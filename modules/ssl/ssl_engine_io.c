@@ -200,17 +200,13 @@ static int bio_filter_out_write(BIO *bio, const char *in, int inl)
     apr_bucket *e;
     int need_flush;
 
+    BIO_clear_retry_flags(bio);
+
     /* Abort early if the client has initiated a renegotiation. */
     if (outctx->filter_ctx->config->reneg_state == RENEG_ABORT) {
         outctx->rc = APR_ECONNABORTED;
         return -1;
     }
-
-    /* when handshaking we'll have a small number of bytes.
-     * max size SSL will pass us here is about 16k.
-     * (16413 bytes to be exact)
-     */
-    BIO_clear_retry_flags(bio);
 
     /* Use a transient bucket for the output data - any downstream
      * filter must setaside if necessary. */
@@ -458,13 +454,13 @@ static int bio_filter_in_read(BIO *bio, char *in, int inlen)
     if (!in)
         return 0;
 
+    BIO_clear_retry_flags(bio);
+
     /* Abort early if the client has initiated a renegotiation. */
     if (inctx->filter_ctx->config->reneg_state == RENEG_ABORT) {
         inctx->rc = APR_ECONNABORTED;
         return -1;
     }
-
-    BIO_clear_retry_flags(bio);
 
     if (!inctx->bb) {
         inctx->rc = APR_EOF;

@@ -125,12 +125,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_ssl (ssl_engine_io.c: bio_filter_out_write, bio_filter_in_read)
-     Clear retry flags before aborting on client-initiated reneg. [Joe Orton]
-     PR: 63052
-     trunk patch: http://svn.apache.org/r1850946
-     2.4.x patch: svn merge -c 1850946 ^/httpd/httpd/trunk .
-     +1: wrowe, jorton, rpluem
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

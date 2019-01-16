@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.38
 
+  *) mod_ssl: Clear retry flag before aborting client-initiated renegotiation.
+     PR 63052 [Joe Orton]
+
   *) mod_negotiation: Treat LanguagePriority as case-insensitive to match
      AddLanguage behavior and HTTP specification. PR 39730 [Christophe Jaillet]
   
