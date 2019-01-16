@@ -204,8 +204,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1850745 ^/httpd/httpd/trunk .
      +1: jim
      -0: wrowe [Raised on dev@, whether -std=c99 is correct now for maintainer
-                mode? Otherwise I support modifying mod_proxy_html's CPPFLAGS
-                alone, rather than changing global CPPFLAGS.]
+                mode, or alternately -std=c89 -Wno-error=comment, independent
+                of mod_proxy_html config? Otherwise modify mod_proxy_html's 
+                CPPFLAGS alone, without modifying global compilation flags.]
 
   *) mod_proxy_wstunnel: Fix websocket proxy over UDS. PR 62932
      trunk patch: http://svn.apache.org/r1851093
