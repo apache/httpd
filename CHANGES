@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.38
 
+  *) mod_negotiation: Treat LanguagePriority as case-insensitive to match
+     AddLanguage behavior and HTTP specification. PR 39730 [Christophe Jaillet]
+  
   *) mod_md: incorrect behaviour when synchronizing ongoing ACME challenges
      have been fixed. [Michael Kaufmann, Stefan Eissing]
   
