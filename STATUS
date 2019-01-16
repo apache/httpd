@@ -216,9 +216,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1850835
      2.4.x patch: svn merge -c 1850834,1850835 ^/httpd/httpd/trunk .
      +1: jailletc36, jim
-     [wrowe] asks, please don't comingle issues? Impacts review. You don't
-             offer the first patch for consideration, although the later
-             backport of r1850834 looks fine. Refactor please for me to vote.
+     -1: wrowe [half vetod; see Message-ID: <CACsi253VZdKPd8L5PMHq+74RX0ttmGbFf8a8d5f0UttEQvsJMQ@mail.gmail.com> for detail] 
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
