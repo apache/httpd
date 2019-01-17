@@ -185,7 +185,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR 55348
      trunk patch: https://svn.apache.org/r1730129
      2.4.x patch: svn merge -c 1730129 ^/httpd/httpd/trunk .
-     +1: wrowe, jim
+     +1: wrowe, jim, ylavic
 
   *) modules/filters/config.m4: Make libxml2's inclusion of unicode/*.h files
      a non-fatal warning/error under maintainer-mode.
@@ -200,7 +200,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_proxy_wstunnel: Fix websocket proxy over UDS. PR 62932
      trunk patch: http://svn.apache.org/r1851093
      2.4.x patch: svn merge -c 1851093 ^/httpd/httpd/trunk .
-     +1: jailletc36 (by inspection), jim
+     +1: jailletc36 (by inspection), jim, ylavic
 
   *) easy proposals:
        - mod_authn_dbm: Return APR_SUCCESS which is equivalent but more readable
@@ -210,8 +210,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1850834
                   http://svn.apache.org/r1850835
      2.4.x patch: svn merge -c 1850834,1850835 ^/httpd/httpd/trunk .
-     +1: jailletc36, jim
+     +1: jailletc36, jim, ylavic
      -1: wrowe [half vetod; see Message-ID: <CACsi253VZdKPd8L5PMHq+74RX0ttmGbFf8a8d5f0UttEQvsJMQ@mail.gmail.com> for detail] 
+     ylavic: I agree w/ joe's response on dev@ for r1850835 (no functional change btw),
+             while the warning addressed by r1850834 is annoying for 2.4.38..
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
