@@ -70,7 +70,7 @@
     <p>Remember, in order to make the following examples work, you have to
     enable <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> and <code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code>.</p>
 
-    <div class="example"><h3>Simple gateway</h3><pre class="prettyprint lang-config">ProxyPass /scgi-bin/ scgi://localhost:4000/</pre>
+    <div class="example"><h3>Simple gateway</h3><pre class="prettyprint lang-config">ProxyPass "/scgi-bin/" "scgi://localhost:4000/"</pre>
 </div>
 
     <p>The balanced gateway needs <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> and
@@ -100,8 +100,8 @@
         and <var>Script-URI</var> and be compliant with RFC 3875 section 3.3.
         If instead you need <code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code> to generate
         a "best guess" for <var>PATH_INFO</var>, set this env-var.  The
-        variable must be set before <code class="directive"><a href="../mod/env.html#setenv">SetEnv</a></code>
-        is effective.  <code class="directive"><a href="../mod/setenv.html#setenvif">SetEnvIf</a></code> can be
+        variable must be set before <code class="directive"><a href="../mod/mod_env.html#setenv">SetEnv</a></code>
+        is effective.  <code class="directive"><a href="../mod/mod_setenvif.html#setenvif">SetEnvIf</a></code> can be
         used instead: <code>SetEnvIf Request_URI . proxy-scgi-pathinfo</code>
         </dd>
     </dl>
@@ -176,7 +176,7 @@ header</td></tr>
 
     <div class="example"><h3>Example</h3><pre class="prettyprint lang-config"># Use the default header (X-Sendfile)
 ProxySCGISendfile On
-    
+
 # Use a different header
 ProxySCGISendfile X-Send-Static</pre>
 </div>
