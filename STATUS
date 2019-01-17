@@ -125,6 +125,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_proxy_wstunnel: Fix websocket proxy over UDS. PR 62932
+     trunk patch: http://svn.apache.org/r1851093
+     2.4.x patch: svn merge -c 1851093 ^/httpd/httpd/trunk .
+     +1: jailletc36 (by inspection), jim, ylavic
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -196,11 +201,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 mode, or alternately -std=c89 -Wno-error=comment, independent
                 of mod_proxy_html config? Otherwise modify mod_proxy_html's 
                 CPPFLAGS alone, without modifying global compilation flags.]
-
-  *) mod_proxy_wstunnel: Fix websocket proxy over UDS. PR 62932
-     trunk patch: http://svn.apache.org/r1851093
-     2.4.x patch: svn merge -c 1851093 ^/httpd/httpd/trunk .
-     +1: jailletc36 (by inspection), jim, ylavic
 
   *) easy proposals:
        - mod_authn_dbm: Return APR_SUCCESS which is equivalent but more readable
