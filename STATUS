@@ -131,12 +131,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1851093 ^/httpd/httpd/trunk .
      +1: jailletc36 (by inspection), jim, ylavic
 
-  *) mod_md: fix warning with gcc (this breaks maintainer-mode build with
-     recent gcc)
-     trunk patch: http://svn.apache.org/r1850834
-     2.4.x patch: svn merge -c 1850834 ^/httpd/httpd/trunk .
-     +1: jailletc36, jim, ylavic, wrowe
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
