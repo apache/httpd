@@ -131,6 +131,12 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1851093 ^/httpd/httpd/trunk .
      +1: jailletc36 (by inspection), jim, ylavic
 
+  *) mod_md: fix warning with gcc (this breaks maintainer-mode build with
+     recent gcc)
+     trunk patch: http://svn.apache.org/r1850834
+     2.4.x patch: svn merge -c 1850834 ^/httpd/httpd/trunk .
+     +1: jailletc36, jim, wrowe
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -203,15 +209,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 of mod_proxy_html config? Otherwise modify mod_proxy_html's 
                 CPPFLAGS alone, without modifying global compilation flags.]
 
-  *) easy proposals:
-       - mod_authn_dbm: Return APR_SUCCESS which is equivalent but more readable
-         than 'rv' here
+  *) mod_authn_dbm: Return APR_SUCCESS which is equivalent but more readable
+     than 'rv' here
      trunk patch: http://svn.apache.org/r1850835
-     2.4.x patch: svn merge -c 1850835 ^/httpd/httpd/trunk .
-     +1: jailletc36, jim, ylavic
-     -1: wrowe [half vetod; see Message-ID: <CACsi253VZdKPd8L5PMHq+74RX0ttmGbFf8a8d5f0UttEQvsJMQ@mail.gmail.com> for detail] 
-     ylavic: I agree w/ joe's response on dev@ for r1850835 (no functional change btw),
-             while the warning addressed by r1850834 is annoying for 2.4.38..
+                  http://svn.apache.org/r1851552
+     2.4.x patch: svn merge -c 1850835,1851552 ^/httpd/httpd/trunk .
+     +1: jailletc36, jim, ylavic, wrowe
+     ylavic: I agree w/ joe's response on dev@ for r1850835 (no functional
+             change btw), while the warning addressed by r1850834 is annoying
+             for 2.4.38.
+     wrowe: Clarified obtuse code with comment, waiting for jorton to
+            confirm, or earlier +1's to object, before promoting to apply.
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
