@@ -289,7 +289,10 @@ APACHE_MODULE(md, [Managed Domain handling], $md_objs, , most, [
     
     AC_CHECK_FUNCS([arc4random_buf], 
         [APR_ADDTO(MOD_CPPFLAGS, ["-DMD_HAVE_ARC4RANDOM"])], [])
-    
+
+    if test "x$enable_md" = "xshared"; then
+       APR_ADDTO(MOD_MD_LDADD, [-export-symbols-regex md_module])
+    fi
 ])
 
 dnl #  end of module specific part

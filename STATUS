@@ -125,11 +125,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_md: Don't export all symbols on Unix (reduces .so size by ~8%)
-     trunk patch: https://svn.apache.org/r1830747
-     2.4.x patch: svn merge -c 1830747 ^/httpd/httpd/trunk .
-     +1: jorton, jim, icing
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
