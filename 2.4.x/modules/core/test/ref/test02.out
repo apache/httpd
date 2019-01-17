@@ -1,3 +1,0 @@
-# testing with conf/test02.conf
-httpd: Syntax error on line 2 of ./conf/test02.conf: <Macro macro definition: empty name
-# exit: 1

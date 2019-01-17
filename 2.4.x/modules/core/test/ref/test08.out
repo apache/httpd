@@ -1,3 +1,0 @@
-# testing with conf/test08.conf
-httpd: Syntax error on line 3 of ./conf/test08.conf: </Macro> without matching <Macro> section
-# exit: 1
