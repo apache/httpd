@@ -32,7 +32,8 @@
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Provides macros within apache httpd runtime configuration files</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>macro_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_macro.c</td></tr></table>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_macro.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.4.5 and later</td></tr></table>
 <h3>Summary</h3>
 
 
@@ -112,7 +113,7 @@ Examples section.</p>
 <p>Parameter names should begin with a sigil such as <code>$</code>,
 <code>%</code>, or <code>@</code>, so that they are clearly
 identifiable, and also in order to help deal with interactions with
-other directives, such as the core <code class="directive"><a href="../mod/core.html#define">Define</a></code> directive. Failure to do so will 
+other directives, such as the core <code class="directive"><a href="../mod/core.html#define">Define</a></code> directive. Failure to do so will
 result in a warning. Nevertheless, you are encouraged to have a good
 knowledge of your entire server configuration in order to avoid reusing
 the same variables in different scopes, which can cause confusion.</p>
