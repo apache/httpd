@@ -1,0 +1,147 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision: 1421892 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_version.xml.meta">
+<name>mod_version</name>
+<description>Configuration dépendant de la version</description>
+<status>Extension</status>
+<sourcefile>mod_version.c</sourcefile>
+<identifier>version_module</identifier>
+
+<summary>
+    <p>Ce module a été conçu pour être utilisé dans les suites de tests
+    et les grands réseaux qui doivent prendre en compte différentes
+    versions de httpd et différentes configurations. Il fournit un
+    nouveau conteneur -- <directive type="section"
+    module="mod_version">IfVersion</directive>, qui apporte une grande
+    souplesse dans la vérification de version en permettant une
+    comparaison numérique et l'utilisation d'expressions
+    rationnelles.</p>
+
+    <example><title>Exemples</title>
+      <highlight language="config">
+&lt;IfVersion 2.4.2&gt;
+    # la version actuelle de httpd est exactement 2.4.2
+&lt;/IfVersion&gt;
+
+&lt;IfVersion >= 2.5&gt;
+    # utilise vraiment les nouvelles fonctionnalités :-)
+&lt;/IfVersion&gt;
+      </highlight>
+    </example>
+
+    <p>Voir ci-dessous pour d'autres exemples.</p>
+</summary>
+
+<directivesynopsis type="section">
+<name>IfVersion</name>
+<description>Contient des portions de configuration dépendantes de la
+version</description>
+<syntax>&lt;IfVersion [[!]<var>opérateur</var>] <var>version</var>&gt; ...
+&lt;/IfVersion&gt;</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>All</override>
+
+<usage>
+    <p>La section <directive type="section">IfVersion</directive>
+    rassemble des directives de configuration qui ne sont exécutées que
+    si la version de httpd satisfait aux critères spécifiés. Pour une
+    comparaison normale (numérique), l'argument <var>version</var> doit
+    être spécifié sous le format
+    <code><var>majeur</var>[.<var>mineur</var>[.<var>patch</var>]]</code>,
+    comme par exemple <code>2.1.0</code> ou <code>2.2</code>.
+    <var>mineur</var> et <var>patch</var> sont optionnels. Si ces
+    numéros sont absents, il se voient affectée implicitement la valeur
+    0. Les <var>opérateur</var>s numériques suivants sont autorisés
+    :</p>
+
+    <table style="zebra" border="1">
+    <tr><th><var>opérateur</var></th><th>description</th></tr>
+    <tr><td><code>=</code> ou <code>==</code></td>
+        <td>La version de httpd est égale à la valeur
+	spécifiée</td></tr>
+    <tr><td><code>&gt;</code></td>
+        <td>La version de httpd est supérieure à la valeur
+	spécifiée</td></tr>
+    <tr><td><code>&gt;=</code></td>
+        <td>La version de httpd est supérieure ou égale à la valeur
+	spécifiée</td></tr>
+    <tr><td><code>&lt;</code></td>
+        <td>La version de httpd est inférieure à la valeur
+	spécifiée</td></tr>
+    <tr><td><code>&lt;=</code></td>
+        <td>La version de httpd est inférieure ou égale à la valeur
+	spécifiée</td></tr>
+    </table>
+
+    <example><title>Exemple</title>
+      <highlight language="config">
+&lt;IfVersion >= 2.3&gt;
+    # la condition n'est satisfaite que pour les versions de httpd
+	# supérieures ou égales à 2.3
+&lt;/IfVersion&gt;
+      </highlight>
+    </example>
+
+    <p>En plus d'une comparaison numérique, il est possible de comparer
+    la version de httpd avec une <glossary ref="regex">expression
+    rationnelle</glossary>. Il existe deux méthodes pour spécifier cette
+    dernière :</p>
+
+    <table style="zebra" border="1">
+    <tr><th><var>opérateur</var></th><th>description</th></tr>
+    <tr><td><code>=</code> ou <code>==</code></td>
+        <td><var>version</var> est de la forme
+            <code>/<var>regex</var>/</code></td></tr>
+    <tr><td><code>~</code></td>
+        <td><var>version</var> est de la forme
+            <code><var>regex</var></code></td></tr>
+    </table>
+
+    <example><title>Exemple</title>
+      <highlight language="config">
+&lt;IfVersion = /^2.4.[01234]$/&gt;
+    # exemple de contournement pour les versions boguées
+&lt;/IfVersion&gt;
+      </highlight>
+    </example>
+
+    <p>Pour inverser la condition, tous les opérateurs peuvent être
+    préfixés par un point d'exclamation (<code>!</code>) :</p>
+
+    <example>
+     <highlight language="config">
+&lt;IfVersion !~ ^2.4.[01234]$&gt;
+    # pas pour ces versions
+&lt;/IfVersion&gt;
+    </highlight>
+    </example>
+
+    <p>Si <var>opérateur</var> est absent, sa valeur implicite est
+    <code>=</code>.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

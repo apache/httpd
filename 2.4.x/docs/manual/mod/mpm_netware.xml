@@ -1,0 +1,108 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mpm_netware.xml.meta">
+<name>mpm_netware</name>
+<description>Multi-Processing Module implementing an exclusively threaded web
+    server optimized for Novell NetWare</description>
+<status>MPM</status>
+<sourcefile>mpm_netware.c</sourcefile>
+<identifier>mpm_netware_module</identifier>
+
+<summary>
+    <p>This Multi-Processing Module (MPM) implements an exclusively
+    threaded web server that has been optimized for Novell
+    NetWare.</p>
+
+    <p>The main thread is responsible for launching child
+    worker threads which listen for connections and serve them when they
+    arrive. Apache HTTP Server always tries to maintain several <dfn>spare</dfn>
+    or idle worker threads, which stand ready to serve incoming
+    requests. In this way, clients do not need to wait for a new
+    child threads to be spawned before their requests can be
+    served.</p>
+
+    <p>The <directive module="mpm_common">StartThreads</directive>,
+    <directive module="mpm_common">MinSpareThreads</directive>,
+    <directive module="mpm_common">MaxSpareThreads</directive>, and
+    <directive module="mpm_netware">MaxThreads</directive>
+    regulate how the main thread creates worker threads to serve
+    requests. In general, Apache httpd is very self-regulating, so most
+    sites do not need to adjust these directives from their default
+    values. Sites with limited memory may need to decrease <directive
+    module="mpm_netware">MaxThreads</directive> to keep the server from
+    thrashing (spawning and terminating idle threads). More information
+    about tuning process creation is provided in the <a
+    href="../misc/perf-tuning.html">performance hints</a>
+    documentation.</p>
+
+    <p><directive module="mpm_common">MaxConnectionsPerChild</directive>
+    controls how frequently the server recycles processes by killing old
+    ones and launching new ones. On the NetWare OS it is highly
+    recommended that this directive remain set to 0. This allows worker
+    threads to continue servicing requests indefinitely.</p>
+</summary>
+<seealso><a href="../bind.html">Setting which addresses and
+    ports Apache httpd uses</a>
+</seealso>
+
+<directivesynopsis location="mpm_common"><name>Listen</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ListenBacklog</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MaxMemFree</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MaxConnectionsPerChild</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ReceiveBufferSize</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>SendBufferSize</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MaxSpareThreads</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MinSpareThreads</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>StartThreads</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ThreadStackSize</name>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MaxThreads</name>
+<description>Set the maximum number of worker threads</description>
+<syntax>MaxThreads <var>number</var></syntax>
+<default>MaxThreads 2048</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>The <directive>MaxThreads</directive> directive sets the desired
+    maximum number worker threads allowable. The default value is
+    also the compiled in hard limit. Therefore it can only be lowered,
+    for example:</p>
+
+    <example>
+      MaxThreads 512
+    </example>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

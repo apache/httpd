@@ -1,0 +1,213 @@
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.\" DO NOT EDIT! Generated from XML source.
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.de Sh \" Subsection
+.br
+.if t .Sp
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.de Sp \" Vertical space (when we can't use .PP)
+.if t .sp .5v
+.if n .sp
+..
+.de Ip \" List item
+.br
+.ie \\n(.$>=3 .ne \\$3
+.el .ne 3
+.IP "\\$1" \\$2
+..
+.TH "AB" 1 "2014-06-24" "Apache HTTP Sunucusu" "ab"
+.nh
+.SH İSİM
+ab \- Apache HTTP sunucusu başarım ölçme aracı
+
+.SH "KULLANIM"
+ 
+.PP
+\fBab\fR [ -\fBA\fR \fIyetkili-kullanıcı:parola\fR ] [ -\fBb\fR \fItampon-boyu\fR ] [ -\fBB\fR \fIyerel-adres\fR ] [ -\fBc\fR \fIbağlantı-sayısı\fR ] [ -\fBC\fR \fIçerez-ismi=değer\fR ] [ -\fBd\fR ] [ -\fBe\fR \fIcsv-dosyası\fR ] [ -\fBf\fR \fIprotokol\fR ] [ -\fBg\fR \fIgnuplot-dosyası\fR ] [ -\fBh\fR ] [ -\fBH\fR \fIözel-başlık\fR ] [ -\fBi\fR ] [ -\fBk\fR ] [ -\fBl\fR ] [ -\fBm\fR \fIHTTP-yöntemi\fR ] [ -\fBn\fR \fIistek-sayısı\fR ] [ -\fBp\fR \fIPOST-dosyası\fR ] [ -\fBP\fR \fIvekil-yetkilisi:parola\fR ] [ -\fBq\fR ] [ -\fBr\fR ] [ -\fBs\fR \fIzamanasimi\fR ] [ -\fBS\fR ] [ -\fBt\fR \fIsaniye\fR ] [ -\fBT\fR \fIiçerik-türü\fR ] [ -\fBu\fR \fIPUT-dosyası\fR ] [ -\fBv\fR \fIayrıntı-düzeyi\fR] [ -\fBV\fR ] [ -\fBw\fR ] [ -\fBx\fR \fI<table>-öznitelikleri\fR ] [ -\fBX\fR \fIvekil\fR[:\fIport\fR] ] [ -\fBy\fR \fI<tr>-öznitelikleri\fR ] [ -\fBz\fR \fI<td>-öznitelikleri\fR ] [ -\fBZ\fR \fIşifre-kümesi\fR ] [http[s]://]\fIkonakadı\fR[:\fIport\fR]/\fIdizin\fR
+ 
+
+.SH "ÖZET"
+ 
+.PP
+\fBab\fR Apache Hiper Metin Aktarım Protokolü (HTTP) sunucunuzun başarımını ölçmek amacıyla kullanabileceğiniz bir kıyaslama aracıdır\&. Mevcut Apache kurulumunuzun görevini nasıl yerine getirdiği hakkında bir izlenim edinmeniz için tasarlanmıştır\&. Özellikle, Apache kurulumunuzun saniyede kaç isteği sunma yeteneğinde olduğunu gösterir\&.
+ 
+
+.SH "SEÇENEKLER"
+ 
+ 
+.TP
+\fB-A\fR \fIyetkili-kullanıcı\fR:\fIparola\fR
+Sunucuya TEMEL Kimlik Doğrulamada kullanılmak üzere kanıt sağlar\&. Kullanıcı adı ile parola arasına sadece : konur ve sunucunun buna ihtiyacı olup olmadığına bakılmaksızın (yani, bir "401 kimlik doğrulaması gerekli" yanıtı beklenmeden) bağlantı üzerinden base64 kodlu olarak sunucuya gönderilir\&.  
+.TP
+\fB-b\fR \fItampon-boyu\fR
+TCP gönderme/alma tamponlarının bayt cinsinden uzunluğu\&.  
+.TP
+\fB-B\fR \fIyerel-adres\fR
+Uzak bağlantılar yaparken dinlenecek adres\&.  
+.TP
+\fB-c\fR \fIbağlantı-sayısı\fR
+Aynı anda işleme sokulacak bağlantı sayısı\&. Aynı anda bir bağlantı öntanımlı değerdir\&.  
+.TP
+\fB-C\fR \fIçerez-ismi\fR=\fIdeğer\fR
+İsteğe bir Cookie: satırı ekler\&. Argüman olarak genellikle bir \fIisim=değer\fR çifti kullanılır\&. Bu çiftler birden fazla olabilir\&.  
+.TP
+\fB-d\fR
+"percentage served within XX [ms] table" iletisi gösterilmez\&. (Geriye uyumluluk için vardır)\&.  
+.TP
+\fB-e\fR \fIcsv-dosyası\fR
+Sunulan isteğin birim zamanda (milisaniye) ne kadarının (yüzde cinsinden) sunulduğunu gösteren virgül ayraçlı değerler (CSV) dosyası\&. Sonuçlar 'bobin haline' getirilmiş olduğundan doğal olarak 'gnuplot' dosyasından daha yararlıdır\&.  
+.TP
+\fB-f\fR \fIprotokol\fR
+SSL/TLS protokolü belirtilir (SSL2, SSL3, TLS1, TLS1\&.1, TLS1\&.2 veya ALL)\&. TLS1\&.1 ve TLS1\&.2 desteği 2\&.4\&.4 ve sonraki sürümler içindir\&.  
+.TP
+\fB-g\fR \fIgnuplot-dosyası\fR
+Ölçülen değerler bir 'gnuplot' veya TSV (sekme ayraçlı değerler) dosyasına yazılır\&. Bu dosya, Gnuplot, IDL, Mathematica, Igor hatta Excel tarafından veri dosyası olarak kabul edilir\&. Veri sütunlarının başlıkları dosyanın ilk satırında bulunur\&.  
+.TP
+\fB-h\fR
+Kullanım bilgisi gösterir\&.  
+.TP
+\fB-H\fR \fIözel-başlık\fR
+İsteğe fazladan başlık ekler\&. \fIözel-başlık\fR, aralarında iki nokta imi bulunan bir isim-değer çifti olarak belirtilir\&. Örnek: "Accept-Encoding: zip/zop;8bit"  
+.TP
+\fB-i\fR
+GET istekleri yerine HEAD istekleri yapılır\&.  
+.TP
+\fB-k\fR
+HTTP KeepAlive (kalıcı bağlantı) özelliğini etkinleştirir, yani tek bir oturum içinde çok sayıda isteğe hizmet sunulabilir\&. Özellik öntanımlı olarak kapalıdır\&.  
+.TP
+\fB-l\fR
+Yanıtarın uzunluğu sabit değilse hataları raporlamaz\&. Özdevinimli sayfalarda kullanışlı olabilir\&. 2\&.4\&.7 ve sonraki sürümler içindir\&.  
+.TP
+\fB-m\fR \fIHTTP-yöntemi\fR
+İstekler için özel HTTP yöntemi, belirtilir\&. 2\&.4\&.10 ve sonraki sürümler içindir\&.  
+.TP
+\fB-n\fR \fIistek-sayısı\fR
+Kıyaslama oturumu sırasında sunucuya uygulanacak istek sayısı\&. Öntanımlı olarak hiçbir başarım ölçütü sağlamayan tek bir istek yapılır\&.  
+.TP
+\fB-p\fR \fIPOST-dosyası\fR
+POST isteği ile ilgili verileri içeren dosya\&. Ayrıca \fB-T\fR seçeneğini de belirtmeyi unutmayın\&.\&.  
+.TP
+\fB-P\fR \fIvekil-yetkilisi\fR:\fIparola\fR
+Vekil sunucuya TEMEL Kimlik Doğrulamasında kullanılacak kanıtları sağlar\&. Kullanıcı adı ile parola arasına sadece : konur ve vekilin buna ihtiyacı olup olmadığına bakılmaksızın (yani, bir "407 vekilde kimlik doğrulaması gerekiyor" yanıtı beklenmeden) bağlantı üzerinden base64 kodlu olarak sunucuya gönderilir\&.  
+.TP
+\fB-q\fR
+İstek sayısı 150'den fazla olduğunda, \fBab\fR her 100 veya %10 istekte bir, standart hataya bir işlenen istek sayacı çıktılar\&. \fB-q\fR seçeneği bu çıktının üretilmemesini sağlar\&.  
+.TP
+\fB-r\fR
+Soket hata alsa bile program çıkmaz\&.  
+.TP
+\fB-s\fR \fIzamanasimi\fR
+Soket zaman aşımına uğramadan önce beklenecek azami saniye sayısı\&. 30 saniye öntanımlı süredir\&. 2\&.4\&.4 ve sonraki sürümler içindir\&.  
+.TP
+\fB-S\fR
+Ortalama ve ortanca değerler arasında bir veya iki standart sapmadan fazlası varsa ne ortalama değer ne standart sapma değeri ne de uyarı/hata iletileri gösterilir\&. Öntanımlı olarak, asgari/ortalama/azami değerler gösterilir\&. (Geriye uyumluluk)\&.  
+.TP
+\fB-t\fR \fIsaniye\fR
+Ölçümleme işleminin ne kadar süreyle uygulanacağı belirtilir\&. Dahili olarak \fB-n 50000\fR seçeneği uygulanır\&. Bunu belli bir süreye göre kıyaslama yapmak amacıyla kullanabilirsiniz\&. Öntanımlı olarak bir süre kısıtlaması yoktur\&.  
+.TP
+\fB-T\fR \fIiçerik-türü\fR
+POST/PUT verisi için kullanılacak içerik türü belirtilir\&. Örnek: application/x-www-form-urlencoded\&. Öntanımlı değer: text/plain\&.  
+.TP
+\fB-v\fR \fIayrıntı-düzeyi\fR
+Çıktının ayrıntı düzeyi belirtilir\&. 4 ve üstü ile başlıklar hakkında bilgi, 3 ve üstü ile yanıt kodları (404, 200, vb\&.), 2 ve üstü ile ise uyarı ve bilgi iletileri gösterilir\&.  
+.TP
+-u \fIPUT-dosyası\fR
+PUT verisini içeren dosya\&. Ayrıca, -T seçeneğini belirtmeyi de unutmayın\&.  
+.TP
+\fB-V\fR
+Sürüm bilgilerini gösterir ve çıkar\&.  
+.TP
+\fB-w\fR
+Sonuçları HTML tabloları olarak basar\&. Öntanımlı tablo, beyaz artalanlı ve iki sütunludur\&.  
+.TP
+\fB-x\fR \fI<table>-öznitelikleri\fR
+<table> etiketinde kullanılacak öznitelikler belirtilir\&. Belirtilen öznitelikler etiket içine <table \fIburaya\fR > biçeminde yerleştirilir\&.  
+.TP
+\fB-X\fR \fIvekil\fR[:\fIport\fR]
+İstekler için bir vekil sunucu kullanılır\&.  
+.TP
+\fB-y\fR \fI<tr>-öznitelikleri\fR
+<tr> etiketinde kullanılacak öznitelikler belirtilir\&.  
+.TP
+\fB-z\fR \fI<td>-öznitelikleri\fR
+<td> etiketinde kullanılacak öznitelikler belirtilir\&.  
+.TP
+-Z \fIşifre-kümesi\fR
+SSL/TLS şifre kümesi belirtilir (\fBopenssl\fR(1) şifrelerine bakınız)\&.  
+ 
+.SH "ÇIKTI"
+ 
+.PP
+Aşağıda \fBab\fR tarafından döndürülen değerler açıklanmıştır:
+ 
+ 
+.TP
+Server Software
+İlk başarılı yanıtın, varsa, \fIserver\fR HTTP başlığında döndürülen değer\&. Bu başlıktaki başlangıçtan 32 ondalık değerli karaktere (genellikle boşluk veya CR/LF karakteri) kadar tüm karakterleri içerir\&.  
+.TP
+Server Hostname
+Komut satırında belirtilen DNS veya IP adresi\&.  
+.TP
+Server Port
+\fBab\fR'nin bağlandığı port\&. Komut satırında port belirtilmemişse, öntanımlı olarak http için 80, https için 443'tür\&.  
+.TP
+SSL/TLS Protocol
+İstemci le sunucu arasında uzlaşılmış protokol değerleri\&. Bu sadece SSL kullanılıyorsa çıktılanır\&.  
+.TP
+Document Path
+Komut satırı dizgesinden çözümlenen isteğin URI'si\&.  
+.TP
+Document Length
+Başarıyla döndürülen ilk belgenin bayt cinsinden uzunluğu\&. Eğer belge uzunluğu sınama sırasında değişirse yanıt bir hata içerecektir\&.  
+.TP
+Concurrency Level
+Sınama sırasında kullanılan eşzamanlı istemcilerin sayısı\&.  
+.TP
+Time taken for tests
+İlk soket bağlantısının alındığı andan son yanıtın alındığı ana kadar geçen süre\&.  
+.TP
+Complete requests
+Alınan başarılı yanıtların sayısı\&.  
+.TP
+Failed requests
+Başarısızlık olarak addedilen isteklerin sayısı\&. Sayı sıfırdan büyükse, diğer satırda, bağlanma, okuma, yanlış içerik uzunluğu, istisnalar gibi sebeplerle başarısız olmuş istekler gösterilir\&.  
+.TP
+Write errors
+Başarısız yazma hatalarının (kırık boru) sayısı\&.  
+.TP
+Non-2xx responses
+200 serisi yanıt kodları ile açıklanamayan yanıtların sayısı\&. Tüm yanıtlar 200 olursa bu alan çıktılanmaz\&.  
+.TP
+Keep-Alive requests
+Keep-Alive isteklerinde sonuçlanan bağlantı sayısı\&.  
+.TP
+Total body sent
+Sınamanın parçası olarak veri gönderimi yapılandırılmışsa, bu sınama sırasında gönderilen toplam bayt sayısıdır\&. Sınama sırasında gövde gönderilmiyorsa bu alan çıktılanmaz\&.  
+.TP
+Total transferred
+Sunucudan alınan toplam bayt sayısı\&. Bu sayı aslında hattan gönderilen bayt sayısıdır\&.  
+.TP
+HTML transferred
+Sunucudan alınan belge baytlarının sayısı\&. Bu sayı HTTP başlıklarının bayt sayısını içermez\&.  
+.TP
+Requests per second
+Saniyedeki istek sayısı\&. İstek sayısının toplam süreye oranıdır\&.  
+.TP
+Time per request
+İstek başına harcanan süre\&. İlk değer eşzamanlılık * süre * 1000 / biten formülüyle hesaplanırken ikincisi için süre * 1000 / biten formülü kullanılır\&.  
+.TP
+Transfer rate
+okunantoplam / 1024 / süre formülüyle hesaplanan aktarım hızı\&.  
+ 
+.SH "BÖRTÜ BÖCEK"
+ 
+.PP
+Duruk bildirimli sabit uzunlukta çeşitli tamponlar vardır\&. Sunucudan gelen yanıt başlıkları ve diğer harici girdiler, komut satırı argümanları ile birlikte basitçe çözümlenir, bu size can sıkıcı gelebilir\&.
+ 
+.PP
+HTTP/1\&.x protokolünü tamamen gerçeklemez; sadece yanıtların 'belli başlı' bazı biçimlerini kabul eder\&. Aksi takdirde, \fBstrstr\fR(3) işlevinin yoğun kullanımı nedeniyle sunucu yerine \fBab\fR'nin başarımını ölçerdiniz\&.
+ 

@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision: 1827779 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_reqtimeout.xml.meta">
+
+<name>mod_reqtimeout</name>
+<description>Définit le délai maximum et le taux minimum de transfert des
+données pour la réception des requêtes
+</description>
+<status>Extension</status>
+<sourcefile>mod_reqtimeout.c</sourcefile>
+<identifier>reqtimeout_module</identifier>
+<compatibility>Disponible depuis la version 2.2.15 du serveur HTTP Apache</compatibility>
+
+<section id="examples"><title>Exemples</title>
+
+    <ol>
+      <li>
+        Accorde 10 secondes pour la réception des en-têtes de la requête
+	et 30 secondes pour la réception du corps :
+
+        <highlight language="config">
+          RequestReadTimeout headerinit=10 body=30
+        </highlight>
+      </li>
+
+      <li>
+        Accorde au moins 10 secondes pour la réception du corps de
+	la requête. Si le client envoie des données, augmente ce délai
+	d'une seconde pour chaque paquet de 1000 octets reçus, sans
+	limite supérieure (sauf si une limite a été
+	spécifiée via la directive <directive
+	module="core">LimitRequestBody</directive>) :
+
+        <highlight language="config">
+          RequestReadTimeout body=10,MinRate=1000
+        </highlight>
+      </li>
+
+      <li>
+        Accorde au moins 10 secondes pour la réception de de la
+	requête, en-têtes inclus. Si le client envoie des données, augmente ce délai
+	d'une seconde pour chaque paquet de 500 octets reçus, mais
+	n'alloue que 30 secondes pour la requête, en-têtes inclus :
+
+        <highlight language="config">
+          RequestReadTimeout header=10-30,MinRate=500
+        </highlight>
+      </li>
+
+      <li>
+        En général, un serveur doit avoir ses délais d'en-tête et de
+	corps configurés. Si les serveurs virtuels http et https
+	utilisent une configuration commune, les délais ne doivent pas
+	être définis trop bas :
+
+        <highlight language="config">
+          RequestReadTimeout header=20-40,MinRate=500 body=20,MinRate=500
+        </highlight>
+      </li>
+
+    </ol>
+</section>
+
+<directivesynopsis>
+<name>RequestReadTimeout</name>
+<description>Définit des délais maximums pour la réception des en-têtes
+et corps des requêtes en provenance du client.
+</description>
+<syntax>RequestReadTimeout
+[header=<var>délai</var>[-<var>délai-maxi</var>][,MinRate=<var>taux-mini</var>]
+[body=<var>délai</var>[-<var>délai-maxi</var>][,MinRate=<var>taux-mini</var>]
+</syntax>
+<default>header=20-40,MinRate=500 body=20,MinRate=500</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+<compatibility>Disponible depuis la version 2.2.15 du serveur HTTP
+Apache ; désactivée par défaut depuis la version 2.3.14.</compatibility>
+
+<usage>
+    <p>Cette directive permet de définir différents délais pour la
+    réception des en-têtes et corps des requêtes en provenance du
+    client. Si le client ne parvient pas à respecter ces délais, un code
+    d'erreur <code>408 REQUEST TIME OUT</code> est envoyé.</p>
+
+    <p>Pour les serveurs virtuels SSL, le délai concernant les en-têtes
+    inclut le temps nécessaire à la négociation SSL initiale. Si le
+    navigateur du client est configuré pour demander des listes de
+    révocations de certificats, et si le serveur correspondant n'est pas
+    disponible, le délai avant lequel le navigateur va abandonner son
+    attente de CRL au cours de la négociation SSL initiale peut être
+    assez important. Par conséquent, les valeurs de délais d'en-têtes ne
+    doivent pas être trop basses pour les serveurs virtuels SSL. Le délai
+    concernant le corps inclut le temps nécessaire à la renégociation
+    SSL (si elle est nécessaire).</p>
+
+    <p>Lorsqu'une directive <directive
+    module="core">AcceptFilter</directive> est active (ce qui est en
+    général le cas sous Linux et FreeBSD), la socket n'est envoyée au
+    processus du serveur qu'après la réception du premier octet (ou de
+    l'ensemble de la requête si <code>httpready</code> est défini). Le
+    délai configuré pour les en-têtes via la directive
+    <directive>RequestReadTimeout</directive> n'entre en ligne de compte qu'une fois
+    la socket reçue par le processus du serveur.</p>
+
+    <p>Il existe deux méthodes pour spécifier le délai (pour l'en-tête
+    ou le corps) :
+    </p>
+
+    <ul>
+
+    <li><strong>Valeur de délai fixe</strong>:<br />
+
+    <example><var>type</var>=<var>délai</var></example>
+
+    <p>Le temps en secondes alloué pour la lecture des en-têtes ou du
+    corps de la requête. La valeur 0 signifie aucune limite.</p>
+    </li>
+
+    <li><strong>Désactivation du module pour un serveur virtuel</strong>:<br />
+
+    <example>header=0 body=0</example>
+
+    <p>Avec cet exemple, le module <module>mod_reqtimeout</module> est
+    complètement désactivé.</p>
+    </li>
+
+    <li><strong>La valeur du délai qui est augmentée lorsque des données
+    sont reçues</strong> :<br />
+    <example>
+    <var>type</var>=<var>délai</var>,MinRate=<var>taux-mini</var>
+    </example>
+
+    <p>Identique à ce qui précède, mais chaque fois que des données sont
+    reçues, la valeur du délai est augmentée en fonction du taux-mini
+    spécifié (en octets par seconde).</p>
+    </li>
+
+    <li><strong>La valeur du délai augmente lorsque des données sont
+    reçues, jusqu'à une limite supérieure</strong>:<br />
+    <example>
+    <var>type</var>=<var>délai</var>-<var>délai-maxi</var>,MinRate=<var>taux-mini</var>
+    </example>
+
+    <p>Identique à ce qui précède, mais le délai n'augmentera pas au
+    delà de la borne supérieure du délai spécifiée.</p>
+    </li>
+
+    </ul>
+
+
+
+
+</usage>
+
+</directivesynopsis>
+
+</modulesynopsis>

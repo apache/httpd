@@ -1,0 +1,437 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision: 1739075 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_privileges.xml.meta">
+
+<name>mod_privileges</name>
+<description>Support des privilèges de Solaris et de l'exécution des
+serveurs virtuels sous différents identifiants
+utilisateurs.</description>
+<status>Experimental</status>
+<sourcefile>mod_privileges.c</sourcefile>
+<identifier>privileges_module</identifier>
+<compatibility>Disponible depuis la version 2.3 d'Apache sur les
+plates-formes Solaris 10 et OpenSolaris</compatibility>
+
+<summary>
+<p>Ce module permet l'exécution de différents serveurs virtuels sous
+différents identifiants Unix <var>User</var> et <var>Group</var>,
+et avec différents <a
+href="http://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp">Privilèges
+Solaris</a>. En particulier, il apporte au problème de
+séparation des privilèges entre les différents serveurs virtuels la
+solution que devait apporter le module MPM abandonné perchild. Il
+apporte aussi d'autres améliorations en matière de sécurité.</p>
+
+<p>À la différence de perchild, <module>mod_privileges</module> n'est
+pas un module MPM. Il travaille <em>au sein</em> d'un modèle de
+traitement pour définir les privilèges et les User/Group <em>pour chaque
+requête</em> dans un même processus. Il n'est donc pas compatible avec
+les MPM threadés, et refusera de s'exécuter en cas d'utilisation d'un de
+ces derniers.</p>
+
+<p><module>mod_privileges</module> traite des problèmes de sécurité
+similaires à ceux de <a href="../suexec.html">suexec</a> ; mais à la
+différence de ce dernier, il ne s'applique pas seulement aux programmes
+CGI, mais à l'ensemble du cycle de traitement d'une requête, y compris
+les applications in-process et les sous-processus. Il convient
+particulièrement à l'exécution des applications PHP sous
+<strong>mod_php</strong>, qui est lui-même incompatible avec les modules
+MPM threadés. Il est également bien adapté aux autres applications de type
+script in-process comme <strong>mod_perl</strong>,
+<strong>mod_python</strong>, et <strong>mod_ruby</strong>, ainsi qu'aux
+applications en langage C telles que les modules Apache pour lesquels la
+séparation des privilèges constitue un problème.</p>
+
+</summary>
+
+<section id="security"><title>Considérations à propos de sécurité</title>
+
+<p><module>mod_privileges</module> introduit de nouveaux problèmes de
+sécurité dans les situations où du <strong>code non sûr</strong> peut
+s'exécuter <strong>à l'intérieur du processus du serveur web</strong>.
+Ceci s'applique aux modules non sûrs, et aux scripts s'exécutant sous
+des modules comme mod_php ou mod_perl. Les scripts s'exécutant en
+externe (comme par exemple les scripts CGI ou ceux s'exécutant sur un
+serveur d'applications derrière mod_proxy ou mod_jk) ne sont pas
+concernés.</p>
+
+<p>Les principaux problèmes de sécurité que l'on rencontre avec
+mod_privileges sont :</p>
+
+
+<ul><li>L'exécution sous un utilisateur système pose les mêmes problèmes
+de sécurité que mod_suexec, et pratiquement les mêmes que cgiwrap et
+suphp.</li>
+<li>Une extension utilisateur (module ou script) malveillante, écrite en connaissant les mécanismes
+utilisés par <strong>mod_privileges</strong>,
+pourrait élever ses privilèges à tout niveau
+accessible au processus httpd dans tout serveur virtuel. Ceci introduit
+de nouveaux risques si (et seulement si) mod_privileges est compilé avec
+l'option <var>BIG_SECURITY_HOLE</var>.</li>
+<li>Une extension utilisateur (module ou script) malveillante, écrite en connaissant les mécanismes
+utilisés par <strong>mod_privileges</strong>,
+pourrait élever ses privilèges pour s'attribuer
+l'identifiant utilisateur d'un autre utilisateur (et/ou groupe)
+système.</li>
+</ul>
+
+<p>La directive <directive>PrivilegesMode</directive> vous permet de
+sélectionner soit le mode <var>FAST</var>, soit le mode
+<var>SECURE</var>. Vous pouvez panacher les modes en utilisant par
+exemple le mode <var>FAST</var> pour les utilisateurs de confiance et
+les chemins contenant du code entièrement audité, tout en imposant le
+mode <var>SECURE</var> où un utilisateur non sûr a la possibilité
+d'introduire du code.</p>
+<p>Avant de décrire les modes, il nous faut présenter les cas
+d'utilisation de la cible : "Benign" ou "Hostile". Dans une situation
+"Benign", vous voulez séparer les utilisateurs pour leur confort, et les
+protéger, ainsi que le serveur, contre les risques induits par les
+erreurs involontaires. Dans une situation "Hostile" - par exemple
+l'hébergement d'un site commercial - il se peut que des utilisateurs
+attaquent délibérément le serveur ou s'attaquent entre eux.</p>
+<dl>
+<dt>Mode FAST</dt>
+<dd>En mode <var>FAST</var>, les requêtes sont traitées "in-process"
+avec les uid/gid et privilèges sélectionnés, si bien que la
+surcharge est négligeable. Ceci convient aux situations "Benign", mais
+n'est pas sécurisé contre un attaquant augmentant ses privilèges avec un
+module ou script "in-process".</dd>
+<dt>Mode SECURE</dt>
+<dd>Une requête en mode <var>SECURE</var> génère un sous-processus qui
+supprime les privilèges. Ce comportement est très similaire à
+l'exécution d'un programme CGI avec suexec, mais il reste valable tout
+au long du cycle de traitement de la requête, avec en plus l'avantage
+d'un contrôle précis des privilèges.</dd>
+</dl>
+<p>Vous pouvez sélectionner différents
+<directive>PrivilegesMode</directive>s pour chaque serveur virtuel, et
+même dans un contexte de répertoire à l'intérieur d'un serveur virtuel.
+Le mode <var>FAST</var> convient lorsque les utilisateurs sont sûrs
+et/ou n'ont pas le privilège de charger du code "in-process". Le mode
+<var>SECURE</var> convient dans les cas où du code non sûr peut
+s'exécuter "in-process".  Cependant, même en mode <var>SECURE</var>, il
+n'y a pas de protection contre un utilisateur malveillant qui a la
+possibilité d'introduire du code supportant les privilèges <em>avant le
+début du cycle de traitement de la requête.</em></p>
+
+</section>
+<directivesynopsis>
+<name>PrivilegesMode</name>
+<description>Fait un compromis entre d'une part l'efficacité et la
+vitesse de traitement et d'autre part la sécurité à l'encontre des codes
+malicieux supportant les privilèges.</description>
+<syntax>PrivilegesMode FAST|SECURE|SELECTIVE</syntax>
+<default>PrivilegesMode FAST</default>
+<contextlist>
+	<context>server config</context>
+	<context>virtual host</context>
+	<context>directory</context>
+</contextlist>
+<compatibility>Disponible sous Solaris 10 et OpenSolaris avec des
+modules MPMs non threadés (comme <module>prefork</module> ou un module
+personnalisé).</compatibility>
+<usage><p>Cette directive permet de faire un compromis entre les
+performances et la sécurité à l'encontre des codes malicieux supportant
+les privilèges. En mode <var>SECURE</var>, chaque requête est traitée
+dans un sous-processus sécurisé, ce qui induit une dégradation sensible
+des performances. En mode <var>FAST</var>, le serveur n'est pas protégé
+contre l'augmentation de privilège comme décrit plus haut.</p>
+<p>Cette directive est sensiblement différente selon qu'elle se trouve
+dans une section <code>&lt;Directory&gt;</code> (ou Location/Files/If)
+ou au niveau global ou dans un <code>&lt;VirtualHost&gt;</code>.</p>
+<p>Au niveau global, elle définit un comportement par défaut dont
+hériteront les serveurs virtuels. Dans un serveur virtuel, les modes
+FAST ou SECURE agissent sur l'ensemble de la requête HTTP, et toute
+définition de ces modes dans une section <code>&lt;Directory&gt;</code>
+sera <strong>ignorée</strong>. Le pseudo-mode SELECTIVE confie le choix
+du mode FAST ou SECURE aux directives contenues dans une
+section<code>&lt;Directory&gt;</code>.</p>
+<p>Dans une section <code>&lt;Directory&gt;</code>, elle ne s'applique
+que lorsque le mode SELECTIVE a été défini pour le serveur virtuel.
+Seuls FAST ou SECURE peuvent être définis dans ce contexte (SELECTIVE
+n'aurait pas de sens).</p>
+<note type="warning"><title>Avertissement</title>
+	Lorsque le mode SELECTIVE a été défini pour un serveur virtuel,
+	l'activation des privilèges doit être reportée <em>après</em>
+	la détermination, par la phase de comparaison du traitement de
+	la requête, du contexte <code>&lt;Directory&gt;</code> qui
+	s'applique à la requête. Ceci peut donner à un attaquant
+	l'opportunité d'introduire du code via une directive <directive
+	module="mod_rewrite">RewriteMap</directive> s'exécutant au
+	niveau global ou d'un serveur virtuel <em>avant</em> que les
+	privilèges n'aient été supprimés et l'uid/gid défini.
+</note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>VHostUser</name>
+<description>Définit l'identifiant utilisateur sous lequel s'exécute un
+serveur virtuel.</description>
+<syntax>VHostUser <var>identifiant-utilisateur-unix</var></syntax>
+<default>Hérite de l'identifiant utilisateur spécifié par la directive
+<directive module="mod_unixd">User</directive></default>
+<contextlist><context>virtual host</context></contextlist>
+<compatibility>Disponible sous Solaris 10 et OpenSolaris avec les
+modules MPM non-threadés (<module>prefork</module> ou MPM
+personnalisé).</compatibility>
+
+<usage>
+    <p>La directive <directive>VHostUser</directive> permet de définir
+    l'identifiant utilisateur unix sous lequel le serveur va traiter les
+    requêtes par l'intermédiaire d'un serveur virtuel. L'identifiant
+    utilisateur est défini avant le traitement de la requête, puis
+    restauré à sa valeur de départ via les <a
+    href="http://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp">Privilèges
+    Solaris</a>. Comme la définition
+    s'applique au <em>processus</em>, cette directive est incompatible
+    avec les modules MPM threadés.</p>
+    <p><var>identifiant-utilisateur-unix</var> peut être :</p>
+    <dl>
+      <dt>Un nom d'utilisateur</dt>
+      <dd>Fait référence à l'utilisateur donné par son nom.</dd>
+
+      <dt><code>#</code> suivi d'un numéro d'utilisateur.</dt>
+      <dd>Fait référence à l'utilisateur donné par son numéro.</dd>
+    </dl>
+
+    <note type="warning"><title>Sécurité</title>
+    <p>Cette directive ne peut pas être utilisée pour exécuter Apache en
+    tant que root ! Elle est tout de même susceptible de poser des
+    problèmes de sécurité similaires à ceux décrits dans la
+    documentation de <a href="../suexec.html">suexec</a>.</p></note>
+</usage>
+<seealso><directive module="mod_unixd">User</directive></seealso>
+<seealso><directive module="mod_suexec">SuexecUserGroup</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>VHostGroup</name>
+<description>Définit l'identifiant du groupe sous lequel s'exécute un
+serveur virtuel.</description>
+<syntax>VHostGroup <var>identifiant-groupe-unix</var></syntax>
+<default>Hérite de l'identifiant du groupe spécifié par la directive
+<directive module="mod_unixd">Group</directive></default>
+<contextlist><context>virtual host</context></contextlist>
+<compatibility>Disponible sous Solaris 10 et OpenSolaris avec les
+modules MPM non-threadés (<module>prefork</module> ou MPM
+personnalisé).</compatibility>
+
+<usage>
+    <p>La directive <directive>VHostGroup</directive> permet de définir
+    l'identifiant du groupe unix sous lequel le serveur va traiter les
+    requêtes par l'intermédiaire d'un serveur virtuel. L'identifiant
+    du groupe est défini avant le traitement de la requête, puis
+    restauré à sa valeur de départ via les <a
+    href="http://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp">Privilèges
+    Solaris</a>. Comme la définition
+    s'applique au <em>processus</em>, cette directive est incompatible
+    avec les modules MPM threadés.</p>
+    <p><var>Unix-group</var> peut être :</p>
+    <dl>
+      <dt>Un nom de groupe</dt>
+      <dd>Fait référence au groupe donné par son nom.</dd>
+
+      <dt><code>#</code> suivi d'un numéro de groupe.</dt>
+      <dd>Fait référence au groupe donné par son numéro.</dd>
+    </dl>
+
+    <note type="warning"><title>Sécurité</title>
+    <p>Cette directive ne peut pas être utilisée pour exécuter Apache en
+    tant que root ! Elle est tout de même susceptible de poser des
+    problèmes de sécurité similaires à ceux décrits dans la
+    documentation de <a href="../suexec.html">suexec</a>.</p></note>
+</usage>
+<seealso><directive module="mod_unixd">Group</directive></seealso>
+<seealso><directive module="mod_suexec">SuexecUserGroup</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>VHostSecure</name>
+<description>Détermine si le serveur s'exécute avec une sécurité avancée
+pour les serveurs virtuels.</description>
+<syntax>VHostSecure On|Off</syntax>
+<default>VHostSecure On</default>
+<contextlist><context>virtual host</context></contextlist>
+<compatibility>Disponible sous Solaris 10 et OpenSolaris avec les
+modules MPM non-threadés (<module>prefork</module> ou MPM
+personnalisé).</compatibility>
+
+<usage>
+    <p>Détermine si les serveurs virtuels traitent les requêtes avec une
+    sécurité avancée en supprimant les <a
+    href="http://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp"
+    >Privilèges</a> rarement requis par un serveur web, mais disponibles
+    par défaut pour un utilisateur Unix standard, et donc susceptibles
+    d'être demandés par des modules et des applications. Il est
+    recommandé de conserver la définition par défaut (On), sauf si elle
+    empêche une application de fonctionner. Comme la définition
+    s'applique au <em>processus</em>, cette directive est incompatible
+    avec les modules MPM threadés.</p>
+    <note><title>Note</title>
+    <p>Le fait que la directive <directive>VHostSecure</directive>
+    empêche une application de fonctionner peut constituer un signal
+    d'avertissement indiquant que la sécurité de l'application doit être
+    revue.</p></note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>VHostCGIMode</name>
+<description>Détermine si le serveur virtuel peut exécuter des
+sous-processus, et définit les privilèges disponibles pour ces
+dernier.</description>
+<syntax>VHostCGIMode On|Off|Secure</syntax>
+<default>VHostCGIMode On</default>
+<contextlist><context>virtual host</context></contextlist>
+<compatibility>Disponible sous Solaris 10 et OpenSolaris avec les
+modules MPM non-threadés (<module>prefork</module> ou MPM
+personnalisé).</compatibility>
+
+<usage>
+    <p>Détermine si le serveur virtuel est autorisé à exécuter fork et
+    exec, et définit les <a
+    href="http://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp"
+    >privilèges</a> requis pour exécuter des sous-processus. Si cette
+    directive est définie à <var>Off</var> le serveur virtuel ne
+    disposera d'aucun privilège et ne pourra exécuter ni des programmes
+    ou scripts CGI classiques via le module traditionnel
+    <module>mod_cgi</module>, ni des programmes externes similaires tels
+    que ceux créés via le module <module>mod_ext_filter</module> ou les
+    programmes de réécriture externes utilisés par la directive
+    <directive module="mod_rewrite">RewriteMap</directive>. Notez que
+    ceci n'empêche pas l'exécution de programmes CGI via d'autres
+    processus et sous d'autres modèles de sécurité comme <a
+    href="https://httpd.apache.org/mod_fcgid/">mod_fcgid</a>, ce qui est la
+    solution recommandée sous Solaris.</p>
+    <p>Si cette directive est définie à <var>On</var> ou
+    <var>Secure</var>, le serveur virtuel pourra exécuter les scripts et
+    programmes externes cités ci-dessus. Définir la directive
+    <directive>VHostCGIMode</directive> à <var>Secure</var> a pour effet
+    supplémentaire de n'accorder aucun privilège aux sous-processus,
+    comme décrit dans la directive
+    <directive>VHostSecure</directive>.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DTracePrivileges</name>
+<description>Détermine si les privilèges requis par dtrace sont
+activés.</description>
+<syntax>DTracePrivileges On|Off</syntax>
+<default>DTracePrivileges Off</default>
+<contextlist><context>server config</context></contextlist>
+<compatibility>>Disponible sous Solaris 10 et OpenSolaris avec les
+modules MPM non-threadés (<module>prefork</module> ou MPM
+personnalisé).</compatibility>
+
+<usage>
+    <p>Cette directive qui s'applique à l'ensemble du serveur permet de
+    déterminer si Apache s'exécutera avec les <a
+    href="http://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp"
+    >privilèges</a> requis pour exécuter <a
+    href="http://sosc-dr.sun.com/bigadmin/content/dtrace/">dtrace</a>.
+    Notez que la définition <var>DTracePrivileges On</var> n'activera
+    pas à elle-seule DTrace, mais que <var>DTracePrivileges Off</var>
+    l'empêchera de fonctionner.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>VHostPrivs</name>
+<description>Assigne des privilèges à un serveur virtuel.</description>
+<syntax>VHostPrivs [+-]?<var>nom-privilège</var> [[+-]?nom-privilège] ...</syntax>
+<default>Aucun</default>
+<contextlist><context>virtual host</context></contextlist>
+<compatibility>Disponible sous Solaris 10 et OpenSolaris avec les
+modules MPM non-threadés (<module>prefork</module> ou MPM
+personnalisé) et lorsque <module>mod_privileges</module> est construit
+avec l'option de compilation
+<var>BIG_SECURITY_HOLE</var>.</compatibility>
+
+<usage>
+    <p>La directive <directive>VHostPrivs</directive> permet d'assigner
+    des <a
+    href="http://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp"
+    >privilèges</a> au choix à un serveur virtuel. Chaque
+    <var>nom-privilège</var> correspond à un privilège Solaris tel que
+    <var>file_setid</var> ou <var>sys_nfs</var>.</p>
+
+    <p><var>nom-privilège</var> peut être éventuellement préfixé par +
+    ou -, ce qui va respectivement accorder ou refuser le privilège. Si
+    <var>nom-privilège</var> est spécifié sans + ni -, tous les autres
+    privilèges préalablement assignés au serveur virtuel seront refusés.
+    Cette directive permet de construire aisément votre propre jeu de
+    privilèges en annulant tout réglage par défaut.</p>
+
+    <note type="warning"><title>Sécurité</title>
+    <p>L'utilisation de cette directive peut ouvrir d'immenses trous de
+    sécurité dans Apache, jusqu'au traitement de requêtes avec les
+    droits de root. Ne l'utilisez que si vous êtes absolument sûr de
+    comprendre ce que vous faites !</p></note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>VHostCGIPrivs</name>
+<description>Assigne des privilèges au choix aux sous-processus créés
+par un serveur virtuel.</description>
+<syntax>VHostPrivs [+-]?<var>nom-privilège</var> [[+-]?nom-privilège] ...</syntax>
+<default>Aucun</default>
+<contextlist><context>virtual host</context></contextlist>
+<compatibility>Disponible sous Solaris 10 et OpenSolaris avec les
+modules MPM non-threadés (<module>prefork</module> ou MPM
+personnalisé) et lorsque <module>mod_privileges</module> est construit
+avec l'option de compilation
+<var>BIG_SECURITY_HOLE</var>.</compatibility>
+
+<usage>
+    <p>La directive <directive>VHostCGIPrivs</directive> permet
+    d'assigner des <a
+    href="http://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp"
+    >privilèges</a> au choix aux sous-processus créés par un serveur
+    virtuel, comme décrit dans la directive
+    <directive>VHostCGIMode</directive>. Chaque
+    <var>nom-privilège</var> correspond à un privilège Solaris tel que
+    <var>file_setid</var> ou <var>sys_nfs</var>.</p>
+
+    <p><var>nom-privilège</var> peut être éventuellement préfixé par +
+    ou -, ce qui va respectivement accorder ou refuser le privilège. Si
+    <var>nom-privilège</var> est spécifié sans + ni -, tous les autres
+    privilèges préalablement assignés au serveur virtuel seront refusés.
+    Cette directive permet de construire aisément votre propre jeu de
+    privilèges en annulant tout réglage par défaut.</p>
+
+    <note type="warning"><title>Sécurité</title>
+    <p>L'utilisation de cette directive peut ouvrir d'immenses trous de
+    sécurité dans les sous-processus Apache, jusqu'à leur exécution avec les
+    droits de root. Ne l'utilisez que si vous êtes absolument sûr de
+    comprendre ce que vous faites !</p></note>
+</usage>
+</directivesynopsis>
+
+
+
+</modulesynopsis>

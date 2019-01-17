@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="EUC-KR" ?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
+<!-- English Revision: 105989:1673563 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_example_hooks.xml.meta">
+
+<name>mod_example_hooks</name>
+<description>아파치 모듈 API를 설명한다</description>
+<status>Experimental</status>
+<sourcefile>mod_example_hooks.c</sourcefile>
+<identifier>example_hooks_module</identifier>
+
+<summary>
+    <p>아파치 배포본 <code>modules/examples</code> 디렉토리에
+    있는 파일들은 아파치 API를 사용하여 모듈을 작성하려는 사람들을
+    돕기위한 예제다.</p>
+
+    <p><code>mod_example_hooks.c</code>는 모든 콜백(callback) 구조와
+    호출 문법을 설명하는 파일이다. 당신은 모듈에 이 모든 콜백을
+    구현할 필요가 없다. 사실 정반대다!</p>
+
+    <p>example 모듈은 실제로 동작하는 모듈이다. 이 모듈을 서버에
+    연결하고 특정 위치에 "example-hooks-handler" 핸들러를 할당하여
+    그곳을 브라우징하면 example 모듈의 여러 콜백을 확인할 수
+    있다.</p>
+</summary>
+
+<section id="compiling"><title>example 모듈 컴파일하기</title>
+
+    <p>서버에 example 모듈을 포함하려면 다음 과정을 거친다:</p>
+
+    <ol>
+      <li>
+        <code>--enable-example-hooks</code> 옵션과 함께
+        <code>configure</code>를 실행한다.</li>
+
+      <li>서버를 컴파일한다 ("<code>make</code>"를 실행한다).</li>
+    </ol>
+
+    <p>자신이 만든 모듈을 추가하려면:</p>
+
+    <ol type="A">
+      <li><code>cp modules/examples/mod_example_hooks.c
+      modules/new_module/<em>mod_myexample.c</em></code></li>
+
+      <li>파일을 수정한다.</li>
+
+      <li><code>modules/new_module/config.m4</code> 파일을 만든다.
+        <ol>
+          <li><code>APACHE_MODPATH_INIT(new_module)</code>을
+            추가한다.</li>
+          <li><code>modules/examples/config.m4</code> 파일에서
+            "example_hooks"이 있는 APACHE_MODULE 줄을 복사해온다.</li>
+          <li>첫번째 아규먼트 "example_hooks"을 <em>myexample</em>로
+            변경한다.</li>
+          <li>두번째 아규먼트 자리에 자신이 만든 모듈에 대한
+            간단한 설명을 적는다. <code>configure --help</code>를
+            실행하면 여기에 기록한 설명을 보여준다.</li>
+          <li>모듈을 컴파일할때 특별한 C 컴파일러 옵션, 링커
+            옵션, 라이브러리가 필요하면 각각 CFLAGS, LDFLAGS,
+            LIBS에 추가한다. modules 디렉토리에 있는 다른
+            <code>config.m4</code> 파일들을 참고하라.</li>
+          <li><code>APACHE_MODPATH_FINISH</code>를 추가한다.</li>
+        </ol>
+      </li>
+
+      <li><code>module/new_module/Makefile.in</code> 파일을
+      만든다. 모듈을 컴파일하는데 특별한 명령어가 필요없다면,
+      파일에 <code>include $(top_srcdir)/build/special.mk</code>만
+      있어도 된다.</li>
+
+      <li>최상위 디렉토리에서 ./buildconf 를 실행한다.</li>
+
+      <li>--enable-myexample 옵션을 사용하여 서버를 컴파일한다</li>
+
+    </ol>
+</section>
+
+<section id="using"><title><code>mod_example_hooks</code> 모듈 사용하기</title>
+
+    <p>example 모듈을 사용하려면 <code>httpd.conf</code> 파일에
+    다음과 같은 설정을 추가하라:</p>
+<example>
+   &lt;Location /example-hooks-info&gt;<br />
+       SetHandler example-hooks-handler<br />
+   &lt;/Location&gt;
+</example>
+
+    <p>아니면 <a
+    href="core.html#accessfilename"><code>.htaccess</code></a>
+    파일에 다음과 같은 내용을 추가하고, 그 위치에서 "test.example"
+    같은 파일을 요청하라:</p>
+<example>
+   AddHandler example-hooks-handler .example
+</example>
+
+    <p>서버를 재시작한 후 이 위치를 브라우징하면 앞에서 말한
+    내용을 보게될 것이다.</p>
+</section>
+
+<directivesynopsis>
+<name>Example</name>
+<description>아파치 모듈 API를 설명하기위한 예제 지시어</description>
+<syntax>Example</syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
+
+<usage>
+    <p><directive>Example</directive> 지시어는 example 모듈의
+    내용핸들러가 간단한 문구를 보일지 여부를 설정한다. 이 지시어는
+    아규먼트를 받지않는다. example 내용핸들러를 적용한 URL에
+    접속하면 문서 요청을 서비스하기위해 모듈안에 함수들이 어떻게
+    그리고 어떤 순서로 불리는지 알 수 있다. 이 지시어의 효과는
+    "<code>Example directive declared here: YES/NO</code>"로
+    확인할 수 있다.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

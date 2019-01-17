@@ -1,0 +1,8 @@
+# testing with conf/test47.conf
+[macro:warn] macro 'foo' (defined on line 3 of "./conf/test47.conf"): empty contents!
+[macro:warn] macro 'bla' (defined on line 8 of "./conf/test47.conf"): empty contents!
+[macro:warn] macro 'bof' (defined on line 11 of "./conf/test47.conf"): empty contents!
+[core:error] okay. on line 15 of ./conf/test47.conf
+AH00526: Syntax error on line 15 of ./conf/test47.conf:
+Configuration processing stopped by Error directive
+# exit: 1

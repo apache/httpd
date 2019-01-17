@@ -1,0 +1,187 @@
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.\" DO NOT EDIT! Generated from XML source.
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.de Sh \" Subsection
+.br
+.if t .Sp
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.de Sp \" Vertical space (when we can't use .PP)
+.if t .sp .5v
+.if n .sp
+..
+.de Ip \" List item
+.br
+.ie \\n(.$>=3 .ne \\$3
+.el .ne 3
+.IP "\\$1" \\$2
+..
+.TH "HTDBM" 1 "2018-07-06" "Apache HTTP Server" "htdbm"
+
+.SH NAME
+htdbm \- Manipulate DBM password databases
+
+.SH "SYNOPSIS"
+ 
+.PP
+\fB\fBhtdbm\fR [ -\fBT\fR\fIDBTYPE\fR ] [ -\fBi\fR ] [ -\fBc\fR ] [ -\fBm\fR | -\fBB\fR | -\fBd\fR | -\fBs\fR | -\fBp\fR ] [ -\fBC\fR \fIcost\fR ] [ -\fBt\fR ] [ -\fBv\fR ] \fIfilename\fR \fIusername\fR\fR
+ 
+.PP
+\fB\fBhtdbm\fR -\fBb\fR [ -\fBT\fR\fIDBTYPE\fR ] [ -\fBc\fR ] [ -\fBm\fR | -\fBB\fR | -\fBd\fR | -\fBs\fR | -\fBp\fR ] [ -\fBC\fR \fIcost\fR ] [ -\fBt\fR ] [ -\fBv\fR ] \fIfilename\fR \fIusername\fR \fIpassword\fR\fR
+ 
+.PP
+\fB\fBhtdbm\fR -\fBn\fR [ -\fBi\fR ] [ -\fBc\fR ] [ -\fBm\fR | -\fBB\fR | -\fBd\fR | -\fBs\fR | -\fBp\fR ] [ -\fBC\fR \fIcost\fR ] [ -\fBt\fR ] [ -\fBv\fR ] \fIusername\fR\fR
+ 
+.PP
+\fB\fBhtdbm\fR -\fBnb\fR [ -\fBc\fR ] [ -\fBm\fR | -\fBB\fR | -\fBd\fR | -\fBs\fR | -\fBp\fR ] [ -\fBC\fR \fIcost\fR ] [ -\fBt\fR ] [ -\fBv\fR ] \fIusername\fR \fIpassword\fR\fR
+ 
+.PP
+\fB\fBhtdbm\fR -\fBv\fR [ -\fBT\fR\fIDBTYPE\fR ] [ -\fBi\fR ] [ -\fBc\fR ] [ -\fBm\fR | -\fBB\fR | -\fBd\fR | -\fBs\fR | -\fBp\fR ] [ -\fBC\fR \fIcost\fR ] [ -\fBt\fR ] [ -\fBv\fR ] \fIfilename\fR \fIusername\fR\fR
+ 
+.PP
+\fB\fBhtdbm\fR -\fBvb\fR [ -\fBT\fR\fIDBTYPE\fR ] [ -\fBc\fR ] [ -\fBm\fR | -\fBB\fR | -\fBd\fR | -\fBs\fR | -\fBp\fR ] [ -\fBC\fR \fIcost\fR ] [ -\fBt\fR ] [ -\fBv\fR ] \fIfilename\fR \fIusername\fR \fIpassword\fR\fR
+ 
+.PP
+\fB\fBhtdbm\fR -\fBx\fR [ -\fBT\fR\fIDBTYPE\fR ] \fIfilename\fR \fIusername\fR\fR
+ 
+.PP
+\fB\fBhtdbm\fR -\fBl\fR [ -\fBT\fR\fIDBTYPE\fR ] \fR
+ 
+
+.SH "SUMMARY"
+ 
+.PP
+\fBhtdbm\fR is used to manipulate the DBM format files used to store usernames and password for basic authentication of HTTP users via mod_authn_dbm\&. See the dbmmanage documentation for more information about these DBM files\&.
+ 
+
+.SH "OPTIONS"
+ 
+ 
+.TP
+\fB-b\fR
+Use batch mode; \fIi\&.e\&.\fR, get the password from the command line rather than prompting for it\&. This option should be used with extreme care, since \fBthe password is clearly visible\fR on the command line\&. For script use see the \fB-i\fR option\&.  
+.TP
+\fB-i\fR
+Read the password from stdin without verification (for script usage)\&.  
+.TP
+\fB-c\fR
+Create the \fIpasswdfile\fR\&. If \fIpasswdfile\fR already exists, it is rewritten and truncated\&. This option cannot be combined with the \fB-n\fR option\&.  
+.TP
+\fB-n\fR
+Display the results on standard output rather than updating a database\&. This option changes the syntax of the command line, since the \fIpasswdfile\fR argument (usually the first one) is omitted\&. It cannot be combined with the \fB-c\fR option\&.  
+.TP
+\fB-m\fR
+Use MD5 encryption for passwords\&. On Windows and Netware, this is the default\&.  
+.TP
+\fB-B\fR
+Use bcrypt encryption for passwords\&. This is currently considered to be very secure\&.  
+.TP
+\fB-C\fR
+This flag is only allowed in combination with \fB-B\fR (bcrypt encryption)\&. It sets the computing time used for the bcrypt algorithm (higher is more secure but slower, default: 5, valid: 4 to 31)\&.  
+.TP
+\fB-d\fR
+Use \fBcrypt()\fR encryption for passwords\&. The default on all platforms but Windows and Netware\&. Though possibly supported by \fBhtdbm\fR on all platforms, it is not supported by the httpd server on Windows and Netware\&. This algorithm is \fBinsecure\fR by today's standards\&.  
+.TP
+\fB-s\fR
+Use SHA encryption for passwords\&. Facilitates migration from/to Netscape servers using the LDAP Directory Interchange Format (ldif)\&. This algorithm is \fBinsecure\fR by today's standards\&.  
+.TP
+\fB-p\fR
+Use plaintext passwords\&. Though \fBhtdbm\fR will support creation on all platforms, the httpd daemon will only accept plain text passwords on Windows and Netware\&.  
+.TP
+\fB-l\fR
+Print each of the usernames and comments from the database on stdout\&.  
+.TP
+\fB-v\fR
+Verify the username and password\&. The program will print a message indicating whether the supplied password is valid\&. If the password is invalid, the program exits with error code 3\&.  
+.TP
+\fB-x\fR
+Delete user\&. If the username exists in the specified DBM file, it will be deleted\&.  
+.TP
+\fB-t\fR
+Interpret the final parameter as a comment\&. When this option is specified, an additional string can be appended to the command line; this string will be stored in the "Comment" field of the database, associated with the specified username\&.  
+.TP
+\fB\fIfilename\fR\fR
+The filename of the DBM format file\&. Usually without the extension \fB\&.db\fR, \fB\&.pag\fR, or \fB\&.dir\fR\&. If \fB-c\fR is given, the DBM file is created if it does not already exist, or updated if it does exist\&.  
+.TP
+\fB\fIusername\fR\fR
+The username to create or update in \fIpasswdfile\fR\&. If \fIusername\fR does not exist in this file, an entry is added\&. If it does exist, the password is changed\&.  
+.TP
+\fB\fIpassword\fR\fR
+The plaintext password to be encrypted and stored in the DBM file\&. Used only with the \fB-b\fR flag\&.  
+.TP
+\fB-T\fIDBTYPE\fR\fR
+Type of DBM file (SDBM, GDBM, DB, or "default")\&.  
+ 
+.SH "BUGS"
+ 
+.PP
+One should be aware that there are a number of different DBM file formats in existence, and with all likelihood, libraries for more than one format may exist on your system\&. The three primary examples are SDBM, NDBM, GNU GDBM, and Berkeley/Sleepycat DB 2/3/4\&. Unfortunately, all these libraries use different file formats, and you must make sure that the file format used by \fIfilename\fR is the same format that \fBhtdbm\fR expects to see\&. \fBhtdbm\fR currently has no way of determining what type of DBM file it is looking at\&. If used against the wrong format, will simply return nothing, or may create a different DBM file with a different name, or at worst, it may corrupt the DBM file if you were attempting to write to it\&.
+ 
+.PP
+One can usually use the \fBfile\fR program supplied with most Unix systems to see what format a DBM file is in\&.
+ 
+.SH "EXIT STATUS"
+ 
+.PP
+\fBhtdbm\fR returns a zero status ("true") if the username and password have been successfully added or updated in the DBM File\&. \fBhtdbm\fR returns \fB1\fR if it encounters some problem accessing files, \fB2\fR if there was a syntax problem with the command line, \fB3\fR if the password was entered interactively and the verification entry didn't match, \fB4\fR if its operation was interrupted, \fB5\fR if a value is too long (username, filename, password, or final computed record), \fB6\fR if the username contains illegal characters (see the Restrictions section), and \fB7\fR if the file is not a valid DBM password file\&.
+ 
+.SH "EXAMPLES"
+ 
+.nf
+
+      htdbm /usr/local/etc/apache/\&.htdbm-users jsmith
+    
+.fi
+ 
+.PP
+Adds or modifies the password for user \fBjsmith\fR\&. The user is prompted for the password\&. If executed on a Windows system, the password will be encrypted using the modified Apache MD5 algorithm; otherwise, the system's \fBcrypt()\fR routine will be used\&. If the file does not exist, \fBhtdbm\fR will do nothing except return an error\&.
+ 
+.nf
+
+      htdbm -c /home/doe/public_html/\&.htdbm jane
+    
+.fi
+ 
+.PP
+Creates a new file and stores a record in it for user \fBjane\fR\&. The user is prompted for the password\&. If the file exists and cannot be read, or cannot be written, it is not altered and \fBhtdbm\fR will display a message and return an error status\&.
+ 
+.nf
+
+      htdbm -mb /usr/web/\&.htdbm-all jones Pwd4Steve
+    
+.fi
+ 
+.PP
+Encrypts the password from the command line (\fBPwd4Steve\fR) using the MD5 algorithm, and stores it in the specified file\&.
+ 
+.SH "SECURITY CONSIDERATIONS"
+ 
+.PP
+Web password files such as those managed by \fBhtdbm\fR should \fInot\fR be within the Web server's URI space -- that is, they should not be fetchable with a browser\&.
+ 
+.PP
+The use of the \fB-b\fR option is discouraged, since when it is used the unencrypted password appears on the command line\&.
+ 
+.PP
+When using the \fBcrypt()\fR algorithm, note that only the first 8 characters of the password are used to form the password\&. If the supplied password is longer, the extra characters will be silently discarded\&.
+ 
+.PP
+The SHA encryption format does not use salting: for a given password, there is only one encrypted representation\&. The \fBcrypt()\fR and MD5 formats permute the representation by prepending a random salt string, to make dictionary attacks against the passwords more difficult\&.
+ 
+.PP
+The SHA and \fBcrypt()\fR formats are insecure by today's standards\&.
+ 
+.SH "RESTRICTIONS"
+ 
+.PP
+On the Windows platform, passwords encrypted with \fBhtdbm\fR are limited to no more than \fB255\fR characters in length\&. Longer passwords will be truncated to 255 characters\&.
+ 
+.PP
+The MD5 algorithm used by \fBhtdbm\fR is specific to the Apache software; passwords encrypted using it will not be usable with other Web servers\&.
+ 
+.PP
+Usernames are limited to \fB255\fR bytes and may not include the character \fB:\fR\&.
+ 

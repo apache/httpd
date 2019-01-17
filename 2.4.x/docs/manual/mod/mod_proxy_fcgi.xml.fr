@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision: 1823834 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_proxy_fcgi.xml.meta">
+
+<name>mod_proxy_fcgi</name>
+<description>Module fournissant le support de FastCGI à
+<module>mod_proxy</module></description>
+<status>Extension</status>
+<sourcefile>mod_proxy_fcgi.c</sourcefile>
+<identifier>proxy_fcgi_module</identifier>
+<compatibility>Disponible depuis la version 2.3 d'Apache</compatibility>
+
+<summary>
+    <p>Pour fonctionner, ce module <em>nécessite</em> le chargement de
+    <module>mod_proxy</module>. Il fournit le support du protocole <a
+    href="http://www.fastcgi.com/">FastCGI</a>.</p>
+
+    <p>Ainsi, pour pouvoir traiter le protocole <code>FastCGI</code>,
+    <module>mod_proxy</module> et <module>mod_proxy_fcgi</module>
+    doivent être chargés dans le serveur.</p>
+
+    <p>A la différence de <a
+    href="http://httpd.apache.org/mod_fcgid/">mod_fcgid</a> et <a
+    href="http://www.fastcgi.com/">mod_fastcgi</a>,
+    <module>mod_proxy_fcgi</module> n'est pas en mesure de démarrer le
+    processus de l'application ; <program>fcgistarter</program> est
+    fourni à cet effet sur certaines plateformes. Le framework
+    applicatif FastCGI utilisé peut aussi fournir la gestion des
+    processus ou des lancements de programmes externes.</p>
+
+    <note type="warning"><title>Avertissement</title>
+      <p>N'activez pas la fonctionnalité de mandataire avant d'avoir <a
+      href="mod_proxy.html#access">sécurisé votre serveur</a>. Les
+      serveurs mandataires ouverts sont dangereux non seulement pour
+      votre réseau, mais aussi pour l'Internet au sens large.</p>
+    </note>
+</summary>
+
+<seealso><program>fcgistarter</program></seealso>
+<seealso><module>mod_proxy</module></seealso>
+<seealso><module>mod_authnz_fcgi</module></seealso>
+
+<section id="examples"><title>Exemples</title>
+    <p>Pour que ces exemples fonctionnent, vous ne devez pas oublier
+    d'activer <module>mod_proxy</module> et
+    <module>mod_proxy_fcgi</module>.</p>
+
+    <example><title>Instance d'application unique</title>
+    <highlight language="config">
+      ProxyPass "/mon_appli/" "fcgi://localhost:4000/"
+      </highlight>
+    </example>
+
+    
+    <p><module>mod_proxy_fcgi</module> interdisant par défaut la
+    réutilisation des connexions, lorsqu'une requête a été traitée, la
+    connexion ne sera pas maintenue ouverte par le processus enfant
+    httpd, et ne sera donc pas réutilisée. Cependant, si l'application
+    FastCGI supporte les connexions httpd simultanées, vous pouvez opter
+    pour la réutilisation des connexions comme dans l'exemple suivant :</p>
+
+    <example><title>Instance d'application unique, réutilisation
+    des connexions (versions 2.4.11 et supérieures)</title>
+    <highlight language="config">
+      ProxyPass "/myapp/" "fcgi://localhost:4000/" enablereuse=on
+      </highlight>
+    </example>
+
+    <note><title>Active la réutilisation des connexions vers un serveur FCGI
+    d'arrière-plan tel que PHP-FPM</title>
+    <p>Il faut garder à l'esprit que PHP-FPM (en février 2018) utilise un modèle
+    du style prefork ; autrement dit, chacun de ses processus de travail ne peut
+    gérer qu'une connexion à la fois.<br /> Par défaut et lorsqu'il est
+    configuré avec <code>enablereuse=on</code> et lorsqu'un MPM à base de
+    threads est utilisé (comme <module>worker</module> ou
+    <module>event</module>), mod_proxy autorise un jeu de <directive
+    module="mpm_common">ThreadsPerChild</directive> connexions vers le serveur
+    d'arrière-plan pour chaque processus httpd, et par conséquent, il faut
+    prêter une attention particulière aux situations suivantes :</p>
+    <ul>
+      <li>Avec une charge en HTTP/1, il est fort probable que le nombre de
+      connexions vers le serveur FCGI d'arrière-plan augmente jusqu'à atteindre
+      <directive module="mpm_common">MaxRequestWorkers</directive>.</li>
+      <li>Avec une charge en HTTP/2, et vue la manière dont
+      <module>mod_http2</module> est implémenté, il y a des threads de travail
+      h2 additionnels qui peuvent forcer la création de connexions
+      supplémentaires vers le serveur d'arrière-plan. Le nombre total de
+      connexions que contiennent les jeux de connexions peut alors dépasser
+      <directive module="mpm_common">MaxRequestWorkers</directive>.</li>
+    </ul>
+    <p>Le nombre maximum de processus de travail PHP-FPM doit être défini
+    judicieusement car il est possible qu'ils finissent par rester dans l'état
+    occupé ("busy") pour ne gérer que des connexions persistantes inactives,
+    sans avoir la possibilité d'en établir de nouvelles ; ce qui se traduira
+    pour l'utilisateur final par une pile de "HTTP request timeouts".</p>
+    </note>
+
+    <p>Dans l'exemple suivant, l'URI de la requête est transmis en tant
+    que chemin du système de fichiers pour l'exécution du démon PHP-FPM.
+    L'URL de la requête est implicitement ajoutée au second paramètre.
+    PHP-FPM est à l'écoute de l'hôte et du port qui
+    suivent fcgi://. La conservation/réutilisation des connexions est activée.</p>
+    <example><title>PHP-FPM</title>
+    <highlight language="config">
+      ProxyPassMatch "^/myapp/.*\.php(/.*)?$" "fcgi://localhost:9000/var/www/" enablereuse=on
+    </highlight>
+    </example>
+
+    <p>Dans l'exemple suivant, l'URI de la requête est transmis en tant
+    que chemin du système de fichiers pour l'exécution du démon PHP-FPM.
+    Dans ce cas cependant, PHP-FPM est à l'écoute d'un socket de domaine
+    unix (UDS). Cette fonctionnalité est disponible à partir de la
+    version 2.4.9. Avec cette syntaxe, si un nom d'hôte et un port sont
+    ajoutés après fcgi://, ils seront ignorés.</p>
+    <example><title>PHP-FPM with UDS</title>
+    <highlight language="config">
+            ProxyPassMatch "^/(.*\.php(/.*)?)$" "unix:/var/run/php5-fpm.sock|fcgi://localhost/var/www/"
+    </highlight>
+    </example>
+
+    <p>La passerelle à répartition de charge nécessite le chargement du
+    module <module>mod_proxy_balancer</module> et d'au moins un module
+    fournissant un algorithme de répartition de charge, comme
+    <module>mod_lbmethod_byrequests</module> en plus des modules
+    déjà cités. <module>mod_lbmethod_byrequests</module> est le module
+    par défaut et sera utilisé dans cet exemple de configuration.</p>
+
+    <example><title>Passerelle à répartition de charge vers plusieurs
+    instances de l'application</title>
+    <highlight language="config">
+ProxyPass "/myapp/" "balancer://myappcluster/"
+&lt;Proxy "balancer://myappcluster/"&gt;
+    BalancerMember "fcgi://localhost:4000"
+    BalancerMember "fcgi://localhost:4001"
+&lt;/Proxy&gt;
+    </highlight>
+    </example>
+
+    <p>Vous pouvez aussi forcer le traitement d'une requête en tant que
+    requête de mandataire inverse en créant un court-circuiteur de
+    gestionnaire approprié. Dans l'exemple ci-dessous, toutes les
+    requêtes pour des scripts PHP seront transmises au serveur FastCGI
+    spécifié par mandat inverse. Cette fonctionnalité est disponible à
+    partir de la version 2.4.10 du serveur HTTP Apache. Pour des raisons
+    de performances, il est recommandé de définir un <a
+    href="mod_proxy.html#workers">worker (configuration d'un
+    mandataire)</a> représentant le même serveur fcgi:// d'arrière-plan.
+    Avec cette configuration, il est possible d'effectuer une
+    correspondance directe entre l'URI et le chemin du fichier sur le
+    serveur, et le chemin local du fichier sera alors transmis au serveur
+    d'arrière-plan. Lorsque FastCGI est configuré ainsi, le serveur est
+    en mesure de calculer le PATH_INFO le plus approprié.
+      </p>
+	<example><title>Mandataire via un gestionnaire</title>
+      <highlight language="config">
+&lt;FilesMatch "\.php$"&gt;
+    # Note : la seule partie variable est /path/to/app.sock
+    SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost/"
+&lt;/FilesMatch&gt;
+   # Définition d'une configuration de mandataire qui convient.
+   # La partie qui est mise en correspondance avec la valeur de
+   # SetHandler est la partie qui suit le "pipe". Si vous devez faire
+   # une distinction, "localhost" peut être changé en un nom de serveur
+   # unique.
+   &lt;Proxy "fcgi://localhost/" enablereuse=on max=10&gt;
+   &lt;/Proxy&gt;
+
+&lt;FilesMatch ...&gt;
+    SetHandler  "proxy:fcgi://localhost:9000"
+&lt;/FilesMatch&gt;
+
+&lt;FilesMatch ...&gt;
+    SetHandler  "proxy:balancer://myappcluster/"
+&lt;/FilesMatch&gt;
+      </highlight>
+   </example>
+</section>
+
+<section id="env"><title>Variables d'environnement</title>
+    <p>En plus des directives de configuration qui contrôlent le
+    comportement de <module>mod_proxy</module>, de nombreuses
+    <dfn>variables d'environnement</dfn> permettent de piloter le
+    fournisseur du protocole FCGI :</p>
+    <dl>
+        <dt>proxy-fcgi-pathinfo</dt>
+        <dd>Lorsqu'il est configuré via les directives <directive
+	module="mod_proxy">ProxyPass</directive> ou <directive
+	module="mod_proxy">ProxyPassMatch</directive>,
+	<module>mod_proxy_fcgi</module> ne définit
+	pas la variable d'environnement <var>PATH_INFO</var>,
+	ce qui permet au serveur FCGI d'arrière-plan de déterminer
+	correctement <var>SCRIPT_NAME</var> et <var>Script-URI</var>, et
+	de se conformer à la section 3.3 de la RFC 3875. Si au contraire
+	vous avez souhaitez que <module>mod_proxy_fcgi</module> génère une
+	"estimation la plus exacte possible" de <var>PATH_INFO</var>,
+	définissez la variable d'environnement
+	<var>proxy-fcgi-pathinfo</var>. Ceci peut servir de
+	contournement pour une bogue présente dans certaines
+	implémentations de FCGI. Cette variable peut être
+	multivaluée afin de pouvoir choisir la valeur la plus appropriée
+	(versions 2.4.11 et supérieures) :
+	<dl>
+          <dt>first-dot</dt>
+          <dd>PATH_INFO est extrait à partir du slash qui suit le
+	  <em>premier</em> "." de l'URL.</dd>
+          <dt>last-dot</dt>
+          <dd>PATH_INFO est extrait à partir du slash qui suit le
+	  <em>dernier</em> "." de l'URL.</dd>
+          <dt>full</dt> 
+          <dd>PATH_INFO est calculé en supposant que l'URL correspond au
+	  chemin du système de fichiers.</dd>
+          <dt>unescape</dt>
+          <dd>PATH_INFO correspond à la partie chemin de l'URL avec ses
+	  séquences d'échappement décodées.</dd>
+          <dt>toute autre valeur</dt>
+          <dd>PATH_INFO correspond à la partie chemin de l'URL.  
+              Auparavant, c'était la seule option pour proxy-fcgi-pathinfo.</dd>
+         </dl>
+	</dd>
+    </dl>
+</section>
+
+<directivesynopsis>
+<name>ProxyFCGIBackendType</name>
+<description>Spécifie le type de l'application FastCGI d'arrière-plan</description>
+<syntax>ProxyFCGIBackendType FPM|GENERIC</syntax>
+<default>ProxyFCGIBackendType FPM</default>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
+<compatibility>Disponible à partir de la version 2.4.26 du serveur HTTP Apache</compatibility>
+
+<usage>
+<p>Cette directive permet de spécifier le type de l'application FastCGI
+d'arrière-plan. Certains serveurs FastCGI, comme PHP-FPM, utilisent de manière
+historique des variables d'environnement exotiques pour identifier le type du
+serveur mandataire utilisé. Définissez cette directive à "GENERIC" si votre
+application n'est pas de type PHP-FPM et n'interpréter pas correctement des
+variables d'environnement comme SCRIPT_FILENAME ou PATH_TRANSLATED telles
+qu'elles sont définies par le serveur.</p>
+
+<p>SCRIPT_FILENAME est un exemple de valeur modifiée par la définition de cette
+directive. Historiquement, lorsqu'on utilisait le module
+<module>mod_proxy_fcgi</module>, SCRIPT_FILENAME était préfixé par la chaîne
+"proxy:fcgi://". C'est cette variable que lisent certaines applications FastCGI
+génériques en tant que valeur en entrée pour leur script ; cependant, PHP-FPM
+peut supprimer le préfixe, puis garder en mémoire qu'il communique avec Apache.
+Avec les versions 2.4.21 à 2.4.25, ce préfixe était automatiquement supprimé par
+le serveur, empêchant ainsi PHP-FPM de détecter et interopérer avec Apache dans
+certains scénarios.</p> 
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ProxyFCGISetEnvIf</name>
+<description>Permet d'adapter la valeur des variables envoyées aux serveurs
+FastCGI</description>
+<syntax>ProxyFCGISetEnvIf <var>conditional-expression</var>
+    [!]<var>environment-variable-name</var>
+    [<var>value-expression</var>]</syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
+<compatibility>Disponible à partir de la version 2.4.26 du serveur HTTP Apache.</compatibility>
+
+<usage>
+<p>Juste avant la transmission d'une requête au serveur FastCGI configuré, le
+coeur du programme du serveur web définit un certain nombre de variables
+d'environnement en fonction de certains détails de la requête considérée. Les
+programmes FastCGI utilisent souvent ces variables comme données en entrée afin
+de déterminer quels scripts sous-jacents ils vont exécuter, ou quelles données
+en sortie doivent être produites.</p>
+<p>Voici quelques exemples de variables d'environnement importantes :</p>
+<ul>
+  <li>SCRIPT_NAME</li>
+  <li>SCRIPT_FILENAME</li>
+  <li>REQUEST_URI</li>
+  <li>PATH_INFO</li>
+  <li>PATH_TRANSLATED</li>
+</ul>
+
+<p>Cette directive permet de passer outre les variables d'environnement
+ci-dessus, entre autres. Elle est évaluée après la définition de la valeur
+initiale de ces variables ; elle peuvent donc être utilisées comme entrées dans
+les expressions définissants les conditions et les valeurs.</p>
+<p>Syntaxe des paramètres :</p>
+<dl>
+<dt>conditional-expression</dt> 
+<dd>Définit une condition en fonction de laquelle la
+variable d'environnement qui suit sera modifiée ou non. Pour la syntaxe de cette
+expression, reportez-vous aux exemples qui suivent ou à la spécification
+détaillée dans le document <a href="../expr.html">ap_expr</a>.
+   </dd>
+<dt>environment-variable-name</dt> 
+<dd>Spécifie le nom de la variable d'environnement à modifier, par exemple
+PATH_INFO. Si elle est précédée d'un point d'exclamation, la définition de la
+variable sera annulée.</dd>
+<dt>value-expression</dt>
+<dd>Spécifie la nouvelle valeur de la variable "environment-variable-name". On
+peut inclure des
+références arrières, comme "$1", issues de captures en provenance de
+l'expression rationnelle <var>conditional-expression</var>. Si cette valeur est
+omise, la variable est définie (ou sa valeur est écrasée) par une chaîne vide
+&mdash; voir cependant la note ci-après.</dd>
+</dl>
+  
+<example>
+   <highlight language="config">
+# Une modification basique, inconditionnelle
+ProxyFCGISetEnvIf "true" PATH_INFO "/example"
+
+# Utilisation d'une variable d'environnement pour spécifier la nouvelle valeur
+ProxyFCGISetEnvIf "true" PATH_INFO "%{reqenv:SCRIPT_NAME}"
+<br/>
+# Utilisation de captures dans la condition et de références arrières dans la
+# nouvelle valeur
+ProxyFCGISetEnvIf "reqenv('PATH_TRANSLATED') =~ m#(/.*prefix)(\d+)(.*)#" PATH_TRANSLATED "$1$3"
+   </highlight>
+</example>
+
+<note><title>Note : Annulation définition ou valeur vide</title>
+  La ligne suivante annule la définition de la variable <code>VARIABLE</code>,
+  ce qui l'empêche d'être envoyée au serveur FastCGI :
+
+    <highlight language="config">ProxyFCGISetEnvIf true !VARIABLE</highlight>
+
+  La ligne suivante, quant à elle, efface la <em>valeur</em> de la variable
+  <code>VARIABLE</code> en lui affectant la chaîne vide ; cette variable
+  <code>VARIABLE</code> sera alors tout de même envoyée au serveur FastCGI :
+
+    <highlight language="config">ProxyFCGISetEnvIf true VARIABLE</highlight>
+
+  La spécification CGI/1.1 <a
+  href="https://tools.ietf.org/html/rfc3875#section-4.1">ne fait pas de
+  distinction</a> entre une variable contenant une chaîne vide et une variable qui
+  n'existe pas. De nombreuses implémentations CGI et FastCGI font cependant
+  cette distinction (ou permettent aux scripts de la faire). Le choix de celle
+  que vous allez utiliser dépend de votre implémentation et de la raison qui
+  vous pousse à modifier cette variable.
+</note>
+
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

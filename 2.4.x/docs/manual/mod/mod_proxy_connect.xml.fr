@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1598284 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_proxy_connect.xml.meta">
+
+<name>mod_proxy_connect</name>
+<description>Extension de <module>mod_proxy</module> pour le traitement
+des requ&ecirc;tes <code>CONNECT</code></description>
+<status>Extension</status>
+<sourcefile>mod_proxy_connect.c</sourcefile>
+<identifier>proxy_connect_module</identifier>
+
+<summary>
+    <p>Pour fonctionner, ce module <em>n&eacute;cessite</em> le chargement de
+    <module>mod_proxy</module>. Il fournit le support de la m&eacute;thode HTTP
+    <code>CONNECT</code>. Cette m&eacute;thode est principalement utilis&eacute;e pour
+    faire franchir les serveurs mandataires aux requ&ecirc;tes SSL &agrave; l'aide
+    d'un tunnel.</p>
+
+    <p>Ainsi, pour pouvoir traiter les requ&ecirc;tes <code>CONNECT</code>,
+    <module>mod_proxy</module> et <module>mod_proxy_connect</module>
+    doivent &ecirc;tre charg&eacute;s dans le serveur.</p>
+
+    <p>CONNECT est aussi utilis&eacute;e lorsque le serveur doit envoyer une
+    requ&ecirc;te HTTPS via un mandataire. Dans ce cas, le serveur se comporte
+    comme un client CONNECT. Cette fonctionnalit&eacute; &eacute;tant fournie par le
+    module <module>mod_proxy</module>, le module
+    <module>mod_proxy_connect</module> n'est dans ce cas pas n&eacute;cessaire.</p>
+
+    <note type="warning"><title>Avertissement</title>
+      <p>N'activez pas la fonctionnalit&eacute; de mandataire avant d'avoir <a
+      href="mod_proxy.html#access">s&eacute;curis&eacute; votre serveur</a>. Les
+      serveurs mandataires ouverts sont dangereux non seulement pour
+      votre r&eacute;seau, mais aussi pour l'Internet au sens large.</p>
+    </note>
+</summary>
+<seealso><module>mod_proxy</module></seealso>
+
+<section id="notes"><title>Informations sur les requ&ecirc;tes</title>
+    <p><module>mod_proxy_connect</module> enregistre les informations
+    suivantes pour journalisation via le format <code>%{NOMVAR}n</code>
+    dans les directives <directive
+    module="mod_log_config">LogFormat</directive> ou <directive
+    module="core">ErrorLogFormat</directive> :
+    </p>
+    <dl>
+        <dt>proxy-source-port</dt>
+        <dd>Le port local utilis&eacute; pour la connexion vers le serveur
+	d'arri&egrave;re-plan.</dd>
+    </dl>
+</section>
+
+<directivesynopsis>
+<name>AllowCONNECT</name>
+<description>Ports autoris&eacute;s &agrave; se <code>CONNECT</code>er &agrave; travers le
+mandataire</description>
+<syntax>AllowCONNECT <var>port</var>[-<var>port</var>]
+[<var>port</var>[-<var>port</var>]] ...</syntax>
+<default>AllowCONNECT 443 563</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+<compatibility>D&eacute;plac&eacute; depuis <module>mod_proxy</module> &agrave; partir
+d'Apache 2.3.5. Plages de ports disponibles depuis Apache 2.3.7.</compatibility>
+
+<usage>
+    <p>La directive <directive>AllowCONNECT</directive> permet de
+    sp&eacute;cifier une liste de num&eacute;ros ou de plages de ports auxquels la
+    m&eacute;thode de mandataire <code>CONNECT</code> pourra se connecter. Les
+    navigateurs r&eacute;cents utilisent cette m&eacute;thode dans le cas o&ugrave; une
+    connexion <code>https</code> est requise et o&ugrave; le tunneling
+    mandataire sur HTTP est en service.</p>
+
+    <p>Par d&eacute;faut, seuls les ports par d&eacute;fauts https (<code>443</code>)
+    et snews (<code>563</code>) sont pris en compte. Vous pouvez
+    utiliser la directive <directive>AllowCONNECT</directive> pour
+    outrepasser ces valeurs par d&eacute;faut et n'autoriser les connexions que
+    vers les ports sp&eacute;cifi&eacute;s.</p>
+</usage>
+</directivesynopsis>
+
+
+</modulesynopsis>

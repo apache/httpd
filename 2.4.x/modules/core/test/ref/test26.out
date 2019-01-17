@@ -1,0 +1,11 @@
+# testing with conf/test26.conf
+[macro:warn] macro 'funny' (defined on line 4 of "./conf/test26.conf") argument name 'first arg' (#1) without expected prefix, better prefix argument names with one of '$%@'.
+[macro:warn] macro 'funny' (defined on line 4 of "./conf/test26.conf") argument name 'second ... arg' (#2) without expected prefix, better prefix argument names with one of '$%@'.
+[core:warn] funny directory on line 2 of macro 'funny' (defined on line 4 of "./conf/test26.conf") used on line 13 of "./conf/test26.conf"
+[core:warn] funny location on line 5 of macro 'funny' (defined on line 4 of "./conf/test26.conf") used on line 13 of "./conf/test26.conf"
+[core:warn] funny directory on line 2 of macro 'funny' (defined on line 4 of "./conf/test26.conf") used on line 16 of "./conf/test26.conf"
+[core:warn] funny location on line 5 of macro 'funny' (defined on line 4 of "./conf/test26.conf") used on line 16 of "./conf/test26.conf"
+[core:error] done! on line 19 of ./conf/test26.conf
+AH00526: Syntax error on line 19 of ./conf/test26.conf:
+Configuration processing stopped by Error directive
+# exit: 1

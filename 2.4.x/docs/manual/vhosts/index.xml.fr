@@ -1,0 +1,114 @@
+<?xml version='1.0' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision: 1753873 -->
+<!-- french translation by alain B, review by Vincent Deffontaines -->
+<!-- Updated by Lucien Gentis -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="index.xml.meta">
+<parentdocument href="../"/>
+
+   <title>Documentation sur les serveurs virtuels Apache</title>
+
+<summary>
+
+    <p>Le principe des <cite>Serveurs Virtuels</cite> consiste à 
+    faire fonctionner un ou plusieurs serveurs Web (comme 
+    <code>www.company1.example.com</code> et <code>www.company2.example.com</code>) 
+    sur une même machine. Les serveurs virtuels peuvent être soit 
+    "<a href="ip-based.html">par-IP</a>" où une adresse IP est 
+    attribuée pour chaque serveur Web, soit "<a href="name-based.html"
+    >par-nom</a>" où plusieurs noms de domaine se côtoient sur 
+    des mêmes adresses IP. L'utilisateur final ne perçoit pas 
+    qu'en fait il s'agit d'un même serveur physique.</p>
+
+    <p>Apache a été le précurseur des serveurs proposant cette 
+    méthode de serveurs virtuels basés sur les adresses IP. Ses 
+    versions 1.1 et suivantes proposent les deux 
+    méthodes de serveurs virtuels : par-IP et par-nom. Cette 
+    deuxième méthode est parfois également appelée <em>host-based</em> 
+    ou <em>serveur virtuel non-IP</em>.</p>
+
+    <p>Vous trouverez ci-dessous une liste documentaire qui vous 
+    expliquera en détails le fonctionnement du support des serveurs
+    virtuels par le serveur HTTP Apache.</p>
+
+</summary>
+
+<seealso><module>mod_vhost_alias</module></seealso>
+<seealso><a href="name-based.html">Serveurs virtuels par-nom</a></seealso>
+<seealso><a href="ip-based.html">Serveurs virtuels par-IP</a></seealso>
+<seealso><a href="examples.html">Exemples de serveurs virtuels</a></seealso>
+<seealso><a href="fd-limits.html">Limites des descripteurs de fichiers</a></seealso>
+<seealso><a href="mass.html">Hébergement virtuel en masse</a></seealso>
+<seealso><a href="details.html">Détails sur les critères de choix du serveur</a></seealso>
+
+<section id="support"><title>Support des serveurs virtuels</title>
+
+    <ul>
+      <li><a href="name-based.html">Serveurs Virtuels par-Nom</a> 
+      (Un ou plusieurs sites Web par adresse IP)</li>
+      <li><a href="ip-based.html">Serveurs Virtuels par-IP</a> 
+      (Une adresse IP pour chaque site Web)</li>
+      <li><a href="examples.html">Exemples de configurations classiques 
+      de Serveurs Virtuels </a></li>
+      <li><a href="fd-limits.html">Limites des descripteurs de fichiers</a> 
+      (ou, <em>trop de fichiers journaux</em>)</li>
+      <li><a href="mass.html">Configuration dynamique en masse de 
+      Serveurs Virtuels</a></li>
+      <li><a href="details.html">Explication approfondie des critères 
+      de sélection d'un Serveur Virtuel</a></li>
+    </ul>
+
+</section>
+
+<section id="directives"><title>Directives de configuration</title>
+
+    <ul>
+      <li><directive type="section"
+           module="core">VirtualHost</directive></li>
+      <li><directive module="core">ServerName</directive></li>
+      <li><directive module="core">ServerAlias</directive></li>
+      <li><directive module="core">ServerPath</directive></li>
+    </ul>
+
+    <p>Pour vérifier et analyser la configuration de vos serveurs 
+    virtuels, vous pouvez utiliser l'argument <code>-S</code> sur 
+    la ligne de commande.</p>
+
+    <example>
+    <title>Exemple Unix</title>
+    apachectl -S
+    </example>
+
+    <example>
+    <title>Exemple Windows</title>
+    httpd.exe -S
+    </example>
+
+    <p>Cette commande affichera dans le détail comment Apache a 
+    traité son fichier de configuration. Les erreurs de configuration 
+    peuvent être corrigées par l'examen attentif des adresses IP et 
+    des noms de serveurs. (Consultez la documentation du programme 
+    <program>httpd</program> pour les autres arguments de la ligne de 
+    commande)</p>
+
+</section>
+</manualpage>

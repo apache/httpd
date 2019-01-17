@@ -1,0 +1,331 @@
+#!/bin/sh
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+#
+# buildconf: Build the support scripts needed to compile from a
+#            checked-out version of the source code.
+
+# version check for AC_PROG_CC_C99
+ac_version=`${AUTOCONF:-autoconf} --version 2>/dev/null|sed -e 's/^[^0-9]*//;s/[a-z]* *$//;q'`
+case "$ac_version" in
+# versions older than 2.50 are denied by AC_PREREQ
+2.5*)
+    echo WARNING: You are using an outdated version of autoconf.
+    echo WARNING: This may lead to less than optimal performance of httpd.
+    echo WARNING: You should use autoconf 2.60 or newer.
+    sleep 1
+    ;;
+esac
+
+# set a couple of defaults for where we should be looking for our support libs.
+# can be overridden with --with-apr=[dir] and --with-apr-util=[dir]
+
+apr_src_dir="srclib/apr ../apr"
+apu_src_dir=""
+
+while test $# -gt 0 
+do
+    # Normalize
+    case "$1" in
+    -*=*) optarg=`echo "$1" | sed 's/[-_a-zA-Z0-9]*=//'` ;;
+    *) optarg= ;;
+    esac
+
+    case "$1" in
+    --with-apr=*)
+        apr_src_dir=$optarg
+        ;;
+
+    --with-apr-util=*)
+        apu_src_dir=$optarg
+        ;;
+
+    -h|--help)
+        cat <<EOF
+buildconf: generates the files needed to configure httpd.
+
+Usage: $0 [OPTION]...
+
+Configuration:
+  -h, --help               display this help and exit
+
+  --with-apr=SRCDIR        define a space-separated list of directories to
+                           search for the APR source code. If, instead of a
+                           directory, an apr-config executable name is passed,
+                           APR-Config Mode is enabled (see below). Defaults to
+                           "srclib/apr ../apr"
+  --with-apr-util=SRCDIR   define a space-separated list of directories to
+                           search for the APR-util source code. Defaults to the
+                           same location as the --with-apr SRCDIR, but with
+                           "apr" replaced with "apr-util" or "aprutil". Ignored
+                           in APR-Config Mode.
+
+APR-Config Mode:
+
+  When passing an apr-config executable to --with-apr, buildconf will attempt to
+  copy build scripts from various installed locations on your system instead of
+  an APR source tree. This allows you to configure httpd from source without
+  also requiring you to download the APR and/or APR-util sources.
+
+  For example:
+
+      ./buildconf --with-apr=apr-1-config
+
+  For this functionality to work reliably, you must have automake >= 1.12 and be
+  using a distribution that includes both find_apr.m4 and find_apu.m4 in the
+  --installbuilddir pointed to by apr-config.
+
+Environment variables used by buildconf:
+  AUTOCONF           autoconf executable name [autoconf]
+  AUTOMAKE           automake executable name [automake]
+  AUTOHEADER         autoheader executable name [autoheader]
+EOF
+        exit
+        ;;
+
+    *)
+        echo "unknown option $1 (try --help for usage)"
+        exit 1
+        ;;
+    esac
+
+    shift
+done
+
+#
+# Check to be sure that we have the srclib dependencies checked-out, or that a
+# working apr-config installation has been specified.
+#
+
+should_exit=0
+apr_config=         # path to apr-config (empty if using a source directory)
+apr_found=0
+apu_found=0
+apr_major_version=2
+
+for dir in $apr_src_dir
+do
+    if [ -f "${dir}/build/apr_common.m4" ]; then
+        echo "found apr source: ${dir}"
+        apr_src_dir=$dir
+        apr_found=1
+        break
+    elif which "${dir}" >/dev/null 2>&1; then
+        # We're using apr-config. Do a sanity check.
+        apr_config=`which "${dir}"`
+        echo "testing apr-config executable: ${apr_config}"
+
+        version=`"${apr_config}" --version`
+        version=`echo "${version}" | sed -n '/^[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*$/p'`
+
+        if [ -z "${version}" ]; then
+            echo "apr-config gave us an invalid --version"
+            apr_config=
+            continue
+        fi
+
+        echo "using apr-config version ${version}"
+        apr_major_version=${version} # we'll make a real "major version" later
+        apr_src_dir=`"${apr_config}" --installbuilddir`
+        apr_found=1
+        break
+    fi
+done
+
+if [ $apr_found -lt 1 ]; then
+    echo ""
+    echo "You don't have a copy of the apr source in srclib/apr. "
+    echo "Please get the source using the following instructions," 
+    echo "or specify the location of the source with " 
+    echo "--with-apr=[path to apr] :"
+    echo ""
+    echo "   svn co http://svn.apache.org/repos/asf/apr/apr/trunk srclib/apr"
+    echo ""
+    should_exit=1
+elif [ -n "${apr_config}" ]; then
+    apr_major_version=`echo "${apr_major_version}" | sed 's/\..*//'`
+else
+    apr_major_version=`grep "#define APR_MAJOR_VERSION" \
+                      $apr_src_dir/include/apr_version.h | sed 's/[^0-9]//g'`
+fi
+
+# Find APR-util. Note: if we're using apr-config, we can completely skip this,
+# even if APR is version 1. That's because we only end up caring about
+# find_apu.m4, which is not actually installed in the standard APR-util
+# distribution to begin with.
+if [ -z "${apr_config}" -a $apr_major_version -lt 2 ] ; then
+    if test -z "$apu_src_dir"; then
+        apu_src_dir=`echo $apr_src_dir | sed -e 's#/apr#/apr-util#g;'`
+        apu_src_dir="$apu_src_dir `echo $apr_src_dir | sed -e 's#/apr#/aprutil#;g'`"
+        apu_src_dir="$apu_src_dir srclib/apr-util ../apr-util"
+    fi
+
+    for dir in $apu_src_dir
+    do
+        if [ -f "${dir}/Makefile.in" ]; then
+            echo "found apr-util source: ${dir}"
+            apu_src_dir=$dir
+            apu_found=1
+            break
+        fi
+    done
+
+    if [ $apu_found -lt 1 ]; then
+        echo ""
+        echo "You don't have a copy of the apr-util source in srclib/apr-util. "
+        echo "Please get one the source using the following instructions, "
+        echo "or specify the location of the source with "
+        echo "--with-apr-util=[path to apr-util]:"
+        echo ""
+        echo "   svn co http://svn.apache.org/repos/asf/apr/apr-util/branches/1.5.x srclib/apr-util"
+        echo ""
+        should_exit=1
+    fi
+fi
+
+if [ $should_exit -gt 0 ]; then
+    exit 1
+fi
+
+# These are temporary until Roy finishes the other build changes
+#
+touch .deps
+rm -f aclocal.m4
+rm -f generated_lists
+
+# Remove autoconf 2.5x cache directories
+rm -rf autom4te*.cache
+
+case "`uname`" in
+*BSD/OS*)
+    ./build/bsd_makefile;;
+esac
+#
+# end temporary stuff
+
+apr_configure="$apr_src_dir/configure"
+if [ $apr_major_version -lt 2 ] ; then
+    aprutil_configure="$apu_src_dir/configure"
+fi
+config_h_in="include/ap_config_auto.h.in"
+
+cross_compile_warning="warning: AC_TRY_RUN called without default to allow cross compiling"
+
+if [ "$apr_src_dir" = "srclib/apr" ]; then
+    echo rebuilding $apr_configure
+    (cd srclib/apr && ./buildconf) || {
+        echo "./buildconf failed for apr"
+        exit 1
+    }
+    rm -f srclib/apr/apr.spec
+fi
+
+apr_src_dir=`cd $apr_src_dir && pwd` 
+
+if [ $apr_major_version -lt 2 ] ; then
+    if [ "$apu_src_dir" = "srclib/apr-util" ]; then
+        echo rebuilding $aprutil_configure
+        (cd srclib/apr-util && ./buildconf --with-apr=$apr_src_dir) || {
+            echo "./buildconf failed for apr-util" 
+            exit 1
+        }
+        rm -f srclib/apr-util/apr-util.spec
+    fi
+
+    apu_src_dir=`cd $apu_src_dir && pwd`
+fi
+
+echo copying build files
+if [ -n "${apr_config}" ]; then
+    # If we're using apr-config, we switch things up a little bit:
+    # - use automake's config.* scripts instead of APR's
+    # - use the included PrintPath instead of copying from APR
+    # - assume find_apu.m4 is also in APR's --installbuilddir
+
+    # Figure out where to copy config.* from.
+    automake=${AUTOMAKE:-automake}
+    am_libdir=`"${automake}" --print-libdir`
+    cp "${am_libdir}/config.guess" "${am_libdir}/config.sub" build
+
+    # Remember that in this case, $apr_src_dir points to the build directory.
+    cp "$apr_src_dir/apr_common.m4" "$apr_src_dir/find_apr.m4" build
+    if [ $apr_major_version -lt 2 ] ; then
+        cp "$apr_src_dir/find_apu.m4" build
+    fi
+else
+    cp $apr_src_dir/build/config.guess $apr_src_dir/build/config.sub \
+       $apr_src_dir/build/PrintPath $apr_src_dir/build/apr_common.m4 \
+       $apr_src_dir/build/find_apr.m4 build
+    if [ $apr_major_version -lt 2 ] ; then
+        cp $apu_src_dir/build/find_apu.m4 build
+    fi
+fi
+
+# Remove any libtool files so one can switch between libtool 1.3
+# and libtool 1.4 by simply rerunning the buildconf script.
+(cd build ; rm -f ltconfig ltmain.sh)
+
+if [ -z "${apr_config}" ]; then
+    # Optionally copy libtool-1.3.x files
+    if [ -f $apr_src_dir/build/ltconfig ]; then
+        cp $apr_src_dir/build/ltconfig build
+    fi
+    if [ -f $apr_src_dir/build/ltmain.sh ]; then
+        cp $apr_src_dir/build/ltmain.sh build
+    fi
+fi
+
+echo rebuilding $config_h_in
+rm -f $config_h_in
+${AUTOHEADER:-autoheader} 2>&1 | grep -v "$cross_compile_warning"
+
+echo rebuilding configure
+rm -f config.cache
+${AUTOCONF:-autoconf} 2>&1 | grep -v "$cross_compile_warning"
+
+# Remove autoconf 2.5x cache directories
+rm -rf autom4te*.cache
+
+if [ -f `which cut` ]; then
+  echo rebuilding rpm spec file
+  ( VMMN=`build/get-version.sh mmn include/ap_mmn.h MODULE_MAGIC_NUMBER`
+    EPOCH=`build/get-version.sh epoch include/ap_release.h AP_SERVER`
+    REVISION=`build/get-version.sh all include/ap_release.h AP_SERVER`
+    VERSION=`echo $REVISION | cut -d- -s -f1`
+    RELEASE=`echo $REVISION | cut -d- -s -f2`
+    if [ "x$VERSION" = "x" ]; then
+      VERSION=$REVISION
+      RELEASE=1
+    fi
+    cat ./build/rpm/httpd.spec.in | \
+    sed -e "s/APACHE_VERSION/$VERSION/" \
+        -e "s/APACHE_RELEASE/$RELEASE/" \
+        -e "s/APACHE_MMN/$VMMN/" \
+        -e "s/APACHE_EPOCH/$EPOCH/" \
+    > httpd.spec )
+fi
+
+# ensure that the ap_expr expression parser sources are never regenerated
+# when running make
+echo fixing timestamps for ap_expr sources
+cd server
+touch util_expr_parse.y util_expr_scan.l
+sleep 1
+touch util_expr_parse.c util_expr_parse.h util_expr_scan.c
+cd ..
+
+exit 0

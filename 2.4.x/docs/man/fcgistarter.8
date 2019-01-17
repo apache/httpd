@@ -1,0 +1,59 @@
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.\" DO NOT EDIT! Generated from XML source.
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.de Sh \" Subsection
+.br
+.if t .Sp
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.de Sp \" Vertical space (when we can't use .PP)
+.if t .sp .5v
+.if n .sp
+..
+.de Ip \" List item
+.br
+.ie \\n(.$>=3 .ne \\$3
+.el .ne 3
+.IP "\\$1" \\$2
+..
+.TH "FCGISTARTER" 8 "2018-07-06" "Apache HTTP Server" "fcgistarter"
+
+.SH NAME
+fcgistarter \- Start a FastCGI program
+
+.SH "SYNOPSIS"
+ 
+.PP
+\fB\fBfcgistarter\fR -\fBc\fR \fIcommand\fR -\fBp\fR \fIport\fR [ -\fBi\fR \fIinterface\fR ] -\fBN\fR \fInum\fR \fR
+ 
+
+.SH "SUMMARY"
+ 
+.PP
+
+ 
+
+.SH "NOTE"
+ 
+.PP
+Currently only works on Unix systems\&.
+ 
+.SH "OPTIONS"
+ 
+ 
+.TP
+\fB-c \fIcommand\fR\fR
+FastCGI program  
+.TP
+\fB-p \fIport\fR\fR
+Port which the program will listen on  
+.TP
+\fB-i \fIinterface\fR\fR
+Interface which the program will listen on  
+.TP
+\fB-N \fInum\fR\fR
+Number of instances of the program  
+ 

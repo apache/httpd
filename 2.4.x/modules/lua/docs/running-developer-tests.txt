@@ -1,0 +1,16 @@
+-*- mode:org -*-
+* Building mod_lua
+  The first step is to build mod_lua per the instructions in
+  building-from-subversion.txt.
+
+* Build and install LuaSocket
+    http://www.cs.princeton.edu/~diego/professional/luasocket/
+    FreeBSD: /usr/ports/net/luasocket
+
+* Running Tests
+  1. Replace apache's httpd.conf with test/test_httpd.conf
+  2. Customize the new httpd.conf to match your directories
+  3. Finally, to run the tests, start apache and run:
+     $ cd test
+     $ lua ./test.lua
+     FreeBSD: lua-5.1 ./test.lua

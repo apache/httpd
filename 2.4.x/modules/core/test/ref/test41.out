@@ -1,0 +1,9 @@
+# testing with conf/test41.conf
+AH00112: Warning: DocumentRoot [/foo/document/root/directory] does not exist
+[core:warn] location /A on line 7 of ./conf/test41.conf
+[core:warn] location /B on line 11 of ./conf/test41.conf
+[core:warn] location /C on line 15 of ./conf/test41.conf
+[core:error] Stop configuration file processing. on line 20 of ./conf/test41.conf
+AH00526: Syntax error on line 20 of ./conf/test41.conf:
+Configuration processing stopped by Error directive
+# exit: 1

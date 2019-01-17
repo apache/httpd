@@ -1,0 +1,121 @@
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.\" DO NOT EDIT! Generated from XML source.
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.de Sh \" Subsection
+.br
+.if t .Sp
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.de Sp \" Vertical space (when we can't use .PP)
+.if t .sp .5v
+.if n .sp
+..
+.de Ip \" List item
+.br
+.ie \\n(.$>=3 .ne \\$3
+.el .ne 3
+.IP "\\$1" \\$2
+..
+.TH "DBMMANAGE" 1 "2018-07-06" "Apache HTTP Server" "dbmmanage"
+
+.SH NAME
+dbmmanage \- Manage user authentication files in DBM format
+
+.SH "SYNOPSIS"
+ 
+.PP
+\fB\fBdbmmanage\fR [ \fIencoding\fR ] \fIfilename\fR add|adduser|check|delete|update \fIusername\fR [ \fIencpasswd\fR [ \fIgroup\fR[,\fIgroup\fR\&.\&.\&.] [ \fIcomment\fR ] ] ]\fR
+ 
+.PP
+\fB\fBdbmmanage\fR \fIfilename\fR view [ \fIusername\fR ]\fR
+ 
+.PP
+\fB\fBdbmmanage\fR \fIfilename\fR import\fR
+ 
+
+.SH "SUMMARY"
+ 
+.PP
+\fBdbmmanage\fR is used to create and update the DBM format files used to store usernames and password for basic authentication of HTTP users via mod_authn_dbm\&. Resources available from the Apache HTTP server can be restricted to just the users listed in the files created by \fBdbmmanage\fR\&. This program can only be used when the usernames are stored in a DBM file\&. To use a flat-file database see htpasswd\&.
+ 
+.PP
+Another tool to maintain a DBM password database is htdbm\&.
+ 
+.PP
+This manual page only lists the command line arguments\&. For details of the directives necessary to configure user authentication in httpd see the httpd manual, which is part of the Apache distribution or can be found at http://httpd\&.apache\&.org/\&.
+ 
+
+.SH "OPTIONS"
+ 
+ 
+.TP
+\fB\fIfilename\fR\fR
+The filename of the DBM format file\&. Usually without the extension \fB\&.db\fR, \fB\&.pag\fR, or \fB\&.dir\fR\&.  
+.TP
+\fB\fIusername\fR\fR
+The user for which the operations are performed\&. The \fIusername\fR may not contain a colon (\fB:\fR)\&.  
+.TP
+\fB\fIencpasswd\fR\fR
+This is the already encrypted password to use for the \fBupdate\fR and \fBadd\fR commands\&. You may use a hyphen (\fB-\fR) if you want to get prompted for the password, but fill in the fields afterwards\&. Additionally when using the \fBupdate\fR command, a period (\fB\&.\fR) keeps the original password untouched\&.  
+.TP
+\fB\fIgroup\fR\fR
+A group, which the user is member of\&. A groupname may not contain a colon (\fB:\fR)\&. You may use a hyphen (\fB-\fR) if you don't want to assign the user to a group, but fill in the comment field\&. Additionally when using the \fBupdate\fR command, a period (\fB\&.\fR) keeps the original groups untouched\&.  
+.TP
+\fB\fIcomment\fR\fR
+This is the place for your opaque comments about the user, like realname, mailaddress or such things\&. The server will ignore this field\&.  
+ 
+.SS "Encodings"
+ 
+ 
+.TP
+\fB-d\fR
+crypt encryption (default, except on Win32, Netware)  
+.TP
+\fB-m\fR
+MD5 encryption (default on Win32, Netware)  
+.TP
+\fB-s\fR
+SHA1 encryption  
+.TP
+\fB-p\fR
+plaintext (\fInot recommended\fR)  
+  
+.SS "Commands"
+ 
+ 
+.TP
+\fBadd\fR
+Adds an entry for \fIusername\fR to \fIfilename\fR using the encrypted password \fIencpasswd\fR\&. dbmmanage passwords\&.dat add rbowen foKntnEF3KSXA  
+.TP
+\fBadduser\fR
+Asks for a password and then adds an entry for \fIusername\fR to \fIfilename\fR\&. dbmmanage passwords\&.dat adduser krietz  
+.TP
+\fBcheck\fR
+Asks for a password and then checks if \fIusername\fR is in \fIfilename\fR and if it's password matches the specified one\&. dbmmanage passwords\&.dat check rbowen  
+.TP
+\fBdelete\fR
+Deletes the \fIusername\fR entry from \fIfilename\fR\&. dbmmanage passwords\&.dat delete rbowen  
+.TP
+\fBimport\fR
+Reads \fB\fIusername\fR:\fIpassword\fR\fR entries (one per line) from \fBSTDIN\fR and adds them to \fIfilename\fR\&. The passwords already have to be crypted\&.  
+.TP
+\fBupdate\fR
+Same as the \fBadduser\fR command, except that it makes sure \fIusername\fR already exists in \fIfilename\fR\&. dbmmanage passwords\&.dat update rbowen  
+.TP
+\fBview\fR
+Just displays the contents of the DBM file\&. If you specify a \fIusername\fR, it displays the particular record only\&. dbmmanage passwords\&.dat view  
+  
+.SH "BUGS"
+ 
+.PP
+One should be aware that there are a number of different DBM file formats in existence, and with all likelihood, libraries for more than one format may exist on your system\&. The three primary examples are SDBM, NDBM, the GNU project's GDBM, and Berkeley DB 2\&. Unfortunately, all these libraries use different file formats, and you must make sure that the file format used by \fIfilename\fR is the same format that \fBdbmmanage\fR expects to see\&. \fBdbmmanage\fR currently has no way of determining what type of DBM file it is looking at\&. If used against the wrong format, will simply return nothing, or may create a different DBM file with a different name, or at worst, it may corrupt the DBM file if you were attempting to write to it\&.
+ 
+.PP
+\fBdbmmanage\fR has a list of DBM format preferences, defined by the \fB@AnyDBM::ISA\fR array near the beginning of the program\&. Since we prefer the Berkeley DB 2 file format, the order in which \fBdbmmanage\fR will look for system libraries is Berkeley DB 2, then NDBM, then GDBM and then SDBM\&. The first library found will be the library \fBdbmmanage\fR will attempt to use for all DBM file transactions\&. This ordering is slightly different than the standard \fB@AnyDBM::ISA\fR ordering in Perl, as well as the ordering used by the simple \fBdbmopen()\fR call in Perl, so if you use any other utilities to manage your DBM files, they must also follow this preference ordering\&. Similar care must be taken if using programs in other languages, like C, to access these files\&.
+ 
+.PP
+One can usually use the \fBfile\fR program supplied with most Unix systems to see what format a DBM file is in\&.
+ 

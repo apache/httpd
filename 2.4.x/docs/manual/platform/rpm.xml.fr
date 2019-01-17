@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1242925 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="rpm.xml.meta">
+  <parentdocument href="./">Notes spécifiques aux différentes
+  plateformes</parentdocument>
+
+  <title>Utiliser Apache sur les systèmes à base de paquets RPM (Redhat
+  / CentOS / Fedora)</title>
+
+  <summary>
+
+    <p>Alors que de nombreuses distributions mettent à disposition des
+    paquets Apache httpd supportés par le système d'exploitation
+    sous-jacent, il peut s'avérer nécessaire d'installer et d'utiliser
+    la version de base d'Apache httpd en remplacement de la version des
+    paquets.</p>
+
+    <p>Bien que le projet Apache httpd ne crée pas actuellement de
+    paquets RPM pour les différentes distributions, il est aisé de
+    construire votre propre paquet RPM à partir du tarball de base
+    d'Apache httpd.</p>
+
+    <p>Ce document explique comment construire, installer, configurer et
+    exécuter Apache httpd 2.4 sur les systèmes Unix à base de paquets
+    RPM.</p>
+
+  </summary>
+
+  <section id="creating">
+    <title>Création d'un paquet RPM source</title>
+
+    <p>Le tarball d'Apache httpd peut être converti en paquet SRPM de la
+    manière suivante :</p>
+
+    <example>
+      rpmbuild -ts httpd-2.4.x.tar.bz2
+    </example>
+
+  </section>
+
+  <section id="building">
+    <title>Création d'un paquet RPM</title>
+
+    <p>Le tarball d'Apache httpd peut être converti en paquet RPM de la
+    manière suivante :</p>
+
+    <example>
+      rpmbuild -tb httpd-2.4.x.tar.bz2
+    </example>
+
+    <p>Il sera nécessaire d'installer les paquets "-devel"
+    correspondants avant de construire les RPMs ; à cet effet, la
+    commande <code>rpmbuild</code> détecte automatiquement les RPMs
+    requis et en donne la liste sous forme de dépendances manquantes sur
+    votre système. Ces paquets "-devel" ne seront d'ailleurs plus
+    nécessaires une fois la création des RPMs terminée, et pourront
+    alors être supprimés sans risque.</p>
+
+    <p>Si tout va bien, les RPMs suivants seront créés :</p>
+
+    <dl>
+    <dt>httpd-2.4.x-1.i686.rpm</dt>
+    <dd>Le serveur de base et le jeu de modules standards.</dd>
+
+    <dt>httpd-debuginfo-2.4.x-1.i686.rpm</dt>
+    <dd>Les symboles de débogage pour le serveur et tous les modules.</dd>
+
+    <dt>httpd-devel-2.4.x-1.i686.rpm</dt>
+    <dd>Les en-têtes et fichiers de développement pour le serveur.</dd>
+
+    <dt>httpd-manual-2.4.x-1.i686.rpm</dt>
+    <dd>Le manuel du serveur web.</dd>
+
+    <dt>httpd-tools-2.4.x-1.i686.rpm</dt>
+    <dd>Les utilitaires du serveur web.</dd>
+
+    <dt>mod_authnz_ldap-2.4.x-1.i686.rpm</dt>
+    <dd>Les modules <module>mod_ldap</module> et
+    <module>mod_authnz_ldap</module> avec les dépendances
+    correspondantes sur openldap.</dd>
+
+    <dt>mod_lua-2.4.x-1.i686.rpm</dt>
+    <dd>Le module <module>mod_lua</module> avec les dépendances
+    correspondantes sur lua.</dd>
+
+    <dt>mod_proxy_html-2.4.x-1.i686.rpm</dt>
+    <dd>Le module <module>mod_proxy_html</module> avec les
+    dépendances correspondantes sur libxml2.</dd>
+
+    <dt>mod_socache_dc-2.4.x-1.i686.rpm</dt>
+    <dd>Le module <module>mod_socache_dc</module> avec les
+    dépendances correspondantes sur distcache.</dd>
+
+    <dt>mod_ssl-2.4.x-1.i686.rpm</dt>
+    <dd>Le module <module>mod_ssl</module> avec les
+    dépendances correspondantes sur openssl.</dd>
+
+    </dl>
+
+  </section>
+
+  <section id="installing">
+    <title>Installation du serveur</title>
+
+    <p>Le RPM <code>httpd</code> est le seul paquet nécessaire pour
+    obtenir un serveur de base fonctionnel. Vous pouvez l'installer
+    comme suit :</p>
+
+    <example>
+      rpm -U httpd-2.4.x-1.i686.rpm
+    </example>
+
+    <p>Le jeu de modules standards est inclus dans le serveur. Les
+    modules qui dépendent de bibliothèques externes sont fournis en tant
+    que paquets RPM séparés et doivent être installés si nécessaire.</p>
+
+  </section>
+
+  <section id="default">
+    <title>Configuration de l'instance par défaut d'Apache httpd</title>
+
+    <p>Les répertoires par défaut sont
+    <code>/etc/httpd</code> pour la configuration du serveur, et
+    <code>/var/log/httpd</code> pour la journalisation. L'environnement
+    par défaut du serveur web est défini dans le répertoire optionnel
+    <code>/etc/sysconfig/httpd</code>.</p>
+
+    <p>Démarrez le serveur comme suit :</p>
+
+    <example>
+      service httpd restart
+    </example>
+
+  </section>
+
+  <section id="additional">
+    <title>Configuration d'instances d'Apache httpd supplémentaires sur
+    la même machine</title>
+
+    <p>Il est possible d'exécuter simultanément plusieurs instances du
+    serveur Apache httpd sur la même machine. Chaque instance peut
+    posséder sa propre configuration et en fonction de cette dernière,
+    s'exécuter sous un utilisateur différent.</p>
+
+    <p>Pour parvenir à ce résultat, on a fait en sorte que le script de
+    démarrage de httpd ait connaissance de son propre nom. Ce nom est
+    par la suite utilisé pour trouver le fichier d'environnement associé
+    au serveur, et par conséquent, la racine de l'instance du serveur
+    considéré.</p>
+
+    <p>Pour créer une instance supplémentaire appelée
+    <code>httpd-additional</code>, suivez ces étapes :</p>
+
+    <ul>
+      <li>Créez un lien symbolique vers le script de démarrage pour
+      l'instance supplémentaire :
+
+      <example>
+        ln -s /etc/rc.d/init.d/httpd /etc/rc.d/init.d/httpd-additional<br />
+        chkconfig --add httpd-additional
+      </example>
+
+      </li>
+
+      <li>Créez un fichier d'environnement pour l'instance
+      supplémentaire, en utilisant le fichier
+      <code>/etc/sysconfig/httpd</code> comme modèle :
+
+      <example>
+        # création du fichier d'environnement à partir du modèle httpd<br />
+        cp /etc/sysconfig/httpd /etc/sysconfig/httpd-additional
+      </example>
+      
+      <example>
+        # création du fichier d'environnement à partir de zéro<br />
+        touch /etc/sysconfig/httpd-additional
+      </example>
+
+      Editez le fichier <code>/etc/sysconfig/httpd-additional</code> et
+      définissez la racine de la nouvelle instance du serveur via la
+      variable d'environnement <code>OPTIONS</code>.
+
+      <example>
+        OPTIONS="-d /etc/httpd-additional -f conf/httpd-additional.conf"
+      </example>
+
+      </li>
+
+      <li>Editez le fichier de configuration du serveur supplémentaire
+      <code>/etc/httpd-additional/conf/httpd-additional.conf</code> et
+      assurez-vous que les ports et chemins sont correctement définis.
+      </li>
+
+      <li>Démarrez le serveur supplémentaire comme suit :
+
+      <example>
+        service httpd-additional restart
+      </example>
+
+      </li>
+
+      <li>Répétez ces opérations pour chaque instance supplémentaire
+      souhaitée.</li>
+    </ul>
+
+  </section>
+
+</manualpage>
+

@@ -1,0 +1,361 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1673563 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_vhost_alias.xml.meta">
+
+<name>mod_vhost_alias</name>
+<description>Permet de configurer dynamiquement l'h&eacute;bergement virtuel de
+masse</description>
+<status>Extension</status>
+<sourcefile>mod_vhost_alias.c</sourcefile>
+<identifier>vhost_alias_module</identifier>
+
+<summary>
+    <p>Ce module permet de cr&eacute;er des serveurs virtuels configur&eacute;s
+    dynamiquement, en autorisant l'utilisation de l'adresse IP et/ou de
+    l'en-t&ecirc;te <code>Host:</code> de la requ&ecirc;te HTTP comme partie du nom
+    de chemin afin de d&eacute;terminer les fichiers &agrave; servir. Ceci facilite la
+    gestion d'un grand nombre de serveurs virtuels poss&egrave;dant des
+    configurations similaires.</p>
+
+    <note><title>Note</title>
+      <p>Si les modules <module>mod_alias</module> ou
+      <module>mod_userdir</module> sont utilis&eacute;s pour traduire les URIs
+      en noms de fichiers, ils l'emportent sur les directives du module
+      <module>mod_vhost_alias</module> d&eacute;crites ci-dessous. Par
+      exemple, la configuration suivante fera correspondre <code>
+      /cgi-bin/script.pl</code> &agrave; <code>
+      /usr/local/apache2/cgi-bin/script.pl</code> dans tous les cas :</p>
+
+      <highlight language="config">
+ScriptAlias "/cgi-bin/" "/usr/local/apache2/cgi-bin/"
+VirtualScriptAlias "/never/found/%0/cgi-bin/"
+      </highlight>
+    </note>
+</summary>
+
+<seealso><directive module="core">UseCanonicalName</directive></seealso>
+<seealso><a href="../vhosts/mass.html">Configuration dynamique de
+l'h&eacute;bergement virtuel de masse</a></seealso>
+
+<section id="interpol">
+    <title>Interpolation du nom de r&eacute;pertoire</title>
+
+    <p>Toutes les directives de ce module ins&egrave;rent une cha&icirc;ne dans un
+    nom de chemin. La cha&icirc;ne ins&eacute;r&eacute;e (que nous appellerons maintenant le
+    "nom") peut &ecirc;tre soit le nom du serveur (voir la directive
+    <directive module="core">UseCanonicalName</directive> pour les
+    d&eacute;tails sur la mani&egrave;re dont il est d&eacute;termin&eacute;), soit l'adresse IP du
+    serveur virtuel h&eacute;berg&eacute; par le serveur sous la forme d'un quadruplet
+    d'octets s&eacute;par&eacute;s par des points. L'insertion est contr&ocirc;l&eacute;e par des
+    sp&eacute;cificateurs inspir&eacute;s de <code>printf</code> et poss&egrave;dant de
+    nombreux formats :</p>
+
+<table>
+<columnspec><column width=".2"/><column width=".6"/></columnspec>
+<tr><td><code>%%</code></td>
+<td>ins&egrave;re un <code>%</code></td></tr>
+
+<tr><td><code>%p</code></td>
+<td>ins&egrave;re le num&eacute;ro de port du serveur virtuel</td></tr>
+
+<tr><td><code>%N.M</code></td>
+<td>ins&egrave;re le nom (en partie)</td></tr>
+
+</table>
+
+    <p><code>N</code> et <code>M</code> permettent de sp&eacute;cifier des
+    sous-cha&icirc;nes du nom. <code>N</code> s&eacute;lectionne un des composants du
+    nom s&eacute;par&eacute;s par des points, et <code>M</code> s&eacute;lectionne des
+    caract&egrave;res &agrave; l'int&eacute;rieur de ce que <code>N</code> a s&eacute;lectionn&eacute;.
+    <code>M</code> est optionnel et sa valeur par d&eacute;faut est 0 s'il
+    n'est pas sp&eacute;cifi&eacute; ; le point doit &ecirc;tre pr&eacute;sent si et seulement si
+    <code>M</code> l'est aussi. Les modes d'insertion sont les suivants
+    :</p>
+
+    <table>
+      <columnspec><column width=".1"/><column width=".4"/></columnspec>
+      <tr><td><code>0</code></td>
+      <td>le nom en entier</td></tr>
+
+      <tr><td><code>1</code></td>
+      <td>la premi&egrave;re partie</td></tr>
+
+      <tr><td><code>2</code></td>
+      <td>la seconde partie</td></tr>
+
+      <tr><td><code>-1</code></td>
+      <td>la derni&egrave;re partie</td></tr>
+
+      <tr><td><code>-2</code></td>
+      <td>l'avant-derni&egrave;re partie</td></tr>
+
+      <tr><td><code>2+</code></td>
+      <td>toutes les parties &agrave; partir de la seconde</td></tr>
+
+      <tr><td><code>-2+</code></td>
+      <td>toutes les parties jusqu'&agrave; l'avant-derni&egrave;re</td></tr>
+
+      <tr><td><code>1+</code> et <code>-1+</code></td>
+      <td>identique &agrave; <code>0</code></td></tr>
+    </table>
+
+    <p>Si <code>N</code> ou <code>M</code> est plus grand que le nombre
+    de parties disponibles, seul un caract&egrave;re de soulignement est
+    ins&eacute;r&eacute;.</p>
+
+</section>
+
+<section id="examples">
+    <title>Exemples</title>
+
+    <p>Pour des serveurs virtuels simples &agrave; base de nom, utilisez les
+    directives suivantes dans le fichier de configuration de votre
+    serveur :</p>
+
+    <highlight language="config">
+UseCanonicalName    Off
+VirtualDocumentRoot "/usr/local/apache/vhosts/%0"
+    </highlight>
+
+    <p>Une requ&ecirc;te pour
+    <code>http://www.example.com/repertoire/fichier.html</code>
+    concernera alors la ressource
+    <code>/usr/local/apache/vhosts/www.example.com/repertoire/fichier.html</code>.
+    </p>
+
+    <p>Pour un tr&egrave;s grand nombre de serveurs virtuels, il est avantageux
+    d'organiser les fichiers de fa&ccedil;on &agrave; r&eacute;duire la taille du r&eacute;pertoire
+    <code>vhosts</code>. Pour ce faire, ins&eacute;rez les lignes suivantes
+    dans votre fichier de configuration :</p>
+
+    <highlight language="config">
+UseCanonicalName    Off
+VirtualDocumentRoot "/usr/local/apache/vhosts/%3+/%2.1/%2.2/%2.3/%2"
+    </highlight>
+
+    <p>Une requ&ecirc;te pour
+    <code>http://www.domaine.example.com/repertoire/fichier.html</code>
+    concernera alors la ressource
+    <code>/usr/local/apache/vhosts/example.com/d/o/m/domaine/repertoire/fichier.html</code>.</p>
+
+    <p>Une r&eacute;partition plus r&eacute;guli&egrave;re des fichiers peut &ecirc;tre obtenue en
+    partant de la fin d'un composant du nom, comme dans l'exemple
+    suivant :</p>
+
+<highlight language="config">
+    VirtualDocumentRoot "/usr/local/apache/vhosts/%3+/%2.-1/%2.-2/%2.-3/%2"
+</highlight>
+
+    <p>La requ&ecirc;te pr&eacute;c&eacute;dente concernerait alors
+    <code>/usr/local/apache/vhosts/example.com/e/n/i/domaine/repertoire/fichier.html</code>.</p>
+
+    <p>Vous pouvez &eacute;galement utiliser : </p>
+
+<highlight language="config">
+    VirtualDocumentRoot "/usr/local/apache/vhosts/%3+/%2.1/%2.2/%2.3/%2.4+"
+</highlight>
+
+    <p>La requ&ecirc;te pr&eacute;c&eacute;dente concernerait alors
+    <code>/usr/local/apache/vhosts/example.com/d/o/m/aine/repertoire/fichier.html</code>.</p>
+
+    <p>Une demande tr&egrave;s courante des utilisateurs concerne la possibilit&eacute; de
+    faire correspondre plusieurs racines de documents &agrave; plusieurs
+    domaines, sans avoir &agrave; se pr&eacute;occuper de la longueur ou du nombre de
+    parties du nom d'h&ocirc;te faisant partie de la requ&ecirc;te. Si le nom d'h&ocirc;te
+    de la requ&ecirc;te est <code>sub.www.domain.example.com</code> au lieu de
+    simplement <code>www.domain.example.com</code>, alors en utilisant
+    %3+, la racine des documents sera
+    <code>/usr/local/apache/vhosts/domain.example.com/...</code> au
+    lieu du r&eacute;pertoire <code>example.com</code> attendu. Dans ce genre
+    de situation, il peut s'av&eacute;rer pr&eacute;f&eacute;rable d'utiliser la combinaison
+    <code>%-2.0.%-1.0</code> qui fournira toujours le nom de domaine et
+    le tld, par exemple <code>example.com</code> sans tenir compte du
+    nombre de sous-domaines ajout&eacute;s au nom d'h&ocirc;te. Dans ces conditions,
+    il est possible d'&eacute;laborer une configuration qui associera les
+    sous-domaines de premier, second et troisi&egrave;me niveau au m&ecirc;me
+    r&eacute;pertoire :
+</p>
+<highlight language="config">
+    VirtualDocumentRoot "/usr/local/apache/vhosts/%-2.0.%-1.0"
+</highlight>
+<p>
+Dans l'exemple ci-dessus, <code>www.example.com</code>,
+<code>www.sub.example.com</code> ou <code>example.com</code>
+correspondront tous au r&eacute;pertoire
+<code>/usr/local/apache/vhosts/example.com</code>.
+</p>
+
+
+
+    <p>Pour l'h&eacute;bergement virtuel &agrave; base d'adresse IP, vous pouvez
+    ins&eacute;rer les lignes suivantes dans votre fichier de configuration
+    :</p>
+
+    <highlight language="config">
+UseCanonicalName DNS
+VirtualDocumentRootIP "/usr/local/apache/vhosts/%1/%2/%3/%4/docs"
+VirtualScriptAliasIP  "/usr/local/apache/vhosts/%1/%2/%3/%4/cgi-bin"
+    </highlight>
+
+    <p>Si l'adresse IP de <code>www.domaine.example.com</code> est
+    10.20.30.40, une requ&ecirc;te pour
+    <code>http://www.domaine.example.com/repertoire/fichier.html</code>
+    concernera la ressource
+    <code>/usr/local/apache/vhosts/10/20/30/40/docs/repertoire/fichier.html</code>.
+    Une requ&ecirc;te pour
+    <code>http://www.domaine.example.com/cgi-bin/script.pl</code>
+    concernera la ressource
+    <code>/usr/local/apache/vhosts/10/20/30/40/cgi-bin/script.pl</code>.</p>
+
+    <p>Si vous voulez ins&eacute;rer le caract&egrave;re <code>.</code> dans une
+    directive <code>VirtualDocumentRoot</code>, et si cela cr&eacute;e un
+    conflit avec un sp&eacute;cificateur <code>%</code>, vous pouvez contourner
+    le probl&egrave;me de la mani&egrave;re suivante :</p>
+
+<highlight language="config">
+    VirtualDocumentRoot "/usr/local/apache/vhosts/%2.0.%3.0"
+</highlight>
+
+    <p>Une requ&ecirc;te pour
+    <code>http://www.domaine.example.com/repertoire/fichier.html</code>
+    concernera alors la ressource
+    <code>/usr/local/apache/vhosts/domaine.exemple/repertoire/fichier.html</code>.</p>
+
+    <p>Les sp&eacute;cificateurs de format <code>%V</code> et <code>%A</code>
+    de la directive <directive
+    module="mod_log_config">LogFormat</directive> s'av&egrave;rent tr&egrave;s utiles
+    lorsqu'ils sont utilis&eacute;s en conjonction avec ce module.</p>
+</section>
+
+<directivesynopsis>
+<name>VirtualDocumentRoot</name>
+<description>Permet une configuration dynamique de la racine des
+documents d'un serveur virtuel donn&eacute;</description>
+<syntax>VirtualDocumentRoot <em>r&eacute;pertoire-interpol&eacute;</em>|none</syntax>
+<default>VirtualDocumentRoot none</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+</contextlist>
+
+<usage>
+
+    <p>La directive <directive>VirtualDocumentRoot</directive> vous
+    permet de sp&eacute;cifier o&ugrave; le serveur HTTP Apache pourra trouver vos
+    documents en se basant
+    sur le nom du serveur. Le r&eacute;sultat de l'expansion du
+    <em>r&eacute;pertoire-interpol&eacute;</em> est utilis&eacute; comme racine de
+    l'arborescence des documents d'une mani&egrave;re similaire &agrave; l'argument de
+    la directive <directive module="core">DocumentRoot</directive>. Si
+    <em>r&eacute;pertoire-interpol&eacute;</em> a pour valeur <code>none</code>, la
+    directive <directive>VirtualDocumentRoot</directive> est d&eacute;sactiv&eacute;e.
+    Cette directive ne peut pas &ecirc;tre utilis&eacute;e dans le m&ecirc;me contexte que
+    la directive <directive
+    module="mod_vhost_alias">VirtualDocumentRootIP</directive>.</p>
+
+<note type="warning"><title>Note</title>
+La directive <directive>VirtualDocumentRoot</directive> l'emporte sur
+toute directive <directive module="core">DocumentRoot</directive>
+d&eacute;finie dans le m&ecirc;me contexte ou dans des contextes enfants. Le fait de
+d&eacute;finir une directive <directive>VirtualDocumentRoot</directive> dans le
+contexte du serveur principal va effectivement l'emporter sur toute
+directive <directive module="core">DocumentRoot</directive> d&eacute;finie dans
+un serveur virtuel quelconque, si vous n'avez pas d&eacute;fini
+<directive>VirtualDocumentRoot</directive> &agrave; <code>None</code> dans ce
+serveur virtuel.
+</note>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>VirtualDocumentRootIP</name>
+<description>Configuration dynamique de la racine des documents pour un
+serveur virtuel donn&eacute;</description>
+<syntax>VirtualDocumentRootIP <em>r&eacute;pertoire-interpol&eacute;</em>|none</syntax>
+<default>VirtualDocumentRootIP none</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+</contextlist>
+
+<usage>
+
+<p>La directive <directive>VirtualDocumentRootIP</directive> est
+identique &agrave; la directive <directive
+module="mod_vhost_alias">VirtualDocumentRoot</directive> &agrave; l'exception
+pr&egrave;s qu'elle utilise l'adresse IP du serveur virtuel pour
+l'interpolation du r&eacute;pertoire &agrave; la place du nom du serveur.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>VirtualScriptAlias</name>
+<description>Configuration dynamique du r&eacute;pertoire des scripts CGI pour
+un serveur virtuel donn&eacute;</description>
+<syntax>VirtualScriptAlias <em>r&eacute;pertoire-interpol&eacute;</em>|none</syntax>
+<default>VirtualScriptAlias none</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+</contextlist>
+
+<usage>
+
+    <p>La directive <directive>VirtualScriptAlias</directive> vous
+    permet de sp&eacute;cifier o&ugrave; Apache httpd pourra trouver les scripts CGI selon une
+    m&eacute;thode similaire &agrave; celle qu'utilise la directive <directive
+    module="mod_vhost_alias">VirtualDocumentRoot</directive> pour les
+    autres documents. Elle recherche des requ&ecirc;tes dont l'URI commence
+    par <code>/cgi-bin/</code>, comme le ferait la directive <directive
+    module="mod_alias">ScriptAlias</directive>.</p>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>VirtualScriptAliasIP</name>
+<description>Configuration dynamique du r&eacute;pertoire des scripts CGI pour
+un serveur virtuel donn&eacute;</description>
+<syntax>VirtualScriptAliasIP <em>r&eacute;pertoire-interpol&eacute;</em>|none</syntax>
+<default>VirtualScriptAliasIP none</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+</contextlist>
+
+<usage>
+
+    <p>La directive <directive>VirtualScriptAliasIP</directive> est
+    identique &agrave; la directive <directive
+    module="mod_vhost_alias">VirtualScriptAlias</directive> &agrave;
+    l'exception pr&egrave;s qu'elle utilise l'adresse IP du serveur virtuel
+    pour l'interpolation du r&eacute;pertoire &agrave; la place du nom du serveur.</p>
+
+    </usage>
+
+</directivesynopsis>
+</modulesynopsis>
+

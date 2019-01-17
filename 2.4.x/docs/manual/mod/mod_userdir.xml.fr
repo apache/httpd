@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision: 1745806 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_userdir.xml.meta">
+
+<name>mod_userdir</name>
+<description>Répertoires propres à un utilisateur</description>
+<status>Base</status>
+<sourcefile>mod_userdir.c</sourcefile>
+<identifier>userdir_module</identifier>
+
+<summary>
+<p>Ce module permet l'accès aux répertoires propres à un utilisateur en
+utilisant la syntaxe <code>http://example.com/~utilisateur/</code>.</p>
+</summary>
+
+<seealso><a href="../urlmapping.html">Mise en correspondance des URLs
+avec le système de fichiers</a></seealso>
+<seealso><a href="../howto/public_html.html">Tutoriel
+public_html</a></seealso>
+
+<directivesynopsis>
+
+<name>UserDir</name>
+<description>Chemin des répertoires propres à un
+utilisateur</description>
+<syntax>UserDir <em>nom-répertoire</em> [<em>nom-répertoire</em>] ...
+</syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+
+<usage>
+
+    <p>La directive <directive>UserDir</directive> permet de définir le
+    répertoire réel du répertoire home d'un utilisateur à utiliser à la
+    réception d'une requête pour un document de cet utilisateur.
+    <em>nom-répertoire</em> peut se présenter sous la forme suivante
+    :</p>
+
+    <ul>
+      <li>Le nom d'un répertoire ou un modèle tel que ceux présentés
+      ci-dessous.</li>
+
+      <li>Le mot-clé <code>disabled</code>. <em>Toutes</em> les
+      traductions nom d'utilisateur vers répertoire sont alors
+      désactivées, à l'exception de celles comportant le mot-clé
+      <code>enabled</code> (voir ci-dessous).</li>
+
+      <li>Le mot-clé <code>disabled</code> suivi d'une liste de noms
+      d'utilisateurs séparés par des espaces. Les noms d'utilisateurs
+      apparaissant dans une telle liste ne feront <em>jamais</em>
+      l'objet d'une traduction vers un répertoire, même dans le cas où
+      ils apparaîtront dans une clause <code>enabled</code>.</li>
+
+      <li>Le mot-clé <code>enabled</code> suivi d'une liste de noms
+      d'utilisateurs séparés par des espaces. Les noms d'utilisateurs
+      apparaissant dans une telle liste seront traduits en répertoires
+      même dans le cas où une clause disable globale est active, mais
+      pas s'ils apparaissent aussi dans une clause
+      <code>disabled</code>.</li>
+    </ul>
+
+    <p>Si aucun mot-clé <code>enabled</code> ou <code>disabled</code>
+    n'apparait dans la directive <directive>Userdir</directive>, l'argument est
+    traité en tant que modèle de fichier, et utilisé pour traduire le
+    nom d'utilisateur en une spécification de répertoire. Une requête
+    pour <code>http://www.example.com/~bob/un/deux.html</code> sera
+    traduite en :</p>
+
+    <table>
+      <tr><th>Directive Userdir utilisée</th>
+          <th>Chemin traduit</th></tr>
+      <tr><td>UserDir public_html</td>
+          <td>~bob/public_html/un/deux.html</td></tr>
+      <tr><td>UserDir /usr/web</td>
+          <td>/usr/web/bob/un/deux.html</td></tr>
+      <tr><td>UserDir /home/*/www</td>
+          <td>/home/bob/www/un/deux.html</td></tr>
+    </table>
+
+    <p>Les directives suivantes vont envoyer des redirections au client
+    :</p>
+
+    <table>
+      <tr><th>Directive Userdir utilisée</th>
+          <th>Chemin traduit</th></tr>
+      <tr><td>UserDir http://www.example.com/utilisateurs</td>
+          <td>http://www.example.com/utilisateurs/bob/un/deux.html</td></tr>
+      <tr><td>UserDir http://www.example.com/*/usr</td>
+          <td>http://www.example.com/bob/usr/un/deux.html</td></tr>
+      <tr><td>UserDir http://www.example.com/~*/</td>
+          <td>http://www.example.com/~bob/un/deux.html</td></tr>
+    </table>
+
+    <note>
+      <strong>Soyez prudent avec cette directive ; par exemple,
+      <code>"UserDir ./"</code> ferait correspondre
+      <code>"/~root"</code> à <code>"/"</code> - ce qui n'est
+      probablement pas souhaité. Il est fortement recommandé d'inclure
+      une déclaration "<code>UserDir disabled root</code>" dans votre
+      configuration. Voir aussi la directive <directive
+      module="core">Directory</directive> et la page <a
+      href="../misc/security_tips.html">Conseils en matière de
+      sécurité</a> pour plus d'informations.</strong>
+    </note>
+
+    <p>Exemples supplémentaires :</p>
+
+    <p>Pour permettre à quelques utilisateurs et seulement à ceux-ci de
+    posséder des répertoires <code>UserDir</code>, utilisez la
+    configuration suivante :</p>
+
+    <highlight language="config">
+UserDir disabled
+UserDir enabled user1 user2 user3
+    </highlight>
+
+    <p>Pour permettre à la plupart des utilisateurs de posséder des
+    répertoires <code>UserDir</code>, mais l'interdire à quelques uns,
+    utilisez la configuration suivante :</p>
+
+    <highlight language="config">
+      UserDir disabled utilisateur4 utilisateur5 utilisateur6
+    </highlight>
+
+    <p>Il est aussi possible de spécifier des répertoires utilisateurs
+    alternatifs. Si vous utilisez une commande comme :</p>
+
+    <highlight language="config">
+      UserDir "public_html" "/usr/web" "http://www.example.com/"
+    </highlight>
+
+    <p>Avec une requête pour
+    <code>http://www.example.com/~bob/un/deux.html</code>, le serveur
+    tentera tout d'abord de trouver la page à
+    <code>~bob/public_html/un/deux.html</code>, puis à
+    <code>/usr/web/bob/un/deux.html</code>, et enfin il enverra une
+    redirection vers
+    <code>http://www.example.com/bob/un/deux.html</code>.</p>
+
+    <p>Si vous spécifiez une redirection, elle doit être la dernière
+    alternative de la liste. Apache httpd ne pouvant pas déterminer si la
+    redirection a réussi, si cette dernière ne se trouve pas en fin de
+    liste, c'est cette alternative qui sera toujours utilisée.</p>
+
+    <p>La substitution de répertoire utilisateur n'est pas activée par
+    défaut depuis la version 2.1.4. Dans les versions précédentes,
+    <code>UserDir public_html</code> était sous-entendu si aucune
+    directive <directive>UserDir</directive>
+    n'était présente.</p>
+
+    <note><title>Détails à propos de la fusion</title>
+    <p>Lorsqu'on passe du contexte global au contexte de serveur
+    virtuel, les listes d'utilisateurs spécifiques activés ou désactivés
+    sont remplacées par les listes du contexte, et non fusionnées.</p></note>
+
+</usage>
+
+<seealso>
+  <a href="../howto/public_html.html">Tutoriel sur les répertoires web
+  utilisateur</a>
+</seealso>
+
+</directivesynopsis>
+</modulesynopsis>
+
+

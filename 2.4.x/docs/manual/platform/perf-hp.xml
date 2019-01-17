@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="perf-hp.xml.meta">
+  <parentdocument href="./">Platform Specific Notes</parentdocument>
+
+  <title>Running a High-Performance Web Server on HPUX</title>
+
+  <summary>
+
+<pre>
+Date: Wed, 05 Nov 1997 16:59:34 -0800
+From: Rick Jones &lt;<a
+href="mailto:raj@cup.hp.com">raj@cup.hp.com</a>&gt;
+Reply-To: <a href="mailto:raj@cup.hp.com"
+>raj@cup.hp.com</a>
+Organization: Network Performance
+Subject: HP-UX tuning tips
+</pre>
+
+    <p>Here are some tuning tips for HP-UX to add to the tuning page.</p>
+
+    <p>For HP-UX 9.X: Upgrade to 10.20<br />
+    For HP-UX 10.[00|01|10]: Upgrade to 10.20</p>
+
+    <p>For HP-UX 10.20:</p>
+
+    <p>Install the latest cumulative ARPA Transport Patch. This
+    will allow you to configure the size of the TCP connection
+    lookup hash table. The default is 256 buckets and must be set
+    to a power of two. This is accomplished with adb against the
+    *disc* image of the kernel. The variable name is <code>tcp_hash_size</code>.
+    Notice that it's critically important that you use "<code>W</code>"
+    to write a 32 bit quantity, not "<code>w</code>" to write a 16 bit
+    value when patching the disc image because the <code>tcp_hash_size</code>
+    variable is a 32 bit quantity.</p>
+
+    <p>How to pick the value? Examine the output of <a
+    href="ftp://ftp.cup.hp.com/dist/networking/tools/connhist"
+    >ftp://ftp.cup.hp.com/dist/networking/tools/connhist</a>
+    and see how many total TCP connections exist on the system. You
+    probably want that number divided by the hash table size to be
+    reasonably small, say less than 10. Folks can look at HP's
+    SPECweb96 disclosures for some common settings. These can be
+    found at <a
+    href="http://www.specbench.org/">http://www.specbench.org/</a>.
+    If an HP-UX system was performing at 1000 SPECweb96 connections
+    per second, the <code>TIME_WAIT</code> time of 60 seconds would mean
+    60,000 TCP "connections" being tracked.</p>
+
+    <p>Folks can check their listen queue depths with <a
+    href="ftp://ftp.cup.hp.com/dist/networking/misc/listenq"
+    >ftp://ftp.cup.hp.com/dist/networking/misc/listenq</a>.</p>
+
+    <p>If folks are running Apache on a PA-8000 based system, they
+    should consider "chatr'ing" the Apache executable to have a
+    large page size. This would be "<code>chatr +pi L &lt;BINARY&gt;</code>".
+    The GID of the running executable must have <code>MLOCK</code> privileges.
+    <code>Setprivgrp(1m)</code> should be consulted for assigning
+    <code>MLOCK</code>. The change can be validated by running Glance
+    and examining the memory regions of the server(s) to make sure that
+    they show a non-trivial fraction of the text segment being locked.</p>
+
+    <p>If folks are running Apache on MP systems, they might
+    consider writing a small program that uses <code>mpctl()</code>
+    to bind processes to processors. A simple <code>pid % numcpu</code>
+    algorithm is probably sufficient. This might even go into the
+    source code.</p>
+
+    <p>If folks are concerned about the number of <code>FIN_WAIT_2</code>
+    connections, they can use nettune to shrink the value of
+    <code>tcp_keepstart</code>. However, they should be careful there -
+    certainly do not make it less than oh two to four minutes. If
+    <code>tcp_hash_size</code> has been set well, it is probably OK to
+    let the <code>FIN_WAIT_2</code>'s take longer to timeout (perhaps
+    even the default two hours) - they will not on average have a big
+    impact on performance.</p>
+
+    <p>There are other things that could go into the code base, but
+    that might be left for another email. Feel free to drop me a
+    message if you or others are interested.</p>
+
+    <p>sincerely,</p>
+
+    <p>rick jones</p>
+
+    <p><a href="http://www.netperf.org/netperf/"
+    >http://www.netperf.org/netperf/</a></p>
+
+  </summary>
+
+</manualpage>
+
+

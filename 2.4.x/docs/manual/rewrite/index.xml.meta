@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- GENERATED FROM XML: DO NOT EDIT -->
+
+<metafile reference="index.xml">
+  <basename>index</basename>
+  <path>/rewrite/</path>
+  <relpath>..</relpath>
+
+  <variants>
+    <variant>en</variant>
+    <variant>fr</variant>
+    <variant>tr</variant>
+    <variant outdated="yes">zh-cn</variant>
+  </variants>
+</metafile>

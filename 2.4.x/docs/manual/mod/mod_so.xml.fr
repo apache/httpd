@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision: 1727635 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_so.xml.meta">
+
+<name>mod_so</name>
+<description>Chargement de modules ou de code exécutable au cours du
+démarrage ou du redémarrage du serveur</description>
+<status>Extension</status>
+<sourcefile>mod_so.c</sourcefile>
+<identifier>so_module</identifier>
+<compatibility>Sous Windows, c'est un module de base (toujours
+inclus)</compatibility>
+
+<summary>
+
+    <p>Sur les systèmes d'exploitation sélectionnés, ce module peut être
+    utilisé pour charger des modules dans le serveur HTTP Apache en cours d'exécution
+    grâce au mécanisme des <a
+    href="../dso.html">Dynamic Shared Object ou Objets Partagés
+    Dynamiquement</a> (DSO), et évite ainsi de devoir effectuer une
+    recompilation.</p>
+
+    <p>Sous Unix, le code chargé provient en général de fichiers objet
+    partagés possèdant en général l'extension <code>.so</code>, alors
+    que sous Windows, l'extension peut être soit <code>.so</code>, soit
+    <code>.dll</code>.</p>
+
+    <note type="warning"><title>Avertissement</title>
+    <p>En général, les modules compilés pour une version majeure du
+    serveur HTTP Apache ne fonctionneront pas avec une autre (par
+    exemple de 1.3 à 2.0 ou 2.0 à 2.2). D'une version majeure à l'autre,
+    il y a souvent des modifications d'API qui nécessitent des
+    modifications du module pour qu'il puisse fonctionner avec la
+    nouvelle version.</p>
+    </note>
+</summary>
+
+<section id="windows"><title>Création de modules chargeables pour
+Windows</title>
+
+    <note><title>Note</title>
+    <p>Sous Windows, où les modules chargeables possèdent en général
+    l'extension de nom de fichier <code>.dll</code>, les modules Apache
+    httpd se nomment <code>mod_nom-module.so</code>, tout comme sur les
+    autres plates-formes. Vous trouverez cependant encore des modules
+    tiers, comme PHP par exemple, qui continuent d'utiliser la
+    convention de nommage avec extension <code>.dll</code>.</p>
+
+    <p>Bien que <code>mod_so</code> puisse encore charger des modules
+    possèdant un nom du style <code>ApacheModuleFoo.dll</code>,
+    il est préférable d'utiliser la
+    nouvelle convention de nommage ; si vous modifiez votre module
+    chargeable pour la version 2.0, veuillez aussi modifier son nom pour
+    respecter cette nouvelle convention.</p></note>
+
+    <p>Les API des modules Apache httpd sous Unix et Windows sont identiques.
+    Alors que certains modules s'appuient sur certains
+    aspects de l'architecture Unix non présents dans Windows, et ne
+    fonctionneront donc pas sur cette dernière plate-forme, de nombreux
+    modules fonctionnent sous Windows avec peu ou pas de modification
+    par rapport à leur version Unix.</p>
+
+    <p>Lorsqu'un module fonctionne, il peut être ajouté au serveur de
+    deux manières. Sous Unix, il peut être compilé dans le serveur.
+    Comme Apache httpd pour Windows ne dispose pas du programme
+    <code>Configure</code> propre à Apache httpd pour Unix, le fichier source
+    du module doit être ajouté au fichier projet Apache de base, et ses
+    symboles ajoutés au fichier <code>os\win32\modules.c</code>.</p>
+
+    <p>La seconde méthode consiste à compiler le module en tant que DLL,
+    à savoir une bibliothèque partagée qui pourra être chargée dans le
+    serveur en cours d'exécution via la directive
+    <directive>LoadModule</directive>. Ces modules DLL
+    peuvent être distribués et exécutés sur toute installation d'Apache
+    httpd pour Windows, sans avoir à recompiler le serveur.</p>
+
+    <p>Pour créer un module DLL, il est nécessaire d'apporter une légère
+    modification à son fichier source : l'enregistrement du module doit
+    être exporté depuis la DLL (qui sera elle-même créée plus tard ;
+    voir plus loin). Pour ce faire, ajoutez la macro
+    <code>AP_MODULE_DECLARE_DATA</code> (définie dans les fichiers
+    d'en-têtes d'Apache httpd) à la définition de l'enregistrement de votre
+    module. Par exemple, si votre module est déclaré comme suit :</p>
+
+<example>
+    module foo_module;
+</example>
+
+    <p>Remplacez cette ligne par :</p>
+<example>
+    module AP_MODULE_DECLARE_DATA foo_module;
+</example>
+
+    <p>Notez que cette macro ne sera prise en compte que sous Windows,
+    si bien que le module poura être utilisé sans changement sous Unix,
+    si besoin est. Alternativement, si vous êtes familier avec les
+    fichiers <code>.DEF</code>, vous pouvez les utiliser pour exporter
+    l'enregistrement du module.</p>
+
+    <p>Maintenant, nous sommes prêts à créer une DLL contenant notre
+    module. Il va falloir pour cela la lier avec la bibliothèque
+    d'export libhttpd.lib qui a été créée au cours de la compilation de
+    la bibliothèque partagée libhttpd.dll. Il sera peut-être aussi
+    nécessaire de modifier la configuration du compilateur pour
+    s'assurer que les fichiers d'en-têtes d'Apache httpd seront correctement
+    localisés. Vous trouverez cette bibliothèque à la racine du
+    répertoire des modules de votre serveur. Il est souhaitable
+    d'utiliser un fichier de module .dsp existant dans l'arborescence
+    afin de s'assurer que l'environnement de compilation est
+    correctement configuré, mais vous pouvez aussi comparer les options
+    de compilation et d'édition de liens à votre fichier .dsp.</p>
+
+    <p>Ceci devrait créer une version DLL de votre module. Il vous
+    suffit maintenant de l'enregistrer dans le répertoire
+    <code>modules</code> à la racine de votre serveur, et d'utiliser la
+    directive <directive>LoadModule</directive> pour la charger.</p>
+
+</section>
+
+<directivesynopsis>
+<name>LoadFile</name>
+<description>Liaison du fichier objet ou de la bibliothèque
+spécifié</description>
+<syntax>LoadFile <em>nom-fichier</em> [<em>nom-fichier</em>] ...</syntax>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+</contextlist>
+
+<usage>
+
+    <p>La directive <directive>LoadFile</directive> permet de lier le fichier
+    objet ou la bibliothèque spécifié au serveur lors du
+    démarrage ou du redémarrage
+    de ce dernier ; ceci permet d'ajouter tout code additionnel
+    nécessaire au fonctionnement d'un module.
+    <em>nom-fichier</em> est soit un chemin absolu, soit un chemin
+    relatif au répertoire défini par la directive <a
+    href="core.html#serverroot">ServerRoot</a>.</p>
+
+    <p>Par exemple :</p>
+
+    <highlight language="config">
+LoadFile "libexec/libxmlparse.so"
+    </highlight>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LoadModule</name>
+<description>Liaison avec le serveur du fichier objet ou de la
+bibliothèque spécifié, et ajout de ce dernier à la liste des modules
+actifs</description>
+<syntax>LoadModule <em>module nom-fichier</em></syntax>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>LoadModule</directive> permet de lier le fichier objet ou la
+    bibliothèque <em>nom-fichier</em> avec le serveur, et d'ajouter la
+    structure de module nommée <em>module</em> à la liste des modules
+    actifs. <em>module</em> est le nom de la variable externe de type
+    <code>module</code> dans le fichier, et est référencé comme <a
+    href="module-dict.html#ModuleIdentifier">Identificateur de
+    module</a> dans la documentation des modules.</p>
+
+    <p>Par exemple :</p>
+
+    <highlight language="config">
+LoadModule status_module "modules/mod_status.so"      
+    </highlight>
+
+    <p>charge le module spécifié depuis le sous-répertoire des modules
+    situé à la racine du serveur.</p>
+</usage>
+
+</directivesynopsis>
+</modulesynopsis>
+

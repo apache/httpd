@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_lbmethod_bybusyness.xml.meta">
+
+<name>mod_lbmethod_bybusyness</name>
+<description>Pending Request Counting load balancer scheduler algorithm for <module
+>mod_proxy_balancer</module></description>
+<status>Extension</status>
+<sourcefile>mod_lbmethod_bybusyness.c</sourcefile>
+<identifier>lbmethod_bybusyness_module</identifier>
+<compatibility>Split off from <module>mod_proxy_balancer</module> in 2.3</compatibility>
+
+<summary>
+<p>This module does not provide any configuration directives of its own.
+It requires the services of <module>mod_proxy_balancer</module>, and
+provides the <code>bybusyness</code> load balancing method.</p>
+</summary>
+<seealso><module>mod_proxy</module></seealso>
+<seealso><module>mod_proxy_balancer</module></seealso>
+
+<section id="busyness">
+
+    <title>Pending Request Counting Algorithm</title>
+
+    <p>Enabled via <code>lbmethod=bybusyness</code>, this scheduler keeps
+    track of how many requests each worker is currently assigned at present. A new
+    request is automatically assigned to the worker with the lowest
+    number of active requests. This is useful in the case of workers
+    that queue incoming requests independently of Apache, to ensure that
+    queue length stays even and a request is always given to the worker
+    most likely to service it the fastest and reduce latency.</p>
+
+    <p>In the case of multiple least-busy workers, the statistics (and
+    weightings) used by the Request Counting method are used to break the
+    tie. Over time, the distribution of work will come to resemble that
+    characteristic of <code>byrequests</code> (as implemented
+    by <module>mod_lbmethod_byrequests</module>).</p>
+
+</section>
+
+</modulesynopsis>

@@ -1,0 +1,397 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.pt-br.xsl"?>
+<!-- English Revision: 151408:1741841 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="htaccess.xml.meta">
+<parentdocument href="./">How-To / Tutoriais</parentdocument>
+
+<title>Tutorial do Apache: arquivos .htaccess</title>
+
+<summary>
+<p>Arquivos <code>.htaccess</code> oferecem um meio de fazer mudan&#231;as
+ nas configura&#231;&#245;es por-diret&#243;rio.</p>
+</summary>
+
+<section id="related"><title>Arquivos .htaccess </title>
+    <related>
+        <modulelist>
+            <module>core</module>
+            <module>mod_authn_file</module>
+            <module>mod_authz_groupfile</module>
+            <module>mod_cgi</module>
+            <module>mod_include</module>
+            <module>mod_mime</module>
+        </modulelist>
+
+        <directivelist>
+            <directive module="core">AccessFileName</directive>
+            <directive module="core">AllowOverride</directive>
+            <directive module="core">Options</directive>
+            <directive module="mod_mime">AddHandler</directive>
+            <directive module="core">SetHandler</directive>
+            <directive module="mod_authn_core">AuthType</directive>
+            <directive module="mod_authn_core">AuthName</directive>
+            <directive module="mod_authn_file">AuthUserFile</directive>
+            <directive module="mod_authz_groupfile">AuthGroupFile</directive>
+            <directive module="mod_authz_core">Require</directive>
+        </directivelist>
+
+    </related>
+</section>
+
+<section id="what">
+<title>O que eles s&#227;o/Como us&#225;-los</title>
+
+    <p>Os arquivos <code>.htaccess</code> (ou "arquivos de
+    configura&#231;&#227;o distribu&#237;da") oferecem um meio de fazer mudan&#231;as nas
+    configura&#231;&#245;es por-diret&#243;rio. Um arquivo, contendo uma ou mais
+    diretrizes de configura&#231;&#245;es, &#233; colocado em um diret&#243;rio 
+    em particular, e as diretrizes se aplicam para aquele diret&#243;rio e todos 
+    os seu subdiret&#243;rios subseq&#252;entes.</p>
+
+    <note><title>Nota:</title>
+      <p>Se voc&#234; quiser renomear o seu arquivo <code>.htaccess</code>
+      para outro nome, voc&#234; deve usar a diretriz <directive
+      module="core">AccessFileName</directive>. Por exemplo, se voc&#234;
+      prefere que o arquivo se chame <code>.config</code>, ent&#227;o voc&#234; 
+      pode adicionar a seguinte linha ao seu arquivo de configura&#231;&#227;o
+      do servidor:</p>
+
+      <example>
+        AccessFileName .config
+      </example>
+    </note>
+
+    <p>No geral, arquivos <code>.htaccess</code> usam a mesma sintaxe
+    que os <a href="../configuring.html#syntax">arquivos de
+    configura&#231;&#227;o principal</a>. O que voc&#234; pode colocar nesses
+    arquivos &#233; determinado pele diretriz <directive
+    module="core">AllowOverride</directive>. Essa diretriz especifica,
+    em categorias, quais diretrizes ser&#227;o aceitas caso sejam
+    encontradas em um arquivo <code>.htaccess</code>.  Se uma diretriz
+    for permitida em um arquivo <code>.htaccess</code>, a documenta&#231;&#227;o
+    para essa diretriz ir&#225; conter uma se&#231;&#227;o <em>Override</em>,
+    especificando que valor precisa estar em <directive
+    module="core">AllowOverride</directive> para que esta diretriz
+    seja permitida.</p>
+
+    <p>Por exemplo, se voc&#234; procurar na documenta&#231;&#227;o pela diretriz
+    <directive module="core">AddDefaultCharset</directive>, voc&#234;
+    achar&#225; que ela &#233; permitida nos arquivos <code>.htaccess</code>.
+    (Veja a linha Contexto no sum&#225;rio das diretivas.) A
+    linha <a href="../mod/directive-dict.html#Context">Override</a> l&#234;
+    <code>FileInfo</code>. Ent&#227;o, voc&#234; deve ao menos ter
+    <code>AllowOverride FileInfo</code> para que essa diretriz seja
+    aceita nos arquivos <code>.htaccess</code>.</p>
+
+    <example><title>Exemplo:</title>
+      <table>
+        <tr>
+          <td><a
+          href="../mod/directive-dict.html#Context">Contexto:</a></td>
+          <td>configura&#231;&#227;o do servidor, hospedeiros virtuais, diret&#243;rio, .htaccess</td>
+        </tr>
+
+        <tr>
+          <td><a
+          href="../mod/directive-dict.html#Override">Override:</a></td>
+          <td>FileInfo</td>
+        </tr>
+      </table>
+    </example>
+
+    <p>Se voc&#234; estiver incerto se uma diretriz em particular &#233;
+    aceita em um arquivo <code>.htaccess</code>, procure na
+    documenta&#231;&#227;o por essa diretriz, e verifique a linha de
+    Contexto por ".htaccess".</p> </section>
+
+    <section id="when"><title>Quando (n&#227;o) usar arquivos .htaccess</title>
+
+    <p>No geral, voc&#234; nunca deve usar arquivos <code>.htaccess</code>
+    a n&#227;o ser que voc&#234; n&#227;o tenha acesso ao arquivo de configura&#231;&#227;o
+    principal do servidor. Existe, por exemplo, um erro de concep&#231;&#227;o
+    que dita que a autentica&#231;&#227;o de usu&#225;rios sempre deve
+    ser feita usando os arquivos <code>.htaccess</code>. Esse
+    simplesmente n&#227;o &#233; o caso. Voc&#234; pode usar as configura&#231;&#245;es de
+    autentica&#231;&#227;o de usu&#225;rio no arquivo de configura&#231;&#227;o principal do
+    servidor, e isso &#233;, de fato, a maneira mais adequada de se fazer
+    as coisas.</p>
+
+    <p>Arquivos <code>.htaccess</code> devem ser usados em casos onde
+    os provedores de conte&#250;do do site precisem fazer mudan&#231;as na
+    configura&#231;&#227;o do servidor por-diret&#243;rio, mas n&#227;o tem
+    acesso <em>root</em> ao sistema do servidor. Caso o administrador do 
+    servidor n&#227;o esteja disposto a fazer mudan&#231;as freq&#252;entes nas
+    configura&#231;&#245;es do servidor, &#233; desej&#225;vel permitir que os 
+    usu&#225;rios possam fazer essas mudan&#231;as atrav&#233;s de arquivos
+    <code>.htaccess</code> eles mesmos. Isso &#233; particularmente
+    verdade, por exemplo, em casos onde provedores est&#227;o fornecendo
+    m&#250;ltiplos sites para usu&#225;rios em apenas uma m&#225;quina, e querem que
+    seus usu&#225;rios possam alterar suas configura&#231;&#245;es.</p>
+
+    <p>No entanto, de modo geral, o uso de arquivos <code>.htaccess</code>
+    deve ser evitado quando poss&#237;vel. Quaisquer configura&#231;&#245;es 
+    que voc&#234; considerar acrescentar em um arquivo <code>.htaccess</code>, podem
+    ser efetivamente colocadas em uma se&#231;&#227;o <directive module="core"
+    type="section">Directory</directive> no arquivo principal de
+    configura&#231;&#227;o de seu servidor.</p>
+
+    <p>Existem duas raz&#245;es principais para evitar o uso de arquivos
+    <code>.htaccess</code>.</p>
+
+    <p>A primeira delas &#233; a performance. Quando <directive
+    module="core">AllowOverride</directive> &#233; configurado para
+    permitir o uso de arquivos <code>.htaccess</code>, o Apache procura
+    em todos diret&#243;rios por arquivos <code>.htaccess</code>.  
+    Logo, permitir arquivos <code>.htaccess</code> causa um impacto na 
+    performance, mesmo sem voc&#234; us&#225;-los de fato! Al&#233;m disso, 
+    o arquivo <code>.htaccess</code> &#233; carregado toda vez que um documento 
+    &#233; requerido.</p>
+
+    <p>Al&#233;m disso, note que o Apache precisa procurar pelos arquivos
+    <code>.htaccess</code> em todos os diret&#243;rios superiores, para ter
+    o complemento total de todas as diretivas que devem ser
+    aplicadas. (Veja a se&#231;&#227;o <a href="#how">como as diretrizes s&#227;o
+    aplicadas</a>.) Ent&#227;o, se um arquivo de um diret&#243;rio
+    <code>/www/htdocs/example</code> &#233; requerido, o Apache precisa
+    procurar pelos seguintes arquivos:</p>
+
+    <example>
+      /.htaccess<br />
+      /www/.htaccess<br />
+      /www/htdocs/.htaccess<br />
+      /www/htdocs/example/.htaccess
+    </example>
+
+    <p>Assim, para cada acesso de arquivo fora desse diret&#243;rio,
+    existem 4 acessos ao sistema de arquivos adicionais, mesmo
+    que nenhum desses arquivos estejam presentes. (Note que esse
+    s&#243; ser&#225; o caso se os arquivos <code>.htaccess</code>
+    estiverem habilitados para <code>/</code>, o que
+    normalmente n&#227;o &#233; o verdade.)</p>
+
+    <p>A segunda considera&#231;&#227;o &#233; relativa &#224; seguran&#231;a. 
+    Voc&#234; est&#225; permitindo que os usu&#225;rios modifiquem as 
+    configura&#231;&#245;es do servidor, o que pode resultar em mudan&#231;as 
+    que podem fugir ao seu controle. Considere com cuidado se voc&#234; quer 
+    ou n&#227;o dar aos seus usu&#225;rios esses privil&#233;gios. Note tamb&#233;m 
+    que dar aos usu&#225;rios menos privil&#233;gios que eles precisam, acarreta em 
+    pedidos de suporte t&#233;cnico adicionais. Tenha certeza que voc&#234; comunicou
+    aos usu&#225;rios que n&#237;vel de privil&#233;gios voc&#234; os deu. 
+    Especificar exatamente o que voc&#234; configurou na diretriz <directive
+    module="core">AllowOverride</directive>, e direcion&#225;-los para a
+    documenta&#231;&#227;o relevante, ir&#225; poup&#225;-lo de muita confus&#227;o 
+    depois.</p>
+
+    <p>Perceba que &#233; exatamente equivalente colocar o arquivo
+    <code>.htaccess</code> em um diret&#243;rio
+    <code>/www/htdocs/example</code> contendo uma diretriz, e
+    adicionar a mesma diretriz em uma se&#231;&#227;o <em>Directory</em>
+    <code>&lt;Directory /www/htdocs/example&gt;</code> na configura&#231;&#227;o
+    principal do seu servidor:</p>
+
+    <p>Arquivo <code>.htaccess</code> em <code>/www/htdocs/example</code>:</p>
+
+    <example><title>Conte&#250;do de um arquivo .htaccess em
+    <code>/www/htdocs/example</code></title>
+        AddType text/example .exm
+    </example>
+
+    <example><title>Se&#231;&#227;o do seu arquivo <code>httpd.conf</code></title>
+      &lt;Directory /www/htdocs/example&gt;<br />
+      <indent>
+        AddType text/example .exm<br />
+      </indent>
+      &lt;/Directory&gt;
+    </example>
+
+    <p>No entanto, adicionando isso ao seu arquivo de configura&#231;&#227;o do
+    servidor resultar&#225; em uma menor perda de performance, na medida que
+    a configura&#231;&#227;o &#233; carregada no momento da inicializa&#231;&#227;o do
+    servidor, ao inv&#233;s de toda que que um arquivo &#233; requerido.</p>
+
+    <p>O uso de arquivos <code>.htaccess</code> pode ser totalmente
+    desabilitado, ajustando a diretriz <directive
+    module="core">AllowOverride</directive> para <code>none</code>:</p>
+
+    <example>
+      AllowOverride None
+    </example>
+</section>
+
+<section id="how"><title>Como as diretrizes s&#227;o aplicadas</title>
+
+    <p>As diretrizes de configura&#231;&#227;o que se encontram em um arquivo
+    <code>.htaccess</code> s&#227;o aplicadas para o diret&#243;rio no qual o
+    arquivo <code>.htaccess</code> se encontra, e para todos os
+    subdiret&#243;rios ali presentes. Mas, &#233; importante lembrar tamb&#233;m que
+    podem existir arquivos <code>.htaccess</code> no diret&#243;rios
+    superiores. As diretrizes s&#227;o aplicadas na ordem que s&#227;o
+    achadas. Logo, um arquivo <code>.htaccess</code> em um diret&#243;rio
+    em particular, pode sobrescrever as diretrizes encontradas em um
+    diret&#243;rio acima deste em sua respectiva &#225;rvore. Estes, por sua vez,
+    podem ter suas diretrizes sobrescritas por diretrizes ainda mais
+    acima, ou no pr&#243;prio arquivo de configura&#231;&#227;o principal do
+    servidor.</p>
+
+    <p>Exemplo:</p>
+
+    <p>No diret&#243;rio <code>/www/htdocs/example1</code> n&#243;s temos
+    um arquivo <code>.htaccess</code> contendo o seguinte:</p>
+
+    <example>
+       Options +ExecCGI
+    </example>
+
+    <p>(Nota: voc&#234; deve ter "<code>AllowOverride Options</code>" para
+    permitir o uso da diretriz "<directive
+    module="core">Options</directive>" nos arquivos
+    <code>.htaccess</code> .)</p>
+
+    <p>No diret&#243;rio <code>/www/htdocs/example1/example2</code> n&#243;s temos
+    um arquivo <code>.htaccess</code> contendo:</p>
+
+    <example>
+       Options Includes
+    </example>
+
+    <p>Devido a esse segundo arquivo <code>.htaccess</code>, no
+    diret&#243;rio <code>/www/htdocs/example1/example2</code>, a execu&#231;&#227;o
+    de scripts CGI n&#227;o &#233; permitida, pois somente <code>Options
+    Includes</code> est&#225; em efeito, o que sobrescreve completamente
+    quaisquer outros ajustes previamente configurados.</p>
+</section>
+
+<section id="auth"><title>Exemplo de Autentica&#231;&#227;o</title>
+
+    <p>Se voc&#234; veio diretamente &#224; esta parte do documento para
+    aprender como fazer autentica&#231;&#227;o, &#233; importante notar uma
+    coisa. Existe uma concep&#231;&#227;o errada, mas muito comum, de que &#233;
+    necess&#225;rio o uso de arquivos <code>.htaccess</code> para implementar 
+    a autentica&#231;&#227;o por senha. Este n&#227;o &#233; o caso. Colocar 
+    diretrizes de senha em uma se&#231;&#227;o <directive module="core"
+    type="section">Directory</directive>, no seu arquivo principal de
+    configura&#231;&#227;o do servidor, &#233; a melhor maneira de se implementar
+    isto, e os arquivos <code>.htaccess</code> devem ser usados apenas
+    se voc&#234; n&#227;o tem acesso ao arquivo principal de configura&#231;&#227;o do
+    servidor. Veja <a href="#when">acima</a> a discuss&#227;o sobre quando
+    voc&#234; deve e quando n&#227;o deve usar os arquivos
+    <code>.htaccess</code>.</p>
+
+    <p>Dito isso, se voc&#234; ainda acredita que precisa usar um arquivo
+    <code>.htaccess</code>, a configura&#231;&#227;o a seguir provavelmente
+    funcionar&#225; para voc&#234;.</p>
+
+    <p>Conte&#250;do de um arquivo <code>.htaccess</code>:</p>
+
+    <example>
+      AuthType Basic<br />
+      AuthName "Password Required"<br />
+      AuthUserFile /www/passwords/password.file<br />
+      AuthGroupFile /www/passwords/group.file<br />
+      Require Group admins
+    </example>
+
+    <p>Note que <code>AllowOverride AuthConfig</code> precisa estar
+    habilitado para que estas diretrizes tenham efeito.</p>
+
+    <p>Por favor veja o <a href="auth.html">tutorial de
+    autentica&#231;&#227;o</a> para uma discuss&#227;o mais completa sobre
+    autentica&#231;&#227;o e autoriza&#231;&#227;o.</p>
+</section>
+
+<section id="ssi"><title>Exemplo de Server Side Includes</title>
+
+    <p>Outro uso comum de arquivos <code>.htaccess</code> &#233; ativar o
+    Server Side Includes para um diret&#243;rio em particular. Isto pode
+    ser feito com as seguintes diretrizes de configura&#231;&#227;o, colocadas em
+    um arquivo <code>.htaccess</code> no diret&#243;rio desejado:</p>
+
+    <example>
+       Options +Includes<br />
+       AddType text/html shtml<br />
+       AddHandler server-parsed shtml
+    </example>
+
+    <p>Note que ambos <code>AllowOverride Options</code> e
+    <code>AllowOverride FileInfo</code> precisam estar habilitados
+    para essas diretrizes terem efeito.</p>
+
+    <p>Por favor veja o <a href="ssi.html">tutorial de SSI</a> para
+    uma discuss&#227;o mais completa sobre server-side includes.</p>
+</section>
+
+<section id="cgi"><title>Exemplo de CGI</title>
+
+    <p>Finalmente, voc&#234; pode querer que um arquivo
+    <code>.htaccess</code> permita a execu&#231;&#227;o de programas CGI em um
+    diret&#243;rio em particular. Isto pode ser implementado com as
+    seguintes configura&#231;&#245;es:</p>
+
+    <example>
+       Options +ExecCGI<br />
+       AddHandler cgi-script cgi pl
+    </example>
+
+    <p>Alternativamente, se voc&#234; desejar que todos os arquivos de um
+    dado diret&#243;rio, sejam considerados programas CGI, isso pode ser
+    feito com a seguinte configura&#231;&#227;o:</p>
+
+    <example>
+       Options +ExecCGI<br />
+       SetHandler cgi-script
+    </example>
+
+    <p>Note que ambos <code>AllowOverride Options</code> e
+    <code>AllowOverride FileInfo</code> precisam estar habilitados
+    para que essas diretrizes tenham quaisquer efeito.</p>
+
+    <p>Por favor veja o <a href="cgi.html">tutorial de CGI
+    tutorial</a> para uma discuss&#227;o mais completa sobre programa&#231;&#227;o
+    e configura&#231;&#227;o CGI.</p>
+</section>
+
+<section id="troubleshoot"><title>Resolvendo Problemas</title>
+
+    <p>Quando voc&#234; adiciona diretrizes de configura&#231;&#227;o em um arquivo
+    <code>.htaccess</code>, e n&#227;o obt&#233;m o efeito desejado, existe uma
+    s&#233;rie de pontos que podem estar errados.</p>
+
+    <p>Mais comumente, o problema &#233; que a diretriz <directive
+    module="core">AllowOverride</directive> n&#227;o est&#225; habilitada
+    corretamente para que as suas diretrizes de configura&#231;&#245;es sejam
+    honradas. Verifique se voc&#234; n&#227;o possui <code>AllowOverride
+    None</code> ajustado para o escopo do arquivo em quest&#227;o. Um bom
+    meio de testar isso &#233; colocar "lixo" em seu arquivo
+    <code>.htaccess</code> e recarreg&#225;-lo. Se n&#227;o for gerado nenhum
+    erro do servidor, certamente voc&#234; tem <code>AllowOverride
+    None</code> habilitado.</p>
+
+    <p>Se, por outro lado, voc&#234; est&#225; obtendo erros do servidor ao
+    tentar acessar documentos, verifique o registro de erros do
+    Apache. Ele provavelmente ir&#225; indicar que a diretriz usada em
+    seu arquivo <code>.htaccess</code> n&#227;o &#233; permitida.
+    Alternativamente, ele pode acusar erros de sintaxe que voc&#234; ter&#225;
+    que corrigir.</p>
+
+</section>
+
+</manualpage>

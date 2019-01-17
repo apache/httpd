@@ -1,0 +1,4 @@
+# testing with conf/test20.conf
+AH00526: Syntax error on line 1 of macro 'foo' (defined on line 3 of "./conf/test20.conf") used on line 10 of "./conf/test20.conf":
+<Directory not allowed here
+# exit: 1

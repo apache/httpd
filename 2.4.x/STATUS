@@ -1,0 +1,467 @@
+APACHE 2.4 STATUS:                        -*- mode: text; coding: utf-8 -*-
+Last modified at [$Date$]
+
+The current version of this file can be found at:
+
+  * http://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x/STATUS
+
+The current development branch of this software can be found at:
+
+  * http://svn.apache.org/repos/asf/httpd/httpd/trunk
+
+Consult the following STATUS files for information on related projects:
+
+  * http://svn.apache.org/repos/asf/apr/apr/trunk/STATUS
+  * http://svn.apache.org/repos/asf/apr/apr/branches/1.4.x/STATUS
+  * http://svn.apache.org/repos/asf/apr/apr-util/branches/1.4.x/STATUS
+  * http://svn.apache.org/repos/asf/apr/apr/branches/1.5.x/STATUS
+  * http://svn.apache.org/repos/asf/apr/apr-util/branches/1.5.x/STATUS
+  * http://svn.apache.org/repos/asf/apr/apr/branches/1.6.x/STATUS
+  * http://svn.apache.org/repos/asf/apr/apr-util/branches/1.6.x/STATUS
+
+Patches considered for backport are noted in their branches' STATUS:
+
+  * http://svn.apache.org/repos/asf/httpd/httpd/branches/2.2.x/STATUS
+  * http://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x/STATUS
+
+
+Release history:
+    [NOTE that x.{odd}.z versions are strictly Alpha/Beta releases,
+          while x.{even}.z versions are Stable/GA releases.]
+
+    2.4.38  : In development
+    2.4.37  : Tagged on October 18, 2018. Released on October 23, 2018.
+    2.4.36  : Tagged on October 10, 2018. Not released.
+    2.4.35  : Tagged on September 17, 2018. Released on September 22, 2018. 
+    2.4.34  : Tagged on July 10, 2018. Released on July 16, 2018.
+    2.4.33  : Tagged on March 17, 2018. Released on March 21, 2018.
+    2.4.32  : Tagged on March 09, 2018. Distributed on March 15, 2018,
+              not announced.
+    2.4.31  : Tagged on March 03, 2018. Not released.
+    2.4.30  : Tagged on February 19, 2018. Not released.
+    2.4.29  : Tagged on October 17, 2017. Released on October 23, 2017.
+    2.4.28  : Tagged on September 25, 2017. Released on October 5, 2017.
+    2.4.27  : Tagged on July 6, 2017. Released on July 11, 2017.
+    2.4.26  : Tagged on June 13, 2017. Released on June 19, 2017.
+    2.4.25  : Tagged on December 16, 2016. Released on December 21, 2016.
+    2.4.24  : Tagged on December 16, 2016. Not released.
+    2.4.23  : Tagged on June 30, 2016. Released on July 05, 2016.
+    2.4.22  : Tagged on June 20, 2016. Not released.
+    2.4.21  : Tagged on June 16, 2016. Not released.
+    2.4.20  : Tagged on April 4, 2016. Released on April 11, 2016.
+    2.4.19  : Tagged on March 21, 2016. Not released.
+    2.4.18  : Tagged on December 8, 2015. Released on December 14, 2015.
+    2.4.17  : Tagged on October 9, 2015. Released October 13, 2015.
+    2.4.16  : Tagged on July 9, 2015. Released July 15, 2015.
+    2.4.15  : Tagged on June 19, 2015. Not released.
+    2.4.14  : Tagged on June 11, 2015. Not released.
+    2.4.13  : Tagged on June 4, 2015. Not released.
+    2.4.12  : Tagged on January 22, 2015. Released January 29, 2015.
+    2.4.11  : Tagged on January 15, 2015. Not released.
+    2.4.10  : Tagged on July 15, 2014. Released July 21, 2014.
+    2.4.9   : Tagged on March 13, 2014. Released on March 17, 2014.
+    2.4.8   : Tagged on March 11, 2014. Not released.
+    2.4.7   : Tagged on November 19, 2013. Released on November 25, 2013.
+    2.4.6   : Tagged on July 15, 2013. Released July 22, 2013.
+    2.4.5   : Tagged on July 11, 2013. Not released.
+    2.4.4   : Tagged on February 18, 2013. Released February 25, 2013.
+    2.4.3   : Tagged on August 17, 2012. Released August 18, 2012.
+    2.4.2   : Tagged on April 5, 2012. Released April 17, 2012.
+    2.4.1   : Tagged on February 13, 2012. Released February 21, 2012.
+    2.4.0   : Tagged on January 16, 2012. Not released.
+    2.3.16  : Tagged on December 15, 2011. Released December 19, 2011
+    2.3.15  : Tagged on November 8, 2011. Released November 15, 2011.
+    2.3.14  : Tagged on August 1, 2011. Released August 9, 2011.
+    2.3.13  : Tagged on June 28, 2011. Not released.
+    2.3.12  : Tagged on May 11, 2011. Released May 23, 2011.
+    2.3.11  : Tagged on March 1, 2011. Released March 7, 2011.
+    2.3.10  : Tagged on December 13, 2010. Released December 21, 2010.
+    2.3.9   : Tagged on November 23, 2010. Not released.
+    2.3.8   : Tagged on August 24, 2010. Released August 31, 2010.
+    2.3.7   : Tagged on August 19, 2010. Not released.
+    2.3.6   : Tagged on June 11, 2010. Released on June 21, 2010.
+    2.3.5   : Tagged on January 21, 2010. Released on January 26, 2010.
+    2.3.4   : Tagged on November 25, 2009. Released on December 8, 2009.
+    2.3.3   : Tagged on November 11, 2009. Not released.
+    2.3.2   : Tagged on March 23, 2009. Not released.
+    2.3.1   : Tagged on January 2, 2009. Not released.
+    2.3.0   : Tagged on December 6, 2008. Not released.
+
+Contributors looking for a mission:
+
+  * Just do an egrep on "TODO" or "XXX" in the source.
+
+  * Review the bug database at: http://issues.apache.org/bugzilla/
+
+  * Review the "PatchAvailable" bugs in the bug database:
+
+    https://issues.apache.org/bugzilla/buglist.cgi?bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&product=Apache+httpd-2&keywords=PatchAvailable
+
+    After testing, you can append a comment saying "Reviewed and tested".
+
+  * Open bugs in the bug database.
+
+  * See also the STATUS file in the docs/ directory, which lists documentation-specific TODO items.
+
+
+CURRENT RELEASE NOTES:
+
+  * Forward binary compatibility is expected of Apache 2.4.x releases, such
+    that no MMN major number changes will occur after 2.4.1.  Such changes can
+    only be made in the trunk.
+
+  * All commits to branches/2.4.x must be reflected in SVN trunk,
+    as well, if they apply.  Logical progression is commit to trunk
+    then merge into branches/2.4.x, as applicable.
+
+  * Current exceptions for RTC for this branch:
+    . mod_proxy_http2
+    . documentation
+    . non-Unix build
+    . non-Unix, single-platform code
+
+RELEASE SHOWSTOPPERS:
+
+PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
+  [ start all new proposals below, under PATCHES PROPOSED. ]
+
+  *) mod_proxy_wstunnel: Fix websocket proxy over UDS. PR 62932
+     trunk patch: http://svn.apache.org/r1851093
+     2.4.x patch: svn merge -c 1851093 ^/httpd/httpd/trunk .
+     +1: jailletc36 (by inspection), jim, ylavic
+
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
+
+  *) core: Allow mod_env to override all system path envvars not just PATH
+     trunk patch: http://svn.apache.org/r1811831
+     2.4.x patch: svn merge -c 1811831 ^/httpd/httpd/trunk .
+     +1: jorton, rpluem
+     ylavic: same as dev@; since SetEnv* are usable from htaccess, wouldn't
+             we open a door here (unconditionally)? 
+             covener: seems like we need some kind of pattern for opting in
+             to restricted arguments.
+
+  *) core: avoid duplicate headers when using ap_send_error_response.
+           From trunk's testing the code seems running fine without any side
+           effects, so adding this change in here to have more reviews.
+     trunk patch: http://svn.apache.org/r1832092
+     2.4.x patch: svn merge -c 1832092 ^/httpd/httpd/trunk .
+     +1: elukey
+     +0.5: icing: as I read this, the change preserves the special status of headers in
+         ->err_headers_out, since swapping the tables makes former error headers normal ones.
+         But it is hard to see of this was ever intentional or not. Lack of regressions
+         in testing may meaning someone out there relies on the former, unverified
+         behaviour. OTOH, it fixes and error you saw and added test for. So, I am cautiously
+         for the change.
+     elukey: PR 62025 seems another use case that gets fixed using this patch
+             (still need to get feedback from the reporter but on my local env it solves the problem).
+
+   *) Add in mod_socache_redis from trunk
+      trunk: http://svn.apache.org/r1768070
+             http://svn.apache.org/r1768120
+             http://svn.apache.org/r1768225
+             http://svn.apache.org/r1769712
+             http://svn.apache.org/r1769737
+             http://svn.apache.org/r1774610
+             http://svn.apache.org/r1828624
+             http://svn.apache.org/r1828626
+      2.4.x patch: http://home.apache.org/~jim/patches/socache_redisv2.patch
+      +1: jim, minfrin
+
+  *) mod_dav: Fix a potential incorrect PROPFIND response
+     trunk patch: http://svn.apache.org/r1842010
+                  http://svn.apache.org/r1846339      (CHANGES)
+     2.4.x patch: svn merge -c 1842010,1846339 ^/httpd/httpd/trunk .
+     +1: jailletc36
+     rpluem: Not sure if this makes sense until we include r1841225
+     and a to be committed follow up patch by jorton (https://lists.apache.org/thread.html/76d6c39f59d0f9433c6800f5ee4069c7221424be45ef3008d2f41723@%3Cdev.httpd.apache.org%3E)
+     unfortunately the discussion about it died.
+
+  *) core: Split out the ability to parse wildcard files and directories
+     from the Include/IncludeOptional directives into a generic set of
+     functions ap_dir_nofnmatch() and ap_dir_fnmatch().
+     trunk patch: http://svn.apache.org/r1847430
+     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-ap_dir_fnmatch.patch
+     +1: minfrin, jim
+
+  *) mod_log_config: Support %{c}h for conn-hostname, %h for useragent_host
+     PR 55348
+     trunk patch: https://svn.apache.org/r1730129
+     2.4.x patch: svn merge -c 1730129 ^/httpd/httpd/trunk .
+     +1: wrowe, jim, ylavic
+
+  *) modules/filters/config.m4: Make libxml2's inclusion of unicode/*.h files
+     a non-fatal warning/error under maintainer-mode.
+     trunk patch: http://svn.apache.org/r1850745
+     2.4.x patch: svn merge -c 1850745 ^/httpd/httpd/trunk .
+     +1: jim
+     -0: wrowe [Raised on dev@, whether -std=c99 is correct now for maintainer
+                mode, or alternately -std=c89 -Wno-error=comment, independent
+                of mod_proxy_html config? Otherwise modify mod_proxy_html's 
+                CPPFLAGS alone, without modifying global compilation flags.]
+
+  *) easy proposals:
+       - mod_authn_dbm: Return APR_SUCCESS which is equivalent but more readable
+         than 'rv' here
+     trunk patch: http://svn.apache.org/r1850835
+     2.4.x patch: svn merge -c 1850835 ^/httpd/httpd/trunk .
+     +1: jailletc36, jim, ylavic
+     -1: wrowe [half vetod; see Message-ID: <CACsi253VZdKPd8L5PMHq+74RX0ttmGbFf8a8d5f0UttEQvsJMQ@mail.gmail.com> for detail] 
+     ylavic: I agree w/ joe's response on dev@ for r1850835 (no functional change btw),
+             while the warning addressed by r1850834 is annoying for 2.4.38..
+
+
+PATCHES/ISSUES THAT ARE BEING WORKED
+  [ New entries should be added at the START of the list ]
+
+  *) mod_dav: Allow other modules to become providers and add ACLs
+     to the DAV response.
+     trunk patch: http://svn.apache.org/r1748322
+                  http://svn.apache.org/r1824590
+                  http://svn.apache.org/r1824596
+     2.4.x: trunk works modulo CHANGES/MMN/log-message
+     +1: minfrin, jim
+     -1: rpluem: While we allow extensions of structures at the end in general
+                 this is a specific case where the the design of the mod_dav
+                 API clashes with this approach, as the API requires consumers
+                 to create the public structs on their own, something we do
+                 not "allow/encourage" otherwise in order to be able to do the
+                 structure extension. I don't want to see consumers of this API
+                 suffer from the clash we created.
+                 See also:
+                 https://lists.apache.org/thread.html/b924afe0fcc58a8636b753e630421bf6dc2080653a79575fd5fd641a@%3Cdev.httpd.apache.org%3E
+
+  *) core: Drop an invalid Last-Modified header value coming
+     from a (F)CGI script instead of replacing it with Unix epoch.
+     Warn the users about Last-Modified header value replacements
+     and violations of the RFC.
+     trunk patch: http://svn.apache.org/r1748379
+                  http://svn.apache.org/r1750747
+                  http://svn.apache.org/r1750749
+                  http://svn.apache.org/r1750953
+                  http://svn.apache.org/r1751138
+                  http://svn.apache.org/r1751139
+                  http://svn.apache.org/r1751147
+                  http://svn.apache.org/r1757818
+     2.4.x: trunk patches work, final view:
+            http://home.apache.org/~elukey/httpd-2.4.x-core-last_modified_tz_logging.patch
+     The problem has been discussed in dev@ extensively but we did not reach a common
+     agreement about how to proceed in the long term. While we wait, I would really like
+     to introduce useful logs for the users (the starting point of this change was a users@
+     email thread). If this is not the right way to go I will move the patch to other
+     sections of STATUS (stalled or being worked).
+     The code has been tested with a simple PHP script returning different Last-Modified
+     headers (GMT now, GMT now Europe/Paris, GMT tomorrow, GMT yesterday, PST now).
+     +1: elukey
+
+  *) http: Don't remove the Content-Length of zero from a HEAD response if
+     it comes from an origin server, module or script. Allow the previous
+     behaviour (for legacy/buggy modules only, not origin) by also backporting
+     the HttpContentLengthHeadZero directive (and also HttpExpectStrict which
+     comes for free with the same commit).
+     trunk patch: http://svn.apache.org/r1554303
+                  http://svn.apache.org/r1678215
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-preserve_head_cl_zero.patch
+     +1: ylavic, jim
+     ylavic: r1554303 issued a major MMN bump, but since the ABI change is two
+             ints added at the end of core_server_config, the proposed merge
+             does a minor bump only.
+     minfrin: Two new directives need to be documented.
+
+   * mod_proxy_http: Don't establish or reuse a backend connection before pre-
+     fetching the request body, so to minimize the delay between it is supposed
+     to be alive and the first bytes sent: this is a best effort to prevent the
+     backend from closing because of idle or keepalive timeout in the meantime.
+     Also, handle a new "proxy-flushall" environment variable which allows to
+     flush any forwarded body data immediately. PR 56541+37920.
+     trunk patch: http://svn.apache.org/r1656259
+                  http://svn.apache.org/r1656359 (CHANGES entry)
+     2.4.x patch: trunk works (modulo CHANGES, docs/log-message-tags)
+     +1: ylavic
+     -0: jim:  This seems to be a hit to normal performance, to handle an
+               error and/or non-normal condition. The pre-fetch is
+               expensive, and is always done, even before we know that
+               the backend is available to rec' it. I understand the
+               error described, but is the fix actually worth it (plus
+               it seems to allow for a DDoS vector).
+     ylavic: It seems to me that the problem is real since we reuse the
+             connection before prefetching 16K (either controlled by the
+             client, or by an input filter), we currently always prefetch
+             these bytes already. Regarding performance I don't see any
+             difference (more cycles) compared with the current code.
+             However I think I failed to rebuild the header_brigade when
+             the proxy loop is retried (ping), so I need to rework this.
+             Do you think we'd better remove the prefetch, or maybe just
+             make it nonblocking (by default)?
+        jim: Non-blocking seems the best way to handle...
+
+   * Support PCRE2 (10.x) in place of PCRE (8.x).
+     Submitted by: wrowe, Petr Pisar [ppisar redhat.com]
+     trunk patches:
+         http://svn.apache.org/r1773454
+         http://svn.apache.org/r1773741
+         http://svn.apache.org/r1773742
+         http://svn.apache.org/r1773839
+         http://svn.apache.org/r1773870
+         http://svn.apache.org/r1773882
+     wrowe notes that the current code is too inefficient, owing to the fact
+     that the ovector is a required allocation and is no longer allocated on
+     the stack, by design. The correct fix is an apr userdata allocation on
+     the appropriate pool, which would be thread-safe, but the actual API of
+     ap_regexec[_len]() offers us no pool. We cannot associate that pool with
+     the ap_regex_t, because a single regex may be used by many threads in
+     parallel and is not thread-safe beyond initialization.
+     So the only fix allowing us to use PCRE 10 in httpd 2.4 would be to write
+     this as a thread safe storage buffer for the majority of cases (<10 $args)
+     and we don't have a portable tls mechanism to do so.
+     jorton: Adding ap_pregexec/_len which pass a pool would also work
+             for internal users of this api; not sure if performance
+             impact is significant from using malloc here.
+
+
+PATCHES/ISSUES THAT ARE STALLED
+
+  *) mod_proxy: Add ap_proxy_define_match_worker() and use it for ProxyPassMatch
+     and ProxyMatch section to distinguish between normal workers and workers
+     with regex substitutions in the name. Implement handling of such workers
+     in ap_proxy_get_worker(). Fixes the bug when regex workers were not
+     matched and used for request. PR 43513.
+     trunk patch: http://svn.apache.org/r1609680
+                  http://svn.apache.org/r1609688
+                  http://svn.apache.org/r1641381
+                  http://svn.apache.org/r1826289
+                  http://svn.apache.org/r1826313
+     ylavic: Merge patch provided (reusing new->real to avoid double de_socketfy() call).
+             Also added missing r1609688 to the patchset.
+     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-ap_proxy_define_match_worker-v2.patch
+     +1:
+     -0: covener: lots of folks getting dns and connection reuse implicitly after we backport this.
+     ylavic: agreed, withdrawing
+
+   * core: Add ap_errorlog_provider to make ErrorLog logging modular. This
+           backport keeps syslog logging as part of httpd core and only adds
+           API to allow other modules to be used for error logging.
+     trunk patch: http://svn.apache.org/r1525597
+                  http://svn.apache.org/r1525664
+                  http://svn.apache.org/r1525845
+                  http://svn.apache.org/r1527003
+                  http://svn.apache.org/r1527005
+                  http://svn.apache.org/r1532344
+                  http://svn.apache.org/r1539988
+                  http://svn.apache.org/r1541029
+                  http://svn.apache.org/r1543979
+                  http://svn.apache.org/r1544156
+                  http://svn.apache.org/r1626978
+     2.4.x patch: http://people.apache.org/~jkaluza/patches/httpd-2.4.x-errorlog_provider.patch
+     +1: jkaluza
+     +1: covener w/ doc or code to fix syntax (providername:providerarg not supported like syslog or socacheproviders,
+                 needs 2 args which is not valid in ErrorLog manual)
+                 Note: This also fixes syslog logging dropping messages with NULL server_rec by reaching up into ap_server_conf
+                 explicitly.
+        
+     trawick: nit: fix "writing" in "/* NULL if we are writing to syslog */"
+              (sorry, haven't finished reviewing completely)
+     jim: What is the status of this??
+
+   * core: Add support for systemd socket activation.
+     trunk patch: http://svn.apache.org/r1511033
+                  http://svn.apache.org/r1608686
+                  http://svn.apache.org/r1608694
+                  http://svn.apache.org/r1608703
+                  http://svn.apache.org/r1608721
+                  http://svn.apache.org/r1608744
+     2.4.x patch: http://people.apache.org/~jkaluza/patches/mod_systemd/httpd-2.4.x-socket-activation.patch
+     +1: jkaluza
+
+  * mod_proxy: Ensure network errors detected by the proxy are returned as
+    504 Gateway Timeout as opposed to 502 Bad Gateway
+    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1480058
+    2.4.x patch: trunk patch works modulo CHANGES
+    +1:
+    -1: rpluem: This change is still disputed. See
+        http://mail-archives.apache.org/mod_mbox/httpd-dev/201305.mbox/%3C1B16B9E3-87BA-4EEF-939C-7C7313B54714%40gbiv.com%3E
+
+  * cross-compile: allow to provide CC_FOR_BUILD so that gen_test_char will be
+    compiled by the build compiler instead of the host compiler.
+    Also set CC_FOR_BUILD to 'cc' when cross-compilation is detected.
+    Trunk patches: http://svn.apache.org/viewvc?view=revision&revision=1327907
+                   http://svn.apache.org/viewvc?view=revision&revision=1328390
+                   http://svn.apache.org/viewvc?view=revision&revision=1328714
+    2.4 patch: http://people.apache.org/~fuankg/diffs/httpd-2.4.x-cross_compile.diff
+    fuankg: on hold until we agree for a better and more simple solution ...
+
+   * Makefile.win: Added copying of .vbs / .wsf CGIs to Windows install target.
+                   Moved fixing of shebang to separate target so that it is
+                   no longer executed by default and all CGIs remain inactive.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1387984
+                  http://svn.apache.org/viewvc?view=revision&revision=1421203
+                  http://svn.apache.org/viewvc?view=revision&revision=1421591
+     2.4.x patch: http://people.apache.org/~fuankg/diffs/httpd-2.4.x-Makefile.win.diff
+     +1 fuankg, gsmith
+     -.8: trawick
+          This commit is essentially deciding that an httpd install on
+          Windows now has printenv/testcgi written in 2 more languages.
+          To the extent that the usefulness is that it shows how to make scripts
+          of these types executable by httpd, I believe that the documentation
+          is the proper place to solve that.  To the extent that the usefullness
+          is to show how to implement a CGI in these particular languages, I believe
+          that the httpd distribution and documentation in general is not the
+          place for that.  Historically these types of scripts have caused problems
+          for downstream vendorsas well as newbies (and sometimes the intersection
+          of those two groups) who don't understand that these are information leaks
+          once they are enabled, and the subtlety of the way they are disabled ("Apache
+          messed up the first line; let me fix that") contributes to that.
+     fuankg notes: I've just added a big warning to all CGI scripts which should now
+          make absolutely clear that these CGIs are for testing purpose only - so those
+          who enable those scripts with inserting the right shebang should be 100% aware
+          of any risks (this should cover your last point).
+     jim: trawick, does the above address your concerns?
+     trawick: to some extent (somebody reading the script gets an idea)
+          Why isn't the configuration requirement documented instead
+          of described indirectly in a sample?
+          Why are these new samples added to the install without three
+          votes?  (I didn't veto it; put your name next to the two
+          existing ones and I'll be satisfied that enough people
+          considered this addition as an appropriate solution for a
+          real httpd usability problem.)
+     wrowe: I'd agree with trawick, and suggest that these scripts can begin
+            their life somewhere in the manual/ tree.  This really seems like
+            the place where /usr/share/httpd/examples/ would be useful, but
+            there isn't an ordinary directory for that.  Since we want none
+            of the scripts to function 'out of the box', what about a new
+            cgi-examples/ dir alongside cgi-bin/? Otherwise manual/cgi/examples
+            might work?
+
+  *) mod_journald: Add new module mod_journald to log error logs into journald.
+     trunk patch: http://svn.apache.org/r1610339
+                  http://svn.apache.org/r1621806
+                  http://svn.apache.org/r1812339
+     2.4.x patch: http://people.apache.org/~jkaluza/patches/httpd-2.4.x-mod_journald.patch
+                  http://svn.apache.org/r1812339
+     +1: jkaluza, jim
+     jchampion: Looks like the headers require GCC extensions to compile, so
+                mod_journald can't be configured in maintainer mode (-std=c89).
+                Can anyone else reproduce, or is it just my distro?
+     ylavic: missing r1812339 for maintainer-mode/c89/-Werror compliance,
+             needed if the above configure.in proposal gets backported.
+             Note that r1812339 could be backported in any case, even if
+             the above configure.in proposal does not get accepted.
+
+   * mod_systemd: New module, for integration with systemd on Linux.
+     trunk patch: http://svn.apache.org/r1393976
+                  http://svn.apache.org/r1393997
+                  http://svn.apache.org/r1484554
+                  http://svn.apache.org/r1528032
+                  http://svn.apache.org/r1528034
+                  http://svn.apache.org/r1614821
+                  http://svn.apache.org/r1618579
+                  http://svn.apache.org/r1618588
+     2.4.x patch: http://people.apache.org/~jkaluza/patches/mod_systemd/httpd-2.4.x-mod_systemd.patch
+     +1: jkaluza
+     sf comments: The IdleShutdown logic seems broken. Consider a single
+                  active connection that is stalled for 10 seconds. That
+                  connection will be broken after GracefulShutdownTimeout.
+                  A better logic would be to check if there is any open
+                  connection that is not in keep-alive state.

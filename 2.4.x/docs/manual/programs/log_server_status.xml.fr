@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1562488 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="log_server_status.xml.meta">
+<parentdocument href="./">Programs</parentdocument>
+
+<title>log_server_status - Enregistrement périodique de l'état du serveur</title>
+
+<summary>
+    <p>Ce script perl a été conçu pour être exécuté à intervalles
+    réguliers via un déclencheur de type cron. Il se connecte au serveur
+    pour en extraire des informations quant à son état. Il formate ces
+    informations sous la forme d'une seule ligne qu'il enregistre dans
+    un fichier. Vous devez éditer la valeur des variables en tête de
+    script afin de définir le chemin du fichier de sortie. Pour que ce
+    script puisse fonctionner, <module>mod_status</module> doit au
+    préalable être chargé et configuré.</p>
+</summary>
+
+<section id="configure"><title>Mode d'emploi</title>
+
+<p>Le script contient les sections suivantes :</p>
+
+<highlight language="perl">
+my $wherelog = "/usr/local/apache2/logs/";  # Le fichier de sortie sera
+					# du style "/usr/local/apache2/logs/19960312"
+my $server   = "localhost";        # Nom du serveur, par exemple "www.foo.com"
+my $port     = "80";               # Port d'écoute du serveur
+my $request = "/server-status/?auto";    # Requête à soumettre
+</highlight>
+
+<p>Ces variables doivent contenir des valeurs correctes, et le
+gestionnaire <code>/server-status</code> doit être configuré pour le
+répertoire considéré. En outre, l'utilisateur qui exécute le script doit
+avoir les droits d'écriture sur le chemin du fichier de sortie.</p>
+
+<p>L'exécution périodique du script via cron permet d'obtenir un jeu de
+rapports d'état qui pourra être utilisé à des fins d'analyse
+statistique.</p>
+
+</section>
+
+</manualpage>

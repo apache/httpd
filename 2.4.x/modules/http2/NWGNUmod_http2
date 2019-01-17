@@ -1,0 +1,395 @@
+#
+# This Makefile requires the environment var NGH2SRC
+# pointing to the base directory of nghttp2 source tree.
+#
+
+#
+# Declare the sub-directories to be built here
+#
+
+SUBDIRS = \
+	$(EOLIST)
+
+#
+# Get the 'head' of the build environment.  This includes default targets and
+# paths to tools
+#
+
+include $(AP_WORK)/build/NWGNUhead.inc
+
+#
+# build this level's files
+#
+# Make sure all needed macro's are defined
+#
+
+#
+# These directories will be at the beginning of the include list, followed by
+# INCDIRS
+#
+XINCDIRS	+= \
+			$(APR)/include \
+			$(APRUTIL)/include \
+			$(SRC)/include \
+			$(NGH2SRC)/lib/ \
+			$(NGH2SRC)/lib/includes \
+			$(SERVER)/mpm/NetWare \
+			$(STDMOD)/ssl \
+			$(NWOS) \
+			$(EOLIST)
+
+#
+# These flags will come after CFLAGS
+#
+XCFLAGS		+= \
+			$(EOLIST)
+
+#
+# These defines will come after DEFINES
+#
+XDEFINES	+= \
+			-DHAVE_CONFIG_H \
+			$(EOLIST)
+
+#
+# These flags will be added to the link.opt file
+#
+XLFLAGS		+= \
+			-L$(OBJDIR) \
+			$(EOLIST)
+
+#
+# These values will be appended to the correct variables based on the value of
+# RELEASE
+#
+ifeq "$(RELEASE)" "debug"
+XINCDIRS	+= \
+			$(EOLIST)
+
+XCFLAGS		+= \
+			$(EOLIST)
+
+XDEFINES	+= \
+			$(EOLIST)
+
+XLFLAGS		+= \
+			$(EOLIST)
+endif
+
+ifeq "$(RELEASE)" "noopt"
+XINCDIRS	+= \
+			$(EOLIST)
+
+XCFLAGS		+= \
+			$(EOLIST)
+
+XDEFINES	+= \
+			$(EOLIST)
+
+XLFLAGS		+= \
+			$(EOLIST)
+endif
+
+ifeq "$(RELEASE)" "release"
+XINCDIRS	+= \
+			$(EOLIST)
+
+XCFLAGS		+= \
+			$(EOLIST)
+
+XDEFINES	+= \
+			$(EOLIST)
+
+XLFLAGS		+= \
+			$(EOLIST)
+endif
+
+#
+# These are used by the link target if an NLM is being generated
+# This is used by the link 'name' directive to name the nlm.  If left blank
+# TARGET_nlm (see below) will be used.
+#
+NLM_NAME	= mod_http2
+
+#
+# This is used by the link '-desc ' directive.
+# If left blank, NLM_NAME will be used.
+#
+NLM_DESCRIPTION	= Apache $(VERSION_STR) HTTP2 Support module (w/ NGHTTP2 Lib)
+
+#
+# This is used by the '-threadname' directive.  If left blank,
+# NLM_NAME Thread will be used.
+#
+NLM_THREAD_NAME	= $(NLM_NAME)
+
+#
+# If this is specified, it will override VERSION value in
+# $(AP_WORK)/build/NWGNUenvironment.inc
+#
+NLM_VERSION	=
+
+#
+# If this is specified, it will override the default of 64K
+#
+NLM_STACK_SIZE	= 65536
+
+#
+# If this is specified it will be used by the link '-entry' directive
+#
+NLM_ENTRY_SYM	=
+
+#
+# If this is specified it will be used by the link '-exit' directive
+#
+NLM_EXIT_SYM	=
+
+#
+# If this is specified it will be used by the link '-check' directive
+#
+NLM_CHECK_SYM	=
+
+#
+# If this is specified it will be used by the link '-flags' directive
+#
+NLM_FLAGS	=
+
+#
+# If this is specified it will be linked in with the XDCData option in the def
+# file instead of the default of $(NWOS)/apache.xdc.  XDCData can be disabled
+# by setting APACHE_UNIPROC in the environment
+#
+XDCDATA		=
+
+#
+# Declare all target files (you must add your files here)
+#
+
+#
+# If there is an NLM target, put it here
+#
+TARGET_nlm = \
+	$(OBJDIR)/$(NLM_NAME).nlm \
+	$(EOLIST)
+
+#
+# If there is an LIB target, put it here
+#
+TARGET_lib = \
+	$(OBJDIR)/nghttp2.lib \
+	$(EOLIST)
+
+#
+# These are the OBJ files needed to create the NLM target above.
+# Paths must all use the '/' character
+#
+FILES_nlm_objs = \
+	$(OBJDIR)/h2_alt_svc.o \
+	$(OBJDIR)/h2_bucket_beam.o \
+	$(OBJDIR)/h2_bucket_eos.o \
+	$(OBJDIR)/h2_config.o \
+	$(OBJDIR)/h2_conn.o \
+	$(OBJDIR)/h2_conn_io.o \
+	$(OBJDIR)/h2_ctx.o \
+	$(OBJDIR)/h2_filter.o \
+	$(OBJDIR)/h2_from_h1.o \
+	$(OBJDIR)/h2_h2.o \
+	$(OBJDIR)/h2_mplx.o \
+	$(OBJDIR)/h2_ngn_shed.o \
+	$(OBJDIR)/h2_push.o \
+	$(OBJDIR)/h2_request.o \
+	$(OBJDIR)/h2_headers.o \
+	$(OBJDIR)/h2_session.o \
+	$(OBJDIR)/h2_stream.o \
+	$(OBJDIR)/h2_switch.o \
+	$(OBJDIR)/h2_task.o \
+	$(OBJDIR)/h2_util.o \
+	$(OBJDIR)/h2_workers.o \
+	$(OBJDIR)/mod_http2.o \
+	$(EOLIST)
+
+#
+# These are the LIB files needed to create the NLM target above.
+# These will be added as a library command in the link.opt file.
+#
+FILES_nlm_libs = \
+	$(PRELUDE) \
+	$(OBJDIR)/nghttp2.lib \
+	$(EOLIST)
+
+#
+# These are the modules that the above NLM target depends on to load.
+# These will be added as a module command in the link.opt file.
+#
+FILES_nlm_modules = \
+	Libc \
+	Apache2 \
+	$(EOLIST)
+
+#
+# If the nlm has a msg file, put it's path here
+#
+FILE_nlm_msg =
+
+#
+# If the nlm has a hlp file put it's path here
+#
+FILE_nlm_hlp =
+
+#
+# If this is specified, it will override $(NWOS)\copyright.txt.
+#
+FILE_nlm_copyright =
+
+#
+# Any additional imports go here
+#
+FILES_nlm_Ximports = \
+	@libc.imp \
+	@aprlib.imp \
+	@httpd.imp \
+	$(EOLIST)
+
+#
+# Any symbols exported to here
+#
+FILES_nlm_exports = \
+	@$(OBJDIR)/mod_http2.imp \
+	$(EOLIST)
+
+#
+# These are the OBJ files needed to create the LIB target above.
+# Paths must all use the '/' character
+#
+FILES_lib_objs := $(sort $(patsubst $(NGH2SRC)/lib/%.c,$(OBJDIR)/%.o,$(wildcard $(NGH2SRC)/lib/*.c)))
+#
+# implement targets and dependancies (leave this section alone)
+#
+
+libs :: $(OBJDIR) $(NGH2SRC)/lib/config.h $(TARGET_lib)
+
+nlms :: libs $(OBJDIR)/mod_http2.imp $(TARGET_nlm)
+
+#
+# Updated this target to create necessary directories and copy files to the
+# correct place.  (See $(AP_WORK)/build/NWGNUhead.inc for examples)
+#
+install :: nlms FORCE
+	$(call COPY,$(OBJDIR)/*.nlm,        $(INSTALLBASE)/modules/)
+
+clean ::
+	$(call DEL,$(NGH2SRC)/lib/config.h)
+#
+# Any specialized rules here
+#
+vpath %.c $(NGH2SRC)/lib
+
+$(NGH2SRC)/lib/config.h : NWGNUmod_http2
+	@-$(RM) $@
+	@echo $(DL)GEN  $@$(DL)
+	@echo $(DL)/* For NetWare target.$(DL) > $@
+	@echo $(DL)** Do not edit - created by Make!$(DL) >> $@
+	@echo $(DL)*/$(DL) >> $@
+	@echo $(DL)#ifndef NGH2_CONFIG_H$(DL) >> $@
+	@echo $(DL)#define NGH2_CONFIG_H$(DL) >> $@
+	@echo #define HAVE_ARPA_INET_H 1 >> $@
+	@echo #define HAVE_CHOWN 1 >> $@
+	@echo #define HAVE_DECL_STRERROR_R 1 >> $@
+	@echo #define HAVE_DLFCN_H 1 >> $@
+	@echo #define HAVE_DUP2 1 >> $@
+	@echo #define HAVE_FCNTL_H 1 >> $@
+	@echo #define HAVE_GETCWD 1 >> $@
+	@echo #define HAVE_INTTYPES_H 1 >> $@
+	@echo #define HAVE_LIMITS_H 1 >> $@
+	@echo #define HAVE_LOCALTIME_R 1 >> $@
+	@echo #define HAVE_MALLOC 1 >> $@
+	@echo #define HAVE_MEMCHR 1 >> $@
+	@echo #define HAVE_MEMMOVE 1 >> $@
+	@echo #define HAVE_MEMORY_H 1 >> $@
+	@echo #define HAVE_MEMSET 1 >> $@
+	@echo #define HAVE_NETDB_H 1 >> $@
+	@echo #define HAVE_NETINET_IN_H 1 >> $@
+	@echo #define HAVE_PTRDIFF_T 1 >> $@
+	@echo #define HAVE_PWD_H 1 >> $@
+	@echo #define HAVE_SOCKET 1 >> $@
+	@echo #define HAVE_SQRT 1 >> $@
+	@echo #define HAVE_STDDEF_H 1 >> $@
+	@echo #define HAVE_STDINT_H 1 >> $@
+	@echo #define HAVE_STDLIB_H 1 >> $@
+	@echo #define HAVE_STRCHR 1 >> $@
+	@echo #define HAVE_STRDUP 1 >> $@
+	@echo #define HAVE_STRERROR 1 >> $@
+	@echo #define HAVE_STRERROR_R 1 >> $@
+	@echo #define HAVE_STRINGS_H 1 >> $@
+	@echo #define HAVE_STRING_H 1 >> $@
+	@echo #define HAVE_STRSTR 1 >> $@
+	@echo #define HAVE_STRTOL 1 >> $@
+	@echo #define HAVE_STRTOUL 1 >> $@
+	@echo #define HAVE_SYSLOG_H 1 >> $@
+	@echo #define HAVE_SYS_SOCKET_H 1 >> $@
+	@echo #define HAVE_SYS_STAT_H 1 >> $@
+	@echo #define HAVE_SYS_TIME_H 1 >> $@
+	@echo #define HAVE_SYS_TYPES_H 1 >> $@
+	@echo #define HAVE_TIME_H 1 >> $@
+	@echo #define HAVE_UNISTD_H 1 >> $@
+
+	@echo #define SIZEOF_INT_P 4 >> $@
+	@echo #define STDC_HEADERS 1 >> $@
+	@echo #define STRERROR_R_CHAR_P 4 >> $@
+
+# Hint to compiler a function parameter is not used
+	@echo #define _U_ >> $@
+
+	@echo #ifndef __cplusplus >> $@
+	@echo #define inline __inline >> $@
+	@echo #endif >> $@
+
+	@echo $(DL)#endif /* NGH2_CONFIG_H */$(DL) >> $@
+
+#
+# Exports from mod_http2 for mod_proxy_http2
+$(OBJDIR)/mod_http2.imp : NWGNUmod_http2
+	@-$(RM) $@
+	@echo $(DL)GEN  $@$(DL)
+	@echo $(DL) (HTTP2)$(DL) > $@
+	@echo $(DL) http2_module,$(DL) >> $@
+	@echo $(DL) nghttp2_is_fatal,$(DL) >> $@
+	@echo $(DL) nghttp2_option_del,$(DL) >> $@
+	@echo $(DL) nghttp2_option_new,$(DL) >> $@
+	@echo $(DL) nghttp2_option_set_no_auto_window_update,$(DL) >> $@
+	@echo $(DL) nghttp2_option_set_peer_max_concurrent_streams,$(DL) >> $@
+	@echo $(DL) nghttp2_session_callbacks_del,$(DL) >> $@
+	@echo $(DL) nghttp2_session_callbacks_new,$(DL) >> $@
+	@echo $(DL) nghttp2_session_callbacks_set_before_frame_send_callback,$(DL) >> $@
+	@echo $(DL) nghttp2_session_callbacks_set_on_data_chunk_recv_callback,$(DL) >> $@
+	@echo $(DL) nghttp2_session_callbacks_set_on_frame_recv_callback,$(DL) >> $@
+	@echo $(DL) nghttp2_session_callbacks_set_on_header_callback,$(DL) >> $@
+	@echo $(DL) nghttp2_session_callbacks_set_on_stream_close_callback,$(DL) >> $@
+	@echo $(DL) nghttp2_session_callbacks_set_send_callback,$(DL) >> $@
+	@echo $(DL) nghttp2_session_client_new2,$(DL) >> $@
+	@echo $(DL) nghttp2_session_consume,$(DL) >> $@
+	@echo $(DL) nghttp2_session_consume_connection,$(DL) >> $@
+	@echo $(DL) nghttp2_session_del,$(DL) >> $@
+	@echo $(DL) nghttp2_session_get_remote_settings,$(DL) >> $@
+	@echo $(DL) nghttp2_session_get_stream_user_data,$(DL) >> $@
+	@echo $(DL) nghttp2_session_mem_recv,$(DL) >> $@
+	@echo $(DL) nghttp2_session_resume_data,$(DL) >> $@
+	@echo $(DL) nghttp2_session_send,$(DL) >> $@
+	@echo $(DL) nghttp2_session_want_read,$(DL) >> $@
+	@echo $(DL) nghttp2_session_want_write,$(DL) >> $@
+	@echo $(DL) nghttp2_strerror,$(DL) >> $@
+	@echo $(DL) nghttp2_submit_goaway,$(DL) >> $@
+	@echo $(DL) nghttp2_submit_ping,$(DL) >> $@
+	@echo $(DL) nghttp2_submit_request,$(DL) >> $@
+	@echo $(DL) nghttp2_submit_rst_stream,$(DL) >> $@
+	@echo $(DL) nghttp2_submit_settings,$(DL) >> $@
+	@echo $(DL) nghttp2_submit_window_update,$(DL) >> $@
+	@echo $(DL) nghttp2_version$(DL) >> $@
+
+# Include the 'tail' makefile that has targets that depend on variables defined
+# in this makefile
+#
+
+include $(APBUILD)/NWGNUtail.inc
+
+

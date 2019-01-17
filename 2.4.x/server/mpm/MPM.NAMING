@@ -1,0 +1,14 @@
+
+The following MPMs currently exist:
+
+  prefork ....... Multi  Process Model with Preforking (Apache 1.3)
+  mpmt_os2 ...... Multi Process Model with Threading on OS/2
+                  Constant number of processes, variable number of threads.
+                  One acceptor thread per process, multiple workers threads.
+  winnt ......... Single Process Model with Threading on Windows NT
+  event ......... Multi Process model with threads.  One acceptor thread,
+                  multiple worker threads, separate poller threads for idle
+                  connections and asynchoneous write completion.
+  worker ........ Multi Process model with threads.  One acceptor thread,
+                  multiple worker threads.
+  netware ....... Multi-threaded MPM for Netware

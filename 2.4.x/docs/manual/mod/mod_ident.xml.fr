@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 420993 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_ident.xml.meta">
+
+<name>mod_ident</name>
+<description>Recherche d'identit&eacute; conform&eacute;ment &agrave; la RFC
+1413</description>
+<status>Extension</status>
+<sourcefile>mod_ident.c</sourcefile>
+<identifier>ident_module</identifier>
+<compatibility>Disponible depuis la version 2.2 d'Apache</compatibility>
+
+<summary>
+    <p>Ce module interroge un d&eacute;mon compatible <a
+    href="http://www.ietf.org/rfc/rfc1413.txt">RFC 1413</a> sur un
+    serveur distant afin de d&eacute;terminer le propri&eacute;taire d'une
+    connexion.</p>
+</summary>
+<seealso><module>mod_log_config</module></seealso>
+
+<directivesynopsis>
+<name>IdentityCheck</name>
+<description>Active la journalisation de l'identit&eacute; RFC 1413 de
+l'utilisateur distant</description>
+<syntax>IdentityCheck On|Off</syntax>
+<default>IdentityCheck Off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+<compatibility>Retir&eacute; du serveur de base depuis Apache
+2.1</compatibility>
+
+<usage>
+    <p>Cette directive permet d'activer la journalisation compatible <a
+    href="http://www.ietf.org/rfc/rfc1413.txt">RFC 1413</a> du nom de
+    l'utilisateur distant pour chaque connexion, si la machine du client
+    ex&eacute;cute identd ou un d&eacute;mon similaire. Cette information est
+    enregistr&eacute;e dans le journal des acc&egrave;s en utilisant la <a
+    href="mod_log_config.html#formats">cha&icirc;ne de formatage</a>
+    <code>%...l</code>.</p>
+
+    <note>
+      Cette information ne doit pas faire l'objet d'une confiance
+      absolue, et elle ne doit &ecirc;tre utilis&eacute;e que dans le cadre d'un
+      tra&ccedil;age grossier.
+    </note>
+
+    <p>Notez que de s&eacute;rieux probl&egrave;mes de d&eacute;lais peuvent survenir lors
+    des acc&egrave;s &agrave; votre serveur, car chaque requ&ecirc;te n&eacute;cessite l'ex&eacute;cution
+    d'un de ces processus de recherche. Lorsque des pare-feu ou des
+    serveurs mandataires sont impliqu&eacute;s, chaque recherche est
+    susceptible d'&eacute;chouer et ajouter un temps de latence conform&eacute;ment
+    &agrave; la directive <directive
+    module="mod_ident">IdentityCheckTimeout</directive>. En g&eacute;n&eacute;ral, ces
+    recherches ne se r&eacute;v&egrave;lent donc pas tr&egrave;s utiles sur des serveurs
+    publics accessibles depuis l'Internet.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>IdentityCheckTimeout</name>
+<description>D&eacute;termine le d&eacute;lai d'attente pour les requ&ecirc;tes
+ident</description>
+<syntax>IdentityCheckTimeout <var>secondes</var></syntax>
+<default>IdentityCheckTimeout 30</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+<usage>
+    <p>Cette directive permet de sp&eacute;cifier le d&eacute;lai d'attente d'une
+    requ&ecirc;te ident. Une valeur par d&eacute;faut de 30 secondes est recommand&eacute;e
+    par la <a href="http://www.ietf.org/rfc/rfc1413.txt">RFC 1413</a>,
+    principalement pour pr&eacute;venir les probl&egrave;mes qui pourraient &ecirc;tre
+    induits par la charge du r&eacute;seau. Vous pouvez cependant ajuster la
+    valeur de ce d&eacute;lai en fonction du d&eacute;bit de votre r&eacute;seau local.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
+
