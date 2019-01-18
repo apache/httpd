@@ -191,29 +191,23 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR 55348
      trunk patch: https://svn.apache.org/r1730129
      2.4.x patch: svn merge -c 1730129 ^/httpd/httpd/trunk .
-     +1: wrowe, jim, ylavic
+     +1: jim, ylavic
 
   *) modules/filters/config.m4: Make libxml2's inclusion of unicode/*.h files
      a non-fatal warning/error under maintainer-mode.
      trunk patch: http://svn.apache.org/r1850745
      2.4.x patch: svn merge -c 1850745 ^/httpd/httpd/trunk .
      +1: jim
-     -0: wrowe [Raised on dev@, whether -std=c99 is correct now for maintainer
-                mode, or alternately -std=c89 -Wno-error=comment, independent
-                of mod_proxy_html config? Otherwise modify mod_proxy_html's 
-                CPPFLAGS alone, without modifying global compilation flags.]
 
   *) mod_authn_dbm: Return APR_SUCCESS which is equivalent but more readable
      than 'rv' here
      trunk patch: http://svn.apache.org/r1850835
                   http://svn.apache.org/r1851552
      2.4.x patch: svn merge -c 1850835,1851552 ^/httpd/httpd/trunk .
-     +1: jailletc36, jim, ylavic, wrowe
+     +1: jailletc36, jim, ylavic
      ylavic: I agree w/ joe's response on dev@ for r1850835 (no functional
              change btw), while the warning addressed by r1850834 is annoying
              for 2.4.38.
-     wrowe: Clarified obtuse code with comment, waiting for jorton to
-            confirm, or earlier +1's to object, before promoting to apply.
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
