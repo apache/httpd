@@ -1757,6 +1757,7 @@ version of OpenSSL.
 <highlight language="config">
 SSLStrictSNIVHostCheck on
 </highlight>
+
 </example>
 </usage>
 </directivesynopsis>
@@ -1767,6 +1768,7 @@ SSLStrictSNIVHostCheck on
 <syntax>SSLProxyMachineCertificatePath <em>directory</em></syntax>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
+<compatibility>The proxy section context is allowed in httpd 2.4.30 and later</compatibility>
 
 <usage>
 <p>
@@ -1795,6 +1797,7 @@ SSLProxyMachineCertificatePath "/usr/local/apache2/conf/proxy.crt/"
 <syntax>SSLProxyMachineCertificateFile <em>filename</em></syntax>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
+<compatibility>The proxy section context is allowed in httpd 2.4.30 and later</compatibility>
 
 <usage>
 <p>
@@ -1823,6 +1826,7 @@ SSLProxyMachineCertificateFile "/usr/local/apache2/conf/ssl.crt/proxy.pem"
 <syntax>SSLProxyMachineCertificateChainFile <em>filename</em></syntax>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
+<compatibility>The proxy section context is allowed in httpd 2.4.30 and later</compatibility>
 
 <usage>
 <p>
@@ -1856,6 +1860,7 @@ SSLProxyMachineCertificateChainFile "/usr/local/apache2/conf/ssl.crt/proxyCA.pem
 <default>SSLProxyVerify none</default>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
+<compatibility>The proxy section context is allowed in httpd 2.4.30 and later</compatibility>
 
 <usage>
 
@@ -1896,6 +1901,7 @@ Certificate verification</description>
 <default>SSLProxyVerifyDepth 1</default>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
+<compatibility>The proxy section context is allowed in httpd 2.4.30 and later</compatibility>
 
 <usage>
 <p>
@@ -1925,6 +1931,7 @@ SSLProxyVerifyDepth 10
 <default>SSLProxyCheckPeerExpire on</default>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
+<compatibility>The proxy section context is allowed in httpd 2.4.30 and later</compatibility>
 
 <usage>
 <p>
@@ -1948,6 +1955,7 @@ SSLProxyCheckPeerExpire on
 <default>SSLProxyCheckPeerCN on</default>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
+<compatibility>The proxy section context is allowed in httpd 2.4.30 and later</compatibility>
 
 <usage>
 <p>
@@ -1992,7 +2000,8 @@ SSLProxyCheckPeerName off
 <default>SSLProxyCheckPeerName on</default>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
-<compatibility>Apache HTTP Server 2.4.5 and later</compatibility>
+<compatibility>Apache HTTP Server 2.4.5 and later<br />
+The proxy section context is allowed in httpd 2.4.30 and later</compatibility>
 
 <usage>
 <p>
@@ -2031,6 +2040,7 @@ improvements.
 <default>SSLProxyEngine off</default>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
+<compatibility>The proxy section context is allowed in httpd 2.4.30 and later</compatibility>
 
 <usage>
 <p>
@@ -2065,6 +2075,7 @@ server to proxy SSL/TLS requests.</p>
 <default>SSLProxyProtocol all -SSLv3 (up to 2.4.16: all)</default>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
+<compatibility>The proxy section context is allowed in httpd 2.4.30 and later</compatibility>
 
 <usage>
 <!-- XXX Why does this have an override and not .htaccess context? -->
@@ -2086,6 +2097,7 @@ proxy handshake</description>
 <default>SSLProxyCipherSuite ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+EXP</default>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
+<compatibility>The proxy section context is allowed in httpd 2.4.30 and later</compatibility>
 
 <usage>
 <p>Equivalent to <directive module="mod_ssl">SSLCipherSuite</directive>, but
@@ -2102,6 +2114,7 @@ Remote Server Auth</description>
 <syntax>SSLProxyCACertificatePath <em>directory-path</em></syntax>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
+<compatibility>The proxy section context is allowed in httpd 2.4.30 and later</compatibility>
 
 <usage>
 <p>
@@ -2129,6 +2142,7 @@ for Remote Server Auth</description>
 <syntax>SSLProxyCACertificateFile <em>file-path</em></syntax>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
+<compatibility>The proxy section context is allowed in httpd 2.4.30 and later</compatibility>
 
 <usage>
 <p>
@@ -2153,6 +2167,7 @@ Remote Server Auth</description>
 <syntax>SSLProxyCARevocationPath <em>directory-path</em></syntax>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
+<compatibility>The proxy section context is allowed in httpd 2.4.30 and later</compatibility>
 
 <usage>
 <p>
@@ -2180,6 +2195,7 @@ Remote Server Auth</description>
 <syntax>SSLProxyCARevocationFile <em>file-path</em></syntax>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
+<compatibility>The proxy section context is allowed in httpd 2.4.30 and later</compatibility>
 
 <usage>
 <p>
@@ -2205,6 +2221,7 @@ SSLProxyCARevocationFile "/usr/local/apache2/conf/ssl.crl/ca-bundle-remote-serve
 <default>SSLProxyCARevocationCheck none</default>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
+<compatibility>The proxy section context is allowed in httpd 2.4.30 and later</compatibility>
 
 <usage>
 <p>
