@@ -77,7 +77,7 @@ imagemap</a></li>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="features" id="features">Nouvelles fonctionnalités</a><a title="Lien permanent" href="#features" class="permalink">&para;</a></h2>
+<h2><a name="features" id="features">Nouvelles fonctionnalités</a> <a title="Lien permanent" href="#features" class="permalink">&para;</a></h2>
 
     <p>Le module imagemap propose quelques nouvelles fonctionnalités qui
     n'étaient pas disponibles avec les programmes imagemap précédemment
@@ -98,7 +98,7 @@ imagemap</a></li>
     </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="imapfile" id="imapfile">Fichier imagemap</a><a title="Lien permanent" href="#imapfile" class="permalink">&para;</a></h2>
+<h2><a name="imapfile" id="imapfile">Fichier imagemap</a> <a title="Lien permanent" href="#imapfile" class="permalink">&para;</a></h2>
 
     <p>Les lignes d'un fichier imagemap peuvent se présenter sous
     plusieurs formats :</p>
@@ -275,7 +275,7 @@ imagemap</a></li>
     
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="example" id="example">Exemple de fichier imagemap</a><a title="Lien permanent" href="#example" class="permalink">&para;</a></h2>
+<h2><a name="example" id="example">Exemple de fichier imagemap</a> <a title="Lien permanent" href="#example" class="permalink">&para;</a></h2>
 
     <div class="example"><p><code>
       #Les commentaires sont affichés dans un menu 'formaté' ou
@@ -294,7 +294,7 @@ imagemap</a></li>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="referencing" id="referencing">Référencement de votre fichier
-imagemap</a><a title="Lien permanent" href="#referencing" class="permalink">&para;</a></h2>
+imagemap</a> <a title="Lien permanent" href="#referencing" class="permalink">&para;</a></h2>
 
     <div class="example"><h3>Exemple HTML</h3><p><code>
       &lt;a href="/maps/imagemap1.map"&gt;<br />
@@ -314,7 +314,7 @@ imagemap</a><a title="Lien permanent" href="#referencing" class="permalink">&par
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="imapbase" id="imapbase">Directive</a> <a name="ImapBase" id="ImapBase">ImapBase</a><a title="Lien permanent" href="#imapbase" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="imapbase" id="imapbase">Directive</a> <a name="ImapBase" id="ImapBase">ImapBase</a> <a title="Lien permanent" href="#imapbase" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Valeur par défaut de la directive <code>base</code> des
 fichiers imagemap</td></tr>
@@ -339,7 +339,7 @@ fichiers imagemap</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="imapdefault" id="imapdefault">Directive</a> <a name="ImapDefault" id="ImapDefault">ImapDefault</a><a title="Lien permanent" href="#imapdefault" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="imapdefault" id="imapdefault">Directive</a> <a name="ImapDefault" id="ImapDefault">ImapDefault</a> <a title="Lien permanent" href="#imapdefault" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Action à entreprendre par défaut lorsqu'un fichier imagemap
 est invoqué avec des coordonnées qui ne correspondent à aucune
@@ -362,7 +362,7 @@ cible</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="imapmenu" id="imapmenu">Directive</a> <a name="ImapMenu" id="ImapMenu">ImapMenu</a><a title="Lien permanent" href="#imapmenu" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="imapmenu" id="imapmenu">Directive</a> <a name="ImapMenu" id="ImapMenu">ImapMenu</a> <a title="Lien permanent" href="#imapmenu" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Action à entreprendre si aucune coordonnée n'est fournie
 lorsqu'on invoque un fichier imagemap</td></tr>

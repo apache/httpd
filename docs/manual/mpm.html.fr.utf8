@@ -45,7 +45,7 @@ DSO (Dynamic Shared Object)</a></li>
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">Introduction</a><a title="Lien permanent" href="#introduction" class="permalink">&para;</a></h2>
+<h2><a name="introduction" id="introduction">Introduction</a> <a title="Lien permanent" href="#introduction" class="permalink">&para;</a></h2>
 
     <p>La conception du serveur HTTP Apache en fait un serveur web puissant et
     flexible pouvant fonctionner sur une très grande variété de
@@ -97,7 +97,7 @@ DSO (Dynamic Shared Object)</a></li>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="defaults" id="defaults">MPM par défaut</a><a title="Lien permanent" href="#defaults" class="permalink">&para;</a></h2>
+<h2><a name="defaults" id="defaults">MPM par défaut</a> <a title="Lien permanent" href="#defaults" class="permalink">&para;</a></h2>
 
 <p>La table suivante fournit la liste des MPMs par défaut pour divers
 systèmes d'exploitation.  Il s'agit du MPM qui sera utilisé si
@@ -135,7 +135,7 @@ modernes satisfont aux deux conditions.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="static" id="static">Compiler un module MPM en tant que module
-statique</a><a title="Lien permanent" href="#static" class="permalink">&para;</a></h2>
+statique</a> <a title="Lien permanent" href="#static" class="permalink">&para;</a></h2>
 
     <p>Les modules MPM peuvent être compilés en tant que modules
 statiques sur toutes les plates-formes. A la compilation d'Apache, un
@@ -157,7 +157,7 @@ souhaitez changer de module MPM.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="dynamic" id="dynamic">Compiler un module MPM en tant que module
-DSO (Dynamic Shared Object)</a><a title="Lien permanent" href="#dynamic" class="permalink">&para;</a></h2>
+DSO (Dynamic Shared Object)</a> <a title="Lien permanent" href="#dynamic" class="permalink">&para;</a></h2>
 
     <p>Sous Unix et les plates-formes similaires, les modules MPM
     peuvent être compilés en tant que modules DSO et chargés

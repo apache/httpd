@@ -75,7 +75,7 @@ serveur</td></tr>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="security" id="security">Problèmes liés à la sécurité</a><a title="Lien permanent" href="#security" class="permalink">&para;</a></h2>
+<h2><a name="security" id="security">Problèmes liés à la sécurité</a> <a title="Lien permanent" href="#security" class="permalink">&para;</a></h2>
     <p>Une fois <code class="module"><a href="../mod/mod_info.html">mod_info</a></code> chargé dans le serveur, sa
     fonctionnalité de gestionnaire est disponible dans <em>tous</em> les
     fichiers de configuration, y compris les fichiers de configuration
@@ -106,7 +106,7 @@ serveur</td></tr>
 </div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="queries" id="queries">Filtrage des informations affichées</a><a title="Lien permanent" href="#queries" class="permalink">&para;</a></h2>
+<h2><a name="queries" id="queries">Filtrage des informations affichées</a> <a title="Lien permanent" href="#queries" class="permalink">&para;</a></h2>
     <p>Par défaut, les informations affichées comprennent une liste de
     tous les modules activés, et pour chaque module, une description des
     directives qu'il accepte, les branchements (hooks) qu'il
@@ -137,7 +137,7 @@ serveur</td></tr>
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="startup" id="startup">Affichage de la configuration au démarrage</a><a title="Lien permanent" href="#startup" class="permalink">&para;</a></h2>
+<h2><a name="startup" id="startup">Affichage de la configuration au démarrage</a> <a title="Lien permanent" href="#startup" class="permalink">&para;</a></h2>
     <p>Si la directive de configuration define
     <code>-DDUMP_CONFIG</code> est utilisée, <code class="module"><a href="../mod/mod_info.html">mod_info</a></code> va
     envoyer la configuration préinterprétée vers <code>stdout</code> au
@@ -158,7 +158,7 @@ serveur</td></tr>
     
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="limitations" id="limitations">Limitations connues</a><a title="Lien permanent" href="#limitations" class="permalink">&para;</a></h2>
+<h2><a name="limitations" id="limitations">Limitations connues</a> <a title="Lien permanent" href="#limitations" class="permalink">&para;</a></h2>
     <p><code class="module"><a href="../mod/mod_info.html">mod_info</a></code> tire ses informations de
     la configuration interprétée, et non du fichier de configuration
     original. La manière dont l'arbre de configuration interprété est
@@ -188,7 +188,7 @@ serveur</td></tr>
     </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="addmoduleinfo" id="addmoduleinfo">Directive</a> <a name="AddModuleInfo" id="AddModuleInfo">AddModuleInfo</a><a title="Lien permanent" href="#addmoduleinfo" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="addmoduleinfo" id="addmoduleinfo">Directive</a> <a name="AddModuleInfo" id="AddModuleInfo">AddModuleInfo</a> <a title="Lien permanent" href="#addmoduleinfo" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ajoute des données supplémentaires aux informations de
 module affichées par le gestionnaire server-info</td></tr>

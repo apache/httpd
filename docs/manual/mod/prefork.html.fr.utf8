@@ -86,7 +86,7 @@ qu'utilise le serveur HTTP Apache</a></li>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="how-it-works" id="how-it-works">Comment ça marche</a><a title="Lien permanent" href="#how-it-works" class="permalink">&para;</a></h2>
+<h2><a name="how-it-works" id="how-it-works">Comment ça marche</a> <a title="Lien permanent" href="#how-it-works" class="permalink">&para;</a></h2>
     <p>Un processus de contrôle unique a pour tâche de lancer les
     processus enfants qui attendent les connexions et les traitent au
     fur et à mesure qu'elles arrivent. Apache httpd essaie toujours de
@@ -131,7 +131,7 @@ qu'utilise le serveur HTTP Apache</a></li>
     performances</a></p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="maxspareservers" id="maxspareservers">Directive</a> <a name="MaxSpareServers" id="MaxSpareServers">MaxSpareServers</a><a title="Lien permanent" href="#maxspareservers" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="maxspareservers" id="maxspareservers">Directive</a> <a name="MaxSpareServers" id="MaxSpareServers">MaxSpareServers</a> <a title="Lien permanent" href="#maxspareservers" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre maximum de processus serveurs enfants
 inactifs</td></tr>
@@ -164,7 +164,7 @@ inactifs</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="minspareservers" id="minspareservers">Directive</a> <a name="MinSpareServers" id="MinSpareServers">MinSpareServers</a><a title="Lien permanent" href="#minspareservers" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="minspareservers" id="minspareservers">Directive</a> <a name="MinSpareServers" id="MinSpareServers">MinSpareServers</a> <a title="Lien permanent" href="#minspareservers" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre minimum de processus serveurs enfants
 inactifs</td></tr>

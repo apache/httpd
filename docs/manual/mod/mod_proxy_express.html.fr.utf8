@@ -99,7 +99,7 @@ dynamique inverse de masse</td></tr>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="proxyexpressdbmfile" id="proxyexpressdbmfile">Directive</a> <a name="ProxyExpressDBMFile" id="ProxyExpressDBMFile">ProxyExpressDBMFile</a><a title="Lien permanent" href="#proxyexpressdbmfile" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxyexpressdbmfile" id="proxyexpressdbmfile">Directive</a> <a name="ProxyExpressDBMFile" id="ProxyExpressDBMFile">ProxyExpressDBMFile</a> <a title="Lien permanent" href="#proxyexpressdbmfile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Chemin du fichier DBM.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyExpressDBMFile &lt;chemin&gt;</code></td></tr>
@@ -141,7 +141,7 @@ dynamique inverse de masse</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="proxyexpressdbmtype" id="proxyexpressdbmtype">Directive</a> <a name="ProxyExpressDBMType" id="ProxyExpressDBMType">ProxyExpressDBMType</a><a title="Lien permanent" href="#proxyexpressdbmtype" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxyexpressdbmtype" id="proxyexpressdbmtype">Directive</a> <a name="ProxyExpressDBMType" id="ProxyExpressDBMType">ProxyExpressDBMType</a> <a title="Lien permanent" href="#proxyexpressdbmtype" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Type de fichier DBM.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyExpressDBMFile &lt;type&gt;</code></td></tr>
@@ -169,7 +169,7 @@ dynamique inverse de masse</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="proxyexpressenable" id="proxyexpressenable">Directive</a> <a name="ProxyExpressEnable" id="ProxyExpressEnable">ProxyExpressEnable</a><a title="Lien permanent" href="#proxyexpressenable" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxyexpressenable" id="proxyexpressenable">Directive</a> <a name="ProxyExpressEnable" id="ProxyExpressEnable">ProxyExpressEnable</a> <a title="Lien permanent" href="#proxyexpressenable" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la fonctionnalité du module.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyExpressEnable [on|off]</code></td></tr>

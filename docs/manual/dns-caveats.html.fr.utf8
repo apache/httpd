@@ -47,7 +47,7 @@
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="example" id="example">Un exemple simple</a><a title="Lien permanent" href="#example" class="permalink">&para;</a></h2>
+<h2><a name="example" id="example">Un exemple simple</a> <a title="Lien permanent" href="#example" class="permalink">&para;</a></h2>
     
 
     <pre class="prettyprint lang-config"># Ceci est un exemple de mauvaise configuration ; ne l'utilisez pas comme base
@@ -102,7 +102,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="denial" id="denial">Déni de service</a><a title="Lien permanent" href="#denial" class="permalink">&para;</a></h2>
+<h2><a name="denial" id="denial">Déni de service</a> <a title="Lien permanent" href="#denial" class="permalink">&para;</a></h2>
     
 
     <p>Considérons cet extrait de configuration :</p>
@@ -138,7 +138,7 @@
     virtuels qui vont les servir. Un document de base décrivant ceci <a href="vhosts/details.html">est disponible</a>.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="main" id="main">L'adresse du "serveur principal"</a><a title="Lien permanent" href="#main" class="permalink">&para;</a></h2>
+<h2><a name="main" id="main">L'adresse du "serveur principal"</a> <a title="Lien permanent" href="#main" class="permalink">&para;</a></h2>
     
 
     <p><a href="vhosts/name-based.html">Le support des
@@ -172,7 +172,7 @@
     système d'exploitation.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="tips" id="tips">Conseils pour éviter ce genre de problème</a><a title="Lien permanent" href="#tips" class="permalink">&para;</a></h2>
+<h2><a name="tips" id="tips">Conseils pour éviter ce genre de problème</a> <a title="Lien permanent" href="#tips" class="permalink">&para;</a></h2>
     
 
     <ul>

@@ -109,7 +109,7 @@ Directory</a></li>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="contents" id="contents">Sommaire</a><a title="Lien permanent" href="#contents" class="permalink">&para;</a></h2>
+<h2><a name="contents" id="contents">Sommaire</a> <a title="Lien permanent" href="#contents" class="permalink">&para;</a></h2>
 
     <ul>
       <li> <a href="#gcaveats">Mises en garde à caractère général</a> </li>
@@ -154,7 +154,7 @@ Directory</a></li>
     </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="gcaveats" id="gcaveats">Mises en garde à caractère général</a><a title="Lien permanent" href="#gcaveats" class="permalink">&para;</a></h2>
+<h2><a name="gcaveats" id="gcaveats">Mises en garde à caractère général</a> <a title="Lien permanent" href="#gcaveats" class="permalink">&para;</a></h2>
 <p>Ce module effectue une mise en cache des résultats du processus
 d'authentification et d'autorisation en fonction de la configuration du
 module <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code>. Les modifications effectuées au niveau
@@ -168,7 +168,7 @@ configuration de la mise en cache.
 </p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="operation" id="operation">Mode opératoire</a><a title="Lien permanent" href="#operation" class="permalink">&para;</a></h2>
+<h2><a name="operation" id="operation">Mode opératoire</a> <a title="Lien permanent" href="#operation" class="permalink">&para;</a></h2>
 
     <p>L'utilisateur se voit accorder l'accès selon un processus en deux
     phases. La première phase est l'authentification, au cours de
@@ -392,7 +392,7 @@ configuration de la mise en cache.
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="requiredirectives" id="requiredirectives">Les directives requises</a><a title="Lien permanent" href="#requiredirectives" class="permalink">&para;</a></h2>
+<h2><a name="requiredirectives" id="requiredirectives">Les directives requises</a> <a title="Lien permanent" href="#requiredirectives" class="permalink">&para;</a></h2>
 
     <p>Les directives <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> d'Apache sont utilisées
     au cours de la phase d'autorisation afin de s'assurer que
@@ -630,7 +630,7 @@ Website)"
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Exemples</a><a title="Lien permanent" href="#examples" class="permalink">&para;</a></h2>
+<h2><a name="examples" id="examples">Exemples</a> <a title="Lien permanent" href="#examples" class="permalink">&para;</a></h2>
 
     <ul>
       <li>
@@ -732,7 +732,7 @@ Require valid-user</pre>
     </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="usingtls" id="usingtls">Utilisation de TLS</a><a title="Lien permanent" href="#usingtls" class="permalink">&para;</a></h2>
+<h2><a name="usingtls" id="usingtls">Utilisation de TLS</a> <a title="Lien permanent" href="#usingtls" class="permalink">&para;</a></h2>
 
     <p>Pour l'utilisation de TLS, voir les directives du module
     <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> <code class="directive"><a href="../mod/mod_ldap.html#ldaptrustedclientcert">LDAPTrustedClientCert</a></code>, <code class="directive"><a href="../mod/mod_ldap.html#ldaptrustedglobalcert">LDAPTrustedGlobalCert</a></code> et <code class="directive"><a href="../mod/mod_ldap.html#ldaptrustedmode">LDAPTrustedMode</a></code>.</p>
@@ -746,7 +746,7 @@ Require valid-user</pre>
     port.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="usingssl" id="usingssl">Utilisation de SSL</a><a title="Lien permanent" href="#usingssl" class="permalink">&para;</a></h2>
+<h2><a name="usingssl" id="usingssl">Utilisation de SSL</a> <a title="Lien permanent" href="#usingssl" class="permalink">&para;</a></h2>
 
     <p>Pour l'utilisation de SSL, voir les directives du module
     <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> <code class="directive"><a href="../mod/mod_ldap.html#ldaptrustedclientcert">LDAPTrustedClientCert</a></code>, <code class="directive"><a href="../mod/mod_ldap.html#ldaptrustedglobalcert">LDAPTrustedGlobalCert</a></code> et <code class="directive"><a href="../mod/mod_ldap.html#ldaptrustedmode">LDAPTrustedMode</a></code>.</p>
@@ -757,7 +757,7 @@ Require valid-user</pre>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="exposed" id="exposed">Mise à disposition des informations de
-connexion</a><a title="Lien permanent" href="#exposed" class="permalink">&para;</a></h2>
+connexion</a> <a title="Lien permanent" href="#exposed" class="permalink">&para;</a></h2>
 
     <p>Au cours du processus d'<em>authentification</em>, les attributs LDAP
     spécifiés par la directive <code class="directive"><a href="#authldapurl">authldapurl</a></code> sont enregistrés
@@ -780,7 +780,7 @@ connexion</a><a title="Lien permanent" href="#exposed" class="permalink">&para;<
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="activedirectory" id="activedirectory">Utilisation d'Active
-Directory</a><a title="Lien permanent" href="#activedirectory" class="permalink">&para;</a></h2>
+Directory</a> <a title="Lien permanent" href="#activedirectory" class="permalink">&para;</a></h2>
 
     <p>Active Directory peut supporter plusieurs domaines à la fois.
     Pour faire la distinction entre les utilisateurs de plusieurs
@@ -822,7 +822,7 @@ AuthLDAPURL ldap://10.0.0.1:3268/?userPrincipalName?sub</pre>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="frontpage" id="frontpage">Utilisation de Microsoft
-    FrontPage avec mod_authnz_ldap</a><a title="Lien permanent" href="#frontpage" class="permalink">&para;</a></h2>
+    FrontPage avec mod_authnz_ldap</a> <a title="Lien permanent" href="#frontpage" class="permalink">&para;</a></h2>
 
     <p>Normalement, FrontPage utilise des fichiers utilisateur/groupe
     spécifiques à FrontPage-web (c'est à dire les modules
@@ -906,7 +906,7 @@ Require group     "mygroupfile"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authldapauthorizeprefix" id="authldapauthorizeprefix">Directive</a> <a name="AuthLDAPAuthorizePrefix" id="AuthLDAPAuthorizePrefix">AuthLDAPAuthorizePrefix</a><a title="Lien permanent" href="#authldapauthorizeprefix" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="authldapauthorizeprefix" id="authldapauthorizeprefix">Directive</a> <a name="AuthLDAPAuthorizePrefix" id="AuthLDAPAuthorizePrefix">AuthLDAPAuthorizePrefix</a> <a title="Lien permanent" href="#authldapauthorizeprefix" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Spécifie le préfixe ajouté aux variables d'environnement
 durant la phase d'autorisation</td></tr>
@@ -933,7 +933,7 @@ durant la phase d'autorisation</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authldapbindauthoritative" id="authldapbindauthoritative">Directive</a> <a name="AuthLDAPBindAuthoritative" id="AuthLDAPBindAuthoritative">AuthLDAPBindAuthoritative</a><a title="Lien permanent" href="#authldapbindauthoritative" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="authldapbindauthoritative" id="authldapbindauthoritative">Directive</a> <a name="AuthLDAPBindAuthoritative" id="AuthLDAPBindAuthoritative">AuthLDAPBindAuthoritative</a> <a title="Lien permanent" href="#authldapbindauthoritative" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine si l'on doit utiliser d'autres fournisseurs
 d'authentification lorsque le serveur ne peut pas valider les données
@@ -969,7 +969,7 @@ DN.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authldapbinddn" id="authldapbinddn">Directive</a> <a name="AuthLDAPBindDN" id="AuthLDAPBindDN">AuthLDAPBindDN</a><a title="Lien permanent" href="#authldapbinddn" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="authldapbinddn" id="authldapbinddn">Directive</a> <a name="AuthLDAPBindDN" id="AuthLDAPBindDN">AuthLDAPBindDN</a> <a title="Lien permanent" href="#authldapbinddn" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Un DN optionnel pour se connecter au serveur
 LDAP</td></tr>
@@ -986,7 +986,7 @@ LDAP</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authldapbindpassword" id="authldapbindpassword">Directive</a> <a name="AuthLDAPBindPassword" id="AuthLDAPBindPassword">AuthLDAPBindPassword</a><a title="Lien permanent" href="#authldapbindpassword" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="authldapbindpassword" id="authldapbindpassword">Directive</a> <a name="AuthLDAPBindPassword" id="AuthLDAPBindPassword">AuthLDAPBindPassword</a> <a title="Lien permanent" href="#authldapbindpassword" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Mot de passe à utiliser en conjonction avec le DN de
 connexion</td></tr>
@@ -1023,7 +1023,7 @@ AuthLDAPBindPassword "exec:/path/to/otherProgram argument1"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authldapcharsetconfig" id="authldapcharsetconfig">Directive</a> <a name="AuthLDAPCharsetConfig" id="AuthLDAPCharsetConfig">AuthLDAPCharsetConfig</a><a title="Lien permanent" href="#authldapcharsetconfig" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="authldapcharsetconfig" id="authldapcharsetconfig">Directive</a> <a name="AuthLDAPCharsetConfig" id="AuthLDAPCharsetConfig">AuthLDAPCharsetConfig</a> <a title="Lien permanent" href="#authldapcharsetconfig" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Chemin du fichier de configuration de la correspondance
 langage/jeu de caractères</td></tr>
@@ -1054,7 +1054,7 @@ langage/jeu de caractères</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authldapcompareasuser" id="authldapcompareasuser">Directive</a> <a name="AuthLDAPCompareAsUser" id="AuthLDAPCompareAsUser">AuthLDAPCompareAsUser</a><a title="Lien permanent" href="#authldapcompareasuser" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="authldapcompareasuser" id="authldapcompareasuser">Directive</a> <a name="AuthLDAPCompareAsUser" id="AuthLDAPCompareAsUser">AuthLDAPCompareAsUser</a> <a title="Lien permanent" href="#authldapcompareasuser" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Utilisation des données d'authentification de l'utilisateur
 pour effectuer les comparaisons pour l'attribution des autorisations</td></tr>
@@ -1094,7 +1094,7 @@ pour effectuer les comparaisons pour l'attribution des autorisations</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authldapcomparednonserver" id="authldapcomparednonserver">Directive</a> <a name="AuthLDAPCompareDNOnServer" id="AuthLDAPCompareDNOnServer">AuthLDAPCompareDNOnServer</a><a title="Lien permanent" href="#authldapcomparednonserver" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="authldapcomparednonserver" id="authldapcomparednonserver">Directive</a> <a name="AuthLDAPCompareDNOnServer" id="AuthLDAPCompareDNOnServer">AuthLDAPCompareDNOnServer</a> <a title="Lien permanent" href="#authldapcomparednonserver" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Utilise le serveur LDAP pour comparer les DNs</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthLDAPCompareDNOnServer on|off</code></td></tr>
@@ -1118,7 +1118,7 @@ pour effectuer les comparaisons pour l'attribution des autorisations</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authldapdereferencealiases" id="authldapdereferencealiases">Directive</a> <a name="AuthLDAPDereferenceAliases" id="AuthLDAPDereferenceAliases">AuthLDAPDereferenceAliases</a><a title="Lien permanent" href="#authldapdereferencealiases" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="authldapdereferencealiases" id="authldapdereferencealiases">Directive</a> <a name="AuthLDAPDereferenceAliases" id="AuthLDAPDereferenceAliases">AuthLDAPDereferenceAliases</a> <a title="Lien permanent" href="#authldapdereferencealiases" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>À quel moment le module va déréférencer les
 alias</td></tr>
@@ -1136,7 +1136,7 @@ alias</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authldapgroupattribute" id="authldapgroupattribute">Directive</a> <a name="AuthLDAPGroupAttribute" id="AuthLDAPGroupAttribute">AuthLDAPGroupAttribute</a><a title="Lien permanent" href="#authldapgroupattribute" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="authldapgroupattribute" id="authldapgroupattribute">Directive</a> <a name="AuthLDAPGroupAttribute" id="AuthLDAPGroupAttribute">AuthLDAPGroupAttribute</a> <a title="Lien permanent" href="#authldapgroupattribute" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'attribut LDAP utilisé pour vérifier l'appartenance d'un
 utilisateur à un groupe.</td></tr>
@@ -1156,7 +1156,7 @@ utilisateur à un groupe.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authldapgroupattributeisdn" id="authldapgroupattributeisdn">Directive</a> <a name="AuthLDAPGroupAttributeIsDN" id="AuthLDAPGroupAttributeIsDN">AuthLDAPGroupAttributeIsDN</a><a title="Lien permanent" href="#authldapgroupattributeisdn" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="authldapgroupattributeisdn" id="authldapgroupattributeisdn">Directive</a> <a name="AuthLDAPGroupAttributeIsDN" id="AuthLDAPGroupAttributeIsDN">AuthLDAPGroupAttributeIsDN</a> <a title="Lien permanent" href="#authldapgroupattributeisdn" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Utilise le DN de l'utilisateur pour vérifier son
 appartenance à un groupe</td></tr>
@@ -1180,7 +1180,7 @@ appartenance à un groupe</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authldapinitialbindasuser" id="authldapinitialbindasuser">Directive</a> <a name="AuthLDAPInitialBindAsUser" id="AuthLDAPInitialBindAsUser">AuthLDAPInitialBindAsUser</a><a title="Lien permanent" href="#authldapinitialbindasuser" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="authldapinitialbindasuser" id="authldapinitialbindasuser">Directive</a> <a name="AuthLDAPInitialBindAsUser" id="AuthLDAPInitialBindAsUser">AuthLDAPInitialBindAsUser</a> <a title="Lien permanent" href="#authldapinitialbindasuser" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine si le serveur effectue la recherche initiale du
 DN en utilisant le nom propre de l'utilisateur pour l'authentification
@@ -1225,7 +1225,7 @@ codées en dur pour le serveur</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authldapinitialbindpattern" id="authldapinitialbindpattern">Directive</a> <a name="AuthLDAPInitialBindPattern" id="AuthLDAPInitialBindPattern">AuthLDAPInitialBindPattern</a><a title="Lien permanent" href="#authldapinitialbindpattern" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="authldapinitialbindpattern" id="authldapinitialbindpattern">Directive</a> <a name="AuthLDAPInitialBindPattern" id="AuthLDAPInitialBindPattern">AuthLDAPInitialBindPattern</a> <a title="Lien permanent" href="#authldapinitialbindpattern" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Spécifie la modification a apporter au nom d'utilisateur
 pour l'authentification de base lors de l'authentification auprès du
@@ -1278,7 +1278,7 @@ distant utilisé tel quel)</code></td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authldapmaxsubgroupdepth" id="authldapmaxsubgroupdepth">Directive</a> <a name="AuthLDAPMaxSubGroupDepth" id="AuthLDAPMaxSubGroupDepth">AuthLDAPMaxSubGroupDepth</a><a title="Lien permanent" href="#authldapmaxsubgroupdepth" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="authldapmaxsubgroupdepth" id="authldapmaxsubgroupdepth">Directive</a> <a name="AuthLDAPMaxSubGroupDepth" id="AuthLDAPMaxSubGroupDepth">AuthLDAPMaxSubGroupDepth</a> <a title="Lien permanent" href="#authldapmaxsubgroupdepth" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Spécifie la profondeur d'imbrication des sous-groupes
 maximale prise en compte avant l'abandon de la recherche de
@@ -1316,7 +1316,7 @@ premières versions 2.5</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authldapremoteuserattribute" id="authldapremoteuserattribute">Directive</a> <a name="AuthLDAPRemoteUserAttribute" id="AuthLDAPRemoteUserAttribute">AuthLDAPRemoteUserAttribute</a><a title="Lien permanent" href="#authldapremoteuserattribute" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="authldapremoteuserattribute" id="authldapremoteuserattribute">Directive</a> <a name="AuthLDAPRemoteUserAttribute" id="AuthLDAPRemoteUserAttribute">AuthLDAPRemoteUserAttribute</a> <a title="Lien permanent" href="#authldapremoteuserattribute" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Spécifie l'attribut dont la valeur renvoyée au cours de la
 requête de l'utilisateur sera utilisée pour définir la variable
@@ -1343,7 +1343,7 @@ d'environnement REMOTE_USER</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authldapremoteuserisdn" id="authldapremoteuserisdn">Directive</a> <a name="AuthLDAPRemoteUserIsDN" id="AuthLDAPRemoteUserIsDN">AuthLDAPRemoteUserIsDN</a><a title="Lien permanent" href="#authldapremoteuserisdn" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="authldapremoteuserisdn" id="authldapremoteuserisdn">Directive</a> <a name="AuthLDAPRemoteUserIsDN" id="AuthLDAPRemoteUserIsDN">AuthLDAPRemoteUserIsDN</a> <a title="Lien permanent" href="#authldapremoteuserisdn" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Utilise le DN de l'utilisateur pour définir la variable
 d'environnement REMOTE_USER</td></tr>
@@ -1364,7 +1364,7 @@ d'environnement REMOTE_USER</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authldapsearchasuser" id="authldapsearchasuser">Directive</a> <a name="AuthLDAPSearchAsUser" id="AuthLDAPSearchAsUser">AuthLDAPSearchAsUser</a><a title="Lien permanent" href="#authldapsearchasuser" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="authldapsearchasuser" id="authldapsearchasuser">Directive</a> <a name="AuthLDAPSearchAsUser" id="AuthLDAPSearchAsUser">AuthLDAPSearchAsUser</a> <a title="Lien permanent" href="#authldapsearchasuser" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Utilise les données d'authentification de l'utilisateur
 pour la recherche des autorisations</td></tr>
@@ -1404,7 +1404,7 @@ pour la recherche des autorisations</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authldapsubgroupattribute" id="authldapsubgroupattribute">Directive</a> <a name="AuthLDAPSubGroupAttribute" id="AuthLDAPSubGroupAttribute">AuthLDAPSubGroupAttribute</a><a title="Lien permanent" href="#authldapsubgroupattribute" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="authldapsubgroupattribute" id="authldapsubgroupattribute">Directive</a> <a name="AuthLDAPSubGroupAttribute" id="AuthLDAPSubGroupAttribute">AuthLDAPSubGroupAttribute</a> <a title="Lien permanent" href="#authldapsubgroupattribute" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Spécifie les noms d'attribut, un par directive, utilisés
 pour différencier les membres du groupe courant qui sont eux-mêmes des
@@ -1430,7 +1430,7 @@ Apache</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authldapsubgroupclass" id="authldapsubgroupclass">Directive</a> <a name="AuthLDAPSubGroupClass" id="AuthLDAPSubGroupClass">AuthLDAPSubGroupClass</a><a title="Lien permanent" href="#authldapsubgroupclass" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="authldapsubgroupclass" id="authldapsubgroupclass">Directive</a> <a name="AuthLDAPSubGroupClass" id="AuthLDAPSubGroupClass">AuthLDAPSubGroupClass</a> <a title="Lien permanent" href="#authldapsubgroupclass" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Spécifie quelles valeurs d'objectClass LDAP identifient les
 objets de l'annuaire qui sont des groupes au cours du traitement des
@@ -1462,7 +1462,7 @@ Apache</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authldapurl" id="authldapurl">Directive</a> <a name="AuthLDAPUrl" id="AuthLDAPUrl">AuthLDAPUrl</a><a title="Lien permanent" href="#authldapurl" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="authldapurl" id="authldapurl">Directive</a> <a name="AuthLDAPUrl" id="AuthLDAPUrl">AuthLDAPUrl</a> <a title="Lien permanent" href="#authldapurl" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'URL permettant de spécifier les paramètres de la
 recherche LDAP</td></tr>

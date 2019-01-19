@@ -75,7 +75,7 @@ de répertoire</td></tr>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="directorycheckhandler" id="directorycheckhandler">Directive</a> <a name="DirectoryCheckHandler" id="DirectoryCheckHandler">DirectoryCheckHandler</a><a title="Lien permanent" href="#directorycheckhandler" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="directorycheckhandler" id="directorycheckhandler">Directive</a> <a name="DirectoryCheckHandler" id="DirectoryCheckHandler">DirectoryCheckHandler</a> <a title="Lien permanent" href="#directorycheckhandler" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit la réponse de ce module lorsqu'un autre
 gestionnaire est utilisé</td></tr>
@@ -106,7 +106,7 @@ comme si "DirectoryCheckHandler ON" avait été spécifié.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="directoryindex" id="directoryindex">Directive</a> <a name="DirectoryIndex" id="DirectoryIndex">DirectoryIndex</a><a title="Lien permanent" href="#directoryindex" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="directoryindex" id="directoryindex">Directive</a> <a name="DirectoryIndex" id="DirectoryIndex">DirectoryIndex</a> <a title="Lien permanent" href="#directoryindex" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Liste des fichiers ressources à rechercher lorsque le
 client envoie une requête pour un répertoire</td></tr>
@@ -186,7 +186,7 @@ client envoie une requête pour un répertoire</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="directoryindexredirect" id="directoryindexredirect">Directive</a> <a name="DirectoryIndexRedirect" id="DirectoryIndexRedirect">DirectoryIndexRedirect</a><a title="Lien permanent" href="#directoryindexredirect" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="directoryindexredirect" id="directoryindexredirect">Directive</a> <a name="DirectoryIndexRedirect" id="DirectoryIndexRedirect">DirectoryIndexRedirect</a> <a title="Lien permanent" href="#directoryindexredirect" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit une redirection externe pour les index de
 répertoires.
@@ -230,7 +230,7 @@ répertoires.
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="directoryslash" id="directoryslash">Directive</a> <a name="DirectorySlash" id="DirectorySlash">DirectorySlash</a><a title="Lien permanent" href="#directoryslash" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="directoryslash" id="directoryslash">Directive</a> <a name="DirectorySlash" id="DirectorySlash">DirectorySlash</a> <a title="Lien permanent" href="#directoryslash" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Activation/Désactivation de la redirection "slash de
 fin"</td></tr>
@@ -294,7 +294,7 @@ fin"</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="fallbackresource" id="fallbackresource">Directive</a> <a name="FallbackResource" id="FallbackResource">FallbackResource</a><a title="Lien permanent" href="#fallbackresource" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="fallbackresource" id="fallbackresource">Directive</a> <a name="FallbackResource" id="FallbackResource">FallbackResource</a> <a title="Lien permanent" href="#fallbackresource" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit une URL par défaut pour les requêtes qui ne ciblent
 aucun fichier</td></tr>

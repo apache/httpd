@@ -47,7 +47,7 @@ pour une exploration plus détaillée.</p>
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="cryptographictech" id="cryptographictech">Techniques de chiffrement</a><a title="Lien permanent" href="#cryptographictech" class="permalink">&para;</a></h2>
+<h2><a name="cryptographictech" id="cryptographictech">Techniques de chiffrement</a> <a title="Lien permanent" href="#cryptographictech" class="permalink">&para;</a></h2>
 
 <p>La maîtrise de SSL nécessite la compréhension des algorithmes de
 chiffrement, des fonctions relatives aux empreintes de messages (comme les
@@ -162,7 +162,7 @@ elle seule peut l'avoir signé (non-répudiation).</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="certificates" id="certificates">Certificats</a><a title="Lien permanent" href="#certificates" class="permalink">&para;</a></h2>
+<h2><a name="certificates" id="certificates">Certificats</a> <a title="Lien permanent" href="#certificates" class="permalink">&para;</a></h2>
 
 <p>Bien qu'Alice soit parvenue à envoyer un message privé à sa banque, après
 l'avoir signé et avoir ainsi assuré l'intégrité du message, elle doit encore vérifier
@@ -386,7 +386,7 @@ dUHzICxBVC1lnHyYGjDuAMhe396lYAn8bCld1/L4NMGBCQ==
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="ssl" id="ssl">Couche Points d'Accès Sécurisés - Secure Sockets Layer (SSL)</a><a title="Lien permanent" href="#ssl" class="permalink">&para;</a></h2>
+<h2><a name="ssl" id="ssl">Couche Points d'Accès Sécurisés - Secure Sockets Layer (SSL)</a> <a title="Lien permanent" href="#ssl" class="permalink">&para;</a></h2>
 
 <p>Le protocole Couche Points d'Accès Sécurisés est une couche protocolaire
 qui pourrait s'intercaler entre un protocole d'une couche réseau orientée
@@ -652,7 +652,7 @@ l'Internet Engineering Task Force (IETF).</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="references" id="references">Références</a><a title="Lien permanent" href="#references" class="permalink">&para;</a></h2>
+<h2><a name="references" id="references">Références</a> <a title="Lien permanent" href="#references" class="permalink">&para;</a></h2>
 
 <dl>
 <dt><a id="AC96" name="AC96">[AC96]</a></dt>

@@ -77,7 +77,7 @@ serveur HTTP Apache 2.2</a></li>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="smart" id="smart">Filtrage intelligent</a><a title="Lien permanent" href="#smart" class="permalink">&para;</a></h2>
+<h2><a name="smart" id="smart">Filtrage intelligent</a> <a title="Lien permanent" href="#smart" class="permalink">&para;</a></h2>
     <p>Dans le modèle de filtrage traditionnel, les filtres sont insérés
     sans condition à l'aide de la directive <code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code> et des directives
     apparentées. Chaque filtre doit ensuite déterminer s'il doit
@@ -94,7 +94,7 @@ serveur HTTP Apache 2.2</a></li>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="terms" id="terms">Déclarations de filtres, fournisseurs et
-chaînes</a><a title="Lien permanent" href="#terms" class="permalink">&para;</a></h2>
+chaînes</a> <a title="Lien permanent" href="#terms" class="permalink">&para;</a></h2>
     <p class="figure">
     <img src="../images/mod_filter_old.gif" width="160" height="310" alt="[Cette image illustre le modèle de filtrage traditionnel]" /><br />
     <dfn>Figure 1:</dfn> Le modèle de filtrage traditionnel</p>
@@ -131,7 +131,7 @@ chaînes</a><a title="Lien permanent" href="#terms" class="permalink">&para;</a>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="config" id="config">Configuration de la chaîne de
-filtrage</a><a title="Lien permanent" href="#config" class="permalink">&para;</a></h2>
+filtrage</a> <a title="Lien permanent" href="#config" class="permalink">&para;</a></h2>
     <p>Trois étapes sont nécessaires pour configurer une chaîne de
     filtrage avec <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code>. Voir ci-dessous la
     description détaillée des directives.</p>
@@ -168,7 +168,7 @@ filtrage</a><a title="Lien permanent" href="#config" class="permalink">&para;</a
 </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="errordocs" id="errordocs">Filtrage et statut de la réponse</a><a title="Lien permanent" href="#errordocs" class="permalink">&para;</a></h2>
+<h2><a name="errordocs" id="errordocs">Filtrage et statut de la réponse</a> <a title="Lien permanent" href="#errordocs" class="permalink">&para;</a></h2>
     <p>Normalement, mod_filter n'applique les filtres qu'aux réponses
     possédant un statut HTTP 200 (OK). Pour pouvoir filtrer des
     documents possédant un autre statut, vous devez définir la variable
@@ -180,7 +180,7 @@ filtrage</a><a title="Lien permanent" href="#config" class="permalink">&para;</a
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="upgrade" id="upgrade">Mise à jour depuis une configuration du
-serveur HTTP Apache 2.2</a><a title="Lien permanent" href="#upgrade" class="permalink">&para;</a></h2>
+serveur HTTP Apache 2.2</a> <a title="Lien permanent" href="#upgrade" class="permalink">&para;</a></h2>
     <p>La directive <code class="directive"><a href="#filterprovider">FilterProvider</a></code> a été modifiée par
     rapport à httpd 2.2 : les arguments <var>match</var> et
     <var>dispatch</var> ont été remplacés par l'argument unique
@@ -198,7 +198,7 @@ serveur HTTP Apache 2.2</a><a title="Lien permanent" href="#upgrade" class="perm
     être remplacées par des comparaisons d'expressions rationnelles.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Exemples</a><a title="Lien permanent" href="#examples" class="permalink">&para;</a></h2>
+<h2><a name="examples" id="examples">Exemples</a> <a title="Lien permanent" href="#examples" class="permalink">&para;</a></h2>
     <dl>
     <dt>Inclusions côté serveur (SSI)</dt>
     <dd>Un exemple simple de remplacement de la directive <code class="directive"><a href="../mod/core.html#addoutputfilterbytype">AddOutputFilterByType</a></code>. On crée un nouveau filtre
@@ -257,7 +257,7 @@ FilterProvider repack png_pack  "%{CONTENT_TYPE} = 'image/png'"
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="protocol" id="protocol">Gestion de protocole</a><a title="Lien permanent" href="#protocol" class="permalink">&para;</a></h2>
+<h2><a name="protocol" id="protocol">Gestion de protocole</a> <a title="Lien permanent" href="#protocol" class="permalink">&para;</a></h2>
     <p>Historiquement, tout filtre doit s'assurer que toute modification
     qu'il effectue est correctement représentée dans les en-têtes de la
     réponse HTTP, et qu'il ne s'exécutera pas si cette exécution
@@ -306,7 +306,7 @@ FilterProvider repack png_pack  "%{CONTENT_TYPE} = 'image/png'"
     l'expérimenter avec précautions.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="addoutputfilterbytype" id="addoutputfilterbytype">Directive</a> <a name="AddOutputFilterByType" id="AddOutputFilterByType">AddOutputFilterByType</a><a title="Lien permanent" href="#addoutputfilterbytype" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="addoutputfilterbytype" id="addoutputfilterbytype">Directive</a> <a name="AddOutputFilterByType" id="AddOutputFilterByType">AddOutputFilterByType</a> <a title="Lien permanent" href="#addoutputfilterbytype" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>assigne un filtre en sortie pour un type de média
 particulier</td></tr>
@@ -355,7 +355,7 @@ particulier</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="filterchain" id="filterchain">Directive</a> <a name="FilterChain" id="FilterChain">FilterChain</a><a title="Lien permanent" href="#filterchain" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="filterchain" id="filterchain">Directive</a> <a name="FilterChain" id="FilterChain">FilterChain</a> <a title="Lien permanent" href="#filterchain" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure la chaîne de filtrage</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>FilterChain [+=-@!]<var>smart-filter-name</var> <var>...</var></code></td></tr>
@@ -393,7 +393,7 @@ particulier</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="filterdeclare" id="filterdeclare">Directive</a> <a name="FilterDeclare" id="FilterDeclare">FilterDeclare</a><a title="Lien permanent" href="#filterdeclare" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="filterdeclare" id="filterdeclare">Directive</a> <a name="FilterDeclare" id="FilterDeclare">FilterDeclare</a> <a title="Lien permanent" href="#filterdeclare" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Déclare un filtre intelligent</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>FilterDeclare <var>smart-filter-name</var> <var>[type]</var></code></td></tr>
@@ -416,7 +416,7 @@ particulier</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="filterprotocol" id="filterprotocol">Directive</a> <a name="FilterProtocol" id="FilterProtocol">FilterProtocol</a><a title="Lien permanent" href="#filterprotocol" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="filterprotocol" id="filterprotocol">Directive</a> <a name="FilterProtocol" id="FilterProtocol">FilterProtocol</a> <a title="Lien permanent" href="#filterprotocol" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Vérifie le respect du protocole HTTP</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>FilterProtocol <var>smart-filter-name</var> [<var>provider-name</var>]
@@ -474,7 +474,7 @@ particulier</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="filterprovider" id="filterprovider">Directive</a> <a name="FilterProvider" id="FilterProvider">FilterProvider</a><a title="Lien permanent" href="#filterprovider" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="filterprovider" id="filterprovider">Directive</a> <a name="FilterProvider" id="FilterProvider">FilterProvider</a> <a title="Lien permanent" href="#filterprovider" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enregistre un filtre de contenu</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>FilterProvider <var>smart-filter-name</var> <var>provider-name</var>
@@ -506,7 +506,7 @@ Apache</a>, pour une référence complète et d'autres exemples.</li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="filtertrace" id="filtertrace">Directive</a> <a name="FilterTrace" id="FilterTrace">FilterTrace</a><a title="Lien permanent" href="#filtertrace" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="filtertrace" id="filtertrace">Directive</a> <a name="FilterTrace" id="FilterTrace">FilterTrace</a> <a title="Lien permanent" href="#filtertrace" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Obtention d'informations de débogage/diagnostique en
 provenance de <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code></td></tr>

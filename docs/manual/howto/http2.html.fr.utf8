@@ -46,7 +46,7 @@
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code></li><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="protocol" id="protocol">Le protocole HTTP/2</a><a title="Lien permanent" href="#protocol" class="permalink">&para;</a></h2>
+<h2><a name="protocol" id="protocol">Le protocole HTTP/2</a> <a title="Lien permanent" href="#protocol" class="permalink">&para;</a></h2>
     
     <p>HTTP/2 est une évolution du protocole de la couche application le plus
     utilisé au monde, HTTP. Cette évolution permet en particulier une utilisation
@@ -97,7 +97,7 @@
     </ul>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="implementation" id="implementation">HTTP/2 dans Apache httpd</a><a title="Lien permanent" href="#implementation" class="permalink">&para;</a></h2>
+<h2><a name="implementation" id="implementation">HTTP/2 dans Apache httpd</a> <a title="Lien permanent" href="#implementation" class="permalink">&para;</a></h2>
     
     <p>Le protocole HTTP/2 est implémenté dans Apache httpd via un module
     propre, pertinemment nommé <code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code>. Ce
@@ -111,7 +111,7 @@
     vous indiquera comment votre application peut en tirer parti.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="building" id="building">Compilation de httpd avec le support de HTTP/2</a><a title="Lien permanent" href="#building" class="permalink">&para;</a></h2>
+<h2><a name="building" id="building">Compilation de httpd avec le support de HTTP/2</a> <a title="Lien permanent" href="#building" class="permalink">&para;</a></h2>
     
     <p><code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code> se base sur la bibliothèque
     de <a href="https://nghttp2.org">nghttp2</a> pour son implémentation. Pour
@@ -137,7 +137,7 @@
     1.0.2. ou supérieure.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="basic-config" id="basic-config">Configuration de base</a><a title="Lien permanent" href="#basic-config" class="permalink">&para;</a></h2>
+<h2><a name="basic-config" id="basic-config">Configuration de base</a> <a title="Lien permanent" href="#basic-config" class="permalink">&para;</a></h2>
     
 
     <p>Maintenant que vous disposez d'un binaire <code>httpd</code> compilé avec le
@@ -216,7 +216,7 @@
     commun</a>.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="mpm-config" id="mpm-config">Configuration du MPM</a><a title="Lien permanent" href="#mpm-config" class="permalink">&para;</a></h2>
+<h2><a name="mpm-config" id="mpm-config">Configuration du MPM</a> <a title="Lien permanent" href="#mpm-config" class="permalink">&para;</a></h2>
     
 
     <p>Tous les modules multiprocessus (MPM) fournis avec httpd supportent
@@ -242,7 +242,7 @@
     fonctionne.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="clients" id="clients">Clients</a><a title="Lien permanent" href="#clients" class="permalink">&para;</a></h2>
+<h2><a name="clients" id="clients">Clients</a> <a title="Lien permanent" href="#clients" class="permalink">&para;</a></h2>
     
     <p>La plupart des navigateurs modernes supportent HTTP/2, mais seulement sur
     des connexions SSL : Firefox v43, Chrome v45, Safari v9, iOS Safari v9,
@@ -257,7 +257,7 @@
     est <a href="https://curl.haxx.se">curl</a>.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="tools" id="tools">Outils efficaces pour déboguer HTTP/2</a><a title="Lien permanent" href="#tools" class="permalink">&para;</a></h2>
+<h2><a name="tools" id="tools">Outils efficaces pour déboguer HTTP/2</a> <a title="Lien permanent" href="#tools" class="permalink">&para;</a></h2>
     
     <p>Le premier d'entre eux est bien entendu <a href="https://curl.haxx.se">curl</a>. Assurez-vous au préalable que votre
     version supporte HTTP/2 en vérifiant ses <code>Fonctionnalités</code> :</p>
@@ -287,7 +287,7 @@
     qui permet d'indiquer que votre navigateur utilise HTTP/2.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="push" id="push">Push serveur</a><a title="Lien permanent" href="#push" class="permalink">&para;</a></h2>
+<h2><a name="push" id="push">Push serveur</a> <a title="Lien permanent" href="#push" class="permalink">&para;</a></h2>
     
     <p>Le protocole HTTP/2 permet au serveur de proposer (PUSH) des réponses
     pour lesquelles le client n'a rien demandé. La communication autour de ces
@@ -370,7 +370,7 @@
     d'exposer les cookies là où ils ne sont pas censés être visibles.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="earlyhints" id="earlyhints">Suggestions précoces</a><a title="Lien permanent" href="#earlyhints" class="permalink">&para;</a></h2>
+<h2><a name="earlyhints" id="earlyhints">Suggestions précoces</a> <a title="Lien permanent" href="#earlyhints" class="permalink">&para;</a></h2>
     
     <p>A l'instar des ressources PUSHées, une autre méthode consiste à envoyer
     des en-têtes <code>Link</code> au client avant même que la réponse ne soit

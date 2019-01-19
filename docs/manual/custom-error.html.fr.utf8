@@ -60,7 +60,7 @@
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="configuration" id="configuration">Configuration</a><a title="Lien permanent" href="#configuration" class="permalink">&para;</a></h2>
+<h2><a name="configuration" id="configuration">Configuration</a> <a title="Lien permanent" href="#configuration" class="permalink">&para;</a></h2>
 
     <p>Les messages d'erreur personnalisés sont configurés via la
     directive <code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code>, qui
@@ -96,7 +96,7 @@ ErrorDocument 401 /subscription/how_to_subscribe.html</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="variables" id="variables">Variables disponibles</a><a title="Lien permanent" href="#variables" class="permalink">&para;</a></h2>
+<h2><a name="variables" id="variables">Variables disponibles</a> <a title="Lien permanent" href="#variables" class="permalink">&para;</a></h2>
 
       <p>La redirection vers une autre URL peut être utile, mais
       seulement s'il est possible de transmettre certaines informations
@@ -145,7 +145,7 @@ ErrorDocument 401 /subscription/how_to_subscribe.html</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="custom" id="custom">Personnalisation des messages d'erreur</a><a title="Lien permanent" href="#custom" class="permalink">&para;</a></h2>
+<h2><a name="custom" id="custom">Personnalisation des messages d'erreur</a> <a title="Lien permanent" href="#custom" class="permalink">&para;</a></h2>
 
 
 	<p>Si vous faites pointer votre directive
@@ -183,7 +183,7 @@ printf "Status: %s Condition Intercepted\n", $ENV{"REDIRECT_STATUS"};
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="multi-lang" id="multi-lang">Messages d'erreur personnalisés
-  multilingues</a><a title="Lien permanent" href="#multi-lang" class="permalink">&para;</a></h2>
+  multilingues</a> <a title="Lien permanent" href="#multi-lang" class="permalink">&para;</a></h2>
 
     <p>Vous trouverez dans la distribution du serveur HTTP Apache un
     répertoire contenant des messages d'erreur personnalisés traduits en

@@ -61,7 +61,7 @@
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="recommended" id="recommended">Exemples de configurations</a><a title="Lien permanent" href="#recommended" class="permalink">&para;</a></h2>
+<h2><a name="recommended" id="recommended">Exemples de configurations</a> <a title="Lien permanent" href="#recommended" class="permalink">&para;</a></h2>
     <div class="warning"><h3>Compression et TLS</h3>
         <p>Certaines applications web sont vulnérables à une attaque de type vol
 	d'informations lorsqu'une connexion TLS transmet des données
@@ -76,7 +76,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="enable" id="enable">Activation de la compression</a><a title="Lien permanent" href="#enable" class="permalink">&para;</a></h2>
+<h2><a name="enable" id="enable">Activation de la compression</a> <a title="Lien permanent" href="#enable" class="permalink">&para;</a></h2>
     <div class="warning"><h3>Compression et TLS</h3>
         <p>Certaines applications web sont vulnérables à une attaque de type vol
 	d'informations lorsqu'une connexion TLS transmet des données
@@ -119,7 +119,7 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-brotli</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="proxies" id="proxies">Interaction avec les serveurs mandataires</a><a title="Lien permanent" href="#proxies" class="permalink">&para;</a></h2>
+<h2><a name="proxies" id="proxies">Interaction avec les serveurs mandataires</a> <a title="Lien permanent" href="#proxies" class="permalink">&para;</a></h2>
 
     <p>Le module <code class="module"><a href="../mod/mod_brotli.html">mod_brotli</a></code> envoie un en-tête de réponse HTTP
     <code>Vary:Accept-Encoding</code> pour indiquer aux mandataires qu'une
@@ -148,7 +148,7 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-brotli</pre>
 </div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="precompressed" id="precompressed">Servir un contenu pré-compressé</a><a title="Lien permanent" href="#precompressed" class="permalink">&para;</a></h2>
+<h2><a name="precompressed" id="precompressed">Servir un contenu pré-compressé</a> <a title="Lien permanent" href="#precompressed" class="permalink">&para;</a></h2>
 
     <p>comme <code class="module"><a href="../mod/mod_brotli.html">mod_brotli</a></code> compresse systématiquement un contenu
     pour chaque requête le concernant, il est possible d'obtenir un gain en
@@ -181,7 +181,7 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-brotli</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="brotlialteretag" id="brotlialteretag">Directive</a> <a name="BrotliAlterETag" id="BrotliAlterETag">BrotliAlterETag</a><a title="Lien permanent" href="#brotlialteretag" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="brotlialteretag" id="brotlialteretag">Directive</a> <a name="BrotliAlterETag" id="BrotliAlterETag">BrotliAlterETag</a> <a title="Lien permanent" href="#brotlialteretag" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Comment l'en-tête de réponse ETag doit être modifié au cours de la
 compression</td></tr>
@@ -216,7 +216,7 @@ compression</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="brotlicompressionmaxinputblock" id="brotlicompressionmaxinputblock">Directive</a> <a name="BrotliCompressionMaxInputBlock" id="BrotliCompressionMaxInputBlock">BrotliCompressionMaxInputBlock</a><a title="Lien permanent" href="#brotlicompressionmaxinputblock" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="brotlicompressionmaxinputblock" id="brotlicompressionmaxinputblock">Directive</a> <a name="BrotliCompressionMaxInputBlock" id="BrotliCompressionMaxInputBlock">BrotliCompressionMaxInputBlock</a> <a title="Lien permanent" href="#brotlicompressionmaxinputblock" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille maximale du bloc de données en entrée</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>BrotliCompressionMaxInputBlock <var>value</var></code></td></tr>
@@ -232,7 +232,7 @@ compression</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="brotlicompressionquality" id="brotlicompressionquality">Directive</a> <a name="BrotliCompressionQuality" id="BrotliCompressionQuality">BrotliCompressionQuality</a><a title="Lien permanent" href="#brotlicompressionquality" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="brotlicompressionquality" id="brotlicompressionquality">Directive</a> <a name="BrotliCompressionQuality" id="BrotliCompressionQuality">BrotliCompressionQuality</a> <a title="Lien permanent" href="#brotlicompressionquality" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Qualité de la compression</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>BrotliCompressionQuality <var>value</var></code></td></tr>
@@ -249,7 +249,7 @@ compression</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="brotlicompressionwindow" id="brotlicompressionwindow">Directive</a> <a name="BrotliCompressionWindow" id="BrotliCompressionWindow">BrotliCompressionWindow</a><a title="Lien permanent" href="#brotlicompressionwindow" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="brotlicompressionwindow" id="brotlicompressionwindow">Directive</a> <a name="BrotliCompressionWindow" id="BrotliCompressionWindow">BrotliCompressionWindow</a> <a title="Lien permanent" href="#brotlicompressionwindow" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille de la fenêtre de compression glissante brotli</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>BrotliCompressionWindow <var>value</var></code></td></tr>
@@ -265,7 +265,7 @@ compression</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="brotlifilternote" id="brotlifilternote">Directive</a> <a name="BrotliFilterNote" id="BrotliFilterNote">BrotliFilterNote</a><a title="Lien permanent" href="#brotlifilternote" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="brotlifilternote" id="brotlifilternote">Directive</a> <a name="BrotliFilterNote" id="BrotliFilterNote">BrotliFilterNote</a> <a title="Lien permanent" href="#brotlifilternote" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enregistre le taux de compression dans une note à des fins de
 journalisation</td></tr>

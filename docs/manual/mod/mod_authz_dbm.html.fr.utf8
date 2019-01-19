@@ -57,7 +57,7 @@
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="requiredirectives" id="requiredirectives">The Require Directives</a><a title="Lien permanent" href="#requiredirectives" class="permalink">&para;</a></h2>
+<h2><a name="requiredirectives" id="requiredirectives">The Require Directives</a> <a title="Lien permanent" href="#requiredirectives" class="permalink">&para;</a></h2>
 
     <p>Les directives <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> d'Apache permettent,
     au cours de la phase d'autorisation, de s'assurer qu'un utilisateur
@@ -89,7 +89,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Exemple d'utilisation</a><a title="Lien permanent" href="#examples" class="permalink">&para;</a></h2>
+<h2><a name="examples" id="examples">Exemple d'utilisation</a> <a title="Lien permanent" href="#examples" class="permalink">&para;</a></h2>
 
 <p><em>Notez que si vous utilisez mod_authz_dbm, le mot-clé pour les
 groupes d'authentification qui était auparavant <code>group</code> est
@@ -106,7 +106,7 @@ maintenant <code>dbm-group</code> :</em>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authdbmgroupfile" id="authdbmgroupfile">Directive</a> <a name="AuthDBMGroupFile" id="AuthDBMGroupFile">AuthDBMGroupFile</a><a title="Lien permanent" href="#authdbmgroupfile" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="authdbmgroupfile" id="authdbmgroupfile">Directive</a> <a name="AuthDBMGroupFile" id="AuthDBMGroupFile">AuthDBMGroupFile</a> <a title="Lien permanent" href="#authdbmgroupfile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le nom du fichier de base de données qui liste
 les groupes d'utilisateurs.</td></tr>
@@ -163,7 +163,7 @@ AuthDBMUserFile "/www/userbase"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authzdbmtype" id="authzdbmtype">Directive</a> <a name="AuthzDBMType" id="AuthzDBMType">AuthzDBMType</a><a title="Lien permanent" href="#authzdbmtype" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="authzdbmtype" id="authzdbmtype">Directive</a> <a name="AuthzDBMType" id="AuthzDBMType">AuthzDBMType</a> <a title="Lien permanent" href="#authzdbmtype" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le type de fichier de base de données contenant
 la liste des groupes d'utilisateurs</td></tr>

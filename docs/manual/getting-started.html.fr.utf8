@@ -41,7 +41,7 @@ parcourir les bases du sujet.</p>
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="clientserver" id="clientserver">Clients, serveurs et URLs</a><a title="Lien permanent" href="#clientserver" class="permalink">&para;</a></h2>
+<h2><a name="clientserver" id="clientserver">Clients, serveurs et URLs</a> <a title="Lien permanent" href="#clientserver" class="permalink">&para;</a></h2>
 
 
 <p>
@@ -82,7 +82,7 @@ journaux</a>.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="dns" id="dns">Noms d'hôte et DNS</a><a title="Lien permanent" href="#dns" class="permalink">&para;</a></h2>
+<h2><a name="dns" id="dns">Noms d'hôte et DNS</a> <a title="Lien permanent" href="#dns" class="permalink">&para;</a></h2>
 
 
 <p>Pour se connecter à un serveur, le client doit tout d'abord résoudre
@@ -118,7 +118,7 @@ dernier : </p>
 et à propos du DNS à <a href="http://en.wikipedia.org/wiki/Domain_Name_System">Wikipedia.org/wiki/Domain_Name_System</a>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="configuration" id="configuration">Fichiers de configuration et directives</a><a title="Lien permanent" href="#configuration" class="permalink">&para;</a></h2>
+<h2><a name="configuration" id="configuration">Fichiers de configuration et directives</a> <a title="Lien permanent" href="#configuration" class="permalink">&para;</a></h2>
 
 
 <p>La configuration du serveur HTTP Apache s'effectue via de simples
@@ -163,7 +163,7 @@ du serveur. Vous trouverez plus de détails à propos des fichiers
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="content" id="content">Contenu du site web</a><a title="Lien permanent" href="#content" class="permalink">&para;</a></h2>
+<h2><a name="content" id="content">Contenu du site web</a> <a title="Lien permanent" href="#content" class="permalink">&para;</a></h2>
 
 
 <p>Si le contenu du site web peut se présenter sous de nombreuses
@@ -203,7 +203,7 @@ ce document, et nous vous invitons à consulter le site de leur éditeur
 pour accéder à leur documentation.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="logs" id="logs">Fichiers journaux et résolution des problèmes</a><a title="Lien permanent" href="#logs" class="permalink">&para;</a></h2>
+<h2><a name="logs" id="logs">Fichiers journaux et résolution des problèmes</a> <a title="Lien permanent" href="#logs" class="permalink">&para;</a></h2>
 
 <p>En tant qu'administrateur d'un serveur HTTP Apache, vos sources
 d'informations principales sont les fichiers journaux, et en particulier
@@ -227,7 +227,7 @@ l'erreur.</p>
 <p>Vous trouverez plus de détails à ce sujet dans la <a href="logs.html">Documentation sur la journalisation</a>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="other" id="other">Et maintenant, quelle est la suite des opérations ?</a><a title="Lien permanent" href="#other" class="permalink">&para;</a></h2>
+<h2><a name="other" id="other">Et maintenant, quelle est la suite des opérations ?</a> <a title="Lien permanent" href="#other" class="permalink">&para;</a></h2>
 
 
 <p>La question des prérequis étant réglée, il est temps de passer aux

@@ -69,7 +69,7 @@
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="format" id="format">Format du flux de données</a><a title="Lien permanent" href="#format" class="permalink">&para;</a></h2>
+<h2><a name="format" id="format">Format du flux de données</a> <a title="Lien permanent" href="#format" class="permalink">&para;</a></h2>
     
 
     <p>Le flux de données chiffrées comporte un bloc IV optionnel suivi des
@@ -82,7 +82,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="config" id="config">Clés et blocs IV</a><a title="Lien permanent" href="#config" class="permalink">&para;</a></h2>
+<h2><a name="config" id="config">Clés et blocs IV</a> <a title="Lien permanent" href="#config" class="permalink">&para;</a></h2>
     
 
     <p>Les directives <code class="directive"><a href="#cryptokey">CryptoKey</a></code> et
@@ -116,7 +116,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="handler" id="handler">Gestionnaire de clé de chiffrement</a><a title="Lien permanent" href="#handler" class="permalink">&para;</a></h2>
+<h2><a name="handler" id="handler">Gestionnaire de clé de chiffrement</a> <a title="Lien permanent" href="#handler" class="permalink">&para;</a></h2>
     
 
     <p>Le gestionnaire <strong>crypto-key</strong> permet de fournir la clé aux
@@ -139,7 +139,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="hls" id="hls">HTTP Live Streaming (HLS)</a><a title="Lien permanent" href="#hls" class="permalink">&para;</a></h2>
+<h2><a name="hls" id="hls">HTTP Live Streaming (HLS)</a> <a title="Lien permanent" href="#hls" class="permalink">&para;</a></h2>
     
 
     <p>Le protocole HLS supporte les flux chiffrés qui utilisent l'algorithme de
@@ -179,7 +179,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="cryptocipher" id="cryptocipher">Directive</a> <a name="CryptoCipher" id="CryptoCipher">CryptoCipher</a><a title="Lien permanent" href="#cryptocipher" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="cryptocipher" id="cryptocipher">Directive</a> <a name="CryptoCipher" id="CryptoCipher">CryptoCipher</a> <a title="Lien permanent" href="#cryptocipher" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'algorithme de chiffrement que le filtre crypto doit utiliser</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CryptoCipher name</code></td></tr>
@@ -201,7 +201,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="cryptodriver" id="cryptodriver">Directive</a> <a name="CryptoDriver" id="CryptoDriver">CryptoDriver</a><a title="Lien permanent" href="#cryptodriver" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="cryptodriver" id="cryptodriver">Directive</a> <a name="CryptoDriver" id="CryptoDriver">CryptoDriver</a> <a title="Lien permanent" href="#cryptodriver" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nom du pilote crypto à utiliser</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CryptoDriver name</code></td></tr>
@@ -218,7 +218,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="cryptoiv" id="cryptoiv">Directive</a> <a name="CryptoIV" id="CryptoIV">CryptoIV</a><a title="Lien permanent" href="#cryptoiv" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="cryptoiv" id="cryptoiv">Directive</a> <a name="CryptoIV" id="CryptoIV">CryptoIV</a> <a title="Lien permanent" href="#cryptoiv" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le Vecteur d'Initialisation IV (Initialisation Vector) que le
 filtre crypto doit utiliser</td></tr>
@@ -247,7 +247,7 @@ filtre crypto doit utiliser</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="cryptokey" id="cryptokey">Directive</a> <a name="CryptoKey" id="CryptoKey">CryptoKey</a><a title="Lien permanent" href="#cryptokey" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="cryptokey" id="cryptokey">Directive</a> <a name="CryptoKey" id="CryptoKey">CryptoKey</a> <a title="Lien permanent" href="#cryptokey" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Clé que le filtre crypto doit utiliser</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CryptoKey value</code></td></tr>
@@ -273,7 +273,7 @@ filtre crypto doit utiliser</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="cryptosize" id="cryptosize">Directive</a> <a name="CryptoSize" id="CryptoSize">CryptoSize</a><a title="Lien permanent" href="#cryptosize" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="cryptosize" id="cryptosize">Directive</a> <a name="CryptoSize" id="CryptoSize">CryptoSize</a> <a title="Lien permanent" href="#cryptosize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille maximale en octets du tampon utilisé par le filtre crypto</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CryptoSize integer</code></td></tr>

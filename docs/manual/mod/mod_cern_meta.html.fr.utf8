@@ -62,7 +62,7 @@ CERN</td></tr>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="metadir" id="metadir">Directive</a> <a name="MetaDir" id="MetaDir">MetaDir</a><a title="Lien permanent" href="#metadir" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="metadir" id="metadir">Directive</a> <a name="MetaDir" id="MetaDir">MetaDir</a> <a title="Lien permanent" href="#metadir" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nom du répertoire où trouver les fichiers de
 métainformations dans le style du CERN</td></tr>
@@ -91,7 +91,7 @@ métainformations dans le style du CERN</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="metafiles" id="metafiles">Directive</a> <a name="MetaFiles" id="MetaFiles">MetaFiles</a><a title="Lien permanent" href="#metafiles" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="metafiles" id="metafiles">Directive</a> <a name="MetaFiles" id="MetaFiles">MetaFiles</a> <a title="Lien permanent" href="#metafiles" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active le traitement des métafichiers du CERN</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MetaFiles on|off</code></td></tr>
@@ -106,7 +106,7 @@ métainformations dans le style du CERN</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="metasuffix" id="metasuffix">Directive</a> <a name="MetaSuffix" id="MetaSuffix">MetaSuffix</a><a title="Lien permanent" href="#metasuffix" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="metasuffix" id="metasuffix">Directive</a> <a name="MetaSuffix" id="MetaSuffix">MetaSuffix</a> <a title="Lien permanent" href="#metasuffix" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Suffixe du fichier contenant les métainformations dans le
 style du CERN</td></tr>

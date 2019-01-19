@@ -125,7 +125,7 @@ multiples</a></li>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="multipleext" id="multipleext">Fichiers avec extensions
-multiples</a><a title="Lien permanent" href="#multipleext" class="permalink">&para;</a></h2>
+multiples</a> <a title="Lien permanent" href="#multipleext" class="permalink">&para;</a></h2>
     <p>Les fichiers peuvent posséder plusieurs extensions dont l'ordre
     est <em>normalement</em> sans importance. Par exemple, si
     le fichier <code>welcome.html.fr</code> est associé au type de
@@ -177,7 +177,7 @@ multiples</a><a title="Lien permanent" href="#multipleext" class="permalink">&pa
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="contentencoding" id="contentencoding">Codage du contenu</a><a title="Lien permanent" href="#contentencoding" class="permalink">&para;</a></h2>
+<h2><a name="contentencoding" id="contentencoding">Codage du contenu</a> <a title="Lien permanent" href="#contentencoding" class="permalink">&para;</a></h2>
     <p>Un fichier d'un <a class="glossarylink" href="../glossary.html#type de médium" title="voir glossaire">type de médium</a> particulier
     peut être aussi codé d'une certaine manière pour simplifier sa
     transmission sur Internet. Alors que cela concerne en général la
@@ -222,7 +222,7 @@ multiples</a><a title="Lien permanent" href="#multipleext" class="permalink">&pa
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="charset-lang" id="charset-lang">Jeux de caractères et langages</a><a title="Lien permanent" href="#charset-lang" class="permalink">&para;</a></h2>
+<h2><a name="charset-lang" id="charset-lang">Jeux de caractères et langages</a> <a title="Lien permanent" href="#charset-lang" class="permalink">&para;</a></h2>
     <p>En plus du type de fichier et du codage, un autre élément
     important d'information est le langage dans lequel le document est
     écrit, et avec quel jeu de caractères le contenu du fichier doit
@@ -265,7 +265,7 @@ Content-Type: text/plain; charset=ISO-8859-1
     
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="addcharset" id="addcharset">Directive</a> <a name="AddCharset" id="AddCharset">AddCharset</a><a title="Lien permanent" href="#addcharset" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="addcharset" id="addcharset">Directive</a> <a name="AddCharset" id="AddCharset">AddCharset</a> <a title="Lien permanent" href="#addcharset" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Associe les extensions de noms de fichiers spécifiées au
 jeu de caractères spécifié</td></tr>
@@ -316,7 +316,7 @@ AddCharset SHIFT_JIS .sjis</pre>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="addencoding" id="addencoding">Directive</a> <a name="AddEncoding" id="AddEncoding">AddEncoding</a><a title="Lien permanent" href="#addencoding" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="addencoding" id="addencoding">Directive</a> <a name="AddEncoding" id="AddEncoding">AddEncoding</a> <a title="Lien permanent" href="#addencoding" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Associe les extensions de noms de fichiers données au type
 de codage spécifié</td></tr>
@@ -367,7 +367,7 @@ AddEncoding x-compress .Z</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="addhandler" id="addhandler">Directive</a> <a name="AddHandler" id="AddHandler">AddHandler</a><a title="Lien permanent" href="#addhandler" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="addhandler" id="addhandler">Directive</a> <a name="AddHandler" id="AddHandler">AddHandler</a> <a title="Lien permanent" href="#addhandler" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Associe les extensions de noms de fichiers données au
 gestionnaire spécifié</td></tr>
@@ -405,7 +405,7 @@ gestionnaire spécifié</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="addinputfilter" id="addinputfilter">Directive</a> <a name="AddInputFilter" id="AddInputFilter">AddInputFilter</a><a title="Lien permanent" href="#addinputfilter" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="addinputfilter" id="addinputfilter">Directive</a> <a name="AddInputFilter" id="AddInputFilter">AddInputFilter</a> <a title="Lien permanent" href="#addinputfilter" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Associe les extensions de noms de fichiers aux
 filtres spécifiés qui traiteront les requêtes clients</td></tr>
@@ -444,7 +444,7 @@ filtres spécifiés qui traiteront les requêtes clients</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="addlanguage" id="addlanguage">Directive</a> <a name="AddLanguage" id="AddLanguage">AddLanguage</a><a title="Lien permanent" href="#addlanguage" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="addlanguage" id="addlanguage">Directive</a> <a name="AddLanguage" id="AddLanguage">AddLanguage</a> <a title="Lien permanent" href="#addlanguage" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Associe l'extension de nom de fichier donnée au langage
 spécifié</td></tr>
@@ -503,7 +503,7 @@ AddLanguage en-us .en</pre>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="addoutputfilter" id="addoutputfilter">Directive</a> <a name="AddOutputFilter" id="AddOutputFilter">AddOutputFilter</a><a title="Lien permanent" href="#addoutputfilter" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="addoutputfilter" id="addoutputfilter">Directive</a> <a name="AddOutputFilter" id="AddOutputFilter">AddOutputFilter</a> <a title="Lien permanent" href="#addoutputfilter" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Associe les extensions de noms de fichiers aux
 filtres spécifiés qui traiteront les réponses en provenance du
@@ -574,7 +574,7 @@ AddOutputFilter DEFLATE shtml
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="addtype" id="addtype">Directive</a> <a name="AddType" id="AddType">AddType</a><a title="Lien permanent" href="#addtype" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="addtype" id="addtype">Directive</a> <a name="AddType" id="AddType">AddType</a> <a title="Lien permanent" href="#addtype" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Associe les extensions de noms de fichiers au type de
 contenu spécifié</td></tr>
@@ -664,7 +664,7 @@ contenu spécifié</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="defaultlanguage" id="defaultlanguage">Directive</a> <a name="DefaultLanguage" id="DefaultLanguage">DefaultLanguage</a><a title="Lien permanent" href="#defaultlanguage" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="defaultlanguage" id="defaultlanguage">Directive</a> <a name="DefaultLanguage" id="DefaultLanguage">DefaultLanguage</a> <a title="Lien permanent" href="#defaultlanguage" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Défini un symbole de langage par défaut à affecter au champ
 d'en-tête Content-Language pour toutes les ressources dans le contexte
@@ -705,7 +705,7 @@ associé.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="modmimeusepathinfo" id="modmimeusepathinfo">Directive</a> <a name="ModMimeUsePathInfo" id="ModMimeUsePathInfo">ModMimeUsePathInfo</a><a title="Lien permanent" href="#modmimeusepathinfo" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="modmimeusepathinfo" id="modmimeusepathinfo">Directive</a> <a name="ModMimeUsePathInfo" id="ModMimeUsePathInfo">ModMimeUsePathInfo</a> <a title="Lien permanent" href="#modmimeusepathinfo" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Indique à <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> de traiter les éléments
 de <code>path_info</code> en tant que parties du nom de
@@ -744,7 +744,7 @@ fichier</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="multiviewsmatch" id="multiviewsmatch">Directive</a> <a name="MultiviewsMatch" id="MultiviewsMatch">MultiviewsMatch</a><a title="Lien permanent" href="#multiviewsmatch" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="multiviewsmatch" id="multiviewsmatch">Directive</a> <a name="MultiviewsMatch" id="MultiviewsMatch">MultiviewsMatch</a> <a title="Lien permanent" href="#multiviewsmatch" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Les types de fichiers qui seront inclus lors d'une
 recherche de correspondance de fichier avec les vues multiples
@@ -811,7 +811,7 @@ recherche de correspondance de fichier avec les vues multiples
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="removecharset" id="removecharset">Directive</a> <a name="RemoveCharset" id="RemoveCharset">RemoveCharset</a><a title="Lien permanent" href="#removecharset" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="removecharset" id="removecharset">Directive</a> <a name="RemoveCharset" id="RemoveCharset">RemoveCharset</a> <a title="Lien permanent" href="#removecharset" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Supprime toute association de jeu de caractères pour un
 ensemble d'extensions de noms de fichiers</td></tr>
@@ -837,7 +837,7 @@ ensemble d'extensions de noms de fichiers</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="removeencoding" id="removeencoding">Directive</a> <a name="RemoveEncoding" id="RemoveEncoding">RemoveEncoding</a><a title="Lien permanent" href="#removeencoding" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="removeencoding" id="removeencoding">Directive</a> <a name="RemoveEncoding" id="RemoveEncoding">RemoveEncoding</a> <a title="Lien permanent" href="#removeencoding" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Supprime toute association de codage de contenu pour un
 ensemble d'extensions de noms de fichiers</td></tr>
@@ -879,7 +879,7 @@ AddType text/plain .asc
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="removehandler" id="removehandler">Directive</a> <a name="RemoveHandler" id="RemoveHandler">RemoveHandler</a><a title="Lien permanent" href="#removehandler" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="removehandler" id="removehandler">Directive</a> <a name="RemoveHandler" id="RemoveHandler">RemoveHandler</a> <a title="Lien permanent" href="#removehandler" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Supprime toute association de gestionnaire à un ensemble
 d'extensions de noms de fichiers</td></tr>
@@ -915,7 +915,7 @@ d'extensions de noms de fichiers</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="removeinputfilter" id="removeinputfilter">Directive</a> <a name="RemoveInputFilter" id="RemoveInputFilter">RemoveInputFilter</a><a title="Lien permanent" href="#removeinputfilter" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="removeinputfilter" id="removeinputfilter">Directive</a> <a name="RemoveInputFilter" id="RemoveInputFilter">RemoveInputFilter</a> <a title="Lien permanent" href="#removeinputfilter" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Supprime toute association de filtre en entrée à un
 ensemble d'extensions de noms de fichiers</td></tr>
@@ -944,7 +944,7 @@ ensemble d'extensions de noms de fichiers</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="removelanguage" id="removelanguage">Directive</a> <a name="RemoveLanguage" id="RemoveLanguage">RemoveLanguage</a><a title="Lien permanent" href="#removelanguage" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="removelanguage" id="removelanguage">Directive</a> <a name="RemoveLanguage" id="RemoveLanguage">RemoveLanguage</a> <a title="Lien permanent" href="#removelanguage" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Supprime toute association de langage à un ensemble
 d'extensions de noms de fichiers</td></tr>
@@ -967,7 +967,7 @@ d'extensions de noms de fichiers</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="removeoutputfilter" id="removeoutputfilter">Directive</a> <a name="RemoveOutputFilter" id="RemoveOutputFilter">RemoveOutputFilter</a><a title="Lien permanent" href="#removeoutputfilter" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="removeoutputfilter" id="removeoutputfilter">Directive</a> <a name="RemoveOutputFilter" id="RemoveOutputFilter">RemoveOutputFilter</a> <a title="Lien permanent" href="#removeoutputfilter" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Supprime toute association de filtre en sortie à un
 ensemble d'extensions de noms de fichiers</td></tr>
@@ -997,7 +997,7 @@ ensemble d'extensions de noms de fichiers</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="removetype" id="removetype">Directive</a> <a name="RemoveType" id="RemoveType">RemoveType</a><a title="Lien permanent" href="#removetype" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="removetype" id="removetype">Directive</a> <a name="RemoveType" id="RemoveType">RemoveType</a> <a title="Lien permanent" href="#removetype" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Supprime toute association de type de contenu à un ensemble
 d'extensions de noms de fichiers</td></tr>
@@ -1039,7 +1039,7 @@ d'extensions de noms de fichiers</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="typesconfig" id="typesconfig">Directive</a> <a name="TypesConfig" id="TypesConfig">TypesConfig</a><a title="Lien permanent" href="#typesconfig" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="typesconfig" id="typesconfig">Directive</a> <a name="TypesConfig" id="TypesConfig">TypesConfig</a> <a title="Lien permanent" href="#typesconfig" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le chemin du fichier <code>mime.types</code></td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>TypesConfig <var>chemin-fichier</var></code></td></tr>

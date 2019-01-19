@@ -47,7 +47,7 @@ passe</h1>
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><code class="program"><a href="../programs/httpd.html">httpd</a></code></li><li><code class="program"><a href="../programs/dbmmanage.html">dbmmanage</a></code></li><li><code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code></li><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="synopsis" id="synopsis">Syntaxe</a><a title="Lien permanent" href="#synopsis" class="permalink">&para;</a></h2>
+<h2><a name="synopsis" id="synopsis">Syntaxe</a> <a title="Lien permanent" href="#synopsis" class="permalink">&para;</a></h2>
     <p><code><strong>htdbm</strong>
     [ -<strong>T</strong><var>DBTYPE</var> ]
     [ -<strong>i</strong> ]
@@ -136,7 +136,7 @@ passe</h1>
     <var>nom-fichier</var></code></p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="options" id="options">Options</a><a title="Lien permanent" href="#options" class="permalink">&para;</a></h2>
+<h2><a name="options" id="options">Options</a> <a title="Lien permanent" href="#options" class="permalink">&para;</a></h2>
     <dl>
     <dt><code>-b</code></dt>
     <dd>Utilise le mode batch ; en d'autres termes, le mot de passe est
@@ -244,7 +244,7 @@ passe</h1>
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="bugs" id="bugs">Bugs</a><a title="Lien permanent" href="#bugs" class="permalink">&para;</a></h2>
+<h2><a name="bugs" id="bugs">Bugs</a> <a title="Lien permanent" href="#bugs" class="permalink">&para;</a></h2>
     <p>Vous devez garder à l'esprit qu'il existe de nombreux formats de
     fichiers DBM différents, et que selon toute vraisemblance, des
     bibliothèques pour plus d'un format sont présentes sur votre
@@ -265,7 +265,7 @@ passe</h1>
     DBM.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="exit" id="exit">Valeur renvoyée</a><a title="Lien permanent" href="#exit" class="permalink">&para;</a></h2>
+<h2><a name="exit" id="exit">Valeur renvoyée</a> <a title="Lien permanent" href="#exit" class="permalink">&para;</a></h2>
     <p><code>htdbm</code> renvoie 0 ("true") si les nom d'utilisateur et
     mot de passe ont été créés ou mis à jour avec succès dans le fichier
     DBM. <code>htdbm</code> renvoie <code>1</code> s'il a rencontré un
@@ -280,7 +280,7 @@ passe</h1>
     fichier n'est pas un fichier de mots de passe DBM valide.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Exemples</a><a title="Lien permanent" href="#examples" class="permalink">&para;</a></h2>
+<h2><a name="examples" id="examples">Exemples</a> <a title="Lien permanent" href="#examples" class="permalink">&para;</a></h2>
     <div class="example"><p><code>
       htdbm /usr/local/etc/apache/.utilisateurs-htdbm jsmith
     </code></p></div>
@@ -327,7 +327,7 @@ passe</h1>
     supprime cette entrée temporaire.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="security" id="security">Considérations à propos de sécurité</a><a title="Lien permanent" href="#security" class="permalink">&para;</a></h2>
+<h2><a name="security" id="security">Considérations à propos de sécurité</a> <a title="Lien permanent" href="#security" class="permalink">&para;</a></h2>
     <p>Les fichiers de mots de passe Web tels que ceux que gère
     <code>htdbm</code> ne doivent <em>pas</em> être stockés dans
     l'espace d'URI du serveur Web -- en d'autres termes, il ne doit pas
@@ -354,7 +354,7 @@ passe</h1>
     non sûrs selon les standards actuels.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="restrictions" id="restrictions">Restrictions</a><a title="Lien permanent" href="#restrictions" class="permalink">&para;</a></h2>
+<h2><a name="restrictions" id="restrictions">Restrictions</a> <a title="Lien permanent" href="#restrictions" class="permalink">&para;</a></h2>
     <p>Sur la plate-forme Windows, les mots de passe chiffrés avec
     <code>htdbm</code> ont une taille limitée à <code>255</code>
     caractères. Si le mot de passe fourni est plus long, il sera tronqué

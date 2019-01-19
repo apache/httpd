@@ -91,7 +91,7 @@ système de fichiers</a></li>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="order" id="order">Chronologie du traitement</a><a title="Lien permanent" href="#order" class="permalink">&para;</a></h2>
+<h2><a name="order" id="order">Chronologie du traitement</a> <a title="Lien permanent" href="#order" class="permalink">&para;</a></h2>
 
     <p>Les alias et redirections apparaissant dans différents contextes
     sont traités comme les autres directives en respectant les <a href="../sections.html#mergin">règles de fusion</a> standards. Par
@@ -130,7 +130,7 @@ Alias "/foo" "/gaq"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="alias" id="alias">Directive</a> <a name="Alias" id="Alias">Alias</a><a title="Lien permanent" href="#alias" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="alias" id="alias">Directive</a> <a name="Alias" id="Alias">Alias</a> <a title="Lien permanent" href="#alias" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Met en correspondance des URLs avec des chemins du système
 de fichiers</td></tr>
@@ -214,7 +214,7 @@ de fichiers</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="aliasmatch" id="aliasmatch">Directive</a> <a name="AliasMatch" id="AliasMatch">AliasMatch</a><a title="Lien permanent" href="#aliasmatch" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="aliasmatch" id="aliasmatch">Directive</a> <a name="AliasMatch" id="AliasMatch">AliasMatch</a> <a title="Lien permanent" href="#aliasmatch" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Met en correspondance des URLs avec le système de fichiers
 en faisant intervenir les expressions rationnelles</td></tr>
@@ -294,7 +294,7 @@ en faisant intervenir les expressions rationnelles</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="redirect" id="redirect">Directive</a> <a name="Redirect" id="Redirect">Redirect</a><a title="Lien permanent" href="#redirect" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="redirect" id="redirect">Directive</a> <a name="Redirect" id="Redirect">Redirect</a> <a title="Lien permanent" href="#redirect" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Envoie une redirection externe demandant au client
 d'effectuer une autre requête avec une URL différente</td></tr>
@@ -422,7 +422,7 @@ Redirect 303 "/three" "http://example.com/other"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="redirectmatch" id="redirectmatch">Directive</a> <a name="RedirectMatch" id="RedirectMatch">RedirectMatch</a><a title="Lien permanent" href="#redirectmatch" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="redirectmatch" id="redirectmatch">Directive</a> <a name="RedirectMatch" id="RedirectMatch">RedirectMatch</a> <a title="Lien permanent" href="#redirectmatch" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Envoie une redirection externe faisant appel aux
 expressions rationnelles pour la mise en correspondance de l'URL
@@ -455,7 +455,7 @@ courante</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="redirectpermanent" id="redirectpermanent">Directive</a> <a name="RedirectPermanent" id="RedirectPermanent">RedirectPermanent</a><a title="Lien permanent" href="#redirectpermanent" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="redirectpermanent" id="redirectpermanent">Directive</a> <a name="RedirectPermanent" id="RedirectPermanent">RedirectPermanent</a> <a title="Lien permanent" href="#redirectpermanent" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Envoie une redirection externe permanente demandant au
 client d'effectuer une nouvelle requête avec une URL
@@ -472,7 +472,7 @@ différente</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="redirecttemp" id="redirecttemp">Directive</a> <a name="RedirectTemp" id="RedirectTemp">RedirectTemp</a><a title="Lien permanent" href="#redirecttemp" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="redirecttemp" id="redirecttemp">Directive</a> <a name="RedirectTemp" id="RedirectTemp">RedirectTemp</a> <a title="Lien permanent" href="#redirecttemp" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Envoie une redirection externe temporaire demandant au
 client d'effectuer une nouvelle requête avec une URL
@@ -489,7 +489,7 @@ différente</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="scriptalias" id="scriptalias">Directive</a> <a name="ScriptAlias" id="ScriptAlias">ScriptAlias</a><a title="Lien permanent" href="#scriptalias" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="scriptalias" id="scriptalias">Directive</a> <a name="ScriptAlias" id="ScriptAlias">ScriptAlias</a> <a title="Lien permanent" href="#scriptalias" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fait correspondre une URL à une zone du système de fichiers
 et désigne la cible comme script CGI</td></tr>
@@ -577,7 +577,7 @@ et désigne la cible comme script CGI</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="scriptaliasmatch" id="scriptaliasmatch">Directive</a> <a name="ScriptAliasMatch" id="ScriptAliasMatch">ScriptAliasMatch</a><a title="Lien permanent" href="#scriptaliasmatch" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="scriptaliasmatch" id="scriptaliasmatch">Directive</a> <a name="ScriptAliasMatch" id="ScriptAliasMatch">ScriptAliasMatch</a> <a title="Lien permanent" href="#scriptaliasmatch" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fait correspondre une URL à une zone du système de fichiers
 en faisant appel aux expressions rationnelles et en désignant la cible
