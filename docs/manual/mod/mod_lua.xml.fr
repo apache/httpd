@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1837405:1851341 (outdated) -->
+<!-- English Revision: 1851341 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -28,7 +28,7 @@
 
 <description>Fournit des points d'entrée Lua dans différentes parties du
 traitement des requêtes httpd</description>
-<status>Experimental</status>
+<status>Extension</status>
 <sourcefile>mod_lua.c</sourcefile>
 <identifier>lua_module</identifier>
 <compatibility>versions 2.3 et supérieures</compatibility>
@@ -45,12 +45,6 @@ l'autorisation.</p>
 <p>Vous trouverez davantage d'informations à propos du langage de
 programmation Lua sur <a href="http://www.lua.org/">le site web de
 Lua</a>.</p>
-
-<note><code>mod_lua</code> est encore au stade expérimental. Son mode
-d'utilisation et son comportement pourront changer à tout moment jusqu'à
-ce qu'il passe au stade stable, et ce même entre deux versions stables
-2.4.x. N'oublez pas de consulter le fichier CHANGES avant toute mise à
-jour.</note>
 
 <note type="warning"><title>Avertissement</title>
 <p>Ce module possède une grande capacité d'action sur le fonctrionnement
