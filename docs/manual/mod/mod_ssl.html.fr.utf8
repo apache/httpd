@@ -1721,6 +1721,8 @@ codés en PEM pour l'authentification des serveurs distants</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, section proxy</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
+version 2.4.30 du serveur HTTP Apache</td></tr>
 </table>
 <p>
 Cette directive permet de définir le fichier <em>tout-en-un</em> où sont
@@ -1744,6 +1746,8 @@ l'authentification des serveurs distants</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, section proxy</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
+version 2.4.30 du serveur HTTP Apache</td></tr>
 </table>
 <p>
 Cette directive permet de spécifier le répertoire où sont stockés les
@@ -1772,6 +1776,8 @@ pour l'authentification du serveur distant</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, section proxy</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
+version 2.4.30 du serveur HTTP Apache</td></tr>
 </table>
 <p>
 Active la vérification des révocations basée sur les Listes de
@@ -1809,6 +1815,8 @@ PEM pour l'authentification des serveurs distants</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, section proxy</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
+version 2.4.30 du serveur HTTP Apache</td></tr>
 </table>
 <p>
 Cette directive permet de définir le fichier <em>tout-en-un</em> où sont
@@ -1833,6 +1841,8 @@ l'authentification des serveurs distants</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, section proxy</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
+version 2.4.30 du serveur HTTP Apache</td></tr>
 </table>
 <p>
 Cette directive permet de définir le répertoire où sont stockées les
@@ -1862,6 +1872,8 @@ du serveur distant
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, section proxy</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
+version 2.4.30 du serveur HTTP Apache</td></tr>
 </table>
 <p>
 Cette directive permet de définir si le champ CN du certificat du serveur
@@ -1904,6 +1916,8 @@ certificat du serveur distant
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, section proxy</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
+version 2.4.30 du serveur HTTP Apache</td></tr>
 </table>
 <p>
 Cette directive permet de définir si l'expiration du certificat du
@@ -1926,7 +1940,9 @@ certificats serveur distants
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.5 du serveur HTTP
-Apache</td></tr>
+Apache<br />
+Le contexte d'une section proxy est supporté à partir de la
+version 2.4.30 du serveur HTTP Apache</td></tr>
 </table>
 <p>
 Cette directive permet de configurer la vérification du nom d'hôte pour
@@ -1967,6 +1983,8 @@ lors de l'initialisation d'une connexion SSL de mandataire</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, section proxy</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
+version 2.4.30 du serveur HTTP Apache</td></tr>
 </table>
 <p>Cette directive est équivalente à la directive <code class="directive"><a href="#sslciphersuite">SSLCipherSuite</a></code>, mais s'applique à une connexion de
 mandataire. Veuillez vous reporter à la directive <code class="directive"><a href="#sslciphersuite">SSLCipherSuite</a></code> pour plus d'informations.</p>
@@ -1982,6 +2000,8 @@ SSL</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, section proxy</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
+version 2.4.30 du serveur HTTP Apache</td></tr>
 </table>
 <p>
 Cette directive permet d'activer/désactiver l'utilisation du moteur de
@@ -2015,6 +2035,8 @@ mandataire de choisir un certificat</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, section proxy</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
+version 2.4.30 du serveur HTTP Apache</td></tr>
 </table>
 <p>
 Cette directive permet de définir le fichier global où est enregistrée
@@ -2048,6 +2070,8 @@ clients codés en PEM que le mandataire doit utiliser</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, section proxy</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
+version 2.4.30 du serveur HTTP Apache</td></tr>
 </table>
 <p>
 Cette directive permet de définir le fichier tout-en-un où sont stockés
@@ -2077,6 +2101,8 @@ le mandataire doit utiliser</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, section proxy</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
+version 2.4.30 du serveur HTTP Apache</td></tr>
 </table>
 <p>
 Cette directive permet de définir le répertoire où sont stockés les clés
@@ -2105,6 +2131,8 @@ mandataire</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, section proxy</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
+version 2.4.30 du serveur HTTP Apache</td></tr>
 </table>
 
 <p>
@@ -2126,6 +2154,8 @@ distant</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, section proxy</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
+version 2.4.30 du serveur HTTP Apache</td></tr>
 </table>
 
 <p>Lorsqu'un mandataire est configuré pour faire suivre les requêtes
@@ -2166,6 +2196,8 @@ lors de la vérification du certificat du serveur distant</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, section proxy</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
+version 2.4.30 du serveur HTTP Apache</td></tr>
 </table>
 <p>
 Cette directive permet de définir le niveau de profondeur maximum
