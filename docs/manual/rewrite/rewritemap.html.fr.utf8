@@ -55,7 +55,7 @@
   correspondance</a></li><li><a href="access.html">Contrôle d'accès</a></li><li><a href="vhosts.html">Serveurs virtuels</a></li><li><a href="proxy.html">Mise en cache</a></li><li><a href="advanced.html">Techniques avancées</a></li><li><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></li><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">Introduction</a><a title="Lien permanent" href="#introduction" class="permalink">&para;</a></h2>
+<h2><a name="introduction" id="introduction">Introduction</a> <a title="Lien permanent" href="#introduction" class="permalink">&para;</a></h2>
     
 
    <p>
@@ -130,7 +130,7 @@ correspondances <em>type-map</em> disponibles, et fournissent des
 exemples pour chacun d'entre eux.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="int" id="int">int: fonction interne</a><a title="Lien permanent" href="#int" class="permalink">&para;</a></h2>
+<h2><a name="int" id="int">int: fonction interne</a> <a title="Lien permanent" href="#int" class="permalink">&para;</a></h2>
     
 
     <p>Quand le type de table <code>int</code> est spécifié, la
@@ -176,7 +176,7 @@ RewriteRule "(.*)" "${lc:$1}" [R]</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="txt" id="txt">txt: tables de correspondances au format texte</a><a title="Lien permanent" href="#txt" class="permalink">&para;</a></h2>
+<h2><a name="txt" id="txt">txt: tables de correspondances au format texte</a> <a title="Lien permanent" href="#txt" class="permalink">&para;</a></h2>
     
 
     <p>Lorsqu'un type-map <code>txt</code> est utilisé, la source-map
@@ -257,7 +257,7 @@ TELEPHONE  328
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="rnd" id="rnd">rnd: Fichier texte à valeurs de substitution multiples
-    choisies de manière aléatoire</a><a title="Lien permanent" href="#rnd" class="permalink">&para;</a></h2>
+    choisies de manière aléatoire</a> <a title="Lien permanent" href="#rnd" class="permalink">&para;</a></h2>
     
 
     <p>Lorsque le type-map spécifié est <code>rnd</code>, la source est
@@ -308,7 +308,7 @@ statique   www1|www1|www2|www3|www4
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="dbm" id="dbm">dbm: Fichier condensé DBM</a><a title="Lien permanent" href="#dbm" class="permalink">&para;</a></h2>
+<h2><a name="dbm" id="dbm">dbm: Fichier condensé DBM</a> <a title="Lien permanent" href="#dbm" class="permalink">&para;</a></h2>
     
 
     <p>Lorsque le type-map <code>dbm</code> est utilisé, la source est
@@ -364,7 +364,7 @@ directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">R
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="prg" id="prg">prg: Programme de réécriture externe</a><a title="Lien permanent" href="#prg" class="permalink">&para;</a></h2>
+<h2><a name="prg" id="prg">prg: Programme de réécriture externe</a> <a title="Lien permanent" href="#prg" class="permalink">&para;</a></h2>
 
     <p>Lorque le type-map <code>prg</code> est spécifié, la source est
     un chemin du système de fichiers vers un programme exécutable
@@ -436,7 +436,7 @@ script lui-même est très lent.</li>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="dbd" id="dbd">dbd ou fastdbd: requête SQL</a><a title="Lien permanent" href="#dbd" class="permalink">&para;</a></h2>
+<h2><a name="dbd" id="dbd">dbd ou fastdbd: requête SQL</a> <a title="Lien permanent" href="#dbd" class="permalink">&para;</a></h2>
     
 
     <p>Lorsque le type-map <code>dbd</code> ou <code>fastdbd</code> est
@@ -468,7 +468,7 @@ script lui-même est très lent.</li>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="summary" id="summary">Résumé</a><a title="Lien permanent" href="#summary" class="permalink">&para;</a></h2>
+<h2><a name="summary" id="summary">Résumé</a> <a title="Lien permanent" href="#summary" class="permalink">&para;</a></h2>
     
 
     <p>La directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> peut apparaître

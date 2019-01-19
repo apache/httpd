@@ -125,7 +125,7 @@
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Exemples d'utilisation</a><a title="Lien permanent" href="#examples" class="permalink">&para;</a></h2>
+<h2><a name="examples" id="examples">Exemples d'utilisation</a> <a title="Lien permanent" href="#examples" class="permalink">&para;</a></h2>
 
 	
     <p>L'exemple suivant montre comment configurer le check up pour différents
@@ -167,7 +167,7 @@ up.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="proxyhcexpr" id="proxyhcexpr">Directive</a> <a name="ProxyHCExpr" id="ProxyHCExpr">ProxyHCExpr</a><a title="Lien permanent" href="#proxyhcexpr" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxyhcexpr" id="proxyhcexpr">Directive</a> <a name="ProxyHCExpr" id="ProxyHCExpr">ProxyHCExpr</a> <a title="Lien permanent" href="#proxyhcexpr" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Crée et nomme une expression conditionnelle à utiliser pour
 déterminer la santé d'un serveur d'arrière-plan en fonction de sa valeur</td></tr>
@@ -219,7 +219,7 @@ ProxyPass "/apps"     "balancer://foo"
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="proxyhctemplate" id="proxyhctemplate">Directive</a> <a name="ProxyHCTemplate" id="ProxyHCTemplate">ProxyHCTemplate</a><a title="Lien permanent" href="#proxyhctemplate" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxyhctemplate" id="proxyhctemplate">Directive</a> <a name="ProxyHCTemplate" id="ProxyHCTemplate">ProxyHCTemplate</a> <a title="Lien permanent" href="#proxyhctemplate" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Crée et nomme un modèle permettant de définir différents
 paramètres de check up</td></tr>
@@ -244,7 +244,7 @@ ProxyPass "/apps"     "balancer://foo"
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="proxyhctpsize" id="proxyhctpsize">Directive</a> <a name="ProxyHCTPsize" id="ProxyHCTPsize">ProxyHCTPsize</a><a title="Lien permanent" href="#proxyhctpsize" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxyhctpsize" id="proxyhctpsize">Directive</a> <a name="ProxyHCTPsize" id="ProxyHCTPsize">ProxyHCTPsize</a> <a title="Lien permanent" href="#proxyhctpsize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit la taille totale, pour l'ensemble du
 serveur, du jeu de threads utilisé pour le check up des

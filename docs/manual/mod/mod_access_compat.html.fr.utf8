@@ -108,7 +108,7 @@ ce module sont devenues obsolètes depuis la refonte d'authz. Voir
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="allow" id="allow">Directive</a> <a name="Allow" id="Allow">Allow</a><a title="Lien permanent" href="#allow" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="allow" id="allow">Directive</a> <a name="Allow" id="Allow">Allow</a> <a title="Lien permanent" href="#allow" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Spécifie quels hôtes peuvent accéder à une certaine zone du
 serveur</td></tr>
@@ -239,7 +239,7 @@ Allow from 2001:db8::a00:20ff:fea7:ccea/10</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="deny" id="deny">Directive</a> <a name="Deny" id="Deny">Deny</a><a title="Lien permanent" href="#deny" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="deny" id="deny">Directive</a> <a name="Deny" id="Deny">Deny</a> <a title="Lien permanent" href="#deny" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit quels hôtes ne sont pas autorisés à accéder au
 serveur</td></tr>
@@ -259,7 +259,7 @@ d'environnement</var>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="order" id="order">Directive</a> <a name="Order" id="Order">Order</a><a title="Lien permanent" href="#order" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="order" id="order">Directive</a> <a name="Order" id="Order">Order</a> <a title="Lien permanent" href="#order" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le statut d'accès par défaut et l'ordre dans lequel
 les directives <code class="directive">Allow</code> et
@@ -416,7 +416,7 @@ Deny from foo.example.org</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="satisfy" id="satisfy">Directive</a> <a name="Satisfy" id="Satisfy">Satisfy</a><a title="Lien permanent" href="#satisfy" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="satisfy" id="satisfy">Directive</a> <a name="Satisfy" id="Satisfy">Satisfy</a> <a title="Lien permanent" href="#satisfy" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Interaction entre le contrôle d'accès en fonction de l'hôte
 et l'authentification utilisateur</td></tr>

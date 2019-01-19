@@ -47,7 +47,7 @@ module mod_rewrite</a></li><li><a href="remapping.html">Redirection and remise e
 correspondance</a></li><li><a href="access.html">Contrôle d'accès</a></li><li><a href="vhosts.html">Serveurs virtuels</a></li><li><a href="proxy.html">Mise en cache</a></li><li><a href="rewritemap.html">Utilisation de RewriteMap</a></li><li><a href="advanced.html">Techniques avancées</a></li><li><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></li><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">Introduction</a><a title="Lien permanent" href="#introduction" class="permalink">&para;</a></h2>
+<h2><a name="introduction" id="introduction">Introduction</a> <a title="Lien permanent" href="#introduction" class="permalink">&para;</a></h2>
 <p>Le module Apache <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> est un module puissant
 et sophistiqué qui permet la réécriture des URLs. Grâce à lui, vous
 pouvez effectuer quasiment tous les types de réécriture d'URLs dont vous
@@ -76,7 +76,7 @@ exactement comment chaque règle est traitée.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="regex" id="regex">Expressions rationnelles</a><a title="Lien permanent" href="#regex" class="permalink">&para;</a></h2>
+<h2><a name="regex" id="regex">Expressions rationnelles</a> <a title="Lien permanent" href="#regex" class="permalink">&para;</a></h2>
 
 <p>mod_rewrite utilise le vocabulaire des <a href="http://pcre.org/">Expressions rationnelles compatibles Perl</a>.
 Ce document n'a pas pour prétention d'être une référence détaillée des
@@ -188,7 +188,7 @@ arrières dans les expressions rationnelles</a></h3>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="rewriterule" id="rewriterule">Les bases des règles de réécriture</a><a title="Lien permanent" href="#rewriterule" class="permalink">&para;</a></h2>
+<h2><a name="rewriterule" id="rewriterule">Les bases des règles de réécriture</a> <a title="Lien permanent" href="#rewriterule" class="permalink">&para;</a></h2>
 <p>Une règle de réécriture <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> est constituée de trois
 arguments séparés par des espaces. Les arguments sont :</p>
 <ol>
@@ -265,7 +265,7 @@ accessibles selon leur ordre d'apparition via les variables
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="flags" id="flags">Drapeaux de réécriture</a><a title="Lien permanent" href="#flags" class="permalink">&para;</a></h2>
+<h2><a name="flags" id="flags">Drapeaux de réécriture</a> <a title="Lien permanent" href="#flags" class="permalink">&para;</a></h2>
 <p>Le comportement d'une règle <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> peut être modifié par la
 présence d'un ou plusieurs drapeaux en fin de règle. Par exemple, les
 conditions de correspondance d'une règle peuvent être rendues
@@ -280,7 +280,7 @@ réécriture</a>.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="rewritecond" id="rewritecond">Conditions de réécriture</a><a title="Lien permanent" href="#rewritecond" class="permalink">&para;</a></h2>
+<h2><a name="rewritecond" id="rewritecond">Conditions de réécriture</a> <a title="Lien permanent" href="#rewritecond" class="permalink">&para;</a></h2>
 <p>Il est possible d'utiliser une ou plusieurs directives <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> pour restreindre les types
 de requêtes auxquelles devra s'appliquer la règle <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> suivante. Le premier
 argument est une variable décrivant une caractéristique de la requête,
@@ -332,7 +332,7 @@ alors <code>%1</code> contiendrait <code>example.com</code> et
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="rewritemap" id="rewritemap">Tables de réécriture</a><a title="Lien permanent" href="#rewritemap" class="permalink">&para;</a></h2>
+<h2><a name="rewritemap" id="rewritemap">Tables de réécriture</a> <a title="Lien permanent" href="#rewritemap" class="permalink">&para;</a></h2>
 
 <p>La directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
 permet en quelque sorte de faire appel à une fonction externe pour
@@ -341,7 +341,7 @@ détails dans la <a href="rewritemap.html">Documentation
 supplémentaire sur RewriteMap</a>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="htaccess" id="htaccess">Fichiers .htaccess</a><a title="Lien permanent" href="#htaccess" class="permalink">&para;</a></h2>
+<h2><a name="htaccess" id="htaccess">Fichiers .htaccess</a> <a title="Lien permanent" href="#htaccess" class="permalink">&para;</a></h2>
 
 <p>La réécriture est en général définie au niveau de la configuration du
 serveur principal (en dehors de toute section <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>) ou dans une section  <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>. Il s'agit là de la

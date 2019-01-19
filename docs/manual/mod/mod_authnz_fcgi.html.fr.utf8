@@ -72,7 +72,7 @@ contrôle d'accès</a></li>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="invocations" id="invocations">Modes d'invocation</a><a title="Lien permanent" href="#invocations" class="permalink">&para;</a></h2>
+<h2><a name="invocations" id="invocations">Modes d'invocation</a> <a title="Lien permanent" href="#invocations" class="permalink">&para;</a></h2>
 
     <p>Les modes d'invocation des processus d'autorisation FastCGI que
     ce module supporte se distinguent par deux caractéristiques : le
@@ -294,7 +294,7 @@ while ($request-&gt;Accept() &gt;= 0) {
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Exemples supplémentaires</a><a title="Lien permanent" href="#examples" class="permalink">&para;</a></h2>
+<h2><a name="examples" id="examples">Exemples supplémentaires</a> <a title="Lien permanent" href="#examples" class="permalink">&para;</a></h2>
 
   <ol>
     <li>Si votre application supporte séparément les rôles
@@ -339,7 +339,7 @@ Require FooAuthnz</pre>
 </ol>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="limitations" id="limitations">Limitations</a><a title="Lien permanent" href="#limitations" class="permalink">&para;</a></h2>
+<h2><a name="limitations" id="limitations">Limitations</a> <a title="Lien permanent" href="#limitations" class="permalink">&para;</a></h2>
 
     <p>Les fonctionnalités suivantes ne sont pas encore implémentées :</p>
 
@@ -399,7 +399,7 @@ Require FooAuthnz</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="logging" id="logging">Journalisation</a><a title="Lien permanent" href="#logging" class="permalink">&para;</a></h2>
+<h2><a name="logging" id="logging">Journalisation</a> <a title="Lien permanent" href="#logging" class="permalink">&para;</a></h2>
 
     <ol>
         <li>Les erreurs de traitement sont journalisées à un niveau
@@ -429,7 +429,7 @@ Require FooAuthnz</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authnzfcgicheckauthnprovider" id="authnzfcgicheckauthnprovider">Directive</a> <a name="AuthnzFcgiCheckAuthnProvider" id="AuthnzFcgiCheckAuthnProvider">AuthnzFcgiCheckAuthnProvider</a><a title="Lien permanent" href="#authnzfcgicheckauthnprovider" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="authnzfcgicheckauthnprovider" id="authnzfcgicheckauthnprovider">Directive</a> <a name="AuthnzFcgiCheckAuthnProvider" id="AuthnzFcgiCheckAuthnProvider">AuthnzFcgiCheckAuthnProvider</a> <a title="Lien permanent" href="#authnzfcgicheckauthnprovider" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Permet à une application FastCGI de gérer l'accroche
 d'authentification check_authn.</td></tr>
@@ -523,7 +523,7 @@ d'authentification check_authn.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authnzfcgidefineprovider" id="authnzfcgidefineprovider">Directive</a> <a name="AuthnzFcgiDefineProvider" id="AuthnzFcgiDefineProvider">AuthnzFcgiDefineProvider</a><a title="Lien permanent" href="#authnzfcgidefineprovider" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="authnzfcgidefineprovider" id="authnzfcgidefineprovider">Directive</a> <a name="AuthnzFcgiDefineProvider" id="AuthnzFcgiDefineProvider">AuthnzFcgiDefineProvider</a> <a title="Lien permanent" href="#authnzfcgidefineprovider" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit une application FastCGI en tant que fournisseur
 d'authentification et/ou autorisation</td></tr>

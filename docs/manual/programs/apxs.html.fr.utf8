@@ -92,7 +92,7 @@
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><code class="program"><a href="../programs/apachectl.html">apachectl</a></code></li><li><code class="program"><a href="../programs/httpd.html">httpd</a></code></li><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="synopsis" id="synopsis">Syntaxe</a><a title="Lien permanent" href="#synopsis" class="permalink">&para;</a></h2>
+<h2><a name="synopsis" id="synopsis">Syntaxe</a> <a title="Lien permanent" href="#synopsis" class="permalink">&para;</a></h2>
     <p><code><strong>apxs</strong> -<strong>g</strong>
     [ -<strong>S</strong> <var>nom</var>=<var>valeur</var> ]
     -<strong>n</strong> <var>nom-module</var></code></p>
@@ -128,7 +128,7 @@
     <var>fichier-dso</var> ...</code></p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="options" id="options">Options</a><a title="Lien permanent" href="#options" class="permalink">&para;</a></h2>
+<h2><a name="options" id="options">Options</a> <a title="Lien permanent" href="#options" class="permalink">&para;</a></h2>
     <h3><a name="options.common" id="options.common">Options courantes</a></h3>
       <dl>
       <dt><code>-n <var>nom-module</var></code></dt>
@@ -280,7 +280,7 @@
     
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Exemples</a><a title="Lien permanent" href="#examples" class="permalink">&para;</a></h2>
+<h2><a name="examples" id="examples">Exemples</a> <a title="Lien permanent" href="#examples" class="permalink">&para;</a></h2>
     <p>Supposons que vous disposiez d'un module Apache nommé
     <code>mod_foo.c</code> et destiné à étendre les fonctionnalités du
     serveur. Pour ce faire, vous devez tout d'abord compiler le fichier

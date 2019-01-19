@@ -78,7 +78,7 @@ externe avant de l'envoyer au client</td></tr>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Exemples</a><a title="Lien permanent" href="#examples" class="permalink">&para;</a></h2>
+<h2><a name="examples" id="examples">Exemples</a> <a title="Lien permanent" href="#examples" class="permalink">&para;</a></h2>
 
     <h3>Générer du HTML à partir d'un autre type de
     contenu</h3>
@@ -211,7 +211,7 @@ close(SAVE);</pre>
     
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="extfilterdefine" id="extfilterdefine">Directive</a> <a name="ExtFilterDefine" id="ExtFilterDefine">ExtFilterDefine</a><a title="Lien permanent" href="#extfilterdefine" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="extfilterdefine" id="extfilterdefine">Directive</a> <a name="ExtFilterDefine" id="ExtFilterDefine">ExtFilterDefine</a> <a title="Lien permanent" href="#extfilterdefine" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit un filtre externe</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ExtFilterDefine <var>nom_filtre</var> <var>paramètres</var></code></td></tr>
@@ -311,7 +311,7 @@ close(SAVE);</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="extfilteroptions" id="extfilteroptions">Directive</a> <a name="ExtFilterOptions" id="ExtFilterOptions">ExtFilterOptions</a><a title="Lien permanent" href="#extfilteroptions" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="extfilteroptions" id="extfilteroptions">Directive</a> <a name="ExtFilterOptions" id="ExtFilterOptions">ExtFilterOptions</a> <a title="Lien permanent" href="#extfilteroptions" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure les options de
 <code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code></td></tr>

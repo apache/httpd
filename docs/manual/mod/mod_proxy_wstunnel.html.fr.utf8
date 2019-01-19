@@ -75,7 +75,7 @@ va lire les en-têtes de la requête et les utilisera dans l'en-tête
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="proxywebsocketasync" id="proxywebsocketasync">Directive</a> <a name="ProxyWebsocketAsync" id="ProxyWebsocketAsync">ProxyWebsocketAsync</a><a title="Lien permanent" href="#proxywebsocketasync" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxywebsocketasync" id="proxywebsocketasync">Directive</a> <a name="ProxyWebsocketAsync" id="ProxyWebsocketAsync">ProxyWebsocketAsync</a> <a title="Lien permanent" href="#proxywebsocketasync" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Création d'un tunnel asynchrone</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyWebsocketAsync ON|OFF</code></td></tr>
@@ -91,7 +91,7 @@ va lire les en-têtes de la requête et les utilisera dans l'en-tête
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="proxywebsocketasyncdelay" id="proxywebsocketasyncdelay">Directive</a> <a name="ProxyWebsocketAsyncDelay" id="ProxyWebsocketAsyncDelay">ProxyWebsocketAsyncDelay</a><a title="Lien permanent" href="#proxywebsocketasyncdelay" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxywebsocketasyncdelay" id="proxywebsocketasyncdelay">Directive</a> <a name="ProxyWebsocketAsyncDelay" id="ProxyWebsocketAsyncDelay">ProxyWebsocketAsyncDelay</a> <a title="Lien permanent" href="#proxywebsocketasyncdelay" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Temps d'attente synchrone maximum pour des données</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyWebsocketAsyncDelay <var>num</var>[ms]</code></td></tr>
@@ -111,7 +111,7 @@ va lire les en-têtes de la requête et les utilisera dans l'en-tête
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="proxywebsocketidletimeout" id="proxywebsocketidletimeout">Directive</a> <a name="ProxyWebsocketIdleTimeout" id="ProxyWebsocketIdleTimeout">ProxyWebsocketIdleTimeout</a><a title="Lien permanent" href="#proxywebsocketidletimeout" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxywebsocketidletimeout" id="proxywebsocketidletimeout">Directive</a> <a name="ProxyWebsocketIdleTimeout" id="ProxyWebsocketIdleTimeout">ProxyWebsocketIdleTimeout</a> <a title="Lien permanent" href="#proxywebsocketidletimeout" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Temps d'attente maximum pour des données sur le tunnel websockets</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyWebsocketIdleTimeout <var>num</var>[ms]</code></td></tr>

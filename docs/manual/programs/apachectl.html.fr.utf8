@@ -64,7 +64,7 @@ configuration</a></li><li><a href="../platform/">Documentation spécifique aux
 plates-formes</a></li><li><code class="program"><a href="../programs/httpd.html">httpd</a></code></li><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="synopsis" id="synopsis">Résumé</a><a title="Lien permanent" href="#synopsis" class="permalink">&para;</a></h2>
+<h2><a name="synopsis" id="synopsis">Résumé</a> <a title="Lien permanent" href="#synopsis" class="permalink">&para;</a></h2>
 
 <p>En mode frontal (pass-through), <code>apachectl</code> peut spécifier
 tous les arguments qu'accepte le binaire <code class="program"><a href="../programs/httpd.html">httpd</a></code>.</p>
@@ -78,7 +78,7 @@ n'accepte qu'un seul des arguments définis ci-dessous.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="options" id="options">Options</a><a title="Lien permanent" href="#options" class="permalink">&para;</a></h2>
+<h2><a name="options" id="options">Options</a> <a title="Lien permanent" href="#options" class="permalink">&para;</a></h2>
 
 <p>Seules les options du style initialisation SysV sont décrites ici.
 Les autres arguments sont décrits dans la page de manuel de

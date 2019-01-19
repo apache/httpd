@@ -36,7 +36,7 @@
   </div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="providers" id="providers">Fournisseurs du cache d'objets partagés</a><a title="Lien permanent" href="#providers" class="permalink">&para;</a></h2>
+<h2><a name="providers" id="providers">Fournisseurs du cache d'objets partagés</a> <a title="Lien permanent" href="#providers" class="permalink">&para;</a></h2>
     
     <p>Le cache d'objets partagés en tant que tel est une abstraction.
     Il est implémenté par quatre modules différents. Pour pouvoir

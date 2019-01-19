@@ -55,7 +55,7 @@
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="req" id="req">Prérequis du système d'exploitation</a><a title="Lien permanent" href="#req" class="permalink">&para;</a></h2>
+<h2><a name="req" id="req">Prérequis du système d'exploitation</a> <a title="Lien permanent" href="#req" class="permalink">&para;</a></h2>
     
 
     <p>La plate-forme Windows de base pour l'exécution d'Apache 2.5 est
@@ -69,7 +69,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="down" id="down">Téléchargement d'Apache pour Windows</a><a title="Lien permanent" href="#down" class="permalink">&para;</a></h2>
+<h2><a name="down" id="down">Téléchargement d'Apache pour Windows</a> <a title="Lien permanent" href="#down" class="permalink">&para;</a></h2>
     
 
     <p>Le projet du serveur HTTP Apache proprement dit ne fournit pas de
@@ -94,7 +94,7 @@
     </ul>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="cust" id="cust">Personnaliser Apache pour Windows</a><a title="Lien permanent" href="#cust" class="permalink">&para;</a></h2>
+<h2><a name="cust" id="cust">Personnaliser Apache pour Windows</a> <a title="Lien permanent" href="#cust" class="permalink">&para;</a></h2>
     
 
     <p>La configuration d'Apache est enregistrée dans les fichiers du
@@ -222,7 +222,7 @@ RewriteRule "(.*)" "${lowercase:$1}" [R,L]</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="winsvc" id="winsvc">Exécuter Apache en tant que service</a><a title="Lien permanent" href="#winsvc" class="permalink">&para;</a></h2>
+<h2><a name="winsvc" id="winsvc">Exécuter Apache en tant que service</a> <a title="Lien permanent" href="#winsvc" class="permalink">&para;</a></h2>
     
 
     <p>Apache fournit un utilitaire nommé Apache Service Monitor
@@ -403,7 +403,7 @@ RewriteRule "(.*)" "${lowercase:$1}" [R,L]</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="wincons" id="wincons">Exécuter Apache depuis la console</a><a title="Lien permanent" href="#wincons" class="permalink">&para;</a></h2>
+<h2><a name="wincons" id="wincons">Exécuter Apache depuis la console</a> <a title="Lien permanent" href="#wincons" class="permalink">&para;</a></h2>
     
 
     <p>Il est en général recommandé d'exécuter Apache en tant que
@@ -581,7 +581,7 @@ RewriteRule "(.*)" "${lowercase:$1}" [R,L]</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="test" id="test">Vérification de l'installation</a><a title="Lien permanent" href="#test" class="permalink">&para;</a></h2>
+<h2><a name="test" id="test">Vérification de l'installation</a> <a title="Lien permanent" href="#test" class="permalink">&para;</a></h2>
     
 
     <p>Une fois Apache démarré (soit à partir d'une console Windows,
@@ -631,7 +631,7 @@ RewriteRule "(.*)" "${lowercase:$1}" [R,L]</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="windrivemap" id="windrivemap">Configuration de l'accès aux ressources réseau</a><a title="Lien permanent" href="#windrivemap" class="permalink">&para;</a></h2>
+<h2><a name="windrivemap" id="windrivemap">Configuration de l'accès aux ressources réseau</a> <a title="Lien permanent" href="#windrivemap" class="permalink">&para;</a></h2>
     
 
   <p>L'accès à des fichiers par le réseau peut être spécifié via deux
@@ -678,7 +678,7 @@ RewriteRule "(.*)" "${lowercase:$1}" [R,L]</pre>
   décrit ci-dessus.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="tuning" id="tuning">Personnalisation sous Windows</a><a title="Lien permanent" href="#tuning" class="permalink">&para;</a></h2>
+<h2><a name="tuning" id="tuning">Personnalisation sous Windows</a> <a title="Lien permanent" href="#tuning" class="permalink">&para;</a></h2>
     
     <ul>
       <li><p>Si on utilise un grand nombre de redirections de journaux

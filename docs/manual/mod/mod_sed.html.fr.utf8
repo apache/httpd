@@ -83,7 +83,7 @@ données, ce qui reste est traité comme la dernière ligne.
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="sampleconf" id="sampleconf">Exemple de configuration</a><a title="Lien permanent" href="#sampleconf" class="permalink">&para;</a></h2>
+<h2><a name="sampleconf" id="sampleconf">Exemple de configuration</a> <a title="Lien permanent" href="#sampleconf" class="permalink">&para;</a></h2>
     <div class="example"><h3>Ajout d'un filtre en sortie</h3><pre class="prettyprint lang-config"># Dans l'exemple suivant, le filtre sed va remplacer la chaîne
 	 # "monday" par "MON" et la chaîne "sunday" par "SUN" dans les
 	 # documents html avant de les envoyer au client.
@@ -105,7 +105,7 @@ données, ce qui reste est traité comme la dernière ligne.
 </div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="sed_commands" id="sed_commands">Commandes sed</a><a title="Lien permanent" href="#sed_commands" class="permalink">&para;</a></h2>
+<h2><a name="sed_commands" id="sed_commands">Commandes sed</a> <a title="Lien permanent" href="#sed_commands" class="permalink">&para;</a></h2>
     <p>
     Vous trouverez tous les détails à propos de la commande
     <code>sed</code> dans sa <a href="http://www.gnu.org/software/sed/manual/sed.txt">page
@@ -127,7 +127,7 @@ données, ce qui reste est traité comme la dernière ligne.
     </dl>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="inputsed" id="inputsed">Directive</a> <a name="InputSed" id="InputSed">InputSed</a><a title="Lien permanent" href="#inputsed" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="inputsed" id="inputsed">Directive</a> <a name="InputSed" id="InputSed">InputSed</a> <a title="Lien permanent" href="#inputsed" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Commande sed à exécuter pour le filtrage des données d'une
 requête (en général des données <code>POST</code>)</td></tr>
@@ -143,7 +143,7 @@ requête (en général des données <code>POST</code>)</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="outputsed" id="outputsed">Directive</a> <a name="OutputSed" id="OutputSed">OutputSed</a><a title="Lien permanent" href="#outputsed" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="outputsed" id="outputsed">Directive</a> <a name="OutputSed" id="OutputSed">OutputSed</a> <a title="Lien permanent" href="#outputsed" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Commande sed pour le filtrage des contenus de type
 réponse</td></tr>

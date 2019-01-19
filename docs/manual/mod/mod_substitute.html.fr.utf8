@@ -51,7 +51,7 @@ corps de réponses</td></tr>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="substitute" id="substitute">Directive</a> <a name="Substitute" id="Substitute">Substitute</a><a title="Lien permanent" href="#substitute" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="substitute" id="substitute">Directive</a> <a name="Substitute" id="Substitute">Substitute</a> <a title="Lien permanent" href="#substitute" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Modèle de substition dans le contenu de la
 réponse</td></tr>
@@ -177,7 +177,7 @@ Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"<
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="substituteinheritbefore" id="substituteinheritbefore">Directive</a> <a name="SubstituteInheritBefore" id="SubstituteInheritBefore">SubstituteInheritBefore</a><a title="Lien permanent" href="#substituteinheritbefore" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="substituteinheritbefore" id="substituteinheritbefore">Directive</a> <a name="SubstituteInheritBefore" id="SubstituteInheritBefore">SubstituteInheritBefore</a> <a title="Lien permanent" href="#substituteinheritbefore" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Modifie l'ordre de fusion des modèles hérités</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SubstituteInheritBefore on|off</code></td></tr>
@@ -204,7 +204,7 @@ l'ordre de fusion défini le plus proche.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="substitutemaxlinelength" id="substitutemaxlinelength">Directive</a> <a name="SubstituteMaxLineLength" id="SubstituteMaxLineLength">SubstituteMaxLineLength</a><a title="Lien permanent" href="#substitutemaxlinelength" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="substitutemaxlinelength" id="substitutemaxlinelength">Directive</a> <a name="SubstituteMaxLineLength" id="SubstituteMaxLineLength">SubstituteMaxLineLength</a> <a title="Lien permanent" href="#substitutemaxlinelength" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit la longueur de ligne maximale</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SubstituteMaxLineLength <var>octets</var>(b|B|k|K|m|M|g|G)</code></td></tr>
