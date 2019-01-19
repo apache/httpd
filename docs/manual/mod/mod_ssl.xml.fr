@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1842639 -->
+<!-- English Revision: 1851643 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2039,6 +2039,7 @@ version d'OpenSSL supportant SNI.
 <highlight language="config">
 SSLStrictSNIVHostCheck on
 </highlight>
+
 </example>
 </usage>
 </directivesynopsis>
@@ -2050,6 +2051,8 @@ le mandataire doit utiliser</description>
 <syntax>SSLProxyMachineCertificatePath <em>chemin-répertoire</em></syntax>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
+<compatibility>Le contexte d'une section proxy est supporté à partir de la
+version 2.4.30 du serveur HTTP Apache</compatibility>
 
 <usage>
 <p>
@@ -2080,6 +2083,8 @@ clients codés en PEM que le mandataire doit utiliser</description>
 <syntax>SSLProxyMachineCertificateFile <em>file-path</em></syntax>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
+<compatibility>Le contexte d'une section proxy est supporté à partir de la
+version 2.4.30 du serveur HTTP Apache</compatibility>
 
 <usage>
 <p>
@@ -2111,6 +2116,8 @@ mandataire de choisir un certificat</description>
 <syntax>SSLProxyMachineCertificateChainFile <em>nom-fichier</em></syntax>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
+<compatibility>Le contexte d'une section proxy est supporté à partir de la
+version 2.4.30 du serveur HTTP Apache</compatibility>
 
 <usage>
 <p>
@@ -2149,6 +2156,8 @@ distant</description>
 <default>SSLProxyVerify none</default>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
+<compatibility>Le contexte d'une section proxy est supporté à partir de la
+version 2.4.30 du serveur HTTP Apache</compatibility>
 
 <usage>
 
@@ -2197,6 +2206,8 @@ lors de la vérification du certificat du serveur distant</description>
 <default>SSLProxyVerifyDepth 1</default>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
+<compatibility>Le contexte d'une section proxy est supporté à partir de la
+version 2.4.30 du serveur HTTP Apache</compatibility>
 
 <usage>
 <p>
@@ -2232,6 +2243,8 @@ certificat du serveur distant
 <default>SSLProxyCheckPeerExpire on</default>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
+<compatibility>Le contexte d'une section proxy est supporté à partir de la
+version 2.4.30 du serveur HTTP Apache</compatibility>
 
 <usage>
 <p>
@@ -2256,6 +2269,8 @@ du serveur distant
 <default>SSLProxyCheckPeerCN on</default>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
+<compatibility>Le contexte d'une section proxy est supporté à partir de la
+version 2.4.30 du serveur HTTP Apache</compatibility>
 
 <usage>
 <p>
@@ -2305,7 +2320,9 @@ certificats serveur distant
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
 <compatibility>Disponible à partir de la version 2.4.5 du serveur HTTP
-Apache</compatibility>
+Apache<br />
+Le contexte d'une section proxy est supporté à partir de la
+version 2.4.30 du serveur HTTP Apache</compatibility>
 
 <usage>
 <p>
@@ -2346,6 +2363,8 @@ SSL</description>
 <default>SSLProxyEngine off</default>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
+<compatibility>Le contexte d'une section proxy est supporté à partir de la
+version 2.4.30 du serveur HTTP Apache</compatibility>
 
 <usage>
 <p>
@@ -2385,6 +2404,8 @@ mandataire</description>
 <default>SSLProxyProtocol all -SSLv3</default>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
+<compatibility>Le contexte d'une section proxy est supporté à partir de la
+version 2.4.30 du serveur HTTP Apache</compatibility>
 
 <usage>
 <!-- XXX Why does this have an override and not .htaccess context? -->
@@ -2407,6 +2428,8 @@ lors de l'initialisation d'une connexion SSL de mandataire</description>
 <default>SSLProxyCipherSuite ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+EXP</default>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
+<compatibility>Le contexte d'une section proxy est supporté à partir de la
+version 2.4.30 du serveur HTTP Apache</compatibility>
 
 <usage>
 <p>Cette directive est équivalente à la directive <directive
@@ -2423,6 +2446,8 @@ l'authentification des serveurs distants</description>
 <syntax>SSLProxyCACertificatePath <em>chemin-répertoire</em></syntax>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
+<compatibility>Le contexte d'une section proxy est supporté à partir de la
+version 2.4.30 du serveur HTTP Apache</compatibility>
 
 <usage>
 <p>
@@ -2453,6 +2478,8 @@ codés en PEM pour l'authentification des serveurs distants</description>
 <syntax>SSLProxyCACertificateFile <var>file-path</var></syntax>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
+<compatibility>Le contexte d'une section proxy est supporté à partir de la
+version 2.4.30 du serveur HTTP Apache</compatibility>
 
 <usage>
 <p>
@@ -2480,6 +2507,8 @@ l'authentification des serveurs distants</description>
 <syntax>SSLProxyCARevocationPath <em>chemin-répertoire</em></syntax>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
+<compatibility>Le contexte d'une section proxy est supporté à partir de la
+version 2.4.30 du serveur HTTP Apache</compatibility>
 
 <usage>
 <p>
@@ -2510,6 +2539,8 @@ PEM pour l'authentification des serveurs distants</description>
 <syntax>SSLProxyCARevocationFile <var>file-path</var></syntax>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
+<compatibility>Le contexte d'une section proxy est supporté à partir de la
+version 2.4.30 du serveur HTTP Apache</compatibility>
 
 <usage>
 <p>
@@ -2539,6 +2570,8 @@ pour l'authentification du serveur distant</description>
 <default>SSLProxyCARevocationCheck none</default>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
+<compatibility>Le contexte d'une section proxy est supporté à partir de la
+version 2.4.30 du serveur HTTP Apache</compatibility>
 
 <usage>
 <p>
