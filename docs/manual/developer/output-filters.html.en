@@ -48,7 +48,7 @@
 </ul><h3>See also</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="basics" id="basics">Filters and bucket brigades</a><a title="Permanent link" href="#basics" class="permalink">&para;</a></h2>
+<h2><a name="basics" id="basics">Filters and bucket brigades</a> <a title="Permanent link" href="#basics" class="permalink">&para;</a></h2>
     
 
     <p>Each time a filter is invoked, it is passed a <em>bucket
@@ -103,7 +103,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="invocation" id="invocation">Filter invocation</a><a title="Permanent link" href="#invocation" class="permalink">&para;</a></h2>
+<h2><a name="invocation" id="invocation">Filter invocation</a> <a title="Permanent link" href="#invocation" class="permalink">&para;</a></h2>
     
 
     <p>For any given request, an output filter might be invoked only
@@ -142,7 +142,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="brigade" id="brigade">Brigade structure</a><a title="Permanent link" href="#brigade" class="permalink">&para;</a></h2>
+<h2><a name="brigade" id="brigade">Brigade structure</a> <a title="Permanent link" href="#brigade" class="permalink">&para;</a></h2>
     
 
     <p>A bucket brigade is a doubly-linked list of buckets.  The list
@@ -199,7 +199,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="buckets" id="buckets">Processing buckets</a><a title="Permanent link" href="#buckets" class="permalink">&para;</a></h2>
+<h2><a name="buckets" id="buckets">Processing buckets</a> <a title="Permanent link" href="#buckets" class="permalink">&para;</a></h2>
 
     
 
@@ -244,7 +244,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="filtering" id="filtering">Filtering brigades</a><a title="Permanent link" href="#filtering" class="permalink">&para;</a></h2>
+<h2><a name="filtering" id="filtering">Filtering brigades</a> <a title="Permanent link" href="#filtering" class="permalink">&para;</a></h2>
     
 
     <p>The basic function of any output filter will be to iterate
@@ -297,7 +297,7 @@ while ((e = APR_BRIGADE_FIRST(bb)) != APR_BRIGADE_SENTINEL(bb)) {
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="state" id="state">Maintaining state</a><a title="Permanent link" href="#state" class="permalink">&para;</a></h2>
+<h2><a name="state" id="state">Maintaining state</a> <a title="Permanent link" href="#state" class="permalink">&para;</a></h2>
 
     
 
@@ -332,7 +332,7 @@ apr_status_t dummy_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="buffer" id="buffer">Buffering buckets</a><a title="Permanent link" href="#buffer" class="permalink">&para;</a></h2>
+<h2><a name="buffer" id="buffer">Buffering buckets</a> <a title="Permanent link" href="#buffer" class="permalink">&para;</a></h2>
     
 
     <p>If a filter decides to store buckets beyond the duration of a
@@ -381,7 +381,7 @@ apr_status_t dummy_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="nonblock" id="nonblock">Non-blocking bucket reads</a><a title="Permanent link" href="#nonblock" class="permalink">&para;</a></h2>
+<h2><a name="nonblock" id="nonblock">Non-blocking bucket reads</a> <a title="Permanent link" href="#nonblock" class="permalink">&para;</a></h2>
     
 
     <p>The <code>apr_bucket_read</code> function takes an
@@ -433,7 +433,7 @@ while ((e = APR_BRIGADE_FIRST(bb)) != APR_BRIGADE_SENTINEL(bb)) {
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="rules" id="rules">Ten rules for output filters</a><a title="Permanent link" href="#rules" class="permalink">&para;</a></h2>
+<h2><a name="rules" id="rules">Ten rules for output filters</a> <a title="Permanent link" href="#rules" class="permalink">&para;</a></h2>
     
 
     <p>In summary, here is a set of rules for all output filters to
@@ -485,7 +485,7 @@ while ((e = APR_BRIGADE_FIRST(bb)) != APR_BRIGADE_SENTINEL(bb)) {
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="usecase1" id="usecase1">Use case: buffering in mod_ratelimit</a><a title="Permanent link" href="#usecase1" class="permalink">&para;</a></h2>
+<h2><a name="usecase1" id="usecase1">Use case: buffering in mod_ratelimit</a> <a title="Permanent link" href="#usecase1" class="permalink">&para;</a></h2>
     
     <p>The <a href="http://svn.apache.org/r1833875">r1833875</a> change is a good
     example to show what buffering and keeping state means in the context of an

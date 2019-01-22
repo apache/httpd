@@ -57,7 +57,7 @@ assumption that they are not fully initialized.</p>
 <li><a href="#comments_section">Comments</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="HeartbeatStorage" id="HeartbeatStorage">HeartbeatStorage</a> <a name="heartbeatstorage" id="heartbeatstorage">Directive</a><a title="Permanent link" href="#heartbeatstorage" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="HeartbeatStorage" id="HeartbeatStorage">HeartbeatStorage</a> <a name="heartbeatstorage" id="heartbeatstorage">Directive</a> <a title="Permanent link" href="#heartbeatstorage" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Path to read heartbeat data</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>HeartbeatStorage <var>file-path</var></code></td></tr>

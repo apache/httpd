@@ -66,7 +66,7 @@
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="formats" id="formats">사용자정의 로그 형식</a><a title="Permanent link" href="#formats" class="permalink">&para;</a></h2>
+<h2><a name="formats" id="formats">사용자정의 로그 형식</a> <a title="Permanent link" href="#formats" class="permalink">&para;</a></h2>
 
 
     <p>이 모듈은 두가지 새로운 로그지시어를 추가한다. 요청자체의
@@ -94,7 +94,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LogIOTrackTTFB" id="LogIOTrackTTFB">LogIOTrackTTFB</a> <a name="logiotrackttfb" id="logiotrackttfb">지시어</a><a title="Permanent link" href="#logiotrackttfb" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="LogIOTrackTTFB" id="LogIOTrackTTFB">LogIOTrackTTFB</a> <a name="logiotrackttfb" id="logiotrackttfb">지시어</a> <a title="Permanent link" href="#logiotrackttfb" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>Enable tracking of time to first byte (TTFB = time to first byte)
 </td></tr>
@@ -109,7 +109,7 @@
             not been translated yet. Please have a look at the English
             version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LogIOTrackTTFU" id="LogIOTrackTTFU">LogIOTrackTTFU</a> <a name="logiotrackttfu" id="logiotrackttfu">지시어</a><a title="Permanent link" href="#logiotrackttfu" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="LogIOTrackTTFU" id="LogIOTrackTTFU">LogIOTrackTTFU</a> <a name="logiotrackttfu" id="logiotrackttfu">지시어</a> <a title="Permanent link" href="#logiotrackttfu" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>Enable tracking of time to last request byte (TTFU = time to finish
 upload)</td></tr>

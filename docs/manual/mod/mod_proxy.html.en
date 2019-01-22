@@ -150,7 +150,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="forwardreverse" id="forwardreverse">Forward Proxies and Reverse
-       Proxies/Gateways</a><a title="Permanent link" href="#forwardreverse" class="permalink">&para;</a></h2>
+       Proxies/Gateways</a> <a title="Permanent link" href="#forwardreverse" class="permalink">&para;</a></h2>
       <p>Apache HTTP Server can be configured in both a <dfn>forward</dfn> and
       <dfn>reverse</dfn> proxy (also known as <dfn>gateway</dfn>) mode.</p>
 
@@ -196,7 +196,7 @@
       configure a reverse proxy.</p>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Basic Examples</a><a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
+<h2><a name="examples" id="examples">Basic Examples</a> <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
 
     <p>The examples below are only a very basic idea to help you
     get started.  Please read the documentation on the individual
@@ -218,7 +218,7 @@ ProxyVia On
 </div>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="handler" id="handler">Access via Handler</a><a title="Permanent link" href="#handler" class="permalink">&para;</a></h2>
+<h2><a name="handler" id="handler">Access via Handler</a> <a title="Permanent link" href="#handler" class="permalink">&para;</a></h2>
 
       <p>You can also force a request to be handled as a reverse-proxy
         request, by creating a suitable Handler pass-through. The example
@@ -235,7 +235,7 @@ ProxyVia On
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="workers" id="workers">Workers</a><a title="Permanent link" href="#workers" class="permalink">&para;</a></h2>
+<h2><a name="workers" id="workers">Workers</a> <a title="Permanent link" href="#workers" class="permalink">&para;</a></h2>
       <p>The proxy manages the configuration of origin servers and their
       communication parameters in objects called <dfn>workers</dfn>.
       There are two built-in workers: the default forward proxy worker and the
@@ -364,7 +364,7 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10</pre>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="access" id="access">Controlling Access to Your Proxy</a><a title="Permanent link" href="#access" class="permalink">&para;</a></h2>
+<h2><a name="access" id="access">Controlling Access to Your Proxy</a> <a title="Permanent link" href="#access" class="permalink">&para;</a></h2>
       <p>You can control who can access your proxy via the <code class="directive"><a href="#proxy">&lt;Proxy&gt;</a></code> control block as in
       the following example:</p>
 
@@ -390,14 +390,14 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10</pre>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="startup" id="startup">Slow Startup</a><a title="Permanent link" href="#startup" class="permalink">&para;</a></h2>
+<h2><a name="startup" id="startup">Slow Startup</a> <a title="Permanent link" href="#startup" class="permalink">&para;</a></h2>
       <p>If you're using the <code class="directive"><a href="#proxyblock">ProxyBlock</a></code> directive, hostnames' IP addresses are looked up
       and cached during startup for later match test. This may take a few
       seconds (or more) depending on the speed with which the hostname lookups
       occur.</p>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="intranet" id="intranet">Intranet Proxy</a><a title="Permanent link" href="#intranet" class="permalink">&para;</a></h2>
+<h2><a name="intranet" id="intranet">Intranet Proxy</a> <a title="Permanent link" href="#intranet" class="permalink">&para;</a></h2>
       <p>An Apache httpd proxy server situated in an intranet needs to forward
       external requests through the company's firewall (for this, configure
       the <code class="directive"><a href="#proxyremote">ProxyRemote</a></code> directive
@@ -418,7 +418,7 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10</pre>
       files will then contain fully qualified hosts.</p>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="envsettings" id="envsettings">Protocol Adjustments</a><a title="Permanent link" href="#envsettings" class="permalink">&para;</a></h2>
+<h2><a name="envsettings" id="envsettings">Protocol Adjustments</a> <a title="Permanent link" href="#envsettings" class="permalink">&para;</a></h2>
       <p>For circumstances where <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> is sending
       requests to an origin server that doesn't properly implement
       keepalives or HTTP/1.1, there are two <a href="../env.html">environment variables</a> that can force the
@@ -442,7 +442,7 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10</pre>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="request-bodies" id="request-bodies">Request Bodies</a><a title="Permanent link" href="#request-bodies" class="permalink">&para;</a></h2>
+<h2><a name="request-bodies" id="request-bodies">Request Bodies</a> <a title="Permanent link" href="#request-bodies" class="permalink">&para;</a></h2>
 
     <p>Some request methods such as POST include a request body.
     The HTTP protocol requires that requests which include a body
@@ -473,7 +473,7 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10</pre>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="x-headers" id="x-headers">Reverse Proxy Request Headers</a><a title="Permanent link" href="#x-headers" class="permalink">&para;</a></h2>
+<h2><a name="x-headers" id="x-headers">Reverse Proxy Request Headers</a> <a title="Permanent link" href="#x-headers" class="permalink">&para;</a></h2>
 
     <p>When acting in a reverse-proxy mode (using the <code class="directive"><a href="#proxypass">ProxyPass</a></code> directive, for example),
     <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> adds several request headers in
@@ -508,7 +508,7 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10</pre>
 
    </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="BalancerGrowth" id="BalancerGrowth">BalancerGrowth</a> <a name="balancergrowth" id="balancergrowth">Directive</a><a title="Permanent link" href="#balancergrowth" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="BalancerGrowth" id="BalancerGrowth">BalancerGrowth</a> <a name="balancergrowth" id="balancergrowth">Directive</a> <a title="Permanent link" href="#balancergrowth" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Number of additional Balancers that can be added Post-configuration</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>BalancerGrowth <var>#</var></code></td></tr>
@@ -526,7 +526,7 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="BalancerInherit" id="BalancerInherit">BalancerInherit</a> <a name="balancerinherit" id="balancerinherit">Directive</a><a title="Permanent link" href="#balancerinherit" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="BalancerInherit" id="BalancerInherit">BalancerInherit</a> <a name="balancerinherit" id="balancerinherit">Directive</a> <a title="Permanent link" href="#balancerinherit" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Inherit proxy Balancers/Workers defined from the main server</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>BalancerInherit On|Off</code></td></tr>
@@ -545,7 +545,7 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10</pre>
     
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="BalancerMember" id="BalancerMember">BalancerMember</a> <a name="balancermember" id="balancermember">Directive</a><a title="Permanent link" href="#balancermember" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="BalancerMember" id="BalancerMember">BalancerMember</a> <a name="balancermember" id="balancermember">Directive</a> <a title="Permanent link" href="#balancermember" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Add a member to a load balancing group</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>BalancerMember [<var>balancerurl</var>] <var>url</var> [<var>key=value [key=value ...]]</var></code></td></tr>
@@ -573,7 +573,7 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10</pre>
     
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="BalancerPersist" id="BalancerPersist">BalancerPersist</a> <a name="balancerpersist" id="balancerpersist">Directive</a><a title="Permanent link" href="#balancerpersist" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="BalancerPersist" id="BalancerPersist">BalancerPersist</a> <a name="balancerpersist" id="balancerpersist">Directive</a> <a title="Permanent link" href="#balancerpersist" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Attempt to persist changes made by the Balancer Manager across restarts.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>BalancerPersist On|Off</code></td></tr>
@@ -590,7 +590,7 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10</pre>
     
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="NoProxy" id="NoProxy">NoProxy</a> <a name="noproxy" id="noproxy">Directive</a><a title="Permanent link" href="#noproxy" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="NoProxy" id="NoProxy">NoProxy</a> <a name="noproxy" id="noproxy">Directive</a> <a title="Permanent link" href="#noproxy" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Hosts, domains, or networks that will be connected to
 directly</td></tr>
@@ -714,7 +714,7 @@ NoProxy         .example.com 192.168.112.0/21</pre>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Proxy" id="Proxy">&lt;Proxy&gt;</a> <a name="proxy" id="proxy">Directive</a><a title="Permanent link" href="#proxy" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="Proxy" id="Proxy">&lt;Proxy&gt;</a> <a name="proxy" id="proxy">Directive</a> <a title="Permanent link" href="#proxy" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Container for directives applied to proxied resources</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>&lt;Proxy <var>wildcard-url</var>&gt; ...&lt;/Proxy&gt;</code></td></tr>
@@ -774,7 +774,7 @@ NoProxy         .example.com 192.168.112.0/21</pre>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyAddHeaders" id="ProxyAddHeaders">ProxyAddHeaders</a> <a name="proxyaddheaders" id="proxyaddheaders">Directive</a><a title="Permanent link" href="#proxyaddheaders" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ProxyAddHeaders" id="ProxyAddHeaders">ProxyAddHeaders</a> <a name="proxyaddheaders" id="proxyaddheaders">Directive</a> <a title="Permanent link" href="#proxyaddheaders" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Add proxy information in X-Forwarded-* headers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyAddHeaders Off|On</code></td></tr>
@@ -792,7 +792,7 @@ NoProxy         .example.com 192.168.112.0/21</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyBadHeader" id="ProxyBadHeader">ProxyBadHeader</a> <a name="proxybadheader" id="proxybadheader">Directive</a><a title="Permanent link" href="#proxybadheader" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ProxyBadHeader" id="ProxyBadHeader">ProxyBadHeader</a> <a name="proxybadheader" id="proxybadheader">Directive</a> <a title="Permanent link" href="#proxybadheader" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determines how to handle bad header lines in a
 response</td></tr>
@@ -823,7 +823,7 @@ response</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyBlock" id="ProxyBlock">ProxyBlock</a> <a name="proxyblock" id="proxyblock">Directive</a><a title="Permanent link" href="#proxyblock" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ProxyBlock" id="ProxyBlock">ProxyBlock</a> <a name="proxyblock" id="proxyblock">Directive</a> <a title="Permanent link" href="#proxyblock" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Disallow proxy requests to certain hosts</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyBlock *|<var>hostname</var>|<var>partial-hostname</var> [<var>hostname</var>|<var>partial-hostname</var>]...</code></td></tr>
@@ -878,7 +878,7 @@ response</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyDomain" id="ProxyDomain">ProxyDomain</a> <a name="proxydomain" id="proxydomain">Directive</a><a title="Permanent link" href="#proxydomain" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ProxyDomain" id="ProxyDomain">ProxyDomain</a> <a name="proxydomain" id="proxydomain">Directive</a> <a title="Permanent link" href="#proxydomain" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Default domain name for proxied requests</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyDomain <var>Domain</var></code></td></tr>
@@ -900,7 +900,7 @@ ProxyDomain       ".example.com"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyErrorOverride" id="ProxyErrorOverride">ProxyErrorOverride</a> <a name="proxyerroroverride" id="proxyerroroverride">Directive</a><a title="Permanent link" href="#proxyerroroverride" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ProxyErrorOverride" id="ProxyErrorOverride">ProxyErrorOverride</a> <a name="proxyerroroverride" id="proxyerroroverride">Directive</a> <a title="Permanent link" href="#proxyerroroverride" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Override error pages for proxied content</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyErrorOverride On|Off</code></td></tr>
@@ -922,7 +922,7 @@ ProxyDomain       ".example.com"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyIOBufferSize" id="ProxyIOBufferSize">ProxyIOBufferSize</a> <a name="proxyiobuffersize" id="proxyiobuffersize">Directive</a><a title="Permanent link" href="#proxyiobuffersize" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ProxyIOBufferSize" id="ProxyIOBufferSize">ProxyIOBufferSize</a> <a name="proxyiobuffersize" id="proxyiobuffersize">Directive</a> <a title="Permanent link" href="#proxyiobuffersize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determine size of internal data throughput buffer</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyIOBufferSize <var>bytes</var></code></td></tr>
@@ -951,7 +951,7 @@ ProxyDomain       ".example.com"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyMatch" id="ProxyMatch">&lt;ProxyMatch&gt;</a> <a name="proxymatch" id="proxymatch">Directive</a><a title="Permanent link" href="#proxymatch" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ProxyMatch" id="ProxyMatch">&lt;ProxyMatch&gt;</a> <a name="proxymatch" id="proxymatch">Directive</a> <a title="Permanent link" href="#proxymatch" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Container for directives applied to regular-expression-matched
 proxied resources</td></tr>
@@ -982,7 +982,7 @@ proxied resources</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyMaxForwards" id="ProxyMaxForwards">ProxyMaxForwards</a> <a name="proxymaxforwards" id="proxymaxforwards">Directive</a><a title="Permanent link" href="#proxymaxforwards" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ProxyMaxForwards" id="ProxyMaxForwards">ProxyMaxForwards</a> <a name="proxymaxforwards" id="proxymaxforwards">Directive</a> <a title="Permanent link" href="#proxymaxforwards" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximium number of proxies that a request can be forwarded
 through</td></tr>
@@ -1010,7 +1010,7 @@ through</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyPass" id="ProxyPass">ProxyPass</a> <a name="proxypass" id="proxypass">Directive</a><a title="Permanent link" href="#proxypass" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ProxyPass" id="ProxyPass">ProxyPass</a> <a name="proxypass" id="proxypass">Directive</a> <a title="Permanent link" href="#proxypass" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maps remote servers into the local server URL-space</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyPass [<var>path</var>] !|<var>url</var> [<var>key=value</var>
@@ -1044,7 +1044,7 @@ through</td></tr>
 
     <p>In 2.4.7 and later, support for using a Unix Domain Socket is available by using a target
     which prepends <code>unix:/path/lis.sock|</code>. For example, to proxy
-    HTTP and target the UDS at /home/www/socket, you would use
+    HTTP and target the UDS at /home/www.socket, you would use
     <code>unix:/home/www.socket|http://localhost/whatever/</code>. Since
     the socket is local, the hostname used (in this case <code>localhost</code>)
     is moot, but it is passed as the Host: header value of the request.</p>
@@ -1583,7 +1583,7 @@ ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyPassInherit" id="ProxyPassInherit">ProxyPassInherit</a> <a name="proxypassinherit" id="proxypassinherit">Directive</a><a title="Permanent link" href="#proxypassinherit" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ProxyPassInherit" id="ProxyPassInherit">ProxyPassInherit</a> <a name="proxypassinherit" id="proxypassinherit">Directive</a> <a title="Permanent link" href="#proxypassinherit" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Inherit ProxyPass directives defined from the main server</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyPassInherit On|Off</code></td></tr>
@@ -1604,7 +1604,7 @@ ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"</pre>
     
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyPassInterpolateEnv" id="ProxyPassInterpolateEnv">ProxyPassInterpolateEnv</a> <a name="proxypassinterpolateenv" id="proxypassinterpolateenv">Directive</a><a title="Permanent link" href="#proxypassinterpolateenv" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ProxyPassInterpolateEnv" id="ProxyPassInterpolateEnv">ProxyPassInterpolateEnv</a> <a name="proxypassinterpolateenv" id="proxypassinterpolateenv">Directive</a> <a title="Permanent link" href="#proxypassinterpolateenv" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable Environment Variable interpolation in Reverse Proxy configurations</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyPassInterpolateEnv On|Off</code></td></tr>
@@ -1641,7 +1641,7 @@ ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyPassMatch" id="ProxyPassMatch">ProxyPassMatch</a> <a name="proxypassmatch" id="proxypassmatch">Directive</a><a title="Permanent link" href="#proxypassmatch" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ProxyPassMatch" id="ProxyPassMatch">ProxyPassMatch</a> <a name="proxypassmatch" id="proxypassmatch">Directive</a> <a title="Permanent link" href="#proxypassmatch" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maps remote servers into the local server URL-space using regular expressions</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyPassMatch [<var>regex</var>] !|<var>url</var> [<var>key=value</var>
@@ -1708,7 +1708,7 @@ ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyPassReverse" id="ProxyPassReverse">ProxyPassReverse</a> <a name="proxypassreverse" id="proxypassreverse">Directive</a><a title="Permanent link" href="#proxypassreverse" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ProxyPassReverse" id="ProxyPassReverse">ProxyPassReverse</a> <a name="proxypassreverse" id="proxypassreverse">Directive</a> <a title="Permanent link" href="#proxypassreverse" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Adjusts the URL in HTTP response headers sent from a reverse
 proxied server</td></tr>
@@ -1794,7 +1794,7 @@ ProxyPassReverseCookiePath  "/"  "/mirror/foo/"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyPassReverseCookieDomain" id="ProxyPassReverseCookieDomain">ProxyPassReverseCookieDomain</a> <a name="proxypassreversecookiedomain" id="proxypassreversecookiedomain">Directive</a><a title="Permanent link" href="#proxypassreversecookiedomain" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ProxyPassReverseCookieDomain" id="ProxyPassReverseCookieDomain">ProxyPassReverseCookieDomain</a> <a name="proxypassreversecookiedomain" id="proxypassreversecookiedomain">Directive</a> <a title="Permanent link" href="#proxypassreversecookiedomain" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Adjusts the Domain string in Set-Cookie headers from a reverse-
 proxied server</td></tr>
@@ -1811,7 +1811,7 @@ string in <code>Set-Cookie</code> headers.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyPassReverseCookiePath" id="ProxyPassReverseCookiePath">ProxyPassReverseCookiePath</a> <a name="proxypassreversecookiepath" id="proxypassreversecookiepath">Directive</a><a title="Permanent link" href="#proxypassreversecookiepath" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ProxyPassReverseCookiePath" id="ProxyPassReverseCookiePath">ProxyPassReverseCookiePath</a> <a name="proxypassreversecookiepath" id="proxypassreversecookiepath">Directive</a> <a title="Permanent link" href="#proxypassreversecookiepath" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Adjusts the Path string in Set-Cookie headers from a reverse-
 proxied server</td></tr>
@@ -1842,7 +1842,7 @@ will rewrite a cookie with backend path <code>/</code> (or
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyPreserveHost" id="ProxyPreserveHost">ProxyPreserveHost</a> <a name="proxypreservehost" id="proxypreservehost">Directive</a><a title="Permanent link" href="#proxypreservehost" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ProxyPreserveHost" id="ProxyPreserveHost">ProxyPreserveHost</a> <a name="proxypreservehost" id="proxypreservehost">Directive</a> <a title="Permanent link" href="#proxypreservehost" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Use incoming Host HTTP request header for proxy
 request</td></tr>
@@ -1865,7 +1865,7 @@ context in 2.3.3 and later.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyReceiveBufferSize" id="ProxyReceiveBufferSize">ProxyReceiveBufferSize</a> <a name="proxyreceivebuffersize" id="proxyreceivebuffersize">Directive</a><a title="Permanent link" href="#proxyreceivebuffersize" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ProxyReceiveBufferSize" id="ProxyReceiveBufferSize">ProxyReceiveBufferSize</a> <a name="proxyreceivebuffersize" id="proxyreceivebuffersize">Directive</a> <a title="Permanent link" href="#proxyreceivebuffersize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Network buffer size for proxied HTTP and FTP
 connections</td></tr>
@@ -1886,7 +1886,7 @@ connections</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyRemote" id="ProxyRemote">ProxyRemote</a> <a name="proxyremote" id="proxyremote">Directive</a><a title="Permanent link" href="#proxyremote" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ProxyRemote" id="ProxyRemote">ProxyRemote</a> <a name="proxyremote" id="proxyremote">Directive</a> <a title="Permanent link" href="#proxyremote" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Remote proxy used to handle certain requests</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyRemote <var>match</var> <var>remote-server</var></code></td></tr>
@@ -1925,7 +1925,7 @@ ProxyRemote ftp http://ftpproxy.mydomain:8080</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyRemoteMatch" id="ProxyRemoteMatch">ProxyRemoteMatch</a> <a name="proxyremotematch" id="proxyremotematch">Directive</a><a title="Permanent link" href="#proxyremotematch" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ProxyRemoteMatch" id="ProxyRemoteMatch">ProxyRemoteMatch</a> <a name="proxyremotematch" id="proxyremotematch">Directive</a> <a title="Permanent link" href="#proxyremotematch" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Remote proxy used to handle requests matched by regular
 expressions</td></tr>
@@ -1941,7 +1941,7 @@ expressions</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyRequests" id="ProxyRequests">ProxyRequests</a> <a name="proxyrequests" id="proxyrequests">Directive</a><a title="Permanent link" href="#proxyrequests" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ProxyRequests" id="ProxyRequests">ProxyRequests</a> <a name="proxyrequests" id="proxyrequests">Directive</a> <a title="Permanent link" href="#proxyrequests" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enables forward (standard) proxy requests</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyRequests On|Off</code></td></tr>
@@ -1976,7 +1976,7 @@ expressions</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxySet" id="ProxySet">ProxySet</a> <a name="proxyset" id="proxyset">Directive</a><a title="Permanent link" href="#proxyset" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ProxySet" id="ProxySet">ProxySet</a> <a name="proxyset" id="proxyset">Directive</a> <a title="Permanent link" href="#proxyset" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Set various Proxy balancer or member parameters</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxySet <var>url</var> <var>key=value [key=value ...]</var></code></td></tr>
@@ -2021,7 +2021,7 @@ expressions</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxySourceAddress" id="ProxySourceAddress">ProxySourceAddress</a> <a name="proxysourceaddress" id="proxysourceaddress">Directive</a><a title="Permanent link" href="#proxysourceaddress" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ProxySourceAddress" id="ProxySourceAddress">ProxySourceAddress</a> <a name="proxysourceaddress" id="proxysourceaddress">Directive</a> <a title="Permanent link" href="#proxysourceaddress" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Set local IP address for outgoing proxy connections</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxySourceAddress <var>address</var></code></td></tr>
@@ -2035,7 +2035,7 @@ expressions</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyStatus" id="ProxyStatus">ProxyStatus</a> <a name="proxystatus" id="proxystatus">Directive</a><a title="Permanent link" href="#proxystatus" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ProxyStatus" id="ProxyStatus">ProxyStatus</a> <a name="proxystatus" id="proxystatus">Directive</a> <a title="Permanent link" href="#proxystatus" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Show Proxy LoadBalancer status in mod_status</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyStatus Off|On|Full</code></td></tr>
@@ -2054,7 +2054,7 @@ expressions</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyTimeout" id="ProxyTimeout">ProxyTimeout</a> <a name="proxytimeout" id="proxytimeout">Directive</a><a title="Permanent link" href="#proxytimeout" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ProxyTimeout" id="ProxyTimeout">ProxyTimeout</a> <a name="proxytimeout" id="proxytimeout">Directive</a> <a title="Permanent link" href="#proxytimeout" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Network timeout for proxied requests</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyTimeout <var>time-interval</var>[s]</code></td></tr>
@@ -2070,7 +2070,7 @@ expressions</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyVia" id="ProxyVia">ProxyVia</a> <a name="proxyvia" id="proxyvia">Directive</a><a title="Permanent link" href="#proxyvia" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ProxyVia" id="ProxyVia">ProxyVia</a> <a name="proxyvia" id="proxyvia">Directive</a> <a title="Permanent link" href="#proxyvia" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Information provided in the <code>Via</code> HTTP response
 header for proxied requests</td></tr>

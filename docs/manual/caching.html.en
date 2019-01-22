@@ -42,7 +42,7 @@
 </ul><h3>See also</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">Introduction</a><a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
+<h2><a name="introduction" id="introduction">Introduction</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
     
 
     <p>The Apache HTTP server offers a range of caching features that
@@ -96,7 +96,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="http-caching" id="http-caching">Three-state RFC2616 HTTP caching</a><a title="Permanent link" href="#http-caching" class="permalink">&para;</a></h2>
+<h2><a name="http-caching" id="http-caching">Three-state RFC2616 HTTP caching</a> <a title="Permanent link" href="#http-caching" class="permalink">&para;</a></h2>
 
     
 
@@ -422,7 +422,7 @@ Vary: negotiate,accept-language,accept-charset
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Cache Setup Examples</a><a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
+<h2><a name="examples" id="examples">Cache Setup Examples</a> <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
 
     
 
@@ -580,7 +580,7 @@ CacheSocache dbm:/path/to/datafile</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="socache-caching" id="socache-caching">General Two-state Key/Value Shared Object Caching</a><a title="Permanent link" href="#socache-caching" class="permalink">&para;</a></h2>
+<h2><a name="socache-caching" id="socache-caching">General Two-state Key/Value Shared Object Caching</a> <a title="Permanent link" href="#socache-caching" class="permalink">&para;</a></h2>
 
     
 
@@ -626,7 +626,7 @@ CacheSocache dbm:/path/to/datafile</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="file-caching" id="file-caching">Specialized File Caching</a><a title="Permanent link" href="#file-caching" class="permalink">&para;</a></h2>
+<h2><a name="file-caching" id="file-caching">Specialized File Caching</a> <a title="Permanent link" href="#file-caching" class="permalink">&para;</a></h2>
 
     
 
@@ -772,7 +772,7 @@ sys     0m0.000s</pre></div>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="security" id="security">Security Considerations</a><a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
+<h2><a name="security" id="security">Security Considerations</a> <a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
     
 
     <h3>Authorization and Access Control</h3>

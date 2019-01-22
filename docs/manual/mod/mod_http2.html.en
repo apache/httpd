@@ -100,7 +100,7 @@
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="how-it-works" id="how-it-works">How it works</a><a title="Permanent link" href="#how-it-works" class="permalink">&para;</a></h2>
+<h2><a name="how-it-works" id="how-it-works">How it works</a> <a title="Permanent link" href="#how-it-works" class="permalink">&para;</a></h2>
     
     <h3><a name="dimensioning" id="dimensioning">HTTP/2 Dimensioning</a></h3>
         <p>
@@ -213,7 +213,7 @@
     
     </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2CopyFiles" id="H2CopyFiles">H2CopyFiles</a> <a name="h2copyfiles" id="h2copyfiles">Directive</a><a title="Permanent link" href="#h2copyfiles" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="H2CopyFiles" id="H2CopyFiles">H2CopyFiles</a> <a name="h2copyfiles" id="h2copyfiles">Directive</a> <a title="Permanent link" href="#h2copyfiles" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determine file handling in responses</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2CopyFiles on|off</code></td></tr>
@@ -246,7 +246,7 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2Direct" id="H2Direct">H2Direct</a> <a name="h2direct" id="h2direct">Directive</a><a title="Permanent link" href="#h2direct" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="H2Direct" id="H2Direct">H2Direct</a> <a name="h2direct" id="h2direct">Directive</a> <a title="Permanent link" href="#h2direct" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>H2 Direct Protocol Switch</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2Direct on|off</code></td></tr>
@@ -292,7 +292,7 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2EarlyHints" id="H2EarlyHints">H2EarlyHints</a> <a name="h2earlyhints" id="h2earlyhints">Directive</a><a title="Permanent link" href="#h2earlyhints" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="H2EarlyHints" id="H2EarlyHints">H2EarlyHints</a> <a name="h2earlyhints" id="h2earlyhints">Directive</a> <a title="Permanent link" href="#h2earlyhints" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determine sending of 103 status codes</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2EarlyHints on|off</code></td></tr>
@@ -317,7 +317,7 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2MaxSessionStreams" id="H2MaxSessionStreams">H2MaxSessionStreams</a> <a name="h2maxsessionstreams" id="h2maxsessionstreams">Directive</a><a title="Permanent link" href="#h2maxsessionstreams" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="H2MaxSessionStreams" id="H2MaxSessionStreams">H2MaxSessionStreams</a> <a name="h2maxsessionstreams" id="h2maxsessionstreams">Directive</a> <a title="Permanent link" href="#h2maxsessionstreams" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum number of active streams per HTTP/2 session.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2MaxSessionStreams <em>n</em></code></td></tr>
@@ -336,7 +336,7 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2MaxWorkerIdleSeconds" id="H2MaxWorkerIdleSeconds">H2MaxWorkerIdleSeconds</a> <a name="h2maxworkeridleseconds" id="h2maxworkeridleseconds">Directive</a><a title="Permanent link" href="#h2maxworkeridleseconds" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="H2MaxWorkerIdleSeconds" id="H2MaxWorkerIdleSeconds">H2MaxWorkerIdleSeconds</a> <a name="h2maxworkeridleseconds" id="h2maxworkeridleseconds">Directive</a> <a title="Permanent link" href="#h2maxworkeridleseconds" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum number of seconds h2 workers remain idle until shut down.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2MaxWorkerIdleSeconds <em>n</em></code></td></tr>
@@ -355,7 +355,7 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2MaxWorkers" id="H2MaxWorkers">H2MaxWorkers</a> <a name="h2maxworkers" id="h2maxworkers">Directive</a><a title="Permanent link" href="#h2maxworkers" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="H2MaxWorkers" id="H2MaxWorkers">H2MaxWorkers</a> <a name="h2maxworkers" id="h2maxworkers">Directive</a> <a title="Permanent link" href="#h2maxworkers" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum number of worker threads to use per child process.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2MaxWorkers <em>n</em></code></td></tr>
@@ -374,7 +374,7 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2MinWorkers" id="H2MinWorkers">H2MinWorkers</a> <a name="h2minworkers" id="h2minworkers">Directive</a><a title="Permanent link" href="#h2minworkers" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="H2MinWorkers" id="H2MinWorkers">H2MinWorkers</a> <a name="h2minworkers" id="h2minworkers">Directive</a> <a title="Permanent link" href="#h2minworkers" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Minimal number of worker threads to use per child process.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2MinWorkers <em>n</em></code></td></tr>
@@ -393,7 +393,7 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2ModernTLSOnly" id="H2ModernTLSOnly">H2ModernTLSOnly</a> <a name="h2moderntlsonly" id="h2moderntlsonly">Directive</a><a title="Permanent link" href="#h2moderntlsonly" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="H2ModernTLSOnly" id="H2ModernTLSOnly">H2ModernTLSOnly</a> <a name="h2moderntlsonly" id="h2moderntlsonly">Directive</a> <a title="Permanent link" href="#h2moderntlsonly" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Require HTTP/2 connections to be "modern TLS" only</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2ModernTLSOnly on|off</code></td></tr>
@@ -436,7 +436,7 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2Push" id="H2Push">H2Push</a> <a name="h2push" id="h2push">Directive</a><a title="Permanent link" href="#h2push" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="H2Push" id="H2Push">H2Push</a> <a name="h2push" id="h2push">Directive</a> <a title="Permanent link" href="#h2push" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>H2 Server Push Switch</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2Push on|off</code></td></tr>
@@ -496,7 +496,7 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2PushDiarySize" id="H2PushDiarySize">H2PushDiarySize</a> <a name="h2pushdiarysize" id="h2pushdiarysize">Directive</a><a title="Permanent link" href="#h2pushdiarysize" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="H2PushDiarySize" id="H2PushDiarySize">H2PushDiarySize</a> <a name="h2pushdiarysize" id="h2pushdiarysize">Directive</a> <a title="Permanent link" href="#h2pushdiarysize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>H2 Server Push Diary Size</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2PushDiarySize <em>n</em></code></td></tr>
@@ -531,7 +531,7 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2PushPriority" id="H2PushPriority">H2PushPriority</a> <a name="h2pushpriority" id="h2pushpriority">Directive</a><a title="Permanent link" href="#h2pushpriority" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="H2PushPriority" id="H2PushPriority">H2PushPriority</a> <a name="h2pushpriority" id="h2pushpriority">Directive</a> <a title="Permanent link" href="#h2pushpriority" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>H2 Server Push Priority</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2PushPriority <em>mime-type</em> [after|before|interleaved] [weight]</code></td></tr>
@@ -648,7 +648,7 @@ H2PushPriority text/css   interleaved      # weight 256 default</pre>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2PushResource" id="H2PushResource">H2PushResource</a> <a name="h2pushresource" id="h2pushresource">Directive</a><a title="Permanent link" href="#h2pushresource" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="H2PushResource" id="H2PushResource">H2PushResource</a> <a name="h2pushresource" id="h2pushresource">Directive</a> <a title="Permanent link" href="#h2pushresource" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Declares resources for early pushing to the client</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2PushResource [add] path [critical]</code></td></tr>
@@ -684,7 +684,7 @@ H2PushPriority text/css   interleaved      # weight 256 default</pre>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2SerializeHeaders" id="H2SerializeHeaders">H2SerializeHeaders</a> <a name="h2serializeheaders" id="h2serializeheaders">Directive</a><a title="Permanent link" href="#h2serializeheaders" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="H2SerializeHeaders" id="H2SerializeHeaders">H2SerializeHeaders</a> <a name="h2serializeheaders" id="h2serializeheaders">Directive</a> <a title="Permanent link" href="#h2serializeheaders" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Serialize Request/Response Processing Switch</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2SerializeHeaders on|off</code></td></tr>
@@ -708,7 +708,7 @@ H2PushPriority text/css   interleaved      # weight 256 default</pre>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2StreamMaxMemSize" id="H2StreamMaxMemSize">H2StreamMaxMemSize</a> <a name="h2streammaxmemsize" id="h2streammaxmemsize">Directive</a><a title="Permanent link" href="#h2streammaxmemsize" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="H2StreamMaxMemSize" id="H2StreamMaxMemSize">H2StreamMaxMemSize</a> <a name="h2streammaxmemsize" id="h2streammaxmemsize">Directive</a> <a title="Permanent link" href="#h2streammaxmemsize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum amount of output data buffered per stream.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2StreamMaxMemSize <em>bytes</em></code></td></tr>
@@ -729,7 +729,7 @@ H2PushPriority text/css   interleaved      # weight 256 default</pre>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2TLSCoolDownSecs" id="H2TLSCoolDownSecs">H2TLSCoolDownSecs</a> <a name="h2tlscooldownsecs" id="h2tlscooldownsecs">Directive</a><a title="Permanent link" href="#h2tlscooldownsecs" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="H2TLSCoolDownSecs" id="H2TLSCoolDownSecs">H2TLSCoolDownSecs</a> <a name="h2tlscooldownsecs" id="h2tlscooldownsecs">Directive</a> <a title="Permanent link" href="#h2tlscooldownsecs" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2TLSCoolDownSecs <em>seconds</em></code></td></tr>
@@ -768,7 +768,7 @@ H2PushPriority text/css   interleaved      # weight 256 default</pre>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2TLSWarmUpSize" id="H2TLSWarmUpSize">H2TLSWarmUpSize</a> <a name="h2tlswarmupsize" id="h2tlswarmupsize">Directive</a><a title="Permanent link" href="#h2tlswarmupsize" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="H2TLSWarmUpSize" id="H2TLSWarmUpSize">H2TLSWarmUpSize</a> <a name="h2tlswarmupsize" id="h2tlswarmupsize">Directive</a> <a title="Permanent link" href="#h2tlswarmupsize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2TLSWarmUpSize <em>amount</em></code></td></tr>
@@ -817,7 +817,7 @@ H2PushPriority text/css   interleaved      # weight 256 default</pre>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2Upgrade" id="H2Upgrade">H2Upgrade</a> <a name="h2upgrade" id="h2upgrade">Directive</a><a title="Permanent link" href="#h2upgrade" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="H2Upgrade" id="H2Upgrade">H2Upgrade</a> <a name="h2upgrade" id="h2upgrade">Directive</a> <a title="Permanent link" href="#h2upgrade" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>H2 Upgrade Protocol Switch</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2Upgrade on|off</code></td></tr>
@@ -860,7 +860,7 @@ H2PushPriority text/css   interleaved      # weight 256 default</pre>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2WindowSize" id="H2WindowSize">H2WindowSize</a> <a name="h2windowsize" id="h2windowsize">Directive</a><a title="Permanent link" href="#h2windowsize" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="H2WindowSize" id="H2WindowSize">H2WindowSize</a> <a name="h2windowsize" id="h2windowsize">Directive</a> <a title="Permanent link" href="#h2windowsize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Size of Stream Window for upstream data.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2WindowSize <em>bytes</em></code></td></tr>
