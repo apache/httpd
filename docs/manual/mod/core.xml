@@ -3173,6 +3173,28 @@ matching URLs</description>
     Require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/LocationMatch&gt;
     </highlight>
+
+    <note><title>Note about / (slash)</title>
+      <p>The slash character has special meaning depending on where in a
+      URL it appears. People may be used to its behavior in the filesystem
+      where multiple adjacent slashes are frequently collapsed to a single
+      slash (<em>i.e.</em>, <code>/home///foo</code> is the same as
+      <code>/home/foo</code>). In URL-space this is not necessarily true.
+      The <directive type="section" module="core">LocationMatch</directive>
+      directive and the regex version of <directive type="section"
+      >Location</directive> require you to explicitly specify multiple
+      slashes if that is your intention.</p>
+
+      <p>For example, <code>&lt;LocationMatch "^/abc"&gt;</code> would match
+      the request URL <code>/abc</code> but not the request URL <code>
+      //abc</code>. The (non-regex) <directive type="section"
+      >Location</directive> directive behaves similarly when used for
+      proxy requests. But when (non-regex) <directive type="section"
+      >Location</directive> is used for non-proxy requests it will
+      implicitly match multiple slashes with a single slash. For example,
+      if you specify <code>&lt;Location "/abc/def"&gt;</code> and the
+      request is to <code>/abc//def</code> then it will match.</p>
+    </note>
 </usage>
 
 <seealso><a href="../sections.html">How &lt;Directory&gt;, &lt;Location&gt;
