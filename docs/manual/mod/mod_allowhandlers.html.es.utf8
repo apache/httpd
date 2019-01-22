@@ -58,7 +58,7 @@
 <li><a href="#comments_section">Comentarios</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="allowhandlers" id="allowhandlers">Directiva</a> <a name="AllowHandlers" id="AllowHandlers">AllowHandlers</a><a title="Enlace permanente" href="#allowhandlers" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="allowhandlers" id="allowhandlers">Directiva</a> <a name="AllowHandlers" id="AllowHandlers">AllowHandlers</a> <a title="Enlace permanente" href="#allowhandlers" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Restringe acceso a los handlers listados</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>AllowHandlers [not] none|<em>handler-name</em>

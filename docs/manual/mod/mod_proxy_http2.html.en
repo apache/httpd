@@ -91,7 +91,7 @@
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Basic Examples</a><a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
+<h2><a name="examples" id="examples">Basic Examples</a> <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
 
     <p>The examples below demonstrate how to configure HTTP/2 for
     backend connections for a reverse proxy. </p>
@@ -113,7 +113,7 @@ ProxyPassReverse "/app" "http://app.example.com"</pre>
     </div>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="notes" id="notes">Request notes</a><a title="Permanent link" href="#notes" class="permalink">&para;</a></h2>
+<h2><a name="notes" id="notes">Request notes</a> <a title="Permanent link" href="#notes" class="permalink">&para;</a></h2>
     <p><code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> creates the following request notes for
         logging using the <code>%{VARNAME}n</code> format in
         <code class="directive"><a href="../mod/mod_log_config.html#logformat">LogFormat</a></code> or
@@ -127,7 +127,7 @@ ProxyPassReverse "/app" "http://app.example.com"</pre>
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="h2push" id="h2push">HTTP/2 PUSH</a><a title="Permanent link" href="#h2push" class="permalink">&para;</a></h2>
+<h2><a name="h2push" id="h2push">HTTP/2 PUSH</a> <a title="Permanent link" href="#h2push" class="permalink">&para;</a></h2>
     <p>The module does not support the HTTP/2 feature PUSH. Backend servers
     that would like to advertise preload resources should send the appropriate 
     <code>Link</code> headers.</p>
