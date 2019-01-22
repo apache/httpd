@@ -3,6 +3,21 @@ Changes with Apache 2.4.39
 
 Changes with Apache 2.4.38
 
+  *) SECURITY: CVE-2018-17199 (cve.mitre.org)
+     mod_session: mod_session_cookie does not respect expiry time allowing
+     sessions to be reused.  [Hank Ibell]
+
+  *) SECURITY: CVE-2018-17189 (cve.mitre.org)
+     mod_http2: fixes a DoS attack vector. By sending slow request bodies
+     to resources not consuming them, httpd cleanup code occupies a server
+     thread unnecessarily. This was changed to an immediate stream reset
+     which discards all stream state and incoming data.  [Stefan Eissing]
+
+  *) SECURITY: CVE-2019-0190 (cve.mitre.org)
+     mod_ssl: Fix infinite loop triggered by a client-initiated
+     renegotiation in TLSv1.2 (or earlier) with OpenSSL 1.1.1 and
+     later.  PR 63052.  [Joe Orton]
+
   *) mod_ssl: Clear retry flag before aborting client-initiated renegotiation.
      PR 63052 [Joe Orton]
 
