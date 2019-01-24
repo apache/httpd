@@ -327,8 +327,7 @@ static int stream_destroy_iter(void *ctx, void *val)
                                && !task->rst_error);
             }
             
-            task->c = NULL;
-            if (reuse_slave) {
+            if (reuse_slave && slave->keepalive == AP_CONN_KEEPALIVE) {
                 h2_beam_log(task->output.beam, m->c, APLOG_DEBUG, 
                             APLOGNO(03385) "h2_task_destroy, reuse slave");    
                 h2_task_destroy(task);
