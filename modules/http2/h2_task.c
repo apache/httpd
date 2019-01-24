@@ -545,7 +545,6 @@ h2_task *h2_task_create(conn_rec *slave, int stream_id,
 void h2_task_destroy(h2_task *task)
 {
     if (task->output.beam) {
-        h2_beam_log(task->output.beam, task->c, APLOG_TRACE2, "task_destroy");
         h2_beam_destroy(task->output.beam);
         task->output.beam = NULL;
     }
