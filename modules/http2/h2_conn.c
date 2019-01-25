@@ -316,6 +316,7 @@ conn_rec *h2_slave_create(conn_rec *master, int slave_id, apr_pool_t *parent)
     c->notes                  = apr_table_make(pool, 5);
     c->input_filters          = NULL;
     c->output_filters         = NULL;
+    c->keepalives             = 0;
 #if AP_MODULE_MAGIC_AT_LEAST(20180903, 1)
     c->filter_conn_ctx        = NULL;
 #endif
@@ -348,16 +349,15 @@ conn_rec *h2_slave_create(conn_rec *master, int slave_id, apr_pool_t *parent)
         ap_set_module_config(c->conn_config, mpm, cfg);
     }
 
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c, 
-                  "h2_stream(%ld-%d): created slave", master->id, slave_id);
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, c, 
+                  "h2_slave(%s): created", c->log_id);
     return c;
 }
 
 void h2_slave_destroy(conn_rec *slave)
 {
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, slave,
-                  "h2_stream(%s): destroy slave", 
-                  apr_table_get(slave->notes, H2_TASK_ID_NOTE));
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, slave,
+                  "h2_slave(%s): destroy", slave->log_id);
     slave->sbh = NULL;
     apr_pool_destroy(slave->pool);
 }
@@ -370,16 +370,18 @@ apr_status_t h2_slave_run_pre_connection(conn_rec *slave, apr_socket_t *csd)
          * (Not necessarily in pre_connection, but later. Set it here, so it
          * is in place.) */
         slave->keepalives = 1;
+        /* We signal that this connection will be closed after the request.
+         * Which is true in that sense that we throw away all traffic data
+         * on this slave connection after each requests. Although we might
+         * reuse internal structures like memory pools.
+         * The wanted effect of this is that httpd does not try to clean up
+         * any dangling data on this connection when a request is done. Which
+         * is unneccessary on a h2 stream.
+         */
+        slave->keepalive = AP_CONN_CLOSE;
+        return ap_run_pre_connection(slave, csd);
     }
-    /* We signal that this connection will be closed after the request.
-     * Which is true in that sense that we throw away all traffic data
-     * on this slave connection after each requests. Although we might
-     * reuse internal structures like memory pools.
-     * The wanted effect of this is that httpd does not try to clean up
-     * any dangling data on this connection when a request is done. Which
-     * is unneccessary on a h2 stream.
-     */
-    slave->keepalive = AP_CONN_CLOSE;
-    return ap_run_pre_connection(slave, csd);
+    ap_assert(slave->output_filters);
+    return APR_SUCCESS;
 }
 
