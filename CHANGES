@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_ssl: give mod_md the chance to override certificate after ALPN protocol
+     negotiation. [Stefan Eissing]
+
   *) mod_http2: enable re-use of slave connections again. Fixed slave connection
      keepalives counter. [Stefan Eissing]
 
