@@ -131,6 +131,16 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1851093 ^/httpd/httpd/trunk .
      +1: jailletc36 (by inspection), jim, ylavic
 
+  *) mod_authn_dbm: Return APR_SUCCESS which is equivalent but more readable
+     than 'rv' here
+     trunk patch: http://svn.apache.org/r1850835
+                  http://svn.apache.org/r1851552
+     2.4.x patch: svn merge -c 1850835,1851552 ^/httpd/httpd/trunk .
+     +1: jailletc36, jim, ylavic
+     ylavic: I agree w/ joe's response on dev@ for r1850835 (no functional
+             change btw), while the warning addressed by r1850834 is annoying
+             for 2.4.38.
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -199,15 +209,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1850745 ^/httpd/httpd/trunk .
      +1: jim
 
-  *) mod_authn_dbm: Return APR_SUCCESS which is equivalent but more readable
-     than 'rv' here
-     trunk patch: http://svn.apache.org/r1850835
-                  http://svn.apache.org/r1851552
-     2.4.x patch: svn merge -c 1850835,1851552 ^/httpd/httpd/trunk .
-     +1: jailletc36, jim, ylavic
-     ylavic: I agree w/ joe's response on dev@ for r1850835 (no functional
-             change btw), while the warning addressed by r1850834 is annoying
-             for 2.4.38.
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
