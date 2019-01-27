@@ -1,9 +1,8 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1803315 -->
+<!-- English Revision: 1852273 -->
 <!-- French translation : Lucien GENTIS -->
-<!-- Reviewed by : Vincent Deffontaines -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -30,15 +29,16 @@ dynamique inverse de masse</description>
 <status>Extension</status>
 <sourcefile>mod_proxy_express.c</sourcefile>
 <identifier>proxy_express_module</identifier>
+<compatibility>Disponible à partir de la version 2.3.13 du serveur HTTP Apache</compatibility>
 
 <summary>
     <p>Ce module crée dynamiquement en masse des mandataires inverses en
-    faisant correspondre l'en-tête Host: de la requête HTTP à un nom de
+    faisant correspondre l'en-tête <code>Host:</code> de la requête HTTP à un nom de
     serveur et une URL d'arrière-plan stockés dans un fichier DBM. Il
     est ainsi plus aisé d'utiliser un grand nombre de
     mandataires inverses sans avoir à modifier la configuration. Il est
     loin de posséder autant de fonctionnalités que
-    <module>mod_proxy_balancer</module>, qui propose aussi la croissance
+    <module>mod_proxy_balancer</module> qui propose aussi la croissance
     dynamique, mais il est conçu pour gérer un nombre beaucoup plus important
     de serveurs d'arrière-plan. Il convient parfaitement pour créer un
     commutateur HTTP frontal et pour les architectures Microservices.</p>
@@ -55,11 +55,11 @@ dynamique inverse de masse</description>
 
 <note><title>Limitations</title>
   <ul>
-    <li>Ce module n'est pas conçu pour remplacer les fonctionnalités
-    dynamiques de <module>mod_proxy_balancer</module>. Par contre, il
-    peut constituer une alternative légère et rapide à
-    <module>mod_rewrite</module> lorsque ce dernier utilise la directive
-    <directive>RewriteMap</directive> et le drapeau <code>[P]</code>
+    <li>Ce module n'est pas conçu pour remplacer les fonctionnalités dynamiques
+    de <module>mod_proxy_balancer</module>. Par contre, il peut constituer une
+    alternative légère et rapide à <module>mod_rewrite</module> lorsque ce
+    dernier utilise la directive <directive
+    module="mod_rewrite">RewriteMap</directive> et le drapeau <code>[P]</code>
     pour le mandatement inverse à partir d'une table de correspondances.
     </li>
     <li>Il ne supporte pas les mises en correspondance basées sur les
@@ -90,11 +90,10 @@ dynamique inverse de masse</description>
 <directivesynopsis>
 <name>ProxyExpressEnable</name>
 <description>Active la fonctionnalité du module.</description>
-<syntax>ProxyExpressEnable [on|off]</syntax>
-<default>off</default>
+<syntax>ProxyExpressEnable on|off</syntax>
+<default>ProxyExpressEnable off</default>
 <contextlist><context>server config</context><context>virtual host</context>
   </contextlist>
-<compatibility>Disponible à partir de la version 2.3.13 d'Apache</compatibility>
 
 <usage>
   <p>La directive <directive>ProxyExpressEnable</directive> permet
@@ -105,17 +104,15 @@ dynamique inverse de masse</description>
 <directivesynopsis>
 <name>ProxyExpressDBMFile</name>
 <description>Chemin du fichier DBM.</description>
-<syntax>ProxyExpressDBMFile &lt;chemin&gt;</syntax>
-<default>None</default>
+<syntax>ProxyExpressDBMFile <var>pathname</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
   </contextlist>
-<compatibility>Disponible à partir de la version 2.3.13 d'Apache</compatibility>
 
 <usage>
   <p>La directive <directive>ProxyExpressDBMFile</directive> permet de
   définir le chemin du fichier DBM de correspondance Express. Ce fichier
   permet de faire correspondre le nom de serveur extrait de l'en-tête
-  Host: de la requête entrante avec une URL d'arrière-plan.</p>
+  <code>Host:</code> de la requête entrante avec une URL d'arrière-plan.</p>
 
     <note><title>Note</title>
       <p>Ce fichier est élaboré à partir d'un fichier texte à l'aide de
@@ -127,19 +124,21 @@ dynamique inverse de masse</description>
         ##express-map.txt:<br />
         ##<br />
         <br />
-        www1.example.com    http://192.168.211.2:8080<br />
+        www1.example.com   http://192.168.211.2:8080<br />
         www2.example.com   http://192.168.211.12:8088<br />
         www3.example.com   http://192.168.212.10<br />
       </example>
 
       <example><title>Création du fichier DBM</title>
         httxt2dbm -i express-map.txt -o emap<br />
-        </example>
+      </example>
 
       <example><title>Configuration</title>
-        ProxyExpressEnable on<br />
-	ProxyExpressDBMFile emap<br />
-        </example>
+      <highlight language="config">
+ProxyExpressEnable on
+ProxyExpressDBMFile emap
+      </highlight>
+      </example>        
     </note>
 </usage>
 </directivesynopsis>
@@ -147,11 +146,10 @@ dynamique inverse de masse</description>
 <directivesynopsis>
 <name>ProxyExpressDBMType</name>
 <description>Type de fichier DBM.</description>
-<syntax>ProxyExpressDBMFile &lt;type&gt;</syntax>
-<default>"default"</default>
+<syntax>ProxyExpressDBMType <var>type</var></syntax>
+<default>ProxyExpressDBMType default</default>
 <contextlist><context>server config</context><context>virtual host</context>
   </contextlist>
-<compatibility>Disponible à partir de la version 2.3.13 d'Apache</compatibility>
 
 <usage>
   <p>La directive <directive>ProxyExpressDBMType</directive> permet de

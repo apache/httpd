@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1425939 -->
+<!-- English Revision: 1852224 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -140,17 +140,17 @@ information ne peut être <a href="#sniffing">automatiquement détectée</a></de
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
-<compatibility>Disponible depuis la version 2.4.0 du serveur HTTP Apache
-; disponible depuis un module tiers dans les versions antérieures.</compatibility>
 
 <usage>
     <p>Si vous traitez des données dont l'encodage est connu, mais ne
     contenant aucune information à propos de ce dernier, vous pouvez
     définir une valeur par défaut afin d'aider mod_xml2enc à traiter
     correctement les données. Par exemple, pour définir la valeur par
-    défaut Latin1 (<var>iso-8859-1</var> specifiée dans HTTP/1.0),
+    défaut Latin1 (<var>iso-8859-1</var>) specifiée dans HTTP/1.0,
     utilisez :</p>
-    <highlight language="config">xml2EncDefault iso-8859-1</highlight>
+    <highlight language="config">
+xml2EncDefault iso-8859-1
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -193,4 +193,3 @@ commencer son traitement.</description>
 </directivesynopsis>
 
 </modulesynopsis>
-

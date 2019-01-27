@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1841039:1851792 (outdated) -->
+<!-- English Revision: 1851792 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -3441,6 +3441,27 @@ host</context>
 &lt;/LocationMatch&gt;
 </highlight>
 
+    <note><title>Note à propos du slash '/'</title>
+      <p>La signification du caractère slash '/' dépend de l'endroit où il
+      apparaît dans une URL. Les utilisateurs sont habitués à voir de multiples
+      slashes adjacents réduits à un seul au sein du système de fichiers (par
+      exemple, <code>/home///foo</code> est équivalent à
+      <code>/home/foo</code>). Ce n'est n'est cependant pas toujours le cas au
+      sein des URLs. En effet, si vous souhaitez spécifier plusieurs slashes,
+      vous devez le faire explicitement au sein de la directive <directive
+      type="section" module="core">LocationMatch</directive> et de la version
+      regex de la directive <directive type="section">Location</directive>.</p>
+
+      <p>Par exemple, <code>&lt;LocationMatch "^/abc"&gt;</code> correspondra à
+      l'URL <code>/abc</code>, mais pas à l'URL <code>//abc</code>. La directive
+      (non-regex) <directive type="section">Location</directive> se comporte de
+      la même manière lorsqu'elle est utilisée dans les requêtes de mandataire.
+      Par contre, pour les autres types de requêtes, la directive <directive
+      type="section">Location</directive> considérera plusieurs slashes
+      adjacents comme équivalents à un seul slash. Par exemple, si vous
+      spécifiez <code>&lt;Location "/abc/def"&gt;</code>, une requête pour
+      <code>/abc//def</code> correspondra.</p>
+    </note>
 </usage>
 <seealso><a href="../sections.html">Comment fonctionnent les sections
 &lt;Directory&gt;, &lt;Location&gt; et &lt;Files&gt;</a> pour une
