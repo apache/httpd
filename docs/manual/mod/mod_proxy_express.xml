@@ -28,10 +28,11 @@
 <status>Extension</status>
 <sourcefile>mod_proxy_express.c</sourcefile>
 <identifier>proxy_express_module</identifier>
+<compatibility>Available in Apache 2.3.13 and later</compatibility>
 
 <summary>
     <p>This module creates dynamically configured mass reverse
-    proxies, by mapping the Host: header of the HTTP request to
+    proxies, by mapping the <code>Host:</code> header of the HTTP request to
     a server name and backend URL stored in a DBM file.
     This allows for easy use of a huge number of reverse proxies
     with no configuration changes. It is much less feature-full
@@ -55,8 +56,8 @@
     <li>This module is not intended to replace the dynamic capability of
       <module>mod_proxy_balancer</module>. Instead, it is intended to be mostly
       a lightweight and fast alternative to using <module>mod_rewrite</module>
-      with <directive>RewriteMap</directive> and the <code>[P]</code> flag
-      for mapped reverse proxying.
+      with <directive module="mod_rewrite">RewriteMap</directive> and the
+      <code>[P]</code> flag for mapped reverse proxying.
     </li>
     <li>It does not support regex or pattern matching at all.
     </li>
@@ -64,7 +65,7 @@
       <highlight language="config">
 &lt;VirtualHost *:80&gt;
    ServerName front.end.server
-   ProxyPass "/" "back.end.server:port"
+   ProxyPass        "/" "back.end.server:port"
    ProxyPassReverse "/" "back.end.server:port"
 &lt;/VirtualHost&gt;
       </highlight>
@@ -85,11 +86,10 @@
 <directivesynopsis>
 <name>ProxyExpressEnable</name>
 <description>Enable the module functionality.</description>
-<syntax>ProxyExpressEnable [on|off]</syntax>
-<default>off</default>
+<syntax>ProxyExpressEnable on|off</syntax>
+<default>ProxyExpressEnable off</default>
 <contextlist><context>server config</context><context>virtual host</context>
   </contextlist>
-<compatibility>Available in Apache 2.3.13 and later</compatibility>
 
 <usage>
   <p>The <directive>ProxyExpressEnable</directive> directive
@@ -100,17 +100,15 @@
 <directivesynopsis>
 <name>ProxyExpressDBMFile</name>
 <description>Pathname to DBM file.</description>
-<syntax>ProxyExpressDBMFile &lt;pathname&gt;</syntax>
-<default>None</default>
+<syntax>ProxyExpressDBMFile <var>pathname</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
   </contextlist>
-<compatibility>Available in Apache 2.3.13 and later</compatibility>
 
 <usage>
   <p>The <directive>ProxyExpressDBMFile</directive> directive
     points to the location of the Express map DBM file. This
     file serves to map the incoming server name, obtained from
-    the Host: header, to a backend URL.</p>
+    the <code>Host:</code> header, to a backend URL.</p>
 
     <note><title>Note</title>
       <p>The file is constructed from a plain text file format using
@@ -122,19 +120,21 @@
         ##express-map.txt:<br />
         ##<br />
         <br />
-        www1.example.com    http://192.168.211.2:8080<br />
+        www1.example.com   http://192.168.211.2:8080<br />
         www2.example.com   http://192.168.211.12:8088<br />
         www3.example.com   http://192.168.212.10<br />
       </example>
 
       <example><title>Create DBM file</title>
         httxt2dbm -i express-map.txt -o emap<br />
-        </example>
+      </example>
 
       <example><title>Configuration</title>
-        ProxyExpressEnable on<br />
-        ProxyExpressDBMFile emap<br />
-        </example>
+      <highlight language="config">
+ProxyExpressEnable on
+ProxyExpressDBMFile emap
+      </highlight>
+      </example>
     </note>
 </usage>
 </directivesynopsis>
@@ -142,11 +142,10 @@
 <directivesynopsis>
 <name>ProxyExpressDBMType</name>
 <description>DBM type of file.</description>
-<syntax>ProxyExpressDBMFile &lt;type&gt;</syntax>
-<default>"default"</default>
+<syntax>ProxyExpressDBMType <var>type</var></syntax>
+<default>ProxyExpressDBMType default</default>
 <contextlist><context>server config</context><context>virtual host</context>
   </contextlist>
-<compatibility>Available in Apache 2.3.13 and later</compatibility>
 
 <usage>
   <p>The <directive>ProxyExpressDBMType</directive> directive
