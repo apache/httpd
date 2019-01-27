@@ -33,8 +33,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fonctionnalités de base du serveur HTTP Apache toujours
 disponibles</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Noyau httpd</td></tr></table>
@@ -3340,6 +3338,25 @@ correspondant à une expression rationnelle</td></tr>
 &lt;/LocationMatch&gt;</pre>
 
 
+    <div class="note"><h3>Note à propos du slash '/'</h3>
+      <p>La signification du caractère slash '/' dépend de l'endroit où il
+      apparaît dans une URL. Les utilisateurs sont habitués à voir de multiples
+      slashes adjacents réduits à un seul au sein du système de fichiers (par
+      exemple, <code>/home///foo</code> est équivalent à
+      <code>/home/foo</code>). Ce n'est n'est cependant pas toujours le cas au
+      sein des URLs. En effet, si vous souhaitez spécifier plusieurs slashes,
+      vous devez le faire explicitement au sein de la directive <code class="directive"><a href="#locationmatch">&lt;LocationMatch&gt;</a></code> et de la version
+      regex de la directive <code class="directive">&lt;Location&gt;</code>.</p>
+
+      <p>Par exemple, <code>&lt;LocationMatch "^/abc"&gt;</code> correspondra à
+      l'URL <code>/abc</code>, mais pas à l'URL <code>//abc</code>. La directive
+      (non-regex) <code class="directive">&lt;Location&gt;</code> se comporte de
+      la même manière lorsqu'elle est utilisée dans les requêtes de mandataire.
+      Par contre, pour les autres types de requêtes, la directive <code class="directive">&lt;Location&gt;</code> considérera plusieurs slashes
+      adjacents comme équivalents à un seul slash. Par exemple, si vous
+      spécifiez <code>&lt;Location "/abc/def"&gt;</code>, une requête pour
+      <code>/abc//def</code> correspondra.</p>
+    </div>
 
 <h3>Voir aussi</h3>
 <ul>

@@ -33,16 +33,17 @@
 dynamique inverse de masse</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>proxy_express_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_proxy_express.c</td></tr></table>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_proxy_express.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.3.13 du serveur HTTP Apache</td></tr></table>
 <h3>Sommaire</h3>
 
     <p>Ce module crée dynamiquement en masse des mandataires inverses en
-    faisant correspondre l'en-tête Host: de la requête HTTP à un nom de
+    faisant correspondre l'en-tête <code>Host:</code> de la requête HTTP à un nom de
     serveur et une URL d'arrière-plan stockés dans un fichier DBM. Il
     est ainsi plus aisé d'utiliser un grand nombre de
     mandataires inverses sans avoir à modifier la configuration. Il est
     loin de posséder autant de fonctionnalités que
-    <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code>, qui propose aussi la croissance
+    <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> qui propose aussi la croissance
     dynamique, mais il est conçu pour gérer un nombre beaucoup plus important
     de serveurs d'arrière-plan. Il convient parfaitement pour créer un
     commutateur HTTP frontal et pour les architectures Microservices.</p>
@@ -58,11 +59,10 @@ dynamique inverse de masse</td></tr>
 
 <div class="note"><h3>Limitations</h3>
   <ul>
-    <li>Ce module n'est pas conçu pour remplacer les fonctionnalités
-    dynamiques de <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code>. Par contre, il
-    peut constituer une alternative légère et rapide à
-    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> lorsque ce dernier utilise la directive
-    <code class="directive">RewriteMap</code> et le drapeau <code>[P]</code>
+    <li>Ce module n'est pas conçu pour remplacer les fonctionnalités dynamiques
+    de <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code>. Par contre, il peut constituer une
+    alternative légère et rapide à <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> lorsque ce
+    dernier utilise la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> et le drapeau <code>[P]</code>
     pour le mandatement inverse à partir d'une table de correspondances.
     </li>
     <li>Il ne supporte pas les mises en correspondance basées sur les
@@ -102,17 +102,15 @@ dynamique inverse de masse</td></tr>
 <div class="directive-section"><h2><a name="proxyexpressdbmfile" id="proxyexpressdbmfile">Directive</a> <a name="ProxyExpressDBMFile" id="ProxyExpressDBMFile">ProxyExpressDBMFile</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Chemin du fichier DBM.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyExpressDBMFile &lt;chemin&gt;</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>None</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyExpressDBMFile <var>pathname</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_express</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.3.13 d'Apache</td></tr>
 </table>
   <p>La directive <code class="directive">ProxyExpressDBMFile</code> permet de
   définir le chemin du fichier DBM de correspondance Express. Ce fichier
   permet de faire correspondre le nom de serveur extrait de l'en-tête
-  Host: de la requête entrante avec une URL d'arrière-plan.</p>
+  <code>Host:</code> de la requête entrante avec une URL d'arrière-plan.</p>
 
     <div class="note"><h3>Note</h3>
       <p>Ce fichier est élaboré à partir d'un fichier texte à l'aide de
@@ -123,19 +121,18 @@ dynamique inverse de masse</td></tr>
         ##express-map.txt:<br />
         ##<br />
         <br />
-        www1.example.com    http://192.168.211.2:8080<br />
+        www1.example.com   http://192.168.211.2:8080<br />
         www2.example.com   http://192.168.211.12:8088<br />
         www3.example.com   http://192.168.212.10<br />
       </code></p></div>
 
       <div class="example"><h3>Création du fichier DBM</h3><p><code>
         httxt2dbm -i express-map.txt -o emap<br />
-        </code></p></div>
+      </code></p></div>
 
-      <div class="example"><h3>Configuration</h3><p><code>
-        ProxyExpressEnable on<br />
-	ProxyExpressDBMFile emap<br />
-        </code></p></div>
+      <div class="example"><h3>Configuration</h3><pre class="prettyprint lang-config">ProxyExpressEnable on
+ProxyExpressDBMFile emap</pre>
+</div>        
     </div>
 
 </div>
@@ -143,12 +140,11 @@ dynamique inverse de masse</td></tr>
 <div class="directive-section"><h2><a name="proxyexpressdbmtype" id="proxyexpressdbmtype">Directive</a> <a name="ProxyExpressDBMType" id="ProxyExpressDBMType">ProxyExpressDBMType</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Type de fichier DBM.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyExpressDBMFile &lt;type&gt;</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>"default"</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyExpressDBMType <var>type</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProxyExpressDBMType default</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_express</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.3.13 d'Apache</td></tr>
 </table>
   <p>La directive <code class="directive">ProxyExpressDBMType</code> permet de
   définir le type de fichier DBM requis par le module. La valeur par
@@ -170,12 +166,11 @@ dynamique inverse de masse</td></tr>
 <div class="directive-section"><h2><a name="proxyexpressenable" id="proxyexpressenable">Directive</a> <a name="ProxyExpressEnable" id="ProxyExpressEnable">ProxyExpressEnable</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la fonctionnalité du module.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyExpressEnable [on|off]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>off</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyExpressEnable on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProxyExpressEnable off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_express</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.3.13 d'Apache</td></tr>
 </table>
   <p>La directive <code class="directive">ProxyExpressEnable</code> permet
   d'activer/désactiver le module.</p>

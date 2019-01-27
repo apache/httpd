@@ -944,9 +944,9 @@ mandataire</td></tr>
 mandatées</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#proxyerroroverride">ProxyErrorOverride On|Off</a></td><td> Off </td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Outrepasser les pages d'erreur pour les contenus
 mandatés</td></tr>
-<tr><td><a href="mod_proxy_express.html#proxyexpressdbmfile">ProxyExpressDBMFile &lt;chemin&gt;</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Chemin du fichier DBM.</td></tr>
-<tr class="odd"><td><a href="mod_proxy_express.html#proxyexpressdbmtype">ProxyExpressDBMFile &lt;type&gt;</a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Type de fichier DBM.</td></tr>
-<tr><td><a href="mod_proxy_express.html#proxyexpressenable">ProxyExpressEnable [on|off]</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Active la fonctionnalité du module.</td></tr>
+<tr><td><a href="mod_proxy_express.html#proxyexpressdbmfile">ProxyExpressDBMFile <var>pathname</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Chemin du fichier DBM.</td></tr>
+<tr class="odd"><td><a href="mod_proxy_express.html#proxyexpressdbmtype">ProxyExpressDBMType <var>type</var></a></td><td> default </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Type de fichier DBM.</td></tr>
+<tr><td><a href="mod_proxy_express.html#proxyexpressenable">ProxyExpressEnable on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Active la fonctionnalité du module.</td></tr>
 <tr class="odd"><td><a href="mod_proxy_fcgi.html#proxyfcgibackendtype">ProxyFCGIBackendType FPM|GENERIC</a></td><td> FPM </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Spécifie le type de l'application FastCGI d'arrière-plan</td></tr>
 <tr><td><a href="mod_proxy_fcgi.html#proxyfcgisetenvif">ProxyFCGISetEnvIf <var>conditional-expression</var>
     [!]<var>environment-variable-name</var>
