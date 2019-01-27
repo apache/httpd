@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_xml2enc.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_xml2enc.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Support avancé de l'internationalisation et des jeux de
 caractères pour les modules de filtrage basés sur libxml2</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
@@ -181,14 +179,12 @@ information ne peut être <a href="#sniffing">automatiquement détectée</a></td
 <tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_xml2enc</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.4.0 du serveur HTTP Apache
-; disponible depuis un module tiers dans les versions antérieures.</td></tr>
 </table>
     <p>Si vous traitez des données dont l'encodage est connu, mais ne
     contenant aucune information à propos de ce dernier, vous pouvez
     définir une valeur par défaut afin d'aider mod_xml2enc à traiter
     correctement les données. Par exemple, pour définir la valeur par
-    défaut Latin1 (<var>iso-8859-1</var> specifiée dans HTTP/1.0),
+    défaut Latin1 (<var>iso-8859-1</var>) specifiée dans HTTP/1.0,
     utilisez :</p>
     <pre class="prettyprint lang-config">xml2EncDefault iso-8859-1</pre>
 
