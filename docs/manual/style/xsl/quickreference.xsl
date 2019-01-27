@@ -319,6 +319,15 @@
             </xsl:choose>
         </xsl:variable>
 
+        <!-- Check if the default string really starts with the directive -->
+        <!-- name, in order to avoid typo, or unexpected formatting.      -->
+        <!-- Below, we skip the directive name, so, for it to work, it    -->
+        <!-- must be there.                                               -->
+        <xsl:if test="string-length($default) &gt; 0
+                      and substring-before($default, ' ') != name">
+            <xsl:message>Spurious default string: <xsl:value-of select="$default"/> (Directive <xsl:value-of select="name"/> omitted or misspelled)</xsl:message>
+        </xsl:if>
+
         <!-- Now. If the default output is empty, the xslt processor emits -->
         <!-- <td />. In order to avoid this, we simply emit <td></td>      -->
         <!-- by ourselves. Crap.                                           -->
