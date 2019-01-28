@@ -282,7 +282,7 @@ request_rec *h2_request_create_rec(const h2_request *req, conn_rec *c)
     
     /* Time to populate r with the data we have. */
     r->request_time = req->request_time;
-    r->method = req->method;
+    r->method = apr_pstrdup(r->pool, req->method);
     /* Provide quick information about the request method as soon as known */
     r->method_number = ap_method_number_of(r->method);
     if (r->method_number == M_GET && r->method[0] == 'H') {
