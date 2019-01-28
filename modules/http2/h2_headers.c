@@ -28,6 +28,7 @@
 
 #include "h2_private.h"
 #include "h2_h2.h"
+#include "h2_config.h"
 #include "h2_util.h"
 #include "h2_request.h"
 #include "h2_headers.h"
@@ -141,8 +142,10 @@ h2_headers *h2_headers_rcreate(request_rec *r, int status,
         }
     }
     if (is_unsafe(r->server)) {
-        apr_table_setn(headers->notes, H2_HDR_CONFORMANCE, 
-                       H2_HDR_CONFORMANCE_UNSAFE);
+        apr_table_setn(headers->notes, H2_HDR_CONFORMANCE, H2_HDR_CONFORMANCE_UNSAFE);
+    }
+    if (h2_config_rgeti(r, H2_CONF_PUSH) == 0 && h2_config_sgeti(r->server, H2_CONF_PUSH) != 0) {
+        apr_table_setn(headers->notes, H2_PUSH_MODE_NOTE, "0");
     }
     return headers;
 }

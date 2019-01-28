@@ -236,7 +236,7 @@ static apr_status_t h2_filter_slave_in(ap_filter_t* f,
     apr_size_t rmax = ((readbytes <= APR_SIZE_MAX)? 
                        (apr_size_t)readbytes : APR_SIZE_MAX);
     
-    task = h2_ctx_cget_task(f->c);
+    task = h2_ctx_get_task(f->c);
     ap_assert(task);
 
     if (trace1) {
@@ -379,7 +379,7 @@ static apr_status_t h2_filter_slave_in(ap_filter_t* f,
 static apr_status_t h2_filter_slave_output(ap_filter_t* filter,
                                            apr_bucket_brigade* brigade)
 {
-    h2_task *task = h2_ctx_cget_task(filter->c);
+    h2_task *task = h2_ctx_get_task(filter->c);
     apr_status_t status;
     
     ap_assert(task);
@@ -392,7 +392,7 @@ static apr_status_t h2_filter_slave_output(ap_filter_t* filter,
 
 static apr_status_t h2_filter_parse_h1(ap_filter_t* f, apr_bucket_brigade* bb)
 {
-    h2_task *task = h2_ctx_cget_task(f->c);
+    h2_task *task = h2_ctx_get_task(f->c);
     apr_status_t status;
     
     ap_assert(task);
@@ -502,7 +502,7 @@ static int h2_task_pre_conn(conn_rec* c, void *arg)
     
     ctx = h2_ctx_get(c, 0);
     (void)arg;
-    if (h2_ctx_is_task(ctx)) {
+    if (ctx->task) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c,
                       "h2_slave(%s), pre_connection, adding filters", c->log_id);
         ap_add_input_filter("H2_SLAVE_IN", NULL, NULL, c);
@@ -545,6 +545,7 @@ h2_task *h2_task_create(conn_rec *slave, int stream_id,
 void h2_task_destroy(h2_task *task)
 {
     if (task->output.beam) {
+        h2_beam_log(task->output.beam, task->c, APLOG_TRACE2, "task_destroy");
         h2_beam_destroy(task->output.beam);
         task->output.beam = NULL;
     }
@@ -724,7 +725,7 @@ static int h2_task_process_conn(conn_rec* c)
     }
     
     ctx = h2_ctx_get(c, 0);
-    if (h2_ctx_is_task(ctx)) {
+    if (ctx->task) {
         if (!ctx->task->request->serialize) {
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c, 
                           "h2_h2, processing request directly");

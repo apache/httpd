@@ -1,6 +1,13 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_http2: Configuration directoves H2Push and H2Upgrade can now be specified per 
+     Location/Directory, e.g. disabling PUSH for a specific set of resources. [Stefan Eissing]
+
+  *) mod_http2: HEAD requests to some module such as mod_cgid caused the stream to
+     terminate improperly and cause a HTTP/2 PROTOCOL_ERROR. 
+     Fixes <https://github.com/icing/mod_h2/issues/167>. [Michael Kaufmann]
+
   *) mod_ssl: give mod_md the chance to override certificate after ALPN protocol
      negotiation. [Stefan Eissing]
 

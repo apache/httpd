@@ -161,7 +161,7 @@ apr_status_t h2_ngn_shed_push_request(h2_ngn_shed *shed, const char *ngn_type,
                                       http2_req_engine_init *einit) 
 {
     h2_req_engine *ngn;
-    h2_task *task = h2_ctx_rget_task(r);
+    h2_task *task = h2_ctx_get_task(r->connection);
 
     ap_assert(task);
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, shed->c,

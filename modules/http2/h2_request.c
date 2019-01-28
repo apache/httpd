@@ -85,8 +85,7 @@ apr_status_t h2_request_rcreate(h2_request **preq, apr_pool_t *pool,
     req->path      = path;
     req->headers   = apr_table_make(pool, 10);
     if (r->server) {
-        req->serialize = h2_config_geti(h2_config_sget(r->server), 
-                                        H2_CONF_SER_HEADERS);
+        req->serialize = h2_config_rgeti(r, H2_CONF_SER_HEADERS);
     }
 
     x.pool = pool;
