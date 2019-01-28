@@ -260,9 +260,8 @@ static const char *val_H2_PUSH(apr_pool_t *p, server_rec *s,
 {
     if (ctx) {
         if (r) {
-            h2_task *task = h2_ctx_get_task(ctx);
-            if (task) {
-                h2_stream *stream = h2_mplx_stream_get(task->mplx, task->stream_id);
+            if (ctx->task) {
+                h2_stream *stream = h2_mplx_stream_get(ctx->task->mplx, ctx->task->stream_id);
                 if (stream && stream->push_policy != H2_PUSH_NONE) {
                     return "on";
                 }
@@ -273,8 +272,7 @@ static const char *val_H2_PUSH(apr_pool_t *p, server_rec *s,
         }
     }
     else if (s) {
-        const h2_config *cfg = h2_config_sget(s);
-        if (cfg && h2_config_geti(cfg, H2_CONF_PUSH)) {
+        if (h2_config_geti(r, s, H2_CONF_PUSH)) {
             return "on";
         }
     }
@@ -285,8 +283,7 @@ static const char *val_H2_PUSHED(apr_pool_t *p, server_rec *s,
                                  conn_rec *c, request_rec *r, h2_ctx *ctx)
 {
     if (ctx) {
-        h2_task *task = h2_ctx_get_task(ctx);
-        if (task && !H2_STREAM_CLIENT_INITIATED(task->stream_id)) {
+        if (ctx->task && !H2_STREAM_CLIENT_INITIATED(ctx->task->stream_id)) {
             return "PUSHED";
         }
     }
@@ -297,9 +294,8 @@ static const char *val_H2_PUSHED_ON(apr_pool_t *p, server_rec *s,
                                     conn_rec *c, request_rec *r, h2_ctx *ctx)
 {
     if (ctx) {
-        h2_task *task = h2_ctx_get_task(ctx);
-        if (task && !H2_STREAM_CLIENT_INITIATED(task->stream_id)) {
-            h2_stream *stream = h2_mplx_stream_get(task->mplx, task->stream_id);
+        if (ctx->task && !H2_STREAM_CLIENT_INITIATED(ctx->task->stream_id)) {
+            h2_stream *stream = h2_mplx_stream_get(ctx->task->mplx, ctx->task->stream_id);
             if (stream) {
                 return apr_itoa(p, stream->initiated_on);
             }
@@ -312,9 +308,8 @@ static const char *val_H2_STREAM_TAG(apr_pool_t *p, server_rec *s,
                                      conn_rec *c, request_rec *r, h2_ctx *ctx)
 {
     if (ctx) {
-        h2_task *task = h2_ctx_get_task(ctx);
-        if (task) {
-            return task->id;
+        if (ctx->task) {
+            return ctx->task->id;
         }
     }
     return "";
@@ -366,7 +361,7 @@ static char *http2_var_lookup(apr_pool_t *p, server_rec *s,
     for (i = 0; i < H2_ALEN(H2_VARS); ++i) {
         h2_var_def *vdef = &H2_VARS[i];
         if (!strcmp(vdef->name, name)) {
-            h2_ctx *ctx = (r? h2_ctx_rget(r) : 
+            h2_ctx *ctx = (r? h2_ctx_get(c, 0) : 
                            h2_ctx_get(c->master? c->master : c, 0));
             return (char *)vdef->lookup(p, s, c, r, ctx);
         }
@@ -377,7 +372,7 @@ static char *http2_var_lookup(apr_pool_t *p, server_rec *s,
 static int h2_h2_fixups(request_rec *r)
 {
     if (r->connection->master) {
-        h2_ctx *ctx = h2_ctx_rget(r);
+        h2_ctx *ctx = h2_ctx_get(r->connection, 0);
         int i;
         
         for (i = 0; ctx && i < H2_ALEN(H2_VARS); ++i) {

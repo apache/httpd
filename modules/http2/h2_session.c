@@ -757,9 +757,8 @@ static apr_status_t session_pool_cleanup(void *data)
 {
     conn_rec *c = data;
     h2_session *session;
-    h2_ctx *ctx = h2_ctx_get(c, 0);
     
-    if (ctx && (session = h2_ctx_session_get(ctx))) {
+    if ((session = h2_ctx_get_session(c))) {
         /* if the session is still there, now is the last chance
          * to perform cleanup. Normally, cleanup should have happened
          * earlier in the connection pre_close. Main reason is that
@@ -775,11 +774,8 @@ static apr_status_t session_pool_cleanup(void *data)
     return APR_SUCCESS;
 }
 
-static apr_status_t h2_session_create_int(h2_session **psession,
-                                          conn_rec *c,
-                                          request_rec *r,
-                                          h2_ctx *ctx, 
-                                          h2_workers *workers)
+apr_status_t h2_session_create(h2_session **psession, conn_rec *c, request_rec *r,
+                               server_rec *s, h2_workers *workers)
 {
     nghttp2_session_callbacks *callbacks = NULL;
     nghttp2_option *options = NULL;
@@ -820,19 +816,16 @@ static apr_status_t h2_session_create_int(h2_session **psession,
     session->id = c->id;
     session->c = c;
     session->r = r;
-    session->s = h2_ctx_server_get(ctx);
+    session->s = s;
     session->pool = pool;
-    session->config = h2_config_sget(session->s);
     session->workers = workers;
     
     session->state = H2_SESSION_ST_INIT;
     session->local.accepting = 1;
     session->remote.accepting = 1;
     
-    session->max_stream_count = h2_config_geti(session->config, 
-                                               H2_CONF_MAX_STREAMS);
-    session->max_stream_mem = h2_config_geti(session->config, 
-                                             H2_CONF_STREAM_MAX_MEM);
+    session->max_stream_count = h2_config_sgeti(s, H2_CONF_MAX_STREAMS);
+    session->max_stream_mem = h2_config_sgeti(s, H2_CONF_STREAM_MAX_MEM);
     
     status = apr_thread_cond_create(&session->iowait, session->pool);
     if (status != APR_SUCCESS) {
@@ -862,14 +855,13 @@ static apr_status_t h2_session_create_int(h2_session **psession,
     session->monitor->on_state_event = on_stream_state_event;
     session->monitor->on_event = on_stream_event;
     
-    session->mplx = h2_mplx_create(c, session->pool, session->config, 
-                                   workers);
+    session->mplx = h2_mplx_create(c, s, session->pool, workers);
     
     /* connection input filter that feeds the session */
     session->cin = h2_filter_cin_create(session);
     ap_add_input_filter("H2_IN", session->cin, r, c);
     
-    h2_conn_io_init(&session->io, c, session->config);
+    h2_conn_io_init(&session->io, c, s);
     session->bbtmp = apr_brigade_create(session->pool, c->bucket_alloc);
     
     status = init_callbacks(c, &callbacks);
@@ -888,8 +880,7 @@ static apr_status_t h2_session_create_int(h2_session **psession,
         apr_pool_destroy(pool);
         return status;
     }
-    nghttp2_option_set_peer_max_concurrent_streams(
-                                                   options, (uint32_t)session->max_stream_count);
+    nghttp2_option_set_peer_max_concurrent_streams(options, (uint32_t)session->max_stream_count);
     /* We need to handle window updates ourself, otherwise we
      * get flooded by nghttp2. */
     nghttp2_option_set_no_auto_window_update(options, 1);
@@ -907,7 +898,7 @@ static apr_status_t h2_session_create_int(h2_session **psession,
         return APR_ENOMEM;
     }
     
-    n = h2_config_geti(session->config, H2_CONF_PUSH_DIARY_SIZE);
+    n = h2_config_sgeti(s, H2_CONF_PUSH_DIARY_SIZE);
     session->push_diary = h2_push_diary_create(session->pool, n);
     
     if (APLOGcdebug(c)) {
@@ -924,20 +915,9 @@ static apr_status_t h2_session_create_int(h2_session **psession,
                       (int)session->push_diary->N);
     }
     
-    apr_pool_pre_cleanup_register(pool, c, session_pool_cleanup);    
+    apr_pool_pre_cleanup_register(pool, c, session_pool_cleanup);
+        
     return APR_SUCCESS;
-}
-
-apr_status_t h2_session_create(h2_session **psession, 
-                               conn_rec *c, h2_ctx *ctx, h2_workers *workers)
-{
-    return h2_session_create_int(psession, c, NULL, ctx, workers);
-}
-
-apr_status_t h2_session_rcreate(h2_session **psession, 
-                                request_rec *r, h2_ctx *ctx, h2_workers *workers)
-{
-    return h2_session_create_int(psession, r->connection, r, ctx, workers);
 }
 
 static apr_status_t h2_session_start(h2_session *session, int *rv)
@@ -1004,7 +984,7 @@ static apr_status_t h2_session_start(h2_session *session, int *rv)
     settings[slen].settings_id = NGHTTP2_SETTINGS_MAX_CONCURRENT_STREAMS;
     settings[slen].value = (uint32_t)session->max_stream_count;
     ++slen;
-    win_size = h2_config_geti(session->config, H2_CONF_WIN_SIZE);
+    win_size = h2_config_sgeti(session->s, H2_CONF_WIN_SIZE);
     if (win_size != H2_INITIAL_WINDOW_SIZE) {
         settings[slen].settings_id = NGHTTP2_SETTINGS_INITIAL_WINDOW_SIZE;
         settings[slen].value = win_size;
@@ -1280,7 +1260,7 @@ int h2_session_push_enabled(h2_session *session)
 {
     /* iff we can and they can and want */
     return (session->remote.accepting /* remote GOAWAY received */
-            && h2_config_geti(session->config, H2_CONF_PUSH)
+            && h2_config_sgeti(session->s, H2_CONF_PUSH)
             && nghttp2_session_get_remote_settings(session->ngh2, 
                    NGHTTP2_SETTINGS_ENABLE_PUSH));
 }
@@ -1324,6 +1304,7 @@ static apr_status_t on_stream_headers(h2_session *session, h2_stream *stream,
                                       int eos)
 {
     apr_status_t status = APR_SUCCESS;
+    const char *s;
     int rv = 0;
 
     ap_assert(session);
@@ -1391,8 +1372,12 @@ static apr_status_t on_stream_headers(h2_session *session, h2_stream *stream,
             && (headers->status < 400)
             && (headers->status != 304)
             && h2_session_push_enabled(session)) {
-            
-            h2_stream_submit_pushes(stream, headers);
+            /* PUSH is possibe and enabled on server, unless the request
+             * denies it, submit resources to push */
+            s = apr_table_get(headers->notes, H2_PUSH_MODE_NOTE);
+            if (!s || strcmp(s, "0")) {
+                h2_stream_submit_pushes(stream, headers);
+            }
         }
         
         if (!stream->pref_priority) {
@@ -1414,7 +1399,7 @@ static apr_status_t on_stream_headers(h2_session *session, h2_stream *stream,
         }
         
         if (headers->status == 103 
-            && !h2_config_geti(session->config, H2_CONF_EARLY_HINTS)) {
+            && !h2_config_sgeti(session->s, H2_CONF_EARLY_HINTS)) {
             /* suppress sending this to the client, it might have triggered 
              * pushes and served its purpose nevertheless */
             rv = 0;
@@ -2089,7 +2074,7 @@ apr_status_t h2_session_process(h2_session *session, int async)
         switch (session->state) {
             case H2_SESSION_ST_INIT:
                 ap_update_child_status_from_conn(c->sbh, SERVER_BUSY_READ, c);
-                if (!h2_is_acceptable_connection(c, 1)) {
+                if (!h2_is_acceptable_connection(c, session->r, 1)) {
                     update_child_status(session, SERVER_BUSY_READ, 
                                         "inadequate security");
                     h2_session_shutdown(session, 

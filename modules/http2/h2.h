@@ -162,5 +162,6 @@ typedef int h2_stream_pri_cmp(int stream_id1, int stream_id2, void *ctx);
 #define H2_FILTER_DEBUG_NOTE    "http2-debug"
 #define H2_HDR_CONFORMANCE      "http2-hdr-conformance"
 #define H2_HDR_CONFORMANCE_UNSAFE      "unsafe"
+#define H2_PUSH_MODE_NOTE       "http2-push-mode"
 
 #endif /* defined(__mod_h2__h2__) */

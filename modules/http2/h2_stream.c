@@ -365,9 +365,8 @@ void h2_stream_dispatch(h2_stream *stream, h2_stream_event_t ev)
 static void set_policy_for(h2_stream *stream, h2_request *r) 
 {
     int enabled = h2_session_push_enabled(stream->session);
-    stream->push_policy = h2_push_policy_determine(r->headers, stream->pool, 
-                                                   enabled);
-    r->serialize = h2_config_geti(stream->session->config, H2_CONF_SER_HEADERS);
+    stream->push_policy = h2_push_policy_determine(r->headers, stream->pool, enabled);
+    r->serialize = h2_config_sgeti(stream->session->s, H2_CONF_SER_HEADERS);
 }
 
 apr_status_t h2_stream_send_frame(h2_stream *stream, int ftype, int flags, size_t frame_len)
@@ -987,7 +986,7 @@ const h2_priority *h2_stream_get_priority(h2_stream *stream,
         const char *ctype = apr_table_get(response->headers, "content-type");
         if (ctype) {
             /* FIXME: Not good enough, config needs to come from request->server */
-            return h2_config_get_priority(stream->session->config, ctype);
+            return h2_cconfig_get_priority(stream->session->c, ctype);
         }
     }
     return NULL;

@@ -48,8 +48,7 @@ typedef struct {
     apr_size_t slen;
 } h2_conn_io;
 
-apr_status_t h2_conn_io_init(h2_conn_io *io, conn_rec *c, 
-                             const struct h2_config *cfg);
+apr_status_t h2_conn_io_init(h2_conn_io *io, conn_rec *c, server_rec *s);
 
 /**
  * Append data to the buffered output.

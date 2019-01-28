@@ -55,7 +55,6 @@ static int h2_protocol_propose(conn_rec *c, request_rec *r,
     int is_tls = h2_h2_is_tls(c);
     const char **protos = is_tls? h2_tls_protos : h2_clear_protos;
     
-    (void)s;
     if (!h2_mpm_supported()) {
         return DECLINED;
     }
@@ -68,7 +67,7 @@ static int h2_protocol_propose(conn_rec *c, request_rec *r,
         return DECLINED;
     }
     
-    if (!h2_is_acceptable_connection(c, 0)) {
+    if (!h2_is_acceptable_connection(c, r, 0)) {
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(03084)
                       "protocol propose: connection requirements not met");
         return DECLINED;
@@ -81,7 +80,7 @@ static int h2_protocol_propose(conn_rec *c, request_rec *r,
          */
         const char *p;
         
-        if (!h2_allows_h2_upgrade(c)) {
+        if (!h2_allows_h2_upgrade(r)) {
             return DECLINED;
         }
          
@@ -150,7 +149,7 @@ static int h2_protocol_switch(conn_rec *c, request_rec *r, server_rec *s,
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
                       "switching protocol to '%s'", protocol);
         h2_ctx_protocol_set(ctx, protocol);
-        h2_ctx_server_set(ctx, s);
+        h2_ctx_server_update(ctx, s);
         
         if (r != NULL) {
             apr_status_t status;
@@ -164,8 +163,8 @@ static int h2_protocol_switch(conn_rec *c, request_rec *r, server_rec *s,
             ap_remove_output_filter_byhandle(r->output_filters, "HTTP_HEADER");
             
             /* Ok, start an h2_conn on this one. */
-            h2_ctx_server_set(ctx, r->server);
-            status = h2_conn_setup(ctx, r->connection, r);
+            status = h2_conn_setup(c, r, s);
+            
             if (status != APR_SUCCESS) {
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r, APLOGNO(03088)
                               "session setup");
@@ -173,7 +172,7 @@ static int h2_protocol_switch(conn_rec *c, request_rec *r, server_rec *s,
                 return !OK;
             }
             
-            h2_conn_run(ctx, c);
+            h2_conn_run(c);
         }
         return OK;
     }

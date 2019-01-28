@@ -57,23 +57,15 @@ void h2_h2_register_hooks(void);
  *    the handshake is still ongoing.
  * @return != 0 iff connection requirements are met
  */
-int h2_is_acceptable_connection(conn_rec *c, int require_all);
-
-/**
- * Check if the "direct" HTTP/2 mode of protocol handling is enabled
- * for the given connection.
- * @param c the connection to check
- * @return != 0 iff direct mode is enabled
- */
-int h2_allows_h2_direct(conn_rec *c);
+int h2_is_acceptable_connection(conn_rec *c, request_rec *r, int require_all);
 
 /**
  * Check if the "Upgrade" HTTP/1.1 mode of protocol switching is enabled
- * for the given connection.
- * @param c the connection to check
+ * for the given request.
+ * @param r the request to check
  * @return != 0 iff Upgrade switching is enabled
  */
-int h2_allows_h2_upgrade(conn_rec *c);
+int h2_allows_h2_upgrade(request_rec *r);
 
 
 #endif /* defined(__mod_h2__h2_h2__) */

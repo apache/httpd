@@ -111,8 +111,7 @@ apr_status_t h2_mplx_child_init(apr_pool_t *pool, server_rec *s);
  * Create the multiplexer for the given HTTP2 session. 
  * Implicitly has reference count 1.
  */
-h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *master, 
-                        const struct h2_config *conf, 
+h2_mplx *h2_mplx_create(conn_rec *c, server_rec *s, apr_pool_t *master, 
                         struct h2_workers *workers);
 
 /**

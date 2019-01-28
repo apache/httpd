@@ -151,25 +151,19 @@ static void stream_cleanup(h2_mplx *m, h2_stream *stream)
  *   their HTTP/1 cousins, the separate allocator seems to work better
  *   than protecting a shared h2_session one with an own lock.
  */
-h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *parent, 
-                        const h2_config *conf, 
+h2_mplx *h2_mplx_create(conn_rec *c, server_rec *s, apr_pool_t *parent, 
                         h2_workers *workers)
 {
     apr_status_t status = APR_SUCCESS;
     apr_allocator_t *allocator;
     apr_thread_mutex_t *mutex;
     h2_mplx *m;
-    h2_ctx *ctx = h2_ctx_get(c, 0);
-    ap_assert(conf);
     
     m = apr_pcalloc(parent, sizeof(h2_mplx));
     if (m) {
         m->id = c->id;
         m->c = c;
-        m->s = (ctx? h2_ctx_server_get(ctx) : NULL);
-        if (!m->s) {
-            m->s = c->base_server;
-        }
+        m->s = s;
         
         /* We create a pool with its own allocator to be used for
          * processing slave connections. This is the only way to have the
@@ -210,8 +204,8 @@ h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *parent,
             return NULL;
         }
     
-        m->max_streams = h2_config_geti(conf, H2_CONF_MAX_STREAMS);
-        m->stream_max_mem = h2_config_geti(conf, H2_CONF_STREAM_MAX_MEM);
+        m->max_streams = h2_config_sgeti(s, H2_CONF_MAX_STREAMS);
+        m->stream_max_mem = h2_config_sgeti(s, H2_CONF_STREAM_MAX_MEM);
 
         m->streams = h2_ihash_create(m->pool, offsetof(h2_stream,id));
         m->sredo = h2_ihash_create(m->pool, offsetof(h2_stream,id));
@@ -327,8 +321,7 @@ static int stream_destroy_iter(void *ctx, void *val)
                                && !task->rst_error);
             }
             
-            task->c = NULL;
-            if (reuse_slave) {
+            if (reuse_slave && slave->keepalive == AP_CONN_KEEPALIVE) {
                 h2_beam_log(task->output.beam, m->c, APLOG_DEBUG, 
                             APLOGNO(03385) "h2_task_destroy, reuse slave");    
                 h2_task_destroy(task);
@@ -795,6 +788,8 @@ static void task_done(h2_mplx *m, h2_task *task, h2_req_engine *ngn)
         /* this task was handed over to an engine for processing 
          * and the original worker has finished. That means the 
          * engine may start processing now. */
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c,
+                      "h2_mplx(%ld): task(%s) done (frozen)", m->id, task->id);
         h2_task_thaw(task);
         apr_thread_cond_broadcast(m->task_thawed);
         return;
@@ -849,18 +844,24 @@ static void task_done(h2_mplx *m, h2_task *task, h2_req_engine *ngn)
                           m->id, m->limit_active);
         }
     }
-    
+
+    ap_assert(task->done_done == 0);
+
     stream = h2_ihash_get(m->streams, task->stream_id);
     if (stream) {
         /* stream not done yet. */
         if (!m->aborted && h2_ihash_get(m->sredo, stream->id)) {
             /* reset and schedule again */
+            task->worker_done = 0;
             h2_task_redo(task);
             h2_ihash_remove(m->sredo, stream->id);
             h2_iq_add(m->q, stream->id, NULL, NULL);
+            ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, m->c,
+                          H2_STRM_MSG(stream, "redo, added to q")); 
         }
         else {
             /* stream not cleaned up, stay around */
+            task->done_done = 1;
             ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c,
                           H2_STRM_MSG(stream, "task_done, stream open")); 
             if (stream->input) {
@@ -873,6 +874,7 @@ static void task_done(h2_mplx *m, h2_task *task, h2_req_engine *ngn)
     }
     else if ((stream = h2_ihash_get(m->shold, task->stream_id)) != NULL) {
         /* stream is done, was just waiting for this. */
+        task->done_done = 1;
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c,
                       H2_STRM_MSG(stream, "task_done, in hold"));
         if (stream->input) {
@@ -1132,7 +1134,7 @@ apr_status_t h2_mplx_req_engine_push(const char *ngn_type,
     h2_task *task;
     h2_stream *stream;
     
-    task = h2_ctx_rget_task(r);
+    task = h2_ctx_get_task(r->connection);
     if (!task) {
         return APR_ECONNABORTED;
     }
@@ -1196,11 +1198,12 @@ apr_status_t h2_mplx_req_engine_pull(h2_req_engine *ngn,
 void h2_mplx_req_engine_done(h2_req_engine *ngn, conn_rec *r_conn,
                              apr_status_t status)
 {
-    h2_task *task = h2_ctx_cget_task(r_conn);
+    h2_task *task = h2_ctx_get_task(r_conn);
     
     if (task) {
         h2_mplx *m = task->mplx;
         h2_stream *stream;
+        int task_hosting_engine = (task->engine != NULL); 
 
         H2_MPLX_ENTER_ALWAYS(m);
 
@@ -1212,13 +1215,13 @@ void h2_mplx_req_engine_done(h2_req_engine *ngn, conn_rec *r_conn,
         if (status != APR_SUCCESS && stream 
             && h2_task_can_redo(task) 
             && !h2_ihash_get(m->sredo, stream->id)) {
+            ap_log_cerror(APLOG_MARK, APLOG_INFO, status, m->c,
+                          "h2_mplx(%ld): task %s added to redo", m->id, task->id);
             h2_ihash_add(m->sredo, stream);
         }
 
-        if (task->engine) { 
-            /* cannot report that as done until engine returns */
-        }
-        else {
+        /* cannot report that until hosted engine returns */
+        if (!task_hosting_engine) { 
             task_done(m, task, ngn);
         }
 

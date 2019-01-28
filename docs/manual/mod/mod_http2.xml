@@ -244,6 +244,8 @@ H2Direct on
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
+            <context>directory</context>
+            <context>.htaccess</context>
         </contextlist>
         <compatibility>Available in version 2.4.18 and later.</compatibility>
         
@@ -269,7 +271,8 @@ H2Direct on
             </p>
             <p> 
                 Link headers in responses are either set by the application or
-                can be configured via <module>mod_headers</module> as:
+                can be configured via <directive>H2PushResource</directive> or
+                using <module>mod_headers</module> as:
             </p>
             <example><title>mod_headers example</title>
                 <highlight language="config">
@@ -286,9 +289,10 @@ H2Direct on
                 twice or more to one client. Use with care.
             </p>
             <p> 
-                HTTP/2 server pushes are enabled by default. This directive 
-                allows it to be switch off on all resources of this server/virtual
-                host.
+                HTTP/2 server pushes are enabled by default. On a server or virtual host,
+                you may enable/disable this feature for any connection to the host. In addition,
+                you may disable PUSH for a set of resources in a Directory/Location. This controls
+                which resources may cause a PUSH, not which resources may be sent via PUSH.
             </p>
             <example><title>Example</title>
                 <highlight language="config">
@@ -480,6 +484,8 @@ H2PushPriority text/css   interleaved      # weight 256 default
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
+            <context>directory</context>
+            <context>.htaccess</context>
         </contextlist>
         
         <usage>

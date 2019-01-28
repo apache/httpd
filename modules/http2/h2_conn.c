@@ -110,7 +110,6 @@ static void check_modules(int force)
 
 apr_status_t h2_conn_child_init(apr_pool_t *pool, server_rec *s)
 {
-    const h2_config *config = h2_config_sget(s);
     apr_status_t status = APR_SUCCESS;
     int minw, maxw;
     int max_threads_per_child = 0;
@@ -130,7 +129,7 @@ apr_status_t h2_conn_child_init(apr_pool_t *pool, server_rec *s)
     
     h2_get_num_workers(s, &minw, &maxw);
     
-    idle_secs = h2_config_geti(config, H2_CONF_MAX_WORKER_IDLE_SECS);
+    idle_secs = h2_config_sgeti(s, H2_CONF_MAX_WORKER_IDLE_SECS);
     ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, s,
                  "h2_workers: min=%d max=%d, mthrpchild=%d, idle_secs=%d", 
                  minw, maxw, max_threads_per_child, idle_secs);
@@ -173,9 +172,10 @@ static module *h2_conn_mpm_module(void)
     return mpm_module;
 }
 
-apr_status_t h2_conn_setup(h2_ctx *ctx, conn_rec *c, request_rec *r)
+apr_status_t h2_conn_setup(conn_rec *c, request_rec *r, server_rec *s)
 {
     h2_session *session;
+    h2_ctx *ctx;
     apr_status_t status;
     
     if (!workers) {
@@ -184,24 +184,19 @@ apr_status_t h2_conn_setup(h2_ctx *ctx, conn_rec *c, request_rec *r)
         return APR_EGENERAL;
     }
     
-    if (r) {
-        status = h2_session_rcreate(&session, r, ctx, workers);
-    }
-    else {
-        status = h2_session_create(&session, c, ctx, workers);
-    }
-
-    if (status == APR_SUCCESS) {
+    if (APR_SUCCESS == (status = h2_session_create(&session, c, r, s, workers))) {
+        ctx = h2_ctx_get(c, 1);
         h2_ctx_session_set(ctx, session);
     }
+    
     return status;
 }
 
-apr_status_t h2_conn_run(struct h2_ctx *ctx, conn_rec *c)
+apr_status_t h2_conn_run(conn_rec *c)
 {
     apr_status_t status;
     int mpm_state = 0;
-    h2_session *session = h2_ctx_session_get(ctx);
+    h2_session *session = h2_ctx_get_session(c);
     
     ap_assert(session);
     do {
@@ -250,7 +245,7 @@ apr_status_t h2_conn_run(struct h2_ctx *ctx, conn_rec *c)
 
 apr_status_t h2_conn_pre_close(struct h2_ctx *ctx, conn_rec *c)
 {
-    h2_session *session = h2_ctx_session_get(ctx);
+    h2_session *session = h2_ctx_get_session(c);
     
     (void)c;
     if (session) {

@@ -83,7 +83,9 @@ struct h2_task {
     unsigned int frozen         : 1;
     unsigned int thawed         : 1;
     unsigned int worker_started : 1; /* h2_worker started processing */
-    unsigned int worker_done    : 1; /* h2_worker finished */
+    
+    int worker_done;                 /* h2_worker finished */
+    int done_done;                   /* task_done has been handled */
     
     apr_time_t started_at;           /* when processing started */
     apr_time_t done_at;              /* when processing was done */
