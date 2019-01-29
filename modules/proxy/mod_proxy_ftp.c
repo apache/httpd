@@ -971,7 +971,9 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
     apr_status_t rv;
     conn_rec *origin, *data = NULL;
     apr_status_t err = APR_SUCCESS;
+#if APR_HAS_THREADS
     apr_status_t uerr = APR_SUCCESS;
+#endif
     apr_bucket_brigade *bb;
     char *buf, *connectname;
     apr_port_t connectport;
@@ -1112,10 +1114,12 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
 
     if (worker->s->is_address_reusable) {
         if (!worker->cp->addr) {
+#if APR_HAS_THREADS
             if ((err = PROXY_THREAD_LOCK(worker->balancer)) != APR_SUCCESS) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, err, r, APLOGNO(01037) "lock");
                 return HTTP_INTERNAL_SERVER_ERROR;
             }
+#endif
         }
         connect_addr = worker->cp->addr;
         address_pool = worker->cp->pool;
@@ -1131,9 +1135,11 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
                                     address_pool);
     if (worker->s->is_address_reusable && !worker->cp->addr) {
         worker->cp->addr = connect_addr;
+#if APR_HAS_THREADS
         if ((uerr = PROXY_THREAD_UNLOCK(worker->balancer)) != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, uerr, r, APLOGNO(01038) "unlock");
         }
+#endif
     }
     /*
      * get all the possible IP addresses for the destname and loop through
