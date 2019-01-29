@@ -348,7 +348,7 @@ and when <module>mod_privileges</module> is compiled with the
 <name>VHostCGIPrivs</name>
 <description>Assign arbitrary privileges to subprocesses created
 by a virtual host.</description>
-<syntax>VHostPrivs [+-]?<var>privilege-name</var> [[+-]?privilege-name] ...</syntax>
+<syntax>VHostCGIPrivs [+-]?<var>privilege-name</var> [[+-]?privilege-name] ...</syntax>
 <default>None</default>
 <contextlist><context>virtual host</context></contextlist>
 <compatibility>Available on Solaris 10 and OpenSolaris with
