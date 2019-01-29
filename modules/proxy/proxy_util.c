@@ -1167,8 +1167,10 @@ PROXY_DECLARE(char *) ap_proxy_define_balancer(apr_pool_t *p,
     lbmethod = ap_lookup_provider(PROXY_LBMETHOD, "byrequests", "0");
 
     (*balancer)->workers = apr_array_make(p, 5, sizeof(proxy_worker *));
+#if APR_HAS_THREADS
     (*balancer)->gmutex = NULL;
     (*balancer)->tmutex = NULL;
+#endif
     (*balancer)->lbmethod = lbmethod;
 
     if (do_malloc)
@@ -1257,7 +1259,9 @@ PROXY_DECLARE(apr_status_t) ap_proxy_share_balancer(proxy_balancer *balancer,
 
 PROXY_DECLARE(apr_status_t) ap_proxy_initialize_balancer(proxy_balancer *balancer, server_rec *s, apr_pool_t *p)
 {
+#if APR_HAS_THREADS
     apr_status_t rv = APR_SUCCESS;
+#endif
     ap_slotmem_provider_t *storage = balancer->storage;
     apr_size_t size;
     unsigned int num;
@@ -1271,6 +1275,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_balancer(proxy_balancer *balance
      * for each balancer we need to init the global
      * mutex and then attach to the shared worker shm
      */
+#if APR_HAS_THREADS
     if (!balancer->gmutex) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s, APLOGNO(00919)
                      "no mutex %s", balancer->s->name);
@@ -1287,6 +1292,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_balancer(proxy_balancer *balance
                      balancer->s->name);
         return rv;
     }
+#endif
 
     /* now attach */
     storage->attach(&(balancer->wslot), balancer->s->sname, &size, &num, p);
@@ -1297,6 +1303,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_balancer(proxy_balancer *balance
     if (balancer->lbmethod && balancer->lbmethod->reset)
         balancer->lbmethod->reset(balancer, s);
 
+#if APR_HAS_THREADS
     if (balancer->tmutex == NULL) {
         rv = apr_thread_mutex_create(&(balancer->tmutex), APR_THREAD_MUTEX_DEFAULT, p);
         if (rv != APR_SUCCESS) {
@@ -1305,6 +1312,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_balancer(proxy_balancer *balance
             return rv;
         }
     }
+#endif
     return APR_SUCCESS;
 }
 
@@ -2035,6 +2043,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
                      ap_proxy_worker_name(p, worker));
         apr_global_mutex_lock(proxy_mutex);
         /* Now init local worker data */
+#if APR_HAS_THREADS
         if (worker->tmutex == NULL) {
             rv = apr_thread_mutex_create(&(worker->tmutex), APR_THREAD_MUTEX_DEFAULT, p);
             if (rv != APR_SUCCESS) {
@@ -2044,6 +2053,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
                 return rv;
             }
         }
+#endif
         if (worker->cp == NULL)
             init_conn_pool(p, worker);
         if (worker->cp == NULL) {
@@ -2401,7 +2411,9 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
 {
     int server_port;
     apr_status_t err = APR_SUCCESS;
+#if APR_HAS_THREADS
     apr_status_t uerr = APR_SUCCESS;
+#endif
     const char *uds_path;
 
     /*
@@ -2535,10 +2547,12 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
              * we can reuse the address.
              */
             if (!worker->cp->addr) {
+#if APR_HAS_THREADS
                 if ((err = PROXY_THREAD_LOCK(worker)) != APR_SUCCESS) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, err, r, APLOGNO(00945) "lock");
                     return HTTP_INTERNAL_SERVER_ERROR;
                 }
+#endif
 
                 /*
                  * Worker can have the single constant backend address.
@@ -2551,9 +2565,11 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                                             conn->port, 0,
                                             worker->cp->pool);
                 conn->addr = worker->cp->addr;
+#if APR_HAS_THREADS
                 if ((uerr = PROXY_THREAD_UNLOCK(worker)) != APR_SUCCESS) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, uerr, r, APLOGNO(00946) "unlock");
                 }
+#endif
             }
             else {
                 conn->addr = worker->cp->addr;
@@ -3483,7 +3499,9 @@ PROXY_DECLARE(apr_status_t) ap_proxy_sync_balancer(proxy_balancer *b, server_rec
             (*runtime)->cp = NULL;
             (*runtime)->balancer = b;
             (*runtime)->s = shm;
+#if APR_HAS_THREADS
             (*runtime)->tmutex = NULL;
+#endif
             rv = ap_proxy_initialize_worker(*runtime, s, conf->pool);
             if (rv != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(00966) "Cannot init worker");
