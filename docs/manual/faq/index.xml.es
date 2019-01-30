@@ -28,7 +28,7 @@
 <summary>
 
     <p>Las preguntas frecuentes se han movido a la  <a
-    href="http://wiki.apache.org/httpd/FAQ">Wiki  de HTTP Server (en Inglés)</a>.</p>
+    href="http://wiki.apache.org/httpd/FAQ">Wiki de HTTP Server (en Inglés)</a>.</p>
 </summary>
 
 </manualpage>
