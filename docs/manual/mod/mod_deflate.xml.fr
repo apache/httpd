@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1816989 -->
+<!-- English Revision: 1852478 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -416,7 +416,7 @@ de la compression</description>
 <directivesynopsis>
 <name>DeflateInflateLimitRequestBody</name>
 <description>Taille maximale des corps de requête décompressés</description>
-<syntax>DeflateInflateLimitRequestBody<var>value</var></syntax>
+<syntax>DeflateInflateLimitRequestBody <var>value</var></syntax>
 <default>Aucune limite, mais LimitRequestBody s'applique après la
 compression</default>
 <contextlist><context>server config</context><context>virtual host</context>
