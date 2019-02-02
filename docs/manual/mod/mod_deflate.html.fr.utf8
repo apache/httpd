@@ -391,7 +391,7 @@ CustomLog "logs/deflate_log" deflate</pre>
 <div class="directive-section"><h2><a name="deflateinflatelimitrequestbody" id="deflateinflatelimitrequestbody">Directive</a> <a name="DeflateInflateLimitRequestBody" id="DeflateInflateLimitRequestBody">DeflateInflateLimitRequestBody</a> <a title="Lien permanent" href="#deflateinflatelimitrequestbody" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille maximale des corps de requête décompressés</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DeflateInflateLimitRequestBody<var>value</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DeflateInflateLimitRequestBody <var>value</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Aucune limite, mais LimitRequestBody s'applique après la
 compression</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
