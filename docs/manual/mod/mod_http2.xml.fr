@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1834268 -->
+<!-- English Revision: 1852339 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -291,6 +291,8 @@ Protocols h2 h2c http/1.1
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
+	    <context>directory</context>
+            <context>.htaccess</context>
         </contextlist>
 	<compatibility>Disponible à partir de la version 2.4.18 du serveur HTTP
 	Apache.</compatibility>
@@ -324,7 +326,8 @@ Protocols h2 h2c http/1.1
             </p>
             <p>
                 Les en-têtes link des réponses sont soit définis par
-		l'application, soit configurés via
+		l'application, soit configurés via la directive
+		<directive>H2PushResource</directive> ou en utilisant
 		<module>mod_headers</module> comme suit :
             </p>
             <example><title>Exemple de configuration d'en-tête link via mod_headers</title>
@@ -343,9 +346,13 @@ Protocols h2 h2c http/1.1
 		une ressource n'a pas déjà été "pushée" vers un client.
             </p>
             <p>
-                Les server pushes HTTP/2 sont activés par défaut. Cette
-		directive permet de désactiver cette fonctionnalité pour
-		le serveur virtuel ou non considéré.
+                Les PUSH HTTP/2 sont activés par défaut. Vous pouvez
+		activer/désactiver cette fonctionnalité pour toute connexion au
+		serveur au niveau global ou serveur virtuel. Vous pouvez en
+		outre désactiver PUSH pour un jeu de ressources dans une
+		section Directory/Location. Notez que ceci permet de contrôler
+		quelles ressources peuvent déclencher un PUSH, mais pas les
+		ressources qui peuvent être envoyées via PUSH.
             </p>
             <example><title>Exemple</title>
                 <highlight language="config">
@@ -560,6 +567,8 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
+	    <context>directory</context>
+            <context>.htaccess</context>
         </contextlist>
 
         <usage>
