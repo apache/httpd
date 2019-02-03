@@ -235,7 +235,7 @@ non-threaded MPMs (<code class="module"><a href="../mod/prefork.html">prefork</a
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Assign arbitrary privileges to subprocesses created
 by a virtual host.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>VHostPrivs [+-]?<var>privilege-name</var> [[+-]?privilege-name] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>VHostCGIPrivs [+-]?<var>privilege-name</var> [[+-]?privilege-name] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>None</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>

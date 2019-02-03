@@ -441,7 +441,7 @@
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>H2 Server Push Switch</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2Push on|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2Push on</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.4.18 and later.</td></tr>
@@ -467,7 +467,8 @@
             </p>
             <p> 
                 Link headers in responses are either set by the application or
-                can be configured via <code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code> as:
+                can be configured via <code class="directive">H2PushResource</code> or
+                using <code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code> as:
             </p>
             <div class="example"><h3>mod_headers example</h3><pre class="prettyprint lang-config">&lt;Location /index.html&gt;
     Header add Link "&lt;/css/site.css&gt;;rel=preload"
@@ -481,9 +482,10 @@
                 twice or more to one client. Use with care.
             </p>
             <p> 
-                HTTP/2 server pushes are enabled by default. This directive 
-                allows it to be switch off on all resources of this server/virtual
-                host.
+                HTTP/2 server pushes are enabled by default. On a server or virtual host,
+                you may enable/disable this feature for any connection to the host. In addition,
+                you may disable PUSH for a set of resources in a Directory/Location. This controls
+                which resources may cause a PUSH, not which resources may be sent via PUSH.
             </p>
             <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">H2Push off</pre>
 </div>
@@ -822,7 +824,7 @@ H2PushPriority text/css   interleaved      # weight 256 default</pre>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>H2 Upgrade Protocol Switch</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2Upgrade on|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2Upgrade on for h2c, off for h2 protocol</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
 </table>
