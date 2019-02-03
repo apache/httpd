@@ -360,7 +360,7 @@ CustomLog "logs/deflate_log" deflate</pre>
 <div class="directive-section"><h2><a name="DeflateInflateLimitRequestBody" id="DeflateInflateLimitRequestBody">DeflateInflateLimitRequestBody</a> <a name="deflateinflatelimitrequestbody" id="deflateinflatelimitrequestbody">Directive</a> <a title="Permanent link" href="#deflateinflatelimitrequestbody" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum size of inflated request bodies</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DeflateInflateLimitRequestBody<var>value</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DeflateInflateLimitRequestBody <var>value</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>None, but LimitRequestBody applies after deflation</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
