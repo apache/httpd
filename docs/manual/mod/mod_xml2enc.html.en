@@ -80,10 +80,10 @@ for 2.2.x versions</td></tr></table>
     </dd>
     <dt>Non-enabled modules</dt><dd>
     <p>To use it with a libxml2-based module that isn't explicitly enabled for
-    mod_xml2enc, you will have to configure the filter chain yourself.
-    So to use it with a filter <strong>foo</strong> provided by a module
-    <strong>mod_foo</strong> to improve the latter's i18n support with HTML
-    and XML, you could use</p>
+    mod_xml2enc, you will have to configure the filter chain yourself.  So to
+    use it with a filter <strong>foo</strong> provided by a module
+    <strong>mod_foo</strong> to improve the latter's i18n support with HTML and
+    XML, you could use</p>
     <pre><code>
     FilterProvider iconv    xml2enc Content-Type $text/html
     FilterProvider iconv    xml2enc Content-Type $xml
@@ -164,13 +164,11 @@ can be <a href="#sniffing">automatically detected</a></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_xml2enc</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Version 2.4.0 and later; available as a third-party
-module for earlier versions.</td></tr>
 </table>
     <p>If you are processing data with known encoding but no encoding
     information, you can set this default to help mod_xml2enc process
     the data correctly.  For example, to work with the default value
-    of Latin1 (<var>iso-8859-1</var> specified in HTTP/1.0, use</p>
+    of Latin1 (<var>iso-8859-1</var>) specified in HTTP/1.0, use:</p>
     <pre class="prettyprint lang-config">xml2EncDefault iso-8859-1</pre>
 
 
