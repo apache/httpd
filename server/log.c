@@ -1524,6 +1524,8 @@ AP_DECLARE(void) ap_log_pid(apr_pool_t *p, const char *filename)
     pid_t mypid;
     apr_status_t rv;
     const char *fname;
+    char *temp_fname;
+    apr_fileperms_t perms;
 
     if (!filename) {
         return;
@@ -1533,6 +1535,10 @@ AP_DECLARE(void) ap_log_pid(apr_pool_t *p, const char *filename)
     if (!fname) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT, APR_EBADPATH,
                      ap_server_conf, APLOGNO(00097) "Invalid PID file path %s, ignoring.", filename);
+        return;
+    }
+    temp_fname = apr_psprintf(p, "%s.XXXXXX", filename);
+    if (!temp_fname) {
         return;
     }
 
@@ -1552,19 +1558,23 @@ AP_DECLARE(void) ap_log_pid(apr_pool_t *p, const char *filename)
                       fname);
     }
 
-    if ((rv = apr_file_open(&pid_file, fname,
-                            APR_WRITE | APR_CREATE | APR_TRUNCATE,
-                            APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD, p))
+    if ((rv = apr_file_mktemp(&pid_file, temp_fname,
+                              APR_WRITE | APR_CREATE | APR_TRUNCATE, p))
         != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL, APLOGNO(00099)
-                     "could not create %s", fname);
+                     "could not create %s", temp_fname);
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL, APLOGNO(00100)
                      "%s: could not log pid to file %s",
                      ap_server_argv0, fname);
         exit(1);
     }
+
+    perms = APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD;
+    apr_file_perms_set(temp_fname, perms);
+
     apr_file_printf(pid_file, "%" APR_PID_T_FMT APR_EOL_STR, mypid);
     apr_file_close(pid_file);
+    apr_file_rename(temp_fname, fname, p);
     saved_pid = mypid;
 }
 
