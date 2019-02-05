@@ -5293,6 +5293,7 @@ static int core_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptem
     ap_regcomp_set_default_cflags(AP_REG_DOLLAR_ENDONLY);
 
     mpm_common_pre_config(pconf);
+    core_state_dir = NULL;
 
     return OK;
 }
