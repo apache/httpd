@@ -33,7 +33,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Apache HTTP Sunucusunda daima mevcut olan çekirdek
  özellikler</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr></table>
@@ -3146,6 +3145,26 @@ uygulanır.</td></tr>
     Require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/LocationMatch&gt;</pre>
 
+
+    <div class="note"><h3>/ (bölü çizgisi) hakkında</h3>
+      <p>Bölü çizgisi karakteri URL üzerinde göründüğü yere bağlı olarak farklı anlamlar içerir. İnsanlar, birden çok bitişik bölü çizgisinin sık sık 
+      tek bir bölü çizgisine daraltıldığı dosya sistemindeki davranışına 
+      alışkın olabilir (<em>örn</em>, <code>/home///foo</code> ile
+      <code>/home/foo</code> aynıdır). URL bakımından bu her zaman doğru 
+      değildir. Eğer niyetiniz buysa, <code class="directive"><a href="#locationmatch">&lt;LocationMatch&gt;</a></code> yönergesi ve <code class="directive">&lt;Location&gt;</code> yönergesinin regex ile kullanımı,
+      bölü çizgisinin özel anlam ifade etmesi nedeniyle gerektiği kadarının 
+      belirtilmesini gerektirir.</p>
+
+      <p>Örneğin, <code>&lt;LocationMatch "^/abc"&gt;</code> ile 
+      <code>/abc</code> isteği eşleşirken <code>//abc</code> isteği 
+      eşleşmez. <code class="directive">&lt;Location&gt;</code> yönergesinin
+      regex olmayan kullanımı vekil isteklerindeki gibi davranır. Fakat
+      vekil harici işlemlerde <code class="directive">&lt;Location&gt;</code> 
+      yönergesinin regex olmayan kullanımında çok sayıda bölü çizgisi örtük 
+      olarak tek bölü çizgisiyle eşleşir. Örneğin,
+      <code>&lt;Location "/abc/def"&gt;</code> belirtirseniz 
+      <code>/abc//def</code> isteği bu ifade ile eşleşecektir.</p>
+    </div>
 
 <h3>Ayrıca bakınız:</h3>
 <ul>
