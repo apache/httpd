@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1676925:1843412 (outdated) -->
+<!-- English Revision: 1843412 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -48,6 +48,7 @@
     [ -<strong>C</strong> <var>çerez-ismi=değer</var> ]
     [ -<strong>d</strong> ]
     [ -<strong>e</strong> <var>csv-dosyası</var> ]
+    [ -<strong>E</strong> <var>istemci-sertifikası-dosyası</var> ]
     [ -<strong>f</strong> <var>protokol</var> ]
     [ -<strong>g</strong> <var>gnuplot-dosyası</var> ]
     [ -<strong>h</strong> ]
@@ -113,6 +114,12 @@
       cinsinden) sunulduğunu gösteren virgül ayraçlı değerler (CSV) dosyası.
       Sonuçlar 'bobin haline' getirilmiş olduğundan doğal olarak 'gnuplot'
       dosyasından daha yararlıdır.</dd>
+
+    <dt><code>-E <var>istemci-sertifikası-dosyası</var></code></dt>
+    <dd>Bir SSL sitesine bağlanırken, sunucu ile kimlik doğrulaması için
+      PEM biçeminde sağlanan sertifika kullanılır. Dosyanın sırayla istemci 
+      sertifikasını, ara sertifikaları ve özel anahtarı içermesi beklenir. 
+      2.4.36 ve sonrasında kullanılabilir.</dd>
 
     <dt><code><strong>-f</strong> <var>protokol</var></code></dt>
     <dd>SSL/TLS protokolü belirtilir (SSL2, SSL3, TLS1, TLS1.1, TLS1.2 veya

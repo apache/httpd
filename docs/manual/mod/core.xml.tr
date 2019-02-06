@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1841039:1851792 (outdated) -->
+<!-- English Revision: 1851792 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -3178,6 +3178,28 @@ uygulanır.</description>
     Require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/LocationMatch&gt;
     </highlight>
+
+    <note><title>/ (bölü çizgisi) hakkında</title>
+      <p>Bölü çizgisi karakteri URL üzerinde göründüğü yere bağlı olarak farklı anlamlar içerir. İnsanlar, birden çok bitişik bölü çizgisinin sık sık 
+      tek bir bölü çizgisine daraltıldığı dosya sistemindeki davranışına 
+      alışkın olabilir (<em>örn</em>, <code>/home///foo</code> ile
+      <code>/home/foo</code> aynıdır). URL bakımından bu her zaman doğru 
+      değildir. Eğer niyetiniz buysa, <directive type="section" 
+      module="core">LocationMatch</directive> yönergesi ve <directive 
+      type="section">Location</directive> yönergesinin regex ile kullanımı,
+      bölü çizgisinin özel anlam ifade etmesi nedeniyle gerektiği kadarının 
+      belirtilmesini gerektirir.</p>
+
+      <p>Örneğin, <code>&lt;LocationMatch "^/abc"&gt;</code> ile 
+      <code>/abc</code> isteği eşleşirken <code>//abc</code> isteği 
+      eşleşmez. <directive type="section">Location</directive> yönergesinin
+      regex olmayan kullanımı vekil isteklerindeki gibi davranır. Fakat
+      vekil harici işlemlerde <directive type="section">Location</directive> 
+      yönergesinin regex olmayan kullanımında çok sayıda bölü çizgisi örtük 
+      olarak tek bölü çizgisiyle eşleşir. Örneğin,
+      <code>&lt;Location "/abc/def"&gt;</code> belirtirseniz 
+      <code>/abc//def</code> isteği bu ifade ile eşleşecektir.</p>
+    </note>
 </usage>
 
 <seealso>Bir istek alındığında farklı yapılandırma bölümlerinin nasıl bir
