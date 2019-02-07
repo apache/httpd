@@ -525,6 +525,7 @@ h2_task *h2_task_create(conn_rec *slave, int stream_id,
     ap_assert(req);
 
     apr_pool_create(&pool, slave->pool);
+    apr_pool_tag(pool, "h2_task");
     task = apr_pcalloc(pool, sizeof(h2_task));
     if (task == NULL) {
         return NULL;
