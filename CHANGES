@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_ssl: Don't unset FIPS mode on restart unless it's forced by
+     configuration (SSLFIPS on) and not active by default in OpenSSL.
+     PR 63136. [Yann Ylavic]
+
   *) mod_http2: Configuration directoves H2Push and H2Upgrade can now be specified per 
      Location/Directory, e.g. disabling PUSH for a specific set of resources. [Stefan Eissing]
 
