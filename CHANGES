@@ -1,7 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.39
 
-Changes with Apache 2.4.38
+  *) mod_ssl: Don't unset FIPS mode on restart unless it's forced by
+     configuration (SSLFIPS on) and not active by default in OpenSSL.
+     PR 63136. [Yann Ylavic]
 
   *) SECURITY: CVE-2018-17199 (cve.mitre.org)
      mod_session: mod_session_cookie does not respect expiry time allowing

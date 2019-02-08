@@ -331,9 +331,6 @@ static apr_status_t ssl_cleanup_pre_config(void *data)
     /*
      * Try to kill the internals of the SSL library.
      */
-#ifdef HAVE_FIPS
-    FIPS_mode_set(0);
-#endif
     /* Corresponds to OBJ_create()s */
     OBJ_cleanup();
     /* Corresponds to OPENSSL_load_builtin_modules() */
