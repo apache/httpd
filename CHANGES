@@ -1,5 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
+  *) mod_auth_digest: Fix a race condition. Authentication with valid credentials could be
+     refused in case of concurrent accesses from different users.
+     PR 63124 [Simon Kappel <simon.kappel axis.com>]
 
   *) mod_ssl: Don't unset FIPS mode on restart unless it's forced by
      configuration (SSLFIPS on) and not active by default in OpenSSL.
