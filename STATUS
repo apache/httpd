@@ -215,14 +215,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         - mod_info: Constify fixed tables and mark module-private global variables static
         - mod_heartmonitor: Axe an apparently out of date comment
         - mod_deflate: Fix clang and Coverity warnings
+        - md_acme_authz: fix typo
         - mod_dav: tag a pool 
      trunk patch:
         - https://svn.apache.org/r1486027
         - https://svn.apache.org/r1828909
         - https://svn.apache.org/r1839249
         - https://svn.apache.org/r1842888
+        - https://svn.apache.org/r1844343
         - https://svn.apache.org/r1846651
-     2.4.x patch: svn merge -c 1486027,1828909,1839249,1842888,1846651 ^/httpd/httpd/trunk .
+     2.4.x patch: svn merge -c 1486027,1828909,1839249,1842888,1844343,1846651 ^/httpd/httpd/trunk .
      +1: jailletc36
 
   *) mod_auth_digest: Fix a race condition. Authentication with valid credentials could be
