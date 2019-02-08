@@ -5,6 +5,8 @@ Changes with Apache 2.4.39
      configuration (SSLFIPS on) and not active by default in OpenSSL.
      PR 63136. [Yann Ylavic]
 
+Changes with Apache 2.4.38
+
   *) SECURITY: CVE-2018-17199 (cve.mitre.org)
      mod_session: mod_session_cookie does not respect expiry time allowing
      sessions to be reused.  [Hank Ibell]
