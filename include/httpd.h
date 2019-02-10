@@ -2560,7 +2560,7 @@ AP_DECLARE(int) ap_cstr_casecmp(const char *s1, const char *s2);
 AP_DECLARE(int) ap_cstr_casecmpn(const char *s1, const char *s2, apr_size_t n);
 
 /**
- * Default flags for apr_dir_*().
+ * Default flags for ap_dir_*fnmatch().
  */
 #define AP_DIR_FLAG_NONE      0
 

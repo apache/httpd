@@ -1920,6 +1920,7 @@ AP_DECLARE(const char *) ap_process_fnmatch_configs(server_rec *s,
     w.flags = (optional ? AP_DIR_FLAG_OPTIONAL : AP_DIR_FLAG_NONE) | AP_DIR_FLAG_RECURSIVE;
     w.cb = process_resource_config_cb;
     w.ctx = &cfgs;
+    w.depth = 0;
 
     /* don't require conf/httpd.conf if we have a -C or -c switch */
     if ((ap_server_pre_read_config->nelts
