@@ -196,6 +196,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1847430
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-ap_dir_fnmatch.patch
      +1: minfrin, jim
+     jailletc36: at least, r1853302 is required, IMHO
 
   *) mod_log_config: Support %{c}h for conn-hostname, %h for useragent_host
      PR 55348
