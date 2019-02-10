@@ -3459,13 +3459,13 @@ static int fname_alphasort(const void *fn1, const void *fn2)
     const fnames *f1 = fn1;
     const fnames *f2 = fn2;
 
-    return strcmp(f1->fname,f2->fname);
+    return strcmp(f1->fname, f2->fname);
 }
 
 AP_DECLARE(ap_dir_match_t *)ap_dir_cfgmatch(cmd_parms *cmd, int flags,
         const char *(*cb)(ap_dir_match_t *w, const char *fname), void *ctx)
 {
-    ap_dir_match_t *w = apr_palloc(cmd->temp_pool, sizeof(cmd_parms));
+    ap_dir_match_t *w = apr_palloc(cmd->temp_pool, sizeof(*w));
 
     w->prefix = apr_pstrcat(cmd->pool, cmd->cmd->name, ": ", NULL);
     w->p = cmd->pool;
