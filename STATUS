@@ -238,6 +238,24 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      jailletc36: could worth a CHANGE entry as it could fix some use after free or
      garbage returned to the client
 
+  *) mod_proxy_http: forward 100-continue, and minimize race conditions when
+     reusing backend connections. PR 60330.
+     trunk patch: http://svn.apache.org/r1656259
+                  http://svn.apache.org/r1656359
+                  http://svn.apache.org/r1721759
+                  http://svn.apache.org/r1729507
+                  http://svn.apache.org/r1729749
+                  http://svn.apache.org/r1754159
+                  http://svn.apache.org/r1807318
+                  http://svn.apache.org/r1836588
+                  http://svn.apache.org/r1836648
+                  http://svn.apache.org/r1836716
+                  http://svn.apache.org/r1836750
+                  http://svn.apache.org/r1837040
+                  http://svn.apache.org/r1853407
+     2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-forward_100_continue.patch
+     +1: ylavic
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
@@ -345,24 +363,6 @@ PATCHES/ISSUES THAT ARE BEING WORKED
      jorton: Adding ap_pregexec/_len which pass a pool would also work
              for internal users of this api; not sure if performance
              impact is significant from using malloc here.
-
-  *) mod_proxy_http: forward 100-continue, and minimize race conditions when
-     reusing backend connections. PR 60330.
-     trunk patch: http://svn.apache.org/r1656259
-                  http://svn.apache.org/r1656359
-                  http://svn.apache.org/r1721759
-                  http://svn.apache.org/r1729507
-                  http://svn.apache.org/r1729749
-                  http://svn.apache.org/r1754159
-                  http://svn.apache.org/r1807318
-                  http://svn.apache.org/r1836588
-                  http://svn.apache.org/r1836648
-                  http://svn.apache.org/r1836716
-                  http://svn.apache.org/r1836750
-                  http://svn.apache.org/r1837040
-                  http://svn.apache.org/r1853407
-     2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-forward_100_continue.patch
-     +1: ylavic
 
 
 PATCHES/ISSUES THAT ARE STALLED
