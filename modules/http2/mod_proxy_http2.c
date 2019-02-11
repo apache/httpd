@@ -77,7 +77,6 @@ typedef struct h2_proxy_ctx {
     
     unsigned standalone : 1;
     unsigned is_ssl : 1;
-    unsigned flushall : 1;
     
     apr_status_t r_status;     /* status of our first request work */
     h2_proxy_session *session; /* current http2 session against backend */
@@ -509,7 +508,6 @@ static int proxy_http2_handler(request_rec *r,
     ctx->is_ssl     = is_ssl;
     ctx->worker     = worker;
     ctx->conf       = conf;
-    ctx->flushall   = apr_table_get(r->subprocess_env, "proxy-flushall")? 1 : 0;
     ctx->r_status   = HTTP_SERVICE_UNAVAILABLE;
     
     h2_proxy_fifo_set_create(&ctx->requests, ctx->pool, 100);
