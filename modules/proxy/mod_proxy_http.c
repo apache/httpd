@@ -250,14 +250,58 @@ typedef struct {
     apr_bucket_brigade *header_brigade;
     apr_bucket_brigade *input_brigade;
     char *old_cl_val, *old_te_val;
-    apr_off_t cl_val, bytes_spooled;
+    apr_off_t cl_val;
 
     rb_methods rb_method;
 
     int expecting_100;
     unsigned int do_100_continue:1,
-                 flushall:1;
+                 prefetch_nonblocking:1;
 } proxy_http_req_t;
+
+/* Read what's in the client pipe. If nonblocking is set and read is EAGAIN,
+ * pass a FLUSH bucket to the backend and read again in blocking mode.
+ */
+static int stream_reqbody_read(proxy_http_req_t *req, apr_bucket_brigade *bb,
+                               int nonblocking)
+{
+    request_rec *r = req->r;
+    proxy_conn_rec *p_conn = req->backend;
+    apr_bucket_alloc_t *bucket_alloc = req->bucket_alloc;
+    apr_read_type_e block = nonblocking ? APR_NONBLOCK_READ : APR_BLOCK_READ;
+    apr_status_t status;
+    int rv;
+
+    for (;;) {
+        status = ap_get_brigade(r->input_filters, bb, AP_MODE_READBYTES,
+                                block, HUGE_STRING_LEN);
+        if (block == APR_BLOCK_READ
+                || (!APR_STATUS_IS_EAGAIN(status)
+                    && (status != APR_SUCCESS || !APR_BRIGADE_EMPTY(bb)))) {
+            break;
+        }
+
+        /* Flush and retry (blocking) */
+        apr_brigade_cleanup(bb);
+        rv = ap_proxy_pass_brigade(bucket_alloc, r, p_conn, req->origin, bb, 1);
+        if (rv != OK) {
+            return rv;
+        }
+        block = APR_BLOCK_READ;
+    }
+
+    if (status != APR_SUCCESS) {
+        conn_rec *c = r->connection;
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(02608)
+                      "read request body failed to %pI (%s)"
+                      " from %s (%s)", p_conn->addr,
+                      p_conn->hostname ? p_conn->hostname: "",
+                      c->client_ip, c->remote_host ? c->remote_host: "");
+        return ap_map_http_request_error(status, HTTP_BAD_REQUEST);
+    }
+
+    return OK;
+}
 
 static int stream_reqbody_chunked(proxy_http_req_t *req)
 {
@@ -265,19 +309,21 @@ static int stream_reqbody_chunked(proxy_http_req_t *req)
     int seen_eos = 0, rv = OK;
     apr_size_t hdr_len;
     apr_off_t bytes;
-    apr_status_t status;
     char chunk_hdr[20];  /* must be here due to transient bucket. */
     proxy_conn_rec *p_conn = req->backend;
     apr_bucket_alloc_t *bucket_alloc = req->bucket_alloc;
     apr_bucket_brigade *header_brigade = req->header_brigade;
     apr_bucket_brigade *input_brigade = req->input_brigade;
-    apr_bucket_brigade *bb;
     apr_bucket *e;
 
-    while (APR_BRIGADE_EMPTY(input_brigade)
-           || !APR_BUCKET_IS_EOS(APR_BRIGADE_FIRST(input_brigade)))
-    {
-        int flush = req->flushall;
+    do {
+        if (APR_BRIGADE_EMPTY(input_brigade)
+                && APR_BRIGADE_EMPTY(header_brigade)) {
+            rv = stream_reqbody_read(req, input_brigade, 1);
+            if (rv != OK) {
+                return rv;
+            }
+        }
 
         if (!APR_BRIGADE_EMPTY(input_brigade)) {
             /* If this brigade contains EOS, either stop or remove it. */
@@ -290,12 +336,6 @@ static int stream_reqbody_chunked(proxy_http_req_t *req)
             }
 
             apr_brigade_length(input_brigade, 1, &bytes);
-
-            /* Flush only if we did not get the requested #bytes. */
-            if (bytes < HUGE_STRING_LEN) {
-                flush = 0;
-            }
-
             hdr_len = apr_snprintf(chunk_hdr, sizeof(chunk_hdr),
                                    "%" APR_UINT64_T_HEX_FMT CRLF,
                                    (apr_uint64_t)bytes);
@@ -312,107 +352,61 @@ static int stream_reqbody_chunked(proxy_http_req_t *req)
             APR_BRIGADE_INSERT_TAIL(input_brigade, e);
         }
 
-        if (!APR_BRIGADE_EMPTY(header_brigade)) {
-            /* we never sent the header brigade, so go ahead and
-             * take care of that now
-             */
-            bb = header_brigade;
-            APR_BRIGADE_CONCAT(bb, input_brigade);
+        /* If we never sent the header brigade, so go ahead and
+         * take care of that now by prepending it.
+         */
+        APR_BRIGADE_PREPEND(input_brigade, header_brigade);
 
-            /* Flush now since we have the header and (enough of) the
-             * prefeched body, or racing KeepAliveTimeout on the backend
-             * side may kill our connection while we read more client data.
-             */
-            flush = 1;
-        }
-        else {
-            bb = input_brigade;
-        }
-
-        /* Once we hit EOS, flush below this loop with the EOS chunk. */
+        /* No flush here since it's done either on the next loop depending
+         * on stream_reqbody_read(), or after the loop with the EOS chunk.
+         */
         rv = ap_proxy_pass_brigade(bucket_alloc, r, p_conn, req->origin,
-                                   bb, flush && !seen_eos);
+                                   input_brigade, 0);
         if (rv != OK) {
             return rv;
         }
-
-        if (seen_eos) {
-            break;
-        }
-
-        status = ap_get_brigade(r->input_filters, input_brigade,
-                                AP_MODE_READBYTES, APR_BLOCK_READ,
-                                HUGE_STRING_LEN);
-
-        if (status != APR_SUCCESS) {
-            conn_rec *c = r->connection;
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(02608)
-                          "read request body failed to %pI (%s)"
-                          " from %s (%s)", p_conn->addr,
-                          p_conn->hostname ? p_conn->hostname: "",
-                          c->client_ip, c->remote_host ? c->remote_host: "");
-            return ap_map_http_request_error(status, HTTP_BAD_REQUEST);
-        }
-    }
-
-    if (!APR_BRIGADE_EMPTY(header_brigade)) {
-        /* we never sent the header brigade because there was no request body;
-         * send it now
-         */
-        bb = header_brigade;
-    }
-    else {
-        if (!APR_BRIGADE_EMPTY(input_brigade)) {
-            /* input brigade still has an EOS which we can't pass to the output_filters. */
-            e = APR_BRIGADE_LAST(input_brigade);
-            AP_DEBUG_ASSERT(APR_BUCKET_IS_EOS(e));
-            apr_bucket_delete(e);
-        }
-        bb = input_brigade;
-    }
+    } while (!seen_eos);
 
     e = apr_bucket_immortal_create(ZERO_ASCII CRLF_ASCII
                                    /* <trailers> */
                                    CRLF_ASCII,
                                    5, bucket_alloc);
-    APR_BRIGADE_INSERT_TAIL(bb, e);
+    APR_BRIGADE_INSERT_TAIL(input_brigade, e);
 
     if (apr_table_get(r->subprocess_env, "proxy-sendextracrlf")) {
         e = apr_bucket_immortal_create(CRLF_ASCII, 2, bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(bb, e);
+        APR_BRIGADE_INSERT_TAIL(input_brigade, e);
     }
 
     /* Now we have headers-only, or the chunk EOS mark; flush it */
-    return ap_proxy_pass_brigade(bucket_alloc, r, p_conn, req->origin, bb, 1);
+    return ap_proxy_pass_brigade(bucket_alloc, r, p_conn, req->origin,
+                                 input_brigade, 1);
 }
 
 static int stream_reqbody_cl(proxy_http_req_t *req)
 {
     request_rec *r = req->r;
-    int seen_eos = 0, rv = 0;
-    apr_status_t status = APR_SUCCESS;
+    int seen_eos = 0, rv = OK;
     proxy_conn_rec *p_conn = req->backend;
     apr_bucket_alloc_t *bucket_alloc = req->bucket_alloc;
     apr_bucket_brigade *header_brigade = req->header_brigade;
     apr_bucket_brigade *input_brigade = req->input_brigade;
-    apr_bucket_brigade *bb;
     apr_bucket *e;
     apr_off_t bytes;
     apr_off_t bytes_streamed = 0;
 
-    while (APR_BRIGADE_EMPTY(input_brigade)
-           || !APR_BUCKET_IS_EOS(APR_BRIGADE_FIRST(input_brigade)))
-    {
-        int flush = req->flushall;
+    do {
+        if (APR_BRIGADE_EMPTY(input_brigade)
+                && APR_BRIGADE_EMPTY(header_brigade)) {
+            rv = stream_reqbody_read(req, input_brigade, 1);
+            if (rv != OK) {
+                return rv;
+            }
+        }
 
         if (!APR_BRIGADE_EMPTY(input_brigade)) {
             apr_brigade_length(input_brigade, 1, &bytes);
             bytes_streamed += bytes;
-
-            /* Flush only if we did not get the requested #bytes. */
-            if (bytes < HUGE_STRING_LEN) {
-                flush = 0;
-            }
 
             /* If this brigade contains EOS, either stop or remove it. */
             if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(input_brigade))) {
@@ -448,48 +442,18 @@ static int stream_reqbody_cl(proxy_http_req_t *req)
             }
         }
 
-        if (!APR_BRIGADE_EMPTY(header_brigade)) {
-            /* we never sent the header brigade, so go ahead and
-             * take care of that now
-             */
-            bb = header_brigade;
-            APR_BRIGADE_CONCAT(bb, input_brigade);
+        /* If we never sent the header brigade, so go ahead and
+         * take care of that now by prepending it.
+         */
+        APR_BRIGADE_PREPEND(input_brigade, header_brigade);
 
-            /* Flush now since we have the header and (enough of) the
-             * prefeched body, or racing KeepAliveTimeout on the backend
-             * side may kill our connection while we read more client data.
-             */
-            flush = 1;
-        }
-        else {
-            bb = input_brigade;
-        }
-
-        /* Once we hit EOS, we are ready to flush. */
+        /* Flush here on EOS because we won't stream_reqbody_read() again */
         rv = ap_proxy_pass_brigade(bucket_alloc, r, p_conn, req->origin,
-                                   input_brigade, flush || seen_eos);
+                                   input_brigade, seen_eos);
         if (rv != OK) {
             return rv;
         }
-
-        if (seen_eos) {
-            break;
-        }
-
-        status = ap_get_brigade(r->input_filters, input_brigade,
-                                AP_MODE_READBYTES, APR_BLOCK_READ,
-                                HUGE_STRING_LEN);
-
-        if (status != APR_SUCCESS) {
-            conn_rec *c = r->connection;
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(02609)
-                          "read request body failed to %pI (%s)"
-                          " from %s (%s)", p_conn->addr,
-                          p_conn->hostname ? p_conn->hostname: "",
-                          c->client_ip, c->remote_host ? c->remote_host: "");
-            return ap_map_http_request_error(status, HTTP_BAD_REQUEST);
-        }
-    }
+    } while (!seen_eos);
 
     if (bytes_streamed != req->cl_val) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01087)
@@ -498,22 +462,14 @@ static int stream_reqbody_cl(proxy_http_req_t *req)
         return HTTP_BAD_REQUEST;
     }
 
-    if (!APR_BRIGADE_EMPTY(header_brigade)) {
-        /* we never sent the header brigade since there was no request
-         * body; send it now with the flush flag
-         */
-        return ap_proxy_pass_brigade(bucket_alloc, r, p_conn, req->origin,
-                                     header_brigade, 1);
-    }
-
     return OK;
 }
 
-static int spool_reqbody_cl(proxy_http_req_t *req)
+static int spool_reqbody_cl(proxy_http_req_t *req, apr_off_t *bytes_spooled)
 {
     apr_pool_t *p = req->p;
     request_rec *r = req->r;
-    int seen_eos = 0;
+    int seen_eos = 0, rv = OK;
     apr_status_t status = APR_SUCCESS;
     apr_bucket_alloc_t *bucket_alloc = req->bucket_alloc;
     apr_bucket_brigade *input_brigade = req->input_brigade;
@@ -524,17 +480,18 @@ static int spool_reqbody_cl(proxy_http_req_t *req)
     apr_off_t limit;
 
     body_brigade = apr_brigade_create(p, bucket_alloc);
+    *bytes_spooled = 0;
 
     limit = ap_get_limit_req_body(r);
 
-    if (APR_BRIGADE_EMPTY(input_brigade)) {
-        status = ap_get_brigade(r->input_filters, input_brigade,
-                                AP_MODE_READBYTES, APR_BLOCK_READ,
-                                HUGE_STRING_LEN);
-    }
-    while (status == APR_SUCCESS
-           && !APR_BUCKET_IS_EOS(APR_BRIGADE_FIRST(input_brigade)))
-    {
+    do {
+        if (APR_BRIGADE_EMPTY(input_brigade)) {
+            rv = stream_reqbody_read(req, input_brigade, 0);
+            if (rv != OK) {
+                return rv;
+            }
+        }
+
         /* If this brigade contains EOS, either stop or remove it. */
         if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(input_brigade))) {
             seen_eos = 1;
@@ -546,13 +503,13 @@ static int spool_reqbody_cl(proxy_http_req_t *req)
 
         apr_brigade_length(input_brigade, 1, &bytes);
 
-        if (req->bytes_spooled + bytes > MAX_MEM_SPOOL) {
+        if (*bytes_spooled + bytes > MAX_MEM_SPOOL) {
             /*
              * LimitRequestBody does not affect Proxy requests (Should it?).
              * Let it take effect if we decide to store the body in a
              * temporary file on disk.
              */
-            if (limit && (req->bytes_spooled + bytes > limit)) {
+            if (limit && (*bytes_spooled + bytes > limit)) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01088)
                               "Request body is larger than the configured "
                               "limit of %" APR_OFF_T_FMT, limit);
@@ -622,23 +579,8 @@ static int spool_reqbody_cl(proxy_http_req_t *req)
 
         }
 
-        req->bytes_spooled += bytes;
-
-        if (seen_eos) {
-            break;
-        }
-
-        status = ap_get_brigade(r->input_filters, input_brigade,
-                                AP_MODE_READBYTES, APR_BLOCK_READ,
-                                HUGE_STRING_LEN);
-    }
-    if (status != APR_SUCCESS) {
-        conn_rec *c = r->connection;
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(02610)
-                      "read request body failed from %s (%s)",
-                      c->client_ip, c->remote_host ? c->remote_host: "");
-        return ap_map_http_request_error(status, HTTP_BAD_REQUEST);
-    }
+        *bytes_spooled += bytes;
+    } while (!seen_eos);
 
     APR_BRIGADE_CONCAT(input_brigade, body_brigade);
     if (tmpfile) {
@@ -740,7 +682,7 @@ static int ap_proxy_http_prefetch(proxy_http_req_t *req,
      * reasonable size.
      */
     temp_brigade = apr_brigade_create(p, bucket_alloc);
-    block = req->flushall ? APR_NONBLOCK_READ : APR_BLOCK_READ;
+    block = req->prefetch_nonblocking ? APR_NONBLOCK_READ : APR_BLOCK_READ;
     do {
         status = ap_get_brigade(r->input_filters, temp_brigade,
                                 AP_MODE_READBYTES, block,
@@ -791,7 +733,7 @@ static int ap_proxy_http_prefetch(proxy_http_req_t *req,
      */
     } while ((bytes_read < MAX_MEM_SPOOL - 80)
               && !APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(input_brigade))
-              && !req->flushall);
+              && !req->prefetch_nonblocking);
 
     /* Use chunked request body encoding or send a content-length body?
      *
@@ -899,16 +841,12 @@ static int ap_proxy_http_prefetch(proxy_http_req_t *req,
         /* If we have to spool the body, do it now, before connecting or
          * reusing the backend connection.
          */
-        rv = spool_reqbody_cl(req);
+        rv = spool_reqbody_cl(req, &bytes);
         if (rv != OK) {
             return rv;
         }
-        if (bytes_read > 0
-                || req->old_te_val
-                || req->old_cl_val
-                || req->bytes_spooled) {
-            add_cl(p, bucket_alloc, header_brigade,
-                   apr_off_t_toa(p, req->bytes_spooled));
+        if (bytes || req->old_te_val || req->old_cl_val) {
+            add_cl(p, bucket_alloc, header_brigade, apr_off_t_toa(p, bytes));
         }
     }
 
@@ -2138,15 +2076,15 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
          * req->expecting_100 (i.e. cleared only if mod_proxy_http sent the
          * "100 Continue" according to its policy).
          */
-        req->do_100_continue = req->flushall = 1;
+        req->do_100_continue = req->prefetch_nonblocking = 1;
         req->expecting_100 = r->expecting_100;
         r->expecting_100 = 0;
     }
     /* Should we block while prefetching the body or try nonblocking and flush
      * data to the backend ASAP?
      */
-    else if (apr_table_get(r->subprocess_env, "proxy-flushall")) {
-        req->flushall = 1;
+    else if (apr_table_get(r->subprocess_env, "proxy-prefetch-nonblocking")) {
+        req->prefetch_nonblocking = 1;
     }
 
     /*
