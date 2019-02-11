@@ -232,7 +232,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      refused in case of concurrent accesses from different users.  PR 63124
      trunk patch: https://svn.apache.org/r1853190
      2.4.x patch: svn merge -c 1853190 ^/httpd/httpd/trunk .
-     +1: jailletc36
+     +1: jailletc36, icing
 
   *) mod_dav: Fix a potential use after free
      trunk patch: https://svn.apache.org/r1842010
