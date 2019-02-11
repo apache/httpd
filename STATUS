@@ -226,7 +226,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         - https://svn.apache.org/r1844343
         - https://svn.apache.org/r1846651
      2.4.x patch: svn merge -c 1486027,1828909,1839249,1842888,1844343,1846651 ^/httpd/httpd/trunk .
-     +1: jailletc36
+     +1: jailletc36, icing
 
   *) mod_auth_digest: Fix a race condition. Authentication with valid credentials could be
      refused in case of concurrent accesses from different users.  PR 63124
