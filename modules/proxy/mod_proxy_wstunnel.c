@@ -530,7 +530,7 @@ static int proxy_wstunnel_handler(request_rec *r, proxy_worker *worker,
         }
     }
 
-    /* Step Three: Process the Request */
+    /* Step Four: Process the Request */
     status = proxy_wstunnel_request(p, r, backend, worker, conf, uri, locurl,
                                   server_portstr, scheme);
 
