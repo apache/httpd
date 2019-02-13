@@ -336,20 +336,32 @@ static int stream_reqbody_chunked(proxy_http_req_t *req)
             }
 
             apr_brigade_length(input_brigade, 1, &bytes);
-            hdr_len = apr_snprintf(chunk_hdr, sizeof(chunk_hdr),
-                                   "%" APR_UINT64_T_HEX_FMT CRLF,
-                                   (apr_uint64_t)bytes);
+            if (bytes) {
+                hdr_len = apr_snprintf(chunk_hdr, sizeof(chunk_hdr),
+                                       "%" APR_UINT64_T_HEX_FMT CRLF,
+                                       (apr_uint64_t)bytes);
+                ap_xlate_proto_to_ascii(chunk_hdr, hdr_len);
+                e = apr_bucket_transient_create(chunk_hdr, hdr_len,
+                                                bucket_alloc);
+                APR_BRIGADE_INSERT_HEAD(input_brigade, e);
 
-            ap_xlate_proto_to_ascii(chunk_hdr, hdr_len);
-            e = apr_bucket_transient_create(chunk_hdr, hdr_len,
-                                            bucket_alloc);
-            APR_BRIGADE_INSERT_HEAD(input_brigade, e);
-
-            /*
-             * Append the end-of-chunk CRLF
-             */
-            e = apr_bucket_immortal_create(CRLF_ASCII, 2, bucket_alloc);
-            APR_BRIGADE_INSERT_TAIL(input_brigade, e);
+                /*
+                 * Append the end-of-chunk CRLF
+                 */
+                e = apr_bucket_immortal_create(CRLF_ASCII, 2, bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(input_brigade, e);
+            }
+            else if (APR_BRIGADE_EMPTY(header_brigade)) {
+                if (!seen_eos) {
+                    /* Metadata only (shouldn't happen), read more */
+                    apr_brigade_cleanup(input_brigade);
+                    continue;
+                }
+                /* At EOS, we are done since the trailing 0-size is handled
+                 * outside this loop.
+                 */
+                break;
+            }
         }
 
         /* If we never sent the header brigade, so go ahead and
