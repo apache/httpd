@@ -253,7 +253,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1836750
                   http://svn.apache.org/r1837040
                   http://svn.apache.org/r1853407
-     2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-forward_100_continue.patch
+                  http://svn.apache.org/r1853518
+     2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-forward_100_continue-v2.patch
      +1: ylavic
 
 
