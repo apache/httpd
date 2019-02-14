@@ -254,7 +254,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1837040
                   http://svn.apache.org/r1853407
                   http://svn.apache.org/r1853518
-     2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-forward_100_continue-v2.patch
+                  http://svn.apache.org/r1853561
+                  http://svn.apache.org/r1853566
+     2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-forward_100_continue-v3.patch
      +1: ylavic
 
 
