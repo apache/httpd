@@ -364,6 +364,11 @@ static int stream_reqbody_chunked(proxy_http_req_t *req)
                                                CRLF_ASCII,
                                                5, bucket_alloc);
                 APR_BRIGADE_INSERT_TAIL(input_brigade, e);
+
+                if (apr_table_get(r->subprocess_env, "proxy-sendextracrlf")) {
+                    e = apr_bucket_immortal_create(CRLF_ASCII, 2, bucket_alloc);
+                    APR_BRIGADE_INSERT_TAIL(input_brigade, e);
+                }
             }
         }
 
@@ -380,14 +385,7 @@ static int stream_reqbody_chunked(proxy_http_req_t *req)
         }
     } while (!seen_eos);
 
-    if (apr_table_get(r->subprocess_env, "proxy-sendextracrlf")) {
-        e = apr_bucket_immortal_create(CRLF_ASCII, 2, bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(input_brigade, e);
-    }
-
-    /* Now we have headers-only, or the chunk EOS mark; flush it */
-    return ap_proxy_pass_brigade(bucket_alloc, r, p_conn, req->origin,
-                                 input_brigade, 1);
+    return OK;
 }
 
 static int stream_reqbody_cl(proxy_http_req_t *req)
