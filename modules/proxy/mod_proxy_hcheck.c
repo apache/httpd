@@ -110,6 +110,10 @@ static const char *set_worker_hc_param(apr_pool_t *p,
     if (!worker && !v) {
         return "Bad call to set_worker_hc_param()";
     }
+    if (!ctx) {
+        ctx = hc_create_config(p, s);
+        ap_set_module_config(s->module_config, &proxy_hcheck_module, ctx);
+    }
     temp = (hc_template_t *)v;
     if (!strcasecmp(key, "hctemplate")) {
         hc_template_t *template;
@@ -1060,6 +1064,8 @@ static void hc_show_exprs(request_rec *r)
     int i;
     sctx_t *ctx = (sctx_t *) ap_get_module_config(r->server->module_config,
                                                   &proxy_hcheck_module);
+    if (!ctx)
+        return;
     if (apr_is_empty_table(ctx->conditions))
         return;
 
@@ -1089,6 +1095,8 @@ static void hc_select_exprs(request_rec *r, const char *expr)
     int i;
     sctx_t *ctx = (sctx_t *) ap_get_module_config(r->server->module_config,
                                                   &proxy_hcheck_module);
+    if (!ctx)
+        return;
     if (apr_is_empty_table(ctx->conditions))
         return;
 
@@ -1112,6 +1120,8 @@ static int hc_valid_expr(request_rec *r, const char *expr)
     int i;
     sctx_t *ctx = (sctx_t *) ap_get_module_config(r->server->module_config,
                                                   &proxy_hcheck_module);
+    if (!ctx)
+        return 0;
     if (apr_is_empty_table(ctx->conditions))
         return 0;
 
