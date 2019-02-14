@@ -337,6 +337,9 @@ static int stream_reqbody_chunked(proxy_http_req_t *req)
 
             apr_brigade_length(input_brigade, 1, &bytes);
             if (bytes) {
+                /*
+                 * Prepend the size of the chunk
+                 */
                 hdr_len = apr_snprintf(chunk_hdr, sizeof(chunk_hdr),
                                        "%" APR_UINT64_T_HEX_FMT CRLF,
                                        (apr_uint64_t)bytes);
@@ -351,16 +354,16 @@ static int stream_reqbody_chunked(proxy_http_req_t *req)
                 e = apr_bucket_immortal_create(CRLF_ASCII, 2, bucket_alloc);
                 APR_BRIGADE_INSERT_TAIL(input_brigade, e);
             }
-            else if (APR_BRIGADE_EMPTY(header_brigade)) {
-                if (!seen_eos) {
-                    /* Metadata only (shouldn't happen), read more */
-                    apr_brigade_cleanup(input_brigade);
-                    continue;
-                }
-                /* At EOS, we are done since the trailing 0-size is handled
-                 * outside this loop.
+
+            if (seen_eos) {
+                /*
+                 * Append the tailing 0-size chunk
                  */
-                break;
+                e = apr_bucket_immortal_create(ZERO_ASCII CRLF_ASCII
+                                               /* <trailers> */
+                                               CRLF_ASCII,
+                                               5, bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(input_brigade, e);
             }
         }
 
@@ -369,21 +372,13 @@ static int stream_reqbody_chunked(proxy_http_req_t *req)
          */
         APR_BRIGADE_PREPEND(input_brigade, header_brigade);
 
-        /* No flush here since it's done either on the next loop depending
-         * on stream_reqbody_read(), or after the loop with the EOS chunk.
-         */
+        /* Flush here on EOS because we won't stream_reqbody_read() again */
         rv = ap_proxy_pass_brigade(bucket_alloc, r, p_conn, req->origin,
-                                   input_brigade, 0);
+                                   input_brigade, seen_eos);
         if (rv != OK) {
             return rv;
         }
     } while (!seen_eos);
-
-    e = apr_bucket_immortal_create(ZERO_ASCII CRLF_ASCII
-                                   /* <trailers> */
-                                   CRLF_ASCII,
-                                   5, bucket_alloc);
-    APR_BRIGADE_INSERT_TAIL(input_brigade, e);
 
     if (apr_table_get(r->subprocess_env, "proxy-sendextracrlf")) {
         e = apr_bucket_immortal_create(CRLF_ASCII, 2, bucket_alloc);
