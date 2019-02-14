@@ -372,11 +372,9 @@ static int stream_reqbody_chunked(proxy_http_req_t *req)
          */
         APR_BRIGADE_PREPEND(input_brigade, header_brigade);
 
-        /* No flush here since it's done either on the next loop depending
-         * on stream_reqbody_read(), or after the loop when leaving.
-         */
+        /* Flush here on EOS because we won't stream_reqbody_read() again */
         rv = ap_proxy_pass_brigade(bucket_alloc, r, p_conn, req->origin,
-                                   input_brigade, 0);
+                                   input_brigade, seen_eos);
         if (rv != OK) {
             return rv;
         }
