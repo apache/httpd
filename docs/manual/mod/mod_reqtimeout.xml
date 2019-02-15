@@ -100,7 +100,7 @@
 [header=<var>timeout</var>[-<var>maxtimeout</var>][,MinRate=<var>rate</var>]
 [body=<var>timeout</var>[-<var>maxtimeout</var>][,MinRate=<var>rate</var>]
 </syntax>
-<default>header=20-40,MinRate=500 body=20,MinRate=500</default>
+<default>RequestReadTimeout header=20-40,MinRate=500 body=20,MinRate=500</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 <compatibility>Defaulted to disabled in
