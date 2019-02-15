@@ -54,10 +54,18 @@
 
 #define DEF_VAL     (-1)
 
+#ifndef MD_DEFAULT_BASE_DIR
+#define MD_DEFAULT_BASE_DIR "md"
+#endif
+
 /* Default settings for the global conf */
 static md_mod_conf_t defmc = {
     NULL,
-    "md",
+#if AP_MODULE_MAGIC_AT_LEAST(20180906, 2)
+    NULL, /* apply default state-dir-relative */
+#else
+    MD_DEFAULT_BASE_DIR,
+#endif
     NULL,
     NULL,
     80,
@@ -113,6 +121,11 @@ static md_mod_conf_t *md_mod_conf_get(apr_pool_t *pool, int create)
         mod_md_config->mds = apr_array_make(pool, 5, sizeof(const md_t *));
         mod_md_config->unused_names = apr_array_make(pool, 5, sizeof(const md_t *));
         
+#if AP_MODULE_MAGIC_AT_LEAST(20180906, 2)
+        mod_md_config->base_dir = ap_state_dir_relative(pool,
+                                                        MD_DEFAULT_BASE_DIR);
+#endif
+
         apr_pool_cleanup_register(pool, NULL, cleanup_mod_config, apr_pool_cleanup_null);
     }
     
