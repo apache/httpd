@@ -814,10 +814,10 @@ per child process</description>
     <code>25</code> when used with the others.</p>
     
     <p>The value of <directive>ThreadsPerChild</directive> can not exceed the
-    value of <directive module="mpm_common">ThreadsLimit</directive>. If a
+    value of <directive module="mpm_common">ThreadLimit</directive>. If a
     higher value is configured, it will be automatically reduced at start-up
     and a warning will be logged. The relationship between these 2 directives
-    is explained in <directive module="mpm_common">ThreadsLimit</directive>.</p>
+    is explained in <directive module="mpm_common">ThreadLimit</directive>.</p>
 </usage>
 </directivesynopsis>
 
