@@ -319,14 +319,28 @@
             </xsl:choose>
         </xsl:variable>
 
-        <!-- Check if the default string really starts with the directive -->
-        <!-- name, in order to avoid typo, or unexpected formatting.      -->
-        <!-- Below, we skip the directive name, so, for it to work, it    -->
-        <!-- must be there.                                               -->
+        <!-- Check if the syntax and the default strings really start with -->
+        <!-- the directive name, in order to avoid typo, or unexpected     -->
+        <!-- formatting.                                                   -->
+        <!-- Un-comment these lines if you want to perform this additional -->
+        <!-- tests.  They are not run by default, because of the false     -->
+        <!-- positives and the noise they generate.                        -->
+<!--
+        <xsl:if test="string-length(syntax) = 0 or
+                         (syntax != name and
+                          substring-before(syntax, ' ') != name and
+                          substring-before(syntax, ' ') != concat ('&lt;', name) and
+                          substring-before(syntax, ' ') != concat ('&lt;', name, '&gt;')
+                         )" >
+                      
+            <xsl:message>Spurious syntax string for <xsl:value-of select="name"/>: '<xsl:value-of select="syntax"/>'</xsl:message>
+        </xsl:if>
+
         <xsl:if test="string-length($default) &gt; 0
                       and substring-before($default, ' ') != name">
-            <xsl:message>Spurious default string: <xsl:value-of select="$default"/> (Directive <xsl:value-of select="name"/> omitted or misspelled)</xsl:message>
+            <xsl:message>Spurious default string for <xsl:value-of select="name"/>: <xsl:value-of select="$default"/></xsl:message>
         </xsl:if>
+-->
 
         <!-- Now. If the default output is empty, the xslt processor emits -->
         <!-- <td />. In order to avoid this, we simply emit <td></td>      -->
