@@ -327,8 +327,8 @@ in *BSDs.</compatibility>
 <directivesynopsis>
 <name>ListenBackLog</name>
 <description>Maximum length of the queue of pending connections</description>
-<syntax>ListenBacklog <var>backlog</var></syntax>
-<default>ListenBacklog 511</default>
+<syntax>ListenBackLog <var>backlog</var></syntax>
+<default>ListenBackLog 511</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>event</module><module>worker</module>
 <module>prefork</module><module>mpm_winnt</module>
