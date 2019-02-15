@@ -102,7 +102,11 @@ static apr_status_t fetch_dbm_value(const char *dbmtype, const char *dbmfile,
 
     apr_dbm_close(f);
 
-    return rv;
+    /* NOT FOUND is not an error case; this is indicated by a NULL result.
+     * Treat all NULL lookup/error results as success for the simple case 
+     * of auth credential lookup, these are DECLINED in both cases.
+     */
+    return APR_SUCCESS;
 }
 
 static authn_status check_dbm_pw(request_rec *r, const char *user,
