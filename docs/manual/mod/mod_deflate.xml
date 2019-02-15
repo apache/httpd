@@ -55,8 +55,8 @@ client</description>
 
     <example><title>Compress only a few types</title>
     <highlight language="config">
-      AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript
-      </highlight>
+AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript
+    </highlight>
     </example>
 
 </section>
@@ -171,7 +171,7 @@ SetEnvIfNoCase Request_URI "\.(?:gif|jpe?g|png)$" no-gzip
     filter depends on the <code>User-Agent</code>, you should add:</p>
 
     <highlight language="config">
-      Header append Vary User-Agent
+Header append Vary User-Agent
     </highlight>
 
     <p>If your decision about compression depends on other information
@@ -181,15 +181,15 @@ SetEnvIfNoCase Request_URI "\.(?:gif|jpe?g|png)$" no-gzip
 
     <example><title>Example</title>
     <highlight language="config">
-      Header set Vary *
-      </highlight>
+Header set Vary *
+    </highlight>
     </example>
 </section>
 
 <section id="precompressed"><title>Serving pre-compressed
 content</title>
 
-    <p>Since <module>mod_deflate</module> re-compresses content each 
+    <p>Since <module>mod_deflate</module> re-compresses content each
     time a request is made, some performance benefit can be derived by
     pre-compressing the content and telling mod_deflate to serve them
     without re-compressing them. This may be accomplished using a
@@ -197,29 +197,23 @@ content</title>
 
     <highlight language="config">
 &lt;IfModule mod_headers.c&gt;
-    # Serve gzip compressed CSS files if they exist 
+    # Serve gzip compressed CSS and JS files if they exist
     # and the client accepts gzip.
     RewriteCond "%{HTTP:Accept-encoding}" "gzip"
     RewriteCond "%{REQUEST_FILENAME}\.gz" -s
-    RewriteRule "^(.*)\.css" "$1\.css\.gz" [QSA]
-
-    # Serve gzip compressed JS files if they exist 
-    # and the client accepts gzip.
-    RewriteCond "%{HTTP:Accept-encoding}" "gzip"
-    RewriteCond "%{REQUEST_FILENAME}\.gz" -s
-    RewriteRule "^(.*)\.js" "$1\.js\.gz" [QSA]
+    RewriteRule "^(.*)\.(css|js)" "$1\.$2\.gz" [QSA]
 
 
     # Serve correct content types, and prevent mod_deflate double gzip.
     RewriteRule "\.css\.gz$" "-" [T=text/css,E=no-gzip:1]
-    RewriteRule "\.js\.gz$" "-" [T=text/javascript,E=no-gzip:1]
+    RewriteRule "\.js\.gz$"  "-" [T=text/javascript,E=no-gzip:1]
 
 
     &lt;FilesMatch "(\.js\.gz|\.css\.gz)$"&gt;
       # Serve correct encoding type.
       Header append Content-Encoding gzip
 
-      # Force proxies to cache gzipped &amp; 
+      # Force proxies to cache gzipped &amp;
       # non-gzipped css/js files separately.
       Header append Vary Accept-Encoding
     &lt;/FilesMatch&gt;
@@ -245,11 +239,11 @@ content</title>
 
     <example><title>Example</title>
     <highlight language="config">
-      DeflateFilterNote ratio
-    
-      LogFormat '"%r" %b (%{ratio}n) "%{User-agent}i"' deflate
-      CustomLog "logs/deflate_log" deflate
-      </highlight>
+DeflateFilterNote ratio
+
+LogFormat '"%r" %b (%{ratio}n) "%{User-agent}i"' deflate
+CustomLog "logs/deflate_log" deflate
+    </highlight>
     </example>
 
     <p>If you want to extract more accurate values from your logs, you
@@ -365,7 +359,7 @@ CustomLog "logs/deflate_log" deflate
 <compatibility>2.4.10 and later</compatibility>
 
 <usage>
-    <p>The <directive>DeflateInflateLimitRequestBody</directive> directive 
+    <p>The <directive>DeflateInflateLimitRequestBody</directive> directive
         specifies the maximum size of an inflated request body. If it is unset,
         <directive module="core">LimitRequestBody</directive> is applied to the
         inflated body.</p>
@@ -376,38 +370,37 @@ CustomLog "logs/deflate_log" deflate
 <name>DeflateInflateRatioLimit</name>
 <description>Maximum inflation ratio for request bodies</description>
 <syntax>DeflateInflateRatioLimit <var>value</var></syntax>
-<default>200</default>
+<default>DeflateInflateRatioLimit 200</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <compatibility>2.4.10 and later</compatibility>
 
 <usage>
-    <p>The <directive>DeflateInflateRatioLimit</directive> directive 
-        specifies the maximum ratio of deflated to inflated size of an 
+    <p>The <directive>DeflateInflateRatioLimit</directive> directive
+        specifies the maximum ratio of deflated to inflated size of an
         inflated request body. This ratio is checked as the body is
-        streamed in, and if crossed more than 
-        <directive>DeflateInflateRatioBurst</directive> times, the request
-        will be terminated.</p>
+        streamed in, and if crossed more than
+        <directive module="mod_deflate">DeflateInflateRatioBurst</directive>
+        times, the request will be terminated.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>DeflateInflateRatioBurst</name>
-<description>Maximum number of times the inflation ratio for request bodies 
+<description>Maximum number of times the inflation ratio for request bodies
              can be crossed</description>
 <syntax>DeflateInflateRatioBurst <var>value</var></syntax>
-<default>3</default>
+<default>DeflateInflateRatioBurst 3</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <compatibility>2.4.10 and later</compatibility>
 
 <usage>
-    <p>The <directive>DeflateInflateRatioBurst</directive> directive 
-       specifies the maximum number of times the 
-       <directive>DeflateInflateRatioLimit</directive> can be crossed before 
-       terminating the request.</p>
+    <p>The <directive>DeflateInflateRatioBurst</directive> directive
+       specifies the maximum number of times the
+       <directive module="mod_deflate">DeflateInflateRatioLimit</directive> can
+       be crossed before terminating the request.</p>
 </usage>
 </directivesynopsis>
 
 </modulesynopsis>
-
