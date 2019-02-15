@@ -30,6 +30,21 @@
 <identifier>reqtimeout_module</identifier>
 <compatibility>Available in Apache HTTPD 2.2.15 and later</compatibility>
 
+<summary>
+    <p>This module provides a convenient way to set timeouts and minimum data
+    rates for receiving requests. Should a timeout occur or a data rate be
+    to low, the corresponding connection will be closed by the server.</p>
+
+    <p>This is logged at <directive module="core">LogLevel</directive>
+    <code>info</code>.</p>
+    
+    <p>If needed, the <directive module="core">LogLevel</directive> directive
+    can be tweaked to explicitly log it:</p>
+    <highlight language="config">
+      LogLevel reqtimeout:info
+    </highlight>
+</summary>
+
 <section id="examples"><title>Examples</title>
 
     <ol>
@@ -86,7 +101,7 @@
 [header=<var>timeout</var>[-<var>maxtimeout</var>][,MinRate=<var>rate</var>]
 [body=<var>timeout</var>[-<var>maxtimeout</var>][,MinRate=<var>rate</var>]
 </syntax>
-<default>header=20-40,MinRate=500 body=20,MinRate=500</default>
+<default>RequestReadTimeout header=20-40,MinRate=500 body=20,MinRate=500</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 <compatibility>Available in version 2.2.15 and later; defaulted to disabled in
