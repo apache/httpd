@@ -77,7 +77,10 @@ static int proxy_wstunnel_canon(request_rec *r, char *url)
     if (path == NULL)
         return HTTP_BAD_REQUEST;
 
-    apr_snprintf(sport, sizeof(sport), ":%d", port);
+    if (port != def_port)
+        apr_snprintf(sport, sizeof(sport), ":%d", port);
+    else
+        sport[0] = '\0';
 
     if (ap_strchr_c(host, ':')) {
         /* if literal IPv6 address */

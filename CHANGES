@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.39
 
+  *) mod_proxy_wstunnel: Fix websocket proxy over UDS.
+     PR 62932 <pavel dcmsys.com>
+
   *) mod_ssl: Don't unset FIPS mode on restart unless it's forced by
      configuration (SSLFIPS on) and not active by default in OpenSSL.
      PR 63136. [Yann Ylavic]
