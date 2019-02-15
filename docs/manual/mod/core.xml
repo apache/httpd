@@ -747,7 +747,7 @@ DefaultRuntimeDir scratch/
 <name>DefaultStateDir</name>
 <description>Base directory for the persistent state files</description>
 <syntax>DefaultStateDir <var>directory-path</var></syntax>
-<default>DefaultRuntimeDir DEFAULT_REL_STATEDIR (state/)</default>
+<default>DefaultStateDir DEFAULT_REL_STATEDIR (state/)</default>
 <contextlist><context>server config</context></contextlist>
 <compatibility>Available in Apache 2.5.1 and later</compatibility>
 
@@ -756,7 +756,7 @@ DefaultRuntimeDir scratch/
     directory in which the server will create various persistent state
     files (databases, long-lived caches, etc.). If set as a relative
     path, the full path will be relative to
-    <directive>ServerRoot</directive>.</p>
+    <directive module="core">ServerRoot</directive>.</p>
 
     <p><strong>Example</strong></p>
    <highlight language="config">
@@ -767,14 +767,14 @@ DefaultStateDir state/
     modified by changing the <code>DEFAULT_REL_STATEDIR</code> #define
     at build time.</p>
 
-   <p>Note: <directive>ServerRoot</directive> should be specified before this
-   directive is used. Otherwise, the default value of <directive>ServerRoot</directive>
+   <p>Note: <directive module="core">ServerRoot</directive> should be specified before this
+   directive is used. Otherwise, the default value of <directive module="core">ServerRoot</directive>
    would be used to set the base directory.</p>
 
 </usage>
 <seealso><a href="../misc/security_tips.html#serverroot">the
     security tips</a> for information on how to properly set
-    permissions on the <directive>ServerRoot</directive></seealso>
+    permissions on the <directive module="core">ServerRoot</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
