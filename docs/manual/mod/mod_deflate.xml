@@ -358,7 +358,7 @@ CustomLog "logs/deflate_log" deflate
 <directivesynopsis>
 <name>DeflateInflateLimitRequestBody</name>
 <description>Maximum size of inflated request bodies</description>
-<syntax>DeflateInflateLimitRequestBody<var>value</var></syntax>
+<syntax>DeflateInflateLimitRequestBody <var>value</var></syntax>
 <default>None, but LimitRequestBody applies after deflation</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>

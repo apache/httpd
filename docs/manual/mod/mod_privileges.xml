@@ -282,8 +282,7 @@ non-threaded MPMs (<module>prefork</module> or custom MPM).</compatibility>
     created by <module>mod_ext_filter</module> or
     <directive module="mod_rewrite">RewriteMap</directive> <var>prog</var>.
     Note that it does not prevent CGI programs running under alternative
-    process and security models such as <a
-    href="https://httpd.apache.org/mod_fcgid/"
+    process and security models such as <a href="https://httpd.apache.org/mod_fcgid/"
     >mod_fcgid</a>, which is a recommended solution in Solaris.</p>
     <p>If set to <var>On</var> or <var>Secure</var>, the virtual host
     is permitted to run external programs and scripts as above.
@@ -349,7 +348,7 @@ and when <module>mod_privileges</module> is compiled with the
 <name>VHostCGIPrivs</name>
 <description>Assign arbitrary privileges to subprocesses created
 by a virtual host.</description>
-<syntax>VHostPrivs [+-]?<var>privilege-name</var> [[+-]?privilege-name] ...</syntax>
+<syntax>VHostCGIPrivs [+-]?<var>privilege-name</var> [[+-]?privilege-name] ...</syntax>
 <default>None</default>
 <contextlist><context>virtual host</context></contextlist>
 <compatibility>Available on Solaris 10 and OpenSolaris with

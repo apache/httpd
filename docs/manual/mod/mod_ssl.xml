@@ -2367,7 +2367,7 @@ SSLOCSPOverrideResponder on
 <directivesynopsis>
 <name>SSLOCSPDefaultResponder</name>
 <description>Set the default responder URI for OCSP validation</description>
-<syntax>SSLOCSDefaultResponder <em>uri</em></syntax>
+<syntax>SSLOCSPDefaultResponder <em>uri</em></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 
