@@ -655,11 +655,11 @@ Require valid-user
 <section id="exposed"><title>Exposing Login Information</title>
 
     <p>when this module performs <em>authentication</em>, ldap attributes specified
-    in the <directive module="mod_authnz_ldap">authldapurl</directive>
+    in the <directive module="mod_authnz_ldap">AuthLDAPURL</directive>
     directive are placed in environment variables with the prefix "AUTHENTICATE_".</p>
 
     <p>when this module performs <em>authorization</em>, ldap attributes specified
-    in the <directive module="mod_authnz_ldap">authldapurl</directive>
+    in the <directive module="mod_authnz_ldap">AuthLDAPURL</directive>
     directive are placed in environment variables with the prefix "AUTHORIZE_".</p>
 
     <p>If the attribute field contains the username, common name
@@ -1073,7 +1073,7 @@ AuthLDAPBindPassword "exec:/path/to/otherProgram argument1"
 <description>LDAP attributes used to identify the user members of
 groups.</description>
 <syntax>AuthLDAPGroupAttribute <em>attribute</em></syntax>
-<default>AuthLDAPGroupAttribute member uniquemember</default>
+<default>AuthLDAPGroupAttribute member uniqueMember</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
@@ -1083,7 +1083,7 @@ groups.</description>
     check for user members within groups. Multiple attributes can be used
     by specifying this directive multiple times. If not specified,
     then <module>mod_authnz_ldap</module> uses the <code>member</code> and
-    <code>uniquemember</code> attributes.</p>
+    <code>uniqueMember</code> attributes.</p>
 </usage>
 </directivesynopsis>
 
@@ -1157,7 +1157,8 @@ query to set the REMOTE_USER environment variable</description>
     <p>If this directive is set, the value of the
     <code>REMOTE_USER</code> environment variable will be set to the
     value of the attribute specified. Make sure that this attribute is
-    included in the list of attributes in the AuthLDAPUrl definition,
+    included in the list of attributes in the <directive module="mod_authnz_ldap"
+    >AuthLDAPURL</directive> definition,
     otherwise this directive will have no effect. This directive, if
     present, takes precedence over <directive module="mod_authnz_ldap"
     >AuthLDAPRemoteUserIsDN</directive>. This
@@ -1224,7 +1225,7 @@ environment variable</description>
 directive line, used to distinguish the members of the current group that
 are groups.</description>
 <syntax>AuthLDAPSubGroupAttribute <em>attribute</em></syntax>
-<default>AuthLDAPSubgroupAttribute member uniquemember</default>
+<default>AuthLDAPSubGroupAttribute member uniqueMember</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
@@ -1271,9 +1272,9 @@ objects that are groups during sub-group processing.</description>
 </directivesynopsis>
 
 <directivesynopsis>
-<name>AuthLDAPUrl</name>
+<name>AuthLDAPURL</name>
 <description>URL specifying the LDAP search parameters</description>
-<syntax>AuthLDAPUrl <em>url [NONE|SSL|TLS|STARTTLS]</em></syntax>
+<syntax>AuthLDAPURL <em>url</em> [NONE|SSL|TLS|STARTTLS]</syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
@@ -1284,7 +1285,7 @@ objects that are groups during sub-group processing.</description>
 <example>ldap://host:port/basedn?attribute?scope?filter</example>
     <p>If you want to specify more than one LDAP URL that Apache should try in turn, the syntax is:</p>
 <highlight language="config">
-AuthLDAPUrl "ldap://ldap1.example.com ldap2.example.com/dc=..."
+AuthLDAPURL "ldap://ldap1.example.com ldap2.example.com/dc=..."
 </highlight>
 <p><em><strong>Caveat: </strong>If you specify multiple servers, you need to enclose the entire URL string in quotes;
 otherwise you will get an error: "AuthLDAPURL takes one argument, URL to define LDAP connection.." </em>
@@ -1390,7 +1391,7 @@ You can of course use search parameters on each of these.</p>
 </dl>
 
     <p>See above for examples of <directive
-    module="mod_authnz_ldap">AuthLDAPUrl</directive> URLs.</p>
+    module="mod_authnz_ldap">AuthLDAPURL</directive> URLs.</p>
 </usage>
 </directivesynopsis>
 
