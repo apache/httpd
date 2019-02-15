@@ -322,7 +322,7 @@
         <!-- Check if the syntax and the default strings really start with -->
         <!-- the directive name, in order to avoid typo, or unexpected     -->
         <!-- formatting.                                                   -->
-        <!-- Un-comment these lines if you want to perform this additional -->
+        <!-- Un-comment these lines if you want to perform these additional-->
         <!-- tests.  They are not run by default, because of the false     -->
         <!-- positives and the noise they generate.                        -->
 <!--
