@@ -668,7 +668,7 @@ static const char *process_regexp(header_entry *hdr, const char *value,
 
 static int echo_header(void *v, const char *key, const char *val)
 {
-    edit_do *ed = v;
+    echo_do *ed = (echo_do *)v;
 
     /* If the input header (key) matches the regex, echo it intact to
      * r->headers_out.
