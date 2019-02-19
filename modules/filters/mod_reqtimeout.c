@@ -29,6 +29,9 @@
 module AP_MODULE_DECLARE_DATA reqtimeout_module;
 
 #define UNSET                            -1
+#define MRT_DEFAULT_handshake_TIMEOUT     0 /* disabled */
+#define MRT_DEFAULT_handshake_MAX_TIMEOUT 0
+#define MRT_DEFAULT_handshake_MIN_RATE    APR_INT32_MAX
 #define MRT_DEFAULT_header_TIMEOUT       20
 #define MRT_DEFAULT_header_MAX_TIMEOUT   40
 #define MRT_DEFAULT_header_MIN_RATE      500
@@ -46,6 +49,7 @@ typedef struct
 
 typedef struct
 {
+    reqtimeout_stage_t handshake;   /* Handshaking (TLS) */
     reqtimeout_stage_t header;      /* Reading the HTTP header */
     reqtimeout_stage_t body;        /* Reading the HTTP body */
 } reqtimeout_srv_cfg;
@@ -63,6 +67,7 @@ typedef struct
 } reqtimeout_con_cfg;
 
 static const char *const reqtimeout_filter_name = "reqtimeout";
+static int default_handshake_rate_factor;
 static int default_header_rate_factor;
 static int default_body_rate_factor;
 
@@ -372,7 +377,10 @@ static int reqtimeout_init(conn_rec *c)
                                &reqtimeout_module);
     AP_DEBUG_ASSERT(cfg != NULL);
 
-    if (cfg->header.timeout == 0 && cfg->body.timeout == 0) {
+    /* For compatibility, handshake timeout is disabled when UNSET (< 0) */
+    if (cfg->handshake.timeout <= 0
+            && cfg->header.timeout == 0
+            && cfg->body.timeout == 0) {
         /* disabled for this vhost */
         return DECLINED;
     }
@@ -383,6 +391,10 @@ static int reqtimeout_init(conn_rec *c)
         ap_set_module_config(c->conn_config, &reqtimeout_module, ccfg);
         ap_add_output_filter(reqtimeout_filter_name, ccfg, NULL, c);
         ap_add_input_filter(reqtimeout_filter_name, ccfg, NULL, c);
+
+        if (cfg->handshake.timeout > 0) {
+            INIT_STAGE(cfg, ccfg, handshake);
+        }
     }
 
     /* we are not handling the connection, we just do initialization */
@@ -450,6 +462,7 @@ static void *reqtimeout_create_srv_config(apr_pool_t *p, server_rec *s)
 {
     reqtimeout_srv_cfg *cfg = apr_pcalloc(p, sizeof(reqtimeout_srv_cfg));
 
+    UNSET_STAGE(cfg, handshake);
     UNSET_STAGE(cfg, header);
     UNSET_STAGE(cfg, body);
 
@@ -473,6 +486,7 @@ static void *reqtimeout_merge_srv_config(apr_pool_t *p, void *base_, void *add_)
     reqtimeout_srv_cfg *add  = add_;
     reqtimeout_srv_cfg *cfg  = apr_pcalloc(p, sizeof(reqtimeout_srv_cfg));
 
+    MERGE_STAGE(cfg, base, add, handshake);
     MERGE_STAGE(cfg, base, add, header);
     MERGE_STAGE(cfg, base, add, body);
 
@@ -505,7 +519,10 @@ static const char *set_reqtimeout_param(reqtimeout_srv_cfg *conf,
     char *rate_str = NULL, *initial_str, *max_str = NULL;
     reqtimeout_stage_t *stage;
 
-    if (!strcasecmp(key, "header")) {
+    if (!strcasecmp(key, "handshake")) {
+        stage = &conf->handshake;
+    }
+    else if (!strcasecmp(key, "header")) {
         stage = &conf->header;
     }
     else if (!strcasecmp(key, "body")) {
@@ -611,13 +628,17 @@ static void reqtimeout_hooks(apr_pool_t *pool)
      * e.g. mod_ftp. Also, if mod_reqtimeout used the pre_connection hook, it
      * would be inserted on mod_proxy's backend connections.
      */
-    ap_hook_process_connection(reqtimeout_init, NULL, NULL, APR_HOOK_LAST);
+    ap_hook_process_connection(reqtimeout_init, NULL, NULL, APR_HOOK_FIRST);
 
     ap_hook_pre_read_request(reqtimeout_before_header, NULL, NULL,
                              APR_HOOK_MIDDLE);
     ap_hook_post_read_request(reqtimeout_before_body, NULL, NULL,
                               APR_HOOK_MIDDLE);
 
+#if MRT_DEFAULT_HANDSHAKE_MIN_RATE > 0
+    default_handshake_rate_factor = apr_time_from_sec(1) /
+                                    MRT_DEFAULT_HANDSHAKE_MIN_RATE;
+#endif
 #if MRT_DEFAULT_HEADER_MIN_RATE > 0
     default_header_rate_factor = apr_time_from_sec(1) /
                                  MRT_DEFAULT_HEADER_MIN_RATE;
@@ -630,8 +651,8 @@ static void reqtimeout_hooks(apr_pool_t *pool)
 
 static const command_rec reqtimeout_cmds[] = {
     AP_INIT_RAW_ARGS("RequestReadTimeout", set_reqtimeouts, NULL, RSRC_CONF,
-                     "Set various timeout parameters for reading request "
-                     "headers and body"),
+                     "Set various timeout parameters for TLS handshake and/or "
+                     "reading request headers and body"),
     {NULL}
 };
 

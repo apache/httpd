@@ -1,5 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
+
+  *) mod_reqtimeout: Allow to configure (TLS-)handshake timeouts.
+     PR 61310. [Yann Ylavic]
+
   *) mod_auth_digest: Fix a race condition. Authentication with valid credentials could be
      refused in case of concurrent accesses from different users.
      PR 63124 [Simon Kappel <simon.kappel axis.com>]
