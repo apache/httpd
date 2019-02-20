@@ -310,11 +310,9 @@ static apr_status_t h2_filter_slave_in(ap_filter_t* f,
         }
     }
     
-    /* Nothing there, no more data to get. Return APR_EAGAIN on
-     * speculative reads, this is ap_check_pipeline()'s trick to
-     * see if the connection needs closing. */
+    /* Nothing there, no more data to get. Return. */
     if (status == APR_EOF && APR_BRIGADE_EMPTY(task->input.bb)) {
-        return (mode == AP_MODE_SPECULATIVE)? APR_EAGAIN : APR_EOF;
+        return status;
     }
 
     if (trace1) {
@@ -600,7 +598,6 @@ apr_status_t h2_task_do(h2_task *task, apr_thread_t *thread, int worker_id)
             slave_id = worker_id; 
         }
         task->c->id = (c->master->id << free_bits)^slave_id;
-        c->keepalive = AP_CONN_KEEPALIVE;
     }
         
     h2_beam_create(&task->output.beam, c->pool, task->stream_id, "output", 
