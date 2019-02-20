@@ -264,8 +264,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1853908
                   http://svn.apache.org/r1853929
                   http://svn.apache.org/r1853935
-     2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-reqtimeout_handshake.patch
-     +1: ylavic
+                  http://svn.apache.org/r1853967
+     2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-reqtimeout_handshake-v2.patch
+     +1: ylavic, icing
      icing: please add r1853967 to this to keep h2 working with this change. if added, +1 
 
   *) mod_cache_socache: Avoid reallocations and be safe with outgoing data
