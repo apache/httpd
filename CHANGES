@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_cache_socache: Avoid reallocations and be safe with outgoing data
+     lifetime. [Yann Ylavic]
+
   *) mod_reqtimeout: Allow to configure (TLS-)handshake timeouts.
      PR 61310. [Yann Ylavic]
 
