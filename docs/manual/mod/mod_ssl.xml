@@ -34,7 +34,7 @@ Layer (SSL) and Transport Layer Security (TLS) protocols</description>
 HTTP Server. SSL v2 is no longer supported.</p>
 
 <p>This module relies on <a href="http://www.openssl.org/">OpenSSL</a>
-to provide the cryptography engine.</p>
+to provide the cryptographic engine.</p>
 
 <p>Further details, discussion, and examples are provided in the
 <a href="../ssl/">SSL documentation</a>.</p>
