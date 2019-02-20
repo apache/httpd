@@ -246,6 +246,23 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-forward_100_continue-v3.patch
      +1: ylavic
 
+  *) mod_reqtimeout: Allow to configure (TLS-)handshake timeouts.  PR 61310.
+     trunk patch: http://svn.apache.org/r1853901
+                  http://svn.apache.org/r1853906
+                  http://svn.apache.org/r1853908
+                  http://svn.apache.org/r1853929
+                  http://svn.apache.org/r1853935
+     2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-reqtimeout_handshake.patch
+     +1: ylavic
+
+  *) mod_cache_socache: Avoid reallocations and be safe with outgoing data
+     lifetime. [Yann Ylavic]
+     trunk patch: http://svn.apache.org/r1853874
+                  http://svn.apache.org/r1853938 (CHANGES entry)
+     2.4.x patch: svn merge -c 1853874,1853938 ^/httpd/httpd/trunk .
+                  (trunk works, modulo CHANGES)
+     +1: ylavic
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
