@@ -469,9 +469,9 @@ static void *reqtimeout_create_srv_config(apr_pool_t *p, server_rec *s)
     return cfg;
 }
 
-#define MERGE_INT(cfg, b, a, val) \
-    cfg->val = (a->val == UNSET) ? b->val : a->val
-#define MERGE_STAGE(cfg, b, a, stage) do { \
+#define MERGE_INT(cfg, base, add, val) \
+    cfg->val = (add->val == UNSET) ? base->val : add->val
+#define MERGE_STAGE(cfg, base, add, stage) do { \
     MERGE_INT(cfg, base, add, stage.timeout); \
     MERGE_INT(cfg, base, add, stage.max_timeout); \
     MERGE_INT(cfg, base, add, stage.min_rate); \
