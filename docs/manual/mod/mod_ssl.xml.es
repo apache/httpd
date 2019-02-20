@@ -3,6 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="../style/manual.es.xsl"?>
 <!-- English Revision: 1817381:1852478 (outdated) -->
 <!-- Spanish Translation: Daniel Ferradal <dferradal@apache.org> -->
+<!-- Updated and reviewed: Luis Gil de bernabe <lgilbernabe@apache.org> -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -36,7 +37,7 @@
   HTTP. SSL v2 ya no está soportado.</p>
 
 <p>Este módulo depende de <a href="http://www.openssl.org/">OpenSSL</a> para
-proveer el motor de criptografía.</p>
+proveer el motor criptográfico.</p>
 
 <p>Se facilitan más detalles, discusión y ejemplos en la 
 <a href="../ssl/">documentación SSL</a>.</p>
@@ -57,14 +58,14 @@ para más detalles sobre las variables de compatibilidad.</p>
 <columnspec><column width=".3"/><column width=".2"/><column width=".5"/>
 </columnspec>
 <tr>
- <th><a name="table3">Nommbre de Variable:</a></th>
+ <th><a name="table3">Nombre de Variable:</a></th>
  <th>Valor Tipo:</th>
  <th>Descripción:</th>
 </tr>
 <tr><td><code>HTTPS</code></td>                         <td>flag</td>      <td>Se está usando HTTPS.</td></tr>
 <tr><td><code>SSL_PROTOCOL</code></td>                  <td>string</td>    <td>El protocolo SSL versión (SSLv3, TLSv1, TLSv1.1, TLSv1.2)</td></tr>
 <tr><td><code>SSL_SESSION_ID</code></td>                <td>string</td>    <td>El id de sesión SSL codificado en hexadecimal</td></tr>
-<tr><td><code>SSL_SESSION_RESUMED</code></td>           <td>string</td>    <td>Sesíón SSL inicial o reanudada.  Nota: multiples peticiones pueden servirse a través de la misma sesión SSL (Inicial o Reanudada) si el KeepAlive de HTTP está en uso</td></tr>
+<tr><td><code>SSL_SESSION_RESUMED</code></td>           <td>string</td>    <td>Sesión SSL inicial o reanudada.  Nota: múltiples peticiones pueden servirse a través de la misma sesión SSL (Inicial o Reanudada) si el KeepAlive de HTTP está en uso</td></tr>
 <tr><td><code>SSL_SECURE_RENEG</code></td>              <td>string</td>    <td><code>true</code> si la renegociación segura está soportada, si no <code>false</code></td></tr>
 <tr><td><code>SSL_CIPHER</code></td>                    <td>string</td>    <td>El nombre de la especificación del cifrado</td></tr>
 <tr><td><code>SSL_CIPHER_EXPORT</code></td>             <td>string</td>    <td><code>true</code> si el cifrado es un cifrado export</td></tr>
@@ -87,7 +88,7 @@ para más detalles sobre las variables de compatibilidad.</p>
 <tr><td><code>SSL_CLIENT_V_REMAIN</code></td>           <td>string</td>    <td>Número de días hasta que el certificado cliente expira</td></tr>
 <tr><td><code>SSL_CLIENT_A_SIG</code></td>              <td>string</td>    <td>Algoritmo usado para la firma del certificado cliente</td></tr>
 <tr><td><code>SSL_CLIENT_A_KEY</code></td>              <td>string</td>    <td>Algoritmo usado para la clave pública del certificado cliente.</td></tr>
-<tr><td><code>SSL_CLIENT_CERT</code></td>               <td>string</td>    <td>Certificado cliente condificado en PEM</td></tr>
+<tr><td><code>SSL_CLIENT_CERT</code></td>               <td>string</td>    <td>Certificado cliente codificado en PEM</td></tr>
 <tr><td><code>SSL_CLIENT_CERT_CHAIN_</code><em>n</em></td> <td>string</td>    <td>Certificados codificados en PEM en la cadena de certificados cliente</td></tr>
 <tr><td><code>SSL_CLIENT_CERT_RFC4523_CEA</code></td>   <td>string</td>    <td>Número de serie y distribuidor del certificado. El formato coincide con el CertificateExactAssertion en RFC4523</td></tr>
 <tr><td><code>SSL_CLIENT_VERIFY</code></td>             <td>string</td>    <td><code>NONE</code>, <code>SUCCESS</code>, <code>GENEROUS</code> or <code>FAILED:</code><em>reason</em></td></tr>
@@ -116,7 +117,7 @@ posterior, <em>x509</em> también puede incluir un sufijo <code>_n</code>
 numérico. Si el DN en cuestión contiene múltiples atributos del mismo
 nombre, este sufijo se usa para un índice basado en ceros para seleccionar
 un atributo en particular.  Por ejemplo, donde el sujeto del DN del 
-certificado del servidor incluia dos atributos OU,
+certificado del servidor incluirá dos atributos OU,
  <code>SSL_SERVER_S_DN_OU_0</code> y
 <code>SSL_SERVER_S_DN_OU_1</code> podría usarse para referenciar cada una. 
 Una variable sin un sufijo <code>_n</code> es equivalente a ese nombre con un
@@ -296,7 +297,7 @@ Cuando Apache arranca tiene que leer varios ficheros Certificado (vea
 (vea 
 <directive module="mod_ssl">SSLCertificateKeyFile</directive>) de los servidores
 virtuales que tienen SSL activado. Por razones de seguridad los ficheros
-de clave privada están generalmente encriptados, mod_ssl necesita preguntar al
+de clave privada están generalmente cifrados, mod_ssl necesita preguntar al
 administrador por la contraseña para desencriptar esos ficheros. Esta solicitud
 puede hacerse de dos maneras que se pueden configurar por
 <em>tipo</em>:</p>
@@ -306,7 +307,7 @@ puede hacerse de dos maneras que se pueden configurar por
     Este es el método por defecto donde una ventana de terminal interactiva
     aparece al inicio antes que Apache pase a segundo plano. Aquí un
     administrador tiene que introducir manualmente la contraseña para cada
-    fichero de Clave Privada Encriptada. Puesto que puede haber muchos 
+    fichero de Clave Privada cifrado. Puesto que puede haber muchos 
     hosts virtuales configurados con SSL, se usa el siguiente esquema de 
     reutilización para minimizar el número de veces que se pide la contraseña:
     Cuanto un fichero de clave privada está encriptado, se intentará usar
@@ -317,7 +318,7 @@ puede hacerse de dos maneras que se pueden configurar por
     siguientes (donde quizás se pueden reutilizar).</p>
     <p>
     Este esquema permite a mod_ssl ser flexible al máximo (porque para N 
-    ficheros de Clave Privada Encriptados <em>usted puede</em> usar N 
+    ficheros de Clave Privada cifrados <em>usted puede</em> usar N 
     contraseñas diferentes - pero entonces tiene que introducir todas ellas, por
     supuesto) al mismo tiempo que se minimizan las solicitudes de contraseña
     por terminal (p.ej. cuando usa una sola contraseña para todos los N ficheros
@@ -476,7 +477,7 @@ SSLRandomSeed connect "file:/dev/urandom" 1024
 <p>
 Esto configura el tipo de almacenamiento para la Cache global/interproceso de 
 la sesión SSL. Esta cache es una característica opcional que acelera el 
-processamiento de peticiones en paralelo. Para peticiones con el mismo
+procesamiento de peticiones en paralelo. Para peticiones con el mismo
 proceso de servidor (a través de keep-alive HTTP), OpenSSL ya cachea la 
 información de sesión de SSL localmente. Pero puesto que los clientes modernos
 solicitan imágenes y otros datos a través de peticiones en paralelo 
@@ -519,10 +520,10 @@ Los cinto <em>tipos</em> de almacenamientos siguientes están soportados:</p>
 
 <li><code>dc:UNIX:/ruta/al/socket</code>
 
-    <p>Esto hace uso de las librerias de cacheo <a
-    href="http://distcache.sourceforge.net/">distcache</a>. El parámetro debería
-    especificar la ubicación del servidor o proxy para ser usado con distcache 
-    usando sintaxis de dirección; por ejemplo, 
+    <p>Esto hace uso de las librerías de almacenamiento en caché de sesión 
+      distribuida.<a href="http://distcache.sourceforge.net/">distcache</a>.
+      El parámetro debería especificar la ubicación del servidor o proxy para 
+      ser usado con distcache usando sintaxis de dirección; por ejemplo, 
     <code>UNIX:/ruta/al/socket</code> especifica un socket de dominio UNIX
     (típicamente un proxy dc_client local);
     <code>IP:server.example.com:9001</code> especifica una dirección IP. Para
@@ -639,7 +640,7 @@ Si httpd fuera compilado contra una librería SSL que no soporta FIPS_mode,
 FIPS 140-2 de su proveedor de librería SSL para requerimientos específicos para
 usar mod_ssl en un modo de operación aprobado; tenga en cuenta que mod_ssl
 en sí mismo no está validado, pero puede ser descrito como un módulo 
-validado de criptofrafía FIPS 140-2, cuando todos los componentes son montados
+validado de criptografía FIPS 140-2, cuando todos los componentes son montados
 y gestionados bajo las reglas impuestas por la Política de Seguridad aplicable.
 </p>
 </usage>
@@ -662,8 +663,8 @@ Los <em>protocolos</em> disponibles (no sensibles a mayúsculas) son:</p>
 <ul>
 <li><code>SSLv3</code>
     <p>
-    Este es el protocolo de Secure Sockets Layer (SSL), version 3.0, de la 
-    Corporación Netscape. Es el sucesor a SSLv2 y el predecesor de TLSv1, pero
+    Este es el protocolo de Secure Sockets Layer (SSL), versión 3.0, de la 
+    empresa Netscape. Es el sucesor a SSLv2 y el predecesor de TLSv1, pero
     se ha marcado ya como obsoleto en 
     <a href="http://www.ietf.org/rfc/rfc7568.txt">RFC 7568</a>.</p></li>
 
@@ -743,9 +744,9 @@ atributos principales más unos cuantos menores extra:</p>
 
 <p>Un cifrado SSL puede ser un cifrado export. Los cifrados SSLv2 ya no están
 soportados. Para especificar qué cifrados usar, uno puede especificar todos
-los cifrados a utilizar, de uno en uno, o puede usar pseudónimos para
+los cifrados a utilizar, de uno en uno, o puede usar alias para
 especificar la preferencia y orden de los cifrados (vea <a href="#table1">Tabla
-1</a>). La lista actual de cifrados y pseudónimos depende de la versión openssl
+1</a>). La lista actual de cifrados y alias depende de la versión openssl
 utilizada. Versiones más modernas de openssl pueden incluir cifrados 
 adicionales.</p>
 
@@ -3047,7 +3048,7 @@ pueden redefinir:</p>
 </example>
 
 <p>Las definiciones de Política se <em>añaden</em> en el orden que aparecen, 
-pero se <em>aplican</em> cuando se ha leido toda la configuración. Esto 
+pero se <em>aplican</em> cuando se ha leído toda la configuración. Esto 
 significa que cualquier uso de 'proxy-trust' significará 'SSLProxyVerify none'. 
 La primera definición no tiene ningún efecto. Esto permite que las políticas
 pre-instaladas sean sustituidas sin la necesidad de desactivarlas.</p>
@@ -3072,7 +3073,7 @@ una política:</p>
 una directiva encima de él. Todas las demás todavía aplican. Esto es muy útil
 cuando las políticas pre-definidas (por Apache mismo o un distribuidor) son
  <em>casi</em> como lo que necesitas. Previamente, tales definiciones fueron
-(copiadas y) editadas. Esto hacía que actualizarlas fuera dificil. Ahora pueden
+(copiadas y) editadas. Esto hacía que actualizarlas fuera difícil. Ahora pueden
 configurarse así:</p>
 
 <example><title>Ajusta una Política Pre-Definida</title>
@@ -3095,7 +3096,7 @@ Include ssl-policies.conf
 <syntax>SSLPolicy <em>nombre</em></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Disponible en httpd 2.4.30 y posterior</compatibility>
+<compatibility>Disponible en httpd 2.5.0 y posterior</compatibility>
 
 <usage>
 <p>Esta directiva aplica el conjunto de directivas SSL definidas bajo
@@ -3116,7 +3117,7 @@ vea aquí para una descripción detallada de ellas.</a>):
     Explorer 7. El último recurso.</li>
 </ul>
 
-<p>Puede comprobar una descripciónm detallada de todas las políticas definidas
+<p>Puede comprobar una descripción detallada de todas las políticas definidas
 a través de la línea de comandos:</p>
 <example><title>Listar Todas las Políticas Definidas</title>
 <highlight language="sh">
@@ -3125,7 +3126,7 @@ httpd -t -D DUMP_SSL_POLICIES
 </example>
 
 <p>Una SSLPolicy define la línea base para el contexto en la que se utiliza. Eso
-significa que cualquier otra diretiva SSL en el mismo contexto la sobreescribirá.
+significa que cualquier otra directiva SSL en el mismo contexto la sobrescribirá.
 Como ejemplo de esto, vea el valor efectivo de 
 <directive>SSLProtocol</directive> en la siguiente configuración:</p>
 
@@ -3154,7 +3155,7 @@ SSLProtocol all
 </example>
 
 <p>Puede haber más de una política aplicada en un contexto. La últimas 
-sobreescribiendo las previas: :</p>
+sobrescribiendo las previas: :</p>
 
 <example><title>Ordenando Políticas</title>
 <highlight language="config">
@@ -3194,7 +3195,7 @@ SSLProxyPolicy intermediate
 </example>
 
 <p>En este ejemplo, la política 'modern' se aplica a los clientes y backends.
-Entonces a las partes de los backend se sobreescriben con las configuraciones
+Entonces a las partes de los backend se sobrescriben con las configuraciones
 de políticas de 'intermediate'.</p>
 </usage>
 </directivesynopsis>
