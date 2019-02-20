@@ -383,7 +383,6 @@ static int stream_reqbody(proxy_http_req_t *req, rb_methods rb_method)
                               "(got %" APR_OFF_T_FMT ", expected "
                               "%" APR_OFF_T_FMT ")",
                               bytes_streamed, req->cl_val);
-                /* XXX: probably more a HTTP_BAD_REQUEST (like below) */
                 return HTTP_INTERNAL_SERVER_ERROR;
             }
 
