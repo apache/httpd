@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) http: Fix possible empty response with mod_ratelimit for HEAD requests.
+     PR 63192. [Yann Ylavic]
+
   *) mod_cache_socache: Avoid reallocations and be safe with outgoing data
      lifetime. [Yann Ylavic]
 
