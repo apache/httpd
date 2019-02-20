@@ -365,7 +365,6 @@ static apr_status_t reqtimeout_eor(ap_filter_t *f, apr_bucket_brigade *bb)
         ccfg->cur_stage.max_timeout = MRT_DEFAULT_##stage##_MAX_TIMEOUT; \
         ccfg->cur_stage.rate_factor = default_##stage##_rate_factor; \
     } \
-    ccfg->type = #stage; \
 } while (0)
 
 static int reqtimeout_init(conn_rec *c)
@@ -392,6 +391,7 @@ static int reqtimeout_init(conn_rec *c)
         ap_add_output_filter(reqtimeout_filter_name, ccfg, NULL, c);
         ap_add_input_filter(reqtimeout_filter_name, ccfg, NULL, c);
 
+        ccfg->type = "handshake";
         if (cfg->handshake.timeout > 0) {
             INIT_STAGE(cfg, ccfg, handshake);
         }
@@ -419,6 +419,7 @@ static void reqtimeout_before_header(request_rec *r, conn_rec *c)
     /* (Re)set the state for this new request, but ccfg->socket and
      * ccfg->tmpbb which have the lifetime of the connection.
      */
+    ccfg->type = "header";
     ccfg->timeout_at = 0;
     ccfg->max_timeout_at = 0;
     ccfg->in_keep_alive = (c->keepalives > 0);
@@ -439,9 +440,9 @@ static int reqtimeout_before_body(request_rec *r)
                                &reqtimeout_module);
     AP_DEBUG_ASSERT(cfg != NULL);
 
+    ccfg->type = "body";
     ccfg->timeout_at = 0;
     ccfg->max_timeout_at = 0;
-    ccfg->type = "body";
     if (r->method_number == M_CONNECT) {
         /* disabled for a CONNECT request */
         ccfg->cur_stage.timeout = 0;
