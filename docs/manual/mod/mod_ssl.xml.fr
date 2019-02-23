@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1852478 -->
+<!-- English Revision: 1854000 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -3278,7 +3278,7 @@ SSLOpenSSLConfCmd SignatureAlgorithms RSA+SHA384:ECDSA+SHA256
 <syntax>SSLPolicy <em>name</em></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Disponible à partir de la version 2.4.30 du serveur HTTP Apache</compatibility>
+<compatibility>Disponible à partir de la version 2.5.0 du serveur HTTP Apache</compatibility>
 
 <usage>
 <p>Cette directive permet d'appliquer le jeu de directives définies au sein

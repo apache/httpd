@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1852478 -->
+<!-- English Revision: 1853637 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -439,7 +439,7 @@ Apache</compatibility>
 <name>DeflateInflateRatioLimit</name>
 <description>Ratio de décompression maximum pour les corps de requêtes</description>
 <syntax>DeflateInflateRatioLimit <var>value</var></syntax>
-<default>200</default>
+<default>DeflateInflateRatioLimit 200</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>All</override>
@@ -447,13 +447,12 @@ Apache</compatibility>
 Apache</compatibility>
 
 <usage>
-    <p>La directive <directive>DeflateInflateRatioLimit</directive>
-    permet de définir le ratio maximum entre la taille d'un corps de
-    requête compressé et sa taille décompressée. Ce ratio est vérifié au
-    fur et à mesure de
-    l'arrivée du corps de requête, et s'il est dépassé plus de
-    <directive>DeflateInflateRatioBurst</directive> fois, le traitement
-    de la requête est interrompu.</p>
+    <p>La directive <directive>DeflateInflateRatioLimit</directive> permet de
+    définir le ratio maximum entre la taille d'un corps de requête compressé et
+    sa taille décompressée. Ce ratio est vérifié au fur et à mesure de l'arrivée
+    du corps de requête, et s'il est dépassé plus de <directive
+    module="mod_deflate">DeflateInflateRatioBurst</directive> fois, le
+    traitement de la requête est interrompu.</p>
 </usage>
 </directivesynopsis>
 
@@ -462,7 +461,7 @@ Apache</compatibility>
 <description>Nombre maximal de fois que le ratio de décompression d'un
 corps de requête peut être dépassé</description>
 <syntax>DeflateInflateRatioBurst <var>value</var></syntax>
-<default>3</default>
+<default>DeflateInflateRatioBurst 3</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>All</override>
@@ -470,10 +469,10 @@ corps de requête peut être dépassé</description>
 Apache</compatibility>
 
 <usage>
-    <p>La directive <directive>DeflateInflateRatioBurst</directive>
-    permet de spécifier le nombre maximal de fois que la valeur de la
-    directive <directive>DeflateInflateRatioLimit</directive> peut être
-    dépassé avant l'arrêt du traitement de la requête.</p>
+    <p>La directive <directive>DeflateInflateRatioBurst</directive> permet de
+    spécifier le nombre maximal de fois que la valeur de la directive <directive
+    module="mod_deflate">DeflateInflateRatioLimit</directive> peut être dépassé
+    avant l'arrêt du traitement de la requête.</p>
 </usage>
 </directivesynopsis>
 

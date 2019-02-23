@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1838958 -->
+<!-- English Revision: 1853618 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -370,8 +370,8 @@ plateformes de type BSD.</compatibility>
 <name>ListenBackLog</name>
 <description>Longueur maximale de la liste d'attente des
 connexions</description>
-<syntax>ListenBacklog <var>backlog</var></syntax>
-<default>ListenBacklog 511</default>
+<syntax>ListenBackLog <var>backlog</var></syntax>
+<default>ListenBackLog 511</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>event</module><module>worker</module>
 <module>prefork</module><module>mpm_winnt</module>
@@ -914,11 +914,11 @@ enfant</description>
 
     <p>La valeur de la directive <directive>ThreadsPerChild</directive> ne peut
     pas dépasser la valeur de la directive <directive
-    module="mpm_common">ThreadsLimit</directive>. Si on spécifie une valeur
+    module="mpm_common">ThreadLimit</directive>. Si on spécifie une valeur
     supérieure, elle sera automatiquement réduite au démarrage du serveur et un
     avertissement sera enregistré dans le journal. La relation entre ces deux
     directives est expliquée dans la <directive
-    module="mpm_common">documentation de la directive ThreadsLimit</directive>.</p>
+    module="mpm_common">documentation de la directive ThreadLimit</directive>.</p>
 </usage>
 </directivesynopsis>
 
