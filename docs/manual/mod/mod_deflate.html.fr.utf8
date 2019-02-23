@@ -414,7 +414,7 @@ Apache</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre maximal de fois que le ratio de décompression d'un
 corps de requête peut être dépassé</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DeflateInflateRatioBurst <var>value</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>3</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>DeflateInflateRatioBurst 3</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -422,10 +422,9 @@ corps de requête peut être dépassé</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.10 du serveur HTTP
 Apache</td></tr>
 </table>
-    <p>La directive <code class="directive">DeflateInflateRatioBurst</code>
-    permet de spécifier le nombre maximal de fois que la valeur de la
-    directive <code class="directive">DeflateInflateRatioLimit</code> peut être
-    dépassé avant l'arrêt du traitement de la requête.</p>
+    <p>La directive <code class="directive">DeflateInflateRatioBurst</code> permet de
+    spécifier le nombre maximal de fois que la valeur de la directive <code class="directive"><a href="#deflateinflateratiolimit">DeflateInflateRatioLimit</a></code> peut être dépassé
+    avant l'arrêt du traitement de la requête.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -433,7 +432,7 @@ Apache</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ratio de décompression maximum pour les corps de requêtes</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DeflateInflateRatioLimit <var>value</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>200</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>DeflateInflateRatioLimit 200</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -441,13 +440,11 @@ Apache</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.10 du serveur HTTP
 Apache</td></tr>
 </table>
-    <p>La directive <code class="directive">DeflateInflateRatioLimit</code>
-    permet de définir le ratio maximum entre la taille d'un corps de
-    requête compressé et sa taille décompressée. Ce ratio est vérifié au
-    fur et à mesure de
-    l'arrivée du corps de requête, et s'il est dépassé plus de
-    <code class="directive">DeflateInflateRatioBurst</code> fois, le traitement
-    de la requête est interrompu.</p>
+    <p>La directive <code class="directive">DeflateInflateRatioLimit</code> permet de
+    définir le ratio maximum entre la taille d'un corps de requête compressé et
+    sa taille décompressée. Ce ratio est vérifié au fur et à mesure de l'arrivée
+    du corps de requête, et s'il est dépassé plus de <code class="directive"><a href="#deflateinflateratioburst">DeflateInflateRatioBurst</a></code> fois, le
+    traitement de la requête est interrompu.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

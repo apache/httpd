@@ -864,7 +864,7 @@ permissions sur la racine du serveur <code class="directive">ServerRoot</code></
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Répertoire racine des fichiers d'état persistants</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DefaultStateDir <var>directory-path</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>DefaultRuntimeDir DEFAULT_REL_STATEDIR (state/)</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>DefaultStateDir DEFAULT_REL_STATEDIR (state/)</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Noyau httpd</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
@@ -874,7 +874,7 @@ permissions sur la racine du serveur <code class="directive">ServerRoot</code></
     répertoire dans lequel le serveur va créer divers fichiers d'état
     persistants (bases de données, caches de longue durée, etc...). Si elle est
     définie avec un chemin relatif, ce dernier sera accolé à la valeur de la
-    directive <code class="directive">ServerRoot</code>.</p>
+    directive <code class="directive"><a href="#serverroot">ServerRoot</a></code>.</p>
 
     <p><strong>Exemple</strong></p>
    <pre class="prettyprint lang-config">DefaultStateDir state/</pre>
@@ -884,17 +884,18 @@ permissions sur la racine du serveur <code class="directive">ServerRoot</code></
     modifiée en changeant la valeur de <code>DEFAULT_REL_STATEDIR</code>
     #définie à la compilation.</p>
 
-   <p>Note: si la valeur de <code class="directive">ServerRoot</code> n'a pas
-   été spécifiée avant d'utiliser cette directive, c'est la valeur par
-   défaut de <code class="directive">ServerRoot</code> qui sera utilisée pour
-   définir la base du répertoire.</p>
+   <p>Note: si la valeur de <code class="directive"><a href="#serverroot">ServerRoot</a></code> n'a
+   pas été spécifiée avant d'utiliser cette directive, c'est la valeur par
+   défaut de <code class="directive"><a href="#serverroot">ServerRoot</a></code> qui sera utilisée
+   pour définir la base du répertoire.</p>
 
 
 <h3>Voir aussi</h3>
 <ul>
-<li>Voir les <a href="../misc/security_tips.html#serverroot">conseils à propos de
-sésurité</a> pour plus d'informations en vue de définir correctement les
-permissions sur la racine du serveur <code class="directive">ServerRoot</code></li>
+<li>Voir les <a href="../misc/security_tips.html#serverroot">conseils à
+propos de sésurité</a> pour plus d'informations en vue de définir correctement
+les permissions sur la racine <code class="directive"><a href="#serverroot">ServerRoot</a></code> du
+serveur</li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
