@@ -290,8 +290,8 @@ use</code>, citant d'autres causes possibles.</a></li>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Longueur maximale de la liste d'attente des
 connexions</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ListenBacklog <var>backlog</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ListenBacklog 511</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ListenBackLog <var>backlog</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ListenBackLog 511</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code></td></tr>
@@ -893,10 +893,10 @@ enfant</td></tr>
     MPMs.</p>
 
     <p>La valeur de la directive <code class="directive">ThreadsPerChild</code> ne peut
-    pas dépasser la valeur de la directive <code class="directive"><a href="#threadslimit">ThreadsLimit</a></code>. Si on spécifie une valeur
+    pas dépasser la valeur de la directive <code class="directive"><a href="#threadlimit">ThreadLimit</a></code>. Si on spécifie une valeur
     supérieure, elle sera automatiquement réduite au démarrage du serveur et un
     avertissement sera enregistré dans le journal. La relation entre ces deux
-    directives est expliquée dans la <code class="directive"><a href="#documentation de la directive threadslimit">documentation de la directive ThreadsLimit</a></code>.</p>
+    directives est expliquée dans la <code class="directive"><a href="#documentation de la directive threadlimit">documentation de la directive ThreadLimit</a></code>.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

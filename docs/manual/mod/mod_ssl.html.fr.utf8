@@ -1721,7 +1721,7 @@ cette demande peut être formulée parmi les trois suivantes :</p>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.30 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.0 du serveur HTTP Apache</td></tr>
 </table>
 <p>Cette directive permet d'appliquer le jeu de directives définies au sein
 de la polique SSL de nom 'name' comme configuration <em>de base</em> dans

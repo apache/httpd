@@ -257,7 +257,7 @@ pour effectuer les comparaisons pour l'attribution des autorisations</td></tr>
 <tr class="odd"><td><a href="mod_authnz_ldap.html#authldapcomparednonserver">AuthLDAPCompareDNOnServer on|off</a></td><td> on </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Utilise le serveur LDAP pour comparer les DNs</td></tr>
 <tr><td><a href="mod_authnz_ldap.html#authldapdereferencealiases">AuthLDAPDereferenceAliases never|searching|finding|always</a></td><td> always </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">À quel moment le module va déréférencer les
 alias</td></tr>
-<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapgroupattribute">AuthLDAPGroupAttribute <em>attribut</em></a></td><td> member uniquemember +</td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">L'attribut LDAP utilisé pour vérifier l'appartenance d'un
+<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapgroupattribute">AuthLDAPGroupAttribute <em>attribut</em></a></td><td> member uniqueMember +</td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">L'attribut LDAP utilisé pour vérifier l'appartenance d'un
 utilisateur à un groupe.</td></tr>
 <tr><td><a href="mod_authnz_ldap.html#authldapgroupattributeisdn">AuthLDAPGroupAttributeIsDN on|off</a></td><td> on </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Utilise le DN de l'utilisateur pour vérifier son
 appartenance à un groupe</td></tr>
@@ -285,8 +285,7 @@ groupes.</td></tr>
 <tr><td><a href="mod_authnz_ldap.html#authldapsubgroupclass">AuthLDAPSubGroupClass <em>ObjectClass-LDAP</em></a></td><td> groupOfNames groupO +</td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Spécifie quelles valeurs d'objectClass LDAP identifient les
 objets de l'annuaire qui sont des groupes au cours du traitement des
 sous-groupes.</td></tr>
-<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapurl">AuthLDAPUrl <em>url [NONE|SSL|TLS|STARTTLS]</em></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">L'URL permettant de spécifier les paramètres de la
-recherche LDAP</td></tr>
+<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapurl">AuthLDAPURL <em>url</em> [NONE|SSL|TLS|STARTTLS]</a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">URL specifying the LDAP search parameters</td></tr>
 <tr><td><a href="mod_authz_core.html#authmerging">AuthMerging Off | And | Or</a></td><td> Off </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Définit la manière dont chaque logique d'autorisation des
 sections de configuration se combine avec celles des sections de
 configuration précédentes.</td></tr>
@@ -511,7 +510,7 @@ d'en-tête Content-Language pour toutes les ressources dans le contexte
 courant auxquelles aucun symbole de langage n'a été
 associé.</td></tr>
 <tr><td><a href="core.html#defaultruntimedir">DefaultRuntimeDir <var>chemin-répertoire</var></a></td><td> DEFAULT_REL_RUNTIME +</td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Répertoire de base des fichiers créés au cours de l'exécution du serveur</td></tr>
-<tr class="odd"><td><a href="core.html#defaultstatedir">DefaultStateDir <var>directory-path</var></a></td><td></td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Répertoire racine des fichiers d'état persistants</td></tr>
+<tr class="odd"><td><a href="core.html#defaultstatedir">DefaultStateDir <var>directory-path</var></a></td><td> DEFAULT_REL_STATEDI +</td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Répertoire racine des fichiers d'état persistants</td></tr>
 <tr><td><a href="core.html#defaulttype">DefaultType <var>type média|none</var></a></td><td> none </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Les seuls effets de cette directive sont des émissions
 d'avertissements si sa valeur est différente de <code>none</code>. Dans
 les versions précédentes, DefaultType permettait de spécifier un type de
@@ -528,9 +527,9 @@ sortie</td></tr>
 <tr class="odd"><td><a href="mod_deflate.html#deflatefilternote">DeflateFilterNote [<var>type</var>] <var>nom de la note</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enregistre le taux de compression sous la forme d'une note
 à des fins de journalisation</td></tr>
 <tr><td><a href="mod_deflate.html#deflateinflatelimitrequestbody">DeflateInflateLimitRequestBody <var>value</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Taille maximale des corps de requête décompressés</td></tr>
-<tr class="odd"><td><a href="mod_deflate.html#deflateinflateratioburst">DeflateInflateRatioBurst <var>value</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Nombre maximal de fois que le ratio de décompression d'un
+<tr class="odd"><td><a href="mod_deflate.html#deflateinflateratioburst">DeflateInflateRatioBurst <var>value</var></a></td><td> 3 </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Nombre maximal de fois que le ratio de décompression d'un
 corps de requête peut être dépassé</td></tr>
-<tr><td><a href="mod_deflate.html#deflateinflateratiolimit">DeflateInflateRatioLimit <var>value</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Ratio de décompression maximum pour les corps de requêtes</td></tr>
+<tr><td><a href="mod_deflate.html#deflateinflateratiolimit">DeflateInflateRatioLimit <var>value</var></a></td><td> 200 </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Ratio de décompression maximum pour les corps de requêtes</td></tr>
 <tr class="odd"><td><a href="mod_deflate.html#deflatememlevel">DeflateMemLevel <var>valeur</var></a></td><td> 9 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">La quantité de mémoire utilisable par zlib pour la
 compression</td></tr>
 <tr><td><a href="mod_deflate.html#deflatewindowsize">DeflateWindowSize <var>valeur</var></a></td><td> 15 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Taille de la fenêtre de compression zlib</td></tr>
@@ -819,7 +818,7 @@ HTTP</td></tr>
 XML</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#listen">Listen [<var>adresse IP</var>:]<var>numéro port</var>
 [<var>protocole</var>]</a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Les adresses IP et ports sur lesquels le serveur écoute</td></tr>
-<tr><td><a href="mpm_common.html#listenbacklog">ListenBacklog <var>backlog</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Longueur maximale de la liste d'attente des
+<tr><td><a href="mpm_common.html#listenbacklog">ListenBackLog <var>backlog</var></a></td><td> 511 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Longueur maximale de la liste d'attente des
 connexions</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#listencoresbucketsratio">ListenCoresBucketsRatio <var>ratio</var></a></td><td> 0 (disabled) </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Rapport entre le nombre de coeurs de processeur activés et
 le nombre de segments d'écoute</td></tr>
@@ -1201,10 +1200,11 @@ d'extensions de noms de fichiers</td></tr>
 [early|env=[!]<var>variable</var>|expr=<var>expression</var>]]
 </a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configure les en-têtes d'une requête HTTP</td></tr>
 <tr><td><a href="mod_reqtimeout.html#requestreadtimeout">RequestReadTimeout
+[handshake=<var>timeout</var>[-<var>maxtimeout</var>][,MinRate=<var>rate</var>]
 [header=<var>délai</var>[-<var>délai-maxi</var>][,MinRate=<var>taux-mini</var>]
 [body=<var>délai</var>[-<var>délai-maxi</var>][,MinRate=<var>taux-mini</var>]
-</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit des délais maximums pour la réception des en-têtes
-et corps des requêtes en provenance du client.
+</a></td><td> handshake=0 header= +</td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit des délais maximums pour la négociation TLS, la réception des en-têtes
+et/ou corps des requêtes en provenance du client.
 </td></tr>
 <tr class="odd"><td><a href="mod_authz_core.html#require">Require [not] <var>nom-entité</var> [<var>nom-entité</var>]
 ...</a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Vérifie si un utilisateur authentifié a une
