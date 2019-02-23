@@ -36,6 +36,19 @@ données pour la réception des requêtes
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>reqtimeout_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_reqtimeout.c</td></tr>
 <tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.2.15 du serveur HTTP Apache</td></tr></table>
+<h3>Sommaire</h3>
+
+    <p>Ce module permet de définir aisément le délai maximum et le taux de
+    transfert des données minimum pour la réception des requêtes. Si ce délai
+    est dépassé ou ce taux trop faible, la connexion concernée sera fermée par
+    le serveur.</p>
+
+    <p>Cet évènement sera alors enregistré dans le journal au niveau de <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code> <code>info</code>.</p>
+    
+    <p>Au besoin, la directive <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code>
+    peut être modifiée pour un enregistrement dans le journal plus explicite :</p>
+    <pre class="prettyprint lang-config">LogLevel reqtimeout:info</pre>
+
 </div>
 <div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><h3>Sujets</h3>
 <ul id="topics">
@@ -103,7 +116,7 @@ et corps des requêtes en provenance du client.
 [header=<var>délai</var>[-<var>délai-maxi</var>][,MinRate=<var>taux-mini</var>]
 [body=<var>délai</var>[-<var>délai-maxi</var>][,MinRate=<var>taux-mini</var>]
 </code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>header=20-40,MinRate=500 body=20,MinRate=500</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>RequestReadTimeout header=20-40,MinRate=500 body=20,MinRate=500</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_reqtimeout</td></tr>

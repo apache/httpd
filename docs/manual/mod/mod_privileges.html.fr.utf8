@@ -266,7 +266,7 @@ personnalisé).</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Assigne des privilèges au choix aux sous-processus créés
 par un serveur virtuel.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>VHostPrivs [+-]?<var>nom-privilège</var> [[+-]?nom-privilège] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>VHostCGIPrivs [+-]?<var>privilege-name</var> [[+-]?privilege-name] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Aucun</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
@@ -281,10 +281,10 @@ avec l'option de compilation
     d'assigner des <a href="http://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp">privilèges</a> au choix aux sous-processus créés par un serveur
     virtuel, comme décrit dans la directive
     <code class="directive">VHostCGIMode</code>. Chaque
-    <var>nom-privilège</var> correspond à un privilège Solaris tel que
+    <var>privilege-name</var> correspond à un privilège Solaris tel que
     <var>file_setid</var> ou <var>sys_nfs</var>.</p>
 
-    <p><var>nom-privilège</var> peut être éventuellement préfixé par +
+    <p><var>privilege-name</var> peut être éventuellement préfixé par +
     ou -, ce qui va respectivement accorder ou refuser le privilège. Si
     <var>nom-privilège</var> est spécifié sans + ni -, tous les autres
     privilèges préalablement assignés au serveur virtuel seront refusés.

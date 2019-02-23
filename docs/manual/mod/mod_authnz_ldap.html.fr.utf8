@@ -100,7 +100,7 @@ Directory</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapsearchasuser">AuthLDAPSearchAsUser</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapsubgroupattribute">AuthLDAPSubGroupAttribute</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapsubgroupclass">AuthLDAPSubGroupClass</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#authldapurl">AuthLDAPUrl</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authldapurl">AuthLDAPURL</a></li>
 </ul>
 <h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_authnz_ldap">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_authnz_ldap">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
@@ -717,12 +717,11 @@ Require valid-user</pre>
 connexion</a></h2>
 
     <p>Au cours du processus d'<em>authentification</em>, les attributs LDAP
-    spécifiés par la directive <code class="directive"><a href="#authldapurl">authldapurl</a></code> sont enregistrés
-    dans des variables d'environnement préfixées par la chaîne
-    "AUTHENTICATE_".</p>
+    spécifiés par la directive <code class="directive"><a href="#authldapurl">AuthLDAPURL</a></code> sont enregistrés dans des
+    variables d'environnement préfixées par la chaîne "AUTHENTICATE_".</p>
 
     <p>Au cours du processus d'<em>autorisation</em>, les attributs LDAP
-    spécifiés par la directive <code class="directive"><a href="#authldapurl">authldapurl</a></code> sont enregistrés
+    spécifiés par la directive <code class="directive"><a href="#authldapurl">AuthLDAPURL</a></code> sont enregistrés
     dans des variables d'environnement préfixées par la chaîne
     "AUTHORIZE_".</p>
 
@@ -1098,7 +1097,7 @@ alias</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'attribut LDAP utilisé pour vérifier l'appartenance d'un
 utilisateur à un groupe.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthLDAPGroupAttribute <em>attribut</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthLDAPGroupAttribute member uniquemember</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthLDAPGroupAttribute member uniqueMember</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -1109,7 +1108,7 @@ utilisateur à un groupe.</td></tr>
     groupe. On peut spécifier plusieurs attributs en répétant cette
     directive plusieurs fois. Si la directive n'est pas définie,
     <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> utilise les attributs
-    <code>member</code> et <code>uniquemember</code>.</p>
+    <code>member</code> et <code>uniqueMember</code>.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1285,15 +1284,15 @@ d'environnement REMOTE_USER</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
 </table>
     <p>Lorsque cette directive est définie, la variable d'environnement
-    <code>REMOTE_USER</code> sera définie à la valeur de l'attribut
-    spécifié. Assurez-vous que cet attribut soit bien inclus dans la
-    liste d'attributs spécifiés dans la définition de AuthLDAPUrl ; dans
-    le cas contraire, cette directive n'aurait aucun effet. Si elle est
-    présente, cette directive l'emporte sur <code class="directive"><a href="#authldapremoteuserisdn">AuthLDAPRemoteUserIsDN</a></code>. Elle
-    peut s'avérer utile par exemple, si vous souhaitez que les
-    utilisateurs se connectent à un site web en utilisant leur adresse
-    email, alors qu'une application sous-jacente nécessite un nom
-    d'utilisateur comme identifiant.</p>
+    <code>REMOTE_USER</code> sera définie à la valeur de l'attribut spécifié.
+    Assurez-vous que cet attribut soit bien inclus dans la liste d'attributs
+    spécifiés dans la définition de <code class="directive"><a href="#authldapurl">AuthLDAPURL</a></code> ; dans le cas contraire,
+    cette directive n'aurait aucun effet. Si elle est présente, cette directive
+    l'emporte sur <code class="directive"><a href="#authldapremoteuserisdn">AuthLDAPRemoteUserIsDN</a></code>. Elle peut
+    s'avérer utile par exemple, si vous souhaitez que les utilisateurs se
+    connectent à un site web en utilisant leur adresse email, alors qu'une
+    application sous-jacente nécessite un nom d'utilisateur comme
+    identifiant.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1362,7 +1361,7 @@ pour la recherche des autorisations</td></tr>
 pour différencier les membres du groupe courant qui sont eux-mêmes des
 groupes.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthLDAPSubGroupAttribute <em>attribut</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthLDAPSubgroupAttribute member uniquemember</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthLDAPSubgroupAttribute member uniqueMember</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -1415,148 +1414,17 @@ Apache</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authldapurl" id="authldapurl">Directive</a> <a name="AuthLDAPUrl" id="AuthLDAPUrl">AuthLDAPUrl</a></h2>
+<div class="directive-section"><h2><a name="authldapurl" id="authldapurl">Directive</a> <a name="AuthLDAPURL" id="AuthLDAPURL">AuthLDAPURL</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'URL permettant de spécifier les paramètres de la
-recherche LDAP</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthLDAPUrl <em>url [NONE|SSL|TLS|STARTTLS]</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>URL specifying the LDAP search parameters</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthLDAPURL <em>url</em> [NONE|SSL|TLS|STARTTLS]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
-</table>
-    <p>Une URL conforme à la RFC 2255 qui permet de spécifier les
-    paramètres à utiliser pour la recherche dans l'annuaire LDAP. La
-    syntaxe de l'URL est :</p>
-<div class="example"><p><code>ldap://hôte:port/DN-de-base?attribut?portée?filtre</code></p></div>
-    <p>Si vous souhaitez mettre à la disposition d'Apache plusieurs URLs
-    LDAP, la syntaxe sera :</p>
-<pre class="prettyprint lang-config">AuthLDAPUrl "ldap://ldap1.example.com ldap2.example.com/dc=..."</pre>
-
-<p><em><strong>Mise en garde : </strong>Si vous spécifiez plusieurs
-serveurs, vous devez en entourer la liste avec des guillemets ; dans le
-cas contraire, vous générerez une erreur : "AuthLDAPURL takes one
-argument, URL to define LDAP connection..".</em> Vous pouvez bien
-entendu ajouter des paramètres de recherche à chacun des serveurs
-spécifiés.</p>
-
-<dl>
-<dt>ldap</dt>
-
-        <dd>Pour ldap non sécurisé, utilisez la chaîne
-	<code>ldap</code>. Pour ldap sécurisé, utilisez à la place la
-	chaîne <code>ldaps</code>. LDAP sécurisé n'est disponible que si
-	Apache a été lié avec une bibliothèque LDAP supportant SSL.</dd>
-
-<dt>hôte:port</dt>
-
-        <dd>
-          <p>Il s'agit du nom/port du serveur ldap
-	  (dont la valeur par défaut est
-	  <code>localhost:389</code> pour <code>ldap</code>, et
-	  <code>localhost:636</code> pour <code>ldaps</code>). Pour
-	  spécifier plusieurs serveurs LDAP redondants, indiquez
-	  simplement leur liste en les séparant par des espaces.
-	  <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> tentera alors de se connecter
-	  à chacun des serveurs jusqu'à ce qu'il parvienne à se
-	  connecter avec succès. Notez qu'en cas de multiples serveurs
-	  LDAP, l'ensemble de l'URL LDAP doit être entourée de
-	  guillemets.</p>
-
-          <p>lorsqu'une connection a été établie avec un serveur, elle
-	  reste active pendant toute la durée de vie du processus
-	  <code class="program"><a href="../programs/httpd.html">httpd</a></code>, ou jusqu'à ce que le serveur LDAP
-	  cesse de fonctionner.</p>
-
-          <p>Si le serveur LDAP cesse de fonctionner, et ainsi
-	  interrompt une
-	  connexion existante, <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> tentera
-	  de se reconnecter en commençant par le premier serveur de la
-	  liste, et ainsi de suite avec les serveurs redondants
-	  suivants. Notez que ce processus n'a rien à voir avec une
-	  véritable recherche de type round-robin.</p>
-        </dd>
-
-<dt>DN-de-base</dt>
-        <dd>Le DN de la branche de l'annuaire à partir de laquelle
-	toutes les recherches seront lancées. Il doit au moins
-	correspondre à la racine de votre annuaire, mais vous pouvez
-	aussi indiquer une branche plus spécifique.</dd>
-
-<dt>attribut</dt>
-
-        <dd>Il s'agit de l'attribut à utiliser pour la recherche.
-	Bien que la RFC
-	2255 autorise une liste d'attributs séparés par des virgules,
-	seul le premier sera retenu, sans tenir compte des autres
-	attributs fournis. Si aucun attribut n'est fourni, l'attribut
-	par défaut est <code>uid</code>. Il est judicieux de choisir un
-	attribut dont la valeur sera unique parmi toutes les entrées de
-	la branche de l'annuaire que vous aurez définie. Tous les
-	attributs spécifiés seront enregistrés dans des variables
-	d'environnement avec le préfixe AUTHENTICATE_, afin de pouvoir
-	être utilisés par d'autres modules.</dd>
-
-<dt>portée</dt>
-
-        <dd>Il s'agit de la portée de la recherche. Elle peut prendre
-	les valeurs <code>one</code> ou <code>sub</code>. Notez que la
-	RFC 2255 supporte aussi une portée de valeur <code>base</code>,
-	mais cette dernière n'est pas supportée par le module. Si la
-	portée n'est pas définie, ou si elle est définie à
-	<code>base</code>, c'est la valeur de portée par défaut
-	<code>sub</code> qui sera utilisée.</dd>
-
-<dt>filtre</dt>
-
-        <dd>Il s'agit d'un filtre de recherche LDAP valide. Si aucun
-	filtre n'est spécifié, le filtre par défaut
-	<code>(objectClass=*)</code> sera utilisé, ce qui corrspond à
-	une recherche de tous les types d'objets de l'arborescence. La
-	taille des filtres est limitée à environ 8000 caractères (valeur
-	de la macro <code>MAX_STRING_LEN</code> dans le code source
-	d'Apache), ce qui s'avère plus que suffisant pour la plupart des
-	applications. Depuis la version 2.4.10, il est possible
-	d'utiliser le paramètre <code>none</code> pour spécifier qu'aucun filtre
-	n'est activé ; ce paramètre est obligatoire avec certains
-	serveurs LDAP primitifs.</dd>
-</dl>
-
-    <p>Pour une recherche, les attribut, filtre et nom d'utilisateur
-    fournis par le client HTTP sont combinés pour créer un filtre de
-    recherche du style :
-    <code>(&amp;(<em>filtre</em>)(<em>attribut</em>
-    =<em>nom-utilisateur</em>))</code>.</p>
-
-    <p>Par exemple, considérons l'URL
-    <code>ldap://ldap.example.com/o=Example?cn?sub?(posixid=*)</code>.
-    Lorsqu'un client tentera de se connecter en utilisant le nom
-    d'utilisateur <code>Babs Jenson</code>, le filtre de recherche sera
-    : <code>(&amp;(posixid=*)(cn=Babs Jenson))</code>.</p>
-
-    <p>On peut encore ajouter un paramètre optionnel pour permettre à
-    l'URL LDAP de surcharger le type de connexion. Ce paramètre peut
-    prendre l'une des valeurs suivantes :</p>
-
-<dl>
-    <dt>NONE</dt>
-        <dd>Établit une connexion non sécurisée sur le port LDAP par
-	défaut, ce qui est équivalent à <code>ldap://</code> sur le port
-	389.</dd>
-    <dt>SSL</dt>
-        <dd>Établit une connexion sécurisée sur le port LDAP sécurisé
-	par défaut, ce qui est équivalent à <code>ldaps://</code>.</dd>
-    <dt>TLS | STARTTLS</dt>
-        <dd>Établit une connexion sécurisée par élévation de niveau sur
-	le port LDAP par défaut. Cette connexion sera initialisée sur le
-	port 389 par défaut, puis élevée à un niveau de connexion
-	sécurisée sur le même port.</dd>
-</dl>
-
-    <p>Voir plus haut pour des exemples d'URLs définies par la directive
-    <code class="directive"><a href="#authldapurl">AuthLDAPUrl</a></code>.</p>
-
-</div>
+</table><p>La documentation de cette directive
+	n'a pas encore t traduite. Veuillez vous reporter  la version
+	en langue anglaise.</p></div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authnz_ldap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |

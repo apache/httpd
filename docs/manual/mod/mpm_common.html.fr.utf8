@@ -261,8 +261,8 @@ use</code>, citant d'autres causes possibles.</a></li>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Longueur maximale de la liste d'attente des
 connexions</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ListenBacklog <var>backlog</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ListenBacklog 511</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ListenBackLog <var>backlog</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ListenBackLog 511</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code></td></tr>
@@ -301,14 +301,13 @@ plateformes de type BSD.</td></tr>
 </table>
     <p>Vous pouvez utiliser la directive
     <code class="directive">ListenCoresBucketsRatio</code> pour spécifier un
-    <var>ratio</var> entre le nombre de coeurs de CPU activés et le
-    nombre de segments d'écoute (listeners' buckets) souhaités ; le
-    serveur HTTP Apache va alors créer<code>num_cpu_cores / ratio</code>
-    segments d'écoute, chacun contenant son propre socket d'écoute
-    <code class="directive">Listen</code> sur le ou les mêmes ports ; chaque
+    <var>ratio</var> entre le nombre de coeurs de CPU activés et le nombre de
+    segments d'écoute (listeners' buckets) souhaités ; le serveur HTTP Apache va
+    alors créer<code>num_cpu_cores / ratio</code> segments d'écoute, chacun
+    contenant son propre socket d'écoute <code class="directive"><a href="#listen">Listen</a></code> sur le ou les mêmes ports ; chaque
     processus enfant sera associé à un seul segment d'écoute (avec une
-    distribution de type round-robin des segments à la création des
-    processus enfants).</p>
+    distribution de type round-robin des segments à la création des processus
+    enfants).</p>
 
     <div class="note"><h3>Définition du terme coeur de CPU activé ("online")</h3>
     <p>Sous Linux et BSD, un coeur de CPU peut être activé ou désactivé si <a href="https://www.kernel.org/doc/Documentation/cpu-hotplug.txt">Hotplug</a>
@@ -855,6 +854,12 @@ enfant</td></tr>
     <code class="directive">ThreadsPerChild</code> est <code>64</code> avec
     <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, et <code>25</code> avec les autres
     MPMs.</p>
+
+    <p>La valeur de la directive <code class="directive">ThreadsPerChild</code> ne peut
+    pas dépasser la valeur de la directive <code class="directive"><a href="#threadlimit">ThreadLimit</a></code>. Si on spécifie une valeur
+    supérieure, elle sera automatiquement réduite au démarrage du serveur et un
+    avertissement sera enregistré dans le journal. La relation entre ces deux
+    directives est expliquée dans la <code class="directive"><a href="#documentation de la directive threadlimit">documentation de la directive ThreadLimit</a></code>.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

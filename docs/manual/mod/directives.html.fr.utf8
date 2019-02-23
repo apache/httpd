@@ -133,7 +133,7 @@
 <li><a href="mod_authnz_ldap.html#authldapsearchasuser">AuthLDAPSearchAsUser</a></li>
 <li><a href="mod_authnz_ldap.html#authldapsubgroupattribute">AuthLDAPSubGroupAttribute</a></li>
 <li><a href="mod_authnz_ldap.html#authldapsubgroupclass">AuthLDAPSubGroupClass</a></li>
-<li><a href="mod_authnz_ldap.html#authldapurl">AuthLDAPUrl</a></li>
+<li><a href="mod_authnz_ldap.html#authldapurl">AuthLDAPURL</a></li>
 <li><a href="mod_authz_core.html#authmerging">AuthMerging</a></li>
 <li><a href="mod_authn_core.html#authname">AuthName</a></li>
 <li><a href="mod_authn_socache.html#authncachecontext">AuthnCacheContext</a></li>

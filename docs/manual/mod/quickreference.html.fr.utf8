@@ -248,7 +248,7 @@ pour effectuer les comparaisons pour l'attribution des autorisations</td></tr>
 <tr><td><a href="mod_authnz_ldap.html#authldapcomparednonserver">AuthLDAPCompareDNOnServer on|off</a></td><td> on </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Utilise le serveur LDAP pour comparer les DNs</td></tr>
 <tr class="odd"><td><a href="mod_authnz_ldap.html#authldapdereferencealiases">AuthLDAPDereferenceAliases never|searching|finding|always</a></td><td> always </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">À quel moment le module va déréférencer les
 alias</td></tr>
-<tr><td><a href="mod_authnz_ldap.html#authldapgroupattribute">AuthLDAPGroupAttribute <em>attribut</em></a></td><td> member uniquemember +</td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">L'attribut LDAP utilisé pour vérifier l'appartenance d'un
+<tr><td><a href="mod_authnz_ldap.html#authldapgroupattribute">AuthLDAPGroupAttribute <em>attribut</em></a></td><td> member uniqueMember +</td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">L'attribut LDAP utilisé pour vérifier l'appartenance d'un
 utilisateur à un groupe.</td></tr>
 <tr class="odd"><td><a href="mod_authnz_ldap.html#authldapgroupattributeisdn">AuthLDAPGroupAttributeIsDN on|off</a></td><td> on </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Utilise le DN de l'utilisateur pour vérifier son
 appartenance à un groupe</td></tr>
@@ -276,8 +276,7 @@ groupes.</td></tr>
 <tr class="odd"><td><a href="mod_authnz_ldap.html#authldapsubgroupclass">AuthLDAPSubGroupClass <em>ObjectClass-LDAP</em></a></td><td> groupOfNames groupO +</td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Spécifie quelles valeurs d'objectClass LDAP identifient les
 objets de l'annuaire qui sont des groupes au cours du traitement des
 sous-groupes.</td></tr>
-<tr><td><a href="mod_authnz_ldap.html#authldapurl">AuthLDAPUrl <em>url [NONE|SSL|TLS|STARTTLS]</em></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">L'URL permettant de spécifier les paramètres de la
-recherche LDAP</td></tr>
+<tr><td><a href="mod_authnz_ldap.html#authldapurl">AuthLDAPURL <em>url</em> [NONE|SSL|TLS|STARTTLS]</a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">URL specifying the LDAP search parameters</td></tr>
 <tr class="odd"><td><a href="mod_authz_core.html#authmerging">AuthMerging Off | And | Or</a></td><td> Off </td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Définit la manière dont chaque logique d'autorisation des
 sections de configuration se combine avec celles des sections de
 configuration précédentes.</td></tr>
@@ -488,10 +487,10 @@ fois</td></tr>
 sortie</td></tr>
 <tr><td><a href="mod_deflate.html#deflatefilternote">DeflateFilterNote [<var>type</var>] <var>nom de la note</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Enregistre le taux de compression sous la forme d'une note
 à des fins de journalisation</td></tr>
-<tr class="odd"><td><a href="mod_deflate.html#deflateinflatelimitrequestbody">DeflateInflateLimitRequestBody<var>value</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Taille maximale des corps de requête décompressés</td></tr>
-<tr><td><a href="mod_deflate.html#deflateinflateratioburst">DeflateInflateRatioBurst <var>value</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Nombre maximal de fois que le ratio de décompression d'un
+<tr class="odd"><td><a href="mod_deflate.html#deflateinflatelimitrequestbody">DeflateInflateLimitRequestBody <var>value</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Taille maximale des corps de requête décompressés</td></tr>
+<tr><td><a href="mod_deflate.html#deflateinflateratioburst">DeflateInflateRatioBurst <var>value</var></a></td><td> 3 </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Nombre maximal de fois que le ratio de décompression d'un
 corps de requête peut être dépassé</td></tr>
-<tr class="odd"><td><a href="mod_deflate.html#deflateinflateratiolimit">DeflateInflateRatioLimit <var>value</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Ratio de décompression maximum pour les corps de requêtes</td></tr>
+<tr class="odd"><td><a href="mod_deflate.html#deflateinflateratiolimit">DeflateInflateRatioLimit <var>value</var></a></td><td> 200 </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Ratio de décompression maximum pour les corps de requêtes</td></tr>
 <tr><td><a href="mod_deflate.html#deflatememlevel">DeflateMemLevel <var>valeur</var></a></td><td> 9 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">La quantité de mémoire utilisable par zlib pour la
 compression</td></tr>
 <tr class="odd"><td><a href="mod_deflate.html#deflatewindowsize">DeflateWindowSize <var>valeur</var></a></td><td> 15 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Taille de la fenêtre de compression zlib</td></tr>
@@ -771,7 +770,7 @@ HTTP</td></tr>
 XML</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#listen">Listen [<var>adresse IP</var>:]<var>numéro port</var>
 [<var>protocole</var>]</a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Les adresses IP et ports sur lesquels le serveur écoute</td></tr>
-<tr><td><a href="mpm_common.html#listenbacklog">ListenBacklog <var>backlog</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Longueur maximale de la liste d'attente des
+<tr><td><a href="mpm_common.html#listenbacklog">ListenBackLog <var>backlog</var></a></td><td> 511 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Longueur maximale de la liste d'attente des
 connexions</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#listencoresbucketsratio">ListenCoresBucketsRatio <var>ratio</var></a></td><td> 0 (disabled) </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Rapport entre le nombre de coeurs de processeur activés et
 le nombre de segments d'écoute</td></tr>
@@ -1105,7 +1104,7 @@ d'extensions de noms de fichiers</td></tr>
 <tr class="odd"><td><a href="mod_reqtimeout.html#requestreadtimeout">RequestReadTimeout
 [header=<var>délai</var>[-<var>délai-maxi</var>][,MinRate=<var>taux-mini</var>]
 [body=<var>délai</var>[-<var>délai-maxi</var>][,MinRate=<var>taux-mini</var>]
-</a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit des délais maximums pour la réception des en-têtes
+</a></td><td> header=20-40,MinRat +</td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit des délais maximums pour la réception des en-têtes
 et corps des requêtes en provenance du client.
 </td></tr>
 <tr><td><a href="mod_authz_core.html#require">Require [not] <var>nom-entité</var> [<var>nom-entité</var>]
@@ -1290,7 +1289,7 @@ chiffrement</td></tr>
 du serveur par ordre de préférence</td></tr>
 <tr><td><a href="mod_ssl.html#sslinsecurerenegotiation">SSLInsecureRenegotiation on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Option permettant d'activer le support de la renégociation
 non sécurisée</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslocspdefaultresponder">SSLOCSDefaultResponder <em>uri</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit l'URI du répondeur par défaut pour la validation
+<tr class="odd"><td><a href="mod_ssl.html#sslocspdefaultresponder">SSLOCSPDefaultResponder <em>uri</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit l'URI du répondeur par défaut pour la validation
 OCSP</td></tr>
 <tr><td><a href="mod_ssl.html#sslocspenable">SSLOCSPEnable on|leaf|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Active la validation OCSP de la chaîne de certificats du
 client</td></tr>
@@ -1428,7 +1427,7 @@ utilisateur</td></tr>
 <tr class="odd"><td><a href="mod_privileges.html#vhostcgimode" id="V" name="V">VHostCGIMode On|Off|Secure</a></td><td> On </td><td>v</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Détermine si le serveur virtuel peut exécuter des
 sous-processus, et définit les privilèges disponibles pour ces
 dernier.</td></tr>
-<tr><td><a href="mod_privileges.html#vhostcgiprivs">VHostPrivs [+-]?<var>nom-privilège</var> [[+-]?nom-privilège] ...</a></td><td></td><td>v</td><td>X</td></tr><tr><td class="descr" colspan="4">Assigne des privilèges au choix aux sous-processus créés
+<tr><td><a href="mod_privileges.html#vhostcgiprivs">VHostCGIPrivs [+-]?<var>privilege-name</var> [[+-]?privilege-name] ...</a></td><td></td><td>v</td><td>X</td></tr><tr><td class="descr" colspan="4">Assigne des privilèges au choix aux sous-processus créés
 par un serveur virtuel.</td></tr>
 <tr class="odd"><td><a href="mod_privileges.html#vhostgroup">VHostGroup <var>identifiant-groupe-unix</var></a></td><td></td><td>v</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Définit l'identifiant du groupe sous lequel s'exécute un
 serveur virtuel.</td></tr>
