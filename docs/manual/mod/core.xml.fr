@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1851790 -->
+<!-- English Revision: 1853623 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -812,7 +812,7 @@ permissions sur la racine du serveur <directive>ServerRoot</directive></seealso>
 <name>DefaultStateDir</name>
 <description>Répertoire racine des fichiers d'état persistants</description>
 <syntax>DefaultStateDir <var>directory-path</var></syntax>
-<default>DefaultRuntimeDir DEFAULT_REL_STATEDIR (state/)</default>
+<default>DefaultStateDir DEFAULT_REL_STATEDIR (state/)</default>
 <contextlist><context>server config</context></contextlist>
 <compatibility>Disponible à partir de la version 2.5.1. du serveur HTTP Apache.</compatibility>
 
@@ -821,7 +821,7 @@ permissions sur la racine du serveur <directive>ServerRoot</directive></seealso>
     répertoire dans lequel le serveur va créer divers fichiers d'état
     persistants (bases de données, caches de longue durée, etc...). Si elle est
     définie avec un chemin relatif, ce dernier sera accolé à la valeur de la
-    directive <directive>ServerRoot</directive>.</p>
+    directive <directive module="core">ServerRoot</directive>.</p>
 
     <p><strong>Exemple</strong></p>
    <highlight language="config">
@@ -832,16 +832,16 @@ DefaultStateDir state/
     modifiée en changeant la valeur de <code>DEFAULT_REL_STATEDIR</code>
     #définie à la compilation.</p>
 
-   <p>Note: si la valeur de <directive>ServerRoot</directive> n'a pas
-   été spécifiée avant d'utiliser cette directive, c'est la valeur par
-   défaut de <directive>ServerRoot</directive> qui sera utilisée pour
-   définir la base du répertoire.</p>
+   <p>Note: si la valeur de <directive module="core">ServerRoot</directive> n'a
+   pas été spécifiée avant d'utiliser cette directive, c'est la valeur par
+   défaut de <directive module="core">ServerRoot</directive> qui sera utilisée
+   pour définir la base du répertoire.</p>
 
 </usage>
-<seealso>Voir les <a
-href="../misc/security_tips.html#serverroot">conseils à propos de
-sésurité</a> pour plus d'informations en vue de définir correctement les
-permissions sur la racine du serveur <directive>ServerRoot</directive></seealso>
+<seealso>Voir les <a href="../misc/security_tips.html#serverroot">conseils à
+propos de sésurité</a> pour plus d'informations en vue de définir correctement
+les permissions sur la racine <directive module="core">ServerRoot</directive> du
+serveur</seealso>
 </directivesynopsis>
 
 <directivesynopsis>
