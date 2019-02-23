@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1827779 -->
+<!-- English Revision: 1853625 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -32,6 +32,22 @@ données pour la réception des requêtes
 <sourcefile>mod_reqtimeout.c</sourcefile>
 <identifier>reqtimeout_module</identifier>
 <compatibility>Disponible depuis la version 2.2.15 du serveur HTTP Apache</compatibility>
+
+<summary>
+    <p>Ce module permet de définir aisément le délai maximum et le taux de
+    transfert des données minimum pour la réception des requêtes. Si ce délai
+    est dépassé ou ce taux trop faible, la connexion concernée sera fermée par
+    le serveur.</p>
+
+    <p>Cet évènement sera alors enregistré dans le journal au niveau de <directive
+    module="core">LogLevel</directive> <code>info</code>.</p>
+    
+    <p>Au besoin, la directive <directive module="core">LogLevel</directive>
+    peut être modifiée pour un enregistrement dans le journal plus explicite :</p>
+    <highlight language="config">
+      LogLevel reqtimeout:info
+    </highlight>
+</summary>
 
 <section id="examples"><title>Exemples</title>
 
@@ -92,7 +108,7 @@ et corps des requêtes en provenance du client.
 [header=<var>délai</var>[-<var>délai-maxi</var>][,MinRate=<var>taux-mini</var>]
 [body=<var>délai</var>[-<var>délai-maxi</var>][,MinRate=<var>taux-mini</var>]
 </syntax>
-<default>header=20-40,MinRate=500 body=20,MinRate=500</default>
+<default>RequestReadTimeout header=20-40,MinRate=500 body=20,MinRate=500</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 <compatibility>Disponible depuis la version 2.2.15 du serveur HTTP

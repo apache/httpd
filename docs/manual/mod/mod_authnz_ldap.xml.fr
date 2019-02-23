@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1824143 -->
+<!-- English Revision: 1853665 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -728,13 +728,12 @@ connexion</title>
 
     <p>Au cours du processus d'<em>authentification</em>, les attributs LDAP
     spécifiés par la directive <directive
-    module="mod_authnz_ldap">authldapurl</directive> sont enregistrés
-    dans des variables d'environnement préfixées par la chaîne
-    "AUTHENTICATE_".</p>
+    module="mod_authnz_ldap">AuthLDAPURL</directive> sont enregistrés dans des
+    variables d'environnement préfixées par la chaîne "AUTHENTICATE_".</p>
 
     <p>Au cours du processus d'<em>autorisation</em>, les attributs LDAP
     spécifiés par la directive <directive
-    module="mod_authnz_ldap">authldapurl</directive> sont enregistrés
+    module="mod_authnz_ldap">AuthLDAPURL</directive> sont enregistrés
     dans des variables d'environnement préfixées par la chaîne
     "AUTHORIZE_".</p>
 
@@ -1209,7 +1208,7 @@ alias</description>
 <description>L'attribut LDAP utilisé pour vérifier l'appartenance d'un
 utilisateur à un groupe.</description>
 <syntax>AuthLDAPGroupAttribute <em>attribut</em></syntax>
-<default>AuthLDAPGroupAttribute member uniquemember</default>
+<default>AuthLDAPGroupAttribute member uniqueMember</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
@@ -1220,7 +1219,7 @@ utilisateur à un groupe.</description>
     groupe. On peut spécifier plusieurs attributs en répétant cette
     directive plusieurs fois. Si la directive n'est pas définie,
     <module>mod_authnz_ldap</module> utilise les attributs
-    <code>member</code> et <code>uniquemember</code>.</p>
+    <code>member</code> et <code>uniqueMember</code>.</p>
 </usage>
 </directivesynopsis>
 
@@ -1298,16 +1297,17 @@ d'environnement REMOTE_USER</description>
 
 <usage>
     <p>Lorsque cette directive est définie, la variable d'environnement
-    <code>REMOTE_USER</code> sera définie à la valeur de l'attribut
-    spécifié. Assurez-vous que cet attribut soit bien inclus dans la
-    liste d'attributs spécifiés dans la définition de AuthLDAPUrl ; dans
-    le cas contraire, cette directive n'aurait aucun effet. Si elle est
-    présente, cette directive l'emporte sur <directive
-    module="mod_authnz_ldap">AuthLDAPRemoteUserIsDN</directive>. Elle
-    peut s'avérer utile par exemple, si vous souhaitez que les
-    utilisateurs se connectent à un site web en utilisant leur adresse
-    email, alors qu'une application sous-jacente nécessite un nom
-    d'utilisateur comme identifiant.</p>
+    <code>REMOTE_USER</code> sera définie à la valeur de l'attribut spécifié.
+    Assurez-vous que cet attribut soit bien inclus dans la liste d'attributs
+    spécifiés dans la définition de <directive
+    module="mod_authnz_ldap">AuthLDAPURL</directive> ; dans le cas contraire,
+    cette directive n'aurait aucun effet. Si elle est présente, cette directive
+    l'emporte sur <directive
+    module="mod_authnz_ldap">AuthLDAPRemoteUserIsDN</directive>. Elle peut
+    s'avérer utile par exemple, si vous souhaitez que les utilisateurs se
+    connectent à un site web en utilisant leur adresse email, alors qu'une
+    application sous-jacente nécessite un nom d'utilisateur comme
+    identifiant.</p>
 </usage>
 </directivesynopsis>
 
@@ -1375,7 +1375,7 @@ pour la recherche des autorisations</description>
 pour différencier les membres du groupe courant qui sont eux-mêmes des
 groupes.</description>
 <syntax>AuthLDAPSubGroupAttribute <em>attribut</em></syntax>
-<default>AuthLDAPSubgroupAttribute member uniquemember</default>
+<default>AuthLDAPSubgroupAttribute member uniqueMember</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
@@ -1429,10 +1429,10 @@ Apache</compatibility>
 </directivesynopsis>
 
 <directivesynopsis>
-<name>AuthLDAPUrl</name>
+<name>AuthLDAPURl</name>
 <description>L'URL permettant de spécifier les paramètres de la
 recherche LDAP</description>
-<syntax>AuthLDAPUrl <em>url [NONE|SSL|TLS|STARTTLS]</em></syntax>
+<syntax>AuthLDAPURL <em>url</em> [NONE|SSL|TLS|STARTTLS]</syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
@@ -1445,7 +1445,7 @@ recherche LDAP</description>
     <p>Si vous souhaitez mettre à la disposition d'Apache plusieurs URLs
     LDAP, la syntaxe sera :</p>
 <highlight language="config">
-AuthLDAPUrl "ldap://ldap1.example.com ldap2.example.com/dc=..."
+AuthLDAPURl "ldap://ldap1.example.com ldap2.example.com/dc=..."
 </highlight>
 <p><em><strong>Mise en garde : </strong>Si vous spécifiez plusieurs
 serveurs, vous devez en entourer la liste avec des guillemets ; dans le
@@ -1568,7 +1568,7 @@ spécifiés.</p>
 </dl>
 
     <p>Voir plus haut pour des exemples d'URLs définies par la directive
-    <directive module="mod_authnz_ldap">AuthLDAPUrl</directive>.</p>
+    <directive module="mod_authnz_ldap">AuthLDAPURl</directive>.</p>
 </usage>
 </directivesynopsis>
 

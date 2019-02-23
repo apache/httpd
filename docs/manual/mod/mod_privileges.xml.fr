@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1739075 -->
+<!-- English Revision: 1853628 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -398,7 +398,7 @@ avec l'option de compilation
 <name>VHostCGIPrivs</name>
 <description>Assigne des privilèges au choix aux sous-processus créés
 par un serveur virtuel.</description>
-<syntax>VHostPrivs [+-]?<var>nom-privilège</var> [[+-]?nom-privilège] ...</syntax>
+<syntax>VHostCGIPrivs [+-]?<var>privilege-name</var> [[+-]?privilege-name] ...</syntax>
 <default>Aucun</default>
 <contextlist><context>virtual host</context></contextlist>
 <compatibility>Disponible sous Solaris 10 et OpenSolaris avec les
@@ -414,10 +414,10 @@ avec l'option de compilation
     >privilèges</a> au choix aux sous-processus créés par un serveur
     virtuel, comme décrit dans la directive
     <directive>VHostCGIMode</directive>. Chaque
-    <var>nom-privilège</var> correspond à un privilège Solaris tel que
+    <var>privilege-name</var> correspond à un privilège Solaris tel que
     <var>file_setid</var> ou <var>sys_nfs</var>.</p>
 
-    <p><var>nom-privilège</var> peut être éventuellement préfixé par +
+    <p><var>privilege-name</var> peut être éventuellement préfixé par +
     ou -, ce qui va respectivement accorder ou refuser le privilège. Si
     <var>nom-privilège</var> est spécifié sans + ni -, tous les autres
     privilèges préalablement assignés au serveur virtuel seront refusés.
