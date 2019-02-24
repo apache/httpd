@@ -179,9 +179,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      from the Include/IncludeOptional directives into a generic set of
      functions ap_dir_nofnmatch() and ap_dir_fnmatch().
      trunk patch: http://svn.apache.org/r1847430
-     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-ap_dir_fnmatch.patch
-     +1: minfrin, jim
+                  http://svn.apache.org/r1853302
+     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-ap_dir_fnmatch-2.patch
+     +1: minfrin
      jailletc36: at least, r1853302 is required, IMHO
+     minfrin: r1853302 is added in above, resetting jim's vote
 
   *) mod_log_config: Support %{c}h for conn-hostname, %h for useragent_host
      PR 55348
