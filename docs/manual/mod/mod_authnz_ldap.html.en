@@ -95,7 +95,7 @@ for HTTP Basic authentication.</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapsearchasuser">AuthLDAPSearchAsUser</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapsubgroupattribute">AuthLDAPSubGroupAttribute</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapsubgroupclass">AuthLDAPSubGroupClass</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#authldapurl">AuthLDAPUrl</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authldapurl">AuthLDAPURL</a></li>
 </ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_authnz_ldap">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_authnz_ldap">Report a bug</a></li></ul><h3>See also</h3>
 <ul class="seealso">
@@ -653,11 +653,11 @@ Require valid-user</pre>
 <h2><a name="exposed" id="exposed">Exposing Login Information</a></h2>
 
     <p>when this module performs <em>authentication</em>, ldap attributes specified
-    in the <code class="directive"><a href="#authldapurl">authldapurl</a></code>
+    in the <code class="directive"><a href="#authldapurl">AuthLDAPURL</a></code>
     directive are placed in environment variables with the prefix "AUTHENTICATE_".</p>
 
     <p>when this module performs <em>authorization</em>, ldap attributes specified
-    in the <code class="directive"><a href="#authldapurl">authldapurl</a></code>
+    in the <code class="directive"><a href="#authldapurl">AuthLDAPURL</a></code>
     directive are placed in environment variables with the prefix "AUTHORIZE_".</p>
 
     <p>If the attribute field contains the username, common name
@@ -989,7 +989,7 @@ AuthLDAPBindPassword "exec:/path/to/otherProgram argument1"</pre>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>LDAP attributes used to identify the user members of
 groups.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPGroupAttribute <em>attribute</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthLDAPGroupAttribute member uniquemember</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthLDAPGroupAttribute member uniqueMember</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -999,7 +999,7 @@ groups.</td></tr>
     check for user members within groups. Multiple attributes can be used
     by specifying this directive multiple times. If not specified,
     then <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> uses the <code>member</code> and
-    <code>uniquemember</code> attributes.</p>
+    <code>uniqueMember</code> attributes.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1160,7 +1160,7 @@ query to set the REMOTE_USER environment variable</td></tr>
     <p>If this directive is set, the value of the
     <code>REMOTE_USER</code> environment variable will be set to the
     value of the attribute specified. Make sure that this attribute is
-    included in the list of attributes in the AuthLDAPUrl definition,
+    included in the list of attributes in the <code class="directive"><a href="#authldapurl">AuthLDAPURL</a></code> definition,
     otherwise this directive will have no effect. This directive, if
     present, takes precedence over <code class="directive"><a href="#authldapremoteuserisdn">AuthLDAPRemoteUserIsDN</a></code>. This
     directive is useful should you want people to log into a website
@@ -1229,7 +1229,7 @@ environment variable</td></tr>
 directive line, used to distinguish the members of the current group that
 are groups.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPSubGroupAttribute <em>attribute</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthLDAPSubgroupAttribute member uniquemember</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthLDAPSubGroupAttribute member uniqueMember</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -1274,10 +1274,10 @@ objects that are groups during sub-group processing.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthLDAPUrl" id="AuthLDAPUrl">AuthLDAPUrl</a> <a name="authldapurl" id="authldapurl">Directive</a></h2>
+<div class="directive-section"><h2><a name="AuthLDAPURL" id="AuthLDAPURL">AuthLDAPURL</a> <a name="authldapurl" id="authldapurl">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>URL specifying the LDAP search parameters</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPUrl <em>url [NONE|SSL|TLS|STARTTLS]</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPURL <em>url</em> [NONE|SSL|TLS|STARTTLS]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -1287,7 +1287,7 @@ objects that are groups during sub-group processing.</td></tr>
     to use. The syntax of the URL is</p>
 <div class="example"><p><code>ldap://host:port/basedn?attribute?scope?filter</code></p></div>
     <p>If you want to specify more than one LDAP URL that Apache should try in turn, the syntax is:</p>
-<pre class="prettyprint lang-config">AuthLDAPUrl "ldap://ldap1.example.com ldap2.example.com/dc=..."</pre>
+<pre class="prettyprint lang-config">AuthLDAPURL "ldap://ldap1.example.com ldap2.example.com/dc=..."</pre>
 
 <p><em><strong>Caveat: </strong>If you specify multiple servers, you need to enclose the entire URL string in quotes;
 otherwise you will get an error: "AuthLDAPURL takes one argument, URL to define LDAP connection.." </em>
@@ -1392,7 +1392,7 @@ You can of course use search parameters on each of these.</p>
         upgraded to a secure connection on the same port.</dd>
 </dl>
 
-    <p>See above for examples of <code class="directive"><a href="#authldapurl">AuthLDAPUrl</a></code> URLs.</p>
+    <p>See above for examples of <code class="directive"><a href="#authldapurl">AuthLDAPURL</a></code> URLs.</p>
 
 </div>
 </div>

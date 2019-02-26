@@ -296,7 +296,7 @@ are groups.</td></tr>
 <tr><td><a href="mod_authnz_ldap.html#authldapsubgroupclass">AuthLDAPSubGroupClass</a></td><td class="module"><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></td></tr>
 <tr><td colspan="2" class="descr">Specifies which LDAP objectClass values identify directory
 objects that are groups during sub-group processing.</td></tr>
-<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapurl">AuthLDAPUrl</a></td><td class="module"><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></td></tr>
+<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapurl">AuthLDAPURL</a></td><td class="module"><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></td></tr>
 <tr class="odd"><td colspan="2" class="descr">URL specifying the LDAP search parameters</td></tr>
 <tr><td><a href="mod_authz_core.html#authmerging">AuthMerging</a></td><td class="module"><a href="mod_authz_core.html">mod_authz_core</a></td></tr>
 <tr><td colspan="2" class="descr">Controls the manner in which each configuration section's

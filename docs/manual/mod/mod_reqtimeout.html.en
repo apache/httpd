@@ -35,6 +35,19 @@
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>reqtimeout_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_reqtimeout.c</td></tr>
 <tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTPD 2.2.15 and later</td></tr></table>
+<h3>Summary</h3>
+
+    <p>This module provides a convenient way to set timeouts and minimum data
+    rates for receiving requests. Should a timeout occur or a data rate be
+    to low, the corresponding connection will be closed by the server.</p>
+
+    <p>This is logged at <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code>
+    <code>info</code>.</p>
+    
+    <p>If needed, the <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code> directive
+    can be tweaked to explicitly log it:</p>
+    <pre class="prettyprint lang-config">LogLevel reqtimeout:info</pre>
+
 </div>
 <div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><h3>Topics</h3>
 <ul id="topics">
@@ -100,7 +113,7 @@
 [header=<var>timeout</var>[-<var>maxtimeout</var>][,MinRate=<var>rate</var>]
 [body=<var>timeout</var>[-<var>maxtimeout</var>][,MinRate=<var>rate</var>]
 </code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>header=20-40,MinRate=500 body=20,MinRate=500</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>RequestReadTimeout header=20-40,MinRate=500 body=20,MinRate=500</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_reqtimeout</td></tr>
