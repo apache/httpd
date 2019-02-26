@@ -429,7 +429,7 @@ static int stream_cancel_iter(void *ctx, void *val) {
 void h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
 {
     apr_status_t status;
-    int i, wait_secs = 60;
+    int i, wait_secs = 60, old_aborted;
 
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c,
                   "h2_mplx(%ld): start release", m->id);
@@ -439,6 +439,12 @@ void h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
     h2_workers_unregister(m->workers, m);
     
     H2_MPLX_ENTER_ALWAYS(m);
+
+    /* While really terminating any slave connections, treat the master
+     * connection as aborted. It's not as if we could send any more data
+     * at this point. */
+    old_aborted = m->c->aborted;
+    m->c->aborted = 1;
 
     /* How to shut down a h2 connection:
      * 1. cancel all streams still active */
@@ -484,6 +490,7 @@ void h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
         h2_ihash_iter(m->shold, unexpected_stream_iter, m);
     }
     
+    m->c->aborted = old_aborted;
     H2_MPLX_LEAVE(m);
 
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c,
