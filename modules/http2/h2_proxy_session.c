@@ -653,10 +653,12 @@ h2_proxy_session *h2_proxy_session_setup(const char *id, proxy_conn_rec *p_conn,
     }
     else {
         h2_proxy_session *session = p_conn->data;
-        apr_interval_time_t age = apr_time_now() - session->last_frame_received;
-        if (age > apr_time_from_sec(1)) {
-            session->check_ping = 1;
-            nghttp2_submit_ping(session->ngh2, 0, (const uint8_t *)"nevergonnagiveyouup");
+        if (!session->check_ping) {
+            apr_interval_time_t age = apr_time_now() - session->last_frame_received;
+            if (age > apr_time_from_sec(1)) {
+                session->check_ping = 1;
+                nghttp2_submit_ping(session->ngh2, 0, (const uint8_t *)"nevergonnagiveyouup");
+            }
         }
     }
     return p_conn->data;

@@ -57,6 +57,7 @@ static void (*req_engine_done)(h2_req_engine *engine, conn_rec *r_conn,
                                apr_status_t status);
                                        
 typedef struct h2_proxy_ctx {
+    conn_rec *master;
     conn_rec *owner;
     apr_pool_t *pool;
     request_rec *rbase;
@@ -77,6 +78,7 @@ typedef struct h2_proxy_ctx {
     
     unsigned standalone : 1;
     unsigned is_ssl : 1;
+    unsigned flushall : 1;
     
     apr_status_t r_status;     /* status of our first request work */
     h2_proxy_session *session; /* current http2 session against backend */
@@ -361,58 +363,67 @@ static apr_status_t proxy_engine_run(h2_proxy_ctx *ctx) {
                   "eng(%s): run session %s", ctx->engine_id, ctx->session->id);
     ctx->session->user_data = ctx;
     
-    while (!ctx->owner->aborted) {
+    while (1) {
+        if (ctx->master->aborted) {
+            status = APR_ECONNABORTED;
+            goto out;
+        }
+        
         if (APR_SUCCESS == h2_proxy_fifo_try_pull(ctx->requests, (void**)&r)) {
             add_request(ctx->session, r);
         }
-        
         status = h2_proxy_session_process(ctx->session);
         
         if (status == APR_SUCCESS) {
-            apr_status_t s2;
-            /* ongoing processing, call again */
+            /* ongoing processing, check if we have room to handle more streams,
+             * maybe the remote side changed their limit */
             if (ctx->session->remote_max_concurrent > 0
                 && ctx->session->remote_max_concurrent != ctx->capacity) {
                 ctx->capacity = H2MIN((int)ctx->session->remote_max_concurrent, 
                                       h2_proxy_fifo_capacity(ctx->requests));
             }
-            s2 = next_request(ctx, 0);
-            if (s2 == APR_ECONNABORTED) {
-                /* master connection gone */
-                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, s2, ctx->owner, 
-                              APLOGNO(03374) "eng(%s): pull request", 
-                              ctx->engine_id);
-                /* give notice that we're leaving and cancel all ongoing
-                 * streams. */
-                next_request(ctx, 1); 
-                h2_proxy_session_cancel_all(ctx->session);
-                h2_proxy_session_process(ctx->session);
-                status = ctx->r_status = APR_SUCCESS;
-                break;
+            /* try to pull more request, if our capacity allows it */
+            if (APR_ECONNABORTED == next_request(ctx, 0)) {
+                status = APR_ECONNABORTED;
+                goto out;
             }
+            /* If we have no ongoing streams and nothing in our queue, we
+             * terminate processing and return to our caller. */
             if ((h2_proxy_fifo_count(ctx->requests) == 0) 
                 && h2_proxy_ihash_empty(ctx->session->streams)) {
-                break;
+                goto out;
             }
         }
         else {
-            /* end of processing, maybe error */
+            /* Encountered an error during session processing */
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, ctx->owner, 
                           APLOGNO(03375) "eng(%s): end of session %s", 
                           ctx->engine_id, ctx->session->id);
-            /*
-             * Any open stream of that session needs to
+            /* Any open stream of that session needs to
              * a) be reopened on the new session iff safe to do so
              * b) reported as done (failed) otherwise
              */
             h2_proxy_session_cleanup(ctx->session, session_req_done);
-            break;
+            goto out;
+        }
+    }
+    
+out:
+    if (APR_ECONNABORTED == status) {
+        /* master connection gone */
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, ctx->owner, 
+                      APLOGNO(03374) "eng(%s): master connection gone", ctx->engine_id);
+        /* give notice that we're leaving and cancel all ongoing streams. */
+        next_request(ctx, 1); 
+        h2_proxy_session_cancel_all(ctx->session);
+        h2_proxy_session_process(ctx->session);
+        if (!ctx->master->aborted) {
+            status = ctx->r_status = APR_SUCCESS;
         }
     }
     
     ctx->session->user_data = NULL;
     ctx->session = NULL;
-    
     return status;
 }
 
@@ -500,6 +511,7 @@ static int proxy_http2_handler(request_rec *r,
     }
     
     ctx = apr_pcalloc(r->pool, sizeof(*ctx));
+    ctx->master     = r->connection->master? r->connection->master : r->connection;
     ctx->owner      = r->connection;
     ctx->pool       = r->pool;
     ctx->rbase      = r;
@@ -508,6 +520,7 @@ static int proxy_http2_handler(request_rec *r,
     ctx->is_ssl     = is_ssl;
     ctx->worker     = worker;
     ctx->conf       = conf;
+    ctx->flushall   = apr_table_get(r->subprocess_env, "proxy-flushall")? 1 : 0;
     ctx->r_status   = HTTP_SERVICE_UNAVAILABLE;
     
     h2_proxy_fifo_set_create(&ctx->requests, ctx->pool, 100);
@@ -520,6 +533,11 @@ static int proxy_http2_handler(request_rec *r,
                   "H2: serving URL %s", url);
     
 run_connect:    
+    if (ctx->master->aborted) {
+        ctx->r_status = APR_ECONNABORTED;
+        goto cleanup;
+    }
+
     /* Get a proxy_conn_rec from the worker, might be a new one, might
      * be one still open from another request, or it might fail if the
      * worker is stopped or in error. */
@@ -593,6 +611,11 @@ run_connect:
     }
 
 run_session:
+    if (ctx->owner->aborted) {
+        ctx->r_status = APR_ECONNABORTED;
+        goto cleanup;
+    }
+
     status = proxy_engine_run(ctx);
     if (status == APR_SUCCESS) {
         /* session and connection still ok */
@@ -607,6 +630,11 @@ run_session:
     }
 
 reconnect:
+    if (ctx->master->aborted) {
+        ctx->r_status = APR_ECONNABORTED;
+        goto cleanup;
+    }
+
     if (next_request(ctx, 1) == APR_SUCCESS) {
         /* Still more to do, tear down old conn and start over */
         if (ctx->p_conn) {
@@ -618,7 +646,7 @@ reconnect:
             ctx->p_conn = NULL;
         }
         ++reconnects;
-        if (reconnects < 5 && !ctx->owner->aborted) {
+        if (reconnects < 5 && !ctx->master->aborted) {
             goto run_connect;
         } 
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->owner, APLOGNO(10023)
@@ -639,7 +667,7 @@ cleanup:
         ctx->p_conn = NULL;
     }
 
-    /* Any requests will still have need to fail */
+    /* Any requests we still have need to fail */
     while (APR_SUCCESS == h2_proxy_fifo_try_pull(ctx->requests, (void**)&r)) {
         request_done(ctx, r, HTTP_SERVICE_UNAVAILABLE, 1);
     }

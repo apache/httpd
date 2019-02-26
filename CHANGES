@@ -1,6 +1,16 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_http2/mod_proxy_http2: proxy_http2 checks correct master connection aborted status 
+     to trigger immediate shutdown of backend connections. This is now always signalled
+     by mod_http2 when the the session is being released. 
+     proxy_http2 now only sends a PING frame to the backend when there is not already one
+     in flight. [Stefan Eissing]
+
+  *) mod_proxy_http2: fixed an issue where a proxy_http2 handler entered an infinite 
+     loop when encountering certain errors on the backend connection. 
+     See <https://bz.apache.org/bugzilla/show_bug.cgi?id=63170>. [Stefan Eissing]
+
   *) http: Fix possible empty response with mod_ratelimit for HEAD requests.
      PR 63192. [Yann Ylavic]
 
