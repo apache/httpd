@@ -798,7 +798,7 @@ nasıl ayarlanacağını öğrenmek için:
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Base directory for the persistent state files</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>DefaultStateDir <var>directory-path</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>DefaultRuntimeDir DEFAULT_REL_STATEDIR (state/)</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>DefaultStateDir DEFAULT_REL_STATEDIR (state/)</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
@@ -808,7 +808,7 @@ nasıl ayarlanacağını öğrenmek için:
 <ul>
 <li><a href="../misc/security_tips.html#serverroot">the
     security tips</a> for information on how to properly set
-    permissions on the <code class="directive">ServerRoot</code></li>
+    permissions on the <code class="directive"><a href="#serverroot">ServerRoot</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

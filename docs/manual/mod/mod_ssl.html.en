@@ -41,7 +41,7 @@ Layer (SSL) and Transport Layer Security (TLS) protocols</td></tr>
 HTTP Server. SSL v2 is no longer supported.</p>
 
 <p>This module relies on <a href="http://www.openssl.org/">OpenSSL</a>
-to provide the cryptography engine.</p>
+to provide the cryptographic engine.</p>
 
 <p>Further details, discussion, and examples are provided in the
 <a href="../ssl/">SSL documentation</a>.</p>
@@ -779,7 +779,7 @@ This complex directive uses a colon-separated <em>cipher-spec</em> string
 consisting of OpenSSL cipher specifications to configure the Cipher Suite the
 client is permitted to negotiate in the SSL handshake phase. The optional 
 protocol specifier can configure the Cipher Suite for a specific SSL version.
-Possible values include "SSL" for all SSL Protocols up to and including TLSv1.2. 
+Possible values include "SSL" for all SSL Protocols up to and including TLSv1.2.
 </p>
 <p>
 Notice that this
@@ -1507,7 +1507,7 @@ query can be done in two ways which can be configured by
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.4.30 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.5.0 and later</td></tr>
 </table>
 <p>This directive applies the set of SSL* directives defined
 under 'name' as the <em>base</em> settings in the current context. Apache comes with the 

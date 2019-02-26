@@ -318,10 +318,10 @@ content</a> <a title="Permanent link" href="#precompressed" class="permalink">&p
     the directive. You can use that note for statistical purposes by
     adding the value to your <a href="../logs.html#accesslog">access log</a>.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">      DeflateFilterNote ratio
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">DeflateFilterNote ratio
 
-      LogFormat '"%r" %b (%{ratio}n) "%{User-agent}i"' deflate
-      CustomLog "logs/deflate_log" deflate</pre>
+LogFormat '"%r" %b (%{ratio}n) "%{User-agent}i"' deflate
+CustomLog "logs/deflate_log" deflate</pre>
 </div>
 
     <p>If you want to extract more accurate values from your logs, you
@@ -380,7 +380,7 @@ CustomLog "logs/deflate_log" deflate</pre>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum number of times the inflation ratio for request bodies
              can be crossed</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DeflateInflateRatioBurst <var>value</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>3</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>DeflateInflateRatioBurst 3</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -389,8 +389,8 @@ CustomLog "logs/deflate_log" deflate</pre>
 </table>
     <p>The <code class="directive">DeflateInflateRatioBurst</code> directive
        specifies the maximum number of times the
-       <code class="directive">DeflateInflateRatioLimit</code> can be crossed before
-       terminating the request.</p>
+       <code class="directive"><a href="#deflateinflateratiolimit">DeflateInflateRatioLimit</a></code> can
+       be crossed before terminating the request.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -398,7 +398,7 @@ CustomLog "logs/deflate_log" deflate</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum inflation ratio for request bodies</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DeflateInflateRatioLimit <var>value</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>200</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>DeflateInflateRatioLimit 200</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -409,8 +409,8 @@ CustomLog "logs/deflate_log" deflate</pre>
         specifies the maximum ratio of deflated to inflated size of an
         inflated request body. This ratio is checked as the body is
         streamed in, and if crossed more than
-        <code class="directive">DeflateInflateRatioBurst</code> times, the request
-        will be terminated.</p>
+        <code class="directive"><a href="#deflateinflateratioburst">DeflateInflateRatioBurst</a></code>
+        times, the request will be terminated.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
