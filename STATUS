@@ -279,6 +279,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   (trunk works, modulo CHANGES)
      +1: ylavic, icing
 
+  *) mod_http2: enable re-use of slave connections again. Fixed slave connection
+     keepalives counter. [Stefan Eissing]
+     trunk patch: http://svn.apache.org/r1852038
+                  http://svn.apache.org/r1852101
+     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/h2-slave-keepalives.patch
+     +1: icing
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
