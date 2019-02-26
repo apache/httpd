@@ -822,7 +822,7 @@ headers</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Base directory for the persistent state files</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DefaultStateDir <var>directory-path</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>DefaultRuntimeDir DEFAULT_REL_STATEDIR (state/)</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>DefaultStateDir DEFAULT_REL_STATEDIR (state/)</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
@@ -832,7 +832,7 @@ headers</td></tr>
     directory in which the server will create various persistent state
     files (databases, long-lived caches, etc.). If set as a relative
     path, the full path will be relative to
-    <code class="directive">ServerRoot</code>.</p>
+    <code class="directive"><a href="#serverroot">ServerRoot</a></code>.</p>
 
     <p><strong>Example</strong></p>
    <pre class="prettyprint lang-config">DefaultStateDir state/</pre>
@@ -842,8 +842,8 @@ headers</td></tr>
     modified by changing the <code>DEFAULT_REL_STATEDIR</code> #define
     at build time.</p>
 
-   <p>Note: <code class="directive">ServerRoot</code> should be specified before this
-   directive is used. Otherwise, the default value of <code class="directive">ServerRoot</code>
+   <p>Note: <code class="directive"><a href="#serverroot">ServerRoot</a></code> should be specified before this
+   directive is used. Otherwise, the default value of <code class="directive"><a href="#serverroot">ServerRoot</a></code>
    would be used to set the base directory.</p>
 
 
@@ -851,7 +851,7 @@ headers</td></tr>
 <ul>
 <li><a href="../misc/security_tips.html#serverroot">the
     security tips</a> for information on how to properly set
-    permissions on the <code class="directive">ServerRoot</code></li>
+    permissions on the <code class="directive"><a href="#serverroot">ServerRoot</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

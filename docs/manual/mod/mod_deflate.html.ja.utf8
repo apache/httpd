@@ -363,7 +363,7 @@
 <div class="directive-section"><h2><a name="DeflateInflateLimitRequestBody" id="DeflateInflateLimitRequestBody">DeflateInflateLimitRequestBody</a> <a name="deflateinflatelimitrequestbody" id="deflateinflatelimitrequestbody">ディレクティブ</a> <a title="Permanent link" href="#deflateinflatelimitrequestbody" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Maximum size of inflated request bodies</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>DeflateInflateLimitRequestBody<var>value</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>DeflateInflateLimitRequestBody <var>value</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>None, but LimitRequestBody applies after deflation</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>All</td></tr>
@@ -379,7 +379,7 @@
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Maximum number of times the inflation ratio for request bodies
              can be crossed</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>DeflateInflateRatioBurst <var>value</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>3</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>DeflateInflateRatioBurst 3</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
@@ -393,7 +393,7 @@
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Maximum inflation ratio for request bodies</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>DeflateInflateRatioLimit <var>value</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>200</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>DeflateInflateRatioLimit 200</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
