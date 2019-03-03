@@ -335,7 +335,7 @@
                          is repeated.
                      -->
                     <xsl:choose>
-                        <xsl:when test="current()[@type='section']">
+                        <xsl:when test="@type='section'">
                             <xsl:apply-templates select="$this[name=current()/name and @type='section']" />
                         </xsl:when>
                         <xsl:otherwise>
