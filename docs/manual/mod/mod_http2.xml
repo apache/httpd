@@ -946,4 +946,41 @@ H2TLSCoolDownSecs 0
         </usage>
     </directivesynopsis>
     
+    <directivesynopsis>
+        <name>H2Padding</name>
+        <description>Determine the range of padding bytes added to payload frames</description>
+        <syntax>H2Padding numbits</syntax>
+        <default>H2Padding 0</default>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+        </contextlist>
+        <compatibility>Available in version 2.4.39 and later.</compatibility>
+        
+        <usage>
+            <p>
+                With the default 0, no padding bytes are added to any payload
+                frames, e.g. HEADERS, DATA and PUSH_PROMISE. This is the behaviour
+                of previous versions. It means that under certain conditions, an
+                observer of network traffic can see the length of those frames 
+                in the TLS stream.
+            </p>
+            <p>
+                When configuring numbits of 1-8, a random number in range
+                [0, 2^numbits[ are added to each frame. The random value is chosen
+                independantly for each frame that the module sends back to the client.
+            </p>
+            <p>
+                While more padding bytes give better message length obfuscation, they
+                are also additional traffic. The optimal number therefore depends on
+                the kind of web traffic the server carries.
+            </p>
+            <p>
+                The default of 0, e.g. no padding, was chosen for maximum backward
+                compatibility. There might be deployments where padding bytes are
+                unwanted or do harm. The most likely cause would be a client that
+                has a faults implementation.
+            </p>
+        </usage>
+    </directivesynopsis>
 </modulesynopsis>
