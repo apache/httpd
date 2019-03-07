@@ -76,6 +76,8 @@ typedef struct h2_config {
     int copy_files;               /* if files shall be copied vs setaside on output */
     apr_array_header_t *push_list;/* list of h2_push_res configurations */
     int early_hints;              /* support status code 103 */
+    int padding_bits;
+    int padding_always;
 } h2_config;
 
 typedef struct h2_dir_config {
@@ -111,6 +113,8 @@ static h2_config defconf = {
     0,                      /* copy files across threads */
     NULL,                   /* push list */
     0,                      /* early hints, http status 103 */
+    0,                      /* padding bits */
+    1,                      /* padding always */
 };
 
 static h2_dir_config defdconf = {
@@ -153,6 +157,8 @@ void *h2_config_create_svr(apr_pool_t *pool, server_rec *s)
     conf->copy_files           = DEF_VAL;
     conf->push_list            = NULL;
     conf->early_hints          = DEF_VAL;
+    conf->padding_bits         = DEF_VAL;
+    conf->padding_always       = DEF_VAL;
     return conf;
 }
 
@@ -194,6 +200,8 @@ static void *h2_config_merge(apr_pool_t *pool, void *basev, void *addv)
         n->push_list        = add->push_list? add->push_list : base->push_list;
     }
     n->early_hints          = H2_CONFIG_GET(add, base, early_hints);
+    n->padding_bits         = H2_CONFIG_GET(add, base, padding_bits);
+    n->padding_always       = H2_CONFIG_GET(add, base, padding_always);
     return n;
 }
 
@@ -275,6 +283,10 @@ static apr_int64_t h2_srv_config_geti64(const h2_config *conf, h2_config_var_t v
             return H2_CONFIG_GET(conf, &defconf, copy_files);
         case H2_CONF_EARLY_HINTS:
             return H2_CONFIG_GET(conf, &defconf, early_hints);
+        case H2_CONF_PADDING_BITS:
+            return H2_CONFIG_GET(conf, &defconf, padding_bits);
+        case H2_CONF_PADDING_ALWAYS:
+            return H2_CONFIG_GET(conf, &defconf, padding_always);
         default:
             return DEF_VAL;
     }
@@ -333,6 +345,12 @@ static void h2_srv_config_seti(h2_config *conf, h2_config_var_t var, int val)
             break;
         case H2_CONF_EARLY_HINTS:
             H2_CONFIG_SET(conf, early_hints, val);
+            break;
+        case H2_CONF_PADDING_BITS:
+            H2_CONFIG_SET(conf, padding_bits, val);
+            break;
+        case H2_CONF_PADDING_ALWAYS:
+            H2_CONFIG_SET(conf, padding_always, val);
             break;
         default:
             break;
@@ -873,6 +891,22 @@ static const char *h2_conf_set_early_hints(cmd_parms *cmd,
     return NULL;
 }
 
+static const char *h2_conf_set_padding(cmd_parms *cmd, void *dirconf, const char *value)
+{
+    int val;
+    
+    val = (int)apr_atoi64(value);
+    if (val < 0) {
+        return "number of bits must be >= 0";
+    }
+    if (val > 8) {
+        return "number of bits must be <= 8";
+    }
+    CONFIG_CMD_SET(cmd, dirconf, H2_CONF_PADDING_BITS, val);
+    return NULL;
+}
+
+
 void h2_get_num_workers(server_rec *s, int *minw, int *maxw)
 {
     int threads_per_child = 0;
@@ -941,6 +975,8 @@ const command_rec h2_cmds[] = {
                    OR_FILEINFO|OR_AUTHCFG, "add a resource to be pushed in this location/on this server."),
     AP_INIT_TAKE1("H2EarlyHints", h2_conf_set_early_hints, NULL,
                   RSRC_CONF, "on to enable interim status 103 responses"),
+    AP_INIT_TAKE1("H2Padding", h2_conf_set_padding, NULL,
+                  RSRC_CONF, "set payload padding"),
     AP_END_CMD
 };
 

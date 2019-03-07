@@ -429,12 +429,6 @@ static int stream_response_data(nghttp2_session *ngh2, uint8_t flags,
                                   stream_id, NGHTTP2_STREAM_CLOSED);
         return NGHTTP2_ERR_STREAM_CLOSING;
     }
-    if (stream->standalone) {
-        nghttp2_session_consume(ngh2, stream_id, len);
-        ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, stream->r,
-                      "h2_proxy_session(%s): stream %d, win_update %d bytes",
-                      session->id, stream_id, (int)len);
-    }
     return 0;
 }
 
@@ -641,7 +635,7 @@ h2_proxy_session *h2_proxy_session_setup(const char *id, proxy_conn_rec *p_conn,
         
         nghttp2_option_new(&option);
         nghttp2_option_set_peer_max_concurrent_streams(option, 100);
-        nghttp2_option_set_no_auto_window_update(option, 1);
+        nghttp2_option_set_no_auto_window_update(option, 0);
         
         nghttp2_session_client_new2(&session->ngh2, cbs, session, option);
         
@@ -1544,43 +1538,4 @@ typedef struct {
     apr_off_t bytes;
     int updated;
 } win_update_ctx;
-
-static int win_update_iter(void *udata, void *val)
-{
-    win_update_ctx *ctx = udata;
-    h2_proxy_stream *stream = val;
-    
-    if (stream->r && stream->r->connection == ctx->c) {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, ctx->session->c, 
-                      "h2_proxy_session(%s-%d): win_update %ld bytes",
-                      ctx->session->id, (int)stream->id, (long)ctx->bytes);
-        nghttp2_session_consume(ctx->session->ngh2, stream->id, ctx->bytes);
-        ctx->updated = 1;
-        return 0;
-    }
-    return 1;
-}
-
-
-void h2_proxy_session_update_window(h2_proxy_session *session, 
-                                    conn_rec *c, apr_off_t bytes)
-{
-    if (!h2_proxy_ihash_empty(session->streams)) {
-        win_update_ctx ctx;
-        ctx.session = session;
-        ctx.c = c;
-        ctx.bytes = bytes;
-        ctx.updated = 0;
-        h2_proxy_ihash_iter(session->streams, win_update_iter, &ctx);
-        
-        if (!ctx.updated) {
-            /* could not find the stream any more, possibly closed, update
-             * the connection window at least */
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c, 
-                          "h2_proxy_session(%s): win_update conn %ld bytes",
-                          session->id, (long)bytes);
-            nghttp2_session_consume_connection(session->ngh2, (size_t)bytes);
-        }
-    }
-}
 

@@ -97,7 +97,7 @@ static apr_status_t send_out(h2_task *task, apr_bucket_brigade* bb, int block)
     apr_brigade_length(bb, 0, &written);
     H2_TASK_OUT_LOG(APLOG_TRACE2, task, bb, "h2_task send_out");
     h2_beam_log(task->output.beam, task->c, APLOG_TRACE2, "send_out(before)");
-    /* engines send unblocking */
+
     status = h2_beam_send(task->output.beam, bb, 
                           block? APR_BLOCK_READ : APR_NONBLOCK_READ);
     h2_beam_log(task->output.beam, task->c, APLOG_TRACE2, "send_out(after)");
@@ -133,26 +133,9 @@ static apr_status_t slave_out(h2_task *task, ap_filter_t* f,
     apr_status_t rv = APR_SUCCESS;
     int flush = 0, blocking;
     
-    if (task->frozen) {
-        h2_util_bb_log(task->c, task->stream_id, APLOG_TRACE2,
-                       "frozen task output write, ignored", bb);
-        while (!APR_BRIGADE_EMPTY(bb)) {
-            b = APR_BRIGADE_FIRST(bb);
-            if (AP_BUCKET_IS_EOR(b)) {
-                APR_BUCKET_REMOVE(b);
-                task->eor = b;
-            }
-            else {
-                apr_bucket_delete(b);
-            }
-        }
-        return APR_SUCCESS;
-    }
-
 send:
-    /* we send block once we opened the output, so someone is there
-     * reading it *and* the task is not assigned to a h2_req_engine */
-    blocking = (!task->assigned && task->output.opened);
+    /* we send block once we opened the output, so someone is there reading it */
+    blocking = task->output.opened;
     for (b = APR_BRIGADE_FIRST(bb);
          b != APR_BRIGADE_SENTINEL(bb);
          b = APR_BUCKET_NEXT(b)) {
@@ -632,18 +615,9 @@ apr_status_t h2_task_do(h2_task *task, apr_thread_t *thread, int worker_id)
     task->c->current_thread = thread; 
     ap_run_process_connection(c);
     
-    if (task->frozen) {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
-                      "h2_task(%s): process_conn returned frozen task", 
-                      task->id);
-        /* cleanup delayed */
-        return APR_EAGAIN;
-    }
-    else {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
-                      "h2_task(%s): processing done", task->id);
-        return output_finish(task);
-    }
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
+                  "h2_task(%s): processing done", task->id);
+    return output_finish(task);
 }
 
 static apr_status_t h2_task_process_request(h2_task *task, conn_rec *c)
@@ -681,14 +655,8 @@ static apr_status_t h2_task_process_request(h2_task *task, conn_rec *c)
         
         ap_process_request(r);
         
-        if (task->frozen) {
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
-                          "h2_task(%s): process_request frozen", task->id);
-        }
-        else {
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
-                          "h2_task(%s): process_request done", task->id);
-        }
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
+                      "h2_task(%s): process_request done", task->id);
         
         /* After the call to ap_process_request, the
          * request pool may have been deleted.  We set
@@ -740,28 +708,3 @@ static int h2_task_process_conn(conn_rec* c)
     return DECLINED;
 }
 
-apr_status_t h2_task_freeze(h2_task *task)
-{   
-    if (!task->frozen) {
-        task->frozen = 1;
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, task->c, APLOGNO(03406) 
-                      "h2_task(%s), frozen", task->id);
-    }
-    return APR_SUCCESS;
-}
-
-apr_status_t h2_task_thaw(h2_task *task)
-{
-    if (task->frozen) {
-        task->frozen = 0;
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, task->c, APLOGNO(03407) 
-                      "h2_task(%s), thawed", task->id);
-    }
-    task->thawed = 1;
-    return APR_SUCCESS;
-}
-
-int h2_task_has_thawed(h2_task *task)
-{
-    return task->thawed;
-}

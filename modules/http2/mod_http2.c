@@ -172,27 +172,6 @@ static char *http2_var_lookup(apr_pool_t *, server_rec *,
                          conn_rec *, request_rec *, char *name);
 static int http2_is_h2(conn_rec *);
 
-static apr_status_t http2_req_engine_push(const char *ngn_type, 
-                                          request_rec *r, 
-                                          http2_req_engine_init *einit)
-{
-    return h2_mplx_req_engine_push(ngn_type, r, einit);
-}
-
-static apr_status_t http2_req_engine_pull(h2_req_engine *ngn, 
-                                          apr_read_type_e block, 
-                                          int capacity, 
-                                          request_rec **pr)
-{
-    return h2_mplx_req_engine_pull(ngn, block, (apr_uint32_t)capacity, pr);
-}
-
-static void http2_req_engine_done(h2_req_engine *ngn, conn_rec *r_conn,
-                                  apr_status_t status)
-{
-    h2_mplx_req_engine_done(ngn, r_conn, status);
-}
-
 static void http2_get_num_workers(server_rec *s, int *minw, int *maxw)
 {
     h2_get_num_workers(s, minw, maxw);
@@ -220,9 +199,6 @@ static void h2_hooks(apr_pool_t *pool)
     
     APR_REGISTER_OPTIONAL_FN(http2_is_h2);
     APR_REGISTER_OPTIONAL_FN(http2_var_lookup);
-    APR_REGISTER_OPTIONAL_FN(http2_req_engine_push);
-    APR_REGISTER_OPTIONAL_FN(http2_req_engine_pull);
-    APR_REGISTER_OPTIONAL_FN(http2_req_engine_done);
     APR_REGISTER_OPTIONAL_FN(http2_get_num_workers);
 
     ap_log_perror(APLOG_MARK, APLOG_TRACE1, 0, pool, "installing hooks");

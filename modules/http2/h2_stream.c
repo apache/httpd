@@ -854,7 +854,7 @@ apr_status_t h2_stream_out_prepare(h2_stream *stream, apr_off_t *plen,
      * is requested. But we can reduce the size in case the master
      * connection operates in smaller chunks. (TSL warmup) */
     if (stream->session->io.write_size > 0) {
-        max_chunk = stream->session->io.write_size - 9; /* header bits */ 
+        max_chunk = stream->session->io.write_size - H2_FRAME_HDR_LEN; 
     }
     requested = (*plen > 0)? H2MIN(*plen, max_chunk) : max_chunk;
     

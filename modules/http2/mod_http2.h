@@ -30,22 +30,20 @@ APR_DECLARE_OPTIONAL_FN(int,
 
 
 /*******************************************************************************
- * HTTP/2 request engines
+ * START HTTP/2 request engines (DEPRECATED)
  ******************************************************************************/
+
+/* The following functions were introduced for the experimental mod_proxy_http2
+ * support, but have been abandoned since.
+ * They are still declared here for backward compatibiliy, in case someone
+ * tries to build an old mod_proxy_http2 against it, but will disappear
+ * completely sometime in the future.
+ */ 
  
 struct apr_thread_cond_t;
-
 typedef struct h2_req_engine h2_req_engine;
-
 typedef void http2_output_consumed(void *ctx, conn_rec *c, apr_off_t consumed);
 
-/**
- * Initialize a h2_req_engine. The structure will be passed in but
- * only the name and master are set. The function should initialize
- * all fields.
- * @param engine the allocated, partially filled structure
- * @param r      the first request to process, or NULL
- */
 typedef apr_status_t http2_req_engine_init(h2_req_engine *engine, 
                                            const char *id, 
                                            const char *type,
@@ -55,35 +53,11 @@ typedef apr_status_t http2_req_engine_init(h2_req_engine *engine,
                                            http2_output_consumed **pconsumed,
                                            void **pbaton);
 
-/**
- * Push a request to an engine with the specified name for further processing.
- * If no such engine is available, einit is not NULL, einit is called 
- * with a new engine record and the caller is responsible for running the
- * new engine instance.
- * @param engine_type the type of the engine to add the request to
- * @param r           the request to push to an engine for processing
- * @param einit       an optional initialization callback for a new engine 
- *                    of the requested type, should no instance be available.
- *                    By passing a non-NULL callback, the caller is willing
- *                    to init and run a new engine itself.
- * @return APR_SUCCESS iff slave was successfully added to an engine
- */
 APR_DECLARE_OPTIONAL_FN(apr_status_t, 
                         http2_req_engine_push, (const char *engine_type, 
                                                 request_rec *r,
                                                 http2_req_engine_init *einit));
 
-/**
- * Get a new request for processing in this engine.
- * @param engine      the engine which is done processing the slave
- * @param block       if call should block waiting for request to come
- * @param capacity    how many parallel requests are acceptable
- * @param pr          the request that needs processing or NULL
- * @return APR_SUCCESS if new request was assigned
- *         APR_EAGAIN  if no new request is available
- *         APR_EOF          if engine may shut down, as no more request will be scheduled
- *         APR_ECONNABORTED if the engine needs to shut down immediately
- */
 APR_DECLARE_OPTIONAL_FN(apr_status_t, 
                         http2_req_engine_pull, (h2_req_engine *engine, 
                                                 apr_read_type_e block,
@@ -97,5 +71,9 @@ APR_DECLARE_OPTIONAL_FN(void,
 APR_DECLARE_OPTIONAL_FN(void,
                         http2_get_num_workers, (server_rec *s,
                                                 int *minw, int *max));
+
+/*******************************************************************************
+ * END HTTP/2 request engines (DEPRECATED)
+ ******************************************************************************/
 
 #endif
