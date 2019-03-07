@@ -40,12 +40,17 @@
  * ~= 1300 bytes */
 #define WRITE_SIZE_INITIAL    1300
 
-/* Calculated like this: max TLS record size 16*1024
- *   - 40 (IP) - 20 (TCP) - 40 (TCP options) 
- *    - TLS overhead (60-100) 
- * which seems to create less TCP packets overall
+/* The maximum we'd like to write in one chunk is
+ * the max size of a TLS record. When pushing
+ * many frames down the h2 connection, this might
+ * align differently because of headers and other
+ * frames or simply as not sufficient data is
+ * in a response body.
+ * However keeping frames at or below this limit
+ * should make optimizations at the layer that writes
+ * to TLS easier.
  */
-#define WRITE_SIZE_MAX        (TLS_DATA_MAX - 100) 
+#define WRITE_SIZE_MAX        (TLS_DATA_MAX) 
 
 #define BUF_REMAIN            ((apr_size_t)(bmax-off))
 

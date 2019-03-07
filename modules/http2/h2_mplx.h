@@ -47,8 +47,6 @@ struct h2_request;
 struct apr_thread_cond_t;
 struct h2_workers;
 struct h2_iqueue;
-struct h2_ngn_shed;
-struct h2_req_engine;
 
 #include <apr_queue.h>
 
@@ -86,7 +84,6 @@ struct h2_mplx {
 
     apr_thread_mutex_t *lock;
     struct apr_thread_cond_t *added_output;
-    struct apr_thread_cond_t *task_thawed;
     struct apr_thread_cond_t *join_wait;
     
     apr_size_t stream_max_mem;
@@ -95,8 +92,6 @@ struct h2_mplx {
     apr_array_header_t *spare_slaves; /* spare slave connections */
     
     struct h2_workers *workers;
-    
-    struct h2_ngn_shed *ngn_shed;
 };
 
 
@@ -301,29 +296,5 @@ APR_RING_INSERT_TAIL((b), ap__b, h2_mplx, link);	\
  * @return != SUCCESS iff connection should be terminated
  */
 apr_status_t h2_mplx_idle(h2_mplx *m);
-
-/*******************************************************************************
- * h2_req_engine handling
- ******************************************************************************/
-
-typedef void h2_output_consumed(void *ctx, conn_rec *c, apr_off_t consumed);
-typedef apr_status_t h2_mplx_req_engine_init(struct h2_req_engine *engine, 
-                                             const char *id, 
-                                             const char *type,
-                                             apr_pool_t *pool, 
-                                             apr_size_t req_buffer_size,
-                                             request_rec *r,
-                                             h2_output_consumed **pconsumed,
-                                             void **pbaton);
-
-apr_status_t h2_mplx_req_engine_push(const char *ngn_type, 
-                                     request_rec *r, 
-                                     h2_mplx_req_engine_init *einit);
-apr_status_t h2_mplx_req_engine_pull(struct h2_req_engine *ngn, 
-                                     apr_read_type_e block, 
-                                     int capacity, 
-                                     request_rec **pr);
-void h2_mplx_req_engine_done(struct h2_req_engine *ngn, conn_rec *r_conn,
-                             apr_status_t status);
 
 #endif /* defined(__mod_h2__h2_mplx__) */

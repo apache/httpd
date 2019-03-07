@@ -48,12 +48,12 @@ extern const char *H2_MAGIC_TOKEN;
 #define H2_HEADER_PATH_LEN   5
 #define H2_CRLF             "\r\n"
 
-/* Max data size to write so it fits inside a TLS record */
-#define H2_DATA_CHUNK_SIZE          ((16*1024) - 100 - 9) 
-
 /* Size of the frame header itself in HTTP/2 */
 #define H2_FRAME_HDR_LEN            9
  
+/* Max data size to write so it fits inside a TLS record */
+#define H2_DATA_CHUNK_SIZE          ((16*1024) - 100 - H2_FRAME_HDR_LEN) 
+
 /* Maximum number of padding bytes in a frame, rfc7540 */
 #define H2_MAX_PADLEN               256
 /* Initial default window size, RFC 7540 ch. 6.5.2 */

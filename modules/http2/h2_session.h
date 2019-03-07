@@ -85,6 +85,8 @@ typedef struct h2_session {
     struct h2_workers *workers;     /* for executing stream tasks */
     struct h2_filter_cin *cin;      /* connection input filter context */
     h2_conn_io io;                  /* io on httpd conn filters */
+    int padding_max;                /* max number of padding bytes */
+    int padding_always;             /* padding has precedence over I/O optimizations */
     struct nghttp2_session *ngh2;   /* the nghttp2 session (internal use) */
 
     h2_session_state state;         /* state session is in */
