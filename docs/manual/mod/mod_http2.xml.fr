@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1852339 -->
+<!-- English Revision: 1854964 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -1193,6 +1193,51 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut
 		intermédiaire 103 avant la réponse finale. Cette réponse 103
 		comporte des en-têtes <code>Link</code> qui provoquent le
 		<code>préchargement</code> des ressources considérées.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>H2Padding</name>
+        <description>Spécifie un intervalle de nombres d'octets de bourrage à
+	ajouter aux trames utiles</description>
+        <syntax>H2Padding numbits</syntax>
+        <default>H2Padding 0</default>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+        </contextlist>
+        <compatibility>Disponible à partir de la version 2.4.39 du serveur HTTP
+	Apache.</compatibility>
+        
+        <usage>
+            <p>
+                La valeur par défaut 0 indique qu'aucun octet de bourrage ne
+		sera ajouté aux trames utiles comme HEADERS, DATA et
+		PUSH_PROMISE. Ceci correspond au comportement des versions
+		précédentes. Dans ce cas et sous certaines conditions, un
+		observateur du trafic réseau pourra alors déterminer la longueur
+		de ces trames dans le flux TLS.
+            </p>
+            <p>
+                Si on attribue à numbits la valeur 1-8, un nombre aléatoire
+		d'octets entre 0 et 2^numbits sont ajoutés à chaque trame. Une
+		valeur aléatoire d'octets de bourrage est attribué
+		indépendamment à chaque trame que le module renvoie au client.
+            </p>
+            <p>
+                Pour améliorer la dissimulation de la longueur des trames, on
+		peut augmenter le nombre moyen d'octets de bourrage, mais cela
+		augmente d'autant le trafic réseau. Le nombre optimal d'octets
+		de bourrage dépend donc du type de trafic web que le serveur
+		engendre.
+            </p>
+            <p>
+                La valeur par défaut de 0 (aucun octet de bourrage) a été
+		choisie dans un but de compatibilité ascendante. Il peut en
+		effet exister des installations où les octets de bourrage ne
+		sont pas souhaités ou sont néfastes. La cause principale peut
+		provenir d'un client dont l'implémentation comporte des erreurs.
             </p>
         </usage>
     </directivesynopsis>
