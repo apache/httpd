@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.39
 
+  *) mod_auth_digest: Fix a race condition. Authentication with valid
+     credentials could be refused in case of concurrent accesses from
+     different users.  PR 63124.  [Simon Kappel <simon.kappel axis.com>]
+
   *) mod_proxy_wstunnel: Fix websocket proxy over UDS.
      PR 62932 <pavel dcmsys.com>
 

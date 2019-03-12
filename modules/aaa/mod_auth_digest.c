@@ -92,7 +92,6 @@ typedef struct digest_config_struct {
     int          check_nc;
     const char  *algorithm;
     char        *uri_list;
-    const char  *ha1;
 } digest_config_rec;
 
 
@@ -153,6 +152,7 @@ typedef struct digest_header_struct {
     apr_time_t            nonce_time;
     enum hdr_sts          auth_hdr_sts;
     int                   needed_auth;
+    const char           *ha1;
     client_entry         *client;
 } digest_header_rec;
 
@@ -1304,7 +1304,7 @@ static int hook_note_digest_auth_failure(request_rec *r, const char *auth_type)
  */
 
 static authn_status get_hash(request_rec *r, const char *user,
-                             digest_config_rec *conf)
+                             digest_config_rec *conf, const char **rethash)
 {
     authn_status auth_result;
     char *password;
@@ -1356,7 +1356,7 @@ static authn_status get_hash(request_rec *r, const char *user,
     } while (current_provider);
 
     if (auth_result == AUTH_USER_FOUND) {
-        conf->ha1 = password;
+        *rethash = password;
     }
 
     return auth_result;
@@ -1483,25 +1483,24 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
 
 /* RFC-2069 */
 static const char *old_digest(const request_rec *r,
-                              const digest_header_rec *resp, const char *ha1)
+                              const digest_header_rec *resp)
 {
     const char *ha2;
 
     ha2 = ap_md5(r->pool, (unsigned char *)apr_pstrcat(r->pool, resp->method, ":",
                                                        resp->uri, NULL));
     return ap_md5(r->pool,
-                  (unsigned char *)apr_pstrcat(r->pool, ha1, ":", resp->nonce,
-                                              ":", ha2, NULL));
+                  (unsigned char *)apr_pstrcat(r->pool, resp->ha1, ":",
+                                               resp->nonce, ":", ha2, NULL));
 }
 
 /* RFC-2617 */
 static const char *new_digest(const request_rec *r,
-                              digest_header_rec *resp,
-                              const digest_config_rec *conf)
+                              digest_header_rec *resp)
 {
     const char *ha1, *ha2, *a2;
 
-    ha1 = conf->ha1;
+    ha1 = resp->ha1;
 
     a2 = apr_pstrcat(r->pool, resp->method, ":", resp->uri, NULL);
     ha2 = ap_md5(r->pool, (const unsigned char *)a2);
@@ -1513,7 +1512,6 @@ static const char *new_digest(const request_rec *r,
                                                resp->message_qop, ":", ha2,
                                                NULL));
 }
-
 
 static void copy_uri_components(apr_uri_t *dst,
                                 apr_uri_t *src, request_rec *r) {
@@ -1759,7 +1757,7 @@ static int authenticate_digest_user(request_rec *r)
         return HTTP_UNAUTHORIZED;
     }
 
-    return_code = get_hash(r, r->user, conf);
+    return_code = get_hash(r, r->user, conf, &resp->ha1);
 
     if (return_code == AUTH_USER_NOT_FOUND) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01790)
@@ -1789,7 +1787,7 @@ static int authenticate_digest_user(request_rec *r)
 
     if (resp->message_qop == NULL) {
         /* old (rfc-2069) style digest */
-        if (strcmp(resp->digest, old_digest(r, resp, conf->ha1))) {
+        if (strcmp(resp->digest, old_digest(r, resp))) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01792)
                           "user %s: password mismatch: %s", r->user,
                           r->uri);
@@ -1819,7 +1817,7 @@ static int authenticate_digest_user(request_rec *r)
             return HTTP_UNAUTHORIZED;
         }
 
-        exp_digest = new_digest(r, resp, conf);
+        exp_digest = new_digest(r, resp);
         if (!exp_digest) {
             /* we failed to allocate a client struct */
             return HTTP_INTERNAL_SERVER_ERROR;
@@ -1903,7 +1901,7 @@ static int add_auth_info(request_rec *r)
 
         /* calculate rspauth attribute
          */
-        ha1 = conf->ha1;
+        ha1 = resp->ha1;
 
         a2 = apr_pstrcat(r->pool, ":", resp->uri, NULL);
         ha2 = ap_md5(r->pool, (const unsigned char *)a2);
