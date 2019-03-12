@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) MPMs unix: bind the bucket number of each child to its slot number, for a
+     more efficient per bucket maintenance. [Yann Ylavic]
+
   *) mod_http2: when SSL renegotiation is inhibited and a 403 ErrorDocument is
      in play, the proper HTTP/2 stream reset did not trigger with H2_ERR_HTTP_1_1_REQUIRED.
      Fixed. [Michael Kaufmann] 
