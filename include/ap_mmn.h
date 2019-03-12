@@ -609,14 +609,15 @@
  * 20180906.1 (2.5.1-dev)  Don't export ap_filter_recycle() anymore
  * 20180906.2 (2.5.1-dev)  Add ap_state_dir_relative()
  * 20180906.3 (2.5.1-dev)  Add ap_dir_nofnmatch() and ap_dir_fnmatch().
+ * 20191203.1 (2.5.1-dev)  Axe bucket number from struct process_score
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20180906
+#define MODULE_MAGIC_NUMBER_MAJOR 20191203
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 3                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 1                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
