@@ -866,7 +866,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
 
             if (c->note_output_name) {
                 apr_table_setn(r->notes, c->note_output_name,
-                               (ctx->stream.total_in > 0)
+                               (ctx->stream.total_out > 0)
                                 ? apr_off_t_toa(r->pool,
                                                 ctx->stream.total_out)
                                 : "-");
@@ -1337,8 +1337,6 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
             /* pass through zlib inflate. */
             ctx->stream.next_in = (unsigned char *)data;
             ctx->stream.avail_in = (int)len;
-
-            zRC = Z_OK;
 
             if (!ctx->validation_buffer) {
                 while (ctx->stream.avail_in != 0) {

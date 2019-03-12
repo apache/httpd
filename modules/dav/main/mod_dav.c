@@ -2113,6 +2113,7 @@ static int dav_method_propfind(request_rec *r)
     ctx.r = r;
     ctx.bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
     apr_pool_create(&ctx.scratchpool, r->pool);
+    apr_pool_tag(ctx.scratchpool, "mod_dav-scratch");
 
     /* ### should open read-only */
     if ((err = dav_open_lockdb(r, 0, &ctx.w.lockdb)) != NULL) {

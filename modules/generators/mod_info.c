@@ -80,9 +80,9 @@ typedef struct
 module AP_MODULE_DECLARE_DATA info_module;
 
 /* current file name when doing -DDUMP_CONFIG */
-const char *dump_config_fn_info;
+static const char *dump_config_fn_info;
 /* file handle when doing -DDUMP_CONFIG */
-apr_file_t *out = NULL;
+static apr_file_t *out = NULL;
 
 static void *create_info_config(apr_pool_t * p, server_rec * s)
 {
@@ -297,7 +297,7 @@ typedef struct
     hook_get_t get;
 } hook_lookup_t;
 
-static hook_lookup_t startup_hooks[] = {
+static const hook_lookup_t startup_hooks[] = {
     {"Pre-Config", ap_hook_get_pre_config},
     {"Check Configuration", ap_hook_get_check_config},
     {"Test Configuration", ap_hook_get_test_config},
@@ -311,7 +311,7 @@ static hook_lookup_t startup_hooks[] = {
     {NULL},
 };
 
-static hook_lookup_t request_hooks[] = {
+static const hook_lookup_t request_hooks[] = {
     {"Pre-Connection", ap_hook_get_pre_connection},
     {"Create Connection", ap_hook_get_create_connection},
     {"Process Connection", ap_hook_get_process_connection},
@@ -339,7 +339,7 @@ static hook_lookup_t request_hooks[] = {
     {NULL},
 };
 
-static hook_lookup_t other_hooks[] = {
+static const hook_lookup_t other_hooks[] = {
     {"Monitor", ap_hook_get_monitor},
     {"Child Status", ap_hook_get_child_status},
     {"End Generation", ap_hook_get_end_generation},
@@ -378,7 +378,7 @@ static int module_find_hook(module * modp, hook_get_t hook_get)
 
 static void module_participate(request_rec * r,
                                module * modp,
-                               hook_lookup_t * lookup, int *comma)
+                               const hook_lookup_t *lookup, int *comma)
 {
     if (module_find_hook(modp, lookup->get)) {
         if (*comma) {

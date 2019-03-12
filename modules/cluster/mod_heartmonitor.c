@@ -624,9 +624,7 @@ static apr_status_t hm_watchdog_callback(int state, void *data,
             /* store in the slotmem or in the file depending on configuration */
             hm_update_stats(ctx, pool);
             cur = now = apr_time_sec(apr_time_now());
-            /* TODO: Insted HN_UPDATE_SEC use
-             * the ctx->interval
-             */
+
             while ((now - cur) < apr_time_sec(ctx->interval)) {
                 int n;
                 apr_status_t rc;
