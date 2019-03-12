@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_http2: when SSL renegotiation is inhibited and a 403 ErrorDocument is
+     in play, the proper HTTP/2 stream reset did not trigger with H2_ERR_HTTP_1_1_REQUIRED.
+     Fixed. [Michael Kaufmann] 
+
   *) mod_http2: new configuration directive: ```H2Padding numbits``` to control 
      padding of HTTP/2 payload frames. 'numbits' is a number from 0-8,
      controlling the range of padding bytes added to a frame. The actual number
