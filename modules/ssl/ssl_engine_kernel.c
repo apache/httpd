@@ -1144,7 +1144,8 @@ static int ssl_hook_Access_modern(request_rec *r, SSLSrvConfigRec *sc, SSLDirCon
                 return HTTP_FORBIDDEN;
             }
 
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10129) "verify client post handshake");
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(10129)
+                          "verify client post handshake");
 
             SSL_set_verify(ssl, vmode_needed, ssl_callback_SSLVerify);
 
