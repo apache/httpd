@@ -270,6 +270,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/h2-mega-v1.14.1-backport-bugs-and-whistles.patch
      +1: icing
 
+  *) MPMs unix: bind the bucket number of each child to its slot number, for a
+     more efficient per bucket maintenance.
+     trunk patch: http://svn.apache.org/r1855306
+     2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-scoreboard_bucket.patch
+                  (no motorz in 2.4.x)
+     +1: ylavic
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
