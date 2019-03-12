@@ -323,7 +323,7 @@ $ httxt2dbm -i mapfile.txt -o mapfile.map
 <div class="note">
 <p>Note that with some dbm types, more than one file is generated, with
 a common base name. For example, you may have two files named
-<code>mapfile.map.dir</code> and <code>mapfiile.map.pag</code>. This is
+<code>mapfile.map.dir</code> and <code>mapfile.map.pag</code>. This is
 normal, and you need only use the base name <code>mapfile.map</code> in
 your <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> directive.</p>
 </div>
