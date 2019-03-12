@@ -126,6 +126,13 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_dav: Fix a potential use after free
+     trunk patch: https://svn.apache.org/r1842010
+     2.4.x patch: svn merge -c 1842010 ^/httpd/httpd/trunk .
+     +1: jailletc36, icing, ylavic
+     jailletc36: could worth a CHANGE entry as it could fix some use after free or
+     garbage returned to the client
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -198,13 +205,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1850745 ^/httpd/httpd/trunk .
      +1: jim
 
-  *) mod_dav: Fix a potential use after free
-     trunk patch: https://svn.apache.org/r1842010
-     2.4.x patch: svn merge -c 1842010 ^/httpd/httpd/trunk .
-     +1: jailletc36, icing
-     jailletc36: could worth a CHANGE entry as it could fix some use after free or
-     garbage returned to the client
-
   *) mod_proxy_http: forward 100-continue, and minimize race conditions when
      reusing backend connections. PR 60330.
      trunk patch: http://svn.apache.org/r1656259
@@ -249,7 +249,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      icing: please add r1853967 to this to keep h2 working with this change. if added, +1 
 
   *) mod_cache_socache: Avoid reallocations and be safe with outgoing data
-     lifetime. [Yann Ylavic]
+     lifetime.
      trunk patch: http://svn.apache.org/r1853874
                   http://svn.apache.org/r1853938 (CHANGES entry)
      2.4.x patch: svn merge -c 1853874,1853938 ^/httpd/httpd/trunk .
@@ -261,7 +261,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1852038
                   http://svn.apache.org/r1852101
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/h2-slave-keepalives.patch
-     +1: icing
+     +1: icing, ylavic
 
   *) mod_http2/mod_proxy_http2: backport of v1.14.1. Fixes several important bugs and adds
      some requested new features (and some I made up). See patched CHANGES for all details.
