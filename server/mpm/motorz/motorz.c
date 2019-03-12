@@ -948,8 +948,9 @@ static void child_main(motorz_core_t *mz, int child_num_arg, int child_bucket)
     clean_child_exit(0);
 }
 
-static int make_child(motorz_core_t *mz, server_rec *s, int slot, int bucket)
+static int make_child(motorz_core_t *mz, server_rec *s, int slot)
 {
+    int bucket = slot % mz->mpm->num_buckets;
     int pid;
 
     if (slot + 1 > mz->max_daemons_limit) {
@@ -1020,7 +1021,6 @@ static int make_child(motorz_core_t *mz, server_rec *s, int slot, int bucket)
         child_main(mz, slot, bucket);
     }
 
-    ap_scoreboard_image->parent[slot].bucket = bucket;
     motorz_note_child_started(mz, slot, pid);
 
     return 0;
@@ -1036,7 +1036,7 @@ static void startup_children(motorz_core_t *mz, int number_to_start)
         if (ap_scoreboard_image->servers[i][0].status != SERVER_DEAD) {
             continue;
         }
-        if (make_child(mz, ap_server_conf, i, i % mz->mpm->num_buckets) < 0) {
+        if (make_child(mz, ap_server_conf, i) < 0) {
             break;
         }
         --number_to_start;
@@ -1045,8 +1045,6 @@ static void startup_children(motorz_core_t *mz, int number_to_start)
 
 static void perform_idle_server_maintenance(motorz_core_t *mz, apr_pool_t *p)
 {
-    static int bucket_make_child_record = -1;
-    static int bucket_kill_child_record = -1;
     int free_length;
     int free_slots[1];
 
@@ -1070,6 +1068,7 @@ static void perform_idle_server_maintenance(motorz_core_t *mz, apr_pool_t *p)
         }
     }
     if (active > ap_num_kids) {
+        static int bucket_kill_child_record = -1;
         /* kill off one child... we use the pod because that'll cause it to
          * shut down gracefully, in case it happened to pick up a request
          * while we were counting
@@ -1078,10 +1077,7 @@ static void perform_idle_server_maintenance(motorz_core_t *mz, apr_pool_t *p)
         ap_mpm_pod_signal(all_buckets[bucket_kill_child_record].pod);
     }
     else if (active < ap_num_kids) {
-        bucket_make_child_record++;
-        bucket_make_child_record %= mz->mpm->num_buckets;
-        make_child(mz, ap_server_conf, free_slots[0],
-                   bucket_make_child_record);
+        make_child(mz, ap_server_conf, free_slots[0]);
     }
 }
 
@@ -1113,7 +1109,7 @@ static int motorz_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     if (one_process) {
         AP_MONCONTROL(1);
-        make_child(mz, ap_server_conf, 0, 0);
+        make_child(mz, ap_server_conf, 0);
         /* NOTREACHED */
         ap_assert(0);
         return !OK;
@@ -1201,8 +1197,7 @@ static int motorz_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
                     /* we're still doing a 1-for-1 replacement of dead
                      * children with new children
                      */
-                    make_child(mz, ap_server_conf, child_slot,
-                               ap_get_scoreboard_process(child_slot)->bucket);
+                    make_child(mz, ap_server_conf, child_slot);
                     --remaining_children_to_start;
                 }
 #if APR_HAS_OTHER_CHILD
