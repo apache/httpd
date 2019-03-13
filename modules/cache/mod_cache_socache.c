@@ -429,6 +429,14 @@ static int create_entity(cache_handle_t *h, request_rec *r, const char *key,
     return OK;
 }
 
+static apr_status_t sobj_body_pre_cleanup(void *baton)
+{
+    cache_socache_object_t *sobj = baton;
+    apr_brigade_cleanup(sobj->body);
+    sobj->body = NULL;
+    return APR_SUCCESS;
+}
+
 static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
 {
     cache_socache_dir_conf *dconf =
@@ -648,35 +656,24 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
     }
 
     /* Retrieve the body if we have one */
-    sobj->body = apr_brigade_create(r->pool, r->connection->bucket_alloc);
     len = buffer_len - slider;
-
-    /*
-     *  Optimisation: if the body is small, we want to make a
-     *  copy of the body and free the temporary pool, as we
-     *  don't want large blocks of unused memory hanging around
-     *  to the end of the response. In contrast, if the body is
-     *  large, we would rather leave the body where it is in the
-     *  temporary pool, and save ourselves the copy.
-     */
-    if (len * 2 > dconf->max) {
+    if (len > 0) {
         apr_bucket *e;
-
-        /* large - use the brigade as is, we're done */
-        e = apr_bucket_immortal_create((const char *) sobj->buffer + slider,
-                len, r->connection->bucket_alloc);
-
+        /* Create the body brigade later concatenated to the output filters'
+         * brigade by recall_body(). Since sobj->buffer (the data) point to
+         * sobj->pool (a subpool of r->pool), be safe by using a pool bucket
+         * which can morph to heap if sobj->pool is destroyed while the bucket
+         * is still alive. But if sobj->pool gets destroyed while the bucket is
+         * still in sobj->body (i.e. recall_body() was never called), we don't
+         * need to morph to something just about to be freed, so a pre_cleanup
+         * will take care of cleaning up sobj->body before this happens (and is
+         * a noop otherwise).
+         */
+        sobj->body = apr_brigade_create(sobj->pool, r->connection->bucket_alloc);
+        apr_pool_pre_cleanup_register(sobj->pool, sobj, sobj_body_pre_cleanup);
+        e = apr_bucket_pool_create((const char *) sobj->buffer + slider, len,
+                                   sobj->pool, r->connection->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(sobj->body, e);
-    }
-    else {
-
-        /* small - make a copy of the data... */
-        apr_brigade_write(sobj->body, NULL, NULL, (const char *) sobj->buffer
-                + slider, len);
-
-        /* ...and get rid of the large memory buffer */
-        apr_pool_destroy(sobj->pool);
-        sobj->pool = NULL;
     }
 
     /* make the configuration stick */
@@ -766,13 +763,9 @@ static apr_status_t recall_body(cache_handle_t *h, apr_pool_t *p,
         apr_bucket_brigade *bb)
 {
     cache_socache_object_t *sobj = (cache_socache_object_t*) h->cache_obj->vobj;
-    apr_bucket *e;
 
-    e = APR_BRIGADE_FIRST(sobj->body);
-
-    if (e != APR_BRIGADE_SENTINEL(sobj->body)) {
-        APR_BUCKET_REMOVE(e);
-        APR_BRIGADE_INSERT_TAIL(bb, e);
+    if (sobj->body) {
+        APR_BRIGADE_CONCAT(bb, sobj->body);
     }
 
     return APR_SUCCESS;

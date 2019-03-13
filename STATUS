@@ -137,14 +137,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      +1: ylavic, icing, jim
      icing: please add r1853967 to this to keep h2 working with this change. if added, +1 
 
-  *) mod_cache_socache: Avoid reallocations and be safe with outgoing data
-     lifetime.
-     trunk patch: http://svn.apache.org/r1853874
-                  http://svn.apache.org/r1853938 (CHANGES entry)
-     2.4.x patch: svn merge -c 1853874,1853938 ^/httpd/httpd/trunk .
-                  (trunk works, modulo CHANGES)
-     +1: ylavic, icing, jim
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
