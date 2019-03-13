@@ -4,35 +4,6 @@ Changes with Apache 2.5.1
   *) MPMs unix: bind the bucket number of each child to its slot number, for a
      more efficient per bucket maintenance. [Yann Ylavic]
 
-  *) mod_http2: when SSL renegotiation is inhibited and a 403 ErrorDocument is
-     in play, the proper HTTP/2 stream reset did not trigger with H2_ERR_HTTP_1_1_REQUIRED.
-     Fixed. [Michael Kaufmann] 
-
-  *) mod_http2: new configuration directive: ```H2Padding numbits``` to control 
-     padding of HTTP/2 payload frames. 'numbits' is a number from 0-8,
-     controlling the range of padding bytes added to a frame. The actual number
-     added is chosen randomly per frame. This applies to HEADERS, DATA and PUSH_PROMISE
-     frames equally. The default continues to be 0, e.g. no padding. [Stefan Eissing] 
-  
-  *) mod_http2: ripping out all the h2_req_engine internal features now that mod_proxy_http2
-     has no more need for it. Optional functions are still declared but no longer implemented.
-     While previous mod_proxy_http2 will work with this, it is recommeneded to run the matching
-     versions of both modules. [Stefan Eissing]
-  
-  *) mod_proxy_http2: changed mod_proxy_http2 implementation and fixed several bugs which
-     resolve PR63170. The proxy module does now a single h2 request on the (reused)
-     connection and returns. [Stefan Eissing]
-  
-  *) mod_http2/mod_proxy_http2: proxy_http2 checks correct master connection aborted status 
-     to trigger immediate shutdown of backend connections. This is now always signalled
-     by mod_http2 when the the session is being released. 
-     proxy_http2 now only sends a PING frame to the backend when there is not already one
-     in flight. [Stefan Eissing]
-
-  *) mod_proxy_http2: fixed an issue where a proxy_http2 handler entered an infinite 
-     loop when encountering certain errors on the backend connection. 
-     See <https://bz.apache.org/bugzilla/show_bug.cgi?id=63170>. [Stefan Eissing]
-
   *) http: Fix possible empty response with mod_ratelimit for HEAD requests.
      PR 63192. [Yann Ylavic]
 
@@ -50,18 +21,8 @@ Changes with Apache 2.5.1
      configuration (SSLFIPS on) and not active by default in OpenSSL.
      PR 63136. [Yann Ylavic]
 
-  *) mod_http2: Configuration directoves H2Push and H2Upgrade can now be specified per 
-     Location/Directory, e.g. disabling PUSH for a specific set of resources. [Stefan Eissing]
-
-  *) mod_http2: HEAD requests to some module such as mod_cgid caused the stream to
-     terminate improperly and cause a HTTP/2 PROTOCOL_ERROR. 
-     Fixes <https://github.com/icing/mod_h2/issues/167>. [Michael Kaufmann]
-
   *) mod_ssl: give mod_md the chance to override certificate after ALPN protocol
      negotiation. [Stefan Eissing]
-
-  *) mod_http2: enable re-use of slave connections again. Fixed slave connection
-     keepalives counter. [Stefan Eissing]
 
   *) mod_proxy_wstunnel: Fix websocket proxy over UDS.
      PR 62932 <pavel dcmsys.com>
@@ -99,11 +60,6 @@ Changes with Apache 2.5.1
      MinSpareThreads, issue new one-time message AH10159. Matches worker MPM.
      [Eric Covener]
 
-  *) mod_http2: adding defensive code for stream EOS handling, in case the request handler
-     missed to signal it the normal way (eos buckets). Addresses github issues 
-     https://github.com/icing/mod_h2/issues/164, https://github.com/icing/mod_h2/issues/167
-     and https://github.com/icing/mod_h2/issues/170. [Stefan Eissing] 
-
   *) mod_proxy_scgi, mod_proxy_uwsgi: improve error handling when sending the
      body of the response. [Jim Jagielski]
 
@@ -124,10 +80,6 @@ Changes with Apache 2.5.1
 
   *) mod_proxy_hcheck: Fix issues with TCP health checks. PR 61499
      [Dominik Stillhard <dominik.stillhard united-security-providers.ch>]
-
-  *) mod_http2: connection IO event handling reworked. Instead of reacting on 
-     incoming bytes, the state machine now acts on incoming frames that are 
-     affecting it. This reduces state transitions. [Stefan Eissing]
 
   *) MPMs: Initialize all runtime/asynchronous objects on a dedicated pool and
      before signals handling to avoid lifetime issues on restart or shutdown.
@@ -188,13 +140,6 @@ Changes with Apache 2.5.1
      PKCS#11 OpenSSL engine.  [Anderson Sasaki <ansasaki redhat.com>,
      Joe Orton]
 
-  *) mod_http2: adding an abort function to slave connections' pools, so out-of-memory
-     events lead to a control process abort, as on HTTP/1.x connections. [Stefan Eissing]
-  
-  *) mod_http2: adding regular memory cleanup when transferring large response bodies. This
-     reduces memory footprint and avoids memory exhaustion when transferring large files
-     on 32-bit architectures. Fixes PR 62325. [Stefan Eissing]
-
   *) http: LimitRequestBody applies to proxied requests.  [Yann Ylavic]
 
   *) mod_logio: Add LogIOTrackTTFU and %^FU logformat to log the time
@@ -219,9 +164,6 @@ Changes with Apache 2.5.1
   *) mod_ssl: proper checks for libressl 2.07/8 and its TLSv1_3 support, see PR 62236.
      [Bernard Spil <brnrd@freebsd.org>]
   
-  *) mod_http2: on level trace2, log any unsuccessful HTTP/2 direct connection upgrade
-     with base64 encoding to unify its appearance in possible bug reports. [Stefan Eissing]
-
   *) mod_cgi: Add CGIScriptTimeout to make mod_cgi's timeout per-directory and
      independent of the core Timeout directive.  PR 62229.  
      [Hank Ibell <hwibell gmail.com>]
@@ -243,9 +185,6 @@ Changes with Apache 2.5.1
 
   *) core: adding AP_DECLARE for ap_parse_vhost_addrs() and minor bumb mmn. Resolves
      building mod_ssl on Windows. [Stefan Eissing, Gregg Smith]
-
-  *) mod_http2: discourage gzip/brotli content encoding on http2-status responses as
-     they are inserted into the reponse when filters are already done. [Stefan Eissing]
 
   *) core: adding defines to allow interworking with honggfuzz without
      further patches. [Stefan Eissing, Robert Swiecki]
@@ -315,9 +254,6 @@ Changes with Apache 2.5.1
      should be accepted after the authorization scheme. \t are also tolerated.
      [Christophe Jaillet]
   
-  *) mod_http2: fixed unfair scheduling when number of active connections
-     exceeded the scheduling fifo capacity. [Stefan Eissing]
-
   *) core: Support zone/scope in IPv6 link-local addresses in Listen and
      VirtualHost directives (requires APR 1.7.x or later).  PR 59396.  [Joe Orton]
 
