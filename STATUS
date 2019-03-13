@@ -126,6 +126,33 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_reqtimeout: Allow to configure (TLS-)handshake timeouts.  PR 61310.
+     trunk patch: http://svn.apache.org/r1853901
+                  http://svn.apache.org/r1853906
+                  http://svn.apache.org/r1853908
+                  http://svn.apache.org/r1853929
+                  http://svn.apache.org/r1853935
+                  http://svn.apache.org/r1853967
+     2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-reqtimeout_handshake-v2.patch
+     +1: ylavic, icing, jim
+     icing: please add r1853967 to this to keep h2 working with this change. if added, +1 
+
+  *) mod_cache_socache: Avoid reallocations and be safe with outgoing data
+     lifetime.
+     trunk patch: http://svn.apache.org/r1853874
+                  http://svn.apache.org/r1853938 (CHANGES entry)
+     2.4.x patch: svn merge -c 1853874,1853938 ^/httpd/httpd/trunk .
+                  (trunk works, modulo CHANGES)
+     +1: ylavic, icing, jim
+
+  *) mod_http2: enable re-use of slave connections again. Fixed slave connection
+     keepalives counter. [Stefan Eissing]
+     trunk patch: http://svn.apache.org/r1852038
+                  http://svn.apache.org/r1852101
+     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/h2-slave-keepalives.patch
+     +1: icing, ylavic, jim
+
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -229,32 +256,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              possible. Changes from v3 to v4 (r1853953 mainly, r1853956 is only
              comment) are non functional (or at least intended as such).
              
-
-  *) mod_reqtimeout: Allow to configure (TLS-)handshake timeouts.  PR 61310.
-     trunk patch: http://svn.apache.org/r1853901
-                  http://svn.apache.org/r1853906
-                  http://svn.apache.org/r1853908
-                  http://svn.apache.org/r1853929
-                  http://svn.apache.org/r1853935
-                  http://svn.apache.org/r1853967
-     2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-reqtimeout_handshake-v2.patch
-     +1: ylavic, icing, jim
-     icing: please add r1853967 to this to keep h2 working with this change. if added, +1 
-
-  *) mod_cache_socache: Avoid reallocations and be safe with outgoing data
-     lifetime.
-     trunk patch: http://svn.apache.org/r1853874
-                  http://svn.apache.org/r1853938 (CHANGES entry)
-     2.4.x patch: svn merge -c 1853874,1853938 ^/httpd/httpd/trunk .
-                  (trunk works, modulo CHANGES)
-     +1: ylavic, icing, jim
-
-  *) mod_http2: enable re-use of slave connections again. Fixed slave connection
-     keepalives counter. [Stefan Eissing]
-     trunk patch: http://svn.apache.org/r1852038
-                  http://svn.apache.org/r1852101
-     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/h2-slave-keepalives.patch
-     +1: icing, ylavic, jim
 
   *) mod_http2/mod_proxy_http2: backport of v1.14.1. Fixes several important bugs and adds
      some requested new features (and some I made up). See patched CHANGES for all details.
