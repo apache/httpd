@@ -281,6 +281,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/h2-mega-v1.14.1-backport-bugs-and-whistles.patch
      +1: icing
 
+  *) http: Fix possible empty response with mod_ratelimit for HEAD requests.
+     trunk patch: https://svn.apache.org/r1854004
+     2.4.x patch: svn merge -c 1854004 ^/httpd/httpd/trunk .
+     +1: elukey
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
