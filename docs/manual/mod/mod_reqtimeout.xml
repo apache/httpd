@@ -109,7 +109,7 @@ the request headers and/or body from client.
 </contextlist>
 <compatibility>Available in version 2.2.15 and later; defaulted to disabled in
 version 2.3.14 and earlier. The <code>handshake</code> stage is available since
-version 2.4.29.
+version 2.4.39.
 </compatibility>
 
 <usage>
