@@ -116,7 +116,7 @@ AC_DEFUN([FIND_LIBXML2], [
       XML2_INCLUDES="${xml2_path}"
       dnl libxml2 includes unicode/*.h files which uses C++ comments
       if test "$GCC" = "yes"; then
-        APACHE_ADD_GCC_CFLAG([-Wno-error=comment])
+        APR_ADDTO(MOD_CPPFLAGS, ["-Wno-error=comment"])
       fi
     else
       ac_cv_libxml2=no
