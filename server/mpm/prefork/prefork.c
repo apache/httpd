@@ -637,8 +637,9 @@ static void child_main(int child_num_arg, int child_bucket)
 }
 
 
-static int make_child(server_rec *s, int slot, int bucket)
+static int make_child(server_rec *s, int slot)
 {
+    int bucket = slot % retained->mpm->num_buckets;
     int pid;
 
     if (slot + 1 > retained->max_daemons_limit) {
@@ -716,7 +717,6 @@ static int make_child(server_rec *s, int slot, int bucket)
         child_main(slot, bucket);
     }
 
-    ap_scoreboard_image->parent[slot].bucket = bucket;
     prefork_note_child_started(slot, pid);
 
     return 0;
@@ -732,7 +732,7 @@ static void startup_children(int number_to_start)
         if (ap_scoreboard_image->servers[i][0].status != SERVER_DEAD) {
             continue;
         }
-        if (make_child(ap_server_conf, i, i % retained->mpm->num_buckets) < 0) {
+        if (make_child(ap_server_conf, i) < 0) {
             break;
         }
         --number_to_start;
@@ -741,8 +741,6 @@ static void startup_children(int number_to_start)
 
 static void perform_idle_server_maintenance(apr_pool_t *p)
 {
-    static int bucket_make_child_record = -1;
-    static int bucket_kill_child_record = -1;
     int i;
     int idle_count;
     worker_score *ws;
@@ -789,6 +787,7 @@ static void perform_idle_server_maintenance(apr_pool_t *p)
     }
     retained->max_daemons_limit = last_non_dead + 1;
     if (idle_count > ap_daemons_max_free) {
+        static int bucket_kill_child_record = -1;
         /* kill off one child... we use the pod because that'll cause it to
          * shut down gracefully, in case it happened to pick up a request
          * while we were counting
@@ -819,10 +818,7 @@ static void perform_idle_server_maintenance(apr_pool_t *p)
                     idle_count, total_non_dead);
             }
             for (i = 0; i < free_length; ++i) {
-                bucket_make_child_record++;
-                bucket_make_child_record %= retained->mpm->num_buckets;
-                make_child(ap_server_conf, free_slots[i],
-                           bucket_make_child_record);
+                make_child(ap_server_conf, free_slots[i]);
             }
             /* the next time around we want to spawn twice as many if this
              * wasn't good enough, but not if we've just done a graceful
@@ -867,7 +863,7 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     if (one_process) {
         AP_MONCONTROL(1);
-        make_child(ap_server_conf, 0, 0);
+        make_child(ap_server_conf, 0);
         /* NOTREACHED */
         ap_assert(0);
         return !OK;
@@ -976,8 +972,7 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
                     /* we're still doing a 1-for-1 replacement of dead
                      * children with new children
                      */
-                    make_child(ap_server_conf, child_slot,
-                               ap_get_scoreboard_process(child_slot)->bucket);
+                    make_child(ap_server_conf, child_slot);
                     --remaining_children_to_start;
                 }
 #if APR_HAS_OTHER_CHILD

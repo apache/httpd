@@ -1339,7 +1339,6 @@ static int make_child(server_rec *s, int slot, int bucket)
         worker_note_child_lost_slot(slot, pid);
     }
     ap_scoreboard_image->parent[slot].quiescing = 0;
-    ap_scoreboard_image->parent[slot].bucket = bucket;
     worker_note_child_started(slot, pid);
     return 0;
 }
@@ -1388,6 +1387,7 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
         int any_dead_threads = 0;
         int all_dead_threads = 1;
         int child_threads_active = 0;
+        int bucket = i % num_buckets;
 
         if (i >= retained->max_daemons_limit &&
             totally_free_length == retained->idle_spawn_rate[child_bucket]) {
@@ -1420,7 +1420,7 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
                 if (status <= SERVER_READY &&
                         !ps->quiescing &&
                         ps->generation == retained->mpm->my_generation &&
-                        ps->bucket == child_bucket) {
+                        bucket == child_bucket) {
                     ++idle_thread_count;
                 }
                 if (status >= SERVER_READY && status < SERVER_GRACEFUL) {
@@ -1430,6 +1430,7 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
         }
         active_thread_count += child_threads_active;
         if (any_dead_threads
+                && bucket == child_bucket
                 && totally_free_length < retained->idle_spawn_rate[child_bucket]
                 && free_length < MAX_SPAWN_RATE / num_buckets
                 && (!ps->pid               /* no process in the slot */
@@ -1615,14 +1616,15 @@ static void server_main_loop(int remaining_children_to_start, int num_buckets)
                 ps->quiescing = 0;
                 if (processed_status == APEXIT_CHILDSICK) {
                     /* resource shortage, minimize the fork rate */
-                    retained->idle_spawn_rate[ps->bucket] = 1;
+                    retained->idle_spawn_rate[child_slot % num_buckets] = 1;
                 }
                 else if (remaining_children_to_start
                     && child_slot < ap_daemons_limit) {
                     /* we're still doing a 1-for-1 replacement of dead
                      * children with new children
                      */
-                    make_child(ap_server_conf, child_slot, ps->bucket);
+                    make_child(ap_server_conf, child_slot,
+                               child_slot % num_buckets);
                     --remaining_children_to_start;
                 }
             }
