@@ -133,13 +133,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      jailletc36: could worth a CHANGE entry as it could fix some use after free or
      garbage returned to the client
 
-  *) MPMs unix: bind the bucket number of each child to its slot number, for a
-     more efficient per bucket maintenance.
-     trunk patch: http://svn.apache.org/r1855306
-     2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-scoreboard_bucket.patch
-                  (no motorz in 2.4.x)
-     +1: ylavic, rpluem, jorton
-
   *) mod_ssl: AH10129 from ERR to DEBUG level.
      trunk patch: http://svn.apache.org/r1855349
      2.4.x patch: svn merge -c 1855349 ^/httpd/httpd/trunk .
