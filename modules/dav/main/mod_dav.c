@@ -2012,9 +2012,9 @@ static dav_error * dav_propfind_walker(dav_walk_resource *wres, int calltype)
                                  : DAV_PROP_INSERT_NAME;
         propstats = dav_get_allprops(propdb, what);
     }
-    dav_close_propdb(propdb);
-
     dav_stream_response(wres, 0, &propstats, ctx->scratchpool);
+
+    dav_close_propdb(propdb);
 
     /* at this point, ctx->scratchpool has been used to stream a
        single response.  this function fully controls the pool, and
