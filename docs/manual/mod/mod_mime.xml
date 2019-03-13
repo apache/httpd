@@ -1058,7 +1058,7 @@ RemoveType .cgi
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context>
-<compatibility>IBM HTTP Server 9.0.0.12 and later</compatibility>
+<compatibility>Apache HTTP Server 2.5.1 and later</compatibility>
 </contextlist>
 <override>FileInfo</override>
 
