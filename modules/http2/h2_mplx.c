@@ -40,7 +40,6 @@
 #include "h2_ctx.h"
 #include "h2_h2.h"
 #include "h2_mplx.h"
-#include "h2_ngn_shed.h"
 #include "h2_request.h"
 #include "h2_stream.h"
 #include "h2_session.h"
@@ -83,12 +82,6 @@ static void check_data_for(h2_mplx *m, h2_stream *stream, int lock);
 static void stream_output_consumed(void *ctx, 
                                    h2_bucket_beam *beam, apr_off_t length)
 {
-    h2_stream *stream = ctx;
-    h2_task *task = stream->task;
-    
-    if (length > 0 && task && task->assigned) {
-        h2_req_engine_out_consumed(task->assigned, task->c, length); 
-    }
 }
 
 static void stream_input_ev(void *ctx, h2_bucket_beam *beam)
@@ -136,7 +129,6 @@ static void stream_cleanup(h2_mplx *m, h2_stream *stream)
     }
     else if (stream->task) {
         stream->task->c->aborted = 1;
-        apr_thread_cond_broadcast(m->task_thawed);
     }
 }
 
@@ -151,25 +143,19 @@ static void stream_cleanup(h2_mplx *m, h2_stream *stream)
  *   their HTTP/1 cousins, the separate allocator seems to work better
  *   than protecting a shared h2_session one with an own lock.
  */
-h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *parent, 
-                        const h2_config *conf, 
+h2_mplx *h2_mplx_create(conn_rec *c, server_rec *s, apr_pool_t *parent, 
                         h2_workers *workers)
 {
     apr_status_t status = APR_SUCCESS;
     apr_allocator_t *allocator;
     apr_thread_mutex_t *mutex;
     h2_mplx *m;
-    h2_ctx *ctx = h2_ctx_get(c, 0);
-    ap_assert(conf);
     
     m = apr_pcalloc(parent, sizeof(h2_mplx));
     if (m) {
         m->id = c->id;
         m->c = c;
-        m->s = (ctx? h2_ctx_server_get(ctx) : NULL);
-        if (!m->s) {
-            m->s = c->base_server;
-        }
+        m->s = s;
         
         /* We create a pool with its own allocator to be used for
          * processing slave connections. This is the only way to have the
@@ -204,14 +190,8 @@ h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *parent,
             return NULL;
         }
         
-        status = apr_thread_cond_create(&m->task_thawed, m->pool);
-        if (status != APR_SUCCESS) {
-            apr_pool_destroy(m->pool);
-            return NULL;
-        }
-    
-        m->max_streams = h2_config_geti(conf, H2_CONF_MAX_STREAMS);
-        m->stream_max_mem = h2_config_geti(conf, H2_CONF_STREAM_MAX_MEM);
+        m->max_streams = h2_config_sgeti(s, H2_CONF_MAX_STREAMS);
+        m->stream_max_mem = h2_config_sgeti(s, H2_CONF_STREAM_MAX_MEM);
 
         m->streams = h2_ihash_create(m->pool, offsetof(h2_stream,id));
         m->sredo = h2_ihash_create(m->pool, offsetof(h2_stream,id));
@@ -232,10 +212,6 @@ h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *parent,
         m->limit_change_interval = apr_time_from_msec(100);
         
         m->spare_slaves = apr_array_make(m->pool, 10, sizeof(conn_rec*));
-        
-        m->ngn_shed = h2_ngn_shed_create(m->pool, m->c, m->max_streams, 
-                                         m->stream_max_mem);
-        h2_ngn_shed_set_ctx(m->ngn_shed , m);
     }
     return m;
 }
@@ -394,10 +370,10 @@ static int report_stream_iter(void *ctx, void *val) {
     if (task) {
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c, /* NO APLOGNO */
                       H2_STRM_MSG(stream, "->03198: %s %s %s"
-                      "[started=%d/done=%d/frozen=%d]"), 
+                      "[started=%d/done=%d]"), 
                       task->request->method, task->request->authority, 
                       task->request->path, task->worker_started, 
-                      task->worker_done, task->frozen);
+                      task->worker_done);
     }
     else {
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c, /* NO APLOGNO */
@@ -436,7 +412,7 @@ static int stream_cancel_iter(void *ctx, void *val) {
 void h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
 {
     apr_status_t status;
-    int i, wait_secs = 60;
+    int i, wait_secs = 60, old_aborted;
 
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c,
                   "h2_mplx(%ld): start release", m->id);
@@ -447,15 +423,19 @@ void h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
     
     H2_MPLX_ENTER_ALWAYS(m);
 
+    /* While really terminating any slave connections, treat the master
+     * connection as aborted. It's not as if we could send any more data
+     * at this point. */
+    old_aborted = m->c->aborted;
+    m->c->aborted = 1;
+
     /* How to shut down a h2 connection:
      * 1. cancel all streams still active */
     while (!h2_ihash_iter(m->streams, stream_cancel_iter, m)) {
         /* until empty */
     }
     
-    /* 2. terminate ngn_shed, no more streams
-     * should be scheduled or in the active set */
-    h2_ngn_shed_abort(m->ngn_shed);
+    /* 2. no more streams should be scheduled or in the active set */
     ap_assert(h2_ihash_empty(m->streams));
     ap_assert(h2_iq_empty(m->q));
     
@@ -479,10 +459,6 @@ void h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
     ap_assert(m->tasks_active == 0);
     m->join_wait = NULL;
     
-    /* 4. close the h2_req_enginge shed */
-    h2_ngn_shed_destroy(m->ngn_shed);
-    m->ngn_shed = NULL;
-    
     /* 4. With all workers done, all streams should be in spurge */
     if (!h2_ihash_empty(m->shold)) {
         ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, m->c, APLOGNO(03516)
@@ -491,6 +467,7 @@ void h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
         h2_ihash_iter(m->shold, unexpected_stream_iter, m);
     }
     
+    m->c->aborted = old_aborted;
     H2_MPLX_LEAVE(m);
 
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c,
@@ -787,46 +764,13 @@ apr_status_t h2_mplx_pop_task(h2_mplx *m, h2_task **ptask)
     return rv;
 }
 
-static void task_done(h2_mplx *m, h2_task *task, h2_req_engine *ngn)
+static void task_done(h2_mplx *m, h2_task *task)
 {
     h2_stream *stream;
     
-    if (task->frozen) {
-        /* this task was handed over to an engine for processing 
-         * and the original worker has finished. That means the 
-         * engine may start processing now. */
-        h2_task_thaw(task);
-        apr_thread_cond_broadcast(m->task_thawed);
-        return;
-    }
-        
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c,
                   "h2_mplx(%ld): task(%s) done", m->id, task->id);
     out_close(m, task);
-    
-    if (ngn) {
-        apr_off_t bytes = 0;
-        h2_beam_send(task->output.beam, NULL, APR_NONBLOCK_READ);
-        bytes += h2_beam_get_buffered(task->output.beam);
-        if (bytes > 0) {
-            /* we need to report consumed and current buffered output
-             * to the engine. The request will be streamed out or cancelled,
-             * no more data is coming from it and the engine should update
-             * its calculations before we destroy this information. */
-            h2_req_engine_out_consumed(ngn, task->c, bytes);
-        }
-    }
-    
-    if (task->engine) {
-        if (!m->aborted && !task->c->aborted 
-            && !h2_req_engine_is_shutdown(task->engine)) {
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c, APLOGNO(10022)
-                          "h2_mplx(%ld): task(%s) has not-shutdown "
-                          "engine(%s)", m->id, task->id, 
-                          h2_req_engine_get_id(task->engine));
-        }
-        h2_ngn_shed_done_ngn(m->ngn_shed, task->engine);
-    }
     
     task->worker_done = 1;
     task->done_at = apr_time_now();
@@ -849,18 +793,24 @@ static void task_done(h2_mplx *m, h2_task *task, h2_req_engine *ngn)
                           m->id, m->limit_active);
         }
     }
-    
+
+    ap_assert(task->done_done == 0);
+
     stream = h2_ihash_get(m->streams, task->stream_id);
     if (stream) {
         /* stream not done yet. */
         if (!m->aborted && h2_ihash_get(m->sredo, stream->id)) {
             /* reset and schedule again */
+            task->worker_done = 0;
             h2_task_redo(task);
             h2_ihash_remove(m->sredo, stream->id);
             h2_iq_add(m->q, stream->id, NULL, NULL);
+            ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, m->c,
+                          H2_STRM_MSG(stream, "redo, added to q")); 
         }
         else {
             /* stream not cleaned up, stay around */
+            task->done_done = 1;
             ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c,
                           H2_STRM_MSG(stream, "task_done, stream open")); 
             if (stream->input) {
@@ -873,6 +823,7 @@ static void task_done(h2_mplx *m, h2_task *task, h2_req_engine *ngn)
     }
     else if ((stream = h2_ihash_get(m->shold, task->stream_id)) != NULL) {
         /* stream is done, was just waiting for this. */
+        task->done_done = 1;
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c,
                       H2_STRM_MSG(stream, "task_done, in hold"));
         if (stream->input) {
@@ -897,7 +848,7 @@ void h2_mplx_task_done(h2_mplx *m, h2_task *task, h2_task **ptask)
 {
     H2_MPLX_ENTER_ALWAYS(m);
 
-    task_done(m, task, NULL);
+    task_done(m, task);
     --m->tasks_active;
     
     if (m->join_wait) {
@@ -1088,142 +1039,6 @@ apr_status_t h2_mplx_idle(h2_mplx *m)
 
     H2_MPLX_LEAVE(m);
     return status;
-}
-
-/*******************************************************************************
- * HTTP/2 request engines
- ******************************************************************************/
-
-typedef struct {
-    h2_mplx * m;
-    h2_req_engine *ngn;
-    int streams_updated;
-} ngn_update_ctx;
-
-static int ngn_update_window(void *ctx, void *val)
-{
-    ngn_update_ctx *uctx = ctx;
-    h2_stream *stream = val;
-    if (stream->task && stream->task->assigned == uctx->ngn
-        && output_consumed_signal(uctx->m, stream->task)) {
-        ++uctx->streams_updated;
-    }
-    return 1;
-}
-
-static apr_status_t ngn_out_update_windows(h2_mplx *m, h2_req_engine *ngn)
-{
-    ngn_update_ctx ctx;
-        
-    ctx.m = m;
-    ctx.ngn = ngn;
-    ctx.streams_updated = 0;
-    h2_ihash_iter(m->streams, ngn_update_window, &ctx);
-    
-    return ctx.streams_updated? APR_SUCCESS : APR_EAGAIN;
-}
-
-apr_status_t h2_mplx_req_engine_push(const char *ngn_type, 
-                                     request_rec *r,
-                                     http2_req_engine_init *einit)
-{
-    apr_status_t status;
-    h2_mplx *m;
-    h2_task *task;
-    h2_stream *stream;
-    
-    task = h2_ctx_rget_task(r);
-    if (!task) {
-        return APR_ECONNABORTED;
-    }
-    m = task->mplx;
-    
-    H2_MPLX_ENTER(m);
-
-    stream = h2_ihash_get(m->streams, task->stream_id);
-    if (stream) {
-        status = h2_ngn_shed_push_request(m->ngn_shed, ngn_type, r, einit);
-    }
-    else {
-        status = APR_ECONNABORTED;
-    }
-
-    H2_MPLX_LEAVE(m);
-    return status;
-}
-
-apr_status_t h2_mplx_req_engine_pull(h2_req_engine *ngn, 
-                                     apr_read_type_e block, 
-                                     int capacity, 
-                                     request_rec **pr)
-{   
-    h2_ngn_shed *shed = h2_ngn_shed_get_shed(ngn);
-    h2_mplx *m = h2_ngn_shed_get_ctx(shed);
-    apr_status_t status;
-    int want_shutdown;
-    
-    H2_MPLX_ENTER(m);
-
-    want_shutdown = (block == APR_BLOCK_READ);
-
-    /* Take this opportunity to update output consummation 
-     * for this engine */
-    ngn_out_update_windows(m, ngn);
-    
-    if (want_shutdown && !h2_iq_empty(m->q)) {
-        /* For a blocking read, check first if requests are to be
-         * had and, if not, wait a short while before doing the
-         * blocking, and if unsuccessful, terminating read.
-         */
-        status = h2_ngn_shed_pull_request(shed, ngn, capacity, 1, pr);
-        if (APR_STATUS_IS_EAGAIN(status)) {
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c,
-                          "h2_mplx(%ld): start block engine pull", m->id);
-            apr_thread_cond_timedwait(m->task_thawed, m->lock, 
-                                      apr_time_from_msec(20));
-            status = h2_ngn_shed_pull_request(shed, ngn, capacity, 1, pr);
-        }
-    }
-    else {
-        status = h2_ngn_shed_pull_request(shed, ngn, capacity,
-                                          want_shutdown, pr);
-    }
-
-    H2_MPLX_LEAVE(m);
-    return status;
-}
- 
-void h2_mplx_req_engine_done(h2_req_engine *ngn, conn_rec *r_conn,
-                             apr_status_t status)
-{
-    h2_task *task = h2_ctx_cget_task(r_conn);
-    
-    if (task) {
-        h2_mplx *m = task->mplx;
-        h2_stream *stream;
-
-        H2_MPLX_ENTER_ALWAYS(m);
-
-        stream = h2_ihash_get(m->streams, task->stream_id);
-        
-        ngn_out_update_windows(m, ngn);
-        h2_ngn_shed_done_task(m->ngn_shed, ngn, task);
-        
-        if (status != APR_SUCCESS && stream 
-            && h2_task_can_redo(task) 
-            && !h2_ihash_get(m->sredo, stream->id)) {
-            h2_ihash_add(m->sredo, stream);
-        }
-
-        if (task->engine) { 
-            /* cannot report that as done until engine returns */
-        }
-        else {
-            task_done(m, task, ngn);
-        }
-
-        H2_MPLX_LEAVE(m);
-    }
 }
 
 /*******************************************************************************

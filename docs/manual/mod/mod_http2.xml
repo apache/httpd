@@ -244,6 +244,8 @@ H2Direct on
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
+            <context>directory</context>
+            <context>.htaccess</context>
         </contextlist>
         <compatibility>Available in version 2.4.18 and later.</compatibility>
         
@@ -269,7 +271,8 @@ H2Direct on
             </p>
             <p> 
                 Link headers in responses are either set by the application or
-                can be configured via <module>mod_headers</module> as:
+                can be configured via <directive>H2PushResource</directive> or
+                using <module>mod_headers</module> as:
             </p>
             <example><title>mod_headers example</title>
                 <highlight language="config">
@@ -286,9 +289,10 @@ H2Direct on
                 twice or more to one client. Use with care.
             </p>
             <p> 
-                HTTP/2 server pushes are enabled by default. This directive 
-                allows it to be switch off on all resources of this server/virtual
-                host.
+                HTTP/2 server pushes are enabled by default. On a server or virtual host,
+                you may enable/disable this feature for any connection to the host. In addition,
+                you may disable PUSH for a set of resources in a Directory/Location. This controls
+                which resources may cause a PUSH, not which resources may be sent via PUSH.
             </p>
             <example><title>Example</title>
                 <highlight language="config">
@@ -480,6 +484,8 @@ H2PushPriority text/css   interleaved      # weight 256 default
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
+            <context>directory</context>
+            <context>.htaccess</context>
         </contextlist>
         
         <usage>
@@ -938,4 +944,41 @@ H2TLSCoolDownSecs 0
         </usage>
     </directivesynopsis>
     
+    <directivesynopsis>
+        <name>H2Padding</name>
+        <description>Determine the range of padding bytes added to payload frames</description>
+        <syntax>H2Padding numbits</syntax>
+        <default>H2Padding 0</default>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+        </contextlist>
+        <compatibility>Available in version 2.4.39 and later.</compatibility>
+        
+        <usage>
+            <p>
+                With the default 0, no padding bytes are added to any payload
+                frames, e.g. HEADERS, DATA and PUSH_PROMISE. This is the behaviour
+                of previous versions. It means that under certain conditions, an
+                observer of network traffic can see the length of those frames 
+                in the TLS stream.
+            </p>
+            <p>
+                When configuring numbits of 1-8, a random number in range
+                [0, 2^numbits[ are added to each frame. The random value is chosen
+                independantly for each frame that the module sends back to the client.
+            </p>
+            <p>
+                While more padding bytes give better message length obfuscation, they
+                are also additional traffic. The optimal number therefore depends on
+                the kind of web traffic the server carries.
+            </p>
+            <p>
+                The default of 0, e.g. no padding, was chosen for maximum backward
+                compatibility. There might be deployments where padding bytes are
+                unwanted or do harm. The most likely cause would be a client that
+                has a faults implementation.
+            </p>
+        </usage>
+    </directivesynopsis>
 </modulesynopsis>

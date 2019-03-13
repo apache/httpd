@@ -23,21 +23,21 @@ struct h2_task;
 /**
  * Setup the connection and our context for HTTP/2 processing
  *
- * @param ctx the http2 context to setup
  * @param c the connection HTTP/2 is starting on
  * @param r the upgrade request that still awaits an answer, optional
+ * @param s the server selected for this connection (can be != c->base_server)
  */
-apr_status_t h2_conn_setup(struct h2_ctx *ctx, conn_rec *c, request_rec *r);
+apr_status_t h2_conn_setup(conn_rec *c, request_rec *r, server_rec *s);
 
 /**
  * Run the HTTP/2 connection in synchronous fashion. 
  * Return when the HTTP/2 session is done
  * and the connection will close or a fatal error occurred.
  *
- * @param ctx the http2 context to run
+ * @param c the http2 connection to run
  * @return APR_SUCCESS when session is done.
  */
-apr_status_t h2_conn_run(struct h2_ctx *ctx, conn_rec *c);
+apr_status_t h2_conn_run(conn_rec *c);
 
 /**
  * The connection is about to close. If we have not send a GOAWAY

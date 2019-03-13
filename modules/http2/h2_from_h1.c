@@ -594,18 +594,20 @@ apr_status_t h2_filter_headers_out(ap_filter_t *f, apr_bucket_brigade *bb)
         }
     }
     
-    if (r->header_only) {
+    if (r->header_only || AP_STATUS_IS_HEADER_ONLY(r->status)) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, f->c,
-                      "h2_task(%s): header_only, cleanup output brigade", 
+                      "h2_task(%s): headers only, cleanup output brigade", 
                       task->id);
         b = body_bucket? body_bucket : APR_BRIGADE_FIRST(bb);
         while (b != APR_BRIGADE_SENTINEL(bb)) {
             next = APR_BUCKET_NEXT(b);
             if (APR_BUCKET_IS_EOS(b) || AP_BUCKET_IS_EOR(b)) {
                 break;
-            } 
-            APR_BUCKET_REMOVE(b);
-            apr_bucket_destroy(b);
+            }
+            if (!H2_BUCKET_IS_HEADERS(b)) {
+                APR_BUCKET_REMOVE(b);
+                apr_bucket_destroy(b);
+            }
             b = next;
         }
     }

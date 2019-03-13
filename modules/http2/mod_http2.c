@@ -172,27 +172,6 @@ static char *http2_var_lookup(apr_pool_t *, server_rec *,
                          conn_rec *, request_rec *, char *name);
 static int http2_is_h2(conn_rec *);
 
-static apr_status_t http2_req_engine_push(const char *ngn_type, 
-                                          request_rec *r, 
-                                          http2_req_engine_init *einit)
-{
-    return h2_mplx_req_engine_push(ngn_type, r, einit);
-}
-
-static apr_status_t http2_req_engine_pull(h2_req_engine *ngn, 
-                                          apr_read_type_e block, 
-                                          int capacity, 
-                                          request_rec **pr)
-{
-    return h2_mplx_req_engine_pull(ngn, block, capacity, pr);
-}
-
-static void http2_req_engine_done(h2_req_engine *ngn, conn_rec *r_conn,
-                                  apr_status_t status)
-{
-    h2_mplx_req_engine_done(ngn, r_conn, status);
-}
-
 static void http2_get_num_workers(server_rec *s, int *minw, int *maxw)
 {
     h2_get_num_workers(s, minw, maxw);
@@ -220,9 +199,6 @@ static void h2_hooks(apr_pool_t *pool)
     
     APR_REGISTER_OPTIONAL_FN(http2_is_h2);
     APR_REGISTER_OPTIONAL_FN(http2_var_lookup);
-    APR_REGISTER_OPTIONAL_FN(http2_req_engine_push);
-    APR_REGISTER_OPTIONAL_FN(http2_req_engine_pull);
-    APR_REGISTER_OPTIONAL_FN(http2_req_engine_done);
     APR_REGISTER_OPTIONAL_FN(http2_get_num_workers);
 
     ap_log_perror(APLOG_MARK, APLOG_TRACE1, 0, pool, "installing hooks");
@@ -260,9 +236,8 @@ static const char *val_H2_PUSH(apr_pool_t *p, server_rec *s,
 {
     if (ctx) {
         if (r) {
-            h2_task *task = h2_ctx_get_task(ctx);
-            if (task) {
-                h2_stream *stream = h2_mplx_stream_get(task->mplx, task->stream_id);
+            if (ctx->task) {
+                h2_stream *stream = h2_mplx_stream_get(ctx->task->mplx, ctx->task->stream_id);
                 if (stream && stream->push_policy != H2_PUSH_NONE) {
                     return "on";
                 }
@@ -273,8 +248,7 @@ static const char *val_H2_PUSH(apr_pool_t *p, server_rec *s,
         }
     }
     else if (s) {
-        const h2_config *cfg = h2_config_sget(s);
-        if (cfg && h2_config_geti(cfg, H2_CONF_PUSH)) {
+        if (h2_config_geti(r, s, H2_CONF_PUSH)) {
             return "on";
         }
     }
@@ -285,8 +259,7 @@ static const char *val_H2_PUSHED(apr_pool_t *p, server_rec *s,
                                  conn_rec *c, request_rec *r, h2_ctx *ctx)
 {
     if (ctx) {
-        h2_task *task = h2_ctx_get_task(ctx);
-        if (task && !H2_STREAM_CLIENT_INITIATED(task->stream_id)) {
+        if (ctx->task && !H2_STREAM_CLIENT_INITIATED(ctx->task->stream_id)) {
             return "PUSHED";
         }
     }
@@ -297,9 +270,8 @@ static const char *val_H2_PUSHED_ON(apr_pool_t *p, server_rec *s,
                                     conn_rec *c, request_rec *r, h2_ctx *ctx)
 {
     if (ctx) {
-        h2_task *task = h2_ctx_get_task(ctx);
-        if (task && !H2_STREAM_CLIENT_INITIATED(task->stream_id)) {
-            h2_stream *stream = h2_mplx_stream_get(task->mplx, task->stream_id);
+        if (ctx->task && !H2_STREAM_CLIENT_INITIATED(ctx->task->stream_id)) {
+            h2_stream *stream = h2_mplx_stream_get(ctx->task->mplx, ctx->task->stream_id);
             if (stream) {
                 return apr_itoa(p, stream->initiated_on);
             }
@@ -312,9 +284,8 @@ static const char *val_H2_STREAM_TAG(apr_pool_t *p, server_rec *s,
                                      conn_rec *c, request_rec *r, h2_ctx *ctx)
 {
     if (ctx) {
-        h2_task *task = h2_ctx_get_task(ctx);
-        if (task) {
-            return task->id;
+        if (ctx->task) {
+            return ctx->task->id;
         }
     }
     return "";
@@ -366,7 +337,7 @@ static char *http2_var_lookup(apr_pool_t *p, server_rec *s,
     for (i = 0; i < H2_ALEN(H2_VARS); ++i) {
         h2_var_def *vdef = &H2_VARS[i];
         if (!strcmp(vdef->name, name)) {
-            h2_ctx *ctx = (r? h2_ctx_rget(r) : 
+            h2_ctx *ctx = (r? h2_ctx_get(c, 0) : 
                            h2_ctx_get(c->master? c->master : c, 0));
             return (char *)vdef->lookup(p, s, c, r, ctx);
         }
@@ -377,7 +348,7 @@ static char *http2_var_lookup(apr_pool_t *p, server_rec *s,
 static int h2_h2_fixups(request_rec *r)
 {
     if (r->connection->master) {
-        h2_ctx *ctx = h2_ctx_rget(r);
+        h2_ctx *ctx = h2_ctx_get(r->connection, 0);
         int i;
         
         for (i = 0; ctx && i < H2_ALEN(H2_VARS); ++i) {

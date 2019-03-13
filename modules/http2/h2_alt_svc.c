@@ -75,7 +75,7 @@ h2_alt_svc *h2_alt_svc_parse(const char *s, apr_pool_t *pool)
 
 static int h2_alt_svc_handler(request_rec *r)
 {
-    const h2_config *cfg;
+    apr_array_header_t *alt_svcs;
     int i;
     
     if (r->connection->keepalives > 0) {
@@ -87,8 +87,8 @@ static int h2_alt_svc_handler(request_rec *r)
         return DECLINED;
     }
     
-    cfg = h2_config_sget(r->server);
-    if (r->hostname && cfg && cfg->alt_svcs && cfg->alt_svcs->nelts > 0) {
+    alt_svcs = h2_config_alt_svcs(r);
+    if (r->hostname && alt_svcs && alt_svcs->nelts > 0) {
         const char *alt_svc_used = apr_table_get(r->headers_in, "Alt-Svc-Used");
         if (!alt_svc_used) {
             /* We have alt-svcs defined and client is not already using
@@ -99,7 +99,7 @@ static int h2_alt_svc_handler(request_rec *r)
             const char *alt_svc = "";
             const char *svc_ma = "";
             int secure = h2_h2_is_tls(r->connection);
-            int ma = h2_config_geti(cfg, H2_CONF_ALT_SVC_MAX_AGE);
+            int ma = h2_config_rgeti(r, H2_CONF_ALT_SVC_MAX_AGE);
             if (ma >= 0) {
                 svc_ma = apr_psprintf(r->pool, "; ma=%d", ma);
             }
@@ -107,8 +107,8 @@ static int h2_alt_svc_handler(request_rec *r)
                           "h2_alt_svc: announce %s for %s:%d", 
                           (secure? "secure" : "insecure"), 
                           r->hostname, (int)r->server->port);
-            for (i = 0; i < cfg->alt_svcs->nelts; ++i) {
-                h2_alt_svc *as = h2_alt_svc_IDX(cfg->alt_svcs, i);
+            for (i = 0; i < alt_svcs->nelts; ++i) {
+                h2_alt_svc *as = h2_alt_svc_IDX(alt_svcs, i);
                 const char *ahost = as->host;
                 if (ahost && !apr_strnatcasecmp(ahost, r->hostname)) {
                     ahost = NULL;

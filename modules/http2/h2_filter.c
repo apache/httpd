@@ -54,6 +54,7 @@ static apr_status_t recv_RAW_DATA(conn_rec *c, h2_filter_cin *cin,
     const char *data;
     ssize_t n;
     
+    (void)c;
     status = apr_bucket_read(b, &data, &len, block);
     
     while (status == APR_SUCCESS && len > 0) {
@@ -71,10 +72,10 @@ static apr_status_t recv_RAW_DATA(conn_rec *c, h2_filter_cin *cin,
         }
         else {
             session->io.bytes_read += n;
-            if (len <= n) {
+            if ((apr_ssize_t)len <= n) {
                 break;
             }
-            len -= n;
+            len -= (apr_size_t)n;
             data += n;
         }
     }
@@ -277,6 +278,7 @@ apr_bucket *h2_bucket_observer_beam(struct h2_bucket_beam *beam,
                                     apr_bucket_brigade *dest,
                                     const apr_bucket *src)
 {
+    (void)beam;
     if (H2_BUCKET_IS_OBSERVER(src)) {
         h2_bucket_observer *l = (h2_bucket_observer *)src->data; 
         apr_bucket *b = h2_bucket_observer_create(dest->bucket_alloc, 
@@ -311,8 +313,7 @@ static void add_settings(apr_bucket_brigade *bb, h2_session *s, int last)
     bbout(bb, "  \"settings\": {\n");
     bbout(bb, "    \"SETTINGS_MAX_CONCURRENT_STREAMS\": %d,\n", m->max_streams); 
     bbout(bb, "    \"SETTINGS_MAX_FRAME_SIZE\": %d,\n", 16*1024); 
-    bbout(bb, "    \"SETTINGS_INITIAL_WINDOW_SIZE\": %d,\n",
-          h2_config_geti(s->config, H2_CONF_WIN_SIZE));
+    bbout(bb, "    \"SETTINGS_INITIAL_WINDOW_SIZE\": %d,\n", h2_config_sgeti(s->s, H2_CONF_WIN_SIZE));
     bbout(bb, "    \"SETTINGS_ENABLE_PUSH\": %d\n", h2_session_push_enabled(s)); 
     bbout(bb, "  }%s\n", last? "" : ",");
 }
@@ -431,41 +432,38 @@ static void add_stats(apr_bucket_brigade *bb, h2_session *s,
 
 static apr_status_t h2_status_insert(h2_task *task, apr_bucket *b)
 {
-    conn_rec *c = task->c->master;
-    h2_ctx *h2ctx = h2_ctx_get(c, 0);
-    h2_session *session;
-    h2_stream *stream;
+    h2_mplx *m = task->mplx;
+    h2_stream *stream = h2_mplx_stream_get(m, task->stream_id);
+    h2_session *s;
+    conn_rec *c;
+    
     apr_bucket_brigade *bb;
     apr_bucket *e;
     int32_t connFlowIn, connFlowOut;
     
-    
-    if (!h2ctx || (session = h2_ctx_session_get(h2ctx)) == NULL) {
-        return APR_SUCCESS;
-    }
-    
-    stream = h2_session_stream_get(session, task->stream_id);
     if (!stream) {
         /* stream already done */
         return APR_SUCCESS;
     }
+    s = stream->session;
+    c = s->c;
     
     bb = apr_brigade_create(stream->pool, c->bucket_alloc);
     
-    connFlowIn = nghttp2_session_get_effective_local_window_size(session->ngh2); 
-    connFlowOut = nghttp2_session_get_remote_window_size(session->ngh2);
+    connFlowIn = nghttp2_session_get_effective_local_window_size(s->ngh2); 
+    connFlowOut = nghttp2_session_get_remote_window_size(s->ngh2);
      
     bbout(bb, "{\n");
     bbout(bb, "  \"version\": \"draft-01\",\n");
-    add_settings(bb, session, 0);
-    add_peer_settings(bb, session, 0);
+    add_settings(bb, s, 0);
+    add_peer_settings(bb, s, 0);
     bbout(bb, "  \"connFlowIn\": %d,\n", connFlowIn);
     bbout(bb, "  \"connFlowOut\": %d,\n", connFlowOut);
-    bbout(bb, "  \"sentGoAway\": %d,\n", session->local.shutdown);
+    bbout(bb, "  \"sentGoAway\": %d,\n", s->local.shutdown);
 
-    add_streams(bb, session, 0);
+    add_streams(bb, s, 0);
     
-    add_stats(bb, session, stream, 1);
+    add_stats(bb, s, stream, 1);
     bbout(bb, "}\n");
     
     while ((e = APR_BRIGADE_FIRST(bb)) != APR_BRIGADE_SENTINEL(bb)) {
@@ -497,7 +495,6 @@ static apr_status_t status_event(void *ctx, h2_bucket_event event,
 
 int h2_filter_h2_status_handler(request_rec *r)
 {
-    h2_ctx *ctx = h2_ctx_rget(r);
     conn_rec *c = r->connection;
     h2_task *task;
     apr_bucket_brigade *bb;
@@ -511,7 +508,7 @@ int h2_filter_h2_status_handler(request_rec *r)
         return DECLINED;
     }
 
-    task = ctx? h2_ctx_get_task(ctx) : NULL;
+    task = h2_ctx_get_task(r->connection);
     if (task) {
 
         if ((status = ap_discard_request_body(r)) != OK) {

@@ -17,6 +17,7 @@
 #include <assert.h>
 
 #include <apr_strings.h>
+#include <ap_mmn.h>
 
 #include <httpd.h>
 #include <http_core.h>
@@ -84,8 +85,7 @@ apr_status_t h2_request_rcreate(h2_request **preq, apr_pool_t *pool,
     req->path      = path;
     req->headers   = apr_table_make(pool, 10);
     if (r->server) {
-        req->serialize = h2_config_geti(h2_config_sget(r->server), 
-                                        H2_CONF_SER_HEADERS);
+        req->serialize = h2_config_rgeti(r, H2_CONF_SER_HEADERS);
     }
 
     x.pool = pool;
@@ -206,13 +206,11 @@ h2_request *h2_request_clone(apr_pool_t *p, const h2_request *src)
     return dst;
 }
 
-request_rec *h2_request_create_rec(const h2_request *req, conn_rec *c)
+#if !AP_MODULE_MAGIC_AT_LEAST(20150222, 13)
+static request_rec *my_ap_create_request(conn_rec *c)
 {
-    int access_status = HTTP_OK;    
-    const char *rpath;
     apr_pool_t *p;
     request_rec *r;
-    const char *s;
 
     apr_pool_create(&p, c->pool);
     apr_pool_tag(p, "request");
@@ -226,8 +224,8 @@ request_rec *h2_request_create_rec(const h2_request *req, conn_rec *c)
     r->ap_auth_type    = NULL;
     
     r->allowed_methods = ap_make_method_list(p, 2);
-    
-    r->headers_in      = apr_table_clone(r->pool, req->headers);
+
+    r->headers_in      = apr_table_make(r->pool, 5);
     r->trailers_in     = apr_table_make(r->pool, 5);
     r->subprocess_env  = apr_table_make(r->pool, 25);
     r->headers_out     = apr_table_make(r->pool, 12);
@@ -262,6 +260,24 @@ request_rec *h2_request_create_rec(const h2_request *req, conn_rec *c)
     r->useragent_addr = c->client_addr;
     r->useragent_ip = c->client_ip;
     
+    return r;
+}
+#endif
+
+request_rec *h2_request_create_rec(const h2_request *req, conn_rec *c)
+{
+    int access_status = HTTP_OK;    
+    const char *rpath;
+    const char *s;
+
+#if AP_MODULE_MAGIC_AT_LEAST(20150222, 13)
+    request_rec *r = ap_create_request(c);
+#else
+    request_rec *r = my_ap_create_request(c);
+#endif
+
+    r->headers_in = apr_table_clone(r->pool, req->headers);
+
     ap_run_pre_read_request(r, c);
     
     /* Time to populate r with the data we have. */
@@ -335,5 +351,6 @@ traceout:
     AP_READ_REQUEST_FAILURE((uintptr_t)r);
     return r;
 }
+
 
 

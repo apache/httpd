@@ -56,12 +56,11 @@ h2_ctx *h2_ctx_create_for(const conn_rec *c, struct h2_task *task);
  */
 h2_ctx *h2_ctx_protocol_set(h2_ctx *ctx, const char *proto);
 
-/* Set the server_rec relevant for this context.
+/* Update the server_rec relevant for this context. A server for
+ * a connection may change during SNI handling, for example.
  */
-h2_ctx *h2_ctx_server_set(h2_ctx *ctx, server_rec *s);
-server_rec *h2_ctx_server_get(h2_ctx *ctx);
+h2_ctx *h2_ctx_server_update(h2_ctx *ctx, server_rec *s);
 
-struct h2_session *h2_ctx_session_get(h2_ctx *ctx);
 void h2_ctx_session_set(h2_ctx *ctx, struct h2_session *session);
 
 /**
@@ -69,10 +68,8 @@ void h2_ctx_session_set(h2_ctx *ctx, struct h2_session *session);
  */
 const char *h2_ctx_protocol_get(const conn_rec *c);
 
-int h2_ctx_is_task(h2_ctx *ctx);
+struct h2_session *h2_ctx_get_session(conn_rec *c);
+struct h2_task *h2_ctx_get_task(conn_rec *c);
 
-struct h2_task *h2_ctx_get_task(h2_ctx *ctx);
-struct h2_task *h2_ctx_cget_task(conn_rec *c);
-struct h2_task *h2_ctx_rget_task(request_rec *r);
 
 #endif /* defined(__mod_h2__h2_ctx__) */

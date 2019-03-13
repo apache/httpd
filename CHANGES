@@ -1,6 +1,42 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.39
 
+  *) mod_http2: when SSL renegotiation is inhibited and a 403 ErrorDocument is
+     in play, the proper HTTP/2 stream reset did not trigger with H2_ERR_HTTP_1_1_REQUIRED.
+     Fixed. [Michael Kaufmann] 
+
+  *) mod_http2: new configuration directive: `H2Padding numbits` to control 
+     padding of HTTP/2 payload frames. 'numbits' is a number from 0-8,
+     controlling the range of padding bytes added to a frame. The actual number
+     added is chosen randomly per frame. This applies to HEADERS, DATA and PUSH_PROMISE
+     frames equally. The default continues to be 0, e.g. no padding. [Stefan Eissing] 
+  
+  *) mod_http2: ripping out all the h2_req_engine internal features now that mod_proxy_http2
+     has no more need for it. Optional functions are still declared but no longer implemented.
+     While previous mod_proxy_http2 will work with this, it is recommeneded to run the matching
+     versions of both modules. [Stefan Eissing]
+  
+  *) mod_proxy_http2: changed mod_proxy_http2 implementation and fixed several bugs which
+     resolve PR63170. The proxy module does now a single h2 request on the (reused)
+     connection and returns. [Stefan Eissing]
+  
+  *) mod_http2/mod_proxy_http2: proxy_http2 checks correct master connection aborted status 
+     to trigger immediate shutdown of backend connections. This is now always signalled
+     by mod_http2 when the the session is being released. 
+     proxy_http2 now only sends a PING frame to the backend when there is not already one
+     in flight. [Stefan Eissing]
+
+  *) mod_proxy_http2: fixed an issue where a proxy_http2 handler entered an infinite 
+     loop when encountering certain errors on the backend connection. 
+     See <https://bz.apache.org/bugzilla/show_bug.cgi?id=63170>. [Stefan Eissing]
+
+  *) mod_http2: Configuration directives H2Push and H2Upgrade can now be specified per 
+     Location/Directory, e.g. disabling PUSH for a specific set of resources. [Stefan Eissing]
+
+  *) mod_http2: HEAD requests to some module such as mod_cgid caused the stream to
+     terminate improperly and cause a HTTP/2 PROTOCOL_ERROR. 
+     Fixes <https://github.com/icing/mod_h2/issues/167>. [Michael Kaufmann]
+
   *) http: Fix possible empty response with mod_ratelimit for HEAD requests.
      PR 63192. [Yann Ylavic]
 

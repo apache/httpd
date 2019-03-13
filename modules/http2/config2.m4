@@ -31,7 +31,6 @@ h2_from_h1.lo dnl
 h2_h2.lo dnl
 h2_headers.lo dnl
 h2_mplx.lo dnl
-h2_ngn_shed.lo dnl
 h2_push.lo dnl
 h2_request.lo dnl
 h2_session.lo dnl

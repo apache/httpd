@@ -40,12 +40,17 @@
  * ~= 1300 bytes */
 #define WRITE_SIZE_INITIAL    1300
 
-/* Calculated like this: max TLS record size 16*1024
- *   - 40 (IP) - 20 (TCP) - 40 (TCP options) 
- *    - TLS overhead (60-100) 
- * which seems to create less TCP packets overall
+/* The maximum we'd like to write in one chunk is
+ * the max size of a TLS record. When pushing
+ * many frames down the h2 connection, this might
+ * align differently because of headers and other
+ * frames or simply as not sufficient data is
+ * in a response body.
+ * However keeping frames at or below this limit
+ * should make optimizations at the layer that writes
+ * to TLS easier.
  */
-#define WRITE_SIZE_MAX        (TLS_DATA_MAX - 100) 
+#define WRITE_SIZE_MAX        (TLS_DATA_MAX) 
 
 
 static void h2_conn_io_bb_log(conn_rec *c, int stream_id, int level, 
@@ -123,21 +128,20 @@ static void h2_conn_io_bb_log(conn_rec *c, int stream_id, int level,
 
 }
 
-apr_status_t h2_conn_io_init(h2_conn_io *io, conn_rec *c, 
-                             const h2_config *cfg)
+apr_status_t h2_conn_io_init(h2_conn_io *io, conn_rec *c, server_rec *s)
 {
     io->c              = c;
     io->output         = apr_brigade_create(c->pool, c->bucket_alloc);
     io->is_tls         = h2_h2_is_tls(c);
     io->buffer_output  = io->is_tls;
-    io->flush_threshold = (apr_size_t)h2_config_geti64(cfg, H2_CONF_STREAM_MAX_MEM);
+    io->flush_threshold = (apr_size_t)h2_config_sgeti64(s, H2_CONF_STREAM_MAX_MEM);
 
     if (io->is_tls) {
         /* This is what we start with, 
          * see https://issues.apache.org/jira/browse/TS-2503 
          */
-        io->warmup_size    = h2_config_geti64(cfg, H2_CONF_TLS_WARMUP_SIZE);
-        io->cooldown_usecs = (h2_config_geti(cfg, H2_CONF_TLS_COOLDOWN_SECS) 
+        io->warmup_size    = h2_config_sgeti64(s, H2_CONF_TLS_WARMUP_SIZE);
+        io->cooldown_usecs = (h2_config_sgeti(s, H2_CONF_TLS_COOLDOWN_SECS) 
                               * APR_USEC_PER_SEC);
         io->write_size     = (io->cooldown_usecs > 0? 
                               WRITE_SIZE_INITIAL : WRITE_SIZE_MAX); 
