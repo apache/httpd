@@ -504,7 +504,7 @@ static int h2_task_pre_conn(conn_rec* c, void *arg)
     (void)arg;
     if (h2_ctx_is_task(ctx)) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c,
-                      "h2_h2, pre_connection, found stream task");
+                      "h2_slave(%s), pre_connection, adding filters", c->log_id);
         ap_add_input_filter("H2_SLAVE_IN", NULL, NULL, c);
         ap_add_output_filter("H2_PARSE_H1", NULL, NULL, c);
         ap_add_output_filter("H2_SLAVE_OUT", NULL, NULL, c);
@@ -545,7 +545,6 @@ h2_task *h2_task_create(conn_rec *slave, int stream_id,
 void h2_task_destroy(h2_task *task)
 {
     if (task->output.beam) {
-        h2_beam_log(task->output.beam, task->c, APLOG_TRACE2, "task_destroy");
         h2_beam_destroy(task->output.beam);
         task->output.beam = NULL;
     }

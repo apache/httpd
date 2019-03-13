@@ -305,6 +305,10 @@ conn_rec *h2_slave_create(conn_rec *master, int slave_id, apr_pool_t *parent)
     c->notes                  = apr_table_make(pool, 5);
     c->input_filters          = NULL;
     c->output_filters         = NULL;
+    c->keepalives             = 0;
+#if AP_MODULE_MAGIC_AT_LEAST(20180903, 1)
+    c->filter_conn_ctx        = NULL;
+#endif
     c->bucket_alloc           = apr_bucket_alloc_create(pool);
     c->data_in_input_filters  = 0;
     c->data_in_output_filters = 0;
@@ -332,16 +336,15 @@ conn_rec *h2_slave_create(conn_rec *master, int slave_id, apr_pool_t *parent)
         ap_set_module_config(c->conn_config, mpm, cfg);
     }
 
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c, 
-                  "h2_stream(%ld-%d): created slave", master->id, slave_id);
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, c, 
+                  "h2_slave(%s): created", c->log_id);
     return c;
 }
 
 void h2_slave_destroy(conn_rec *slave)
 {
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, slave,
-                  "h2_stream(%s): destroy slave", 
-                  apr_table_get(slave->notes, H2_TASK_ID_NOTE));
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, slave,
+                  "h2_slave(%s): destroy", slave->log_id);
     slave->sbh = NULL;
     apr_pool_destroy(slave->pool);
 }
@@ -365,6 +368,7 @@ apr_status_t h2_slave_run_pre_connection(conn_rec *slave, apr_socket_t *csd)
         slave->keepalive = AP_CONN_CLOSE;
         return ap_run_pre_connection(slave, csd);
     }
+    ap_assert(slave->output_filters);
     return APR_SUCCESS;
 }
 

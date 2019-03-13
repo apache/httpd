@@ -327,7 +327,8 @@ static int stream_destroy_iter(void *ctx, void *val)
                                && !task->rst_error);
             }
             
-            if (reuse_slave && slave->keepalive == AP_CONN_KEEPALIVE) {
+            task->c = NULL;
+            if (reuse_slave) {
                 h2_beam_log(task->output.beam, m->c, APLOG_DEBUG, 
                             APLOGNO(03385) "h2_task_destroy, reuse slave");    
                 h2_task_destroy(task);
@@ -437,6 +438,8 @@ void h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
     apr_status_t status;
     int i, wait_secs = 60;
 
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c,
+                  "h2_mplx(%ld): start release", m->id);
     /* How to shut down a h2 connection:
      * 0. abort and tell the workers that no more tasks will come from us */
     m->aborted = 1;
@@ -977,6 +980,9 @@ static apr_status_t unschedule_slow_tasks(h2_mplx *m)
      */
     n = (m->tasks_active - m->limit_active - (int)h2_ihash_count(m->sredo));
     while (n > 0 && (stream = get_latest_repeatable_unsubmitted_stream(m))) {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c, 
+                      "h2_mplx(%s): unschedule, resetting task for redo later",
+                      stream->task->id);
         h2_task_rst(stream->task, H2_ERR_CANCEL);
         h2_ihash_add(m->sredo, stream);
         --n;

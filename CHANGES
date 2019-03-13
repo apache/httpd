@@ -11,6 +11,9 @@ Changes with Apache 2.4.39
      credentials could be refused in case of concurrent accesses from
      different users.  PR 63124.  [Simon Kappel <simon.kappel axis.com>]
 
+  *) mod_http2: enable re-use of slave connections again. Fixed slave connection
+     keepalives counter. [Stefan Eissing]
+
   *) mod_proxy_wstunnel: Fix websocket proxy over UDS.
      PR 62932 <pavel dcmsys.com>
 
