@@ -151,7 +151,6 @@ may be used, and give examples of each.</p>
 
    <p> <strong>Redirect a URI to an all-lowercase version of itself</strong></p>
     <highlight language="config">
-
 RewriteMap lc int:tolower
 RewriteRule "(.*)" "${lc:$1}" [R]
     </highlight>
@@ -329,7 +328,7 @@ RewriteMap mapname "dbm:/etc/apache/mapfile.map"
 <note>
 <p>Note that with some dbm types, more than one file is generated, with
 a common base name. For example, you may have two files named
-<code>mapfile.map.dir</code> and <code>mapfiile.map.pag</code>. This is
+<code>mapfile.map.dir</code> and <code>mapfile.map.pag</code>. This is
 normal, and you need only use the base name <code>mapfile.map</code> in
 your <directive module="mod_rewrite">RewriteMap</directive> directive.</p>
 </note>
