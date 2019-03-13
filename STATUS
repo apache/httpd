@@ -266,7 +266,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) http: Fix possible empty response with mod_ratelimit for HEAD requests.
      trunk patch: https://svn.apache.org/r1854004
      2.4.x patch: svn merge -c 1854004 ^/httpd/httpd/trunk .
-     +1: elukey
+     +1: elukey, ylavic
+     ylavic: nice catch Luca, forgot about this one..
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
