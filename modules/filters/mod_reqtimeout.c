@@ -29,23 +29,29 @@
 module AP_MODULE_DECLARE_DATA reqtimeout_module;
 
 #define UNSET                            -1
-#define MRT_DEFAULT_HEADER_TIMEOUT       20
-#define MRT_DEFAULT_HEADER_MAX_TIMEOUT   40
-#define MRT_DEFAULT_HEADER_MIN_RATE      500
-#define MRT_DEFAULT_BODY_TIMEOUT         20
-#define MRT_DEFAULT_BODY_MAX_TIMEOUT     0
-#define MRT_DEFAULT_BODY_MIN_RATE        500
+#define MRT_DEFAULT_handshake_TIMEOUT     0 /* disabled */
+#define MRT_DEFAULT_handshake_MAX_TIMEOUT 0
+#define MRT_DEFAULT_handshake_MIN_RATE    APR_INT32_MAX
+#define MRT_DEFAULT_header_TIMEOUT       20
+#define MRT_DEFAULT_header_MAX_TIMEOUT   40
+#define MRT_DEFAULT_header_MIN_RATE      500
+#define MRT_DEFAULT_body_TIMEOUT         20
+#define MRT_DEFAULT_body_MAX_TIMEOUT     0
+#define MRT_DEFAULT_body_MIN_RATE        500
 
 typedef struct
 {
-    int header_timeout;     /* timeout for reading the req hdrs in secs */
-    int header_max_timeout; /* max timeout for req hdrs in secs */
-    int header_min_rate;    /* min rate for reading req hdrs in bytes/s */
-    apr_time_t header_rate_factor;
-    int body_timeout;       /* timeout for reading the req body in secs */
-    int body_max_timeout;   /* max timeout for req body in secs */
-    int body_min_rate;      /* min rate for reading req body in bytes/s */
-    apr_time_t body_rate_factor;
+    int timeout;            /* timeout in secs */
+    int max_timeout;        /* max timeout in secs */
+    int min_rate;           /* min rate in bytes/s */
+    apr_time_t rate_factor; /* scale factor (#usecs per min_rate) */
+} reqtimeout_stage_t;
+
+typedef struct
+{
+    reqtimeout_stage_t handshake;   /* Handshaking (TLS) */
+    reqtimeout_stage_t header;      /* Reading the HTTP header */
+    reqtimeout_stage_t body;        /* Reading the HTTP body */
 } reqtimeout_srv_cfg;
 
 /* this struct is used both as conn_config and as filter context */
@@ -53,17 +59,15 @@ typedef struct
 {
     apr_time_t timeout_at;
     apr_time_t max_timeout_at;
-    int min_rate;
-    int new_timeout;
-    int new_max_timeout;
+    reqtimeout_stage_t cur_stage;
     int in_keep_alive;
     char *type;
     apr_socket_t *socket;
-    apr_time_t rate_factor;
     apr_bucket_brigade *tmpbb;
 } reqtimeout_con_cfg;
 
 static const char *const reqtimeout_filter_name = "reqtimeout";
+static int default_handshake_rate_factor;
 static int default_header_rate_factor;
 static int default_body_rate_factor;
 
@@ -75,7 +79,7 @@ static void extend_timeout(reqtimeout_con_cfg *ccfg, apr_bucket_brigade *bb)
     if (apr_brigade_length(bb, 0, &len) != APR_SUCCESS || len <= 0)
         return;
 
-    new_timeout_at = ccfg->timeout_at + len * ccfg->rate_factor;
+    new_timeout_at = ccfg->timeout_at + len * ccfg->cur_stage.rate_factor;
     if (ccfg->max_timeout_at > 0 && new_timeout_at > ccfg->max_timeout_at) {
         ccfg->timeout_at = ccfg->max_timeout_at;
     }
@@ -190,14 +194,14 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
         apr_brigade_cleanup(bb);
     }
 
-    if (ccfg->new_timeout > 0) {
+    if (ccfg->cur_stage.timeout > 0) {
         /* set new timeout */
         now = apr_time_now();
-        ccfg->timeout_at = now + apr_time_from_sec(ccfg->new_timeout);
-        ccfg->new_timeout = 0;
-        if (ccfg->new_max_timeout > 0) {
-            ccfg->max_timeout_at = now + apr_time_from_sec(ccfg->new_max_timeout);
-            ccfg->new_max_timeout = 0;
+        ccfg->timeout_at = now + apr_time_from_sec(ccfg->cur_stage.timeout);
+        ccfg->cur_stage.timeout = 0;
+        if (ccfg->cur_stage.max_timeout > 0) {
+            ccfg->max_timeout_at = now + apr_time_from_sec(ccfg->cur_stage.max_timeout);
+            ccfg->cur_stage.max_timeout = 0;
         }
     }
     else if (ccfg->timeout_at == 0) {
@@ -216,7 +220,7 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
     if (block == APR_NONBLOCK_READ || mode == AP_MODE_INIT
         || mode == AP_MODE_EATCRLF) {
         rv = ap_get_brigade(f->next, bb, mode, block, readbytes);
-        if (ccfg->min_rate > 0 && rv == APR_SUCCESS) {
+        if (ccfg->cur_stage.rate_factor > 0 && rv == APR_SUCCESS) {
             extend_timeout(ccfg, bb);
         }
         return rv;
@@ -250,7 +254,7 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
             }
 
             if (!APR_BRIGADE_EMPTY(bb)) {
-                if (ccfg->min_rate > 0) {
+                if (ccfg->cur_stage.rate_factor > 0) {
                     extend_timeout(ccfg, bb);
                 }
 
@@ -311,7 +315,7 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
          * the real (relevant) bytes to be asked later, within the
          * currently alloted time.
          */
-        if (ccfg->min_rate > 0 && rv == APR_SUCCESS
+        if (ccfg->cur_stage.rate_factor > 0 && rv == APR_SUCCESS
                 && mode != AP_MODE_SPECULATIVE) {
             extend_timeout(ccfg, bb);
         }
@@ -350,6 +354,19 @@ static apr_status_t reqtimeout_eor(ap_filter_t *f, apr_bucket_brigade *bb)
     return ap_pass_brigade(f->next, bb);
 }
 
+#define INIT_STAGE(cfg, ccfg, stage) do { \
+    if (cfg->stage.timeout != UNSET) { \
+        ccfg->cur_stage.timeout     = cfg->stage.timeout; \
+        ccfg->cur_stage.max_timeout = cfg->stage.max_timeout; \
+        ccfg->cur_stage.rate_factor = cfg->stage.rate_factor; \
+    } \
+    else { \
+        ccfg->cur_stage.timeout     = MRT_DEFAULT_##stage##_TIMEOUT; \
+        ccfg->cur_stage.max_timeout = MRT_DEFAULT_##stage##_MAX_TIMEOUT; \
+        ccfg->cur_stage.rate_factor = default_##stage##_rate_factor; \
+    } \
+} while (0)
+
 static int reqtimeout_init(conn_rec *c)
 {
     reqtimeout_con_cfg *ccfg;
@@ -358,7 +375,11 @@ static int reqtimeout_init(conn_rec *c)
     cfg = ap_get_module_config(c->base_server->module_config,
                                &reqtimeout_module);
     AP_DEBUG_ASSERT(cfg != NULL);
-    if (cfg->header_timeout == 0 && cfg->body_timeout == 0) {
+
+    /* For compatibility, handshake timeout is disabled when UNSET (< 0) */
+    if (cfg->handshake.timeout <= 0
+            && cfg->header.timeout == 0
+            && cfg->body.timeout == 0) {
         /* disabled for this vhost */
         return DECLINED;
     }
@@ -369,6 +390,11 @@ static int reqtimeout_init(conn_rec *c)
         ap_set_module_config(c->conn_config, &reqtimeout_module, ccfg);
         ap_add_output_filter(reqtimeout_filter_name, ccfg, NULL, c);
         ap_add_input_filter(reqtimeout_filter_name, ccfg, NULL, c);
+
+        ccfg->type = "handshake";
+        if (cfg->handshake.timeout > 0) {
+            INIT_STAGE(cfg, ccfg, handshake);
+        }
     }
 
     /* we are not handling the connection, we just do initialization */
@@ -393,22 +419,11 @@ static void reqtimeout_before_header(request_rec *r, conn_rec *c)
     /* (Re)set the state for this new request, but ccfg->socket and
      * ccfg->tmpbb which have the lifetime of the connection.
      */
+    ccfg->type = "header";
     ccfg->timeout_at = 0;
     ccfg->max_timeout_at = 0;
     ccfg->in_keep_alive = (c->keepalives > 0);
-    ccfg->type = "header";
-    if (cfg->header_timeout != UNSET) {
-        ccfg->new_timeout     = cfg->header_timeout;
-        ccfg->new_max_timeout = cfg->header_max_timeout;
-        ccfg->min_rate        = cfg->header_min_rate;
-        ccfg->rate_factor     = cfg->header_rate_factor;
-    }
-    else {
-        ccfg->new_timeout     = MRT_DEFAULT_HEADER_TIMEOUT;
-        ccfg->new_max_timeout = MRT_DEFAULT_HEADER_MAX_TIMEOUT;
-        ccfg->min_rate        = MRT_DEFAULT_HEADER_MIN_RATE;
-        ccfg->rate_factor     = default_header_rate_factor;
-    }
+    INIT_STAGE(cfg, ccfg, header);
 }
 
 static int reqtimeout_before_body(request_rec *r)
@@ -425,60 +440,57 @@ static int reqtimeout_before_body(request_rec *r)
                                &reqtimeout_module);
     AP_DEBUG_ASSERT(cfg != NULL);
 
+    ccfg->type = "body";
     ccfg->timeout_at = 0;
     ccfg->max_timeout_at = 0;
-    ccfg->type = "body";
     if (r->method_number == M_CONNECT) {
         /* disabled for a CONNECT request */
-        ccfg->new_timeout     = 0;
-    }
-    else if (cfg->body_timeout != UNSET) {
-        ccfg->new_timeout     = cfg->body_timeout;
-        ccfg->new_max_timeout = cfg->body_max_timeout;
-        ccfg->min_rate        = cfg->body_min_rate;
-        ccfg->rate_factor     = cfg->body_rate_factor;
+        ccfg->cur_stage.timeout = 0;
     }
     else {
-        ccfg->new_timeout     = MRT_DEFAULT_BODY_TIMEOUT;
-        ccfg->new_max_timeout = MRT_DEFAULT_BODY_MAX_TIMEOUT;
-        ccfg->min_rate        = MRT_DEFAULT_BODY_MIN_RATE;
-        ccfg->rate_factor     = default_body_rate_factor;
+        INIT_STAGE(cfg, ccfg, body);
     }
     return OK;
 }
+
+#define UNSET_STAGE(cfg, stage) do { \
+    cfg->stage.timeout = UNSET; \
+    cfg->stage.max_timeout = UNSET; \
+    cfg->stage.min_rate = UNSET; \
+} while (0)
 
 static void *reqtimeout_create_srv_config(apr_pool_t *p, server_rec *s)
 {
     reqtimeout_srv_cfg *cfg = apr_pcalloc(p, sizeof(reqtimeout_srv_cfg));
 
-    cfg->header_timeout = UNSET;
-    cfg->header_max_timeout = UNSET;
-    cfg->header_min_rate = UNSET;
-    cfg->body_timeout = UNSET;
-    cfg->body_max_timeout = UNSET;
-    cfg->body_min_rate = UNSET;
+    UNSET_STAGE(cfg, handshake);
+    UNSET_STAGE(cfg, header);
+    UNSET_STAGE(cfg, body);
 
     return cfg;
 }
 
-#define MERGE_INT(cfg, b, a, val) cfg->val = (a->val == UNSET) ? b->val : a->val;
+#define MERGE_INT(cfg, base, add, val) \
+    cfg->val = (add->val == UNSET) ? base->val : add->val
+#define MERGE_STAGE(cfg, base, add, stage) do { \
+    MERGE_INT(cfg, base, add, stage.timeout); \
+    MERGE_INT(cfg, base, add, stage.max_timeout); \
+    MERGE_INT(cfg, base, add, stage.min_rate); \
+    cfg->stage.rate_factor = (cfg->stage.min_rate == UNSET) \
+                             ? base->stage.rate_factor \
+                             : add->stage.rate_factor; \
+} while (0)
+
 static void *reqtimeout_merge_srv_config(apr_pool_t *p, void *base_, void *add_)
 {
     reqtimeout_srv_cfg *base = base_;
     reqtimeout_srv_cfg *add  = add_;
     reqtimeout_srv_cfg *cfg  = apr_pcalloc(p, sizeof(reqtimeout_srv_cfg));
 
-    MERGE_INT(cfg, base, add, header_timeout);
-    MERGE_INT(cfg, base, add, header_max_timeout);
-    MERGE_INT(cfg, base, add, header_min_rate);
-    MERGE_INT(cfg, base, add, body_timeout);
-    MERGE_INT(cfg, base, add, body_max_timeout);
-    MERGE_INT(cfg, base, add, body_min_rate);
+    MERGE_STAGE(cfg, base, add, handshake);
+    MERGE_STAGE(cfg, base, add, header);
+    MERGE_STAGE(cfg, base, add, body);
 
-    cfg->header_rate_factor = (cfg->header_min_rate == UNSET) ?
-                              base->header_rate_factor : add->header_rate_factor;
-    cfg->body_rate_factor = (cfg->body_min_rate == UNSET) ?
-                            base->body_rate_factor : add->body_rate_factor;
     return cfg;
 }
 
@@ -506,66 +518,59 @@ static const char *set_reqtimeout_param(reqtimeout_srv_cfg *conf,
 {
     const char *ret = NULL;
     char *rate_str = NULL, *initial_str, *max_str = NULL;
-    int rate = 0, initial = 0, max = 0;
-    enum { PARAM_HEADER, PARAM_BODY } type;
+    reqtimeout_stage_t *stage;
 
-    if (!strcasecmp(key, "header")) {
-        type = PARAM_HEADER;
+    if (!strcasecmp(key, "handshake")) {
+        stage = &conf->handshake;
+    }
+    else if (!strcasecmp(key, "header")) {
+        stage = &conf->header;
     }
     else if (!strcasecmp(key, "body")) {
-        type = PARAM_BODY;
+        stage = &conf->body;
     }
     else {
         return "Unknown RequestReadTimeout parameter";
     }
 
+    memset(stage, 0, sizeof(*stage));
+
     if ((rate_str = ap_strcasestr(val, ",minrate="))) {
         initial_str = apr_pstrndup(p, val, rate_str - val);
         rate_str += strlen(",minrate=");
-        ret = parse_int(p, rate_str, &rate);
+        ret = parse_int(p, rate_str, &stage->min_rate);
         if (ret)
             return ret;
 
-        if (rate == 0)
+        if (stage->min_rate == 0)
             return "Minimum data rate must be larger than 0";
 
         if ((max_str = strchr(initial_str, '-'))) {
             *max_str++ = '\0';
-            ret = parse_int(p, max_str, &max);
+            ret = parse_int(p, max_str, &stage->max_timeout);
             if (ret)
                 return ret;
         }
 
-        ret = parse_int(p, initial_str, &initial);
+        ret = parse_int(p, initial_str, &stage->timeout);
     }
     else {
         if (ap_strchr_c(val, '-'))
             return "Must set MinRate option if using timeout range";
-        ret = parse_int(p, val, &initial);
+        ret = parse_int(p, val, &stage->timeout);
     }
-
     if (ret)
         return ret;
 
-    if (max && initial >= max) {
+    if (stage->max_timeout && stage->timeout >= stage->max_timeout) {
         return "Maximum timeout must be larger than initial timeout";
     }
 
-    if (type == PARAM_HEADER) {
-        conf->header_timeout = initial;
-        conf->header_max_timeout = max;
-        conf->header_min_rate = rate;
-        if (rate)
-            conf->header_rate_factor = apr_time_from_sec(1) / rate;
+    if (stage->min_rate) {
+        stage->rate_factor = apr_time_from_sec(1) / stage->min_rate;
     }
-    else {
-        conf->body_timeout = initial;
-        conf->body_max_timeout = max;
-        conf->body_min_rate = rate;
-        if (rate)
-            conf->body_rate_factor = apr_time_from_sec(1) / rate;
-    }
-    return ret;
+
+    return NULL;
 }
 
 static const char *set_reqtimeouts(cmd_parms *cmd, void *mconfig,
@@ -603,8 +608,7 @@ static void reqtimeout_hooks(apr_pool_t *pool)
 {
     /*
      * mod_ssl is AP_FTYPE_CONNECTION + 5 and mod_reqtimeout needs to
-     * be called before mod_ssl. Otherwise repeated reads during the ssl
-     * handshake can prevent the timeout from triggering.
+     * be called before mod_ssl for the handshake stage to catch SSL traffic.
      */
     ap_register_input_filter(reqtimeout_filter_name, reqtimeout_filter, NULL,
                              AP_FTYPE_CONNECTION + 8);
@@ -621,28 +625,37 @@ static void reqtimeout_hooks(apr_pool_t *pool)
      * mod_reqtimeout needs to be called before ap_process_http_request (which
      * is run at APR_HOOK_REALLY_LAST) but after all other protocol modules.
      * This ensures that it only influences normal http connections and not
-     * e.g. mod_ftp. Also, if mod_reqtimeout used the pre_connection hook, it
-     * would be inserted on mod_proxy's backend connections.
+     * e.g. mod_ftp. We still process it first though, for the handshake stage
+     * to work with/before mod_ssl, but since it's disabled by default it won't
+     * influence non-HTTP modules unless configured explicitely. Also, if
+     * mod_reqtimeout used the pre_connection hook, it would be inserted on
+     * mod_proxy's backend connections, and we don't want this.
      */
-    ap_hook_process_connection(reqtimeout_init, NULL, NULL, APR_HOOK_LAST);
+    ap_hook_process_connection(reqtimeout_init, NULL, NULL, APR_HOOK_FIRST);
 
     ap_hook_pre_read_request(reqtimeout_before_header, NULL, NULL,
                              APR_HOOK_MIDDLE);
     ap_hook_post_read_request(reqtimeout_before_body, NULL, NULL,
                               APR_HOOK_MIDDLE);
 
+#if MRT_DEFAULT_HANDSHAKE_MIN_RATE > 0
+    default_handshake_rate_factor = apr_time_from_sec(1) /
+                                    MRT_DEFAULT_HANDSHAKE_MIN_RATE;
+#endif
 #if MRT_DEFAULT_HEADER_MIN_RATE > 0
-    default_header_rate_factor = apr_time_from_sec(1) / MRT_DEFAULT_HEADER_MIN_RATE;
+    default_header_rate_factor = apr_time_from_sec(1) /
+                                 MRT_DEFAULT_HEADER_MIN_RATE;
 #endif
 #if MRT_DEFAULT_BODY_MIN_RATE > 0
-    default_body_rate_factor = apr_time_from_sec(1) / MRT_DEFAULT_BODY_MIN_RATE;
+    default_body_rate_factor = apr_time_from_sec(1) /
+                               MRT_DEFAULT_BODY_MIN_RATE;
 #endif
 }
 
 static const command_rec reqtimeout_cmds[] = {
     AP_INIT_RAW_ARGS("RequestReadTimeout", set_reqtimeouts, NULL, RSRC_CONF,
-                     "Set various timeout parameters for reading request "
-                     "headers and body"),
+                     "Set various timeout parameters for TLS handshake and/or "
+                     "reading request headers and body"),
     {NULL}
 };
 

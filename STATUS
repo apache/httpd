@@ -126,16 +126,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_reqtimeout: Allow to configure (TLS-)handshake timeouts.  PR 61310.
-     trunk patch: http://svn.apache.org/r1853901
-                  http://svn.apache.org/r1853906
-                  http://svn.apache.org/r1853908
-                  http://svn.apache.org/r1853929
-                  http://svn.apache.org/r1853935
-                  http://svn.apache.org/r1853967
-     2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-reqtimeout_handshake-v2.patch
-     +1: ylavic, icing, jim
-     icing: please add r1853967 to this to keep h2 working with this change. if added, +1 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

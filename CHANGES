@@ -17,6 +17,9 @@ Changes with Apache 2.4.39
   *) mod_http2: enable re-use of slave connections again. Fixed slave connection
      keepalives counter. [Stefan Eissing]
 
+  *) mod_reqtimeout: Allow to configure (TLS-)handshake timeouts.
+     PR 61310. [Yann Ylavic]
+
   *) mod_proxy_wstunnel: Fix websocket proxy over UDS.
      PR 62932 <pavel dcmsys.com>
 
