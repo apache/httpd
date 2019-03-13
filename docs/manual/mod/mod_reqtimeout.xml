@@ -107,7 +107,7 @@ the request headers and/or body from client.
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 <compatibility>Defaulted to disabled in version 2.3.14 and earlier. The
-<code>handshake</code> stage is available since version 2.5.
+<code>handshake</code> stage is available since version 2.4.39.
 </compatibility>
 
 <usage>
