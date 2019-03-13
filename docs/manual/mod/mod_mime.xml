@@ -1051,4 +1051,38 @@ RemoveType .cgi
 <seealso><module>mod_mime_magic</module></seealso>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>MimeOptions</name>
+<description>Configures mod_mime behavior</description>
+<syntax>MimeOptions<var>option</var> [<var>option</var>] ...</syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+<context>.htaccess</context>
+<compatibility>IBM HTTP Server 9.0.0.12 and later</compatibility>
+</contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>The <directive>MimeOptions</directive> directive configures certain
+    behaviors of <module>mod_mime</module>. <var>Option</var> can
+    be one of</p>
+
+    <dl>
+      <dt><code>TypesLastExtension</code></dt>
+      <dd>This option only consider the last (right-most) filename extension
+      when determining a files Content-Type.</dd>
+      <dt><code>NoTypesLastExtension</code></dt>
+      <dd>This option can be used to revert to the default behavior of testing
+      every filename extension when determining a files Content-Type.</dd>
+      <dt><code>AllLastExtension</code></dt>
+      <dd>This option only consider the last (right-most) filename extension
+      when determining any response metadata (Content-Type, language, encoding,
+      etc.) .</dd>
+      <dt><code>NoAllLastExtension</code></dt>
+      <dd>This option can be used to revert to the default behavior of testing
+      every filename extension when determining any response metadata
+      (Content-Type, language, encoding, etc.) .</dd>
+    </dl>
+</usage>
+</directivesynopsis>
 </modulesynopsis>
