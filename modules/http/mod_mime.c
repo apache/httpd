@@ -391,7 +391,7 @@ static const char *add_mime_options(cmd_parms *cmd, void *in_dc,
     else if (!strcasecmp(flag, "AllLastExtension")) {
         dc->all_last_ext = ALL_LAST_ON;
     }
-    else if (!strcasecmp(flag, "AllLastExtension")) {
+    else if (!strcasecmp(flag, "NoAllLastExtension")) {
         dc->all_last_ext = ALL_LAST_OFF;
     }
     else {
