@@ -126,6 +126,17 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_http2/mod_proxy_http2: backport of v1.14.1. Fixes several important bugs and adds
+     some requested new features (and some I made up). See patched CHANGES for all details.
+     [Stefan Eissing]
+     trunk patch: http://svn.apache.org/r[1849296,1852038,1852101,1852339,1853171,1853967,1854365,1854963,1854964,1855295,1855411]
+     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/h2-mega-v1.14.1-backport-bugs-and-whistles-v2.patch
+     +1: icing, jim, ylavic
+     icing: added r1855411 which reverts the unwanted revert of r1852989. Assuming jim would like ot keep his vote!
+     ylavic: nice config simplification and overall changes!
+             @backporter: take care of mixed/unrelated CHANGES entries from
+	     the patch.
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -228,15 +239,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              sensible to me to have trunk and 2.4.x code in sync as much as
              possible. Changes from v3 to v4 (r1853953 mainly, r1853956 is only
              comment) are non functional (or at least intended as such).
-             
-
-  *) mod_http2/mod_proxy_http2: backport of v1.14.1. Fixes several important bugs and adds
-     some requested new features (and some I made up). See patched CHANGES for all details.
-     [Stefan Eissing]
-     trunk patch: http://svn.apache.org/r[1849296,1852038,1852101,1852339,1853171,1853967,1854365,1854963,1854964,1855295,1855411]
-     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/h2-mega-v1.14.1-backport-bugs-and-whistles-v2.patch
-     +1: icing, jim
-     icing: added r1855411 which reverts the unwanted revert of r1852989. Assuming jim would like ot keep his vote!
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
