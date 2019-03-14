@@ -145,10 +145,6 @@ SOURCE=./h2_mplx.c
 # End Source File
 # Begin Source File
 
-SOURCE=./h2_ngn_shed.c
-# End Source File
-# Begin Source File
-
 SOURCE=./h2_push.c
 # End Source File
 # Begin Source File

@@ -61,7 +61,6 @@ CLEAN :
 	-@erase "$(INTDIR)\h2_h2.obj"
 	-@erase "$(INTDIR)\h2_headers.obj"
 	-@erase "$(INTDIR)\h2_mplx.obj"
-	-@erase "$(INTDIR)\h2_ngn_shed.obj"
 	-@erase "$(INTDIR)\h2_push.obj"
 	-@erase "$(INTDIR)\h2_request.obj"
 	-@erase "$(INTDIR)\h2_session.obj"
@@ -138,7 +137,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\h2_h2.obj" \
 	"$(INTDIR)\h2_headers.obj" \
 	"$(INTDIR)\h2_mplx.obj" \
-	"$(INTDIR)\h2_ngn_shed.obj" \
 	"$(INTDIR)\h2_push.obj" \
 	"$(INTDIR)\h2_request.obj" \
 	"$(INTDIR)\h2_session.obj" \
@@ -207,7 +205,6 @@ CLEAN :
 	-@erase "$(INTDIR)\h2_h2.obj"
 	-@erase "$(INTDIR)\h2_headers.obj"
 	-@erase "$(INTDIR)\h2_mplx.obj"
-	-@erase "$(INTDIR)\h2_ngn_shed.obj"
 	-@erase "$(INTDIR)\h2_push.obj"
 	-@erase "$(INTDIR)\h2_request.obj"
 	-@erase "$(INTDIR)\h2_session.obj"
@@ -284,7 +281,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\h2_h2.obj" \
 	"$(INTDIR)\h2_headers.obj" \
 	"$(INTDIR)\h2_mplx.obj" \
-	"$(INTDIR)\h2_ngn_shed.obj" \
 	"$(INTDIR)\h2_push.obj" \
 	"$(INTDIR)\h2_request.obj" \
 	"$(INTDIR)\h2_session.obj" \
@@ -467,11 +463,6 @@ SOURCE=./h2_headers.c
 SOURCE=./h2_mplx.c
 
 "$(INTDIR)\h2_mplx.obj" : $(SOURCE) "$(INTDIR)"
-
-
-SOURCE=./h2_ngn_shed.c
-
-"$(INTDIR)\h2_ngn_shed.obj" : $(SOURCE) "$(INTDIR)"
 
 
 SOURCE=./h2_push.c

@@ -694,7 +694,6 @@
 	".\h2_ctx.h"\
 	".\h2_h2.h"\
 	".\h2_mplx.h"\
-	".\h2_ngn_shed.h"\
 	".\h2_private.h"\
 	".\h2_request.h"\
 	".\h2_stream.h"\
@@ -754,7 +753,6 @@
 	".\h2_ctx.h"\
 	".\h2_h2.h"\
 	".\h2_mplx.h"\
-	".\h2_ngn_shed.h"\
 	".\h2_private.h"\
 	".\h2_request.h"\
 	".\h2_task.h"\
