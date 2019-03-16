@@ -123,7 +123,7 @@ et/ou corps des requêtes en provenance du client.
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_reqtimeout</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Désactivée par défaut jusqu'à la version 2.3.14. L'étape de la
 <code>négociation TLS</code> est prise en compte à partir de la version
-2.5</td></tr>
+2.4.39</td></tr>
 </table>
     <p>Cette directive permet de définir différents délais pour la négociation
     TLS et la réception des en-têtes et/ou corps des requêtes en provenance du
