@@ -486,17 +486,31 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
 }
 
 static SSLConnRec *ssl_init_connection_ctx(conn_rec *c,
-                                           ap_conf_vector_t *per_dir_config)
+                                           ap_conf_vector_t *per_dir_config,
+                                           int new_proxy)
 {
     SSLConnRec *sslconn = myConnConfig(c);
-    SSLSrvConfigRec *sc;
 
-    if (sslconn) {
-        return sslconn;
+    if (!sslconn) {
+        sslconn = apr_pcalloc(c->pool, sizeof(*sslconn));
+
+        sslconn->server = c->base_server;
+        sslconn->verify_depth = UNSET;
+        if (new_proxy) {
+            sslconn->is_proxy = 1;
+            sslconn->cipher_suite = sslconn->dc->proxy->auth.cipher_suite;
+        }
+        else {
+            SSLSrvConfigRec *sc = mySrvConfig(c->base_server);
+            sslconn->cipher_suite = sc->server->auth.cipher_suite;
+        }
+
+        myConnConfigSet(c, sslconn);
     }
 
-    sslconn = apr_pcalloc(c->pool, sizeof(*sslconn));
-
+    /* Reinit dc in any case because it may be r->per_dir_config scoped
+     * and thus a caller like mod_proxy needs to update it per request.
+     */
     if (per_dir_config) {
         sslconn->dc = ap_get_module_config(per_dir_config, &ssl_module);
     }
@@ -504,13 +518,6 @@ static SSLConnRec *ssl_init_connection_ctx(conn_rec *c,
         sslconn->dc = ap_get_module_config(c->base_server->lookup_defaults,
                                            &ssl_module);
     }
-
-    sslconn->server = c->base_server;
-    sslconn->verify_depth = UNSET;
-    sc = mySrvConfig(c->base_server);
-    sslconn->cipher_suite = sc->server->auth.cipher_suite;
-
-    myConnConfigSet(c, sslconn);
 
     return sslconn;
 }
@@ -551,8 +558,7 @@ static int ssl_engine_set(conn_rec *c,
     int status;
     
     if (proxy) {
-        sslconn = ssl_init_connection_ctx(c, per_dir_config);
-        sslconn->is_proxy = 1;
+        sslconn = ssl_init_connection_ctx(c, per_dir_config, 1);
     }
     else {
         sslconn = myConnConfig(c);
@@ -599,7 +605,7 @@ int ssl_init_ssl_connection(conn_rec *c, request_rec *r)
     /*
      * Create or retrieve SSL context
      */
-    sslconn = ssl_init_connection_ctx(c, r ? r->per_dir_config : NULL);
+    sslconn = ssl_init_connection_ctx(c, r ? r->per_dir_config : NULL, 0);
     server = sslconn->server;
     sc = mySrvConfig(server);
 
