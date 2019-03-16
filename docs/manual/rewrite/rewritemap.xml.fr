@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1828122 -->
+<!-- English Revision: 1855357 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : VIncent Deffontaines -->
 <!--
@@ -153,7 +153,6 @@ exemples pour chacun d'entre eux.</p>
 
     <p> <strong>Redirige un URI vers son équivalent en minuscules</strong></p>
     <highlight language="config">
-
 RewriteMap lc int:tolower
 RewriteRule "(.*)" "${lc:$1}" [R]
     </highlight>
