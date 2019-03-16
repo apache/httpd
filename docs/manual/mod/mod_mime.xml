@@ -1082,6 +1082,11 @@ RemoveType .cgi
       <dd>This option can be used to revert to the default behavior of testing
       every filename extension when determining any response metadata
       (Content-Type, language, encoding, etc.) .</dd>
+      <dt><code>Disable</code></dt>
+      <dd>All assignment of metadata based on the filename is skipped.</dd>
+      <dt><code>Enable</code></dt>
+      <dd>Re-enables assignment of metadata based on the filename. Only useful if a lower
+      precedence section has specified <code>MimeOptions Disable</code>.</dd>
     </dl>
 </usage>
 </directivesynopsis>

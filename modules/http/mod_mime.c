@@ -95,6 +95,8 @@ typedef struct {
     enum {CT_LAST_INIT, CT_LAST_ON, CT_LAST_OFF} ct_last_ext;
     /* Only use the final extension for anything */
     enum {ALL_LAST_INIT, ALL_LAST_ON, ALL_LAST_OFF} all_last_ext;
+    /* don't do any detection */
+    enum {NOMIME_INIT, NOMIME_ON, NOMIME_OFF} nomime;
 } mime_dir_config;
 
 typedef struct param_s {
@@ -251,6 +253,10 @@ static void *merge_mime_dir_configs(apr_pool_t *p, void *basev, void *addv)
     new->all_last_ext = (add->all_last_ext != ALL_LAST_INIT)
                            ? add->all_last_ext
                            : base->all_last_ext;
+    new->nomime = (add->nomime != NOMIME_INIT)
+                           ? add->nomime
+                           : base->nomime;
+
 
     return new;
 }
@@ -393,6 +399,12 @@ static const char *add_mime_options(cmd_parms *cmd, void *in_dc,
     }
     else if (!strcasecmp(flag, "NoAllLastExtension")) {
         dc->all_last_ext = ALL_LAST_OFF;
+    }
+    else if (!strcasecmp(flag, "Disable")) {
+        dc->nomime = NOMIME_ON;
+    }
+    else if (!strcasecmp(flag, "Enable")) {
+        dc->nomime = NOMIME_OFF;
     }
     else {
         return apr_pstrcat(cmd->temp_pool,
@@ -814,6 +826,10 @@ static int find_ct(request_rec *r)
 
     conf = (mime_dir_config *)ap_get_module_config(r->per_dir_config,
                                                    &mime_module);
+    if (conf->nomime == NOMIME_ON) {
+        return DECLINED;
+    }
+
     exception_list = apr_array_make(r->pool, 2, sizeof(char *));
 
     /* If use_path_info is explicitly set to on (value & 1 == 1), append. */
