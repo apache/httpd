@@ -1058,9 +1058,9 @@ RemoveType .cgi
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context>
-<compatibility>Apache HTTP Server 2.5.1 and later</compatibility>
 </contextlist>
 <override>FileInfo</override>
+<compatibility>Apache HTTP Server 2.5.1 and later</compatibility>
 
 <usage>
     <p>The <directive>MimeOptions</directive> directive configures certain
