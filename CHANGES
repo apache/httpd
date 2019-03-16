@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_proxy/ssl: Cleanup per-request SSL configuration anytime a backend
+     connection is recycled/reused to avoid a possible crash with some SSLProxy
+     configurations in <Location> or <Proxy> context. PR 63256. [Yann Ylavic]
+
   *) mod_mime: Add `MimeOptions` directive to allow Content-Type or all metadata
      detection to use only the last (right-most) file extension. [Eric Covener]
 
