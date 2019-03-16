@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1853906 -->
+<!-- English Revision: 1855418 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -113,7 +113,7 @@ et/ou corps des requêtes en provenance du client.
 </contextlist>
 <compatibility>Désactivée par défaut jusqu'à la version 2.3.14. L'étape de la
 <code>négociation TLS</code> est prise en compte à partir de la version
-2.5</compatibility>
+2.4.39</compatibility>
 
 <usage>
     <p>Cette directive permet de définir différents délais pour la négociation
