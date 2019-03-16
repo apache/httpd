@@ -6,7 +6,8 @@ Changes with Apache 2.5.1
      configurations in <Location> or <Proxy> context. PR 63256. [Yann Ylavic]
 
   *) mod_mime: Add `MimeOptions` directive to allow Content-Type or all metadata
-     detection to use only the last (right-most) file extension. [Eric Covener]
+     detection to use only the last (right-most) file extension or to be
+     disabled per-dir. [Eric Covener]
 
   *) MPMs unix: bind the bucket number of each child to its slot number, for a
      more efficient per bucket maintenance. [Yann Ylavic]
