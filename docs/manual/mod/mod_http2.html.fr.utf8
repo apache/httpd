@@ -90,6 +90,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#h2maxworkers">H2MaxWorkers</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2minworkers">H2MinWorkers</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2moderntlsonly">H2ModernTLSOnly</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#h2padding">H2Padding</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2push">H2Push</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2pushdiarysize">H2PushDiarySize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2pushpriority">H2PushPriority</a></li>
@@ -495,12 +496,55 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="h2padding" id="h2padding">Directive</a> <a name="H2Padding" id="H2Padding">H2Padding</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Spécifie un intervalle de nombres d'octets de bourrage à
+	ajouter aux trames utiles</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2Padding numbits</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>H2Padding 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.39 du serveur HTTP
+	Apache.</td></tr>
+</table>
+            <p>
+                La valeur par défaut 0 indique qu'aucun octet de bourrage ne
+		sera ajouté aux trames utiles comme HEADERS, DATA et
+		PUSH_PROMISE. Ceci correspond au comportement des versions
+		précédentes. Dans ce cas et sous certaines conditions, un
+		observateur du trafic réseau pourra alors déterminer la longueur
+		de ces trames dans le flux TLS.
+            </p>
+            <p>
+                Si on attribue à numbits la valeur 1-8, un nombre aléatoire
+		d'octets entre 0 et 2^numbits sont ajoutés à chaque trame. Une
+		valeur aléatoire d'octets de bourrage est attribué
+		indépendamment à chaque trame que le module renvoie au client.
+            </p>
+            <p>
+                Pour améliorer la dissimulation de la longueur des trames, on
+		peut augmenter le nombre moyen d'octets de bourrage, mais cela
+		augmente d'autant le trafic réseau. Le nombre optimal d'octets
+		de bourrage dépend donc du type de trafic web que le serveur
+		engendre.
+            </p>
+            <p>
+                La valeur par défaut de 0 (aucun octet de bourrage) a été
+		choisie dans un but de compatibilité ascendante. Il peut en
+		effet exister des installations où les octets de bourrage ne
+		sont pas souhaités ou sont néfastes. La cause principale peut
+		provenir d'un client dont l'implémentation comporte des erreurs.
+            </p>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="h2push" id="h2push">Directive</a> <a name="H2Push" id="H2Push">H2Push</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Activation/désactivation du server push H2</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2Push on|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>H2Push on</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.18 du serveur HTTP
@@ -535,6 +579,7 @@
             <p> 
                 Les en-têtes link des réponses sont soit définis par
 		l'application, soit configurés via
+		<code class="directive">H2PushResource</code> ou
 		<code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code> comme suit :
             </p>
             <div class="example"><h3>Exemple de configuration d'en-tête link via mod_headers</h3><pre class="prettyprint lang-config">&lt;Location /index.html&gt;
@@ -550,9 +595,13 @@
 		une ressource n'a pas déjà été "pushée" vers un client.
             </p>
             <p> 
-                Les server pushes HTTP/2 sont activés par défaut. Cette
-		directive permet de désactiver cette fonctionnalité pour
-		le serveur virtuel ou non considéré.
+                Les PUSH HTTP/2 sont activés par défaut. Vous pouvez
+		activer/désactiver cette fonctionnalité pour toute connexion au
+		serveur au niveau global ou serveur virtuel. Vous pouvez en
+		outre désactiver PUSH pour un jeu de ressources dans une
+		section Directory/Location. Notez que ceci permet de contrôler
+		quelles ressources peuvent déclencher un PUSH, mais pas les
+		ressources qui peuvent être envoyées via PUSH.
             </p>
             <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">H2Push off</pre>
 </div>
@@ -934,7 +983,7 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut</pre>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Activation/Désactivation du protocole de mise à jour H2</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2Upgrade on|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>H2Upgrade on pour h2c, off pour h2</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
 </table>
