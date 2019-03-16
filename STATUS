@@ -126,6 +126,24 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   *) Add in mod_socache_redis from trunk
+      trunk: http://svn.apache.org/r1768070
+             http://svn.apache.org/r1768120
+             http://svn.apache.org/r1768225
+             http://svn.apache.org/r1769712
+             http://svn.apache.org/r1769737
+             http://svn.apache.org/r1774610
+             http://svn.apache.org/r1828624
+             http://svn.apache.org/r1828626
+      2.4.x patch: http://home.apache.org/~jim/patches/socache_redisv2.patch
+      +1: jim, minfrin, covener
+
+  *) mod_log_config: Support %{c}h for conn-hostname, %h for useragent_host
+     PR 55348
+     trunk patch: https://svn.apache.org/r1730129
+     2.4.x patch: svn merge -c 1730129 ^/httpd/httpd/trunk .
+     +1: jim, ylavic, covener
+     jailletc36: require r1818321 and part of r1818341 to update doc accordingly
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -154,18 +172,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      elukey: PR 62025 seems another use case that gets fixed using this patch
              (still need to get feedback from the reporter but on my local env it solves the problem).
 
-   *) Add in mod_socache_redis from trunk
-      trunk: http://svn.apache.org/r1768070
-             http://svn.apache.org/r1768120
-             http://svn.apache.org/r1768225
-             http://svn.apache.org/r1769712
-             http://svn.apache.org/r1769737
-             http://svn.apache.org/r1774610
-             http://svn.apache.org/r1828624
-             http://svn.apache.org/r1828626
-      2.4.x patch: http://home.apache.org/~jim/patches/socache_redisv2.patch
-      +1: jim, minfrin
-
   *) mod_dav: Fix a potential incorrect PROPFIND response
      trunk patch: http://svn.apache.org/r1842010
                   http://svn.apache.org/r1846339      (CHANGES)
@@ -185,19 +191,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      jailletc36: at least, r1853302 is required, IMHO
      minfrin: r1853302 is added in above, resetting jim's vote
 
-  *) mod_log_config: Support %{c}h for conn-hostname, %h for useragent_host
-     PR 55348
-     trunk patch: https://svn.apache.org/r1730129
-     2.4.x patch: svn merge -c 1730129 ^/httpd/httpd/trunk .
-     +1: jim, ylavic
-     jailletc36: require r1818321 and part of r1818341 to update doc accordingly
-
   *) modules/filters/config.m4: Make libxml2's inclusion of unicode/*.h files
      a non-fatal warning/error under maintainer-mode.
      trunk patch: http://svn.apache.org/r1850745
                   http://svn.apache.org/r1855446
      2.4.x patch: svn merge -c 1850745,1855446 ^/httpd/httpd/trunk .
-     +1: jim
+     +1: jim, covener
 
   *) mod_proxy_http: forward 100-continue, and minimize race conditions when
      reusing backend connections. PR 60330.
