@@ -528,6 +528,7 @@ static void *create_core_server_config(apr_pool_t *a, server_rec *s)
     conf->protocols_honor_order = -1;
     conf->async_filter = 0;
     conf->strict_host_check= AP_CORE_CONFIG_UNSET; 
+    conf->merge_slashes    = AP_CORE_CONFIG_UNSET; 
 
     return (void *)conf;
 }
@@ -628,6 +629,7 @@ static void *merge_core_server_configs(apr_pool_t *p, void *basev, void *virtv)
                               : base->strict_host_check;
 
     AP_CORE_MERGE_FLAG(strict_host_check, conf, base, virt);
+    AP_CORE_MERGE_FLAG(merge_slashes, conf, base, virt);
 
     return conf;
 }
@@ -4922,6 +4924,11 @@ AP_INIT_TAKE1("ProtocolsHonorOrder", set_protocols_honor_order, NULL, RSRC_CONF,
 AP_INIT_TAKE1("AsyncFilter", set_async_filter, NULL, RSRC_CONF,
               "'network', 'connection' (default) or 'request' to limit the "
               "types of filters that support asynchronous handling"),
+AP_INIT_FLAG("MergeSlashes", set_core_server_flag, 
+             (void *)APR_OFFSETOF(core_server_config, merge_slashes),  
+             RSRC_CONF,
+             "Controls whether consecutive slashes in the URI path are merged"),
+
 { NULL }
 };
 

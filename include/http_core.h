@@ -771,6 +771,7 @@ typedef struct {
     apr_size_t   flush_max_threshold;
     apr_int32_t  flush_max_pipelined;
     unsigned int strict_host_check;
+    unsigned int merge_slashes;
 } core_server_config;
 
 /* for AddOutputFiltersByType in core.c */
