@@ -27,6 +27,7 @@
 <status>Extension</status>
 <sourcefile>mod_socache_redis.c</sourcefile>
 <identifier>socache_redis_module</identifier>
+<compatibility>Available in Apache 2.4.39 and later</compatibility>
 
 <summary>
     <p><module>mod_socache_redis</module> is a shared object cache provider
@@ -61,7 +62,7 @@
 <context>server config</context>
 <context>virtual host</context>
 </contextlist>
-<compatibility>Available in Apache 2.5 and later</compatibility>
+<compatibility>Available in Apache 2.4.39 and later</compatibility>
 
 <usage>
     <p>Set the time to keep idle connections with the Redis server(s)
@@ -94,7 +95,7 @@ RedisConnPoolTTL 60
 <context>server config</context>
 <context>virtual host</context>
 </contextlist>
-<compatibility>Available in Apache 2.5 and later</compatibility>
+<compatibility>Available in Apache 2.4.39 and later</compatibility>
 
 <usage>
     <p>Set the Read/Write timeout used for the connection with the Redis
