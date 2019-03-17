@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) Merge consecutive slashes in URL's. Opt-out with `MergeSlashes OFF`. 
+     [Eric Covener]
+
   *) mod_proxy/ssl: Cleanup per-request SSL configuration anytime a backend
      connection is recycled/reused to avoid a possible crash with some SSLProxy
      configurations in <Location> or <Proxy> context. PR 63256. [Yann Ylavic]
