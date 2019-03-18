@@ -146,6 +146,10 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      +1: jim, ylavic, covener
      jailletc36: require r1818321 and part of r1818341 to update doc accordingly
 
+  *) core: fix SEGFAULT in CONNECT with recent change
+     2.4.x: svn merge -c 1855743,1855744 ^/httpd/httpd/trunk .
+     +1: rpluem, icing, covener
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -230,11 +234,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              sensible to me to have trunk and 2.4.x code in sync as much as
              possible. Changes from v3 to v4 (r1853953 mainly, r1853956 is only
              comment) are non functional (or at least intended as such).
-
-  *) core: fix SEGFAULT in CONNECT with recent change
-     2.4.x: svn merge -c 1855743,1855744 ^/httpd/httpd/trunk .
-     +1: rpluem, icing, 
-
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
