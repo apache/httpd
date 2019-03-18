@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_md: Explicitly setting file permissions to break out of umasks. We want our
+     non-privilegded apache user to be able to read them. See github issue
+     <https://github.com/icing/mod_md/issues/117>. [Stefan Eissing] 
+  
   *) Merge consecutive slashes in URL's. Opt-out with `MergeSlashes OFF`. 
      [Eric Covener]
 
