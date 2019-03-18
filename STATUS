@@ -233,7 +233,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    *) core: merge consecutive slashes in the path
       trunk patch http://svn.apache.org/r1855705
       2.4.x patch: http://people.apache.org/~covener/patches/mergeslashes-2.4.diff
-   +1: covener
+   +1: covener, rpluem
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
