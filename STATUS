@@ -146,11 +146,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      +1: jim, ylavic, covener
      jailletc36: require r1818321 and part of r1818341 to update doc accordingly
 
-   *) core: merge consecutive slashes in the path
-      trunk patch http://svn.apache.org/r1855705
-      2.4.x patch: http://people.apache.org/~covener/patches/mergeslashes-2.4.diff
-      +1: covener, rpluem, icing
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
