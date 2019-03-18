@@ -195,7 +195,9 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
     ap_getparents(r->uri);     /* OK --- shrinking transformations... */
     if (sconf->merge_slashes != AP_CORE_CONFIG_OFF) { 
         ap_no2slash(r->uri);
-        ap_no2slash(r->parsed_uri.path);
+        if (r->parsed_uri.path) {
+            ap_no2slash(r->parsed_uri.path);
+        }
      }
 
     /* All file subrequests are a huge pain... they cannot bubble through the
