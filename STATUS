@@ -231,6 +231,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              possible. Changes from v3 to v4 (r1853953 mainly, r1853956 is only
              comment) are non functional (or at least intended as such).
 
+  *) core: fix SEGFAULT in CONNECT with recent change
+     2.4.x: svn merge -c 1855743,1855744 ^/httpd/httpd/trunk .
+     +1: rpluem, icing, 
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
