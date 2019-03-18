@@ -1076,17 +1076,18 @@ RemoveType .cgi
       every filename extension when determining a files Content-Type.</dd>
       <dt><code>AllLastExtension</code></dt>
       <dd>This option only consider the last (right-most) filename extension
-      when determining any response metadata (Content-Type, language, encoding,
-      etc.) .</dd>
+      when scanning filenames.</dd>
       <dt><code>NoAllLastExtension</code></dt>
-      <dd>This option can be used to revert to the default behavior of testing
-      every filename extension when determining any response metadata
-      (Content-Type, language, encoding, etc.) .</dd>
+      <dd>This option can be used to revert to the default behavior of scanning 
+      every filename extension. Only useful if 
+      <code>MimeOptions AllLastExtension</code> has been used in a lower precedence 
+      configuration section</dd>
       <dt><code>Disable</code></dt>
       <dd>All assignment of metadata based on the filename is skipped.</dd>
       <dt><code>Enable</code></dt>
-      <dd>Re-enables assignment of metadata based on the filename. Only useful if a lower
-      precedence section has specified <code>MimeOptions Disable</code>.</dd>
+      <dd>Re-enables file extension checking by this module. Only useful if a lower
+      precedence configuration section has specified 
+      <code>MimeOptions Disable</code>.</dd>
     </dl>
 </usage>
 </directivesynopsis>
