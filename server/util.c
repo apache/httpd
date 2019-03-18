@@ -566,6 +566,10 @@ AP_DECLARE(void) ap_no2slash_ex(char *name, int is_fs_path)
 
     char *d, *s;
 
+    if (!name || !*name) {
+        return;
+    }
+
     s = d = name;
 
 #ifdef HAVE_UNC_PATHS
