@@ -5138,4 +5138,30 @@ recognized methods to modules.</p>
 <seealso><directive module="mod_allowmethods">AllowMethods</directive></seealso>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>MergeSlashes</name>
+<description>Controls whether the server merges consecutive slashes in URLs.
+</description>
+<syntax>MergeSlashes ON|OFF</syntax>
+<default>MergeSlashes ON</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+<compatibility>Added in 2.5.1</compatibility>
+
+<usage>
+    <p>By default, the server merges (or collapses) multiple consecutive slash
+    ('/') characters in the path component of the request URL.</p>
+
+    <p>When mapping URL's to the filesystem, these multiple slashes are not 
+    significant.  However, URL's handled other ways, such as by CGI or proxy,
+    might prefer to retain the significance of multiple consecutive slashes. 
+    In these cases <directive>MergeSlashes</directive> can be set to 
+    <em>OFF</em> to retain the multiple consecutive slashes.  In these
+    configurations, regular expressions used in the configuration file that match
+    the path component of the URL (<directive>LocationMatch</directive>,
+    <directive>RewriteRule</directive>, ...) need to take into account multiple 
+    consecutive slashes.</p>
+</usage>
+</directivesynopsis>
+
 </modulesynopsis>

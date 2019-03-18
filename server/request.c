@@ -167,6 +167,8 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
     int file_req = (r->main && r->filename);
     int access_status;
     core_dir_config *d;
+    core_server_config *sconf =
+        ap_get_core_module_config(r->server->module_config);
 
     /* Ignore embedded %2F's in path for proxy requests */
     if (!r->proxyreq && r->parsed_uri.path) {
@@ -191,6 +193,10 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
     }
 
     ap_getparents(r->uri);     /* OK --- shrinking transformations... */
+    if (sconf->merge_slashes != AP_CORE_CONFIG_OFF) { 
+        ap_no2slash(r->uri);
+        ap_no2slash(r->parsed_uri.path);
+     }
 
     /* All file subrequests are a huge pain... they cannot bubble through the
      * next several steps.  Only file subrequests are allowed an empty uri,
@@ -1411,20 +1417,7 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
 
     cache = prep_walk_cache(AP_NOTE_LOCATION_WALK, r);
     cached = (cache->cached != NULL);
-
-    /* Location and LocationMatch differ on their behaviour w.r.t. multiple
-     * slashes.  Location matches multiple slashes with a single slash,
-     * LocationMatch doesn't.  An exception, for backwards brokenness is
-     * absoluteURIs... in which case neither match multiple slashes.
-     */
-    if (r->uri[0] != '/') {
-        entry_uri = r->uri;
-    }
-    else {
-        char *uri = apr_pstrdup(r->pool, r->uri);
-        ap_no2slash(uri);
-        entry_uri = uri;
-    }
+    entry_uri = r->uri;
 
     /* If we have an cache->cached location that matches r->uri,
      * and the vhost's list of locations hasn't changed, we can skip
@@ -1491,7 +1484,7 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
                     pmatch = apr_palloc(rxpool, nmatch*sizeof(ap_regmatch_t));
                 }
 
-                if (ap_regexec(entry_core->r, r->uri, nmatch, pmatch, 0)) {
+                if (ap_regexec(entry_core->r, entry_uri, nmatch, pmatch, 0)) {
                     continue;
                 }
 
@@ -1501,7 +1494,7 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
                         apr_table_setn(r->subprocess_env,
                                        ((const char **)entry_core->refs->elts)[i],
                                        apr_pstrndup(r->pool,
-                                       r->uri + pmatch[i].rm_so,
+                                       entry_uri + pmatch[i].rm_so,
                                        pmatch[i].rm_eo - pmatch[i].rm_so));
                     }
                 }

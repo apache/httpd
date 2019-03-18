@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.39
 
+  *) core: new configuration option 'MergeSlashes on|off' that controls handling of
+     multiple, consecutive slash ('/') characters in the path component of the request URL.
+     [Eric Covener]
+     
   *) mod_http2: when SSL renegotiation is inhibited and a 403 ErrorDocument is
      in play, the proper HTTP/2 stream reset did not trigger with H2_ERR_HTTP_1_1_REQUIRED.
      Fixed. [Michael Kaufmann] 

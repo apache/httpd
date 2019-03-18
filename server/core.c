@@ -490,6 +490,7 @@ static void *create_core_server_config(apr_pool_t *a, server_rec *s)
 
     conf->protocols = apr_array_make(a, 5, sizeof(const char *));
     conf->protocols_honor_order = -1;
+    conf->merge_slashes = AP_CORE_CONFIG_UNSET; 
     
     return (void *)conf;
 }
@@ -555,6 +556,7 @@ static void *merge_core_server_configs(apr_pool_t *p, void *basev, void *virtv)
     conf->protocols_honor_order = ((virt->protocols_honor_order < 0)?
                                        base->protocols_honor_order :
                                        virt->protocols_honor_order);
+    AP_CORE_MERGE_FLAG(merge_slashes, conf, base, virt);
     
     return conf;
 }
@@ -1861,6 +1863,13 @@ static const char *set_qualify_redirect_url(cmd_parms *cmd, void *d_, int flag)
     d->qualify_redirect_url = flag ? AP_CORE_CONFIG_ON : AP_CORE_CONFIG_OFF;
 
     return NULL;
+}
+
+static const char *set_core_server_flag(cmd_parms *cmd, void *s_, int flag)
+{
+    core_server_config *conf =
+        ap_get_core_module_config(cmd->server->module_config);
+    return ap_set_flag_slot(cmd, conf, flag);
 }
 
 static const char *set_override_list(cmd_parms *cmd, void *d_, int argc, char *const argv[])
@@ -4562,6 +4571,10 @@ AP_INIT_ITERATE("HttpProtocolOptions", set_http_protocol_options, NULL, RSRC_CON
                 "'Unsafe' or 'Strict' (default). Sets HTTP acceptance rules"),
 AP_INIT_ITERATE("RegisterHttpMethod", set_http_method, NULL, RSRC_CONF,
                 "Registers non-standard HTTP methods"),
+AP_INIT_FLAG("MergeSlashes", set_core_server_flag, 
+             (void *)APR_OFFSETOF(core_server_config, merge_slashes),  
+             RSRC_CONF,
+             "Controls whether consecutive slashes in the URI path are merged"),
 { NULL }
 };
 

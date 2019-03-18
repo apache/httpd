@@ -1697,10 +1697,20 @@ AP_DECLARE(int) ap_unescape_url_keep2f(char *url, int decode_slashes);
 AP_DECLARE(int) ap_unescape_urlencoded(char *query);
 
 /**
- * Convert all double slashes to single slashes
- * @param name The string to convert
+ * Convert all double slashes to single slashes, except where significant
+ * to the filesystem on the current platform.
+ * @param name The string to convert, assumed to be a filesystem path
  */
 AP_DECLARE(void) ap_no2slash(char *name);
+
+/**
+ * Convert all double slashes to single slashes, except where significant
+ * to the filesystem on the current platform.
+ * @param name The string to convert
+ * @param is_fs_path if set to 0, the significance of any double-slashes is 
+ *        ignored.
+ */
+AP_DECLARE(void) ap_no2slash_ex(char *name, int is_fs_path);
 
 /**
  * Remove all ./ and xx/../ substrings from a file name. Also remove

@@ -740,7 +740,7 @@ typedef struct {
 #define AP_HTTP_METHODS_LENIENT       1
 #define AP_HTTP_METHODS_REGISTERED    2
     char http_methods;
-
+    unsigned int merge_slashes;
 } core_server_config;
 
 /* for AddOutputFiltersByType in core.c */

@@ -561,16 +561,16 @@ AP_DECLARE(void) ap_getparents(char *name)
         name[l] = '\0';
     }
 }
-
-AP_DECLARE(void) ap_no2slash(char *name)
+AP_DECLARE(void) ap_no2slash_ex(char *name, int is_fs_path)
 {
+
     char *d, *s;
 
     s = d = name;
 
 #ifdef HAVE_UNC_PATHS
     /* Check for UNC names.  Leave leading two slashes. */
-    if (s[0] == '/' && s[1] == '/')
+    if (is_fs_path && s[0] == '/' && s[1] == '/')
         *d++ = *s++;
 #endif
 
@@ -587,6 +587,10 @@ AP_DECLARE(void) ap_no2slash(char *name)
     *d = '\0';
 }
 
+AP_DECLARE(void) ap_no2slash(char *name)
+{
+    ap_no2slash_ex(name, 1);
+}
 
 /*
  * copy at most n leading directories of s into d
