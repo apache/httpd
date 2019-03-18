@@ -491,17 +491,6 @@ static SSLConnRec *ssl_init_connection_ctx(conn_rec *c,
 {
     SSLConnRec *sslconn = myConnConfig(c);
 
-    /* Reinit dc in any case because it may be r->per_dir_config scoped
-     * and thus a caller like mod_proxy needs to update it per request.
-     */
-    if (per_dir_config) {
-        sslconn->dc = ap_get_module_config(per_dir_config, &ssl_module);
-    }
-    else {
-        sslconn->dc = ap_get_module_config(c->base_server->lookup_defaults,
-                                           &ssl_module);
-    }
-
     if (!sslconn) {
         sslconn = apr_pcalloc(c->pool, sizeof(*sslconn));
 
@@ -517,6 +506,17 @@ static SSLConnRec *ssl_init_connection_ctx(conn_rec *c,
         }
 
         myConnConfigSet(c, sslconn);
+    }
+
+    /* Reinit dc in any case because it may be r->per_dir_config scoped
+     * and thus a caller like mod_proxy needs to update it per request.
+     */
+    if (per_dir_config) {
+        sslconn->dc = ap_get_module_config(per_dir_config, &ssl_module);
+    }
+    else {
+        sslconn->dc = ap_get_module_config(c->base_server->lookup_defaults,
+                                           &ssl_module);
     }
 
     return sslconn;
