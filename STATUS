@@ -126,12 +126,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_log_config: Support %{c}h for conn-hostname, %h for useragent_host
-     PR 55348
-     trunk patch: https://svn.apache.org/r1730129
-     2.4.x patch: svn merge -c 1730129 ^/httpd/httpd/trunk .
-     +1: jim, ylavic, covener
-     jailletc36: require r1818321 and part of r1818341 to update doc accordingly
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

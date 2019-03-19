@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.39
 
+  *) mod_log_config: Support %{c}h for conn-hostname, %h for useragent_host
+     PR 55348
+
+  *) mod_socache_redis: Support for Redis as socache storage provider.
+
   *) core: new configuration option 'MergeSlashes on|off' that controls handling of
      multiple, consecutive slash ('/') characters in the path component of the request URL.
      [Eric Covener]

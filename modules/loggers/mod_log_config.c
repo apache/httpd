@@ -309,9 +309,15 @@ static const char *constant_item(request_rec *dummy, char *stuff)
 
 static const char *log_remote_host(request_rec *r, char *a)
 {
-    return ap_escape_logitem(r->pool, ap_get_remote_host(r->connection,
-                                                         r->per_dir_config,
-                                                         REMOTE_NAME, NULL));
+    const char *remote_host;
+    if (a && !strcmp(a, "c")) {
+        remote_host = ap_get_remote_host(r->connection, r->per_dir_config,
+                                         REMOTE_NAME, NULL);
+    }
+    else {
+        remote_host = ap_get_useragent_host(r, REMOTE_NAME, NULL);
+    }
+    return ap_escape_logitem(r->pool, remote_host);
 }
 
 static const char *log_remote_address(request_rec *r, char *a)

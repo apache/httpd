@@ -111,6 +111,11 @@
         href="mod_authz_host.html#reqhost">the Require host
         documentation</a>.</td></tr>
 
+    <tr><td><code>%{c}h</code></td>
+        <td>Like <code>%h</code>, but always reports on the hostname of the
+        underlying TCP connection and not any modifications to the 
+        remote hostname by modules like <module>mod_remoteip</module>.</td></tr>
+
     <tr><td><code>%H</code></td>
         <td>The request protocol.</td></tr>
 
