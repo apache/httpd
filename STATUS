@@ -158,6 +158,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          for the change.
      elukey: PR 62025 seems another use case that gets fixed using this patch
              (still need to get feedback from the reporter but on my local env it solves the problem).
+     elukey: If anybody has time to review this change it would be great, to know if it needs to be reverted,
+             reworked, etc.. I would like to avoid a patch that is clearly wrong for some reviewer sitting here for
+             months/years without any action item :)
 
   *) mod_dav: Fix a potential incorrect PROPFIND response
      trunk patch: http://svn.apache.org/r1842010
