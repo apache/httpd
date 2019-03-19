@@ -279,6 +279,7 @@ usados para describir las directivas de Apache</a></li>
 <li><a href="mod/mod_socache_dbm.html">Módulo Apache mod_socache_dbm</a></li>
 <li><a href="mod/mod_socache_dc.html">Módulo Apache mod_socache_dc</a></li>
 <li><a href="mod/mod_socache_memcache.html">Módulo Apache mod_socache_memcache</a></li>
+<li><a href="mod/mod_socache_redis.html">Módulo Apache mod_socache_redis</a></li>
 <li><a href="mod/mod_socache_shmcb.html">Módulo Apache mod_socache_shmcb</a></li>
 <li><a href="mod/mod_speling.html">Módulo Apache mod_speling</a></li>
 <li><a href="mod/mod_ssl.html">Módulo Apache mod_ssl</a></li>

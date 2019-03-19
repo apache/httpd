@@ -97,6 +97,7 @@ available</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#maxrangeoverlaps">MaxRangeOverlaps</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#maxrangereversals">MaxRangeReversals</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#maxranges">MaxRanges</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mergeslashes">MergeSlashes</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mergetrailers">MergeTrailers</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mutex">Mutex</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#namevirtualhost">NameVirtualHost</a></li>
@@ -3481,6 +3482,32 @@ resource </td></tr>
       <dd>A positive number representing the maximum number of ranges the
       server is willing to satisfy.</dd>
     </dl>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MergeSlashes" id="MergeSlashes">MergeSlashes</a> <a name="mergeslashes" id="mergeslashes">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Controls whether the server merges consecutive slashes in URLs.
+</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MergeSlashes ON|OFF</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MergeSlashes ON</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Added in 2.4.39</td></tr>
+</table>
+    <p>By default, the server merges (or collapses) multiple consecutive slash
+    ('/') characters in the path component of the request URL.</p>
+
+    <p>When mapping URL's to the filesystem, these multiple slashes are not 
+    significant.  However, URL's handled other ways, such as by CGI or proxy,
+    might prefer to retain the significance of multiple consecutive slashes. 
+    In these cases <code class="directive">MergeSlashes</code> can be set to 
+    <em>OFF</em> to retain the multiple consecutive slashes.  In these
+    configurations, regular expressions used in the configuration file that match
+    the path component of the URL (<code class="directive">LocationMatch</code>,
+    <code class="directive">RewriteRule</code>, ...) need to take into account multiple 
+    consecutive slashes.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

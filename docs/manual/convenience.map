@@ -255,6 +255,7 @@ h2maxworkeridleseconds	mod/mod_http2.html#h2maxworkeridleseconds
 h2maxworkers	mod/mod_http2.html#h2maxworkers
 h2minworkers	mod/mod_http2.html#h2minworkers
 h2moderntlsonly	mod/mod_http2.html#h2moderntlsonly
+h2padding	mod/mod_http2.html#h2padding
 h2push	mod/mod_http2.html#h2push
 h2pushdiarysize	mod/mod_http2.html#h2pushdiarysize
 h2pushpriority	mod/mod_http2.html#h2pushpriority
@@ -392,6 +393,7 @@ mdrenewwindow	mod/mod_md.html#mdrenewwindow
 mdrequirehttps	mod/mod_md.html#mdrequirehttps
 mdstoredir	mod/mod_md.html#mdstoredir
 memcacheconnttl	mod/mod_socache_memcache.html#memcacheconnttl
+mergeslashes	mod/core.html#mergeslashes
 mergetrailers	mod/core.html#mergetrailers
 metadir	mod/mod_cern_meta.html#metadir
 metafiles	mod/mod_cern_meta.html#metafiles
@@ -476,6 +478,8 @@ redirect	mod/mod_alias.html#redirect
 redirectmatch	mod/mod_alias.html#redirectmatch
 redirectpermanent	mod/mod_alias.html#redirectpermanent
 redirecttemp	mod/mod_alias.html#redirecttemp
+redisconnpoolttl	mod/mod_socache_redis.html#redisconnpoolttl
+redistimeout	mod/mod_socache_redis.html#redistimeout
 reflectorheader	mod/mod_reflector.html#reflectorheader
 regexdefaultoptions	mod/core.html#regexdefaultoptions
 registerhttpmethod	mod/core.html#registerhttpmethod

@@ -220,6 +220,7 @@ URLs on the fly</dd>
 <dt><a href="mod_socache_dbm.html">mod_socache_dbm</a></dt><dd>DBM based shared object cache provider.</dd>
 <dt><a href="mod_socache_dc.html">mod_socache_dc</a></dt><dd>Distcache based shared object cache provider.</dd>
 <dt><a href="mod_socache_memcache.html">mod_socache_memcache</a></dt><dd>Memcache based shared object cache provider.</dd>
+<dt><a href="mod_socache_redis.html">mod_socache_redis</a></dt><dd>Redis based shared object cache provider.</dd>
 <dt><a href="mod_socache_shmcb.html">mod_socache_shmcb</a></dt><dd>shmcb based shared object cache provider.</dd>
 <dt><a href="mod_speling.html">mod_speling</a></dt><dd>ユーザが入力したであろう間違った URL を、
 大文字小文字の区別を無視することと一つ以下の綴り間違いを許容することで

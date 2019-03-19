@@ -218,6 +218,7 @@ URLs on the fly</dd>
 <dt><a href="mod_socache_dbm.html">mod_socache_dbm</a></dt><dd>DBM based shared object cache provider.</dd>
 <dt><a href="mod_socache_dc.html">mod_socache_dc</a></dt><dd>Distcache based shared object cache provider.</dd>
 <dt><a href="mod_socache_memcache.html">mod_socache_memcache</a></dt><dd>Memcache based shared object cache provider.</dd>
+<dt><a href="mod_socache_redis.html">mod_socache_redis</a></dt><dd>Redis based shared object cache provider.</dd>
 <dt><a href="mod_socache_shmcb.html">mod_socache_shmcb</a></dt><dd>shmcb based shared object cache provider.</dd>
 <dt><a href="mod_speling.html">mod_speling</a></dt><dd>사용자가 대소문자를 잘못 사용하거나 맞춤법이 틀리는
 것을 한번까지 허용하여 잘못된 URL을 고치려고 시도한다</dd>

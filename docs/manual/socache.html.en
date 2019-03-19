@@ -59,6 +59,9 @@
     <dt>"memcache" (<code class="module"><a href="./mod/mod_socache_memcache.html">mod_socache_memcache</a></code>)</dt>
     <dd>This makes use of the <a href="http://memcached.org/">memcached</a>
     high-performance, distributed memory object caching system.</dd>
+    <dt>"redis" (<code class="module"><a href="./mod/mod_socache_redis.html">mod_socache_redis</a></code>)</dt>
+    <dd>This makes use of the <a href="http://redis.io/">Redis</a>
+    high-performance, distributed memory object caching system.</dd>
     <dt>"shmcb" (<code class="module"><a href="./mod/mod_socache_shmcb.html">mod_socache_shmcb</a></code>)</dt>
     <dd>This makes use of a high-performance cyclic buffer inside a
      shared memory segment.</dd>

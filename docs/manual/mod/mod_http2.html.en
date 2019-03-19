@@ -84,6 +84,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#h2maxworkers">H2MaxWorkers</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2minworkers">H2MinWorkers</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2moderntlsonly">H2ModernTLSOnly</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#h2padding">H2Padding</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2push">H2Push</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2pushdiarysize">H2PushDiarySize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2pushpriority">H2PushPriority</a></li>
@@ -435,12 +436,48 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="H2Padding" id="H2Padding">H2Padding</a> <a name="h2padding" id="h2padding">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determine the range of padding bytes added to payload frames</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2Padding numbits</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2Padding 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.4.39 and later.</td></tr>
+</table>
+            <p>
+                With the default 0, no padding bytes are added to any payload
+                frames, e.g. HEADERS, DATA and PUSH_PROMISE. This is the behaviour
+                of previous versions. It means that under certain conditions, an
+                observer of network traffic can see the length of those frames 
+                in the TLS stream.
+            </p>
+            <p>
+                When configuring numbits of 1-8, a random number in range
+                [0, 2^numbits[ are added to each frame. The random value is chosen
+                independantly for each frame that the module sends back to the client.
+            </p>
+            <p>
+                While more padding bytes give better message length obfuscation, they
+                are also additional traffic. The optimal number therefore depends on
+                the kind of web traffic the server carries.
+            </p>
+            <p>
+                The default of 0, e.g. no padding, was chosen for maximum backward
+                compatibility. There might be deployments where padding bytes are
+                unwanted or do harm. The most likely cause would be a client that
+                has a faults implementation.
+            </p>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="H2Push" id="H2Push">H2Push</a> <a name="h2push" id="h2push">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>H2 Server Push Switch</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2Push on|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2Push on</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.4.18 and later.</td></tr>
@@ -466,7 +503,8 @@
             </p>
             <p> 
                 Link headers in responses are either set by the application or
-                can be configured via <code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code> as:
+                can be configured via <code class="directive">H2PushResource</code> or
+                using <code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code> as:
             </p>
             <div class="example"><h3>mod_headers example</h3><pre class="prettyprint lang-config">&lt;Location /index.html&gt;
     Header add Link "&lt;/css/site.css&gt;;rel=preload"
@@ -480,9 +518,10 @@
                 twice or more to one client. Use with care.
             </p>
             <p> 
-                HTTP/2 server pushes are enabled by default. This directive 
-                allows it to be switch off on all resources of this server/virtual
-                host.
+                HTTP/2 server pushes are enabled by default. On a server or virtual host,
+                you may enable/disable this feature for any connection to the host. In addition,
+                you may disable PUSH for a set of resources in a Directory/Location. This controls
+                which resources may cause a PUSH, not which resources may be sent via PUSH.
             </p>
             <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">H2Push off</pre>
 </div>
@@ -820,7 +859,7 @@ H2PushPriority text/css   interleaved      # weight 256 default</pre>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>H2 Upgrade Protocol Switch</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2Upgrade on|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2Upgrade on for h2c, off for h2 protocol</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
 </table>

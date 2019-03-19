@@ -278,6 +278,7 @@
 <li><a href="mod/mod_socache_dbm.html">Apache 模块 mod_socache_dbm</a></li>
 <li><a href="mod/mod_socache_dc.html">Apache 模块 mod_socache_dc</a></li>
 <li><a href="mod/mod_socache_memcache.html">Apache 模块 mod_socache_memcache</a></li>
+<li><a href="mod/mod_socache_redis.html">Apache 模块 mod_socache_redis</a></li>
 <li><a href="mod/mod_socache_shmcb.html">Apache 模块 mod_socache_shmcb</a></li>
 <li><a href="mod/mod_speling.html">Apache 模块 mod_speling</a></li>
 <li><a href="mod/mod_ssl.html">Apache 模块 mod_ssl</a></li>

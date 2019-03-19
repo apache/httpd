@@ -26,6 +26,8 @@
 <p><span>Langues Disponibles: </span><a href="./en/socache.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/socache.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 
     <p>Le cache des objets partagés est un concept de partage de données
     de base entre tous les processus d'un serveur, sans se préoccuper du

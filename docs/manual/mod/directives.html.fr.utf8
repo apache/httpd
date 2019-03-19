@@ -436,6 +436,7 @@
 <li><a href="mod_md.html#mdrequirehttps">MDRequireHttps</a></li>
 <li><a href="mod_md.html#mdstoredir">MDStoreDir</a></li>
 <li><a href="mod_socache_memcache.html#memcacheconnttl">MemcacheConnTTL</a></li>
+<li><a href="core.html#mergeslashes">MergeSlashes</a></li>
 <li><a href="core.html#mergetrailers">MergeTrailers</a></li>
 <li><a href="mod_cern_meta.html#metadir">MetaDir</a></li>
 <li><a href="mod_cern_meta.html#metafiles">MetaFiles</a></li>
@@ -520,6 +521,8 @@
 <li><a href="mod_alias.html#redirectmatch">RedirectMatch</a></li>
 <li><a href="mod_alias.html#redirectpermanent">RedirectPermanent</a></li>
 <li><a href="mod_alias.html#redirecttemp">RedirectTemp</a></li>
+<li><a href="mod_socache_redis.html#redisconnpoolttl">RedisConnPoolTTL</a></li>
+<li><a href="mod_socache_redis.html#redistimeout">RedisTimeout</a></li>
 <li><a href="mod_reflector.html#reflectorheader">ReflectorHeader</a></li>
 <li><a href="core.html#regexdefaultoptions">RegexDefaultOptions</a></li>
 <li><a href="core.html#registerhttpmethod">RegisterHttpMethod</a></li>

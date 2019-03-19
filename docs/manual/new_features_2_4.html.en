@@ -205,6 +205,9 @@
       <dt><code class="module"><a href="./mod/mod_md.html">mod_md</a></code> (available since 2.4.30)</dt>
       <dd>Support the ACME protocol to automate certificate provisionning.</dd>
 
+      <dt><code class="module"><a href="./mod/mod_socache_redis.html">mod_socache_redis</a></code> (available since 2.4.39)</dt>
+      <dd>Support <a href="http://redis.io/">Redis</a> based shared object cache provider.</dd>
+
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
