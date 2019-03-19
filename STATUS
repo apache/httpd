@@ -230,7 +230,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_ssl: Fix restoring SSL state for TLSv1.3 PHA client cert verification.
      trunk patch: http://svn.apache.org/1855849
      2.4.x patch: svn merge -c 1855849 ^/httpd/httpd/trunk .
-     +1: jorton, 
+     +1: jorton, covener
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
