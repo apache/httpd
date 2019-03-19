@@ -126,6 +126,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) maintainer mode fix for util.c no2slash_ex
+     trunk patch: http://svn.apache.org/r1855755
+     2.4.x patch svn merge -c 1855755 ^/httpd/httpd/trunk .
+     +1: covener, rpluem, jim, ylavic
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -211,11 +216,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              possible. Changes from v3 to v4 (r1853953 mainly, r1853956 is only
              comment) are non functional (or at least intended as such).
 
+  *) mod_proxy/ssl: Cleanup per-request SSL configuration anytime a backend
+     connection is recycled/reused to avoid a possible crash with some SSLProxy
+     configurations in <Location> or <Proxy> context. PR 63256.
+     trunk patch: http://svn.apache.org/r1855646
+                  http://svn.apache.org/r1855748
+     2.4.x patch svn merge -c 1855646,1855748 ^/httpd/httpd/trunk .
+     +1: ylavic
 
-  *) maintainer mode fix for util.c no2slash_ex
-     trunk patch: http://svn.apache.org/r1855755
-     2.4.x patch svn merge -c 1855755 ^/httpd/httpd/trunk .
-     +1: covener, rpluem, jim
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
