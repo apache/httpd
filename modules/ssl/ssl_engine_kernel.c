@@ -1155,6 +1155,7 @@ static int ssl_hook_Access_modern(request_rec *r, SSLSrvConfigRec *sc, SSLDirCon
                 ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, r->server);
                 apr_table_setn(r->notes, "error-notes",
                                "Reason: Cannot perform Post-Handshake Authentication.<br />");
+                SSL_set_verify(ssl, vmode_inplace, NULL);
                 return HTTP_FORBIDDEN;
             }
             
@@ -1176,6 +1177,7 @@ static int ssl_hook_Access_modern(request_rec *r, SSLSrvConfigRec *sc, SSLDirCon
              * Finally check for acceptable renegotiation results
              */
             if (OK != (rc = ssl_check_post_client_verify(r, sc, dc, sslconn, ssl))) {
+                SSL_set_verify(ssl, vmode_inplace, NULL);
                 return rc;
             }
         }
