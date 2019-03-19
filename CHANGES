@@ -185,6 +185,9 @@ Changes with Apache 2.4.36
      should be accepted after the authorization scheme. \t are also tolerated.
      [Christophe Jaillet]
 
+  *) mod_socache_redis: New socache submodule provider to allow use
+     of Redis as storage backend. [Jim Jagielski]
+
   *) mod_proxy_hcheck: Fix issues with interval determination. PR 62318
      [Jim Jagielski]
 

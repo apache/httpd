@@ -126,19 +126,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   *) Add in mod_socache_redis from trunk
-      trunk: http://svn.apache.org/r1768070
-             http://svn.apache.org/r1768120
-             http://svn.apache.org/r1768225
-             http://svn.apache.org/r1769712
-             http://svn.apache.org/r1769737
-             http://svn.apache.org/r1774610
-             http://svn.apache.org/r1828624
-             http://svn.apache.org/r1828626
-      2.4.x patch: http://home.apache.org/~jim/patches/socache_redisv2.patch
-      +1: jim, minfrin, covener
-      jailletc36: r1855701 should be added to fix compatibility notes in the doc
-
   *) mod_log_config: Support %{c}h for conn-hostname, %h for useragent_host
      PR 55348
      trunk patch: https://svn.apache.org/r1730129
