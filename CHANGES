@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_ssl: Correctly restore SSL verify state after TLSv1.3 PHA failure.
+     [Michael Kaufmann <mail michael-kaufmann.ch>]
+
   *) mod_md: Explicitly setting file permissions to break out of umasks. We want our
      non-privilegded apache user to be able to read them. See github issue
      <https://github.com/icing/mod_md/issues/117>. [Stefan Eissing] 
