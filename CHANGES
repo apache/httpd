@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.39
 
+  *) mod_ssl: Correctly restore SSL verify state after TLSv1.3 PHA failure.
+     [Michael Kaufmann <mail michael-kaufmann.ch>]
+
   *) mod_log_config: Support %{c}h for conn-hostname, %h for useragent_host
      PR 55348
 
