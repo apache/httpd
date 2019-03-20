@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.39
 
+  *) mod_proxy/ssl: Cleanup per-request SSL configuration anytime a backend
+     connection is recycled/reused to avoid a possible crash with some SSLProxy
+     configurations in <Location> or <Proxy> context. PR 63256. [Yann Ylavic]
+
   *) mod_ssl: Correctly restore SSL verify state after TLSv1.3 PHA failure.
      [Michael Kaufmann <mail michael-kaufmann.ch>]
 

@@ -1532,6 +1532,13 @@ static apr_status_t connection_cleanup(void *theconn)
         socket_cleanup(conn);
         conn->close = 0;
     }
+    else if (conn->is_ssl) {
+        /* Unbind/reset the SSL connection dir config (sslconn->dc) from
+         * r->per_dir_config, r will likely get destroyed before this proxy
+         * conn is reused.
+         */
+        ap_proxy_ssl_engine(conn->connection, worker->section_config, 1);
+    }
 
     if (worker->s->hmax && worker->cp->res) {
         conn->inreslist = 1;
@@ -3172,6 +3179,12 @@ static int proxy_connection_create(const char *proxy_function,
     apr_bucket_alloc_t *bucket_alloc;
 
     if (conn->connection) {
+        if (conn->is_ssl) {
+            /* on reuse, reinit the SSL connection dir config with the current
+             * r->per_dir_config, the previous one was reset on release.
+             */
+            ap_proxy_ssl_engine(conn->connection, per_dir_config, 1);
+        }
         return OK;
     }
 
