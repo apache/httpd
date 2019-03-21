@@ -203,7 +203,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1853953
                   http://svn.apache.org/r1853956
      2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-forward_100_continue-v4.patch
-     +1: ylavic, icing
+     +1: ylavic, icing, jim
      ylavic: please note the "s/ASCII_(CRLF|ZERO)/\1_ASCII/g" in the backport,
              same as in trunk (where definitions come from httpd.h) so doing
              the change now in 2.4.x helps backports. Since in 2.4.x these
