@@ -1,3 +1,4 @@
+<IfModule mod_autoindex>
 #
 # Directives controlling the display of server-generated directory listings.
 #
@@ -91,3 +92,4 @@ HeaderName HEADER.html
 #
 IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t
 
+</IfModule>
