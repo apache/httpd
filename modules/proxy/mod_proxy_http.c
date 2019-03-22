@@ -1947,6 +1947,7 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
     proxy_conn_rec *backend = NULL;
     int is_ssl = 0;
     conn_rec *c = r->connection;
+    proxy_dir_conf *dconf;
     int retry = 0;
     char *locurl = url;
     int toclose = 0;
@@ -2007,8 +2008,11 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
     req->bucket_alloc = c->bucket_alloc;
     req->rb_method = RB_INIT;
 
+    dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
+
     /* Should we handle end-to-end or ping 100-continue? */
-    if (r->expecting_100 || PROXY_DO_100_CONTINUE(worker, r)) {
+    if ((r->expecting_100 && dconf->forward_100_continue)
+            || PROXY_DO_100_CONTINUE(worker, r)) {
         /* We need to reset r->expecting_100 or prefetching will cause
          * ap_http_filter() to send "100 Continue" response by itself. So
          * we'll use req->expecting_100 in mod_proxy_http to determine whether
