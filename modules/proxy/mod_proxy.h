@@ -240,6 +240,8 @@ typedef struct {
     /** Named back references */
     apr_array_header_t *refs;
 
+    unsigned int forward_100_continue:1;
+    unsigned int forward_100_continue_set:1;
 } proxy_dir_conf;
 
 /* if we interpolate env vars per-request, we'll need a per-request
