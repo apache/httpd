@@ -1,0 +1,5 @@
+# Microsoft Developer Studio Generated Dependency File, included by mod_socache_shmcb.mak
+
+..\..\build\win32\httpd.rc : \
+	"..\..\include\ap_release.h"\
+	
