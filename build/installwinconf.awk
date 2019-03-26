@@ -191,6 +191,7 @@ BEGIN {
           print "#LoadModule slotmem_shm_module modules/mod_slotmem_shm.so" > dstfl;
           print "#LoadModule socache_dbm_module modules/mod_socache_dbm.so" > dstfl;
           print "#LoadModule socache_memcache_module modules/mod_socache_memcache.so" > dstfl;
+          print "#LoadModule socache_redis_module modules/mod_socache_redis.so" > dstfl;
           print "#LoadModule socache_shmcb_module modules/mod_socache_shmcb.so" > dstfl;
           print "#LoadModule speling_module modules/mod_speling.so" > dstfl;
           print "#LoadModule ssl_module modules/mod_ssl.so" > dstfl;
