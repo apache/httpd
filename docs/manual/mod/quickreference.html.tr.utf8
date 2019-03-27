@@ -834,8 +834,6 @@ yönlendirme gönderir.</td></tr>
 URL’ye yönlendirir.</td></tr>
 <tr class="odd"><td><a href="mod_alias.html#redirecttemp">RedirectTemp <var>URL-yolu</var> <var>URL</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">İstemciyi, geçici bir yönlendirme isteği döndürerek farklı bir
 URL’ye yönlendirir.</td></tr>
-<tr><td><a href="mod_socache_redis.html#redisconnpoolttl">RedisConnPoolTTL <em>num</em>[<em>units</em>]</a></td><td> 15s </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">TTL used for the connection pool with the Redis server(s)</td></tr>
-<tr class="odd"><td><a href="mod_socache_redis.html#redistimeout">RedisTimeout <em>num</em>[<em>units</em>]</a></td><td> 5s </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">R/W timeout used for the connection with the Redis server(s)</td></tr>
 <tr><td><a href="mod_reflector.html#reflectorheader">ReflectorHeader <var>inputheader</var> <var>[outputheader]</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Reflect an input header to the output headers</td></tr>
 <tr class="odd"><td><a href="core.html#regexdefaultoptions">RegexDefaultOptions [none] [+|-]<var>seçenek</var> [[+|-]<var>seçenek</var>] ...</a></td><td> DOLLAR_ENDONLY </td><td>s</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Regex düzenli ifadeleri için öntanımlı/küresel seçenekleri yapılandırır</td></tr>
 <tr><td><a href="core.html#registerhttpmethod">RegisterHttpMethod <var>yöntem</var> [<var>yöntem</var> [...]]</a></td><td></td><td>s</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Standart olmayan HTTP yöntemlerini devreye alır</td></tr>

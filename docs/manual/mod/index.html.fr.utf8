@@ -273,7 +273,6 @@ démarrage ou du redémarrage du serveur</dd>
 <dt><a href="mod_socache_dbm.html">mod_socache_dbm</a></dt><dd>Fournisseur de cache d'objets partagés basé sur DBM.</dd>
 <dt><a href="mod_socache_dc.html">mod_socache_dc</a></dt><dd>Fournisseur de cache d'objets partagés basé sur dc.</dd>
 <dt><a href="mod_socache_memcache.html">mod_socache_memcache</a></dt><dd>Fournisseur de cache d'objets partagés basé sur Memcache.</dd>
-<dt><a href="mod_socache_redis.html">mod_socache_redis</a></dt><dd>Redis based shared object cache provider.</dd>
 <dt><a href="mod_socache_shmcb.html">mod_socache_shmcb</a></dt><dd>Fournisseur de cache d'objets partagés basé sur shmcb.</dd>
 <dt><a href="mod_speling.html">mod_speling</a></dt><dd>Tente de corriger les erreurs de casse dans les URLs ou les
 fautes de frappe mineures.</dd>

@@ -478,8 +478,6 @@ redirect	mod/mod_alias.html#redirect
 redirectmatch	mod/mod_alias.html#redirectmatch
 redirectpermanent	mod/mod_alias.html#redirectpermanent
 redirecttemp	mod/mod_alias.html#redirecttemp
-redisconnpoolttl	mod/mod_socache_redis.html#redisconnpoolttl
-redistimeout	mod/mod_socache_redis.html#redistimeout
 reflectorheader	mod/mod_reflector.html#reflectorheader
 regexdefaultoptions	mod/core.html#regexdefaultoptions
 registerhttpmethod	mod/core.html#registerhttpmethod

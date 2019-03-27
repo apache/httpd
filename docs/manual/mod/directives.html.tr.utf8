@@ -517,8 +517,6 @@
 <li><a href="mod_alias.html#redirectmatch">RedirectMatch</a></li>
 <li><a href="mod_alias.html#redirectpermanent">RedirectPermanent</a></li>
 <li><a href="mod_alias.html#redirecttemp">RedirectTemp</a></li>
-<li><a href="mod_socache_redis.html#redisconnpoolttl">RedisConnPoolTTL</a></li>
-<li><a href="mod_socache_redis.html#redistimeout">RedisTimeout</a></li>
 <li><a href="mod_reflector.html#reflectorheader">ReflectorHeader</a></li>
 <li><a href="core.html#regexdefaultoptions">RegexDefaultOptions</a></li>
 <li><a href="core.html#registerhttpmethod">RegisterHttpMethod</a></li>

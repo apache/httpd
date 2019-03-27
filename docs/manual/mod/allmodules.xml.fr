@@ -111,7 +111,6 @@
   <modulefile>mod_socache_dbm.xml.fr</modulefile>
   <modulefile>mod_socache_dc.xml.fr</modulefile>
   <modulefile>mod_socache_memcache.xml.fr</modulefile>
-  <modulefile>mod_socache_redis.xml</modulefile>
   <modulefile>mod_socache_shmcb.xml.fr</modulefile>
   <modulefile>mod_speling.xml.fr</modulefile>
   <modulefile>mod_ssl.xml.fr</modulefile>

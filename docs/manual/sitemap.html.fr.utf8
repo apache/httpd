@@ -315,7 +315,6 @@ pour décrire les directives Apache</a></li>
 <li><a href="mod/mod_socache_dbm.html">Module Apache mod_socache_dbm</a></li>
 <li><a href="mod/mod_socache_dc.html">Module Apache mod_socache_dc</a></li>
 <li><a href="mod/mod_socache_memcache.html">Module Apache mod_socache_memcache</a></li>
-<li><a href="mod/mod_socache_redis.html">Module Apache mod_socache_redis</a></li>
 <li><a href="mod/mod_socache_shmcb.html">Module Apache mod_socache_shmcb</a></li>
 <li><a href="mod/mod_speling.html">Module Apache mod_speling</a></li>
 <li><a href="mod/mod_ssl.html">Module Apache mod_ssl</a></li>
