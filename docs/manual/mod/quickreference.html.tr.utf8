@@ -54,7 +54,7 @@
 <tr><th>k</th><td>sanal konak</td></tr>
 <tr><th>d</th><td>dizin</td></tr>
 <tr><th>h</th><td>.htaccess</td></tr>
-<tr><th /><td /></tr>
+<tr><th>v</th><td>vekil bölümü</td></tr>
 </table></td>
 <td><table><tr><th>Ç</th><td>Çekirdek</td></tr>
 <tr><th>M</th><td>MPM</td></tr>
@@ -614,7 +614,7 @@ sınırlar.</td></tr>
 <tr class="odd"><td><a href="core.html#limitxmlrequestbody">LimitXMLRequestBody <var>bayt-sayısı</var></a></td><td> 1000000 </td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Bir XML temelli istek gövdesinin uzunluğunu sınırlar.</td></tr>
 <tr><td><a href="mpm_common.html#listen">Listen [<var>IP-adresi</var>:]<var>port-numarası</var>
   [<var>protokol</var>]</a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Sunucunun dinleyeceği IP adresini ve portu belirler.</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#listenbacklog">ListenBacklog <var>kuyruk-uzunluğu</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Bekleyen bağlantılar kuyruğunun azami uzunluğunu
+<tr class="odd"><td><a href="mpm_common.html#listenbacklog">ListenBackLog <var>kuyruk-uzunluğu</var></a></td><td> 511 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Bekleyen bağlantılar kuyruğunun azami uzunluğunu
   belirler</td></tr>
 <tr><td><a href="mpm_common.html#listencoresbucketsratio">ListenCoresBucketsRatio <var>oran</var></a></td><td> 0 (iptal) </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">İşlemci çekirdek sayısının dinleyenlerin buket sayısına oranı</td></tr>
 <tr class="odd"><td><a href="mod_so.html#loadfile">LoadFile <em>dosya-ismi</em> [<em>dosya-ismi</em>] ...</a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Belirtilen nesne dosyasını veya kütüphaneyi sunucu ile ilintiler.
@@ -700,7 +700,7 @@ processing</td></tr>
 <tr><td><a href="mod_md.html#mdrequirehttps">MDRequireHttps off|temporary|permanent</a></td><td> off </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Redirects http: traffic to https: for Managed Domains.</td></tr>
 <tr class="odd"><td><a href="mod_md.html#mdstoredir">MDStoreDir path</a></td><td> md </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Path on the local file system to store the Managed Domains data.</td></tr>
 <tr><td><a href="mod_socache_memcache.html#memcacheconnttl">MemcacheConnTTL <em>num[units]</em></a></td><td> 15s </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Keepalive time for idle connections</td></tr>
-<tr class="odd"><td><a href="core.html#mergeslashes">MergeSlashes ON|OFF</a></td><td> ON </td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Controls whether the server merges consecutive slashes in URLs.
+<tr class="odd"><td><a href="core.html#mergeslashes">MergeSlashes ON|OFF</a></td><td> ON </td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Sunucunun URL’lerde ardışık bölü çizgilerini birleştirip birleştirmeyeceğini denetler.
 </td></tr>
 <tr><td><a href="core.html#mergetrailers">MergeTrailers [on|off]</a></td><td> off </td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Trailer alanlarının başlığa dahil edilip edilmeyeceğini belirler</td></tr>
 <tr class="odd"><td><a href="mod_cern_meta.html#metadir">MetaDir <var>directory</var></a></td><td> .web </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Name of the directory to find CERN-style meta information
@@ -1032,30 +1032,30 @@ handshake</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslpassphrasedialog">SSLPassPhraseDialog <em>type</em></a></td><td> builtin </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Type of pass phrase dialog for encrypted private
 keys</td></tr>
 <tr><td><a href="mod_ssl.html#sslprotocol">SSLProtocol [+|-]<em>protocol</em> ...</a></td><td> all -SSLv3 (up to 2 +</td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure usable SSL/TLS protocol versions</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslproxycacertificatefile">SSLProxyCACertificateFile <em>file-path</em></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">File of concatenated PEM-encoded CA Certificates
+<tr class="odd"><td><a href="mod_ssl.html#sslproxycacertificatefile">SSLProxyCACertificateFile <em>file-path</em></a></td><td></td><td>skv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">File of concatenated PEM-encoded CA Certificates
 for Remote Server Auth</td></tr>
-<tr><td><a href="mod_ssl.html#sslproxycacertificatepath">SSLProxyCACertificatePath <em>directory-path</em></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Directory of PEM-encoded CA Certificates for
+<tr><td><a href="mod_ssl.html#sslproxycacertificatepath">SSLProxyCACertificatePath <em>directory-path</em></a></td><td></td><td>skv</td><td>E</td></tr><tr><td class="descr" colspan="4">Directory of PEM-encoded CA Certificates for
 Remote Server Auth</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslproxycarevocationcheck">SSLProxyCARevocationCheck chain|leaf|none</a></td><td> none </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable CRL-based revocation checking for Remote Server Auth</td></tr>
-<tr><td><a href="mod_ssl.html#sslproxycarevocationfile">SSLProxyCARevocationFile <em>file-path</em></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">File of concatenated PEM-encoded CA CRLs for
+<tr class="odd"><td><a href="mod_ssl.html#sslproxycarevocationcheck">SSLProxyCARevocationCheck chain|leaf|none</a></td><td> none </td><td>skv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable CRL-based revocation checking for Remote Server Auth</td></tr>
+<tr><td><a href="mod_ssl.html#sslproxycarevocationfile">SSLProxyCARevocationFile <em>file-path</em></a></td><td></td><td>skv</td><td>E</td></tr><tr><td class="descr" colspan="4">File of concatenated PEM-encoded CA CRLs for
 Remote Server Auth</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslproxycarevocationpath">SSLProxyCARevocationPath <em>directory-path</em></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Directory of PEM-encoded CA CRLs for
+<tr class="odd"><td><a href="mod_ssl.html#sslproxycarevocationpath">SSLProxyCARevocationPath <em>directory-path</em></a></td><td></td><td>skv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Directory of PEM-encoded CA CRLs for
 Remote Server Auth</td></tr>
-<tr><td><a href="mod_ssl.html#sslproxycheckpeercn">SSLProxyCheckPeerCN on|off</a></td><td> on </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Whether to check the remote server certificate's CN field
+<tr><td><a href="mod_ssl.html#sslproxycheckpeercn">SSLProxyCheckPeerCN on|off</a></td><td> on </td><td>skv</td><td>E</td></tr><tr><td class="descr" colspan="4">Whether to check the remote server certificate's CN field
 </td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslproxycheckpeerexpire">SSLProxyCheckPeerExpire on|off</a></td><td> on </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Whether to check if remote server certificate is expired
+<tr class="odd"><td><a href="mod_ssl.html#sslproxycheckpeerexpire">SSLProxyCheckPeerExpire on|off</a></td><td> on </td><td>skv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Whether to check if remote server certificate is expired
 </td></tr>
-<tr><td><a href="mod_ssl.html#sslproxycheckpeername">SSLProxyCheckPeerName on|off</a></td><td> on </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure host name checking for remote server certificates
+<tr><td><a href="mod_ssl.html#sslproxycheckpeername">SSLProxyCheckPeerName on|off</a></td><td> on </td><td>skv</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure host name checking for remote server certificates
 </td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslproxyciphersuite">SSLProxyCipherSuite [<em>protocol</em>] <em>cipher-spec</em></a></td><td> ALL:!ADH:RC4+RSA:+H +</td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Cipher Suite available for negotiation in SSL
+<tr class="odd"><td><a href="mod_ssl.html#sslproxyciphersuite">SSLProxyCipherSuite [<em>protocol</em>] <em>cipher-spec</em></a></td><td> ALL:!ADH:RC4+RSA:+H +</td><td>skv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Cipher Suite available for negotiation in SSL
 proxy handshake</td></tr>
-<tr><td><a href="mod_ssl.html#sslproxyengine">SSLProxyEngine on|off</a></td><td> off </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">SSL Proxy Engine Operation Switch</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslproxymachinecertificatechainfile">SSLProxyMachineCertificateChainFile <em>filename</em></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">File of concatenated PEM-encoded CA certificates to be used by the proxy for choosing a certificate</td></tr>
-<tr><td><a href="mod_ssl.html#sslproxymachinecertificatefile">SSLProxyMachineCertificateFile <em>filename</em></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">File of concatenated PEM-encoded client certificates and keys to be used by the proxy</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslproxymachinecertificatepath">SSLProxyMachineCertificatePath <em>directory</em></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Directory of PEM-encoded client certificates and keys to be used by the proxy</td></tr>
-<tr><td><a href="mod_ssl.html#sslproxyprotocol">SSLProxyProtocol [+|-]<em>protocol</em> ...</a></td><td> all -SSLv3 (up to 2 +</td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure usable SSL protocol flavors for proxy usage</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslproxyverify">SSLProxyVerify <em>level</em></a></td><td> none </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Type of remote server Certificate verification</td></tr>
-<tr><td><a href="mod_ssl.html#sslproxyverifydepth">SSLProxyVerifyDepth <em>number</em></a></td><td> 1 </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum depth of CA Certificates in Remote Server
+<tr><td><a href="mod_ssl.html#sslproxyengine">SSLProxyEngine on|off</a></td><td> off </td><td>skv</td><td>E</td></tr><tr><td class="descr" colspan="4">SSL Proxy Engine Operation Switch</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslproxymachinecertificatechainfile">SSLProxyMachineCertificateChainFile <em>filename</em></a></td><td></td><td>skv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">File of concatenated PEM-encoded CA certificates to be used by the proxy for choosing a certificate</td></tr>
+<tr><td><a href="mod_ssl.html#sslproxymachinecertificatefile">SSLProxyMachineCertificateFile <em>filename</em></a></td><td></td><td>skv</td><td>E</td></tr><tr><td class="descr" colspan="4">File of concatenated PEM-encoded client certificates and keys to be used by the proxy</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslproxymachinecertificatepath">SSLProxyMachineCertificatePath <em>directory</em></a></td><td></td><td>skv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Directory of PEM-encoded client certificates and keys to be used by the proxy</td></tr>
+<tr><td><a href="mod_ssl.html#sslproxyprotocol">SSLProxyProtocol [+|-]<em>protocol</em> ...</a></td><td> all -SSLv3 (up to 2 +</td><td>skv</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure usable SSL protocol flavors for proxy usage</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslproxyverify">SSLProxyVerify <em>level</em></a></td><td> none </td><td>skv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Type of remote server Certificate verification</td></tr>
+<tr><td><a href="mod_ssl.html#sslproxyverifydepth">SSLProxyVerifyDepth <em>number</em></a></td><td> 1 </td><td>skv</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum depth of CA Certificates in Remote Server
 Certificate verification</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslrandomseed">SSLRandomSeed <em>context</em> <em>source</em>
 [<em>bytes</em>]</a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Pseudo Random Number Generator (PRNG) seeding
@@ -1163,7 +1163,7 @@ can be <a href="#sniffing">automatically detected</a></td></tr>
 <a href="../ko/mod/quickreference.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/quickreference.html" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/mod/quickreference.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Yorum</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Yorumlar</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
 var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/quickreference.html';

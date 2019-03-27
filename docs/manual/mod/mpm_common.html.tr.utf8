@@ -32,7 +32,6 @@
 <a href="../ja/mod/mpm_common.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/mpm_common.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Birden fazla Çok Süreçlilik Modülü (MPM) tarafından gerçeklenmiş
   yönergeler bütünü.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>MPM</td></tr></table>
@@ -61,9 +60,9 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#threadsperchild">ThreadsPerChild</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#threadstacksize">ThreadStackSize</a></li>
 </ul>
-<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mpm_common">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mpm_common">Report a bug</a></li></ul><h3>Ayrıca bakınız:</h3>
+<h3>Bulunan hatalar</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd günlüğü</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mpm_common">Bilinenler</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mpm_common">Hata bildir</a></li></ul><h3>Ayrıca bakınız:</h3>
 <ul class="seealso">
-<li><a href="#comments_section">Yorum</a></li></ul></div>
+<li><a href="#comments_section">Yorumlar</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CoreDumpDirectory" id="CoreDumpDirectory">CoreDumpDirectory</a> <a name="coredumpdirectory" id="coredumpdirectory">Yönergesi</a></h2>
@@ -251,8 +250,8 @@ açıklaması</a></li>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bekleyen bağlantılar kuyruğunun azami uzunluğunu
   belirler</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>ListenBacklog <var>kuyruk-uzunluğu</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>ListenBacklog 511</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>ListenBackLog <var>kuyruk-uzunluğu</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>ListenBackLog 511</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code></td></tr>
@@ -289,10 +288,9 @@ açıklaması</a></li>
     <p>(çevrimiçi) İşlemci çekirdek sayısının dinleyenlerin buket sayısına
       <var>oran</var>ı, Apache HTTP Sunucusunun <code>işlemci_çekirdek_sayısı /
       oran</code> sayıda dinleme buketi oluşturması için kullanılabilir ve bu
-      buketlerin herbiri aynı portlar üzerinde kendi
-      <code class="directive">Listen</code> soketlerini içeriyor olurlar. Bu durumda,
-      her çocuk süreç tek bir buketle çalışır (çocukların oluşturulması
-      sırasında buketler döner dağılımla eşleştirilir).</p>
+      buketlerin herbiri aynı portlar üzerinde kendi <code class="directive"><a href="#listen">Listen</a></code> soketlerini içeriyor olurlar. 
+      Bu durumda, her çocuk süreç tek bir buketle çalışır (çocukların 
+      oluşturulması sırasında buketler döner dağılımla eşleştirilir).</p>
 
     <div class="note"><h3>"çevrimiçi" İşlemci çekirdek sayısının anlamı</h3>
     <p>Linux için (ve ayrıca BSD) bir işlemci çekirdeği <a href="https://www.kernel.org/doc/Documentation/cpu-       hotplug.txt">Hotplug</a> yapılandırılarak açılıp kapatıalbilir. 
@@ -804,6 +802,10 @@ açıklaması</a></li>
     <p><code class="directive">ThreadsPerChild</code> için öntanımlı değer
       <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code> kullanıldığında <code>64</code> diğerleri
       için <code>25</code>’tir.</p>
+    
+    <p><code class="directive">ThreadsPerChild</code> değeri <code class="directive"><a href="#threadlimit">ThreadLimit</a></code> değerini aşamaz. Eğer daha 
+      yüksek bir değer verilirse sunucu başlatılırken düşürülür ve günlüğe bir 
+      uyarı kaydedilir. Bu iki yönerge arasındaki ilişki <code class="directive"><a href="#threadlimit">ThreadLimit</a></code> belgelsinde açıklanmıştır.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -870,7 +872,7 @@ açıklaması</a></li>
 <a href="../fr/mod/mpm_common.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mpm_common.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/mpm_common.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Yorum</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Yorumlar</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
 var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/mpm_common.html';
