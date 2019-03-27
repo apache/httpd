@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
-<!-- English Revision: 1850546:1855817 (outdated) -->
+<!-- English Revision: 1855817 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -203,6 +203,10 @@
       <dt><module>mod_md</module> (2.4.30'dan itibaren kullanılabilir)</dt>
       <dd>Sertifika sağlama işlemi için ACME protokolü desteği.</dd>
 
+      <dt><module>mod_socache_redis</module> (2.4.39'dan itibaren kullanılabilir)</dt>
+      <dd><a href="http://redis.io/">Redis</a> tabanlı paylaşımlı nesne arabelleği 
+        sağlayıcı için destek.</dd>
+      
     </dl>
   </section>
 

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1851792:1855819 (outdated) -->
+<!-- English Revision: 1855819 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -5089,6 +5089,32 @@ davranılır.</compatibility>
 </usage>
 <seealso><directive module="core">HTTPProtocolOptions</directive></seealso>
 <seealso><directive module="mod_allowmethods">AllowMethods</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MergeSlashes</name>
+<description>Sunucunun URL’lerde ardışık bölü çizgilerini birleştirip birleştirmeyeceğini denetler.
+</description>
+<syntax>MergeSlashes ON|OFF</syntax>
+<default>MergeSlashes ON</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+<compatibility>2.4.39 sürümünde eklendi</compatibility>
+
+<usage>
+    <p>Öntanımlı olarak, sunucu istek adresinin yol bileşenindeki ardışık bölü 
+    çizgilerini ('/') birleştirip tek bölü çizgisi olarak ele alır.</p>
+
+    <p>Bu adresleri dosya sistemi ile eşleştirirken bu ardışık bölü 
+    çizgilerinin önemi yoktur. Ancak. bu adresler CGI veya vekil gibi başka 
+    yollardan değerlendiriliyorsa bu ardışık bölü çizgilerinin olduğu gibi 
+    kalması tercih edilebilir. Bu durumlarda ardışık bölü çizgilerinin 
+    birleştirilmesini önlemek için <directive>MergeSlashes</directive> 
+    yönergesine <em>OFF</em> atanabilir. Bu atamayla, yapılandırma dosyasında, 
+    adresin yol bileşenini ile eşleşen düzenli ifadelerde 
+    (<directive>LocationMatch</directive>, <directive>RewriteRule</directive>, 
+    ...) ardışık bölü çizgileri hesaba katılacaktır.</p>
+</usage>
 </directivesynopsis>
 
 </modulesynopsis>

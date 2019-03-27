@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1746928:1855818 (outdated) -->
+<!-- English Revision: 1855818 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -113,6 +113,11 @@
           kaç konak için konak ismi de günlüğe kaydoluyorsa muhtemelen onların
           isimlerini içeren erişim denetim yönergelerine sahipsinizdir. Bak: <a
           href="mod_authz_host.html#reqhost">Require host</a>.</td></tr>
+
+    <tr><td><code>%{c}h</code></td>
+        <td><code>%h</code> gibi, ancak her zaman, temel TCP bağlantısının 
+        konak adı kaydedilir, ancak <module>mod_remoteip</module> gibi modüller 
+        tarafından uzak konak adında yapılan değişiklikler kaydedilmez.</td></tr>
 
     <tr><td><code>%H</code></td>
         <td>İstek Protokolü.</td></tr>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1805221:1853619 (outdated) -->
+<!-- English Revision: 1853619 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -283,10 +283,10 @@ açıklaması</a></seealso>
     <p>(çevrimiçi) İşlemci çekirdek sayısının dinleyenlerin buket sayısına
       <var>oran</var>ı, Apache HTTP Sunucusunun <code>işlemci_çekirdek_sayısı /
       oran</code> sayıda dinleme buketi oluşturması için kullanılabilir ve bu
-      buketlerin herbiri aynı portlar üzerinde kendi
-      <directive>Listen</directive> soketlerini içeriyor olurlar. Bu durumda,
-      her çocuk süreç tek bir buketle çalışır (çocukların oluşturulması
-      sırasında buketler döner dağılımla eşleştirilir).</p>
+      buketlerin herbiri aynı portlar üzerinde kendi <directive 
+      module="mpm_common">Listen</directive> soketlerini içeriyor olurlar. 
+      Bu durumda, her çocuk süreç tek bir buketle çalışır (çocukların 
+      oluşturulması sırasında buketler döner dağılımla eşleştirilir).</p>
 
     <note><title>"çevrimiçi" İşlemci çekirdek sayısının anlamı</title>
     <p>Linux için (ve ayrıca BSD) bir işlemci çekirdeği <a 
@@ -343,8 +343,8 @@ açıklaması</a></seealso>
 <name>ListenBackLog</name>
 <description>Bekleyen bağlantılar kuyruğunun azami uzunluğunu
   belirler</description>
-<syntax>ListenBacklog <var>kuyruk-uzunluğu</var></syntax>
-<default>ListenBacklog 511</default>
+<syntax>ListenBackLog <var>kuyruk-uzunluğu</var></syntax>
+<default>ListenBackLog 511</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>event</module><module>worker</module>
 <module>prefork</module><module>mpm_winnt</module>
@@ -832,6 +832,12 @@ ScoreBoardFile /var/run/apache_status
     <p><directive>ThreadsPerChild</directive> için öntanımlı değer
       <module>mpm_winnt</module> kullanıldığında <code>64</code> diğerleri
       için <code>25</code>’tir.</p>
+    
+    <p><directive>ThreadsPerChild</directive> değeri <directive 
+      module="mpm_common">ThreadLimit</directive> değerini aşamaz. Eğer daha 
+      yüksek bir değer verilirse sunucu başlatılırken düşürülür ve günlüğe bir 
+      uyarı kaydedilir. Bu iki yönerge arasındaki ilişki <directive 
+      module="mpm_common">ThreadLimit</directive> belgelsinde açıklanmıştır.</p>
 </usage>
 </directivesynopsis>
 
