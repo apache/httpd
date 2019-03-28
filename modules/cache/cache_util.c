@@ -932,7 +932,12 @@ apr_status_t cache_strqtok(char *str, char **token, char **arg, char **last)
 {
 #define CACHE_TOKEN_SEPS "\t ,"
     apr_status_t rv = APR_SUCCESS;
-    int quoted = 0;
+    enum {
+        IN_TOKEN,
+        IN_BETWEEN,
+        IN_ARGUMENT,
+        IN_QUOTES
+    } state = IN_TOKEN;
     char *wpos;
 
     if (!str) {         /* subsequent call */
@@ -964,32 +969,43 @@ apr_status_t cache_strqtok(char *str, char **token, char **arg, char **last)
      * quoted strings, escaped characters.
      */
     for (wpos = str; *str; ++str) {
-        if (!quoted) {
-            if (*str == '"') {
-                quoted = 1;
-                continue;
-            }
-            if (arg && !*arg && *str == '=') {
+        switch (state) {
+        case IN_TOKEN:
+            if (*str == '=') {
+                state = IN_BETWEEN;
                 *wpos++ = '\0';
                 *arg = wpos;
                 continue;
             }
-            if (TEST_CHAR(*str, T_HTTP_TOKEN_STOP)) {
-                break;
+            break;
+
+        case IN_BETWEEN:
+            if (*str == '"') {
+                state = IN_QUOTES;
+                continue;
             }
-        }
-        else {
+            /* fall through */
+            state = IN_ARGUMENT;
+        case IN_ARGUMENT:
+            if (TEST_CHAR(*str, T_HTTP_TOKEN_STOP)) {
+                goto end;
+            }
+            break;
+
+        default:
+            AP_DEBUG_ASSERT(state == IN_QUOTES);
             if (*str == '"') {
                 ++str;
-                break;
+                goto end;
             }
             if (*str == '\\' && *(str + 1)) {
                 ++str;
             }
+            break;
         }
         *wpos++ = *str;
     }
-
+end:
     /* anything after should be trailing OWS or comma */
     for (; *str; ++str) {
         if (*str == ',') {
