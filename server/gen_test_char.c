@@ -167,7 +167,16 @@ int main(int argc, char *argv[])
         printf("0x%03x%c", flags, (c < 255) ? ',' : ' ');
     }
 
-    printf("\n};\n");
+    printf("\n};\n\n");
+
+    printf(
+      "/* we assume the folks using this ensure 0 <= c < 256... which means\n"
+      " * you need a cast to (unsigned char) first, you can't just plug a\n"
+      " * char in here and get it to work, because if char is signed then it\n"
+      " * will first be sign extended.\n"
+      " */\n"
+      "#define TEST_CHAR(c, f) (test_char_table[(unsigned char)(c)] & (f))\n"
+    );
 
     return 0;
 }

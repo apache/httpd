@@ -76,13 +76,6 @@
  */
 #include "test_char.h"
 
-/* we assume the folks using this ensure 0 <= c < 256... which means
- * you need a cast to (unsigned char) first, you can't just plug a
- * char in here and get it to work, because if char is signed then it
- * will first be sign extended.
- */
-#define TEST_CHAR(c, f)        (test_char_table[(unsigned char)(c)] & (f))
-
 /* Win32/NetWare/OS2 need to check for both forward and back slashes
  * in ap_getparents() and ap_escape_url.
  */
