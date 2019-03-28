@@ -127,6 +127,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_md: Store permissions are enforced on file creation, enforcing restrictions in
+     spite of umask. Fixes <https://github.com/icing/mod_md/issues/117>.
+     trunk patch: http://svn.apache.org/r1856297
+     2.4.x patch: svn merge -c 1856297 ^/httpd/httpd/trunk .
+     +1: icing, jim, ylavic
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -218,11 +224,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-forward_100_continue-v5.patch
      +1: ylavic, jim
 
-  *) mod_md: Store permissions are enforced on file creation, enforcing restrictions in
-     spite of umask. Fixes <https://github.com/icing/mod_md/issues/117>.
-     trunk patch: http://svn.apache.org/r1856297
-     2.4.x patch: svn merge -c 1856297 ^/httpd/httpd/trunk .
-     +1: icing, jim
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
