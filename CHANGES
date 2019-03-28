@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_cache: Fix parsing of quoted Cache-Control token arguments.
+     PR 63288. [Yann Ylavic]
+
   *) mod_md: Store permissions are enforced on file creation, enforcing restrictions in
      spite of umask. Fixes <https://github.com/icing/mod_md/issues/117>. [Stefan Eissing]
      
