@@ -931,6 +931,7 @@ CACHE_DECLARE(char *)ap_cache_generate_name(apr_pool_t *p, int dirlevels,
 apr_status_t cache_strqtok(char *str, char **token, char **arg, char **last)
 {
 #define CACHE_TOKEN_SEPS "\t ,"
+    apr_status_t rv = APR_SUCCESS;
     int quoted = 0;
     char *wpos;
 
@@ -988,7 +989,6 @@ apr_status_t cache_strqtok(char *str, char **token, char **arg, char **last)
         }
         *wpos++ = *str;
     }
-    *wpos = '\0';
 
     /* anything after should be trailing OWS or comma */
     for (; *str; ++str) {
@@ -997,12 +997,14 @@ apr_status_t cache_strqtok(char *str, char **token, char **arg, char **last)
             break;
         }
         if (*str != '\t' && *str != ' ') {
-            return APR_EINVAL;
+            rv = APR_EINVAL;
+            break;
         }
     }
-    *last = str;
 
-    return APR_SUCCESS;
+    *wpos = '\0';
+    *last = str;
+    return rv;
 }
 
 /**
