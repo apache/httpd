@@ -878,7 +878,7 @@ inactifs</td></tr>
 <tr><td><a href="mod_md.html#mdrequirehttps">MDRequireHttps off|temporary|permanent</a></td><td> off </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Redirects http: traffic to https: for Managed Domains.</td></tr>
 <tr class="odd"><td><a href="mod_md.html#mdstoredir">MDStoreDir path</a></td><td> md </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Path on the local file system to store the Managed Domains data.</td></tr>
 <tr><td><a href="mod_socache_memcache.html#memcacheconnttl">MemcacheConnTTL <em>num[units]</em></a></td><td> 15s </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Durée de conservation des connexions inactives</td></tr>
-<tr class="odd"><td><a href="core.html#mergeslashes">MergeSlashes ON|OFF</a></td><td> ON </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Controls whether the server merges consecutive slashes in URLs.
+<tr class="odd"><td><a href="core.html#mergeslashes">MergeSlashes ON|OFF</a></td><td> ON </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Fusion des slashes consécutifs dans les URLs par le serveur.
 </td></tr>
 <tr><td><a href="core.html#mergetrailers">MergeTrailers [on|off]</a></td><td> off </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Détermine si les données supplémentaires (trailers) sont
 fusionnées avec les en-têtes</td></tr>
@@ -1058,6 +1058,8 @@ différente</td></tr>
 <tr class="odd"><td><a href="mod_alias.html#redirecttemp">RedirectTemp <var>chemin URL</var> <var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Envoie une redirection externe temporaire demandant au
 client d'effectuer une nouvelle requête avec une URL
 différente</td></tr>
+<tr><td><a href="mod_socache_redis.html#redisconnpoolttl">RedisConnPoolTTL <em>num</em>[<em>units</em>]</a></td><td> 15s </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">TTL used for the connection pool with the Redis server(s)</td></tr>
+<tr class="odd"><td><a href="mod_socache_redis.html#redistimeout">RedisTimeout <em>num</em>[<em>units</em>]</a></td><td> 5s </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">R/W timeout used for the connection with the Redis server(s)</td></tr>
 <tr><td><a href="mod_reflector.html#reflectorheader">ReflectorHeader <var>en-tête-entrée</var> <var>[en-tête-sortie]</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Renvoie un en-tête d'entrée dans les en-têtes de sortie</td></tr>
 <tr class="odd"><td><a href="core.html#regexdefaultoptions">RegexDefaultOptions [none] [+|-]<var>option</var> [[+|-]<var>option</var>] ...</a></td><td> DOLLAR_ENDONLY </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Configuration des options globales par défaut pour les
     expressions rationnelles</td></tr>

@@ -33,8 +33,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fonctionnalités de base du serveur HTTP Apache toujours
 disponibles</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Noyau httpd</td></tr></table>
@@ -3723,17 +3721,31 @@ Apache</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="mergeslashes" id="mergeslashes">Directive</a> <a name="MergeSlashes" id="MergeSlashes">MergeSlashes</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Controls whether the server merges consecutive slashes in URLs.
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fusion des slashes consécutifs dans les URLs par le serveur.
 </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MergeSlashes ON|OFF</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MergeSlashes ON</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Noyau httpd</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Added in 2.4.39</td></tr>
-</table><p>La documentation de cette directive
-	n'a pas encore t traduite. Veuillez vous reporter  la version
-	en langue anglaise.</p></div>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.39 du serveur HTTP Apache</td></tr>
+</table>
+    <p>Par défaut, le serveur fusionne les caractères slash ('/') multiples et
+    consécutifs dans la partie chemin de l'URL d'une requête.</p>
+
+    <p>Lorsque cette partie chemin de l'URL est appliquée au système de
+    fichiers, ces slashes multiples sont inutiles. Il peut être cependant
+    préférable de conserver ces slashes multiples et consécutifs car ils peuvent
+    avoir une signification dans le cas des URLs gérées différemment, par
+    exemple par CGI ou par un serveur mandataire. Il convient alors de définir
+    <code class="directive">MergeSlashes</code> à <em>OFF</em>. Dans ces types de
+    configuration, les expressions rationnelles utilisées dans le
+    fichier de configuration pour effectuer une comparaison de la partie chemin
+    de l'URL ((<code class="directive">LocationMatch</code>,
+    <code class="directive">RewriteRule</code>, ...) doivent en effet tenir compte de la
+    présence éventuelle de slashes multiples et consécutifs.</p>
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="mergetrailers" id="mergetrailers">Directive</a> <a name="MergeTrailers" id="MergeTrailers">MergeTrailers</a></h2>
 <table class="directive">

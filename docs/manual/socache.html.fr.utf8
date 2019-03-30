@@ -26,8 +26,6 @@
 <p><span>Langues Disponibles: </span><a href="./en/socache.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/socache.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Le cache des objets partagés est un concept de partage de données
     de base entre tous les processus d'un serveur, sans se préoccuper du
@@ -60,6 +58,9 @@
     <dt>"memcache" (<code class="module"><a href="./mod/mod_socache_memcache.html">mod_socache_memcache</a></code>)</dt>
     <dd>Celui-ci utilise le système à hautes performances de mise en
     cache d'objets de mémoire distribuée <a href="http://memcached.org/">memcached</a>.</dd>
+    <dt>"redis" (<code class="module"><a href="./mod/mod_socache_redis.html">mod_socache_redis</a></code>)</dt>
+    <dd>Celui-ci utilise le système de mise en cache d'objets de mémoire
+    distribuée à hautes performances <a href="http://redis.io/">Redis</a>.</dd>
     <dt>"shmcb" (<code class="module"><a href="./mod/mod_socache_shmcb.html">mod_socache_shmcb</a></code>)</dt>
     <dd>Celui-ci utilise un tampon cyclique à hautes performances au
     sein d'un segment de mémoire partagée.</dd>

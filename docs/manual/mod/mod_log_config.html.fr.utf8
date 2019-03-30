@@ -32,8 +32,6 @@
 <a href="../ko/mod/mod_log_config.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_log_config.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Journalisation des requêtes envoyées au
 serveur</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
@@ -132,9 +130,14 @@ d'Apache</a></li>
 	avez probablement défini des directives de contrôle d'accès qui
 	mentionnent ces derniers par leurs noms. Voir la <a href="mod_authz_host.html#reqhost">documentation de Require
 	host</a>.</td></tr>
-<tr class="odd"><td><code>%H</code></td>
+<tr class="odd"><td><code>%{c}h</code></td>
+	<td>Semblable à <code>%h</code>, mais exploite toujours le nom d'hôte de
+	la connection TCP sous-jacente, en ignorant toute modification réalisée
+	sur le nom d'hôte distant par des modules tels que
+	<code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code>.</td></tr>
+<tr><td><code>%H</code></td>
         <td>Le protocole de la requête</td></tr>
-<tr><td><code>%{<var>NOMVAR</var>}i</code></td>
+<tr class="odd"><td><code>%{<var>NOMVAR</var>}i</code></td>
         <td>Le contenu des lignes d'en-tête
 	<code><var>NOMVAR</var>:</code> dans la requête envoyée au
 	serveur. Ces en-têtes sont ajoutés par d'autres modules (par
@@ -146,61 +149,61 @@ d'Apache</a></li>
 	le champ <code>%{<var>VARNAME</var>}e</code> décrit plus haut.
 
         </td></tr>
-<tr class="odd"><td><code>%k</code></td>
+<tr><td><code>%k</code></td>
         <td>Nombre de requêtes persistantes en cours pour cette
 	connexion. Interessant si la directive <code class="directive"><a href="../mod/core.html#keepalive">KeepAlive</a></code> est utilisée ; par exemple,
 	'1' signifie la première requête après la requête initiale, '2'
 	la seconde, etc... ; autrement, il s'agit toujours de 0
 	(indiquant la requête initiale).</td></tr>
-<tr><td><code>%l</code></td>
+<tr class="odd"><td><code>%l</code></td>
         <td>Le nom de connexion distant (en provenance d'identd, si
 	disponible). Affiche un tiret, sauf si
 	<code class="module"><a href="../mod/mod_ident.html">mod_ident</a></code> est présent et si <code class="directive"><a href="../mod/mod_ident.html#identitycheck">IdentityCheck</a></code> est à
 	<code>On</code>.</td></tr>
-<tr class="odd"><td><code>%L</code></td>
+<tr><td><code>%L</code></td>
         <td>L'identifiant du message de journalisation de la requête
 	dans le journal des erreurs (ou '-' si aucun message n'a
 	été enregistré dans le journal des erreurs pour cette requête)</td></tr>
-<tr><td><code>%m</code></td>
+<tr class="odd"><td><code>%m</code></td>
         <td>La méthode de la requête</td></tr>
-<tr class="odd"><td><code>%{<var>NOMVAR</var>}n</code></td>
+<tr><td><code>%{<var>NOMVAR</var>}n</code></td>
         <td>Le contenu de la note <var>NOMVAR</var> en provenance d'un
 	autre module.</td></tr>
-<tr><td><code>%{<var>NOMVAR</var>}o</code></td>
+<tr class="odd"><td><code>%{<var>NOMVAR</var>}o</code></td>
         <td>Le contenu de la ligne d'en-tête
 	<code><var>NOMVAR</var>:</code> de la réponse.</td></tr>
-<tr class="odd"><td><code>%p</code></td>
+<tr><td><code>%p</code></td>
         <td>Le port canonique du serveur servant la requête</td></tr>
-<tr><td><code>%{<var>format</var>}p</code></td>
+<tr class="odd"><td><code>%{<var>format</var>}p</code></td>
         <td>Le port canonique du serveur servant la requête ou le
 	véritable port du serveur ou le véritable port du client. les
 	formats valides sont <code>canonical</code>, <code>local</code>,
 	ou <code>remote</code>.
         </td></tr>
-<tr class="odd"><td><code>%P</code></td>
+<tr><td><code>%P</code></td>
         <td>Le numéro de processus du processus enfant qui a servi la
 	requête.</td></tr>
-<tr><td><code>%{<var>format</var>}P</code></td>
+<tr class="odd"><td><code>%{<var>format</var>}P</code></td>
         <td>Le numéro de processus ou le numéro de thread du processus
 	enfant qui a servi la requête. Les formats valides sont
 	<code>pid</code>, <code>tid</code>, et <code>hextid</code>.
 	<code>hextid</code> nécessite APR version 1.2.0 ou supérieure.
         </td></tr>
-<tr class="odd"><td><code>%q</code></td>
+<tr><td><code>%q</code></td>
         <td>La chaîne d'arguments (préfixée par un <code>?</code> si une
 	chaîne d'arguments existe, sinon une chaîne vide)</td></tr>
-<tr><td><code>%r</code></td>
+<tr class="odd"><td><code>%r</code></td>
         <td>La première ligne de la requête</td></tr>
-<tr class="odd"><td><code>%R</code></td>
+<tr><td><code>%R</code></td>
         <td>Le gestionnaire qui génère la réponse (s'il y en a un).</td></tr>
-<tr><td><code>%s</code></td>
+<tr class="odd"><td><code>%s</code></td>
         <td>Statut. Pour les requêtes redirigées en interne, il s'agit
 	du statut de la requête *originale* --- <code>%&gt;s</code> pour
 	la dernière.</td></tr>
-<tr class="odd"><td><code>%t</code></td>
+<tr><td><code>%t</code></td>
         <td>Date à laquelle la requête a été reçue (au format anglais
 	standard)</td></tr>
-<tr><td><code>%{<var>format</var>}t</code></td>
+<tr class="odd"><td><code>%{<var>format</var>}t</code></td>
         <td>La date, sous la forme spécifiée par format, qui devrait
 	être au format étendu <code>strftime(3)</code> (éventuellement
 	localisé). Si le format commence par <code>begin:</code> (valeur
@@ -221,9 +224,9 @@ d'Apache</a></li>
 	formatage <code>strftime(3)</code> dans la même chaîne de
 	format. Par contre, vous pouvez utiliser plusieurs symboles
 	<code>%{<var>format</var>}t</code>.</td></tr>
-<tr class="odd"><td><code>%T</code></td>
+<tr><td><code>%T</code></td>
         <td>Le temps mis pour servir la requête, en secondes.</td></tr>
-<tr><td><code>%{<var>UNIT</var>}T</code></td>
+<tr class="odd"><td><code>%{<var>UNIT</var>}T</code></td>
         <td>Le temps mis pour traiter la requête dans une unité définie
 	par <code>UNIT</code>. Les valeurs d'unité valides sont
 	<code>ms</code> pour millisecondes, <code>us</code> pour
@@ -233,19 +236,19 @@ d'Apache</a></li>
 	à utiliser le format <code>%D</code>. La possibilité de
 	spécifier une valeur d'unité avec le format <code>%T</code> est
 	disponible depuis la version 2.4.13 du serveur HTTP Apache.</td></tr>
-<tr class="odd"><td><code>%u</code></td>
+<tr><td><code>%u</code></td>
         <td>L'utilisateur distant (en provenance d'auth ; peut être faux
 	si le statut de retour (<code>%s</code>) est 401).</td></tr>
-<tr><td><code>%U</code></td>
+<tr class="odd"><td><code>%U</code></td>
         <td>Le chemin de la requête, à l'exclusion de toute chaîne
 	d'arguments.</td></tr>
-<tr class="odd"><td><code>%v</code></td>
+<tr><td><code>%v</code></td>
         <td>Le nom canonique du serveur qui a servi la requête, défini
 	par la directive <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>.</td></tr>
-<tr><td><code>%V</code></td>
+<tr class="odd"><td><code>%V</code></td>
         <td>La nom du serveur en tenant compte de la définition de la
 	directive <code class="directive"><a href="../mod/core.html#usecanonicalname">UseCanonicalName</a></code>.</td></tr>
-<tr class="odd"><td><code>%X</code></td>
+<tr><td><code>%X</code></td>
         <td>Statut de la connexion lorsque la réponse a été renvoyée
 	:
 
@@ -262,25 +265,25 @@ d'Apache</a></li>
         </table>
 
         </td></tr>
-<tr><td><code>%I</code></td>
+<tr class="odd"><td><code>%I</code></td>
         <td>Le nombre d'octets reçus, en comptant la requête et les
 	en-têtes, ne peut être nul. Nécessite l'activation de
 	<code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code>.</td></tr>
-<tr class="odd"><td><code>%O</code></td>
+<tr><td><code>%O</code></td>
         <td>Nombre d'octets envoyés, y compris les en-têtes. Peut être
 	nul dans les rares cas où une requête est avortée avant que la
 	réponse ne soit envoyée. Nécessite l'activation de
 	<code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code>.</td></tr>
-<tr><td><code>%S</code></td>
+<tr class="odd"><td><code>%S</code></td>
         <td>Nombre d'octets transmis (en émission et réception), y
 	compris corps et en-têtes de requête. Ce nombre ne peut pas être
 	nul, et il correspond à la combinaison des formats %I et %O.
 	<code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code> doit être chargé pour pouvoir
 	utiliser ce format.</td></tr>
-<tr class="odd"><td><code>%{<var>VARNAME</var>}^ti</code></td>
+<tr><td><code>%{<var>VARNAME</var>}^ti</code></td>
         <td>Le contenu de <code><var>VARNAME</var>:</code> dans les
 	paramètres de la requête envoyée au serveur.</td></tr>
-<tr><td><code>%{<var>VARNAME</var>}^to</code></td>
+<tr class="odd"><td><code>%{<var>VARNAME</var>}^to</code></td>
         <td>Le contenu de <code><var>VARNAME</var>:</code> dans les
 	paramètres de la réponse envoyée par le serveur.</td></tr>
 </table>
