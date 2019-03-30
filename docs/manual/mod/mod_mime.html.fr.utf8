@@ -731,12 +731,22 @@ associé.</td></tr>
       type de contenu.</dd>
       <dt><code>AllLastExtension</code></dt>
       <dd>Cette option indique que seule la dernière extension du nom de fichier
-      (la plus à droite) doit être prise en compte pour déterminer les
-      métadonnées de la réponse (Content-Type, language, encoding, etc...).</dd>
+      (la plus à droite) doit être prise en compte lors de l'examen de ce
+      dernier.</dd>
       <dt><code>NoAllLastExtension</code></dt>
       <dd>Cette option permet de restaurer le comportement par défaut qui prend
-      en compte toutes les extensions du nom de fichier pour déterminer les
-      métadonnées de la réponse (Content-Type, language, encoding, etc...).</dd>
+      en compte toutes les extensions du nom de fichier lors de l'examen de ce
+      dernier. Cette option n'est utile que dans le cas où <code>MimeOptions
+      AllLastExtension</code> a été spécifiée dans une section de configuration
+      de priorité plus basse.</dd>
+      <dt><code>Disable</code></dt>
+      <dd>Aucun assignement de métadonnées basées sur le nom de fichier n'est
+      effectué.</dd>
+      <dt><code>Enable</code></dt>
+      <dd>Réactive l'examen des extensions de nom de fichiers par ce module.
+      Cette option n'est utile que dans le cas où <code>MimeOptions
+      Disable</code> a été spécifiée dans une section de configuration de
+      priorité plus basse.</dd>
     </dl>
 
 </div>

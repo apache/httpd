@@ -936,97 +936,100 @@ inactifs</td></tr>
 <tr><td><a href="mod_md.html#mdrequirehttps">MDRequireHttps off|temporary|permanent</a></td><td> off </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Redirects http: traffic to https: for Managed Domains.</td></tr>
 <tr class="odd"><td><a href="mod_md.html#mdstoredir">MDStoreDir path</a></td><td> md </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Path on the local file system to store the Managed Domains data.</td></tr>
 <tr><td><a href="mod_socache_memcache.html#memcacheconnttl">MemcacheConnTTL <em>num[units]</em></a></td><td> 15s </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Durée de conservation des connexions inactives</td></tr>
-<tr class="odd"><td><a href="core.html#mergetrailers">MergeTrailers [on|off]</a></td><td> off </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Détermine si les données supplémentaires (trailers) sont
+<tr class="odd"><td><a href="core.html#mergeslashes">MergeSlashes ON|OFF</a></td><td> ON </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Fusion des slashes consécutifs dans les URLs par le serveur.
+</td></tr>
+<tr><td><a href="core.html#mergetrailers">MergeTrailers [on|off]</a></td><td> off </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Détermine si les données supplémentaires (trailers) sont
 fusionnées avec les en-têtes</td></tr>
-<tr><td><a href="mod_cern_meta.html#metadir">MetaDir <var>répertoire</var></a></td><td> .web </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Le nom du répertoire où trouver les fichiers de
+<tr class="odd"><td><a href="mod_cern_meta.html#metadir">MetaDir <var>répertoire</var></a></td><td> .web </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Le nom du répertoire où trouver les fichiers de
 métainformations dans le style du CERN</td></tr>
-<tr class="odd"><td><a href="mod_cern_meta.html#metafiles">MetaFiles on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active le traitement des métafichiers du CERN</td></tr>
-<tr><td><a href="mod_cern_meta.html#metasuffix">MetaSuffix <var>suffixe</var></a></td><td> .meta </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Suffixe du fichier contenant les métainformations dans le
+<tr><td><a href="mod_cern_meta.html#metafiles">MetaFiles on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Active le traitement des métafichiers du CERN</td></tr>
+<tr class="odd"><td><a href="mod_cern_meta.html#metasuffix">MetaSuffix <var>suffixe</var></a></td><td> .meta </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Suffixe du fichier contenant les métainformations dans le
 style du CERN</td></tr>
-<tr class="odd"><td><a href="mod_mime_magic.html#mimemagicfile">MimeMagicFile <var>chemin-fichier</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active la détermination du type MIME en se basant sur le
+<tr><td><a href="mod_mime_magic.html#mimemagicfile">MimeMagicFile <var>chemin-fichier</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Active la détermination du type MIME en se basant sur le
 contenu du fichier et en utilisant le fichier magique
 spécifié</td></tr>
-<tr><td><a href="mod_mime.html#mimeoptions">MimeOptions<var>option</var> [<var>option</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Configure le comportement de mod_mime</td></tr>
-<tr class="odd"><td><a href="prefork.html#minspareservers">MinSpareServers <var>nombre</var></a></td><td> 5 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Nombre minimum de processus serveurs enfants
+<tr class="odd"><td><a href="mod_mime.html#mimeoptions">MimeOptions<var>option</var> [<var>option</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Configure le comportement de mod_mime</td></tr>
+<tr><td><a href="prefork.html#minspareservers">MinSpareServers <var>nombre</var></a></td><td> 5 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Nombre minimum de processus serveurs enfants
 inactifs</td></tr>
-<tr><td><a href="mpm_common.html#minsparethreads">MinSpareThreads <var>nombre</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Nombre minimum de threads inactifs qui seront disponibles
+<tr class="odd"><td><a href="mpm_common.html#minsparethreads">MinSpareThreads <var>nombre</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Nombre minimum de threads inactifs qui seront disponibles
 pour pouvoir traiter les pics de requêtes</td></tr>
-<tr class="odd"><td><a href="mod_file_cache.html#mmapfile">MMapFile <var>chemin fichier</var> [<var>chemin_fichier</var>] ...</a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Charge au démarrage une liste de fichiers en
+<tr><td><a href="mod_file_cache.html#mmapfile">MMapFile <var>chemin fichier</var> [<var>chemin_fichier</var>] ...</a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Charge au démarrage une liste de fichiers en
 mémoire</td></tr>
-<tr><td><a href="mod_dialup.html#modemstandard">ModemStandard V.21|V.26bis|V.32|V.34|V.92</a></td><td></td><td>d</td><td>X</td></tr><tr><td class="descr" colspan="4">Standard de modem à simuler</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#modmimeusepathinfo">ModMimeUsePathInfo On|Off</a></td><td> Off </td><td>d</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Indique à <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> de traiter les éléments
+<tr class="odd"><td><a href="mod_dialup.html#modemstandard">ModemStandard V.21|V.26bis|V.32|V.34|V.92</a></td><td></td><td>d</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Standard de modem à simuler</td></tr>
+<tr><td><a href="mod_mime.html#modmimeusepathinfo">ModMimeUsePathInfo On|Off</a></td><td> Off </td><td>d</td><td>B</td></tr><tr><td class="descr" colspan="4">Indique à <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> de traiter les éléments
 de <code>path_info</code> en tant que parties du nom de
 fichier</td></tr>
-<tr><td><a href="mod_mime.html#multiviewsmatch">MultiviewsMatch Any|NegotiatedOnly|Filters|Handlers
-[Handlers|Filters]</a></td><td> NegotiatedOnly </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Les types de fichiers qui seront inclus lors d'une
+<tr class="odd"><td><a href="mod_mime.html#multiviewsmatch">MultiviewsMatch Any|NegotiatedOnly|Filters|Handlers
+[Handlers|Filters]</a></td><td> NegotiatedOnly </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Les types de fichiers qui seront inclus lors d'une
 recherche de correspondance de fichier avec les vues multiples
 (MultiViews)</td></tr>
-<tr class="odd"><td><a href="core.html#mutex">Mutex <var>mécanisme</var> [default|<var>nom-mutex</var>] ... [OmitPID]</a></td><td> default </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Définit les mécanismes de mutex et le repertoire du fichier
+<tr><td><a href="core.html#mutex">Mutex <var>mécanisme</var> [default|<var>nom-mutex</var>] ... [OmitPID]</a></td><td> default </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Définit les mécanismes de mutex et le repertoire du fichier
 verrou pour tous les mutex ou seulement les mutex spécifiés</td></tr>
-<tr><td><a href="core.html#namevirtualhost" id="N" name="N">NameVirtualHost <var>adresse</var>[:<var>port</var>]</a></td><td></td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">OBSOLETE : Définit une adresse IP pour les serveurs virtuels à base de
+<tr class="odd"><td><a href="core.html#namevirtualhost" id="N" name="N">NameVirtualHost <var>adresse</var>[:<var>port</var>]</a></td><td></td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">OBSOLETE : Définit une adresse IP pour les serveurs virtuels à base de
 nom</td></tr>
-<tr class="odd"><td><a href="mod_proxy.html#noproxy">NoProxy <var>domaine</var> [<var>domaine</var>] ...</a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Serveurs, domaines ou réseaux auquels on se connectera
+<tr><td><a href="mod_proxy.html#noproxy">NoProxy <var>domaine</var> [<var>domaine</var>] ...</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Serveurs, domaines ou réseaux auquels on se connectera
 directement</td></tr>
-<tr><td><a href="mod_nw_ssl.html#nwssltrustedcerts">NWSSLTrustedCerts <var>nom-fichier</var>
-[<var>nom-fichier</var>] ...</a></td><td></td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Liste de certificats clients supplémentaires</td></tr>
-<tr class="odd"><td><a href="mod_nw_ssl.html#nwsslupgradeable">NWSSLUpgradeable [<var>adresse-IP</var>:]<var>num-port</var></a></td><td></td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Permet de promouvoir une connexion non SSL au statut de
+<tr class="odd"><td><a href="mod_nw_ssl.html#nwssltrustedcerts">NWSSLTrustedCerts <var>nom-fichier</var>
+[<var>nom-fichier</var>] ...</a></td><td></td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Liste de certificats clients supplémentaires</td></tr>
+<tr><td><a href="mod_nw_ssl.html#nwsslupgradeable">NWSSLUpgradeable [<var>adresse-IP</var>:]<var>num-port</var></a></td><td></td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Permet de promouvoir une connexion non SSL au statut de
 connexion SSL à la demande</td></tr>
-<tr><td><a href="core.html#options" id="O" name="O">Options
-    [+|-]<var>option</var> [[+|-]<var>option</var>] ...</a></td><td> FollowSymlinks </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Définit les fonctionnalités disponibles pour un répertoire
+<tr class="odd"><td><a href="core.html#options" id="O" name="O">Options
+    [+|-]<var>option</var> [[+|-]<var>option</var>] ...</a></td><td> FollowSymlinks </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Définit les fonctionnalités disponibles pour un répertoire
 particulier</td></tr>
-<tr class="odd"><td><a href="mod_access_compat.html#order"> Order <var>ordre</var></a></td><td> Deny,Allow </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit le statut d'accès par défaut et l'ordre dans lequel
+<tr><td><a href="mod_access_compat.html#order"> Order <var>ordre</var></a></td><td> Deny,Allow </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit le statut d'accès par défaut et l'ordre dans lequel
 les directives <code class="directive">Allow</code> et
 <code class="directive">Deny</code> sont évaluées.</td></tr>
-<tr><td><a href="mod_sed.html#outputsed">OutputSed <var>commande-sed</var></a></td><td></td><td>dh</td><td /></tr><tr><td class="descr" colspan="4">Commande sed pour le filtrage des contenus de type
+<tr class="odd"><td><a href="mod_sed.html#outputsed">OutputSed <var>commande-sed</var></a></td><td></td><td>dh</td><td /></tr><tr class="odd"><td class="descr" colspan="4">Commande sed pour le filtrage des contenus de type
 réponse</td></tr>
-<tr class="odd"><td><a href="mod_env.html#passenv" id="P" name="P">PassEnv <var>var-env</var> [<var>var-env</var>]
-...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Transmet des variables d'environnement depuis le
+<tr><td><a href="mod_env.html#passenv" id="P" name="P">PassEnv <var>var-env</var> [<var>var-env</var>]
+...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Transmet des variables d'environnement depuis le
 shell</td></tr>
-<tr><td><a href="mpm_common.html#pidfile">PidFile <var>nom fichier</var></a></td><td> httpd.pid </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Ficher dans lequel le serveur enregistre l'identificateur
+<tr class="odd"><td><a href="mpm_common.html#pidfile">PidFile <var>nom fichier</var></a></td><td> httpd.pid </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Ficher dans lequel le serveur enregistre l'identificateur
 de processus du démon</td></tr>
-<tr class="odd"><td><a href="mod_policy.html#policyconditional">PolicyConditional <var>ignore|log|enforce</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active le filtrage des requêtes conditionnelles.</td></tr>
-<tr><td><a href="mod_policy.html#policyconditionalurl">PolicyConditionalURL <var>url</var></a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">URL contenant la description de la politique de filtrage
+<tr><td><a href="mod_policy.html#policyconditional">PolicyConditional <var>ignore|log|enforce</var></a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Active le filtrage des requêtes conditionnelles.</td></tr>
+<tr class="odd"><td><a href="mod_policy.html#policyconditionalurl">PolicyConditionalURL <var>url</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">URL contenant la description de la politique de filtrage
 des requêtes conditionnelles.</td></tr>
-<tr class="odd"><td><a href="mod_policy.html#policyenvironment">PolicyEnvironment <var>variable</var> <var>log-value</var> <var>ignore-value</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Modification des règles de filtrage en fonction d'une
+<tr><td><a href="mod_policy.html#policyenvironment">PolicyEnvironment <var>variable</var> <var>log-value</var> <var>ignore-value</var></a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Modification des règles de filtrage en fonction d'une
 variable d'environnement.</td></tr>
-<tr><td><a href="mod_policy.html#policyfilter">PolicyFilter <var>on|off</var></a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Active ou désactive le filtrage pour un espace d'URL donné.</td></tr>
-<tr class="odd"><td><a href="mod_policy.html#policykeepalive">PolicyKeepalive <var>ignore|log|enforce</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active la politique de persistance.</td></tr>
-<tr><td><a href="mod_policy.html#policykeepaliveurl">PolicyKeepaliveURL <var>url</var></a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">URL contenant la description de la politique de persistance.</td></tr>
-<tr class="odd"><td><a href="mod_policy.html#policylength">PolicyLength <var>ignore|log|enforce</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active le filtrage de la spécification de la longueur du
+<tr class="odd"><td><a href="mod_policy.html#policyfilter">PolicyFilter <var>on|off</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active ou désactive le filtrage pour un espace d'URL donné.</td></tr>
+<tr><td><a href="mod_policy.html#policykeepalive">PolicyKeepalive <var>ignore|log|enforce</var></a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Active la politique de persistance.</td></tr>
+<tr class="odd"><td><a href="mod_policy.html#policykeepaliveurl">PolicyKeepaliveURL <var>url</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">URL contenant la description de la politique de persistance.</td></tr>
+<tr><td><a href="mod_policy.html#policylength">PolicyLength <var>ignore|log|enforce</var></a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Active le filtrage de la spécification de la longueur du
 contenu.</td></tr>
-<tr><td><a href="mod_policy.html#policylengthurl">PolicyLengthURL <var>url</var></a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">URL contenant la description de la politique de filtrage de
+<tr class="odd"><td><a href="mod_policy.html#policylengthurl">PolicyLengthURL <var>url</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">URL contenant la description de la politique de filtrage de
 la spécification de la longueur du contenu.</td></tr>
-<tr class="odd"><td><a href="mod_policy.html#policymaxage">PolicyMaxage <var>ignore|log|enforce</var> <var>age</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active le filtrage de la durée de vie des réponses.</td></tr>
-<tr><td><a href="mod_policy.html#policymaxageurl">PolicyMaxageURL <var>url</var></a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">URL contenant la description de la politique de filtrage
+<tr><td><a href="mod_policy.html#policymaxage">PolicyMaxage <var>ignore|log|enforce</var> <var>age</var></a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Active le filtrage de la durée de vie des réponses.</td></tr>
+<tr class="odd"><td><a href="mod_policy.html#policymaxageurl">PolicyMaxageURL <var>url</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">URL contenant la description de la politique de filtrage
 des réponses en fonction de leur durée de vie.</td></tr>
-<tr class="odd"><td><a href="mod_policy.html#policynocache">PolicyNocache <var>ignore|log|enforce</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active le filtrage des réponses qui se définissent
+<tr><td><a href="mod_policy.html#policynocache">PolicyNocache <var>ignore|log|enforce</var></a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Active le filtrage des réponses qui se définissent
 elles-mêmes comme impossibles à mettre en cache.</td></tr>
-<tr><td><a href="mod_policy.html#policynocacheurl">PolicyNocacheURL <var>url</var></a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">URL contenant la description de la politique de filtrage
+<tr class="odd"><td><a href="mod_policy.html#policynocacheurl">PolicyNocacheURL <var>url</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">URL contenant la description de la politique de filtrage
 des réponses qui se définissent elles-mêmes comme impossibles à mettre
 en cache.</td></tr>
-<tr class="odd"><td><a href="mod_policy.html#policytype">PolicyType <var>ignore|log|enforce</var> <var>type</var> [ <var>type</var> [ ... ]]</a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active la politique des types de contenus.</td></tr>
-<tr><td><a href="mod_policy.html#policytypeurl">PolicyTypeURL <var>url</var></a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">URL contenant la description de la politique des types de
+<tr><td><a href="mod_policy.html#policytype">PolicyType <var>ignore|log|enforce</var> <var>type</var> [ <var>type</var> [ ... ]]</a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Active la politique des types de contenus.</td></tr>
+<tr class="odd"><td><a href="mod_policy.html#policytypeurl">PolicyTypeURL <var>url</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">URL contenant la description de la politique des types de
 contenu.</td></tr>
-<tr class="odd"><td><a href="mod_policy.html#policyvalidation">PolicyValidation <var>ignore|log|enforce</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active le filtrage de la validation du contenu.</td></tr>
-<tr><td><a href="mod_policy.html#policyvalidationurl">PolicyValidationURL <var>url</var></a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">URL contenant la description de la politique de filtrage de
+<tr><td><a href="mod_policy.html#policyvalidation">PolicyValidation <var>ignore|log|enforce</var></a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Active le filtrage de la validation du contenu.</td></tr>
+<tr class="odd"><td><a href="mod_policy.html#policyvalidationurl">PolicyValidationURL <var>url</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">URL contenant la description de la politique de filtrage de
 la validation du contenu.</td></tr>
-<tr class="odd"><td><a href="mod_policy.html#policyvary">PolicyVary <var>ignore|log|enforce</var> <var>header</var> [ <var>header</var> [ ... ]]</a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active la politique de filtrage de l'en-tête Vary.</td></tr>
-<tr><td><a href="mod_policy.html#policyvaryurl">PolicyVaryURL <var>url</var></a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">URL contenant la description de la politique de filtrage de
+<tr><td><a href="mod_policy.html#policyvary">PolicyVary <var>ignore|log|enforce</var> <var>header</var> [ <var>header</var> [ ... ]]</a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Active la politique de filtrage de l'en-tête Vary.</td></tr>
+<tr class="odd"><td><a href="mod_policy.html#policyvaryurl">PolicyVaryURL <var>url</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">URL contenant la description de la politique de filtrage de
 l'en-tête Vary.</td></tr>
-<tr class="odd"><td><a href="mod_policy.html#policyversion">PolicyVersion <var>ignore|log|enforce</var> <var>HTTP/0.9|HTTP/1.0|HTTP/1.1</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active le filtrage des requêtes en fonction du numéro de
+<tr><td><a href="mod_policy.html#policyversion">PolicyVersion <var>ignore|log|enforce</var> <var>HTTP/0.9|HTTP/1.0|HTTP/1.1</var></a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Active le filtrage des requêtes en fonction du numéro de
 version HTTP.</td></tr>
-<tr><td><a href="mod_policy.html#policyversionurl">PolicyVersionURL <var>url</var></a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">URL contenant la description de la politique de filtrage
+<tr class="odd"><td><a href="mod_policy.html#policyversionurl">PolicyVersionURL <var>url</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">URL contenant la description de la politique de filtrage
 des requêtes en fonction du numéro de version HTTP.</td></tr>
-<tr class="odd"><td><a href="mod_privileges.html#privilegesmode">PrivilegesMode FAST|SECURE|SELECTIVE</a></td><td> FAST </td><td>svd</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Fait un compromis entre d'une part l'efficacité et la
+<tr><td><a href="mod_privileges.html#privilegesmode">PrivilegesMode FAST|SECURE|SELECTIVE</a></td><td> FAST </td><td>svd</td><td>X</td></tr><tr><td class="descr" colspan="4">Fait un compromis entre d'une part l'efficacité et la
 vitesse de traitement et d'autre part la sécurité à l'encontre des codes
 malicieux supportant les privilèges.</td></tr>
-<tr><td><a href="core.html#protocol">Protocol <var>protocole</var></a></td><td></td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Protocole pour une socket d'écoute</td></tr>
-<tr class="odd"><td><a href="mod_echo.html#protocolecho">ProtocolEcho On|Off</a></td><td> Off </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Active ou désactive le serveur d'écho</td></tr>
-<tr><td><a href="core.html#protocols">Protocols <var>protocole</var> ...</a></td><td> http/1.1 </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Protocoles disponibles pour un serveur virtuel ou non</td></tr>
-<tr class="odd"><td><a href="core.html#protocolshonororder">ProtocolsHonorOrder On|Off</a></td><td> On </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Détermine qui du client ou du serveur détermine l'ordre
+<tr class="odd"><td><a href="core.html#protocol">Protocol <var>protocole</var></a></td><td></td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Protocole pour une socket d'écoute</td></tr>
+<tr><td><a href="mod_echo.html#protocolecho">ProtocolEcho On|Off</a></td><td> Off </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">Active ou désactive le serveur d'écho</td></tr>
+<tr class="odd"><td><a href="core.html#protocols">Protocols <var>protocole</var> ...</a></td><td> http/1.1 </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Protocoles disponibles pour un serveur virtuel ou non</td></tr>
+<tr><td><a href="core.html#protocolshonororder">ProtocolsHonorOrder On|Off</a></td><td> On </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Détermine qui du client ou du serveur détermine l'ordre
     des protocoles au cours de la négociation de la connexion</td></tr>
-<tr><td><a href="mod_proxy.html#proxy">&lt;Proxy <var>url-avec-jokers</var>&gt; ...&lt;/Proxy&gt;</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Conteneur de directives s'appliquant à des ressources
+<tr class="odd"><td><a href="mod_proxy.html#proxy">&lt;Proxy <var>url-avec-jokers</var>&gt; ...&lt;/Proxy&gt;</a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Conteneur de directives s'appliquant à des ressources
 mandatées</td></tr>
+<tr><td><a href="mod_proxy.html#proxy100continue">Proxy100Continue Off|On</a></td><td> On </td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Transmission du message "100-continue" au serveur d'origine</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#proxyaddheaders">ProxyAddHeaders Off|On</a></td><td> On </td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Ajoute des informations à propos du mandataire aux
 en-têtes X-Forwarded-*</td></tr>
 <tr><td><a href="mod_proxy.html#proxybadheader">ProxyBadHeader IsError|Ignore|StartBody</a></td><td> IsError </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Détermine la manière de traiter les lignes d'en-tête
