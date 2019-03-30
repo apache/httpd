@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 1780218:1855817 (outdated) -->
+<!-- English Revision: 1855817 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -62,6 +62,9 @@
     <dd>Celui-ci utilise le système à hautes performances de mise en
     cache d'objets de mémoire distribuée <a
     href="http://memcached.org/">memcached</a>.</dd>
+    <dt>"redis" (<module>mod_socache_redis</module>)</dt>
+    <dd>Celui-ci utilise le système de mise en cache d'objets de mémoire
+    distribuée à hautes performances <a href="http://redis.io/">Redis</a>.</dd>
     <dt>"shmcb" (<module>mod_socache_shmcb</module>)</dt>
     <dd>Celui-ci utilise un tampon cyclique à hautes performances au
     sein d'un segment de mémoire partagée.</dd>

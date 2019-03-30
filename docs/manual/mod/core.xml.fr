@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1851792:1855819 (outdated) -->
+<!-- English Revision: 1855819 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -5559,6 +5559,34 @@ configuré pour ne transmettre que des méthodes reconnues aux modules.</p>
 </usage>
 <seealso><directive module="core">HTTPProtocolOptions</directive></seealso>
 <seealso><directive module="mod_allowmethods">AllowMethods</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MergeSlashes</name>
+<description>Fusion des slashes consécutifs dans les URLs par le serveur.
+</description>
+<syntax>MergeSlashes ON|OFF</syntax>
+<default>MergeSlashes ON</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+<compatibility>Disponible à partir de la version 2.4.39 du serveur HTTP Apache</compatibility>
+
+<usage>
+    <p>Par défaut, le serveur fusionne les caractères slash ('/') multiples et
+    consécutifs dans la partie chemin de l'URL d'une requête.</p>
+
+    <p>Lorsque cette partie chemin de l'URL est appliquée au système de
+    fichiers, ces slashes multiples sont inutiles. Il peut être cependant
+    préférable de conserver ces slashes multiples et consécutifs car ils peuvent
+    avoir une signification dans le cas des URLs gérées différemment, par
+    exemple par CGI ou par un serveur mandataire. Il convient alors de définir
+    <directive>MergeSlashes</directive> à <em>OFF</em>. Dans ces types de
+    configuration, les expressions rationnelles utilisées dans le
+    fichier de configuration pour effectuer une comparaison de la partie chemin
+    de l'URL ((<directive>LocationMatch</directive>,
+    <directive>RewriteRule</directive>, ...) doivent en effet tenir compte de la
+    présence éventuelle de slashes multiples et consécutifs.</p>
+</usage>
 </directivesynopsis>
 
 </modulesynopsis>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1746928:1855818 (outdated) -->
+<!-- English Revision: 1855818 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -124,6 +124,12 @@ d'Apache</a></seealso>
 	mentionnent ces derniers par leurs noms. Voir la <a
         href="mod_authz_host.html#reqhost">documentation de Require
 	host</a>.</td></tr>
+
+    <tr><td><code>%{c}h</code></td>
+	<td>Semblable à <code>%h</code>, mais exploite toujours le nom d'hôte de
+	la connection TCP sous-jacente, en ignorant toute modification réalisée
+	sur le nom d'hôte distant par des modules tels que
+	<module>mod_remoteip</module>.</td></tr>	
 
     <tr><td><code>%H</code></td>
         <td>Le protocole de la requête</td></tr>
