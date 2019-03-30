@@ -100,6 +100,7 @@ disponibles</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#maxrangeoverlaps">MaxRangeOverlaps</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#maxrangereversals">MaxRangeReversals</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#maxranges">MaxRanges</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mergeslashes">MergeSlashes</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mergetrailers">MergeTrailers</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mutex">Mutex</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#namevirtualhost">NameVirtualHost</a></li>
@@ -3855,6 +3856,34 @@ Apache</td></tr>
       <dd>Un nombre positif représentera la nombre de segments de
       données maximal que le serveur renverra au client.</dd>
     </dl>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="mergeslashes" id="mergeslashes">Directive</a> <a name="MergeSlashes" id="MergeSlashes">MergeSlashes</a> <a title="Lien permanent" href="#mergeslashes" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fusion des slashes consécutifs dans les URLs par le serveur.
+</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MergeSlashes ON|OFF</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MergeSlashes ON</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Noyau httpd</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.1. du serveur HTTP Apache</td></tr>
+</table>
+    <p>Par défaut, le serveur fusionne les caractères slash ('/') multiples et
+    consécutifs dans la partie chemin de l'URL d'une requête.</p>
+
+    <p>Lorsque cette partie chemin de l'URL est appliquée au système de
+    fichiers, ces slashes multiples sont inutiles. Il peut être cependant
+    préférable de conserver ces slashes multiples et consécutifs car ils peuvent
+    avoir une signification dans le cas des URLs gérées différemment, par
+    exemple par CGI ou par un serveur mandataire. Il convient alors de définir
+    <code class="directive">MergeSlashes</code> à <em>OFF</em>. Dans ces types de
+    configuration, les expressions rationnelles utilisées dans le
+    fichier de configuration pour effectuer une comparaison de la partie chemin
+    de l'URL ((<code class="directive">LocationMatch</code>,
+    <code class="directive">RewriteRule</code>, ...) doivent en effet tenir compte de la
+    présence éventuelle de slashes multiples et consécutifs.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
