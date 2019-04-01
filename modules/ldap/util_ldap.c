@@ -81,7 +81,12 @@ static APR_INLINE apr_status_t ldap_cache_lock(util_ldap_state_t *st, request_re
     if (st->util_ldap_cache_lock) { 
         apr_status_t rv = apr_global_mutex_lock(st->util_ldap_cache_lock);
         if (rv != APR_SUCCESS) { 
-            ap_log_rerror(APLOG_MARK, APLOG_CRIT, rv, r, APLOGNO(10134) "LDAP cache lock failed");
+            if (r) {
+                ap_log_rerror(APLOG_MARK, APLOG_CRIT, rv, r, APLOGNO(10134) "LDAP cache lock failed");
+            }
+            else { 
+                ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, APLOGNO(10134) "LDAP cache lock failed");
+            }
             ap_assert(0);
         }
     }
@@ -92,7 +97,12 @@ static APR_INLINE apr_status_t ldap_cache_unlock(util_ldap_state_t *st, request_
     if (st->util_ldap_cache_lock) { 
         apr_status_t rv = apr_global_mutex_unlock(st->util_ldap_cache_lock);
         if (rv != APR_SUCCESS) { 
-            ap_log_rerror(APLOG_MARK, APLOG_CRIT, rv, r, APLOGNO(10135) "LDAP cache lock failed");
+            if (r != NULL) {
+                ap_log_rerror(APLOG_MARK, APLOG_CRIT, rv, r, APLOGNO(10135) "LDAP cache unlock failed");
+            }
+            else { 
+                ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, APLOGNO(10135) "LDAP cache unlock failed");
+            }
             ap_assert(0);
         }
     }
@@ -109,6 +119,25 @@ static void util_ldap_strdup (char **str, const char *newstr)
     if (newstr) {
         *str = strdup(newstr);
     }
+}
+
+static apr_status_t util_ldap_cache_module_kill(void *data)
+{
+    util_ldap_state_t *st = data;
+
+    util_ald_destroy_cache(st->util_ldap_cache);
+#if APR_HAS_SHARED_MEMORY
+    if (st->cache_rmm != NULL) {
+        apr_rmm_destroy (st->cache_rmm);
+        st->cache_rmm = NULL;
+    }
+    if (st->cache_shm != NULL) {
+        apr_status_t result = apr_shm_destroy(st->cache_shm);
+        st->cache_shm = NULL;
+        return result;
+    }
+#endif
+    return APR_SUCCESS;
 }
 
 /*
@@ -2932,6 +2961,18 @@ static int util_ldap_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
     return OK;
 }
 
+static apr_status_t util_ldap_cache_module_kill_locked(void *data)
+{
+    apr_status_t result;
+    util_ldap_state_t *st = data;
+
+    ldap_cache_lock(st, NULL);
+    result = util_ldap_cache_module_kill(data);
+    ldap_cache_unlock(st, NULL);
+
+    return result;
+}
+
 static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
                                  apr_pool_t *ptemp, server_rec *s)
 {
@@ -2978,6 +3019,8 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
                          "LDAP cache: could not create shared memory segment");
             return DONE;
         }
+
+        apr_pool_cleanup_register(st->pool, st , util_ldap_cache_module_kill_locked, apr_pool_cleanup_null);
 
         result = ap_global_mutex_create(&st->util_ldap_cache_lock, NULL,
                                         ldap_cache_mutex_type, NULL, s, p, 0);
