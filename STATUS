@@ -227,7 +227,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_http2: remove the no longer existing h2_ngn_shed.c from Cmake.
      trunk patch: http://svn.apache.org/r1856910
      2.4.x patch: svn merge -c 1856910 ^/httpd/httpd/trunk .
-     +1: icing
+     +1: icing, covener
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
