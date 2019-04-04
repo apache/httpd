@@ -194,8 +194,20 @@ apr_status_t md_util_fopen(FILE **pf, const char *fn, const char *mode)
 apr_status_t md_util_fcreatex(apr_file_t **pf, const char *fn, 
                               apr_fileperms_t perms, apr_pool_t *p)
 {
-    return apr_file_open(pf, fn, (APR_FOPEN_WRITE|APR_FOPEN_CREATE|APR_FOPEN_EXCL),
-                         perms, p);
+    apr_status_t rv;
+    rv = apr_file_open(pf, fn, (APR_FOPEN_WRITE|APR_FOPEN_CREATE|APR_FOPEN_EXCL),
+                       perms, p);
+    if (APR_SUCCESS == rv) {
+        /* See <https://github.com/icing/mod_md/issues/117>
+         * Some people set umask 007 to deny all world read/writability to files
+         * created by apache. While this is a noble effort, we need the store files
+         * to have the permissions as specified. */
+        rv = apr_file_perms_set(fn, perms);
+        if (APR_STATUS_IS_ENOTIMPL(rv)) {
+            rv = APR_SUCCESS;
+        }
+    }
+    return rv;
 }
 
 apr_status_t md_util_is_dir(const char *path, apr_pool_t *pool)
