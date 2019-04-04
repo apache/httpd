@@ -133,13 +133,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1856297 ^/httpd/httpd/trunk .
      +1: icing, jim, ylavic
 
-  *) modules/filters/config.m4: Make libxml2's inclusion of unicode/*.h files
-     a non-fatal warning/error under maintainer-mode.
-     trunk patch: http://svn.apache.org/r1850745
-                  http://svn.apache.org/r1855446
-     2.4.x patch: svn merge -c 1850745,1855446 ^/httpd/httpd/trunk .
-     +1: jim, covener, icing
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
