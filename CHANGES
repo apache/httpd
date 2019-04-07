@@ -5,6 +5,7 @@ Changes with Apache 2.4.40
      spite of umask. Fixes <https://github.com/icing/mod_md/issues/117>. [Stefan Eissing]
 
 Changes with Apache 2.4.39
+
   *) SECURITY: CVE-2019-0197 (cve.mitre.org)
      mod_http2: fixes a possible crash when HTTP/2 was enabled for a http:
      host or H2Upgrade was enabled for h2 on a https: host. An Upgrade
