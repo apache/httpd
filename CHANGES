@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_reqtimeout: Fix default rates missing (not applied) in 2.4.39.
+     PR 63325. [Yann Ylavic]
+
   *) mod_ldap: Avoid potential crashes in util_ldap_cache_module_kill() or other
      LDAP related functions during graceful restart of a busy server. PR63305.
      [Martin Fúsek <mfusek newps.cz>]
