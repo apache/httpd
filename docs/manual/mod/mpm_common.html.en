@@ -87,6 +87,17 @@ switch before dumping core</td></tr>
     operating system is not configured to write core files to the working directory
     of the crashing processes.</p>
 
+    <div class="warning">
+      <h3>Security note for Linux systems</h3>
+
+      <p>Using this directive on Linux may allow other processes on
+      the system (if running with similar privileges, such as CGI
+      scripts) to attach to httpd children via the <code>ptrace</code>
+      system call.  This may make weaken the protection from certain
+      security attacks.  It is not recommended to use this directive
+      on production systems.</p>
+    </div>
+    
     <div class="note"><h3>Core Dumps on Linux</h3>
       <p>If Apache httpd starts as root and switches to another user, the
       Linux kernel <em>disables</em> core dumps even if the directory is
