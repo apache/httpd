@@ -95,6 +95,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#addoutputfilter">AddOutputFilter</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#addtype">AddType</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#defaultlanguage">DefaultLanguage</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mimeoptions">MimeOptions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#modmimeusepathinfo">ModMimeUsePathInfo</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#multiviewsmatch">MultiviewsMatch</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#removecharset">RemoveCharset</a></li>
@@ -660,6 +661,45 @@ assigned a language-tag by some other means.</td></tr>
 <ul>
 <li><code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code></li>
 </ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MimeOptions" id="MimeOptions">MimeOptions</a> <a name="mimeoptions" id="mimeoptions">Directive</a> <a title="Permanent link" href="#mimeoptions" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configures mod_mime behavior</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MimeOptions<var>option</var> [<var>option</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Apache HTTP Server 2.5.1 and later</td></tr>
+</table>
+    <p>The <code class="directive">MimeOptions</code> directive configures certain
+    behaviors of <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code>. <var>Option</var> can
+    be one of</p>
+
+    <dl>
+      <dt><code>TypesLastExtension</code></dt>
+      <dd>This option only consider the last (right-most) filename extension
+      when determining a files Content-Type.</dd>
+      <dt><code>NoTypesLastExtension</code></dt>
+      <dd>This option can be used to revert to the default behavior of testing
+      every filename extension when determining a files Content-Type.</dd>
+      <dt><code>AllLastExtension</code></dt>
+      <dd>This option only consider the last (right-most) filename extension
+      when scanning filenames.</dd>
+      <dt><code>NoAllLastExtension</code></dt>
+      <dd>This option can be used to revert to the default behavior of scanning 
+      every filename extension. Only useful if 
+      <code>MimeOptions AllLastExtension</code> has been used in a lower precedence 
+      configuration section</dd>
+      <dt><code>Disable</code></dt>
+      <dd>All assignment of metadata based on the filename is skipped.</dd>
+      <dt><code>Enable</code></dt>
+      <dd>Re-enables file extension checking by this module. Only useful if a lower
+      precedence configuration section has specified 
+      <code>MimeOptions Disable</code>.</dd>
+    </dl>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ModMimeUsePathInfo" id="ModMimeUsePathInfo">ModMimeUsePathInfo</a> <a name="modmimeusepathinfo" id="modmimeusepathinfo">Directive</a> <a title="Permanent link" href="#modmimeusepathinfo" class="permalink">&para;</a></h2>

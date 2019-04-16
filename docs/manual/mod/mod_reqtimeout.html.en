@@ -120,7 +120,7 @@ the request headers and/or body from client.
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_reqtimeout</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Defaulted to disabled in version 2.3.14 and earlier. The
-<code>handshake</code> stage is available since version 2.5.
+<code>handshake</code> stage is available since version 2.4.39.
 </td></tr>
 </table>
     <p>This directive can set various timeouts for completing the TLS handshake,
