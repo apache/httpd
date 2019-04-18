@@ -1489,12 +1489,15 @@ AP_DECLARE(const char *) ap_resolve_env(apr_pool_t *p, const char * word)
     return res_buf;
 }
 
-static int reset_config_defines(void *dummy)
+/* pconf cleanup - clear global variables set from config here. */
+static apr_status_t reset_config(void *dummy)
 {
     ap_server_config_defines = saved_server_config_defines;
     saved_server_config_defines = NULL;
     server_config_defined_vars = NULL;
-    return OK;
+    core_state_dir = NULL;
+
+    return APR_SUCCESS;
 }
 
 /*
@@ -5294,13 +5297,11 @@ static int core_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptem
 
     if (!saved_server_config_defines)
         init_config_defines(pconf);
-    apr_pool_cleanup_register(pconf, NULL, reset_config_defines,
-                              apr_pool_cleanup_null);
+    apr_pool_cleanup_register(pconf, NULL, reset_config, apr_pool_cleanup_null);
 
     ap_regcomp_set_default_cflags(AP_REG_DOLLAR_ENDONLY);
 
     mpm_common_pre_config(pconf);
-    core_state_dir = NULL;
 
     return OK;
 }
