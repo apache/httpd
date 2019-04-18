@@ -46,11 +46,7 @@ const char *dav_get_lockdb_path(const request_rec *r)
 
 static void *dav_fs_create_server_config(apr_pool_t *p, server_rec *s)
 {
-    dav_fs_server_conf *conf = apr_pcalloc(p, sizeof(dav_fs_server_conf));
-
-    conf->lockdb_path = ap_state_dir_relative(p, DEFAULT_DAV_LOCKDB);
-
-    return conf;
+    return apr_pcalloc(p, sizeof(dav_fs_server_conf));
 }
 
 static void *dav_fs_merge_server_config(apr_pool_t *p,
@@ -66,6 +62,24 @@ static void *dav_fs_merge_server_config(apr_pool_t *p,
         child->lockdb_path ? child->lockdb_path : parent->lockdb_path;
 
     return newconf;
+}
+
+static apr_status_t dav_fs_post_config(apr_pool_t *p, apr_pool_t *plog,
+                                       apr_pool_t *ptemp, server_rec *base_server)
+{
+    server_rec *s;
+
+    for (s = base_server; s; s = s->next) {
+        dav_fs_server_conf *conf;
+
+        conf = ap_get_module_config(s->module_config, &dav_fs_module);
+
+        if (!conf->lockdb_path) {
+            conf->lockdb_path = ap_state_dir_relative(p, DEFAULT_DAV_LOCKDB);
+        }
+    }
+
+    return OK;
 }
 
 /*
@@ -98,6 +112,8 @@ static const command_rec dav_fs_cmds[] =
 
 static void register_hooks(apr_pool_t *p)
 {
+    ap_hook_post_config(dav_fs_post_config, NULL, NULL, APR_HOOK_MIDDLE);
+
     dav_hook_gather_propsets(dav_fs_gather_propsets, NULL, NULL,
                              APR_HOOK_MIDDLE);
     dav_hook_find_liveprop(dav_fs_find_liveprop, NULL, NULL, APR_HOOK_MIDDLE);
