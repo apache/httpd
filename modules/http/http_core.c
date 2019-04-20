@@ -57,7 +57,6 @@ static const char *set_keep_alive_timeout(cmd_parms *cmd, void *dummy,
         return err;
     }
 
-    /* Stolen from mod_proxy.c */
     if (ap_timeout_parameter_parse(arg, &timeout, "s") != APR_SUCCESS)
         return "KeepAliveTimeout has wrong format";
     cmd->server->keep_alive_timeout = timeout;
@@ -156,14 +155,6 @@ static int ap_process_http_async_connection(conn_rec *c)
                 }
                 ap_update_child_status(c->sbh, SERVER_BUSY_WRITE, r);
                 ap_process_async_request(r);
-                /* After the call to ap_process_request, the
-                 * request pool may have been deleted.  We set
-                 * r=NULL here to ensure that any dereference
-                 * of r that might be added later in this function
-                 * will result in a segfault immediately instead
-                 * of nondeterministic failures later.
-                 */
-                r = NULL;
             }
 
             if (cs->state != CONN_STATE_WRITE_COMPLETION &&
