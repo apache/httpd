@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1853619:1857648 (outdated) -->
+<!-- English Revision: 1857648 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -58,6 +58,17 @@ positionner avant d'effectuer un vidage mémoire</description>
     d'exploitation n'est pas configuré pour créer des
     fichiers de vidage mémoire dans le répertoire de travail des
     processus qui se sont crashés.</p>
+
+    <note type="warning">
+      <title>Note de sécurité pour les systèmes de type Linux</title>
+
+      <p>Utiliser cette directive sous Linux peut permettre aux autres processus
+      du système s'exécutant avec les même privilèges (comme les scripts CGI) de
+      se rattacher aux processus httpd enfants via l'appel système
+      <code>ptrace</code>. La protection contre certaines attaques engageant la
+      sécurité peut s'en trouver affectée. Il est par conséquent déconseillé
+      d'utiliser cette directive sur les systèmes en production.</p>
+    </note>
 
     <note><title>Vidages mémoire sous Linux</title>
       <p>Si Apache httpd est démarré sous l'utilisateur root puis bascule vers
