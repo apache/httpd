@@ -28,4 +28,8 @@
 #define DEFAULT_REL_RUNTIMEDIR "logs"
 #endif
 
+#ifndef DEFAULT_REL_STATEDIR
+#define DEFAULT_REL_STATEDIR "state"
+#endif
+
 #endif /* AP_CONFIG_LAYOUT_H */
