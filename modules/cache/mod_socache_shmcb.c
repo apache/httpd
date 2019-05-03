@@ -368,8 +368,8 @@ static apr_status_t socache_shmcb_init(ap_socache_instance_t *ctx,
          * above will return NULL for invalid paths. */
         if (ctx->data_file == NULL) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(00818)
-                         "Could not use default path '%s' for shmcb socache",
-                         ctx->data_file);
+                         "Could not use anonymous shm for '%s' cache",
+                         namespace);
             return APR_EINVAL;
         }
 
