@@ -319,10 +319,10 @@ struct dummy_state {
 apr_status_t dummy_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 {
     struct dummy_state *state;
-    
+
     state = f->ctx;
     if (state == NULL) {
-    
+
         /* First invocation for this response: initialise state structure.
          */
         f->ctx = state = apr_palloc(f->r->pool, sizeof *state);
@@ -562,7 +562,7 @@ chunk_size = (speed / (1000 / RATE_INTERVAL_MS));
     <p>The commit linked in the beginning of the section contains also a bit of code
     refactoring so it is not trivial to read during the first pass, but the overall
     idea is basically what written up to now. The goal of this section is not to
-    cause an headache to the reader trying to read C code, but to put him/her into
+    cause a headache to the reader trying to read C code, but to put him/her into
     the right mindset needed to use efficiently the tools offered by the httpd's
     filter chain toolset.</p>
   </section>
