@@ -219,20 +219,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1857129
                   http://svn.apache.org/r1857130
      2.4.x patch: svn merge -c 1857129,1857130 ^/httpd/httpd/trunk .
-     +1: ylavic, rpluem
+     +1: ylavic, rpluem, jim
 
   *) mod_info: Fix wrong use of ap_rputs with formats.
      Use ap_rprintf instead.
      It seems noone has PIPE_BUF defined.
      trunk patch: http://svn.apache.org/r1857515
      2.4.x patch: svn merge -c 1857515 ^/httpd/httpd/trunk .
-     +1: rjung, jailletc36
+     +1: rjung, jailletc36, jim
 
   *) mod_status: PR60647: ACC per connection not available w/ event MPM
      trunk patch: http://svn.apache.org/r1780280
      2.4.x patch: svn merge -c 1780280 ^/httpd/httpd/trunk .
                   (minus CHANGES and ap_mmn.h)
-     +1: jailletc36
+     +1: jailletc36, jim
 
   *) Easy patches: synch 2.4.x and trunk
         - core: 80 chars
@@ -257,8 +257,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         - http://svn.apache.org/r1853980
         - http://svn.apache.org/r1855614
      2.4.x patch: svn merge -c 1780282,1814659,1814660,1838285,1842881,1846253,1853757,1851702,1853980,1855614 ^/httpd/httpd/trunk . 
-     +1: jailletc36
-     jailletc36: this serie relies on r1780280 backport (see above)
+     +1: jailletc36, jim
+     jailletc36: this series relies on r1780280 backport (see above)
 
   *) core: make the eor bucket do the right thing when copied
      trunk patch: http://svn.apache.org/r1707084
