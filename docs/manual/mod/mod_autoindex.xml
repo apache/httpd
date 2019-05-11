@@ -612,8 +612,7 @@ indexing</description>
 
       <dt><a name="indexoptions.charset"
                id="indexoptions.charset"
-      >Charset=<var>character-set</var></a> (<em>Apache HTTP Server 2.0.61 and
-      later</em>)</dt>
+      >Charset=<var>character-set</var></a></dt>
 
       <dd>The <code>Charset</code> keyword allows you to
       specify the character set of the generated page. The
@@ -886,8 +885,7 @@ indexing</description>
 
       <dt><a name="indexoptions.type"
                id="indexoptions.type"
-      >Type=<var>MIME content-type</var></a> (<em>Apache HTTP Server 2.0.61 and
-      later</em>)</dt>
+      >Type=<var>MIME content-type</var></a></dt>
 
       <dd>The <code>Type</code> keyword allows you to
       specify the MIME content-type of the generated page. The default
@@ -909,8 +907,7 @@ indexing</description>
       restores the date format from 2.2 and earlier.</dd>
 
       <dt><a name="indexoptions.versionsort"
-               id="indexoptions.versionsort">VersionSort</a>
-      (<em>Apache HTTP Server 2.0a3 and later</em>)</dt>
+               id="indexoptions.versionsort">VersionSort</a></dt>
 
       <dd>The <code>VersionSort</code> keyword causes files containing
       version numbers to sort in a natural way. Strings are sorted as
@@ -938,8 +935,7 @@ indexing</description>
       </dd>
 
       <dt><a name="indexoptions.xhtml"
-               id="indexoptions.xhtml">XHTML</a>
-      (<em>Apache HTTP Server 2.0.49 and later</em>)</dt>
+               id="indexoptions.xhtml">XHTML</a></dt>
 
       <dd>The <code>XHTML</code> keyword forces <module>mod_autoindex</module>
       to emit XHTML 1.0 code instead of HTML 3.2.
