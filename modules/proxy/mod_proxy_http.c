@@ -2107,13 +2107,10 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
         }
 
         /* Step Three: Create conn_rec */
+        if ((status = ap_proxy_connection_create_ex(proxy_function,
+                                                    backend, r)) != OK)
+            break;
         req->origin = backend->connection;
-        if (!req->origin) {
-            if ((status = ap_proxy_connection_create_ex(proxy_function,
-                                                        backend, r)) != OK)
-                break;
-            req->origin = backend->connection;
-        }
 
         /* Don't recycle the connection if prefetch (above) told not to do so */
         if (toclose) {
