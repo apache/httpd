@@ -262,7 +262,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      This also makes backporting the fixes for PR 63430 simpler and reduces code drift.
      trunk patch: http://svn.apache.org/r1818726
      2.4.x patch: http://home.apache.org/~rjung/patches/httpd-2.4.x-proxy-request-hostname.patch
-     +1: rjung
+     +1: rjung, rpluem
      -1: 
 
 
