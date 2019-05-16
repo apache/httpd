@@ -138,6 +138,32 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                   (minus CHANGES and ap_mmn.h)
      +1: jailletc36, jim, rjung
 
+  *) Easy patches: synch 2.4.x and trunk
+        - core: 80 chars
+        - http_core: Clean-uo and style. No functional change overall
+        - http_core: One more style fix in ap_process_http_async_connection()
+        - mod_mime: Fix a cppcheck warning
+        - mod_proxy_ajp: Fix a harmless clang warning
+        - suexec: avoid a potential sprintf overflow
+        - mod_headers: This is harmless, but this really should be an 'echo_do *' 
+        - core: Fix typo
+        - core: Update a comment about the 'PATCH' HTTP command
+        - mod_proxy_balancer: Fix some HTML syntax issues
+     trunk patch:
+        - http://svn.apache.org/r1780282
+        - http://svn.apache.org/r1814659
+        - http://svn.apache.org/r1814660
+        - http://svn.apache.org/r1838285
+        - http://svn.apache.org/r1842881
+        - http://svn.apache.org/r1846253
+        - http://svn.apache.org/r1853757
+        - http://svn.apache.org/r1851702
+        - http://svn.apache.org/r1853980
+        - http://svn.apache.org/r1855614
+     2.4.x patch: svn merge -c 1780282,1814659,1814660,1838285,1842881,1846253,1853757,1851702,1853980,1855614 ^/httpd/httpd/trunk . 
+     +1: jailletc36, jim, rjung
+     jailletc36: this series relies on r1780280 backport (see above)
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -220,32 +246,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: plus http://svn.apache.org/r1856036 (opt-out)
      2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-forward_100_continue-v5.patch
      +1: ylavic, jim
-
-  *) Easy patches: synch 2.4.x and trunk
-        - core: 80 chars
-        - http_core: Clean-uo and style. No functional change overall
-        - http_core: One more style fix in ap_process_http_async_connection()
-        - mod_mime: Fix a cppcheck warning
-        - mod_proxy_ajp: Fix a harmless clang warning
-        - suexec: avoid a potential sprintf overflow
-        - mod_headers: This is harmless, but this really should be an 'echo_do *' 
-        - core: Fix typo
-        - core: Update a comment about the 'PATCH' HTTP command
-        - mod_proxy_balancer: Fix some HTML syntax issues
-     trunk patch:
-        - http://svn.apache.org/r1780282
-        - http://svn.apache.org/r1814659
-        - http://svn.apache.org/r1814660
-        - http://svn.apache.org/r1838285
-        - http://svn.apache.org/r1842881
-        - http://svn.apache.org/r1846253
-        - http://svn.apache.org/r1853757
-        - http://svn.apache.org/r1851702
-        - http://svn.apache.org/r1853980
-        - http://svn.apache.org/r1855614
-     2.4.x patch: svn merge -c 1780282,1814659,1814660,1838285,1842881,1846253,1853757,1851702,1853980,1855614 ^/httpd/httpd/trunk . 
-     +1: jailletc36, jim, rjung
-     jailletc36: this series relies on r1780280 backport (see above)
 
   *) core: make the eor bucket do the right thing when copied
      trunk patch: http://svn.apache.org/r1707084
