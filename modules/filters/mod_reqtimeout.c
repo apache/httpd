@@ -31,7 +31,7 @@ module AP_MODULE_DECLARE_DATA reqtimeout_module;
 #define UNSET                            -1
 #define MRT_DEFAULT_handshake_TIMEOUT     0 /* disabled */
 #define MRT_DEFAULT_handshake_MAX_TIMEOUT 0
-#define MRT_DEFAULT_handshake_MIN_RATE    APR_INT32_MAX
+#define MRT_DEFAULT_handshake_MIN_RATE    0
 #define MRT_DEFAULT_header_TIMEOUT       20
 #define MRT_DEFAULT_header_MAX_TIMEOUT   40
 #define MRT_DEFAULT_header_MIN_RATE      500
@@ -220,7 +220,7 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
     if (block == APR_NONBLOCK_READ || mode == AP_MODE_INIT
         || mode == AP_MODE_EATCRLF) {
         rv = ap_get_brigade(f->next, bb, mode, block, readbytes);
-        if (ccfg->cur_stage.rate_factor > 0 && rv == APR_SUCCESS) {
+        if (ccfg->cur_stage.rate_factor && rv == APR_SUCCESS) {
             extend_timeout(ccfg, bb);
         }
         return rv;
@@ -254,7 +254,7 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
             }
 
             if (!APR_BRIGADE_EMPTY(bb)) {
-                if (ccfg->cur_stage.rate_factor > 0) {
+                if (ccfg->cur_stage.rate_factor) {
                     extend_timeout(ccfg, bb);
                 }
 
@@ -315,7 +315,7 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
          * the real (relevant) bytes to be asked later, within the
          * currently alloted time.
          */
-        if (ccfg->cur_stage.rate_factor > 0 && rv == APR_SUCCESS
+        if (ccfg->cur_stage.rate_factor && rv == APR_SUCCESS
                 && mode != AP_MODE_SPECULATIVE) {
             extend_timeout(ccfg, bb);
         }
@@ -638,17 +638,17 @@ static void reqtimeout_hooks(apr_pool_t *pool)
     ap_hook_post_read_request(reqtimeout_before_body, NULL, NULL,
                               APR_HOOK_MIDDLE);
 
-#if MRT_DEFAULT_HANDSHAKE_MIN_RATE > 0
+#if MRT_DEFAULT_handshake_MIN_RATE
     default_handshake_rate_factor = apr_time_from_sec(1) /
-                                    MRT_DEFAULT_HANDSHAKE_MIN_RATE;
+                                    MRT_DEFAULT_handshake_MIN_RATE;
 #endif
-#if MRT_DEFAULT_HEADER_MIN_RATE > 0
+#if MRT_DEFAULT_header_MIN_RATE
     default_header_rate_factor = apr_time_from_sec(1) /
-                                 MRT_DEFAULT_HEADER_MIN_RATE;
+                                 MRT_DEFAULT_header_MIN_RATE;
 #endif
-#if MRT_DEFAULT_BODY_MIN_RATE > 0
+#if MRT_DEFAULT_body_MIN_RATE
     default_body_rate_factor = apr_time_from_sec(1) /
-                               MRT_DEFAULT_BODY_MIN_RATE;
+                               MRT_DEFAULT_body_MIN_RATE;
 #endif
 }
 

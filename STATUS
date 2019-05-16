@@ -215,12 +215,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-forward_100_continue-v5.patch
      +1: ylavic, jim
 
-  *) mod_reqtimeout: Fix default rates missing in 2.4.39. PR 63325
-     trunk patch: http://svn.apache.org/r1857129
-                  http://svn.apache.org/r1857130
-     2.4.x patch: svn merge -c 1857129,1857130 ^/httpd/httpd/trunk .
-     +1: ylavic, rpluem, jim
-
   *) mod_status: PR60647: ACC per connection not available w/ event MPM
      trunk patch: http://svn.apache.org/r1780280
      2.4.x patch: svn merge -c 1780280 ^/httpd/httpd/trunk .
