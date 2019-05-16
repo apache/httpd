@@ -268,6 +268,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1707084,1707093,1707159,1707362 ^/httpd/httpd/trunk .
      +1: icing
 
+  *) mod_proxy: allow SSLProxyCheckPeer* usage for all proxy modules.
+     PR 61857.  [Yann Ylavic]
+     Proposed (for trunk) by: Markus Gausling <markusgausling googlemail.com>
+     Reviewed (for trunk) by: ylavic
+     This also makes backporting the fixes for PR 63430 simpler and reduces code drift.
+     trunk patch: http://svn.apache.org/r1818726
+     2.4.x patch: http://home.apache.org/~rjung/patches/httpd-2.4.x-proxy-request-hostname.patch
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
