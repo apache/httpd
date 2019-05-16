@@ -577,7 +577,7 @@ static int show_server_settings(request_rec * r)
 #ifdef BUFFERED_LOGS
     ap_rputs(" -D BUFFERED_LOGS\n", r);
 #ifdef PIPE_BUF
-    ap_rputs(" -D PIPE_BUF=%ld\n", (long) PIPE_BUF, r);
+    ap_rprintf(r, " -D PIPE_BUF=%ld\n", (long) PIPE_BUF);
 #endif
 #endif
 

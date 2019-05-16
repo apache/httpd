@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.40
 
+  *) mod_info: Fix output of server settings for PIPE_BUF in mod_info in
+     the rare case that PIPE_BUF is defined. [Rainer Jung]
+
   *) mod_md: Store permissions are enforced on file creation, enforcing restrictions in
      spite of umask. Fixes <https://github.com/icing/mod_md/issues/117>. [Stefan Eissing]
 
