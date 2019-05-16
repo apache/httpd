@@ -244,7 +244,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         - http://svn.apache.org/r1853980
         - http://svn.apache.org/r1855614
      2.4.x patch: svn merge -c 1780282,1814659,1814660,1838285,1842881,1846253,1853757,1851702,1853980,1855614 ^/httpd/httpd/trunk . 
-     +1: jailletc36, jim
+     +1: jailletc36, jim, rjung
      jailletc36: this series relies on r1780280 backport (see above)
 
   *) core: make the eor bucket do the right thing when copied
