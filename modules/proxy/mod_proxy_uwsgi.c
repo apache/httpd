@@ -509,12 +509,10 @@ static int uwsgi_handler(request_rec *r, proxy_worker * worker,
     }
 
     /* Step Three: Create conn_rec */
-    if (!backend->connection) {
-        if ((status = ap_proxy_connection_create(UWSGI_SCHEME, backend,
-                                                 r->connection,
-                                                 r->server)) != OK)
-            goto cleanup;
-    }
+    if ((status = ap_proxy_connection_create(UWSGI_SCHEME, backend,
+                                             r->connection,
+                                             r->server)) != OK)
+        goto cleanup;
 
     /* Step Four: Process the Request */
     if (((status = ap_setup_client_block(r, REQUEST_CHUNKED_ERROR)) != OK)
