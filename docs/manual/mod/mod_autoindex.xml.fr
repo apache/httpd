@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1787525 -->
+<!-- English Revision : 1859106 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -655,8 +655,7 @@ répertoire</description>
 
       <dt><a name="indexoptions.charset"
                id="indexoptions.charset"
-      >Charset=<var>jeu de caractères</var></a> (<em>Versions 2.0.61 et
-      supérieures du serveur HTTP Apache</em>)</dt>
+      >Charset=<var>jeu de caractères</var></a></dt>
 
       <dd>Le mot-clé <code>Charset</code> vous permet de spécifier le
       jeu de caractères de la page générée. La valeur par défaut est
@@ -956,8 +955,7 @@ répertoire</description>
 
       <dt><a name="indexoptions.type"
                id="indexoptions.type"
-      >Type=<var>type MIME</var></a> (<em>Versions 2.0.61 et
-      supérieures du serveur HTTP Apache</em>)</dt>
+      >Type=<var>type MIME</var></a></dt>
 
       <dd>Le mot-clé <code>Type</code> vous permet de spécifier le type
       MIME de la page générée. La valeur par défaut est
@@ -979,8 +977,7 @@ répertoire</description>
       de restaurer le format de date des versions 2.2 et antérieures.</dd>
 
       <dt><a name="indexoptions.versionsort"
-               id="indexoptions.versionsort">VersionSort</a>
-      (<em>Versions 2.0a3 et supérieures du serveur HTTP Apache</em>)</dt>
+               id="indexoptions.versionsort">VersionSort</a></dt>
 
       <dd>Le mot-clé <code>VersionSort</code> permet de trier les
       fichiers contenant des numéros de version d'une manière
@@ -1009,8 +1006,7 @@ répertoire</description>
       </dd>
 
       <dt><a name="indexoptions.xhtml"
-               id="indexoptions.xhtml">XHTML</a>
-      (<em>Versions 2.0.49 et supérieures du serveur HTTP Apache</em>)</dt>
+               id="indexoptions.xhtml">XHTML</a></dt>
 
       <dd>Le mot-clé <code>XHTML</code> enjoint
       <module>mod_autoindex</module> de générer du code XHTML 1.0 au
