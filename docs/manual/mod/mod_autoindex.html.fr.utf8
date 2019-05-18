@@ -653,8 +653,7 @@ répertoire</td></tr>
       </dd>
 
 
-      <dt><a name="indexoptions.charset" id="indexoptions.charset">Charset=<var>jeu de caractères</var></a> (<em>Versions 2.0.61 et
-      supérieures du serveur HTTP Apache</em>)</dt>
+      <dt><a name="indexoptions.charset" id="indexoptions.charset">Charset=<var>jeu de caractères</var></a></dt>
 
       <dd>Le mot-clé <code>Charset</code> vous permet de spécifier le
       jeu de caractères de la page générée. La valeur par défaut est
@@ -909,8 +908,7 @@ répertoire</td></tr>
       Unix.</strong> Si c'est le cas, laissez cette option
       désactivée.</dd>
 
-      <dt><a name="indexoptions.type" id="indexoptions.type">Type=<var>type MIME</var></a> (<em>Versions 2.0.61 et
-      supérieures du serveur HTTP Apache</em>)</dt>
+      <dt><a name="indexoptions.type" id="indexoptions.type">Type=<var>type MIME</var></a></dt>
 
       <dd>Le mot-clé <code>Type</code> vous permet de spécifier le type
       MIME de la page générée. La valeur par défaut est
@@ -928,8 +926,7 @@ répertoire</td></tr>
       <code>"%Y-%m-%d %H:%M"</code> dans la version 2.4.0. Cette option permet
       de restaurer le format de date des versions 2.2 et antérieures.</dd>
 
-      <dt><a name="indexoptions.versionsort" id="indexoptions.versionsort">VersionSort</a>
-      (<em>Versions 2.0a3 et supérieures du serveur HTTP Apache</em>)</dt>
+      <dt><a name="indexoptions.versionsort" id="indexoptions.versionsort">VersionSort</a></dt>
 
       <dd>Le mot-clé <code>VersionSort</code> permet de trier les
       fichiers contenant des numéros de version d'une manière
@@ -957,8 +954,7 @@ répertoire</td></tr>
       </code></p></div>
       </dd>
 
-      <dt><a name="indexoptions.xhtml" id="indexoptions.xhtml">XHTML</a>
-      (<em>Versions 2.0.49 et supérieures du serveur HTTP Apache</em>)</dt>
+      <dt><a name="indexoptions.xhtml" id="indexoptions.xhtml">XHTML</a></dt>
 
       <dd>Le mot-clé <code>XHTML</code> enjoint
       <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code> de générer du code XHTML 1.0 au
