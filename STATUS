@@ -265,6 +265,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: rjung, rpluem
      -1: 
 
+  *) mod_proxy/ssl: Proxy SSL client certificate configuration and other proxy
+     SSL configurations broken inside <Proxy> context.  PR 63430.
+     [Ruediger Pluem, Yann Ylavic]
+     The patch applies clean after backporting r1818726 above.
+     trunk patch: http://svn.apache.org/r1859371
+     2.4.x patch: http://home.apache.org/~rjung/patches/httpd-2.4.x-proxy-ssl-proxy-section-r1859371.patch
+     +1: rjung
+     -1: 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
