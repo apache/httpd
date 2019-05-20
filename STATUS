@@ -268,13 +268,22 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_proxy/ssl: Proxy SSL client certificate configuration and other proxy
      SSL configurations broken inside <Proxy> context.  PR 63430.
      [Ruediger Pluem, Yann Ylavic]
-     The patch applies clean after backporting r1818726 above.
+     Plus:
+     Follow up to r1859371: extend to other ap_proxy_connection_create[_ex]() users.
+     This function now now handles SSL reuse as well as the "proxy-request-hostname"
+     note (SNI), so let's also call it unconditionnaly in all proxy modules.
+     On the mod_ssl side, since this note has the lifetime of the connection, don't
+     reset/unset it during handshake (ssl_io_filter_handshake).
+     The 2.4 backport patch applies clean after backporting r1818726 above.
      trunk patch: http://svn.apache.org/r1859371
-     2.4.x patch: http://home.apache.org/~rjung/patches/httpd-2.4.x-proxy-ssl-proxy-section-r1859371.patch
+                  http://svn.apache.org/r1859422
+     2.4.x patch: http://home.apache.org/~rjung/patches/httpd-2.4.x-proxy-ssl-proxy-section-r1859371-r1859422.patch
      +1: rjung
+     -1: 
      rpluem says: I would prefer adding r1859422 to this backport proposal to
                   have the issue fixed for other proxy modules as well.
-     -1: 
+     rjung: I added r1859422 now. I had the plan to add the second backports
+            separately, but I am totally fine to combine them.
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
