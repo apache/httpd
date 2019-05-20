@@ -453,9 +453,9 @@ an authorization provider.</td></tr>
       <dt><code>Require valid-user</code></dt>
       <dd>All valid users can access the resource.</dd>
 
-      <dt><code>Require ip 10 172.20 192.168.2</code></dt>
+      <dt><code>Require ip 10 172.20.0.0/12 192.168.2</code></dt>
       <dd>Clients in the specified IP address ranges can access the
-      resource.</dd>
+        resource.  IP can be a prefix or use /cidr notation.</dd>
     </dl>
 
     <p>Other authorization modules that implement require options
