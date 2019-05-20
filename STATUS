@@ -280,8 +280,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://home.apache.org/~rjung/patches/httpd-2.4.x-proxy-ssl-proxy-section-r1859371-r1859422.patch
      +1: rjung, rpluem
      -1: 
-     rjung: I added r1859422 now. I had the plan to add the second backports
-            separately, but I am totally fine to combine them.
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
