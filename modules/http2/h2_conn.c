@@ -37,7 +37,6 @@
 #include "h2_filter.h"
 #include "h2_mplx.h"
 #include "h2_session.h"
-#include "h2_stream.h"
 #include "h2_h2.h"
 #include "h2_task.h"
 #include "h2_workers.h"
@@ -351,8 +350,7 @@ conn_rec *h2_slave_create(conn_rec *master, int slave_id, apr_pool_t *parent)
 
 void h2_slave_destroy(conn_rec *slave)
 {
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, slave,
-                  "h2_slave(%s): destroy", slave->log_id);
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, slave, "h2_slave(%s): destroy", slave->log_id);
     slave->sbh = NULL;
     apr_pool_destroy(slave->pool);
 }

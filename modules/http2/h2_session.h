@@ -51,7 +51,6 @@ struct h2_priority;
 struct h2_push;
 struct h2_push_diary;
 struct h2_session;
-struct h2_stream;
 struct h2_stream_monitor;
 struct h2_task;
 struct h2_workers;
@@ -192,16 +191,17 @@ int h2_session_push_enabled(h2_session *session);
  * processing..
  * 
  * @param session the session to work in
- * @param is the stream initiating the push
+ * @param initiating_stream_id id of the stream initiating this push
  * @param push the push to promise
- * @return the new promised stream or NULL
  */
-struct h2_stream *h2_session_push(h2_session *session, 
-                                  struct h2_stream *is, struct h2_push *push);
+apr_status_t h2_session_push(h2_session *session, 
+                             int initiating_stream_id, struct h2_push *push);
 
-apr_status_t h2_session_set_prio(h2_session *session, 
-                                 struct h2_stream *stream, 
-                                 const struct h2_priority *prio);
+/**
+ * Notifies the session that the EOS for a stream has been sent.
+ * See h2_bucket_eos for usage.
+ */
+void h2_session_eos_sent(h2_session *session, int stream_id);
 
 #define H2_SSSN_MSG(s, msg)     \
     "h2_session(%ld,%s,%d): "msg, s->id, h2_session_state_str(s->state), \

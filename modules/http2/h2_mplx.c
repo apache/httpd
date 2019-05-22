@@ -61,8 +61,8 @@ apr_status_t h2_mplx_child_init(apr_pool_t *pool, server_rec *s)
 }
 
 #define H2_MPLX_ENTER(m)    \
-    do { apr_status_t rv; if ((rv = apr_thread_mutex_lock(m->lock)) != APR_SUCCESS) {\
-        return rv;\
+    do { apr_status_t lrv; if ((lrv = apr_thread_mutex_lock(m->lock)) != APR_SUCCESS) {\
+        return lrv;\
     } } while(0)
 
 #define H2_MPLX_LEAVE(m)    \
@@ -104,7 +104,7 @@ static void stream_joined(h2_mplx *m, h2_stream *stream)
     h2_ihash_add(m->spurge, stream);
 }
 
-static void stream_cleanup(h2_mplx *m, h2_stream *stream)
+static void stream_discard(h2_mplx *m, h2_stream *stream)
 {
     ap_assert(stream->state == H2_SS_CLEANUP);
 
@@ -175,7 +175,7 @@ h2_mplx *h2_mplx_create(conn_rec *c, server_rec *s, apr_pool_t *parent,
         }
         apr_pool_tag(m->pool, "h2_mplx");
         apr_allocator_owner_set(allocator, m->pool);
-        status = apr_thread_mutex_create(&mutex, APR_THREAD_MUTEX_DEFAULT,
+        status = apr_thread_mutex_create(&mutex, APR_THREAD_MUTEX_NESTED,
                                          m->pool);
         if (status != APR_SUCCESS) {
             apr_pool_destroy(m->pool);
@@ -183,7 +183,7 @@ h2_mplx *h2_mplx_create(conn_rec *c, server_rec *s, apr_pool_t *parent,
         }
         apr_allocator_mutex_set(allocator, mutex);
 
-        status = apr_thread_mutex_create(&m->lock, APR_THREAD_MUTEX_DEFAULT,
+        status = apr_thread_mutex_create(&m->lock, APR_THREAD_MUTEX_NESTED,
                                          m->pool);
         if (status != APR_SUCCESS) {
             apr_pool_destroy(m->pool);
@@ -267,8 +267,13 @@ static int stream_destroy_iter(void *ctx, void *val)
     h2_mplx *m = ctx;
     h2_stream *stream = val;
 
+    /* Make dead certain we are called for a stream 
+    to purge and that we have not already done so */
+    ap_assert(h2_ihash_get(m->spurge, stream->id) == stream);
+    
     h2_ihash_remove(m->spurge, stream->id);
     ap_assert(stream->state == H2_SS_CLEANUP);
+    stream->state = H2_SS_DESTROYED;
     
     if (stream->input) {
         /* Process outstanding events before destruction */
@@ -303,15 +308,15 @@ static int stream_destroy_iter(void *ctx, void *val)
                                && !task->rst_error);
             }
             
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c, 
+                          APLOGNO(03385) "h2_task_destroy, reuse slave=%d", reuse_slave); 
+            task->c = NULL;
+            h2_task_destroy(task);
+            
             if (reuse_slave) {
-                h2_beam_log(task->output.beam, m->c, APLOG_DEBUG, 
-                            APLOGNO(03385) "h2_task_destroy, reuse slave");    
-                h2_task_destroy(task);
                 APR_ARRAY_PUSH(m->spare_slaves, conn_rec*) = slave;
             }
             else {
-                h2_beam_log(task->output.beam, m->c, APLOG_TRACE1, 
-                            "h2_task_destroy, destroy slave");    
                 h2_slave_destroy(slave);
             }
         }
@@ -320,15 +325,15 @@ static int stream_destroy_iter(void *ctx, void *val)
     return 0;
 }
 
-static void purge_streams(h2_mplx *m, int lock)
+static void purge_streams(h2_mplx *m)
 {
+    H2_MPLX_ENTER_ALWAYS(m);
     if (!h2_ihash_empty(m->spurge)) {
-        H2_MPLX_ENTER_MAYBE(m, lock);
         while (!h2_ihash_iter(m->spurge, stream_destroy_iter, m)) {
             /* repeat until empty */
         }
-        H2_MPLX_LEAVE_MAYBE(m, lock);
     }
+    H2_MPLX_LEAVE(m);
 }
 
 typedef struct {
@@ -390,7 +395,7 @@ static int unexpected_stream_iter(void *ctx, void *val) {
     return 1;
 }
 
-static int stream_cancel_iter(void *ctx, void *val) {
+static int stream_cancel_and_discard_iter(void *ctx, void *val) {
     h2_mplx *m = ctx;
     h2_stream *stream = val;
 
@@ -404,7 +409,7 @@ static int stream_cancel_iter(void *ctx, void *val) {
     h2_stream_rst(stream, H2_ERR_NO_ERROR);
     /* All connection data has been sent, simulate cleanup */
     h2_stream_dispatch(stream, H2_SEV_EOS_SENT);
-    stream_cleanup(m, stream);  
+    stream_discard(m, stream);  
     return 0;
 }
 
@@ -430,7 +435,7 @@ void h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
 
     /* How to shut down a h2 connection:
      * 1. cancel all streams still active */
-    while (!h2_ihash_iter(m->streams, stream_cancel_iter, m)) {
+    while (!h2_ihash_iter(m->streams, stream_cancel_and_discard_iter, m)) {
         /* until empty */
     }
     
@@ -466,6 +471,7 @@ void h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
         h2_ihash_iter(m->shold, unexpected_stream_iter, m);
     }
     
+    purge_streams(m);
     m->c->aborted = old_aborted;
     H2_MPLX_LEAVE(m);
 
@@ -473,16 +479,9 @@ void h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
                   "h2_mplx(%ld): released", m->id);
 }
 
-apr_status_t h2_mplx_stream_cleanup(h2_mplx *m, h2_stream *stream)
+static h2_stream *mplx_stream_get(h2_mplx *m, int id)
 {
-    H2_MPLX_ENTER(m);
-    
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c, 
-                  H2_STRM_MSG(stream, "cleanup"));
-    stream_cleanup(m, stream);        
-    
-    H2_MPLX_LEAVE(m);
-    return APR_SUCCESS;
+    return h2_ihash_get(m->streams, id);
 }
 
 h2_stream *h2_mplx_stream_get(h2_mplx *m, int id)
@@ -490,11 +489,24 @@ h2_stream *h2_mplx_stream_get(h2_mplx *m, int id)
     h2_stream *s = NULL;
     
     H2_MPLX_ENTER_ALWAYS(m);
-
     s = h2_ihash_get(m->streams, id);
-
     H2_MPLX_LEAVE(m);
     return s;
+}
+
+apr_status_t h2_mplx_stream_discard(h2_mplx *m, int stream_id)
+{
+    h2_stream *stream;
+    
+    H2_MPLX_ENTER(m);
+    stream = mplx_stream_get(m, stream_id);
+    if (stream) {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c, 
+                      H2_STRM_MSG(stream, "cleanup"));
+        stream_discard(m, stream);        
+    }
+    H2_MPLX_LEAVE(m);
+    return APR_SUCCESS;
 }
 
 static void output_produced(void *ctx, h2_bucket_beam *beam, apr_off_t bytes)
@@ -594,7 +606,7 @@ apr_status_t h2_mplx_out_trywait(h2_mplx *m, apr_interval_time_t timeout,
         status = APR_SUCCESS;
     }
     else {
-        purge_streams(m, 0);
+        purge_streams(m);
         h2_ihash_iter(m->streams, report_consumption_iter, m);
         m->added_output = iowait;
         status = apr_thread_cond_timedwait(m->added_output, m->lock, timeout);
@@ -656,19 +668,31 @@ static void register_if_needed(h2_mplx *m)
     }
 }
 
-apr_status_t h2_mplx_process(h2_mplx *m, struct h2_stream *stream, 
-                             h2_stream_pri_cmp *cmp, void *ctx)
+void h2_mplx_stream_register(h2_mplx *m, h2_stream *stream)
 {
-    apr_status_t status;
+    H2_MPLX_ENTER_ALWAYS(m);
+    AP_DEBUG_ASSERT(h2_ihash_get(m->streams, stream->id) == NULL);
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c, H2_STRM_MSG(stream, "registered")); 
+    h2_ihash_add(m->streams, stream);
+    H2_MPLX_LEAVE(m);
+}
+
+apr_status_t h2_mplx_process(h2_mplx *m, int stream_id, h2_stream_pri_cmp *cmp, void *ctx)
+{
+    h2_stream *stream;
+    apr_status_t rv = APR_SUCCESS;
     
     H2_MPLX_ENTER(m);
 
     if (m->aborted) {
-        status = APR_ECONNABORTED;
+        rv = APR_ECONNABORTED;
     }
     else {
-        status = APR_SUCCESS;
-        h2_ihash_add(m->streams, stream);
+        stream = mplx_stream_get(m, stream_id);
+        if (!stream) goto leave;
+        ap_assert(!stream->scheduled);
+        stream->scheduled = 1;
+        
         if (h2_stream_is_ready(stream)) {
             /* already have a response */
             check_data_for(m, stream, 0);
@@ -682,9 +706,9 @@ apr_status_t h2_mplx_process(h2_mplx *m, struct h2_stream *stream,
                           H2_STRM_MSG(stream, "process, added to q")); 
         }
     }
-
+leave:
     H2_MPLX_LEAVE(m);
-    return status;
+    return rv;
 }
 
 static h2_task *next_stream_task(h2_mplx *m)
@@ -1026,7 +1050,6 @@ apr_status_t h2_mplx_idle(h2_mplx *m)
                                               ", out has %ld bytes buffered"),
                                   h2_beam_is_closed(stream->output),
                                   (long)h2_beam_get_buffered(stream->output));
-                    h2_ihash_add(m->streams, stream);
                     check_data_for(m, stream, 0);
                     stream->out_checked = 1;
                     status = APR_EAGAIN;
@@ -1062,7 +1085,7 @@ apr_status_t h2_mplx_dispatch_master_events(h2_mplx *m,
 
     /* update input windows for streams */
     h2_ihash_iter(m->streams, report_consumption_iter, m);    
-    purge_streams(m, 1);
+    purge_streams(m);
     
     n = h2_ififo_count(m->readyq);
     while (n > 0 

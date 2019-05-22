@@ -134,7 +134,8 @@ apr_status_t h2_conn_io_init(h2_conn_io *io, conn_rec *c, server_rec *s)
     io->c              = c;
     io->output         = apr_brigade_create(c->pool, c->bucket_alloc);
     io->is_tls         = h2_h2_is_tls(c);
-    io->buffer_output  = io->is_tls;
+    /* we used to buffer only on TLS connections, but to eliminate code paths
+     * and force more predictable behaviour, we do it on all now. Less test cases. */
     io->flush_threshold = (apr_size_t)h2_config_sgeti64(s, H2_CONF_STREAM_MAX_MEM);
 
     if (io->is_tls) {
@@ -150,14 +151,13 @@ apr_status_t h2_conn_io_init(h2_conn_io *io, conn_rec *c, server_rec *s)
     else {
         io->warmup_size    = 0;
         io->cooldown_usecs = 0;
-        io->write_size     = 0;
+        io->write_size     = WRITE_SIZE_MAX;
     }
 
     if (APLOGctrace1(c)) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, io->c,
-                      "h2_conn_io(%ld): init, buffering=%d, warmup_size=%ld, "
-                      "cd_secs=%f", io->c->id, io->buffer_output, 
-                      (long)io->warmup_size,
+                      "h2_conn_io(%ld): init, warmup_size=%ld, cd_secs=%f", 
+                      io->c->id, (long)io->warmup_size,
                       ((double)io->cooldown_usecs/APR_USEC_PER_SEC));
     }
 
@@ -321,24 +321,19 @@ apr_status_t h2_conn_io_write(h2_conn_io *io, const char *data, size_t length)
         io->is_flushed = 0;
     }
     
-    if (io->buffer_output) {
-        while (length > 0) {
-            remain = assure_scratch_space(io);
-            if (remain >= length) {
-                memcpy(io->scratch + io->slen, data, length);
-                io->slen += length;
-                length = 0;
-            }
-            else {
-                memcpy(io->scratch + io->slen, data, remain);
-                io->slen += remain;
-                data += remain;
-                length -= remain;
-            }
+    while (length > 0) {
+        remain = assure_scratch_space(io);
+        if (remain >= length) {
+            memcpy(io->scratch + io->slen, data, length);
+            io->slen += length;
+            length = 0;
         }
-    }
-    else {
-        status = apr_brigade_write(io->output, NULL, NULL, data, length);
+        else {
+            memcpy(io->scratch + io->slen, data, remain);
+            io->slen += remain;
+            data += remain;
+            length -= remain;
+        }
     }
     return status;
 }
@@ -356,37 +351,26 @@ apr_status_t h2_conn_io_pass(h2_conn_io *io, apr_bucket_brigade *bb)
         b = APR_BRIGADE_FIRST(bb);
         
         if (APR_BUCKET_IS_METADATA(b)) {
-            /* need to finish any open scratch bucket, as meta data 
-             * needs to be forward "in order". */
-            append_scratch(io);
-            APR_BUCKET_REMOVE(b);
-            APR_BRIGADE_INSERT_TAIL(io->output, b);
-        }
-        else if (io->buffer_output) {
-            apr_size_t remain = assure_scratch_space(io);
-            if (b->length > remain) {
-                apr_bucket_split(b, remain);
-                if (io->slen == 0) {
-                    /* complete write_size bucket, append unchanged */
-                    APR_BUCKET_REMOVE(b);
-                    APR_BRIGADE_INSERT_TAIL(io->output, b);
-                    continue;
-                }
+            if (APR_BUCKET_IS_FLUSH(b)) {
+                /* need to finish any open scratch bucket, as meta data 
+                 * needs to be forward "in order". */
+                append_scratch(io);
+                APR_BUCKET_REMOVE(b);
+                APR_BRIGADE_INSERT_TAIL(io->output, b);
             }
             else {
-                /* bucket fits in remain, copy to scratch */
-                status = read_to_scratch(io, b);
                 apr_bucket_delete(b);
-                continue;
             }
         }
         else {
-            /* no buffering, forward buckets setaside on flush */
-            if (APR_BUCKET_IS_TRANSIENT(b)) {
-                apr_bucket_setaside(b, io->c->pool);
+            apr_size_t remain = assure_scratch_space(io);
+            if (b->length > remain) {
+                apr_bucket_split(b, remain);
             }
-            APR_BUCKET_REMOVE(b);
-            APR_BRIGADE_INSERT_TAIL(io->output, b);
+            /* bucket now fits in remain, copy to scratch */
+            status = read_to_scratch(io, b);
+            apr_bucket_delete(b);
+            continue;
         }
     }
     return status;

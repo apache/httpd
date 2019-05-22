@@ -622,15 +622,19 @@ static h2_push_diary_entry *move_to_last(h2_push_diary *diary, apr_size_t idx)
 {
     h2_push_diary_entry *entries = (h2_push_diary_entry*)diary->entries->elts;
     h2_push_diary_entry e;
-    apr_size_t lastidx = (apr_size_t)diary->entries->nelts;
     
-    /* move entry[idx] to the end */
-    if (idx+1 < lastidx) {
-        e =  entries[idx];
-        memmove(entries+idx, entries+idx+1, sizeof(e) * (lastidx - idx));
-        entries[lastidx] = e;
+    if (diary->entries->nelts > 0) {
+        int lastidx = diary->entries->nelts - 1;
+        
+        /* move entry[idx] to the end */
+        if (idx < lastidx) {
+            e =  entries[idx];
+            memmove(entries+idx, entries+idx+1, sizeof(e) * (lastidx - idx));
+            entries[lastidx] = e;
+            return &entries[lastidx];
+        }
     }
-    return &entries[lastidx];
+    return &entries[idx];
 }
 
 static void h2_push_diary_append(h2_push_diary *diary, h2_push_diary_entry *e)
@@ -707,7 +711,7 @@ apr_array_header_t *h2_push_collect_update(h2_stream *stream,
         }
     }
     pushes = h2_push_collect(stream->pool, req, stream->push_policy, res);
-    return h2_push_diary_update(stream->session, pushes);
+    return h2_push_diary_update(session, pushes);
 }
 
 static apr_int32_t h2_log2inv(unsigned char log2)
