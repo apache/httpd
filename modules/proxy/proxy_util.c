@@ -2528,8 +2528,8 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                     proxy_auth = apr_table_get(r->headers_in, "Proxy-Authorization");
                     if (proxy_auth != NULL &&
                         proxy_auth[0] != '\0' &&
-                        r->user == NULL && /* we haven't yet authenticated */
-                        apr_table_get(r->subprocess_env, "Proxy-Chain-Auth")) {
+                        (r->user == NULL || /* we haven't yet authenticated */
+                        apr_table_get(r->subprocess_env, "Proxy-Chain-Auth"))) {
                         forward->proxy_auth = apr_pstrdup(conn->pool, proxy_auth);
                     }
                 }
