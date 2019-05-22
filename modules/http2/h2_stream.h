@@ -167,13 +167,14 @@ void h2_stream_cleanup(h2_stream *stream);
 apr_status_t h2_stream_in_consumed(h2_stream *stream, apr_off_t amount);
 
 /**
- * Set complete stream headers from given h2_request.
+ * Set complete stream headers from given h2_request, creates a deep copy.
+ * Only to be called once to initialize.
  * 
  * @param stream stream to write request to
  * @param r the request with all the meta data
  * @param eos != 0 iff stream input is closed
  */
-void h2_stream_set_request(h2_stream *stream, const h2_request *r);
+void h2_stream_request_set(h2_stream *stream, const h2_request *r);
 
 /**
  * Set complete stream header from given request_rec.
