@@ -974,7 +974,7 @@ apr_status_t cache_strqtok(char *str, char **token, char **arg, char **last)
             if (*str == '=') {
                 state = IN_BETWEEN;
                 *wpos++ = '\0';
-                *arg = wpos;
+                if (arg) *arg = wpos;
                 continue;
             }
             break;
