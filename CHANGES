@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.40
 
+  *) mod_proxy: allow SSLProxyCheckPeer* usage for all proxy modules.
+     PR 61857.  [Markus Gausling <markusgausling googlemail.com>, Yann Ylavic]
+
   *) mod_reqtimeout: Fix default rates missing (not applied) in 2.4.39.
      PR 63325. [Yann Ylavic]
 

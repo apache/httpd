@@ -3220,6 +3220,13 @@ static int proxy_connection_create(const char *proxy_function,
                          backend_addr, conn->hostname);
             return HTTP_INTERNAL_SERVER_ERROR;
         }
+        if (conn->ssl_hostname) {
+            /* Set a note on the connection about what CN is requested,
+             * such that mod_ssl can check if it is requested to do so.
+             */
+            apr_table_setn(conn->connection->notes, "proxy-request-hostname",
+                           conn->ssl_hostname);
+        }
     }
     else {
         /* TODO: See if this will break FTP */

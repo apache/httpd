@@ -1976,16 +1976,6 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
             if ((status = ap_proxy_connection_create_ex(proxy_function,
                                                         backend, r)) != OK)
                 break;
-            /*
-             * On SSL connections set a note on the connection what CN is
-             * requested, such that mod_ssl can check if it is requested to do
-             * so.
-             */
-            if (backend->ssl_hostname) {
-                apr_table_setn(backend->connection->notes,
-                               "proxy-request-hostname",
-                               backend->ssl_hostname);
-            }
         }
 
         /* Step Four: Send the Request
