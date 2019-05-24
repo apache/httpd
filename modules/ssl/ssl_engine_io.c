@@ -1267,7 +1267,6 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
             ((dc->proxy->ssl_check_peer_cn != FALSE) ||
              (dc->proxy->ssl_check_peer_name == TRUE)) &&
             hostname_note) {
-            apr_table_unset(c->notes, "proxy-request-hostname");
             if (!cert
                 || modssl_X509_match_name(c->pool, cert, hostname_note,
                                           TRUE, server) == FALSE) {
@@ -1284,7 +1283,6 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
 
             hostname = ssl_var_lookup(NULL, server, c, NULL,
                                       "SSL_CLIENT_S_DN_CN");
-            apr_table_unset(c->notes, "proxy-request-hostname");
 
             /* Do string match or simplest wildcard match if that
              * fails. */

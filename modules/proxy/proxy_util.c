@@ -3224,6 +3224,9 @@ static int proxy_connection_create(const char *proxy_function,
             /* Set a note on the connection about what CN is requested,
              * such that mod_ssl can check if it is requested to do so.
              */
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, conn->connection, 
+                          "%s: set SNI to %s for (%s)", proxy_function,
+                          conn->ssl_hostname, conn->hostname);
             apr_table_setn(conn->connection->notes, "proxy-request-hostname",
                            conn->ssl_hostname);
         }

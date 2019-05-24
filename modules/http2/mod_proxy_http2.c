@@ -387,24 +387,22 @@ run_connect:
     }
     
     /* Step Three: Create conn_rec for the socket we have open now. */
-    if (!ctx->p_conn->connection) {
-        status = ap_proxy_connection_create_ex(ctx->proxy_func, ctx->p_conn, ctx->r);
-        if (status != OK) {
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, ctx->owner, APLOGNO(03353)
-                          "setup new connection: is_ssl=%d %s %s %s", 
-                          ctx->p_conn->is_ssl, ctx->p_conn->ssl_hostname, 
-                          locurl, ctx->p_conn->hostname);
-            ctx->r_status = status;
-            goto cleanup;
-        }
-        
-        if (!ctx->p_conn->data && ctx->is_ssl) {
-            /* New SSL connection: set a note on the connection about what
-             * protocol we want.
-             */
-            apr_table_setn(ctx->p_conn->connection->notes,
-                           "proxy-request-alpn-protos", "h2");
-        }
+    status = ap_proxy_connection_create_ex(ctx->proxy_func, ctx->p_conn, ctx->r);
+    if (status != OK) {
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, ctx->owner, APLOGNO(03353)
+                      "setup new connection: is_ssl=%d %s %s %s", 
+                      ctx->p_conn->is_ssl, ctx->p_conn->ssl_hostname, 
+                      locurl, ctx->p_conn->hostname);
+        ctx->r_status = status;
+        goto cleanup;
+    }
+    
+    if (!ctx->p_conn->data && ctx->is_ssl) {
+        /* New SSL connection: set a note on the connection about what
+         * protocol we want.
+         */
+        apr_table_setn(ctx->p_conn->connection->notes,
+                       "proxy-request-alpn-protos", "h2");
     }
 
     if (ctx->master->aborted) goto cleanup;

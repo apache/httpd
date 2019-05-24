@@ -762,10 +762,8 @@ static apr_status_t hc_check_http(baton_t *baton)
     }
 
     r = create_request_rec(ptemp, ctx->s, baton->balancer, wctx->method);
-    if (!backend->connection) {
-        if ((status = ap_proxy_connection_create_ex("HCOH", backend, r)) != OK) {
-            return backend_cleanup("HCOH", backend, ctx->s, status);
-        }
+    if ((status = ap_proxy_connection_create_ex("HCOH", backend, r)) != OK) {
+        return backend_cleanup("HCOH", backend, ctx->s, status);
     }
     set_request_connection(r, backend->connection);
 

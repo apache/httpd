@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.40
 
+  *) mod_proxy/ssl: Proxy SSL client certificate configuration and other proxy
+     SSL configurations broken inside <Proxy> context.  PR 63430.
+     [Ruediger Pluem, Yann Ylavic]
+
   *) mod_proxy: allow SSLProxyCheckPeer* usage for all proxy modules.
      PR 61857.  [Markus Gausling <markusgausling googlemail.com>, Yann Ylavic]
 

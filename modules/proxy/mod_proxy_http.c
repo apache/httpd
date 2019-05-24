@@ -1972,11 +1972,9 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
         }
 
         /* Step Three: Create conn_rec */
-        if (!backend->connection) {
-            if ((status = ap_proxy_connection_create_ex(proxy_function,
-                                                        backend, r)) != OK)
-                break;
-        }
+        if ((status = ap_proxy_connection_create_ex(proxy_function,
+                                                    backend, r)) != OK)
+            break;
 
         /* Step Four: Send the Request
          * On the off-chance that we forced a 100-Continue as a

@@ -356,17 +356,15 @@ static int proxy_wstunnel_handler(request_rec *r, proxy_worker *worker,
         }
 
         /* Step Three: Create conn_rec */
-        if (!backend->connection) {
-            status = ap_proxy_connection_create_ex(scheme, backend, r);
-            if (status  != OK) {
-                break;
-            }
+        status = ap_proxy_connection_create_ex(scheme, backend, r);
+        if (status != OK) {
+            break;
         }
 
         backend->close = 1; /* must be after ap_proxy_determine_connection */
 
 
-        /* Step Three: Process the Request */
+        /* Step Four: Process the Request */
         status = proxy_wstunnel_request(p, r, backend, worker, conf, uri, locurl,
                                       server_portstr);
         break;

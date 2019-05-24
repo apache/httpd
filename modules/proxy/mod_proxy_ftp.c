@@ -1180,12 +1180,10 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
         return HTTP_SERVICE_UNAVAILABLE;
     }
 
-    if (!backend->connection) {
-        status = ap_proxy_connection_create_ex("FTP", backend, r);
-        if (status != OK) {
-            proxy_ftp_cleanup(r, backend);
-            return status;
-        }
+    status = ap_proxy_connection_create_ex("FTP", backend, r);
+    if (status != OK) {
+        proxy_ftp_cleanup(r, backend);
+        return status;
     }
 
     /* Use old naming */

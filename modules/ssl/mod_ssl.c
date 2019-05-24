@@ -448,9 +448,19 @@ static SSLConnRec *ssl_init_connection_ctx(conn_rec *c,
     SSLConnRec *sslconn = myConnConfig(c);
     int need_setup = 0;
 
+    /* mod_proxy's (r->)per_dir_config has the lifetime of the request, thus
+     * it uses ssl_engine_set() to reset sslconn->dc when reusing SSL backend
+     * connections, so we must fall through here. But in the case where we are
+     * called from ssl_init_ssl_connection() with no per_dir_config (which also
+     * includes mod_proxy's later run_pre_connection call), sslconn->dc should
+     * be preserved if it's already set.
+     */
     if (!sslconn) {
         sslconn = apr_pcalloc(c->pool, sizeof(*sslconn));
         need_setup = 1;
+    }
+    else if (!new_proxy) {
+        return sslconn;
     }
 
     /* Reinit dc in any case because it may be r->per_dir_config scoped
