@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.40
 
+  *) mod_http2: remove the no longer existing h2_ngn_shed.c from Cmake.
+     [Stefan Eissing]
+
   *) mod_proxy/ssl: Proxy SSL client certificate configuration and other proxy
      SSL configurations broken inside <Proxy> context.  PR 63430.
      [Ruediger Pluem, Yann Ylavic]

@@ -127,11 +127,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_http2: remove the no longer existing h2_ngn_shed.c from Cmake.
-     trunk patch: http://svn.apache.org/r1856910
-     2.4.x patch: svn merge -c 1856910 ^/httpd/httpd/trunk .
-     +1: icing, covener, ylavic
-
   *) mod_status: PR60647: ACC per connection not available w/ event MPM
      trunk patch: http://svn.apache.org/r1780280
      2.4.x patch: svn merge -c 1780280 ^/httpd/httpd/trunk .
