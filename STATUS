@@ -208,9 +208,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              comment) are non functional (or at least intended as such).
      +1: ylavic, icing, jim
      ylavic: plus http://svn.apache.org/r1856036 (opt-out)
-     2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-forward_100_continue-v5.patch
+     2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-forward_100_continue-v6.patch
      +1: ylavic, jim
      minfrin: the above v5 patch fails to apply for me, if you update it I'll take a look.
+     ylavic: v6 applies to latest 2.4.x (i.e. changes/conflicts from r1859845), thanks!
 
   *) core: make the eor bucket do the right thing when copied
      trunk patch: http://svn.apache.org/r1707084
