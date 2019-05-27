@@ -595,7 +595,7 @@ AP_DECLARE(const char *) ap_get_server_built(void);
 #define M_CONNECT               4
 #define M_OPTIONS               5
 #define M_TRACE                 6       /** RFC 2616: HTTP */
-#define M_PATCH                 7       /** no rfc(!)  ### remove this one? */
+#define M_PATCH                 7       /** RFC 5789: PATCH Method for HTTP */
 #define M_PROPFIND              8       /** RFC 2518: WebDAV */
 #define M_PROPPATCH             9       /*  :               */
 #define M_MKCOL                 10

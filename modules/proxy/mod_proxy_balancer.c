@@ -1805,7 +1805,7 @@ static int balancer_handler(request_rec *r)
                 ap_rprintf(r, "<tr><td>Fails trigger)</td><td><input name='w_hf' id='w_hf' type='text'"
                            "value='%d'></td></tr>\n", wsel->s->fails);
                 ap_rprintf(r, "<tr><td>HC uri</td><td><input name='w_hu' id='w_hu' type='text'"
-                        "value='%s'</td></tr>\n", ap_escape_html(r->pool, wsel->s->hcuri));
+                           "value='%s'></td></tr>\n", ap_escape_html(r->pool, wsel->s->hcuri));
                 ap_rputs("</table>\n</td></tr>\n", r);
             }
             ap_rputs("<tr><td colspan='2'><input type=submit value='Submit'></td></tr>\n", r);
@@ -1846,6 +1846,7 @@ static int balancer_handler(request_rec *r)
             ap_rprintf(r, "value='%d'></td></tr>\n", bsel->s->max_attempts);
             ap_rputs("<tr><td>Disable Failover:</td>", r);
             create_radio("b_sforce", bsel->s->sticky_force, r);
+            ap_rputs("</tr>\n", r);
             ap_rputs("<tr><td>Sticky Session:</td><td><input name='b_ss' id='b_ss' size=64 type=text ", r);
             if (strcmp(bsel->s->sticky, bsel->s->sticky_path)) {
                 ap_rvputs(r, "value ='", bsel->s->sticky, " | ",

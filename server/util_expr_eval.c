@@ -1791,7 +1791,7 @@ static int expr_lookup_not_found(ap_expr_lookup_parms *parms)
         type = "Binary operator";
         break;
     default:
-        *parms->err = "Inavalid expression type in expr_lookup";
+        *parms->err = "Invalid expression type in expr_lookup";
         return !OK;
     }
     if (   parms->type == AP_EXPR_FUNC_OP_UNARY

@@ -1,6 +1,19 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.40
 
+  *) Easy patches: synch 2.4.x and trunk
+        - core: 80 chars
+        - http_core: Clean-uo and style. No functional change overall
+        - http_core: One more style fix in ap_process_http_async_connection()
+        - mod_mime: Fix a cppcheck warning
+        - mod_proxy_ajp: Fix a harmless clang warning
+        - suexec: avoid a potential sprintf overflow
+        - mod_headers: This is harmless, but this really should be an 'echo_do *' 
+        - core: Fix typo
+        - core: Update a comment about the 'PATCH' HTTP command
+        - mod_proxy_balancer: Fix some HTML syntax issues
+     [Christophe Jaillet]
+
   *) When using mod_status with the Event MPM, report the number of requests
      associated with an active connection in the "ACC" field. Previously
      zero was always reported with this MPM.  PR60647. [Eric Covener]
