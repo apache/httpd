@@ -211,7 +211,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-ap_dir_fnmatch-2.patch
      +1: minfrin, jim
      jailletc36: at least, r1853302 is required, IMHO
-     minfrin: r1853302 is added in above, resetting jim's vote
+     minfrin: r1853302 is added in above, jim agress
 
   *) mod_proxy_http: forward 100-continue, and minimize race conditions when
      reusing backend connections. PR 60330.
