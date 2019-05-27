@@ -175,7 +175,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-ap_dir_fnmatch-2.patch
      +1: minfrin, jim
      jailletc36: at least, r1853302 is required, IMHO
-     minfrin: r1853302 is added in above, jim agress
+     minfrin: r1853302 is added in above, jim agrees
 
   *) mod_proxy_http: forward 100-continue, and minimize race conditions when
      reusing backend connections. PR 60330.
@@ -210,6 +210,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: plus http://svn.apache.org/r1856036 (opt-out)
      2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-forward_100_continue-v5.patch
      +1: ylavic, jim
+     minfrin: the above v5 patch fails to apply for me, if you update it I'll take a look.
 
   *) core: make the eor bucket do the right thing when copied
      trunk patch: http://svn.apache.org/r1707084
