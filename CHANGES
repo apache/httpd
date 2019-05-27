@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.40
 
+  *) mod_proxy_http: forward 100-continue, and minimize race conditions when
+     reusing backend connections. PR 60330. [Yann Ylavic, Jean-Frederic Clere]
+
   *) Easy patches: synch 2.4.x and trunk
         - core: 80 chars
         - http_core: Clean-uo and style. No functional change overall

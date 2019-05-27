@@ -3603,10 +3603,7 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
      * To be compliant, we only use 100-Continue for requests with bodies.
      * We also make sure we won't be talking HTTP/1.0 as well.
      */
-    do_100_continue = (worker->s->ping_timeout_set
-                       && ap_request_has_body(r)
-                       && (PROXYREQ_REVERSE == r->proxyreq)
-                       && !(apr_table_get(r->subprocess_env, "force-proxy-request-1.0")));
+    do_100_continue = PROXY_DO_100_CONTINUE(worker, r);
 
     if (apr_table_get(r->subprocess_env, "force-proxy-request-1.0")) {
         /*
@@ -3623,7 +3620,9 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
         buf = apr_pstrcat(p, r->method, " ", url, " HTTP/1.1" CRLF, NULL);
     }
     if (apr_table_get(r->subprocess_env, "proxy-nokeepalive")) {
-        origin->keepalive = AP_CONN_CLOSE;
+        if (origin) {
+            origin->keepalive = AP_CONN_CLOSE;
+        }
         p_conn->close = 1;
     }
     ap_xlate_proto_to_ascii(buf, strlen(buf));
@@ -3714,14 +3713,6 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
      */
     if (do_100_continue) {
         const char *val;
-
-        if (!r->expecting_100) {
-            /* Don't forward any "100 Continue" response if the client is
-             * not expecting it.
-             */
-            apr_table_setn(r->subprocess_env, "proxy-interim-response",
-                                              "Suppress");
-        }
 
         /* Add the Expect header if not already there. */
         if (((val = apr_table_get(r->headers_in, "Expect")) == NULL)

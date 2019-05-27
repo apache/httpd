@@ -240,6 +240,8 @@ typedef struct {
     /** Named back references */
     apr_array_header_t *refs;
 
+    unsigned int forward_100_continue:1;
+    unsigned int forward_100_continue_set:1;
 } proxy_dir_conf;
 
 /* if we interpolate env vars per-request, we'll need a per-request
@@ -378,6 +380,12 @@ do {                             \
 (w)->s->io_buffer_size       = (c)->io_buffer_size;        \
 (w)->s->io_buffer_size_set   = (c)->io_buffer_size_set;    \
 } while (0)
+
+#define PROXY_DO_100_CONTINUE(w, r) \
+((w)->s->ping_timeout_set \
+ && (PROXYREQ_REVERSE == (r)->proxyreq) \
+ && !(apr_table_get((r)->subprocess_env, "force-proxy-request-1.0")) \
+ && ap_request_has_body((r)))
 
 /* use 2 hashes */
 typedef struct {

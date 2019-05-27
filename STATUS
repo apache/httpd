@@ -128,41 +128,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
 
-  *) mod_proxy_http: forward 100-continue, and minimize race conditions when
-     reusing backend connections. PR 60330.
-     trunk patch: http://svn.apache.org/r1656259
-                  http://svn.apache.org/r1656359
-                  http://svn.apache.org/r1721759
-                  http://svn.apache.org/r1729507
-                  http://svn.apache.org/r1729749
-                  http://svn.apache.org/r1754159
-                  http://svn.apache.org/r1836588
-                  http://svn.apache.org/r1836648
-                  http://svn.apache.org/r1836716
-                  http://svn.apache.org/r1836750
-                  http://svn.apache.org/r1837040
-                  http://svn.apache.org/r1853407
-                  http://svn.apache.org/r1853518
-                  http://svn.apache.org/r1853561
-                  http://svn.apache.org/r1853566
-                  http://svn.apache.org/r1853953
-                  http://svn.apache.org/r1853956
-     2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-forward_100_continue-v4.patch
-     ylavic: please note the "s/ASCII_(CRLF|ZERO)/\1_ASCII/g" in the backport,
-             same as in trunk (where definitions come from httpd.h) so doing
-             the change now in 2.4.x helps backports. Since in 2.4.x these
-             macros are still locally #defined, I also added the #ifdefs around
-             them to avoid potential issues..
-             @icing: sorry I had to reset your vote for v4, but it looks
-             sensible to me to have trunk and 2.4.x code in sync as much as
-             possible. Changes from v3 to v4 (r1853953 mainly, r1853956 is only
-             comment) are non functional (or at least intended as such).
-     +1: ylavic, icing, jim
-     ylavic: plus http://svn.apache.org/r1856036 (opt-out)
-     2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-forward_100_continue-v6.patch
-     +1: ylavic, jim, minfrin
-
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 

@@ -2066,6 +2066,29 @@ header for proxied requests</description>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>Proxy100Continue</name>
+<description>Forward 100-continue expectation to the origin server</description>
+<syntax>Proxy100Continue Off|On</syntax>
+<default>Proxy100Continue On</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+</contextlist>
+<compatibility>Available in version 2.4.39 and later</compatibility>
+
+<usage>
+    <p>This directive determines whether the proxy should forward 100-continue
+    <em>Expect:</em>ation to the origin server and thus let it decide when/if
+    the HTTP request body should be read, or when <code>Off</code> the proxy
+    should generate <em>100 Continue</em> intermediate response by itself before
+    forwarding the request body.</p>
+    <note><title>Effectiveness</title>
+     <p>This option is of use only for HTTP proxying, as handled by <module>mod_proxy_http</module>.</p>
+    </note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>ProxySourceAddress</name>
 <description>Set local IP address for outgoing proxy connections</description>
 <syntax>ProxySourceAddress <var>address</var></syntax>
