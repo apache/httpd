@@ -102,8 +102,9 @@ apr_bucket *h2_bucket_headers_beam(struct h2_bucket_beam *beam,
                                     const apr_bucket *src)
 {
     if (H2_BUCKET_IS_HEADERS(src)) {
-        h2_headers *r = ((h2_bucket_headers *)src->data)->headers;
-        apr_bucket *b = h2_bucket_headers_create(dest->bucket_alloc, r);
+        h2_headers *src_headers = ((h2_bucket_headers *)src->data)->headers;
+        apr_bucket *b = h2_bucket_headers_create(dest->bucket_alloc, 
+                                                 h2_headers_clone(dest->p, src_headers));
         APR_BRIGADE_INSERT_TAIL(dest, b);
         return b;
     }
@@ -156,7 +157,14 @@ h2_headers *h2_headers_rcreate(request_rec *r, int status,
 
 h2_headers *h2_headers_copy(apr_pool_t *pool, h2_headers *h)
 {
-    return h2_headers_create(h->status, h->headers, h->notes, h->raw_bytes, pool);
+    return h2_headers_create(h->status, apr_table_copy(pool, h->headers), 
+                             apr_table_copy(pool, h->notes), h->raw_bytes, pool);
+}
+
+h2_headers *h2_headers_clone(apr_pool_t *pool, h2_headers *h)
+{
+    return h2_headers_create(h->status, apr_table_clone(pool, h->headers), 
+                             apr_table_clone(pool, h->notes), h->raw_bytes, pool);
 }
 
 h2_headers *h2_headers_die(apr_status_t type,
