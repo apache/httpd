@@ -112,7 +112,6 @@ typedef enum h2_stream_state_t {
     H2_SS_CLOSED_L,
     H2_SS_CLOSED,
     H2_SS_CLEANUP,
-    H2_SS_DESTROYED,
     H2_SS_MAX
 } h2_stream_state_t;
 
@@ -124,17 +123,6 @@ typedef enum {
     H2_SEV_IN_DATA_PENDING,
 } h2_stream_event_t;
 
-typedef enum {
-    H2_PS_NONE,
-    H2_PS_QUEUED,
-    H2_PS_RUNNING,
-    H2_PS_FINISHED,
-} h2_processing_state_t;
-
-#define H2_PS_IS_RUNNING(s)      ((s) == H2_PS_RUNNING)
-#define H2_PS_IS_NOT_RUNNING(s)  ((s) != H2_PS_RUNNING)
-#define H2_PS_IS_WAS_STARTED(s)  ((s) >= H2_PS_RUNNING)
-#define H2_PS_IS_HAS_FINISHED(s) ((s) == H2_PS_FINISHED)
 
 /* h2_request is the transformer of HTTP2 streams into HTTP/1.1 internal
  * format that will be fed to various httpd input filters to finally

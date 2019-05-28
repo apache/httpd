@@ -19,6 +19,7 @@
 
 struct h2_bucket_beam;
 struct h2_headers;
+struct h2_stream;
 struct h2_session;
 
 typedef struct h2_filter_cin {

@@ -136,22 +136,7 @@ int h2_mplx_is_busy(h2_mplx *m);
  * IO lifetime of streams.
  ******************************************************************************/
 
-/**
- * Register a stream with the multiplexer. This transfers responisibility
- * for lifetime and final destruction to mplx.
- 
- * @param mplx the multiplexer
- * @param stream the h2 stream instance
- */
-void h2_mplx_stream_register(h2_mplx *mplx, struct h2_stream *stream);
-
-/**
- * Lookup a stream by its id. Will only return active streams, not discarded ones.
- * @param mplx the multiplexer
- * @param id the stream identifier
- * @return the stream or NULL
- */
-struct h2_stream *h2_mplx_stream_get(h2_mplx *mplx, int id);
+struct h2_stream *h2_mplx_stream_get(h2_mplx *m, int id);
 
 /**
  * Notifies mplx that a stream has been completely handled on the main
@@ -160,7 +145,7 @@ struct h2_stream *h2_mplx_stream_get(h2_mplx *mplx, int id);
  * @param m the mplx itself
  * @param stream the stream ready for cleanup
  */
-apr_status_t h2_mplx_stream_discard(h2_mplx *m, int stream_id);
+apr_status_t h2_mplx_stream_cleanup(h2_mplx *m, struct h2_stream *stream);
 
 /**
  * Waits on output data from any stream in this session to become available. 
@@ -179,12 +164,13 @@ apr_status_t h2_mplx_keep_active(h2_mplx *m, struct h2_stream *stream);
  * Process a stream request.
  * 
  * @param m the multiplexer
- * @param stream_id the identifier of the stream
+ * @param stream the identifier of the stream
  * @param r the request to be processed
  * @param cmp the stream priority compare function
  * @param ctx context data for the compare function
  */
-apr_status_t h2_mplx_process(h2_mplx *m, int stream_id, h2_stream_pri_cmp *cmp, void *ctx);
+apr_status_t h2_mplx_process(h2_mplx *m, struct h2_stream *stream, 
+                             h2_stream_pri_cmp *cmp, void *ctx);
 
 /**
  * Stream priorities have changed, reschedule pending requests.

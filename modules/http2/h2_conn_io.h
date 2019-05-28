@@ -39,6 +39,7 @@ typedef struct {
     apr_int64_t bytes_read;
     apr_int64_t bytes_written;
     
+    int buffer_output;
     apr_size_t flush_threshold;
     unsigned int is_flushed : 1;
     

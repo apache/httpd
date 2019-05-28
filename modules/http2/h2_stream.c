@@ -88,39 +88,39 @@ const char *h2_stream_state_str(h2_stream *stream)
 
 /* state transisitions when certain frame types are sent */
 static int trans_on_send[][H2_SS_MAX] = {
-/*S_IDLE,S_RS_R, S_RS_L, S_OPEN, S_CL_R, S_CL_L, S_CLS,  S_CLN, S_DSTR */        
-{ S_ERR, S_ERR,  S_ERR,  S_NOP,  S_NOP,  S_ERR,  S_NOP,  S_NOP, S_NOP, },/* DATA */ 
-{ S_ERR, S_ERR,  S_CL_R, S_NOP,  S_NOP,  S_ERR,  S_NOP,  S_NOP, S_NOP, },/* HEADERS */ 
-{ S_NOP, S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP, S_NOP, },/* PRIORITY */    
-{ S_CLS, S_CLS,  S_CLS,  S_CLS,  S_CLS,  S_CLS,  S_NOP,  S_NOP, S_NOP, },/* RST_STREAM */ 
-{ S_ERR, S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR, S_NOP, },/* SETTINGS */ 
-{ S_RS_L,S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR, S_NOP, },/* PUSH_PROMISE */  
-{ S_ERR, S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR, S_NOP, },/* PING */ 
-{ S_ERR, S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR, S_NOP, },/* GOAWAY */ 
-{ S_NOP, S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP, S_NOP, },/* WINDOW_UPDATE */ 
-{ S_NOP, S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP, S_NOP, },/* CONT */ 
+/*S_IDLE,S_RS_R, S_RS_L, S_OPEN, S_CL_R, S_CL_L, S_CLS,  S_CLN, */        
+{ S_ERR, S_ERR,  S_ERR,  S_NOP,  S_NOP,  S_ERR,  S_NOP,  S_NOP, },/* DATA */ 
+{ S_ERR, S_ERR,  S_CL_R, S_NOP,  S_NOP,  S_ERR,  S_NOP,  S_NOP, },/* HEADERS */ 
+{ S_NOP, S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP, },/* PRIORITY */    
+{ S_CLS, S_CLS,  S_CLS,  S_CLS,  S_CLS,  S_CLS,  S_NOP,  S_NOP, },/* RST_STREAM */ 
+{ S_ERR, S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR, },/* SETTINGS */ 
+{ S_RS_L,S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR, },/* PUSH_PROMISE */  
+{ S_ERR, S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR, },/* PING */ 
+{ S_ERR, S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR, },/* GOAWAY */ 
+{ S_NOP, S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP, },/* WINDOW_UPDATE */ 
+{ S_NOP, S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP, },/* CONT */ 
 };
 /* state transisitions when certain frame types are received */
 static int trans_on_recv[][H2_SS_MAX] = {
-/*S_IDLE,S_RS_R, S_RS_L, S_OPEN, S_CL_R, S_CL_L, S_CLS,  S_CLN, S_DSTR */        
-{ S_ERR, S_ERR,  S_ERR,  S_NOP,  S_ERR,  S_NOP,  S_NOP,  S_NOP, S_NOP, },/* DATA */ 
-{ S_OPEN,S_CL_L, S_ERR,  S_NOP,  S_ERR,  S_NOP,  S_NOP,  S_NOP, S_NOP, },/* HEADERS */ 
-{ S_NOP, S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP, S_NOP, },/* PRIORITY */    
-{ S_ERR, S_CLS,  S_CLS,  S_CLS,  S_CLS,  S_CLS,  S_NOP,  S_NOP, S_NOP, },/* RST_STREAM */ 
-{ S_ERR, S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR, S_NOP, },/* SETTINGS */ 
-{ S_RS_R,S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR, S_NOP, },/* PUSH_PROMISE */  
-{ S_ERR, S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR, S_NOP, },/* PING */ 
-{ S_ERR, S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR, S_NOP, },/* GOAWAY */ 
-{ S_NOP, S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP, S_NOP, },/* WINDOW_UPDATE */ 
-{ S_NOP, S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP, S_NOP, },/* CONT */ 
+/*S_IDLE,S_RS_R, S_RS_L, S_OPEN, S_CL_R, S_CL_L, S_CLS,  S_CLN, */        
+{ S_ERR, S_ERR,  S_ERR,  S_NOP,  S_ERR,  S_NOP,  S_NOP,  S_NOP, },/* DATA */ 
+{ S_OPEN,S_CL_L, S_ERR,  S_NOP,  S_ERR,  S_NOP,  S_NOP,  S_NOP, },/* HEADERS */ 
+{ S_NOP, S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP, },/* PRIORITY */    
+{ S_ERR, S_CLS,  S_CLS,  S_CLS,  S_CLS,  S_CLS,  S_NOP,  S_NOP, },/* RST_STREAM */ 
+{ S_ERR, S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR, },/* SETTINGS */ 
+{ S_RS_R,S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR, },/* PUSH_PROMISE */  
+{ S_ERR, S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR, },/* PING */ 
+{ S_ERR, S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR,  S_ERR, },/* GOAWAY */ 
+{ S_NOP, S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP, },/* WINDOW_UPDATE */ 
+{ S_NOP, S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP,  S_NOP, },/* CONT */ 
 };
 /* state transisitions when certain events happen */
 static int trans_on_event[][H2_SS_MAX] = {
-/*S_IDLE,S_RS_R, S_RS_L, S_OPEN, S_CL_R, S_CL_L, S_CLS,  S_CLN, S_DSTR */        
-{ S_XXX, S_ERR,  S_ERR,  S_CL_L, S_CLS,  S_XXX,  S_XXX,  S_XXX, S_NOP, },/* EV_CLOSED_L*/
-{ S_ERR, S_ERR,  S_ERR,  S_CL_R, S_ERR,  S_CLS,  S_NOP,  S_NOP, S_NOP, },/* EV_CLOSED_R*/
-{ S_CLS, S_CLS,  S_CLS,  S_CLS,  S_CLS,  S_CLS,  S_NOP,  S_NOP, S_NOP, },/* EV_CANCELLED*/
-{ S_NOP, S_XXX,  S_XXX,  S_XXX,  S_XXX,  S_CLS,  S_CLN,  S_XXX, S_NOP, },/* EV_EOS_SENT*/
+/*S_IDLE,S_RS_R, S_RS_L, S_OPEN, S_CL_R, S_CL_L, S_CLS,  S_CLN, */        
+{ S_XXX, S_ERR,  S_ERR,  S_CL_L, S_CLS,  S_XXX,  S_XXX,  S_XXX, },/* EV_CLOSED_L*/
+{ S_ERR, S_ERR,  S_ERR,  S_CL_R, S_ERR,  S_CLS,  S_NOP,  S_NOP, },/* EV_CLOSED_R*/
+{ S_CLS, S_CLS,  S_CLS,  S_CLS,  S_CLS,  S_CLS,  S_NOP,  S_NOP, },/* EV_CANCELLED*/
+{ S_NOP, S_XXX,  S_XXX,  S_XXX,  S_XXX,  S_CLS,  S_CLN,  S_XXX, },/* EV_EOS_SENT*/
 };
 
 static int on_map(h2_stream_state_t state, int map[H2_SS_MAX])
@@ -189,7 +189,9 @@ static apr_status_t setup_input(h2_stream *stream) {
                          || APR_BRIGADE_EMPTY(stream->in_buffer)));
         if (!empty) {
             h2_beam_create(&stream->input, stream->pool, stream->id, 
-                           "input", 0, stream->session->s->timeout);
+                           "input", H2_BEAM_OWNER_SEND, 0, 
+                           stream->session->s->timeout);
+            h2_beam_send_from(stream->input, stream->pool);
         }
     }
     return APR_SUCCESS;
@@ -590,6 +592,7 @@ apr_status_t h2_stream_prep_processing(h2_stream *stream)
                       H2_STRM_MSG(stream, "schedule %s %s://%s%s chunked=%d"),
                       r->method, r->scheme, r->authority, r->path, r->chunked);
         setup_input(stream);
+        stream->scheduled = 1;
         return APR_SUCCESS;
     }
     return APR_EINVAL;
@@ -634,7 +637,7 @@ apr_status_t h2_stream_set_request_rec(h2_stream *stream,
     return status;
 }
 
-void h2_stream_request_set(h2_stream *stream, const h2_request *r)
+void h2_stream_set_request(h2_stream *stream, const h2_request *r)
 {
     ap_assert(stream->request == NULL);
     ap_assert(stream->rtmp == NULL);
@@ -950,7 +953,7 @@ apr_status_t h2_stream_read_to(h2_stream *stream, apr_bucket_brigade *bb,
 
 apr_status_t h2_stream_submit_pushes(h2_stream *stream, h2_headers *response)
 {
-    apr_status_t rv = APR_SUCCESS;
+    apr_status_t status = APR_SUCCESS;
     apr_array_header_t *pushes;
     int i;
     
@@ -959,12 +962,16 @@ apr_status_t h2_stream_submit_pushes(h2_stream *stream, h2_headers *response)
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
                       H2_STRM_MSG(stream, "found %d push candidates"),
                       pushes->nelts);
-        for (i = 0; i < pushes->nelts && (APR_SUCCESS == rv); ++i) {
+        for (i = 0; i < pushes->nelts; ++i) {
             h2_push *push = APR_ARRAY_IDX(pushes, i, h2_push*);
-            rv = h2_session_push(stream->session, stream->id, push);
+            h2_stream *s = h2_session_push(stream->session, stream, push);
+            if (!s) {
+                status = APR_ECONNRESET;
+                break;
+            }
         }
     }
-    return rv;
+    return status;
 }
 
 apr_table_t *h2_stream_get_trailers(h2_stream *stream)

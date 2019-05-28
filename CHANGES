@@ -1,9 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
-  *) mod_http2: internal code cleanups and simplifications. Common output code for
-     h2 and h2c protocols, using nested mutex locks for simplified calls. [Stefan Eissing]
-
   *) mod_proxy/ssl: Proxy SSL client certificate configuration and other proxy
      SSL configurations broken inside <Proxy> context.  PR 63430.
      [Ruediger Pluem, Yann Ylavic]

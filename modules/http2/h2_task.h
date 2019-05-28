@@ -87,11 +87,10 @@ struct h2_task {
     apr_time_t started_at;           /* when processing started */
     apr_time_t done_at;              /* when processing was done */
     apr_bucket *eor;
-    int destroyed;
 };
 
 h2_task *h2_task_create(conn_rec *slave, int stream_id,
-                        const struct h2_request *req, struct h2_mplx *m, 
+                        const h2_request *req, struct h2_mplx *m, 
                         struct h2_bucket_beam *input, 
                         apr_interval_time_t timeout,
                         apr_size_t output_max_mem);

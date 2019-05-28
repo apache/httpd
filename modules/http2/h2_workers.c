@@ -83,7 +83,7 @@ static apr_status_t activate_slot(h2_workers *workers, h2_slot *slot)
 
     if (!slot->lock) {
         status = apr_thread_mutex_create(&slot->lock,
-                                         APR_THREAD_MUTEX_NESTED,
+                                         APR_THREAD_MUTEX_DEFAULT,
                                          workers->pool);
         if (status != APR_SUCCESS) {
             push_slot(&workers->free, slot);
@@ -336,7 +336,7 @@ h2_workers *h2_workers_create(server_rec *s, apr_pool_t *server_pool,
     }
     
     status = apr_thread_mutex_create(&workers->lock,
-                                     APR_THREAD_MUTEX_NESTED,
+                                     APR_THREAD_MUTEX_DEFAULT,
                                      workers->pool);
     if (status == APR_SUCCESS) {        
         n = workers->nslots = workers->max_workers;
