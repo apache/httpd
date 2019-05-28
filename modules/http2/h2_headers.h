@@ -59,10 +59,16 @@ h2_headers *h2_headers_rcreate(request_rec *r, int status,
                                  apr_table_t *header, apr_pool_t *pool);
 
 /**
- * Clone the headers into another pool. This will not copy any
+ * Copy the headers into another pool. This will not copy any
  * header strings.
  */
 h2_headers *h2_headers_copy(apr_pool_t *pool, h2_headers *h);
+
+/**
+ * Clone the headers into another pool. This will also clone any
+ * header strings.
+ */
+h2_headers *h2_headers_clone(apr_pool_t *pool, h2_headers *h);
 
 /**
  * Create the headers for the given error.
