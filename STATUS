@@ -185,15 +185,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1707084,1707093,1707159,1707362 ^/httpd/httpd/trunk .
      +1: icing
 
-  *) mod_http2: Incorporate the lastest trunk revision with code improvements and
-     better connection reuse handling in mod_proxy_http2. [Ruediger Pluem, Stefan Eissing]
-     trunk patch: http://svn.apache.org/r1859213
-                  http://svn.apache.org/r1859724
-     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/h2-v1.15.0.patch
-     +1: icing
-     rjung: Hunk 1 in modules/http2/mod_proxy_http2.c was already backported in r1859845,
-            so it fails in the suggested h2-v1.15.0.patch. You could remove it from that patch.
-
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
