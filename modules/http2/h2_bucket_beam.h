@@ -150,6 +150,11 @@ typedef struct {
 typedef int h2_beam_can_beam_callback(void *ctx, h2_bucket_beam *beam,
                                       apr_file_t *file);
 
+typedef enum {
+    H2_BEAM_OWNER_SEND,
+    H2_BEAM_OWNER_RECV
+} h2_beam_owner_t;
+
 /**
  * Will deny all transfer of apr_file_t across the beam and force
  * a data copy instead.
@@ -160,11 +165,13 @@ struct h2_bucket_beam {
     int id;
     const char *tag;
     apr_pool_t *pool;
+    h2_beam_owner_t owner;
     h2_blist send_list;
     h2_blist hold_list;
     h2_blist purge_list;
     apr_bucket_brigade *recv_buffer;
     h2_bproxy_list proxies;
+    apr_pool_t *send_pool;
     apr_pool_t *recv_pool;
     
     apr_size_t max_buf_size;
@@ -208,6 +215,8 @@ struct h2_bucket_beam {
  * @param pool          pool owning the beam, beam will cleanup when pool released
  * @param id            identifier of the beam
  * @param tag           tag identifying beam for logging
+ * @param owner         if the beam is owned by the sender or receiver, e.g. if
+ *                      the pool owner is using this beam for sending or receiving
  * @param buffer_size   maximum memory footprint of buckets buffered in beam, or
  *                      0 for no limitation
  * @param timeout       timeout for blocking operations
@@ -215,6 +224,7 @@ struct h2_bucket_beam {
 apr_status_t h2_beam_create(h2_bucket_beam **pbeam,
                             apr_pool_t *pool, 
                             int id, const char *tag,
+                            h2_beam_owner_t owner,  
                             apr_size_t buffer_size,
                             apr_interval_time_t timeout);
 
@@ -234,6 +244,13 @@ apr_status_t h2_beam_destroy(h2_bucket_beam *beam);
 apr_status_t h2_beam_send(h2_bucket_beam *beam,  
                           apr_bucket_brigade *bb, 
                           apr_read_type_e block);
+
+/**
+ * Register the pool from which future buckets are send. This defines
+ * the lifetime of the buckets, e.g. the pool should not be cleared/destroyed
+ * until the data is no longer needed (or has been received).
+ */
+void h2_beam_send_from(h2_bucket_beam *beam, apr_pool_t *p);
 
 /**
  * Receive buckets from the beam into the given brigade. Will return APR_EOF

@@ -34,6 +34,7 @@
 #include "h2_private.h"
 
 #include "h2_bucket_beam.h"
+#include "h2_stream.h"
 #include "h2_task.h"
 #include "h2_config.h"
 #include "h2_ctx.h"
@@ -755,10 +756,6 @@ static int h2_h2_late_fixups(request_rec *r)
             }
             check_push(r, "late_fixup");
         }
-        /* enforce that we will close this slave connection after
-         * the task is done. This will keep request processing from
-         * trying to clean up dangling input data, for example. */
-        r->connection->keepalive = AP_CONN_CLOSE;
     }
     return DECLINED;
 }

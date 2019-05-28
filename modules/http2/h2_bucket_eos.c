@@ -24,16 +24,26 @@
 
 #include "h2_private.h"
 #include "h2.h"
-#include "h2_ctx.h"
 #include "h2_mplx.h"
-#include "h2_session.h"
+#include "h2_stream.h"
 #include "h2_bucket_eos.h"
 
 typedef struct {
     apr_bucket_refcount refcount;
-    conn_rec *c;
-    int stream_id;
+    h2_stream *stream;
 } h2_bucket_eos;
+
+static apr_status_t bucket_cleanup(void *data)
+{
+    h2_stream **pstream = data;
+
+    if (*pstream) {
+        /* If bucket_destroy is called after us, this prevents
+         * bucket_destroy from trying to destroy the stream again. */
+        *pstream = NULL;
+    }
+    return APR_SUCCESS;
+}
 
 static apr_status_t bucket_read(apr_bucket *b, const char **str,
                                 apr_size_t *len, apr_read_type_e block)
@@ -45,13 +55,12 @@ static apr_status_t bucket_read(apr_bucket *b, const char **str,
     return APR_SUCCESS;
 }
 
-apr_bucket *h2_bucket_eos_make(apr_bucket *b, conn_rec *c, int stream_id)
+apr_bucket *h2_bucket_eos_make(apr_bucket *b, h2_stream *stream)
 {
     h2_bucket_eos *h;
 
     h = apr_bucket_alloc(sizeof(*h), b->list);
-    h->c = c;
-    h->stream_id = stream_id;
+    h->stream = stream;
 
     b = apr_bucket_shared_make(b, h, 0, 0);
     b->type = &h2_bucket_type_eos;
@@ -59,27 +68,35 @@ apr_bucket *h2_bucket_eos_make(apr_bucket *b, conn_rec *c, int stream_id)
     return b;
 }
 
-apr_bucket *h2_bucket_eos_create(apr_bucket_alloc_t *list, conn_rec *c, int stream_id)
+apr_bucket *h2_bucket_eos_create(apr_bucket_alloc_t *list,
+                                 h2_stream *stream)
 {
     apr_bucket *b = apr_bucket_alloc(sizeof(*b), list);
 
     APR_BUCKET_INIT(b);
     b->free = apr_bucket_free;
     b->list = list;
-    b = h2_bucket_eos_make(b, c, stream_id);
+    b = h2_bucket_eos_make(b, stream);
+    if (stream) {
+        h2_bucket_eos *h = b->data;
+        apr_pool_pre_cleanup_register(stream->pool, &h->stream, bucket_cleanup);
+    }
     return b;
 }
 
 static void bucket_destroy(void *data)
 {
     h2_bucket_eos *h = data;
-    h2_session *session;
-    
+
     if (apr_bucket_shared_destroy(h)) {
-        if ((session = h2_ctx_get_session(h->c))) {
-            h2_session_eos_sent(session, h->stream_id);
+        h2_stream *stream = h->stream;
+        if (stream && stream->pool) {
+            apr_pool_cleanup_kill(stream->pool, &h->stream, bucket_cleanup);
         }
         apr_bucket_free(h);
+        if (stream) {
+            h2_stream_dispatch(stream, H2_SEV_EOS_SENT);
+        }
     }
 }
 

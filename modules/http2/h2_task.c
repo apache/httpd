@@ -44,6 +44,7 @@
 #include "h2_request.h"
 #include "h2_headers.h"
 #include "h2_session.h"
+#include "h2_stream.h"
 #include "h2_task.h"
 #include "h2_util.h"
 
@@ -492,14 +493,6 @@ static int h2_task_pre_conn(conn_rec* c, void *arg)
     return OK;
 }
 
-static apr_status_t task_pool_cleanup(void *data)
-{
-    h2_task *task = data;
-    
-    ap_assert(task->destroyed);
-    return APR_SUCCESS;
-}
-
 h2_task *h2_task_create(conn_rec *slave, int stream_id,
                         const h2_request *req, h2_mplx *m,
                         h2_bucket_beam *input, 
@@ -528,15 +521,13 @@ h2_task *h2_task_create(conn_rec *slave, int stream_id,
     task->input.beam  = input;
     task->output.max_buffer = output_max_mem;
 
-    apr_pool_cleanup_register(pool, task, task_pool_cleanup, apr_pool_cleanup_null);
-
     return task;
 }
 
 void h2_task_destroy(h2_task *task)
 {
-    task->destroyed = 1;
     if (task->output.beam) {
+        h2_beam_log(task->output.beam, task->c, APLOG_TRACE2, "task_destroy");
         h2_beam_destroy(task->output.beam);
         task->output.beam = NULL;
     }
@@ -593,12 +584,13 @@ apr_status_t h2_task_do(h2_task *task, apr_thread_t *thread, int worker_id)
     }
         
     h2_beam_create(&task->output.beam, c->pool, task->stream_id, "output", 
-                   0, task->timeout);
+                   H2_BEAM_OWNER_SEND, 0, task->timeout);
     if (!task->output.beam) {
         return APR_ENOMEM;
     }
     
     h2_beam_buffer_size_set(task->output.beam, task->output.max_buffer);
+    h2_beam_send_from(task->output.beam, task->pool);
     
     h2_ctx_create_for(c, task);
     apr_table_setn(c->notes, H2_TASK_ID_NOTE, task->id);
@@ -715,5 +707,4 @@ static int h2_task_process_conn(conn_rec* c)
     }
     return DECLINED;
 }
-
 
