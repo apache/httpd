@@ -185,6 +185,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1707084,1707093,1707159,1707362 ^/httpd/httpd/trunk .
      +1: icing
 
+  *) mod_http2:  more copying of data to disentangle worker processing from main connection
+     trunk patch: http://svn.apache.org/r1860260
+     2.4.x patch: svn merge -c 1860260 ^/httpd/httpd/trunk .
+     +1: icing
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
