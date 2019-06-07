@@ -138,6 +138,7 @@ static apr_status_t ap_unix_create_privileged_process(
     const char **newargs;
     char *newprogname;
     char *execuser, *execgroup;
+    char *owneruser, *ownergroup;
     const char *argv0;
 
     if (!ap_unixd_config.suexec_enabled) {
@@ -162,20 +163,25 @@ static apr_status_t ap_unix_create_privileged_process(
     }
     execgroup = apr_psprintf(p, "%ld", (long) ugid->gid);
 
-    if (!execuser || !execgroup) {
+    owneruser = apr_psprintf(p, "%ld", (long) ugid->ouid);
+    ownergroup = apr_psprintf(p, "%ld", (long) ugid->ogid);
+
+    if (!execuser || !execgroup || !owneruser || !ownergroup) {
         return APR_ENOMEM;
     }
 
     i = 0;
     while (args[i])
         i++;
-    /* allocate space for 4 new args, the input args, and a null terminator */
-    newargs = apr_palloc(p, sizeof(char *) * (i + 4));
+    /* allocate space for 6 new args, the input args, and a null terminator */
+    newargs = apr_palloc(p, sizeof(char *) * (i + 6));
     newprogname = SUEXEC_BIN;
     newargs[0] = SUEXEC_BIN;
     newargs[1] = execuser;
     newargs[2] = execgroup;
-    newargs[3] = apr_pstrdup(p, argv0);
+    newargs[3] = owneruser;
+    newargs[4] = ownergroup;
+    newargs[5] = apr_pstrdup(p, argv0);
 
     /*
     ** using a shell to execute suexec makes no sense thus
@@ -188,7 +194,7 @@ static apr_status_t ap_unix_create_privileged_process(
 
     i = 1;
     do {
-        newargs[i + 3] = args[i];
+        newargs[i + 5] = args[i];
     } while (args[i++]);
 
     return apr_proc_create(newproc, newprogname, newargs, env, attr, p);

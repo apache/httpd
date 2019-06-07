@@ -56,6 +56,8 @@ extern "C" {
 typedef struct {
     uid_t uid;
     gid_t gid;
+    uid_t ouid;
+    gid_t ogid;
     int userdir;
 } ap_unix_identity_t;
 

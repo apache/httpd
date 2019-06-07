@@ -56,6 +56,22 @@
 #endif
 
 /*
+ * OUID_MIN -- Define this as the lowest UID allowed to be a owner user
+ *            for suEXEC.  For most systems, 500 or 100 is common.
+ */
+#ifndef AP_OUID_MIN
+#define AP_OUID_MIN 100
+#endif
+
+/*
+ * OGID_MIN -- Define this as the lowest GID allowed to be a owner group
+ *            for suEXEC.  For most systems, 100 is common.
+ */
+#ifndef AP_OGID_MIN
+#define AP_OGID_MIN 100
+#endif
+
+/*
  * USERDIR_SUFFIX -- Define to be the subdirectory under users'
  *                   home directories where suEXEC access should
  *                   be allowed.  All executables under this directory

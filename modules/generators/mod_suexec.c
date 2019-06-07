@@ -56,7 +56,8 @@ static void *create_mconfig_for_directory(apr_pool_t *p, char *dir)
 }
 
 static const char *set_suexec_ugid(cmd_parms *cmd, void *mconfig,
-                                   const char *uid, const char *gid)
+                                   const char *uid, const char *gid,
+                                   const char *ouid, const char *ogid)
 {
     suexec_config_t *cfg = (suexec_config_t *) mconfig;
     const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_CONTEXT);
@@ -73,6 +74,8 @@ static const char *set_suexec_ugid(cmd_parms *cmd, void *mconfig,
 
     cfg->ugid.uid = ap_uname2id(uid);
     cfg->ugid.gid = ap_gname2id(gid);
+    cfg->ugid.ouid = ouid ? ap_uname2id(ouid) : cfg->ugid.uid;
+    cfg->ugid.ogid = ogid ? ap_gname2id(ogid) : cfg->ugid.gid;
     cfg->ugid.userdir = 0;
     cfg->active = 1;
 
@@ -116,7 +119,7 @@ static const command_rec suexec_cmds[] =
 {
     /* XXX - Another important reason not to allow this in .htaccess is that
      * the ap_[ug]name2id() is not thread-safe */
-    AP_INIT_TAKE2("SuexecUserGroup", set_suexec_ugid, NULL, RSRC_CONF,
+    AP_INIT_TAKE24("SuexecUserGroup", set_suexec_ugid, NULL, RSRC_CONF,
       "User and group for spawned processes"),
     { NULL }
 };

@@ -286,9 +286,13 @@ int main(int argc, char *argv[])
     int userdir = 0;        /* ~userdir flag             */
     uid_t uid;              /* user information          */
     gid_t gid;              /* target group placeholder  */
+    uid_t ouid;             /* owner information         */
+    gid_t ogid;             /* owner group information   */
     char *target_uname;     /* target user name          */
     char *target_gname;     /* target group name         */
     char *target_homedir;   /* target home directory     */
+    char *owner_uname;      /* owner of files            */
+    char *owner_gname;      /* owner group of files      */
     char *actual_uname;     /* actual user name          */
     char *actual_gname;     /* actual group name         */
     char *cmd;              /* command to be executed    */
@@ -359,13 +363,15 @@ int main(int argc, char *argv[])
      * If there are a proper number of arguments, set
      * all of them to variables.  Otherwise, error out.
      */
-    if (argc < 4) {
+    if (argc < 6) {
         log_err("too few arguments\n");
         exit(101);
     }
     target_uname = argv[1];
     target_gname = argv[2];
-    cmd = argv[3];
+    owner_uname = argv[3];
+    owner_gname = argv[4];
+    cmd = argv[5];
 
     /*
      * Check to see if the user running this program
@@ -477,6 +483,40 @@ int main(int argc, char *argv[])
     uid = pw->pw_uid;
     actual_uname = strdup(pw->pw_name);
     target_homedir = strdup(pw->pw_dir);
+    /*
+     * Error out if the owner username is invalid.
+     */
+    if (strspn(owner_uname, "1234567890") != strlen(owner_uname)) {
+        if ((pw = getpwnam(owner_uname)) == NULL) {
+            log_err("invalid owner user name: (%s)\n", owner_uname);
+            exit(105);
+        }
+    }
+    else {
+        if ((pw = getpwuid(atoi(owner_uname))) == NULL) {
+            log_err("invalid owner user id: (%s)\n", owner_uname);
+            exit(121);
+        }
+    }
+    ouid = pw->pw_uid;
+
+    /*
+     * Error out if the owner group name is invalid.
+     */
+    if (strspn(owner_gname, "1234567890") != strlen(owner_gname)) {
+        if ((gr = getgrnam(owner_gname)) == NULL) {
+            log_err("invalid owner group name: (%s)\n", owner_gname);
+            exit(106);
+        }
+    }
+    else {
+        if ((gr = getgrgid(atoi(owner_gname))) == NULL) {
+            log_err("invalid owner group id: (%s)\n", owner_gname);
+            exit(106);
+        }
+    }
+    ogid = gr->gr_gid;
+
     if (actual_uname == NULL || target_homedir == NULL) {
         log_err("failed to alloc memory\n");
         exit(126);
@@ -486,10 +526,11 @@ int main(int argc, char *argv[])
      * Log the transaction here to be sure we have an open log
      * before we setuid().
      */
-    log_no_err("uid: (%s/%s) gid: (%s/%s) cmd: %s\n",
-               target_uname, actual_uname,
-               target_gname, actual_gname,
-               cmd);
+    log_no_err("uid: (%s/%s) gid: (%s/%s) own: (%s/%s) cmd: %s\n",
+                target_uname, actual_uname,
+                target_gname, actual_gname,
+                owner_uname, owner_gname,
+                cmd);
 
     /*
      * Error out if attempt is made to execute as root or as
@@ -506,6 +547,24 @@ int main(int argc, char *argv[])
      */
     if ((gid == 0) || (gid < AP_GID_MIN)) {
         log_err("cannot run as forbidden gid (%lu/%s)\n", (unsigned long)gid, cmd);
+        exit(108);
+    }
+
+    /*
+     * Error out if attempt is made to execute as root or as
+     * a OUID less than AP_OUID_MIN.  Tsk tsk.
+     */
+    if ((ouid == 0) || (ouid < AP_OUID_MIN)) {
+        log_err("cannot own as forbidden uid (%lu/%s)\n", (unsigned long)ouid, cmd);
+        exit(107);
+    }
+
+    /*
+     * Error out if attempt is made to execute as root group
+     * or as a GID less than AP_GID_MIN.  Tsk tsk.
+     */
+    if ((ogid == 0) || (ogid < AP_OGID_MIN)) {
+        log_err("cannot own as forbidden gid (%lu/%s)\n", (unsigned long)ogid, cmd);
         exit(108);
     }
 
@@ -604,20 +663,21 @@ int main(int argc, char *argv[])
         exit(119);
     }
 
-    /*
-     * Error out if the target name/group is different from
-     * the name/group of the cwd or the program.
-     */
-    if ((uid != dir_info.st_uid) ||
-        (gid != dir_info.st_gid) ||
-        (uid != prg_info.st_uid) ||
-        (gid != prg_info.st_gid)) {
-        log_err("target uid/gid (%lu/%lu) mismatch "
-                "with directory (%lu/%lu) or program (%lu/%lu)\n",
-                (unsigned long)uid, (unsigned long)gid,
-                (unsigned long)dir_info.st_uid, (unsigned long)dir_info.st_gid,
-                (unsigned long)prg_info.st_uid, (unsigned long)prg_info.st_gid);
-        exit(120);
+     /*
+      * Error out if the owner name/group is different from
+      * the name/group of the cwd or the program.
+      */
+    if ((ouid != dir_info.st_uid) ||
+        (ogid != dir_info.st_gid) ||
+        (ouid != prg_info.st_uid) ||
+        (ogid != prg_info.st_gid)) {
+        log_err("owner uid/gid (%lu/%lu) mismatch "
+                 "with directory (%lu/%lu) or program (%lu/%lu)\n",
+                 (unsigned long)uid, (unsigned long)gid,
+                 (unsigned long)ouid, (unsigned long)ogid,
+                 (unsigned long)dir_info.st_uid, (unsigned long)dir_info.st_gid,
+                 (unsigned long)prg_info.st_uid, (unsigned long)prg_info.st_gid);
+         exit(120);
     }
     /*
      * Error out if the program is not executable for the user.
@@ -678,10 +738,10 @@ int main(int argc, char *argv[])
     {
         extern char **environ;
 
-        ap_execve(cmd, &argv[3], environ);
+        ap_execve(cmd, &argv[5], environ);
     }
 #else /*NEED_HASHBANG_EMUL*/
-    execv(cmd, &argv[3]);
+    execv(cmd, &argv[5]);
 #endif /*NEED_HASHBANG_EMUL*/
 
     /*

@@ -63,7 +63,9 @@ enum cmd_how {
     TAKE23,             /**< two or three arguments */
     TAKE123,            /**< one, two or three arguments */
     TAKE13,             /**< one or three arguments */
-    TAKE_ARGV           /**< an argc and argv are passed */
+    TAKE_ARGV,          /**< an argc and argv are passed */
+    TAKE4,              /**< four arguments only */
+    TAKE24              /**< two or four arguments */
 };
 
 /**
@@ -96,6 +98,9 @@ typedef union {
     /** function to call for a take3 */
     const char *(*take3) (cmd_parms *parms, void *mconfig, const char *w,
                           const char *w2, const char *w3);
+    /** function to call for a take4 */
+    const char *(*take4) (cmd_parms *parms, void *mconfig, const char *w,
+                          const char *w2, const char *w3, const char *w4);
     /** function to call for a flag */
     const char *(*flag) (cmd_parms *parms, void *mconfig, int on);
 } cmd_func;
@@ -112,6 +117,8 @@ typedef union {
 # define AP_TAKE2       func.take2
 /** This configuration directive takes 3 arguments */
 # define AP_TAKE3       func.take3
+/** This configuration directive takes 4 arguments */
+# define AP_TAKE4       func.take4
 /** This configuration directive takes a flag (on/off) as a argument*/
 # define AP_FLAG        func.flag
 
@@ -154,7 +161,12 @@ typedef union {
 /** mechanism for declaring a directive which takes a flag (on/off) argument */
 # define AP_INIT_FLAG(directive, func, mconfig, where, help) \
     { directive, { .flag=func }, mconfig, where, FLAG, help }
-
+/** mechanism for declaring a directive which takes 4 arguments */
+# define AP_INIT_TAKE4(directive, func, mconfig, where, help) \
+    { directive, { .take4=func }, mconfig, where, TAKE4, help }
+/** mechanism for declaring a directive which takes 2 or 4 arguments */
+# define AP_INIT_TAKE24(directive, func, mconfig, where, help) \
+    { directive, { .take4=func }, mconfig, where, TAKE24, help }
 #else /* AP_HAVE_DESIGNATED_INITIALIZER */
 
 typedef const char *(*cmd_func) ();
@@ -165,6 +177,7 @@ typedef const char *(*cmd_func) ();
 # define AP_TAKE1    func
 # define AP_TAKE2    func
 # define AP_TAKE3    func
+# define AP_TAKE4    func
 # define AP_FLAG     func
 
 # define AP_INIT_NO_ARGS(directive, func, mconfig, where, help) \
@@ -193,6 +206,10 @@ typedef const char *(*cmd_func) ();
     { directive, func, mconfig, where, TAKE3, help }
 # define AP_INIT_FLAG(directive, func, mconfig, where, help) \
     { directive, func, mconfig, where, FLAG, help }
+# define AP_INIT_TAKE4(directive, func, mconfig, where, help) \
+    { directive, func, mconfig, where, TAKE4, help }
+# define AP_INIT_TAKE24(directive, func, mconfig, where, help) \
+    { directive, func, mconfig, where, TAKE24, help }
 
 #endif /* AP_HAVE_DESIGNATED_INITIALIZER */
 

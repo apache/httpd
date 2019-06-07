@@ -856,7 +856,7 @@ static const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms,
                               ap_directive_t *parent)
 {
     int override_list_ok = 0;
-    char *w, *w2, *w3;
+    char *w, *w2, *w3, *w4;
     const char *errmsg = NULL;
 
     /* Have we been provided a list of acceptable directives? */
@@ -995,6 +995,31 @@ static const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms,
                                cmd->errmsg ? ", " : NULL, cmd->errmsg, NULL);
 
         return cmd->AP_TAKE3(parms, mconfig, w, w2, w3);
+
+    case TAKE4:
+        w = ap_getword_conf(parms->pool, &args);
+        w2 = ap_getword_conf(parms->pool, &args);
+        w3 = ap_getword_conf(parms->pool, &args);
+        w4 = ap_getword_conf(parms->pool, &args);
+
+        if (*w == '\0' || *w2 == '\0' || *w3 == '\0' || *w4 == '\0' || *args != 0)
+            return apr_pstrcat(parms->pool, cmd->name, " takes four arguments",
+                               cmd->errmsg ? ", " : NULL, cmd->errmsg, NULL);
+
+        return cmd->AP_TAKE4(parms, mconfig, w, w2, w3, w4);
+
+    case TAKE24:
+        w = ap_getword_conf(parms->pool, &args);
+        w2 = ap_getword_conf(parms->pool, &args);
+        w3 = *args ? ap_getword_conf(parms->pool, &args) : NULL;
+        w4 = *args ? ap_getword_conf(parms->pool, &args) : NULL;
+
+        if (*w == '\0' || *w2 == '\0' || (!w3 && w4 && *w4) || (w3 && *w3 && !w4) || *args != 0)
+            return apr_pstrcat(parms->pool, cmd->name, 
+			    " takes two or four arguments",
+                               cmd->errmsg ? ", " : NULL, cmd->errmsg, NULL);
+
+        return cmd->AP_TAKE4(parms, mconfig, w, w2, w3, w4);
 
     case ITERATE:
         w = ap_getword_conf(parms->pool, &args);
