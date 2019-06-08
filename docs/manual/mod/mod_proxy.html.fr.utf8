@@ -117,6 +117,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#balancerpersist">BalancerPersist</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#noproxy">NoProxy</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxy">&lt;Proxy&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#proxy100continue">Proxy100Continue</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyaddheaders">ProxyAddHeaders</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxybadheader">ProxyBadHeader</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyblock">ProxyBlock</a></li>
@@ -844,6 +845,29 @@ mandatées</td></tr>
 <ul>
 <li><code class="directive"><a href="#proxymatch">&lt;ProxyMatch&gt;</a></code></li>
 </ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="proxy100continue" id="proxy100continue">Directive</a> <a name="Proxy100Continue" id="Proxy100Continue">Proxy100Continue</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Transmission du message "100-continue" au serveur d'origine</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Proxy100Continue Off|On</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Proxy100Continue On</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.39 du serveur HTTP Apache</td></tr>
+</table>
+    <p>Cette directive permet de contrôler le transfert par le mandataire du
+    message "100-continue" (<em>Expect:</em>ation) vers le serveur d'origine. Si
+    elle est définie à "On", le serveur d'origine décidera lui-même si le corps
+    de la requête HTTP doit être lu. Si elle est définie à "Off", le mandataire
+    générera lui-même une réponse intermédiaire <em>100 Continue</em> avant de
+    transférer le corps de la requête.</p>
+    <div class="note"><h3>Contexte d'utilisation</h3>
+     <p>Cette option n'est utilisable qu'avec les mandataires HTTP gérés par
+     <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>.</p>
+    </div>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="proxyaddheaders" id="proxyaddheaders">Directive</a> <a name="ProxyAddHeaders" id="ProxyAddHeaders">ProxyAddHeaders</a></h2>
