@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1851101 -->
+<!-- English Revision: 1860166 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2372,6 +2372,31 @@ en-têtes X-Forwarded-*</description>
     <note><title>Utilité</title>
      <p>Cette option n'est utile que dans le cas du mandat HTTP traité
      par <module>mod_proxy_http</module>.</p>
+    </note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Proxy100Continue</name>
+<description>Transmission du message "100-continue" au serveur d'origine</description>
+<syntax>Proxy100Continue Off|On</syntax>
+<default>Proxy100Continue On</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+</contextlist>
+<compatibility>Disponible à partir de la version 2.4.39 du serveur HTTP Apache</compatibility>
+
+<usage>
+    <p>Cette directive permet de contrôler le transfert par le mandataire du
+    message "100-continue" (<em>Expect:</em>ation) vers le serveur d'origine. Si
+    elle est définie à "On", le serveur d'origine décidera lui-même si le corps
+    de la requête HTTP doit être lu. Si elle est définie à "Off", le mandataire
+    générera lui-même une réponse intermédiaire <em>100 Continue</em> avant de
+    transférer le corps de la requête.</p>
+    <note><title>Contexte d'utilisation</title>
+     <p>Cette option n'est utilisable qu'avec les mandataires HTTP gérés par
+     <module>mod_proxy_http</module>.</p>
     </note>
 </usage>
 </directivesynopsis>
