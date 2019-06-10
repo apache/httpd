@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.es.xsl"?>
-<!-- English Revision: 1780356:1793932 (outdated) -->
-<!-- Spanish Translator: Luis Gil de Bernabé -->
+<!-- English Revision: 1793932 -->
+<!-- Spanish Translator: Luis Gil de Bernabé  lgilbernabe@apache.org-->
 <!-- Reviewed by: Sergio Ramos -->
 
 <!--
@@ -199,8 +199,8 @@ usados para describir las directivas de Apache</page>
 <page href="glossary.html">Glosario</page>
 <page href="mod/">Índice de Módulos</page>
 <page href="mod/directives.html">Índice de Directivas</page>
-<page href="mod/quickreference.html">Guía Rápida de
-Referencia de Directivas</page>
+<page href="mod/quickreference.html">Guía Rápida de Referencia de Directivas</page>
+<page href="mod/overrides.html">Extensión para índices en .htaccess</page>
 </category>
 
 </sitemap>
