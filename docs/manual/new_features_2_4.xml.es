@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.es.xsl"?>
-<!-- English Revision: 1787943:1855701 (outdated) -->
+<!-- English Revision: 1855701 -->
 <!-- Spanish Translation by: Luis Gil de Bernabé -->
 <!-- Reviewed by: Sergio Ramos -->
 
@@ -120,8 +120,9 @@
       carga según el número de conexiones activas en los servidores de back-end.</dd>
 
       <dt><module>mod_proxy_html</module></dt>
-      <dd>antiguamente un módulo de terceros, esto apoya la fijación de enlaces HTML en un proxy inverso,
-situación en la que el servidor genera URLs que no son válidos para los clientes del proxy.</dd>
+      <dd>antiguamente un módulo de terceros, esto apoya la fijación de enlaces 
+        HTML en un proxy inverso, situación en la que el servidor genera URLs 
+        que no son válidas para los clientes del proxy.</dd>
 
       <dt><module>mod_sed</module></dt>
       <dd>Un reemplazo avanzado de <module>mod_substitute</module>, permite editar el 
@@ -131,7 +132,7 @@ situación en la que el servidor genera URLs que no son válidos para los client
       <dd>Habilitar la autenticación basada en formularios.</dd>
 
       <dt><module>mod_session</module></dt>
-      <dd>Permite el uso de estado de sesión para clientes, utilizando cookies o el 
+      <dd>Permite el uso de estado de sesión para clientes, utilizando cookies o 
       	almacenamiento en una base de datos.</dd>
 
       <dt><module>mod_allowmethods</module></dt>
@@ -161,7 +162,7 @@ situación en la que el servidor genera URLs que no son válidos para los client
       <dd>Proporciona Reflexión del cuerpo de la petición como una respuesta a través de la pila de filtro de salida.</dd>
 
       <dt><module>mod_slotmem_shm</module></dt>
-      <dd>Proporciona un proveedor de memoria compartida basada en la ranura (ala the scoreboard).</dd>
+      <dd>Proporciona un proveedor de memoria compartida basada en huecos (ala the scoreboard).</dd>
 
       <dt><module>mod_xml2enc</module></dt>
       <dd>Anteriormente un módulo de terceros, que apoya la internacionalización en
@@ -179,8 +180,18 @@ situación en la que el servidor genera URLs que no son válidos para los client
       <dt><module>mod_http2</module> (disponible desde la versión 2.4.17)</dt>
       <dd>Soporte para la capa HTTP/2</dd>
 
-	<dt><module>mod_proxy_hcheck</module> (disponible desde la versión 2.4.21)</dt>
-	<dd>Soporta chekeos dinámicos propios del estado de servidores proxys remotos</dd>
+      <dt><module>mod_proxy_hcheck</module> (disponible desde la versión 2.4.21)</dt>
+      <dd>Soporta controles dinámicos propios del estado de servidores proxys remotos</dd>
+
+      <dt><module>mod_brotli</module> (disponible desde la versión 2.4.26)</dt>
+      <dd>Soporte para el algoritmo de compresión Brotli.</dd>
+
+      <dt><module>mod_md</module> (disponible desde la versión 2.4.30)</dt>
+      <dd>Soporte para el protocolo ACME para la automatización del proceso de 
+        aprovisionamiento de certificados.</dd>
+
+      <dt><module>mod_socache_redis</module> (disponible desde la versión 2.4.39)</dt>
+      <dd>Soporte para caché de objetos compartidos basados en <a href="htt://redis.io/">Redis</a>.</dd>
 
     </dl>
   </section>
@@ -225,10 +236,10 @@ situación en la que el servidor genera URLs que no son válidos para los client
       <dt><module>mod_proxy_balancer</module></dt>
 
       <dd>Más cambios en la configuración en tiempo de ejecución para BalancerMembers 
-      	mediante el manager del balanceador.</dd>
+      	mediante el configurador del balanceador.</dd>
 
       <dd>Se pueden agregar miembros adicionales a BalancerMembers en tiempo de ejecución 
-      	mediante el manager del balanceador.</dd>
+      	mediante el configurador del balanceador.</dd>
 
       <dd>Configuración de ejecución de un subconjunto de parámetros Balancer</dd>
 
@@ -370,14 +381,14 @@ situación en la que el servidor genera URLs que no son válidos para los client
       <dd>El nuevo Hook, <code>check_config</code>, ha sido añadido el cuál se ejecuta entre
       	  los hooks <code>pre_config</code> y <code>open_logs</code>.
       	  También se ejecuta antes del hook <code>test_config</code> cuando la opción 
-          <code>-t</code> se le pasa al <program>httpd</program>. El hook <code>check_config</code>
-          permite a los módulos revisar los valores en las directivas de
-          configuraciones de forma independiente y ajustarlos mientras 
+          <code>-t</code> se le pasa al <program>httpd</program>. El hook <code>
+          check_config</code> permite a los módulos revisar los valores en las 
+          directivas de configuraciones de forma independiente y ajustarlos mientras 
           mensajes pueden seguir siendo logados a la consola.
 
           El usuario puede así ser alertado de problemas de mala 
           configuración antes de que la función hook <code>open_logs</code> 
-          redireccione la salida de error por la consola
+          redireccione la salida de la consola
           al log de error.</dd>
 
       <dt>Añadido un Analizador de Expresiones</dt>
@@ -400,7 +411,7 @@ situación en la que el servidor genera URLs que no son válidos para los client
       aplicación anterior de caché de sesión del módulo <module>mod_ssl</module>.
       Los proveedores que utilizan una memoria compartida de búfer cíclico, 
       archivos dbf basados en disco, y una memoria caché distribuida
-      memcached están soportados actualmente.</dd>
+      memcache están soportados actualmente.</dd>
 
       <dt>Añadido Hook de Estado de la Caché</dt>
 
