@@ -127,6 +127,18 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) core: make the eor bucket do the right thing when copied
+     trunk patch: http://svn.apache.org/r1707084
+                  http://svn.apache.org/r1707093
+                  http://svn.apache.org/r1707159
+                  http://svn.apache.org/r1707362
+     2.4.x patch: svn merge -c 1707084,1707093,1707159,1707362 ^/httpd/httpd/trunk .
+     +1: icing, covener, jim
+
+  *) mod_http2:  more copying of data to disentangle worker processing from main connection
+     trunk patch: http://svn.apache.org/r1860260
+     2.4.x patch: svn merge -c 1860260 ^/httpd/httpd/trunk .
+     +1: icing, covener, jim
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -176,19 +188,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: minfrin, jim
      jailletc36: at least, r1853302 is required, IMHO
      minfrin: r1853302 is added in above, jim agrees
-
-  *) core: make the eor bucket do the right thing when copied
-     trunk patch: http://svn.apache.org/r1707084
-                  http://svn.apache.org/r1707093
-                  http://svn.apache.org/r1707159
-                  http://svn.apache.org/r1707362
-     2.4.x patch: svn merge -c 1707084,1707093,1707159,1707362 ^/httpd/httpd/trunk .
-     +1: icing, covener, jim
-
-  *) mod_http2:  more copying of data to disentangle worker processing from main connection
-     trunk patch: http://svn.apache.org/r1860260
-     2.4.x patch: svn merge -c 1860260 ^/httpd/httpd/trunk .
-     +1: icing, covener, jim
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
