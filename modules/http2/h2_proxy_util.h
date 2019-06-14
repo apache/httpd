@@ -168,6 +168,8 @@ typedef struct h2_proxy_ngheader {
 h2_proxy_ngheader *h2_proxy_util_nghd_make_req(apr_pool_t *p, 
                                                const struct h2_proxy_request *req);
 
+h2_proxy_ngheader *h2_proxy_util_nghd_make(apr_pool_t *p, apr_table_t *headers);
+
 /*******************************************************************************
  * h2_proxy_request helpers
  ******************************************************************************/
