@@ -493,6 +493,52 @@ static apr_status_t status_event(void *ctx, h2_bucket_event event,
     return APR_SUCCESS;
 }
 
+static apr_status_t discard_body(request_rec *r, apr_off_t maxlen)
+{
+    apr_bucket_brigade *bb;
+    int seen_eos;
+    apr_status_t rv;
+
+    bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+    seen_eos = 0;
+    do {
+        apr_bucket *bucket;
+
+        rv = ap_get_brigade(r->input_filters, bb, AP_MODE_READBYTES,
+                            APR_BLOCK_READ, HUGE_STRING_LEN);
+
+        if (rv != APR_SUCCESS) {
+            apr_brigade_destroy(bb);
+            return rv;
+        }
+
+        for (bucket = APR_BRIGADE_FIRST(bb);
+             bucket != APR_BRIGADE_SENTINEL(bb);
+             bucket = APR_BUCKET_NEXT(bucket))
+        {
+            const char *data;
+            apr_size_t len;
+
+            if (APR_BUCKET_IS_EOS(bucket)) {
+                seen_eos = 1;
+                break;
+            }
+            if (bucket->length == 0) {
+                continue;
+            }
+            rv = apr_bucket_read(bucket, &data, &len, APR_BLOCK_READ);
+            if (rv != APR_SUCCESS) {
+                apr_brigade_destroy(bb);
+                return rv;
+            }
+            maxlen -= bucket->length;
+        }
+        apr_brigade_cleanup(bb);
+    } while (!seen_eos && maxlen >= 0);
+
+    return APR_SUCCESS;
+}
+
 int h2_filter_h2_status_handler(request_rec *r)
 {
     conn_rec *c = r->connection;
@@ -510,8 +556,10 @@ int h2_filter_h2_status_handler(request_rec *r)
 
     task = h2_ctx_get_task(r->connection);
     if (task) {
-
-        if ((status = ap_discard_request_body(r)) != OK) {
+        /* In this handler, we do some special sauce to send footers back,
+         * IFF we received footers in the request. This is used in our test
+         * cases, since CGI has no way of handling those. */
+        if ((status = discard_body(r, 1024)) != OK) {
             return status;
         }
         
