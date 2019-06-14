@@ -683,6 +683,8 @@ static apr_status_t add_trailer(h2_stream *stream,
     hvalue = apr_pstrndup(stream->pool, value, vlen);
     h2_util_camel_case_header(hname, nlen);
     apr_table_mergen(stream->trailers, hname, hvalue);
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c, 
+                  H2_STRM_MSG(stream, "added trailer '%s: %s'"), hname, hvalue);
     
     return APR_SUCCESS;
 }
