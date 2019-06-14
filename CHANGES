@@ -389,7 +389,7 @@ Changes with Apache 2.4.34
      connections.  [Ruediger Pluem, Joe Orton]
 
   *) mod_proxy_html: Fix variable interpolation and memory allocation failure
-     in ProxyHTMLURLMap.  [Ewald Dieterich <ewald mailbox.org>]
+     in ProxyHTMLURLMap.  PR 62344.  [Ewald Dieterich <ewald mailbox.org>]
 
   *) mod_remoteip: Fix RemoteIP{Trusted,Internal}ProxyList loading broken by 2.4.30.
      PR 62220.  [Chritophe Jaillet, Yann Ylavic]
