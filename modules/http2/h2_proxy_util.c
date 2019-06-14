@@ -452,6 +452,22 @@ h2_proxy_ngheader *h2_proxy_util_nghd_make_req(apr_pool_t *p,
     return ngh;
 }
 
+h2_proxy_ngheader *h2_proxy_util_nghd_make(apr_pool_t *p, apr_table_t *headers)
+{
+    
+    h2_proxy_ngheader *ngh;
+    size_t n;
+    
+    n = 0;
+    apr_table_do(count_header, &n, headers, NULL);
+    
+    ngh = apr_pcalloc(p, sizeof(h2_proxy_ngheader));
+    ngh->nv =  apr_pcalloc(p, n * sizeof(nghttp2_nv));
+    apr_table_do(add_table_header, ngh, headers, NULL);
+
+    return ngh;
+}
+
 /*******************************************************************************
  * header HTTP/1 <-> HTTP/2 conversions
  ******************************************************************************/
@@ -609,6 +625,7 @@ apr_status_t h2_proxy_req_make(h2_proxy_request *req, apr_pool_t *pool,
                          apr_table_t *headers)
 {
     h1_ctx x;
+    const char *val;
 
     req->method    = method;
     req->scheme    = scheme;
@@ -623,6 +640,11 @@ apr_status_t h2_proxy_req_make(h2_proxy_request *req, apr_pool_t *pool,
     x.pool = pool;
     x.headers = req->headers;
     apr_table_do(set_h1_header, &x, headers, NULL);
+    if ((val = apr_table_get(headers, "TE")) && ap_find_token(pool, val, "trailers")) {
+        /* client accepts trailers, forward this information */
+        apr_table_addn(req->headers, "TE", "trailers");
+    }
+    apr_table_setn(req->headers, "te", "trailers");
     return APR_SUCCESS;
 }
 
