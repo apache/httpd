@@ -1351,7 +1351,7 @@ static int balancer_process_balancer_worker(request_rec *r, proxy_server_conf *c
                     /* by default, all new workers are disabled */
                     ap_proxy_set_wstatus(PROXY_WORKER_DISABLED_FLAG, 1, nworker);
                 } else {
-                            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01207)
+                            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10163)
                                   "%s: failed to add worker %s",
                                   bsel->s->name, val);
 #if APR_HAS_THREADS
@@ -1367,7 +1367,7 @@ static int balancer_process_balancer_worker(request_rec *r, proxy_server_conf *c
                 }
 #endif
             } else {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01207)
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10164)
                                   "%s: failed to add worker %s",
                                   bsel->s->name, val);
                 return HTTP_BAD_REQUEST;
