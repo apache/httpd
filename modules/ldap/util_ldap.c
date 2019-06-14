@@ -85,7 +85,7 @@ static APR_INLINE apr_status_t ldap_cache_lock(util_ldap_state_t *st, request_re
                 ap_log_rerror(APLOG_MARK, APLOG_CRIT, rv, r, APLOGNO(10134) "LDAP cache lock failed");
             }
             else { 
-                ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, APLOGNO(10134) "LDAP cache lock failed");
+                ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, APLOGNO(10165) "LDAP cache lock failed");
             }
             ap_assert(0);
         }
@@ -101,7 +101,7 @@ static APR_INLINE apr_status_t ldap_cache_unlock(util_ldap_state_t *st, request_
                 ap_log_rerror(APLOG_MARK, APLOG_CRIT, rv, r, APLOGNO(10135) "LDAP cache unlock failed");
             }
             else { 
-                ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, APLOGNO(10135) "LDAP cache unlock failed");
+                ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, APLOGNO(10166) "LDAP cache unlock failed");
             }
             ap_assert(0);
         }
