@@ -746,7 +746,7 @@ H2ModernTLSOnly off
     
     <directivesynopsis>
         <name>H2TLSWarmUpSize</name>
-        <description></description>
+        <description>Configure the number of bytes on TLS connection before doing max writes</description>
         <syntax>H2TLSWarmUpSize <em>amount</em></syntax>
         <default>H2TLSWarmUpSize 1048576</default>
         <contextlist>
@@ -800,7 +800,7 @@ H2TLSWarmUpSize 0
     
     <directivesynopsis>
         <name>H2TLSCoolDownSecs</name>
-        <description></description>
+        <description>Configure the number of seconds of idle time on TLS before shrinking writes</description>
         <syntax>H2TLSCoolDownSecs <em>seconds</em></syntax>
         <default>H2TLSCoolDownSecs 1</default>
         <contextlist>
