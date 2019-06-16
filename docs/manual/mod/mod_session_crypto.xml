@@ -178,7 +178,8 @@ SessionCryptoPassphrase secret
     <p>As of version 2.4.7 if the value begins with <var>exec:</var> the resulting command
     will be executed and the first line returned to standard output by the program will be
     used as the key.</p>
-<example><pre>
+<example>
+    <highlight language="config">
 #key used as-is
 SessionCryptoPassphrase secret
 
@@ -187,7 +188,8 @@ SessionCryptoPassphrase exec:/path/to/program
 
 #Run /path/to/otherProgram and provide arguments
 SessionCryptoPassphrase "exec:/path/to/otherProgram argument1"
-</pre></example>
+    </highlight>
+</example>
 
 </usage>
 </directivesynopsis>
@@ -209,7 +211,7 @@ SessionCryptoPassphrase "exec:/path/to/otherProgram argument1"
     the session, specified one per line. The file is read on server start, and a graceful
     restart will be necessary for httpd to pick up changes to the keys.</p>
 
-    <p>Unlike the <directive>SessionCryptoPassphrase</directive> directive, the keys are
+    <p>Unlike the <directive module="mod_session_crypto">SessionCryptoPassphrase</directive> directive, the keys are
     not exposed within the httpd configuration and can be hidden by protecting the file
     appropriately.</p>
 
@@ -226,7 +228,7 @@ SessionCryptoPassphrase "exec:/path/to/otherProgram argument1"
 <name>SessionCryptoCipher</name>
 <description>The crypto cipher to be used to encrypt the session</description>
 <syntax>SessionCryptoCipher <var>name</var></syntax>
-<default>aes256</default>
+<default>SessionCryptoCipher aes256</default>
 <contextlist><context>server config</context>
 <context>virtual host</context>
 <context>directory</context>
