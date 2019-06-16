@@ -342,7 +342,7 @@ MDCertificateAgreement https://letsencrypt.org/documents/LE-SA-v1.2-November-15-
 &lt;MDomainSet example.org&gt;
     MDMember www.example.org
     MDMember mail.example.org
-&lt;/MDomainSet example.org&gt;
+&lt;/MDomainSet&gt;
                 </highlight>
             </example>
             <p>
