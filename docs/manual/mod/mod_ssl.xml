@@ -1235,7 +1235,7 @@ SSLCARevocationFile "/usr/local/apache2/conf/ssl.crl/ca-bundle-client.crl"
 <directivesynopsis>
 <name>SSLCARevocationCheck</name>
 <description>Enable CRL-based revocation checking</description>
-<syntax>SSLCARevocationCheck chain|leaf|none <em>flag</em>s</syntax>
+<syntax>SSLCARevocationCheck chain|leaf|none [<em>flag</em>s ...]</syntax>
 <default>SSLCARevocationCheck none</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
