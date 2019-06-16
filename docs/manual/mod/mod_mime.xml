@@ -1054,7 +1054,7 @@ RemoveType .cgi
 <directivesynopsis>
 <name>MimeOptions</name>
 <description>Configures mod_mime behavior</description>
-<syntax>MimeOptions<var>option</var> [<var>option</var>] ...</syntax>
+<syntax>MimeOptions <var>option</var> [<var>option</var>] ...</syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context>
