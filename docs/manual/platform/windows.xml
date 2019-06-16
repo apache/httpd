@@ -55,7 +55,7 @@
     <title>Downloading Apache for Windows</title>
 
     <p>The Apache HTTP Server Project itself does not provide binary releases of
-    software, only source code. Individual committers <em>may</em> provide 
+    software, only source code. Individual committers <em>may</em> provide
     binary packages as a convenience, but it is not a release deliverable.</p>
     <p>If you cannot compile the Apache HTTP Server
     yourself, you can obtain a binary package from numerous binary distributions
@@ -66,7 +66,7 @@
     <ul>
     <li><a href="http://www.apachehaus.com/cgi-bin/download.plx">ApacheHaus</a></li>
     <li><a href="http://www.apachelounge.com/download/">Apache Lounge</a></li>
-    <li><a href="http://bitnami.com/stack/wamp">BitNami WAMP Stack</a></li>
+    <li><a href="http://bitnami.com/stack/wamp">Bitnami WAMP Stack</a></li>
     <li><a href="http://www.wampserver.com/">WampServer</a></li>
     <li><a href="http://www.apachefriends.org/en/xampp.html">XAMPP</a></li>
     </ul>
@@ -162,7 +162,7 @@ RewriteRule "(.*)" "${lowercase:$1}" [R,L]
       directives in <code>access.conf</code>):</p>
 
       <highlight language="config">
-        LoadModule status_module modules/mod_status.so
+        LoadModule status_module "modules/mod_status.so"
       </highlight>
 
       <p>Information on <a href="../mod/mod_so.html#creating">creating
@@ -619,7 +619,7 @@ Alias "/images/" "//imagehost/www/images/"
 
 &lt;Directory "//imagehost/www/images/"&gt;
 #...
-&lt;Directory&gt;
+&lt;/Directory&gt;
   </highlight>
   </example>
 
@@ -631,7 +631,7 @@ Alias "/images/" "//imagehost/www/images/"
   <section id="tuning">
     <title>Windows Tuning</title>
     <ul>
-      <li><p>If more than a few dozen piped loggers are used on an operating system 
+      <li><p>If more than a few dozen piped loggers are used on an operating system
       instance, scaling up the "desktop heap" is often necessary. For
       more detailed information, refer to the <a href="../logs.html#piped"
       >piped logging</a> documentation.</p></li>
