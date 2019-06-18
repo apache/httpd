@@ -612,11 +612,11 @@ static int translate_alias_redir(request_rec *r)
                                   orig_target, r->uri, ret);
                 }
                 if (!ap_is_url(ret)) {
-                    status = HTTP_INTERNAL_SERVER_ERROR;
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00674)
                                   "cannot redirect '%s' to '%s'; "
                                   "target is not a valid absoluteURI or abs_path",
                                   r->uri, ret);
+                    return HTTP_INTERNAL_SERVER_ERROR;
                 }
             }
             /* append requested query only, if the config didn't
@@ -667,11 +667,11 @@ static int fixup_redir(request_rec *r)
                                   orig_target, r->uri, ret);
                 }
                 if (!ap_is_url(ret)) {
-                    status = HTTP_INTERNAL_SERVER_ERROR;
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00676)
                                   "cannot redirect '%s' to '%s'; "
                                   "target is not a valid absoluteURI or abs_path",
                                   r->uri, ret);
+                    return HTTP_INTERNAL_SERVER_ERROR;
                 }
             }
             /* append requested query only, if the config didn't
