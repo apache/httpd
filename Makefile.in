@@ -4,8 +4,13 @@ CLEAN_SUBDIRS = test
 
 PROGRAM_NAME         = $(progname)
 PROGRAM_SOURCES      = modules.c
-PROGRAM_LDADD        = buildmark.o $(HTTPD_LDFLAGS) $(PROGRAM_DEPENDENCIES) $(HTTPD_LIBS) $(EXTRA_LIBS) $(AP_LIBS) $(LIBS)
+PROGRAM_LDADD        = buildmark.o $(HTTPD_LDFLAGS) $(PROGRAM_LDDEPS) $(HTTPD_LIBS) $(EXTRA_LIBS) $(AP_LIBS) $(LIBS)
 PROGRAM_PRELINK      = $(COMPILE) -c $(top_srcdir)/server/buildmark.c
+PROGRAM_LDDEPS = \
+  $(BUILTIN_LIBS) \
+  $(MPM_LIB) \
+  $(LIBMAIN_LIB) \
+  os/$(OS_DIR)/libos.la
 PROGRAM_DEPENDENCIES = \
   $(BUILTIN_LIBS) \
   $(MPM_LIB) \

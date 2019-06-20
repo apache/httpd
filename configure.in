@@ -703,6 +703,28 @@ fi
 APACHE_SUBST(PICFLAGS)
 APACHE_SUBST(PILDFLAGS)
 
+ap_reduced_exports=no
+EXPORTS_DOT_C=exports.c
+LIBMAIN_LIB=server/libmain.la
+APACHE_SUBST(EXPORTS_DOT_C)
+APACHE_SUBST(LIBMAIN_LIB)
+
+AC_ARG_ENABLE(reduced-exports,
+APACHE_HELP_STRING(--enable-reduced-exports,Reduce binary size if using shared APR libraries),
+[
+  if test "$enableval" = "yes" -a "$GCC" = "yes"; then
+    ap_reduced_exports=yes
+  fi
+])
+
+if test "$ap_reduced_exports" = "yes"; then
+  EXPORTS_DOT_C=
+  LIBMAIN_LIB="-Wl,--whole-archive,server/.libs/libmain.a,--no-whole-archive"
+  AC_MSG_NOTICE([Using reduced symbol exports])
+else
+  AC_DEFINE(AP_FORCE_EXPORTS, 1, [Force symbol exports for dependent libraries])
+fi
+
 AC_ARG_WITH(valgrind,
   [  --with-valgrind[[=DIR]]   Enable code to reduce valgrind false positives
                           (optionally: set path to valgrind headers) ],
@@ -722,7 +744,7 @@ AC_ARG_WITH(valgrind,
 dnl Enable the unit test executable if Check is installed.
 dnl TODO: at the moment, only pkg-config discovery is supported.
 AC_MSG_CHECKING([for Check to enable unit tests])
-if test "x$PKGCONFIG" != "x" && `$PKGCONFIG --atleast-version='0.9.12' check`; then
+if test "x$PKGCONFIG" != "x" -a "$AP_FORCE_EXPORTS" = "yes" && `$PKGCONFIG --atleast-version='0.9.12' check`; then
   UNITTEST_CFLAGS=`$PKGCONFIG --cflags check`
   UNITTEST_LIBS=`$PKGCONFIG --libs check`
   other_targets="$other_targets test/httpdunit"
@@ -863,9 +885,6 @@ AP_LIBS="$AP_LIBS `$apr_config --link-libtool --libs`"
 APACHE_SUBST(AP_LIBS)
 APACHE_SUBST(AP_BUILD_SRCLIB_DIRS)
 APACHE_SUBST(AP_CLEAN_SRCLIB_DIRS)
-
-AC_DEFINE(AP_USING_AUTOCONF, 1,
-		[Using autoconf to configure Apache])
 
 if test "$SINGLE_LISTEN_UNSERIALIZED_ACCEPT" = "1"; then
     AC_DEFINE(SINGLE_LISTEN_UNSERIALIZED_ACCEPT, 1, 

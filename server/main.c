@@ -861,7 +861,7 @@ static void usage(process_rec *process)
     return !OK;
 }
 
-#ifdef AP_USING_AUTOCONF
+#ifdef AP_FORCE_EXPORTS
 /* This ugly little hack pulls any function referenced in exports.c into
  * the web server.  exports.c is generated during the build, and it
  * has all of the APR functions specified by the apr/apr.exports and
