@@ -66,8 +66,10 @@ AP_DECLARE_DATA extern apr_array_header_t *ap_server_pre_read_config;
 /** An array of all -c directives.  These are processed after the server's
  *  config file */
 AP_DECLARE_DATA extern apr_array_header_t *ap_server_post_read_config;
-/** An array of all -D defines on the command line.  This allows people to
- *  effect the server based on command line options */
+/** An array of all -D defines on the command line.  This allows users
+ *  to effect the server based on command line options.  A module
+ *  which adds to this array must allocate the new element value from
+ *  same pool as the array (->pool in the array header).  */
 AP_DECLARE_DATA extern apr_array_header_t *ap_server_config_defines;
 /** Available integer for using the -T switch */
 AP_DECLARE_DATA extern int ap_document_root_check;
