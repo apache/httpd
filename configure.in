@@ -984,10 +984,6 @@ AC_MSG_NOTICE([])
 
 APACHE_GEN_CONFIG_VARS
 
-dnl ## Build modules.c
-rm -f modules.c
-echo $MODLIST | $AWK -f $srcdir/build/build-modules-c.awk > modules.c
-
 APR_EXPAND_VAR(ap_prefix, $prefix)
 AC_DEFINE_UNQUOTED(HTTPD_ROOT, "${ap_prefix}",
 	[Root directory of the Apache install area])
@@ -1050,6 +1046,11 @@ test -d docs/conf||$mkdir_p docs/conf
 
 AC_CONFIG_FILES(docs/conf/httpd.conf docs/conf/extra/httpd-autoindex.conf docs/conf/extra/httpd-dav.conf docs/conf/extra/httpd-default.conf docs/conf/extra/httpd-info.conf docs/conf/extra/httpd-languages.conf docs/conf/extra/httpd-manual.conf docs/conf/extra/httpd-mpm.conf docs/conf/extra/httpd-multilang-errordoc.conf docs/conf/extra/httpd-policy.conf docs/conf/extra/httpd-ssl.conf docs/conf/extra/httpd-userdir.conf docs/conf/extra/httpd-vhosts.conf docs/conf/extra/proxy-html.conf docs/conf/extra/httpd-macro.conf include/ap_config_layout.h support/apxs support/apachectl support/dbmmanage support/envvars-std support/log_server_status support/logresolve.pl support/phf_abuse_log.cgi support/split-logfile build/rules.mk build/pkg/pkginfo build/config_vars.sh)
 AC_CONFIG_COMMANDS([default], [true], [APACHE_GEN_MAKEFILES])
+AC_CONFIG_COMMANDS([modules.c], [
+## Build modules.c
+rm -f modules.c
+echo $MODLIST | $AWK -f $srcdir/build/build-modules-c.awk > modules.c
+], [MODLIST="$MODLIST"])
 AC_OUTPUT
 
 AC_MSG_NOTICE([summary of build options:
