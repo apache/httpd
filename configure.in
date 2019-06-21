@@ -744,7 +744,7 @@ AC_ARG_WITH(valgrind,
 dnl Enable the unit test executable if Check is installed.
 dnl TODO: at the moment, only pkg-config discovery is supported.
 AC_MSG_CHECKING([for Check to enable unit tests])
-if test "x$PKGCONFIG" != "x" -a "$AP_FORCE_EXPORTS" = "yes" && `$PKGCONFIG --atleast-version='0.9.12' check`; then
+if test "x$PKGCONFIG" != "x" -a "$ap_reduced_exports" = "no" && `$PKGCONFIG --atleast-version='0.9.12' check`; then
   UNITTEST_CFLAGS=`$PKGCONFIG --cflags check`
   UNITTEST_LIBS=`$PKGCONFIG --libs check`
   other_targets="$other_targets test/httpdunit"
