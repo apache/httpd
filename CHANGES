@@ -470,6 +470,9 @@ Changes with Apache 2.4.34
   *) core: Add <IfFile>, <IfDirective> and <IfSection> conditional
      section containers.  [Eric Covener, Joe Orton]
 
+  *) rotatelogs: Add -D option to create parent directories.  PR 46669.
+     [Philippe Lantin <plantin cobaltgroup.com>, Ben Reser, Rainer Jung]
+
 Changes with Apache 2.4.33
 
   *) core: Fix request timeout logging and possible crash for error_log hooks.
