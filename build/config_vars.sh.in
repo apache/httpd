@@ -86,4 +86,5 @@ exec sed "
 /^LIBTOOL.*$/s,/[^ ]*/libtool \(.*\),${APR_LIBTOOL} @LTFLAGS@,
 /^EXPORTS_DOT_C/d
 /^LIBMAIN_LIB/d
+/TEST_SUITE/d
 "
