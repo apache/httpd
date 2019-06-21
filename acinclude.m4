@@ -119,12 +119,6 @@ AC_DEFUN([APACHE_GEN_CONFIG_VARS],[
   done
 ])
 
-dnl APACHE_GEN_MAKEFILES
-dnl Creates Makefiles
-AC_DEFUN([APACHE_GEN_MAKEFILES],[
-  $SHELL $srcdir/build/fastgen.sh $srcdir $ac_cv_mkdir_p $BSD_MAKEFILE $APACHE_FAST_OUTPUT_FILES >&AS_MESSAGE_FD
-])
-
 dnl
 dnl APACHE_TYPE_RLIM_T
 dnl
