@@ -28,6 +28,8 @@
 #include "apu_version.h"
 #endif
 
+#include "ap_config_auto.h"
+
 #define MAX_STRING_LEN 256
 
 #define ALG_PLAIN 0
@@ -35,6 +37,8 @@
 #define ALG_APMD5 2
 #define ALG_APSHA 3
 #define ALG_BCRYPT 4
+#define ALG_CRYPT_SHA256 5
+#define ALG_CRYPT_SHA512 6
 
 #define BCRYPT_DEFAULT_COST 5
 
@@ -84,7 +88,7 @@ struct passwd_ctx {
     apr_size_t      out_len;
     char            *passwd;
     int             alg;
-    int             cost;
+    int             cost; /* cost for bcrypt, rounds for SHA-2 */
     enum {
         PW_PROMPT = 0,
         PW_ARG,

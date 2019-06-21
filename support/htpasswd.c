@@ -178,7 +178,7 @@ static void check_args(int argc, const char *const argv[],
     if (rv != APR_SUCCESS)
         exit(ERR_SYNTAX);
 
-    while ((rv = apr_getopt(state, "cnmspdBbDiC:v", &opt, &opt_arg)) == APR_SUCCESS) {
+    while ((rv = apr_getopt(state, "cnmspdBbDi25C:r:v", &opt, &opt_arg)) == APR_SUCCESS) {
         switch (opt) {
         case 'c':
             *mask |= APHTP_NEWFILE;
