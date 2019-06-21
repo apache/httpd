@@ -210,19 +210,12 @@ static apr_status_t open_scoreboard(apr_pool_t *pconf)
 #if APR_HAS_SHARED_MEMORY
     apr_status_t rv;
     char *fname = NULL;
-    apr_pool_t *global_pool;
+    apr_pool_t *global_pool = apr_pool_parent_get(pconf);
 
-    /* We don't want to have to recreate the scoreboard after
-     * restarts, so we'll create a global pool and never clean it.
-     */
-    rv = apr_pool_create(&global_pool, NULL);
-    if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf, APLOGNO(00002)
-                     "Fatal error: unable to create global pool "
-                     "for use by the scoreboard");
-        return rv;
-    }
-
+    /* If this is not passed pconf, or pconf is no longer a direct
+     * child of a global pool, this should change... */
+    AP_DEBUG_ASSERT(apr_pool_parent_get(global_pool) == NULL);
+    
     /* The config says to create a name-based shmem */
     if (ap_scoreboard_fname) {
         /* make sure it's an absolute pathname */
