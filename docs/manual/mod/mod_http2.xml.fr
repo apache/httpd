@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1855431 -->
+<!-- English Revision : 1861440 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -861,7 +861,8 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut
 
     <directivesynopsis>
         <name>H2TLSWarmUpSize</name>
-        <description></description>
+        <description>Taille des paquets durant la phase initiale de la connexion
+	TLS</description>
         <syntax>H2TLSWarmUpSize <em>amount</em></syntax>
         <default>H2TLSWarmUpSize 1048576</default>
         <contextlist>
@@ -923,7 +924,8 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut
     
     <directivesynopsis>
         <name>H2TLSCoolDownSecs</name>
-        <description></description>
+        <description>Durée d'inactivité d'une connexion TLS avant diminution de
+	la taille des paquets</description>
         <syntax>H2TLSCoolDownSecs <em>seconds</em></syntax>
         <default>H2TLSCoolDownSecs 1</default>
         <contextlist>

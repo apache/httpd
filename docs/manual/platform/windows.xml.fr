@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1673563 -->
+<!-- English Revision: 1861450 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -79,7 +79,7 @@
     <ul>
     <li><a href="http://www.apachehaus.com/cgi-bin/download.plx">ApacheHaus</a></li>
     <li><a href="http://www.apachelounge.com/download/">Apache Lounge</a></li>
-    <li><a href="http://bitnami.com/stack/wamp">BitNami WAMP Stack</a></li>
+    <li><a href="http://bitnami.com/stack/wamp">Bitnami WAMP Stack</a></li>
     <li><a href="http://www.wampserver.com/">WampServer</a></li>
     <li><a href="http://www.apachefriends.org/en/xampp.html">XAMPP</a></li>
     </ul>
@@ -184,7 +184,7 @@ RewriteRule "(.*)" "${lowercase:$1}" [R,L]
       <code>access.conf</code>) :</p>
 
       <highlight language="config">
-        LoadModule status_module modules/mod_status.so
+        LoadModule status_module "modules/mod_status.so"
       </highlight>
 
       <p>Des informations sont aussi à votre disposition pour <a
@@ -684,7 +684,7 @@ Alias "/images/" "//imagehost/www/images/"
 
 &lt;Directory "//imagehost/www/images/"&gt;
 #...
-&lt;Directory&gt;
+&lt;/Directory&gt;
   </highlight>
   </example>
 
