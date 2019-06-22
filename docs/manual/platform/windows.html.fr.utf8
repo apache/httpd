@@ -88,7 +88,7 @@
     <ul>
     <li><a href="http://www.apachehaus.com/cgi-bin/download.plx">ApacheHaus</a></li>
     <li><a href="http://www.apachelounge.com/download/">Apache Lounge</a></li>
-    <li><a href="http://bitnami.com/stack/wamp">BitNami WAMP Stack</a></li>
+    <li><a href="http://bitnami.com/stack/wamp">Bitnami WAMP Stack</a></li>
     <li><a href="http://www.wampserver.com/">WampServer</a></li>
     <li><a href="http://www.apachefriends.org/en/xampp.html">XAMPP</a></li>
     </ul>
@@ -186,7 +186,7 @@ RewriteRule "(.*)" "${lowercase:$1}" [R,L]</pre>
       (en plus des directives d'activation de status dans
       <code>access.conf</code>) :</p>
 
-      <pre class="prettyprint lang-config">LoadModule status_module modules/mod_status.so</pre>
+      <pre class="prettyprint lang-config">LoadModule status_module "modules/mod_status.so"</pre>
 
 
       <p>Des informations sont aussi à votre disposition pour <a href="../mod/mod_so.html#creating">créer des modules
@@ -670,7 +670,7 @@ RewriteRule "(.*)" "${lowercase:$1}" [R,L]</pre>
 
 &lt;Directory "//imagehost/www/images/"&gt;
 #...
-&lt;Directory&gt;</pre>
+&lt;/Directory&gt;</pre>
 </div>
 
   <p>Lorsqu'Apache s'exécute en tant que service, vous devez créer un

@@ -107,7 +107,7 @@ SessionCryptoPassphrase secret</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'algorithme à utiliser pour le chiffrement de la session</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionCryptoCipher <var>algorithme</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>aes256</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SessionCryptoCipher aes256</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_crypto</td></tr>
@@ -215,14 +215,15 @@ d'Apache</td></tr>
     <p>Depuis la version 2.4.7, si la valeur de l'argument commence par <var>exec:</var> , la commande
     spécifiée sera exécutée, et la première ligne que cette dernière
     renverra sur la sortie standard sera utilisée comme clé.</p>
-<div class="example"><pre># clé spécifiée et utilisée en tant que tel
+<div class="example"><pre class="prettyprint lang-config"># clé spécifiée et utilisée en tant que tel
 SessionCryptoPassphrase secret
 
 # exécution de /path/to/program pour générer la clé
 SessionCryptoPassphrase exec:/path/to/program
 
 # exécution de /path/to/program avec un argument pour générer la clé
-SessionCryptoPassphrase "exec:/path/to/otherProgram argument1"</pre></div>
+SessionCryptoPassphrase "exec:/path/to/otherProgram argument1"</pre>
+</div>
 
 
 </div>
@@ -245,18 +246,19 @@ session</td></tr>
     serveur, et un redémarrage graceful est nécessaire pour prendre en
     compte un éventuel changement de clés.</p>
 
-    <p>À la différence de la directive
-    <code class="directive">SessionCryptoPassphrase</code>, les clés ne sont pas
-    présentes dans le fichier de configuration de httpd et peuvent être
-    cachées via une protection appropriée du fichier de clés.</p>
+    <p>À la différence de la directive <code class="directive"><a href="#sessioncryptopassphrase">SessionCryptoPassphrase</a></code>, les
+    clés ne sont pas présentes dans le fichier de configuration de
+    httpd et peuvent être cachées via une protection
+    appropriée du fichier de clés.</p>
 
-    <p>Il est possible de spécifier plusieurs clés afin de mettre en
-    oeuvre la rotation de clés. La première clé spécifiée sera utilisée
-    pour le chiffrement, alors que l'ensemble des clés spécifiées le
-    sera pour le déchiffrement. Pour effectuer une rotation périodique
-    des clés sur plusieurs serveurs, ajoutez une nouvelle clé en fin de
-    liste, puis, une fois la rotation complète effectuée, supprimez la
-    première clé de la liste.</p>
+    <p>Il est possible de spécifier plusieurs clés afin de mettre
+    en oeuvre la rotation de clés. La première clé
+    spécifiée sera utilisée pour le chiffrement, alors que
+    l'ensemble des clés spécifiées le sera pour le
+    déchiffrement. Pour effectuer une rotation périodique des
+    clés sur plusieurs serveurs, ajoutez une nouvelle clé en fin
+    de liste, puis, une fois la rotation complète effectuée,
+    supprimez la première clé de la liste.</p>
 
 
 </div>
