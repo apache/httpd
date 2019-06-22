@@ -672,8 +672,8 @@ comme un script CGI</description>
 <default>RedirectRelative OFF</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
-<compatibility>Disponible à partir de la version 2.5.1 du serveur HTTP Apache</compatibility>
 </contextlist>
+<compatibility>Disponible à partir de la version 2.5.1 du serveur HTTP Apache</compatibility>
 
 <usage>
     <p>Par défaut, si l'URL cible d'une directive
