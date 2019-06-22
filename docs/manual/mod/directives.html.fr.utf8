@@ -580,6 +580,7 @@
 <li><a href="mod_alias.html#redirect">Redirect</a></li>
 <li><a href="mod_alias.html#redirectmatch">RedirectMatch</a></li>
 <li><a href="mod_alias.html#redirectpermanent">RedirectPermanent</a></li>
+<li><a href="mod_alias.html#redirectrelative">RedirectRelative</a></li>
 <li><a href="mod_alias.html#redirecttemp">RedirectTemp</a></li>
 <li><a href="mod_socache_redis.html#redisconnpoolttl">RedisConnPoolTTL</a></li>
 <li><a href="mod_socache_redis.html#redistimeout">RedisTimeout</a></li>
