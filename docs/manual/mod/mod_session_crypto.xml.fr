@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1793934 -->
+<!-- English Revision: 1861455 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -200,7 +200,8 @@ d'Apache</compatibility>
     <var>exec:</var> , la commande
     spécifiée sera exécutée, et la première ligne que cette dernière
     renverra sur la sortie standard sera utilisée comme clé.</p>
-<example><pre>
+<example>
+    <highlight language="config">
 # clé spécifiée et utilisée en tant que tel
 SessionCryptoPassphrase secret
 
@@ -209,7 +210,8 @@ SessionCryptoPassphrase exec:/path/to/program
 
 # exécution de /path/to/program avec un argument pour générer la clé
 SessionCryptoPassphrase "exec:/path/to/otherProgram argument1"
-</pre></example>
+    </highlight>
+</example>
 
 </usage>
 </directivesynopsis>
@@ -234,9 +236,9 @@ session</description>
     serveur, et un redémarrage graceful est nécessaire pour prendre en
     compte un éventuel changement de clés.</p>
 
-    <p>A la différence de la directive
-    <directive>SessionCryptoPassphrase</directive>, les clés ne sont pas
-    présentes dans le fichier de configuration de httpd et peuvent être
+    <p>A la différence de la directive <directive
+    module="mod_session_crypto">SessionCryptoPassphrase</directive>, les clés ne
+    sont pas présentes dans le fichier de configuration de httpd et peuvent être
     cachées via une protection appropriée du fichier de clés.</p>
 
     <p>Il est possible de spécifier plusieurs clés afin de mettre en
@@ -254,7 +256,7 @@ session</description>
 <name>SessionCryptoCipher</name>
 <description>L'algorithme à utiliser pour le chiffrement de la session</description>
 <syntax>SessionCryptoCipher <var>algorithme</var></syntax>
-<default>aes256</default>
+<default>SessionCryptoCipher aes256</default>
 <contextlist><context>server config</context>
 <context>virtual host</context>
 <context>directory</context>

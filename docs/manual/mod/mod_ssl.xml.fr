@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1854000 -->
+<!-- English Revision: 1861442 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1447,7 +1447,7 @@ SSLCARevocationFile "/usr/local/apache2/conf/ssl.crl/ca-bundle-client.crl"
 <directivesynopsis>
 <name>SSLCARevocationCheck</name>
 <description>Active la vérification des révocations basée sur les CRL</description>
-<syntax>SSLCARevocationCheck chain|leaf|none <em>flag</em>s</syntax>
+<syntax>SSLCARevocationCheck chain|leaf|none [<em>flag</em>s ...]</syntax>
 <default>SSLCARevocationCheck none</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
