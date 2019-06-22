@@ -28,6 +28,8 @@
 <a href="../fr/platform/windows.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ko/platform/windows.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 
 
     <p>Ce document décrit l'installation, la configuration et
@@ -670,7 +672,7 @@ RewriteRule "(.*)" "${lowercase:$1}" [R,L]</pre>
 
 &lt;Directory "//imagehost/www/images/"&gt;
 #...
-&lt;Directory&gt;</pre>
+&lt;/Directory&gt;</pre>
 </div>
 
   <p>Lorsqu'Apache s'exécute en tant que service, vous devez créer un

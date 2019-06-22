@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.es.xsl"?>
-<!-- English Revision: 1817381:1854000 (outdated) -->
+<!-- English Revision: 1817381:1861442 (outdated) -->
 <!-- Spanish Translation: Daniel Ferradal <dferradal@apache.org> -->
 <!-- Updated and reviewed: Luis Gil de bernabe <lgilbernabe@apache.org> -->
 
