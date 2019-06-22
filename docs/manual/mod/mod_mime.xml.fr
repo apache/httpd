@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1855767 -->
+<!-- English Revision: 1861457 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -1125,7 +1125,7 @@ d'extensions de noms de fichiers</description>
 <directivesynopsis>
 <name>MimeOptions</name>
 <description>Configure le comportement de mod_mime</description>
-<syntax>MimeOptions<var>option</var> [<var>option</var>] ...</syntax>
+<syntax>MimeOptions <var>option</var> [<var>option</var>] ...</syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context>

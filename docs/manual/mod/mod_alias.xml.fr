@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1799478 -->
+<!-- English Revision: 1861542 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -664,5 +664,26 @@ comme un script CGI</description>
 
 </usage>
 </directivesynopsis>
+
+<directivesynopsis>
+<name>RedirectRelative</name>
+<description>Redirection relative de cibles.</description>
+<syntax>RedirectRelative OFF|ON</syntax>
+<default>RedirectRelative OFF</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context>
+<compatibility>Disponible à partir de la version 2.5.1 du serveur HTTP Apache</compatibility>
+</contextlist>
+
+<usage>
+    <p>Par défaut, si l'URL cible d'une directive
+    <directive>Redirect</directive> est une URL relative commençant par un
+    caractère '/', le serveur convertit cette dernière en URL absolue avant de
+    répondre au client. En définissant <directive>RedirectRelative</directive> à
+    "ON", l'URL relative est présentée au client sans modification.</p>
+
+</usage>
+</directivesynopsis>
+
 
 </modulesynopsis>
