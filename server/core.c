@@ -20,15 +20,7 @@
 #include "apr_fnmatch.h"
 #include "apr_hash.h"
 #include "apr_thread_proc.h"    /* for RLIMIT stuff */
-
-#include "apr_crypto.h"
-#if defined(APU_HAVE_CRYPTO) && APU_HAVE_CRYPTO && \
-    defined(APU_HAVE_CRYPTO_PRNG) && APU_HAVE_CRYPTO_PRNG
-#define USE_APR_CRYPTO_PRNG 1
-#else
-#define USE_APR_CRYPTO_PRNG 0
 #include "apr_random.h"
-#endif
 
 #include "apr_version.h"
 #if APR_MAJOR_VERSION < 2
@@ -5610,26 +5602,14 @@ AP_DECLARE(char *) ap_state_dir_relative(apr_pool_t *p, const char *file)
 }
 
 
-#if !USE_APR_CRYPTO_PRNG
 static apr_random_t *rng = NULL;
 #if APR_HAS_THREADS
 static apr_thread_mutex_t *rng_mutex = NULL;
 #endif
-#endif /* !USE_APR_CRYPTO_PRNG */
 
 static void core_child_init(apr_pool_t *pchild, server_rec *s)
 {
-    /* The MPMs use plain fork() and not apr_proc_fork(), so we have to
-     * take care of the random generator manually in the child.
-     */
     apr_proc_t proc;
-
-    memset(&proc, 0, sizeof(proc));
-    proc.pid = getpid();
-
-#if USE_APR_CRYPTO_PRNG
-    apr_crypto_prng_after_fork(NULL, 1);
-#else
 #if APR_HAS_THREADS
     {
         int threaded_mpm;
@@ -5640,8 +5620,11 @@ static void core_child_init(apr_pool_t *pchild, server_rec *s)
         }
     }
 #endif
+    /* The MPMs use plain fork() and not apr_proc_fork(), so we have to call
+     * apr_random_after_fork() manually in the child
+     */
+    proc.pid = getpid();
     apr_random_after_fork(&proc);
-#endif /* USE_APR_CRYPTO_PRNG */
 }
 
 static void core_optional_fn_retrieve(void)
@@ -5651,7 +5634,6 @@ static void core_optional_fn_retrieve(void)
 
 AP_CORE_DECLARE(void) ap_random_parent_after_fork(void)
 {
-#if !USE_APR_CRYPTO_PRNG
     /*
      * To ensure that the RNG state in the parent changes after the fork, we
      * pull some data from the RNG and discard it. This ensures that the RNG
@@ -5663,41 +5645,30 @@ AP_CORE_DECLARE(void) ap_random_parent_after_fork(void)
      */
     apr_uint16_t data;
     apr_random_insecure_bytes(rng, &data, sizeof(data));
-#endif /* !USE_APR_CRYPTO_PRNG */
 }
 
 AP_CORE_DECLARE(void) ap_init_rng(apr_pool_t *p)
 {
+    unsigned char seed[8];
     apr_status_t rv;
-
-#if USE_APR_CRYPTO_PRNG
-    rv = apr_crypto_init(p);
-#else
-    {
-        unsigned char seed[8];
-        rng = apr_random_standard_new(p);
-        do {
-            rv = apr_generate_random_bytes(seed, sizeof(seed));
-            if (rv != APR_SUCCESS)
-                break;
-            apr_random_add_entropy(rng, seed, sizeof(seed));
-            rv = apr_random_insecure_ready(rng);
-        } while (rv == APR_ENOTENOUGHENTROPY);
-    }
-#endif /* USE_APR_CRYPTO_PRNG */
-
-    if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, APLOGNO(00141)
-                     "Could not initialize random number generator");
-        exit(1);
-    }
+    rng = apr_random_standard_new(p);
+    do {
+        rv = apr_generate_random_bytes(seed, sizeof(seed));
+        if (rv != APR_SUCCESS)
+            goto error;
+        apr_random_add_entropy(rng, seed, sizeof(seed));
+        rv = apr_random_insecure_ready(rng);
+    } while (rv == APR_ENOTENOUGHENTROPY);
+    if (rv == APR_SUCCESS)
+        return;
+error:
+    ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, APLOGNO(00141)
+                 "Could not initialize random number generator");
+    exit(1);
 }
 
 AP_DECLARE(void) ap_random_insecure_bytes(void *buf, apr_size_t size)
 {
-#if USE_APR_CRYPTO_PRNG
-    apr_crypto_random_bytes(buf, size);
-#else
 #if APR_HAS_THREADS
     if (rng_mutex)
         apr_thread_mutex_lock(rng_mutex);
@@ -5711,7 +5682,6 @@ AP_DECLARE(void) ap_random_insecure_bytes(void *buf, apr_size_t size)
     if (rng_mutex)
         apr_thread_mutex_unlock(rng_mutex);
 #endif
-#endif /* USE_APR_CRYPTO_PRNG */
 }
 
 /*

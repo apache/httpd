@@ -32,16 +32,6 @@
 #include "ap_provider.h"
 #include "http_config.h"
 
-#include "apr_crypto.h"
-#include "apr_version.h"
-#if APR_VERSION_AT_LEAST(2,0,0) && \
-    defined(APU_HAVE_CRYPTO) && APU_HAVE_CRYPTO && \
-    defined(APU_HAVE_OPENSSL) && APU_HAVE_OPENSSL
-#define USE_APR_CRYPTO_LIB_INIT 1
-#else
-#define USE_APR_CRYPTO_LIB_INIT 0
-#endif
-
 #include "mod_proxy.h" /* for proxy_hook_section_post_config() */
 
 #include <assert.h>
@@ -342,7 +332,6 @@ static int modssl_is_prelinked(void)
     return 0;
 }
 
-#if !USE_APR_CRYPTO_LIB_INIT
 static apr_status_t ssl_cleanup_pre_config(void *data)
 {
     /*
@@ -395,7 +384,6 @@ static apr_status_t ssl_cleanup_pre_config(void *data)
      */
     return APR_SUCCESS;
 }
-#endif /* !USE_APR_CRYPTO_LIB_INIT */
 
 static int ssl_hook_pre_config(apr_pool_t *pconf,
                                apr_pool_t *plog,
@@ -406,58 +394,29 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
 #endif
     modssl_running_statically = modssl_is_prelinked();
 
-#if USE_APR_CRYPTO_LIB_INIT
-    {
-        /* When mod_ssl is builtin, no need to unload openssl on restart,
-         * so use pglobal.
-         */
-        apr_pool_t *p = modssl_running_statically ? ap_pglobal : pconf;
-        apr_status_t rv = apr_crypto_lib_init("openssl", NULL, NULL, p);
-        if (rv != APR_SUCCESS && rv != APR_EREINIT) {
-            ap_log_perror(APLOG_MARK, APLOG_ERR, rv, pconf, APLOGNO(10155)
-                          "mod_ssl: can't initialize OpenSSL library");
-            return !OK;
-        }
-    }
-#else /* USE_APR_CRYPTO_LIB_INIT */
-    {
-        /* We must register the library in full, to ensure our configuration
-         * code can successfully test the SSL environment.
-         */
-/* Both undefined (or no-op) with LibreSSL */
-#if !defined(LIBRESSL_VERSION_NUMBER)
-#if MODSSL_USE_OPENSSL_PRE_1_1_API
-        CRYPTO_malloc_init();
-#else
-        OPENSSL_malloc_init();
-#endif
-#endif
-        ERR_load_crypto_strings();
-#if HAVE_ENGINE_LOAD_BUILTIN_ENGINES
-        ENGINE_load_builtin_engines();
-#endif
-        OpenSSL_add_all_algorithms();
-        OPENSSL_load_builtin_modules();
-
-        SSL_load_error_strings();
-        SSL_library_init();
-
-        /*
-         * Let us cleanup the ssl library when the module is unloaded
-         */
-        apr_pool_cleanup_register(pconf, NULL, ssl_cleanup_pre_config,
-                                               apr_pool_cleanup_null);
-    }
-
-#if APR_HAS_THREADS && MODSSL_USE_OPENSSL_PRE_1_1_API
     /* Some OpenSSL internals are allocated per-thread, make sure they
-     * are associated to the/our same thread-id until cleaned up. Then
-     * initialize all the thread locking stuff needed by the lib.
+     * are associated to the/our same thread-id until cleaned up.
      */
+#if APR_HAS_THREADS && MODSSL_USE_OPENSSL_PRE_1_1_API
     ssl_util_thread_id_setup(pconf);
-    ssl_util_thread_setup(pconf);
 #endif
-#endif /* USE_APR_CRYPTO_LIB_INIT */
+
+    /* We must register the library in full, to ensure our configuration
+     * code can successfully test the SSL environment.
+     */
+#if MODSSL_USE_OPENSSL_PRE_1_1_API || defined(LIBRESSL_VERSION_NUMBER)
+    (void)CRYPTO_malloc_init();
+#else
+    OPENSSL_malloc_init();
+#endif
+    ERR_load_crypto_strings();
+    SSL_load_error_strings();
+    SSL_library_init();
+#if HAVE_ENGINE_LOAD_BUILTIN_ENGINES
+    ENGINE_load_builtin_engines();
+#endif
+    OpenSSL_add_all_algorithms();
+    OPENSSL_load_builtin_modules();
 
     if (OBJ_txt2nid("id-on-dnsSRV") == NID_undef) {
         (void)OBJ_create("1.3.6.1.5.5.7.8.7", "id-on-dnsSRV",
@@ -466,6 +425,12 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
 
     /* Start w/o errors (e.g. OBJ_txt2nid() above) */
     ERR_clear_error();
+
+    /*
+     * Let us cleanup the ssl library when the module is unloaded
+     */
+    apr_pool_cleanup_register(pconf, NULL, ssl_cleanup_pre_config,
+                                           apr_pool_cleanup_null);
 
     /* Register us to handle mod_log_config %c/%x variables */
     ssl_var_log_config_register(pconf);
