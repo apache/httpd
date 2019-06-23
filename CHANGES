@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_ssl: use OPENSSL_init_ssl() to initialise OpenSSL on versions 1.1+.
+     [Graham Leggett]
+
   *) mod_proxy_http2: adding support for handling trailers in both directions. PR 63502.
      [Stefan Eissing]
 
