@@ -17,6 +17,7 @@
 #ifndef mod_md_md_h
 #define mod_md_md_h
 
+#include "md_time.h"
 #include "md_version.h"
 
 struct apr_array_header_t;
@@ -37,13 +38,19 @@ struct md_pkey_spec_t;
 #define MD_HSTS_HEADER             "Strict-Transport-Security"
 #define MD_HSTS_MAX_AGE_DEFAULT    15768000
 
+#define PROTO_ACME_TLS_1        "acme-tls/1"
+
+#define MD_TIME_LIFE_NORM           (apr_time_from_sec(100 * MD_SECS_PER_DAY))
+#define MD_TIME_RENEW_WINDOW_DEF    (apr_time_from_sec(33 * MD_SECS_PER_DAY))
+#define MD_TIME_WARN_WINDOW_DEF     (apr_time_from_sec(10 * MD_SECS_PER_DAY))
+
 typedef enum {
-    MD_S_UNKNOWN,                   /* MD has not been analysed yet */
-    MD_S_INCOMPLETE,                /* MD is missing necessary information, cannot go live */
-    MD_S_COMPLETE,                  /* MD has all necessary information, can go live */
-    MD_S_EXPIRED,                   /* MD is complete, but credentials have expired */
-    MD_S_ERROR,                     /* MD data is flawed, unable to be processed as is */ 
-    MD_S_MISSING,                   /* MD is missing config information, cannot proceed */
+    MD_S_UNKNOWN = 0,               /* MD has not been analysed yet */
+    MD_S_INCOMPLETE = 1,            /* MD is missing necessary information, cannot go live */
+    MD_S_COMPLETE = 2,              /* MD has all necessary information, can go live */
+    MD_S_EXPIRED_DEPRECATED = 3,    /* deprecated */
+    MD_S_ERROR = 4,                 /* MD data is flawed, unable to be processed as is */ 
+    MD_S_MISSING_INFORMATION = 5,     /* User has not agreed to ToS */
 } md_state_t;
 
 typedef enum {
@@ -73,11 +80,11 @@ typedef enum {
 } md_store_group_t;
 
 typedef enum {
-    MD_DRIVE_DEFAULT = -1,          /* default value */
-    MD_DRIVE_MANUAL,                /* manually triggered transmission of credentials */
-    MD_DRIVE_AUTO,                  /* automatic process performed by httpd */
-    MD_DRIVE_ALWAYS,                /* always driven by httpd, even if not used in any vhost */
-} md_drive_mode_t;
+    MD_RENEW_DEFAULT = -1,          /* default value */
+    MD_RENEW_MANUAL,                /* manually triggered renewal of certificate */
+    MD_RENEW_AUTO,                  /* automatic process performed by httpd */
+    MD_RENEW_ALWAYS,                /* always renewed by httpd, even if not necessary */
+} md_renew_mode_t;
 
 typedef struct md_t md_t;
 struct md_t {
@@ -88,35 +95,46 @@ struct md_t {
     int transitive;                 /* != 0 iff VirtualHost names/aliases are auto-added */
     md_require_t require_https;     /* Iff https: is required for this MD */
     
-    int drive_mode;                 /* mode of obtaining credentials */
+    int renew_mode;                 /* mode of obtaining credentials */
     struct md_pkey_spec_t *pkey_spec;/* specification for generating new private keys */
     int must_staple;                /* certificates should set the OCSP Must Staple extension */
-    apr_interval_time_t renew_norm; /* if > 0, normalized cert lifetime */
-    apr_interval_time_t renew_window;/* time before expiration that starts renewal */
+    const md_timeslice_t *renew_window;  /* time before expiration that starts renewal */
+    const md_timeslice_t *warn_window;   /* time before expiration that warnings are sent out */
     
     const char *ca_url;             /* url of CA certificate service */
     const char *ca_proto;           /* protocol used vs CA (e.g. ACME) */
     const char *ca_account;         /* account used at CA */
     const char *ca_agreement;       /* accepted agreement uri between CA and user */ 
     struct apr_array_header_t *ca_challenges; /* challenge types configured for this MD */
-
+    const char *cert_file;          /* != NULL iff pubcert file explicitly configured */
+    const char *pkey_file;          /* != NULL iff privkey file explicitly configured */
+    
     md_state_t state;               /* state of this MD */
-    apr_time_t valid_from;          /* When the credentials start to be valid. 0 if unknown */
-    apr_time_t expires;             /* When the credentials expire. 0 if unknown */
-    const char *cert_url;           /* url where cert has been created, remember during drive */ 
+    
+    struct apr_array_header_t *acme_tls_1_domains; /* domains supporting "acme-tls/1" protocol */
     
     const struct md_srv_conf_t *sc; /* server config where it was defined or NULL */
     const char *defn_name;          /* config file this MD was defined */
     unsigned defn_line_number;      /* line number of definition */
+    
+    const char *configured_name;    /* name this MD was configured with, if different */
 };
 
 #define MD_KEY_ACCOUNT          "account"
+#define MD_KEY_ACME_TLS_1       "acme-tls/1"
+#define MD_KEY_ACTIVITY         "activity"
 #define MD_KEY_AGREEMENT        "agreement"
+#define MD_KEY_AUTHORIZATIONS   "authorizations"
 #define MD_KEY_BITS             "bits"
 #define MD_KEY_CA               "ca"
 #define MD_KEY_CA_URL           "ca-url"
 #define MD_KEY_CERT             "cert"
+#define MD_KEY_CERT_FILE        "cert-file"
+#define MD_KEY_CERTIFICATE      "certificate"
+#define MD_KEY_CHALLENGE        "challenge"
 #define MD_KEY_CHALLENGES       "challenges"
+#define MD_KEY_CMD_DNS01        "cmd-dns-01"
+#define MD_KEY_COMPLETE         "complete"
 #define MD_KEY_CONTACT          "contact"
 #define MD_KEY_CONTACTS         "contacts"
 #define MD_KEY_CSR              "csr"
@@ -125,46 +143,67 @@ struct md_t {
 #define MD_KEY_DIR              "dir"
 #define MD_KEY_DOMAIN           "domain"
 #define MD_KEY_DOMAINS          "domains"
-#define MD_KEY_DRIVE_MODE       "drive-mode"
+#define MD_KEY_ENTRIES          "entries"
+#define MD_KEY_ERRORED          "errored"
 #define MD_KEY_ERRORS           "errors"
 #define MD_KEY_EXPIRES          "expires"
+#define MD_KEY_FINALIZE         "finalize"
+#define MD_KEY_FINISHED         "finished"
 #define MD_KEY_HTTP             "http"
 #define MD_KEY_HTTPS            "https"
 #define MD_KEY_ID               "id"
 #define MD_KEY_IDENTIFIER       "identifier"
 #define MD_KEY_KEY              "key"
 #define MD_KEY_KEYAUTHZ         "keyAuthorization"
+#define MD_KEY_LAST             "last"
+#define MD_KEY_LAST_RUN         "last-run"
 #define MD_KEY_LOCATION         "location"
+#define MD_KEY_LOG              "log"
+#define MD_KEY_MDS              "managed-domains"
+#define MD_KEY_MESSAGE          "message"
 #define MD_KEY_MUST_STAPLE      "must-staple"
 #define MD_KEY_NAME             "name"
+#define MD_KEY_NEXT_RUN         "next-run"
+#define MD_KEY_NOTIFIED         "notified"
+#define MD_KEY_ORDERS           "orders"
 #define MD_KEY_PERMANENT        "permanent"
 #define MD_KEY_PKEY             "privkey"
-#define MD_KEY_PROCESSED        "processed"
+#define MD_KEY_PKEY_FILE        "pkey-file"
+#define MD_KEY_PROBLEM          "problem"
 #define MD_KEY_PROTO            "proto"
+#define MD_KEY_READY            "ready"
 #define MD_KEY_REGISTRATION     "registration"
 #define MD_KEY_RENEW            "renew"
+#define MD_KEY_RENEW_MODE       "renew-mode"
+#define MD_KEY_RENEWAL          "renewal"
+#define MD_KEY_RENEWING         "renewing"
 #define MD_KEY_RENEW_WINDOW     "renew-window"
 #define MD_KEY_REQUIRE_HTTPS    "require-https"
 #define MD_KEY_RESOURCE         "resource"
+#define MD_KEY_SERIAL           "serial"
+#define MD_KEY_SHA256_FINGERPRINT  "sha256-fingerprint"
 #define MD_KEY_STATE            "state"
 #define MD_KEY_STATUS           "status"
 #define MD_KEY_STORE            "store"
 #define MD_KEY_TEMPORARY        "temporary"
 #define MD_KEY_TOKEN            "token"
+#define MD_KEY_TOTAL            "total"
 #define MD_KEY_TRANSITIVE       "transitive"
 #define MD_KEY_TYPE             "type"
 #define MD_KEY_URL              "url"
 #define MD_KEY_URI              "uri"
-#define MD_KEY_VALID_FROM       "validFrom"
+#define MD_KEY_VALID_FROM       "valid-from"
+#define MD_KEY_VALID_UNTIL      "valid-until"
 #define MD_KEY_VALUE            "value"
 #define MD_KEY_VERSION          "version"
+#define MD_KEY_WHEN             "when"
+#define MD_KEY_WARN_WINDOW      "warn-window"
 
 #define MD_FN_MD                "md.json"
 #define MD_FN_JOB               "job.json"
 #define MD_FN_PRIVKEY           "privkey.pem"
 #define MD_FN_PUBCERT           "pubcert.pem"
 #define MD_FN_CERT              "cert.pem"
-#define MD_FN_CHAIN             "chain.pem"
 #define MD_FN_HTTPD_JSON        "httpd.json"
 
 #define MD_FN_FALLBACK_PKEY     "fallback-privkey.pem"
@@ -226,7 +265,7 @@ md_t *md_get_by_dns_overlap(struct apr_array_header_t *mds, const md_t *md);
  * Find the managed domain in the list that, for the given md, 
  * has the same name, or the most number of overlaps in domains
  */
-md_t *md_find_closest_match(apr_array_header_t *mds, const md_t *md);
+md_t *md_find_closest_match(struct apr_array_header_t *mds, const md_t *md);
 
 /**
  * Create and empty md record, structures initialized.
@@ -248,11 +287,6 @@ md_t *md_clone(apr_pool_t *p, const md_t *src);
  */
 md_t *md_copy(apr_pool_t *p, const md_t *src);
 
-/**
- * Create a merged md with the settings of add overlaying the ones from base.
- */
-md_t *md_merge(apr_pool_t *p, const md_t *add, const md_t *base);
-
 /** 
  * Convert the managed domain into a JSON representation and vice versa. 
  *
@@ -261,30 +295,26 @@ md_t *md_merge(apr_pool_t *p, const md_t *add, const md_t *base);
 struct md_json_t *md_to_json (const md_t *md, apr_pool_t *p);
 md_t *md_from_json(struct md_json_t *json, apr_pool_t *p);
 
-/**
- * Determine if MD should renew its cert (if it has one)
- */
-int md_should_renew(const md_t *md);
+int md_is_covered_by_alt_names(const md_t *md, const struct apr_array_header_t* alt_names);
+
+#define LE_ACMEv1_PROD      "https://acme-v01.api.letsencrypt.org/directory"
+#define LE_ACMEv1_STAGING   "https://acme-staging.api.letsencrypt.org/directory"
+
+#define LE_ACMEv2_PROD      "https://acme-v02.api.letsencrypt.org/directory"  
+#define LE_ACMEv2_STAGING   "https://acme-staging-v02.api.letsencrypt.org/directory"
+
 
 /**************************************************************************************************/
 /* domain credentials */
 
-typedef struct md_creds_t md_creds_t;
-struct md_creds_t {
-    struct md_pkey_t *privkey;
-    struct apr_array_header_t *pubcert;    /* complete md_cert* chain */
-    struct md_cert_t *cert;
-    int expired;
+typedef struct md_pubcert_t md_pubcert_t;
+struct md_pubcert_t {
+    struct apr_array_header_t *certs;     /* chain of const md_cert*, leaf cert first */
+    struct apr_array_header_t *alt_names; /* alt-names of leaf cert */
+    const char *cert_file;                /* file path of chain */
+    const char *key_file;                 /* file path of key for leaf cert */
 };
 
-/* TODO: not sure this is a good idea, testing some readability and debuggabiltiy of
- * cascaded apr_status_t checks. */
-#define MD_CHK_VARS                 const char *md_chk_
-#define MD_LAST_CHK                 md_chk_
-#define MD_CHK_STEP(c, status, s)   (md_chk_ = s, (void)md_chk_, status == (rv = (c)))
-#define MD_CHK(c, status)           MD_CHK_STEP(c, status, #c)
-#define MD_IS_ERR(c, err)           (md_chk_ = #c, APR_STATUS_IS_##err((rv = (c))))
-#define MD_CHK_SUCCESS(c)           MD_CHK(c, APR_SUCCESS)
-#define MD_OK(c)                    MD_CHK_SUCCESS(c)
+#define MD_OK(c)                    (APR_SUCCESS == (rv = c))
 
 #endif /* mod_md_md_h */

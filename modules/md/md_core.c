@@ -79,16 +79,34 @@ apr_size_t md_common_name_count(const md_t *md1, const md_t *md2)
     return hits;
 }
 
+int md_is_covered_by_alt_names(const md_t *md, const struct apr_array_header_t* alt_names)
+{
+    const char *name;
+    int i;
+    
+    if (alt_names) {
+        for (i = 0; i < md->domains->nelts; ++i) {
+            name = APR_ARRAY_IDX(md->domains, i, const char *);
+            if (!md_dns_domains_match(alt_names, name)) {
+                return 0;
+            }
+        }
+        return 1;
+    }
+    return 0;
+}
+
 md_t *md_create_empty(apr_pool_t *p)
 {
     md_t *md = apr_pcalloc(p, sizeof(*md));
     if (md) {
         md->domains = apr_array_make(p, 5, sizeof(const char *));
         md->contacts = apr_array_make(p, 5, sizeof(const char *));
-        md->drive_mode = MD_DRIVE_DEFAULT;
+        md->renew_mode = MD_RENEW_DEFAULT;
         md->require_https = MD_REQUIRE_UNSET;
         md->must_staple = -1;
         md->transitive = -1;
+        md->acme_tls_1_domains = apr_array_make(p, 5, sizeof(const char *));
         md->defn_name = "unknown";
         md->defn_line_number = 0;
     }
@@ -204,34 +222,6 @@ md_t *md_create(apr_pool_t *p, apr_array_header_t *domains)
     return md;
 }
 
-int md_should_renew(const md_t *md) 
-{
-    apr_time_t now = apr_time_now();
-
-    if (md->expires <= now) {
-        return 1;
-    }
-    else if (md->expires > 0) {
-        double renew_win,  life;
-        apr_interval_time_t left;
-        
-        renew_win = (double)md->renew_window;
-        if (md->renew_norm > 0 
-            && md->renew_norm > renew_win
-            && md->expires > md->valid_from) {
-            /* Calc renewal days as fraction of cert lifetime - if known */
-            life = (double)(md->expires - md->valid_from); 
-            renew_win = life * renew_win / (double)md->renew_norm;
-        }
-        
-        left = md->expires - now;
-        if (left <= renew_win) {
-            return 1;
-        }                
-    }
-    return 0;
-}
-
 /**************************************************************************************************/
 /* lifetime */
 
@@ -247,6 +237,7 @@ md_t *md_copy(apr_pool_t *p, const md_t *src)
         if (src->ca_challenges) {
             md->ca_challenges = apr_array_copy(p, src->ca_challenges);
         }
+        md->acme_tls_1_domains = apr_array_copy(p, src->acme_tls_1_domains);
     }    
     return md;   
 }
@@ -261,47 +252,26 @@ md_t *md_clone(apr_pool_t *p, const md_t *src)
         md->name = apr_pstrdup(p, src->name);
         md->require_https = src->require_https;
         md->must_staple = src->must_staple;
-        md->drive_mode = src->drive_mode;
+        md->renew_mode = src->renew_mode;
         md->domains = md_array_str_compact(p, src->domains, 0);
         md->pkey_spec = src->pkey_spec;
-        md->renew_norm = src->renew_norm;
         md->renew_window = src->renew_window;
+        md->warn_window = src->warn_window;
         md->contacts = md_array_str_clone(p, src->contacts);
         if (src->ca_url) md->ca_url = apr_pstrdup(p, src->ca_url);
         if (src->ca_proto) md->ca_proto = apr_pstrdup(p, src->ca_proto);
         if (src->ca_account) md->ca_account = apr_pstrdup(p, src->ca_account);
         if (src->ca_agreement) md->ca_agreement = apr_pstrdup(p, src->ca_agreement);
         if (src->defn_name) md->defn_name = apr_pstrdup(p, src->defn_name);
-        if (src->cert_url) md->cert_url = apr_pstrdup(p, src->cert_url);
         md->defn_line_number = src->defn_line_number;
         if (src->ca_challenges) {
             md->ca_challenges = md_array_str_clone(p, src->ca_challenges);
         }
+        md->acme_tls_1_domains = md_array_str_compact(p, src->acme_tls_1_domains, 0);
+        if (src->cert_file) md->cert_file = apr_pstrdup(p, src->cert_file);
+        if (src->pkey_file) md->pkey_file = apr_pstrdup(p, src->pkey_file);
     }    
     return md;   
-}
-
-md_t *md_merge(apr_pool_t *p, const md_t *add, const md_t *base)
-{
-    md_t *n = apr_pcalloc(p, sizeof(*n));
-
-    n->ca_url = add->ca_url? add->ca_url : base->ca_url;
-    n->ca_proto = add->ca_proto? add->ca_proto : base->ca_proto;
-    n->ca_agreement = add->ca_agreement? add->ca_agreement : base->ca_agreement;
-    n->require_https = (add->require_https != MD_REQUIRE_UNSET)? add->require_https : base->require_https;
-    n->must_staple = (add->must_staple >= 0)? add->must_staple : base->must_staple;
-    n->drive_mode = (add->drive_mode != MD_DRIVE_DEFAULT)? add->drive_mode : base->drive_mode;
-    n->pkey_spec = add->pkey_spec? add->pkey_spec : base->pkey_spec;
-    n->renew_norm = (add->renew_norm > 0)? add->renew_norm : base->renew_norm;
-    n->renew_window = (add->renew_window > 0)? add->renew_window : base->renew_window;
-    n->transitive = (add->transitive >= 0)? add->transitive : base->transitive;
-    if (add->ca_challenges) {
-        n->ca_challenges = apr_array_copy(p, add->ca_challenges);
-    }
-    else if (base->ca_challenges) {
-        n->ca_challenges = apr_array_copy(p, base->ca_challenges);
-    }
-    return n;
 }
 
 /**************************************************************************************************/
@@ -320,32 +290,15 @@ md_json_t *md_to_json(const md_t *md, apr_pool_t *p)
         md_json_sets(md->ca_proto, json, MD_KEY_CA, MD_KEY_PROTO, NULL);
         md_json_sets(md->ca_url, json, MD_KEY_CA, MD_KEY_URL, NULL);
         md_json_sets(md->ca_agreement, json, MD_KEY_CA, MD_KEY_AGREEMENT, NULL);
-        if (md->cert_url) {
-            md_json_sets(md->cert_url, json, MD_KEY_CERT, MD_KEY_URL, NULL);
-        }
         if (md->pkey_spec) {
             md_json_setj(md_pkey_spec_to_json(md->pkey_spec, p), json, MD_KEY_PKEY, NULL);
         }
         md_json_setl(md->state, json, MD_KEY_STATE, NULL);
-        md_json_setl(md->drive_mode, json, MD_KEY_DRIVE_MODE, NULL);
-        if (md->expires > 0) {
-            char *ts = apr_pcalloc(p, APR_RFC822_DATE_LEN);
-            apr_rfc822_date(ts, md->expires);
-            md_json_sets(ts, json, MD_KEY_CERT, MD_KEY_EXPIRES, NULL);
-        }
-        if (md->valid_from > 0) {
-            char *ts = apr_pcalloc(p, APR_RFC822_DATE_LEN);
-            apr_rfc822_date(ts, md->valid_from);
-            md_json_sets(ts, json, MD_KEY_CERT, MD_KEY_VALID_FROM, NULL);
-        }
-        if (md->renew_norm > 0) {
-            md_json_sets(apr_psprintf(p, "%ld%%", (long)(md->renew_window * 100L / md->renew_norm)), 
-                                      json, MD_KEY_RENEW_WINDOW, NULL);
-        }
-        else {
-            md_json_setl((long)apr_time_sec(md->renew_window), json, MD_KEY_RENEW_WINDOW, NULL);
-        }
-        md_json_setb(md_should_renew(md), json, MD_KEY_RENEW, NULL);
+        md_json_setl(md->renew_mode, json, MD_KEY_RENEW_MODE, NULL);
+        if (md->renew_window)
+            md_json_sets(md_timeslice_format(md->renew_window, p), json, MD_KEY_RENEW_WINDOW, NULL);
+        if (md->warn_window)
+            md_json_sets(md_timeslice_format(md->warn_window, p), json, MD_KEY_WARN_WINDOW, NULL);
         if (md->ca_challenges && md->ca_challenges->nelts > 0) {
             apr_array_header_t *na;
             na = md_array_str_compact(p, md->ca_challenges, 0);
@@ -362,6 +315,10 @@ md_json_t *md_to_json(const md_t *md, apr_pool_t *p)
                 break;
         }
         md_json_setb(md->must_staple > 0, json, MD_KEY_MUST_STAPLE, NULL);
+        if (!apr_is_empty_array(md->acme_tls_1_domains))
+            md_json_setsa(md->acme_tls_1_domains, json, MD_KEY_PROTO, MD_KEY_ACME_TLS_1, NULL);
+        md_json_sets(md->cert_file, json, MD_KEY_CERT_FILE, NULL);
+        md_json_sets(md->pkey_file, json, MD_KEY_PKEY_FILE, NULL);
         return json;
     }
     return NULL;
@@ -379,34 +336,18 @@ md_t *md_from_json(md_json_t *json, apr_pool_t *p)
         md->ca_proto = md_json_dups(p, json, MD_KEY_CA, MD_KEY_PROTO, NULL);
         md->ca_url = md_json_dups(p, json, MD_KEY_CA, MD_KEY_URL, NULL);
         md->ca_agreement = md_json_dups(p, json, MD_KEY_CA, MD_KEY_AGREEMENT, NULL);
-        md->cert_url = md_json_dups(p, json, MD_KEY_CERT, MD_KEY_URL, NULL);
         if (md_json_has_key(json, MD_KEY_PKEY, MD_KEY_TYPE, NULL)) {
             md->pkey_spec = md_pkey_spec_from_json(md_json_getj(json, MD_KEY_PKEY, NULL), p);
         }
         md->state = (md_state_t)md_json_getl(json, MD_KEY_STATE, NULL);
-        md->drive_mode = (int)md_json_getl(json, MD_KEY_DRIVE_MODE, NULL);
+        if (MD_S_EXPIRED_DEPRECATED == md->state) md->state = MD_S_COMPLETE;
+        md->renew_mode = (int)md_json_getl(json, MD_KEY_RENEW_MODE, NULL);
         md->domains = md_array_str_compact(p, md->domains, 0);
         md->transitive = (int)md_json_getl(json, MD_KEY_TRANSITIVE, NULL);
-        s = md_json_dups(p, json, MD_KEY_CERT, MD_KEY_EXPIRES, NULL);
-        if (s && *s) {
-            md->expires = apr_date_parse_rfc(s);
-        }
-        s = md_json_dups(p, json, MD_KEY_CERT, MD_KEY_VALID_FROM, NULL);
-        if (s && *s) {
-            md->valid_from = apr_date_parse_rfc(s);
-        }
-        md->renew_norm = 0;
-        md->renew_window = apr_time_from_sec(md_json_getl(json, MD_KEY_RENEW_WINDOW, NULL));
-        if (md->renew_window <= 0) {
-            s = md_json_gets(json, MD_KEY_RENEW_WINDOW, NULL);
-            if (s && strchr(s, '%')) {
-                int percent = atoi(s);
-                if (0 < percent && percent < 100) {
-                    md->renew_norm = apr_time_from_sec(100 * MD_SECS_PER_DAY);
-                    md->renew_window = apr_time_from_sec(percent * MD_SECS_PER_DAY);
-                }
-            }
-        }
+        s = md_json_gets(json, MD_KEY_RENEW_WINDOW, NULL);
+        md_timeslice_parse(&md->renew_window, p, s, MD_TIME_LIFE_NORM);
+        s = md_json_gets(json, MD_KEY_WARN_WINDOW, NULL);
+        md_timeslice_parse(&md->warn_window, p, s, MD_TIME_LIFE_NORM);
         if (md_json_has_key(json, MD_KEY_CA, MD_KEY_CHALLENGES, NULL)) {
             md->ca_challenges = apr_array_make(p, 5, sizeof(const char*));
             md_json_dupsa(md->ca_challenges, p, json, MD_KEY_CA, MD_KEY_CHALLENGES, NULL);
@@ -420,6 +361,10 @@ md_t *md_from_json(md_json_t *json, apr_pool_t *p)
             md->require_https = MD_REQUIRE_PERMANENT;
         }
         md->must_staple = (int)md_json_getb(json, MD_KEY_MUST_STAPLE, NULL);
+        md_json_dupsa(md->acme_tls_1_domains, p, json, MD_KEY_PROTO, MD_KEY_ACME_TLS_1, NULL);
+            
+        md->cert_file = md_json_dups(p, json, MD_KEY_CERT_FILE, NULL); 
+        md->pkey_file = md_json_dups(p, json, MD_KEY_PKEY_FILE, NULL); 
         
         return md;
     }

@@ -24,6 +24,7 @@
 #include <apr_tables.h>
 #include <apr_uri.h>
 
+#include "md.h"
 #include "md_log.h"
 #include "md_util.h"
 
@@ -67,7 +68,66 @@ apr_status_t md_util_pool_vdo(md_util_vaction *cb, void *baton, apr_pool_t *p, .
 }
  
 /**************************************************************************************************/
+/* data chunks */
+
+md_data *md_data_create(apr_pool_t *p, const char *data, apr_size_t len)
+{
+    md_data *d;
+    
+    d = apr_palloc(p, sizeof(*d));
+    d->len = len;
+    d->data = len? apr_pstrndup(p, data, len) : NULL;
+    return d;
+}
+
+static const char * const hex_const[] = {
+    "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "0a", "0b", "0c", "0d", "0e", "0f", 
+    "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "1a", "1b", "1c", "1d", "1e", "1f", 
+    "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "2a", "2b", "2c", "2d", "2e", "2f", 
+    "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "3a", "3b", "3c", "3d", "3e", "3f", 
+    "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "4a", "4b", "4c", "4d", "4e", "4f", 
+    "50", "51", "52", "53", "54", "55", "56", "57", "58", "59", "5a", "5b", "5c", "5d", "5e", "5f", 
+    "60", "61", "62", "63", "64", "65", "66", "67", "68", "69", "6a", "6b", "6c", "6d", "6e", "6f", 
+    "70", "71", "72", "73", "74", "75", "76", "77", "78", "79", "7a", "7b", "7c", "7d", "7e", "7f", 
+    "80", "81", "82", "83", "84", "85", "86", "87", "88", "89", "8a", "8b", "8c", "8d", "8e", "8f", 
+    "90", "91", "92", "93", "94", "95", "96", "97", "98", "99", "9a", "9b", "9c", "9d", "9e", "9f", 
+    "a0", "a1", "a2", "a3", "a4", "a5", "a6", "a7", "a8", "a9", "aa", "ab", "ac", "ad", "ae", "af", 
+    "b0", "b1", "b2", "b3", "b4", "b5", "b6", "b7", "b8", "b9", "ba", "bb", "bc", "bd", "be", "bf", 
+    "c0", "c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8", "c9", "ca", "cb", "cc", "cd", "ce", "cf", 
+    "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8", "d9", "da", "db", "dc", "dd", "de", "df", 
+    "e0", "e1", "e2", "e3", "e4", "e5", "e6", "e7", "e8", "e9", "ea", "eb", "ec", "ed", "ee", "ef", 
+    "f0", "f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8", "f9", "fa", "fb", "fc", "fd", "fe", "ff", 
+};
+
+apr_status_t md_data_to_hex(const char **phex, char separator,
+                            apr_pool_t *p, const md_data *data)
+{
+    char *hex, *cp;
+    const char * x;
+    unsigned int i;
+    
+    cp = hex = apr_pcalloc(p, ((separator? 3 : 2) * data->len) + 1);
+    if (!hex) {
+        *phex = NULL;
+        return APR_ENOMEM;
+    }
+    for (i = 0; i < data->len; ++i) {
+        x = hex_const[(unsigned char)data->data[i]];
+        if (i && separator) *cp++ = separator;
+        *cp++ = x[0];
+        *cp++ = x[1];
+    }
+    *phex = hex;
+    return APR_SUCCESS;
+}
+
+/**************************************************************************************************/
 /* string related */
+
+int md_array_is_empty(const struct apr_array_header_t *array)
+{
+    return (array == NULL) || (array->nelts == 0);
+}
 
 char *md_util_str_tolower(char *s)
 {
@@ -230,6 +290,11 @@ apr_status_t md_util_is_file(const char *path, apr_pool_t *pool)
     return rv;
 }
 
+int md_file_exists(const char *fname, apr_pool_t *p)
+{
+    return (fname && *fname && APR_SUCCESS == md_util_is_file(fname, p));
+}
+
 apr_status_t md_util_path_merge(const char **ppath, apr_pool_t *p, ...)
 {
     const char *segment, *path;
@@ -324,6 +389,13 @@ apr_status_t md_text_fcreatex(const char *fpath, apr_fileperms_t perms,
     if (APR_SUCCESS == rv) {
         rv = write_text((void*)text, f, p);
         apr_file_close(f);
+        /* See <https://github.com/icing/mod_md/issues/117>: when a umask
+         * is set, files need to be assigned permissions explicitly.
+         * Otherwise, as in the issues reported, it will break our access model. */
+        rv = apr_file_perms_set(fpath, perms);
+        if (APR_STATUS_IS_ENOTIMPL(rv)) {
+            rv = APR_SUCCESS;
+        }
     }
     return rv;
 }
@@ -413,17 +485,25 @@ static apr_status_t match_and_do(md_util_fwalk_t *ctx, const char *path, int dep
     }
     pattern = APR_ARRAY_IDX(ctx->patterns, depth, const char *);
     
+    md_log_perror(MD_LOG_MARK, MD_LOG_TRACE4, 0, ptemp, "match_and_do "
+                  "path=%s depth=%d pattern=%s", path, depth, pattern);
     rv = apr_dir_open(&d, path, ptemp);
     if (APR_SUCCESS != rv) {
         return rv;
     }
     
     while (APR_SUCCESS == (rv = apr_dir_read(&finfo, wanted, d))) {
+        md_log_perror(MD_LOG_MARK, MD_LOG_TRACE4, 0, ptemp, "match_and_do "
+                      "candidate=%s", finfo.name);
         if (!strcmp(".", finfo.name) || !strcmp("..", finfo.name)) {
             continue;
         } 
         if (APR_SUCCESS == apr_fnmatch(pattern, finfo.name, 0)) {
+            md_log_perror(MD_LOG_MARK, MD_LOG_TRACE4, 0, ptemp, "match_and_do "
+                          "candidate=%s matches pattern", finfo.name);
             if (ndepth < ctx->patterns->nelts) {
+                md_log_perror(MD_LOG_MARK, MD_LOG_TRACE4, 0, ptemp, "match_and_do "
+                              "need to go deepter");
                 if (APR_DIR == finfo.filetype) { 
                     /* deeper and deeper, irgendwo in der tiefe leuchtet ein licht */
                     rv = md_util_path_merge(&npath, ptemp, path, finfo.name, NULL);
@@ -433,6 +513,8 @@ static apr_status_t match_and_do(md_util_fwalk_t *ctx, const char *path, int dep
                 }
             }
             else {
+                md_log_perror(MD_LOG_MARK, MD_LOG_TRACE4, 0, ptemp, "match_and_do "
+                              "invoking inspector on name=%s", finfo.name);
                 rv = ctx->cb(ctx->baton, p, ptemp, path, finfo.name, finfo.filetype);
             }
         }
@@ -608,7 +690,7 @@ apr_status_t md_util_ftree_remove(const char *path, apr_pool_t *p)
 
 /* DNS name checks ********************************************************************************/
 
-int md_util_is_dns_name(apr_pool_t *p, const char *hostname, int need_fqdn)
+int md_dns_is_name(apr_pool_t *p, const char *hostname, int need_fqdn)
 {
     char c, last = 0;
     const char *cp = hostname;
@@ -649,6 +731,73 @@ int md_util_is_dns_name(apr_pool_t *p, const char *hostname, int need_fqdn)
     return 1; /* empty string not allowed */
 }
 
+int md_dns_is_wildcard(apr_pool_t *p, const char *domain)
+{
+    if (domain[0] != '*' || domain[1] != '.') return 0;
+    return md_dns_is_name(p, domain+2, 1);
+}
+
+int md_dns_matches(const char *pattern, const char *domain)
+{
+    const char *s;
+    
+    if (!apr_strnatcasecmp(pattern, domain)) return 1;
+    if (pattern[0] == '*' && pattern[1] == '.') {
+        s = strchr(domain, '.');
+        if (s && !apr_strnatcasecmp(pattern+1, s)) return 1;
+    }
+    return 0;
+}
+
+apr_array_header_t *md_dns_make_minimal(apr_pool_t *p, apr_array_header_t *domains)
+{
+    apr_array_header_t *minimal;
+    const char *domain, *pattern;
+    int i, j, duplicate;
+    
+    minimal = apr_array_make(p, domains->nelts, sizeof(const char *));
+    for (i = 0; i < domains->nelts; ++i) {
+        domain = APR_ARRAY_IDX(domains, i, const char*);
+        duplicate = 0;
+        /* is it matched in minimal already? */
+        for (j = 0; j < minimal->nelts; ++j) {
+            pattern = APR_ARRAY_IDX(minimal, j, const char*);
+            if (md_dns_matches(pattern, domain)) {
+                duplicate = 1;
+                break;
+            }
+        }
+        if (!duplicate) {
+            if (!md_dns_is_wildcard(p, domain)) {
+                /* plain name, will we see a wildcard that replaces it? */
+                for (j = i+1; j < domains->nelts; ++j) {
+                    pattern = APR_ARRAY_IDX(domains, j, const char*);
+                    if (md_dns_is_wildcard(p, pattern) && md_dns_matches(pattern, domain)) {
+                        duplicate = 1;
+                        break;
+                    }
+                }
+            }
+            if (!duplicate) {
+                APR_ARRAY_PUSH(minimal, const char *) = domain; 
+            }
+        }
+    }
+    return minimal;
+}
+
+int md_dns_domains_match(const apr_array_header_t *domains, const char *name)
+{
+    const char *domain;
+    int i;
+    
+    for (i = 0; i < domains->nelts; ++i) {
+        domain = APR_ARRAY_IDX(domains, i, const char*);
+        if (md_dns_matches(domain, name)) return 1;
+    }
+    return 0;
+}
+
 const char *md_util_schemify(apr_pool_t *p, const char *s, const char *def_scheme)
 {
     const char *cp = s;
@@ -682,7 +831,7 @@ static apr_status_t uri_check(apr_uri_t *uri_parsed, apr_pool_t *p,
             if (!uri_parsed->hostname) {
                 err = "missing hostname";
             }
-            else if (!md_util_is_dns_name(p, uri_parsed->hostname, 0)) {
+            else if (!md_dns_is_name(p, uri_parsed->hostname, 0)) {
                 err = "invalid hostname";
             }
             if (uri_parsed->port_str 
@@ -808,37 +957,36 @@ apr_status_t md_util_exec(apr_pool_t *p, const char *cmd, const char * const *ar
     apr_procattr_t *procattr;
     apr_proc_t *proc;
     apr_exit_why_e ewhy;
-
+    char buffer[1024];
+    
     *exit_code = 0;
     if (!(proc = apr_pcalloc(p, sizeof(*proc)))) {
         return APR_ENOMEM;
     }
     if (   APR_SUCCESS == (rv = apr_procattr_create(&procattr, p))
         && APR_SUCCESS == (rv = apr_procattr_io_set(procattr, APR_NO_FILE, 
-                                                    APR_NO_PIPE, APR_NO_PIPE))
+                                                    APR_NO_PIPE, APR_FULL_BLOCK))
         && APR_SUCCESS == (rv = apr_procattr_cmdtype_set(procattr, APR_PROGRAM))
-        && APR_SUCCESS == (rv = apr_proc_create(proc, cmd, argv, NULL, procattr, p))
-        && APR_CHILD_DONE == (rv = apr_proc_wait(proc, exit_code, &ewhy, APR_WAIT))) {
-        /* let's not dwell on exit stati, but core should signal something's bad */
-        if (*exit_code > 127 || APR_PROC_SIGNAL_CORE == ewhy) {
-            return APR_EINCOMPLETE;
+        && APR_SUCCESS == (rv = apr_proc_create(proc, cmd, argv, NULL, procattr, p))) {
+        
+        /* read stderr and log on INFO for possible fault analysis. */
+        while(APR_SUCCESS == (rv = apr_file_gets(buffer, sizeof(buffer)-1, proc->err))) {
+            md_log_perror(MD_LOG_MARK, MD_LOG_INFO, 0, p, "cmd(%s) stderr: %s", cmd, buffer);
         }
-        return APR_SUCCESS;
+        if (!APR_STATUS_IS_EOF(rv)) goto out;
+        apr_file_close(proc->err);
+        
+        if (APR_CHILD_DONE == (rv = apr_proc_wait(proc, exit_code, &ewhy, APR_WAIT))) {
+            /* let's not dwell on exit stati, but core should signal something's bad */
+            if (*exit_code > 127 || APR_PROC_SIGNAL_CORE == ewhy) {
+                return APR_EINCOMPLETE;
+            }
+            return APR_SUCCESS;
+        }
     }
+out:
     return rv;
 }
-
-
-/* date/time encoding *****************************************************************************/
-
-const char *md_print_duration(apr_pool_t *p, apr_interval_time_t duration)
-{
-    int secs = (int)(apr_time_sec(duration) % MD_SECS_PER_DAY);
-    return apr_psprintf(p, "%2d:%02d:%02d hours", 
-                        (int)secs/MD_SECS_PER_HOUR, (int)(secs%(MD_SECS_PER_HOUR))/60,
-                        (int)(secs%60));
-}
-
 
 /* base64 url encoding ****************************************************************************/
 

@@ -49,6 +49,9 @@ typedef apr_status_t md_store_iter_cb(md_store_inspect *inspect, void *baton, md
                                       apr_pool_t *p, md_store_group_t group, const char *pattern,
                                       const char *aspect, md_store_vtype_t vtype);
 
+typedef apr_status_t md_store_names_iter_cb(md_store_inspect *inspect, void *baton, md_store_t *store, 
+                                            apr_pool_t *p, md_store_group_t group, const char *pattern);
+
 typedef apr_status_t md_store_move_cb(md_store_t *store, apr_pool_t *p, md_store_group_t from, 
                                       md_store_group_t to, const char *name, int archive);
 
@@ -69,6 +72,7 @@ struct md_store_t {
     md_store_remove_cb *remove;
     md_store_move_cb *move;
     md_store_iter_cb *iterate;
+    md_store_names_iter_cb *iterate_names;
     md_store_purge_cb *purge;
     md_store_get_fname_cb *get_fname;
     md_store_is_newer_cb *is_newer;
@@ -115,6 +119,10 @@ apr_status_t md_store_get_fname(const char **pfname,
 int md_store_is_newer(md_store_t *store, md_store_group_t group1, md_store_group_t group2,  
                       const char *name, const char *aspect, apr_pool_t *p);
 
+apr_status_t md_store_iter_names(md_store_inspect *inspect, void *baton, md_store_t *store, 
+                                 apr_pool_t *p, md_store_group_t group, const char *pattern);
+
+
 /**************************************************************************************************/
 /* Storage handling utils */
 
@@ -138,14 +146,6 @@ apr_status_t md_pkey_load(md_store_t *store, md_store_group_t group,
                           const char *name, struct md_pkey_t **ppkey, apr_pool_t *p);
 apr_status_t md_pkey_save(md_store_t *store, apr_pool_t *p, md_store_group_t group, 
                           const char *name, struct md_pkey_t *pkey, int create);
-apr_status_t md_cert_load(md_store_t *store, md_store_group_t group, 
-                          const char *name, struct md_cert_t **pcert, apr_pool_t *p);
-apr_status_t md_cert_save(md_store_t *store, apr_pool_t *p, md_store_group_t group, 
-                          const char *name, struct md_cert_t *cert, int create);
-apr_status_t md_chain_load(md_store_t *store, md_store_group_t group, 
-                           const char *name, struct apr_array_header_t **pchain, apr_pool_t *p);
-apr_status_t md_chain_save(md_store_t *store, apr_pool_t *p, md_store_group_t group, 
-                           const char *name, struct apr_array_header_t *chain, int create);
 
 apr_status_t md_pubcert_load(md_store_t *store, md_store_group_t group, const char *name, 
                              struct apr_array_header_t **ppubcert, apr_pool_t *p);
