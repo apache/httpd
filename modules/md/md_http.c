@@ -43,8 +43,6 @@ void md_http_use_implementation(md_http_impl_t *impl)
     }
 }
 
-static long next_req_id;
-
 apr_status_t md_http_create(md_http_t **phttp, apr_pool_t *p, const char *user_agent,
                             const char *proxy_url)
 {
@@ -97,7 +95,6 @@ static apr_status_t req_create(md_http_request_t **preq, md_http_t *http,
     }
     
     req = apr_pcalloc(pool, sizeof(*req));
-    req->id = next_req_id++;
     req->pool = pool;
     req->bucket_alloc = http->bucket_alloc;
     req->http = http;
@@ -124,8 +121,7 @@ void md_http_req_destroy(md_http_request_t *req)
 }
 
 static apr_status_t schedule(md_http_request_t *req, 
-                             apr_bucket_brigade *body, int detect_clen,
-                             long *preq_id) 
+                             apr_bucket_brigade *body, int detect_clen) 
 {
     apr_status_t rv;
     
@@ -147,19 +143,12 @@ static apr_status_t schedule(md_http_request_t *req,
         apr_table_setn(req->headers, "Content-Length", apr_off_t_toa(req->pool, req->body_len));
     }
     
-    if (preq_id) {
-        *preq_id = req->id;
-    }
-    
-    /* we send right away */
-    rv = req->http->impl->perform(req);
-    
-    return rv;
+    return req->http->impl->perform(req);
 }
 
 apr_status_t md_http_GET(struct md_http_t *http, 
                          const char *url, struct apr_table_t *headers,
-                         md_http_cb *cb, void *baton, long *preq_id)
+                         md_http_cb *cb, void *baton)
 {
     md_http_request_t *req;
     apr_status_t rv;
@@ -169,12 +158,12 @@ apr_status_t md_http_GET(struct md_http_t *http,
         return rv;
     }
     
-    return schedule(req, NULL, 0, preq_id);
+    return schedule(req, NULL, 0);
 }
 
 apr_status_t md_http_HEAD(struct md_http_t *http, 
                           const char *url, struct apr_table_t *headers,
-                          md_http_cb *cb, void *baton, long *preq_id)
+                          md_http_cb *cb, void *baton)
 {
     md_http_request_t *req;
     apr_status_t rv;
@@ -184,13 +173,13 @@ apr_status_t md_http_HEAD(struct md_http_t *http,
         return rv;
     }
     
-    return schedule(req, NULL, 0, preq_id);
+    return schedule(req, NULL, 0);
 }
 
 apr_status_t md_http_POST(struct md_http_t *http, const char *url, 
                           struct apr_table_t *headers, const char *content_type, 
                           apr_bucket_brigade *body,
-                          md_http_cb *cb, void *baton, long *preq_id)
+                          md_http_cb *cb, void *baton)
 {
     md_http_request_t *req;
     apr_status_t rv;
@@ -203,13 +192,13 @@ apr_status_t md_http_POST(struct md_http_t *http, const char *url,
     if (content_type) {
         apr_table_set(req->headers, "Content-Type", content_type); 
     }
-    return schedule(req, body, 1, preq_id);
+    return schedule(req, body, 1);
 }
 
 apr_status_t md_http_POSTd(md_http_t *http, const char *url, 
                            struct apr_table_t *headers, const char *content_type, 
                            const char *data, size_t data_len, 
-                           md_http_cb *cb, void *baton, long *preq_id)
+                           md_http_cb *cb, void *baton)
 {
     md_http_request_t *req;
     apr_status_t rv;
@@ -233,13 +222,5 @@ apr_status_t md_http_POSTd(md_http_t *http, const char *url,
         apr_table_set(req->headers, "Content-Type", content_type); 
     }
      
-    return schedule(req, body, 1, preq_id);
+    return schedule(req, body, 1);
 }
-
-apr_status_t md_http_await(md_http_t *http, long req_id)
-{
-    (void)http;
-    (void)req_id;
-    return APR_SUCCESS;
-}
-

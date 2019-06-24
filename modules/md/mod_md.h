@@ -39,12 +39,4 @@ APR_DECLARE_OPTIONAL_FN(int,
                         md_is_challenge, (struct conn_rec *, const char *,
                                           X509 **pcert, EVP_PKEY **pkey));
 
-/* Backward compatibility to older mod_ssl patches, will generate
- * a WARNING in the logs, use 'md_get_certificate' instead */
-APR_DECLARE_OPTIONAL_FN(apr_status_t, 
-                        md_get_credentials, (struct server_rec *, apr_pool_t *,
-                                             const char **pkeyfile, 
-                                             const char **pcertfile, 
-                                             const char **pchainfile));
-
 #endif /* mod_md_mod_md_h */

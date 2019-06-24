@@ -33,8 +33,27 @@ apr_status_t md_util_pool_do(md_util_action *cb, void *baton, apr_pool_t *p);
 apr_status_t md_util_pool_vdo(md_util_vaction *cb, void *baton, apr_pool_t *p, ...); 
 
 /**************************************************************************************************/
+/* data chunks */
+
+typedef struct md_data md_data;
+struct md_data {
+    const char *data;
+    apr_size_t len;
+};
+
+md_data *md_data_create(apr_pool_t *p, const char *data, apr_size_t len);
+
+apr_status_t md_data_to_hex(const char **phex, char separator,
+                            apr_pool_t *p, const md_data *data);
+
+/**************************************************************************************************/
 /* string related */
 char *md_util_str_tolower(char *s);
+
+/**
+ * Return != 0 iff array is either NULL or empty 
+ */ 
+int md_array_is_empty(const struct apr_array_header_t *array);
 
 int md_array_str_index(const struct apr_array_header_t *array, const char *s, 
                        int start, int case_sensitive);
@@ -44,9 +63,15 @@ int md_array_str_eq(const struct apr_array_header_t *a1,
 
 struct apr_array_header_t *md_array_str_clone(apr_pool_t *p, struct apr_array_header_t *array);
 
+/**
+ * Create a new array with duplicates removed.
+ */
 struct apr_array_header_t *md_array_str_compact(apr_pool_t *p, struct apr_array_header_t *src,
                                                 int case_sensitive);
 
+/**
+ * Create a new array with all occurances of <exclude> removed.
+ */
 struct apr_array_header_t *md_array_str_remove(apr_pool_t *p, struct apr_array_header_t *src, 
                                                const char *exclude, int case_sensitive);
 
@@ -61,7 +86,41 @@ apr_status_t md_util_exec(apr_pool_t *p, const char *cmd, const char * const *ar
 /**************************************************************************************************/
 /* dns name check */
 
-int md_util_is_dns_name(apr_pool_t *p, const char *hostname, int need_fqdn);
+/**
+ * Is a host/domain name using allowed characters. Not a wildcard.
+ * @param domain     name to check
+ * @param need_fqdn  iff != 0, check that domain contains '.'
+ * @return != 0 iff domain looks like  a non-wildcard, legal DNS domain name.
+ */
+int md_dns_is_name(apr_pool_t *p, const char *domain, int need_fqdn);
+
+/**
+ * Check if the given domain is a valid wildcard DNS name, e.g. *.example.org
+ * @param domain    name to check
+ * @return != 0 iff domain is a DNS wildcard.
+ */
+int md_dns_is_wildcard(apr_pool_t *p, const char *domain);
+
+/**
+ * Determine iff pattern matches domain, including case-ignore and wildcard domains.
+ * It is assumed that both names follow dns syntax.
+ * @return != 0 iff pattern matches domain
+ */ 
+int md_dns_matches(const char *pattern, const char *domain);
+
+/**
+ * Create a new array with the minimal set out of the given domain names that match all
+ * of them. If none of the domains is a wildcard, only duplicates are removed.
+ * If domains contain a wildcard, any name matching the wildcard will be removed.
+ */
+struct apr_array_header_t *md_dns_make_minimal(apr_pool_t *p, 
+                                               struct apr_array_header_t *domains);
+
+/**
+ * Determine if the given domains cover the name, including wildcard matching.
+ * @return != 0 iff name is matched by list of domains
+ */
+int md_dns_domains_match(const apr_array_header_t *domains, const char *name);
 
 /**************************************************************************************************/
 /* file system related */
@@ -78,6 +137,7 @@ apr_status_t md_util_path_merge(const char **ppath, apr_pool_t *p, ...);
 
 apr_status_t md_util_is_dir(const char *path, apr_pool_t *pool);
 apr_status_t md_util_is_file(const char *path, apr_pool_t *pool);
+int md_file_exists(const char *fname, apr_pool_t *p);
 
 typedef apr_status_t md_util_file_cb(void *baton, struct apr_file_t *f, apr_pool_t *p);
 
@@ -136,13 +196,5 @@ typedef apr_status_t md_util_try_fn(void *baton, int i);
 apr_status_t md_util_try(md_util_try_fn *fn, void *baton, int ignore_errs,  
                          apr_interval_time_t timeout, apr_interval_time_t start_delay, 
                          apr_interval_time_t max_delay, int backoff);
-
-/**************************************************************************************************/
-/* date/time related */
-
-#define MD_SECS_PER_HOUR      (60*60)
-#define MD_SECS_PER_DAY       (24*MD_SECS_PER_HOUR)
-
-const char *md_print_duration(apr_pool_t *p, apr_interval_time_t duration);
 
 #endif /* md_util_h */
