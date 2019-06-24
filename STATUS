@@ -165,7 +165,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: jailletc36
      rpluem: Not sure if this makes sense until we include r1841225
      and a to be committed follow up patch by jorton (https://lists.apache.org/thread.html/76d6c39f59d0f9433c6800f5ee4069c7221424be45ef3008d2f41723@%3Cdev.httpd.apache.org%3E)
-     unfortunately the discussion about it died.
+     unfortunately the discussion about it died. Just as a note: The discussion
+     that lead us a little bit away was IMHO resolved in trunk by
+     r1844780. Need to propose this for backport as well.
 
   *) core: Split out the ability to parse wildcard files and directories
      from the Include/IncludeOptional directives into a generic set of
