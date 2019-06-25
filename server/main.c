@@ -527,8 +527,7 @@ static void usage(process_rec *process)
     }
 #endif
 
-    apr_pool_create(&pcommands, ap_pglobal);
-    apr_pool_tag(pcommands, "pcommands");
+    pcommands = ap_pglobal;
     ap_server_pre_read_config  = apr_array_make(pcommands, 1,
                                                 sizeof(const char *));
     ap_server_post_read_config = apr_array_make(pcommands, 1,
