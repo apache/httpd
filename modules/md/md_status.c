@@ -98,7 +98,7 @@ static apr_status_t get_staging_cert_json(md_json_t **pjson, apr_pool_t *p,
     apr_status_t rv = APR_SUCCESS;
     
     rv = md_pubcert_load(md_reg_store_get(reg), MD_SG_STAGING, md->name, &certs, p);
-    if (APR_STATUS_IS_ENOENT(rv) || certs->nelts == 0) {
+    if (APR_STATUS_IS_ENOENT(rv)) {
         rv = APR_SUCCESS;
         goto leave;
     }

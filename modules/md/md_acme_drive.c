@@ -304,17 +304,9 @@ static apr_status_t csr_req(md_acme_t *acme, const md_http_response_t *res, void
     ad->next_up_link = NULL;
     if (APR_SUCCESS == (rv = md_cert_read_http(&cert, d->p, res))) {
         md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, d->p, "cert parsed");
-        if (ad->certs) {
-            apr_array_clear(ad->certs);
-        }
-        else {
-            ad->certs = apr_array_make(d->p, 5, sizeof(md_cert_t*));
-        }
+        apr_array_clear(ad->certs);
         APR_ARRAY_PUSH(ad->certs, md_cert_t*) = cert;
-        
-        if (APR_SUCCESS == rv) {
-            get_up_link(d, res->headers);
-        }
+        get_up_link(d, res->headers);
     }
     else if (APR_STATUS_IS_ENOENT(rv)) {
         rv = APR_SUCCESS;
@@ -454,9 +446,6 @@ static apr_status_t ad_chain_retrieve(md_proto_driver_t *d)
      *                          the link header with relation "up" gives us the location
      *                          for the next cert in the chain
      */
-    if (!ad->certs) {
-        ad->certs = apr_array_make(d->p, 5, sizeof(md_cert_t *));
-    }
     if (md_array_is_empty(ad->certs)) {
         /* Need to start at the order */
         ad->next_up_link = NULL;
@@ -499,15 +488,16 @@ static apr_status_t acme_driver_init(md_proto_driver_t *d, md_result_t *result)
     ad = apr_pcalloc(d->p, sizeof(*ad));
     
     d->baton = ad;
-    ad->driver = d;
     
+    ad->driver = d;
     ad->authz_monitor_timeout = apr_time_from_sec(30);
     ad->cert_poll_timeout = apr_time_from_sec(30);
+    ad->ca_challenges = apr_array_make(d->p, 3, sizeof(const char*));
+    ad->certs = apr_array_make(d->p, 5, sizeof(md_cert_t*));
     
     /* We can only support challenges if the server is reachable from the outside
      * via port 80 and/or 443. These ports might be mapped for httpd to something
      * else, but a mapping needs to exist. */
-    ad->ca_challenges = apr_array_make(d->p, 3, sizeof(const char *));
     challenge = apr_table_get(d->env, MD_KEY_CHALLENGE); 
     if (challenge) {
         APR_ARRAY_PUSH(ad->ca_challenges, const char*) = apr_pstrdup(d->p, challenge);
@@ -578,6 +568,7 @@ static apr_status_t acme_renew(md_proto_driver_t *d, md_result_t *result)
     int reset_staging = d->reset;
     apr_status_t rv = APR_SUCCESS;
     apr_time_t now;
+    apr_array_header_t *staged_certs;
     char ts[APR_RFC822_DATE_LEN];
 
     if (md_log_is_level(d->p, MD_LOG_DEBUG)) {
@@ -667,9 +658,10 @@ static apr_status_t acme_renew(md_proto_driver_t *d, md_result_t *result)
     if (!ad->domains) {
         ad->domains = md_dns_make_minimal(d->p, ad->md->domains);
     }
-    if (md_array_is_empty(ad->certs)) {
-        /* have we created this already? */
-        md_pubcert_load(d->store, MD_SG_STAGING, d->md->name, &ad->certs, d->p);
+    
+    if (md_array_is_empty(ad->certs)
+        && APR_SUCCESS == md_pubcert_load(d->store, MD_SG_STAGING, d->md->name, &staged_certs, d->p)) {
+        apr_array_cat(ad->certs, staged_certs);
     }
     
     if (md_array_is_empty(ad->certs)) {
