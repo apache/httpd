@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_ssl/mod_md: reversing dependency by letting mod_ssl offer hooks for
+     adding certificates and keys to a virtual host. An additional hook allows
+     answering special TLS connections as used in ACME challenges.
+     [Stefan Eissing]
+  
   *) mod_md: bringing over v2.0.6 from github.
      - supports the ACMEv2 protocol
      - supports the new challenge method 'tls-alpn-01' 

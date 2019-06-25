@@ -39,6 +39,27 @@ APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ssl, SSL, int, init_server,
                                     (server_rec *s,apr_pool_t *p,int is_proxy,SSL_CTX *ctx),
                                     (s,p,is_proxy,ctx), OK, DECLINED)
 
+/* Implement 'ap_run_ssl_add_cert_files'. */
+APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ssl, SSL, int, add_cert_files,
+                                    (server_rec *s, apr_pool_t *p, 
+                                    apr_array_header_t *cert_files, apr_array_header_t *key_files),
+                                    (s, p, cert_files, key_files),
+                                    OK, DECLINED)
+
+APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ssl, SSL, int, add_fallback_cert_files,
+                                    (server_rec *s, apr_pool_t *p, 
+                                    apr_array_header_t *cert_files, apr_array_header_t *key_files),
+                                    (s, p, cert_files, key_files),
+                                    OK, DECLINED)
+
+APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ssl, SSL, int, answer_challenge,
+                                    (conn_rec *c, const char *server_name, 
+                                    void **pX509, void **pEVP_PKEY),
+                                    (c, server_name, pX509, pEVP_PKEY),
+                                    DECLINED, DECLINED)
+
+
+
 /*  _________________________________________________________________
 **
 **  Module Initialization
@@ -170,19 +191,16 @@ static void ssl_add_version_components(apr_pool_t *p,
 
 /*  _________________________________________________________________
 **
-**  Managed Domains Interface
+**  Let other answer special connection attempts. 
+**  Used in ACME challenge handling by mod_md.
 **  _________________________________________________________________
 */
-
-static APR_OPTIONAL_FN_TYPE(md_is_managed) *md_is_managed;
-static APR_OPTIONAL_FN_TYPE(md_get_certificate) *md_get_certificate;
-static APR_OPTIONAL_FN_TYPE(md_is_challenge) *md_is_challenge;
 
 int ssl_is_challenge(conn_rec *c, const char *servername, 
                      X509 **pcert, EVP_PKEY **pkey)
 {
-    if (md_is_challenge) {
-        return md_is_challenge(c, servername, pcert, pkey);
+    if (APR_SUCCESS == ssl_run_answer_challenge(c, servername, (void**)pcert, (void**)pkey)) {
+        return 1;
     }
     *pcert = NULL;
     *pkey = NULL;
@@ -236,16 +254,6 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
      */
     ssl_config_global_create(base_server); /* just to avoid problems */
     ssl_config_global_fix(mc);
-
-    /* Initialize our interface to mod_md, if it is loaded 
-     */
-    md_is_managed = APR_RETRIEVE_OPTIONAL_FN(md_is_managed);
-    md_get_certificate = APR_RETRIEVE_OPTIONAL_FN(md_get_certificate);
-    md_is_challenge = APR_RETRIEVE_OPTIONAL_FN(md_is_challenge);
-    if (!md_is_managed || !md_get_certificate) {
-        md_is_managed = NULL;
-        md_get_certificate = NULL;
-    }
 
     /*
      *  try to fix the configuration and open the dedicated SSL
@@ -1798,6 +1806,7 @@ static apr_status_t ssl_init_server_ctx(server_rec *s,
     SSL_CONF_CTX *cctx = sc->server->ssl_ctx_config;
     int i;
 #endif
+    int n;
 
     /*
      *  Check for problematic re-initializations
@@ -1809,52 +1818,24 @@ static apr_status_t ssl_init_server_ctx(server_rec *s,
         return APR_EGENERAL;
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(10083)
-                 "Init: (%s) mod_md support is %s.", ssl_util_vhostid(p, s),
-                 md_is_managed? "available" : "unavailable");
-    if (md_is_managed && md_get_certificate && md_is_managed(s)) {
-        pks = sc->server->pks;
-        if (pks->cert_files->nelts > 0 || pks->key_files->nelts > 0) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(10084)
-                         "Init: (%s) You configured certificate/key files on this host, but "
-                         "it is covered by a Managed Domain. You need to remove these directives "
-                         "for the Managed Domain to take over.", ssl_util_vhostid(p, s));
-        }
-        else {
-            const char *key_file = NULL, *cert_file = NULL;
-            int service_unavailable = 0;
-            
-            rv = md_get_certificate(s, p, &key_file, &cert_file);
-            
-            if (APR_STATUS_IS_EAGAIN(rv)) {
-                /* Managed Domain not ready yet. This is not a reason to fail the config */
-                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(10085)
-                             "Init: %s will respond with '503 Service Unavailable' for now. This "
-                             "host is part of a Managed Domain, but no SSL certificate is "
-                             "available (yet).", ssl_util_vhostid(p, s));
-                service_unavailable = 1;
-                rv = APR_SUCCESS;
-            }
-            else if (rv != APR_SUCCESS) {
-                return rv;
-            }
-            
-            /* We install the managed certificate and key in the server_rec config now
-             * and, if those are not ready/fallback ones, mark service as unavailable.
-             */
-            if (APR_SUCCESS == rv && key_file && cert_file) {
-                ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, s, 
-                             "%s: installing key=%s, cert=%s", 
-                             sc->vhost_id, key_file, cert_file);
-                APR_ARRAY_PUSH(pks->key_files, const char *) = key_file;
-                APR_ARRAY_PUSH(pks->cert_files, const char *) = cert_file;
-                sc->server->cert_chain = NULL;
-            }
-            
-            if (service_unavailable) {
-                pks->service_unavailable = 1;
-            }
-        }
+    /* Allow others to provide certificate files */
+    pks = sc->server->pks;
+    n = pks->cert_files->nelts;
+    ssl_run_add_cert_files(s, p, pks->cert_files, pks->key_files);
+
+    if (n < pks->cert_files->nelts) {
+        /* this overrides any old chain configuration */
+        sc->server->cert_chain = NULL;
+    }
+    
+    if (apr_is_empty_array(pks->cert_files) && !sc->server->cert_chain) {
+        ssl_run_add_fallback_cert_files(s, p, pks->cert_files, pks->key_files);
+        
+        pks->service_unavailable = 1;
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(10085)
+                     "Init: %s will respond with '503 Service Unavailable' for now. This "
+                     "has no SSL certificate configured and no other module contributed any.",
+                     ssl_util_vhostid(p, s));
     }
     
     if ((rv = ssl_init_ctx(s, p, ptemp, sc->server)) != APR_SUCCESS) {
