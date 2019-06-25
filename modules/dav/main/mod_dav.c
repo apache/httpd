@@ -563,6 +563,7 @@ DAV_DECLARE(void) dav_send_multistatus(request_rec *r, int status,
     dav_begin_multistatus(bb, r, status, namespaces);
 
     apr_pool_create(&subpool, r->pool);
+    apr_pool_tag(subpool, "mod_dav-multistatus");
 
     for (; first != NULL; first = first->next) {
       apr_pool_clear(subpool);
