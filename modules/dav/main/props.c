@@ -524,21 +524,20 @@ DAV_DECLARE(dav_error *)dav_open_propdb(request_rec *r, dav_lockdb *lockdb,
                                         apr_array_header_t * ns_xlate,
                                         dav_propdb **p_propdb)
 {
+    return dav_popen_propdb(r->pool, r, lockdb, resource, ro, ns_xlate, p_propdb);
+}
+
+DAV_DECLARE(dav_error *)dav_popen_propdb(apr_pool_t *p,
+                                         request_rec *r, dav_lockdb *lockdb,
+                                         const dav_resource *resource,
+                                         int ro,
+                                         apr_array_header_t * ns_xlate,
+                                         dav_propdb **p_propdb)
+{
     dav_propdb *propdb = NULL;
-    /*
-     * Check if we have tucked away a previous propdb and reuse it.
-     * Otherwise create a new one and tuck it away
-     */
-    apr_pool_userdata_get((void **)&propdb, "propdb", r->pool);
-    if (!propdb) {
-        propdb = apr_pcalloc(r->pool, sizeof(*propdb));
-        apr_pool_userdata_setn(propdb, "propdb", NULL, r->pool);
-        apr_pool_create(&propdb->p, r->pool);
-    }
-    else {
-        /* Play safe and clear the pool of the reused probdb */
-        apr_pool_clear(propdb->p);
-    }
+
+    propdb = apr_pcalloc(p, sizeof(*propdb));
+    propdb->p = p;
 
     *p_propdb = NULL;
 
@@ -579,8 +578,6 @@ DAV_DECLARE(void) dav_close_propdb(dav_propdb *propdb)
         ap_destroy_sub_req(propdb->subreq);
         propdb->subreq = NULL;
     }
-
-    apr_pool_clear(propdb->p);
 }
 
 DAV_DECLARE(dav_get_props_result) dav_get_allprops(dav_propdb *propdb,

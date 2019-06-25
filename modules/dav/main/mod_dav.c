@@ -2027,8 +2027,9 @@ static dav_error * dav_propfind_walker(dav_walk_resource *wres, int calltype)
     ** Note: we cast to lose the "const". The propdb won't try to change
     ** the resource, however, since we are opening readonly.
     */
-    err = dav_open_propdb(ctx->r, ctx->w.lockdb, wres->resource, 1,
-                          ctx->doc ? ctx->doc->namespaces : NULL, &propdb);
+    err = dav_popen_propdb(ctx->scratchpool,
+                           ctx->r, ctx->w.lockdb, wres->resource, 1,
+                           ctx->doc ? ctx->doc->namespaces : NULL, &propdb);
     if (err != NULL) {
         /* ### do something with err! */
 
