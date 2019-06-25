@@ -109,7 +109,43 @@ SOURCE=./mod_md_config.c
 # End Source File
 # Begin Source File
 
+SOURCE=./mod_md_drive.c
+# End Source File
+# Begin Source File
+
 SOURCE=./mod_md_os.c
+# End Source File
+# Begin Source File
+
+SOURCE=./mod_md_status.c
+# End Source File
+# Begin Source File
+
+SOURCE=./md_acme.c
+# End Source File
+# Begin Source File
+
+SOURCE=./md_acme_acct.c
+# End Source File
+# Begin Source File
+
+SOURCE=./md_acme_authz.c
+# End Source File
+# Begin Source File
+
+SOURCE=./md_acme_drive.c
+# End Source File
+# Begin Source File
+
+SOURCE=./md_acme_order.c
+# End Source File
+# Begin Source File
+
+SOURCE=./md_acmev1_drive.c
+# End Source File
+# Begin Source File
+
+SOURCE=./md_acmev2_drive.c
 # End Source File
 # Begin Source File
 
@@ -145,6 +181,14 @@ SOURCE=./md_reg.c
 # End Source File
 # Begin Source File
 
+SOURCE=./md_result.c
+# End Source File
+# Begin Source File
+
+SOURCE=./md_status.c
+# End Source File
+# Begin Source File
+
 SOURCE=./md_store.c
 # End Source File
 # Begin Source File
@@ -153,26 +197,13 @@ SOURCE=./md_store_fs.c
 # End Source File
 # Begin Source File
 
+SOURCE=./md_time.c
+# End Source File
+# Begin Source File
+
 SOURCE=./md_util.c
 # End Source File
 # Begin Source File
-
-SOURCE=./md_acme.c
-# End Source File
-# Begin Source File
-
-SOURCE=./md_acme_acct.c
-# End Source File
-# Begin Source File
-
-SOURCE=./md_acme_authz.c
-# End Source File
-# Begin Source File
-
-SOURCE=./md_acme_drive.c
-# End Source File
-# Begin Source File
-
 
 SOURCE=..\..\build\win32\httpd.rc
 # End Source File
