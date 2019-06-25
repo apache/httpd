@@ -216,6 +216,7 @@ static ap_lua_vm_spec *create_vm_spec(apr_pool_t **lifecycle_pool,
     case AP_LUA_SCOPE_ONCE:
     case AP_LUA_SCOPE_UNSET:
         apr_pool_create(&pool, r->pool);
+        apr_pool_tag(pool, "mod_lua-vm");
         break;
     case AP_LUA_SCOPE_REQUEST:
         pool = r->pool;
@@ -2032,6 +2033,7 @@ static int lua_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     }
     pool = (apr_pool_t **)apr_shm_baseaddr_get(lua_ivm_shm);
     apr_pool_create(pool, pconf);
+    apr_pool_tag(*pool, "mod_lua-shared");
     apr_pool_cleanup_register(pconf, NULL, shm_cleanup_wrapper,
                           apr_pool_cleanup_null);
     return OK;
