@@ -323,7 +323,7 @@ static void dav_do_prop_subreq(dav_propdb *propdb)
 {
     /* need to escape the uri that's in the resource struct because during
      * the property walker it's not encoded. */
-    const char *e_uri = ap_escape_uri(propdb->resource->pool,
+    const char *e_uri = ap_escape_uri(propdb->p,
                                       propdb->resource->uri);
 
     /* perform a "GET" on the resource's URI (note that the resource
