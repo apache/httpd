@@ -919,8 +919,8 @@ static apr_status_t setup_fallback_cert(md_store_t *store, const md_t *md,
     return rv;
 }
 
-static apr_status_t md_get_certificate(server_rec *s, apr_pool_t *p,
-                                       const char **pkeyfile, const char **pcertfile)
+static apr_status_t get_certificate(server_rec *s, apr_pool_t *p, int fallback,
+                                    const char **pcertfile, const char **pkeyfile)
 {
     apr_status_t rv = APR_ENOENT;    
     md_srv_conf_t *sc;
@@ -932,11 +932,11 @@ static apr_status_t md_get_certificate(server_rec *s, apr_pool_t *p,
     *pcertfile = NULL;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(10113)
-                 "md_get_certificate called for vhost %s.", s->server_hostname);
+                 "get_certificate called for vhost %s.", s->server_hostname);
 
     sc = md_config_get(s);
     if (!sc) {
-        ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, s,  
+        ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, s,  
                      "asked for certificate of server %s which has no md config", 
                      s->server_hostname);
         return APR_ENOENT;
@@ -971,23 +971,25 @@ static apr_status_t md_get_certificate(server_rec *s, apr_pool_t *p,
     
     rv = md_reg_get_cred_files(pkeyfile, pcertfile, reg, MD_SG_DOMAINS, md, p);
     if (APR_STATUS_IS_ENOENT(rv)) {
-        /* Provide temporary, self-signed certificate as fallback, so that
-         * clients do not get obscure TLS handshake errors or will see a fallback
-         * virtual host that is not intended to be served here. */
-        store = md_reg_store_get(reg);
-        assert(store);    
-        
-        md_store_get_fname(pkeyfile, store, MD_SG_DOMAINS, md->name, MD_FN_FALLBACK_PKEY, p);
-        md_store_get_fname(pcertfile, store, MD_SG_DOMAINS, md->name, MD_FN_FALLBACK_CERT, p);
-        if (!md_file_exists(*pkeyfile, p) || !md_file_exists(*pcertfile, p)) { 
-            if (APR_SUCCESS != (rv = setup_fallback_cert(store, md, s, p))) {
-                return rv;
+        if (fallback) {
+            /* Provide temporary, self-signed certificate as fallback, so that
+             * clients do not get obscure TLS handshake errors or will see a fallback
+             * virtual host that is not intended to be served here. */
+            store = md_reg_store_get(reg);
+            assert(store);    
+            
+            md_store_get_fname(pkeyfile, store, MD_SG_DOMAINS, md->name, MD_FN_FALLBACK_PKEY, p);
+            md_store_get_fname(pcertfile, store, MD_SG_DOMAINS, md->name, MD_FN_FALLBACK_CERT, p);
+            if (!md_file_exists(*pkeyfile, p) || !md_file_exists(*pcertfile, p)) { 
+                if (APR_SUCCESS != (rv = setup_fallback_cert(store, md, s, p))) {
+                    return rv;
+                }
             }
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(10116)  
+                         "%s: providing fallback certificate for server %s", 
+                         md->name, s->server_hostname);
+            return APR_EAGAIN;
         }
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(10116)  
-                     "%s: providing fallback certificate for server %s", 
-                     md->name, s->server_hostname);
-        return APR_EAGAIN;
     }
     else if (APR_SUCCESS != rv) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10110) 
@@ -1001,33 +1003,70 @@ static apr_status_t md_get_certificate(server_rec *s, apr_pool_t *p,
     return rv;
 }
 
+static apr_status_t md_get_certificate(server_rec *s, apr_pool_t *p,
+                                       const char **pkeyfile, const char **pcertfile)
+{
+    return get_certificate(s, p, 1, pcertfile, pkeyfile);
+}
+
+static int md_add_cert_files(server_rec *s, apr_pool_t *p,
+                             apr_array_header_t *cert_files, 
+                             apr_array_header_t *key_files)
+{
+    const char *certfile, *keyfile;
+    apr_status_t rv;
+    
+    ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, s, "hook ssl_add_cert_files for %s",
+                 s->server_hostname);
+    rv = get_certificate(s, p, 0, &certfile, &keyfile);
+    if (APR_SUCCESS == rv) {
+        if (!apr_is_empty_array(cert_files)) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(10084)
+                         "host '%s' is covered by a Managed Domain, but "
+                         "certificate/key files are already configured "
+                         "for it (most likely via SSLCertificateFile).", 
+                         s->server_hostname);
+        } 
+        APR_ARRAY_PUSH(cert_files, const char*) = certfile;
+        APR_ARRAY_PUSH(key_files, const char*) = keyfile;
+        return DONE;
+    }
+    return DECLINED;
+}
+
+static int md_add_fallback_cert_files(server_rec *s, apr_pool_t *p,
+                                      apr_array_header_t *cert_files, 
+                                      apr_array_header_t *key_files)
+{
+    const char *certfile, *keyfile;
+    apr_status_t rv;
+    
+    ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, s, "hook ssl_add_fallback_cert_files for %s",
+                 s->server_hostname);
+    rv = get_certificate(s, p, 1, &certfile, &keyfile);
+    if (APR_EAGAIN == rv) {
+        APR_ARRAY_PUSH(cert_files, const char*) = certfile;
+        APR_ARRAY_PUSH(key_files, const char*) = keyfile;
+        return DONE;
+    }
+    return DECLINED;
+}
+
 static int md_is_challenge(conn_rec *c, const char *servername,
                            X509 **pcert, EVP_PKEY **pkey)
 {
     md_srv_conf_t *sc;
-    apr_size_t slen, sufflen = sizeof(MD_TLSSNI01_DNS_SUFFIX) - 1;
     const char *protocol, *challenge, *cert_name, *pkey_name;
     apr_status_t rv;
 
     if (!servername) goto out;
                   
     challenge = NULL;
-    slen = strlen(servername);
-    if (slen > sufflen 
-        && !apr_strnatcasecmp(MD_TLSSNI01_DNS_SUFFIX, servername + slen - sufflen)) {
-        /* server name ends with the tls-sni-01 challenge suffix, answer if
-         * we have prepared a certificate in store under this name */
-        challenge = "tls-sni-01";
-        cert_name = MD_FN_TLSSNI01_CERT;
-        pkey_name = MD_FN_TLSSNI01_PKEY;
-    }
-    else if ((protocol = md_protocol_get(c)) && !strcmp(PROTO_ACME_TLS_1, protocol)) {
+    if ((protocol = md_protocol_get(c)) && !strcmp(PROTO_ACME_TLS_1, protocol)) {
         challenge = "tls-alpn-01";
         cert_name = MD_FN_TLSALPN01_CERT;
         pkey_name = MD_FN_TLSALPN01_PKEY;
-    }
-    
-    if (challenge) {
+
         sc = md_config_get(c->base_server);
         if (sc && sc->mc->reg) {
             md_store_t *store = md_reg_store_get(sc->mc->reg);
@@ -1059,6 +1098,15 @@ out:
     *pcert = NULL;
     *pkey = NULL;
     return 0;
+}
+
+static int md_answer_challenge(conn_rec *c, const char *servername,
+                               void **pX509, void **pEVP_PKEY)
+{
+    if (md_is_challenge(c, servername, (X509**)pX509, (EVP_PKEY**)pEVP_PKEY)) {
+        return APR_SUCCESS;
+    }
+    return DECLINED;
 }
 
 /**************************************************************************************************/
@@ -1230,8 +1278,16 @@ static void md_hooks(apr_pool_t *pool)
     APR_OPTIONAL_HOOK(ap, status_hook, md_status_hook, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_handler(md_status_handler, NULL, NULL, APR_HOOK_MIDDLE);
 
+#ifdef SSL_CERT_HOOKS
+    (void)md_is_managed;
+    (void)md_get_certificate;
+    APR_OPTIONAL_HOOK(ssl, add_cert_files, md_add_cert_files, NULL, NULL, APR_HOOK_MIDDLE);
+    APR_OPTIONAL_HOOK(ssl, add_fallback_cert_files, md_add_fallback_cert_files, NULL, NULL, APR_HOOK_MIDDLE);
+    APR_OPTIONAL_HOOK(ssl, answer_challenge, md_answer_challenge, NULL, NULL, APR_HOOK_MIDDLE);
+#else
+    APR_REGISTER_OPTIONAL_FN(md_is_challenge);
     APR_REGISTER_OPTIONAL_FN(md_is_managed);
     APR_REGISTER_OPTIONAL_FN(md_get_certificate);
-    APR_REGISTER_OPTIONAL_FN(md_is_challenge);
+#endif
 }
 

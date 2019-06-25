@@ -30,6 +30,8 @@
 #include "http_config.h"
 #include "apr_optional.h"
 
+struct apr_array_header_t;
+
 /* Create a set of SSL_DECLARE(type), SSL_DECLARE_NONSTD(type) and
  * SSL_DECLARE_DATA with appropriate export and import tags for the platform
  */
@@ -95,6 +97,36 @@ APR_DECLARE_OPTIONAL_FN(int, ssl_engine_disable, (conn_rec *));
 APR_DECLARE_OPTIONAL_FN(int, ssl_engine_set, (conn_rec *,
                                               ap_conf_vector_t *,
                                               int proxy, int enable));
+                                              
+/* Check for availability of new hooks */
+#define SSL_CERT_HOOKS
+#ifdef SSL_CERT_HOOKS
+
+/** Lets others add certificate and key files to the given server.
+ * For each cert a key must also be added. */
+APR_DECLARE_EXTERNAL_HOOK(ssl, SSL, int, add_cert_files,
+                          (server_rec *s, apr_pool_t *p, 
+                           struct apr_array_header_t *cert_files,
+                           struct apr_array_header_t *key_files))
+
+/** In case no certificates are available for a server, this
+ * lets other modules add a fallback certificate for the time
+ * being. Regular requests against this server will be answered
+ * with a 503. */
+APR_DECLARE_EXTERNAL_HOOK(ssl, SSL, int, add_fallback_cert_files,
+                          (server_rec *s, apr_pool_t *p, 
+                           struct apr_array_header_t *cert_files,
+                           struct apr_array_header_t *key_files))
+
+/** On TLS connections that do not relate to a configured virtual host,
+ * allow other modules to provide a X509 certificate and EVP_PKEY to
+ * be used on the connection. This first hook which does not
+ * return DECLINDED will determine the outcome. */
+APR_DECLARE_EXTERNAL_HOOK(ssl, SSL, int, answer_challenge,
+                          (conn_rec *c, const char *server_name, 
+                          void **pX509, void **pEVP_PKEY))
+                          
+#endif /* SSL_CERT_HOOKS */
 
 #endif /* __MOD_SSL_H__ */
 /** @} */
