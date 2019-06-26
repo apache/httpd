@@ -1285,6 +1285,9 @@ static void md_hooks(apr_pool_t *pool)
     APR_OPTIONAL_HOOK(ssl, add_fallback_cert_files, md_add_fallback_cert_files, NULL, NULL, APR_HOOK_MIDDLE);
     APR_OPTIONAL_HOOK(ssl, answer_challenge, md_answer_challenge, NULL, NULL, APR_HOOK_MIDDLE);
 #else
+    (void)md_add_cert_files;
+    (void)md_add_fallback_cert_files;
+    (void)md_answer_challenge;
     APR_REGISTER_OPTIONAL_FN(md_is_challenge);
     APR_REGISTER_OPTIONAL_FN(md_is_managed);
     APR_REGISTER_OPTIONAL_FN(md_get_certificate);
