@@ -210,6 +210,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1426802,1744460,1829799,1824716,1838318,1840678,1861294 ^/httpd/httpd/trunk . 
      +1: jailletc36
 
+  *) Fix mod_mime_magic potential content-type corruption (seen in the wild),
+     and update match for WAV files to work properly.
+     trunk: http://svn.apache.org/r1491700
+            http://svn.apache.org/r1862200
+     2.4.x: trunk works [needs CHANGES]
+     +1: jorton, 
+
+
+https://svn.apache.org/viewvc?view=revision&revision=1491700
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
