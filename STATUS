@@ -158,16 +158,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              reworked, etc.. I would like to avoid a patch that is clearly wrong for some reviewer sitting here for
              months/years without any action item :)
 
-  *) mod_dav: Fix a potential incorrect PROPFIND response
+  *) mod_dav: Reduce the amount of memory needed when doing PROPFIND's on large
+              collections by improving the memory management.
+              [Joe Orton, Ruediger Pluem]
      trunk patch: http://svn.apache.org/r1842010
-                  http://svn.apache.org/r1846339      (CHANGES)
-     2.4.x patch: svn merge -c 1842010,1846339 ^/httpd/httpd/trunk .
-     +1: jailletc36
-     rpluem: Not sure if this makes sense until we include r1841225
-     and a to be committed follow up patch by jorton (https://lists.apache.org/thread.html/76d6c39f59d0f9433c6800f5ee4069c7221424be45ef3008d2f41723@%3Cdev.httpd.apache.org%3E)
-     unfortunately the discussion about it died. Just as a note: The discussion
-     that lead us a little bit away was IMHO resolved in trunk by
-     r1844780. Need to propose this for backport as well.
+                  http://svn.apache.org/r1841225
+                  http://svn.apache.org/r1862039
+                  http://svn.apache.org/r1862040
+                  http://svn.apache.org/r1862042
+     2.4.x patch: svn merge -c 1842010,1841225,1862039,1862040,1862042 ^/httpd/httpd/trunk .
+     +1: rpluem
 
   *) core: Split out the ability to parse wildcard files and directories
      from the Include/IncludeOptional directives into a generic set of
