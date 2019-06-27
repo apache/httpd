@@ -167,7 +167,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1862040
                   http://svn.apache.org/r1862042
      2.4.x patch: svn merge -c 1842010,1841225,1862039,1862040,1862042 ^/httpd/httpd/trunk .
-     +1: rpluem
+     +1: rpluem, jorton, 
 
   *) core: Split out the ability to parse wildcard files and directories
      from the Include/IncludeOptional directives into a generic set of
