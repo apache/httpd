@@ -2002,10 +2002,12 @@ static dav_prop_insert dav_fs_insert_prop(const dav_resource *resource,
     }
     else {
         /* assert: what == DAV_PROP_INSERT_SUPPORTED */
-        s = apr_psprintf(p,
-                         "<D:supported-live-property D:name=\"%s\" "
-                         "D:namespace=\"%s\"/>" DEBUG_CR,
-                         info->name, dav_fs_namespace_uris[info->ns]);
+        s = apr_pstrcat(p,
+                        "<D:supported-live-property D:name=\"",
+                        info->name,
+                        "\" D:namespace=\"",
+                        dav_fs_namespace_uris[info->ns],
+                        "\"/>" DEBUG_CR, NULL);
     }
     apr_text_append(p, phdr, s);
 

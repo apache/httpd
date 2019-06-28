@@ -154,10 +154,10 @@ static dav_prop_insert dav_core_insert_prop(const dav_resource *resource,
     /* assert: info != NULL && info->name != NULL */
 
     if (what == DAV_PROP_INSERT_SUPPORTED) {
-        s = apr_psprintf(p,
-                         "<D:supported-live-property D:name=\"%s\" "
-                         "D:namespace=\"%s\"/>" DEBUG_CR,
-                         info->name, dav_core_namespace_uris[info->ns]);
+        s = apr_pstrcat(p,
+                         "<D:supported-live-property D:name=\"", info->name,
+                         "\" D:namespace=\"", dav_core_namespace_uris[info->ns],
+                         "\"/>" DEBUG_CR, NULL);
     }
     else if (what == DAV_PROP_INSERT_VALUE && *value != '\0') {
         s = apr_psprintf(p, "<lp%ld:%s>%s</lp%ld:%s>" DEBUG_CR,
