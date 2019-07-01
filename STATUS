@@ -214,9 +214,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      and update match for WAV files to work properly.
      trunk: http://svn.apache.org/r1491700
             http://svn.apache.org/r1862200
-     2.4.x: trunk works [needs CHANGES]
+     2.4.x: svn merge -c 1491700,1862200 ^/httpd/httpd/trunk . works [needs CHANGES]
      +1: jorton, jim
 
+  *) mod_socache_shmcb: fix gcc 9 warnings
+     trunk: http://svn.apache.org/r1858565
+     2.4.x: svn merge -c 1858565 ^/httpd/httpd/trunk .
+     +1: jorton,
+
+  *) Kill export of "nul" symbol.
+     trunk: http://svn.apache.org/r1861690
+     2.4.x: svn merge -c 1861690 ^/httpd/httpd/trunk .
+     +1: jorton, 
 
 https://svn.apache.org/viewvc?view=revision&revision=1491700
 
