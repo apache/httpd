@@ -59,7 +59,6 @@ APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ssl, SSL, int, answer_challenge,
                                     DECLINED, DECLINED)
 
 
-
 /*  _________________________________________________________________
 **
 **  Module Initialization
@@ -1423,8 +1422,7 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
          * loaded via SSLOpenSSLConfCmd Certificate), so for 1.0.2 and
          * later, we defer to the code in ssl_init_server_ctx.
          */
-        if ((mctx->stapling_enabled == TRUE) &&
-            !ssl_stapling_init_cert(s, p, ptemp, mctx, cert)) {
+        if (!ssl_stapling_init_cert(s, p, ptemp, mctx, cert)) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(02567)
                          "Unable to configure certificate %s for stapling",
                          key_id);
@@ -1833,8 +1831,8 @@ static apr_status_t ssl_init_server_ctx(server_rec *s,
         
         pks->service_unavailable = 1;
         ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(10085)
-                     "Init: %s will respond with '503 Service Unavailable' for now. This "
-                     "has no SSL certificate configured and no other module contributed any.",
+                     "Init: %s will respond with '503 Service Unavailable' for now. There "
+                     "are no SSL certificates configured and no other module contributed any.",
                      ssl_util_vhostid(p, s));
     }
     
@@ -1887,7 +1885,7 @@ static apr_status_t ssl_init_server_ctx(server_rec *s,
      * (late) point makes sure that we catch both certificates loaded
      * via SSLCertificateFile and SSLOpenSSLConfCmd Certificate.
      */
-    if (sc->server->stapling_enabled == TRUE) {
+    do {
         X509 *cert;
         int i = 0;
         int ret = SSL_CTX_set_current_cert(sc->server->ssl_ctx,
@@ -1904,7 +1902,7 @@ static apr_status_t ssl_init_server_ctx(server_rec *s,
                                            SSL_CERT_SET_NEXT);
             i++;
         }
-    }
+    } while(0);
 #endif
 
 #ifdef HAVE_TLS_SESSION_TICKETS

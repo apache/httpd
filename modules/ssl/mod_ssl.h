@@ -121,10 +121,41 @@ APR_DECLARE_EXTERNAL_HOOK(ssl, SSL, int, add_fallback_cert_files,
 /** On TLS connections that do not relate to a configured virtual host,
  * allow other modules to provide a X509 certificate and EVP_PKEY to
  * be used on the connection. This first hook which does not
- * return DECLINDED will determine the outcome. */
+ * return DECLINED will determine the outcome. */
 APR_DECLARE_EXTERNAL_HOOK(ssl, SSL, int, answer_challenge,
                           (conn_rec *c, const char *server_name, 
                           void **pX509, void **pEVP_PKEY))
+
+/** During post_config phase, ask around if someone wants to provide
+ * OCSP stapling status information for the given cert (with the also
+ * provided issuer certificate). The first hook which does not
+ * return DECLINED promises to take responsibility (and respond
+ * in later calls via hook ssl_get_stapling_status).
+ * If no hook takes over, mod_ssl's own stapling implementation will
+ * be applied (if configured).
+ */
+APR_DECLARE_EXTERNAL_HOOK(ssl, SSL, int, init_stapling_status,
+                          (server_rec *s, apr_pool_t *p, 
+                          void *x509cert, void *x509issuer))
+
+/** Anyone answering positive to ssl_init_stapling_status for a 
+ * certificate, needs to register here and supply the actual OCSP stapling
+ * status data (OCSP_RESP) for a new connection.
+ * The data is returned in DER encoded bytes via pder and pderlen. The
+ * returned pointer may be NULL, which indicates that data is (currently)
+ * unavailable.
+ * If DER data is returned, it MUST come from a response with
+ * status OCSP_RESPONSE_STATUS_SUCCESSFUL and V_OCSP_CERTSTATUS_GOOD
+ * or V_OCSP_CERTSTATUS_REVOKED, not V_OCSP_CERTSTATUS_UNKNOWN. This means
+ * errors in OCSP retrieval are to be handled/logged by the hook and
+ * are not done by mod_ssl.
+ * Any DER bytes returned MUST be allocated via malloc() and ownership
+ * passes to mod_ssl. Meaning, the hook must return a malloced copy of
+ * the data it has. mod_ssl (or OpenSSL) will free it. 
+ */
+APR_DECLARE_EXTERNAL_HOOK(ssl, SSL, int, get_stapling_status,
+                          (unsigned char **pder, int *pderlen, 
+                          conn_rec *c, server_rec *s, void *x509cert))
                           
 #endif /* SSL_CERT_HOOKS */
 
