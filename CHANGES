@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.40
 
+  *) mod_proxy_http2: fixing a potential NULL pointer use in logging.
+     [Christophe Jaillet <christophe.jaillet wanadoo.fr>, Dr Silvio Cesare InfoSect]
+
   *) mod_dav: Reduce the amount of memory needed when doing PROPFIND's on large
      collections by improving the memory management. [Joe Orton, Ruediger Pluem]
 
