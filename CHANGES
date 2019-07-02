@@ -36,10 +36,6 @@ Changes with Apache 2.5.1
   *) mod_proxy_http2: adding support for handling trailers in both directions. PR 63502.
      [Stefan Eissing]
 
-  *) mod_proxy/ssl: Proxy SSL client certificate configuration and other proxy
-     SSL configurations broken inside <Proxy> context.  PR 63430.
-     [Ruediger Pluem, Yann Ylavic]
-
   *) mod_reqtimeout: Fix default rates missing (not applied) in 2.4.39.
      PR 63325. [Yann Ylavic]
 
@@ -116,9 +112,6 @@ Changes with Apache 2.5.1
      afterwards. Otherwise errors are reported when other SSL using modules
      are in play. Fixes PR 62880. [Michael Kaufmann]
 
-  *) mod_ssl: Correctly merge configurations that have client certificates set
-     by SSLProxyMachineCertificate{File|Path}. [Ruediger Pluem]
-
   *) core: Ensure that aborted connections are logged as such. PR 62823
      [Arnaud Grandville <contact@grandville.net>]
 
@@ -138,10 +131,6 @@ Changes with Apache 2.5.1
 
   *) core: Add DefaultStateDir and layout-specific state directory
      created at "make install".  [Joe Orton]
-
-  *) mod_ssl: Fix a regression that the configuration settings for verify mode
-     and verify depth were taken from the frontend connection in case of
-     connections by the proxy to the backend. PR 62769. [Ruediger Pluem]
 
   *) ab: Add client certificate support. [Graham Leggett]
 
