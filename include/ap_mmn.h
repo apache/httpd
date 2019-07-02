@@ -526,7 +526,7 @@
  * 20120211.84 (2.4.35-dev) Add ap_no2slash_ex() and merge_slashes to 
  *                          core_server_conf.
  * 20120211.85 (2.4.40-dev) add ap_set_conn_count().
- * 20120211.86 (2.4.35-dev) Add forward_100_continue{,_set} to proxy_dir_conf
+ * 20120211.86 (2.4.40-dev) Add forward_100_continue{,_set} to proxy_dir_conf
  * 20120211.87 (2.4.40-dev) Add dav_popen_propdb
  */
 
