@@ -1590,6 +1590,16 @@ DAV_DECLARE(dav_error *) dav_open_propdb(
     apr_array_header_t *ns_xlate,
     dav_propdb **propdb);
 
+DAV_DECLARE(dav_error *) dav_popen_propdb(
+    apr_pool_t *p,
+    request_rec *r,
+    dav_lockdb *lockdb,
+    const dav_resource *resource,
+    int ro,
+    apr_array_header_t *ns_xlate,
+    dav_propdb **propdb);
+
+
 DAV_DECLARE(void) dav_close_propdb(dav_propdb *db);
 
 DAV_DECLARE(dav_get_props_result) dav_get_props(

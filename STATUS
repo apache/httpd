@@ -127,16 +127,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_dav: Reduce the amount of memory needed when doing PROPFIND's on large
-              collections by improving the memory management.
-              [Joe Orton, Ruediger Pluem]
-     trunk patch: http://svn.apache.org/r1842010
-                  http://svn.apache.org/r1841225
-                  http://svn.apache.org/r1862039
-                  http://svn.apache.org/r1862040
-                  http://svn.apache.org/r1862042
-     2.4.x patch: svn merge -c 1842010,1841225,1862039,1862040,1862042 ^/httpd/httpd/trunk .
-     +1: rpluem, jorton, jim
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:

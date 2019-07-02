@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.40
 
+  *) mod_dav: Reduce the amount of memory needed when doing PROPFIND's on large
+     collections by improving the memory management. [Joe Orton, Ruediger Pluem]
+
   *) mod_proxy_http2: adding support for handling trailers in both directions. PR 63502.
      [Stefan Eissing]
 

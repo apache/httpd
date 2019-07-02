@@ -323,7 +323,7 @@ static void dav_do_prop_subreq(dav_propdb *propdb)
 {
     /* need to escape the uri that's in the resource struct because during
      * the property walker it's not encoded. */
-    const char *e_uri = ap_escape_uri(propdb->resource->pool,
+    const char *e_uri = ap_escape_uri(propdb->p,
                                       propdb->resource->uri);
 
     /* perform a "GET" on the resource's URI (note that the resource
@@ -524,7 +524,20 @@ DAV_DECLARE(dav_error *)dav_open_propdb(request_rec *r, dav_lockdb *lockdb,
                                         apr_array_header_t * ns_xlate,
                                         dav_propdb **p_propdb)
 {
-    dav_propdb *propdb = apr_pcalloc(r->pool, sizeof(*propdb));
+    return dav_popen_propdb(r->pool, r, lockdb, resource, ro, ns_xlate, p_propdb);
+}
+
+DAV_DECLARE(dav_error *)dav_popen_propdb(apr_pool_t *p,
+                                         request_rec *r, dav_lockdb *lockdb,
+                                         const dav_resource *resource,
+                                         int ro,
+                                         apr_array_header_t * ns_xlate,
+                                         dav_propdb **p_propdb)
+{
+    dav_propdb *propdb = NULL;
+
+    propdb = apr_pcalloc(p, sizeof(*propdb));
+    propdb->p = p;
 
     *p_propdb = NULL;
 
@@ -537,7 +550,6 @@ DAV_DECLARE(dav_error *)dav_open_propdb(request_rec *r, dav_lockdb *lockdb,
 #endif
 
     propdb->r = r;
-    apr_pool_create(&propdb->p, r->pool);
     propdb->resource = resource;
     propdb->ns_xlate = ns_xlate;
 
@@ -562,10 +574,10 @@ DAV_DECLARE(void) dav_close_propdb(dav_propdb *propdb)
         (*propdb->db_hooks->close)(propdb->db);
     }
 
-    /* Currently, mod_dav's pool usage doesn't allow clearing this pool. */
-#if 0
-    apr_pool_destroy(propdb->p);
-#endif
+    if (propdb->subreq) {
+        ap_destroy_sub_req(propdb->subreq);
+        propdb->subreq = NULL;
+    }
 }
 
 DAV_DECLARE(dav_get_props_result) dav_get_allprops(dav_propdb *propdb,
@@ -739,7 +751,8 @@ DAV_DECLARE(dav_get_props_result) dav_get_props(dav_propdb *propdb,
         */
 
         if (elem->priv == NULL) {
-            elem->priv = apr_pcalloc(propdb->p, sizeof(*priv));
+            /* elem->priv outlives propdb->p. Hence use the request pool */
+            elem->priv = apr_pcalloc(propdb->r->pool, sizeof(*priv));
         }
         priv = elem->priv;
 

@@ -557,6 +557,7 @@ DAV_DECLARE(void) dav_send_multistatus(request_rec *r, int status,
     dav_begin_multistatus(bb, r, status, namespaces);
 
     apr_pool_create(&subpool, r->pool);
+    apr_pool_tag(subpool, "mod_dav-multistatus");
 
     for (; first != NULL; first = first->next) {
       apr_pool_clear(subpool);
@@ -1980,8 +1981,9 @@ static dav_error * dav_propfind_walker(dav_walk_resource *wres, int calltype)
     ** Note: we cast to lose the "const". The propdb won't try to change
     ** the resource, however, since we are opening readonly.
     */
-    err = dav_open_propdb(ctx->r, ctx->w.lockdb, wres->resource, 1,
-                          ctx->doc ? ctx->doc->namespaces : NULL, &propdb);
+    err = dav_popen_propdb(ctx->scratchpool,
+                           ctx->r, ctx->w.lockdb, wres->resource, 1,
+                           ctx->doc ? ctx->doc->namespaces : NULL, &propdb);
     if (err != NULL) {
         /* ### do something with err! */
 
