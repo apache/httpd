@@ -1153,10 +1153,11 @@ read_request:
         else if (ap_filter_should_yield(c->output_filters)) {
             pending = OK;
         }
-        if (pending == OK) {
+        if (pending == OK || (pending == DECLINED &&
+                              cs->pub.sense == CONN_SENSE_WANT_READ)) {
             /* Still in WRITE_COMPLETION_STATE:
-             * Set a write timeout for this connection, and let the
-             * event thread poll for writeability.
+             * Set a read/write timeout for this connection, and let the
+             * event thread poll for read/writeability.
              */
             cs->queue_timestamp = apr_time_now();
             notify_suspend(cs);

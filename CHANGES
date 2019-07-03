@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_http2/mpm_event: Fixes the behaviour when a HTTP/2 connection has nothing
+     more to write with streams ongoing (flow control block). The timeout waiting
+     for the client to send WINODW_UPDATE was incorrectly KeepAliveTimeout and not
+     Timeout as it should be. Fixes PR 63534. [Yann Ylavic, Stefan Eissing]
+
   *) mod_ssl/mod_md: reversing dependency by letting mod_ssl offer hooks for
      adding certificates and keys to a virtual host. An additional hook allows
      answering special TLS connections as used in ACME challenges.
