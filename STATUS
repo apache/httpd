@@ -222,7 +222,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x: svn merge -c 1862014 ^/httpd/httpd/trunk .
      +1: jfclere
 
-https://svn.apache.org/viewvc?view=revision&revision=1491700
+  *) mod_http2: fixes Timeout vs. KeepAliveTimeout behaviour, see PR 63534.
+     trunk patch:
+        http://svn.apache.org/r1862475
+        http://svn.apache.org/r1862583
+     2.4.x patch:
+        https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/h2-keepalive-yann-v4.patch
+     +1: icing,
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
