@@ -1703,7 +1703,7 @@ static void transit(h2_session *session, const char *action, h2_session_state ns
                      * that already served requests - not fair. */
                     session->idle_sync_until = apr_time_now() + apr_time_from_sec(1);
                     s = "timeout";
-                    timeout = H2MAX(session->s->timeout, session->s->keep_alive_timeout);
+                    timeout = session->s->timeout;
                     update_child_status(session, SERVER_BUSY_READ, "idle");
                     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c, 
                                   H2_SSSN_LOG("", session, "enter idle, timeout = %d sec"), 
@@ -1711,8 +1711,8 @@ static void transit(h2_session *session, const char *action, h2_session_state ns
                 }
                 else if (session->open_streams) {
                     s = "timeout";
-                    timeout = session->s->keep_alive_timeout;
-                    update_child_status(session, SERVER_BUSY_KEEPALIVE, "idle");
+                    timeout = session->s->timeout;
+                    update_child_status(session, SERVER_BUSY_READ, "idle");
                 }
                 else {
                     /* normal keepalive setup */
