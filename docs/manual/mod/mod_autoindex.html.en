@@ -614,8 +614,7 @@ indexing</td></tr>
       the various <code>AddAlt*</code> directives.
       </dd>
 
-      <dt><a name="indexoptions.charset" id="indexoptions.charset">Charset=<var>character-set</var></a> (<em>Apache HTTP Server 2.0.61 and
-      later</em>)</dt>
+      <dt><a name="indexoptions.charset" id="indexoptions.charset">Charset=<var>character-set</var></a></dt>
 
       <dd>The <code>Charset</code> keyword allows you to
       specify the character set of the generated page. The
@@ -845,8 +844,7 @@ indexing</td></tr>
       <code>Last-Modified</code> header on all Unix platforms.</strong>
       If this is a concern, leave this option disabled.</dd>
 
-      <dt><a name="indexoptions.type" id="indexoptions.type">Type=<var>MIME content-type</var></a> (<em>Apache HTTP Server 2.0.61 and
-      later</em>)</dt>
+      <dt><a name="indexoptions.type" id="indexoptions.type">Type=<var>MIME content-type</var></a></dt>
 
       <dd>The <code>Type</code> keyword allows you to
       specify the MIME content-type of the generated page. The default
@@ -864,8 +862,7 @@ indexing</td></tr>
       <code>"%d-%b-%Y %H:%M"</code> in 2.4.0. Setting this option 
       restores the date format from 2.2 and earlier.</dd>
 
-      <dt><a name="indexoptions.versionsort" id="indexoptions.versionsort">VersionSort</a>
-      (<em>Apache HTTP Server 2.0a3 and later</em>)</dt>
+      <dt><a name="indexoptions.versionsort" id="indexoptions.versionsort">VersionSort</a></dt>
 
       <dd>The <code>VersionSort</code> keyword causes files containing
       version numbers to sort in a natural way. Strings are sorted as
@@ -892,8 +889,7 @@ indexing</td></tr>
       </code></p></div>
       </dd>
 
-      <dt><a name="indexoptions.xhtml" id="indexoptions.xhtml">XHTML</a>
-      (<em>Apache HTTP Server 2.0.49 and later</em>)</dt>
+      <dt><a name="indexoptions.xhtml" id="indexoptions.xhtml">XHTML</a></dt>
 
       <dd>The <code>XHTML</code> keyword forces <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>
       to emit XHTML 1.0 code instead of HTML 3.2.
