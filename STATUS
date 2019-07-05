@@ -219,7 +219,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_proxy_hcheck fix for BZ 60948
      trunk: http://svn.apache.org/r1862014
      2.4.x: svn merge -c 1862014 ^/httpd/httpd/trunk .
-     +1: jfclere
+     +1: jfclere, icing
 
   *) mod_http2: fixes Timeout vs. KeepAliveTimeout behaviour, see PR 63534.
      trunk patch:
