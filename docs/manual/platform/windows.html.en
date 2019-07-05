@@ -617,7 +617,7 @@ RewriteRule "(.*)"           "${lowercase:$1}" [R,L]</pre>
 
 &lt;Directory "//imagehost/www/images/"&gt;
 #...
-&lt;Directory&gt;</pre>
+&lt;/Directory&gt;</pre>
 </div>
 
   <p>When running Apache httpd as a service, you must create a

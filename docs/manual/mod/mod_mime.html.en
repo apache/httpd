@@ -666,7 +666,7 @@ assigned a language-tag by some other means.</td></tr>
 <div class="directive-section"><h2><a name="MimeOptions" id="MimeOptions">MimeOptions</a> <a name="mimeoptions" id="mimeoptions">Directive</a> <a title="Permanent link" href="#mimeoptions" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configures mod_mime behavior</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MimeOptions<var>option</var> [<var>option</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MimeOptions <var>option</var> [<var>option</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
