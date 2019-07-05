@@ -158,6 +158,13 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1426802,1744460,1829799,1824716,1838318,1840678,1861294 ^/httpd/httpd/trunk . 
      +1: jailletc36, jim, icing
 
+  *) cache_storage: be consistent when building a cache key value when CacheKeyBaseURL is used with
+                    an URL that contains a :port.
+                    PR 53915 [Rein Tollevik <rein basefarm.no>]
+     trunk: http://svn.apache.org/r1851146
+     2.4.x patch: svn merge -c 1851146 ^/httpd/httpd/trunk .
+     +1: jailletc36, jim, icing
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -203,13 +210,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1857859
      2.4.x patch: svn merge -c 1857859 ^/httpd/httpd/trunk .
      +1: jailletc36, icing
-
-  *) cache_storage: be consistent when building a cache key value when CacheKeyBaseURL is used with
-                    an URL that contains a :port.
-                    PR 53915 [Rein Tollevik <rein basefarm.no>]
-     trunk: http://svn.apache.org/r1851146
-     2.4.x patch: svn merge -c 1851146 ^/httpd/httpd/trunk .
-     +1: jailletc36, jim
 
   *) mod_socache_shmcb: fix gcc 9 warnings
      trunk: http://svn.apache.org/r1858565
