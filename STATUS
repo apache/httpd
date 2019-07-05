@@ -132,6 +132,13 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x: svn merge -c 1861690 ^/httpd/httpd/trunk .
      +1: jorton, jfclere, icing
 
+  *) Fix mod_mime_magic potential content-type corruption (seen in the wild),
+     and update match for WAV files to work properly.
+     trunk: http://svn.apache.org/r1491700
+            http://svn.apache.org/r1862200
+     2.4.x: svn merge -c 1491700,1862200 ^/httpd/httpd/trunk . works [needs CHANGES]
+     +1: jorton, jim, icing
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -203,13 +210,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         - http://svn.apache.org/r1861294
      2.4.x patch: svn merge -c 1426802,1744460,1829799,1824716,1838318,1840678,1861294 ^/httpd/httpd/trunk . 
      +1: jailletc36, jim
-
-  *) Fix mod_mime_magic potential content-type corruption (seen in the wild),
-     and update match for WAV files to work properly.
-     trunk: http://svn.apache.org/r1491700
-            http://svn.apache.org/r1862200
-     2.4.x: svn merge -c 1491700,1862200 ^/httpd/httpd/trunk . works [needs CHANGES]
-     +1: jorton, jim
 
   *) mod_socache_shmcb: fix gcc 9 warnings
      trunk: http://svn.apache.org/r1858565
