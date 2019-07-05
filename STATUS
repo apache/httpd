@@ -217,6 +217,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/h2-keepalive-yann-v4.patch
      +1: icing,
 
+  *) mod_ssl: fix gcc 8+ warnings
+     trunk: fixed as part of wider changes, r1809037
+     2.4.x: http://people.apache.org/~jorton/modssl_chain_warning.diff
+     +1: jorton, jfclere, 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
