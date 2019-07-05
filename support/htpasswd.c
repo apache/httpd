@@ -109,17 +109,21 @@ static void usage(void)
             "for it." NL
         " -i  Read password from stdin without verification (for script usage)." NL
         " -m  Force MD5 encryption of the password (default)." NL
-        " -B  Force bcrypt encryption of the password (very secure)." NL
+        " -2  Force SHA-256 crypt() hash of the password (very secure)." NL
+        " -5  Force SHA-512 crypt() hash of the password (very secure)." NL
+        " -B  Force bcrypt aencryption of the password (very secure)." NL
         " -C  Set the computing time used for the bcrypt algorithm" NL
         "     (higher is more secure but slower, default: %d, valid: 4 to 17)." NL
+        " -r  Set the number of rounds used for the SHA-256, SHA-512 algorithms" NL
+        "     (higher is more secure but slower, default: 5000)." NL
         " -d  Force CRYPT encryption of the password (8 chars max, insecure)." NL
-        " -s  Force SHA encryption of the password (insecure)." NL
+        " -s  Force SHA-1 encryption of the password (insecure)." NL
         " -p  Do not encrypt the password (plaintext, insecure)." NL
         " -D  Delete the specified user." NL
         " -v  Verify password for the specified user." NL
         "On other systems than Windows and NetWare the '-p' flag will "
             "probably not work." NL
-        "The SHA algorithm does not use a salt and is less secure than the "
+        "The SHA-1 algorithm does not use a salt and is less secure than the "
             "MD5 algorithm." NL,
         BCRYPT_DEFAULT_COST
     );
