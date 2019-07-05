@@ -202,7 +202,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) core: Fix a compilation error when GPROF is defined.
      trunk patch: http://svn.apache.org/r1857859
      2.4.x patch: svn merge -c 1857859 ^/httpd/httpd/trunk .
-     +1: jailletc36
+     +1: jailletc36, icing
 
   *) cache_storage: be consistent when building a cache key value when CacheKeyBaseURL is used with
                     an URL that contains a :port.
