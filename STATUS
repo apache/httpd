@@ -214,7 +214,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_socache_shmcb: fix gcc 9 warnings
      trunk: http://svn.apache.org/r1858565
      2.4.x: svn merge -c 1858565 ^/httpd/httpd/trunk .
-     +1: jorton,
+     +1: jorton, icing
 
   *) mod_proxy_hcheck fix for BZ 60948
      trunk: http://svn.apache.org/r1862014
