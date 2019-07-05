@@ -2828,7 +2828,7 @@ static apr_status_t varbuf_cleanup(void *info_)
     return APR_SUCCESS;
 }
 
-const char nul = '\0';
+static const char nul = '\0';
 static char * const varbuf_empty = (char *)&nul;
 
 AP_DECLARE(void) ap_varbuf_init(apr_pool_t *p, struct ap_varbuf *vb,
