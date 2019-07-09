@@ -222,6 +222,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x: http://people.apache.org/~jorton/modssl_chain_warning.diff
      +1: jorton, jfclere, 
 
+  *) mod_ssl: offer new hooks for modules like mod_md and remove use of mod_md's optional functions.
+     trunk:
+        http://svn.apache.org/r1851621
+        http://svn.apache.org/r1852128
+        http://svn.apache.org/r1862075
+        http://svn.apache.org/r1862384
+     2.4.x:
+        https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/ssl-certicate-hooks.patch 
+     +1: icing
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
