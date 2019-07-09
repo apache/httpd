@@ -53,7 +53,7 @@
 #include "mod_md_drive.h"
 #include "mod_md_os.h"
 #include "mod_md_status.h"
-#include "mod_ssl.h"
+#include "mod_ssl_openssl.h"
 
 static void md_hooks(apr_pool_t *pool);
 
@@ -1101,9 +1101,9 @@ out:
 }
 
 static int md_answer_challenge(conn_rec *c, const char *servername,
-                               void **pX509, void **pEVP_PKEY)
+                               X509 **pcert, EVP_PKEY **pkey)
 {
-    if (md_is_challenge(c, servername, (X509**)pX509, (EVP_PKEY**)pEVP_PKEY)) {
+    if (md_is_challenge(c, servername, pcert, pkey)) {
         return APR_SUCCESS;
     }
     return DECLINED;
