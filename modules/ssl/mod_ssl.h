@@ -29,8 +29,7 @@
 #include "httpd.h"
 #include "http_config.h"
 #include "apr_optional.h"
-
-struct apr_array_header_t;
+#include "apr_tables.h" /* for apr_array_header_t */
 
 /* Create a set of SSL_DECLARE(type), SSL_DECLARE_NONSTD(type) and
  * SSL_DECLARE_DATA with appropriate export and import tags for the platform
@@ -106,8 +105,8 @@ APR_DECLARE_OPTIONAL_FN(int, ssl_engine_set, (conn_rec *,
  * For each cert a key must also be added. */
 APR_DECLARE_EXTERNAL_HOOK(ssl, SSL, int, add_cert_files,
                           (server_rec *s, apr_pool_t *p, 
-                           struct apr_array_header_t *cert_files,
-                           struct apr_array_header_t *key_files))
+                           apr_array_header_t *cert_files,
+                           apr_array_header_t *key_files))
 
 /** In case no certificates are available for a server, this
  * lets other modules add a fallback certificate for the time
@@ -115,8 +114,8 @@ APR_DECLARE_EXTERNAL_HOOK(ssl, SSL, int, add_cert_files,
  * with a 503. */
 APR_DECLARE_EXTERNAL_HOOK(ssl, SSL, int, add_fallback_cert_files,
                           (server_rec *s, apr_pool_t *p, 
-                           struct apr_array_header_t *cert_files,
-                           struct apr_array_header_t *key_files))
+                           apr_array_header_t *cert_files,
+                           apr_array_header_t *key_files))
 
 /** On TLS connections that do not relate to a configured virtual host,
  * allow other modules to provide a X509 certificate and EVP_PKEY to
