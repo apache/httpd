@@ -29,7 +29,6 @@ typedef struct md_http_response_t md_http_response_t;
 typedef apr_status_t md_http_cb(const md_http_response_t *res);
 
 struct md_http_request_t {
-    long id;
     md_http_t *http;
     apr_pool_t *pool;
     struct apr_bucket_alloc_t *bucket_alloc;
@@ -61,23 +60,21 @@ void md_http_set_response_limit(md_http_t *http, apr_off_t resp_limit);
 
 apr_status_t md_http_GET(md_http_t *http, 
                          const char *url, struct apr_table_t *headers,
-                         md_http_cb *cb, void *baton, long *preq_id);
+                         md_http_cb *cb, void *baton);
 
 apr_status_t md_http_HEAD(md_http_t *http, 
                           const char *url, struct apr_table_t *headers,
-                          md_http_cb *cb, void *baton, long *preq_id);
+                          md_http_cb *cb, void *baton);
 
 apr_status_t md_http_POST(md_http_t *http, const char *url, 
                           struct apr_table_t *headers, const char *content_type, 
                           struct apr_bucket_brigade *body,
-                          md_http_cb *cb, void *baton, long *preq_id);
+                          md_http_cb *cb, void *baton);
 
 apr_status_t md_http_POSTd(md_http_t *http, const char *url, 
                            struct apr_table_t *headers, const char *content_type, 
                            const char *data, size_t data_len, 
-                           md_http_cb *cb, void *baton, long *preq_id);
-
-apr_status_t md_http_await(md_http_t *http, long req_id);
+                           md_http_cb *cb, void *baton);
 
 void md_http_req_destroy(md_http_request_t *req);
 

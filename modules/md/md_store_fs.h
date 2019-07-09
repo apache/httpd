@@ -56,7 +56,7 @@ typedef enum {
 } md_store_fs_ev_t; 
 
 typedef apr_status_t md_store_fs_cb(void *baton, struct md_store_t *store,
-                                    md_store_fs_ev_t ev, int group, 
+                                    md_store_fs_ev_t ev, unsigned int group, 
                                     const char *fname, apr_filetype_e ftype,  
                                     apr_pool_t *p);
                                     

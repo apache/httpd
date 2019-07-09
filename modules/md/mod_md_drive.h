@@ -14,29 +14,22 @@
  * limitations under the License.
  */
 
-#ifndef mod_md_md_version_h
-#define mod_md_md_version_h
+#ifndef mod_md_md_drive_h
+#define mod_md_md_drive_h
 
-#undef PACKAGE_VERSION
-#undef PACKAGE_TARNAME
-#undef PACKAGE_STRING
-#undef PACKAGE_NAME
-#undef PACKAGE_BUGREPORT
+struct md_mod_conf_t;
+struct md_reg_t;
 
-/**
- * @macro
- * Version number of the md module as c string
- */
-#define MOD_MD_VERSION "2.0.7"
+typedef struct md_drive_ctx md_drive_ctx;
+
+int md_will_renew_cert(const md_t *md);
 
 /**
- * @macro
- * Numerical representation of the version number of the md module
- * release. This is a 24 bit number with 8 bits for major number, 8 bits
- * for minor and 8 bits for patch. Version 1.2.3 becomes 0x010203.
+ * Start driving the certificate procotol for the domains mentioned in mc->watched_names.
  */
-#define MOD_MD_VERSION_NUM 0x020007
+apr_status_t md_start_watching(struct md_mod_conf_t *mc, server_rec *s, apr_pool_t *p);
 
-#define MD_ACME_DEF_URL    "https://acme-v02.api.letsencrypt.org/directory"
 
-#endif /* mod_md_md_version_h */
+
+
+#endif /* mod_md_md_drive_h */

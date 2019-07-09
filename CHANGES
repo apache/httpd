@@ -1,6 +1,27 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.40
 
+  *) mod_md: new features
+     - supports the ACMEv2 protocol
+     - new challenge method 'tls-alpn-01' implemented, needs mod_ssl patch to become available 
+     - supports command configuration to setup/teardown 'dns-01' challenges
+     - supports wildcard certificates when dns challenges are configured
+     - ACMEv2 is the new default and will be used on the next certificate renewal,
+       unless another MDCertificateAuthority is configured
+     - challenge type 'tls-sni-01' has been removed as CAs do not offer this any longer
+     - a domain exposes its status at https://<domain>/.httpd/certificate-status
+     - Managed Domains are now in Apache's 'server-status' page
+     - A new handler 'md-status' exposes verbose status information in JSON format
+     - new directives "MDCertificateFile" and "MDCertificateKeyFile" to configure a
+       Managed Domain that uses static files. Auto-renewal is turned off for those.
+     - new MDMessageCmd that is invoked on several events: 'renewed', 'expiring' and
+       'errored'. New 'MDWarnWindow' directive to configure when expiration warnings
+       shall be issued.
+     - ACMEv2 endpoints use the GET via empty POST way of accessing resources, see
+       announcement by Let's Encrypt:       
+       https://community.letsencrypt.org/t/acme-v2-scheduled-deprecation-of-unauthenticated-resource-gets/74380
+     [Stefan Eissing]
+
   *) mod_mime_magic: Fix possible corruption of returned strings.
      [Christophe Jaillet]
 

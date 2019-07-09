@@ -237,7 +237,7 @@ static apr_status_t curl_perform(md_http_request_t *req)
     }
     
     md_log_perror(MD_LOG_MARK, MD_LOG_TRACE1, 0, req->pool, 
-                  "request %ld --> %s %s", req->id, req->method, req->url);
+                  "request --> %s %s", req->method, req->url);
     
     if (md_log_is_level(req->pool, MD_LOG_TRACE3)) {
         curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
@@ -253,11 +253,11 @@ static apr_status_t curl_perform(md_http_request_t *req)
             res->status = (int)l;
         }
         md_log_perror(MD_LOG_MARK, MD_LOG_TRACE1, res->rv, req->pool, 
-                      "request %ld <-- %d", req->id, res->status);
+                      "request <-- %d", res->status);
     }
     else {
         md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, res->rv, req->pool, 
-                      "request %ld failed(%d): %s", req->id, curle, 
+                      "request failed(%d): %s", curle, 
                       curl_easy_strerror(curle));
     }
     

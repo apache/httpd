@@ -24,6 +24,8 @@ struct md_t;
 struct md_http_response_t;
 struct md_cert_t;
 struct md_pkey_t;
+struct md_data;
+
 
 /**************************************************************************************************/
 /* random */
@@ -33,9 +35,11 @@ apr_status_t md_rand_bytes(unsigned char *buf, apr_size_t len, apr_pool_t *p);
 /**************************************************************************************************/
 /* digests */
 apr_status_t md_crypt_sha256_digest64(const char **pdigest64, apr_pool_t *p, 
-                                      const char *d, size_t dlen);
+                                      const struct md_data *data);
 apr_status_t md_crypt_sha256_digest_hex(const char **pdigesthex, apr_pool_t *p, 
-                                        const char *d, size_t dlen);
+                                        const struct md_data *data);
+
+#define MD_DATA_SET_STR(d, s)       do { (d)->data = (s); (d)->len = strlen(s); } while(0)
 
 /**************************************************************************************************/
 /* private keys */
@@ -76,7 +80,6 @@ apr_status_t md_pkey_fsave(md_pkey_t *pkey, apr_pool_t *p,
 apr_status_t md_crypt_sign64(const char **psign64, md_pkey_t *pkey, apr_pool_t *p, 
                              const char *d, size_t dlen);
 
-void *md_cert_get_X509(struct md_cert_t *cert);
 void *md_pkey_get_EVP_PKEY(struct md_pkey_t *pkey);
 
 struct md_json_t *md_pkey_spec_to_json(const md_pkey_spec_t *spec, apr_pool_t *p);
@@ -95,28 +98,48 @@ typedef enum {
 } md_cert_state_t;
 
 void md_cert_free(md_cert_t *cert);
+void *md_cert_get_X509(const md_cert_t *cert);
 
 apr_status_t md_cert_fload(md_cert_t **pcert, apr_pool_t *p, const char *fname);
 apr_status_t md_cert_fsave(md_cert_t *cert, apr_pool_t *p, 
                            const char *fname, apr_fileperms_t perms);
 
+/**
+ * Read a x509 certificate from a http response.
+ * Will return APR_ENOENT if content-type is not recognized (currently
+ * only "application/pkix-cert" is supported).
+ */
 apr_status_t md_cert_read_http(md_cert_t **pcert, apr_pool_t *pool, 
                                const struct md_http_response_t *res);
 
-md_cert_state_t md_cert_state_get(md_cert_t *cert);
+/**
+ * Read one or even a chain of certificates from a http response.
+ * Will return APR_ENOENT if content-type is not recognized (currently
+ * supports only "application/pem-certificate-chain" and "application/pkix-cert").
+ * @param chain    must be non-NULL, retrieved certificates will be added.
+ */
+apr_status_t md_cert_chain_read_http(struct apr_array_header_t *chain,
+                                     apr_pool_t *pool, const struct md_http_response_t *res);
+
+md_cert_state_t md_cert_state_get(const md_cert_t *cert);
 int md_cert_is_valid_now(const md_cert_t *cert);
 int md_cert_has_expired(const md_cert_t *cert);
 int md_cert_covers_domain(md_cert_t *cert, const char *domain_name);
 int md_cert_covers_md(md_cert_t *cert, const struct md_t *md);
-int md_cert_must_staple(md_cert_t *cert);
-apr_time_t md_cert_get_not_after(md_cert_t *cert);
-apr_time_t md_cert_get_not_before(md_cert_t *cert);
+int md_cert_must_staple(const md_cert_t *cert);
+apr_time_t md_cert_get_not_after(const md_cert_t *cert);
+apr_time_t md_cert_get_not_before(const md_cert_t *cert);
 
-apr_status_t md_cert_get_issuers_uri(const char **puri, md_cert_t *cert, apr_pool_t *p);
-apr_status_t md_cert_get_alt_names(apr_array_header_t **pnames, md_cert_t *cert, apr_pool_t *p);
+apr_status_t md_cert_get_issuers_uri(const char **puri, const md_cert_t *cert, apr_pool_t *p);
+apr_status_t md_cert_get_alt_names(apr_array_header_t **pnames, const md_cert_t *cert, apr_pool_t *p);
 
-apr_status_t md_cert_to_base64url(const char **ps64, md_cert_t *cert, apr_pool_t *p);
+apr_status_t md_cert_to_base64url(const char **ps64, const md_cert_t *cert, apr_pool_t *p);
 apr_status_t md_cert_from_base64url(md_cert_t **pcert, const char *s64, apr_pool_t *p);
+
+apr_status_t md_cert_to_sha256_digest(struct md_data **pdigest, const md_cert_t *cert, apr_pool_t *p);
+apr_status_t md_cert_to_sha256_fingerprint(const char **pfinger, const md_cert_t *cert, apr_pool_t *p);
+
+const char *md_cert_get_serial_number(const md_cert_t *cert, apr_pool_t *p);
 
 apr_status_t md_chain_fload(struct apr_array_header_t **pcerts, 
                             apr_pool_t *p, const char *fname);
@@ -125,11 +148,42 @@ apr_status_t md_chain_fsave(struct apr_array_header_t *certs,
 apr_status_t md_chain_fappend(struct apr_array_header_t *certs, 
                               apr_pool_t *p, const char *fname);
 
-apr_status_t md_cert_req_create(const char **pcsr_der_64, const struct md_t *md, 
+apr_status_t md_cert_req_create(const char **pcsr_der_64, const char *name,
+                                apr_array_header_t *domains, int must_staple, 
                                 md_pkey_t *pkey, apr_pool_t *p);
 
+/**
+ * Create a self-signed cerftificate with the given cn, key and list
+ * of alternate domain names.
+ */
 apr_status_t md_cert_self_sign(md_cert_t **pcert, const char *cn, 
                                struct apr_array_header_t *domains, md_pkey_t *pkey,
                                apr_interval_time_t valid_for, apr_pool_t *p);
+   
+/**
+ * Create a certificate for answering "tls-alpn-01" ACME challenges 
+ * (see <https://tools.ietf.org/html/draft-ietf-acme-tls-alpn-01>).
+ */
+apr_status_t md_cert_make_tls_alpn_01(md_cert_t **pcert, const char *domain, 
+                                      const char *acme_id, md_pkey_t *pkey, 
+                                      apr_interval_time_t valid_for, apr_pool_t *p);
+
+apr_status_t md_cert_get_ct_scts(apr_array_header_t *scts, apr_pool_t *p, const md_cert_t *cert);
+
+
+/**************************************************************************************************/
+/* X509 certificate transparency */
+
+const char *md_nid_get_sname(int nid);
+const char *md_nid_get_lname(int nid);
+
+typedef struct md_sct md_sct;
+struct md_sct {
+    int version;
+    apr_time_t timestamp;
+    struct md_data *logid;
+    int signature_type_nid;
+    struct md_data *signature;
+};
 
 #endif /* md_crypt_h */

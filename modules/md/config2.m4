@@ -248,6 +248,9 @@ md_acme.lo dnl
 md_acme_acct.lo dnl
 md_acme_authz.lo dnl
 md_acme_drive.lo dnl
+md_acmev1_drive.lo dnl
+md_acmev2_drive.lo dnl
+md_acme_order.lo dnl
 md_core.lo dnl
 md_curl.lo dnl
 md_crypt.lo dnl
@@ -255,13 +258,18 @@ md_http.lo dnl
 md_json.lo dnl
 md_jws.lo dnl
 md_log.lo dnl
+md_result.lo dnl
 md_reg.lo dnl
+md_status.lo dnl
 md_store.lo dnl
 md_store_fs.lo dnl
+md_time.lo dnl
 md_util.lo dnl
 mod_md.lo dnl
 mod_md_config.lo dnl
+mod_md_drive.lo dnl
 mod_md_os.lo dnl
+mod_md_status.lo dnl
 "
 
 # Ensure that other modules can pick up mod_md.h

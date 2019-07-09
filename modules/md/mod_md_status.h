@@ -14,29 +14,13 @@
  * limitations under the License.
  */
 
-#ifndef mod_md_md_version_h
-#define mod_md_md_version_h
+#ifndef mod_md_md_status_h
+#define mod_md_md_status_h
 
-#undef PACKAGE_VERSION
-#undef PACKAGE_TARNAME
-#undef PACKAGE_STRING
-#undef PACKAGE_NAME
-#undef PACKAGE_BUGREPORT
+int md_http_cert_status(request_rec *r);
 
-/**
- * @macro
- * Version number of the md module as c string
- */
-#define MOD_MD_VERSION "2.0.7"
+int md_status_hook(request_rec *r, int flags);
 
-/**
- * @macro
- * Numerical representation of the version number of the md module
- * release. This is a 24 bit number with 8 bits for major number, 8 bits
- * for minor and 8 bits for patch. Version 1.2.3 becomes 0x010203.
- */
-#define MOD_MD_VERSION_NUM 0x020007
+int md_status_handler(request_rec *r);
 
-#define MD_ACME_DEF_URL    "https://acme-v02.api.letsencrypt.org/directory"
-
-#endif /* mod_md_md_version_h */
+#endif /* mod_md_md_status_h */
