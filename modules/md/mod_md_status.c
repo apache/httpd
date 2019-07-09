@@ -85,7 +85,7 @@ int md_http_cert_status(request_rec *r)
                   "requesting status for MD: %s", md->name);
 
     if (APR_SUCCESS != (rv = md_status_get_md_json(&mdj, md, sc->mc->reg, r->pool))) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO()
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(10175)
                       "loading md status for %s", md->name);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
