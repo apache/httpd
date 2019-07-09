@@ -39,7 +39,6 @@ APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ssl, SSL, int, init_server,
                                     (server_rec *s,apr_pool_t *p,int is_proxy,SSL_CTX *ctx),
                                     (s,p,is_proxy,ctx), OK, DECLINED)
 
-/* Implement 'ap_run_ssl_add_cert_files'. */
 APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ssl, SSL, int, add_cert_files,
                                     (server_rec *s, apr_pool_t *p, 
                                     apr_array_header_t *cert_files, apr_array_header_t *key_files),
@@ -54,8 +53,8 @@ APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ssl, SSL, int, add_fallback_cert_files,
 
 APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ssl, SSL, int, answer_challenge,
                                     (conn_rec *c, const char *server_name, 
-                                    void **pX509, void **pEVP_PKEY),
-                                    (c, server_name, pX509, pEVP_PKEY),
+                                    X509 **pcert, EVP_PKEY **pkey),
+                                    (c, server_name, pcert, pkey),
                                     DECLINED, DECLINED)
 
 
@@ -198,7 +197,7 @@ static void ssl_add_version_components(apr_pool_t *p,
 int ssl_is_challenge(conn_rec *c, const char *servername, 
                      X509 **pcert, EVP_PKEY **pkey)
 {
-    if (APR_SUCCESS == ssl_run_answer_challenge(c, servername, (void**)pcert, (void**)pkey)) {
+    if (APR_SUCCESS == ssl_run_answer_challenge(c, servername, pcert, pkey)) {
         return 1;
     }
     *pcert = NULL;

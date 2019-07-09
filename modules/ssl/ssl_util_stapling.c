@@ -31,18 +31,18 @@
 #include "ssl_private.h"
 #include "ap_mpm.h"
 #include "apr_thread_mutex.h"
-#include "mod_ssl.h"
+#include "mod_ssl_openssl.h"
 
 APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ssl, SSL, int, init_stapling_status,
                                     (server_rec *s, apr_pool_t *p, 
-                                     void *x509cert, void *x509issuer),
-                                     (s, p, x509cert, x509issuer),
+                                     X509 *cert, X509 *issuer),
+                                     (s, p, cert, issuer),
                                     DECLINED, DECLINED)
 
 APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ssl, SSL, int, get_stapling_status,
                                     (unsigned char **pder, int *pderlen, 
-                                     conn_rec *c, server_rec *s, void *x509cert),
-                                     (pder, pderlen, c, s, x509cert), 
+                                     conn_rec *c, server_rec *s, X509 *cert),
+                                     (pder, pderlen, c, s, cert), 
                                     DECLINED, DECLINED)
                          
 
