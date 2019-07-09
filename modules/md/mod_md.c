@@ -386,12 +386,12 @@ static void init_acme_tls_1_domains(md_t *md, server_rec *base_server)
     for (i = 0; i < md->domains->nelts; ++i) {
         domain = APR_ARRAY_IDX(md->domains, i, const char*);
         if (NULL == (s = get_https_server(domain, base_server))) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, base_server, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, base_server, APLOGNO(10168)
                          "%s: no https server_rec found for %s", md->name, domain);
             continue;
         }
         if (!ap_is_allowed_protocol(NULL, NULL, s, PROTO_ACME_TLS_1)) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, base_server, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, base_server, APLOGNO(10169)
                          "%s: https server_rec for %s does not have protocol %s enabled", 
                          md->name, domain, PROTO_ACME_TLS_1);
             continue;
@@ -601,14 +601,14 @@ static apr_status_t merge_mds_with_conf(md_mod_conf_t *mc, apr_pool_t *p,
         }
         
         if (md->cert_file && !md->pkey_file) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, base_server, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, base_server, APLOGNO(10170)
                          "The Managed Domain '%s', defined in %s(line %d), "
                          "has a MDCertificateFile but no MDCertificateKeyFile.",
                          md->name, md->defn_name, md->defn_line_number);
             return APR_EINVAL;
         }
         if (!md->cert_file && md->pkey_file) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, base_server, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, base_server, APLOGNO(10171)
                          "The Managed Domain '%s', defined in %s(line %d), "
                          "has a MDCertificateKeyFile but no MDCertificateFile.",
                          md->name, md->defn_name, md->defn_line_number);
@@ -659,7 +659,7 @@ static apr_status_t reinit_mds(md_mod_conf_t *mc, server_rec *s, apr_pool_t *p)
     for (i = 0; i < mc->mds->nelts; ++i) {
         md = APR_ARRAY_IDX(mc->mds, i, md_t *);
         if (APR_SUCCESS != (rv = md_reg_reinit_state(mc->reg, (md_t*)md, p))) {
-            ap_log_error( APLOG_MARK, APLOG_ERR, rv, s, APLOGNO()
+            ap_log_error( APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10172)
                          "%s: error reinitiazing from store", md->name);
             break;
         }
@@ -702,7 +702,7 @@ static void init_watched_names(md_mod_conf_t *mc, apr_pool_t *p, apr_pool_t *pte
             md_reg_test_init(mc->reg, md, mc->env, result, p);
             if (APR_SUCCESS != result->status && result->detail) {
                 apr_hash_set(mc->init_errors, md->name, APR_HASH_KEY_STRING, apr_pstrdup(p, result->detail));
-                ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO() 
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(10173) 
                              "md[%s]: %s", md->name, result->detail);
             }
         }
@@ -913,7 +913,7 @@ static apr_status_t setup_fallback_cert(md_store_t *store, const md_t *md,
                                     md->domains, pkey, apr_time_from_sec(14 * MD_SECS_PER_DAY), p))
         || APR_SUCCESS != (rv = md_store_save(store, p, MD_SG_DOMAINS, md->name, 
                                 MD_FN_FALLBACK_CERT, MD_SV_CERT, (void*)cert, 0))) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10174)
                      "%s: setup fallback certificate", md->name);
     }
     return rv;
