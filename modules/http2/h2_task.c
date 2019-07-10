@@ -406,8 +406,15 @@ int h2_task_can_redo(h2_task *task) {
             || !strcmp("OPTIONS", task->request->method));
 }
 
+int h2_task_has_started(h2_task *task)
+{
+    return task && task->started_at != 0;
+}
+
 void h2_task_redo(h2_task *task)
 {
+    task->started_at = 0;
+    task->worker_done = 0;
     task->rst_error = 0;
 }
 
@@ -547,7 +554,6 @@ apr_status_t h2_task_do(h2_task *task, apr_thread_t *thread, int worker_id)
     ap_assert(task);
     c = task->c;
     task->worker_started = 1;
-    task->started_at = apr_time_now();
     
     if (c->master) {
         /* Each conn_rec->id is supposed to be unique at a point in time. Since
