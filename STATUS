@@ -209,12 +209,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x: svn merge -c 1862014 ^/httpd/httpd/trunk .
      +1: jfclere, icing
 
-  *) mod_http2: fixes Timeout vs. KeepAliveTimeout behaviour, see PR 63534.
+  *) mod_http2: fixes Timeout vs. KeepAliveTimeout behaviour, see PR 63534. Fixes
+     stream cleanup when connection throttling is in place. Counts stream resets by client
+     on streams initiated by client as cause for connection throttling.
      trunk patch:
+        http://svn.apache.org/r1861338
         http://svn.apache.org/r1862475
         http://svn.apache.org/r1862583
+        http://svn.apache.org/r1862865        
      2.4.x patch:
-        https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/h2-keepalive-yann-v4.patch
+        https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/h2-keepalive+throttling-v2.patch
      +1: icing,
 
   *) mod_ssl: fix gcc 8+ warnings
