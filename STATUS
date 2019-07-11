@@ -153,6 +153,21 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1851146 ^/httpd/httpd/trunk .
      +1: jailletc36, jim, icing
 
+  *) core: Fix a compilation error when GPROF is defined.
+     trunk patch: http://svn.apache.org/r1857859
+     2.4.x patch: svn merge -c 1857859 ^/httpd/httpd/trunk .
+     +1: jailletc36, icing, jim
+
+  *) mod_socache_shmcb: fix gcc 9 warnings
+     trunk: http://svn.apache.org/r1858565
+     2.4.x: svn merge -c 1858565 ^/httpd/httpd/trunk .
+     +1: jorton, icing, jim
+
+  *) mod_proxy_hcheck fix for BZ 60948
+     trunk: http://svn.apache.org/r1862014
+     2.4.x: svn merge -c 1862014 ^/httpd/httpd/trunk .
+     +1: jfclere, icing, jim
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -193,21 +208,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: minfrin, jim
      jailletc36: at least, r1853302 is required, IMHO
      minfrin: r1853302 is added in above, jim agrees
-
-  *) core: Fix a compilation error when GPROF is defined.
-     trunk patch: http://svn.apache.org/r1857859
-     2.4.x patch: svn merge -c 1857859 ^/httpd/httpd/trunk .
-     +1: jailletc36, icing, jim
-
-  *) mod_socache_shmcb: fix gcc 9 warnings
-     trunk: http://svn.apache.org/r1858565
-     2.4.x: svn merge -c 1858565 ^/httpd/httpd/trunk .
-     +1: jorton, icing, jim
-
-  *) mod_proxy_hcheck fix for BZ 60948
-     trunk: http://svn.apache.org/r1862014
-     2.4.x: svn merge -c 1862014 ^/httpd/httpd/trunk .
-     +1: jfclere, icing, jim
 
   *) mod_http2: fixes Timeout vs. KeepAliveTimeout behaviour, see PR 63534. Fixes
      stream cleanup when connection throttling is in place. Counts stream resets by client
