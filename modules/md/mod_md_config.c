@@ -45,7 +45,7 @@
 static md_mod_conf_t defmc = {
     NULL,                      /* list of mds */
 #if AP_MODULE_MAGIC_AT_LEAST(20180906, 2)
-    NULL,                      /* base dirm by default state-dir-relative */
+    NULL,                      /* base dir by default state-dir-relative */
 #else
     MD_DEFAULT_BASE_DIR,
 #endif
@@ -897,6 +897,12 @@ apr_status_t md_config_post_config(server_rec *s, apr_pool_t *p)
     if (mc->hsts_max_age > 0) {
         mc->hsts_header = apr_psprintf(p, "max-age=%d", mc->hsts_max_age);
     }
+    
+#if AP_MODULE_MAGIC_AT_LEAST(20180906, 2)
+    if (mc->base_dir == NULL) {
+        mc->base_dir = ap_state_dir_relative(p, MD_DEFAULT_BASE_DIR);
+    }
+#endif
     
     return APR_SUCCESS;
 }

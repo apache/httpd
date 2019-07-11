@@ -443,7 +443,7 @@ static apr_status_t acct_upd(md_acme_t *acme, apr_pool_t *p,
     }
     
     apr_array_clear(acct->contacts);
-    md_json_getsa(acct->contacts, body, MD_KEY_CONTACT, NULL);
+    md_json_dupsa(acct->contacts, acme->p, body, MD_KEY_CONTACT, NULL);
     if (md_json_has_key(body, MD_KEY_STATUS, NULL)) {
         acct->status = acct_st_from_str(md_json_gets(body, MD_KEY_STATUS, NULL));
     }
