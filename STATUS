@@ -158,11 +158,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1857859 ^/httpd/httpd/trunk .
      +1: jailletc36, icing, jim
 
-  *) mod_socache_shmcb: fix gcc 9 warnings
-     trunk: http://svn.apache.org/r1858565
-     2.4.x: svn merge -c 1858565 ^/httpd/httpd/trunk .
-     +1: jorton, icing, jim
-
   *) mod_proxy_hcheck fix for BZ 60948
      trunk: http://svn.apache.org/r1862014
      2.4.x: svn merge -c 1862014 ^/httpd/httpd/trunk .
@@ -224,6 +219,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_ssl: fix gcc 8+ warnings
      trunk: fixed as part of wider changes, r1809037
      2.4.x: http://people.apache.org/~jorton/modssl_chain_warning.diff
+     [HOLD: this is obsoleted by icing's mod_ssl patch below]
      +1: jorton, jfclere, jim
 
   *) mod_ssl: offer new hooks for modules like mod_md and remove use of mod_md's optional functions.
@@ -234,7 +230,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/r1862384
      2.4.x:
         https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/ssl-certicate-hooks.patch 
-     +1: icing
+     +1: icing, jorton
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
