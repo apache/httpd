@@ -1520,7 +1520,7 @@ static const char *set_gprof_dir(cmd_parms *cmd, void *dummy, const char *arg)
         return err;
     }
 
-    conf->gprof_dir = arg;
+    conf->gprof_dir = apr_pstrdup(cmd->pool, arg);
     return NULL;
 }
 #endif /*GPROF*/
