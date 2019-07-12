@@ -153,11 +153,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1851146 ^/httpd/httpd/trunk .
      +1: jailletc36, jim, icing
 
-  *) core: Fix a compilation error when GPROF is defined.
-     trunk patch: http://svn.apache.org/r1857859
-     2.4.x patch: svn merge -c 1857859 ^/httpd/httpd/trunk .
-     +1: jailletc36, icing, jim
-
   *) mod_proxy_hcheck fix for BZ 60948
      trunk: http://svn.apache.org/r1862014
      2.4.x: svn merge -c 1862014 ^/httpd/httpd/trunk .
