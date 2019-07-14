@@ -64,6 +64,9 @@ CLEAN :
 	-@erase "$(INTDIR)\md_acme_acct.obj"
 	-@erase "$(INTDIR)\md_acme_authz.obj"
 	-@erase "$(INTDIR)\md_acme_drive.obj"
+	-@erase "$(INTDIR)\md_acme_order.obj"
+	-@erase "$(INTDIR)\md_acmev1_drive.obj"
+	-@erase "$(INTDIR)\md_acmev2_drive.obj"
 	-@erase "$(INTDIR)\md_core.obj"
 	-@erase "$(INTDIR)\md_crypt.obj"
 	-@erase "$(INTDIR)\md_curl.obj"
@@ -72,12 +75,17 @@ CLEAN :
 	-@erase "$(INTDIR)\md_jws.obj"
 	-@erase "$(INTDIR)\md_log.obj"
 	-@erase "$(INTDIR)\md_reg.obj"
+	-@erase "$(INTDIR)\md_result.obj"
+	-@erase "$(INTDIR)\md_status.obj"
 	-@erase "$(INTDIR)\md_store.obj"
 	-@erase "$(INTDIR)\md_store_fs.obj"
+	-@erase "$(INTDIR)\md_time.obj"
 	-@erase "$(INTDIR)\md_util.obj"
 	-@erase "$(INTDIR)\mod_md.obj"
 	-@erase "$(INTDIR)\mod_md.res"
 	-@erase "$(INTDIR)\mod_md_config.obj"
+	-@erase "$(INTDIR)\mod_md_drive.obj"
+	-@erase "$(INTDIR)\mod_md_status.obj"
 	-@erase "$(INTDIR)\mod_md_os.obj"
 	-@erase "$(INTDIR)\mod_md_src.idb"
 	-@erase "$(INTDIR)\mod_md_src.pdb"
@@ -90,7 +98,7 @@ CLEAN :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MD /W3 /Zi /O2 /Oy- /I "../../server/mpm/winnt" /I "../../include" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" $(SSLINC) /I "../../srclib/jansson/include" /I "../../srclib/curl/include" /I "../ssl" /I "../core" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D ssize_t=long /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\mod_md_src" /FD /I " ../ssl" /c 
+CPP_PROJ=/nologo /MD /W3 /Zi /O2 /Oy- /I "../../server/mpm/winnt" /I "../../include" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" $(SSLINC) /I "../../srclib/jansson/include" /I "../../srclib/curl/include" /I "../ssl" /I "../core" /I "../generators" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D ssize_t=long /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\mod_md_src" /FD /I " ../ssl" /c 
 
 .c{$(INTDIR)}.obj::
    $(CPP) @<<
@@ -135,7 +143,9 @@ LINK32_FLAGS=kernel32.lib libhttpd.lib libapr-1.lib libaprutil-1.lib $(SSLCRP).l
 LINK32_OBJS= \
 	"$(INTDIR)\mod_md.obj" \
 	"$(INTDIR)\mod_md_config.obj" \
+	"$(INTDIR)\mod_md_drive.obj" \
 	"$(INTDIR)\mod_md_os.obj" \
+	"$(INTDIR)\mod_md_status.obj" \
 	"$(INTDIR)\md_core.obj" \
 	"$(INTDIR)\md_crypt.obj" \
 	"$(INTDIR)\md_curl.obj" \
@@ -144,13 +154,19 @@ LINK32_OBJS= \
 	"$(INTDIR)\md_jws.obj" \
 	"$(INTDIR)\md_log.obj" \
 	"$(INTDIR)\md_reg.obj" \
+	"$(INTDIR)\md_result.obj" \
+	"$(INTDIR)\md_status.obj" \
 	"$(INTDIR)\md_store.obj" \
 	"$(INTDIR)\md_store_fs.obj" \
+	"$(INTDIR)\md_time.obj" \
 	"$(INTDIR)\md_util.obj" \
 	"$(INTDIR)\md_acme.obj" \
 	"$(INTDIR)\md_acme_acct.obj" \
 	"$(INTDIR)\md_acme_authz.obj" \
 	"$(INTDIR)\md_acme_drive.obj" \
+	"$(INTDIR)\md_acme_order.obj" \
+	"$(INTDIR)\md_acmev1_drive.obj" \
+	"$(INTDIR)\md_acmev2_drive.obj" \
 	"$(INTDIR)\mod_md.res" \
 	"..\..\srclib\apr\Release\libapr-1.lib" \
 	"..\..\srclib\apr-util\Release\libaprutil-1.lib" \
@@ -203,6 +219,9 @@ CLEAN :
 	-@erase "$(INTDIR)\md_acme_acct.obj"
 	-@erase "$(INTDIR)\md_acme_authz.obj"
 	-@erase "$(INTDIR)\md_acme_drive.obj"
+	-@erase "$(INTDIR)\md_acme_order.obj"
+	-@erase "$(INTDIR)\md_acmev1_drive.obj"
+	-@erase "$(INTDIR)\md_acmev2_drive.obj"
 	-@erase "$(INTDIR)\md_core.obj"
 	-@erase "$(INTDIR)\md_crypt.obj"
 	-@erase "$(INTDIR)\md_curl.obj"
@@ -211,12 +230,17 @@ CLEAN :
 	-@erase "$(INTDIR)\md_jws.obj"
 	-@erase "$(INTDIR)\md_log.obj"
 	-@erase "$(INTDIR)\md_reg.obj"
+	-@erase "$(INTDIR)\md_result.obj"
+	-@erase "$(INTDIR)\md_status.obj"
 	-@erase "$(INTDIR)\md_store.obj"
 	-@erase "$(INTDIR)\md_store_fs.obj"
+	-@erase "$(INTDIR)\md_time.obj"
 	-@erase "$(INTDIR)\md_util.obj"
 	-@erase "$(INTDIR)\mod_md.obj"
 	-@erase "$(INTDIR)\mod_md.res"
 	-@erase "$(INTDIR)\mod_md_config.obj"
+	-@erase "$(INTDIR)\mod_md_drive.obj"
+	-@erase "$(INTDIR)\mod_md_status.obj"
 	-@erase "$(INTDIR)\mod_md_os.obj"
 	-@erase "$(INTDIR)\mod_md_src.idb"
 	-@erase "$(INTDIR)\mod_md_src.pdb"
@@ -229,7 +253,7 @@ CLEAN :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MDd /W3 /Zi /Od /I "../../include" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" $(SSLINC) /I "../../srclib/jansson/include" /I "../../srclib/curl/include" /I "../core" /I "../ssl" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D ssize_t=long /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\mod_md_src" /FD /EHsc /c 
+CPP_PROJ=/nologo /MDd /W3 /Zi /Od /I "../../include" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" $(SSLINC) /I "../../srclib/jansson/include" /I "../../srclib/curl/include" /I "../core" /I "../generators" /I "../ssl" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D ssize_t=long /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\mod_md_src" /FD /EHsc /c 
 
 .c{$(INTDIR)}.obj::
    $(CPP) @<<
@@ -274,7 +298,9 @@ LINK32_FLAGS=kernel32.lib libhttpd.lib libapr-1.lib libaprutil-1.lib $(SSLCRP).l
 LINK32_OBJS= \
 	"$(INTDIR)\mod_md.obj" \
 	"$(INTDIR)\mod_md_config.obj" \
+	"$(INTDIR)\mod_md_drive.obj" \
 	"$(INTDIR)\mod_md_os.obj" \
+	"$(INTDIR)\mod_md_status.obj" \
 	"$(INTDIR)\md_core.obj" \
 	"$(INTDIR)\md_crypt.obj" \
 	"$(INTDIR)\md_curl.obj" \
@@ -283,13 +309,19 @@ LINK32_OBJS= \
 	"$(INTDIR)\md_jws.obj" \
 	"$(INTDIR)\md_log.obj" \
 	"$(INTDIR)\md_reg.obj" \
+	"$(INTDIR)\md_result.obj" \
+	"$(INTDIR)\md_status.obj" \
 	"$(INTDIR)\md_store.obj" \
 	"$(INTDIR)\md_store_fs.obj" \
+	"$(INTDIR)\md_time.obj" \
 	"$(INTDIR)\md_util.obj" \
 	"$(INTDIR)\md_acme.obj" \
 	"$(INTDIR)\md_acme_acct.obj" \
 	"$(INTDIR)\md_acme_authz.obj" \
 	"$(INTDIR)\md_acme_drive.obj" \
+	"$(INTDIR)\md_acme_order.obj" \
+	"$(INTDIR)\md_acmev1_drive.obj" \
+	"$(INTDIR)\md_acmev2_drive.obj" \
 	"$(INTDIR)\mod_md.res" \
 	"..\..\srclib\apr\Debug\libapr-1.lib" \
 	"..\..\srclib\apr-util\Debug\libaprutil-1.lib" \
@@ -445,6 +477,21 @@ SOURCE=./md_acme_drive.c
 "$(INTDIR)\md_acme_drive.obj" : $(SOURCE) "$(INTDIR)"
 
 
+SOURCE=./md_acme_order.c
+
+"$(INTDIR)\md_acme_order.obj" : $(SOURCE) "$(INTDIR)"
+
+
+SOURCE=./md_acmev1_drive.c
+
+"$(INTDIR)\md_acmev1_drive.obj" : $(SOURCE) "$(INTDIR)"
+
+
+SOURCE=./md_acmev2_drive.c
+
+"$(INTDIR)\md_acmev2_drive.obj" : $(SOURCE) "$(INTDIR)"
+
+
 SOURCE=./md_core.c
 
 "$(INTDIR)\md_core.obj" : $(SOURCE) "$(INTDIR)"
@@ -485,6 +532,16 @@ SOURCE=./md_reg.c
 "$(INTDIR)\md_reg.obj" : $(SOURCE) "$(INTDIR)"
 
 
+SOURCE=./md_result.c
+
+"$(INTDIR)\md_result.obj" : $(SOURCE) "$(INTDIR)"
+
+
+SOURCE=./md_status.c
+
+"$(INTDIR)\md_status.obj" : $(SOURCE) "$(INTDIR)"
+
+
 SOURCE=./md_store.c
 
 "$(INTDIR)\md_store.obj" : $(SOURCE) "$(INTDIR)"
@@ -493,6 +550,11 @@ SOURCE=./md_store.c
 SOURCE=./md_store_fs.c
 
 "$(INTDIR)\md_store_fs.obj" : $(SOURCE) "$(INTDIR)"
+
+
+SOURCE=./md_time.c
+
+"$(INTDIR)\md_time.obj" : $(SOURCE) "$(INTDIR)"
 
 
 SOURCE=./md_util.c
@@ -510,10 +572,19 @@ SOURCE=./mod_md_config.c
 "$(INTDIR)\mod_md_config.obj" : $(SOURCE) "$(INTDIR)"
 
 
+SOURCE=./mod_md_drive.c
+
+"$(INTDIR)\mod_md_drive.obj" : $(SOURCE) "$(INTDIR)"
+
+
 SOURCE=./mod_md_os.c
 
 "$(INTDIR)\mod_md_os.obj" : $(SOURCE) "$(INTDIR)"
 
+
+SOURCE=./mod_md_status.c
+
+"$(INTDIR)\mod_md_status.obj" : $(SOURCE) "$(INTDIR)"
 
 
 !ENDIF 
