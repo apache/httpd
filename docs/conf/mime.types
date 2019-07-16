@@ -1366,8 +1366,8 @@ application/zip					zip
 # audio/3gpp2
 # audio/ac3
 audio/adpcm					adp
-# audio/amr
-# audio/amr-wb
+audio/amr					amr
+audio/amr-wb					awb
 # audio/amr-wb+
 # audio/aptx
 # audio/asc
