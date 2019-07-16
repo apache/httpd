@@ -227,6 +227,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/ssl-certicate-hooks.patch 
      +1: icing, jorton
 
+  *) core: fix crash when running with apr lib build with APR_POOL_DEBUG.
+     Observed with huge config and mod_security using long config lines.
+     trunk:
+        http://svn.apache.org/r1863179
+     2.4.x patch: svn merge -c 1863179 ^/httpd/httpd/trunk .
+     +1: rjung
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
