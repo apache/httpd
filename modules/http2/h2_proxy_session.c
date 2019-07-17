@@ -557,7 +557,7 @@ static ssize_t stream_request_data(nghttp2_session *ngh2, int32_t stream_id,
                       " total, flags=%d", stream->id, (long)readlen, (long)stream->data_sent,
                       (int)*data_flags);
         if ((*data_flags & NGHTTP2_DATA_FLAG_EOF) && !apr_is_empty_table(stream->r->trailers_in)) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, stream->r, APLOGNO(03468) 
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, stream->r, APLOGNO(10179) 
                           "h2_proxy_stream(%d): submit trailers", stream->id);
             *data_flags |= NGHTTP2_DATA_FLAG_NO_END_STREAM;
             submit_trailers(stream);
