@@ -170,6 +170,10 @@ Changes with Apache 2.4.39
   *) mod_reqtimeout: Allow to configure (TLS-)handshake timeouts.
      PR 61310. [Yann Ylavic]
 
+  *) core: Split out the ability to parse wildcard files and directories
+     from the Include/IncludeOptional directives into a generic set of
+     functions ap_dir_nofnmatch() and ap_dir_fnmatch(). [Graham Leggett]
+
   *) mod_proxy_wstunnel: Fix websocket proxy over UDS.
      PR 62932 <pavel dcmsys.com>
 

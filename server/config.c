@@ -1793,18 +1793,6 @@ static const char *process_command_config(server_rec *s,
     return NULL;
 }
 
-typedef struct {
-    const char *fname;
-} fnames;
-
-static int fname_alphasort(const void *fn1, const void *fn2)
-{
-    const fnames *f1 = fn1;
-    const fnames *f2 = fn2;
-
-    return strcmp(f1->fname,f2->fname);
-}
-
 /**
  * Used by -D DUMP_INCLUDES to output the config file "tree".
  */
@@ -1897,200 +1885,15 @@ AP_DECLARE(const char *) ap_process_resource_config(server_rec *s,
     return NULL;
 }
 
-static const char *process_resource_config_nofnmatch(server_rec *s,
-                                                     const char *fname,
-                                                     ap_directive_t **conftree,
-                                                     apr_pool_t *p,
-                                                     apr_pool_t *ptemp,
-                                                     unsigned depth,
-                                                     int optional)
+typedef struct {
+    server_rec *s;
+    ap_directive_t **conftree;
+} configs;
+
+static const char *process_resource_config_cb(ap_dir_match_t *w, const char *fname)
 {
-    const char *error;
-    apr_status_t rv;
-
-    if (ap_is_directory(ptemp, fname)) {
-        apr_dir_t *dirp;
-        apr_finfo_t dirent;
-        int current;
-        apr_array_header_t *candidates = NULL;
-        fnames *fnew;
-        char *path = apr_pstrdup(ptemp, fname);
-
-        if (++depth > AP_MAX_INCLUDE_DIR_DEPTH) {
-            return apr_psprintf(p, "Directory %s exceeds the maximum include "
-                                "directory nesting level of %u. You have "
-                                "probably a recursion somewhere.", path,
-                                AP_MAX_INCLUDE_DIR_DEPTH);
-        }
-
-        /*
-         * first course of business is to grok all the directory
-         * entries here and store 'em away. Recall we need full pathnames
-         * for this.
-         */
-        rv = apr_dir_open(&dirp, path, ptemp);
-        if (rv != APR_SUCCESS) {
-            return apr_psprintf(p, "Could not open config directory %s: %pm",
-                                path, &rv);
-        }
-
-        candidates = apr_array_make(ptemp, 1, sizeof(fnames));
-        while (apr_dir_read(&dirent, APR_FINFO_DIRENT, dirp) == APR_SUCCESS) {
-            /* strip out '.' and '..' */
-            if (strcmp(dirent.name, ".")
-                && strcmp(dirent.name, "..")) {
-                fnew = (fnames *) apr_array_push(candidates);
-                fnew->fname = ap_make_full_path(ptemp, path, dirent.name);
-            }
-        }
-
-        apr_dir_close(dirp);
-        if (candidates->nelts != 0) {
-            qsort((void *) candidates->elts, candidates->nelts,
-                  sizeof(fnames), fname_alphasort);
-
-            /*
-             * Now recurse these... we handle errors and subdirectories
-             * via the recursion, which is nice
-             */
-            for (current = 0; current < candidates->nelts; ++current) {
-                fnew = &((fnames *) candidates->elts)[current];
-                error = process_resource_config_nofnmatch(s, fnew->fname,
-                                                          conftree, p, ptemp,
-                                                          depth, optional);
-                if (error) {
-                    return error;
-                }
-            }
-        }
-
-        return NULL;
-    }
-    else if (optional) {
-        /* If the optinal flag is set (like for IncludeOptional) we can
-         * tolerate that no file or directory is present and bail out.
-         */
-        apr_finfo_t finfo;
-        if (apr_stat(&finfo, fname, APR_FINFO_TYPE, ptemp) != APR_SUCCESS
-            || finfo.filetype == APR_NOFILE)
-            return NULL;
-    }
-
-    return ap_process_resource_config(s, fname, conftree, p, ptemp);
-}
-
-static const char *process_resource_config_fnmatch(server_rec *s,
-                                                   const char *path,
-                                                   const char *fname,
-                                                   ap_directive_t **conftree,
-                                                   apr_pool_t *p,
-                                                   apr_pool_t *ptemp,
-                                                   unsigned depth,
-                                                   int optional)
-{
-    const char *rest;
-    apr_status_t rv;
-    apr_dir_t *dirp;
-    apr_finfo_t dirent;
-    apr_array_header_t *candidates = NULL;
-    fnames *fnew;
-    int current;
-
-    /* find the first part of the filename */
-    rest = ap_strchr_c(fname, '/');
-    if (rest) {
-        fname = apr_pstrmemdup(ptemp, fname, rest - fname);
-        rest++;
-    }
-
-    /* optimisation - if the filename isn't a wildcard, process it directly */
-    if (!apr_fnmatch_test(fname)) {
-        path = ap_make_full_path(ptemp, path, fname);
-        if (!rest) {
-            return process_resource_config_nofnmatch(s, path,
-                                                     conftree, p,
-                                                     ptemp, 0, optional);
-        }
-        else {
-            return process_resource_config_fnmatch(s, path, rest,
-                                                   conftree, p,
-                                                   ptemp, 0, optional);
-        }
-    }
-
-    /*
-     * first course of business is to grok all the directory
-     * entries here and store 'em away. Recall we need full pathnames
-     * for this.
-     */
-    rv = apr_dir_open(&dirp, path, ptemp);
-    if (rv != APR_SUCCESS) {
-        /* If the directory doesn't exist and the optional flag is set
-         * there is no need to return an error.
-         */
-        if (rv == APR_ENOENT && optional) {
-            return NULL;
-        }
-        return apr_psprintf(p, "Could not open config directory %s: %pm",
-                            path, &rv);
-    }
-
-    candidates = apr_array_make(ptemp, 1, sizeof(fnames));
-    while (apr_dir_read(&dirent, APR_FINFO_DIRENT | APR_FINFO_TYPE, dirp) == APR_SUCCESS) {
-        /* strip out '.' and '..' */
-        if (strcmp(dirent.name, ".")
-            && strcmp(dirent.name, "..")
-            && (apr_fnmatch(fname, dirent.name,
-                            APR_FNM_PERIOD) == APR_SUCCESS)) {
-            const char *full_path = ap_make_full_path(ptemp, path, dirent.name);
-            /* If matching internal to path, and we happen to match something
-             * other than a directory, skip it
-             */
-            if (rest && (dirent.filetype != APR_DIR)) {
-                continue;
-            }
-            fnew = (fnames *) apr_array_push(candidates);
-            fnew->fname = full_path;
-        }
-    }
-
-    apr_dir_close(dirp);
-    if (candidates->nelts != 0) {
-        const char *error;
-
-        qsort((void *) candidates->elts, candidates->nelts,
-              sizeof(fnames), fname_alphasort);
-
-        /*
-         * Now recurse these... we handle errors and subdirectories
-         * via the recursion, which is nice
-         */
-        for (current = 0; current < candidates->nelts; ++current) {
-            fnew = &((fnames *) candidates->elts)[current];
-            if (!rest) {
-                error = process_resource_config_nofnmatch(s, fnew->fname,
-                                                          conftree, p,
-                                                          ptemp, 0, optional);
-            }
-            else {
-                error = process_resource_config_fnmatch(s, fnew->fname, rest,
-                                                        conftree, p,
-                                                        ptemp, 0, optional);
-            }
-            if (error) {
-                return error;
-            }
-        }
-    }
-    else {
-
-        if (!optional) {
-            return apr_psprintf(p, "No matches for the wildcard '%s' in '%s', failing "
-                                   "(use IncludeOptional if required)", fname, path);
-        }
-    }
-
-    return NULL;
+    configs *cfgs = w->ctx;
+    return ap_process_resource_config(cfgs->s, fname, cfgs->conftree, w->p, w->ptemp);
 }
 
 AP_DECLARE(const char *) ap_process_fnmatch_configs(server_rec *s,
@@ -2100,8 +1903,19 @@ AP_DECLARE(const char *) ap_process_fnmatch_configs(server_rec *s,
                                                     apr_pool_t *ptemp,
                                                     int optional)
 {
-    /* XXX: lstat() won't work on the wildcard pattern...
-     */
+    configs cfgs;
+    ap_dir_match_t w;
+
+    cfgs.s = s;
+    cfgs.conftree = conftree;
+
+    w.prefix = "Include/IncludeOptional: ";
+    w.p = p;
+    w.ptemp = ptemp;
+    w.flags = (optional ? AP_DIR_FLAG_OPTIONAL : AP_DIR_FLAG_NONE) | AP_DIR_FLAG_RECURSIVE;
+    w.cb = process_resource_config_cb;
+    w.ctx = &cfgs;
+    w.depth = 0;
 
     /* don't require conf/httpd.conf if we have a -C or -c switch */
     if ((ap_server_pre_read_config->nelts
@@ -2114,7 +1928,7 @@ AP_DECLARE(const char *) ap_process_fnmatch_configs(server_rec *s,
     }
 
     if (!apr_fnmatch_test(fname)) {
-        return process_resource_config_nofnmatch(s, fname, conftree, p, ptemp, 0, optional);
+        return ap_dir_nofnmatch(&w, fname);
     }
     else {
         apr_status_t status;
@@ -2132,8 +1946,7 @@ AP_DECLARE(const char *) ap_process_fnmatch_configs(server_rec *s,
         }
 
         /* walk the filepath */
-        return process_resource_config_fnmatch(s, rootpath, filepath, conftree, p, ptemp,
-                                               0, optional);
+        return ap_dir_fnmatch(&w, rootpath, filepath);
     }
 }
 

@@ -2407,6 +2407,92 @@ AP_DECLARE(int) ap_cstr_casecmp(const char *s1, const char *s2);
  */
 AP_DECLARE(int) ap_cstr_casecmpn(const char *s1, const char *s2, apr_size_t n);
 
+/**
+ * Default flags for ap_dir_*fnmatch().
+ */
+#define AP_DIR_FLAG_NONE      0
+
+/**
+ * If set, wildcards that match no files or directories will be ignored, otherwise
+ * an error is triggered.
+ */
+#define AP_DIR_FLAG_OPTIONAL  1
+
+/**
+ * If set, and the wildcard resolves to a directory, recursively find all files
+ * below that directory, otherwise return the directory.
+ */
+#define AP_DIR_FLAG_RECURSIVE 2
+
+/**
+ * Structure to provide the state of a directory match.
+ */
+typedef struct ap_dir_match_t ap_dir_match_t;
+
+/**
+ * Concrete structure to provide the state of a directory match.
+ */
+struct ap_dir_match_t {
+    /** Pool to use for allocating the result */
+    apr_pool_t *p;
+    /** Temporary pool used for directory traversal */
+    apr_pool_t *ptemp;
+    /** Prefix for log messages */
+    const char *prefix;
+    /** Callback for each file found that matches the wildcard. Return NULL on success, an error string on error. */
+    const char *(*cb)(ap_dir_match_t *w, const char *fname);
+    /** Context for the callback */
+    void *ctx;
+    /** Flags to indicate whether optional or recursive */
+    int flags;
+    /** Recursion depth safety check */
+    unsigned int depth;
+};
+
+/**
+ * Search for files given a non wildcard filename with non native separators.
+ *
+ * If the provided filename points at a file, the callback within ap_dir_match_t is
+ * triggered for that file, and this function returns the result of the callback.
+ *
+ * If the provided filename points at a directory, and recursive within ap_dir_match_t
+ * is true, the callback will be triggered for every file found recursively beneath
+ * that directory, otherwise the callback is triggered once for the directory itself.
+ * This function returns the result of the callback.
+ *
+ * If the provided path points to neither a file nor a directory, and optional within
+ * ap_dir_match_t is true, this function returns NULL. If optional within ap_dir_match_t
+ * is false, this function will return an error string indicating that the path does not
+ * exist.
+ *
+ * @param w Directory match structure containing callback and context.
+ * @param fname The name of the file or directory, with non native separators.
+ * @return NULL on success, or a string describing the error.
+ */
+AP_DECLARE(const char *)ap_dir_nofnmatch(ap_dir_match_t *w, const char *fname)
+        __attribute__((nonnull(1,2)));
+
+/**
+ * Search for files given a wildcard filename with non native separators.
+ *
+ * If the filename contains a wildcard, all files and directories that match the wildcard
+ * will be returned.
+ *
+ * ap_dir_nofnmatch() is called for each directory and file found, and the callback
+ * within ap_dir_match_t triggered as described above.
+ *
+ * Wildcards may appear in both directory and file components in the path, and
+ * wildcards may appear more than once.
+ *
+ * @param w Directory match structure containing callback and context.
+ * @param path Path prefix for search, with non native separators and no wildcards.
+ * @param fname The name of the file or directory, with non native separators and
+ * optional wildcards.
+ * @return NULL on success, or a string describing the error.
+ */
+AP_DECLARE(const char *)ap_dir_fnmatch(ap_dir_match_t *w, const char *path,
+        const char *fname) __attribute__((nonnull(1,3)));
+
 #ifdef __cplusplus
 }
 #endif

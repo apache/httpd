@@ -928,6 +928,21 @@ AP_DECLARE(const char *) ap_walk_config(ap_directive_t *conftree,
                                         ap_conf_vector_t *section_vector);
 
 /**
+ * Convenience function to create a ap_dir_match_t structure from a cmd_parms.
+ *
+ * @param cmd The command.
+ * @param flags Flags to indicate whether optional or recursive.
+ * @param cb Callback for each file found that matches the wildcard. Return NULL on
+ *        success, an error string on error.
+ * @param ctx Context for the callback.
+ * @return Structure ap_dir_match_t with fields populated, allocated from the
+ *         cmd->temp_pool.
+ */
+AP_DECLARE(ap_dir_match_t *)ap_dir_cfgmatch(cmd_parms *cmd, int flags,
+        const char *(*cb)(ap_dir_match_t *w, const char *fname), void *ctx)
+        __attribute__((nonnull(1,3)));
+
+/**
  * @defgroup ap_check_cmd_context Check command context
  * @{
  */

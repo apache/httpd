@@ -47,6 +47,7 @@
 
 #include "ap_config.h"
 #include "apr_base64.h"
+#include "apr_fnmatch.h"
 #include "httpd.h"
 #include "http_main.h"
 #include "http_log.h"
@@ -95,6 +96,11 @@
 /* we know core's module_index is 0 */
 #undef APLOG_MODULE_INDEX
 #define APLOG_MODULE_INDEX AP_CORE_MODULE_INDEX
+
+/* maximum nesting level for config directories */
+#ifndef AP_MAX_FNMATCH_DIR_DEPTH
+#define AP_MAX_FNMATCH_DIR_DEPTH (128)
+#endif
 
 /*
  * Examine a field value (such as a media-/content-type) string and return
@@ -3315,3 +3321,206 @@ AP_DECLARE(int) ap_cstr_casecmpn(const char *s1, const char *s2, apr_size_t n)
     return 0;
 }
 
+typedef struct {
+    const char *fname;
+} fnames;
+
+static int fname_alphasort(const void *fn1, const void *fn2)
+{
+    const fnames *f1 = fn1;
+    const fnames *f2 = fn2;
+
+    return strcmp(f1->fname, f2->fname);
+}
+
+AP_DECLARE(ap_dir_match_t *)ap_dir_cfgmatch(cmd_parms *cmd, int flags,
+        const char *(*cb)(ap_dir_match_t *w, const char *fname), void *ctx)
+{
+    ap_dir_match_t *w = apr_palloc(cmd->temp_pool, sizeof(*w));
+
+    w->prefix = apr_pstrcat(cmd->pool, cmd->cmd->name, ": ", NULL);
+    w->p = cmd->pool;
+    w->ptemp = cmd->temp_pool;
+    w->flags = flags;
+    w->cb = cb;
+    w->ctx = ctx;
+    w->depth = 0;
+
+    return w;
+}
+
+AP_DECLARE(const char *)ap_dir_nofnmatch(ap_dir_match_t *w, const char *fname)
+{
+    const char *error;
+    apr_status_t rv;
+
+    if ((w->flags & AP_DIR_FLAG_RECURSIVE) && ap_is_directory(w->ptemp, fname)) {
+        apr_dir_t *dirp;
+        apr_finfo_t dirent;
+        int current;
+        apr_array_header_t *candidates = NULL;
+        fnames *fnew;
+        char *path = apr_pstrdup(w->ptemp, fname);
+
+        if (++w->depth > AP_MAX_FNMATCH_DIR_DEPTH) {
+            return apr_psprintf(w->p, "%sDirectory '%s' exceeds the maximum include "
+                    "directory nesting level of %u. You have "
+                    "probably a recursion somewhere.", w->prefix ? w->prefix : "", path,
+                    AP_MAX_FNMATCH_DIR_DEPTH);
+        }
+
+        /*
+         * first course of business is to grok all the directory
+         * entries here and store 'em away. Recall we need full pathnames
+         * for this.
+         */
+        rv = apr_dir_open(&dirp, path, w->ptemp);
+        if (rv != APR_SUCCESS) {
+            return apr_psprintf(w->p, "%sCould not open directory %s: %pm",
+                    w->prefix ? w->prefix : "", path, &rv);
+        }
+
+        candidates = apr_array_make(w->ptemp, 1, sizeof(fnames));
+        while (apr_dir_read(&dirent, APR_FINFO_DIRENT, dirp) == APR_SUCCESS) {
+            /* strip out '.' and '..' */
+            if (strcmp(dirent.name, ".")
+                && strcmp(dirent.name, "..")) {
+                fnew = (fnames *) apr_array_push(candidates);
+                fnew->fname = ap_make_full_path(w->ptemp, path, dirent.name);
+            }
+        }
+
+        apr_dir_close(dirp);
+        if (candidates->nelts != 0) {
+            qsort((void *) candidates->elts, candidates->nelts,
+                  sizeof(fnames), fname_alphasort);
+
+            /*
+             * Now recurse these... we handle errors and subdirectories
+             * via the recursion, which is nice
+             */
+            for (current = 0; current < candidates->nelts; ++current) {
+                fnew = &((fnames *) candidates->elts)[current];
+                error = ap_dir_nofnmatch(w, fnew->fname);
+                if (error) {
+                    return error;
+                }
+            }
+        }
+
+        w->depth--;
+
+        return NULL;
+    }
+    else if (w->flags & AP_DIR_FLAG_OPTIONAL) {
+        /* If the optional flag is set (like for IncludeOptional) we can
+         * tolerate that no file or directory is present and bail out.
+         */
+        apr_finfo_t finfo;
+        if (apr_stat(&finfo, fname, APR_FINFO_TYPE, w->ptemp) != APR_SUCCESS
+            || finfo.filetype == APR_NOFILE)
+            return NULL;
+    }
+
+    return w->cb(w, fname);
+}
+
+AP_DECLARE(const char *)ap_dir_fnmatch(ap_dir_match_t *w, const char *path,
+        const char *fname)
+{
+    const char *rest;
+    apr_status_t rv;
+    apr_dir_t *dirp;
+    apr_finfo_t dirent;
+    apr_array_header_t *candidates = NULL;
+    fnames *fnew;
+    int current;
+
+    /* find the first part of the filename */
+    rest = ap_strchr_c(fname, '/');
+    if (rest) {
+        fname = apr_pstrmemdup(w->ptemp, fname, rest - fname);
+        rest++;
+    }
+
+    /* optimisation - if the filename isn't a wildcard, process it directly */
+    if (!apr_fnmatch_test(fname)) {
+        path = path ? ap_make_full_path(w->ptemp, path, fname) : fname;
+        if (!rest) {
+            return ap_dir_nofnmatch(w, path);
+        }
+        else {
+            return ap_dir_fnmatch(w, path, rest);
+        }
+    }
+
+    /*
+     * first course of business is to grok all the directory
+     * entries here and store 'em away. Recall we need full pathnames
+     * for this.
+     */
+    rv = apr_dir_open(&dirp, path, w->ptemp);
+    if (rv != APR_SUCCESS) {
+        /* If the directory doesn't exist and the optional flag is set
+         * there is no need to return an error.
+         */
+        if (rv == APR_ENOENT && (w->flags & AP_DIR_FLAG_OPTIONAL)) {
+            return NULL;
+        }
+        return apr_psprintf(w->p, "%sCould not open directory %s: %pm",
+                w->prefix ? w->prefix : "", path, &rv);
+    }
+
+    candidates = apr_array_make(w->ptemp, 1, sizeof(fnames));
+    while (apr_dir_read(&dirent, APR_FINFO_DIRENT | APR_FINFO_TYPE, dirp) == APR_SUCCESS) {
+        /* strip out '.' and '..' */
+        if (strcmp(dirent.name, ".")
+            && strcmp(dirent.name, "..")
+            && (apr_fnmatch(fname, dirent.name,
+                            APR_FNM_PERIOD) == APR_SUCCESS)) {
+            const char *full_path = ap_make_full_path(w->ptemp, path, dirent.name);
+            /* If matching internal to path, and we happen to match something
+             * other than a directory, skip it
+             */
+            if (rest && (dirent.filetype != APR_DIR)) {
+                continue;
+            }
+            fnew = (fnames *) apr_array_push(candidates);
+            fnew->fname = full_path;
+        }
+    }
+
+    apr_dir_close(dirp);
+    if (candidates->nelts != 0) {
+        const char *error;
+
+        qsort((void *) candidates->elts, candidates->nelts,
+              sizeof(fnames), fname_alphasort);
+
+        /*
+         * Now recurse these... we handle errors and subdirectories
+         * via the recursion, which is nice
+         */
+        for (current = 0; current < candidates->nelts; ++current) {
+            fnew = &((fnames *) candidates->elts)[current];
+            if (!rest) {
+                error = ap_dir_nofnmatch(w, fnew->fname);
+            }
+            else {
+                error = ap_dir_fnmatch(w, fnew->fname, rest);
+            }
+            if (error) {
+                return error;
+            }
+        }
+    }
+    else {
+
+        if (!(w->flags & AP_DIR_FLAG_OPTIONAL)) {
+            return apr_psprintf(w->p, "%sNo matches for the wildcard '%s' in '%s', failing",
+                    w->prefix ? w->prefix : "", fname, path);
+        }
+    }
+
+    return NULL;
+}
