@@ -398,12 +398,7 @@ apr_status_t h2_stream_send_frame(h2_stream *stream, int ftype, int flags, size_
                 ap_assert(stream->request == NULL);
                 ap_assert(stream->rtmp != NULL);
                 status = h2_stream_end_headers(stream, 1, 0);
-                if (status != APR_SUCCESS) {
-                    return status;
-                }
-                set_policy_for(stream, stream->rtmp);
-                stream->request = stream->rtmp;
-                stream->rtmp = NULL;
+                if (status != APR_SUCCESS) goto leave;
             break;
             
         default:
@@ -415,6 +410,7 @@ apr_status_t h2_stream_send_frame(h2_stream *stream, int ftype, int flags, size_
     if (status == APR_SUCCESS && eos) {
         status = transit(stream, on_event(stream, H2_SEV_CLOSED_L));
     }
+leave:
     return status;
 }
 
@@ -456,12 +452,7 @@ apr_status_t h2_stream_recv_frame(h2_stream *stream, int ftype, int flags, size_
                     return APR_EINVAL;
                 }
                 status = h2_stream_end_headers(stream, eos, frame_len);
-                if (status != APR_SUCCESS) {
-                    return status;
-                }
-                set_policy_for(stream, stream->rtmp);
-                stream->request = stream->rtmp;
-                stream->rtmp = NULL;
+                if (status != APR_SUCCESS) goto leave;
             }
             break;
             
@@ -472,6 +463,7 @@ apr_status_t h2_stream_recv_frame(h2_stream *stream, int ftype, int flags, size_
     if (status == APR_SUCCESS && eos) {
         status = transit(stream, on_event(stream, H2_SEV_CLOSED_R));
     }
+leave:
     return status;
 }
 
@@ -761,9 +753,45 @@ apr_status_t h2_stream_add_header(h2_stream *stream,
     return status;
 }
 
+typedef struct {
+    apr_size_t maxlen;
+    const char *failed_key;
+} val_len_check_ctx;
+
+static int table_check_val_len(void *baton, const char *key, const char *value)
+{
+    val_len_check_ctx *ctx = baton;
+
+    if (strlen(value) <= ctx->maxlen) return 1;
+    ctx->failed_key = key;
+    return 0;
+}
+
 apr_status_t h2_stream_end_headers(h2_stream *stream, int eos, size_t raw_bytes)
 {
-    return h2_request_end_headers(stream->rtmp, stream->pool, eos, raw_bytes);
+    apr_status_t status;
+    val_len_check_ctx ctx;
+    
+    status = h2_request_end_headers(stream->rtmp, stream->pool, eos, raw_bytes);
+    if (APR_SUCCESS == status) {
+        set_policy_for(stream, stream->rtmp);
+        stream->request = stream->rtmp;
+        stream->rtmp = NULL;
+        
+        ctx.maxlen = stream->session->s->limit_req_fieldsize;
+        ctx.failed_key = NULL;
+        apr_table_do(table_check_val_len, &ctx, stream->request->headers, NULL);
+        if (ctx.failed_key) {
+            ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, stream->session->c,  
+                          H2_STRM_LOG(APLOGNO(), stream,"Request header exceeds "
+                                      "LimitRequestFieldSize: %.*s"),
+                          (int)H2MIN(strlen(ctx.failed_key), 80), ctx.failed_key);
+            set_error_response(stream, HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE);
+            /* keep on returning APR_SUCCESS, so that we send a HTTP response and
+             * do not RST the stream. */
+        }
+    }
+    return status;
 }
 
 static apr_bucket *get_first_headers_bucket(apr_bucket_brigade *bb)
