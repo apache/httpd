@@ -127,13 +127,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) cache_storage: be consistent when building a cache key value when CacheKeyBaseURL is used with
-                    an URL that contains a :port.
-                    PR 53915 [Rein Tollevik <rein basefarm.no>]
-     trunk: http://svn.apache.org/r1851146
-     2.4.x patch: svn merge -c 1851146 ^/httpd/httpd/trunk .
-     +1: jailletc36, jim, icing
-
   *) mod_proxy_hcheck fix for BZ 60948
      trunk: http://svn.apache.org/r1862014
      2.4.x: svn merge -c 1862014 ^/httpd/httpd/trunk .
