@@ -127,11 +127,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_proxy_hcheck fix for BZ 60948
-     trunk: http://svn.apache.org/r1862014
-     2.4.x: svn merge -c 1862014 ^/httpd/httpd/trunk .
-     +1: jfclere, icing, jim
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
