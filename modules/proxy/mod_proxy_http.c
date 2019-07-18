@@ -1951,12 +1951,12 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
      * and avoid a memory leak
      */
     apr_pool_t *p = r->pool;
-    apr_uri_t *uri = apr_palloc(p, sizeof(*uri));
+    apr_uri_t *uri;
 
     /* find the scheme */
     u = strchr(url, ':');
     if (u == NULL || u[1] != '/' || u[2] != '/' || u[3] == '\0')
-       return DECLINED;
+        return DECLINED;
     if ((u - url) > 14)
         return HTTP_BAD_REQUEST;
     scheme = apr_pstrmemdup(p, url, u - url);
@@ -2041,6 +2041,7 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
     }
 
     /* Step One: Determine Who To Connect To */
+    uri = apr_palloc(p, sizeof(*uri));
     if ((status = ap_proxy_determine_connection(p, r, conf, worker, backend,
                                             uri, &locurl, proxyname,
                                             proxyport, req->server_portstr,

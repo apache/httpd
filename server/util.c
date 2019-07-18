@@ -2768,12 +2768,11 @@ AP_DECLARE(int) ap_parse_form_data(request_rec *r, ap_filter_t *f,
                     case FORM_NAME:
                         if (offset < HUGE_STRING_LEN) {
                             if ('=' == c) {
-                                buffer[offset] = 0;
-                                offset = 0;
                                 pair = (ap_form_pair_t *) apr_array_push(pairs);
-                                pair->name = apr_pstrdup(r->pool, buffer);
+                                pair->name = apr_pstrmemdup(r->pool, buffer, offset);
                                 pair->value = apr_brigade_create(r->pool, r->connection->bucket_alloc);
                                 state = FORM_VALUE;
+                                offset = 0;
                             }
                             else {
                                 buffer[offset++] = c;

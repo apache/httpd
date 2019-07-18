@@ -217,8 +217,8 @@ static apr_status_t read_table(cache_handle_t *handle, request_rec *r,
             while (apr_isspace(buffer[colon]) && (colon < *slider)) {
                 colon++;
             }
-            apr_table_addn(table, apr_pstrndup(r->pool, (const char *) buffer
-                    + key, len - key), apr_pstrndup(r->pool,
+            apr_table_addn(table, apr_pstrmemdup(r->pool, (const char *) buffer
+                    + key, len - key), apr_pstrmemdup(r->pool,
                     (const char *) buffer + colon, *slider - colon));
             (*slider)++;
             if (buffer[*slider] == '\n') {

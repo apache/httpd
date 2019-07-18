@@ -127,25 +127,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) easy patches to synch 2.4.x and trunk:
-        - core: extend description of r->hostname
-        - mod_proxy_http: Avoid memory allocation before making sure that this handler can handle the URL
-        - core: Save a few cycles in 'ap_parse_form_data()'
-        - mod_cache_socache: Save some cycles
-        - mod_proxy_ftp: Save some cycle
-        - vhost: move an assignment to the end of the loop to ease readability and please a compiler
-        - core: Be a little more verbose when an error in trigerred in 'ap_set_file_slot()'
-     trunk patch:
-        - http://svn.apache.org/r1426802
-        - http://svn.apache.org/r1744460
-        - http://svn.apache.org/r1829799
-        - http://svn.apache.org/r1824716
-        - http://svn.apache.org/r1838318
-        - http://svn.apache.org/r1840678
-        - http://svn.apache.org/r1861294
-     2.4.x patch: svn merge -c 1426802,1744460,1829799,1824716,1838318,1840678,1861294 ^/httpd/httpd/trunk . 
-     +1: jailletc36, jim, icing
-
   *) cache_storage: be consistent when building a cache key value when CacheKeyBaseURL is used with
                     an URL that contains a :port.
                     PR 53915 [Rein Tollevik <rein basefarm.no>]

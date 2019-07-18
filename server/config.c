@@ -1542,8 +1542,8 @@ AP_DECLARE_NONSTD(const char *) ap_set_file_slot(cmd_parms *cmd, void *struct_pt
     path = ap_server_root_relative(cmd->pool, arg);
 
     if (!path) {
-        return apr_pstrcat(cmd->pool, "Invalid file path ",
-                           arg, NULL);
+        return apr_pstrcat(cmd->pool, cmd->cmd->name, ": Invalid file path '",
+                           arg, "'", NULL);
     }
 
     *(const char **) ((char*)struct_ptr + offset) = path;
