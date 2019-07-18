@@ -202,13 +202,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_http2: fixes Timeout vs. KeepAliveTimeout behaviour, see PR 63534. Fixes
      stream cleanup when connection throttling is in place. Counts stream resets by client
      on streams initiated by client as cause for connection throttling.
+     Changes in log level for header size checks by Michael Kaufmann. Added length
+     check on merged header values.
      trunk patch:
         http://svn.apache.org/r1861338
         http://svn.apache.org/r1862475
         http://svn.apache.org/r1862583
-        http://svn.apache.org/r1862865        
+        http://svn.apache.org/r1862865
+        http://svn.apache.org/r1863221
+        http://svn.apache.org/r1863276
      2.4.x patch:
-        https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/h2-keepalive+throttling-v2.patch
+        https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/h2-keepalive+throttling-v3.patch
      +1: icing,
 
   *) mod_ssl: fix gcc 8+ warnings
