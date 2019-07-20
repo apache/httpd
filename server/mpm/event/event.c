@@ -57,7 +57,6 @@
 #include "apr_atomic.h"
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
-
 #include "apr_version.h"
 
 #include <stdlib.h>
