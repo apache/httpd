@@ -196,6 +196,35 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1863179 ^/httpd/httpd/trunk .
      +1: rjung, icing
 
+  *) mod_proxy_hcheck: Create the configure for mod_proxy_hcheck when used in BalancerMember.
+     PR 60757
+     CHANGES suggestion:
+     *) mod_proxy_hcheck: Create the configuration for mod_proxy_hcheck
+        when used in BalancerMember. PR 60757. [Jean-Frederic Clere]
+     trunk:
+        http://svn.apache.org/r1853560
+     2.4.x patch: svn merge -c 1853560 ^/httpd/httpd/trunk .
+     +1: rjung
+
+  *) mod_proxy_hcheck: mod_proxy_hcheck: mute "run from watchdog" message.
+     This is way too verbose (every 100ms) to be logged at any LogLevel.
+     CHANGES suggestion:
+     *) mod_proxy_hcheck: Mute extremely frequent debug message. [Yann Ylavic]
+     trunk:
+        http://svn.apache.org/r1853992
+     2.4.x patch: svn merge -c 1853992 ^/httpd/httpd/trunk .
+     +1: rjung
+
+  *) mod_proxy: Load balancer byrequests required when bytraffic chosen
+     PR 62372
+     CHANGES suggestion:
+     *) mod_proxy_balancer: Load balancer required byrequests when bytraffic chosen.
+        PR 62372. [Jim Jagielski]
+     trunk:
+        http://svn.apache.org/r1856829
+     2.4.x patch: svn merge -c 1856829 ^/httpd/httpd/trunk .
+     +1: rjung
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
