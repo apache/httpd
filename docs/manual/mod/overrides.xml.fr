@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE overrideindex SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1809882 -->
+<!-- French translation : Lucien GENTIS -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<overrideindex metafile="overrides.xml.meta">
+  <title>Index par classes des directives autorisées dans .htaccess</title>
+  <summary>
+    <p>
+      Ceci est un index, organisé en classes, des directives autorisées dans les
+      fichiers .htaccess pour différentes définitions de la directive <directive
+      module="core">AllowOverride</directive>. Il a pour but d'aider les
+      administrateurs à contrôler les privilèges qu'ils accordent aux
+      utilisateurs via les fichiers .htaccess. Pour une présentation de la
+      manière dont fonctionnent les fichiers .htaccess, voir le <a
+      href="../howto/htaccess.html">tutoriel .htaccess</a>.  
+    </p>
+
+    <p> Pour déterminer le jeu de directives que la configuration de votre
+    serveur autorise aux utilisateurs dans les fichiers .htaccess : </p>
+
+    <ol>
+      <li>Commencez par rechercher la présence d'une directive
+      <code>AllowOverrideList</code> dans la section directory concernée. Sa
+      définition vous indiquera la liste des directives autorisées (La valeur
+      par défaut de cette directive est <code>None</code>).</li>
+      <li>Recherchez ensuite la présence d'une directive
+      <code>AllowOverride</code> dans cette même section (sa valeur par défaut
+      est <code>None</code>). Il y a tout d'abord deux cas particuliers :
+        <ol>
+          <li>Si la directive <code>AllowOverride</code> est définie à
+	  <code>All</code>, vous pouvez ajouter toutes les directives indiquées
+	  sur cette page à la liste préexistante.</li>
+          <li>Si la directive <code>AllowOverride</code> est définie à
+	  <code>None</code>, inutile d'aller plus loin. Seules les directives indiquées
+	  par la directive <code>AllowOverrideList</code> (si elle est présente)
+	  seront autorisées.</li>
+        </ol>
+      </li>
+      <li>En dehors de ces deux cas, la directive <code>AllowOverride</code>
+      définit une liste de classes de directives (vous trouverez plus loin le
+      jeu de directives correspondant à chacune de ces classes), et vous pourrez
+      alors les ajouter à la liste définie par la directive
+      <code>AllowOverrideList</code>.</li>
+      <li>Ajoutez enfin à la liste le jeu de directives toujours autorisées dans les
+      fichiers .htaccess (elles sont listées dans la section <a
+      href="#override-all">All</a> ci-dessous).</li>
+    </ol>
+
+    <p>
+      De nombreuses classes de directives sont assez puissantes et peuvent
+      permettre aux utilisateurs des fichiers .htaccess de contrôler une grande
+      partie du serveur. Pour une approche plus sure, définissez
+      <code>AllowOverride None</code>, et utilisez la directive <directive
+      module="core">AllowOverrideList</directive> pour spécifier la liste exacte
+      de directives que les utilisateurs de fichiers .htaccess pourront utiliser.
+    </p>
+  </summary>
+
+  <!--
+    Provide one overridesummary element for each Override type. The content will
+    be sucked into the relevant section on the override index page.
+  -->
+
+  <overridesummary class="All">
+    <p>
+      Les directives suivantes sont autorisées dans les fichiers .htaccess, sous
+      réserve que la surcharge soit autorisée dans la configuration du serveur.
+    </p>
+  </overridesummary>
+
+  <overridesummary class="AuthConfig">
+    <p>
+      Les directives suivantes sont autorisées dans les fichiers .htaccess
+      lorsque <code>AllowOverride AuthConfig</code> a été spécifié. Elles
+      permettent aux utilisateurs de fichiers .htaccess de contrôler les
+      méthodes d'authentification et d'autorisation qui s'appliquent à
+      l'arborescence de leur répertoire, y compris de nombreuses directives
+      utilitaires pour la gestion de session et la configuration TLS.
+    </p>
+  </overridesummary>
+
+  <overridesummary class="FileInfo">
+    <p>
+      Les directives suivantes sont autorisées dans les fichiers .htaccess
+      lorsque <code>AllowOverride FileInfo</code> a été spécifié. Elles
+      accordent aux utilisateurs de fichiers .htaccess un grand nombre de
+      contrôles sur les réponses et les métadonnées fournies par le serveur.
+    </p>
+  </overridesummary>
+
+  <overridesummary class="Indexes">
+    <p>
+      Les directives suivantes sont autorisées dans les fichiers .htaccess
+      lorsque <code>AllowOverride Indexes</code> a été spécifié. Elles
+      permettent aux utilisateurs de fichiers .htaccess de contrôler certains
+      aspects des pages d'index de répertoires fournies par le serveur, y
+      compris la génération d'autoindex.
+    </p>
+  </overridesummary>
+
+  <overridesummary class="Limit">
+    <p>
+      Les directives suivantes sont autorisées dans les fichiers .htaccess
+      lorsque <code>AllowOverride Limit</code> a été spécifié. Cette autorisation
+      de surcharge très restreinte permet principalement d'utiliser les
+      directives d'autorisation héritées fournies par
+      <module>mod_access_compat</module>.
+    </p>
+  </overridesummary>
+
+  <overridesummary class="Options">
+    <p>
+      Les directives suivantes sont autorisées dans les fichiers .htaccess
+      lorsque <code>AllowOverride Options</code> a été spécifié. Elles permettent
+      aux utilisateurs de fichiers .htaccess d'utiliser la directive
+      <code>Options</code> et d'autres directives similaires, ainsi que les
+      directives qui contrôlent la chaîne de filtrage.
+    </p>
+  </overridesummary>
+
+  <!--
+    This is the error message for when a directive shows up in a section that
+    has no explicit overridesummary above.
+  -->
+  <overridesummary fallback="yes">
+    <p><em>
+    [This section has no description. It's possible that the documentation is
+    incomplete, or that the directives here have an incorrect or misspelled
+    Override type. Please consider reporting this in the
+    <a href="#comments_section">comments section</a>.]
+    </em></p>
+  </overridesummary>
+</overrideindex>
