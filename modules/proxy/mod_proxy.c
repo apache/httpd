@@ -48,14 +48,14 @@ static APR_OPTIONAL_FN_TYPE(set_worker_hc_param) *set_worker_hc_param_f = NULL;
 
 /* Externals */
 proxy_hcmethods_t PROXY_DECLARE_DATA proxy_hcmethods[] = {
-        {NONE, "NONE", 1},
-        {TCP, "TCP", 1},
-        {OPTIONS, "OPTIONS", 1},
-        {HEAD, "HEAD", 1},
-        {GET, "GET", 1},
-        {CPING, "CPING", 0},
-        {PROVIDER, "PROVIDER", 0},
-        {EOT, NULL, 1}
+    {NONE, "NONE", 1},
+    {TCP, "TCP", 1},
+    {OPTIONS, "OPTIONS", 1},
+    {HEAD, "HEAD", 1},
+    {GET, "GET", 1},
+    {CPING, "CPING", 0},
+    {PROVIDER, "PROVIDER", 0},
+    {EOT, NULL, 1}
 };
 
 proxy_wstat_t PROXY_DECLARE_DATA proxy_wstat_tbl[] = {
