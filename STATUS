@@ -143,13 +143,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/ssl-certicate-hooks.patch 
      +1: icing, jorton, jim
 
-  *) core: fix crash when running with apr lib build with APR_POOL_DEBUG.
-     Observed with huge config and mod_security using long config lines.
-     trunk:
-        http://svn.apache.org/r1863179
-     2.4.x patch: svn merge -c 1863179 ^/httpd/httpd/trunk .
-     +1: rjung, icing, jim
-
   *) mod_proxy_hcheck: mod_proxy_hcheck: mute "run from watchdog" message.
      This is way too verbose (every 100ms) to be logged at any LogLevel.
      CHANGES suggestion:

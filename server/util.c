@@ -2902,6 +2902,11 @@ AP_DECLARE(void) ap_varbuf_grow(struct ap_varbuf *vb, apr_size_t new_len)
     /* The required block is rather larger. Use allocator directly so that
      * the memory can be freed independently from the pool. */
     allocator = apr_pool_allocator_get(vb->pool);
+    /* Happens if APR was compiled with APR_POOL_DEBUG */
+    if (allocator == NULL) {
+        apr_allocator_create(&allocator);
+        ap_assert(allocator != NULL);
+    }
     if (new_len <= VARBUF_MAX_SIZE)
         new_node = apr_allocator_alloc(allocator,
                                        new_len + APR_ALIGN_DEFAULT(sizeof(*new_info)));
