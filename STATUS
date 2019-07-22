@@ -143,15 +143,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/ssl-certicate-hooks.patch 
      +1: icing, jorton, jim
 
-  *) mod_proxy_hcheck: mod_proxy_hcheck: mute "run from watchdog" message.
-     This is way too verbose (every 100ms) to be logged at any LogLevel.
-     CHANGES suggestion:
-     *) mod_proxy_hcheck: Mute extremely frequent debug message. [Yann Ylavic]
-     trunk:
-        http://svn.apache.org/r1853992
-     2.4.x patch: svn merge -c 1853992 ^/httpd/httpd/trunk .
-     +1: rjung, jailletc36, jim
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 

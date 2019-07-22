@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.40
 
+  *) mod_proxy_hcheck: Mute extremely frequent debug message. [Yann Ylavic]
+
   *) mod_md: new features
      - supports the ACMEv2 protocol
      - new challenge method 'tls-alpn-01' implemented, needs mod_ssl patch to become available 
