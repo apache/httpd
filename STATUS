@@ -171,7 +171,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/r1863276
      2.4.x patch:
         https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/h2-keepalive+throttling-v3.patch
-     +1: icing,
+     +1: icing,, jim
 
   *) mod_ssl: fix gcc 8+ warnings
      trunk: fixed as part of wider changes, r1809037
@@ -187,14 +187,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/r1862384
      2.4.x:
         https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/ssl-certicate-hooks.patch 
-     +1: icing, jorton
+     +1: icing, jorton, jim
 
   *) core: fix crash when running with apr lib build with APR_POOL_DEBUG.
      Observed with huge config and mod_security using long config lines.
      trunk:
         http://svn.apache.org/r1863179
      2.4.x patch: svn merge -c 1863179 ^/httpd/httpd/trunk .
-     +1: rjung, icing
+     +1: rjung, icing, jim
 
   *) mod_proxy_hcheck: Create the configure for mod_proxy_hcheck when used in BalancerMember.
      PR 60757
@@ -204,7 +204,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk:
         http://svn.apache.org/r1853560
      2.4.x patch: svn merge -c 1853560 ^/httpd/httpd/trunk .
-     +1: rjung
+     +1: rjung, jim
 
   *) mod_proxy_hcheck: mod_proxy_hcheck: mute "run from watchdog" message.
      This is way too verbose (every 100ms) to be logged at any LogLevel.
@@ -213,7 +213,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk:
         http://svn.apache.org/r1853992
      2.4.x patch: svn merge -c 1853992 ^/httpd/httpd/trunk .
-     +1: rjung, jailletc36
+     +1: rjung, jailletc36, jim
 
   *) mod_proxy: Load balancer byrequests required when bytraffic chosen
      PR 62372
@@ -223,7 +223,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk:
         http://svn.apache.org/r1856829
      2.4.x patch: svn merge -c 1856829 ^/httpd/httpd/trunk .
-     +1: rjung
+     +1: rjung, jim
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
