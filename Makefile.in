@@ -298,7 +298,7 @@ install-suexec-caps: install-suexec-binary
             setcap 'cap_setuid,cap_setgid+pe' $(DESTDIR)$(sbindir)/suexec; \
 	fi
 
-suexec:
+suexec: support/suexec.h support/suexec.c
 	cd support && $(MAKE) suexec
 
 x-local-distclean:
