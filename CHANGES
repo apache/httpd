@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.40
 
+  *) mod_proxy_balancer: Load balancer required byrequests when bytraffic chosen.
+     PR 62372. [Jim Jagielski]
+
   *) mod_proxy_hcheck: Create the configuration for mod_proxy_hcheck
      when used in BalancerMember. PR 60757. [Jean-Frederic Clere]
 
