@@ -127,16 +127,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_proxy_hcheck: Create the configure for mod_proxy_hcheck when used in BalancerMember.
-     PR 60757
-     CHANGES suggestion:
-     *) mod_proxy_hcheck: Create the configuration for mod_proxy_hcheck
-        when used in BalancerMember. PR 60757. [Jean-Frederic Clere]
-     trunk:
-        http://svn.apache.org/r1853560
-     2.4.x patch: svn merge -c 1853560 ^/httpd/httpd/trunk .
-     +1: rjung, jim, icing
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
