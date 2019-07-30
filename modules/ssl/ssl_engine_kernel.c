@@ -2293,6 +2293,37 @@ void ssl_callback_Info(const SSL *ssl, int where, int rc)
 }
 
 #ifdef HAVE_TLSEXT
+
+static apr_status_t set_challenge_creds(conn_rec *c, const char *servername,
+                                        SSL *ssl, X509 *cert, EVP_PKEY *key)
+{
+    SSLConnRec *sslcon = myConnConfig(c);
+    
+    sslcon->service_unavailable = 1;
+    if ((SSL_use_certificate(ssl, cert) < 1)) {
+        ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c, APLOGNO(10086)
+                      "Failed to configure challenge certificate %s",
+                      servername);
+        return APR_EGENERAL;
+    }
+    
+    if (!SSL_use_PrivateKey(ssl, key)) {
+        ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c, APLOGNO(10087)
+                      "error '%s' using Challenge key: %s",
+                      ERR_error_string(ERR_peek_last_error(), NULL), 
+                      servername);
+        return APR_EGENERAL;
+    }
+    
+    if (SSL_check_private_key(ssl) < 1) {
+        ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c, APLOGNO(10088)
+                      "Challenge certificate and private key %s "
+                      "do not match", servername);
+        return APR_EGENERAL;
+    }
+    return APR_SUCCESS;
+}
+  
 /*
  * This function sets the virtual host from an extended
  * client hello with a server name indication extension ("SNI", cf. RFC 6066).
@@ -2322,30 +2353,12 @@ static apr_status_t init_vhost(conn_rec *c, SSL *ssl)
                 return APR_SUCCESS;
             }
             else if (ssl_is_challenge(c, servername, &cert, &key)) {
-            
-                sslcon->service_unavailable = 1;
-                if ((SSL_use_certificate(ssl, cert) < 1)) {
-                    ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c, APLOGNO(10086)
-                                  "Failed to configure challenge certificate %s",
-                                  servername);
+                /* With ACMEv1 we can have challenge connections to a unknown domains
+                 * that need to be answered with a special certificate and will
+                 * otherwise not answer any requests. */
+                if (set_challenge_creds(c, servername, ssl, cert, key) != APR_SUCCESS) {
                     return APR_EGENERAL;
                 }
-                
-                if (!SSL_use_PrivateKey(ssl, key)) {
-                    ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c, APLOGNO(10087)
-                                  "error '%s' using Challenge key: %s",
-                                  ERR_error_string(ERR_peek_last_error(), NULL), 
-                                  servername);
-                    return APR_EGENERAL;
-                }
-                
-                if (SSL_check_private_key(ssl) < 1) {
-                    ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c, APLOGNO(10088)
-                                  "Challenge certificate and private key %s "
-                                  "do not match", servername);
-                    return APR_EGENERAL;
-                }
-                
             }
             else {
                 ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(02044)
@@ -2637,6 +2650,23 @@ int ssl_callback_alpn_select(SSL *ssl,
                           APLOGNO(02908) "protocol switch to '%s' failed",
                           proposed);
             return SSL_TLSEXT_ERR_ALERT_FATAL;
+        }
+        
+        /* protocol was switched, this could be a challenge protocol such as "acme-tls/1".
+         * For that to work, we need to allow overrides to our ssl certificate. 
+         * However, exclude challenge checks on our best known traffic protocol.
+         * (http/1.1 is the default, we never switch to it anyway.)
+         */
+        if (strcmp("h2", proposed)) {
+            const char *servername = SSL_get_servername(ssl, TLSEXT_NAMETYPE_host_name);
+            X509 *cert;
+            EVP_PKEY *key;
+            
+            if (ssl_is_challenge(c, servername, &cert, &key)) {
+                if (set_challenge_creds(c, servername, ssl, cert, key) != APR_SUCCESS) {
+                    return SSL_TLSEXT_ERR_ALERT_FATAL;
+                }
+            }
         }
     }
 

@@ -31,11 +31,27 @@
 #include "ssl_private.h"
 #include "ap_mpm.h"
 #include "apr_thread_mutex.h"
+#include "mod_ssl_openssl.h"
+
+APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ssl, SSL, int, init_stapling_status,
+                                    (server_rec *s, apr_pool_t *p, 
+                                     X509 *cert, X509 *issuer),
+                                     (s, p, cert, issuer),
+                                    DECLINED, DECLINED)
+
+APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ssl, SSL, int, get_stapling_status,
+                                    (unsigned char **pder, int *pderlen, 
+                                     conn_rec *c, server_rec *s, X509 *cert),
+                                     (pder, pderlen, c, s, cert), 
+                                    DECLINED, DECLINED)
+                         
 
 #ifdef HAVE_OCSP_STAPLING
 
 static int stapling_cache_mutex_on(server_rec *s);
 static int stapling_cache_mutex_off(server_rec *s);
+
+static int stapling_cb(SSL *ssl, void *arg);
 
 /**
  * Maxiumum OCSP stapling response size. This should be the response for a
@@ -119,7 +135,38 @@ int ssl_stapling_init_cert(server_rec *s, apr_pool_t *p, apr_pool_t *ptemp,
     OCSP_CERTID *cid = NULL;
     STACK_OF(OPENSSL_STRING) *aia = NULL;
 
-    if ((x == NULL) || (X509_digest(x, EVP_sha1(), idx, NULL) != 1))
+    if (x == NULL)
+        return 0;
+
+    if (!(issuer = stapling_get_issuer(mctx, x))) {
+        /* In Apache pre 2.4.40, we use to come here only when mod_ssl stapling
+         * was enabled. With the new hooks, we give other modules the chance
+         * to provide stapling status. However, we do not want to log ssl errors
+         * where we did not do so in the past. */
+        if (mctx->stapling_enabled == TRUE) {
+            ssl_log_xerror(SSLLOG_MARK, APLOG_ERR, 0, ptemp, s, x, APLOGNO(02217)
+                           "ssl_stapling_init_cert: can't retrieve issuer "
+                           "certificate!");
+            return 0;
+        }
+        return 1;
+    }
+
+    if (ssl_run_init_stapling_status(s, p, x, issuer) == APR_SUCCESS) {
+        /* Someone's taken over or mod_ssl's own implementation is not enabled */
+        if (mctx->stapling_enabled != TRUE) {
+            SSL_CTX_set_tlsext_status_cb(mctx->ssl_ctx, stapling_cb);
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO() "OCSP stapling added via hook");
+        }
+        return 1;
+    }
+    
+    if (mctx->stapling_enabled != TRUE) {
+        /* mod_ssl's own implementation is not enabled */
+        return 1;
+    }
+    
+    if (X509_digest(x, EVP_sha1(), idx, NULL) != 1)
         return 0;
 
     cinf = apr_hash_get(stapling_certinfo, idx, sizeof(idx));
@@ -137,13 +184,6 @@ int ssl_stapling_init_cert(server_rec *s, apr_pool_t *p, apr_pool_t *ptemp,
             return 0;
         }
         return 1;
-    }
-
-    if (!(issuer = stapling_get_issuer(mctx, x))) {
-        ssl_log_xerror(SSLLOG_MARK, APLOG_ERR, 0, ptemp, s, x, APLOGNO(02217)
-                       "ssl_stapling_init_cert: can't retrieve issuer "
-                       "certificate!");
-        return 0;
     }
 
     cid = OCSP_cert_to_id(NULL, x, issuer);
@@ -182,18 +222,16 @@ int ssl_stapling_init_cert(server_rec *s, apr_pool_t *p, apr_pool_t *ptemp,
                    mctx->sc->vhost_id);
 
     apr_hash_set(stapling_certinfo, cinf->idx, sizeof(cinf->idx), cinf);
-
+    
     return 1;
 }
 
-static certinfo *stapling_get_certinfo(server_rec *s, modssl_ctx_t *mctx,
+static certinfo *stapling_get_certinfo(server_rec *s, X509 *x, modssl_ctx_t *mctx,
                                         SSL *ssl)
 {
     certinfo *cinf;
-    X509 *x;
     UCHAR idx[SHA_DIGEST_LENGTH];
-    x = SSL_get_certificate(ssl);
-    if ((x == NULL) || (X509_digest(x, EVP_sha1(), idx, NULL) != 1))
+    if (X509_digest(x, EVP_sha1(), idx, NULL) != 1)
         return NULL;
     cinf = apr_hash_get(stapling_certinfo, idx, sizeof(idx));
     if (cinf && cinf->cid)
@@ -750,18 +788,34 @@ static int stapling_cb(SSL *ssl, void *arg)
     OCSP_RESPONSE *rsp = NULL;
     int rv;
     BOOL ok = TRUE;
+    X509 *x;
+    unsigned char *rspder = NULL;
+    int rspderlen;
 
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01951)
+                 "stapling_cb: OCSP Stapling callback called");
+
+    x = SSL_get_certificate(ssl);
+    if (x == NULL) {
+        return SSL_TLSEXT_ERR_NOACK;
+    }
+
+    if (ssl_run_get_stapling_status(&rspder, &rspderlen, conn, s, x) == APR_SUCCESS) {
+        /* a hook handles stapling for this certicate and determines the response */
+        if (rspder == NULL || rspderlen <= 0) {
+            return SSL_TLSEXT_ERR_NOACK;
+        }
+        SSL_set_tlsext_status_ocsp_resp(ssl, rspder, rspderlen);
+        return SSL_TLSEXT_ERR_OK;
+    }
+    
     if (sc->server->stapling_enabled != TRUE) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01950)
                      "stapling_cb: OCSP Stapling disabled");
         return SSL_TLSEXT_ERR_NOACK;
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01951)
-                 "stapling_cb: OCSP Stapling callback called");
-
-    cinf = stapling_get_certinfo(s, mctx, ssl);
-    if (cinf == NULL) {
+    if ((cinf = stapling_get_certinfo(s, x, mctx, ssl)) == NULL) {
         return SSL_TLSEXT_ERR_NOACK;
     }
 
@@ -864,9 +918,10 @@ apr_status_t modssl_init_stapling(server_rec *s, apr_pool_t *p,
     if (mctx->stapling_responder_timeout == UNSET) {
         mctx->stapling_responder_timeout = 10 * APR_USEC_PER_SEC;
     }
+
     SSL_CTX_set_tlsext_status_cb(ctx, stapling_cb);
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01960) "OCSP stapling initialized");
-
+    
     return APR_SUCCESS;
 }
 

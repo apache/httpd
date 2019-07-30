@@ -3,6 +3,14 @@ Changes with Apache 2.4.40
 
   *) mod_proxy_hcheck: Mute extremely frequent debug message. [Yann Ylavic]
 
+  *) mod_ssl/mod_md: reversing dependency by letting mod_ssl offer hooks for
+     adding certificates and keys to a virtual host. An additional hook allows
+     answering special TLS connections as used in ACME challenges.
+     Adding 2 new hooks for init/get of OCSP stapling status information when
+     other modules want to provide those. Falls back to own implementation with
+     same behaviour as before.
+     [Stefan Eissing]
+  
   *) mod_md: new features
      - supports the ACMEv2 protocol
      - new challenge method 'tls-alpn-01' implemented, needs mod_ssl patch to become available 
