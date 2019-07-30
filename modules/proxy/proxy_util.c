@@ -1172,11 +1172,11 @@ PROXY_DECLARE(char *) ap_proxy_define_balancer(apr_pool_t *p,
      * exist, that's OK at this time. We check when we share and sync
      */
     lbmethod = ap_lookup_provider(PROXY_LBMETHOD, "byrequests", "0");
-
+    (*balancer)->lbmethod = lbmethod;
+    
     (*balancer)->workers = apr_array_make(p, 5, sizeof(proxy_worker *));
     (*balancer)->gmutex = NULL;
     (*balancer)->tmutex = NULL;
-    (*balancer)->lbmethod = lbmethod;
 
     if (do_malloc)
         bshared = ap_malloc(sizeof(proxy_balancer_shared));
@@ -1190,6 +1190,8 @@ PROXY_DECLARE(char *) ap_proxy_define_balancer(apr_pool_t *p,
     if (PROXY_STRNCPY(bshared->name, uri) != APR_SUCCESS) {
         return apr_psprintf(p, "balancer name (%s) too long", uri);
     }
+    (*balancer)->lbmethod_set = 1;
+
     /*
      * We do the below for verification. The real sname will be
      * done post_config
@@ -1244,6 +1246,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_share_balancer(proxy_balancer *balancer,
     lbmethod = ap_lookup_provider(PROXY_LBMETHOD, balancer->s->lbpname, "0");
     if (lbmethod) {
         balancer->lbmethod = lbmethod;
+        balancer->lbmethod_set = 1;
     } else {
         ap_log_error(APLOG_MARK, APLOG_CRIT, 0, ap_server_conf, APLOGNO(02432)
                      "Cannot find LB Method: %s", balancer->s->lbpname);

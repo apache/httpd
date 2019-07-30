@@ -127,16 +127,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_proxy: Load balancer byrequests required when bytraffic chosen
-     PR 62372
-     CHANGES suggestion:
-     *) mod_proxy_balancer: Load balancer required byrequests when bytraffic chosen.
-        PR 62372. [Jim Jagielski]
-     trunk:
-        http://svn.apache.org/r1856829
-     2.4.x patch: svn merge -c 1856829 ^/httpd/httpd/trunk .
-     +1: rjung, jim, icing
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
