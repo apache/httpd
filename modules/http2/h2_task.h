@@ -80,6 +80,7 @@ struct h2_task {
     
     unsigned int filters_set    : 1;
     unsigned int worker_started : 1; /* h2_worker started processing */
+    unsigned int redo : 1;           /* was throttled, should be restarted later */
     
     int worker_done;                 /* h2_worker finished */
     int done_done;                   /* task_done has been handled */
@@ -101,6 +102,7 @@ apr_status_t h2_task_do(h2_task *task, apr_thread_t *thread, int worker_id);
 
 void h2_task_redo(h2_task *task);
 int h2_task_can_redo(h2_task *task);
+int h2_task_has_started(h2_task *task);
 
 /**
  * Reset the task with the given error code, resets all input/output.

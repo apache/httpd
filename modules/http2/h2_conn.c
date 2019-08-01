@@ -231,6 +231,13 @@ apr_status_t h2_conn_run(conn_rec *c)
             case H2_SESSION_ST_BUSY:
             case H2_SESSION_ST_WAIT:
                 c->cs->state = CONN_STATE_WRITE_COMPLETION;
+                if (c->cs && (session->open_streams || !session->remote.emitted_count)) {
+                    /* let the MPM know that we are not done and want
+                     * the Timeout behaviour instead of a KeepAliveTimeout
+                     * See PR 63534. 
+                     */
+                    c->cs->sense = CONN_SENSE_WANT_READ;
+                }
                 break;
             case H2_SESSION_ST_CLEANUP:
             case H2_SESSION_ST_DONE:

@@ -390,9 +390,14 @@ static int on_frame_recv_cb(nghttp2_session *ng2s,
                           (int)frame->rst_stream.error_code);
             stream = h2_session_stream_get(session, frame->hd.stream_id);
             if (stream && stream->initiated_on) {
+                /* A stream reset on a request we sent it. Normal, when the
+                 * client does not want it. */
                 ++session->pushes_reset;
             }
             else {
+                /* A stream reset on a request it sent us. Could happen in a browser
+                 * when the user navigates away or cancels loading - maybe. */
+                h2_mplx_client_rst(session->mplx, frame->hd.stream_id);
                 ++session->streams_reset;
             }
             break;
@@ -1703,7 +1708,7 @@ static void transit(h2_session *session, const char *action, h2_session_state ns
                      * that already served requests - not fair. */
                     session->idle_sync_until = apr_time_now() + apr_time_from_sec(1);
                     s = "timeout";
-                    timeout = H2MAX(session->s->timeout, session->s->keep_alive_timeout);
+                    timeout = session->s->timeout;
                     update_child_status(session, SERVER_BUSY_READ, "idle");
                     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c, 
                                   H2_SSSN_LOG("", session, "enter idle, timeout = %d sec"), 
@@ -1711,8 +1716,8 @@ static void transit(h2_session *session, const char *action, h2_session_state ns
                 }
                 else if (session->open_streams) {
                     s = "timeout";
-                    timeout = session->s->keep_alive_timeout;
-                    update_child_status(session, SERVER_BUSY_KEEPALIVE, "idle");
+                    timeout = session->s->timeout;
+                    update_child_status(session, SERVER_BUSY_READ, "idle");
                 }
                 else {
                     /* normal keepalive setup */
@@ -2170,6 +2175,14 @@ apr_status_t h2_session_process(h2_session *session, int async)
                         session->have_read = 1;
                     }
                     else if (APR_STATUS_IS_EAGAIN(status) || APR_STATUS_IS_TIMEUP(status)) {
+                        status = h2_mplx_idle(session->mplx);
+                        if (status == APR_EAGAIN) {
+                            break;
+                        }
+                        else if (status != APR_SUCCESS) {
+                            dispatch_event(session, H2_SESSION_EV_CONN_ERROR, 
+                                           H2_ERR_ENHANCE_YOUR_CALM, "less is more");
+                        }
                         status = APR_EAGAIN;
                         goto out;
                     }

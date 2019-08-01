@@ -1113,10 +1113,11 @@ read_request:
                           "network write failure in core output filter");
             cs->pub.state = CONN_STATE_LINGER;
         }
-        else if (c->data_in_output_filters) {
+        else if (c->data_in_output_filters ||
+                 cs->pub.sense == CONN_SENSE_WANT_READ) {
             /* Still in WRITE_COMPLETION_STATE:
-             * Set a write timeout for this connection, and let the
-             * event thread poll for writeability.
+             * Set a read/write timeout for this connection, and let the
+             * event thread poll for read/writeability.
              */
             cs->queue_timestamp = apr_time_now();
             notify_suspend(cs);

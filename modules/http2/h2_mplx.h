@@ -63,7 +63,6 @@ struct h2_mplx {
     unsigned int is_registered;     /* is registered at h2_workers */
 
     struct h2_ihash_t *streams;     /* all streams currently processing */
-    struct h2_ihash_t *sredo;       /* all streams that need to be re-started */
     struct h2_ihash_t *shold;       /* all streams done with task ongoing */
     struct h2_ihash_t *spurge;      /* all streams done, ready for destroy */
     
@@ -77,10 +76,10 @@ struct h2_mplx {
     int tasks_active;       /* # of tasks being processed from this mplx */
     int limit_active;       /* current limit on active tasks, dynamic */
     int max_active;         /* max, hard limit # of active tasks in a process */
-    apr_time_t last_idle_block;      /* last time, this mplx entered IDLE while
-                                      * streams were ready */
-    apr_time_t last_limit_change;    /* last time, worker limit changed */
-    apr_interval_time_t limit_change_interval;
+    
+    apr_time_t last_mood_change; /* last time, we worker limit changed */
+    apr_interval_time_t mood_update_interval; /* how frequent we update at most */
+    int irritations_since; /* irritations (>0) or happy events (<0) since last mood change */
 
     apr_thread_mutex_t *lock;
     struct apr_thread_cond_t *added_output;
@@ -204,6 +203,8 @@ int h2_mplx_awaits_data(h2_mplx *m);
 typedef int h2_mplx_stream_cb(struct h2_stream *s, void *ctx);
 
 apr_status_t h2_mplx_stream_do(h2_mplx *m, h2_mplx_stream_cb *cb, void *ctx);
+
+apr_status_t h2_mplx_client_rst(h2_mplx *m, int stream_id);
 
 /*******************************************************************************
  * Output handling of streams.

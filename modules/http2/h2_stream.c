@@ -397,13 +397,8 @@ apr_status_t h2_stream_send_frame(h2_stream *stream, int ftype, int flags, size_
                 /* start pushed stream */
                 ap_assert(stream->request == NULL);
                 ap_assert(stream->rtmp != NULL);
-                status = h2_request_end_headers(stream->rtmp, stream->pool, 1, 0);
-                if (status != APR_SUCCESS) {
-                    return status;
-                }
-                set_policy_for(stream, stream->rtmp);
-                stream->request = stream->rtmp;
-                stream->rtmp = NULL;
+                status = h2_stream_end_headers(stream, 1, 0);
+                if (status != APR_SUCCESS) goto leave;
             break;
             
         default:
@@ -415,6 +410,7 @@ apr_status_t h2_stream_send_frame(h2_stream *stream, int ftype, int flags, size_
     if (status == APR_SUCCESS && eos) {
         status = transit(stream, on_event(stream, H2_SEV_CLOSED_L));
     }
+leave:
     return status;
 }
 
@@ -455,13 +451,8 @@ apr_status_t h2_stream_recv_frame(h2_stream *stream, int ftype, int flags, size_
                      * to abort the connection here, since this is clearly a protocol error */
                     return APR_EINVAL;
                 }
-                status = h2_request_end_headers(stream->rtmp, stream->pool, eos, frame_len);
-                if (status != APR_SUCCESS) {
-                    return status;
-                }
-                set_policy_for(stream, stream->rtmp);
-                stream->request = stream->rtmp;
-                stream->rtmp = NULL;
+                status = h2_stream_end_headers(stream, eos, frame_len);
+                if (status != APR_SUCCESS) goto leave;
             }
             break;
             
@@ -472,6 +463,7 @@ apr_status_t h2_stream_recv_frame(h2_stream *stream, int ftype, int flags, size_
     if (status == APR_SUCCESS && eos) {
         status = transit(stream, on_event(stream, H2_SEV_CLOSED_R));
     }
+leave:
     return status;
 }
 
@@ -683,6 +675,8 @@ static apr_status_t add_trailer(h2_stream *stream,
     hvalue = apr_pstrndup(stream->pool, value, vlen);
     h2_util_camel_case_header(hname, nlen);
     apr_table_mergen(stream->trailers, hname, hvalue);
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c, 
+                  H2_STRM_MSG(stream, "added trailer '%s: %s'"), hname, hvalue);
     
     return APR_SUCCESS;
 }
@@ -702,15 +696,19 @@ apr_status_t h2_stream_add_header(h2_stream *stream,
     if (name[0] == ':') {
         if ((vlen) > session->s->limit_req_line) {
             /* pseudo header: approximation of request line size check */
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c,
-                          H2_STRM_MSG(stream, "pseudo %s too long"), name);
+            ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, session->c,  
+                          H2_STRM_LOG(APLOGNO(10178), stream, 
+                                      "Request pseudo header exceeds "
+                                      "LimitRequestFieldSize: %s"), name);
             error = HTTP_REQUEST_URI_TOO_LARGE;
         }
     }
     else if ((nlen + 2 + vlen) > session->s->limit_req_fieldsize) {
         /* header too long */
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c,
-                      H2_STRM_MSG(stream, "header %s too long"), name);
+        ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, session->c,  
+                      H2_STRM_LOG(APLOGNO(10180), stream,"Request header exceeds "
+                                  "LimitRequestFieldSize: %.*s"),
+                      (int)H2MIN(nlen, 80), name);
         error = HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE;
     }
     
@@ -722,8 +720,9 @@ apr_status_t h2_stream_add_header(h2_stream *stream,
             h2_stream_rst(stream, H2_ERR_ENHANCE_YOUR_CALM);
             return APR_ECONNRESET;
         }
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c,
-                      H2_STRM_MSG(stream, "too many header lines")); 
+        ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, session->c, 
+                      H2_STRM_LOG(APLOGNO(10181), stream, "Number of request headers "
+                                  "exceeds LimitRequestFields"));
         error = HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE;
     }
     
@@ -750,6 +749,47 @@ apr_status_t h2_stream_add_header(h2_stream *stream,
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c,
                       H2_STRM_MSG(stream, "header %s not accepted"), name);
         h2_stream_dispatch(stream, H2_SEV_CANCELLED);
+    }
+    return status;
+}
+
+typedef struct {
+    apr_size_t maxlen;
+    const char *failed_key;
+} val_len_check_ctx;
+
+static int table_check_val_len(void *baton, const char *key, const char *value)
+{
+    val_len_check_ctx *ctx = baton;
+
+    if (strlen(value) <= ctx->maxlen) return 1;
+    ctx->failed_key = key;
+    return 0;
+}
+
+apr_status_t h2_stream_end_headers(h2_stream *stream, int eos, size_t raw_bytes)
+{
+    apr_status_t status;
+    val_len_check_ctx ctx;
+    
+    status = h2_request_end_headers(stream->rtmp, stream->pool, eos, raw_bytes);
+    if (APR_SUCCESS == status) {
+        set_policy_for(stream, stream->rtmp);
+        stream->request = stream->rtmp;
+        stream->rtmp = NULL;
+        
+        ctx.maxlen = stream->session->s->limit_req_fieldsize;
+        ctx.failed_key = NULL;
+        apr_table_do(table_check_val_len, &ctx, stream->request->headers, NULL);
+        if (ctx.failed_key) {
+            ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, stream->session->c,  
+                          H2_STRM_LOG(APLOGNO(), stream,"Request header exceeds "
+                                      "LimitRequestFieldSize: %.*s"),
+                          (int)H2MIN(strlen(ctx.failed_key), 80), ctx.failed_key);
+            set_error_response(stream, HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE);
+            /* keep on returning APR_SUCCESS, so that we send a HTTP response and
+             * do not RST the stream. */
+        }
     }
     return status;
 }

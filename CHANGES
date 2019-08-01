@@ -1,6 +1,18 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.40
 
+  *) mod_http2: core setting "LimitRequestFieldSize" is not additionally checked on
+     merged header fields, just as HTTP/1.1 does. [Stefan Eissing, Michael Kaufmann]
+
+  *) mod_http2: fixed a bug that prevented proper stream cleanup when connection
+     throttling was in place. Stream resets by clients on streams initiated by them
+     are counted as possible trigger for throttling. [Stefan Eissing]
+
+  *) mod_http2/mpm_event: Fixes the behaviour when a HTTP/2 connection has nothing
+     more to write with streams ongoing (flow control block). The timeout waiting
+     for the client to send WINODW_UPDATE was incorrectly KeepAliveTimeout and not
+     Timeout as it should be. Fixes PR 63534. [Yann Ylavic, Stefan Eissing]
+
   *) mod_proxy_balancer: Load balancer required byrequests when bytraffic chosen.
      PR 62372. [Jim Jagielski]
 
