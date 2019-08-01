@@ -294,6 +294,7 @@ Windows ile Apache Kullanımı</a></li>
 <li><a href="mod/mod_socache_dbm.html">Apache Modülü mod_socache_dbm</a></li>
 <li><a href="mod/mod_socache_dc.html">Apache Modülü mod_socache_dc</a></li>
 <li><a href="mod/mod_socache_memcache.html">Apache Modülü mod_socache_memcache</a></li>
+<li><a href="mod/mod_socache_redis.html">Apache Modülü mod_socache_redis</a></li>
 <li><a href="mod/mod_socache_shmcb.html">Apache Modülü mod_socache_shmcb</a></li>
 <li><a href="mod/mod_speling.html">Apache Modülü mod_speling</a></li>
 <li><a href="mod/mod_ssl.html">Apache Modülü mod_ssl</a></li>

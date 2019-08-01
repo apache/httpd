@@ -100,7 +100,7 @@ SessionCryptoPassphrase secret</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The crypto cipher to be used to encrypt the session</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionCryptoCipher <var>name</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>aes256</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SessionCryptoCipher aes256</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_crypto</td></tr>
@@ -195,14 +195,15 @@ SessionCryptoPassphrase secret</pre>
     <p>As of version 2.4.7 if the value begins with <var>exec:</var> the resulting command
     will be executed and the first line returned to standard output by the program will be
     used as the key.</p>
-<div class="example"><pre>#key used as-is
+<div class="example"><pre class="prettyprint lang-config">#key used as-is
 SessionCryptoPassphrase secret
 
 #Run /path/to/program to get key
 SessionCryptoPassphrase exec:/path/to/program
 
 #Run /path/to/otherProgram and provide arguments
-SessionCryptoPassphrase "exec:/path/to/otherProgram argument1"</pre></div>
+SessionCryptoPassphrase "exec:/path/to/otherProgram argument1"</pre>
+</div>
 
 
 </div>
@@ -222,7 +223,7 @@ SessionCryptoPassphrase "exec:/path/to/otherProgram argument1"</pre></div>
     the session, specified one per line. The file is read on server start, and a graceful
     restart will be necessary for httpd to pick up changes to the keys.</p>
 
-    <p>Unlike the <code class="directive">SessionCryptoPassphrase</code> directive, the keys are
+    <p>Unlike the <code class="directive"><a href="#sessioncryptopassphrase">SessionCryptoPassphrase</a></code> directive, the keys are
     not exposed within the httpd configuration and can be hidden by protecting the file
     appropriately.</p>
 

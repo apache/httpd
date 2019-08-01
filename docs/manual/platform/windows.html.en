@@ -67,7 +67,7 @@
     
 
     <p>The Apache HTTP Server Project itself does not provide binary releases of
-    software, only source code. Individual committers <em>may</em> provide 
+    software, only source code. Individual committers <em>may</em> provide
     binary packages as a convenience, but it is not a release deliverable.</p>
     <p>If you cannot compile the Apache HTTP Server
     yourself, you can obtain a binary package from numerous binary distributions
@@ -78,7 +78,7 @@
     <ul>
     <li><a href="http://www.apachehaus.com/cgi-bin/download.plx">ApacheHaus</a></li>
     <li><a href="http://www.apachelounge.com/download/">Apache Lounge</a></li>
-    <li><a href="http://bitnami.com/stack/wamp">BitNami WAMP Stack</a></li>
+    <li><a href="http://bitnami.com/stack/wamp">Bitnami WAMP Stack</a></li>
     <li><a href="http://www.wampserver.com/">WampServer</a></li>
     <li><a href="http://www.apachefriends.org/en/xampp.html">XAMPP</a></li>
     </ul>
@@ -169,7 +169,7 @@ RewriteRule "(.*)" "${lowercase:$1}" [R,L]</pre>
       module, use the following (in addition to the status-activating
       directives in <code>access.conf</code>):</p>
 
-      <pre class="prettyprint lang-config">LoadModule status_module modules/mod_status.so</pre>
+      <pre class="prettyprint lang-config">LoadModule status_module "modules/mod_status.so"</pre>
 
 
       <p>Information on <a href="../mod/mod_so.html#creating">creating
@@ -617,7 +617,7 @@ RewriteRule "(.*)" "${lowercase:$1}" [R,L]</pre>
 
 &lt;Directory "//imagehost/www/images/"&gt;
 #...
-&lt;Directory&gt;</pre>
+&lt;/Directory&gt;</pre>
 </div>
 
   <p>When running Apache httpd as a service, you must create a
@@ -628,7 +628,7 @@ RewriteRule "(.*)" "${lowercase:$1}" [R,L]</pre>
 <h2><a name="tuning" id="tuning">Windows Tuning</a></h2>
     
     <ul>
-      <li><p>If more than a few dozen piped loggers are used on an operating system 
+      <li><p>If more than a few dozen piped loggers are used on an operating system
       instance, scaling up the "desktop heap" is often necessary. For
       more detailed information, refer to the <a href="../logs.html#piped">piped logging</a> documentation.</p></li>
     </ul>

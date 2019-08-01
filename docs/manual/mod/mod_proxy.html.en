@@ -107,6 +107,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#balancerpersist">BalancerPersist</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#noproxy">NoProxy</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxy">&lt;Proxy&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#proxy100continue">Proxy100Continue</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyaddheaders">ProxyAddHeaders</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxybadheader">ProxyBadHeader</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyblock">ProxyBlock</a></li>
@@ -754,6 +755,27 @@ NoProxy         ".example.com" "192.168.112.0/21"</pre>
 <ul>
 <li><code class="directive"><a href="#proxymatch">&lt;ProxyMatch&gt;</a></code></li>
 </ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Proxy100Continue" id="Proxy100Continue">Proxy100Continue</a> <a name="proxy100continue" id="proxy100continue">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Forward 100-continue expectation to the origin server</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Proxy100Continue Off|On</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>Proxy100Continue On</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.4.39 and later</td></tr>
+</table>
+    <p>This directive determines whether the proxy should forward 100-continue
+    <em>Expect:</em>ation to the origin server and thus let it decide when/if
+    the HTTP request body should be read, or when <code>Off</code> the proxy
+    should generate <em>100 Continue</em> intermediate response by itself before
+    forwarding the request body.</p>
+    <div class="note"><h3>Effectiveness</h3>
+     <p>This option is of use only for HTTP proxying, as handled by <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>.</p>
+    </div>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ProxyAddHeaders" id="ProxyAddHeaders">ProxyAddHeaders</a> <a name="proxyaddheaders" id="proxyaddheaders">Directive</a></h2>

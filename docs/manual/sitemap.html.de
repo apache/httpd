@@ -300,6 +300,7 @@ HPUX betreiben</a></li>
 <li><a href="mod/mod_socache_dbm.html">Apache-Modul mod_socache_dbm</a></li>
 <li><a href="mod/mod_socache_dc.html">Apache-Modul mod_socache_dc</a></li>
 <li><a href="mod/mod_socache_memcache.html">Apache-Modul mod_socache_memcache</a></li>
+<li><a href="mod/mod_socache_redis.html">Apache-Modul mod_socache_redis</a></li>
 <li><a href="mod/mod_socache_shmcb.html">Apache-Modul mod_socache_shmcb</a></li>
 <li><a href="mod/mod_speling.html">Apache-Modul mod_speling</a></li>
 <li><a href="mod/mod_ssl.html">Apache-Modul mod_ssl</a></li>
