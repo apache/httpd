@@ -17,13 +17,6 @@
 #include <assert.h>
 #include <apr_strings.h>
 
-#include <ap_mmn.h>
-#if !AP_MODULE_MAGIC_AT_LEAST(20180720, 5)
-#ifndef AP_ENABLE_EXCEPTION_HOOK
-#define AP_ENABLE_EXCEPTION_HOOK 0
-#endif
-#endif
-
 #include <mpm_common.h>
 #include <httpd.h>
 #include <http_log.h>
