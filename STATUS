@@ -127,6 +127,22 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_http2: fixes Timeout vs. KeepAliveTimeout behaviour, see PR 63534. Fixes
+     stream cleanup when connection throttling is in place. Counts stream resets by client
+     on streams initiated by client as cause for connection throttling.
+     Changes in log level for header size checks by Michael Kaufmann. Added length
+     check on merged header values.
+     trunk patch:
+        http://svn.apache.org/r1861338
+        http://svn.apache.org/r1862475
+        http://svn.apache.org/r1862583
+        http://svn.apache.org/r1862865
+        http://svn.apache.org/r1863221
+        http://svn.apache.org/r1863276
+     2.4.x patch:
+        https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/h2-keepalive+throttling-v3.patch
+     +1: icing, jim, rpluem
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -156,22 +172,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      elukey: If anybody has time to review this change it would be great, to know if it needs to be reverted,
              reworked, etc.. I would like to avoid a patch that is clearly wrong for some reviewer sitting here for
              months/years without any action item :)
-
-  *) mod_http2: fixes Timeout vs. KeepAliveTimeout behaviour, see PR 63534. Fixes
-     stream cleanup when connection throttling is in place. Counts stream resets by client
-     on streams initiated by client as cause for connection throttling.
-     Changes in log level for header size checks by Michael Kaufmann. Added length
-     check on merged header values.
-     trunk patch:
-        http://svn.apache.org/r1861338
-        http://svn.apache.org/r1862475
-        http://svn.apache.org/r1862583
-        http://svn.apache.org/r1862865
-        http://svn.apache.org/r1863221
-        http://svn.apache.org/r1863276
-     2.4.x patch:
-        https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/h2-keepalive+throttling-v3.patch
-     +1: icing,, jim
 
   *) md_crypt: Wrap get_ct_scts_nid(void) definition to avoid unused function error
      when building in maintainer mode.
