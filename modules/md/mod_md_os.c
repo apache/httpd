@@ -17,10 +17,6 @@
 #include <assert.h>
 #include <apr_strings.h>
 
-#ifndef AP_ENABLE_EXCEPTION_HOOK
-#define AP_ENABLE_EXCEPTION_HOOK 0
-#endif
-
 #include <mpm_common.h>
 #include <httpd.h>
 #include <http_log.h>
