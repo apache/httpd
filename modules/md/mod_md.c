@@ -18,10 +18,6 @@
 #include <apr_optional.h>
 #include <apr_strings.h>
 
-#include <ap_release.h>
-#ifndef AP_ENABLE_EXCEPTION_HOOK
-#define AP_ENABLE_EXCEPTION_HOOK 0
-#endif
 #include <mpm_common.h>
 #include <httpd.h>
 #include <http_core.h>
