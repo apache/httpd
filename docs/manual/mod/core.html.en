@@ -4069,7 +4069,7 @@ as if 'QualifyRedirectURL ON' was configured.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Allow to configure global/default options for regexes</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RegexDefaultOptions [none] [+|-]<var>option</var> [[+|-]<var>option</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>RegexDefaultOptions DOLLAR_ENDONLY</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>RegexDefaultOptions DOTALL DOLLAR_ENDONLY</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
@@ -4089,23 +4089,25 @@ as if 'QualifyRedirectURL ON' was configured.</td></tr>
             <dt><code>ICASE</code></dt>
             <dd>Use a case-insensitive match.</dd>
 
+            <dt><code>EXTENDED</code></dt>
+            <dd>Perl's /x flag, ignore (unescaped-)spaces and comments in the pattern.</dd>
+
             <dt><code>DOTALL</code></dt>
-            <dd>Perl's /s flag.</dd>
+            <dd>Perl's /s flag, '.' matches newline characters.</dd>
 
             <dt><code>DOLLAR_ENDONLY</code></dt>
             <dd>'$' matches at end of subject string only.</dd>
-            <dd>.</dd>
         </dl>
-        <pre class="prettyprint lang-config"># 
-RegexDefaultOptions +ICASE +DOLLAR_ENDONLY
+        <pre class="prettyprint lang-config"># Add the ICASE option for all regexes by default
+RegexDefaultOptions +ICASE
 ...
-# Remove the ICASE option, but keep all the other already set options
-RegexDefaultOptions -ICASE
+# Remove the default DOLLAR_ENDONLY option, but keep any other one
+RegexDefaultOptions -DOLLAR_ENDONLY
 ...
-# Set the default option to DOTALL, resetting any other option
+# Set the DOTALL option only, resetting any other one
 RegexDefaultOptions DOTALL
 ...
-# Reset all defined option
+# Reset all defined options
 RegexDefaultOptions none
 ...</pre>
 

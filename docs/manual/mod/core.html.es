@@ -3535,7 +3535,7 @@ as if 'QualifyRedirectURL ON' was configured.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Allow to configure global/default options for regexes</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>RegexDefaultOptions [none] [+|-]<var>option</var> [[+|-]<var>option</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>RegexDefaultOptions DOLLAR_ENDONLY</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>RegexDefaultOptions DOTALL DOLLAR_ENDONLY</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
