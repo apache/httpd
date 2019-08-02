@@ -368,12 +368,9 @@ PROXY_DECLARE(char *)
 
 PROXY_DECLARE(int) ap_proxyerror(request_rec *r, int statuscode, const char *message)
 {
-    const char *uri = ap_escape_html(r->pool, r->uri);
     apr_table_setn(r->notes, "error-notes",
         apr_pstrcat(r->pool,
-            "The proxy server could not handle the request <em><a href=\"",
-            uri, "\">", ap_escape_html(r->pool, r->method), "&nbsp;", uri,
-            "</a></em>.<p>\n"
+            "The proxy server could not handle the request<p>"
             "Reason: <strong>", ap_escape_html(r->pool, message),
             "</strong></p>",
             NULL));
