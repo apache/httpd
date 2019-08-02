@@ -127,6 +127,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) core, rewrite: Set PCRE_DOTALL by default
+     trunk: http://svn.apache.org/1864192
+     2.4.x: svn merge  -c 1864192 ^/httpd/httpd/trunk .
+     +1: covener, rpluem, icing
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -157,11 +162,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      elukey: If anybody has time to review this change it would be great, to know if it needs to be reverted,
              reworked, etc.. I would like to avoid a patch that is clearly wrong for some reviewer sitting here for
              months/years without any action item :)
-
-  *) core, rewrite: Set PCRE_DOTALL by default
-     trunk: http://svn.apache.org/1864192
-     2.4.x: svn merge  -c 1864192 ^/httpd/httpd/trunk .
-     +1: covener, rpluem
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
