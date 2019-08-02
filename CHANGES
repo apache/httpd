@@ -1,4 +1,6 @@
                                                          -*- coding: utf-8 -*-
+Changes with Apache 2.4.41
+
 Changes with Apache 2.4.40
 
   *) core, mod_rewrite: Set PCRE_DOTALL by default. Revert via 
