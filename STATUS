@@ -143,6 +143,14 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/h2-keepalive+throttling-v3.patch
      +1: icing, jim, rpluem
 
+  *) md_crypt: Wrap get_ct_scts_nid(void) definition to avoid unused function error
+     when building in maintainer mode.
+     trunk: 
+        http://svn.apache.org/1863635
+     2.4.x patch: svn merge -c 1863635 ^/httpd/httpd/trunk .
+     +1: jim, icing, rpluem
+
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -173,23 +181,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              reworked, etc.. I would like to avoid a patch that is clearly wrong for some reviewer sitting here for
              months/years without any action item :)
 
-  *) md_crypt: Wrap get_ct_scts_nid(void) definition to avoid unused function error
-     when building in maintainer mode.
-     trunk: 
-        http://svn.apache.org/1863635
-     2.4.x patch: svn merge -c 1863635 ^/httpd/httpd/trunk .
-     +1: jim, icing
-
-
   *) core, proxy: remove request URL and headers from error docs
      trunk: http://svn.apache.org/1864191
      2.4.x: svn merge  -c 1864191 ^/httpd/httpd/trunk .
-     +1: covener
+     +1: covener, rpluem
 
   *) core, rewrite: Set PCRE_DOTALL by default
      trunk: http://svn.apache.org/1864192
      2.4.x: svn merge  -c 1864192 ^/httpd/httpd/trunk .
-     +1: covener
+     +1: covener, rpluem
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
