@@ -4061,7 +4061,7 @@ Protocols h2 http/1.1
     <name>RegexDefaultOptions</name>
     <description>Allow to configure global/default options for regexes</description>
     <syntax>RegexDefaultOptions [none] [+|-]<var>option</var> [[+|-]<var>option</var>] ...</syntax>
-    <default>RegexDefaultOptions DOLLAR_ENDONLY</default>
+    <default>RegexDefaultOptions DOTALL DOLLAR_ENDONLY</default>
     <contextlist><context>server config</context></contextlist>
     <compatibility>Only available from Apache 2.4.30 and later.</compatibility>
     
@@ -4080,24 +4080,26 @@ Protocols h2 http/1.1
             <dt><code>ICASE</code></dt>
             <dd>Use a case-insensitive match.</dd>
 
+            <dt><code>EXTENDED</code></dt>
+            <dd>Perl's /x flag, ignore (unescaped-)spaces and comments in the pattern.</dd>
+
             <dt><code>DOTALL</code></dt>
-            <dd>Perl's /s flag.</dd>
+            <dd>Perl's /s flag, '.' matches newline characters.</dd>
 
             <dt><code>DOLLAR_ENDONLY</code></dt>
             <dd>'$' matches at end of subject string only.</dd>
-            <dd>.</dd>
         </dl>
         <highlight language="config">
-# 
-RegexDefaultOptions +ICASE +DOLLAR_ENDONLY
+# Add the ICASE option for all regexes by default
+RegexDefaultOptions +ICASE
 ...
-# Remove the ICASE option, but keep all the other already set options
-RegexDefaultOptions -ICASE
+# Remove the default DOLLAR_ENDONLY option, but keep any other one
+RegexDefaultOptions -DOLLAR_ENDONLY
 ...
-# Set the default option to DOTALL, resetting any other option
+# Set the DOTALL option only, resetting any other one
 RegexDefaultOptions DOTALL
 ...
-# Reset all defined option
+# Reset all defined options
 RegexDefaultOptions none
 ...
         </highlight>

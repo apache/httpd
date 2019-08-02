@@ -120,7 +120,8 @@ AP_DECLARE(void) ap_regfree(ap_regex_t *preg)
  *            Compile a regular expression       *
  *************************************************/
 
-static int default_cflags = AP_REG_DOLLAR_ENDONLY;
+static int default_cflags = AP_REG_DOTALL |
+                            AP_REG_DOLLAR_ENDONLY;
 
 AP_DECLARE(int) ap_regcomp_get_default_cflags(void)
 {

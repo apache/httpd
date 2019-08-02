@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.40
 
+  *) core, mod_rewrite: Set PCRE_DOTALL by default. Revert via 
+     RegexDefaultOptions -DOTALL [Yann Ylavic]
+
   *) core: Remove request details from built-in error documents [Eric Covener]
 
   *) mod_http2: core setting "LimitRequestFieldSize" is not additionally checked on
