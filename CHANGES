@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.40
 
+  *) core: Remove request details from built-in error documents [Eric Covener]
+
   *) mod_http2: core setting "LimitRequestFieldSize" is not additionally checked on
      merged header fields, just as HTTP/1.1 does. [Stefan Eissing, Michael Kaufmann]
 

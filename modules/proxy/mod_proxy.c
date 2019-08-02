@@ -1049,9 +1049,10 @@ static int proxy_handler(request_rec *r)
         char *end;
         maxfwd = apr_strtoi64(str, &end, 10);
         if (maxfwd < 0 || maxfwd == APR_INT64_MAX || *end) {
-            return ap_proxyerror(r, HTTP_BAD_REQUEST,
-                    apr_psprintf(r->pool,
-                            "Max-Forwards value '%s' could not be parsed", str));
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO() 
+                          "Max-Forwards value '%s' could not be parsed", str);
+            return ap_proxyerror(r, HTTP_BAD_REQUEST, 
+                          "Max-Forwards request header could not be parsed");
         }
         else if (maxfwd == 0) {
             switch (r->method_number) {

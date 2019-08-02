@@ -150,11 +150,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1863635 ^/httpd/httpd/trunk .
      +1: jim, icing, rpluem
 
-  *) core, proxy: remove request URL and headers from error docs
-     trunk: http://svn.apache.org/1864191
-     2.4.x: svn merge  -c 1864191 ^/httpd/httpd/trunk .
-     +1: covener, rpluem, icing
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
