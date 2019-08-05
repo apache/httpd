@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_ssl: reverting a 2.4.40 change where a superfluous SSLCertificateChainFile configuration
+     for a domain managed by mod_md caused a startup error. This happened when mod_md installed 
+     its fallback certificate, before it got the first real certificate from Lets Encrypt.
+     [Stefan Eissing]
+
   *) core, mod_rewrite: Set PCRE_DOTALL by default. Revert via 
      RegexDefaultOptions -DOTALL [Yann Ylavic]
 
