@@ -284,7 +284,8 @@ PATCHES/ISSUES THAT ARE BEING WORKED
      only switching off error status for comment warnings.
      Still need some work due to feedback in the PR.
      trunk patch: http://svn.apache.org/r1864435
-     2.4.x patch: svn merge -c 1864435 ^/httpd/httpd/trunk .
+                  http://svn.apache.org/r1864438
+     2.4.x patch: svn merge -c 1864435,1864438 ^/httpd/httpd/trunk .
      +1: 
 
 
