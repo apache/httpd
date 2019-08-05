@@ -114,10 +114,6 @@ AC_DEFUN([FIND_LIBXML2], [
     if test -n "${xml2_path}" ; then
       ac_cv_libxml2=yes
       XML2_INCLUDES="${xml2_path}"
-      dnl libxml2 includes unicode/*.h files which uses C++ comments
-      if test "$GCC" = "yes"; then
-        APR_ADDTO(MOD_CPPFLAGS, ["-Wno-error=comment"])
-      fi
     else
       ac_cv_libxml2=no
     fi
