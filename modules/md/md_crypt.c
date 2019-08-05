@@ -1545,6 +1545,9 @@ apr_status_t md_cert_get_ct_scts(apr_array_header_t *scts, apr_pool_t *p, const 
     md_log_perror(MD_LOG_MARK, MD_LOG_TRACE3, 0, p, "ct_sct, found %d SCT extensions", scts->nelts);
     return APR_SUCCESS;
 #else
+    (void)scts;
+    (void)p;
+    (void)cert;
     return APR_ENOTIMPL;
 #endif
 }

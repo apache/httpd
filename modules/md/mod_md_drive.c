@@ -149,7 +149,7 @@ static apr_status_t send_notification(md_drive_ctx *dctx, md_job_t *job, const m
     const char * const *argv;
     const char *cmdline;
     int exit_code;
-    apr_status_t rv;            
+    apr_status_t rv = APR_SUCCESS;            
     
     if (!strcmp("renewed", reason)) {
         if (dctx->mc->notify_cmd) {
