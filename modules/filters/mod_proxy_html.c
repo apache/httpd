@@ -34,10 +34,10 @@
 #if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
 #pragma GCC diagnostic push
 #endif
-#pragma GCC diagnostic ignored "-Werror=comment"
+#pragma GCC diagnostic warning "-Wcomment"
 #elif defined(__clang__)
 #pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Werror=comment"
+#pragma clang diagnostic warning "-Wcomment"
 #endif
 
 /* libxml2 */
