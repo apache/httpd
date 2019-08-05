@@ -274,6 +274,19 @@ PATCHES/ISSUES THAT ARE BEING WORKED
              for internal users of this api; not sure if performance
              impact is significant from using malloc here.
 
+  *) modules/filters: PR 63633: Fix broken compilation when using old GCC (<4.2.x).
+     The GCC flag "-Wno-error=comment" introduced by r1855446
+     and r1850745 (backported in r1856931) are only known since GCC 4.2.
+     Since it gets set unconditionally, this breaks compilation with old GCC
+     even when not using maintainer mode.
+     Make the fix for maintainer mode more specific by using
+     a version dependent pragma in the relevant two C files
+     only switching off error status for comment warnings.
+     Still need some work due to feedback in the PR.
+     trunk patch: http://svn.apache.org/r1864435
+     2.4.x patch: svn merge -c 1864435 ^/httpd/httpd/trunk .
+     +1: 
+
 
 PATCHES/ISSUES THAT ARE STALLED
 
