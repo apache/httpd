@@ -219,7 +219,7 @@ const char *md_timeslice_parse(const md_timeslice_t **pts, apr_pool_t *p,
                                const char *val, apr_interval_time_t norm)
 {
     md_timeslice_t *ts;
-    int percent;
+    int percent = 0;
 
     *pts = NULL;
     if (!val) {

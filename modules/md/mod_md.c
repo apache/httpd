@@ -143,8 +143,8 @@ static apr_status_t store_file_ev(void *baton, struct md_store_t *store,
     ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, s, "store event=%d on %s %s (group %d)", 
                  ev, (ftype == APR_DIR)? "dir" : "file", fname, group);
                  
-    /* Directories in group CHALLENGES and STAGING are written to under a different user. 
-     * Give him ownership. 
+    /* Directories in group CHALLENGES, STAGING and OCSP are written to 
+     * under a different user. Give her ownership. 
      */
     if (ftype == APR_DIR) {
         switch (group) {
@@ -191,7 +191,8 @@ static apr_status_t setup_store(md_store_t **pstore, md_mod_conf_t *mc,
     md_store_fs_set_event_cb(*pstore, store_file_ev, s);
     if (APR_SUCCESS != (rv = check_group_dir(*pstore, MD_SG_CHALLENGES, p, s))
         || APR_SUCCESS != (rv = check_group_dir(*pstore, MD_SG_STAGING, p, s))
-        || APR_SUCCESS != (rv = check_group_dir(*pstore, MD_SG_ACCOUNTS, p, s))) {
+        || APR_SUCCESS != (rv = check_group_dir(*pstore, MD_SG_ACCOUNTS, p, s))
+        ) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10047) 
                      "setup challenges directory");
     }
@@ -707,8 +708,8 @@ static void init_watched_names(md_mod_conf_t *mc, apr_pool_t *p, apr_pool_t *pte
     }
 }   
 
-static apr_status_t md_post_config(apr_pool_t *p, apr_pool_t *plog,
-                                   apr_pool_t *ptemp, server_rec *s)
+static apr_status_t md_post_config_before_ssl(apr_pool_t *p, apr_pool_t *plog,
+                                              apr_pool_t *ptemp, server_rec *s)
 {
     void *data = NULL;
     const char *mod_md_init_key = "mod_md_init_counter";
@@ -751,11 +752,10 @@ static apr_status_t md_post_config(apr_pool_t *p, apr_pool_t *plog,
 
     if (APR_SUCCESS != (rv = setup_store(&store, mc, p, s))
         || APR_SUCCESS != (rv = md_reg_create(&mc->reg, p, store, mc->proxy_url))) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10072)
-                     "setup md registry");
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10072) "setup md registry");
         goto leave;
     }
-    
+
     init_ssl();
 
     /* How to bootstrap this module:
@@ -939,17 +939,8 @@ static apr_status_t get_certificate(server_rec *s, apr_pool_t *p, int fallback,
     }
     
     if (!sc->assigned) {
-        /* Hmm, mod_ssl (or someone like it) asks for certificates for a server
-         * where we did not assign a MD to. Either the user forgot to configure
-         * that server with SSL certs, has misspelled a server name or we have
-         * a bug that prevented us from taking responsibility for this server.
-         * Either way, make some polite noise */
-        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s, APLOGNO(10114)  
-                     "asked for certificate of server %s which has no MD assigned. This "
-                     "could be ok, but most likely it is either a misconfiguration or "
-                     "a bug. Please check server names and MD names carefully and if "
-                     "everything checks open, please open an issue.", 
-                     s->server_hostname);
+        /* With the new hooks in mod_ssl, we are invoked for all server_rec. It is
+         * therefore normal, when we have nothing to add here. */
         return APR_ENOENT;
     }
     
@@ -1254,8 +1245,9 @@ static void md_hooks(apr_pool_t *pool)
     ap_log_perror(APLOG_MARK, APLOG_TRACE1, 0, pool, "installing hooks");
     
     /* Run once after configuration is set, before mod_ssl.
+     * Run again after mod_ssl is done.
      */
-    ap_hook_post_config(md_post_config, NULL, mod_ssl, APR_HOOK_MIDDLE);
+    ap_hook_post_config(md_post_config_before_ssl, NULL, mod_ssl, APR_HOOK_MIDDLE);
     
     /* Run once after a child process has been created.
      */

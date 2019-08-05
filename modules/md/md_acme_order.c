@@ -505,7 +505,7 @@ static apr_status_t check_challenges(void *baton, int attempt)
                 default:
                     rv = APR_EINVAL;
                     md_result_printf(ctx->result, rv, 
-                                     "domain authorization for %s failed with state %s", 
+                                     "domain authorization for %s failed with state %d", 
                                      authz->domain, authz->state);
                     md_result_log(ctx->result, MD_LOG_ERR);
                     goto leave;
