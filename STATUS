@@ -153,7 +153,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_remoteip: Add sanity checks.
      trunk patch: http://svn.apache.org/r1864526
      2.4.x patch: svn merge -c 1864526 ^/httpd/httpd/trunk .
-     +1: jorton, 
+     +1: jorton, covener, 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
