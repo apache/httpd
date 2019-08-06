@@ -184,8 +184,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1864438
                   http://svn.apache.org/r1864450
                   http://svn.apache.org/r1864451
-     2.4.x patch: svn merge -c 1864435,1864438,1864450,1864451 ^/httpd/httpd/trunk .
-     +1: rjung
+                  http://svn.apache.org/r1864464
+     2.4.x patch: svn merge -c 1864435,1864438,1864450,1864451,1864464 ^/httpd/httpd/trunk .
+     +1: jorton, 
 
      
 PATCHES/ISSUES THAT ARE BEING WORKED
