@@ -155,6 +155,22 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1864526 ^/httpd/httpd/trunk .
      +1: jorton, covener, 
 
+  *) apr_common.m4: Pick up from APR 1.7.0.
+     apr_common.m4 is currently from APR 1.6.x. When running buildconf
+     against APR 1.7.x it gets updated from there. Therefore in the
+     apr_common.m4 in the 2.4.40 tarball differs from the one in svn for 2.4.x
+     (a copy of the APR 1.6.x version in svn, a copy of the APR 1.7.x version
+     in the tarball).
+     The below backports the changes to apr_common.m4 in httpd trunk which
+     in effect result in the 2.4.x apr_common.m4 to become identical with
+     the one in APR 1.7.x (and trunk).
+     trunk patch: http://svn.apache.org/r1856560
+                  http://svn.apache.org/r1856561
+                  http://svn.apache.org/r1856846
+     2.4.x patch: svn merge -c 1856560,1856561,1856846 ^/httpd/httpd/trunk .
+     +1: rjung
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
