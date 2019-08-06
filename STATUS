@@ -128,28 +128,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) modules/filters: PR 63633: Fix broken compilation when using old GCC (<4.2.x).
-     The above line could be used as CHANGES item.
-     The GCC flag "-Wno-error=comment" introduced by r1855446
-     and r1850745 (backported in r1856931) is only known since GCC 4.2.
-     Since it gets set unconditionally, this breaks compilation with old GCC
-     even when not using maintainer mode.
-     Make the fix for maintainer mode more specific by using
-     a version dependent pragma in the relevant two C files
-     only switching off error status for comment warnings.
-     The original maintainer mode problem seems to happen only
-     on certain platforms (observed on MacOS) or clang, because I could
-     not reproduce with GCC on Linux and Solaris. So not fixing the maintainer
-     mode problem for ancient GCC before 4.6 might be OK. more important is not
-     to break normal compilation on old platforms.
-     trunk patch: http://svn.apache.org/r1864435
-                  http://svn.apache.org/r1864438
-                  http://svn.apache.org/r1864450
-                  http://svn.apache.org/r1864451
-                  http://svn.apache.org/r1864464
-     2.4.x patch: svn merge -c 1864435,1864438,1864450,1864451,1864464 ^/httpd/httpd/trunk .
-     +1: jorton, rjung, icing
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.41
 
+  *) modules/filters: PR 63633: Fix broken compilation when using old GCC (<4.2.x).
+     [Rainer Jung, Joe Orton]
+
 Changes with Apache 2.4.40
 
   *) core, mod_rewrite: Set PCRE_DOTALL by default. Revert via 

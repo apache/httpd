@@ -23,8 +23,27 @@
 
 #include <ctype.h>
 
+/* libxml2 includes unicode/[...].h files which uses C++ comments */
+#if defined(__GNUC__)
+#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic warning "-Wcomment"
+#endif
+#elif defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic warning "-Wcomment"
+#endif
+
 /* libxml2 */
 #include <libxml/encoding.h>
+
+#if defined(__GNUC__)
+#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
+#pragma GCC diagnostic pop
+#endif
+#elif defined(__clang__)
+#pragma clang diagnostic pop
+#endif
 
 #include "http_protocol.h"
 #include "http_config.h"
