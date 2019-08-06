@@ -1770,19 +1770,21 @@ static apr_status_t ssl_init_server_ctx(server_rec *s,
     n = pks->cert_files->nelts;
     ssl_run_add_cert_files(s, p, pks->cert_files, pks->key_files);
 
-    if (n < pks->cert_files->nelts) {
-        /* this overrides any old chain configuration */
-        sc->server->cert_chain = NULL;
+    if (apr_is_empty_array(pks->cert_files)) {
+        /* does someone propose a certiciate to fall back on here? */
+        ssl_run_add_fallback_cert_files(s, p, pks->cert_files, pks->key_files);
+        if (n < pks->cert_files->nelts) {
+            pks->service_unavailable = 1;
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(10085)
+                         "Init: %s will respond with '503 Service Unavailable' for now. There "
+                         "are no SSL certificates configured and no other module contributed any.",
+                         ssl_util_vhostid(p, s));
+        }
     }
     
-    if (apr_is_empty_array(pks->cert_files) && !sc->server->cert_chain) {
-        ssl_run_add_fallback_cert_files(s, p, pks->cert_files, pks->key_files);
-        
-        pks->service_unavailable = 1;
-        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(10085)
-                     "Init: %s will respond with '503 Service Unavailable' for now. There "
-                     "are no SSL certificates configured and no other module contributed any.",
-                     ssl_util_vhostid(p, s));
+    if (n < pks->cert_files->nelts) {
+        /* additionally installed certs overrides any old chain configuration */
+        sc->server->cert_chain = NULL;
     }
     
     if ((rv = ssl_init_ctx(s, p, ptemp, sc->server)) != APR_SUCCESS) {

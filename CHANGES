@@ -4,6 +4,9 @@ Changes with Apache 2.4.41
   *) modules/filters: PR 63633: Fix broken compilation when using old GCC (<4.2.x).
      [Rainer Jung, Joe Orton]
 
+  *) mod_ssl: reverting a 2.4.40 change where a superfluous SSLCertificateChainFile configuration
+     for a domain managed by mod_md could cause a startup error. [Stefan Eissing]
+
 Changes with Apache 2.4.40
 
   *) core, mod_rewrite: Set PCRE_DOTALL by default. Revert via 
