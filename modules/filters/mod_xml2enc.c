@@ -23,7 +23,7 @@
 
 #include <ctype.h>
 
-/* libxml2 includes unicode/*.h files which uses C++ comments */
+/* libxml2 includes unicode/[...].h files which uses C++ comments */
 #if defined(__GNUC__)
 #if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
 #pragma GCC diagnostic push
