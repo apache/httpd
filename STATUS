@@ -128,13 +128,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_ssl: reverting a 2.4.40 change where a superfluous SSLCertificateChainFile configuration
-     for a domain managed by mod_md caused a startup error. This happened when mod_md installed 
-     its fallback certificate, before it got the first real certificate from Lets Encrypt.
-     trunk patch: http://svn.apache.org/r1864428
-     2.4.x patch: svn merge -c 1864428 ^/httpd/httpd/trunk .
-     +1: icing, covener, jim
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
