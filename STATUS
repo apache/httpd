@@ -164,7 +164,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      its fallback certificate, before it got the first real certificate from Lets Encrypt.
      trunk patch: http://svn.apache.org/r1864428
      2.4.x patch: svn merge -c 1864428 ^/httpd/httpd/trunk .
-     +1: icing, covener
+     +1: icing, covener, jim
 
      
 PATCHES/ISSUES THAT ARE BEING WORKED
