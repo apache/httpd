@@ -132,15 +132,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
-  *) core: Allow mod_env to override all system path envvars not just PATH
-     trunk patch: http://svn.apache.org/r1811831
-     2.4.x patch: svn merge -c 1811831 ^/httpd/httpd/trunk .
-     +1: jorton, rpluem
-     ylavic: same as dev@; since SetEnv* are usable from htaccess, wouldn't
-             we open a door here (unconditionally)? 
-             covener: seems like we need some kind of pattern for opting in
-             to restricted arguments.
-
   *) core: avoid duplicate headers when using ap_send_error_response.
            From trunk's testing the code seems running fine without any side
            effects, so adding this change in here to have more reviews.
@@ -158,7 +149,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      elukey: If anybody has time to review this change it would be great, to know if it needs to be reverted,
              reworked, etc.. I would like to avoid a patch that is clearly wrong for some reviewer sitting here for
              months/years without any action item :)
-     
+
+  *) mod_remoteip: Add sanity checks.
+     trunk patch: http://svn.apache.org/r1864526
+     2.4.x patch: svn merge -c 1864526 ^/httpd/httpd/trunk .
+     +1: jorton, 
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
@@ -268,6 +264,15 @@ PATCHES/ISSUES THAT ARE BEING WORKED
 
 
 PATCHES/ISSUES THAT ARE STALLED
+
+  *) core: Allow mod_env to override all system path envvars not just PATH
+     trunk patch: http://svn.apache.org/r1811831
+     2.4.x patch: svn merge -c 1811831 ^/httpd/httpd/trunk .
+     +1: jorton, rpluem
+     ylavic: same as dev@; since SetEnv* are usable from htaccess, wouldn't
+             we open a door here (unconditionally)? 
+             covener: seems like we need some kind of pattern for opting in
+             to restricted arguments.
 
   *) mod_proxy: Add ap_proxy_define_match_worker() and use it for ProxyPassMatch
      and ProxyMatch section to distinguish between normal workers and workers
