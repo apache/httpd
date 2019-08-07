@@ -128,11 +128,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_remoteip: Add sanity checks.
-     trunk patch: http://svn.apache.org/r1864526
-     2.4.x patch: svn merge -c 1864526 ^/httpd/httpd/trunk .
-     +1: jorton, covener, jim
-
   *) apr_common.m4: Pick up from APR 1.7.0.
      apr_common.m4 is currently from APR 1.6.x. When running buildconf
      against APR 1.7.x it gets updated from there. Therefore in the

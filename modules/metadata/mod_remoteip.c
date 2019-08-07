@@ -987,15 +987,13 @@ static remoteip_parse_status_t remoteip_process_v2_header(conn_rec *c,
                     return HDR_ERROR;
 #endif
                 default:
-                    /* unsupported protocol, keep local connection address */
-                    return HDR_DONE;
+                    /* unsupported protocol */
+                    ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(10183)
+                                  "RemoteIPProxyProtocol: unsupported protocol %.2hx",
+                                  (unsigned short)hdr->v2.fam);
+                    return HDR_ERROR;
             }
             break;  /* we got a sockaddr now */
-
-        case 0x00: /* LOCAL command */
-            /* keep local connection address for LOCAL */
-            return HDR_DONE;
-
         default:
             /* not a supported command */
             ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(03507)
@@ -1087,10 +1085,23 @@ static apr_status_t remoteip_input_filter(ap_filter_t *f,
     /* try to read a header's worth of data */
     while (!ctx->done) {
         if (APR_BRIGADE_EMPTY(ctx->bb)) {
-            ret = ap_get_brigade(f->next, ctx->bb, ctx->mode, block,
-                                 ctx->need - ctx->rcvd);
+            apr_off_t got, want = ctx->need - ctx->rcvd;
+
+            ret = ap_get_brigade(f->next, ctx->bb, ctx->mode, block, want);
             if (ret != APR_SUCCESS) {
+                ap_log_cerror(APLOG_MARK, APLOG_ERR, ret, f->c, APLOGNO(10184)
+                              "failed reading input");
                 return ret;
+            }
+
+            ret = apr_brigade_length(ctx->bb, 1, &got);
+            if (ret || got > want) {
+                ap_log_cerror(APLOG_MARK, APLOG_ERR, ret, f->c, APLOGNO(10185)
+                              "RemoteIPProxyProtocol header too long, "
+                              "got %" APR_OFF_T_FMT " expected %" APR_OFF_T_FMT,
+                              got, want);
+                f->c->aborted = 1;
+                return APR_ECONNABORTED;
             }
         }
         if (APR_BRIGADE_EMPTY(ctx->bb)) {
@@ -1139,6 +1150,13 @@ static apr_status_t remoteip_input_filter(ap_filter_t *f,
                 if (ctx->rcvd >= MIN_V2_HDR_LEN) {
                     ctx->need = MIN_V2_HDR_LEN +
                         remoteip_get_v2_len((proxy_header *) ctx->header);
+                    if (ctx->need > sizeof(proxy_v2)) {
+                        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, f->c, APLOGNO(10186)
+                                      "RemoteIPProxyProtocol protocol header length too long");
+                        f->c->aborted = 1;
+                        apr_brigade_destroy(ctx->bb);
+                        return APR_ECONNABORTED;
+                    }
                 }
                 if (ctx->rcvd >= ctx->need) {
                     psts = remoteip_process_v2_header(f->c, conn_conf,
