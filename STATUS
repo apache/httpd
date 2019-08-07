@@ -168,7 +168,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1856561
                   http://svn.apache.org/r1856846
      2.4.x patch: svn merge -c 1856560,1856561,1856846 ^/httpd/httpd/trunk .
-     +1: rjung
+     +1: rjung, jorton, 
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
