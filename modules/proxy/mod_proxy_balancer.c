@@ -1407,7 +1407,7 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
             /* Start proxy_balancer */
             ap_rvputs(r, "      <httpd:name>", balancer->s->name, "</httpd:name>\n", NULL);
             if (*balancer->s->sticky) {
-                ap_rvputs(r, "      <httpd:stickysession>", balancer->s->sticky,
+                ap_rvputs(r, "      <httpd:stickysession>", ap_escape_html(r->pool, balancer->s->sticky),
                           "</httpd:stickysession>\n", NULL);
                 ap_rprintf(r,
                            "      <httpd:nofailover>%s</httpd:nofailover>\n",
@@ -1617,10 +1617,10 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
         for (i = 0; i < conf->balancers->nelts; i++) {
 
             ap_rputs("<hr />\n<h3>LoadBalancer Status for ", r);
-            ap_rvputs(r, "<a href='", ap_escape_uri(r->pool, r->uri), "?b=",
+            ap_rvputs(r, "<a href=\"", ap_escape_uri(r->pool, r->uri), "?b=",
                       balancer->s->name + sizeof(BALANCER_PREFIX) - 1,
                       "&amp;nonce=", balancer->s->nonce,
-                      "'>", NULL);
+                      "\">", NULL);
             ap_rvputs(r, balancer->s->name, "</a> [",balancer->s->sname, "]</h3>\n", NULL);
             ap_rputs("\n\n<table><tr>"
                 "<th>MaxMembers</th><th>StickySession</th><th>DisableFailover</th><th>Timeout</th><th>FailoverAttempts</th><th>Method</th>"
@@ -1631,11 +1631,11 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
                        balancer->max_workers - (int)storage->num_free_slots(balancer->wslot));
             if (*balancer->s->sticky) {
                 if (strcmp(balancer->s->sticky, balancer->s->sticky_path)) {
-                    ap_rvputs(r, "<td>", balancer->s->sticky, " | ",
-                              balancer->s->sticky_path, NULL);
+                    ap_rvputs(r, "<td>", ap_escape_html(r->pool, balancer->s->sticky), " | ",
+                              ap_escape_html(r->pool, balancer->s->sticky_path), NULL);
                 }
                 else {
-                    ap_rvputs(r, "<td>", balancer->s->sticky, NULL);
+                    ap_rvputs(r, "<td>", ap_escape_html(r->pool, balancer->s->sticky), NULL);
                 }
             }
             else {
@@ -1670,12 +1670,12 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
             for (n = 0; n < balancer->workers->nelts; n++) {
                 char fbuf[50];
                 worker = *workers;
-                ap_rvputs(r, "<tr>\n<td><a href='",
+                ap_rvputs(r, "<tr>\n<td><a href=\"",
                           ap_escape_uri(r->pool, r->uri), "?b=",
                           balancer->s->name + sizeof(BALANCER_PREFIX) - 1, "&amp;w=",
                           ap_escape_uri(r->pool, worker->s->name),
                           "&amp;nonce=", balancer->s->nonce,
-                          "'>", NULL);
+                          "\">", NULL);
                 ap_rvputs(r, (*worker->s->uds_path ? "<i>" : ""), ap_proxy_worker_name(r->pool, worker),
                           (*worker->s->uds_path ? "</i>" : ""), "</a></td>", NULL);
                 ap_rvputs(r, "<td>", ap_escape_html(r->pool, worker->s->route),
@@ -1697,7 +1697,7 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
                     ap_rprintf(r, "<td>%" APR_TIME_T_FMT "ms</td>", apr_time_as_msec(worker->s->interval));
                     ap_rprintf(r, "<td>%d (%d)</td>", worker->s->passes,worker->s->pcount);
                     ap_rprintf(r, "<td>%d (%d)</td>", worker->s->fails, worker->s->fcount);
-                    ap_rprintf(r, "<td>%s</td>", worker->s->hcuri);
+                    ap_rprintf(r, "<td>%s</td>", ap_escape_html(r->pool, worker->s->hcuri));
                     ap_rprintf(r, "<td>%s", worker->s->hcexpr);
                 }
                 ap_rputs("</td></tr>\n", r);
@@ -1714,20 +1714,20 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
         if (wsel && bsel) {
             ap_rputs("<h3>Edit worker settings for ", r);
             ap_rvputs(r, (*wsel->s->uds_path?"<i>":""), ap_proxy_worker_name(r->pool, wsel), (*wsel->s->uds_path?"</i>":""), "</h3>\n", NULL);
-            ap_rputs("<form method='POST' enctype='application/x-www-form-urlencoded' action='", r);
-            ap_rvputs(r, ap_escape_uri(r->pool, action), "'>\n", NULL);
+            ap_rputs("<form method='POST' enctype='application/x-www-form-urlencoded' action=\"", r);
+            ap_rvputs(r, ap_escape_uri(r->pool, action), "\">\n", NULL);
             ap_rputs("<table><tr><td>Load factor:</td><td><input name='w_lf' id='w_lf' type=text ", r);
             ap_rprintf(r, "value='%.2f'></td></tr>\n", (float)(wsel->s->lbfactor)/100.0);
             ap_rputs("<tr><td>LB Set:</td><td><input name='w_ls' id='w_ls' type=text ", r);
             ap_rprintf(r, "value='%d'></td></tr>\n", wsel->s->lbset);
             ap_rputs("<tr><td>Route:</td><td><input name='w_wr' id='w_wr' type=text ", r);
-            ap_rvputs(r, "value='", ap_escape_html(r->pool, wsel->s->route),
+            ap_rvputs(r, "value=\"", ap_escape_html(r->pool, wsel->s->route),
                       NULL);
-            ap_rputs("'></td></tr>\n", r);
+            ap_rputs("\"></td></tr>\n", r);
             ap_rputs("<tr><td>Route Redirect:</td><td><input name='w_rr' id='w_rr' type=text ", r);
-            ap_rvputs(r, "value='", ap_escape_html(r->pool, wsel->s->redirect),
+            ap_rvputs(r, "value=\"", ap_escape_html(r->pool, wsel->s->redirect),
                       NULL);
-            ap_rputs("'></td></tr>\n", r);
+            ap_rputs("\"></td></tr>\n", r);
             ap_rputs("<tr><td>Status:</td>", r);
             ap_rputs("<td><table><tr>"
                      "<th>Ignore Errors</th>"
@@ -1772,15 +1772,15 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
                 ap_rprintf(r, "<tr><td>Fails trigger)</td><td><input name='w_hf' id='w_hf' type='text'"
                            "value='%d'></td></tr>\n", wsel->s->fails);
                 ap_rprintf(r, "<tr><td>HC uri</td><td><input name='w_hu' id='w_hu' type='text'"
-                           "value='%s'></td></tr>\n", ap_escape_html(r->pool, wsel->s->hcuri));
+                           "value=\"%s\"></td></tr>\n", ap_escape_html(r->pool, wsel->s->hcuri));
                 ap_rputs("</table>\n</td></tr>\n", r);
             }
             ap_rputs("<tr><td colspan='2'><input type=submit value='Submit'></td></tr>\n", r);
             ap_rvputs(r, "</table>\n<input type=hidden name='w' id='w' ",  NULL);
-            ap_rvputs(r, "value='", ap_escape_uri(r->pool, wsel->s->name), "'>\n", NULL);
+            ap_rvputs(r, "value=\"", ap_escape_uri(r->pool, wsel->s->name), "\">\n", NULL);
             ap_rvputs(r, "<input type=hidden name='b' id='b' ", NULL);
-            ap_rvputs(r, "value='", bsel->s->name + sizeof(BALANCER_PREFIX) - 1,
-                      "'>\n", NULL);
+            ap_rvputs(r, "value=\"", ap_escape_html(r->pool, bsel->s->name + sizeof(BALANCER_PREFIX) - 1),
+                      "\">\n", NULL);
             ap_rvputs(r, "<input type=hidden name='nonce' id='nonce' value='",
                       bsel->s->nonce, "'>\n", NULL);
             ap_rputs("</form>\n", r);
@@ -1790,9 +1790,9 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
             const ap_list_provider_names_t *pname;
             int i;
             ap_rputs("<h3>Edit balancer settings for ", r);
-            ap_rvputs(r, bsel->s->name, "</h3>\n", NULL);
-            ap_rputs("<form method='POST' enctype='application/x-www-form-urlencoded' action='", r);
-            ap_rvputs(r, ap_escape_uri(r->pool, action), "'>\n", NULL);
+            ap_rvputs(r, ap_escape_html(r->pool, bsel->s->name), "</h3>\n", NULL);
+            ap_rputs("<form method='POST' enctype='application/x-www-form-urlencoded' action=\"", r);
+            ap_rvputs(r, ap_escape_uri(r->pool, action), "\">\n", NULL);
             ap_rputs("<table>\n", r);
             provs = ap_list_provider_names(r->pool, PROXY_LBMETHOD, "0");
             if (provs) {
@@ -1816,13 +1816,13 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
             ap_rputs("</tr>\n", r);
             ap_rputs("<tr><td>Sticky Session:</td><td><input name='b_ss' id='b_ss' size=64 type=text ", r);
             if (strcmp(bsel->s->sticky, bsel->s->sticky_path)) {
-                ap_rvputs(r, "value ='", bsel->s->sticky, " | ",
-                          bsel->s->sticky_path, NULL);
+                ap_rvputs(r, "value =\"", ap_escape_html(r->pool, bsel->s->sticky), " | ",
+                          ap_escape_html(r->pool, bsel->s->sticky_path), NULL);
             }
             else {
-                ap_rvputs(r, "value ='", bsel->s->sticky, NULL);
+                ap_rvputs(r, "value =\"", ap_escape_html(r->pool, bsel->s->sticky), NULL);
             }
-            ap_rputs("'>&nbsp;&nbsp;&nbsp;&nbsp;(Use '-' to delete)</td></tr>\n", r);
+            ap_rputs("\">&nbsp;&nbsp;&nbsp;&nbsp;(Use '-' to delete)</td></tr>\n", r);
             if (storage->num_free_slots(bsel->wslot) != 0) {
                 ap_rputs("<tr><td>Add New Worker:</td><td><input name='b_nwrkr' id='b_nwrkr' size=32 type=text>"
                          "&nbsp;&nbsp;&nbsp;&nbsp;Are you sure? <input name='b_wyes' id='b_wyes' type=checkbox value='1'>"
@@ -1830,8 +1830,8 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
             }
             ap_rputs("<tr><td colspan=2><input type=submit value='Submit'></td></tr>\n", r);
             ap_rvputs(r, "</table>\n<input type=hidden name='b' id='b' ", NULL);
-            ap_rvputs(r, "value='", bsel->s->name + sizeof(BALANCER_PREFIX) - 1,
-                      "'>\n", NULL);
+            ap_rvputs(r, "value=\"", ap_escape_html(r->pool, bsel->s->name + sizeof(BALANCER_PREFIX) - 1),
+                      "\">\n", NULL);
             ap_rvputs(r, "<input type=hidden name='nonce' id='nonce' value='",
                       bsel->s->nonce, "'>\n", NULL);
             ap_rputs("</form>\n", r);
