@@ -159,6 +159,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~jorton/ap_pb_xsrf.patch
      +1: jorton, covener
 
+  *) mod_session: mod_session: Introduce SessionExpiryUpdateInterval which allows to 
+                  configure the session/cookie expiry's update interval. PR 57300.
+     trunk patch:  http://svn.apache.org/r1709121
+     2.4.x patch:  svn merge -c 1709121  ^/httpd/httpd/trunk .
+     +1: covener
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
