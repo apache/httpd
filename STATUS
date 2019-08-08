@@ -152,6 +152,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              reworked, etc.. I would like to avoid a patch that is clearly wrong for some reviewer sitting here for
              months/years without any action item :)
 
+  *) mod_proxy: Improve XSRF/XSS protection.
+     trunk patch: http://svn.apache.org/r1864693
+                  http://svn.apache.org/r1864695
+                  http://svn.apache.org/r1864703
+     2.4.x patch: http://people.apache.org/~jorton/ap_pb_xsrf.patch
+     +1: jorton, 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
