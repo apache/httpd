@@ -122,6 +122,7 @@ CURRENT RELEASE NOTES:
     . documentation
     . non-Unix build
     . non-Unix, single-platform code
+    . routine APLOGNO() backports
 
 RELEASE SHOWSTOPPERS:
 
