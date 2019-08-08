@@ -156,7 +156,7 @@ int ssl_stapling_init_cert(server_rec *s, apr_pool_t *p, apr_pool_t *ptemp,
         /* Someone's taken over or mod_ssl's own implementation is not enabled */
         if (mctx->stapling_enabled != TRUE) {
             SSL_CTX_set_tlsext_status_cb(mctx->ssl_ctx, stapling_cb);
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO() "OCSP stapling added via hook");
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(10177) "OCSP stapling added via hook");
         }
         return 1;
     }
