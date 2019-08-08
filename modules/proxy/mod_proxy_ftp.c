@@ -1036,7 +1036,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
     /* We break the URL into host, port, path-search */
     if (r->parsed_uri.hostname == NULL) {
         if (APR_SUCCESS != apr_uri_parse(p, url, &uri)) {
-            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO() 
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(10189) 
                           "URI cannot be parsed: %s", url);
             return ap_proxyerror(r, HTTP_BAD_REQUEST, "URI cannot be parsed");
         }
