@@ -1843,6 +1843,18 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
     }
 }
 
+/* Returns non-zero if the Referer: header value passed matches the
+ * host of the request. */
+static int safe_referer(request_rec *r, const char *ref)
+{
+    apr_uri_t uri;
+
+    if (apr_uri_parse(r->pool, ref, &uri) || !uri.hostname)
+        return 0;
+
+    return strcmp(uri.hostname, ap_get_server_name(r)) == 0;
+}
+
 /* Manages the loadfactors and member status
  *   The balancer, worker and nonce are obtained from
  *   the request args (?b=...&w=...&nonce=....).
@@ -1860,7 +1872,7 @@ static int balancer_handler(request_rec *r)
     apr_table_t *params;
     int i;
     int ok2change = 1;
-    const char *name;
+    const char *name, *ref;
     apr_status_t rv;
 
     /* is this for us? */
@@ -1920,6 +1932,15 @@ static int balancer_handler(request_rec *r)
         push2table(buf, params, NULL, r->pool);
     }
 
+    /* Ignore parameters if this looks like XSRF */
+    ref = apr_table_get(r->headers_in, "Referer");
+    if (apr_table_elts(params)
+        && (!ref || !safe_referer(r, ref))) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10187)
+                      "ignoring params in balancer-manager cross-site access");
+        apr_table_clear(params);
+    }
+    
     /* Process the parameters */
     if ((name = apr_table_get(params, "b")))
         bsel = ap_proxy_get_balancer(r->pool, conf,
