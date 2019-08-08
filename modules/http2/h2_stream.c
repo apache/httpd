@@ -783,7 +783,7 @@ apr_status_t h2_stream_end_headers(h2_stream *stream, int eos, size_t raw_bytes)
         apr_table_do(table_check_val_len, &ctx, stream->request->headers, NULL);
         if (ctx.failed_key) {
             ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, stream->session->c,  
-                          H2_STRM_LOG(APLOGNO(), stream,"Request header exceeds "
+                          H2_STRM_LOG(APLOGNO(10190) stream,"Request header exceeds "
                                       "LimitRequestFieldSize: %.*s"),
                           (int)H2MIN(strlen(ctx.failed_key), 80), ctx.failed_key);
             set_error_response(stream, HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE);
