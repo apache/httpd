@@ -1,0 +1,210 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1860977 -->
+<!-- French translation : Lucien GENTIS -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="encrypt.xml.meta">
+<parentdocument href="./">Recettes / Tutoriels</parentdocument>
+
+  <title>Comment chiffrer votre trafic</title>
+
+  <summary>
+    <p>Voici un tutoriel qui vous apprendra à configurer Apache httpd de façon
+    à ce qu'il chiffre les transferts de données entre votre serveur et ses
+    visiteurs. Votre site va alors utiliser des liens en https: à la place des liens
+    en http: et, si la configuration a été correctement effectuée, la vie
+    privée des clients qui visitent votre site sera mieux protégée.
+    </p>
+    <p>
+    Ce tutoriel a été conçu pour les utilisateurs qui ne sont pas
+    familiarisés avec SSL/TLS, les algorythmes de chiffrement et tout le
+    bavardage technique associé (nous plaisantons, car c'est un domaine d'action
+    sérieux avec des experts sérieux et de réels problèmes à résoudre ; mais il
+    est vu comme un bavardage technique par quiconque n'est pas familiarisé avec
+    lui). En fait, les administrateurs s'entendent dire que leur serveur en http: n'est
+    plus assez sécurisé. Il y a tous ces espions et ces mauvais sujets qui nous
+    écoutent. Même certaines sociétés tout à fait légitimes insèrent des données dans
+    leurs pages web et revendent les profils de leurs visiteurs.
+    </p>
+    <p>
+    Avec ce guide, vous devriez être en mesure de migrer les liens fournis par
+    votre serveur depuis http: vers https: sans qu'il vous soit nécessaire au
+    préalable de devenir un expert SSL. Il se peut tout de même que vous soyez
+    fasciné par tous ces concepts de chiffrement au point de vouloir les étudier
+    en profondeur et ainsi devenir un véritable expert. Mais même sans aller jusque
+    là, vous pourrez tout de même configurer votre serveur web de manière
+    raisonnablement sécurisée et employer le temps que vous aurez économisé pour
+    accomplir d'autres choses utiles pour l'humanité.
+    </p>
+    <p>
+    Vous allez vous faire une idée du rôle que jouent ces objets mystérieux que
+    l'on nomme "certificats" et "clés privées" et de la manière dont ils sont
+    utilisés pour faire en sorte que les visiteurs soient sûrs de se connecter
+    au bon serveur. On ne vous dira <em>pas</em> <em>comment</em> ils
+    fonctionnent, mais seulement comment les utiliser ; ils pourront être vus
+    comme des passeports.
+    </p>
+  </summary>
+  <seealso><a href="../ssl/ssl_howto.html">Tutoriel SSL</a></seealso>
+  <seealso><a href="../mod/mod_ssl.html">mod_ssl</a></seealso>
+  <seealso><a href="../mod/mod_md.html">mod_md</a></seealso>
+
+  <section id="protocol">
+    <title>Une brève introduction sur les certificats, ou passeports Internet</title>
+    <p>
+    Le protocole TLS (anciennement SSL) permet aux clients et serveurs de
+    communiquer entre eux sans que le trafic soit compréhensible, même s'il est
+    intercepté. C'est le protocole qu'utilise votre serveur lorsque vous ouvrez
+    un lien en https:. 
+    </p>
+    <p>
+    Outre le fait d'avoir une conversation en privé, votre
+    navigateur doit aussi être sûr qu'il s'adresse au bon serveur, et non à
+    quelqu'un d'autre qui se ferait passer pour ce dernier. Ce processus qui
+    intervient après le chiffrement constitue l'autre partie du protocole TLS.
+    </p>
+    <p>
+    Pour pouvoir être authentifié, votre serveur a besoin tout d'abord d'une
+    implémentation logicielle du protocole TLS, dans notre cas le module <a
+    href="../mod/mod_http2.html">mod_ssl</a>, mais aussi d'un moyen de prouver
+    son identité sur Internet. C'est là qu'intervient la notion de
+    <em>certificat</em>. En fait, tous les serveurs possèdent le même module
+    mod_ssl et peuvent de ce fait procéder au chiffrement des échanges, mais
+    <em>votre</em> certificat qui est unique n'appartient qu'à vous, et il vous
+    permet de prouver que vous êtes bien vous-même.
+    </p>
+    <p>
+    Un certificat est l'équivalent digital d'un passeport. Il se compose de
+    deux parties : un cachet d'authenticité apposé par les fournisseurs du
+    passeport, et l'équivalent de vos empreintes digitales : ce que l'on nomme
+    une <em>clé privée</em> dans le jargon du chiffrement.
+    </p>
+    <p>
+    Lorsque vous configurez votre serveur Apache httpd pour les liens en https:,
+    vous devez spécifier le certificat et la clé privée. Si vous ne divulguez
+    la clé à personne, vous seul(e) serez en mesure de prouver aux visiteurs que
+    le certificat vous appartient bien. De cette façon, un navigateur qui se
+    connecte à nouveau à votre serveur pourra s'assurer qu'il s'agit bien du
+    même serveur que celui auquel il s'est connecté la fois précédente.
+    </p>
+    <p>
+    Mais comment sait-il qu'il s'adresse au bon serveur la première fois qu'il
+    communique avec lui ? C'est ici qu'intervient le cachet digital
+    d'authenticité du fournisseur du certificat. Ce cachet est fourni par un
+    tiers qui utilise pour cela sa propre clé privée. Cette personne possède
+    aussi un certificat, autrement dit son propre passeport. Le navigateur peut
+    s'assurer que ce passeport utilise la même clé que celle qui a été utilisée
+    pour cacheter le passeport de votre serveur. Maintenant, au lieu de
+    s'assurer que votre passeport est correct, il doit s'assurer de
+    l'authenticité du passeport de la personne qui certifie que <em>votre</em>
+    passeport est correct. 
+    </p>
+    <p>
+    Et ce passeport possède aussi un cachet digital d'authenticité fourni par
+    une autre personne qui possède elle-même une clé privée et un certificat. Le
+    navigateur n'a alors besoin que de s'assurer que <em>ce dernier</em> soit
+    correct pour faire confiance à celui qui certifie que celui de votre serveur
+    est correct. Ce jeu de confiance/pas confiance peut ainsi se poursuivre sur
+    plusieurs niveaux (en général moins de 5).
+    </p>
+    <p>
+    A la fin, le navigateur va se trouver face à un passeport authentifié par
+    sa propre clé. C'est le certificat d'une certaine Gloria Gaynor qui dit "I
+    am what I am !". Le navigateur pourra alors faire confiance ou non à cette
+    Gloria. De son choix découlera la confiance qu'il accordera à votre serveur.
+    C'est aussi simple que cela.  
+    </p>
+    <p>
+    Il est aisé de vérifier l'authencité de Gloria Gaynor sur Internet : votre
+    navigateur (ou votre système d'exploitation) est fourni avec une liste de
+    passeports de confiance préinstallée. S'il se trouve ainsi face à un
+    passeport de Gloria, soit ce dernier fait partie de cette liste et on peut
+    donc lui faire confiance, soit ce n'est pas le cas et on ne doit donc pas
+    lui faire confiance.
+    </p>
+    <p>
+    Tout ce processus d'authentification ne fonctionne que si personne ne
+    divulgue ses clés privées. En effet, quiconque parvient à copier une telle
+    clé sera en mesure de violer l'identité de son propriétaire. Et si ce
+    dernier était habilité à cacheter les passeports, l'intrus pourra alors faire
+    de même, et tous les passeports qu'il aura cachetés passeront pour 100%
+    valides et impossibles à distinguer des vrais.
+    </p>
+    <p>
+    Ce modèle d'authentification fonctionne donc, mais il a ses limites. C'est
+    pourquoi les éditeurs de navigateurs s'attachent tant à maintenir des listes
+    valides de passeports "Gloria Gaynor" et menacent d'en expulser quiconque
+    ne prend pas suffisamment soin de ses clés.
+    </p>
+  </section>
+
+  <section id="buycert">
+    <title>Acheter un certificat</title>
+    <p>Vous pouvez effectivement en acheter un. De nombreuses sociétés vendent
+    des passeports Internet en tant que service. Dans <a
+    href="https://ccadb-public.secure.force.com/mozilla/IncludedCACertificateReport">cette
+    liste de chez Mozilla</a>, vous trouverez toutes les sociétés auxquelles le
+    navigateur Firefox fait confiance. Choisissez-en une et visitez son site
+    web. Elle vous indiquera alors les tarifs, et comment leur prouver que vous êtes
+    bien qui vous prétendez être de façon à ce qu'elle puisse cacheter votre
+    passeport en toute confiance. 
+    </p>
+    <p>Elles possèdent toutes leur propre méthode qui dépend
+    aussi du type de passeport que vous demandez, mais elle consiste le plus
+    souvent en quelques clicks dans une interface web. Vous recevrez alors un
+    email auquel vous devrez répondre ou effectuer une autre action. Enfin vous
+    serez informé(e) sur la manière de procéder pour générer votre propre clé
+    privée et vous recevrez alors un passeport cacheté qui lui correspondra.
+    </p>
+    <p>
+    Il vous restera alors à placer la clé dans un fichier et le certificat dans
+    un autre. Vous devrez alors placer ces fichiers sur votre serveur (tout en
+    vous assurant que seuls les utilisateurs de confiance puissent lire la clé),
+    et renseigner en conséquence votre configuration httpd. Tout ceci est décrit
+    en détails dans le <a href="../ssl/ssl_howto.html">tutoriel SSL</a>.
+    </p>
+    <p>
+    </p>
+  </section>
+
+  <section id="freecert">
+    <title>Obtenir gratuitement un certificat</title>
+    <p>
+    Certaines sociétés fournissent gratuitement des certificats pour serveurs
+    web. Le pionnier en la matière est <a href="https://letsencrypt.org">Let's
+    Encrypt</a>, un service de l'<a
+    href="https://www.abetterinternet.org/">Internet Security Research Group
+    (ISRG)</a> et une organisation à but non lucratif ayant pour but d'"enfoncer
+    les barrières financières, technologiques et éducatives afin de sécuriser
+    les communications sur Internet".
+    </p>
+    <p>
+    Elles n'offrent pas seulement des certificats gratuits, elles ont aussi
+    développé une interface que votre serveur httpd peut utiliser pour en obtenir
+    un. C'est ici que <a href="../mod/mod_md.html">mod_md</a> entre en scène.
+    </p>
+    <p>
+    (il vous reste maintenant à étudier la manière de configurer mod_md et les serveurs
+    virtuels ...)
+    </p>
+  </section>
+    
+</manualpage>
