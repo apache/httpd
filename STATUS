@@ -157,7 +157,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1864695
                   http://svn.apache.org/r1864703
      2.4.x patch: http://people.apache.org/~jorton/ap_pb_xsrf.patch
-     +1: jorton, 
+     +1: jorton, covener
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
