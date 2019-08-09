@@ -1252,10 +1252,11 @@ PROXY_DECLARE(apr_status_t) ap_proxy_share_balancer(proxy_balancer *balancer,
     if (*balancer->s->nonce == PROXY_UNSET_NONCE) {
         char nonce[APR_UUID_FORMATTED_LENGTH + 1];
         apr_uuid_t uuid;
-        /* Retrieve a UUID and store the nonce for the lifetime of
-         * the process.
-         */
-        apr_uuid_get(&uuid);
+
+        /* Generate a pseudo-UUID from the PRNG to use as a nonce for
+         * the lifetime of the process. uuid.data is a char array so
+         * this is an adequate substitute for apr_uuid_get(). */
+        ap_random_insecure_bytes(uuid.data, sizeof uuid.data);
         apr_uuid_format(nonce, &uuid);
         rv = PROXY_STRNCPY(balancer->s->nonce, nonce);
     }
