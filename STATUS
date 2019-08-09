@@ -164,8 +164,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch:  http://svn.apache.org/r1709121
      2.4.x patch:  svn merge -c 1709121  ^/httpd/httpd/trunk .
      +1: covener, jorton, 
-     rjung: shouldn't the merging respect the "add" set flag? Otherwise it seems
-            impossible to merge a 0 value on top of a non-zero value.
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
