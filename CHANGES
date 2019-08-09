@@ -1,7 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.41
 
-  *) mod_proxy: Improve XSRF/XSS protection. [Joe Orton]
+  *) mod_proxy_balancer: Improve balancer-manager protection against 
+     XSS/XSRF attacks from trusted users.  [Joe Orton,
+     Niels Heinen <heinenn google.com>]
 
   *) mod_session: Introduce SessionExpiryUpdateInterval which allows to
      configure the session/cookie expiry's update interval. PR 57300.
