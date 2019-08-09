@@ -1,11 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.41
 
-  *) modules/filters: PR 63633: Fix broken compilation when using old GCC (<4.2.x).
-     [Rainer Jung, Joe Orton]
+  *) modules/filters: Fix broken compilation when using old GCC (<4.2.x).
+     PR 63633.  [Rainer Jung, Joe Orton]
 
-  *) mod_ssl: reverting a 2.4.40 change where a superfluous SSLCertificateChainFile configuration
-     for a domain managed by mod_md could cause a startup error. [Stefan Eissing]
+  *) mod_ssl: Fix startup failure in 2.4.40 with SSLCertificateChainFile
+     configured for a domain managed by mod_md.  [Stefan Eissing]
 
 Changes with Apache 2.4.40
 
