@@ -561,6 +561,7 @@ sessiondbdselectlabel	mod/mod_session_dbd.html#sessiondbdselectlabel
 sessiondbdupdatelabel	mod/mod_session_dbd.html#sessiondbdupdatelabel
 sessionenv	mod/mod_session.html#sessionenv
 sessionexclude	mod/mod_session.html#sessionexclude
+sessionexpiryupdateinterval	mod/mod_session.html#sessionexpiryupdateinterval
 sessionheader	mod/mod_session.html#sessionheader
 sessioninclude	mod/mod_session.html#sessioninclude
 sessionmaxage	mod/mod_session.html#sessionmaxage
