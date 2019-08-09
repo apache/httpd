@@ -1,4 +1,6 @@
                                                          -*- coding: utf-8 -*-
+Changes with Apache 2.4.42
+
 Changes with Apache 2.4.41
 
   *) mod_proxy_balancer: Improve balancer-manager protection against 
