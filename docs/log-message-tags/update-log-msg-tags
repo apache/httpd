@@ -37,7 +37,7 @@ sub process
     my $modified;
     my $result = "";
     while (defined $line) {
-        if ($line =~ s{APLOGNO\(\),?}{gen_tag($file)}e) {
+        if ($line =~ s{APLOGNO\(\)}{gen_tag($file)}e) {
             $modified = 1;
         }
         if ($line =~ /APLOGNO\(\s*(\d{5})\s*\)/ ) {
