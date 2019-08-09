@@ -115,6 +115,9 @@ typedef struct {
                                    * URLs included if empty */
     apr_array_header_t *excludes; /* URL prefixes to be excluded. No
                                    * URLs excluded if empty */
+    apr_time_t expiry_update_time; /* seconds the session expiry may change and
+                                    * not have to be rewritten */
+    int expiry_update_set;
 } session_dir_conf;
 
 /**

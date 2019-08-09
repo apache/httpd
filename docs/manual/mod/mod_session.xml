@@ -487,4 +487,42 @@ AuthName realm
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>SessionExpiryUpdateInterval</name>
+<description>Define the number of seconds a session's expiry may change without
+the session being updated</description>
+<syntax>SessionExpiryUpdateInterval <var>interval</var></syntax>
+<default>SessionExpiryUpdateInterval 0 (always update)</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<compatibility>Available in Apache 2.4.41 and later</compatibility>
+
+<usage>
+    <p>The <directive>SessionExpiryUpdateInterval</directive> directive allows
+    sessions to avoid the cost associated with writing the session each request
+    when only the expiry time has changed. This can be used to make a website
+    more efficient or reduce load on a database when using
+    <module>mod_session_dbd</module>. The session is always written if the data
+    stored in the session has changed or the expiry has changed by more than the
+    configured interval.</p>
+
+    <p>Setting the interval to zero disables this directive, and the session
+    expiry is refreshed for each request.</p>
+
+    <p>This directive only has an effect when combined with
+    <directive module="mod_session">SessionMaxAge</directive> to enable session
+    expiry. Sessions without an expiry are only written when the data stored in
+    the session has changed.</p>
+
+    <note type="warning"><title>Warning</title>
+    <p>Because the session expiry may not be refreshed with each request, it's
+    possible for sessions to expire up to <var>interval</var> seconds early.
+    Using a small interval usually provides sufficient savings while having a
+    minimal effect on expiry resolution.</p></note>
+</usage>
+</directivesynopsis>
+
 </modulesynopsis>

@@ -245,6 +245,9 @@ static apr_status_t session_dbd_load(request_rec * r, session_rec ** z)
     /* put the session in the notes so we don't have to parse it again */
     apr_table_setn(m->notes, note, (char *)zz);
 
+    /* don't cache pages with a session */
+    apr_table_addn(r->headers_out, "Cache-Control", "no-cache, private");
+
     return OK;
 
 }
@@ -409,9 +412,6 @@ static apr_status_t session_dbd_save(request_rec * r, session_rec * z)
     if (conf->name_set || conf->name2_set) {
         char *oldkey = NULL, *newkey = NULL;
 
-        /* don't cache pages with a session */
-        apr_table_addn(r->headers_out, "Cache-Control", "no-cache");
-
         /* if the session is new or changed, make a new session ID */
         if (z->uuid) {
             oldkey = apr_pcalloc(r->pool, APR_UUID_FORMATTED_LENGTH + 1);
@@ -458,7 +458,7 @@ static apr_status_t session_dbd_save(request_rec * r, session_rec * z)
     else if (conf->peruser) {
 
         /* don't cache pages with a session */
-        apr_table_addn(r->headers_out, "Cache-Control", "no-cache");
+        apr_table_addn(r->headers_out, "Cache-Control", "no-cache, private");
 
         if (r->user) {
             ret = dbd_save(r, r->user, r->user, z->encoded, z->expiry);

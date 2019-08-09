@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.41
 
+  *) mod_session: Introduce SessionExpiryUpdateInterval which allows to
+     configure the session/cookie expiry's update interval. PR 57300.
+     [Paul Spangler <paul.spangler ni.com>]
+
   *) modules/filters: Fix broken compilation when using old GCC (<4.2.x).
      PR 63633.  [Rainer Jung, Joe Orton]
 
