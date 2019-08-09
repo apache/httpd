@@ -196,9 +196,9 @@ static authz_status authz_alias_check_authorization(request_rec *r,
     authz_status ret = AUTHZ_DENIED;
 
     /* Look up the provider alias in the alias list.
-     * Get the dir_config and call ap_Merge_per_dir_configs()
+     * Get the dir_config and call ap_merge_per_dir_configs()
      * Call the real provider->check_authorization() function
-     * return the result of the above function call
+     * Return the result of the above function call
      */
 
     provider_name = apr_table_get(r->notes, AUTHZ_PROVIDER_NAME_NOTE);
@@ -233,9 +233,6 @@ static authz_status authz_alias_check_authorization(request_rec *r,
                           "no alias provider found for '%s' (BUG?)",
                           provider_name);
         }
-    }
-    else {
-        ap_assert(provider_name != NULL);
     }
 
     return ret;
