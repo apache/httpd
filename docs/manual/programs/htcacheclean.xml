@@ -47,8 +47,8 @@
     [ -<strong>n</strong> ]
     [ -<strong>R</strong><var>round</var> ]
     -<strong>p</strong><var>path</var>
-    [-<strong>l</strong><var>limit</var>|
-    -<strong>L</strong><var>limit</var>]</code></p>
+    [ -<strong>l</strong><var>limit</var> ]
+    [ -<strong>L</strong><var>limit</var> ]</code></p>
 
     <p><code><strong>htcacheclean</strong>
     [ -<strong>n</strong> ]
@@ -58,8 +58,8 @@
     [ -<strong>R</strong><var>round</var> ]
     -<strong>d</strong><var>interval</var>
     -<strong>p</strong><var>path</var>
-    [-<strong>l</strong><var>limit</var>|
-    -<strong>L</strong><var>limit</var>]</code></p>
+    [ -<strong>l</strong><var>limit</var> ]
+    [ -<strong>L</strong><var>limit</var> ]</code></p>
 
     <p><code><strong>htcacheclean</strong>
     [ -<strong>v</strong> ]
@@ -133,11 +133,13 @@
     <dt><code>-l<var>limit</var></code></dt>
     <dd>Specify <var>limit</var> as the total disk cache size limit. The value
     is expressed in bytes by default (or attaching <code>B</code> to the
-    number). Attach <code>K</code> for Kbytes or <code>M</code> for
-    MBytes.</dd>
+    number). Attach <code>K</code> for Kbytes, <code>M</code> for
+    MBytes or <code>G</code> for Gbytes.</dd>
 
     <dt><code>-L<var>limit</var></code></dt>
-    <dd>Specify <var>limit</var> as the total disk cache inode limit.</dd>
+    <dd>Specify <var>limit</var> as the total disk cache inode limit.
+    <code>K</code>, <code>M</code> or <code>G</code> suffix can also be
+    used.</dd>
 
     <dt><code>-i</code></dt>
     <dd>Be intelligent and run only when there was a modification of the disk
