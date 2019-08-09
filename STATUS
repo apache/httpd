@@ -129,6 +129,13 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_session: mod_session: Introduce SessionExpiryUpdateInterval which allows to 
+                  configure the session/cookie expiry's update interval. PR 57300.
+     trunk patch:  http://svn.apache.org/r1709121
+     2.4.x patch:  svn merge -c 1709121  ^/httpd/httpd/trunk .
+     +1: covener, jorton, rjung
+     rjung: one might add a "<compatibility>" item for 2.4.41 (or whereever the
+            feature goes in) to the docs part.
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -158,12 +165,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1864703
      2.4.x patch: http://people.apache.org/~jorton/ap_pb_xsrf.patch
      +1: jorton, covener
-
-  *) mod_session: mod_session: Introduce SessionExpiryUpdateInterval which allows to 
-                  configure the session/cookie expiry's update interval. PR 57300.
-     trunk patch:  http://svn.apache.org/r1709121
-     2.4.x patch:  svn merge -c 1709121  ^/httpd/httpd/trunk .
-     +1: covener, jorton, 
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
