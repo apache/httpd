@@ -2145,7 +2145,7 @@ static int r_flush(apr_vformatter_buff_t *buff)
 
 AP_DECLARE(int) ap_vrprintf(request_rec *r, const char *fmt, va_list va)
 {
-    apr_size_t written;
+    int written;
     struct ap_vrprintf_data vd;
     char vrprintf_buf[AP_IOBUFSIZE];
 
@@ -2163,7 +2163,7 @@ AP_DECLARE(int) ap_vrprintf(request_rec *r, const char *fmt, va_list va)
         int n = vd.vbuff.curpos - vrprintf_buf;
 
         /* last call to buffer_output, to finish clearing the buffer */
-        if (buffer_output(r, vrprintf_buf,n) != APR_SUCCESS)
+        if (buffer_output(r, vrprintf_buf, n) != APR_SUCCESS)
             return -1;
 
         written += n;
