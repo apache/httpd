@@ -108,7 +108,7 @@ log_json(request_rec *r, char *a)
                 r->pool, r->server, r->connection, r, "SSL_PROTOCOL")));
         json_object_set_new_nocheck(tls, "cipher",
             json_string(log_json_ssl_lookup(
-                r->pool, r->server, r->connection, r, "SSL_COPHER")));
+                r->pool, r->server, r->connection, r, "SSL_CIPHER")));
         json_object_set_new_nocheck(tls, "client_verify",
             json_string(log_json_ssl_lookup(
                 r->pool, r->server, r->connection, r, "SSL_CLIENT_VERIFY")));
