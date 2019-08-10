@@ -1229,7 +1229,7 @@ struct conn_rec {
     struct ap_filter_conn_ctx *filter_conn_ctx;
 
     /** The minimum level of filter type to allow setaside buckets */
-    int async_filter;
+    ap_filter_type async_filter;
 };
 
 struct conn_slave_rec {
