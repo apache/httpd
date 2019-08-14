@@ -1,7 +1,38 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.42
 
+  *) SECURITY: CVE-2019-10097 (cve.mitre.org)
+     mod_remoteip: Fix stack buffer overflow and NULL pointer deference
+     when reading the PROXY protocol header.  [Joe Orton,
+     Daniel McCarney <cpu letsencrypt.org>]
+
 Changes with Apache 2.4.41
+
+  *) SECURITY: CVE-2019-9517 (cve.mitre.org)
+     mod_http2: a malicious client could perform a DoS attack by flooding
+        a connection with requests and basically never reading responses
+        on the TCP connection. Depending on h2 worker dimensioning, it was
+        possible to block those with relatively few connections. [Stefan Eissing]
+
+  *) SECURITY: CVE-2019-10098 (cve.mitre.org)
+     rewrite, core: Set PCRE_DOTALL flag by default to avoid unpredictable
+     matches and substitutions with encoded line break characters.
+     [Yann Ylavic]
+
+  *) SECURITY: CVE-2019-10092 (cve.mitre.org)
+     Remove HTML-escaped URLs from canned error responses to prevent misleading
+     text/links being displayed via crafted links. [Eric Covener]
+
+  *) SECURITY: CVE-2019-10082 (cve.mitre.org)
+     mod_http2: Using fuzzed network input, the http/2 session
+     handling could be made to read memory after being freed,
+     during connection shutdown. [Stefan Eissing]
+
+  *) SECURITY: CVE-2019-10081 (cve.mitre.org)
+     mod_http2: HTTP/2 very early pushes, for example configured with "H2PushResource",
+        could lead to an overwrite of memory in the pushing request's pool,
+        leading to crashes. The memory copied is that of the configured push
+        link header values, not data supplied by the client. [Stefan Eissing]
 
   *) mod_proxy_balancer: Improve balancer-manager protection against 
      XSS/XSRF attacks from trusted users.  [Joe Orton,
