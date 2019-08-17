@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1174747:1864789 (outdated) -->
+<!-- English Revision: 1864789 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -52,8 +52,8 @@
     [ -<strong>n</strong> ]
     [ -<strong>R</strong><var>arrondi</var> ]
     -<strong>p</strong><var>chemin</var>
-    [-<strong>l</strong><var>limite</var>|
-    -<strong>L</strong><var>limite</var>]</code></p>
+    [ -<strong>l</strong><var>limite</var> ]
+    [ -<strong>L</strong><var>limite</var> ]</code></p>
 
     <p><code><strong>htcacheclean</strong>
     [ -<strong>n</strong> ]
@@ -63,8 +63,8 @@
     [ -<strong>R</strong><var>arrondi</var> ]
     -<strong>d</strong><var>intervalle</var>
     -<strong>p</strong><var>chemin</var>
-    [-<strong>l</strong><var>limite</var>|
-    -<strong>L</strong><var>limite</var>]</code></p>
+    [ -<strong>l</strong><var>limite</var> ]
+    [ -<strong>L</strong><var>limite</var> ]</code></p>
 
     <p><code><strong>htcacheclean</strong>
     [ -<strong>v</strong> ]
@@ -145,11 +145,13 @@
     <dd>Définit <var>limite</var> comme la taille maximale du cache sur
     disque. La valeur s'exprime par défaut en octets (ou en ajoutant le
     suffixe <code>B</code> à la valeur). Ajoutez le suffixe
-    <code>K</code> pour KOctets ou <code>M</code> pour MOctets.</dd>
+    <code>K</code> pour Ko, <code>M</code> pour Mo ou <code>G</code> pour
+    Go.</dd>
 
     <dt><code>-L<var>limite</var></code></dt>
-    <dd>Spécifie <var>limite</var> comme la limite totale en inodes du
-    cache disque.</dd>
+    <dd>Spécifie <var>limite</var> comme la limite totale en inodes du cache
+    disque. Là aussi, on peut ajouter le suffixe <code>K</code> pour Ko,
+    <code>M</code> pour Mo ou <code>G</code> pour Go.</dd>
 
     <dt><code>-i</code></dt>
     <dd>Exécution intelligente. Le programme ne s'exécute que lorsque le

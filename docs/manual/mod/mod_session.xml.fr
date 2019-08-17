@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1673563:1864783 (outdated) -->
+<!-- English Revision: 1864783 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -303,7 +303,7 @@ SessionCookieName session path=/
 AuthFormProvider file
 AuthUserFile "conf/passwd"
 AuthType form
-AuthName realm
+AuthName "realm"
 #...
         </highlight>
       </example>
@@ -554,6 +554,50 @@ ignor&eacute;e</description>
     avec cet attribut. En effet, cette directive ne d&eacute;finit pas
     l'attribut <var>chemin</var>, qui doit &ecirc;tre configur&eacute;
     s&eacute;par&eacute;ment.</p></note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SessionExpiryUpdateInterval</name>
+<description>Définit le nombre de secondes dont la durée d'expiration d'une
+session peut changer sans que cette session soit mise à jour</description>
+<syntax>SessionExpiryUpdateInterval <var>interval</var></syntax>
+<default>SessionExpiryUpdateInterval 0 (mise à jour systématique)</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<compatibility>Disponible à partir de la version 2.4.41 du serveur HTTP Apache</compatibility>
+
+<usage>
+    <p>La directive <directive>SessionExpiryUpdateInterval</directive>
+    permet d'éviter le coût de l'écriture d'une session pour chaque
+    requête en n'effectuant cette mise à jour que lorsque la date
+    d'expiration a changé. Ceci permet d'améliorer les performances d'un
+    site web ou de réduire la charge d'une base de données lorsqu'on
+    utilise <module>mod_session_dbd</module>. La session est
+    systématiquement mise à jour si les données stockées dans la session
+    ont été modifiées ou si la durée d'expiration a été modifiée d'une
+    durée supérieure à l'intervalle spécifié.</p>
+
+    <p>Définir l'intervalle à 0 désactive cette directive, et
+    l'expiration de la session sera alors rafraîchie pour chaque requête.</p>
+
+    <p>Cette directive n'a d'effet que si on l'utilise en combinaison
+    avec la directive <directive
+    module="mod_session">SessionMaxAge</directive> qui active
+    l'expiration des sessions. Les sessions sans date d'expiration ne
+    sont écrites que lorsque les données qu'elles renferment ont été
+    modifiées.</p>
+
+    <note type="warning"><title>Avertissement</title>
+    <p>Comme l'expiration de la session n'est pas systématiquement
+    rafraîchie à chaque requête, une session peut arriver à expiration
+    plus tôt d'un nombre de secondes spécifié dans le paramètre
+    <var>interval</var>. Définir un petit intervalle est en général
+    assez sur, mais en revenche n'a qu'un effet minime sur la prise en
+    compte des durées d'expiration.</p></note>
 </usage>
 </directivesynopsis>
 
