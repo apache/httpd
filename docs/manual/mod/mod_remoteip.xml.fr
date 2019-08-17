@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1825467 -->
+<!-- English Revision: 1864913 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -128,7 +128,7 @@ du client</description>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
-    <p>La directive <directive module="mod_remoteip">RemoteIPHeader</directive> indique à
+    <p>La directive <directive>RemoteIPHeader</directive> indique à
     <module>mod_remoteip</module> de traiter la valeur de
     l'<var>en-tête</var> spécifié comme l'adresse IP du client, ou comme
     une liste d'adresses IP clients intermédiaires, en fonction de la
@@ -139,8 +139,7 @@ du client</description>
     <note type="warning">Si ces deux dernières
     directives ne sont pas utilisées, <module>mod_remoteip</module>
     traitera tout hôte présentant une adresse non interne
-    dans l'en-tête <directive
-    module="mod_remoteip">RemoteIPHeader</directive> comme hôte de
+    dans l'en-tête <directive>RemoteIPHeader</directive> comme hôte de
     confiance.</note>
 
     <example><title>Exemple à usage interne (répartiteur de
@@ -167,7 +166,7 @@ confiance pour présenter la valeur RemoteIPHeader</description>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
-    <p>La directive <directive module="mod_remoteip">RemoteIPInternalProxy</directive> permet
+    <p>La directive <directive>RemoteIPInternalProxy</directive> permet
     d'ajouter une ou plusieurs adresses (ou blocs d'adresses) auxquelles
     on peut faire confiance pour présenter une valeur RemoteIPHeader
     valide de l'adresse IP du client. A la différence de la directive
@@ -195,7 +194,7 @@ confiance pour présenter la valeur RemoteIPHeader</description>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
-    <p>La directive <directive module="mod_remoteip">RemoteIPInternalProxyList</directive>
+    <p>La directive <directive>RemoteIPInternalProxyList</directive>
     permet de spécifier un fichier parcouru au démarrage du serveur pour
     construire une liste d'adresses (ou blocs d'adresses), auxquelles
     on peut faire confiance pour présenter une valeur RemoteIPHeader
@@ -234,7 +233,7 @@ adresses IP intermédiaires</description>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
-    <p>La directive <directive module="mod_remoteip">RemoteIPProxiesHeader</directive> permet
+    <p>La directive <directive>RemoteIPProxiesHeader</directive> permet
     de spécifier l'en-tête dans lequel <module>mod_remoteip</module> va
     collecter une liste de toutes les adresses IP clients intermédiaires
     auxquelles on pourra faire confiance pour résoudre l'adresse IP
@@ -318,13 +317,13 @@ ou réseaux</description>
 version 2.4.31 du serveur HTTP Apache</compatibility>
 
 <usage>
-    <p>La directive <directive>RemoteIPProxyProtocol</directive> permet de
-    contrôler la prise en compte de l'en-tête de connexion du protocole PROXY.
-    Il est parfois souhaitable d'exiger pour certains clients la
-    présence de l'en-tête PROXY, mais aussi de permettre aux autres clients de
-    se connecter sans ce dernier. Cette directive permet à l'administrateur du
-    serveur d'autoriser cette possibilité à un hôte isolé ou à une gamme d'hôtes
-    au format CIDR.</p>
+    <p>La directive <directive>RemoteIPProxyProtocolExceptions</directive>
+    permet de contrôler la prise en compte de l'en-tête de connexion du
+    protocole PROXY.  Il est parfois souhaitable d'exiger pour certains clients
+    la présence de l'en-tête PROXY, mais aussi de permettre aux autres clients
+    de se connecter sans ce dernier. Cette directive permet à l'administrateur
+    du serveur d'autoriser cette possibilité à un hôte isolé ou à une gamme
+    d'hôtes au format CIDR.</p>
 </usage>
 </directivesynopsis>
 
@@ -337,7 +336,7 @@ confiance pour présenter la valeur RemoteIPHeader</description>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
-    <p>La directive <directive module="mod_remoteip">RemoteIPTrustedProxy</directive> permet
+    <p>La directive <directive>RemoteIPTrustedProxy</directive> permet
     de définir quelles adresses IP (ou blocs d'adresses) seront
     considérées comme de confiance pour présenter une valeur RemoteIPHeader
     valide de l'adresse IP du client.</p>
@@ -376,7 +375,7 @@ confiance pour présenter la valeur RemoteIPHeader</description>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
-    <p>La directive <directive module="mod_remoteip">RemoteIPTrustedProxyList</directive>
+    <p>La directive <directive>RemoteIPTrustedProxyList</directive>
     permet de spécifier un fichier parcouru au démarrage du serveur pour
     construire une liste d'adresses (ou blocs d'adresses), auxquelles
     on peut faire confiance pour présenter une valeur RemoteIPHeader
