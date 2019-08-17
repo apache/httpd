@@ -1,12 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.42
 
+Changes with Apache 2.4.41
+
   *) SECURITY: CVE-2019-10097 (cve.mitre.org)
      mod_remoteip: Fix stack buffer overflow and NULL pointer deference
      when reading the PROXY protocol header.  [Joe Orton,
      Daniel McCarney <cpu letsencrypt.org>]
-
-Changes with Apache 2.4.41
 
   *) SECURITY: CVE-2019-9517 (cve.mitre.org)
      mod_http2: a malicious client could perform a DoS attack by flooding
