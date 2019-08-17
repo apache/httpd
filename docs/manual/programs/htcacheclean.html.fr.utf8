@@ -28,8 +28,6 @@
 <a href="../ko/programs/htcacheclean.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/htcacheclean.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p><code>htcacheclean</code> permet de maintenir la taille de
     l'espace de stockage réservé à <code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code> en
@@ -61,8 +59,8 @@
     [ -<strong>n</strong> ]
     [ -<strong>R</strong><var>arrondi</var> ]
     -<strong>p</strong><var>chemin</var>
-    [-<strong>l</strong><var>limite</var>|
-    -<strong>L</strong><var>limite</var>]</code></p>
+    [ -<strong>l</strong><var>limite</var> ]
+    [ -<strong>L</strong><var>limite</var> ]</code></p>
 
     <p><code><strong>htcacheclean</strong>
     [ -<strong>n</strong> ]
@@ -72,8 +70,8 @@
     [ -<strong>R</strong><var>arrondi</var> ]
     -<strong>d</strong><var>intervalle</var>
     -<strong>p</strong><var>chemin</var>
-    [-<strong>l</strong><var>limite</var>|
-    -<strong>L</strong><var>limite</var>]</code></p>
+    [ -<strong>l</strong><var>limite</var> ]
+    [ -<strong>L</strong><var>limite</var> ]</code></p>
 
     <p><code><strong>htcacheclean</strong>
     [ -<strong>v</strong> ]
@@ -153,11 +151,13 @@
     <dd>Définit <var>limite</var> comme la taille maximale du cache sur
     disque. La valeur s'exprime par défaut en octets (ou en ajoutant le
     suffixe <code>B</code> à la valeur). Ajoutez le suffixe
-    <code>K</code> pour KOctets ou <code>M</code> pour MOctets.</dd>
+    <code>K</code> pour Ko, <code>M</code> pour Mo ou <code>G</code> pour
+    Go.</dd>
 
     <dt><code>-L<var>limite</var></code></dt>
-    <dd>Spécifie <var>limite</var> comme la limite totale en inodes du
-    cache disque.</dd>
+    <dd>Spécifie <var>limite</var> comme la limite totale en inodes du cache
+    disque. Là aussi, on peut ajouter le suffixe <code>K</code> pour Ko,
+    <code>M</code> pour Mo ou <code>G</code> pour Go.</dd>
 
     <dt><code>-i</code></dt>
     <dd>Exécution intelligente. Le programme ne s'exécute que lorsque le
