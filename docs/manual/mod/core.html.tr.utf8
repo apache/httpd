@@ -3731,7 +3731,7 @@ as if 'QualifyRedirectURL ON' was configured.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Allow to configure global/default options for regexes</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>RegexDefaultOptions [none] [+|-]<var>option</var> [[+|-]<var>option</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>RegexDefaultOptions DOLLAR_ENDONLY</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>RegexDefaultOptions DOTALL DOLLAR_ENDONLY</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
