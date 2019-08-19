@@ -2542,6 +2542,12 @@ static int req_newindex(lua_State *L)
     request_rec *r = ap_lua_check_request_rec(L, 1);
     key = luaL_checkstring(L, 2);
 
+    if (0 == strcmp("ap_auth_type", key)) {
+        const char *value = luaL_checkstring(L, 3);
+        r->ap_auth_type = apr_pstrdup(r->pool, value);
+        return 0;
+    }
+
     if (0 == strcmp("args", key)) {
         const char *value = luaL_checkstring(L, 3);
         r->args = apr_pstrdup(r->pool, value);

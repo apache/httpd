@@ -353,7 +353,7 @@ end
         <tr>
           <td><code>ap_auth_type</code></td>
           <td>string</td>
-          <td>no</td>
+          <td>yes</td>
           <td>If an authentication check was made, this is set to the type
           of authentication (f.x. <code>basic</code>)</td>
         </tr>

@@ -376,7 +376,7 @@ end
         <tr>
           <td><code>ap_auth_type</code></td>
           <td>string</td>
-          <td>non</td>
+          <td>oui</td>
 	  <td>Ce champ contient le type d'authentification effectuée
 	  (par exemple <code>basic</code>)</td>
         </tr>
