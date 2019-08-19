@@ -71,7 +71,7 @@ content</a></li>
 <h2><a name="supportedencodings" id="supportedencodings">Supported Encodings</a></h2>
   <p>The <code>gzip</code> encoding is the only one supported to ensure complete compatibility
   with old browser implementations. The <code>deflate</code> encoding is not supported, 
-  please check the <a href="http://www.gzip.org/zlib/zlib_faq.html#faq38">zlib's documentation</a>
+  please check the <a href="https://zlib.net/zlib_faq.html#faq39">zlib's documentation</a>
   for a complete explanation.
   </p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -205,7 +205,7 @@ content</a></h2>
 
     <p>Since <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> re-compresses content each
     time a request is made, some performance benefit can be derived by
-    pre-compressing the content and telling mod_deflate to serve them
+    pre-compressing the content and telling <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> to serve them
     without re-compressing them. This may be accomplished using a
     configuration like the following:</p>
 
@@ -214,8 +214,7 @@ content</a></h2>
     # and the client accepts gzip.
     RewriteCond "%{HTTP:Accept-encoding}" "gzip"
     RewriteCond "%{REQUEST_FILENAME}\.gz" -s
-    RewriteRule "^(.*)\.(css|js)" "$1\.$2\.gz" [QSA]
-
+    RewriteRule "^(.*)\.(css|js)"         "$1\.$2\.gz" [QSA]
 
     # Serve correct content types, and prevent mod_deflate double gzip.
     RewriteRule "\.css\.gz$" "-" [T=text/css,E=no-gzip:1]
