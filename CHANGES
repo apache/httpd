@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_proxy_balancer: Fix case-sensitive referer check related to CSRF/XSS 
+     protection. PR63688. [Armin Abfalterer <a.abfalterer gmail.com>]
+
   *) mod_authn_socache: Increase the maximum length of strings that can be cached by
      the module from 100 to 256.  PR 62149 [<thorsten.meinl knime.com>]
 
