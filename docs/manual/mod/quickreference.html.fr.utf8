@@ -291,7 +291,7 @@ sections de configuration se combine avec celles des sections de
 configuration précédentes.</td></tr>
 <tr class="odd"><td><a href="mod_authn_core.html#authname">AuthName <var>identifiant d'autorisation</var></a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">L'identifiant de l'autorisation à utiliser avec
 l'authentification HTTP</td></tr>
-<tr><td><a href="mod_authn_socache.html#authncachecontext">AuthnCacheContext <var>directory|server|chaîne-personnalisée</var></a></td><td></td><td>d</td><td>B</td></tr><tr><td class="descr" colspan="4">Spécifie une chaîne de contexte à utiliser dans la clé du
+<tr><td><a href="mod_authn_socache.html#authncachecontext">AuthnCacheContext directory|server|<var>custom-string</var></a></td><td> directory </td><td>d</td><td>B</td></tr><tr><td class="descr" colspan="4">Spécifie une chaîne de contexte à utiliser dans la clé du
 cache</td></tr>
 <tr class="odd"><td><a href="mod_authn_socache.html#authncacheenable">AuthnCacheEnable</a></td><td></td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Active la mise en cache de l'authentification en tout
 endroit</td></tr>
@@ -299,7 +299,7 @@ endroit</td></tr>
 mise en cache</td></tr>
 <tr class="odd"><td><a href="mod_authn_socache.html#authncachesocache">AuthnCacheSOCache <var>nom-fournisseur[:arguments-fournisseur]</var></a></td><td></td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sélectionne le fournisseur socache d'arrière-plan à
 utiliser</td></tr>
-<tr><td><a href="mod_authn_socache.html#authncachetimeout">AuthnCacheTimeout <var>durée-de-vie</var> (secondes)</a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Définit une durée de vie pour les entrées du cache</td></tr>
+<tr><td><a href="mod_authn_socache.html#authncachetimeout">AuthnCacheTimeout <var>durée-de-vie</var> (secondes)</a></td><td> 300 (5 minutes) </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Définit une durée de vie pour les entrées du cache</td></tr>
 <tr class="odd"><td><a href="mod_authn_core.html#authnprovideralias">&lt;AuthnProviderAlias <var>alias-fournisseur</var>&gt;
 ... &lt;/AuthnProviderAlias&gt;</a></td><td></td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Regroupe un ensemble de directives qui constituent une
 extension d'un fournisseur d'authentification de base et lui attribue
