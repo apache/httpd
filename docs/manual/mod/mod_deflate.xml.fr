@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1853640:1865364 (outdated) -->
+<!-- English Revision: 1865364 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -42,8 +42,8 @@ client</description>
   <p>Le seul codage supporté est <code>gzip</code> afin d'assurer une complète
   compatibilité avec les anciens navigateurs. Le codage <code>deflate</code>
   n'est donc pas supporté ; voir à ce sujet la <a
-  href="http://www.gzip.org/zlib/zlib_faq.html#faq38">documentation de zlib</a>
-  pour une explication détaillée.
+  href="https://zlib.net/zlib_faq.html#faq39">documentation de zlib</a> pour une
+  explication détaillée.
   </p>
 </section>
 
@@ -206,19 +206,18 @@ SetEnvIfNoCase Request_URI "\.(?:gif|jpe?g|png)$" no-gzip
 <section id="precompressed"><title>Servir du contenu précompressé</title>
 
     <p>Comme <module>mod_deflate</module> recompresse le contenu demandé à
-    chaque requête, il est possible de gagner en performances en
-    précompressant ce contenu, et en forçant mod_deflate à servir ce
-    contenu précompressé sans avoir à le recompresser à chaque requête.
-    Pour ce faire, utilisez une configuration du style :</p>
+    chaque requête, il est possible de gagner en performances en précompressant
+    ce contenu, et en forçant <module>mod_deflate</module> à servir ce contenu
+    précompressé sans avoir à le recompresser à chaque requête.  Pour ce faire,
+    utilisez une configuration du style :</p>
 
     <highlight language="config">
 &lt;IfModule mod_headers.c&gt;
     # Servir des fichiers CSS et JS compressés avec gzip, s'ils existent, et
     # si le client accepte gzip.
     RewriteCond "%{HTTP:Accept-encoding}" "gzip"
-    RewriteCond "%{REQUEST_FILENAME}\.gz" "-s"
-    RewriteRule "^(.*)\.(css|js)" "$1\.$2\.gz" [QSA]
-
+    RewriteCond "%{REQUEST_FILENAME}\.gz" -s
+    RewriteRule "^(.*)\.(css|js)"         "$1\.$2\.gz" [QSA]
 
     # Servir des types de contenus corrects, et empêcher mod_deflate
     # d'effectuer un double gzip.
