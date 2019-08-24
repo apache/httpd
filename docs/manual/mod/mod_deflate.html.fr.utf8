@@ -31,8 +31,6 @@
 <a href="../ja/mod/mod_deflate.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_deflate.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Comprime le contenu avant de le servir au
 client</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -72,8 +70,8 @@ client</td></tr>
 <h2><a name="supportedencodings" id="supportedencodings">Codages supportés</a> <a title="Lien permanent" href="#supportedencodings" class="permalink">&para;</a></h2>
   <p>Le seul codage supporté est <code>gzip</code> afin d'assurer une complète
   compatibilité avec les anciens navigateurs. Le codage <code>deflate</code>
-  n'est donc pas supporté ; voir à ce sujet la <a href="http://www.gzip.org/zlib/zlib_faq.html#faq38">documentation de zlib</a>
-  pour une explication détaillée.
+  n'est donc pas supporté ; voir à ce sujet la <a href="https://zlib.net/zlib_faq.html#faq39">documentation de zlib</a> pour une
+  explication détaillée.
   </p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -220,16 +218,16 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip</pre>
 <h2><a name="precompressed" id="precompressed">Servir du contenu précompressé</a> <a title="Lien permanent" href="#precompressed" class="permalink">&para;</a></h2>
 
     <p>Comme <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> recompresse le contenu demandé à
-    chaque requête, il est possible de gagner en performances en
-    précompressant ce contenu, et en forçant mod_deflate à servir ce
-    contenu précompressé sans avoir à le recompresser à chaque requête.
-    Pour ce faire, utilisez une configuration du style :</p>
+    chaque requête, il est possible de gagner en performances en précompressant
+    ce contenu, et en forçant <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> à servir ce contenu
+    précompressé sans avoir à le recompresser à chaque requête.  Pour ce faire,
+    utilisez une configuration du style :</p>
 
     <pre class="prettyprint lang-config">&lt;IfModule mod_headers.c&gt;
     # Servir des fichiers JS et CSS compressés avec gzip, s'ils existent, et
     # si le client accepte gzip.
     RewriteCond "%{HTTP:Accept-encoding}" "gzip"
-    RewriteCond "%{REQUEST_FILENAME}\.gz" "-s"
+     RewriteCond "%{REQUEST_FILENAME}\.gz" -s
     RewriteRule "^(.*)\.(css|js)"              "$1\.$2\.gz" [QSA]
 
     # Servir des types de contenus corrects, et empêcher mod_deflate
