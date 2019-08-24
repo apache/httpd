@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1793933:1865402 (outdated) -->
+<!-- English Revision: 1865402 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -47,28 +47,28 @@ la charge des serveurs d'arrière-plan</description>
     etc...), et où une requête pour cette page génère des centaines de
     sous-requêtes à effet immédiat pour des contenus supplémentaires
     authentifiés.</p>
-    <p>Pour résoudre ce problème, mod_authn_socache fournit une solution
-    qui permet de maintenir un cache des données d'authentification.</p>
+    <p>Pour résoudre ce problème, <module>mod_authn_socache</module> fournit une
+    solution qui permet de maintenir un cache des données
+    d'authentification.</p>
 </section>
 
 <section id="usage"><title>Utilisation</title>
-    <p>Le cache d'authentification doit être utilisé lorsque les
-    requêtes d'authentification induisent une charge significative sur le
-    serveur, le serveur d'arrière-plan ou le réseau. Cette mise en cache
-    n'apportera probablement aucune amélioration dans le cas d'une
-    authentification à base de fichier (<module>mod_authn_file</module>)
-    ou de base de données dbm (<module>mod_authn_dbm</module>) car ces
-    méthodes sont de par leur conception rapides et légères (la mise en
-    cache peut cependant s'avérer utile dans le cas où le fichier est
-    situé sur un montage réseau). Les fournisseurs d'authentification
-    basés sur SQL ou LDAP ont plus de chances de tirer parti de cette
-    mise en cache, en particulier lorsqu'un problème de performances est
-    détecté. <module>mod_authnz_ldap</module> gérant son propre cache,
-    seul <module>mod_authn_dbd</module> est concerné par notre sujet.</p>
+    <p>Le cache d'authentification doit être utilisé lorsque les requêtes
+    d'authentification induisent une charge significative sur le serveur, le
+    serveur d'arrière-plan ou le réseau. Cette mise en cache n'apportera
+    probablement aucune amélioration dans le cas d'une authentification à base
+    de fichier (<module>mod_authn_file</module>) ou de base de données dbm
+    (<module>mod_authn_dbm</module>) car ces méthodes sont de par leur
+    conception rapides et légères (la mise en cache peut cependant s'avérer
+    utile dans le cas où le fichier est situé sur un montage réseau). Les
+    fournisseurs d'authentification basés sur SQL ou LDAP ont plus de chances de
+    tirer parti de cette mise en cache, en particulier lorsqu'un problème de
+    performances est détecté. <module>mod_authnz_ldap</module> gérant son propre
+    cache, seul <module>mod_authn_dbd</module> est concerné par notre sujet.</p>
     <p>Les principales règles à appliquer pour la mise en cache sont :</p>
-    <ol><li>Inclure le fournisseur pour lequel vous voulez effectuer une
-    mise en cache dans une directive
-    <directive>AuthnCacheProvideFor</directive>.</li>
+    <ol><li>Inclure le fournisseur pour lequel vous voulez effectuer une mise en
+    cache dans une directive <directive
+    module="mod_authn_socache">AuthnCacheProvideFor</directive> .</li>
         <li>Mettre <var>socache</var> avant le fournisseur pour lequel
 	vous voulez effectuer une mise en cache dans votre directive
 	<directive module="mod_auth_basic">AuthBasicProvider</directive>
@@ -96,12 +96,11 @@ AuthnCacheSOCache dbm
 </section>
 
 <section id="dev"><title>La mise en cache avec les modules tiers</title>
-    <p>Les développeurs de modules doivent savoir que la mise en cache
-    avec mod_authn_socache doit être activée dans leurs modules. La
-    fonction de l'API <var>ap_authn_cache_store</var> permet de
-    mettre en cache les données d'authentification qu'un fournisseur
-    vient de rechercher ou de générer. Vous trouverez des exemples
-    d'utilisation à <a
+    <p>Les développeurs de modules doivent savoir que la mise en cache avec
+    <module>mod_authn_socache</module> doit être activée dans leurs modules. La
+    fonction de l'API <var>ap_authn_cache_store</var> permet de mettre en cache
+    les données d'authentification qu'un fournisseur vient de rechercher ou de
+    générer. Vous trouverez des exemples d'utilisation à <a
     href="http://svn.eu.apache.org/viewvc?view=revision&amp;revision=957072"
     >r957072</a>, où trois fournisseurs authn sont activés pour la mise
     en cache.</p>
@@ -157,10 +156,11 @@ mise en cache</description>
 <override>AuthConfig</override>
 
 <usage>
-    <p>Cette directive permet de spécifier un ou plusieurs fournisseurs
-    pour le(s)quel(s) on veut effectuer une mise en cache. Les données
+    <p>Cette directive permet de spécifier un ou plusieurs fournisseurs pour
+    le(s)quel(s) on veut effectuer une mise en cache. Les données
     d'authentification trouvées par un fournisseur non spécifié dans une
-    directive AuthnCacheProvideFor ne seront pas mises en cache.</p>
+    directive <directive>AuthnCacheProvideFor</directive> ne seront pas mises en
+    cache.</p>
 
     <p>Par exemple, pour mettre en cache les données d'authentification
     trouvées par <module>mod_authn_dbd</module> ou par un fournisseur
@@ -176,7 +176,7 @@ AuthnCacheProvideFor dbd mon-fournisseur
 <name>AuthnCacheTimeout</name>
 <description>Définit une durée de vie pour les entrées du cache</description>
 <syntax>AuthnCacheTimeout <var>durée-de-vie</var> (secondes)</syntax>
-<default>300 (5 minutes)</default>
+<default>AuthnCacheTimeout 300 (5 minutes)</default>
 <contextlist><context>directory</context><context>.htaccess</context></contextlist>
 <override>AuthConfig</override>
 
@@ -204,8 +204,8 @@ AuthnCacheProvideFor dbd mon-fournisseur
 <name>AuthnCacheContext</name>
 <description>Spécifie une chaîne de contexte à utiliser dans la clé du
 cache</description>
-<syntax>AuthnCacheContext <var>directory|server|chaîne-personnalisée</var></syntax>
-<default>directory</default>
+<syntax>AuthnCacheContext directory|server|<var>custom-string</var></syntax>
+<default>AuthnCacheContext directory</default>
 <contextlist><context>directory</context></contextlist>
 
 <usage>
@@ -215,12 +215,12 @@ cache</description>
     construction d'une clé de cache. Ceci permet de lever l'ambiguïté
     entre plusieurs noms d'utilisateurs identiques servant différentes
     zones d'authentification sur le serveur.</p>
-    <p>Il y a deux valeurs spéciales pour le paramètre : <var>directory</var>,
+    <p>Il y a deux valeurs spéciales pour le paramètre : <code>directory</code>,
     qui utilise le contexte de répertoire de la requête comme chaîne, et
-    <var>server</var>, qui utilise le nom du serveur virtuel.</p>
-    <p>La valeur par défaut est <var>directory</var>, qui est aussi la
-    définition la plus courante. Ceci est cependant loin d'être optimal,
-    car par exemple, <var>$app-base</var>, <var>$app-base/images</var>,
+    <code>server</code>, qui utilise le nom du serveur virtuel.</p> <p>La valeur
+    par défaut est <code>directory</code>, qui est aussi la définition la plus
+    courante. Ceci est cependant loin d'être optimal, car par exemple,
+    <var>$app-base</var>, <var>$app-base/images</var>,
     <var>$app-base/scripts</var> et <var>$app-base/media</var>
     possèderont chacun leur propre clé de cache. Il est préférable
     d'utiliser le fournisseur de mot de passe : par exemple un fichier
