@@ -556,8 +556,13 @@ struct proxy_balancer_method {
     apr_status_t (*updatelbstatus)(proxy_balancer *balancer, proxy_worker *elected, server_rec *s);
 };
 
+#if APR_HAS_THREADS
 #define PROXY_THREAD_LOCK(x)      ( (x) && (x)->tmutex ? apr_thread_mutex_lock((x)->tmutex) : APR_SUCCESS)
 #define PROXY_THREAD_UNLOCK(x)    ( (x) && (x)->tmutex ? apr_thread_mutex_unlock((x)->tmutex) : APR_SUCCESS)
+#else
+#define PROXY_THREAD_LOCK(x)      (APR_SUCCESS)
+#define PROXY_THREAD_UNLOCK(x)    (APR_SUCCESS)
+#endif
 
 #define PROXY_GLOBAL_LOCK(x)      ( (x) && (x)->gmutex ? apr_global_mutex_lock((x)->gmutex) : APR_SUCCESS)
 #define PROXY_GLOBAL_UNLOCK(x)    ( (x) && (x)->gmutex ? apr_global_mutex_unlock((x)->gmutex) : APR_SUCCESS)
