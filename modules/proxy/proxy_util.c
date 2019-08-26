@@ -2555,12 +2555,10 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
              * we can reuse the address.
              */
             if (!worker->cp->addr) {
-#if APR_HAS_THREADS
                 if ((err = PROXY_THREAD_LOCK(worker)) != APR_SUCCESS) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, err, r, APLOGNO(00945) "lock");
                     return HTTP_INTERNAL_SERVER_ERROR;
                 }
-#endif
 
                 /*
                  * Worker can have the single constant backend address.
@@ -2573,11 +2571,9 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                                             conn->port, 0,
                                             worker->cp->pool);
                 conn->addr = worker->cp->addr;
-#if APR_HAS_THREADS
                 if ((uerr = PROXY_THREAD_UNLOCK(worker)) != APR_SUCCESS) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, uerr, r, APLOGNO(00946) "unlock");
                 }
-#endif
             }
             else {
                 conn->addr = worker->cp->addr;
