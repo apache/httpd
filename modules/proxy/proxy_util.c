@@ -2062,7 +2062,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
             }
         }
         if ((rv = PROXY_THREAD_LOCK(worker)) != APR_SUCCESS) {  
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO() "lock"); 
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10190) "lock"); 
             apr_global_mutex_unlock(proxy_mutex);
             return rv;  
         }
@@ -2073,14 +2073,14 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(00929)
                          "can not create connection pool");
             if ((rv = PROXY_THREAD_UNLOCK(worker)) != APR_SUCCESS) {  
-                ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO() "unlock"); 
+                ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10191) "unlock"); 
             }
             apr_global_mutex_unlock(proxy_mutex);
             return APR_EGENERAL;
         }
 
         if ((rv = PROXY_THREAD_UNLOCK(worker)) != APR_SUCCESS) {  
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO() "unlock"); 
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10192) "unlock"); 
         }
 
         if (worker->s->hmax) {
@@ -2115,7 +2115,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
                  getpid(), worker->s->hostname_ex);
         }
         if ((rv = PROXY_THREAD_UNLOCK(worker)) != APR_SUCCESS) {  
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO() "unlock"); 
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10193) "unlock"); 
         }
         apr_global_mutex_unlock(proxy_mutex);
 
@@ -2379,12 +2379,12 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
 
     if (worker->s->hmax && worker->cp->res) {
         if ((err = PROXY_THREAD_LOCK(worker)) != APR_SUCCESS) {  
-            ap_log_error(APLOG_MARK, APLOG_ERR, err, s, APLOGNO() "lock"); 
+            ap_log_error(APLOG_MARK, APLOG_ERR, err, s, APLOGNO(10194) "lock"); 
             return HTTP_INTERNAL_SERVER_ERROR;   
         }
         rv = apr_reslist_acquire(worker->cp->res, (void **)conn);
         if ((err = PROXY_THREAD_UNLOCK(worker)) != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, err, s, APLOGNO() "unlock");
+            ap_log_error(APLOG_MARK, APLOG_ERR, err, s, APLOGNO(10195) "unlock");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
     }
