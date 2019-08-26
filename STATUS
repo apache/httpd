@@ -158,9 +158,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       +1: covener, jim
     
    *) mod_proxy: fix concurrent pool access around initialization of workers
-      trunk patch:  http://svn.apache.org/r1865938
+      trunk patch:  http://svn.apache.org/r1865938 + http://svn.apache.org/r1865944
       2.4.x patch:  http://people.apache.org/~covener/httpd-2.4.x-proxy-segv.diff
-                    (APR_HAS_THREADS context break(
+                    (APR_HAS_THREADS context break)
       +1: covener, jim
 
 PATCHES/ISSUES THAT ARE BEING WORKED
