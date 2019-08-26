@@ -2055,11 +2055,16 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
         if (worker->tmutex == NULL) {
             rv = apr_thread_mutex_create(&(worker->tmutex), APR_THREAD_MUTEX_DEFAULT, p);
             if (rv != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(00928)
+                ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(00928)
                              "can not create worker thread mutex");
                 apr_global_mutex_unlock(proxy_mutex);
                 return rv;
             }
+        }
+        if ((rv = PROXY_THREAD_LOCK(worker)) != APR_SUCCESS) {  
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO() "lock"); 
+            apr_global_mutex_unlock(proxy_mutex);
+            return rv;  
         }
 #endif
         if (worker->cp == NULL)
@@ -2067,8 +2072,15 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
         if (worker->cp == NULL) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(00929)
                          "can not create connection pool");
+            if ((rv = PROXY_THREAD_UNLOCK(worker)) != APR_SUCCESS) {  
+                ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO() "unlock"); 
+            }
             apr_global_mutex_unlock(proxy_mutex);
             return APR_EGENERAL;
+        }
+
+        if ((rv = PROXY_THREAD_UNLOCK(worker)) != APR_SUCCESS) {  
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO() "unlock"); 
         }
 
         if (worker->s->hmax) {
@@ -2098,13 +2110,16 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
             rv = connection_constructor(&conn, worker, worker->cp->pool);
             worker->cp->conn = conn;
 
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00931)
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s, APLOGNO(00931)
                  "initialized single connection worker in child %" APR_PID_T_FMT " for (%s)",
                  getpid(), worker->s->hostname_ex);
         }
+        if ((rv = PROXY_THREAD_UNLOCK(worker)) != APR_SUCCESS) {  
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO() "unlock"); 
+        }
         apr_global_mutex_unlock(proxy_mutex);
 
-    }
+    } /* init worker */
     if (rv == APR_SUCCESS) {
         worker->s->status |= (PROXY_WORKER_INITIALIZED);
         worker->local_status |= (PROXY_WORKER_INITIALIZED);
@@ -2348,6 +2363,7 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
                                                server_rec *s)
 {
     apr_status_t rv;
+    apr_status_t err;
 
     if (!PROXY_WORKER_IS_USABLE(worker)) {
         /* Retry the worker */
@@ -2362,18 +2378,26 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
     }
 
     if (worker->s->hmax && worker->cp->res) {
+        if ((err = PROXY_THREAD_LOCK(worker)) != APR_SUCCESS) {  
+            ap_log_error(APLOG_MARK, APLOG_ERR, err, s, APLOGNO() "lock"); 
+            return HTTP_INTERNAL_SERVER_ERROR;   
+        }
         rv = apr_reslist_acquire(worker->cp->res, (void **)conn);
+        if ((err = PROXY_THREAD_UNLOCK(worker)) != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, err, s, APLOGNO() "unlock");
+            return HTTP_INTERNAL_SERVER_ERROR;
+        }
     }
     else {
         /* create the new connection if the previous was destroyed */
         if (!worker->cp->conn) {
-            connection_constructor((void **)conn, worker, worker->cp->pool);
+            rv = connection_constructor((void **)conn, worker, worker->cp->pool);
         }
         else {
             *conn = worker->cp->conn;
             worker->cp->conn = NULL;
+            rv = APR_SUCCESS;
         }
-        rv = APR_SUCCESS;
     }
 
     if (rv != APR_SUCCESS) {
