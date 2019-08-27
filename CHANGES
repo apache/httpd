@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.42
 
+  *) mod_proxy_balancer: Fix case-sensitive referer check related to CSRF/XSS 
+     protection. PR 63688. [Armin Abfalterer <a.abfalterer gmail.com>]
+
 Changes with Apache 2.4.41
 
   *) SECURITY: CVE-2019-10097 (cve.mitre.org)

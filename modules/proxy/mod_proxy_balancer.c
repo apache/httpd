@@ -1104,7 +1104,7 @@ static int safe_referer(request_rec *r, const char *ref)
     if (apr_uri_parse(r->pool, ref, &uri) || !uri.hostname)
         return 0;
 
-    return strcmp(uri.hostname, ap_get_server_name(r)) == 0;
+    return strcasecmp(uri.hostname, ap_get_server_name(r)) == 0;
 }
 
 /* Manages the loadfactors and member status
