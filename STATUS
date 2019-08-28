@@ -160,6 +160,21 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       rpluem says: -1 for now. See further discussion at
                    https://bz.apache.org/bugzilla/show_bug.cgi?id=63503
 
+   *) mod_ssl: Add support for loading certs & keys from PKCS#11 URLs via the
+               OpenSSL pkcs11 engine.  Includes related minor cleanups and
+               simplification to mod_ssl internals.
+      trunk patch: http://svn.apache.org/r1830819
+                   http://svn.apache.org/r1830912
+                   http://svn.apache.org/r1830913
+                   http://svn.apache.org/r1830927
+                   http://svn.apache.org/r1831168
+                   http://svn.apache.org/r1831173
+                   http://svn.apache.org/r1835240
+                   http://svn.apache.org/r1835242
+                   http://svn.apache.org/r1835615
+      2.4.x patch: http://people.apache.org/~jorton/mod_ssl_pkcs11.patch
+      +1: jorton, 
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
