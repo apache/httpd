@@ -1123,7 +1123,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
     if (worker->s->is_address_reusable) {
         if (!worker->cp->addr) {
 #if APR_HAS_THREADS
-            if ((err = PROXY_THREAD_LOCK(worker->balancer)) != APR_SUCCESS) {
+            if ((err = PROXY_THREAD_LOCK(worker)) != APR_SUCCESS) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, err, r, APLOGNO(01037) "lock");
                 return HTTP_INTERNAL_SERVER_ERROR;
             }
@@ -1144,7 +1144,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
     if (worker->s->is_address_reusable && !worker->cp->addr) {
         worker->cp->addr = connect_addr;
 #if APR_HAS_THREADS
-        if ((uerr = PROXY_THREAD_UNLOCK(worker->balancer)) != APR_SUCCESS) {
+        if ((uerr = PROXY_THREAD_UNLOCK(worker)) != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, uerr, r, APLOGNO(01038) "unlock");
         }
 #endif
