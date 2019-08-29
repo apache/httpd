@@ -452,14 +452,18 @@ define dump_one_pool
 end
 
 define dump_all_pools
-    set $root = $arg0
+    if $argc > 0
+        set $root = $arg0
+    else
+        set $root = ap_pglobal
+    end
     while $root->parent
         set $root = $root->parent
     end
     dump_pool_and_children $root
 end
 document dump_all_pools
-    Dump the whole pool hierarchy starting from apr_global_pool. Requires an arbitrary pool as starting parameter.
+    Dump the whole pool hierarchy starting from apr_global_pool. Optionally takes an arbitrary pool as starting parameter.
 end
 
 python
