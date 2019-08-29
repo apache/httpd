@@ -4218,17 +4218,26 @@ Protocols h2 http/1.1
             <dd>'$' matches at end of subject string only.</dd>
         </dl>
         <highlight language="config">
+# Reset all default/defined options
+RegexDefaultOptions none
 # Add the ICASE option for all regexes by default
 RegexDefaultOptions +ICASE
 ...
+# Add the ICASE option to the already applicable ones
+RegexDefaultOptions +ICASE
 # Remove the default DOLLAR_ENDONLY option, but keep any other one
 RegexDefaultOptions -DOLLAR_ENDONLY
 ...
 # Set the DOTALL option only, resetting any other one
 RegexDefaultOptions DOTALL
 ...
-# Reset all defined options
-RegexDefaultOptions none
+# Set the DOTALL and ICASE options only
+# Options are applied in order and blindly, so:
+#   RegexDefaultOptions DOTALL ICASE
+# would not work as possibly expected (ICASE clears DOTALL)
+RegexDefaultOptions none +DOTALL +ICASE
+# or "simply"
+RegexDefaultOptions DOTALL +ICASE
 ...
         </highlight>
     </usage>
