@@ -532,8 +532,8 @@ struct proxy_balancer {
     proxy_hashes hash;
     apr_time_t      wupdated;    /* timestamp of last change to workers list */
     proxy_balancer_method *lbmethod;
-#if APR_HAS_THREADS
     apr_global_mutex_t  *gmutex; /* global lock for updating list of workers */
+#if APR_HAS_THREADS
     apr_thread_mutex_t  *tmutex; /* Thread lock for updating shm */
 #endif
     proxy_server_conf *sconf;

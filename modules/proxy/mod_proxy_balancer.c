@@ -728,23 +728,19 @@ static void recalc_factors(proxy_balancer *balancer)
 
 static apr_status_t lock_remove(void *data)
 {
-#if APR_HAS_THREADS
     int i;
-#endif
     proxy_balancer *balancer;
     server_rec *s = data;
     void *sconf = s->module_config;
     proxy_server_conf *conf = (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
 
     balancer = (proxy_balancer *)conf->balancers->elts;
-#if APR_HAS_THREADS
     for (i = 0; i < conf->balancers->nelts; i++, balancer++) {
         if (balancer->gmutex) {
             apr_global_mutex_destroy(balancer->gmutex);
             balancer->gmutex = NULL;
         }
     }
-#endif
     return(0);
 }
 
@@ -962,7 +958,6 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
             PROXY_STRNCPY(balancer->s->sname, sname); /* We know this will succeed */
 
             balancer->max_workers = balancer->workers->nelts + balancer->growth;
-#if APR_HAS_THREADS
             /* Create global mutex */
             rv = ap_global_mutex_create(&(balancer->gmutex), NULL, balancer_mutex_type,
                                         balancer->s->sname, s, pconf, 0);
@@ -972,7 +967,6 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                              balancer->s->sname);
                 return HTTP_INTERNAL_SERVER_ERROR;
             }
-#endif
             apr_pool_cleanup_register(pconf, (void *)s, lock_remove,
                                       apr_pool_cleanup_null);
 
