@@ -470,7 +470,9 @@ SET(mod_lua_extra_sources
   modules/lua/lua_vmprep.c           modules/lua/lua_dbd.c
 )
 SET(mod_lua_requires                 LUA51_FOUND)
-SET(mod_md_requires                  OPENSSL_FOUND CURL_FOUND JANSSON_FOUND HAVE_OPENSSL_102)
+# TODO: _requires does not currently iterate a list, substitute the following once it does;
+# SET(mod_md_requires                OPENSSL_FOUND CURL_FOUND JANSSON_FOUND HAVE_OPENSSL_102)
+SET(mod_md_requires                  CURL_FOUND)
 SET(mod_md_extra_includes            ${OPENSSL_INCLUDE_DIR} ${CURL_INCLUDE_DIR} ${JANSSON_INCLUDE_DIR})
 SET(mod_md_extra_libs                ${OPENSSL_LIBRARIES} ${CURL_LIBRARIES} ${JANSSON_LIBRARIES} mod_watchdog)
 SET(mod_md_extra_sources
@@ -705,6 +707,7 @@ SET(HTTPD_INCLUDE_DIRECTORIES
   ${CMAKE_CURRENT_SOURCE_DIR}/modules/session
   ${CMAKE_CURRENT_SOURCE_DIR}/modules/ssl
   ${CMAKE_CURRENT_SOURCE_DIR}/server
+  ${CMAKE_CURRENT_SOURCE_DIR}/server/mpm/winnt
   ${APR_INCLUDE_DIR}
   ${PCRE_INCLUDE_DIR}
 )
