@@ -1276,7 +1276,6 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_balancer(proxy_balancer *balance
      * for each balancer we need to init the global
      * mutex and then attach to the shared worker shm
      */
-#if APR_HAS_THREADS
     if (!balancer->gmutex) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s, APLOGNO(00919)
                      "no mutex %s", balancer->s->name);
@@ -1293,7 +1292,6 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_balancer(proxy_balancer *balance
                      balancer->s->name);
         return rv;
     }
-#endif
 
     /* now attach */
     storage->attach(&(balancer->wslot), balancer->s->sname, &size, &num, p);
