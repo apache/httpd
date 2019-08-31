@@ -4541,17 +4541,27 @@ comme si la directive QualifyRedirectURL était définie à ON.</td></tr>
             <dd>'$' n'est actif qu'à la fin de la chaîne de référence.</dd>
             
         </dl>
-        <pre class="prettyprint lang-config"># Ajoute l'option ICASE par défaut pour toutes les expressions rationnelles
+        <pre class="prettyprint lang-config"># Supprime toutes les options par défaut ou définies
+RegexDefaultOptions none
+# Ajoute l'option ICASE par défaut pour toutes les expressions rationnelles
 RegexDefaultOptions +ICASE
 ...
+# Ajoute l'option ICASE à la liste des options préexistantes
+RegexDefaultOptions +ICASE
 # Supprime l'option DOLLAR_ENDONLY par défaut et conserve toutes les autres
 RegexDefaultOptions -DOLLAR_ENDONLY
 ...
 # Définit l'option  DOTALL seule et annule toutes les autres options
 RegexDefaultOptions DOTALL
 ...
-# Annule toutes les options définies
-RegexDefaultOptions none
+# Définit les options DOTALL et ICASE seules
+# Les options sont appliqués dans l'ordre de leur spécification et en aveugle,
+# si bien que :
+#   RegexDefaultOptions DOTALL ICASE
+# ne produirait pas l'effet escompté (ICASE annule DOTALL)
+RegexDefaultOptions none +DOTALL +ICASE
+# or "simplement"
+RegexDefaultOptions DOTALL +ICASE
 ...</pre>
 
     
