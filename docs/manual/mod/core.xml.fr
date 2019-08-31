@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1864192 -->
+<!-- English Revision: 1866066 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -4564,17 +4564,27 @@ serveur HTTP Apache.</compatibility>
             
         </dl>
         <highlight language="config">
+# Supprime toutes les options par défaut ou définies
+RegexDefaultOptions none
 # Ajoute l'option ICASE par défaut pour toutes les expressions rationnelles
 RegexDefaultOptions +ICASE
 ...
+# Ajoute l'option ICASE à la liste des options préexistantes
+RegexDefaultOptions +ICASE
 # Supprime l'option DOLLAR_ENDONLY par défaut et conserve toutes les autres
 RegexDefaultOptions -DOLLAR_ENDONLY
 ...
 # Définit l'option  DOTALL seule et annule toutes les autres options
 RegexDefaultOptions DOTALL
 ...
-# Annule toutes les options définies
-RegexDefaultOptions none
+# Définit les options DOTALL et ICASE seules
+# Les options sont appliqués dans l'ordre de leur spécification et en aveugle,
+# si bien que :
+#   RegexDefaultOptions DOTALL ICASE
+# ne produirait pas l'effet escompté (ICASE annule DOTALL)
+RegexDefaultOptions none +DOTALL +ICASE
+# or "simplement"
+RegexDefaultOptions DOTALL +ICASE
 ...
         </highlight>
     </usage>
