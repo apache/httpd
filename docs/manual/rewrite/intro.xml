@@ -73,7 +73,7 @@ it will tell you exactly how each rule is processed.</p>
 
 <section id="regex"><title>Regular Expressions</title>
 
-<p>mod_rewrite uses the <a href="http://pcre.org/">Perl Compatible
+<p><module>mod_rewrite</module> uses the <a href="http://pcre.org/">Perl Compatible
 Regular Expression</a> vocabulary. In this document, we do not attempt
 to provide a detailed reference to regular expressions. For that, we
 recommend the <a href="http://pcre.org/pcre.txt">PCRE man pages</a>, the
@@ -103,32 +103,65 @@ well as write your own.</p>
 <th>Example</th>
 </tr>
 
-<tr><td><code>.</code></td><td>Matches any single
-character</td><td><code>c.t</code> will match <code>cat</code>,
-<code>cot</code>, <code>cut</code>, etc.</td></tr>
-<tr><td><code>+</code></td><td>Repeats the previous match one or more
-times</td><td><code>a+</code> matches <code>a</code>, <code>aa</code>,
-<code>aaa</code>, etc</td></tr>
-<tr><td><code>*</code></td><td>Repeats the previous match zero or more
-times.</td><td><code>a*</code> matches all the same things
-<code>a+</code> matches, but will also match an empty string.</td></tr>
-<tr><td><code>?</code></td><td>Makes the match optional.</td><td>
-<code>colou?r</code> will match <code>color</code> and <code>colour</code>.</td>
+<tr>
+    <td><code>.</code></td>
+    <td>Matches any single character</td>
+    <td><code>c.t</code> will match <code>cat</code>, <code>cot</code>,
+      <code>cut</code>, etc</td>
 </tr>
-<tr><td><code>^</code></td><td>Called an anchor, matches the beginning
-of the string</td><td><code>^a</code> matches a string that begins with
-<code>a</code></td></tr>
-<tr><td><code>$</code></td><td>The other anchor, this matches the end of
-the string.</td><td><code>a$</code> matches a string that ends with
-<code>a</code>.</td></tr>
-<tr><td><code>( )</code></td><td>Groups several characters into a single
-unit, and captures a match for use in a backreference.</td><td><code>(ab)+</code>
-matches <code>ababab</code> - that is, the <code>+</code> applies to the group.
-For more on backreferences see <a href="#InternalBackRefs">below</a>.</td></tr>
-<tr><td><code>[ ]</code></td><td>A character class - matches one of the
-characters</td><td><code>c[uoa]t</code> matches <code>cut</code>,
-<code>cot</code> or <code>cat</code>.</td></tr>
-<tr><td><code>[^ ]</code></td><td>Negative character class - matches any character not specified</td><td><code>c[^/]t</code> matches <code>cat</code> or <code>c=t</code> but not <code>c/t</code></td></tr>
+<tr>
+    <td><code>+</code></td>
+    <td>Repeats the previous match one or more times</td>
+    <td><code>a+</code> matches <code>a</code>, <code>aa</code>,
+      <code>aaa</code>, etc</td>
+</tr>
+<tr>
+    <td><code>*</code></td>
+    <td>Repeats the previous match zero or more times</td>
+    <td><code>a*</code> matches all the same things <code>a+</code> matches,
+      but will also match an empty string</td>
+</tr>
+<tr>
+    <td><code>?</code></td>
+    <td>Makes the match optional</td>
+    <td><code>colou?r</code> will match <code>color</code> and
+    <code>colour</code></td>
+</tr>
+<tr>
+    <td><code>\</code></td>
+    <td>Escape the next character</td>
+    <td><code>\.</code> will match <code>.</code> (dot) and not <em>any single
+    character</em> as explain above</td>
+</tr>
+<tr>
+    <td><code>^</code></td>
+    <td>Called an anchor, matches the beginning of the string</td>
+    <td><code>^a</code> matches a string that begins with <code>a</code></td>
+</tr>
+<tr>
+    <td><code>$</code></td>
+    <td>The other anchor, this matches the end of the string</td>
+    <td><code>a$</code> matches a string that ends with <code>a</code></td>
+</tr>
+<tr>
+    <td><code>( )</code></td>
+    <td>Groups several characters into a single unit, and captures a match
+      for use in a backreference</td>
+    <td><code>(ab)+</code> matches <code>ababab</code> - that is, the
+      <code>+</code> applies to the group. For more on backreferences see
+      <a href="#InternalBackRefs">below</a></td>
+</tr>
+<tr>
+    <td><code>[ ]</code></td>
+    <td>A character class - matches one of the characters</td>
+    <td><code>c[uoa]t</code> matches <code>cut</code>, <code>cot</code> or
+      <code>cat</code></td>
+</tr>
+<tr>
+    <td><code>[^ ]</code></td>
+    <td>Negative character class - matches any character not specified</td>
+    <td><code>c[^/]t</code> matches <code>cat</code> or <code>c=t</code> but
+      not <code>c/t</code></td></tr>
 </table>
 
 <p>In <module>mod_rewrite</module> the <code>!</code> character can be
