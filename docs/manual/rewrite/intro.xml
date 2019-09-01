@@ -73,7 +73,7 @@ it will tell you exactly how each rule is processed.</p>
 
 <section id="regex"><title>Regular Expressions</title>
 
-<p>mod_rewrite uses the <a href="http://pcre.org/">Perl Compatible
+<p><module>mod_rewrite</module> uses the <a href="http://pcre.org/">Perl Compatible
 Regular Expression</a> vocabulary. In this document, we do not attempt
 to provide a detailed reference to regular expressions. For that, we
 recommend the <a href="http://pcre.org/pcre.txt">PCRE man pages</a>, the
@@ -103,32 +103,65 @@ well as write your own.</p>
 <th>Example</th>
 </tr>
 
-<tr><td><code>.</code></td><td>Matches any single
-character</td><td><code>c.t</code> will match <code>cat</code>,
-<code>cot</code>, <code>cut</code>, etc.</td></tr>
-<tr><td><code>+</code></td><td>Repeats the previous match one or more
-times</td><td><code>a+</code> matches <code>a</code>, <code>aa</code>,
-<code>aaa</code>, etc</td></tr>
-<tr><td><code>*</code></td><td>Repeats the previous match zero or more
-times.</td><td><code>a*</code> matches all the same things
-<code>a+</code> matches, but will also match an empty string.</td></tr>
-<tr><td><code>?</code></td><td>Makes the match optional.</td><td>
-<code>colou?r</code> will match <code>color</code> and <code>colour</code>.</td>
+<tr>
+    <td><code>.</code></td>
+    <td>Matches any single character</td>
+    <td><code>c.t</code> will match <code>cat</code>, <code>cot</code>,
+      <code>cut</code>, etc</td>
 </tr>
-<tr><td><code>^</code></td><td>Called an anchor, matches the beginning
-of the string</td><td><code>^a</code> matches a string that begins with
-<code>a</code></td></tr>
-<tr><td><code>$</code></td><td>The other anchor, this matches the end of
-the string.</td><td><code>a$</code> matches a string that ends with
-<code>a</code>.</td></tr>
-<tr><td><code>( )</code></td><td>Groups several characters into a single
-unit, and captures a match for use in a backreference.</td><td><code>(ab)+</code>
-matches <code>ababab</code> - that is, the <code>+</code> applies to the group.
-For more on backreferences see <a href="#InternalBackRefs">below</a>.</td></tr>
-<tr><td><code>[ ]</code></td><td>A character class - matches one of the
-characters</td><td><code>c[uoa]t</code> matches <code>cut</code>,
-<code>cot</code> or <code>cat</code>.</td></tr>
-<tr><td><code>[^ ]</code></td><td>Negative character class - matches any character not specified</td><td><code>c[^/]t</code> matches <code>cat</code> or <code>c=t</code> but not <code>c/t</code></td></tr>
+<tr>
+    <td><code>+</code></td>
+    <td>Repeats the previous match one or more times</td>
+    <td><code>a+</code> matches <code>a</code>, <code>aa</code>,
+      <code>aaa</code>, etc</td>
+</tr>
+<tr>
+    <td><code>*</code></td>
+    <td>Repeats the previous match zero or more times</td>
+    <td><code>a*</code> matches all the same things <code>a+</code> matches,
+      but will also match an empty string</td>
+</tr>
+<tr>
+    <td><code>?</code></td>
+    <td>Makes the match optional</td>
+    <td><code>colou?r</code> will match <code>color</code> and
+    <code>colour</code></td>
+</tr>
+<tr>
+    <td><code>\</code></td>
+    <td>Escape the next character</td>
+    <td><code>\.</code> will match <code>.</code> (dot) and not <em>any single
+    character</em> as explain above</td>
+</tr>
+<tr>
+    <td><code>^</code></td>
+    <td>Called an anchor, matches the beginning of the string</td>
+    <td><code>^a</code> matches a string that begins with <code>a</code></td>
+</tr>
+<tr>
+    <td><code>$</code></td>
+    <td>The other anchor, this matches the end of the string</td>
+    <td><code>a$</code> matches a string that ends with <code>a</code></td>
+</tr>
+<tr>
+    <td><code>( )</code></td>
+    <td>Groups several characters into a single unit, and captures a match
+      for use in a backreference</td>
+    <td><code>(ab)+</code> matches <code>ababab</code> - that is, the
+      <code>+</code> applies to the group. For more on backreferences see
+      <a href="#InternalBackRefs">below</a></td>
+</tr>
+<tr>
+    <td><code>[ ]</code></td>
+    <td>A character class - matches one of the characters</td>
+    <td><code>c[uoa]t</code> matches <code>cut</code>, <code>cot</code> or
+      <code>cat</code></td>
+</tr>
+<tr>
+    <td><code>[^ ]</code></td>
+    <td>Negative character class - matches any character not specified</td>
+    <td><code>c[^/]t</code> matches <code>cat</code> or <code>c=t</code> but
+      not <code>c/t</code></td></tr>
 </table>
 
 <p>In <module>mod_rewrite</module> the <code>!</code> character can be
@@ -145,22 +178,22 @@ the expression.</p>
       <em>CondPattern</em>, back-references are internally created
       which can be used with the strings <code>$N</code> and
       <code>%N</code> (see below). These are available for creating
-      the <em>Substitution</em> parameter of a 
+      the <em>Substitution</em> parameter of a
       <directive module="mod_rewrite">RewriteRule</directive> or
-      the <em>TestString</em> parameter of a 
+      the <em>TestString</em> parameter of a
       <directive module="mod_rewrite">RewriteCond</directive>.</p>
       <p>  Captures in the <directive module="mod_rewrite"
-      >RewriteRule</directive> patterns are (counterintuitively) available to 
-       all preceding 
+      >RewriteRule</directive> patterns are (counterintuitively) available to
+       all preceding
       <directive module="mod_rewrite">RewriteCond</directive> directives,
       because the <directive module="mod_rewrite">RewriteRule</directive>
       expression is evaluated before the individual conditions.</p>
 
-      <p>Figure 1 shows to which 
-      locations the back-references are transferred for expansion as 
-      well as illustrating the flow of the RewriteRule, RewriteCond 
-      matching. In the next chapters, we will be exploring how to use 
-      these back-references, so do not fret if it seems a bit alien 
+      <p>Figure 1 shows to which
+      locations the back-references are transferred for expansion as
+      well as illustrating the flow of the RewriteRule, RewriteCond
+      matching. In the next chapters, we will be exploring how to use
+      these back-references, so do not fret if it seems a bit alien
       to you at first.
       </p>
 
@@ -183,12 +216,12 @@ of three arguments separated by spaces. The arguments are</p>
 <li><var>[flags]</var>: options affecting the rewritten request.</li>
 </ol>
 
-<p>The <var>Pattern</var> is a <a href="#regex">regular expression</a>. 
-It is initially (for the first rewrite rule or until a substitution occurs) 
-matched against the URL-path of the incoming request (the part after the 
-hostname but before any question mark indicating the beginning of a query 
-string) or, in per-directory context, against the request's path relative 
-to the directory for which the rule is defined. Once a substitution has 
+<p>The <var>Pattern</var> is a <a href="#regex">regular expression</a>.
+It is initially (for the first rewrite rule or until a substitution occurs)
+matched against the URL-path of the incoming request (the part after the
+hostname but before any question mark indicating the beginning of a query
+string) or, in per-directory context, against the request's path relative
+to the directory for which the rule is defined. Once a substitution has
 occurred, the rules that follow are matched against the substituted
 value.
 </p>
@@ -289,7 +322,7 @@ argument is a list of flags that modify how the match is evaluated.</p>
 different server, you could use:</p>
 <highlight language="config">
 RewriteCond "%{REMOTE_ADDR}" "^10\.2\."
-RewriteRule "(.*)" "http://intranet.example.com$1"
+RewriteRule "(.*)"           "http://intranet.example.com$1"
 </highlight>
 
 <p>When more than
@@ -301,8 +334,8 @@ their query string, unless they also contain a cookie containing
 the word "go", you could use:</p>
 <highlight language="config">
 RewriteCond "%{QUERY_STRING}" "hack"
-RewriteCond "%{HTTP_COOKIE}" "!go"
-RewriteRule "." "-" [F]
+RewriteCond "%{HTTP_COOKIE}"  !go
+RewriteRule "."               "-"   [F]
 </highlight>
 <p>Notice that the exclamation mark specifies a negative match, so the rule is only applied if the cookie does not contain "go".</p>
 
@@ -315,7 +348,7 @@ will direct the request to a different directory depending on the
 hostname used to access the site:</p>
 <highlight language="config">
 RewriteCond "%{HTTP_HOST}" "(.*)"
-RewriteRule "^/(.*)" "/sites/%1/$1"
+RewriteRule "^/(.*)"       "/sites/%1/$1"
 </highlight>
 <p>If the request was for <code>http://example.com/foo/bar</code>,
 then <code>%1</code> would contain <code>example.com</code>
@@ -354,5 +387,3 @@ the <directive module="mod_rewrite">RewriteRule</directive>. In addition, the <d
 </section>
 
 </manualpage>
-
-
