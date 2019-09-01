@@ -318,10 +318,10 @@ RewriteRule   "^foo\.html$"             "foo.night.html"
     <dt>Description:</dt>
 
     <dd>
-      <p>At time, we want to maintain some kind of status when we
+      <p>At times, we want to maintain some kind of status when we
       perform a rewrite. For example, you want to make a note that
       you've done that rewrite, so that you can check later to see if a
-      request can via that rewrite. One way to do this is by setting an
+      request came via that rewrite. One way to do this is by setting an
       environment variable.</p>
     </dd>
 
@@ -344,7 +344,10 @@ RewriteCond "%{ENV:rewritten}"  =1
 
     <p>Note that environment variables do not survive an external
     redirect. You might consider using the [CO] flag to set a
-    cookie.</p>
+    cookie. For per-directory and htaccess rewrites, where the final
+    substitution is processed as an internal redirect, environment
+    variables from the previous round of rewriting are prefixed with
+    "REDIRECT_". </p>
 
     </dd>
   </dl>
