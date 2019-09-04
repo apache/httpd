@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) core: On Windows, fix a start-up crash if <IfFile ...> is used with a path that is not
+     valid (For example, testing for a file on a flash drive that is not mounted)
+     [Christophe Jaillet]
+
   *) mod_proxy_balancer: Fix case-sensitive referer check related to CSRF/XSS 
      protection. PR63688. [Armin Abfalterer <a.abfalterer gmail.com>]
 
