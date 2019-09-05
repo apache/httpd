@@ -152,14 +152,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              months/years without any action item :)
 
     
-   *) mod_proxy: fix concurrent pool access around initialization of workers
-      trunk patch:  http://svn.apache.org/r1865938 + http://svn.apache.org/r1865944
-      2.4.x patch:  http://people.apache.org/~covener/httpd-2.4.x-proxy-segv.diff
-                    (APR_HAS_THREADS context break)
-      +1: covener, jim
-      rpluem says: -1 for now. See further discussion at
-                   https://bz.apache.org/bugzilla/show_bug.cgi?id=63503
-
    *) mod_ssl: Add support for loading certs & keys from PKCS#11 URLs via the
                OpenSSL pkcs11 engine.  Includes related minor cleanups and
                simplification to mod_ssl internals.
@@ -179,7 +171,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
             path that is not valid
       trunk patch: http://svn.apache.org/r1866418
       2.4.x patch: svn merge -c 1866418 ^/httpd/httpd/trunk .
-      +1: jailletc36, 
+      +1: jailletc36, covener,
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
@@ -288,6 +280,14 @@ PATCHES/ISSUES THAT ARE BEING WORKED
      jorton: Adding ap_pregexec/_len which pass a pool would also work
              for internal users of this api; not sure if performance
              impact is significant from using malloc here.
+
+   *) mod_proxy: fix concurrent pool access around initialization of workers
+      trunk patch:  http://svn.apache.org/r1865938 + http://svn.apache.org/r1865944
+      2.4.x patch:  http://people.apache.org/~covener/httpd-2.4.x-proxy-segv.diff
+                    (APR_HAS_THREADS context break)
+      +1: covener, jim
+      rpluem says: -1 for now. See further discussion at
+                   https://bz.apache.org/bugzilla/show_bug.cgi?id=63503
 
 
 PATCHES/ISSUES THAT ARE STALLED
