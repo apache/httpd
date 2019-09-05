@@ -175,6 +175,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: http://people.apache.org/~jorton/mod_ssl_pkcs11.patch
       +1: jorton, 
 
+   *) core: On Windows, fix a start-up crash if <IfFile ...> is used with a
+            path that is not valid
+      trunk patch: http://svn.apache.org/r1866418
+      2.4.x patch: svn merge -c 1866418 ^/httpd/httpd/trunk .
+      +1: jailletc36, 
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
