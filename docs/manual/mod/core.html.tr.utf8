@@ -33,7 +33,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Apache HTTP Sunucusunda daima mevcut olan çekirdek
  özellikler</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr></table>
@@ -4059,7 +4058,7 @@ davranılır.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Regex düzenli ifadeleri için öntanımlı/küresel seçenekleri yapılandırır</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>RegexDefaultOptions [none] [+|-]<var>seçenek</var> [[+|-]<var>seçenek</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>RegexDefaultOptions DOLLAR_ENDONLY</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>RegexDefaultOptions DOTALL DOLLAR_ENDONLY</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
@@ -4081,20 +4080,24 @@ davranılır.</td></tr>
             <dt><code>ICASE</code></dt>
             <dd>Harf büyüklüğüne duyarlı eşleşmeler kullanılır.</dd>
 
+            <dt><code>EXTENDED</code></dt>
+            <dd>Perl'ün /x seçeneği; kalıp içindeki açıklamaları ve 
+            (öncelenmemiş) boşlukları yoksayar.</dd>
+
             <dt><code>DOTALL</code></dt>
-            <dd>Perl'ün /s seçeneği.</dd>
+            <dd>Perl'ün /s seçeneği; '.' karakteri, satırsonu karakteri ile 
+             eşleşir.</dd>
 
             <dt><code>DOLLAR_ENDONLY</code></dt>
             <dd>'$' dizgenin sonu ile eşleşir.</dd>
-            <dd>.</dd>
         </dl>
-        <pre class="prettyprint lang-config"># 
-RegexDefaultOptions +ICASE +DOLLAR_ENDONLY
+        <pre class="prettyprint lang-config"># Tüm düzenli ifadeler için öntanımlı olarak ICASE seçeneğini ekler:
+RegexDefaultOptions +ICASE
 ...
-# ICASE seçeneği silinir, diğer seçenekler tutulur:
-RegexDefaultOptions -ICASE
+# Öntanımlı DOLLAR_ENDONLY seçeneği silinir, diğer seçenekler tutulur:
+RegexDefaultOptions -DOLLAR_ENDONLY
 ...
-# Atanmuş seçenekler silinir, DOTALL öntanımlı seçenek yapılır:
+# Atanmış seçenekler silinir, DOTALL öntanımlı seçenek yapılır:
 RegexDefaultOptions DOTALL
 ...
 # Tüm seçenekler silinir, öntanımlı seçenek kalmaz.
