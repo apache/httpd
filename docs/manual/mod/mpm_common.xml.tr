@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1853619:1857648 (outdated) -->
+<!-- English Revision: 1857648 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -57,6 +57,17 @@
       durumunda <code>core</code> dosyasını çöken sürecin çalışma dizinine
       yazacak şekilde yapılandırılmamışsa, bu yönergenin bir etkisi olmaz.</p>
 
+    <note type="warning">
+      <title>Linux sistemleri için güvenlik bilgisi</title>
+
+      <p>Bu yönergenin Linux'ta kullanılması, sistemdeki diğer işlemlerin
+      (benzer yetkilerle çalıştırılan CGI komut dosyaları gibi) 
+      <code>ptrace</code> sistem çağrısı yoluyla httpd çocuklarına eklenmesine 
+      izin verebilir. Bu, bazı güvenlik saldırılarına karşı korumayı 
+      zayıflatabilir. Bu yönergenin üretim sistemlerinde kullanılması 
+      önerilmez.</p>
+    </note>
+    
     <note><title>Linux üzerinde <code>core</code> dökümlemek</title>
       <p>Apache httpd root olarak başlatılıp başka bir kullanıcıya geçilirse
         Linux çekirdeği, süreç tarafından yazılabilir olsa bile

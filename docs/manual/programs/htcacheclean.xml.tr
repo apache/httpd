@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1174747:1864789 (outdated) -->
+<!-- English Revision: 1864789 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -54,7 +54,7 @@
     [ -<strong>R</strong><var>boyut</var> ]
     -<strong>p</strong><var>yol</var>
     [ -<strong>l</strong><var>sınır</var> |
-    -<strong>L</strong><var>limit</var> ]</code></p>
+    [ -<strong>L</strong><var>sınır</var> ]</code></p>
 
     <p><code><strong>htcacheclean</strong>
     [ -<strong>n</strong> ]
@@ -65,7 +65,7 @@
     -<strong>d</strong><var>süre</var>
     -<strong>p</strong><var>yol</var>
     [ -<strong>l</strong><var>sınır</var> |
-    -<strong>L</strong><var>limit</var> ]</code></p>
+    [ -<strong>L</strong><var>sınır</var> ]</code></p>
 
     <p><code><strong>htcacheclean</strong>
     [ -<strong>v</strong> ]
@@ -140,11 +140,12 @@
     <dd><code><var>sınır</var></code>, disk arabelleğinin toplam boyutu
     olarak belirtilir. Değerin öntanımlı olarak bayt cinsinden belirtileceği
     varsayılır. Değerin sonuna kilobayt için <code>K</code>, megabayt
-    <code>M</code>, bayt için <code>B</code>  harfi konulabilir.</dd>
+    <code>M</code>, Gbayt için <code>G</code>  harfi konulabilir.</dd>
 
     <dt><code><strong>-L</strong><var>limit</var></code></dt>
     <dd>Disk arabellek dosyası düğümü toplamının sınırını belirlemekte
-    kullanılır.</dd>
+    kullanılır. Değerin sonuna kilobayt için <code>K</code>, megabayt
+    <code>M</code>, Gbayt için <code>G</code>  harfi konulabilir.</dd>
 
     <dt><code><strong>-i</strong></code></dt>
     <dd>Akıllı olup sadece disk arabelleği değiştiği zaman çalışır. Bu

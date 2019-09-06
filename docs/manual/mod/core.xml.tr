@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1855819:1864213 (outdated) -->
+<!-- English Revision: 1864213 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -4028,7 +4028,7 @@ Protocols h2 http/1.1
 <name>RegexDefaultOptions</name>
 <description>Regex düzenli ifadeleri için öntanımlı/küresel seçenekleri yapılandırır</description>
 <syntax>RegexDefaultOptions [none] [+|-]<var>seçenek</var> [[+|-]<var>seçenek</var>] ...</syntax>
-<default>RegexDefaultOptions DOLLAR_ENDONLY</default>
+<default>RegexDefaultOptions DOTALL DOLLAR_ENDONLY</default>
 <contextlist><context>server config</context></contextlist>
 <compatibility>Sadece Apache 2.4.30 ve sonrasında kullanılabilmektedir.</compatibility>
     
@@ -4049,21 +4049,25 @@ Protocols h2 http/1.1
             <dt><code>ICASE</code></dt>
             <dd>Harf büyüklüğüne duyarlı eşleşmeler kullanılır.</dd>
 
+            <dt><code>EXTENDED</code></dt>
+            <dd>Perl'ün /x seçeneği; kalıp içindeki açıklamaları ve 
+            (öncelenmemiş) boşlukları yoksayar.</dd>
+
             <dt><code>DOTALL</code></dt>
-            <dd>Perl'ün /s seçeneği.</dd>
+            <dd>Perl'ün /s seçeneği; '.' karakteri, satırsonu karakteri ile 
+             eşleşir.</dd>
 
             <dt><code>DOLLAR_ENDONLY</code></dt>
             <dd>'$' dizgenin sonu ile eşleşir.</dd>
-            <dd>.</dd>
         </dl>
         <highlight language="config">
-# 
-RegexDefaultOptions +ICASE +DOLLAR_ENDONLY
+# Tüm düzenli ifadeler için öntanımlı olarak ICASE seçeneğini ekler:
+RegexDefaultOptions +ICASE
 ...
-# ICASE seçeneği silinir, diğer seçenekler tutulur:
-RegexDefaultOptions -ICASE
+# Öntanımlı DOLLAR_ENDONLY seçeneği silinir, diğer seçenekler tutulur:
+RegexDefaultOptions -DOLLAR_ENDONLY
 ...
-# Atanmuş seçenekler silinir, DOTALL öntanımlı seçenek yapılır:
+# Atanmış seçenekler silinir, DOTALL öntanımlı seçenek yapılır:
 RegexDefaultOptions DOTALL
 ...
 # Tüm seçenekler silinir, öntanımlı seçenek kalmaz.
