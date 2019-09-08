@@ -1675,6 +1675,7 @@ model/x3d+xml					x3d x3dz
 text/cache-manifest				appcache
 text/calendar					ics ifb
 text/css					css
+text/css	        less
 text/csv					csv
 # text/csv-schema
 # text/directory
