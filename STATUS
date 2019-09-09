@@ -124,6 +124,7 @@ CURRENT RELEASE NOTES:
     . non-Unix build
     . non-Unix, single-platform code
     . routine APLOGNO() backports
+    . .gdbinit
 
 RELEASE SHOWSTOPPERS:
 
