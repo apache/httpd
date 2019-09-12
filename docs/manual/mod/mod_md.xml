@@ -47,13 +47,6 @@
         to configure another CA that supports the protocol.
         </p>
         
-        <note type="warning"><title>Warning</title>
-            <p>This module is experimental. Its behaviors, directives, and 
-                defaults are subject to more change from release to 
-                release relative to other standard modules. Users are encouraged to 
-                consult the "CHANGES" file for potential updates.</p>
-        </note>
-
         <p>Simple configuration example:</p>
         
         <note><title>TLS in a VirtualHost context</title>
@@ -87,39 +80,59 @@ MDomain example.org
             This module requires <module>mod_watchdog</module> to be loaded as well.
         </p><p>
             Certificate sign-up and renewal with Let's Encrypt requires your server to be
-            reachable on port 80 (http:) from the outside. The alternative method over
-            port 443 (https:) is currently disabled for security reasons (status from
-            2018-01-14).
+            reachable on port 80 (http:) and/or port 443 (https:) from the public internet.
+            (Unless your server is configured to use DNS for challenges - more on that under
+             'wildcard certificates')  
         </p><p>
-            The module will select from the methods offered by Let's Encrypt. If LE decides
-            at one point in the future, to re-enable it again, mod_md will
-            use it when suitable.
+            The module will select from the methods offered by Let's Encrypt. Usually LE offers
+            challenges on both ports and DNS and Apache chooses a method available.
         </p><p>
-            But for now, only the port 80 variant is available (termed "http-01"). Only
-            when LE can reach your server on port 80 will mod_md work for
-            you. For now, at least.
+            To determine which one is available, the module looks at the ports
+            Apache httpd listens on. If those include port 80, it assumes that the
+            http: challenge (named http-01) is available. If the server listens
+            on port 443, the https: challenge (named tls-alpn-01) is also added to
+            the list. (And if <directive module="mod_md">MDChallengeDns01</directive> 
+            is configured, the challenge dns-01 is added as well.) 
         </p><p>
-            If you do not want to offer any sites on port 80 any more, you may leave it open
-            and redirect all requests to your https: sites instead. Use the
-            <directive module="mod_md">MDRequireHttps</directive> described below to do
-            that in a convenient fashion. This will continue to answer http: challenges
-            from Let's Encrypt. 
+            If your setup is not so straight forward, there are two methods available
+            to influence this. First, look at <directive module="mod_md">MDPortMap</directive>
+            if the server is behind a portmapper, such as a firewall. Second, you may
+            override the module's guesswork completely by configuring
+            <directive module="mod_md">MDCAChallenges</directive> directly.  
         </p>
+        </note>
+
+        <note><title>https: Challenges</title>
+        <p>
+            For domain verification via the TLS protocol `tls-alpn-01` is the name
+            of the challenge type. It requires the Apache server to listen on port 443
+            (see <directive module="mod_md">MDPortMap</directive> if you map that port
+            to something else).
+        </p><p>
+            Let's Encrypt will open a TLS connection to Apache using the special indicator
+            `acme-tls/1` (this indication part of TLS is called ALPN, therefore the name
+            of the challenge. ALPN is also used by browsers to request a HTTP/2 connection).
+        </p><p>
+            As with the HTTP/2 protocol, to allow this, you configure:
+        </p>
+        <highlight language="config">
+Protocols h2 http/1.1 acme-tls/1
+        </highlight>
+        <p>
+            And the `tls-alpn-01` challenge type is available.
         </note>
 
         <note><title>Wildcard Certificates</title>
         <p>
-            Wildcard certificates are possible with version 2.x of `mod_md``. But they are 
-            not straight-forward. Let's Encrypt requires the `dns-01` challenge verification 
+            Wildcard certificates are possible, but not straight-forward to use out of
+            the box. Let's Encrypt requires the `dns-01` challenge verification 
             for those. No other is considered good enough.
         </p><p>
-            The difficulty here is that Apache cannot do that on its own. (which is also 
-            a security benefit, since corrupting a web server or the communication path to 
-            it is the scenario `dns-01` protects against). As the name implies, `dns-01` 
+            The difficulty here is that Apache cannot do that on its own. As the name implies, `dns-01` 
             requires you to show some specific DNS records for your domain that contain 
             some challenge data. So you need to _write_ your domain's DNS records.
         </p><p>
-            If you know how to do that, you can integrated this with `mod_md`. Let's 
+            If you know how to do that, you can integrated this with mod_md. Let's 
             say you have a script for that in `/usr/bin/acme-setup-dns` you configure 
             Apache with:
         </p>
@@ -767,11 +780,22 @@ MDRequireHttps permanent
         </contextlist>
         <usage>
             <p>
-                Sets challenge types and their execution order when proving domain ownership.
+                Sets challenge types and their execution order when proving domain ownership
+                and overrides any guesswork and sanity checks by the module.
                 The names are protocol specific.
                 The current ACME protocol version implemented by Let's Encrypt defines three challenge
                 types that are supported by mod_md. By default, it will try
-                the one on port 443 when available.
+                the https: based one on port 443 when available.
+            </p><p>
+                To repeat: using this directive overrides the module selection. If you specify
+                the 'http-01' challenge, the module will no longer check if the server listens
+                on port 80. It will just use the challenge with Let's Encrypt (if LE offers
+                it).
+            </p><p>
+                If your configuration choices here are unworkable, LE will fail
+                your domain verification  after a while and give up. This error will
+                be reported on your server-status and md-status. You will then have to figure 
+                out why it did not work.
             </p>
         </usage>
     </directivesynopsis>
