@@ -78,7 +78,7 @@ exactement comment chaque règle est traitée.</p>
 <div class="section">
 <h2><a name="regex" id="regex">Expressions rationnelles</a></h2>
 
-<p>mod_rewrite utilise le vocabulaire des <a href="http://pcre.org/">Expressions rationnelles compatibles Perl</a>.
+<p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> utilise le vocabulaire des <a href="http://pcre.org/">Expressions rationnelles compatibles Perl</a>.
 Ce document n'a pas pour prétention d'être une référence détaillée des
 expressions rationnelles. A cet effet, nous recommandons les <a href="http://pcre.org/pcre.txt">pages de manuel de PCRE</a>, la <a href="http://perldoc.perl.org/perlre.html">page de manuel des
 expressions rationnelles Perl</a>, et l'ouvrage <a href="http://shop.oreilly.com/product/9780596528126.do">Mastering
@@ -105,43 +105,73 @@ expressions.</p>
 <th>Exemple</th>
 </tr>
 
-<tr><td><code>.</code></td><td>Correspond à tout caractère unique
-</td><td><code>c.t</code> correspondra à <code>cat</code>,
-<code>cot</code>, <code>cut</code>, etc.</td></tr>
-<tr><td><code>+</code></td><td>Répète le caractère de correspondance
-précédent une ou plusieurs fois</td>
-<td><code>a+</code> correspond à <code>a</code>, <code>aa</code>,
-<code>aaa</code>, etc.</td></tr>
-<tr><td><code>*</code></td><td>Répète le caractère de correspondance
-précédent zéro ou plusieurs fois</td>
-<td><code>a*</code> correspond à tout ce à quoi correspond
-<code>a+</code>, mais correspond aussi à la chaîne vide.</td></tr>
-<tr><td><code>?</code></td><td>Rend la correspondance optionnelle.</td><td>
-<code>colou?r</code> correspondra à <code>color</code> et <code>colour</code>.</td>
+<tr>
+	<td><code>.</code></td>
+	<td>Correspond à tout caractère unique</td>
+	<td><code>c.t</code> correspondra à <code>cat</code>,
+	<code>cot</code>, <code>cut</code>, etc.</td>
 </tr>
-<tr><td><code>^</code></td><td>Appelé ancrage, correspond au début de la
-chaîne</td>
-<td><code>^a</code> correspond à une chaîne qui commence par
-<code>a</code></td></tr>
-<tr><td><code>$</code></td><td>L'autre ancrage, correspond à la fin de
-la chaîne.</td>
-<td><code>a$</code> correspond à une chaîne qui se termine par
-<code>a</code>.</td></tr>
-<tr><td><code>( )</code></td><td>Regroupe plusieurs caractères en une
-seule entité, et conserve une correspondance à des fins d'utilisation
-dans une référence arrière.</td>
-<td><code>(ab)+</code>
-correspond à <code>ababab</code> - à savoir, le <code>+</code>
-s'applique au groupe.
-Pour plus de détails sur les références arrières, voir <a href="#InternalBackRefs">ci-dessous</a>.</td></tr>
-<tr><td><code>[ ]</code></td><td>Une classe de caractères - correspond à
-un des caractères de la classe</td>
-<td><code>c[uoa]t</code> correspond à <code>cut</code>,
-<code>cot</code> ou <code>cat</code>.</td></tr>
-<tr><td><code>[^ ]</code></td><td>Négation de la classe de caractères -
-correspond à tout caractère ne faisant pas partie de la classe</td>
-<td><code>c[^/]t</code> correspond à <code>cat</code> ou
-<code>c=t</code> mais pas à <code>c/t</code></td></tr>
+<tr>
+	<td><code>+</code></td>
+	<td>Répète le caractère de correspondance précédent une ou plusieurs fois</td>
+	<td><code>a+</code> correspond à <code>a</code>, <code>aa</code>,
+	<code>aaa</code>, etc.</td>
+</tr>
+	<tr><td><code>*</code></td>
+	<td>Répète le caractère de correspondance
+	précédent zéro ou plusieurs fois</td>
+	<td><code>a*</code> correspond à tout ce à quoi correspond
+	<code>a+</code>, mais correspond aussi à la chaîne vide.</td>
+</tr>
+<tr>
+	<td><code>?</code></td>
+	<td>Rend la correspondance optionnelle.</td>
+	<td><code>colou?r</code> correspondra à <code>color</code> et <code>colour</code>.</td>
+</tr>
+<tr>
+    <td><code>\</code></td>
+    <td>Echappe le caractère suivant</td>
+    <td><code>\.</code> correspondra à <code>.</code> (le point) et non <em>à
+    tout caractère unique</em> comme expliqué plus haut</td>
+</tr>
+<tr>
+	<td><code>^</code></td>
+	<td>Appelé ancrage, correspond au début de la
+	chaîne</td>
+	<td><code>^a</code> correspond à une chaîne qui commence par
+	<code>a</code></td>
+</tr>
+<tr>
+	<td><code>$</code></td>
+	<td>L'autre ancrage, correspond à la fin de
+	la chaîne.</td>
+	<td><code>a$</code> correspond à une chaîne qui se termine par
+	<code>a</code>.</td>
+</tr>
+<tr>
+	<td><code>( )</code></td>
+	<td>Regroupe plusieurs caractères en une
+	seule entité, et conserve une correspondance à des fins d'utilisation
+	dans une référence arrière.</td>
+	<td><code>(ab)+</code>
+	correspond à <code>ababab</code> - à savoir, le <code>+</code>
+	s'applique au groupe.
+	Pour plus de détails sur les références arrières, voir <a href="#InternalBackRefs">ci-dessous</a>.</td>
+</tr>
+<tr>
+	<td><code>[ ]</code></td>
+	<td>Une classe de caractères - correspond à
+	un des caractères de la classe</td>
+	<td><code>c[uoa]t</code> correspond à <code>cut</code>,
+	<code>cot</code> ou <code>cat</code>.</td>
+</tr>
+<tr>
+	<td><code>[^ ]</code></td>
+	<td>Négation de la classe de caractères -
+	correspond à tout caractère ne faisant pas partie de la classe</td>
+	<td><code>c[^/]t</code> correspond à <code>cat</code> ou
+	<code>c=t</code> mais pas à <code>c/t</code></td>
+</tr>
 </table>
 
 <p>Avec <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>, le caractère <code>!</code> peut
@@ -159,15 +189,14 @@ arrières dans les expressions rationnelles</a></h3>
       un des <em>modèles de conditions</em>, des références arrières
       sont créées en interne et peuvent être rappelées via les chaînes
       <code>$N</code> et <code>%N</code> (voir ci-dessous). Ces
-      références sont disponibles lors de la création
-      de la chaîne de substitution d'une directive
+      références sont disponibles lors de la
+      création de la chaîne de substitution d'une directive
       <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> ou de la
       chaîne de test d'une directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>.</p>
       <p>Les captures dans les modèles de directives <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> sont paradoxalement
       disponibles dans toutes les directives <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> qui précèdent, car
       les expressions des directives <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> sont évaluées avant
       les conditions individuelles.</p>
-       
       
       <p>La figure 1 montre à quels endroits les
       références arrières sont suceptibles
