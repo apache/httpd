@@ -54,14 +54,6 @@
 	de configurer une autre CA si cette dernière supporte le protocole.
         </p>
         
-        <div class="warning"><h3>Avertissement</h3>
-            <p>Ce module en est au stade expérimental, et ses comportements,
-	    directives et valeurs par défaut sont d'avantage susceptibles d'être
-	    modifiés que ceux des modules standards. Il est par
-	    conséquent recommandé de consulter régulièrement le fichier
-	    "CHANGES" pour se tenir informé des modifications apportées.</p>
-        </div>
-
         <p>Exemple de configuration simple :</p>
         
         <div class="note"><h3>TLS dans un contexte de serveur virtuel</h3>
@@ -97,26 +89,59 @@
 	    préalable du module <code class="module"><a href="../mod/mod_watchdog.html">mod_watchdog</a></code>.
         </p><p>
             Pour que Let's Encrypt puisse signer et renouveler votre certificat,
-	    votre serveur doit être accessible depuis l'extérieur sur le port 80
-	    (http:). Il existe une autre méthode via le port 443 (https:), mais
-	    elle est actuellement désactivée pour des raisons de sécurité (à la
-	    date du 14/01/2018).
+	    votre serveur doit être accessible depuis l'internet public sur le port 80
+	    (http:) et/ou 443 (https:), à moins que votre serveur soit configuré
+	    pour utiliser les vérifications DNS - pour plus de détails, voir
+	    "certificats génériques".
         </p><p>
-            Le module va sélectionner une des méthodes proposées par Let's
-	    Encrypt. Si Let's Encrypt décide de la réactiver dans le futur,
-	    mod_md l'utilisera chaque fois qu'elle sera disponible.
+            Le module choisit une des méthodes proposées par Let's Encrypt. En
+	    général, LE propose des méthodes de vérification sur les ports ou le
+	    DNS et Apache choisit une des méthodes disponibles.    
         </p><p>
-            Actuellement, seule la méthode du port 80 est proposée (appelée
-	    "http-01"). Pour l'instant, mod_md ne fonctionnera donc
-	    que si Let's Encrypt peut accéder à votre serveur sur le port 80.
+            Pour déterminer quelles méthodes sont disponibles, le module
+	    consulte les ports sur lesquels écoute Apache httpd. Si le port 80 en
+	    fait partie, le module supposera que la vérification http: nommée
+	    http-01 est disponible. Si le port 443 en fait aussi partie, la
+	    vérification https: nommée tls-alpn-01 sera ajoutée à la liste des
+	    méthodes disponibles. Enfin, si la directive <code class="directive"><a href="#mdchallengedns01">MDChallengeDns01</a></code> est définie, la méthode
+	    de vérification dns-01 sera aussi ajoutée. 
+        </p><p>
+            Si votre configuration est plus complexe, deux méthodes permettent
+	    d'orienter ce choix. En premier lieu, voyez du côté de la directive
+	    <code class="directive"><a href="#mdportmap">MDPortMap</a></code> si le serveur se
+	    trouve derrière un redirecteur de port comme un pare-feu. En second
+	    lieu, vous pouvez court-circuiter entièrement le processus de choix
+	    du module en définissant directement la directive <code class="directive"><a href="#mdcachallenges">MDCAChallenges</a></code>.  
+        </p>
+        </div>
+
+        <div class="note"><h3>Vérifications https:</h3>
+        <p>
+            Pour la vérification de domaine via le protocole TLS, le nom de la
+	    méthode correspondante est "tls-alpn-01". Le serveur Apache doit
+	    alors être en écoute sur le port 443 (voir la directive <code class="directive"><a href="#mdportmap">MDPortMap</a></code> si vous redirigez ce port vers
+	    un autre).
+        </p><p>
+            Let's Encrypt ouvrira alors une connexion TLS avec Apache en
+	    utilisant l'indicateur spécial "acme-tls/1" (cette portion
+	    indication de TLS se nomme ALPN, d'où le nom de la méthode de
+	    vérification. ALPN est aussi utilisé par les navigateurs pour ouvrir
+	    une connexion HTTP/2.
         </p><p>
             Si vous ne souhaitez cependant qu'aucun de vos sites ne soit
 	    accessible sur le port 80, vous pouvez laiser ce dernier ouvert et
 	    rediriger toutes les requêtes vers vos sites en https:. Pour
 	    ce faire, utilisez la directive <code class="directive"><a href="#mdrequirehttps">MDRequireHttps</a></code> décrite plus loin. Votre
 	    serveur pourra alors continuer à répondre au requêtes en http: en
-	    provenance de Let's Encrypt. 
+	    provenance de Let's Encrypt.
+	    Comme dans le cas du protocole HTTP/2, vous pouvez configurer ceci
+	    de la manière suivante :
         </p>
+	<pre class="prettyprint lang-config">Protocols h2 http/1.1 acme-tls/1</pre>
+
+        <p>
+            La méthode de vérification "tls-alpn-01" sera alors disponible.
+	</p>
         </div>
 	<div class="note"><h3>Certificats génériques</h3>
         <p>
@@ -126,13 +151,11 @@
 	    Aucune autre n'est considérée comme suffisamment efficace.
         </p><p>
 	    Apache ne peut cependant pas implémenter cette vérification de
-	    lui-même (ce qui est aussi un avantage en matière de sécurité car la
-	    corruption d'un serveur web ou du chemin de communication permettant
-	    d'y accéder est le scénario contre lequel "dns-01" protège). Comme
-	    son nom l'indique, "dns-01" vous demande de présenter certains
-	    enregistrement DNS spécifiques à votre domaine qui doivent contenir
-	    certaines données de vérification. Vous devez donc être en mesure
-	    d'éditer et modifier les enregistrements DNS de votre domaine.
+	    lui-même . Comme son nom l'indique, "dns-01" vous demande de
+	    présenter certains enregistrement DNS spécifiques à votre domaine
+	    qui doivent contenir certaines données de vérification. Vous devez
+	    donc être en mesure d'éditer et modifier les enregistrements DNS de
+	    votre domaine.
         </p><p>
             Si c'est le cas, vous pouvez procéder via mod_md. Supposons que vous
 	    disposiez pour cela du script /usr/bin/acme-setup-dns ; vous
@@ -308,11 +331,25 @@
             <p>
 		Cette directive permet de définir les types de négociation
 		utilisés et leur ordre d'exécution pour prouver l'appartenance
-		du domaine. Les noms sont spécifiques au protocole. La version
-		du protocole ACME actuellement implémentée par Let's Encrypt
-		définit trois types de négociation supportés par mod_md. Par
-		défaut, ce dernier utilisera le type de négociation associé au
+		du domaine et de court-circuiter tout processus de choix ou
+		vérification d'absence de corruption de la part du module. Les
+		noms sont spécifiques au protocole. La version du protocole ACME
+		actuellement implémentée par Let's Encrypt définit trois types
+		de négociation supportés par mod_md. Par défaut, ce dernier
+		tentera d'utiliser le type de négociation basé sur https: sur le
 		port 443, s'il est disponible.
+            </p><p>
+                Pour rappel, l'utilisation de cette directive court-circuite le
+		processus de sélection du module. Ainsi, si vous spécifiez la méthode
+		"http-01", le module ne vérifiera pas si le serveur écoute sur
+		le port 80. Il utilisera directement cette méthode avec Let's
+		Encrypt, si ce dernier la propose.
+            </p><p>
+                Si vos choix de configuration ne sont pas applicables ici, LE
+		échouera à vérifier votre domaine et rendra la main au bout d'un
+		certain temps. Cette erreur sera consignée dans votre
+		server-status et dans md-status. Vous devrez alors tenter de
+		comprendre pourquoi votre configuration ne fonctionne pas.		
             </p>
         
 </div>

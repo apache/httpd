@@ -326,10 +326,10 @@ RewriteRule   "^foo\.html$"             "foo.night.html"</pre>
     <dt>Description :</dt>
 
     <dd>
-      <p>Ici, nous voulons conserver une certaine forme de statut
+      <p>Parfois, nous voulons conserver une certaine forme de statut
       lorsqu'une réécriture a eu lieu. Par exemple, vous souhaitez
       consigner le fait que cette réécriture a eu lieu, et vous servir
-      plus tard de cette information pour déterminer si une requête sera
+      plus tard de cette information pour déterminer si une requête était
       concernée par cette réécriture. Pour y parvenir, on peut utiliser
       une variable d'environnement.</p>
     </dd>
@@ -350,6 +350,13 @@ RewriteRule   "^/cheval/(.*)"   "/poney/$1" [E=<strong>rewritten:1</strong>]</pr
 
 <pre class="prettyprint lang-config">RewriteCond "%{ENV:rewritten}" =1</pre>
 
+
+    <p>Notez que les variables d'environnement ne survivent pas à une
+    redirection externe. Vous devez alors utiliser le drapeau [CO] pour définir
+    un cookie. Pour les redirections de niveau répertoire et htaccess où la
+    substitution finale est traitée en tant que redirection interne, les
+    variables d'environnement du tour de réécriture précédent sont préfixées par
+    "REDIRECT_".</p>
 
     </dd>
   </dl>
