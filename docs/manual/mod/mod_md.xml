@@ -120,6 +120,7 @@ Protocols h2 http/1.1 acme-tls/1
         </highlight>
         <p>
             And the `tls-alpn-01` challenge type is available.
+	</p>
         </note>
 
         <note><title>Wildcard Certificates</title>
