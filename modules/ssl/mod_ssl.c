@@ -99,7 +99,7 @@ static const command_rec ssl_config_cmds[] = {
                 "Enable FIPS-140 mode "
                 "(`on', `off')")
     SSL_CMD_ALL(CipherSuite, TAKE12,
-                "Colon-delimited list of permitted SSL Ciphers, optional preceeded "
+                "Colon-delimited list of permitted SSL Ciphers, optional preceded "
                 "by protocol identifier ('XXX:...:XXX' - see manual)")
     SSL_CMD_SRV(CertificateFile, TAKE1,
                 "SSL Server Certificate file "
@@ -192,7 +192,7 @@ static const command_rec ssl_config_cmds[] = {
                 "('[+-][" SSL_PROTOCOLS "] ...' - see manual)")
     SSL_CMD_PXY(ProxyCipherSuite, TAKE12,
                "SSL Proxy: colon-delimited list of permitted SSL ciphers "
-               ", optionally preceeded by protocol specifier ('XXX:...:XXX' - see manual)")
+               ", optionally preceded by protocol specifier ('XXX:...:XXX' - see manual)")
     SSL_CMD_PXY(ProxyVerify, TAKE1,
                "SSL Proxy: whether to verify the remote certificate "
                "('on' or 'off')")
