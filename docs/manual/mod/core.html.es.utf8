@@ -1242,7 +1242,7 @@ in case of an error</td></tr>
     error rather than masking it.  More information is available in
     Microsoft Knowledge Base article <a href="http://support.microsoft.com/default.aspx?scid=kb;en-us;Q294807">Q294807</a>.</p>
 
-    <p>Although most error messages can be overriden, there are certain
+    <p>Although most error messages can be overridden, there are certain
     circumstances where the internal messages are used regardless of the
     setting of <code class="directive"><a href="#errordocument">ErrorDocument</a></code>.  In
     particular, if a malformed request is detected, normal request processing

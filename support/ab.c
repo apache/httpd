@@ -18,7 +18,7 @@
    ** This program is based on ZeusBench V1.0 written by Adam Twiss
    ** which is Copyright (c) 1996 by Zeus Technology Ltd. http://www.zeustech.net/
    **
-   ** This software is provided "as is" and any express or implied waranties,
+   ** This software is provided "as is" and any express or implied warranties,
    ** including but not limited to, the implied warranties of merchantability and
    ** fitness for a particular purpose are disclaimed.  In no event shall
    ** Zeus Technology Ltd. be liable for any direct, indirect, incidental, special,
