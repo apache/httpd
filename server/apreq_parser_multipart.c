@@ -410,6 +410,10 @@ APREQ_DECLARE_PARSER(apreq_parse_multipart)
                                                     parser->brigade_limit,
                                                     parser->temp_dir,
                                                     ctx->level + 1);
+                if (next_ctx == NULL) {
+                    ctx->status = MFD_ERROR;
+                    goto mfd_parse_brigade;
+                }
 
                 next_ctx->param_name = "";
 
