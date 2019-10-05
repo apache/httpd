@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1706010 -->
+<!-- English Revision: 1867994 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -104,8 +104,8 @@ http://serveur_physique_utilisateur1/u/utilisateur/chemin
 
 <highlight language="config">
 RewriteEngine on
-RewriteMap      users-to-hosts   "txt:/path/to/map.users-to-hosts"
-RewriteRule   "^/u/([^/]+)/?(.*)"   "http://${users-to-hosts:$1|server0}/u/$1/$2"
+RewriteMap    users-to-hosts      "txt:/path/to/map.users-to-hosts"
+RewriteRule   "^/u/([^/]+)/?(.*)" "http://${users-to-hosts:$1|server0}/u/$1/$2"
 </highlight>
     </dd>
   </dl>
@@ -140,7 +140,7 @@ RewriteRule   "^/u/([^/]+)/?(.*)"   "http://${users-to-hosts:$1|server0}/u/$1/$2
 <highlight language="config">
 # Cet exemple n'est valable que dans un contexte de r&eacute;pertoire
 RewriteCond "%{REQUEST_URI}"   "!-U"
-RewriteRule "^(.+)\.html$"          "/regenerate_page.cgi"   [PT,L]
+RewriteRule "^(.+)\.html$"     "/regenerate_page.cgi"   [PT,L]
 </highlight>
 
       <p>L'op&eacute;rateur <code>-U</code> permet de d&eacute;terminer si la cha&icirc;ne
@@ -184,8 +184,8 @@ RewriteRule "^(.+)\.html$"          "/regenerate_page.cgi"   [PT,L]
 
 <highlight language="config">
 RewriteEngine on
-RewriteMap lb "rnd:/path/to/serverlist.txt"
-RewriteRule "^/(.*)" "http://${lb:serveurs}/$1" [P,L]
+RewriteMap lb        "rnd:/path/to/serverlist.txt"
+RewriteRule "^/(.*)" "http://${lb:servers}/$1"     [P,L]
 </highlight>
 
 <p><code>liste-serveurs.txt</code> contiendra la liste des serveurs :</p>
@@ -331,11 +331,11 @@ RewriteRule   "^foo\.html$"             "foo.night.html"
     <dt>Description :</dt>
 
     <dd>
-      <p>Ici, nous voulons conserver une certaine forme de statut
+      <p>Nous voulons parfois conserver une certaine forme de statut
       lorsqu'une r&eacute;&eacute;criture a eu lieu. Par exemple, vous souhaitez
       consigner le fait que cette r&eacute;&eacute;criture a eu lieu, et vous servir
-      plus tard de cette information pour d&eacute;terminer si une requ&ecirc;te sera
-      concern&eacute;e par cette r&eacute;&eacute;criture. Pour y parvenir, on peut utiliser
+      plus tard de cette information pour d&eacute;terminer si une requ&ecirc;te était
+      concern&eacute;e par cette r&eacute;&eacute;criture. Pour ce faire, on peut utiliser
       une variable d'environnement.</p>
     </dd>
 
@@ -357,6 +357,13 @@ RewriteRule   "^/cheval/(.*)"   "/poney/$1" [E=<strong>rewritten:1</strong>]
 <highlight language="config">
 RewriteCond "%{ENV:rewritten}" "=1"
 </highlight>
+
+    <p>Notez que les variables d'environnement ne survivent pas à une
+    redirection externe. Vous devez alors utiliser le drapeau [CO] pour définir
+    un cookie. Pour les redirections de niveau répertoire et htaccess où la
+    substitution finale est traitée en tant que redirection interne, les
+    variables d'environnement du tour de réécriture précédent sont préfixées par
+    "REDIRECT_".</p>
 
     </dd>
   </dl>
