@@ -103,8 +103,8 @@ http://serveur_physique_utilisateur1/u/utilisateur/chemin
       possèdera pas d'entrée dans la table de correspondances :</p>
 
 <pre class="prettyprint lang-config">RewriteEngine on
-RewriteMap      users-to-hosts   "txt:/path/to/map.users-to-hosts"
-RewriteRule   "^/u/([^/]+)/?(.*)"   "http://${users-to-hosts:$1|server0}/u/$1/$2"</pre>
+RewriteMap    users-to-hosts      "txt:/path/to/map.users-to-hosts"
+RewriteRule   "^/u/([^/]+)/?(.*)" "http://${users-to-hosts:$1|server0}/u/$1/$2"</pre>
 
     </dd>
   </dl>
@@ -137,7 +137,7 @@ RewriteRule   "^/u/([^/]+)/?(.*)"   "http://${users-to-hosts:$1|server0}/u/$1/$2
 
 <pre class="prettyprint lang-config"># Cet exemple n'est valable que dans un contexte de répertoire
 RewriteCond "%{REQUEST_URI}"   "!-U"
-RewriteRule "^(.+)\.html$"          "/regenerate_page.cgi"   [PT,L]</pre>
+RewriteRule "^(.+)\.html$"     "/regenerate_page.cgi"   [PT,L]</pre>
 
 
       <p>L'opérateur <code>-U</code> permet de déterminer si la chaîne
@@ -179,8 +179,8 @@ RewriteRule "^(.+)\.html$"          "/regenerate_page.cgi"   [PT,L]</pre>
       serveurs.</p>
 
 <pre class="prettyprint lang-config">RewriteEngine on
-RewriteMap lb "rnd:/path/to/serverlist.txt"
-RewriteRule "^/(.*)" "http://${lb:serveurs}/$1" [P,L]</pre>
+RewriteMap lb        "rnd:/path/to/serverlist.txt"
+RewriteRule "^/(.*)" "http://${lb:servers}/$1"     [P,L]</pre>
 
 
 <p><code>liste-serveurs.txt</code> contiendra la liste des serveurs :</p>
@@ -324,11 +324,11 @@ RewriteRule   "^foo\.html$"             "foo.night.html"</pre>
     <dt>Description :</dt>
 
     <dd>
-      <p>Ici, nous voulons conserver une certaine forme de statut
+      <p>Nous voulons parfois conserver une certaine forme de statut
       lorsqu'une réécriture a eu lieu. Par exemple, vous souhaitez
       consigner le fait que cette réécriture a eu lieu, et vous servir
-      plus tard de cette information pour déterminer si une requête sera
-      concernée par cette réécriture. Pour y parvenir, on peut utiliser
+      plus tard de cette information pour déterminer si une requête était
+      concernée par cette réécriture. Pour ce faire, on peut utiliser
       une variable d'environnement.</p>
     </dd>
 
@@ -348,6 +348,13 @@ RewriteRule   "^/cheval/(.*)"   "/poney/$1" [E=<strong>rewritten:1</strong>]</pr
 
 <pre class="prettyprint lang-config">RewriteCond "%{ENV:rewritten}" "=1"</pre>
 
+
+    <p>Notez que les variables d'environnement ne survivent pas à une
+    redirection externe. Vous devez alors utiliser le drapeau [CO] pour définir
+    un cookie. Pour les redirections de niveau répertoire et htaccess où la
+    substitution finale est traitée en tant que redirection interne, les
+    variables d'environnement du tour de réécriture précédent sont préfixées par
+    "REDIRECT_".</p>
 
     </dd>
   </dl>
