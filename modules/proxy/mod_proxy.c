@@ -2377,7 +2377,7 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
                          elts[i].key, elts[i].val, ap_proxy_worker_name(cmd->pool, worker));
         } else {
             err = set_worker_param(cmd->pool, cmd->server, worker, elts[i].key,
-                                               elts[i].val);
+                                   elts[i].val);
             if (err)
                 return apr_pstrcat(cmd->temp_pool, "BalancerMember ", err, NULL);
         }
