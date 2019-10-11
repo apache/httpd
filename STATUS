@@ -176,8 +176,23 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
    *) mod_proxy_html, mod_xml2enc: Fix build issues with macOS due to r1864469
       trunk patch: http://svn.apache.org/r1867183
-      2.4.x: Trunk patch works
+      2.4.x patch: svn merge -c 1867183 ^/httpd/httpd/trunk .
       +1: jim
+
+   *) mod_authn_socache: Increase the maximum length of strings that can be cached
+                         PR 62149
+      trunk patch: http://svn.apache.org/r1865405
+      2.4.x patch: svn merge -c 1865405 ^/httpd/httpd/trunk .
+      +1: jailletc36
+
+   *) mod_deflate, mod_brotli: Honor "Accept-Encoding: foo;q=0" as per RFC 7231;
+                               which means 'foo' is "not acceptable".
+                               PR 58158
+      trunk patch: http://svn.apache.org/r1868313
+      2.4.x patch: svn merge -c 1868313 ^/httpd/httpd/trunk .
+      +1: jailletc36
+      jailletc36: tests added in r1868312.
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
