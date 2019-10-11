@@ -1121,8 +1121,8 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
             }
 #endif
         }
-        connect_addr = worker->cp->addr;
-        address_pool = worker->cp->pool;
+        connect_addr = AP_VOLATILIZE_T(apr_sockaddr_t *, worker->cp->addr);
+        address_pool = worker->cp->dns_pool;
     }
     else
         address_pool = r->pool;

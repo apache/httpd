@@ -287,11 +287,14 @@ typedef struct {
 
 /* Connection pool */
 struct proxy_conn_pool {
-    apr_pool_t     *pool;   /* The pool used in constructor and destructor calls */
-    apr_sockaddr_t *addr;   /* Preparsed remote address info */
-    apr_reslist_t  *res;    /* Connection resource list */
-    proxy_conn_rec *conn;   /* Single connection for prefork mpm */
+    apr_pool_t     *pool;     /* The pool used in constructor and destructor calls */
+    apr_sockaddr_t *addr;     /* Preparsed remote address info */
+    apr_reslist_t  *res;      /* Connection resource list */
+    proxy_conn_rec *conn;     /* Single connection for prefork mpm */
+    apr_pool_t     *dns_pool; /* The pool used for worker scoped DNS resolutions */
 };
+
+#define AP_VOLATILIZE_T(T, x) (*(T volatile *)&(x))
 
 /* worker status bits */
 /*
