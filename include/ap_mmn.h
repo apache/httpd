@@ -613,6 +613,8 @@
  * 20190312.2 (2.5.1-dev)  Add ap_no2slash_ex() and merge_slashes to 
  *                         core_server_conf.
  * 20190312.3 (2.5.1-dev)  Add forward_100_continue{,_set} to proxy_dir_conf
+ * 20190312.4 (2.5.1-dev)  Add add dns_pool to proxy_conn_pool and define
+ *                         AP_VOLATILIZE_T.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -620,7 +622,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20190312
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 3                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 4                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_proxy: Fix crash by resolving pool concurrency problems. PR 63503
+     [Ruediger Pluem, Eric Covener]
+
   *) core: On Windows, fix a start-up crash if <IfFile ...> is used with a path that is not
      valid (For example, testing for a file on a flash drive that is not mounted)
      [Christophe Jaillet]
