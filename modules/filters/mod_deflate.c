@@ -739,6 +739,8 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
          */
         if (!apr_table_get(r->subprocess_env, "force-gzip")) {
             const char *accepts;
+            const char *q = NULL;
+
             /* if they don't have the line, then they can't play */
             accepts = apr_table_get(r->headers_in, "Accept-Encoding");
             if (accepts == NULL) {
@@ -761,10 +763,21 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
                 token = (*accepts) ? ap_get_token(r->pool, &accepts, 0) : NULL;
             }
 
-            /* No acceptable token found. */
-            if (token == NULL || token[0] == '\0') {
+            /* Find the qvalue, if provided */
+            if (*accepts) {
+                while (*accepts == ';') {
+                    ++accepts;
+                }
+                q = ap_get_token(r->pool, &accepts, 1);
                 ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
-                              "Not compressing (no Accept-Encoding: gzip)");
+                              "token: '%s' - q: '%s'", token, q);
+            }
+
+            /* No acceptable token found or q=0 */
+            if (!token || token[0] == '\0' ||
+                (q && strlen(q) >= 3 && strncmp("q=0.000", q, strlen(q)) == 0)) {
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
+                              "Not compressing (no Accept-Encoding: gzip or q=0)");
                 ap_remove_output_filter(f);
                 return ap_pass_brigade(f->next, bb);
             }
