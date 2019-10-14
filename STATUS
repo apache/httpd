@@ -198,6 +198,37 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       +1: jailletc36
       jailletc36: tests added in r1868312.
 
+   *) mod_log_config: Parts of r1331110 is missing in back-port in 2.4.x done
+                      in r1430514. Add it now.
+      trunk patch: http://svn.apache.org/r1331110
+      2.4.x patch: http://home.apache.org/~jailletc36/r1331110.diff
+      +1: jailletc36
+
+  *) Easy patches: synch 2.4.x and trunk
+        - core: print r->uri during failure
+        - core: Call va_end before returning in the error case
+        - mod_cache_disk: fix a Coverity warning
+        - core: Provide TEST_CHAR macro in test_char.h
+        - tag some pools
+        - mod_mime_magic: constify some constant data
+        - mod_authz_core: axe some dead code
+        - core: Fix a signed/unsigned comparison that can never match
+        - mod_session: leave a hint about session expiration at TRACE2
+        - mod_ssl: Fix a typo
+     trunk patch:
+        - http://svn.apache.org/r1787229
+        - http://svn.apache.org/r1842919
+        - http://svn.apache.org/r1842926
+        - http://svn.apache.org/r1856490
+        - http://svn.apache.org/r1862051
+        - http://svn.apache.org/r1862202
+        - http://svn.apache.org/r1864759
+        - http://svn.apache.org/r1864865
+        - http://svn.apache.org/r1865871
+        - http://svn.apache.org/r1867256
+     2.4.x patch: svn merge -c 1787229,1842919,1842926,1856490,1862051,1862202,1864759,1864865,1865871,1867256 ^/httpd/httpd/trunk . 
+     +1: jailletc36
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
