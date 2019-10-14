@@ -135,6 +135,7 @@ static void *create_mime_dir_config(apr_pool_t *p, char *dummy)
     new->use_path_info = 2;
     new->ct_last_ext = CT_LAST_INIT;
     new->all_last_ext = ALL_LAST_INIT;
+    new->nomime = NOMIME_INIT;
 
     return new;
 }
