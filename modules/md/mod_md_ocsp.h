@@ -14,22 +14,20 @@
  * limitations under the License.
  */
 
-#ifndef mod_md_md_drive_h
-#define mod_md_md_drive_h
+#ifndef mod_md_md_ocsp_h
+#define mod_md_md_ocsp_h
 
-struct md_mod_conf_t;
-struct md_reg_t;
 
-typedef struct md_renew_ctx_t md_renew_ctx_t;
+apr_status_t md_ocsp_init_stapling_status(server_rec *s, apr_pool_t *p, 
+                                          X509 *cert, X509 *issuer);
 
-int md_will_renew_cert(const md_t *md);
-
+apr_status_t md_ocsp_get_stapling_status(unsigned char **pder, int *pderlen, 
+                                         conn_rec *c, server_rec *s, X509 *cert);
+                          
 /**
- * Start driving the certificate renewal for MDs marked with watched.
+ * Start watchdog for retrieving/updating ocsp status.
  */
-apr_status_t md_renew_start_watching(struct md_mod_conf_t *mc, server_rec *s, apr_pool_t *p);
+apr_status_t md_ocsp_start_watching(struct md_mod_conf_t *mc, server_rec *s, apr_pool_t *p);
 
 
-
-
-#endif /* mod_md_md_drive_h */
+#endif /* mod_md_md_ocsp_h */

@@ -33,16 +33,20 @@
     <summary>
         <p>
         This module manages common properties of domains for one or more virtual hosts. 
-        Its main feature is the use of the ACME protocol
-        (<a href="https://tools.ietf.org/html/rfc8555">RFC 8555</a>) 
-        to automate certificate provisioning. Certificates will be renewed 
-        by the module ahead of their expiration to account for disruption in internet
-        services. There are ways to monitor the status of all Managed Domains
-        and configurations that will run your own notification commands on renewal,
-        expiration and errors.
-        </p>
-        <p>
-        The default ACME Certificate Authority is 
+        Its serves two main purposes: for one, supervise/renew https: certificates via the 
+        ACME protocol (<a href="https://tools.ietf.org/html/rfc8555">RFC 8555</a>). 
+        Certificates will be renewed by the module ahead of their expiration to account 
+        for disruption in internet services. There are ways to monitor the status of all 
+        certififcates managed this way and configurations that will run your own 
+        notification commands on renewal, expiration and errors.
+        </p><p>
+        Second, mod_md offers an alternate OCSP Stapling implementation. This works with
+        managed certificates as well as with certificates you configure yourself. OCSP
+        Stapling is a necessary component for any https: site, influencing page load
+        times and, depending on other setups, page availability. More in the
+        stapling section below.
+        </p><p>
+        The default ACME Authority for managing certificates is 
         <a href="https://letsencrypt.org/">Let's Encrypt</a>, but it is possible 
         to configure another CA that supports the protocol.
         </p>
@@ -231,6 +235,53 @@ MDChallengeDns01 /usr/bin/acme-setup-dns
             </p><p>
                 In addition, there is <directive module="mod_md">MDCertificateStatus</directive> which
                 gives access to relevant certificate information in JSON format.
+            </p>
+        </note>
+
+        <note><title>Stapling</title>
+            <p>
+                If you want to try the stapling in one Managed Domain alone at first,
+                configure:
+            </p>
+            <highlight language="config">
+&lt;MDomain mydomain.net>
+  MDStapling on
+&lt;/MDomain>            
+            </highlight>
+            <p>
+                and use the 'server-status' and/or MDMessageCmd to see how it operates. You will
+                see if Stapling information is there, how long it is valid, from where it came and
+                when it will be refreshed.
+            </p><p>
+                If this all works to your satisfaction, you can switch it on for all your
+                certificates or just your managed ones.
+            </p><p>
+                The existing stapling implementation by mod_ssl is used by many sites
+                for years. There are two main differences between the mod_ssl and mod_md
+                one:
+            </p>
+            <ol>
+                <li>On demand vs. scheduled: mod_ssl retrieves the stapling information
+                when it is requested, e.g. on a new connection. mod_md retrieves it
+                right at server start and after 2/3rds of its lifetime.</li>
+                <li>In memory vs. persisted: mod_ssl <em>can</em> persist this
+                information, but most example configurations use a memory cache. mod_md
+                always stores in the file system.</li>
+            </ol>
+            <p>
+                If you are unlucky and restart your server during an outage of your CA's
+                OCSP service, your users may no longer reach your sites. Without persistence
+                your server cannot provide the client with the data and the client browser
+                cannot get it as well, since the OCSP service is not responding. 
+            </p><p>
+                The implementation in mod_md will have peristed it, load it again after
+                restart and have it available for incoming connections. A day or two before
+                this information expires, it will renew it, making it able to copy with
+                a long OCSP service downtime.
+            </p><p>
+                Due to backward compatibility, the existing implementation in mod_ssl could
+                not be changed drastically. For example, mod_ssl is unable to add a dependency 
+                to mod_watchdog without braking many existing installations (that do not load it).
             </p>
         </note>
 
@@ -781,22 +832,24 @@ MDRequireHttps permanent
         </contextlist>
         <usage>
             <p>
-                Sets challenge types and their execution order when proving domain ownership
-                and overrides any guesswork and sanity checks by the module.
-                The names are protocol specific.
-                The current ACME protocol version implemented by Let's Encrypt defines three challenge
-                types that are supported by mod_md. By default, it will try
-                the https: based one on port 443 when available.
+                Sets challenge types (in order of preference) when proving domain ownership.
+                Supported by the module are the challenge methods 'tls-alpn-01', 'dns-01'  
+                and 'http-01'. The module will look at the overall configuation of the server 
+                to find out which methods can be used. 
             </p><p>
-                To repeat: using this directive overrides the module selection. If you specify
-                the 'http-01' challenge, the module will no longer check if the server listens
-                on port 80. It will just use the challenge with Let's Encrypt (if LE offers
-                it).
+                If the server listens on port 80, for example, the 'http-01' method is available. 
+                The prerequisite for 'dns-01' is a configured  'MDChallengeDns01' command. 
+                'tls-alpn-01' is described above in 'https: Challenges'.
             </p><p>
-                If your configuration choices here are unworkable, LE will fail
-                your domain verification  after a while and give up. This error will
-                be reported on your server-status and md-status. You will then have to figure 
-                out why it did not work.
+                This auto selection works for most setups. But since Apache is a very powerful 
+                server with many configuration options, the situation is not clear for all 
+                possible cases. For example: it may listen on multiple IP addresses where some 
+                are reachable on `https:` and some not.
+            </p><p>
+                If you configure 'MDCAChallenges' directly, this auto selection is disabled. 
+                Instead, the module will use the configured challenge list when talking to 
+                the ACME server (a challenge type must be offered by the server as well). 
+                This challenges are examined in the order specified.
             </p>
         </usage>
     </directivesynopsis>
@@ -948,7 +1001,7 @@ MDRequireHttps permanent
         <usage>
             <p>
                 This command gets called when one of the following events happen for
-                a Managed Domain: "renewed", "expiring", "errored". The command may
+                a Managed Domain: "renewed", "installed", "expiring", "errored". The command may
                 be invoked for more than these in the future and ignore events
                 it is not prepared to handle.
             </p><p>
@@ -967,13 +1020,25 @@ MDMessageCmd /etc/apache/md-message
                 return code other than 0 is regarded as an error. 
             </p><p>
                 'errored' is no immediate cause for concern since renewal is attempted
-                early enough to allow the internet to come back. 
+                early enough to allow the internet to come back. This is reported at most
+                once per hour. 
             </p><p>
                 'expiring' should be taken serious. It is issued when the
                 <directive module="mod_md">MDWarnWindow</directive> is reached. By default this is
                 10% of the certificate lifetime, so for Let's Encrypt this currently
                 means 9 days before it expires. The warning is repeated at most once
                 a day. 
+            </p><p>
+                'renewed' means that a new certificate has been obtained and is stored
+                in the 'staging' area in the MD store. It will be activated on the next
+                server restart/reload.
+            </p><p>
+                'installed' is triggered when a new certificate has been transferred from
+                staging into the domains location in MD store. This happens at server
+                startup/reload. Different to all other invocations, MDMessageCmd is run
+                with root permissions (on *nix systems) and has access to the certificate
+                files (and keys). Certificates needed for other applications or
+                in different formats can be processed on this event.
             </p>
         </usage>
     </directivesynopsis>
@@ -1021,5 +1086,134 @@ MDMessageCmd /etc/apache/md-message
         </usage>
     </directivesynopsis>
 
+    <directivesynopsis>
+        <name>MDCertificateMonitor</name>
+        <description>The URL of a certificate log monitor.</description>
+        <syntax>MDCertificateMonitor name url</syntax>
+        <default>crt.sh https://crt.sh?q=</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <usage>
+            <p>
+                This is part of the 'server-status' HTML user interface and has nothing to 
+                do with the core functioning itself. It defines the link offered on that 
+                page for easy checking of a certificate monitor. The SHA256 fingerprint 
+                of the certificate is appended to the configured url.
+            </p><p>
+                Certificate Monitors offer supervision of Certificate Transparency (CT) 
+                Logs to track the use of certificates for domains. The least you may see 
+                is that Let's Encrypt (or whichever CA you have configured) has entered 
+                your certificates into the CTLogs.
+            </p><p>
+                Caveat: certificate logs update and monitor's intakes of those
+                updates suffer some delay. This varies between logs and monitors. A
+                brand new certificate will not be known immediately.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDStapling</name>
+        <description>Enable stapling for all or a particular MDomain.</description>
+        <syntax>MDStapling on|off</syntax>
+        <default>off</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <usage>
+            <p>
+                mod_md offers an implementation for providing OCSP stapling information. 
+                This is an alternative to the one provided by 'mod_ssl'. For backward 
+                compatiblity, this is disabled by default.
+            </p><p>
+                The stapling can be switched on for all certificates on the server or 
+                for an individual MDomain. This will replace any stapling configurtion 
+                in `mod_ssl` for these hosts. When disabled, the 'mod_ssl' stapling 
+                will do the work (if it is itself enabled, of course). This allows for
+                a gradual shift over from one implementation to the other.
+            </p><p>
+                The stapling of `mod_md` will also work for domains where the certificates 
+                are not managed by this module (see MDStapleOthers for how to control this). 
+                This allows use of the new stapling without using any ACME certificate 
+                management.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDStapleOthers</name>
+        <description>Enable stapling for certificates not managed by mod_md.</description>
+        <syntax>MDStaplingOthers on|off</syntax>
+        <default>on</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <usage>
+            <p>
+                This setting only takes effect when `MDStapling` is enabled. It controls 
+                if `mod_md` should also provide stapling information for certificates 
+                that are not directly controlled by it, e.g. renewed via an ACME CA.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDStaplingKeepResponse</name>
+        <description>Controls when old responses should be removed.</description>
+        <syntax>MDStaplingKeepResponse duration</syntax>
+        <default>7d</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <usage>
+            <p>
+                This time window specifies when OCSP response data used in stapling 
+                shall be removed from the store again. Response information older than 
+                7 days (default) is deleted on server restart/reload. This keeps the store 
+                from growing when certificates are renewed/reconfigured frequently.
+            </p><p>
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDStaplingRenewWindow</name>
+        <description>Control when the stapling responses will be renewed.</description>
+        <syntax>MDStaplingRenewWindow duration</syntax>
+        <default>33%</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <usage>
+            <p>
+                If the validity of the OCSP response used in stapling falls below 'duration', 
+                mod_md will obtain a new OCSP response.
+            </p><p>
+                The CA issueing a certificate commonly also operates the OCSP responder 
+                service and determines how long its signed response about the validity 
+                of a certificate are itself valid. The longer a response is valid, the longer 
+                it can be cached which mean better overall performance for everyone. 
+                The shorter the life time, the more rapidly certificate revocations
+                spread to clients. Also, service reliability is a consideration.
+            </p><p>
+                By adjusting the stapling renew window you can control parts of this yourself. 
+                If you make the renew time short (e.g. a short time before the current
+                information expires), you gain maximum cache time. But a service outage
+                (down for maintenance, for example) will affect you. If you renew a long
+                time before expiry, updates will be made more frequent, cause more load
+                on the CA server infrastructure and also more coordination between
+                the child processes of your server.
+            </p><p>
+                The default is chosen as 33%, which means renewal is started when only 
+                a third of the response lifetime is left. For a CA that issues OCSP 
+                responses with lifetime of 3 days, this means 2 days of caching and 1 day 
+                for renewal attempts. A service outage would have to last full 24 hours 
+                to affect your domains.
+            </p><p>
+                Setting an absolute renew window, like `2d` (2 days), is also possible. 
+            </p>
+        </usage>
+    </directivesynopsis>
 
 </modulesynopsis>

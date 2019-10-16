@@ -55,20 +55,16 @@ static const char *GROUP_NAME[] = {
     "staging",
     "archive",
     "tmp",
+    "ocsp",
     NULL
 };
 
-const char *md_store_group_name(int group)
+const char *md_store_group_name(unsigned int group)
 {
-    if ((size_t)group < sizeof(GROUP_NAME)/sizeof(GROUP_NAME[0])) {
+    if (group < sizeof(GROUP_NAME)/sizeof(GROUP_NAME[0])) {
         return GROUP_NAME[group];
     }
     return "UNKNOWN";
-}
-
-void md_store_destroy(md_store_t *store)
-{
-    if (store->destroy) store->destroy(store);
 }
 
 apr_status_t md_store_load(md_store_t *store, md_store_group_t group, 
@@ -145,10 +141,31 @@ int md_store_is_newer(md_store_t *store, md_store_group_t group1, md_store_group
     return store->is_newer(store, group1, group2, name, aspect, p);
 }
 
+apr_time_t md_store_get_modified(md_store_t *store, md_store_group_t group,  
+                                 const char *name, const char *aspect, apr_pool_t *p)
+{
+    return store->get_modified(store, group, name, aspect, p);
+}
+
 apr_status_t md_store_iter_names(md_store_inspect *inspect, void *baton, md_store_t *store, 
                                  apr_pool_t *p, md_store_group_t group, const char *pattern)
 {
     return store->iterate_names(inspect, baton, store, p, group, pattern);
+}
+
+apr_status_t md_store_remove_not_modified_since(md_store_t *store, apr_pool_t *p, 
+                                                apr_time_t modified,
+                                                md_store_group_t group, 
+                                                const char *name, 
+                                                const char *aspect)
+{
+    return store->remove_nms(store, p, modified, group, name, aspect);
+}
+
+apr_status_t md_store_rename(md_store_t *store, apr_pool_t *p,
+                             md_store_group_t group, const char *name, const char *to)
+{
+    return store->rename(store, p, group, name, to);
 }
 
 /**************************************************************************************************/

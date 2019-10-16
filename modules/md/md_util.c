@@ -14,6 +14,7 @@
  * limitations under the License.
  */
  
+#include <assert.h>
 #include <stdio.h>
 
 #include <apr_lib.h>
@@ -70,14 +71,30 @@ apr_status_t md_util_pool_vdo(md_util_vaction *cb, void *baton, apr_pool_t *p, .
 /**************************************************************************************************/
 /* data chunks */
 
-md_data *md_data_create(apr_pool_t *p, const char *data, apr_size_t len)
+md_data_t *md_data_create(apr_pool_t *p, const char *data, apr_size_t len)
 {
-    md_data *d;
+    md_data_t *d;
     
     d = apr_palloc(p, sizeof(*d));
     d->len = len;
     d->data = len? apr_pstrndup(p, data, len) : NULL;
     return d;
+}
+
+md_data_t *md_data_make(apr_pool_t *p, apr_size_t len)
+{
+    md_data_t *d;
+    
+    d = apr_palloc(p, sizeof(*d));
+    d->len = len;
+    d->data = apr_pcalloc(p, len);
+    return d;
+}
+
+void md_data_assign_pcopy(md_data_t *dest, const md_data_t *src, apr_pool_t *p)
+{
+    dest->data = (src->data && src->len)? apr_pmemdup(p, src->data, src->len) : NULL;
+    dest->len = dest->data? src->len : 0;
 }
 
 static const char * const hex_const[] = {
@@ -100,7 +117,7 @@ static const char * const hex_const[] = {
 };
 
 apr_status_t md_data_to_hex(const char **phex, char separator,
-                            apr_pool_t *p, const md_data *data)
+                            apr_pool_t *p, const md_data_t *data)
 {
     char *hex, *cp;
     const char * x;
@@ -119,6 +136,47 @@ apr_status_t md_data_to_hex(const char **phex, char separator,
     }
     *phex = hex;
     return APR_SUCCESS;
+}
+
+/**************************************************************************************************/
+/* generic arrays */
+
+int md_array_remove_at(struct apr_array_header_t *a, int idx)
+{
+    char *ps, *pe;
+
+    if (idx < 0 || idx >= a->nelts) return 0;
+    if (idx+1 == a->nelts) {
+        --a->nelts;
+    }
+    else {
+        ps = (a->elts + (idx * a->elt_size));
+        pe = ps + a->elt_size;
+        memmove(ps, pe, (a->nelts - (idx+1)) * a->elt_size);
+        --a->nelts;
+    }
+    return 1;
+}
+
+int md_array_remove(struct apr_array_header_t *a, void *elem)
+{
+    int i, n, m;
+    void **pe;
+    
+    assert(sizeof(void*) == a->elt_size);
+    n = i = 0;
+    while (i < a->nelts) {
+        pe = &APR_ARRAY_IDX(a, i, void*);
+        if (*pe == elem) {
+            m = a->nelts - (i+1);
+            if (m > 0) memmove(pe, pe+1, (unsigned)m*sizeof(void*));
+            a->nelts--;
+            n++;
+            continue;
+        }
+        ++i;
+    }
+    return n;
 }
 
 /**************************************************************************************************/
@@ -325,7 +383,7 @@ apr_status_t md_util_freplace(const char *fpath, apr_fileperms_t perms, apr_pool
 creat:
     while (i < max && APR_EEXIST == (rv = md_util_fcreatex(&f, tmp, perms, p))) {
         ++i;
-        apr_sleep(apr_time_msec(50));
+        apr_sleep(apr_time_from_msec(50));
     } 
     if (APR_EEXIST == rv 
         && APR_SUCCESS == (rv = apr_file_remove(tmp, p))
@@ -503,7 +561,7 @@ static apr_status_t match_and_do(md_util_fwalk_t *ctx, const char *path, int dep
                           "candidate=%s matches pattern", finfo.name);
             if (ndepth < ctx->patterns->nelts) {
                 md_log_perror(MD_LOG_MARK, MD_LOG_TRACE4, 0, ptemp, "match_and_do "
-                              "need to go deepter");
+                              "need to go deeper");
                 if (APR_DIR == finfo.filetype) { 
                     /* deeper and deeper, irgendwo in der tiefe leuchtet ein licht */
                     rv = md_util_path_merge(&npath, ptemp, path, finfo.name, NULL);
@@ -1023,7 +1081,7 @@ static const unsigned char BASE64URL_CHARS[] = {
 
 #define BASE64URL_CHAR(x)    BASE64URL_CHARS[ (unsigned int)(x) & 0x3fu ]
    
-apr_size_t md_util_base64url_decode(const char **decoded, const char *encoded, 
+apr_size_t md_util_base64url_decode(md_data_t *decoded, const char *encoded, 
                                     apr_pool_t *pool)
 {
     const unsigned char *e = (const unsigned char *)encoded;
@@ -1037,10 +1095,10 @@ apr_size_t md_util_base64url_decode(const char **decoded, const char *encoded,
     }
     len = (int)(p - e);
     mlen = (len/4)*4;
-    *decoded = apr_pcalloc(pool, (apr_size_t)len + 1);
+    decoded->data = apr_pcalloc(pool, (apr_size_t)len + 1);
     
     i = 0;
-    d = (unsigned char*)*decoded;
+    d = (unsigned char*)decoded->data;
     for (; i < mlen; i += 4) {
         n = ((BASE64URL_UINT6[ e[i+0] ] << 18) +
              (BASE64URL_UINT6[ e[i+1] ] << 12) +
@@ -1069,14 +1127,15 @@ apr_size_t md_util_base64url_decode(const char **decoded, const char *encoded,
         default: /* do nothing */
             break;
     }
-    return (apr_size_t)(mlen/4*3 + remain);
+    decoded->len = (apr_size_t)(mlen/4*3 + remain);
+    return decoded->len; 
 }
 
-const char *md_util_base64url_encode(const char *data, apr_size_t dlen, apr_pool_t *pool)
+const char *md_util_base64url_encode(const md_data_t *data, apr_pool_t *pool)
 {
-    int i, len = (int)dlen;
-    apr_size_t slen = ((dlen+2)/3)*4 + 1; /* 0 terminated */
-    const unsigned char *udata = (const unsigned char*)data;
+    int i, len = (int)data->len;
+    apr_size_t slen = ((data->len+2)/3)*4 + 1; /* 0 terminated */
+    const unsigned char *udata = (const unsigned char*)data->data;
     unsigned char *enc, *p = apr_pcalloc(pool, slen);
     
     enc = p;

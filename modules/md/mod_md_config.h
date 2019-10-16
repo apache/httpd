@@ -20,6 +20,7 @@
 struct apr_hash_t;
 struct md_store_t;
 struct md_reg_t;
+struct md_ocsp_reg_t;
 struct md_pkey_spec_t;
 
 typedef enum {
@@ -28,8 +29,6 @@ typedef enum {
     MD_CONFIG_BASE_DIR,
     MD_CONFIG_CA_AGREEMENT,
     MD_CONFIG_DRIVE_MODE,
-    MD_CONFIG_LOCAL_80,
-    MD_CONFIG_LOCAL_443,
     MD_CONFIG_RENEW_WINDOW,
     MD_CONFIG_WARN_WINDOW,
     MD_CONFIG_TRANSITIVE,
@@ -38,6 +37,8 @@ typedef enum {
     MD_CONFIG_MUST_STAPLE,
     MD_CONFIG_NOTIFY_CMD,
     MD_CONFIG_MESSGE_CMD,
+    MD_CONFIG_STAPLING,
+    MD_CONFIG_STAPLE_OTHERS,
 } md_config_var_t;
 
 typedef struct md_mod_conf_t md_mod_conf_t;
@@ -45,7 +46,8 @@ struct md_mod_conf_t {
     apr_array_header_t *mds;           /* all md_t* defined in the config, shared */
     const char *base_dir;              /* base dir for store */
     const char *proxy_url;             /* proxy url to use (or NULL) */
-    struct md_reg_t *reg;              /* md registry instance, singleton, shared */
+    struct md_reg_t *reg;              /* md registry instance */
+    struct md_ocsp_reg_t *ocsp;        /* ocsp status registry */
 
     int local_80;                      /* On which port http:80 arrives */
     int local_443;                     /* On which port https:443 arrives */
@@ -55,7 +57,6 @@ struct md_mod_conf_t {
     int hsts_max_age;                  /* max-age of HSTS (rfc6797) header */
     const char *hsts_header;           /* computed HTST header to use or NULL */
     apr_array_header_t *unused_names;  /* post config, names of all MDs not assigned to a vhost */
-    apr_array_header_t *watched_names; /* post config, names of all MDs that we need to watch */
     struct apr_hash_t *init_errors;    /* init errors reported with MD name as key */
 
     const char *notify_cmd;            /* notification command to execute on signup/renew */
@@ -64,6 +65,10 @@ struct md_mod_conf_t {
     int dry_run;                       /* != 0 iff config dry run */
     int server_status_enabled;         /* if module should add to server-status handler */
     int certificate_status_enabled;    /* if module should expose /.httpd/certificate-status */
+    md_timeslice_t *ocsp_keep_window;  /* time that we keep ocsp responses around */
+    md_timeslice_t *ocsp_renew_window; /* time before exp. that we start renewing ocsp resp. */
+    const char *cert_check_name;       /* name of the linked certificate check site */
+    const char *cert_check_url;        /* url "template for" checking a certificate */
 };
 
 typedef struct md_srv_conf_t {
@@ -76,16 +81,20 @@ typedef struct md_srv_conf_t {
     int renew_mode;                    /* mode of obtaining credentials */
     int must_staple;                   /* certificates should set the OCSP Must Staple extension */
     struct md_pkey_spec_t *pkey_spec;  /* specification for generating private keys */
-    const md_timeslice_t *renew_window; /* time before expiration that starts renewal */
-    const md_timeslice_t *warn_window;  /* time before expiration that warning are sent out */
+    md_timeslice_t *renew_window; /* time before expiration that starts renewal */
+    md_timeslice_t *warn_window;  /* time before expiration that warning are sent out */
     
     const char *ca_url;                /* url of CA certificate service */
     const char *ca_proto;              /* protocol used vs CA (e.g. ACME) */
     const char *ca_agreement;          /* accepted agreement uri between CA and user */ 
     struct apr_array_header_t *ca_challenges; /* challenge types configured */
+    
+    int stapling;                      /* OCSP stapling enabled */
+    int staple_others;                 /* Provide OCSP stapling for non-MD certificates */
 
     md_t *current;                     /* md currently defined in <MDomainSet xxx> section */
-    md_t *assigned;                    /* post_config: MD that applies to this server or NULL */
+    struct apr_array_header_t *assigned; /* post_config: MDs that apply to this server */
+    int is_ssl;                        /* SSLEngine is enabled here */
 } md_srv_conf_t;
 
 void *md_config_create_svr(apr_pool_t *pool, server_rec *s);
@@ -106,7 +115,8 @@ md_srv_conf_t *md_config_get_unique(server_rec *s, apr_pool_t *p);
 const char *md_config_gets(const md_srv_conf_t *config, md_config_var_t var);
 int md_config_geti(const md_srv_conf_t *config, md_config_var_t var);
 
-void md_config_get_timespan(const md_timeslice_t **pspan, const md_srv_conf_t *sc, md_config_var_t var);
+void md_config_get_timespan(md_timeslice_t **pspan, const md_srv_conf_t *sc, md_config_var_t var);
 
+const md_t *md_get_for_domain(server_rec *s, const char *domain);
 
 #endif /* md_config_h */

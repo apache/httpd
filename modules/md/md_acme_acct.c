@@ -107,19 +107,13 @@ md_json_t *md_acme_acct_to_json(md_acme_acct_t *acct, apr_pool_t *p)
             s = NULL;
             break;
     }    
-    if (s) {
-        md_json_sets(s, jacct, MD_KEY_STATUS, NULL);
-    }
-    md_json_sets(acct->url, jacct, MD_KEY_URL, NULL);
-    md_json_sets(acct->ca_url, jacct, MD_KEY_CA_URL, NULL);
-    md_json_setsa(acct->contacts, jacct, MD_KEY_CONTACT, NULL);
-    md_json_setj(acct->registration, jacct, MD_KEY_REGISTRATION, NULL);
-    if (acct->agreement) {
-        md_json_sets(acct->agreement, jacct, MD_KEY_AGREEMENT, NULL);
-    }
-    if (acct->orders) {
-        md_json_sets(acct->orders, jacct, MD_KEY_ORDERS, NULL);
-    }
+    if (s) md_json_sets(s, jacct, MD_KEY_STATUS, NULL);
+    if (acct->url) md_json_sets(acct->url, jacct, MD_KEY_URL, NULL);
+    if (acct->ca_url) md_json_sets(acct->ca_url, jacct, MD_KEY_CA_URL, NULL);
+    if (acct->contacts) md_json_setsa(acct->contacts, jacct, MD_KEY_CONTACT, NULL);
+    if (acct->registration) md_json_setj(acct->registration, jacct, MD_KEY_REGISTRATION, NULL);
+    if (acct->agreement) md_json_sets(acct->agreement, jacct, MD_KEY_AGREEMENT, NULL);
+    if (acct->orders) md_json_sets(acct->orders, jacct, MD_KEY_ORDERS, NULL);
     
     return jacct;
 }

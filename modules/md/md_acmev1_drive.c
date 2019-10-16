@@ -139,7 +139,7 @@ apr_status_t md_acmev1_drive_renew(md_acme_driver_t *ad, md_proto_driver_t *d, m
     apr_status_t rv = APR_SUCCESS;
     const char *required;
     
-    md_log_perror(MD_LOG_MARK, MD_LOG_INFO, 0, d->p, "%s: (ACMEv1) need certificate", d->md->name);
+    md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, d->p, "%s: (ACMEv1) need certificate", d->md->name);
     
     /* Chose (or create) and ACME account to use */
     if (APR_SUCCESS != (rv = md_acme_drive_set_acct(d, result))) goto leave;
@@ -147,7 +147,7 @@ apr_status_t md_acmev1_drive_renew(md_acme_driver_t *ad, md_proto_driver_t *d, m
     /* Check that the account agreed to the terms-of-service, otherwise
      * requests for new authorizations are denied. ToS may change during the
      * lifetime of an account */
-    md_log_perror(MD_LOG_MARK, MD_LOG_INFO, 0, d->p, 
+    md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, d->p, 
                   "%s: (ACMEv1) check Tems-of-Service agreement", d->md->name);
     
     rv = md_acme_check_agreement(ad->acme, d->p, ad->md->ca_agreement, &required);

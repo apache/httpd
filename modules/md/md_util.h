@@ -35,16 +35,36 @@ apr_status_t md_util_pool_vdo(md_util_vaction *cb, void *baton, apr_pool_t *p, .
 /**************************************************************************************************/
 /* data chunks */
 
-typedef struct md_data md_data;
-struct md_data {
+typedef struct md_data_t md_data_t;
+struct md_data_t {
     const char *data;
     apr_size_t len;
 };
 
-md_data *md_data_create(apr_pool_t *p, const char *data, apr_size_t len);
+#define MD_DATA_CWRAP(d, buffer)       md_data_t d = { buffer, sizeof(buffer) }
+
+md_data_t *md_data_make(apr_pool_t *p, apr_size_t len);
+md_data_t *md_data_create(apr_pool_t *p, const char *data, apr_size_t len);
+
+void md_data_assign_pcopy(md_data_t *dest, const md_data_t *src, apr_pool_t *p);
 
 apr_status_t md_data_to_hex(const char **phex, char separator,
-                            apr_pool_t *p, const md_data *data);
+                            apr_pool_t *p, const md_data_t *data);
+
+/**************************************************************************************************/
+/* generic arrays */
+
+/**
+ * In an array of pointers, remove all entries == elem. Returns the number
+ * of entries removed.
+ */
+int md_array_remove(struct apr_array_header_t *a, void *elem);
+
+/* 
+ * Remove the ith entry from the array.
+ * @return != 0 iff an entry was removed, e.g. idx was not outside range 
+ */
+int md_array_remove_at(struct apr_array_header_t *a, int idx);
 
 /**************************************************************************************************/
 /* string related */
@@ -173,9 +193,8 @@ apr_status_t md_text_freplace(const char *fpath, apr_fileperms_t perms,
 
 /**************************************************************************************************/
 /* base64 url encodings */
-const char *md_util_base64url_encode(const char *data, 
-                                     apr_size_t len, apr_pool_t *pool);
-apr_size_t md_util_base64url_decode(const char **decoded, const char *encoded, 
+const char *md_util_base64url_encode(const md_data_t *data, apr_pool_t *pool);
+apr_size_t md_util_base64url_decode(md_data_t *decoded, const char *encoded, 
                                     apr_pool_t *pool);
 
 /**************************************************************************************************/

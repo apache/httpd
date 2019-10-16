@@ -94,7 +94,7 @@ apr_status_t md_acme_drive_set_acct(md_proto_driver_t *d, md_result_t *result)
         md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, d->p, "re-using staged account");
     }
     else if (!APR_STATUS_IS_ENOENT(rv)) {
-        goto out;
+        goto leave;
     }
     
     /* Get an account for the ACME server for this MD */
@@ -107,7 +107,7 @@ apr_status_t md_acme_drive_set_acct(md_proto_driver_t *d, md_result_t *result)
             update_md = 1;
         }
         else if (APR_SUCCESS != rv) {
-            goto out;
+            goto leave;
         }
     }
 
@@ -130,10 +130,11 @@ apr_status_t md_acme_drive_set_acct(md_proto_driver_t *d, md_result_t *result)
                       d->proto->protocol);
         
         if (!ad->md->contacts || apr_is_empty_array(md->contacts)) {
-            md_log_perror(MD_LOG_MARK, MD_LOG_ERR, APR_EINVAL, d->p, 
-                          "no contact information for md %s", md->name);            
             rv = APR_EINVAL;
-            goto out;
+            md_result_printf(result, rv, "No contact information is available for MD %s. "
+                             "Configure one using the ServerAdmin directive.", md->name);            
+            md_result_log(result, MD_LOG_ERR);
+            goto leave;
         }
         
         /* ACMEv1 allowed registration of accounts without accepted Terms-of-Service.
@@ -150,18 +151,24 @@ apr_status_t md_acme_drive_set_acct(md_proto_driver_t *d, md_result_t *result)
                   ad->acme->ca_agreement);
             md_result_log(result, MD_LOG_ERR);
             rv = result->status;
-            goto out;
+            goto leave;
         }
     
         rv = md_acme_acct_register(ad->acme, d->store, d->p, md->contacts, md->ca_agreement);
-        if (APR_SUCCESS == rv) {
-            md->ca_account = NULL;
-            update_md = 1;
-            update_acct = 1;
+        if (APR_SUCCESS != rv) {
+            if (APR_SUCCESS != ad->acme->last->status) {
+                md_result_dup(result, ad->acme->last);
+                md_result_log(result, MD_LOG_ERR);
+            }
+            goto leave;
         }
+
+        md->ca_account = NULL;
+        update_md = 1;
+        update_acct = 1;
     }
     
-out:
+leave:
     /* Persist MD changes in STAGING, so we pick them up on next run */
     if (APR_SUCCESS == rv&& update_md) {
         rv = md_save(d->store, d->p, MD_SG_STAGING, ad->md, 0);
@@ -255,7 +262,7 @@ apr_status_t md_acme_drive_cert_poll(md_proto_driver_t *d, int only_once)
         rv = md_util_try(get_cert, d, 1, ad->cert_poll_timeout, 0, 0, 1);
     }
     
-    md_log_perror(MD_LOG_MARK, MD_LOG_INFO, 0, d->p, "poll for cert at %s", ad->order->certificate);
+    md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, d->p, "poll for cert at %s", ad->order->certificate);
     return rv;
 }
 
@@ -477,11 +484,9 @@ out:
 /**************************************************************************************************/
 /* ACME driver init */
 
-static apr_status_t acme_driver_init(md_proto_driver_t *d, md_result_t *result)
+static apr_status_t acme_driver_preload_init(md_proto_driver_t *d, md_result_t *result)
 {
     md_acme_driver_t *ad;
-    int dis_http, dis_https, dis_alpn_acme, dis_dns;
-    const char *challenge;
     
     md_result_set(result, APR_SUCCESS, NULL);
     
@@ -495,6 +500,23 @@ static apr_status_t acme_driver_init(md_proto_driver_t *d, md_result_t *result)
     ad->ca_challenges = apr_array_make(d->p, 3, sizeof(const char*));
     ad->certs = apr_array_make(d->p, 5, sizeof(md_cert_t*));
     
+    md_log_perror(MD_LOG_MARK, MD_LOG_TRACE1, result->status, d->p, 
+                  "%s: init_base driver", d->md->name);
+    return result->status;
+}
+
+static apr_status_t acme_driver_init(md_proto_driver_t *d, md_result_t *result)
+{
+    md_acme_driver_t *ad;
+    int dis_http, dis_https, dis_alpn_acme, dis_dns;
+    const char *challenge;
+
+    acme_driver_preload_init(d, result);
+    md_result_set(result, APR_SUCCESS, NULL);
+    if (APR_SUCCESS != result->status) goto leave;
+    
+    ad = d->baton;
+
     /* We can only support challenges if the server is reachable from the outside
      * via port 80 and/or 443. These ports might be mapped for httpd to something
      * else, but a mapping needs to exist. */
@@ -511,49 +533,49 @@ static apr_status_t acme_driver_init(md_proto_driver_t *d, md_result_t *result)
         APR_ARRAY_PUSH(ad->ca_challenges, const char*) = MD_AUTHZ_TYPE_HTTP01;
         APR_ARRAY_PUSH(ad->ca_challenges, const char*) = MD_AUTHZ_TYPE_TLSALPN01;
         APR_ARRAY_PUSH(ad->ca_challenges, const char*) = MD_AUTHZ_TYPE_DNS01;
+
+        if (!d->can_http && !d->can_https 
+            && md_array_str_index(ad->ca_challenges, MD_AUTHZ_TYPE_DNS01, 0, 0) < 0) {
+            md_result_printf(result, APR_EGENERAL,
+                             "the server seems neither reachable via http (port 80) nor https (port 443). "
+                             "Please look at the MDPortMap configuration directive on how to correct this. "
+                             "The ACME protocol needs at least one of those so the CA can talk to the server "
+                             "and verify a domain ownership. Alternatively, you may configure support "
+                             "for the %s challenge directive.", MD_AUTHZ_TYPE_DNS01);
+            goto leave;
+        }
+
+        dis_http = dis_https = dis_alpn_acme = dis_dns = 0;
+        if (!d->can_http && md_array_str_index(ad->ca_challenges, MD_AUTHZ_TYPE_HTTP01, 0, 1) >= 0) {
+            ad->ca_challenges = md_array_str_remove(d->p, ad->ca_challenges, MD_AUTHZ_TYPE_HTTP01, 0);
+            dis_http = 1;
+        }
+        if (!d->can_https && md_array_str_index(ad->ca_challenges, MD_AUTHZ_TYPE_TLSALPN01, 0, 1) >= 0) {
+            ad->ca_challenges = md_array_str_remove(d->p, ad->ca_challenges, MD_AUTHZ_TYPE_TLSALPN01, 0);
+            dis_https = 1;
+        }
+        if (apr_is_empty_array(d->md->acme_tls_1_domains)
+            && md_array_str_index(ad->ca_challenges, MD_AUTHZ_TYPE_TLSALPN01, 0, 1) >= 0) {
+            ad->ca_challenges = md_array_str_remove(d->p, ad->ca_challenges, MD_AUTHZ_TYPE_TLSALPN01, 0);
+            dis_alpn_acme = 1;
+        }
+        if (!apr_table_get(d->env, MD_KEY_CMD_DNS01) && md_array_str_index(ad->ca_challenges, MD_AUTHZ_TYPE_DNS01, 0, 1) >= 0) {
+            ad->ca_challenges = md_array_str_remove(d->p, ad->ca_challenges, MD_AUTHZ_TYPE_DNS01, 0);
+            dis_dns = 1;
+        }
+
+        if (apr_is_empty_array(ad->ca_challenges)) {
+            md_result_printf(result, APR_EGENERAL, 
+                             "None of the ACME challenge methods configured for this domain are suitable.%s%s%s%s",
+                             dis_http? " The http: challenge 'http-01' is disabled because the server seems not reachable on public port 80." : "",
+                             dis_https? " The https: challenge 'tls-alpn-01' is disabled because the server seems not reachable on public port 443." : "",
+                             dis_alpn_acme? " The https: challenge 'tls-alpn-01' is disabled because the Protocols configuration does not include the 'acme-tls/1' protocol." : "",
+                             dis_dns? "The DNS challenge 'dns-01' is disabled because the directive 'MDChallengeDns01' is not configured." : ""
+                             );
+            goto leave;
+        }
     }
     
-    if (!d->can_http && !d->can_https 
-        && md_array_str_index(ad->ca_challenges, MD_AUTHZ_TYPE_DNS01, 0, 0) < 0) {
-        md_result_printf(result, APR_EGENERAL,
-            "the server seems neither reachable via http (port 80) nor https (port 443). "
-            "Please look at the MDPortMap configuration directive on how to correct this. "
-            "The ACME protocol needs at least one of those so the CA can talk to the server "
-            "and verify a domain ownership. Alternatively, you may configure support "
-            "for the %s challenge directive.", MD_AUTHZ_TYPE_DNS01);
-        goto leave;
-    }
-    
-    dis_http = dis_https = dis_alpn_acme = dis_dns = 0;
-    if (!d->can_http && md_array_str_index(ad->ca_challenges, MD_AUTHZ_TYPE_HTTP01, 0, 1) >= 0) {
-        ad->ca_challenges = md_array_str_remove(d->p, ad->ca_challenges, MD_AUTHZ_TYPE_HTTP01, 0);
-        dis_http = 1;
-    }
-    if (!d->can_https && md_array_str_index(ad->ca_challenges, MD_AUTHZ_TYPE_TLSALPN01, 0, 1) >= 0) {
-        ad->ca_challenges = md_array_str_remove(d->p, ad->ca_challenges, MD_AUTHZ_TYPE_TLSALPN01, 0);
-        dis_https = 1;
-    }
-    if (apr_is_empty_array(d->md->acme_tls_1_domains)
-        && md_array_str_index(ad->ca_challenges, MD_AUTHZ_TYPE_TLSALPN01, 0, 1) >= 0) {
-        ad->ca_challenges = md_array_str_remove(d->p, ad->ca_challenges, MD_AUTHZ_TYPE_TLSALPN01, 0);
-        dis_alpn_acme = 1;
-    }
-    if (!apr_table_get(d->env, MD_KEY_CMD_DNS01) && md_array_str_index(ad->ca_challenges, MD_AUTHZ_TYPE_DNS01, 0, 1) >= 0) {
-        ad->ca_challenges = md_array_str_remove(d->p, ad->ca_challenges, MD_AUTHZ_TYPE_DNS01, 0);
-        dis_dns = 1;
-    }
-
-    if (apr_is_empty_array(ad->ca_challenges)) {
-        md_result_printf(result, APR_EGENERAL, 
-            "None of the ACME challenge methods configured for this domain are suitable.%s%s%s%s",
-            dis_http? " The http: challenge 'http-01' is disabled because the server seems not reachable on port 80." : "",
-            dis_https? " The https: challenge 'tls-alpn-01' is disabled because the server seems not reachable on port 443." : "",
-            dis_alpn_acme? "The https: challenge 'tls-alpn-01' is disabled because the Protocols configuration does not include the 'acme-tls/1' protocol." : "",
-            dis_dns? "The DNS challenge 'dns-01' is disabled because the directive 'MDChallengeDns01' is not configured." : ""
-            );
-        goto leave;
-    }
-
 leave:    
     md_log_perror(MD_LOG_MARK, MD_LOG_TRACE1, result->status, d->p, "%s: init driver", d->md->name);
     return result->status;
@@ -570,11 +592,11 @@ static apr_status_t acme_renew(md_proto_driver_t *d, md_result_t *result)
     apr_time_t now;
     apr_array_header_t *staged_certs;
     char ts[APR_RFC822_DATE_LEN];
-
+    int first = 0;
+    
     if (md_log_is_level(d->p, MD_LOG_DEBUG)) {
         md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, d->p, "%s: staging started, "
-                      "state=%d, can_http=%d, can_https=%d, challenges='%s'",
-                      d->md->name, d->md->state, d->can_http, d->can_https,
+                      "state=%d, challenges='%s'", d->md->name, d->md->state, 
                       apr_array_pstrcat(d->p, ad->ca_challenges, ' '));
     }
 
@@ -623,8 +645,15 @@ static apr_status_t acme_renew(md_proto_driver_t *d, md_result_t *result)
 
         rv = md_reg_get_cred_files(&keyfile, &certfile, d->reg, MD_SG_STAGING, d->md, d->p);
         if (APR_SUCCESS == rv) {
-            md_log_perror(MD_LOG_MARK, MD_LOG_INFO, 0, d->p, "%s: all data staged", d->md->name);
-            goto ready;
+            if (md_array_is_empty(ad->certs)
+                && APR_SUCCESS == md_pubcert_load(d->store, MD_SG_STAGING, d->md->name, &staged_certs, d->p)) {
+                apr_array_cat(ad->certs, staged_certs);
+            }
+            if (!md_array_is_empty(ad->certs)) {
+                md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, d->p, "%s: all data staged", d->md->name);
+                rv = APR_SUCCESS;
+                goto ready;
+            }
         }
     }
     
@@ -644,7 +673,7 @@ static apr_status_t acme_renew(md_proto_driver_t *d, md_result_t *result)
     if (!ad->md || strcmp(ad->md->ca_url, d->md->ca_url)) {
         md_result_activity_printf(result, "Resetting staging for %s", d->md->name);
         /* re-initialize staging */
-        md_log_perror(MD_LOG_MARK, MD_LOG_INFO, 0, d->p, "%s: setup staging", d->md->name);
+        md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, d->p, "%s: setup staging", d->md->name);
         md_store_purge(d->store, d->p, MD_SG_STAGING, d->md->name);
         ad->md = md_copy(d->p, d->md);
         ad->order = NULL;
@@ -687,11 +716,11 @@ static apr_status_t acme_renew(md_proto_driver_t *d, md_result_t *result)
     
     if (md_array_is_empty(ad->certs) || ad->next_up_link) {
         md_result_activity_printf(result, "Retrieving certificate chain for %s", d->md->name);
-        md_log_perror(MD_LOG_MARK, MD_LOG_INFO, 0, d->p, 
+        md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, d->p, 
                       "%s: retrieving certificate chain", d->md->name);
         rv = ad_chain_retrieve(d);
         if (APR_SUCCESS != rv) {
-            md_result_printf(result, rv, "Unable to retrive certificate chain.");
+            md_result_printf(result, rv, "Unable to retrieve certificate chain.");
             goto out;
         }
         
@@ -707,12 +736,18 @@ static apr_status_t acme_renew(md_proto_driver_t *d, md_result_t *result)
     /* As last step, cleanup any order we created so that challenge data
      * may be removed asap. */
     md_acme_order_purge(d->store, d->p, MD_SG_STAGING, d->md->name, d->env);
-
+    
+    /* first time this job ran through */
+    first = 1;    
 ready:
     md_result_activity_setn(result, NULL);
     /* we should have the complete cert chain now */
     assert(!md_array_is_empty(ad->certs));
     assert(ad->certs->nelts > 1);
+    
+    md_log_perror(MD_LOG_MARK, MD_LOG_TRACE1, rv, d->p, 
+                  "%s: certificate ready, activation delay set to %s", 
+                  d->md->name, md_duration_format(d->p, d->activation_delay));
     
     /* determine when it should be activated */
     md_result_delay_set(result, md_cert_get_not_before(APR_ARRAY_IDX(ad->certs, 0, md_cert_t*)));
@@ -725,10 +760,20 @@ ready:
         const md_pubcert_t *pub;
         apr_time_t valid_until, delay_activation;
         
+        md_log_perror(MD_LOG_MARK, MD_LOG_TRACE1, rv, d->p, 
+                      "%s: state is COMPLETE, checking existing certificate", d->md->name);
         if (APR_SUCCESS == md_reg_get_pubcert(&pub, d->reg, d->md, d->p)) {
             valid_until = md_cert_get_not_after(APR_ARRAY_IDX(pub->certs, 0, const md_cert_t*));
-            if (valid_until > now) {            
-                delay_activation = apr_time_from_sec(MD_SECS_PER_DAY);
+            if (d->activation_delay < 0) {
+                /* special simulation for test case */
+                if (first) {
+                    md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, d->p, 
+                                  "%s: delay ready_at to now+1s", d->md->name);
+                    md_result_delay_set(result, apr_time_now() + apr_time_from_sec(1));
+                }
+            }
+            else if (valid_until > now) {            
+                delay_activation = d->activation_delay;
                 if (delay_activation > (valid_until - now)) {
                     delay_activation = (valid_until - now);
                 }
@@ -742,13 +787,12 @@ ready:
     if (result->ready_at > now) {
         md_result_printf(result, APR_SUCCESS, 
             "The certificate for the managed domain has been renewed successfully and can "
-            "be used from %s on. A graceful server restart in %s is recommended.",
-            ts, md_duration_print(d->p, result->ready_at - now));
+            "be used from %s on.", ts);
     }
     else {
         md_result_printf(result, APR_SUCCESS, 
             "The certificate for the managed domain has been renewed successfully and can "
-            "be used. A graceful server restart now is recommended.");
+            "be used (valid since %s). A graceful server restart now is recommended.", ts);
     }
 
 out:
@@ -884,7 +928,8 @@ static apr_status_t acme_driver_preload(md_proto_driver_t *d,
 }
 
 static md_proto_t ACME_PROTO = {
-    MD_PROTO_ACME, acme_driver_init, acme_driver_renew, acme_driver_preload
+    MD_PROTO_ACME, acme_driver_init, acme_driver_renew, 
+    acme_driver_preload_init, acme_driver_preload
 };
  
 apr_status_t md_acme_protos_add(apr_hash_t *protos, apr_pool_t *p)

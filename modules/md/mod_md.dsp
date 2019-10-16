@@ -113,6 +113,10 @@ SOURCE=./mod_md_drive.c
 # End Source File
 # Begin Source File
 
+SOURCE=./mod_md_ocsp.c
+# End Source File
+# Begin Source File
+
 SOURCE=./mod_md_os.c
 # End Source File
 # Begin Source File
@@ -174,6 +178,10 @@ SOURCE=./md_jws.c
 # Begin Source File
 
 SOURCE=./md_log.c
+# End Source File
+# Begin Source File
+
+SOURCE=./md_ocsp.c
 # End Source File
 # Begin Source File
 

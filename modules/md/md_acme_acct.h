@@ -21,6 +21,7 @@ struct md_acme_req;
 struct md_json_t;
 struct md_pkey_t;
 
+#include "md_store.h"
 
 /** 
  * An ACME account at an ACME server.
@@ -71,7 +72,7 @@ apr_status_t md_acme_acct_update(md_acme_t *acme);
 /**
  * Update the account and persist changes in the store, if given (and not NULL).
  */
-apr_status_t md_acme_acct_validate(md_acme_t *acme, struct md_store_t *store, apr_pool_t *p);
+apr_status_t md_acme_acct_validate(md_acme_t *acme, md_store_t *store, apr_pool_t *p);
 
 /**
  * Agree to the given Terms-of-Service url for the current account.
@@ -103,23 +104,23 @@ const char *md_acme_get_agreement(md_acme_t *acme);
  * Find an existing account in the local store. On APR_SUCCESS, the acme
  * instance will have a current, validated account to use.
  */ 
-apr_status_t md_acme_find_acct(md_acme_t *acme, struct md_store_t *store);
+apr_status_t md_acme_find_acct(md_acme_t *acme, md_store_t *store);
 
 /**
  * Find the account id for a given account url. 
  */
-apr_status_t md_acme_acct_id_for_url(const char **pid, struct md_store_t *store, 
+apr_status_t md_acme_acct_id_for_url(const char **pid, md_store_t *store, 
                                      md_store_group_t group, const char *url, apr_pool_t *p);
 
 /**
  * Create a new account at the ACME server. The
  * new account is the one used by the acme instance afterwards, on success.
  */
-apr_status_t md_acme_acct_register(md_acme_t *acme, struct md_store_t *store, 
+apr_status_t md_acme_acct_register(md_acme_t *acme, md_store_t *store, 
                                    apr_pool_t *p, apr_array_header_t *contacts, 
                                    const char *agreement);
 
-apr_status_t md_acme_acct_save(struct md_store_t *store, apr_pool_t *p, md_acme_t *acme,  
+apr_status_t md_acme_acct_save(md_store_t *store, apr_pool_t *p, md_acme_t *acme,  
                                const char **pid, struct md_acme_acct_t *acct, 
                                struct md_pkey_t *acct_key);
                                
@@ -129,7 +130,7 @@ apr_status_t md_acme_acct_save(struct md_store_t *store, apr_pool_t *p, md_acme_
 apr_status_t md_acme_acct_deactivate(md_acme_t *acme, apr_pool_t *p);
 
 apr_status_t md_acme_acct_load(struct md_acme_acct_t **pacct, struct md_pkey_t **ppkey,
-                               struct md_store_t *store, md_store_group_t group, 
+                               md_store_t *store, md_store_group_t group, 
                                const char *name, apr_pool_t *p);
 
 #endif /* md_acme_acct_h */

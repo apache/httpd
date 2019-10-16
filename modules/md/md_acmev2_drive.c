@@ -95,7 +95,7 @@ apr_status_t md_acmev2_drive_renew(md_acme_driver_t *ad, md_proto_driver_t *d, m
 {
     apr_status_t rv = APR_SUCCESS;
     
-    md_log_perror(MD_LOG_MARK, MD_LOG_INFO, 0, d->p, "%s: (ACMEv2) need certificate", d->md->name);
+    md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, d->p, "%s: (ACMEv2) need certificate", d->md->name);
     
     /* Chose (or create) and ACME account to use */
     rv = md_acme_drive_set_acct(d, result);
@@ -149,7 +149,7 @@ apr_status_t md_acmev2_drive_renew(md_acme_driver_t *ad, md_proto_driver_t *d, m
     rv = md_acme_drive_setup_certificate(d, result);
     if (APR_SUCCESS != rv) goto leave;
     
-    md_log_perror(MD_LOG_MARK, MD_LOG_INFO, 0, d->p, "%s: finalized order", d->md->name);
+    md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, d->p, "%s: finalized order", d->md->name);
     
     rv = md_acme_order_await_valid(ad->order, ad->acme, d->md, 
                                    ad->authz_monitor_timeout, result, d->p);
