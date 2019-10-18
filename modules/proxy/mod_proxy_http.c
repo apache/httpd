@@ -431,6 +431,21 @@ static int spool_reqbody_cl(proxy_http_req_t *req, apr_off_t *bytes_spooled)
     apr_file_t *tmpfile = NULL;
     apr_off_t limit;
 
+    /* Send "100 Continue" now if the client expects one, before
+     * blocking on the body, otherwise we'd wait for each other.
+     */
+    if (req->expecting_100) {
+        int saved_status = r->status;
+
+        r->expecting_100 = 1;
+        r->status = HTTP_CONTINUE;
+        ap_send_interim_response(r, 0);
+        AP_DEBUG_ASSERT(!r->expecting_100);
+
+        r->status = saved_status;
+        req->expecting_100 = 0;
+    }
+
     body_brigade = apr_brigade_create(p, bucket_alloc);
     *bytes_spooled = 0;
 

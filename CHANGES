@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_proxy_http: Fix 100-continue deadlock for spooled request bodies,
+     leading to Request Timeout (408).  PR 63855.  [Yann Ylavic]
+
   *) mod_md: Adding the several new features.
      The module offers an implementation of OCSP Stapling that can replace fully or
      for a limited set of domains the existing one from mod_ssl. OCSP handling
