@@ -674,6 +674,18 @@ static int ap_proxy_http_prefetch(proxy_http_req_t *req,
         apr_brigade_length(temp_brigade, 1, &bytes);
         bytes_read += bytes;
 
+        /* From https://tools.ietf.org/html/rfc7231#section-5.1.1
+         *   A server MAY omit sending a 100 (Continue) response if it has
+         *   already received some or all of the message body for the
+         *   corresponding request, or if [snip].
+         */
+        if (req->expecting_100 && bytes > 0) {
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r, APLOGNO(10206)
+                          "prefetching request body while 100-continue is"
+                          "expected, omit sending interim response");
+            req->expecting_100 = 0;
+        }
+
         /*
          * Save temp_brigade in input_brigade. (At least) in the SSL case
          * temp_brigade contains transient buckets whose data would get
