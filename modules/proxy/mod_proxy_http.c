@@ -431,18 +431,18 @@ static int spool_reqbody_cl(proxy_http_req_t *req, apr_off_t *bytes_spooled)
     apr_file_t *tmpfile = NULL;
     apr_off_t limit;
 
-    /*
-     * Tell the HTTP_IN filter that it should send a "100 continue" if the
-     * client expects one, before blocking on the body, otherwise we'd wait
-     * for each other.
+    /* Send "100 Continue" now if the client expects one, before
+     * blocking on the body, otherwise we'd wait for each other.
      */
     if (req->expecting_100) {
-        /* From https://tools.ietf.org/html/rfc7231#section-5.1.1
-         *   A server MAY omit sending a 100 (Continue) response if it has
-         *   already received some or all of the message body for the
-         *   corresponding request, or if [snip].
-         */
-        r->expecting_100 = APR_BRIGADE_EMPTY(input_brigade);
+        int saved_status = r->status;
+
+        r->expecting_100 = 1;
+        r->status = HTTP_CONTINUE;
+        ap_send_interim_response(r, 0);
+        AP_DEBUG_ASSERT(!r->expecting_100);
+
+        r->status = saved_status;
         req->expecting_100 = 0;
     }
 
