@@ -1067,7 +1067,7 @@ static apr_status_t get_certificate(server_rec *s, apr_pool_t *p, int fallback,
     }
     else if (sc->assigned->nelts != 1) {
         if (!fallback) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(10042)
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(10207)
                          "conflict: %d MDs match Virtualhost %s which uses SSL, however "
                          "there can be at most 1.",
                          (int)sc->assigned->nelts, s->server_hostname);
