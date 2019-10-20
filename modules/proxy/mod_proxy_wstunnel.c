@@ -524,7 +524,7 @@ static int proxy_wstunnel_handler(request_rec *r, proxy_worker *worker,
 
     /* Step Three: Create conn_rec */
     status = ap_proxy_connection_create_ex(scheme, backend, r);
-    if (status  != OK) {
+    if (status != OK) {
         goto cleanup;
     }
 
