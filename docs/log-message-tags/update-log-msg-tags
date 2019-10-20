@@ -10,9 +10,13 @@ my $orig_serial = $serial;
 my %tags;
 
 my %intended_duplicate_tags;
-
-# mod_cgid's cgid_child_errfn()
-$intended_duplicate_tags{"01241"} = "true";
+if (open(my $fh, "<", "$basedir/intended-duplicates")) {
+    while (my $line = <$fh>) {
+        if ($line =~ /^(\d+)\b/) {
+            $intended_duplicate_tags{$1} = "true";
+        }
+    }
+}
 
 foreach my $file (@ARGV) {
     if ($file !~ /\.c$/) {
