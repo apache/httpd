@@ -9,6 +9,8 @@ my $serial = read_serial($serial_file);
 my $orig_serial = $serial;
 my %tags;
 
+my %intended_duplicate_tags;
+
 foreach my $file (@ARGV) {
     if ($file !~ /\.c$/) {
         print STDERR "Skipping non-C file $file\n";
@@ -124,7 +126,7 @@ sub note_tag
             $oneline .= $1;
         }
     }
-    if (exists $tags{$tag}) {
+    if (exists $tags{$tag} and not exists $intended_duplicate_tags{$tag}) {
         print STDERR "WARNING: Duplicate tag $tag at $tags{$tag}->{file}:$tags{$tag}->{line} and $file:$lineno\n";
     }
     if ($tag >= $serial) {
