@@ -915,7 +915,11 @@ SSL_SESSION *ssl_callback_GetSessionCacheEntry(SSL *, IDCONST unsigned char *, i
 void         ssl_callback_DelSessionCacheEntry(SSL_CTX *, SSL_SESSION *);
 void         ssl_callback_Info(const SSL *, int, int);
 #ifdef HAVE_TLSEXT
+#if OPENSSL_VERSION_NUMBER < 0x10101000L || defined(LIBRESSL_VERSION_NUMBER)
 int          ssl_callback_ServerNameIndication(SSL *, int *, modssl_ctx_t *);
+#else
+int          ssl_callback_ClientHello(SSL *, int *, void *);
+#endif
 #endif
 #ifdef HAVE_TLS_SESSION_TICKETS
 int         ssl_callback_SessionTicket(SSL *, unsigned char *, unsigned char *,

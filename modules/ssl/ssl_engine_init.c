@@ -500,8 +500,11 @@ static apr_status_t ssl_init_ctx_tls_extensions(server_rec *s,
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01893)
                  "Configuring TLS extension handling");
 
+#if OPENSSL_VERSION_NUMBER < 0x10101000L || defined(LIBRESSL_VERSION_NUMBER)
     /*
-     * Server name indication (SNI)
+     * The Server Name Indication (SNI) provided by the ClientHello can be
+     * used to select the right (name-based-)vhost and its SSL configuration
+     * before the handshake takes place.
      */
     if (!SSL_CTX_set_tlsext_servername_callback(mctx->ssl_ctx,
                           ssl_callback_ServerNameIndication) ||
@@ -512,6 +515,15 @@ static apr_status_t ssl_init_ctx_tls_extensions(server_rec *s,
         ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
         return ssl_die(s);
     }
+#else
+    /*
+     * The ClientHello callback also allows to retrieve the SNI, but since it
+     * runs at the earliest possible connection stage we can even set the TLS
+     * protocol version(s) according to the selected (name-based-)vhost, which
+     * is not possible at the SNI callback stage (due to OpenSSL internals).
+     */
+    SSL_CTX_set_client_hello_cb(mctx->ssl_ctx, ssl_callback_ClientHello, NULL);
+#endif
 
 #ifdef HAVE_OCSP_STAPLING
     /*
@@ -706,7 +718,7 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
 #else /* #if OPENSSL_VERSION_NUMBER < 0x10100000L */
     /* We first determine the maximum protocol version we should provide */
 #if SSL_HAVE_PROTOCOL_TLSV1_3
-    if (SSL_HAVE_PROTOCOL_TLSV1_3 && (protocol & SSL_PROTOCOL_TLSV1_3)) {
+    if (protocol & SSL_PROTOCOL_TLSV1_3) {
         prot = TLS1_3_VERSION;
     } else
 #endif
