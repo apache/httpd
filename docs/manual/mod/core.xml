@@ -4403,8 +4403,8 @@ scripts</description>
     so.</p>
     </note>
 
-    <p>The option <code>Registry-Strict</code> which is new in Apache HTTP Server
-    2.0 does the same thing as <code>Registry</code> but uses only the
+    <p>The option <code>Registry-Strict</code>
+    does the same thing as <code>Registry</code> but uses only the
     subkey <code>Shell\ExecCGI\Command</code>. The
     <code>ExecCGI</code> key is not a common one. It must be
     configured manually in the windows registry and hence prevents
@@ -4684,9 +4684,8 @@ ServerRoot "/home/httpd"
     actually produced a returned error message.</p>
 
     <p>The <code>Off</code>
-    setting, which is the default, suppresses the footer line (and is
-    therefore compatible with the behavior of Apache-1.2 and
-    below). The <code>On</code> setting simply adds a line with the
+    setting, which is the default, suppresses the footer line.
+    The <code>On</code> setting simply adds a line with the
     server version number and <directive
     module="core">ServerName</directive> of the serving virtual host,
     and the <code>EMail</code> setting additionally creates a
@@ -4694,7 +4693,7 @@ ServerRoot "/home/httpd"
     module="core">ServerAdmin</directive> of the referenced
     document.</p>
 
-    <p>After version 2.0.44, the details of the server version number
+    <p>The details of the server version number
     presented are controlled by the <directive
     module="core">ServerTokens</directive> directive.</p>
 </usage>
@@ -4751,7 +4750,7 @@ header</description>
     <p>This setting applies to the entire server, and cannot be
     enabled or disabled on a virtualhost-by-virtualhost basis.</p>
 
-    <p>After version 2.0.44, this directive also controls the
+    <p>This directive also controls the
     information presented by the <directive
     module="core">ServerSignature</directive> directive.</p>
 
