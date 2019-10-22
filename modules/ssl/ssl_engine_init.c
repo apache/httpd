@@ -500,7 +500,6 @@ static apr_status_t ssl_init_ctx_tls_extensions(server_rec *s,
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01893)
                  "Configuring TLS extension handling");
 
-#if OPENSSL_VERSION_NUMBER < 0x10101000L || defined(LIBRESSL_VERSION_NUMBER)
     /*
      * The Server Name Indication (SNI) provided by the ClientHello can be
      * used to select the right (name-based-)vhost and its SSL configuration
@@ -515,7 +514,8 @@ static apr_status_t ssl_init_ctx_tls_extensions(server_rec *s,
         ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
         return ssl_die(s);
     }
-#else
+
+#if OPENSSL_VERSION_NUMBER >= 0x10101000L && !defined(LIBRESSL_VERSION_NUMBER)
     /*
      * The ClientHello callback also allows to retrieve the SNI, but since it
      * runs at the earliest possible connection stage we can even set the TLS

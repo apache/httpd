@@ -2353,11 +2353,12 @@ static apr_status_t init_vhost(conn_rec *c, SSL *ssl, const char *servername)
     
     if (c) {
         SSLConnRec *sslcon = myConnConfig(c);
-        
-        if (sslcon->server != c->base_server) {
-            /* already found the vhost */
-            return APR_SUCCESS;
+
+        if (sslcon->vhost_found) {
+            /* already found the vhost? */
+            return sslcon->vhost_found > 0 ? APR_SUCCESS : APR_NOTFOUND;
         }
+        sslcon->vhost_found = -1;
         
         if (!servername) {
             servername = SSL_get_servername(ssl, TLSEXT_NAMETYPE_host_name);
@@ -2368,7 +2369,8 @@ static apr_status_t init_vhost(conn_rec *c, SSL *ssl, const char *servername)
                 ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(02043)
                               "SSL virtual host for servername %s found",
                               servername);
-                
+
+                sslcon->vhost_found = +1;
                 return APR_SUCCESS;
             }
             else if (ssl_is_challenge(c, servername, &cert, &key)) {
@@ -2411,7 +2413,6 @@ static apr_status_t init_vhost(conn_rec *c, SSL *ssl, const char *servername)
     return APR_NOTFOUND;
 }
 
-#if OPENSSL_VERSION_NUMBER < 0x10101000L || defined(LIBRESSL_VERSION_NUMBER)
 /*
  * This callback function is executed when OpenSSL encounters an extended
  * client hello with a server name indication extension ("SNI", cf. RFC 6066).
@@ -2423,9 +2424,10 @@ int ssl_callback_ServerNameIndication(SSL *ssl, int *al, modssl_ctx_t *mctx)
     
     return (status == APR_SUCCESS)? SSL_TLSEXT_ERR_OK : SSL_TLSEXT_ERR_NOACK;
 }
-#else /* OPENSSL_VERSION_NUMBER < 0x10101000L */
+
+#if OPENSSL_VERSION_NUMBER >= 0x10101000L && !defined(LIBRESSL_VERSION_NUMBER)
 /*
- * This callback function when the ClientHello is received.
+ * This callback function is called when the ClientHello is received.
  */
 int ssl_callback_ClientHello(SSL *ssl, int *al, void *arg)
 {
