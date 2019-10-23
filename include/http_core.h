@@ -662,6 +662,12 @@ typedef struct {
     /** Named back references */
     apr_array_header_t *refs;
 
+    /** Custom response config with expression support. The hash table
+     * contains compiled expressions keyed against the custom response
+     * code.
+     */
+    apr_hash_t *response_code_exprs;
+
 #define AP_CGI_PASS_AUTH_OFF     (0)
 #define AP_CGI_PASS_AUTH_ON      (1)
 #define AP_CGI_PASS_AUTH_UNSET   (2)
@@ -671,13 +677,6 @@ typedef struct {
      * advice
      */
     unsigned int cgi_pass_auth : 2;
-
-    /** Custom response config with expression support. The hash table
-     * contains compiled expressions keyed against the custom response
-     * code.
-     */
-    apr_hash_t *response_code_exprs;
-
     unsigned int qualify_redirect_url :2;
     ap_expr_info_t  *expr_handler;         /* forced with SetHandler */
 
