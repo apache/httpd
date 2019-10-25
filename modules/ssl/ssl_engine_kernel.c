@@ -2514,8 +2514,14 @@ static int ssl_find_vhost(void *servername, conn_rec *c, server_rec *s)
 #if OPENSSL_VERSION_NUMBER >= 0x10100000L \
         && (!defined(LIBRESSL_VERSION_NUMBER) \
             || LIBRESSL_VERSION_NUMBER >= 0x20800000L)
-        SSL_set_min_proto_version(ssl, SSL_CTX_get_min_proto_version(ctx));
-        SSL_set_max_proto_version(ssl, SSL_CTX_get_max_proto_version(ctx));
+        /*
+         * Don't switch the protocol if none is configured for this vhost,
+         * the default in this case is still the base server's SSLProtocol.
+         */
+        if (myCtxConfig(sslcon, sc)->protocol_set) {
+            SSL_set_min_proto_version(ssl, SSL_CTX_get_min_proto_version(ctx));
+            SSL_set_max_proto_version(ssl, SSL_CTX_get_max_proto_version(ctx));
+        }
 #endif
         if ((SSL_get_verify_mode(ssl) == SSL_VERIFY_NONE) ||
             (SSL_num_renegotiations(ssl) == 0)) {
