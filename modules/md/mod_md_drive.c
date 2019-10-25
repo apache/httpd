@@ -71,7 +71,7 @@ struct md_renew_ctx_t {
 static void process_drive_job(md_renew_ctx_t *dctx, md_job_t *job, apr_pool_t *ptemp)
 {
     const md_t *md;
-    md_result_t *result;
+    md_result_t *result = NULL;
     apr_status_t rv;
     
     md_job_load(job);
@@ -151,7 +151,7 @@ expiry:
     }
 
 leave:
-    if (job->dirty) {
+    if (job->dirty && result) {
         rv = md_job_save(job, result, ptemp);
         ap_log_error(APLOG_MARK, APLOG_TRACE1, rv, dctx->s, "%s: saving job props", job->mdomain);
     }
