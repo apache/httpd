@@ -37,8 +37,10 @@
 #include "md_store.h"
 #include "md_store_fs.h"
 #include "md_log.h"
+#include "md_ocsp.h"
 #include "md_result.h"
 #include "md_reg.h"
+#include "md_status.h"
 #include "md_util.h"
 #include "md_version.h"
 #include "md_acme.h"
@@ -47,6 +49,7 @@
 #include "mod_md.h"
 #include "mod_md_config.h"
 #include "mod_md_drive.h"
+#include "mod_md_ocsp.h"
 #include "mod_md_os.h"
 #include "mod_md_status.h"
 #include "mod_ssl_openssl.h"
@@ -129,7 +132,92 @@ static void init_setups(apr_pool_t *p, server_rec *base_server)
 }
 
 /**************************************************************************************************/
-/* store & registry setup */
+/* notification handling */
+
+typedef struct {
+    const char *reason;         /* what the notification is about */
+    apr_time_t min_interim;     /* minimum time between notifying for this reason */
+} notify_rate;
+
+static notify_rate notify_rates[] = {
+    { "renewed", apr_time_from_sec(28 * MD_SECS_PER_DAY) }, /* once per month */
+    { "installed", apr_time_from_sec(MD_SECS_PER_DAY) }, /* once per day */
+    { "expiring", apr_time_from_sec(MD_SECS_PER_DAY) },     /* once per day */
+    { "errored", apr_time_from_sec(MD_SECS_PER_HOUR) },     /* once per hour */
+    { "ocsp-renewed", apr_time_from_sec(MD_SECS_PER_DAY) }, /* once per day */
+    { "ocsp-errored", apr_time_from_sec(MD_SECS_PER_HOUR) }, /* once per hour */
+};
+
+static apr_status_t notify(md_job_t *job, const char *reason, 
+                           md_result_t *result, apr_pool_t *p, void *baton)
+{
+    md_mod_conf_t *mc = baton;
+    const char * const *argv;
+    const char *cmdline;
+    int exit_code;
+    apr_status_t rv = APR_SUCCESS;
+    apr_time_t min_interim = 0;
+    md_timeperiod_t since_last;
+    const char *log_msg_reason;
+    int i;
+    
+    log_msg_reason = apr_psprintf(p, "message-%s", reason);
+    for (i = 0; i < (int)(sizeof(notify_rates)/sizeof(notify_rates[0])); ++i) {
+        if (!strcmp(reason, notify_rates[i].reason)) {
+            min_interim = notify_rates[i].min_interim;
+        }
+    }
+    if (min_interim > 0) {
+        since_last.start = md_job_log_get_time_of_latest(job, log_msg_reason);
+        since_last.end = apr_time_now();
+        if (md_timeperiod_length(&since_last) < min_interim) {
+            /* not enough time has passed since we sent the last notification
+             * for this reason. */
+            return APR_SUCCESS;
+        }
+    }
+    
+    if (!strcmp("renewed", reason)) {
+        if (mc->notify_cmd) {
+            cmdline = apr_psprintf(p, "%s %s", mc->notify_cmd, job->mdomain); 
+            apr_tokenize_to_argv(cmdline, (char***)&argv, p);
+            rv = md_util_exec(p, argv[0], argv, &exit_code);
+            
+            if (APR_SUCCESS == rv && exit_code) rv = APR_EGENERAL;
+            if (APR_SUCCESS != rv) {
+                md_result_problem_printf(result, rv, MD_RESULT_LOG_ID(APLOGNO(10108)), 
+                                         "MDNotifyCmd %s failed with exit code %d.", 
+                                         mc->notify_cmd, exit_code);
+                md_result_log(result, MD_LOG_ERR);
+                md_job_log_append(job, "notify-error", result->problem, result->detail);
+                return rv;
+            }
+        }
+        md_log_perror(MD_LOG_MARK, MD_LOG_NOTICE, 0, p, APLOGNO(10059) 
+                     "The Managed Domain %s has been setup and changes "
+                     "will be activated on next (graceful) server restart.", job->mdomain);
+    }
+    if (mc->message_cmd) {
+        cmdline = apr_psprintf(p, "%s %s %s", mc->message_cmd, reason, job->mdomain); 
+        apr_tokenize_to_argv(cmdline, (char***)&argv, p);
+        rv = md_util_exec(p, argv[0], argv, &exit_code);
+        
+        if (APR_SUCCESS == rv && exit_code) rv = APR_EGENERAL;
+        if (APR_SUCCESS != rv) {
+            md_result_problem_printf(result, rv, MD_RESULT_LOG_ID(APLOGNO(10109)), 
+                                     "MDMessageCmd %s failed with exit code %d.", 
+                                     mc->message_cmd, exit_code);
+            md_result_log(result, MD_LOG_ERR);
+            md_job_log_append(job, "message-error", reason, result->detail);
+            return rv;
+        }
+    }
+    md_job_log_append(job, log_msg_reason, NULL, NULL);
+    return APR_SUCCESS;
+}
+
+/**************************************************************************************************/
+/* store setup */
 
 static apr_status_t store_file_ev(void *baton, struct md_store_t *store,
                                     md_store_fs_ev_t ev, unsigned int group, 
@@ -150,6 +238,7 @@ static apr_status_t store_file_ev(void *baton, struct md_store_t *store,
         switch (group) {
             case MD_SG_CHALLENGES:
             case MD_SG_STAGING:
+            case MD_SG_OCSP:
                 rv = md_make_worker_accessible(fname, p);
                 if (APR_ENOTIMPL != rv) {
                     return rv;
@@ -185,19 +274,21 @@ static apr_status_t setup_store(md_store_t **pstore, md_mod_conf_t *mc,
     
     if (APR_SUCCESS != (rv = md_store_fs_init(pstore, p, base_dir))) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10046)"setup store for %s", base_dir);
-        goto out;
+        goto leave;
     }
 
     md_store_fs_set_event_cb(*pstore, store_file_ev, s);
     if (APR_SUCCESS != (rv = check_group_dir(*pstore, MD_SG_CHALLENGES, p, s))
         || APR_SUCCESS != (rv = check_group_dir(*pstore, MD_SG_STAGING, p, s))
         || APR_SUCCESS != (rv = check_group_dir(*pstore, MD_SG_ACCOUNTS, p, s))
+        || APR_SUCCESS != (rv = check_group_dir(*pstore, MD_SG_OCSP, p, s))
         ) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10047) 
                      "setup challenges directory");
+        goto leave;
     }
     
-out:
+leave:
     return rv;
 }
 
@@ -245,15 +336,20 @@ static void merge_srv_config(md_t *md, md_srv_conf_t *base_sc, apr_pool_t *p)
     if (md->must_staple < 0) {
         md->must_staple = md_config_geti(md->sc, MD_CONFIG_MUST_STAPLE);
     }
+    if (md->stapling < 0) {
+        md->stapling = md_config_geti(md->sc, MD_CONFIG_STAPLING);
+    }
 }
 
-static apr_status_t check_coverage(md_t *md, const char *domain, server_rec *s, apr_pool_t *p)
+static apr_status_t check_coverage(md_t *md, const char *domain, server_rec *s, 
+                                   int *pupdates, apr_pool_t *p)
 {
     if (md_contains(md, domain, 0)) {
         return APR_SUCCESS;
     }
     else if (md->transitive) {
         APR_ARRAY_PUSH(md->domains, const char*) = apr_pstrdup(p, domain);
+        *pupdates |= MD_UPD_DOMAINS;
         return APR_SUCCESS;
     }
     else {
@@ -266,38 +362,25 @@ static apr_status_t check_coverage(md_t *md, const char *domain, server_rec *s, 
     }
 }
 
-static apr_status_t md_covers_server(md_t *md, server_rec *s, apr_pool_t *p)
+static apr_status_t md_cover_server(md_t *md, server_rec *s, int *pupdates, apr_pool_t *p)
 {
     apr_status_t rv;
     const char *name;
     int i;
     
-    if (APR_SUCCESS == (rv = check_coverage(md, s->server_hostname, s, p)) && s->names) {
-        for (i = 0; i < s->names->nelts; ++i) {
+    if (APR_SUCCESS == (rv = check_coverage(md, s->server_hostname, s, pupdates, p))) {
+        ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, s, 
+                     "md[%s]: auto add, covers name %s", md->name, s->server_hostname);
+        for (i = 0; s->names && i < s->names->nelts; ++i) {
             name = APR_ARRAY_IDX(s->names, i, const char*);
-            if (APR_SUCCESS != (rv = check_coverage(md, name, s, p))) {
+            if (APR_SUCCESS != (rv = check_coverage(md, name, s, pupdates, p))) {
                 break;
             }
+            ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, s, 
+                         "md[%s]: auto add, covers alias %s", md->name, name);
         }
     }
     return rv;
-}
-
-static int matches_port_somewhere(server_rec *s, int port)
-{
-    server_addr_rec *sa;
-    
-    for (sa = s->addrs; sa; sa = sa->next) {
-        if (sa->host_port == port) {
-            /* host_addr might be general (0.0.0.0) or specific, we count this as match */
-            return 1;
-        }
-        if (sa->host_port == 0) {
-            /* wildcard port, answers to all ports. Rare, but may work. */
-            return 1;
-        }
-    }
-    return 0;
 }
 
 static int uses_port(server_rec *s, int port)
@@ -317,61 +400,94 @@ static int uses_port(server_rec *s, int port)
     return match;
 }
 
-static apr_status_t detect_supported_ports(md_mod_conf_t *mc, server_rec *s, 
-                                           apr_pool_t *p, int log_level)
+static apr_status_t detect_supported_protocols(md_mod_conf_t *mc, server_rec *s, 
+                                               apr_pool_t *p, int log_level)
 {
     ap_listen_rec *lr;
     apr_sockaddr_t *sa;
+    int can_http, can_https;
 
-    mc->can_http = 0;
-    mc->can_https = 0;
+    if (mc->can_http >= 0 && mc->can_https >= 0) goto set_and_leave;
+    
+    can_http = can_https = 0;
     for (lr = ap_listeners; lr; lr = lr->next) {
         for (sa = lr->bind_addr; sa; sa = sa->next) {
             if  (sa->port == mc->local_80 
                  && (!lr->protocol || !strncmp("http", lr->protocol, 4))) {
-                mc->can_http = 1;
+                can_http = 1;
             }
             else if (sa->port == mc->local_443
                      && (!lr->protocol || !strncmp("http", lr->protocol, 4))) {
-                mc->can_https = 1;
+                can_https = 1;
             }
         }
     }
-
+    if (mc->can_http < 0) mc->can_http = can_http; 
+    if (mc->can_https < 0) mc->can_https = can_https;
     ap_log_error(APLOG_MARK, log_level, 0, s, APLOGNO(10037)
-                 "server seems%s reachable via http: (port 80->%d) "
-                 "and%s reachable via https: (port 443->%d) ",
-                 mc->can_http? "" : " not", mc->local_80,
-                 mc->can_https? "" : " not", mc->local_443);
+                 "server seems%s reachable via http: and%s reachable via https:",
+                 mc->can_http? "" : " not", mc->can_https? "" : " not");
+set_and_leave:
     return md_reg_set_props(mc->reg, p, mc->can_http, mc->can_https); 
 }
 
-static server_rec *get_https_server(const char *domain, server_rec *base_server)
+static server_rec *get_public_https_server(md_t *md, const char *domain, server_rec *base_server)
 {
     md_srv_conf_t *sc;
     md_mod_conf_t *mc;
     server_rec *s;
     request_rec r;
+    int i;
 
     sc = md_config_get(base_server);
     mc = sc->mc;
     memset(&r, 0, sizeof(r));
     
-    for (s = base_server; s && (mc->local_443 > 0); s = s->next) {
-        if (!mc->manage_base_server && s == base_server) {
-            /* we shall not assign ourselves to the base server */
-            continue;
-        }
-        r.server = s;
-        if (ap_matches_request_vhost(&r, domain, s->port) && uses_port(s, mc->local_443)) {
-            return s;
+    if (!mc->can_https) return NULL;
+    /* find an ssl server matching domain from MD */
+    for (s = base_server; s; s = s->next) {
+        sc = md_config_get(s);
+        if (!sc || !sc->is_ssl || !sc->assigned) continue;
+        if (base_server == s && !mc->manage_base_server) continue;
+        if (base_server != s && mc->local_443 > 0 && !uses_port(s, mc->local_443)) continue;
+        for (i = 0; i < sc->assigned->nelts; ++i) {
+            if (md == APR_ARRAY_IDX(sc->assigned, i, md_t*)) {
+                r.server = s;
+                if (ap_matches_request_vhost(&r, domain, s->port)) {
+                    return s;
+                }
+            }
         }
     }
     return NULL;
 }
 
+static apr_status_t auto_add_domains(md_t *md, server_rec *base_server, apr_pool_t *p)
+{
+    md_srv_conf_t *sc;
+    server_rec *s;
+    apr_status_t rv = APR_SUCCESS;
+    int updates;
+    
+    /* Ad all domain names used in SSL VirtualHosts, if not already there */
+    ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, base_server, 
+                 "md[%s]: auto add domains", md->name);
+    updates = 0;
+    for (s = base_server; s; s = s->next) {
+        sc = md_config_get(s);
+        if (!sc || !sc->is_ssl || !sc->assigned || sc->assigned->nelts != 1) continue;
+        if (md != APR_ARRAY_IDX(sc->assigned, 0, md_t*)) continue;
+        if (APR_SUCCESS != (rv = md_cover_server(md, s, &updates, p))) {
+            return rv;
+        }
+    }
+    return rv;
+}
+
 static void init_acme_tls_1_domains(md_t *md, server_rec *base_server)
 {
+    md_srv_conf_t *sc;
+    md_mod_conf_t *mc;
     server_rec *s;
     int i;
     const char *domain;
@@ -379,10 +495,16 @@ static void init_acme_tls_1_domains(md_t *md, server_rec *base_server)
     /* Collect those domains that support the "acme-tls/1" protocol. This
      * is part of the MD (and not tested dynamically), since challenge selection
      * may be done outside the server, e.g. in the a2md command. */
-     apr_array_clear(md->acme_tls_1_domains);
+    sc = md_config_get(base_server);
+    mc = sc->mc;    
+    apr_array_clear(md->acme_tls_1_domains);
     for (i = 0; i < md->domains->nelts; ++i) {
         domain = APR_ARRAY_IDX(md->domains, i, const char*);
-        if (NULL == (s = get_https_server(domain, base_server))) {
+        s = get_public_https_server(md, domain, base_server);
+        /* If we did not find a specific virtualhost for md and manage
+         * the base_server, that one is inspected */
+        if (NULL == s && mc->manage_base_server) s = base_server;
+        if (NULL == s) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, base_server, APLOGNO(10168)
                          "%s: no https server_rec found for %s", md->name, domain);
             continue;
@@ -398,15 +520,13 @@ static void init_acme_tls_1_domains(md_t *md, server_rec *base_server)
 }
 
 static apr_status_t link_md_to_servers(md_mod_conf_t *mc, md_t *md, server_rec *base_server, 
-                                       apr_pool_t *p, apr_pool_t *ptemp)
+                                       apr_pool_t *p)
 {
-    server_rec *s, *s_https;
+    server_rec *s;
     request_rec r;
     md_srv_conf_t *sc;
-    apr_status_t rv = APR_SUCCESS;
     int i;
-    const char *domain;
-    apr_array_header_t *servers;
+    const char *domain, *uri;
     
     sc = md_config_get(base_server);
 
@@ -414,8 +534,6 @@ static apr_status_t link_md_to_servers(md_mod_conf_t *mc, md_t *md, server_rec *
      * is an assigned MD not equal this one, the configuration is in error.
      */
     memset(&r, 0, sizeof(r));
-    servers = apr_array_make(ptemp, 5, sizeof(server_rec*));
-    
     for (s = base_server; s; s = s->next) {
         if (!mc->manage_base_server && s == base_server) {
             /* we shall not assign ourselves to the base server */
@@ -429,65 +547,15 @@ static apr_status_t link_md_to_servers(md_mod_conf_t *mc, md_t *md, server_rec *
             if (ap_matches_request_vhost(&r, domain, s->port)) {
                 /* Create a unique md_srv_conf_t record for this server, if there is none yet */
                 sc = md_config_get_unique(s, p);
+                if (!sc->assigned) sc->assigned = apr_array_make(p, 2, sizeof(md_t*));
                 
+                APR_ARRAY_PUSH(sc->assigned, md_t*) = md;
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, base_server, APLOGNO(10041)
-                             "Server %s:%d matches md %s (config %s)", 
-                             s->server_hostname, s->port, md->name, sc->name);
+                             "Server %s:%d matches md %s (config %s) for domain %s, "
+                             "has now %d MDs", 
+                             s->server_hostname, s->port, md->name, sc->name,
+                             domain, (int)sc->assigned->nelts);
                 
-                if (sc->assigned == md) {
-                    /* already matched via another domain name */
-                    goto next_server;
-                }
-                else if (sc->assigned) {
-                    ap_log_error(APLOG_MARK, APLOG_ERR, 0, base_server, APLOGNO(10042)
-                                 "conflict: MD %s matches server %s, but MD %s also matches.",
-                                 md->name, s->server_hostname, sc->assigned->name);
-                    return APR_EINVAL;
-                }
-                
-                /* If this server_rec is only for http: requests. Defined
-                 * alias names do not matter for this MD.
-                 * (see gh issue https://github.com/icing/mod_md/issues/57)
-                 * Otherwise, if server has name or an alias not covered,
-                 * it is by default auto-added (config transitive).
-                 * If mode is "manual", a generated certificate will not match
-                 * all necessary names. */
-                if (!mc->local_80 || !uses_port(s, mc->local_80)) {
-                    if (APR_SUCCESS != (rv = md_covers_server(md, s, p))) {
-                        return rv;
-                    }
-                }
-
-                sc->assigned = md;
-                APR_ARRAY_PUSH(servers, server_rec*) = s;
-                
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, base_server, APLOGNO(10043)
-                             "Managed Domain %s applies to vhost %s:%d", md->name,
-                             s->server_hostname, s->port);
-                
-                goto next_server;
-            }
-        }
-    next_server:
-        continue;
-    }
-
-    if (APR_SUCCESS == rv) {
-        if (apr_is_empty_array(servers)) {
-            if (md->renew_mode != MD_RENEW_ALWAYS) {
-                /* Not an error, but looks suspicious */
-                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, base_server, APLOGNO(10045)
-                             "No VirtualHost matches Managed Domain %s", md->name);
-                APR_ARRAY_PUSH(mc->unused_names, const char*)  = md->name;
-            }
-        }
-        else {
-            const char *uri;
-            
-            /* Found matching server_rec's. Collect all 'ServerAdmin's into MD's contact list */
-            apr_array_clear(md->contacts);
-            for (i = 0; i < servers->nelts; ++i) {
-                s = APR_ARRAY_IDX(servers, i, server_rec*);
                 if (s->server_admin && strcmp(DEFAULT_ADMIN, s->server_admin)) {
                     uri = md_util_schemify(p, s->server_admin, "mailto");
                     if (md_array_str_index(md->contacts, uri, 0, 0) < 0) {
@@ -496,50 +564,14 @@ static apr_status_t link_md_to_servers(md_mod_conf_t *mc, md_t *md, server_rec *
                                      "%s: added contact %s", md->name, uri);
                     }
                 }
+                break;
             }
-            
-            if (md->require_https > MD_REQUIRE_OFF) {
-                /* We require https for this MD, but do we have port 443 (or a mapped one)
-                 * available? */
-                if (mc->local_443 <= 0) {
-                    ap_log_error(APLOG_MARK, APLOG_ERR, 0, base_server, APLOGNO(10105)
-                                 "MDPortMap says there is no port for https (443), "
-                                 "but MD %s is configured to require https. This "
-                                 "only works when a 443 port is available.", md->name);
-                    return APR_EINVAL;
-                    
-                }
-                
-                /* Ok, we know which local port represents 443, do we have a server_rec
-                 * for MD that has addresses with port 443? */
-                s_https = NULL;
-                for (i = 0; i < servers->nelts; ++i) {
-                    s = APR_ARRAY_IDX(servers, i, server_rec*);
-                    if (matches_port_somewhere(s, mc->local_443)) {
-                        s_https = s;
-                        break;
-                    }
-                }
-                
-                if (!s_https) {
-                    /* Did not find any server_rec that matches this MD *and* has an
-                     * s->addrs match for the https port. Suspicious. */
-                    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, base_server, APLOGNO(10106)
-                                 "MD %s is configured to require https, but there seems to be "
-                                 "no VirtualHost for it that has port %d in its address list. "
-                                 "This looks as if it will not work.", 
-                                 md->name, mc->local_443);
-                }
-            }
-            
         }
-        
     }
-    return rv;
+    return APR_SUCCESS;
 }
 
-static apr_status_t link_mds_to_servers(md_mod_conf_t *mc, server_rec *s, 
-                                            apr_pool_t *p, apr_pool_t *ptemp)
+static apr_status_t link_mds_to_servers(md_mod_conf_t *mc, server_rec *s, apr_pool_t *p)
 {
     int i;
     md_t *md;
@@ -548,7 +580,7 @@ static apr_status_t link_mds_to_servers(md_mod_conf_t *mc, server_rec *s,
     apr_array_clear(mc->unused_names);
     for (i = 0; i < mc->mds->nelts; ++i) {
         md = APR_ARRAY_IDX(mc->mds, i, md_t*);
-        if (APR_SUCCESS != (rv = link_md_to_servers(mc, md, s, p, ptemp))) {
+        if (APR_SUCCESS != (rv = link_md_to_servers(mc, md, s, p))) {
             goto leave;
         }
     }
@@ -562,7 +594,7 @@ static apr_status_t merge_mds_with_conf(md_mod_conf_t *mc, apr_pool_t *p,
     md_srv_conf_t *base_conf;
     md_t *md, *omd;
     const char *domain;
-    const md_timeslice_t *ts;
+    md_timeslice_t *ts;
     apr_status_t rv = APR_SUCCESS;
     int i, j;
 
@@ -612,8 +644,6 @@ static apr_status_t merge_mds_with_conf(md_mod_conf_t *mc, apr_pool_t *p,
             return APR_EINVAL;
         }
 
-        init_acme_tls_1_domains(md, base_server);
-
         if (APLOG_IS_LEVEL(base_server, log_level)) {
             ap_log_error(APLOG_MARK, log_level, 0, base_server, APLOGNO(10039)
                          "Completed MD[%s, CA=%s, Proto=%s, Agreement=%s, renew-mode=%d "
@@ -635,7 +665,7 @@ static void load_staged_data(md_mod_conf_t *mc, server_rec *s, apr_pool_t *p)
     
     for (i = 0; i < mc->mds->nelts; ++i) {
         md = APR_ARRAY_IDX(mc->mds, i, md_t *);
-        result = md_result_md_make(p, md);
+        result = md_result_md_make(p, md->name);
         if (APR_SUCCESS == (rv = md_reg_load_staging(mc->reg, md, mc->env, result, p))) {
             ap_log_error( APLOG_MARK, APLOG_INFO, rv, s, APLOGNO(10068) 
                          "%s: staged set activated", md->name);
@@ -647,39 +677,84 @@ static void load_staged_data(md_mod_conf_t *mc, server_rec *s, apr_pool_t *p)
     }
 }
 
-static apr_status_t reinit_mds(md_mod_conf_t *mc, server_rec *s, apr_pool_t *p)
+static apr_status_t check_invalid_duplicates(server_rec *base_server)
 {
-    md_t *md; 
-    apr_status_t rv = APR_SUCCESS;
-    int i;
+    server_rec *s;
+    md_srv_conf_t *sc;
     
-    for (i = 0; i < mc->mds->nelts; ++i) {
-        md = APR_ARRAY_IDX(mc->mds, i, md_t *);
-        if (APR_SUCCESS != (rv = md_reg_reinit_state(mc->reg, (md_t*)md, p))) {
-            ap_log_error( APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10172)
-                         "%s: error reinitiazing from store", md->name);
-            break;
+    ap_log_error( APLOG_MARK, APLOG_TRACE1, 0, base_server, 
+                 "cecking duplicate ssl assignments");
+    for (s = base_server; s; s = s->next) {
+        sc = md_config_get(s);
+        if (!sc || !sc->assigned) continue;
+        
+        if (sc->assigned->nelts > 1 && sc->is_ssl) {
+            /* duplicate assignment to SSL VirtualHost, not allowed */
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, base_server, APLOGNO(10042)
+                         "conflict: %d MDs match to SSL VirtualHost %s, there can at most be one.",
+                         (int)sc->assigned->nelts, s->server_hostname);
+            return APR_EINVAL;
+        }
+    }
+    return APR_SUCCESS;
+}
+
+static apr_status_t check_usage(md_mod_conf_t *mc, md_t *md, server_rec *base_server, 
+                                apr_pool_t *p, apr_pool_t *ptemp)
+{
+    server_rec *s;
+    md_srv_conf_t *sc;
+    apr_status_t rv = APR_SUCCESS;
+    int i, has_ssl;
+    apr_array_header_t *servers;
+
+    (void)p;
+    servers = apr_array_make(ptemp, 5, sizeof(server_rec*));
+    has_ssl = 0;
+    for (s = base_server; s; s = s->next) {
+        sc = md_config_get(s);
+        if (!sc || !sc->assigned) continue;
+        for (i = 0; i < sc->assigned->nelts; ++i) {
+            if (md == APR_ARRAY_IDX(sc->assigned, i, md_t*)) {
+                APR_ARRAY_PUSH(servers, server_rec*) = s;
+                if (sc->is_ssl) has_ssl = 1;
+            }
+        }
+    }
+
+    if (!has_ssl && md->require_https > MD_REQUIRE_OFF) {
+        /* We require https for this MD, but do we have a SSL vhost? */
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, base_server, APLOGNO(10105)
+                     "MD %s does not match any VirtualHost with 'SSLEngine on', "
+                     "but is configured to require https. This cannot work.", md->name);
+    }
+    if (apr_is_empty_array(servers)) {
+        if (md->renew_mode != MD_RENEW_ALWAYS) {
+            /* Not an error, but looks suspicious */
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, base_server, APLOGNO(10045)
+                         "No VirtualHost matches Managed Domain %s", md->name);
+            APR_ARRAY_PUSH(mc->unused_names, const char*)  = md->name;
         }
     }
     return rv;
 }
 
-static void init_watched_names(md_mod_conf_t *mc, apr_pool_t *p, apr_pool_t *ptemp, server_rec *s)
+static int init_cert_watch_status(md_mod_conf_t *mc, apr_pool_t *p, apr_pool_t *ptemp, server_rec *s)
 {
-    const md_t *md;
+    md_t *md;
     md_result_t *result;
-    int i;
+    int i, count;
     
     /* Calculate the list of MD names which we need to watch:
      * - all MDs that are used somewhere
      * - all MDs in drive mode 'AUTO' that are not in 'unused_names'
      */
+    count = 0;
     result = md_result_make(ptemp, APR_SUCCESS);
-    apr_array_clear(mc->watched_names);
     for (i = 0; i < mc->mds->nelts; ++i) {
-        md = APR_ARRAY_IDX(mc->mds, i, const md_t *);
+        md = APR_ARRAY_IDX(mc->mds, i, md_t*);
         md_result_set(result, APR_SUCCESS, NULL);
-
+        md->watched = 0;
         if (md->state == MD_S_ERROR) {
             md_result_set(result, APR_EGENERAL, 
                           "in error state, unable to drive forward. This "
@@ -704,8 +779,10 @@ static void init_watched_names(md_mod_conf_t *mc, apr_pool_t *p, apr_pool_t *pte
             }
         }
         
-        APR_ARRAY_PUSH(mc->watched_names, const char *) = md->name; 
+        md->watched = 1;
+        ++count;
     }
+    return count;
 }   
 
 static apr_status_t md_post_config_before_ssl(apr_pool_t *p, apr_pool_t *plog,
@@ -755,11 +832,21 @@ static apr_status_t md_post_config_before_ssl(apr_pool_t *p, apr_pool_t *plog,
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10072) "setup md registry");
         goto leave;
     }
+    md_reg_set_notify_cb(mc->reg, notify, mc);
 
+    /* renew on 30% remaining /*/
+    rv = md_ocsp_reg_make(&mc->ocsp, p, store, mc->ocsp_renew_window,
+                          AP_SERVER_BASEVERSION, mc->proxy_url);
+    if (APR_SUCCESS != rv) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10196) "setup ocsp registry");
+        goto leave;
+    }
+    md_ocsp_set_notify_cb(mc->ocsp, notify, mc);
+    
     init_ssl();
 
     /* How to bootstrap this module:
-     * 1. find out if we know where http: and https: requests will arrive
+     * 1. find out if we know if http: and/or https: requests will arrive
      * 2. apply the now complete configuration setttings to the MDs
      * 3. Link MDs to the server_recs they are used in. Detect unused MDs.
      * 4. Update the store with the MDs. Change domain names, create new MDs, etc.
@@ -778,25 +865,63 @@ static apr_status_t md_post_config_before_ssl(apr_pool_t *p, apr_pool_t *plog,
      * 10. If this list is non-empty, setup a watchdog to run. 
      */
     /*1*/
-    if (APR_SUCCESS != (rv = detect_supported_ports(mc, s, p, log_level))) goto leave;
+    if (APR_SUCCESS != (rv = detect_supported_protocols(mc, s, p, log_level))) goto leave;
     /*2*/
     if (APR_SUCCESS != (rv = merge_mds_with_conf(mc, p, s, log_level))) goto leave;
     /*3*/
-    if (APR_SUCCESS != (rv = link_mds_to_servers(mc, s, p, ptemp))) goto leave;
+    if (APR_SUCCESS != (rv = link_mds_to_servers(mc, s, p))) goto leave;
     /*4*/
-    if (APR_SUCCESS != (rv = md_reg_sync(mc->reg, p, ptemp, mc->mds))) {
+    if (APR_SUCCESS != (rv = md_reg_sync_start(mc->reg, mc->mds, ptemp))) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10073)
                      "synching %d mds to registry", mc->mds->nelts);
         goto leave;
     }
     /*5*/
     load_staged_data(mc, s, p);
+leave:
+    return rv;
+}
+
+static apr_status_t md_post_config_after_ssl(apr_pool_t *p, apr_pool_t *plog,
+                                             apr_pool_t *ptemp, server_rec *s)
+{
+    md_srv_conf_t *sc;
+    apr_status_t rv = APR_SUCCESS;
+    md_mod_conf_t *mc;
+    int watched, i;
+    md_t *md;
+
+    (void)ptemp;
+    (void)plog;
+    sc = md_config_get(s);
+
     /*6*/
-    if (dry_run) goto leave;
+    if (!sc || !sc->mc || sc->mc->dry_run) goto leave;
+    mc = sc->mc;
+    
     /*7*/
-    if (APR_SUCCESS != (rv = reinit_mds(mc, s, p))) goto leave;
+    if (APR_SUCCESS != (rv = check_invalid_duplicates(s))) {
+        goto leave;
+    }
+    apr_array_clear(mc->unused_names);
+    for (i = 0; i < mc->mds->nelts; ++i) {
+        md = APR_ARRAY_IDX(mc->mds, i, md_t *);
+
+        if (APR_SUCCESS != (rv = auto_add_domains(md, s, p))) {
+            goto leave;
+        }
+        init_acme_tls_1_domains(md, s);
+        if (APR_SUCCESS != (rv = check_usage(mc, md, s, p, ptemp))) {
+            goto leave;
+        }
+        if (APR_SUCCESS != (rv = md_reg_sync_finish(mc->reg, md, p, ptemp))) {
+            ap_log_error( APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10172)
+                         "md[%s]: error synching to store", md->name);
+            goto leave;
+        }
+    }
     /*8*/
-    init_watched_names(mc, p, ptemp, s);
+    watched = init_cert_watch_status(mc, p, ptemp, s);
     /*9*/
     md_reg_cleanup_challenges(mc->reg, p, ptemp, mc->mds);
     
@@ -804,18 +929,23 @@ static apr_status_t md_post_config_before_ssl(apr_pool_t *p, apr_pool_t *plog,
      * and only staging/challenges may be manipulated */
     md_reg_freeze_domains(mc->reg, mc->mds);
     
-    if (mc->watched_names->nelts > 0) {
+    if (watched) {
         /*10*/
         ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s, APLOGNO(10074)
-                     "%d out of %d mds need watching", 
-                     mc->watched_names->nelts, mc->mds->nelts);
+                     "%d out of %d mds need watching", watched, mc->mds->nelts);
     
         md_http_use_implementation(md_curl_get_impl(p));
-        rv = md_start_watching(mc, s, p);
+        rv = md_renew_start_watching(mc, s, p);
     }
     else {
-        ap_log_error( APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(10075) "no mds to drive");
+        ap_log_error( APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(10075) "no mds to supervise");
     }
+
+    if (!mc->ocsp || md_ocsp_count(mc->ocsp) == 0) goto leave;
+    
+    md_http_use_implementation(md_curl_get_impl(p));
+    rv = md_ocsp_start_watching(mc, s, p);
+    
 leave:
     return rv;
 }
@@ -877,20 +1007,6 @@ static int md_protocol_switch(conn_rec *c, request_rec *r, server_rec *s,
 /**************************************************************************************************/
 /* Access API to other httpd components */
 
-static int md_is_managed(server_rec *s)
-{
-    md_srv_conf_t *conf = md_config_get(s);
-
-    if (conf && conf->assigned) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(10076) 
-                     "%s: manages server %s", conf->assigned->name, s->server_hostname);
-        return 1;
-    }
-    ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, s,  
-                 "server %s is not managed", s->server_hostname);
-    return 0;
-}
-
 static apr_status_t setup_fallback_cert(md_store_t *store, const md_t *md, 
                                         server_rec *s, apr_pool_t *p)
 {
@@ -938,23 +1054,27 @@ static apr_status_t get_certificate(server_rec *s, apr_pool_t *p, int fallback,
         return APR_ENOENT;
     }
     
+    assert(sc->mc);
+    reg = sc->mc->reg;
+    assert(reg);
+
+    sc->is_ssl = 1;
+
     if (!sc->assigned) {
         /* With the new hooks in mod_ssl, we are invoked for all server_rec. It is
          * therefore normal, when we have nothing to add here. */
         return APR_ENOENT;
     }
-    
-    assert(sc->mc);
-    reg = sc->mc->reg;
-    assert(reg);
-    
-    md = sc->assigned;
-    if (!md) {
-        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(10115) 
-                     "unable to hand out certificates, as registry can no longer "
-                     "find MD '%s'.", sc->assigned->name);
-        return APR_ENOENT;
+    else if (sc->assigned->nelts != 1) {
+        if (!fallback) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(10207)
+                         "conflict: %d MDs match Virtualhost %s which uses SSL, however "
+                         "there can be at most 1.",
+                         (int)sc->assigned->nelts, s->server_hostname);
+        }
+        return APR_EINVAL;
     }
+    md = APR_ARRAY_IDX(sc->assigned, 0, const md_t*);
     
     rv = md_reg_get_cred_files(pkeyfile, pcertfile, reg, MD_SG_DOMAINS, md, p);
     if (APR_STATUS_IS_ENOENT(rv)) {
@@ -988,12 +1108,6 @@ static apr_status_t get_certificate(server_rec *s, apr_pool_t *p, int fallback,
                  "%s[state=%d]: providing certificate for server %s", 
                  md->name, md->state, s->server_hostname);
     return rv;
-}
-
-static apr_status_t md_get_certificate(server_rec *s, apr_pool_t *p,
-                                       const char **pkeyfile, const char **pcertfile)
-{
-    return get_certificate(s, p, 1, pcertfile, pkeyfile);
 }
 
 static int md_add_cert_files(server_rec *s, apr_pool_t *p,
@@ -1176,51 +1290,62 @@ static int md_require_https_maybe(request_rec *r)
 {
     const md_srv_conf_t *sc;
     apr_uri_t uri;
-    const char *s;
+    const char *s, *host;
+    const md_t *md;
     int status;
     
-    if (opt_ssl_is_https && r->parsed_uri.path
-        && strncmp(WELL_KNOWN_PREFIX, r->parsed_uri.path, sizeof(WELL_KNOWN_PREFIX)-1)) {
+    /* Requests outside the /.well-known path are subject to possible
+     * https: redirects or HSTS header additions.
+     */
+    sc = ap_get_module_config(r->server->module_config, &md_module);
+    if (!sc || !sc->assigned || !sc->assigned->nelts 
+        || !opt_ssl_is_https || !r->parsed_uri.path
+        || !strncmp(WELL_KNOWN_PREFIX, r->parsed_uri.path, sizeof(WELL_KNOWN_PREFIX)-1)) {
+        goto declined;
+    }
         
-        sc = ap_get_module_config(r->server->module_config, &md_module);
-        if (sc && sc->assigned && sc->assigned->require_https > MD_REQUIRE_OFF) {
-            if (opt_ssl_is_https(r->connection)) {
-                /* Using https:
-                 * if 'permanent' and no one else set a HSTS header already, do it */
-                if (sc->assigned->require_https == MD_REQUIRE_PERMANENT 
-                    && sc->mc->hsts_header && !apr_table_get(r->headers_out, MD_HSTS_HEADER)) {
-                    apr_table_setn(r->headers_out, MD_HSTS_HEADER, sc->mc->hsts_header);
-                }
+    host = ap_get_server_name_for_url(r);
+    md = md_get_for_domain(r->server, host);
+    if (!md) goto declined;
+    
+    if (opt_ssl_is_https(r->connection)) {
+        /* Using https:
+         * if 'permanent' and no one else set a HSTS header already, do it */
+        if (md->require_https == MD_REQUIRE_PERMANENT 
+            && sc->mc->hsts_header && !apr_table_get(r->headers_out, MD_HSTS_HEADER)) {
+            apr_table_setn(r->headers_out, MD_HSTS_HEADER, sc->mc->hsts_header);
+        }
+    }
+    else {
+        if (md->require_https > MD_REQUIRE_OFF) {
+            /* Not using https:, but require it. Redirect. */
+            if (r->method_number == M_GET) {
+                /* safe to use the old-fashioned codes */
+                status = ((MD_REQUIRE_PERMANENT == md->require_https)? 
+                          HTTP_MOVED_PERMANENTLY : HTTP_MOVED_TEMPORARILY);
             }
             else {
-                /* Not using https:, but require it. Redirect. */
-                if (r->method_number == M_GET) {
-                    /* safe to use the old-fashioned codes */
-                    status = ((MD_REQUIRE_PERMANENT == sc->assigned->require_https)? 
-                              HTTP_MOVED_PERMANENTLY : HTTP_MOVED_TEMPORARILY);
-                }
-                else {
-                    /* these should keep the method unchanged on retry */
-                    status = ((MD_REQUIRE_PERMANENT == sc->assigned->require_https)? 
-                              HTTP_PERMANENT_REDIRECT : HTTP_TEMPORARY_REDIRECT);
-                }
-                
-                s = ap_construct_url(r->pool, r->uri, r);
-                if (APR_SUCCESS == apr_uri_parse(r->pool, s, &uri)) {
-                    uri.scheme = (char*)"https";
-                    uri.port = 443;
-                    uri.port_str = (char*)"443";
-                    uri.query = r->parsed_uri.query;
-                    uri.fragment = r->parsed_uri.fragment;
-                    s = apr_uri_unparse(r->pool, &uri, APR_URI_UNP_OMITUSERINFO);
-                    if (s && *s) {
-                        apr_table_setn(r->headers_out, "Location", s);
-                        return status;
-                    }
+                /* these should keep the method unchanged on retry */
+                status = ((MD_REQUIRE_PERMANENT == md->require_https)? 
+                          HTTP_PERMANENT_REDIRECT : HTTP_TEMPORARY_REDIRECT);
+            }
+            
+            s = ap_construct_url(r->pool, r->uri, r);
+            if (APR_SUCCESS == apr_uri_parse(r->pool, s, &uri)) {
+                uri.scheme = (char*)"https";
+                uri.port = 443;
+                uri.port_str = (char*)"443";
+                uri.query = r->parsed_uri.query;
+                uri.fragment = r->parsed_uri.fragment;
+                s = apr_uri_unparse(r->pool, &uri, APR_URI_UNP_OMITUSERINFO);
+                if (s && *s) {
+                    apr_table_setn(r->headers_out, "Location", s);
+                    return status;
                 }
             }
         }
     }
+declined:
     return DECLINED;
 }
 
@@ -1248,6 +1373,7 @@ static void md_hooks(apr_pool_t *pool)
      * Run again after mod_ssl is done.
      */
     ap_hook_post_config(md_post_config_before_ssl, NULL, mod_ssl, APR_HOOK_MIDDLE);
+    ap_hook_post_config(md_post_config_after_ssl, mod_ssl, NULL, APR_HOOK_MIDDLE);
     
     /* Run once after a child process has been created.
      */
@@ -1263,22 +1389,18 @@ static void md_hooks(apr_pool_t *pool)
 
     /* Status request handlers and contributors */
     ap_hook_post_read_request(md_http_cert_status, NULL, mod_ssl, APR_HOOK_MIDDLE);
-    APR_OPTIONAL_HOOK(ap, status_hook, md_status_hook, NULL, NULL, APR_HOOK_MIDDLE);
+    APR_OPTIONAL_HOOK(ap, status_hook, md_domains_status_hook, NULL, NULL, APR_HOOK_MIDDLE);
+    APR_OPTIONAL_HOOK(ap, status_hook, md_ocsp_status_hook, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_handler(md_status_handler, NULL, NULL, APR_HOOK_MIDDLE);
 
-#ifdef SSL_CERT_HOOKS
-    (void)md_is_managed;
-    (void)md_get_certificate;
+
+#ifndef SSL_CERT_HOOKS
+#error "This version of mod_md requires Apache httpd 2.4.41 or newer."
+#endif
     APR_OPTIONAL_HOOK(ssl, add_cert_files, md_add_cert_files, NULL, NULL, APR_HOOK_MIDDLE);
     APR_OPTIONAL_HOOK(ssl, add_fallback_cert_files, md_add_fallback_cert_files, NULL, NULL, APR_HOOK_MIDDLE);
     APR_OPTIONAL_HOOK(ssl, answer_challenge, md_answer_challenge, NULL, NULL, APR_HOOK_MIDDLE);
-#else
-    (void)md_add_cert_files;
-    (void)md_add_fallback_cert_files;
-    (void)md_answer_challenge;
-    APR_REGISTER_OPTIONAL_FN(md_is_challenge);
-    APR_REGISTER_OPTIONAL_FN(md_is_managed);
-    APR_REGISTER_OPTIONAL_FN(md_get_certificate);
-#endif
+    APR_OPTIONAL_HOOK(ssl, init_stapling_status, md_ocsp_init_stapling_status, NULL, NULL, APR_HOOK_MIDDLE);
+    APR_OPTIONAL_HOOK(ssl, get_stapling_status, md_ocsp_get_stapling_status, NULL, NULL, APR_HOOK_MIDDLE);
 }
 

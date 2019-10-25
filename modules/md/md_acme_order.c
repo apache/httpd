@@ -447,7 +447,7 @@ apr_status_t md_acme_order_start_challenges(md_acme_order_t *order, md_acme_t *a
         if (APR_SUCCESS != (rv = md_acme_authz_retrieve(acme, p, url, &authz))) {
             md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, p, "%s: check authz for %s",
                           md->name, authz->domain);
-            goto out;
+            goto leave;
         }
 
         switch (authz->state) {
@@ -459,21 +459,28 @@ apr_status_t md_acme_order_start_challenges(md_acme_order_t *order, md_acme_t *a
                                            md->pkey_spec, md->acme_tls_1_domains,
                                            env, p, &setup_token, result);
                 if (APR_SUCCESS != rv) {
-                    goto out;
+                    goto leave;
                 }
                 add_setup_token(order, setup_token);
                 md_acme_order_save(store, p, MD_SG_STAGING, md->name, order, 0);
                 break;
                 
+            case MD_ACME_AUTHZ_S_INVALID:
+                rv = APR_EINVAL;
+                if (authz->error_type) {
+                    md_result_problem_set(result, rv, authz->error_type, authz->error_detail, NULL);
+                    goto leave;
+                }
+                /* fall through */
             default:
                 rv = APR_EINVAL;
                 md_result_printf(result, rv, "unexpected AUTHZ state %d for domain %s", 
                                  authz->state, authz->domain);
                 md_result_log(result, MD_LOG_ERR);
-             goto out;
+                goto leave;
         }
     }
-out:    
+leave:    
     return rv;
 }
 
@@ -501,6 +508,16 @@ static apr_status_t check_challenges(void *baton, int attempt)
                     rv = APR_EAGAIN;
                     md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, ctx->p, 
                                   "%s: status pending at %s", authz->domain, authz->url);
+                    goto leave;
+                case MD_ACME_AUTHZ_S_INVALID:
+                    rv = APR_EINVAL;
+                    if (!authz->error_type) {
+                        md_result_printf(ctx->result, rv, 
+                                         "domain authorization for %s failed, CA consideres "
+                                         "answer to challenge invalid, no error given", 
+                                         authz->domain);
+                    } 
+                    md_result_log(ctx->result, MD_LOG_ERR);
                     goto leave;
                 default:
                     rv = APR_EINVAL;
@@ -531,7 +548,7 @@ apr_status_t md_acme_order_monitor_authzs(md_acme_order_t *order, md_acme_t *acm
     
     md_result_activity_printf(result, "Monitoring challenge status for %s", md->name);
     rv = md_util_try(check_challenges, &ctx, 0, timeout, 0, 0, 1);
-    md_log_perror(MD_LOG_MARK, MD_LOG_INFO, rv, p, "%s: checked authorizations", md->name);
+    md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, p, "%s: checked authorizations", md->name);
     return rv;
 }
 

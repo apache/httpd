@@ -22,14 +22,17 @@
 
 #include "md_http.h"
 #include "md_log.h"
+#include "md_util.h"
 
 struct md_http_t {
     apr_pool_t *pool;
     apr_bucket_alloc_t *bucket_alloc;
+    int next_id;
     apr_off_t resp_limit;
     md_http_impl_t *impl;
     const char *user_agent;
     const char *proxy_url;
+    md_http_timeouts_t timeout;
 };
 
 static md_http_impl_t *cur_impl;
@@ -81,9 +84,82 @@ void md_http_set_response_limit(md_http_t *http, apr_off_t resp_limit)
     http->resp_limit = resp_limit;
 }
 
+void md_http_set_timeout_default(md_http_t *http, apr_time_t timeout)
+{
+    http->timeout.overall = timeout;
+}
+
+void md_http_set_timeout(md_http_request_t *req, apr_time_t timeout)
+{
+    req->timeout.overall = timeout;
+}
+
+void md_http_set_connect_timeout_default(md_http_t *http, apr_time_t timeout)
+{
+    http->timeout.connect = timeout;
+}
+
+void md_http_set_connect_timeout(md_http_request_t *req, apr_time_t timeout)
+{
+    req->timeout.connect = timeout;
+}
+
+void md_http_set_stalling_default(md_http_t *http, long bytes_per_sec, apr_time_t timeout)
+{
+    http->timeout.stall_bytes_per_sec = bytes_per_sec;
+    http->timeout.stalled = timeout;
+}
+
+void md_http_set_stalling(md_http_request_t *req, long bytes_per_sec, apr_time_t timeout)
+{
+    req->timeout.stall_bytes_per_sec = bytes_per_sec;
+    req->timeout.stalled = timeout;
+}
+
+static apr_status_t req_set_body(md_http_request_t *req, const char *content_type,
+                                 apr_bucket_brigade *body, apr_off_t body_len,
+                                 int detect_len)
+{
+    apr_status_t rv = APR_SUCCESS;
+    
+    if (body && detect_len) {
+        rv = apr_brigade_length(body, 1, &body_len);
+        if (rv != APR_SUCCESS) {
+            return rv;
+        }
+    }
+
+    req->body = body;
+    req->body_len = body? body_len : 0;
+    if (content_type) {
+        apr_table_set(req->headers, "Content-Type", content_type); 
+    }
+    else {
+        apr_table_unset(req->headers, "Content-Type"); 
+    }
+    return rv;
+}
+
+static apr_status_t req_set_body_data(md_http_request_t *req, const char *content_type,
+                                      const md_data_t *body)
+{
+    apr_bucket_brigade *bbody = NULL;
+    apr_status_t rv;
+    
+    if (body && body->len > 0) {
+        bbody = apr_brigade_create(req->pool, req->http->bucket_alloc);
+        rv = apr_brigade_write(bbody, NULL, NULL, body->data, body->len);
+        if (rv != APR_SUCCESS) {
+            md_http_req_destroy(req);
+            return rv;
+        }
+    }
+    return req_set_body(req, content_type, bbody, body? (apr_off_t)body->len : 0, 0);
+}
+
 static apr_status_t req_create(md_http_request_t **preq, md_http_t *http, 
-                               const char *method, const char *url, struct apr_table_t *headers,
-                               md_http_cb *cb, void *baton)
+                               const char *method, const char *url, 
+                               struct apr_table_t *headers)
 {
     md_http_request_t *req;
     apr_pool_t *pool;
@@ -96,17 +172,16 @@ static apr_status_t req_create(md_http_request_t **preq, md_http_t *http,
     
     req = apr_pcalloc(pool, sizeof(*req));
     req->pool = pool;
+    req->id = http->next_id++;
     req->bucket_alloc = http->bucket_alloc;
     req->http = http;
     req->method = method;
     req->url = url;
     req->headers = headers? apr_table_copy(req->pool, headers) : apr_table_make(req->pool, 5);
     req->resp_limit = http->resp_limit;
-    req->cb = cb;
-    req->baton = baton;
     req->user_agent = http->user_agent;
     req->proxy_url = http->proxy_url;
-
+    req->timeout = http->timeout;
     *preq = req;
     return rv;
 }
@@ -120,107 +195,157 @@ void md_http_req_destroy(md_http_request_t *req)
     apr_pool_destroy(req->pool);
 }
 
-static apr_status_t schedule(md_http_request_t *req, 
-                             apr_bucket_brigade *body, int detect_clen) 
+void md_http_set_on_status_cb(md_http_request_t *req, md_http_status_cb *cb, void *baton)
 {
-    apr_status_t rv;
-    
-    req->body = body;
-    req->body_len = body? -1 : 0;
+    req->cb.on_status = cb;
+    req->cb.on_status_data = baton;
+}
 
-    if (req->body && detect_clen) {
-        rv = apr_brigade_length(req->body, 1, &req->body_len);
-        if (rv != APR_SUCCESS) {
-            md_http_req_destroy(req);
-            return rv;
-        }
-    }
-    
+void md_http_set_on_response_cb(md_http_request_t *req, md_http_response_cb *cb, void *baton)
+{
+    req->cb.on_response = cb;
+    req->cb.on_response_data = baton;
+}
+
+static void req_init_cl(md_http_request_t *req)
+{
     if (req->body_len == 0 && apr_strnatcasecmp("GET", req->method)) {
         apr_table_setn(req->headers, "Content-Length", "0");
     }
     else if (req->body_len > 0) {
         apr_table_setn(req->headers, "Content-Length", apr_off_t_toa(req->pool, req->body_len));
     }
-    
+}
+
+apr_status_t md_http_perform(md_http_request_t *req)
+{
+    req_init_cl(req);
     return req->http->impl->perform(req);
 }
 
-apr_status_t md_http_GET(struct md_http_t *http, 
-                         const char *url, struct apr_table_t *headers,
-                         md_http_cb *cb, void *baton)
+typedef struct {
+    md_http_next_req *nextreq;
+    void *baton;
+} nextreq_proxy_t;
+
+static apr_status_t proxy_nextreq(md_http_request_t **preq, void *baton, 
+                                      md_http_t *http, int in_flight)
 {
-    md_http_request_t *req;
+    nextreq_proxy_t *proxy = baton;
     apr_status_t rv;
     
-    rv = req_create(&req, http, "GET", url, headers, cb, baton);
-    if (rv != APR_SUCCESS) {
-        return rv;
-    }
-    
-    return schedule(req, NULL, 0);
+    rv = proxy->nextreq(preq, proxy->baton, http, in_flight);
+    if (APR_SUCCESS == rv) req_init_cl(*preq);
+    return rv;
 }
 
-apr_status_t md_http_HEAD(struct md_http_t *http, 
-                          const char *url, struct apr_table_t *headers,
-                          md_http_cb *cb, void *baton)
+apr_status_t md_http_multi_perform(md_http_t *http, md_http_next_req *nextreq, void *baton)
 {
-    md_http_request_t *req;
-    apr_status_t rv;
+    nextreq_proxy_t proxy;
     
-    rv = req_create(&req, http, "HEAD", url, headers, cb, baton);
-    if (rv != APR_SUCCESS) {
-        return rv;
-    }
-    
-    return schedule(req, NULL, 0);
+    proxy.nextreq = nextreq;
+    proxy.baton = baton;
+    return http->impl->multi_perform(http, http->pool, proxy_nextreq, &proxy);
 }
 
-apr_status_t md_http_POST(struct md_http_t *http, const char *url, 
-                          struct apr_table_t *headers, const char *content_type, 
-                          apr_bucket_brigade *body,
-                          md_http_cb *cb, void *baton)
+apr_status_t md_http_GET_create(md_http_request_t **preq, md_http_t *http, const char *url, 
+                                struct apr_table_t *headers)
 {
     md_http_request_t *req;
     apr_status_t rv;
     
-    rv = req_create(&req, http, "POST", url, headers, cb, baton);
-    if (rv != APR_SUCCESS) {
-        return rv;
-    }
-    
-    if (content_type) {
-        apr_table_set(req->headers, "Content-Type", content_type); 
-    }
-    return schedule(req, body, 1);
+    rv = req_create(&req, http, "GET", url, headers);
+    *preq = (APR_SUCCESS == rv)? req : NULL;
+    return rv;
 }
 
-apr_status_t md_http_POSTd(md_http_t *http, const char *url, 
-                           struct apr_table_t *headers, const char *content_type, 
-                           const char *data, size_t data_len, 
-                           md_http_cb *cb, void *baton)
+apr_status_t md_http_HEAD_create(md_http_request_t **preq, md_http_t *http, const char *url, 
+                                 struct apr_table_t *headers)
 {
     md_http_request_t *req;
     apr_status_t rv;
-    apr_bucket_brigade *body = NULL;
     
-    rv = req_create(&req, http, "POST", url, headers, cb, baton);
-    if (rv != APR_SUCCESS) {
-        return rv;
-    }
+    rv = req_create(&req, http, "HEAD", url, headers);
+    *preq = (APR_SUCCESS == rv)? req : NULL;
+    return rv;
+}
 
-    if (data && data_len > 0) {
-        body = apr_brigade_create(req->pool, req->http->bucket_alloc);
-        rv = apr_brigade_write(body, NULL, NULL, data, data_len);
-        if (rv != APR_SUCCESS) {
-            md_http_req_destroy(req);
-            return rv;
-        }
-    }
+apr_status_t md_http_POST_create(md_http_request_t **preq, md_http_t *http, const char *url, 
+                                 struct apr_table_t *headers, const char *content_type, 
+                                 struct apr_bucket_brigade *body, int detect_len)
+{
+    md_http_request_t *req;
+    apr_status_t rv;
     
-    if (content_type) {
-        apr_table_set(req->headers, "Content-Type", content_type); 
+    rv = req_create(&req, http, "POST", url, headers);
+    if (APR_SUCCESS == rv) {
+        rv = req_set_body(req, content_type, body, -1, detect_len);
     }
-     
-    return schedule(req, body, 1);
+    *preq = (APR_SUCCESS == rv)? req : NULL;
+    return rv;
+}
+
+apr_status_t md_http_POSTd_create(md_http_request_t **preq, md_http_t *http, const char *url, 
+                                  struct apr_table_t *headers, const char *content_type, 
+                                  const struct md_data_t *body)
+{
+    md_http_request_t *req;
+    apr_status_t rv;
+    
+    rv = req_create(&req, http, "POST", url, headers);
+    if (APR_SUCCESS == rv) {
+        rv = req_set_body_data(req, content_type, body);
+    }
+    *preq = (APR_SUCCESS == rv)? req : NULL;
+    return rv;
+}
+
+apr_status_t md_http_GET_perform(struct md_http_t *http, 
+                                 const char *url, struct apr_table_t *headers,
+                                 md_http_response_cb *cb, void *baton)
+{
+    md_http_request_t *req;
+    apr_status_t rv;
+
+    rv = md_http_GET_create(&req, http, url, headers);
+    if (APR_SUCCESS == rv) md_http_set_on_response_cb(req, cb, baton);
+    return (APR_SUCCESS == rv)? md_http_perform(req) : rv;
+}
+
+apr_status_t md_http_HEAD_perform(struct md_http_t *http, 
+                                  const char *url, struct apr_table_t *headers,
+                                  md_http_response_cb *cb, void *baton)
+{
+    md_http_request_t *req;
+    apr_status_t rv;
+
+    rv = md_http_HEAD_create(&req, http, url, headers);
+    if (APR_SUCCESS == rv) md_http_set_on_response_cb(req, cb, baton);
+    return (APR_SUCCESS == rv)? md_http_perform(req) : rv;
+}
+
+apr_status_t md_http_POST_perform(struct md_http_t *http, const char *url, 
+                                  struct apr_table_t *headers, const char *content_type, 
+                                  apr_bucket_brigade *body, int detect_len, 
+                                  md_http_response_cb *cb, void *baton)
+{
+    md_http_request_t *req;
+    apr_status_t rv;
+
+    rv = md_http_POST_create(&req, http, url, headers, content_type, body, detect_len);
+    if (APR_SUCCESS == rv) md_http_set_on_response_cb(req, cb, baton);
+    return (APR_SUCCESS == rv)? md_http_perform(req) : rv;
+}
+
+apr_status_t md_http_POSTd_perform(md_http_t *http, const char *url, 
+                                   struct apr_table_t *headers, const char *content_type, 
+                                   const md_data_t *body, 
+                                   md_http_response_cb *cb, void *baton)
+{
+    md_http_request_t *req;
+    apr_status_t rv;
+
+    rv = md_http_POSTd_create(&req, http, url, headers, content_type, body);
+    if (APR_SUCCESS == rv) md_http_set_on_response_cb(req, cb, baton);
+    return (APR_SUCCESS == rv)? md_http_perform(req) : rv;
 }

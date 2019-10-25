@@ -46,8 +46,10 @@ struct md_reg_t {
     int can_https;
     const char *proxy_url;
     int domains_frozen;
-    const md_timeslice_t *renew_window;
-    const md_timeslice_t *warn_window;
+    md_timeslice_t *renew_window;
+    md_timeslice_t *warn_window;
+    md_job_notify_cb *notify;
+    void *notify_ctx;
 };
 
 /**************************************************************************************************/
@@ -292,11 +294,6 @@ md_t *md_reg_get(md_reg_t *reg, const char *name, apr_pool_t *p)
     return NULL;
 }
 
-apr_status_t md_reg_reinit_state(md_reg_t *reg, md_t *md, apr_pool_t *p)
-{
-    return state_init(reg, p, md);
-}
-
 typedef struct {
     const char *domain;
     md_t *md;
@@ -417,7 +414,7 @@ static apr_status_t p_md_update(void *baton, apr_pool_t *p, apr_pool_t *ptemp, v
         return APR_ENOENT;
     }
     
-    md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, ptemp, "update md %s", name);
+    md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, ptemp, "md[%s]: update store", name);
     
     if (do_checks && APR_SUCCESS != (rv = check_values(reg, ptemp, updates, fields))) {
         return rv;
@@ -455,11 +452,11 @@ static apr_status_t p_md_update(void *baton, apr_pool_t *p, apr_pool_t *ptemp, v
     }
     if (MD_UPD_RENEW_WINDOW & fields) {
         md_log_perror(MD_LOG_MARK, MD_LOG_TRACE1, 0, ptemp, "update renew-window: %s", name);
-        nmd->renew_window = updates->renew_window;
+        *nmd->renew_window = *updates->renew_window;
     }
     if (MD_UPD_WARN_WINDOW & fields) {
         md_log_perror(MD_LOG_MARK, MD_LOG_TRACE1, 0, ptemp, "update warn-window: %s", name);
-        nmd->warn_window = updates->warn_window;
+        *nmd->warn_window = *updates->warn_window;
     }
     if (MD_UPD_CA_CHALLENGES & fields) {
         md_log_perror(MD_LOG_MARK, MD_LOG_TRACE1, 0, ptemp, "update ca challenges: %s", name);
@@ -489,6 +486,10 @@ static apr_status_t p_md_update(void *baton, apr_pool_t *p, apr_pool_t *ptemp, v
         md_log_perror(MD_LOG_MARK, MD_LOG_TRACE1, 0, ptemp, "update proto: %s", name);
         nmd->acme_tls_1_domains = updates->acme_tls_1_domains;
     }
+    if (MD_UPD_STAPLING & fields) {
+        md_log_perror(MD_LOG_MARK, MD_LOG_TRACE1, 0, ptemp, "update stapling: %s", name);
+        nmd->stapling = updates->stapling;
+    }
     
     if (fields && APR_SUCCESS == (rv = md_save(reg->store, p, MD_SG_DOMAINS, nmd, 0))) {
         rv = state_init(reg, ptemp, nmd);
@@ -496,17 +497,11 @@ static apr_status_t p_md_update(void *baton, apr_pool_t *p, apr_pool_t *ptemp, v
     return rv;
 }
 
-static apr_status_t update_md(md_reg_t *reg, apr_pool_t *p, 
-                              const char *name, const md_t *md, 
-                              int fields, int do_checks)
+apr_status_t md_reg_update(md_reg_t *reg, apr_pool_t *p, 
+                           const char *name, const md_t *md, int fields, 
+                           int do_checks)
 {
     return md_util_pool_vdo(p_md_update, reg, p, name, md, fields, do_checks, NULL);
-}
-
-apr_status_t md_reg_update(md_reg_t *reg, apr_pool_t *p, 
-                           const char *name, const md_t *md, int fields)
-{
-    return update_md(reg, p, name, md, fields, 1);
 }
 
 apr_status_t md_reg_delete_acct(md_reg_t *reg, apr_pool_t *p, const char *acct_id) 
@@ -612,16 +607,16 @@ apr_status_t md_reg_get_cred_files(const char **pkeyfile, const char **pcertfile
     return APR_SUCCESS;
 }
 
-int md_reg_should_renew(md_reg_t *reg, const md_t *md, apr_pool_t *p) 
+apr_time_t md_reg_renew_at(md_reg_t *reg, const md_t *md, apr_pool_t *p)
 {
     const md_pubcert_t *pub;
     const md_cert_t *cert;
     md_timeperiod_t certlife, renewal;
     apr_status_t rv;
     
-    if (md->state == MD_S_INCOMPLETE) return 1;
+    if (md->state == MD_S_INCOMPLETE) return apr_time_now();
     rv = md_reg_get_pubcert(&pub, reg, md, p);
-    if (APR_STATUS_IS_ENOENT(rv)) return 1;
+    if (APR_STATUS_IS_ENOENT(rv)) return apr_time_now();
     if (APR_SUCCESS == rv) {
         cert = APR_ARRAY_IDX(pub->certs, 0, const md_cert_t*);
         certlife.start = md_cert_get_not_before(cert);
@@ -629,14 +624,22 @@ int md_reg_should_renew(md_reg_t *reg, const md_t *md, apr_pool_t *p)
 
         renewal = md_timeperiod_slice_before_end(&certlife, md->renew_window);
         if (md_log_is_level(p, MD_LOG_TRACE1)) {
-            md_log_perror(MD_LOG_MARK, MD_LOG_TRACE1, 0, p, 
+            md_log_perror(MD_LOG_MARK, MD_LOG_TRACE2, 0, p, 
                           "md[%s]: cert-life[%s] renewal[%s]", md->name, 
                           md_timeperiod_print(p, &certlife),
                           md_timeperiod_print(p, &renewal));
         }
-        return md_timeperiod_has_started(&renewal, apr_time_now());
+        return renewal.start;
     }
     return 0;
+}
+
+int md_reg_should_renew(md_reg_t *reg, const md_t *md, apr_pool_t *p) 
+{
+    apr_time_t renew_at;
+    
+    renew_at = md_reg_renew_at(reg, md, p);
+    return renew_at && (renew_at <= apr_time_now());
 }
 
 int md_reg_should_warn(md_reg_t *reg, const md_t *md, apr_pool_t *p)
@@ -656,7 +659,7 @@ int md_reg_should_warn(md_reg_t *reg, const md_t *md, apr_pool_t *p)
 
         warn = md_timeperiod_slice_before_end(&certlife, md->warn_window);
         if (md_log_is_level(p, MD_LOG_TRACE1)) {
-            md_log_perror(MD_LOG_MARK, MD_LOG_TRACE1, 0, p, 
+            md_log_perror(MD_LOG_MARK, MD_LOG_TRACE2, 0, p, 
                           "md[%s]: cert-life[%s] warn[%s]", md->name, 
                           md_timeperiod_print(p, &certlife),
                           md_timeperiod_print(p, &warn));
@@ -668,33 +671,6 @@ int md_reg_should_warn(md_reg_t *reg, const md_t *md, apr_pool_t *p)
 
 /**************************************************************************************************/
 /* synching */
-
-typedef struct {
-    apr_pool_t *p;
-    apr_array_header_t *store_mds;
-} sync_ctx;
-
-static int do_add_md(void *baton, md_store_t *store, md_t *md, apr_pool_t *ptemp)
-{
-    sync_ctx *ctx = baton;
-
-    (void)store;
-    (void)ptemp;
-    APR_ARRAY_PUSH(ctx->store_mds, const md_t*) = md_clone(ctx->p, md);
-    return 1;
-}
-
-static apr_status_t read_store_mds(md_reg_t *reg, sync_ctx *ctx)
-{
-    int rv;
-    
-    apr_array_clear(ctx->store_mds);
-    rv = md_store_md_iter(do_add_md, ctx, reg->store, ctx->p, MD_SG_DOMAINS, "*");
-    if (APR_STATUS_IS_ENOENT(rv) || APR_STATUS_IS_EINVAL(rv)) {
-        rv = APR_SUCCESS;
-    }
-    return rv;
-}
 
 apr_status_t md_reg_set_props(md_reg_t *reg, apr_pool_t *p, int can_http, int can_https)
 {
@@ -714,192 +690,211 @@ apr_status_t md_reg_set_props(md_reg_t *reg, apr_pool_t *p, int can_http, int ca
     return APR_SUCCESS;
 }
 
-static apr_status_t update_md(md_reg_t *reg, apr_pool_t *p, 
-                              const char *name, const md_t *md, 
-                              int fields, int do_checks);
- 
-/**
- * Procedure:
- * 1. Collect all defined "managed domains" (MD). It does not matter where a MD is defined. 
- *    All MDs need to be unique and have no overlaps in their domain names. 
- *    Fail the config otherwise. Also, if a vhost matches an MD, it
- *    needs to *only* have ServerAliases from that MD. There can be no more than one
- *    matching MD for a vhost. But an MD can apply to several vhosts.
- * 2. Synchronize with the persistent store. Iterate over all configured MDs and 
- *   a. create them in the store if they do not already exist, neither under the
- *      name or with a common domain.
- *   b. compare domain lists from store and config, if
- *      - store has dns name in other MD than from config, remove dns name from store def,
- *        issue WARNING.
- *      - store misses dns name from config, add dns name and update store
- *   c. compare MD acme url/protocol, update if changed
- */
-apr_status_t md_reg_sync(md_reg_t *reg, apr_pool_t *p, apr_pool_t *ptemp, 
-                         apr_array_header_t *master_mds) 
+static md_t *find_closest_match(apr_array_header_t *mds, const md_t *md)
 {
-    sync_ctx ctx;
-    apr_status_t rv;
-
-    ctx.p = ptemp;
-    ctx.store_mds = apr_array_make(ptemp, 100, sizeof(md_t *));
-    rv = read_store_mds(reg, &ctx);
+    md_t *candidate, *m;
+    apr_size_t cand_n, n;
+    int i;
     
-    md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, p, 
-                  "sync: found %d mds in store", ctx.store_mds->nelts);
-    if (reg->domains_frozen) return APR_EACCES; 
-    if (APR_SUCCESS == rv) {
-        int i, fields;
-        md_t *md, *config_md, *smd, *omd;
-        const char *common;
-        
-        for (i = 0; i < master_mds->nelts; ++i) {
-            md = APR_ARRAY_IDX(master_mds, i, md_t *);
-            
-            /* find the store md that is closest match for the configured md */
-            smd = md_find_closest_match(ctx.store_mds, md);
-            if (smd) {
-                fields = 0;
-                
-                /* Did the name change? This happens when the order of names in configuration
-                 * changes or when the first name is removed. Use the name from the store, but
-                 * remember the original one. We try to align this later on. */
-                if (strcmp(md->name, smd->name)) {
-                    md->configured_name = md->name;
-                    md->name = apr_pstrdup(p, smd->name);
-                }
-                
-                /* Make the stored domain list *exactly* the same, even if
-                 * someone only changed upper/lowercase, we'd like to persist that. */
-                if (!md_equal_domains(md, smd, 1)) {
-                    md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, p, 
-                                 "%s: domains changed", smd->name);
-                    smd->domains = md_array_str_clone(ptemp, md->domains);
-                    fields |= MD_UPD_DOMAINS;
-                }
-                
-                /* Look for other store mds which have domains now being part of smd */
-                while (APR_SUCCESS == rv && (omd = md_get_by_dns_overlap(ctx.store_mds, md))) {
-                    /* find the name now duplicate */
-                    common = md_common_name(md, omd);
-                    assert(common);
-                    
-                    /* Is this md still configured or has it been abandoned in the config? */
-                    config_md = md_get_by_name(master_mds, omd->name);
-                    if (config_md && md_contains(config_md, common, 0)) {
-                        /* domain used in two configured mds, not allowed */
-                        rv = APR_EINVAL;
-                        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, p, 
-                                      "domain %s used in md %s and %s", 
-                                      common, md->name, omd->name);
-                    }
-                    else {
-                        /* remove it from the other md and update store, or, if it
-                         * is now empty, move it into the archive */
-                        omd->domains = md_array_str_remove(ptemp, omd->domains, common, 0);
-                        if (apr_is_empty_array(omd->domains)) {
-                            md_log_perror(MD_LOG_MARK, MD_LOG_WARNING, rv, p, 
-                                          "All domains of the MD %s have moved elsewhere, "
-                                          " moving it to the archive. ", omd->name);
-                            md_reg_remove(reg, ptemp, omd->name, 1); /* best effort */
-                        }
-                        else {
-                            rv = update_md(reg, ptemp, omd->name, omd, MD_UPD_DOMAINS, 0);
-                        }
-                    }
-                }
-
-                /* If no CA url/proto is configured for the MD, take the default */
-                if (!md->ca_url) {
-                    md->ca_url = MD_ACME_DEF_URL;
-                    md->ca_proto = MD_PROTO_ACME; 
-                }
-                
-                if (MD_SVAL_UPDATE(md, smd, ca_url)) {
-                    smd->ca_url = md->ca_url;
-                    fields |= MD_UPD_CA_URL;
-                }
-                if (MD_SVAL_UPDATE(md, smd, ca_proto)) {
-                    smd->ca_proto = md->ca_proto;
-                    fields |= MD_UPD_CA_PROTO;
-                }
-                if (MD_SVAL_UPDATE(md, smd, ca_agreement)) {
-                    smd->ca_agreement = md->ca_agreement;
-                    fields |= MD_UPD_AGREEMENT;
-                }
-                if (MD_VAL_UPDATE(md, smd, transitive)) {
-                    smd->transitive = md->transitive;
-                    fields |= MD_UPD_TRANSITIVE;
-                }
-                if (MD_VAL_UPDATE(md, smd, renew_mode)) {
-                    smd->renew_mode = md->renew_mode;
-                    fields |= MD_UPD_DRIVE_MODE;
-                }
-                if (!apr_is_empty_array(md->contacts) 
-                    && !md_array_str_eq(md->contacts, smd->contacts, 0)) {
-                    smd->contacts = md->contacts;
-                    fields |= MD_UPD_CONTACTS;
-                }
-                if (!md_timeslice_eq(md->renew_window, smd->renew_window)) {
-                    smd->renew_window = md->renew_window;
-                    fields |= MD_UPD_RENEW_WINDOW;
-                }
-                if (!md_timeslice_eq(md->warn_window, smd->warn_window)) {
-                    smd->warn_window = md->warn_window;
-                    fields |= MD_UPD_WARN_WINDOW;
-                }
-                if (md->ca_challenges) {
-                    md->ca_challenges = md_array_str_compact(p, md->ca_challenges, 0);
-                    if (!smd->ca_challenges 
-                        || !md_array_str_eq(md->ca_challenges, smd->ca_challenges, 0)) {
-                        smd->ca_challenges = apr_array_copy(ptemp, md->ca_challenges);
-                        fields |= MD_UPD_CA_CHALLENGES;
-                    }
-                }
-                else if (smd->ca_challenges) {
-                    smd->ca_challenges = NULL;
-                    fields |= MD_UPD_CA_CHALLENGES;
-                }
-                if (!md_pkey_spec_eq(md->pkey_spec, smd->pkey_spec)) {
-                    fields |= MD_UPD_PKEY_SPEC;
-                    smd->pkey_spec = NULL;
-                    if (md->pkey_spec) {
-                        smd->pkey_spec = apr_pmemdup(p, md->pkey_spec, sizeof(md_pkey_spec_t));
-                    }
-                }
-                if (MD_VAL_UPDATE(md, smd, require_https)) {
-                    smd->require_https = md->require_https;
-                    fields |= MD_UPD_REQUIRE_HTTPS;
-                }
-                if (MD_VAL_UPDATE(md, smd, must_staple)) {
-                    smd->must_staple = md->must_staple;
-                    fields |= MD_UPD_MUST_STAPLE;
-                }
-                if (!md_array_str_eq(md->acme_tls_1_domains, smd->acme_tls_1_domains, 0)) {
-                    smd->acme_tls_1_domains = md->acme_tls_1_domains;
-                    fields |= MD_UPD_PROTO;
-                }
-                
-                if (fields) {
-                    rv = update_md(reg, ptemp, smd->name, smd, fields, 0);
-                    md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, p, "md %s updated", smd->name);
-                }
+    candidate = md_get_by_name(mds, md->name);
+    if (!candidate) {
+        /* try to find an instance that contains all domain names from md */ 
+        for (i = 0; i < mds->nelts; ++i) {
+            m = APR_ARRAY_IDX(mds, i, md_t *);
+            if (md_contains_domains(m, md)) {
+                return m;
             }
-            else {
-                /* new managed domain */
-                /* If no CA url/proto is configured for the MD, take the default */
-                if (!md->ca_url) {
-                    md->ca_url = MD_ACME_DEF_URL;
-                    md->ca_proto = MD_PROTO_ACME; 
-                }
-                rv = add_md(reg, md, ptemp, 0);
-                md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, p, "new md %s added", md->name);
+        }
+        /* no matching name and no md in the list has all domains.
+         * We consider that managed domain as closest match that contains at least one
+         * domain name from md, ONLY if there is no other one that also has.
+         */
+        cand_n = 0;
+        for (i = 0; i < mds->nelts; ++i) {
+            m = APR_ARRAY_IDX(mds, i, md_t *);
+            n = md_common_name_count(md, m);
+            if (n > cand_n) {
+                candidate = m;
+                cand_n = n;
             }
         }
     }
-    else {
-        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, p, "loading mds");
+    return candidate;
+}
+
+typedef struct {
+    apr_pool_t *p;
+    apr_array_header_t *master_mds;
+    apr_array_header_t *store_names;
+    apr_array_header_t *maybe_new_mds;
+    apr_array_header_t *new_mds;
+    apr_array_header_t *unassigned_mds;
+} sync_ctx_v2;
+
+static int iter_add_name(void *baton, const char *dir, const char *name, 
+                         md_store_vtype_t vtype, void *value, apr_pool_t *ptemp)
+{
+    sync_ctx_v2 *ctx = baton;
+    
+    (void)dir;
+    (void)value;
+    (void)ptemp;
+    (void)vtype;
+    APR_ARRAY_PUSH(ctx->store_names, const char*) = apr_pstrdup(ctx->p, name);
+    return APR_SUCCESS;
+}
+
+/* A better scaling version:
+ *  1. The consistency of the MDs in 'master_mds' has already been verified. E.g.
+ *     that no domain lists overlap etc.
+ *  2. All MD storage that exists will be overwritten by the settings we have.
+ *     And "exists" meaning that "store/MD_SG_DOMAINS/name" exists.
+ *  3. For MDs that have no directory in "store/MD_SG_DOMAINS", we load all MDs
+ *     outside the list of known names from MD_SG_DOMAINS. In this list, we
+ *     look for the MD with the most domain overlap. 
+ *      - if we find it, we assume this is a rename and move the old MD to the new name.
+ *      - if not, MD is completely new.
+ *  4. Any MD in store that does not match the "master_mds" will just be left as is. 
+ */
+apr_status_t md_reg_sync_start(md_reg_t *reg, apr_array_header_t *master_mds, apr_pool_t *p) 
+{
+    sync_ctx_v2 ctx;
+    apr_status_t rv;
+    md_t *md, *oldmd;
+    const char *name;
+    int i, idx;
+    
+    md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, p, "sync MDs, start");
+     
+    ctx.p = p;
+    ctx.master_mds = master_mds;
+    ctx.store_names = apr_array_make(p, master_mds->nelts + 100, sizeof(const char*));
+    ctx.maybe_new_mds = apr_array_make(p, master_mds->nelts, sizeof(md_t*));
+    ctx.new_mds = apr_array_make(p, master_mds->nelts, sizeof(md_t*));
+    ctx.unassigned_mds = apr_array_make(p, master_mds->nelts, sizeof(md_t*));
+    
+    rv = md_store_iter_names(iter_add_name, &ctx, reg->store, p, MD_SG_DOMAINS, "*");
+    if (APR_SUCCESS != rv) {
+        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, p, "listing existing store MD names"); 
+        goto leave;
     }
     
+    /* Get all MDs that are not already present in store */
+    for (i = 0; i < ctx.master_mds->nelts; ++i) {
+        md = APR_ARRAY_IDX(ctx.master_mds, i, md_t*);
+        idx = md_array_str_index(ctx.store_names, md->name, 0, 1);
+        if (idx < 0) {
+            APR_ARRAY_PUSH(ctx.maybe_new_mds, md_t*) = md;
+            md_array_remove_at(ctx.store_names, idx);
+        }
+    }
+    
+    if (ctx.maybe_new_mds->nelts == 0) goto leave; /* none new */
+    if (ctx.store_names->nelts == 0) goto leave;   /* all new */
+    
+    md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, p, 
+                  "sync MDs, %d potentially new MDs detected, looking for renames among "
+                  "the %d unassigned store domains", (int)ctx.maybe_new_mds->nelts,
+                  (int)ctx.store_names->nelts);
+    for (i = 0; i < ctx.store_names->nelts; ++i) {
+        name = APR_ARRAY_IDX(ctx.store_names, i, const char*);
+        if (APR_SUCCESS == md_load(reg->store, MD_SG_DOMAINS, name, &md, p)) {
+            APR_ARRAY_PUSH(ctx.unassigned_mds, md_t*) = md;
+        } 
+    }
+    
+    md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, p, 
+                  "sync MDs, %d MDs maybe new, checking store", (int)ctx.maybe_new_mds->nelts);
+    for (i = 0; i < ctx.maybe_new_mds->nelts; ++i) {
+        md = APR_ARRAY_IDX(ctx.maybe_new_mds, i, md_t*);
+        oldmd = find_closest_match(ctx.unassigned_mds, md);
+        if (oldmd) {
+            /* found the rename, move the domains and possible staging directory */
+            md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, p, 
+                          "sync MDs, found MD %s under previous name %s", md->name, oldmd->name);
+            rv = md_store_rename(reg->store, p, MD_SG_DOMAINS, oldmd->name, md->name);
+            if (APR_SUCCESS != rv) {
+                md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, p, 
+                              "sync MDs, renaming MD %s to %s failed", oldmd->name, md->name);
+                /* ignore it? */
+            }
+            md_store_rename(reg->store, p, MD_SG_STAGING, oldmd->name, md->name);
+            md_array_remove(ctx.unassigned_mds, oldmd);
+        }
+        else {
+            APR_ARRAY_PUSH(ctx.new_mds, md_t*) = md;
+        }
+    }
+
+leave:
+    md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, p, 
+                  "sync MDs, %d existing, %d moved, %d new.", 
+                  (int)ctx.master_mds->nelts - ctx.maybe_new_mds->nelts,
+                  (int)ctx.maybe_new_mds->nelts - ctx.new_mds->nelts,
+                  (int)ctx.new_mds->nelts);
+    return rv;
+}
+
+/** 
+ * Finish synching an MD with the store. 
+ * 1. if there are changed properties (or if the MD is new), save it.
+ * 2. read any existing certificate and init the state of the memory MD
+ */
+apr_status_t md_reg_sync_finish(md_reg_t *reg, md_t *md, apr_pool_t *p, apr_pool_t *ptemp)
+{
+    md_t *old;
+    apr_status_t rv;
+    int changed = 1;
+    
+    md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, ptemp, "sync MDs, finish start");
+    
+    if (!md->ca_url) {
+        md->ca_url = MD_ACME_DEF_URL;
+        md->ca_proto = MD_PROTO_ACME; 
+    }
+    
+    rv = state_init(reg, ptemp, md);
+    if (APR_SUCCESS != rv) goto leave;
+    
+    if (APR_SUCCESS == md_load(reg->store, MD_SG_DOMAINS, md->name, &old, ptemp)) {
+        /* Some parts are kept from old, lacking new values */
+        if ((!md->contacts || apr_is_empty_array(md->contacts)) && old->contacts) {
+            md->contacts = md_array_str_clone(p, old->contacts);
+        } 
+        if (md->ca_challenges && old->ca_challenges) {
+            if (!md_array_str_eq(md->ca_challenges, old->ca_challenges, 0)) {
+                md->ca_challenges = md_array_str_compact(p, md->ca_challenges, 0);
+            }
+        }
+        if (!md->ca_account && old->ca_account) {
+            md->ca_account = apr_pstrdup(p, old->ca_account);
+        }
+        
+        /* if everything remains the same, spare the write back */
+        if (!MD_VAL_UPDATE(md, old, state)
+            && !MD_SVAL_UPDATE(md, old, ca_url)
+            && !MD_SVAL_UPDATE(md, old, ca_proto)
+            && !MD_SVAL_UPDATE(md, old, ca_agreement)
+            && !MD_VAL_UPDATE(md, old, transitive)
+            && md_equal_domains(md, old, 1)
+            && !MD_VAL_UPDATE(md, old, renew_mode)
+            && md_timeslice_eq(md->renew_window, old->renew_window)
+            && md_timeslice_eq(md->warn_window, old->warn_window)
+            && md_pkey_spec_eq(md->pkey_spec, old->pkey_spec)
+            && !MD_VAL_UPDATE(md, old, require_https)
+            && !MD_VAL_UPDATE(md, old, must_staple)
+            && md_array_str_eq(md->acme_tls_1_domains, old->acme_tls_1_domains, 0)
+            && !MD_VAL_UPDATE(md, old, stapling)
+            && md_array_str_eq(md->contacts, old->contacts, 0)
+            && md_array_str_eq(md->ca_challenges, old->ca_challenges, 0)) {
+            changed = 0;
+        }
+    }
+    if (changed) {
+        rv = md_save(reg->store, ptemp, MD_SG_DOMAINS, md, 0);
+    }
+leave:
+    md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, ptemp, "sync MDs, finish done");
     return rv;
 }
 
@@ -970,11 +965,14 @@ static apr_status_t run_init(void *baton, apr_pool_t *p, ...)
     md_proto_driver_t *driver, **pdriver;
     md_result_t *result;
     apr_table_t *env;
+    const char *s;
+    int preload;
     
     (void)p;
     va_start(ap, p);
     pdriver = va_arg(ap, md_proto_driver_t **);
     md = va_arg(ap, const md_t *);
+    preload = va_arg(ap, int);
     env = va_arg(ap, apr_table_t *);
     result = va_arg(ap, md_result_t *); 
     va_end(ap);
@@ -989,6 +987,11 @@ static apr_status_t run_init(void *baton, apr_pool_t *p, ...)
     driver->md = md;
     driver->can_http = reg->can_http;
     driver->can_https = reg->can_https;
+    
+    s = apr_table_get(driver->env, MD_KEY_ACTIVATION_DELAY);
+    if (!s || APR_SUCCESS != md_duration_parse(&driver->activation_delay, s, "d")) {
+        driver->activation_delay = apr_time_from_sec(MD_SECS_PER_DAY);
+    }
 
     if (!md->ca_proto) {
         md_result_printf(result, APR_EGENERAL, "CA protocol is not defined"); 
@@ -1002,7 +1005,12 @@ static apr_status_t run_init(void *baton, apr_pool_t *p, ...)
         goto leave;
     }
     
-    result->status = driver->proto->init(driver, result);
+    if (preload) {
+        result->status = driver->proto->init_preload(driver, result);
+    }
+    else {
+        result->status = driver->proto->init(driver, result);
+    }
 
 leave:
     if (APR_SUCCESS != result->status) {
@@ -1027,7 +1035,7 @@ static apr_status_t run_test_init(void *baton, apr_pool_t *p, apr_pool_t *ptemp,
     env = va_arg(ap, apr_table_t *);
     result = va_arg(ap, md_result_t *); 
 
-    return run_init(baton, ptemp, &driver, md, env, result, NULL);
+    return run_init(baton, ptemp, &driver, md, 0, env, result, NULL);
 }
 
 apr_status_t md_reg_test_init(md_reg_t *reg, const md_t *md, struct apr_table_t *env, 
@@ -1051,7 +1059,7 @@ static apr_status_t run_renew(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_
     reset = va_arg(ap, int); 
     result = va_arg(ap, md_result_t *); 
 
-    rv = run_init(baton, ptemp, &driver, md, env, result, NULL);
+    rv = run_init(baton, ptemp, &driver, md, 0, env, result, NULL);
     if (APR_SUCCESS == rv) { 
         md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, ptemp, "%s: run staging", md->name);
         driver->reset = reset;
@@ -1089,11 +1097,11 @@ static apr_status_t run_load_staging(void *baton, apr_pool_t *p, apr_pool_t *pte
     result =  va_arg(ap, md_result_t*);
     
     if (APR_STATUS_IS_ENOENT(rv = md_load(reg->store, MD_SG_STAGING, md->name, NULL, ptemp))) {
-        md_log_perror(MD_LOG_MARK, MD_LOG_TRACE2, rv, ptemp, "%s: nothing staged", md->name);
+        md_log_perror(MD_LOG_MARK, MD_LOG_TRACE2, 0, ptemp, "%s: nothing staged", md->name);
         goto out;
     }
     
-    rv = run_init(baton, ptemp, &driver, md, env, result, NULL);
+    rv = run_init(baton, ptemp, &driver, md, 1, env, result, NULL);
     if (APR_SUCCESS != rv) goto out;
     
     apr_hash_set(reg->certs, md->name, (apr_ssize_t)strlen(md->name), NULL);
@@ -1102,9 +1110,10 @@ static apr_status_t run_load_staging(void *baton, apr_pool_t *p, apr_pool_t *pte
     if (APR_SUCCESS != rv) goto out;
 
     /* If we had a job saved in STAGING, copy it over too */
-    job = md_job_make(ptemp, md->name);
-    if (APR_SUCCESS == md_job_load(job, reg, MD_SG_STAGING, ptemp)) {
-        md_job_save(job, reg, MD_SG_TMP, NULL, ptemp);
+    job = md_reg_job_make(reg, md->name, ptemp);
+    if (APR_SUCCESS == md_job_load(job)) {
+        md_job_set_group(job, MD_SG_TMP);
+        md_job_save(job, NULL, ptemp);
     }
     
     /* swap */
@@ -1118,9 +1127,13 @@ static apr_status_t run_load_staging(void *baton, apr_pool_t *p, apr_pool_t *pte
     md_store_purge(reg->store, p, MD_SG_STAGING, md->name);
     md_store_purge(reg->store, p, MD_SG_CHALLENGES, md->name);
     md_result_set(result, APR_SUCCESS, "new certificate successfully saved in domains");
-
+    md_job_notify(job, "installed", result);
+    if (job->dirty) md_job_save(job, result, ptemp);
+    
 out:
-    md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, ptemp, "%s: load done", md->name);
+    if (!APR_STATUS_IS_ENOENT(rv)) {
+        md_log_perror(MD_LOG_MARK, MD_LOG_TRACE1, rv, ptemp, "%s: load done", md->name);
+    }
     return rv;
 }
 
@@ -1150,12 +1163,27 @@ leave:
     return rv;
 }
 
-void md_reg_set_renew_window_default(md_reg_t *reg, const md_timeslice_t *renew_window)
+void md_reg_set_renew_window_default(md_reg_t *reg, md_timeslice_t *renew_window)
 {
-    reg->renew_window = renew_window;
+    *reg->renew_window = *renew_window;
 }
 
-void md_reg_set_warn_window_default(md_reg_t *reg, const md_timeslice_t *warn_window)
+void md_reg_set_warn_window_default(md_reg_t *reg, md_timeslice_t *warn_window)
 {
-    reg->warn_window = warn_window;
+    *reg->warn_window = *warn_window;
+}
+
+void md_reg_set_notify_cb(md_reg_t *reg, md_job_notify_cb *cb, void *baton)
+{
+    reg->notify = cb;
+    reg->notify_ctx = baton;
+}
+
+md_job_t *md_reg_job_make(md_reg_t *reg, const char *mdomain, apr_pool_t *p)
+{
+    md_job_t *job;
+    
+    job = md_job_make(p, reg->store, MD_SG_STAGING, mdomain);
+    md_job_set_notify_cb(job, reg->notify, reg->notify_ctx);
+    return job;
 }

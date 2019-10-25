@@ -55,8 +55,7 @@ struct md_store_fs_t {
     md_store_fs_cb *event_cb;
     void *event_baton;
     
-    const unsigned char *key;
-    apr_size_t key_len;
+    md_data_t key;
     int plain_pkey[MD_SG_COUNT];
     
     int port_80;
@@ -78,9 +77,14 @@ static apr_status_t fs_remove(md_store_t *store, md_store_group_t group,
                               apr_pool_t *p, int force);
 static apr_status_t fs_purge(md_store_t *store, apr_pool_t *p, 
                              md_store_group_t group, const char *name);
+static apr_status_t fs_remove_nms(md_store_t *store, apr_pool_t *p, 
+                                  apr_time_t modified, md_store_group_t group, 
+                                  const char *name, const char *aspect);
 static apr_status_t fs_move(md_store_t *store, apr_pool_t *p, 
                             md_store_group_t from, md_store_group_t to, 
                             const char *name, int archive);
+static apr_status_t fs_rename(md_store_t *store, apr_pool_t *p, 
+                            md_store_group_t group, const char *from, const char *to);
 static apr_status_t fs_iterate(md_store_inspect *inspect, void *baton, md_store_t *store, 
                                apr_pool_t *p, md_store_group_t group,  const char *pattern,
                                const char *aspect, md_store_vtype_t vtype);
@@ -94,23 +98,25 @@ static apr_status_t fs_get_fname(const char **pfname,
 static int fs_is_newer(md_store_t *store, md_store_group_t group1, md_store_group_t group2,  
                        const char *name, const char *aspect, apr_pool_t *p);
 
+static apr_time_t fs_get_modified(md_store_t *store, md_store_group_t group,  
+                                  const char *name, const char *aspect, apr_pool_t *p);
+
 static apr_status_t init_store_file(md_store_fs_t *s_fs, const char *fname, 
                                     apr_pool_t *p, apr_pool_t *ptemp)
 {
     md_json_t *json = md_json_create(p);
     const char *key64;
-    unsigned char *key;
     apr_status_t rv;
     
     md_json_setn(MD_STORE_VERSION, json, MD_KEY_STORE, MD_KEY_VERSION, NULL);
 
-    s_fs->key_len = FS_STORE_KLEN;
-    s_fs->key = key = apr_pcalloc(p, FS_STORE_KLEN);
-    if (APR_SUCCESS != (rv = md_rand_bytes(key, s_fs->key_len, p))) {
+    s_fs->key.len = FS_STORE_KLEN;
+    s_fs->key.data = apr_pcalloc(p, FS_STORE_KLEN);
+    if (APR_SUCCESS != (rv = md_rand_bytes((unsigned char*)s_fs->key.data, s_fs->key.len, p))) {
         return rv;
     }
         
-    key64 = md_util_base64url_encode((char *)key, s_fs->key_len, ptemp);
+    key64 = md_util_base64url_encode(&s_fs->key, ptemp);
     md_json_sets(key64, json, MD_KEY_KEY, NULL);
     rv = md_json_fcreatex(json, ptemp, MD_JSON_FMT_INDENT, fname, MD_FPROT_F_UONLY);
     memset((char*)key64, 0, strlen(key64));
@@ -193,7 +199,7 @@ static apr_status_t read_store_file(md_store_fs_t *s_fs, const char *fname,
                                     apr_pool_t *p, apr_pool_t *ptemp)
 {
     md_json_t *json;
-    const char *key64, *key;
+    const char *key64;
     apr_status_t rv;
     double store_version;
     
@@ -214,11 +220,10 @@ static apr_status_t read_store_file(md_store_fs_t *s_fs, const char *fname,
             return APR_EINVAL;
         }
         
-        s_fs->key_len = md_util_base64url_decode(&key, key64, p);
-        s_fs->key = (const unsigned char*)key;
-        if (s_fs->key_len != FS_STORE_KLEN) {
+        md_util_base64url_decode(&s_fs->key, key64, p);
+        if (s_fs->key.len != FS_STORE_KLEN) {
             md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, p, "key length unexpected: %" APR_SIZE_T_FMT, 
-                          s_fs->key_len);
+                          s_fs->key.len);
             return APR_EINVAL;
         }
 
@@ -279,11 +284,14 @@ apr_status_t md_store_fs_init(md_store_t **pstore, apr_pool_t *p, const char *pa
     s_fs->s.save = fs_save;
     s_fs->s.remove = fs_remove;
     s_fs->s.move = fs_move;
+    s_fs->s.rename = fs_rename;
     s_fs->s.purge = fs_purge;
     s_fs->s.iterate = fs_iterate;
     s_fs->s.iterate_names = fs_iterate_names;
     s_fs->s.get_fname = fs_get_fname;
     s_fs->s.is_newer = fs_is_newer;
+    s_fs->s.get_modified = fs_get_modified;
+    s_fs->s.remove_nms = fs_remove_nms;
     
     /* by default, everything is only readable by the current user */ 
     s_fs->def_perms.dir = MD_FPROT_D_UONLY;
@@ -298,6 +306,9 @@ apr_status_t md_store_fs_init(md_store_t **pstore, apr_pool_t *p, const char *pa
     /* challenges dir and files are readable by all, no secrets involved */ 
     s_fs->group_perms[MD_SG_CHALLENGES].dir = MD_FPROT_D_UALL_WREAD;
     s_fs->group_perms[MD_SG_CHALLENGES].file = MD_FPROT_F_UALL_WREAD;
+    /* OCSP data is readable by all, no secrets involved */ 
+    s_fs->group_perms[MD_SG_OCSP].dir = MD_FPROT_D_UALL_WREAD;
+    s_fs->group_perms[MD_SG_OCSP].file = MD_FPROT_F_UALL_WREAD;
 
     s_fs->base = apr_pstrdup(p, path);
     
@@ -392,8 +403,8 @@ static void get_pass(const char **ppass, apr_size_t *plen,
         *plen = 0;
     }
     else {
-        *ppass = (const char *)s_fs->key;
-        *plen = s_fs->key_len;
+        *ppass = (const char *)s_fs->key.data;
+        *plen = s_fs->key.len;
     }
 }
  
@@ -522,7 +533,6 @@ static apr_status_t pfs_is_newer(void *baton, apr_pool_t *p, apr_pool_t *ptemp, 
     return rv;
 }
 
- 
 static int fs_is_newer(md_store_t *store, md_store_group_t group1, md_store_group_t group2,  
                        const char *name, const char *aspect, apr_pool_t *p)
 {
@@ -537,6 +547,44 @@ static int fs_is_newer(md_store_t *store, md_store_group_t group1, md_store_grou
     return 0;
 }
 
+static apr_status_t pfs_get_modified(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_list ap)
+{
+    md_store_fs_t *s_fs = baton;
+    const char *fname, *name, *aspect;
+    md_store_group_t group;
+    apr_finfo_t inf;
+    apr_time_t *pmtime;
+    apr_status_t rv;
+    
+    (void)p;
+    group = (md_store_group_t)va_arg(ap, int);
+    name = va_arg(ap, const char*);
+    aspect = va_arg(ap, const char*);
+    pmtime = va_arg(ap, apr_time_t*);
+    
+    *pmtime = 0;
+    if (   MD_OK(fs_get_fname(&fname, &s_fs->s, group, name, aspect, ptemp))
+        && MD_OK(apr_stat(&inf, fname, APR_FINFO_MTIME, ptemp))) {
+        *pmtime = inf.mtime;
+    }
+
+    return rv;
+}
+
+static apr_time_t fs_get_modified(md_store_t *store, md_store_group_t group,  
+                                  const char *name, const char *aspect, apr_pool_t *p)
+{
+    md_store_fs_t *s_fs = FS_STORE(store);
+    apr_time_t mtime;
+    apr_status_t rv;
+    
+    rv = md_util_pool_vdo(pfs_get_modified, s_fs, p, group, name, aspect, &mtime, NULL);
+    if (APR_SUCCESS == rv) {
+        return mtime;
+    }
+    return 0;
+}
+ 
 static apr_status_t pfs_save(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_list ap)
 {
     md_store_fs_t *s_fs = baton;
@@ -700,6 +748,7 @@ typedef struct {
     md_store_inspect *inspect;
     const char *dirname;
     void *baton;
+    apr_time_t ts;
 } inspect_ctx;
 
 static apr_status_t insp(void *baton, apr_pool_t *p, apr_pool_t *ptemp, 
@@ -792,6 +841,66 @@ static apr_status_t fs_iterate_names(md_store_inspect *inspect, void *baton, md_
     groupname = md_store_group_name(group);
 
     rv = md_util_files_do(insp_name, &ctx, p, ctx.s_fs->base, groupname, pattern, NULL);
+    
+    return rv;
+}
+
+static apr_status_t remove_nms_file(void *baton, apr_pool_t *p, apr_pool_t *ptemp, 
+                                    const char *dir, const char *name, apr_filetype_e ftype)
+{
+    inspect_ctx *ctx = baton;
+    const char *fname;
+    apr_finfo_t inf;
+    apr_status_t rv = APR_SUCCESS;
+
+    (void)p;
+    if (APR_DIR == ftype) goto leave;
+    if (APR_SUCCESS != (rv = md_util_path_merge(&fname, ptemp, dir, name, NULL))) goto leave;
+    if (APR_SUCCESS != (rv = apr_stat(&inf, fname, APR_FINFO_MTIME, ptemp))) goto leave;
+    if (inf.mtime >= ctx->ts) goto leave;
+
+    md_log_perror(MD_LOG_MARK, MD_LOG_TRACE3, 0, ptemp, "remove_nms file: %s/%s", dir, name);
+    rv = apr_file_remove(fname, ptemp);
+
+leave:
+    return rv;
+}
+
+static apr_status_t remove_nms_dir(void *baton, apr_pool_t *p, apr_pool_t *ptemp, 
+                                   const char *dir, const char *name, apr_filetype_e ftype)
+{
+    inspect_ctx *ctx = baton;
+    apr_status_t rv;
+    const char *fpath;
+ 
+    (void)ftype;
+    md_log_perror(MD_LOG_MARK, MD_LOG_TRACE3, 0, ptemp, "remove_nms dir at: %s/%s", dir, name);
+    if (MD_OK(md_util_path_merge(&fpath, p, dir, name, NULL))) {
+        ctx->dirname = name;
+        rv = md_util_files_do(remove_nms_file, ctx, p, fpath, ctx->aspect, NULL);
+        if (APR_STATUS_IS_ENOENT(rv)) {
+            rv = APR_SUCCESS;
+        }
+    } 
+    return rv;
+}
+
+static apr_status_t fs_remove_nms(md_store_t *store, apr_pool_t *p, 
+                                  apr_time_t modified, md_store_group_t group, 
+                                  const char *name, const char *aspect)
+{
+    const char *groupname;
+    apr_status_t rv;
+    inspect_ctx ctx;
+    
+    ctx.s_fs = FS_STORE(store);
+    ctx.group = group;
+    ctx.pattern = name;
+    ctx.aspect = aspect;
+    ctx.ts = modified;
+    groupname = md_store_group_name(group);
+
+    rv = md_util_files_do(remove_nms_dir, &ctx, p, ctx.s_fs->base, groupname, name, NULL);
     
     return rv;
 }
@@ -925,4 +1034,39 @@ static apr_status_t fs_move(md_store_t *store, apr_pool_t *p,
 {
     md_store_fs_t *s_fs = FS_STORE(store);
     return md_util_pool_vdo(pfs_move, s_fs, p, from, to, name, archive, NULL);
+}
+
+static apr_status_t pfs_rename(void *baton, apr_pool_t *p, apr_pool_t *ptemp, va_list ap)
+{
+    md_store_fs_t *s_fs = baton;
+    const char *group_name, *from_dir, *to_dir;
+    md_store_group_t group;
+    const char *from, *to;
+    apr_status_t rv;
+    
+    (void)p;
+    group = (md_store_group_t)va_arg(ap, int);
+    from = va_arg(ap, const char*);
+    to = va_arg(ap, const char*);
+    
+    group_name = md_store_group_name(group);
+    if (   !MD_OK(md_util_path_merge(&from_dir, ptemp, s_fs->base, group_name, from, NULL))
+        || !MD_OK(md_util_path_merge(&to_dir, ptemp, s_fs->base, group_name, to, NULL))) {
+        goto out;
+    }
+    
+    if (APR_SUCCESS != (rv = apr_file_rename(from_dir, to_dir, ptemp))) {
+        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, ptemp, "rename from %s to %s", 
+                      from_dir, to_dir);
+        goto out;
+    }
+out:
+    return rv;
+}
+
+static apr_status_t fs_rename(md_store_t *store, apr_pool_t *p, 
+                            md_store_group_t group, const char *from, const char *to)
+{
+    md_store_fs_t *s_fs = FS_STORE(store);
+    return md_util_pool_vdo(pfs_rename, s_fs, p, group, from, to, NULL);
 }

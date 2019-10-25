@@ -41,25 +41,35 @@
 #define MD_DEFAULT_BASE_DIR "md"
 #endif
 
+static md_timeslice_t def_ocsp_keep_window = {
+    0,
+    MD_TIME_OCSP_KEEP_NORM,
+};
+
+static md_timeslice_t def_ocsp_renew_window = {
+    MD_TIME_LIFE_NORM,
+    MD_TIME_RENEW_WINDOW_DEF,
+};
+
 /* Default settings for the global conf */
 static md_mod_conf_t defmc = {
     NULL,                      /* list of mds */
 #if AP_MODULE_MAGIC_AT_LEAST(20180906, 2)
-    NULL,                      /* base dir by default state-dir-relative */
+    NULL,                      /* base dirm by default state-dir-relative */
 #else
     MD_DEFAULT_BASE_DIR,
 #endif
     NULL,                      /* proxy url for outgoing http */
-    NULL,                      /* md_reg */
+    NULL,                      /* md_reg_t */
+    NULL,                      /* md_ocsp_reg_t */
     80,                        /* local http: port */
     443,                       /* local https: port */
-    0,                         /* can http: */
-    0,                         /* can https: */
+    -1,                        /* can http: */
+    -1,                        /* can https: */
     0,                         /* manage base server */
     MD_HSTS_MAX_AGE_DEFAULT,   /* hsts max-age */
     NULL,                      /* hsts headers */
     NULL,                      /* unused names */
-    NULL,                      /* watched names */
     NULL,                      /* init errors hash */
     NULL,                      /* notify cmd */
     NULL,                      /* message cmd */
@@ -67,6 +77,10 @@ static md_mod_conf_t defmc = {
     0,                         /* dry_run flag */
     1,                         /* server_status_enabled */
     1,                         /* certificate_status_enabled */
+    &def_ocsp_keep_window,     /* default time to keep ocsp responses */
+    &def_ocsp_renew_window,    /* default time to renew ocsp responses */
+    "crt.sh",                  /* default cert checker site name */
+    "https://crt.sh?q=",       /* default cert checker site url */
 };
 
 static md_timeslice_t def_renew_window = {
@@ -94,8 +108,11 @@ static md_srv_conf_t defconf = {
     "ACME",                    /* ca protocol */
     NULL,                      /* ca agreemnent */
     NULL,                      /* ca challenges array */
+    0,                         /* stapling */
+    1,                         /* staple others */
     NULL,                      /* currently defined md */
     NULL,                      /* assigned md, post config */
+    0,                         /* is_ssl, set during mod_ssl post_config */
 };
 
 static md_mod_conf_t *mod_md_config;
@@ -118,7 +135,6 @@ static md_mod_conf_t *md_mod_conf_get(apr_pool_t *pool, int create)
         memcpy(mod_md_config, &defmc, sizeof(*mod_md_config));
         mod_md_config->mds = apr_array_make(pool, 5, sizeof(const md_t *));
         mod_md_config->unused_names = apr_array_make(pool, 5, sizeof(const md_t *));
-        mod_md_config->watched_names = apr_array_make(pool, 5, sizeof(const md_t *));
         mod_md_config->env = apr_table_make(pool, 10);
         mod_md_config->init_errors = apr_hash_make(pool);
          
@@ -143,6 +159,8 @@ static void srv_conf_props_clear(md_srv_conf_t *sc)
     sc->ca_proto = NULL;
     sc->ca_agreement = NULL;
     sc->ca_challenges = NULL;
+    sc->stapling = DEF_VAL;
+    sc->staple_others = DEF_VAL;
 }
 
 static void srv_conf_props_copy(md_srv_conf_t *to, const md_srv_conf_t *from)
@@ -158,6 +176,8 @@ static void srv_conf_props_copy(md_srv_conf_t *to, const md_srv_conf_t *from)
     to->ca_proto = from->ca_proto;
     to->ca_agreement = from->ca_agreement;
     to->ca_challenges = from->ca_challenges;
+    to->stapling = from->stapling;
+    to->staple_others = from->staple_others;
 }
 
 static void srv_conf_props_apply(md_t *md, const md_srv_conf_t *from, apr_pool_t *p)
@@ -173,6 +193,7 @@ static void srv_conf_props_apply(md_t *md, const md_srv_conf_t *from, apr_pool_t
     if (from->ca_proto) md->ca_proto = from->ca_proto;
     if (from->ca_agreement) md->ca_agreement = from->ca_agreement;
     if (from->ca_challenges) md->ca_challenges = apr_array_copy(p, from->ca_challenges);
+    if (from->stapling != DEF_VAL) md->stapling = from->stapling;
 }
 
 void *md_config_create_svr(apr_pool_t *pool, server_rec *s)
@@ -198,7 +219,6 @@ static void *md_config_merge(apr_pool_t *pool, void *basev, void *addv)
     nsc = (md_srv_conf_t *)apr_pcalloc(pool, sizeof(md_srv_conf_t));
     nsc->name = name;
     nsc->mc = add->mc? add->mc : base->mc;
-    nsc->assigned = add->assigned? add->assigned : base->assigned;
 
     nsc->transitive = (add->transitive != DEF_VAL)? add->transitive : base->transitive;
     nsc->require_https = (add->require_https != MD_REQUIRE_UNSET)? add->require_https : base->require_https;
@@ -213,8 +233,9 @@ static void *md_config_merge(apr_pool_t *pool, void *basev, void *addv)
     nsc->ca_agreement = add->ca_agreement? add->ca_agreement : base->ca_agreement;
     nsc->ca_challenges = (add->ca_challenges? apr_array_copy(pool, add->ca_challenges) 
                     : (base->ca_challenges? apr_array_copy(pool, base->ca_challenges) : NULL));
+    nsc->stapling = (add->stapling != DEF_VAL)? add->stapling : base->stapling;
+    nsc->staple_others = (add->staple_others != DEF_VAL)? add->staple_others : base->staple_others;
     nsc->current = NULL;
-    nsc->assigned = NULL;
     
     return nsc;
 }
@@ -485,6 +506,30 @@ static const char *md_config_set_must_staple(cmd_parms *cmd, void *dc, const cha
         return err;
     }
     return set_on_off(&config->must_staple, value, cmd->pool);
+}
+
+static const char *md_config_set_stapling(cmd_parms *cmd, void *dc, const char *value)
+{
+    md_srv_conf_t *config = md_config_get(cmd->server);
+    const char *err;
+
+    (void)dc;
+    if (!inside_md_section(cmd) && (err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
+        return err;
+    }
+    return set_on_off(&config->stapling, value, cmd->pool);
+}
+
+static const char *md_config_set_staple_others(cmd_parms *cmd, void *dc, const char *value)
+{
+    md_srv_conf_t *config = md_config_get(cmd->server);
+    const char *err;
+
+    (void)dc;
+    if ((err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
+        return err;
+    }
+    return set_on_off(&config->staple_others, value, cmd->pool);
 }
 
 static const char *md_config_set_base_server(cmd_parms *cmd, void *dc, const char *value)
@@ -820,6 +865,69 @@ static const char *md_config_set_certificate_status(cmd_parms *cmd, void *dc, co
     return set_on_off(&sc->mc->certificate_status_enabled, value, cmd->pool);
 }
 
+static const char *md_config_set_ocsp_keep_window(cmd_parms *cmd, void *dc, const char *value)
+{
+    md_srv_conf_t *sc = md_config_get(cmd->server);
+    const char *err;
+
+    (void)dc;
+    if (!inside_md_section(cmd) && (err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
+        return err;
+    }
+    err = md_timeslice_parse(&sc->mc->ocsp_keep_window, cmd->pool, value, MD_TIME_OCSP_KEEP_NORM);
+    if (err) return apr_psprintf(cmd->pool, "MDStaplingKeepResponse %s", err);
+    return NULL;
+}
+
+static const char *md_config_set_ocsp_renew_window(cmd_parms *cmd, void *dc, const char *value)
+{
+    md_srv_conf_t *sc = md_config_get(cmd->server);
+    const char *err;
+
+    (void)dc;
+    if (!inside_md_section(cmd) && (err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
+        return err;
+    }
+    err = md_timeslice_parse(&sc->mc->ocsp_renew_window, cmd->pool, value, MD_TIME_LIFE_NORM);
+    if (!err && sc->mc->ocsp_renew_window->norm 
+        && (sc->mc->ocsp_renew_window->len >= sc->mc->ocsp_renew_window->norm)) {
+        err = "with a length of 100% or more is not allowed.";
+    }
+    if (err) return apr_psprintf(cmd->pool, "MDStaplingRenewWindow %s", err);
+    return NULL;
+}
+
+static const char *md_config_set_cert_check(cmd_parms *cmd, void *dc, 
+                                            const char *name, const char *url)
+{
+    md_srv_conf_t *sc = md_config_get(cmd->server);
+    const char *err;
+
+    (void)dc;
+    if (!inside_md_section(cmd) && (err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
+        return err;
+    }
+    sc->mc->cert_check_name = name;
+    sc->mc->cert_check_url = url;
+    return NULL;
+}
+
+static const char *md_config_set_activation_delay(cmd_parms *cmd, void *mconfig, const char *arg)
+{
+    md_srv_conf_t *sc = md_config_get(cmd->server);
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    apr_interval_time_t delay;
+
+    (void)mconfig;
+    if (err) {
+        return err;
+    }
+    if (md_duration_parse(&delay, arg, "d") != APR_SUCCESS) {
+        return "unrecognized duration format";
+    }
+    apr_table_set(sc->mc->env, MD_KEY_ACTIVATION_DELAY, md_duration_format(cmd->pool, delay));
+    return NULL;
+}
 
 const command_rec md_cmds[] = {
     AP_INIT_TAKE1("MDCertificateAuthority", md_config_set_ca, NULL, RSRC_CONF, 
@@ -860,7 +968,7 @@ const command_rec md_cmds[] = {
     AP_INIT_TAKE1("MDStoreDir", md_config_set_store_dir, NULL, RSRC_CONF, 
                   "the directory for file system storage of managed domain data."),
     AP_INIT_TAKE1("MDRenewWindow", md_config_set_renew_window, NULL, RSRC_CONF, 
-                  "Time length for renewal before certificate expires (defaults to days)"),
+                  "Time length for renewal before certificate expires (defaults to days)."),
     AP_INIT_TAKE1("MDRequireHttps", md_config_set_require_https, NULL, RSRC_CONF, 
                   "Redirect non-secure requests to the https: equivalent."),
     AP_INIT_RAW_ARGS("MDNotifyCmd", md_config_set_notify_cmd, NULL, RSRC_CONF, 
@@ -881,6 +989,18 @@ const command_rec md_cmds[] = {
                   "When less time remains for a certificate, send our/log a warning (defaults to days)"),
     AP_INIT_RAW_ARGS("MDMessageCmd", md_config_set_msg_cmd, NULL, RSRC_CONF, 
                   "Set the command run when a message about a domain is issued."),
+    AP_INIT_TAKE1("MDStapling", md_config_set_stapling, NULL, RSRC_CONF, 
+                  "Enable/Disable OCSP Stapling for this/all Managed Domain(s)."),
+    AP_INIT_TAKE1("MDStapleOthers", md_config_set_staple_others, NULL, RSRC_CONF, 
+                  "Enable/Disable OCSP Stapling for certificates not in Managed Domains."),
+    AP_INIT_TAKE1("MDStaplingKeepResponse", md_config_set_ocsp_keep_window, NULL, RSRC_CONF, 
+                  "The amount of time to keep an OCSP response in the store."),
+    AP_INIT_TAKE1("MDStaplingRenewWindow", md_config_set_ocsp_renew_window, NULL, RSRC_CONF, 
+                  "Time length for renewal before OCSP responses expire (defaults to days)."),
+    AP_INIT_TAKE2("MDCertificateCheck", md_config_set_cert_check, NULL, RSRC_CONF, 
+                  "Set name and URL pattern for a certificate monitoring site."),
+    AP_INIT_TAKE1("MDActivationDelay", md_config_set_activation_delay, NULL, RSRC_CONF, 
+                  "How long to delay activation of new certificates"),
 
     AP_INIT_TAKE1(NULL, NULL, NULL, RSRC_CONF, NULL)
 };
@@ -897,7 +1017,7 @@ apr_status_t md_config_post_config(server_rec *s, apr_pool_t *p)
     if (mc->hsts_max_age > 0) {
         mc->hsts_header = apr_psprintf(p, "max-age=%d", mc->hsts_max_age);
     }
-    
+
 #if AP_MODULE_MAGIC_AT_LEAST(20180906, 2)
     if (mc->base_dir == NULL) {
         mc->base_dir = ap_state_dir_relative(p, MD_DEFAULT_BASE_DIR);
@@ -913,6 +1033,7 @@ static md_srv_conf_t *config_get_int(server_rec *s, apr_pool_t *p)
     ap_assert(sc);
     if (sc->s != s && p) {
         sc = md_config_merge(p, &defconf, sc);
+        sc->s = s;
         sc->name = apr_pstrcat(p, CONF_S_NAME(s), sc->name, NULL);
         sc->mc = md_mod_conf_get(p, 1);
         ap_set_module_config(s->module_config, &md_module, sc);
@@ -961,22 +1082,22 @@ int md_config_geti(const md_srv_conf_t *sc, md_config_var_t var)
     switch (var) {
         case MD_CONFIG_DRIVE_MODE:
             return (sc->renew_mode != DEF_VAL)? sc->renew_mode : defconf.renew_mode;
-        case MD_CONFIG_LOCAL_80:
-            return sc->mc->local_80;
-        case MD_CONFIG_LOCAL_443:
-            return sc->mc->local_443;
         case MD_CONFIG_TRANSITIVE:
             return (sc->transitive != DEF_VAL)? sc->transitive : defconf.transitive;
         case MD_CONFIG_REQUIRE_HTTPS:
             return (sc->require_https != MD_REQUIRE_UNSET)? sc->require_https : defconf.require_https;
         case MD_CONFIG_MUST_STAPLE:
             return (sc->must_staple != DEF_VAL)? sc->must_staple : defconf.must_staple;
+        case MD_CONFIG_STAPLING:
+            return (sc->stapling != DEF_VAL)? sc->stapling : defconf.stapling;
+        case MD_CONFIG_STAPLE_OTHERS:
+            return (sc->staple_others != DEF_VAL)? sc->staple_others : defconf.staple_others;
         default:
             return 0;
     }
 }
 
-void md_config_get_timespan(const md_timeslice_t **pspan, const md_srv_conf_t *sc, md_config_var_t var)
+void md_config_get_timespan(md_timeslice_t **pspan, const md_srv_conf_t *sc, md_config_var_t var)
 {
     switch (var) {
         case MD_CONFIG_RENEW_WINDOW:
@@ -988,5 +1109,21 @@ void md_config_get_timespan(const md_timeslice_t **pspan, const md_srv_conf_t *s
         default:
             break;
     }
+}
+
+const md_t *md_get_for_domain(server_rec *s, const char *domain)
+{
+    md_srv_conf_t *sc;
+    const md_t *md;
+    int i;
+    
+    sc = md_config_get(s);
+    for (i = 0; sc && sc->assigned && i < sc->assigned->nelts; ++i) {
+        md = APR_ARRAY_IDX(sc->assigned, i, const md_t*);
+        if (md_contains(md, domain, 0)) goto leave;
+    }
+    md = NULL;
+leave:
+    return md;
 }
 

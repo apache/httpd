@@ -18,10 +18,12 @@
 #include <apr_lib.h>
 #include <apr_strings.h>
 #include <apr_buckets.h>
+#include <apr_date.h>
 
 #include "md_json.h"
 #include "md_log.h"
 #include "md_http.h"
+#include "md_time.h"
 #include "md_util.h"
 
 /* jansson thinks everyone compiles with the platform's cc in its fullest capabilities
@@ -106,12 +108,12 @@ void md_json_destroy(md_json_t *json)
     }
 }
 
-md_json_t *md_json_copy(apr_pool_t *pool, md_json_t *json)
+md_json_t *md_json_copy(apr_pool_t *pool, const md_json_t *json)
 {
     return json_create(pool, json_copy(json->j));
 }
 
-md_json_t *md_json_clone(apr_pool_t *pool, md_json_t *json)
+md_json_t *md_json_clone(apr_pool_t *pool, const md_json_t *json)
 {
     return json_create(pool, json_deep_copy(json->j));
 }
@@ -168,18 +170,16 @@ static apr_status_t jselect_add(json_t *val, md_json_t *json, va_list ap)
     j = jselect_parent(&key, 1, json, ap);
     
     if (!j || !json_is_object(j)) {
-        json_decref(val);
         return APR_EINVAL;
     }
     
     aj = json_object_get(j, key);
     if (!aj) {
         aj = json_array();
-        json_object_set_new(j, key, aj);
+        json_object_set(j, key, aj);
     }
     
     if (!json_is_array(aj)) {
-        json_decref(val);
         return APR_EINVAL;
     }
 
@@ -202,7 +202,7 @@ static apr_status_t jselect_insert(json_t *val, size_t index, md_json_t *json, v
     aj = json_object_get(j, key);
     if (!aj) {
         aj = json_array();
-        json_object_set_new(j, key, aj);
+        json_object_set(j, key, aj);
     }
     
     if (!json_is_array(aj)) {
@@ -227,13 +227,11 @@ static apr_status_t jselect_set(json_t *val, md_json_t *json, va_list ap)
     j = jselect_parent(&key, 1, json, ap);
     
     if (!j) {
-        json_decref(val);
         return APR_EINVAL;
     }
     
     if (key) {
         if (!json_is_object(j)) {
-            json_decref(val);
             return APR_EINVAL;
         }
         json_object_set(j, key, val);
@@ -311,6 +309,19 @@ int md_json_is(const md_json_type_t jtype, md_json_t *json, ...)
         case MD_JSON_TYPE_NULL: return (j == NULL);
     }
     return 0;
+}
+
+static const char *md_json_type_name(const md_json_t *json)
+{
+    json_t *j = json->j;
+    if (json_is_object(j)) return "object";
+    if (json_is_array(j)) return "array";
+    if (json_is_string(j)) return "string";
+    if (json_is_real(j)) return "real";
+    if (json_is_integer(j)) return "integer";
+    if (json_is_true(j)) return "true";
+    if (json_is_false(j)) return "false";
+    return "unknown";
 }
 
 /**************************************************************************************************/
@@ -428,6 +439,35 @@ apr_status_t md_json_sets(const char *value, md_json_t *json, ...)
 }
 
 /**************************************************************************************************/
+/* time */
+
+apr_time_t md_json_get_time(const md_json_t *json, ...)
+{
+    json_t *j;
+    va_list ap;
+    
+    va_start(ap, json);
+    j = jselect(json, ap);
+    va_end(ap);
+
+    if (!j || !json_is_string(j)) return 0;
+    return apr_date_parse_rfc(json_string_value(j));
+}
+
+apr_status_t md_json_set_time(apr_time_t value, md_json_t *json, ...)
+{
+    char ts[APR_RFC822_DATE_LEN];
+    va_list ap;
+    apr_status_t rv;
+    
+    apr_rfc822_date(ts, value);
+    va_start(ap, json);
+    rv = jselect_set_new(json_string(ts), json, ap);
+    va_end(ap);
+    return rv;
+}
+
+/**************************************************************************************************/
 /* json itself */
 
 md_json_t *md_json_getj(md_json_t *json, ...)
@@ -445,6 +485,22 @@ md_json_t *md_json_getj(md_json_t *json, ...)
         }
         json_incref(j);
         return json_create(json->p, j);
+    }
+    return NULL;
+}
+
+md_json_t *md_json_dupj(apr_pool_t *p, const md_json_t *json, ...)
+{
+    json_t *j;
+    va_list ap;
+    
+    va_start(ap, json);
+    j = jselect(json, ap);
+    va_end(ap);
+    
+    if (j) {
+        json_incref(j);
+        return json_create(p, j);
     }
     return NULL;
 }
@@ -468,7 +524,7 @@ const md_json_t *md_json_getcj(const md_json_t *json, ...)
     return NULL;
 }
 
-apr_status_t md_json_setj(md_json_t *value, md_json_t *json, ...)
+apr_status_t md_json_setj(const md_json_t *value, md_json_t *json, ...)
 {
     va_list ap;
     apr_status_t rv;
@@ -496,7 +552,7 @@ apr_status_t md_json_setj(md_json_t *value, md_json_t *json, ...)
     return rv;
 }
 
-apr_status_t md_json_addj(md_json_t *value, md_json_t *json, ...)
+apr_status_t md_json_addj(const md_json_t *value, md_json_t *json, ...)
 {
     va_list ap;
     apr_status_t rv;
@@ -518,6 +574,25 @@ apr_status_t md_json_insertj(md_json_t *value, size_t index, md_json_t *json, ..
     return rv;
 }
 
+apr_size_t md_json_limita(size_t max_elements, md_json_t *json, ...)
+{
+    json_t *j;
+    va_list ap;
+    apr_size_t n = 0;
+    
+    va_start(ap, json);
+    j = jselect(json, ap);
+    va_end(ap);
+
+    if (j && json_is_array(j)) {
+        n = json_array_size(j);
+        while (n > max_elements) {
+            json_array_remove(j, n-1);
+            n = json_array_size(j);
+        }
+    }
+    return n;
+}
 
 /**************************************************************************************************/
 /* arrays / objects */
@@ -642,7 +717,7 @@ apr_status_t md_json_clone_to(void *value, md_json_t *json, apr_pool_t *p, void 
     return md_json_setj(md_json_clone(p, value), json, NULL);
 }
 
-apr_status_t md_json_clone_from(void **pvalue, md_json_t *json, apr_pool_t *p, void *baton)
+apr_status_t md_json_clone_from(void **pvalue, const md_json_t *json, apr_pool_t *p, void *baton)
 {
     (void)baton;
     *pvalue = md_json_clone(p, json);
@@ -843,7 +918,7 @@ apr_status_t md_json_setsa(apr_array_header_t *a, md_json_t *json, ...)
 /* formatting, parsing */
 
 typedef struct {
-    md_json_t *json;
+    const md_json_t *json;
     md_json_fmt_t fmt;
     const char *fname;
     apr_file_t *f;
@@ -868,7 +943,7 @@ static int dump_cb(const char *buffer, size_t len, void *baton)
     return (rv == APR_SUCCESS)? 0 : -1;
 }
 
-apr_status_t md_json_writeb(md_json_t *json, md_json_fmt_t fmt, apr_bucket_brigade *bb)
+apr_status_t md_json_writeb(const md_json_t *json, md_json_fmt_t fmt, apr_bucket_brigade *bb)
 {
     int rv = json_dump_callback(json->j, dump_cb, bb, fmt_to_flags(fmt));
     return rv? APR_EGENERAL : APR_SUCCESS;
@@ -877,14 +952,18 @@ apr_status_t md_json_writeb(md_json_t *json, md_json_fmt_t fmt, apr_bucket_briga
 static int chunk_cb(const char *buffer, size_t len, void *baton)
 {
     apr_array_header_t *chunks = baton;
-    char *chunk = apr_pcalloc(chunks->pool, len+1);
+    char *chunk;
     
-    memcpy(chunk, buffer, len);
-    APR_ARRAY_PUSH(chunks, const char *) = chunk;
+    if (len > 0) {
+        chunk = apr_palloc(chunks->pool, len+1);
+        memcpy(chunk, buffer, len);
+        chunk[len] = '\0';
+        APR_ARRAY_PUSH(chunks, const char*) = chunk;
+    }
     return 0;
 }
 
-const char *md_json_writep(md_json_t *json, apr_pool_t *p, md_json_fmt_t fmt)
+const char *md_json_writep(const md_json_t *json, apr_pool_t *p, md_json_fmt_t fmt)
 {
     apr_array_header_t *chunks;
     int rv;
@@ -901,13 +980,13 @@ const char *md_json_writep(md_json_t *json, apr_pool_t *p, md_json_fmt_t fmt)
         case 0:
             return "";
         case 1:
-            return APR_ARRAY_IDX(chunks, 0, const char *);
+            return APR_ARRAY_IDX(chunks, 0, const char*);
         default:
             return apr_array_pstrcat(p, chunks, 0);
     }
 }
 
-apr_status_t md_json_writef(md_json_t *json, apr_pool_t *p, md_json_fmt_t fmt, apr_file_t *f)
+apr_status_t md_json_writef(const md_json_t *json, apr_pool_t *p, md_json_fmt_t fmt, apr_file_t *f)
 {
     apr_status_t rv;
     const char *s;
@@ -920,12 +999,13 @@ apr_status_t md_json_writef(md_json_t *json, apr_pool_t *p, md_json_fmt_t fmt, a
     }
     else {
         rv = APR_EINVAL;
-        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, json->p, "md_json_writef: error dumping json");
+        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, json->p, 
+                      "md_json_writef: error dumping json (%s)", md_json_dump_state(json, p));
     }
     return rv;
 }
 
-apr_status_t md_json_fcreatex(md_json_t *json, apr_pool_t *p, md_json_fmt_t fmt, 
+apr_status_t md_json_fcreatex(const md_json_t *json, apr_pool_t *p, md_json_fmt_t fmt, 
                               const char *fpath, apr_fileperms_t perms)
 {
     apr_status_t rv;
@@ -949,7 +1029,7 @@ static apr_status_t write_json(void *baton, apr_file_t *f, apr_pool_t *p)
     return rv;
 }
 
-apr_status_t md_json_freplace(md_json_t *json, apr_pool_t *p, md_json_fmt_t fmt, 
+apr_status_t md_json_freplace(const md_json_t *json, apr_pool_t *p, md_json_fmt_t fmt, 
                               const char *fpath, apr_fileperms_t perms)
 {
     j_write_ctx ctx;
@@ -1076,11 +1156,9 @@ apr_status_t md_json_readf(md_json_t **pjson, apr_pool_t *p, const char *fpath)
 apr_status_t md_json_read_http(md_json_t **pjson, apr_pool_t *pool, const md_http_response_t *res)
 {
     apr_status_t rv = APR_ENOENT;
-    if (res->rv == APR_SUCCESS) {
-        const char *ctype = apr_table_get(res->headers, "content-type");
-        if (ctype && res->body && (strstr(ctype, "/json") || strstr(ctype, "+json"))) {
-            rv = md_json_readb(pjson, pool, res->body);
-        }
+    const char *ctype = apr_table_get(res->headers, "content-type");
+    if (ctype && res->body && (strstr(ctype, "/json") || strstr(ctype, "+json"))) {
+        rv = md_json_readb(pjson, pool, res->body);
     }
     return rv;
 }
@@ -1091,9 +1169,9 @@ typedef struct {
     md_json_t *json;
 } resp_data;
 
-static apr_status_t json_resp_cb(const md_http_response_t *res)
+static apr_status_t json_resp_cb(const md_http_response_t *res, void *data)
 {
-    resp_data *resp = res->req->baton;
+    resp_data *resp = data;
     return md_json_read_http(&resp->json, resp->pool, res);
 }
 
@@ -1106,7 +1184,7 @@ apr_status_t md_json_http_get(md_json_t **pjson, apr_pool_t *pool,
     memset(&resp, 0, sizeof(resp));
     resp.pool = pool;
     
-    rv = md_http_GET(http, url, NULL, json_resp_cb, &resp);
+    rv = md_http_GET_perform(http, url, NULL, json_resp_cb, &resp);
     
     if (rv == APR_SUCCESS) {
         *pjson = resp.json;
@@ -1133,4 +1211,64 @@ apr_status_t md_json_copy_to(md_json_t *dest, const md_json_t *src, ...)
         va_end(ap);
     }
     return rv;
+}
+
+const char *md_json_dump_state(const md_json_t *json, apr_pool_t *p)
+{
+    if (!json) return "NULL";
+    return apr_psprintf(p, "%s, refc=%ld", md_json_type_name(json), (long)json->j->refcount);
+}
+
+apr_status_t md_json_set_timeperiod(const md_timeperiod_t *tp, md_json_t *json, ...)
+{
+    char ts[APR_RFC822_DATE_LEN];
+    json_t *jn, *j;
+    va_list ap;
+    const char *key;
+    apr_status_t rv;
+    
+    if (!tp || tp->start || tp->end) {
+        jn = json_object();
+        apr_rfc822_date(ts, tp->start);
+        json_object_set_new(jn, "from", json_string(ts));
+        apr_rfc822_date(ts, tp->end);
+        json_object_set_new(jn, "until", json_string(ts));
+        
+        va_start(ap, json);
+        rv = jselect_set_new(jn, json, ap);
+        va_end(ap);
+        return rv;
+    }
+    else {
+        va_start(ap, json);
+        j = jselect_parent(&key, 0, json, ap);
+        va_end(ap);
+        
+        if (key && j && json_is_object(j)) {
+            json_object_del(j, key);
+        }
+        return APR_SUCCESS;
+    }
+}
+
+apr_status_t md_json_get_timeperiod(md_timeperiod_t *tp, md_json_t *json, ...)
+{
+    json_t *j, *jts;
+    va_list ap;
+    
+    va_start(ap, json);
+    j = jselect(json, ap);
+    va_end(ap);
+    
+    memset(tp, 0, sizeof(*tp));
+    if (!j) goto not_found;
+    jts = json_object_get(j, "from");
+    if (!jts || !json_is_string(jts)) goto not_found;
+    tp->start = apr_date_parse_rfc(json_string_value(jts)); 
+    jts = json_object_get(j, "until");
+    if (!jts || !json_is_string(jts)) goto not_found;
+    tp->end = apr_date_parse_rfc(json_string_value(jts)); 
+    return APR_SUCCESS;
+not_found:
+    return APR_ENOENT;
 }

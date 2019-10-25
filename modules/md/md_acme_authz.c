@@ -144,12 +144,31 @@ apr_status_t md_acme_authz_retrieve(md_acme_t *acme, apr_pool_t *p, const char *
     return rv;
 }
 
+typedef struct {
+    apr_pool_t *p;
+    md_acme_authz_t *authz;
+} error_ctx_t;
+
+static int copy_challenge_error(void *baton, size_t index, md_json_t *json)
+{
+    error_ctx_t *ctx = baton;
+    
+    (void)index;
+    if (md_json_has_key(json, MD_KEY_ERROR, NULL)) {
+        ctx->authz->error_type = md_json_dups(ctx->p, json, MD_KEY_ERROR, MD_KEY_TYPE, NULL);
+        ctx->authz->error_detail = md_json_dups(ctx->p, json, MD_KEY_ERROR, MD_KEY_DETAIL, NULL);
+        ctx->authz->error_subproblems = md_json_dupj(ctx->p, json, MD_KEY_ERROR, MD_KEY_SUBPROBLEMS, NULL);
+    }
+    return 1;
+}
+
 apr_status_t md_acme_authz_update(md_acme_authz_t *authz, md_acme_t *acme, apr_pool_t *p)
 {
     md_json_t *json;
     const char *s, *err;
     md_log_level_t log_level;
     apr_status_t rv;
+    error_ctx_t ctx;
     
     assert(acme);
     assert(acme->http);
@@ -158,6 +177,8 @@ apr_status_t md_acme_authz_update(md_acme_authz_t *authz, md_acme_t *acme, apr_p
 
     authz->state = MD_ACME_AUTHZ_S_UNKNOWN;
     json = NULL;
+    authz->error_type = authz->error_detail = NULL;
+    authz->error_subproblems = NULL;
     err = "unable to parse response";
     log_level = MD_LOG_ERR;
     
@@ -177,7 +198,10 @@ apr_status_t md_acme_authz_update(md_acme_authz_t *authz, md_acme_t *acme, apr_p
             log_level = MD_LOG_DEBUG;
         }
         else if (!strcmp(s, "invalid")) {
+            ctx.p = p;
+            ctx.authz = authz;
             authz->state = MD_ACME_AUTHZ_S_INVALID;
+            md_json_itera(copy_challenge_error, &ctx, json, MD_KEY_CHALLENGES, NULL);
             err = "challenge 'invalid'";
         }
     }
@@ -189,7 +213,7 @@ apr_status_t md_acme_authz_update(md_acme_authz_t *authz, md_acme_t *acme, apr_p
     
     if (md_log_is_level(p, log_level)) {
         md_log_perror(MD_LOG_MARK, log_level, rv, p, "ACME server authz: %s for %s at %s. "
-                      "Exact response was: %s", err? err : "", authz->domain, authz->url,
+                      "Exact response was: %s", err, authz->domain, authz->url,
                       json? md_json_writep(json, p, MD_JSON_FMT_COMPACT) : "not available");
     }
     
@@ -243,7 +267,7 @@ static apr_status_t authz_http_set(md_acme_t *acme, apr_pool_t *p, const apr_tab
     (void)p;
     (void)hdrs;
     (void)body;
-    md_log_perror(MD_LOG_MARK, MD_LOG_INFO, 0, ctx->p, "updated authz %s", ctx->authz->url);
+    md_log_perror(MD_LOG_MARK, MD_LOG_TRACE1, 0, ctx->p, "updated authz %s", ctx->authz->url);
     return APR_SUCCESS;
 }
 
@@ -323,7 +347,7 @@ static apr_status_t cha_tls_alpn_01_setup(md_acme_authz_cha_t *cha, md_acme_auth
     const char *acme_id, *token;
     apr_status_t rv;
     int notify_server;
-    md_data data;
+    md_data_t data;
     
     (void)env;
     if (md_array_str_index(acme_tls_1_domains, authz->domain, 0, 0) < 0) {
@@ -400,7 +424,7 @@ static apr_status_t cha_dns_01_setup(md_acme_authz_cha_t *cha, md_acme_authz_t *
     apr_status_t rv;
     int exit_code, notify_server;
     authz_req_ctx ctx;
-    md_data data;
+    md_data_t data;
     
     (void)store;
     (void)key_spec;
@@ -582,7 +606,7 @@ apr_status_t md_acme_authz_respond(md_acme_authz_t *authz, md_acme_t *acme, md_s
                     rv = CHA_TYPES[i].setup(fctx.accepted, authz, acme, store, key_spec, 
                                             acme_tls_1_domains, env, p);
                     if (APR_SUCCESS == rv) {
-                        md_log_perror(MD_LOG_MARK, MD_LOG_INFO, rv, p, 
+                        md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, p, 
                                       "%s: set up challenge '%s'", 
                                       authz->domain, fctx.accepted->type);
                         challenge_setup = CHA_TYPES[i].name; 

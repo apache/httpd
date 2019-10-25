@@ -19,7 +19,8 @@
 
 int md_http_cert_status(request_rec *r);
 
-int md_status_hook(request_rec *r, int flags);
+int md_domains_status_hook(request_rec *r, int flags);
+int md_ocsp_status_hook(request_rec *r, int flags);
 
 int md_status_handler(request_rec *r);
 

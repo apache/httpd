@@ -49,6 +49,9 @@ struct md_acme_authz_t {
     const char *url;
     md_acme_authz_state_t state;
     apr_time_t expires;
+    const char *error_type;
+    const char *error_detail;
+    const struct md_json_t *error_subproblems;
     struct md_json_t *resource;
 };
 

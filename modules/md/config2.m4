@@ -258,6 +258,7 @@ md_http.lo dnl
 md_json.lo dnl
 md_jws.lo dnl
 md_log.lo dnl
+md_ocsp.lo dnl
 md_result.lo dnl
 md_reg.lo dnl
 md_status.lo dnl
@@ -268,6 +269,7 @@ md_util.lo dnl
 mod_md.lo dnl
 mod_md_config.lo dnl
 mod_md_drive.lo dnl
+mod_md_ocsp.lo dnl
 mod_md_os.lo dnl
 mod_md_status.lo dnl
 "

@@ -1,8 +1,24 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.42
 
+  *) mod_md: Adding the several new features.
+     The module offers an implementation of OCSP Stapling that can replace fully or
+     for a limited set of domains the existing one from mod_ssl. OCSP handling
+     is part of mod_md's monitoring and message notifications. If can be used
+     for sites that do not have ACME certificates.
+     The url for a CTLog Monitor can be configured. It is used in the server-status
+     to link to the external status page of a certicate.
+     The MDMessageCmd is called with argument "installed" when a new certificate
+     has been activated on server restart/reload. This allows for processing of
+     the new certificate, for example to applications that require it in different
+     locations or formats.
+     [Stefan Eissing]
+
   *) mod_proxy_balancer: Fix case-sensitive referer check related to CSRF/XSS 
      protection. PR 63688. [Armin Abfalterer <a.abfalterer gmail.com>]
+
+  *) mod_deflate, mod_brotli: honor "Accept-Encoding: foo;q=0" as per RFC 7231; which
+     means 'foo' is "not acceptable".  PR 58158 [Chistophe Jaillet]
 
 Changes with Apache 2.4.41
 

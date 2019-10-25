@@ -24,7 +24,9 @@ struct apr_array_header_t;
 struct apr_hash_t;
 struct md_json_t;
 struct md_cert_t;
+struct md_job_t;
 struct md_pkey_t;
+struct md_result_t;
 struct md_store_t;
 struct md_srv_conf_t;
 struct md_pkey_spec_t;
@@ -41,6 +43,9 @@ struct md_pkey_spec_t;
 #define MD_TIME_LIFE_NORM           (apr_time_from_sec(100 * MD_SECS_PER_DAY))
 #define MD_TIME_RENEW_WINDOW_DEF    (apr_time_from_sec(33 * MD_SECS_PER_DAY))
 #define MD_TIME_WARN_WINDOW_DEF     (apr_time_from_sec(10 * MD_SECS_PER_DAY))
+#define MD_TIME_OCSP_KEEP_NORM      (apr_time_from_sec(7 * MD_SECS_PER_DAY))
+
+#define MD_OTHER                "other"
 
 typedef enum {
     MD_S_UNKNOWN = 0,               /* MD has not been analysed yet */
@@ -57,25 +62,6 @@ typedef enum {
     MD_REQUIRE_TEMPORARY,
     MD_REQUIRE_PERMANENT,
 } md_require_t;
-
-typedef enum {
-    MD_SV_TEXT,
-    MD_SV_JSON,
-    MD_SV_CERT,
-    MD_SV_PKEY,
-    MD_SV_CHAIN,
-} md_store_vtype_t;
-
-typedef enum {
-    MD_SG_NONE,
-    MD_SG_ACCOUNTS,
-    MD_SG_CHALLENGES,
-    MD_SG_DOMAINS,
-    MD_SG_STAGING,
-    MD_SG_ARCHIVE,
-    MD_SG_TMP,
-    MD_SG_COUNT,
-} md_store_group_t;
 
 typedef enum {
     MD_RENEW_DEFAULT = -1,          /* default value */
@@ -96,8 +82,8 @@ struct md_t {
     int renew_mode;                 /* mode of obtaining credentials */
     struct md_pkey_spec_t *pkey_spec;/* specification for generating new private keys */
     int must_staple;                /* certificates should set the OCSP Must Staple extension */
-    const md_timeslice_t *renew_window;  /* time before expiration that starts renewal */
-    const md_timeslice_t *warn_window;   /* time before expiration that warnings are sent out */
+    md_timeslice_t *renew_window;  /* time before expiration that starts renewal */
+    md_timeslice_t *warn_window;   /* time before expiration that warnings are sent out */
     
     const char *ca_url;             /* url of CA certificate service */
     const char *ca_proto;           /* protocol used vs CA (e.g. ACME) */
@@ -110,7 +96,9 @@ struct md_t {
     md_state_t state;               /* state of this MD */
     
     struct apr_array_header_t *acme_tls_1_domains; /* domains supporting "acme-tls/1" protocol */
+    int stapling;                   /* if OCSP stapling is enabled */
     
+    int watched;               /* if certificate is supervised (renew or expiration warning) */
     const struct md_srv_conf_t *sc; /* server config where it was defined or NULL */
     const char *defn_name;          /* config file this MD was defined */
     unsigned defn_line_number;      /* line number of definition */
@@ -120,6 +108,7 @@ struct md_t {
 
 #define MD_KEY_ACCOUNT          "account"
 #define MD_KEY_ACME_TLS_1       "acme-tls/1"
+#define MD_KEY_ACTIVATION_DELAY "activation-delay"
 #define MD_KEY_ACTIVITY         "activity"
 #define MD_KEY_AGREEMENT        "agreement"
 #define MD_KEY_AUTHORIZATIONS   "authorizations"
@@ -143,10 +132,13 @@ struct md_t {
 #define MD_KEY_DOMAINS          "domains"
 #define MD_KEY_ENTRIES          "entries"
 #define MD_KEY_ERRORED          "errored"
+#define MD_KEY_ERROR            "error"
 #define MD_KEY_ERRORS           "errors"
 #define MD_KEY_EXPIRES          "expires"
 #define MD_KEY_FINALIZE         "finalize"
 #define MD_KEY_FINISHED         "finished"
+#define MD_KEY_FROM             "from"
+#define MD_KEY_GOOD             "good"
 #define MD_KEY_HTTP             "http"
 #define MD_KEY_HTTPS            "https"
 #define MD_KEY_ID               "id"
@@ -163,6 +155,8 @@ struct md_t {
 #define MD_KEY_NAME             "name"
 #define MD_KEY_NEXT_RUN         "next-run"
 #define MD_KEY_NOTIFIED         "notified"
+#define MD_KEY_OCSP             "ocsp"
+#define MD_KEY_OCSPS            "ocsps"
 #define MD_KEY_ORDERS           "orders"
 #define MD_KEY_PERMANENT        "permanent"
 #define MD_KEY_PKEY             "privkey"
@@ -172,40 +166,38 @@ struct md_t {
 #define MD_KEY_READY            "ready"
 #define MD_KEY_REGISTRATION     "registration"
 #define MD_KEY_RENEW            "renew"
+#define MD_KEY_RENEW_AT         "renew-at"
 #define MD_KEY_RENEW_MODE       "renew-mode"
 #define MD_KEY_RENEWAL          "renewal"
 #define MD_KEY_RENEWING         "renewing"
 #define MD_KEY_RENEW_WINDOW     "renew-window"
 #define MD_KEY_REQUIRE_HTTPS    "require-https"
 #define MD_KEY_RESOURCE         "resource"
+#define MD_KEY_RESPONSE         "response"
+#define MD_KEY_REVOKED          "revoked"
 #define MD_KEY_SERIAL           "serial"
 #define MD_KEY_SHA256_FINGERPRINT  "sha256-fingerprint"
+#define MD_KEY_STAPLING         "stapling"
 #define MD_KEY_STATE            "state"
 #define MD_KEY_STATUS           "status"
 #define MD_KEY_STORE            "store"
+#define MD_KEY_SUBPROBLEMS      "subproblems"
 #define MD_KEY_TEMPORARY        "temporary"
 #define MD_KEY_TOKEN            "token"
 #define MD_KEY_TOTAL            "total"
 #define MD_KEY_TRANSITIVE       "transitive"
 #define MD_KEY_TYPE             "type"
+#define MD_KEY_UNKNOWN          "unknown"
+#define MD_KEY_UNTIL            "until"
 #define MD_KEY_URL              "url"
 #define MD_KEY_URI              "uri"
+#define MD_KEY_VALID            "valid"
 #define MD_KEY_VALID_FROM       "valid-from"
-#define MD_KEY_VALID_UNTIL      "valid-until"
 #define MD_KEY_VALUE            "value"
 #define MD_KEY_VERSION          "version"
+#define MD_KEY_WATCHED          "watched"
 #define MD_KEY_WHEN             "when"
 #define MD_KEY_WARN_WINDOW      "warn-window"
-
-#define MD_FN_MD                "md.json"
-#define MD_FN_JOB               "job.json"
-#define MD_FN_PRIVKEY           "privkey.pem"
-#define MD_FN_PUBCERT           "pubcert.pem"
-#define MD_FN_CERT              "cert.pem"
-#define MD_FN_HTTPD_JSON        "httpd.json"
-
-#define MD_FN_FALLBACK_PKEY     "fallback-privkey.pem"
-#define MD_FN_FALLBACK_CERT     "fallback-cert.pem"
 
 /* Check if a string member of a new MD (n) has 
  * a value and if it differs from the old MD o
@@ -260,12 +252,6 @@ md_t *md_get_by_domain(struct apr_array_header_t *mds, const char *domain);
 md_t *md_get_by_dns_overlap(struct apr_array_header_t *mds, const md_t *md);
 
 /**
- * Find the managed domain in the list that, for the given md, 
- * has the same name, or the most number of overlaps in domains
- */
-md_t *md_find_closest_match(struct apr_array_header_t *mds, const md_t *md);
-
-/**
  * Create and empty md record, structures initialized.
  */
 md_t *md_create_empty(apr_pool_t *p);
@@ -301,6 +287,12 @@ int md_is_covered_by_alt_names(const md_t *md, const struct apr_array_header_t* 
 #define LE_ACMEv2_PROD      "https://acme-v02.api.letsencrypt.org/directory"  
 #define LE_ACMEv2_STAGING   "https://acme-staging-v02.api.letsencrypt.org/directory"
 
+
+/**************************************************************************************************/
+/* notifications */
+
+typedef apr_status_t md_job_notify_cb(struct md_job_t *job, const char *reason, 
+                                      struct md_result_t *result, apr_pool_t *p, void *baton);
 
 /**************************************************************************************************/
 /* domain credentials */

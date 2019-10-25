@@ -19,10 +19,11 @@
 
 struct apr_hash_t;
 struct apr_array_header_t;
-struct md_store_t;
 struct md_pkey_t;
 struct md_cert_t;
 struct md_result_t;
+
+#include "md_store.h"
 
 /**
  * A registry for managed domains with a md_store_t as persistence.
@@ -33,10 +34,10 @@ typedef struct md_reg_t md_reg_t;
 /**
  * Create the MD registry, using the pool and store.
  */
-apr_status_t md_reg_create(md_reg_t **preg, apr_pool_t *pm, struct md_store_t *store,
+apr_status_t md_reg_create(md_reg_t **preg, apr_pool_t *pm, md_store_t *store,
                            const char *proxy_url);
 
-struct md_store_t *md_reg_store_get(md_reg_t *reg);
+md_store_t *md_reg_store_get(md_reg_t *reg);
 
 apr_status_t md_reg_set_props(md_reg_t *reg, apr_pool_t *p, int can_http, int can_https);
 
@@ -66,11 +67,6 @@ md_t *md_reg_find_overlap(md_reg_t *reg, const md_t *md, const char **pdomain, a
 md_t *md_reg_get(md_reg_t *reg, const char *name, apr_pool_t *p);
 
 /**
- * Re-compute the state of the MD, given current store contents.
- */
-apr_status_t md_reg_reinit_state(md_reg_t *reg, md_t *md, apr_pool_t *p);
-
-/**
  * Callback invoked for every md in the registry. If 0 is returned, iteration stops.
  */
 typedef int md_reg_do_cb(void *baton, md_reg_t *reg, md_t *md);
@@ -85,21 +81,22 @@ int md_reg_do(md_reg_do_cb *cb, void *baton, md_reg_t *reg, apr_pool_t *p);
 /**
  * Bitmask for fields that are updated.
  */
-#define MD_UPD_DOMAINS       0x0001
-#define MD_UPD_CA_URL        0x0002
-#define MD_UPD_CA_PROTO      0x0004
-#define MD_UPD_CA_ACCOUNT    0x0008
-#define MD_UPD_CONTACTS      0x0010
-#define MD_UPD_AGREEMENT     0x0020
-#define MD_UPD_DRIVE_MODE    0x0080
-#define MD_UPD_RENEW_WINDOW  0x0100
-#define MD_UPD_CA_CHALLENGES 0x0200
-#define MD_UPD_PKEY_SPEC     0x0400
-#define MD_UPD_REQUIRE_HTTPS 0x0800
-#define MD_UPD_TRANSITIVE    0x1000
-#define MD_UPD_MUST_STAPLE   0x2000
-#define MD_UPD_PROTO         0x4000
-#define MD_UPD_WARN_WINDOW   0x8000
+#define MD_UPD_DOMAINS       0x00001
+#define MD_UPD_CA_URL        0x00002
+#define MD_UPD_CA_PROTO      0x00004
+#define MD_UPD_CA_ACCOUNT    0x00008
+#define MD_UPD_CONTACTS      0x00010
+#define MD_UPD_AGREEMENT     0x00020
+#define MD_UPD_DRIVE_MODE    0x00080
+#define MD_UPD_RENEW_WINDOW  0x00100
+#define MD_UPD_CA_CHALLENGES 0x00200
+#define MD_UPD_PKEY_SPEC     0x00400
+#define MD_UPD_REQUIRE_HTTPS 0x00800
+#define MD_UPD_TRANSITIVE    0x01000
+#define MD_UPD_MUST_STAPLE   0x02000
+#define MD_UPD_PROTO         0x04000
+#define MD_UPD_WARN_WINDOW   0x08000
+#define MD_UPD_STAPLING      0x10000
 #define MD_UPD_ALL           0x7FFFFFFF
 
 /**
@@ -107,7 +104,8 @@ int md_reg_do(md_reg_do_cb *cb, void *baton, md_reg_t *reg, apr_pool_t *p);
  * values from the given md, all other values remain unchanged.
  */
 apr_status_t md_reg_update(md_reg_t *reg, apr_pool_t *p, 
-                           const char *name, const md_t *md, int fields);
+                           const char *name, const md_t *md, 
+                           int fields, int check_consistency);
 
 /**
  * Get the chain of public certificates of the managed domain md, starting with the cert
@@ -127,8 +125,13 @@ apr_status_t md_reg_get_cred_files(const char **pkeyfile, const char **pcertfile
 /**
  * Synchronise the give master mds with the store.
  */
-apr_status_t md_reg_sync(md_reg_t *reg, apr_pool_t *p, apr_pool_t *ptemp, 
-                         apr_array_header_t *master_mds);
+apr_status_t md_reg_sync_start(md_reg_t *reg, apr_array_header_t *master_mds, apr_pool_t *p);
+
+/**
+ * Re-compute the state of the MD, given current store contents.
+ */
+apr_status_t md_reg_sync_finish(md_reg_t *reg, md_t *md, apr_pool_t *p, apr_pool_t *ptemp);
+
 
 apr_status_t md_reg_remove(md_reg_t *reg, apr_pool_t *p, const char *name, int archive);
 
@@ -164,6 +167,12 @@ apr_status_t md_reg_freeze_domains(md_reg_t *reg, apr_array_header_t *mds);
 int md_reg_should_renew(md_reg_t *reg, const md_t *md, apr_pool_t *p);
 
 /**
+ * Return the timestamp when the certificate should be renewed. A value of 0
+ * indicates that that renewal is not configured (see renew_mode).
+ */
+apr_time_t md_reg_renew_at(md_reg_t *reg, const md_t *md, apr_pool_t *p);
+
+/**
  * Return if a warning should be issued about the certificate expiration. 
  * This applies the configured warn window to the remaining lifetime of the 
  * current certiciate. If no certificate is present, this returns 0.
@@ -188,17 +197,19 @@ struct md_proto_driver_t {
     struct apr_table_t *env;
 
     md_reg_t *reg;
-    struct md_store_t *store;
+    md_store_t *store;
     const char *proxy_url;
     const md_t *md;
 
     int can_http;
     int can_https;
     int reset;
+    apr_interval_time_t activation_delay;
 };
 
 typedef apr_status_t md_proto_init_cb(md_proto_driver_t *driver, struct md_result_t *result);
 typedef apr_status_t md_proto_renew_cb(md_proto_driver_t *driver, struct md_result_t *result);
+typedef apr_status_t md_proto_init_preload_cb(md_proto_driver_t *driver, struct md_result_t *result);
 typedef apr_status_t md_proto_preload_cb(md_proto_driver_t *driver, 
                                          md_store_group_t group, struct md_result_t *result);
 
@@ -206,6 +217,7 @@ struct md_proto_t {
     const char *protocol;
     md_proto_init_cb *init;
     md_proto_renew_cb *renew;
+    md_proto_init_preload_cb *init_preload;
     md_proto_preload_cb *preload;
 };
 
@@ -239,7 +251,10 @@ apr_status_t md_reg_renew(md_reg_t *reg, const md_t *md,
 apr_status_t md_reg_load_staging(md_reg_t *reg, const md_t *md, struct apr_table_t *env, 
                                  struct md_result_t *result, apr_pool_t *p);
 
-void md_reg_set_renew_window_default(md_reg_t *reg, const md_timeslice_t *renew_window);
-void md_reg_set_warn_window_default(md_reg_t *reg, const md_timeslice_t *warn_window);
+void md_reg_set_renew_window_default(md_reg_t *reg, md_timeslice_t *renew_window);
+void md_reg_set_warn_window_default(md_reg_t *reg, md_timeslice_t *warn_window);
+
+void md_reg_set_notify_cb(md_reg_t *reg, md_job_notify_cb *cb, void *baton);
+struct md_job_t *md_reg_job_make(md_reg_t *reg, const char *mdomain, apr_pool_t *p);
 
 #endif /* mod_md_md_reg_h */
