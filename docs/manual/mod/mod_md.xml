@@ -1144,7 +1144,7 @@ MDMessageCmd /etc/apache/md-message
     <directivesynopsis>
         <name>MDStapleOthers</name>
         <description>Enable stapling for certificates not managed by mod_md.</description>
-        <syntax>MDStaplingOthers on|off</syntax>
+        <syntax>MDStapleOthers on|off</syntax>
         <default>on</default>
         <contextlist>
             <context>server config</context>
