@@ -901,6 +901,13 @@ if (typeof(prettyPrint) !== 'undefined') {
         </xsl:variable>
 
         <xsl:choose>
+        <!-- No link if within the block that describes the directive itself -->
+        <xsl:when test="$in-modulesynopsis and normalize-space(.) = ancestor::directivesynopsis/name">
+                <xsl:if test="@type='section'">&lt;</xsl:if>
+                <xsl:value-of select="."/>
+                <xsl:if test="@type='section'">&gt;</xsl:if>
+                <xsl:message>Removing link to '<xsl:value-of select="."/>'</xsl:message>
+        </xsl:when>
         <xsl:when test="$in-modulesynopsis and normalize-space(@module) = /modulesynopsis/name">
             <a href="#{$lowerdirective}">
                 <xsl:if test="@type='section'">&lt;</xsl:if>
@@ -922,6 +929,17 @@ if (typeof(prettyPrint) !== 'undefined') {
         <xsl:if test="@type='section'">&lt;</xsl:if>
         <xsl:value-of select="."/>
         <xsl:if test="@type='section'">&gt;</xsl:if>
+        <!-- Missing module reference -->
+        <xsl:choose>
+            <!-- within another directive synopsis -->
+            <xsl:when test="normalize-space(.) != ancestor::directivesynopsis/name">
+                <xsl:message>link to '<xsl:value-of select="."/>' directive could be added in directive '<xsl:value-of select="ancestor::directivesynopsis/name"/>'</xsl:message>
+            </xsl:when>
+            <!-- somewhere else (try to find module name to give a hint) -->
+            <xsl:when test="not(ancestor::directivesynopsis/name)">
+                <xsl:message>link to '<xsl:value-of select="."/>' directive could be added in MODULE '<xsl:value-of select="/modulesynopsis/name"/>'</xsl:message>
+            </xsl:when>
+        </xsl:choose>
     </xsl:otherwise>
     </xsl:choose>
 </code>
