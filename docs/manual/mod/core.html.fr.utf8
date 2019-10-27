@@ -4339,20 +4339,21 @@ seulement depuis la version 2.3.3 sous Windows.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Vérifie si la variable d'environnement REDIRECT_URL est
 pleinement qualifiée</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>QualifyRedirectURL ON|OFF</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>QualifyRedirectURL OFF</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>QualifyRedirectURL On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>QualifyRedirectURL Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Noyau httpd</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Directive supportée à partir de la version 2.4.18 du
 serveur HTTP Apache. Jusqu'à la version 2.4.17, le serveur se comportait
-comme si la directive QualifyRedirectURL était définie à ON.</td></tr>
+comme si la directive QualifyRedirectURL était définie à On.</td></tr>
 </table>
     <p>Cette directive permet de s'assurer que le serveur vérifiera que
     la variable d'environnement REDIRECT_URL est bien pleinement
     qualifiée. Par défaut, cette variable contient l'URL textuellement
-    demandée par le client, par exemple "/index.html". Avec <code class="directive"><a href="#qualifyredirecturl on">QualifyRedirectURL ON</a></code>, la même requête
+    demandée par le client, par exemple "/index.html". Avec
+    <code class="directive">QualifyRedirectURL ON</code>, la même requête
     affectera à la variable REDIRECT_URL une valeur du style
     "http://www.example.com/index.html".</p>
     <p>Même si cette directive n'est pas définie, lorsqu'une requête est
@@ -4620,8 +4621,7 @@ CGI</td></tr>
     suivent.</p>
     </div>
 
-    <p>L'option <code>Registry-Strict</code>, apparue avec la version
-    2.0 du serveur HTTP Apache,
+    <p>L'option <code>Registry-Strict</code>
     agit de manière identique à <code>Registry</code>, mais n'utilise
     que la sous-clé <code>Shell\ExecCGI\Command</code>. La présence de
     la clé <code>ExecCGI</code> n'étant pas systématique, Elle doit être
@@ -4917,8 +4917,7 @@ serveur</td></tr>
     on peut être amené à ajouter un tel pied de page.</p>
 
     <p>La valeur par défaut <code>Off</code> supprime la ligne de pied
-    de page (et est ainsi compatible avec le comportement des
-    versions 1.2 et antérieures d'Apache). la valeur <code>On</code>
+    de page. la valeur <code>On</code>
     ajoute simplement une ligne contenant le numéro de version du
     serveur ainsi que le nom du serveur virtuel issu de la directive
     <code class="directive"><a href="#servername">ServerName</a></code>, alors que la valeur
@@ -4926,7 +4925,7 @@ serveur</td></tr>
     l'administrateur du document référencé issu la directive
     <code class="directive"><a href="#serveradmin">ServerAdmin</a></code>.</p>
 
-    <p>Après la version 2.0.44, les détails à propos du numéro de
+    <p>Les détails à propos du numéro de
     version du serveur sont contrôlés à l'aide de la directive
     <code class="directive"><a href="#servertokens">ServerTokens</a></code>.</p>
 
@@ -4990,7 +4989,7 @@ HTTP</td></tr>
     <p>Cette définition s'applique à l'ensemble du serveur et ne peut
     être activée ou désactivée pour tel ou tel serveur virtuel.</p>
 
-    <p>Dans les versions postérieures à 2.0.44, cette directive contrôle
+    <p>Cette directive contrôle
     aussi les informations fournies par la directive <code class="directive"><a href="#serversignature">ServerSignature</a></code>.</p>
 
     <div class="note">Définir <code class="directive">ServerTokens</code> à une
