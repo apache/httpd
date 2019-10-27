@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1866066 -->
+<!-- English Revision: 1868821 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -4765,9 +4765,8 @@ host</context>
     suivent.</p>
     </note>
 
-    <p>L'option <code>Registry-Strict</code>, apparue avec la version
-    2.0 du serveur HTTP Apache,
-    agit de manière identique à <code>Registry</code>, mais n'utilise
+    <p>L'option <code>Registry-Strict</code> agit de manière identique à
+    <code>Registry</code>, mais n'utilise
     que la sous-clé <code>Shell\ExecCGI\Command</code>. La présence de
     la clé <code>ExecCGI</code> n'étant pas systématique, Elle doit être
     définie manuellement dans le registre Windows et évite ainsi tout
@@ -5067,8 +5066,7 @@ host</context>
     on peut être amené à ajouter un tel pied de page.</p>
 
     <p>La valeur par défaut <code>Off</code> supprime la ligne de pied
-    de page (et est ainsi compatible avec le comportement des
-    versions 1.2 et antérieures d'Apache). la valeur <code>On</code>
+    de page. la valeur <code>On</code>
     ajoute simplement une ligne contenant le numéro de version du
     serveur ainsi que le nom du serveur virtuel issu de la directive
     <directive module="core">ServerName</directive>, alors que la valeur
@@ -5076,7 +5074,7 @@ host</context>
     l'administrateur du document référencé issu la directive
     <directive module="core">ServerAdmin</directive>.</p>
 
-    <p>Après la version 2.0.44, les détails à propos du numéro de
+    <p>Les détails à propos du numéro de
     version du serveur sont contrôlés à l'aide de la directive
     <directive module="core">ServerTokens</directive>.</p>
 </usage>
@@ -5136,7 +5134,7 @@ HTTP</description>
     <p>Cette définition s'applique à l'ensemble du serveur et ne peut
     être activée ou désactivée pour tel ou tel serveur virtuel.</p>
 
-    <p>Dans les versions postérieures à 2.0.44, cette directive contrôle
+    <p>Cette directive contrôle
     aussi les informations fournies par la directive <directive
     module="core">ServerSignature</directive>.</p>
 
@@ -5729,22 +5727,22 @@ Apache</compatibility>
 <name>QualifyRedirectURL</name>
 <description>Vérifie si la variable d'environnement REDIRECT_URL est
 pleinement qualifiée</description>
-<syntax>QualifyRedirectURL ON|OFF</syntax>
-<default>QualifyRedirectURL OFF</default>
+<syntax>QualifyRedirectURL On|Off</syntax>
+<default>QualifyRedirectURL Off</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
 <override>FileInfo</override>
 <compatibility>Directive supportée à partir de la version 2.4.18 du
 serveur HTTP Apache. Jusqu'à la version 2.4.17, le serveur se comportait
-comme si la directive QualifyRedirectURL était définie à ON.</compatibility>
+comme si la directive QualifyRedirectURL était définie à On.</compatibility>
 
 <usage>
     <p>Cette directive permet de s'assurer que le serveur vérifiera que
     la variable d'environnement REDIRECT_URL est bien pleinement
     qualifiée. Par défaut, cette variable contient l'URL textuellement
-    demandée par le client, par exemple "/index.html". Avec <directive
-    module="core">QualifyRedirectURL ON</directive>, la même requête
+    demandée par le client, par exemple "/index.html". Avec
+    <directive>QualifyRedirectURL On</directive>, la même requête
     affectera à la variable REDIRECT_URL une valeur du style
     "http://www.example.com/index.html".</p>
     <p>Même si cette directive n'est pas définie, lorsqu'une requête est

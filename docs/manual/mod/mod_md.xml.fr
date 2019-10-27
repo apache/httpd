@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
-<!-- English Revision: 1867013 -->
+<!-- English Revision: 1868506 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -35,17 +35,25 @@
     <summary>
         <p>
 	Ce module permet de gérer les propriétés courantes des domaines pour un
-	ou plusieurs serveurs virtuels. Il a pour principale fonctionnalité
-	l'obtention automatique de certificats via le protocole ACME (<a
+	ou plusieurs serveurs virtuels. Il fournit deux fonctionnalités
+	principales : la première permet la supervision et le renouvellement des
+	certificats https: via le protocole ACME (<a
 	href="https://tools.ietf.org/html/rfc8555">RFC 8555</a>). Le module
-	effectue aussi le renouvellement des certificats avant leur expiration
+	effectue le renouvellement des certificats avant leur expiration
 	afin d'éviter une interruption des services internet. Il est possible de
-	monitorer l'état de tous les domaines gérés par mod_md et de configurer
+	monitorer l'état de tous les certificats gérés par mod_md et de configurer
 	le serveur de façon à ce qu'il envoie des notifications de
 	renouvellement, d'expiration ou d'erreur personnalisées.
-	</p>
-        <p>
-        L'autorité de certification ACME par défaut est <a
+	</p><p>
+	La seconde fonctionnalité principale fournit une implémentation
+	alternative de l'agrafage OCSP, et ceci aussi bien pour les certificats
+	gérés par mod_md que pour les certificats que vous gérez vous-même.
+	Composant nécessaire pour tout site https, l'agrafage OCSP influence la
+	vitesse de chargement des pages et suivant la configuration, la
+	disponibilité de ces dernières. Vous trouverez plus de détails dans la section
+	agrafage ci-dessous.
+        </p><p>
+        L'autorité ACME par défaut pour la gestion des certificats est <a
 	href="https://letsencrypt.org/">Let's Encrypt</a>, mais il est possible
 	de configurer une autre CA si cette dernière supporte le protocole.
         </p>
@@ -269,6 +277,66 @@ MDChallengeDns01 /usr/bin/acme-setup-dns
                 Enfin, la directive <directive
 		module="mod_md">MDCertificateStatus</directive> donne accès au
 		informations à propos du certificat spécifié au format JSON.
+            </p>
+        </note>
+
+	<note><title>Agrafage</title>
+            <p>
+                Si vous voulez commencer par tester l'agrafage pour un seul
+		domaine géré, utilisez cette configuration :
+            </p>
+            <highlight language="config">
+&lt;MDomain mydomain.net>
+  MDStapling on
+&lt;/MDomain>            
+            </highlight>
+            <p>
+                et utilisez 'server-status' et/ou MDMessageCmd pour voir comment
+		tout cela fonctionne. Vous pourrez alors vérifier si
+		l'information d'agrafage est présente, sa durée de validité, son
+		origine et à quel moment elle sera rafraîchie.
+            </p><p>
+                Si tout fonctionne comme vous le souhaitez, vous pouvez définir
+		cette configuration pour tous les certificats ou seulement vos
+		certificats gérés.
+            </p><p>
+                De nombreux sites utilisent l'implémentation d'agrafage
+		existante de mod_ssl depuis des années. Les implémentations par
+		mod-ssl et mod_md présentent deux différences principales :
+            </p>
+            <ol>
+                <li>Lecture des informations à la demande ou de manière planifiée
+		: mod_ssl extrait les informations d'agrafage lorsque le besoin
+		s'en fait sentir, par exemple lors d'une nouvelle connexion. mod_md
+		quant à lui, extrait ces informations au démarrage du serveur et
+		lorsqu'elles ont atteint les deux tiers de leur durée de vie.</li>
+                <li>Conservation des informations en mémoire ou de manière
+		persistante : mod_ssl <em>peut</em> conserver ces informations
+		de manière persistante, mais la plupart des configurations
+		exemples utilisent un cache en mémoire. mod_md quant à lui,
+		stocke systématiquement les informations dans le système de
+		fichiers.</li>
+            </ol>
+            <p>
+                Si par malchance vous redémarrez votre serveur alors que le
+		service OCSP de votre CA est en panne, les utilisateurs ne
+		pourront plus atteindre vos sites. Sans persistance des
+		informations, votre serveur n'est plus en mesure de fournir au
+		client les données nécessaires, et le navigateur client ne peut
+		pas les obtenir lui-même car le service OCSP ne répond pas. 
+            </p><p>
+                Avec l'implémentation de mod_md, l'information d'agrafage est
+		stockée de manière persistante, et elle peut donc être réchargée
+		au démarrage du serveur et être ainsi disponible pour les
+		connexions entrantes. Un jour ou deux avant expiration des
+		informations, mod_md va les renouveler, ce qui permet de faire
+		face à un temps d'indisponibilité du service OCSP assez long.
+            </p><p>
+                Pour conserver une compatibilité ascendante, l'implémentation de
+		mod_ssl n'a pas pu être modifiée en profondeur. Par exemple,
+		mod_ssl est incapable d'ajouter une dépendance à mod_watchdog
+		sans rendre inutilisables de nombreuses configurations
+		existantes qui ne chargent pas ce module.
             </p>
         </note>
 	
@@ -894,27 +962,32 @@ MDRequireHttps permanent
         <usage>
             <p>
 		Cette directive permet de définir les types de négociation
-		utilisés et leur ordre d'exécution pour prouver l'appartenance
-		du domaine et de court-circuiter tout processus de choix ou
-		vérification d'absence de corruption de la part du module. Les
-		noms sont spécifiques au protocole. La version du protocole ACME
-		actuellement implémentée par Let's Encrypt définit trois types
-		de négociation supportés par mod_md. Par défaut, ce dernier
-		tentera d'utiliser le type de négociation basé sur https: sur le
-		port 443, s'il est disponible.
+		utilisés (par ordre de préférences) pour prouver l'appartenance
+		du domaine. Les types de négociation supportés par le module
+		sont 'tls-alpn-01', 'dns-01' et 'http-01'. Le module parcourt
+		toute la configuration du serveur pour déterminer quelles
+		méthodes peuvent être utilisées.
             </p><p>
-                Pour rappel, l'utilisation de cette directive court-circuite le
-		processus de sélection du module. Ainsi, si vous spécifiez la méthode
-		"http-01", le module ne vérifiera pas si le serveur écoute sur
-		le port 80. Il utilisera directement cette méthode avec Let's
-		Encrypt, si ce dernier la propose.
+                Si par exemple le serveur est en écoute sur le port 80, c'est la
+		méthode 'http-01' qui sera disponible. Pour 'dns-01', une
+		commande 'MDChallengeDns01' définie sera requise. La méthode
+		'tls-alpn-01' est décrite ci-dessus dans 'https: Challenges'.
             </p><p>
-                Si vos choix de configuration ne sont pas applicables ici, LE
-		échouera à vérifier votre domaine et rendra la main au bout d'un
-		certain temps. Cette erreur sera consignée dans votre
-		server-status et dans md-status. Vous devrez alors tenter de
-		comprendre pourquoi votre configuration ne fonctionne pas.		
-            </p>
+                Cette sélection automatique fonctionne pour la plupart des
+		configurations. Mais comme Apache est un serveur très puissant
+		avec de nombreuses options de configuration, certains cas
+		pourront poser des problèmes. Par exemple, il peut être en
+		écoute sur plusieurs adresses IP, certaines étant accessibles en
+		https: et d'autres non.
+            </p><p>
+                Si vous définissez 'MDCAChallenges' directement, la sélection
+		automatique est désactivée. A la place, le module va utiliser la
+		liste de méthodes de négociation spécifiée pour dialoguer avec le
+		serveur ACME (un type de négociation doit aussi être proposé par
+		le serveur). Ces méthodes de négociation sont examinées dans
+		l'ordre selon lequel elles sont spécifiées.
+             </p>
+
         </usage>
     </directivesynopsis>
 
@@ -1091,11 +1164,12 @@ MDRequireHttps permanent
         </contextlist>
         <usage>
             <p>
-                Cette directive permet de définir la commande à appeler
-		lorsqu'un des évènements "renewed", "expiring" ou "errored" se
-		produit pour un domaine géré. La commande sera probablement
-		invoquée pour d'autres évènements dans le futur et ignorera les
-		évènements pour lesquels elle n'aura pas été préparée.
+		Cette directive permet de définir la commande à appeler
+		lorsqu'un des évènements "renewed", "installed", "expiring" ou
+		"errored" se produit pour un domaine géré. La commande sera
+		probablement invoquée pour d'autres évènements dans le futur et
+		ignorera les évènements pour lesquels elle n'aura pas été
+		préparée.
             </p><p>
                 Il s'agit d'une version plus souple de la directive
 		<directive module="mod_md">MDNotifyCmd</directive>.
@@ -1115,7 +1189,8 @@ MDMessageCmd /etc/apache/md-message
             </p><p>
                 "errored" n'est pas l'évènement à surveiller en priorité car le
 		renouvellement du certificat est censé se produire suffisammant
-		tôt pour éviter toute interruption de service. 
+		tôt pour éviter toute interruption de service. Cet évènement est
+		signalé au plus une fois par heure.
             </p><p>
                 L'évènement "expiring", quant à lui, doit être pris au sérieux.
 		Il se produit lorsque la valeur de <directive
@@ -1123,7 +1198,20 @@ MDMessageCmd /etc/apache/md-message
 		défaut, cette valeur correspond à 10% de la durée de vie du
 		certificat, donc actuellement pour Let's Encrypt, 9 jours avant
 		expiration du certificat. Le message d'avertissement est répété
-		au plus une fois par jour. 
+		au plus une fois par jour.
+            </p><p>
+                'renewed' indique qu'un nouveau certificat a été obtenu et
+		se trouve dans la zone intermédiaire du magasin MD. Il sera
+		activé au prochain restart/reload du serveur.
+            </p><p>
+                'installed' indique qu'un nouveau certificat a été transféré
+		depuis la zone intermédiaire vers la zone des domaines du
+		magasin MD. Cet évènement se produit lors d'un restart/reload du
+		serveur. A la différence des autres commandes, MDMessageCmd
+		s'exécute avec les permissions de root (sur les systèmes *nix)
+		et a donc accès aux fichiers de certificats (et aux clés). Les
+		certificats nécessaires à d'autres applications ou possédant des
+		formats différents peuvent être traités suite à cet évènement.		
             </p>
         </usage>
     </directivesynopsis>
@@ -1179,6 +1267,163 @@ MDMessageCmd /etc/apache/md-message
             </p>
         </usage>
     </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDCertificateMonitor</name>
+        <description>L'URL d'un moniteur d'enregistrement de certificat.</description>
+        <syntax>MDCertificateMonitor name url</syntax>
+        <default>crt.sh https://crt.sh?q=</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <usage>
+            <p>
+                Cette directive impacte l'interface utilisateur HTML 'server-status' et
+		n'a rien à voir avec le fonctionnement de mod_md proprement dit.
+		Elle permet de définir le lien qui s'affiche sur cette interface
+		pour accéder facilement à un moniteur de certificat. L'empreinte
+		SHA256 du certificat doit être ajoutée à l'URL spécifié.
+            </p><p>
+                Les moniteurs de certificat donnent accès aux enregistrements de
+		la Certificate Transparency (CT) afin de tracer l'utilisation
+		des certificats pour les domaines. Vous pourrez au moins
+		vérifier si Let's Encrypt (ou tout autre CA que vous aurez
+		défini) a bien inscrit votre certificat dans les enregistrements
+		de CT.
+            </p><p>
+                Avertissement : La mise à jour des enregistrements des
+		certificats et leur prise en compte par les moniteurs peut
+		prendre un certain temps. Ce dernier varie en fonction des
+		enregistreurs et des moniteurs. Un nouveau certificat ne sera
+		donc pas connu immédiatement.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDStapling</name>
+        <description>Active l'agrafage pour un ou plusieurs domaines.</description>
+        <syntax>MDStapling on|off</syntax>
+        <default>off</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <usage>
+            <p>
+                mod_md permet l'obtention des informations d'agrafage OCSP.
+		Cette fonctionnalité est une alternative à celle fournie par
+		'mod_ssl'. Elle est désactivée par défaut à des fins de
+		compatibilité ascendante.
+            </p><p>
+                La fonctionnalité peut être activée pour tous les certificats du
+		serveur ou pour un domaine géré seulement, ce qui aura pour effet
+		de remplacer toute configuration d'agrafage au niveau de
+		`mod_ssl` pour ce(s) domaine(s). Lorsqu'elle est désactivée,
+		l'agrafage de 'mod_ssl' se chargera du travail (s'il a été
+		lui-même activé, bien entendu). Ceci permet de basculer de
+		manière graduée d'une implémentation à l'autre.
+            </p><p>
+                L'agrafage fonctionne aussi pour les domaines non gérés par
+		mod_md (voir à ce sujet la directive MDStapleOthers). En fait,
+		l'agrafage OCSP peut très bien être utilisé en l'absence de tout
+		certificat géré via le protocole ACME.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDStapleOthers</name>
+        <description>Active l'agrafage pour les certificats non gérés par
+	mod_md.</description>
+        <syntax>MDStaplingOthers on|off</syntax>
+        <default>on</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <usage>
+            <p>
+                Cette directive n'a d'effet que si `MDStapling` est activée.
+		Elle permet de contrôler si `mod_md` doit aussi fournir les
+		informations d'agrafage pour les certificats qu'il ne gère pas
+		directement (autrement dit pour les certificats non renouvelés
+		via le protocole ACME).
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDStaplingKeepResponse</name>
+        <description>Contrôle la durée au bout de laquelle les anciennes
+	réponses doivent être supprimées.</description>
+        <syntax>MDStaplingKeepResponse duration</syntax>
+        <default>7d</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <usage>
+            <p>
+                Cette directive permet de spécifier la durée au bout de laquelle
+		les données OCSP utilisées pour l'agrafage doivent être
+		supprimées du magasin. Par défaut, ces informations sont
+		supprimées lors d'un restart/reload du serveur si elles ont plus
+		de sept jours. Ceci permet de limiter la taille du magasin
+		lorsque les certificats sont renouvelés et/ou reconfigurés
+		fréquemment.
+            </p><p>
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDStaplingRenewWindow</name>
+        <description>Contrôle l'ancienneté des réponses OCSP au dela de laquelle
+	ces dernières seront renouvelées.</description>
+        <syntax>MDStaplingRenewWindow duration</syntax>
+        <default>33%</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <usage>
+            <p>
+                Si la durée de validité d'un réponse OCSP passe en dessous de
+		'duration', mod_md va tenter de la renouveler.
+            </p><p>
+                La CA à l'origine du certificat fournit aussi en général le
+		service de réponse OCSP et détermine la durée de validité de sa
+		réponse signée à propos de la validité du certificat. Plus
+		longtemps une réponse sera valide, plus longtemps elle pourra
+		être mise en cache, ce qui arrange tout le monde en matière de
+		performances. Plus courte sera la validité d'une réponse, plus
+		vite seront envoyées des révocations de certificats aux clients.
+		Il est donc important de prendre en compte la qualité de
+		service.
+            </p><p>
+                En ajustant la durée de validité des réponses vous-même, vous
+		pouvez contrôler une partie du processus. Si vous spécifiez une
+		durée de vie importante (autrement dit si vous spécifiez un
+		petit pourcentage de validité avant que l'information n'expire),
+		vous assurer un temps de mise en cache maximal, mais une
+		interruption du service OCSP (par exemple un arrêt pour
+		maintenance) aura plus de chance de vous affecter. Si vous
+		spécifiez un pourcentage de temps avant expiration plus
+		important, les mises à jour seront plus fréquentes, ce qui va
+		augmenter la charge de l'infrastructure de serveurs du CA et
+		nécessiter d'avantage de coordination entre les processus
+		enfants de votre propre serveur.
+            </p><p>
+                La valeur par défaut choisie est de 33%, ce qui signifie que la
+		demande de renouvellement interviendra lorsque la durée de vie
+		de la réponse OCSP passera en dessous de 33%. Pour une CA qui
+		fournit des réponses OCSP avec une durée de vie de 3 jours, cela
+		implique 2 jours de mise en cache et 1 jour pour les tentatives
+		de renouvellement. Pour affecter votre domaine, une interruption
+		de service devra donc avoir une durée supérieure à 1 jour.
+            </p><p>
+                Vous pouvez aussi définir de manière absolue la durée de vie
+		restante, par exemple `2d` pour 2 jours. 
+            </p>
+        </usage>
+    </directivesynopsis>    
 
 
 </modulesynopsis>
