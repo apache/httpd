@@ -285,9 +285,9 @@ SessionCookieName session path=/
 
       <example><title>CGI example</title>
       <highlight language="config">
-        AuthFormProvider file
-        ErrorDocument 401 "/cgi-bin/login.cgi"
-        ...
+AuthFormProvider file
+ErrorDocument 401 "/cgi-bin/login.cgi"
+...
         </highlight>
       </example>
 
@@ -412,7 +412,7 @@ lower level modules</description>
 <name>AuthFormUsername</name>
 <description>The name of a form field carrying the login username</description>
 <syntax>AuthFormUsername <var>fieldname</var></syntax>
-<default>httpd_username</default>
+<default>AuthFormUsername httpd_username</default>
 <contextlist><context>directory</context>
 </contextlist>
 <compatibility>Available in Apache HTTP Server 2.3.0 and later</compatibility>
@@ -428,7 +428,7 @@ lower level modules</description>
 <name>AuthFormPassword</name>
 <description>The name of a form field carrying the login password</description>
 <syntax>AuthFormPassword <var>fieldname</var></syntax>
-<default>httpd_password</default>
+<default>AuthFormPassword httpd_password</default>
 <contextlist><context>directory</context>
 </contextlist>
 <compatibility>Available in Apache HTTP Server 2.3.0 and later</compatibility>
@@ -444,7 +444,7 @@ lower level modules</description>
 <name>AuthFormLocation</name>
 <description>The name of a form field carrying a URL to redirect to on successful login</description>
 <syntax>AuthFormLocation <var>fieldname</var></syntax>
-<default>httpd_location</default>
+<default>AuthFormLocation httpd_location</default>
 <contextlist><context>directory</context>
 </contextlist>
 <compatibility>Available in Apache HTTP Server 2.3.0 and later</compatibility>
@@ -460,14 +460,14 @@ lower level modules</description>
 <name>AuthFormMethod</name>
 <description>The name of a form field carrying the method of the request to attempt on successful login</description>
 <syntax>AuthFormMethod <var>fieldname</var></syntax>
-<default>httpd_method</default>
+<default>AuthFormMethod httpd_method</default>
 <contextlist><context>directory</context>
 </contextlist>
 <compatibility>Available in Apache HTTP Server 2.3.0 and later</compatibility>
 
 <usage>
     <p>The <directive module="mod_auth_form">AuthFormMethod</directive> directive specifies
-    the name of an HTML field which, if present, will contain the method of the request to
+    the name of an HTML field which, if present, will contain the method of the request
     to submit should login be successful.</p>
 
     <p>By populating the form with fields described by
@@ -483,13 +483,13 @@ lower level modules</description>
 <name>AuthFormMimetype</name>
 <description>The name of a form field carrying the mimetype of the body of the request to attempt on successful login</description>
 <syntax>AuthFormMimetype <var>fieldname</var></syntax>
-<default>httpd_mimetype</default>
+<default>AuthFormMimetype httpd_mimetype</default>
 <contextlist><context>directory</context>
 </contextlist>
 <compatibility>Available in Apache HTTP Server 2.3.0 and later</compatibility>
 
 <usage>
-    <p>The <directive module="mod_auth_form">AuthFormMethod</directive> directive specifies
+    <p>The <directive module="mod_auth_form">AuthFormMimetype</directive> directive specifies
     the name of an HTML field which, if present, will contain the
     mimetype of the request to submit should login be successful.</p>
 
@@ -506,14 +506,14 @@ lower level modules</description>
 <name>AuthFormBody</name>
 <description>The name of a form field carrying the body of the request to attempt on successful login</description>
 <syntax>AuthFormBody <var>fieldname</var></syntax>
-<default>httpd_body</default>
+<default>AuthFormBody httpd_body</default>
 <contextlist><context>directory</context>
 </contextlist>
 <compatibility>Available in Apache HTTP Server 2.3.0 and later</compatibility>
 
 <usage>
-    <p>The <directive module="mod_auth_form">AuthFormMethod</directive> directive specifies
-    the name of an HTML field which, if present, will contain the method of the request to
+    <p>The <directive module="mod_auth_form">AuthFormBody</directive> directive specifies
+    the name of an HTML field which, if present, will contain the body of the request
     to submit should login be successful.</p>
 
     <p>By populating the form with fields described by
@@ -529,7 +529,7 @@ lower level modules</description>
 <name>AuthFormSize</name>
 <description>The largest size of the form in bytes that will be parsed for the login details</description>
 <syntax>AuthFormSize <var>size</var></syntax>
-<default>8192</default>
+<default>AuthFormSize 8192</default>
 <contextlist><context>directory</context>
 </contextlist>
 <compatibility>Available in Apache HTTP Server 2.3.0 and later</compatibility>
@@ -601,7 +601,7 @@ parser has been added in 2.4.4.</compatibility>
 <directivesynopsis>
 <name>AuthFormFakeBasicAuth</name>
 <description>Fake a Basic Authentication header</description>
-<syntax>AuthFormFakeBasicAuth <var>On|Off</var></syntax>
+<syntax>AuthFormFakeBasicAuth On|Off</syntax>
 <default>AuthFormFakeBasicAuth Off</default>
 <contextlist><context>directory</context>
 </contextlist>
@@ -658,7 +658,7 @@ parser has been added in 2.4.4.</compatibility>
 <directivesynopsis>
 <name>AuthFormDisableNoStore</name>
 <description>Disable the CacheControl no-store header on the login page</description>
-<syntax>AuthFormDisableNoStore <var>On|Off</var></syntax>
+<syntax>AuthFormDisableNoStore On|Off</syntax>
 <default>AuthFormDisableNoStore Off</default>
 <contextlist><context>directory</context>
 </contextlist>
