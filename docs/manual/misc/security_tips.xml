@@ -454,7 +454,7 @@ UserDir disabled root
     on how directives are merged.</p>
 
     <p> For modules that don't implement any merging logic, such as
-    <directive>mod_access_compat</directive>, the behavior in later sections
+    <module>mod_access_compat</module>, the behavior in later sections
     depends on whether the later section has any directives
     from the module.  The configuration is inherited until a change is made,
     at which point the configuration is <em>replaced</em> and not merged.</p>
