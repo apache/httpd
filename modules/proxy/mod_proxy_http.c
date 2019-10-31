@@ -303,18 +303,16 @@ static int stream_reqbody_read(proxy_http_req_t *req, apr_bucket_brigade *bb,
     return OK;
 }
 
-static int stream_reqbody(proxy_http_req_t *req)
+static int stream_reqbody(proxy_http_req_t *req, rb_methods rb_method)
 {
     request_rec *r = req->r;
     int seen_eos = 0, rv = OK;
     apr_size_t hdr_len;
     char chunk_hdr[20];  /* must be here due to transient bucket. */
-    conn_rec *origin = req->origin;
     proxy_conn_rec *p_conn = req->backend;
     apr_bucket_alloc_t *bucket_alloc = req->bucket_alloc;
     apr_bucket_brigade *header_brigade = req->header_brigade;
     apr_bucket_brigade *input_brigade = req->input_brigade;
-    rb_methods rb_method = req->rb_method;
     apr_off_t bytes, bytes_streamed = 0;
     apr_bucket *e;
 
@@ -328,7 +326,7 @@ static int stream_reqbody(proxy_http_req_t *req)
         }
 
         if (!APR_BRIGADE_EMPTY(input_brigade)) {
-            /* If this brigade contains EOS, remove it and be done. */
+            /* If this brigade contains EOS, either stop or remove it. */
             if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(input_brigade))) {
                 seen_eos = 1;
 
@@ -370,8 +368,7 @@ static int stream_reqbody(proxy_http_req_t *req)
                     APR_BRIGADE_INSERT_TAIL(input_brigade, e);
                 }
             }
-            else if (rb_method == RB_STREAM_CL
-                     && bytes_streamed > req->cl_val) {
+            else if (bytes_streamed > req->cl_val) {
                 /* C-L < bytes streamed?!?
                  * We will error out after the body is completely
                  * consumed, but we can't stream more bytes at the
@@ -403,7 +400,7 @@ static int stream_reqbody(proxy_http_req_t *req)
         APR_BRIGADE_PREPEND(input_brigade, header_brigade);
 
         /* Flush here on EOS because we won't stream_reqbody_read() again */
-        rv = ap_proxy_pass_brigade(bucket_alloc, r, p_conn, origin,
+        rv = ap_proxy_pass_brigade(bucket_alloc, r, p_conn, req->origin,
                                    input_brigade, seen_eos);
         if (rv != OK) {
             return rv;
@@ -465,6 +462,10 @@ static int spool_reqbody_cl(proxy_http_req_t *req, apr_off_t *bytes_spooled)
         /* If this brigade contains EOS, either stop or remove it. */
         if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(input_brigade))) {
             seen_eos = 1;
+
+            /* We can't pass this EOS to the output_filters. */
+            e = APR_BRIGADE_LAST(input_brigade);
+            apr_bucket_delete(e);
         }
 
         apr_brigade_length(input_brigade, 1, &bytes);
@@ -858,19 +859,33 @@ static int ap_proxy_http_request(proxy_http_req_t *req)
 {
     int rv;
     request_rec *r = req->r;
+    apr_bucket_alloc_t *bucket_alloc = req->bucket_alloc;
+    apr_bucket_brigade *header_brigade = req->header_brigade;
+    apr_bucket_brigade *input_brigade = req->input_brigade;
 
     /* send the request header/body, if any. */
     switch (req->rb_method) {
-    case RB_SPOOL_CL:
     case RB_STREAM_CL:
     case RB_STREAM_CHUNKED:
         if (req->do_100_continue) {
-            rv = ap_proxy_pass_brigade(req->bucket_alloc, r, req->backend,
-                                       req->origin, req->header_brigade, 1);
+            rv = ap_proxy_pass_brigade(bucket_alloc, r, req->backend,
+                                       req->origin, header_brigade, 1);
         }
         else {
-            rv = stream_reqbody(req);
+            rv = stream_reqbody(req, req->rb_method);
         }
+        break;
+
+    case RB_SPOOL_CL:
+        /* Prefetch has built the header and spooled the whole body;
+         * if we don't expect 100-continue we can flush both all at once,
+         * otherwise flush the header only.
+         */
+        if (!req->do_100_continue) {
+            APR_BRIGADE_CONCAT(header_brigade, input_brigade);
+        }
+        rv = ap_proxy_pass_brigade(bucket_alloc, r, req->backend,
+                                   req->origin, header_brigade, 1);
         break;
 
     default:
@@ -1575,10 +1590,15 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
 
                 /* Send the request body (fully). */
                 switch(req->rb_method) {
-                case RB_SPOOL_CL:
                 case RB_STREAM_CL:
                 case RB_STREAM_CHUNKED:
-                    status = stream_reqbody(req);
+                    status = stream_reqbody(req, req->rb_method);
+                    break;
+                case RB_SPOOL_CL:
+                    /* Prefetch has spooled the whole body, flush it. */
+                    status = ap_proxy_pass_brigade(req->bucket_alloc, r,
+                                                   backend, origin,
+                                                   req->input_brigade, 1);
                     break;
                 default:
                     /* Shouldn't happen */
