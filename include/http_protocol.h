@@ -82,6 +82,30 @@ AP_DECLARE(void) ap_get_mime_headers(request_rec *r);
 AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r,
                                           apr_bucket_brigade *bb);
 
+/**
+ * @struct ap_mime_headers_ctx
+ * @brief  Context for ap_get_mime_headers_ex()
+ */
+typedef struct ap_mime_headers_ctx ap_mime_headers_ctx_t;
+struct ap_mime_headers_ctx {
+    int limit_req_fields;
+    int limit_req_fieldsize;
+    apr_table_t *headers;
+    apr_table_t *notes;
+    apr_bucket_brigade *bb;
+    unsigned int strict:1,
+                 compress:1;
+};
+
+/**
+ * Generic version of ap_get_mime_headers_core() that takes a filter as
+ * parameter and options regarding limits to apply.
+ * @param f The filter to read from
+ * @param ctx The context/options (@see ap_mime_headers_ctx)
+ */
+AP_DECLARE(int) ap_get_mime_headers_ex(request_rec *r, ap_filter_t *f,
+                                       ap_mime_headers_ctx_t *ctx);
+
 /* Finish up stuff after a request */
 
 /**
