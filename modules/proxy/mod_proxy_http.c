@@ -650,7 +650,18 @@ static int ap_proxy_http_prefetch(proxy_http_req_t *req,
      */
     temp_brigade = apr_brigade_create(p, bucket_alloc);
     block = req->prefetch_nonblocking ? APR_NONBLOCK_READ : APR_BLOCK_READ;
-    do {
+
+    /* Account for saved input, if any. */
+    apr_brigade_length(input_brigade, 0, &bytes_read);
+
+    /* Ensure we don't hit a wall where we have a buffer too small
+     * for ap_get_brigade's filters to fetch us another bucket,
+     * surrender once we hit 80 bytes less than MAX_MEM_SPOOL
+     * (an arbitrary value).
+     */
+    while (bytes_read < MAX_MEM_SPOOL - 80
+           && (APR_BRIGADE_EMPTY(input_brigade)
+               || !APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(input_brigade)))) {
         status = ap_get_brigade(r->input_filters, temp_brigade,
                                 AP_MODE_READBYTES, block,
                                 MAX_MEM_SPOOL - bytes_read);
@@ -704,15 +715,7 @@ static int ap_proxy_http_prefetch(proxy_http_req_t *req,
                           c->client_ip, c->remote_host ? c->remote_host: "");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
-
-    /* Ensure we don't hit a wall where we have a buffer too small
-     * for ap_get_brigade's filters to fetch us another bucket,
-     * surrender once we hit 80 bytes less than MAX_MEM_SPOOL
-     * (an arbitrary value.)
-     */
-    } while ((bytes_read < MAX_MEM_SPOOL - 80)
-              && !APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(input_brigade))
-              && !req->prefetch_nonblocking);
+    }
 
     /* Use chunked request body encoding or send a content-length body?
      *
@@ -1972,6 +1975,7 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
     const char *u;
     proxy_http_req_t *req = NULL;
     proxy_conn_rec *backend = NULL;
+    apr_bucket_brigade *input_brigade = NULL;
     int is_ssl = 0;
     conn_rec *c = r->connection;
     proxy_dir_conf *dconf;
@@ -2037,8 +2041,20 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
 
     dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
 
+    /* We possibly reuse input data prefetched in previous call(s), e.g. for a
+     * balancer fallback scenario, and in this case the 100 continue settings
+     * should be consistent between balancer members. If not, we need to ignore
+     * Proxy100Continue on=>off once we tried to prefetch already, otherwise
+     * the HTTP_IN filter won't send 100 Continue for us anymore, and we might
+     * deadlock with the client waiting for each other. Note that off=>on is
+     * not an issue because in this case r->expecting_100 is false (the 100
+     * Continue is out already), but we make sure that prefetch will be
+     * nonblocking to avoid passing more time there. 
+     */
+    apr_pool_userdata_get((void **)&input_brigade, "proxy-req-input", p);
+
     /* Should we handle end-to-end or ping 100-continue? */
-    if ((r->expecting_100 && dconf->forward_100_continue)
+    if ((r->expecting_100 && (dconf->forward_100_continue || input_brigade))
             || PROXY_DO_100_CONTINUE(worker, r)) {
         /* We need to reset r->expecting_100 or prefetching will cause
          * ap_http_filter() to send "100 Continue" response by itself. So
@@ -2055,7 +2071,8 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
     /* Should we block while prefetching the body or try nonblocking and flush
      * data to the backend ASAP?
      */
-    else if (apr_table_get(r->subprocess_env, "proxy-prefetch-nonblocking")) {
+    else if (input_brigade || apr_table_get(r->subprocess_env,
+                                            "proxy-prefetch-nonblocking")) {
         req->prefetch_nonblocking = 1;
     }
 
@@ -2080,6 +2097,17 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
                                             sizeof(req->server_portstr))))
         goto cleanup;
 
+    /* The header is always (re-)built since it depends on worker settings,
+     * but the body can be fetched only once (even partially), so it's saved
+     * in between proxy_http_handler() calls should we come back here.
+     */
+    req->header_brigade = apr_brigade_create(p, req->bucket_alloc);
+    if (input_brigade == NULL) {
+        input_brigade = apr_brigade_create(p, req->bucket_alloc);
+        apr_pool_userdata_setn(input_brigade, "proxy-req-input", NULL, p);
+    }
+    req->input_brigade = input_brigade;
+
     /* Prefetch (nonlocking) the request body so to increase the chance to get
      * the whole (or enough) body and determine Content-Length vs chunked or
      * spooled. By doing this before connecting or reusing the backend, we want
@@ -2090,8 +2118,6 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
      * to reduce to the minimum the unavoidable local is_socket_connected() vs
      * remote keepalive race condition.
      */
-    req->input_brigade = apr_brigade_create(p, req->bucket_alloc);
-    req->header_brigade = apr_brigade_create(p, req->bucket_alloc);
     if ((status = ap_proxy_http_prefetch(req, uri, locurl)) != OK)
         goto cleanup;
 

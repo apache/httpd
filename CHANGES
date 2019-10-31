@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_proxy_http: Fix the forwarding of requests with content body when a
+     balancer member is unavailable; the retry on the next member was issued
+     with an empty body (regression introduced in 2.4.41).  [Yann Ylavic]
+
   *) mod_ssl: negotiate the TLS protocol version per name based vhost
      configuration, when linked with OpenSSL-1.1.1 or later. The base vhost's
      SSLProtocol (from the first vhost declared on the IP:port) is now only
