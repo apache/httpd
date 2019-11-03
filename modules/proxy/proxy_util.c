@@ -4132,6 +4132,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_transfer_between_connections(
                             APR_NONBLOCK_READ, bsize);
         if (rv == APR_SUCCESS) {
             if (c_o->aborted) {
+                apr_brigade_cleanup(bb_i);
                 return APR_EPIPE;
             }
             if (APR_BRIGADE_EMPTY(bb_i)) {
@@ -4172,7 +4173,9 @@ PROXY_DECLARE(apr_status_t) ap_proxy_transfer_between_connections(
                               "error on %s - ap_pass_brigade",
                               name);
             }
-        } else if (!APR_STATUS_IS_EAGAIN(rv) && !APR_STATUS_IS_EOF(rv)) {
+            apr_brigade_cleanup(bb_o);
+        }
+        else if (!APR_STATUS_IS_EAGAIN(rv) && !APR_STATUS_IS_EOF(rv)) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, APLOGNO(03308)
                           "ap_proxy_transfer_between_connections: "
                           "error on %s - ap_get_brigade",
@@ -4182,7 +4185,9 @@ PROXY_DECLARE(apr_status_t) ap_proxy_transfer_between_connections(
 
     if (after) {
         ap_fflush(c_o->output_filters, bb_o);
+        apr_brigade_cleanup(bb_o);
     }
+    apr_brigade_cleanup(bb_i);
 
     ap_log_rerror(APLOG_MARK, APLOG_TRACE2, rv, r,
                   "ap_proxy_transfer_between_connections complete");
@@ -4192,6 +4197,193 @@ PROXY_DECLARE(apr_status_t) ap_proxy_transfer_between_connections(
     }
 
     return rv;
+}
+
+PROXY_DECLARE(apr_status_t) ap_proxy_tunnel_create(proxy_tunnel_rec **ptunnel,
+                                                   request_rec *r,
+                                                   conn_rec *origin)
+{
+    apr_status_t rv;
+    apr_pollfd_t *pfds;
+    conn_rec *c = r->connection;
+    proxy_tunnel_rec *tunnel;
+
+    *ptunnel = NULL;
+
+    tunnel = apr_pcalloc(r->pool, sizeof(*tunnel));
+
+    tunnel->r = r;
+    tunnel->origin = origin;
+    tunnel->bb_i = apr_brigade_create(r->pool,
+                                      c->bucket_alloc);
+    tunnel->bb_o = apr_brigade_create(origin->pool,
+                                      origin->bucket_alloc);
+    
+    tunnel->timeout = -1;
+    rv = apr_pollset_create(&tunnel->pollset, 2, r->pool,
+                            APR_POLLSET_NOCOPY);
+    if (rv != APR_SUCCESS) {
+        return rv;
+    }
+
+    tunnel->pfds = apr_array_make(r->pool, 2, sizeof(apr_pollfd_t));
+    apr_array_push(tunnel->pfds); /* pfds[0] */
+    apr_array_push(tunnel->pfds); /* pfds[1] */
+
+    pfds = &APR_ARRAY_IDX(tunnel->pfds, 0, apr_pollfd_t);
+    pfds[0].desc.s = ap_get_conn_socket(c);
+    pfds[1].desc.s = ap_get_conn_socket(origin);
+    pfds[0].desc_type = pfds[1].desc_type = APR_POLL_SOCKET;
+    pfds[0].reqevents = pfds[1].reqevents = APR_POLLIN | APR_POLLHUP;
+    pfds[0].p = pfds[1].p = r->pool;
+
+    /* The input/output filter stacks should contain connection filters only */
+    r->output_filters = c->output_filters;
+    r->proto_output_filters = c->output_filters;
+    r->input_filters = c->input_filters;
+    r->proto_input_filters = c->input_filters;
+
+    c->keepalive = AP_CONN_CLOSE;
+    origin->keepalive = AP_CONN_CLOSE;
+
+    *ptunnel = tunnel;
+    return APR_SUCCESS;
+}
+
+PROXY_DECLARE(apr_status_t) ap_proxy_tunnel_run(proxy_tunnel_rec *tunnel)
+{
+    apr_status_t rv;
+    request_rec *r = tunnel->r;
+    conn_rec *c_i = r->connection;
+    conn_rec *c_o = tunnel->origin;
+    apr_socket_t *sock_i = ap_get_conn_socket(c_i);
+    apr_socket_t *sock_o = ap_get_conn_socket(c_o);
+    apr_interval_time_t timeout = tunnel->timeout >= 0 ? tunnel->timeout : -1;
+    apr_pollfd_t *pfds = &APR_ARRAY_IDX(tunnel->pfds, 0, apr_pollfd_t);
+    apr_pollset_t *pollset = tunnel->pollset;
+    const apr_pollfd_t *signalled;
+    apr_int32_t pollcnt, pi;
+    int done = 0;
+
+    AP_DEBUG_ASSERT(tunnel->pfds->nelts == 2);
+    AP_DEBUG_ASSERT(pfds[0].desc.s == sock_i);
+    AP_DEBUG_ASSERT(pfds[1].desc.s == sock_o);
+
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(10212)
+                  "proxy: tunnel: running (timeout %" APR_TIME_T_FMT "."
+                                                  "%" APR_TIME_T_FMT ")",
+                  timeout > 0 ? apr_time_sec(timeout) : timeout,
+                  timeout > 0 ? timeout % APR_USEC_PER_SEC : 0);
+
+#if 0
+    apr_socket_opt_set(sock_i, APR_SO_NONBLOCK, 1);
+    apr_socket_opt_set(sock_i, APR_SO_NONBLOCK, 1);
+    apr_socket_opt_set(sock_o, APR_SO_KEEPALIVE, 1);
+    apr_socket_opt_set(sock_o, APR_SO_KEEPALIVE, 1);
+#endif
+
+    apr_pollset_add(pollset, &pfds[0]);
+    apr_pollset_add(pollset, &pfds[1]);
+
+    do { /* Loop until done (one side closes the connection, or an error) */
+        rv = apr_pollset_poll(tunnel->pollset, timeout, &pollcnt, &signalled);
+        if (rv != APR_SUCCESS) {
+            if (APR_STATUS_IS_EINTR(rv)) {
+                continue;
+            }
+
+            apr_pollset_remove(pollset, &pfds[1]);
+            apr_pollset_remove(pollset, &pfds[0]);
+
+            if (APR_STATUS_IS_TIMEUP(rv)) {
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r, APLOGNO(10213)
+                              "proxy: tunnel: woken up, i=%d", (int)pollcnt);
+
+                return HTTP_GATEWAY_TIME_OUT;
+            }
+
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(10214)
+                          "proxy: tunnel: polling failed");
+            return HTTP_INTERNAL_SERVER_ERROR;
+        }
+
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r, APLOGNO(10215)
+                      "proxy: tunnel: woken up, i=%d", (int)pollcnt);
+
+        for (pi = 0; pi < pollcnt; pi++) {
+            const apr_pollfd_t *cur = &signalled[pi];
+            apr_int16_t pollevent = cur->rtnevents;
+
+            if (cur->desc.s == sock_o) {
+                if (pollevent & (APR_POLLIN | APR_POLLHUP)) {
+                    ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r, APLOGNO(10216)
+                                  "proxy: tunnel: backend was readable");
+                    rv = ap_proxy_transfer_between_connections(r, c_o, c_i,
+                                                               tunnel->bb_o,
+                                                               tunnel->bb_i,
+                                                               "backend",
+                                                               &tunnel->replied,
+                                                               AP_IOBUFSIZE,
+                                                               0);
+                    done |= (rv != APR_SUCCESS);
+                }
+                else if (pollevent & APR_POLLERR) {
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10217)
+                            "proxy: tunnel: error on backend connection");
+                    c_o->aborted = 1;
+                    done = 1;
+                }
+                else { 
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10218)
+                            "proxy: tunnel: unknown event %d on backend connection",
+                            (int)pollevent);
+                    done = 1;
+                }
+            }
+            else if (cur->desc.s == sock_i) {
+                if (pollevent & (APR_POLLIN | APR_POLLHUP)) {
+                    ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r, APLOGNO(10219)
+                                  "proxy: tunnel: client was readable");
+                    rv = ap_proxy_transfer_between_connections(r, c_i, c_o,
+                                                               tunnel->bb_i,
+                                                               tunnel->bb_o,
+                                                               "client", NULL,
+                                                               AP_IOBUFSIZE,
+                                                               0);
+                    done |= (rv != APR_SUCCESS);
+                }
+                else if (pollevent & APR_POLLERR) {
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10220)
+                                  "proxy: tunnel: error on client connection");
+                    c_i->aborted = 1;
+                    done = 1;
+                }
+                else { 
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10221)
+                            "proxy: tunnel: unknown event %d on client connection",
+                            (int)pollevent);
+                    done = 1;
+                }
+            }
+            else {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10222)
+                              "proxy: tunnel: unknown socket in pollset");
+                done = 1;
+            }
+        }
+    } while (!done);
+
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(10223)
+                  "proxy: tunnel: finished");
+
+    apr_pollset_remove(pollset, &pfds[1]);
+    apr_pollset_remove(pollset, &pfds[0]);
+
+    if (!tunnel->replied) {
+        return HTTP_BAD_GATEWAY;
+    }
+
+    return OK;
 }
 
 PROXY_DECLARE (const char *) ap_proxy_show_hcmethod(hcmethod_t method)

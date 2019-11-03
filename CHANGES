@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.47
 
+  *) mod_proxy: Put mod_proxy_{connect,wstunnel} tunneling code in common in
+     proxy_util.  [Yann Ylavic]
+
   *) mod_proxy: Allow ProxyErrorOverride to be restricted to specific status 
      codes.  PR63628. [Martin Drößler <mail martindroessler.de>]
 

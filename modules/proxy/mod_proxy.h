@@ -1203,6 +1203,40 @@ PROXY_DECLARE(int) ap_proxy_pass_brigade(apr_bucket_alloc_t *bucket_alloc,
                                          conn_rec *origin, apr_bucket_brigade *bb,
                                          int flush);
 
+typedef struct {
+    request_rec *r;
+    conn_rec *origin;
+    apr_pollset_t *pollset;
+    apr_array_header_t *pfds;
+    apr_interval_time_t timeout;
+    apr_bucket_brigade *bb_i;
+    apr_bucket_brigade *bb_o;
+    int replied;
+} proxy_tunnel_rec;
+
+/**
+ * Create a tunnel, to be activated by ap_proxy_tunnel_run().
+ * @param tunnel   tunnel created
+ * @param r        client request
+ * @param origin   backend connection
+ * @return         APR_SUCCESS or error status
+ */
+PROXY_DECLARE(apr_status_t) ap_proxy_tunnel_create(proxy_tunnel_rec **tunnel,
+                                                   request_rec *r,
+                                                   conn_rec *origin);
+
+/**
+ * Forward anything from either side of the tunnel to the other,
+ * until one end aborts or a polling timeout/error occurs.
+ * @param tunnel  tunnel created
+ * @return        OK: closed/aborted on one side,
+ *                HTTP_GATEWAY_TIME_OUT: polling timeout,
+ *                HTTP_INTERNAL_SERVER_ERROR: polling error,
+ *                HTTP_BAD_GATEWAY: no response from backend, ever,
+ *                                  so client may expect one still.
+ */
+PROXY_DECLARE(int) ap_proxy_tunnel_run(proxy_tunnel_rec *tunnel);
+
 /**
  * Clear the headers referenced by the Connection header from the given
  * table, and remove the Connection header.
