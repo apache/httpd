@@ -615,6 +615,8 @@
  * 20190312.3 (2.5.1-dev)  Add forward_100_continue{,_set} to proxy_dir_conf
  * 20190312.4 (2.5.1-dev)  Add add dns_pool to proxy_conn_pool and define
  *                         AP_VOLATILIZE_T.
+ * 20190312.5 (2.5.1-dev)  Add proxy_tunnel_rec, ap_proxy_tunnel_create()
+ *                         and ap_proxy_tunnel_run() to proxy_util.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -622,7 +624,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20190312
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 4                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 5                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
