@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.47
 
+  *) mod_proxy: Put mod_proxy_{connect,wstunnel} tunneling code in common in
+     proxy_util.  [Yann Ylavic]
+
   *) core: Ensure that aborted connections are logged as such. PR 62823
      [Arnaud Grandville <contact@grandville.net>]
 
