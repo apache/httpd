@@ -530,8 +530,8 @@ static apr_status_t acme_driver_init(md_proto_driver_t *d, md_result_t *result)
     }
     else {
         /* free to chose. Add all we support and see what we get offered */
-        APR_ARRAY_PUSH(ad->ca_challenges, const char*) = MD_AUTHZ_TYPE_HTTP01;
         APR_ARRAY_PUSH(ad->ca_challenges, const char*) = MD_AUTHZ_TYPE_TLSALPN01;
+        APR_ARRAY_PUSH(ad->ca_challenges, const char*) = MD_AUTHZ_TYPE_HTTP01;
         APR_ARRAY_PUSH(ad->ca_challenges, const char*) = MD_AUTHZ_TYPE_DNS01;
 
         if (!d->can_http && !d->can_https 

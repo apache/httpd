@@ -1,5 +1,15 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
+   
+  *) mod_md v2.2.3: 
+     - Configuring MDCAChallenges replaces any previous existing challenge configuration. It
+       had been additive before which was not the intended behaviour. [@mkauf]
+     - Fixing order of ACME challenges used when nothing else configured. Code now behaves as
+       documented for `MDCAChallenges`. Fixes #156. Thanks again to @mkauf for finding this.
+     - Fixing a potential, low memory null pointer dereference [thanks to @uhliarik].
+     - Fixing an incompatibility with a change in libcurl v7.66.0 that added unwanted
+       "transfer-encoding" to POST requests. This failed in directy communication with
+       Let's Encrypt boulder server. Thanks to @mkauf for finding and fixing. [Stefan Eissing]
 
   *) mod_proxy: Put mod_proxy_{connect,wstunnel} tunneling code in common in
      proxy_util.  [Yann Ylavic]
