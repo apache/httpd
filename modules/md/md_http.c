@@ -207,19 +207,8 @@ void md_http_set_on_response_cb(md_http_request_t *req, md_http_response_cb *cb,
     req->cb.on_response_data = baton;
 }
 
-static void req_init_cl(md_http_request_t *req)
-{
-    if (req->body_len == 0 && apr_strnatcasecmp("GET", req->method)) {
-        apr_table_setn(req->headers, "Content-Length", "0");
-    }
-    else if (req->body_len > 0) {
-        apr_table_setn(req->headers, "Content-Length", apr_off_t_toa(req->pool, req->body_len));
-    }
-}
-
 apr_status_t md_http_perform(md_http_request_t *req)
 {
-    req_init_cl(req);
     return req->http->impl->perform(req);
 }
 
@@ -232,11 +221,8 @@ static apr_status_t proxy_nextreq(md_http_request_t **preq, void *baton,
                                       md_http_t *http, int in_flight)
 {
     nextreq_proxy_t *proxy = baton;
-    apr_status_t rv;
     
-    rv = proxy->nextreq(preq, proxy->baton, http, in_flight);
-    if (APR_SUCCESS == rv) req_init_cl(*preq);
-    return rv;
+    return proxy->nextreq(preq, proxy->baton, http, in_flight);
 }
 
 apr_status_t md_http_multi_perform(md_http_t *http, md_http_next_req *nextreq, void *baton)

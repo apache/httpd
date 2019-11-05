@@ -294,6 +294,12 @@ static apr_status_t internals_setup(md_http_request_t *req)
         curl_easy_setopt(curl, CURLOPT_LOW_SPEED_TIME, timeout_sec(req->timeout.stalled));
     }
     
+    if (req->body_len >= 0) {
+        /* set the Content-Length */
+        curl_easy_setopt(curl, CURLOPT_INFILESIZE_LARGE, (curl_off_t)req->body_len);
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE_LARGE, (curl_off_t)req->body_len);
+    }
+    
     if (req->user_agent) {
         curl_easy_setopt(curl, CURLOPT_USERAGENT, req->user_agent);
     }

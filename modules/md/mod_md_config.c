@@ -714,7 +714,10 @@ static const char *md_config_set_cha_tyes(cmd_parms *cmd, void *dc,
     pcha = &config->ca_challenges; 
     
     ca_challenges = *pcha;
-    if (!ca_challenges) {
+    if (ca_challenges) {
+        apr_array_clear(ca_challenges);
+    }
+    else {
         *pcha = ca_challenges = apr_array_make(cmd->pool, 5, sizeof(const char *));
     }
     for (i = 0; i < argc; ++i) {
