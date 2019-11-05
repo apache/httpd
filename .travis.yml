@@ -1,0 +1,56 @@
+language: c
+os:
+  - linux
+cache:
+  directories:
+    - /home/travis/perl5
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - libtool
+      - libtool-bin
+      - libapr1-dev
+      - libaprutil1-dev
+      - perl-doc
+      - lua5.3-dev
+      - libbrotli-dev
+      - libnghttp2-dev
+      - gcc-7
+      - gcc-8
+
+matrix:
+  include:
+    - name: Default module set
+    - name: Default, all-modules
+      env: CONFIG="--enable-mods-shared=reallyall --enable-load-all-modules"
+    - name: Prefork MPM, all-modules
+      env: CONFIG="--enable-mods-shared=reallyall --enable-load-all-modules --with-mpm=prefork"
+    - name: Xenial, all-modules
+      os: linux
+      dist: xenial
+      env: CONFIG="--enable-mods-shared=reallyall --enable-load-all-modules"
+    - name: GCC 7 maintainer-mode w/-Werror
+      env: CONFIG="--enable-mods-shared=reallyall --enable-load-all-modules --enable-maintainer-mode NOTEST_CFLAGS=-Werror CC=gcc-7"
+           SKIP_TESTING=1
+    - name: GCC 8 maintainer-mode w/-Werror
+      env: CONFIG="--enable-mods-shared=reallyall --enable-load-all-modules --enable-maintainer-mode NOTEST_CFLAGS=-Werror CC=gcc-8"
+           SKIP_TESTING=1
+
+before_install:
+  - cpanm --local-lib=~/perl5 local::lib && eval $(perl -I ~/perl5/lib/perl5/ -Mlocal::lib)
+  - cpanm --notest Net::SSL LWP::Protocol::https ExtUtils::Embed Test::More AnyEvent DateTime
+                   HTTP::DAV Protocol::HTTP2::Client FCGI
+
+before_script:
+  - svn export -q https://svn.apache.org/repos/asf/apr/apr/trunk srclib/apr
+  - test -v SKIP_TESTING || svn export -q https://svn.apache.org/repos/asf/httpd/test/framework/trunk test/perl-framework
+
+script:
+  - ./buildconf
+  - test -v SKIP_TESTING || CONFIG="--with-test-suite=test/perl-framework $CONFIG"
+  - ./configure $CONFIG --with-apr=/usr --with-apr-util=/usr
+  - make $MAKEFLAGS -j2
+  - test -v SKIP_TESTING || make check
+
