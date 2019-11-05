@@ -37,10 +37,17 @@ static void proxy_wstunnel_callback(void *b);
 static int proxy_wstunnel_pump(ws_baton_t *baton, int async)
 {
     int status = ap_proxy_tunnel_run(baton->tunnel);
-    if (async && status == HTTP_GATEWAY_TIME_OUT) {
-        ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, baton->r,
-                      APLOGNO(02542) "Attempting to go async");
-        status = SUSPENDED;
+    if (status == HTTP_GATEWAY_TIME_OUT) {
+        if (!async) {
+            /* ap_proxy_tunnel_run() didn't log this */
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, baton->r, APLOGNO(10225)
+                          "Tunnel timed out");
+        }
+        else {
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, baton->r, APLOGNO(02542)
+                          "Attempting to go async");
+            status = SUSPENDED;
+        }
     }
     return status;
 }
@@ -234,7 +241,7 @@ static int proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
 
     ap_remove_input_filter_byhandle(c->input_filters, "reqtimeout");
 
-    rv = ap_proxy_tunnel_create(&tunnel, r, conn->connection);
+    rv = ap_proxy_tunnel_create(&tunnel, r, conn->connection, scheme);
     if (rv != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(02543)
                       "error creating websocket tunnel");

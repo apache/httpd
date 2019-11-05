@@ -335,7 +335,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
 
     /* r->sent_bodyct = 1; */
 
-    rv = ap_proxy_tunnel_create(&tunnel, r, backconn);
+    rv = ap_proxy_tunnel_create(&tunnel, r, backconn, "CONNECT");
     if (rv != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(10208)
                       "can't create tunnel for %pI (%s)",
@@ -345,6 +345,11 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
 
     rc = ap_proxy_tunnel_run(tunnel);
     if (ap_is_HTTP_ERROR(rc)) {
+        if (rc == HTTP_GATEWAY_TIME_OUT) {
+            /* ap_proxy_tunnel_run() didn't log this */
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10224)
+                          "tunnel timed out");
+        }
         /* Don't send an error page if we sent data already */
         if (proxyport && !tunnel->replied) {
             return rc;

@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
    
+  *) mod_proxy: Improve tunneling loop to support half closed connections and
+     pending data draining (for protocols like rsync). PR 61616. [Yann Ylavic]
+
   *) mod_proxy: Add proxy check_trans hook for proxy modules to possibly
      decline request handling at early stage.  [Yann Ylavic]
 
