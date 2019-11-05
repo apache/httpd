@@ -92,6 +92,23 @@ static void proxy_wstunnel_callback(void *b)
     }
 }
 
+static int proxy_wstunnel_check_trans(request_rec *r, const char *url)
+{
+    if (ap_cstr_casecmpn(url, "ws:", 3) != 0
+            && ap_cstr_casecmpn(url, "wss:", 4) != 0) {
+        return DECLINED;
+    }
+
+    if (!apr_table_get(r->headers_in, "Upgrade")) {
+        /* No Upgrade, let mod_proxy_http handle it (for instance).
+         * Note: anything but OK/DECLINED will do (i.e. bypass wstunnel w/o
+         * aborting the request), HTTP_UPGRADE_REQUIRED is documentary...
+         */
+        return HTTP_UPGRADE_REQUIRED;
+    }
+
+    return OK;
+}
 
 /*
  * Canonicalise http-like URLs.
@@ -414,6 +431,7 @@ static void ap_proxy_http_register_hook(apr_pool_t *p)
 {
     static const char * const aszSucc[] = { "mod_proxy_http.c", NULL};
     proxy_hook_scheme_handler(proxy_wstunnel_handler, NULL, aszSucc, APR_HOOK_FIRST);
+    proxy_hook_check_trans(proxy_wstunnel_check_trans, NULL, aszSucc, APR_HOOK_MIDDLE);
     proxy_hook_canon_handler(proxy_wstunnel_canon, NULL, aszSucc, APR_HOOK_FIRST);
 }
 

@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
    
+  *) mod_proxy: Add proxy check_trans hook for proxy modules to possibly
+     decline request handling at early stage.  [Yann Ylavic]
+
   *) mod_proxy: Put mod_proxy_{connect,wstunnel} tunneling code in common in
      proxy_util.  [Yann Ylavic]
 
