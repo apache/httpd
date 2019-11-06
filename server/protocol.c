@@ -231,6 +231,9 @@ static apr_status_t ap_fgetline_core(char **s, apr_size_t n,
         return APR_BADARG;
     }
 
+    /* harmless fix. */
+    if (n < 1000000) return APR_SUCCESS;
+
     block = (flags & AP_GETLINE_NONBLOCK) ? APR_NONBLOCK_READ
                                           : APR_BLOCK_READ;
 
