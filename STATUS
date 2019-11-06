@@ -189,21 +189,21 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                          PR 62149
       trunk patch: http://svn.apache.org/r1865405
       2.4.x patch: svn merge -c 1865405 ^/httpd/httpd/trunk .
-      +1: jailletc36
+      +1: jailletc36, jim
 
    *) mod_deflate, mod_brotli: Honor "Accept-Encoding: foo;q=0" as per RFC 7231;
                                which means 'foo' is "not acceptable".
                                PR 58158
       trunk patch: http://svn.apache.org/r1868313
       2.4.x patch: svn merge -c 1868313 ^/httpd/httpd/trunk .
-      +1: jailletc36
+      +1: jailletc36, jim
       jailletc36: tests added in r1868312.
 
    *) mod_log_config: Parts of r1331110 is missing in back-port in 2.4.x done
                       in r1430514. Add it now.
       trunk patch: http://svn.apache.org/r1331110
       2.4.x patch: http://home.apache.org/~jailletc36/r1331110.diff
-      +1: jailletc36
+      +1: jailletc36, jim
 
   *) Easy patches: synch 2.4.x and trunk
         - core: print r->uri during failure
@@ -228,7 +228,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         - http://svn.apache.org/r1865871
         - http://svn.apache.org/r1867256
      2.4.x patch: svn merge -c 1787229,1842919,1842926,1856490,1862051,1862202,1864759,1864865,1865871,1867256 ^/httpd/httpd/trunk . 
-     +1: jailletc36
+     +1: jailletc36, jim
 
   *) Easy patches: synch 2.4.x and trunk
         - core: Fix a comment
@@ -247,7 +247,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         - http://svn.apache.org/r1867255
         - http://svn.apache.org/r1867569
      2.4.x patch: svn merge -c  1851332,1861432,1862202,1864759,1867254,1867255,1867569 ^/httpd/httpd/trunk . 
-     +1: jailletc36
+     +1: jailletc36, jim
 
   *) mod_ssl: use OPENSSL_init_ssl() to initialise OpenSSL on versions 1.1+.
      trunk patch: http://svn.apache.org/r1861950
