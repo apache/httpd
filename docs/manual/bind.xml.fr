@@ -31,8 +31,8 @@
     sur un port et une adresse IP spécifiques.</p>
   </summary>
 
-  <seealso><a href="vhosts/">Hôtes virtuels</a></seealso>
-  <seealso><a href="dns-caveats.html">Problèmes liés à DNS</a></seealso>
+  <seealso><a href="vhosts/">Serveurs virtuels</a></seealso>
+  <seealso><a href="dns-caveats.html">Problèmes liés au DNS</a></seealso>
 
   <section id="overview">
     <title>Vue d'ensemble</title>
@@ -52,28 +52,26 @@
     <p>Au démarrage de httpd, un port et une adresse lui sont associés sur
     l'hôte local et le serveur se met en attente de l'arrivée d'une requête.
     Par défaut, le serveur écoute toutes les adresses de l'hôte local.
-    Cependant, on peut lui préciser des ports et des adresses spécifiques à écouter,
-    ou une combinaison des deux.
-    Tout ceci est souvent associé avec la fonctionnalité
-    des <a href="vhosts/">hôtes virtuels</a>
-    qui détermine la manière dont <code>httpd</code> répond aux différents ports,
-    noms d'hôtes et adresses IP.</p>
+    Cependant, on peut lui préciser des ports et des adresses spécifiques à
+    écouter, ou une combinaison des deux.  Tout ceci est souvent associé avec la
+    fonctionnalité des <a href="vhosts/">serveurs virtuels</a> qui détermine la
+    manière dont <code>httpd</code> répond aux différents ports, noms d'hôtes et
+    adresses IP.</p>
 
-    <p>La directive <directive module="mpm_common">Listen</directive>
-    enjoint le serveur de n'accepter des requêtes que sur le(s)
-    port(s) spécifiés ou
-    une combinaison adresse/port. Si seul un numéro de port est spécifié
-    dans la directive <directive module="mpm_common">Listen</directive>,
-    le serveur se met à l'écoute sur ce port, sur toutes les interfaces réseau.
-    Si une adresse IP est spécifiée en plus du port, le serveur va écouter
-    sur ce port, uniquement sur l'interface réseau correspondante. On peut utiliser
-    de multiples directives
-    <directive module="mpm_common">Listen</directive> pour
-    spécifier plusieurs adresses et ports à écouter. Le serveur répondra alors
-    aux requêtes sur ces ports et adresses spécifiés.</p>
+    <p>La directive <directive module="mpm_common">Listen</directive> permet
+    d'indiquer au serveur qu'il ne doit accepter des requêtes que sur le(s)
+    port(s) spécifiés ou une combinaison adresse/port. Si seul un numéro de port
+    est spécifié dans la directive <directive
+    module="mpm_common">Listen</directive>, le serveur se met à l'écoute sur ce
+    port et sur toutes les interfaces réseau.  Si une adresse IP est spécifiée
+    en plus du port, le serveur va écouter sur ce port et uniquement sur
+    l'interface réseau correspondante. On peut utiliser plusieurs directives
+    <directive module="mpm_common">Listen</directive> pour spécifier plusieurs
+    adresses et ports à écouter. Le serveur répondra alors aux requêtes sur tous
+    les ports et adresses spécifiés.</p>
 
     <p>Par exemple, pour faire en sorte que le serveur accepte des connexions
-    sur les ports 80 et 8000, sur toutes les interfaces, utilisez :</p>
+    sur les ports 80 et 8000 et sur toutes les interfaces, utilisez :</p>
 
     <example>
     <highlight language="config">
@@ -113,8 +111,8 @@ Listen 192.0.2.5:8000
 
     <p>Voir <a
     href="http://wiki.apache.org/httpd/CouldNotBindToAddress">cette
-    discussion dans le wiki</a> pour plus de conseils pour résoudre ce
-    problème.</p>
+    discussion dans le wiki</a> pour plus de détails à propos de la résolution
+    de ce problème.</p>
 
     </note>
 
@@ -167,7 +165,7 @@ Listen 192.0.2.5:8000
     pour un point de connexion IPv6 de traiter à la fois des connexions IPv4
     et des connexions IPv6.
     Le traitement de connexions IPv4 avec un point de connexion IPv6 utilise
-    des adresses IPv6 traduites en IPv4, qui sont autorisées par défaut sur la
+    des adresses IPv6 traduites en IPv4 qui sont autorisées par défaut sur la
     plupart des plateformes, mais sont interdites par défaut sous FreeBSD, NetBSD,
     et OpenBSD, afin de respecter la politique de sécurité du système sur ces plateformes.
     Sur les systèmes où ces adresses sont interdites par défaut, un
@@ -187,7 +185,7 @@ Listen 192.0.2.5:8000
     votre httpd a donc probablement été construit avec cette option.</p>
 
     <p>Si vous souhaitez que httpd ne gère que des connexions IPv4, sans se
-    soucier de ce que vos plateforme et APR supportent, spécifiez une adresse
+    soucier de ce que votre plateforme et APR supportent, spécifiez une adresse
     IPv4 dans toutes les directives
     <directive module="mpm_common">Listen</directive>, comme dans l'exemple
     suivant :</p>
@@ -231,10 +229,10 @@ Listen 192.0.2.1:80
   </section>
 
   <section id="virtualhost">
-    <title>Comment tout ceci fonctionne-t-il avec les hôtes virtuels</title>
+    <title>Qu'en est-il avec les serveurs virtuels</title>
 
     <p> La directive <directive
-    module="mpm_common">Listen</directive> n'implémente pas les hôtes virtuels.
+    module="mpm_common">Listen</directive> n'implémente pas les serveurs virtuels.
     Elle indique simplement au serveur principal sur quels adresses et ports
     il doit écouter. Si aucune directive
     <directive module="core" type="section">VirtualHost</directive>
@@ -242,7 +240,7 @@ Listen 192.0.2.1:80
     les requêtes acceptées. En revanche, la directive
     <directive module="core" type="section">VirtualHost</directive>
     peut être utilisée pour provoquer une réaction différente du serveur
-    pour un ou plusieurs adresses ou ports. Pour implémenter un hôte virtuel,
+    pour un ou plusieurs adresses ou ports. Pour implémenter un serveur virtuel,
     on doit d'abord indiquer au serveur sur quels adresses et ports il doit écouter.
     Ensuite, une section
     <directive module="core" type="section">VirtualHost</directive>
