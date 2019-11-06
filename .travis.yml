@@ -70,16 +70,7 @@ before_install:
     fi
 
 before_script:
-  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then
-        svn export -q https://svn.apache.org/repos/asf/apr/apr/trunk srclib/apr;
-        test -v SKIP_TESTING || svn export -q https://svn.apache.org/repos/asf/httpd/test/framework/trunk test/perl-framework;
-    fi
+  - ./test/travis_before_${TRAVIS_OS_NAME}.sh
 
 script:
-  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then
-        ./buildconf;
-        test -v SKIP_TESTING || CONFIG="--with-test-suite=test/perl-framework $CONFIG";
-        ./configure $CONFIG --with-apr=/usr --with-apr-util=/usr;
-        make $MAKEFLAGS -j2;
-        test -v SKIP_TESTING || make check;
-    fi
+  - ./test/travis_run_${TRAVIS_OS_NAME}.sh
