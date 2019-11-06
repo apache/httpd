@@ -37,7 +37,7 @@ parcourir les bases du sujet.</p>
 <li><img alt="" src="./images/down.gif" /> <a href="#configuration">Fichiers de configuration et directives</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#content">Contenu du site web</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#logs">Fichiers journaux et résolution des problèmes</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#other">Et maintenant, quelle est la suite des opérations ?</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#other">Et maintenant, comment faire pour aller plus loin ?</a></li>
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -50,7 +50,7 @@ Les adresses des pages web sur la Toile se présentent sous forme d'URLs
   exemple <code>http</code>), un nom de serveur (par exemple
   <code>www.apache.org</code>), un chemin (par exemple
   <code>/docs/current/getting-started.html</code>), et le cas échéant
-  une chaîne de requête (query string) (par exemple <code>?arg=value</code>)
+  une chaîne de paramètres (query string) (par exemple <code>?arg=value</code>)
   permettant de transmettre des informations supplémentaires au serveur.
 </p>
 
@@ -70,7 +70,7 @@ site web</a>.</p>
 Le serveur envoie alors une <strong>réponse</strong> comportant un code
 d'état, et éventuellement un corps de réponse. Le code d'état indique si
 la requête a été traitée avec succès, ou dans la négative quel type
-d'erreur a été rencontré. Le client est alors sensé savoir quoi faire de
+d'erreur a été rencontré. Le client est alors censé savoir quoi faire de
 la réponse. Vous pouvez vous familiariser avec les différents codes
 d'état en consultant le <a href="http://wiki.apache.org/httpd/CommonHTTPStatusCodes">Wiki du
 serveur HTTP Apache</a>.</p>
@@ -85,13 +85,13 @@ journaux</a>.</p>
 <h2><a name="dns" id="dns">Noms d'hôte et DNS</a> <a title="Lien permanent" href="#dns" class="permalink">&para;</a></h2>
 
 
-<p>Pour se connecter à un serveur, le client doit tout d'abord résoudre
+<p>Pour se connecter à un serveur, le client doit tout d'abord traduire
 le nom du serveur en adresse IP, cette dernière permettant de localiser
 le serveur sur Internet. Ainsi, pour que votre serveur web soit
 accessible, son nom doit être enregistré dans le DNS.</p>
 
 <p>Si vous ne savez pas comment effectuer cet enregistrement, vous
-devrez contacter votre administrateur réseau ou votre fournisseur
+devez contacter votre administrateur réseau ou votre fournisseur
 d'accès à Internet afin qu'il effectue cette opération pour vous.</p>
 
 <p>Plusieurs noms d'hôte peuvent pointer vers la même adresse IP, et
@@ -167,7 +167,7 @@ du serveur. Vous trouverez plus de détails à propos des fichiers
 
 
 <p>Si le contenu du site web peut se présenter sous de nombreuses
-formes, il peut en général être scindé en deux formes principales : les
+formes, il en existe deux principales : les
 contenus statiques et les contenus dynamiques.</p>
 
 <p>Les contenus statiques sont par exemple les fichiers HTML, les
@@ -198,7 +198,7 @@ votre site.</p>
 du code permettant d'effectuer de nombreuses choses. De nombreuses
 applications tierces écrites à partir de divers langages ou outils sont
 disponibles en téléchargement et peuvent être installées sur votre
-serveur HTTP Apache. Le support de ces applications dépasse le sujet de
+serveur HTTP Apache. Le support de ces applications est en dehors du sujet de
 ce document, et nous vous invitons à consulter le site de leur éditeur
 pour accéder à leur documentation.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -208,7 +208,8 @@ pour accéder à leur documentation.</p>
 <p>En tant qu'administrateur d'un serveur HTTP Apache, vos sources
 d'informations principales sont les fichiers journaux, et en particulier
 le journal des erreurs. Toute tentative de résolution d'un problème sans
-consulter le journal des erreurs revient à conduire les yeux fermés.</p>
+consulter le journal des erreurs revient à essayer de conduire les yeux
+fermés.</p>
 
 <p>La position dans le système de fichiers du journal des erreurs est
 spécifiée par la directive <code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code>
@@ -227,7 +228,7 @@ l'erreur.</p>
 <p>Vous trouverez plus de détails à ce sujet dans la <a href="logs.html">Documentation sur la journalisation</a>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="other" id="other">Et maintenant, quelle est la suite des opérations ?</a> <a title="Lien permanent" href="#other" class="permalink">&para;</a></h2>
+<h2><a name="other" id="other">Et maintenant, comment faire pour aller plus loin ?</a> <a title="Lien permanent" href="#other" class="permalink">&para;</a></h2>
 
 
 <p>La question des prérequis étant réglée, il est temps de passer aux
