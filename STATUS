@@ -131,6 +131,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   *) mod_log_config: Parts of r1331110 is missing in back-port in 2.4.x done
+                      in r1430514. Add it now.
+      trunk patch: http://svn.apache.org/r1331110
+      2.4.x patch: http://home.apache.org/~jailletc36/r1331110.diff
+      +1: jailletc36, jim, ylavic
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -192,12 +198,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: svn merge -c 1865405 ^/httpd/httpd/trunk .
       +1: jailletc36, jim
 
-   *) mod_log_config: Parts of r1331110 is missing in back-port in 2.4.x done
-                      in r1430514. Add it now.
-      trunk patch: http://svn.apache.org/r1331110
-      2.4.x patch: http://home.apache.org/~jailletc36/r1331110.diff
-      +1: jailletc36, jim
-
   *) Easy patches: synch 2.4.x and trunk
         - core: print r->uri during failure
         - core: Call va_end before returning in the error case
@@ -222,6 +222,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         - http://svn.apache.org/r1867256
      2.4.x patch: svn merge -c 1787229,1842919,1842926,1856490,1862051,1862202,1864759,1864865,1865871,1867256 ^/httpd/httpd/trunk . 
      +1: jailletc36, jim
+     ylavic: +1 with r1869512, follow up to r1862202
+             (btw, r1862202 and r1864759 duplicated below)
+
 
   *) Easy patches: synch 2.4.x and trunk
         - core: Fix a comment
@@ -241,6 +244,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         - http://svn.apache.org/r1867569
      2.4.x patch: svn merge -c  1851332,1861432,1862202,1864759,1867254,1867255,1867569 ^/httpd/httpd/trunk . 
      +1: jailletc36, jim
+     ylavic: +1 with r1869512, follow up to r1862202
+             (btw, r1862202 and r1864759 duplicated above)
 
   *) mod_ssl: use OPENSSL_init_ssl() to initialise OpenSSL on versions 1.1+.
      trunk patch: http://svn.apache.org/r1861950
@@ -250,12 +255,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_ssl: OCSP does not apply to proxy mode
      trunk patch: http://svn.apache.org/r1865740
      2.4.x patch: svn merge -c 1865740 ^/httpd/httpd/trunk . 
-     +1: 
+     +1: ylavic
 
   *) ap_check_pipeline: clarify/simplify !max_blank_lines logic, no functional change.
      trunk patch: http://svn.apache.org/r1765061
      2.4.x patch: svn merge -c 1765061 ^/httpd/httpd/trunk . 
-     +1: jailletc36
+     +1: jailletc36, ylavic
      jailletc36: this is fine because if !max_blank_lines, we break at the first
                  iteration, so we know that mode = AP_MODE_SPECULATIVE
 
