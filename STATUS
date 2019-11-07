@@ -131,6 +131,14 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   *) mod_deflate, mod_brotli: Honor "Accept-Encoding: foo;q=0" as per RFC 7231;
+                               which means 'foo' is "not acceptable".
+                               PR 58158
+      trunk patch: http://svn.apache.org/r1868313
+      2.4.x patch: svn merge -c 1868313 ^/httpd/httpd/trunk .
+      +1: jailletc36, jim, ylavic
+      jailletc36: tests added in r1868312.
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -190,14 +198,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk patch: http://svn.apache.org/r1865405
       2.4.x patch: svn merge -c 1865405 ^/httpd/httpd/trunk .
       +1: jailletc36, jim
-
-   *) mod_deflate, mod_brotli: Honor "Accept-Encoding: foo;q=0" as per RFC 7231;
-                               which means 'foo' is "not acceptable".
-                               PR 58158
-      trunk patch: http://svn.apache.org/r1868313
-      2.4.x patch: svn merge -c 1868313 ^/httpd/httpd/trunk .
-      +1: jailletc36, jim
-      jailletc36: tests added in r1868312.
 
    *) mod_log_config: Parts of r1331110 is missing in back-port in 2.4.x done
                       in r1430514. Add it now.
