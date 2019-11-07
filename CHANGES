@@ -30,9 +30,6 @@ Changes with Apache 2.4.42
   *) mod_proxy_balancer: Fix case-sensitive referer check related to CSRF/XSS 
      protection. PR 63688. [Armin Abfalterer <a.abfalterer gmail.com>]
 
-  *) mod_deflate, mod_brotli: honor "Accept-Encoding: foo;q=0" as per RFC 7231; which
-     means 'foo' is "not acceptable".  PR 58158 [Chistophe Jaillet]
-
 Changes with Apache 2.4.41
 
   *) SECURITY: CVE-2019-10097 (cve.mitre.org)
