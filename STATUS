@@ -131,13 +131,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   *) mod_deflate, mod_brotli: Honor "Accept-Encoding: foo;q=0" as per RFC 7231;
-                               which means 'foo' is "not acceptable".
-                               PR 58158
-      trunk patch: http://svn.apache.org/r1868313
-      2.4.x patch: svn merge -c 1868313 ^/httpd/httpd/trunk .
-      +1: jailletc36, jim, ylavic
-      jailletc36: tests added in r1868312.
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -265,6 +258,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: jailletc36
      jailletc36: this is fine because if !max_blank_lines, we break at the first
                  iteration, so we know that mode = AP_MODE_SPECULATIVE
+
+  *) mod_ssl: negotiate the TLS protocol version per name based vhost...
+     trunk patch: http://svn.apache.org/r1868645
+                  http://svn.apache.org/r1868743
+                  http://svn.apache.org/r1868929
+                  http://svn.apache.org/r1868934
+                  http://svn.apache.org/r1869077
+     2.4.x patch: svn merge -c 1868645,1868743,1868929,1868934,1869077 ^/httpd/httpd/trunk .
+                  (merge works modulo CHANGES, below patch for all in one review)
+                  http://people.apache.org/~ylavic/patches/httpd-2.4.x-SSLProtocol_per_vhost.patch
+     +1: ylavic
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
