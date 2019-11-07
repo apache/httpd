@@ -344,6 +344,7 @@ static apr_status_t compress_filter(ap_filter_t *f, apr_bucket_brigade *bb)
         const char *encoding;
         const char *token;
         const char *accepts;
+        const char *q = NULL;
 
         /* Only work on main request, not subrequests, that are not
          * a 204 response with no content, and are not tagged with the
@@ -411,7 +412,19 @@ static apr_status_t compress_filter(ap_filter_t *f, apr_bucket_brigade *bb)
             token = (*accepts) ? ap_get_token(r->pool, &accepts, 0) : NULL;
         }
 
-        if (!token || token[0] == '\0') {
+        /* Find the qvalue, if provided */
+        if (*accepts) {
+            while (*accepts == ';') {
+                ++accepts;
+            }
+            q = ap_get_token(r->pool, &accepts, 1);
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
+                          "token: '%s' - q: '%s'", token, q);
+        }
+
+        /* No acceptable token found or q=0 */
+        if (!token || token[0] == '\0' ||
+            (q && strlen(q) >= 3 && strncmp("q=0.000", q, strlen(q)) == 0)) {
             ap_remove_output_filter(f);
             return ap_pass_brigade(f->next, bb);
         }

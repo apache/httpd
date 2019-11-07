@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.42
    
+  *) mod_deflate, mod_brotli: honor "Accept-Encoding: foo;q=0" as per RFC 7231; which
+     means 'foo' is "not acceptable".  PR 58158 [Chistophe Jaillet]
+
   *) mod_md v2.2.3: 
      - Configuring MDCAChallenges replaces any previous existing challenge configuration. It
        had been additive before which was not the intended behaviour. [@mkauf]
