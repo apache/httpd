@@ -137,6 +137,18 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       2.4.x patch: http://home.apache.org/~jailletc36/r1331110.diff
       +1: jailletc36, jim, ylavic
 
+   *) core: On Windows, fix a start-up crash if <IfFile ...> is used with a
+            path that is not valid
+      trunk patch: http://svn.apache.org/r1866418
+      2.4.x patch: svn merge -c 1866418 ^/httpd/httpd/trunk .
+      +1: jailletc36, covener, ylavic
+
+   *) mod_authn_socache: Increase the maximum length of strings that can be cached
+                         PR 62149
+      trunk patch: http://svn.apache.org/r1865405
+      2.4.x patch: svn merge -c 1865405 ^/httpd/httpd/trunk .
+      +1: jailletc36, jim, ylavic
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -158,6 +170,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      elukey: If anybody has time to review this change it would be great, to know if it needs to be reverted,
              reworked, etc.. I would like to avoid a patch that is clearly wrong for some reviewer sitting here for
              months/years without any action item :)
+     ylavic: will look at it ASAP..
 
     
    *) mod_ssl: Add support for loading certs & keys from PKCS#11 URLs via the
@@ -173,30 +186,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    http://svn.apache.org/r1835242
                    http://svn.apache.org/r1835615
       2.4.x patch: http://people.apache.org/~jorton/mod_ssl_pkcs11.patch
-      +1: jorton, 
-
-   *) core: On Windows, fix a start-up crash if <IfFile ...> is used with a
-            path that is not valid
-      trunk patch: http://svn.apache.org/r1866418
-      2.4.x patch: svn merge -c 1866418 ^/httpd/httpd/trunk .
-      +1: jailletc36, covener,
+      +1: jorton, ylavic,
+      ylavic: engine part not tested, but works with no engine still
 
    *) mod_proxy_html, mod_xml2enc: Fix build issues with macOS due to r1864469
       trunk patch: http://svn.apache.org/r1867183
       2.4.x patch: svn merge -c 1867183 ^/httpd/httpd/trunk .
-      +1: jim
+      +1: jim, ylavic (by inspection),
       jailletc36: -0
                   I don't think that the #pragma black magic is of any help with GCC 
                   and jim seems to still have problem with clang and comments with //.
                   See discussion at:
                   https://lists.apache.org/thread.html/628cc54a1a345cb773d8e1be0639f8e75d2b481cf89232051c83b787@%3Cdev.httpd.apache.org%3E
              jim: The problem still exists because this is NOT back ported yet. With this back port, the problem goes away.
-
-   *) mod_authn_socache: Increase the maximum length of strings that can be cached
-                         PR 62149
-      trunk patch: http://svn.apache.org/r1865405
-      2.4.x patch: svn merge -c 1865405 ^/httpd/httpd/trunk .
-      +1: jailletc36, jim
 
   *) Easy patches: synch 2.4.x and trunk
         - core: print r->uri during failure
