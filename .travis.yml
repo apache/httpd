@@ -78,6 +78,11 @@ matrix:
       env: APR_VERSION=1.5.1 APU_VERSION=1.5.4
            CONFIG="--enable-mods-shared=reallyall"
     # -------------------------------------------------------------------------
+    - if: branch = 2.4.x
+      name: Linux Ubuntu, APR 1.4.8, APR-util 1.4.2
+      env: APR_VERSION=1.4.8 APU_VERSION=1.4.2
+           CONFIG="--enable-mods-shared=reallyall"
+    # -------------------------------------------------------------------------
 
 before_install:
   - if [ "$TRAVIS_OS_NAME" = "linux" ]; then
