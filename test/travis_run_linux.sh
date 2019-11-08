@@ -1,5 +1,10 @@
 #!/bin/bash -ex
-./buildconf --with-apr=/usr/bin/apr-1-config
+if test -v APR_VERSION -a -v APU_VERSION; then
+    ./buildconf --with-apr=$HOME/root/apr-${APR_VERSION}/bin/apr-1-config \
+                --with-apr-util=$HOME/root/apu-${APU_VERSION}/bin/apu-1-config
+else
+    ./buildconf --with-apr=/usr/bin/apr-1-config
+fi
 # For trunk, "make check" is sufficient to run the test suite.
 # For 2.4.x, the test suite must be run manually
 if test ! -v SKIP_TESTING; then
