@@ -125,6 +125,7 @@ CURRENT RELEASE NOTES:
     . non-Unix, single-platform code
     . routine APLOGNO() backports
     . .gdbinit
+    . Travis integration: .travis.yml and test/travis*.sh
 
 RELEASE SHOWSTOPPERS:
 
