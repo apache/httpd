@@ -23,27 +23,27 @@ matrix:
     - name: Linux Ubuntu, Default module set
     # -------------------------------------------------------------------------
     - name: Linux Ubuntu, Default, all-modules
-      env: CONFIG="--enable-mods-shared=reallyall --enable-load-all-modules"
+      env: CONFIG="--enable-mods-shared=reallyall"
     # -------------------------------------------------------------------------
     - name: Linux Ubuntu, Prefork MPM, all-modules
-      env: CONFIG="--enable-mods-shared=reallyall --enable-load-all-modules --with-mpm=prefork"
+      env: CONFIG="--enable-mods-shared=reallyall --with-mpm=prefork"
     # -------------------------------------------------------------------------
     - name: Linux Ubuntu, Worker MPM, all-modules
-      env: CONFIG="--enable-mods-shared=reallyall --enable-load-all-modules --with-mpm=worker"
+      env: CONFIG="--enable-mods-shared=reallyall --with-mpm=worker"
     # -------------------------------------------------------------------------
     - name: Linux Ubuntu Bionic, all-modules
       os: linux
       dist: bionic
-      env: CONFIG="--enable-mods-shared=reallyall --enable-load-all-modules"
+      env: CONFIG="--enable-mods-shared=reallyall"
     # -------------------------------------------------------------------------
     - name: Linux Ubuntu Bionic, GCC 7 maintainer-mode w/-Werror
       os: linux
       dist: bionic
-      env: CONFIG="--enable-mods-shared=reallyall --enable-load-all-modules --enable-maintainer-mode NOTEST_CFLAGS=-Werror CC=gcc-7"
+      env: CONFIG="--enable-mods-shared=reallyall --enable-maintainer-mode NOTEST_CFLAGS=-Werror CC=gcc-7"
            SKIP_TESTING=1
     # -------------------------------------------------------------------------
     - name: Linux Ubuntu, GCC 8 maintainer-mode w/-Werror
-      env: CONFIG="--enable-mods-shared=reallyall --enable-load-all-modules --enable-maintainer-mode NOTEST_CFLAGS=-Werror CC=gcc-8"
+      env: CONFIG="--enable-mods-shared=reallyall --enable-maintainer-mode NOTEST_CFLAGS=-Werror CC=gcc-8"
            SKIP_TESTING=1
       addons:
         apt:
