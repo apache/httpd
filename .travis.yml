@@ -67,7 +67,7 @@ matrix:
             - libjansson-dev
     # -------------------------------------------------------------------------
     - if: branch = trunk
-    - name: Linux Ubuntu, APR trunk
+      name: Linux Ubuntu, APR trunk
       env: APR_VERSION=trunk APR_CONFIG="--with-crypto"
            CONFIG="--enable-mods-shared=reallyall"
     # -------------------------------------------------------------------------
