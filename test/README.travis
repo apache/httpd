@@ -1,0 +1,32 @@
+
+Variables
+---------
+
+The Travis scripts use the following environment variables:
+
+* APR_VERSION - if set, APR of this version is built and installed
+  in $HOME/root/apr-$APR_VERSION (trunk means trunk is used)
+
+* APR_CONFIG - arguments to pass when running APR's configure script
+  if APR_VERSION is set
+
+* APU_VERSION - if set, APR-util of this version is built and
+  installed in $HOME/root/apu-$APU_VERSION (trunk means trunk is used)
+
+* APU_CONFIG - arguments to pass when running APR-util's configure
+  script if APU_VERSION is set
+
+* CONFIG - arguments to pass to httpd's configure script.
+
+* SKIP_TESTING - if set, the Perl test framework is not run for the
+  build.
+
+Caching
+-------
+
+Perl modules installed in $HOME/perl5 are cached.
+
+Anything installed into the $HOME/root directory is cached - notably,
+versions of APR/APR-util are installed here and cached across httpd
+build jobs without needing to be rebuilt every time.
+
