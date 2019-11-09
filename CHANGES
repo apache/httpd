@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.42
    
+  *) core: On Windows, fix a start-up crash if <IfFile ...> is used with a path that is not
+     valid (For example, testing for a file on a flash drive that is not mounted)
+     [Christophe Jaillet]
+
   *) mod_deflate, mod_brotli: honor "Accept-Encoding: foo;q=0" as per RFC 7231; which
      means 'foo' is "not acceptable".  PR 58158 [Chistophe Jaillet]
 

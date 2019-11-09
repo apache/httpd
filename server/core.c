@@ -2787,8 +2787,15 @@ static int test_iffile_section(cmd_parms *cmd, const char *arg)
     const char *relative;
     apr_finfo_t sb;
 
+    /*
+     * At least on Windows, if the path we are testing is not valid (for example
+     * a path on a USB key that is not plugged), 'ap_server_root_relative()' will
+     * return NULL. In such a case, consider that the file is not there and that
+     * the section should be skipped.
+     */
     relative = ap_server_root_relative(cmd->temp_pool, arg);
-    return (apr_stat(&sb, relative, 0, cmd->pool) == APR_SUCCESS);
+    return (relative &&
+           (apr_stat(&sb, relative, APR_FINFO_TYPE, cmd->temp_pool) == APR_SUCCESS));
 }
 
 static int test_ifdirective_section(cmd_parms *cmd, const char *arg)
