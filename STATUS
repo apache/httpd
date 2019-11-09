@@ -132,24 +132,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   *) mod_log_config: Parts of r1331110 is missing in back-port in 2.4.x done
-                      in r1430514. Add it now.
-      trunk patch: http://svn.apache.org/r1331110
-      2.4.x patch: http://home.apache.org/~jailletc36/r1331110.diff
-      +1: jailletc36, jim, ylavic
-
-   *) core: On Windows, fix a start-up crash if <IfFile ...> is used with a
-            path that is not valid
-      trunk patch: http://svn.apache.org/r1866418
-      2.4.x patch: svn merge -c 1866418 ^/httpd/httpd/trunk .
-      +1: jailletc36, covener, ylavic
-
-   *) mod_authn_socache: Increase the maximum length of strings that can be cached
-                         PR 62149
-      trunk patch: http://svn.apache.org/r1865405
-      2.4.x patch: svn merge -c 1865405 ^/httpd/httpd/trunk .
-      +1: jailletc36, jim, ylavic
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
