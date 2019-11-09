@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
-<!-- English Revision: 1868506 -->
+<!-- English Revision: 1869000 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -1335,7 +1335,7 @@ MDMessageCmd /etc/apache/md-message
         <name>MDStapleOthers</name>
         <description>Active l'agrafage pour les certificats non gérés par
 	mod_md.</description>
-        <syntax>MDStaplingOthers on|off</syntax>
+        <syntax>MDStapleOthers on|off</syntax>
         <default>on</default>
         <contextlist>
             <context>server config</context>

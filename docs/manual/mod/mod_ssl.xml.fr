@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1861442 -->
+<!-- English Revision: 1869606 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -740,7 +740,7 @@ disponibles</description>
 Cette directive permet de définir quelles versions du protocole SSL/TLS
 seront acceptées lors de l'initialisation d'une nouvelle connexion.</p>
 <p>
-Les <em>protocole</em>s disponibles sont les suivants (sensibles à la
+Les <em>protocoles</em> disponibles sont les suivants (sensibles à la
 casse) :</p>
 <ul>
 <li><code>SSLv3</code>
@@ -775,8 +775,8 @@ casse) :</p>
 
 <li><code>all</code>
     <p>
-    C'est un raccourci pour ``<code>+SSLv3 +TLSv1</code>'' ou - à partir
-    de la version 1.0.1 d'OpenSSL - ``<code>+SSLv3 +TLSv1 +TLSv1.1
+    C'est un raccourci pour ``<code>+SSLv3 +TLSv1</code>'' ou, à partir
+    de la version 1.0.1 d'OpenSSL, ``<code>+SSLv3 +TLSv1 +TLSv1.1
     +TLSv1.2</code>'' (sauf si OpenSSL a été compilé avec l'option
     ``no-ssl3'', auquel cas <code>all</code> n'inclura pas
     <code>+SSLv3</code>).</p></li>
@@ -786,6 +786,34 @@ casse) :</p>
 SSLProtocol TLSv1
 </highlight>
 </example>
+<note>
+<title>La directive <directive>SSLProtocol</directive> et les serveurs virtuels
+basés sur le nom</title>
+<p>
+Avant OpenSSL 1.1.1, et même si l'indication du nom de serveur (Server Name
+Indication ou SNI) permettait de déterminer le serveur virtuel cible assez tôt
+au cours de la négociation TLS, il était impossible de changer de version de
+protocole TLS à ce point, si bien que le <directive>SSLProtocol</directive>
+négocié se basait toujours sur celui du <em>serveur virtuel de base</em> (le
+premier serveur virtuel déclaré avec le couple <code>IP:port</code> de la
+connexion).
+</p>
+<p>
+A partir de la version 2.5.1, si le serveur HTTP Apache est compilé avec une
+version 1.1.1. ou supérieure d'OpenSSL, et si le client fournit la SNI dans la
+négociation TLS, le <directive>SSLProtocol</directive> de chaque serveur virtuel
+(basé sur le nom) pourra être pris en compte et le sera.
+</p>
+<p>
+A des fins de compatibilité avec les versions précédentes, si un serveur virtuel
+basé sur le nom n'a aucune directive <directive>SSLProtocol</directive> définie,
+c'est le protocole du serveur virtuel de base qui s'appliquera, <strong>à
+moins</strong> qu'une directive <directive>SSLProtocol</directive> ne soit
+configurée au niveau global, auquel cas c'est le protocole défini par cette
+directive qui s'appliquera (ce dernier cas relève cependant plus d'un
+comportement logique que d'un souci de compatibilité).
+</p>
+</note>
 </usage>
 </directivesynopsis>
 
