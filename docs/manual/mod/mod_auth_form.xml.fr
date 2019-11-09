@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1745884 -->
+<!-- English Revision: 1869054 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -476,7 +476,7 @@ des modules de plus bas niveau</description>
 <description>Le nom du champ de formulaire qui contient le nom de
 connexion</description>
 <syntax>AuthFormUsername <var>nom du champ</var></syntax>
-<default>httpd_username</default>
+<default>AuthFormUsername httpd_username</default>
 <contextlist><context>directory</context>
 </contextlist>
 <compatibility>Disponible depuis la version 2.3.3 du serveur HTTP Apache</compatibility>
@@ -494,7 +494,7 @@ connexion</description>
 <description>Le nom du champ de formulaire qui contient le mot de passe
 de connexion</description>
 <syntax>AuthFormPassword <var>nom du champ</var></syntax>
-<default>httpd_password</default>
+<default>AuthFormPassword httpd_password</default>
 <contextlist><context>directory</context>
 </contextlist>
 <compatibility>Disponible depuis la version 2.3.0 du serveur HTTP Apache</compatibility>
@@ -513,7 +513,7 @@ de connexion</description>
 laquelle l'utilisateur sera redirigé en cas de connexion
 réussie</description>
 <syntax>AuthFormLocation <var>nom du champ</var></syntax>
-<default>httpd_location</default>
+<default>AuthFormLocation httpd_location</default>
 <contextlist><context>directory</context>
 </contextlist>
 <compatibility>Disponible depuis la version 2.3.0 du serveur HTTP Apache</compatibility>
@@ -532,7 +532,7 @@ réussie</description>
 <description>Le nom du champ de formulaire contenant la méthode de la
 requête à effectuer en cas de connexion réussie</description>
 <syntax>AuthFormMethod <var>nom du champ</var></syntax>
-<default>httpd_method</default>
+<default>AuthFormMethod httpd_method</default>
 <contextlist><context>directory</context>
 </contextlist>
 <compatibility>Disponible depuis la version 2.3.0 du serveur HTTP Apache</compatibility>
@@ -559,7 +559,7 @@ requête à effectuer en cas de connexion réussie</description>
 corps de la requête à effectuer en cas de connexion
 réussie</description>
 <syntax>AuthFormMimetype <var>nom du champ</var></syntax>
-<default>httpd_mimetype</default>
+<default>AuthFormMimetype httpd_mimetype</default>
 <contextlist><context>directory</context>
 </contextlist>
 <compatibility>Disponible depuis la version 2.3.0 du serveur HTTP Apache</compatibility>
@@ -585,7 +585,7 @@ réussie</description>
 <description>Le nom du champ de formulaire contenant le corps de la
 requête à effectuer en cas de connexion réussie</description>
 <syntax>AuthFormBody <var>nom du champ</var></syntax>
-<default>httpd_body</default>
+<default>AuthFormBody httpd_body</default>
 <contextlist><context>directory</context>
 </contextlist>
 <compatibility>Disponible depuis la version 2.3.0 du serveur HTTP Apache</compatibility>
@@ -611,7 +611,7 @@ requête à effectuer en cas de connexion réussie</description>
 <description>La taille maximale en octets du formulaire dont seront
 extraites les informations de connexion</description>
 <syntax>AuthFormSize <var>taille</var></syntax>
-<default>8192</default>
+<default>AuthFormSize 8192</default>
 <contextlist><context>directory</context>
 </contextlist>
 <compatibility>Disponible depuis la version 2.3.0 du serveur HTTP Apache</compatibility>
@@ -701,7 +701,7 @@ depuis la version 2.4.4.</compatibility>
 <directivesynopsis>
 <name>AuthFormFakeBasicAuth</name>
 <description>Simule une en-tête d'authentification de base</description>
-<syntax>AuthFormFakeBasicAuth <var>On|Off</var></syntax>
+<syntax>AuthFormFakeBasicAuth On|Off</syntax>
 <default>AuthFormFakeBasicAuth Off</default>
 <contextlist><context>directory</context>
 </contextlist>
@@ -768,7 +768,7 @@ depuis la version 2.4.4.</compatibility>
 <name>AuthFormDisableNoStore</name>
 <description>Désactive l'en-tête CacheControl no-store sur la page de
 connexion</description>
-<syntax>AuthFormDisableNoStore <var>On|Off</var></syntax>
+<syntax>AuthFormDisableNoStore On|Off</syntax>
 <default>AuthFormDisableNoStore Off</default>
 <contextlist><context>directory</context>
 </contextlist>
