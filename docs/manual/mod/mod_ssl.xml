@@ -667,7 +667,6 @@ The available (case-insensitive) <em>protocol</em>s are:</p>
 SSLProtocol TLSv1
 </highlight>
 </example>
-</usage>
 <note>
 <title><directive>SSLProtocol</directive> for name-based virtual hosts</title>
 <p>
@@ -693,6 +692,7 @@ global value applies (this latter exception is more sensible than compatible,
 though).
 </p>
 </note>
+</usage>
 </directivesynopsis>
 
 <directivesynopsis>
