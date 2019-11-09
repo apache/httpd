@@ -350,7 +350,7 @@ static void ap_authn_cache_store(request_rec *r, const char *module,
     }
 }
 
-#define MAX_VAL_LEN 100
+#define MAX_VAL_LEN 256
 static authn_status check_password(request_rec *r, const char *user,
                                    const char *password)
 {
