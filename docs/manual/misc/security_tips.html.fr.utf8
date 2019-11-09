@@ -474,7 +474,7 @@
     fusionnées.</p>
 
     <p>Concernant les modules qui n'implémentent aucune logique de
-    fusion, comme <code class="directive">mod_access_compat</code>, le
+    fusion, comme <code class="module"><a href="../mod/mod_access_compat.html">mod_access_compat</a></code>, le
     comportement des sections suivantes est tributaire de la présence
     dans ces dernières de directives appartenant à ces modules. La
     configuration est héritée jusqu'à ce qu'une modification soit

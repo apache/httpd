@@ -106,10 +106,10 @@ le Serveur HTTP Apache.</p>
     afin d'éviter tout conflit avec la syntaxe de la directive <code class="directive"><a href="./mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>.</p>
 
     <p>Seules les variables d'environnement du shell définies avant le démarrage
-    du serveur peuvent être utilisées dans les extensions.
+    du serveur peuvent être utilisées en extension.
     Les variables d'environnement
     définies dans le fichier de configuration lui-même, par exemple avec <code class="directive"><a href="./mod/mod_env.html#setenv">SetEnv</a></code>, prennent effet trop tard pour
-    pouvoir être utilisées dans les extensions au sein du fichier de
+    pouvoir être utilisées en extension au sein du fichier de
     configuration.</p>
 
     <p>La longueur maximale d'une ligne dans un fichier de configuration
