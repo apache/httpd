@@ -278,7 +278,7 @@ les directives <code class="directive">Allow</code> et
     implémente un système de contrôle d'accès en trois passes. Au cours
     de la première passe, ce sont soit toutes les directives <code class="directive"><a href="#allow">Allow</a></code>, soit toutes les
     directives <code class="directive"><a href="#deny">Deny</a></code> qui sont traitées, selon
-    la définition de la directive <code class="directive"><a href="#order">Order</a></code>. Le reste des
+    la définition de la directive <code class="directive">Order</code>. Le reste des
     directives (<code class="directive"><a href="#deny">Deny</a></code>
     ou <code class="directive"><a href="#allow">Allow</a></code>) est
     traité au cours de la seconde passe. La troisième passe s'applique à

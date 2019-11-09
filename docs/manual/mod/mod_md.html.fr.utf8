@@ -518,7 +518,7 @@
 		"always", et le module obtiendra un nouveau cerificat avant que
 		celui du fichier considéré n'arrive à expiration. Une fois le
 		certificat renouvelé, vous pouvez supprimer la directive
-		<code class="directive"><a href="#mdcertificatefile">MDCertificateFile</a></code> et
+		<code class="directive">MDCertificateFile</code> et
 		recharger la configuration.
             </p><p>
                 Une autre application est le renouvellement de vos certificats
@@ -695,7 +695,7 @@
 </table>
             <p>
 	    Plutôt que de lister tous les noms DNS sur la même ligne, vous
-	    pouvez utiliser la directive <code class="directive"><a href="#mdmember">MDMember</a></code> pour ajouter des noms d'hôte à
+	    pouvez utiliser la directive <code class="directive">MDMember</code> pour ajouter des noms d'hôte à
 	    un domaine géré.
             </p>
             <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">&lt;MDomain example.org&gt;
@@ -1207,7 +1207,7 @@ MDRenewWindow 10%</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active l'agrafage pour les certificats non gérés par
 	mod_md.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDStaplingOthers on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDStapleOthers on|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>on</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>

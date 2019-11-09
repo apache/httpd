@@ -182,7 +182,7 @@ requêtes</td></tr>
 
     <div class="warning"><h3>Sécurité</h3>
       <p>Ne définissez pas la directive <code class="directive">Group</code> (ou
-      <code class="directive"><a href="#user">User</a></code>) à
+      <code class="directive">User</code>) à
       <code>root</code> à moins de savoir exactement ce que vous faites
       ainsi que les dangers encourus.</p>
     </div>

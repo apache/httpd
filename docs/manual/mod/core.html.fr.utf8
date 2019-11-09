@@ -1578,7 +1578,7 @@ ErrorDocument 403 /errors/forbidden.py?referrer=%{escape:%{HTTP_REFERER}}</pre>
     <p>Bien que la plupart des messages d'erreur internes originaux
     puissent être remplacés, ceux-ci sont cependant conservés dans
     certaines circonstances sans tenir compte de la définition de la
-    directive <code class="directive"><a href="#errordocument">ErrorDocument</a></code>. En
+    directive <code class="directive">ErrorDocument</code>. En
     particulier, en cas de détection d'une requête mal formée, le
     processus de traitement normal des requêtes est immédiatement
     interrompu, et un message d'erreur interne est renvoyé, ceci afin de
@@ -2728,7 +2728,7 @@ génériques dans la partie chemin depuis la version 2.3.6</td></tr>
     exemple, nous vous recommandons d'utiliser plutôt la syntaxe avec
     caractères génériques comme ci-dessous.</p>
 
-    <p>La directive <code class="directive"><a href="#include">Include</a></code>
+    <p>La directive <code class="directive">Include</code>
     <strong>échouera avec un code d'erreur</strong> si une expression
    contenant des caractères génériques ne correspond à aucun fichier.
    Pour ignorer les expressions contenant des caractères génériques ne
@@ -3432,7 +3432,7 @@ correspondant à une expression rationnelle</td></tr>
       exemple, <code>/home///foo</code> est équivalent à
       <code>/home/foo</code>). Ce n'est n'est cependant pas toujours le cas au
       sein des URLs. En effet, si vous souhaitez spécifier plusieurs slashes,
-      vous devez le faire explicitement au sein de la directive <code class="directive"><a href="#locationmatch">&lt;LocationMatch&gt;</a></code> et de la version
+      vous devez le faire explicitement au sein de la directive <code class="directive">&lt;LocationMatch&gt;</code> et de la version
       regex de la directive <code class="directive">&lt;Location&gt;</code>.</p>
 
       <p>Par exemple, <code>&lt;LocationMatch "^/abc"&gt;</code> correspondra à
@@ -4875,13 +4875,13 @@ serveurs virtuels à base de nom</td></tr>
     <p>La recherche du serveur virtuel à base de nom correspondant au
     plus près à la requête s'effectue selon l'ordre d'apparition des
     directives <code class="directive"><a href="#virtualhost">&lt;virtualhost&gt;</a></code> dans le fichier de
-    configuration. Le premier serveur virtuel dont le <code class="directive"><a href="#servername">ServerName</a></code> ou le <code class="directive"><a href="#serveralias">ServerAlias</a></code> correspond est choisi, sans
+    configuration. Le premier serveur virtuel dont le <code class="directive"><a href="#servername">ServerName</a></code> ou le <code class="directive">ServerAlias</code> correspond est choisi, sans
     priorité particulière si le nom contient des caractères génériques
     (que ce soit pour ServerName ou ServerAlias).</p>
 
     <p>Tous les noms spécifiés au sein d'une section
     <code class="directive"><a href="#virtualhost">&lt;VirtualHost&gt;</a></code> sont traités comme un
-    <code class="directive"><a href="#serveralias">&lt;ServerAlias&gt;</a></code>
+    <code class="directive">&lt;ServerAlias&gt;</code>
     (sans caractères génériques).</p>
 
 

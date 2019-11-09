@@ -135,7 +135,7 @@ s'effectuer</td></tr>
     <div class="note">
      Spécifier le même jeu de caractères pour les deux directives
      <code class="directive"><a href="#charsetsourceenc">CharsetSourceEnc</a></code>
-     et <code class="directive"><a href="#charsetdefault">CharsetDefault</a></code>
+     et <code class="directive">CharsetDefault</code>
      désactive la traduction. Le jeu de caractères ne doit pas forcément
      correspondre au jeu de caractères de la réponse, mais il doit être
      valide du point de vue du système.
@@ -212,7 +212,7 @@ caractères</td></tr>
 
     <div class="note">
      Spécifier le même jeu de caractères pour les deux directives
-     <code class="directive"><a href="#charsetsourceenc">CharsetSourceEnc</a></code>
+     <code class="directive">CharsetSourceEnc</code>
      et <code class="directive"><a href="#charsetdefault">CharsetDefault</a></code>
      désactive la traduction. Le jeu de caractères ne doit pas forcément
      correspondre au jeu de caractères de la réponse, mais il doit être

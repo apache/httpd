@@ -545,7 +545,7 @@ serveur</td></tr>
     l'argument <var>extension</var> sera comparé à chacune d'entre
     elles.</p>
 
-    <p>Notez que toute définition de filtres via la directive <code class="directive"><a href="#addoutputfilter">AddOutputFilter</a></code> remplace toutes les
+    <p>Notez que toute définition de filtres via la directive <code class="directive">AddOutputFilter</code> remplace toutes les
     définitions précédentes effectuées via cette même directive.</p>
 
     <pre class="prettyprint lang-config"># Filtre spécifié "DEFLATE"

@@ -502,7 +502,7 @@ cours de la phase d'initialisation de la connexion SSL. Le client peut
 alors utiliser cette liste de noms de CA pour sélectionner un certificat
 client approprié parmi ceux dont il dispose.</p>
 
-<p>Si aucune des directives <code class="directive"><a href="#sslcadnrequestpath">SSLCADNRequestPath</a></code> ou <code class="directive"><a href="#sslcadnrequestfile">SSLCADNRequestFile</a></code> n'est définie, la liste
+<p>Si aucune des directives <code class="directive"><a href="#sslcadnrequestpath">SSLCADNRequestPath</a></code> ou <code class="directive">SSLCADNRequestFile</code> n'est définie, la liste
 de noms de CsA acceptables envoyée au client est la liste des noms de
 tous les certificats de CA spécifiés par les directives <code class="directive"><a href="#sslcacertificatefile">SSLCACertificateFile</a></code> et <code class="directive"><a href="#sslcacertificatepath">SSLCACertificatePath</a></code> ; en d'autres termes,
 c'est la liste des noms de CAs qui sera effectivement utilisée pour
@@ -512,12 +512,12 @@ vérifier le certificat du client.</p>
 une liste de noms de CA acceptables qui diffère de la liste des CAs
 effectivement utilisés pour vérifier le certificat du client ;
 considérons par exemple le cas où le certificat du client est signé par
-des CAs intermédiaires. On peut ici utiliser les directives <code class="directive"><a href="#sslcadnrequestpath">SSLCADNRequestPath</a></code> et/ou <code class="directive"><a href="#sslcadnrequestfile">SSLCADNRequestFile</a></code>, et les noms de CA
+des CAs intermédiaires. On peut ici utiliser les directives <code class="directive"><a href="#sslcadnrequestpath">SSLCADNRequestPath</a></code> et/ou <code class="directive">SSLCADNRequestFile</code>, et les noms de CA
 acceptables seront alors extraits de l'ensemble des certificats contenus
 dans le répertoire et/ou le fichier définis par cette paire de
 directives.</p>
 
-<p><code class="directive"><a href="#sslcadnrequestfile">SSLCADNRequestFile</a></code> doit
+<p><code class="directive">SSLCADNRequestFile</code> doit
 spécifier un fichier <em>tou-en-un</em> contenant une concaténation des
 certificats de CA codés en PEM.</p>
 
@@ -749,7 +749,7 @@ de certification en fonction du certificat.</p>
 <p>Depuis la version 2.4.7 du serveur HTTP Apache, on peut aussi ajouter
 des paramètres DH personnalisés et un nom EC
 curve pour les clés éphémères à la fin du premier fichier défini par la
-directive <code class="directive"><a href="#sslcertificatefile">SSLCertificateFile</a></code>.
+directive <code class="directive">SSLCertificateFile</code>.
 Ces paramètres peuvent être générés avec les commandes <code>openssl
 dhparam</code> et <code>openssl ecparam</code>, et ils peuvent être
 ajoutés tel quel à la fin du premier fichier de certificat. En effet,
@@ -774,7 +774,7 @@ stocké dans un jeton. Actuellement, seuls les <a href="https://tools.ietf.org/h
 identificateurs de certificats et peuvent être utilisés en conjonction avec le
 moteur OpenSSL <code>pkcs11</code>. Si la directive <code class="directive"><a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></code> est absente, le certificat et
 la clé privée peuvent être chargés avec l'identificateur spécifié via la
-directive <code class="directive"><a href="#sslcertificatefile">SSLCertificateFile</a></code>.</p>
+directive <code class="directive">SSLCertificateFile</code>.</p>
 
 <div class="note">
 <h3>Interopérabilité des paramètres DH avec les nombres premiers de
@@ -852,7 +852,7 @@ cette dernière s'ouvre au démarrage du serveur.</p>
 <p>
 Cette directive peut être utilisée plusieurs fois pour référencer
 différents noms de fichiers, afin de supporter plusieurs algorithmes
-pour l'authentification du serveur. A chaque directive <code class="directive"><a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></code> doit être associée
+pour l'authentification du serveur. A chaque directive <code class="directive">SSLCertificateKeyFile</code> doit être associée
 une directive <code class="directive">SSLCertificateFile</code> correspondante.</p>
 
 <p>
@@ -1766,7 +1766,7 @@ disponibles</td></tr>
 Cette directive permet de définir quelles versions du protocole SSL/TLS
 seront acceptées lors de l'initialisation d'une nouvelle connexion.</p>
 <p>
-Les <em>protocole</em>s disponibles sont les suivants (sensibles à la
+Les <em>protocoles</em> disponibles sont les suivants (sensibles à la
 casse) :</p>
 <ul>
 <li><code>SSLv3</code>
@@ -1797,13 +1797,41 @@ casse) :</p>
 
 <li><code>all</code>
     <p>
-    C'est un raccourci pour ``<code>+SSLv3 +TLSv1</code>'' ou - à partir
-    de la version 1.0.1 d'OpenSSL - ``<code>+SSLv3 +TLSv1 +TLSv1.1
+    C'est un raccourci pour ``<code>+SSLv3 +TLSv1</code>'' ou, à partir
+    de la version 1.0.1 d'OpenSSL, ``<code>+SSLv3 +TLSv1 +TLSv1.1
     +TLSv1.2</code>'' (sauf si OpenSSL a été compilé avec l'option
     ``no-ssl3'', auquel cas <code>all</code> n'inclura pas
     <code>+SSLv3</code>).</p></li>
 </ul>
 <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">SSLProtocol TLSv1</pre>
+</div>
+<div class="note">
+<h3>La directive <code class="directive">SSLProtocol</code> et les serveurs virtuels
+basés sur le nom</h3>
+<p>
+Avant OpenSSL 1.1.1, et même si l'indication du nom de serveur (Server Name
+Indication ou SNI) permettait de déterminer le serveur virtuel cible assez tôt
+au cours de la négociation TLS, il était impossible de changer de version de
+protocole TLS à ce point, si bien que le <code class="directive">SSLProtocol</code>
+négocié se basait toujours sur celui du <em>serveur virtuel de base</em> (le
+premier serveur virtuel déclaré avec le couple <code>IP:port</code> de la
+connexion).
+</p>
+<p>
+A partir de la version 2.5.1, si le serveur HTTP Apache est compilé avec une
+version 1.1.1. ou supérieure d'OpenSSL, et si le client fournit la SNI dans la
+négociation TLS, le <code class="directive">SSLProtocol</code> de chaque serveur virtuel
+(basé sur le nom) pourra être pris en compte et le sera.
+</p>
+<p>
+A des fins de compatibilité avec les versions précédentes, si un serveur virtuel
+basé sur le nom n'a aucune directive <code class="directive">SSLProtocol</code> définie,
+c'est le protocole du serveur virtuel de base qui s'appliquera, <strong>à
+moins</strong> qu'une directive <code class="directive">SSLProtocol</code> ne soit
+configurée au niveau global, auquel cas c'est le protocole défini par cette
+directive qui s'appliquera (ce dernier cas relève cependant plus d'un
+comportement logique que d'un souci de compatibilité).
+</p>
 </div>
 
 </div>

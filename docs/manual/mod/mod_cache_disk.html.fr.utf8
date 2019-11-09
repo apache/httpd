@@ -120,7 +120,7 @@ sous-répertoires</td></tr>
 
     <div class="note">
       <p>La valeur du produit <code class="directive">CacheDirLevels</code> *
-      <code class="directive"><a href="#cachedirlength">CacheDirLength</a></code> ne
+      <code class="directive">CacheDirLength</code> ne
       doit pas dépasser 20.</p>
     </div>
 

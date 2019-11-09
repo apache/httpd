@@ -1543,7 +1543,7 @@ développe le répertoire home sans tenir compte de la présence ou de la
 configuration du module <code class="module"><a href="../mod/mod_userdir.html">mod_userdir</a></code>.</p>
 
 <p> Ce développement n'est pas effectué si le drapeau <em>PT</em> est
-utilisé dans la directive <code class="directive"><a href="#rewriterule">RewriteRule</a></code></p>
+utilisé dans la directive <code class="directive">RewriteRule</code></p>
 </div>
 
      <p>Voici toutes les combinaisons de substitution et leurs

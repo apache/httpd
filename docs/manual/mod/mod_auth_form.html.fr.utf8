@@ -432,18 +432,18 @@ des modules de plus bas niveau</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nom du champ de formulaire contenant le corps de la
 requête à effectuer en cas de connexion réussie</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthFormBody <var>nom du champ</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>httpd_body</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthFormBody httpd_body</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
 </table>
-    <p>La directive <code class="directive"><a href="#authformbody">AuthFormBody</a></code>
+    <p>La directive <code class="directive">AuthFormBody</code>
     spécifie le nom du champ HTML qui, s'il existe, contiendra le corps
     de la requête à effectuer en cas de connexion réussie.</p>
 
-    <p>En ajoutant au formulaire les champs décrits dans <code class="directive"><a href="#authformmethod">AuthFormMethod</a></code>, <code class="directive"><a href="#authformmimetype">AuthFormMimetype</a></code> et <code class="directive"><a href="#authformbody">AuthFormBody</a></code>, un site web sera en
+    <p>En ajoutant au formulaire les champs décrits dans <code class="directive"><a href="#authformmethod">AuthFormMethod</a></code>, <code class="directive"><a href="#authformmimetype">AuthFormMimetype</a></code> et <code class="directive">AuthFormBody</code>, un site web sera en
     mesure de relancer une requête qui a été éventuellement interrompue
     par l'écran de connexion, ou par l'expiration d'un délai de
     session.</p>
@@ -454,7 +454,7 @@ requête à effectuer en cas de connexion réussie</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Désactive l'en-tête CacheControl no-store sur la page de
 connexion</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthFormDisableNoStore <var>On|Off</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthFormDisableNoStore On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthFormDisableNoStore Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>AuthConfig</td></tr>
@@ -462,7 +462,7 @@ connexion</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
 </table>
-    <p>Le drapeau <code class="directive"><a href="#authformdisablenostore">AuthFormDisableNoStore</a></code> supprime
+    <p>Le drapeau <code class="directive">AuthFormDisableNoStore</code> supprime
     l'envoi d'un en-tête <code>Cache-Control no-store</code> lorsqu'une
     page avec code d'erreur 401 est renvoyée, si l'utilisateur n'est pas
     encore connecté. Avec cette en-tête, il est plus difficile pour une
@@ -477,7 +477,7 @@ connexion</td></tr>
 <div class="directive-section"><h2><a name="authformfakebasicauth" id="authformfakebasicauth">Directive</a> <a name="AuthFormFakeBasicAuth" id="AuthFormFakeBasicAuth">AuthFormFakeBasicAuth</a> <a title="Lien permanent" href="#authformfakebasicauth" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Simule une en-tête d'authentification de base</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthFormFakeBasicAuth <var>On|Off</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthFormFakeBasicAuth On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthFormFakeBasicAuth Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>AuthConfig</td></tr>
@@ -485,7 +485,7 @@ connexion</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
 </table>
-    <p>Le drapeau <code class="directive"><a href="#authformfakebasicauth">AuthFormFakeBasicAuth</a></code>
+    <p>Le drapeau <code class="directive">AuthFormFakeBasicAuth</code>
     détermine si une en-tête d'<code>Authentification de base</code>
     sera ajoutée aux en-têtes de la requête. On peut utiliser cette
     méthode pour présenter le nom d'utilisateur et le mot de passe à
@@ -502,14 +502,14 @@ connexion</td></tr>
 laquelle l'utilisateur sera redirigé en cas de connexion
 réussie</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthFormLocation <var>nom du champ</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>httpd_location</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthFormLocation httpd_location</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
 </table>
-    <p>La directive <code class="directive"><a href="#authformlocation">AuthFormLocation</a></code>
+    <p>La directive <code class="directive">AuthFormLocation</code>
     spécifie le nom du champ HTML qui, s'il existe, contiendra l'URL
     vers laquelle rediriger le navigateur en cas de connexion
     réussie.</p>
@@ -530,14 +530,14 @@ authentification est requise</td></tr>
 Apache. L'interprétation des expressions rationnelles est supportée
 depuis la version 2.4.4.</td></tr>
 </table>
-    <p>La directive <code class="directive"><a href="#authformloginrequiredlocation">AuthFormLoginRequiredLocation</a></code>
+    <p>La directive <code class="directive">AuthFormLoginRequiredLocation</code>
     spécifie l'URL vers laquelle l'utilisateur devra être
     redirigé s'il n'est pas autorisé à accéder à une page. Sa valeur est
     interprétée via l'interpréteur <a href="../expr.html">ap_expr</a>
     avant d'être envoyée au client. Par défaut,
     si un utilisateur n'est pas autorisé à accéder à une page, le code
     de réponse HTTP <code>HTTP_UNAUTHORIZED</code> est renvoyé avec la
-    page spécifiée par la directive <code class="directive"><a href="../mod/core.html#errordocument">ErrorDocument</a></code>. La directive <code class="directive"><a href="#authformloginrequiredlocation">AuthFormLoginRequiredLocation</a></code>
+    page spécifiée par la directive <code class="directive"><a href="../mod/core.html#errordocument">ErrorDocument</a></code>. La directive <code class="directive">AuthFormLoginRequiredLocation</code>
     permet de remplacer cette valeur par défaut.</p>
 
     <p>Vous pouvez utiliser cette directive si vous voulez présenter une
@@ -560,7 +560,7 @@ de connexion réussie</td></tr>
 Apache. L'interprétation des expressions rationnelles est supportée
 depuis la version 2.4.4.</td></tr>
 </table>
-    <p>La directive <code class="directive"><a href="#authformloginsuccesslocation">AuthFormLoginSuccessLocation</a></code>
+    <p>La directive <code class="directive">AuthFormLoginSuccessLocation</code>
     spécifie l'URL vers laquelle l'utilisateur doit être
     redirigé en cas de connexion réussie. Sa valeur est
     interprétée via l'interpréteur <a href="../expr.html">ap_expr</a>
@@ -589,7 +589,7 @@ après s'être déconnecté</td></tr>
 Apache. L'interprétation des expressions rationnelles est supportée
 depuis la version 2.4.4.</td></tr>
 </table>
-    <p>La directive <code class="directive"><a href="#authformlogoutlocation">AuthFormLogoutLocation</a></code>
+    <p>La directive <code class="directive">AuthFormLogoutLocation</code>
     spécifie l'URL de la page du serveur vers laquelle l'utilisateur
     devra être redirigé s'il se déconnecte. Sa valeur est
     interprétée via l'interpréteur <a href="../expr.html">ap_expr</a>
@@ -621,18 +621,18 @@ depuis la version 2.4.4.</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nom du champ de formulaire contenant la méthode de la
 requête à effectuer en cas de connexion réussie</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthFormMethod <var>nom du champ</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>httpd_method</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthFormMethod httpd_method</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
 </table>
-    <p>La directive <code class="directive"><a href="#authformmethod">AuthFormMethod</a></code>
+    <p>La directive <code class="directive">AuthFormMethod</code>
     spécifie le nom du champ HTML qui, s'il existe, contiendra le type
     MIME de la requête à effectuer en cas de connexion réussie.</p>
 
-    <p>En ajoutant au formulaire les champs décrits dans <code class="directive"><a href="#authformmethod">AuthFormMethod</a></code>, <code class="directive"><a href="#authformmimetype">AuthFormMimetype</a></code> et <code class="directive"><a href="#authformbody">AuthFormBody</a></code>, un site web sera en
+    <p>En ajoutant au formulaire les champs décrits dans <code class="directive">AuthFormMethod</code>, <code class="directive"><a href="#authformmimetype">AuthFormMimetype</a></code> et <code class="directive"><a href="#authformbody">AuthFormBody</a></code>, un site web sera en
     mesure de relancer une requête qui a été éventuellement interrompue
     par l'écran de connexion, ou par l'expiration d'un délai de
     session.</p>
@@ -645,18 +645,18 @@ requête à effectuer en cas de connexion réussie</td></tr>
 corps de la requête à effectuer en cas de connexion
 réussie</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthFormMimetype <var>nom du champ</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>httpd_mimetype</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthFormMimetype httpd_mimetype</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
 </table>
-    <p>La directive <code class="directive"><a href="#authformmimetype">AuthFormMimetype</a></code>
+    <p>La directive <code class="directive">AuthFormMimetype</code>
     spécifie le nom du champ HTML qui, s'il existe, contiendra le type
     MIME de la requête à effectuer en cas de connexion réussie.</p>
 
-    <p>En ajoutant au formulaire les champs décrits dans <code class="directive"><a href="#authformmethod">AuthFormMethod</a></code>, <code class="directive"><a href="#authformmimetype">AuthFormMimetype</a></code> et <code class="directive"><a href="#authformbody">AuthFormBody</a></code>, un site web sera en
+    <p>En ajoutant au formulaire les champs décrits dans <code class="directive"><a href="#authformmethod">AuthFormMethod</a></code>, <code class="directive">AuthFormMimetype</code> et <code class="directive"><a href="#authformbody">AuthFormBody</a></code>, un site web sera en
     mesure de relancer une requête qui a été éventuellement interrompue
     par l'écran de connexion, ou par l'expiration d'un délai de
     session.</p>
@@ -668,14 +668,14 @@ réussie</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nom du champ de formulaire qui contient le mot de passe
 de connexion</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthFormPassword <var>nom du champ</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>httpd_password</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthFormPassword httpd_password</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
 </table>
-    <p>La directive <code class="directive"><a href="#authformpassword">AuthFormPassword</a></code> permet de
+    <p>La directive <code class="directive">AuthFormPassword</code> permet de
     spécifier le nom du champ HTML qui, s'il existe, contiendra le mot
     de passe qui sera utilisé pour la connexion.</p>
 
@@ -730,7 +730,7 @@ trafic</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
 </table>
-    <p>La directive <code class="directive"><a href="#authformsitepassphrase">AuthFormSitePassphrase</a></code>
+    <p>La directive <code class="directive">AuthFormSitePassphrase</code>
     spécifie un mot de passe qui, s'il est présent dans la session
     utilisateur, indique à Apache httpd de court-circuiter l'authentification
     pour l'URL considérée. On peut l'utiliser dans le cas de sites web à
@@ -764,13 +764,13 @@ trafic</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La taille maximale en octets du formulaire dont seront
 extraites les informations de connexion</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthFormSize <var>taille</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>8192</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthFormSize 8192</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
 </table>
-    <p>La directive <code class="directive"><a href="#authformsize">AuthFormSize</a></code> spécifie
+    <p>La directive <code class="directive">AuthFormSize</code> spécifie
     la taille maximale du corps de la requête qui sera utilisée pour
     trouver le formulaire de connexion.</p>
 
@@ -790,14 +790,14 @@ extraites les informations de connexion</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nom du champ de formulaire qui contient le nom de
 connexion</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthFormUsername <var>nom du champ</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>httpd_username</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthFormUsername httpd_username</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.3 du serveur HTTP Apache</td></tr>
 </table>
-    <p>La directive <code class="directive"><a href="#authformusername">AuthFormUsername</a></code> permet de
+    <p>La directive <code class="directive">AuthFormUsername</code> permet de
     spécifier le nom du champ HTML qui, s'il existe, contiendra le nom
     d'utilisateur qui sera utilisé pour la connexion.</p>
 

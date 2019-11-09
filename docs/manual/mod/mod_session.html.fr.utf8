@@ -457,7 +457,7 @@ ignorée</td></tr>
     ciblant de manière plus précise l'espace d'URL pour lequel une
     session devra être maintenue. Par défaut, toutes les URLs du
     contexte ou du conteneur courant sont incluses dans la session. La
-    directive <code class="directive"><a href="#sessionexclude">SessionExclude</a></code>
+    directive <code class="directive">SessionExclude</code>
     l'emporte sur la directive <code class="directive"><a href="#sessioninclude">SessionInclude</a></code>.</p>
 
     <div class="warning"><h3>Avertissement</h3>

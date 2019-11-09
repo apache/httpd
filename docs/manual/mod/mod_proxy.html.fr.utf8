@@ -605,7 +605,7 @@ serveur HTTP Apache</td></tr>
         <p>Les définitions au niveau du serveur principal constituent
 	les définitions par défaut au niveau des serveurs virtuels.</p>
 	<p>La désactivation de ProxyPassInherit désactive aussi la
-	directive <code class="directive"><a href="#balancerinherit">BalancerInherit</a></code>.</p>
+	directive <code class="directive">BalancerInherit</code>.</p>
     
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1276,10 +1276,10 @@ ProxyPass "/mirror/foo" "http://backend.example.com"</pre>
     chronologie de prise en compte.</p>
 
     <div class="warning"><h3>Ordre de classement des directives ProxyPass</h3>
-      <p>Les directives <code class="directive"><a href="#proxypass">ProxyPass</a></code> et <code class="directive"><a href="#proxypassmatch">ProxyPassMatch</a></code> sont évaluées dans
+      <p>Les directives <code class="directive">ProxyPass</code> et <code class="directive"><a href="#proxypassmatch">ProxyPassMatch</a></code> sont évaluées dans
       l'ordre de leur apparition dans le fichier de configuration. La
       première règle qui correspond s'applique. Vous devez donc en
-      général classer les règles <code class="directive"><a href="#proxypass">ProxyPass</a></code> qui entrent en conflit de
+      général classer les règles <code class="directive">ProxyPass</code> qui entrent en conflit de
       l'URL la plus longue à la plus courte. Dans le cas contraire, les
       règles situées après une règle dont l'URL correspond au début de
       leur propre URL seront ignorées. Notez que tout ceci est en
@@ -1289,7 +1289,7 @@ ProxyPass "/mirror/foo" "http://backend.example.com"</pre>
     <div class="warning"><h3>Chronologie de prise en compte des directives
     ProxyPass au sein des sections Locations</h3>
       <p>On ne peut placer
-      qu'une seule directive <code class="directive"><a href="#proxypass">ProxyPass</a></code> dans une section
+      qu'une seule directive <code class="directive">ProxyPass</code> dans une section
       <code class="directive"><a href="../mod/core.html#location">Location</a></code>, et c'est la section
       la plus spécifique qui l'emportera.</p>
      </div>
@@ -2244,7 +2244,7 @@ direct</td></tr>
 
     <div class="warning"><h3>Avertissement</h3>
       <p>N'activez pas la fonctionnalité de mandataire avec la directive
-      <code class="directive"><a href="#proxyrequests">ProxyRequests</a></code> avant
+      <code class="directive">ProxyRequests</code> avant
       d'avoir <a href="#access">sécurisé votre serveur</a>. Les serveurs
       mandataires ouverts sont dangereux non seulement pour votre
       réseau, mais aussi pour l'Internet au sens large.</p>

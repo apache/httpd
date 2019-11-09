@@ -210,7 +210,7 @@
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_crypto</td></tr>
 </table>
-    <p>La directive <code class="directive"><a href="#cryptodriver">CryptoDriver</a></code>
+    <p>La directive <code class="directive">CryptoDriver</code>
     permet de spécifier le nom du pilote crypto à utiliser. Un pilote recommandé
     par défaut est en général défini pour chaque plateforme. Les pilotes
     supportés sont <strong>openssl</strong>, <strong>commoncrypto</strong> et
@@ -282,7 +282,7 @@ filtre crypto doit utiliser</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_crypto</td></tr>
 </table>
-    <p>La directive <code class="directive"><a href="#cryptosize">CryptoSize</a></code> permet
+    <p>La directive <code class="directive">CryptoSize</code> permet
     de spécifier la quantité de données en octets qui sera mise en tampon pour
     chaque requête avant d'être chiffrée ou déchiffrée. La valeur par défaut est
     128 Ko.</p>

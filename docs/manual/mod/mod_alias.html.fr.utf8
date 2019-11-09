@@ -245,16 +245,16 @@ en faisant intervenir les expressions rationnelles</td></tr>
     <pre class="prettyprint lang-config">AliasMatch "(?i)^/image(.*)" "/ftp/pub/image$1"</pre>
 
 
-    <p>Il existe une différence subtile entre <code class="directive"><a href="#alias">Alias</a></code> et <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> : <code class="directive"><a href="#alias">Alias</a></code> copie automatiquement toute
+    <p>Il existe une différence subtile entre <code class="directive"><a href="#alias">Alias</a></code> et <code class="directive">AliasMatch</code> : <code class="directive"><a href="#alias">Alias</a></code> copie automatiquement toute
     portion supplémentaire de l'URI située après la partie du modèle qui
     correspond, à la fin du chemin du fichier de la partie droite, alors
-    que <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> ne le fait
+    que <code class="directive">AliasMatch</code> ne le fait
     pas. Cela signifie qu'il sera préférable dans la plupart des cas de
     comparer l'expression rationnelle du modèle à la totalité de l'URI
     de la requête, et d'utiliser les substitutions dans la partie
     droite.</p>
 
-    <p>En d'autres termes, le remplacement d'<code class="directive"><a href="#alias">Alias</a></code> par <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> ne produira pas le même
+    <p>En d'autres termes, le remplacement d'<code class="directive"><a href="#alias">Alias</a></code> par <code class="directive">AliasMatch</code> ne produira pas le même
     résultat. Au minimum, vous devez ajouter <code>^</code> au début de
     l'expression rationnelle, <code>(.*)$</code> à sa fin et
     <code>$1</code> à la fin de la chaîne de remplacement.</p>
@@ -278,7 +278,7 @@ en faisant intervenir les expressions rationnelles</td></tr>
     <pre class="prettyprint lang-config">AliasMatch "^/image/(.*)$" "/ftp/pub/image/$1"</pre>
 
 
-    <p>Bien entendu, il n'y a aucune raison d'utiliser <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> dans le cas où <code class="directive"><a href="#alias">Alias</a></code> suffit. <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> vous permet d'effectuer
+    <p>Bien entendu, il n'y a aucune raison d'utiliser <code class="directive">AliasMatch</code> dans le cas où <code class="directive"><a href="#alias">Alias</a></code> suffit. <code class="directive">AliasMatch</code> vous permet d'effectuer
     des choses beaucoup plus sophistiquées. Par exemple, vous pouvez
     servir différentes sortes de fichiers à partir de répertoires
     différents :</p>
@@ -449,7 +449,7 @@ courante</td></tr>
 
 
     <p>Les remarques à propos de la différence entre <code class="directive"><a href="#alias">Alias</a></code> et <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> s'appliquent aussi à la
-    différence entre les directives <code class="directive"><a href="#redirect">Redirect</a></code> et <code class="directive"><a href="#redirectmatch">RedirectMatch</a></code>. Voir la directive
+    différence entre les directives <code class="directive"><a href="#redirect">Redirect</a></code> et <code class="directive">RedirectMatch</code>. Voir la directive
     <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> pour plus de
     détails.</p>
 
@@ -628,7 +628,7 @@ comme un script CGI</td></tr>
 
 
     <p>Les remarques à propos de la différence entre <code class="directive"><a href="#alias">Alias</a></code> et <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> s'appliquent aussi à la
-    différence entre les directives <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> et <code class="directive"><a href="#scriptaliasmatch">ScriptAliasMatch</a></code>. Voir la directive
+    différence entre les directives <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> et <code class="directive">ScriptAliasMatch</code>. Voir la directive
     <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> pour plus de
     détails.</p>
 

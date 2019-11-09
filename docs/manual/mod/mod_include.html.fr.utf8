@@ -1033,7 +1033,7 @@ générés par le serveur.</td></tr>
         <dt><code>on</code></dt>
         <dd>L'en-tête <code>Last-Modified</code> sera respecté s'il est
 	déjà présent, et ajouté à la réponse si cette dernière est un
-	fichier et si l'en-tête est manquant. La directive <code class="directive"><a href="#ssilastmodified">SSILastModified</a></code> l'emporte sur
+	fichier et si l'en-tête est manquant. La directive <code class="directive">SSILastModified</code> l'emporte sur
 	la directive <code class="directive"><a href="#xbithack">XBitHack</a></code>.</dd>
 
       </dl>
@@ -1191,7 +1191,7 @@ d'exécution est positionné</td></tr>
 
       <p>Lorsqu'elle est définie à <code>on</code>, la directive
       <code class="directive"><a href="#ssilastmodified">SSILastModified</a></code>
-      l'emporte sur la directive <code class="directive"><a href="#xbithack">XBitHack</a></code>.</p>
+      l'emporte sur la directive <code class="directive">XBitHack</code>.</p>
       </div>
 
       </dd>

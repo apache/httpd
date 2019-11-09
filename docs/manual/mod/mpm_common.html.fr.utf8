@@ -744,7 +744,7 @@ processus</td></tr>
     continuer à s'exécuter pour terminer le traitement des connexions ouvertes.    
     Au cours d'un redémarrage, vous pouvez
     modifier la valeur de la directive <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers</a></code>, alors que toute
-    tentative de modification de la valeur de la directive <code class="directive"><a href="#serverlimit">ServerLimit</a></code> sera ignorée.</p>
+    tentative de modification de la valeur de la directive <code class="directive">ServerLimit</code> sera ignorée.</p>
 
     <p>Cette directive doit être utilisée avec précaution. Si
     <code class="directive">ServerLimit</code> est définie à une valeur beaucoup
@@ -756,13 +756,13 @@ processus</td></tr>
 
     <p>Avec les MPMs <code class="module"><a href="../mod/prefork.html">prefork</a></code> et <code class="module"><a href="../mod/event.html">event</a></code>, n'utilisez cette directive
     que si vous devez définir <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers</a></code> à une valeur supérieure à
-    256 (valeur par défaut). N'affectez pas à la directive <code class="directive"><a href="#serverlimit">ServerLimit</a></code> une valeur supérieure à
+    256 (valeur par défaut). N'affectez pas à la directive <code class="directive">ServerLimit</code> une valeur supérieure à
     celle que vous avez prévu d'affecter à la directive <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers</a></code>.</p>
 
     <p>Avec <code class="module"><a href="../mod/worker.html">worker</a></code>, n'utilisez cette directive que si
     la définition de vos directives <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers</a></code> et <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code> nécessitent plus de
     16 processus serveurs (valeur par défaut). N'affectez pas à la
-    directive <code class="directive"><a href="#serverlimit">ServerLimit</a></code> une
+    directive <code class="directive">ServerLimit</code> une
     valeur supérieure au nombre de processus requis pour la définition
     des directives <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers
     </a></code> et <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>.</p>
@@ -845,8 +845,8 @@ processus enfant</td></tr>
     <p>Cette directive permet de définir le nombre maximum que l'on peut
     affecter à la directive <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code> pour la durée de vie
     du processus Apache httpd. La directive  <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code> peut être modifiée
-    au cours d'un redémarrage jusqu'à la valeur de la directive <code class="directive"><a href="#threadlimit">ThreadLimit</a></code>, mais toute tentative
-    de modification de la directive <code class="directive"><a href="#threadlimit">ThreadLimit</a></code> au cours d'un
+    au cours d'un redémarrage jusqu'à la valeur de la directive <code class="directive">ThreadLimit</code>, mais toute tentative
+    de modification de la directive <code class="directive">ThreadLimit</code> au cours d'un
     redémarrage sera ignorée.</p>
 
     <p>L'utilisation de cette directive doit faire l'objet de

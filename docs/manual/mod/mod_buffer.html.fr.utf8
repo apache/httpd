@@ -94,7 +94,7 @@ d'Apache</td></tr></table>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_buffer</td></tr>
 </table>
-    <p>La directive <code class="directive"><a href="#buffersize">BufferSize</a></code> permet de spécifier la
+    <p>La directive <code class="directive">BufferSize</code> permet de spécifier la
     quantité de données en octets qui sera mise en tampon avant d'être
     lue depuis ou écrite vers chaque requête. La valeur par défaut est
     128 ko.</p>
