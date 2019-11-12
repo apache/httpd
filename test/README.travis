@@ -11,13 +11,15 @@ The Travis scripts use the following environment variables:
   if APR_VERSION is set
 
 * APU_VERSION - if set, APR-util of this version is built and
-  installed in $HOME/root/apu-$APU_VERSION (trunk means trunk is used)
+  installed in $HOME/root/apu-$APU_VERSION
 
 * APU_CONFIG - arguments to pass when running APR-util's configure
   script if APU_VERSION is set
 
 * CONFIG - arguments to pass to httpd's configure script.
 
+* BUILDCONFIG - arguments to pass when running httpd's ./buildconf script
+  
 * SKIP_TESTING - if set, the Perl test framework is not run for the
   build.
 
@@ -30,3 +32,18 @@ Anything installed into the $HOME/root directory is cached - notably,
 versions of APR/APR-util are installed here and cached across httpd
 build jobs without needing to be rebuilt every time.
 
+TODO list
+---------
+
+* MacOS build
+* Windows build
+* clang-on-Linux build
+* Build using APR non-trunk branches (1.7.x etc)
+   - need to make the ~/root/apr-trunk caching logic work for non-trunk branches
+* Multi-arch testing
+* Use containers for non-Ubuntu-based Linux testing
+* E-mail notifications
+* IRC notifications
+* VPATH builds
+* sanity checks for use of APLOGNO() - empty arguments, accidental duplicates, etc.
+ - not sure how exactly
