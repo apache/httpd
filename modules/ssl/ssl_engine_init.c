@@ -680,7 +680,7 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
 #if SSL_HAVE_PROTOCOL_TLSV1_3
     if (SSL_HAVE_PROTOCOL_TLSV1_3 && (protocol & SSL_PROTOCOL_TLSV1_3)) {
         prot = TLS1_3_VERSION;
-    } else  
+    } else
 #endif
     if (protocol & SSL_PROTOCOL_TLSV1_2) {
         prot = TLS1_2_VERSION;
