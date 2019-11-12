@@ -1,6 +1,8 @@
 language: c
 os:
   - linux
+dist:
+  - bionic
 cache:
   directories:
     - /home/travis/perl5
@@ -35,14 +37,8 @@ matrix:
     - name: Linux Ubuntu, Shared MPMs, all-modules
       env: CONFIG="--enable-mods-shared=reallyall --enable-mpms-shared=all"
     # -------------------------------------------------------------------------
-    - name: Linux Ubuntu Bionic, all-modules
+    - name: Linux Ubuntu, GCC 7 maintainer-mode w/-Werror
       os: linux
-      dist: bionic
-      env: CONFIG="--enable-mods-shared=reallyall"
-    # -------------------------------------------------------------------------
-    - name: Linux Ubuntu Bionic, GCC 7 maintainer-mode w/-Werror
-      os: linux
-      dist: bionic
       env: CONFIG="--enable-mods-shared=reallyall --enable-maintainer-mode NOTEST_CFLAGS=-Werror CC=gcc-7"
            SKIP_TESTING=1
     # -------------------------------------------------------------------------
@@ -66,10 +62,16 @@ matrix:
             - libnghttp2-dev
             - libjansson-dev
     # -------------------------------------------------------------------------
-    - if: branch = trunk
+    - if: branch != 2.4.x
       name: Linux Ubuntu, APR trunk
       env: APR_VERSION=trunk APR_CONFIG="--with-crypto"
            CONFIG="--enable-mods-shared=reallyall"
+    # -------------------------------------------------------------------------
+    - if: branch = 2.4.x
+      name: Linux Ubuntu Xenial, all-modules
+      os: linux
+      dist: xenial
+      env: CONFIG="--enable-mods-shared=reallyall"
     # -------------------------------------------------------------------------
     - name: Linux Ubuntu, APR 1.7.0, APR-util 1.6.1
       env: APR_VERSION=1.7.0 APU_VERSION=1.6.1
@@ -82,7 +84,8 @@ matrix:
            APU_CONFIG="--with-crypto"
            CONFIG="--enable-mods-shared=reallyall"
     # -------------------------------------------------------------------------
-    - name: Linux Ubuntu, APR 1.5.1, APR-util 1.5.4
+    - if: branch = 2.4.x
+      name: Linux Ubuntu, APR 1.5.1, APR-util 1.5.4
       env: APR_VERSION=1.5.1 APU_VERSION=1.5.4
            CONFIG="--enable-mods-shared=reallyall"
     # -------------------------------------------------------------------------

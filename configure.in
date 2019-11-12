@@ -96,8 +96,8 @@ else
   APR_FIND_APR("$srcdir/srclib/apr", "./srclib/apr", 1, 1 2, [
     version=`$apr_config --version`
     case x${version} in
-    x1.[[0-3]].*) 
-      AC_MSG_WARN([APR version 1.4.0 or later is required, found $version])
+    x1.[[0-5]].*)
+      AC_MSG_WARN([APR version 1.6.0 or later is required, found $version])
       apr_acceptable=no
       ;;
     esac
