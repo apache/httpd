@@ -20,6 +20,7 @@ addons:
       - libsystemd-dev
       - libnghttp2-dev
       - libjansson-dev
+      - libpcre2-dev
 
 matrix:
   include:
@@ -42,6 +43,10 @@ matrix:
       env: CONFIG="--enable-mods-shared=reallyall --enable-maintainer-mode NOTEST_CFLAGS=-Werror CC=gcc-7"
            SKIP_TESTING=1
     # -------------------------------------------------------------------------
+    - name: Linux Ubuntu, PCRE 1, GCC 7 maintainer-mode w/-Werror
+      os: linux
+      env: CONFIG="--enable-mods-shared=reallyall --with-pcre=/usr/bin/pcre-config --enable-maintainer-mode NOTEST_CFLAGS=-Werror CC=gcc-7"
+    # -------------------------------------------------------------------------
     - name: Linux Ubuntu, GCC 8 maintainer-mode w/-Werror
       env: CONFIG="--enable-mods-shared=reallyall --enable-maintainer-mode NOTEST_CFLAGS=-Werror CC=gcc-8"
            SKIP_TESTING=1
@@ -61,6 +66,7 @@ matrix:
             - libsystemd-dev
             - libnghttp2-dev
             - libjansson-dev
+            - libpcre2-dev
     # -------------------------------------------------------------------------
     - name: Linux Ubuntu, Regenerate ap_expr
       os: linux
