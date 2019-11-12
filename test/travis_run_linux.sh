@@ -1,7 +1,7 @@
 #!/bin/bash -ex
 ### Installed apr/apr-util don't include the *.m4 files but the
 ### Debian packages helpfully install them, so use the system APR to buildconf
-./buildconf --with-apr=/usr/bin/apr-1-config
+./buildconf --with-apr=/usr/bin/apr-1-config ${BUILDCONFIG}
 # For trunk, "make check" is sufficient to run the test suite.
 # For 2.4.x, the test suite must be run manually
 if test ! -v SKIP_TESTING; then

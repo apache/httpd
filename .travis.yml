@@ -62,6 +62,11 @@ matrix:
             - libnghttp2-dev
             - libjansson-dev
     # -------------------------------------------------------------------------
+    - name: Linux Ubuntu, Regenerate ap_expr
+      os: linux
+      env: CONFIG="--enable-mods-shared=reallyall --enable-maintainer-mode NOTEST_CFLAGS=-Werror"
+           BUILDCONFIG="--with-regen-expr"
+    # -------------------------------------------------------------------------
     - if: branch != 2.4.x
       name: Linux Ubuntu, APR trunk
       env: APR_VERSION=trunk APR_CONFIG="--with-crypto"

@@ -37,6 +37,10 @@ esac
 apr_src_dir="srclib/apr ../apr"
 apu_src_dir=""
 
+# By default, touch the checked-in sources to suppress regeneration of
+# the ap_expr parser.
+regen_expr=no
+
 while test $# -gt 0 
 do
     # Normalize
@@ -54,6 +58,10 @@ do
         apu_src_dir=$optarg
         ;;
 
+    --with-regen-expr)
+        regen_expr=yes
+        ;;
+    
     -h|--help)
         cat <<EOF
 buildconf: generates the files needed to configure httpd.
@@ -73,6 +81,9 @@ Configuration:
                            same location as the --with-apr SRCDIR, but with
                            "apr" replaced with "apr-util" or "aprutil". Ignored
                            in APR-Config Mode.
+
+  --with-regen-expr        suppress the timestamp adjustment which prevents the 
+                           rebuild of the ap_expr expression parser
 
 APR-Config Mode:
 
@@ -316,13 +327,18 @@ if [ -f `which cut` ]; then
     > httpd.spec )
 fi
 
-# ensure that the ap_expr expression parser sources are never regenerated
-# when running make
-echo fixing timestamps for ap_expr sources
-cd server
-touch util_expr_parse.y util_expr_scan.l
-sleep 1
-touch util_expr_parse.c util_expr_parse.h util_expr_scan.c
-cd ..
+if [ x$regen_expr = xno ]; then
+    # ensure that the ap_expr expression parser sources are never regenerated
+    # when running make
+    echo buildconf: Fixing timestamps for ap_expr sources to prevent regeneration
+    cd server
+    touch util_expr_parse.y util_expr_scan.l
+    sleep 1
+    touch util_expr_parse.c util_expr_parse.h util_expr_scan.c
+    cd ..
+else
+    echo buildconf: Fixing timestamps for ap_expr sources to ensure regeneration
+    touch server/util_expr_parse.[yl]
+fi
 
 exit 0
