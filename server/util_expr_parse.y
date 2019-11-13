@@ -98,22 +98,22 @@
 %right  T_OP_NOT
 %right  T_OP_CONCAT
 
-%type   <exVal>   cond              "condition"
-%type   <exVal>   comp              "comparison"
-%type   <exVal>   strfunc           "string function"
-%type   <exVal>   listfunc          "list function"
-%type   <exVal>   list              "list"
-%type   <exVal>   words             "words"
-%type   <exVal>   word              "word"
-%type   <exVal>   string            "string"
-%type   <exVal>   substr            "substring"
-%type   <exVal>   var               "variable"
-%type   <exVal>   regex             "match regex"
-%type   <exVal>   regsub            "substitution regex"
-%type   <exVal>   regany            "any regex"
-%type   <exVal>   split             "split"
-%type   <exVal>   join              "join"
-%type   <exVal>   sub               "sub"
+%nterm  <exVal>   cond
+%nterm  <exVal>   comp
+%nterm  <exVal>   strfunc
+%nterm  <exVal>   listfunc
+%nterm  <exVal>   list
+%nterm  <exVal>   words
+%nterm  <exVal>   word
+%nterm  <exVal>   string
+%nterm  <exVal>   substr
+%nterm  <exVal>   var
+%nterm  <exVal>   regex
+%nterm  <exVal>   regsub
+%nterm  <exVal>   regany
+%nterm  <exVal>   split
+%nterm  <exVal>   join
+%nterm  <exVal>   sub
 
 %{
 #include "util_expr_private.h"
