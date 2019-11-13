@@ -68,7 +68,7 @@ static apr_status_t session_cookie_save(request_rec * r, session_rec * z)
                             NULL);
         }
         else {
-            ap_cookie_remove(r, conf->name, conf->name_attrs, r->headers_out,
+            ap_cookie_remove(r, conf->name, conf->name_attrs,
                              r->err_headers_out, NULL);
         }
     }
@@ -82,7 +82,7 @@ static apr_status_t session_cookie_save(request_rec * r, session_rec * z)
         }
         else {
             ap_cookie_remove2(r, conf->name2, conf->name2_attrs,
-                              r->headers_out, r->err_headers_out, NULL);
+                              r->err_headers_out, NULL);
         }
     }
 
