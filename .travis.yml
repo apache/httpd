@@ -117,3 +117,8 @@ before_script:
 
 script:
   - ./test/travis_run_${TRAVIS_OS_NAME}.sh
+
+notifications:
+  irc: "chat.freenode.net#httpd-dev"
+  email:
+    - jorton@apache.org
