@@ -1166,7 +1166,7 @@ URL を調整する</td></tr>
     サーバに組み込まれていなければなりません。</p>
 
     <div class="warning"><h3>警告</h3>
-      <p><a href="#access">サーバを安全にする</a>まで <code class="directive"><a href="#proxyrequests">ProxyRequests</a></code> は有効にしないでください。
+      <p><a href="#access">サーバを安全にする</a>まで <code class="directive">ProxyRequests</code> は有効にしないでください。
       オープンプロキシサーバはあなた自身のネットワークにとっても、
       インターネット全体にとっても危険です。</p>
     </div>

@@ -214,7 +214,7 @@
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_crypto</td></tr>
 </table>
-    <p>The <code class="directive"><a href="#cryptodriver">CryptoDriver</a></code>
+    <p>The <code class="directive">CryptoDriver</code>
     directive specifies the name of the crypto driver to use. There is usually
     a recommended default driver on each platform. Possible values include
     <strong>openssl</strong>, <strong>commoncrypto</strong> and
@@ -280,7 +280,7 @@
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_crypto</td></tr>
 </table>
-    <p>The <code class="directive"><a href="#cryptosize">CryptoSize</a></code>
+    <p>The <code class="directive">CryptoSize</code>
     directive specifies the amount of data in bytes that will be
     buffered before being encrypted or decrypted during each request.
     The default is 128 kilobytes.</p>

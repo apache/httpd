@@ -241,18 +241,18 @@ expressions</td></tr>
 
     <p>One subtle difference
     between <code class="directive"><a href="#alias">Alias</a></code>
-    and <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> is
+    and <code class="directive">AliasMatch</code> is
     that <code class="directive"><a href="#alias">Alias</a></code> will
     automatically copy any additional part of the URI, past the part
     that matched, onto the end of the file path on the right side,
-    while <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> will
+    while <code class="directive">AliasMatch</code> will
     not.  This means that in almost all cases, you will want the
     regular expression to match the entire request URI from beginning
     to end, and to use substitution on the right side.</p>
 
     <p>In other words, just changing
     <code class="directive"><a href="#alias">Alias</a></code> to
-    <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> will not
+    <code class="directive">AliasMatch</code> will not
     have the same effect.  At a minimum, you need to
     add <code>^</code> to the beginning of the regular expression
     and add <code>(.*)$</code> to the end, and add <code>$1</code> to
@@ -275,9 +275,9 @@ expressions</td></tr>
 
 
     <p>Of course, there's no point in
-    using <code class="directive"><a href="#aliasmatch">AliasMatch</a></code>
+    using <code class="directive">AliasMatch</code>
     where <code class="directive"><a href="#alias">Alias</a></code> would
-    work.  <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> lets
+    work.  <code class="directive">AliasMatch</code> lets
     you do more complicated things.  For example, you could
     serve different kinds of files from different directories:</p>
 
@@ -442,7 +442,7 @@ of the current URL</td></tr>
     <code class="directive"><a href="#aliasmatch">AliasMatch</a></code>
     also apply to the difference between
     <code class="directive"><a href="#redirect">Redirect</a></code> and
-    <code class="directive"><a href="#redirectmatch">RedirectMatch</a></code>.
+    <code class="directive">RedirectMatch</code>.
     See <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> for
     details.</p>
 
@@ -619,7 +619,7 @@ and designates the target as a CGI script</td></tr>
     <code class="directive"><a href="#aliasmatch">AliasMatch</a></code>
     also apply to the difference between
     <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> and
-    <code class="directive"><a href="#scriptaliasmatch">ScriptAliasMatch</a></code>.
+    <code class="directive">ScriptAliasMatch</code>.
     See <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> for
     details.</p>
 

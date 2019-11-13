@@ -1148,17 +1148,17 @@ ProxyPass "/mirror/foo"   "http://backend.example.com"</pre>
        guarantee any ordering or override.</p>
 
     <div class="warning"><h3>Ordering ProxyPass Directives</h3>
-      <p>The configured <code class="directive"><a href="#proxypass">ProxyPass</a></code>
+      <p>The configured <code class="directive">ProxyPass</code>
       and <code class="directive"><a href="#proxypassmatch">ProxyPassMatch</a></code>
       rules are checked in the order of configuration. The first rule that
       matches wins. So usually you should sort conflicting
-      <code class="directive"><a href="#proxypass">ProxyPass</a></code> rules starting with the
+      <code class="directive">ProxyPass</code> rules starting with the
       longest URLs first. Otherwise, later rules for longer URLS will be hidden
       by any earlier rule which uses a leading substring of the URL. Note that
       there is some relation with worker sharing.</p>
     </div>
     <div class="warning"><h3>Ordering ProxyPass Directives in Locations</h3>
-      <p>Only one <code class="directive"><a href="#proxypass">ProxyPass</a></code> directive
+      <p>Only one <code class="directive">ProxyPass</code> directive
       can be placed in a <code class="directive"><a href="../mod/core.html#location">Location</a></code> block,
       and the most specific location will take precedence.</p>
     </div>
@@ -1988,7 +1988,7 @@ expressions</td></tr>
     need <code class="module"><a href="../mod/mod_proxy_connect.html">mod_proxy_connect</a></code> enabled in the server.</p>
 
     <div class="warning"><h3>Warning</h3>
-      <p>Do not enable proxying with <code class="directive"><a href="#proxyrequests">ProxyRequests</a></code> until you have <a href="#access">secured your server</a>.  Open proxy servers are dangerous
+      <p>Do not enable proxying with <code class="directive">ProxyRequests</code> until you have <a href="#access">secured your server</a>.  Open proxy servers are dangerous
       both to your network and to the Internet at large.</p>
     </div>
 

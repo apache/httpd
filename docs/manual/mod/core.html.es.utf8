@@ -1244,7 +1244,7 @@ in case of an error</td></tr>
 
     <p>Although most error messages can be overriden, there are certain
     circumstances where the internal messages are used regardless of the
-    setting of <code class="directive"><a href="#errordocument">ErrorDocument</a></code>.  In
+    setting of <code class="directive">ErrorDocument</code>.  In
     particular, if a malformed request is detected, normal request processing
     will be immediately halted and the internal error message returned.
     This is necessary to guard against security problems caused by
@@ -2025,11 +2025,11 @@ wildcard matching available in 2.3.6 and later</td></tr>
 
     <p>When a wildcard is specified for a <strong>file</strong> component of
     the path, and no file matches the wildcard, the
-    <code class="directive"><a href="#include">Include</a></code>
+    <code class="directive">Include</code>
     directive will be <strong>silently ignored</strong>. When a wildcard is
     specified for a <strong>directory</strong> component of the path, and
     no directory matches the wildcard, the
-    <code class="directive"><a href="#include">Include</a></code> directive will
+    <code class="directive">Include</code> directive will
     <strong>fail with an error</strong> saying the directory cannot be found.
     </p>
 
@@ -2042,7 +2042,7 @@ wildcard matching available in 2.3.6 and later</td></tr>
 
     <p>When a directory or file component of the path is
     specified exactly, and that directory or file does not exist,
-    <code class="directive"><a href="#include">Include</a></code> directive will fail with an
+    <code class="directive">Include</code> directive will fail with an
     error saying the file or directory cannot be found.</p>
 
     <p>The file path specified may be an absolute path, or may be relative 
@@ -3568,14 +3568,14 @@ On Windows from Apache 2.3.3 and later.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Controls whether the REDIRECT_URL environment variable is
              fully qualified</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>QualifyRedirectURL ON|OFF</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>QualifyRedirectURL OFF</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>QualifyRedirectURL On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>QualifyRedirectURL Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Override">Anula:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>Directive supported in 2.4.18 and later. 2.4.17 acted
-as if 'QualifyRedirectURL ON' was configured.</td></tr>
+as if 'QualifyRedirectURL On' was configured.</td></tr>
 </table><p>The documentation for this directive has
             not been translated yet. Please have a look at the English
             version.</p></div>

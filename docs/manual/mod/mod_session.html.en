@@ -402,7 +402,7 @@ AuthName "realm"
     website more efficient, by targeting a more precise URL space for which
     a session should be maintained. By default, all URLs within the directory
     or location are included in the session. The
-    <code class="directive"><a href="#sessionexclude">SessionExclude</a></code> directive takes
+    <code class="directive">SessionExclude</code> directive takes
     precedence over the
     <code class="directive"><a href="#sessioninclude">SessionInclude</a></code> directive.</p>
 

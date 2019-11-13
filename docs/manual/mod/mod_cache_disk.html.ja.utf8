@@ -91,7 +91,7 @@
 
     <div class="note">
       <p><code class="directive">CacheDirLevels</code>*
-      <code class="directive"><a href="#cachedirlength">CacheDirLength</a></code> の
+      <code class="directive">CacheDirLength</code> の
       結果は 20 以内でなければなりません。</p>
     </div>
 

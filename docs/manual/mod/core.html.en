@@ -1493,7 +1493,7 @@ ErrorDocument 403 /errors/forbidden.py?referrer=%{escape:%{HTTP_REFERER}}</pre>
 
     <p>Although most error messages can be overridden, there are certain
     circumstances where the internal messages are used regardless of the
-    setting of <code class="directive"><a href="#errordocument">ErrorDocument</a></code>.  In
+    setting of <code class="directive">ErrorDocument</code>.  In
     particular, if a malformed request is detected, normal request processing
     will be immediately halted and the internal error message returned.
     This is necessary to guard against security problems caused by
@@ -2559,7 +2559,7 @@ wildcard matching available in 2.3.6 and later</td></tr>
     wildcard syntax shown below, to include files that match a particular
     pattern, such as *.conf, for example.</p>
 
-    <p>The <code class="directive"><a href="#include">Include</a></code> directive will
+    <p>The <code class="directive">Include</code> directive will
     <strong>fail with an error</strong> if a wildcard expression does not
     match any file. The <code class="directive"><a href="#includeoptional">IncludeOptional</a></code>
     directive can be used if non-matching wildcards should be ignored.</p>
@@ -3212,7 +3212,7 @@ matching URLs</td></tr>
       where multiple adjacent slashes are frequently collapsed to a single
       slash (<em>i.e.</em>, <code>/home///foo</code> is the same as
       <code>/home/foo</code>). In URL-space this is not necessarily true.
-      The <code class="directive"><a href="#locationmatch">&lt;LocationMatch&gt;</a></code>
+      The <code class="directive">&lt;LocationMatch&gt;</code>
       directive and the regex version of <code class="directive">&lt;Location&gt;</code> require you to explicitly specify multiple
       slashes if that is your intention.</p>
 
@@ -3955,7 +3955,7 @@ directory</td></tr>
       change the pathname used to match against <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> sections.</p>
 
       <p>The <code>FollowSymLinks</code> and
-      <code>SymLinksIfOwnerMatch</code> <code class="directive"><a href="#options">Options</a></code> work only in <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> sections or
+      <code>SymLinksIfOwnerMatch</code> <code class="directive">Options</code> work only in <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> sections or
       <code>.htaccess</code> files.</p>
 
       <p>Omitting this option should not be considered a security restriction,
@@ -4007,7 +4007,7 @@ directory</td></tr>
 
       <div class="note"><h3>Note</h3>
       <p>The <code>FollowSymLinks</code> and
-      <code>SymLinksIfOwnerMatch</code> <code class="directive"><a href="#options">Options</a></code> work only in <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> sections or
+      <code>SymLinksIfOwnerMatch</code> <code class="directive">Options</code> work only in <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> sections or
       <code>.htaccess</code> files.</p>
 
       <p>This option should not be considered a security restriction,
@@ -4183,19 +4183,19 @@ directory</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Controls whether the REDIRECT_URL environment variable is
              fully qualified</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>QualifyRedirectURL ON|OFF</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>QualifyRedirectURL OFF</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>QualifyRedirectURL On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>QualifyRedirectURL Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Directive supported in 2.4.18 and later. 2.4.17 acted
-as if 'QualifyRedirectURL ON' was configured.</td></tr>
+as if 'QualifyRedirectURL On' was configured.</td></tr>
 </table>
     <p>This directive controls whether the server will ensure that the 
     REDIRECT_URL environment variable is fully qualified.  By default, 
     the variable contains the verbatim URL requested by the client, 
-    such as "/index.html".  With <code class="directive"><a href="#qualifyredirecturl on">QualifyRedirectURL ON</a></code>, the same request would result in a
+    such as "/index.html".  With <code class="directive">QualifyRedirectURL On</code>, the same request would result in a
     value such as "http://www.example.com/index.html".</p>
     <p>Even without this directive set, when a request is issued against a 
     fully qualified URL, REDIRECT_URL will remain fully qualified.
@@ -4236,17 +4236,26 @@ as if 'QualifyRedirectURL ON' was configured.</td></tr>
             <dt><code>DOLLAR_ENDONLY</code></dt>
             <dd>'$' matches at end of subject string only.</dd>
         </dl>
-        <pre class="prettyprint lang-config"># Add the ICASE option for all regexes by default
+        <pre class="prettyprint lang-config"># Reset all default/defined options
+RegexDefaultOptions none
+# Add the ICASE option for all regexes by default
 RegexDefaultOptions +ICASE
 ...
+# Add the ICASE option to the already applicable ones
+RegexDefaultOptions +ICASE
 # Remove the default DOLLAR_ENDONLY option, but keep any other one
 RegexDefaultOptions -DOLLAR_ENDONLY
 ...
 # Set the DOTALL option only, resetting any other one
 RegexDefaultOptions DOTALL
 ...
-# Reset all defined options
-RegexDefaultOptions none
+# Set the DOTALL and ICASE options only
+# Options are applied in order and blindly, so:
+#   RegexDefaultOptions DOTALL ICASE
+# would not work as possibly expected (ICASE clears DOTALL)
+RegexDefaultOptions none +DOTALL +ICASE
+# or "simply"
+RegexDefaultOptions DOTALL +ICASE
 ...</pre>
 
     
@@ -4439,8 +4448,8 @@ scripts</td></tr>
     so.</p>
     </div>
 
-    <p>The option <code>Registry-Strict</code> which is new in Apache HTTP Server
-    2.0 does the same thing as <code>Registry</code> but uses only the
+    <p>The option <code>Registry-Strict</code>
+    does the same thing as <code>Registry</code> but uses only the
     subkey <code>Shell\ExecCGI\Command</code>. The
     <code>ExecCGI</code> key is not a common one. It must be
     configured manually in the windows registry and hence prevents
@@ -4537,7 +4546,7 @@ to name-virtual hosts</td></tr>
 
 
     <p>Name-based virtual hosts for the best-matching set of  <code class="directive"><a href="#virtualhost">&lt;virtualhost&gt;</a></code>s are processed
-    in the order they appear in the configuration.  The first matching <code class="directive"><a href="#servername">ServerName</a></code> or <code class="directive"><a href="#serveralias">ServerAlias</a></code> is used, with no different precedence for wildcards
+    in the order they appear in the configuration.  The first matching <code class="directive"><a href="#servername">ServerName</a></code> or <code class="directive">ServerAlias</code> is used, with no different precedence for wildcards
     (nor for ServerName vs. ServerAlias).  </p>
 
     <p>The complete list of names in the <code class="directive"><a href="#virtualhost">&lt;VirtualHost&gt;</a></code>
@@ -4718,15 +4727,14 @@ is accessed by an incompatible browser</td></tr>
     actually produced a returned error message.</p>
 
     <p>The <code>Off</code>
-    setting, which is the default, suppresses the footer line (and is
-    therefore compatible with the behavior of Apache-1.2 and
-    below). The <code>On</code> setting simply adds a line with the
+    setting, which is the default, suppresses the footer line.
+    The <code>On</code> setting simply adds a line with the
     server version number and <code class="directive"><a href="#servername">ServerName</a></code> of the serving virtual host,
     and the <code>EMail</code> setting additionally creates a
     "mailto:" reference to the <code class="directive"><a href="#serveradmin">ServerAdmin</a></code> of the referenced
     document.</p>
 
-    <p>After version 2.0.44, the details of the server version number
+    <p>The details of the server version number
     presented are controlled by the <code class="directive"><a href="#servertokens">ServerTokens</a></code> directive.</p>
 
 <h3>See also</h3>
@@ -4786,7 +4794,7 @@ header</td></tr>
     <p>This setting applies to the entire server, and cannot be
     enabled or disabled on a virtualhost-by-virtualhost basis.</p>
 
-    <p>After version 2.0.44, this directive also controls the
+    <p>This directive also controls the
     information presented by the <code class="directive"><a href="#serversignature">ServerSignature</a></code> directive.</p>
 
     <div class="note">Setting <code class="directive">ServerTokens</code> to less than

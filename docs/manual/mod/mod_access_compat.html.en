@@ -264,7 +264,7 @@ evaluated.</td></tr>
     <code class="directive"><a href="#deny">Deny</a></code> directives,
     controls a three-pass access control system. The first pass
     processes either all <code class="directive"><a href="#allow">Allow</a></code> or all <code class="directive"><a href="#deny">Deny</a></code> directives, as specified
-    by the <code class="directive"><a href="#order">Order</a></code>
+    by the <code class="directive">Order</code>
     directive. The second pass parses the rest of the directives
     (<code class="directive"><a href="#deny">Deny</a></code> or
     <code class="directive"><a href="#allow">Allow</a></code>). The third

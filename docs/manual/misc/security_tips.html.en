@@ -456,7 +456,7 @@
     on how directives are merged.</p>
 
     <p> For modules that don't implement any merging logic, such as
-    <code class="directive">mod_access_compat</code>, the behavior in later sections
+    <code class="module"><a href="../mod/mod_access_compat.html">mod_access_compat</a></code>, the behavior in later sections
     depends on whether the later section has any directives
     from the module.  The configuration is inherited until a change is made,
     at which point the configuration is <em>replaced</em> and not merged.</p>

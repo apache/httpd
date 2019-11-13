@@ -208,16 +208,16 @@ eşler.</td></tr>
     </code></p></div>
 
     <p><code class="directive"><a href="#alias">Alias</a></code>
-      ve <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> yönergeleri
+      ve <code class="directive">AliasMatch</code> yönergeleri
       arasındaki başlıca fark <code class="directive"><a href="#alias">Alias</a></code>
       yönergesinin, URI'nin ek parçasını, eşleşen parçayı geçip sağ tarafta
-      dosya yolunun ucuna kendiliğinden kopyalamasıdır. <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> bunu böyle yapmaz. Yani hemen
+      dosya yolunun ucuna kendiliğinden kopyalamasıdır. <code class="directive">AliasMatch</code> bunu böyle yapmaz. Yani hemen
       her durumda, düzenli ifadenin istenen URI'nin tamamıyla baştan sona
       eşleşmesi ve yer değiştirmeyi sağ tarafta yapması istenir.</p>
 
     <p>Başka bir deyişle, basitçe
       <code class="directive"><a href="#alias">Alias</a></code> yerine
-      <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> yazmakla aynı etkiyi
+      <code class="directive">AliasMatch</code> yazmakla aynı etkiyi
       alamazsınız. En azından düzenli ifadenin başına bir <code>^</code> ve
       sonuna bir <code>(.*)$</code>, ikinci değiştirgenin sonuna da bir
       <code>$1</code> eklemeniz gerekir.</p>
@@ -242,8 +242,8 @@ eşler.</td></tr>
     </code></p></div>
 
     <p>Şüphesiz, <code class="directive"><a href="#alias">Alias</a></code> yönergesini
-      çalıştığı yerde <code class="directive"><a href="#aliasmatch">AliasMatch</a></code>
-      kullanmanın hiç gereği yoktur. <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> daha karmaşık şeyler yapmamızı sağlar. Örneğin
+      çalıştığı yerde <code class="directive">AliasMatch</code>
+      kullanmanın hiç gereği yoktur. <code class="directive">AliasMatch</code> daha karmaşık şeyler yapmamızı sağlar. Örneğin
       farklı dosya çeşitlerini farklı dizinlerden sunmak isteyelim:</p>
 
     <div class="example"><p><code>
@@ -376,7 +376,7 @@ yönlendirme gönderir.</td></tr>
     <p><code class="directive"><a href="#alias">Alias</a></code> ve
       <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> arasındaki farklarla
       ilgili hususlar <code class="directive"><a href="#redirect">Redirect</a></code> ve
-      <code class="directive"><a href="#redirectmatch">RedirectMatch</a></code> arasındakilere de
+      <code class="directive">RedirectMatch</code> arasındakilere de
       uygulanır. Ayrıntılar için  <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> yönergesine bakınız.</p>
 
 
@@ -538,7 +538,7 @@ eşler ve hedefi bir CGI betiği olarak çalıştırır.</td></tr>
     <p><code class="directive"><a href="#alias">Alias</a></code> ve
       <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> arasındaki farklarla
       ilgili hususlar <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> ve
-      <code class="directive"><a href="#scriptaliasmatch">ScriptAliasMatch</a></code> arasındakilere
+      <code class="directive">ScriptAliasMatch</code> arasındakilere
       de uygulanır. Ayrıntılar için  <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> yönergesine bakınız.</p>
 
 

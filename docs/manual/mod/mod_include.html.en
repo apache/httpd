@@ -961,7 +961,7 @@ server.</td></tr>
         <dd>The <code>Last-Modified</code> header will be respected if already
           present in a response, and added to the response if the response is a
           file and the header is missing. The
-          <code class="directive"><a href="#ssilastmodified">SSILastModified</a></code> directive
+          <code class="directive">SSILastModified</code> directive
           takes precedence over <code class="directive"><a href="#xbithack">XBitHack</a></code>.</dd>
 
       </dl>
@@ -1107,7 +1107,7 @@ set</td></tr>
 
       <p>The <code class="directive"><a href="#ssilastmodified">SSILastModified</a></code>
       directive takes precedence over the
-      <code class="directive"><a href="#xbithack">XBitHack</a></code> directive when
+      <code class="directive">XBitHack</code> directive when
       <code class="directive"><a href="#ssilastmodified">SSILastModified</a></code> is set to
       <code>on</code>.</p>
       </div>

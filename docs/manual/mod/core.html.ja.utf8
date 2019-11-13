@@ -1174,7 +1174,7 @@ for a complete reference and more examples.</li>
     にあります。</p>
 
     <p>ほとんどのエラーメッセージを上書きすることができますが、特定の状況下では
-    <code class="directive"><a href="#errordocument">ErrorDocument</a></code> の設定にかかわらず
+    <code class="directive">ErrorDocument</code> の設定にかかわらず
     内蔵のメッセージが使われます。
     特に、不正な形式のリクエストが検出された場合、通常のリクエスト処理は
     即座に中止され、内蔵のエラーメッセージが返されます。
@@ -1939,7 +1939,7 @@ the server configuration files</td></tr>
     (<code class="directive"><a href="#traceenable">&lt;TraceEnable&gt;</a></code> 参照)。</p>
 
     <div class="warning">アクセス制御が目的の場合は
-    <code class="directive"><a href="#limit">&lt;Limit&gt;</a></code> 
+    <code class="directive">&lt;Limit&gt;</code> 
     セクションの代わりに <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code> セクションを使用した方が良いでしょう。
     <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code>
     セクションでは不特定のメソッドに対しても防御できるからです。</div>
@@ -2872,14 +2872,14 @@ or specified mutexes</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Controls whether the REDIRECT_URL environment variable is
              fully qualified</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>QualifyRedirectURL ON|OFF</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>QualifyRedirectURL OFF</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>QualifyRedirectURL On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>QualifyRedirectURL Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Directive supported in 2.4.18 and later. 2.4.17 acted
-as if 'QualifyRedirectURL ON' was configured.</td></tr>
+as if 'QualifyRedirectURL On' was configured.</td></tr>
 </table><p>このディレクティブの解説文書は
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>

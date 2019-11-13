@@ -127,7 +127,7 @@
 
      <div class="note">
      Specifying the same charset for both <code class="directive"><a href="#charsetsourceenc">CharsetSourceEnc</a></code>
-     and <code class="directive"><a href="#charsetdefault">CharsetDefault</a></code> disables translation. The charset
+     and <code class="directive">CharsetDefault</code> disables translation. The charset
      need not match the charset of the response, but it must be a valid charset on the system.
      </div>
 
@@ -197,7 +197,7 @@
     translation support in Solaris 8.</p>
 
      <div class="note">
-     Specifying the same charset for both <code class="directive"><a href="#charsetsourceenc">CharsetSourceEnc</a></code>
+     Specifying the same charset for both <code class="directive">CharsetSourceEnc</code>
      and <code class="directive"><a href="#charsetdefault">CharsetDefault</a></code> disables translation. The charset
      need not match the charset of the response, but it must be a valid charset on the system.
      </div>

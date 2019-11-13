@@ -216,13 +216,13 @@ Alias "/foo" "/gaq"</pre>
 
     <p>Una sutil diferencia entre 
     <code class="directive"><a href="#alias">Alias</a></code>
-    y <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> es que
+    y <code class="directive">AliasMatch</code> es que
     <code class="directive"><a href="#alias">Alias</a></code> copiará automáticamente cualquier parte adicional de la URI, pasada la parte que coincide, al final de la ruta del fichero en el parámetro de la derecha, mientras que
-    <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> no lo hará. Esto significa en casi todos los casos, querrá que las expresiones regulares concuerden con la URI solicitada al completo desde el comienzo al final, y usar la sustitución del parámetro a la derecha.</p>
+    <code class="directive">AliasMatch</code> no lo hará. Esto significa en casi todos los casos, querrá que las expresiones regulares concuerden con la URI solicitada al completo desde el comienzo al final, y usar la sustitución del parámetro a la derecha.</p>
 
     <p>En otras palabras, cambiar
     <code class="directive"><a href="#alias">Alias</a></code> a
-    <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> no tendrá el mismo resultado. Como mínimo, tendrá que añadir un <code>^</code> al comienzo de la expresión regular, añadir un <code>(.*)$</code> al final y añadir 
+    <code class="directive">AliasMatch</code> no tendrá el mismo resultado. Como mínimo, tendrá que añadir un <code>^</code> al comienzo de la expresión regular, añadir un <code>(.*)$</code> al final y añadir 
     <code>$1</code> al final del reemplazo.</p>
 
     <p>Por ejemplo, supongamos que quiere reemplazar esto con AliasMatch:</p>
@@ -241,9 +241,9 @@ Alias "/foo" "/gaq"</pre>
 
 
     <p>Por supuesto, no hay ningún motivo para usar
-    <code class="directive"><a href="#aliasmatch">AliasMatch</a></code>
+    <code class="directive">AliasMatch</code>
     donde <code class="directive"><a href="#alias">Alias</a></code> funcionaría.  
-    <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> le permite hacer cosas más complicadas. Por ejemplo, puede servir diferentes tipos de ficheros desde diferentes directorios:</p>
+    <code class="directive">AliasMatch</code> le permite hacer cosas más complicadas. Por ejemplo, puede servir diferentes tipos de ficheros desde diferentes directorios:</p>
 
     <pre class="prettyprint lang-config">AliasMatch "^/image/(.*)\.jpg$" "/files/jpg.images/$1.jpg"
 AliasMatch "^/image/(.*)\.gif$" "/files/gif.images/$1.gif"</pre>
@@ -379,7 +379,7 @@ Redirect 303 "/three" "http://example.com/other"</pre>
     <code class="directive"><a href="#aliasmatch">AliasMatch</a></code>
     también aplican a las diferencias entre
     <code class="directive"><a href="#redirect">Redirect</a></code> y
-    <code class="directive"><a href="#redirectmatch">RedirectMatch</a></code>.
+    <code class="directive">RedirectMatch</code>.
     Vea <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> para más
     detalles.</p>
 
@@ -529,7 +529,7 @@ una expresión regular y designa el destino como un script CGI</td></tr>
     <code class="directive"><a href="#aliasmatch">AliasMatch</a></code>
     también aplican a las diferencias entre
     <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> y
-    <code class="directive"><a href="#scriptaliasmatch">ScriptAliasMatch</a></code>.
+    <code class="directive">ScriptAliasMatch</code>.
     Vea <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> para más
     detalles.</p>
 

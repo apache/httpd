@@ -1431,7 +1431,7 @@ You can of course use search parameters on each of these.</p>
         upgraded to a secure connection on the same port.</dd>
 </dl>
 
-    <p>See above for examples of <code class="directive"><a href="#authldapurl">AuthLDAPURL</a></code> URLs.</p>
+    <p>See above for examples of <code class="directive">AuthLDAPURL</code> URLs.</p>
 
 </div>
 </div>

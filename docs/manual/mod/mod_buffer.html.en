@@ -91,7 +91,7 @@
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_buffer</td></tr>
 </table>
-    <p>The <code class="directive"><a href="#buffersize">BufferSize</a></code>
+    <p>The <code class="directive">BufferSize</code>
     directive specifies the amount of data in bytes that will be
     buffered before being read from or written to each request.
     The default is 128 kilobytes.</p>

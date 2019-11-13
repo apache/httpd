@@ -298,9 +298,9 @@ SessionCookieName session path=/</pre>
       <p>Another option is to render the login form using a CGI script or other dynamic
       technology.</p>
 
-      <div class="example"><h3>CGI example</h3><pre class="prettyprint lang-config">        AuthFormProvider file
-        ErrorDocument 401 "/cgi-bin/login.cgi"
-        ...</pre>
+      <div class="example"><h3>CGI example</h3><pre class="prettyprint lang-config">AuthFormProvider file
+ErrorDocument 401 "/cgi-bin/login.cgi"
+...</pre>
 </div>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -379,21 +379,21 @@ lower level modules</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The name of a form field carrying the body of the request to attempt on successful login</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthFormBody <var>fieldname</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>httpd_body</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthFormBody httpd_body</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.3.0 and later</td></tr>
 </table>
-    <p>The <code class="directive"><a href="#authformmethod">AuthFormMethod</a></code> directive specifies
-    the name of an HTML field which, if present, will contain the method of the request to
+    <p>The <code class="directive">AuthFormBody</code> directive specifies
+    the name of an HTML field which, if present, will contain the body of the request
     to submit should login be successful.</p>
 
     <p>By populating the form with fields described by
     <code class="directive"><a href="#authformmethod">AuthFormMethod</a></code>,
     <code class="directive"><a href="#authformmimetype">AuthFormMimetype</a></code> and
-    <code class="directive"><a href="#authformbody">AuthFormBody</a></code>, a website can retry
+    <code class="directive">AuthFormBody</code>, a website can retry
     a request that may have been interrupted by the login screen, or by a session
     timeout.</p>
 
@@ -402,7 +402,7 @@ lower level modules</td></tr>
 <div class="directive-section"><h2><a name="AuthFormDisableNoStore" id="AuthFormDisableNoStore">AuthFormDisableNoStore</a> <a name="authformdisablenostore" id="authformdisablenostore">Directive</a> <a title="Permanent link" href="#authformdisablenostore" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Disable the CacheControl no-store header on the login page</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthFormDisableNoStore <var>On|Off</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthFormDisableNoStore On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthFormDisableNoStore Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
@@ -410,7 +410,7 @@ lower level modules</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.3.0 and later</td></tr>
 </table>
-    <p>The <code class="directive"><a href="#authformdisablenostore">AuthFormDisableNoStore</a></code> flag
+    <p>The <code class="directive">AuthFormDisableNoStore</code> flag
     disables the sending of a <code>Cache-Control no-store</code> header with the
     error 401 page returned when the user is not yet logged in. The purpose of the header
     is to make it difficult for an <code>ecmascript</code> application to attempt to resubmit the
@@ -423,7 +423,7 @@ lower level modules</td></tr>
 <div class="directive-section"><h2><a name="AuthFormFakeBasicAuth" id="AuthFormFakeBasicAuth">AuthFormFakeBasicAuth</a> <a name="authformfakebasicauth" id="authformfakebasicauth">Directive</a> <a title="Permanent link" href="#authformfakebasicauth" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fake a Basic Authentication header</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthFormFakeBasicAuth <var>On|Off</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthFormFakeBasicAuth On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthFormFakeBasicAuth Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
@@ -431,7 +431,7 @@ lower level modules</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.3.0 and later</td></tr>
 </table>
-    <p>The <code class="directive"><a href="#authformfakebasicauth">AuthFormFakeBasicAuth</a></code> flag
+    <p>The <code class="directive">AuthFormFakeBasicAuth</code> flag
     determines whether a <code>Basic Authentication</code> header will be added to
     the request headers. This can be used to expose the username and password to
     an underlying application, without the underlying application having to be aware
@@ -444,14 +444,14 @@ lower level modules</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The name of a form field carrying a URL to redirect to on successful login</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthFormLocation <var>fieldname</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>httpd_location</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthFormLocation httpd_location</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.3.0 and later</td></tr>
 </table>
-    <p>The <code class="directive"><a href="#authformlocation">AuthFormLocation</a></code> directive specifies
+    <p>The <code class="directive">AuthFormLocation</code> directive specifies
     the name of an HTML field which, if present, will contain a URL to redirect the browser to
     should login be successful.</p>
 
@@ -469,7 +469,7 @@ lower level modules</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.3.0 and later. The use of the expression
 parser has been added in 2.4.4.</td></tr>
 </table>
-    <p>The <code class="directive"><a href="#authformloginrequiredlocation">AuthFormLoginRequiredLocation</a></code> directive
+    <p>The <code class="directive">AuthFormLoginRequiredLocation</code> directive
     specifies the URL to redirect to should the user not be authorised to view a page. The value
     is parsed using the <a href="../expr.html">ap_expr</a> parser before being sent to the client.
     By default, if a user is not authorised to view a page, the HTTP response code
@@ -494,7 +494,7 @@ parser has been added in 2.4.4.</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.3.0 and later. The use of the expression
 parser has been added in 2.4.4.</td></tr>
 </table>
-    <p>The <code class="directive"><a href="#authformloginsuccesslocation">AuthFormLoginSuccessLocation</a></code> directive
+    <p>The <code class="directive">AuthFormLoginSuccessLocation</code> directive
     specifies the URL to redirect to should the user have logged in successfully. The value is
     parsed using the <a href="../expr.html">ap_expr</a> parser before being sent to the client.
     This directive can be overridden if a form field has been defined containing another URL
@@ -518,7 +518,7 @@ parser has been added in 2.4.4.</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.3.0 and later. The use of the expression
 parser has been added in 2.4.4.</td></tr>
 </table>
-    <p>The <code class="directive"><a href="#authformlogoutlocation">AuthFormLogoutLocation</a></code> directive
+    <p>The <code class="directive">AuthFormLogoutLocation</code> directive
     specifies the URL of a page on the server to redirect to should the user attempt to log
     out. The value is parsed using the <a href="../expr.html">ap_expr</a> parser before
     being sent to the client.</p>
@@ -546,19 +546,19 @@ parser has been added in 2.4.4.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The name of a form field carrying the method of the request to attempt on successful login</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthFormMethod <var>fieldname</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>httpd_method</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthFormMethod httpd_method</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.3.0 and later</td></tr>
 </table>
-    <p>The <code class="directive"><a href="#authformmethod">AuthFormMethod</a></code> directive specifies
-    the name of an HTML field which, if present, will contain the method of the request to
+    <p>The <code class="directive">AuthFormMethod</code> directive specifies
+    the name of an HTML field which, if present, will contain the method of the request
     to submit should login be successful.</p>
 
     <p>By populating the form with fields described by
-    <code class="directive"><a href="#authformmethod">AuthFormMethod</a></code>,
+    <code class="directive">AuthFormMethod</code>,
     <code class="directive"><a href="#authformmimetype">AuthFormMimetype</a></code> and
     <code class="directive"><a href="#authformbody">AuthFormBody</a></code>, a website can retry
     a request that may have been interrupted by the login screen, or by a session
@@ -570,20 +570,20 @@ parser has been added in 2.4.4.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The name of a form field carrying the mimetype of the body of the request to attempt on successful login</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthFormMimetype <var>fieldname</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>httpd_mimetype</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthFormMimetype httpd_mimetype</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.3.0 and later</td></tr>
 </table>
-    <p>The <code class="directive"><a href="#authformmethod">AuthFormMethod</a></code> directive specifies
+    <p>The <code class="directive">AuthFormMimetype</code> directive specifies
     the name of an HTML field which, if present, will contain the
     mimetype of the request to submit should login be successful.</p>
 
     <p>By populating the form with fields described by
     <code class="directive"><a href="#authformmethod">AuthFormMethod</a></code>,
-    <code class="directive"><a href="#authformmimetype">AuthFormMimetype</a></code> and
+    <code class="directive">AuthFormMimetype</code> and
     <code class="directive"><a href="#authformbody">AuthFormBody</a></code>, a website can retry
     a request that may have been interrupted by the login screen, or by a session
     timeout.</p>
@@ -594,14 +594,14 @@ parser has been added in 2.4.4.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The name of a form field carrying the login password</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthFormPassword <var>fieldname</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>httpd_password</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthFormPassword httpd_password</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.3.0 and later</td></tr>
 </table>
-    <p>The <code class="directive"><a href="#authformpassword">AuthFormPassword</a></code> directive specifies
+    <p>The <code class="directive">AuthFormPassword</code> directive specifies
     the name of an HTML field which, if present, will contain the password to be used to log
     in.</p>
 
@@ -652,7 +652,7 @@ parser has been added in 2.4.4.</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.3.0 and later</td></tr>
 </table>
-    <p>The <code class="directive"><a href="#authformsitepassphrase">AuthFormSitePassphrase</a></code> directive
+    <p>The <code class="directive">AuthFormSitePassphrase</code> directive
     specifies a passphrase which, if present in the user session, causes Apache httpd to
     bypass authentication checks for the given URL. It can be used on high traffic websites
     to reduce the load induced on authentication infrastructure.</p>
@@ -678,13 +678,13 @@ parser has been added in 2.4.4.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The largest size of the form in bytes that will be parsed for the login details</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthFormSize <var>size</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>8192</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthFormSize 8192</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.3.0 and later</td></tr>
 </table>
-    <p>The <code class="directive"><a href="#authformsize">AuthFormSize</a></code> directive specifies
+    <p>The <code class="directive">AuthFormSize</code> directive specifies
     the maximum size of the body of the request that will be parsed to find the login form.</p>
 
     <p>If a login request arrives that exceeds this size, the whole request will be aborted
@@ -704,14 +704,14 @@ parser has been added in 2.4.4.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The name of a form field carrying the login username</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthFormUsername <var>fieldname</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>httpd_username</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthFormUsername httpd_username</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.3.0 and later</td></tr>
 </table>
-    <p>The <code class="directive"><a href="#authformusername">AuthFormUsername</a></code> directive specifies
+    <p>The <code class="directive">AuthFormUsername</code> directive specifies
     the name of an HTML field which, if present, will contain the username to be used to log
     in.</p>
 

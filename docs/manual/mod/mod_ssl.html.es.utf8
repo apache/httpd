@@ -433,7 +433,7 @@ el saludo SSL. Estos nombres de CA se pueden usar por el cliente para
 seleccionar un certificado cliente apropiado entre los que tiene disponibles.</p>
 
 <p>Si no están las directivas <code class="directive"><a href="#sslcadnrequestpath">SSLCADNRequestPath</a></code> o 
-<code class="directive"><a href="#sslcadnrequestfile">SSLCADNRequestFile</a></code>, entonces el 
+<code class="directive">SSLCADNRequestFile</code>, entonces el 
 conjunto de nombres aceptables de CA enviados al cliente es la de los nombres
 de todos los certificados de CA cargados en las directivas
 <code class="directive"><a href="#sslcacertificatefile">SSLCACertificateFile</a></code> y 
@@ -445,11 +445,11 @@ cliente.</p>
 aceptables diferente de las CAs usadas para verificar el certificado cliente - 
 por ejemplo, si los certificados cliente están firmados CAs intermedias. En tales
 casos, <code class="directive"><a href="#sslcadnrequestpath">SSLCADNRequestPath</a></code> y/o 
-<code class="directive"><a href="#sslcadnrequestfile">SSLCADNRequestFile</a></code> se pueden usar; los
+<code class="directive">SSLCADNRequestFile</code> se pueden usar; los
 nombres de CA aceptables se toman del conjunto completo de certificados en el 
 directorio y/o fichero especificados por este par de directivas.</p>
 
-<p><code class="directive"><a href="#sslcadnrequestfile">SSLCADNRequestFile</a></code> debe especificar
+<p><code class="directive">SSLCADNRequestFile</code> debe especificar
 un fichero <em>todo-en-uno</em> que contenga una concatenación de certificados
 CA codificados en PEM.</p>
 
@@ -669,7 +669,7 @@ la cadena de CAs intermedias por certificado.
 <p>
 También se pueden añadir parámetros personalizados DH y un nombre de curva EC 
 para claves efímeras al final del primer fichero configurado usando 
-<code class="directive"><a href="#sslcertificatefile">SSLCertificateFile</a></code>.
+<code class="directive">SSLCertificateFile</code>.
 Esto está soportado en la versión 2.4.7 y posterior.
 
 Tales parámetros pueden ser generados usando los comandos
@@ -757,7 +757,7 @@ forzará un diálogo de solicitud de contraseña en el arranque.</p>
 La directiva puede usarse múltiples veces (haciendo referencia a ficheros 
 distintos) para dar soporte a múltiples algoritmos de autenticación para el 
 servidor. Por cada directiva
-<code class="directive"><a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></code>
+<code class="directive">SSLCertificateKeyFile</code>
 directive, debe haber una directiva <code class="directive">SSLCertificateFile</code>
 relacionada.</p>
 

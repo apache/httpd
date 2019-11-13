@@ -509,9 +509,9 @@ responses from the server</td></tr>
     them.</p>
 
     <p>Note that when defining a set of filters using the
-    <code class="directive"><a href="#addoutputfilter">AddOutputFilter</a></code> directive,
+    <code class="directive">AddOutputFilter</code> directive,
     any definition made will replace any previous definition made by
-    the <code class="directive"><a href="#addoutputfilter">AddOutputFilter</a></code>
+    the <code class="directive">AddOutputFilter</code>
     directive.</p>
 
     <pre class="prettyprint lang-config"># Effective filter "DEFLATE"

@@ -196,7 +196,7 @@ que el proveedor elegido está presente en el servidor.</p>
     </p>
 
     <p>A través del uso de 
-    <code class="directive"><a href="#authbasicusedigestalgorithm">AuthBasicUseDigestAlgorithm</a></code> un sitio puede pasar de Autenticación Digest a Básica sin requerir que a los usuarios se les asignen contraseñas nuevas.</p>
+    <code class="directive">AuthBasicUseDigestAlgorithm</code> un sitio puede pasar de Autenticación Digest a Básica sin requerir que a los usuarios se les asignen contraseñas nuevas.</p>
 
     <div class="note">
       El método inverso de cambiar de Autenticación Básica a Digest sin asignar nuevas contraseñas generalmente no es posible.  Solo si las contraseñas de la Autenticación Básica se han almacenado en texto plano o con un esquema de encriptación reversible sería posible recuperarlas y generar un nuevo almacén de datos siguiendo el esquema de almacenamiento de contraseñas de Autenticación Digest.

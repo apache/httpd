@@ -209,7 +209,7 @@ Allow from 2001:db8::a00:20ff:fea7:ccea/10</pre>
     <code class="directive"><a href="#deny">Deny</a></code>, realizan un sistema de control de tres fases. La primera fase proceso o bien todas las directivas 
     <code class="directive"><a href="#allow">Allow</a></code> o todas las directivas 
     <code class="directive"><a href="#deny">Deny</a></code>, tal y como se haya especificado en la directiva  
-    <code class="directive"><a href="#order">Order</a></code>. La segunda fase interpreta el resto de directivas 
+    <code class="directive">Order</code>. La segunda fase interpreta el resto de directivas 
     (<code class="directive"><a href="#deny">Deny</a></code> o
     <code class="directive"><a href="#allow">Allow</a></code>). La tercera fase se aplica a todas las peticiones que no coinciden con cualquiera de las dos fases anteriores.</p>
 

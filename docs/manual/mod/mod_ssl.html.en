@@ -425,7 +425,7 @@ in the SSL handshake.  These CA names can be used by the client to
 select an appropriate client certificate out of those it has
 available.</p>
 
-<p>If neither of the directives <code class="directive"><a href="#sslcadnrequestpath">SSLCADNRequestPath</a></code> or <code class="directive"><a href="#sslcadnrequestfile">SSLCADNRequestFile</a></code> are given, then the
+<p>If neither of the directives <code class="directive"><a href="#sslcadnrequestpath">SSLCADNRequestPath</a></code> or <code class="directive">SSLCADNRequestFile</code> are given, then the
 set of acceptable CA names sent to the client is the names of all the
 CA certificates given by the <code class="directive"><a href="#sslcacertificatefile">SSLCACertificateFile</a></code> and <code class="directive"><a href="#sslcacertificatepath">SSLCACertificatePath</a></code> directives; in other
 words, the names of the CAs which will actually be used to verify the
@@ -434,12 +434,12 @@ client certificate.</p>
 <p>In some circumstances, it is useful to be able to send a set of
 acceptable CA names which differs from the actual CAs used to verify
 the client certificate - for example, if the client certificates are
-signed by intermediate CAs.  In such cases, <code class="directive"><a href="#sslcadnrequestpath">SSLCADNRequestPath</a></code> and/or <code class="directive"><a href="#sslcadnrequestfile">SSLCADNRequestFile</a></code> can be used; the
+signed by intermediate CAs.  In such cases, <code class="directive"><a href="#sslcadnrequestpath">SSLCADNRequestPath</a></code> and/or <code class="directive">SSLCADNRequestFile</code> can be used; the
 acceptable CA names are then taken from the complete set of
 certificates in the directory and/or file specified by this pair of
 directives.</p>
 
-<p><code class="directive"><a href="#sslcadnrequestfile">SSLCADNRequestFile</a></code> must
+<p><code class="directive">SSLCADNRequestFile</code> must
 specify an <em>all-in-one</em> file containing a concatenation of
 PEM-encoded CA certificates.</p>
 
@@ -641,7 +641,7 @@ to configure the intermediate CA chain on a per-certificate basis.
 <p>
 Custom DH parameters and an EC curve name for ephemeral keys,
 can also be added to end of the first file configured using
-<code class="directive"><a href="#sslcertificatefile">SSLCertificateFile</a></code>.
+<code class="directive">SSLCertificateFile</code>.
 This is supported in version 2.4.7 or later.
 Such parameters can be generated using the commands
 <code>openssl dhparam</code> and <code>openssl ecparam</code>.
@@ -667,7 +667,7 @@ stored in a token.  Currently, only <a href="https://tools.ietf.org/html/rfc7512
 recognized as certificate identifiers, and can be used in conjunction
 with the OpenSSL <code>pkcs11</code> engine.  If <code class="directive"><a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></code> is omitted, the
 certificate and private key can be loaded through the single
-identifier specified with <code class="directive"><a href="#sslcertificatefile">SSLCertificateFile</a></code>.</p>
+identifier specified with <code class="directive">SSLCertificateFile</code>.</p>
 
 <div class="note">
 <h3>DH parameter interoperability with primes &gt; 1024 bit</h3>
@@ -738,7 +738,7 @@ at startup time.</p>
 <p>
 The directive can be used multiple times (referencing different filenames)
 to support multiple algorithms for server authentication. For each
-<code class="directive"><a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></code>
+<code class="directive">SSLCertificateKeyFile</code>
 directive, there must be a matching <code class="directive">SSLCertificateFile</code>
 directive.</p>
 
@@ -1584,6 +1584,31 @@ The available (case-insensitive) <em>protocol</em>s are:</p>
     option, where <code>all</code> does not include <code>+SSLv3</code>).</p></li>
 </ul>
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLProtocol TLSv1</pre>
+</div>
+<div class="note">
+<h3><code class="directive">SSLProtocol</code> for name-based virtual hosts</h3>
+<p>
+Before OpenSSL 1.1.1, even though the Server Name Indication (SNI) allowed to
+determine the targeted virtual host early in the TLS handshake, it was not
+possible to switch the TLS protocol version of the connection at this point,
+and thus the <code class="directive">SSLProtocol</code> negotiated was always based off
+the one of the <em>base virtual host</em> (first virtual host declared on the
+listening <code>IP:port</code> of the connection).
+</p>
+<p>
+Beginning with Apache HTTP server version 2.5.1, when built/linked against
+OpenSSL 1.1.1 or later, and when the SNI is provided by the client in the TLS
+handshake, the <code class="directive">SSLProtocol</code> of each (name-based) virtual
+host can and will be honored.
+</p>
+<p>
+For compatibility with previous versions, if no
+<code class="directive">SSLProtocol</code> is configured in a name-based virtual host,
+the one from the base virtual host still applies, <strong>unless</strong>
+<code class="directive">SSLProtocol</code> is configured globally in which case the
+global value applies (this latter exception is more sensible than compatible,
+though).
+</p>
 </div>
 
 </div>

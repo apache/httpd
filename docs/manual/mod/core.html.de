@@ -1227,7 +1227,7 @@ sich im Apache 2.0 geändert</td></tr>
 
     <p>Obwohl die meisten Fehlermeldungen überschrieben werden
     können, werden unter bestimmten Umständen die internen
-    Meldungen ungeachtet der Einstellung der <code class="directive"><a href="#errordocument">ErrorDocument</a></code>-Direktive verwendet. Insbesondere bei
+    Meldungen ungeachtet der Einstellung der <code class="directive">ErrorDocument</code>-Direktive verwendet. Insbesondere bei
     einer fehlerhaften Anfrage werden der normale Bearbeitungsprozess sofort
     beendet und die interne Meldung zurückgegeben. Das ist notwendig, um
     Sicherheitsprobleme zu vermeiden, die auf Grund fehlerhafter Anfragen
@@ -1972,7 +1972,7 @@ bestimmte HTTP-Methoden</td></tr>
 
     <div class="warning">
       Wenn es um Zugriffsbeschränkungen geht, sollte
-      ein <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code>-Container sollte immer einem <code class="directive"><a href="#limit">&lt;Limit&gt;</a></code>-Container vorgezogen
+      ein <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code>-Container sollte immer einem <code class="directive">&lt;Limit&gt;</code>-Container vorgezogen
       werden, da <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code>
       einen Schutz gegen beliebige Methoden bietet.
     </div>
@@ -2931,14 +2931,14 @@ bestimmten Verzeichnis verfügbar sind</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Controls whether the REDIRECT_URL environment variable is
              fully qualified</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>QualifyRedirectURL ON|OFF</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Voreinstellung:</a></th><td><code>QualifyRedirectURL OFF</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>QualifyRedirectURL On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Voreinstellung:</a></th><td><code>QualifyRedirectURL Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host, Verzeichnis</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Kompatibilität:</a></th><td>Directive supported in 2.4.18 and later. 2.4.17 acted
-as if 'QualifyRedirectURL ON' was configured.</td></tr>
+as if 'QualifyRedirectURL On' was configured.</td></tr>
 </table><p>Die Dokumentation zu dieser Direktive wurde
             noch nicht übersetzt. Bitte schauen Sie in die englische
             Version.</p></div>

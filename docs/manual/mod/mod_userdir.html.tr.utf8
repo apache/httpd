@@ -166,7 +166,7 @@
       sonra bir yönlendirme daha bulunması daha iyi olacaktır.</p>
 
     <p>Kullanıcı dizini dönüşümü Apache 2.1.4 sürümü ve sonrasında öntanımlı
-      olarak etkin değildir. Daha önceki sürümlerde bir <code class="directive"><a href="#userdir">UserDir</a></code> yönergesinin yokluğunda
+      olarak etkin değildir. Daha önceki sürümlerde bir <code class="directive">UserDir</code> yönergesinin yokluğunda
       <code>UserDir public_html</code> öntanımlıydı.</p>
 
     <div class="note"><h3>Ayrıntıların birleştirilmesi</h3>

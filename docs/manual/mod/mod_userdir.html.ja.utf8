@@ -174,7 +174,7 @@ Apache はリダイレクトが成功するかどうかを決めることはで�
 なってしまいます。</p>
 
 <p>2.1.4 以降では、ユーザディレクトリ置換機能はデフォルトでは起動しません。
-それ以前のバージョンでは、<code class="directive"><a href="#userdir">UserDir</a></code>
+それ以前のバージョンでは、<code class="directive">UserDir</code>
 ディレクティブが存在しなければ、<code>UserDir public_html</code> 
 であると仮定されていました。</p>
 
