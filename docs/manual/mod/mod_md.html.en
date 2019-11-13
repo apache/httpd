@@ -1090,7 +1090,7 @@ MDRenewWindow 10%</pre>
                 compatiblity, this is disabled by default.
             </p><p>
                 The stapling can be switched on for all certificates on the server or 
-                for an individual MDomain. This will replace any stapling configurtion 
+                for an individual MDomain. This will replace any stapling configuration 
                 in `mod_ssl` for these hosts. When disabled, the 'mod_ssl' stapling 
                 will do the work (if it is itself enabled, of course). This allows for
                 a gradual shift over from one implementation to the other.
