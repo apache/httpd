@@ -132,7 +132,7 @@
 
       <li>The use of a threaded <a href="../mpm.html">mpm</a> may
       allow you to handle more simultaneous connections, thereby
-      mitigating DoS attacks.  Further, the 
+      mitigating DoS attacks.  Further, the
       <code class="module"><a href="../mod/event.html">event</a></code> mpm
       uses asynchronous processing to avoid devoting a thread to each
       connection. Due to the nature of the OpenSSL library the
@@ -454,10 +454,10 @@
     directive specific.  Always test your changes when creating dependencies
     on how directives are merged.</p>
 
-    <p> For modules that don't implement any merging logic, such as 
-    <code class="directive">mod_access_compat</code>, the behavior in later sections
+    <p> For modules that don't implement any merging logic, such as
+    <code class="module"><a href="../mod/mod_access_compat.html">mod_access_compat</a></code>, the behavior in later sections
     depends on whether the later section has any directives
-    from the module.  The configuration is inherited until a change is made, 
+    from the module.  The configuration is inherited until a change is made,
     at which point the configuration is <em>replaced</em> and not merged.</p>
   </div></div>
 <div class="bottomlang">

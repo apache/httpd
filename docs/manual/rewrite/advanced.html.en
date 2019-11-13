@@ -94,8 +94,8 @@ http://physical_host_of_user1/u/user/anypath
       a user has no entry in the map:</p>
 
 <pre class="prettyprint lang-config">RewriteEngine on
-RewriteMap      users-to-hosts   "txt:/path/to/map.users-to-hosts"
-RewriteRule   "^/u/([^/]+)/?(.*)"   "http://${users-to-hosts:$1|server0}/u/$1/$2"</pre>
+RewriteMap    users-to-hosts      "txt:/path/to/map.users-to-hosts"
+RewriteRule   "^/u/([^/]+)/?(.*)" "http://${users-to-hosts:$1|server0}/u/$1/$2"</pre>
 
     </dd>
   </dl>
@@ -127,7 +127,7 @@ RewriteRule   "^/u/([^/]+)/?(.*)"   "http://${users-to-hosts:$1|server0}/u/$1/$2
 
 <pre class="prettyprint lang-config"># This example is valid in per-directory context only
 RewriteCond "%{REQUEST_URI}"   "!-U"
-RewriteRule "^(.+)\.html$"          "/regenerate_page.cgi"   [PT,L]</pre>
+RewriteRule "^(.+)\.html$"     "/regenerate_page.cgi"   [PT,L]</pre>
 
 
     <p>The <code>-U</code> operator determines whether the test string
@@ -166,8 +166,8 @@ RewriteRule "^(.+)\.html$"          "/regenerate_page.cgi"   [PT,L]</pre>
       to accomplish this.</p>
 
 <pre class="prettyprint lang-config">RewriteEngine on
-RewriteMap lb "rnd:/path/to/serverlist.txt"
-RewriteRule "^/(.*)" "http://${lb:servers}/$1" [P,L]</pre>
+RewriteMap lb        "rnd:/path/to/serverlist.txt"
+RewriteRule "^/(.*)" "http://${lb:servers}/$1"     [P,L]</pre>
 
 
 <p><code>serverlist.txt</code> will contain a list of the servers:</p>
@@ -306,10 +306,10 @@ RewriteRule   "^foo\.html$"             "foo.night.html"</pre>
     <dt>Description:</dt>
 
     <dd>
-      <p>At time, we want to maintain some kind of status when we
+      <p>At times, we want to maintain some kind of status when we
       perform a rewrite. For example, you want to make a note that
       you've done that rewrite, so that you can check later to see if a
-      request can via that rewrite. One way to do this is by setting an
+      request came via that rewrite. One way to do this is by setting an
       environment variable.</p>
     </dd>
 
@@ -330,7 +330,10 @@ RewriteRule   "^/horse/(.*)"   "/pony/$1" [E=<strong>rewritten:1</strong>]</pre>
 
     <p>Note that environment variables do not survive an external
     redirect. You might consider using the [CO] flag to set a
-    cookie.</p>
+    cookie. For per-directory and htaccess rewrites, where the final
+    substitution is processed as an internal redirect, environment
+    variables from the previous round of rewriting are prefixed with
+    "REDIRECT_". </p>
 
     </dd>
   </dl>

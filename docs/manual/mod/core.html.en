@@ -4045,19 +4045,19 @@ On Windows, from Apache 2.3.3 and later.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Controls whether the REDIRECT_URL environment variable is
              fully qualified</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>QualifyRedirectURL ON|OFF</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>QualifyRedirectURL OFF</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>QualifyRedirectURL On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>QualifyRedirectURL Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Directive supported in 2.4.18 and later. 2.4.17 acted
-as if 'QualifyRedirectURL ON' was configured.</td></tr>
+as if 'QualifyRedirectURL On' was configured.</td></tr>
 </table>
     <p>This directive controls whether the server will ensure that the 
     REDIRECT_URL environment variable is fully qualified.  By default, 
     the variable contains the verbatim URL requested by the client, 
-    such as "/index.html".  With <code class="directive"><a href="#qualifyredirecturl on">QualifyRedirectURL ON</a></code>, the same request would result in a
+    such as "/index.html".  With <code class="directive">QualifyRedirectURL On</code>, the same request would result in a
     value such as "http://www.example.com/index.html".</p>
     <p>Even without this directive set, when a request is issued against a 
     fully qualified URL, REDIRECT_URL will remain fully qualified.
@@ -4301,8 +4301,8 @@ scripts</td></tr>
     so.</p>
     </div>
 
-    <p>The option <code>Registry-Strict</code> which is new in Apache HTTP Server
-    2.0 does the same thing as <code>Registry</code> but uses only the
+    <p>The option <code>Registry-Strict</code>
+    does the same thing as <code>Registry</code> but uses only the
     subkey <code>Shell\ExecCGI\Command</code>. The
     <code>ExecCGI</code> key is not a common one. It must be
     configured manually in the windows registry and hence prevents
@@ -4581,15 +4581,14 @@ is accessed by an incompatible browser</td></tr>
     actually produced a returned error message.</p>
 
     <p>The <code>Off</code>
-    setting, which is the default, suppresses the footer line (and is
-    therefore compatible with the behavior of Apache-1.2 and
-    below). The <code>On</code> setting simply adds a line with the
+    setting, which is the default, suppresses the footer line.
+    The <code>On</code> setting simply adds a line with the
     server version number and <code class="directive"><a href="#servername">ServerName</a></code> of the serving virtual host,
     and the <code>EMail</code> setting additionally creates a
     "mailto:" reference to the <code class="directive"><a href="#serveradmin">ServerAdmin</a></code> of the referenced
     document.</p>
 
-    <p>After version 2.0.44, the details of the server version number
+    <p>The details of the server version number
     presented are controlled by the <code class="directive"><a href="#servertokens">ServerTokens</a></code> directive.</p>
 
 <h3>See also</h3>
@@ -4649,7 +4648,7 @@ header</td></tr>
     <p>This setting applies to the entire server, and cannot be
     enabled or disabled on a virtualhost-by-virtualhost basis.</p>
 
-    <p>After version 2.0.44, this directive also controls the
+    <p>This directive also controls the
     information presented by the <code class="directive"><a href="#serversignature">ServerSignature</a></code> directive.</p>
 
     <div class="note">Setting <code class="directive">ServerTokens</code> to less than
