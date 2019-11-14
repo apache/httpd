@@ -2803,3 +2803,18 @@ int ssl_callback_SRPServerParams(SSL *ssl, int *ad, void *arg)
 }
 
 #endif /* HAVE_SRP */
+
+
+#ifdef HAVE_OPENSSL_KEYLOG
+void modssl_callback_keylog(const SSL *ssl, const char *line)
+{
+    /* Since it's still 1992 and OpenSSL API designers haven't
+     * discovered userdata parameters, extract the keylog file. */
+    conn_rec *conn = SSL_get_app_data(ssl);
+    SSLSrvConfigRec *sc = mySrvConfig(conn->base_server);
+
+    if (sc && sc->mc->keylog_file) {
+        apr_file_printf(sc->mc->keylog_file, "%s\n", line);
+    }
+}
+#endif
