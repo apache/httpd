@@ -367,7 +367,7 @@
       root user.  If this option is used, the <code>suexec</code>
       binary will instead be installed with only the setuid/setgid
       "capability" bits set, which is the subset of full root
-      priviliges required for suexec operation.  Note that
+      privileges required for suexec operation.  Note that
       the <code>suexec</code> binary may not be able to write to a log
       file in this mode; it is recommended that the
       <code>--with-suexec-syslog --without-suexec-logfile</code>
@@ -578,17 +578,14 @@ Group webgroup
     Warnings &amp; Examples</title>
 
     <p><strong>NOTE!</strong> This section may not be
-    complete. For the latest revision of this section of the
-    documentation, see the <a
-    href="http://httpd.apache.org/docs/&httpd.docs;/suexec.html">Online
-    Documentation</a> version.</p>
+    complete.</p>
 
     <p>There are a few points of interest regarding
     the wrapper that can cause limitations on server setup. Please
     review these before submitting any "bugs" regarding suEXEC.</p>
 
+    <p><strong>suEXEC Points Of Interest</strong></p>
     <ul>
-      <li><strong>suEXEC Points Of Interest</strong></li>
 
       <li>
         Hierarchy limitations

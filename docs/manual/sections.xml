@@ -305,7 +305,7 @@ and modules like <module>mod_rewrite</module>.</p>
 
 <highlight language="config">
 &lt;DirectoryMatch "^/var/www/combined/(?&lt;SITENAME&gt;[^/]+)"&gt;
-    require ldap-group "cn=%{env:MATCH_SITENAME},ou=combined,o=Example"
+    Require ldap-group "cn=%{env:MATCH_SITENAME},ou=combined,o=Example"
 &lt;/DirectoryMatch&gt;
 </highlight>
 
@@ -567,7 +567,7 @@ are interpreted, it is important to understand how this works.</p>
         <li><directive>Directory</directive> "/" matches and an initial configuration to set the <code>CustomHeaderName</code> header with the value <code>one</code> is created.</li>
         <li><directive>Directory</directive> "/example" matches, and since <module>mod_headers</module> specifies in its code to override in case of a merge, a new configuration is created to set the <code>CustomHeaderName</code> header with the value <code>two</code>.</li>
         <li><directive>FilesMatch</directive> ".*" matches and another merge opportunity arises, causing the <code>CustomHeaderName</code> header to be set with the value <code>three</code>.</li>
-        <li>Eventually during the next steps of the HTTP request processing <module>mod_headers</module> will be called and it will receive the configuration to set the <code>CustomHeaderName</code> header with the value <code>three</code>. <module>mod_headers</module> normally uses this configuration to perfom its job, namely setting the foo header. This does not mean that a module can't perform a more complex action like discarding directives because not needed or deprecated, etc..</li>
+        <li>Eventually during the next steps of the HTTP request processing <module>mod_headers</module> will be called and it will receive the configuration to set the <code>CustomHeaderName</code> header with the value <code>three</code>. <module>mod_headers</module> normally uses this configuration to perform its job, namely setting the foo header. This does not mean that a module can't perform a more complex action like discarding directives because not needed or deprecated, etc..</li>
     </ul>
 
     <p>This is true for .htaccess too since they have the same priority as <directive>Directory</directive> in the merge order. The important concept to understand is that configuration sections like  <directive>Directory</directive> and <directive>FilesMatch</directive> are not comparable to module specific directives like <directive module="mod_headers">Header</directive> or <directive module="mod_rewrite">RewriteRule</directive> because they operate on different levels.

@@ -460,7 +460,7 @@ $ tar xvf httpd-<em>NN</em>.tar
 
     <p>A <a
     href="http://wiki.apache.org/httpd/DistrosDefaultLayout">description
-    of these third-party distrubutions</a> is maintained in the HTTP
+    of these third-party distributions</a> is maintained in the HTTP
     Server wiki, and should reflect the current state of these
     third-party distributions. However, you will need to familiarize
     yourself with your particular platform's package management and
