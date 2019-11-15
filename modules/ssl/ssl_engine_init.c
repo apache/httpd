@@ -445,6 +445,28 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
     init_bio_methods();
 #endif
 
+#ifdef HAVE_OPENSSL_KEYLOG
+    {
+        const char *logfn = getenv("SSLKEYLOGFILE");
+
+        if (logfn) {
+            rv = apr_file_open(&mc->keylog_file, logfn,
+                               APR_FOPEN_CREATE|APR_FOPEN_WRITE|APR_FOPEN_APPEND|APR_FOPEN_LARGEFILE,
+                               APR_FPROT_UREAD|APR_FPROT_UWRITE,
+                               mc->pPool);
+            if (rv) {
+                ap_log_error(APLOG_MARK, APLOG_NOTICE, rv, s, APLOGNO(10226)
+                             "Could not open log file '%s' configured via SSLKEYLOGFILE",
+                             logfn);
+                return rv;
+            }
+
+            ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s, APLOGNO(10227)
+                         "Init: Logging SSL private key material to %s", logfn);
+        }
+    }
+#endif
+    
     return OK;
 }
 
@@ -805,6 +827,12 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
      * to consume handshake records without blocking for app-data.
      * https://github.com/openssl/openssl/issues/7178 */
     SSL_CTX_clear_mode(ctx, SSL_MODE_AUTO_RETRY);
+#endif
+
+#ifdef HAVE_OPENSSL_KEYLOG
+    if (mctx->sc->mc->keylog_file) {
+        SSL_CTX_set_keylog_callback(ctx, modssl_callback_keylog);
+    }
 #endif
     
     return APR_SUCCESS;
