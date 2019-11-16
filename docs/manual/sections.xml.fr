@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1838938 -->
+<!-- English Revision: 1869816 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -335,7 +335,7 @@ href="expr.html">expression</a> et au sein de modules comme
 
 <highlight language="config">
 &lt;DirectoryMatch "^/var/www/combined/(?&lt;SITENAME&gt;[^/]+)"&gt;
-    require ldap-group "cn=%{env:MATCH_SITENAME},ou=combined,o=Example"
+    Require ldap-group "cn=%{env:MATCH_SITENAME},ou=combined,o=Example"
 &lt;/DirectoryMatch&gt;
 </highlight>
 
@@ -431,14 +431,14 @@ non-imbriquées de même type.</p>
 
 </section>
 
-<section id="virtualhost"><title>Hôtes virtuels</title>
+<section id="virtualhost"><title>Serveurs virtuels</title>
 
 <p>Le conteneur <directive type="section" module="core">VirtualHost</directive>
-contient des directives qui s'appliquent à des hôtes spécifiques.
-Ceci s'avère utile pour servir des hôtes multiples à partir de la même machine,
-chacun d'entre eux possédant une configuration différente.  Pour de plus amples
-informations,
-voir la <a href="vhosts/">Documentation sur les hôtes virtuels</a>.</p>
+contient des directives qui s'appliquent à des serveurs virtuels spécifiques.
+Ceci s'avère utile pour servir les contenus de plusieurs serveurs virtuels à
+partir de la même machine, chacun d'entre eux possédant une configuration
+différente.  Pour de plus amples informations, voir la <a
+href="vhosts/">Documentation sur les serveurs virtuels</a>.</p>
 </section>
 
 <section id="proxy"><title>Mandataire</title>
@@ -502,13 +502,13 @@ Il est important de savoir comment cet ordre est défini car il peut avoir
 des effets importants sur la manière dont les directives de configuration
 sont interprétées.</p>
 
-    <p>L'ordre dans lequel les sections sont combinées est :</p>
+    <p>L'ordre dans lequel les sections sont appliquées est :</p>
 
     <ol>
       <li> Les sections <directive type="section"
       module="core">Directory</directive> (à l'exception des
       expressions rationnelles)
-      et les fichiers <code>.htaccess</code> sont appliqués simultanément (avec
+      et les fichiers <code>.htaccess</code> sont appliquées simultanément (avec
       la possibilité pour <code>.htaccess</code>, s'il y est autorisé, de
       prévaloir sur
       <directive type="section" module="core">Directory</directive>)</li>
@@ -547,7 +547,7 @@ sont interprétées.</p>
     type="section" module="core">Directory</directive> (groupe 1 ci-dessus)
     sont traitées dans l'ordre du répertoire le plus court vers le plus long.
     Par exemple, <code>&lt;Directory "/var/web/dir"&gt;</code> sera
-    traité avant <code>&lt;Directory
+    traitée avant <code>&lt;Directory
     "/var/web/dir/subdir"&gt;</code>.</li>
     <li>Si plusieurs sections <directive
     type="section" module="core">Directory</directive> s'appliquent au même
@@ -586,8 +586,8 @@ modules et sections de configuration</title>
     réponse n'est pas triviale et nécessite un approfondissement. Chaque module
     httpd gère sa propre configuration, et chacune de ses directives dans
     httpd.conf définit un élément de configuration dans un contexte particulier.
-    httpd n'exécute pas un commande au moment où elle est lue.</p>
-    <p>A l'exécution, le noyau de httpd parcours les sections de configuration
+    httpd n'exécute pas une commande au moment où elle est lue.</p>
+    <p>A l'exécution, le noyau de httpd parcourt les sections de configuration
     dans l'ordre décrit ci-dessus afin de déterminer lesquelles s'appliquent à
     la requête courante. Lorsqu'une première section s'applique, elle est
     considérée comme la configuration courante pour cette requête. Si une
@@ -601,7 +601,7 @@ modules et sections de configuration</title>
     et pour déterminer de quelle manière dont il doit agir, il peut s'appuyer
     sur le noyau de httpd pour retrouver sa configuration globale issue de la
     fusion précédente.</p>
-    <p>Un exemple permet de mieux visualiser l'ensemble du processus. la
+    <p>Un exemple permet de mieux visualiser l'ensemble du processus. La
     configuration suivante utilise la directive <directive
     module="mod_headers">Header</directive> du module
     <module>mod_headers</module> pour définir un en-tête HTTP spécifique. Quelle
