@@ -39,7 +39,7 @@ modifier la portée des directives de configuration.</p>
 configuration</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#file-and-web">Système de fichiers,
 arborescence du site web et expressions booléennes</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#virtualhost">Hôtes virtuels</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#virtualhost">Serveurs virtuels</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#proxy">Mandataire</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#whatwhere">Quelles sont les directives autorisées ?</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#merging">Comment les sections sont combinées entre elles</a></li>
@@ -297,7 +297,7 @@ chemins de fichiers et d'URLs depuis une <a href="expr.html">expression</a> et a
 <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
 
 <pre class="prettyprint lang-config">&lt;DirectoryMatch "^/var/www/combined/(?&lt;SITENAME&gt;[^/]+)"&gt;
-    require ldap-group "cn=%{env:MATCH_SITENAME},ou=combined,o=Example"
+    Require ldap-group "cn=%{env:MATCH_SITENAME},ou=combined,o=Example"
 &lt;/DirectoryMatch&gt;</pre>
 
 
@@ -384,14 +384,13 @@ non-imbriquées de même type.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="virtualhost" id="virtualhost">Hôtes virtuels</a> <a title="Lien permanent" href="#virtualhost" class="permalink">&para;</a></h2>
+<h2><a name="virtualhost" id="virtualhost">Serveurs virtuels</a> <a title="Lien permanent" href="#virtualhost" class="permalink">&para;</a></h2>
 
 <p>Le conteneur <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
-contient des directives qui s'appliquent à des hôtes spécifiques.
-Ceci s'avère utile pour servir des hôtes multiples à partir de la même machine,
-chacun d'entre eux possédant une configuration différente.  Pour de plus amples
-informations,
-voir la <a href="vhosts/">Documentation sur les hôtes virtuels</a>.</p>
+contient des directives qui s'appliquent à des serveurs virtuels spécifiques.
+Ceci s'avère utile pour servir les contenus de plusieurs serveurs virtuels à
+partir de la même machine, chacun d'entre eux possédant une configuration
+différente.  Pour de plus amples informations, voir la <a href="vhosts/">Documentation sur les serveurs virtuels</a>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="proxy" id="proxy">Mandataire</a> <a title="Lien permanent" href="#proxy" class="permalink">&para;</a></h2>
@@ -452,12 +451,12 @@ Il est important de savoir comment cet ordre est défini car il peut avoir
 des effets importants sur la manière dont les directives de configuration
 sont interprétées.</p>
 
-    <p>L'ordre dans lequel les sections sont combinées est :</p>
+    <p>L'ordre dans lequel les sections sont appliquées est :</p>
 
     <ol>
       <li> Les sections <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> (à l'exception des
       expressions rationnelles)
-      et les fichiers <code>.htaccess</code> sont appliqués simultanément (avec
+      et les fichiers <code>.htaccess</code> sont appliquées simultanément (avec
       la possibilité pour <code>.htaccess</code>, s'il y est autorisé, de
       prévaloir sur
       <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>)</li>
@@ -491,7 +490,7 @@ sont interprétées.</p>
     <li>Les sections <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> (groupe 1 ci-dessus)
     sont traitées dans l'ordre du répertoire le plus court vers le plus long.
     Par exemple, <code>&lt;Directory "/var/web/dir"&gt;</code> sera
-    traité avant <code>&lt;Directory
+    traitée avant <code>&lt;Directory
     "/var/web/dir/subdir"&gt;</code>.</li>
     <li>Si plusieurs sections <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> s'appliquent au même
     répertoire, elles sont traitées selon l'ordre dans lequel elles
@@ -526,8 +525,8 @@ modules et sections de configuration</a></h3>
     réponse n'est pas triviale et nécessite un approfondissement. Chaque module
     httpd gère sa propre configuration, et chacune de ses directives dans
     httpd.conf définit un élément de configuration dans un contexte particulier.
-    httpd n'exécute pas un commande au moment où elle est lue.</p>
-    <p>A l'exécution, le noyau de httpd parcours les sections de configuration
+    httpd n'exécute pas une commande au moment où elle est lue.</p>
+    <p>A l'exécution, le noyau de httpd parcourt les sections de configuration
     dans l'ordre décrit ci-dessus afin de déterminer lesquelles s'appliquent à
     la requête courante. Lorsqu'une première section s'applique, elle est
     considérée comme la configuration courante pour cette requête. Si une
@@ -541,7 +540,7 @@ modules et sections de configuration</a></h3>
     et pour déterminer de quelle manière dont il doit agir, il peut s'appuyer
     sur le noyau de httpd pour retrouver sa configuration globale issue de la
     fusion précédente.</p>
-    <p>Un exemple permet de mieux visualiser l'ensemble du processus. la
+    <p>Un exemple permet de mieux visualiser l'ensemble du processus. La
     configuration suivante utilise la directive <code class="directive"><a href="./mod/mod_headers.html#header">Header</a></code> du module
     <code class="module"><a href="./mod/mod_headers.html">mod_headers</a></code> pour définir un en-tête HTTP spécifique. Quelle
     valeur httpd va-t-il affecter à l'en-tête <code>CustomHeaderName</code> pour
