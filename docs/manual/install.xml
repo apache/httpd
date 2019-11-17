@@ -157,7 +157,7 @@ sudo service apache2 start
       your system. If you don't, or prefer to not use the system-provided
       versions, download the latest versions of both APR and APR-Util
       from <a href="http://apr.apache.org/">Apache APR</a>, unpack
-      them into <code>/httpd_source_tree_root/srclib/apr</code> and /httpd_source_tree_root<code>/srclib/apr-util</code>
+      them into <code>/httpd_source_tree_root/srclib/apr</code> and <code>/httpd_source_tree_root/srclib/apr-util</code>
       (be sure the directory names do not have version numbers; for example,
       the APR distribution must be under /httpd_source_tree_root/srclib/apr/) and use
       <code>./configure</code>'s <code>--with-included-apr</code>
