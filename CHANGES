@@ -278,7 +278,7 @@ Changes with Apache 2.5.1
   *) core: Create a conn_config_t structure to hold an extendable core config rather
      than consuming the whole pointer with the connection socket. [Graham Leggett]
 
-  *) core: adding AP_DECLARE for ap_parse_vhost_addrs() and minor bumb mmn. Resolves
+  *) core: adding AP_DECLARE for ap_parse_vhost_addrs() and minor bump mmn. Resolves
      building mod_ssl on Windows. [Stefan Eissing, Gregg Smith]
 
   *) core: adding defines to allow interworking with honggfuzz without
@@ -316,7 +316,7 @@ Changes with Apache 2.5.1
        patch, so that people with old patched servers get a chance to upgrade.
      [Stefan Eissing, Yann Ylavic]
 
-  *) mod_susbtitute: Allow expressions in the subtitution, prefixed with expr=
+  *) mod_susbtitute: Allow expressions in the substitution, prefixed with expr=
      [Eric Covener]
 
   *) mod_md: fixed mem pool usage for auto-added server names. Added
@@ -365,7 +365,7 @@ Changes with Apache 2.5.1
      includes a colon character.  PR 52644.  [Joe Orton]
 
   *) mod_md: v1.0.3, fixed various bugs in persisting job properties, so that status is 
-     persisted accross child process changes and staging is reset on reloads. Changed 
+     persisted across child process changes and staging is reset on reloads. Changed 
      MDCertificateAgreement url checks. As long as the CA reports that the account has 
      an agreement, no further checking is done. Existing accounts need no changes when
      a new agreement comes out. [Stefan Eissing]
@@ -383,7 +383,7 @@ Changes with Apache 2.5.1
 Changes with Apache 2.5.0-alpha
 
   *) mod_md: v1.0.1, ServerName/Alias names from pure-http: virtual hosts are no longer
-     auto-added to a Managed Domain. Error counts of jobs are presisted. When the server
+     auto-added to a Managed Domain. Error counts of jobs are persisted. When the server
      restarts (gracefully) any errored staging areas are purged to reset the signup/renewal
      process. [Stefan Eissing]
 
@@ -403,7 +403,7 @@ Changes with Apache 2.5.0-alpha
      overwrites of later initializattions (vhost_id), selective disables by "SSLEngine addr-list"
      and certificate/key pickup from mod_md. [Stefan Eissing]
 
-  *) mod_md: v0.9.6: a "MDRequireHttps permament" configured domain automatically sends out
+  *) mod_md: v0.9.6: a "MDRequireHttps permanent" configured domain automatically sends out
      HSTS (rfc 6797) headers in https: responses. [Stefan Eissing]
 
   *) mod_ssl: adding ssl_policies.h[.in] for policy cipher/protocol definitions. Use 
@@ -416,7 +416,7 @@ Changes with Apache 2.5.0-alpha
        new certificates are requested with the OCSP Must Staple extension.
      - Known limitation: when the server is configured to ditch and restart child processes, for example
        after a certain number of connections/requests, the mod_md watchdog instance might migrate 
-       to a new child process. Since not all its state is persisted, some messsages might appear a
+       to a new child process. Since not all its state is persisted, some messages might appear a
        second time in the logs.
      - Adding checks when 'MDRequireHttps' is used. It is considered an error when 'MDPortMap 443:-'
        is used - which negates that a https: port exists. Also, a warning is logged if no 
@@ -561,7 +561,7 @@ Changes with Apache 2.5.0-alpha
      flush any forwarded body data immediately. PR 56541+37920. [Yann Ylavic]
 
   *) core: Define and UnDefine are no longer permitted in
-     directory context. Previously they would always be evaulated
+     directory context. Previously they would always be evaluated
      as the configuration was read without regard for the directory
      context. [Eric Covener]
 
@@ -729,7 +729,7 @@ Changes with Apache 2.5.0-alpha
      needed. [Graham Leggett]
 
   *) mod_proxy: Ensure network errors detected by the proxy are returned as
-     504 Gateway Timout as opposed to 502 Bad Gateway, in order to be
+     504 Gateway Timeout as opposed to 502 Bad Gateway, in order to be
      compliant with RFC2616 14.9.4 Cache Revalidation and Reload Controls.
 
   *) mod_dav: mod_dav overrides dav_fs response on PUT failure. PR 35981
