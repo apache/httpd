@@ -554,17 +554,14 @@ Group webgroup
     Warnings &amp; Examples</title>
 
     <p><strong>NOTE!</strong> This section may not be
-    complete. For the latest revision of this section of the
-    documentation, see the <a
-    href="http://httpd.apache.org/docs/&httpd.docs;/suexec.html">Online
-    Documentation</a> version.</p>
+    complete.</p>
 
     <p>There are a few points of interest regarding
     the wrapper that can cause limitations on server setup. Please
     review these before submitting any "bugs" regarding suEXEC.</p>
 
+    <p><strong>suEXEC Points Of Interest</strong></p>
     <ul>
-      <li><strong>suEXEC Points Of Interest</strong></li>
 
       <li>
         Hierarchy limitations

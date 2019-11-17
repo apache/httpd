@@ -30,7 +30,7 @@
     on Unix and Unix-like systems only. For compiling and
     installation on Windows, see <a
     href="platform/windows.html">Using Apache HTTP Server with Microsoft
-    Windows</a> and <a 
+    Windows</a> and <a
     href="platform/win_compiling.html">Compiling Apache for Microsoft Windows</a>.
     For other platforms, see the <a
     href="platform/">platform</a> documentation.</p>
@@ -40,7 +40,7 @@
     projects.</p>
 
     <p>If you are upgrading from one minor version to the next (for
-    example, 2.4.9 to 2.4.10), please skip down to the <a
+    example, 2.4.8 to 2.4.9), please skip down to the <a
     href="#upgrading">upgrading</a> section.</p>
 
 </summary>
@@ -162,20 +162,20 @@ sudo service apache2 start
       (be sure the directory names do not have version numbers; for example,
       the APR distribution must be under /httpd_source_tree_root/srclib/apr/) and use
       <code>./configure</code>'s <code>--with-included-apr</code>
-      option.  On some platforms, you may have to install the 
-      corresponding <code>-dev</code> packages to allow httpd to build 
+      option.  On some platforms, you may have to install the
+      corresponding <code>-dev</code> packages to allow httpd to build
       against your installed copy of APR and APR-Util.</dd>
 
       <dt>Perl-Compatible Regular Expressions Library (PCRE)</dt>
-      <dd>This library is required but not longer bundled with httpd.  
-      Download the source code from <a href="http://www.pcre.org/">http://www.pcre.org</a>, 
+      <dd>This library is required but not longer bundled with httpd.
+      Download the source code from <a href="http://www.pcre.org/">http://www.pcre.org</a>,
       or install a Port or Package.  If your build system can't find
       the pcre-config script installed by the PCRE build, point to it
-      using the <code>--with-pcre</code> parameter.  On some platforms, 
-      you may have to install the corresponding <code>-dev</code> 
-      package to allow httpd to build against your installed copy 
+      using the <code>--with-pcre</code> parameter.  On some platforms,
+      you may have to install the corresponding <code>-dev</code>
+      package to allow httpd to build against your installed copy
       of PCRE.</dd>
-      
+
       <dt>Disk Space</dt>
       <dd>Make sure you have at least 50 MB of temporary free disk
       space available. After installation the server occupies
@@ -461,7 +461,7 @@ $ tar xvf httpd-<em>NN</em>.tar
 
     <p>A <a
     href="http://wiki.apache.org/httpd/DistrosDefaultLayout">description
-    of these third-party distrubutions</a> is maintained in the HTTP
+    of these third-party distributions</a> is maintained in the HTTP
     Server wiki, and should reflect the current state of these
     third-party distributions. However, you will need to familiarize
     yourself with your particular platform's package management and
