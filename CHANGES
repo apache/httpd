@@ -316,7 +316,7 @@ Changes with Apache 2.5.1
        patch, so that people with old patched servers get a chance to upgrade.
      [Stefan Eissing, Yann Ylavic]
 
-  *) mod_susbtitute: Allow expressions in the substitution, prefixed with expr=
+  *) mod_substitute: Allow expressions in the substitution, prefixed with expr=
      [Eric Covener]
 
   *) mod_md: fixed mem pool usage for auto-added server names. Added
