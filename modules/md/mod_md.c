@@ -438,18 +438,25 @@ static server_rec *get_public_https_server(md_t *md, const char *domain, server_
     server_rec *s;
     request_rec r;
     int i;
+    int skip_port_check = 0;
 
     sc = md_config_get(base_server);
     mc = sc->mc;
     memset(&r, 0, sizeof(r));
-    
-    if (!mc->can_https) return NULL;
+
+    if (md->ca_challenges && md->ca_challenges->nelts > 0) {
+        /* skip the port check if "tls-alpn-01" is pre-configured */
+        skip_port_check = md_array_str_index(md->ca_challenges, MD_AUTHZ_TYPE_TLSALPN01, 0, 0) >= 0;
+    }
+
+    if (!skip_port_check && !mc->can_https) return NULL;
+
     /* find an ssl server matching domain from MD */
     for (s = base_server; s; s = s->next) {
         sc = md_config_get(s);
         if (!sc || !sc->is_ssl || !sc->assigned) continue;
         if (base_server == s && !mc->manage_base_server) continue;
-        if (base_server != s && mc->local_443 > 0 && !uses_port(s, mc->local_443)) continue;
+        if (base_server != s && !skip_port_check && mc->local_443 > 0 && !uses_port(s, mc->local_443)) continue;
         for (i = 0; i < sc->assigned->nelts; ++i) {
             if (md == APR_ARRAY_IDX(sc->assigned, i, md_t*)) {
                 r.server = s;
@@ -1067,7 +1074,7 @@ static apr_status_t get_certificate(server_rec *s, apr_pool_t *p, int fallback,
     }
     else if (sc->assigned->nelts != 1) {
         if (!fallback) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(10207)
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(10042)
                          "conflict: %d MDs match Virtualhost %s which uses SSL, however "
                          "there can be at most 1.",
                          (int)sc->assigned->nelts, s->server_hostname);
