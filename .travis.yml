@@ -21,6 +21,9 @@ addons:
       - libnghttp2-dev
       - libjansson-dev
       - libpcre2-dev
+env:
+  global:
+    - MFLAGS=-j2
 
 matrix:
   include:
@@ -68,10 +71,12 @@ matrix:
             - libjansson-dev
             - libpcre2-dev
     # -------------------------------------------------------------------------
+    # MFLAGS= works around https://bz.apache.org/bugzilla/show_bug.cgi?id=63942
     - name: Linux Ubuntu, Regenerate ap_expr
       os: linux
       env: CONFIG="--enable-mods-shared=reallyall --enable-maintainer-mode NOTEST_CFLAGS=-Werror"
            BUILDCONFIG="--with-regen-expr"
+           MFLAGS=
     # -------------------------------------------------------------------------
     - if: branch != 2.4.x
       name: Linux Ubuntu, APR trunk

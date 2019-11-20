@@ -24,7 +24,7 @@ else
     CONFIG="$CONFIG --with-apr-util=/usr"
 fi
 ./configure $CONFIG
-make $MAKEFLAGS -j2
+make $MFLAGS
 if ! test -v SKIP_TESTING; then
     if test -v WITH_TEST_SUITE; then
         make check
