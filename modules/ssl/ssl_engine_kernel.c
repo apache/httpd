@@ -136,7 +136,7 @@ static int fill_reneg_buffer(request_rec *r, SSLDirConfigRec *dc)
     apr_size_t rsize;
 
     /* ### this is HTTP/1.1 specific, special case for protocol? */
-    if (r->expecting_100 || ap_request_has_body(r)) {
+    if (r->expecting_100 || !ap_request_has_body(r)) {
         return 0;
     }
 
