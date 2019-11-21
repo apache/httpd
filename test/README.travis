@@ -40,12 +40,12 @@ TODO list
 * MacOS build
 * Windows build
 * clang-on-Linux build
-* Build using APR non-trunk branches (1.7.x etc)
-   - need to make the ~/root/apr-trunk caching logic work for non-trunk branches
 * Multi-arch testing
+ - non-x86_64 images lack installed cpanminus and don't enable caching.
+   ppc64le builds seem unreasonably slow to install CPAN deps each time
+   (15-20 minutes) - not sure why.  s390x is enabled & seems reasonably fast.
 * Use containers for non-Ubuntu-based Linux testing
 * E-mail notifications
-* IRC notifications
 * VPATH builds
 * sanity checks for use of APLOGNO() - empty arguments, accidental duplicates, etc.
  - not sure how exactly

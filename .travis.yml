@@ -7,9 +7,15 @@ cache:
   directories:
     - /home/travis/perl5
     - /home/travis/root
+# The non-x86_64 images currently lack cpanminus, when that is fixed
+# the cpanminus & universe sourceline can be removed.
 addons:
   apt:
+    update: false
+    sources:
+      - sourceline: 'deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) universe'
     packages:
+      - cpanminus
       - libtool-bin
       - libapr1-dev
       - libaprutil1-dev
@@ -28,6 +34,10 @@ env:
 matrix:
   include:
     - name: Linux Ubuntu, Default module set
+    # -------------------------------------------------------------------------
+    - name: Linux s390x Ubuntu, all-modules
+      arch: s390x
+      env: CONFIG="--enable-mods-shared=reallyall"
     # -------------------------------------------------------------------------
     - name: Linux Ubuntu, Default, all-modules
       env: CONFIG="--enable-mods-shared=reallyall"
