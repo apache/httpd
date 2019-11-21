@@ -19,7 +19,7 @@ else
     CONFIG="$CONFIG --with-apr=/usr"
 fi
 if test -v APU_VERSION; then
-    CONFIG="$CONFIG --with-apr-util=$HOME/root/apu-${APU_VERSION}"
+    CONFIG="$CONFIG --with-apr-util=$HOME/root/apr-util-${APU_VERSION}"
 else
     CONFIG="$CONFIG --with-apr-util=/usr"
 fi
