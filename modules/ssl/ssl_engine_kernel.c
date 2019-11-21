@@ -1132,6 +1132,30 @@ static int ssl_hook_Access_modern(request_rec *r, SSLSrvConfigRec *sc, SSLDirCon
             }
         }
 
+        if (change_vmode && !r->expecting_100 && ap_request_has_body(r)) {
+            int rv;
+            apr_size_t rsize;
+            
+            rsize = dc->nRenegBufferSize == UNSET ? DEFAULT_RENEG_BUFFER_SIZE :
+                dc->nRenegBufferSize;
+            if (rsize > 0) {
+                /* Fill the I/O buffer with the request body if possible. */
+                rv = ssl_io_buffer_fill(r, rsize);
+            }
+            else {
+                /* If the reneg buffer size is set to zero, just fail. */
+                rv = HTTP_REQUEST_ENTITY_TOO_LARGE;
+            }
+            
+            if (rv) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02257)
+                              "could not buffer message body to allow "
+                              "SSL renegotiation to proceed");
+                return rv;
+            }
+        }
+            
+        
         if (change_vmode) {
             char peekbuf[1];
 
