@@ -1148,7 +1148,7 @@ static int ssl_hook_Access_modern(request_rec *r, SSLSrvConfigRec *sc, SSLDirCon
         if (change_vmode) {
             rc = fill_reneg_buffer(r, dc);
             if (rc) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO()
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10228)
                               "could not buffer message body to allow "
                               "TLS Post-Handshake Authentication to proceed");
                 return rc;
