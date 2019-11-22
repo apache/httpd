@@ -13,7 +13,8 @@ The Travis scripts use the following environment variables:
 
 * APU_VERSION - if set, APR-util of this version is built and
   installed in $HOME/root/apr-util-$APU_VERSION - a value of "*.x"
-  means a branch, otherwise a tagged version is implied.
+  means a branch, otherwise a tagged version is implied.  (Since there
+  is no "trunk" for apr-util, that value cannot be used here.)
 
 * APU_CONFIG - arguments to pass when running APR-util's configure
   script if APU_VERSION is set
