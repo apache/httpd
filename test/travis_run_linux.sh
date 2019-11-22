@@ -1,4 +1,12 @@
 #!/bin/bash -ex
+
+if test -v TEST_LOGNO; then
+    if grep --include \*.c -r 'APLOGNO()' .; then
+        exit 1
+    fi
+    exit 0
+fi
+
 ### Installed apr/apr-util don't include the *.m4 files but the
 ### Debian packages helpfully install them, so use the system APR to buildconf
 ./buildconf --with-apr=/usr/bin/apr-1-config ${BUILDCONFIG}

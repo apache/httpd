@@ -35,6 +35,9 @@ matrix:
   include:
     - name: Linux Ubuntu, Default module set
     # -------------------------------------------------------------------------
+    - name: Linux Ubuntu, Verify APLOGNO() macros
+      env: TEST_LOGNO=1 SKIP_TESTING=1
+    # -------------------------------------------------------------------------
     - name: Linux s390x Ubuntu, all-modules
       arch: s390x
       env: CONFIG="--enable-mods-shared=reallyall"
