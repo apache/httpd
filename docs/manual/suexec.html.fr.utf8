@@ -602,17 +602,17 @@ de suEXEC</a></h2>
 <h2><a name="jabberwock" id="jabberwock">Avis à la population !
     Avertissements et exemples</a></h2>
 
-    <p><strong>NOTE !</strong> Cette section est peut-être incomplète.
-    Pour en consulter la dernière révision, voir la version de la <a href="http://httpd.apache.org/docs/2.4/suexec.html">Documentation en ligne</a>.</p>
+    <p><strong>NOTE !</strong> Cette section est peut-être
+    incomplète.</p>
 
     <p>Quelques points importants du conteneur peuvent
     imposer des contraintes du point de vue de la configuration du
     serveur. Veuillez en prendre connaissance avant de soumettre un
     rapport de bogue à propos de suEXEC.</p>
 
+    <p><strong>Points importants à propos de suEXEC</strong></p>
     <ul>
-      <li><strong>Points importants de suEXEC</strong></li>
-
+ 
       <li>
         Limitations concernant la hiérarchie.
 
