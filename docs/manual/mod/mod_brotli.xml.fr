@@ -306,7 +306,7 @@ compression</description>
     contenus compressés.</p></dd>
     <dt>NoChange</dt>
     <dd><p>Ne modifie pas l'en-tête ETag d'une réponse compressée. C'était le
-    comportement par défaut depuis la version 2.4.0 avec un autre module de
+    comportement par défaut avant la version 2.4.0 avec un autre module de
     compression dynamique, mod-deflate. Ce paramètre ne respecte pas la
     propriété HTTP/1.1 selon laquelle toutes les représentations d'une même
     ressource ont des en-têtes ETag uniques.</p></dd>
