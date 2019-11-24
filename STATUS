@@ -132,27 +132,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) Easy patches: synch 2.4.x and trunk
-        - core: print r->uri during failure
-        - core: Call va_end before returning in the error case
-        - mod_cache_disk: fix a Coverity warning
-        - core: Provide TEST_CHAR macro in test_char.h
-        - tag some pools
-        - core: Fix a signed/unsigned comparison that can never match
-        - mod_session: leave a hint about session expiration at TRACE2
-        - mod_ssl: Fix a typo
-     trunk patch:
-        - http://svn.apache.org/r1787229
-        - http://svn.apache.org/r1842919
-        - http://svn.apache.org/r1842926
-        - http://svn.apache.org/r1856490
-        - http://svn.apache.org/r1862051
-        - http://svn.apache.org/r1864865
-        - http://svn.apache.org/r1865871
-        - http://svn.apache.org/r1867256
-     2.4.x patch: svn merge -c 1787229,1842919,1842926,1856490,1862051,1864865,1865871,1867256 ^/httpd/httpd/trunk . 
-     +1: jailletc36, jim, ylavic
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
