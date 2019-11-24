@@ -171,6 +171,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: http://people.apache.org/~jorton/mod_ssl_pkcs11.patch
       +1: jorton, ylavic,
       ylavic: engine part not tested, but works with no engine still
+      jailletc36: not reviewed, but at least r1836547 seems to be missing, according
+                  to changelog
 
    *) mod_proxy_html, mod_xml2enc: Fix build issues with macOS due to r1864469
       trunk patch: http://svn.apache.org/r1867183
