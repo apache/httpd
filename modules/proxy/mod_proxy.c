@@ -1374,6 +1374,7 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->source_address = NULL;
     ps->source_address_set = 0;
     apr_pool_create_ex(&ps->pool, p, NULL, NULL);
+    apr_pool_tag(ps->pool, "proxy_server_conf");
 
     return ps;
 }

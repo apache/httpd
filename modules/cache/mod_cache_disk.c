@@ -994,10 +994,11 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r)
             }
 
             rv = mkdir_structure(conf, dobj->hdrs.file, r->pool);
-
-            rv = apr_file_mktemp(&dobj->vary.tempfd, dobj->vary.tempfile,
-                                 APR_CREATE | APR_WRITE | APR_BINARY | APR_EXCL,
-                                 dobj->vary.pool);
+            if (rv == APR_SUCCESS) {
+                rv = apr_file_mktemp(&dobj->vary.tempfd, dobj->vary.tempfile,
+                                     APR_CREATE | APR_WRITE | APR_BINARY | APR_EXCL,
+                                     dobj->vary.pool);
+            }
 
             if (rv != APR_SUCCESS) {
                 ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r, APLOGNO(00721)
