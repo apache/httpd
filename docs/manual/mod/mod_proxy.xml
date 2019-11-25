@@ -2137,7 +2137,7 @@ header for proxied requests</description>
 <context>virtual host</context>
 <context>directory</context>
 </contextlist>
-<compatibility>Available in version 2.4.39 and later</compatibility>
+<compatibility>Available in version 2.4.40 and later</compatibility>
 
 <usage>
     <p>This directive determines whether the proxy should forward 100-continue
