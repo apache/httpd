@@ -542,7 +542,7 @@ int h2_allows_h2_upgrade(request_rec *r)
  * Register various hooks
  */
 static const char* const mod_ssl[]        = { "mod_ssl.c", NULL};
-static const char* const mod_reqtimeout[] = { "mod_reqtimeout.c", NULL};
+static const char* const mod_reqtimeout[] = { "mod_ssl.c", "mod_reqtimeout.c", NULL};
 
 void h2_h2_register_hooks(void)
 {
@@ -553,7 +553,7 @@ void h2_h2_register_hooks(void)
      * a chance to take over before it.
      */
     ap_hook_process_connection(h2_h2_process_conn, 
-                               mod_ssl, mod_reqtimeout, APR_HOOK_LAST);
+                               mod_reqtimeout, NULL, APR_HOOK_LAST);
     
     /* One last chance to properly say goodbye if we have not done so
      * already. */
