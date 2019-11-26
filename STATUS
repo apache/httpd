@@ -259,6 +259,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                                  https://github.com/apache/httpd/pull/80.diff
      +1: rpluem,
 
+*) mod_http2: Fix mod_reqtimeout interworking on handshakes. Fix H2Directr config value.
+     trunk patch: http://svn.apache.org/r1870454
+     2.4.x patch: svn merge -c 1870454 ^/httpd/httpd/trunk .
+     +1: icing, 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
