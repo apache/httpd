@@ -82,7 +82,8 @@ matrix:
             - libpcre2-dev
     # -------------------------------------------------------------------------
     # MFLAGS= works around https://bz.apache.org/bugzilla/show_bug.cgi?id=63942
-    - name: Linux Ubuntu, Regenerate ap_expr
+    - if: branch != 2.4.x
+      name: Linux Ubuntu, Regenerate ap_expr
       os: linux
       env: CONFIG="--enable-mods-shared=reallyall --enable-maintainer-mode NOTEST_CFLAGS=-Werror"
            BUILDCONFIG="--with-regen-expr"
