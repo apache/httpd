@@ -1,13 +1,21 @@
 language: c
 os:
   - linux
+dist:
+  - bionic
 cache:
   directories:
     - /home/travis/perl5
     - /home/travis/root
+# The non-x86_64 images currently lack cpanminus, when that is fixed
+# the cpanminus & universe sourceline can be removed.
 addons:
   apt:
+    update: false
+    sources:
+      - sourceline: 'deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) universe'
     packages:
+      - cpanminus
       - libtool-bin
       - libapr1-dev
       - libaprutil1-dev
@@ -18,10 +26,18 @@ addons:
       - libsystemd-dev
       - libnghttp2-dev
       - libjansson-dev
+      - libpcre2-dev
+env:
+  global:
+    - MFLAGS=-j2
 
 matrix:
   include:
     - name: Linux Ubuntu, Default module set
+    # -------------------------------------------------------------------------
+    - name: Linux s390x Ubuntu, all-modules
+      arch: s390x
+      env: CONFIG="--enable-mods-shared=reallyall"
     # -------------------------------------------------------------------------
     - name: Linux Ubuntu, Default, all-modules
       env: CONFIG="--enable-mods-shared=reallyall"
@@ -32,16 +48,17 @@ matrix:
     - name: Linux Ubuntu, Worker MPM, all-modules
       env: CONFIG="--enable-mods-shared=reallyall --with-mpm=worker"
     # -------------------------------------------------------------------------
-    - name: Linux Ubuntu Bionic, all-modules
-      os: linux
-      dist: bionic
-      env: CONFIG="--enable-mods-shared=reallyall"
+    - name: Linux Ubuntu, Shared MPMs, all-modules
+      env: CONFIG="--enable-mods-shared=reallyall --enable-mpms-shared=all"
     # -------------------------------------------------------------------------
-    - name: Linux Ubuntu Bionic, GCC 7 maintainer-mode w/-Werror
+    - name: Linux Ubuntu, GCC 7 maintainer-mode w/-Werror
       os: linux
-      dist: bionic
       env: CONFIG="--enable-mods-shared=reallyall --enable-maintainer-mode NOTEST_CFLAGS=-Werror CC=gcc-7"
            SKIP_TESTING=1
+    # -------------------------------------------------------------------------
+    - name: Linux Ubuntu, PCRE 1, GCC 7 maintainer-mode w/-Werror
+      os: linux
+      env: CONFIG="--enable-mods-shared=reallyall --with-pcre=/usr/bin/pcre-config --enable-maintainer-mode NOTEST_CFLAGS=-Werror CC=gcc-7"
     # -------------------------------------------------------------------------
     - name: Linux Ubuntu, GCC 8 maintainer-mode w/-Werror
       env: CONFIG="--enable-mods-shared=reallyall --enable-maintainer-mode NOTEST_CFLAGS=-Werror CC=gcc-8"
@@ -62,9 +79,40 @@ matrix:
             - libsystemd-dev
             - libnghttp2-dev
             - libjansson-dev
+            - libpcre2-dev
+    # -------------------------------------------------------------------------
+    # MFLAGS= works around https://bz.apache.org/bugzilla/show_bug.cgi?id=63942
+    - if: branch != 2.4.x
+      name: Linux Ubuntu, Regenerate ap_expr
+      os: linux
+      env: CONFIG="--enable-mods-shared=reallyall --enable-maintainer-mode NOTEST_CFLAGS=-Werror"
+           BUILDCONFIG="--with-regen-expr"
+           MFLAGS=
+    # -------------------------------------------------------------------------
+    - if: branch != 2.4.x
+      name: Linux Ubuntu, APR trunk
+      env: APR_VERSION=trunk APR_CONFIG="--with-crypto"
+           CONFIG="--enable-mods-shared=reallyall"
+    # -------------------------------------------------------------------------
+    - if: branch = 2.4.x
+      name: Linux Ubuntu Xenial, all-modules, system APR/APR-util
+      os: linux
+      dist: xenial
+      env: CONFIG="--enable-mods-shared=reallyall"
+    # -------------------------------------------------------------------------
+    - name: Linux Ubuntu Xenial, all-modules, APR 1.7.0, APR-util 1.6.1
+      dist: xenial
+      env: APR_VERSION=1.7.0 APU_VERSION=1.6.1
+           CONFIG="--enable-mods-shared=reallyall"
+           APU_CONFIG="--with-crypto"
     # -------------------------------------------------------------------------
     - name: Linux Ubuntu, APR 1.7.0, APR-util 1.6.1
       env: APR_VERSION=1.7.0 APU_VERSION=1.6.1
+           CONFIG="--enable-mods-shared=reallyall"
+           APU_CONFIG="--with-crypto"
+    # -------------------------------------------------------------------------
+    - name: Linux Ubuntu, APR 1.7.x, APR-util 1.7.x
+      env: APR_VERSION=1.7.x APU_VERSION=1.7.x
            CONFIG="--enable-mods-shared=reallyall"
            APU_CONFIG="--with-crypto"
     # -------------------------------------------------------------------------
@@ -74,7 +122,8 @@ matrix:
            APU_CONFIG="--with-crypto"
            CONFIG="--enable-mods-shared=reallyall"
     # -------------------------------------------------------------------------
-    - name: Linux Ubuntu, APR 1.5.1, APR-util 1.5.4
+    - if: branch = 2.4.x
+      name: Linux Ubuntu, APR 1.5.1, APR-util 1.5.4
       env: APR_VERSION=1.5.1 APU_VERSION=1.5.4
            CONFIG="--enable-mods-shared=reallyall"
     # -------------------------------------------------------------------------
@@ -95,3 +144,8 @@ before_script:
 
 script:
   - ./test/travis_run_${TRAVIS_OS_NAME}.sh
+
+notifications:
+  irc: "chat.freenode.net#httpd-dev"
+  email:
+    - dev@httpd.apache.org

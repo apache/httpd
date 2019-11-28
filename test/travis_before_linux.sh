@@ -2,38 +2,48 @@
 if ! test -v SKIP_TESTING; then
    svn export -q https://svn.apache.org/repos/asf/httpd/test/framework/trunk test/perl-framework
 fi
+
+function install_apx() {
+    local name=$1
+    local version=$2
+    local root=https://svn.apache.org/repos/asf/apr/${name}
+    local prefix=${HOME}/root/${name}-${version}
+    local build=${HOME}/build/${name}-${version}
+    local config=$3
+    local buildconf=$4
+
+    case $version in
+    trunk) url=${root}/trunk ;;
+    *.x) url=${root}/branches/${version} ;;
+    *) url=${root}/tags/${version} ;;
+    esac
+
+    local revision=`svn info --show-item last-changed-revision ${url}`
+
+    # Blow away the cached install root if the revision does not
+    # match.
+    test -f ${prefix}/.revision-is-${revision} || rm -rf ${prefix}
+
+    if test -d ${prefix}; then
+        return 0
+    fi
+
+    svn export -q -r ${revision} ${url} ${build}
+    pushd $build
+         ./buildconf ${buildconf}
+         ./configure --prefix=${prefix} ${config}
+         make -j2
+         make install
+    popd
+
+    touch ${prefix}/.revision-is-${revision}
+}
+
 if test -v APR_VERSION; then
-    if ! test -d $HOME/root/apr-${APR_VERSION}; then
-        case $APR_VERSION in
-            trunk) url=https://svn.apache.org/repos/asf/apr/apr/trunk ;;
-            *) url=https://svn.apache.org/repos/asf/apr/apr/tags/${APR_VERSION} ;;
-        esac
-        svn export -q ${url} $HOME/build/apr-${APR_VERSION}
-        pushd $HOME/build/apr-${APR_VERSION}
-        if [ $APR_VERSION = 1.4.1 ]; then
-            # 1.4.1 doesn't build with current libtool
-            svn cat https://svn.apache.org/repos/asf/apr/apr/tags/1.5.1/buildconf > buildconf
-        fi
-        ./buildconf
-        ./configure ${APR_CONFIG} --prefix=$HOME/root/apr-${APR_VERSION}
-        make -j2
-        make install
-        popd
-        APU_CONFIG="$APU_CONFIG --with-apr=$HOME/root/apr-${APR_VERSION}"
-    fi
+    install_apx apr ${APR_VERSION} "${APR_CONFIG}"
+    APU_CONFIG="$APU_CONFIG --with-apr=$HOME/root/apr-${APR_VERSION}"
 fi
+
 if test -v APU_VERSION; then
-    if ! test -d $HOME/root/apu-${APU_VERSION}; then
-        case $APU_VERSION in
-            trunk) url=https://svn.apache.org/repos/asf/apr/apr-util/trunk ;;
-            *) url=https://svn.apache.org/repos/asf/apr/apr-util/tags/${APU_VERSION} ;;
-        esac
-        svn export -q ${url} $HOME/build/apu-${APU_VERSION}
-        pushd $HOME/build/apu-${APU_VERSION}
-        ./buildconf --with-apr=$HOME/build/apr-${APR_VERSION}
-        ./configure ${APU_CONFIG} --prefix=$HOME/root/apu-${APU_VERSION}
-        make -j2
-        make install
-        popd
-    fi
+    install_apx apr-util ${APU_VERSION} "${APU_CONFIG}" --with-apr=$HOME/build/apr-${APR_VERSION}
 fi
