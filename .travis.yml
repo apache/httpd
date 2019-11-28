@@ -56,7 +56,8 @@ matrix:
       env: CONFIG="--enable-mods-shared=reallyall --enable-maintainer-mode NOTEST_CFLAGS=-Werror CC=gcc-7"
            SKIP_TESTING=1
     # -------------------------------------------------------------------------
-    - name: Linux Ubuntu, PCRE 1, GCC 7 maintainer-mode w/-Werror
+    - if: branch != 2.4.x
+      name: Linux Ubuntu, PCRE 1, GCC 7 maintainer-mode w/-Werror
       os: linux
       env: CONFIG="--enable-mods-shared=reallyall --with-pcre=/usr/bin/pcre-config --enable-maintainer-mode NOTEST_CFLAGS=-Werror CC=gcc-7"
     # -------------------------------------------------------------------------
