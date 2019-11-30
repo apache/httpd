@@ -39,7 +39,13 @@ static int lua_table_set(lua_State *L)
 {
     req_table_t    *t = ap_lua_check_apr_table(L, 1);
     const char     *key = luaL_checkstring(L, 2);
-    const char     *val = luaL_checkstring(L, 3);
+    const char     *val = luaL_optlstring(L, 3, NULL, NULL);
+
+    if (!val) { 
+        apr_table_unset(t->t, key);
+        return 0;
+    }
+
     /* Unless it's the 'notes' table, check for newline chars */
     /* t->r will be NULL in case of the connection notes, but since 
        we aren't going to check anything called 'notes', we can safely 
