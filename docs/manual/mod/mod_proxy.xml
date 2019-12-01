@@ -1795,7 +1795,7 @@ connections</description>
 
 <directivesynopsis>
 <name>ProxyMaxForwards</name>
-<description>Maximium number of proxies that a request can be forwarded
+<description>Maximum number of proxies that a request can be forwarded
 through</description>
 <syntax>ProxyMaxForwards <var>number</var></syntax>
 <default>ProxyMaxForwards -1</default>
@@ -1959,7 +1959,7 @@ NoProxy         .example.com 192.168.112.0/21
 </contextlist>
 
 <usage>
-    <p>This directive allows a user to specifiy a timeout on proxy requests.
+    <p>This directive allows a user to specify a timeout on proxy requests.
     This is useful when you have a slow/buggy appserver which hangs, and you
     would rather just return a timeout and fail gracefully instead of waiting
     however long it takes the server to return.</p>
