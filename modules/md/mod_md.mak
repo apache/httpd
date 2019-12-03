@@ -74,6 +74,7 @@ CLEAN :
 	-@erase "$(INTDIR)\md_json.obj"
 	-@erase "$(INTDIR)\md_jws.obj"
 	-@erase "$(INTDIR)\md_log.obj"
+	-@erase "$(INTDIR)\md_ocsp.obj"
 	-@erase "$(INTDIR)\md_reg.obj"
 	-@erase "$(INTDIR)\md_result.obj"
 	-@erase "$(INTDIR)\md_status.obj"
@@ -86,6 +87,7 @@ CLEAN :
 	-@erase "$(INTDIR)\mod_md_config.obj"
 	-@erase "$(INTDIR)\mod_md_drive.obj"
 	-@erase "$(INTDIR)\mod_md_status.obj"
+	-@erase "$(INTDIR)\mod_md_ocsp.obj"
 	-@erase "$(INTDIR)\mod_md_os.obj"
 	-@erase "$(INTDIR)\mod_md_src.idb"
 	-@erase "$(INTDIR)\mod_md_src.pdb"
@@ -144,6 +146,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\mod_md.obj" \
 	"$(INTDIR)\mod_md_config.obj" \
 	"$(INTDIR)\mod_md_drive.obj" \
+	"$(INTDIR)\mod_md_ocsp.obj" \
 	"$(INTDIR)\mod_md_os.obj" \
 	"$(INTDIR)\mod_md_status.obj" \
 	"$(INTDIR)\md_core.obj" \
@@ -153,6 +156,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\md_json.obj" \
 	"$(INTDIR)\md_jws.obj" \
 	"$(INTDIR)\md_log.obj" \
+	"$(INTDIR)\md_ocsp.obj" \
 	"$(INTDIR)\md_reg.obj" \
 	"$(INTDIR)\md_result.obj" \
 	"$(INTDIR)\md_status.obj" \
@@ -229,6 +233,7 @@ CLEAN :
 	-@erase "$(INTDIR)\md_json.obj"
 	-@erase "$(INTDIR)\md_jws.obj"
 	-@erase "$(INTDIR)\md_log.obj"
+	-@erase "$(INTDIR)\md_ocsp.obj"
 	-@erase "$(INTDIR)\md_reg.obj"
 	-@erase "$(INTDIR)\md_result.obj"
 	-@erase "$(INTDIR)\md_status.obj"
@@ -241,6 +246,7 @@ CLEAN :
 	-@erase "$(INTDIR)\mod_md_config.obj"
 	-@erase "$(INTDIR)\mod_md_drive.obj"
 	-@erase "$(INTDIR)\mod_md_status.obj"
+	-@erase "$(INTDIR)\mod_md_ocsp.obj"
 	-@erase "$(INTDIR)\mod_md_os.obj"
 	-@erase "$(INTDIR)\mod_md_src.idb"
 	-@erase "$(INTDIR)\mod_md_src.pdb"
@@ -299,6 +305,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\mod_md.obj" \
 	"$(INTDIR)\mod_md_config.obj" \
 	"$(INTDIR)\mod_md_drive.obj" \
+	"$(INTDIR)\mod_md_ocsp.obj" \
 	"$(INTDIR)\mod_md_os.obj" \
 	"$(INTDIR)\mod_md_status.obj" \
 	"$(INTDIR)\md_core.obj" \
@@ -308,6 +315,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\md_json.obj" \
 	"$(INTDIR)\md_jws.obj" \
 	"$(INTDIR)\md_log.obj" \
+	"$(INTDIR)\md_ocsp.obj" \
 	"$(INTDIR)\md_reg.obj" \
 	"$(INTDIR)\md_result.obj" \
 	"$(INTDIR)\md_status.obj" \
@@ -527,6 +535,11 @@ SOURCE=./md_log.c
 "$(INTDIR)\md_log.obj" : $(SOURCE) "$(INTDIR)"
 
 
+SOURCE=./md_ocsp.c
+
+"$(INTDIR)\md_ocsp.obj" : $(SOURCE) "$(INTDIR)"
+
+
 SOURCE=./md_reg.c
 
 "$(INTDIR)\md_reg.obj" : $(SOURCE) "$(INTDIR)"
@@ -575,6 +588,11 @@ SOURCE=./mod_md_config.c
 SOURCE=./mod_md_drive.c
 
 "$(INTDIR)\mod_md_drive.obj" : $(SOURCE) "$(INTDIR)"
+
+
+SOURCE=./mod_md_ocsp.c
+
+"$(INTDIR)\mod_md_ocsp.obj" : $(SOURCE) "$(INTDIR)"
 
 
 SOURCE=./mod_md_os.c
