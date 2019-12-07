@@ -1784,7 +1784,6 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
     return max_worker;
 }
 
-
 /*
  * To create a worker from scratch first we define the
  * specifics of the worker; this is all local data.
