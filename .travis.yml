@@ -153,4 +153,7 @@ script:
 notifications:
   irc: "chat.freenode.net#httpd-dev"
   email:
-    - dev@httpd.apache.org
+    recipients:
+      - dev@httpd.apache.org
+    on_success: always
+    on_failure: always
