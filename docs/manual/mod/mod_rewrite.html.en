@@ -531,6 +531,14 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
             <em>CondPattern</em>, or is equal to <em>CondPattern</em>
             (the two strings are equal, character for character).</dd>
         </dl>
+        <div class="note"><h3>Note</h3>
+        The string comparison operator is part of the <em>CondPattern</em>
+        argument and must be included in the quotes if those are used. Eg.
+        
+        <pre class="prettyprint lang-config">RewriteCond %{HTTP_USER_AGENT} "=This Robot/1.0"</pre>
+
+        </div>
+        
         </li>
 
         <li>

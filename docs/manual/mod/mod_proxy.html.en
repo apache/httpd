@@ -783,7 +783,7 @@ NoProxy         .example.com 192.168.112.0/21</pre>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.4.39 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.4.40 and later</td></tr>
 </table>
     <p>This directive determines whether the proxy should forward 100-continue
     <em>Expect:</em>ation to the origin server and thus let it decide when/if
@@ -1006,7 +1006,7 @@ proxied resources</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ProxyMaxForwards" id="ProxyMaxForwards">ProxyMaxForwards</a> <a name="proxymaxforwards" id="proxymaxforwards">Directive</a> <a title="Permanent link" href="#proxymaxforwards" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximium number of proxies that a request can be forwarded
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum number of proxies that a request can be forwarded
 through</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyMaxForwards <var>number</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ProxyMaxForwards -1</code></td></tr>
@@ -2085,7 +2085,7 @@ expressions</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 </table>
-    <p>This directive allows a user to specifiy a timeout on proxy requests.
+    <p>This directive allows a user to specify a timeout on proxy requests.
     This is useful when you have a slow/buggy appserver which hangs, and you
     would rather just return a timeout and fail gracefully instead of waiting
     however long it takes the server to return.</p>
