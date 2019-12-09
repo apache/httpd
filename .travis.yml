@@ -148,3 +148,4 @@ notifications:
   irc: "chat.freenode.net#httpd-dev"
   email:
     - dev@httpd.apache.org
+    - elukey@apache.org

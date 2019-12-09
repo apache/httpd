@@ -622,3 +622,5 @@ AP_DECLARE(const char *)ap_check_mpm(void)
 
     return NULL;
 }
+
+THIS SHOULD TRIGGER A BUILD FAILURE
