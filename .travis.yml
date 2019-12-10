@@ -155,6 +155,5 @@ notifications:
   email:
     recipients:
       - dev@httpd.apache.org
-      - humbedooh@apache.org
     on_success: always
     on_failure: always
