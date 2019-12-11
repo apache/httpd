@@ -16,7 +16,8 @@
 
 /*
    ** This program is based on ZeusBench V1.0 written by Adam Twiss
-   ** which is Copyright (c) 1996 by Zeus Technology Ltd. http://www.zeustech.net/
+   ** which is Copyright (c) 1996 by Zeus Technology Ltd.
+   ** http://web.archive.org/web/20000304112933/http://www.zeustech.net/
    **
    ** This software is provided "as is" and any express or implied warranties,
    ** including but not limited to, the implied warranties of merchantability and
@@ -2083,14 +2084,14 @@ static void copyright(void)
 {
     if (!use_html) {
         printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision$>");
-        printf("Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
+        printf("Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://web.archive.org/web/20000304112933/http://www.zeustech.net/\n");
         printf("Licensed to The Apache Software Foundation, http://www.apache.org/\n");
         printf("\n");
     }
     else {
         printf("<p>\n");
         printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i><br>\n", AP_AB_BASEREVISION, "$Revision$");
-        printf(" Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
+        printf(" Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://web.archive.org/web/20000304112933/http://www.zeustech.net/<br>\n");
         printf(" Licensed to The Apache Software Foundation, http://www.apache.org/<br>\n");
         printf("</p>\n<p>\n");
     }
