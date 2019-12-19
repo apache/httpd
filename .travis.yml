@@ -155,5 +155,4 @@ notifications:
   email:
     recipients:
       - dev@httpd.apache.org
-    on_success: always
     on_failure: always
