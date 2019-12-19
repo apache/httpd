@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_http2: Fixed rare cases where a h2 worker could deadlock the main connection. 
+     [Yann Ylavic, Stefan Eissing]
+
   *) mod_lua: Accept nil assignments to the exposed tables (r.subprocess_env, 
      r.headers_out, etc) to remove the key from the table. PR63971. 
      [Eric Covener]

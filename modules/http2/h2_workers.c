@@ -269,7 +269,6 @@ static apr_status_t workers_pool_cleanup(void *data)
         }
 
         h2_fifo_term(workers->mplxs);
-        h2_fifo_interrupt(workers->mplxs);
 
         cleanup_zombies(workers);
     }

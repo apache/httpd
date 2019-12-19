@@ -2141,7 +2141,7 @@ apr_status_t h2_session_process(h2_session *session, int async)
                 break;
                 
             case H2_SESSION_ST_IDLE:
-                if (session->idle_until && (apr_time_now() + session->idle_delay) > session->idle_until) {
+                if (session->idle_until && (now + session->idle_delay) > session->idle_until) {
                     ap_log_cerror( APLOG_MARK, APLOG_TRACE1, status, c,
                                   H2_SSSN_MSG(session, "idle, timeout reached, closing"));
                     if (session->idle_delay) {
