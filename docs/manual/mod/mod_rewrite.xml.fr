@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1853280:1870427 (outdated) -->
+<!-- English Revision: 1870427 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -914,6 +914,16 @@ la réécriture soit effectuée
 	    égale à <em>expression_de_comparaison</em> (les deux chaînes
 	    sont identiques, caractère pour caractère).</dd>
         </dl>
+	<note><title>Note</title>
+        L'opérateur de comparaison de chaînes fait partie des arguments de la
+	<em>CondPattern</em> et doit par conséquent se trouver entre les
+	guillemets s'ils sont présents. Exemple :
+	        
+        <highlight language="config">
+RewriteCond %{HTTP_USER_AGENT} "=This Robot/1.0"
+        </highlight>
+        </note>
+
 	</li>
 
         <li>
