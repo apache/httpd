@@ -572,6 +572,15 @@ la réécriture soit effectuée
 	    égale à <em>expression_de_comparaison</em> (les deux chaînes
 	    sont identiques, caractère pour caractère).</dd>
         </dl>
+	<div class="note"><h3>Note</h3>
+        L'opérateur de comparaison de chaînes fait partie des arguments de la
+	<em>CondPattern</em> et doit par conséquent se trouver entre les
+	guillemets s'ils sont présents. Exemple :
+	        
+        <pre class="prettyprint lang-config">RewriteCond %{HTTP_USER_AGENT} "=This Robot/1.0"</pre>
+
+        </div>
+
 	</li>
 
         <li>
