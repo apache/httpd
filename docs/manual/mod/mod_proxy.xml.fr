@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1860166 -->
+<!-- English Revision: 1870426 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2385,7 +2385,7 @@ en-têtes X-Forwarded-*</description>
 <context>virtual host</context>
 <context>directory</context>
 </contextlist>
-<compatibility>Disponible à partir de la version 2.4.39 du serveur HTTP Apache</compatibility>
+<compatibility>Disponible à partir de la version 2.4.40 du serveur HTTP Apache</compatibility>
 
 <usage>
     <p>Cette directive permet de contrôler le transfert par le mandataire du
