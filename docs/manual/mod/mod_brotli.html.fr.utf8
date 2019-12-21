@@ -204,14 +204,14 @@ compression</td></tr>
     <dt>AddSuffix</dt>
     <dd><p>Ajoute la méthode de compression à la fin de l'en-tête ETag, ce qui
     implique que les représentations compressées et non compressées possèderont
-    des en-têtes ETag uniques. C'était le comportement par défaut depuis la
+    des en-têtes ETag uniques. C'est le comportement par défaut depuis la
     version 2.4.0 avec un autre module de compression dynamique,
     mod-deflate. Ce paramètre permet d'éviter l'envoi de messages
     "HTTP Not Modified" (304) en réponse aux requêtes conditionnelles pour des
     contenus compressés.</p></dd>
     <dt>NoChange</dt>
     <dd><p>Ne modifie pas l'en-tête ETag d'une réponse compressée. C'était le
-    comportement par défaut depuis la version 2.4.0 avec un autre module de
+    comportement par défaut avant la version 2.4.0 avec un autre module de
     compression dynamique, mod-deflate. Ce paramètre ne respecte pas la
     propriété HTTP/1.1 selon laquelle toutes les représentations d'une même
     ressource ont des en-têtes ETag uniques.</p></dd>
