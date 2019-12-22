@@ -1,6 +1,13 @@
 #!/bin/bash -ex
 if ! test -v SKIP_TESTING; then
-   svn export -q https://svn.apache.org/repos/asf/httpd/test/framework/trunk test/perl-framework
+   # Use a rudimental retry workflow as workaround to svn export hanging for minutes.
+   # Travis automatically kills a build if one step takes more than 10 minutes without
+   # reporting any progress.
+   for i in {1..5} 
+   do
+       timeout 60 svn export -q https://svn.apache.org/repos/asf/httpd/test/framework/trunk test/perl-framework
+       if [ $? -eq 0 ]; then break; else sleep 120; fi
+   done
 fi
 
 function install_apx() {
