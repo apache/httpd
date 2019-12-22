@@ -1,4 +1,4 @@
-#!/bin/bash -ex
+#!/bin/bash -x
 if ! test -v SKIP_TESTING; then
    # Use a rudimental retry workflow as workaround to svn export hanging for minutes.
    # Travis automatically kills a build if one step takes more than 10 minutes without
