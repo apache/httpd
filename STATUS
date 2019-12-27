@@ -57,6 +57,13 @@ CURRENT VOTES:
 
 THINGS THAT SHOULD BE CONSIDERED EARLY IN THE 2.6/3.0 DEVELOPMENT CYCLE:
 
+  * Remove directives whose purpose was to preserve existing buggy behaviour
+    in v2.4.x.
+
+  * Re-align structures to be memory efficient. Move bit fields to the
+    top of structures so that they can be extended without adding a
+    memory overhead.
+
   * Seriously ramp up/replace test framework and cases to have better
     coverage of existing special cases and behaviours users rely on.
 
