@@ -201,18 +201,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
              Once we have a clean solution, we can try to optimize
              it, so that the server won't be slow down too much.
 
-  * RFC 2616 violations.
-    Closed PRs: 15852, 15857, 15859, 15861, 15864, 15869, 15870, 16120,
-                16125, 16135, 16136, 16137, 16138, 16139, 16140, 16518,
-                16520, 49825
-    Open PRs:   15865, 15866, 15868, 16126, 16133, 16142, 16521, 42978 
-    jerenkrantz says: need to decide how many we need to backport and/or
-                      if these rise to showstopper status.
-    wrowe suggests: it would be nice to see "MUST" v.s. "SHOULD" v.s. "MAY"
-                    out of this list, without reviewing them individually.
-    wrowe asks: what is lingering after 2.4.25 release? Offhand, only
-                URI conformance
-
   * pipes deadlock on all platforms with limited pipe buffers (e.g. both
     Linux and Win32, as opposed to only Win32 on 1.3).  The right solution
     is either GStein's proposal for a "CGI Brigade", or OtherBill's proposal
