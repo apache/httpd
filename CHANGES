@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) Add a config layout for OpenWRT. [Graham Leggett]
+
   *) mod_http2: Fixed rare cases where a h2 worker could deadlock the main connection. 
      [Yann Ylavic, Stefan Eissing]
 

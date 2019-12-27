@@ -409,3 +409,29 @@
     logfiledir:      ${localstatedir}/log/httpd
     proxycachedir:   ${localstatedir}/cache/httpd
 </Layout>
+
+# OpenWRT layout
+<Layout OpenWRT>
+    prefix:          /usr
+    exec_prefix:     ${prefix}
+    bindir:          ${prefix}/bin
+    sbindir:         ${prefix}/sbin
+    libdir:          ${prefix}/lib/apache
+    libexecdir:      ${prefix}/lib/apache/modules
+    installbuilddir: ${prefix}/lib/apache/build
+    mandir:          ${prefix}/man
+    sysconfdir:      /etc/apache
+    datadir:         /usr/share
+    iconsdir:        ${datadir}/icons
+    htdocsdir:       ${datadir}/htdocs
+    manualdir:       ${htdocsdir}/manual
+    cgidir:          ${datadir}/cgi-bin
+    errordir:        ${datadir}/error
+    includedir:      ${prefix}/include/httpd
+    localstatedir:   /var
+    runtimedir:      ${localstatedir}/run
+    statedir:        ${localstatedir}/lib/apache
+    logfiledir:      ${localstatedir}/log
+    proxycachedir:   ${localstatedir}/cache/apache
+</Layout>
+
