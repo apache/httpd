@@ -5,8 +5,16 @@ if ! test -v SKIP_TESTING; then
    # reporting any progress.
    for i in {1..5} 
    do
-       timeout 60 svn export -q https://svn.apache.org/repos/asf/httpd/test/framework/trunk test/perl-framework
-       if [ $? -eq 0 ]; then break; else sleep 120; fi
+       timeout 60 svn export --force -q https://svn.apache.org/repos/asf/httpd/test/framework/trunk test/perl-framework
+       if [ $? -eq 0 ]; then
+           break
+       else
+           if [ $i -eq 5 ]; then
+               exit 1
+           else
+               sleep 120
+           fi
+       fi
    done
 fi
 
