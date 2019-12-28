@@ -506,7 +506,7 @@ if ($opt_i or $opt_e) {
         #  use .so unambigiously for installed shared library modules
         $t =~ s|\.[^./\\]+$|\.so|;
         if ($opt_i) {
-	    push(@cmds, "$installbuilddir/instdso.sh SH_LIBTOOL='" .
+	    push(@cmds, $destdir . "$installbuilddir/instdso.sh SH_LIBTOOL='" .
                  "$libtool' $f $CFG_LIBEXECDIR");
 	    push(@cmds, "chmod 755 $CFG_LIBEXECDIR/$t");
         }
