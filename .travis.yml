@@ -152,5 +152,6 @@ script:
 
 notifications:
   irc: "chat.freenode.net#httpd-dev"
-  email:
-    - dev@httpd.apache.org
+# Temporary disable email notifications to rule out some build issues
+#  email:
+#    - dev@httpd.apache.org
