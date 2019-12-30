@@ -208,7 +208,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_ssl: use OPENSSL_init_ssl() to initialise OpenSSL on versions 1.1+.
      trunk patch: http://svn.apache.org/r1861950
      2.4.x patch: svn merge -c 1861950 ^/httpd/httpd/trunk . 
-     +1: 
+     +1: minfrin
 
   *) mod_ssl: OCSP does not apply to proxy mode
      trunk patch: http://svn.apache.org/r1865740
