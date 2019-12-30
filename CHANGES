@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) configure: Add manualdir and proxycachedir to the APR_ENABLE_LAYOUT macro call.
+     [Graham Leggett]
+
   *) Add support for cross compiling to apxs. If apxs is being executed from somewhere
      other than its target location, add that prefix to includes and library directories.
      Without this, apxs would fail to find config_vars.mk and exit. [Graham Leggett]
