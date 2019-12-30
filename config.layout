@@ -410,8 +410,8 @@
     proxycachedir:   ${localstatedir}/cache/httpd
 </Layout>
 
-# OpenWRT layout
-<Layout OpenWRT>
+# OpenWrt layout
+<Layout OpenWrt>
     prefix:          /usr
     exec_prefix:     ${prefix}
     bindir:          ${prefix}/bin
