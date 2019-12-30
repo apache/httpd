@@ -1,5 +1,9 @@
 #!/bin/bash -xe
 
+if test -v CLEAR_CACHE; then
+    rm -rf $HOME/root
+fi
+
 # Use a rudimental retry workflow as workaround to svn export hanging for minutes.
 # Travis automatically kills a build if one step takes more than 10 minutes without
 # reporting any progress. 
