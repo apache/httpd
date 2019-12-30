@@ -416,22 +416,21 @@
     exec_prefix:     ${prefix}
     bindir:          ${prefix}/bin
     sbindir:         ${prefix}/sbin
-    libdir:          ${prefix}/lib/apache
-    libexecdir:      ${prefix}/lib/apache/modules
-    installbuilddir: ${prefix}/lib/apache/build
-    mandir:          ${prefix}/man
-    sysconfdir:      /etc/apache
-    datadir:         /usr/share
+    libdir:          ${prefix}/lib
+    libexecdir:      ${prefix}/lib+
+    mandir:          ${prefix}/share/man
+    sysconfdir:      /etc+
+    datadir:         ${prefix}/share+
+    installbuilddir: ${datadir}/build
+    errordir:        ${datadir}/error
     iconsdir:        ${datadir}/icons
     htdocsdir:       ${datadir}/htdocs
-    manualdir:       ${htdocsdir}/manual
+    manualdir:       /usr/share/doc/apache2/manual
     cgidir:          ${datadir}/cgi-bin
-    errordir:        ${datadir}/error
-    includedir:      ${prefix}/include/httpd
+    includedir:      ${prefix}/include+
     localstatedir:   /var
-    runtimedir:      ${localstatedir}/run
-    statedir:        ${localstatedir}/lib/apache
-    logfiledir:      ${localstatedir}/log
-    proxycachedir:   ${localstatedir}/cache/apache
+    runtimedir:      ${localstatedir}/run+
+    logfiledir:      ${localstatedir}/log+
+    proxycachedir:   ${localstatedir}/cache/apache2
 </Layout>
 
