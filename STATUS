@@ -173,6 +173,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       ylavic: engine part not tested, but works with no engine still
       jailletc36: not reviewed, but at least r1836547 seems to be missing, according
                   to changelog
+      minfrin: r1836547 is indeed missing.
 
    *) mod_proxy_html, mod_xml2enc: Fix build issues with macOS due to r1864469
       trunk patch: http://svn.apache.org/r1867183
