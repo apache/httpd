@@ -269,7 +269,7 @@ and URLs to be referenced from within <a href="expr.html">expressions</a>
 and modules like <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
 
 <pre class="prettyprint lang-config">&lt;DirectoryMatch "^/var/www/combined/(?&lt;SITENAME&gt;[^/]+)"&gt;
-    require ldap-group "cn=%{env:MATCH_SITENAME},ou=combined,o=Example"
+    Require ldap-group "cn=%{env:MATCH_SITENAME},ou=combined,o=Example"
 &lt;/DirectoryMatch&gt;</pre>
 
 
@@ -506,7 +506,7 @@ are interpreted, it is important to understand how this works.</p>
         <li><code class="directive">Directory</code> "/" matches and an initial configuration to set the <code>CustomHeaderName</code> header with the value <code>one</code> is created.</li>
         <li><code class="directive">Directory</code> "/example" matches, and since <code class="module"><a href="./mod/mod_headers.html">mod_headers</a></code> specifies in its code to override in case of a merge, a new configuration is created to set the <code>CustomHeaderName</code> header with the value <code>two</code>.</li>
         <li><code class="directive">FilesMatch</code> ".*" matches and another merge opportunity arises, causing the <code>CustomHeaderName</code> header to be set with the value <code>three</code>.</li>
-        <li>Eventually during the next steps of the HTTP request processing <code class="module"><a href="./mod/mod_headers.html">mod_headers</a></code> will be called and it will receive the configuration to set the <code>CustomHeaderName</code> header with the value <code>three</code>. <code class="module"><a href="./mod/mod_headers.html">mod_headers</a></code> normally uses this configuration to perfom its job, namely setting the foo header. This does not mean that a module can't perform a more complex action like discarding directives because not needed or deprecated, etc..</li>
+        <li>Eventually during the next steps of the HTTP request processing <code class="module"><a href="./mod/mod_headers.html">mod_headers</a></code> will be called and it will receive the configuration to set the <code>CustomHeaderName</code> header with the value <code>three</code>. <code class="module"><a href="./mod/mod_headers.html">mod_headers</a></code> normally uses this configuration to perform its job, namely setting the foo header. This does not mean that a module can't perform a more complex action like discarding directives because not needed or deprecated, etc..</li>
     </ul>
 
     <p>This is true for .htaccess too since they have the same priority as <code class="directive">Directory</code> in the merge order. The important concept to understand is that configuration sections like  <code class="directive">Directory</code> and <code class="directive">FilesMatch</code> are not comparable to module specific directives like <code class="directive"><a href="./mod/mod_headers.html#header">Header</a></code> or <code class="directive"><a href="./mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> because they operate on different levels.
@@ -589,7 +589,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/sections.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2019 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

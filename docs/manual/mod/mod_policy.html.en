@@ -601,7 +601,7 @@ later.</td></tr>
     header which in turn contains one of the headers listed, will be
     rejected.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config"># reject reponses with "User-Agent" listed in the Vary header
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config"># reject responses with "User-Agent" listed in the Vary header
 PolicyVary enforce User-Agent</pre>
 </div>
 
@@ -682,7 +682,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_policy.htm
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2019 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

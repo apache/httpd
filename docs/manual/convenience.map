@@ -414,6 +414,7 @@ mdcertificateagreement	mod/mod_md.html#mdcertificateagreement
 mdcertificateauthority	mod/mod_md.html#mdcertificateauthority
 mdcertificatefile	mod/mod_md.html#mdcertificatefile
 mdcertificatekeyfile	mod/mod_md.html#mdcertificatekeyfile
+mdcertificatemonitor	mod/mod_md.html#mdcertificatemonitor
 mdcertificateprotocol	mod/mod_md.html#mdcertificateprotocol
 mdcertificatestatus	mod/mod_md.html#mdcertificatestatus
 mdchallengedns01	mod/mod_md.html#mdchallengedns01
@@ -432,6 +433,10 @@ mdrenewmode	mod/mod_md.html#mdrenewmode
 mdrenewwindow	mod/mod_md.html#mdrenewwindow
 mdrequirehttps	mod/mod_md.html#mdrequirehttps
 mdserverstatus	mod/mod_md.html#mdserverstatus
+mdstapleothers	mod/mod_md.html#mdstapleothers
+mdstapling	mod/mod_md.html#mdstapling
+mdstaplingkeepresponse	mod/mod_md.html#mdstaplingkeepresponse
+mdstaplingrenewwindow	mod/mod_md.html#mdstaplingrenewwindow
 mdstoredir	mod/mod_md.html#mdstoredir
 mdwarnwindow	mod/mod_md.html#mdwarnwindow
 memcacheconnttl	mod/mod_socache_memcache.html#memcacheconnttl

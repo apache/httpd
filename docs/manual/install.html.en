@@ -167,7 +167,7 @@ sudo service apache2 start</pre>
       your system. If you don't, or prefer to not use the system-provided
       versions, download the latest versions of both APR and APR-Util
       from <a href="http://apr.apache.org/">Apache APR</a>, unpack
-      them into <code>/httpd_source_tree_root/srclib/apr</code> and /httpd_source_tree_root<code>/srclib/apr-util</code>
+      them into <code>/httpd_source_tree_root/srclib/apr</code> and <code>/httpd_source_tree_root/srclib/apr-util</code>
       (be sure the directory names do not have version numbers; for example,
       the APR distribution must be under /httpd_source_tree_root/srclib/apr/) and use
       <code>./configure</code>'s <code>--with-included-apr</code>
@@ -458,7 +458,7 @@ $ tar xvf httpd-<em>NN</em>.tar
     soon.</p>
 
     <p>A <a href="http://wiki.apache.org/httpd/DistrosDefaultLayout">description
-    of these third-party distrubutions</a> is maintained in the HTTP
+    of these third-party distributions</a> is maintained in the HTTP
     Server wiki, and should reflect the current state of these
     third-party distributions. However, you will need to familiarize
     yourself with your particular platform's package management and
@@ -491,7 +491,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/install.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2019 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
