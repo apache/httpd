@@ -132,6 +132,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_ssl: OCSP does not apply to proxy mode
+     trunk patch: http://svn.apache.org/r1865740
+     2.4.x patch: svn merge -c 1865740 ^/httpd/httpd/trunk .
+     +1: ylavic, jorton, minfrin
+
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -200,11 +205,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1861950
      2.4.x patch: svn merge -c 1861950 ^/httpd/httpd/trunk . 
      +1: minfrin
-
-  *) mod_ssl: OCSP does not apply to proxy mode
-     trunk patch: http://svn.apache.org/r1865740
-     2.4.x patch: svn merge -c 1865740 ^/httpd/httpd/trunk . 
-     +1: ylavic, jorton, 
 
   *) ap_check_pipeline: clarify/simplify !max_blank_lines logic, no functional change.
      trunk patch: http://svn.apache.org/r1765061
