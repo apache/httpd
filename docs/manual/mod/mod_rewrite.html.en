@@ -531,6 +531,14 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
             <em>CondPattern</em>, or is equal to <em>CondPattern</em>
             (the two strings are equal, character for character).</dd>
         </dl>
+        <div class="note"><h3>Note</h3>
+        The string comparison operator is part of the <em>CondPattern</em>
+        argument and must be included in the quotes if those are used. Eg.
+        
+        <pre class="prettyprint lang-config">RewriteCond %{HTTP_USER_AGENT} "=This Robot/1.0"</pre>
+
+        </div>
+        
         </li>
 
         <li>
@@ -1580,7 +1588,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/mod_rewrite.html
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2019 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
