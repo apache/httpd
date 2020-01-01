@@ -132,6 +132,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_http2: Fix mod_reqtimeout interworking on handshakes. Fix H2Directr config value.
+     trunk patch: http://svn.apache.org/r1870454
+                  http://svn.apache.org/r1870499
+     2.4.x patch: svn merge -c 1870454,1870499 ^/httpd/httpd/trunk .
+     +1: icing, steffenal, minfrin
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -237,12 +242,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   All revisions: https://github.com/apache/httpd/pull/80
                                  https://github.com/apache/httpd/pull/80.diff
      +1: rpluem, covener
-
-  *) mod_http2: Fix mod_reqtimeout interworking on handshakes. Fix H2Directr config value.
-     trunk patch: http://svn.apache.org/r1870454
-                  http://svn.apache.org/r1870499
-     2.4.x patch: svn merge -c 1870454,1870499 ^/httpd/httpd/trunk .
-     +1: icing, steffenal
 
   *) mod_lua: allow nil assignment to trigger apr_table_unset
            (nil assignment to an APR table used to throw an error)
