@@ -269,8 +269,7 @@ static apr_int64_t h2_srv_config_geti64(const h2_config *conf, h2_config_var_t v
         case H2_CONF_UPGRADE:
             return H2_CONFIG_GET(conf, &defconf, h2_upgrade);
         case H2_CONF_DIRECT:
-            return 1;
-            /*return H2_CONFIG_GET(conf, &defconf, h2_direct);*/
+            return H2_CONFIG_GET(conf, &defconf, h2_direct);
         case H2_CONF_TLS_WARMUP_SIZE:
             return H2_CONFIG_GET(conf, &defconf, tls_warmup_size);
         case H2_CONF_TLS_COOLDOWN_SECS:
