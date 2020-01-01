@@ -132,6 +132,18 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   *) mod_proxy_html, mod_xml2enc: Fix build issues with macOS due to r1864469
+      trunk patch: http://svn.apache.org/r1867183
+      2.4.x patch: svn merge -c 1867183 ^/httpd/httpd/trunk .
+      +1: jim, ylavic (by inspection), minfrin
+      jailletc36: -0
+                  I don't think that the #pragma black magic is of any help with GCC
+                  and jim seems to still have problem with clang and comments with //.
+                  See discussion at:
+                  https://lists.apache.org/thread.html/628cc54a1a345cb773d8e1be0639f8e75d2b481cf89232051c83b787@%3Cdev.httpd.apache.org%3E
+             jim: The problem still exists because this is NOT back ported yet. With this back port, the problem goes away.
+
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -174,17 +186,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       jailletc36: not reviewed, but at least r1836547 seems to be missing, according
                   to changelog
       minfrin: r1836547 is indeed missing.
-
-   *) mod_proxy_html, mod_xml2enc: Fix build issues with macOS due to r1864469
-      trunk patch: http://svn.apache.org/r1867183
-      2.4.x patch: svn merge -c 1867183 ^/httpd/httpd/trunk .
-      +1: jim, ylavic (by inspection),
-      jailletc36: -0
-                  I don't think that the #pragma black magic is of any help with GCC 
-                  and jim seems to still have problem with clang and comments with //.
-                  See discussion at:
-                  https://lists.apache.org/thread.html/628cc54a1a345cb773d8e1be0639f8e75d2b481cf89232051c83b787@%3Cdev.httpd.apache.org%3E
-             jim: The problem still exists because this is NOT back ported yet. With this back port, the problem goes away.
 
   *) Easy patches: synch 2.4.x and trunk
         - core: Fix a comment
