@@ -283,6 +283,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c r1872036,1872093,1872102 ^/httpd/httpd/trunk
      +1: minfrin
 
+  *) Add support for cross compiling to apxs. If apxs is being executed from somewhere
+     other than its target location, add that prefix to includes and library directories.
+     Without this, apxs would fail to find config_vars.mk and exit.
+     trunk patch: http://svn.apache.org/r1872042
+     2.4.x patch: svn merge -c 1872042 ^/httpd/httpd/trunk
+     +1: minfrin
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
