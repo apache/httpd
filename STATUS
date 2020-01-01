@@ -132,6 +132,13 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) ap_check_pipeline: clarify/simplify !max_blank_lines logic, no functional change.
+     trunk patch: http://svn.apache.org/r1765061
+     2.4.x patch: svn merge -c 1765061 ^/httpd/httpd/trunk .
+     +1: jailletc36, ylavic, minfrin
+     jailletc36: this is fine because if !max_blank_lines, we break at the first
+                 iteration, so we know that mode = AP_MODE_SPECULATIVE
+
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -200,13 +207,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1861950
      2.4.x patch: svn merge -c 1861950 ^/httpd/httpd/trunk . 
      +1: minfrin
-
-  *) ap_check_pipeline: clarify/simplify !max_blank_lines logic, no functional change.
-     trunk patch: http://svn.apache.org/r1765061
-     2.4.x patch: svn merge -c 1765061 ^/httpd/httpd/trunk . 
-     +1: jailletc36, ylavic
-     jailletc36: this is fine because if !max_blank_lines, we break at the first
-                 iteration, so we know that mode = AP_MODE_SPECULATIVE
 
   *) mod_ssl: negotiate the TLS protocol version per name based vhost...
      trunk patch: http://svn.apache.org/r1868645
