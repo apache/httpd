@@ -249,7 +249,7 @@ AP_DECLARE(apr_status_t) ap_check_pipeline(conn_rec *c, apr_bucket_brigade *bb,
         apr_brigade_cleanup(bb);
         rv = ap_get_brigade(c->input_filters, bb, mode,
                             APR_NONBLOCK_READ, len);
-        if (rv != APR_SUCCESS || APR_BRIGADE_EMPTY(bb) || !max_blank_lines) {
+        if (rv != APR_SUCCESS || APR_BRIGADE_EMPTY(bb)) {
             if (mode == AP_MODE_READBYTES) {
                 /* Unexpected error, stop with this connection */
                 ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c, APLOGNO(02967)
@@ -257,23 +257,22 @@ AP_DECLARE(apr_status_t) ap_check_pipeline(conn_rec *c, apr_bucket_brigade *bb,
                 c->keepalive = AP_CONN_CLOSE;
                 rv = APR_EGENERAL;
             }
-            else if (rv != APR_SUCCESS || APR_BRIGADE_EMPTY(bb)) {
-                if (rv != APR_SUCCESS && !APR_STATUS_IS_EAGAIN(rv)) {
-                    /* Pipe is dead */
-                    c->keepalive = AP_CONN_CLOSE;
-                }
-                else {
-                    /* Pipe is up and empty */
-                    rv = APR_EAGAIN;
-                }
+            else if (rv != APR_SUCCESS && !APR_STATUS_IS_EAGAIN(rv)) {
+                /* Pipe is dead */
+                c->keepalive = AP_CONN_CLOSE;
             }
             else {
-                apr_off_t n = 0;
-                /* Single read asked, (non-meta-)data available? */
-                rv = apr_brigade_length(bb, 0, &n);
-                if (rv == APR_SUCCESS && n <= 0) {
-                    rv = APR_EAGAIN;
-                }
+                /* Pipe is up and empty */
+                rv = APR_EAGAIN;
+            }
+            break;
+        }
+        if (!max_blank_lines) {
+            apr_off_t n = 0;
+            /* Single read asked, (non-meta-)data available? */
+            rv = apr_brigade_length(bb, 0, &n);
+            if (rv == APR_SUCCESS && n <= 0) {
+                rv = APR_EAGAIN;
             }
             break;
         }

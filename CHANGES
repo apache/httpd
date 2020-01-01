@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.42
 
+  *) ap_check_pipeline: clarify/simplify !max_blank_lines logic, no functional change.
+     [Christophe Jaillet]
+
   *) mod_ssl: OCSP does not apply to proxy mode. [Yann Ylavic]
 
   *) mod_proxy_html, mod_xml2enc: Fix build issues with macOS due to r1864469
