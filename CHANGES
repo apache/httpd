@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.42
-   
+
+  *) mod_proxy_html, mod_xml2enc: Fix build issues with macOS due to r1864469
+     [Jim Jagielski]
+ 
   *) mod_authn_socache: Increase the maximum length of strings that can be cached by
      the module from 100 to 256.  PR 62149 [<thorsten.meinl knime.com>]
 
