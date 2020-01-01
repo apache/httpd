@@ -1813,8 +1813,8 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
     /*
      * Perform OCSP-based revocation checks
      */
-    if (ok && ((sc->server->ocsp_mask & SSL_OCSPCHECK_CHAIN) ||
-         (errdepth == 0 && (sc->server->ocsp_mask & SSL_OCSPCHECK_LEAF)))) {     
+    if (ok && ((mctx->ocsp_mask & SSL_OCSPCHECK_CHAIN) ||
+         (errdepth == 0 && (mctx->ocsp_mask & SSL_OCSPCHECK_LEAF)))) {     
         /* If there was an optional verification error, it's not
          * possible to perform OCSP validation since the issuer may be
          * missing/untrusted.  Fail in that case. */
