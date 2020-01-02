@@ -308,6 +308,10 @@ later</td></tr>
     FallbackResource disabled
 &lt;/Directory&gt;</pre>
 
+    <p>A fallback handler (in the above case, <code>/blog/index.php</code>)
+    can access the original requested URL via the server variable
+    <code>REQUEST_URI</code>. For example, to access this variable in PHP,
+    use <code>$_SERVER['REQUEST_URI']</code>.</p>
 
 </div>
 </div>
