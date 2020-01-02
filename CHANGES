@@ -10,9 +10,6 @@ Changes with Apache 2.4.42
   *) mod_http2: Multiple field length violations in the same request no longer cause
      several log entries to be written. [@mkauf]
 
-  *) ap_check_pipeline: clarify/simplify !max_blank_lines logic, no functional change.
-     [Christophe Jaillet]
-
   *) mod_ssl: OCSP does not apply to proxy mode.  PR 63679.
      [Lubos Uhliarik <luhliari redhat.com>, Yann Ylavic]
 
