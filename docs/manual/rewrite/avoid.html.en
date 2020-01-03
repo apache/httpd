@@ -202,7 +202,7 @@ accomplish.</p>
 <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> is frequently used to take a particular
 action based on the presence or absence of a particular environment
 variable or request header. This can be done more efficiently using the
-<code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code>.</p>
+<code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> directive.</p>
 
 <p>Consider, for example, the common scenario where
 <code class="directive">RewriteRule</code> is used to enforce a canonical
