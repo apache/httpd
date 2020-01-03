@@ -650,6 +650,58 @@ DIGIT       ::= &lt;any US-ASCII digit "0".."9"&gt;
 
 </section>
 
+<section id="other">
+    <title>Other</title>
+
+    <table border="1" style="zebra">
+    <columnspec><column width=".2"/><column width=".2"/><column width=".6"/></columnspec>
+
+    <tr><th>Name</th><th>Alternative</th> <th>Description</th></tr>
+    <tr><td><code>-in</code></td>
+        <td><code>in</code></td>
+        <td>string contained in list</td></tr>
+    <tr><td><code>/regexp/</code></td>
+        <td><code>m#regexp#</code></td>
+        <td>Regular expression (the second form allows different
+        delimiters than /)</td></tr>
+    <tr><td><code>/regexp/i</code></td>
+        <td><code>m#regexp#i</code></td>
+        <td>Case insensitive regular expression</td></tr>
+    <tr><td><code>$0 ... $9</code></td>
+        <td></td>
+        <td>Regular expression backreferences</td></tr>
+    </table>
+
+    <section id="rebackref">
+        <title>Regular expression backreferences</title>
+        <p>The strings <code>$0</code> ... <code>$9</code> allow to reference
+        the capture groups from a previously executed, successfully
+        matching regular expressions. They can normally only be used in the
+        same expression as the matching regex, but some modules allow special
+        uses.</p>
+    </section>
+
+</section>
+
+<section id="sslrequire">
+    <title>Comparison with SSLRequire</title>
+    <p>The <em>ap_expr</em> syntax is mostly a superset of the syntax of the
+    deprecated <directive module="mod_ssl">SSLRequire</directive> directive.
+    The differences are described in <directive
+    module="mod_ssl">SSLRequire</directive>'s documentation.</p>
+</section>
+
+<section id="compatibility">
+    <title>Version History</title>
+    <p>The <code>req_novary</code> <a href="#functions">function</a>
+    is available for versions 2.4.4 and later.</p>
+    <p>The <code>SERVER_PROTOCOL_VERSION</code>,
+    <code>SERVER_PROTOCOL_VERSION_MAJOR</code> and
+    <code>SERVER_PROTOCOL_VERSION_MINOR</code>
+    <a href="#vars">variables</a>
+    are available for versions 2.5.0 and later.</p>
+</section>
+
 <section id="examples">
 
     <title>Example expressions</title>
@@ -723,58 +775,6 @@ CustomLog logs/access-errors.log common "expr=%{REQUEST_STATUS} >= 400"
 CustomLog logs/access-errors-specific.log common "expr=%{REQUEST_STATUS} -in {'405','410'}"
 
     </highlight>
-</section>
-
-<section id="other">
-    <title>Other</title>
-
-    <table border="1" style="zebra">
-    <columnspec><column width=".2"/><column width=".2"/><column width=".6"/></columnspec>
-
-    <tr><th>Name</th><th>Alternative</th> <th>Description</th></tr>
-    <tr><td><code>-in</code></td>
-        <td><code>in</code></td>
-        <td>string contained in list</td></tr>
-    <tr><td><code>/regexp/</code></td>
-        <td><code>m#regexp#</code></td>
-        <td>Regular expression (the second form allows different
-        delimiters than /)</td></tr>
-    <tr><td><code>/regexp/i</code></td>
-        <td><code>m#regexp#i</code></td>
-        <td>Case insensitive regular expression</td></tr>
-    <tr><td><code>$0 ... $9</code></td>
-        <td></td>
-        <td>Regular expression backreferences</td></tr>
-    </table>
-
-    <section id="rebackref">
-        <title>Regular expression backreferences</title>
-        <p>The strings <code>$0</code> ... <code>$9</code> allow to reference
-        the capture groups from a previously executed, successfully
-        matching regular expressions. They can normally only be used in the
-        same expression as the matching regex, but some modules allow special
-        uses.</p>
-    </section>
-
-</section>
-
-<section id="sslrequire">
-    <title>Comparison with SSLRequire</title>
-    <p>The <em>ap_expr</em> syntax is mostly a superset of the syntax of the
-    deprecated <directive module="mod_ssl">SSLRequire</directive> directive.
-    The differences are described in <directive
-    module="mod_ssl">SSLRequire</directive>'s documentation.</p>
-</section>
-
-<section id="compatibility">
-    <title>Version History</title>
-    <p>The <code>req_novary</code> <a href="#functions">function</a>
-    is available for versions 2.4.4 and later.</p>
-    <p>The <code>SERVER_PROTOCOL_VERSION</code>,
-    <code>SERVER_PROTOCOL_VERSION_MAJOR</code> and
-    <code>SERVER_PROTOCOL_VERSION_MINOR</code>
-    <a href="#vars">variables</a>
-    are available for versions 2.5.0 and later.</p>
 </section>
 
 </manualpage>
