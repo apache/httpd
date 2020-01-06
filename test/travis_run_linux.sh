@@ -32,6 +32,6 @@ if ! test -v SKIP_TESTING; then
         make install
         cd test/perl-framework
         perl Makefile.PL -apxs $HOME/build/httpd-root/bin/apxs
-        make test
+        make test ${TEST_ARGS}
     fi
 fi
