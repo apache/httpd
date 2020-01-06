@@ -21,7 +21,6 @@
  * otherwise.
  */
 
-#include <assert.h>
 #include  "ap_slotmem.h"
 
 #include "httpd.h"
@@ -401,7 +400,6 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
             else {
                 apr_shm_remove(fname, pool);
                 rv = apr_shm_create(&shm, size, fname, gpool);
-                assert(rv == APR_SUCCESS);
             }
         }
         else {
