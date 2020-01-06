@@ -27,7 +27,7 @@ fi
 make $MFLAGS
 if ! test -v SKIP_TESTING; then
     if test -v WITH_TEST_SUITE; then
-        make check
+        make check ${TEST_ARGS}
     else
         make install
         cd test/perl-framework
