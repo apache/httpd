@@ -72,10 +72,13 @@ function install_apx() {
 
 
 if ! test -v SKIP_TESTING; then
+    # The test/framework checkout is cached at ~/root/framework, which
+    # is copied to test/framework within the httpd build directory.
+    # Renew the cache here if the last-changed revision is stale.
     framework=https://svn.apache.org/repos/asf/httpd/test/framework/trunk
     fcache=$HOME/root/framework
-    frev=`svn info --show-item last-changed-revision ${framework} || echo HEAD`
-    if [ -n "${frev}" -a ! -f ${fcache}/.revision-is-${frev} ]; then
+    frev=`svn info --no-newline --show-item last-changed-revision ${framework}`
+    if [ -d ${fcache} -a ! -f ${fcache}/.revision-is-${frev} ]; then
         : Purging stale cache at ${fcache}
         rm -rf ${fcache}
     fi
