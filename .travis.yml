@@ -46,6 +46,10 @@ matrix:
     - name: Linux Ubuntu, Default, all-modules
       env: CONFIG="--enable-mods-shared=reallyall"
     # -------------------------------------------------------------------------
+    - name: Linux Ubuntu, Default, all-modules, random test order
+      env: CONFIG="--enable-mods-shared=reallyall"
+           TEST_ARGS="-order=random"
+    # -------------------------------------------------------------------------
     - name: Linux Ubuntu, Prefork MPM, all-modules
       env: CONFIG="--enable-mods-shared=reallyall --with-mpm=prefork"
     # -------------------------------------------------------------------------
