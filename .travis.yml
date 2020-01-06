@@ -55,6 +55,7 @@ matrix:
     # -------------------------------------------------------------------------
     - name: Linux Ubuntu, Worker MPM, all-modules
       env: CONFIG="--enable-mods-shared=reallyall --with-mpm=worker"
+           TEST_ARGS="-verbose"
     # -------------------------------------------------------------------------
     - name: Linux Ubuntu, Shared MPMs, all-modules
       env: CONFIG="--enable-mods-shared=reallyall --enable-mpms-shared=all"
