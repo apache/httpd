@@ -48,7 +48,7 @@ matrix:
     # -------------------------------------------------------------------------
     - name: Linux Ubuntu, Default, all-modules, random test order
       env: CONFIG="--enable-mods-shared=reallyall"
-           TEST_ARGS="APACHE_TEST_EXTRA_ARGS=-order=random"
+           TEST_ARGS="-order=random"
     # -------------------------------------------------------------------------
     - name: Linux Ubuntu, Prefork MPM, all-modules
       env: CONFIG="--enable-mods-shared=reallyall --with-mpm=prefork"

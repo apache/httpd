@@ -27,11 +27,11 @@ fi
 make $MFLAGS
 if ! test -v SKIP_TESTING; then
     if test -v WITH_TEST_SUITE; then
-        make check ${TEST_ARGS}
+        make check TESTS="${TEST_ARGS}"
     else
         make install
         cd test/perl-framework
         perl Makefile.PL -apxs $HOME/build/httpd-root/bin/apxs
-        make test ${TEST_ARGS}
+        make test APACHE_TEST_EXTRA_ARGS="${TEST_ARGS}"
     fi
 fi
