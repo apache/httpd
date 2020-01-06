@@ -74,14 +74,14 @@ function install_apx() {
 if ! test -v SKIP_TESTING; then
     framework=https://svn.apache.org/repos/asf/httpd/test/framework/trunk
     fcache=$HOME/root/framework
-    frev=`svn info --show-item last-changed-revision ${framework}`
+    frev=`svn info --show-item last-changed-revision ${framework} || echo HEAD`
     if [ -n "${frev}" -a ! -f ${fcache}/.revision-is-${frev} ]; then
         : Purging stale cache at ${fcache}
         rm -rf ${fcache}
     fi
 
     if [ ! -d ${fcache} ]; then
-        run_svn_export ${framework} ${frev:-HEAD} ${fcache} 5
+        run_svn_export ${framework} ${frev} ${fcache} 5
         touch ${fcache}/.revision-is-${frev}
     fi
 
