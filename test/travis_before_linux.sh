@@ -9,15 +9,16 @@ fi
 # reporting any progress. 
 function run_svn_export() {
    local url=$1
-   local dest_dir=$2
-   local max_tries=$3
+   local revision=$2
+   local dest_dir=$3
+   local max_tries=$4
 
    # Disable -e to allow fail/retry
    set +e
 
    for i in $(seq 1 $max_tries)
    do
-       timeout 60 svn export --force -q $url $dest_dir
+       timeout 60 svn export -r ${revision} --force -q $url $dest_dir
        if [ $? -eq 0 ]; then
            break
        else
@@ -71,7 +72,23 @@ function install_apx() {
 
 
 if ! test -v SKIP_TESTING; then
-    run_svn_export https://svn.apache.org/repos/asf/httpd/test/framework/trunk test/perl-framework 5
+    # The test/framework checkout is cached at ~/root/framework, which
+    # is copied to test/framework within the httpd build directory.
+    # Renew the cache here if the last-changed revision is stale.
+    framework=https://svn.apache.org/repos/asf/httpd/test/framework/trunk
+    fcache=$HOME/root/framework
+    frev=`svn info --no-newline --show-item last-changed-revision ${framework}`
+    if [ -d ${fcache} -a ! -f ${fcache}/.revision-is-${frev} ]; then
+        : Purging stale cache at ${fcache}
+        rm -rf ${fcache}
+    fi
+
+    if [ ! -d ${fcache} ]; then
+        run_svn_export ${framework} ${frev} ${fcache} 5
+        touch ${fcache}/.revision-is-${frev}
+    fi
+
+    cp -a ${fcache} test/perl-framework
 fi
 
 if test -v APR_VERSION; then
