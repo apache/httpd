@@ -26,8 +26,6 @@
 <p><span>Langues Disponibles: </span><a href="./en/expr.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/expr.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Historiquement, il existe de nombreuses variantes dans la syntaxe
     des expressions permettant d'exprimer une condition dans les
@@ -48,10 +46,10 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#binop">Opérateurs binaires</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#unnop">Opérateurs unaires</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#functions">Fonctions</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#examples">Exemples d'expressions</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#other">Autres</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#sslrequire">Comparaison avec SSLRequire</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#compatibility">Historique de version</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#examples">Exemples d'expressions</a></li>
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><code class="directive"><a href="./mod/core.html#if">If</a></code></li><li><code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#elseif">&lt;ElseIf&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#else">&lt;Else&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#alias">Alias</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#scriptalias">ScriptAlias</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#redirect">Redirect</a></code></li><li><code class="directive"><a href="./mod/mod_auth_basic.html#authbasicfake">AuthBasicFake</a></code></li><li><code class="directive"><a href="./mod/mod_auth_form.html#authformloginrequiredlocation">AuthFormLoginRequiredLocation</a></code></li><li><code class="directive"><a href="./mod/mod_auth_form.html#authformloginsuccesslocation">AuthFormLoginSuccessLocation</a></code></li><li><code class="directive"><a href="./mod/mod_auth_form.html#authformlogoutlocation">AuthFormLogoutLocation</a></code></li><li><code class="directive"><a href="./mod/mod_authn_core.html#authname">AuthName</a></code></li><li><code class="directive"><a href="./mod/mod_authn_core.html#authtype">AuthType</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewritecond">RewriteCond</a></code></li><li><code class="directive"><a href="./mod/mod_setenvif.html#setenvifexpr">SetEnvIfExpr</a></code></li><li><code class="directive"><a href="./mod/mod_headers.html#header">Header</a></code></li><li><code class="directive"><a href="./mod/mod_headers.html#requestheader">RequestHeader</a></code></li><li><code class="directive"><a href="./mod/mod_filter.html#filterprovider">FilterProvider</a></code></li><li><code class="directive"><a href="./mod/mod_crypto.html#cryptokey">CryptoKey</a></code></li><li><code class="directive"><a href="./mod/mod_crypto.html#cryptoiv">CryptoIV</a></code></li><li><a href="mod/mod_authz_core.html#reqexpr">Require expr</a></li><li><a href="mod/mod_authnz_ldap.html#requser">Require ldap-user</a></li><li><a href="mod/mod_authnz_ldap.html#reqgroup">Require ldap-group</a></li><li><a href="mod/mod_authnz_ldap.html#reqdn">Require ldap-dn</a></li><li><a href="mod/mod_authnz_ldap.html#reqattribute">Require ldap-attribute</a></li><li><a href="mod/mod_authnz_ldap.html#reqfilter">Require ldap-filter</a></li><li><a href="mod/mod_authnz_ldap.html#reqsearch">Require ldap-search</a></li><li><a href="mod/mod_authz_dbd.html#reqgroup">Require dbd-group</a></li><li><a href="mod/mod_authz_dbm.html#reqgroup">Require dbm-group</a></li><li><a href="mod/mod_authz_groupfile.html#reqgroup">Require group</a></li><li><a href="mod/mod_authz_host.html#reqhost">Require host</a></li><li><code class="directive"><a href="./mod/mod_ssl.html#sslrequire">SSLRequire</a></code></li><li><code class="directive"><a href="./mod/mod_log_debug.html#logmessage">LogMessage</a></code></li><li><code class="module"><a href="./mod/mod_include.html">mod_include</a></code></li><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -630,6 +628,56 @@ DIGIT       ::= &lt;any US-ASCII digit "0".."9"&gt;</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
+<h2><a name="other" id="other">Autres</a> <a title="Lien permanent" href="#other" class="permalink">&para;</a></h2>
+    
+
+    <table class="bordered"><tr class="header"><th>Nom</th><th>Alternative</th> <th>Description</th></tr>
+<tr><td><code>-in</code></td>
+        <td><code>in</code></td>
+        <td>chaîne contenue dans une liste</td></tr>
+<tr class="odd"><td><code>/regexp/</code></td>
+        <td><code>m#regexp#</code></td>
+        <td>Expression rationnelle (la seconde forme permet de spécifier
+	des délimiteurs autres que /)</td></tr>
+<tr><td><code>/regexp/i</code></td>
+        <td><code>m#regexp#i</code></td>
+        <td>Expression rationnelle insensible à la casse</td></tr>
+<tr class="odd"><td><code>$0 ... $9</code></td>
+        <td />
+        <td>Références arrières dans les expressions rationnelles</td></tr>
+</table>
+
+    <h3><a name="rebackref" id="rebackref">Références arrières dans les expressions rationnelles</a></h3>
+        
+        <p>Les chaînes <code>$0</code> ... <code>$9</code> permettent de
+	référencer les groupes de capture en provenance d'expressions
+	rationnelles précédemment exécutées et mises en correspondance avec
+	succès. Elles ne peuvent normalement être utilisées que dans la
+	même expression que celle mise en correspondance, mais certains
+	modules permettent de les utiliser de manière spéciale.</p>
+    
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="sslrequire" id="sslrequire">Comparaison avec SSLRequire</a> <a title="Lien permanent" href="#sslrequire" class="permalink">&para;</a></h2>
+    
+    <p>La syntaxe <em>ap_expr</em> consiste principalement en une
+    surcouche de la syntaxe de la directive obsolète <code class="directive"><a href="./mod/mod_ssl.html#sslrequire">SSLRequire</a></code>. Vous pouvez consulter la
+    liste de leur différences dans la documentation de la directive
+    <code class="directive"><a href="./mod/mod_ssl.html#sslrequire">SSLRequire</a></code>.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="compatibility" id="compatibility">Historique de version</a> <a title="Lien permanent" href="#compatibility" class="permalink">&para;</a></h2>
+    
+    <p>La <a href="#functions">fonction</a> <code>req_novary</code> est
+    disponible à partir de la version 2.4.4 du serveur HTTP Apache.</p>
+    <p>Les <a href="#vars">variables</a>
+    <code>SERVER_PROTOCOL_VERSION</code>,
+    <code>SERVER_PROTOCOL_VERSION_MAJOR</code> et
+    <code>SERVER_PROTOCOL_VERSION_MINOR</code> sont disponibles à partir
+    de la version 2.5.0 du serveur HTTP Apache.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
 <h2><a name="examples" id="examples">Exemples d'expressions</a> <a title="Lien permanent" href="#examples" class="permalink">&para;</a></h2>
     
 	
@@ -708,56 +756,6 @@ Require expr "IP Address:%{REMOTE_ADDR}" -in split/, /, join PeerExtList('subjec
 CustomLog logs/access-errors.log common "expr=%{REQUEST_STATUS} &gt;= 400"
 CustomLog logs/access-errors-specific.log common "expr=%{REQUEST_STATUS} -in {'405','410'}"</pre>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="other" id="other">Autres</a> <a title="Lien permanent" href="#other" class="permalink">&para;</a></h2>
-    
-
-    <table class="bordered"><tr class="header"><th>Nom</th><th>Alternative</th> <th>Description</th></tr>
-<tr><td><code>-in</code></td>
-        <td><code>in</code></td>
-        <td>chaîne contenue dans une liste</td></tr>
-<tr class="odd"><td><code>/regexp/</code></td>
-        <td><code>m#regexp#</code></td>
-        <td>Expression rationnelle (la seconde forme permet de spécifier
-	des délimiteurs autres que /)</td></tr>
-<tr><td><code>/regexp/i</code></td>
-        <td><code>m#regexp#i</code></td>
-        <td>Expression rationnelle insensible à la casse</td></tr>
-<tr class="odd"><td><code>$0 ... $9</code></td>
-        <td />
-        <td>Références arrières dans les expressions rationnelles</td></tr>
-</table>
-
-    <h3><a name="rebackref" id="rebackref">Références arrières dans les expressions rationnelles</a></h3>
-        
-        <p>Les chaînes <code>$0</code> ... <code>$9</code> permettent de
-	référencer les groupes de capture en provenance d'expressions
-	rationnelles précédemment exécutées et mises en correspondance avec
-	succès. Elles ne peuvent normalement être utilisées que dans la
-	même expression que celle mise en correspondance, mais certains
-	modules permettent de les utiliser de manière spéciale.</p>
-    
-
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="sslrequire" id="sslrequire">Comparaison avec SSLRequire</a> <a title="Lien permanent" href="#sslrequire" class="permalink">&para;</a></h2>
-    
-    <p>La syntaxe <em>ap_expr</em> consiste principalement en une
-    surcouche de la syntaxe de la directive obsolète <code class="directive"><a href="./mod/mod_ssl.html#sslrequire">SSLRequire</a></code>. Vous pouvez consulter la
-    liste de leur différences dans la documentation de la directive
-    <code class="directive"><a href="./mod/mod_ssl.html#sslrequire">SSLRequire</a></code>.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="compatibility" id="compatibility">Historique de version</a> <a title="Lien permanent" href="#compatibility" class="permalink">&para;</a></h2>
-    
-    <p>La <a href="#functions">fonction</a> <code>req_novary</code> est
-    disponible à partir de la version 2.4.4 du serveur HTTP Apache.</p>
-    <p>Les <a href="#vars">variables</a>
-    <code>SERVER_PROTOCOL_VERSION</code>,
-    <code>SERVER_PROTOCOL_VERSION_MAJOR</code> et
-    <code>SERVER_PROTOCOL_VERSION_MINOR</code> sont disponibles à partir
-    de la version 2.5.0 du serveur HTTP Apache.</p>
 </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="./en/expr.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
