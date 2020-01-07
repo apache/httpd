@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1869816 -->
+<!-- English Revision: 1872297 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -74,12 +74,12 @@ s'appliqueront à toutes les requêtes.  Si leurs conditions ne sont pas vérifi
 directives qu'ils contiennent seront ignorées.</p>
 
 <p>Le conteneur <directive type="section" module="core">IfDefine</directive>
-contient des directives qui ne seront appliquées que si un paramètre
-approprié a été défini dans la ligne de commande de <program>httpd</program>.
-Par exemple,
-avec la configuration suivante, toutes les requêtes seront redirigées vers
-un autre site si le serveur est démarré en utilisant la ligne de commande :
-<code>httpd -DClosedForNow</code>:</p>
+contient des directives qui ne seront appliquées que si un paramètre approprié a
+été défini dans la ligne de commande de <program>httpd</program> ou via une
+directive <directive module="core">Define</directive>.  Par exemple, avec la
+configuration suivante, toutes les requêtes seront redirigées vers un autre site
+si le serveur est démarré en utilisant la ligne de commande : <code>httpd
+-DClosedForNow</code>:</p>
 
 <highlight language="config">
 &lt;IfDefine ClosedForNow&gt;
