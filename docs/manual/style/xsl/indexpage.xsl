@@ -153,7 +153,7 @@
 <!-- ==================================================================== -->
 <xsl:template name="search.spec">
 <xsl:attribute name="method">get</xsl:attribute>
-<xsl:attribute name="action">http://www.google.com/search</xsl:attribute>
+<xsl:attribute name="action">https://www.google.com/search</xsl:attribute>
 <xsl:if test="$ext-target">
     <xsl:attribute name="target">_blank</xsl:attribute>
 </xsl:if>
