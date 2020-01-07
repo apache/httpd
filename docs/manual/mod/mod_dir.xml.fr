@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1755988:1872258 (outdated) -->
+<!-- English Revision: 1872258 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -303,6 +303,10 @@ de la version 2.4.4 du serveur HTTP Apache.</compatibility>
     FallbackResource disabled
 &lt;/Directory&gt;
     </highlight>
+    <p>Un gestionnaire de ressource par défaut (dans l'exemple ci-dessus
+    <code>/blog/index.php</code>) peut accéder à l'URL de la requête originale
+    via la variable de serveur <code>REQUEST_URI</code>. Pour accéder à cette
+    variable en PHP, par exemple, utilisez <code>$_SERVER['REQUEST_URI']</code>.</p>
 </usage>
 </directivesynopsis>
 
