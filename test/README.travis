@@ -47,6 +47,7 @@ TODO list
  - non-x86_64 images lack installed cpanminus and don't enable caching.
    ppc64le builds seem unreasonably slow to install CPAN deps each time
    (15-20 minutes) - not sure why.  s390x is enabled & seems reasonably fast.
+ - Testing support for arm64.
 * Use containers for non-Ubuntu-based Linux testing
 * E-mail notifications
 * VPATH builds

@@ -43,6 +43,10 @@ matrix:
       arch: ppc64le
       env: CONFIG="--enable-mods-shared=reallyall"
     # -------------------------------------------------------------------------
+    - name: Linux arm64 Ubuntu, all-modules
+      arch: arm64
+      env: CONFIG="--enable-mods-shared=reallyall"
+    # -------------------------------------------------------------------------
     - name: Linux Ubuntu, Default, all-modules
       env: CONFIG="--enable-mods-shared=reallyall"
     # -------------------------------------------------------------------------
