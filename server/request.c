@@ -2083,7 +2083,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_request_core_filter(ap_filter_t *f,
     conf = ap_get_core_module_config(f->r->server->module_config);
 
     for (bucket = APR_BRIGADE_FIRST(bb); bucket != APR_BRIGADE_SENTINEL(bb);
-         bucket = APR_BUCKET_NEXT(bb)) {
+         bucket = APR_BUCKET_NEXT(bucket)) {
         if (AP_BUCKET_IS_EOR(bucket)) {
             seen_eor = 1;
             break;
