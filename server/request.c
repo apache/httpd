@@ -2069,6 +2069,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_request_core_filter(ap_filter_t *f,
     apr_size_t tmp_bb_len = 0;
     core_server_config *conf;
     int seen_eor = 0;
+    apr_bucket *bucket;
 
     /*
      * Handle the AsyncFilter directive. We limit the filters that are
@@ -2081,6 +2082,14 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_request_core_filter(ap_filter_t *f,
 
     conf = ap_get_core_module_config(f->r->server->module_config);
 
+    for (bucket = APR_BRIGADE_FIRST(bb); bucket != APR_BRIGADE_SENTINEL(bb);
+         bucket = APR_BRIGADE_NEXT(bb)) {
+        if (AP_BUCKET_IS_EOR(bucket)) {
+            seen_eor = 1;
+            break;
+        }
+    }
+
     /* Reinstate any buffered content */
     ap_filter_reinstate_brigade(f, bb, &flush_upto);
 
@@ -2090,86 +2099,83 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_request_core_filter(ap_filter_t *f,
      */
     tmp_bb = ap_acquire_brigade(f->c);
 
+    if (seen_eor) {
+        APR_BRIGADE_CONCAT(tmp_bb, bb);
+        ap_remove_output_filter(f);
+        status = ap_pass_brigade(f->next, tmp_bb);
+        apr_brigade_cleanup(tmp_bb);
+        goto cleanup;
+    }
+
     /* Don't touch *bb after seen_eor */
-    while (status == APR_SUCCESS && !seen_eor && !APR_BRIGADE_EMPTY(bb)) {
-        apr_bucket *bucket = APR_BRIGADE_FIRST(bb);
+    while (status == APR_SUCCESS && !APR_BRIGADE_EMPTY(bb)) {
+        bucket = APR_BRIGADE_FIRST(bb);
         int do_pass = 0;
 
-        if (AP_BUCKET_IS_EOR(bucket)) {
-            /* pass out everything and never come back again,
-             * r is destroyed with this bucket!
-             */
-            APR_BRIGADE_CONCAT(tmp_bb, bb);
-            ap_remove_output_filter(f);
-            seen_eor = 1;
+        /* if the core has set aside data, back off and try later */
+        if (!flush_upto) {
+            if (ap_filter_should_yield(f->next)) {
+                break;
+            }
         }
-        else {
-            /* if the core has set aside data, back off and try later */
-            if (!flush_upto) {
-                if (ap_filter_should_yield(f->next)) {
+        else if (flush_upto == bucket) {
+            flush_upto = NULL;
+        }
+
+        /* have we found a morphing bucket? if so, force it to morph into
+         * something safe to pass down to the connection filters without
+         * needing to be set aside.
+         */
+        if (bucket->length == (apr_size_t)-1) {
+            const char *data;
+            apr_size_t size;
+
+            status = apr_bucket_read(bucket, &data, &size, block);
+            if (status != APR_SUCCESS) {
+                if (!APR_STATUS_IS_EAGAIN(status)
+                        || block != APR_NONBLOCK_READ) {
                     break;
                 }
-            }
-            else if (flush_upto == bucket) {
-                flush_upto = NULL;
-            }
-
-            /* have we found a morphing bucket? if so, force it to morph into
-             * something safe to pass down to the connection filters without
-             * needing to be set aside.
-             */
-            if (bucket->length == (apr_size_t)-1) {
-                const char *data;
-                apr_size_t size;
-
-                status = apr_bucket_read(bucket, &data, &size, block);
-                if (status != APR_SUCCESS) {
-                    if (!APR_STATUS_IS_EAGAIN(status)
-                            || block != APR_NONBLOCK_READ) {
-                        break;
-                    }
-                    /* Flush everything so far and retry in blocking mode */
-                    bucket = apr_bucket_flush_create(c->bucket_alloc);
-                    block = APR_BLOCK_READ;
-                }
-                else {
-                    tmp_bb_len += size;
-                    block = APR_NONBLOCK_READ;
-                }
+                /* Flush everything so far and retry in blocking mode */
+                bucket = apr_bucket_flush_create(c->bucket_alloc);
+                block = APR_BLOCK_READ;
             }
             else {
-                tmp_bb_len += bucket->length;
-            }
-
-            /* move the bucket to tmp_bb and check whether it exhausts bb or
-             * brings tmp_bb above the limit; in both cases it's time to pass
-             * everything down the chain.
-             */
-            APR_BUCKET_REMOVE(bucket);
-            APR_BRIGADE_INSERT_TAIL(tmp_bb, bucket);
-            if (APR_BRIGADE_EMPTY(bb)
-                    || APR_BUCKET_IS_FLUSH(bucket)
-                    || tmp_bb_len >= conf->flush_max_threshold) {
-                do_pass = 1;
+                tmp_bb_len += size;
+                block = APR_NONBLOCK_READ;
             }
         }
+        else {
+            tmp_bb_len += bucket->length;
+        }
 
-        if (do_pass || seen_eor) {
+        /* move the bucket to tmp_bb and check whether it exhausts bb or
+         * brings tmp_bb above the limit; in both cases it's time to pass
+         * everything down the chain.
+         */
+        APR_BUCKET_REMOVE(bucket);
+        APR_BRIGADE_INSERT_TAIL(tmp_bb, bucket);
+        if (APR_BRIGADE_EMPTY(bb)
+                || APR_BUCKET_IS_FLUSH(bucket)
+                || tmp_bb_len >= conf->flush_max_threshold) {
+            do_pass = 1;
+        }
+
+        if (do_pass) {
             status = ap_pass_brigade(f->next, tmp_bb);
             apr_brigade_cleanup(tmp_bb);
             tmp_bb_len = 0;
         }
     }
 
-    /* Don't touch *bb after seen_eor */
-    if (!seen_eor) {
-        apr_status_t rv;
-        APR_BRIGADE_PREPEND(bb, tmp_bb);
-        rv = ap_filter_setaside_brigade(f, bb);
-        if (status == APR_SUCCESS) {
-            status = rv;
-        }
+    apr_status_t rv;
+    APR_BRIGADE_PREPEND(bb, tmp_bb);
+    rv = ap_filter_setaside_brigade(f, bb);
+    if (status == APR_SUCCESS) {
+        status = rv;
     }
+
+cleanup:
 
     ap_release_brigade(f->c, tmp_bb);
 
