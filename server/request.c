@@ -2070,6 +2070,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_request_core_filter(ap_filter_t *f,
     core_server_config *conf;
     int seen_eor = 0;
     apr_bucket *bucket;
+    apr_status_t rv;
 
     /*
      * Handle the AsyncFilter directive. We limit the filters that are
@@ -2109,8 +2110,8 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_request_core_filter(ap_filter_t *f,
 
     /* Don't touch *bb after seen_eor */
     while (status == APR_SUCCESS && !APR_BRIGADE_EMPTY(bb)) {
-        bucket = APR_BRIGADE_FIRST(bb);
         int do_pass = 0;
+        bucket = APR_BRIGADE_FIRST(bb);
 
         /* if the core has set aside data, back off and try later */
         if (!flush_upto) {
@@ -2168,7 +2169,6 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_request_core_filter(ap_filter_t *f,
         }
     }
 
-    apr_status_t rv;
     APR_BRIGADE_PREPEND(bb, tmp_bb);
     rv = ap_filter_setaside_brigade(f, bb);
     if (status == APR_SUCCESS) {
