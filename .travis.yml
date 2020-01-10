@@ -27,7 +27,6 @@ addons:
       - libnghttp2-dev
       - libjansson-dev
       - libpcre2-dev
-      - litmus
 env:
   global:
     - MFLAGS=-j2
@@ -141,6 +140,25 @@ matrix:
     - name: Linux Ubuntu, Litmus
       env: CONFIG="--enable-dav --enable-dav-fs"
            LITMUS=1
+      addons:
+        apt:
+          update: false
+          sources:
+            - sourceline: 'deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) universe'
+          packages:
+            - cpanminus
+            - libtool-bin
+            - libapr1-dev
+            - libaprutil1-dev
+            - perl-doc
+            - lua5.3-dev
+            - libbrotli-dev
+            - libcurl4-openssl-dev
+            - libsystemd-dev
+            - libnghttp2-dev
+            - libjansson-dev
+            - libpcre2-dev
+            - litmus
     # -------------------------------------------------------------------------
     - if: branch = 2.4.x
       name: Linux Ubuntu, APR 1.5.1, APR-util 1.5.4
