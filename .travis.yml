@@ -27,6 +27,7 @@ addons:
       - libnghttp2-dev
       - libjansson-dev
       - libpcre2-dev
+      - litmus
 env:
   global:
     - MFLAGS=-j2
@@ -136,6 +137,10 @@ matrix:
            APU_VERSION=1.6.1
            APU_CONFIG="--with-crypto"
            CONFIG="--enable-mods-shared=reallyall"
+    # -------------------------------------------------------------------------
+    - name: Linux Ubuntu, Litmus
+      env: CONFIG="--enable-dav --enable-dav-fs"
+           LITMUS=1
     # -------------------------------------------------------------------------
     - if: branch = 2.4.x
       name: Linux Ubuntu, APR 1.5.1, APR-util 1.5.4
