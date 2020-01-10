@@ -30,8 +30,17 @@ if ! test -v SKIP_TESTING; then
         make check TESTS="${TEST_ARGS}"
     else
         make install
-        cd test/perl-framework
-        perl Makefile.PL -apxs $HOME/build/httpd-root/bin/apxs
-        make test APACHE_TEST_EXTRA_ARGS="${TEST_ARGS}"
+        pushd test/perl-framework
+            perl Makefile.PL -apxs $HOME/build/httpd-root/bin/apxs
+            make test APACHE_TEST_EXTRA_ARGS="${TEST_ARGS}"
+        popd
+    fi
+    if test -v LITMUS; then
+        pushd test/perl-framework
+           mkdir -p t/htdocs/modules/dav
+           ./t/TEST -start
+           litmus http://localhost:8529/modules/dav/
+           ./t/TEST -stop
+        popd
     fi
 fi
