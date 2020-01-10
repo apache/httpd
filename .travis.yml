@@ -46,6 +46,7 @@ matrix:
     - name: Linux arm64 Ubuntu, all-modules
       arch: arm64
       env: CONFIG="--enable-mods-shared=reallyall"
+           TEST_ARGS="-v"
     # -------------------------------------------------------------------------
     - name: Linux Ubuntu, Default, all-modules
       env: CONFIG="--enable-mods-shared=reallyall"
