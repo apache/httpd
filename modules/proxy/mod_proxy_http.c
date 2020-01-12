@@ -674,8 +674,9 @@ static int ap_proxy_http_prefetch(proxy_http_req_t *req,
         }
         if (status != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(01095)
-                          "prefetch request body failed to %pI (%s)"
+                          "prefetch request body failed to %pI<>%pI (%s)"
                           " from %s (%s)",
+                          p_conn->connection->local_addr,
                           p_conn->addr, p_conn->hostname ? p_conn->hostname: "",
                           c->client_ip, c->remote_host ? c->remote_host: "");
             return ap_map_http_request_error(status, HTTP_BAD_REQUEST);
@@ -883,7 +884,8 @@ static int ap_proxy_http_request(proxy_http_req_t *req)
         conn_rec *c = r->connection;
         /* apr_status_t value has been logged in lower level method */
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01097)
-                      "pass request body failed to %pI (%s) from %s (%s)",
+                      "pass request body failed to %pI<>%pI (%s) from %s (%s)",
+                      req->origin->local_addr,
                       req->backend->addr,
                       req->backend->hostname ? req->backend->hostname: "",
                       c->client_ip, c->remote_host ? c->remote_host: "");
