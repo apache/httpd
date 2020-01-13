@@ -43,16 +43,15 @@ TODO list
 * MacOS build
 * Windows build
 * clang-on-Linux build
-* Multi-arch testing
- - non-x86_64 images lack installed cpanminus and don't enable caching.
-   ppc64le builds seem unreasonably slow to install CPAN deps each time
-   (15-20 minutes) - not sure why.  s390x is enabled & seems reasonably fast.
- - Testing support for arm64.
 * Use containers for non-Ubuntu-based Linux testing
-* E-mail notifications
 * VPATH builds
 * sanity checks for use of APLOGNO() - empty arguments, accidental duplicates, etc.
  - not sure how exactly
+* Known test failures
+ - "apt-get install" timeout/fails - workaround by moving apt install to before_script phase?
+ - t/apache/expr_string.t - unclear root cause, possible workaround in r1872705
+ - t/apache/rwrite.t, t/apache/pass_brigade.t
+   see msg <CAKQ1sVMbDcUouu+_bfp8T5HO5+=ORWhLx361+b4qyLux5xyhwA@mail.gmail.com> etc
 
 Testing from a Feature Branch
 -----------------------------
