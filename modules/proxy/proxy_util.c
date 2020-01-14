@@ -1172,8 +1172,10 @@ PROXY_DECLARE(char *) ap_proxy_define_balancer(apr_pool_t *p,
     (*balancer)->lbmethod = lbmethod;
     
     (*balancer)->workers = apr_array_make(p, 5, sizeof(proxy_worker *));
+#if APR_HAS_THREADS
     (*balancer)->gmutex = NULL;
     (*balancer)->tmutex = NULL;
+#endif
 
     if (do_malloc)
         bshared = ap_malloc(sizeof(proxy_balancer_shared));
@@ -1265,7 +1267,9 @@ PROXY_DECLARE(apr_status_t) ap_proxy_share_balancer(proxy_balancer *balancer,
 
 PROXY_DECLARE(apr_status_t) ap_proxy_initialize_balancer(proxy_balancer *balancer, server_rec *s, apr_pool_t *p)
 {
+#if APR_HAS_THREADS
     apr_status_t rv = APR_SUCCESS;
+#endif
     ap_slotmem_provider_t *storage = balancer->storage;
     apr_size_t size;
     unsigned int num;
@@ -1305,6 +1309,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_balancer(proxy_balancer *balance
     if (balancer->lbmethod && balancer->lbmethod->reset)
         balancer->lbmethod->reset(balancer, s);
 
+#if APR_HAS_THREADS
     if (balancer->tmutex == NULL) {
         rv = apr_thread_mutex_create(&(balancer->tmutex), APR_THREAD_MUTEX_DEFAULT, p);
         if (rv != APR_SUCCESS) {
@@ -1313,6 +1318,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_balancer(proxy_balancer *balance
             return rv;
         }
     }
+#endif
     return APR_SUCCESS;
 }
 
@@ -1454,16 +1460,14 @@ static void socket_cleanup(proxy_conn_rec *conn)
 
 static apr_status_t conn_pool_cleanup(void *theworker)
 {
-    proxy_worker *worker = (proxy_worker *)theworker;
-    if (worker->cp->res) {
-        worker->cp->pool = NULL;
-    }
+    ((proxy_worker *)theworker)->cp = NULL;
     return APR_SUCCESS;
 }
 
 static void init_conn_pool(apr_pool_t *p, proxy_worker *worker)
 {
     apr_pool_t *pool;
+    apr_pool_t *dns_pool;
     proxy_conn_pool *cp;
 
     /*
@@ -1475,11 +1479,20 @@ static void init_conn_pool(apr_pool_t *p, proxy_worker *worker)
     apr_pool_create(&pool, p);
     apr_pool_tag(pool, "proxy_worker_cp");
     /*
+     * Create a subpool of the connection pool for worker
+     * scoped DNS resolutions. This is needed to avoid race
+     * conditions in using the connection pool by multiple
+     * threads during ramp up.
+     */
+    apr_pool_create(&dns_pool, pool);
+    apr_pool_tag(dns_pool, "proxy_worker_dns");
+    /*
      * Alloc from the same pool as worker.
      * proxy_conn_pool is permanently attached to the worker.
      */
     cp = (proxy_conn_pool *)apr_pcalloc(p, sizeof(proxy_conn_pool));
     cp->pool = pool;
+    cp->dns_pool = dns_pool;
     worker->cp = cp;
 }
 
@@ -1494,14 +1507,6 @@ static apr_status_t connection_cleanup(void *theconn)
 {
     proxy_conn_rec *conn = (proxy_conn_rec *)theconn;
     proxy_worker *worker = conn->worker;
-
-    /*
-     * If the connection pool is NULL the worker
-     * cleanup has been run. Just return.
-     */
-    if (!worker->cp->pool) {
-        return APR_SUCCESS;
-    }
 
     if (conn->r) {
         apr_pool_destroy(conn->r->pool);
@@ -1631,7 +1636,7 @@ static apr_status_t connection_destructor(void *resource, void *params,
     proxy_worker *worker = params;
 
     /* Destroy the pool only if not called from reslist_destroy */
-    if (worker->cp->pool) {
+    if (worker->cp) {
         proxy_conn_rec *conn = resource;
         apr_pool_destroy(conn->pool);
     }
@@ -1987,67 +1992,73 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
                      ap_proxy_worker_name(p, worker));
     }
     else {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00927)
-                     "initializing worker %s local",
-                     ap_proxy_worker_name(p, worker));
         apr_global_mutex_lock(proxy_mutex);
-        /* Now init local worker data */
-        if (worker->tmutex == NULL) {
-            rv = apr_thread_mutex_create(&(worker->tmutex), APR_THREAD_MUTEX_DEFAULT, p);
-            if (rv != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(00928)
-                             "can not create worker thread mutex");
+        /* Check again after we got the lock if we are still uninitialized */
+        if (!(AP_VOLATILIZE_T(unsigned int, worker->local_status) & PROXY_WORKER_INITIALIZED)) {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00927)
+                         "initializing worker %s local",
+                         ap_proxy_worker_name(p, worker));
+            /* Now init local worker data */
+#if APR_HAS_THREADS
+            if (worker->tmutex == NULL) {
+                rv = apr_thread_mutex_create(&(worker->tmutex), APR_THREAD_MUTEX_DEFAULT, p);
+                if (rv != APR_SUCCESS) {
+                    ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(00928)
+                                 "can not create worker thread mutex");
+                    apr_global_mutex_unlock(proxy_mutex);
+                    return rv;
+                }
+            }
+#endif
+            if (worker->cp == NULL)
+                init_conn_pool(p, worker);
+            if (worker->cp == NULL) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(00929)
+                             "can not create connection pool");
                 apr_global_mutex_unlock(proxy_mutex);
-                return rv;
-            }
-        }
-        if (worker->cp == NULL)
-            init_conn_pool(p, worker);
-        if (worker->cp == NULL) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(00929)
-                         "can not create connection pool");
-            apr_global_mutex_unlock(proxy_mutex);
-            return APR_EGENERAL;
-        }
-
-        if (worker->s->hmax) {
-            rv = apr_reslist_create(&(worker->cp->res),
-                                    worker->s->min, worker->s->smax,
-                                    worker->s->hmax, worker->s->ttl,
-                                    connection_constructor, connection_destructor,
-                                    worker, worker->cp->pool);
-
-            apr_pool_cleanup_register(worker->cp->pool, (void *)worker,
-                                      conn_pool_cleanup,
-                                      apr_pool_cleanup_null);
-
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00930)
-                "initialized pool in child %" APR_PID_T_FMT " for (%s) min=%d max=%d smax=%d",
-                 getpid(), worker->s->hostname_ex, worker->s->min,
-                 worker->s->hmax, worker->s->smax);
-
-            /* Set the acquire timeout */
-            if (rv == APR_SUCCESS && worker->s->acquire_set) {
-                apr_reslist_timeout_set(worker->cp->res, worker->s->acquire);
+                return APR_EGENERAL;
             }
 
-        }
-        else {
-            void *conn;
+            if (worker->s->hmax) {
+                rv = apr_reslist_create(&(worker->cp->res),
+                                        worker->s->min, worker->s->smax,
+                                        worker->s->hmax, worker->s->ttl,
+                                        connection_constructor, connection_destructor,
+                                        worker, worker->cp->pool);
 
-            rv = connection_constructor(&conn, worker, worker->cp->pool);
-            worker->cp->conn = conn;
+                apr_pool_pre_cleanup_register(worker->cp->pool, worker,
+                                              conn_pool_cleanup);
 
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00931)
-                 "initialized single connection worker in child %" APR_PID_T_FMT " for (%s)",
-                 getpid(), worker->s->hostname_ex);
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00930)
+                    "initialized pool in child %" APR_PID_T_FMT " for (%s) min=%d max=%d smax=%d",
+                     getpid(), worker->s->hostname_ex, worker->s->min,
+                     worker->s->hmax, worker->s->smax);
+
+                /* Set the acquire timeout */
+                if (rv == APR_SUCCESS && worker->s->acquire_set) {
+                    apr_reslist_timeout_set(worker->cp->res, worker->s->acquire);
+                }
+
+            }
+            else {
+                void *conn;
+
+                rv = connection_constructor(&conn, worker, worker->cp->pool);
+                worker->cp->conn = conn;
+
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s, APLOGNO(00931)
+                     "initialized single connection worker in child %" APR_PID_T_FMT " for (%s)",
+                     getpid(), worker->s->hostname_ex);
+            }
+            if (rv == APR_SUCCESS) {
+                worker->local_status |= (PROXY_WORKER_INITIALIZED);
+            }
         }
         apr_global_mutex_unlock(proxy_mutex);
 
     }
     if (rv == APR_SUCCESS) {
         worker->s->status |= (PROXY_WORKER_INITIALIZED);
-        worker->local_status |= (PROXY_WORKER_INITIALIZED);
     }
     return rv;
 }
@@ -2307,13 +2318,13 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
     else {
         /* create the new connection if the previous was destroyed */
         if (!worker->cp->conn) {
-            connection_constructor((void **)conn, worker, worker->cp->pool);
+            rv = connection_constructor((void **)conn, worker, worker->cp->pool);
         }
         else {
             *conn = worker->cp->conn;
             worker->cp->conn = NULL;
+            rv = APR_SUCCESS;
         }
-        rv = APR_SUCCESS;
     }
 
     if (rv != APR_SUCCESS) {
@@ -2359,7 +2370,9 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
 {
     int server_port;
     apr_status_t err = APR_SUCCESS;
+#if APR_HAS_THREADS
     apr_status_t uerr = APR_SUCCESS;
+#endif
     const char *uds_path;
 
     /*
@@ -2493,25 +2506,39 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
              * we can reuse the address.
              */
             if (!worker->cp->addr) {
+#if APR_HAS_THREADS
                 if ((err = PROXY_THREAD_LOCK(worker)) != APR_SUCCESS) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, err, r, APLOGNO(00945) "lock");
                     return HTTP_INTERNAL_SERVER_ERROR;
                 }
+#endif
 
                 /*
-                 * Worker can have the single constant backend address.
-                 * The single DNS lookup is used once per worker.
-                 * If dynamic change is needed then set the addr to NULL
-                 * inside dynamic config to force the lookup.
+                 * Recheck addr after we got the lock. This may have changed
+                 * while waiting for the lock.
                  */
-                err = apr_sockaddr_info_get(&(worker->cp->addr),
-                                            conn->hostname, APR_UNSPEC,
-                                            conn->port, 0,
-                                            worker->cp->pool);
+                if (!AP_VOLATILIZE_T(apr_sockaddr_t *, worker->cp->addr)) {
+
+                    apr_sockaddr_t *addr;
+
+                    /*
+                     * Worker can have the single constant backend address.
+                     * The single DNS lookup is used once per worker.
+                     * If dynamic change is needed then set the addr to NULL
+                     * inside dynamic config to force the lookup.
+                     */
+                    err = apr_sockaddr_info_get(&addr,
+                                                conn->hostname, APR_UNSPEC,
+                                                conn->port, 0,
+                                                worker->cp->dns_pool);
+                    worker->cp->addr = addr;
+                }
                 conn->addr = worker->cp->addr;
+#if APR_HAS_THREADS
                 if ((uerr = PROXY_THREAD_UNLOCK(worker)) != APR_SUCCESS) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, uerr, r, APLOGNO(00946) "unlock");
                 }
+#endif
             }
             else {
                 conn->addr = worker->cp->addr;
@@ -3449,7 +3476,9 @@ PROXY_DECLARE(apr_status_t) ap_proxy_sync_balancer(proxy_balancer *b, server_rec
             (*runtime)->cp = NULL;
             (*runtime)->balancer = b;
             (*runtime)->s = shm;
+#if APR_HAS_THREADS
             (*runtime)->tmutex = NULL;
+#endif
             rv = ap_proxy_initialize_worker(*runtime, s, conf->pool);
             if (rv != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(00966) "Cannot init worker");

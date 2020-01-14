@@ -19,6 +19,9 @@ Changes with Apache 2.4.42
   *) mod_authn_socache: Increase the maximum length of strings that can be cached by
      the module from 100 to 256.  PR 62149 [<thorsten.meinl knime.com>]
 
+  *) mod_proxy: Fix crash by resolving pool concurrency problems. PR 63503
+     [Ruediger Pluem, Eric Covener]
+
   *) core: On Windows, fix a start-up crash if <IfFile ...> is used with a path that is not
      valid (For example, testing for a file on a flash drive that is not mounted)
      [Christophe Jaillet]

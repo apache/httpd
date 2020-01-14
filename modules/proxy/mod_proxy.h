@@ -287,11 +287,14 @@ typedef struct {
 
 /* Connection pool */
 struct proxy_conn_pool {
-    apr_pool_t     *pool;   /* The pool used in constructor and destructor calls */
-    apr_sockaddr_t *addr;   /* Preparsed remote address info */
-    apr_reslist_t  *res;    /* Connection resource list */
-    proxy_conn_rec *conn;   /* Single connection for prefork mpm */
+    apr_pool_t     *pool;     /* The pool used in constructor and destructor calls */
+    apr_sockaddr_t *addr;     /* Preparsed remote address info */
+    apr_reslist_t  *res;      /* Connection resource list */
+    proxy_conn_rec *conn;     /* Single connection for prefork mpm */
+    apr_pool_t     *dns_pool; /* The pool used for worker scoped DNS resolutions */
 };
+
+#define AP_VOLATILIZE_T(T, x) (*(T volatile *)&(x))
 
 /* worker status bits */
 /*
@@ -472,7 +475,9 @@ struct proxy_worker {
     proxy_conn_pool     *cp;    /* Connection pool to use */
     proxy_worker_shared   *s;   /* Shared data */
     proxy_balancer  *balancer;  /* which balancer am I in? */
+#if APR_HAS_THREADS
     apr_thread_mutex_t  *tmutex; /* Thread lock for updating address cache */
+#endif
     void            *context;   /* general purpose storage */
     ap_conf_vector_t *section_config; /* <Proxy>-section wherein defined */
 };
@@ -531,7 +536,9 @@ struct proxy_balancer {
     apr_time_t      wupdated;    /* timestamp of last change to workers list */
     proxy_balancer_method *lbmethod;
     apr_global_mutex_t  *gmutex; /* global lock for updating list of workers */
+#if APR_HAS_THREADS
     apr_thread_mutex_t  *tmutex; /* Thread lock for updating shm */
+#endif
     proxy_server_conf *sconf;
     void            *context;    /* general purpose storage */
     proxy_balancer_shared *s;    /* Shared data */

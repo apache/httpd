@@ -346,23 +346,27 @@ static proxy_worker *find_best_worker(proxy_balancer *balancer,
     proxy_worker *candidate = NULL;
     apr_status_t rv;
 
+#if APR_HAS_THREADS
     if ((rv = PROXY_THREAD_LOCK(balancer)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01163)
                       "%s: Lock failed for find_best_worker()",
                       balancer->s->name);
         return NULL;
     }
+#endif
 
     candidate = (*balancer->lbmethod->finder)(balancer, r);
 
     if (candidate)
         candidate->s->elected++;
 
+#if APR_HAS_THREADS
     if ((rv = PROXY_THREAD_UNLOCK(balancer)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01164)
                       "%s: Unlock failed for find_best_worker()",
                       balancer->s->name);
     }
+#endif
 
     if (candidate == NULL) {
         /* All the workers are in error state or disabled.
@@ -492,11 +496,13 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
     /* Step 2: Lock the LoadBalancer
      * XXX: perhaps we need the process lock here
      */
+#if APR_HAS_THREADS
     if ((rv = PROXY_THREAD_LOCK(*balancer)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01166)
                       "%s: Lock failed for pre_request", (*balancer)->s->name);
         return DECLINED;
     }
+#endif
 
     /* Step 3: force recovery */
     force_recovery(*balancer, r->server);
@@ -557,20 +563,24 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01167)
                           "%s: All workers are in error state for route (%s)",
                           (*balancer)->s->name, route);
+#if APR_HAS_THREADS
             if ((rv = PROXY_THREAD_UNLOCK(*balancer)) != APR_SUCCESS) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01168)
                               "%s: Unlock failed for pre_request",
                               (*balancer)->s->name);
             }
+#endif
             return HTTP_SERVICE_UNAVAILABLE;
         }
     }
 
+#if APR_HAS_THREADS
     if ((rv = PROXY_THREAD_UNLOCK(*balancer)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01169)
                       "%s: Unlock failed for pre_request",
                       (*balancer)->s->name);
     }
+#endif
     if (!*worker) {
         runtime = find_best_worker(*balancer, r);
         if (!runtime) {
@@ -644,12 +654,14 @@ static int proxy_balancer_post_request(proxy_worker *worker,
 
     apr_status_t rv;
 
+#if APR_HAS_THREADS
     if ((rv = PROXY_THREAD_LOCK(balancer)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01173)
                       "%s: Lock failed for post_request",
                       balancer->s->name);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
+#endif
 
     if (!apr_is_empty_array(balancer->errstatuses)
         && !(worker->s->status & PROXY_WORKER_IGNORE_ERRORS)) {
@@ -681,11 +693,12 @@ static int proxy_balancer_post_request(proxy_worker *worker,
         worker->s->error_time = apr_time_now();
 
     }
-
+#if APR_HAS_THREADS
     if ((rv = PROXY_THREAD_UNLOCK(balancer)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01175)
                       "%s: Unlock failed for post_request", balancer->s->name);
     }
+#endif
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01176)
                   "proxy_balancer_post_request for (%s)", balancer->s->name);
 
@@ -945,7 +958,6 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
             PROXY_STRNCPY(balancer->s->sname, sname); /* We know this will succeed */
 
             balancer->max_workers = balancer->workers->nelts + balancer->growth;
-
             /* Create global mutex */
             rv = ap_global_mutex_create(&(balancer->gmutex), NULL, balancer_mutex_type,
                                         balancer->s->sname, s, pconf, 0);
@@ -955,7 +967,6 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                              balancer->s->sname);
                 return HTTP_INTERNAL_SERVER_ERROR;
             }
-
             apr_pool_cleanup_register(pconf, (void *)s, lock_remove,
                                       apr_pool_cleanup_null);
 
@@ -1147,17 +1158,21 @@ static int balancer_handler(request_rec *r)
 
     balancer = (proxy_balancer *)conf->balancers->elts;
     for (i = 0; i < conf->balancers->nelts; i++, balancer++) {
+#if APR_HAS_THREADS
         if ((rv = PROXY_THREAD_LOCK(balancer)) != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01189)
                           "%s: Lock failed for balancer_handler",
                           balancer->s->name);
         }
+#endif
         ap_proxy_sync_balancer(balancer, r->server, conf);
+#if APR_HAS_THREADS
         if ((rv = PROXY_THREAD_UNLOCK(balancer)) != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01190)
                           "%s: Unlock failed for balancer_handler",
                           balancer->s->name);
         }
+#endif
     }
 
     if (r->args && (r->method_number == M_GET)) {
@@ -1381,11 +1396,13 @@ static int balancer_handler(request_rec *r)
             proxy_worker *nworker;
             nworker = ap_proxy_get_worker(r->pool, bsel, conf, val);
             if (!nworker && storage->num_free_slots(bsel->wslot)) {
+#if APR_HAS_THREADS
                 if ((rv = PROXY_GLOBAL_LOCK(bsel)) != APR_SUCCESS) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01194)
                                   "%s: Lock failed for adding worker",
                                   bsel->s->name);
                 }
+#endif
                 ret = ap_proxy_define_worker(conf->pool, &nworker, bsel, conf, val, 0);
                 if (!ret) {
                     unsigned int index;
@@ -1394,53 +1411,76 @@ static int balancer_handler(request_rec *r)
                     if ((rv = storage->grab(bsel->wslot, &index)) != APR_SUCCESS) {
                         ap_log_rerror(APLOG_MARK, APLOG_EMERG, rv, r, APLOGNO(01195)
                                       "worker slotmem_grab failed");
+#if APR_HAS_THREADS
                         if ((rv = PROXY_GLOBAL_UNLOCK(bsel)) != APR_SUCCESS) {
                             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01196)
                                           "%s: Unlock failed for adding worker",
                                           bsel->s->name);
                         }
+#endif
                         return HTTP_BAD_REQUEST;
                     }
                     if ((rv = storage->dptr(bsel->wslot, index, (void *)&shm)) != APR_SUCCESS) {
                         ap_log_rerror(APLOG_MARK, APLOG_EMERG, rv, r, APLOGNO(01197)
                                       "worker slotmem_dptr failed");
+#if APR_HAS_THREADS
                         if ((rv = PROXY_GLOBAL_UNLOCK(bsel)) != APR_SUCCESS) {
                             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01198)
                                           "%s: Unlock failed for adding worker",
                                           bsel->s->name);
                         }
+#endif
                         return HTTP_BAD_REQUEST;
                     }
                     if ((rv = ap_proxy_share_worker(nworker, shm, index)) != APR_SUCCESS) {
                         ap_log_rerror(APLOG_MARK, APLOG_EMERG, rv, r, APLOGNO(01199)
                                       "Cannot share worker");
+#if APR_HAS_THREADS
                         if ((rv = PROXY_GLOBAL_UNLOCK(bsel)) != APR_SUCCESS) {
                             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01200)
                                           "%s: Unlock failed for adding worker",
                                           bsel->s->name);
                         }
+#endif
                         return HTTP_BAD_REQUEST;
                     }
                     if ((rv = ap_proxy_initialize_worker(nworker, r->server, conf->pool)) != APR_SUCCESS) {
                         ap_log_rerror(APLOG_MARK, APLOG_EMERG, rv, r, APLOGNO(01201)
                                       "Cannot init worker");
+#if APR_HAS_THREADS
                         if ((rv = PROXY_GLOBAL_UNLOCK(bsel)) != APR_SUCCESS) {
                             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01202)
                                           "%s: Unlock failed for adding worker",
                                           bsel->s->name);
                         }
+#endif
                         return HTTP_BAD_REQUEST;
                     }
                     /* sync all timestamps */
                     bsel->wupdated = bsel->s->wupdated = nworker->s->updated = apr_time_now();
                     /* by default, all new workers are disabled */
                     ap_proxy_set_wstatus(PROXY_WORKER_DISABLED_FLAG, 1, nworker);
+                } else {
+                            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10163)
+                                  "%s: failed to add worker %s",
+                                  bsel->s->name, val);
+#if APR_HAS_THREADS
+                    PROXY_GLOBAL_UNLOCK(bsel);
+#endif
+                    return HTTP_BAD_REQUEST;
                 }
+#if APR_HAS_THREADS
                 if ((rv = PROXY_GLOBAL_UNLOCK(bsel)) != APR_SUCCESS) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01203)
                                   "%s: Unlock failed for adding worker",
                                   bsel->s->name);
                 }
+#endif
+            } else {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10164)
+                                  "%s: failed to add worker %s",
+                                  bsel->s->name, val);
+                return HTTP_BAD_REQUEST;
             }
 
         }

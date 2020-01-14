@@ -132,32 +132,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_proxy: Fix crash by resolving pool concurrency problems. PR 63503
-     trunk patch: http://svn.apache.org/r1822531
-                  http://svn.apache.org/r1829676
-                  http://svn.apache.org/r1847232
-                  http://svn.apache.org/r1847234
-                  http://svn.apache.org/r1861333
-                  http://svn.apache.org/r1852442
-                  http://svn.apache.org/r1866145
-                  http://svn.apache.org/r1868295
-                  http://svn.apache.org/r1868296
-     2.4.x patch: The core of the patch addressing the issue are r1868295 and
-                  r1868296. The other revisions are unreleated to the core
-                  patch but small changes that ease merging and avoid further
-                  misalignment between trunk and 2.4.x. In order to ease review
-                  I splitted the revisions in 4 blocks and created 4 pull
-                  requests for it on github:
-                  r1822531: https://github.com/apache/httpd/pull/77
-                            https://github.com/apache/httpd/pull/77.diff 
-                  r1829676: https://github.com/apache/httpd/pull/78
-                            https://github.com/apache/httpd/pull/78.diff
-                  r1847232, r1847234, r1861333: https://github.com/apache/httpd/pull/79
-                                                https://github.com/apache/httpd/pull/79.diff
-                  All revisions: https://github.com/apache/httpd/pull/80
-                                 https://github.com/apache/httpd/pull/80.diff
-     +1: rpluem, covener, jim
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
