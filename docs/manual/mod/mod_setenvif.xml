@@ -223,6 +223,13 @@ of</p>
     of <var>regex</var>. <code>$0</code> provides access to the whole
     string matched by that pattern.</p>
 
+    <p>If the special value <code>--early</code> is specified, and this
+    directive is not in directory context, the directive will be evaluated
+    earlier during request processing.  This allows the output variables
+    set by this directive to be used as input to the "early mode" option of
+    the <directive module="mod_headers">RequestHeader</directive> directive.
+    Available in 2.5.1 and later.</p>
+
 <highlight language="config">
 SetEnvIf Request_URI "\.gif$" object_is_image=gif
 SetEnvIf Request_URI "\.jpg$" object_is_image=jpg

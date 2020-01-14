@@ -113,13 +113,20 @@ typedef struct {
     apr_table_t *features;      /* env vars to set (or unset) */
     enum special special_type;  /* is it a "special" header ? */
     int icase;                  /* ignoring case? */
+    int early;
 } sei_entry;
 
 typedef struct {
     apr_array_header_t *conditionals;
 } sei_cfg_rec;
 
+
+typedef struct {
+   int pass;
+} sei_request_config;
+
 module AP_MODULE_DECLARE_DATA setenvif_module;
+static int has_early; /* at least 1 server-scoped SEI needs to be run early */
 
 /*
  * These routines, the create- and merge-config functions, are called
@@ -163,7 +170,6 @@ static void *merge_setenvif_config(apr_pool_t *p, void *basev, void *overridesv)
  * be used
  */
 #define ICASE_MAGIC  ((void *)(&setenvif_module))
-#define SEI_MAGIC_HEIRLOOM "setenvif-phase-flag"
 
 static ap_regex_t *is_header_regex_regex;
 
@@ -267,7 +273,13 @@ static const char *add_envvars(cmd_parms *cmd, const char *args, sei_entry *new)
             apr_table_setn(new->features, var + 1, "!");
         }
         else {
-            apr_table_setn(new->features, var, "1");
+             if (strcmp(var, "--early") == 0 && cmd->path == NULL) { 
+                 new->early = 1;
+                 has_early = 1;
+             }
+             else { 
+                 apr_table_setn(new->features, var, "1");
+             }
         }
     }
 
@@ -332,6 +344,7 @@ static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
 
         /* no match, create a new entry */
         new = apr_array_push(sconf->conditionals);
+        new->early = 0;
         new->name = fname;
         new->regex = regex;
         new->icase = icase;
@@ -479,6 +492,7 @@ static const command_rec setenvif_module_cmds[] =
     { NULL },
 };
 
+
 /*
  * This routine gets called at two different points in request processing:
  * once before the URI has been translated (during the post-read-request
@@ -491,6 +505,7 @@ static const command_rec setenvif_module_cmds[] =
 static int match_headers(request_rec *r)
 {
     sei_cfg_rec *sconf;
+    sei_request_config *rconf;
     sei_entry *entries;
     const apr_table_entry_t *elts;
     const char *val, *err;
@@ -498,12 +513,24 @@ static int match_headers(request_rec *r)
     int i, j;
     char *last_name;
     ap_regmatch_t regm[AP_MAX_REG_MATCH];
+    int do_early = 0;
+   
+    rconf = ap_get_module_config(r->request_config, &setenvif_module);
 
-    if (!ap_get_module_config(r->request_config, &setenvif_module)) {
-        ap_set_module_config(r->request_config, &setenvif_module,
-                             SEI_MAGIC_HEIRLOOM);
+    if (!rconf) { 
         sconf  = (sei_cfg_rec *) ap_get_module_config(r->server->module_config,
                                                       &setenvif_module);
+        rconf = (sei_request_config*) apr_pcalloc(r->pool, sizeof(*rconf));
+        ap_set_module_config(r->request_config, &setenvif_module, rconf);
+        if (!has_early){ 
+            return DECLINED;
+        }
+        do_early = 1;
+    }
+    else if (rconf->pass == 0) { 
+        sconf  = (sei_cfg_rec *) ap_get_module_config(r->server->module_config,
+                                                      &setenvif_module);
+        rconf->pass++;
     }
     else {
         sconf = (sei_cfg_rec *) ap_get_module_config(r->per_dir_config,
@@ -514,6 +541,9 @@ static int match_headers(request_rec *r)
     val = NULL;
     for (i = 0; i < sconf->conditionals->nelts; ++i) {
         sei_entry *b = &entries[i];
+        if (b->early && !do_early) { 
+            continue;
+        }
 
         if (!b->expr) {
             /* Optimize the case where a bunch of directives in a row use the
@@ -636,10 +666,18 @@ static int match_headers(request_rec *r)
     return DECLINED;
 }
 
+static int sei_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp)
+{
+    has_early = 0;
+    return OK;
+}
+
 static void register_hooks(apr_pool_t *p)
 {
     ap_hook_header_parser(match_headers, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_read_request(match_headers, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_post_read_request(match_headers, NULL, NULL, APR_HOOK_REALLY_FIRST);
+    ap_hook_pre_config(sei_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
 
     is_header_regex_regex = ap_pregcomp(p, "^[-A-Za-z0-9_]*$",
                                         (AP_REG_EXTENDED | AP_REG_NOSUB ));
