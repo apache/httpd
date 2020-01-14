@@ -235,31 +235,31 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                                                 https://github.com/apache/httpd/pull/79.diff
                   All revisions: https://github.com/apache/httpd/pull/80
                                  https://github.com/apache/httpd/pull/80.diff
-     +1: rpluem, covener
+     +1: rpluem, covener, jim
 
   *) mod_lua: allow nil assignment to trigger apr_table_unset
            (nil assignment to an APR table used to throw an error)
      trunk patch: http://svn.apache.org/r1870650
      2.4.x patch: svn merge -c 1870650 ^/httpd/httpd/trunk
-     +1: covener,
+     +1: covener, jim
 
   *) mod_lua: add _table() methods to return raw r/o lua tables that can be
      iterated over for headers/notes/subprocess_env:
      trunk patch: http://svn.apache.org/r1872455
      2.4.x patch: svn merge -c 1872455 ^/httpd/httpd/trunk
-     +1: covener,
+     +1: covener,jim
 
   *) mod_http2: Fixed rare cases where a h2 worker could deadlock the main connection. 
      trunk patch: http://svn.apache.org/r1871810
      2.4.x patch: svn merge -c 1871810 ^/httpd/httpd/trunk
-     +1: icing, 
+     +1: icing, jim
 
   *) Add a config layout for OpenWRT
      trunk patch: http://svn.apache.org/r1872036
                   http://svn.apache.org/r1872093
                   http://svn.apache.org/r1872102
      2.4.x patch: svn merge -c r1872036,1872093,1872102 ^/httpd/httpd/trunk
-     +1: minfrin
+     +1: minfrin, jim (inspection)
 
   *) Add support for cross compiling to apxs. If apxs is being executed from somewhere
      other than its target location, add that prefix to includes and library directories.
@@ -267,8 +267,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1872042
                   http://svn.apache.org/r1872062
      2.4.x patch: svn merge -c 1872042,1872062 ^/httpd/httpd/trunk
-     +1: minfrin
+     +1: minfrin, jim
 
+  *) config: Speed up graceful restarts by using pre-hashed command table. PR 64066.
+     trunk patch: http://svn.apache.org/r1872786
+     2.4.x patch: svn merge -c 1872786 ^/httpd/httpd/trunk
+     +1: jim
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
