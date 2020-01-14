@@ -40,8 +40,8 @@
     <code>Type=notify</code> (see <a href="https://www.freedesktop.org/software/systemd/man/systemd.service.html">systemd.service(5)</a>
     for more information).  The module is activated if loaded.</p>
 
-    <p><code class="directive"><a href="../mod/mod_status.html#extendedstatus">ExtendedStatus</a></code> is
-    enabled by default if the module is loaded.  If <code class="directive"><a href="../mod/mod_status.html#extendedstatus">ExtendedStatus</a></code> is not disabled in
+    <p><code class="directive"><a href="../mod/core.html#extendedstatus">ExtendedStatus</a></code> is
+    enabled by default if the module is loaded.  If <code class="directive"><a href="../mod/core.html#extendedstatus">ExtendedStatus</a></code> is not disabled in
     the configuration, run-time load and request statistics are made
     available in the <code>systemctl status</code> output.</p>
 </div>
