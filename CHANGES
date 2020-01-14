@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) config: Speed up graceful restarts by using pre-hashed command table. PR 64066.
+     [Giovanni Bechis <giovanni paclan.it>, Jim Jagielski]
+
   *) mod_lua: Add r:headers_in_table, r:headers_out_table, r:err_headers_out_table,
      r:notes_table, r:subprocess_env_table as read-only native table alternatives
      that can be iterated over. [Eric Covener]
