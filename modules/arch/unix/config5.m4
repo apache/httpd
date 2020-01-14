@@ -18,6 +18,15 @@ APACHE_MODULE(privileges, Per-virtualhost Unix UserIDs and enhanced security for
   fi
 ])
 
+APACHE_MODULE(systemd, Systemd support, , , no, [
+  if test "${ac_cv_header_systemd_sd_daemon_h}" = "no" || test -z "${SYSTEMD_LIBS}"; then
+    AC_MSG_WARN([Your system does not support systemd.])
+    enable_systemd="no"
+  else
+    APR_ADDTO(MOD_SYSTEMD_LDADD, [$SYSTEMD_LIBS])
+  fi
+])
+
 APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current])
 
 APACHE_MODPATH_FINISH

@@ -34,11 +34,6 @@
 #include <unistd.h>
 #endif
 
-static int shutdown_timer = 0;
-static int shutdown_counter = 0;
-static unsigned long bytes_served;
-static pid_t mainpid;
-
 static int systemd_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
                               apr_pool_t *ptemp)
 {
@@ -66,11 +61,9 @@ static int systemd_post_config(apr_pool_t *p, apr_pool_t *plog,
 
 static int systemd_pre_mpm(apr_pool_t *p, ap_scoreboard_e sb_type)
 {
-    mainpid = getpid();
-
     sd_notifyf(0, "READY=1\n"
                "STATUS=Processing requests...\n"
-               "MAINPID=%" APR_PID_T_FMT, mainpid);
+               "MAINPID=%" APR_PID_T_FMT, getpid());
 
     return OK;
 }
@@ -100,23 +93,6 @@ static int systemd_monitor(apr_pool_t *p, server_rec *s)
                sload.access_count, sload.idle, sload.busy,
                ((float) sload.access_count) / (float) up_time, bps);
 
-    /* Shutdown httpd when nothing is sent for shutdown_timer seconds. */
-    if (sload.bytes_served == bytes_served) {
-        /* mpm_common.c: INTERVAL_OF_WRITABLE_PROBES is 10 */
-        shutdown_counter += 10;
-        if (shutdown_timer > 0 && shutdown_counter >= shutdown_timer) {
-            sd_notifyf(0, "READY=1\n"
-                       "STATUS=Stopped as result of IdleShutdown "
-                       "timeout.");
-            kill(mainpid, AP_SIG_GRACEFUL);
-        }
-    }
-    else {
-        shutdown_counter = 0;
-    }
-
-    bytes_served = sload.bytes_served;
-
     return DECLINED;
 }
 
@@ -132,31 +108,12 @@ static void systemd_register_hooks(apr_pool_t *p)
     ap_hook_monitor(systemd_monitor, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
-static const char *set_shutdown_timer(cmd_parms *cmd, void *dummy,
-                                      const char *arg)
-{
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    shutdown_timer = atoi(arg);
-    return NULL;
-}
-
-static const command_rec systemd_cmds[] =
-{
-AP_INIT_TAKE1("IdleShutdown", set_shutdown_timer, NULL, RSRC_CONF,
-     "Number of seconds in idle-state after which httpd is shutdown"),
-    {NULL}
-};
-
 AP_DECLARE_MODULE(systemd) = {
     STANDARD20_MODULE_STUFF,
     NULL,
     NULL,
     NULL,
     NULL,
-    systemd_cmds,
+    NULL,
     systemd_register_hooks,
 };
