@@ -132,6 +132,52 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) Easy patches: synch 2.4.x and trunk
+        - core: Fix a comment
+        - mod_auth_form: use the provided types via the macro
+        - mod_mime_magic: Constify some constant data
+        - mod_authz_core: Axe some dead code + slighly improve a comment
+        - core: Fix a typo
+        - mod_remoteip: Fix a typo
+        - mod_ssl: save a few cycles
+     trunk patch:
+        - http://svn.apache.org/r1851332
+        - http://svn.apache.org/r1861432
+        - http://svn.apache.org/r1862202
+        - http://svn.apache.org/r1864759
+        - http://svn.apache.org/r1867254
+        - http://svn.apache.org/r1867255
+        - http://svn.apache.org/r1867569
+     2.4.x patch: svn merge -c  1851332,1861432,1862202,1864759,1867254,1867255,1867569 ^/httpd/httpd/trunk . 
+     +1: jailletc36, jim
+     ylavic: +1 with r1869512, follow up to r1864759
+
+  *) mod_proxy: Fix crash by resolving pool concurrency problems. PR 63503
+     trunk patch: http://svn.apache.org/r1822531
+                  http://svn.apache.org/r1829676
+                  http://svn.apache.org/r1847232
+                  http://svn.apache.org/r1847234
+                  http://svn.apache.org/r1861333
+                  http://svn.apache.org/r1852442
+                  http://svn.apache.org/r1866145
+                  http://svn.apache.org/r1868295
+                  http://svn.apache.org/r1868296
+     2.4.x patch: The core of the patch addressing the issue are r1868295 and
+                  r1868296. The other revisions are unreleated to the core
+                  patch but small changes that ease merging and avoid further
+                  misalignment between trunk and 2.4.x. In order to ease review
+                  I splitted the revisions in 4 blocks and created 4 pull
+                  requests for it on github:
+                  r1822531: https://github.com/apache/httpd/pull/77
+                            https://github.com/apache/httpd/pull/77.diff 
+                  r1829676: https://github.com/apache/httpd/pull/78
+                            https://github.com/apache/httpd/pull/78.diff
+                  r1847232, r1847234, r1861333: https://github.com/apache/httpd/pull/79
+                                                https://github.com/apache/httpd/pull/79.diff
+                  All revisions: https://github.com/apache/httpd/pull/80
+                                 https://github.com/apache/httpd/pull/80.diff
+     +1: rpluem, covener, jim
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -175,26 +221,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   to changelog
       minfrin: r1836547 is indeed missing.
 
-  *) Easy patches: synch 2.4.x and trunk
-        - core: Fix a comment
-        - mod_auth_form: use the provided types via the macro
-        - mod_mime_magic: Constify some constant data
-        - mod_authz_core: Axe some dead code + slighly improve a comment
-        - core: Fix a typo
-        - mod_remoteip: Fix a typo
-        - mod_ssl: save a few cycles
-     trunk patch:
-        - http://svn.apache.org/r1851332
-        - http://svn.apache.org/r1861432
-        - http://svn.apache.org/r1862202
-        - http://svn.apache.org/r1864759
-        - http://svn.apache.org/r1867254
-        - http://svn.apache.org/r1867255
-        - http://svn.apache.org/r1867569
-     2.4.x patch: svn merge -c  1851332,1861432,1862202,1864759,1867254,1867255,1867569 ^/httpd/httpd/trunk . 
-     +1: jailletc36, jim
-     ylavic: +1 with r1869512, follow up to r1864759
-
   *) mod_ssl: use OPENSSL_init_ssl() to initialise OpenSSL on versions 1.1+.
      trunk patch: http://svn.apache.org/r1861950
      2.4.x patch: svn merge -c 1861950 ^/httpd/httpd/trunk . 
@@ -210,32 +236,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   (merge works modulo CHANGES, below patch for all in one review)
                   http://people.apache.org/~ylavic/patches/httpd-2.4.x-SSLProtocol_per_vhost.patch
      +1: ylavic
-
-  *) mod_proxy: Fix crash by resolving pool concurrency problems. PR 63503
-     trunk patch: http://svn.apache.org/r1822531
-                  http://svn.apache.org/r1829676
-                  http://svn.apache.org/r1847232
-                  http://svn.apache.org/r1847234
-                  http://svn.apache.org/r1861333
-                  http://svn.apache.org/r1852442
-                  http://svn.apache.org/r1866145
-                  http://svn.apache.org/r1868295
-                  http://svn.apache.org/r1868296
-     2.4.x patch: The core of the patch addressing the issue are r1868295 and
-                  r1868296. The other revisions are unreleated to the core
-                  patch but small changes that ease merging and avoid further
-                  misalignment between trunk and 2.4.x. In order to ease review
-                  I splitted the revisions in 4 blocks and created 4 pull
-                  requests for it on github:
-                  r1822531: https://github.com/apache/httpd/pull/77
-                            https://github.com/apache/httpd/pull/77.diff 
-                  r1829676: https://github.com/apache/httpd/pull/78
-                            https://github.com/apache/httpd/pull/78.diff
-                  r1847232, r1847234, r1861333: https://github.com/apache/httpd/pull/79
-                                                https://github.com/apache/httpd/pull/79.diff
-                  All revisions: https://github.com/apache/httpd/pull/80
-                                 https://github.com/apache/httpd/pull/80.diff
-     +1: rpluem, covener, jim
 
   *) mod_lua: allow nil assignment to trigger apr_table_unset
            (nil assignment to an APR table used to throw an error)
