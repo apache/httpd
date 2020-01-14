@@ -22,7 +22,6 @@ APACHE_MODULE(journald, Journald support, , , all, [
     if test $new_systemd_found = "no"; then
       APR_ADDTO(MOD_JOURNALD_LDADD, [$ID128_LIBS])
     fi
-    enable_journald="yes"
   fi
 ])
 
@@ -31,8 +30,6 @@ APACHE_MODULE(syslog, logging to syslog, , , all, [
   if test $ap_HAVE_SYSLOG_H = "no"; then
     AC_MSG_WARN([Your system does not support syslog.])
     enable_syslog="no"
-  else
-    enable_syslog="yes"
   fi
 ])
 
@@ -43,7 +40,6 @@ APACHE_MODULE(log_json, logging in jsonn, , , most, [
       AC_MSG_WARN([libjansson not found])
       enable_log_json="no"
   else
-      enable_log_json="yes"
       APR_ADDTO(MOD_LOG_JSON_LDADD, [$ap_jansson_libs])
   fi
 ])
