@@ -51,6 +51,9 @@ matrix:
     - name: Linux Ubuntu, Default, all-modules
       env: CONFIG="--enable-mods-shared=reallyall"
     # -------------------------------------------------------------------------
+    - name: Linux Ubuntu, Default, all-static modules
+      env: CONFIG="--enable-mods-static=reallyall"
+    # -------------------------------------------------------------------------
     - name: Linux Ubuntu, Default, all-modules, random test order
       env: CONFIG="--enable-mods-shared=reallyall"
            TEST_ARGS="-order=random"
