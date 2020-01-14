@@ -30,41 +30,16 @@
 
 <summary>
     <p>This module provides support for systemd integration. It allows
-    starting httpd as a service with systemd <code>Type=notify</code>
-    (see systemd.service(5) manual page for more information). It also
-    provides statistics in <code>systemctl status</code> output and adds
-    various directives useful for systemd integration.
-    </p>
+    httpd to be used in a service with the systemd
+    <code>Type=notify</code> (see <a
+    href="https://www.freedesktop.org/software/systemd/man/systemd.service.html">systemd.service(5)</a>
+    for more information).  The module is activated if loaded.</p>
+
+    <p><directive module="mod_status">ExtendedStatus</directive> is
+    enabled by default if the module is loaded.  If <directive
+    module="mod_status">ExtendedStatus</directive> is not disabled in
+    the configuration, run-time load and request statistics are made
+    available in the <code>systemctl status</code> output.</p>
 </summary>
-
-<directivesynopsis>
-<name>IdleShutdown</name>
-<description>Enable shutting down the httpd when it is idle for some time.</description>
-<syntax>IdleShutdown seconds</syntax>
-<default>IdleShutdown 0</default>
-<contextlist><context>server config</context></contextlist>
-
-<usage>
-    <p>The <directive>IdleShutdown</directive> directive enables shutting
-    down the httpd when it is idle for some time. The idleness is based on
-    bytes served, so if there are no bytes sent for some time defined by this
-    directive, httpd will shutdown. By default, IdleShutdown is set to 0
-    meaning this feature is disabled.
-    </p>
-
-    <p>This feature is useful in a combination with systemd socket activation
-    (see systemd.socket(5) manual page). When httpd is started by systemd on
-    some request, using this directive you can stop the httpd automatically
-    when all the requests are served.
-    </p>
-
-    <note type="warning"><title>Implementation warning</title><p>
-    Because of implementation details, idleness is checked only every 10
-    seconds. That means that if you specify <code>IdleShutdown 14</code>,
-    httpd will stop itself after 20 seconds of idleness.
-    </p></note>
-</usage>
-</directivesynopsis>
-
 
 </modulesynopsis>
