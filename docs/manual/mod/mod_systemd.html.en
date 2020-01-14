@@ -36,50 +36,22 @@
 <h3>Summary</h3>
 
     <p>This module provides support for systemd integration. It allows
-    starting httpd as a service with systemd <code>Type=notify</code>
-    (see systemd.service(5) manual page for more information). It also
-    provides statistics in <code>systemctl status</code> output and adds
-    various directives useful for systemd integration.
-    </p>
+    httpd to be used in a service with the systemd
+    <code>Type=notify</code> (see <a href="https://www.freedesktop.org/software/systemd/man/systemd.service.html">systemd.service(5)</a>
+    for more information).  The module is activated if loaded.</p>
+
+    <p><code class="directive"><a href="../mod/mod_status.html#extendedstatus">ExtendedStatus</a></code> is
+    enabled by default if the module is loaded.  If <code class="directive"><a href="../mod/mod_status.html#extendedstatus">ExtendedStatus</a></code> is not disabled in
+    the configuration, run-time load and request statistics are made
+    available in the <code>systemctl status</code> output.</p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
-<ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#idleshutdown">IdleShutdown</a></li>
-</ul>
+<p>This module provides no
+            directives.</p>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_systemd">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_systemd">Report a bug</a></li></ul><h3>See also</h3>
 <ul class="seealso">
 <li><a href="#comments_section">Comments</a></li></ul></div>
 
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IdleShutdown" id="IdleShutdown">IdleShutdown</a> <a name="idleshutdown" id="idleshutdown">Directive</a> <a title="Permanent link" href="#idleshutdown" class="permalink">&para;</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable shutting down the httpd when it is idle for some time.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>IdleShutdown seconds</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>IdleShutdown 0</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_systemd</td></tr>
-</table>
-    <p>The <code class="directive">IdleShutdown</code> directive enables shutting
-    down the httpd when it is idle for some time. The idleness is based on
-    bytes served, so if there are no bytes sent for some time defined by this
-    directive, httpd will shutdown. By default, IdleShutdown is set to 0
-    meaning this feature is disabled.
-    </p>
-
-    <p>This feature is useful in a combination with systemd socket activation
-    (see systemd.socket(5) manual page). When httpd is started by systemd on
-    some request, using this directive you can stop the httpd automatically
-    when all the requests are served.
-    </p>
-
-    <div class="warning"><h3>Implementation warning</h3><p>
-    Because of implementation details, idleness is checked only every 10
-    seconds. That means that if you specify <code>IdleShutdown 14</code>,
-    httpd will stop itself after 20 seconds of idleness.
-    </p></div>
-
-</div>
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_systemd.html" title="English">&nbsp;en&nbsp;</a> |

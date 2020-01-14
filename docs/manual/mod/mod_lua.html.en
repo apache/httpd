@@ -467,7 +467,7 @@ end</pre>
           <td>table</td>
           <td>no</td>
           <td>MIME header environment for the response, printed even on errors and
-            persist across internal redirects</td>
+            persist across internal redirects.  A read-only lua table suitable for iteration is available as r:err_headers_out_table().</td>
         </tr>
 <tr>
           <td><code>filename</code></td>
@@ -493,13 +493,13 @@ end</pre>
           <td>table</td>
           <td>yes</td>
           <td>MIME header environment from the request. This contains headers such as <code>Host,
-            User-Agent, Referer</code> and so on.</td>
+            User-Agent, Referer</code> and so on. A read-only lua table suitable for iteration is available as r:headers_in_table().</td>
         </tr>
 <tr class="odd">
           <td><code>headers_out</code></td>
           <td>table</td>
           <td>yes</td>
-          <td>MIME header environment for the response.</td>
+          <td>MIME header environment for the response. A read-only lua table suitable for iteration is available as r:headers_out_table().</td>
         </tr>
 <tr>
           <td><code>hostname</code></td>
@@ -541,7 +541,7 @@ end</pre>
           <td><code>notes</code></td>
           <td>table</td>
           <td>yes</td>
-          <td>A list of notes that can be passed on from one module to another.</td>
+          <td>A list of notes that can be passed on from one module to another.  A read-only lua table suitable for iteration is available as r:notes_table().</td>
         </tr>
 <tr class="odd">
           <td><code>options</code></td>
@@ -608,7 +608,7 @@ end</pre>
           <td><code>subprocess_env</code></td>
           <td>table</td>
           <td>yes</td>
-          <td>The environment variables set for this request.</td>
+          <td>The environment variables set for this request. A read-only lua table suitable for iteration is available as r:subprocess_env_table().</td>
         </tr>
 <tr>
           <td><code>started</code></td>

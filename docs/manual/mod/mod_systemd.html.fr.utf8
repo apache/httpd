@@ -45,48 +45,11 @@
     </p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
-<ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#idleshutdown">IdleShutdown</a></li>
-</ul>
+<p>Ce module ne fournit aucune directive.</p>
 <h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_systemd">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_systemd">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="idleshutdown" id="idleshutdown">Directive</a> <a name="IdleShutdown" id="IdleShutdown">IdleShutdown</a> <a title="Lien permanent" href="#idleshutdown" class="permalink">&para;</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Permet d'arrêter httpd lorsque qu'il est inactif pendant un
-certain temps.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>IdleShutdown seconds</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>IdleShutdown 0</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_systemd</td></tr>
-</table>
-    <p>La directive <code class="directive">IdleShutdown</code> permet d'arrêter
-    httpd lorsque qu'il est inactif pendant un certain temps. Ce statut
-    d'inactivité se base sur le nombre d'octets envoyés ; par conséquent, si
-    aucun octet n'est envoyé pendant le temps spécifié par cette
-    directive, httpd sera arrêté. Par défaut, IdleShutdown est définie à
-    0, ce qui signifie que cette fonctionnalité est désactivée.
-    </p>
-
-    <p>Cette fonctionnalité prend tout son sens en combinaison avec
-    l'activation du socket systemd (voir la page de manuel
-    systemd.socket(5)). En effet, lorsque httpd est démarré par systemd
-    suite à l'arrivée d'une ou plusieurs requêtes HTTP, cette directive
-    vous permet d'arrêter httpd automatiquement lorsque toutes les
-    requêtes ont été traitées.
-    </p>
-
-    <div class="warning"><h3>Particularité de cette implémentation</h3><p>
-    De par la conception de cette implémentation, l'inactivité de httpd
-    n'est vérifiée que toutes les 10 secondes, ce qui signifie que si
-    vous spécifiez <code>IdleShutdown 14</code>, httpd ne s'arrêtera
-    qu'après 20 secondes d'inactivité.
-    </p></div>
-
-</div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_systemd.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
