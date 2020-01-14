@@ -393,7 +393,7 @@ static void remoteip_warn_enable_conflict(remoteip_addr_info *prev, server_rec *
 
     ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, new, APLOGNO(03491)
                  "RemoteIPProxyProtocol: previous setting for %s:%hu from virtual "
-                 "host {%s:%hu in %s} is being overriden by virtual host "
+                 "host {%s:%hu in %s} is being overridden by virtual host "
                  "{%s:%hu in %s}; new setting is '%s'",
                  buf, prev->addr->port, prev->source->server_hostname,
                  prev->source->addrs->host_port, prev->source->defn_name,

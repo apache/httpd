@@ -132,26 +132,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) Easy patches: synch 2.4.x and trunk
-        - core: Fix a comment
-        - mod_auth_form: use the provided types via the macro
-        - mod_mime_magic: Constify some constant data
-        - mod_authz_core: Axe some dead code + slighly improve a comment
-        - core: Fix a typo
-        - mod_remoteip: Fix a typo
-        - mod_ssl: save a few cycles
-     trunk patch:
-        - http://svn.apache.org/r1851332
-        - http://svn.apache.org/r1861432
-        - http://svn.apache.org/r1862202
-        - http://svn.apache.org/r1864759
-        - http://svn.apache.org/r1867254
-        - http://svn.apache.org/r1867255
-        - http://svn.apache.org/r1867569
-     2.4.x patch: svn merge -c  1851332,1861432,1862202,1864759,1867254,1867255,1867569 ^/httpd/httpd/trunk . 
-     +1: jailletc36, jim
-     ylavic: +1 with r1869512, follow up to r1864759
-
   *) mod_proxy: Fix crash by resolving pool concurrency problems. PR 63503
      trunk patch: http://svn.apache.org/r1822531
                   http://svn.apache.org/r1829676

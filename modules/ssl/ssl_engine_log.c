@@ -123,10 +123,8 @@ static void ssl_log_cert_error(const char *file, int line, int level,
     int msglen, n;
     char *name;
 
-    apr_vsnprintf(buf, sizeof buf, format, ap);
-
-    msglen = strlen(buf);
-
+    msglen = apr_vsnprintf(buf, sizeof buf, format, ap);
+    
     if (cert) {
         BIO *bio = BIO_new(BIO_s_mem());
 

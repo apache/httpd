@@ -1284,7 +1284,7 @@ struct server_rec {
     /** MIME type info, etc., before we start checking per-directory info */
     struct ap_conf_vector_t *lookup_defaults;
 
-    /** The name of the server */
+    /** The path to the config file that the server was defined in */
     const char *defn_name;
     /** The line of the config file that the server was defined on */
     unsigned defn_line_number;

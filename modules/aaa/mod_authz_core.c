@@ -193,12 +193,11 @@ static authz_status authz_alias_check_authorization(request_rec *r,
                                                     const void *parsed_require_args)
 {
     const char *provider_name;
-    authz_status ret = AUTHZ_DENIED;
 
     /* Look up the provider alias in the alias list.
-     * Get the dir_config and call ap_Merge_per_dir_configs()
+     * Get the dir_config and call ap_merge_per_dir_configs()
      * Call the real provider->check_authorization() function
-     * return the result of the above function call
+     * Return the result of the above function call
      */
 
     provider_name = apr_table_get(r->notes, AUTHZ_PROVIDER_NAME_NOTE);
@@ -217,6 +216,7 @@ static authz_status authz_alias_check_authorization(request_rec *r,
            configurations and call the real provider */
         if (prvdraliasrec) {
             ap_conf_vector_t *orig_dir_config = r->per_dir_config;
+            authz_status ret;
 
             r->per_dir_config =
                 ap_merge_per_dir_configs(r->pool, orig_dir_config,
@@ -227,18 +227,16 @@ static authz_status authz_alias_check_authorization(request_rec *r,
                                     prvdraliasrec->provider_parsed_args);
 
             r->per_dir_config = orig_dir_config;
+
+            return ret;
         }
-        else {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02305)
-                          "no alias provider found for '%s' (BUG?)",
-                          provider_name);
-        }
-    }
-    else {
-        ap_assert(provider_name != NULL);
     }
 
-    return ret;
+    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02305)
+                  "no alias provider found for '%s' (BUG?)",
+                  provider_name ? provider_name : "n/a");
+
+    return AUTHZ_DENIED;
 }
 
 static const authz_provider authz_alias_provider =
