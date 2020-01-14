@@ -35,9 +35,9 @@
     href="https://www.freedesktop.org/software/systemd/man/systemd.service.html">systemd.service(5)</a>
     for more information).  The module is activated if loaded.</p>
 
-    <p><directive module="mod_status">ExtendedStatus</directive> is
+    <p><directive module="core">ExtendedStatus</directive> is
     enabled by default if the module is loaded.  If <directive
-    module="mod_status">ExtendedStatus</directive> is not disabled in
+    module="core">ExtendedStatus</directive> is not disabled in
     the configuration, run-time load and request statistics are made
     available in the <code>systemctl status</code> output.</p>
 </summary>
