@@ -1078,8 +1078,6 @@ AC_DEFUN([APACHE_CHECK_JANSSON],[
 
     if test "x$ac_cv_jansson" = "xyes"; then
       ap_jansson_libs="${ap_jansson_libs:--ljansson} `$apr_config --libs`"
-      APR_ADDTO(MOD_LDFLAGS, [$ap_jansson_libs])
-      APR_ADDTO(LIBS, [$ap_jansson_libs])
     fi
 
     dnl restore

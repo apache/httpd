@@ -183,6 +183,8 @@ APACHE_MODULE(md, [Managed Domain handling], $md_objs, , most, [
         enable_md=no
     fi
 
+    APR_ADDTO(MOD_MD_LDADD, [$ap_jansson_libs])
+
     APACHE_CHECK_CURL
     if test "x$ac_cv_curl" != "xyes" ; then
         AC_MSG_WARN([libcurl not found])

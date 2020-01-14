@@ -44,6 +44,7 @@ APACHE_MODULE(log_json, logging in jsonn, , , most, [
       enable_log_json="no"
   else
       enable_log_json="yes"
+      APR_ADDTO(MOD_LOG_JSON_LDADD, [$ap_jansson_libs])
   fi
 ])
 
