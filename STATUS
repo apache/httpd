@@ -224,7 +224,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) config: Speed up graceful restarts by using pre-hashed command table. PR 64066.
      trunk patch: http://svn.apache.org/r1872786
      2.4.x patch: svn merge -c 1872786 ^/httpd/httpd/trunk
-     +1: jim
+     +1: jim, jorton
 
    * mod_systemd: New module, for integration with systemd on Linux.
      trunk patch: http://svn.apache.org/r1393976
