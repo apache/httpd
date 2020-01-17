@@ -284,7 +284,11 @@ PATCHES/ISSUES THAT ARE BEING WORKED
      sections of STATUS (stalled or being worked).
      The code has been tested with a simple PHP script returning different Last-Modified
      headers (GMT now, GMT now Europe/Paris, GMT tomorrow, GMT yesterday, PST now).
-     +1: elukey
+     +1: elukey, jorton
+     jorton: +1 though I'd say log at WARN or INFO for the APR_BAD_DATE case
+             rather than "silently" (at normal log-level) dropping the parsed header?
+             [also nit: wrapping a lone ap_log_rerror(,APLOG_X) call in
+             if (APLOGrX(..) is unnecessary/redundant]
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
      it comes from an origin server, module or script. Allow the previous
@@ -293,7 +297,7 @@ PATCHES/ISSUES THAT ARE BEING WORKED
      comes for free with the same commit).
      trunk patch: http://svn.apache.org/r1554303
                   http://svn.apache.org/r1678215
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-preserve_head_cl_zero.patch
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-preserve_head_cl_zero.patch <--- this is 404
      +1: ylavic, jim
      ylavic: r1554303 issued a major MMN bump, but since the ABI change is two
              ints added at the end of core_server_config, the proposed merge
