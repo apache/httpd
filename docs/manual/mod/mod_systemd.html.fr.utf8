@@ -29,6 +29,8 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_systemd.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_systemd.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fournit un support amélioré pour l'intégration de systemd</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>systemd_module</td></tr>
@@ -36,13 +38,16 @@
 <h3>Sommaire</h3>
 
     <p>Ce module implémente le support de l'intégration de systemd. Il
-    permet de démarrer httpd en temps que service avec le paramètre de
+    permet d'utiliser httpd en temps que service avec le paramètre de
     systemd <code>Type=notify</code> (voir la page de manuel
-    systemd.service(5) pour plus de détails). Il ajoute aussi des
-    statistiques à la sortie de la commande <code>systemctl
-    status</code>, et fournit diverses directives pour l'intégration de
-    systemd.
-    </p>
+    <a href="https://www.freedesktop.org/software/systemd/man/systemd.service.html">systemd.service(5)</a>
+    pour plus de détails). Le module est activé s'il est chargé.</p>
+
+    <p><code class="directive"><a href="../mod/core.html#extendedstatus">ExtendedStatus</a></code> est activé par défaut
+    si le module est chargé. Si <code class="directive"><a href="../mod/core.html#extendedstatus">ExtendedStatus</a></code> n'est pas explicitement désactivé
+    dans le fichier de configuration, les statistiques à propos de la charge et
+    des requêtes pendant l'exécution apparaîtront dans la sortie de la commande
+    <code>systemctl status</code>.</p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <p>Ce module ne fournit aucune directive.</p>

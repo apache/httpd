@@ -237,6 +237,14 @@ peuvent se présenter sous les formes suivantes :</p>
     <var>regex</var>. <code>$0</code> permet d'accéder à l'ensemble de la chaîne
     qui correspond à ce modèle.</p>
 
+    <p>Si l'option <code>--early</code> est spécifiée, et si cette directive
+    n'est pas dans un contexte de répertoire, cette dernière sera évaluée plus
+    tôt au cours du traitement de la requête. Ceci permet d'utiliser les
+    variables de sortie définies par cette directive comme variables d'entrée de
+    l'option "early mode" de la directive <code class="directive"><a href="../mod/mod_headers.html#requestheader">RequestHeader</a></code>. L'option
+    <code>--early</code> est disponible à partir de la version 2.5.1 du serveur
+    HTTP Apache.</p>
+
 <pre class="prettyprint lang-config">SetEnvIf Request_URI "\.gif$" object_is_image=gif
 SetEnvIf Request_URI "\.jpg$" object_is_image=jpg
 SetEnvIf Request_URI "\.xbm$" object_is_image=xbm
