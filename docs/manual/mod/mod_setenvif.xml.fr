@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1782252 -->
+<!-- English Revision: 1872797 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -234,6 +234,15 @@ peuvent se présenter sous les formes suivantes :</p>
     sous-expressions entre parenthèses correspondantes de
     <var>regex</var>. <code>$0</code> permet d'accéder à l'ensemble de la chaîne
     qui correspond à ce modèle.</p>
+
+    <p>Si l'option <code>--early</code> est spécifiée, et si cette directive
+    n'est pas dans un contexte de répertoire, cette dernière sera évaluée plus
+    tôt au cours du traitement de la requête. Ceci permet d'utiliser les
+    variables de sortie définies par cette directive comme variables d'entrée de
+    l'option "early mode" de la directive <directive
+    module="mod_headers">RequestHeader</directive>. L'option
+    <code>--early</code> est disponible à partir de la version 2.5.1 du serveur
+    HTTP Apache.</p>
 
 <highlight language="config">
 SetEnvIf Request_URI "\.gif$" object_is_image=gif

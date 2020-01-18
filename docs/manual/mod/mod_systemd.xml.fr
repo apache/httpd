@@ -1,9 +1,8 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1620075:1872764 (outdated) -->
+<!-- English Revision: 1872764 -->
 <!-- French translation : Lucien GENTIS -->
-<!-- $LastChangedRevision: 2015011801 $ -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -25,55 +24,25 @@
 <modulesynopsis metafile="mod_systemd.xml.meta">
 
 <name>mod_systemd</name>
-<description>Fournit un support am&eacute;lior&eacute; pour l'int&eacute;gration de systemd</description>
+<description>Fournit un support amélioré pour l'intégration de systemd</description>
 <status>Extension</status>
 <sourcefile>mod_systemd.c</sourcefile>
 <identifier>systemd_module</identifier>
 
 <summary>
-    <p>Ce module impl&eacute;mente le support de l'int&eacute;gration de systemd. Il
-    permet de d&eacute;marrer httpd en temps que service avec le param&egrave;tre de
+    <p>Ce module implémente le support de l'intégration de systemd. Il
+    permet d'utiliser httpd en temps que service avec le paramètre de
     systemd <code>Type=notify</code> (voir la page de manuel
-    systemd.service(5) pour plus de d&eacute;tails). Il ajoute aussi des
-    statistiques &agrave; la sortie de la commande <code>systemctl
-    status</code>, et fournit diverses directives pour l'int&eacute;gration de
-    systemd.
-    </p>
+    <a
+    href="https://www.freedesktop.org/software/systemd/man/systemd.service.html">systemd.service(5)</a>
+    pour plus de détails). Le module est activé s'il est chargé.</p>
+
+    <p><directive module="core">ExtendedStatus</directive> est activé par défaut
+    si le module est chargé. Si <directive
+    module="core">ExtendedStatus</directive> n'est pas explicitement désactivé
+    dans le fichier de configuration, les statistiques à propos de la charge et
+    des requêtes pendant l'exécution apparaîtront dans la sortie de la commande
+    <code>systemctl status</code>.</p>
 </summary>
-
-<directivesynopsis>
-<name>IdleShutdown</name>
-<description>Permet d'arr&ecirc;ter httpd lorsque qu'il est inactif pendant un
-certain temps.</description>
-<syntax>IdleShutdown seconds</syntax>
-<default>IdleShutdown 0</default>
-<contextlist><context>server config</context></contextlist>
-
-<usage>
-    <p>La directive <directive>IdleShutdown</directive> permet d'arr&ecirc;ter
-    httpd lorsque qu'il est inactif pendant un certain temps. Ce statut
-    d'inactivit&eacute; se base sur le nombre d'octets envoy&eacute;s ; par cons&eacute;quent, si
-    aucun octet n'est envoy&eacute; pendant le temps sp&eacute;cifi&eacute; par cette
-    directive, httpd sera arr&ecirc;t&eacute;. Par d&eacute;faut, IdleShutdown est d&eacute;finie &agrave;
-    0, ce qui signifie que cette fonctionnalit&eacute; est d&eacute;sactiv&eacute;e.
-    </p>
-
-    <p>Cette fonctionnalit&eacute; prend tout son sens en combinaison avec
-    l'activation du socket systemd (voir la page de manuel
-    systemd.socket(5)). En effet, lorsque httpd est d&eacute;marr&eacute; par systemd
-    suite &agrave; l'arriv&eacute;e d'une ou plusieurs requ&ecirc;tes HTTP, cette directive
-    vous permet d'arr&ecirc;ter httpd automatiquement lorsque toutes les
-    requ&ecirc;tes ont &eacute;t&eacute; trait&eacute;es.
-    </p>
-
-    <note type="warning"><title>Particularit&eacute; de cette impl&eacute;mentation</title><p>
-    De par la conception de cette impl&eacute;mentation, l'inactivit&eacute; de httpd
-    n'est v&eacute;rifi&eacute;e que toutes les 10 secondes, ce qui signifie que si
-    vous sp&eacute;cifiez <code>IdleShutdown 14</code>, httpd ne s'arr&ecirc;tera
-    qu'apr&egrave;s 20 secondes d'inactivit&eacute;.
-    </p></note>
-</usage>
-</directivesynopsis>
-
 
 </modulesynopsis>
