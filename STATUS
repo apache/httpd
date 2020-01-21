@@ -171,12 +171,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    http://svn.apache.org/r1836547
       2.4.x patch: https://github.com/apache/httpd/commit/709a625b8e3fd3cd3426be5a005c1c60079c8d59.patch
       Test results: https://travis-ci.org/apache/httpd/builds/638362588
-      +1: jorton, 
+      +1: jorton, jim
 
   *) mod_ssl: use OPENSSL_init_ssl() to initialise OpenSSL on versions 1.1+.
      trunk patch: http://svn.apache.org/r1861950
      2.4.x patch: svn merge -c 1861950 ^/httpd/httpd/trunk . 
-     +1: minfrin
+     +1: minfrin, jim
 
   *) mod_ssl: negotiate the TLS protocol version per name based vhost...
      trunk patch: http://svn.apache.org/r1868645
@@ -241,7 +241,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1872761
                   http://svn.apache.org/r1872763
      2.4.x patch: http://people.apache.org/~jorton/httpd-2.4.x-mod_systemd.patch
-     +1: jorton,
+     +1: jorton, jim
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
