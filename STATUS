@@ -354,15 +354,6 @@ PATCHES/ISSUES THAT ARE BEING WORKED
              for internal users of this api; not sure if performance
              impact is significant from using malloc here.
 
-   *) mod_proxy: fix concurrent pool access around initialization of workers
-      trunk patch:  http://svn.apache.org/r1865938 + http://svn.apache.org/r1865944
-      2.4.x patch:  http://people.apache.org/~covener/httpd-2.4.x-proxy-segv.diff
-                    (APR_HAS_THREADS context break)
-      +1: covener, jim
-      rpluem says: -1 for now. See further discussion at
-                   https://bz.apache.org/bugzilla/show_bug.cgi?id=63503
-
-
 PATCHES/ISSUES THAT ARE STALLED
 
   *) core: Allow mod_env to override all system path envvars not just PATH
