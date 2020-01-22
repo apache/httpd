@@ -193,13 +193,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
            (nil assignment to an APR table used to throw an error)
      trunk patch: http://svn.apache.org/r1870650
      2.4.x patch: svn merge -c 1870650 ^/httpd/httpd/trunk
-     +1: covener, jim
+     +1: covener, jim, humbedooh
 
   *) mod_lua: add _table() methods to return raw r/o lua tables that can be
      iterated over for headers/notes/subprocess_env:
      trunk patch: http://svn.apache.org/r1872455
      2.4.x patch: svn merge -c 1872455 ^/httpd/httpd/trunk
-     +1: covener,jim
+     +1: covener, jim, humbedooh
 
   *) mod_http2: Fixed rare cases where a h2 worker could deadlock the main connection. 
      trunk patch: http://svn.apache.org/r1871810
