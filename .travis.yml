@@ -187,5 +187,5 @@ notifications:
   irc: "chat.freenode.net#httpd-dev"
   # Disabled to avoid too many failure emails to dev@,
   # some builds occasionally fail.
-  #email:
-  #  - dev@httpd.apache.org
+  email:
+    - dev@httpd.apache.org
