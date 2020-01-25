@@ -206,31 +206,42 @@ static int translate_userdir(request_rec *r)
     apr_finfo_t statbuf;
 
     /*
-     * If the URI doesn't match our basic pattern, we've nothing to do with
-     * it.
+     * Accept the User header from draft-vanrein-http-unauth-user.
+     * TODO: Decide about the removal of percent escapes.
+     *
+     * When the header does not exist, fall back to /~username parsing.
      */
-    if (r->uri[0] != '/' || r->uri[1] != '~') {
-        return DECLINED;
+    user = apr_table_get(r->headers_in, "User");
+    if (user != NULL) {
+        /*
+         * The code below assumes that dname may point anywhere in the URI.
+         */
+        dname = r->uri;
+    } else {
+        /*
+         * If the URI doesn't match our basic pattern, we've nothing to do with
+         * it.
+         */
+        if (r->uri[0] != '/' || r->uri[1] != '~') {
+            return DECLINED;
+        }
+        dname = r->uri + 2;
+        user = ap_getword(r->pool, &dname, '/');
+        /*
+         * The 'dname' funny business involves backing it up to capture the '/'
+         * delimiting the "/~user" part from the rest of the URL, in case there
+         * was one (the case where there wasn't being just "GET /~user HTTP/1.0",
+         * for which we don't want to tack on a '/' onto the filename).
+         */
+        if (dname[-1] == '/') {
+            --dname;
+        }
     }
     server_conf = r->server->module_config;
     s_cfg = ap_get_module_config(server_conf, &userdir_module);
     userdirs = s_cfg->userdir;
     if (userdirs == NULL) {
         return DECLINED;
-    }
-
-    dname = r->uri + 2;
-    user = ap_getword(r->pool, &dname, '/');
-
-    /*
-     * The 'dname' funny business involves backing it up to capture the '/'
-     * delimiting the "/~user" part from the rest of the URL, in case there
-     * was one (the case where there wasn't being just "GET /~user HTTP/1.0",
-     * for which we don't want to tack on a '/' onto the filename).
-     */
-
-    if (dname[-1] == '/') {
-        --dname;
     }
 
     /*
