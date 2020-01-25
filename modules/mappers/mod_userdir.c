@@ -217,6 +217,10 @@ static int translate_userdir(request_rec *r)
          * The code below assumes that dname may point anywhere in the URI.
          */
         dname = r->uri;
+        /*
+         * Impact by "User" MUST be mentioned in the "Vary" response header
+         */
+        apr_table_merge(r->headers_out, "Vary", "User");
     } else {
         /*
          * If the URI doesn't match our basic pattern, we've nothing to do with
