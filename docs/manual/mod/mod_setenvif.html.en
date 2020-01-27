@@ -27,16 +27,16 @@
 <div id="preamble"><h1>Apache Module mod_setenvif</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_setenvif.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_setenvif.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_setenvif.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_setenvif.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_setenvif.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_setenvif.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_setenvif.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Allows the setting of environment variables based
 on characteristics of the request</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Base</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>setenvif_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_setenvif.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module&#160;Identifier:</a></th><td>setenvif_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source&#160;File:</a></th><td>mod_setenvif.c</td></tr></table>
 <h3>Summary</h3>
 
 
@@ -230,6 +230,13 @@ of</p>
     of <var>regex</var>. <code>$0</code> provides access to the whole
     string matched by that pattern.</p>
 
+    <p>If the special value <code>--early</code> is specified, and this
+    directive is not in directory context, the directive will be evaluated
+    earlier during request processing.  This allows the output variables
+    set by this directive to be used as input to the "early mode" option of
+    the <code class="directive"><a href="../mod/mod_headers.html#requestheader">RequestHeader</a></code> directive.
+    Available in 2.5.1 and later.</p>
+
 <pre class="prettyprint lang-config">SetEnvIf Request_URI "\.gif$" object_is_image=gif
 SetEnvIf Request_URI "\.jpg$" object_is_image=jpg
 SetEnvIf Request_URI "\.xbm$" object_is_image=xbm
@@ -330,10 +337,10 @@ without respect to case</td></tr>
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_setenvif.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_setenvif.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_setenvif.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_setenvif.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_setenvif.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_setenvif.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_setenvif.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';

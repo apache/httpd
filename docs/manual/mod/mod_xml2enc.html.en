@@ -27,13 +27,13 @@
 <div id="preamble"><h1>Apache Module mod_xml2enc</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_xml2enc.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_xml2enc.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_xml2enc.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Enhanced charset/internationalisation support for libxml2-based
 filter modules</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Base</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>xml2enc_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_xml2enc.c</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module&#160;Identifier:</a></th><td>xml2enc_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source&#160;File:</a></th><td>mod_xml2enc.c</td></tr>
 <tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Version 2.4 and later.  Available as a third-party module
 for 2.2.x versions</td></tr></table>
 <h3>Summary</h3>
@@ -193,7 +193,7 @@ can be <a href="#sniffing">automatically detected</a></td></tr>
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_xml2enc.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_xml2enc.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_xml2enc.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
