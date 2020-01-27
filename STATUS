@@ -132,6 +132,22 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_lua: allow nil assignment to trigger apr_table_unset
+           (nil assignment to an APR table used to throw an error)
+     trunk patch: http://svn.apache.org/r1870650
+     2.4.x patch: svn merge -c 1870650 ^/httpd/httpd/trunk
+     +1: covener, jim, humbedooh
+
+  *) mod_lua: add _table() methods to return raw r/o lua tables that can be
+     iterated over for headers/notes/subprocess_env:
+     trunk patch: http://svn.apache.org/r1872455
+     2.4.x patch: svn merge -c 1872455 ^/httpd/httpd/trunk
+     +1: covener, jim, humbedooh
+
+  *) mod_http2: Fixed rare cases where a h2 worker could deadlock the main connection. 
+     trunk patch: http://svn.apache.org/r1871810
+     2.4.x patch: svn merge -c 1871810 ^/httpd/httpd/trunk
+     +1: icing, jim, steffenal(tested with 1.15.5-git)
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -189,23 +205,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://people.apache.org/~ylavic/patches/httpd-2.4.x-SSLProtocol_per_vhost.patch
      +1: ylavic
 
-  *) mod_lua: allow nil assignment to trigger apr_table_unset
-           (nil assignment to an APR table used to throw an error)
-     trunk patch: http://svn.apache.org/r1870650
-     2.4.x patch: svn merge -c 1870650 ^/httpd/httpd/trunk
-     +1: covener, jim, humbedooh
-
-  *) mod_lua: add _table() methods to return raw r/o lua tables that can be
-     iterated over for headers/notes/subprocess_env:
-     trunk patch: http://svn.apache.org/r1872455
-     2.4.x patch: svn merge -c 1872455 ^/httpd/httpd/trunk
-     +1: covener, jim, humbedooh
-
-  *) mod_http2: Fixed rare cases where a h2 worker could deadlock the main connection. 
-     trunk patch: http://svn.apache.org/r1871810
-     2.4.x patch: svn merge -c 1871810 ^/httpd/httpd/trunk
-     +1: icing, jim, steffenal(tested with 1.15.5-git)
-
   *) Add a config layout for OpenWRT
      trunk patch: http://svn.apache.org/r1872036
                   http://svn.apache.org/r1872093
@@ -248,7 +247,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: https://svn.apache.org/r1867970
      2.4.x patch: https://github.com/apache/httpd/commit/ed258a2133bc48ee90b027eead13e2d28d03c66a.patch
      Test results: https://travis-ci.org/apache/httpd/builds/642414361
-     +1: jorton, 
+     +1: jorton, covener
      
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
