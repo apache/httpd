@@ -182,7 +182,7 @@ the server based on the value of this tag.
 
 <h3><a name="hook_declaration" id="hook_declaration">Hooking into httpd</a></h3>
 <p>
-To begin with, we only want to create a simple handler, that replies to the
+To begin with, we only want to create a simple handler that replies to the
 client browser when a specific URL is requested, so we won't bother setting
 up configuration handlers and directives just yet. Our initial module
 definition will look like this:</p>
@@ -210,7 +210,7 @@ just want to hook onto the requests and possibly handle some of them. </p>
 is the name of a function we will create to manage how we hook onto the
 request process. In this example module, the function has just one purpose;
 To create a simple hook that gets called after all the rewrites, access
-control etc has been handled. Thus, we will let the server know, that we want
+control etc has been handled. Thus, we will let the server know that we want
 to hook into its process as one of the last modules:
 </p>
 
