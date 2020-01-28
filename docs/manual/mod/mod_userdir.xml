@@ -95,6 +95,19 @@ host</context></contextlist>
           <td>/home/bob/www/one/two.html</td></tr>
     </table>
 
+    <p>Likewise, under <code>draft-vanrein-http-unauth-user</code>, the inclusion
+    of a <code>User</code> header in the request can be used as an equivalent form.
+    The URI <code>http://www.example.com/~bob/one/two.html</code> could
+    be written as <code>http://bob@www.example.com/one/two.html</code>
+    in a supporting client and lead to a request that triggers the
+    same logic, namely:</p>
+
+    <pre>
+    GET /one/two.html HTTP/1.1
+    Host: www.example.com
+    User: bob
+    </pre>
+
     <p>The following directives will send redirects to the client:</p>
 
     <table>
