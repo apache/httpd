@@ -274,7 +274,7 @@
           is <code>yes</code>.</dd>
 
         <dt><code>--enable-<var>MODULE</var>=shared</code></dt>
-        <dd>The corresponding module will be build as DSO module.
+        <dd>The corresponding module will be built as a DSO module.
             By default enabled modules are linked dynamically.</dd>
 
         <dt><code>--enable-<var>MODULE</var>=static</code></dt>
