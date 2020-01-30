@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.42
 
+  *) mod_lua: Add r:headers_in_table, r:headers_out_table, r:err_headers_out_table,
+     r:notes_table, r:subprocess_env_table as read-only native table alternatives
+     that can be iterated over. [Eric Covener]
+
   *) mod_lua: Accept nil assignments to the exposed tables (r.subprocess_env, 
      r.headers_out, etc) to remove the key from the table. PR63971. 
      [Eric Covener]
