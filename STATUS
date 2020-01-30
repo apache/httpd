@@ -132,10 +132,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_http2: Fixed rare cases where a h2 worker could deadlock the main connection. 
-     trunk patch: http://svn.apache.org/r1871810
-     2.4.x patch: svn merge -c 1871810 ^/httpd/httpd/trunk
-     +1: icing, jim, steffenal(tested with 1.15.5-git)
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

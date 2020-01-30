@@ -5,6 +5,9 @@ Changes with Apache 2.4.42
      r:notes_table, r:subprocess_env_table as read-only native table alternatives
      that can be iterated over. [Eric Covener]
 
+  *) mod_http2: Fixed rare cases where a h2 worker could deadlock the main connection. 
+     [Yann Ylavic, Stefan Eissing]
+
   *) mod_lua: Accept nil assignments to the exposed tables (r.subprocess_env, 
      r.headers_out, etc) to remove the key from the table. PR63971. 
      [Eric Covener]

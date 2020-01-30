@@ -209,7 +209,6 @@ apr_status_t h2_fifo_create(h2_fifo **pfifo, apr_pool_t *pool, int capacity);
 apr_status_t h2_fifo_set_create(h2_fifo **pfifo, apr_pool_t *pool, int capacity);
 
 apr_status_t h2_fifo_term(h2_fifo *fifo);
-apr_status_t h2_fifo_interrupt(h2_fifo *fifo);
 
 int h2_fifo_count(h2_fifo *fifo);
 
@@ -280,7 +279,6 @@ apr_status_t h2_ififo_create(h2_ififo **pfifo, apr_pool_t *pool, int capacity);
 apr_status_t h2_ififo_set_create(h2_ififo **pfifo, apr_pool_t *pool, int capacity);
 
 apr_status_t h2_ififo_term(h2_ififo *fifo);
-apr_status_t h2_ififo_interrupt(h2_ififo *fifo);
 
 int h2_ififo_count(h2_ififo *fifo);
 
