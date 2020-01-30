@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.42
 
+  *) mod_lua: Accept nil assignments to the exposed tables (r.subprocess_env, 
+     r.headers_out, etc) to remove the key from the table. PR63971. 
+     [Eric Covener]
+
   *) mod_http2: Fixed interaction with mod_reqtimeout. A loaded mod_http2 was disabling the
      ssl handshake timeouts. Also, fixed a mistake of the last version that made `H2Direct` 
      always `on`, irregardless of configuration. Found and reported by
