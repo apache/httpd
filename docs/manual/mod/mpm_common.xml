@@ -150,7 +150,7 @@ of the daemon</description>
 <usage>
     <p>The <directive>PidFile</directive> directive sets the file to
     which the server records the process id of the daemon. If the
-    filename is not absolute then it is assumed to be relative to the
+    filename is not absolute, then it is assumed to be relative to the
     <directive module="core">ServerRoot</directive>.</p>
 
     <example><title>Example</title>
@@ -350,8 +350,8 @@ in *BSDs.</compatibility>
 
 <usage>
     <p>The maximum length of the queue of pending connections.
-    Generally no tuning is needed or desired, however on some
-    systems it is desirable to increase this when under a TCP SYN
+    Generally no tuning is needed or desired; however on some
+    systems, it is desirable to increase this when under a TCP SYN
     flood attack. See the backlog parameter to the
     <code>listen(2)</code> system call.</p>
 
@@ -390,9 +390,9 @@ simultaneously</description>
     <directive module="mpm_common">ServerLimit</directive>.</p>
 
     <p>For threaded and hybrid servers (<em>e.g.</em> <module>event</module>
-    or <module>worker</module>) <directive>MaxRequestWorkers</directive> restricts
+    or <module>worker</module>), <directive>MaxRequestWorkers</directive> restricts
     the total number of threads that will be available to serve clients.
-    For hybrid MPMs the default value is <code>16</code> (<directive
+    For hybrid MPMs, the default value is <code>16</code> (<directive
     module="mpm_common">ServerLimit</directive>) multiplied by the value of
     <code>25</code> (<directive module="mpm_common"
     >ThreadsPerChild</directive>). Therefore, to increase <directive
@@ -450,7 +450,7 @@ will handle during its life</description>
     <code>0</code>, then the process will never expire.</p>
 
     <p>Setting <directive>MaxConnectionsPerChild</directive> to a
-    non-zero value limits the amount of memory that process can consume
+    non-zero value limits the amount of memory that a process can consume
     by (accidental) memory leakage.</p>
 </usage>
 </directivesynopsis>
@@ -472,7 +472,7 @@ will handle during its life</description>
     <p>For <module>worker</module> and <module>event</module>, the default is
     <code>MaxSpareThreads 250</code>. These MPMs deal with idle threads
     on a server-wide basis. If there are too many idle threads in the
-    server then child processes are killed until the number of idle
+    server, then child processes are killed until the number of idle
     threads is less than this number. Additional processes/threads
     might be created if <directive module="mpm_common">ListenCoresBucketsRatio</directive> 
     is enabled.</p>
@@ -522,7 +522,7 @@ spikes</description>
 
     <p><module>worker</module> and <module>event</module> use a default of
     <code>MinSpareThreads 75</code> and deal with idle threads on a server-wide
-    basis. If there aren't enough idle threads in the server then child
+    basis. If there aren't enough idle threads in the server, then child
     processes are created until the number of idle threads is greater
     than <var>number</var>. Additional processes/threads
     might be created if <directive module="mpm_common">ListenCoresBucketsRatio</directive> 
@@ -530,7 +530,7 @@ spikes</description>
 
     <p><module>mpm_netware</module> uses a default of
     <code>MinSpareThreads 10</code> and, since it is a single-process
-    MPM, tracks this on a server-wide bases.</p>
+    MPM, tracks this on a server-wide basis.</p>
 
     <p><module>mpmt_os2</module> works
     similar to <module>mpm_netware</module>.  For
@@ -570,7 +570,7 @@ the child processes</description>
     <p>File-based shared memory is useful for third-party applications
     that require direct access to the scoreboard.</p>
 
-    <p>If you use a <directive>ScoreBoardFile</directive> then
+    <p>If you use a <directive>ScoreBoardFile</directive>, then
     you may see improved speed by placing it on a RAM disk. But be
     careful that you heed the same warnings about log file placement
     and <a href="../misc/security_tips.html">security</a>.</p>
@@ -869,7 +869,7 @@ client connections</description>
       will be achievable if <directive>ThreadStackSize</directive> is
       set to a value lower than the operating system default.  This type
       of adjustment should only be made in a test environment which allows
-      the full set of web server processing can be exercised, as there
+      the full set of web server processing to be exercised, as there
       may be infrequent requests which require more stack to process.
       The minimum required stack size strongly depends on the modules
       used, but any change in the web server configuration can invalidate

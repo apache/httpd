@@ -80,24 +80,29 @@ of the <directive>AsyncRequestWorkerFactor</directive>.</p>
         The status page of <module>mod_status</module> shows new columns under the Async connections section:</p>
         <dl>
             <dt>Writing</dt>
-            <dd>While sending the response to the client, it might happen that the TCP write buffer fills up because the connection is too slow. Usually in this case a <code>write()</code> to the socket returns <code>EWOULDBLOCK</code> or <code>EAGAIN</code>, to become writable again after an idle time. The worker holding the socket might be able to offload the waiting task to the listener thread, that in turn will re-assign it to the first idle worker thread available once an event will be raised for the socket (for example, "the socket is now writable"). Please check the Limitations section for more information.
+	    <dd>While sending the response to the client, it might happen that the TCP write buffer fills up because the connection is too slow.
+	 Usually in this case, a <code>write()</code> to the socket returns <code>EWOULDBLOCK</code> or <code>EAGAIN</code> to become writable again after an idle time.
+	 The worker holding the socket might be able to offload the waiting task to the listener thread, that in turn will re-assign it to the first idle worker thread available once an event will be raised for the socket (for example, "the socket is now writable").
+	 Please check the Limitations section for more information.
             </dd>
 
             <dt>Keep-alive</dt>
             <dd>Keep Alive handling is the most basic improvement from the worker MPM.
             Once a worker thread finishes to flush the response to the client, it can offload the
-            socket handling to the listener thread, that in turns will wait for any event from the
+            socket handling to the listener thread, that in turn will wait for any event from the
             OS, like "the socket is readable". If any new request comes from the client, then the
             listener will forward it to the first worker thread available. Conversely, if the
             <directive module="core">KeepAliveTimeout</directive> occurs then the socket will be
-            closed by the listener. In this way the worker threads are not responsible for idle
-            sockets and they can be re-used to serve other requests.</dd>
+            closed by the listener. In this way, the worker threads are not responsible for idle
+            sockets, and they can be re-used to serve other requests.</dd>
 
             <dt>Closing</dt>
             <dd>Sometimes the MPM needs to perform a lingering close, namely sending back an early error to the client while it is still transmitting data to httpd.
             Sending the response and then closing the connection immediately is not the correct thing to do since the client (still trying to send the rest of the
-            request) would get a connection reset and could not read the httpd's response. The lingering close is time bounded but it can take relatively long
-            time, so it's offloaded to a worker thread (including the shutdown hooks and real socket close). From 2.4.28 onward this is also the
+	    request) would get a connection reset and could not read the httpd's response.
+	    The lingering close is time-bounded, but it can take a relatively long
+	    time, so it's offloaded to a worker thread (including the shutdown hooks and real socket close).
+	    From 2.4.28 onward, this is also the
             case when connections finally timeout (the listener thread never handles connections besides waiting for and dispatching their events).
             </dd>
         </dl>
@@ -107,33 +112,33 @@ of the <directive>AsyncRequestWorkerFactor</directive>.</p>
     </section>
 
     <section id="graceful-close"><title>Graceful process termination and Scoreboard usage</title>
-        <p>This mpm showed some scalability bottlenecks in the past leading to the following
+        <p>This mpm showed some scalability bottlenecks in the past, leading to the following
         error: "<strong>scoreboard is full, not at MaxRequestWorkers</strong>".
         <directive module="mpm_common">MaxRequestWorkers</directive>
         limits the number of simultaneous requests that will be served at any given time
         and also the number of allowed processes
         (<directive module="mpm_common">MaxRequestWorkers</directive> 
-        / <directive module="mpm_common">ThreadsPerChild</directive>), meanwhile
+        / <directive module="mpm_common">ThreadsPerChild</directive>); meanwhile,
         the Scoreboard is a representation of all the running processes and
         the status of their worker threads. If the scoreboard is full (so all the
         threads have a state that is not idle) but the number of active requests
         served is not <directive module="mpm_common">MaxRequestWorkers</directive>,
         it means that some of them are blocking new requests that could be served
         but that are queued instead (up to the limit imposed by
-        <directive module="mpm_common">ListenBacklog</directive>). Most of the times
+        <directive module="mpm_common">ListenBacklog</directive>). Most of the time,
         the threads are stuck in the Graceful state, namely they are waiting to
         finish their work with a TCP connection to safely terminate and free up a
-        scoreboard slot (for example handling long running requests, slow clients
+        scoreboard slot (for example, handling long-running requests, slow clients
         or connections with keep-alive enabled). Two scenarios are very common:</p>
         <ul>
-            <li>During a <a href="../stopping.html#graceful">graceful restart</a>.
-            The parent process signals all its children to complete
+            <li>During a <a href="../stopping.html#graceful">graceful restart</a>,
+            the parent process signals all its children to complete
             their work and terminate, while it reloads the config and forks new
             processes. If the old children keep running for a while before stopping,
             the scoreboard will be partially occupied until their slots are freed.
             </li>
-            <li>When the server load goes down in a way that causes httpd to
-            stop some processes (for example due to
+            <li>The server load goes down in a way that causes httpd to
+            stop some processes (for example, due to
             <directive module="mpm_common">MaxSpareThreads</directive>).
             This is particularly problematic because when the load increases again,
             httpd will try to start new processes.
@@ -149,7 +154,7 @@ of the <directive>AsyncRequestWorkerFactor</directive>.</p>
             <directive module="mpm_common">ServerLimit</directive>.
             <directive module="mpm_common">MaxRequestWorkers</directive> and
             <directive module="mpm_common">ThreadsPerChild</directive> are used
-            to limit the amount of active processes, meanwhile
+            to limit the amount of active processes; meanwhile,
             <directive module="mpm_common">ServerLimit</directive> 
             takes also into account the ones doing a graceful
             close to allow extra slots when needed. The idea is to use
@@ -162,7 +167,7 @@ of the <directive>AsyncRequestWorkerFactor</directive>.</p>
             <li>During graceful shutdown, if there are more running worker threads
             than open connections for a given process, terminate these threads to
             free resources faster (which may be needed for new processes).</li>
-            <li>If the scoreboard is full, prevent more processes to finish
+            <li>If the scoreboard is full, prevent more processes from finishing
             gracefully due to reduced load until old processes have terminated
             (otherwise the situation would get worse once the load increases again).</li>
         </ul>
@@ -186,14 +191,14 @@ of the <directive>AsyncRequestWorkerFactor</directive>.</p>
         data, and the amount of data produced by the filter is too big to be
         buffered in memory, the thread used for the request is not freed while
         httpd waits until the pending data is sent to the client.<br />
-        To illustrate this point we can think about the following two situations:
+        To illustrate this point, we can think about the following two situations:
         serving a static asset (like a CSS file) versus serving content retrieved from
         FCGI/CGI or a proxied server. The former is predictable, namely the event MPM
         has full visibility on the end of the content and it can use events: the worker
         thread serving the response content can flush the first bytes until <code>EWOULDBLOCK</code>
         or <code>EAGAIN</code> is returned, delegating the rest to the listener. This one in turn
-        waits for an event on the socket, and delegates the work to flush the rest of the content
-        to the first idle worker thread. Meanwhile in the latter example (FCGI/CGI/proxied content)
+        waits for an event on the socket and delegates the work to flush the rest of the content
+        to the first idle worker thread. Meanwhile in the latter example (FCGI/CGI/proxied content),
         the MPM can't predict the end of the response and a worker thread has to finish its work
         before returning the control to the listener. The only alternative is to buffer the
         response in memory, but it wouldn't be the safest option for the sake of the
@@ -211,7 +216,7 @@ of the <directive>AsyncRequestWorkerFactor</directive>.</p>
         </ul>
         <p>Before these new APIs where made available, the traditional <code>select</code> and <code>poll</code> APIs had to be used.
         Those APIs get slow if used to handle many connections or if the set of connections rate of change is high.
-        The new APIs allow to monitor much more connections and they perform way better when the set of connections to monitor changes frequently. So these APIs made it possible to write the event MPM, that scales much better with the typical HTTP pattern of many idle connections.</p>
+        The new APIs allow to monitor many more connections, and they perform way better when the set of connections to monitor changes frequently. So these APIs made it possible to write the event MPM, that scales much better with the typical HTTP pattern of many idle connections.</p>
 
         <p>The MPM assumes that the underlying <code>apr_pollset</code>
         implementation is reasonably threadsafe. This enables the MPM to
@@ -241,7 +246,7 @@ of the <directive>AsyncRequestWorkerFactor</directive>.</p>
     <ul>
 
       <li>To use this MPM on FreeBSD, FreeBSD 5.3 or higher is recommended.
-      However, it is possible to run this MPM on FreeBSD 5.2.1, if you
+      However, it is possible to run this MPM on FreeBSD 5.2.1 if you
       use <code>libkse</code> (see <code>man libmap.conf</code>).</li>
 
       <li>For NetBSD, at least version 2.0 is recommended.</li>
@@ -310,9 +315,9 @@ of the <directive>AsyncRequestWorkerFactor</directive>.</p>
 
     <p>To mitigate this problem, the event MPM does two things:</p>
     <ul>
-        <li>it limits the number of connections accepted per process, depending on the
+        <li>It limits the number of connections accepted per process, depending on the
             number of idle request workers;</li>
-        <li>if all workers are busy, it will
+        <li>If all workers are busy, it will
             close connections in keep-alive state even if the keep-alive timeout has
             not expired. This allows the respective clients to reconnect to a
             different process which may still have worker threads available.</li>
