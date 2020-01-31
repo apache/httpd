@@ -224,7 +224,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1872761
                   http://svn.apache.org/r1872763
      2.4.x patch: http://people.apache.org/~jorton/httpd-2.4.x-mod_systemd.patch
-     +1: jorton, jim
+     +1: jorton, jim, elukey
 
    * mod_cgi, mod_cgid: Fix a memory leak when discarding script output
      after various error conditions.  PR 64096
