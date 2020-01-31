@@ -726,6 +726,9 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
             else if (APR_STATUS_IS_TIMEUP(rv)) {
                 r->status = HTTP_REQUEST_TIME_OUT;
             }
+            else if (APR_STATUS_IS_BADARG(rv)) {
+                r->status = HTTP_BAD_REQUEST;
+            }
             else if (APR_STATUS_IS_EINVAL(rv)) {
                 r->status = HTTP_BAD_REQUEST;
             }
