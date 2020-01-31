@@ -179,7 +179,7 @@ static void emit_preamble(request_rec *r, int xhtml, const char *title)
                   " <head>\n  <title>Index of ", title,
                   "</title>\n", NULL);
     } else {
-        ap_rvputs(r, DOCTYPE_HTML_3_2,
+        ap_rvputs(r, DOCTYPE_HTML_4_01,
                   "<html>\n <head>\n"
                   "  <title>Index of ", title,
                   "</title>\n", NULL);

@@ -1564,7 +1564,7 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
     }
     else {
         ap_set_content_type(r, "text/html; charset=ISO-8859-1");
-        ap_rputs(DOCTYPE_HTML_3_2
+        ap_rputs(DOCTYPE_HTML_4_01
                  "<html><head><title>Balancer Manager</title>\n", r);
         ap_rputs("<style type='text/css'>\n"
                  "table {\n"

@@ -50,7 +50,7 @@ extern "C" {
 
 #define DAV_READ_BLOCKSIZE      2048    /* used for reading input blocks */
 
-#define DAV_RESPONSE_BODY_1     "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\n<html><head>\n<title>"
+#define DAV_RESPONSE_BODY_1	"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">\n<html>\n<head>\n<title>"
 #define DAV_RESPONSE_BODY_2     "</title>\n</head><body>\n<h1>"
 #define DAV_RESPONSE_BODY_3     "</h1>\n<p>"
 #define DAV_RESPONSE_BODY_4     "</p>\n"

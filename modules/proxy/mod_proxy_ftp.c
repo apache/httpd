@@ -524,7 +524,7 @@ static apr_status_t proxy_send_dir_filter(ap_filter_t *f,
 
         /* print "ftp://host/" */
         escpath = ap_escape_html(p, path);
-        str = apr_psprintf(p, DOCTYPE_HTML_3_2
+        str = apr_psprintf(p, DOCTYPE_HTML_4_01
                 "<html>\n <head>\n  <title>%s%s%s</title>\n"
                 "<base href=\"%s%s%s\">\n"
                 " </head>\n"

@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) Update DOCTYPE tags in server-generated HTML. PR62989.
+     [Andra Farkas <deepbluemistake gmail.com>, Giovanni Bechis <giovanni paclan.it>]
+
   *) mod_setenvif: Passing an env-variable parameter of "--early" in non-perdir
      context runs directives from this module before `RequestHeader ... early` 
      are evaluated. This allows results of SetEnvIf conditionals to be used 

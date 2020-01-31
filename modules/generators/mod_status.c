@@ -412,7 +412,7 @@ static int status_handler(request_rec *r)
     ap_get_loadavg(&t);
 
     if (!short_report) {
-        ap_rputs(DOCTYPE_HTML_3_2
+        ap_rputs(DOCTYPE_HTML_4_01
                  "<html><head>\n"
                  "<title>Apache Status</title>\n"
                  "</head><body>\n"

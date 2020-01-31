@@ -173,7 +173,7 @@ static int util_ldap_handler(request_rec *r)
     if (r->header_only)
         return OK;
 
-    ap_rputs(DOCTYPE_HTML_3_2
+    ap_rputs(DOCTYPE_HTML_4_01
              "<html><head><title>LDAP Cache Information</title></head>\n", r);
     ap_rputs("<body bgcolor='#ffffff'><h1 align=center>LDAP Cache Information"
              "</h1>\n", r);
