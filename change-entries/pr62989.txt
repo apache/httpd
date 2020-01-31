@@ -1,0 +1,2 @@
+  *) Update DOCTYPE tags in server-generated HTML. PR62989.
+     [Andra Farkas <deepbluemistake gmail.com>, Giovanni Bechis <giovanni paclan.it>]
