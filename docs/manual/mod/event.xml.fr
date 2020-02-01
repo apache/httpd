@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1820541 -->
+<!-- English Revision: 1873381 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -171,7 +171,7 @@ propose le MPM <module>worker</module>, avec l'unique addition de la directive
 	keep-alive). Voici deux scénarios courants :</p>
         <ul>
             <li>Pendant un <a href="../stopping.html#graceful">graceful
-	    restart</a>. Le processus parent demande à tous ses processus
+	    restart</a>, le processus parent demande à tous ses processus
 	    enfants de terminer leur travail et de s'arrêter pendant qu'il
 	    recharge la configuration et lance de nouveaux processus. Si les
 	    processus existants continuent de s'exécuter pendant un certain

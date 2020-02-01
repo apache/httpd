@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1851341 -->
+<!-- English Revision: 1873367 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -461,7 +461,8 @@ end
           <td>non</td>
 	  <td>L'en-tête MIME de l'environnement pour la réponse, écrit
 	  même en cas d'erreur et conservé pendant les redirections
-	  internes</td>
+	  internes. Une table lua en lecture seule est disponible pour
+	  l'itération sous la forme r:err_headers_out_table().</td>
         </tr>
         <tr>
           <td><code>filename</code></td>
@@ -495,13 +496,15 @@ end
           <td>oui</td>
 	  <td>Les en-têtes MIME de l'environnement de la requête. Il
 	  s'agit des en-têtes comme <code>Host, User-Agent,
-	  Referer</code>, etc...</td>
+	  Referer</code>, etc... Une table lua en lecture seule est disponible pour
+	  l'itération sous la forme r:headers_in_table().</td>
         </tr>
         <tr>
           <td><code>headers_out</code></td>
           <td>table</td>
           <td>oui</td>
-	  <td>Les en-têtes MIME de l'environnement de la réponse.</td>
+	  <td>Les en-têtes MIME de l'environnement de la réponse. Une table lua en lecture seule est disponible pour
+	  l'itération sous la forme r:headers_out_table().</td>
         </tr>
         <tr>
           <td><code>hostname</code></td>
@@ -549,7 +552,8 @@ end
           <td>table</td>
           <td>oui</td>
 	  <td>Une liste de notes qui peuvent être transmises d'un module
-	  à l'autre.</td>
+	  à l'autre. Une table lua en lecture seule est disponible pour
+	  l'itération sous la forme r:notes_table().</td>
         </tr>
         <tr>
           <td><code>options</code></td>
@@ -619,7 +623,9 @@ end
           <td><code>subprocess_env</code></td>
           <td>table</td>
           <td>oui</td>
-	  <td>Le jeu de variables d'environnement pour cette requête.</td>
+	  <td>Le jeu de variables d'environnement pour cette requête. Une table
+	  lua en lecture seule est disponible pour l'itération sous la forme
+	  r:subprocess_env_table().</td>
         </tr>
         <tr>
           <td><code>started</code></td>

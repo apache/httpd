@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1469400 -->
+<!-- English Revision : 1873396 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -49,7 +49,7 @@
 <section id="options"><title>Options</title>
     <dl>
     <dt><code>-c <var>commande</var></code></dt>
-    <dd>Le programme FastCGI</dd>
+    <dd>Le chemin absolu du programme FastCGI</dd>
 
     <dt><code>-p <var>port</var></code></dt>
     <dd>Port sur lequel le programme va se mettre en écoute</dd>
