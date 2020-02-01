@@ -201,7 +201,7 @@ propose le MPM <code class="module"><a href="../mod/worker.html">worker</a></cod
 	keep-alive). Voici deux scénarios courants :</p>
         <ul>
             <li>Pendant un <a href="../stopping.html#graceful">graceful
-	    restart</a>. Le processus parent demande à tous ses processus
+	    restart</a>, le processus parent demande à tous ses processus
 	    enfants de terminer leur travail et de s'arrêter pendant qu'il
 	    recharge la configuration et lance de nouveaux processus. Si les
 	    processus existants continuent de s'exécuter pendant un certain

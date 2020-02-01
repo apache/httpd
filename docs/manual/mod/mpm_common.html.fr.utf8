@@ -543,7 +543,7 @@ pour pouvoir traiter les pics de requêtes</td></tr>
 
     <p>Avec <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, la définition par défaut est
     <code>MinSpareThreads 10</code> et, comme ce MPM n'exécute qu'un
-    seul processus, le nombre de threads est surveillé au niveau du
+    seul processus, le nombre de threads est surveillé au niveau général du
     serveur.</p>
 
     <p><code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code> fonctionne de manière similaire à
