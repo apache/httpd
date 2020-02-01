@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1857626:1873372 (outdated) -->
+<!-- English Revision: 1873372 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -535,7 +535,7 @@ supporté.</compatibility>
     <p>Pour <module>mpm_netware</module>, la définition par défaut est
     <code>MaxSpareThreads 100</code>. Comme ce MPM n'exécute qu'un seul
     processus, le nombre de processus inactifs est surveillé au
-    niveau du serveur.</p>
+    niveau général du serveur.</p>
 
     <p><module>mpmt_os2</module> fonctionne de manière similaire à
     <module>mpm_netware</module>. Pour <module>mpmt_os2</module>, la
@@ -590,7 +590,7 @@ pour pouvoir traiter les pics de requêtes</description>
 
     <p>Avec <module>mpm_netware</module>, la définition par défaut est
     <code>MinSpareThreads 10</code> et, comme ce MPM n'exécute qu'un
-    seul processus, le nombre de threads est surveillé au niveau du
+    seul processus, le nombre de threads est surveillé au niveau général du
     serveur.</p>
 
     <p><module>mpmt_os2</module> fonctionne de manière similaire à

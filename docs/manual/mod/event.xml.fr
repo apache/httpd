@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1820539:1873372 (outdated) -->
+<!-- English Revision: 1873372 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -190,14 +190,14 @@ propose le MPM <module>worker</module>, avec l'unique addition de la directive
 	keep-alive). Voici deux scénarios courants :</p>
         <ul>
             <li>Pendant un <a href="../stopping.html#graceful">graceful
-	    restart</a>. Le processus parent demande à tous ses processus
+	    restart</a>, le processus parent demande à tous ses processus
 	    enfants de terminer leur travail et de s'arrêter pendant qu'il
 	    recharge la configuration et lance de nouveaux processus. Si les
 	    processus existants continuent de s'exécuter pendant un certain
 	    temps avant de s'arrêter, le scoreboard sera partiellement occupé
 	    jusqu'à ce que les entrées correspondantes soient libérées.
             </li>
-            <li>Lorsque la charge du serveur diminue suffisamment pour que httpd
+            <li>La charge du serveur diminue suffisamment pour que httpd
 	    commence à stopper certains processus (par exemple pour respecter la
 	    valeur de la directive <directive
 	    module="mpm_common">MaxSpareThreads</directive>). Cette situation
