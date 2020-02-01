@@ -52,7 +52,7 @@
 <h2><a name="options" id="options">Options</a> <a title="Lien permanent" href="#options" class="permalink">&para;</a></h2>
     <dl>
     <dt><code>-c <var>commande</var></code></dt>
-    <dd>Le programme FastCGI</dd>
+    <dd>Le chemin absolu du programme FastCGI</dd>
 
     <dt><code>-p <var>port</var></code></dt>
     <dd>Port sur lequel le programme va se mettre en écoute</dd>

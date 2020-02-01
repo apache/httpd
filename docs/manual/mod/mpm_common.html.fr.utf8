@@ -32,8 +32,6 @@
 <a href="../ja/mod/mpm_common.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/mpm_common.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Une série de directives implémentées par plusieurs
 modules multi-processus (MPM)</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>MPM</td></tr></table>
@@ -523,7 +521,7 @@ simultanément</td></tr>
     <p>Pour <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, la définition par défaut est
     <code>MaxSpareThreads 100</code>. Comme ce MPM n'exécute qu'un seul
     processus, le nombre de processus inactifs est surveillé au
-    niveau du serveur.</p>
+    niveau général du serveur.</p>
 
     <p><code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code> fonctionne de manière similaire à
     <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>. Pour <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, la
@@ -574,7 +572,7 @@ pour pouvoir traiter les pics de requêtes</td></tr>
 
     <p>Avec <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, la définition par défaut est
     <code>MinSpareThreads 10</code> et, comme ce MPM n'exécute qu'un
-    seul processus, le nombre de threads est surveillé au niveau du
+    seul processus, le nombre de threads est surveillé au niveau général du
     serveur.</p>
 
     <p><code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code> fonctionne de manière similaire à
