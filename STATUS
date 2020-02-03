@@ -132,22 +132,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_systemd: New module, for integration with systemd on Linux.
-     trunk patch: http://svn.apache.org/r1393976
-                  http://svn.apache.org/r1393997
-                  http://svn.apache.org/r1484554
-                  http://svn.apache.org/r1528032
-                  http://svn.apache.org/r1528034
-                  http://svn.apache.org/r1614821
-                  http://svn.apache.org/r1618579
-                  http://svn.apache.org/r1618588
-                  http://svn.apache.org/r1802251
-                  http://svn.apache.org/r1840554
-                  http://svn.apache.org/r1840555
-                  http://svn.apache.org/r1872761
-                  http://svn.apache.org/r1872763
-     2.4.x patch: http://people.apache.org/~jorton/httpd-2.4.x-mod_systemd.patch
-     +1: jorton, jim, elukey
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
