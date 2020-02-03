@@ -504,6 +504,8 @@ if test "$ac_cv_struct_tm_gmtoff" = "yes"; then
     AC_DEFINE(HAVE_GMTOFF, 1, [Define if struct tm has a tm_gmtoff field])
 fi
 
+APACHE_CHECK_SYSTEMD
+
 dnl ## Set up any appropriate OS-specific environment variables for apachectl
 
 case $host in
