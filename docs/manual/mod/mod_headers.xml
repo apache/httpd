@@ -349,7 +349,7 @@ available in 2.4.10 and later</compatibility>
     (or more) headers having the same name. This can lead to
     unforeseen consequences, and in general <code>set</code>,
     <code>append</code> or <code>merge</code> should be used instead.
-    <p>Specify a condition of <code>always</code> if you want the header to
+    <br/><br/><p>Choosing a <var>condition</var>: Specify a condition of <code>always</code> if you want the header to
     be included in non-2xx response (such as redirects or errors)</p>
     </dd>
 
@@ -358,7 +358,7 @@ available in 2.4.10 and later</compatibility>
     the same name. When a new value is merged onto an existing
     header it is separated from the existing header with a comma.
     This is the HTTP standard way of giving a header multiple values.
-    <p>If the header was added by this module, you must match the condition
+    <br/><br/><p>Choosing a <var>condition</var>: If the header was added by this module, you must match the condition
     parameter that was originally used. Otherwise, you must determine by trial
     and error whether <code>always</code> should be specified because you can't
     reliably know which internal table the existing value is present in.</p>
@@ -369,7 +369,7 @@ available in 2.4.10 and later</compatibility>
     response headers. <var>header</var> may be a
     <glossary ref="regex">regular expression</glossary>.
     <var>value</var> must be omitted.
-    <p>Specify a condition of <code>always</code> if you want the header to
+    <br/><br/><p>Choosing a <var>condition</var>: Specify a condition of <code>always</code> if you want the header to
     be included in non-2xx response (such as redirects or errors).</p>
     </dd>
 
@@ -384,7 +384,7 @@ available in 2.4.10 and later</compatibility>
     in a header value, whereas the <code>edit*</code> form will replace
     <em>every</em> instance of the search pattern if it appears more
     than once.
-    <p>Because you cannot reliably know which internal header table might have a match,
+    <br/><br/><p>Choosing a <var>condition</var>: Because you cannot reliably know which internal header table might have a match,
     you should repeat your edit/edit* directive with both <code>always</code> and
     <code>onsuccess</code>.</p>
     </dd>
@@ -398,7 +398,7 @@ available in 2.4.10 and later</compatibility>
     Values are compared in a case sensitive manner, and after
     all format specifiers have been processed.  Values in double quotes
     are considered different from otherwise identical unquoted values.
-    <p>If the header was added by this module, you must match the condition
+    <br/><br/><p>Choosing a <var>condition</var>: If the header was added by this module, you must match the condition
     parameter that was originally used. Otherwise, you must determine by trial
     and error whether <code>always</code> should be specified because you can't
     reliably know which internal table the existing value is present in.</p>
@@ -408,7 +408,7 @@ available in 2.4.10 and later</compatibility>
     <dt><code>set</code></dt>
     <dd>The response header is set, replacing any previous header
     with this name. The <var>value</var> may be a format string.
-    <p>If the header was added by this module, you must match the condition
+    <br/><br/><p>Choosing a <var>condition</var>: If the header was added by this module, you must match the condition
     parameter that was originally used. Otherwise, you must determine by trial
     and error whether <code>always</code> should be specified because you can't
     reliably know which internal table the existing value is present in.</p>
@@ -418,7 +418,7 @@ available in 2.4.10 and later</compatibility>
     <dt><code>setifempty</code></dt>
     <dd>The request header is set, but only if there is no previous header
     with this name.
-    <p>If the header was added by this module, you must match the condition
+    <br/><br/><p>Choosing a <var>condition</var>: If the header was added by this module, you must match the condition
     parameter that was originally used. Otherwise, you must determine by trial
     and error whether <code>always</code> should be specified because you can't
     reliably know which internal table the existing value is present in.</p>
@@ -439,7 +439,7 @@ available in 2.4.10 and later</compatibility>
     <dd>The response header of this name is removed, if it exists.
     If there are multiple headers of the same name, all will be
     removed. <var>value</var> must be omitted.
-    <p>Because you cannot reliably know which internal header table might have a match,
+    <br/><br/><p>Choosing a <var>condition</var>: Because you cannot reliably know which internal header table might have a match,
     you should repeat your this directive with both <code>always</code> and
     <code>onsuccess</code>.</p>
     </dd>
@@ -450,7 +450,7 @@ available in 2.4.10 and later</compatibility>
     if a header sent by a CGI or proxied resource is configured to be unset
     but should also be logged.<br />
     Available in 2.4.7 and later.
-    <p>If the header was added by this module, you must match the condition
+    <br/><br/><p>Choosing a <var>condition</var>: If the header was added by this module, you must match the condition
     parameter that was originally used. Otherwise, you must determine by trial
     and error whether <code>always</code> should be specified because you can't
     reliably know which internal table the existing value is present in.</p>
