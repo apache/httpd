@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision: 1872770 -->
+<!-- French translation : Lucien GENTIS -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_systemd.xml.meta">
+
+<name>mod_systemd</name>
+<description>Fournit un support amélioré pour l'intégration de systemd</description>
+<status>Extension</status>
+<sourcefile>mod_systemd.c</sourcefile>
+<identifier>systemd_module</identifier>
+
+<summary>
+    <p>Ce module implémente le support de l'intégration de systemd. Il
+    permet d'utiliser httpd en temps que service avec le paramètre de
+    systemd <code>Type=notify</code> (voir la page de manuel
+    <a
+    href="https://www.freedesktop.org/software/systemd/man/systemd.service.html">systemd.service(5)</a>
+    pour plus de détails). Le module est activé s'il est chargé.</p>
+
+    <p><directive module="core">ExtendedStatus</directive> est activé par défaut
+    si le module est chargé. Si <directive
+    module="core">ExtendedStatus</directive> n'est pas explicitement désactivé
+    dans le fichier de configuration, les statistiques à propos de la charge et
+    des requêtes pendant l'exécution apparaîtront dans la sortie de la commande
+    <code>systemctl status</code>.</p>
+</summary>
+
+</modulesynopsis>
