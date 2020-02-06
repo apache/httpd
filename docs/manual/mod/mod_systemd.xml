@@ -27,6 +27,7 @@
 <status>Extension</status>
 <sourcefile>mod_systemd.c</sourcefile>
 <identifier>systemd_module</identifier>
+<compatibility>Available in Apache 2.4.42 and later</compatibility>
 
 <summary>
     <p>This module provides support for systemd integration. It allows
