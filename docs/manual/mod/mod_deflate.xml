@@ -76,7 +76,7 @@ AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javasc
 
       <highlight language="config">
 SetOutputFilter DEFLATE
-SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip
+SetEnvIfNoCase Request_URI "\.(?:gif|jpe?g|png)$" no-gzip
       </highlight>
 
       <p>If you want to restrict the compression to particular MIME types
@@ -349,36 +349,6 @@ CustomLog "logs/deflate_log" deflate
 </directivesynopsis>
 
 <directivesynopsis>
-<name>DeflateAlterETag</name>
-<description>How the outgoing ETag header should be modified during compression</description>
-<syntax>DeflateAlterETag AddSuffix|NoChange|Remove</syntax>
-<default>DeflateAlterETag AddSuffix</default>
-<contextlist><context>server config</context><context>virtual host</context>
-</contextlist>
-
-<usage>
-    <p>The <directive>DeflateAlterETag</directive> directive specifies
-    how the ETag hader should be altered when a response is compressed.</p>
-    <dl>
-    <dt>AddSuffix</dt>
-    <dd><p>Append the compression method onto the end of the ETag, causing
-        compressed and uncompressed representations to have unique ETags.
-        This has been the default since 2.4.0, but prevents serving
-        "HTTP Not Modified" (304) responses to conditional requests for
-        compressed content.</p></dd>
-    <dt>NoChange</dt>
-    <dd><p>Don't change the ETag on a compressed response. This was the default
-        prior to 2.4.0, but does not satisfy the HTTP/1.1 property that all
-        representations of the same resource have unique ETags. </p></dd>
-    <dt>Remove</dt>
-    <dd><p>Remove the ETag header from compressed responses. This prevents
-        some conditional requests from being possible, but avoids the
-        shortcomings of the preceding options.  </p></dd>
-    </dl>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
 <name>DeflateInflateLimitRequestBody</name>
 <description>Maximum size of inflated request bodies</description>
 <syntax>DeflateInflateLimitRequestBody <var>value</var></syntax>
@@ -432,6 +402,37 @@ CustomLog "logs/deflate_log" deflate
        specifies the maximum number of times the
        <directive module="mod_deflate">DeflateInflateRatioLimit</directive> can
        be crossed before terminating the request.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DeflateAlterETag</name>
+<description>How the outgoing ETag header should be modified during compression</description>
+<syntax>DeflateAlterETag AddSuffix|NoChange|Remove</syntax>
+<default>DeflateAlterETag AddSuffix</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+<compatibility>Available in Apache 2.4.42 and later</compatibility>
+
+<usage>
+    <p>The <directive>DeflateAlterETag</directive> directive specifies
+    how the ETag hader should be altered when a response is compressed.</p>
+    <dl>
+    <dt>AddSuffix</dt>
+    <dd><p>Append the compression method onto the end of the ETag, causing
+        compressed and uncompressed representations to have unique ETags.
+        This has been the default since 2.4.0, but prevents serving
+        "HTTP Not Modified" (304) responses to conditional requests for
+        compressed content.</p></dd>
+    <dt>NoChange</dt>
+    <dd><p>Don't change the ETag on a compressed response. This was the default
+        prior to 2.4.0, but does not satisfy the HTTP/1.1 property that all
+        representations of the same resource have unique ETags. </p></dd>
+    <dt>Remove</dt>
+    <dd><p>Remove the ETag header from compressed responses. This prevents
+        some conditional requests from being possible, but avoids the
+        shortcomings of the preceding options.  </p></dd>
+    </dl>
 </usage>
 </directivesynopsis>
 
