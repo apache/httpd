@@ -199,6 +199,10 @@
       <dt><module>mod_socache_redis</module> (available since 2.4.39)</dt>
       <dd>Support <a href="http://redis.io/">Redis</a> based shared object cache provider.</dd>
 
+      <dt><module>mod_systemd</module> (available since 2.4.42)</dt>
+      <dd>systemd integration. It allows httpd to be used in a service with the systemd
+      <code>Type=notify</code>.</dd>
+
     </dl>
   </section>
 
