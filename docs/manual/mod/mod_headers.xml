@@ -358,7 +358,7 @@ available in 2.4.10 and later</compatibility>
     the same name. When a new value is merged onto an existing
     header it is separated from the existing header with a comma.
     This is the HTTP standard way of giving a header multiple values.
-    <br/><br/><p>Choosing a <var>condition</var>: If the header was added by this module, you must match the condition
+    <br/><br/><p>Choosing a <var>condition</var>: If the existing header to be appended to was added by this module, you must match the condition
     parameter that was originally used. Otherwise, you must determine by trial
     and error whether <code>always</code> should be specified because you can't
     reliably know which internal table the existing value is present in.</p>
@@ -384,9 +384,10 @@ available in 2.4.10 and later</compatibility>
     in a header value, whereas the <code>edit*</code> form will replace
     <em>every</em> instance of the search pattern if it appears more
     than once.
-    <br/><br/><p>Choosing a <var>condition</var>: Because you cannot reliably know which internal header table might have a match,
-    you should repeat your edit/edit* directive with both <code>always</code> and
-    <code>onsuccess</code>.</p>
+    <br/><br/><p>Choosing a <var>condition</var>: Depending on the origins of the header to be edited,
+    you may have to repeat your edit/edit* directive with both <code>always</code> and
+    <code>onsuccess</code>. Alternatively, determine by experimentation 
+    whether a condition of <code>always</code> is necessary.</p>
     </dd>
 
     <dt><code>merge</code></dt>
@@ -398,30 +399,27 @@ available in 2.4.10 and later</compatibility>
     Values are compared in a case sensitive manner, and after
     all format specifiers have been processed.  Values in double quotes
     are considered different from otherwise identical unquoted values.
-    <br/><br/><p>Choosing a <var>condition</var>: If the header was added by this module, you must match the condition
-    parameter that was originally used. Otherwise, you must determine by trial
-    and error whether <code>always</code> should be specified because you can't
-    reliably know which internal table the existing value is present in.</p>
+    <br/><br/><p>Choosing a <var>condition</var>: If the target header to be merged was added by this module, you must match the condition
+    parameter that was originally used. Otherwise, you must determine by experimentation
+    whether a condition of <code>always</code> is necessary.</p>
     </dd>
 
 
     <dt><code>set</code></dt>
     <dd>The response header is set, replacing any previous header
     with this name. The <var>value</var> may be a format string.
-    <br/><br/><p>Choosing a <var>condition</var>: If the header was added by this module, you must match the condition
-    parameter that was originally used. Otherwise, you must determine by trial
-    and error whether <code>always</code> should be specified because you can't
-    reliably know which internal table the existing value is present in.</p>
+    <br/><br/><p>Choosing a <var>condition</var>: If the target header to be replaced was added by this module, you must match the condition
+    parameter that was originally used. Otherwise, you must determine by experimentation
+    whether a condition <code>always</code> is necessary.</p>
     </dd>
 
 
     <dt><code>setifempty</code></dt>
     <dd>The request header is set, but only if there is no previous header
     with this name.
-    <br/><br/><p>Choosing a <var>condition</var>: If the header was added by this module, you must match the condition
-    parameter that was originally used. Otherwise, you must determine by trial
-    and error whether <code>always</code> should be specified because you can't
-    reliably know which internal table the existing value is present in.</p>
+    <br/><br/><p>Choosing a <var>condition</var>: If the target header to conditionally set was added by this module, you must match the condition
+    parameter that was originally used. Otherwise, you must determine by experimentation
+    whether a condition of <code>always</code> is necessary.</p>
 
     <note>
     The Content-Type header is a special use case since there might be
@@ -439,9 +437,9 @@ available in 2.4.10 and later</compatibility>
     <dd>The response header of this name is removed, if it exists.
     If there are multiple headers of the same name, all will be
     removed. <var>value</var> must be omitted.
-    <br/><br/><p>Choosing a <var>condition</var>: Because you cannot reliably know which internal header table might have a match,
-    you should repeat your this directive with both <code>always</code> and
-    <code>onsuccess</code>.</p>
+    <br/><br/><p>Choosing a <var>condition</var>: Repeat this directive with both <code>always</code> and
+    <code>onsuccess</code> to be certain the header is unset, or determine by experimentation 
+    whether a condition of <code>always</code> is necessary..</p>
     </dd>
 
     <dt><code>note</code></dt>
@@ -450,10 +448,9 @@ available in 2.4.10 and later</compatibility>
     if a header sent by a CGI or proxied resource is configured to be unset
     but should also be logged.<br />
     Available in 2.4.7 and later.
-    <br/><br/><p>Choosing a <var>condition</var>: If the header was added by this module, you must match the condition
-    parameter that was originally used. Otherwise, you must determine by trial
-    and error whether <code>always</code> should be specified because you can't
-    reliably know which internal table the existing value is present in.</p>
+    <br/><br/><p>Choosing a <var>condition</var>: If the target header was added by this module, you must match the condition
+    parameter that was originally used. Otherwise, you must determine by experimentation
+    whether a condition of <code>always</code> is necessary..</p>
     </dd>
 
     </dl>
