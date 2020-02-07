@@ -218,7 +218,7 @@ static int ftp_check_string(const char *x)
  * (EBCDIC) machines either.
  */
 static apr_status_t ftp_string_read(conn_rec *c, apr_bucket_brigade *bb,
-        char *buff, apr_size_t bufflen, int *eos)
+        char *buff, apr_size_t bufflen, int *eos, apr_size_t *outlen)
 {
     apr_bucket *e;
     apr_status_t rv;
@@ -230,6 +230,7 @@ static apr_status_t ftp_string_read(conn_rec *c, apr_bucket_brigade *bb,
     /* start with an empty string */
     buff[0] = 0;
     *eos = 0;
+    *outlen = 0;
 
     /* loop through each brigade */
     while (!found) {
@@ -273,6 +274,7 @@ static apr_status_t ftp_string_read(conn_rec *c, apr_bucket_brigade *bb,
                 if (len > 0) {
                     memcpy(pos, response, len);
                     pos += len;
+                    *outlen += len;
                 }
             }
             apr_bucket_delete(e);
@@ -385,28 +387,36 @@ static int ftp_getrc_msg(conn_rec *ftp_ctrl, apr_bucket_brigade *bb, char *msgbu
     char buff[5];
     char *mb = msgbuf, *me = &msgbuf[msglen];
     apr_status_t rv;
+    apr_size_t nread;
+    
     int eos;
 
-    if (APR_SUCCESS != (rv = ftp_string_read(ftp_ctrl, bb, response, sizeof(response), &eos))) {
+    if (APR_SUCCESS != (rv = ftp_string_read(ftp_ctrl, bb, response, sizeof(response), &eos, &nread))) {
         return -1;
     }
 /*
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL, APLOGNO(03233)
                  "<%s", response);
 */
+    if (nread < 4) { 
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, NULL, APLOGNO(10229) "Malformed FTP response '%s'", response);
+        *mb = '\0';
+        return -1;
+    }
+
     if (!apr_isdigit(response[0]) || !apr_isdigit(response[1]) ||
-    !apr_isdigit(response[2]) || (response[3] != ' ' && response[3] != '-'))
+        !apr_isdigit(response[2]) || (response[3] != ' ' && response[3] != '-'))
         status = 0;
     else
         status = 100 * response[0] + 10 * response[1] + response[2] - 111 * '0';
 
     mb = apr_cpystrn(mb, response + 4, me - mb);
 
-    if (response[3] == '-') {
+    if (response[3] == '-') { /* multi-line reply "123-foo\nbar\n123 baz" */
         memcpy(buff, response, 3);
         buff[3] = ' ';
         do {
-            if (APR_SUCCESS != (rv = ftp_string_read(ftp_ctrl, bb, response, sizeof(response), &eos))) {
+            if (APR_SUCCESS != (rv = ftp_string_read(ftp_ctrl, bb, response, sizeof(response), &eos, &nread))) {
                 return -1;
             }
             mb = apr_cpystrn(mb, response + (' ' == response[0] ? 1 : 4), me - mb);
