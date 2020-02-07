@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.42
 
+  *) mod_cgi, mod_cgid: Fix a memory leak in some error cases with large script
+     output.  PR 64096.  [Joe Orton]
+
   *) config: Speed up graceful restarts by using pre-hashed command table. PR 64066.
      [Giovanni Bechis <giovanni paclan.it>, Jim Jagielski]
 
