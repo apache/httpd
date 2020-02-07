@@ -5298,7 +5298,7 @@ static int core_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptem
         init_config_defines(pconf);
     apr_pool_cleanup_register(pconf, NULL, reset_config, apr_pool_cleanup_null);
 
-    ap_regcomp_set_default_cflags(AP_REG_DOLLAR_ENDONLY);
+    ap_regcomp_set_default_cflags(AP_REG_DEFAULT);
 
     mpm_common_pre_config(pconf);
 
