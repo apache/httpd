@@ -132,12 +132,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_cgi, mod_cgid: Fix a memory leak when discarding script output
-     after various error conditions.  PR 64096
-     trunk patch: https://svn.apache.org/r1867970
-     2.4.x patch: https://github.com/apache/httpd/commit/ed258a2133bc48ee90b027eead13e2d28d03c66a.patch
-     Test results: https://travis-ci.org/apache/httpd/builds/642414361
-     +1: jorton, covener, rpluem
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
