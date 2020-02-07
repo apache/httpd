@@ -2660,6 +2660,15 @@ AP_DECLARE(const char *)ap_dir_nofnmatch(ap_dir_match_t *w, const char *fname)
 AP_DECLARE(const char *)ap_dir_fnmatch(ap_dir_match_t *w, const char *path,
         const char *fname) __attribute__((nonnull(1,3)));
 
+/**
+ * Determine if the final Transfer-Encoding is "chunked".
+ *
+ * @param p The pool to allocate from
+ * @param line the header field-value to scan
+ * @return 1 if the last Transfer-Encoding is "chunked", else 0
+ */
+AP_DECLARE(int) ap_is_chunked(apr_pool_t *p, const char *line);
+
 #ifdef __cplusplus
 }
 #endif
