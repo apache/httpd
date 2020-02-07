@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.42
 
+  *) config: Speed up graceful restarts by using pre-hashed command table. PR 64066.
+     [Giovanni Bechis <giovanni paclan.it>, Jim Jagielski]
+
   *) mod_systemd: New module providing integration with systemd.  [Jan Kaluza]
 
   *) mod_lua: Add r:headers_in_table, r:headers_out_table, r:err_headers_out_table,
