@@ -132,12 +132,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) config: Speed up graceful restarts by using pre-hashed command table. PR 64066.
-     trunk patch: http://svn.apache.org/r1872786
-     2.4.x patch: svn merge -c 1872786 ^/httpd/httpd/trunk
-     +1: jim, jorton, covener
-
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
