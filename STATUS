@@ -193,7 +193,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1872036
                   http://svn.apache.org/r1872093
                   http://svn.apache.org/r1872102
-     2.4.x patch: svn merge -c r1872036,1872093,1872102 ^/httpd/httpd/trunk
+     2.4.x patch: svn merge -c r1872036,1872093,1872102 ^/httpd/httpd/trunk .
      +1: minfrin, jim (inspection)
 
   *) Add support for cross compiling to apxs. If apxs is being executed from somewhere
@@ -201,8 +201,25 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Without this, apxs would fail to find config_vars.mk and exit.
      trunk patch: http://svn.apache.org/r1872042
                   http://svn.apache.org/r1872062
-     2.4.x patch: svn merge -c 1872042,1872062 ^/httpd/httpd/trunk
+     2.4.x patch: svn merge -c 1872042,1872062 ^/httpd/httpd/trunk .
      +1: minfrin, jim
+
+  *) trap mod_proxy_ftp errors
+     trunk patch: http://svn.apache.org/r1873745
+     2.4.x patch: svn merge -c 1873745 ^/httpd/httpd/trunk .
+     +1: covener
+
+  *) factor out default regex flags:
+     trunk patch: http://svn.apache.org/r1873747
+     2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-reg_default.diff
+         (MMN, ap_regex.h conflicts)
+     +1: covener
+
+  *) factor out chunked TE checks
+     trunk patch: http://svn.apache.org/r1873748
+     2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-chunk.diff
+         (conflicts)
+     +1: covener
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
