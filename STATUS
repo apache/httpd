@@ -132,6 +132,13 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_cgi, mod_cgid: Fix a memory leak when discarding script output
+     after various error conditions.  PR 64096
+     trunk patch: https://svn.apache.org/r1867970
+     2.4.x patch: https://github.com/apache/httpd/commit/ed258a2133bc48ee90b027eead13e2d28d03c66a.patch
+     Test results: https://travis-ci.org/apache/httpd/builds/642414361
+     +1: jorton, covener, rpluem
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -154,7 +161,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              months/years without any action item :)
      ylavic: will look at it ASAP..
 
-    
+
    *) mod_ssl: Add support for loading certs & keys from PKCS#11 URLs via the
                OpenSSL pkcs11 engine.  Includes related minor cleanups and
                simplification to mod_ssl internals.
@@ -203,13 +210,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1872042,1872062 ^/httpd/httpd/trunk
      +1: minfrin, jim
 
-   * mod_cgi, mod_cgid: Fix a memory leak when discarding script output
-     after various error conditions.  PR 64096
-     trunk patch: https://svn.apache.org/r1867970
-     2.4.x patch: https://github.com/apache/httpd/commit/ed258a2133bc48ee90b027eead13e2d28d03c66a.patch
-     Test results: https://travis-ci.org/apache/httpd/builds/642414361
-     +1: jorton, covener
-     
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
