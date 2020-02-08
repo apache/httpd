@@ -172,6 +172,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: https://github.com/apache/httpd/commit/709a625b8e3fd3cd3426be5a005c1c60079c8d59.patch
       Test results: https://travis-ci.org/apache/httpd/builds/638362588
       +1: jorton, jim
+      minfrin: This needs mentioning in the docs.
 
   *) mod_ssl: use OPENSSL_init_ssl() to initialise OpenSSL on versions 1.1+.
      trunk patch: http://svn.apache.org/r1861950
