@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_rewrite: Extend the [CO] (cookie) flag of RewriteRule to accept a 
+     SameSite attribute. [Eric Covener]
+
   *) Update DOCTYPE tags in server-generated HTML. PR62989.
      [Andra Farkas <deepbluemistake gmail.com>, Giovanni Bechis <giovanni paclan.it>]
 
