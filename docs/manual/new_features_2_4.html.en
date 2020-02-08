@@ -208,6 +208,10 @@
       <dt><code class="module"><a href="./mod/mod_socache_redis.html">mod_socache_redis</a></code> (available since 2.4.39)</dt>
       <dd>Support <a href="http://redis.io/">Redis</a> based shared object cache provider.</dd>
 
+      <dt><code class="module"><a href="./mod/mod_systemd.html">mod_systemd</a></code> (available since 2.4.42)</dt>
+      <dd>systemd integration. It allows httpd to be used in a service with the systemd
+      <code>Type=notify</code>.</dd>
+
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">

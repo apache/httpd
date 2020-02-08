@@ -49,9 +49,9 @@ performance</td></tr>
     <p>The details given are:</p>
 
     <ul>
-      <li>The number of worker serving requests</li>
+      <li>The number of workers serving requests</li>
 
-      <li>The number of idle worker</li>
+      <li>The number of idle workers</li>
 
       <li>The status of each worker, the number of requests that
       worker has performed and the total number of bytes served by

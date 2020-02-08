@@ -68,9 +68,9 @@
       information on doing this.)</li>
 
       <li>
-        If you system falls into 1 or 2 (above), then increase the
+        If your system falls into 1 or 2 (above), then increase the
         file descriptor limit before starting Apache, using a
-        script like
+        script like:
 
         <div class="example"><p><code>
           <code>#!/bin/sh<br />
@@ -107,7 +107,7 @@ each line. (See <code class="module"><a href="../mod/mod_log_config.html">mod_lo
 more about customizing your log files.)</p>
 
 <p>When you wish to split your log file into its component parts (one
-file per virtual host) you can use the program <code><a href="../programs/other.html">split-logfile</a></code> to accomplish
+file per virtual host), you can use the program <code><a href="../programs/other.html">split-logfile</a></code> to accomplish
 this. You'll find this program in the <code>support</code> directory
 of the Apache distribution.</p>
 

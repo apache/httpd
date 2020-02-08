@@ -118,6 +118,7 @@
   <modulefile>mod_status.xml.fr</modulefile>
   <modulefile>mod_substitute.xml.fr</modulefile>
   <modulefile>mod_suexec.xml.fr</modulefile>
+  <modulefile>mod_systemd.xml.fr</modulefile>
   <modulefile>mod_unique_id.xml.fr</modulefile>
   <modulefile>mod_unixd.xml.fr</modulefile>
   <modulefile>mod_userdir.xml.fr</modulefile>

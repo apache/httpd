@@ -118,6 +118,7 @@
   <modulefile>mod_status.xml.ko</modulefile>
   <modulefile>mod_substitute.xml</modulefile>
   <modulefile>mod_suexec.xml.ko</modulefile>
+  <modulefile>mod_systemd.xml</modulefile>
   <modulefile>mod_unique_id.xml.ko</modulefile>
   <modulefile>mod_unixd.xml</modulefile>
   <modulefile>mod_userdir.xml.ko</modulefile>
