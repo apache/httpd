@@ -189,6 +189,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   (merge works modulo CHANGES, below patch for all in one review)
                   http://people.apache.org/~ylavic/patches/httpd-2.4.x-SSLProtocol_per_vhost.patch
      +1: ylavic
+     minfrin: Tiny detail - docs refer to version 2.5.1
 
   *) Add a config layout for OpenWRT
      trunk patch: http://svn.apache.org/r1872036
