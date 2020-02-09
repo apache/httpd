@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1855817:1873719 (outdated) -->
+<!-- English Revision: 1873719 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -225,6 +225,10 @@ serveur HTTP Apache</title>
       <dt><module>mod_socache_redis</module> (disponible à partir de la version 2.4.39)</dt>
       <dd>Supporte le fournisseur de cache d'objets partagés basé sur <a
       href="http://redis.io/">Redis</a>.</dd>
+
+      <dt><module>mod_systemd</module> (disponible à partir de la version 2.4.42)</dt>
+      <dd>intégration de systemd. Permet d'utiliser httpd en tant que service avec
+      le paramètre systemd <code>Type=notify</code>.</dd>
 
     </dl>
   </section>
