@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1803171 -->
+<!-- English Revision: 1873799 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -152,13 +152,13 @@ chaînées qui suivent, seront sautées.</p>
 <p>Le drapeau [CO], ou [cookie], vous permet de définir un cookie
 lorsqu'une règle <directive module="mod_rewrite">RewriteRule</directive>
 s'applique. Il possède trois arguments obligatoires et
-quatre arguments optionnels.</p>
+cinq arguments optionnels.</p>
 
 <p>La syntaxe complète de ce drapeau, avec tous ses attributs, est la
 suivante :</p>
 
 <example>
-[CO=NAME:VALUE:DOMAIN:lifetime:path:secure:httponly]
+[CO=NAME:VALUE:DOMAIN:lifetime:path:secure:httponly:samesite]
 </example>
 
 <p>Si un caractère littéral ':' doit être insérer dans un des champs du
@@ -167,7 +167,7 @@ alternative, le contenu du champ "Name" doit être précédé du caractère
 ';', et les sépateurs de champs deviendront des ';'.</p>
 
 <example>
-[CO=;NAME;VALUE:MOREVALUE;DOMAIN;lifetime;path;secure;httponly]
+[CO=;NAME;VALUE:MOREVALUE;DOMAIN;lifetime;path;secure;httponly;samesite]
 </example>
 
 <p>Vous devez déclarer un nom, une valeur et un domaine pour que
@@ -210,6 +210,12 @@ que dans le cadre d'une connexion sécurisée (https).</dd>
 <code>HttpOnly</code> activé, ce qui signifie qu'il sera inaccessible au
 code JavaScript pour les navigateurs qui supportent cette
 fonctionnalité.</dd>
+
+<dt>samesite</dt>
+<dd>S'il est différent de 0, l'attribut <code>SameSite</code> est défini à la
+valeur spécifiée. Les valeurs typiques sont <code>None</code>, <code>Lax</code>
+et <code>Strict</code>. Disponible à partir de la version 2.5.1 du serveur HTTP
+Apache.</dd>
 </dl>
 
 <p>Voici un exemple :</p>

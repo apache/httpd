@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1872770 -->
+<!-- English Revision: 1873715 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -28,6 +28,7 @@
 <status>Extension</status>
 <sourcefile>mod_systemd.c</sourcefile>
 <identifier>systemd_module</identifier>
+<compatibility>Disponible à partir de la version 2.4.42 du serveur HTTP Apache</compatibility>
 
 <summary>
     <p>Ce module implémente le support de l'intégration de systemd. Il

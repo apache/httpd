@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1844401 -->
+<!-- English Revision: 1873677 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -367,75 +367,16 @@ version 2.4.10</compatibility>
     <p>L'argument optionnel <var>condition</var> permet de déterminer
     sur quelle table interne d'en-têtes de réponses cette directive va
     opérer : <code>onsuccess</code> (valeur par défaut, peut être omis) ou
-    <code>always</code>. A la différence de ceux de la première table, les
-    en-têtes de la seconde sont ajoutés à la réponse même en cas d'erreur et
-    sont conservés au fil des redirections internes (par exemple les
-    gestionnaires ErrorDocument). Notez aussi que la répétition
-    de cette directive avec les deux conditions peut être pertinente
-    dans certains scénarios, car <code>always</code> n'englobe pas
-    <code>onsuccess</code> en ce qui concerne les en-têtes existants :</p>
-
-    <ul>
-       <li>Vous ajoutez un en-tête à une réponse
-       générée localement et échouée (non-2xx),
-       une redirection par exemple, et dans ce cas, seule la table
-       correspondant à <code>always</code> est utilisée dans la réponse
-       définitive.</li>
-       <li>Vous modifiez ou supprimez un en-tête généré par un script CGI ou par
-       <module>mod_proxy_fcgi</module>, auquel cas, les en-têtes des scripts CGI
-       sont dans la table correspondant à <code>always</code> et non dans la
-       table par défaut.</li>
-       <li>Vous modifiez ou supprimez un en-tête généré par tel ou tel
-       composant du serveur, mais cet en-tête n'est pas trouvé par la
-       condition par défaut <code>onsuccess</code>.</li>
-    </ul>
-
-    <p>Comme il n'y a pas de liste unique "normalisée" d'en-têtes, la manière
-    dont httpd stocke en interne les en-têtes des réponses HTTP est à l'origine
-    de la fonctionnalité que constitue la différence entre
-    <code>onsuccess</code> et <code>always</code>. Si vous ne gardez pas à
-    l'esprit le concept ci-après lors de l'écriture de votre configuration,
-    certaines réponses HTTP pourront contenir des en-têtes dupliqués
-    (ce qui pourra dérouter les utilisateurs ou même parfois les clients HTTP). Supposons par
-    exemple que votre configuration comporte un mandataire PHP simple avec
-    <module>mod_proxy_fcgi</module> et que votre script PHP d'arrière-plan
-    ajoute l'en-tête <code>X-Foo: bar</code> à chaque réponse HTTP. Comme décrit
-    plus haut, <module>mod_proxy_fcgi</module> utilise la table
-    <code>always</code> pour stocker les en-têtes, et une configuration comme la
-    suivante n'aboutira pas au résultat attendu car l'en-tête sera dupliqué
-    avec les deux valeurs :</p>
-
-    <highlight language="config">
-# la valeur de X-Foo est définie dans la table d'en-têtes 'onsuccess'
-Header set X-Foo: baz
-    </highlight>    
-
-    <p>Plusieurs modèles de configuration permettent de contourner ce problème,
-    comme celui-ci :</p>
-
-        <highlight language="config">
-# 'onsuccess' peut être omis car il s'agit de la valeur par défaut
-Header onsuccess unset X-Foo
-Header always set X-Foo "baz"
-        </highlight>
-
-    <p>Outre le paramètre <var>condition</var> décrit ci-dessus, vous
-    pouvez limiter une action en fonction de codes d'état HTTP, par
-    exemple pour les requêtes mandatées ou générées par un programme
-    CGI. Voir l'exemple qui utilise %{REQUEST_STATUS} dans la section
-    ci-dessus.</p>
-
-    <p>L'action que cette directive provoque est déterminée par le
-    premier argument (ou par le second argument si une
-    <var>condition</var> est spécifiée). Il peut prendre
-    une des valeurs suivantes :</p>
+    <code>always</code>. La situation où vous devez spécifier
+    <code>always</code> dépend des différentes actions ci-dessous. </p>
 
     <note type="warning"><title>Avertissement</title>
-        <p>Vous devez lire la différence, décrite plus haut, entre les listes
-	d'en-têtes <code>always</code> et <code>onsuccess</code> avant de lire
-	la liste d'actions ci-dessous car cet important concept s'applique
-	encore ici. En fait, chaque action fonctionne telle qu'elle est décrite
-	mais seulement pour la liste d'en-têtes cible.</p>
+        <p>Etudiez avec attention la différence entre <code>always</code> et
+	<code>onsuccess</code> pour chaque action décrite ci-dessous car le
+	comportement induit n'est pas trivial et est souvent source de
+	confusion. Lorsqu'il est conseillé de répéter les conditions, vous
+	pouvez expérimenter chacune d'entre elles et utiliser celle qui vous
+	paraît la plus efficace pour correspondre à l'en-tête préexistant.</p>
     </note>
 
     <dl>
@@ -444,20 +385,35 @@ Header always set X-Foo "baz"
     existe déjà. Ceci peut conduire à la présence de deux (ou plusieurs)
     en-têtes possèdant le même nom et donc induire des conséquences
     imprévues ; en général, il est préférable d'utiliser
-    <code>set</code>, <code>append</code> ou <code>merge</code>.</dd>
+    <code>set</code>, <code>append</code> ou <code>merge</code>.
+    <br/><br/><p>Choix de la <var>condition</var> : spécifiez la condition
+    <code>always</code> si vous souhaitez que l'en-tête soit aussi ajouté aux
+    réponses de type non-2xx (comme les redirections ou les erreurs).</p>
+    </dd>
 
     <dt><code>append</code></dt>
     <dd>La valeur d'en-tête est ajoutée à tout en-tête existant de même
     nom. Lorsqu'une nouvelle valeur est ainsi ajoutée, elle est séparée
     de celles qui sont déjà présentes par une virgule. Il s'agit de la
     méthode HTTP standard permettant d'affecter plusieurs valeurs à un
-    en-tête.</dd>
+    en-tête.
+    <br/><br/><p>Choix de la <var>condition</var> : si l'en-tête préexistant
+    auquel vous voulez ajouter une valeur a été ajouté par ce module, vous devez
+    spécifier la même condition que celle utilisée à l'origine. Dans le cas
+    contraire, vous devez déterminer expérimentalement si <code>always</code>
+    doit être spécifié car vous ne pouvez pas savoir de manière sure dans quelle
+    table interne la valeur existante est présente.</p>
+    </dd>
 
     <dt><code>echo</code></dt>
     <dd>Les en-têtes de la requête possédant le nom spécifié sont
     recopiés vers les en-têtes de la réponse. <var>en-tête</var> peut
     être une <glossary ref="regex">expression rationnelle</glossary>, et
-    <var>valeur</var> ne doit pas être présent.</dd>
+    <var>valeur</var> ne doit pas être présent.
+    <br/><br/><p>Choix de la <var>condition</var> : spécifiez la condition
+    <code>always</code> si vous souhaitez que l'en-tête soit aussi ajouté aux
+    réponses de type non-2xx (comme les redirections ou les erreurs).</p>
+    </dd>
 
     <dt><code>edit</code></dt>
     <dt><code>edit*</code></dt>
@@ -470,7 +426,13 @@ Header always set X-Foo "baz"
     arrières ou des spécificateurs de format. La forme <code>edit</code> n'effectuera une
     recherche/remplacement qu'une seule fois dans la valeur de
     l'en-tête, alors que la forme <code>edit*</code> en effectuera autant
-    que le nombre d'apparition de la chaîne à remplacer.</dd>
+    que le nombre d'apparition de la chaîne à remplacer.
+    <br/><br/><p>Choix de la <var>condition</var> : en fonction de l'origine de
+    l'en-tête à éditer, vous pourrez être amenés à répéter votre directive
+    edit/edit* avec les deux conditions <code>always</code> et
+    <code>onsuccess</code>. Autrement, vous pouvez déterminer expérimentalement
+    si une condition <code>always</code> est nécessaire.</p>
+    </dd>
 
     <dt><code>merge</code></dt>
     <dd>La valeur d'en-tête est ajoutée à tout en-tête de même nom, sauf
@@ -481,17 +443,33 @@ Header always set X-Foo "baz"
     d'affecter plusieurs valeurs à un en-tête. Les valeurs sont
     comparées en tenant compte de la casse, et après le traitement de
     tous les spécificateurs de format. Une valeur entourée de guillemets
-    est considérée comme différente de la même valeur mais sans
-    guillemets.</dd>
+    est considérée comme différente de la même valeur sans
+    guillemets.
+    <br/><br/><p>Choix de la <var>condition</var> : si l'en-tête préexistant
+    auquel vous voulez ajouter une valeur a été ajouté par ce module, vous devez
+    spécifier la même condition que celle utilisée à l'origine. Dans le cas
+    contraire, vous devez déterminer expérimentalement si <code>always</code>
+    est nécessaire.</p>
+    </dd>
 
     <dt><code>set</code></dt>
     <dd>L'en-tête est défini, remplaçant tout en-tête préexistant avec
-    le même nom. L'argument <var>valeur</var> peut être une chaîne de
-    formatage.</dd>
+    le même nom. L'argument <var>valeur</var> peut être une chaîne
+    formatée.
+    <br/><br/><p>Choix de la <var>condition</var> : si l'en-tête à définir a été
+    ajouté par ce module, vous devez spécifier la même condition que celle
+    utilisée à l'origine. Dans le cas contraire, vous devez déterminer
+    expérimentalement si <code>always</code> est nécessaire.</p>
+    </dd>
 
     <dt><code>setifempty</code></dt>
     <dd>L'en-tête est défini, mais seulement s'il n'existe
     aucun en-tête avec le même nom.
+    <br/><br/><p>Choix de la <var>condition</var> : si l'en-tête à définir a été
+    ajouté par ce module, vous devez spécifier la même condition que celle
+    utilisée à l'origine. Dans le cas contraire, vous devez déterminer
+    expérimentalement si <code>always</code> est nécessaire.</p>
+
     <note>
     L'en-tête Content-Type est un cas particulier car il est possible que sa
     valeur ait été déterminée mais que l'en-tête ne soit pas présent dans la
@@ -505,7 +483,12 @@ Header always set X-Foo "baz"
     <dt><code>unset</code></dt>
     <dd>L'en-tête est supprimé s'il existe. Si plusieurs en-têtes
     possèdent le même nom, ils seront tous supprimés. L'argument
-    <var>value</var> ne doit pas apparaître.</dd>
+    <var>value</var> ne doit pas apparaître.
+    <br/><br/><p>Choix de la <var>condition</var> : répétez cette directive avec
+    les deux conditions <code>always</code> et <code>onsuccess</code> pour être
+    sur que l'en-tête soit bien supprimé, ou déterminez
+    expérimentalement si <code>always</code> est nécessaire.</p>
+    </dd>
 
     <dt><code>note</code></dt>
     <dd>La valeur de l'<var>en-tête</var> considéré est copiée dans une
@@ -513,7 +496,12 @@ Header always set X-Foo "baz"
     <var>valeur</var>. Ceci permet de journaliser la valeur d'un en-tête
     envoyé par un programme CGI ou une ressource mandatée, même s'il
     est prévu de l'effacer.<br />
-    Disponible à partir de la version 2.4.7 du serveur HTTP Apache.</dd>
+    Disponible à partir de la version 2.4.7 du serveur HTTP Apache.
+    <br/><br/><p>Choix de la <var>condition</var> : si l'en-tête cible a été
+    ajouté par ce module, vous devez spécifier la même condition que celle
+    utilisée à l'origine. Dans le cas contraire, vous devez déterminer
+    expérimentalement si <code>always</code> est nécessaire.</p>
+    </dd>
 
     </dl>    
 
