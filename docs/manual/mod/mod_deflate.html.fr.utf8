@@ -104,7 +104,7 @@ client</td></tr>
       conteneur où elle est placée :</p>
 
       <pre class="prettyprint lang-config">SetOutputFilter DEFLATE
-SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip</pre>
+SetEnvIfNoCase Request_URI "\.(?:gif|jpe?g|png)$" no-gzip</pre>
 
 
       <p>Si vous voulez limiter la compression à certains types MIME
