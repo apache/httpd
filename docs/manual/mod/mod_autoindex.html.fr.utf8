@@ -528,8 +528,8 @@ contenant l'index</td></tr>
 
     <p>Si le fichier spécifié par la directive
     <code class="directive">HeaderName</code> contient les en-têtes d'un
-    document HTML ((&lt;html&gt;, &lt;head&gt;, etc...), vous serez
-    probablement amené à définir <a href="#indexoptions.suppresshtmlpreamble"><code>IndexOptions
+    document HTML (&lt;html&gt;, &lt;head&gt;, etc...), vous serez
+    probablement amenés à définir <a href="#indexoptions.suppresshtmlpreamble"><code>IndexOptions
     +SuppressHTMLPreamble</code></a>, de manière à ce que ces balises ne
     soient pas répétées.</p>
 

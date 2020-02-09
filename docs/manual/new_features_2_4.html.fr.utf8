@@ -228,6 +228,10 @@ serveur HTTP Apache</h1>
       <dt><code class="module"><a href="./mod/mod_socache_redis.html">mod_socache_redis</a></code> (disponible à partir de la version 2.4.39)</dt>
       <dd>Supporte le fournisseur de cache d'objets partagés basé sur <a href="http://redis.io/">Redis</a>.</dd>
 
+      <dt><code class="module"><a href="./mod/mod_systemd.html">mod_systemd</a></code> (disponible à partir de la version 2.4.42)</dt>
+      <dd>intégration de systemd. Permet d'utiliser httpd en tant que service avec
+      le paramètre systemd <code>Type=notify</code>.</dd>
+
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">

@@ -322,6 +322,7 @@ pour décrire les directives Apache</a></li>
 <li><a href="mod/mod_status.html">Module Apache mod_status</a></li>
 <li><a href="mod/mod_substitute.html">Module Apache mod_substitute</a></li>
 <li><a href="mod/mod_suexec.html">Module Apache mod_suexec</a></li>
+<li><a href="mod/mod_systemd.html">Module Apache mod_systemd</a></li>
 <li><a href="mod/mod_unique_id.html">Module Apache mod_unique_id</a></li>
 <li><a href="mod/mod_unixd.html">Module Apache mod_unixd</a></li>
 <li><a href="mod/mod_userdir.html">Module Apache mod_userdir</a></li>

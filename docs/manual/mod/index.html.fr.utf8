@@ -285,6 +285,7 @@ du serveur</dd>
 corps de réponses</dd>
 <dt><a href="mod_suexec.html">mod_suexec</a></dt><dd>Permet l'exécution des scripts CGI sous l'utilisateur et
 le groupe spécifiés</dd>
+<dt><a href="mod_systemd.html">mod_systemd</a></dt><dd>Fournit un support amélioré pour l'intégration de systemd</dd>
 <dt><a href="mod_unique_id.html" id="U" name="U">mod_unique_id</a></dt><dd>Fournit une variable d'environnement contenant un
 identifiant unique pour chaque requête</dd>
 <dt><a href="mod_unixd.html">mod_unixd</a></dt><dd>Sécurité de base (nécessaire) pour les plates-formes de la

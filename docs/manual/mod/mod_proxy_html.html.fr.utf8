@@ -267,10 +267,10 @@ Disponible en tant que module tiers dans les versions 2.x antérieures.</td></tr
 </table>
 <p>Cette directive accepte un à trois arguments parmi les suivants :</p>
 <ul>
-<li><code>lowercase</code>Les Urls sont réécrites en minuscules</li>
-<li><code>dospath</code>Les slashes inversés dans les URLs sont
+<li><code>lowercase</code> Les Urls sont réécrites en minuscules</li>
+<li><code>dospath</code> Les slashes inversés dans les URLs sont
 remplacés par des slashes directs.</li>
-<li><code>reset</code>Annule toute option définie à un niveau supérieur
+<li><code>reset</code> Annule toute option définie à un niveau supérieur
 dans la configuration</li>
 </ul>
 <p>Cette directive doit être utilisée avec prudence. Elle peut corriger
