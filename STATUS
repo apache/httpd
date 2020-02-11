@@ -133,11 +133,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
 
-  *) trap mod_proxy_ftp errors
-     trunk patch: http://svn.apache.org/r1873745
-     2.4.x patch: svn merge -c 1873745 ^/httpd/httpd/trunk .
-     +1: covener, minfrin, jorton
-
   *) factor out default regex flags:
      trunk patch: http://svn.apache.org/r1873747
      2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-reg_default.diff
