@@ -84,12 +84,11 @@
 CGI program</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CGIDScriptTimeout <var>time</var>[s|ms]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>value of <code class="directive"><a href="../mod/core.html#timeout">Timeout</a></code> directive when 
-unset</code></td></tr>
+unset or set to 0</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cgid</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>CGIDScriptTimeout defaults to zero in releases 2.4 and earlier
-</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.4.10 and later; in prior releases no timeout was applied</td></tr>
 </table>
     <p>This directive limits the length of time to wait for more output from
     the CGI program.  If the time is exceeded, the request and CGI are 
