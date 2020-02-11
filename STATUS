@@ -133,12 +133,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
 
-  *) factor out chunked TE checks
-     trunk patch: http://svn.apache.org/r1873748
-     2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-chunk.diff
-         (MMN conflicts)
-     +1: covener, minfrin, jorton
-
   *) mod_ssl: negotiate the TLS protocol version per name based vhost...
      trunk patch: http://svn.apache.org/r1868645
                   http://svn.apache.org/r1868743

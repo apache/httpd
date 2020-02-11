@@ -1708,14 +1708,13 @@ AP_DECLARE(int) ap_find_token(apr_pool_t *p, const char *line, const char *tok)
     }
 }
 
-
-AP_DECLARE(int) ap_find_last_token(apr_pool_t *p, const char *line,
-                                   const char *tok)
+static const char *find_last_token(apr_pool_t *p, const char *line,
+                            const char *tok)
 {
     int llen, tlen, lidx;
 
     if (!line)
-        return 0;
+        return NULL;
 
     llen = strlen(line);
     tlen = strlen(tok);
@@ -1723,9 +1722,44 @@ AP_DECLARE(int) ap_find_last_token(apr_pool_t *p, const char *line,
 
     if (lidx < 0 ||
         (lidx > 0 && !(apr_isspace(line[lidx - 1]) || line[lidx - 1] == ',')))
-        return 0;
+        return NULL;
 
-    return (strncasecmp(&line[lidx], tok, tlen) == 0);
+    if (ap_cstr_casecmpn(&line[lidx], tok, tlen) == 0) { 
+        return &line[lidx];
+    }
+   return NULL;
+}
+
+AP_DECLARE(int) ap_find_last_token(apr_pool_t *p, const char *line,
+                                   const char *tok)
+{
+    return find_last_token(p, line, tok) != NULL;
+}
+
+AP_DECLARE(int) ap_is_chunked(apr_pool_t *p, const char *line)
+{
+    const char *s;
+
+    if (!line) 
+        return 0;
+    if (!ap_cstr_casecmp(line, "chunked")) { 
+        return 1;
+    }
+
+    s = find_last_token(p, line, "chunked");
+
+    if (!s) return 0;
+ 
+    /* eat spaces right-to-left to see what precedes "chunked" */
+    while (--s > line) { 
+        if (*s != ' ') break;
+    }
+
+    /* found delim, or leading ws (input wasn't parsed by httpd as a header) */
+    if (*s == ',' || *s == ' ') { 
+        return 1;
+    }
+    return 0;
 }
 
 AP_DECLARE(char *) ap_escape_shell_cmd(apr_pool_t *p, const char *str)

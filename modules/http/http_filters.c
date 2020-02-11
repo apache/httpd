@@ -379,8 +379,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
         lenp = apr_table_get(f->r->headers_in, "Content-Length");
 
         if (tenc) {
-            if (strcasecmp(tenc, "chunked") == 0 /* fast path */
-                    || ap_find_last_token(f->r->pool, tenc, "chunked")) {
+            if (ap_is_chunked(f->r->pool, tenc)) {
                 ctx->state = BODY_CHUNK;
             }
             else if (f->r->proxyreq == PROXYREQ_RESPONSE) {
