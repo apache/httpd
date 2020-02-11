@@ -235,6 +235,7 @@ Layer (SSL) and Transport Layer Security (TLS) protocols</dd>
 <dt><a href="mod_substitute.html">mod_substitute</a></dt><dd>Perform search and replace operations on response bodies</dd>
 <dt><a href="mod_suexec.html">mod_suexec</a></dt><dd>CGI betiklerinin belli bir kullanıcı ve grubun aidiyetinde
 çalışmasını mümkün kılar.</dd>
+<dt><a href="mod_systemd.html">mod_systemd</a></dt><dd>Provides better support for systemd integration</dd>
 <dt><a href="mod_unique_id.html" id="U" name="U">mod_unique_id</a></dt><dd>Provides an environment variable with a unique
 identifier for each request</dd>
 <dt><a href="mod_unixd.html">mod_unixd</a></dt><dd>Unix ailesi platformlar için temel (gerekli) güvenlik.</dd>

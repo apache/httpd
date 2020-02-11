@@ -286,6 +286,7 @@ usados para describir las directivas de Apache</a></li>
 <li><a href="mod/mod_status.html">Módulo Apache mod_status</a></li>
 <li><a href="mod/mod_substitute.html">Módulo Apache mod_substitute</a></li>
 <li><a href="mod/mod_suexec.html">Módulo Apache mod_suexec</a></li>
+<li><a href="mod/mod_systemd.html">Módulo Apache mod_systemd</a></li>
 <li><a href="mod/mod_unique_id.html">Módulo Apache mod_unique_id</a></li>
 <li><a href="mod/mod_unixd.html">Módulo Apache mod_unixd</a></li>
 <li><a href="mod/mod_userdir.html">Módulo Apache mod_userdir</a></li>
