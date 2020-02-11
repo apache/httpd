@@ -133,6 +133,23 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
 
+  *) trap mod_proxy_ftp errors
+     trunk patch: http://svn.apache.org/r1873745
+     2.4.x patch: svn merge -c 1873745 ^/httpd/httpd/trunk .
+     +1: covener, minfrin, jorton
+
+  *) factor out default regex flags:
+     trunk patch: http://svn.apache.org/r1873747
+     2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-reg_default.diff
+         (MMN, ap_regex.h conflicts)
+     +1: covener, minfrin, jorton
+
+  *) factor out chunked TE checks
+     trunk patch: http://svn.apache.org/r1873748
+     2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-chunk.diff
+         (MMN conflicts)
+     +1: covener, minfrin, jorton
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -205,23 +222,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1872062
      2.4.x patch: svn merge -c 1872042,1872062 ^/httpd/httpd/trunk .
      +1: minfrin, jim
-
-  *) trap mod_proxy_ftp errors
-     trunk patch: http://svn.apache.org/r1873745
-     2.4.x patch: svn merge -c 1873745 ^/httpd/httpd/trunk .
-     +1: covener, minfrin
-
-  *) factor out default regex flags:
-     trunk patch: http://svn.apache.org/r1873747
-     2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-reg_default.diff
-         (MMN, ap_regex.h conflicts)
-     +1: covener, minfrin
-
-  *) factor out chunked TE checks
-     trunk patch: http://svn.apache.org/r1873748
-     2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-chunk.diff
-         (MMN conflicts)
-     +1: covener, minfrin
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
