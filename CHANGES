@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.42
 
+  *) core: Be stricter in parsing of Transfer-Encoding headers.
+     [ZeddYu <zeddyu.lu gmail.com>, Eric Covener]
+
   *) mod_ssl: negotiate the TLS protocol version per name based vhost
      configuration, when linked with OpenSSL-1.1.1 or later. The base vhost's
      SSLProtocol (from the first vhost declared on the IP:port) is now only
