@@ -108,12 +108,11 @@ the cgi daemon</description>
 CGI program</description>
 <syntax>CGIDScriptTimeout <var>time</var>[s|ms]</syntax>
 <default>value of <directive module="core">Timeout</directive> directive when
-unset</default>
+unset or set to 0</default>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
-<compatibility>CGIDScriptTimeout defaults to zero in releases 2.4 and earlier
-</compatibility>
+<compatibility>Available in httpd 2.4.10 and later; in prior releases no timeout was applied</compatibility>
 
 <usage>
     <p>This directive limits the length of time to wait for more output from
