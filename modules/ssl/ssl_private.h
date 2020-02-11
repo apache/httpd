@@ -554,6 +554,7 @@ typedef struct {
     
     const char *cipher_suite; /* cipher suite used in last reneg */
     int service_unavailable;  /* thouugh we negotiate SSL, no requests will be served */
+    int vhost_found;          /* whether we found vhost from SNI already */
 } SSLConnRec;
 
 /* BIG FAT WARNING: SSLModConfigRec has unusual memory lifetime: it is
@@ -927,6 +928,9 @@ void         ssl_callback_DelSessionCacheEntry(SSL_CTX *, SSL_SESSION *);
 void         ssl_callback_Info(const SSL *, int, int);
 #ifdef HAVE_TLSEXT
 int          ssl_callback_ServerNameIndication(SSL *, int *, modssl_ctx_t *);
+#endif
+#if OPENSSL_VERSION_NUMBER >= 0x10101000L && !defined(LIBRESSL_VERSION_NUMBER)
+int          ssl_callback_ClientHello(SSL *, int *, void *);
 #endif
 #ifdef HAVE_TLS_SESSION_TICKETS
 int         ssl_callback_SessionTicket(SSL *, unsigned char *, unsigned char *,

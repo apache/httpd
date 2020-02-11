@@ -261,9 +261,11 @@ static void modssl_ctx_cfg_merge(apr_pool_t *p,
                                  modssl_ctx_t *mrg)
 {
     if (add->protocol_set) {
+        mrg->protocol_set = 1;
         mrg->protocol = add->protocol;
     }
     else {
+        mrg->protocol_set = base->protocol_set;
         mrg->protocol = base->protocol;
     }
 

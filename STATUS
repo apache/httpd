@@ -133,18 +133,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
 
-  *) mod_ssl: negotiate the TLS protocol version per name based vhost...
-     trunk patch: http://svn.apache.org/r1868645
-                  http://svn.apache.org/r1868743
-                  http://svn.apache.org/r1868929
-                  http://svn.apache.org/r1868934
-                  http://svn.apache.org/r1869077
-     2.4.x patch: svn merge -c 1868645,1868743,1868929,1868934,1869077 ^/httpd/httpd/trunk .
-                  (merge works modulo CHANGES, below patch for all in one review)
-                  http://people.apache.org/~ylavic/patches/httpd-2.4.x-SSLProtocol_per_vhost.patch
-     +1: ylavic, minfrin, jim
-     minfrin: Tiny detail - docs refer to version 2.5.1
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

@@ -673,6 +673,31 @@ SSLProtocol TLSv1
 </highlight>
 </example>
 </usage>
+<note>
+<title><directive>SSLProtocol</directive> for name-based virtual hosts</title>
+<p>
+Before OpenSSL 1.1.1, even though the Server Name Indication (SNI) allowed to
+determine the targeted virtual host early in the TLS handshake, it was not
+possible to switch the TLS protocol version of the connection at this point,
+and thus the <directive>SSLProtocol</directive> negotiated was always based off
+the one of the <em>base virtual host</em> (first virtual host declared on the
+listening <code>IP:port</code> of the connection).
+</p>
+<p>
+Beginning with Apache HTTP server version 2.4.42, when built/linked against
+OpenSSL 1.1.1 or later, and when the SNI is provided by the client in the TLS
+handshake, the <directive>SSLProtocol</directive> of each (name-based) virtual
+host can and will be honored.
+</p>
+<p>
+For compatibility with previous versions, if no
+<directive>SSLProtocol</directive> is configured in a name-based virtual host,
+the one from the base virtual host still applies, <strong>unless</strong>
+<directive>SSLProtocol</directive> is configured globally in which case the
+global value applies (this latter exception is more sensible than compatible,
+though).
+</p>
+</note>
 </directivesynopsis>
 
 <directivesynopsis>

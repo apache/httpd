@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.42
 
+  *) mod_ssl: negotiate the TLS protocol version per name based vhost
+     configuration, when linked with OpenSSL-1.1.1 or later. The base vhost's
+     SSLProtocol (from the first vhost declared on the IP:port) is now only
+     relevant if no SSLProtocol is declared for the vhost or globally,
+     otherwise the vhost or global value apply.  [Yann Ylavic]
+
   *) mod_cgi, mod_cgid: Fix a memory leak in some error cases with large script
      output.  PR 64096.  [Joe Orton]
 
