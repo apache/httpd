@@ -205,7 +205,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1868645,1868743,1868929,1868934,1869077 ^/httpd/httpd/trunk .
                   (merge works modulo CHANGES, below patch for all in one review)
                   http://people.apache.org/~ylavic/patches/httpd-2.4.x-SSLProtocol_per_vhost.patch
-     +1: ylavic, minfrin
+     +1: ylavic, minfrin, jim
      minfrin: Tiny detail - docs refer to version 2.5.1
 
   *) Add a config layout for OpenWRT
