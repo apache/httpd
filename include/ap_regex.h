@@ -86,6 +86,8 @@ extern "C" {
 
 #define AP_REG_MATCH "MATCH_" /** suggested prefix for ap_regname */
 
+#define AP_REG_DEFAULT (AP_REG_DOTALL|AP_REG_DOLLAR_ENDONLY)
+
 /* Error values: */
 enum {
   AP_REG_ASSERT = 1,  /** internal error ? */

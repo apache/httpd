@@ -133,12 +133,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
 
-  *) factor out default regex flags:
-     trunk patch: http://svn.apache.org/r1873747
-     2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-reg_default.diff
-         (MMN, ap_regex.h conflicts)
-     +1: covener, minfrin, jorton
-
   *) factor out chunked TE checks
      trunk patch: http://svn.apache.org/r1873748
      2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-chunk.diff
