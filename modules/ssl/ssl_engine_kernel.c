@@ -2403,6 +2403,7 @@ static apr_status_t init_vhost(conn_rec *c, SSL *ssl, const char *servername)
                 if (set_challenge_creds(c, servername, ssl, cert, key) != APR_SUCCESS) {
                     return APR_EGENERAL;
                 }
+                SSL_set_verify(ssl, SSL_VERIFY_NONE, ssl_callback_SSLVerify);
             }
             else {
                 ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(02044)
@@ -2783,6 +2784,7 @@ int ssl_callback_alpn_select(SSL *ssl,
                 if (set_challenge_creds(c, servername, ssl, cert, key) != APR_SUCCESS) {
                     return SSL_TLSEXT_ERR_ALERT_FATAL;
                 }
+                SSL_set_verify(ssl, SSL_VERIFY_NONE, ssl_callback_SSLVerify);
             }
         }
     }

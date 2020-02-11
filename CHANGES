@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_ssl: Disable client verification on ACME ALPN challenges. Fixes github
+     issue mod_md#172 (https://github.com/icing/mod_md/issues/172).
+     [Michael Kaufmann <mail michael-kaufmann.ch>, Stefan Eissing]
+
   *) mod_rewrite: Extend the [CO] (cookie) flag of RewriteRule to accept a 
      SameSite attribute. [Eric Covener]
 
