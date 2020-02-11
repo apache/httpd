@@ -36,6 +36,41 @@
     href="https://www.freedesktop.org/software/systemd/man/systemd.service.html">systemd.service(5)</a>
     for more information).  The module is activated if loaded.</p>
 
+    <example>
+    <title>Example of systemd service unit (more settings are probably needed for production systems)</title>
+    <pre>
+[Unit]
+Description=The Apache HTTP Server
+After=network.target
+
+[Service]
+Type=notify
+ExecStart=/usr/local/apache2/bin/httpd -D FOREGROUND -k start
+ExecReload=/usr/local/apache2/bin/httpd -k graceful
+KillMode=mixed
+
+[Install]
+WantedBy=multi-user.target
+    </pre>
+    </example>
+
+   <p>Special attention should be given to how <code>ExecStop</code>
+   and/or <code>KillMode</code> are configured for the service.  If
+   configured, an <code>ExecStop</code> command should be a
+   <em>synchronous operation</em> which itself exits when the daemon
+   has terminated.  Running <code>httpd -k stop</code>
+   <em>asynchronously</em> initiates daemon termination, so does not
+   satisfy this condition.  The example above uses
+   <code>KillMode=mixed</code> so that systemd sends
+   <code>SIGTERM</code> to signal the parent process (and only the
+   parent) to shut down.  The entire process group is then sent
+   <code>SIGKILL</code> after <code>TimeoutStopSec</code> elapses, if
+   any processes are still running.  See <a
+   href="https://www.freedesktop.org/software/systemd/man/systemd.kill.html">systemd.kill(5)</a>
+   for more information.</p>
+    
+   <p>This module does not provide support for Systemd socket activation.</p>
+
     <p><directive module="core">ExtendedStatus</directive> is
     enabled by default if the module is loaded.  If <directive
     module="core">ExtendedStatus</directive> is not disabled in
