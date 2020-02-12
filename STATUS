@@ -212,8 +212,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    *) mod_substitute: Don't use PREG_DOTALL
       trunk patch: http://svn.apache.org/viewvc?rev=1873941&view=rev
       2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-substitute-nodotall.diff
-      +1 covener
-      -1 rpluem: Does not compile as PCREn is only in trunk, but not in 2.4.x
+      +1 covener, rpluem
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
