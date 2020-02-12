@@ -101,6 +101,7 @@ AP_DECLARE(ap_rxplus_t*) ap_rxplus_compile(apr_pool_t *pool,
         case 'n': ret->flags |= AP_REG_NOMEM; break;
         case 'g': ret->flags |= AP_REG_MULTI; break;
         case 's': ret->flags |= AP_REG_DOTALL; break;
+        case 'S': ret->flags |= AP_REG_NO_DOTALL; break;
         case '^': ret->flags |= AP_REG_NOTBOL; break;
         case '$': ret->flags |= AP_REG_NOTEOL; break;
         default: break; /* we should probably be stricter here */

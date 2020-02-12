@@ -179,6 +179,9 @@ AP_DECLARE(int) ap_regcomp_default_cflag_by_name(const char *name)
     else if (ap_cstr_casecmp(name, "DOTALL") == 0) {
         cflag = AP_REG_DOTALL;
     }
+    else if (ap_cstr_casecmp(name, "NO_DOTALL") == 0) {
+        cflag = AP_REG_NO_DOTALL;
+    }
     else if (ap_cstr_casecmp(name, "DOLLAR_ENDONLY") == 0) {
         cflag = AP_REG_DOLLAR_ENDONLY;
     }
@@ -217,6 +220,8 @@ AP_DECLARE(int) ap_regcomp(ap_regex_t * preg, const char *pattern, int cflags)
         options |= PCREn(MULTILINE);
     if ((cflags & AP_REG_DOTALL) != 0)
         options |= PCREn(DOTALL);
+    if ((cflags & AP_REG_NO_DOTALL) != 0)
+        options &= ~PCREn(DOTALL);
     if ((cflags & AP_REG_DOLLAR_ENDONLY) != 0)
         options |= PCREn(DOLLAR_ENDONLY);
 

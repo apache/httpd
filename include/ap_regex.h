@@ -87,6 +87,8 @@ extern "C" {
 
 #define AP_REG_DOLLAR_ENDONLY 0x200 /**< '$' matches at end of subject string only */
 
+#define AP_REG_NO_DOTALL 0x400 /**< remove AP_REG_DOTALL from defaults */
+
 #define AP_REG_MATCH "MATCH_" /**< suggested prefix for ap_regname */
 
 #define AP_REG_DEFAULT (AP_REG_DOTALL|AP_REG_DOLLAR_ENDONLY)
