@@ -209,6 +209,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      jailletc36: Not sure how is the best way to deal with mod_http2 patches.
                  Should it be first a pull request from the github repository?
 
+   *) mod_substitute: Don't use PREG_DOTALL
+      trunk patch: http://svn.apache.org/viewvc?rev=1873941&view=rev
+      2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-substitute-nodotall.diff
+      +1 covener
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
