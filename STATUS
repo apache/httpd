@@ -214,6 +214,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-substitute-nodotall.diff
       +1 covener, rpluem
 
+   *) Fix spelling errors found by codespell.
+      trunk patch: http://svn.apache.org/r1873985
+      2.4.x patch: svn merge -c 1873985 ^/httpd/httpd/trunk .
+      +1 mrumph
+      mrumph: This patch affects only doc and comments,
+              but proposing here because it changes a lot of files.
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
