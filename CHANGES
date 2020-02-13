@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.42
 
+  *) test: Added continuous testing with Travis CI.
+     This tests various scenarios on Ubuntu with the full test suite.
+     Architectures tested: amd64, s390x, ppc64le, arm64
+     The tests pass successfully.
+     [Luca Toscano, Joe Orton, Mike Rumph, and others]
+
   *) core: Be stricter in parsing of Transfer-Encoding headers.
      [ZeddYu <zeddyu.lu gmail.com>, Eric Covener]
 
