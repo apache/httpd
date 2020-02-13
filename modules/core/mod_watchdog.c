@@ -473,7 +473,7 @@ static int wd_post_config_hook(apr_pool_t *pconf, apr_pool_t *plog,
                     int status = ap_run_watchdog_need(s, w->name, 1,
                                                       w->singleton);
                     if (status == OK) {
-                        /* One of the modules returned OK to this watchog.
+                        /* One of the modules returned OK to this watchdog.
                          * Mark it as active
                          */
                         w->active = 1;
@@ -519,7 +519,7 @@ static int wd_post_config_hook(apr_pool_t *pconf, apr_pool_t *plog,
                     int status = ap_run_watchdog_need(s, w->name, 0,
                                                       w->singleton);
                     if (status == OK) {
-                        /* One of the modules returned OK to this watchog.
+                        /* One of the modules returned OK to this watchdog.
                          * Mark it as active
                          */
                         w->active = 1;

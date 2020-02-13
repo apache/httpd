@@ -49,7 +49,7 @@
  * Pre-Req: we have an account for the ACME server that has accepted the current license agreement
  * For each domain in MD: 
  * - check if there already is a valid AUTHZ resource
- * - if ot, create an AUTHZ resource with challenge data 
+ * - if not, create an AUTHZ resource with challenge data 
  */
 static apr_status_t ad_setup_order(md_proto_driver_t *d, md_result_t *result)
 {

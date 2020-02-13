@@ -135,7 +135,7 @@ typedef struct util_ldap_connection_t {
     apr_pool_t *rebind_pool;            /* frequently cleared pool for rebind data */
     int must_rebind;                    /* The connection was last bound with other then binddn/bindpw */
     request_rec *r;                     /* request_rec used to find this util_ldap_connection_t */
-    apr_time_t last_backend_conn;       /* the approximate time of the last backend LDAP requst */
+    apr_time_t last_backend_conn;       /* the approximate time of the last backend LDAP request */
 } util_ldap_connection_t;
 
 typedef struct util_ldap_config_t {

@@ -80,7 +80,7 @@ static void check_modules(int force)
                 mpm_type = H2_MPM_PREFORK;
                 mpm_module = m;
                 /* While http2 can work really well on prefork, it collides
-                 * today's use case for prefork: runnning single-thread app engines
+                 * today's use case for prefork: running single-thread app engines
                  * like php. If we restrict h2_workers to 1 per process, php will
                  * work fine, but browser will be limited to 1 active request at a
                  * time. */
@@ -284,7 +284,7 @@ conn_rec *h2_slave_create(conn_rec *master, int slave_id, apr_pool_t *parent)
     
     /* We create a pool with its own allocator to be used for
      * processing a request. This is the only way to have the processing
-     * independant of its parent pool in the sense that it can work in
+     * independent of its parent pool in the sense that it can work in
      * another thread. Also, the new allocator needs its own mutex to
      * synchronize sub-pools.
      */
@@ -378,7 +378,7 @@ apr_status_t h2_slave_run_pre_connection(conn_rec *slave, apr_socket_t *csd)
          * reuse internal structures like memory pools.
          * The wanted effect of this is that httpd does not try to clean up
          * any dangling data on this connection when a request is done. Which
-         * is unneccessary on a h2 stream.
+         * is unnecessary on a h2 stream.
          */
         slave->keepalive = AP_CONN_CLOSE;
         return ap_run_pre_connection(slave, csd);

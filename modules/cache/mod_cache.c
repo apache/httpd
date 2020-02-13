@@ -986,7 +986,7 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
         /* 304 does not contain Content-Type and mod_mime regenerates the
          * Content-Type based on the r->filename. This would lead to original
-         * Content-Type to be lost (overwriten by whatever mod_mime generates).
+         * Content-Type to be lost (overwritten by whatever mod_mime generates).
          * We preserves the original Content-Type here. */
         ap_set_content_type(r, apr_table_get(
                 cache->stale_handle->resp_hdrs, "Content-Type"));
@@ -2529,7 +2529,7 @@ static const command_rec cache_cmds[] =
 {
     /* XXX
      * Consider a new config directive that enables loading specific cache
-     * implememtations (like mod_cache_mem, mod_cache_file, etc.).
+     * implementations (like mod_cache_mem, mod_cache_file, etc.).
      * Rather than using a LoadModule directive, admin would use something
      * like CacheModule  mem_cache_module | file_cache_module, etc,
      * which would cause the approprpriate cache module to be loaded.

@@ -2927,7 +2927,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_check_connection(const char *scheme,
             /* Filter chain is OK and empty, yet we can't determine from
              * ap_check_pipeline (actually ap_core_input_filter) whether
              * an empty non-blocking read is EAGAIN or EOF on the socket
-             * side (it's always SUCCESS), so check it explicitely here.
+             * side (it's always SUCCESS), so check it explicitly here.
              */
             if (ap_proxy_is_socket_connected(conn->sock)) {
                 rv = APR_SUCCESS;

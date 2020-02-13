@@ -729,7 +729,7 @@ static meta *metafix(request_rec *r, const char *buf, apr_size_t len)
                     if ((*p == '\'') || (*p == '"')) {
                         delim = *p++;
                         for (q = p; *q && *q != delim; ++q);
-                        /* No terminating delimiter found? Skip the boggus directive */
+                        /* No terminating delimiter found? Skip the bogus directive */
                         if (*q != delim)
                            break;
                     } else {

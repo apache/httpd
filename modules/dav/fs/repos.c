@@ -1663,7 +1663,7 @@ static dav_error * dav_fs_walker(dav_fs_walker_context *fsctx, int depth)
         /* put a slash back on the end of the directory */
         fsctx->path1.buf[fsctx->path1.cur_len - 1] = '/';
 
-        /* these are all non-existant (files) */
+        /* these are all non-existent (files) */
         fsctx->res1.exists = 0;
         fsctx->res1.collection = 0;
         memset(&fsctx->info1.finfo, 0, sizeof(fsctx->info1.finfo));

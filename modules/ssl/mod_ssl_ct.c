@@ -681,7 +681,7 @@ static apr_status_t update_log_list_for_cert(server_rec *s, apr_pool_t *p,
                 rv = apr_uri_parse(p, elts[i], &uri);
                 if (rv != APR_SUCCESS) {
                     ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
-                                 APLOGNO(02697) "unparseable log URL %s in file "
+                                 APLOGNO(02697) "unparsable log URL %s in file "
                                  "%s - ignoring",
                                  elts[i], listfile);
                     /* some garbage in the file? can't map to an auto-maintained SCT,

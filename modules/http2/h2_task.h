@@ -35,7 +35,7 @@
  *
  * Finally, to keep certain connection level filters, such as ourselves and
  * especially mod_ssl ones, from messing with our data, we need a filter
- * of our own to disble those.
+ * of our own to disable those.
  */
 
 struct h2_bucket_beam;

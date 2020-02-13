@@ -706,7 +706,7 @@ static apr_status_t dummy_connection(ap_pod_t *pod)
     }
     else /* ... XXX other request types here? */ {
         /* Create an HTTP request string.  We include a User-Agent so
-         * that adminstrators can track down the cause of the
+         * that administrators can track down the cause of the
          * odd-looking requests in their logs.  A complete request is
          * used since kernel-level filtering may require that much
          * data before returning from accept(). */

@@ -54,7 +54,7 @@ static int stapling_cache_mutex_off(server_rec *s);
 static int stapling_cb(SSL *ssl, void *arg);
 
 /**
- * Maxiumum OCSP stapling response size. This should be the response for a
+ * Maximum OCSP stapling response size. This should be the response for a
  * single certificate and will typically include the responder certificate chain
  * so 10K should be more than enough.
  *
@@ -802,7 +802,7 @@ static int stapling_cb(SSL *ssl, void *arg)
     }
 
     if (ssl_run_get_stapling_status(&rspder, &rspderlen, conn, s, x) == APR_SUCCESS) {
-        /* a hook handles stapling for this certicate and determines the response */
+        /* a hook handles stapling for this certificate and determines the response */
         if (rspder == NULL || rspderlen <= 0) {
             return SSL_TLSEXT_ERR_NOACK;
         }

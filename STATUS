@@ -314,7 +314,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     and in-your-face.)  DocumentRoot unset would be accepted [and would
     not permit content to be served, only virtual resources such as
     server-info or server-status.
-    This proposed change would _not_ depricate Alias.
+    This proposed change would _not_ deprecate Alias.
       striker: See the thread starting with Message-ID:
         JLEGKKNELMHCJPNMOKHOGEEJFBAA.striker@apache.org.
 
@@ -448,7 +448,7 @@ WISH LIST
     HTTP or SNMP?
     jerenkrantz says: Yawn.  Who cares.
 
-  * Regex containers don't work in an intutive way
+  * Regex containers don't work in an intuitive way
       Status: No one has come up with an efficient way to fix this
       behavior. Dean has suggested getting rid of regex containers
       completely.

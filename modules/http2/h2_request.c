@@ -156,7 +156,7 @@ apr_status_t h2_request_end_headers(h2_request *req, apr_pool_t *pool, int eos, 
     
     /* rfc7540, ch. 8.1.2.3:
      * - if we have :authority, it overrides any Host header 
-     * - :authority MUST be ommited when converting h1->h2, so we
+     * - :authority MUST be omitted when converting h1->h2, so we
      *   might get a stream without, but then Host needs to be there */
     if (!req->authority) {
         const char *host = apr_table_get(req->headers, "Host");

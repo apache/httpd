@@ -143,7 +143,7 @@ openssl req -new -nodes -batch \
     -keyout ${CDIR}/xs-root-2.key -out ${CDIR}/xs-root-2.pem  \
     || exit 2
 
-# Create a chain of just the two access authorites:
+# Create a chain of just the two access authorities:
 cat ${CDIR}/xs-root-2.pem ${CDIR}/xs-root-1.pem > ${CDIR}/xs-root-chain.pem
 
 # And likewise a directory with the same information (using the
@@ -206,7 +206,7 @@ ErrorLog ${DIR}/logs/error_log
 SSLSessionCache none
 
 # Note that this SSL configuration is far
-# from complete - you propably will want
+# from complete - you probably will want
 # to configure SSLSession Caches at the 
 # very least.
 
@@ -295,7 +295,7 @@ do
     # Uncomment the following lines if you
     # want to only allow access to clients with
     # a certificate issued/signed by some 
-    # selection of the issuing authorites
+    # selection of the issuing authorities
     #
     # SSLCACertificate ${CDIR}/xs-root-1.pem # just root 1
     # SSLCACertificate ${CDIR}/xs-root-2.pem # just root 2

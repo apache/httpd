@@ -530,7 +530,7 @@ int main(int argc, char *argv[])
 
     /*
      * Get the current working directory, as well as the proper
-     * document root (dependant upon whether or not it is a
+     * document root (dependent upon whether or not it is a
      * ~userdir request).  Error out if we cannot get either one,
      * or if the current working directory is not in the docroot.
      * Use chdir()s and getcwd()s to avoid problems with symlinked

@@ -300,7 +300,7 @@ static int find_systemd_socket(process_rec * process, apr_port_t port)
 
     if (sdc < 0) {
         ap_log_perror(APLOG_MARK, APLOG_CRIT, sdc, process->pool, APLOGNO(02486)
-                      "find_systemd_socket: Error parsing enviroment, sd_listen_fds returned %d",
+                      "find_systemd_socket: Error parsing environment, sd_listen_fds returned %d",
                       sdc);
         return -1;
     }
@@ -774,7 +774,7 @@ AP_DECLARE(int) ap_setup_listeners(server_rec *s)
     if (use_systemd) {
         const char *userdata_key = "ap_open_systemd_listeners";
         void *data;
-        /* clear the enviroment on our second run
+        /* clear the environment on our second run
         * so that none of our future children get confused.
         */
         apr_pool_userdata_get(&data, userdata_key, s->process->pool);
@@ -981,7 +981,7 @@ AP_DECLARE(void) ap_listen_pre_config(void)
          *
          * *BSDs have SO_REUSEPORT too but with a different semantic: the first
          * wildcard address bound socket or the last non-wildcard address bound
-         * socket will receive connections (no evenness garantee); the rest of
+         * socket will receive connections (no evenness guarantee); the rest of
          * the sockets bound to the same port will not.
          * This can't (always) work for httpd.
          *

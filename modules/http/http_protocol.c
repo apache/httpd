@@ -60,7 +60,7 @@
 
 APLOG_USE_MODULE(http);
 
-/* New Apache routine to map status codes into array indicies
+/* New Apache routine to map status codes into array indices
  *  e.g.  100 -> 0,  101 -> 1,  200 -> 2 ...
  * The number of status lines must equal the value of
  * RESPONSE_CODES (httpd.h) and must be listed in order.

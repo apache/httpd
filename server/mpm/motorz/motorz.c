@@ -1008,7 +1008,7 @@ static int make_child(motorz_core_t *mz, server_rec *s, int slot)
         apr_signal(SIGHUP, just_die);
         apr_signal(SIGTERM, just_die);
         /* Ignore SIGINT in child. This fixes race-condition in signals
-         * handling when httpd is runnning on foreground and user hits ctrl+c.
+         * handling when httpd is running on foreground and user hits ctrl+c.
          * In this case, SIGINT is sent to all children followed by SIGTERM
          * from the main process, which interrupts the SIGINT handler and
          * leads to inconsistency.

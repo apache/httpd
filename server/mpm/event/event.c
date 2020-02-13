@@ -1114,7 +1114,7 @@ read_request:
      *   completion at some point may require reads (e.g. SSL_ERROR_WANT_READ),
      *   an output filter can also set the sense to CONN_SENSE_WANT_READ at any
      *   time for event MPM to do the right thing,
-     * - suspend the connection (SUSPENDED) such that it now interracts with
+     * - suspend the connection (SUSPENDED) such that it now interacts with
      *   the MPM through suspend/resume_connection() hooks, and/or registered
      *   poll callbacks (PT_USER), and/or registered timed callbacks triggered
      *   by timer events.
@@ -1858,7 +1858,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
 #if HAVE_SERF
         rc = serf_context_prerun(g_serf);
         if (rc != APR_SUCCESS) {
-            /* TOOD: what should do here? ugh. */
+            /* TODO: what should we do here? ugh. */
         }
 #endif
 
@@ -2466,7 +2466,7 @@ static void setup_threads_runtime(void)
      * the connections they handle (i.e. ptrans). We can't use this thread's
      * self pool because all these objects survive it, nor use pchild or pconf
      * directly because this starter thread races with other modules' runtime,
-     * nor finally pchild (or subpool thereof) because it is killed explicitely
+     * nor finally pchild (or subpool thereof) because it is killed explicitly
      * before pconf (thus connections/ptrans can live longer, which matters in
      * ONE_PROCESS mode). So this leaves us with a subpool of pconf, created
      * before any ptrans hence destroyed after.
@@ -2771,7 +2771,7 @@ static void child_main(int child_num_arg, int child_bucket)
      * from being received.  The child processes no longer use signals for
      * any communication with the parent process. Let's also do this before
      * child_init() hooks are called and possibly create threads that
-     * otherwise could "steal" (implicitely) MPM's signals.
+     * otherwise could "steal" (implicitly) MPM's signals.
      */
     rv = apr_setup_signal_thread();
     if (rv != APR_SUCCESS) {

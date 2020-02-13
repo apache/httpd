@@ -298,7 +298,7 @@ static void ap_authn_cache_store(request_rec *r, const char *module,
     const char *key;
     apr_time_t expiry;
 
-    /* first check whether we're cacheing for this module */
+    /* first check whether we're caching for this module */
     dcfg = ap_get_module_config(r->per_dir_config, &authn_socache_module);
     if (!configured || !dcfg->providers) {
         return;

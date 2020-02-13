@@ -839,7 +839,7 @@ apr_status_t h2_push_diary_digest_get(h2_push_diary *diary, apr_pool_t *pool,
     log2n = h2_log2(N);
     
     /* Now log2p is the max number of relevant bits, so that
-     * log2p + log2n == mask_bits. We can uise a lower log2p
+     * log2p + log2n == mask_bits. We can use a lower log2p
      * and have a shorter set encoding...
      */
     log2pmax = h2_log2(ceil_power_of_2(maxP));

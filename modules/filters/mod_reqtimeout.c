@@ -313,7 +313,7 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
         rv = ap_get_brigade(f->next, bb, mode, block, readbytes);
         /* Don't extend the timeout in speculative mode, wait for
          * the real (relevant) bytes to be asked later, within the
-         * currently alloted time.
+         * currently allotted time.
          */
         if (ccfg->cur_stage.rate_factor && rv == APR_SUCCESS
                 && mode != AP_MODE_SPECULATIVE) {
@@ -627,7 +627,7 @@ static void reqtimeout_hooks(apr_pool_t *pool)
      * This ensures that it only influences normal http connections and not
      * e.g. mod_ftp. We still process it first though, for the handshake stage
      * to work with/before mod_ssl, but since it's disabled by default it won't
-     * influence non-HTTP modules unless configured explicitely. Also, if
+     * influence non-HTTP modules unless configured explicitly. Also, if
      * mod_reqtimeout used the pre_connection hook, it would be inserted on
      * mod_proxy's backend connections, and we don't want this.
      */

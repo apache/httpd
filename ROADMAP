@@ -116,7 +116,7 @@ MAKING APACHE REPOSITORY-AGNOSTIC
     * The translate_name hook goes away
 
       Wrowe altogether disagrees.  translate_name today even operates
-      on URIs ... this mechansim needs to be preserved.
+      on URIs ... this mechanism needs to be preserved.
     
     * The doc for map_to_storage is totally opaque to me. It has
       something to do with filesystems, but it also talks about

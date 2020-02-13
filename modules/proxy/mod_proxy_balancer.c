@@ -380,7 +380,7 @@ static proxy_worker *find_best_worker(proxy_balancer *balancer,
             /* XXX: This can perhaps be build using some
              * smarter mechanism, like tread_cond.
              * But since the statuses can came from
-             * different childs, use the provided algo.
+             * different children, use the provided algo.
              */
             apr_interval_time_t timeout = balancer->s->timeout;
             apr_interval_time_t step, tval = 0;
@@ -795,7 +795,7 @@ static apr_status_t lock_remove(void *data)
 /*
  * First try to compute an unique ID for each vhost with minimal criteria,
  * that is the first Host/IP:port and ServerName. For most cases this should
- * be enough and avoids changing the ID unnecessarily accross restart (or
+ * be enough and avoids changing the ID unnecessarily across restart (or
  * stop/start w.r.t. persisted files) for things that this module does not
  * care about.
  *
@@ -1105,7 +1105,7 @@ static void push2table(const char *input, apr_table_t *params,
 }
 
 /*
- * Process the paramters and add or update the worker of the balancer
+ * Process the parameters and add or update the worker of the balancer
  */
 static int balancer_process_balancer_worker(request_rec *r, proxy_server_conf *conf,
                                             proxy_balancer *bsel,

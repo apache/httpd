@@ -399,7 +399,7 @@ static apr_status_t setup_request(serf_request_t *request,
     return APR_SUCCESS;
 }
 
-/* TOOD: rewrite drive_serf to make it async */
+/* TODO: rewrite drive_serf to make it async */
 static int drive_serf(request_rec *r, serf_config_t *conf)
 {
     apr_status_t rv = 0;
@@ -469,7 +469,7 @@ static int drive_serf(request_rec *r, serf_config_t *conf)
             return HTTP_INTERNAL_SERVER_ERROR;
         }
 
-        /* TOOD: restructure try all servers in the array !! */
+        /* TODO: restructure try all servers in the array !! */
         pick = ap_random_pick(0, servers->nelts-1);
         choice = APR_ARRAY_IDX(servers, pick, ap_serf_server_t *);
 

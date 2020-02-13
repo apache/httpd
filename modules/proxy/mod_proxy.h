@@ -687,7 +687,7 @@ PROXY_DECLARE(int) ap_proxyerror(request_rec *r, int statuscode, const char *mes
  * @param conf      server configuration
  * @param hostname  hostname from request URI
  * @param addr      resolved address of hostname, or NULL if not known
- * @return OK on success, or else an errro
+ * @return OK on success, or else an error
  */
 PROXY_DECLARE(int) ap_proxy_checkproxyblock(request_rec *r, proxy_server_conf *conf, 
                                             const char *hostname, apr_sockaddr_t *addr);

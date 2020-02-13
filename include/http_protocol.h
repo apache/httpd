@@ -809,7 +809,7 @@ AP_DECLARE_HOOK(int,protocol_propose,(conn_rec *c, request_rec *r,
  * @param c The current connection
  * @param r The current request or NULL
  * @param s The server/virtual host selected
- * @param protocol The protocol identifier we try to swicth to
+ * @param protocol The protocol identifier we try to switch to
  * @return OK or DECLINED
  */
 AP_DECLARE_HOOK(int,protocol_switch,(conn_rec *c, request_rec *r,

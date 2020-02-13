@@ -302,7 +302,7 @@ AP_DECLARE(int) ap_regexec_len(const ap_regex_t *preg, const char *buff,
 
 #ifdef HAVE_PCRE2
     /* TODO: create a generic TLS matchdata buffer of some nmatch limit,
-     * e.g. 10 matches, to avoid a malloc-per-call. If it must be alloced,
+     * e.g. 10 matches, to avoid a malloc-per-call. If it must be allocated,
      * implement a general context using palloc and no free implementation.
      */
     nlim = ((apr_size_t)preg->re_nsub + 1) > nmatch

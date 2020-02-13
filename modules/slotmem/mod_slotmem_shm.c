@@ -56,7 +56,7 @@ struct ap_slotmem_instance_t {
 };
 
 /*
- * Layout for SHM and persited file :
+ * Layout for SHM and persisted file :
  *
  *   +-------------------------------------------------------------+~>
  *   | desc | num_free | base (slots) | inuse (array) | md5 | desc | compat..

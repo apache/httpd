@@ -929,7 +929,7 @@ static char *ftp_get_PWD(request_rec *r, conn_rec *ftp_ctrl, apr_bucket_brigade 
  * with username and password (which was presumably queried from the user)
  * supplied in the Authorization: header.
  * Note that we "invent" a realm name which consists of the
- * ftp://user@host part of the reqest (sans password -if supplied but invalid-)
+ * ftp://user@host part of the request (sans password -if supplied but invalid-)
  */
 static int ftp_unauthorized(request_rec *r, int log_it)
 {

@@ -354,7 +354,7 @@ static apr_status_t do_pattmatch(ap_filter_t *f, apr_bucket *inb,
                         }
                         else {
                             apr_size_t repl_len;
-                            /* acount for string before the match */
+                            /* account for string before the match */
                             if (space_left <= regm[0].rm_so)
                                 return APR_ENOMEM;
                             space_left -= regm[0].rm_so;

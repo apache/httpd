@@ -285,7 +285,7 @@ int simple_child_loop(simple_core_t * sc)
         return rv;
     }
 
-    /* XXXXX: Hack. Reseting parts of the simple core needs to be more
+    /* XXXXX: Hack. Resetting parts of the simple core needs to be more
      * thought out than this.
      */
     APR_RING_INIT(&sc->timer_ring, simple_timer_t, link);

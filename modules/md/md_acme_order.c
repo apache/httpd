@@ -513,7 +513,7 @@ static apr_status_t check_challenges(void *baton, int attempt)
                     rv = APR_EINVAL;
                     if (!authz->error_type) {
                         md_result_printf(ctx->result, rv, 
-                                         "domain authorization for %s failed, CA consideres "
+                                         "domain authorization for %s failed, CA considers "
                                          "answer to challenge invalid, no error given", 
                                          authz->domain);
                     } 

@@ -166,7 +166,7 @@ h2_mplx *h2_mplx_create(conn_rec *c, server_rec *s, apr_pool_t *parent,
         
         /* We create a pool with its own allocator to be used for
          * processing slave connections. This is the only way to have the
-         * processing independant of its parent pool in the sense that it
+         * processing independent of its parent pool in the sense that it
          * can work in another thread. Also, the new allocator needs its own
          * mutex to synchronize sub-pools.
          */

@@ -450,7 +450,7 @@ BACKREF      (\$[0-9])
     return T_OP_UNARY;
 }
 
- /* Apply subtitution to a string */
+ /* Apply substitution to a string */
 <expr>"sub"   {
     return T_OP_SUB;
 }

@@ -2361,7 +2361,7 @@ static int protocol_cmp(const apr_array_header_t *preferences,
             return (index2 >= 0) ? -1 : 1;
         }
     }
-    /* both have the same index (mabye -1 or no pref configured) and we compare
+    /* both have the same index (maybe -1 or no pref configured) and we compare
      * the names so that spdy3 gets precedence over spdy2. That makes
      * the outcome at least deterministic. */
     return strcmp(proto1, proto2);

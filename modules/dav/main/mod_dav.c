@@ -442,7 +442,7 @@ static const char *dav_xml_escape_uri(apr_pool_t *p, const char *uri)
 }
 
 
-/* Write a complete RESPONSE object out as a <DAV:repsonse> xml
+/* Write a complete RESPONSE object out as a <DAV:response> xml
    element.  Data is sent into brigade BB, which is auto-flushed into
    the output filter stack for request R.  Use POOL for any temporary
    allocations.
@@ -3373,8 +3373,8 @@ static int dav_method_unlock(request_rec *r)
 
     /* ### RFC 2518 s. 8.11: If this resource is locked by locktoken,
      *     _all_ resources locked by locktoken are released.  It does not say
-     *     resource has to be the root of an infinte lock.  Thus, an UNLOCK
-     *     on any part of an infinte lock will remove the lock on all resources.
+     *     resource has to be the root of an infinite lock.  Thus, an UNLOCK
+     *     on any part of an infinite lock will remove the lock on all resources.
      *
      *     For us, if r->filename represents an indirect lock (part of an infinity lock),
      *     we must actually perform an UNLOCK on the direct lock for this resource.

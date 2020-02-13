@@ -333,7 +333,7 @@ static const char *ap_expr_regexec(const char *subject,
     }
     do {
         /* If previous match was empty, we can't issue the exact same one or
-         * we'd loop indefinitively.  So let's instead ask for an anchored and
+         * we'd loop indefinitely.  So let's instead ask for an anchored and
          * non-empty match (i.e. something not empty at the start of the value)
          * and if nothing is found advance by one character below.
          */

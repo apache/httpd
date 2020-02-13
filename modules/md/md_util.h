@@ -90,7 +90,7 @@ struct apr_array_header_t *md_array_str_compact(apr_pool_t *p, struct apr_array_
                                                 int case_sensitive);
 
 /**
- * Create a new array with all occurances of <exclude> removed.
+ * Create a new array with all occurrences of <exclude> removed.
  */
 struct apr_array_header_t *md_array_str_remove(apr_pool_t *p, struct apr_array_header_t *src, 
                                                const char *exclude, int case_sensitive);

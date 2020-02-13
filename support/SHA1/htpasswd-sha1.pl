@@ -5,7 +5,7 @@ use strict;
 # on the command line and generates a username
 # sha1-encrytped password on the stdout.
 # 
-# Typical useage:
+# Typical usage:
 # 	./htpasswd-sha1.pl dirkx MySecret >> sha1-passwd
 #
 # This is public domain code.  Do whatever you want with it.

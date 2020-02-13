@@ -313,7 +313,7 @@ extern "C" {
 #define AP_MAX_REG_MATCH 10
 
 /**
- * APR_HAS_LARGE_FILES introduces the problem of spliting sendfile into
+ * APR_HAS_LARGE_FILES introduces the problem of splitting sendfile into
  * multiple buckets, no greater than MAX(apr_size_t), and more granular
  * than that in case the brigade code/filters attempt to read it directly.
  * ### 16mb is an invention, no idea if it is reasonable.
@@ -682,9 +682,9 @@ struct ap_method_list_t {
 #if !APR_CHARSET_EBCDIC
 /** linefeed */
 #define LF 10
-/** carrige return */
+/** carriage return */
 #define CR 13
-/** carrige return /Line Feed Combo */
+/** carriage return /Line Feed Combo */
 #define CRLF "\015\012"
 #else /* APR_CHARSET_EBCDIC */
 /* For platforms using the EBCDIC charset, the transition ASCII->EBCDIC is done
@@ -735,7 +735,7 @@ struct ap_method_list_t {
 /*
  * Things which may vary per file-lookup WITHIN a request ---
  * e.g., state of MIME config.  Basically, the name of an object, info
- * about the object, and any other info we may ahve which may need to
+ * about the object, and any other info we may have which may need to
  * change as we go poking around looking for it (e.g., overridden by
  * .htaccess files).
  *
@@ -2022,7 +2022,7 @@ AP_DECLARE(char *) ap_pbase64decode(apr_pool_t *p, const char *bufcoded);
  * Unlike ap_pbase64decode(), this function allows encoded NULLs in the input to
  * be retained by the caller, by inspecting the len argument after the call
  * instead of using strlen(). A NULL terminator is still appended to the buffer
- * to faciliate string use (it is not included in len).
+ * to facilitate string use (it is not included in len).
  *
  * @param p The pool to allocate from
  * @param encoded The encoded string
