@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_ssl: Do not keep connections to OCSP responders alive when doing
+     OCSP requests.  PR 64135.  [Ruediger Pluem]
+
   *) mod_ssl: Disable client verification on ACME ALPN challenges. Fixes github
      issue mod_md#172 (https://github.com/icing/mod_md/issues/172).
      [Michael Kaufmann <mail michael-kaufmann.ch>, Stefan Eissing]
