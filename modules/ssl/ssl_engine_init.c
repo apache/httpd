@@ -331,23 +331,26 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
     ssl_rand_seed(base_server, ptemp, SSL_RSCTX_STARTUP, "Init: ");
 
 #ifdef HAVE_FIPS
+    /* ### The FIPS setting is global and must be the same in all
+     * SSLSrvConfigRecs, should be in SSLModConfigRec really. */
+    sc = mySrvConfig(base_server);
     if (sc->fips) {
         if (!FIPS_mode()) {
             if (FIPS_mode_set(1)) {
-                ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s, APLOGNO(01884)
+                ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, base_server, APLOGNO(01884)
                              "Operating in SSL FIPS mode");
                 apr_pool_cleanup_register(p, NULL, modssl_fips_cleanup,
                                           apr_pool_cleanup_null);
             }
             else {
-                ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(01885) "FIPS mode failed");
-                ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
-                return ssl_die(s);
+                ap_log_error(APLOG_MARK, APLOG_EMERG, 0, base_server, APLOGNO(01885) "FIPS mode failed");
+                ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, base_server);
+                return ssl_die(base_server);
             }
         }
     }
     else {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01886)
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, base_server, APLOGNO(01886)
                      "SSL FIPS mode disabled");
     }
 #endif
