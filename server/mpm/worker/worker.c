@@ -1967,8 +1967,9 @@ static int worker_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, 
             new_max = num_buckets;
         }
         new_ptr = (int *)apr_palloc(ap_pglobal, new_max * sizeof(int));
-        memcpy(new_ptr, retained->idle_spawn_rate,
-               retained->mpm->num_buckets * sizeof(int));
+        if (retained->idle_spawn_rate) /* NULL at startup */
+            memcpy(new_ptr, retained->idle_spawn_rate,
+                   etained->mpm->num_buckets * sizeof(int));
         retained->idle_spawn_rate = new_ptr;
         retained->mpm->max_buckets = new_max;
     }
