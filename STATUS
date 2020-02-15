@@ -133,6 +133,8 @@ RELEASE SHOWSTOPPERS:
       trunk patch: http://svn.apache.org/viewvc?rev=1873941&view=rev
       2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-substitute-nodotall.diff
       +1 covener, rpluem, jim, ylavic
+      jailletc36: This needs some doc update (RegexDefaultOptions and certainly somewhere
+                  for the util_regex.c stuff, but I've not found where :( ).
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
