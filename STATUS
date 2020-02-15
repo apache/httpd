@@ -132,7 +132,7 @@ RELEASE SHOWSTOPPERS:
    *) mod_substitute: Don't use PREG_DOTALL
       trunk patch: http://svn.apache.org/viewvc?rev=1873941&view=rev
       2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-substitute-nodotall.diff
-      +1 covener, rpluem
+      +1 covener, rpluem, jim
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
@@ -205,7 +205,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      [Michael Kaufmann <mail michael-kaufmann.ch>, Stefan Eissing]
      trunk patch: http://svn.apache.org/r1873888
      2.4.x patch: svn merge -c 1873888 ^/httpd/httpd/trunk .
-     +1: icing
+     +1: icing, jim
 
    *) mod_http2: Fix an empty APLOGNO()
      trunk patch: http://svn.apache.org/r1873927
@@ -217,7 +217,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    *) Fix spelling errors found by codespell.
       trunk patch: http://svn.apache.org/r1873985
       2.4.x patch: svn merge -c 1873985 ^/httpd/httpd/trunk .
-      +1 mrumph
+      +1 mrumph, jim
       mrumph: This patch affects only doc and comments,
               but proposing here because it changes a lot of files.
 
