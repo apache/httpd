@@ -132,12 +132,47 @@ RELEASE SHOWSTOPPERS:
    *) mod_substitute: Don't use PREG_DOTALL
       trunk patch: http://svn.apache.org/viewvc?rev=1873941&view=rev
       2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-substitute-nodotall.diff
-      +1 covener, rpluem, jim
+      +1 covener, rpluem, jim, ylavic
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   *) mod_ssl: Add support for loading certs & keys from PKCS#11 URLs via the
+               OpenSSL pkcs11 engine.  Includes related minor cleanups and
+               simplification to mod_ssl internals.
+      trunk patch: http://svn.apache.org/r1830819
+                   http://svn.apache.org/r1830912
+                   http://svn.apache.org/r1830913
+                   http://svn.apache.org/r1830927
+                   http://svn.apache.org/r1831168
+                   http://svn.apache.org/r1831173
+                   http://svn.apache.org/r1835240
+                   http://svn.apache.org/r1835242
+                   http://svn.apache.org/r1835615
+                   http://svn.apache.org/r1836547
+      2.4.x patch: https://github.com/apache/httpd/commit/709a625b8e3fd3cd3426be5a005c1c60079c8d59.patch
+      Test results: https://travis-ci.org/apache/httpd/builds/638362588
+      +1: jorton, jim, ylavic
+      minfrin: This needs mentioning in the docs.
 
+   *) mod_ssl: use OPENSSL_init_ssl() to initialise OpenSSL on versions 1.1+.
+      trunk patch: http://svn.apache.org/r1861950
+      2.4.x patch: svn merge -c 1861950 ^/httpd/httpd/trunk . 
+      +1: minfrin, jim, ylavic
+
+   *) mod_ssl: Disable client verification on ACME ALPN challenges. Fixes github
+      issue mod_md#172 (https://github.com/icing/mod_md/issues/172).
+      [Michael Kaufmann <mail michael-kaufmann.ch>, Stefan Eissing]
+      trunk patch: http://svn.apache.org/r1873888
+      2.4.x patch: svn merge -c 1873888 ^/httpd/httpd/trunk .
+      +1: icing, jim, ylavic
+
+   *) Fix spelling errors found by codespell.
+      trunk patch: http://svn.apache.org/r1873985
+      2.4.x patch: svn merge -c 1873985 ^/httpd/httpd/trunk .
+      +1 mrumph, jim, ylavic
+      mrumph: This patch affects only doc and comments,
+              but proposing here because it changes a lot of files.
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -161,30 +196,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              months/years without any action item :)
      ylavic: will look at it ASAP..
 
-
-   *) mod_ssl: Add support for loading certs & keys from PKCS#11 URLs via the
-               OpenSSL pkcs11 engine.  Includes related minor cleanups and
-               simplification to mod_ssl internals.
-      trunk patch: http://svn.apache.org/r1830819
-                   http://svn.apache.org/r1830912
-                   http://svn.apache.org/r1830913
-                   http://svn.apache.org/r1830927
-                   http://svn.apache.org/r1831168
-                   http://svn.apache.org/r1831173
-                   http://svn.apache.org/r1835240
-                   http://svn.apache.org/r1835242
-                   http://svn.apache.org/r1835615
-                   http://svn.apache.org/r1836547
-      2.4.x patch: https://github.com/apache/httpd/commit/709a625b8e3fd3cd3426be5a005c1c60079c8d59.patch
-      Test results: https://travis-ci.org/apache/httpd/builds/638362588
-      +1: jorton, jim
-      minfrin: This needs mentioning in the docs.
-
-  *) mod_ssl: use OPENSSL_init_ssl() to initialise OpenSSL on versions 1.1+.
-     trunk patch: http://svn.apache.org/r1861950
-     2.4.x patch: svn merge -c 1861950 ^/httpd/httpd/trunk . 
-     +1: minfrin, jim
-
   *) Add a config layout for OpenWRT
      trunk patch: http://svn.apache.org/r1872036
                   http://svn.apache.org/r1872093
@@ -199,27 +210,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1872062
      2.4.x patch: svn merge -c 1872042,1872062 ^/httpd/httpd/trunk .
      +1: minfrin, jim
-     
-  *) mod_ssl: Disable client verification on ACME ALPN challenges. Fixes github
-     issue mod_md#172 (https://github.com/icing/mod_md/issues/172).
-     [Michael Kaufmann <mail michael-kaufmann.ch>, Stefan Eissing]
-     trunk patch: http://svn.apache.org/r1873888
-     2.4.x patch: svn merge -c 1873888 ^/httpd/httpd/trunk .
-     +1: icing, jim
 
    *) mod_http2: Fix an empty APLOGNO()
      trunk patch: http://svn.apache.org/r1873927
      2.4.x patch: svn merge -c 1873927 ^/httpd/httpd/trunk .
-     +1: jailletc36, 
+     +1: jailletc36, ylavic,
      jailletc36: Not sure how is the best way to deal with mod_http2 patches.
                  Should it be first a pull request from the github repository?
-
-   *) Fix spelling errors found by codespell.
-      trunk patch: http://svn.apache.org/r1873985
-      2.4.x patch: svn merge -c 1873985 ^/httpd/httpd/trunk .
-      +1 mrumph, jim
-      mrumph: This patch affects only doc and comments,
-              but proposing here because it changes a lot of files.
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
