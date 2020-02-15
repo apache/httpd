@@ -56,12 +56,12 @@
     <dt>Installing on Fedora/CentOS/Red Hat Enterprise Linux</dt>
     <dd>
     <highlight>
-sudo yum install httpd
+sudo dnf install httpd
 sudo service httpd start
     </highlight>
 
-    <note type="warning">Newer releases of these distros use
-    <code>dnf</code> rather than <code>yum</code>. See <a
+    <note type="warning">Older releases of these distros use
+    <code>yum</code> rather than <code>dnf</code>. See <a
     href="https://fedoraproject.org/wiki/Apache_HTTP_Server">the
     Fedora project's documentation</a> for platform-specific notes.</note>
     </dd>
