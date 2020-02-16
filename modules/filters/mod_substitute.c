@@ -716,8 +716,10 @@ static const char *set_pattern(cmd_parms *cmd, void *cfg, const char *line)
 
     /* first see if we can compile the regex */
     if (!is_pattern) {
-        r = ap_pregcomp(cmd->pool, from, AP_REG_NO_DOTALL | AP_REG_EXTENDED |
-                        (ignore_case ? AP_REG_ICASE : 0));
+        int flags = AP_REG_NO_DEFAULT
+                    | (ap_regcomp_get_default_cflags() & AP_REG_DOLLAR_ENDONLY)
+                    | (ignore_case ? AP_REG_ICASE : 0);
+        r = ap_pregcomp(cmd->pool, from, flags);
         if (!r)
             return "Substitute could not compile regex";
     }

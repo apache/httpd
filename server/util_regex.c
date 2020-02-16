@@ -94,6 +94,7 @@ AP_DECLARE(ap_rxplus_t*) ap_rxplus_compile(apr_pool_t *pool,
     }
 
     /* anything after the current delimiter is flags */
+    ret->flags = ap_regcomp_get_default_cflags() & AP_REG_DOLLAR_ENDONLY;
     while (*++endp) {
         switch (*endp) {
         case 'i': ret->flags |= AP_REG_ICASE; break;
@@ -101,13 +102,12 @@ AP_DECLARE(ap_rxplus_t*) ap_rxplus_compile(apr_pool_t *pool,
         case 'n': ret->flags |= AP_REG_NOMEM; break;
         case 'g': ret->flags |= AP_REG_MULTI; break;
         case 's': ret->flags |= AP_REG_DOTALL; break;
-        case 'S': ret->flags |= AP_REG_NO_DOTALL; break;
         case '^': ret->flags |= AP_REG_NOTBOL; break;
         case '$': ret->flags |= AP_REG_NOTEOL; break;
         default: break; /* we should probably be stricter here */
         }
     }
-    if (ap_regcomp(&ret->rx, rxstr, ret->flags) == 0) {
+    if (ap_regcomp(&ret->rx, rxstr, AP_REG_NO_DEFAULT | ret->flags) == 0) {
         apr_pool_cleanup_register(pool, &ret->rx, rxplus_cleanup,
                                   apr_pool_cleanup_null);
     }

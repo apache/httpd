@@ -620,7 +620,7 @@
  * 20190312.6 (2.5.1-dev)  Add proxy check_trans hook
  * 20190312.7 (2.5.1-dev)  AP_REG_DEFAULT macro in ap_regex.h
  * 20190312.8 (2.5.1-dev)  ap_is_chunked() in httpd.h
- * 20190312.9 (2.5.1-dev)  AP_REG_NO_DOTALL macro in ap_regex.h
+ * 20190312.9 (2.5.1-dev)  AP_REG_NO_DEFAULT macro in ap_regex.h
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
