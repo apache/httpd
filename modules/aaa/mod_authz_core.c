@@ -70,7 +70,7 @@ struct authz_section_conf {
     const char *provider_args;
     const void *provider_parsed_args;
     const authz_provider *provider;
-    apr_int64_t limited;
+    ap_method_mask_t limited;
     authz_logic_op op;
     int negate;
     /** true if this is not a real container but produced by AuthMerging;
@@ -478,7 +478,7 @@ static const char *add_authz_section(cmd_parms *cmd, void *mconfig,
     authz_section_conf *old_section = conf->section;
     authz_section_conf *section;
     int old_overrides = cmd->override;
-    apr_int64_t old_limited = cmd->limited;
+    ap_method_mask_t old_limited = cmd->limited;
     const char *errmsg;
 
     if (endp == NULL) {
@@ -1016,7 +1016,7 @@ static authz_status method_check_authorization(request_rec *r,
                                                const char *require_line,
                                                const void *parsed_require_line)
 {
-    const apr_int64_t *allowed = parsed_require_line;
+    const ap_method_mask_t *allowed = parsed_require_line;
     if (*allowed & (AP_METHOD_BIT << r->method_number))
         return AUTHZ_GRANTED;
     else
@@ -1027,7 +1027,7 @@ static const char *method_parse_config(cmd_parms *cmd, const char *require_line,
                                        const void **parsed_require_line)
 {
     const char *w, *t;
-    apr_int64_t *allowed = apr_pcalloc(cmd->pool, sizeof(apr_int64_t));
+    ap_method_mask_t *allowed = apr_pcalloc(cmd->pool, sizeof *allowed);
 
     t = require_line;
 

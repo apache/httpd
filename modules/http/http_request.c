@@ -857,7 +857,7 @@ AP_DECLARE(void) ap_allow_standard_methods(request_rec *r, int reset, ...)
 {
     int method;
     va_list methods;
-    apr_int64_t mask;
+    ap_method_mask_t mask;
 
     /*
      * Get rid of any current settings if requested; not just the

@@ -295,7 +295,7 @@ struct cmd_parms_struct {
     /** Table of directives allowed per AllowOverrideList */
     apr_table_t *override_list;
     /** Which methods are &lt;Limit&gt;ed */
-    apr_int64_t limited;
+    ap_method_mask_t limited;
     /** methods which are limited */
     apr_array_header_t *limited_xmethods;
     /** methods which are xlimited */

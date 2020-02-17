@@ -854,7 +854,7 @@ AP_DECLARE(const char *) ap_get_status_line(int status)
  */
 static char *make_allow(request_rec *r)
 {
-    apr_int64_t mask;
+    ap_method_mask_t mask;
     apr_array_header_t *allow = apr_array_make(r->pool, 10, sizeof(char *));
     apr_hash_index_t *hi = apr_hash_first(r->pool, methods_registry);
     /* For TRACE below */
