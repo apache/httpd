@@ -304,7 +304,7 @@ MDChallengeDns01 /usr/bin/acme-setup-dns
                 the <directive module="mod_md" type="section">MDomainSet</directive>.
             </p><p>
                 There are 2 additional settings that are necessary for a Managed Domain:
-                <directive module="core">ServerAdmin</directive>
+                a contact Email address (via <directive module="mod_md">MDContactEmail</directive> or <directive module="core">ServerAdmin</directive>)
                 and <directive module="mod_md">MDCertificateAgreement</directive>.
                 The mail address of <directive module="core">ServerAdmin</directive>
                 is used to register at the CA (Let's Encrypt by default).
@@ -317,7 +317,7 @@ MDChallengeDns01 /usr/bin/acme-setup-dns
             </p>
             <example><title>Example</title>
                 <highlight language="config">
-ServerAdmin mailto:admin@example.org
+MDContactEmail admin@example.org
 MDCertificateAgreement accepted
 MDomain example.org www.example.org
 
@@ -1215,5 +1215,24 @@ MDMessageCmd /etc/apache/md-message
             </p>
         </usage>
     </directivesynopsis>
-
+    
+    <directivesynopsis>
+        <name>MDContactEmail</name>
+        <description></description>
+        <syntax>MDContactEmail address</syntax>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <usage>
+            <p>
+                The ACME protocol requires you to give a contact url when you sign up. Currently, 
+                Let's Encrypt wants an email address (and it will use it to inform you about renewals 
+                or changed terms of service). mod_md uses the MDContactEmail directive email in 
+                your Apache configuration, so please specify the correct address there. 
+                If MDContactEmail is not present, mod_md will use the 
+                <directive module="core">ServerAdmin</directive> directive.
+            </p>
+        </usage>
+    </directivesynopsis>
+    
 </modulesynopsis>
