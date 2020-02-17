@@ -37,7 +37,7 @@
 <xsl:text># in order to be ready to use for the JS used in prettify.js</xsl:text>&lf;
 &lf;
 <xsl:text># The next line has to be copy/pasted into prettify.js around line 135</xsl:text>&lf;
-<xsl:text># in place of the correponding CONFIG_KEYWORDS array.</xsl:text>&lf;
+<xsl:text># in place of the corresponding CONFIG_KEYWORDS array.</xsl:text>&lf;
 &lf;
 
 <xsl:variable name="directives"
@@ -56,7 +56,7 @@
 &lf;
 &lf;
 <xsl:text># The next line has to be copy/pasted into prettify.js around line 920</xsl:text>&lf;
-<xsl:text># in place of the correponding PR_TAG array.</xsl:text>&lf;
+<xsl:text># in place of the corresponding PR_TAG array.</xsl:text>&lf;
 &lf;
 
 <xsl:text>        [PR_TAG,     /^\b(</xsl:text>

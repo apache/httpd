@@ -688,7 +688,7 @@ if (typeof(prettyPrint) !== 'undefined') {
     <xsl:call-template name="pre" />
 </pre>&lf; <!-- /.highlight -->
 </xsl:template>
-<!-- /higlight -->
+<!-- /highlight -->
 
 
 <!-- ==================================================================== -->
@@ -1248,7 +1248,7 @@ if (typeof(prettyPrint) !== 'undefined') {
 <!-- ==================================================================== -->
 <!-- Filter &#160; in text() nodes.                                       -->
 <!-- In some environments this character won't be transformed correctly,  -->
-<!-- so we just write it explicitely as "&nbsp;" into the output.         -->
+<!-- so we just write it explicitly as "&nbsp;" into the output.         -->
 <!-- ==================================================================== -->
 <xsl:template match="text()" name="filter.nbsp">
 <xsl:param name="text" select="." />

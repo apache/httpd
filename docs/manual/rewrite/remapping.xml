@@ -619,7 +619,7 @@ RewriteRule "(.*)"            "$1?%1%3"
 </highlight>
   </li>
 
-  <li>This solution uses the captured value in the URL subsitution,
+  <li>This solution uses the captured value in the URL substitution,
   discarding the rest of the original query by appending a '?':
 
 <highlight language="config">

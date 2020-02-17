@@ -66,7 +66,7 @@ RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>
 </highlight>
 
     <p>The <a id="mapfunc" name="mapfunc"><em>MapName</em></a> is an
-    arbitray name that you assign to the map, and which you will use in
+    arbitrary name that you assign to the map, and which you will use in
     directives later on. Arguments are passed to the map via the
     following syntax:</p>
 

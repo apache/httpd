@@ -65,7 +65,7 @@ mod_rewrite</a> document.</note>
     <code><strong>SITE</strong>.example.com</code> for each
     user, and serve their content out of
     <code>/home/<strong>SITE</strong>/www</code>. However, we want
-    <code>www.example.com</code> to be ommitted from this mapping.</p>
+    <code>www.example.com</code> to be omitted from this mapping.</p>
     </dd>
 
     <dt>Solution:</dt>

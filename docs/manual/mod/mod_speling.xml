@@ -151,7 +151,7 @@ module</description>
     <p>When set, this directive extends the action of the spelling correction
     to the file name extension. For example a file <code>foo.gif</code> will
     match a request for <code>foo</code> or <code>foo.jpg</code>. This can be
-    particulary useful in conjunction with
+    particularly useful in conjunction with
     <a href="../content-negotiation.html">MultiViews</a>.</p>
 </usage>
 </directivesynopsis>

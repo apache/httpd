@@ -513,7 +513,7 @@ MDCertificateAuthority https://acme-staging-v02.api.letsencrypt.org/directory
             </p>
             <p>
                 You can override this default in either way. If you specify 'always',
-                the module will renew certificates for an MD, irregardless if the
+                the module will renew certificates for an MD, regardless if the
                 domains are in use or if there are static files.
             </p>
             <p>
@@ -834,7 +834,7 @@ MDRequireHttps permanent
             <p>
                 Sets challenge types (in order of preference) when proving domain ownership.
                 Supported by the module are the challenge methods 'tls-alpn-01', 'dns-01'  
-                and 'http-01'. The module will look at the overall configuation of the server 
+                and 'http-01'. The module will look at the overall configuration of the server 
                 to find out which methods can be used. 
             </p><p>
                 If the server listens on port 80, for example, the 'http-01' method is available. 
@@ -1125,7 +1125,7 @@ MDMessageCmd /etc/apache/md-message
             <p>
                 mod_md offers an implementation for providing OCSP stapling information. 
                 This is an alternative to the one provided by 'mod_ssl'. For backward 
-                compatiblity, this is disabled by default.
+                compatibility, this is disabled by default.
             </p><p>
                 The stapling can be switched on for all certificates on the server or 
                 for an individual MDomain. This will replace any stapling configuration 
@@ -1190,7 +1190,7 @@ MDMessageCmd /etc/apache/md-message
                 If the validity of the OCSP response used in stapling falls below 'duration', 
                 mod_md will obtain a new OCSP response.
             </p><p>
-                The CA issueing a certificate commonly also operates the OCSP responder 
+                The CA issuing a certificate commonly also operates the OCSP responder 
                 service and determines how long its signed response about the validity 
                 of a certificate are itself valid. The longer a response is valid, the longer 
                 it can be cached which mean better overall performance for everyone. 

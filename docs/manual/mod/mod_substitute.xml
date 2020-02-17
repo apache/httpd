@@ -72,7 +72,7 @@
 
     <p>The <var>substitution</var> may contain literal text and regular
     expression backreferences. If the substitution begins with the text 
-    <code>expr=</code> it is intepreted as an <a href="../expr.html">
+    <code>expr=</code> it is interpreted as an <a href="../expr.html">
     expression</a> which allows access to environment variables and
     header values.  </p>
 
@@ -86,7 +86,7 @@
     </example>
 
     <p>The character which is used to separate (or "delimit") the
-    various parts of the substituion string is referred to as the
+    various parts of the substitution string is referred to as the
     "delimiter", and it is most common to use a slash for this
     purpose.</p>
 

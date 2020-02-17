@@ -287,7 +287,7 @@ H2Push Off
     <p>All other headers are ignored. Cookies will also not be copied over. PUSHing resources
     that require a cookie to be present will not work. This can be a matter of debate. But 
     unless this is more clearly discussed with browser, let's err on the side of caution and
-    not expose cookie where they might oridinarily not be visible.</p>
+    not expose cookie where they might ordinarily not be visible.</p>
   </section>
 
   <section id="earlyhints">

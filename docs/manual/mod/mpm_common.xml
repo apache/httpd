@@ -322,7 +322,7 @@ in *BSDs.</compatibility>
     <p>This also means that multiple instances of Apache httpd configured on a
     same <code>IP:port</code> and with a positive <directive>ListenCoresBucketsRatio</directive>
     would start without an error too, and then run with incoming connections
-    evenly distributed accross both instances (this is NOT a recommendation or
+    evenly distributed across both instances (this is NOT a recommendation or
     a sensible usage in any case, but just a notice that it would prevent such
     possible issues to be detected).</p>
     <p>Within the same instance, Apache httpd will check and fail to start if

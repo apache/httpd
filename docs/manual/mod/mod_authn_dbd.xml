@@ -58,7 +58,7 @@
 <seealso><a href="../misc/password_encryptions.html">Password Formats</a></seealso>
 
 <section id="socache">
-<title>Performance and Cacheing</title>
+<title>Performance and Caching</title>
 <p>Some users of DBD authentication in HTTPD 2.2/2.4 have reported that it
 imposes a problematic load on the database.  This is most likely where
 an HTML page contains hundreds of objects (e.g. images, scripts, etc)
@@ -73,7 +73,7 @@ to cache credentials and take most of the load off the database.</p>
 the Authentication and DBD frameworks.</p>
 <highlight language="config">
 # mod_dbd configuration
-# UPDATED to include authentication cacheing
+# UPDATED to include authentication caching
 DBDriver pgsql
 DBDParams "dbname=apacheauth user=apache password=xxxxxx"
 

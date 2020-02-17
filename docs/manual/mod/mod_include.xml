@@ -318,7 +318,7 @@ Options +Includes
       to the usual set of CGI variables.</p>
 
       <p>The use of <code><a href="#includevirtual"
-      >#include virtual</a></code> is almost always prefered to using
+      >#include virtual</a></code> is almost always preferred to using
       either <code>#exec cgi</code> or <code>#exec cmd</code>. The former
       (<code>#include virtual</code>) uses the standard Apache sub-request
       mechanism to include files or scripts. It is much better tested and

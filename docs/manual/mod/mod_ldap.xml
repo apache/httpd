@@ -536,7 +536,7 @@ valid</description>
      <dt>"default"</dt>
      <dd> <p> When set to "default", the underlying SDK's referral chasing state
               is not changed, <directive>LDAPReferralHopLimit</directive> is not
-              used to overide the SDK's hop limit, and no LDAP rebind callback is
+              used to override the SDK's hop limit, and no LDAP rebind callback is
               registered.</p></dd>
     </dl>
 

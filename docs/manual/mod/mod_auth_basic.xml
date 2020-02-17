@@ -240,7 +240,7 @@ Digest Authentication was in force instead of Basic Authentication.
       The inverse process of switching from Basic to Digest
       Authentication without assigning new passwords is generally
       not possible.  Only if the Basic Authentication passwords
-      have been stored in plain text or with a reversable encryption
+      have been stored in plain text or with a reversible encryption
       scheme will it be possible to recover them and generate a
       new data store following the Digest Authentication password
       storage scheme.
