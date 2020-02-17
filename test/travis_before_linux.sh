@@ -25,7 +25,7 @@ function run_svn_export() {
            if [ $i -eq $max_tries ]; then
                exit 1
            else
-               sleep 180
+               sleep $((100 * i))
            fi
        fi
    done
