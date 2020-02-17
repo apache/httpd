@@ -1,6 +1,19 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_md:
+     - Prefer MDContactEmail directive to ServerAdmin for registration. New directive
+       thanks to Timothe Litt (@tlhackque).
+     - protocol check for pre-configured "tls-alpn-01" challenge has been improved. It will now
+       check all matching virtual hosts for protocol support. Thanks to @mkauf.
+     - Corrected a check when OCSP stapling was configured for hosts
+       where the responsible MDomain is not clear, by Michal Karm Babacek (@Karm).
+     - Softening the restrictions where mod_md configuration directives may appear. This should
+       allow for use in <If> and <Macro> sections. If all possible variations lead to the configuration
+       you wanted in the first place, is another matter.
+     [Michael Kaufmann <mail michael-kaufmann.ch>, Timothe Litt (@tlhackque),
+      Michal Karm Babacek (@Karm), Stefan Eissing (@icing)] 
+
   *) core: ap_method_mask_t type added for method bitmasks, changed
      from apr_int64_t and used for the method_mask field in
      ap_method_list_t, AP_METHOD_BIT, allowed field of request_rec,

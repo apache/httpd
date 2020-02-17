@@ -62,7 +62,7 @@ apr_status_t md_ocsp_init_stapling_status(server_rec *s, apr_pool_t *p,
     sc = md_config_get(s);
     if (!staple_here(sc)) goto declined;
 
-    md = ((sc->assigned || sc->assigned->nelts == 1)?
+    md = ((sc->assigned && sc->assigned->nelts == 1)?
           APR_ARRAY_IDX(sc->assigned, 0, const md_t*) : NULL);
     rv = md_ocsp_prime(sc->mc->ocsp, md_cert_wrap(p, cert), 
                        md_cert_wrap(p, issuer), md);
@@ -85,7 +85,7 @@ apr_status_t md_ocsp_get_stapling_status(unsigned char **pder, int *pderlen,
     sc = md_config_get(s);
     if (!staple_here(sc)) goto declined;
     
-    md = ((sc->assigned || sc->assigned->nelts == 1)?
+    md = ((sc->assigned && sc->assigned->nelts == 1)?
           APR_ARRAY_IDX(sc->assigned, 0, const md_t*) : NULL);
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c, "get stapling for: %s", 
                   md? md->name : s->server_hostname);

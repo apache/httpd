@@ -297,6 +297,8 @@ leave:
 
 static void merge_srv_config(md_t *md, md_srv_conf_t *base_sc, apr_pool_t *p)
 {
+    const char *contact;
+
     if (!md->sc) {
         md->sc = base_sc;
     }
@@ -310,9 +312,14 @@ static void merge_srv_config(md_t *md, md_srv_conf_t *base_sc, apr_pool_t *p)
     if (!md->ca_agreement) {
         md->ca_agreement = md_config_gets(md->sc, MD_CONFIG_CA_AGREEMENT);
     }
-    if (md->sc->s->server_admin && strcmp(DEFAULT_ADMIN, md->sc->s->server_admin)) {
+    contact = md_config_gets(md->sc, MD_CONFIG_CA_CONTACT);
+    if (contact && contact[0]) {
         apr_array_clear(md->contacts);
-        APR_ARRAY_PUSH(md->contacts, const char *) = 
+        APR_ARRAY_PUSH(md->contacts, const char *) =
+        md_util_schemify(p, contact, "mailto");
+    } else if( md->sc->s->server_admin && strcmp(DEFAULT_ADMIN, md->sc->s->server_admin)) {
+        apr_array_clear(md->contacts);
+        APR_ARRAY_PUSH(md->contacts, const char *) =
         md_util_schemify(p, md->sc->s->server_admin, "mailto");
     }
     if (md->renew_mode == MD_RENEW_DEFAULT) {
@@ -436,9 +443,10 @@ static server_rec *get_public_https_server(md_t *md, const char *domain, server_
     md_srv_conf_t *sc;
     md_mod_conf_t *mc;
     server_rec *s;
+    server_rec *res = NULL;
     request_rec r;
     int i;
-    int skip_port_check = 0;
+    int check_port = 1;
 
     sc = md_config_get(base_server);
     mc = sc->mc;
@@ -446,27 +454,37 @@ static server_rec *get_public_https_server(md_t *md, const char *domain, server_
 
     if (md->ca_challenges && md->ca_challenges->nelts > 0) {
         /* skip the port check if "tls-alpn-01" is pre-configured */
-        skip_port_check = md_array_str_index(md->ca_challenges, MD_AUTHZ_TYPE_TLSALPN01, 0, 0) >= 0;
+        check_port = !(md_array_str_index(md->ca_challenges, MD_AUTHZ_TYPE_TLSALPN01, 0, 0) >= 0);
     }
 
-    if (!skip_port_check && !mc->can_https) return NULL;
+    if (check_port && !mc->can_https) return NULL;
 
     /* find an ssl server matching domain from MD */
     for (s = base_server; s; s = s->next) {
         sc = md_config_get(s);
         if (!sc || !sc->is_ssl || !sc->assigned) continue;
         if (base_server == s && !mc->manage_base_server) continue;
-        if (base_server != s && !skip_port_check && mc->local_443 > 0 && !uses_port(s, mc->local_443)) continue;
+        if (base_server != s && check_port && mc->local_443 > 0 && !uses_port(s, mc->local_443)) continue;
         for (i = 0; i < sc->assigned->nelts; ++i) {
             if (md == APR_ARRAY_IDX(sc->assigned, i, md_t*)) {
                 r.server = s;
                 if (ap_matches_request_vhost(&r, domain, s->port)) {
-                    return s;
+                    if (check_port) {
+                        return s;
+                    }
+                    else {
+                        /* there may be multiple matching servers because we ignore the port.
+                           if possible, choose a server that supports the acme-tls/1 protocol */
+                        if (ap_is_allowed_protocol(NULL, NULL, s, PROTO_ACME_TLS_1)) {
+                            return s;
+                        }
+                        res = s;
+                    }
                 }
             }
         }
     }
-    return NULL;
+    return res;
 }
 
 static apr_status_t auto_add_domains(md_t *md, server_rec *base_server, apr_pool_t *p)
@@ -563,10 +581,17 @@ static apr_status_t link_md_to_servers(md_mod_conf_t *mc, md_t *md, server_rec *
                              s->server_hostname, s->port, md->name, sc->name,
                              domain, (int)sc->assigned->nelts);
                 
-                if (s->server_admin && strcmp(DEFAULT_ADMIN, s->server_admin)) {
+                if (sc->ca_contact && sc->ca_contact[0]) {
+                    uri = md_util_schemify(p, sc->ca_contact, "mailto");
+                    if (md_array_str_index(md->contacts, uri, 0, 0) < 0) {
+                        APR_ARRAY_PUSH(md->contacts, const char *) = uri;
+                        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, base_server, APLOGNO(10044)
+                                     "%s: added contact %s", md->name, uri);
+                    }
+                } else if (s->server_admin && strcmp(DEFAULT_ADMIN, s->server_admin)) {
                     uri = md_util_schemify(p, s->server_admin, "mailto");
                     if (md_array_str_index(md->contacts, uri, 0, 0) < 0) {
-                        APR_ARRAY_PUSH(md->contacts, const char *) = uri; 
+                        APR_ARRAY_PUSH(md->contacts, const char *) = uri;
                         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, base_server, APLOGNO(10044)
                                      "%s: added contact %s", md->name, uri);
                     }
@@ -690,7 +715,7 @@ static apr_status_t check_invalid_duplicates(server_rec *base_server)
     md_srv_conf_t *sc;
     
     ap_log_error( APLOG_MARK, APLOG_TRACE1, 0, base_server, 
-                 "cecking duplicate ssl assignments");
+                 "checking duplicate ssl assignments");
     for (s = base_server; s; s = s->next) {
         sc = md_config_get(s);
         if (!sc || !sc->assigned) continue;
@@ -854,7 +879,7 @@ static apr_status_t md_post_config_before_ssl(apr_pool_t *p, apr_pool_t *plog,
 
     /* How to bootstrap this module:
      * 1. find out if we know if http: and/or https: requests will arrive
-     * 2. apply the now complete configuration settings to the MDs
+     * 2. apply the now complete configuration setttings to the MDs
      * 3. Link MDs to the server_recs they are used in. Detect unused MDs.
      * 4. Update the store with the MDs. Change domain names, create new MDs, etc.
      *    Basically all MD properties that are configured directly.
@@ -863,7 +888,7 @@ static apr_status_t md_post_config_before_ssl(apr_pool_t *p, apr_pool_t *plog,
      *    store will find the old settings and "recover" the previous name.
      * 5. Load any staged data from previous driving.
      * 6. on a dry run, this is all we do
-     * 7. Read back the MD properties that reflect the existence and aspect of
+     * 7. Read back the MD properties that reflect the existance and aspect of
      *    credentials that are in the store (or missing there). 
      *    Expiry times, MD state, etc.
      * 8. Determine the list of MDs that need driving/supervision.
@@ -880,7 +905,7 @@ static apr_status_t md_post_config_before_ssl(apr_pool_t *p, apr_pool_t *plog,
     /*4*/
     if (APR_SUCCESS != (rv = md_reg_sync_start(mc->reg, mc->mds, ptemp))) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10073)
-                     "syncing %d mds to registry", mc->mds->nelts);
+                     "synching %d mds to registry", mc->mds->nelts);
         goto leave;
     }
     /*5*/
@@ -923,7 +948,7 @@ static apr_status_t md_post_config_after_ssl(apr_pool_t *p, apr_pool_t *plog,
         }
         if (APR_SUCCESS != (rv = md_reg_sync_finish(mc->reg, md, p, ptemp))) {
             ap_log_error( APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10172)
-                         "md[%s]: error syncing to store", md->name);
+                         "md[%s]: error synching to store", md->name);
             goto leave;
         }
     }
