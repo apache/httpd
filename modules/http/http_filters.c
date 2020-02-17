@@ -139,7 +139,11 @@ static apr_status_t parse_chunk_size(http_ctx_t *ctx, const char *buffer,
                 ctx->state = BODY_CHUNK_PART;
             }
             ctx->remaining = 0;
-            ctx->chunkbits = sizeof(apr_off_t) * 8;
+            /* The maximum number of bits that can be handled in a
+             * chunk size is in theory sizeof(apr_off_t)*8-1 since
+             * off_t is signed, but use -4 to avoid undefined
+             * behaviour when bitshifting left. */
+            ctx->chunkbits = sizeof(apr_off_t) * 8 - 4;
             ctx->chunk_used = 0;
             ctx->chunk_bws = 0;
         }
@@ -226,7 +230,8 @@ static apr_status_t parse_chunk_size(http_ctx_t *ctx, const char *buffer,
 
             ctx->remaining = (ctx->remaining << 4) | xvalue;
             if (ctx->remaining < 0) {
-                /* overflow */
+                /* Overflow - should be unreachable since the
+                 * chunkbits limit will be reached first. */
                 return APR_ENOSPC;
             }
         }
