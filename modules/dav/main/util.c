@@ -101,6 +101,9 @@ DAV_DECLARE(dav_error*) dav_join_error(dav_error *dest, dav_error *src)
     return dest;
 }
 
+/* ### Unclear if this was designed to be used with an uninitialized
+ * dav_buffer struct, but is used on by dav_lock_get_activelock().
+ * Hence check for pbuf->buf. */
 DAV_DECLARE(void) dav_check_bufsize(apr_pool_t * p, dav_buffer *pbuf,
                                     apr_size_t extra_needed)
 {
@@ -110,7 +113,8 @@ DAV_DECLARE(void) dav_check_bufsize(apr_pool_t * p, dav_buffer *pbuf,
 
         pbuf->alloc_len += extra_needed + DAV_BUFFER_PAD;
         newbuf = apr_palloc(p, pbuf->alloc_len);
-        memcpy(newbuf, pbuf->buf, pbuf->cur_len);
+        if (pbuf->buf)
+            memcpy(newbuf, pbuf->buf, pbuf->cur_len);
         pbuf->buf = newbuf;
     }
 }
