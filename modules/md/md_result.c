@@ -32,7 +32,7 @@
 static const char *dup_trim(apr_pool_t *p, const char *s)
 {
     char *d = apr_pstrdup(p, s);
-    apr_collapse_spaces(d, d);
+    if (d) apr_collapse_spaces(d, d);
     return d;
 }
 

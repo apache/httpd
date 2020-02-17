@@ -25,6 +25,7 @@ struct md_pkey_spec_t;
 
 typedef enum {
     MD_CONFIG_CA_URL,
+    MD_CONFIG_CA_CONTACT,
     MD_CONFIG_CA_PROTO,
     MD_CONFIG_BASE_DIR,
     MD_CONFIG_CA_AGREEMENT,
@@ -85,6 +86,7 @@ typedef struct md_srv_conf_t {
     md_timeslice_t *warn_window;  /* time before expiration that warning are sent out */
     
     const char *ca_url;                /* url of CA certificate service */
+    const char *ca_contact;            /* contact email registered to account */
     const char *ca_proto;              /* protocol used vs CA (e.g. ACME) */
     const char *ca_agreement;          /* accepted agreement uri between CA and user */ 
     struct apr_array_header_t *ca_challenges; /* challenge types configured */

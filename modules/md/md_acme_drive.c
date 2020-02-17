@@ -132,7 +132,7 @@ apr_status_t md_acme_drive_set_acct(md_proto_driver_t *d, md_result_t *result)
         if (!ad->md->contacts || apr_is_empty_array(md->contacts)) {
             rv = APR_EINVAL;
             md_result_printf(result, rv, "No contact information is available for MD %s. "
-                             "Configure one using the ServerAdmin directive.", md->name);            
+                             "Configure one using the MDContactEmail or ServerAdmin directive.", md->name);            
             md_result_log(result, MD_LOG_ERR);
             goto leave;
         }

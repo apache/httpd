@@ -1,6 +1,19 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.42
 
+  *) mod_md:
+     - Prefer MDContactEmail directive to ServerAdmin for registration. New directive
+       thanks to Timothe Litt (@tlhackque).
+     - protocol check for pre-configured "tls-alpn-01" challenge has been improved. It will now
+       check all matching virtual hosts for protocol support. Thanks to @mkauf.
+     - Corrected a check when OCSP stapling was configured for hosts
+       where the responsible MDomain is not clear, by Michal Karm Babacek (@Karm).
+     - Softening the restrictions where mod_md configuration directives may appear. This should
+       allow for use in <If> and <Macro> sections. If all possible variations lead to the configuration
+       you wanted in the first place, is another matter.
+     [Michael Kaufmann <mail michael-kaufmann.ch>, Timothe Litt (@tlhackque),
+      Michal Karm Babacek (@Karm), Stefan Eissing (@icing)] 
+
   *) test: Added continuous testing with Travis CI.
      This tests various scenarios on Ubuntu with the full test suite.
      Architectures tested: amd64, s390x, ppc64le, arm64

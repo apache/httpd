@@ -25,9 +25,6 @@
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-#ifdef WIN32
-#include "mpm_winnt.h"
-#endif
 #if AP_NEED_SET_MUTEX_PERMS
 #include "unixd.h"
 #endif
