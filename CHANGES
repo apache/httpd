@@ -1,19 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
-  *) mod_md:
-     - Prefer MDContactEmail directive to ServerAdmin for registration. New directive
-       thanks to Timothe Litt (@tlhackque).
-     - protocol check for pre-configured "tls-alpn-01" challenge has been improved. It will now
-       check all matching virtual hosts for protocol support. Thanks to @mkauf.
-     - Corrected a check when OCSP stapling was configured for hosts
-       where the responsible MDomain is not clear, by Michal Karm Babacek (@Karm).
-     - Softening the restrictions where mod_md configuration directives may appear. This should
-       allow for use in <If> and <Macro> sections. If all possible variations lead to the configuration
-       you wanted in the first place, is another matter.
-     [Michael Kaufmann <mail michael-kaufmann.ch>, Timothe Litt (@tlhackque),
-      Michal Karm Babacek (@Karm), Stefan Eissing (@icing)] 
-
   *) core: ap_method_mask_t type added for method bitmasks, changed
      from apr_int64_t and used for the method_mask field in
      ap_method_list_t, AP_METHOD_BIT, allowed field of request_rec,
@@ -53,26 +40,10 @@ Changes with Apache 2.5.1
 
   *) Add a config layout for OpenWRT. [Graham Leggett]
 
-  *) mod_http2: Fixed rare cases where a h2 worker could deadlock the main connection. 
-     [Yann Ylavic, Stefan Eissing]
-
   *) mod_lua: Accept nil assignments to the exposed tables (r.subprocess_env, 
      r.headers_out, etc) to remove the key from the table. PR63971. 
      [Eric Covener]
 
-  *) mod_http2: Fixed interaction with mod_reqtimeout. A loaded mod_http2 was disabling the
-     ssl handshake timeouts. Also, fixed a mistake of the last version that made `H2Direct` 
-     always `on`, regardless of configuration. Found and reported by
-     <Armin.Abfalterer@united-security-providers.ch> and
-     <Marcial.Rion@united-security-providers.ch>. [Stefan Eissing] 
-
-  *) mod_http2: Multiple field length violations in the same request no longer cause
-     several log entries to be written. [@mkauf]
-  
-  *) mod_md: v2.2.4 from github, Fixes a compile time issue with OpenSSL 1.0.2 in 
-     the new OCSP code. Skips port checks for domain server_rec selection when "tls-alpn-01" 
-     is configured explicitly (related to #133). [@mkauf, Stefan Eissing]
-  
   *) mod_ssl: Support logging private key material for use with
      wireshark via log file given by SSLKEYLOGFILE environment
      variable.  Requires OpenSSL 1.1.1.  PR 63391.  [Joe Orton]
@@ -128,23 +99,6 @@ Changes with Apache 2.5.1
   *) mod_http2: core setting "LimitRequestFieldSize" is not additionally checked on
      merged header fields, just as HTTP/1.1 does. [Stefan Eissing, Michael Kaufmann]
 
-  *) mod_http2: fixed a bug that prevented proper stream cleanup when connection
-     throttling was in place. Stream resets by clients on streams initiated by them
-     are counted as possible trigger for throttling. [Stefan Eissing] 
-
-  *) mod_http2/mpm_event: Fixes the behaviour when a HTTP/2 connection has nothing
-     more to write with streams ongoing (flow control block). The timeout waiting
-     for the client to send WINODW_UPDATE was incorrectly KeepAliveTimeout and not
-     Timeout as it should be. Fixes PR 63534. [Yann Ylavic, Stefan Eissing]
-
-  *) mod_ssl/mod_md: reversing dependency by letting mod_ssl offer hooks for
-     adding certificates and keys to a virtual host. An additional hook allows
-     answering special TLS connections as used in ACME challenges.
-     Adding 2 new hooks for init/get of OCSP stapling status information when
-     other modules want to provide those. Falls back to own implementation with
-     same behaviour as before.
-     [Stefan Eissing]
-  
   *) mod_ssl: use OPENSSL_init_ssl() to initialise OpenSSL on versions 1.1+.
      [Graham Leggett]
 
