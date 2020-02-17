@@ -1624,7 +1624,7 @@ static apr_status_t ssl_init_proxy_certs(server_rec *s,
     X509_STORE_CTX *sctx;
     X509_STORE *store = SSL_CTX_get_cert_store(mctx->ssl_ctx);
 
-#if OPENSSL_VERSION_NUMBER >= 0x1010100fL
+#if OPENSSL_VERSION_NUMBER >= 0x1010100fL && !defined(LIBRESSL_VERSION_NUMBER)
     /* For OpenSSL >=1.1.1, turn on client cert support which is
      * otherwise turned off by default (by design).
      * https://github.com/openssl/openssl/issues/6933 */
