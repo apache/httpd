@@ -239,7 +239,7 @@ static void clean_env(void)
 
     environ = &empty_ptr; /* VERY safe environment */
 
-    if ((cleanenv = (char **) ap_calloc(AP_ENVBUF, sizeof(char *))) == NULL) {
+    if ((cleanenv = (char **) calloc(AP_ENVBUF, sizeof(char *))) == NULL) {
         log_err("failed to malloc memory for environment\n");
         exit(123);
     }
