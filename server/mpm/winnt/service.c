@@ -383,7 +383,7 @@ static void __stdcall service_nt_main_fn_w(DWORD argc, LPWSTR *argv)
     apr_size_t wslen = wcslen(argv[0]) + 1;
     apr_size_t slen = wslen * 3 - 2;
 
-    service_name = malloc(slen);
+    service_name = ap_malloc(slen);
     (void)apr_conv_ucs2_to_utf8(argv[0], &wslen, service_name, &slen);
 
     /* args and service names live in the same pool */
@@ -415,7 +415,7 @@ static void __stdcall service_nt_main_fn_w(DWORD argc, LPWSTR *argv)
         DWORD i;
 
         mpm_new_argv->nalloc = mpm_new_argv->nelts + argc - 1;
-        cmb_data = malloc(mpm_new_argv->nalloc * sizeof(const char *));
+        cmb_data = ap_malloc(mpm_new_argv->nalloc * sizeof(const char *));
 
         /* mpm_new_argv remains first (of lower significance) */
         memcpy (cmb_data, mpm_new_argv->elts,
@@ -431,7 +431,7 @@ static void __stdcall service_nt_main_fn_w(DWORD argc, LPWSTR *argv)
         {
             wslen = wcslen(argv[i]) + 1;
             slen = wslen * 3 - 2;
-            service_name = malloc(slen);
+            service_name = ap_malloc(slen);
             (void)apr_conv_ucs2_to_utf8(argv[i], &wslen, *(cmb++), &slen);
         }
 
@@ -485,7 +485,7 @@ static void __stdcall service_nt_main_fn(DWORD argc, LPSTR *argv)
         char **cmb_data;
 
         mpm_new_argv->nalloc = mpm_new_argv->nelts + argc - 1;
-        cmb_data = malloc(mpm_new_argv->nalloc * sizeof(const char *));
+        cmb_data = ap_malloc(mpm_new_argv->nalloc * sizeof(const char *));
 
         /* mpm_new_argv remains first (of lower significance) */
         memcpy (cmb_data, mpm_new_argv->elts,
@@ -643,7 +643,7 @@ apr_status_t mpm_merge_service_args(apr_pool_t *p,
      * the service's default arguments (all others override them)...
      */
     args->nalloc = args->nelts + svc_args->nelts;
-    cmb_data = malloc(args->nalloc * sizeof(const char *));
+    cmb_data = ap_malloc(args->nalloc * sizeof(const char *));
 
     /* First three args (argv[0], -f, path) remain first */
     memcpy(cmb_data, args->elts, args->elt_size * fixed_args);
@@ -1090,14 +1090,14 @@ apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc,
 #if APR_HAS_UNICODE_FS
     IF_WIN_OS_IS_UNICODE
     {
-        LPWSTR *start_argv_w = malloc((argc + 1) * sizeof(LPCWSTR));
+        LPWSTR *start_argv_w = ap_malloc((argc + 1) * sizeof(LPCWSTR));
         int i;
 
         for (i = 0; i < argc; ++i)
         {
             apr_size_t slen = strlen(argv[i]) + 1;
             apr_size_t wslen = slen;
-            start_argv_w[i] = malloc(wslen * sizeof(WCHAR));
+            start_argv_w[i] = ap_malloc(wslen * sizeof(WCHAR));
             rv = apr_conv_utf8_to_ucs2(argv[i], &slen, start_argv_w[i], &wslen);
             if (rv != APR_SUCCESS)
                 return rv;
@@ -1116,7 +1116,7 @@ apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc,
 #if APR_HAS_ANSI_FS
     ELSE_WIN_OS_IS_ANSI
     {
-        char **start_argv = malloc((argc + 1) * sizeof(const char *));
+        char **start_argv = ap_malloc((argc + 1) * sizeof(const char *));
         memcpy(start_argv, argv, argc * sizeof(const char *));
         start_argv[argc] = NULL;
 

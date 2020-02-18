@@ -203,7 +203,7 @@ static void preserve(saxctxt *ctx, const size_t len)
     else while (len > (ctx->avail - ctx->offset))
         ctx->avail += ctx->cfg->bufsz;
 
-    newbuf = realloc(ctx->buf, ctx->avail);
+    newbuf = ap_realloc(ctx->buf, ctx->avail);
     if (newbuf != ctx->buf) {
         if (ctx->buf)
             apr_pool_cleanup_kill(ctx->f->r->pool, ctx->buf,

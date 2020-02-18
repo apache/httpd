@@ -217,7 +217,7 @@ apr_status_t sct_parse(const char *source,
                 + 2 + fields->extlen /* 16-bit length + extensions */
                 ;
             avail = orig_len;
-            mem = malloc(avail);
+            mem = ap_malloc(avail);
             orig_mem = mem;
             
             rv = ctutil_serialize_uint8(&mem, &avail, 0); /* version 1 */

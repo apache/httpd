@@ -113,7 +113,7 @@ static apr_status_t read_public_key(apr_pool_t *p, const char *pubkey_fname,
 static void digest_public_key(EVP_PKEY *pubkey, unsigned char digest[LOG_ID_SIZE])
 {
     int len = i2d_PUBKEY(pubkey, NULL);
-    unsigned char *val = malloc(len);
+    unsigned char *val = ap_malloc(len);
     unsigned char *tmp = val;
     SHA256_CTX sha256ctx;
 
