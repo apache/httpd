@@ -296,7 +296,7 @@
                                 </xsl:choose>
                             </xsl:variable>
 
-                            <!-- The line below is not splitted in multiple
+                            <!-- The line below is not split into multiple
                                  lines to avoid rendering a broken URL. -->
                             <a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component={$bugzilla_prefix}{name}">
 
@@ -305,7 +305,7 @@
                             </a>
                         </li>
                         <li>
-                            <!-- The line below is not splitted in multiple
+                            <!-- The line below is not split into multiple
                                  lines to avoid rendering a broken URL. -->
                             <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component={$bugzilla_prefix}{name}">
                                 <xsl:value-of
@@ -610,7 +610,7 @@
 
 <!-- ==================================================================== -->
 <!-- <context>                                                            -->
-<!-- Each entry is separeted with a comma                                 -->
+<!-- Each entry is separated with a comma                                 -->
 <!-- ==================================================================== -->
 <xsl:template match="context">
 <xsl:choose>

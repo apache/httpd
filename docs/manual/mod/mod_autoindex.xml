@@ -815,7 +815,7 @@ indexing</description>
       as usual. If you also specify a <directive
       module="mod_autoindex">ReadmeName</directive>, and if that file
       exists, The closing &lt;/body&gt;&lt;/html&gt; tags are also
-      ommitted from the output, under the assumption that you'll likely
+      omitted from the output, under the assumption that you'll likely
       put those closing tags in that file.</dd>
 
       <dt><a name="indexoptions.suppressicon"

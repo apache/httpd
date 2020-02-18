@@ -28,7 +28,7 @@ address)</description>
 <status>Base</status>
 <sourcefile>mod_authz_host.c</sourcefile>
 <identifier>authz_host_module</identifier>
-<compatibility>The <code>forward-dns</code> provider was addded in 2.4.19</compatibility>
+<compatibility>The <code>forward-dns</code> provider was added in 2.4.19</compatibility>
 
 <summary>
     <p>The authorization providers implemented by <module>mod_authz_host</module> are

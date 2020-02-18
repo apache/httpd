@@ -46,7 +46,7 @@
  * dealings in this Software without prior written authorization
  * from the individuals in question.
  *
- * Any stylesheet derived from this Software that is publically
+ * Any stylesheet derived from this Software that is publicly
  * distributed will be identified with a different name and the
  * version strings in any derived Software will be changed so that
  * no possibility of confusion between the derived package and this

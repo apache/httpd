@@ -196,6 +196,6 @@ highlight | blockquote">
 <!ATTLIST glossary ref CDATA #IMPLIED>
 
 <!-- The phonetic element should be used only within the glossary. It
-     describes a pronounciation -->
+     describes a pronunciation -->
 <!ELEMENT phonetic (#PCDATA)>
 

@@ -406,7 +406,7 @@ for a complete reference and examples.</seealso>
     filter runs <em>any</em> provider.</p>
 
     <p>Flags specified with this directive are merged with the flags 
-    that underlying providers may have registerd with 
+    that underlying providers may have registered with 
     <module>mod_filter</module>. For example, a filter may internally specify
     the equivalent of <code>change=yes</code>, but a particular 
     configuration of the module can override with <code>change=no</code>.

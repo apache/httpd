@@ -70,7 +70,7 @@
         or regex of a subsequent one.</dd>
     </dl>
 
-    <p>The <var>substitution</var> is may contain literal text and regular
+    <p>The <var>substitution</var> may contain literal text and regular
     expression backreferences</p>
 
     <example><title>Example</title>
@@ -83,7 +83,7 @@
     </example>
 
     <p>The character which is used to separate (or "delimit") the
-    various parts of the substituion string is referred to as the
+    various parts of the substitution string is referred to as the
     "delimiter", and it is most common to use a slash for this
     purpose.</p>
 

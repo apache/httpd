@@ -375,7 +375,7 @@ H2Push off
                 all bandwidth allocated to Y can be used by X.
             </p>
             <p>
-                When a stream has more than one dependant, say X1 and X2 both
+                When a stream has more than one dependent, say X1 and X2 both
                 depend on Y, the <em>weight</em> determines the bandwidth
                 allocation. If X1 and X2 have the same weight, they both get
                 half of the available bandwidth. If the weight of X1 is twice
@@ -966,7 +966,7 @@ H2TLSCoolDownSecs 0
             <p>
                 When configuring numbits of 1-8, a random number in range
                 [0, 2^numbits[ are added to each frame. The random value is chosen
-                independantly for each frame that the module sends back to the client.
+                independently for each frame that the module sends back to the client.
             </p>
             <p>
                 While more padding bytes give better message length obfuscation, they
