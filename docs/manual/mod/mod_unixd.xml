@@ -61,13 +61,16 @@ requests</description>
     </example>
 
     <p>It is recommended that you set up a new group specifically for
-    running the server. Some admins use user <code>nobody</code>,
-    but this is not always possible or desirable.</p>
+    running the server.  If the configured <directive>User</directive>
+    is a member of any supplementary groups, the process will also
+    become a member of these groups.</p>
 
     <note type="warning"><title>Security</title>
       <p>Don't set <directive>Group</directive> (or <directive
       module="mod_unixd">User</directive>) to <code>root</code> unless
-      you know exactly what you are doing, and what the dangers are.</p>
+      you know exactly what you are doing, and what the dangers are.
+      It is not recommended to use the group <code>nobody</code>,
+      which is not intended for use by long-running daemons.</p>
     </note>
 
 </usage>
@@ -106,14 +109,14 @@ requests</description>
     outside world, and similarly, the user should not be able to
     execute code that is not meant for HTTP requests. It is
     recommended that you set up a new user and group specifically for
-    running the server. Some admins use user <code>nobody</code>, but
-    this is not always desirable, since the <code>nobody</code> user
-    can have other uses on the system.</p>
+    running the server.</p>
 
     <note type="warning"><title>Security</title>
       <p>Don't set <directive>User</directive> (or <directive
       module="mod_unixd">Group</directive>) to <code>root</code> unless
-      you know exactly what you are doing, and what the dangers are.</p>
+      you know exactly what you are doing, and what the dangers are.
+      It is not recommended to use the user <code>nobody</code>,
+      which is not intended for use by long-running daemons.</p>
     </note>
 
 </usage>
