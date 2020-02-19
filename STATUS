@@ -129,17 +129,6 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-   *) mod_substitute: Don't use PREG_DOTALL
-      trunk patch: http://svn.apache.org/r1873941
-                   http://svn.apache.org/r1874090
-      2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-substitute-nodotall-v2.patch
-      +1 covener, ylavic, rpluem
-      jailletc36: This needs some doc update (RegexDefaultOptions and certainly somewhere
-                  for the util_regex.c stuff, but I've not found where :( ).
-      ylavic: maybe hold on this one, just started a discussion on dev@
-              update: added r1874090, votes reset (but covener's +1 from dev@)
-                      no docs needed anymore.
-
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
