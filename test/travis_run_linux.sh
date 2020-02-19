@@ -25,14 +25,23 @@ else
 fi
 ./configure $CONFIG
 make $MFLAGS
+
 if ! test -v SKIP_TESTING; then
+    set +e
+
+    if test -v TEST_UBSAN; then
+        export UBSAN_OPTIONS="log_path=$PWD/ubsan.log"
+    fi
+
     if test -v WITH_TEST_SUITE; then
         make check TESTS="${TEST_ARGS}"
+        RV=$?
     else
         make install
         pushd test/perl-framework
             perl Makefile.PL -apxs $HOME/build/httpd-root/bin/apxs
             make test APACHE_TEST_EXTRA_ARGS="${TEST_ARGS}"
+            RV=$?
         popd
     fi
     if test -v LITMUS; then
@@ -40,7 +49,19 @@ if ! test -v SKIP_TESTING; then
            mkdir -p t/htdocs/modules/dav
            ./t/TEST -start
            litmus http://localhost:8529/modules/dav/
+           RV=$?
            ./t/TEST -stop
         popd
     fi
+
+    if grep -q 'Segmentation fault' test/perl-framework/t/logs/error_log; then
+        grep -C5 'Segmentation fault' test/perl-framework/t/logs/error_log
+        RV=2
+    fi
+    if test -v TEST_UBSAN && ls ubsan.log.* &> /dev/null; then
+        cat ubsan.log.*
+        RV=3
+    fi
+
+    exit $RV
 fi
