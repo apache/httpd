@@ -168,7 +168,9 @@ AP_DECLARE(int) ap_regcomp(ap_regex_t * preg, const char *pattern, int cflags)
     int errcode = 0;
     int options = PCRE_DUPNAMES;
 
-    cflags |= default_cflags;
+    if ((cflags & AP_REG_NO_DEFAULT) == 0)
+        cflags |= default_cflags;
+
     if ((cflags & AP_REG_ICASE) != 0)
         options |= PCRE_CASELESS;
     if ((cflags & AP_REG_NEWLINE) != 0)
