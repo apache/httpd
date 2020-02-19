@@ -1527,13 +1527,13 @@ static apr_status_t cleanup_script(void *vptr)
 static int cgid_handler(request_rec *r)
 {
     conn_rec *c = r->connection;
-    int retval, nph, dbpos;
+    int retval, nph;
     char *argv0, *dbuf;
-    apr_bucket_brigade *bb;
+    apr_size_t dbufsize;
+    apr_bucket_brigade *bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
     apr_bucket *b;
     cgid_server_conf *conf;
     int is_included;
-    int seen_eos, child_stopped_reading;
     int sd;
     char **env;
     apr_file_t *tempsock, *script_err, *errpipe_out;
@@ -1659,87 +1659,22 @@ static int cgid_handler(request_rec *r)
     apr_file_pipe_timeout_set(tempsock, timeout);
     apr_pool_cleanup_kill(r->pool, (void *)((long)sd), close_unix_socket);
 
-    /* Transfer any put/post args, CERN style...
-     * Note that we already ignore SIGPIPE in the core server.
-     */
-    bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
-    seen_eos = 0;
-    child_stopped_reading = 0;
-    dbuf = NULL;
-    dbpos = 0;
+    /* Buffer for logging script stdout. */
     if (conf->logname) {
-        dbuf = apr_palloc(r->pool, conf->bufbytes + 1);
+        dbufsize = conf->bufbytes;
+        dbuf = apr_palloc(r->pool, dbufsize + 1);
     }
-    do {
-        apr_bucket *bucket;
-
-        rv = ap_get_brigade(r->input_filters, bb, AP_MODE_READBYTES,
-                            APR_BLOCK_READ, HUGE_STRING_LEN);
-
-        if (rv != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01270)
-                          "Error reading request entity data");
-            return ap_map_http_request_error(rv, HTTP_BAD_REQUEST);
-        }
-
-        for (bucket = APR_BRIGADE_FIRST(bb);
-             bucket != APR_BRIGADE_SENTINEL(bb);
-             bucket = APR_BUCKET_NEXT(bucket))
-        {
-            const char *data;
-            apr_size_t len;
-
-            if (APR_BUCKET_IS_EOS(bucket)) {
-                seen_eos = 1;
-                break;
-            }
-
-            /* We can't do much with this. */
-            if (APR_BUCKET_IS_FLUSH(bucket)) {
-                continue;
-            }
-
-            /* If the child stopped, we still must read to EOS. */
-            if (child_stopped_reading) {
-                continue;
-            }
-
-            /* read */
-            apr_bucket_read(bucket, &data, &len, APR_BLOCK_READ);
-
-            if (conf->logname && dbpos < conf->bufbytes) {
-                int cursize;
-
-                if ((dbpos + len) > conf->bufbytes) {
-                    cursize = conf->bufbytes - dbpos;
-                }
-                else {
-                    cursize = len;
-                }
-                memcpy(dbuf + dbpos, data, cursize);
-                dbpos += cursize;
-            }
-
-            /* Keep writing data to the child until done or too much time
-             * elapses with no progress or an error occurs.
-             */
-            rv = apr_file_write_full(tempsock, data, len, NULL);
-
-            if (rv != APR_SUCCESS) {
-                /* silly script stopped reading, soak up remaining message */
-                child_stopped_reading = 1;
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,  APLOGNO(02651)
-                              "Error writing request body to script %s", 
-                              r->filename);
-
-            }
-        }
-        apr_brigade_cleanup(bb);
+    else {
+        dbuf = NULL;
+        dbufsize = 0;
     }
-    while (!seen_eos);
 
-    if (conf->logname) {
-        dbuf[dbpos] = '\0';
+    /* Read the request body. */
+    rv = cgi_handle_request(r, tempsock, bb, dbuf, dbufsize);
+    if (rv) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01270)
+                      "Error reading request entity data");
+        return ap_map_http_request_error(rv, HTTP_BAD_REQUEST);
     }
 
     /* we're done writing, or maybe we didn't write at all;
