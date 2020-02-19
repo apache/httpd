@@ -143,8 +143,6 @@ apr_status_t ssl_load_encrypted_pkey(server_rec *s, apr_pool_t *p, int idx,
     const char *key_id = asn1_table_vhost_key(mc, p, sc->vhost_id, idx);
     EVP_PKEY *pPrivateKey = NULL;
     ssl_asn1_t *asn1;
-    unsigned char *ucp;
-    long int length;
     int nPassPhrase = (*pphrases)->nelts;
     int nPassPhraseRetry = 0;
     apr_time_t pkey_mtime = 0;
@@ -221,7 +219,7 @@ apr_status_t ssl_load_encrypted_pkey(server_rec *s, apr_pool_t *p, int idx,
          * is not empty. */
         ERR_clear_error();
 
-        pPrivateKey = modssl_read_privatekey(ppcb_arg.pkey_file, NULL,
+        pPrivateKey = modssl_read_privatekey(ppcb_arg.pkey_file,
                                              ssl_pphrase_Handle_CB, &ppcb_arg);
         /* If the private key was successfully read, nothing more to
            do here. */
@@ -351,19 +349,12 @@ apr_status_t ssl_load_encrypted_pkey(server_rec *s, apr_pool_t *p, int idx,
         nPassPhrase++;
     }
 
-    /*
-     * Insert private key into the global module configuration
-     * (we convert it to a stand-alone DER byte sequence
-     * because the SSL library uses static variables inside a
-     * RSA structure which do not survive DSO reloads!)
-     */
-    length = i2d_PrivateKey(pPrivateKey, NULL);
-    ucp = ssl_asn1_table_set(mc->tPrivateKey, key_id, length);
-    (void)i2d_PrivateKey(pPrivateKey, &ucp); /* 2nd arg increments */
+    /* Cache the private key in the global module configuration so it
+     * can be used after subsequent reloads. */
+    asn1 = ssl_asn1_table_set(mc->tPrivateKey, key_id, pPrivateKey);
 
     if (ppcb_arg.nPassPhraseDialogCur != 0) {
         /* remember mtime of encrypted keys */
-        asn1 = ssl_asn1_table_get(mc->tPrivateKey, key_id);
         asn1->source_mtime = pkey_mtime;
     }
 
@@ -613,4 +604,308 @@ int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify, void *srv)
      * And return its length to OpenSSL...
      */
     return (len);
+}
+
+
+#if defined(HAVE_OPENSSL_ENGINE_H) && defined(HAVE_ENGINE_INIT)
+
+/* OpenSSL UI implementation for passphrase entry; largely duplicated
+ * from ssl_pphrase_Handle_CB but adjusted for UI API. TODO: Might be
+ * worth trying to shift pphrase handling over to the UI API
+ * completely. */
+static int passphrase_ui_open(UI *ui)
+{
+    pphrase_cb_arg_t *ppcb = UI_get0_user_data(ui);
+    SSLSrvConfigRec *sc = mySrvConfig(ppcb->s);
+
+    ppcb->nPassPhraseDialog++;
+    ppcb->nPassPhraseDialogCur++;
+
+    /*
+     * Builtin or Pipe dialog
+     */
+    if (sc->server->pphrase_dialog_type == SSL_PPTYPE_BUILTIN
+        || sc->server->pphrase_dialog_type == SSL_PPTYPE_PIPE) {
+        if (sc->server->pphrase_dialog_type == SSL_PPTYPE_PIPE) {
+            if (!readtty) {
+                ap_log_error(APLOG_MARK, APLOG_INFO, 0, ppcb->s,
+                             APLOGNO(10143)
+                             "Init: Creating pass phrase dialog pipe child "
+                             "'%s'", sc->server->pphrase_dialog_path);
+                if (ssl_pipe_child_create(ppcb->p,
+                            sc->server->pphrase_dialog_path)
+                        != APR_SUCCESS) {
+                    ap_log_error(APLOG_MARK, APLOG_ERR, 0, ppcb->s,
+                                 APLOGNO(10144)
+                                 "Init: Failed to create pass phrase pipe '%s'",
+                                 sc->server->pphrase_dialog_path);
+                    return 0;
+                }
+            }
+            ap_log_error(APLOG_MARK, APLOG_INFO, 0, ppcb->s, APLOGNO(10145)
+                         "Init: Requesting pass phrase via piped dialog");
+        }
+        else { /* sc->server->pphrase_dialog_type == SSL_PPTYPE_BUILTIN */
+#ifdef WIN32
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, ppcb->s, APLOGNO(10146)
+                         "Init: Failed to create pass phrase pipe '%s'",
+                         sc->server->pphrase_dialog_path);
+            return 0;
+#else
+            /*
+             * stderr has already been redirected to the error_log.
+             * rather than attempting to temporarily rehook it to the terminal,
+             * we print the prompt to stdout before EVP_read_pw_string turns
+             * off tty echo
+             */
+            apr_file_open_stdout(&writetty, ppcb->p);
+
+            ap_log_error(APLOG_MARK, APLOG_INFO, 0, ppcb->s, APLOGNO(10147)
+                         "Init: Requesting pass phrase via builtin terminal "
+                         "dialog");
+#endif
+        }
+
+        /*
+         * The first time display a header to inform the user about what
+         * program he actually speaks to, which module is responsible for
+         * this terminal dialog and why to the hell he has to enter
+         * something...
+         */
+        if (ppcb->nPassPhraseDialog == 1) {
+            apr_file_printf(writetty, "%s mod_ssl (Pass Phrase Dialog)\n",
+                            AP_SERVER_BASEVERSION);
+            apr_file_printf(writetty,
+                            "A pass phrase is required to access the private key.\n");
+        }
+        if (ppcb->bPassPhraseDialogOnce) {
+            ppcb->bPassPhraseDialogOnce = FALSE;
+            apr_file_printf(writetty, "\n");
+            apr_file_printf(writetty, "Private key %s (%s)\n",
+                            ppcb->key_id, ppcb->pkey_file);
+        }
+    }
+
+    return 1;
+}
+
+static int passphrase_ui_read(UI *ui, UI_STRING *uis)
+{
+    pphrase_cb_arg_t *ppcb = UI_get0_user_data(ui);
+    SSLSrvConfigRec *sc = mySrvConfig(ppcb->s);
+    const char *prompt;
+    int i;
+    int bufsize;
+    int len;
+    char *buf;
+
+    prompt = UI_get0_output_string(uis);
+    if (prompt == NULL) {
+        prompt = "Enter pass phrase:";
+    }
+
+    /*
+     * Get the maximum expected size and allocate the buffer
+     */
+    bufsize = UI_get_result_maxsize(uis);
+    buf = apr_pcalloc(ppcb->p, bufsize);
+
+    if (sc->server->pphrase_dialog_type == SSL_PPTYPE_BUILTIN
+        || sc->server->pphrase_dialog_type == SSL_PPTYPE_PIPE) {
+        /*
+         * Get the pass phrase through a callback.
+         * Empty input is not accepted.
+         */
+        for (;;) {
+            if (sc->server->pphrase_dialog_type == SSL_PPTYPE_PIPE) {
+                i = pipe_get_passwd_cb(buf, bufsize, "", FALSE);
+            }
+            else { /* sc->server->pphrase_dialog_type == SSL_PPTYPE_BUILTIN */
+                i = EVP_read_pw_string(buf, bufsize, "", FALSE);
+            }
+            if (i != 0) {
+                OPENSSL_cleanse(buf, bufsize);
+                return 0;
+            }
+            len = strlen(buf);
+            if (len < 1){
+                apr_file_printf(writetty, "Apache:mod_ssl:Error: Pass phrase"
+                                "empty (needs to be at least 1 character).\n");
+                apr_file_puts(prompt, writetty);
+            }
+            else {
+                break;
+            }
+        }
+    }
+    /*
+     * Filter program
+     */
+    else if (sc->server->pphrase_dialog_type == SSL_PPTYPE_FILTER) {
+        const char *cmd = sc->server->pphrase_dialog_path;
+        const char **argv = apr_palloc(ppcb->p, sizeof(char *) * 3);
+        char *result;
+
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, ppcb->s, APLOGNO(10148)
+                     "Init: Requesting pass phrase from dialog filter "
+                     "program (%s)", cmd);
+
+        argv[0] = cmd;
+        argv[1] = ppcb->key_id;
+        argv[2] = NULL;
+
+        result = ssl_util_readfilter(ppcb->s, ppcb->p, cmd, argv);
+        apr_cpystrn(buf, result, bufsize);
+        len = strlen(buf);
+    }
+
+    /*
+     * Ok, we now have the pass phrase, so give it back
+     */
+    ppcb->cpPassPhraseCur = apr_pstrdup(ppcb->p, buf);
+    UI_set_result(ui, uis, buf);
+
+    /* Clear sensitive data. */
+    OPENSSL_cleanse(buf, bufsize);
+    return 1;
+}
+
+static int passphrase_ui_write(UI *ui, UI_STRING *uis)
+{
+    pphrase_cb_arg_t *ppcb = UI_get0_user_data(ui);
+    SSLSrvConfigRec *sc;
+    const char *prompt;
+
+    sc = mySrvConfig(ppcb->s);
+
+    if (sc->server->pphrase_dialog_type == SSL_PPTYPE_BUILTIN
+        || sc->server->pphrase_dialog_type == SSL_PPTYPE_PIPE) {
+        prompt = UI_get0_output_string(uis);
+        apr_file_puts(prompt, writetty);
+    }
+
+    return 1;
+}
+
+static int passphrase_ui_close(UI *ui)
+{
+    /*
+     * Close the pipes if they were opened
+     */
+    if (readtty) {
+        apr_file_close(readtty);
+        apr_file_close(writetty);
+        readtty = writetty = NULL;
+    }
+    return 1;
+}
+
+static apr_status_t pp_ui_method_cleanup(void *uip)
+{
+    UI_METHOD *uim = uip;
+    
+    UI_destroy_method(uim);
+
+    return APR_SUCCESS;
+}
+
+static UI_METHOD *get_passphrase_ui(apr_pool_t *p)
+{
+    UI_METHOD *ui_method = UI_create_method("Passphrase UI");
+
+    UI_method_set_opener(ui_method, passphrase_ui_open);
+    UI_method_set_reader(ui_method, passphrase_ui_read);
+    UI_method_set_writer(ui_method, passphrase_ui_write);
+    UI_method_set_closer(ui_method, passphrase_ui_close);
+
+    apr_pool_cleanup_register(p, ui_method, pp_ui_method_cleanup,
+                              pp_ui_method_cleanup);
+    
+    return ui_method;
+}
+#endif
+
+
+apr_status_t modssl_load_engine_keypair(server_rec *s, apr_pool_t *p,
+                                        const char *vhostid,
+                                        const char *certid, const char *keyid,
+                                        X509 **pubkey, EVP_PKEY **privkey)
+{
+#if defined(HAVE_OPENSSL_ENGINE_H) && defined(HAVE_ENGINE_INIT)
+    const char *c, *scheme;
+    ENGINE *e;
+    UI_METHOD *ui_method = get_passphrase_ui(p);
+    pphrase_cb_arg_t ppcb;
+
+    memset(&ppcb, 0, sizeof ppcb);
+    ppcb.s = s;
+    ppcb.p = p;
+    ppcb.bPassPhraseDialogOnce = TRUE;
+    ppcb.key_id = vhostid;
+    ppcb.pkey_file = keyid;
+
+    c = ap_strchr_c(keyid, ':');
+    if (!c || c == keyid) {
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10131)
+                     "Init: Unrecognized private key identifier `%s'",
+                     keyid);
+        return ssl_die(s);
+    }
+
+    scheme = apr_pstrmemdup(p, keyid, c - keyid);
+    if (!(e = ENGINE_by_id(scheme))) {
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10132)
+                     "Init: Failed to load engine for private key %s",
+                     keyid);
+        ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
+        return ssl_die(s);
+    }
+
+    if (!ENGINE_init(e)) {
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10149)
+                     "Init: Failed to initialize engine %s for private key %s",
+                     scheme, keyid);
+        ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
+        return ssl_die(s);
+    }
+
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, 
+                 "Init: Initialized engine %s for private key %s",
+                 scheme, keyid);
+
+    if (APLOGdebug(s)) {
+        ENGINE_ctrl_cmd_string(e, "VERBOSE", NULL, 0);
+    }
+
+    if (certid) {
+        struct {
+            const char *cert_id;
+            X509 *cert;
+        } params = { certid, NULL };
+
+        if (!ENGINE_ctrl_cmd(e, "LOAD_CERT_CTRL", 0, &params, NULL, 1)) {
+            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10136)
+                         "Init: Unable to get the certificate");
+            ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
+            return ssl_die(s);
+        }
+
+        *pubkey = params.cert;
+    }
+
+    *privkey = ENGINE_load_private_key(e, keyid, ui_method, &ppcb);
+    if (*privkey == NULL) {
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10133)
+                     "Init: Unable to get the private key");
+        ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
+        return ssl_die(s);
+    }
+
+    ENGINE_finish(e);
+    ENGINE_free(e);
+
+    return APR_SUCCESS;
+#else
+    return APR_ENOTIMPL;
+#endif
 }

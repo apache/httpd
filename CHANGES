@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.42
 
+  *) mod_ssl: Support use of private keys and certificates from an
+     OpenSSL ENGINE via PKCS#11 URIs in SSLCertificateFile/KeyFile.
+     [Anderson Sasaki <ansasaki redhat.com>, Joe Orton]
+
   *) mod_md:
      - Prefer MDContactEmail directive to ServerAdmin for registration. New directive
        thanks to Timothe Litt (@tlhackque).
