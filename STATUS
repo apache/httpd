@@ -132,24 +132,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   *) mod_ssl: Add support for loading certs & keys from PKCS#11 URLs via the
-               OpenSSL pkcs11 engine.  Includes related minor cleanups and
-               simplification to mod_ssl internals.
-      trunk patch: http://svn.apache.org/r1830819
-                   http://svn.apache.org/r1830912
-                   http://svn.apache.org/r1830913
-                   http://svn.apache.org/r1830927
-                   http://svn.apache.org/r1831168
-                   http://svn.apache.org/r1831173
-                   http://svn.apache.org/r1835240
-                   http://svn.apache.org/r1835242
-                   http://svn.apache.org/r1835615
-                   http://svn.apache.org/r1836547
-      2.4.x patch: https://github.com/apache/httpd/commit/709a625b8e3fd3cd3426be5a005c1c60079c8d59.patch
-      Test results: https://travis-ci.org/apache/httpd/builds/638362588
-      +1: jorton, jim, ylavic
-      minfrin: This needs mentioning in the docs.
-
    *) mod_ssl: use OPENSSL_init_ssl() to initialise OpenSSL on versions 1.1+.
       trunk patch: http://svn.apache.org/r1861950
       2.4.x patch: svn merge -c 1861950 ^/httpd/httpd/trunk . 
