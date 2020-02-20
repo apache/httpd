@@ -151,6 +151,14 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       mrumph: This patch affects only doc and comments,
               but proposing here because it changes a lot of files.
 
+  *) Add support for cross compiling to apxs. If apxs is being executed from somewhere
+     other than its target location, add that prefix to includes and library directories.
+     Without this, apxs would fail to find config_vars.mk and exit.
+     trunk patch: http://svn.apache.org/r1872042
+                  http://svn.apache.org/r1872062
+     2.4.x patch: svn merge -c 1872042,1872062 ^/httpd/httpd/trunk .
+     +1: minfrin, jim, ylavic
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -180,20 +188,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c r1872036,1872093,1872102 ^/httpd/httpd/trunk .
      +1: minfrin, jim (inspection)
 
-  *) Add support for cross compiling to apxs. If apxs is being executed from somewhere
-     other than its target location, add that prefix to includes and library directories.
-     Without this, apxs would fail to find config_vars.mk and exit.
-     trunk patch: http://svn.apache.org/r1872042
-                  http://svn.apache.org/r1872062
-     2.4.x patch: svn merge -c 1872042,1872062 ^/httpd/httpd/trunk .
-     +1: minfrin, jim
-
-   *) mod_http2: Fix an empty APLOGNO()
+  *) mod_http2: Fix an empty APLOGNO()
      trunk patch: http://svn.apache.org/r1873927
      2.4.x patch: svn merge -c 1873927 ^/httpd/httpd/trunk .
      +1: jailletc36, ylavic,
      jailletc36: Not sure how is the best way to deal with mod_http2 patches.
                  Should it be first a pull request from the github repository?
+
+  *) mpm_event: avoid possible KeepAlveTimeout off by -100 ms.
+     trunk patch: http://svn.apache.org/r1874277
+     2.4.x patch: svn merge -c 1874277 ^/httpd/httpd/trunk .
+     +1: ylavic,
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
