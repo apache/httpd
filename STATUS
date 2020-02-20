@@ -159,6 +159,13 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1872042,1872062 ^/httpd/httpd/trunk .
      +1: minfrin, jim, ylavic
 
+  *) Add a config layout for OpenWRT
+     trunk patch: http://svn.apache.org/r1872036
+                  http://svn.apache.org/r1872093
+                  http://svn.apache.org/r1872102
+     2.4.x patch: svn merge -c r1872036,1872093,1872102 ^/httpd/httpd/trunk .
+     +1: minfrin, jim (inspection), ylavic
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -180,13 +187,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              reworked, etc.. I would like to avoid a patch that is clearly wrong for some reviewer sitting here for
              months/years without any action item :)
      ylavic: will look at it ASAP..
-
-  *) Add a config layout for OpenWRT
-     trunk patch: http://svn.apache.org/r1872036
-                  http://svn.apache.org/r1872093
-                  http://svn.apache.org/r1872102
-     2.4.x patch: svn merge -c r1872036,1872093,1872102 ^/httpd/httpd/trunk .
-     +1: minfrin, jim (inspection)
 
   *) mod_http2: Fix an empty APLOGNO()
      trunk patch: http://svn.apache.org/r1873927
