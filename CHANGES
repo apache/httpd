@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mpm_event: avoid possible KeepAlveTimeout off by -100 ms.
+     [Eric Covener, Yann Ylavic]
+
   *) core: ap_method_mask_t type added for method bitmasks, changed
      from apr_int64_t and used for the method_mask field in
      ap_method_list_t, AP_METHOD_BIT, allowed field of request_rec,

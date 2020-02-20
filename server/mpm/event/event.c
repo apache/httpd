@@ -1734,7 +1734,8 @@ static void process_timeout_queue(struct timeout_queue *q,
                  */
                 apr_time_t q_expiry = cs->queue_timestamp + qp->timeout;
                 apr_time_t next_expiry = queues_next_expiry;
-                if (!next_expiry || next_expiry > q_expiry) {
+                if (!next_expiry
+                        || next_expiry > q_expiry + TIMEOUT_FUDGE_FACTOR) {
                     queues_next_expiry = q_expiry;
                 }
                 break;
@@ -2163,8 +2164,6 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
          * with and without wake-ability.
          */
         if (timeout_time && timeout_time < (now = apr_time_now())) {
-            timeout_time = now + TIMEOUT_FUDGE_FACTOR;
-
             /* handle timed out sockets */
             apr_thread_mutex_lock(timeout_mutex);
 
@@ -2176,16 +2175,16 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                 process_keepalive_queue(0); /* kill'em all \m/ */
             }
             else {
-                process_keepalive_queue(timeout_time);
+                process_keepalive_queue(now);
             }
             /* Step 2: write completion timeouts */
-            process_timeout_queue(write_completion_q, timeout_time,
+            process_timeout_queue(write_completion_q, now,
                                   start_lingering_close_nonblocking);
             /* Step 3: (normal) lingering close completion timeouts */
-            process_timeout_queue(linger_q, timeout_time,
+            process_timeout_queue(linger_q, now,
                                   stop_lingering_close);
             /* Step 4: (short) lingering close completion timeouts */
-            process_timeout_queue(short_linger_q, timeout_time,
+            process_timeout_queue(short_linger_q, now,
                                   stop_lingering_close);
 
             apr_thread_mutex_unlock(timeout_mutex);
