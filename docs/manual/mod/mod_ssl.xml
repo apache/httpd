@@ -894,7 +894,7 @@ SSLCipherSuite RSA:!EXP:!NULL:+HIGH:+MEDIUM:-LOW
 <syntax>SSLCertificateFile <var>file-path</var>|<var>certid</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility><var>certid</var> available in 2.5.1 and later.</compatibility>
+<compatibility><var>certid</var> available in 2.4.42 and later.</compatibility>
 
 <usage>
 <p>
@@ -1011,7 +1011,7 @@ SSLCertificateFile "pkcs11:token=My%20Token%20Name;id=45"
 <syntax>SSLCertificateKeyFile <var>file-path</var>|<var>keyid</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility><var>keyid</var> available in 2.5.1 and later.</compatibility>
+<compatibility><var>keyid</var> available in 2.4.42 and later.</compatibility>
 
 <usage>
 <p>
