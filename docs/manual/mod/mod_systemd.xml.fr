@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1873715:1873889 (outdated) -->
+<!-- English Revision: 1873889 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -37,6 +37,41 @@
     <a
     href="https://www.freedesktop.org/software/systemd/man/systemd.service.html">systemd.service(5)</a>
     pour plus de détails). Le module est activé s'il est chargé.</p>
+
+    <example>
+    <title>Exemple basique d'unité de service systemd (à étoffer pour un système en
+    production)</title>
+    <pre>
+[Unit]
+Description=The Apache HTTP Server
+After=network.target
+
+[Service]
+Type=notify
+ExecStart=/usr/local/apache2/bin/httpd -D FOREGROUND -k start
+ExecReload=/usr/local/apache2/bin/httpd -k graceful
+KillMode=mixed
+
+[Install]
+WantedBy=multi-user.target
+    </pre>
+    </example>
+
+   <p>Si vous utilisez <code>ExecStop</code> et/ou <code>KillMode</code>, vous
+   devez prêter une attention particulière à leur configuration pour ce service.
+   Si elle est présente, une commande <code>ExecStop</code> doit être une
+   <em>operation synchrone</em> qui se termine elle-même en même temps que le
+   démon. Cette condition n'est pas satisfaite si vous exécutez la commande
+   <code>httpd -k stop</code> de manière <em>asynchrone</em>, car elle initie
+   l'arrêt du démon. L'exemple ci-dessus utilise <code>KillMode=mixed</code>
+   afin que systemd envoie <code>SIGTERM</code> au processus parent (et
+   seulement à ce dernier) pour lui indiquer qu'il doit s'arrêter. Les processus
+   encore en cours d'exécution après un temps égal à <code>TimeoutStopSec</code>
+   recevront alors le signal <code>SIGKILL</code>. Voir <a
+   href="https://www.freedesktop.org/software/systemd/man/systemd.kill.html">systemd.kill(5)</a>
+   pour plus d'informations.</p>
+    
+   <p>Ce module ne fournit pas le support de l'activation du socket Systemd.</p>
 
     <p><directive module="core">ExtendedStatus</directive> est activé par défaut
     si le module est chargé. Si <directive
