@@ -29,6 +29,12 @@ make $MFLAGS
 if ! test -v SKIP_TESTING; then
     set +e
 
+    if test -v TEST_MALLOC; then
+        # Enable enhanced glibc malloc debugging, see mallopt(3)
+        export MALLOC_PERTURB_=65 MALLOC_CHECK_=3
+        export LIBC_FATAL_STDERR_=1
+    fi
+
     if test -v TEST_UBSAN; then
         export UBSAN_OPTIONS="log_path=$PWD/ubsan.log"
     fi
@@ -58,9 +64,18 @@ if ! test -v SKIP_TESTING; then
         grep -C5 'Segmentation fault' test/perl-framework/t/logs/error_log
         RV=2
     fi
+
     if test -v TEST_UBSAN && ls ubsan.log.* &> /dev/null; then
         cat ubsan.log.*
         RV=3
+    fi
+
+    # With LIBC_FATAL_STDERR_/MALLOC_CHECK_ glibc will abort when
+    # malloc errors are detected.  This should get caught by the
+    # segfault grep above, but in case it is not, catch it here too:
+    if grep 'glibc detected' test/perl-framework/t/logs/error_log; then
+        grep -C20 'glibc detected' test/perl-framework/t/logs/error_log
+        RV=4
     fi
 
     exit $RV

@@ -82,10 +82,29 @@ matrix:
            SKIP_TESTING=1
       addons:
         apt:
-          sources:
-            - ubuntu-toolchain-r-test
           packages:
             - gcc-8
+            - libtool-bin
+            - libapr1-dev
+            - libaprutil1-dev
+            - perl-doc
+            - lua5.3-dev
+            - libbrotli-dev
+            - libcurl4-openssl-dev
+            - libsystemd-dev
+            - libnghttp2-dev
+            - libjansson-dev
+            - libpcre2-dev
+    # -------------------------------------------------------------------------
+    - name: Linux Ubuntu, GCC 9 maintainer-mode w/-Werror
+      env: CONFIG="--enable-mods-shared=reallyall --enable-maintainer-mode NOTEST_CFLAGS=-Werror CC=gcc-9"
+           SKIP_TESTING=1
+      addons:
+        apt:
+          sources:
+            - sourceline: 'ppa:ubuntu-toolchain-r/test'
+          packages:
+            - gcc-9
             - libtool-bin
             - libapr1-dev
             - libaprutil1-dev
@@ -136,9 +155,9 @@ matrix:
     # -------------------------------------------------------------------------
     - name: Linux Ubuntu, APR 1.7.0 --enable-pool-debug, APR-util 1.6.1
       env: APR_VERSION=1.7.0 APR_CONFIG="--enable-pool-debug"
-           APU_VERSION=1.6.1
-           APU_CONFIG="--with-crypto"
+           APU_VERSION=1.6.1 APU_CONFIG="--with-crypto"
            CONFIG="--enable-mods-shared=reallyall"
+           TEST_MALLOC=1
     # -------------------------------------------------------------------------
     - name: Linux Ubuntu, litmus WebDAV tests
       env: CONFIG="--enable-dav --enable-dav-fs"
