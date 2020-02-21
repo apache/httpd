@@ -33,7 +33,7 @@
     <summary>
         <p>
         This module manages common properties of domains for one or more virtual hosts. 
-        Its serves two main purposes: for one, supervise/renew https: certificates via the 
+        Its serves two main purposes: for one, supervise/renew TLS certificates via the 
         ACME protocol (<a href="https://tools.ietf.org/html/rfc8555">RFC 8555</a>). 
         Certificates will be renewed by the module ahead of their expiration to account 
         for disruption in internet services. There are ways to monitor the status of all 
