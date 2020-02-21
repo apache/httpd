@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.42
 
+  *) Add a config layout for OpenWRT. [Graham Leggett]
+
   *) Add support for cross compiling to apxs. If apxs is being executed from somewhere
      other than its target location, add that prefix to includes and library directories.
      Without this, apxs would fail to find config_vars.mk and exit. [Graham Leggett]
