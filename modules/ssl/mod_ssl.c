@@ -24,6 +24,7 @@
  *  Apache API interface structures
  */
 
+#include "ap_config_auto.h"
 #include "ssl_private.h"
 #include "mod_ssl.h"
 #include "mod_ssl_openssl.h"
@@ -328,9 +329,16 @@ static int modssl_is_prelinked(void)
 
 static apr_status_t ssl_cleanup_pre_config(void *data)
 {
-    /*
-     * Try to kill the internals of the SSL library.
+#if HAVE_OPENSSL_INIT_SSL
+    /* Openssl v1.1+ handles all termination automatically. Do
+     * nothing in this case.
      */
+
+#else
+    /* Termination below is for legacy Openssl versions v1.0.x and
+     * older.
+     */
+
     /* Corresponds to OBJ_create()s */
     OBJ_cleanup();
     /* Corresponds to OPENSSL_load_builtin_modules() */
@@ -370,12 +378,14 @@ static apr_status_t ssl_cleanup_pre_config(void *data)
     if (!modssl_running_statically) {
         CRYPTO_cleanup_all_ex_data();
     }
+#endif
 
     /*
      * TODO: determine somewhere we can safely shove out diagnostics
      *       (when enabled) at this late stage in the game:
      * CRYPTO_mem_leaks_fp(stderr);
      */
+
     return APR_SUCCESS;
 }
 
@@ -385,16 +395,22 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
 {
     modssl_running_statically = modssl_is_prelinked();
 
-    /* Some OpenSSL internals are allocated per-thread, make sure they
-     * are associated to the/our same thread-id until cleaned up.
+#if HAVE_OPENSSL_INIT_SSL
+    /* Openssl v1.1+ handles all initialisation automatically, apart
+     * from hints as to how we want to use the library.
+     *
+     * We tell openssl we want to include engine support.
      */
+    OPENSSL_init_ssl(OPENSSL_INIT_ENGINE_ALL_BUILTIN, NULL);
+
+#else
+    /* Configuration below is for legacy versions Openssl v1.0 and
+     * older.
+     */
+
 #if APR_HAS_THREADS && MODSSL_USE_OPENSSL_PRE_1_1_API
     ssl_util_thread_id_setup(pconf);
 #endif
-
-    /* We must register the library in full, to ensure our configuration
-     * code can successfully test the SSL environment.
-     */
 #if MODSSL_USE_OPENSSL_PRE_1_1_API || defined(LIBRESSL_VERSION_NUMBER)
     (void)CRYPTO_malloc_init();
 #else
@@ -408,6 +424,7 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
 #endif
     OpenSSL_add_all_algorithms();
     OPENSSL_load_builtin_modules();
+#endif
 
     if (OBJ_txt2nid("id-on-dnsSRV") == NID_undef) {
         (void)OBJ_create("1.3.6.1.5.5.7.8.7", "id-on-dnsSRV",

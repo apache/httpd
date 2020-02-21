@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.42
 
+  *) mod_ssl: use OPENSSL_init_ssl() to initialise OpenSSL on versions 1.1+.
+     [Graham Leggett]
+
   *) mod_ssl: Support use of private keys and certificates from an
      OpenSSL ENGINE via PKCS#11 URIs in SSLCertificateFile/KeyFile.
      [Anderson Sasaki <ansasaki redhat.com>, Joe Orton]
