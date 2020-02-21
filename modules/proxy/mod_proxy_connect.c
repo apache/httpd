@@ -39,7 +39,7 @@ module AP_MODULE_DECLARE_DATA proxy_connect_module;
  *        that may be okay, since the data is supposed to
  *        be transparent. In fact, this doesn't log at all
  *        yet. 8^)
- * FIXME: doesn't check any headers initally sent from the
+ * FIXME: doesn't check any headers initially sent from the
  *        client.
  * FIXME: should allow authentication, but hopefully the
  *        generic proxy authentication is good enough.

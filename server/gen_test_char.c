@@ -123,7 +123,7 @@ int main(int argc, char *argv[])
 
         /* Stop for any non-'token' character, including ctrls, obs-text,
          * and "tspecials" (RFC2068) a.k.a. "separators" (RFC2616), which
-         * is easer to express as characters remaining in the ASCII token set
+         * is easier to express as characters remaining in the ASCII token set
          */
         if (!c || !(apr_isalnum(c) || strchr("!#$%&'*+-.^_`|~", c))) {
             flags |= T_HTTP_TOKEN_STOP;

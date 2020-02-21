@@ -199,7 +199,7 @@ apr_status_t h2_stream_add_header(h2_stream *stream,
                                   const char *name, size_t nlen,
                                   const char *value, size_t vlen);
                                   
-/* End the contruction of request headers */
+/* End the construction of request headers */
 apr_status_t h2_stream_end_headers(h2_stream *stream, int eos, size_t raw_bytes);
 
 

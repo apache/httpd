@@ -40,7 +40,7 @@ apr_status_t md_status_get_json(struct md_json_t **pjson, apr_array_header_t *md
 
 /**
  * Take stock of all MDs given for a short overview. The JSON returned
- * will carry intergers for MD_KEY_COMPLETE, MD_KEY_RENEWING, 
+ * will carry integers for MD_KEY_COMPLETE, MD_KEY_RENEWING, 
  * MD_KEY_ERRORED, MD_KEY_READY and MD_KEY_TOTAL.
  */
 void  md_status_take_stock(struct md_json_t **pjson, apr_array_header_t *mds, 
@@ -101,7 +101,7 @@ void md_job_log_append(md_job_t *job, const char *type,
                        const char *status, const char *detail);
 
 /**
- * Retrieve the lastest log entry of a certain type.
+ * Retrieve the latest log entry of a certain type.
  */
 md_json_t *md_job_log_get_latest(md_job_t *job, const char *type);
 

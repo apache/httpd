@@ -178,7 +178,7 @@ static const command_rec isapi_cmds[] = {
                      " on or off (default: off)"),
     AP_INIT_FLAG("ISAPIAppendLogToQuery", ap_set_flag_slot,
         (void *)APR_OFFSETOF(isapi_dir_conf, log_to_query),
-        OR_FILEINFO, "Append Log requests are concatinated to the query args"
+        OR_FILEINFO, "Append Log requests are concatenated to the query args"
                      " on or off (default: on)"),
     AP_INIT_FLAG("ISAPIFakeAsync", ap_set_flag_slot,
         (void *)APR_OFFSETOF(isapi_dir_conf, fake_async),
@@ -257,7 +257,7 @@ static apr_status_t isapi_load(apr_pool_t *p, server_rec *s, isapi_loaded *isa)
 
     isa->isapi_version = apr_pcalloc(p, sizeof(HSE_VERSION_INFO));
 
-    /* TODO: These aught to become overrideable, so that we
+    /* TODO: These aught to become overridable, so that we
      * assure a given isapi can be fooled into behaving well.
      *
      * The tricky bit, they aren't really a per-dir sort of

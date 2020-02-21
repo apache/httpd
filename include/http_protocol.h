@@ -798,8 +798,7 @@ AP_DECLARE_HOOK(int,protocol_propose,(conn_rec *c, request_rec *r,
  * @param c The current connection
  * @param r The current request or NULL
  * @param s The server/virtual host selected
- * @param choices A list of protocol identifiers, normally the clients whishes
- * @param proposals the list of protocol identifiers proposed by the hooks
+ * @param protocol The protocol identifier we try to switch to
  * @return OK or DECLINED
  * @bug This API or implementation and order of operations should be considered
  * experimental and will continue to evolve in future 2.4 releases, with

@@ -593,7 +593,7 @@ static int ap_proxy_http_prefetch(proxy_http_req_t *req,
      * Because the new logic looks at input_brigade, we will self-terminate
      * input_brigade and jump past all of the request body logic...
      * Reading anything with ap_get_brigade is likely to consume the
-     * main request's body or read beyond EOS - which would be unplesant.
+     * main request's body or read beyond EOS - which would be unpleasant.
      *
      * An exception: when a kept_body is present, then subrequest CAN use
      * pass request bodies, and we DONT skip the body.
@@ -721,7 +721,7 @@ static int ap_proxy_http_prefetch(proxy_http_req_t *req,
      * To reduce server resource use,   setenv proxy-sendchunked
      *
      * Then address specific servers with conditional setenv
-     * options to restore the default behavior where desireable.
+     * options to restore the default behavior where desirable.
      *
      * We have to compute content length by reading the entire request
      * body; if request body is not small, we'll spool the remaining
@@ -1365,7 +1365,7 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
 
             /* read the headers. */
             /* N.B. for HTTP/1.0 clients, we have to fold line-wrapped headers*/
-            /* Also, take care with headers with multiple occurences. */
+            /* Also, take care with headers with multiple occurrences. */
 
             /* First, tuck away all already existing cookies */
             save_table = apr_table_make(r->pool, 2);

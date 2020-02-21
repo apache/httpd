@@ -298,11 +298,11 @@ static const char* regen_key(apr_pool_t *p, apr_table_t *headers,
      *  HTTP URI's (3.2.3) [host and scheme are insensitive]
      *  HTTP method (5.1.1)
      *  HTTP-date values (3.3.1)
-     *  3.7 Media Types [exerpt]
+     *  3.7 Media Types [excerpt]
      *     The type, subtype, and parameter attribute names are case-
      *     insensitive. Parameter values might or might not be case-sensitive,
      *     depending on the semantics of the parameter name.
-     *  4.20 Except [exerpt]
+     *  4.20 Except [excerpt]
      *     Comparison of expectation values is case-insensitive for unquoted
      *     tokens (including the 100-continue token), and is case-sensitive for
      *     quoted-string expectation-extensions.

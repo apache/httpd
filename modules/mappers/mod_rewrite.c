@@ -4090,7 +4090,7 @@ static int apply_rewrite_rule(rewriterule_entry *p, rewrite_ctx *ctx)
         }
 
         /* Additionally we strip the physical path from the url to match
-         * it independent from the underlaying filesystem.
+         * it independent from the underlying filesystem.
          */
         if (!is_proxyreq && strlen(ctx->uri) >= dirlen &&
             !strncmp(ctx->uri, ctx->perdir, dirlen)) {

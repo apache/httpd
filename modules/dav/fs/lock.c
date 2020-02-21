@@ -953,7 +953,7 @@ static dav_error * dav_fs_add_locknull_state(
 
 /*
 ** dav_fs_remove_locknull_state:  Given a request, check to see if r->filename
-**    is/was a lock-null resource.  If so, return it to an existant state, i.e.
+**    is/was a lock-null resource.  If so, return it to an existent state, i.e.
 **    remove it from the list in the appropriate .DAV/locknull file.
 */
 static dav_error * dav_fs_remove_locknull_state(

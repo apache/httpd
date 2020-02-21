@@ -588,8 +588,8 @@ apr_status_t md_acme_authz_respond(md_acme_authz_t *authz, md_acme_t *acme, md_s
      * - if setup failed, continue to look for another supported challenge type
      * - if there is no overlap in types, tell the user that she has to configure
      *   either more types (dns, tls-alpn-01), make ports available or refrain
-     *   from useing wildcard domains when dns is not available. etc.
-     * - if there was an overlap, but no setup was successfull, report that. We
+     *   from using wildcard domains when dns is not available. etc.
+     * - if there was an overlap, but no setup was successful, report that. We
      *   will retry this, maybe the failure is temporary (e.g. command to setup DNS
      */
     rv = APR_ENOTIMPL;

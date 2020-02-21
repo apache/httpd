@@ -784,7 +784,7 @@ AP_DECLARE(void) ap_listen_pre_config(void)
          *
          * *BSDs have SO_REUSEPORT too but with a different semantic: the first
          * wildcard address bound socket or the last non-wildcard address bound
-         * socket will receive connections (no evenness garantee); the rest of
+         * socket will receive connections (no evenness guarantee); the rest of
          * the sockets bound to the same port will not.
          * This can't (always) work for httpd.
          *

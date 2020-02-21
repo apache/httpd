@@ -45,7 +45,7 @@
 /*
  * Various utility functions which are common to a whole lot of
  * script-type extensions mechanisms, and might as well be gathered
- * in one place (if only to avoid creating inter-module dependancies
+ * in one place (if only to avoid creating inter-module dependencies
  * where there don't have to be).
  */
 

@@ -506,7 +506,7 @@ static void doRotate(rotate_config_t *config, rotate_status_t *status)
 /*
  * Get a size or time param from a string.
  * Parameter 'last' indicates, whether the
- * argument is the last commadnline argument.
+ * argument is the last commandline argument.
  * UTC offset is only allowed as a last argument
  * in order to make is distinguishable from the
  * rotation interval time.

@@ -26,7 +26,7 @@
  *
  * Each child process consists of a pool of worker threads and a
  * main thread that accepts connections & passes them to the workers via
- * a work queue. The worker thread pool is dynamic, managed by a maintanence
+ * a work queue. The worker thread pool is dynamic, managed by a maintenance
  * thread so that the number of idle threads is kept between
  * min_spare_threads & max_spare_threads.
  *

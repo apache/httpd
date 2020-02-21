@@ -61,7 +61,7 @@ Changes with Apache 2.4.42
 
   *) mod_http2: Fixed interaction with mod_reqtimeout. A loaded mod_http2 was disabling the
      ssl handshake timeouts. Also, fixed a mistake of the last version that made `H2Direct` 
-     always `on`, irregardless of configuration. Found and reported by
+     always `on`, regardless of configuration. Found and reported by
      <Armin.Abfalterer@united-security-providers.ch> and
      <Marcial.Rion@united-security-providers.ch>. [Stefan Eissing] 
 

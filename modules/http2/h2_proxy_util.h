@@ -185,7 +185,7 @@ struct h2_proxy_request {
     
     apr_time_t request_time;
     
-    unsigned int chunked : 1;   /* iff requst body needs to be forwarded as chunked */
+    unsigned int chunked : 1;   /* iff request body needs to be forwarded as chunked */
     unsigned int serialize : 1; /* iff this request is written in HTTP/1.1 serialization */
 };
 

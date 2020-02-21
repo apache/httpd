@@ -437,7 +437,7 @@ static int send_handles_to_child(apr_pool_t *p,
  * get_listeners_from_parent()
  * The listen sockets are opened in the parent. This function, which runs
  * exclusively in the child process, receives them from the parent and
- * makes them availeble in the child.
+ * makes them available in the child.
  */
 static void get_listeners_from_parent(server_rec *s)
 {
@@ -743,7 +743,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
  * of this event means that the child process has exited prematurely
  * due to a seg fault or other irrecoverable error. For server
  * robustness, master_main will restart the child process under this
- * condtion.
+ * condition.
  *
  * master_main uses the child_exit_event to signal the child process
  * to exit.
@@ -1130,7 +1130,7 @@ static void winnt_rewrite_args(process_rec *process)
                      "Failed to get the full path of %s", process->argv[0]);
         exit(APEXIT_INIT);
     }
-    /* WARNING: There is an implict assumption here that the
+    /* WARNING: There is an implicit assumption here that the
      * executable resides in ServerRoot or ServerRoot\bin
      */
     def_server_root = (char *) apr_filepath_name_get(binpath);
@@ -1377,7 +1377,7 @@ static int winnt_pre_config(apr_pool_t *pconf_, apr_pool_t *plog, apr_pool_t *pt
         ap_exists_config_define("DEBUG"))
         one_process = -1;
 
-    /* XXX: presume proper privilages; one nice thing would be
+    /* XXX: presume proper privileges; one nice thing would be
      * a loud emit if running as "LocalSystem"/"SYSTEM" to indicate
      * they should change to a user with write access to logs/ alone.
      */
@@ -1604,7 +1604,7 @@ static int winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pt
             CleanNullACL((void *)sa);
 
             /* Create the start mutex, as an unnamed object for security.
-             * Ths start mutex is used during a restart to prevent more than
+             * The start mutex is used during a restart to prevent more than
              * one child process from entering the accept loop at once.
              */
             rv =  apr_proc_mutex_create(&start_mutex, NULL,

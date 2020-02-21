@@ -70,7 +70,7 @@ module AP_MODULE_DECLARE_DATA xml2enc_module;
         (((enc)!=XML_CHAR_ENCODING_NONE)&&((enc)!=XML_CHAR_ENCODING_ERROR))
 
 /*
- * XXX: Check all those ap_assert()s ans replace those that should not happen
+ * XXX: Check all those ap_assert()s and replace those that should not happen
  * XXX: with AP_DEBUG_ASSERT and those that may happen with proper error
  * XXX: handling.
  */

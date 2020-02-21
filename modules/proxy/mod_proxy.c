@@ -149,7 +149,7 @@ static const char *set_worker_param(apr_pool_t *p,
             return "Max must be a positive number";
         worker->s->hmax = ival;
     }
-    /* XXX: More inteligent naming needed */
+    /* XXX: More intelligent naming needed */
     else if (!strcasecmp(key, "smax")) {
         /* Maximum number of connections to remote that
          * will not be destroyed
@@ -3023,7 +3023,7 @@ static int proxy_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
 
     APR_OPTIONAL_HOOK(ap, status_hook, proxy_status_hook, NULL, NULL,
                       APR_HOOK_MIDDLE);
-    /* Reset workers count on gracefull restart */
+    /* Reset workers count on graceful restart */
     proxy_lb_workers = 0;
     set_worker_hc_param_f = APR_RETRIEVE_OPTIONAL_FN(set_worker_hc_param);
     return OK;

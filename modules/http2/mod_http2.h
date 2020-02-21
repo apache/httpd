@@ -35,7 +35,7 @@ APR_DECLARE_OPTIONAL_FN(int,
 
 /* The following functions were introduced for the experimental mod_proxy_http2
  * support, but have been abandoned since.
- * They are still declared here for backward compatibiliy, in case someone
+ * They are still declared here for backward compatibility, in case someone
  * tries to build an old mod_proxy_http2 against it, but will disappear
  * completely sometime in the future.
  */ 

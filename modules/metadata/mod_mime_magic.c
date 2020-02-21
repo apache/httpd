@@ -2176,7 +2176,7 @@ static int uncompress(request_rec *r, int method,
     parm.method = method;
 
     /* We make a sub_pool so that we can collect our child early, otherwise
-     * there are cases (i.e. generating directory indicies with mod_autoindex)
+     * there are cases (i.e. generating directory indices with mod_autoindex)
      * where we would end up with LOTS of zombies.
      */
     if (apr_pool_create(&sub_context, r->pool) != APR_SUCCESS)

@@ -934,7 +934,7 @@ static apr_status_t ssl_filter_write(ap_filter_t *f,
                                alloc)
 
 /* Custom apr_status_t error code, used when a plain HTTP request is
- * recevied on an SSL port. */
+ * received on an SSL port. */
 #define MODSSL_ERROR_HTTP_ON_HTTPS (APR_OS_START_USERERR + 0)
 
 /* Custom apr_status_t error code, used when the proxy cannot
@@ -1943,7 +1943,7 @@ static apr_status_t ssl_io_filter_buffer(ap_filter_t *f,
     }
 
     if (APR_BRIGADE_EMPTY(ctx->bb)) {
-        /* Suprisingly (and perhaps, wrongly), the request body can be
+        /* Surprisingly (and perhaps, wrongly), the request body can be
          * pulled from the input filter stack more than once; a
          * handler may read it, and ap_discard_request_body() will
          * attempt to do so again after *every* request.  So input

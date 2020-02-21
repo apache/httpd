@@ -256,7 +256,7 @@ static void destroy_and_exit_process(process_rec *process,
      * Sleep for TASK_SWITCH_SLEEP micro seconds to cause a task switch on
      * OS layer and thus give possibly started piped loggers a chance to
      * process their input. Otherwise it is possible that they get killed
-     * by us before they can do so. In this case maybe valueable log messages
+     * by us before they can do so. In this case maybe valuable log messages
      * might get lost.
      */
     apr_sleep(TASK_SWITCH_SLEEP);

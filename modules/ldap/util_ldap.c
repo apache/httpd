@@ -250,7 +250,7 @@ static apr_status_t util_ldap_connection_remove (void *param)
     apr_thread_mutex_unlock(st->mutex);
 #endif
 
-    /* Destory the pool associated with this connection */
+    /* Destroy the pool associated with this connection */
 
     apr_pool_destroy(ldc->pool);
 
@@ -2874,7 +2874,7 @@ static void *util_ldap_merge_config(apr_pool_t *p, void *basev,
         able to handle the connection timeout per-connection
         but the Novell SDK cannot.  Allowing the timeout to
         be set by each vhost is of little value so rather than
-        trying to make special expections for one LDAP SDK, GLOBAL_ONLY
+        trying to make special exceptions for one LDAP SDK, GLOBAL_ONLY
         is being enforced on this setting as well. */
     st->connectionTimeout = base->connectionTimeout;
     st->opTimeout = base->opTimeout;

@@ -670,7 +670,7 @@ int md_reg_should_warn(md_reg_t *reg, const md_t *md, apr_pool_t *p)
 }
 
 /**************************************************************************************************/
-/* synching */
+/* syncing */
 
 apr_status_t md_reg_set_props(md_reg_t *reg, apr_pool_t *p, int can_http, int can_https)
 {
@@ -836,7 +836,7 @@ leave:
 }
 
 /** 
- * Finish synching an MD with the store. 
+ * Finish syncing an MD with the store. 
  * 1. if there are changed properties (or if the MD is new), save it.
  * 2. read any existing certificate and init the state of the memory MD
  */

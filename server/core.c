@@ -737,7 +737,7 @@ AP_DECLARE(int) ap_allow_overrides(request_rec *r)
 
 /*
  * Optional function coming from mod_authn_core, used for
- * retrieving the type of autorization
+ * retrieving the type of authorization
  */
 static APR_OPTIONAL_FN_TYPE(authn_ap_auth_type) *authn_ap_auth_type;
 

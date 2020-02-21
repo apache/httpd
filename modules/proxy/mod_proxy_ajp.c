@@ -242,7 +242,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
-    /* read the first bloc of data */
+    /* read the first block of data */
     input_brigade = apr_brigade_create(p, r->connection->bucket_alloc);
     tenc = apr_table_get(r->headers_in, "Transfer-Encoding");
     if (tenc && (strcasecmp(tenc, "chunked") == 0)) {

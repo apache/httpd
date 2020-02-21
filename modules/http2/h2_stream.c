@@ -446,7 +446,7 @@ apr_status_t h2_stream_recv_frame(h2_stream *stream, int ftype, int flags, size_
                 ap_assert(stream->request == NULL);
                 if (stream->rtmp == NULL) {
                     /* This can only happen, if the stream has received no header
-                     * name/value pairs at all. The lastest nghttp2 version have become
+                     * name/value pairs at all. The latest nghttp2 version have become
                      * pretty good at detecting this early. In any case, we have
                      * to abort the connection here, since this is clearly a protocol error */
                     return APR_EINVAL;

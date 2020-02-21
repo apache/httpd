@@ -123,7 +123,7 @@ typedef struct {
 } authz_provider;
 
 /* ap_authn_cache_store: Optional function for authn providers
- * to enable cacheing their lookups with mod_authn_cache
+ * to enable caching their lookups with mod_authn_cache
  * @param r The request rec
  * @param module Module identifier
  * @param user User name to authenticate

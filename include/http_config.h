@@ -786,7 +786,7 @@ AP_DECLARE(void) ap_remove_module(module *m);
 AP_DECLARE(const char *) ap_add_loaded_module(module *mod, apr_pool_t *p,
                                               const char *s);
 /**
- * Remove a module fromthe chained modules list and the list of loaded modules
+ * Remove a module from the chained modules list and the list of loaded modules
  * @param mod the module structure of the module to remove
  */
 AP_DECLARE(void) ap_remove_loaded_module(module *mod);
@@ -907,7 +907,7 @@ AP_DECLARE(const char *) ap_build_cont_config(apr_pool_t *p,
  * @param conf_pool The pconf pool
  * @param temp_pool The temporary pool
  * @param conftree Place to store the root node of the config tree
- * @return Error string on erro, NULL otherwise
+ * @return Error string on error, NULL otherwise
  * @note If conf_pool == temp_pool, ap_build_config() will assume .htaccess
  *       context and use a lower maximum line length.
  */
@@ -1069,7 +1069,7 @@ AP_DECLARE(void) ap_run_rewrite_args(process_rec *process);
 
 /**
  * Run the register hooks function for a specified module
- * @param m The module to run the register hooks function fo
+ * @param m The module to run the register hooks function from
  * @param p The pool valid for the lifetime of the module
  */
 AP_DECLARE(void) ap_register_hooks(module *m, apr_pool_t *p);

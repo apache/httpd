@@ -879,7 +879,7 @@ static apr_status_t md_post_config_before_ssl(apr_pool_t *p, apr_pool_t *plog,
 
     /* How to bootstrap this module:
      * 1. find out if we know if http: and/or https: requests will arrive
-     * 2. apply the now complete configuration setttings to the MDs
+     * 2. apply the now complete configuration settings to the MDs
      * 3. Link MDs to the server_recs they are used in. Detect unused MDs.
      * 4. Update the store with the MDs. Change domain names, create new MDs, etc.
      *    Basically all MD properties that are configured directly.
@@ -888,7 +888,7 @@ static apr_status_t md_post_config_before_ssl(apr_pool_t *p, apr_pool_t *plog,
      *    store will find the old settings and "recover" the previous name.
      * 5. Load any staged data from previous driving.
      * 6. on a dry run, this is all we do
-     * 7. Read back the MD properties that reflect the existance and aspect of
+     * 7. Read back the MD properties that reflect the existence and aspect of
      *    credentials that are in the store (or missing there). 
      *    Expiry times, MD state, etc.
      * 8. Determine the list of MDs that need driving/supervision.
@@ -905,7 +905,7 @@ static apr_status_t md_post_config_before_ssl(apr_pool_t *p, apr_pool_t *plog,
     /*4*/
     if (APR_SUCCESS != (rv = md_reg_sync_start(mc->reg, mc->mds, ptemp))) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10073)
-                     "synching %d mds to registry", mc->mds->nelts);
+                     "syncing %d mds to registry", mc->mds->nelts);
         goto leave;
     }
     /*5*/
@@ -948,7 +948,7 @@ static apr_status_t md_post_config_after_ssl(apr_pool_t *p, apr_pool_t *plog,
         }
         if (APR_SUCCESS != (rv = md_reg_sync_finish(mc->reg, md, p, ptemp))) {
             ap_log_error( APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10172)
-                         "md[%s]: error synching to store", md->name);
+                         "md[%s]: error syncing to store", md->name);
             goto leave;
         }
     }

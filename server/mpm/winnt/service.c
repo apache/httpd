@@ -801,7 +801,7 @@ apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc,
         rv = apr_get_os_error();
         ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
                      APLOGNO(00369)  "Failed to open the Windows service "
-                     "manager, perhaps you forgot to log in as Adminstrator?");
+                     "manager, perhaps you forgot to log in as Administrator?");
         return (rv);
     }
 
@@ -957,7 +957,7 @@ apr_status_t mpm_service_uninstall(void)
         rv = apr_get_os_error();
         ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
                      APLOGNO(10009)  "Failed to open the Windows service "
-                     "manager, perhaps you forgot to log in as Adminstrator?");
+                     "manager, perhaps you forgot to log in as Administrator?");
         return (rv);
     }
 
@@ -1047,7 +1047,7 @@ apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc,
         rv = apr_get_os_error();
         ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
                      APLOGNO(10011)  "Failed to open the Windows service "
-                     "manager, perhaps you forgot to log in as Adminstrator?");
+                     "manager, perhaps you forgot to log in as Administrator?");
         return (rv);
     }
 
@@ -1157,7 +1157,7 @@ void mpm_signal_service(apr_pool_t *ptemp, int signal)
         ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP,
                      apr_get_os_error(), NULL,
                      APLOGNO(10013)  "Failed to open the Windows service "
-                     "manager, perhaps you forgot to log in as Adminstrator?");
+                     "manager, perhaps you forgot to log in as Administrator?");
         return;
     }
 

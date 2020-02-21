@@ -269,7 +269,7 @@ cmd_modem_standard(cmd_parms *cmd,
     }
 
     if (dcfg->bytes_per_second == 0) {
-        return "mod_diaulup: Unkonwn Modem Standard specified.";
+        return "mod_diaulup: Unknown Modem Standard specified.";
     }
 
     return NULL;

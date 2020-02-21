@@ -66,7 +66,7 @@ extern "C" {
 #define SERVER_IDLE_KILL 10     /* Server is cleaning up idle children. */
 #define SERVER_NUM_STATUS 11    /* number of status settings */
 
-/* Type used for generation indicies.  Startup and every restart cause a
+/* Type used for generation indices.  Startup and every restart cause a
  * new generation of children to be spawned.  Children within the same
  * generation share the same configuration information -- pointers to stuff
  * created at config time in the parent are valid across children.  However,
@@ -155,7 +155,7 @@ struct process_score {
 
 /* Scoreboard is now in 'local' memory, since it isn't updated once created,
  * even in forked architectures.  Child created-processes (non-fork) will
- * set up these indicies into the (possibly relocated) shmem records.
+ * set up these indices into the (possibly relocated) shmem records.
  */
 typedef struct {
     global_score *global;

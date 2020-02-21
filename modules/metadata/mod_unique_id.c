@@ -104,7 +104,7 @@ typedef struct {
 /*
  * Sun Jun  7 05:43:49 CEST 1998 -- Alvaro
  * More comments:
- * 1) The UUencoding prodecure is now done in a general way, avoiding the problems
+ * 1) The UUencoding procedure is now done in a general way, avoiding the problems
  * with sizes and paddings that can arise depending on the architecture. Now the
  * offsets and sizes of the elements of the unique_id_rec structure are calculated
  * in unique_id_global_init; and then used to duplicate the structure without the

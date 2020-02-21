@@ -100,7 +100,7 @@ typedef enum {
 } md_cert_state_t;
 
 /**
- * Create a holder of the certificate that will free its memmory when the
+ * Create a holder of the certificate that will free its memory when the
  * pool is destroyed.
  */
 md_cert_t *md_cert_make(apr_pool_t *p, void *x509);

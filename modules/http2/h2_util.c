@@ -1336,7 +1336,7 @@ apr_status_t h2_util_bb_avail(apr_bucket_brigade *bb,
         return status;
     }
     else if (blen == 0) {
-        /* brigade without data, does it have an EOS bucket somwhere? */
+        /* brigade without data, does it have an EOS bucket somewhere? */
         *plen = 0;
         *peos = h2_util_has_eos(bb, -1);
     }

@@ -228,7 +228,7 @@ apr_status_t h2_fifo_try_pull(h2_fifo *fifo, void **pelem);
 
 typedef enum {
     H2_FIFO_OP_PULL,   /* pull the element from the queue, ie discard it */
-    H2_FIFO_OP_REPUSH, /* pull and immediatley re-push it */
+    H2_FIFO_OP_REPUSH, /* pull and immediately re-push it */
 } h2_fifo_op_t;
 
 typedef h2_fifo_op_t h2_fifo_peek_fn(void *head, void *ctx);

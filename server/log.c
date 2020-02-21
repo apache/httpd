@@ -276,7 +276,7 @@ AP_DECLARE(apr_status_t) ap_replace_stderr_log(apr_pool_t *p,
             /*
              * You might ponder why stderr_pool should survive?
              * The trouble is, stderr_pool may have s_main->error_log,
-             * so we aren't in a position to destory stderr_pool until
+             * so we aren't in a position to destroy stderr_pool until
              * the next recycle.  There's also an apparent bug which
              * is not; if some folk decided to call this function before
              * the core open error logs hook, this pool won't survive.
@@ -303,7 +303,7 @@ static void log_child_errfn(apr_pool_t *pool, apr_status_t err,
 }
 
 /* Create a child process running PROGNAME with a pipe connected to
- * the childs stdin.  The write-end of the pipe will be placed in
+ * the child's stdin.  The write-end of the pipe will be placed in
  * *FPIN on successful return.  If dummy_stderr is non-zero, the
  * stderr for the child will be the same as the stdout of the parent.
  * Otherwise the child will inherit the stderr from the parent. */
