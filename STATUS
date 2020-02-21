@@ -132,13 +132,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   *) mod_ssl: Disable client verification on ACME ALPN challenges. Fixes github
-      issue mod_md#172 (https://github.com/icing/mod_md/issues/172).
-      [Michael Kaufmann <mail michael-kaufmann.ch>, Stefan Eissing]
-      trunk patch: http://svn.apache.org/r1873888
-      2.4.x patch: svn merge -c 1873888 ^/httpd/httpd/trunk .
-      +1: icing, jim, ylavic
-
    *) Fix spelling errors found by codespell.
       trunk patch: http://svn.apache.org/r1873985
       2.4.x patch: svn merge -c 1873985 ^/httpd/httpd/trunk .
