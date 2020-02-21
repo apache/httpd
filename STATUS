@@ -132,13 +132,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   *) Fix spelling errors found by codespell.
-      trunk patch: http://svn.apache.org/r1873985
-      2.4.x patch: svn merge -c 1873985 ^/httpd/httpd/trunk .
-      +1 mrumph, jim, ylavic
-      mrumph: This patch affects only doc and comments,
-              but proposing here because it changes a lot of files.
-
   *) Add support for cross compiling to apxs. If apxs is being executed from somewhere
      other than its target location, add that prefix to includes and library directories.
      Without this, apxs would fail to find config_vars.mk and exit.
