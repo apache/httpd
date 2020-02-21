@@ -948,6 +948,9 @@ static remoteip_parse_status_t remoteip_process_v2_header(conn_rec *c,
     apr_status_t ret;
 
     switch (hdr->v2.ver_cmd & 0xF) {
+        case 0x00: /* LOCAL command */
+            /* keep local connection address for LOCAL */
+            return HDR_DONE;
         case 0x01: /* PROXY command */
             switch (hdr->v2.fam) {
                 case 0x11:  /* TCPv4 */
