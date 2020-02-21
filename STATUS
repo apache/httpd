@@ -198,7 +198,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mpm_event: avoid possible KeepAlveTimeout off by -100 ms.
      trunk patch: http://svn.apache.org/r1874277
      2.4.x patch: svn merge -c 1874277 ^/httpd/httpd/trunk .
-     +1: ylavic,
+     +1: ylavic, covener
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
