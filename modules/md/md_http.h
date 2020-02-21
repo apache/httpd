@@ -86,7 +86,7 @@ apr_status_t md_http_create(md_http_t **phttp, apr_pool_t *p, const char *user_a
 void md_http_set_response_limit(md_http_t *http, apr_off_t resp_limit);
 
 /**
- * Set the timeout for the complete reqest. This needs to take everything from
+ * Set the timeout for the complete request. This needs to take everything from
  * DNS looksups, to conntects, to transfer of all data into account and should
  * be sufficiently large.
  * Set to 0 the have no timeout for this.
@@ -134,7 +134,7 @@ void md_http_set_on_status_cb(md_http_request_t *req, md_http_status_cb *cb, voi
 void md_http_set_on_response_cb(md_http_request_t *req, md_http_response_cb *cb, void *baton);
 
 /**
- * Create a GET reqest.
+ * Create a GET request.
  * @param preq      the created request after success
  * @param http      the md_http instance 
  * @param url       the url to GET
@@ -144,7 +144,7 @@ apr_status_t md_http_GET_create(md_http_request_t **preq, md_http_t *http, const
                                 struct apr_table_t *headers);
 
 /**
- * Create a HEAD reqest.
+ * Create a HEAD request.
  * @param preq      the created request after success
  * @param http      the md_http instance 
  * @param url       the url to GET
@@ -154,7 +154,7 @@ apr_status_t md_http_HEAD_create(md_http_request_t **preq, md_http_t *http, cons
                                  struct apr_table_t *headers);
 
 /**
- * Create a POST reqest with a bucket brigade as request body.
+ * Create a POST request with a bucket brigade as request body.
  * @param preq      the created request after success
  * @param http      the md_http instance 
  * @param url       the url to GET
@@ -168,7 +168,7 @@ apr_status_t md_http_POST_create(md_http_request_t **preq, md_http_t *http, cons
                                  struct apr_bucket_brigade *body, int detect_len);
 
 /**
- * Create a POST reqest with known request body data.
+ * Create a POST request with known request body data.
  * @param preq      the created request after success
  * @param http      the md_http instance 
  * @param url       the url to GET
@@ -213,7 +213,7 @@ typedef apr_status_t md_http_next_req(md_http_request_t **preq, void *baton,
  * To limit the number of parallel requests, nextreq should return APR_ENOENT when the limit
  * is reached. It will be called again when the number of in_flight requests changes.
  * 
- * When all reqests are done, nextreq will be called one more time. Should it not
+ * When all requests are done, nextreq will be called one more time. Should it not
  * return anything, this function returns.
  */
 apr_status_t md_http_multi_perform(md_http_t *http, md_http_next_req *nextreq, void *baton);

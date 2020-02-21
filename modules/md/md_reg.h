@@ -145,7 +145,7 @@ apr_status_t md_reg_delete_acct(md_reg_t *reg, apr_pool_t *p, const char *acct_i
  * Cleanup any challenges that are no longer in use.
  * 
  * @param reg   the registry
- * @param p     pool for permament storage
+ * @param p     pool for permanent storage
  * @param ptemp pool for temporary storage
  * @param mds   the list of configured MDs
  */
@@ -160,7 +160,7 @@ apr_status_t md_reg_cleanup_challenges(md_reg_t *reg, apr_pool_t *p, apr_pool_t 
 apr_status_t md_reg_freeze_domains(md_reg_t *reg, apr_array_header_t *mds);
 
 /**
- * Return if the certificate of the MD shoud be renewed. This includes reaching
+ * Return if the certificate of the MD should be renewed. This includes reaching
  * the renewal window of an otherwise valid certificate. It return also !0 iff
  * no certificate has been obtained yet.
  */
@@ -222,7 +222,7 @@ struct md_proto_t {
 };
 
 /**
- * Run a test intialization of the renew protocol for the given MD. This verifies
+ * Run a test initialization of the renew protocol for the given MD. This verifies
  * basic parameter settings and is expected to return a description of encountered
  * problems in <pmessage> when != APR_SUCCESS.
  * A message return is allocated fromt the given pool.
