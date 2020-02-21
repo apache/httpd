@@ -132,11 +132,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   *) mod_ssl: use OPENSSL_init_ssl() to initialise OpenSSL on versions 1.1+.
-      trunk patch: http://svn.apache.org/r1861950
-      2.4.x patch: svn merge -c 1861950 ^/httpd/httpd/trunk . 
-      +1: minfrin, jim, ylavic
-
    *) mod_ssl: Disable client verification on ACME ALPN challenges. Fixes github
       issue mod_md#172 (https://github.com/icing/mod_md/issues/172).
       [Michael Kaufmann <mail michael-kaufmann.ch>, Stefan Eissing]
