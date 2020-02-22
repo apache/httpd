@@ -155,6 +155,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              months/years without any action item :)
      ylavic: will look at it ASAP..
 
+  *) usertrack: allow cookie flags samesite/secure/httponly to be configured
+     trunk patch: 1874389.
+     2.4.x patch: svn merge -c 1874389 ^/httpd/httpd/trunk .
+     +:1 covener
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
