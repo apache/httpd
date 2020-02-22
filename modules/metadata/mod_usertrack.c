@@ -86,6 +86,9 @@ typedef struct {
     const char *cookie_domain;
     char *regexp_string;  /* used to compile regexp; save for debugging */
     ap_regex_t *regexp;  /* used to find usertrack cookie in cookie header */
+    int is_secure;
+    int is_httponly;
+    const char *samesite;
 } cookie_dir_rec;
 
 /* Make Cookie: Now we have to generate something that is going to be
@@ -143,6 +146,21 @@ static void make_cookie(request_rec *r)
                                   : ""),
                                  NULL);
     }
+    if (dcfg->samesite != NULL) {
+        new_cookie = apr_pstrcat(r->pool, new_cookie, "; ",
+                                 dcfg->samesite,
+                                 NULL);
+    }
+    if (dcfg->is_secure) {
+        new_cookie = apr_pstrcat(r->pool, new_cookie, "; Secure",
+                                 NULL);
+    }
+    if (dcfg->is_httponly) {
+        new_cookie = apr_pstrcat(r->pool, new_cookie, "; HttpOnly",
+                                 NULL);
+    }
+
+
 
     apr_table_addn(r->err_headers_out,
                    (dcfg->style == CT_COOKIE2 ? "Set-Cookie2" : "Set-Cookie"),
@@ -269,6 +287,7 @@ static void *make_cookie_dir(apr_pool_t *p, char *d)
     dcfg->cookie_domain = NULL;
     dcfg->style = CT_UNSET;
     dcfg->enabled = 0;
+    /* calloc'ed to disabled: samesite, is_secure, is_httponly */
 
     /* In case the user does not use the CookieName directive,
      * we need to compile the regexp for the default cookie name. */
@@ -429,6 +448,31 @@ static const char *set_cookie_style(cmd_parms *cmd, void *mconfig,
     return NULL;
 }
 
+/* 
+ * SameSite enabled disabled 
+ */ 
+
+static const char *set_samesite_value(cmd_parms *cmd, void *mconfig,
+                                    const char *name)
+{
+    cookie_dir_rec *dcfg;
+
+    dcfg = (cookie_dir_rec *) mconfig;
+
+    if (strcasecmp(name, "strict") == 0) {
+        dcfg->samesite = "SameSite=Strict"; 
+    } else if (strcasecmp(name, "lax") == 0) {
+        dcfg->samesite = "SameSite=Lax"; 
+    } else if (strcasecmp(name, "none") == 0) {
+        dcfg->samesite = "SameSite=None"; 
+    } else {
+        return "CookieSameSite accepts 'Strict', 'Lax', or 'None'";
+    }
+
+    
+    return NULL;
+}
+
 static const command_rec cookie_log_cmds[] = {
     AP_INIT_TAKE1("CookieExpires", set_cookie_exp, NULL, OR_FILEINFO,
                   "an expiry date code"),
@@ -440,6 +484,17 @@ static const command_rec cookie_log_cmds[] = {
                  "whether or not to enable cookies"),
     AP_INIT_TAKE1("CookieName", set_cookie_name, NULL, OR_FILEINFO,
                   "name of the tracking cookie"),
+                  AP_INIT_FLAG("CookieTracking", set_cookie_enable, NULL, OR_FILEINFO,
+                 "whether or not to enable cookies"),
+    AP_INIT_TAKE1("CookieSameSite", set_samesite_value, NULL, OR_FILEINFO,
+                  "SameSite setting"),
+    AP_INIT_FLAG("CookieSecure", ap_set_flag_slot, 
+                 (void *)APR_OFFSETOF(cookie_dir_rec, is_secure), OR_FILEINFO,
+                 "is cookie secure"),
+    AP_INIT_FLAG("CookieHttpOnly", ap_set_flag_slot, 
+                 (void *)APR_OFFSETOF(cookie_dir_rec, is_httponly),OR_FILEINFO,
+                 "is cookie http only"),
+
     {NULL}
 };
 

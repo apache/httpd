@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+
+  *) mod_usertrack: Add CookieSameSite, CookieHTTPOnly, and CookieSecure 
+     to allow customization of the usertrack cookie. PR64077.
+     [Prashant Keshvani <prashant2400 gmail.com>, Eric Covener]
+    
   *) mpm_event: avoid possible KeepAlveTimeout off by -100 ms.
      [Eric Covener, Yann Ylavic]
 

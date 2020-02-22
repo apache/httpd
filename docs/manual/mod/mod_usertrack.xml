@@ -222,4 +222,71 @@ CustomLog "logs/clickstream.log" usertrack
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>CookieSecure</name>
+<description>Adds the 'Secure' attribute to the cookie</description>
+<syntax>CookieSecure on|off</syntax>
+<default>CookieSecure off</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>When set to 'ON', the 'Secure' cookie attribute is added to this 
+    modules tracking cookie. This attribute instructs browsers to only
+    transmit the cookie over HTTPS.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CookieHTTPOnly</name>
+<description>Adds the 'HTTPOnly' attribute to the cookie</description>
+<syntax>CookieHTTPOnlyon|off</syntax>
+<default>CookieHTTPOnlyoff</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>When set to 'ON', the 'HTTPOnly' cookie attribute is added to this 
+    modules tracking cookie. This attribute instructs browsers to block javascript
+    from reading the value of the cookie</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CookieSameSite</name>
+<description>Adds the 'SameSite' attribute to the cookie</description>
+<syntax>CookieSameSite None|Lax|Strict</syntax>
+<default>unset</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>When set to 'None', 'Lax', or 'Strict', the 'SameSite' cookie attribute 
+    is added to this modules tracking cookie with the corresponding value.  
+    This attribute instructs browser on how to treat the cookie when it is 
+    requested in a cross-site context.  </p>
+
+     <note type="Warning">
+        <p>A value of 'None' sets 'SameSite=None', which is the most liberal setting. To 
+        omit this attribute, omit the directive entirely.</p>
+    </note>
+  
+</usage>
+</directivesynopsis>
+
 </modulesynopsis>
