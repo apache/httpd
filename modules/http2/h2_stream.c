@@ -790,7 +790,7 @@ apr_status_t h2_stream_end_headers(h2_stream *stream, int eos, size_t raw_bytes)
         if (ctx.failed_key) {
             if (!h2_stream_is_ready(stream)) {
                 ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, stream->session->c,
-                              H2_STRM_LOG(APLOGNO(), stream,"Request header exceeds "
+                              H2_STRM_LOG(APLOGNO(10230), stream,"Request header exceeds "
                                           "LimitRequestFieldSize: %.*s"),
                               (int)H2MIN(strlen(ctx.failed_key), 80), ctx.failed_key);
             }
