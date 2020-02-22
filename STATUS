@@ -132,13 +132,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_http2: Fix an empty APLOGNO()
-     trunk patch: http://svn.apache.org/r1873927
-     2.4.x patch: svn merge -c 1873927 ^/httpd/httpd/trunk .
-     +1: jailletc36, ylavic, minfrin
-     jailletc36: Not sure how is the best way to deal with mod_http2 patches.
-                 Should it be first a pull request from the github repository?
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
