@@ -156,8 +156,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: will look at it ASAP..
 
   *) usertrack: allow cookie flags samesite/secure/httponly to be configured
-     trunk patch: 1874389.
+     trunk patch: http://svn.apache.org/r1874389
      2.4.x patch: svn merge -c 1874389 ^/httpd/httpd/trunk .
+     +:1 covener
+
+  *) authz_groupfile: drop severity of AH0166 (user not found in groupfile)
+     from ERR to INFO.
+     trunk patch: http://svn.apache.org/r1874424
+     2.4.x patch: svn merge -c 1874424 ^/httpd/httpd/trunk .
      +:1 covener
 
 PATCHES/ISSUES THAT ARE BEING WORKED
