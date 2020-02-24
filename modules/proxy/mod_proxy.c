@@ -327,6 +327,12 @@ static const char *set_worker_param(apr_pool_t *p,
         worker->s->response_field_size = (s ? s : HUGE_STRING_LEN);
         worker->s->response_field_size_set = 1;
     }
+    else if (!strcasecmp(key, "secret")) {
+        if (PROXY_STRNCPY(worker->s->secret, val) != APR_SUCCESS) {
+            return apr_psprintf(p, "Secret length must be < %d characters",
+                                (int)sizeof(worker->s->secret));
+        }
+    }
     else {
         if (set_worker_hc_param_f) {
             return set_worker_hc_param_f(p, s, worker, key, val, NULL);

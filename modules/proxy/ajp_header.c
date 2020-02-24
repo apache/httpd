@@ -214,7 +214,8 @@ AJPV13_REQUEST/AJPV14_REQUEST=
 
 static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
                                           request_rec *r,
-                                          apr_uri_t *uri)
+                                          apr_uri_t *uri,
+                                          const char *secret)
 {
     int method;
     apr_uint32_t i, num_headers = 0;
@@ -294,17 +295,15 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
                    i, elts[i].key, elts[i].val);
     }
 
-/* XXXX need to figure out how to do this
-    if (s->secret) {
+    if (secret) {
         if (ajp_msg_append_uint8(msg, SC_A_SECRET) ||
-            ajp_msg_append_string(msg, s->secret)) {
+            ajp_msg_append_string(msg, secret)) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(03228)
-                   "Error ajp_marshal_into_msgb - "
+                   "ajp_marshal_into_msgb: "
                    "Error appending secret");
             return APR_EGENERAL;
         }
     }
- */
 
     if (r->user) {
         if (ajp_msg_append_uint8(msg, SC_A_REMOTE_USER) ||
@@ -672,7 +671,8 @@ static apr_status_t ajp_unmarshal_response(ajp_msg_t *msg,
 apr_status_t ajp_send_header(apr_socket_t *sock,
                              request_rec *r,
                              apr_size_t buffsize,
-                             apr_uri_t *uri)
+                             apr_uri_t *uri,
+                             const char *secret)
 {
     ajp_msg_t *msg;
     apr_status_t rc;
@@ -684,7 +684,7 @@ apr_status_t ajp_send_header(apr_socket_t *sock,
         return rc;
     }
 
-    rc = ajp_marshal_into_msgb(msg, r, uri);
+    rc = ajp_marshal_into_msgb(msg, r, uri, secret);
     if (rc != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00988)
                "ajp_send_header: ajp_marshal_into_msgb failed");

@@ -362,6 +362,7 @@ PROXY_WORKER_HC_FAIL )
 #define PROXY_WORKER_MAX_HOSTNAME_SIZE  64
 #define PROXY_BALANCER_MAX_HOSTNAME_SIZE PROXY_WORKER_MAX_HOSTNAME_SIZE
 #define PROXY_BALANCER_MAX_STICKY_SIZE  64
+#define PROXY_WORKER_MAX_SECRET_SIZE     64
 
 #define PROXY_RFC1035_HOSTNAME_SIZE	256
 
@@ -464,6 +465,7 @@ typedef struct {
     char      hostname_ex[PROXY_RFC1035_HOSTNAME_SIZE];  /* RFC1035 compliant version of the remote backend address */
     apr_size_t   response_field_size; /* Size of proxy response buffer in bytes. */
     unsigned int response_field_size_set:1;
+    char      secret[PROXY_WORKER_MAX_SECRET_SIZE]; /* authentication secret (e.g. AJP13) */
 } proxy_worker_shared;
 
 #define ALIGNED_PROXY_WORKER_SHARED_SIZE (APR_ALIGN_DEFAULT(sizeof(proxy_worker_shared)))
