@@ -134,7 +134,7 @@ RELEASE SHOWSTOPPERS:
      trunk patch: http://svn.apache.org/r1738878  
      2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-ajpsecret.diff
                   (trivial conflict in mod_proxy.c)
-     +1: covener, jorton, 
+     +1: covener, jorton, rjung
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
