@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1834265 -->
+<!-- English Revision: 1874169 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -172,17 +172,17 @@ Protocols http/1.1
     <note><title>Utilisez une chaîne d'algorithmes de chiffrement forte</title>
     <p>La directive <directive module="mod_ssl">SSLCipherSuite</directive> doit
     être définie avec une chaîne d'algorithmes de chiffrement TLS forte. Même si
-    la version actuelle de <module>mod_http2</module> n'impose pas d'algorithmes de chiffrement
-    particuliers, la plupart des clients le font. Faire pointer un navigateur
-    vers un serveur où <code>h2</code> est activé avec une chaîne d'algorithmes
-    de chiffrement inappropriée entraînera un rejet et une retrogradation vers
-    HTTP 1.1. C'est une erreur que l'on fait couramment lorsqu'on configure
-    httpd pour HTTP/2 pour la première fois ; donc gardez la à l'esprit si vous
-    voulez éviter de longues sessions de débogage ! Si vous voulez être sûr de
-    définir une chaîne d'algorithmes de chiffrement appropriée, évitez ceux qui
-    sont listés dans la <a
-    href="http://httpwg.org/specs/rfc7540.html#BadCipherSuites">blacklist TLS HTTP/2
-    </a>.</p>
+    la version actuelle de <module>mod_http2</module> n'impose pas d'algorithmes
+    de chiffrement particuliers, la plupart des clients le font. Faire pointer
+    un navigateur vers un serveur où <code>h2</code> est activé avec une chaîne
+    d'algorithmes de chiffrement inappropriée entraînera un rejet et une
+    retrogradation vers HTTP 1.1. C'est une erreur que l'on fait couramment
+    lorsqu'on configure httpd pour HTTP/2 pour la première fois ; donc gardez la
+    à l'esprit si vous voulez éviter de longues sessions de débogage ! Si vous
+    voulez être sûr de définir une chaîne d'algorithmes de chiffrement
+    appropriée, évitez ceux qui sont listés dans la <a
+    href="http://httpwg.org/specs/rfc7540.html#BadCipherSuites">blacklist TLS
+    HTTP/2 </a>.</p>
     </note>
     <p>L'ordre des protocoles indiqués est aussi important. Par défaut, le
     premier sera le protocole préféré. Lorsqu'un client offre plusieurs choix,

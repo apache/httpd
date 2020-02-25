@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1870426 -->
+<!-- English Revision: 1874456 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1404,8 +1404,10 @@ ProxyPass "/mirror/foo/i" "!"
     </td></tr>
     <tr><td>secret</td>
         <td>-</td>
-        <td><p>Le mot de passe utilisé par <module>mod_proxy_ajp</module>. Voir
-	la documentation de ce module pour plus de détails.</p>
+        <td>Le mot de passe utilisé par <module>mod_proxy_ajp</module>. Il doit
+	identique au mot de passe configuré sur le côté serveur de la connexion
+	AJP.<br />
+	Disponible à partir de la version 2.4.42 du serveur HTTP Apache.
     </td></tr>
     <tr><td>upgrade</td>
         <td>WebSocket</td>

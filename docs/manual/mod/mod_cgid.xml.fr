@@ -1,7 +1,7 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1610512:1873915 (outdated) -->
+<!-- English Revision: 1873915 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -25,45 +25,45 @@
 <modulesynopsis metafile="mod_cgid.xml.meta">
 
 <name>mod_cgid</name>
-<description>Ex&eacute;cution des scripts CGI par l'interm&eacute;diaire d'un d&eacute;mon
+<description>Exécution des scripts CGI par l'intermédiaire d'un démon
 CGI externe</description>
 <status>Base</status>
 <sourcefile>mod_cgid.c</sourcefile>
 <identifier>cgid_module</identifier>
 <compatibility>Uniquement compatible avec les MPMs Unix
-thread&eacute;s</compatibility>
+threadés</compatibility>
 
 <summary>
-    <p>Except&eacute;es les optimisations et la directive additionnelle
-    <directive module="mod_cgid">ScriptSock</directive> d&eacute;crite
-    ci-dessous, <module>mod_cgid</module> a un comportement similaire &agrave;
-    celui de <module>mod_cgi</module>. <strong>Voir le r&eacute;sum&eacute; de
-    <module>mod_cgi</module> pour plus de d&eacute;tails &agrave; propos d'Apache et
+    <p>Exceptées les optimisations et la directive additionnelle
+    <directive module="mod_cgid">ScriptSock</directive> décrite
+    ci-dessous, <module>mod_cgid</module> a un comportement similaire à
+    celui de <module>mod_cgi</module>. <strong>Voir le résumé de
+    <module>mod_cgi</module> pour plus de détails à propos d'Apache et
     CGI.</strong></p>
 
-    <p>Sur certains syst&egrave;mes d'exploitation de type unix, le lancement
-    (forking) d'un processus depuis un serveur multi-thread&eacute; est une
-    op&eacute;ration tr&egrave;s lourde car le nouveau processus va r&eacute;pliquer tous les
-    threads du processus parent. Pour &eacute;viter cette d&eacute;pense de ressouces
+    <p>Sur certains systèmes d'exploitation de type unix, le lancement
+    (forking) d'un processus depuis un serveur multi-threadé est une
+    opération très lourde car le nouveau processus va répliquer tous les
+    threads du processus parent. Pour éviter cette dépense de ressouces
     pour chaque invocation d'un programme CGI, <module>mod_cgid</module>
-    cr&eacute;e un d&eacute;mon externe qui est responsable du branchement de
-    processus enfants destin&eacute;s au lancement de scripts CGI. Le serveur
-    principal communique avec ce d&eacute;mon par l'interm&eacute;diaire d'une socket
+    crée un démon externe qui est responsable du branchement de
+    processus enfants destinés au lancement de scripts CGI. Le serveur
+    principal communique avec ce démon par l'intermédiaire d'une socket
     de domaine unix.</p>
 
-    <p>Si un MPM multi-thread&eacute; a &eacute;t&eacute; s&eacute;lectionn&eacute; lors du processus de
-    compilation, c'est ce module qui est utilis&eacute; par d&eacute;faut &agrave; la place
+    <p>Si un MPM multi-threadé a été sélectionné lors du processus de
+    compilation, c'est ce module qui est utilisé par défaut à la place
     de <module>mod_cgi</module>. Du point de vue de l'utilisateur, ce
-    module est identique &agrave; <module>mod_cgi</module> quant &agrave; sa
-    configuration et son utilisation. La seule diff&eacute;rence est la
+    module est identique à <module>mod_cgi</module> quant à sa
+    configuration et son utilisation. La seule différence est la
     directive additionnelle <code>ScriptSock</code> qui permet de
-    d&eacute;finir le nom du socket &agrave; utiliser pour la communication avec le
-    d&eacute;mon CGI.</p>
+    définir le nom du socket à utiliser pour la communication avec le
+    démon CGI.</p>
 </summary>
 
 <seealso><module>mod_cgi</module></seealso>
-<seealso><a href="../suexec.html">Ex&eacute;cution de programmes CGI sous des
-utilisateurs diff&eacute;rents</a></seealso>
+<seealso><a href="../suexec.html">Exécution de programmes CGI sous des
+utilisateurs différents</a></seealso>
 
 <directivesynopsis location="mod_cgi">
 <name>ScriptLog</name>
@@ -79,24 +79,24 @@ utilisateurs diff&eacute;rents</a></seealso>
 
 <directivesynopsis>
 <name>ScriptSock</name>
-<description>Le pr&eacute;fixe du nom de fichier du socket &agrave; utiliser pour
-communiquer avec le d&eacute;mon CGI</description>
+<description>Le préfixe du nom de fichier du socket à utiliser pour
+communiquer avec le démon CGI</description>
 <syntax>ScriptSock <var>chemin fichier</var></syntax>
 <default>ScriptSock cgisock</default>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p>Cette directive permet de d&eacute;finir le pr&eacute;fixe du nom de fichier de la
-    socket &agrave; utiliser pour communiquer avec le d&eacute;mon CGI, pr&eacute;fixe auquel
-    sera ajout&eacute; une extension correspondant &agrave; l'identifiant processus du
+    <p>Cette directive permet de définir le préfixe du nom de fichier de la
+    socket à utiliser pour communiquer avec le démon CGI, préfixe auquel
+    sera ajouté une extension correspondant à l'identifiant processus du
     serveur. La socket sera ouverte avec les permissions de l'utilisateur
-    qui a d&eacute;marr&eacute; Apache (en g&eacute;n&eacute;ral root). Afin de pr&eacute;server la
-    s&eacute;curit&eacute; des communications avec les scripts CGI, il est imp&eacute;ratif
-    de n'accorder &agrave; aucun autre utilisateur la permission d'&eacute;crire dans
-    le r&eacute;pertoire o&ugrave; se trouve la socket.</p>
+    qui a démarré Apache (en général root). Afin de préserver la
+    sécurité des communications avec les scripts CGI, il est impératif
+    de n'accorder à aucun autre utilisateur la permission d'écrire dans
+    le répertoire où se trouve la socket.</p>
 
     <p>Si <var>chemin fichier</var> n'est pas un chemin absolu, il est
-    relatif au chemin d&eacute;fini par la directive <directive
+    relatif au chemin défini par la directive <directive
     module="core">DefaultRuntimeDir</directive>.</p>
 
     <example><title>Exemple</title>
@@ -110,20 +110,20 @@ communiquer avec le d&eacute;mon CGI</description>
 
 <directivesynopsis>
 <name>CGIDScriptTimeout</name>
-<description>Dur&eacute;e maximale d'attente de la prochaine sortie du
+<description>Durée maximale d'attente de la prochaine sortie du
 programme CGI</description>
 <syntax>CGIDScriptTimeout <var>time</var>[s|ms]</syntax>
-<default>Valeur de la directive <directive module="core">Timeout</directive></default>
+<default>Si non définie ou définie à 0, valeur de la directive <directive
+module="core">Timeout</directive></default>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
-<compatibility>La valeur de CGIDScriptTimeout est 0 dans les versions
-2.4 et ant&eacute;rieures
-</compatibility>
+<compatibility>Disponible à partir de la version 2.4.10 du serveur HTTP Apache ;
+dans les versions précédentes, aucune durée d'attente n'était définie</compatibility>
 
 <usage>
-    <p>Cette directive permet de limiter la dur&eacute;e d'attente avant les prochaines donn&eacute;es
-    re&ccedil;ues en sortie du programme CGI. Si ce temps est d&eacute;pass&eacute;, la requ&ecirc;te et le
+    <p>Cette directive permet de limiter la durée d'attente avant les prochaines données
+    reçues en sortie du programme CGI. Si ce temps est dépassé, la requête et le
     programme CGI se terminent.</p>
 
     <example><title>Exemple</title>
