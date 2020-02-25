@@ -469,7 +469,6 @@ static const char *set_samesite_value(cmd_parms *cmd, void *mconfig,
         return "CookieSameSite accepts 'Strict', 'Lax', or 'None'";
     }
 
-    
     return NULL;
 }
 
