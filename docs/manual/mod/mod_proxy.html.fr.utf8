@@ -1528,8 +1528,10 @@ ProxyPass "/mirror/foo" "http://backend.example.com"</pre>
     </td></tr>
     <tr><td>secret</td>
         <td>-</td>
-        <td><p>Le mot de passe utilisé par <code class="module"><a href="../mod/mod_proxy_ajp.html">mod_proxy_ajp</a></code>. Voir
-	la documentation de ce module pour plus de détails.</p>
+        <td>Le mot de passe utilisé par <code class="module"><a href="../mod/mod_proxy_ajp.html">mod_proxy_ajp</a></code>. Il doit
+	identique au mot de passe configuré sur le côté serveur de la connexion
+	AJP.<br />
+	Disponible à partir de la version 2.4.42 du serveur HTTP Apache.
     </td></tr>
     <tr><td>upgrade</td>
         <td>WebSocket</td>

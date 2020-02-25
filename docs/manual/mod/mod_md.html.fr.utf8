@@ -341,6 +341,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#mdcertificateprotocol">MDCertificateProtocol</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdcertificatestatus">MDCertificateStatus</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdchallengedns01">MDChallengeDns01</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mdcontactemail">MDContactEmail</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mddrivemode">MDDriveMode</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdhttpproxy">MDHttpProxy</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdmember">MDMember</a></li>
@@ -653,6 +654,29 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="mdcontactemail" id="mdcontactemail">Directive</a> <a name="MDContactEmail" id="MDContactEmail">MDContactEmail</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDContactEmail address</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+</table>
+            <p>
+                Lors de votre inscription, vous devez fournir une url de contact
+		pour le protocole ACME. Actuellement, Let's Encrypt exige une
+		adresse Email qu'il utilisera pour vous informer des
+		renouvellements de certificats ou de toute modification des
+		conditions d'utilisation. Pour obtenir cette adresse, mod_md
+		utilise l'email spécifiée par la directive MDContactEmail dans
+		votre configuration de httpd ; veillez par conséquent à bien
+		spécifier une adresse correcte à ce niveau. Si la directive
+		MDContactEmail n'est pas définie, mod_md utilisera l'email
+		spécifiée via la directive <code class="directive"><a href="../mod/core.html#serveradmin">ServerAdmin</a></code>.
+            </p>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="mddrivemode" id="mddrivemode">Directive</a> <a name="MDDriveMode" id="MDDriveMode">MDDriveMode</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ancien nom de MDRenewMode.</td></tr>
@@ -848,7 +872,7 @@ MDMessageCmd /etc/apache/md-message
 		configuration particulière, utilisez la directive <code class="directive"><a href="#mdomainset">&lt;MDomainSet&gt;</a></code>.
             </p><p>
                 Deux définitions supplémentaires sont nécessaires pour un domaine
-		géré : <code class="directive"><a href="../mod/core.html#serveradmin">ServerAdmin</a></code> et
+		géré : une adresse Email de contact (via <code class="directive"><a href="#mdcontactemail">MDContactEmail</a></code> ou <code class="directive"><a href="../mod/core.html#serveradmin">ServerAdmin</a></code>) et
 		<code class="directive"><a href="#mdcertificateagreement">MDCertificateAgreement</a></code>.
 		L'adresse électronique du <code class="directive"><a href="../mod/core.html#serveradmin">ServerAdmin</a></code> permet de s'enregistrer
 		auprès de l'autorité de certification (par défaut Let's
@@ -860,7 +884,7 @@ MDMessageCmd /etc/apache/md-message
 		pour valeur "accepted". Vous confirmez ainsi que vous acceptez
 		les conditions d'utilisation du CA.
             </p>
-            <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">ServerAdmin mailto:admin@example.org
+            <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">MDContactEmail admin@example.org
 MDCertificateAgreement accepted
 MDomain example.org www.example.org
 
