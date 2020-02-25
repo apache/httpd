@@ -231,6 +231,15 @@ Listen 192.170.2.5:8000
       Listen [2001:db8::a00:20ff:fea7:ccea]:80
     </highlight>
 
+    <p>In httpd 2.5.1 and later, if built against APR 1.7.0 or later,
+    scoped (or "zoned") literal IPv6 addresses are accepted in the
+    <directive>Listen</directive> directive, such as the following
+    example.</p>
+
+    <highlight language="config">
+      Listen [fe80::4bfe:88aa:5d42:64d0%eth2]:8081
+    </highlight>
+    
     <p>The optional <var>protocol</var> argument is not required for most
        configurations. If not specified, <code>https</code> is the default for
        port 443 and <code>http</code> the default for all other ports.  The
