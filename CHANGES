@@ -4,14 +4,15 @@ Changes with Apache 2.4.42
   *) mod_proxy_ajp: Add "secret" parameter to proxy workers to implement legacy
      AJP13 authentication.  PR 53098. [Dmitry A. Bakshaev <dab1818 gmail com>]
 
-  *) mpm_event: avoid possible KeepAlveTimeout off by -100 ms.
+  *) mpm_event: avoid possible KeepAliveTimeout off by -100 ms.
      [Eric Covener, Yann Ylavic]
 
   *) Add a config layout for OpenWRT. [Graham Leggett]
 
-  *) Add support for cross compiling to apxs. If apxs is being executed from somewhere
-     other than its target location, add that prefix to includes and library directories.
-     Without this, apxs would fail to find config_vars.mk and exit. [Graham Leggett]
+  *) Add support for cross compiling to apxs. If apxs is being executed from
+     somewhere other than its target location, add that prefix to includes and
+     library directories. Without this, apxs would fail to find config_vars.mk
+     and exit. [Graham Leggett]
 
   *) mod_ssl: Disable client verification on ACME ALPN challenges. Fixes github
      issue mod_md#172 (https://github.com/icing/mod_md/issues/172).
