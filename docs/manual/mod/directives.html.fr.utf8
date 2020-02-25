@@ -223,7 +223,10 @@
 <li><a href="core.html#contentdigest">ContentDigest</a></li>
 <li><a href="mod_usertrack.html#cookiedomain">CookieDomain</a></li>
 <li><a href="mod_usertrack.html#cookieexpires">CookieExpires</a></li>
+<li><a href="mod_usertrack.html#cookiehttponly">CookieHTTPOnly</a></li>
 <li><a href="mod_usertrack.html#cookiename">CookieName</a></li>
+<li><a href="mod_usertrack.html#cookiesamesite">CookieSameSite</a></li>
+<li><a href="mod_usertrack.html#cookiesecure">CookieSecure</a></li>
 <li><a href="mod_usertrack.html#cookiestyle">CookieStyle</a></li>
 <li><a href="mod_usertrack.html#cookietracking">CookieTracking</a></li>
 <li><a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li>

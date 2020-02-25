@@ -31,8 +31,6 @@
 <a href="./ko/install.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/install.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
     <p>Ce document couvre l'installation et la compilation du serveur
@@ -73,12 +71,12 @@
     <dl>
     <dt>Installation sous Fedora/CentOS/Red Hat Enterprise Linux</dt>
     <dd>
-    <pre class="prettyprint lang-">sudo yum install httpd
+    <pre class="prettyprint lang-">sudo dnf install httpd
 sudo service httpd start</pre>
 
 
-    <div class="warning">Les dernières versions de ces distributions préfèrent
-    <code>dnf</code> à <code>yum</code>. Voir la <a href="https://fedoraproject.org/wiki/Apache_HTTP_Server">documentation du
+    <div class="warning">Les anciennes versions de ces distributions utilisent
+    <code>yum</code> au lieu de <code>dnf</code>. Voir la <a href="https://fedoraproject.org/wiki/Apache_HTTP_Server">documentation du
     projet Fedora</a> pour des informations spécifiques à cette plateforme.</div>
     </dd>
 

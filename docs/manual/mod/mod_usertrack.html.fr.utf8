@@ -48,7 +48,10 @@ utilisateur sur un site
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#cookiedomain">CookieDomain</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cookieexpires">CookieExpires</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cookiehttponly">CookieHTTPOnly</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cookiename">CookieName</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cookiesamesite">CookieSameSite</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cookiesecure">CookieSecure</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cookiestyle">CookieStyle</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cookietracking">CookieTracking</a></li>
 </ul>
@@ -136,6 +139,22 @@ s'applique</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="cookiehttponly" id="cookiehttponly">Directive</a> <a name="CookieHTTPOnly" id="CookieHTTPOnly">CookieHTTPOnly</a> <a title="Lien permanent" href="#cookiehttponly" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ajoute l'attribut 'HTTPOnly' au cookie</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CookieHTTPOnlyon|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CookieHTTPOnlyoff</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_usertrack</td></tr>
+</table>
+    <p>Lorsqu'elle est définie à 'ON', cette directive ajoute l'attribut 'HTTPOnly'
+    au cookie de traçage. Cet attribut indique aux navigateurs qu'ils doivent
+    bloquer javascript au cours de la lecture de la valeur du cookie.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="cookiename" id="cookiename">Directive</a> <a name="CookieName" id="CookieName">CookieName</a> <a title="Lien permanent" href="#cookiename" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nom du cookie traceur</td></tr>
@@ -157,6 +176,46 @@ s'applique</td></tr>
 
     <pre class="prettyprint lang-config">CookieName clicktrack</pre>
 
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="cookiesamesite" id="cookiesamesite">Directive</a> <a name="CookieSameSite" id="CookieSameSite">CookieSameSite</a> <a title="Lien permanent" href="#cookiesamesite" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ajoute l'attribut 'SameSite' au cookie</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CookieSameSite None|Lax|Strict</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>unset</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_usertrack</td></tr>
+</table>
+    <p>Lorsque cette directive est définie à 'None', 'Lax', ou 'Strict',
+    l'attribut 'SameSite' est ajouté au cookie de traçage avec la valeur
+    correspondante. Cet attribut indique aux navigateurs de quelle manière ils
+    doivent traiter le cookie lorsqu'il est demandé dans un contexte cross-site.</p>
+
+     <div class="note">
+        <p>'None' définit l'attribut 'SameSite' à 'None', ce qui correspond à la
+	configuration la plus permissive. Pour ne pas ajouter cet attribut au
+	cookie, il est donc préférable de ne pas définir du tout cette directive.</p>
+    </div>
+  
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="cookiesecure" id="cookiesecure">Directive</a> <a name="CookieSecure" id="CookieSecure">CookieSecure</a> <a title="Lien permanent" href="#cookiesecure" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ajoute l'attribut 'Secure' au cookie</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CookieSecure on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CookieSecure off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_usertrack</td></tr>
+</table>
+    <p>Lorsqu'elle est définie à 'ON', cette directive ajoute l'attribut 'Secure'
+    au cookie de traçage. Cet attribut indique aux navigateurs qu'il ne doivent
+    transmettre le cookie que via HTTPS.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

@@ -30,8 +30,6 @@
 <a href="../fr/mod/mod_unixd.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../tr/mod/mod_unixd.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Sécurité de base (nécessaire) pour les plates-formes de la
 famille Unix.</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
@@ -104,15 +102,18 @@ requêtes</td></tr>
 </div>
 
     <p>Il est conseillé de créer un groupe dédié à l'exécution du
-    serveur. Certains administrateurs utilisent l'utilisateur
-    <code>nobody</code>, mais ce n'est pas toujours souhaitable ou même
-    possible.</p>
+    serveur. Si l'utilisateur défini par la directive
+    <code class="directive">User</code> est membre d'autres groupes, le processus
+    deviendra lui aussi membre de ces groupes.</p>
 
     <div class="warning"><h3>Sécurité</h3>
       <p>Ne définissez pas la directive <code class="directive">Group</code> (ou
-      <code class="directive"><a href="#user">User</a></code>) à
-      <code>root</code> à moins de savoir exactement ce que vous faites
-      ainsi que les dangers encourus.</p>
+      <code class="directive"><a href="#user">User</a></code>) à <code>root</code> à
+      moins de savoir exactement ce que vous faites ainsi que les dangers
+      encourus. De même, il est déconseillé d'utiliser le groupe
+      <code>nobody</code> qui s'avère inapproprié pour les démons à longue durée
+      d'exécution.
+      </p>
     </div>
 
 
@@ -177,16 +178,15 @@ requêtes</td></tr>
     du monde extérieur, et parallèlement, l'utilisateur ne doit pas
     exécuter de code dont l'usage soit destiné à un usage autre que les
     requêtes HTTP. Il est conseillé de créer un utilisateur et un groupe
-    dédiés à l'exécution du serveur. Certains administrateurs utilisent
-    l'utilisateur <code>nobody</code>, mais ce n'est pas toujours
-    souhaitable, car l'utilisateur <code>nobody</code> peut avoir
-    diverses utilisations dans le système.</p>
+    dédiés à l'exécution du serveur.</p>
 
     <div class="warning"><h3>Sécurité</h3>
       <p>Ne définissez pas la directive <code class="directive">Group</code> (ou
-      <code class="directive">User</code>) à
-      <code>root</code> à moins de savoir exactement ce que vous faites
-      ainsi que les dangers encourus.</p>
+      <code class="directive">User</code>) à <code>root</code> à
+      moins de savoir exactement ce que vous faites ainsi que les dangers
+      encourus. De même, il est déconseillé d'utiliser l'utilisateur
+      <code>nobody</code> qui s'avère inapproprié pour les démons à longue durée
+      d'exécution.</p>
     </div>
 
 

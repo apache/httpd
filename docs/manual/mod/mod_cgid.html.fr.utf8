@@ -31,8 +31,6 @@
 <a href="../ja/mod/mod_cgid.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_cgid.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Exécution des scripts CGI par l'intermédiaire d'un démon
 CGI externe</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
@@ -89,13 +87,12 @@ utilisateurs différents</a></li>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Durée maximale d'attente de la prochaine sortie du
 programme CGI</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CGIDScriptTimeout <var>time</var>[s|ms]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Valeur de la directive <code class="directive"><a href="../mod/core.html#timeout">Timeout</a></code></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Si non définie ou définie à 0, valeur de la directive <code class="directive"><a href="../mod/core.html#timeout">Timeout</a></code></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cgid</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>La valeur de CGIDScriptTimeout est 0 dans les versions
-2.4 et antérieures
-</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.10 du serveur HTTP Apache ;
+dans les versions précédentes, aucune durée d'attente n'était définie</td></tr>
 </table>
     <p>Cette directive permet de limiter la durée d'attente avant les prochaines données
     reçues en sortie du programme CGI. Si ce temps est dépassé, la requête et le
