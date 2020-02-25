@@ -27,6 +27,8 @@
 <a href="../es/howto/reverse_proxy.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../fr/howto/reverse_proxy.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 
     <p>En plus de ses fonctions de serveur web "basique", à savoir fournir du
     contenu statique et dynamique à l'utilisateur, Apache httpd (comme la

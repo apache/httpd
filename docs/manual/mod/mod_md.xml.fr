@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
-<!-- English Revision: 1869740 -->
+<!-- English Revision: 1874331 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -37,7 +37,7 @@
 	Ce module permet de gérer les propriétés courantes des domaines pour un
 	ou plusieurs serveurs virtuels. Il fournit deux fonctionnalités
 	principales : la première permet la supervision et le renouvellement des
-	certificats https: via le protocole ACME (<a
+	certificats TLS via le protocole ACME (<a
 	href="https://tools.ietf.org/html/rfc8555">RFC 8555</a>). Le module
 	effectue le renouvellement des certificats avant leur expiration
 	afin d'éviter une interruption des services internet. Il est possible de
@@ -362,15 +362,16 @@ MDChallengeDns01 /usr/bin/acme-setup-dns
 		configuration particulière, utilisez la directive <directive
 		module="mod_md" type="section">MDomainSet</directive>.
             </p><p>
-                Deux définitions supplémentaires sont nécessaires pour un domaine
-		géré : <directive module="core">ServerAdmin</directive> et
-		<directive module="mod_md">MDCertificateAgreement</directive>.
-		L'adresse électronique du <directive
-		module="core">ServerAdmin</directive> permet de s'enregistrer
-		auprès de l'autorité de certification (par défaut Let's
-		Encrypt). L'autorité de certification l'utilisera pour vous
-		informer à propos du statut de vos certificats ou d'éventuelles
-		modifications de ses services.
+		Deux définitions supplémentaires sont nécessaires pour un
+		domaine géré : une adresse Email de contact (via <directive
+		module="mod_md">MDContactEmail</directive> ou <directive
+		module="core">ServerAdmin</directive>) et <directive
+		module="mod_md">MDCertificateAgreement</directive>.  L'adresse
+		électronique du <directive module="core">ServerAdmin</directive>
+		permet de s'enregistrer auprès de l'autorité de certification
+		(par défaut Let's Encrypt). L'autorité de certification
+		l'utilisera pour vous informer à propos du statut de vos
+		certificats ou d'éventuelles modifications de ses services.
             </p><p>
                 La seconde définition, <directive
 		module="mod_md">MDCertificateAgreement</directive> doit avoir
@@ -379,7 +380,7 @@ MDChallengeDns01 /usr/bin/acme-setup-dns
             </p>
             <example><title>Exemple</title>
                 <highlight language="config">
-ServerAdmin mailto:admin@example.org
+MDContactEmail admin@example.org
 MDCertificateAgreement accepted
 MDomain example.org www.example.org
 
@@ -1423,7 +1424,30 @@ MDMessageCmd /etc/apache/md-message
 		restante, par exemple `2d` pour 2 jours. 
             </p>
         </usage>
-    </directivesynopsis>    
+    </directivesynopsis>
 
+    <directivesynopsis>
+        <name>MDContactEmail</name>
+        <description></description>
+        <syntax>MDContactEmail address</syntax>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <usage>
+            <p>
+                Lors de votre inscription, vous devez fournir une url de contact
+		pour le protocole ACME. Actuellement, Let's Encrypt exige une
+		adresse Email qu'il utilisera pour vous informer des
+		renouvellements de certificats ou de toute modification des
+		conditions d'utilisation. Pour obtenir cette adresse, mod_md
+		utilise l'email spécifiée par la directive MDContactEmail dans
+		votre configuration de httpd ; veillez par conséquent à bien
+		spécifier une adresse correcte à ce niveau. Si la directive
+		MDContactEmail n'est pas définie, mod_md utilisera l'email
+		spécifiée via la directive <directive
+		module="core">ServerAdmin</directive>.
+            </p>
+        </usage>
+    </directivesynopsis>
 
 </modulesynopsis>

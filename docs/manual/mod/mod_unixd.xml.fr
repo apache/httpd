@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1584572 -->
+<!-- English Revision: 1874187 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- $LastChangedRevision: 2014040501 $ -->
 
@@ -66,15 +66,18 @@ requêtes</description>
     </example>
 
     <p>Il est conseillé de créer un groupe dédié à l'exécution du
-    serveur. Certains administrateurs utilisent l'utilisateur
-    <code>nobody</code>, mais ce n'est pas toujours souhaitable ou même
-    possible.</p>
+    serveur. Si l'utilisateur défini par la directive
+    <directive>User</directive> est membre d'autres groupes, le processus
+    deviendra lui aussi membre de ces groupes.</p>
 
     <note type="warning"><title>Sécurité</title>
       <p>Ne définissez pas la directive <directive>Group</directive> (ou
-      <directive module="mod_unixd">User</directive>) à
-      <code>root</code> à moins de savoir exactement ce que vous faites
-      ainsi que les dangers encourus.</p>
+      <directive module="mod_unixd">User</directive>) à <code>root</code> à
+      moins de savoir exactement ce que vous faites ainsi que les dangers
+      encourus. De même, il est déconseillé d'utiliser le groupe
+      <code>nobody</code> qui s'avère inapproprié pour les démons à longue durée
+      d'exécution.
+      </p>
     </note>
 
 </usage>
@@ -116,16 +119,15 @@ requêtes</description>
     du monde extérieur, et parallèlement, l'utilisateur ne doit pas
     exécuter de code dont l'usage soit destiné à un usage autre que les
     requêtes HTTP. Il est conseillé de créer un utilisateur et un groupe
-    dédiés à l'exécution du serveur. Certains administrateurs utilisent
-    l'utilisateur <code>nobody</code>, mais ce n'est pas toujours
-    souhaitable, car l'utilisateur <code>nobody</code> peut avoir
-    diverses utilisations dans le système.</p>
+    dédiés à l'exécution du serveur.</p>
 
     <note type="warning"><title>Sécurité</title>
       <p>Ne définissez pas la directive <directive>Group</directive> (ou
-      <directive module="mod_unixd">User</directive>) à
-      <code>root</code> à moins de savoir exactement ce que vous faites
-      ainsi que les dangers encourus.</p>
+      <directive module="mod_unixd">User</directive>) à <code>root</code> à
+      moins de savoir exactement ce que vous faites ainsi que les dangers
+      encourus. De même, il est déconseillé d'utiliser l'utilisateur
+      <code>nobody</code> qui s'avère inapproprié pour les démons à longue durée
+      d'exécution.</p>
     </note>
 
 </usage>

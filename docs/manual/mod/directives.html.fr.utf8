@@ -461,6 +461,7 @@
 <li><a href="mod_md.html#mdcertificateprotocol">MDCertificateProtocol</a></li>
 <li><a href="mod_md.html#mdcertificatestatus">MDCertificateStatus</a></li>
 <li><a href="mod_md.html#mdchallengedns01">MDChallengeDns01</a></li>
+<li><a href="mod_md.html#mdcontactemail">MDContactEmail</a></li>
 <li><a href="mod_md.html#mddrivemode">MDDriveMode</a></li>
 <li><a href="mod_md.html#mdhttpproxy">MDHttpProxy</a></li>
 <li><a href="mod_md.html#mdmember">MDMember</a></li>

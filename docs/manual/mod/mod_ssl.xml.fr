@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1870672 -->
+<!-- English Revision: 1874243 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1060,7 +1060,7 @@ codées au format PEM ou identificateur de jeton</description>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility>L'option <var>certid</var> est disponible à partir de la version
-2.5.1 du serveur HTTP Apache.</compatibility>
+2.4.42 du serveur HTTP Apache.</compatibility>
 
 <usage>
 <p>
@@ -1186,7 +1186,7 @@ PEM</description>
 <syntax>SSLCertificateKeyFile <var>file-path</var>|<var>keyid</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility><var>keyid</var> est disponible à partir de la version 2.5.1 du
+<compatibility><var>keyid</var> est disponible à partir de la version 2.4.42 du
 serveur HTTP Apache.</compatibility>
 
 <usage>

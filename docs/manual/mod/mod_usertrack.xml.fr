@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1829393 -->
+<!-- English Revision : 1874389 -->
 <!-- French translation : Lucien GENTIS -->
 
 
@@ -229,6 +229,74 @@ s'applique</description>
     CookieTracking on
     </highlight>
 
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CookieSecure</name>
+<description>Ajoute l'attribut 'Secure' au cookie</description>
+<syntax>CookieSecure on|off</syntax>
+<default>CookieSecure off</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>Lorsqu'elle est définie à 'ON', cette directive ajoute l'attribut 'Secure'
+    au cookie de traçage. Cet attribut indique aux navigateurs qu'il ne doivent
+    transmettre le cookie que via HTTPS.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CookieHTTPOnly</name>
+<description>Ajoute l'attribut 'HTTPOnly' au cookie</description>
+<syntax>CookieHTTPOnlyon|off</syntax>
+<default>CookieHTTPOnlyoff</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>Lorsqu'elle est définie à 'ON', cette directive ajoute l'attribut 'HTTPOnly'
+    au cookie de traçage. Cet attribut indique aux navigateurs qu'ils doivent
+    bloquer javascript au cours de la lecture de la valeur du cookie.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CookieSameSite</name>
+<description>Ajoute l'attribut 'SameSite' au cookie</description>
+<syntax>CookieSameSite None|Lax|Strict</syntax>
+<default>unset</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>Lorsque cette directive est définie à 'None', 'Lax', ou 'Strict',
+    l'attribut 'SameSite' est ajouté au cookie de traçage avec la valeur
+    correspondante. Cet attribut indique aux navigateurs de quelle manière ils
+    doivent traiter le cookie lorsqu'il est demandé dans un contexte cross-site.</p>
+
+     <note type="Warning">
+        <p>'None' définit l'attribut 'SameSite' à 'None', ce qui correspond à la
+	configuration la plus permissive. Pour ne pas ajouter cet attribut au
+	cookie, il est donc préférable de ne pas définir du tout cette directive.</p>
+    </note>
+  
 </usage>
 </directivesynopsis>
 

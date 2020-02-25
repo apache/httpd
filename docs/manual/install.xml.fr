@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1869921 -->
+<!-- English Revision: 1874056 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -59,12 +59,12 @@
     <dt>Installation sous Fedora/CentOS/Red Hat Enterprise Linux</dt>
     <dd>
     <highlight>
-sudo yum install httpd
+sudo dnf install httpd
 sudo service httpd start
     </highlight>
 
-    <note type="warning">Les dernières versions de ces distributions préfèrent
-    <code>dnf</code> à <code>yum</code>. Voir la <a
+    <note type="warning">Les anciennes versions de ces distributions utilisent
+    <code>yum</code> au lieu de <code>dnf</code>. Voir la <a
     href="https://fedoraproject.org/wiki/Apache_HTTP_Server">documentation du
     projet Fedora</a> pour des informations spécifiques à cette plateforme.</note>
     </dd>
