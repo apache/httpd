@@ -407,7 +407,10 @@ static apr_status_t cgi_handle_request(request_rec *r, apr_file_t *script_out,
             }
 
             /* read */
-            apr_bucket_read(bucket, &data, &len, APR_BLOCK_READ);
+            rv = apr_bucket_read(bucket, &data, &len, APR_BLOCK_READ);
+            if (rv) {
+                return rv;
+            }
 
             if (logbufbytes && dbpos < logbufbytes) {
                 int cursize;
