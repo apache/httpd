@@ -361,3 +361,87 @@ static int cgi_handle_response(request_rec *r, int nph, apr_bucket_brigade *bb,
 
     return OK;                      /* NOT r->status, even if it has changed. */
 }
+
+/* Read the request body and write it to fd 'script_out', using 'bb'
+ * as temporary bucket brigade.  If 'logbuf' is non-NULL, the first
+ * logbufbytes of stdout are stored in logbuf. */
+static apr_status_t cgi_handle_request(request_rec *r, apr_file_t *script_out,
+                                       apr_bucket_brigade *bb,
+                                       char *logbuf, apr_size_t logbufbytes)
+{
+    int seen_eos = 0;
+    int child_stopped_reading = 0;
+    apr_status_t rv;
+    int dbpos = 0;
+
+    do {
+        apr_bucket *bucket;
+
+        rv = ap_get_brigade(r->input_filters, bb, AP_MODE_READBYTES,
+                            APR_BLOCK_READ, HUGE_STRING_LEN);
+
+        if (rv != APR_SUCCESS) {
+            return rv;
+        }
+
+        for (bucket = APR_BRIGADE_FIRST(bb);
+             bucket != APR_BRIGADE_SENTINEL(bb);
+             bucket = APR_BUCKET_NEXT(bucket))
+        {
+            const char *data;
+            apr_size_t len;
+
+            if (APR_BUCKET_IS_EOS(bucket)) {
+                seen_eos = 1;
+                break;
+            }
+
+            /* We can't do much with this. */
+            if (APR_BUCKET_IS_FLUSH(bucket)) {
+                continue;
+            }
+
+            /* If the child stopped, we still must read to EOS. */
+            if (child_stopped_reading) {
+                continue;
+            }
+
+            /* read */
+            apr_bucket_read(bucket, &data, &len, APR_BLOCK_READ);
+
+            if (logbufbytes && dbpos < logbufbytes) {
+                int cursize;
+
+                if ((dbpos + len) > logbufbytes) {
+                    cursize = logbufbytes - dbpos;
+                }
+                else {
+                    cursize = len;
+                }
+                memcpy(logbuf + dbpos, data, cursize);
+                dbpos += cursize;
+            }
+
+            /* Keep writing data to the child until done or too much time
+             * elapses with no progress or an error occurs.
+             */
+            rv = apr_file_write_full(script_out, data, len, NULL);
+
+            if (rv != APR_SUCCESS) {
+                /* silly script stopped reading, soak up remaining message */
+                child_stopped_reading = 1;
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(02651)
+                              "Error writing request body to script %s", 
+                              r->filename);
+            }
+        }
+        apr_brigade_cleanup(bb);
+    }
+    while (!seen_eos);
+
+    if (logbuf) {
+        logbuf[dbpos] = '\0';
+    }
+
+    return APR_SUCCESS;
+}
