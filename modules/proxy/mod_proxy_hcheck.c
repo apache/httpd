@@ -693,6 +693,9 @@ static int hc_read_headers(request_rec *r)
         for (end = &value[strlen(value)-1]; end > value && apr_isspace(*end); --end)
             *end = '\0';
         apr_table_add(r->headers_out, buffer, value);
+
+        if (strcasecmp(buffer, "Content-Type") == 0)
+            ap_set_content_type(r, value);
     }
     return OK;
 }
