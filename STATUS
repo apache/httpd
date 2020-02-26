@@ -172,6 +172,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1874424 ^/httpd/httpd/trunk .
      +:1 covener
 
+  *) modules/filters/mod_deflate.c and mod_brotli.c  don't build with -Werror=format-overflow or configure --enable-maintainer-mod
+     trunk patch: http://svn.apache.org/r1874346 
+     trunk patch: http://svn.apache.org/r1874545
+     2.4.x patch: svn merge -c 1874346 ^/httpd/httpd/trunk .
+     2.4.x patch: svn merge -c 1874545 ^/httpd/httpd/trunk .
+     +1: jfclere
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
