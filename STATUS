@@ -129,6 +129,11 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+  *) mod_ssl: OPENSSL_init_ssl() for openssl-1.1+ on Windows (w/o autoconf).
+     trunk patch: http://svn.apache.org/r1874323
+     2.4.x patch: svn merge -c 1874323 ^/httpd/httpd/trunk .
+     +1: ylavic
+
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
