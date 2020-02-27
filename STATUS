@@ -175,9 +175,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) modules/filters/mod_deflate.c and mod_brotli.c  don't build with -Werror=format-overflow or configure --enable-maintainer-mod
      trunk patch: http://svn.apache.org/r1874346 
      trunk patch: http://svn.apache.org/r1874545
+     trunk patch: http://svn.apache.org/r1874558
      2.4.x patch: svn merge -c 1874346 ^/httpd/httpd/trunk .
      2.4.x patch: svn merge -c 1874545 ^/httpd/httpd/trunk .
-     +1: jfclere
+     2.4.x patch: svn merge -c 1874558 ^/httpd/httpd/trunk .
+     2.4.x patch also at http://home.apache.org/~gbechis/diffs/mod_deflate-brotli_print-NULL-2.4.diff
+     +1: jfclere, gbechis
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
