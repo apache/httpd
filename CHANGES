@@ -1,8 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
-  *) mod_ssl: Fix memory leak of OCSP stapling response.  [Yann Ylavic]
-
   *) mod_authz_groupfile: Drop AH01666 from loglevel "error" to "info".
      PR64172.
 

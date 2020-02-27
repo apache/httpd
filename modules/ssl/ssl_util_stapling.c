@@ -870,25 +870,17 @@ static int stapling_cb(SSL *ssl, void *arg)
         }
     }
 
-    rv = SSL_TLSEXT_ERR_NOACK;
-    if (!rsp) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01957)
-                     "stapling_cb: no suitable response available");
+    if (rsp && ((ok == TRUE) || (mctx->stapling_return_errors == TRUE))) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01956)
+                     "stapling_cb: setting response");
+        if (!stapling_set_response(ssl, rsp))
+            return SSL_TLSEXT_ERR_ALERT_FATAL;
+        return SSL_TLSEXT_ERR_OK;
     }
-    else {
-        if (ok == TRUE || mctx->stapling_return_errors == TRUE) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01956)
-                         "stapling_cb: setting response");
-            if (!stapling_set_response(ssl, rsp)) {
-                rv = SSL_TLSEXT_ERR_ALERT_FATAL;
-            }
-            else {
-                rv = SSL_TLSEXT_ERR_OK;
-            }
-        }
-        OCSP_RESPONSE_free(rsp);
-    }
-    return rv;
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01957)
+                 "stapling_cb: no suitable response available");
+
+    return SSL_TLSEXT_ERR_NOACK;
 
 }
 
