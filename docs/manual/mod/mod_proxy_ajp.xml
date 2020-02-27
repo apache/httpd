@@ -478,6 +478,7 @@ attribute_value := (string)
       <tr><td>?req_attribute</td><td>0x0A</td><td>String</td><td>Name (the name of the
       attribute follows)</td></tr>
       <tr><td>?ssl_key_size</td><td>0x0B</td><td>Integer</td><td></td></tr>
+      <tr><td>?secret</td><td>0x0C</td><td>String</td><td>Supported since 2.4.42</td></tr>
       <tr><td>are_done</td><td>0xFF</td><td>-</td><td>request_terminator</td></tr>
     </table>
     <p>The <code>context</code> and <code>servlet_path</code> are not
