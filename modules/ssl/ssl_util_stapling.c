@@ -480,7 +480,7 @@ static BOOL stapling_renew_response(server_rec *s, modssl_ctx_t *mctx, SSL *ssl,
     OCSP_CERTID *id = NULL;
     STACK_OF(X509_EXTENSION) *exts;
     int i;
-    BOOL rv = TRUE;
+    BOOL rv = FALSE;
     const char *ocspuri;
     apr_uri_t uri;
 
@@ -502,7 +502,7 @@ static BOOL stapling_renew_response(server_rec *s, modssl_ctx_t *mctx, SSL *ssl,
     SSL_get_tlsext_status_exts(ssl, &exts);
     for (i = 0; i < sk_X509_EXTENSION_num(exts); i++) {
         X509_EXTENSION *ext = sk_X509_EXTENSION_value(exts, i);
-        if (!OCSP_REQUEST_add_ext(req, ext, -1))
+        if (!OCSP_REQUEST_add_ext(req, ext, -1)) 
             goto err;
     }
 
@@ -514,8 +514,7 @@ static BOOL stapling_renew_response(server_rec *s, modssl_ctx_t *mctx, SSL *ssl,
     if (!ocspuri) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(02621)
                      "stapling_renew_response: no uri for responder");
-        rv = FALSE;
-        goto done;
+        goto err;
     }
 
     /* Create a temporary pool to constrain memory use */
@@ -525,14 +524,12 @@ static BOOL stapling_renew_response(server_rec *s, modssl_ctx_t *mctx, SSL *ssl,
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01939)
                      "stapling_renew_response: Error parsing uri %s",
                       ocspuri);
-        rv = FALSE;
-        goto done;
+        goto err;
     }
     else if (strcmp(uri.scheme, "http")) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01940)
                      "stapling_renew_response: Unsupported uri %s", ocspuri);
-        rv = FALSE;
-        goto done;
+        goto err;
     }
 
     if (!uri.port) {
@@ -552,7 +549,7 @@ static BOOL stapling_renew_response(server_rec *s, modssl_ctx_t *mctx, SSL *ssl,
             *pok = FALSE;
         }
         else {
-            goto done;
+            goto err;
         }
     }
     else {
@@ -579,15 +576,13 @@ static BOOL stapling_renew_response(server_rec *s, modssl_ctx_t *mctx, SSL *ssl,
                      "stapling_renew_response: error caching response!");
     }
 
-done:
+    rv = TRUE;
+err:
     if (id)
         OCSP_CERTID_free(id);
     if (req)
         OCSP_REQUEST_free(req);
     return rv;
-err:
-    rv = FALSE;
-    goto done;
 }
 
 /*
