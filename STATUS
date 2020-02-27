@@ -132,13 +132,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_proxy_ajp: Allow secret= parameter for AJP which is now 
-     suggested/required by tomcat
-     trunk patch: http://svn.apache.org/r1738878  
-     2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-ajpsecret.diff
-                  (trivial conflict in mod_proxy.c)
-     +1: covener, jorton, rjung
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
