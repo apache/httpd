@@ -284,24 +284,15 @@ static void *make_cookie_dir(apr_pool_t *p, char *d)
 
     dcfg = (cookie_dir_rec *) apr_pcalloc(p, sizeof(cookie_dir_rec));
     dcfg->cookie_name = COOKIE_NAME;
-    dcfg->cookie_domain = NULL;
     dcfg->style = CT_UNSET;
-    dcfg->enabled = 0;
-    /* calloc'ed to disabled: samesite, is_secure, is_httponly */
+    /* calloc'ed to disabled: enabled, cookie_domain, samesite, is_secure,
+     * is_httponly */
 
     /* In case the user does not use the CookieName directive,
      * we need to compile the regexp for the default cookie name. */
     set_and_comp_regexp(dcfg, p, COOKIE_NAME);
 
     return dcfg;
-}
-
-static const char *set_cookie_enable(cmd_parms *cmd, void *mconfig, int arg)
-{
-    cookie_dir_rec *dcfg = mconfig;
-
-    dcfg->enabled = arg;
-    return NULL;
 }
 
 static const char *set_cookie_exp(cmd_parms *parms, void *dummy,
@@ -479,7 +470,8 @@ static const command_rec cookie_log_cmds[] = {
                   "domain to which this cookie applies"),
     AP_INIT_TAKE1("CookieStyle", set_cookie_style, NULL, OR_FILEINFO,
                   "'Netscape', 'Cookie' (RFC2109), or 'Cookie2' (RFC2965)"),
-    AP_INIT_FLAG("CookieTracking", set_cookie_enable, NULL, OR_FILEINFO,
+    AP_INIT_FLAG("CookieTracking", ap_set_flag_slot,
+                 (void *)APR_OFFSETOF(cookie_dir_rec, enabled), OR_FILEINFO,
                  "whether or not to enable cookies"),
     AP_INIT_TAKE1("CookieName", set_cookie_name, NULL, OR_FILEINFO,
                   "name of the tracking cookie"),
