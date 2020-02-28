@@ -182,6 +182,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch also at http://home.apache.org/~gbechis/diffs/mod_deflate-brotli_print-NULL-2.4.diff
      +1: jfclere, gbechis
 
+  *) mod_proxy_hcheck: Allow %{Content-Type} to work in expressions
+     trunk patch: http://svn.apache.org/r187461.
+     2.4.x patch:  svn merge -c 187461 ^/httpd/httpd/trunk .
+     +1: covener
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
