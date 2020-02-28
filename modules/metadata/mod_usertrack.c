@@ -483,8 +483,6 @@ static const command_rec cookie_log_cmds[] = {
                  "whether or not to enable cookies"),
     AP_INIT_TAKE1("CookieName", set_cookie_name, NULL, OR_FILEINFO,
                   "name of the tracking cookie"),
-    AP_INIT_FLAG("CookieTracking", set_cookie_enable, NULL, OR_FILEINFO,
-                 "whether or not to enable cookies"),
     AP_INIT_TAKE1("CookieSameSite", set_samesite_value, NULL, OR_FILEINFO,
                   "SameSite setting"),
     AP_INIT_FLAG("CookieSecure", ap_set_flag_slot, 
