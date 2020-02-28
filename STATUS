@@ -163,6 +163,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1874389
      2.4.x patch: svn merge -c 1874389 ^/httpd/httpd/trunk .
      +:1 covener
+     jailletc36: 1874480 and 1874601 are needed to avoid the duplication of 
+                the "CookieTracking" directive in 'command_rec'.
 
   *) authz_groupfile: drop severity of AH0166 (user not found in groupfile)
      from ERR to INFO.
