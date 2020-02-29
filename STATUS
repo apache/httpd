@@ -183,8 +183,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: jfclere, gbechis
 
   *) mod_proxy_hcheck: Allow %{Content-Type} to work in expressions
-     trunk patch: http://svn.apache.org/r187461.
-     2.4.x patch:  svn merge -c 187461 ^/httpd/httpd/trunk .
+     trunk patch: http://svn.apache.org/r1874616
+     2.4.x patch:  svn merge -c 1874616 ^/httpd/httpd/trunk .
      +1: covener
 
 PATCHES/ISSUES THAT ARE BEING WORKED
