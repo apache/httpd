@@ -264,6 +264,14 @@ Listen 192.170.2.5:8000</pre>
     <pre class="prettyprint lang-config">Listen [2001:db8::a00:20ff:fea7:ccea]:80</pre>
 
 
+    <p>A partir de la version 2.5.1 de httpd, si la compilation a été effectuée
+    avec APR version 1.7.0 ou ultérieure, la directive
+    <code class="directive">Listen</code> accepte les adresses IPv6 à portée limitée
+    (scopées ou zonées) comme dans l'exemple suivant :</p>
+
+    <pre class="prettyprint lang-config">Listen [fe80::4bfe:88aa:5d42:64d0%eth2]:8081</pre>
+
+
     <p>L'argument optionnel <var>protocole</var> n'est pas nécessaire
     dans la plupart des configurations. S'il est absent,
     <code>https</code> est la valeur par défaut pour le port 443 et
