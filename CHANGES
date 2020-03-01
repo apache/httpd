@@ -1,8 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
- *) mod_proxy_hcheck: Allow healthcheck expressions to use %{Content-Type}.
-    PR64140. [Renier Velazco <renier.velazco upr.edu>]
+  *) mod_proxy_hcheck: Allow healthcheck expressions to use %{Content-Type}.
+     PR64140. [Renier Velazco <renier.velazco upr.edu>]
 
   *) mod_ssl: Fix memory leak of OCSP stapling response. [Yann Ylavic]
 
