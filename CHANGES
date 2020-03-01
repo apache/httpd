@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_session: Fix an issue that blocked new sessions being created after
+     session expiration or other session errors. PR56052 [Eric Covener]
+
   *) mod_proxy_hcheck: Allow healthcheck expressions to use %{Content-Type}.
      PR64140. [Renier Velazco <renier.velazco upr.edu>]
 

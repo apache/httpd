@@ -137,21 +137,20 @@ static apr_status_t ap_session_load(request_rec * r, session_rec ** z)
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01817)
                     "error while decoding the session, "
                     "session not loaded: %s", r->uri);
-            zz = NULL;
+            /* preserve pointers to zz in load/save providers */
+            memset(zz, 0, sizeof(session_rec));
+            zz->pool = r->pool;
+            zz->entries = apr_table_make(zz->pool, 10);
         }
 
        /* invalidate session if session is expired */
         if (zz && zz->expiry && zz->expiry < now) {
             ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r, "session is expired");
-            zz = NULL;
+            /* preserve pointers to zz in load/save providers */
+            memset(zz, 0, sizeof(session_rec));
+            zz->pool = r->pool;
+            zz->entries = apr_table_make(zz->pool, 10);
         }
-    }
-
-    /* no luck, create a blank session */
-    if (!zz) {
-        zz = (session_rec *) apr_pcalloc(r->pool, sizeof(session_rec));
-        zz->pool = r->pool;
-        zz->entries = apr_table_make(zz->pool, 10);
     }
 
     /* make sure the expiry and maxage are set, if present */
