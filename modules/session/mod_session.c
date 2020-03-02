@@ -153,6 +153,15 @@ static apr_status_t ap_session_load(request_rec * r, session_rec ** z)
         }
     }
 
+    /* no luck, create a blank session. Note that the included session_load 
+     * providers will return new sessions during session_load when configured.
+     */
+    if (!zz) {
+        zz = (session_rec *) apr_pcalloc(r->pool, sizeof(session_rec));
+        zz->pool = r->pool;
+        zz->entries = apr_table_make(zz->pool, 10);
+    }
+
     /* make sure the expiry and maxage are set, if present */
     if (dconf->maxage) {
         if (!zz->expiry) {
