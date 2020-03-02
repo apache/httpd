@@ -196,9 +196,8 @@ static apr_bucket *h2_beam_bucket(h2_bucket_beam *beam,
  * bucket beam that can transport buckets across threads
  ******************************************************************************/
 
-static void mutex_leave(void *ctx, apr_thread_mutex_t *lock)
+static void mutex_leave(apr_thread_mutex_t *lock)
 {
-    (void)ctx;
     apr_thread_mutex_unlock(lock);
 }
 
@@ -219,7 +218,7 @@ static void leave_yellow(h2_bucket_beam *beam, h2_beam_lock *pbl)
 {
     (void)beam;
     if (pbl->leave) {
-        pbl->leave(pbl->leave_ctx, pbl->mutex);
+        pbl->leave(pbl->mutex);
     }
 }
 

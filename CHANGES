@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_http2: Fixes issue where mod_unique_id would generate non-unique request
+     identifier under load, see <https://github.com/icing/mod_h2/issues/195>.
+     [Michael Kaufmann, Stefan Eissing]
+
   *) mod_session_cookie: Add SessionCookieMaxAge to allow the mod_session
      cookie to be sent as a "session cookie" with no expiration even when the
      SessionMaxAge will be enforced on the server. PR56040 [Eric Covener]

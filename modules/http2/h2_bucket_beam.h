@@ -126,12 +126,11 @@ typedef struct {
  * buffers until the transmission is complete. Star gates use a similar trick.
  */
 
-typedef void h2_beam_mutex_leave(void *ctx,  struct apr_thread_mutex_t *lock);
+typedef void h2_beam_mutex_leave(struct apr_thread_mutex_t *lock);
 
 typedef struct {
     apr_thread_mutex_t *mutex;
     h2_beam_mutex_leave *leave;
-    void *leave_ctx;
 } h2_beam_lock;
 
 typedef struct h2_bucket_beam h2_bucket_beam;
