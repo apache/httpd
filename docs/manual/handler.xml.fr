@@ -24,7 +24,7 @@
 
 <manualpage metafile="handler.xml.meta">
 
-  <title>Utilisation des gestionnaires d'Apache (handlers)</title>
+  <title>Utilisation des gestionnaires (handlers) d'Apache</title>
 
   <summary>
     <p>Ce document d&eacute;crit l'utilisation des gestionnaires d'Apache (handlers).</p>
@@ -73,14 +73,14 @@
     int&eacute;gr&eacute;s dans la distribution standard se pr&eacute;sentent comme suit :</p>
 
     <ul>
-      <li><strong>default-handler</strong>: envoie le fichier en utilisant
+      <li><strong>default-handler</strong>: Envoie le fichier en utilisant
       le <code>default_handler()</code>, qui est le gestionnaire utilis&eacute; par
       d&eacute;faut pour traiter les contenus statiques. (core)</li>
 
-      <li><strong>send-as-is</strong>: envoie les fichiers avec en-t&ecirc;tes HTTP
+      <li><strong>send-as-is</strong>: Envoie les fichiers avec en-t&ecirc;tes HTTP
       tels quels. (<module>mod_asis</module>)</li>
 
-      <li><strong>cgi-script</strong>: traite le fichier comme un
+      <li><strong>cgi-script</strong>: Traite le fichier comme un
       script CGI. (<module>mod_cgi</module>)</li>
 
       <li><strong>imap-file</strong>: Traite le fichier comme un ensemble
@@ -115,7 +115,7 @@ AddHandler add-footer .html
 
       <p>&Agrave; ce moment-l&agrave;, le script CGI se charge d'envoyer le document
       initialement demand&eacute; (r&eacute;f&eacute;renc&eacute; par la variable d'environnement
-      <code>PATH_TRANSLATED</code>) et d'effectuer tous ajout ou modification
+      <code>PATH_TRANSLATED</code>) et d'effectuer tous les ajouts ou modifications
       voulus.</p>
 
     </section>
@@ -140,9 +140,7 @@ AddHandler add-footer .html
   <section id="programmer">
     <title>Note du d&eacute;veloppeur</title>
 
-    <p>Pour impl&eacute;menter la fonctionnalit&eacute; des gestionnaires, l'
-    <a href="developer/API.html">API Apache</a> a fait l'objet d'un ajout
-    que vous pourriez &ecirc;tre amen&eacute; &agrave; utiliser.
+    <p>Pour impl&eacute;menter la fonctionnalit&eacute; des gestionnaires, l'<a href="developer/API.html">API Apache</a> a fait l'objet d'un ajout que vous pourriez &ecirc;tre amen&eacute; &agrave; utiliser.
 
     Plus pr&eacute;cis&eacute;ment, un nouvel enregistrement a &eacute;t&eacute; ajout&eacute; &agrave; la structure
     <code>request_rec</code> :</p>
