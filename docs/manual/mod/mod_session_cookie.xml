@@ -169,4 +169,31 @@ SessionCookieName2 session path=/private;domain=example.com;httponly;secure;vers
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>SessionCookieMaxAge</name>
+<description>Control whether session cookies have Max-Age transmitted to the client</description>
+<syntax>SessionCookieMaxAge On|Off</syntax>
+<default>SessionCookieMaxAge On</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>The <directive>SessionCookieMaxAge</directive> flag controls whether 
+    the session expiration will be specified in the Max-Age attribute on the 
+    cookie sent to the client.  When set to 'Off', the attribtue will not be
+    added and clients will only return the cookie until "the current
+    session is over". This often means until the browser is closed.  </p>
+
+    <p>The expiration of the session is still validated on the server by
+    the <directive module="mod_session">SessionMaxAge</directive> directive.
+    </p>
+
+</usage>
+</directivesynopsis>
+
+
 </modulesynopsis>

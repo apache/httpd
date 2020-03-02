@@ -36,6 +36,8 @@ typedef struct {
     const char *name2_attrs;
     int remove;
     int remove_set;
+    int maxage;
+    int maxage_set;
 } session_cookie_dir_conf;
 
 /**
@@ -59,12 +61,13 @@ static apr_status_t session_cookie_save(request_rec * r, session_rec * z)
 
     session_cookie_dir_conf *conf = ap_get_module_config(r->per_dir_config,
                                                     &session_cookie_module);
+    int maxage = conf->maxage ? z->maxage : 0;
 
     /* create RFC2109 compliant cookie */
     if (conf->name_set) {
         if (z->encoded && z->encoded[0]) {
             ap_cookie_write(r, conf->name, z->encoded, conf->name_attrs,
-                            z->maxage, r->err_headers_out,
+                            maxage, r->err_headers_out,
                             NULL);
         }
         else {
@@ -77,7 +80,7 @@ static apr_status_t session_cookie_save(request_rec * r, session_rec * z)
     if (conf->name2_set) {
         if (z->encoded && z->encoded[0]) {
             ap_cookie_write2(r, conf->name2, z->encoded, conf->name2_attrs,
-                             z->maxage, r->err_headers_out,
+                             maxage, r->err_headers_out,
                              NULL);
         }
         else {
@@ -172,6 +175,7 @@ static void *create_session_cookie_dir_config(apr_pool_t * p, char *dummy)
 {
     session_cookie_dir_conf *new =
     (session_cookie_dir_conf *) apr_pcalloc(p, sizeof(session_cookie_dir_conf));
+    new->maxage = 1;
 
     return (void *) new;
 }
@@ -192,6 +196,8 @@ static void *merge_session_cookie_dir_config(apr_pool_t * p, void *basev,
     new->name2_set = add->name2_set || base->name2_set;
     new->remove = (add->remove_set == 0) ? base->remove : add->remove;
     new->remove_set = add->remove_set || base->remove_set;
+    new->maxage = (add->maxage_set == 0) ? base->maxage : add->maxage;
+    new->maxage_set = add->maxage_set || base->maxage_set;
 
     return new;
 }
@@ -253,6 +259,16 @@ static const char *
     return NULL;
 }
 
+static const char *
+     set_maxage(cmd_parms * parms, void *dconf, int flag)
+{
+    session_cookie_dir_conf *conf = dconf;
+
+    conf->maxage = flag;
+    conf->maxage_set = 1;
+
+    return NULL;
+}
 static const command_rec session_cookie_cmds[] =
 {
     AP_INIT_RAW_ARGS("SessionCookieName", set_cookie_name, NULL, RSRC_CONF|OR_AUTHCFG,
@@ -262,6 +278,9 @@ static const command_rec session_cookie_cmds[] =
     AP_INIT_FLAG("SessionCookieRemove", set_remove, NULL, RSRC_CONF|OR_AUTHCFG,
                  "Set to 'On' to remove the session cookie from the headers "
                  "and hide the cookie from a backend server or process"),
+    AP_INIT_FLAG("SessionCookieMaxAge", set_maxage, NULL, RSRC_CONF|OR_AUTHCFG,
+                 "Set to 'Off' to disable propogating SessionMaxAge to the client"),
+
     {NULL}
 };
 

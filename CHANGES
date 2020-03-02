@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_session_cookie: Add SessionCookieMaxAge to allow the mod_session
+     cookie to be sent as a "session cookie" with no expiration even when the
+     SessionMaxAge will be enforced on the server. PR56040 [Eric Covener]
+
   *) mod_session: Fix an issue that blocked new sessions being created after
      session expiration or other session errors. PR56052 [Eric Covener]
 
