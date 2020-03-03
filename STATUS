@@ -173,7 +173,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +:1 covener
      jailletc36: 1874480 and 1874601 are needed to avoid the duplication of 
                 the "CookieTracking" directive in 'command_rec'.
-	 ylavic: +1 with 1874480,1874601
+     ylavic: +1 with 1874480,1874601
 
   *) authz_groupfile: drop severity of AH0166 (user not found in groupfile)
      from ERR to INFO.
