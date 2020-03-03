@@ -1,8 +1,7 @@
 language: c
 os:
   - linux
-dist:
-  - bionic
+dist: bionic
 cache:
   directories:
     - /home/travis/perl5
@@ -31,7 +30,7 @@ env:
   global:
     - MFLAGS=-j2
 
-matrix:
+jobs:
   include:
     - name: Linux Ubuntu, Default module set
     # -------------------------------------------------------------------------
