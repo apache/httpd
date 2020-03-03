@@ -523,13 +523,12 @@ class DumpPoolAndChilds (gdb.Command):
 
   def _dump(self, arg, depth):
     pool = arg
-    print("%*c" % (depth * 4 + 1, " "), end="")
-    self._dump_one_pool(pool)
-    if pool['child'] != 0:
-      self._dump(pool['child'], depth + 1)
-    s = pool['sibling']
-    if s != 0:
-      self._dump(s, depth)
+    while pool:
+        print("%*c" % (depth * 4 + 1, " "), end="")
+        self._dump_one_pool(pool)
+        if pool['child'] != 0:
+            self._dump(pool['child'], depth + 1)
+        pool = pool['sibling']
 
   def invoke (self, arg, from_tty):
     pool = gdb.parse_and_eval(arg)
