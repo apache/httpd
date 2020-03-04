@@ -134,6 +134,15 @@ RELEASE SHOWSTOPPERS:
      2.4.x patch: svn merge -c 1874323 ^/httpd/httpd/trunk .
      +1: ylavic, gsmith
 
+  *) mod_proxy_http: Fix the forwarding of requests with content body when a
+     balancer member is unavailable; the retry on the next member was issued
+     with an empty body (regression introduced in 2.4.41).
+     trunk patch: http://svn.apache.org/r1869216
+                  http://svn.apache.org/r1869224
+     2.4.x patch:  svn merge -c 1869216,1869224 ^/httpd/httpd/trunk .
+                   (works modulo CHANGES)
+     +1: ylavic
+
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
@@ -191,15 +200,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1874689
      2.4.x patch: svn merge -c 1874689 ^/httpd/httpd/trunk .
      +1: icing, ylavic
-
-  *) mod_proxy_http: Fix the forwarding of requests with content body when a
-     balancer member is unavailable; the retry on the next member was issued
-     with an empty body (regression introduced in 2.4.41).
-     trunk patch: http://svn.apache.org/r1869216
-                  http://svn.apache.org/r1869224
-     2.4.x patch:  svn merge -c 1869216,1869224 ^/httpd/httpd/trunk .
-                   (works modulo CHANGES)
-     +1: ylavic
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
