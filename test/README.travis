@@ -28,6 +28,10 @@ The Travis scripts use the following environment variables:
 * SKIP_TESTING - if set, the Perl test framework is not run for the
   build.
 
+* TEST_UBSAN - set for builds using UBSan ("Undefined Behaviour Sanitizer")
+
+* TEST_MALLOC - set for builds using enhanced malloc debugging.
+
 Caching
 -------
 
@@ -49,7 +53,6 @@ TODO list
  - not sure how exactly
 * Known test failures
  - "apt-get install" timeout/fails - workaround by moving apt install to before_script phase?
- - t/apache/expr_string.t - unclear root cause, possible workaround in r1872705
  - t/apache/rwrite.t, t/apache/pass_brigade.t
    see msg <CAKQ1sVMbDcUouu+_bfp8T5HO5+=ORWhLx361+b4qyLux5xyhwA@mail.gmail.com> etc
 
