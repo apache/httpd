@@ -146,6 +146,23 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1874323 ^/httpd/httpd/trunk .
      +1: ylavic, gsmith, rpluem
 
+  *) authz_groupfile: drop severity of AH0166 (user not found in groupfile)
+     from ERR to INFO.
+     trunk patch: http://svn.apache.org/r1874424
+     2.4.x patch: svn merge -c 1874424 ^/httpd/httpd/trunk .
+     +:1 covener, ylavic, jim
+
+  *) mod_proxy_hcheck: Allow %{Content-Type} to work in expressions
+     trunk patch: http://svn.apache.org/r1874616
+     2.4.x patch:  svn merge -c 1874616 ^/httpd/httpd/trunk .
+     +1: covener, ylavic, jim
+
+  *) mod_http2: Fixes issue where mod_unique_id would generate non-unique request
+     identifier under load, see <https://github.com/icing/mod_h2/issues/195>.
+     trunk patch: http://svn.apache.org/r1874689
+     2.4.x patch: svn merge -c 1874689 ^/httpd/httpd/trunk .
+     +1: icing, ylavic, jim
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -167,23 +184,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              reworked, etc.. I would like to avoid a patch that is clearly wrong for some reviewer sitting here for
              months/years without any action item :)
      ylavic: will look at it ASAP..
-
-  *) authz_groupfile: drop severity of AH0166 (user not found in groupfile)
-     from ERR to INFO.
-     trunk patch: http://svn.apache.org/r1874424
-     2.4.x patch: svn merge -c 1874424 ^/httpd/httpd/trunk .
-     +:1 covener, ylavic, jim
-
-  *) mod_proxy_hcheck: Allow %{Content-Type} to work in expressions
-     trunk patch: http://svn.apache.org/r1874616
-     2.4.x patch:  svn merge -c 1874616 ^/httpd/httpd/trunk .
-     +1: covener, ylavic, jim
-
-  *) mod_http2: Fixes issue where mod_unique_id would generate non-unique request
-     identifier under load, see <https://github.com/icing/mod_h2/issues/195>.
-     trunk patch: http://svn.apache.org/r1874689
-     2.4.x patch: svn merge -c 1874689 ^/httpd/httpd/trunk .
-     +1: icing, ylavic, jim
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
