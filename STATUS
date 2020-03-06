@@ -146,12 +146,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1874323 ^/httpd/httpd/trunk .
      +1: ylavic, gsmith, rpluem
 
-  *) authz_groupfile: drop severity of AH0166 (user not found in groupfile)
-     from ERR to INFO.
-     trunk patch: http://svn.apache.org/r1874424
-     2.4.x patch: svn merge -c 1874424 ^/httpd/httpd/trunk .
-     +:1 covener, ylavic, jim
-
   *) mod_proxy_hcheck: Allow %{Content-Type} to work in expressions
      trunk patch: http://svn.apache.org/r1874616
      2.4.x patch:  svn merge -c 1874616 ^/httpd/httpd/trunk .
