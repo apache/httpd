@@ -730,7 +730,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
                 }
                 q = ap_get_token(r->pool, &accepts, 1);
                 ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
-                              "token: '%s' - q: '%s'", token, q);
+                              "token: '%s' - q: '%s'", token ? token : "NULL", q);
             }
 
             /* No acceptable token found or q=0 */
