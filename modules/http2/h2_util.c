@@ -1923,7 +1923,8 @@ int h2_util_frame_print(const nghttp2_frame *frame, char *buffer, size_t maxlen)
         case NGHTTP2_GOAWAY: {
             size_t len = (frame->goaway.opaque_data_len < s_len)?
                 frame->goaway.opaque_data_len : s_len-1;
-            memcpy(scratch, frame->goaway.opaque_data, len);
+            if (len)
+                memcpy(scratch, frame->goaway.opaque_data, len);
             scratch[len] = '\0';
             return apr_snprintf(buffer, maxlen, "GOAWAY[error=%d, reason='%s', "
                                 "last_stream=%d]", frame->goaway.error_code, 
