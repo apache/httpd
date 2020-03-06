@@ -4,7 +4,10 @@ Changes with Apache 2.4.42
   *) mod_usertrack: Add CookieSameSite, CookieHTTPOnly, and CookieSecure 
      to allow customization of the usertrack cookie. PR64077.
      [Prashant Keshvani <prashant2400 gmail.com>, Eric Covener]
-    
+
+  *) mod_proxy_ajp: Add "secret" parameter to proxy workers to implement legacy
+     AJP13 authentication.  PR 53098. [Dmitry A. Bakshaev <dab1818 gmail com>]
+
   *) mpm_event: avoid possible KeepAlveTimeout off by -100 ms.
      [Eric Covener, Yann Ylavic]
 
