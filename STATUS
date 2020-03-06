@@ -154,6 +154,15 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1874323 ^/httpd/httpd/trunk .
      +1: ylavic, gsmith, rpluem
 
+  *) usertrack: allow cookie flags samesite/secure/httponly to be configured
+     trunk patch: http://svn.apache.org/r1874389
+     2.4.x patch: svn merge -c 1874389 ^/httpd/httpd/trunk .
+     +:1 covener
+     jailletc36: 1874480 and 1874601 are needed to avoid the duplication of 
+                the "CookieTracking" directive in 'command_rec'.
+     ylavic: +1 with 1874480,1874601
+
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -175,14 +184,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              reworked, etc.. I would like to avoid a patch that is clearly wrong for some reviewer sitting here for
              months/years without any action item :)
      ylavic: will look at it ASAP..
-
-  *) usertrack: allow cookie flags samesite/secure/httponly to be configured
-     trunk patch: http://svn.apache.org/r1874389
-     2.4.x patch: svn merge -c 1874389 ^/httpd/httpd/trunk .
-     +:1 covener
-     jailletc36: 1874480 and 1874601 are needed to avoid the duplication of 
-                the "CookieTracking" directive in 'command_rec'.
-     ylavic: +1 with 1874480,1874601
 
   *) authz_groupfile: drop severity of AH0166 (user not found in groupfile)
      from ERR to INFO.
