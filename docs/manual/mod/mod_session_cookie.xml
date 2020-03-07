@@ -184,7 +184,7 @@ SessionCookieName2 session path=/private;domain=example.com;httponly;secure;vers
 <usage>
     <p>The <directive>SessionCookieMaxAge</directive> flag controls whether 
     the session expiration will be specified in the Max-Age attribute on the 
-    cookie sent to the client.  When set to 'Off', the attribtue will not be
+    cookie sent to the client.  When set to 'Off', the attribute will not be
     added and clients will only return the cookie until "the current
     session is over". This often means until the browser is closed.  </p>
 
