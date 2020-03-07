@@ -233,6 +233,7 @@ CustomLog "logs/clickstream.log" usertrack
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
+<compatibility>2.4.41 and later</compatibility>
 <override>FileInfo</override>
 
 <usage>
@@ -245,20 +246,21 @@ CustomLog "logs/clickstream.log" usertrack
 <directivesynopsis>
 <name>CookieHTTPOnly</name>
 <description>Adds the 'HTTPOnly' attribute to the cookie</description>
-<syntax>CookieHTTPOnlyon|off</syntax>
-<default>CookieHTTPOnlyoff</default>
+<syntax>CookieHTTPOnly on|off</syntax>
+<default>CookieHTTPOnly off</default>
 <contextlist>
 <context>server config</context>
 <context>virtual host</context>
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
+<compatibility>2.4.41 and later</compatibility>
 <override>FileInfo</override>
 
 <usage>
     <p>When set to 'ON', the 'HTTPOnly' cookie attribute is added to this 
     modules tracking cookie. This attribute instructs browsers to block javascript
-    from reading the value of the cookie</p>
+    from reading the value of the cookie.</p>
 </usage>
 </directivesynopsis>
 
@@ -273,13 +275,14 @@ CustomLog "logs/clickstream.log" usertrack
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
+<compatibility>2.4.41 and later</compatibility>
 <override>FileInfo</override>
 
 <usage>
     <p>When set to 'None', 'Lax', or 'Strict', the 'SameSite' cookie attribute 
     is added to this modules tracking cookie with the corresponding value.  
     This attribute instructs browser on how to treat the cookie when it is 
-    requested in a cross-site context.  </p>
+    requested in a cross-site context.</p>
 
      <note type="Warning">
         <p>A value of 'None' sets 'SameSite=None', which is the most liberal setting. To 
