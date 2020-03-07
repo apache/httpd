@@ -498,158 +498,164 @@ caractères</td></tr>
 s'applique</td></tr>
 <tr class="odd"><td><a href="mod_usertrack.html#cookieexpires">CookieExpires</a></td><td class="module"><a href="mod_usertrack.html">mod_usertrack</a></td></tr>
 <tr class="odd"><td colspan="2" class="descr">Durée avant expiration du cookie traceur</td></tr>
-<tr><td><a href="mod_usertrack.html#cookiename">CookieName</a></td><td class="module"><a href="mod_usertrack.html">mod_usertrack</a></td></tr>
-<tr><td colspan="2" class="descr">Nom du cookie traceur</td></tr>
-<tr class="odd"><td><a href="mod_usertrack.html#cookiestyle">CookieStyle</a></td><td class="module"><a href="mod_usertrack.html">mod_usertrack</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Format du champ d'en-tête cookie</td></tr>
-<tr><td><a href="mod_usertrack.html#cookietracking">CookieTracking</a></td><td class="module"><a href="mod_usertrack.html">mod_usertrack</a></td></tr>
-<tr><td colspan="2" class="descr">Active le cookie traceur</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#defaultlanguage">DefaultLanguage</a></td><td class="module"><a href="mod_mime.html">mod_mime</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Définit un symbole de langue par défaut à affecter au champ
+<tr><td><a href="mod_usertrack.html#cookiehttponly">CookieHTTPOnly</a></td><td class="module"><a href="mod_usertrack.html">mod_usertrack</a></td></tr>
+<tr><td colspan="2" class="descr">Ajoute l'attribut 'HTTPOnly' au cookie</td></tr>
+<tr class="odd"><td><a href="mod_usertrack.html#cookiename">CookieName</a></td><td class="module"><a href="mod_usertrack.html">mod_usertrack</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Nom du cookie traceur</td></tr>
+<tr><td><a href="mod_usertrack.html#cookiesamesite">CookieSameSite</a></td><td class="module"><a href="mod_usertrack.html">mod_usertrack</a></td></tr>
+<tr><td colspan="2" class="descr">Ajoute l'attribut 'SameSite' au cookie</td></tr>
+<tr class="odd"><td><a href="mod_usertrack.html#cookiesecure">CookieSecure</a></td><td class="module"><a href="mod_usertrack.html">mod_usertrack</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Ajoute l'attribut 'Secure' au cookie</td></tr>
+<tr><td><a href="mod_usertrack.html#cookiestyle">CookieStyle</a></td><td class="module"><a href="mod_usertrack.html">mod_usertrack</a></td></tr>
+<tr><td colspan="2" class="descr">Format du champ d'en-tête cookie</td></tr>
+<tr class="odd"><td><a href="mod_usertrack.html#cookietracking">CookieTracking</a></td><td class="module"><a href="mod_usertrack.html">mod_usertrack</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Active le cookie traceur</td></tr>
+<tr><td><a href="mod_mime.html#defaultlanguage">DefaultLanguage</a></td><td class="module"><a href="mod_mime.html">mod_mime</a></td></tr>
+<tr><td colspan="2" class="descr">Définit un symbole de langue par défaut à affecter au champ
 d'en-tête Content-Language pour toutes les ressources dans le contexte
 courant auxquelles aucun symbole de langue n'a été
 associé.</td></tr>
-<tr><td><a href="core.html#defaulttype">DefaultType</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr><td colspan="2" class="descr">Les seuls effets de cette directive sont des émissions
+<tr class="odd"><td><a href="core.html#defaulttype">DefaultType</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Les seuls effets de cette directive sont des émissions
 d'avertissements si sa valeur est différente de <code>none</code>. Dans
 les versions précédentes, DefaultType permettait de spécifier un type de
 média à assigner par défaut au contenu d'une réponse pour lequel aucun
 autre type de média n'avait été trouvé.
 </td></tr>
-<tr class="odd"><td><a href="core.html#enablemmap">EnableMMAP</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Utilise la projection en mémoire (Memory-Mapping) pour
+<tr><td><a href="core.html#enablemmap">EnableMMAP</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr><td colspan="2" class="descr">Utilise la projection en mémoire (Memory-Mapping) pour
 lire les fichiers pendant qu'ils sont servis</td></tr>
-<tr><td><a href="core.html#enablesendfile">EnableSendfile</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr><td colspan="2" class="descr">Utilise le support sendfile du noyau pour servir les
+<tr class="odd"><td><a href="core.html#enablesendfile">EnableSendfile</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Utilise le support sendfile du noyau pour servir les
 fichiers aux clients</td></tr>
-<tr class="odd"><td><a href="core.html#errordocument">ErrorDocument</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Document que le serveur renvoie au client en cas
+<tr><td><a href="core.html#errordocument">ErrorDocument</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr><td colspan="2" class="descr">Document que le serveur renvoie au client en cas
 d'erreur</td></tr>
-<tr><td><a href="core.html#fileetag">FileETag</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr><td colspan="2" class="descr">Caractéristiques de fichier utilisées lors de la génération
+<tr class="odd"><td><a href="core.html#fileetag">FileETag</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Caractéristiques de fichier utilisées lors de la génération
 de l'en-tête de réponse HTTP ETag pour les fichiers statiques</td></tr>
-<tr class="odd"><td><a href="mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority</a></td><td class="module"><a href="mod_negotiation.html">mod_negotiation</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Action à entreprendre si un document acceptable unique
+<tr><td><a href="mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority</a></td><td class="module"><a href="mod_negotiation.html">mod_negotiation</a></td></tr>
+<tr><td colspan="2" class="descr">Action à entreprendre si un document acceptable unique
 n'est pas trouvé</td></tr>
-<tr><td><a href="core.html#forcetype">ForceType</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr><td colspan="2" class="descr">Force le type de médium spécifié dans le champ d'en-tête
+<tr class="odd"><td><a href="core.html#forcetype">ForceType</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Force le type de médium spécifié dans le champ d'en-tête
 HTTP Content-Type pour les fichiers correspondants</td></tr>
-<tr class="odd"><td><a href="mod_headers.html#header">Header</a></td><td class="module"><a href="mod_headers.html">mod_headers</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Configure les en-têtes d'une réponse HTTP</td></tr>
-<tr><td><a href="mod_isapi.html#isapiappendlogtoerrors">ISAPIAppendLogToErrors</a></td><td class="module"><a href="mod_isapi.html">mod_isapi</a></td></tr>
-<tr><td colspan="2" class="descr">Enregistrement des requêtes
+<tr><td><a href="mod_headers.html#header">Header</a></td><td class="module"><a href="mod_headers.html">mod_headers</a></td></tr>
+<tr><td colspan="2" class="descr">Configure les en-têtes d'une réponse HTTP</td></tr>
+<tr class="odd"><td><a href="mod_isapi.html#isapiappendlogtoerrors">ISAPIAppendLogToErrors</a></td><td class="module"><a href="mod_isapi.html">mod_isapi</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Enregistrement des requêtes
 <code>HSE_APPEND_LOG_PARAMETER</code> de la part des extensions ISAPI
 dans le journal des erreurs</td></tr>
-<tr class="odd"><td><a href="mod_isapi.html#isapiappendlogtoquery">ISAPIAppendLogToQuery</a></td><td class="module"><a href="mod_isapi.html">mod_isapi</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Enregistre les requêtes
+<tr><td><a href="mod_isapi.html#isapiappendlogtoquery">ISAPIAppendLogToQuery</a></td><td class="module"><a href="mod_isapi.html">mod_isapi</a></td></tr>
+<tr><td colspan="2" class="descr">Enregistre les requêtes
 <code>HSE_APPEND_LOG_PARAMETER</code> de la part des extensions ISAPI
 dans la partie arguments de la requête</td></tr>
-<tr><td><a href="mod_isapi.html#isapifakeasync">ISAPIFakeAsync</a></td><td class="module"><a href="mod_isapi.html">mod_isapi</a></td></tr>
-<tr><td colspan="2" class="descr">Emulation du support des entrées/sorties asynchrones pour
+<tr class="odd"><td><a href="mod_isapi.html#isapifakeasync">ISAPIFakeAsync</a></td><td class="module"><a href="mod_isapi.html">mod_isapi</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Emulation du support des entrées/sorties asynchrones pour
 les appels ISAPI</td></tr>
-<tr class="odd"><td><a href="mod_isapi.html#isapilognotsupported">ISAPILogNotSupported</a></td><td class="module"><a href="mod_isapi.html">mod_isapi</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Journalisation des demandes de fonctionnalités non
+<tr><td><a href="mod_isapi.html#isapilognotsupported">ISAPILogNotSupported</a></td><td class="module"><a href="mod_isapi.html">mod_isapi</a></td></tr>
+<tr><td colspan="2" class="descr">Journalisation des demandes de fonctionnalités non
 supportées de la part des extensions ISAPI</td></tr>
-<tr><td><a href="mod_isapi.html#isapireadaheadbuffer">ISAPIReadAheadBuffer</a></td><td class="module"><a href="mod_isapi.html">mod_isapi</a></td></tr>
-<tr><td colspan="2" class="descr">Taille du tampon de lecture anticipée envoyé aux extensions
+<tr class="odd"><td><a href="mod_isapi.html#isapireadaheadbuffer">ISAPIReadAheadBuffer</a></td><td class="module"><a href="mod_isapi.html">mod_isapi</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Taille du tampon de lecture anticipée envoyé aux extensions
 ISAPI</td></tr>
-<tr class="odd"><td><a href="mod_negotiation.html#languagepriority">LanguagePriority</a></td><td class="module"><a href="mod_negotiation.html">mod_negotiation</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">L'ordre de priorité des variantes de langages pour les
+<tr><td><a href="mod_negotiation.html#languagepriority">LanguagePriority</a></td><td class="module"><a href="mod_negotiation.html">mod_negotiation</a></td></tr>
+<tr><td colspan="2" class="descr">L'ordre de priorité des variantes de langages pour les
 cas où le client n'a pas formulé de préférences</td></tr>
-<tr><td><a href="mod_mime.html#multiviewsmatch">MultiviewsMatch</a></td><td class="module"><a href="mod_mime.html">mod_mime</a></td></tr>
-<tr><td colspan="2" class="descr">Les types de fichiers qui seront inclus lors d'une
+<tr class="odd"><td><a href="mod_mime.html#multiviewsmatch">MultiviewsMatch</a></td><td class="module"><a href="mod_mime.html">mod_mime</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Les types de fichiers qui seront inclus lors d'une
 recherche de correspondance de fichier avec les vues multiples
 (MultiViews)</td></tr>
-<tr class="odd"><td><a href="mod_env.html#passenv">PassEnv</a></td><td class="module"><a href="mod_env.html">mod_env</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Transmet des variables d'environnement depuis le
+<tr><td><a href="mod_env.html#passenv">PassEnv</a></td><td class="module"><a href="mod_env.html">mod_env</a></td></tr>
+<tr><td colspan="2" class="descr">Transmet des variables d'environnement depuis le
 shell</td></tr>
-<tr><td><a href="core.html#qualifyredirecturl">QualifyRedirectURL</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr><td colspan="2" class="descr">Vérifie si la variable d'environnement REDIRECT_URL est
+<tr class="odd"><td><a href="core.html#qualifyredirecturl">QualifyRedirectURL</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Vérifie si la variable d'environnement REDIRECT_URL est
 pleinement qualifiée</td></tr>
-<tr class="odd"><td><a href="mod_alias.html#redirect">Redirect</a></td><td class="module"><a href="mod_alias.html">mod_alias</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Envoie une redirection externe demandant au client
+<tr><td><a href="mod_alias.html#redirect">Redirect</a></td><td class="module"><a href="mod_alias.html">mod_alias</a></td></tr>
+<tr><td colspan="2" class="descr">Envoie une redirection externe demandant au client
 d'effectuer une autre requête avec une URL différente</td></tr>
-<tr><td><a href="mod_alias.html#redirectmatch">RedirectMatch</a></td><td class="module"><a href="mod_alias.html">mod_alias</a></td></tr>
-<tr><td colspan="2" class="descr">Envoie une redirection externe faisant appel aux
+<tr class="odd"><td><a href="mod_alias.html#redirectmatch">RedirectMatch</a></td><td class="module"><a href="mod_alias.html">mod_alias</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Envoie une redirection externe faisant appel aux
 expressions rationnelles pour la mise en correspondance de l'URL
 courante</td></tr>
-<tr class="odd"><td><a href="mod_alias.html#redirectpermanent">RedirectPermanent</a></td><td class="module"><a href="mod_alias.html">mod_alias</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Envoie une redirection externe permanente demandant au
+<tr><td><a href="mod_alias.html#redirectpermanent">RedirectPermanent</a></td><td class="module"><a href="mod_alias.html">mod_alias</a></td></tr>
+<tr><td colspan="2" class="descr">Envoie une redirection externe permanente demandant au
 client d'effectuer une nouvelle requête avec une URL
 différente</td></tr>
-<tr><td><a href="mod_alias.html#redirecttemp">RedirectTemp</a></td><td class="module"><a href="mod_alias.html">mod_alias</a></td></tr>
-<tr><td colspan="2" class="descr">Envoie une redirection externe temporaire demandant au
+<tr class="odd"><td><a href="mod_alias.html#redirecttemp">RedirectTemp</a></td><td class="module"><a href="mod_alias.html">mod_alias</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Envoie une redirection externe temporaire demandant au
 client d'effectuer une nouvelle requête avec une URL
 différente</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#removecharset">RemoveCharset</a></td><td class="module"><a href="mod_mime.html">mod_mime</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Supprime toute association de jeu de caractères pour un
+<tr><td><a href="mod_mime.html#removecharset">RemoveCharset</a></td><td class="module"><a href="mod_mime.html">mod_mime</a></td></tr>
+<tr><td colspan="2" class="descr">Supprime toute association de jeu de caractères pour un
 ensemble d'extensions de noms de fichiers</td></tr>
-<tr><td><a href="mod_mime.html#removeencoding">RemoveEncoding</a></td><td class="module"><a href="mod_mime.html">mod_mime</a></td></tr>
-<tr><td colspan="2" class="descr">Supprime toute association de codage de contenu pour un
+<tr class="odd"><td><a href="mod_mime.html#removeencoding">RemoveEncoding</a></td><td class="module"><a href="mod_mime.html">mod_mime</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Supprime toute association de codage de contenu pour un
 ensemble d'extensions de noms de fichiers</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#removehandler">RemoveHandler</a></td><td class="module"><a href="mod_mime.html">mod_mime</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Supprime toute association de gestionnaire à un ensemble
+<tr><td><a href="mod_mime.html#removehandler">RemoveHandler</a></td><td class="module"><a href="mod_mime.html">mod_mime</a></td></tr>
+<tr><td colspan="2" class="descr">Supprime toute association de gestionnaire à un ensemble
 d'extensions de noms de fichiers</td></tr>
-<tr><td><a href="mod_mime.html#removeinputfilter">RemoveInputFilter</a></td><td class="module"><a href="mod_mime.html">mod_mime</a></td></tr>
-<tr><td colspan="2" class="descr">Supprime toute association de filtre en entrée à un
+<tr class="odd"><td><a href="mod_mime.html#removeinputfilter">RemoveInputFilter</a></td><td class="module"><a href="mod_mime.html">mod_mime</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Supprime toute association de filtre en entrée à un
 ensemble d'extensions de noms de fichiers</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#removelanguage">RemoveLanguage</a></td><td class="module"><a href="mod_mime.html">mod_mime</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Supprime toute association de langue à un ensemble
+<tr><td><a href="mod_mime.html#removelanguage">RemoveLanguage</a></td><td class="module"><a href="mod_mime.html">mod_mime</a></td></tr>
+<tr><td colspan="2" class="descr">Supprime toute association de langue à un ensemble
 d'extensions de noms de fichiers</td></tr>
-<tr><td><a href="mod_mime.html#removeoutputfilter">RemoveOutputFilter</a></td><td class="module"><a href="mod_mime.html">mod_mime</a></td></tr>
-<tr><td colspan="2" class="descr">Supprime toute association de filtre en sortie à un
+<tr class="odd"><td><a href="mod_mime.html#removeoutputfilter">RemoveOutputFilter</a></td><td class="module"><a href="mod_mime.html">mod_mime</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Supprime toute association de filtre en sortie à un
 ensemble d'extensions de noms de fichiers</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#removetype">RemoveType</a></td><td class="module"><a href="mod_mime.html">mod_mime</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Supprime toute association de type de contenu à un ensemble
+<tr><td><a href="mod_mime.html#removetype">RemoveType</a></td><td class="module"><a href="mod_mime.html">mod_mime</a></td></tr>
+<tr><td colspan="2" class="descr">Supprime toute association de type de contenu à un ensemble
 d'extensions de noms de fichiers</td></tr>
-<tr><td><a href="mod_headers.html#requestheader">RequestHeader</a></td><td class="module"><a href="mod_headers.html">mod_headers</a></td></tr>
-<tr><td colspan="2" class="descr">Configure les en-têtes d'une requête HTTP</td></tr>
-<tr class="odd"><td><a href="mod_rewrite.html#rewritebase">RewriteBase</a></td><td class="module"><a href="mod_rewrite.html">mod_rewrite</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Définit l'URL de base pour les réécritures au niveau
+<tr class="odd"><td><a href="mod_headers.html#requestheader">RequestHeader</a></td><td class="module"><a href="mod_headers.html">mod_headers</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Configure les en-têtes d'une requête HTTP</td></tr>
+<tr><td><a href="mod_rewrite.html#rewritebase">RewriteBase</a></td><td class="module"><a href="mod_rewrite.html">mod_rewrite</a></td></tr>
+<tr><td colspan="2" class="descr">Définit l'URL de base pour les réécritures au niveau
 répertoire</td></tr>
-<tr><td><a href="mod_rewrite.html#rewritecond">RewriteCond</a></td><td class="module"><a href="mod_rewrite.html">mod_rewrite</a></td></tr>
-<tr><td colspan="2" class="descr">Définit une condition qui devra être satisfaite pour que
+<tr class="odd"><td><a href="mod_rewrite.html#rewritecond">RewriteCond</a></td><td class="module"><a href="mod_rewrite.html">mod_rewrite</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Définit une condition qui devra être satisfaite pour que
 la réécriture soit effectuée
 </td></tr>
-<tr class="odd"><td><a href="mod_rewrite.html#rewriteengine">RewriteEngine</a></td><td class="module"><a href="mod_rewrite.html">mod_rewrite</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Active ou désactive l'exécution du
+<tr><td><a href="mod_rewrite.html#rewriteengine">RewriteEngine</a></td><td class="module"><a href="mod_rewrite.html">mod_rewrite</a></td></tr>
+<tr><td colspan="2" class="descr">Active ou désactive l'exécution du
 moteur de réécriture</td></tr>
-<tr><td><a href="mod_rewrite.html#rewriteoptions">RewriteOptions</a></td><td class="module"><a href="mod_rewrite.html">mod_rewrite</a></td></tr>
-<tr><td colspan="2" class="descr">Configure certaines options spéciales
+<tr class="odd"><td><a href="mod_rewrite.html#rewriteoptions">RewriteOptions</a></td><td class="module"><a href="mod_rewrite.html">mod_rewrite</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Configure certaines options spéciales
 pour le moteur de réécriture</td></tr>
-<tr class="odd"><td><a href="mod_rewrite.html#rewriterule">RewriteRule</a></td><td class="module"><a href="mod_rewrite.html">mod_rewrite</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Définit les règles pour le moteur de réécriture</td></tr>
-<tr><td><a href="core.html#scriptinterpretersource">ScriptInterpreterSource</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr><td colspan="2" class="descr">Permet de localiser l'interpréteur des scripts
+<tr><td><a href="mod_rewrite.html#rewriterule">RewriteRule</a></td><td class="module"><a href="mod_rewrite.html">mod_rewrite</a></td></tr>
+<tr><td colspan="2" class="descr">Définit les règles pour le moteur de réécriture</td></tr>
+<tr class="odd"><td><a href="core.html#scriptinterpretersource">ScriptInterpreterSource</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Permet de localiser l'interpréteur des scripts
 CGI</td></tr>
-<tr class="odd"><td><a href="mod_env.html#setenv">SetEnv</a></td><td class="module"><a href="mod_env.html">mod_env</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Définit des variables d'environnement</td></tr>
-<tr><td><a href="mod_setenvif.html#setenvif">SetEnvIf</a></td><td class="module"><a href="mod_setenvif.html">mod_setenvif</a></td></tr>
-<tr><td colspan="2" class="descr">Définit des variables d'environnement en fonction des
+<tr><td><a href="mod_env.html#setenv">SetEnv</a></td><td class="module"><a href="mod_env.html">mod_env</a></td></tr>
+<tr><td colspan="2" class="descr">Définit des variables d'environnement</td></tr>
+<tr class="odd"><td><a href="mod_setenvif.html#setenvif">SetEnvIf</a></td><td class="module"><a href="mod_setenvif.html">mod_setenvif</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Définit des variables d'environnement en fonction des
 attributs de la requête</td></tr>
-<tr class="odd"><td><a href="mod_setenvif.html#setenvifexpr">SetEnvIfExpr</a></td><td class="module"><a href="mod_setenvif.html">mod_setenvif</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Définit des variables d'environnement en fonction d'une expression ap_expr</td></tr>
-<tr><td><a href="mod_setenvif.html#setenvifnocase">SetEnvIfNoCase</a></td><td class="module"><a href="mod_setenvif.html">mod_setenvif</a></td></tr>
-<tr><td colspan="2" class="descr">Définit des variables d'environnement en fonction des
+<tr><td><a href="mod_setenvif.html#setenvifexpr">SetEnvIfExpr</a></td><td class="module"><a href="mod_setenvif.html">mod_setenvif</a></td></tr>
+<tr><td colspan="2" class="descr">Définit des variables d'environnement en fonction d'une expression ap_expr</td></tr>
+<tr class="odd"><td><a href="mod_setenvif.html#setenvifnocase">SetEnvIfNoCase</a></td><td class="module"><a href="mod_setenvif.html">mod_setenvif</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Définit des variables d'environnement en fonction des
 attributs de la requête sans tenir compte de la casse</td></tr>
-<tr class="odd"><td><a href="core.html#sethandler">SetHandler</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Force le traitement des fichiers spécifiés par un
+<tr><td><a href="core.html#sethandler">SetHandler</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr><td colspan="2" class="descr">Force le traitement des fichiers spécifiés par un
 gestionnaire particulier</td></tr>
-<tr><td><a href="core.html#setinputfilter">SetInputFilter</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr><td colspan="2" class="descr">Définit les filtres par lesquels vont passer les requêtes
+<tr class="odd"><td><a href="core.html#setinputfilter">SetInputFilter</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Définit les filtres par lesquels vont passer les requêtes
 client et les données POST</td></tr>
-<tr class="odd"><td><a href="core.html#setoutputfilter">SetOutputFilter</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Définit les filtres par lesquels vont passer les réponses
+<tr><td><a href="core.html#setoutputfilter">SetOutputFilter</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr><td colspan="2" class="descr">Définit les filtres par lesquels vont passer les réponses
 du serveur</td></tr>
-<tr><td><a href="mod_substitute.html#substitute">Substitute</a></td><td class="module"><a href="mod_substitute.html">mod_substitute</a></td></tr>
-<tr><td colspan="2" class="descr">Modèle de substition dans le contenu de la
+<tr class="odd"><td><a href="mod_substitute.html#substitute">Substitute</a></td><td class="module"><a href="mod_substitute.html">mod_substitute</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Modèle de substition dans le contenu de la
 réponse</td></tr>
-<tr class="odd"><td><a href="mod_substitute.html#substituteinheritbefore">SubstituteInheritBefore</a></td><td class="module"><a href="mod_substitute.html">mod_substitute</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Modifie l'ordre de fusion des modèles hérités</td></tr>
-<tr><td><a href="mod_substitute.html#substitutemaxlinelength">SubstituteMaxLineLength</a></td><td class="module"><a href="mod_substitute.html">mod_substitute</a></td></tr>
-<tr><td colspan="2" class="descr">Définit la longueur de ligne maximale</td></tr>
-<tr class="odd"><td><a href="mod_env.html#unsetenv">UnsetEnv</a></td><td class="module"><a href="mod_env.html">mod_env</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Supprime des variables de l'environnement</td></tr>
+<tr><td><a href="mod_substitute.html#substituteinheritbefore">SubstituteInheritBefore</a></td><td class="module"><a href="mod_substitute.html">mod_substitute</a></td></tr>
+<tr><td colspan="2" class="descr">Modifie l'ordre de fusion des modèles hérités</td></tr>
+<tr class="odd"><td><a href="mod_substitute.html#substitutemaxlinelength">SubstituteMaxLineLength</a></td><td class="module"><a href="mod_substitute.html">mod_substitute</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Définit la longueur de ligne maximale</td></tr>
+<tr><td><a href="mod_env.html#unsetenv">UnsetEnv</a></td><td class="module"><a href="mod_env.html">mod_env</a></td></tr>
+<tr><td colspan="2" class="descr">Supprime des variables de l'environnement</td></tr>
 </table></div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a name="override-indexes">Indexes</a></h2>
     <p>
       Les directives suivantes sont autorisées dans les fichiers .htaccess
