@@ -233,8 +233,8 @@ CustomLog "logs/clickstream.log" usertrack
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
-<compatibility>2.4.41 and later</compatibility>
 <override>FileInfo</override>
+<compatibility>2.4.41 and later</compatibility>
 
 <usage>
     <p>When set to 'ON', the 'Secure' cookie attribute is added to this 
@@ -254,8 +254,8 @@ CustomLog "logs/clickstream.log" usertrack
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
-<compatibility>2.4.41 and later</compatibility>
 <override>FileInfo</override>
+<compatibility>2.4.41 and later</compatibility>
 
 <usage>
     <p>When set to 'ON', the 'HTTPOnly' cookie attribute is added to this 
@@ -275,8 +275,8 @@ CustomLog "logs/clickstream.log" usertrack
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
-<compatibility>2.4.41 and later</compatibility>
 <override>FileInfo</override>
+<compatibility>2.4.41 and later</compatibility>
 
 <usage>
     <p>When set to 'None', 'Lax', or 'Strict', the 'SameSite' cookie attribute 
