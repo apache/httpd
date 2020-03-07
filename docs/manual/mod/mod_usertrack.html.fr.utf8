@@ -142,12 +142,13 @@ s'applique</td></tr>
 <div class="directive-section"><h2><a name="cookiehttponly" id="cookiehttponly">Directive</a> <a name="CookieHTTPOnly" id="CookieHTTPOnly">CookieHTTPOnly</a> <a title="Lien permanent" href="#cookiehttponly" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ajoute l'attribut 'HTTPOnly' au cookie</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CookieHTTPOnlyon|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CookieHTTPOnlyoff</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CookieHTTPOnly on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CookieHTTPOnly off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_usertrack</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.41 du serveur HTTP Apache</td></tr>
 </table>
     <p>Lorsqu'elle est définie à 'ON', cette directive ajoute l'attribut 'HTTPOnly'
     au cookie de traçage. Cet attribut indique aux navigateurs qu'ils doivent
@@ -188,6 +189,7 @@ s'applique</td></tr>
 <tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_usertrack</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.41 du serveur HTTP Apache</td></tr>
 </table>
     <p>Lorsque cette directive est définie à 'None', 'Lax', ou 'Strict',
     l'attribut 'SameSite' est ajouté au cookie de traçage avec la valeur
@@ -212,6 +214,7 @@ s'applique</td></tr>
 <tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_usertrack</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.41 du serveur HTTP Apache</td></tr>
 </table>
     <p>Lorsqu'elle est définie à 'ON', cette directive ajoute l'attribut 'Secure'
     au cookie de traçage. Cet attribut indique aux navigateurs qu'il ne doivent

@@ -486,85 +486,88 @@ pas.</td></tr>
 et l'authentification utilisateur</td></tr>
 <tr><td><a href="mod_session.html#session">Session</a></td><td class="module"><a href="mod_session.html">mod_session</a></td></tr>
 <tr><td colspan="2" class="descr">Ouvre une session pour le contexte courant</td></tr>
-<tr class="odd"><td><a href="mod_session_cookie.html#sessioncookiename">SessionCookieName</a></td><td class="module"><a href="mod_session_cookie.html">mod_session_cookie</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Nom et attributs du cookie RFC2109 dans lequel la session
+<tr class="odd"><td><a href="mod_session_cookie.html#sessioncookiemaxage">SessionCookieMaxAge</a></td><td class="module"><a href="mod_session_cookie.html">mod_session_cookie</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Définit si les cookies de session doivent spécifier une durée de vie à
+transmettre au client</td></tr>
+<tr><td><a href="mod_session_cookie.html#sessioncookiename">SessionCookieName</a></td><td class="module"><a href="mod_session_cookie.html">mod_session_cookie</a></td></tr>
+<tr><td colspan="2" class="descr">Nom et attributs du cookie RFC2109 dans lequel la session
 est stockée</td></tr>
-<tr><td><a href="mod_session_cookie.html#sessioncookiename2">SessionCookieName2</a></td><td class="module"><a href="mod_session_cookie.html">mod_session_cookie</a></td></tr>
-<tr><td colspan="2" class="descr">Nom et attributs pour le cookie RFC2965 dans lequel est
+<tr class="odd"><td><a href="mod_session_cookie.html#sessioncookiename2">SessionCookieName2</a></td><td class="module"><a href="mod_session_cookie.html">mod_session_cookie</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Nom et attributs pour le cookie RFC2965 dans lequel est
 stockée la session</td></tr>
-<tr class="odd"><td><a href="mod_session_cookie.html#sessioncookieremove">SessionCookieRemove</a></td><td class="module"><a href="mod_session_cookie.html">mod_session_cookie</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Détermine si les cookies de session doivent être supprimés
-des en-têtes HTTP entrants</td></tr>
-<tr><td><a href="mod_session_crypto.html#sessioncryptocipher">SessionCryptoCipher</a></td><td class="module"><a href="mod_session_crypto.html">mod_session_crypto</a></td></tr>
-<tr><td colspan="2" class="descr">L'algorithme à utiliser pour le chiffrement de la session</td></tr>
-<tr class="odd"><td><a href="mod_session_crypto.html#sessioncryptopassphrase">SessionCryptoPassphrase</a></td><td class="module"><a href="mod_session_crypto.html">mod_session_crypto</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">La clé utilisée pour chiffrer la session</td></tr>
-<tr><td><a href="mod_session_dbd.html#sessiondbdcookiename">SessionDBDCookieName</a></td><td class="module"><a href="mod_session_dbd.html">mod_session_dbd</a></td></tr>
-<tr><td colspan="2" class="descr">Nom et attributs du cookie RFC2109 qui contient
-l'identifiant de session</td></tr>
-<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdcookiename2">SessionDBDCookieName2</a></td><td class="module"><a href="mod_session_dbd.html">mod_session_dbd</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Nom et attributs du cookie RFC2965 qui contient
-l'identifiant de session</td></tr>
-<tr><td><a href="mod_session_dbd.html#sessiondbdcookieremove">SessionDBDCookieRemove</a></td><td class="module"><a href="mod_session_dbd.html">mod_session_dbd</a></td></tr>
+<tr><td><a href="mod_session_cookie.html#sessioncookieremove">SessionCookieRemove</a></td><td class="module"><a href="mod_session_cookie.html">mod_session_cookie</a></td></tr>
 <tr><td colspan="2" class="descr">Détermine si les cookies de session doivent être supprimés
 des en-têtes HTTP entrants</td></tr>
-<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbddeletelabel">SessionDBDDeleteLabel</a></td><td class="module"><a href="mod_session_dbd.html">mod_session_dbd</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">La requête SQL à utiliser pour supprimer des sessions de la
+<tr class="odd"><td><a href="mod_session_crypto.html#sessioncryptocipher">SessionCryptoCipher</a></td><td class="module"><a href="mod_session_crypto.html">mod_session_crypto</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">L'algorithme à utiliser pour le chiffrement de la session</td></tr>
+<tr><td><a href="mod_session_crypto.html#sessioncryptopassphrase">SessionCryptoPassphrase</a></td><td class="module"><a href="mod_session_crypto.html">mod_session_crypto</a></td></tr>
+<tr><td colspan="2" class="descr">La clé utilisée pour chiffrer la session</td></tr>
+<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdcookiename">SessionDBDCookieName</a></td><td class="module"><a href="mod_session_dbd.html">mod_session_dbd</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Nom et attributs du cookie RFC2109 qui contient
+l'identifiant de session</td></tr>
+<tr><td><a href="mod_session_dbd.html#sessiondbdcookiename2">SessionDBDCookieName2</a></td><td class="module"><a href="mod_session_dbd.html">mod_session_dbd</a></td></tr>
+<tr><td colspan="2" class="descr">Nom et attributs du cookie RFC2965 qui contient
+l'identifiant de session</td></tr>
+<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdcookieremove">SessionDBDCookieRemove</a></td><td class="module"><a href="mod_session_dbd.html">mod_session_dbd</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Détermine si les cookies de session doivent être supprimés
+des en-têtes HTTP entrants</td></tr>
+<tr><td><a href="mod_session_dbd.html#sessiondbddeletelabel">SessionDBDDeleteLabel</a></td><td class="module"><a href="mod_session_dbd.html">mod_session_dbd</a></td></tr>
+<tr><td colspan="2" class="descr">La requête SQL à utiliser pour supprimer des sessions de la
 base de données</td></tr>
-<tr><td><a href="mod_session_dbd.html#sessiondbdinsertlabel">SessionDBDInsertLabel</a></td><td class="module"><a href="mod_session_dbd.html">mod_session_dbd</a></td></tr>
-<tr><td colspan="2" class="descr">La requête SQL à utiliser pour insérer des sessions dans la
+<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdinsertlabel">SessionDBDInsertLabel</a></td><td class="module"><a href="mod_session_dbd.html">mod_session_dbd</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">La requête SQL à utiliser pour insérer des sessions dans la
 base de données</td></tr>
-<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdperuser">SessionDBDPerUser</a></td><td class="module"><a href="mod_session_dbd.html">mod_session_dbd</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Active une session propre à un utilisateur</td></tr>
-<tr><td><a href="mod_session_dbd.html#sessiondbdselectlabel">SessionDBDSelectLabel</a></td><td class="module"><a href="mod_session_dbd.html">mod_session_dbd</a></td></tr>
-<tr><td colspan="2" class="descr">La requête SQL à utiliser pour sélectionner des sessions
+<tr><td><a href="mod_session_dbd.html#sessiondbdperuser">SessionDBDPerUser</a></td><td class="module"><a href="mod_session_dbd.html">mod_session_dbd</a></td></tr>
+<tr><td colspan="2" class="descr">Active une session propre à un utilisateur</td></tr>
+<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdselectlabel">SessionDBDSelectLabel</a></td><td class="module"><a href="mod_session_dbd.html">mod_session_dbd</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">La requête SQL à utiliser pour sélectionner des sessions
 dans la base de données</td></tr>
-<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdupdatelabel">SessionDBDUpdateLabel</a></td><td class="module"><a href="mod_session_dbd.html">mod_session_dbd</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">La requête SQL à utiliser pour mettre à jour des sessions
+<tr><td><a href="mod_session_dbd.html#sessiondbdupdatelabel">SessionDBDUpdateLabel</a></td><td class="module"><a href="mod_session_dbd.html">mod_session_dbd</a></td></tr>
+<tr><td colspan="2" class="descr">La requête SQL à utiliser pour mettre à jour des sessions
 préexistantes dans la base de données</td></tr>
-<tr><td><a href="mod_session.html#sessionenv">SessionEnv</a></td><td class="module"><a href="mod_session.html">mod_session</a></td></tr>
-<tr><td colspan="2" class="descr">Définit si le contenu de la session doit être enregistré
+<tr class="odd"><td><a href="mod_session.html#sessionenv">SessionEnv</a></td><td class="module"><a href="mod_session.html">mod_session</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Définit si le contenu de la session doit être enregistré
 dans la variable d'environnement <var>HTTP_SESSION</var></td></tr>
-<tr class="odd"><td><a href="mod_session.html#sessionexclude">SessionExclude</a></td><td class="module"><a href="mod_session.html">mod_session</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Définit les préfixes d'URLs pour lesquels une session sera
+<tr><td><a href="mod_session.html#sessionexclude">SessionExclude</a></td><td class="module"><a href="mod_session.html">mod_session</a></td></tr>
+<tr><td colspan="2" class="descr">Définit les préfixes d'URLs pour lesquels une session sera
 ignorée</td></tr>
-<tr><td><a href="mod_session.html#sessionexpiryupdateinterval">SessionExpiryUpdateInterval</a></td><td class="module"><a href="mod_session.html">mod_session</a></td></tr>
-<tr><td colspan="2" class="descr">Définit le nombre de secondes dont la durée d'expiration d'une
+<tr class="odd"><td><a href="mod_session.html#sessionexpiryupdateinterval">SessionExpiryUpdateInterval</a></td><td class="module"><a href="mod_session.html">mod_session</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Définit le nombre de secondes dont la durée d'expiration d'une
 session peut changer sans que cette session soit mise à jour</td></tr>
-<tr class="odd"><td><a href="mod_session.html#sessionheader">SessionHeader</a></td><td class="module"><a href="mod_session.html">mod_session</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Importation des mises à jour de session depuis l'en-tête de
+<tr><td><a href="mod_session.html#sessionheader">SessionHeader</a></td><td class="module"><a href="mod_session.html">mod_session</a></td></tr>
+<tr><td colspan="2" class="descr">Importation des mises à jour de session depuis l'en-tête de
 réponse HTTP spécifié</td></tr>
-<tr><td><a href="mod_session.html#sessioninclude">SessionInclude</a></td><td class="module"><a href="mod_session.html">mod_session</a></td></tr>
-<tr><td colspan="2" class="descr">Définit les préfixes d'URL pour lesquels une session est
+<tr class="odd"><td><a href="mod_session.html#sessioninclude">SessionInclude</a></td><td class="module"><a href="mod_session.html">mod_session</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Définit les préfixes d'URL pour lesquels une session est
 valide</td></tr>
-<tr class="odd"><td><a href="mod_session.html#sessionmaxage">SessionMaxAge</a></td><td class="module"><a href="mod_session.html">mod_session</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Définit une durée de vie maximale pour la session en
+<tr><td><a href="mod_session.html#sessionmaxage">SessionMaxAge</a></td><td class="module"><a href="mod_session.html">mod_session</a></td></tr>
+<tr><td colspan="2" class="descr">Définit une durée de vie maximale pour la session en
 secondes</td></tr>
-<tr><td><a href="mod_ssl.html#sslcacertificatefile">SSLCACertificateFile</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
-<tr><td colspan="2" class="descr">Fichier contenant une concaténation des certificats de CA
+<tr class="odd"><td><a href="mod_ssl.html#sslcacertificatefile">SSLCACertificateFile</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Fichier contenant une concaténation des certificats de CA
 codés en PEM pour l'authentification des clients</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslcacertificatepath">SSLCACertificatePath</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Répertoire des certificats de CA codés en PEM pour
+<tr><td><a href="mod_ssl.html#sslcacertificatepath">SSLCACertificatePath</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr><td colspan="2" class="descr">Répertoire des certificats de CA codés en PEM pour
 l'authentification des clients</td></tr>
-<tr><td><a href="mod_ssl.html#sslciphersuite">SSLCipherSuite</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
-<tr><td colspan="2" class="descr">Algorithmes de chiffrement disponibles pour la négociation
+<tr class="odd"><td><a href="mod_ssl.html#sslciphersuite">SSLCipherSuite</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Algorithmes de chiffrement disponibles pour la négociation
 au cours de l'initialisation de la connexion SSL</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslrenegbuffersize">SSLRenegBufferSize</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Définit la taille du tampon de renégociation
+<tr><td><a href="mod_ssl.html#sslrenegbuffersize">SSLRenegBufferSize</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr><td colspan="2" class="descr">Définit la taille du tampon de renégociation
 SSL</td></tr>
-<tr><td><a href="mod_ssl.html#sslrequire">SSLRequire</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
-<tr><td colspan="2" class="descr">N'autorise l'accès que lorsqu'une expression booléenne
+<tr class="odd"><td><a href="mod_ssl.html#sslrequire">SSLRequire</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">N'autorise l'accès que lorsqu'une expression booléenne
 complexe et arbitraire est vraie</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslrequiressl">SSLRequireSSL</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Interdit l'accès lorsque la requête HTTP n'utilise pas
+<tr><td><a href="mod_ssl.html#sslrequiressl">SSLRequireSSL</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr><td colspan="2" class="descr">Interdit l'accès lorsque la requête HTTP n'utilise pas
 SSL</td></tr>
-<tr><td><a href="mod_ssl.html#sslusername">SSLUserName</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
-<tr><td colspan="2" class="descr">Nom de la variable servant à déterminer le nom de
+<tr class="odd"><td><a href="mod_ssl.html#sslusername">SSLUserName</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Nom de la variable servant à déterminer le nom de
 l'utilisateur</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslverifyclient">SSLVerifyClient</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Niveau de vérification du certificat client</td></tr>
-<tr><td><a href="mod_ssl.html#sslverifydepth">SSLVerifyDepth</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
-<tr><td colspan="2" class="descr">Profondeur maximale des certificats de CA pour la
+<tr><td><a href="mod_ssl.html#sslverifyclient">SSLVerifyClient</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr><td colspan="2" class="descr">Niveau de vérification du certificat client</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslverifydepth">SSLVerifyDepth</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Profondeur maximale des certificats de CA pour la
 vérification des certificats clients</td></tr>
 </table></div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a name="override-fileinfo">FileInfo</a></h2>
     <p>

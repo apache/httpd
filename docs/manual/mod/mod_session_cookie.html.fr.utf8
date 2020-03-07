@@ -70,6 +70,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#basicexamples">Exemples simples</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#sessioncookiemaxage">SessionCookieMaxAge</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sessioncookiename">SessionCookieName</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sessioncookiename2">SessionCookieName2</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sessioncookieremove">SessionCookieRemove</a></li>
@@ -102,6 +103,31 @@ SessionCookieName session path=/</pre>
       <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code>.</p>
 
     </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="sessioncookiemaxage" id="sessioncookiemaxage">Directive</a> <a name="SessionCookieMaxAge" id="SessionCookieMaxAge">SessionCookieMaxAge</a> <a title="Lien permanent" href="#sessioncookiemaxage" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit si les cookies de session doivent spécifier une durée de vie à
+transmettre au client</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionCookieMaxAge On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SessionCookieMaxAge On</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_cookie</td></tr>
+</table>
+    <p>La directive <code class="directive">SessionCookieMaxAge</code> permet de
+    définir si la durée de vie de la session doit être spécifiée via l'attribut
+    Max-Age du cookie envoyé au client. Lorsqu'elle est définie à "Off",
+    l'attribut Max-Age ne sera pas ajouté et les clients ne renverront le cookie
+    que lorsque "la session courante sera fermée", ce qui correspond souvent à la
+    fermeture du navigateur internet.</p>
+
+    <p>L'expiration de la session est cependant toujours validée au niveau du
+    serveur via la directive <code class="directive"><a href="../mod/mod_session.html#sessionmaxage">SessionMaxAge</a></code>.
+    </p>
+
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="sessioncookiename" id="sessioncookiename">Directive</a> <a name="SessionCookieName" id="SessionCookieName">SessionCookieName</a> <a title="Lien permanent" href="#sessioncookiename" class="permalink">&para;</a></h2>
 <table class="directive">

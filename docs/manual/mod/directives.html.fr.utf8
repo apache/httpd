@@ -655,6 +655,7 @@
 <li><a href="core.html#serversignature">ServerSignature</a></li>
 <li><a href="core.html#servertokens">ServerTokens</a></li>
 <li><a href="mod_session.html#session">Session</a></li>
+<li><a href="mod_session_cookie.html#sessioncookiemaxage">SessionCookieMaxAge</a></li>
 <li><a href="mod_session_cookie.html#sessioncookiename">SessionCookieName</a></li>
 <li><a href="mod_session_cookie.html#sessioncookiename2">SessionCookieName2</a></li>
 <li><a href="mod_session_cookie.html#sessioncookieremove">SessionCookieRemove</a></li>
