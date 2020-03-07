@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1793934 -->
+<!-- English Revision: 1874675 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -186,6 +186,35 @@ des en-têtes HTTP entrants</description>
     session à ce dernier peut conduire à une violation de la
     confidentialité. A ce titre, si cette directive est définie à "on",
     le cookie de session sera supprimé des en-têtes HTTP entrants.</p>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SessionCookieMaxAge</name>
+<description>Définit si les cookies de session doivent spécifier une durée de vie à
+transmettre au client</description>
+<syntax>SessionCookieMaxAge On|Off</syntax>
+<default>SessionCookieMaxAge On</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>La directive <directive>SessionCookieMaxAge</directive> permet de
+    définir si la durée de vie de la session doit être spécifiée via l'attribut
+    Max-Age du cookie envoyé au client. Lorsqu'elle est définie à "Off",
+    l'attribut Max-Age ne sera pas ajouté et les clients ne renverront le cookie
+    que lorsque "la session courante sera fermée", ce qui correspond souvent à la
+    fermeture du navigateur internet.</p>
+
+    <p>L'expiration de la session est cependant toujours validée au niveau du
+    serveur via la directive <directive
+    module="mod_session">SessionMaxAge</directive>.
+    </p>
 
 </usage>
 </directivesynopsis>

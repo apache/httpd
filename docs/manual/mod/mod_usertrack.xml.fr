@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1874389 -->
+<!-- English Revision : 1874940 -->
 <!-- French translation : Lucien GENTIS -->
 
 
@@ -244,6 +244,7 @@ s'applique</description>
 <context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
+<compatibility>Disponible à partir de la version 2.4.41 du serveur HTTP Apache</compatibility>
 
 <usage>
     <p>Lorsqu'elle est définie à 'ON', cette directive ajoute l'attribut 'Secure'
@@ -255,8 +256,8 @@ s'applique</description>
 <directivesynopsis>
 <name>CookieHTTPOnly</name>
 <description>Ajoute l'attribut 'HTTPOnly' au cookie</description>
-<syntax>CookieHTTPOnlyon|off</syntax>
-<default>CookieHTTPOnlyoff</default>
+<syntax>CookieHTTPOnly on|off</syntax>
+<default>CookieHTTPOnly off</default>
 <contextlist>
 <context>server config</context>
 <context>virtual host</context>
@@ -264,6 +265,7 @@ s'applique</description>
 <context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
+<compatibility>Disponible à partir de la version 2.4.41 du serveur HTTP Apache</compatibility>
 
 <usage>
     <p>Lorsqu'elle est définie à 'ON', cette directive ajoute l'attribut 'HTTPOnly'
@@ -284,6 +286,7 @@ s'applique</description>
 <context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
+<compatibility>Disponible à partir de la version 2.4.41 du serveur HTTP Apache</compatibility>
 
 <usage>
     <p>Lorsque cette directive est définie à 'None', 'Lax', ou 'Strict',
