@@ -352,7 +352,7 @@ static unsigned int __stdcall winnt_accept(void *lr_)
     ap_listen_rec *lr = (ap_listen_rec *)lr_;
     apr_os_sock_info_t sockinfo;
     winnt_conn_ctx_t *context = NULL;
-    DWORD BytesRead;
+    DWORD BytesRead = 0;
     SOCKET nlsd;
     LPFN_ACCEPTEX lpfnAcceptEx = NULL;
     LPFN_GETACCEPTEXSOCKADDRS lpfnGetAcceptExSockaddrs = NULL;
