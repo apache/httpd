@@ -51,7 +51,6 @@
 #include "apr_hash.h"
 #include "apr_user.h"
 #include "apr_lib.h"
-#include "apr_signal.h"
 #include "apr_global_mutex.h"
 #include "apr_dbm.h"
 #include "apr_dbd.h"
@@ -66,21 +65,11 @@
 #define APR_WANT_IOVEC
 #include "apr_want.h"
 
-/* XXX: Do we really need these headers? */
-#if APR_HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-#if APR_HAVE_SYS_TYPES_H
-#include <sys/types.h>
-#endif
 #if APR_HAVE_STDARG_H
 #include <stdarg.h>
 #endif
 #if APR_HAVE_STDLIB_H
 #include <stdlib.h>
-#endif
-#if APR_HAVE_CTYPE_H
-#include <ctype.h>
 #endif
 #if APR_HAVE_NETINET_IN_H
 #include <netinet/in.h>
