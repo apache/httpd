@@ -1526,6 +1526,7 @@ AP_DECLARE(void) ap_log_pid(apr_pool_t *p, const char *filename)
     const char *fname;
     char *temp_fname;
     apr_fileperms_t perms;
+    char pidstr[64];
 
     if (!filename) {
         return;
@@ -1535,10 +1536,6 @@ AP_DECLARE(void) ap_log_pid(apr_pool_t *p, const char *filename)
     if (!fname) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT, APR_EBADPATH,
                      ap_server_conf, APLOGNO(00097) "Invalid PID file path %s, ignoring.", filename);
-        return;
-    }
-    temp_fname = apr_psprintf(p, "%s.XXXXXX", filename);
-    if (!temp_fname) {
         return;
     }
 
@@ -1558,9 +1555,10 @@ AP_DECLARE(void) ap_log_pid(apr_pool_t *p, const char *filename)
                       fname);
     }
 
-    if ((rv = apr_file_mktemp(&pid_file, temp_fname,
-                              APR_WRITE | APR_CREATE | APR_TRUNCATE, p))
-        != APR_SUCCESS) {
+    temp_fname = apr_pstrcat(p, fname, ".XXXXXX", NULL);
+    rv = apr_file_mktemp(&pid_file, temp_fname,
+                         APR_WRITE | APR_CREATE | APR_TRUNCATE, p);
+    if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL, APLOGNO(00099)
                      "could not create %s", temp_fname);
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL, APLOGNO(00100)
@@ -1569,12 +1567,23 @@ AP_DECLARE(void) ap_log_pid(apr_pool_t *p, const char *filename)
         exit(1);
     }
 
-    perms = APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD;
-    apr_file_perms_set(temp_fname, perms);
+    apr_snprintf(pidstr, sizeof pidstr, "%" APR_PID_T_FMT APR_EOL_STR, mypid);
 
-    apr_file_printf(pid_file, "%" APR_PID_T_FMT APR_EOL_STR, mypid);
-    apr_file_close(pid_file);
-    apr_file_rename(temp_fname, fname, p);
+    perms = APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD;
+    rv = apr_file_perms_set(temp_fname, perms);
+    if (rv == APR_SUCCESS)
+        rv = apr_file_write_full(pid_file, pidstr, strlen(pidstr), NULL);
+    if (rv == APR_SUCCESS)
+        rv = apr_file_close(pid_file);
+    if (rv == APR_SUCCESS)
+        rv = apr_file_rename(temp_fname, fname, p);
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL, APLOGNO()
+                     "%s: Failed creating pid file %s",
+                     ap_server_argv0, temp_fname);
+        exit(1);
+    }
+
     saved_pid = mypid;
 }
 
