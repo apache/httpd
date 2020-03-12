@@ -137,16 +137,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1874323 ^/httpd/httpd/trunk .
      +1: ylavic, gsmith, rpluem
 
-  *) mod_proxy_http: Fix the forwarding of requests with content body when a
-     balancer member is unavailable; the retry on the next member was issued
-     with an empty body (regression introduced in 2.4.41).
-     trunk patch: http://svn.apache.org/r1869216
-                  http://svn.apache.org/r1869224
-     2.4.x patch:  svn merge -c 1869216,1869224 ^/httpd/httpd/trunk .
-                   (works modulo CHANGES)
-     +1: ylavic, rpluem, covener
-
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
