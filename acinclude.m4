@@ -827,7 +827,7 @@ case $host in
    fi
    if test -n "$SYSTEMD_LIBS"; then
       AC_CHECK_HEADERS(systemd/sd-daemon.h)
-      if test "${ac_cv_header_systemd_sd_daemon_h}" = "no" || test -z "${SYSTEMD_LIBS}"; then
+      if test "${ac_cv_header_systemd_sd_daemon_h}" = "no"; then
         AC_MSG_WARN([Your system does not support systemd.])
       else
         APR_ADDTO(HTTPD_LIBS, [$SYSTEMD_LIBS])
