@@ -24,7 +24,6 @@
  *  Apache API interface structures
  */
 
-#include "ap_config_auto.h"
 #include "ssl_private.h"
 #include "mod_ssl.h"
 #include "mod_ssl_openssl.h"
@@ -329,9 +328,10 @@ static int modssl_is_prelinked(void)
 
 static apr_status_t ssl_cleanup_pre_config(void *data)
 {
-#if HAVE_OPENSSL_INIT_SSL
-    /* Openssl v1.1+ handles all termination automatically. Do
-     * nothing in this case.
+#if HAVE_OPENSSL_INIT_SSL || (OPENSSL_VERSION_NUMBER >= 0x10100000L && \
+                              !defined(LIBRESSL_VERSION_NUMBER))
+    /* Openssl v1.1+ handles all termination automatically from
+     * OPENSSL_init_ssl(). Do nothing in this case.
      */
 
 #else
@@ -395,7 +395,8 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
 {
     modssl_running_statically = modssl_is_prelinked();
 
-#if HAVE_OPENSSL_INIT_SSL
+#if HAVE_OPENSSL_INIT_SSL || (OPENSSL_VERSION_NUMBER >= 0x10100000L && \
+                              !defined(LIBRESSL_VERSION_NUMBER))
     /* Openssl v1.1+ handles all initialisation automatically, apart
      * from hints as to how we want to use the library.
      *
