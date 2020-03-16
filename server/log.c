@@ -1570,14 +1570,10 @@ AP_DECLARE(void) ap_log_pid(apr_pool_t *p, const char *filename)
     apr_snprintf(pidstr, sizeof pidstr, "%" APR_PID_T_FMT APR_EOL_STR, mypid);
 
     perms = APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD;
-    rv = apr_file_perms_set(temp_fname, perms);    
-    if (rv == APR_SUCCESS)
-        rv = apr_file_write_full(pid_file, pidstr, strlen(pidstr), NULL);
-    if (rv == APR_SUCCESS)
-        rv = apr_file_close(pid_file);
-    if (rv == APR_SUCCESS)
-        rv = apr_file_rename(temp_fname, fname, p);
-    if (rv != APR_SUCCESS) {
+    if ((rv = apr_file_perms_set(temp_fname, perms)) != APR_SUCCESS
+        || (rv = apr_file_write_full(pid_file, pidstr, strlen(pidstr), NULL)) != APR_SUCCESS
+        || (rv = apr_file_close(pid_file)) != APR_SUCCESS
+        || (rv = apr_file_rename(temp_fname, fname, p)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL, APLOGNO(10231)
                      "%s: Failed creating pid file %s",
                      ap_server_argv0, temp_fname);
