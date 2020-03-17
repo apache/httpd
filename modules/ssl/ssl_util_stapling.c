@@ -397,10 +397,10 @@ static int stapling_check_response(server_rec *s, modssl_ctx_t *mctx,
 
     bs = OCSP_response_get1_basic(rsp);
     if (bs == NULL) {
-        /* If we can't parse response just pass it to client */
+        /* If we can't parse response as OCSP basic, then don't pass it to client */
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01934)
                      "stapling_check_response: Error Parsing Response!");
-        return SSL_TLSEXT_ERR_OK;
+        return SSL_TLSEXT_ERR_NOACK;
     }
 
     if (!OCSP_resp_find_status(bs, cinf->cid, &status, &reason, &rev,
