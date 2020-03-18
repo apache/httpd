@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_proxy_http: Fix random memory-corruption in case of an error while
+     reading a response from the backend.
+     PR 64234 [Ruediger Pluem, Barnim Dzwillo <dzwillo@strato.de>]
+
   *) core: Use a temporary file when writing the pid file, avoiding
      startup failure if an empty pidfile is left over from a
      previous crashed or aborted invocation of httpd.  PR 63140.
