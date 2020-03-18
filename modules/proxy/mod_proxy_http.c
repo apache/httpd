@@ -1787,6 +1787,7 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
                          * through a response, our only option is to
                          * disconnect the client too.
                          */
+                        apr_brigade_cleanup(bb);
                         e = ap_bucket_error_create(HTTP_GATEWAY_TIME_OUT, NULL,
                                 r->pool, c->bucket_alloc);
                         APR_BRIGADE_INSERT_TAIL(bb, e);
