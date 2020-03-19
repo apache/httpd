@@ -26,7 +26,12 @@ package apxs;
 #   are we building in a cross compile environment? If so, destdir contains
 #   the base directory of the cross compiled environment, otherwise destdir
 #   is the empty string.
-my $destdir = substr($0, 0, rindex($0, "@exp_bindir@"));
+
+my $destdir = "";
+my $ddi = rindex($0, "@exp_bindir@");
+if ($ddi >= 0) {
+  $destdir = substr($0, 0, $ddi);
+}
 
 my %config_vars = ();
 
