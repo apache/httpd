@@ -1546,6 +1546,31 @@ The available (case-insensitive) <em>protocol</em>s are:</p>
 </ul>
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLProtocol TLSv1</pre>
 </div>
+<div class="note">
+<h3><code class="directive">SSLProtocol</code> for name-based virtual hosts</h3>
+<p>
+Before OpenSSL 1.1.1, even though the Server Name Indication (SNI) allowed to
+determine the targeted virtual host early in the TLS handshake, it was not
+possible to switch the TLS protocol version of the connection at this point,
+and thus the <code class="directive">SSLProtocol</code> negotiated was always based off
+the one of the <em>base virtual host</em> (first virtual host declared on the
+listening <code>IP:port</code> of the connection).
+</p>
+<p>
+Beginning with Apache HTTP server version 2.4.42, when built/linked against
+OpenSSL 1.1.1 or later, and when the SNI is provided by the client in the TLS
+handshake, the <code class="directive">SSLProtocol</code> of each (name-based) virtual
+host can and will be honored.
+</p>
+<p>
+For compatibility with previous versions, if no
+<code class="directive">SSLProtocol</code> is configured in a name-based virtual host,
+the one from the base virtual host still applies, <strong>unless</strong>
+<code class="directive">SSLProtocol</code> is configured globally in which case the
+global value applies (this latter exception is more sensible than compatible,
+though).
+</p>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

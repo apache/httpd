@@ -210,7 +210,10 @@
 <li><a href="core.html#contentdigest">ContentDigest</a></li>
 <li><a href="mod_usertrack.html#cookiedomain">CookieDomain</a></li>
 <li><a href="mod_usertrack.html#cookieexpires">CookieExpires</a></li>
+<li><a href="mod_usertrack.html#cookiehttponly">CookieHTTPOnly</a></li>
 <li><a href="mod_usertrack.html#cookiename">CookieName</a></li>
+<li><a href="mod_usertrack.html#cookiesamesite">CookieSameSite</a></li>
+<li><a href="mod_usertrack.html#cookiesecure">CookieSecure</a></li>
 <li><a href="mod_usertrack.html#cookiestyle">CookieStyle</a></li>
 <li><a href="mod_usertrack.html#cookietracking">CookieTracking</a></li>
 <li><a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li>
@@ -422,6 +425,7 @@
 <li><a href="mod_md.html#mdcertificateprotocol">MDCertificateProtocol</a></li>
 <li><a href="mod_md.html#mdcertificatestatus">MDCertificateStatus</a></li>
 <li><a href="mod_md.html#mdchallengedns01">MDChallengeDns01</a></li>
+<li><a href="mod_md.html#mdcontactemail">MDContactEmail</a></li>
 <li><a href="mod_md.html#mddrivemode">MDDriveMode</a></li>
 <li><a href="mod_md.html#mdhttpproxy">MDHttpProxy</a></li>
 <li><a href="mod_md.html#mdmember">MDMember</a></li>

@@ -89,7 +89,7 @@
     should list the locations that will be protected by this
     configuration.</p>
 
-    <p>The pasword file referenced in the <code class="directive"><a href="#authuserfile">AuthUserFile</a></code> directive may be
+    <p>The password file referenced in the <code class="directive"><a href="#authuserfile">AuthUserFile</a></code> directive may be
     created and managed using the <code class="program"><a href="../programs/htdigest.html">htdigest</a></code> tool.</p>
 
 

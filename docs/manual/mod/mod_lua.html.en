@@ -1052,7 +1052,7 @@ r:emerg("This is an emerg log message")</pre>
     <pre class="prettyprint lang-lua">function filter(r)
     -- Our first yield is to signal that we are ready to receive buckets.
     -- Before this yield, we can set up our environment, check for conditions,
-    -- and, if we deem it necessary, decline filtering a request alltogether:
+    -- and, if we deem it necessary, decline filtering a request altogether:
     if something_bad then
         return -- This would skip this filter.
     end

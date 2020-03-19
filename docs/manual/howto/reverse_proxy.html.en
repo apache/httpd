@@ -75,7 +75,7 @@
       The <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>
       directive specifies the mapping of incoming requests to the backend
       server (or a cluster of servers known as a <code>Balancer</code>
-      group). The simpliest example proxies all requests (<code>"/"</code>)
+      group). The simplest example proxies all requests (<code>"/"</code>)
       to a single backend:
     </p>
 

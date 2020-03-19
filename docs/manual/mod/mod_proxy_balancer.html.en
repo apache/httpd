@@ -272,7 +272,7 @@ ProxyPassReverse "/test" "balancer://mycluster"</pre>
     a path info appended to the URL using a semicolon (<code>;</code>)
     as the separator and add the session id behind. As in the cookie case,
     Apache Tomcat can include the configured <code>jvmRoute</code> in this path
-    info. To let Apache find this sort of path info, you neet to set
+    info. To let Apache find this sort of path info, you need to set
     <code>scolonpathdelim</code> to <code>On</code> in
     <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> or
     <code class="directive"><a href="../mod/mod_proxy.html#proxyset">ProxySet</a></code>.</p>

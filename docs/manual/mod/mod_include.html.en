@@ -340,7 +340,7 @@ AddOutputFilter INCLUDES .shtml</pre>
       <code>/bin/sh</code>. The <a href="#includevars">include variables</a> are available to the command, in addition
       to the usual set of CGI variables.</p>
 
-      <p>The use of <code><a href="#includevirtual">#include virtual</a></code> is almost always prefered to using
+      <p>The use of <code><a href="#includevirtual">#include virtual</a></code> is almost always preferred to using
       either <code>#exec cgi</code> or <code>#exec cmd</code>. The former
       (<code>#include virtual</code>) uses the standard Apache sub-request
       mechanism to include files or scripts. It is much better tested and

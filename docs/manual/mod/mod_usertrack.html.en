@@ -47,7 +47,10 @@
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#cookiedomain">CookieDomain</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cookieexpires">CookieExpires</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cookiehttponly">CookieHTTPOnly</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cookiename">CookieName</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cookiesamesite">CookieSameSite</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cookiesecure">CookieSecure</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cookiestyle">CookieStyle</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cookietracking">CookieTracking</a></li>
 </ul>
@@ -129,6 +132,23 @@ CustomLog "logs/clickstream.log" usertrack</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CookieHTTPOnly" id="CookieHTTPOnly">CookieHTTPOnly</a> <a name="cookiehttponly" id="cookiehttponly">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Adds the 'HTTPOnly' attribute to the cookie</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CookieHTTPOnly on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CookieHTTPOnly off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_usertrack</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>2.4.42 and later</td></tr>
+</table>
+    <p>When set to 'ON', the 'HTTPOnly' cookie attribute is added to this 
+    modules tracking cookie. This attribute instructs browsers to block javascript
+    from reading the value of the cookie.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CookieName" id="CookieName">CookieName</a> <a name="cookiename" id="cookiename">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Name of the tracking cookie</td></tr>
@@ -149,6 +169,47 @@ CustomLog "logs/clickstream.log" usertrack</pre>
 
     <pre class="prettyprint lang-config">CookieName clicktrack</pre>
 
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CookieSameSite" id="CookieSameSite">CookieSameSite</a> <a name="cookiesamesite" id="cookiesamesite">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Adds the 'SameSite' attribute to the cookie</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CookieSameSite None|Lax|Strict</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>unset</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_usertrack</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>2.4.42 and later</td></tr>
+</table>
+    <p>When set to 'None', 'Lax', or 'Strict', the 'SameSite' cookie attribute 
+    is added to this modules tracking cookie with the corresponding value.  
+    This attribute instructs browser on how to treat the cookie when it is 
+    requested in a cross-site context.</p>
+
+     <div class="note">
+        <p>A value of 'None' sets 'SameSite=None', which is the most liberal setting. To 
+        omit this attribute, omit the directive entirely.</p>
+    </div>
+  
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CookieSecure" id="CookieSecure">CookieSecure</a> <a name="cookiesecure" id="cookiesecure">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Adds the 'Secure' attribute to the cookie</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CookieSecure on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CookieSecure off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_usertrack</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>2.4.42 and later</td></tr>
+</table>
+    <p>When set to 'ON', the 'Secure' cookie attribute is added to this 
+    modules tracking cookie. This attribute instructs browsers to only
+    transmit the cookie over HTTPS.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

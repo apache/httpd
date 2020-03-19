@@ -1360,8 +1360,10 @@ ProxyPass "/mirror/foo" "http://backend.example.com"</pre>
     </td></tr>
     <tr><td>secret</td>
         <td>-</td>
-        <td><p>Value of secret used by <code class="module"><a href="../mod/mod_proxy_ajp.html">mod_proxy_ajp</a></code>.
-        See the documentation of this module for more details.</p>
+        <td>Value of secret used by <code class="module"><a href="../mod/mod_proxy_ajp.html">mod_proxy_ajp</a></code>.
+        It must be identical to the secret configured on the server side of the
+        AJP connection.<br />
+        Available in Apache HTTP Server 2.4.42 and later.
     </td></tr>
     <tr><td>upgrade</td>
         <td>WebSocket</td>
