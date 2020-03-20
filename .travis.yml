@@ -97,7 +97,7 @@ jobs:
       env: CONFIG="--enable-mods-shared=reallyall --enable-maintainer-mode NOTEST_CFLAGS=-Werror CC=gcc-7"
            SKIP_TESTING=1
     # -------------------------------------------------------------------------
-    - if: branch != 2.4.x or tag !~ /^2.4/
+    - if: branch = master
       name: Linux Ubuntu, PCRE 1, GCC 7 maintainer-mode w/-Werror
       os: linux
       env: CONFIG="--enable-mods-shared=reallyall --with-pcre=/usr/bin/pcre-config --enable-maintainer-mode NOTEST_CFLAGS=-Werror CC=gcc-7"
@@ -143,14 +143,14 @@ jobs:
             - libpcre2-dev
     # -------------------------------------------------------------------------
     # MFLAGS= works around https://bz.apache.org/bugzilla/show_bug.cgi?id=63942
-    - if: branch != 2.4.x or tag !~ /^2.4/
+    - if: branch = master
       name: Linux Ubuntu, Regenerate ap_expr
       os: linux
       env: CONFIG="--enable-mods-shared=reallyall --enable-maintainer-mode NOTEST_CFLAGS=-Werror"
            BUILDCONFIG="--with-regen-expr"
            MFLAGS=
     # -------------------------------------------------------------------------
-    - if: branch != 2.4.x or tag !~ /^2.4/
+    - if: branch = master
       name: Linux Ubuntu, APR trunk
       env: APR_VERSION=trunk APR_CONFIG="--with-crypto"
            CONFIG="--enable-mods-shared=reallyall"
@@ -217,7 +217,7 @@ jobs:
       env: APR_VERSION=1.4.8 APU_VERSION=1.4.2
            CONFIG="--enable-mods-shared=reallyall"
     # -------------------------------------------------------------------------
-    - if: branch != 2.4.x or tag !~ /^2.4/
+    - if: branch = master
       name: Linux Ubuntu, UBSan
       env: NOTEST_CFLAGS="-fsanitize=undefined -fno-sanitize-recover=undefined" NOTEST_LIBS=-lubsan
            CONFIG="--enable-mods-shared=reallyall --disable-http2" TEST_UBSAN=1
