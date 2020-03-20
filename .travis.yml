@@ -1,8 +1,7 @@
 language: c
 os:
   - linux
-dist:
-  - bionic
+dist: bionic
 cache:
   directories:
     - /home/travis/perl5
@@ -31,7 +30,7 @@ env:
   global:
     - MFLAGS=-j2
 
-matrix:
+jobs:
   include:
     - name: Linux Ubuntu, Default module set
     # -------------------------------------------------------------------------
@@ -48,8 +47,37 @@ matrix:
       env: CONFIG="--enable-mods-shared=reallyall"
            TEST_ARGS="-v"
     # -------------------------------------------------------------------------
-    - name: Linux Ubuntu, Default, all-modules
+    - name: Linux i386 Ubuntu, Shared MPMs, most modules, maintainer-mode w/-Werror
+      env: CONFIG="--enable-mods-shared=reallyall --disable-xml2enc --disable-proxy-html --enable-mpms-shared=all --enable-maintainer-mode"
+           PKG_CONFIG_PATH="/usr/lib/i386-linux-gnu/pkgconfig"
+           NOTEST_CFLAGS="-Werror"
+           CC="gcc -m32"
+           APR_VERSION=1.7.0
+           APU_VERSION=1.6.1 APU_CONFIG="--with-crypto"
+      addons:
+        apt:
+          sources:
+            - sourceline: 'deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) universe'
+          packages:
+            - cpanminus
+            - libc6-dev-i386
+            - gcc-multilib
+            - libexpat1-dev:i386
+            - libssl-dev:i386
+            - lib32z1-dev
+            - libbrotli-dev:i386
+            - libpcre2-dev:i386
+            - libtool-bin
+            - perl-doc
+            - libapr1-dev
+            - libbrotli-dev:i386
+    # -------------------------------------------------------------------------
+    - name: Linux Ubuntu, Default, all-modules + install
       env: CONFIG="--enable-mods-shared=reallyall"
+           TEST_INSTALL=1
+    # -------------------------------------------------------------------------
+    - name: Linux Ubuntu, Default, all-static modules
+      env: CONFIG="--enable-mods-static=reallyall"
     # -------------------------------------------------------------------------
     - name: Linux Ubuntu, Default, all-modules, random test order
       env: CONFIG="--enable-mods-shared=reallyall"
@@ -79,10 +107,29 @@ matrix:
            SKIP_TESTING=1
       addons:
         apt:
-          sources:
-            - ubuntu-toolchain-r-test
           packages:
             - gcc-8
+            - libtool-bin
+            - libapr1-dev
+            - libaprutil1-dev
+            - perl-doc
+            - lua5.3-dev
+            - libbrotli-dev
+            - libcurl4-openssl-dev
+            - libsystemd-dev
+            - libnghttp2-dev
+            - libjansson-dev
+            - libpcre2-dev
+    # -------------------------------------------------------------------------
+    - name: Linux Ubuntu, GCC 9 maintainer-mode w/-Werror
+      env: CONFIG="--enable-mods-shared=reallyall --enable-maintainer-mode NOTEST_CFLAGS=-Werror CC=gcc-9"
+           SKIP_TESTING=1
+      addons:
+        apt:
+          sources:
+            - sourceline: 'ppa:ubuntu-toolchain-r/test'
+          packages:
+            - gcc-9
             - libtool-bin
             - libapr1-dev
             - libaprutil1-dev
@@ -133,9 +180,9 @@ matrix:
     # -------------------------------------------------------------------------
     - name: Linux Ubuntu, APR 1.7.0 --enable-pool-debug, APR-util 1.6.1
       env: APR_VERSION=1.7.0 APR_CONFIG="--enable-pool-debug"
-           APU_VERSION=1.6.1
-           APU_CONFIG="--with-crypto"
+           APU_VERSION=1.6.1 APU_CONFIG="--with-crypto"
            CONFIG="--enable-mods-shared=reallyall"
+           TEST_MALLOC=1
     # -------------------------------------------------------------------------
     - name: Linux Ubuntu, litmus WebDAV tests
       env: CONFIG="--enable-dav --enable-dav-fs"
@@ -170,11 +217,18 @@ matrix:
       env: APR_VERSION=1.4.8 APU_VERSION=1.4.2
            CONFIG="--enable-mods-shared=reallyall"
     # -------------------------------------------------------------------------
+    - if: branch != 2.4.x
+      name: Linux Ubuntu, UBSan
+      env: NOTEST_CFLAGS="-fsanitize=undefined -fno-sanitize-recover=undefined" NOTEST_LIBS=-lubsan
+           CONFIG="--enable-mods-shared=reallyall --disable-http2" TEST_UBSAN=1
 
+# CPAN modules are to be used with the system Perl and always with
+# CC=gcc, e.g. for the CC="gcc -m32" case the builds are not correct
+# otherwise.
 before_install:
   - if [ "$TRAVIS_OS_NAME" = "linux" ]; then
         cpanm --local-lib=~/perl5 local::lib && eval $(perl -I ~/perl5/lib/perl5/ -Mlocal::lib);
-        cpanm --notest Net::SSL LWP::Protocol::https ExtUtils::Embed Test::More AnyEvent DateTime HTTP::DAV Protocol::HTTP2::Client FCGI;
+        CC=gcc cpanm --notest Net::SSL LWP::Protocol::https ExtUtils::Embed Test::More AnyEvent DateTime HTTP::DAV Protocol::HTTP2::Client FCGI Apache::Test;
     fi
 
 before_script:

@@ -25,7 +25,7 @@ function run_svn_export() {
            if [ $i -eq $max_tries ]; then
                exit 1
            else
-               sleep 180
+               sleep $((100 * i))
            fi
        fi
    done
@@ -72,23 +72,10 @@ function install_apx() {
 
 
 if ! test -v SKIP_TESTING; then
-    # The test/framework checkout is cached at ~/root/framework, which
-    # is copied to test/framework within the httpd build directory.
-    # Renew the cache here if the last-changed revision is stale.
-    framework=https://svn.apache.org/repos/asf/httpd/test/framework/trunk
-    fcache=$HOME/root/framework
-    frev=`svn info --no-newline --show-item last-changed-revision ${framework}`
-    if [ -d ${fcache} -a ! -f ${fcache}/.revision-is-${frev} ]; then
-        : Purging stale cache at ${fcache}
-        rm -rf ${fcache}
-    fi
-
-    if [ ! -d ${fcache} ]; then
-        run_svn_export ${framework} ${frev} ${fcache} 5
-        touch ${fcache}/.revision-is-${frev}
-    fi
-
-    cp -a ${fcache} test/perl-framework
+    ### Temporary: purge old svn checkout from the cache
+    rm -rf $HOME/root/framework
+    # Make a shallow clone of httpd-tests git repo.
+    git clone --depth=1 https://github.com/apache/httpd-tests.git test/perl-framework
 fi
 
 if test -v APR_VERSION; then
