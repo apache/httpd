@@ -48,7 +48,7 @@ jobs:
            TEST_ARGS="-v"
     # -------------------------------------------------------------------------
     - if: branch = trunk
-    - name: Linux i386 Ubuntu, Shared MPMs, most modules, maintainer-mode w/-Werror
+      name: Linux i386 Ubuntu, Shared MPMs, most modules, maintainer-mode w/-Werror
       env: CONFIG="--enable-mods-shared=reallyall --disable-xml2enc --disable-proxy-html --enable-mpms-shared=all --enable-maintainer-mode"
            PKG_CONFIG_PATH="/usr/lib/i386-linux-gnu/pkgconfig"
            NOTEST_CFLAGS="-Werror"
