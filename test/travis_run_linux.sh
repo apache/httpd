@@ -2,6 +2,9 @@
 ### Installed apr/apr-util don't include the *.m4 files but the
 ### Debian packages helpfully install them, so use the system APR to buildconf
 ./buildconf --with-apr=/usr/bin/apr-1-config ${BUILDCONFIG}
+
+PREFIX=${PREFIX:-$HOME/build/httpd-root}
+
 # For trunk, "make check" is sufficient to run the test suite.
 # For 2.4.x, the test suite must be run manually
 if test ! -v SKIP_TESTING; then
@@ -9,8 +12,6 @@ if test ! -v SKIP_TESTING; then
     if grep -q ^check: Makefile.in; then
         CONFIG="--with-test-suite=test/perl-framework $CONFIG"
         WITH_TEST_SUITE=1
-    else
-        CONFIG="--prefix=$HOME/build/httpd-root $CONFIG"
     fi
 fi
 if test -v APR_VERSION; then
@@ -23,8 +24,19 @@ if test -v APU_VERSION; then
 else
     CONFIG="$CONFIG --with-apr-util=/usr"
 fi
-./configure $CONFIG
+
+./configure --prefix=$PREFIX $CONFIG
 make $MFLAGS
+
+if test -v TEST_INSTALL; then
+   make install
+   pushd $PREFIX
+     test `./bin/apxs -q PREFIX` = $PREFIX
+     test `$PWD/bin/apxs -q PREFIX` = $PREFIX
+     ./bin/apxs -g -n foobar
+     cd foobar; make
+   popd
+fi
 
 if ! test -v SKIP_TESTING; then
     set +e
@@ -43,9 +55,9 @@ if ! test -v SKIP_TESTING; then
         make check TESTS="${TEST_ARGS}"
         RV=$?
     else
-        make install
+        test -v TEST_INSTALL || make install
         pushd test/perl-framework
-            perl Makefile.PL -apxs $HOME/build/httpd-root/bin/apxs
+            perl Makefile.PL -apxs $PREFIX/bin/apxs
             make test APACHE_TEST_EXTRA_ARGS="${TEST_ARGS}"
             RV=$?
         popd

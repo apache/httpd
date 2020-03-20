@@ -72,8 +72,9 @@ jobs:
             - libapr1-dev
             - libbrotli-dev:i386
     # -------------------------------------------------------------------------
-    - name: Linux Ubuntu, Default, all-modules
+    - name: Linux Ubuntu, Default, all-modules + install
       env: CONFIG="--enable-mods-shared=reallyall"
+           TEST_INSTALL=1
     # -------------------------------------------------------------------------
     - name: Linux Ubuntu, Default, all-static modules
       env: CONFIG="--enable-mods-static=reallyall"
