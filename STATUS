@@ -134,11 +134,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
- *) fix apxs on non-destdir builds
-    trunk patch: http://svn.apache.org/r1875429
-    2.4.x patch: svn mergfe -c 1875429 ^/httpd/httpd/trunk .
-   +1: covener, gbechis, rpluem
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
