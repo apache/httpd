@@ -47,6 +47,7 @@ jobs:
       env: CONFIG="--enable-mods-shared=reallyall"
            TEST_ARGS="-v"
     # -------------------------------------------------------------------------
+    - if: branch = trunk
     - name: Linux i386 Ubuntu, Shared MPMs, most modules, maintainer-mode w/-Werror
       env: CONFIG="--enable-mods-shared=reallyall --disable-xml2enc --disable-proxy-html --enable-mpms-shared=all --enable-maintainer-mode"
            PKG_CONFIG_PATH="/usr/lib/i386-linux-gnu/pkgconfig"
@@ -97,7 +98,7 @@ jobs:
       env: CONFIG="--enable-mods-shared=reallyall --enable-maintainer-mode NOTEST_CFLAGS=-Werror CC=gcc-7"
            SKIP_TESTING=1
     # -------------------------------------------------------------------------
-    - if: branch = master
+    - if: branch = trunk
       name: Linux Ubuntu, PCRE 1, GCC 7 maintainer-mode w/-Werror
       os: linux
       env: CONFIG="--enable-mods-shared=reallyall --with-pcre=/usr/bin/pcre-config --enable-maintainer-mode NOTEST_CFLAGS=-Werror CC=gcc-7"
@@ -143,14 +144,14 @@ jobs:
             - libpcre2-dev
     # -------------------------------------------------------------------------
     # MFLAGS= works around https://bz.apache.org/bugzilla/show_bug.cgi?id=63942
-    - if: branch = master
+    - if: branch = trunk
       name: Linux Ubuntu, Regenerate ap_expr
       os: linux
       env: CONFIG="--enable-mods-shared=reallyall --enable-maintainer-mode NOTEST_CFLAGS=-Werror"
            BUILDCONFIG="--with-regen-expr"
            MFLAGS=
     # -------------------------------------------------------------------------
-    - if: branch = master
+    - if: branch = trunk
       name: Linux Ubuntu, APR trunk
       env: APR_VERSION=trunk APR_CONFIG="--with-crypto"
            CONFIG="--enable-mods-shared=reallyall"
@@ -217,7 +218,7 @@ jobs:
       env: APR_VERSION=1.4.8 APU_VERSION=1.4.2
            CONFIG="--enable-mods-shared=reallyall"
     # -------------------------------------------------------------------------
-    - if: branch = master
+    - if: branch = trunk
       name: Linux Ubuntu, UBSan
       env: NOTEST_CFLAGS="-fsanitize=undefined -fno-sanitize-recover=undefined" NOTEST_LIBS=-lubsan
            CONFIG="--enable-mods-shared=reallyall --disable-http2" TEST_UBSAN=1
