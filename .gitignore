@@ -703,6 +703,7 @@
 /modules/http2/*.sto
 /modules/http2/*.vcproj
 /modules/http2/*.vcproj.*
+/modules/http2/*.o
 
 # /modules/ldap/
 /modules/ldap/.deps
