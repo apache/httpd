@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1874946:1875063 (outdated) -->
+<!-- English Revision: 1875063 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -244,7 +244,7 @@ s'applique</description>
 <context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
-<compatibility>Disponible à partir de la version 2.4.41 du serveur HTTP Apache</compatibility>
+<compatibility>Disponible à partir de la version 2.4.42 du serveur HTTP Apache</compatibility>
 
 <usage>
     <p>Lorsqu'elle est définie à 'ON', cette directive ajoute l'attribut 'Secure'
@@ -265,7 +265,7 @@ s'applique</description>
 <context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
-<compatibility>Disponible à partir de la version 2.4.41 du serveur HTTP Apache</compatibility>
+<compatibility>Disponible à partir de la version 2.4.42 du serveur HTTP Apache</compatibility>
 
 <usage>
     <p>Lorsqu'elle est définie à 'ON', cette directive ajoute l'attribut 'HTTPOnly'
@@ -286,7 +286,7 @@ s'applique</description>
 <context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
-<compatibility>Disponible à partir de la version 2.4.41 du serveur HTTP Apache</compatibility>
+<compatibility>Disponible à partir de la version 2.4.42 du serveur HTTP Apache</compatibility>
 
 <usage>
     <p>Lorsque cette directive est définie à 'None', 'Lax', ou 'Strict',
