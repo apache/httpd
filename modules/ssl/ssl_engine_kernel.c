@@ -2535,7 +2535,7 @@ static int ssl_find_vhost(void *servername, conn_rec *c, server_rec *s)
          * from the ctx by hand
          */
         SSL_set_options(ssl, SSL_CTX_get_options(ctx));
-#if OPENSSL_VERSION_NUMBER >= 0x10100000L \
+#if OPENSSL_VERSION_NUMBER >= 0x1010007fL \
         && (!defined(LIBRESSL_VERSION_NUMBER) \
             || LIBRESSL_VERSION_NUMBER >= 0x20800000L)
         /*
