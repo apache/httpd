@@ -163,6 +163,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1874577 ^/httpd/httpd/trunk .
      +1: gbechis
 
+  *) mod_ssl: Fix compilation breakage with OpenSSL 1.1.0 up to 1.1.0f.
+              SSL_CTX_get_min_proto_version() and SSL_CTX_get_max_proto_version()
+              were only introduced in 1.1.0g.
+     trunk patch: http://svn.apache.org/r1875544
+     2.4.x patch: svn merge -c 1875544 ^/httpd/httpd/trunk .
+     +1: rjung, 
+     -1: 
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
