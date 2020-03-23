@@ -134,6 +134,20 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_ssl: Fix memory leak of OCSP stapling response.
+              The OCSP_RESPONSE is either ignored or serialized (i2d_OCSP_RESPONSE) in the
+              TLS response/handshake extension, so it must be freed.
+     trunk patch: http://svn.apache.org/r1874577
+     2.4.x patch: svn merge -c 1874577 ^/httpd/httpd/trunk .
+     +1: gbechis, rpluem, ylavic
+
+  *) mod_ssl: Fix compilation breakage with OpenSSL 1.1.0 up to 1.1.0f.
+              SSL_CTX_get_min_proto_version() and SSL_CTX_get_max_proto_version()
+              were only introduced in 1.1.0g.
+     trunk patch: http://svn.apache.org/r1875544
+     2.4.x patch: svn merge -c 1875544 ^/httpd/httpd/trunk .
+     +1: rjung, rpluem, ylavic
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -155,21 +169,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              reworked, etc.. I would like to avoid a patch that is clearly wrong for some reviewer sitting here for
              months/years without any action item :)
      ylavic: will look at it ASAP..
-
-  *) mod_ssl: Fix memory leak of OCSP stapling response.
-              The OCSP_RESPONSE is either ignored or serialized (i2d_OCSP_RESPONSE) in the
-              TLS response/handshake extension, so it must be freed.
-     trunk patch: http://svn.apache.org/r1874577
-     2.4.x patch: svn merge -c 1874577 ^/httpd/httpd/trunk .
-     +1: gbechis, rpluem
-
-  *) mod_ssl: Fix compilation breakage with OpenSSL 1.1.0 up to 1.1.0f.
-              SSL_CTX_get_min_proto_version() and SSL_CTX_get_max_proto_version()
-              were only introduced in 1.1.0g.
-     trunk patch: http://svn.apache.org/r1875544
-     2.4.x patch: svn merge -c 1875544 ^/httpd/httpd/trunk .
-     +1: rjung, rpluem
-     -1: 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
