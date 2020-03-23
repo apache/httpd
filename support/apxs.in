@@ -221,6 +221,7 @@ sub get_config_vars{
 
 sub get_vars {
     my $result = '';
+    my $tmp_res = '';
     my $ok = 0;
     my $arg;
     foreach $arg (@_) {
@@ -229,7 +230,11 @@ sub get_vars {
                 ? $config_vars{$arg}
                 : $config_vars{lc $arg};
             $val =~ s/[()]//g;
-            $result .= eval "qq($val)" if defined $val;
+            $tmp_res = eval "qq($val)";
+            if(defined $tmp_res) {
+              $result .= $tmp_res;
+              $tmp_res = '';
+            }
             $result .= ";;";
             $ok = 1;
         }
