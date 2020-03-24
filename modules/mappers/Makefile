@@ -1,8 +1,8 @@
-top_srcdir   = /home/ganwang/httpd/httpd
-top_builddir = /home/ganwang/httpd/httpd
-srcdir       = /home/ganwang/httpd/httpd/modules/mappers
-builddir     = /home/ganwang/httpd/httpd/modules/mappers
-VPATH        = /home/ganwang/httpd/httpd/modules/mappers
+top_srcdir   = /home/ganwang/Documents/httpd
+top_builddir = /home/ganwang/Documents/httpd
+srcdir       = /home/ganwang/Documents/httpd/modules/mappers
+builddir     = /home/ganwang/Documents/httpd/modules/mappers
+VPATH        = /home/ganwang/Documents/httpd/modules/mappers
 
 include $(top_srcdir)/build/special.mk
 

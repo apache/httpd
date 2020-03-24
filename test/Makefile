@@ -1,8 +1,8 @@
-top_srcdir   = /home/ganwang/httpd/httpd
-top_builddir = /home/ganwang/httpd/httpd
-srcdir       = /home/ganwang/httpd/httpd/test
-builddir     = /home/ganwang/httpd/httpd/test
-VPATH        = /home/ganwang/httpd/httpd/test
+top_srcdir   = /home/ganwang/Documents/httpd
+top_builddir = /home/ganwang/Documents/httpd
+srcdir       = /home/ganwang/Documents/httpd/test
+builddir     = /home/ganwang/Documents/httpd/test
+VPATH        = /home/ganwang/Documents/httpd/test
 
 # no targets: we don't want to build anything by default. if you want the
 # test programs, then "make test"

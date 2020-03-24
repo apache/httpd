@@ -1,8 +1,8 @@
-top_srcdir   = /home/ganwang/httpd/httpd
-top_builddir = /home/ganwang/httpd/httpd
-srcdir       = /home/ganwang/httpd/httpd
-builddir     = /home/ganwang/httpd/httpd
-VPATH        = /home/ganwang/httpd/httpd
+top_srcdir   = /home/ganwang/Documents/httpd
+top_builddir = /home/ganwang/Documents/httpd
+srcdir       = /home/ganwang/Documents/httpd
+builddir     = /home/ganwang/Documents/httpd
+VPATH        = /home/ganwang/Documents/httpd
 
 SUBDIRS = srclib os server modules support
 CLEAN_SUBDIRS = test

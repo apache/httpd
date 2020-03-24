@@ -1,8 +1,8 @@
-top_srcdir   = /home/ganwang/httpd/httpd
-top_builddir = /home/ganwang/httpd/httpd
-srcdir       = /home/ganwang/httpd/httpd/support
-builddir     = /home/ganwang/httpd/httpd/support
-VPATH        = /home/ganwang/httpd/httpd/support
+top_srcdir   = /home/ganwang/Documents/httpd
+top_builddir = /home/ganwang/Documents/httpd
+srcdir       = /home/ganwang/Documents/httpd/support
+builddir     = /home/ganwang/Documents/httpd/support
+VPATH        = /home/ganwang/Documents/httpd/support
 DISTCLEAN_TARGETS = apxs apachectl dbmmanage log_server_status \
 	logresolve.pl phf_abuse_log.cgi split-logfile envvars-std
 

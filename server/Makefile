@@ -1,8 +1,8 @@
-top_srcdir   = /home/ganwang/httpd/httpd
-top_builddir = /home/ganwang/httpd/httpd
-srcdir       = /home/ganwang/httpd/httpd/server
-builddir     = /home/ganwang/httpd/httpd/server
-VPATH        = /home/ganwang/httpd/httpd/server
+top_srcdir   = /home/ganwang/Documents/httpd
+top_builddir = /home/ganwang/Documents/httpd
+srcdir       = /home/ganwang/Documents/httpd/server
+builddir     = /home/ganwang/Documents/httpd/server
+VPATH        = /home/ganwang/Documents/httpd/server
 
 CLEAN_TARGETS = gen_test_char test_char.h \
 	ApacheCoreOS2.def httpd.exp export_files \

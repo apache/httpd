@@ -437,7 +437,7 @@ Copyright (C) 2012 Free Software Foundation, Inc.
 This config.status script is free software; the Free Software Foundation
 gives unlimited permission to copy, distribute and modify it."
 
-ac_pwd='/home/ganwang/httpd/httpd'
+ac_pwd='/home/ganwang/Documents/httpd'
 srcdir='.'
 AWK='gawk'
 test -n "$AWK" || AWK=awk
@@ -659,7 +659,7 @@ S["APU_INCLUDEDIR"]=""
 S["APU_BINDIR"]=""
 S["APR_CONFIG"]="/home/ganwang/httpd/http/bin/apr-2-config"
 S["APR_VERSION"]="2.0.0"
-S["APR_INCLUDEDIR"]="/home/ganwang/httpd/httpd/srclib/apr/include"
+S["APR_INCLUDEDIR"]="/home/ganwang/Documents/httpd/srclib/apr/include"
 S["APR_BINDIR"]="/home/ganwang/httpd/http/bin"
 S["LOAD_ALL_MODULES"]="no"
 S["ENABLED_DSO_MODULES"]=",authn_file,authn_core,authz_host,authz_groupfile,authz_user,authz_core,access_compat,auth_basic,reqtimeout,filter,mime,log_config,env,headers,seten"\
@@ -684,7 +684,7 @@ S["PORT"]="80"
 S["MODULE_CLEANDIRS"]=" arch/win32 echo examples experimental ldap lua test http2 md cluster dav/lock"
 S["MODULE_DIRS"]=" aaa apreq cache core database debugging filters http loggers metadata proxy session slotmem ssl proxy/balancers arch/unix dav/main generators dav/f"\
 "s mappers"
-S["LIBTOOL"]="/home/ganwang/httpd/httpd/srclib/apr/libtool $(LTFLAGS)"
+S["LIBTOOL"]="/home/ganwang/Documents/httpd/srclib/apr/libtool $(LTFLAGS)"
 S["INTERNAL_CPPFLAGS"]=""
 S["NOTEST_LIBS"]=""
 S["NOTEST_LDFLAGS"]=""
@@ -712,14 +712,14 @@ S["manualdir"]="${datadir}/manual"
 S["htdocsdir"]="${datadir}/htdocs"
 S["logfiledir"]="${localstatedir}/logs"
 S["cgidir"]="${datadir}/cgi-bin"
-S["abs_srcdir"]="/home/ganwang/httpd/httpd"
+S["abs_srcdir"]="/home/ganwang/Documents/httpd"
 S["HTTPD_MMN"]="20200217"
 S["HTTPD_VERSION"]="2.5.1"
-S["EXTRA_INCLUDES"]="-I. -I$(top_srcdir)/os/$(OS_DIR) -I$(top_srcdir)/include -I/home/ganwang/httpd/httpd/srclib/apr/include -I$(top_srcdir)/modules/aaa -I$(top_srcdir)/"\
-"modules/cache -I$(top_srcdir)/modules/core -I$(top_srcdir)/modules/database -I$(top_srcdir)/modules/filters -I$(top_srcdir)/modules/ldap -I$(top_src"\
-"dir)/modules/loggers -I$(top_srcdir)/modules/lua -I$(top_srcdir)/modules/proxy -I$(top_srcdir)/modules/http2 -I$(top_srcdir)/modules/session -I$(top"\
-"_srcdir)/modules/ssl -I$(top_srcdir)/modules/test -I$(top_srcdir)/server -I$(top_srcdir)/modules/md -I$(top_srcdir)/modules/arch/unix -I$(top_srcdir"\
-")/modules/dav/main -I$(top_srcdir)/modules/generators -I$(top_srcdir)/modules/mappers"
+S["EXTRA_INCLUDES"]="-I. -I$(top_srcdir)/os/$(OS_DIR) -I$(top_srcdir)/include -I/home/ganwang/Documents/httpd/srclib/apr/include -I$(top_srcdir)/modules/aaa -I$(top_srcd"\
+"ir)/modules/cache -I$(top_srcdir)/modules/core -I$(top_srcdir)/modules/database -I$(top_srcdir)/modules/filters -I$(top_srcdir)/modules/ldap -I$(top"\
+"_srcdir)/modules/loggers -I$(top_srcdir)/modules/lua -I$(top_srcdir)/modules/proxy -I$(top_srcdir)/modules/http2 -I$(top_srcdir)/modules/session -I$"\
+"(top_srcdir)/modules/ssl -I$(top_srcdir)/modules/test -I$(top_srcdir)/server -I$(top_srcdir)/modules/md -I$(top_srcdir)/modules/arch/unix -I$(top_sr"\
+"cdir)/modules/dav/main -I$(top_srcdir)/modules/generators -I$(top_srcdir)/modules/mappers"
 S["EXTRA_LIBS"]=""
 S["EXTRA_LDFLAGS"]=" "
 S["EXTRA_CXXFLAGS"]=""
@@ -729,7 +729,7 @@ S["WITH_TEST_SUITE"]="no"
 S["TEST_SUITE_LOCATION"]=""
 S["AP_CLEAN_SRCLIB_DIRS"]=" apr"
 S["AP_BUILD_SRCLIB_DIRS"]="apr "
-S["AP_LIBS"]="$(MOD_SO_LDADD) $(MOD_HTTP_LDADD)  /home/ganwang/httpd/httpd/srclib/apr/libapr-2.la -lcrypt -lrt -lcrypt  -lpthread -ldl -lexpat"
+S["AP_LIBS"]="$(MOD_SO_LDADD) $(MOD_HTTP_LDADD)  /home/ganwang/Documents/httpd/srclib/apr/libapr-2.la -lcrypt -lrt -lcrypt  -lpthread -ldl -lexpat"
 S["INSTALL_SUEXEC"]="setuid"
 S["shared_build"]="shared-build"
 S["POST_SHARED_CMDS"]="echo \"\""

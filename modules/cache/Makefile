@@ -1,8 +1,8 @@
-top_srcdir   = /home/ganwang/httpd/httpd
-top_builddir = /home/ganwang/httpd/httpd
-srcdir       = /home/ganwang/httpd/httpd/modules/cache
-builddir     = /home/ganwang/httpd/httpd/modules/cache
-VPATH        = /home/ganwang/httpd/httpd/modules/cache
+top_srcdir   = /home/ganwang/Documents/httpd
+top_builddir = /home/ganwang/Documents/httpd
+srcdir       = /home/ganwang/Documents/httpd/modules/cache
+builddir     = /home/ganwang/Documents/httpd/modules/cache
+VPATH        = /home/ganwang/Documents/httpd/modules/cache
 
 include $(top_srcdir)/build/special.mk
 

@@ -1,8 +1,8 @@
-top_srcdir   = /home/ganwang/httpd/httpd
-top_builddir = /home/ganwang/httpd/httpd
-srcdir       = /home/ganwang/httpd/httpd/modules/ssl
-builddir     = /home/ganwang/httpd/httpd/modules/ssl
-VPATH        = /home/ganwang/httpd/httpd/modules/ssl
+top_srcdir   = /home/ganwang/Documents/httpd
+top_builddir = /home/ganwang/Documents/httpd
+srcdir       = /home/ganwang/Documents/httpd/modules/ssl
+builddir     = /home/ganwang/Documents/httpd/modules/ssl
+VPATH        = /home/ganwang/Documents/httpd/modules/ssl
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
