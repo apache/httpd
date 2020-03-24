@@ -135,6 +135,7 @@ extern "C" {
 /** default maximum subrequest nesting level */
 # define AP_DEFAULT_MAX_SUBREQ_DEPTH 10
 
+//////////////////////////////////////////////////////////////////
 /**
  * Retrieve the value of Options for this request
  * @param r The current request

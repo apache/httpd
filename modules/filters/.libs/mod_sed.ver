@@ -1,0 +1,3 @@
+{ global:
+sed_module;
+local: *; };

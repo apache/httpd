@@ -1,0 +1,9 @@
+#! /bin/sh
+#
+# Created by configure
+
+"./configure" \
+"--with-included-apr" \
+"--prefix=/home/ganwang/httpd/http" \
+"--with-mpm=worker" \
+"$@"

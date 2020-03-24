@@ -32,7 +32,7 @@
 #include "apr_poll.h"
 
 #include <stdlib.h>
-
+#include "apr_thread_cond.h"
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
 
@@ -136,6 +136,13 @@ static int resource_shortage = 0;
 static fd_queue_t *worker_queue;
 static fd_queue_info_t *worker_queue_info;
 static apr_pollset_t *worker_pollset;
+
+
+struct apr_thread_cond_t * empty_cond;
+struct apr_thread_cond_t * full_cond;
+struct apr_thread_mutex_t * worker_mutex;
+
+int num_idler = 0;
 
 
 /* data retained by worker across load/unload of the module
@@ -478,6 +485,7 @@ static void process_socket(apr_thread_t *thd, apr_pool_t *p, apr_socket_t *sock,
     if (current_conn) {
         current_conn->current_thread = thd;
         ap_process_connection(current_conn, sock);
+   //   ap_process_http_sync_connection(current_conn);        
         ap_lingering_close(current_conn);
     }
 }
@@ -546,8 +554,8 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t *thd, void * dummy)
     apr_pool_t *ptrans = NULL;            /* Pool for per-transaction stuff */
     apr_status_t rv;
     ap_listen_rec *lr = NULL;
-    int have_idle_worker = 0;
     int last_poll_idx = 0;
+    int have_idle_worker = 0;
 
     free(ti);
 
@@ -565,6 +573,9 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t *thd, void * dummy)
             check_infinite_requests();
         }
         if (listener_may_exit) break;
+	
+        apr_thread_mutex_lock(worker_mutex);
+        while(num_idler == 0) apr_thread_cond_wait(full_cond, worker_mutex);
 
         if (!have_idle_worker) {
             rv = ap_queue_info_wait_for_idler(worker_queue_info, NULL);
@@ -710,6 +721,10 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t *thd, void * dummy)
             }
             break;
         }
+        num_idler--;
+        apr_thread_cond_signal(empty_cond);
+        apr_thread_mutex_unlock(worker_mutex);
+        
     }
 
     ap_close_listeners_ex(my_bucket->listeners);
@@ -815,6 +830,7 @@ worker_pop:
         requests_this_child--;
         apr_pool_clear(ptrans);
         last_ptrans = ptrans;
+	break;
     }
 
     ap_update_child_status_from_indexes(process_slot, thread_slot,
@@ -949,7 +965,9 @@ static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
     while (1) {
         /* threads_per_child does not include the listener thread */
         for (i = 0; i < threads_per_child; i++) {
-            int status = ap_scoreboard_image->servers[my_child_num][i].status;
+	    apr_thread_mutex_lock(worker_mutex);
+	    while(num_idler == 1) apr_thread_cond_wait(empty_cond, worker_mutex); 
+	    int status = ap_scoreboard_image->servers[my_child_num][i].status;
 
             if (status != SERVER_GRACEFUL && status != SERVER_DEAD) {
                 continue;
@@ -974,13 +992,14 @@ static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
                 /* let the parent decide how bad this really is */
                 clean_child_exit(APEXIT_CHILDSICK);
             }
-            threads_created++;
+
+	    num_idler++;
+	    apr_thread_cond_signal(full_cond);
+	    apr_thread_mutex_unlock(worker_mutex);
+	    
         }
-        /* Start the listener only when there are workers available */
-        if (!listener_started && threads_created) {
-            create_listener_thread(ts);
-            listener_started = 1;
-        }
+	continue;
+	
         if (start_thread_may_exit || threads_created == threads_per_child) {
             break;
         }
@@ -1192,9 +1211,15 @@ static void child_main(int child_num_arg, int child_bucket)
     ts->listener = NULL;
     ts->child_num_arg = child_num_arg;
     ts->threadattr = thread_attr;
-
+    
+    apr_thread_mutex_create(&worker_mutex, APR_THREAD_MUTEX_DEFAULT, pruntime);
+    apr_thread_cond_create(&empty_cond, pruntime);
+    apr_thread_cond_create(&full_cond, pruntime);
+    
+    create_listener_thread(ts);
     rv = apr_thread_create(&start_thread_id, thread_attr, start_threads,
                            ts, pchild);
+    
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf, APLOGNO(00282)
                      "apr_thread_create: unable to create worker thread");

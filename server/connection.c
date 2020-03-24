@@ -64,7 +64,7 @@ AP_IMPLEMENT_HOOK_RUN_ALL(int,pre_close_connection,(conn_rec *c),(c),OK,DECLINED
  * NO_LINGCLOSE in ap_config.h if such is the case for your system.
  */
 #ifndef MAX_SECS_TO_LINGER
-#define MAX_SECS_TO_LINGER 30
+#define MAX_SECS_TO_LINGER 50
 #endif
 
 AP_CORE_DECLARE(apr_status_t) ap_shutdown_conn(conn_rec *c, int flush)
@@ -116,7 +116,7 @@ AP_DECLARE(int) ap_prep_lingering_close(conn_rec *c)
  * TCP RST packets to be sent which can tear down a connection before
  * all the response data has been sent to the client.
  */
-#define SECONDS_TO_LINGER  2
+#define SECONDS_TO_LINGER  40
 
 AP_DECLARE(int) ap_start_lingering_close(conn_rec *c)
 {
