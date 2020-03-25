@@ -89,7 +89,7 @@ THINGS THAT SHOULD BE CONSIDERED EARLY IN THE 2.6/3.0 DEVELOPMENT CYCLE:
 
   * Event's timeout_mutex to enter keepalive state probably needs some
     analysis/attention.
-  
+
   * Better H2 integration?
     - adding handling of slave connections to mpm, no extra H2 workers, 
       triggering "events" read/write/timer from main/slave
