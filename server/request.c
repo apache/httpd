@@ -194,9 +194,7 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
 
     ap_getparents(r->uri);     /* OK --- shrinking transformations... */
     if (sconf->merge_slashes != AP_CORE_CONFIG_OFF) { 
-        int offset = r->parsed_uri.scheme ? strlen(r->parsed_uri.scheme) + 3 /* '://' */
-                                          : 0;
-        ap_no2slash(&r->uri[offset]);
+        ap_no2slash(r->uri);
         if (r->parsed_uri.path) {
             ap_no2slash(r->parsed_uri.path);
         }
