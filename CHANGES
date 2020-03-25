@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) core: When a scheme (protocol) appears in the request URL, don't merge
+     the two slashes that separate the scheme from the authority (hostname).
+     PR 63437. [Eric Covener]
+
   *) mod_proxy_http: Fix random memory-corruption in case of an error while
      reading a response from the backend.
      PR 64234 [Ruediger Pluem, Barnim Dzwillo <dzwillo@strato.de>]
