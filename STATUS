@@ -320,7 +320,7 @@ PATCHES/ISSUES THAT ARE STALLED
                  needs 2 args which is not valid in ErrorLog manual)
                  Note: This also fixes syslog logging dropping messages with NULL server_rec by reaching up into ap_server_conf
                  explicitly.
-        
+
      trawick: nit: fix "writing" in "/* NULL if we are writing to syslog */"
               (sorry, haven't finished reviewing completely)
      jim: What is the status of this??
