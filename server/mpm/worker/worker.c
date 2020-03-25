@@ -830,7 +830,6 @@ worker_pop:
         requests_this_child--;
         apr_pool_clear(ptrans);
         last_ptrans = ptrans;
-	break;
     }
 
     ap_update_child_status_from_indexes(process_slot, thread_slot,

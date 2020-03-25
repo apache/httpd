@@ -771,7 +771,7 @@ configure:7864: gcc -o conftest  -g -O2 -pthread  -DLINUX -D_REENTRANT -D_GNU_SO
 conftest.c:42:6: warning: conflicting types for built-in function 'sqrt' [-Wbuiltin-declaration-mismatch]
  char sqrt ();
       ^~~~
-/tmp/ccZ9pFXN.o: In function `main':
+/tmp/ccdtmQga.o: In function `main':
 /home/ganwang/Documents/httpd/conftest.c:46: undefined reference to `sqrt'
 collect2: error: ld returned 1 exit status
 configure:7864: $? = 1
@@ -833,7 +833,7 @@ configure:7864: $? = 0
 configure:7881: result: -lm
 configure:7898: checking for library containing crypt
 configure:7929: gcc -o conftest  -g -O2 -pthread  -DLINUX -D_REENTRANT -D_GNU_SOURCE   conftest.c  >&5
-/tmp/ccxLKb5U.o: In function `main':
+/tmp/cc5dzpxh.o: In function `main':
 /home/ganwang/Documents/httpd/conftest.c:46: undefined reference to `crypt'
 collect2: error: ld returned 1 exit status
 configure:7929: $? = 1
@@ -910,7 +910,7 @@ configure:8032: $? = 0
 configure:8032: result: yes
 configure:8032: checking for bindprocessor
 configure:8032: gcc -o conftest  -g -O2 -pthread  -DLINUX -D_REENTRANT -D_GNU_SOURCE   conftest.c  >&5
-/tmp/ccBxQEcv.o: In function `main':
+/tmp/ccmr4Law.o: In function `main':
 /home/ganwang/Documents/httpd/conftest.c:73: undefined reference to `bindprocessor'
 collect2: error: ld returned 1 exit status
 configure:8032: $? = 1
@@ -1543,7 +1543,7 @@ configure:30158: $? = 0
 configure:30158: result: yes
 configure:30158: checking for RAND_egd
 configure:30158: gcc -o conftest  -g -O2 -pthread  -DLINUX -D_REENTRANT -D_GNU_SOURCE   conftest.c -lssl -lcrypto  -lcrypt -lrt -lcrypt  -lpthread -ldl -lexpat >&5
-/tmp/cc7tITKv.o: In function `main':
+/tmp/cchm5Pan.o: In function `main':
 /home/ganwang/Documents/httpd/conftest.c:86: undefined reference to `RAND_egd'
 collect2: error: ld returned 1 exit status
 configure:30158: $? = 1
@@ -1640,7 +1640,7 @@ configure: failed program was:
 configure:30158: result: no
 configure:30158: checking for CRYPTO_set_id_callback
 configure:30158: gcc -o conftest  -g -O2 -pthread  -DLINUX -D_REENTRANT -D_GNU_SOURCE   conftest.c -lssl -lcrypto  -lcrypt -lrt -lcrypt  -lpthread -ldl -lexpat >&5
-/tmp/ccd8eN2z.o: In function `main':
+/tmp/ccpvDzds.o: In function `main':
 /home/ganwang/Documents/httpd/conftest.c:86: undefined reference to `CRYPTO_set_id_callback'
 collect2: error: ld returned 1 exit status
 configure:30158: $? = 1
@@ -2167,7 +2167,7 @@ configure:31794: result: yes
 configure:31863: checking whether APR supports thread-safe pollsets
 configure:31882: checking for kqueue
 configure:31882: gcc -o conftest  -g -O2 -pthread  -DLINUX -D_REENTRANT -D_GNU_SOURCE   conftest.c  >&5
-/tmp/cc4B5l2v.o: In function `main':
+/tmp/ccW5yzY7.o: In function `main':
 /home/ganwang/Documents/httpd/conftest.c:97: undefined reference to `kqueue'
 collect2: error: ld returned 1 exit status
 configure:31882: $? = 1
@@ -2275,7 +2275,7 @@ configure: failed program was:
 configure:31882: result: no
 configure:31882: checking for port_create
 configure:31882: gcc -o conftest  -g -O2 -pthread  -DLINUX -D_REENTRANT -D_GNU_SOURCE   conftest.c  >&5
-/tmp/cckZcd5A.o: In function `main':
+/tmp/ccAWR05d.o: In function `main':
 /home/ganwang/Documents/httpd/conftest.c:97: undefined reference to `port_create'
 collect2: error: ld returned 1 exit status
 configure:31882: $? = 1
@@ -2794,7 +2794,7 @@ configure:37004: result: no
 configure:37013: WARNING: libcurl not found
 configure:37020: checking for arc4random_buf
 configure:37020: gcc -o conftest  -g -O2 -pthread  -DLINUX -D_REENTRANT -D_GNU_SOURCE   conftest.c  >&5
-/tmp/ccdIbRTJ.o: In function `main':
+/tmp/ccYs1vgv.o: In function `main':
 /home/ganwang/Documents/httpd/conftest.c:100: undefined reference to `arc4random_buf'
 collect2: error: ld returned 1 exit status
 configure:37020: $? = 1
