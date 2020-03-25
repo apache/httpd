@@ -102,6 +102,9 @@ static apr_status_t ssl_get_tls_cb(apr_pool_t *p, conn_rec *c, const char *type,
     }
     else if (strcEQ(type, "SERVER_TLS_SERVER_END_POINT")) {
         x = SSL_get_certificate(sslconn->ssl);
+        /* Increase refcount so X509_free below works for both client
+         * and server cases. */
+        if (x) X509_up_ref(x);
     }
     else if (strcEQ(type, "CLIENT_TLS_SERVER_END_POINT")) {
         x = SSL_get_peer_certificate(sslconn->ssl);
@@ -130,6 +133,8 @@ static apr_status_t ssl_get_tls_cb(apr_pool_t *p, conn_rec *c, const char *type,
         preflen = sizeof(TLS_SERVER_END_POINT_PREFIX) - 1;
         prefix = TLS_SERVER_END_POINT_PREFIX;
         data = cb;
+
+        X509_free(x);
     } 
     else {
         return APR_EGENERAL;
