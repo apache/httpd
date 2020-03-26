@@ -1950,19 +1950,11 @@ static void modssl_proxy_info_log(conn_rec *c,
  * so we need to increment here to prevent them from
  * being freed.
  */
-#if MODSSL_USE_OPENSSL_PRE_1_1_API
-#define modssl_set_cert_info(info, cert, pkey) \
-    *cert = info->x509; \
-    CRYPTO_add(&(*cert)->references, +1, CRYPTO_LOCK_X509); \
-    *pkey = info->x_pkey->dec_pkey; \
-    CRYPTO_add(&(*pkey)->references, +1, CRYPTO_LOCK_X509_PKEY)
-#else
 #define modssl_set_cert_info(info, cert, pkey) \
     *cert = info->x509; \
     X509_up_ref(*cert); \
     *pkey = info->x_pkey->dec_pkey; \
     EVP_PKEY_up_ref(*pkey);
-#endif
 
 int ssl_callback_proxy_cert(SSL *ssl, X509 **x509, EVP_PKEY **pkey)
 {
