@@ -1,4 +1,6 @@
                                                          -*- coding: utf-8 -*-
+Changes with Apache 2.4.44
+
 Changes with Apache 2.4.43
 
   *) mod_ssl: Fix memory leak of OCSP stapling response. [Yann Ylavic]
