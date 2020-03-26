@@ -1901,6 +1901,11 @@ static apr_status_t ssl_init_proxy_ctx(server_rec *s,
                                        modssl_ctx_t *proxy)
 {
     apr_status_t rv;
+#ifdef HAVE_SSL_CONF_CMD
+    SSL_CONF_CTX *cctx = proxy->ssl_ctx_config;
+    ssl_ctx_param_t *param = (ssl_ctx_param_t *)proxy->ssl_ctx_param->elts;
+    int i;
+#endif
 
     if (proxy->ssl_ctx) {
         /* Merged/initialized already */
@@ -1918,6 +1923,31 @@ static apr_status_t ssl_init_proxy_ctx(server_rec *s,
     if ((rv = ssl_init_proxy_certs(s, p, ptemp, proxy)) != APR_SUCCESS) {
         return rv;
     }
+
+#ifdef HAVE_SSL_CONF_CMD
+    SSL_CONF_CTX_set_ssl_ctx(cctx, proxy->ssl_ctx);
+    for (i = 0; i < proxy->ssl_ctx_param->nelts; i++, param++) {
+        ERR_clear_error();
+        if (SSL_CONF_cmd(cctx, param->name, param->value) <= 0) {
+            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10259)
+                         "\"SSLProxyOpenSSLConfCmd %s %s\" failed for %s",
+                         param->name, param->value, proxy->sc->vhost_id);
+            ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
+            return ssl_die(s);
+        } else {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(10260)
+                         "\"SSLProxyOpenSSLConfCmd %s %s\" applied to %s",
+                         param->name, param->value, proxy->sc->vhost_id);
+        }
+    }
+    if (SSL_CONF_CTX_finish(cctx) == 0) {
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10261)
+                     "SSL_CONF_CTX_finish() failed");
+        SSL_CONF_CTX_free(cctx);
+        ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
+        return ssl_die(s);
+    }
+#endif
 
     return APR_SUCCESS;
 }

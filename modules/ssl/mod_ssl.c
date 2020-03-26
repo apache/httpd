@@ -240,6 +240,10 @@ static const command_rec ssl_config_cmds[] = {
     SSL_CMD_PXY(ProxyCheckPeerName, FLAG,
                 "SSL Proxy: check the peer certificate's name "
                 "(must be present in subjectAltName extension or CN")
+#ifdef HAVE_SSL_CONF_CMD
+    SSL_CMD_PXY(ProxyOpenSSLConfCmd, TAKE2,
+                "SSL Proxy: OpenSSL configuration command")
+#endif
 
     /*
      * Per-directory context configuration directives

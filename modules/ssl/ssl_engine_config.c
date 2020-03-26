@@ -1813,6 +1813,52 @@ const char *ssl_cmd_SSLProxyMachineCertificateChainFile(cmd_parms *cmd,
     return NULL;
 }
 
+#ifdef HAVE_SSL_CONF_CMD
+static const char *ssl_cmd_parse_openssl_conf_cmd(cmd_parms *cmd,
+                                                  modssl_ctx_t *ctx,
+                                                  const char *arg1,
+                                                  const char *arg2)
+{
+    SSL_CONF_CTX *cctx = ctx->ssl_ctx_config;
+    int value_type = SSL_CONF_cmd_value_type(cctx, arg1);
+    const char *err;
+    ssl_ctx_param_t *param;
+
+    if (value_type == SSL_CONF_TYPE_UNKNOWN) {
+        return apr_psprintf(cmd->pool,
+                            "'%s': invalid OpenSSL configuration command",
+                            arg1);
+    }
+
+    if (value_type == SSL_CONF_TYPE_FILE) {
+        if ((err = ssl_cmd_check_file(cmd, &arg2)))
+            return err;
+    }
+    else if (value_type == SSL_CONF_TYPE_DIR) {
+        if ((err = ssl_cmd_check_dir(cmd, &arg2)))
+            return err;
+    }
+
+    if (strcEQ(arg1, "CipherString")) {
+        /* always disable null and export ciphers */
+        arg2 = apr_pstrcat(cmd->pool, arg2, ":!aNULL:!eNULL:!EXP", NULL);
+    }
+
+    param = apr_array_push(ctx->ssl_ctx_param);
+    param->name = arg1;
+    param->value = arg2;
+    return NULL;
+}
+
+const char *ssl_cmd_SSLProxyOpenSSLConfCmd(cmd_parms *cmd,
+                                           void *dcfg,
+                                           const char *arg1, const char *arg2)
+{
+    SSLDirConfigRec *dc = (SSLDirConfigRec *)dcfg;
+    return ssl_cmd_parse_openssl_conf_cmd(cmd, dc->proxy, arg1, arg2);
+}
+#endif
+
 const char *ssl_cmd_SSLUserName(cmd_parms *cmd, void *dcfg,
                                 const char *arg)
 {
@@ -2147,35 +2193,8 @@ const char *ssl_cmd_SSLOpenSSLConfCmd(cmd_parms *cmd, void *dcfg,
                                       const char *arg1, const char *arg2)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-    SSL_CONF_CTX *cctx = sc->server->ssl_ctx_config;
-    int value_type = SSL_CONF_cmd_value_type(cctx, arg1);
-    const char *err;
-    ssl_ctx_param_t *param;
 
-    if (value_type == SSL_CONF_TYPE_UNKNOWN) {
-        return apr_psprintf(cmd->pool,
-                            "'%s': invalid OpenSSL configuration command",
-                            arg1);
-    }
-
-    if (value_type == SSL_CONF_TYPE_FILE) {
-        if ((err = ssl_cmd_check_file(cmd, &arg2)))
-            return err;
-    }
-    else if (value_type == SSL_CONF_TYPE_DIR) {
-        if ((err = ssl_cmd_check_dir(cmd, &arg2)))
-            return err;
-    }
-
-    if (strcEQ(arg1, "CipherString")) {
-        /* always disable null and export ciphers */
-        arg2 = apr_pstrcat(cmd->pool, arg2, ":!aNULL:!eNULL:!EXP", NULL);
-    }
-
-    param = apr_array_push(sc->server->ssl_ctx_param);
-    param->name = arg1;
-    param->value = arg2;
-    return NULL;
+    return ssl_cmd_parse_openssl_conf_cmd(cmd, sc->server, arg1, arg2);
 }
 #endif
 
