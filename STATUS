@@ -133,10 +133,6 @@ RELEASE SHOWSTOPPERS:
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
-  *) mod_proxy_hcheck: Use is_ssl for wss and https.
-     trunk patch: http://svn.apache.org/r1875579
-     2.4.x patch: svn merge -c 1875579 ^/httpd/httpd/trunk .
-     +1: jfclere, gbechis, druggeri
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

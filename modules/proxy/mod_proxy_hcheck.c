@@ -598,7 +598,7 @@ static int hc_get_backend(const char *proxy_function, proxy_conn_rec **backend,
     if (status == OK) {
         (*backend)->addr = hc->cp->addr;
         (*backend)->hostname = hc->s->hostname_ex;
-        if (strcmp(hc->s->scheme, "https") == 0) {
+        if (strcmp(hc->s->scheme, "https") == 0 || strcmp(hc->s->scheme, "wss") == 0 ) {
             if (!ap_proxy_ssl_enable(NULL)) {
                 ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ctx->s, APLOGNO(03252)
                               "mod_ssl not configured?");
