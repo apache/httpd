@@ -1673,6 +1673,10 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
  * where possible, allowing the SSL I/O output filter to handle them
  * more efficiently. */
 
+/* ### increasingly seems like it might be better to do this buffering
+ * inside ssl_io_filter_output itself, though it will need a
+ * significant rewrite? */
+
 #define COALESCE_BYTES (2048)
 
 struct coalesce_ctx {
@@ -1686,6 +1690,7 @@ static apr_status_t ssl_io_filter_coalesce(ap_filter_t *f,
     apr_bucket *e, *upto;
     apr_size_t bytes = 0;
     struct coalesce_ctx *ctx = f->ctx;
+    apr_size_t buffered = ctx ? ctx->bytes : 0; /* space used on entry */
     unsigned count = 0;
 
     /* The brigade consists of zero-or-more small data buckets which
@@ -1706,9 +1711,7 @@ static apr_status_t ssl_io_filter_coalesce(ap_filter_t *f,
              && !APR_BUCKET_IS_METADATA(e)
              && e->length != (apr_size_t)-1
              && e->length < COALESCE_BYTES
-             && (bytes + e->length) < COALESCE_BYTES
-             && (ctx == NULL
-                 || bytes + ctx->bytes + e->length < COALESCE_BYTES);
+             && (buffered + bytes + e->length) < COALESCE_BYTES;
          e = APR_BUCKET_NEXT(e)) {
         /* don't count zero-length buckets */
         if (e->length) {
@@ -1716,6 +1719,40 @@ static apr_status_t ssl_io_filter_coalesce(ap_filter_t *f,
             count++;
         }
     }
+
+    /* If the next bucket to hit is a morphing bucket, try a read to
+     * force it to morph and then include (part of) the resulting HEAP
+     * in the prefix to coalesce.  This allows e.g. HTTP request
+     * headers (typically HEAP) and the start of the body
+     * (e.g. FILE/PIPE/... style) to be coalesced. */
+    if (bytes && count && e != APR_BRIGADE_SENTINEL(bb)
+        && !APR_BUCKET_IS_METADATA(e) && e->length == (apr_size_t)-1) {
+        const char *discard;
+        apr_size_t ignore;
+        apr_status_t rv;
+            
+        rv = apr_bucket_read(e, &discard, &ignore, APR_NONBLOCK_READ);
+        if (rv == APR_SUCCESS) {
+            if (buffered + bytes + e->length > COALESCE_BYTES) {
+                rv = apr_bucket_split(e, buffered + bytes + e->length);
+                if (rv) {
+                    ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, f->c, APLOGNO()
+                                  "coalesce failed to split data bucket");
+                    return AP_FILTER_ERROR;
+                }
+            }
+
+            e = APR_BUCKET_NEXT(e);
+            count++;
+            bytes += e->length;
+        }
+        else if (!APR_STATUS_IS_EAGAIN(rv)) {
+            ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, f->c, APLOGNO()
+                          "coalesce failed to read from data bucket");
+            return AP_FILTER_ERROR;
+        }
+    }
+
     upto = e;
 
     /* Coalesce the prefix, if:
