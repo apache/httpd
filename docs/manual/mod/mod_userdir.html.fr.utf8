@@ -38,6 +38,16 @@
 <tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_userdir.c</td></tr></table>
 <h3>Sommaire</h3>
 
+<div class="warning">En activant ce module, vous permettez à plusieurs
+utilisateurs de stocker des contenus sous un seul noeud de l'arborescence. La
+politique de stockage sous un seul noeud de l'arborescence est un principe clé de
+Javascript et de la sécurité du web. En stockant des pages web sous un seul noeud
+de l'arborescence, celles-ci peuvent se lire et se contrôler mutuellement et
+d'éventuels problèmes de sécurité liés à une page peut affecter les autres. Ceci
+peut s'avérer particulièrement dangereux dans le cas des pages web mettant en
+oeuvre du contenu dynamique et de l'authentification et lorsque les utilisateurs
+ne se voient pas tous forcément d'un bon oeil.</div>
+
 <p>Ce module permet l'accès aux répertoires propres à un utilisateur en
 utilisant la syntaxe <code>http://example.com/~utilisateur/</code>.</p>
 </div>
