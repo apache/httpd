@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1745711 -->
+<!-- English Revision: 1875785 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -30,6 +30,16 @@
 <identifier>userdir_module</identifier>
 
 <summary>
+<note type="warning">En activant ce module, vous permettez à plusieurs
+utilisateurs de stocker des contenus sous un seul noeud de l'arborescence. La
+politique de stockage sous un seul noeud de l'arborescence est un principe clé de
+Javascript et de la sécurité du web. En stockant des pages web sous un seul noeud
+de l'arborescence, celles-ci peuvent se lire et se contrôler mutuellement et
+d'éventuels problèmes de sécurité liés à une page peut affecter les autres. Ceci
+peut s'avérer particulièrement dangereux dans le cas des pages web mettant en
+oeuvre du contenu dynamique et de l'authentification et lorsque les utilisateurs
+ne se voient pas tous forcément d'un bon oeil.</note>
+
 <p>Ce module permet l'accès aux répertoires propres à un utilisateur en
 utilisant la syntaxe <code>http://example.com/~utilisateur/</code>.</p>
 </summary>
