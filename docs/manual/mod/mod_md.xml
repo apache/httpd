@@ -249,7 +249,7 @@ MDChallengeDns01 /usr/bin/acme-setup-dns
 &lt;/MDomain>            
             </highlight>
             <p>
-                and use the 'server-status' and/or MDMessageCmd to see how it operates. You will
+                and use the 'server-status' and/or <directive module="mod_md">MDMessageCmd</directive> to see how it operates. You will
                 see if Stapling information is there, how long it is valid, from where it came and
                 when it will be refreshed.
             </p><p>
@@ -531,7 +531,7 @@ MDCertificateAuthority https://acme-staging-v02.api.letsencrypt.org/directory
             <context>server config</context>
         </contextlist>
         <usage>
-            <p>Use a http proxy to connect to the MDCertificateAuthority. Define this
+            <p>Use a http proxy to connect to the <directive module="mod_md">MDCertificateAuthority</directive>. Define this
             if your webserver can only reach the internet with a forward proxy.
             </p>
         </usage>
@@ -547,7 +547,7 @@ MDCertificateAuthority https://acme-staging-v02.api.letsencrypt.org/directory
         <usage>
             <p>
             Instead of listing all dns names on the same line, you may use
-            <directive module="mod_md">MDMember</directive> to add such names
+            <directive>MDMember</directive> to add such names
             to a managed domain.
             </p>
             <example><title>Example</title>
@@ -803,7 +803,7 @@ MDRequireHttps permanent
     <directivesynopsis>
         <name>MDStoreDir</name>
         <description>Path on the local file system to store the Managed Domains data.</description>
-        <syntax>MDStoreDir path</syntax>
+        <syntax>MDStoreDir <var>path</var></syntax>
         <default>MDStoreDir md</default>
         <contextlist>
             <context>server config</context>
@@ -838,7 +838,7 @@ MDRequireHttps permanent
                 to find out which methods can be used. 
             </p><p>
                 If the server listens on port 80, for example, the 'http-01' method is available. 
-                The prerequisite for 'dns-01' is a configured  'MDChallengeDns01' command. 
+                The prerequisite for 'dns-01' is a configured  <directive module="mod_md">MDChallengeDns01</directive> command. 
                 'tls-alpn-01' is described above in 'https: Challenges'.
             </p><p>
                 This auto selection works for most setups. But since Apache is a very powerful 
@@ -846,7 +846,7 @@ MDRequireHttps permanent
                 possible cases. For example: it may listen on multiple IP addresses where some 
                 are reachable on `https:` and some not.
             </p><p>
-                If you configure 'MDCAChallenges' directly, this auto selection is disabled. 
+                If you configure <directive>MDCAChallenges</directive> directly, this auto selection is disabled. 
                 Instead, the module will use the configured challenge list when talking to 
                 the ACME server (a challenge type must be offered by the server as well). 
                 This challenges are examined in the order specified.
@@ -875,7 +875,7 @@ MDRequireHttps permanent
     <directivesynopsis>
         <name>MDCertificateFile</name>
         <description>Specify a static certificate file for the MD.</description>
-        <syntax>MDCertificateFile path-to-pem-file</syntax>
+        <syntax>MDCertificateFile <var>path-to-pem-file</var></syntax>
         <contextlist>
             <context>server config</context>
         </contextlist>
@@ -909,7 +909,7 @@ MDRequireHttps permanent
                 in your configuration. Then you can add <directive module="mod_md">MDRenewMode</directive>
                 'always' to it and the module will get a new certificate before
                 the one from the file expires. When it has done so, you remove the
-                <directive module="mod_md">MDCertificateFile</directive> and reload the server.
+                <directive>MDCertificateFile</directive> and reload the server.
             </p><p>
                 Another use case is that you renew your Let's Encrypt certificates with
                 another ACME clients, for example the excellent 
@@ -922,7 +922,7 @@ MDRequireHttps permanent
     <directivesynopsis>
         <name>MDCertificateKeyFile</name>
         <description>Specify a static private key for for the static cerrtificate.</description>
-        <syntax>MDCertificateKeyFile path-to-file</syntax>
+        <syntax>MDCertificateKeyFile <var>path-to-file</var></syntax>
         <contextlist>
             <context>server config</context>
         </contextlist>
@@ -971,7 +971,7 @@ MDRequireHttps permanent
     <directivesynopsis>
         <name>MDChallengeDns01</name>
         <description></description>
-        <syntax>MDChallengeDns01 path-to-command</syntax>
+        <syntax>MDChallengeDns01 <var>path-to-command</var></syntax>
         <contextlist>
             <context>server config</context>
         </contextlist>
@@ -994,7 +994,7 @@ MDRequireHttps permanent
     <directivesynopsis>
         <name>MDMessageCmd</name>
         <description>Handle events for Manage Domains</description>
-        <syntax>MDMessageCmd path-to-cmd optional-args</syntax>
+        <syntax>MDMessageCmd <var>path-to-cmd</var> <var>optional-args</var></syntax>
         <contextlist>
             <context>server config</context>
         </contextlist>
@@ -1008,12 +1008,12 @@ MDRequireHttps permanent
                 This is the more flexible companion to <directive module="mod_md">MDNotifyCmd</directive>.
             </p>
             <example><title>Example</title>
+                <highlight language="config">
 MDMessageCmd /etc/apache/md-message
+                </highlight>
 
 # will be invoked when a new certificate for mydomain.org is available as:
 /etc/apache/md-message renewed mydomain.com
-                <highlight language="config">
-                </highlight>
             </example>
             <p>
                 The program should not block, as the module will wait for it to finish. A
@@ -1035,7 +1035,7 @@ MDMessageCmd /etc/apache/md-message
             </p><p>
                 'installed' is triggered when a new certificate has been transferred from
                 staging into the domains location in MD store. This happens at server
-                startup/reload. Different to all other invocations, MDMessageCmd is run
+                startup/reload. Different to all other invocations, <directive>MDMessageCmd</directive> is run
                 with root permissions (on *nix systems) and has access to the certificate
                 files (and keys). Certificates needed for other applications or
                 in different formats can be processed on this event.
@@ -1090,7 +1090,7 @@ MDMessageCmd /etc/apache/md-message
         <name>MDCertificateMonitor</name>
         <description>The URL of a certificate log monitor.</description>
         <syntax>MDCertificateMonitor name url</syntax>
-        <default>crt.sh https://crt.sh?q=</default>
+        <default>MDCertificateMonitor crt.sh https://crt.sh?q=</default>
         <contextlist>
             <context>server config</context>
         </contextlist>
@@ -1117,24 +1117,26 @@ MDMessageCmd /etc/apache/md-message
         <name>MDStapling</name>
         <description>Enable stapling for all or a particular MDomain.</description>
         <syntax>MDStapling on|off</syntax>
-        <default>off</default>
+        <default>MDStapling off</default>
         <contextlist>
             <context>server config</context>
         </contextlist>
+        <compatibility>Available in version 2.4.42 and later</compatibility>
         <usage>
             <p>
-                mod_md offers an implementation for providing OCSP stapling information. 
-                This is an alternative to the one provided by 'mod_ssl'. For backward 
+                <module>mod_md</module> offers an implementation for providing OCSP stapling information. 
+                This is an alternative to the one provided by <module>mod_ssl</module>. For backward 
                 compatibility, this is disabled by default.
             </p><p>
                 The stapling can be switched on for all certificates on the server or 
-                for an individual MDomain. This will replace any stapling configuration 
-                in `mod_ssl` for these hosts. When disabled, the 'mod_ssl' stapling 
+                for an individual <directive module="mod_md">MDomain</directive>.
+                This will replace any stapling configuration 
+                in <module>mod_ssl</module> for these hosts. When disabled, the <module>mod_ssl</module> stapling 
                 will do the work (if it is itself enabled, of course). This allows for
                 a gradual shift over from one implementation to the other.
             </p><p>
-                The stapling of `mod_md` will also work for domains where the certificates 
-                are not managed by this module (see MDStapleOthers for how to control this). 
+                The stapling of <module>mod_md</module> will also work for domains where the certificates 
+                are not managed by this module (see <directive module="mod_md">MDStapleOthers</directive> for how to control this). 
                 This allows use of the new stapling without using any ACME certificate 
                 management.
             </p>
@@ -1145,14 +1147,15 @@ MDMessageCmd /etc/apache/md-message
         <name>MDStapleOthers</name>
         <description>Enable stapling for certificates not managed by mod_md.</description>
         <syntax>MDStapleOthers on|off</syntax>
-        <default>on</default>
+        <default>MDStapleOthers on</default>
         <contextlist>
             <context>server config</context>
         </contextlist>
+        <compatibility>Available in version 2.4.42 and later</compatibility>
         <usage>
             <p>
-                This setting only takes effect when `MDStapling` is enabled. It controls 
-                if `mod_md` should also provide stapling information for certificates 
+                This setting only takes effect when <directive module="mod_md">MDStapling</directive> is enabled. It controls 
+                if <module>mod_md</module> should also provide stapling information for certificates 
                 that are not directly controlled by it, e.g. renewed via an ACME CA.
             </p>
         </usage>
@@ -1161,11 +1164,12 @@ MDMessageCmd /etc/apache/md-message
     <directivesynopsis>
         <name>MDStaplingKeepResponse</name>
         <description>Controls when old responses should be removed.</description>
-        <syntax>MDStaplingKeepResponse duration</syntax>
-        <default>7d</default>
+        <syntax>MDStaplingKeepResponse <var>duration</var></syntax>
+        <default>MDStaplingKeepResponse 7d</default>
         <contextlist>
             <context>server config</context>
         </contextlist>
+        <compatibility>Available in version 2.4.42 and later</compatibility>
         <usage>
             <p>
                 This time window specifies when OCSP response data used in stapling 
@@ -1180,15 +1184,16 @@ MDMessageCmd /etc/apache/md-message
     <directivesynopsis>
         <name>MDStaplingRenewWindow</name>
         <description>Control when the stapling responses will be renewed.</description>
-        <syntax>MDStaplingRenewWindow duration</syntax>
-        <default>33%</default>
+        <syntax>MDStaplingRenewWindow <var>duration</var></syntax>
+        <default>MDStaplingRenewWindow 33%</default>
         <contextlist>
             <context>server config</context>
         </contextlist>
+        <compatibility>Available in version 2.4.42 and later</compatibility>
         <usage>
             <p>
-                If the validity of the OCSP response used in stapling falls below 'duration', 
-                mod_md will obtain a new OCSP response.
+                If the validity of the OCSP response used in stapling falls below <var>duration</var>, 
+                <module>mod_md</module> will obtain a new OCSP response.
             </p><p>
                 The CA issuing a certificate commonly also operates the OCSP responder 
                 service and determines how long its signed response about the validity 
@@ -1215,11 +1220,40 @@ MDMessageCmd /etc/apache/md-message
             </p>
         </usage>
     </directivesynopsis>
-    
+
+    <directivesynopsis>
+        <name>MDCertificateCheck</name>
+        <description>MDCertificateCheck <var>name</var> <var>url</var></description>
+        <syntax></syntax>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <compatibility>Available in version 2.4.42 and later</compatibility>
+        <usage>
+            <p>
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDActivationDelay</name>
+        <description></description>
+        <syntax>MDActivationDelay <var>duration</var><</syntax>
+        <contextlist>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <compatibility>Available in version 2.4.42 and later</compatibility>
+        <usage>
+            <p>
+            </p>
+        </usage>
+    </directivesynopsis>
+
     <directivesynopsis>
         <name>MDContactEmail</name>
         <description></description>
-        <syntax>MDContactEmail address</syntax>
+        <syntax>MDContactEmail <var>address</var></syntax>
         <contextlist>
             <context>server config</context>
         </contextlist>
@@ -1227,9 +1261,9 @@ MDMessageCmd /etc/apache/md-message
             <p>
                 The ACME protocol requires you to give a contact url when you sign up. Currently, 
                 Let's Encrypt wants an email address (and it will use it to inform you about renewals 
-                or changed terms of service). mod_md uses the MDContactEmail directive email in 
+                or changed terms of service). <module>mod_md</module> uses the <directive>MDContactEmail</directive> directive email in 
                 your Apache configuration, so please specify the correct address there. 
-                If MDContactEmail is not present, mod_md will use the 
+                If <directive>MDContactEmail</directive> is not present, <module>mod_md</module> will use the 
                 <directive module="core">ServerAdmin</directive> directive.
             </p>
         </usage>
