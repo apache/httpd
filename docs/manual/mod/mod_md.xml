@@ -1238,7 +1238,7 @@ MDMessageCmd /etc/apache/md-message
     <directivesynopsis>
         <name>MDActivationDelay</name>
         <description></description>
-        <syntax>MDActivationDelay <var>duration</var><</syntax>
+        <syntax>MDActivationDelay <var>duration</var></syntax>
         <contextlist>
         <contextlist>
             <context>server config</context>
