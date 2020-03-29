@@ -1223,8 +1223,8 @@ MDMessageCmd /etc/apache/md-message
 
     <directivesynopsis>
         <name>MDCertificateCheck</name>
-        <description>MDCertificateCheck <var>name</var> <var>url</var></description>
-        <syntax></syntax>
+        <description></description>
+        <syntax>MDCertificateCheck <var>name</var> <var>url</var></syntax>
         <contextlist>
             <context>server config</context>
         </contextlist>
@@ -1238,8 +1238,7 @@ MDMessageCmd /etc/apache/md-message
     <directivesynopsis>
         <name>MDActivationDelay</name>
         <description></description>
-        <syntax>MDActivationDelay <var>duration</var><</syntax>
-        <contextlist>
+        <syntax>MDActivationDelay <var>duration</var></syntax>
         <contextlist>
             <context>server config</context>
         </contextlist>
