@@ -1223,8 +1223,8 @@ MDMessageCmd /etc/apache/md-message
 
     <directivesynopsis>
         <name>MDCertificateCheck</name>
-        <description>MDCertificateCheck <var>name</var> <var>url</var></description>
-        <syntax></syntax>
+        <description></description>
+        <syntax>MDCertificateCheck <var>name</var> <var>url</var></syntax>
         <contextlist>
             <context>server config</context>
         </contextlist>
