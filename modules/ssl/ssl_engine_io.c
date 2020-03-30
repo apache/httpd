@@ -1662,18 +1662,25 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
 }
 
 
-/* ssl_io_filter_output() produces one SSL/TLS message per bucket
+/* ssl_io_filter_output() produces one SSL/TLS record per bucket
  * passed down the output filter stack.  This results in a high
- * overhead (network packets) for any output comprising many small
- * buckets.  SSI page applied through the HTTP chunk filter, for
- * example, may produce many brigades containing small buckets -
- * [chunk-size CRLF] [chunk-data] [CRLF].
+ * overhead (more network packets & TLS processing) for any output
+ * comprising many small buckets.  SSI output passed through the HTTP
+ * chunk filter, for example, may produce many brigades containing
+ * small buckets - [chunk-size CRLF] [chunk-data] [CRLF].
  *
- * The coalescing filter merges many small buckets into larger buckets
- * where possible, allowing the SSL I/O output filter to handle them
- * more efficiently. */
+ * Sending HTTP response headers as a separate TLS record to the
+ * response body also reveals information to a network observer (the
+ * size of headers) which can be significant.
+ *
+ * The coalescing filter merges data buckets with the aim of producing
+ * fewer, larger TLS records - without copying/buffering all content
+ * and introducing unnecessary overhead.
+ *
+ * ### This buffering could be probably be done more comprehensively
+ * ### in ssl_io_filter_output itself. */
 
-#define COALESCE_BYTES (2048)
+#define COALESCE_BYTES (AP_IOBUFSIZE)
 
 struct coalesce_ctx {
     char buffer[COALESCE_BYTES];
@@ -1686,6 +1693,7 @@ static apr_status_t ssl_io_filter_coalesce(ap_filter_t *f,
     apr_bucket *e, *upto;
     apr_size_t bytes = 0;
     struct coalesce_ctx *ctx = f->ctx;
+    apr_size_t buffered = ctx ? ctx->bytes : 0; /* space used on entry */
     unsigned count = 0;
 
     /* The brigade consists of zero-or-more small data buckets which
@@ -1706,9 +1714,7 @@ static apr_status_t ssl_io_filter_coalesce(ap_filter_t *f,
              && !APR_BUCKET_IS_METADATA(e)
              && e->length != (apr_size_t)-1
              && e->length < COALESCE_BYTES
-             && (bytes + e->length) < COALESCE_BYTES
-             && (ctx == NULL
-                 || bytes + ctx->bytes + e->length < COALESCE_BYTES);
+             && (buffered + bytes + e->length) < COALESCE_BYTES;
          e = APR_BUCKET_NEXT(e)) {
         /* don't count zero-length buckets */
         if (e->length) {
@@ -1716,6 +1722,51 @@ static apr_status_t ssl_io_filter_coalesce(ap_filter_t *f,
             count++;
         }
     }
+
+    /* If there is room remaining and the next bucket is a data
+     * bucket, try to include it in the prefix to coalesce.  For a
+     * typical [HEAP] [FILE] HTTP response brigade, this handles
+     * merging the headers and the start of the body into a single TLS
+     * record. */
+    if (bytes + buffered > 0
+        && bytes + buffered < COALESCE_BYTES
+        && e != APR_BRIGADE_SENTINEL(bb)
+        && !APR_BUCKET_IS_METADATA(e)) {
+        apr_status_t rv;
+
+        /* For an indeterminate length bucket (PIPE/CGI/...), try a
+         * non-blocking read to have it morph into a HEAP.  If the
+         * read fails with EAGAIN, it is harmless to try a split
+         * anyway, split is ENOTIMPL for most PIPE-like buckets. */
+        if (e->length == (apr_size_t)-1) {
+            const char *discard;
+            apr_size_t ignore;
+
+            rv = apr_bucket_read(e, &discard, &ignore, APR_NONBLOCK_READ);
+            if (rv != APR_SUCCESS && !APR_STATUS_IS_EAGAIN(rv)) {
+                ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, f->c, APLOGNO()
+                              "coalesce failed to read from data bucket");
+            }
+        }
+
+        rv = apr_bucket_split(e, COALESCE_BYTES - (buffered + bytes));
+        if (rv == APR_SUCCESS) {
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, f->c,
+                          "coalesce: adding %" APR_SIZE_T_FMT " bytes "
+                          "from split bucket, adding %" APR_SIZE_T_FMT,
+                          e->length, bytes + buffered);
+
+            count++;
+            bytes += e->length;
+            e = APR_BUCKET_NEXT(e);
+        }
+        else if (rv != APR_ENOTIMPL) {
+            ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, f->c, APLOGNO()
+                          "coalesce: failed to split data bucket");
+            return AP_FILTER_ERROR;
+        }
+    }
+
     upto = e;
 
     /* Coalesce the prefix, if:
