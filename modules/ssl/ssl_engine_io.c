@@ -1744,7 +1744,7 @@ static apr_status_t ssl_io_filter_coalesce(ap_filter_t *f,
 
             rv = apr_bucket_read(e, &discard, &ignore, APR_NONBLOCK_READ);
             if (rv != APR_SUCCESS && !APR_STATUS_IS_EAGAIN(rv)) {
-                ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, f->c, APLOGNO()
+                ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, f->c, APLOGNO(10232)
                               "coalesce failed to read from data bucket");
             }
         }
@@ -1761,7 +1761,7 @@ static apr_status_t ssl_io_filter_coalesce(ap_filter_t *f,
             e = APR_BUCKET_NEXT(e);
         }
         else if (rv != APR_ENOTIMPL) {
-            ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, f->c, APLOGNO()
+            ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, f->c, APLOGNO(10233)
                           "coalesce: failed to split data bucket");
             return AP_FILTER_ERROR;
         }
