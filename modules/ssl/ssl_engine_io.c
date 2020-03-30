@@ -1749,7 +1749,17 @@ static apr_status_t ssl_io_filter_coalesce(ap_filter_t *f,
             }
         }
 
-        rv = apr_bucket_split(e, COALESCE_BYTES - (buffered + bytes));
+        /* If the read above made the bucket morph, it may now fit
+         * entirely within the buffer.  Otherwise, split it so it does
+         * fit. */
+        if (e->length < COALESCE_BYTES
+            && e->length + buffered + bytes < COALESCE_BYTES) {
+            rv = APR_SUCCESS;
+        }
+        else {
+            rv = apr_bucket_split(e, COALESCE_BYTES - (buffered + bytes));
+        }
+        
         if (rv == APR_SUCCESS) {
             ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, f->c,
                           "coalesce: adding %" APR_SIZE_T_FMT " bytes "
