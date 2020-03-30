@@ -1678,7 +1678,14 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
  * and introducing unnecessary overhead.
  *
  * ### This buffering could be probably be done more comprehensively
- * ### in ssl_io_filter_output itself. */
+ * ### in ssl_io_filter_output itself. 
+ * 
+ * ### Another possible performance optimisation in particular for the
+ * ### [HEAP] [FILE] HTTP response case is using a brigade rather than
+ * ### a char array to buffer; using apr_brigade_write() to append
+ * ### will use already-allocated memory from the HEAP, reducing # of
+ * ### copies.
+ */
 
 #define COALESCE_BYTES (AP_IOBUFSIZE)
 
