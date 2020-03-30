@@ -1677,7 +1677,7 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
  * inside ssl_io_filter_output itself, though it will need a
  * significant rewrite? */
 
-#define COALESCE_BYTES (2048)
+#define COALESCE_BYTES (AP_IOBUFSIZE)
 
 struct coalesce_ctx {
     char buffer[COALESCE_BYTES];
@@ -1720,35 +1720,42 @@ static apr_status_t ssl_io_filter_coalesce(ap_filter_t *f,
         }
     }
 
-    /* If the next bucket to hit is a morphing bucket, try a read to
-     * force it to morph and then include (part of) the resulting HEAP
-     * in the prefix to coalesce.  This allows e.g. HTTP request
-     * headers (typically HEAP) and the start of the body
-     * (e.g. FILE/PIPE/... style) to be coalesced. */
-    if (bytes && count && e != APR_BRIGADE_SENTINEL(bb)
-        && !APR_BUCKET_IS_METADATA(e) && e->length == (apr_size_t)-1) {
-        const char *discard;
-        apr_size_t ignore;
+    /* If there is room remaining and the next bucket is a data
+     * bucket, try to include it in the prefix to coalesce.  A typical
+     * HTTP response is [HEAP FILE] for response headers and body, so
+     * coalescing the start of a FILE avoids separating each into
+     * separate TLS records, hence hides data about the response
+     * header size from an observer. */
+    if (bytes + buffered > 0 && bytes + buffered < COALESCE_BYTES
+        && e != APR_BRIGADE_SENTINEL(bb)
+        && !APR_BUCKET_IS_METADATA(e)) {
         apr_status_t rv;
-            
-        rv = apr_bucket_read(e, &discard, &ignore, APR_NONBLOCK_READ);
-        if (rv == APR_SUCCESS) {
-            if (buffered + bytes + e->length > COALESCE_BYTES) {
-                rv = apr_bucket_split(e, buffered + bytes + e->length);
-                if (rv) {
-                    ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, f->c, APLOGNO()
-                                  "coalesce failed to split data bucket");
-                    return AP_FILTER_ERROR;
-                }
-            }
 
-            e = APR_BUCKET_NEXT(e);
+        if (e->length == (apr_size_t)-1) {
+            const char *discard;
+            apr_size_t ignore;
+
+            rv = apr_bucket_read(e, &discard, &ignore, APR_NONBLOCK_READ);
+            if (rv != APR_SUCCESS && !APR_STATUS_IS_EAGAIN(rv)) {
+                ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, f->c, APLOGNO()
+                              "coalesce failed to read from data bucket");
+            }
+        }
+
+        rv = apr_bucket_split(e, COALESCE_BYTES - (buffered + bytes));
+        if (rv == APR_SUCCESS) {
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, f->c,
+                          "coalesce: adding %" APR_SIZE_T_FMT " bytes "
+                          "from split bucket, adding %" APR_SIZE_T_FMT,
+                          e->length, bytes + buffered);
+
             count++;
             bytes += e->length;
+            e = APR_BUCKET_NEXT(e);
         }
-        else if (!APR_STATUS_IS_EAGAIN(rv)) {
+        else if (rv != APR_ENOTIMPL) {
             ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, f->c, APLOGNO()
-                          "coalesce failed to read from data bucket");
+                          "coalesce: failed to split data bucket");
             return AP_FILTER_ERROR;
         }
     }
