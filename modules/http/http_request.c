@@ -350,7 +350,6 @@ AP_DECLARE(void) ap_process_request_after_handler(request_rec *r)
     apr_bucket_brigade *bb;
     apr_bucket *b;
     conn_rec *c = r->connection;
-    ap_filter_t *f;
 
     bb = ap_acquire_brigade(c);
 
@@ -371,15 +370,9 @@ AP_DECLARE(void) ap_process_request_after_handler(request_rec *r)
 
     /* All the request filters should have bailed out on EOS, and in any
      * case they shouldn't have to handle this EOR which will destroy the
-     * request underneath them. So go straight to the core request filter
-     * which (if any) will take care of the setaside buckets.
+     * request underneath them. So go straight to the connection filters.
      */
-    for (f = r->output_filters; f; f = f->next) {
-        if (f->frec == ap_request_core_filter_handle) {
-            break;
-        }
-    }
-    ap_pass_brigade(f ? f : c->output_filters, bb);
+    ap_pass_brigade(c->output_filters, bb);
 
     /* The EOR bucket has either been handled by an output filter (eg.
      * deleted or moved to a buffered_bb => no more in bb), or an error

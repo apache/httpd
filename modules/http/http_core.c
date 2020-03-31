@@ -268,8 +268,6 @@ static int http_create_request(request_rec *r)
                                     NULL, r, r->connection);
         ap_add_output_filter_handle(ap_http_outerror_filter_handle,
                                     NULL, r, r->connection);
-        ap_add_output_filter_handle(ap_request_core_filter_handle,
-                                    NULL, r, r->connection);
     }
 
     return OK;

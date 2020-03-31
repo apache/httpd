@@ -149,18 +149,6 @@ AP_DECLARE(int) ap_run_sub_req(request_rec *r);
  */
 AP_DECLARE(void) ap_destroy_sub_req(request_rec *r);
 
-/**
- * An output filter to ensure that we avoid passing morphing buckets to
- * connection filters and in so doing defeat async write completion when
- * they are set aside. This should be inserted at the end of a request
- * filter stack.
- * @param f The current filter
- * @param bb The brigade to filter
- * @return status code
- */
-AP_CORE_DECLARE_NONSTD(apr_status_t) ap_request_core_filter(ap_filter_t *f,
-                                                            apr_bucket_brigade *bb);
-
 /*
  * Then there's the case that you want some other request to be served
  * as the top-level request INSTEAD of what the client requested directly.
@@ -599,6 +587,15 @@ AP_DECLARE(int) ap_if_walk(request_rec *r);
 
 /** End Of REQUEST (EOR) bucket */
 AP_DECLARE_DATA extern const apr_bucket_type_t ap_bucket_type_eor;
+
+/**
+ * Determine if a bucket is morphing, that is which changes its
+ * type on read (usually to "heap" allocated data), while moving
+ * itself at the next position to remain plugged until exhausted.
+ * @param e The bucket to inspect
+ * @return true or false
+ */
+#define AP_BUCKET_IS_MORPHING(e)    ((e)->length == (apr_size_t)-1)
 
 /**
  * Determine if a bucket is an End Of REQUEST (EOR) bucket
