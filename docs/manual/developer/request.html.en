@@ -89,9 +89,10 @@
     <h3><a name="strip" id="strip">Strips Parent and This Elements from the
     URI</a></h3>
       <p>All <code>/../</code> and <code>/./</code> elements are
-      removed by <code>ap_getparents()</code>. This helps to ensure
+      removed by <code>ap_getparents()</code>, as well as any trailing 
+      <code>/.</code> or <code>/..</code> element. This helps to ensure
       the path is (nearly) absolute before the request processing
-      continues.</p>
+      continues. (See RFC 1808 section 4 for further discussion.)</p>
 
       <p>This step cannot be bypassed.</p>
     

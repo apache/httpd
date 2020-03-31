@@ -325,7 +325,7 @@
         to ensure safe operations?</strong>
 
         <p class="indent">
-          suEXEC cleans the process' environment by establishing a
+          suEXEC cleans the process's environment by establishing a
           safe execution PATH (defined during configuration), as
           well as only passing through those variables whose names
           are listed in the safe environment list (also created
