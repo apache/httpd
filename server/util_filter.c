@@ -1017,17 +1017,6 @@ AP_DECLARE(apr_status_t) ap_filter_setaside_brigade(ap_filter_t *f,
              *
              * XXX: Should we cleanup all previous c->output_filters' setaside
              *      brigades?
-             *
-             * XXX: For each EOR we potentially destroy here, there is a
-             *      request handler/module which "thought" everything went well
-             *      on the output filters side, and returned OK. Should we mark
-             *      something in each EOR's request_rec (e.g. r->aborted) for
-             *      the log_transaction hooks to know at least?
-             *      Or alternatively (and possibly more robustly) have the
-             *      ap_core_output_filter() set r->flushed when it sees an EOR
-             *      up to which it sent everything (before destroying it)?
-             *      Anyway we can't set c->aborted here, because close_notify
-             *      for instance can/should still be sent out.
              */
             AP_DEBUG_ASSERT(rv != APR_SUCCESS);
             f->c->keepalive = AP_CONN_CLOSE;

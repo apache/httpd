@@ -559,6 +559,14 @@ static apr_status_t send_brigade_nonblocking(apr_socket_t *s,
              * brigade in order.
              */
             if (!nvec) {
+                if (AP_BUCKET_IS_EOR(bucket)) {
+                    /* Mark the request as flushed since all its
+                     * buckets (preceding this EOR) have been sent.
+                     */
+                    request_rec *r = ap_bucket_eor_request(bucket);
+                    ap_assert(r != NULL);
+                    r->flushed = 1;
+                }
                 apr_bucket_delete(bucket);
             }
             continue;
@@ -643,6 +651,14 @@ static apr_status_t writev_nonblocking(apr_socket_t *s,
         for (i = offset; i < nvec; ) {
             apr_bucket *bucket = APR_BRIGADE_FIRST(bb);
             if (!bucket->length) {
+                if (AP_BUCKET_IS_EOR(bucket)) {
+                    /* Mark the request as flushed since all its
+                     * buckets (preceding this EOR) have been sent.
+                     */
+                    request_rec *r = ap_bucket_eor_request(bucket);
+                    ap_assert(r != NULL);
+                    r->flushed = 1;
+                }
                 apr_bucket_delete(bucket);
             }
             else if (n >= vec[i].iov_len) {

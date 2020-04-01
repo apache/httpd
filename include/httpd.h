@@ -1092,6 +1092,11 @@ struct request_rec {
      *  Always use ap_request_tainted() to check taint.
      */
     int taint;
+    /** Whether the response has been flushed through the network,
+     *  relevant at ap_run_log_transaction() time only.
+     *  TODO: compact elsewhere
+     */
+    unsigned int flushed:1;
 };
 
 /**

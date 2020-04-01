@@ -624,6 +624,7 @@
  * 20200217.0 (2.5.1-dev)  Add and use ap_method_mask_t type
  * 20200331.0 (2.5.1-dev)  Remove ap_request_core_filter() and
  *                         ap_request_core_filter_handle.
+ * 20200331.1 (2.5.1-dev)  Add flushed:1 to request_rec
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -631,7 +632,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20200331
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 0            /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 1            /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

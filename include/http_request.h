@@ -625,6 +625,13 @@ AP_DECLARE(apr_bucket *) ap_bucket_eor_create(apr_bucket_alloc_t *list,
                                               request_rec *r);
 
 /**
+ * Get the request bound to an End Of Request (EOR) bucket.
+ * @param b The EOR bucket
+ * @return Its associated request
+ */
+AP_DECLARE(request_rec *) ap_bucket_eor_request(apr_bucket *b);
+
+/**
  * Can be used within any handler to determine if any authentication
  * is required for the current request.  Note that if used with an
  * access_checker hook, an access_checker_ex hook or an authz provider; the

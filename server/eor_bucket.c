@@ -21,7 +21,7 @@
 
 typedef struct {
     apr_bucket_refcount refcount;
-    request_rec *data;
+    request_rec *r;
 } ap_bucket_eor;
 
 static apr_status_t eor_bucket_cleanup(void *data)
@@ -58,7 +58,7 @@ AP_DECLARE(apr_bucket *) ap_bucket_eor_make(apr_bucket *b, request_rec *r)
     ap_bucket_eor *h;
 
     h = apr_bucket_alloc(sizeof(*h), b->list);
-    h->data = r;
+    h->r = r;
 
     b = apr_bucket_shared_make(b, h, 0, 0);
     b->type = &ap_bucket_type_eor;
@@ -85,9 +85,16 @@ AP_DECLARE(apr_bucket *) ap_bucket_eor_create(apr_bucket_alloc_t *list,
          * We need to use a pre-cleanup here because a module may create a
          * sub-pool which is still needed during the log_transaction hook.
          */
-        apr_pool_pre_cleanup_register(r->pool, &h->data, eor_bucket_cleanup);
+        apr_pool_pre_cleanup_register(r->pool, &h->r, eor_bucket_cleanup);
     }
     return b;
+}
+
+AP_DECLARE(request_rec *) ap_bucket_eor_request(apr_bucket *b)
+{
+    ap_bucket_eor *h = b->data;
+    AP_DEBUG_ASSERT(AP_BUCKET_IS_EOR(b));
+    return h->r;
 }
 
 static void eor_bucket_destroy(void *data)
@@ -95,7 +102,7 @@ static void eor_bucket_destroy(void *data)
     ap_bucket_eor *h = data;
 
     if (apr_bucket_shared_destroy(h)) {
-        request_rec *r = h->data;
+        request_rec *r = h->r;
         if (r) {
             /* eor_bucket_cleanup will be called when the pool gets destroyed */
             apr_pool_destroy(r->pool);

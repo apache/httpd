@@ -416,6 +416,10 @@ static const char *log_request_method(request_rec *r, char *a)
 {
     return ap_escape_logitem(r->pool, r->method);
 }
+static const char *log_request_flushed(request_rec *r, char *a)
+{
+    return (r->flushed) ? "F" : "-";
+}
 static const char *log_log_id(request_rec *r, char *a)
 {
     if (a && !strcmp(a, "c")) {
@@ -1854,6 +1858,7 @@ static int log_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
         log_pfn_register(p, "H", log_request_protocol, 0);
         log_pfn_register(p, "m", log_request_method, 0);
         log_pfn_register(p, "q", log_request_query, 0);
+        log_pfn_register(p, "F", log_request_flushed, 1);
         log_pfn_register(p, "X", log_connection_status, 0);
         log_pfn_register(p, "C", log_cookie, 0);
         log_pfn_register(p, "k", log_requests_on_connection, 0);
