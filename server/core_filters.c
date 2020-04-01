@@ -543,12 +543,6 @@ static apr_status_t send_brigade_nonblocking(apr_socket_t *s,
 
                 rv = apr_bucket_read(bucket, &data, &length, APR_BLOCK_READ);
             }
-            if (APR_STATUS_IS_EOF(rv)) {
-                /* Morphing bucket exhausted, next. */
-                apr_bucket_delete(bucket);
-                rv = APR_SUCCESS;
-                continue;
-            }
             if (rv != APR_SUCCESS) {
                 goto cleanup;
             }
