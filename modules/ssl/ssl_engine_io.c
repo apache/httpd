@@ -1766,8 +1766,12 @@ static apr_status_t ssl_io_filter_coalesce(ap_filter_t *f,
         else {
             rv = apr_bucket_split(e, COALESCE_BYTES - (buffered + bytes));
         }
-        
-        if (rv == APR_SUCCESS) {
+
+        if (rv == APR_SUCCESS && e->length == 0) {
+            /* As above, don't count in the prefix if the bucket is
+             * now zero-length. */
+        }
+        else if (rv == APR_SUCCESS) {
             ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, f->c,
                           "coalesce: adding %" APR_SIZE_T_FMT " bytes "
                           "from split bucket, adding %" APR_SIZE_T_FMT,
