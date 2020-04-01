@@ -622,12 +622,14 @@
  * 20190312.8 (2.5.1-dev)  ap_is_chunked() in httpd.h
  * 20190312.9 (2.5.1-dev)  AP_REG_NO_DEFAULT macro in ap_regex.h
  * 20200217.0 (2.5.1-dev)  Add and use ap_method_mask_t type
+ * 20200331.0 (2.5.1-dev)  Remove ap_request_core_filter() and
+ *                         ap_request_core_filter_handle.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20200217
+#define MODULE_MAGIC_NUMBER_MAJOR 20200331
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0            /* 0...n */
 
