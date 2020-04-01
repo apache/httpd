@@ -24,6 +24,8 @@
 #include "http_core.h"
 #include "util_mutex.h"
 
+#include "apr_atomic.h"
+
 #define AP_WATCHDOG_PGROUP    "watchdog"
 #define AP_WATCHDOG_PVERSION  "parent"
 #define AP_WATCHDOG_CVERSION  "child"
@@ -43,7 +45,7 @@ struct watchdog_list_t
 
 struct ap_watchdog_t
 {
-    apr_thread_mutex_t   *startup;
+    apr_uint32_t          thread_started; /* set to 1 once thread running */
     apr_proc_mutex_t     *mutex;
     const char           *name;
     watchdog_list_t      *callbacks;
@@ -73,6 +75,10 @@ static apr_status_t wd_worker_cleanup(void *data)
 {
     apr_status_t rv;
     ap_watchdog_t *w = (ap_watchdog_t *)data;
+
+    /* Do nothing if the thread wasn't started. */
+    if (apr_atomic_read32(&w->thread_started) != 1)
+        return APR_SUCCESS;
 
     if (w->is_running) {
         watchdog_list_t *wl = w->callbacks;
@@ -110,7 +116,8 @@ static void* APR_THREAD_FUNC wd_worker(apr_thread_t *thread, void *data)
     w->pool = apr_thread_pool_get(thread);
     w->is_running = 1;
 
-    apr_thread_mutex_unlock(w->startup);
+    apr_atomic_set32(&w->thread_started, 1); /* thread started */
+
     if (w->mutex) {
         while (w->is_running) {
             if (ap_mpm_query(AP_MPMQ_MPM_STATE, &mpmq_s) != APR_SUCCESS) {
@@ -264,10 +271,7 @@ static apr_status_t wd_startup(ap_watchdog_t *w, apr_pool_t *p)
 {
     apr_status_t rc;
 
-    /* Create thread startup mutex */
-    rc = apr_thread_mutex_create(&w->startup, APR_THREAD_MUTEX_UNNESTED, p);
-    if (rc != APR_SUCCESS)
-        return rc;
+    apr_atomic_set32(&w->thread_started, 0);
 
     if (w->singleton) {
         /* Initialize singleton mutex in child */
@@ -277,21 +281,11 @@ static apr_status_t wd_startup(ap_watchdog_t *w, apr_pool_t *p)
             return rc;
     }
 
-    /* This mutex fixes problems with a fast start/fast end, where the pool
-     * cleanup was being invoked before the thread completely spawned.
-     */
-    apr_thread_mutex_lock(w->startup);
-    apr_pool_pre_cleanup_register(p, w, wd_worker_cleanup);
-
     /* Start the newly created watchdog */
     rc = apr_thread_create(&w->thread, NULL, wd_worker, w, p);
-    if (rc) {
-        apr_pool_cleanup_kill(p, w, wd_worker_cleanup);
+    if (rc == APR_SUCCESS) {
+        apr_pool_pre_cleanup_register(p, w, wd_worker_cleanup);
     }
-
-    apr_thread_mutex_lock(w->startup);
-    apr_thread_mutex_unlock(w->startup);
-    apr_thread_mutex_destroy(w->startup);
 
     return rc;
 }
