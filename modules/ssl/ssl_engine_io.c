@@ -1739,7 +1739,7 @@ static apr_status_t ssl_io_filter_coalesce(ap_filter_t *f,
         && bytes + buffered < COALESCE_BYTES
         && e != APR_BRIGADE_SENTINEL(bb)
         && !APR_BUCKET_IS_METADATA(e)) {
-        apr_status_t rv;
+        apr_status_t rv = APR_SUCCESS;
 
         /* For an indeterminate length bucket (PIPE/CGI/...), try a
          * non-blocking read to have it morph into a HEAP.  If the
@@ -1753,38 +1753,38 @@ static apr_status_t ssl_io_filter_coalesce(ap_filter_t *f,
             if (rv != APR_SUCCESS && !APR_STATUS_IS_EAGAIN(rv)) {
                 ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, f->c, APLOGNO(10232)
                               "coalesce failed to read from data bucket");
+                return AP_FILTER_ERROR;
             }
         }
 
-        /* If the read above made the bucket morph, it may now fit
-         * entirely within the buffer.  Otherwise, split it so it does
-         * fit. */
-        if (e->length < COALESCE_BYTES
-            && e->length + buffered + bytes < COALESCE_BYTES) {
-            rv = APR_SUCCESS;
-        }
-        else {
-            rv = apr_bucket_split(e, COALESCE_BYTES - (buffered + bytes));
-        }
+        if (rv == APR_SUCCESS) {
+            /* If the read above made the bucket morph, it may now fit
+             * entirely within the buffer.  Otherwise, split it so it does
+             * fit. */
+            if (e->length >= COALESCE_BYTES
+                || e->length + buffered + bytes >= COALESCE_BYTES) {
+                rv = apr_bucket_split(e, COALESCE_BYTES - (buffered + bytes));
+            }
 
-        if (rv == APR_SUCCESS && e->length == 0) {
-            /* As above, don't count in the prefix if the bucket is
-             * now zero-length. */
-        }
-        else if (rv == APR_SUCCESS) {
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, f->c,
-                          "coalesce: adding %" APR_SIZE_T_FMT " bytes "
-                          "from split bucket, adding %" APR_SIZE_T_FMT,
-                          e->length, bytes + buffered);
+            if (rv == APR_SUCCESS && e->length == 0) {
+                /* As above, don't count in the prefix if the bucket is
+                 * now zero-length. */
+            }
+            else if (rv == APR_SUCCESS) {
+                ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, f->c,
+                              "coalesce: adding %" APR_SIZE_T_FMT " bytes "
+                              "from split bucket, adding %" APR_SIZE_T_FMT,
+                              e->length, bytes + buffered);
 
-            count++;
-            bytes += e->length;
-            e = APR_BUCKET_NEXT(e);
-        }
-        else if (rv != APR_ENOTIMPL) {
-            ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, f->c, APLOGNO(10233)
-                          "coalesce: failed to split data bucket");
-            return AP_FILTER_ERROR;
+                count++;
+                bytes += e->length;
+                e = APR_BUCKET_NEXT(e);
+            }
+            else if (rv != APR_ENOTIMPL) {
+                ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, f->c, APLOGNO(10233)
+                              "coalesce: failed to split data bucket");
+                return AP_FILTER_ERROR;
+            }
         }
     }
 
