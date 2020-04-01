@@ -1,6 +1,15 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.44
 
+  *) SECURITY: CVE-2020-1934 (cve.mitre.org)
+     mod_proxy_ftp: Use of uninitialized value with malicious backend FTP
+     server. [Eric Covener]
+
+  *) SECURITY: CVE-2020-1927 (cve.mitre.org)
+     rewrite, core: Set PCRE_DOTALL flag by default to avoid unpredictable
+     matches and substitutions with encoded line break characters.
+     The fix for CVE-2019-10098 was not effective.  [Ruediger Pluem]
+
 Changes with Apache 2.4.43
 
   *) mod_ssl: Fix memory leak of OCSP stapling response. [Yann Ylavic]
