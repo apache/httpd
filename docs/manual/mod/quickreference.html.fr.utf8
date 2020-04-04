@@ -920,29 +920,31 @@ simultanément</td></tr>
 inactifs</td></tr>
 <tr><td><a href="mpm_common.html#maxsparethreads">MaxSpareThreads <var>nombre</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Nombre maximum de threads inactifs</td></tr>
 <tr class="odd"><td><a href="mpm_netware.html#maxthreads">MaxThreads <var>nombre</var></a></td><td> 2048 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Définit le nombre maximum de threads esclaves</td></tr>
-<tr><td><a href="mod_md.html#mdbaseserver">MDBaseServer on|off</a></td><td> off </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Définit si le serveur global peut être géré ou seulement
+<tr><td><a href="mod_md.html#mdactivationdelay">MDActivationDelay <var>duration</var></a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">-</td></tr>
+<tr class="odd"><td><a href="mod_md.html#mdbaseserver">MDBaseServer on|off</a></td><td> off </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Définit si le serveur global peut être géré ou seulement
 	les serveurs virtuels.</td></tr>
-<tr class="odd"><td><a href="mod_md.html#mdcachallenges">MDCAChallenges <var>name</var> [ <var>name</var> ... ]</a></td><td> tls-alpn-01 http-01 +</td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Type de négociation ACME utilisée pour prouver l'appartenance
+<tr><td><a href="mod_md.html#mdcachallenges">MDCAChallenges <var>name</var> [ <var>name</var> ... ]</a></td><td> tls-alpn-01 http-01 +</td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Type de négociation ACME utilisée pour prouver l'appartenance
 	du domaine.</td></tr>
-<tr><td><a href="mod_md.html#mdcertificateagreement">MDCertificateAgreement accepted</a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Acceptation des conditions d'utilisation de l'autorité de
+<tr class="odd"><td><a href="mod_md.html#mdcertificateagreement">MDCertificateAgreement accepted</a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Acceptation des conditions d'utilisation de l'autorité de
 	certification.</td></tr>
-<tr class="odd"><td><a href="mod_md.html#mdcertificateauthority">MDCertificateAuthority <var>url</var></a></td><td> https://acme-v02.ap +</td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">L'URL du service ACME de l'autorité de certification.</td></tr>
-<tr><td><a href="mod_md.html#mdcertificatefile">MDCertificateFile path-to-pem-file</a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Définit un fichier de certificat statique pour le domaine géré.</td></tr>
-<tr class="odd"><td><a href="mod_md.html#mdcertificatekeyfile">MDCertificateKeyFile path-to-file</a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Définit une clé privée statique pour le certificat
+<tr><td><a href="mod_md.html#mdcertificateauthority">MDCertificateAuthority <var>url</var></a></td><td> https://acme-v02.ap +</td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">L'URL du service ACME de l'autorité de certification.</td></tr>
+<tr class="odd"><td><a href="mod_md.html#mdcertificatecheck">MDCertificateCheck <var>name</var> <var>url</var></a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">-</td></tr>
+<tr><td><a href="mod_md.html#mdcertificatefile">MDCertificateFile <var>path-to-pem-file</var></a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Définit un fichier de certificat statique pour le domaine géré.</td></tr>
+<tr class="odd"><td><a href="mod_md.html#mdcertificatekeyfile">MDCertificateKeyFile <var>path-to-file</var></a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Définit une clé privée statique pour le certificat
 	statique.</td></tr>
-<tr><td><a href="mod_md.html#mdcertificatemonitor">MDCertificateMonitor name url</a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">L'URL d'un moniteur d'enregistrement de certificat.</td></tr>
+<tr><td><a href="mod_md.html#mdcertificatemonitor">MDCertificateMonitor name url</a></td><td> crt.sh https://crt. +</td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">L'URL d'un moniteur d'enregistrement de certificat.</td></tr>
 <tr class="odd"><td><a href="mod_md.html#mdcertificateprotocol">MDCertificateProtocol <var>protocol</var></a></td><td> ACME </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Le protocole à utiliser avec l'autorité de certification.</td></tr>
 <tr><td><a href="mod_md.html#mdcertificatestatus">MDCertificateStatus on|off</a></td><td> on </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Extrait les informations publiques du certificat au format
 	JSON.</td></tr>
-<tr class="odd"><td><a href="mod_md.html#mdchallengedns01">MDChallengeDns01 path-to-command</a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">-</td></tr>
-<tr><td><a href="mod_md.html#mdcontactemail">MDContactEmail address</a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">-</td></tr>
+<tr class="odd"><td><a href="mod_md.html#mdchallengedns01">MDChallengeDns01 <var>path-to-command</var></a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">-</td></tr>
+<tr><td><a href="mod_md.html#mdcontactemail">MDContactEmail <var>address</var></a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">-</td></tr>
 <tr class="odd"><td><a href="mod_md.html#mddrivemode">MDDriveMode always|auto|manual</a></td><td> auto </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Ancien nom de MDRenewMode.</td></tr>
 <tr><td><a href="mod_md.html#mdhttpproxy">MDHttpProxy <var>url</var></a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Spécifie un serveur mandataire pour les connexions
 	sortantes.</td></tr>
 <tr class="odd"><td><a href="mod_md.html#mdmember">MDMember <var>hostname</var></a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Nom d'hôte additionnel pour le domaine géré.</td></tr>
 <tr><td><a href="mod_md.html#mdmembers">MDMembers auto|manual</a></td><td> auto </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Définit si les alias de noms de domaines sont
 	automatiquement ajoutés.</td></tr>
-<tr class="odd"><td><a href="mod_md.html#mdmessagecmd">MDMessageCmd path-to-cmd optional-args</a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Gère les évènements pour les domaines gérés</td></tr>
+<tr class="odd"><td><a href="mod_md.html#mdmessagecmd">MDMessageCmd <var>path-to-cmd</var> <var>optional-args</var></a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Gère les évènements pour les domaines gérés</td></tr>
 <tr><td><a href="mod_md.html#mdmuststaple">MDMustStaple on|off</a></td><td> off </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Définit si les nouveaux certificats doivent avoir le
 	drapeau OCSP Must Staple activé.</td></tr>
 <tr class="odd"><td><a href="mod_md.html#mdnotifycmd">MDNotifyCmd <var>path</var> [ <var>args</var> ]</a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Lance un programme lorsqu'un domaine géré est opérationnel.</td></tr>
@@ -959,14 +961,14 @@ inactifs</td></tr>
 	gérés.</td></tr>
 <tr class="odd"><td><a href="mod_md.html#mdserverstatus">MDServerStatus on|off</a></td><td> on </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Définit si les informations à propos des domaines gérés
 	sont ajoutés ou non à server-status.</td></tr>
-<tr><td><a href="mod_md.html#mdstapleothers">MDStapleOthers on|off</a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Active l'agrafage pour les certificats non gérés par
+<tr><td><a href="mod_md.html#mdstapleothers">MDStapleOthers on|off</a></td><td> on </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Active l'agrafage pour les certificats non gérés par
 	mod_md.</td></tr>
-<tr class="odd"><td><a href="mod_md.html#mdstapling">MDStapling on|off</a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Active l'agrafage pour un ou plusieurs domaines.</td></tr>
-<tr><td><a href="mod_md.html#mdstaplingkeepresponse">MDStaplingKeepResponse duration</a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Contrôle la durée au bout de laquelle les anciennes
+<tr class="odd"><td><a href="mod_md.html#mdstapling">MDStapling on|off</a></td><td> off </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Active l'agrafage pour un ou plusieurs domaines.</td></tr>
+<tr><td><a href="mod_md.html#mdstaplingkeepresponse">MDStaplingKeepResponse <var>duration</var></a></td><td> 7d </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Contrôle la durée au bout de laquelle les anciennes
 	réponses doivent être supprimées.</td></tr>
-<tr class="odd"><td><a href="mod_md.html#mdstaplingrenewwindow">MDStaplingRenewWindow duration</a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Contrôle l'ancienneté des réponses OCSP au dela de laquelle
+<tr class="odd"><td><a href="mod_md.html#mdstaplingrenewwindow">MDStaplingRenewWindow <var>duration</var></a></td><td> 33% </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Contrôle l'ancienneté des réponses OCSP au dela de laquelle
 	ces dernières seront renouvelées.</td></tr>
-<tr><td><a href="mod_md.html#mdstoredir">MDStoreDir path</a></td><td> md </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Chemin dans le système de fichiers local du répertoire où
+<tr><td><a href="mod_md.html#mdstoredir">MDStoreDir <var>path</var></a></td><td> md </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Chemin dans le système de fichiers local du répertoire où
 	seront stockées les données à propos des domaines gérés.</td></tr>
 <tr class="odd"><td><a href="mod_md.html#mdwarnwindow">MDWarnWindow duration</a></td><td> 10% </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Définit la fenêtre de temps pendant laquelle vous serez
 	informé de l'expiration prochaine d'un certificat.</td></tr>
