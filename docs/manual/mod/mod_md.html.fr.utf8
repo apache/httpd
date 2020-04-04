@@ -279,10 +279,10 @@
 &lt;/MDomain&gt;</pre>
 
             <p>
-                et utilisez 'server-status' et/ou MDMessageCmd pour voir comment
-		tout cela fonctionne. Vous pourrez alors vérifier si
-		l'information d'agrafage est présente, sa durée de validité, son
-		origine et à quel moment elle sera rafraîchie.
+		et utilisez 'server-status' et/ou <code class="directive"><a href="#mdmessagecmd">MDMessageCmd</a></code> pour voir comment tout
+		cela fonctionne. Vous pourrez alors vérifier si l'information
+		d'agrafage est présente, sa durée de validité, son origine et à
+		quel moment elle sera rafraîchie.
             </p><p>
                 Si tout fonctionne comme vous le souhaitez, vous pouvez définir
 		cette configuration pour tous les certificats ou seulement vos
@@ -331,10 +331,12 @@
     </div>
 <div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><h3 class="directives">Directives</h3>
 <ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#mdactivationdelay">MDActivationDelay</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdbaseserver">MDBaseServer</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdcachallenges">MDCAChallenges</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdcertificateagreement">MDCertificateAgreement</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdcertificateauthority">MDCertificateAuthority</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mdcertificatecheck">MDCertificateCheck</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdcertificatefile">MDCertificateFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdcertificatekeyfile">MDCertificateKeyFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdcertificatemonitor">MDCertificateMonitor</a></li>
@@ -368,6 +370,21 @@
 <ul class="seealso">
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="mdactivationdelay" id="mdactivationdelay">Directive</a> <a name="MDActivationDelay" id="MDActivationDelay">MDActivationDelay</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDActivationDelay <var>duration</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.42 du serveur HTTP
+	Apache</td></tr>
+</table>
+            <p>
+            </p>
+        
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="mdbaseserver" id="mdbaseserver">Directive</a> <a name="MDBaseServer" id="MDBaseServer">MDBaseServer</a></h2>
 <table class="directive">
@@ -409,10 +426,11 @@
 		toute la configuration du serveur pour déterminer quelles
 		méthodes peuvent être utilisées.
             </p><p>
-                Si par exemple le serveur est en écoute sur le port 80, c'est la
+		Si par exemple le serveur est en écoute sur le port 80, c'est la
 		méthode 'http-01' qui sera disponible. Pour 'dns-01', une
-		commande 'MDChallengeDns01' définie sera requise. La méthode
-		'tls-alpn-01' est décrite ci-dessus dans 'https: Challenges'.
+		commande <code class="directive"><a href="#mdchallengedns01">MDChallengeDns01</a></code>
+		définie sera requise. La méthode 'tls-alpn-01' est décrite
+		ci-dessus dans 'https: Challenges'.
             </p><p>
                 Cette sélection automatique fonctionne pour la plupart des
 		configurations. Mais comme Apache est un serveur très puissant
@@ -421,12 +439,13 @@
 		écoute sur plusieurs adresses IP, certaines étant accessibles en
 		https: et d'autres non.
             </p><p>
-                Si vous définissez 'MDCAChallenges' directement, la sélection
-		automatique est désactivée. A la place, le module va utiliser la
-		liste de méthodes de négociation spécifiée pour dialoguer avec le
-		serveur ACME (un type de négociation doit aussi être proposé par
-		le serveur). Ces méthodes de négociation sont examinées dans
-		l'ordre selon lequel elles sont spécifiées.
+		Si vous définissez <code class="directive">MDCAChallenges</code>
+		directement, la sélection automatique est désactivée. A la
+		place, le module va utiliser la liste de méthodes de négociation
+		spécifiée pour dialoguer avec le serveur ACME (un type de
+		négociation doit aussi être proposé par le serveur). Ces
+		méthodes de négociation sont examinées dans l'ordre selon lequel
+		elles sont spécifiées.
              </p>
 
         
@@ -482,10 +501,25 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="mdcertificatecheck" id="mdcertificatecheck">Directive</a> <a name="MDCertificateCheck" id="MDCertificateCheck">MDCertificateCheck</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDCertificateCheck <var>name</var> <var>url</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.42 du serveur HTTP
+	Apache</td></tr>
+</table>
+            <p>
+            </p>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="mdcertificatefile" id="mdcertificatefile">Directive</a> <a name="MDCertificateFile" id="MDCertificateFile">MDCertificateFile</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit un fichier de certificat statique pour le domaine géré.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDCertificateFile path-to-pem-file</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDCertificateFile <var>path-to-pem-file</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
@@ -519,7 +553,7 @@
 		"always", et le module obtiendra un nouveau cerificat avant que
 		celui du fichier considéré n'arrive à expiration. Une fois le
 		certificat renouvelé, vous pouvez supprimer la directive
-		<code class="directive"><a href="#mdcertificatefile">MDCertificateFile</a></code> et
+		<code class="directive">MDCertificateFile</code> et
 		recharger la configuration.
             </p><p>
                 Une autre application est le renouvellement de vos certificats
@@ -534,7 +568,7 @@
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit une clé privée statique pour le certificat
 	statique.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDCertificateKeyFile path-to-file</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDCertificateKeyFile <var>path-to-file</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
@@ -554,7 +588,7 @@
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'URL d'un moniteur d'enregistrement de certificat.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDCertificateMonitor name url</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>crt.sh https://crt.sh?q=</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDCertificateMonitor crt.sh https://crt.sh?q=</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
@@ -628,7 +662,7 @@
 <div class="directive-section"><h2><a name="mdchallengedns01" id="mdchallengedns01">Directive</a> <a name="MDChallengeDns01" id="MDChallengeDns01">MDChallengeDns01</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDChallengeDns01 path-to-command</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDChallengeDns01 <var>path-to-command</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
@@ -657,7 +691,7 @@
 <div class="directive-section"><h2><a name="mdcontactemail" id="mdcontactemail">Directive</a> <a name="MDContactEmail" id="MDContactEmail">MDContactEmail</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDContactEmail address</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDContactEmail <var>address</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
@@ -667,11 +701,11 @@
 		pour le protocole ACME. Actuellement, Let's Encrypt exige une
 		adresse Email qu'il utilisera pour vous informer des
 		renouvellements de certificats ou de toute modification des
-		conditions d'utilisation. Pour obtenir cette adresse, mod_md
-		utilise l'email spécifiée par la directive MDContactEmail dans
+		conditions d'utilisation. Pour obtenir cette adresse, <code class="module"><a href="../mod/mod_md.html">mod_md</a></code>
+		utilise l'email spécifiée par la directive <code class="directive">MDContactEmail</code> dans
 		votre configuration de httpd ; veillez par conséquent à bien
 		spécifier une adresse correcte à ce niveau. Si la directive
-		MDContactEmail n'est pas définie, mod_md utilisera l'email
+		<code class="directive">MDContactEmail</code> n'est pas définie, <code class="module"><a href="../mod/mod_md.html">mod_md</a></code> utilisera l'email
 		spécifiée via la directive <code class="directive"><a href="../mod/core.html#serveradmin">ServerAdmin</a></code>.
             </p>
         
@@ -701,10 +735,11 @@
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
 </table>
-            <p>Cette directive permet de spécifier un serveur http mandataire
-	    pour se connecter à l'autorité de certification. Vous devez la
-	    définir si votre serveur web ne peut atteindre internet que via un
-	    serveur mandataire.
+	    <p>Cette directive permet de spécifier un serveur http mandataire
+	    pour se connecter à l'autorité de certification spécifiée via
+	    <code class="directive"><a href="#mdcertificateauthority">MDCertificateAuthority</a></code>. Vous
+	    devez la définir si votre serveur web ne peut atteindre internet que
+	    via un serveur mandataire.
             </p>
         
 </div>
@@ -719,8 +754,8 @@
 </table>
             <p>
 	    Plutôt que de lister tous les noms DNS sur la même ligne, vous
-	    pouvez utiliser la directive <code class="directive"><a href="#mdmember">MDMember</a></code> pour ajouter des noms d'hôte à
-	    un domaine géré.
+	    pouvez utiliser la directive <code class="directive">MDMember</code> pour
+	    ajouter des noms d'hôte à un domaine géré.
             </p>
             <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">&lt;MDomain example.org&gt;
     MDMember www.example.org
@@ -757,7 +792,7 @@
 <div class="directive-section"><h2><a name="mdmessagecmd" id="mdmessagecmd">Directive</a> <a name="MDMessageCmd" id="MDMessageCmd">MDMessageCmd</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Gère les évènements pour les domaines gérés</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDMessageCmd path-to-cmd optional-args</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDMessageCmd <var>path-to-cmd</var> <var>optional-args</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
@@ -773,14 +808,12 @@
                 Il s'agit d'une version plus souple de la directive
 		<code class="directive"><a href="#mdnotifycmd">MDNotifyCmd</a></code>.
             </p>
-            <div class="example"><h3>Exemple</h3><p><code>
-MDMessageCmd /etc/apache/md-message
+            <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">MDMessageCmd /etc/apache/md-message</pre>
+<p><code>
 
 # sera invoquée sous la forme "/etc/apache/md-message renewed mydomain.com"
 # lorsqu'un nouveau certificat sera disponible pour le domaine mydomain.com
-                </code></p><pre class="prettyprint lang-config">
-                </pre>
-</div>
+            </code></p></div>
             <p>
 		Le programme ne doit pas être bloquant car le module attend
 		qu'il se termine. Un code de retour autre que 0 doit indiquer
@@ -802,14 +835,15 @@ MDMessageCmd /etc/apache/md-message
 		se trouve dans la zone intermédiaire du magasin MD. Il sera
 		activé au prochain restart/reload du serveur.
             </p><p>
-                'installed' indique qu'un nouveau certificat a été transféré
+		'installed' indique qu'un nouveau certificat a été transféré
 		depuis la zone intermédiaire vers la zone des domaines du
 		magasin MD. Cet évènement se produit lors d'un restart/reload du
-		serveur. A la différence des autres commandes, MDMessageCmd
-		s'exécute avec les permissions de root (sur les systèmes *nix)
-		et a donc accès aux fichiers de certificats (et aux clés). Les
-		certificats nécessaires à d'autres applications ou possédant des
-		formats différents peuvent être traités suite à cet évènement.		
+		serveur. A la différence des autres commandes,
+		<code class="directive">MDMessageCmd</code> s'exécute avec les
+		permissions de root (sur les systèmes *nix) et a donc accès aux
+		fichiers de certificats (et aux clés). Les certificats
+		nécessaires à d'autres applications ou possédant des formats
+		différents peuvent être traités suite à cet évènement.		
             </p>
         
 </div>
@@ -871,14 +905,13 @@ MDMessageCmd /etc/apache/md-message
 		les autres directives MD). Si un domaine nécessite une
 		configuration particulière, utilisez la directive <code class="directive"><a href="#mdomainset">&lt;MDomainSet&gt;</a></code>.
             </p><p>
-                Deux définitions supplémentaires sont nécessaires pour un domaine
-		géré : une adresse Email de contact (via <code class="directive"><a href="#mdcontactemail">MDContactEmail</a></code> ou <code class="directive"><a href="../mod/core.html#serveradmin">ServerAdmin</a></code>) et
-		<code class="directive"><a href="#mdcertificateagreement">MDCertificateAgreement</a></code>.
-		L'adresse électronique du <code class="directive"><a href="../mod/core.html#serveradmin">ServerAdmin</a></code> permet de s'enregistrer
-		auprès de l'autorité de certification (par défaut Let's
-		Encrypt). L'autorité de certification l'utilisera pour vous
-		informer à propos du statut de vos certificats ou d'éventuelles
-		modifications de ses services.
+		Deux définitions supplémentaires sont nécessaires pour un
+		domaine géré : une adresse Email de contact (via <code class="directive"><a href="#mdcontactemail">MDContactEmail</a></code> ou <code class="directive"><a href="../mod/core.html#serveradmin">ServerAdmin</a></code>) et <code class="directive"><a href="#mdcertificateagreement">MDCertificateAgreement</a></code>.  L'adresse
+		électronique du <code class="directive"><a href="../mod/core.html#serveradmin">ServerAdmin</a></code>
+		permet de s'enregistrer auprès de l'autorité de certification
+		(par défaut Let's Encrypt). L'autorité de certification
+		l'utilisera pour vous informer à propos du statut de vos
+		certificats ou d'éventuelles modifications de ses services.
             </p><p>
                 La seconde définition, <code class="directive"><a href="#mdcertificateagreement">MDCertificateAgreement</a></code> doit avoir
 		pour valeur "accepted". Vous confirmez ainsi que vous acceptez
@@ -1232,14 +1265,16 @@ MDRenewWindow 10%</pre>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active l'agrafage pour les certificats non gérés par
 	mod_md.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDStapleOthers on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>on</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDStapleOthers on</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.42 du serveur HTTP
+	Apache</td></tr>
 </table>
             <p>
-                Cette directive n'a d'effet que si `MDStapling` est activée.
-		Elle permet de contrôler si `mod_md` doit aussi fournir les
+		Cette directive n'a d'effet que si <code class="directive"><a href="#mdstapling">MDStapling</a></code> est activée.  Elle permet
+		de contrôler si <code class="module"><a href="../mod/mod_md.html">mod_md</a></code> doit aussi fournir les
 		informations d'agrafage pour les certificats qu'il ne gère pas
 		directement (autrement dit pour les certificats non renouvelés
 		via le protocole ACME).
@@ -1251,29 +1286,31 @@ MDRenewWindow 10%</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active l'agrafage pour un ou plusieurs domaines.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDStapling on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDStapling off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.42 du serveur HTTP
+	Apache</td></tr>
 </table>
             <p>
-                mod_md permet l'obtention des informations d'agrafage OCSP.
-		Cette fonctionnalité est une alternative à celle fournie par
-		'mod_ssl'. Elle est désactivée par défaut à des fins de
-		compatibilité ascendante.
+		<code class="module"><a href="../mod/mod_md.html">mod_md</a></code> permet l'obtention des informations
+		d'agrafage OCSP.  Cette fonctionnalité est une alternative à
+		celle fournie par <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>. Elle est désactivée
+		par défaut à des fins de compatibilité ascendante.
             </p><p>
                 La fonctionnalité peut être activée pour tous les certificats du
-		serveur ou pour un domaine géré seulement, ce qui aura pour effet
+		serveur ou pour un <code class="directive"><a href="#mdomain">MDomain</a></code> seulement, ce qui aura pour effet
 		de remplacer toute configuration d'agrafage au niveau de
-		`mod_ssl` pour ce(s) domaine(s). Lorsqu'elle est désactivée,
-		l'agrafage de 'mod_ssl' se chargera du travail (s'il a été
+		<code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> pour ce(s) domaine(s). Lorsqu'elle est désactivée,
+		l'agrafage de <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> se chargera du travail (s'il a été
 		lui-même activé, bien entendu). Ceci permet de basculer de
 		manière graduée d'une implémentation à l'autre.
             </p><p>
-                L'agrafage fonctionne aussi pour les domaines non gérés par
-		mod_md (voir à ce sujet la directive MDStapleOthers). En fait,
-		l'agrafage OCSP peut très bien être utilisé en l'absence de tout
-		certificat géré via le protocole ACME.
+		L'agrafage fonctionne aussi pour les domaines non gérés par
+		<code class="module"><a href="../mod/mod_md.html">mod_md</a></code> (voir à ce sujet la directive <code class="directive"><a href="#mdstapleothers">MDStapleOthers</a></code>). En fait, l'agrafage
+		OCSP peut très bien être utilisé en l'absence de tout certificat
+		géré via le protocole ACME.
             </p>
         
 </div>
@@ -1282,11 +1319,13 @@ MDRenewWindow 10%</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contrôle la durée au bout de laquelle les anciennes
 	réponses doivent être supprimées.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDStaplingKeepResponse duration</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>7d</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDStaplingKeepResponse <var>duration</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDStaplingKeepResponse 7d</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.42 du serveur HTTP
+	Apache</td></tr>
 </table>
             <p>
                 Cette directive permet de spécifier la durée au bout de laquelle
@@ -1305,15 +1344,18 @@ MDRenewWindow 10%</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contrôle l'ancienneté des réponses OCSP au dela de laquelle
 	ces dernières seront renouvelées.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDStaplingRenewWindow duration</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>33%</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDStaplingRenewWindow <var>duration</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDStaplingRenewWindow 33%</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.42 du serveur HTTP
+	Apache</td></tr>
 </table>
             <p>
-                Si la durée de validité d'un réponse OCSP passe en dessous de
-		'duration', mod_md va tenter de la renouveler.
+		Si la durée de validité d'un réponse OCSP passe en dessous de
+		<var>duration</var>, <code class="module"><a href="../mod/mod_md.html">mod_md</a></code> va tenter de la
+		renouveler.
             </p><p>
                 La CA à l'origine du certificat fournit aussi en général le
 		service de réponse OCSP et détermine la durée de validité de sa
@@ -1356,7 +1398,7 @@ MDRenewWindow 10%</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Chemin dans le système de fichiers local du répertoire où
 	seront stockées les données à propos des domaines gérés.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDStoreDir path</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDStoreDir <var>path</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDStoreDir md</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
