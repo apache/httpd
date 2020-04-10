@@ -180,7 +180,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         - http://svn.apache.org/r1875769
         - http://svn.apache.org/r1875811
      2.4.x patch: svn merge -c 1534995,1560482,1728779,1805491,1861528,1868016,1874470,1874602,1875769,1875811 ^/httpd/httpd/trunk . 
-     +1: jailletc36
+     +1: jailletc36, gbechis
 
   *) core: default_handler: cleanup outputed brigade before leaving.
      trunk patch:
