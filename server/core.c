@@ -2532,6 +2532,7 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
     }
     else if (strcmp(cmd->path, "/") != 0)
     {
+        int run_mode = ap_state_query(AP_SQ_RUN_MODE);
         char *newpath;
 
         /*
@@ -2542,6 +2543,14 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
         if (rv != APR_SUCCESS && rv != APR_EPATHWILD) {
             return apr_pstrcat(cmd->pool, "<Directory \"", cmd->path,
                                "\"> path is invalid.", NULL);
+        }
+
+        if (run_mode == AP_SQ_RM_CONFIG_TEST &&
+            !ap_is_directory(cmd->temp_pool, cmd->path)) {
+            ap_log_perror(APLOG_MARK, APLOG_STARTUP, 0,
+                          cmd->temp_pool, APLOGNO(10234)
+                          "Warning: <Directory \"%s\"> does not exist or is not a directory",
+                          cmd->path);
         }
 
         cmd->path = newpath;

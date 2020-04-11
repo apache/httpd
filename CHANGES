@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) configtest: Issue a warning for non-existent directories in <Directory> config
+     sections. PR63079. [Stephane Blondon <stephane.blondon gmail.com>].
+
   *) mod_proxy_http: Fix random memory-corruption in case of an error while
      reading a response from the backend.
      PR 64234 [Ruediger Pluem, Barnim Dzwillo <dzwillo@strato.de>]
