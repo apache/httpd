@@ -625,6 +625,7 @@
  * 20200331.0 (2.5.1-dev)  Remove ap_request_core_filter() and
  *                         ap_request_core_filter_handle.
  * 20200331.1 (2.5.1-dev)  Add flushed:1 to request_rec
+ * 20200331.2 (2.5.1-dev)  Add ap_proxy_should_override to mod_proxy.h
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */

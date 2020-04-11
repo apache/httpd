@@ -201,7 +201,6 @@ typedef struct {
     unsigned int ppinherit_set:1;
 } proxy_server_conf;
 
-
 typedef struct {
     const char *p;            /* The path */
     ap_regex_t  *r;            /* Is this a regex? */
@@ -242,6 +241,8 @@ typedef struct {
 
     unsigned int forward_100_continue:1;
     unsigned int forward_100_continue_set:1;
+
+    apr_array_header_t *error_override_codes;
 } proxy_dir_conf;
 
 /* if we interpolate env vars per-request, we'll need a per-request
@@ -1277,6 +1278,15 @@ PROXY_DECLARE(int) ap_proxy_is_socket_connected(apr_socket_t *socket);
  * @return  number of workers to allocate in the scoreboard
  */
 int ap_proxy_lb_workers(void);
+
+/**
+ * Returns 1 if a response with the given status should be overridden.
+ *
+ * @param conf   proxy directory configuration
+ * @param code   http status code
+ * @return       1 if code is considered an error-code, 0 otherwise
+ */
+PROXY_DECLARE(int) ap_proxy_should_override(proxy_dir_conf *conf, int code);
 
 /**
  * Return the port number of a known scheme (eg: http -> 80).

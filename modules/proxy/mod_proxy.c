@@ -1583,6 +1583,7 @@ static void *create_proxy_dir_config(apr_pool_t *p, char *dummy)
     new->raliases = apr_array_make(p, 10, sizeof(struct proxy_alias));
     new->cookie_paths = apr_array_make(p, 10, sizeof(struct proxy_alias));
     new->cookie_domains = apr_array_make(p, 10, sizeof(struct proxy_alias));
+    new->error_override_codes = apr_array_make(p, 10, sizeof(int));
     new->preserve_host_set = 0;
     new->preserve_host = 0;
     new->interpolate_env = -1; /* unset */
@@ -1613,6 +1614,8 @@ static void *merge_proxy_dir_config(apr_pool_t *p, void *basev, void *addv)
         = apr_array_append(p, base->cookie_paths, add->cookie_paths);
     new->cookie_domains
         = apr_array_append(p, base->cookie_domains, add->cookie_domains);
+    new->error_override_codes
+        = apr_array_append(p, base->error_override_codes, add->error_override_codes);
     new->interpolate_env = (add->interpolate_env == -1) ? base->interpolate_env
                                                         : add->interpolate_env;
     new->preserve_host = (add->preserve_host_set == 0) ? base->preserve_host
@@ -2123,14 +2126,39 @@ static const char *
 }
 
 static const char *
-    set_proxy_error_override(cmd_parms *parms, void *dconf, int flag)
+    set_proxy_error_override(cmd_parms *parms, void *dconf, const char *arg)
 {
     proxy_dir_conf *conf = dconf;
 
-    conf->error_override = flag;
-    conf->error_override_set = 1;
+    if (strcasecmp(arg, "Off") == 0) {
+        conf->error_override = 0;
+        conf->error_override_set = 1;
+    }
+    else if (strcasecmp(arg, "On") == 0) {
+        conf->error_override = 1;
+        conf->error_override_set = 1;
+    }
+    else if (conf->error_override_set == 1) {
+        int *newcode;
+        int argcode;
+        if (!apr_isdigit(arg[0]))
+            return "ProxyErrorOverride: status codes to intercept must be numeric";
+        if (!conf->error_override) 
+            return "ProxyErrorOverride: status codes must follow a value of 'on'";
+
+        argcode = strtol(arg, NULL, 10);
+        if (!ap_is_HTTP_ERROR(argcode))
+            return "ProxyErrorOverride: status codes to intercept must be valid HTTP Status Codes >=400 && <600";
+
+        newcode = apr_array_push(conf->error_override_codes);
+        *newcode = argcode;
+    }
+    else
+        return "ProxyErrorOverride first parameter must be one of: off | on";
+
     return NULL;
 }
+
 static const char *
    add_proxy_http_headers(cmd_parms *parms, void *dconf, int flag)
 {
@@ -2714,7 +2742,7 @@ static const command_rec proxy_cmds[] =
      "The default intranet domain name (in absence of a domain in the URL)"),
     AP_INIT_TAKE1("ProxyVia", set_via_opt, NULL, RSRC_CONF,
      "Configure Via: proxy header header to one of: on | off | block | full"),
-    AP_INIT_FLAG("ProxyErrorOverride", set_proxy_error_override, NULL, RSRC_CONF|ACCESS_CONF,
+    AP_INIT_ITERATE("ProxyErrorOverride", set_proxy_error_override, NULL, RSRC_CONF|ACCESS_CONF,
      "use our error handling pages instead of the servers' we are proxying"),
     AP_INIT_FLAG("ProxyPreserveHost", set_preserve_host, NULL, RSRC_CONF|ACCESS_CONF,
      "on if we should preserve host header while proxying"),

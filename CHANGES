@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_proxy: Allow ProxyErrorOverride to be restricted to specific status 
+     codes.  PR63628. [Martin Drößler <mail martindroessler.de>]
+
   *) configtest: Issue a warning for non-existent directories in <Directory> config
      sections. PR63079. [Stephane Blondon <stephane.blondon gmail.com>].
 
