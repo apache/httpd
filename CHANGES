@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.47
 
+  *) mod_proxy: Allow ProxyErrorOverride to be restricted to specific status 
+     codes.  PR63628. [Martin Drößler <mail martindroessler.de>]
+
   *) core: Ensure that aborted connections are logged as such. PR 62823
      [Arnaud Grandville <contact@grandville.net>]
 

@@ -3401,6 +3401,33 @@ int ap_proxy_lb_workers(void)
     return lb_workers_limit;
 }
 
+static int error_code_overridden(proxy_dir_conf *conf, int code)
+{
+    int i;
+    int *list = (int *) conf->error_override_codes->elts;
+
+    if (apr_is_empty_array(conf->error_override_codes))
+        return 0;
+
+    for (i = 0; i < conf->error_override_codes->nelts; i++) {
+        if (code == list[i])
+            return 1;
+    }
+
+    return 0;
+}
+
+PROXY_DECLARE(int) ap_proxy_should_override(proxy_dir_conf *conf, int code)
+{
+    if (!conf->error_override) 
+        return 0;
+
+    if (apr_is_empty_array(conf->error_override_codes))
+        return ap_is_HTTP_ERROR(code);
+
+    return error_code_overridden(conf, code);
+}
+
 PROXY_DECLARE(void) ap_proxy_backend_broke(request_rec *r,
                                            apr_bucket_brigade *brigade)
 {
