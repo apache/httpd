@@ -2681,14 +2681,14 @@ the server configuration files</description>
 <name>KeepAliveTimeout</name>
 <description>Amount of time the server will wait for subsequent
 requests on a persistent connection</description>
-<syntax>KeepAliveTimeout <var>num</var>[ms]</syntax>
+<syntax>KeepAliveTimeout <var>num-seconds</var>|<var>num-milliseconds</var>ms</syntax>
 <default>KeepAliveTimeout 5</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
     <p>The number of seconds Apache httpd will wait for a subsequent
-    request before closing the connection. By adding a postfix of ms the
+    request before closing the connection. By adding a postfix of 'ms' the
     timeout can be also set in milliseconds. Once a request has been
     received, the timeout value specified by the
     <directive module="core">Timeout</directive> directive applies.</p>
