@@ -685,7 +685,8 @@ static int process_dir(char *path, apr_pool_t *pool, apr_off_t *nodes)
         }
 
         if (info.filetype == APR_DIR) {
-            char *dirpath=apr_pstrdup(p, d->basename);
+            char *dirpath = apr_pstrdup(p, d->basename);
+
             if (process_dir(d->basename, pool, nodes)) {
                 return 1;
             }
@@ -695,7 +696,7 @@ static int process_dir(char *path, apr_pool_t *pool, apr_off_t *nodes)
              * If it fails, it likely means there was something else there.
              */
             if (deldirs && !dryrun) {
-                apr_dir_remove(dirpath,p);
+                apr_dir_remove(dirpath, p);
             }
             continue;
         }
