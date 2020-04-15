@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_ssl: Fix memory leak in stapling code. PR63687. [Stefan Eissing]
+
   *) mod_proxy: Allow ProxyErrorOverride to be restricted to specific status 
      codes.  PR63628. [Martin Drößler <mail martindroessler.de>]
 

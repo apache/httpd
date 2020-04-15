@@ -130,6 +130,7 @@ int ssl_stapling_init_cert(server_rec *s, apr_pool_t *p, apr_pool_t *ptemp,
     X509 *issuer = NULL;
     OCSP_CERTID *cid = NULL;
     STACK_OF(OPENSSL_STRING) *aia = NULL;
+    int rv = 1; /* until further notice */
 
     if (x == NULL)
         return 0;
@@ -154,16 +155,18 @@ int ssl_stapling_init_cert(server_rec *s, apr_pool_t *p, apr_pool_t *ptemp,
             SSL_CTX_set_tlsext_status_cb(mctx->ssl_ctx, stapling_cb);
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(10177) "OCSP stapling added via hook");
         }
-        return 1;
+        goto cleanup;
     }
     
     if (mctx->stapling_enabled != TRUE) {
         /* mod_ssl's own implementation is not enabled */
-        return 1;
+        goto cleanup;
     }
     
-    if (X509_digest(x, EVP_sha1(), idx, NULL) != 1)
-        return 0;
+    if (X509_digest(x, EVP_sha1(), idx, NULL) != 1) {
+        rv = 0;
+        goto cleanup;
+    }
 
     cinf = apr_hash_get(stapling_certinfo, idx, sizeof(idx));
     if (cinf) {
@@ -177,18 +180,18 @@ int ssl_stapling_init_cert(server_rec *s, apr_pool_t *p, apr_pool_t *ptemp,
                            APLOGNO(02814) "ssl_stapling_init_cert: no OCSP URI "
                            "in certificate and no SSLStaplingForceURL "
                            "configured for server %s", mctx->sc->vhost_id);
-            return 0;
+            rv = 0;
         }
-        return 1;
+        goto cleanup;
     }
 
     cid = OCSP_cert_to_id(NULL, x, issuer);
-    X509_free(issuer);
     if (!cid) {
         ssl_log_xerror(SSLLOG_MARK, APLOG_ERR, 0, ptemp, s, x, APLOGNO(02815)
                        "ssl_stapling_init_cert: can't create CertID "
                        "for OCSP request");
-        return 0;
+        rv = 0;
+        goto cleanup;
     }
 
     aia = X509_get1_ocsp(x);
@@ -197,7 +200,8 @@ int ssl_stapling_init_cert(server_rec *s, apr_pool_t *p, apr_pool_t *ptemp,
         ssl_log_xerror(SSLLOG_MARK, APLOG_ERR, 0, ptemp, s, x,
                        APLOGNO(02218) "ssl_stapling_init_cert: no OCSP URI "
                        "in certificate and no SSLStaplingForceURL set");
-        return 0;
+        rv = 0;
+        goto cleanup;
     }
 
     /* At this point, we have determined that there's something to store */
@@ -218,8 +222,10 @@ int ssl_stapling_init_cert(server_rec *s, apr_pool_t *p, apr_pool_t *ptemp,
                    mctx->sc->vhost_id);
 
     apr_hash_set(stapling_certinfo, cinf->idx, sizeof(cinf->idx), cinf);
-    
-    return 1;
+
+cleanup:
+    X509_free(issuer);
+    return rv;
 }
 
 static certinfo *stapling_get_certinfo(server_rec *s, X509 *x, modssl_ctx_t *mctx,
