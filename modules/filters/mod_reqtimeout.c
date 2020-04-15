@@ -436,8 +436,8 @@ static int reqtimeout_before_body(request_rec *r)
         /* not configured for this connection */
         return OK;
     }
-    cfg = ap_get_module_config(r->connection->base_server->module_config,
-                               &reqtimeout_module);
+    cfg = ap_get_module_config(r->server->module_config,
+                              &reqtimeout_module);
     AP_DEBUG_ASSERT(cfg != NULL);
 
     ccfg->type = "body";
