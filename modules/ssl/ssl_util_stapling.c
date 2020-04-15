@@ -149,7 +149,7 @@ int ssl_stapling_init_cert(server_rec *s, apr_pool_t *p, apr_pool_t *ptemp,
         return 1;
     }
 
-    if (ssl_run_init_stapling_status(s, p, x, issuer) == APR_SUCCESS) {
+    if (ssl_run_init_stapling_status(s, p, x, issuer) == OK) {
         /* Someone's taken over or mod_ssl's own implementation is not enabled */
         if (mctx->stapling_enabled != TRUE) {
             SSL_CTX_set_tlsext_status_cb(mctx->ssl_ctx, stapling_cb);

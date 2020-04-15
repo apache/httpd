@@ -52,7 +52,7 @@ static int staple_here(md_srv_conf_t *sc)
             && md_config_geti(sc, MD_CONFIG_STAPLE_OTHERS));
 }
 
-apr_status_t md_ocsp_init_stapling_status(server_rec *s, apr_pool_t *p, 
+int md_ocsp_init_stapling_status(server_rec *s, apr_pool_t *p, 
                                           X509 *cert, X509 *issuer)
 {
     md_srv_conf_t *sc;
