@@ -1,0 +1,18 @@
+ARG CONTAINER
+ARG APR_VERSION
+ARG APU_VERSION
+ARG APR_CONFIG
+ARG APU_CONFIG
+FROM ${CONTAINER}
+RUN yum -y install git gcc make autoconf automake libtool \
+    subversion /usr/bin/python openssl-devel systemd-devel \
+    zlib-devel brotli-devel lua-devel pcre2-devel libuuid-devel \
+    libxml2-devel pkgconfig expat-devel perl-App-cpanminus \
+    'perl(Net::SSL)' 'perl(LWP::Protocol::https)' 'perl(ExtUtils::Embed)' 'perl(Test::More)' 'perl(AnyEvent)' 'perl(DateTime)' 'perl(HTTP::DAV)' 'perl(Protocol::HTTP2::Client)' 'perl(FCGI)' 'perl(Apache::Test)' && \
+    yum clean all
+RUN useradd -l -m build
+USER build
+RUN git clone --depth=1 https://github.com/apache/httpd.git $HOME/build/httpd
+WORKDIR /home/build/build/httpd
+RUN test/travis_before_linux.sh
+ENV BUILDCONFIG="--with-apr=$HOME/build/apr-${APR_VERSION} --with-apr-util=$HOME/build/apr-util-${APU_VERSION}"
