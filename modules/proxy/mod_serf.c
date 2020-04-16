@@ -418,6 +418,7 @@ static int drive_serf(request_rec *r, serf_config_t *conf)
      * from the main serf context in the async mpm mode.
      */
     apr_pool_create(&pool, r->pool);
+    apr_pool_tag(pool, "mod_serf_drive");
     if (strcmp(conf->url.scheme, "cluster") == 0) {
         int rc;
         ap_serf_cluster_provider_t *cp;
@@ -955,6 +956,7 @@ static int hb_list_servers(void *baton,
     const char *path = apr_table_get(params, "path");
 
     apr_pool_create(&tpool, r->pool);
+    apr_pool_tag(tpool, "mod_serf_hb");
 
     path = ap_server_root_relative(tpool, path);
 

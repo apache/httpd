@@ -112,6 +112,7 @@ static void* APR_THREAD_FUNC wd_worker(apr_thread_t *thread, void *data)
     int probed = 0;
     int inited = 0;
     int mpmq_s = 0;
+    apr_pool_t *ctx = NULL;
 
     w->pool = apr_thread_pool_get(thread);
     w->is_running = 1;
@@ -165,8 +166,8 @@ static void* APR_THREAD_FUNC wd_worker(apr_thread_t *thread, void *data)
                      w->singleton ? "Singleton " : "", w->name);
         apr_time_clock_hires(w->pool);
         if (wl) {
-            apr_pool_t *ctx = NULL;
             apr_pool_create(&ctx, w->pool);
+            apr_pool_tag(ctx, "wd_running");
             while (wl && w->is_running) {
                 /* Execute watchdog callback */
                 wl->status = (*wl->callback_fn)(AP_WATCHDOG_STATE_STARTING,
@@ -183,7 +184,6 @@ static void* APR_THREAD_FUNC wd_worker(apr_thread_t *thread, void *data)
 
     /* Main execution loop */
     while (w->is_running) {
-        apr_pool_t *ctx = NULL;
         apr_time_t curr;
         watchdog_list_t *wl = w->callbacks;
 
@@ -202,8 +202,10 @@ static void* APR_THREAD_FUNC wd_worker(apr_thread_t *thread, void *data)
             if (wl->status == APR_SUCCESS) {
                 wl->step += (apr_time_now() - curr);
                 if (wl->step >= wl->interval) {
-                    if (!ctx)
+                    if (!ctx) {
                         apr_pool_create(&ctx, w->pool);
+                        apr_pool_tag(ctx, "wd_running");
+                    }
                     wl->step = 0;
                     /* Execute watchdog callback */
                     wl->status = (*wl->callback_fn)(AP_WATCHDOG_STATE_RUNNING,
@@ -224,8 +226,10 @@ static void* APR_THREAD_FUNC wd_worker(apr_thread_t *thread, void *data)
              */
             w->step += (apr_time_now() - curr);
             if (w->step >= wd_interval) {
-                if (!ctx)
+                if (!ctx) {
                     apr_pool_create(&ctx, w->pool);
+                    apr_pool_tag(ctx, "wd_running");
+                }
                 w->step = 0;
                 /* Run watchdog step hook */
                 ap_run_watchdog_step(wd_server_conf->s, w->name, ctx);
@@ -441,6 +445,7 @@ static int wd_post_config_hook(apr_pool_t *pconf, apr_pool_t *plog,
         if (!(wd_server_conf = apr_pcalloc(ppconf, sizeof(wd_server_conf_t))))
             return APR_ENOMEM;
         apr_pool_create(&wd_server_conf->pool, ppconf);
+        apr_pool_tag(wd_server_conf->pool, "wd_server_conf");
         apr_pool_userdata_set(wd_server_conf, pk, apr_pool_cleanup_null, ppconf);
     }
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(010033)

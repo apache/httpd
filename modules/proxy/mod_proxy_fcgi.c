@@ -947,6 +947,7 @@ static int fcgi_do_request(apr_pool_t *p, request_rec *r,
     }
 
     apr_pool_create(&temp_pool, r->pool);
+    apr_pool_tag(temp_pool, "proxy_fcgi_do_request");
 
     /* Step 2: Send Environment via FCGI_PARAMS */
     rv = send_environment(conn, r, temp_pool, request_id);

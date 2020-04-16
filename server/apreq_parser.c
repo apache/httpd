@@ -107,6 +107,7 @@ APREQ_DECLARE(apr_status_t) apreq_pre_initialize(apr_pool_t *pool)
     status = apr_pool_create(&default_parser_pool, pool);
     if (status != APR_SUCCESS)
         return status;
+    apr_pool_tag(default_parser_pool, "apreq_default_parser");
 
     apr_pool_cleanup_register(default_parser_pool, NULL,
                               apreq_parsers_cleanup,

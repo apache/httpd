@@ -1517,6 +1517,7 @@ static void output_directories(struct ent **ar, int n,
     char *breakrow = "";
 
     apr_pool_create(&scratch, r->pool);
+    apr_pool_tag(scratch, "autoindex_scratch");
 
     name_width = d->name_width;
     desc_width = d->desc_width;

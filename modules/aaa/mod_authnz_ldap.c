@@ -481,6 +481,7 @@ static authn_ldap_request_t* build_request_config(request_rec *r)
         (authn_ldap_request_t *)apr_pcalloc(r->pool, sizeof(authn_ldap_request_t));
     ap_set_module_config(r->request_config, &authnz_ldap_module, req);
     apr_pool_create(&(req->ldc_pool), r->pool);
+    apr_pool_tag(req->ldc_pool, "authn_ldap_req_ldc"):
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01740)
                  "ldap authorize: Creating LDAP req structure");
     return req;

@@ -1038,6 +1038,7 @@ static int sct_daemon(server_rec *s_main)
 
     /* ptemp - temporary pool for refresh cycles */
     apr_pool_create(&ptemp, pdaemon);
+    apr_pool_tag(ptemp, "sct_daemon_refresh");
 
     while (!daemon_should_exit) {
         sct_daemon_cycle(sconf, s_main, ptemp, DAEMON_NAME);
@@ -1062,6 +1063,7 @@ static int daemon_start(apr_pool_t *p, server_rec *main_server,
     else if (daemon_pid == 0) {
         if (pdaemon == NULL) {
             apr_pool_create(&pdaemon, p);
+            apr_pool_tag(pdaemon, "sct_daemon");
         }
         exit(sct_daemon(main_server) > 0 ? DAEMON_STARTUP_ERROR : -1);
     }
@@ -1091,6 +1093,7 @@ static void *sct_daemon_thread(apr_thread_t *me, void *data)
 
     /* ptemp - temporary pool for refresh cycles */
     apr_pool_create(&ptemp, pdaemon);
+    apr_pool_tag(ptemp, "sct_daemon_thread");
 
     while (1) {
         if ((rv = ap_mpm_query(AP_MPMQ_MPM_STATE, &mpmq_s)) != APR_SUCCESS) {
@@ -1117,6 +1120,7 @@ static int daemon_thread_start(apr_pool_t *pconf, server_rec *s_main)
     apr_status_t rv;
 
     apr_pool_create(&pdaemon, pconf);
+    apr_pool_tag(pdaemon, "sct_daemon");
     rv = apr_thread_create(&daemon_thread, NULL, sct_daemon_thread, s_main,
                            pconf);
     if (rv != APR_SUCCESS) {
@@ -1260,6 +1264,7 @@ static int ssl_ct_post_config(apr_pool_t *pconf, apr_pool_t *plog,
         if (!sconf->db_log_config) {
             /* log config db in separate pool that can be cleared */
             apr_pool_create(&sconf->db_log_config_pool, pconf);
+            apr_pool_tag(sconf->db_log_config_pool, "sct_db_log_config");
             sconf->db_log_config =
                 apr_array_make(sconf->db_log_config_pool, 2,
                                sizeof(ct_log_config *));

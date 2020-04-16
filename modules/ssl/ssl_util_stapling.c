@@ -515,6 +515,7 @@ static BOOL stapling_renew_response(server_rec *s, modssl_ctx_t *mctx, SSL *ssl,
 
     /* Create a temporary pool to constrain memory use */
     apr_pool_create(&vpool, conn->pool);
+    apr_pool_tag(vpool, "modssl_stapling_renew");
 
     if (apr_uri_parse(vpool, ocspuri, &uri) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01939)

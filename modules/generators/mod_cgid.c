@@ -713,6 +713,7 @@ static int cgid_server(void *data)
     apr_status_t rv;
 
     apr_pool_create(&ptrans, pcgi);
+    apr_pool_tag(ptrans, "cgid_ptrans");
 
     apr_signal(SIGCHLD, SIG_IGN);
     apr_signal(SIGHUP, daemon_signal_handler);
@@ -997,6 +998,7 @@ static int cgid_start(apr_pool_t *p, server_rec *main_server,
     else if (daemon_pid == 0) {
         if (pcgi == NULL) {
             apr_pool_create(&pcgi, p);
+            apr_pool_tag(pcgi, "cgid_pcgi");
         }
         exit(cgid_server(main_server) > 0 ? DAEMON_STARTUP_ERROR : -1);
     }

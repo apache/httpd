@@ -1268,6 +1268,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
             if (entry_core->refs && entry_core->refs->nelts) {
                 if (!rxpool) {
                     apr_pool_create(&rxpool, r->pool);
+                    apr_pool_tag(rxpool, "directory_walk_rxpool");
                 }
                 nmatch = entry_core->refs->nelts;
                 pmatch = apr_palloc(rxpool, nmatch*sizeof(ap_regmatch_t));
@@ -1485,6 +1486,7 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
                 if (entry_core->refs && entry_core->refs->nelts) {
                     if (!rxpool) {
                         apr_pool_create(&rxpool, r->pool);
+                        apr_pool_tag(rxpool, "location_walk_rxpool");
                     }
                     nmatch = entry_core->refs->nelts;
                     pmatch = apr_palloc(rxpool, nmatch*sizeof(ap_regmatch_t));
@@ -1687,6 +1689,7 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
                 if (entry_core->refs && entry_core->refs->nelts) {
                     if (!rxpool) {
                         apr_pool_create(&rxpool, r->pool);
+                        apr_pool_tag(rxpool, "file_walk_rxpool");
                     }
                     nmatch = entry_core->refs->nelts;
                     pmatch = apr_palloc(rxpool, nmatch*sizeof(ap_regmatch_t));

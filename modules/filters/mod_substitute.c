@@ -450,6 +450,7 @@ static apr_status_t substitute_filter(ap_filter_t *f, apr_bucket_brigade *bb)
         ctx->passbb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
         /* Create our temporary pool only once */
         apr_pool_create(&(ctx->tpool), f->r->pool);
+        apr_pool_tag(ctx->tpool, "substitute_tpool");
         apr_table_unset(f->r->headers_out, "Content-Length");
     }
 

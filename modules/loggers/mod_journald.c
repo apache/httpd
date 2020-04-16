@@ -116,6 +116,7 @@ static void journald_log(apr_pool_t *pool, const char *log,
                     NULL);
         return;
     }
+    apr_pool_tag(subpool, "journald_log");
 
     /* Adds new entry to iovec if previous additions were successful. */
 #define IOVEC_ADD_LEN(FORMAT, VAR, LEN) \

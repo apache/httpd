@@ -169,6 +169,7 @@ static apr_status_t req_create(md_http_request_t **preq, md_http_t *http,
     if (rv != APR_SUCCESS) {
         return rv;
     }
+    apr_pool_tag(pool, "md_http_req");
     
     req = apr_pcalloc(pool, sizeof(*req));
     req->pool = pool;

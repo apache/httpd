@@ -92,6 +92,7 @@ static const char *socache_dbm_create(ap_socache_instance_t **context,
     }
 
     apr_pool_create(&ctx->pool, p);
+    apr_pool_tag(ctx->pool, "socache_dbm_instance");
 
     return NULL;
 }

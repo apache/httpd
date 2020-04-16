@@ -37,8 +37,8 @@ apr_status_t md_util_pool_do(md_util_action *cb, void *baton, apr_pool_t *p)
     apr_pool_t *ptemp;
     apr_status_t rv = apr_pool_create(&ptemp, p);
     if (APR_SUCCESS == rv) {
+        apr_pool_tag(ptemp, "md_pool_do");
         rv = cb(baton, p, ptemp);
-        
         apr_pool_destroy(ptemp);
     }
     return rv;
@@ -51,6 +51,7 @@ static apr_status_t pool_vado(md_util_vaction *cb, void *baton, apr_pool_t *p, v
     
     rv = apr_pool_create(&ptemp, p);
     if (APR_SUCCESS == rv) {
+        apr_pool_tag(ptemp, "md_pool_vado");
         rv = cb(baton, p, ptemp, ap);
         apr_pool_destroy(ptemp);
     }

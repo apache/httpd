@@ -2181,6 +2181,7 @@ static int uncompress(request_rec *r, int method,
      */
     if (apr_pool_create(&sub_context, r->pool) != APR_SUCCESS)
         return -1;
+    apr_pool_tag(sub_context, "magic_uncompress");
 
     if ((rv = create_uncompress_child(&parm, sub_context, &pipe_out)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01553)

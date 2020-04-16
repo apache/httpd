@@ -723,6 +723,7 @@ DAV_DECLARE(dav_get_props_result) dav_get_allprops(dav_propdb *propdb,
         apr_xml_parser *parser;
 
         apr_pool_create (&pool, propdb->p);
+        apr_pool_tag(pool, "mod_dav-xml_parser");
         parser = apr_xml_parser_create (pool);
 
         apr_xml_parser_feed(parser, "<r xmlns:D=\"DAV:\" ", 18);
