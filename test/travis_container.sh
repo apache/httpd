@@ -8,14 +8,14 @@ if [ ! -r ${DOCKERFILE} ]; then
     exit 1
 fi    
 $DOCKER build \
-       --build-arg=CONTAINER=${CONTAINER} \
-       --build-arg=APR_CONFIG \
-       --build-arg=APR_VERSION \
-       --build-arg=APU_CONFIG \
-       --build-arg=APU_VERSION \
-       --build-arg=CONFIG \
+       ${CONTAINER:+--build-arg=CONTAINER=$CONTAINER} \
+       ${APR_CONFIG:+--build-arg=APR_CONFIG=$APR_CONFIG} \
+       ${APR_VERSION:+--build-arg=APR_VERSION=$APR_VERSION} \
+       ${APU_CONFIG:+--build-arg=APU_CONFIG=$APU_CONFIG} \
+       ${APU_VERSION:+--build-arg=APU_VERSION=$APU_VERSION} \
+       ${CONFIG:+--build-arg=CONFIG=$CONFIG} \
        -t ${HTTPD_TAG} \
        -f ${DOCKERFILE} .
-$DOCKER run -e CONFIG -e BUILDCONFIG \
-       ${HTTPD_TAG} \
+$DOCKER run \
+       ${HTTPD_TAG} -e CONFIG \
         ./test/travis_run_linux.sh

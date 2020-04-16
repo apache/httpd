@@ -12,7 +12,10 @@ RUN yum -y install git gcc make autoconf automake libtool \
     yum clean all
 RUN useradd -l -m build
 USER build
-RUN git clone --depth=1 https://github.com/apache/httpd.git $HOME/build/httpd
+RUN mkdir /home/build/build
+COPY ./ /home/build/build/httpd
 WORKDIR /home/build/build/httpd
-RUN test/travis_before_linux.sh
-ENV BUILDCONFIG="--with-apr=$HOME/build/apr-${APR_VERSION} --with-apr-util=$HOME/build/apr-util-${APU_VERSION}"
+RUN ./test/travis_before_linux.sh
+ENV APR_VERSION=$APR_VERSION
+ENV APU_VERSION=$APU_VERSION
+ENV BUILDCONFIG="--with-apr=/home/build/build/apr-$APR_VERSION --with-apr-util=/home/build/build/apr-util-$APU_VERSION"
