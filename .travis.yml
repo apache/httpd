@@ -57,7 +57,7 @@ jobs:
     - if: *condition_not_24x
       name: Linux CentOS 8
       env: CONTAINER=centos:8
-           DOCKERFILE=test/travis_Dockerfile_fedora
+           DOCKERFILE=test/travis_Dockerfile_centos8
            CONFIG="--enable-mods-shared=reallyall"
            APR_VERSION=1.7.0 APU_VERSION=1.6.1
            APU_CONFIG="--with-crypto"
