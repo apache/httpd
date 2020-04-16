@@ -59,7 +59,7 @@ jobs:
       env: CONTAINER=centos:8
            DOCKERFILE=test/travis_Dockerfile_centos8
            CONFIG="--enable-mods-shared=reallyall"
-           APR_VERSION=1.7.0 APU_VERSION=1.6.1
+           APR_VERSION=1.7.0 APU_VERSION=1.6.x
            APU_CONFIG="--with-crypto"
            
 # CPAN modules are to be used with the system Perl and always with
