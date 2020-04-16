@@ -16,6 +16,6 @@ $DOCKER build \
        ${CONFIG:+--build-arg=CONFIG=$CONFIG} \
        -t ${HTTPD_TAG} \
        -f ${DOCKERFILE} .
-$DOCKER run \
-       ${HTTPD_TAG} -e CONFIG \
+$DOCKER run -e CONFIG \
+       ${HTTPD_TAG} \
         /home/build/build/httpd/test/travis_run_linux.sh
