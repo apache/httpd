@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_http2: Fixed regression that no longer set H2_STREAM_ID and H2_STREAM_TAG.
+     PR64330 [Stefan Eissing]
+
   *) htcacheclean: Empty directories in CacheRoot are still present even after
      using "-t". PR64313 [Petros Marios Prokopiou <pprokopi redhat.com>,
      Ruediger Pluem, Jean-Frederic Clere]
