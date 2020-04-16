@@ -17,5 +17,7 @@ $DOCKER build \
        -t ${HTTPD_TAG} \
        -f ${DOCKERFILE} .
 $DOCKER run -e CONFIG \
+       ${APR_VERSION:+-e APR_VERSION=$APR_VERSION} \
+       ${APU_VERSION:+-e APU_VERSION=$APU_VERSION} \
        ${HTTPD_TAG} \
         /home/build/build/httpd/test/travis_run_linux.sh
