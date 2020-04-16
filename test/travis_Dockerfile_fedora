@@ -11,9 +11,10 @@ RUN yum -y install git gcc make autoconf automake libtool \
     && yum clean all
 RUN cpanm --notest Net::SSL LWP::Protocol::https ExtUtils::Embed Test::More AnyEvent DateTime HTTP::DAV Protocol::HTTP2::Client FCGI Apache::Test
 RUN useradd -l -m build
-USER build
 RUN mkdir /home/build/build
 COPY ./ /home/build/build/httpd
+RUN chown -R build /home/build/build
+USER build
 WORKDIR /home/build/build/httpd
 RUN ./test/travis_before_linux.sh
 ENV APR_VERSION=$APR_VERSION
