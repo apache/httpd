@@ -1269,7 +1269,7 @@ static int prefork_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp
     if (retained->mpm->module_loads == 2) {
         if (!one_process && !foreground) {
             /* before we detach, setup crash handlers to log to errorlog */
-            ap_fatal_signal_setup(ap_server_conf, pconf);
+            ap_fatal_signal_setup(ap_server_conf, p /* == pconf */);
             rv = apr_proc_detach(no_detach ? APR_PROC_DETACH_FOREGROUND
                                            : APR_PROC_DETACH_DAEMONIZE);
             if (rv != APR_SUCCESS) {
