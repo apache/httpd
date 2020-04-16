@@ -201,6 +201,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1876540 ^/httpd/httpd/trunk .
      +1: jfclere
 
+  *) mod_http2: Fixed regression that no longer set H2_STREAM_ID and H2_STREAM_TAG.
+     PR64330 [Stefan Eissing]
+     trunk patch:
+       - http://svn.apache.org/r1876616
+     2.4.x patch: svn merge -c 1876616 ^/httpd/httpd/trunk .
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
