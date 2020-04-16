@@ -40,19 +40,18 @@ function run_svn_export() {
 function install_apx() {
     local name=$1
     local version=$2
-    local root=https://svn.apache.org/repos/asf/apr/${name}
+    local url=https://github.com/apache/${name}.git
     local prefix=${HOME}/root/${name}-${version}
     local build=${HOME}/build/${name}-${version}
     local config=$3
     local buildconf=$4
 
     case $version in
-    trunk) url=${root}/trunk ;;
-    *.x) url=${root}/branches/${version} ;;
-    *) url=${root}/tags/${version} ;;
+    trunk|*.x) limit=--heads ;;
+    *) limit=--tags ;;
     esac
 
-    local revision=`svn info --show-item last-changed-revision ${url}`
+    local revision=`git ls-remote $limit ${url} $version | cut -f1`
 
     # Blow away the cached install root if the revision does not
     # match.
@@ -62,7 +61,7 @@ function install_apx() {
         return 0
     fi
 
-    svn export -q -r ${revision} ${url} ${build}
+    git clone --depth=1 --branch=$version ${url} ${build}
     pushd $build
          ./buildconf ${buildconf}
          ./configure --prefix=${prefix} ${config}
@@ -72,7 +71,6 @@ function install_apx() {
 
     touch ${prefix}/.revision-is-${revision}
 }
-
 
 if ! test -v SKIP_TESTING; then
     ### Temporary: purge old svn checkout from the cache
