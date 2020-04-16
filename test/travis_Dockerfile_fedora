@@ -8,8 +8,8 @@ RUN yum -y install git gcc make autoconf automake libtool \
     subversion /usr/bin/python openssl-devel systemd-devel \
     zlib-devel brotli-devel lua-devel pcre2-devel libuuid-devel \
     libxml2-devel pkgconfig expat-devel perl-App-cpanminus \
-    'perl(Net::SSL)' 'perl(LWP::Protocol::https)' 'perl(ExtUtils::Embed)' 'perl(Test::More)' 'perl(AnyEvent)' 'perl(DateTime)' 'perl(HTTP::DAV)' 'perl(Protocol::HTTP2::Client)' 'perl(FCGI)' 'perl(Apache::Test)' && \
-    yum clean all
+    && yum clean all
+RUN cpanm --notest Net::SSL LWP::Protocol::https ExtUtils::Embed Test::More AnyEvent DateTime HTTP::DAV Protocol::HTTP2::Client FCGI Apache::Test
 RUN useradd -l -m build
 USER build
 RUN mkdir /home/build/build

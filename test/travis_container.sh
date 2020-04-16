@@ -1,7 +1,7 @@
 #!/bin/sh -ex
 DOCKER=`which podman || which docker`
 export CONTAINER=${CONTAINER:-fedora}
-HTTPD_TAG=travis_httpd_${CONTAINER}
+HTTPD_TAG=${HTTPD_TAG:-travis_httpd_${CONTAINER}}
 DOCKERFILE=${DOCKERFILE:-test/travis_Dockerfile_${CONTAINER}}
 if [ ! -r ${DOCKERFILE} ]; then
     echo No Dockerfile ${DOCKERFILE} found for ${CONTAINER}, cannot continue
@@ -18,4 +18,4 @@ $DOCKER build \
        -f ${DOCKERFILE} .
 $DOCKER run \
        ${HTTPD_TAG} -e CONFIG \
-        ./test/travis_run_linux.sh
+        /home/build/build/httpd/test/travis_run_linux.sh
