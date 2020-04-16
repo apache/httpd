@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) htcacheclean: Empty directories in CacheRoot are still present even after
+     using "-t". PR64313 [Ruediger Pluem, Jean-Frederic Clere]
+
+  *) mod_reqtimeout: Cannot override default Virtualhost's mod_reqtimeout.
+     PR64295 [Jean-Frederic Clere]
+
   *) mod_ssl: Fix memory leak in stapling code. PR63687. [Stefan Eissing]
 
   *) mod_proxy: Allow ProxyErrorOverride to be restricted to specific status 
