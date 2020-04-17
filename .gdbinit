@@ -125,9 +125,9 @@ define dump_bucket_ex
     set $refcount = -1
 
     print_bkt_datacol "bucket" "%-9s" $bucket->type->name $sh
-    printf "(0x%08lx)", (unsigned long)$bucket
+    printf "(%12lx)", (unsigned long)$bucket
     print_bkt_datacol "length" "%-6ld" (long)($bucket->length) $sh
-    print_bkt_datacol "data" "0x%08lx" $bucket->data $sh
+    print_bkt_datacol "data" "%12lx" $bucket->data $sh
 
     if !$sh
         printf "\n    "
@@ -257,9 +257,9 @@ define dump_brigade
                                - ((size_t) &((struct apr_bucket *)0)->link)))
     printf "dump of brigade 0x%lx\n", (unsigned long)$bb
 
-    printf "   | type     (address)    | length | "
-    printf "data addr  | contents               | rc\n"
-    printf "----------------------------------------"
+    printf "   | type     (address)      | length | "
+    printf "data address | contents               | rc\n"
+    printf "------------------------------------------"
     printf "----------------------------------------\n"
 
     if $bucket == $sentinel
