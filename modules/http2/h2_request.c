@@ -266,9 +266,7 @@ static request_rec *my_ap_create_request(conn_rec *c)
 
 request_rec *h2_request_create_rec(const h2_request *req, conn_rec *c)
 {
-    int access_status = HTTP_OK;    
-    const char *rpath = req->path ? req->path : "";
-    const char *s;
+    int access_status;
 
 #if AP_MODULE_MAGIC_AT_LEAST(20150222, 13)
     request_rec *r = ap_create_request(c);
@@ -280,33 +278,17 @@ request_rec *h2_request_create_rec(const h2_request *req, conn_rec *c)
     
     /* Time to populate r with the data we have. */
     r->request_time = req->request_time;
-    r->method = apr_pstrdup(r->pool, req->method);
-    /* Provide quick information about the request method as soon as known */
-    r->method_number = ap_method_number_of(r->method);
-    if (r->method_number == M_GET && r->method[0] == 'H') {
-        r->header_only = 1;
-    }
-    r->proto_num = HTTP_VERSION(2, 0);
-    r->protocol = apr_pstrdup(r->pool, "HTTP/2.0");
-    r->the_request = apr_psprintf(r->pool, "%s %s %s", 
-                                  r->method, rpath, r->protocol);
+    r->the_request = apr_psprintf(r->pool, "%s %s HTTP/2.0", 
+                                  req->method, req->path ? req->path : "");
     r->headers_in = apr_table_clone(r->pool, req->headers);
 
-    ap_parse_uri(r, rpath);
-    if (r->status != HTTP_OK) {
-        access_status = r->status;
-        r->status = HTTP_OK;
-        goto die;
-    }
-
-    /* update what we think the virtual host is based on the headers we've
-     * now read. may update status.
-     * Leave r->hostname empty, vhost will parse if form our Host: header,
-     * otherwise we get complains about port numbers.
+    /* Start with r->hostname = NULL, ap_check_request_header() will get it
+     * form Host: header, otherwise we get complains about port numbers.
      */
     r->hostname = NULL;
-    ap_update_vhost_from_headers(r);
-    if (r->status != HTTP_OK) {
+
+    /* Validate HTTP/1 request and select vhost. */
+    if (!ap_parse_request_line(r) || !ap_check_request_header(r)) {
         access_status = r->status;
         r->status = HTTP_OK;
         goto die;
@@ -314,17 +296,6 @@ request_rec *h2_request_create_rec(const h2_request *req, conn_rec *c)
     
     /* we may have switched to another server */
     r->per_dir_config = r->server->lookup_defaults;
-    
-    s = apr_table_get(r->headers_in, "Expect");
-    if (s && s[0]) {
-        if (ap_cstr_casecmp(s, "100-continue") == 0) {
-            r->expecting_100 = 1;
-        }
-        else {
-            access_status = HTTP_EXPECTATION_FAILED;
-            goto die;
-        }
-    }
 
     /*
      * Add the HTTP_IN filter here to ensure that ap_discard_request_body

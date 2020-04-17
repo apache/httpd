@@ -68,6 +68,20 @@ AP_DECLARE(request_rec *) ap_create_request(conn_rec *c);
 request_rec *ap_read_request(conn_rec *c);
 
 /**
+ * Parse and validate the request line.
+ * @param r The current request
+ * @return 1 on success, 0 on failure
+ */
+AP_DECLARE(int) ap_parse_request_line(request_rec *r);
+
+/**
+ * Validate the request header and select vhost.
+ * @param r The current request
+ * @return 1 on success, 0 on failure
+ */
+AP_DECLARE(int) ap_check_request_header(request_rec *r);
+
+/**
  * Read the mime-encoded headers.
  * @param r The current request
  */

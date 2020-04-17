@@ -626,6 +626,8 @@
  *                         ap_request_core_filter_handle.
  * 20200331.1 (2.5.1-dev)  Add flushed:1 to request_rec
  * 20200331.2 (2.5.1-dev)  Add ap_proxy_should_override to mod_proxy.h
+ * 20200331.3 (2.5.1-dev)  Add ap_parse_request_line() and
+ *                         ap_check_request_header()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -633,7 +635,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20200331
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 2            /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 3            /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

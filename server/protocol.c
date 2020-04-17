@@ -676,13 +676,6 @@ static int field_name_len(const char *field)
 
 static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
 {
-    enum {
-        rrl_none, rrl_badmethod, rrl_badwhitespace, rrl_excesswhitespace,
-        rrl_missinguri, rrl_baduri, rrl_badprotocol, rrl_trailingtext,
-        rrl_badmethod09, rrl_reject09
-    } deferred_error = rrl_none;
-    char *ll;
-    char *uri;
     apr_size_t len;
     int num_blank_lines = DEFAULT_LIMIT_BLANK_LINES;
     core_server_config *conf = ap_get_core_module_config(r->server->module_config);
@@ -745,6 +738,20 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
     }
 
     r->request_time = apr_time_now();
+    return 1;
+}
+
+AP_DECLARE(int) ap_parse_request_line(request_rec *r)
+{
+    core_server_config *conf = ap_get_core_module_config(r->server->module_config);
+    int strict = (conf->http_conformance != AP_HTTP_CONFORMANCE_UNSAFE);
+    enum {
+        rrl_none, rrl_badmethod, rrl_badwhitespace, rrl_excesswhitespace,
+        rrl_missinguri, rrl_baduri, rrl_badprotocol, rrl_trailingtext,
+        rrl_badmethod09, rrl_reject09
+    } deferred_error = rrl_none;
+    apr_size_t len = 0;
+    char *uri, *ll;
 
     r->method = r->the_request;
 
@@ -776,7 +783,6 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
         if (deferred_error == rrl_none)
             deferred_error = rrl_missinguri;
         r->protocol = uri = "";
-        len = 0;
         goto rrl_done;
     }
     else if (strict && ll[0] && apr_isspace(ll[1])
@@ -807,7 +813,6 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
     /* Verify URI terminated with a single SP, or mark as specific error */
     if (!ll) {
         r->protocol = "";
-        len = 0;
         goto rrl_done;
     }
     else if (strict && ll[0] && apr_isspace(ll[1])
@@ -1005,6 +1010,87 @@ rrl_failed:
         r->protocol  = "HTTP/1.0";
     }
     return 0;
+}
+
+AP_DECLARE(int) ap_check_request_header(request_rec *r)
+{
+    core_server_config *conf;
+    int strict_host_check;
+    const char *expect;
+    int access_status;
+
+    conf = ap_get_core_module_config(r->server->module_config);
+
+    /* update what we think the virtual host is based on the headers we've
+     * now read. may update status.
+     */
+    strict_host_check = (conf->strict_host_check == AP_CORE_CONFIG_ON);
+    access_status = ap_update_vhost_from_headers_ex(r, strict_host_check);
+    if (strict_host_check && access_status != HTTP_OK) { 
+        if (r->server == ap_server_conf) { 
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(10156)
+                          "Requested hostname '%s' did not match any ServerName/ServerAlias "
+                          "in the global server configuration ", r->hostname);
+        }
+        else { 
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(10157)
+                          "Requested hostname '%s' did not match any ServerName/ServerAlias "
+                          "in the matching virtual host (default vhost for "
+                          "current connection is %s:%u)", 
+                          r->hostname, r->server->defn_name, r->server->defn_line_number);
+        }
+        r->status = access_status;
+    }
+    if (r->status != HTTP_OK) { 
+        return 0;
+    }
+
+    if ((!r->hostname && (r->proto_num >= HTTP_VERSION(1, 1)))
+        || ((r->proto_num == HTTP_VERSION(1, 1))
+            && !apr_table_get(r->headers_in, "Host"))) {
+        /*
+         * Client sent us an HTTP/1.1 or later request without telling us the
+         * hostname, either with a full URL or a Host: header. We therefore
+         * need to (as per the 1.1 spec) send an error.  As a special case,
+         * HTTP/1.1 mentions twice (S9, S14.23) that a request MUST contain
+         * a Host: header, and the server MUST respond with 400 if it doesn't.
+         */
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00569)
+                      "client sent HTTP/1.1 request without hostname "
+                      "(see RFC2616 section 14.23): %s", r->uri);
+        r->status = HTTP_BAD_REQUEST;
+        return 0;
+    }
+
+    /* we may have switched to another server */
+    conf = ap_get_core_module_config(r->server->module_config);
+
+    if (((expect = apr_table_get(r->headers_in, "Expect")) != NULL)
+        && (expect[0] != '\0')) {
+        /*
+         * The Expect header field was added to HTTP/1.1 after RFC 2068
+         * as a means to signal when a 100 response is desired and,
+         * unfortunately, to signal a poor man's mandatory extension that
+         * the server must understand or return 417 Expectation Failed.
+         */
+        if (ap_cstr_casecmp(expect, "100-continue") == 0) {
+            r->expecting_100 = 1;
+        }
+        else if (conf->http_expect_strict == AP_HTTP_EXPECT_STRICT_DISABLE) {
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02595)
+                          "client sent an unrecognized expectation value "
+                          "of Expect (not fatal): %s", expect);
+        }
+        else {
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00570)
+                          "client sent an unrecognized expectation value "
+                          "of Expect: %s", expect);
+            r->status = HTTP_EXPECTATION_FAILED;
+            return 0;
+        }
+    }
+
+    return 1;
 }
 
 static int table_do_fn_check_lengths(void *r_, const char *key,
@@ -1346,23 +1432,19 @@ AP_DECLARE(request_rec *) ap_create_request(conn_rec *conn)
 
 request_rec *ap_read_request(conn_rec *conn)
 {
-    const char *expect;
     int access_status;
     apr_bucket_brigade *tmp_bb;
     apr_socket_t *csd;
     apr_interval_time_t cur_timeout;
-    core_server_config *conf;
-    int strict_host_check;
 
     request_rec *r = ap_create_request(conn);
 
-    conf = ap_get_core_module_config(r->server->module_config);
     tmp_bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
 
     ap_run_pre_read_request(r, conn);
 
     /* Get the request... */
-    if (!read_request_line(r, tmp_bb)) {
+    if (!read_request_line(r, tmp_bb) || !ap_parse_request_line(r)) {
         apr_brigade_cleanup(tmp_bb);
         switch (r->status) {
         case HTTP_REQUEST_URI_TOO_LARGE:
@@ -1444,50 +1526,13 @@ request_rec *ap_read_request(conn_rec *conn)
         }
     }
 
-    /* update what we think the virtual host is based on the headers we've
-     * now read. may update status.
-     */
-    strict_host_check = (conf->strict_host_check == AP_CORE_CONFIG_ON);
-    access_status = ap_update_vhost_from_headers_ex(r, strict_host_check);
-    if (strict_host_check && access_status != HTTP_OK) { 
-         if (r->server == ap_server_conf) { 
-             ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(10156)
-                           "Requested hostname '%s' did not match any ServerName/ServerAlias "
-                           "in the global server configuration ", r->hostname);
-         } else { 
-             ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(10157)
-                           "Requested hostname '%s' did not match any ServerName/ServerAlias "
-                           "in the matching virtual host (default vhost for "
-                           "current connection is %s:%u)", 
-                           r->hostname, r->server->defn_name, r->server->defn_line_number);
-         }
-         goto die_early;
-    }
-    if (r->status != HTTP_OK) { 
+    if (!ap_check_request_header(r)) {
         access_status = r->status;
-        goto die_early;
-    }
-
-    if ((!r->hostname && (r->proto_num >= HTTP_VERSION(1, 1)))
-        || ((r->proto_num == HTTP_VERSION(1, 1))
-            && !apr_table_get(r->headers_in, "Host"))) {
-        /*
-         * Client sent us an HTTP/1.1 or later request without telling us the
-         * hostname, either with a full URL or a Host: header. We therefore
-         * need to (as per the 1.1 spec) send an error.  As a special case,
-         * HTTP/1.1 mentions twice (S9, S14.23) that a request MUST contain
-         * a Host: header, and the server MUST respond with 400 if it doesn't.
-         */
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00569)
-                      "client sent HTTP/1.1 request without hostname "
-                      "(see RFC2616 section 14.23): %s", r->uri);
-        access_status = HTTP_BAD_REQUEST;
         goto die_early;
     }
 
     /* we may have switched to another server */
     r->per_dir_config = r->server->lookup_defaults;
-    conf = ap_get_core_module_config(r->server->module_config);
 
     /* Toggle to the Host:-based vhost's timeout mode to fetch the
      * request body and send the response body, if needed.
@@ -1508,33 +1553,6 @@ request_rec *ap_read_request(conn_rec *conn)
 
     if ((access_status = ap_run_post_read_request(r))) {
         goto die;
-    }
-
-    if (((expect = apr_table_get(r->headers_in, "Expect")) != NULL)
-        && (expect[0] != '\0')) {
-        /*
-         * The Expect header field was added to HTTP/1.1 after RFC 2068
-         * as a means to signal when a 100 response is desired and,
-         * unfortunately, to signal a poor man's mandatory extension that
-         * the server must understand or return 417 Expectation Failed.
-         */
-        if (ap_cstr_casecmp(expect, "100-continue") == 0) {
-            r->expecting_100 = 1;
-        }
-        else {
-            if (conf->http_expect_strict != AP_HTTP_EXPECT_STRICT_DISABLE) {
-                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00570)
-                              "client sent an unrecognized expectation value "
-                              "of Expect: %s", expect);
-                access_status = HTTP_EXPECTATION_FAILED;
-                goto die;
-            }
-            else {
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02595)
-                              "client sent an unrecognized expectation value "
-                              "of Expect (not fatal): %s", expect);
-            }
-        }
     }
 
     AP_READ_REQUEST_SUCCESS((uintptr_t)r, (char *)r->method,
