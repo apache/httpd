@@ -267,7 +267,7 @@ static request_rec *my_ap_create_request(conn_rec *c)
 request_rec *h2_request_create_rec(const h2_request *req, conn_rec *c)
 {
     int access_status = HTTP_OK;    
-    const char *rpath;
+    const char *rpath = req->path ? req->path : "";
     const char *s;
 
 #if AP_MODULE_MAGIC_AT_LEAST(20150222, 13)
@@ -275,8 +275,6 @@ request_rec *h2_request_create_rec(const h2_request *req, conn_rec *c)
 #else
     request_rec *r = my_ap_create_request(c);
 #endif
-
-    r->headers_in = apr_table_clone(r->pool, req->headers);
 
     ap_run_pre_read_request(r, c);
     
@@ -288,15 +286,19 @@ request_rec *h2_request_create_rec(const h2_request *req, conn_rec *c)
     if (r->method_number == M_GET && r->method[0] == 'H') {
         r->header_only = 1;
     }
-
-    rpath = (req->path ? req->path : "");
-    ap_parse_uri(r, rpath);
-    r->protocol = (char*)"HTTP/2.0";
     r->proto_num = HTTP_VERSION(2, 0);
-
+    r->protocol = apr_pstrdup(r->pool, "HTTP/2.0");
     r->the_request = apr_psprintf(r->pool, "%s %s %s", 
                                   r->method, rpath, r->protocol);
-    
+    r->headers_in = apr_table_clone(r->pool, req->headers);
+
+    ap_parse_uri(r, rpath);
+    if (r->status != HTTP_OK) {
+        access_status = r->status;
+        r->status = HTTP_OK;
+        goto die;
+    }
+
     /* update what we think the virtual host is based on the headers we've
      * now read. may update status.
      * Leave r->hostname empty, vhost will parse if form our Host: header,
@@ -304,6 +306,11 @@ request_rec *h2_request_create_rec(const h2_request *req, conn_rec *c)
      */
     r->hostname = NULL;
     ap_update_vhost_from_headers(r);
+    if (r->status != HTTP_OK) {
+        access_status = r->status;
+        r->status = HTTP_OK;
+        goto die;
+    }
     
     /* we may have switched to another server */
     r->per_dir_config = r->server->lookup_defaults;
@@ -314,8 +321,8 @@ request_rec *h2_request_create_rec(const h2_request *req, conn_rec *c)
             r->expecting_100 = 1;
         }
         else {
-            r->status = HTTP_EXPECTATION_FAILED;
-            ap_send_error_response(r, 0);
+            access_status = HTTP_EXPECTATION_FAILED;
+            goto die;
         }
     }
 
@@ -328,28 +335,39 @@ request_rec *h2_request_create_rec(const h2_request *req, conn_rec *c)
     ap_add_input_filter_handle(ap_http_input_filter_handle,
                                NULL, r, r->connection);
     
-    if (access_status != HTTP_OK
-        || (access_status = ap_run_post_read_request(r))) {
+    if ((access_status = ap_run_post_read_request(r))) {
         /* Request check post hooks failed. An example of this would be a
          * request for a vhost where h2 is disabled --> 421.
          */
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(03367)
                       "h2_request: access_status=%d, request_create failed",
                       access_status);
-        ap_die(access_status, r);
-        ap_update_child_status(c->sbh, SERVER_BUSY_LOG, r);
-        ap_run_log_transaction(r);
-        r = NULL;
-        goto traceout;
+        goto die;
     }
 
     AP_READ_REQUEST_SUCCESS((uintptr_t)r, (char *)r->method, 
                             (char *)r->uri, (char *)r->server->defn_name, 
                             r->status);
     return r;
-traceout:
+
+die:
+    ap_die(access_status, r);
+
+    /* ap_die() sent the response through the output filters, we must now
+     * end the request with an EOR bucket for stream/pipeline accounting.
+     */
+    {
+        apr_bucket_brigade *tmp_bb;
+        tmp_bb = ap_acquire_brigade(c);
+        APR_BRIGADE_INSERT_TAIL(tmp_bb,
+                                ap_bucket_eor_create(c->bucket_alloc, r));
+        ap_pass_brigade(c->output_filters, tmp_bb);
+        ap_release_brigade(c, tmp_bb);
+    }
+
+    r = NULL;
     AP_READ_REQUEST_FAILURE((uintptr_t)r);
-    return r;
+    return NULL;
 }
 
 

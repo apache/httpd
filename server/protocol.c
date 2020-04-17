@@ -1352,6 +1352,7 @@ request_rec *ap_read_request(conn_rec *conn)
     apr_socket_t *csd;
     apr_interval_time_t cur_timeout;
     core_server_config *conf;
+    int strict_host_check;
 
     request_rec *r = ap_create_request(conn);
 
@@ -1362,6 +1363,7 @@ request_rec *ap_read_request(conn_rec *conn)
 
     /* Get the request... */
     if (!read_request_line(r, tmp_bb)) {
+        apr_brigade_cleanup(tmp_bb);
         switch (r->status) {
         case HTTP_REQUEST_URI_TOO_LARGE:
         case HTTP_BAD_REQUEST:
@@ -1377,25 +1379,21 @@ request_rec *ap_read_request(conn_rec *conn)
                               "request failed: malformed request line");
             }
             access_status = r->status;
-            r->status = HTTP_OK;
-            ap_die(access_status, r);
-            ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
-            ap_run_log_transaction(r);
-            r = NULL;
-            apr_brigade_destroy(tmp_bb);
-            goto traceout;
+            goto die_early;
+
         case HTTP_REQUEST_TIME_OUT:
+            /* Just log, no further action on this connection. */
             ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, NULL);
             if (!r->connection->keepalives)
                 ap_run_log_transaction(r);
-            apr_brigade_destroy(tmp_bb);
-            goto traceout;
-        default:
-            apr_brigade_destroy(tmp_bb);
-            r = NULL;
-            goto traceout;
+            break;
         }
+        /* Not worth dying with. */
+        conn->keepalive = AP_CONN_CLOSE;
+        apr_pool_destroy(r->pool);
+        goto ignore;
     }
+    apr_brigade_cleanup(tmp_bb);
 
     /* We may have been in keep_alive_timeout mode, so toggle back
      * to the normal timeout mode as we fetch the header lines,
@@ -1412,14 +1410,12 @@ request_rec *ap_read_request(conn_rec *conn)
         const char *tenc;
 
         ap_get_mime_headers_core(r, tmp_bb);
+        apr_brigade_cleanup(tmp_bb);
         if (r->status != HTTP_OK) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00567)
                           "request failed: error reading the headers");
-            ap_send_error_response(r, 0);
-            ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
-            ap_run_log_transaction(r);
-            apr_brigade_destroy(tmp_bb);
-            goto traceout;
+            access_status = r->status;
+            goto die_early;
         }
 
         tenc = apr_table_get(r->headers_in, "Transfer-Encoding");
@@ -1434,13 +1430,8 @@ request_rec *ap_read_request(conn_rec *conn)
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02539)
                               "client sent unknown Transfer-Encoding "
                               "(%s): %s", tenc, r->uri);
-                r->status = HTTP_BAD_REQUEST;
-                conn->keepalive = AP_CONN_CLOSE;
-                ap_send_error_response(r, 0);
-                ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
-                ap_run_log_transaction(r);
-                apr_brigade_destroy(tmp_bb);
-                goto traceout;
+                access_status = HTTP_BAD_REQUEST;
+                goto die_early;
             }
 
             /* http://tools.ietf.org/html/draft-ietf-httpbis-p1-messaging-23
@@ -1453,14 +1444,12 @@ request_rec *ap_read_request(conn_rec *conn)
         }
     }
 
-    apr_brigade_destroy(tmp_bb);
-
     /* update what we think the virtual host is based on the headers we've
      * now read. may update status.
      */
-    
-    access_status = ap_update_vhost_from_headers_ex(r, conf->strict_host_check == AP_CORE_CONFIG_ON);
-    if (conf->strict_host_check == AP_CORE_CONFIG_ON && access_status != HTTP_OK) { 
+    strict_host_check = (conf->strict_host_check == AP_CORE_CONFIG_ON);
+    access_status = ap_update_vhost_from_headers_ex(r, strict_host_check);
+    if (strict_host_check && access_status != HTTP_OK) { 
          if (r->server == ap_server_conf) { 
              ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(10156)
                            "Requested hostname '%s' did not match any ServerName/ServerAlias "
@@ -1472,21 +1461,12 @@ request_rec *ap_read_request(conn_rec *conn)
                            "current connection is %s:%u)", 
                            r->hostname, r->server->defn_name, r->server->defn_line_number);
          }
-         r->status = access_status;
+         goto die_early;
     }
-
-    access_status = r->status;
-
-    /* Toggle to the Host:-based vhost's timeout mode to fetch the
-     * request body and send the response body, if needed.
-     */
-    if (cur_timeout != r->server->timeout) {
-        apr_socket_timeout_set(csd, r->server->timeout);
-        cur_timeout = r->server->timeout;
+    if (r->status != HTTP_OK) { 
+        access_status = r->status;
+        goto die_early;
     }
-
-    /* we may have switched to another server */
-    r->per_dir_config = r->server->lookup_defaults;
 
     if ((!r->hostname && (r->proto_num >= HTTP_VERSION(1, 1)))
         || ((r->proto_num == HTTP_VERSION(1, 1))
@@ -1498,10 +1478,23 @@ request_rec *ap_read_request(conn_rec *conn)
          * HTTP/1.1 mentions twice (S9, S14.23) that a request MUST contain
          * a Host: header, and the server MUST respond with 400 if it doesn't.
          */
-        access_status = HTTP_BAD_REQUEST;
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00569)
                       "client sent HTTP/1.1 request without hostname "
                       "(see RFC2616 section 14.23): %s", r->uri);
+        access_status = HTTP_BAD_REQUEST;
+        goto die_early;
+    }
+
+    /* we may have switched to another server */
+    r->per_dir_config = r->server->lookup_defaults;
+    conf = ap_get_core_module_config(r->server->module_config);
+
+    /* Toggle to the Host:-based vhost's timeout mode to fetch the
+     * request body and send the response body, if needed.
+     */
+    if (cur_timeout != r->server->timeout) {
+        apr_socket_timeout_set(csd, r->server->timeout);
+        cur_timeout = r->server->timeout;
     }
 
     /*
@@ -1510,17 +1503,11 @@ request_rec *ap_read_request(conn_rec *conn)
      * status codes that do not cause the connection to be dropped and
      * in situations where the connection should be kept alive.
      */
-
     ap_add_input_filter_handle(ap_http_input_filter_handle,
                                NULL, r, r->connection);
 
-    if (access_status != HTTP_OK
-        || (access_status = ap_run_post_read_request(r))) {
-        ap_die(access_status, r);
-        ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
-        ap_run_log_transaction(r);
-        r = NULL;
-        goto traceout;
+    if ((access_status = ap_run_post_read_request(r))) {
+        goto die;
     }
 
     if (((expect = apr_table_get(r->headers_in, "Expect")) != NULL)
@@ -1536,14 +1523,11 @@ request_rec *ap_read_request(conn_rec *conn)
         }
         else {
             if (conf->http_expect_strict != AP_HTTP_EXPECT_STRICT_DISABLE) {
-                r->status = HTTP_EXPECTATION_FAILED;
                 ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00570)
                               "client sent an unrecognized expectation value "
                               "of Expect: %s", expect);
-                ap_send_error_response(r, 0);
-                ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
-                ap_run_log_transaction(r);
-                goto traceout;
+                access_status = HTTP_EXPECTATION_FAILED;
+                goto die;
             }
             else {
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02595)
@@ -1553,11 +1537,49 @@ request_rec *ap_read_request(conn_rec *conn)
         }
     }
 
-    AP_READ_REQUEST_SUCCESS((uintptr_t)r, (char *)r->method, (char *)r->uri, (char *)r->server->defn_name, r->status);
+    AP_READ_REQUEST_SUCCESS((uintptr_t)r, (char *)r->method,
+                            (char *)r->uri, (char *)r->server->defn_name,
+                            r->status);
     return r;
-    traceout:
+
+die_early:
+    /* Input filters are in an undeterminate state, cleanup (including
+     * CORE_IN's socket) such that any further attempt to read is EOF.
+     */
+    {
+        ap_filter_t *f = conn->input_filters;
+        while (f) {
+            ap_filter_reinstate_brigade(f, tmp_bb, NULL);
+            apr_brigade_cleanup(tmp_bb);
+            if (f->frec == ap_core_input_filter_handle) {
+                break;
+            }
+            ap_remove_input_filter(f);
+            f = f->next;
+        }
+        conn->input_filters = r->input_filters = f;
+        conn->keepalive = AP_CONN_CLOSE;
+    }
+
+    /* fallthru ap_die() (non recursive) */
+    r->status = HTTP_OK;
+die:
+    ap_die(access_status, r);
+
+    /* ap_die() sent the response through the output filters, we must now
+     * end the request with an EOR bucket for stream/pipeline accounting.
+     */
+    tmp_bb = ap_acquire_brigade(conn);
+    APR_BRIGADE_INSERT_TAIL(tmp_bb,
+                            ap_bucket_eor_create(conn->bucket_alloc, r));
+    ap_pass_brigade(conn->output_filters, tmp_bb);
+    ap_release_brigade(conn, tmp_bb);
+
+    /* fallthru */
+ignore:
+    r = NULL;
     AP_READ_REQUEST_FAILURE((uintptr_t)r);
-    return r;
+    return NULL;
 }
 
 /* if a request with a body creates a subrequest, remove original request's
