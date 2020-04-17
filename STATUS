@@ -186,27 +186,27 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch:
         - http://svn.apache.org/r1783041
      2.4.x patch: svn merge -c 1783041 ^/httpd/httpd/trunk . 
-     +1: jailletc36
+     +1: jailletc36, rpluem
 
   *) htcacheclean: Empty directories in CacheRoot are still present even after using "-t". PR64313
      trunk patch:
        - http://svn.apache.org/r1876484
        - http://svn.apache.org/r1876493
      2.4.x patch: svn merge -c 1876484,1876493 ^/httpd/httpd/trunk .
-     +1: jfclere
+     +1: jfclere, rpluem
 
   *) mod_reqtimeout: cannot override default Virtualhost's mod_reqtimeout. PR64295
      trunk patch:
        - http://svn.apache.org/r1876540
      2.4.x patch: svn merge -c 1876540 ^/httpd/httpd/trunk .
-     +1: jfclere
+     +1: jfclere, rpluem
 
   *) mod_http2: Fixed regression that no longer set H2_STREAM_ID and H2_STREAM_TAG.
      PR64330 [Stefan Eissing]
      trunk patch:
        - http://svn.apache.org/r1876616
      2.4.x patch: svn merge -c 1876616 ^/httpd/httpd/trunk .
-     +1: steffenal
+     +1: steffenal, rpluem
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
