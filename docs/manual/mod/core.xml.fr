@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1868821 -->
+<!-- English Revision: 1876428 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2908,7 +2908,7 @@ host</context>
 <name>KeepAliveTimeout</name>
 <description>Durée pendant laquelle le serveur va attendre une requête
 avant de fermer une connexion persistante</description>
-<syntax>KeepAliveTimeout <var>num</var>[ms]</syntax>
+<syntax>KeepAliveTimeout <var>num-seconds</var>|<var>num-milliseconds</var>ms</syntax>
 <default>KeepAliveTimeout 5</default>
 <contextlist><context>server config</context><context>virtual
 host</context>
@@ -2917,7 +2917,7 @@ host</context>
 <usage>
     <p>Le nombre de secondes pendant lesquelles Apache httpd va attendre une
     requête avant de fermer la connexion. Le délai peut être défini en
-    millisecondes en suffixant sa valeur par ms. La valeur du délai
+    millisecondes en suffixant sa valeur par "ms". La valeur du délai
     spécifiée par la directive <directive
     module="core">Timeout</directive> s'applique dès qu'une requête a
     été reçue.</p>
