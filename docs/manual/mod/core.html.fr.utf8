@@ -2845,7 +2845,7 @@ provoquent plus d'erreur de syntaxe après de la version 2.4.30</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Durée pendant laquelle le serveur va attendre une requête
 avant de fermer une connexion persistante</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>KeepAliveTimeout <var>num</var>[ms]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>KeepAliveTimeout <var>num-seconds</var>|<var>num-milliseconds</var>ms</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>KeepAliveTimeout 5</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Noyau httpd</td></tr>
@@ -2853,7 +2853,7 @@ avant de fermer une connexion persistante</td></tr>
 </table>
     <p>Le nombre de secondes pendant lesquelles Apache httpd va attendre une
     requête avant de fermer la connexion. Le délai peut être défini en
-    millisecondes en suffixant sa valeur par ms. La valeur du délai
+    millisecondes en suffixant sa valeur par "ms". La valeur du délai
     spécifiée par la directive <code class="directive"><a href="#timeout">Timeout</a></code> s'applique dès qu'une requête a
     été reçue.</p>
 

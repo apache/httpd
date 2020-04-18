@@ -755,7 +755,7 @@ supportées de la part des extensions ISAPI</td></tr>
 <tr class="odd"><td><a href="mod_isapi.html#isapireadaheadbuffer">ISAPIReadAheadBuffer <var>taille</var></a></td><td> 49152 </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Taille du tampon de lecture anticipée envoyé aux extensions
 ISAPI</td></tr>
 <tr><td><a href="core.html#keepalive" id="K" name="K">KeepAlive On|Off</a></td><td> On </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Active les connexions HTTP persistantes</td></tr>
-<tr class="odd"><td><a href="core.html#keepalivetimeout">KeepAliveTimeout <var>num</var>[ms]</a></td><td> 5 </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Durée pendant laquelle le serveur va attendre une requête
+<tr class="odd"><td><a href="core.html#keepalivetimeout">KeepAliveTimeout <var>num-seconds</var>|<var>num-milliseconds</var>ms</a></td><td> 5 </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Durée pendant laquelle le serveur va attendre une requête
 avant de fermer une connexion persistante</td></tr>
 <tr><td><a href="mod_request.html#keptbodysize">KeptBodySize <var>taille maximale en octets</var></a></td><td> 0 </td><td>d</td><td>B</td></tr><tr><td class="descr" colspan="4">Conserve le corps de la requête à concurrence de la taille
 maximale spécifiée, pour une utilisation éventuelle par des filtres
@@ -1075,7 +1075,7 @@ incorrectes d'une réponse</td></tr>
 [<var>nom d'hôte</var>|<var>nom d'hôte partiel</var>]...</a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Interdit les requêtes mandatées vers certains hôtes</td></tr>
 <tr><td><a href="mod_proxy.html#proxydomain">ProxyDomain <var>Domaine</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Nom de domaine par défaut pour les requêtes
 mandatées</td></tr>
-<tr class="odd"><td><a href="mod_proxy.html#proxyerroroverride">ProxyErrorOverride On|Off</a></td><td> Off </td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Outrepasser les pages d'erreur pour les contenus
+<tr class="odd"><td><a href="mod_proxy.html#proxyerroroverride">ProxyErrorOverride Off|On [<var>code</var> ...]</a></td><td> Off </td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Outrepasser les pages d'erreur pour les contenus
 mandatés</td></tr>
 <tr><td><a href="mod_proxy_express.html#proxyexpressdbmfile">ProxyExpressDBMFile <var>pathname</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Chemin du fichier DBM.</td></tr>
 <tr class="odd"><td><a href="mod_proxy_express.html#proxyexpressdbmtype">ProxyExpressDBMType <var>type</var></a></td><td> default </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Type de fichier DBM.</td></tr>
