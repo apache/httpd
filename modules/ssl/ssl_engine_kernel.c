@@ -1673,9 +1673,6 @@ static authz_status ssl_authz_verify_client_check(request_rec *r,
             X509_free(xs);
             return AUTHZ_GRANTED;
         }
-        else {
-            X509_free(xs);
-        }
     }
 
     return AUTHZ_DENIED;
