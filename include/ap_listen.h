@@ -38,6 +38,11 @@ typedef struct ap_slave_t ap_slave_t;
 typedef struct ap_listen_rec ap_listen_rec;
 typedef apr_status_t (*accept_function)(void **csd, ap_listen_rec *lr, apr_pool_t *ptrans);
 
+/* Flags for ap_listen_rec.flags */
+#define AP_LISTEN_SPECIFIC_ERRORS (0x0001)
+#define AP_LISTEN_FREEBIND        (0x0002)
+#define AP_LISTEN_REUSEPORT       (0x0004)
+
 /**
  * @brief Apache's listeners record.
  *
@@ -73,10 +78,9 @@ struct ap_listen_rec {
     ap_slave_t *slave;
 
     /**
-     * Allow the accept_func to return a wider set of return codes
+     * Various AP_LISTEN_* flags.
      */
-    int use_specific_errors;
-
+    apr_uint32_t flags;
 };
 
 /**
