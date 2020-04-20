@@ -281,6 +281,20 @@ static void clean_env(void)
     environ = cleanenv;
 }
 
+/* Converts name (uid/gid) to long, returning -1 on error. */
+static long safe_strtol(const char *name)
+{
+    char *endp;
+    long rv;
+
+    errno = 0;
+    rv = strtol(name, &endp, 10);
+    if (errno || *endp != '\0')
+        rv = -1;
+
+    return rv;
+}
+
 int main(int argc, char *argv[])
 {
     int userdir = 0;        /* ~userdir flag             */
@@ -417,7 +431,15 @@ int main(int argc, char *argv[])
         }
     }
     else {
-        if ((pw = getpwuid(atoi(target_uname))) == NULL) {
+        long parsed_uid = safe_strtol(target_uname);
+        uid_t target_uid = parsed_uid;
+
+        /* uid_t may be signed or unsigned and may be smaller than
+         * long; try to catch long->(u)int conversion surprises and
+         * avoid calling getpwuid with a negative value though it
+         * should be safe anyway. */
+        if (parsed_uid < 0 || target_uid < 0 || target_uid != parsed_uid
+            || (pw = getpwuid(target_uid)) == NULL) {
             log_err("invalid target user id: (%s)\n", target_uname);
             exit(121);
         }
@@ -433,7 +455,12 @@ int main(int argc, char *argv[])
         }
     }
     else {
-        if ((gr = getgrgid(atoi(target_gname))) == NULL) {
+        long parsed_gid = safe_strtol(target_gname);
+        gid_t target_gid = parsed_gid;
+
+        /* See above on long to uid_t conversion. */
+        if (parsed_gid < 0 || target_gid < 0 || target_gid != parsed_gid
+            || (gr = getgrgid(target_gid)) == NULL) {
             log_err("invalid target group id: (%s)\n", target_gname);
             exit(106);
         }
