@@ -1789,6 +1789,9 @@ static apr_status_t ssl_io_filter_coalesce(ap_filter_t *f,
         }
     }
 
+    /* The prefix is zero or more buckets.  upto now points to the
+     * bucket AFTER the end of the prefix, which may be the brigade
+     * sentinel. */
     upto = e;
 
     /* Coalesce the prefix, if any of the following are true:
