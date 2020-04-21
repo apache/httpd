@@ -1143,7 +1143,7 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
 
 #define SWITCH_STATUS_LINE "HTTP/1.1 101 Switching Protocols"
 #define UPGRADE_HEADER "Upgrade: TLS/1.0, HTTP/1.1"
-#define CONNECTION_HEADER "Connection: Upgrade"
+#define CONNECTION_HEADER "Connection: upgrade"
 
 static apr_status_t ssl_io_filter_Upgrade(ap_filter_t *f,
                                           apr_bucket_brigade *bb)
@@ -1178,7 +1178,7 @@ static apr_status_t ssl_io_filter_Upgrade(ap_filter_t *f,
 
     upgrade = apr_table_get(r->headers_in, "Upgrade");
     if (upgrade == NULL
-        || ap_find_token(r->pool, upgrade, "TLS/1.0")) {
+        || !ap_find_token(r->pool, upgrade, "TLS/1.0")) {
             /* "Upgrade: TLS/1.0, ..." header not found, don't do Upgrade */
         return ap_pass_brigade(f->next, bb);
     }
