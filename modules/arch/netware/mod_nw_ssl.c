@@ -1178,7 +1178,7 @@ static apr_status_t ssl_io_filter_Upgrade(ap_filter_t *f,
 
     upgrade = apr_table_get(r->headers_in, "Upgrade");
     if (upgrade == NULL
-        || strcmp(ap_getword(r->pool, &upgrade, ','), "TLS/1.0")) {
+        || ap_find_token(r->pool, upgrade, "TLS/1.0")) {
             /* "Upgrade: TLS/1.0, ..." header not found, don't do Upgrade */
         return ap_pass_brigade(f->next, bb);
     }
