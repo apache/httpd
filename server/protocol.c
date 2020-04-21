@@ -1430,12 +1430,21 @@ AP_DECLARE(request_rec *) ap_create_request(conn_rec *conn)
     return r;
 }
 
+/* Apply the server's timeout/config to the connection/request. */
+static void apply_server_config(request_rec *r)
+{
+    apr_socket_t *csd;
+
+    csd = ap_get_conn_socket(r->connection);
+    apr_socket_timeout_set(csd, r->server->timeout);
+
+    r->per_dir_config = r->server->lookup_defaults;
+}
+
 request_rec *ap_read_request(conn_rec *conn)
 {
     int access_status;
     apr_bucket_brigade *tmp_bb;
-    apr_socket_t *csd;
-    apr_interval_time_t cur_timeout;
 
     request_rec *r = ap_create_request(conn);
 
@@ -1461,7 +1470,7 @@ request_rec *ap_read_request(conn_rec *conn)
                               "request failed: malformed request line");
             }
             access_status = r->status;
-            goto die_early;
+            goto die_unusable_input;
 
         case HTTP_REQUEST_TIME_OUT:
             /* Just log, no further action on this connection. */
@@ -1481,12 +1490,7 @@ request_rec *ap_read_request(conn_rec *conn)
      * to the normal timeout mode as we fetch the header lines,
      * as necessary.
      */
-    csd = ap_get_conn_socket(conn);
-    apr_socket_timeout_get(csd, &cur_timeout);
-    if (cur_timeout != conn->base_server->timeout) {
-        apr_socket_timeout_set(csd, conn->base_server->timeout);
-        cur_timeout = conn->base_server->timeout;
-    }
+    apply_server_config(r);
 
     if (!r->assbackwards) {
         const char *tenc;
@@ -1497,7 +1501,7 @@ request_rec *ap_read_request(conn_rec *conn)
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00567)
                           "request failed: error reading the headers");
             access_status = r->status;
-            goto die_early;
+            goto die_unusable_input;
         }
 
         tenc = apr_table_get(r->headers_in, "Transfer-Encoding");
@@ -1513,7 +1517,7 @@ request_rec *ap_read_request(conn_rec *conn)
                               "client sent unknown Transfer-Encoding "
                               "(%s): %s", tenc, r->uri);
                 access_status = HTTP_BAD_REQUEST;
-                goto die_early;
+                goto die_unusable_input;
             }
 
             /* http://tools.ietf.org/html/draft-ietf-httpbis-p1-messaging-23
@@ -1526,22 +1530,6 @@ request_rec *ap_read_request(conn_rec *conn)
         }
     }
 
-    if (!ap_check_request_header(r)) {
-        access_status = r->status;
-        goto die_early;
-    }
-
-    /* we may have switched to another server */
-    r->per_dir_config = r->server->lookup_defaults;
-
-    /* Toggle to the Host:-based vhost's timeout mode to fetch the
-     * request body and send the response body, if needed.
-     */
-    if (cur_timeout != r->server->timeout) {
-        apr_socket_timeout_set(csd, r->server->timeout);
-        cur_timeout = r->server->timeout;
-    }
-
     /*
      * Add the HTTP_IN filter here to ensure that ap_discard_request_body
      * called by ap_die and by ap_send_error_response works correctly on
@@ -1550,6 +1538,17 @@ request_rec *ap_read_request(conn_rec *conn)
      */
     ap_add_input_filter_handle(ap_http_input_filter_handle,
                                NULL, r, r->connection);
+
+    /* Validate Host/Expect headers and select vhost. */
+    if (!ap_check_request_header(r)) {
+        /* we may have switched to another server still */
+        apply_server_config(r);
+        access_status = r->status;
+        goto die_before_hooks;
+    }
+
+    /* we may have switched to another server */
+    apply_server_config(r);
 
     if ((access_status = ap_run_post_read_request(r))) {
         goto die;
@@ -1560,7 +1559,9 @@ request_rec *ap_read_request(conn_rec *conn)
                             r->status);
     return r;
 
-die_early:
+    /* Everything falls through on failure */
+
+die_unusable_input:
     /* Input filters are in an undeterminate state, cleanup (including
      * CORE_IN's socket) such that any further attempt to read is EOF.
      */
@@ -1579,21 +1580,25 @@ die_early:
         conn->keepalive = AP_CONN_CLOSE;
     }
 
-    /* fallthru ap_die() (non recursive) */
+die_before_hooks:
+    /* First call to ap_die() (non recursive) */
     r->status = HTTP_OK;
+
 die:
     ap_die(access_status, r);
 
     /* ap_die() sent the response through the output filters, we must now
      * end the request with an EOR bucket for stream/pipeline accounting.
      */
-    tmp_bb = ap_acquire_brigade(conn);
-    APR_BRIGADE_INSERT_TAIL(tmp_bb,
-                            ap_bucket_eor_create(conn->bucket_alloc, r));
-    ap_pass_brigade(conn->output_filters, tmp_bb);
-    ap_release_brigade(conn, tmp_bb);
+    {
+        apr_bucket_brigade *eor_bb;
+        eor_bb = ap_acquire_brigade(conn);
+        APR_BRIGADE_INSERT_TAIL(eor_bb,
+                                ap_bucket_eor_create(conn->bucket_alloc, r));
+        ap_pass_brigade(conn->output_filters, eor_bb);
+        ap_release_brigade(conn, eor_bb);
+    }
 
-    /* fallthru */
 ignore:
     r = NULL;
     AP_READ_REQUEST_FAILURE((uintptr_t)r);

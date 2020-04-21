@@ -289,6 +289,8 @@ request_rec *h2_request_create_rec(const h2_request *req, conn_rec *c)
 
     /* Validate HTTP/1 request and select vhost. */
     if (!ap_parse_request_line(r) || !ap_check_request_header(r)) {
+        /* we may have switched to another server still */
+        r->per_dir_config = r->server->lookup_defaults;
         access_status = r->status;
         r->status = HTTP_OK;
         goto die;
@@ -328,12 +330,12 @@ die:
      * end the request with an EOR bucket for stream/pipeline accounting.
      */
     {
-        apr_bucket_brigade *tmp_bb;
-        tmp_bb = ap_acquire_brigade(c);
-        APR_BRIGADE_INSERT_TAIL(tmp_bb,
+        apr_bucket_brigade *eor_bb;
+        eor_bb = ap_acquire_brigade(c);
+        APR_BRIGADE_INSERT_TAIL(eor_bb,
                                 ap_bucket_eor_create(c->bucket_alloc, r));
-        ap_pass_brigade(c->output_filters, tmp_bb);
-        ap_release_brigade(c, tmp_bb);
+        ap_pass_brigade(c->output_filters, eor_bb);
+        ap_release_brigade(c, eor_bb);
     }
 
     r = NULL;
