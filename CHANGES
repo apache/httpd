@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) config: Allow for environment variable substitution with default value,
+     for when the variable is not defined, using format ${VAR?=default value}.
+     [Yann Ylavic]
+
   *) mod_http2: Fixed regression that no longer set H2_STREAM_ID and H2_STREAM_TAG.
      PR64330 [Stefan Eissing]
 

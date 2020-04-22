@@ -1431,6 +1431,12 @@ AP_DECLARE(const char *) ap_resolve_env(apr_pool_t *p, const char * word)
         if (*s == '$') {
             if (s[1] == '{' && (e = ap_strchr_c(s+2, '}'))) {
                 char *name = apr_pstrmemdup(p, s+2, e-s-2);
+                char *dflt = ap_strstr(name, "?=");
+                if (dflt) {
+                    /* Default value for when var is not defined */
+                    *dflt = '\0';
+                    dflt += 2;
+                }
                 word = NULL;
                 if (server_config_defined_vars)
                     word = apr_table_get(server_config_defined_vars, name);
@@ -1439,6 +1445,11 @@ AP_DECLARE(const char *) ap_resolve_env(apr_pool_t *p, const char * word)
                 if (word) {
                     current->string = word;
                     current->len = strlen(word);
+                    outlen += current->len;
+                }
+                else if (dflt) {
+                    current->string = dflt;
+                    current->len = strlen(dflt);
                     outlen += current->len;
                 }
                 else {

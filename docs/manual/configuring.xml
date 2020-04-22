@@ -81,15 +81,23 @@ Server.</p>
     you may indent directives for clarity. Blank lines are also ignored.</p>
 
     <p>The values of variables defined with the <directive
-    module="core">Define</directive> of or shell environment variables can
-    be used in configuration file lines using the syntax <code>${VAR}</code>.
+    module="core">Define</directive> or of shell environment variables can
+    be used in configuration file lines using the syntax
+    <code>${VAR}</code>.<br />
     If "VAR" is the name of a valid variable, the value of that variable is
     substituted into that spot in the configuration file line, and processing
-    continues as if that text were found directly in the configuration file.
+    continues as if that text were found directly in the configuration
+    file.<br />
     Variables defined with <directive module="core">Define</directive> take
-    precedence over shell environment variables.
-    If the "VAR" variable is not found, the characters <code>${VAR}</code>
-    are left unchanged, and a warning is logged.
+    precedence over shell environment variables.<br />
+    If the "VAR" variable is not defined, the characters <code>${VAR}</code>
+    are left unchanged, and a warning is logged. If instead a default value
+    should be substituted, the conditional form
+    <code>${VAR?=some default value}</code> can be used. Note that a
+    <strong>defined</strong> empty variable will <strong>not</strong> be
+    substituted with the default value, and that an empty default value like
+    in <code>${VAR?=}</code> is a valid substitution (which produces an empty
+    value if "VAR" is not defined, but no warning).<br />
     Variable names may not contain colon ":" characters, to avoid clashes with
     <directive module="mod_rewrite">RewriteMap</directive>'s syntax.</p>
 
