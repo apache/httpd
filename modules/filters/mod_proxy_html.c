@@ -107,7 +107,7 @@ typedef struct {
     const char *doctype;
     const char *etag;
     unsigned int flags;
-    size_t bufsz;
+    int bufsz;
     apr_hash_t *links;
     apr_array_header_t *events;
     const char *charset_out;
