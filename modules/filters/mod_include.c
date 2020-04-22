@@ -4194,17 +4194,14 @@ static const command_rec includes_cmds[] =
                   "SSI End String Tag"),
     AP_INIT_TAKE1("SSIUndefinedEcho", set_undefined_echo, NULL, OR_ALL,
                   "String to be displayed if an echoed variable is undefined"),
-    AP_INIT_FLAG("SSILegacyExprParser", ap_set_flag_slot_char,
-                  (void *)APR_OFFSETOF(include_dir_config, legacy_expr),
+    AP_INIT_FLAG_SCHAR_SLOT("SSILegacyExprParser", include_dir_config, legacy_expr,
                   OR_LIMIT,
                   "Whether to use the legacy expression parser compatible "
                   "with <= 2.2.x. Limited to 'on' or 'off'"),
-    AP_INIT_FLAG("SSILastModified", ap_set_flag_slot_char,
-                  (void *)APR_OFFSETOF(include_dir_config, lastmodified),
+    AP_INIT_FLAG_SCHAR_SLOT("SSILastModified", include_dir_config, lastmodified,
                   OR_LIMIT, "Whether to set the last modified header or respect "
                   "an existing header. Limited to 'on' or 'off'"),
-    AP_INIT_FLAG("SSIEtag", ap_set_flag_slot_char,
-                  (void *)APR_OFFSETOF(include_dir_config, etag),
+    AP_INIT_FLAG_SCHAR_SLOT("SSIEtag", include_dir_config, etag,
                   OR_LIMIT, "Whether to allow the generation of ETags within the server. "
                   "Existing ETags will be preserved. Limited to 'on' or 'off'"),
     {NULL}

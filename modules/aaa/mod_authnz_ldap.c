@@ -1755,12 +1755,12 @@ static const command_rec authnz_ldap_cmds[] =
     AP_INIT_TAKE1("AuthLDAPBindPassword", set_bind_password, NULL, OR_AUTHCFG,
                   "Password to use to bind to LDAP server. If not provided, will do an anonymous bind."),
 
-    AP_INIT_FLAG("AuthLDAPBindAuthoritative", ap_set_flag_slot,
-                  (void *)APR_OFFSETOF(authn_ldap_config_t, bind_authoritative), OR_AUTHCFG,
-                  "Set to 'on' to return failures when user-specific bind fails - defaults to on."),
+    AP_INIT_FLAG_SLOT("AuthLDAPBindAuthoritative", authn_ldap_config_t, bind_authoritative,
+                      OR_AUTHCFG,
+                      "Set to 'on' to return failures when user-specific bind fails - defaults to on."),
 
-    AP_INIT_FLAG("AuthLDAPRemoteUserIsDN", ap_set_flag_slot,
-                 (void *)APR_OFFSETOF(authn_ldap_config_t, user_is_dn), OR_AUTHCFG,
+    AP_INIT_FLAG_SLOT("AuthLDAPRemoteUserIsDN", authn_ldap_config_t, user_is_dn,
+                 OR_AUTHCFG,
                  "Set to 'on' to set the REMOTE_USER environment variable to be the full "
                  "DN of the remote user. By default, this is set to off, meaning that "
                  "the REMOTE_USER variable will contain whatever value the remote user sent."),
@@ -1771,8 +1771,8 @@ static const command_rec authnz_ldap_cmds[] =
                  "contents of this attribute in the REMOTE_USER "
                  "environment variable."),
 
-    AP_INIT_FLAG("AuthLDAPCompareDNOnServer", ap_set_flag_slot,
-                 (void *)APR_OFFSETOF(authn_ldap_config_t, compare_dn_on_server), OR_AUTHCFG,
+    AP_INIT_FLAG_SLOT("AuthLDAPCompareDNOnServer", authn_ldap_config_t,
+                      compare_dn_on_server, OR_AUTHCFG,
                  "Set to 'on' to force auth_ldap to do DN compares (for the \"require dn\" "
                  "directive) using the server, and set it 'off' to do the compares locally "
                  "(at the expense of possible false matches). See the documentation for "
@@ -1793,8 +1793,8 @@ static const command_rec authnz_ldap_cmds[] =
                     "A list of attribute labels used to identify the user members of groups - defaults to "
                     "member and uniquemember"),
 
-    AP_INIT_FLAG("AuthLDAPGroupAttributeIsDN", ap_set_flag_slot,
-                 (void *)APR_OFFSETOF(authn_ldap_config_t, group_attrib_is_dn), OR_AUTHCFG,
+    AP_INIT_FLAG_SLOT("AuthLDAPGroupAttributeIsDN", authn_ldap_config_t, group_attrib_is_dn,
+                 OR_AUTHCFG,
                  "If set to 'on', auth_ldap uses the DN that is retrieved from the server for "
                  "subsequent group comparisons. If set to 'off', auth_ldap uses the string "
                  "provided by the client directly. Defaults to 'on'."),
@@ -1813,20 +1813,17 @@ static const command_rec authnz_ldap_cmds[] =
                   "The prefix to add to environment variables set during "
                   "successful authorization, default '" AUTHZ_PREFIX "'"),
 
-    AP_INIT_FLAG("AuthLDAPInitialBindAsUser", ap_set_flag_slot,
-                 (void *)APR_OFFSETOF(authn_ldap_config_t, initial_bind_as_user), OR_AUTHCFG,
+    AP_INIT_FLAG_SLOT("AuthLDAPInitialBindAsUser", authn_ldap_config_t, initial_bind_as_user, OR_AUTHCFG,
                  "Set to 'on' to perform the initial DN lookup with the basic auth credentials "
                  "instead of anonymous or hard-coded credentials"),
 
      AP_INIT_TAKE2("AuthLDAPInitialBindPattern", set_bind_pattern, NULL, OR_AUTHCFG,
                    "The regex and substitution to determine a username that can bind based on an HTTP basic auth username"),
 
-     AP_INIT_FLAG("AuthLDAPSearchAsUser", ap_set_flag_slot,
-                  (void *)APR_OFFSETOF(authn_ldap_config_t, search_as_user), OR_AUTHCFG,
+     AP_INIT_FLAG_SLOT("AuthLDAPSearchAsUser", authn_ldap_config_t, search_as_user, OR_AUTHCFG,
                   "Set to 'on' to perform authorization-based searches with the users credentials, when this module "
                   "has also performed authentication.  Does not affect nested groups lookup."),
-     AP_INIT_FLAG("AuthLDAPCompareAsUser", ap_set_flag_slot,
-                  (void *)APR_OFFSETOF(authn_ldap_config_t, compare_as_user), OR_AUTHCFG,
+     AP_INIT_FLAG_SLOT("AuthLDAPCompareAsUser", authn_ldap_config_t, compare_as_user, OR_AUTHCFG,
                   "Set to 'on' to perform authorization-based compares with the users credentials, when this module "
                   "has also performed authentication.  Does not affect nested groups lookups."),
     {NULL}
