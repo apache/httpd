@@ -156,7 +156,7 @@ typedef union {
 # define AP_INIT_FLAG(directive, func, mconfig, where, help) \
     { directive, { .flag=func }, mconfig, where, FLAG, help }
 
-#ifdef __GNUC__
+#if __STDC_VERSION__ >= 201112L
 /* Gives a compile-time error if types of actual and expected
  * arguments are not the same match, otherwise expands to results. */
 # define AP_INIT_CHECKED_TYPE(actual, expected, result) _Generic(actual, expected: result)
