@@ -29,6 +29,7 @@
 #include "util_cfgtree.h"
 #include "ap_config.h"
 #include "apr_tables.h"
+#include "apr_general.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -155,6 +156,40 @@ typedef union {
 # define AP_INIT_FLAG(directive, func, mconfig, where, help) \
     { directive, { .flag=func }, mconfig, where, FLAG, help }
 
+#ifdef __GNUC__
+/* Gives a compile-time error if types of actual and expected
+ * arguments are not the same match, otherwise expands to results. */
+# define AP_INIT_CHECKED_TYPE(actual, expected, result) _Generic(actual, expected: result)
+#else
+# define AP_INIT_CHECKED_TYPE(actual, expected, result) result
+#endif
+
+# define AP_INIT_TAKE1_INT_SLOT(directive, structname, fieldname, where, help) \
+    { directive, { .take1=ap_set_int_slot }, \
+            AP_INIT_CHECKED_TYPE(((structname *)0)->fieldname, int,    \
+                                 (void *)APR_OFFSETOF(structname, fieldname)), \
+     where, TAKE1, help }
+# define AP_INIT_TAKE1_STR_SLOT(directive, structname, fieldname, where, help) \
+    { directive, { .take1=ap_set_string_slot }, \
+            AP_INIT_CHECKED_TYPE(((structname *)0)->fieldname, const char *,     \
+                                 (void *)APR_OFFSETOF(structname, fieldname)), \
+     where, TAKE1, help }
+# define AP_INIT_FLAG_SLOT(directive, structname, fieldname, where, help) \
+    { directive, { .flag=ap_set_flag_slot },                            \
+        AP_INIT_CHECKED_TYPE(((structname *)0)->fieldname, int,         \
+                             (void *)APR_OFFSETOF(structname, fieldname)), \
+            where, FLAG, help }
+# define AP_INIT_FLAG_CHAR_SLOT(directive, structname, fieldname, where, help) \
+    { directive, { .flag=ap_set_flag_slot_char },                            \
+        AP_INIT_CHECKED_TYPE(((structname *)0)->fieldname, char,         \
+                             (void *)APR_OFFSETOF(structname, fieldname)), \
+            where, FLAG, help }
+# define AP_INIT_FLAG_SCHAR_SLOT(directive, structname, fieldname, where, help) \
+    { directive, { .flag=ap_set_flag_slot_char },                            \
+        AP_INIT_CHECKED_TYPE(((structname *)0)->fieldname, signed char,         \
+                             (void *)APR_OFFSETOF(structname, fieldname)), \
+            where, FLAG, help }
+
 #else /* AP_HAVE_DESIGNATED_INITIALIZER */
 
 typedef const char *(*cmd_func) ();
@@ -193,6 +228,21 @@ typedef const char *(*cmd_func) ();
     { directive, func, mconfig, where, TAKE3, help }
 # define AP_INIT_FLAG(directive, func, mconfig, where, help) \
     { directive, func, mconfig, where, FLAG, help }
+# define AP_INIT_TAKE1_INT_SLOT(directive, structname, fieldname, where, help) \
+    { directive, ap_set_int_slot }, (void *)APR_OFFSETOF(structname, fieldname)), \
+     where, TAKE1, help }
+# define AP_INIT_TAKE1_STR_SLOT(directive, structname, fieldname, where, help) \
+    { directive, ap_set_string_slot }, (void *)APR_OFFSETOF(structname, fieldname)), \
+     where, TAKE1, help }
+# define AP_INIT_FLAG_SLOT(directive, structname, fieldname, where, help) \
+    { directive, ap_set_flag_slot, (void *)APR_OFFSETOF(structname, fieldname), \
+      where, FLAG, help }
+# define AP_INIT_FLAG_CHAR_SLOT(directive, structname, fieldname, where, help) \
+    { directive, ap_set_flag_slot_char, APR_OFFSETOF(structname, fieldname)), \
+        where, FLAG, help }
+# define AP_INIT_FLAG_SCHAR_SLOT(directive, structname, fieldname, where, help) \
+    { directive, ap_set_flag_slot_char, APR_OFFSETOF(structname, fieldname)), \
+        where, FLAG, help }
 
 #endif /* AP_HAVE_DESIGNATED_INITIALIZER */
 
