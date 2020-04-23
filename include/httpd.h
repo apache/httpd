@@ -2347,7 +2347,7 @@ AP_DECLARE(void) ap_bin2hex(const void *src, apr_size_t srclen, char *dest);
 
 /**
  * Short function to execute a command and return the first line of
- * output minus \r \n. Useful for "obscuring" passwords via exec calls
+ * output minus \\r \\n. Useful for "obscuring" passwords via exec calls
  * @param p the pool to allocate from
  * @param cmd the command to execute
  * @param argv the arguments to pass to the cmd

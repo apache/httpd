@@ -31,9 +31,9 @@ PROXY_DECLARE(int) ap_proxy_is_domainname(struct dirconn_entry *This, apr_pool_t
 PROXY_DECLARE(int) ap_proxy_is_hostname(struct dirconn_entry *This, apr_pool_t *p);
 PROXY_DECLARE(int) ap_proxy_is_word(struct dirconn_entry *This, apr_pool_t *p);
 
-PROXY_DECLARE_DATA extern int proxy_lb_workers;
-PROXY_DECLARE_DATA extern const apr_strmatch_pattern *ap_proxy_strmatch_path;
-PROXY_DECLARE_DATA extern const apr_strmatch_pattern *ap_proxy_strmatch_domain;
+extern PROXY_DECLARE_DATA int proxy_lb_workers;
+extern PROXY_DECLARE_DATA const apr_strmatch_pattern *ap_proxy_strmatch_path;
+extern PROXY_DECLARE_DATA const apr_strmatch_pattern *ap_proxy_strmatch_domain;
 
 /**
  * Register optional functions declared within proxy_util.c.

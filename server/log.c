@@ -341,8 +341,10 @@ static int log_child(apr_pool_t *p, const char *progname,
                 rc = apr_procattr_child_err_set(procattr, errfile, NULL);
         }
 
-        rc = apr_proc_create(procnew, args[0], (const char * const *)args,
-                             NULL, procattr, p);
+        if (rc == APR_SUCCESS) {
+            rc = apr_proc_create(procnew, args[0], (const char * const *)args,
+                                 NULL, procattr, p);
+        }
 
         if (rc == APR_SUCCESS) {
             apr_pool_note_subprocess(p, procnew, APR_KILL_AFTER_TIMEOUT);

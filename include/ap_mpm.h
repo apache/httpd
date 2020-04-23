@@ -88,6 +88,7 @@ extern "C" {
  * @param plog the log pool, reset after the config file is read
  * @param server_conf the global server config.
  * @return DONE for shutdown OK otherwise.
+ * @ingroup hooks
  */
 AP_DECLARE_HOOK(int, mpm, (apr_pool_t *pconf, apr_pool_t *plog, server_rec *server_conf))
 
@@ -113,42 +114,75 @@ AP_DECLARE(apr_status_t) ap_os_create_privileged_process(
     apr_procattr_t *attr,
     apr_pool_t *p);
 
-/* Subtypes/Values for AP_MPMQ_IS_THREADED and AP_MPMQ_IS_FORKED        */
-#define AP_MPMQ_NOT_SUPPORTED      0  /* This value specifies that an */
-                                      /* MPM is not capable of        */
-                                      /* threading or forking.        */
-#define AP_MPMQ_STATIC             1  /* This value specifies that    */
-                                      /* an MPM is using a static     */
-                                      /* number of threads or daemons */
-#define AP_MPMQ_DYNAMIC            2  /* This value specifies that    */
-                                      /* an MPM is using a dynamic    */
-                                      /* number of threads or daemons */
+/** @defgroup mpmq MPM query
+ * @{
+ */
 
-/* Values returned for AP_MPMQ_MPM_STATE */
+/** @defgroup thrdfrk Subtypes/Values returned for AP_MPMQ_IS_THREADED and AP_MPMQ_IS_FORKED
+ *  @ingroup mpmq
+ *  @{
+ */
+#define AP_MPMQ_NOT_SUPPORTED      0  /**< This value specifies that an
+                                       * MPM is not capable of
+                                       * threading or forking.        */
+#define AP_MPMQ_STATIC             1  /**< This value specifies that
+                                       * an MPM is using a static
+                                       * number of threads or daemons */
+#define AP_MPMQ_DYNAMIC            2  /**< This value specifies that
+                                       * an MPM is using a dynamic
+                                       * number of threads or daemons */
+/** @} */
+
+/** @defgroup qstate Values returned for AP_MPMQ_MPM_STATE
+ *  @ingroup mpmq
+ *  @{
+ */
 #define AP_MPMQ_STARTING              0
 #define AP_MPMQ_RUNNING               1
 #define AP_MPMQ_STOPPING              2
+/** @} */
 
-#define AP_MPMQ_MAX_DAEMON_USED       1  /* Max # of daemons used so far */
-#define AP_MPMQ_IS_THREADED           2  /* MPM can do threading         */
-#define AP_MPMQ_IS_FORKED             3  /* MPM can do forking           */
-#define AP_MPMQ_HARD_LIMIT_DAEMONS    4  /* The compiled max # daemons   */
-#define AP_MPMQ_HARD_LIMIT_THREADS    5  /* The compiled max # threads   */
-#define AP_MPMQ_MAX_THREADS           6  /* # of threads/child by config */
-#define AP_MPMQ_MIN_SPARE_DAEMONS     7  /* Min # of spare daemons       */
-#define AP_MPMQ_MIN_SPARE_THREADS     8  /* Min # of spare threads       */
-#define AP_MPMQ_MAX_SPARE_DAEMONS     9  /* Max # of spare daemons       */
-#define AP_MPMQ_MAX_SPARE_THREADS    10  /* Max # of spare threads       */
-#define AP_MPMQ_MAX_REQUESTS_DAEMON  11  /* Max # of requests per daemon */
-#define AP_MPMQ_MAX_DAEMONS          12  /* Max # of daemons by config   */
-#define AP_MPMQ_MPM_STATE            13  /* starting, running, stopping  */
-#define AP_MPMQ_IS_ASYNC             14  /* MPM can process async connections  */
-#define AP_MPMQ_GENERATION           15  /* MPM generation */
-#define AP_MPMQ_HAS_SERF             16  /* MPM can drive serf internally  */
+/** @defgroup qcodes Query codes for ap_mpm_query()
+ *  @ingroup mpmq
+ *  @{
+ */
+/** Max # of daemons used so far */
+#define AP_MPMQ_MAX_DAEMON_USED       1
+/** MPM can do threading         */
+#define AP_MPMQ_IS_THREADED           2
+/** MPM can do forking           */
+#define AP_MPMQ_IS_FORKED             3
+/** The compiled max # daemons   */
+#define AP_MPMQ_HARD_LIMIT_DAEMONS    4
+/** The compiled max # threads   */
+#define AP_MPMQ_HARD_LIMIT_THREADS    5
+/** \# of threads/child by config */
+#define AP_MPMQ_MAX_THREADS           6
+/** Min # of spare daemons       */
+#define AP_MPMQ_MIN_SPARE_DAEMONS     7
+/** Min # of spare threads       */
+#define AP_MPMQ_MIN_SPARE_THREADS     8
+/** Max # of spare daemons       */
+#define AP_MPMQ_MAX_SPARE_DAEMONS     9
+/** Max # of spare threads       */
+#define AP_MPMQ_MAX_SPARE_THREADS    10
+/** Max # of requests per daemon */
+#define AP_MPMQ_MAX_REQUESTS_DAEMON  11
+/** Max # of daemons by config   */
+#define AP_MPMQ_MAX_DAEMONS          12
+/** starting, running, stopping  */
+#define AP_MPMQ_MPM_STATE            13
+/** MPM can process async connections  */
+#define AP_MPMQ_IS_ASYNC             14
+/** MPM generation */
+#define AP_MPMQ_GENERATION           15
+/** MPM can drive serf internally  */
+#define AP_MPMQ_HAS_SERF             16
+/** @} */
 
 /**
  * Query a property of the current MPM.
- * @param query_code One of APM_MPMQ_*
+ * @param query_code One of AP_MPMQ_*
  * @param result A location to place the result of the query
  * @return APR_EGENERAL if an mpm-query hook has not been registered;
  * APR_SUCCESS or APR_ENOTIMPL otherwise
@@ -159,6 +193,7 @@ AP_DECLARE(apr_status_t) ap_os_create_privileged_process(
  */
 AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result);
 
+/** @} */
 
 typedef void (ap_mpm_callback_fn_t)(void *baton);
 
@@ -191,6 +226,7 @@ typedef enum mpm_child_status {
  * scoreboard slot.
  * @param state One of the mpm_child_status values.  Modules should ignore
  * unrecognized values.
+ * @ingroup hooks
  */
 AP_DECLARE_HOOK(void,child_status,(server_rec *s, pid_t pid, ap_generation_t gen,
                                    int slot, mpm_child_status state))
@@ -201,6 +237,7 @@ AP_DECLARE_HOOK(void,child_status,(server_rec *s, pid_t pid, ap_generation_t gen
  *
  * @param s The main server_rec.
  * @param gen The server generation which is now completely finished.
+ * @ingroup hooks
  */
 AP_DECLARE_HOOK(void,end_generation,(server_rec *s, ap_generation_t gen))
 
@@ -224,6 +261,14 @@ typedef struct ap_exception_info_t {
     pid_t pid;
 } ap_exception_info_t;
 
+/**
+ * Run the fatal_exception hook for each module; this hook is run
+ * from some MPMs in the event of a child process crash, if the
+ * server was built with --enable-exception-hook and the
+ * EnableExceptionHook directive is On.
+ * @param ei information about the exception
+ * @ingroup hooks
+ */
 AP_DECLARE_HOOK(int,fatal_exception,(ap_exception_info_t *ei))
 #endif /*AP_ENABLE_EXCEPTION_HOOK*/
 

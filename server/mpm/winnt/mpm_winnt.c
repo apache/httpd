@@ -586,10 +586,10 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
             return -1;
         }
 
-        args = malloc((ap_server_conf->process->argc + 1) * sizeof (char*));
+        args = ap_malloc((ap_server_conf->process->argc + 1) * sizeof (char*));
         memcpy(args + 1, ap_server_conf->process->argv + 1,
                (ap_server_conf->process->argc - 1) * sizeof (char*));
-        args[0] = malloc(strlen(cmd) + 1);
+        args[0] = ap_malloc(strlen(cmd) + 1);
         strcpy(args[0], cmd);
         args[ap_server_conf->process->argc] = NULL;
     }

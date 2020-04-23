@@ -135,31 +135,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) Easy patches: synch 2.4.x and trunk
-        - core/log: don't ignore some apr_procattr failures (clang scan-build)
-        - doxygen improvements
-        - core: Standardize order of "extern" and XXX_DECLARE_YYY
-        - mod_mime_magic: Fix some compilation warning when MIME_MAGIC_DEBUG is defined.
-        - mod_alias: style: cmd_rec at the bottom
-        - core: Fix a typo in a message
-        - mpm_winnt: malloc -> ap_malloc
-        - mod_usertrack: Slighly simplify code
-        - code: Parentheses around AP_BUCKET_IS_EOR argument
-        - mod_dialup: Fix a typo
-     trunk patch:
-        - http://svn.apache.org/r1534995
-        - http://svn.apache.org/r1560482
-        - http://svn.apache.org/r1728779
-        - http://svn.apache.org/r1805491
-        - http://svn.apache.org/r1861528
-        - http://svn.apache.org/r1868016
-        - http://svn.apache.org/r1874470
-        - http://svn.apache.org/r1874602
-        - http://svn.apache.org/r1875769
-        - http://svn.apache.org/r1875811
-     2.4.x patch: svn merge -c 1534995,1560482,1728779,1805491,1861528,1868016,1874470,1874602,1875769,1875811 ^/httpd/httpd/trunk . 
-     +1: jailletc36, gbechis, jim
-
   *) core: default_handler: cleanup outputed brigade before leaving.
      trunk patch:
         - http://svn.apache.org/r1783041

@@ -589,7 +589,7 @@ AP_DECLARE_DATA extern const apr_bucket_type_t ap_bucket_type_eor;
  * @param e The bucket to inspect
  * @return true or false
  */
-#define AP_BUCKET_IS_EOR(e)         (e->type == &ap_bucket_type_eor)
+#define AP_BUCKET_IS_EOR(e)         ((e)->type == &ap_bucket_type_eor)
 
 /**
  * Make the bucket passed in an End Of REQUEST (EOR) bucket
