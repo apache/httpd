@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.44
 
+  *) core: httpd is no longer linked against -lsystemd if mod_systemd
+     is enabled (and built as a DSO).  [Rainer Jung]
+
 Changes with Apache 2.4.43
 
   *) mod_ssl: Fix memory leak of OCSP stapling response. [Yann Ylavic]
