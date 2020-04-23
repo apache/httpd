@@ -169,7 +169,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch:
        - http://svn.apache.org/r1876548
      2.4.x patch: svn merge -c 1876548 ^/httpd/httpd/trunk .
-     +1: gbechis
+     +1: gbechis, jorton
 
   *) mod_systemd: library dependency SYSTEMD_LIBS only needed for
      the module, not for httpd. This differs from trunk.
@@ -177,7 +177,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      because Unix build system is not CTR.
      trunk patch: does not apply
      2.4.x patch: svn diff -c r1876870
-     +1: rjung, jim
+     +1: rjung, jim, jorton
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
