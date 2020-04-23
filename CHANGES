@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) core: Add optional "options=" argument to Listen.  Supported
+     keywords are "freebind" and "reuseport".  PR 61865.
+     [Jan Kaluza, Lubos Uhliarik <luhliari redhat.com>, Joe Orton]
+
   *) config: Allow for environment variable substitution with default value,
      for when the variable is not defined, using format ${VAR?=default value}.
      [Yann Ylavic]

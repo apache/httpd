@@ -150,7 +150,8 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server, int do_bind_
 #endif
 
 #if defined(SO_REUSEPORT)
-    if (ap_have_so_reuseport && ap_listencbratio > 0) {
+    if (server->flags & AP_LISTEN_REUSEPORT
+        || (ap_have_so_reuseport && ap_listencbratio > 0)) {
         int thesock;
         apr_os_sock_get(&thesock, s);
         if (setsockopt(thesock, SOL_SOCKET, SO_REUSEPORT,
@@ -165,6 +166,21 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server, int do_bind_
         }
     }
 #endif
+
+
+#if defined(APR_SO_FREEBIND)
+    if (server->flags & AP_LISTEN_FREEBIND) {
+        if (apr_socket_opt_set(s, APR_SO_FREEBIND, one) < 0) {
+            stat = apr_get_netos_error();
+            ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p, APLOGNO()
+                          "make_sock: apr_socket_opt_set: "
+                          "error setting APR_SO_FREEBIND");
+            apr_socket_close(s);
+            return stat;
+        }
+    }
+#endif
+
 
     if (do_bind_listen) {
 #if APR_HAVE_IPV6
@@ -467,7 +483,7 @@ static int find_listeners(ap_listen_rec **from, ap_listen_rec **to,
 static const char *alloc_listener(process_rec *process, const char *addr,
                                   apr_port_t port, const char* proto,
                                   const char *scope_id, void *slave,
-                                  apr_pool_t *temp_pool)
+                                  apr_pool_t *temp_pool, apr_uint32_t flags)
 {
     ap_listen_rec *last;
     apr_status_t status;
@@ -511,6 +527,7 @@ static const char *alloc_listener(process_rec *process, const char *addr,
         new->next = 0;
         new->bind_addr = sa;
         new->protocol = apr_pstrdup(process->pool, proto);
+        new->flags = flags;
 
         /* Go to the next sockaddr. */
         sa = sa->next;
@@ -795,7 +812,7 @@ AP_DECLARE(int) ap_setup_listeners(server_rec *s)
     }
 
     for (lr = ap_listeners; lr; lr = lr->next) {
-        lr->use_specific_errors = ap_accept_errors_nonfatal;
+        if (ap_accept_errors_nonfatal) lr->flags |= AP_LISTEN_SPECIFIC_ERRORS;
         num_listeners++;
         found = 0;
         for (ls = s; ls && !found; ls = ls->next) {
@@ -885,6 +902,7 @@ AP_DECLARE(apr_status_t) ap_duplicate_listeners(apr_pool_t *p, server_rec *s,
                 apr_sockaddr_info_get(&sa, hostname, APR_UNSPEC, port, 0, p);
                 duplr->bind_addr = sa;
                 duplr->next = NULL;
+                duplr->flags = lr->flags;
                 stat = apr_socket_create(&duplr->sd, duplr->bind_addr->family,
                                          SOCK_STREAM, 0, p);
                 if (stat != APR_SUCCESS) {
@@ -1015,20 +1033,48 @@ AP_DECLARE(int) ap_accept_error_is_nonfatal(apr_status_t status)
              || APR_STATUS_IS_ECONNRESET(status);
 }
 
+/* Parse optional flags argument for Listen.  Currently just boolean
+ * flags handled; would need to be extended to incorporate
+ * ListenBacklog */
+static const char *parse_listen_flags(apr_pool_t *temp_pool, const char *arg,
+                                      apr_uint32_t *flags_out)
+{
+    apr_uint32_t flags = 0;
+    char *str = apr_pstrdup(temp_pool, arg), *token, *state = NULL;
+
+    token = apr_strtok(str, ",", &state);
+    while (token) {
+        if (ap_cstr_casecmp(token, "freebind") == 0)
+            flags |= AP_LISTEN_FREEBIND;
+        else if (ap_cstr_casecmp(token, "reuseport") == 0)
+            flags |= AP_LISTEN_REUSEPORT;
+        else
+            return apr_psprintf(temp_pool, "Unknown Listen option '%s' in '%s'",
+                                token, arg);
+
+        token = apr_strtok(NULL, ",", &state);
+    }
+
+    *flags_out = flags;
+
+    return NULL;
+}
+
 AP_DECLARE_NONSTD(const char *) ap_set_listener(cmd_parms *cmd, void *dummy,
                                                 int argc, char *const argv[])
 {
-    char *host, *scope_id, *proto;
+    char *host, *scope_id, *proto = NULL;
     apr_port_t port;
     apr_status_t rv;
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    apr_uint32_t flags = 0;
 
     if (err != NULL) {
         return err;
     }
 
-    if (argc < 1 || argc > 2) {
-        return "Listen requires 1 or 2 arguments.";
+    if (argc < 1 || argc > 3) {
+        return "Listen requires 1-3 arguments.";
     }
 #ifdef HAVE_SYSTEMD
     if (use_systemd == -1) {
@@ -1058,16 +1104,48 @@ AP_DECLARE_NONSTD(const char *) ap_set_listener(cmd_parms *cmd, void *dummy,
         return "Port must be specified";
     }
 
-    if (argc != 2) {
+    if (argc == 3) {
+        if (strncasecmp(argv[2], "options=", 8)) {
+            return "Third argument to Listen must be options=...";
+        }
+
+        err = parse_listen_flags(cmd->temp_pool, argv[2] + 8, &flags);
+        if (err) {
+            return err;
+        }
+
+        proto = argv[1];
+    }
+
+    if (argc == 2) {
+        /* 2-arg form is either 'Listen host:port options=...' or
+         * 'Listen host:port protocol' */
+        if (strncasecmp(argv[1], "options=", 8) == 0) {
+            err = parse_listen_flags(cmd->temp_pool, argv[1] + 8, &flags);
+            if (err) {
+                return err;
+            }
+        }
+        else {
+            proto = argv[1];
+        }
+    }
+
+    /* Catch case where 2-arg form has typoed options=X and doesn't
+     * match above. */
+    if (proto && ap_strchr_c(proto, '=') != NULL) {
+        return apr_psprintf(cmd->pool, "Invalid protocol name '%s'", proto);
+    }
+    else if (proto) {
+        proto = apr_pstrdup(cmd->pool, proto);
+        ap_str_tolower(proto);
+    }
+    else {
         if (port == 443) {
             proto = "https";
         } else {
             proto = "http";
         }
-    }
-    else {
-        proto = apr_pstrdup(cmd->pool, argv[1]);
-        ap_str_tolower(proto);
     }
 
 #ifdef HAVE_SYSTEMD
@@ -1077,7 +1155,7 @@ AP_DECLARE_NONSTD(const char *) ap_set_listener(cmd_parms *cmd, void *dummy,
 #endif
 
     return alloc_listener(cmd->server->process, host, port, proto,
-                          scope_id, NULL, cmd->temp_pool);
+                          scope_id, NULL, cmd->temp_pool, flags);
 }
 
 AP_DECLARE_NONSTD(const char *) ap_set_listenbacklog(cmd_parms *cmd,

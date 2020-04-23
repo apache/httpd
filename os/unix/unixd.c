@@ -323,7 +323,7 @@ AP_DECLARE(apr_status_t) ap_unixd_accept(void **accepted, ap_listen_rec *lr,
     }
   
     /* Let the caller handle slightly more varied return values */
-    if (lr->use_specific_errors && ap_accept_error_is_nonfatal(status)) { 
+    if ((lr->flags & AP_LISTEN_SPECIFIC_ERRORS) && ap_accept_error_is_nonfatal(status)) {
         return status;
     }
 

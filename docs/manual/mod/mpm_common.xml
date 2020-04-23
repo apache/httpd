@@ -182,12 +182,13 @@ of the daemon</description>
 <name>Listen</name>
 <description>IP addresses and ports that the server
 listens to</description>
-<syntax>Listen [<var>IP-address</var>:]<var>portnumber</var> [<var>protocol</var>]</syntax>
+<syntax>Listen [<var>IP-address</var>:]<var>portnumber</var> [<var>protocol</var>] [options=<var>flag</var>[,<var>flag..</var>]]</syntax>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>event</module><module>worker</module>
 <module>prefork</module><module>mpm_winnt</module>
 <module>mpm_netware</module><module>mpmt_os2</module>
 </modulelist>
+<compatibility>The optional <code>options=</code> argument is available in httpd 2.5.1 and later.</compatibility>
 
 <usage>
     <p>The <directive>Listen</directive> directive instructs Apache httpd to
@@ -254,8 +255,25 @@ Listen 192.170.2.5:8000
       Listen 192.170.2.1:8443 https
     </highlight>
 
+    <p>The optional <var>options=flag,flag...</var> argument can be
+    used to enable certain socket options for the listening port.
+    These options are not required for most configurations and should
+    be used with care.  Availability of each flag varies across
+    operating systems.  The available <em>flag</em>s are:</p>
+
+    <ul>
+      <li><code>freebind</code>: The <code>IP_FREEBIND</code> socket
+      option is enabled, allowing a Listen directive to be used for an
+      address which is not (yet) available on the system. (Linux
+      only)</li>
+
+      <li><code>reuseport</code>: The <code>SO_REUSEPORT</code> socket
+      option is enabled, allowing a Listen directive to bind to a port
+      which may already be in use by another process.</li>
+    </ul>
+       
     <note><title>Error condition</title>
-      Multiple <directive>Listen</directive> directives for the same ip
+      Multiple <directive>Listen</directive> directives for the same IP
       address and port will result in an <code>Address already in use</code>
       error message.
     </note>
