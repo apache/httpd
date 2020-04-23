@@ -135,28 +135,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
-  *) core: avoid duplicate headers when using ap_send_error_response.
-           From trunk's testing the code seems running fine without any side
-           effects, so adding this change in here to have more reviews.
-     trunk patch: http://svn.apache.org/r1832092
-     2.4.x patch: svn merge -c 1832092 ^/httpd/httpd/trunk .
-     +1: elukey
-     +0.5: icing: as I read this, the change preserves the special status of headers in
-         ->err_headers_out, since swapping the tables makes former error headers normal ones.
-         But it is hard to see of this was ever intentional or not. Lack of regressions
-         in testing may meaning someone out there relies on the former, unverified
-         behaviour. OTOH, it fixes and error you saw and added test for. So, I am cautiously
-         for the change.
-     elukey: PR 62025 seems another use case that gets fixed using this patch
-             (still need to get feedback from the reporter but on my local env it solves the problem).
-     elukey: If anybody has time to review this change it would be great, to know if it needs to be reverted,
-             reworked, etc.. I would like to avoid a patch that is clearly wrong for some reviewer sitting here for
-             months/years without any action item :)
-     ylavic: will look at it ASAP..
-
   *) Easy patches: synch 2.4.x and trunk
         - core/log: don't ignore some apr_procattr failures (clang scan-build)
         - doxygen improvements
@@ -207,6 +185,29 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        - http://svn.apache.org/r1876616
      2.4.x patch: svn merge -c 1876616 ^/httpd/httpd/trunk .
      +1: steffenal, rpluem, gbechis, jim
+
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
+
+  *) core: avoid duplicate headers when using ap_send_error_response.
+           From trunk's testing the code seems running fine without any side
+           effects, so adding this change in here to have more reviews.
+     trunk patch: http://svn.apache.org/r1832092
+     2.4.x patch: svn merge -c 1832092 ^/httpd/httpd/trunk .
+     +1: elukey
+     +0.5: icing: as I read this, the change preserves the special status of headers in
+         ->err_headers_out, since swapping the tables makes former error headers normal ones.
+         But it is hard to see of this was ever intentional or not. Lack of regressions
+         in testing may meaning someone out there relies on the former, unverified
+         behaviour. OTOH, it fixes and error you saw and added test for. So, I am cautiously
+         for the change.
+     elukey: PR 62025 seems another use case that gets fixed using this patch
+             (still need to get feedback from the reporter but on my local env it solves the problem).
+     elukey: If anybody has time to review this change it would be great, to know if it needs to be reverted,
+             reworked, etc.. I would like to avoid a patch that is clearly wrong for some reviewer sitting here for
+             months/years without any action item :)
+     ylavic: will look at it ASAP..
 
   *) mod_ssl: Fix memory leak in stapling code. PR63687.
      trunk patch:
