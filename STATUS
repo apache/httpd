@@ -135,12 +135,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_reqtimeout: cannot override default Virtualhost's mod_reqtimeout. PR64295
-     trunk patch:
-       - http://svn.apache.org/r1876540
-     2.4.x patch: svn merge -c 1876540 ^/httpd/httpd/trunk .
-     +1: jfclere, rpluem, jim
-
   *) mod_http2: Fixed regression that no longer set H2_STREAM_ID and H2_STREAM_TAG.
      PR64330 [Stefan Eissing]
      trunk patch:
