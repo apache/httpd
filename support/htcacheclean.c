@@ -684,8 +684,18 @@ static int process_dir(char *path, apr_pool_t *pool, apr_off_t *nodes)
         }
 
         if (info.filetype == APR_DIR) {
+            char *dirpath = apr_pstrdup(p, d->basename);
+
             if (process_dir(d->basename, pool, nodes)) {
                 return 1;
+            }
+            /* When given the -t option htcacheclean does not
+             * delete directories that are already empty, so we'll do that here
+             * since process_dir checks all the directories.
+             * If it fails, it likely means there was something else there.
+             */
+            if (deldirs && !dryrun) {
+                apr_dir_remove(dirpath, p);
             }
             continue;
         }

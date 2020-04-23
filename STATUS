@@ -135,19 +135,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) core: default_handler: cleanup outputed brigade before leaving.
-     trunk patch:
-        - http://svn.apache.org/r1783041
-     2.4.x patch: svn merge -c 1783041 ^/httpd/httpd/trunk . 
-     +1: jailletc36, rpluem, jim
-
-  *) htcacheclean: Empty directories in CacheRoot are still present even after using "-t". PR64313
-     trunk patch:
-       - http://svn.apache.org/r1876484
-       - http://svn.apache.org/r1876493
-     2.4.x patch: svn merge -c 1876484,1876493 ^/httpd/httpd/trunk .
-     +1: jfclere, rpluem, jim
-
   *) mod_reqtimeout: cannot override default Virtualhost's mod_reqtimeout. PR64295
      trunk patch:
        - http://svn.apache.org/r1876540
