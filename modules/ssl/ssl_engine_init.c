@@ -1092,8 +1092,8 @@ static apr_status_t ssl_init_ctx_crl(server_rec *s,
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01900)
                  "Configuring certificate revocation facility");
 
-    if (!store || modssl_X509_STORE_load_locations(store, mctx->crl_file,
-                                                          mctx->crl_path)) {
+    if (!store || !modssl_X509_STORE_load_locations(store, mctx->crl_file,
+                                                           mctx->crl_path)) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(01901)
                      "Host %s: unable to configure X.509 CRL storage "
                      "for certificate revocation", mctx->sc->vhost_id);
