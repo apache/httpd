@@ -613,10 +613,19 @@ static int bio_filter_in_gets(BIO *bio, char *buf, int size)
 static long bio_filter_in_ctrl(BIO *bio, int cmd, long num, void *ptr)
 {
     bio_filter_in_ctx_t *inctx = (bio_filter_in_ctx_t *)BIO_get_data(bio);
+    switch (cmd) {
+#ifdef BIO_CTRL_EOF
+    case BIO_CTRL_EOF:
+        return inctx->rc == APR_EOF;
+#endif
+    default:
+        break;
+    }
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, inctx->f->c,
-                  "BUG: %s() should not be called", "bio_filter_in_ctrl");
+                  "BUG: bio_filter_in_ctrl() should not be called with cmd=%i",
+                  cmd);
     AP_DEBUG_ASSERT(0);
-    return -1;
+    return 0;
 }
 
 #if MODSSL_USE_OPENSSL_PRE_1_1_API
@@ -641,7 +650,7 @@ static BIO_METHOD bio_filter_in_method = {
     bio_filter_in_read,
     bio_filter_in_puts,         /* puts is never called */
     bio_filter_in_gets,         /* gets is never called */
-    bio_filter_in_ctrl,         /* ctrl is never called */
+    bio_filter_in_ctrl,         /* ctrl is called for EOF check */
     bio_filter_create,
     bio_filter_destroy,
     NULL

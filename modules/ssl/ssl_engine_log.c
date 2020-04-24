@@ -78,6 +78,16 @@ apr_status_t ssl_die(server_rec *s)
     return APR_EGENERAL;
 }
 
+static APR_INLINE
+unsigned long modssl_ERR_peek_error_data(const char **data, int *flags)
+{
+#if OPENSSL_VERSION_NUMBER < 0x30000000L
+    return ERR_peek_error_line_data(NULL, NULL, data, flags);
+#else
+    return ERR_peek_error_data(data, flags);
+#endif
+}
+
 /*
  * Prints the SSL library error information.
  */
@@ -87,7 +97,7 @@ void ssl_log_ssl_error(const char *file, int line, int level, server_rec *s)
     const char *data;
     int flags;
 
-    while ((e = ERR_peek_error_line_data(NULL, NULL, &data, &flags))) {
+    while ((e = modssl_ERR_peek_error_data(&data, &flags))) {
         const char *annotation;
         char err[256];
 
