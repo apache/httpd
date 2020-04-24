@@ -1626,7 +1626,7 @@ static apr_status_t ssl_init_ticket_key(server_rec *s,
     res = SSL_CTX_set_tlsext_ticket_key_evp_cb(mctx->ssl_ctx,
                                                ssl_callback_SessionTicket);
 #endif
-    memset(buf, 0, sizeof(buf));
+    OPENSSL_cleanse(buf, sizeof(buf));
     if (!res) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(01913)
                      "Unable to initialize TLS session ticket key callback "
