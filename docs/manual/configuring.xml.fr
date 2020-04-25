@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1673947 -->
+<!-- English Revision: 1876835 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -94,16 +94,25 @@ le Serveur HTTP Apache.</p>
     définies via la directive <directive
     module="core">Define</directive> peuvent être utilisées dans le
     fichier de configuration en utilisant la syntaxe
-    <code>${VAR}</code>. Si "VAR" est le nom d'une variable valide, la
+    <code>${VAR}</code>.<br />
+    Si "VAR" est le nom d'une variable valide, la
     valeur de la variable est alors substituée à la chaîne
     <code>${VAR}</code>, et le processus de lecture du fichier de
     configuration continue comme si la chaîne correspondant à la valeur
-    de la variable s'y était trouvée littéralement. Les variables définies
+    de la variable s'y était trouvée littéralement.<br />
+    Les variables définies
     via la directive <directive module="core">Define</directive>
-    l'emportent sur les autres variables d'environnement du shell. Si la
-    variable "VAR" n'est pas trouvée, la chaîne <code>${VAR}</code>
-    n'est pas modifiée, et un avertissement est enregistré dans le
-    journal. Le caractère ":" est interdit dans les noms de variables
+    l'emportent sur les autres variables d'environnement du shell.<br />
+    Si la variable "VAR" n'est pas trouvée, la chaîne <code>${VAR}</code> n'est
+    pas modifiée, et un avertissement est enregistré dans le journal. Si par
+    contre une valeur par défaut existe, on peut utiliser la forme
+    conditionnelle <code>${VAR?=une valeur par défaut}</code>. Notez qu'une
+    variable <strong>définie</strong> vide ne se verra pas attribuer la valeur
+    par défaut et qu'une valeur par défaut vide comme dans <code>${VAR?=}</code>
+    est une substitution valide (qui génère une valeur vide si "VAR" n'est pas
+    définie, mais aucun avertissement).<br />
+    
+    Le caractère ":" est interdit dans les noms de variables
     afin d'éviter tout conflit avec la syntaxe de la directive <directive
     module="mod_rewrite">RewriteMap</directive>.</p>
 
