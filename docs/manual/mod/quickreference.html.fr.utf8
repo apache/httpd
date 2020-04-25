@@ -821,8 +821,7 @@ requête HTTP</td></tr>
 HTTP</td></tr>
 <tr class="odd"><td><a href="core.html#limitxmlrequestbody">LimitXMLRequestBody <var>octets</var></a></td><td> 1000000 </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Définit la taille maximale du corps d'une requête au format
 XML</td></tr>
-<tr><td><a href="mpm_common.html#listen">Listen [<var>adresse IP</var>:]<var>numéro port</var>
-[<var>protocole</var>]</a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Les adresses IP et ports sur lesquels le serveur écoute</td></tr>
+<tr><td><a href="mpm_common.html#listen">Listen [<var>IP-address</var>:]<var>portnumber</var> [<var>protocol</var>] [options=<var>flag</var>[,<var>flag..</var>]]</a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Les adresses IP et ports sur lesquels le serveur écoute</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#listenbacklog">ListenBackLog <var>backlog</var></a></td><td> 511 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Longueur maximale de la liste d'attente des
 connexions</td></tr>
 <tr><td><a href="mpm_common.html#listencoresbucketsratio">ListenCoresBucketsRatio <var>ratio</var></a></td><td> 0 (disabled) </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Rapport entre le nombre de coeurs de processeur activés et

@@ -218,11 +218,12 @@ s'arrêter dans le cas d'un arrêt "en douceur"</td></tr>
 <div class="directive-section"><h2><a name="listen" id="listen">Directive</a> <a name="Listen" id="Listen">Listen</a> <a title="Lien permanent" href="#listen" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Les adresses IP et ports sur lesquels le serveur écoute</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Listen [<var>adresse IP</var>:]<var>numéro port</var>
-[<var>protocole</var>]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Listen [<var>IP-address</var>:]<var>portnumber</var> [<var>protocol</var>] [options=<var>flag</var>[,<var>flag..</var>]]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>L'argument optionnel <code>options=</code> est disponible à
+partir de la version 2.5.1 du serveur HTTP Apache.</td></tr>
 </table>
     <p>La directive <code class="directive">Listen</code> permet de signifier à
     Apache httpd de ne se mettre à l'écoute que sur les adresses IP et ports spécifiés ; par
@@ -286,6 +287,23 @@ Listen 192.170.2.5:8000</pre>
 
     <pre class="prettyprint lang-config">Listen 192.170.2.1:8443 https</pre>
 
+
+    <p>L'argument optionnel <var>options=flag,flag...</var> permet de spécifier
+    certaines options du socket pour le port d'écoute. Non nécessaires pour la
+    plupart des configurations, ces options doivent être utilisées avec
+    prudence. La disponibilité des différents drapeaux dépend du système
+    d'exploitation. En voici la liste :</p>
+
+    <ul>
+      <li><code>freebind</code>: l'option de socket <code>IP_FREEBIND</code> est
+      activée ; elle permet de définir une directive Listen pour une adresse qui
+      n'est pas (encore) valide dans le système (disponible sous Linux
+      seulement).</li>
+
+      <li><code>reuseport</code>: l'option de socket <code>SO_REUSEPORT</code>
+      est activée ; elle permet de définir une directive Listen pour un port
+      déjà utilisé par un autre processus.</li>
+    </ul>
 
     <div class="note"><h3>Condition d'erreur</h3>
       Plusieurs directives <code class="directive">Listen</code> pour les mêmes
