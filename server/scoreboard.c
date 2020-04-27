@@ -947,10 +947,15 @@ AP_DECLARE(void) ap_get_mon_snap(ap_mon_snap_t *ms)
         sload = &ap_scoreboard_image->global->sload1;
         snap = &ap_scoreboard_image->global->snap1;
     }
-    memcpy(ms, snap, sizeof(*snap));
     if (ms->sload) {
         memcpy(ms->sload, sload, sizeof(*sload));
+        sload = ms->sload;
+    } else {
+        sload = NULL;
     }
+    /* This will overwrite our ms-sload pointer, need to reconstruct */
+    memcpy(ms, snap, sizeof(*snap));
+    ms->sload = sload;
 }
 
 void ap_scoreboard_child_init(apr_pool_t *p, server_rec *s)
