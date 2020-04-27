@@ -3179,61 +3179,6 @@ AP_DECLARE(void *) ap_realloc(void *ptr, size_t size)
     return p;
 }
 
-AP_DECLARE(void) ap_get_sload(ap_sload_t *ld)
-{
-    int i, j, server_limit, thread_limit;
-    int ready = 0;
-    int busy = 0;
-    int total;
-    ap_generation_t mpm_generation;
-
-    /* preload errored fields, we overwrite */
-    ld->idle = -1;
-    ld->busy = -1;
-    ld->bytes_served = 0;
-    ld->access_count = 0;
-
-    ap_mpm_query(AP_MPMQ_GENERATION, &mpm_generation);
-    ap_mpm_query(AP_MPMQ_HARD_LIMIT_THREADS, &thread_limit);
-    ap_mpm_query(AP_MPMQ_HARD_LIMIT_DAEMONS, &server_limit);
-
-    for (i = 0; i < server_limit; i++) {
-        process_score *ps;
-        ps = ap_get_scoreboard_process(i);
-
-        for (j = 0; j < thread_limit; j++) {
-            int res;
-            worker_score *ws = NULL;
-            ws = &ap_scoreboard_image->servers[i][j];
-            res = ws->status;
-
-            if (!ps->quiescing && ps->pid) {
-                if (res == SERVER_READY && ps->generation == mpm_generation) {
-                    ready++;
-                }
-                else if (res != SERVER_DEAD &&
-                         res != SERVER_STARTING && res != SERVER_IDLE_KILL &&
-                         ps->generation == mpm_generation) {
-                    busy++;
-                }   
-            }
-
-            if (ap_extended_status && !ps->quiescing && ps->pid) {
-                if (ws->access_count != 0 
-                    || (res != SERVER_READY && res != SERVER_DEAD)) {
-                    ld->access_count += ws->access_count;
-                    ld->bytes_served += ws->bytes_served;
-                }
-            }
-        }
-    }
-    total = busy + ready;
-    if (total) {
-        ld->idle = ready * 100 / total;
-        ld->busy = busy * 100 / total;
-    }
-}
-
 AP_DECLARE(void) ap_get_loadavg(ap_loadavg_t *ld)
 {
     /* preload errored fields, we overwrite */

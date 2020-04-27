@@ -26,6 +26,12 @@
 #include <sys/types.h>
 #endif
 
+#if APR_HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+
+#include <time.h>
+
 #include "ap_config.h"
 #include "httpd.h"
 #include "http_log.h"
@@ -40,6 +46,14 @@
 /* we know core's module_index is 0 */
 #undef APLOG_MODULE_INDEX
 #define APLOG_MODULE_INDEX AP_CORE_MODULE_INDEX
+
+#ifdef HAVE_TIMES
+/* ugh... need to know if we're running with a pthread implementation
+ * such as linuxthreads that treats individual threads as distinct
+ * processes; that affects how we add up CPU time in a process
+ */
+static pid_t child_pid;
+#endif
 
 AP_DECLARE_DATA scoreboard *ap_scoreboard_image = NULL;
 AP_DECLARE_DATA const char *ap_scoreboard_fname = NULL;
@@ -174,6 +188,10 @@ AP_DECLARE(void) ap_init_scoreboard(void *shared_score)
     ap_assert(more_storage == (char*)shared_score + scoreboard_size);
     ap_scoreboard_image->global->server_limit = server_limit;
     ap_scoreboard_image->global->thread_limit = thread_limit;
+    ap_scoreboard_image->global->snap0.sload = &ap_scoreboard_image->global->sload0;
+    ap_scoreboard_image->global->snap1.sload = &ap_scoreboard_image->global->sload1;
+    ap_scoreboard_image->global->snap0.sload->access_count = -1;
+    ap_scoreboard_image->global->snap1.sload->access_count = -1;
 }
 
 /**
@@ -703,4 +721,232 @@ AP_DECLARE(process_score *) ap_get_scoreboard_process(int x)
 AP_DECLARE(global_score *) ap_get_scoreboard_global()
 {
     return ap_scoreboard_image->global;
+}
+
+AP_DECLARE(void) ap_get_sload(ap_sload_t *sl)
+{
+    int i, j, server_limit, thread_limit;
+    int ready = 0;
+    int busy = 0;
+    int dead = 0;
+    int total;
+    ap_generation_t mpm_generation;
+    global_score *global_record;
+#ifdef HAVE_TIMES
+    int times_per_thread;
+#endif
+
+#ifdef HAVE_TIMES
+    times_per_thread = getpid() != child_pid;
+#endif
+
+    /* preload errored fields, we overwrite */
+    sl->idle = -1;
+    sl->busy = -1;
+    sl->dead = -1;
+    sl->cpu_usr = 0;
+    sl->cpu_sys = 0;
+    sl->bytes_served = 0;
+    sl->access_count = 0;
+    sl->duration = 0;
+    sl->timestamp = apr_time_now();
+
+    if (ap_scoreboard_image == NULL) {
+        return;
+    }
+
+    ap_mpm_query(AP_MPMQ_GENERATION, &mpm_generation);
+    ap_mpm_query(AP_MPMQ_HARD_LIMIT_THREADS, &thread_limit);
+    ap_mpm_query(AP_MPMQ_HARD_LIMIT_DAEMONS, &server_limit);
+
+    for (i = 0; i < server_limit; i++) {
+#ifdef HAVE_TIMES
+        clock_t proc_tu = 0, proc_ts = 0, proc_tcu = 0, proc_tcs = 0;
+        clock_t tmp_tu, tmp_ts, tmp_tcu, tmp_tcs;
+#endif
+        process_score *ps = ap_get_scoreboard_process(i);
+
+        for (j = 0; j < thread_limit; j++) {
+            int res;
+            worker_score *ws = NULL;
+            ws = &ap_scoreboard_image->servers[i][j];
+            res = ws->status;
+
+            if (!ps->quiescing && ps->pid) {
+                if (res == SERVER_READY && ps->generation == mpm_generation) {
+                    ready++;
+                }
+                else if (res != SERVER_DEAD &&
+                         res != SERVER_STARTING && res != SERVER_IDLE_KILL &&
+                         ps->generation == mpm_generation) {
+                    busy++;
+                } else {   
+                    dead++;
+                }   
+            }
+
+            if (ap_extended_status && !ps->quiescing && ps->pid) {
+                if (ws->access_count != 0 
+                    || (res != SERVER_READY && res != SERVER_DEAD)) {
+#ifdef HAVE_TIMES
+                    tmp_tu = ws->times.tms_utime;
+                    tmp_ts = ws->times.tms_stime;
+                    tmp_tcu = ws->times.tms_cutime;
+                    tmp_tcs = ws->times.tms_cstime;
+
+                    if (times_per_thread) {
+                        proc_tu += tmp_tu;
+                        proc_ts += tmp_ts;
+                        proc_tcu += tmp_tcu;
+                        proc_tcs += tmp_tcs;
+                    }
+                    else {
+                        if (tmp_tu > proc_tu ||
+                            tmp_ts > proc_ts ||
+                            tmp_tcu > proc_tcu ||
+                            tmp_tcs > proc_tcs) {
+                            proc_tu = tmp_tu;
+                            proc_ts = tmp_ts;
+                            proc_tcu = tmp_tcu;
+                            proc_tcs = tmp_tcs;
+                        }
+                    }
+#endif /* HAVE_TIMES */
+                    sl->access_count += ws->access_count;
+                    sl->bytes_served += ws->bytes_served;
+                    sl->duration += ws->duration;
+                }
+            }
+        }
+#ifdef HAVE_TIMES
+        sl->cpu_usr += proc_tu + proc_tcu;
+        sl->cpu_sys += proc_ts + proc_tcs;
+#endif
+    }
+#ifdef HAVE_TIMES
+    global_record = ap_get_scoreboard_global();
+    sl->cpu_usr += global_record->times.tms_utime
+                   + global_record->times.tms_cutime;
+    sl->cpu_sys += global_record->times.tms_stime
+                   + global_record->times.tms_cstime;
+#endif
+    total = busy + ready + dead;
+    if (total) {
+        sl->idle = (float)ready * 100 / total;
+        sl->busy = (float)busy * 100 / total;
+        sl->dead = (float)dead * 100 / total;
+    }
+}
+
+static void calc_mon_data(ap_mon_snap_t *last,
+                          ap_mon_snap_t *next)
+{
+    unsigned long accesses;
+    ap_sload_t *s0 = last->sload;
+    ap_sload_t *s1 = next->sload;
+#ifdef HAVE_TIMES
+    float tick;
+#endif
+
+    next->acc_per_sec = -1;
+    next->bytes_per_sec = -1;
+    next->average_concurrency = -1;
+    next->cpu_load = -1;
+    next->bytes_per_acc = -1;
+    next->ms_per_acc = -1;
+    next->interval = -1;
+
+    /* Need two iterations for complete data in s0 and s1 */
+    if (s0->access_count < 0 || s0->access_count < 0) {
+        return;
+    }
+
+    next->interval = (apr_interval_time_t) (s1->timestamp - s0->timestamp);
+    accesses = s1->access_count - s0->access_count;
+    if (next->interval > 0) {
+        next->acc_per_sec = (float)accesses / next->interval * APR_USEC_PER_SEC;
+        next->bytes_per_sec = (float)(s1->bytes_served - s0->bytes_served)
+                              / next->interval * APR_USEC_PER_SEC;
+        next->average_concurrency = (float)(s1->duration - s0->duration)
+                                    / next->interval;
+#ifdef HAVE_TIMES
+#ifdef _SC_CLK_TCK
+        tick = sysconf(_SC_CLK_TCK);
+#else
+        tick = HZ;
+#endif
+        next->cpu_load = (float)(s1->cpu_usr - s0->cpu_usr
+                                 + s1->cpu_sys - s0->cpu_sys)
+                              / tick / next->interval * APR_USEC_PER_SEC;
+#endif
+    }
+    if (accesses > 0) {
+        next->bytes_per_acc = (float)(s1->bytes_served - s0->bytes_served)
+                              / accesses;
+        next->ms_per_acc = (float)(s1->duration - s0->duration)
+                           / accesses / 1000.0;
+    }
+}
+
+int ap_scoreboard_monitor(apr_pool_t *p, server_rec *s)
+{
+    int new_index;
+    ap_mon_snap_t *snap_last;
+    ap_mon_snap_t *snap_next;
+
+    if (ap_scoreboard_image == NULL) {
+        return DECLINED;
+    }
+
+    if (ap_scoreboard_image->global->snap_index == 0) {
+        snap_last = &ap_scoreboard_image->global->snap0;
+        snap_next = &ap_scoreboard_image->global->snap1;
+        new_index = 1;
+    } else {
+        snap_last = &ap_scoreboard_image->global->snap1;
+        snap_next = &ap_scoreboard_image->global->snap0;
+        new_index = 0;
+    }
+    ap_get_sload(snap_next->sload);
+    calc_mon_data(snap_last, snap_next);
+    ap_scoreboard_image->global->snap_index = new_index;
+    return DECLINED;
+}
+
+AP_DECLARE(void) ap_get_mon_snap(ap_mon_snap_t *ms)
+{
+    ap_mon_snap_t *snap;
+
+    if (ap_scoreboard_image == NULL) {
+        if (ms->sload) {
+            ms->sload->idle = -1;
+            ms->sload->busy = -1;
+            ms->sload->access_count = -1;
+            ms->sload->bytes_served = -1;
+            ms->sload->duration = -1;
+            ms->sload->timestamp = -1;
+        }
+        ms->interval = -1;
+        ms->acc_per_sec = -1;
+        ms->bytes_per_sec = -1;
+        ms->bytes_per_acc = -1;
+        ms->ms_per_acc = -1;
+        ms->average_concurrency = -1;
+        return;
+    }
+
+    snap = ap_scoreboard_image->global->snap_index == 0 ?
+        &ap_scoreboard_image->global->snap0 :
+        &ap_scoreboard_image->global->snap1;
+    memcpy(ms, snap, sizeof(*snap));
+    if (ms->sload) {
+        memcpy(ms->sload, snap->sload, sizeof(*snap->sload));
+    }
+}
+
+void ap_scoreboard_child_init(apr_pool_t *p, server_rec *s)
+{
+#ifdef HAVE_TIMES
+    child_pid = getpid();
+#endif
 }

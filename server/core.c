@@ -5910,6 +5910,8 @@ static void register_hooks(apr_pool_t *p)
                       APR_HOOK_MIDDLE);
     ap_hook_pre_mpm(ap_create_scoreboard, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_child_status(ap_core_child_status, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_child_init(ap_scoreboard_child_init,NULL,NULL, APR_HOOK_REALLY_FIRST);
+    ap_hook_monitor(ap_scoreboard_monitor, NULL, NULL, APR_HOOK_REALLY_FIRST);
     ap_hook_insert_network_bucket(core_insert_network_bucket, NULL, NULL,
                                   APR_HOOK_REALLY_LAST);
     ap_hook_dirwalk_stat(core_dirwalk_stat, NULL, NULL, APR_HOOK_REALLY_LAST);

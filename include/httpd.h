@@ -1412,14 +1412,47 @@ struct server_rec {
  */
 typedef struct ap_sload_t ap_sload_t;
 struct ap_sload_t {
-    /* percentage of process/threads ready/idle (0->100)*/
-    int idle;
-    /* percentage of process/threads busy (0->100) */
-    int busy;
+    /* idle threads in pct (0-100) */
+    float idle;
+    /* busy threads in pct (0-100) */
+    float busy;
+    /* dead threads: no process or starting or stopping, in pct (0-100) */
+    float dead;
     /* total bytes served */
     apr_off_t bytes_served;
     /* total access count */
     unsigned long access_count;
+    /* total request duration */
+    apr_time_t duration;
+    /* cpu usr time including died children */
+    clock_t cpu_usr;
+    /* cpu system time including died children */
+    clock_t cpu_sys;
+    /* timestamp of data */
+    apr_time_t timestamp;
+};
+
+/**
+ * @struct ap_mon_snap_t
+ * @brief  A structure to hold a monitoring data snapshot
+ */
+typedef struct ap_mon_snap_t ap_mon_snap_t;
+struct ap_mon_snap_t {
+    ap_sload_t *sload;
+    /* averaging interval */
+    apr_interval_time_t interval;
+    /* accesses per second */
+    float acc_per_sec;
+    /* bytes per second */
+    float bytes_per_sec;
+    /* bytes per access */
+    float bytes_per_acc;
+    /* duration (ms) per acc */
+    float ms_per_acc;
+    /* average concurrency */
+    float average_concurrency;
+    /* cpu_load in percent of one core */
+    float cpu_load;
 };
 
 /**
@@ -2478,9 +2511,29 @@ AP_DECLARE(void *) ap_realloc(void *ptr, size_t size)
 
 /**
  * Get server load params
- * @param ld struct to populate: -1 in fields means error
+ * @param sl struct to populate: -1 in fields means error
  */
-AP_DECLARE(void) ap_get_sload(ap_sload_t *ld)
+AP_DECLARE(void) ap_get_sload(ap_sload_t *sl)
+                 AP_FN_ATTR_NONNULL_ALL;
+
+/**
+ * Monitor hook for scoreboard.
+ * Generates a snapshot for some averaging metrics.
+ * @param p and s currently unused.
+ */
+int ap_scoreboard_monitor(apr_pool_t *p, server_rec *s);
+
+/**
+ * Child init hook for scoreboard.
+ * @param p and s currently unused.
+ */
+void ap_scoreboard_child_init(apr_pool_t *p, server_rec *s);
+
+/**
+ * Get monitoring data snapshot
+ * @param ms struct to populate: -1 in fields means error
+ */
+AP_DECLARE(void) ap_get_mon_snap(ap_mon_snap_t *ms)
                  AP_FN_ATTR_NONNULL_ALL;
 
 /**
