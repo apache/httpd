@@ -15,6 +15,7 @@
  */
 
 #include "apr.h"
+#include "apr_atomic.h"
 #include "apr_strings.h"
 #include "apr_portable.h"
 #include "apr_lib.h"
@@ -887,29 +888,30 @@ static void calc_mon_data(ap_sload_t *s0, ap_sload_t *s1,
 
 int ap_scoreboard_monitor(apr_pool_t *p, server_rec *s)
 {
-    int new_index;
     ap_sload_t *sload_last;
     ap_sload_t *sload_next;
     ap_mon_snap_t *snap_next;
+    apr_uint32_t index;
 
     if (ap_scoreboard_image == NULL) {
         return DECLINED;
     }
 
-    if (ap_scoreboard_image->global->snap_index == 0) {
+    index = apr_atomic_read32(&ap_scoreboard_image->global->snap_index);
+    if (index == 0) {
         sload_last = &ap_scoreboard_image->global->sload0;
         sload_next = &ap_scoreboard_image->global->sload1;
         snap_next = &ap_scoreboard_image->global->snap1;
-        new_index = 1;
+        index = 1;
     } else {
         sload_last = &ap_scoreboard_image->global->sload1;
         sload_next = &ap_scoreboard_image->global->sload0;
         snap_next = &ap_scoreboard_image->global->snap0;
-        new_index = 0;
+        index = 0;
     }
     ap_get_sload(sload_next);
     calc_mon_data(sload_last, sload_next, snap_next);
-    ap_scoreboard_image->global->snap_index = new_index;
+    apr_atomic_set32(&ap_scoreboard_image->global->snap_index, index);
     return DECLINED;
 }
 
@@ -917,6 +919,7 @@ AP_DECLARE(void) ap_get_mon_snap(ap_mon_snap_t *ms)
 {
     ap_sload_t *sload;
     ap_mon_snap_t *snap;
+    apr_uint32_t index;
 
     if (ap_scoreboard_image == NULL) {
         if (ms->sload) {
@@ -936,7 +939,8 @@ AP_DECLARE(void) ap_get_mon_snap(ap_mon_snap_t *ms)
         return;
     }
 
-    if (ap_scoreboard_image->global->snap_index == 0) {
+    index = apr_atomic_read32(&ap_scoreboard_image->global->snap_index);
+    if (index == 0) {
         sload = &ap_scoreboard_image->global->sload0;
         snap = &ap_scoreboard_image->global->snap0;
     } else {

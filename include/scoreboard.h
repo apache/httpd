@@ -130,7 +130,7 @@ typedef struct {
 #ifdef HAVE_TIMES
     struct tms times;
 #endif
-    int snap_index;
+    apr_uint32_t volatile snap_index;
     ap_sload_t sload0;
     ap_sload_t sload1;
     ap_mon_snap_t snap0;
