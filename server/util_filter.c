@@ -979,7 +979,7 @@ AP_DECLARE(apr_status_t) ap_filter_setaside_brigade(ap_filter_t *f,
             /* Morphing buckets are moved, so assumed to have next EOR's
              * lifetime or at least the lifetime of the connection.
              */
-            if (AP_BUCKET_IS_MORPHING(e)) {
+            if (e->length == (apr_size_t)-1 || APR_BUCKET_IS_FILE(e)) {
                 /* Save buckets batched below? */
                 if (batched_buckets) {
                     batched_buckets = 0;
