@@ -2520,12 +2520,16 @@ AP_DECLARE(void) ap_get_sload(ap_sload_t *sl)
  * Monitor hook for scoreboard.
  * Generates a snapshot for some averaging metrics.
  * @param p and s currently unused.
+ * @note ap_scoreboard_monitor is not for use by modules; it is an
+ * internal core function
  */
 int ap_scoreboard_monitor(apr_pool_t *p, server_rec *s);
 
 /**
  * Child init hook for scoreboard.
  * @param p and s currently unused.
+ * @note ap_scoreboard_child_init is not for use by modules; it is an
+ * internal core function
  */
 void ap_scoreboard_child_init(apr_pool_t *p, server_rec *s);
 
