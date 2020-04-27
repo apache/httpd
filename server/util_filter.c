@@ -976,11 +976,11 @@ AP_DECLARE(apr_status_t) ap_filter_setaside_brigade(ap_filter_t *f,
              e = next) {
             next = APR_BUCKET_NEXT(e);
 
-            /* Morphing buckets are moved, so assumed to have next EOR's
-             * lifetime or at least the lifetime of the connection.
+            /* Opaque buckets (length == -1) are moved, so assumed to have
+             * next EOR's lifetime or at least the lifetime of the connection.
              */
-            if (AP_BUCKET_IS_MORPHING(e)) {
-                /* Save buckets batched below? */
+            if (e->length == (apr_size_t)-1) {
+                /* First save buckets batched below, if any. */
                 if (batched_buckets) {
                     batched_buckets = 0;
                     if (!tmp_bb) {
@@ -1058,7 +1058,7 @@ AP_DECLARE(apr_status_t) ap_filter_reinstate_brigade(ap_filter_t *f,
 {
     apr_bucket *bucket, *next;
     apr_size_t bytes_in_brigade, memory_bytes_in_brigade;
-    int eor_buckets_in_brigade, morphing_buckets_in_brigade;
+    int eor_buckets_in_brigade, opaque_buckets_in_brigade;
     struct ap_filter_private *fp = f->priv;
     core_server_config *conf;
  
@@ -1094,8 +1094,8 @@ AP_DECLARE(apr_status_t) ap_filter_reinstate_brigade(ap_filter_t *f,
      *     of everything up to the last one.
      *
      *  b) The brigade contains at least flush_max_threshold bytes in memory,
-     *     that is non-file and non-morphing buckets: do blocking writes of
-     *     everything up the last bucket above flush_max_threshold.
+     *     that is non-file and non-opaque (length != -1) buckets: do blocking
+     *     writes of everything up the last bucket above flush_max_threshold.
      *     (The point of this rule is to provide flow control, in case a
      *     handler is streaming out lots of data faster than the data can be
      *     sent to the client.)
@@ -1105,17 +1105,17 @@ AP_DECLARE(apr_status_t) ap_filter_reinstate_brigade(ap_filter_t *f,
      *     (The point of this rule is to prevent too many FDs being kept open
      *     by pipelined requests, possibly allowing a DoS).
      *
-     * Note that morphing buckets use no memory until read, so they don't
-     * account for point b) above. Both ap_filter_reinstate_brigade() and
-     * ap_filter_setaside_brigade() assume that morphing buckets have an
-     * appropriate lifetime (until next EOR for instance), so they are simply
-     * setaside or reinstated by moving them from/to fp->bb to/from bb.
+     * Morphing buckets (opaque and FILE) use no memory until read, so they
+     * don't account for point b) above. Both ap_filter_reinstate_brigade()
+     * and setaside_brigade() assume that opaque buckets have an appropriate
+     * lifetime (until next EOR for instance), so they are simply setaside or
+     * reinstated by moving them from/to fp->bb to/from user bb.
      */
 
     bytes_in_brigade = 0;
     memory_bytes_in_brigade = 0;
     eor_buckets_in_brigade = 0;
-    morphing_buckets_in_brigade = 0;
+    opaque_buckets_in_brigade = 0;
 
     conf = ap_get_core_module_config(f->c->base_server->module_config);
 
@@ -1126,8 +1126,8 @@ AP_DECLARE(apr_status_t) ap_filter_reinstate_brigade(ap_filter_t *f,
         if (AP_BUCKET_IS_EOR(bucket)) {
             eor_buckets_in_brigade++;
         }
-        else if (AP_BUCKET_IS_MORPHING(bucket)) {
-            morphing_buckets_in_brigade++;
+        else if (bucket->length == (apr_size_t)-1) {
+            opaque_buckets_in_brigade++;
         }
         else if (bucket->length) {
             bytes_in_brigade += bucket->length;
@@ -1151,13 +1151,13 @@ AP_DECLARE(apr_status_t) ap_filter_reinstate_brigade(ap_filter_t *f,
                 ap_log_cerror(APLOG_MARK, APLOG_TRACE8, 0, f->c,
                               "seen in brigade%s: bytes: %" APR_SIZE_T_FMT
                               ", memory bytes: %" APR_SIZE_T_FMT ", eor "
-                              "buckets: %d, morphing buckets: %d",
+                              "buckets: %d, opaque buckets: %d",
                               *flush_upto == NULL ? " so far"
                                                   : " since last flush point",
                               bytes_in_brigade,
                               memory_bytes_in_brigade,
                               eor_buckets_in_brigade,
-                              morphing_buckets_in_brigade);
+                              opaque_buckets_in_brigade);
             }
             /*
              * Defer the actual blocking write to avoid doing many writes.
@@ -1167,17 +1167,17 @@ AP_DECLARE(apr_status_t) ap_filter_reinstate_brigade(ap_filter_t *f,
             bytes_in_brigade = 0;
             memory_bytes_in_brigade = 0;
             eor_buckets_in_brigade = 0;
-            morphing_buckets_in_brigade = 0;
+            opaque_buckets_in_brigade = 0;
         }
     }
 
     ap_log_cerror(APLOG_MARK, APLOG_TRACE8, 0, f->c,
                   "brigade contains%s: bytes: %" APR_SIZE_T_FMT
                   ", non-file bytes: %" APR_SIZE_T_FMT
-                  ", eor buckets: %d, morphing buckets: %d",
+                  ", eor buckets: %d, opaque buckets: %d",
                   *flush_upto == NULL ? "" : " since last flush point",
                   bytes_in_brigade, memory_bytes_in_brigade,
-                  eor_buckets_in_brigade, morphing_buckets_in_brigade);
+                  eor_buckets_in_brigade, opaque_buckets_in_brigade);
 
     return APR_SUCCESS;
 }
@@ -1308,7 +1308,7 @@ AP_DECLARE_NONSTD(int) ap_filter_input_pending(conn_rec *c)
          fp = APR_RING_PREV(fp, pending)) {
         apr_bucket *e;
 
-        /* if there is a leading non-morphing bucket
+        /* if there is a leading non-opaque (length != -1) bucket
          * in place, then we have data pending
          */
         AP_DEBUG_ASSERT(fp->bb);

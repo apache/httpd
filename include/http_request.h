@@ -589,15 +589,6 @@ AP_DECLARE(int) ap_if_walk(request_rec *r);
 AP_DECLARE_DATA extern const apr_bucket_type_t ap_bucket_type_eor;
 
 /**
- * Determine if a bucket is morphing, that is which changes its
- * type on read (usually to "heap" allocated data), while moving
- * itself at the next position to remain plugged until exhausted.
- * @param e The bucket to inspect
- * @return true or false
- */
-#define AP_BUCKET_IS_MORPHING(e)    ((e)->length == (apr_size_t)-1)
-
-/**
  * Determine if a bucket is an End Of REQUEST (EOR) bucket
  * @param e The bucket to inspect
  * @return true or false
