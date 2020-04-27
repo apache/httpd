@@ -857,7 +857,7 @@ static void calc_mon_data(ap_mon_snap_t *last,
     next->interval = -1;
 
     /* Need two iterations for complete data in s0 and s1 */
-    if (s0->access_count < 0 || s0->access_count < 0) {
+    if (s0->access_count < 0 || s1->access_count < 0) {
         return;
     }
 
