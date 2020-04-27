@@ -1413,11 +1413,11 @@ struct server_rec {
 typedef struct ap_sload_t ap_sload_t;
 struct ap_sload_t {
     /* idle threads in pct (0-100) */
-    float idle;
+    int idle;
     /* busy threads in pct (0-100) */
-    float busy;
+    int busy;
     /* dead threads: no process or starting or stopping, in pct (0-100) */
-    float dead;
+    int dead;
     /* total bytes served */
     apr_off_t bytes_served;
     /* total access count */

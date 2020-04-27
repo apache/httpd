@@ -831,9 +831,9 @@ AP_DECLARE(void) ap_get_sload(ap_sload_t *sl)
 #endif
     total = busy + ready + dead;
     if (total) {
-        sl->idle = (float)ready * 100 / total;
-        sl->busy = (float)busy * 100 / total;
-        sl->dead = (float)dead * 100 / total;
+        sl->idle = ready * 100 / total;
+        sl->busy = busy * 100 / total;
+        sl->dead = dead * 100 / total;
     }
 }
 

@@ -84,8 +84,8 @@ static int systemd_monitor(apr_pool_t *p, server_rec *s)
     apr_strfsize((apr_off_t)snap.bytes_per_sec, bps);
     apr_strfsize((apr_off_t)snap.bytes_per_acc, bpr);
     sd_notifyf(0, "READY=1\n"
-               "STATUS=Pct Idle workers %.3g; Pct Busy workers %.3g; "
-               "Pct Dead workers %.3g; "
+               "STATUS=Pct Idle workers %d; Pct Busy workers %d; "
+               "Pct Dead workers %d; "
                "Requests/sec: %.3g; Bytes served/sec: %sB/sec; "
                "Bytes served/request: %sB/req; "
                "Avg Duration(ms): %.3g; Avg Concurrency: %.3g; "

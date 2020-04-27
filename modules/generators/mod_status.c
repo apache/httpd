@@ -505,9 +505,9 @@ static int status_handler(request_rec *r)
                        apr_time_as_msec(snap.sload->timestamp));
             ap_rprintf(r, "SnapInterval: %" APR_TIME_T_FMT "\n",
                        apr_time_as_msec(snap.interval));
-            ap_rprintf(r, "BusyPct: %.4g\n", snap.sload->busy);
-            ap_rprintf(r, "IdlePct: %.4g\n", snap.sload->idle);
-            ap_rprintf(r, "DeadPct: %.4g\n", snap.sload->dead);
+            ap_rprintf(r, "BusyPct: %d\n", snap.sload->busy);
+            ap_rprintf(r, "IdlePct: %d\n", snap.sload->idle);
+            ap_rprintf(r, "DeadPct: %d\n", snap.sload->dead);
             ap_rprintf(r, "ReqPerSec: %.4g\n", snap.acc_per_sec);
             ap_rprintf(r, "BytesPerSec: %.4g\n", snap.bytes_per_sec);
             ap_rprintf(r, "BytesPerReq: %.4g\n", snap.bytes_per_acc);
@@ -535,9 +535,9 @@ static int status_handler(request_rec *r)
                        apr_time_as_msec(snap.sload->timestamp));
             ap_rprintf(r, ", interval %" APR_TIME_T_FMT "ms</dt>\n",
                        apr_time_as_msec(snap.interval));
-            ap_rprintf(r, "<dt>%.4g%% busy", snap.sload->busy);
-            ap_rprintf(r, " - %.4g%% idle", snap.sload->idle);
-            ap_rprintf(r, " - %.4g%% dead</dt>\n", snap.sload->dead);
+            ap_rprintf(r, "<dt>%d%% busy", snap.sload->busy);
+            ap_rprintf(r, " - %d%% idle", snap.sload->idle);
+            ap_rprintf(r, " - %d%% dead</dt>\n", snap.sload->dead);
 
             ap_rprintf(r, "<dt>%.4g requests/sec - ", snap.acc_per_sec);
             format_byte_out(r, (unsigned long)(snap.bytes_per_sec));
