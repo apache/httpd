@@ -188,10 +188,8 @@ AP_DECLARE(void) ap_init_scoreboard(void *shared_score)
     ap_assert(more_storage == (char*)shared_score + scoreboard_size);
     ap_scoreboard_image->global->server_limit = server_limit;
     ap_scoreboard_image->global->thread_limit = thread_limit;
-    ap_scoreboard_image->global->snap0.sload = &ap_scoreboard_image->global->sload0;
-    ap_scoreboard_image->global->snap1.sload = &ap_scoreboard_image->global->sload1;
-    ap_scoreboard_image->global->snap0.sload->access_count = -1;
-    ap_scoreboard_image->global->snap1.sload->access_count = -1;
+    ap_scoreboard_image->global->sload0.access_count = -1;
+    ap_scoreboard_image->global->sload1.access_count = -1;
 }
 
 /**
@@ -838,12 +836,10 @@ AP_DECLARE(void) ap_get_sload(ap_sload_t *sl)
     }
 }
 
-static void calc_mon_data(ap_mon_snap_t *last,
+static void calc_mon_data(ap_sload_t *s0, ap_sload_t *s1,
                           ap_mon_snap_t *next)
 {
     unsigned long accesses;
-    ap_sload_t *s0 = last->sload;
-    ap_sload_t *s1 = next->sload;
 #ifdef HAVE_TIMES
     float tick;
 #endif
@@ -855,6 +851,7 @@ static void calc_mon_data(ap_mon_snap_t *last,
     next->bytes_per_acc = -1;
     next->ms_per_acc = -1;
     next->interval = -1;
+    next->sload = NULL;
 
     /* Need two iterations for complete data in s0 and s1 */
     if (s0->access_count < 0 || s1->access_count < 0) {
@@ -891,7 +888,8 @@ static void calc_mon_data(ap_mon_snap_t *last,
 int ap_scoreboard_monitor(apr_pool_t *p, server_rec *s)
 {
     int new_index;
-    ap_mon_snap_t *snap_last;
+    ap_sload_t *sload_last;
+    ap_sload_t *sload_next;
     ap_mon_snap_t *snap_next;
 
     if (ap_scoreboard_image == NULL) {
@@ -899,22 +897,25 @@ int ap_scoreboard_monitor(apr_pool_t *p, server_rec *s)
     }
 
     if (ap_scoreboard_image->global->snap_index == 0) {
-        snap_last = &ap_scoreboard_image->global->snap0;
+        sload_last = &ap_scoreboard_image->global->sload0;
+        sload_next = &ap_scoreboard_image->global->sload1;
         snap_next = &ap_scoreboard_image->global->snap1;
         new_index = 1;
     } else {
-        snap_last = &ap_scoreboard_image->global->snap1;
+        sload_last = &ap_scoreboard_image->global->sload1;
+        sload_next = &ap_scoreboard_image->global->sload0;
         snap_next = &ap_scoreboard_image->global->snap0;
         new_index = 0;
     }
-    ap_get_sload(snap_next->sload);
-    calc_mon_data(snap_last, snap_next);
+    ap_get_sload(sload_next);
+    calc_mon_data(sload_last, sload_next, snap_next);
     ap_scoreboard_image->global->snap_index = new_index;
     return DECLINED;
 }
 
 AP_DECLARE(void) ap_get_mon_snap(ap_mon_snap_t *ms)
 {
+    ap_sload_t *sload;
     ap_mon_snap_t *snap;
 
     if (ap_scoreboard_image == NULL) {
@@ -935,12 +936,16 @@ AP_DECLARE(void) ap_get_mon_snap(ap_mon_snap_t *ms)
         return;
     }
 
-    snap = ap_scoreboard_image->global->snap_index == 0 ?
-        &ap_scoreboard_image->global->snap0 :
-        &ap_scoreboard_image->global->snap1;
+    if (ap_scoreboard_image->global->snap_index == 0) {
+        sload = &ap_scoreboard_image->global->sload0;
+        snap = &ap_scoreboard_image->global->snap0;
+    } else {
+        sload = &ap_scoreboard_image->global->sload1;
+        snap = &ap_scoreboard_image->global->snap1;
+    }
     memcpy(ms, snap, sizeof(*snap));
     if (ms->sload) {
-        memcpy(ms->sload, snap->sload, sizeof(*snap->sload));
+        memcpy(ms->sload, sload, sizeof(*sload));
     }
 }
 
