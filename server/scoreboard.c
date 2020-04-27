@@ -837,50 +837,50 @@ AP_DECLARE(void) ap_get_sload(ap_sload_t *sl)
 }
 
 static void calc_mon_data(ap_sload_t *s0, ap_sload_t *s1,
-                          ap_mon_snap_t *next)
+                          ap_mon_snap_t *snap)
 {
     unsigned long accesses;
 #ifdef HAVE_TIMES
     float tick;
 #endif
 
-    next->acc_per_sec = -1;
-    next->bytes_per_sec = -1;
-    next->average_concurrency = -1;
-    next->cpu_load = -1;
-    next->bytes_per_acc = -1;
-    next->ms_per_acc = -1;
-    next->interval = -1;
-    next->sload = NULL;
+    snap->acc_per_sec = -1;
+    snap->bytes_per_sec = -1;
+    snap->average_concurrency = -1;
+    snap->cpu_load = -1;
+    snap->bytes_per_acc = -1;
+    snap->ms_per_acc = -1;
+    snap->interval = -1;
+    snap->sload = NULL;
 
     /* Need two iterations for complete data in s0 and s1 */
     if (s0->access_count < 0 || s1->access_count < 0) {
         return;
     }
 
-    next->interval = (apr_interval_time_t) (s1->timestamp - s0->timestamp);
+    snap->interval = (apr_interval_time_t) (s1->timestamp - s0->timestamp);
     accesses = s1->access_count - s0->access_count;
-    if (next->interval > 0) {
-        next->acc_per_sec = (float)accesses / next->interval * APR_USEC_PER_SEC;
-        next->bytes_per_sec = (float)(s1->bytes_served - s0->bytes_served)
-                              / next->interval * APR_USEC_PER_SEC;
-        next->average_concurrency = (float)(s1->duration - s0->duration)
-                                    / next->interval;
+    if (snap->interval > 0) {
+        snap->acc_per_sec = (float)accesses / snap->interval * APR_USEC_PER_SEC;
+        snap->bytes_per_sec = (float)(s1->bytes_served - s0->bytes_served)
+                              / snap->interval * APR_USEC_PER_SEC;
+        snap->average_concurrency = (float)(s1->duration - s0->duration)
+                                    / snap->interval;
 #ifdef HAVE_TIMES
 #ifdef _SC_CLK_TCK
         tick = sysconf(_SC_CLK_TCK);
 #else
         tick = HZ;
 #endif
-        next->cpu_load = (float)(s1->cpu_usr - s0->cpu_usr
+        snap->cpu_load = (float)(s1->cpu_usr - s0->cpu_usr
                                  + s1->cpu_sys - s0->cpu_sys)
-                              / tick / next->interval * APR_USEC_PER_SEC;
+                              / tick / snap->interval * APR_USEC_PER_SEC;
 #endif
     }
     if (accesses > 0) {
-        next->bytes_per_acc = (float)(s1->bytes_served - s0->bytes_served)
+        snap->bytes_per_acc = (float)(s1->bytes_served - s0->bytes_served)
                               / accesses;
-        next->ms_per_acc = (float)(s1->duration - s0->duration)
+        snap->ms_per_acc = (float)(s1->duration - s0->duration)
                            / accesses / 1000.0;
     }
 }
