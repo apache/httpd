@@ -32,6 +32,8 @@ The Travis scripts use the following environment variables:
 
 * TEST_MALLOC - set for builds using enhanced malloc debugging.
 
+* TEST_INSTALL - set for builds testing "make install"
+
 Caching
 -------
 
@@ -53,8 +55,6 @@ TODO list
  - not sure how exactly
 * Known test failures
  - "apt-get install" timeout/fails - workaround by moving apt install to before_script phase?
- - t/apache/rwrite.t, t/apache/pass_brigade.t
-   see msg <CAKQ1sVMbDcUouu+_bfp8T5HO5+=ORWhLx361+b4qyLux5xyhwA@mail.gmail.com> etc
 
 Testing from a Feature Branch
 -----------------------------
@@ -64,7 +64,7 @@ tested in the same way that trunk is in Travis, so this workflow is
 available for those familiar with using Subversion and the standard
 ASF/httpd repository layout.
 
-Tested branches are listed at: https://travis-ci.org/apache/httpd/branches
+Tested branches are listed at: https://travis-ci.org/github/apache/httpd/branches
 
 Travis will also run the tests for a PR filed against the httpd Github
 repository at https://github.com/apache/httpd or from a fork of this
@@ -91,7 +91,7 @@ https://github.com/apache/httpd/compare/trunk...$USERNAME:trunk
 
 Once a PR has been created, travis will run the tests and link the
 results from a PR comment. All tested PRs are listed here:
-https://travis-ci.org/apache/httpd/pull_requests
+https://travis-ci.org/github/apache/httpd/pull_requests
 
 To merge from github back to SVN trunk, create a patch from e.g.:
 
