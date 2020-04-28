@@ -852,7 +852,6 @@ static void calc_mon_data(ap_sload_t *s0, ap_sload_t *s1,
     snap->bytes_per_acc = -1;
     snap->ms_per_acc = -1;
     snap->interval = -1;
-    snap->sload = NULL;
 
     /* Need two iterations for complete data in s0 and s1 */
     if (s0->access_count < 0 || s1->access_count < 0) {
@@ -915,27 +914,27 @@ int ap_scoreboard_monitor(apr_pool_t *p, server_rec *s)
     return DECLINED;
 }
 
-AP_DECLARE(void) ap_get_mon_snap(ap_mon_snap_t *ms)
+AP_DECLARE(void) ap_get_mon_snap(ap_mon_snap_t *ms, ap_sload_t *sl)
 {
     ap_sload_t *sload;
     ap_mon_snap_t *snap;
     apr_uint32_t index;
 
     if (ap_scoreboard_image == NULL) {
-        if (ms->sload) {
-            ms->sload->idle = -1;
-            ms->sload->busy = -1;
-            ms->sload->access_count = -1;
-            ms->sload->bytes_served = -1;
-            ms->sload->duration = -1;
-            ms->sload->timestamp = -1;
-        }
         ms->interval = -1;
         ms->acc_per_sec = -1;
         ms->bytes_per_sec = -1;
         ms->bytes_per_acc = -1;
         ms->ms_per_acc = -1;
         ms->average_concurrency = -1;
+        if (sl) {
+            sl->idle = -1;
+            sl->busy = -1;
+            sl->access_count = -1;
+            sl->bytes_served = -1;
+            sl->duration = -1;
+            sl->timestamp = -1;
+        }
         return;
     }
 
@@ -947,15 +946,11 @@ AP_DECLARE(void) ap_get_mon_snap(ap_mon_snap_t *ms)
         sload = &ap_scoreboard_image->global->sload1;
         snap = &ap_scoreboard_image->global->snap1;
     }
-    if (ms->sload) {
-        memcpy(ms->sload, sload, sizeof(*sload));
-        sload = ms->sload;
-    } else {
-        sload = NULL;
-    }
     /* This will overwrite our ms-sload pointer, need to reconstruct */
     memcpy(ms, snap, sizeof(*snap));
-    ms->sload = sload;
+    if (sl) {
+        memcpy(sl, sload, sizeof(*sload));
+    }
 }
 
 void ap_scoreboard_child_init(apr_pool_t *p, server_rec *s)

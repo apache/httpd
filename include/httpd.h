@@ -1438,7 +1438,6 @@ struct ap_sload_t {
  */
 typedef struct ap_mon_snap_t ap_mon_snap_t;
 struct ap_mon_snap_t {
-    ap_sload_t *sload;
     /* averaging interval */
     apr_interval_time_t interval;
     /* accesses per second */
@@ -2535,10 +2534,12 @@ void ap_scoreboard_child_init(apr_pool_t *p, server_rec *s);
 
 /**
  * Get monitoring data snapshot
- * @param ms struct to populate: -1 in fields means error
+ * @param ms struct to populate with averaged data; -1 in fields means error
+ * @param sl struct to populate with last absolute data;
+ * NULL allowed, to ignore those.
  */
-AP_DECLARE(void) ap_get_mon_snap(ap_mon_snap_t *ms)
-                 AP_FN_ATTR_NONNULL_ALL;
+AP_DECLARE(void) ap_get_mon_snap(ap_mon_snap_t *ms, ap_sload_t *sl)
+                 AP_FN_ATTR_NONNULL((1));
 
 /**
  * Get server load averages (ala getloadavg)

@@ -79,8 +79,7 @@ static int systemd_monitor(apr_pool_t *p, server_rec *s)
         return DECLINED;
     }
     
-    snap.sload = &sload;
-    ap_get_mon_snap(&snap);
+    ap_get_mon_snap(&snap, &sload);
     apr_strfsize((apr_off_t)snap.bytes_per_sec, bps);
     apr_strfsize((apr_off_t)snap.bytes_per_acc, bpr);
     sd_notifyf(0, "READY=1\n"
@@ -90,8 +89,8 @@ static int systemd_monitor(apr_pool_t *p, server_rec *s)
                "Bytes served/request: %sB/req; "
                "Avg Duration(ms): %.3g; Avg Concurrency: %.3g; "
                "Cpu Pct: %.3g\n",
-               snap.sload->idle, snap.sload->busy,
-               snap.sload->dead,
+               sload.idle, sload.busy,
+               sload.dead,
                snap.acc_per_sec, bps, bpr,
                snap.ms_per_acc,
                snap.average_concurrency,
