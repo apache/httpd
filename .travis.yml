@@ -149,6 +149,27 @@ jobs:
             - libjansson-dev
             - libpcre2-dev
     # -------------------------------------------------------------------------
+    - name: Linux Ubuntu, GCC 10 maintainer-mode w/-Werror
+      env: CONFIG="--enable-mods-shared=reallyall --enable-maintainer-mode NOTEST_CFLAGS=-Werror CC=gcc-10"
+           SKIP_TESTING=1
+      addons:
+        apt:
+          sources:
+            - sourceline: 'ppa:ubuntu-toolchain-r/test'
+          packages:
+            - gcc-10
+            - libtool-bin
+            - libapr1-dev
+            - libaprutil1-dev
+            - perl-doc
+            - lua5.3-dev
+            - libbrotli-dev
+            - libcurl4-openssl-dev
+            - libsystemd-dev
+            - libnghttp2-dev
+            - libjansson-dev
+            - libpcre2-dev
+    # -------------------------------------------------------------------------
     # MFLAGS= works around https://bz.apache.org/bugzilla/show_bug.cgi?id=63942
     - if: *condition_not_24x
       name: Linux Ubuntu, Regenerate ap_expr
@@ -236,9 +257,6 @@ jobs:
       env: CONFIG="--enable-mods-shared=reallyall"
     - arch: ppc64le
       env: CONFIG="--enable-mods-shared=reallyall"
-    # gcc 9 repo currently broken
-    - env: CONFIG="--enable-mods-shared=reallyall --enable-maintainer-mode NOTEST_CFLAGS=-Werror CC=gcc-9"
-           SKIP_TESTING=1
            
 # CPAN modules are to be used with the system Perl and always with
 # CC=gcc, e.g. for the CC="gcc -m32" case the builds are not correct
