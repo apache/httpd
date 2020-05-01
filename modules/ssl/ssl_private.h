@@ -629,6 +629,10 @@ typedef struct {
     /* Used for logging if SSLKEYLOGFILE is set at startup. */
     apr_file_t      *keylog_file;
 #endif
+
+#ifdef HAVE_FIPS
+    BOOL             fips;
+#endif
 } SSLModConfigRec;
 
 /** Structure representing configured filenames for certs and keys for
@@ -783,9 +787,6 @@ struct SSLSrvConfigRec {
     modssl_ctx_t    *server;
 #ifdef HAVE_TLSEXT
     ssl_enabled_t    strict_sni_vhost_check;
-#endif
-#ifdef HAVE_FIPS
-    BOOL             fips;
 #endif
 #ifndef OPENSSL_NO_COMP
     BOOL             compression;
