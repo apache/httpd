@@ -179,7 +179,7 @@ err_too_long:
 int mkhash(struct passwd_ctx *ctx)
 {
     char *pw;
-    char salt[16];
+    char salt[17];
     apr_status_t rv;
     int ret = 0;
 #if CRYPT_ALGO_SUPPORTED
