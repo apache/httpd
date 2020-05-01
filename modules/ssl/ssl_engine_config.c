@@ -82,6 +82,9 @@ SSLModConfigRec *ssl_config_global_create(server_rec *s)
 #ifdef HAVE_OPENSSL_KEYLOG
     mc->keylog_file = NULL;
 #endif
+#ifdef HAVE_FIPS
+    mc->fips = UNSET;
+#endif
 
     apr_pool_userdata_set(mc, SSL_MOD_CONFIG_KEY,
                           apr_pool_cleanup_null,
@@ -228,9 +231,6 @@ static SSLSrvConfigRec *ssl_config_server_new(apr_pool_t *p)
 #ifdef HAVE_TLSEXT
     sc->strict_sni_vhost_check = SSL_ENABLED_UNSET;
 #endif
-#ifdef HAVE_FIPS
-    sc->fips                   = UNSET;
-#endif
 #ifndef OPENSSL_NO_COMP
     sc->compression            = UNSET;
 #endif
@@ -364,9 +364,6 @@ void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
     cfgMergeBool(insecure_reneg);
 #ifdef HAVE_TLSEXT
     cfgMerge(strict_sni_vhost_check, SSL_ENABLED_UNSET);
-#endif
-#ifdef HAVE_FIPS
-    cfgMergeBool(fips);
 #endif
 #ifndef OPENSSL_NO_COMP
     cfgMergeBool(compression);
@@ -846,7 +843,7 @@ const char *ssl_cmd_SSLEngine(cmd_parms *cmd, void *dcfg, const char *arg)
 const char *ssl_cmd_SSLFIPS(cmd_parms *cmd, void *dcfg, int flag)
 {
 #ifdef HAVE_FIPS
-    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+    SSLModConfigRec *mc = myModConfig(cmd->server);
 #endif
     const char *err;
 
@@ -855,9 +852,9 @@ const char *ssl_cmd_SSLFIPS(cmd_parms *cmd, void *dcfg, int flag)
     }
 
 #ifdef HAVE_FIPS
-    if ((sc->fips != UNSET) && (sc->fips != (BOOL)(flag ? TRUE : FALSE)))
+    if ((mc->fips != UNSET) && (mc->fips != (BOOL)(flag ? TRUE : FALSE)))
         return "Conflicting SSLFIPS options, cannot be both On and Off";
-    sc->fips = flag ? TRUE : FALSE;
+    mc->fips = flag ? TRUE : FALSE;
 #else
     if (flag)
         return "SSLFIPS invalid, rebuild httpd and openssl compiled for FIPS";
@@ -2650,9 +2647,6 @@ static void ssl_srv_dump(SSLSrvConfigRec *sc, apr_pool_t *p,
     DMP_LONG(  "SSLSessionCacheTimeout", sc->session_cache_timeout);
     DMP_ON_OFF("SSLInsecureRenegotiation", sc->insecure_reneg);
     DMP_ON_OFF("SSLStrictSNIVHostCheck", sc->strict_sni_vhost_check);
-#ifdef HAVE_FIPS
-    DMP_ON_OFF("SSLFIPS", sc->fips);
-#endif
     DMP_ON_OFF("SSLSessionTickets", sc->session_tickets);
 }
 

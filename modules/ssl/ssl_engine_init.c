@@ -299,12 +299,6 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
         if (sc->server && sc->server->pphrase_dialog_type == SSL_PPTYPE_UNSET) {
             sc->server->pphrase_dialog_type = SSL_PPTYPE_BUILTIN;
         }
-
-#ifdef HAVE_FIPS
-        if (sc->fips == UNSET) {
-            sc->fips = FALSE;
-        }
-#endif
     }
 
 #if APR_HAS_THREADS && MODSSL_USE_OPENSSL_PRE_1_1_API
@@ -331,27 +325,28 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
     ssl_rand_seed(base_server, ptemp, SSL_RSCTX_STARTUP, "Init: ");
 
 #ifdef HAVE_FIPS
-    /* ### The FIPS setting is global and must be the same in all
-     * SSLSrvConfigRecs, should be in SSLModConfigRec really. */
-    sc = mySrvConfig(base_server);
-    if (sc->fips) {
-        if (!FIPS_mode()) {
-            if (FIPS_mode_set(1)) {
-                ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, base_server, APLOGNO(01884)
-                             "Operating in SSL FIPS mode");
-                apr_pool_cleanup_register(p, NULL, modssl_fips_cleanup,
-                                          apr_pool_cleanup_null);
-            }
-            else {
-                ap_log_error(APLOG_MARK, APLOG_EMERG, 0, base_server, APLOGNO(01885) "FIPS mode failed");
-                ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, base_server);
-                return ssl_die(base_server);
-            }
+    if (!FIPS_mode() && mc->fips == TRUE) {
+        if (!FIPS_mode_set(1)) {
+            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, base_server, APLOGNO(01885)
+                         "Could not enable FIPS mode");
+            ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, base_server);
+            return ssl_die(base_server);
         }
+
+        apr_pool_cleanup_register(p, NULL, modssl_fips_cleanup,
+                                  apr_pool_cleanup_null);
+    }
+
+    /* Log actual FIPS mode which the SSL library is operating under,
+     * which may have been set outside of the mod_ssl
+     * configuration. */
+    if (FIPS_mode()) {
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, base_server, APLOGNO(01884)
+                     MODSSL_LIBRARY_NAME " has FIPS mode enabled");
     }
     else {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, base_server, APLOGNO(01886)
-                     "SSL FIPS mode disabled");
+                     MODSSL_LIBRARY_NAME " has FIPS mode disabled");
     }
 #endif
 
