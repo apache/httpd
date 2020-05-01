@@ -40,17 +40,17 @@
 **  _________________________________________________________________
 */
 
-#define SSL_MOD_CONFIG_KEY "ssl_module"
 
-SSLModConfigRec *ssl_config_global_create(server_rec *s)
+static SSLModConfigRec *ssl_config_global_create(apr_pool_t *pool, server_rec *s)
 {
-    apr_pool_t *pool = s->process->pool;
     SSLModConfigRec *mc;
-    void *vmc;
 
-    apr_pool_userdata_get(&vmc, SSL_MOD_CONFIG_KEY, pool);
-    if (vmc) {
-        return vmc; /* reused for lifetime of the server */
+    if (ap_server_conf && s != ap_server_conf) {
+        SSLSrvConfigRec *sc = mySrvConfig(ap_server_conf);
+
+        AP_DEBUG_ASSERT(sc->mc);
+
+        return sc->mc;
     }
 
     /*
@@ -68,8 +68,6 @@ SSLModConfigRec *ssl_config_global_create(server_rec *s)
     mc->pMutex                 = NULL;
     mc->aRandSeed              = apr_array_make(pool, 4,
                                                 sizeof(ssl_randseed_t));
-    mc->tVHostKeys             = apr_hash_make(pool);
-    mc->tPrivateKey            = apr_hash_make(pool);
 #if defined(HAVE_OPENSSL_ENGINE_H) && defined(HAVE_ENGINE_INIT)
     mc->szCryptoDevice         = NULL;
 #endif
@@ -86,9 +84,15 @@ SSLModConfigRec *ssl_config_global_create(server_rec *s)
     mc->fips = UNSET;
 #endif
 
-    apr_pool_userdata_set(mc, SSL_MOD_CONFIG_KEY,
-                          apr_pool_cleanup_null,
-                          pool);
+    mc->retained = ap_retained_data_get(MODSSL_RETAINED_KEY);
+    if (!mc->retained) {
+        /* Allocate the retained data; the hash table is allocated out
+         * of the process pool. */
+        mc->retained = ap_retained_data_create(MODSSL_RETAINED_KEY,
+                                               sizeof *mc->retained);
+        mc->retained->privkeys = apr_hash_make(s->process->pool);
+        mc->retained->key_ids = apr_hash_make(s->process->pool);
+    }
 
     return mc;
 }
@@ -248,7 +252,7 @@ void *ssl_config_server_create(apr_pool_t *p, server_rec *s)
 {
     SSLSrvConfigRec *sc = ssl_config_server_new(p);
 
-    sc->mc = ssl_config_global_create(s);
+    sc->mc = ssl_config_global_create(p, s);
 
     return sc;
 }
