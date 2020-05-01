@@ -172,15 +172,15 @@ DH *modssl_get_dh_params(unsigned keylen)
     return NULL; /* impossible to reach. */
 }
 
-static void ssl_add_version_components(apr_pool_t *p,
+static void ssl_add_version_components(apr_pool_t *ptemp, apr_pool_t *pconf,
                                        server_rec *s)
 {
-    char *modver = ssl_var_lookup(p, s, NULL, NULL, "SSL_VERSION_INTERFACE");
-    char *libver = ssl_var_lookup(p, s, NULL, NULL, "SSL_VERSION_LIBRARY");
-    char *incver = ssl_var_lookup(p, s, NULL, NULL,
+    char *modver = ssl_var_lookup(ptemp, s, NULL, NULL, "SSL_VERSION_INTERFACE");
+    char *libver = ssl_var_lookup(ptemp, s, NULL, NULL, "SSL_VERSION_LIBRARY");
+    char *incver = ssl_var_lookup(ptemp, s, NULL, NULL,
                                   "SSL_VERSION_LIBRARY_INTERFACE");
 
-    ap_add_version_component(p, libver);
+    ap_add_version_component(pconf, libver);
 
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(01876)
                  "%s compiled against Server: %s, Library: %s",
@@ -429,7 +429,7 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
      *  Announce mod_ssl and SSL library in HTTP Server field
      *  as ``mod_ssl/X.X.X OpenSSL/X.X.X''
      */
-    ssl_add_version_components(p, base_server);
+    ssl_add_version_components(ptemp, p, base_server);
 
     modssl_init_app_data2_idx(); /* for modssl_get_app_data2() at request time */
 
