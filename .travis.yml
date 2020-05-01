@@ -101,7 +101,7 @@ jobs:
     # -------------------------------------------------------------------------
     - name: Linux Ubuntu, GCC 7 maintainer-mode w/-Werror
       os: linux
-      env: CONFIG="--enable-mods-shared=reallyall --enable-maintainer-mode NOTEST_CFLAGS='-Werror -O2' CC=gcc-7"
+      env: CONFIG="--enable-mods-shared=reallyall --enable-maintainer-mode" NOTEST_CFLAGS='-Werror -O2' CC=gcc-7
            SKIP_TESTING=1
     # -------------------------------------------------------------------------
     - if: *condition_not_24x
@@ -110,7 +110,7 @@ jobs:
       env: CONFIG="--enable-mods-shared=reallyall --with-pcre=/usr/bin/pcre-config --enable-maintainer-mode NOTEST_CFLAGS=-Werror CC=gcc-7"
     # -------------------------------------------------------------------------
     - name: Linux Ubuntu, GCC 8 maintainer-mode w/-Werror
-      env: CONFIG="--enable-mods-shared=reallyall --enable-maintainer-mode NOTEST_CFLAGS='-Werror -O2' CC=gcc-8"
+      env: CONFIG="--enable-mods-shared=reallyall --enable-maintainer-mode" NOTEST_CFLAGS='-Werror -O2' CC=gcc-8
            SKIP_TESTING=1
       addons:
         apt:
@@ -129,7 +129,7 @@ jobs:
             - libpcre2-dev
     # -------------------------------------------------------------------------
     - name: Linux Ubuntu, GCC 9 maintainer-mode w/-Werror
-      env: CONFIG="--enable-mods-shared=reallyall --enable-maintainer-mode NOTEST_CFLAGS='-Werror -O2' CC=gcc-9"
+      env: CONFIG="--enable-mods-shared=reallyall --enable-maintainer-mode" NOTEST_CFLAGS='-Werror -O2' CC=gcc-9
            SKIP_TESTING=1
       addons:
         apt:
@@ -150,7 +150,7 @@ jobs:
             - libpcre2-dev
     # -------------------------------------------------------------------------
     - name: Linux Ubuntu, GCC 10 maintainer-mode w/-Werror
-      env: CONFIG="--enable-mods-shared=reallyall --enable-maintainer-mode NOTEST_CFLAGS='-Werror -O2' CC=gcc-10"
+      env: CONFIG="--enable-mods-shared=reallyall --enable-maintainer-mode" NOTEST_CFLAGS='-Werror -O2' CC=gcc-10
            SKIP_TESTING=1
       addons:
         apt:
