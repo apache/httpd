@@ -39,7 +39,7 @@
 <h2><a name="providers" id="providers">Fournisseurs du cache d'objets partagés</a> <a title="Lien permanent" href="#providers" class="permalink">&para;</a></h2>
     
     <p>Le cache d'objets partagés en tant que tel est une abstraction.
-    Il est implémenté par quatre modules différents. Pour pouvoir
+    Il est implémenté par cinq modules différents. Pour pouvoir
     utiliser le cache, un ou plusieurs de ces modules doivent être
     présents et configurés.</p>
     <p>Le seul élément de configuration consiste à définir le
