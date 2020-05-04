@@ -887,9 +887,11 @@ static void ssl_init_ctx_session_cache(server_rec *s,
 }
 
 #ifdef SSL_OP_NO_RENEGOTIATION
-#define MODSSL_BLOCKS_RENEG (1)
-#else
+/* OpenSSL-level renegotiation protection. */
 #define MODSSL_BLOCKS_RENEG (0)
+#else
+/* mod_ssl-level renegotiation protection. */
+#define MODSSL_BLOCKS_RENEG (1)
 #endif
 
 static void ssl_init_ctx_callbacks(server_rec *s,
