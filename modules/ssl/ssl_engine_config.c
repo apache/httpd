@@ -53,33 +53,15 @@ static SSLModConfigRec *ssl_config_global_create(apr_pool_t *pool, server_rec *s
         return sc->mc;
     }
 
-    /*
-     * allocate an own subpool which survives server restarts
-     */
-    mc = (SSLModConfigRec *)apr_palloc(pool, sizeof(*mc));
+    mc = apr_pcalloc(pool, sizeof(*mc));
     mc->pPool = pool;
-    mc->bFixed = FALSE;
 
     /*
      * initialize per-module configuration
      */
     mc->sesscache_mode         = SSL_SESS_CACHE_OFF;
-    mc->sesscache              = NULL;
-    mc->pMutex                 = NULL;
     mc->aRandSeed              = apr_array_make(pool, 4,
                                                 sizeof(ssl_randseed_t));
-#if defined(HAVE_OPENSSL_ENGINE_H) && defined(HAVE_ENGINE_INIT)
-    mc->szCryptoDevice         = NULL;
-#endif
-#ifdef HAVE_OCSP_STAPLING
-    mc->stapling_cache         = NULL;
-    mc->stapling_cache_mutex   = NULL;
-    mc->stapling_refresh_mutex = NULL;
-#endif
-
-#ifdef HAVE_OPENSSL_KEYLOG
-    mc->keylog_file = NULL;
-#endif
 #ifdef HAVE_FIPS
     mc->fips = UNSET;
 #endif
