@@ -1294,10 +1294,10 @@ int ssl_hook_Access(request_rec *r)
      * we need to postpone setting the username until later.
      */
     if ((dc->nOptions & SSL_OPT_FAKEBASICAUTH) == 0 && dc->szUserName) {
-        char *val = ssl_var_lookup(r->pool, r->server, r->connection,
-                                   r, (char *)dc->szUserName);
+        const char *val = ssl_var_lookup(r->pool, r->server, r->connection,
+                                         r, dc->szUserName);
         if (val && val[0])
-            r->user = val;
+            r->user = apr_pstrdup(r->pool, val);
         else
             ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(02227)
                           "Failed to set r->user to '%s'", dc->szUserName);
@@ -1545,7 +1545,7 @@ int ssl_hook_Fixup(request_rec *r)
 {
     SSLDirConfigRec *dc = myDirConfig(r);
     apr_table_t *env = r->subprocess_env;
-    char *var, *val = "";
+    const char *var, *val = "";
 #ifdef HAVE_TLSEXT
     const char *servername;
 #endif
@@ -1578,7 +1578,7 @@ int ssl_hook_Fixup(request_rec *r)
         modssl_var_extract_san_entries(env, ssl, r->pool);
 
         for (i = 0; ssl_hook_Fixup_vars[i]; i++) {
-            var = (char *)ssl_hook_Fixup_vars[i];
+            var = ssl_hook_Fixup_vars[i];
             val = ssl_var_lookup(r->pool, r->server, r->connection, r, var);
             if (!strIsEmpty(val)) {
                 apr_table_setn(env, var, val);
@@ -2257,10 +2257,10 @@ static void log_tracing_state(const SSL *ssl, conn_rec *c,
     if (where & SSL_CB_HANDSHAKE_DONE) {
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(02041)
                       "Protocol: %s, Cipher: %s (%s/%s bits)",
-                      ssl_var_lookup(NULL, s, c, NULL, "SSL_PROTOCOL"),
-                      ssl_var_lookup(NULL, s, c, NULL, "SSL_CIPHER"),
-                      ssl_var_lookup(NULL, s, c, NULL, "SSL_CIPHER_USEKEYSIZE"),
-                      ssl_var_lookup(NULL, s, c, NULL, "SSL_CIPHER_ALGKEYSIZE"));
+                      ssl_var_lookup(c->pool, s, c, NULL, "SSL_PROTOCOL"),
+                      ssl_var_lookup(c->pool, s, c, NULL, "SSL_CIPHER"),
+                      ssl_var_lookup(c->pool, s, c, NULL, "SSL_CIPHER_USEKEYSIZE"),
+                      ssl_var_lookup(c->pool, s, c, NULL, "SSL_CIPHER_ALGKEYSIZE"));
     }
 }
 

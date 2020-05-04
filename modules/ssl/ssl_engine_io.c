@@ -1361,7 +1361,7 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
             const char *hostname;
             int match = 0;
 
-            hostname = ssl_var_lookup(NULL, server, c, NULL,
+            hostname = ssl_var_lookup(c->pool, server, c, NULL,
                                       "SSL_CLIENT_S_DN_CN");
 
             /* Do string match or simplest wildcard match if that

@@ -176,10 +176,12 @@ DH *modssl_get_dh_params(unsigned keylen)
 static void ssl_add_version_components(apr_pool_t *ptemp, apr_pool_t *pconf,
                                        server_rec *s)
 {
-    char *modver = ssl_var_lookup(ptemp, s, NULL, NULL, "SSL_VERSION_INTERFACE");
-    char *libver = ssl_var_lookup(ptemp, s, NULL, NULL, "SSL_VERSION_LIBRARY");
-    char *incver = ssl_var_lookup(ptemp, s, NULL, NULL,
-                                  "SSL_VERSION_LIBRARY_INTERFACE");
+    const char *modver = ssl_var_lookup(ptemp, s, NULL, NULL,
+                                        "SSL_VERSION_INTERFACE");
+    const char *libver = ssl_var_lookup(ptemp, s, NULL, NULL,
+                                        "SSL_VERSION_LIBRARY");
+    const char *incver = ssl_var_lookup(ptemp, s, NULL, NULL,
+                                        "SSL_VERSION_LIBRARY_INTERFACE");
 
     ap_add_version_component(pconf, libver);
 

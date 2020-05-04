@@ -1091,7 +1091,13 @@ void ssl_log_rxerror(const char *file, int line, int level,
 
 /* Register variables for the lifetime of the process pool 'p'. */
 void         ssl_var_register(apr_pool_t *p);
-char        *ssl_var_lookup(apr_pool_t *, server_rec *, conn_rec *, request_rec *, char *);
+
+/* Matches optional function of the same name in the public API.  The
+ * pool in which to allocate the return value must be non-NULL; c
+ * and/or r may be NULL. */
+const char  *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r,
+                            const char *name)
+    AP_FN_ATTR_NONNULL((1, 2, 5)) AP_FN_ATTR_WARN_UNUSED_RESULT;
 apr_array_header_t *ssl_ext_list(apr_pool_t *p, conn_rec *c, int peer, const char *extension);
 
 void         ssl_var_log_config_register(apr_pool_t *p);

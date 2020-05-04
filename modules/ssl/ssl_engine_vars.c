@@ -39,21 +39,21 @@
 **  _________________________________________________________________
 */
 
-static char *ssl_var_lookup_ssl(apr_pool_t *p, const SSLConnRec *sslconn, request_rec *r, char *var);
-static char *ssl_var_lookup_ssl_cert(apr_pool_t *p, request_rec *r, X509 *xs, char *var);
-static char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, X509_NAME *xsname, const char *var);
-static char *ssl_var_lookup_ssl_cert_san(apr_pool_t *p, X509 *xs, char *var);
-static char *ssl_var_lookup_ssl_cert_valid(apr_pool_t *p, ASN1_TIME *tm);
-static char *ssl_var_lookup_ssl_cert_remain(apr_pool_t *p, ASN1_TIME *tm);
-static char *ssl_var_lookup_ssl_cert_serial(apr_pool_t *p, X509 *xs);
-static char *ssl_var_lookup_ssl_cert_chain(apr_pool_t *p, STACK_OF(X509) *sk, char *var);
-static char *ssl_var_lookup_ssl_cert_rfc4523_cea(apr_pool_t *p, SSL *ssl);
-static char *ssl_var_lookup_ssl_cert_PEM(apr_pool_t *p, X509 *xs);
-static char *ssl_var_lookup_ssl_cert_verify(apr_pool_t *p, const SSLConnRec *sslconn);
-static char *ssl_var_lookup_ssl_cipher(apr_pool_t *p, const SSLConnRec *sslconn, char *var);
+static const char *ssl_var_lookup_ssl(apr_pool_t *p, const SSLConnRec *sslconn, request_rec *r, const char *var);
+static const char *ssl_var_lookup_ssl_cert(apr_pool_t *p, request_rec *r, X509 *xs, const char *var);
+static const char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, X509_NAME *xsname, const char *var);
+static const char *ssl_var_lookup_ssl_cert_san(apr_pool_t *p, X509 *xs, const char *var);
+static const char *ssl_var_lookup_ssl_cert_valid(apr_pool_t *p, ASN1_TIME *tm);
+static const char *ssl_var_lookup_ssl_cert_remain(apr_pool_t *p, ASN1_TIME *tm);
+static const char *ssl_var_lookup_ssl_cert_serial(apr_pool_t *p, X509 *xs);
+static const char *ssl_var_lookup_ssl_cert_chain(apr_pool_t *p, STACK_OF(X509) *sk, const char *var);
+static const char *ssl_var_lookup_ssl_cert_rfc4523_cea(apr_pool_t *p, SSL *ssl);
+static const char *ssl_var_lookup_ssl_cert_PEM(apr_pool_t *p, X509 *xs);
+static const char *ssl_var_lookup_ssl_cert_verify(apr_pool_t *p, const SSLConnRec *sslconn);
+static const char *ssl_var_lookup_ssl_cipher(apr_pool_t *p, const SSLConnRec *sslconn, const char *var);
 static void  ssl_var_lookup_ssl_cipher_bits(SSL *ssl, int *usekeysize, int *algkeysize);
-static char *ssl_var_lookup_ssl_version(apr_pool_t *p, char *var);
-static char *ssl_var_lookup_ssl_compress_meth(SSL *ssl);
+static const char *ssl_var_lookup_ssl_version(const char *var);
+static const char *ssl_var_lookup_ssl_compress_meth(SSL *ssl);
 
 static const SSLConnRec *ssl_get_effective_config(conn_rec *c)
 {
@@ -162,7 +162,7 @@ static apr_array_header_t *expr_peer_ext_list_fn(ap_expr_eval_ctx_t *ctx,
 
 static const char *expr_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
 {
-    char *var = (char *)data;
+    const char *var = data;
     const SSLConnRec *sslconn = ssl_get_effective_config(ctx->c);
 
     return sslconn ? ssl_var_lookup_ssl(ctx->p, sslconn, ctx->r, var) : NULL;
@@ -171,7 +171,7 @@ static const char *expr_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
 static const char *expr_func_fn(ap_expr_eval_ctx_t *ctx, const void *data,
                                 const char *arg)
 {
-    char *var = (char *)arg;
+    const char *var = arg;
 
     return var ? ssl_var_lookup(ctx->p, ctx->s, ctx->c, ctx->r, var) : NULL;
 }
@@ -239,29 +239,15 @@ void ssl_var_register(apr_pool_t *p)
 }
 
 /* This function must remain safe to use for a non-SSL connection. */
-char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, char *var)
+const char *ssl_var_lookup(apr_pool_t *p, server_rec *s,
+                           conn_rec *c, request_rec *r,
+                           const char *var)
 {
-    const char *result;
-    BOOL resdup;
+    const char *result = NULL;
     apr_time_exp_t tm;
-
-    result = NULL;
-    resdup = TRUE;
 
     AP_DEBUG_ASSERT(s);
     
-    /*
-     * When no pool is given try to find one
-     */
-    if (p == NULL) {
-        if (r != NULL)
-            p = r->pool;
-        else if (c != NULL)
-            p = c->pool;
-        else
-            p = s->process->pool;
-    }
-
     /*
      * Request dependent stuff
      */
@@ -367,23 +353,20 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
      */
     if (result == NULL) {
         if (strlen(var) > 12 && strcEQn(var, "SSL_VERSION_", 12))
-            result = ssl_var_lookup_ssl_version(p, var+12);
+            result = ssl_var_lookup_ssl_version(var+12);
         else if (strcEQ(var, "SERVER_SOFTWARE"))
             result = ap_get_server_banner();
         else if (strcEQ(var, "API_VERSION")) {
             result = apr_itoa(p, MODULE_MAGIC_NUMBER_MAJOR);
-            resdup = FALSE;
         }
         else if (strcEQ(var, "TIME_YEAR")) {
             apr_time_exp_lt(&tm, apr_time_now());
             result = apr_psprintf(p, "%02d%02d",
                                  (tm.tm_year / 100) + 19, tm.tm_year % 100);
-            resdup = FALSE;
         }
 #define MKTIMESTR(format, tmfield) \
             apr_time_exp_lt(&tm, apr_time_now()); \
-            result = apr_psprintf(p, format, tm.tmfield); \
-            resdup = FALSE;
+            result = apr_psprintf(p, format, tm.tmfield);
         else if (strcEQ(var, "TIME_MON")) {
             MKTIMESTR("%02d", tm_mon+1)
         }
@@ -408,7 +391,6 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
                         "%02d%02d%02d%02d%02d%02d%02d", (tm.tm_year / 100) + 19,
                         (tm.tm_year % 100), tm.tm_mon+1, tm.tm_mday,
                         tm.tm_hour, tm.tm_min, tm.tm_sec);
-            resdup = FALSE;
         }
         /* all other env-variables from the parent Apache process */
         else if (strlen(var) > 4 && strcEQn(var, "ENV:", 4)) {
@@ -416,17 +398,13 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
         }
     }
 
-    if (result != NULL && resdup)
-        result = apr_pstrdup(p, result);
-    if (result == NULL)
-        result = "";
-    return (char *)result;
+    return result ? result : "";
 }
 
-static char *ssl_var_lookup_ssl(apr_pool_t *p, const SSLConnRec *sslconn, 
-                                request_rec *r, char *var)
+static const char *ssl_var_lookup_ssl(apr_pool_t *p, const SSLConnRec *sslconn,
+                                      request_rec *r, const char *var)
 {
-    char *result;
+    const char *result;
     X509 *xs;
     STACK_OF(X509) *sk;
     SSL *ssl;
@@ -435,10 +413,10 @@ static char *ssl_var_lookup_ssl(apr_pool_t *p, const SSLConnRec *sslconn,
 
     ssl = sslconn->ssl;
     if (strlen(var) > 8 && strcEQn(var, "VERSION_", 8)) {
-        result = ssl_var_lookup_ssl_version(p, var+8);
+        result = ssl_var_lookup_ssl_version(var+8);
     }
     else if (ssl != NULL && strcEQ(var, "PROTOCOL")) {
-        result = (char *)SSL_get_version(ssl);
+        result = SSL_get_version(ssl);
     }
     else if (ssl != NULL && strcEQ(var, "SESSION_ID")) {
         char buf[MODSSL_SESSION_ID_STRING_LEN];
@@ -505,7 +483,7 @@ static char *ssl_var_lookup_ssl(apr_pool_t *p, const SSLConnRec *sslconn,
 #ifdef SSL_get_secure_renegotiation_support
         flag = SSL_get_secure_renegotiation_support(ssl);
 #endif
-        result = apr_pstrdup(p, flag ? "true" : "false");
+        result = flag ? "true" : "false";
     }
 #ifdef HAVE_SRP
     else if (ssl != NULL && strcEQ(var, "SRP_USER")) {
@@ -523,7 +501,7 @@ static char *ssl_var_lookup_ssl(apr_pool_t *p, const SSLConnRec *sslconn,
     return result;
 }
 
-static char *ssl_var_lookup_ssl_cert_dn_oneline(apr_pool_t *p, request_rec *r,
+static const char *ssl_var_lookup_ssl_cert_dn_oneline(apr_pool_t *p, request_rec *r,
                                                 X509_NAME *xsname)
 {
     char *result = NULL;
@@ -551,20 +529,17 @@ static char *ssl_var_lookup_ssl_cert_dn_oneline(apr_pool_t *p, request_rec *r,
     return result;
 }
 
-static char *ssl_var_lookup_ssl_cert(apr_pool_t *p, request_rec *r, X509 *xs,
-                                     char *var)
+static const char *ssl_var_lookup_ssl_cert(apr_pool_t *p, request_rec *r, X509 *xs,
+                                           const char *var)
 {
-    char *result;
-    BOOL resdup;
+    const char *result;
     X509_NAME *xsname;
     int nid;
 
     result = NULL;
-    resdup = TRUE;
 
     if (strcEQ(var, "M_VERSION")) {
         result = apr_psprintf(p, "%lu", X509_get_version(xs)+1);
-        resdup = FALSE;
     }
     else if (strcEQ(var, "M_SERIAL")) {
         result = ssl_var_lookup_ssl_cert_serial(p, xs);
@@ -577,7 +552,6 @@ static char *ssl_var_lookup_ssl_cert(apr_pool_t *p, request_rec *r, X509 *xs,
     }
     else if (strcEQ(var, "V_REMAIN")) {
         result = ssl_var_lookup_ssl_cert_remain(p, X509_get_notAfter(xs));
-        resdup = FALSE;
     }
     else if (*var && strcEQ(var+1, "_DN")) {
         if (*var == 'S')
@@ -587,7 +561,6 @@ static char *ssl_var_lookup_ssl_cert(apr_pool_t *p, request_rec *r, X509 *xs,
         else
             return NULL;
         result = ssl_var_lookup_ssl_cert_dn_oneline(p, r, xsname);
-        resdup = FALSE;
     }
     else if (strlen(var) > 5 && strcEQn(var+1, "_DN_", 4)) {
         if (*var == 'S')
@@ -597,11 +570,9 @@ static char *ssl_var_lookup_ssl_cert(apr_pool_t *p, request_rec *r, X509 *xs,
         else
             return NULL;
         result = ssl_var_lookup_ssl_cert_dn(p, xsname, var+5);
-        resdup = FALSE;
     }
     else if (strlen(var) > 4 && strcEQn(var, "SAN_", 4)) {
         result = ssl_var_lookup_ssl_cert_san(p, xs, var+4);
-        resdup = FALSE;
     }
     else if (strcEQ(var, "A_SIG")) {
 #if MODSSL_USE_OPENSSL_PRE_1_1_API
@@ -611,9 +582,7 @@ static char *ssl_var_lookup_ssl_cert(apr_pool_t *p, request_rec *r, X509 *xs,
         X509_ALGOR_get0(&paobj, NULL, NULL, X509_get0_tbs_sigalg(xs));
         nid = OBJ_obj2nid(paobj);
 #endif
-        result = apr_pstrdup(p,
-                             (nid == NID_undef) ? "UNKNOWN" : OBJ_nid2ln(nid));
-        resdup = FALSE;
+        result = (nid == NID_undef) ? "UNKNOWN" : OBJ_nid2ln(nid);
     }
     else if (strcEQ(var, "A_KEY")) {
 #if OPENSSL_VERSION_NUMBER < 0x10100000L
@@ -623,16 +592,12 @@ static char *ssl_var_lookup_ssl_cert(apr_pool_t *p, request_rec *r, X509 *xs,
         X509_PUBKEY_get0_param(&paobj, NULL, 0, NULL, X509_get_X509_PUBKEY(xs));
         nid = OBJ_obj2nid(paobj);
 #endif
-        result = apr_pstrdup(p,
-                             (nid == NID_undef) ? "UNKNOWN" : OBJ_nid2ln(nid));
-        resdup = FALSE;
+        result = (nid == NID_undef) ? "UNKNOWN" : OBJ_nid2ln(nid);
     }
     else if (strcEQ(var, "CERT")) {
         result = ssl_var_lookup_ssl_cert_PEM(p, xs);
     }
 
-    if (resdup)
-        result = apr_pstrdup(p, result);
     return result;
 }
 
@@ -640,7 +605,7 @@ static char *ssl_var_lookup_ssl_cert(apr_pool_t *p, request_rec *r, X509 *xs,
  * extracted to for the SSL_{CLIENT,SERVER}_{I,S}_DN_* environment
  * variables. */
 static const struct {
-    char *name;
+    const char *name;
     int   nid;
     int   extract;
 } ssl_var_lookup_ssl_cert_dn_rec[] = {
@@ -663,11 +628,11 @@ static const struct {
     { NULL,    0,                          0 }
 };
 
-static char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, X509_NAME *xsname,
+static const char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, X509_NAME *xsname,
                                         const char *var)
 {
     const char *ptr;
-    char *result;
+    const char *result;
     X509_NAME_ENTRY *xsne;
     int i, j, n, idx = 0, raw = 0;
     apr_size_t varlen;
@@ -708,7 +673,7 @@ static char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, X509_NAME *xsname,
     return result;
 }
 
-static char *ssl_var_lookup_ssl_cert_san(apr_pool_t *p, X509 *xs, char *var)
+static const char *ssl_var_lookup_ssl_cert_san(apr_pool_t *p, X509 *xs, const char *var)
 {
     int type, numlen;
     const char *onf = NULL;
@@ -751,7 +716,7 @@ static char *ssl_var_lookup_ssl_cert_san(apr_pool_t *p, X509 *xs, char *var)
         return NULL;
 }
 
-static char *ssl_var_lookup_ssl_cert_valid(apr_pool_t *p, ASN1_TIME *tm)
+static const char *ssl_var_lookup_ssl_cert_valid(apr_pool_t *p, ASN1_TIME *tm)
 {
     BIO* bio;
 
@@ -766,7 +731,7 @@ static char *ssl_var_lookup_ssl_cert_valid(apr_pool_t *p, ASN1_TIME *tm)
 
 /* Return a string giving the number of days remaining until 'tm', or
  * "0" if this can't be determined. */
-static char *ssl_var_lookup_ssl_cert_remain(apr_pool_t *p, ASN1_TIME *tm)
+static const char *ssl_var_lookup_ssl_cert_remain(apr_pool_t *p, ASN1_TIME *tm)
 {
     apr_time_t then, now = apr_time_now();
     apr_time_exp_t exp = {0};
@@ -779,7 +744,7 @@ static char *ssl_var_lookup_ssl_cert_remain(apr_pool_t *p, ASN1_TIME *tm)
     if ((tm->type == V_ASN1_UTCTIME && tm->length < 11) ||
         (tm->type == V_ASN1_GENERALIZEDTIME && tm->length < 13) ||
         !ASN1_TIME_check(tm)) {
-        return apr_pstrdup(p, "0");
+        return "0";
     }
 
     if (tm->type == V_ASN1_UTCTIME) {
@@ -798,15 +763,15 @@ static char *ssl_var_lookup_ssl_cert_remain(apr_pool_t *p, ASN1_TIME *tm)
     exp.tm_sec = DIGIT2NUM(dp + 8);
 
     if (apr_time_exp_gmt_get(&then, &exp) != APR_SUCCESS) {
-        return apr_pstrdup(p, "0");
+        return "0";
     }
 
     diff = (long)((apr_time_sec(then) - apr_time_sec(now)) / (60*60*24));
 
-    return diff > 0 ? apr_ltoa(p, diff) : apr_pstrdup(p, "0");
+    return diff > 0 ? apr_ltoa(p, diff) : "0";
 }
 
-static char *ssl_var_lookup_ssl_cert_serial(apr_pool_t *p, X509 *xs)
+static const char *ssl_var_lookup_ssl_cert_serial(apr_pool_t *p, X509 *xs)
 {
     BIO *bio;
 
@@ -817,9 +782,9 @@ static char *ssl_var_lookup_ssl_cert_serial(apr_pool_t *p, X509 *xs)
     return modssl_bio_free_read(p, bio);
 }
 
-static char *ssl_var_lookup_ssl_cert_chain(apr_pool_t *p, STACK_OF(X509) *sk, char *var)
+static const char *ssl_var_lookup_ssl_cert_chain(apr_pool_t *p, STACK_OF(X509) *sk, const char *var)
 {
-    char *result;
+    const char *result;
     X509 *xs;
     int n;
 
@@ -836,7 +801,7 @@ static char *ssl_var_lookup_ssl_cert_chain(apr_pool_t *p, STACK_OF(X509) *sk, ch
     return result;
 }
 
-static char *ssl_var_lookup_ssl_cert_rfc4523_cea(apr_pool_t *p, SSL *ssl)
+static const char *ssl_var_lookup_ssl_cert_rfc4523_cea(apr_pool_t *p, SSL *ssl)
 {
     char *result;
     X509 *xs;
@@ -867,7 +832,7 @@ static char *ssl_var_lookup_ssl_cert_rfc4523_cea(apr_pool_t *p, SSL *ssl)
     return result;
 }
 
-static char *ssl_var_lookup_ssl_cert_PEM(apr_pool_t *p, X509 *xs)
+static const char *ssl_var_lookup_ssl_cert_PEM(apr_pool_t *p, X509 *xs)
 {
     BIO *bio;
 
@@ -878,8 +843,8 @@ static char *ssl_var_lookup_ssl_cert_PEM(apr_pool_t *p, X509 *xs)
     return modssl_bio_free_read(p, bio);
 }
 
-static char *ssl_var_lookup_ssl_cert_verify(apr_pool_t *p, 
-                                            const SSLConnRec *sslconn)
+static const char *ssl_var_lookup_ssl_cert_verify(apr_pool_t *p,
+                                                  const SSLConnRec *sslconn)
 {
     char *result;
     long vrc;
@@ -914,37 +879,35 @@ static char *ssl_var_lookup_ssl_cert_verify(apr_pool_t *p,
     return result;
 }
 
-static char *ssl_var_lookup_ssl_cipher(apr_pool_t *p, 
-                                       const SSLConnRec *sslconn, char *var)
+static const char *ssl_var_lookup_ssl_cipher(apr_pool_t *p,
+                                             const SSLConnRec *sslconn,
+                                             const char *var)
 {
-    char *result;
-    BOOL resdup;
+    const char *result;
     int usekeysize, algkeysize;
     SSL *ssl;
 
     result = NULL;
-    resdup = TRUE;
 
     ssl = sslconn->ssl;
     ssl_var_lookup_ssl_cipher_bits(ssl, &usekeysize, &algkeysize);
 
     if (ssl && strEQ(var, "")) {
         MODSSL_SSL_CIPHER_CONST SSL_CIPHER *cipher = SSL_get_current_cipher(ssl);
-        result = (cipher != NULL ? (char *)SSL_CIPHER_get_name(cipher) : NULL);
+
+        if (cipher) {
+            result = apr_pstrdup(p, SSL_CIPHER_get_name(cipher));
+        }
     }
     else if (strcEQ(var, "_EXPORT"))
         result = (usekeysize < 56 ? "true" : "false");
     else if (strcEQ(var, "_USEKEYSIZE")) {
         result = apr_itoa(p, usekeysize);
-        resdup = FALSE;
     }
     else if (strcEQ(var, "_ALGKEYSIZE")) {
         result = apr_itoa(p, algkeysize);
-        resdup = FALSE;
     }
 
-    if (result != NULL && resdup)
-        result = apr_pstrdup(p, result);
     return result;
 }
 
@@ -960,16 +923,16 @@ static void ssl_var_lookup_ssl_cipher_bits(SSL *ssl, int *usekeysize, int *algke
     return;
 }
 
-static char *ssl_var_lookup_ssl_version(apr_pool_t *p, char *var)
+static const char *ssl_var_lookup_ssl_version(const char *var)
 {
     if (strEQ(var, "INTERFACE")) {
-        return apr_pstrdup(p, var_interface);
+        return var_interface;
     }
     else if (strEQ(var, "LIBRARY_INTERFACE")) {
-        return apr_pstrdup(p, var_library_interface);
+        return var_library_interface;
     }
     else if (strEQ(var, "LIBRARY")) {
-        return apr_pstrdup(p, var_library);
+        return var_library;
     }
     return NULL;
 }
@@ -1202,9 +1165,9 @@ apr_array_header_t *ssl_ext_list(apr_pool_t *p, conn_rec *c, int peer,
     return array;
 }
 
-static char *ssl_var_lookup_ssl_compress_meth(SSL *ssl)
+static const char *ssl_var_lookup_ssl_compress_meth(SSL *ssl)
 {
-    char *result = "NULL";
+    const char *result = "NULL";
 #ifndef OPENSSL_NO_COMP
     SSL_SESSION *pSession = SSL_get_session(ssl);
 
@@ -1272,7 +1235,7 @@ void ssl_var_log_config_register(apr_pool_t *p)
 static const char *ssl_var_log_handler_c(request_rec *r, char *a)
 {
     const SSLConnRec *sslconn = ssl_get_effective_config(r->connection);
-    char *result;
+    const char *result;
 
     if (sslconn == NULL || sslconn->ssl == NULL)
         return NULL;
@@ -1288,7 +1251,7 @@ static const char *ssl_var_log_handler_c(request_rec *r, char *a)
     else if (strEQ(a, "errcode"))
         result = "-";
     else if (strEQ(a, "errstr"))
-        result = (char *)sslconn->verify_error;
+        result = sslconn->verify_error;
     if (result != NULL && result[0] == NUL)
         result = NULL;
     return result;
@@ -1300,7 +1263,7 @@ static const char *ssl_var_log_handler_c(request_rec *r, char *a)
  */
 static const char *ssl_var_log_handler_x(request_rec *r, char *a)
 {
-    char *result;
+    const char *result;
 
     result = ssl_var_lookup(r->pool, r->server, r->connection, r, a);
     if (result != NULL && result[0] == NUL)
