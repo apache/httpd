@@ -246,8 +246,6 @@ const char *ssl_var_lookup(apr_pool_t *p, server_rec *s,
     const char *result = NULL;
     apr_time_exp_t tm;
 
-    AP_DEBUG_ASSERT(s);
-    
     /*
      * Request dependent stuff
      */
