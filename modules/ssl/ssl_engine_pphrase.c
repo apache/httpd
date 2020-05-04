@@ -71,38 +71,25 @@ static apr_status_t exists_and_readable(const char *fname, apr_pool_t *pool,
     return APR_SUCCESS;
 }
 
-/*
- * reuse vhost keys for asn1 tables where keys are allocated out
- * of s->process->pool to prevent "leaking" each time we format
- * a vhost key.  since the key is stored in a table with lifetime
- * of s->process->pool, the key needs to have the same lifetime.
- *
- * XXX: probably seems silly to use a hash table with keys and values
- * being the same, but it is easier than doing a linear search
- * and will make it easier to remove keys if needed in the future.
- * also have the problem with apr_array_header_t that if we
- * underestimate the number of vhost keys when we apr_array_make(),
- * the array will get resized when we push past the initial number
- * of elts.  this resizing in the s->process->pool means "leaking"
- * since apr_array_push() will apr_alloc arr->nalloc * 2 elts,
- * leaving the original arr->elts to waste.
- */
-static const char *asn1_table_vhost_key(SSLModConfigRec *mc, apr_pool_t *p,
-                                  const char *id, int i)
+/* Returns the vhost-key-id which is the index into the
+ * mc->retained->privkeys hash table.  The returned string is
+ * allocated from the same pool as that hash table, to ensure it has
+ * the correct (process) lifetime of the retained data. */
+static const char *privkey_vhost_keyid(SSLModConfigRec *mc, apr_pool_t *p,
+                                       const char *id, int i)
 {
     /* 'p' pool used here is cleared on restarts (or sooner) */
     char *key = apr_psprintf(p, "%s:%d", id, i);
-    void *keyptr = apr_hash_get(mc->tVHostKeys, key,
-                                APR_HASH_KEY_STRING);
+    const char *keyptr = apr_hash_get(mc->retained->key_ids, key,
+                                      APR_HASH_KEY_STRING);
 
     if (!keyptr) {
-        /* make a copy out of s->process->pool */
-        keyptr = apr_pstrdup(mc->pPool, key);
-        apr_hash_set(mc->tVHostKeys, keyptr,
-                     APR_HASH_KEY_STRING, keyptr);
+        /* Make a copy in the (process) pool used for the retained data. */
+        keyptr = apr_pstrdup(apr_hash_pool_get(mc->retained->privkeys), key);
+        apr_hash_set(mc->retained->key_ids, keyptr, APR_HASH_KEY_STRING, keyptr);
     }
 
-    return (char *)keyptr;
+    return keyptr;
 }
 
 /*  _________________________________________________________________
@@ -134,7 +121,7 @@ apr_status_t ssl_load_encrypted_pkey(server_rec *s, apr_pool_t *p, int idx,
 {
     SSLModConfigRec *mc = myModConfig(s);
     SSLSrvConfigRec *sc = mySrvConfig(s);
-    const char *key_id = asn1_table_vhost_key(mc, p, sc->vhost_id, idx);
+    const char *key_id = privkey_vhost_keyid(mc, p, sc->vhost_id, idx);
     EVP_PKEY *pPrivateKey = NULL;
     ssl_asn1_t *asn1;
     int nPassPhrase = (*pphrases)->nelts;
@@ -187,7 +174,7 @@ apr_status_t ssl_load_encrypted_pkey(server_rec *s, apr_pool_t *p, int idx,
      * are used to give a better idea as to what failed.
      */
     if (pkey_mtime) {
-        ssl_asn1_t *asn1 = ssl_asn1_table_get(mc->tPrivateKey, key_id);
+        ssl_asn1_t *asn1 = ssl_asn1_table_get(mc->retained->privkeys, key_id);
         if (asn1 && (asn1->source_mtime == pkey_mtime)) {
             ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(02575)
                          "Reusing existing private key from %s on restart",
@@ -345,7 +332,7 @@ apr_status_t ssl_load_encrypted_pkey(server_rec *s, apr_pool_t *p, int idx,
 
     /* Cache the private key in the global module configuration so it
      * can be used after subsequent reloads. */
-    asn1 = ssl_asn1_table_set(mc->tPrivateKey, key_id, pPrivateKey);
+    asn1 = ssl_asn1_table_set(mc->retained->privkeys, key_id, pPrivateKey);
 
     if (ppcb_arg.nPassPhraseDialogCur != 0) {
         /* remember mtime of encrypted keys */

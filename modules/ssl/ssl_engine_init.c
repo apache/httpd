@@ -226,6 +226,8 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
     apr_status_t rv;
     apr_array_header_t *pphrases;
 
+    AP_DEBUG_ASSERT(mc);
+
     if (SSLeay() < MODSSL_LIBRARY_VERSION) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, 0, base_server, APLOGNO(01882)
                      "Init: this version of mod_ssl was compiled against "
@@ -250,7 +252,6 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
     /*
      * Any init round fixes the global config
      */
-    ssl_config_global_create(base_server); /* just to avoid problems */
     ssl_config_global_fix(mc);
 
     /*
@@ -259,6 +260,8 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
      */
     for (s = base_server; s; s = s->next) {
         sc = mySrvConfig(s);
+
+        AP_DEBUG_ASSERT(sc->mc == mc);
 
         if (sc->server) {
             sc->server->sc = sc;
@@ -1441,7 +1444,7 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
             /* perhaps it's an encrypted private key, so try again */
             ssl_load_encrypted_pkey(s, ptemp, i, keyfile, &pphrases);
 
-            if (!(asn1 = ssl_asn1_table_get(mc->tPrivateKey, key_id)) ||
+            if (!(asn1 = ssl_asn1_table_get(mc->retained->privkeys, key_id)) ||
                 !(ptr = asn1->cpData) ||
                 !(pkey = d2i_AutoPrivateKey(NULL, &ptr, asn1->nData)) ||
                 (SSL_CTX_use_PrivateKey(mctx->ssl_ctx, pkey) < 1)) {

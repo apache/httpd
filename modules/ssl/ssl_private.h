@@ -553,34 +553,37 @@ typedef struct {
     int vhost_found;          /* whether we found vhost from SNI already */
 } SSLConnRec;
 
-/* BIG FAT WARNING: SSLModConfigRec has unusual memory lifetime: it is
- * allocated out of the "process" pool and only a single such
- * structure is created and used for the lifetime of the process.
- * (The process pool is s->process->pool and is stored in the .pPool
- * field.)  Most members of this structure are likewise allocated out
- * of the process pool, but notably sesscache and sesscache_context
- * are not.
+/* Private keys are retained across reloads, since decryption
+ * passphrases can only be entered during startup (before detaching
+ * from a terminal).  This structure is stored via the ap_retained_*
+ * API and retrieved on later module reloads.  If the structure
+ * changes, the key name must be changed by increasing the digit at
+ * the end, to avoid an updated version of mod_ssl loading retained
+ * data with a different struct definition.
  *
- * The structure is treated as mostly immutable after a single config
- * parse has completed; the post_config hook (ssl_init_Module) flips
- * the bFixed flag to true and subsequent invocations of the config
- * callbacks hence do nothing.
- *
- * This odd lifetime strategy is used so that encrypted private keys
- * can be decrypted once at startup and continue to be used across
- * subsequent server reloads where the interactive password prompt is
- * not possible.
+ * All objects used here must be allocated from the process pool
+ * (s->process->pool) so they also survives restarts. */
+#define MODSSL_RETAINED_KEY "mod_ssl-retained-1"
 
- * It is really an ABI nightmare waiting to happen since DSOs are
- * reloaded across restarts, and nothing prevents the struct type
- * changing across such reloads, yet the cached structure will be
- * assumed to match regardless.
- *
- * This should really be fixed using a smaller structure which only
- * stores that which is absolutely necessary (the private keys, maybe
- * the random seed), and have that structure be strictly ABI-versioned
- * for safety.
- */
+typedef struct {
+    /* A hash table of vhost key-IDs used to index the privkeys hash,
+     * for example the string "vhost.example.com:443:0".  For each
+     * (key, value) pair the value is the same as the key, allowing
+     * the keys to be retrieved on subsequent reloads rather than
+     * rellocated.  ### This optimisation seems to be of dubious
+     * value.  Allocating the vhost-key-ids from pconf and duping them
+     * when storing them in ->privkeys would be simpler. */
+    apr_hash_t *key_ids;
+
+    /* A hash table of pointers to ssl_asn1_t structures.  The
+     * structures are used to store private keys in raw DER format
+     * (serialized OpenSSL PrivateKey structures).  The table is
+     * indexed by key-IDs from the key_ids hash table. */
+    apr_hash_t *privkeys;
+
+    /* Do NOT add fields here without changing the key name, as above. */
+} modssl_retained_data_t;
+
 typedef struct {
     pid_t           pid;
     apr_pool_t     *pPool;
@@ -589,6 +592,9 @@ typedef struct {
     /* OpenSSL SSL_SESS_CACHE_* flags: */
     long            sesscache_mode;
 
+    /* Data retained across reloads. */
+    modssl_retained_data_t *retained;
+
     /* The configured provider, and associated private data
      * structure. */
     const ap_socache_provider_t *sesscache;
@@ -596,13 +602,6 @@ typedef struct {
 
     apr_global_mutex_t   *pMutex;
     apr_array_header_t   *aRandSeed;
-    apr_hash_t     *tVHostKeys;
-
-    /* A hash table of pointers to ssl_asn1_t structures.  The structures
-     * are used to store private keys in raw DER format (serialized OpenSSL
-     * PrivateKey structures).  The table is indexed by (vhost-id,
-     * index), for example the string "vhost.example.com:443:0". */
-    apr_hash_t     *tPrivateKey;
 
 #if defined(HAVE_OPENSSL_ENGINE_H) && defined(HAVE_ENGINE_INIT)
     const char     *szCryptoDevice;
@@ -814,7 +813,6 @@ SSLSrvConfigRec *ssl_policy_lookup(apr_pool_t *pool, const char *name);
 extern module AP_MODULE_DECLARE_DATA ssl_module;
 
 /**  configuration handling   */
-SSLModConfigRec *ssl_config_global_create(server_rec *);
 void         ssl_config_global_fix(SSLModConfigRec *);
 BOOL         ssl_config_global_isfixed(SSLModConfigRec *);
 void        *ssl_config_server_create(apr_pool_t *, server_rec *);
