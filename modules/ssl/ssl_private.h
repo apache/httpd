@@ -1046,8 +1046,6 @@ ssl_asn1_t *ssl_asn1_table_set(apr_hash_t *table, const char *key,
                                EVP_PKEY *pkey);
 /* Retrieve the ssl_asn1_t structure with given key from the hash. */
 ssl_asn1_t *ssl_asn1_table_get(apr_hash_t *table, const char *key);
-/* Remove and free the ssl_asn1_t structure with given key. */
-void ssl_asn1_table_unset(apr_hash_t *table, const char *key);
 
 /**  Mutex Support  */
 int          ssl_mutex_init(server_rec *, apr_pool_t *);
