@@ -31,6 +31,7 @@
 #include "mod_ssl_openssl.h"
 #include "mpm_common.h"
 #include "mod_md.h"
+#include "util_md5.h"
 
 static apr_status_t ssl_init_ca_cert_path(server_rec *, apr_pool_t *, const char *,
                                           STACK_OF(X509_NAME) *, STACK_OF(X509_INFO) *);
@@ -287,8 +288,10 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
         /* Derive the vhost id only after potentially defaulting-on
          * sc->enabled since the port used may change. */
         sc->vhost_id = ssl_util_vhostid(p, s);
-        sc->vhost_id_len = strlen(sc->vhost_id);
-        
+        sc->vhost_md5 =
+            (unsigned char *)ap_md5_binary(p, (unsigned char *)sc->vhost_id,
+                                           strlen(sc->vhost_id));
+
         /* Fix up stuff that may not have been set.  If sc->enabled is
          * UNSET, then SSL is disabled on this vhost.  */
         if (sc->enabled == SSL_ENABLED_UNSET) {

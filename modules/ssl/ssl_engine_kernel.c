@@ -2556,11 +2556,7 @@ static int ssl_find_vhost(void *servername, conn_rec *c, server_rec *s)
          * a renegotiation.
          */
         if (SSL_num_renegotiations(ssl) == 0) {
-            unsigned char *sid_ctx =
-                (unsigned char *)ap_md5_binary(c->pool,
-                                               (unsigned char *)sc->vhost_id,
-                                               sc->vhost_id_len);
-            SSL_set_session_id_context(ssl, sid_ctx, APR_MD5_DIGESTSIZE*2);
+            SSL_set_session_id_context(ssl, sc->vhost_md5, APR_MD5_DIGESTSIZE*2);
         }
 
         /*

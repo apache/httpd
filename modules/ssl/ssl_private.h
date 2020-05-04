@@ -765,7 +765,7 @@ struct SSLSrvConfigRec {
     SSLModConfigRec *mc;
     ssl_enabled_t    enabled;
     const char      *vhost_id;
-    int              vhost_id_len;
+    const unsigned char *vhost_md5; /* = ap_md5_binary(vhost_id, ...) */
     int              session_cache_timeout;
     BOOL             cipher_server_pref;
     BOOL             insecure_reneg;

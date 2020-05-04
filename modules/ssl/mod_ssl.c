@@ -589,12 +589,15 @@ static int ssl_engine_disable(conn_rec *c)
     return ssl_engine_set(c, NULL, 0, 0);
 }
 
+#if defined(SSL_MAX_SID_CTX_LENGTH) && (APR_MD5_DIGESTSIZE * 2) > SSL_MAX_SID_CTX_LENGTH
+#error APR digest length x2 exceeds SSL_MAX_SID_CTX_LENGTH
+#endif
+
 int ssl_init_ssl_connection(conn_rec *c, request_rec *r)
 {
     SSLSrvConfigRec *sc;
     SSL *ssl;
     SSLConnRec *sslconn;
-    char *vhost_md5;
     int rc;
     modssl_ctx_t *mctx;
     server_rec *server;
@@ -635,14 +638,10 @@ int ssl_init_ssl_connection(conn_rec *c, request_rec *r)
         return rc;
     }
 
-    vhost_md5 = ap_md5_binary(c->pool, (unsigned char *)sc->vhost_id,
-                              sc->vhost_id_len);
-
-    if (!SSL_set_session_id_context(ssl, (unsigned char *)vhost_md5,
-                                    APR_MD5_DIGESTSIZE*2))
-    {
+    if (!SSL_set_session_id_context(ssl, sc->vhost_md5, APR_MD5_DIGESTSIZE*2)) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(01963)
-                      "Unable to set session id context to '%s'", vhost_md5);
+                      "Unable to set session id context to '%s'",
+                      sc->vhost_md5);
         ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, server);
 
         c->aborted = 1;
