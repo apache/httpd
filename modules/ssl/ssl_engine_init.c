@@ -858,6 +858,13 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
         SSL_CTX_set_keylog_callback(ctx, modssl_callback_keylog);
     }
 #endif
+
+#ifdef SSL_OP_NO_RENEGOTIATION
+    /* For server-side SSL_CTX, disable renegotiation by default.. */
+    if (!mctx->pkp) {
+        SSL_CTX_set_options(ctx, SSL_OP_NO_RENEGOTIATION);
+    }
+#endif
     
     return APR_SUCCESS;
 }
@@ -879,6 +886,12 @@ static void ssl_init_ctx_session_cache(server_rec *s,
     }
 }
 
+#ifdef SSL_OP_NO_RENEGOTIATION
+#define MODSSL_BLOCKS_RENEG (1)
+#else
+#define MODSSL_BLOCKS_RENEG (0)
+#endif
+
 static void ssl_init_ctx_callbacks(server_rec *s,
                                    apr_pool_t *p,
                                    apr_pool_t *ptemp,
@@ -888,7 +901,13 @@ static void ssl_init_ctx_callbacks(server_rec *s,
 
     SSL_CTX_set_tmp_dh_callback(ctx,  ssl_callback_TmpDH);
 
-    SSL_CTX_set_info_callback(ctx, ssl_callback_Info);
+    /* The info callback is used for debug-level tracing.  For OpenSSL
+     * versions where SSL_OP_NO_RENEGOTIATION is not available, the
+     * callback is also used to prevent use of client-initiated
+     * renegotiation.  Enable it in either case. */
+    if (APLOGdebug(s) || MODSSL_BLOCKS_RENEG) {
+        SSL_CTX_set_info_callback(ctx, ssl_callback_Info);
+    }
 
 #ifdef HAVE_TLS_ALPN
     SSL_CTX_set_alpn_select_cb(ctx, ssl_callback_alpn_select, NULL);
