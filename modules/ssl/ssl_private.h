@@ -586,7 +586,6 @@ typedef struct {
 
 typedef struct {
     pid_t           pid;
-    apr_pool_t     *pPool;
     BOOL            bFixed;
 
     /* OpenSSL SSL_SESS_CACHE_* flags: */

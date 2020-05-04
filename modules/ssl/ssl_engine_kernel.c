@@ -2169,7 +2169,6 @@ void ssl_callback_DelSessionCacheEntry(SSL_CTX *ctx,
                                        SSL_SESSION *session)
 {
     server_rec *s;
-    SSLSrvConfigRec *sc;
     IDCONST unsigned char *id;
     unsigned int idlen;
 
@@ -2179,8 +2178,6 @@ void ssl_callback_DelSessionCacheEntry(SSL_CTX *ctx,
     if (!(s = (server_rec *)SSL_CTX_get_app_data(ctx))) {
         return; /* on server shutdown Apache is already gone */
     }
-
-    sc = mySrvConfig(s);
 
     /*
      * Remove the SSL_SESSION from the inter-process cache
@@ -2192,8 +2189,8 @@ void ssl_callback_DelSessionCacheEntry(SSL_CTX *ctx,
     idlen = session->session_id_length;
 #endif
 
-    /* TODO: Do we need a temp pool here, or are we always shutting down? */
-    ssl_scache_remove(s, id, idlen, sc->mc->pPool);
+    /* ### Is it really safe to use the process pool here??? */
+    ssl_scache_remove(s, id, idlen, s->process->pool);
 
     ssl_session_log(s, "REM", id, idlen,
                     "OK", "dead", 0);

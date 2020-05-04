@@ -54,7 +54,6 @@ static SSLModConfigRec *ssl_config_global_create(apr_pool_t *pool, server_rec *s
     }
 
     mc = apr_pcalloc(pool, sizeof(*mc));
-    mc->pPool = pool;
 
     /*
      * initialize per-module configuration
@@ -748,16 +747,16 @@ const char *ssl_cmd_SSLRandomSeed(cmd_parms *cmd,
 
     if ((arg2len > 5) && strEQn(arg2, "file:", 5)) {
         seed->nSrc   = SSL_RSSRC_FILE;
-        seed->cpPath = ap_server_root_relative(mc->pPool, arg2+5);
+        seed->cpPath = ap_server_root_relative(cmd->pool, arg2+5);
     }
     else if ((arg2len > 5) && strEQn(arg2, "exec:", 5)) {
         seed->nSrc   = SSL_RSSRC_EXEC;
-        seed->cpPath = ap_server_root_relative(mc->pPool, arg2+5);
+        seed->cpPath = ap_server_root_relative(cmd->pool, arg2+5);
     }
     else if ((arg2len > 4) && strEQn(arg2, "egd:", 4)) {
 #ifdef HAVE_RAND_EGD
         seed->nSrc   = SSL_RSSRC_EGD;
-        seed->cpPath = ap_server_root_relative(mc->pPool, arg2+4);
+        seed->cpPath = ap_server_root_relative(cmd->pool, arg2+4);
 #else
         return apr_pstrcat(cmd->pool, "Invalid SSLRandomSeed entropy source `",
                            arg2, "': This version of " MODSSL_LIBRARY_NAME
@@ -771,7 +770,7 @@ const char *ssl_cmd_SSLRandomSeed(cmd_parms *cmd,
     }
     else {
         seed->nSrc   = SSL_RSSRC_FILE;
-        seed->cpPath = ap_server_root_relative(mc->pPool, arg2);
+        seed->cpPath = ap_server_root_relative(cmd->pool, arg2);
     }
 
     if (seed->nSrc != SSL_RSSRC_BUILTIN) {

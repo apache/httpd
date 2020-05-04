@@ -449,7 +449,7 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
             rv = apr_file_open(&mc->keylog_file, logfn,
                                APR_FOPEN_CREATE|APR_FOPEN_WRITE|APR_FOPEN_APPEND|APR_FOPEN_LARGEFILE,
                                APR_FPROT_UREAD|APR_FPROT_UWRITE,
-                               mc->pPool);
+                               p);
             if (rv) {
                 ap_log_error(APLOG_MARK, APLOG_NOTICE, rv, s, APLOGNO(10226)
                              "Could not open log file '%s' configured via SSLKEYLOGFILE",

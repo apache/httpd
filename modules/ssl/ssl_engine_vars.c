@@ -241,7 +241,6 @@ void ssl_var_register(apr_pool_t *p)
 /* This function must remain safe to use for a non-SSL connection. */
 char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, char *var)
 {
-    SSLModConfigRec *mc = myModConfig(s);
     const char *result;
     BOOL resdup;
     apr_time_exp_t tm;
@@ -249,6 +248,8 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
     result = NULL;
     resdup = TRUE;
 
+    AP_DEBUG_ASSERT(s);
+    
     /*
      * When no pool is given try to find one
      */
@@ -258,7 +259,7 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
         else if (c != NULL)
             p = c->pool;
         else
-            p = mc->pPool;
+            p = s->process->pool;
     }
 
     /*
