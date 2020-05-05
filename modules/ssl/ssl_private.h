@@ -549,6 +549,16 @@ typedef struct {
     apr_time_t     source_mtime;
 } ssl_asn1_t;
 
+typedef enum {
+    RENEG_INIT = 0, /* Before initial handshake */
+    RENEG_REJECT,   /* After initial handshake; any client-initiated
+                     * renegotiation should be rejected */
+    RENEG_ALLOW,    /* A server-initiated renegotiation is taking
+                     * place (as dictated by configuration) */
+    RENEG_ABORT     /* Renegotiation initiated by client, abort the
+                     * connection */
+} modssl_reneg_state;
+
 /**
  * Define the mod_ssl per-module configuration structure
  * (i.e. the global configuration for each httpd process)
@@ -580,18 +590,13 @@ typedef struct {
         NON_SSL_SET_ERROR_MSG  /* Need to set the error message */
     } non_ssl_request;
 
-    /* Track the handshake/renegotiation state for the connection so
-     * that all client-initiated renegotiations can be rejected, as a
-     * partial fix for CVE-2009-3555. */
-    enum {
-        RENEG_INIT = 0, /* Before initial handshake */
-        RENEG_REJECT,   /* After initial handshake; any client-initiated
-                         * renegotiation should be rejected */
-        RENEG_ALLOW,    /* A server-initiated renegotiation is taking
-                         * place (as dictated by configuration) */
-        RENEG_ABORT     /* Renegotiation initiated by client, abort the
-                         * connection */
-    } reneg_state;
+#ifndef SSL_OP_NO_RENEGOTATION
+    /* For OpenSSL < 1.1.1, track the handshake/renegotiation state
+     * for the connection to block client-initiated renegotiations.
+     * For OpenSSL >=1.1.1, the SSL_OP_NO_RENEGOTATION flag is used in
+     * the SSL * options state with equivalent effect. */
+    modssl_reneg_state reneg_state;
+#endif
 
     server_rec *server;
     SSLDirConfigRec *dc;
@@ -1197,6 +1202,9 @@ int ssl_is_challenge(conn_rec *c, const char *servername,
 /* Returns non-zero if the cert/key filename should be handled through
  * the configured ENGINE. */
 int modssl_is_engine_id(const char *name);
+
+/* Set the renegotation state for connection. */
+void modssl_set_reneg_state(SSLConnRec *sslconn, modssl_reneg_state state);
 
 #endif /* SSL_PRIVATE_H */
 /** @} */
