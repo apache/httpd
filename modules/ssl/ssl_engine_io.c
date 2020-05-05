@@ -211,11 +211,13 @@ static int bio_filter_out_write(BIO *bio, const char *in, int inl)
 
     BIO_clear_retry_flags(bio);
 
+#ifndef SSL_OP_NO_RENEGOTIATION
     /* Abort early if the client has initiated a renegotiation. */
     if (outctx->filter_ctx->config->reneg_state == RENEG_ABORT) {
         outctx->rc = APR_ECONNABORTED;
         return -1;
     }
+#endif
 
     ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, outctx->c,
                   "bio_filter_out_write: %i bytes", inl);
@@ -514,11 +516,13 @@ static int bio_filter_in_read(BIO *bio, char *in, int inlen)
 
     BIO_clear_retry_flags(bio);
 
+#ifndef SSL_OP_NO_RENEGOTIATION
     /* Abort early if the client has initiated a renegotiation. */
     if (inctx->filter_ctx->config->reneg_state == RENEG_ABORT) {
         inctx->rc = APR_ECONNABORTED;
         return -1;
     }
+#endif
 
     if (!inctx->bb) {
         inctx->rc = APR_EOF;

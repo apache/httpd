@@ -992,7 +992,7 @@ static int ssl_hook_Access_classic(request_rec *r, SSLSrvConfigRec *sc, SSLDirCo
 
             /* Toggle the renegotiation state to allow the new
              * handshake to proceed. */
-            sslconn->reneg_state = RENEG_ALLOW;
+            modssl_set_reneg_state(sslconn, RENEG_ALLOW);
 
             SSL_renegotiate(ssl);
             SSL_do_handshake(ssl);
@@ -1019,7 +1019,7 @@ static int ssl_hook_Access_classic(request_rec *r, SSLSrvConfigRec *sc, SSLDirCo
              */
             SSL_peek(ssl, peekbuf, 0);
 
-            sslconn->reneg_state = RENEG_REJECT;
+            modssl_set_reneg_state(sslconn, RENEG_REJECT);
 
             if (!SSL_is_init_finished(ssl)) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02261)
@@ -1078,7 +1078,7 @@ static int ssl_hook_Access_modern(request_rec *r, SSLSrvConfigRec *sc, SSLDirCon
         (sc->server->auth.verify_mode != SSL_CVERIFY_UNSET)) {
         int vmode_inplace, vmode_needed;
         int change_vmode = FALSE;
-        int old_state, n, rc;
+        int n, rc;
 
         vmode_inplace = SSL_get_verify_mode(ssl);
         vmode_needed = SSL_VERIFY_NONE;
@@ -1182,8 +1182,6 @@ static int ssl_hook_Access_modern(request_rec *r, SSLSrvConfigRec *sc, SSLDirCon
                 return HTTP_FORBIDDEN;
             }
             
-            old_state = sslconn->reneg_state;
-            sslconn->reneg_state = RENEG_ALLOW;
             modssl_set_app_data2(ssl, r);
 
             SSL_do_handshake(ssl);
@@ -1193,7 +1191,6 @@ static int ssl_hook_Access_modern(request_rec *r, SSLSrvConfigRec *sc, SSLDirCon
              */
             SSL_peek(ssl, peekbuf, 0);
 
-            sslconn->reneg_state = old_state;
             modssl_set_app_data2(ssl, NULL);
 
             /*
@@ -2267,8 +2264,8 @@ static void log_tracing_state(const SSL *ssl, conn_rec *c,
 /*
  * This callback function is executed while OpenSSL processes the SSL
  * handshake and does SSL record layer stuff.  It's used to trap
- * client-initiated renegotiations, and for dumping everything to the
- * log.
+ * client-initiated renegotiations (where SSL_OP_NO_RENEGOTATION is
+ * not available), and for dumping everything to the log.
  */
 void ssl_callback_Info(const SSL *ssl, int where, int rc)
 {
@@ -2280,14 +2277,12 @@ void ssl_callback_Info(const SSL *ssl, int where, int rc)
         return;
     }
 
-    /* With TLS 1.3 this callback may be called multiple times on the first
-     * negotiation, so the below logic to detect renegotiations can't work.
-     * Fortunately renegotiations are forbidden starting with TLS 1.3, and
-     * this is enforced by OpenSSL so there's nothing to be done here.
-     */
-#if SSL_HAVE_PROTOCOL_TLSV1_3
-    if (SSL_version(ssl) < TLS1_3_VERSION)
-#endif
+#ifndef SSL_OP_NO_RENEGOTATION
+    /* With OpenSSL < 1.1.1 (implying TLS v1.2 or earlier), this
+     * callback is used to block client-initiated renegotiation.  With
+     * TLSv1.3 it is unnecessary since renegotiation is forbidden at
+     * protocol level.  Otherwise (TLSv1.2 with OpenSSL >=1.1.1),
+     * SSL_OP_NO_RENEGOTATION is used to block renegotiation. */
     {
         SSLConnRec *sslconn;
 
@@ -2312,6 +2307,7 @@ void ssl_callback_Info(const SSL *ssl, int where, int rc)
             sslconn->reneg_state = RENEG_REJECT;
         }
     }
+#endif
 
     s = mySrvFromConn(c);
     if (s && APLOGdebug(s)) {

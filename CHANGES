@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_ssl: With OpenSSL 1.1.1 and later, client-initiated
+     renegotiation in TLSv1.2 and earlier is blocked at SSL library
+     level (with a TLS warning alert sent), rather than by aborting
+     the connection inside mod_ssl.  [Joe Orton]
+ 
   *) core: Add optional "options=" argument to Listen.  Supported
      keywords are "freebind" and "reuseport".  PR 61865.
      [Jan Kaluza, Lubos Uhliarik <luhliari redhat.com>, Joe Orton]
