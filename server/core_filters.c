@@ -314,7 +314,7 @@ apr_status_t ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
         if (mode == AP_MODE_READBYTES) {
             APR_BRIGADE_CONCAT(b, ctx->bb);
         }
-        else if (mode == AP_MODE_SPECULATIVE) {
+        else { /* mode == AP_MODE_SPECULATIVE */
             apr_bucket *copy_bucket;
 
             for (e = APR_BRIGADE_FIRST(ctx->bb);
