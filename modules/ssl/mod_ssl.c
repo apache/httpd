@@ -40,7 +40,18 @@
 #include <valgrind.h>
 int ssl_running_on_valgrind = 0;
 #endif
+
+#if HAVE_OPENSSL_INIT_SSL || (OPENSSL_VERSION_NUMBER >= 0x10100000L && \
+                              !defined(LIBRESSL_VERSION_NUMBER))
+/* Openssl v1.1+ handles all termination automatically from
+ * OPENSSL_init_ssl().  No manual initialization is required. */
+#else
+/* For older OpenSSL releases, "manual" initialization and cleanup are
+ * required. */
+#define NEED_MANUAL_OPENSSL_INIT
+/* Will be set to true if mod_ssl is built statically into httpd. */
 static int modssl_running_statically = 0;
+#endif
 
 APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ssl, SSL, int, pre_handshake,
                                     (conn_rec *c,SSL *ssl,int is_proxy),
@@ -317,9 +328,7 @@ static const command_rec ssl_config_cmds[] = {
     AP_END_CMD
 };
 
-/*
- *  the various processing hooks
- */
+#ifdef NEED_MANUAL_OPENSSL_INIT
 static int modssl_is_prelinked(void)
 {
     apr_size_t i = 0;
@@ -332,19 +341,10 @@ static int modssl_is_prelinked(void)
     return 0;
 }
 
+/* Termination below is for legacy Openssl versions v1.0.x and
+ * older. */
 static apr_status_t ssl_cleanup_pre_config(void *data)
 {
-#if HAVE_OPENSSL_INIT_SSL || (OPENSSL_VERSION_NUMBER >= 0x10100000L && \
-                              !defined(LIBRESSL_VERSION_NUMBER))
-    /* Openssl v1.1+ handles all termination automatically from
-     * OPENSSL_init_ssl(). Do nothing in this case.
-     */
-
-#else
-    /* Termination below is for legacy Openssl versions v1.0.x and
-     * older.
-     */
-
     /* Corresponds to OBJ_create()s */
     OBJ_cleanup();
     /* Corresponds to OPENSSL_load_builtin_modules() */
@@ -384,7 +384,6 @@ static apr_status_t ssl_cleanup_pre_config(void *data)
     if (!modssl_running_statically) {
         CRYPTO_cleanup_all_ex_data();
     }
-#endif
 
     /*
      * TODO: determine somewhere we can safely shove out diagnostics
@@ -394,6 +393,7 @@ static apr_status_t ssl_cleanup_pre_config(void *data)
 
     return APR_SUCCESS;
 }
+#endif /* NEED_MANUAL_OPENSSL_INIT */
 
 static int ssl_hook_pre_config(apr_pool_t *pconf,
                                apr_pool_t *plog,
@@ -402,10 +402,8 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
 #if HAVE_VALGRIND
     ssl_running_on_valgrind = RUNNING_ON_VALGRIND;
 #endif
-    modssl_running_statically = modssl_is_prelinked();
 
-#if HAVE_OPENSSL_INIT_SSL || (OPENSSL_VERSION_NUMBER >= 0x10100000L && \
-                              !defined(LIBRESSL_VERSION_NUMBER))
+#ifndef NEED_MANUAL_OPENSSL_INIT
     /* Openssl v1.1+ handles all initialisation automatically, apart
      * from hints as to how we want to use the library.
      *
@@ -417,6 +415,7 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
     /* Configuration below is for legacy versions Openssl v1.0 and
      * older.
      */
+    modssl_running_statically = modssl_is_prelinked();
 
 #if APR_HAS_THREADS && MODSSL_USE_OPENSSL_PRE_1_1_API
     ssl_util_thread_id_setup(pconf);
@@ -434,7 +433,7 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
 #endif
     OpenSSL_add_all_algorithms();
     OPENSSL_load_builtin_modules();
-#endif
+#endif /* NEED_MANUAL_OPENSSL_INIT */
 
     if (OBJ_txt2nid("id-on-dnsSRV") == NID_undef) {
         (void)OBJ_create("1.3.6.1.5.5.7.8.7", "id-on-dnsSRV",
@@ -444,11 +443,14 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
     /* Start w/o errors (e.g. OBJ_txt2nid() above) */
     ERR_clear_error();
 
+
+#ifdef NEED_MANUAL_OPENSSL_INIT
     /*
      * Let us cleanup the ssl library when the module is unloaded
      */
     apr_pool_cleanup_register(pconf, NULL, ssl_cleanup_pre_config,
                                            apr_pool_cleanup_null);
+#endif
 
     /* Register us to handle mod_log_config %c/%x variables */
     ssl_var_log_config_register(pconf);
