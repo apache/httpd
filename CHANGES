@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_ssl: With OpenSSL 1.1.1 and later, SSLRandomSeed has no
+     effect.  OpenSSL must be configured with a suitable entropy
+     source, or mod_ssl will now fail to start up.  [Joe Orton]
+
   *) mod_ssl: With OpenSSL 1.1.1 and later, client-initiated
      renegotiation in TLSv1.2 and earlier is blocked at SSL library
      level (with a TLS warning alert sent), rather than by aborting

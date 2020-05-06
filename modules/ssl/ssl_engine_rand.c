@@ -29,6 +29,8 @@
 
 #include "ssl_private.h"
 
+#ifdef MODSSL_USE_SSLRAND
+
 #if HAVE_VALGRIND
 #include <valgrind.h>
 #include <memcheck.h>
@@ -43,7 +45,7 @@
 static int ssl_rand_choosenum(int, int);
 static int ssl_rand_feedfp(apr_pool_t *, apr_file_t *, int);
 
-int ssl_rand_seed(server_rec *s, apr_pool_t *p, ssl_rsctx_t nCtx, char *prefix)
+void ssl_rand_seed(server_rec *s, apr_pool_t *p, ssl_rsctx_t nCtx, char *prefix)
 {
     SSLModConfigRec *mc;
     apr_array_header_t *apRandSeed;
@@ -134,12 +136,6 @@ int ssl_rand_seed(server_rec *s, apr_pool_t *p, ssl_rsctx_t nCtx, char *prefix)
     }
     ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, s,
                  "%sSeeding PRNG with %d bytes of entropy", prefix, nDone);
-
-    if (RAND_status() == 0)
-        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(01990)
-                     "%sPRNG still contains insufficient entropy!", prefix);
-
-    return nDone;
 }
 
 #define BUFSIZE 8192
@@ -185,3 +181,4 @@ static int ssl_rand_choosenum(int l, int h)
     return i;
 }
 
+#endif /* MODSSL_USE_SSLRAND */
