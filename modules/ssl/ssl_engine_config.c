@@ -59,8 +59,10 @@ static SSLModConfigRec *ssl_config_global_create(apr_pool_t *pool, server_rec *s
      * initialize per-module configuration
      */
     mc->sesscache_mode         = SSL_SESS_CACHE_OFF;
+#ifdef MODSSL_USE_SSLRAND
     mc->aRandSeed              = apr_array_make(pool, 4,
                                                 sizeof(ssl_randseed_t));
+#endif
 #ifdef HAVE_FIPS
     mc->fips = UNSET;
 #endif
@@ -713,6 +715,7 @@ const char *ssl_cmd_SSLRandomSeed(cmd_parms *cmd,
                                   const char *arg2,
                                   const char *arg3)
 {
+#ifdef MODSSL_USE_SSLRAND
     SSLModConfigRec *mc = myModConfig(cmd->server);
     const char *err;
     ssl_randseed_t *seed;
@@ -800,6 +803,12 @@ const char *ssl_cmd_SSLRandomSeed(cmd_parms *cmd,
             return "SSLRandomSeed: invalid number of bytes specified";
         }
     }
+
+#else
+    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server, APLOGNO(10235)
+                 "SSLRandomSeed is deprecated and has no effect "
+                 "with OpenSSL 1.1.1 and later");
+#endif
 
     return NULL;
 }

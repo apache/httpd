@@ -237,11 +237,13 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
                      MODSSL_LIBRARY_TEXT, MODSSL_LIBRARY_DYNTEXT);
     }
 
+#ifdef MODSSL_USE_SSLRAND
     /* We initialize mc->pid per-process in the child init,
      * but it should be initialized for startup before we
      * call ssl_rand_seed() below.
      */
     mc->pid = getpid();
+#endif
 
     /*
      * Let us cleanup on restarts and exits
@@ -329,6 +331,14 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
      * needs to live once we return from ssl_rand_seed().
      */
     ssl_rand_seed(base_server, ptemp, SSL_RSCTX_STARTUP, "Init: ");
+
+    if (RAND_status() == 0) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, 0, base_server, APLOGNO(01990)
+                     MODSSL_LIBRARY_NAME " PRNG does not contain sufficient "
+                     "randomness.  Build the SSL library with a suitable "
+                     "entropy source configured.");
+        return APR_EGENERAL;
+    }
 
 #ifdef HAVE_FIPS
     if (!FIPS_mode() && mc->fips == TRUE) {
@@ -2277,11 +2287,13 @@ STACK_OF(X509_NAME) *ssl_init_FindCAList(server_rec *s,
 
 void ssl_init_Child(apr_pool_t *p, server_rec *s)
 {
+#ifdef MODSSL_USE_SSLRAND
     SSLModConfigRec *mc = myModConfig(s);
     mc->pid = getpid(); /* only call getpid() once per-process */
 
     /* XXX: there should be an ap_srand() function */
     srand((unsigned int)time(NULL));
+#endif
 
     /* open the mutex lockfile */
     ssl_mutex_reinit(s, p);

@@ -147,6 +147,10 @@
 #define MODSSL_USE_OPENSSL_PRE_1_1_API (OPENSSL_VERSION_NUMBER < 0x10100000L)
 #endif
 
+#if OPENSSL_VERSION_NUMBER < 0x10101000
+#define MODSSL_USE_SSLRAND
+#endif
+
 #if defined(OPENSSL_FIPS)
 #define HAVE_FIPS
 #endif
@@ -590,7 +594,6 @@ typedef struct {
 } modssl_retained_data_t;
 
 typedef struct {
-    pid_t           pid;
     BOOL            bFixed;
 
     /* OpenSSL SSL_SESS_CACHE_* flags: */
@@ -605,7 +608,11 @@ typedef struct {
     ap_socache_instance_t *sesscache_context;
 
     apr_global_mutex_t   *pMutex;
+
+#ifdef MODSSL_USE_SSLRAND
+    pid_t           pid; /* used for seeding after fork() */
     apr_array_header_t   *aRandSeed;
+#endif
 
 #if defined(HAVE_OPENSSL_ENGINE_H) && defined(HAVE_ENGINE_INIT)
     const char     *szCryptoDevice;
@@ -1008,8 +1015,12 @@ long         ssl_io_data_cb(BIO *, int, const char *, int, long, long);
  * to allow an SSL renegotiation to take place. */
 int          ssl_io_buffer_fill(request_rec *r, apr_size_t maxlen);
 
+#ifdef MODSSL_USE_SSLRAND
 /**  PRNG  */
-int          ssl_rand_seed(server_rec *, apr_pool_t *, ssl_rsctx_t, char *);
+void         ssl_rand_seed(server_rec *, apr_pool_t *, ssl_rsctx_t, char *);
+#else
+#define      ssl_rand_seed(s, p, ctx, c) /* noop */
+#endif
 
 /**  Utility Functions  */
 char        *ssl_util_vhostid(apr_pool_t *, server_rec *);
