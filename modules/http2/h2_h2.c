@@ -473,7 +473,7 @@ int h2_is_acceptable_connection(conn_rec *c, request_rec *r, int require_all)
          */
         apr_pool_t *pool = c->pool;
         server_rec *s = c->base_server;
-        char *val;
+        const char *val;
 
         if (!opt_ssl_var_lookup) {
             /* unable to check */

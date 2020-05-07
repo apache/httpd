@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_ssl: The "ssl_var_lookup" optional function API now takes a
+     const char *name argument and returns a const char * string
+     value.  The pool argument must now be non-NULL.  [Joe Orton]
+
   *) mod_ssl: With OpenSSL 1.1.1 and later, SSLRandomSeed is now
      ignored.  OpenSSL must be configured with a suitable entropy
      source, or mod_ssl will fail to start up.  [Joe Orton]

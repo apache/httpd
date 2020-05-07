@@ -53,11 +53,13 @@
 #endif
 
 /** The ssl_var_lookup() optional function retrieves SSL environment
- * variables. */
-APR_DECLARE_OPTIONAL_FN(char *, ssl_var_lookup,
-                        (apr_pool_t *, server_rec *,
-                         conn_rec *, request_rec *,
-                         char *));
+ * variables.  The pool in which to allocate the return value must be
+ * non-NULL since httpd 2.5.1.  c and/or r may be NULL. */
+APR_DECLARE_OPTIONAL_FN(const char *, ssl_var_lookup,
+                        (apr_pool_t *p, server_rec *s,
+                         conn_rec *c, request_rec *r,
+                         const char *name))
+    AP_FN_ATTR_NONNULL((1, 2, 5)) AP_FN_ATTR_WARN_UNUSED_RESULT;
 
 /** The ssl_ext_list() optional function attempts to build an array
  * of all the values contained in the named X.509 extension. The
