@@ -75,6 +75,38 @@ module AP_MODULE_DECLARE_DATA ldap_module;
 static const char *ldap_cache_mutex_type = "ldap-cache";
 static apr_status_t uldap_connection_unbind(void *param);
 
+/* For OpenLDAP with the 3-arg version of ldap_set_rebind_proc(), use
+ * a simpler rebind callback than the implementation in APR-util.
+ * Testing for API version >= 3001 appears safe although OpenLDAP
+ * 2.1.x (API version = 2004) also has the 3-arg API. */
+#if APR_HAS_OPENLDAP_LDAPSDK && defined(LDAP_API_VERSION) && LDAP_API_VERSION >= 3001
+
+#define uldap_rebind_init(p) APR_SUCCESS /* noop */
+
+static int uldap_rebind_proc(LDAP *ld, const char *url, ber_tag_t request,
+                             ber_int_t msgid, void *params)
+{
+    util_ldap_connection_t *ldc = params;
+
+    return ldap_bind_s(ld, ldc->binddn, ldc->bindpw, LDAP_AUTH_SIMPLE);
+}
+
+static apr_status_t uldap_rebind_add(util_ldap_connection_t *ldc)
+{
+    ldap_set_rebind_proc(ldc->ldap, uldap_rebind_proc, ldc);
+    return APR_SUCCESS;
+}
+
+#else /* !APR_HAS_OPENLDAP_LDAPSDK */
+
+#define USE_APR_LDAP_REBIND
+#include <apr_ldap_rebind.h>
+
+#define uldap_rebind_init(p) apr_ldap_rebind_init(p)
+#define uldap_rebind_add(ldc) apr_ldap_rebind_add((ldc)->rebind_pool, \
+                                                  (ldc)->ldap, (ldc)->binddn, \
+                                                  (ldc)->bindpw)
+#endif
 
 static APR_INLINE apr_status_t ldap_cache_lock(util_ldap_state_t *st, request_rec *r) { 
     apr_status_t rv = APR_SUCCESS;
@@ -224,6 +256,13 @@ static apr_status_t uldap_connection_unbind(void *param)
     util_ldap_connection_t *ldc = param;
 
     if (ldc) {
+#ifdef USE_APR_LDAP_REBIND
+        /* forget the rebind info for this conn */
+        if (ldc->ChaseReferrals == AP_LDAP_CHASEREFERRALS_ON) {
+            apr_pool_clear(ldc->rebind_pool);
+        }
+#endif
+
         if (ldc->ldap) {
             if (ldc->r) { 
                 ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, ldc->r, "LDC %pp unbind", ldc); 
@@ -232,12 +271,6 @@ static apr_status_t uldap_connection_unbind(void *param)
             ldc->ldap = NULL;
         }
         ldc->bound = 0;
-
-        /* forget the rebind info for this conn */
-        if (ldc->ChaseReferrals == AP_LDAP_CHASEREFERRALS_ON) {
-            apr_ldap_rebind_remove(ldc->ldap);
-            apr_pool_clear(ldc->rebind_pool);
-        }
     }
 
     return APR_SUCCESS;
@@ -373,7 +406,7 @@ static int uldap_connection_init(request_rec *r,
 
     if (ldc->ChaseReferrals == AP_LDAP_CHASEREFERRALS_ON) {
         /* Now that we have an ldap struct, add it to the referral list for rebinds. */
-        rc = apr_ldap_rebind_add(ldc->rebind_pool, ldc->ldap, ldc->binddn, ldc->bindpw);
+        rc = uldap_rebind_add(ldc);
         if (rc != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rc, r->server, APLOGNO(01277)
                     "LDAP: Unable to add rebind cross reference entry. Out of memory? Try 'LDAPReferrals OFF'");
@@ -900,6 +933,7 @@ static util_ldap_connection_t *
         /* whether or not to keep this connection in the pool when it's returned */
         l->keep = (st->connection_pool_ttl == 0) ? 0 : 1;
 
+#ifdef USE_APR_LDAP_REBIND
         if (l->ChaseReferrals == AP_LDAP_CHASEREFERRALS_ON) {
             if (apr_pool_create(&(l->rebind_pool), l->pool) != APR_SUCCESS) {
                 ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r, APLOGNO(01286)
@@ -911,6 +945,7 @@ static util_ldap_connection_t *
             }
             apr_pool_tag(l->rebind_pool, "util_ldap_rebind");
         }
+#endif
 
         if (p) {
             p->next = l;
@@ -3116,7 +3151,7 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
     }
 
     /* Initialize the rebind callback's cross reference list. */
-    apr_ldap_rebind_init (p);
+    (void) uldap_rebind_init(p);
 
 #ifdef AP_LDAP_OPT_DEBUG
     if (st->debug_level > 0) {

@@ -83,12 +83,12 @@ fi
 
 # For LDAP testing, run slapd listening on port 8389 and populate the
 # directory as described in t/modules/ldap.t in the test framework:
-LDIF=test/perl-framework/scripts/httpd.ldif
-if test -v TEST_LDAP -a -r $LDIF ; then
+LDAP_INIT=test/perl-framework/scripts/ldap-init.sh
+if test -v TEST_LDAP -a -x $LDAP_INIT ; then
     docker build -t httpd_slapd -f test/travis_Dockerfile_slapd test/
-    docker run -d -p 8389:389 httpd_slapd | tee .slapd.cid
-    sleep 5
-    ldapadd -H ldap://localhost:8389 -D cn=admin,dc=example,dc=com -w travis < $LDIF
+    pushd test/perl-framework
+       $LDAP_INIT
+    popd
 fi
 
 if test -v APR_VERSION; then
