@@ -245,14 +245,6 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
     mc->pid = getpid();
 #endif
 
-    if (RAND_status() == 0) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, 0, base_server, APLOGNO(01990)
-                     MODSSL_LIBRARY_NAME " PRNG does not contain sufficient "
-                     "randomness.  Build the SSL library with a suitable "
-                     "entropy source configured.");
-        return APR_EGENERAL;
-    }
-
     /*
      * Let us cleanup on restarts and exits
      */
@@ -339,6 +331,14 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
      * needs to live once we return from ssl_rand_seed().
      */
     ssl_rand_seed(base_server, ptemp, SSL_RSCTX_STARTUP, "Init: ");
+
+    if (RAND_status() == 0) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, 0, base_server, APLOGNO(01990)
+                     MODSSL_LIBRARY_NAME " PRNG does not contain sufficient "
+                     "randomness.  Build the SSL library with a suitable "
+                     "entropy source configured.");
+        return APR_EGENERAL;
+    }
 
 #ifdef HAVE_FIPS
     if (!FIPS_mode() && mc->fips == TRUE) {
