@@ -125,25 +125,20 @@ versions where filter directives were used to activate mod_proxy_html.</strong><
 module for earlier 2.x versions.</compatibility>
 
 <usage>
+    <note>
+      <p>ProxyHTMLMeta was part of i18n support in earlier mod_proxy_html
+      versions, including those for Apache HTTPD 2.0 and 2.2.
+      That functionality has now been separated out into the separate
+      module <module>mod_xml2enc</module>.  ProxyHTMLMeta no longer
+      serves any purpose likely to be useful in an operational server,
+      though it might serve as a testing/debugging aid for developers
+      of software such as browsers.</p>
+    </note>
+
     <p>This turns on or off pre-parsing of metadata in HTML
     <code>&lt;head&gt;</code> sections.</p>
-    <p>If not required, turning ProxyHTMLMeta Off will give a small
-    performance boost by skipping this parse step.  However, it
-    is sometimes necessary for internationalisation to work correctly.</p>
-    <p><directive>ProxyHTMLMeta</directive> has two effects.  Firstly and most importantly
-    it enables detection of character encodings declared in the form</p>
-    <pre>&lt;meta http-equiv="Content-Type" content="text/html;charset=<var>foo</var>"&gt;</pre>
-    <p>or, in the case of an XHTML document, an XML declaration.
-    It is NOT required if the charset is declared in a real HTTP header
-    (which is always preferable) from the backend server, nor if the
-    document is <var>utf-8</var> (unicode) or a subset such as ASCII.
-    You may also be able to dispense with it where documents use a
-    default declared using <directive module="mod_xml2enc"
-    >xml2EncDefault</directive>, but that risks propagating an
-    incorrect declaration.  A <directive module="mod_proxy_html">ProxyHTMLCharsetOut</directive>
-    can remove that risk, but is likely to be a bigger processing
-    overhead than enabling ProxyHTMLMeta.</p>
-    <p>The other effect of enabling <directive>ProxyHTMLMeta</directive> is to parse all
+      
+    <p>Enabling <directive>ProxyHTMLMeta</directive> will parse all
     <code>&lt;meta http-equiv=...&gt;</code> declarations and convert
     them to real HTTP headers, in keeping with the original purpose
     of this form of the HTML &lt;meta&gt; element.</p>
@@ -510,6 +505,12 @@ normally be used, as any change from the default <code>UTF-8</code>
 processing overhead.  The special token <code>ProxyHTMLCharsetOut *</code>
 will generate output using the same encoding as the input.</p>
 <p>Note that this relies on <module>mod_xml2enc</module> being loaded.</p>
+<note>
+<p>This does not support encoding HTML Entities.  If a document contains
+characters that cannot be represented in the target charset, it will
+fail and the document is likely to be corrupted.  This applies even if
+such characters are represented as entities in the input document.</p>
+</note>
 </usage>
 </directivesynopsis>
 
