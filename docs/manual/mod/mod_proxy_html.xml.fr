@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1834041 -->
+<!-- English Revision: 1877522 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -141,30 +141,22 @@ Apache ; proposé en tant que module tiers dans les versions 2.x
 précédentes.</compatibility>
 
 <usage>
+    <note>
+      <p>Dans les versions précédentes de mod_proxy_html (y compris celles de
+      HTTPD 2.0 et 2.2), ProxyHTMLMeta faisait partie du support i18n. Cette
+      fonctionnalité est maintenant assurée par le module
+      <module>mod_xml2enc</module>, et ProxyHTMLMeta n'est à l'heure actuelle
+      plus utile dans le cadre d'un serveur opérationnel ; elle peut cependant
+      aider les développeurs à tester/déboguer des logiciels tels que les
+      navigateurs.</p>
+    </note>
+
     <p>Cette directive permet d'activer ou désactiver une
     préinterprétation supplémentaire des métadonnées dans les sections
-    HTML <code>&lt;head&gt;</code>. Si cette préinterprétation n'est pas
-    requise, définissez ProxyHTMLMeta à Off et les performances
-    seront légèrement améliorées. Cependant, elle s'avère parfois
-    nécessaire pour assurer un fonctionnement correct de l'internationalisation.</p>
-    <p>La directive <directive>ProxyHTMLMeta</directive> a deux effets. Le premier et le plus
-    important est la détection des codages de caractères déclarés sous
-    la forme</p>
-    <pre>&lt;meta http-equiv="Content-Type" content="text/html;charset=<var>foo</var>"&gt;</pre>
-    <p>ou, dans le cas d'un document XHTML, sous la forme d'une
-    déclaration XML. Elle n'est pas nécessaire si le jeu de caractères
-    est déclaré explicitement dans un en-tête HTTP (ce qui est
-    préférable) en provenance du serveur d'arrière-plan, ou si le
-    document est en <var>utf-8</var> (unicode) ou un de ses
-    sous-ensembles comme ASCII. Vous pourrez aussi vous en passer
-    lorsque le document utilise une valeur par défaut déclarée via la
-    directive <directive
-    module="mod_xml2enc">xml2EncDefault</directive>, avec le risque de
-    propager une déclaration incorrecte. Une directive
-    <directive module="mod_proxy_html">ProxyHTMLCharsetOut</directive> permettra d'annuler ce
-    risque, mais pourra induire une surcharge de traitement supérieure à
-    celle de ProxyHTMLMeta.</p>
-    <p>Le deuxième effet est l'interprétation de toutes les déclarations
+    HTML <code>&lt;head&gt;</code>.</p>
+    
+    <p>L'activation de <directive>ProxyHTMLMeta</directive> va entraîner
+    l'interprétation de toutes les déclarations
     <code>&lt;meta http-equiv=...&gt;</code> et leur conversion en
     en-têtes HTTP, afin de conserver le but original de cette forme
     de métaélément HTML.</p>
@@ -584,6 +576,12 @@ permet de générer une sortie qui utilisera le même encodage que
 l'entrée.</p>
 <p>Notez que tout ceci ne fonctionne que si le module
 <module>mod_xml2enc</module> est chargé.</p>
+<note>
+<p>Cette directive ne supporte pas les entités HTML. Si un document contient des
+caractères qui ne peuvent pas être représentés dans le jeu de caractères cible, la directive
+échouera et le document sera probablement corrompu (et ceci même si ces
+caractères sont représentés par des entités HTML).</p>
+</note>
 </usage>
 </directivesynopsis>
 
