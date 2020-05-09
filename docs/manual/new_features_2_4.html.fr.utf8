@@ -329,9 +329,9 @@ serveur HTTP Apache</h1>
           <code class="module"><a href="./mod/mod_isapi.html">mod_isapi</a></code>, ...</dt>
       <dd>La traduction des en-têtes en variables d'environnement est
       plus stricte qu'avant, ce qui permet de diminuer l'exposition aux attaques
-      de type cross-site-scripting via injection d'en-têtes. Les
-      en-têtes contenant des caractères invalides (comme les caractères
-      de soulignement) sont maintenant ignorés. Le document <a href="env.html">Les variables d'environnement dans Apache</a>
+      de type cross-site-scripting via injection d'en-têtes. Les noms
+      d'en-têtes contenant des caractères invalides (comme les caractères
+      de soulignement) ne sont plus convertis en variables d'environnement. Le document <a href="env.html">Les variables d'environnement dans Apache</a>
       présente quelques pistes pour contourner ce problème avec les
       clients anciens qui nécessitent de tels en-têtes (Ceci affecte
       tous les modules qui utilisent ces variables d'environnement).</dd>
