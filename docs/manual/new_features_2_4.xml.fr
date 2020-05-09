@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1873719 -->
+<!-- English Revision: 1877395 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -328,9 +328,9 @@ serveur HTTP Apache</title>
           <module>mod_isapi</module>, ...</dt>
       <dd>La traduction des en-têtes en variables d'environnement est
       plus stricte qu'avant, ce qui permet de diminuer l'exposition aux attaques
-      de type cross-site-scripting via injection d'en-têtes. Les
-      en-têtes contenant des caractères invalides (comme les caractères
-      de soulignement) sont maintenant ignorés. Le document <a
+      de type cross-site-scripting via injection d'en-têtes. Les noms
+      d'en-têtes contenant des caractères invalides (comme les caractères
+      de soulignement) ne sont plus convertis en variables d'environnement. Le document <a
       href="env.html">Les variables d'environnement dans Apache</a>
       présente quelques pistes pour contourner ce problème avec les
       clients anciens qui nécessitent de tels en-têtes (Ceci affecte
