@@ -3737,6 +3737,7 @@ static int event_pre_config(apr_pool_t * pconf, apr_pool_t * plog,
     worker_queue_info = NULL;
     listener_os_thread = NULL;
     listensocks_disabled = 0;
+    listener_is_wakeable = 0;
 
     return OK;
 }
