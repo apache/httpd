@@ -521,11 +521,13 @@ static BOOL stapling_renew_response(server_rec *s, modssl_ctx_t *mctx, SSL *ssl,
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01939)
                      "stapling_renew_response: Error parsing uri %s",
                       ocspuri);
+        apr_pool_destroy(vpool);
         goto err;
     }
     else if (strcmp(uri.scheme, "http")) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01940)
                      "stapling_renew_response: Unsupported uri %s", ocspuri);
+        apr_pool_destroy(vpool);
         goto err;
     }
 
