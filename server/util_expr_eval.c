@@ -995,6 +995,19 @@ static void expr_dump_tree(const ap_expr_t *e, const server_rec *s,
 }
 #endif /* AP_EXPR_DEBUG */
 
+#define expr_eval_log(ctx, level, ...) do { \
+    ap_expr_eval_ctx_t *x = (ctx); \
+    if (x->r) { \
+        ap_log_rerror(LOG_MARK(x->info), (level), 0, x->r, __VA_ARGS__); \
+    } \
+    else if (x->c) { \
+        ap_log_cerror(LOG_MARK(x->info), (level), 0, x->c, __VA_ARGS__); \
+    } \
+    else { \
+        ap_log_error(LOG_MARK(x->info), (level), 0, x->s, __VA_ARGS__); \
+    } \
+} while (0)
+
 static int ap_expr_eval_unary_op(ap_expr_eval_ctx_t *ctx, const ap_expr_t *info,
                                  const ap_expr_t *arg)
 {
@@ -1115,29 +1128,38 @@ AP_DECLARE(int) ap_expr_exec_ctx(ap_expr_eval_ctx_t *ctx)
     int rc;
 
     AP_DEBUG_ASSERT(ctx->p != NULL);
-    /* XXX: allow r, c == NULL */
-    AP_DEBUG_ASSERT(ctx->r != NULL);
-    AP_DEBUG_ASSERT(ctx->c != NULL);
-    AP_DEBUG_ASSERT(ctx->s != NULL);
     AP_DEBUG_ASSERT(ctx->err != NULL);
     AP_DEBUG_ASSERT(ctx->info != NULL);
     if (ctx->re_pmatch) {
         AP_DEBUG_ASSERT(ctx->re_source != NULL);
         AP_DEBUG_ASSERT(ctx->re_nmatch > 0);
     }
-    ctx->reclvl = 0;
+    if (!ctx->s) {
+        if (ctx->r) {
+            ctx->s = ctx->r->server;
+        }
+        else if (ctx->c) {
+            ctx->s = ctx->c->base_server;
+        }
+    }
+    if (!ctx->c) {
+        if (ctx->r) {
+            ctx->c = ctx->r->connection;
+        }
+    }
+    AP_DEBUG_ASSERT(ctx->s != NULL);
 
+    ctx->reclvl = 0;
     *ctx->err = NULL;
     if (ctx->info->flags & AP_EXPR_FLAG_STRING_RESULT) {
         *ctx->result_string = ap_expr_eval_word(ctx, ctx->info->root_node);
         if (*ctx->err != NULL) {
-            ap_log_rerror(LOG_MARK(ctx->info), APLOG_ERR, 0, ctx->r,
-                          APLOGNO(03298)
+            expr_eval_log(ctx, APLOG_ERR, APLOGNO(03298)
                           "Evaluation of string expression from %s:%d failed: %s",
                           ctx->info->filename, ctx->info->line_number, *ctx->err);
             return -1;
         } else {
-            ap_log_rerror(LOG_MARK(ctx->info), APLOG_TRACE4, 0, ctx->r,
+            expr_eval_log(ctx, APLOG_TRACE4,
                           "Evaluation of string expression from %s:%d gave: %s",
                           ctx->info->filename, ctx->info->line_number,
                           *ctx->result_string);
@@ -1147,18 +1169,17 @@ AP_DECLARE(int) ap_expr_exec_ctx(ap_expr_eval_ctx_t *ctx)
     else {
         rc = ap_expr_eval_cond(ctx, ctx->info->root_node);
         if (*ctx->err != NULL) {
-            ap_log_rerror(LOG_MARK(ctx->info), APLOG_ERR, 0, ctx->r,
-                          APLOGNO(03299)
+            expr_eval_log(ctx, APLOG_ERR, APLOGNO(03299)
                           "Evaluation of expression from %s:%d failed: %s",
                           ctx->info->filename, ctx->info->line_number, *ctx->err);
             return -1;
         } else {
             rc = rc ? 1 : 0;
-            ap_log_rerror(LOG_MARK(ctx->info), APLOG_TRACE4, 0, ctx->r,
+            expr_eval_log(ctx, APLOG_TRACE4,
                           "Evaluation of expression from %s:%d gave: %d",
                           ctx->info->filename, ctx->info->line_number, rc);
 
-            if (ctx->vary_this && *ctx->vary_this)
+            if (ctx->r && ctx->vary_this && *ctx->vary_this)
                 apr_table_merge(ctx->r->headers_out, "Vary", *ctx->vary_this);
 
             return rc;
@@ -1525,7 +1546,7 @@ static const char *unescape_func(ap_expr_eval_ctx_t *ctx, const void *data,
     int ret = ap_unescape_url_keep2f(result, 0);
     if (ret == OK)
         return result;
-    ap_log_rerror(LOG_MARK(ctx->info), APLOG_DEBUG, 0, ctx->r, APLOGNO(00538)
+    expr_eval_log(ctx, APLOG_DEBUG, APLOGNO(00538)
                   "%s %% escape in unescape('%s') at %s:%d",
                   ret == HTTP_BAD_REQUEST ? "Bad" : "Forbidden", arg,
                   ctx->info->filename, ctx->info->line_number);
@@ -1598,7 +1619,7 @@ static int op_url_subr(ap_expr_eval_ctx_t *ctx, const void *data, const char *ar
     if (rsub->status < 400) {
             rc = TRUE;
     }
-    ap_log_rerror(LOG_MARK(ctx->info), APLOG_TRACE5, 0, r,
+    expr_eval_log(ctx, APLOG_TRACE5,
                   "Subrequest for -U %s at %s:%d gave status: %d",
                   arg, ctx->info->filename, ctx->info->line_number,
                   rsub->status);
@@ -1619,7 +1640,7 @@ static int op_file_subr(ap_expr_eval_ctx_t *ctx, const void *data, const char *a
         apr_stat(&sb, rsub->filename, APR_FINFO_MIN, ctx->p) == APR_SUCCESS) {
         rc = TRUE;
     }
-    ap_log_rerror(LOG_MARK(ctx->info), APLOG_TRACE5, 0, r,
+    expr_eval_log(ctx, APLOG_TRACE5,
                   "Subrequest for -F %s at %s:%d gave status: %d",
                   arg, ctx->info->filename, ctx->info->line_number,
                   rsub->status);
