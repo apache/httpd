@@ -621,6 +621,17 @@ AP_DECLARE(apr_status_t) ap_filter_reinstate_brigade(ap_filter_t *f,
                                                      apr_bucket **flush_upto);
 
 /**
+ * Adopt a bucket brigade as is (no setaside nor copy).
+ * @param f The current filter
+ * @param bb The bucket brigade adopted.  This brigade is always empty
+ *          on return
+ * @remark All buckets in bb should be allocated on f->c->pool and
+ *         f->c->bucket_alloc.
+ */
+AP_DECLARE(void) ap_filter_adopt_brigade(ap_filter_t *f,
+                                         apr_bucket_brigade *bb);
+
+/**
  * This function calculates whether there are any as yet unsent
  * buffered brigades in downstream filters, and returns non zero
  * if so.

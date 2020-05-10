@@ -26,7 +26,6 @@
 #include "http_log.h"
 #include "http_request.h"
 #include "util_filter.h"
-#include "core.h"
 
 /* NOTE: Apache's current design doesn't allow a pool to be passed thru,
    so we depend on a global to hold the correct pool
@@ -1036,7 +1035,8 @@ AP_DECLARE(apr_status_t) ap_filter_setaside_brigade(ap_filter_t *f,
     return rv;
 }
 
-void ap_filter_adopt_brigade(ap_filter_t *f, apr_bucket_brigade *bb)
+AP_DECLARE(void) ap_filter_adopt_brigade(ap_filter_t *f,
+                                         apr_bucket_brigade *bb)
 {
     struct ap_filter_private *fp = f->priv;
 

@@ -30,7 +30,6 @@
 #include "ssl_private.h"
 #include "mod_ssl.h"
 #include "mod_ssl_openssl.h"
-#include "core.h"
 #include "apr_date.h"
 
 APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ssl, SSL, int, proxy_post_handshake,
