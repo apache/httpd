@@ -1264,9 +1264,8 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
                 apr_table_setn(r->notes, "proxy_timedout", "1");
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01103) "read timeout");
                 if (do_100_continue) {
-                    proxy_status = ap_proxyerror(r, HTTP_SERVICE_UNAVAILABLE,
-                                                 "Timeout on 100-Continue");
-                    goto cleanup;
+                    return ap_proxyerror(r, HTTP_SERVICE_UNAVAILABLE,
+                                         "Timeout on 100-Continue");
                 }
             }
             /*
@@ -1298,8 +1297,7 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
                 /* Mark the backend connection for closing */
                 backend->close = 1;
                 /* Need to return OK to avoid sending an error message */
-                proxy_status = OK;
-                goto cleanup;
+                return OK;
             }
             if (!c->keepalives) {
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01105)
@@ -1308,9 +1306,8 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
                               " failed.",
                               backend->hostname, backend->port);
             }
-            proxy_status = ap_proxyerror(r, HTTP_GATEWAY_TIME_OUT,
-                                         "Error reading from remote server");
-            goto cleanup;
+            return ap_proxyerror(r, HTTP_GATEWAY_TIME_OUT,
+                                 "Error reading from remote server");
         }
         /* XXX: Is this a real headers length send from remote? */
         backend->worker->s->read += len;
@@ -1326,11 +1323,9 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
              * if the status line was > 8192 bytes
              */
             if ((major != 1) || (len >= response_field_size - 1)) {
-                proxy_status = ap_proxyerror(r, HTTP_BAD_GATEWAY,
-                                   apr_pstrcat(p, "Corrupt status line "
-                                               "returned by remote server: ",
-                                               buffer, NULL));
-                goto cleanup;
+                return ap_proxyerror(r, HTTP_BAD_GATEWAY,
+                            apr_pstrcat(p, "Corrupt status line returned "
+                                        "by remote server: ", buffer, NULL));
             }
             backasswards = 0;
 
@@ -1386,8 +1381,7 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
                 r->headers_out = apr_table_make(r->pool,1);
                 r->status = HTTP_BAD_GATEWAY;
                 r->status_line = "bad gateway";
-                proxy_status = r->status;
-                goto cleanup;
+                return r->status;
             }
 
             /* Now, add in the just read cookies */
@@ -1433,9 +1427,8 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
             if (toclose) {
                 backend->close = 1;
                 if (toclose < 0) {
-                    proxy_status = ap_proxyerror(r, HTTP_BAD_GATEWAY,
-                                                 "Malformed connection header");
-                    goto cleanup;
+                    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
+                                         "Malformed connection header");
                 }
             }
 
@@ -1600,8 +1593,7 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
                             c->remote_host ? c->remote_host : "",
                             status);
                     backend->close = 1;
-                    proxy_status = status;
-                    goto cleanup;
+                    return status;
                 }
             }
             else {
@@ -1671,7 +1663,7 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
              * internal error.
              */
             apr_table_setn(r->notes, "proxy-error-override", "1");
-            goto cleanup;
+            return proxy_status;
         }
 
         r->sent_bodyct = 1;
@@ -1897,6 +1889,7 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
             proxy_run_detach_backend(r, backend);
             ap_proxy_release_connection(backend->worker->s->scheme,
                     backend, r->server);
+            /* Ensure that the backend is not reused */
             req->backend = NULL;
 
             /* Pass EOS bucket down the filter chain. */
@@ -1912,10 +1905,6 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
      * created from scpool and this pool can be freed before this brigade. */
     apr_brigade_cleanup(bb);
 
-    if (req->backend) {
-        proxy_run_detach_backend(r, req->backend);
-    }
-
     /* See define of AP_MAX_INTERIM_RESPONSES for why */
     if (interim_response >= AP_MAX_INTERIM_RESPONSES) {
         return ap_proxyerror(r, HTTP_BAD_GATEWAY,
@@ -1930,10 +1919,6 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
     }
 
     return OK;
-
-cleanup:
-    proxy_run_detach_backend(r, backend);
-    return proxy_status;
 }
 
 static
@@ -2180,6 +2165,9 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
 
         /* Step Five: Receive the Response... Fall thru to cleanup */
         status = ap_proxy_http_process_response(req);
+        if (req->backend) {
+            proxy_run_detach_backend(r, req->backend);
+        }
 
         break;
     }
