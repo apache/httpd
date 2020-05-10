@@ -216,16 +216,6 @@ static void add_cl(apr_pool_t *p,
     APR_BRIGADE_INSERT_TAIL(header_brigade, e);
 }
 
-static void terminate_headers(apr_bucket_alloc_t *bucket_alloc,
-                              apr_bucket_brigade *header_brigade)
-{
-    apr_bucket *e;
-
-    /* add empty line at the end of the headers */
-    e = apr_bucket_immortal_create(CRLF_ASCII, 2, bucket_alloc);
-    APR_BRIGADE_INSERT_TAIL(header_brigade, e);
-}
-
 
 #define MAX_MEM_SPOOL 16384
 
@@ -253,6 +243,9 @@ typedef struct {
     apr_off_t cl_val;
 
     rb_methods rb_method;
+
+    int force10;
+    const char *upgrade;
 
     int expecting_100;
     unsigned int do_100_continue:1,
@@ -559,6 +552,43 @@ static int spool_reqbody_cl(proxy_http_req_t *req, apr_off_t *bytes_spooled)
     return OK;
 }
 
+static void terminate_headers(proxy_http_req_t *req)
+{
+    apr_bucket_alloc_t *bucket_alloc = req->bucket_alloc;
+    apr_bucket *e;
+    char *buf;
+
+    /*
+     * Handle Connection: header if we do HTTP/1.1 request:
+     * If we plan to close the backend connection sent Connection: close
+     * otherwise sent Connection: Keep-Alive.
+     */
+    if (!req->force10) {
+        if (req->upgrade) {
+            /* Tell the backend that it can upgrade the connection. */
+            buf = apr_pstrcat(req->p, "Upgrade: ", req->upgrade, CRLF, NULL);
+            ap_xlate_proto_to_ascii(buf, strlen(buf));
+            e = apr_bucket_pool_create(buf, strlen(buf), req->p, bucket_alloc);
+            APR_BRIGADE_INSERT_TAIL(req->header_brigade, e);
+
+            buf = apr_pstrdup(req->p, "Connection: Upgrade" CRLF);
+        }
+        else if (ap_proxy_connection_reusable(req->backend)) {
+            buf = apr_pstrdup(req->p, "Connection: Keep-Alive" CRLF);
+        }
+        else {
+            buf = apr_pstrdup(req->p, "Connection: close" CRLF);
+        }
+        ap_xlate_proto_to_ascii(buf, strlen(buf));
+        e = apr_bucket_pool_create(buf, strlen(buf), req->p, bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(req->header_brigade, e);
+    }
+
+    /* add empty line at the end of the headers */
+    e = apr_bucket_immortal_create(CRLF_ASCII, 2, bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(req->header_brigade, e);
+}
+
 static int ap_proxy_http_prefetch(proxy_http_req_t *req,
                                   apr_uri_t *uri, char *url)
 {
@@ -571,20 +601,14 @@ static int ap_proxy_http_prefetch(proxy_http_req_t *req,
     apr_bucket_brigade *input_brigade = req->input_brigade;
     apr_bucket_brigade *temp_brigade;
     apr_bucket *e;
-    char *buf;
     apr_status_t status;
     apr_off_t bytes_read = 0;
     apr_off_t bytes;
-    int force10, rv;
     apr_read_type_e block;
+    int rv;
 
-    if (apr_table_get(r->subprocess_env, "force-proxy-request-1.0")) {
-        if (req->expecting_100) {
-            return HTTP_EXPECTATION_FAILED;
-        }
-        force10 = 1;
-    } else {
-        force10 = 0;
+    if (req->force10 && req->expecting_100) {
+        return HTTP_EXPECTATION_FAILED;
     }
 
     rv = ap_proxy_create_hdrbrgd(p, header_brigade, r, p_conn,
@@ -768,7 +792,7 @@ static int ap_proxy_http_prefetch(proxy_http_req_t *req,
         req->rb_method = RB_STREAM_CL;
     }
     else if (req->old_te_val) {
-        if (force10
+        if (req->force10
              || (apr_table_get(r->subprocess_env, "proxy-sendcl")
                   && !apr_table_get(r->subprocess_env, "proxy-sendchunks")
                   && !apr_table_get(r->subprocess_env, "proxy-sendchunked"))) {
@@ -790,7 +814,7 @@ static int ap_proxy_http_prefetch(proxy_http_req_t *req,
             }
             req->rb_method = RB_STREAM_CL;
         }
-        else if (!force10
+        else if (!req->force10
                   && (apr_table_get(r->subprocess_env, "proxy-sendchunks")
                       || apr_table_get(r->subprocess_env, "proxy-sendchunked"))
                   && !apr_table_get(r->subprocess_env, "proxy-sendcl")) {
@@ -834,23 +858,7 @@ static int ap_proxy_http_prefetch(proxy_http_req_t *req,
 
 /* Yes I hate gotos.  This is the subrequest shortcut */
 skip_body:
-    /*
-     * Handle Connection: header if we do HTTP/1.1 request:
-     * If we plan to close the backend connection sent Connection: close
-     * otherwise sent Connection: Keep-Alive.
-     */
-    if (!force10) {
-        if (!ap_proxy_connection_reusable(p_conn)) {
-            buf = apr_pstrdup(p, "Connection: close" CRLF);
-        }
-        else {
-            buf = apr_pstrdup(p, "Connection: Keep-Alive" CRLF);
-        }
-        ap_xlate_proto_to_ascii(buf, strlen(buf));
-        e = apr_bucket_pool_create(buf, strlen(buf), p, c->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(header_brigade, e);
-    }
-    terminate_headers(bucket_alloc, header_brigade);
+    terminate_headers(req);
 
     return OK;
 }
@@ -1163,6 +1171,36 @@ static int add_trailers(void *data, const char *key, const char *val)
     return 1;
 }
 
+static int send_continue_body(proxy_http_req_t *req)
+{
+    int status;
+
+    /* Send the request body (fully). */
+    switch(req->rb_method) {
+    case RB_SPOOL_CL:
+    case RB_STREAM_CL:
+    case RB_STREAM_CHUNKED:
+        status = stream_reqbody(req);
+        break;
+    default:
+        /* Shouldn't happen */
+        status = HTTP_INTERNAL_SERVER_ERROR;
+        break;
+    }
+    if (status != OK) {
+        conn_rec *c = req->r->connection;
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, req->r,
+                APLOGNO(10154) "pass request body failed "
+                "to %pI (%s) from %s (%s) with status %i",
+                req->backend->addr,
+                req->backend->hostname ? req->backend->hostname : "",
+                c->client_ip, c->remote_host ? c->remote_host : "",
+                status);
+        req->backend->close = 1;
+    }
+    return status;
+}
+
 static
 int ap_proxy_http_process_response(proxy_http_req_t *req)
 {
@@ -1173,6 +1211,7 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
     proxy_conn_rec *backend = req->backend;
     conn_rec *origin = req->origin;
     int do_100_continue = req->do_100_continue;
+    int status;
 
     char *buffer;
     char fixed_buffer[HUGE_STRING_LEN];
@@ -1244,6 +1283,7 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
                    origin->local_addr->port));
     do {
         apr_status_t rc;
+        const char *upgrade = NULL;
         int major = 0, minor = 0;
         int toclose = 0;
 
@@ -1422,6 +1462,21 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
              */
             te = apr_table_get(r->headers_out, "Transfer-Encoding");
 
+            if (proxy_status == HTTP_SWITCHING_PROTOCOLS) {
+                upgrade = apr_table_get(r->headers_out, "Upgrade");
+                if (!upgrade || !req->upgrade || (strcasecmp(req->upgrade,
+                                                             upgrade) != 0)) {
+                    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
+                                         apr_pstrcat(p, "Unexpected Upgrade: ",
+                                                     upgrade ? upgrade : "n/a",
+                                                     " (expecting ",
+                                                     req->upgrade ? req->upgrade
+                                                                  : "n/a", ")",
+                                                     NULL));
+                }
+                backend->close = 1;
+            }
+
             /* strip connection listed hop-by-hop headers from response */
             toclose = ap_proxy_clear_connection_fn(r, r->headers_out);
             if (toclose) {
@@ -1509,6 +1564,7 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
             ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
                           "HTTP: received interim %d response", r->status);
             if (!policy
+                    || upgrade
                     || (!strcasecmp(policy, "RFC")
                         && (proxy_status != HTTP_CONTINUE
                             || (req->expecting_100 = 1)))) {
@@ -1569,30 +1625,8 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
                           major, minor, proxy_status_line);
 
             if (do_send_body) {
-                int status;
-
-                /* Send the request body (fully). */
-                switch(req->rb_method) {
-                case RB_SPOOL_CL:
-                case RB_STREAM_CL:
-                case RB_STREAM_CHUNKED:
-                    status = stream_reqbody(req);
-                    break;
-                default:
-                    /* Shouldn't happen */
-                    status = HTTP_INTERNAL_SERVER_ERROR;
-                    break;
-                }
+                status = send_continue_body(req);
                 if (status != OK) {
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                            APLOGNO(10154) "pass request body failed "
-                            "to %pI (%s) from %s (%s) with status %i",
-                            backend->addr,
-                            backend->hostname ? backend->hostname : "",
-                            c->client_ip,
-                            c->remote_host ? c->remote_host : "",
-                            status);
-                    backend->close = 1;
                     return status;
                 }
             }
@@ -1613,6 +1647,62 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
 
             /* Once only! */
             do_100_continue = 0;
+        }
+
+        if (upgrade) {
+            apr_status_t rv;
+            proxy_tunnel_rec *tunnel;
+            apr_interval_time_t client_timeout = -1,
+                                backend_timeout = -1;
+
+            /* If we didn't send the full body yet, do it now */
+            if (do_100_continue) {
+                req->expecting_100 = 0;
+                status = send_continue_body(req);
+                if (status != OK) {
+                    return status;
+                }
+            }
+
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO()
+                          "HTTP: tunneling protocol %s", upgrade);
+
+            rv = ap_proxy_tunnel_create(&tunnel, r, origin, "HTTP");
+            if (rv != APR_SUCCESS) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO()
+                              "can't create tunnel for %s", upgrade);
+                return HTTP_INTERNAL_SERVER_ERROR;
+            }
+
+            /* Set timeout to the lowest configured for client or backend */
+            apr_socket_timeout_get(backend->sock, &backend_timeout);
+            apr_socket_timeout_get(ap_get_conn_socket(c), &client_timeout);
+            if (backend_timeout >= 0 && backend_timeout < client_timeout) {
+                tunnel->timeout = backend_timeout;
+            }
+            else {
+                tunnel->timeout = client_timeout;
+            }
+
+            /* Let proxy tunnel forward everything */
+            status = ap_proxy_tunnel_run(tunnel);
+            if (ap_is_HTTP_ERROR(status)) {
+                /* Tunnel always return HTTP_GATEWAY_TIME_OUT on timeout,
+                 * but we can differentiate between client and backend here.
+                 */
+                if (status == HTTP_GATEWAY_TIME_OUT
+                        && tunnel->timeout == client_timeout) {
+                    status = HTTP_REQUEST_TIME_OUT;
+                }
+            }
+            else {
+                /* Update r->status for custom log */
+                status = HTTP_SWITCHING_PROTOCOLS;
+            }
+            r->status = status;
+
+            /* We are done with both connections */
+            return DONE;
         }
 
         if (interim_response) {
@@ -2014,6 +2104,18 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
     req->rb_method = RB_INIT;
 
     dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
+
+    if (apr_table_get(r->subprocess_env, "force-proxy-request-1.0")) {
+        req->force10 = 1;
+    }
+    else if (*worker->s->upgrade) {
+        const char *upgrade = apr_table_get(r->headers_in, "Upgrade");
+        if (upgrade && (strcmp(worker->s->upgrade, "*") == 0
+                        || strcmp(worker->s->upgrade, upgrade) == 0
+                        || ap_find_token(p, worker->s->upgrade, upgrade))) {
+            req->upgrade = upgrade;
+        }
+    }
 
     /* We possibly reuse input data prefetched in previous call(s), e.g. for a
      * balancer fallback scenario, and in this case the 100 continue settings
