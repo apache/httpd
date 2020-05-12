@@ -172,7 +172,7 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server, int do_bind_
     if (server->flags & AP_LISTEN_FREEBIND) {
         if (apr_socket_opt_set(s, APR_SO_FREEBIND, one) < 0) {
             stat = apr_get_netos_error();
-            ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p, APLOGNO()
+            ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p, APLOGNO(10236)
                           "make_sock: apr_socket_opt_set: "
                           "error setting APR_SO_FREEBIND");
             apr_socket_close(s);
