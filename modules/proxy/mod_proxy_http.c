@@ -565,13 +565,13 @@ static void terminate_headers(proxy_http_req_t *req)
      */
     if (!req->force10) {
         if (req->upgrade) {
-            /* Tell the backend that it can upgrade the connection. */
-            buf = apr_pstrcat(req->p, "Upgrade: ", req->upgrade, CRLF, NULL);
+            buf = apr_pstrdup(req->p, "Connection: Upgrade" CRLF);
             ap_xlate_proto_to_ascii(buf, strlen(buf));
             e = apr_bucket_pool_create(buf, strlen(buf), req->p, bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(req->header_brigade, e);
 
-            buf = apr_pstrdup(req->p, "Connection: Upgrade" CRLF);
+            /* Tell the backend that it can upgrade the connection. */
+            buf = apr_pstrcat(req->p, "Upgrade: ", req->upgrade, CRLF, NULL);
         }
         else if (ap_proxy_connection_reusable(req->backend)) {
             buf = apr_pstrdup(req->p, "Connection: Keep-Alive" CRLF);
@@ -1462,8 +1462,8 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
              */
             te = apr_table_get(r->headers_out, "Transfer-Encoding");
 
+            upgrade = apr_table_get(r->headers_out, "Upgrade");
             if (proxy_status == HTTP_SWITCHING_PROTOCOLS) {
-                upgrade = apr_table_get(r->headers_out, "Upgrade");
                 if (!upgrade || !req->upgrade || (strcasecmp(req->upgrade,
                                                              upgrade) != 0)) {
                     return ap_proxyerror(r, HTTP_BAD_GATEWAY,
@@ -1649,7 +1649,7 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
             do_100_continue = 0;
         }
 
-        if (upgrade) {
+        if (proxy_status == HTTP_SWITCHING_PROTOCOLS) {
             apr_status_t rv;
             proxy_tunnel_rec *tunnel;
             apr_interval_time_t client_timeout = -1,
@@ -1759,6 +1759,12 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
              */
             apr_table_setn(r->notes, "proxy-error-override", "1");
             return proxy_status;
+        }
+
+        /* Forward back Upgrade header if it matches the configured one(s). */
+        if (upgrade && ap_proxy_worker_can_upgrade(p, worker, upgrade)) {
+            apr_table_setn(r->headers_out, "Connection", "Upgrade");
+            apr_table_setn(r->headers_out, "Upgrade", apr_pstrdup(p, upgrade));
         }
 
         r->sent_bodyct = 1;
@@ -2114,10 +2120,9 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
         req->force10 = 1;
     }
     else if (*worker->s->upgrade) {
+        /* Forward Upgrade header if it matches the configured one(s). */
         const char *upgrade = apr_table_get(r->headers_in, "Upgrade");
-        if (upgrade && (strcmp(worker->s->upgrade, "*") == 0
-                        || strcmp(worker->s->upgrade, upgrade) == 0
-                        || ap_find_token(p, worker->s->upgrade, upgrade))) {
+        if (upgrade && ap_proxy_worker_can_upgrade(p, worker, upgrade)) {
             req->upgrade = upgrade;
         }
     }

@@ -324,7 +324,8 @@ static const char *set_worker_param(apr_pool_t *p,
         }
     }
     else if (!strcasecmp(key, "upgrade")) {
-        if (PROXY_STRNCPY(worker->s->upgrade, val) != APR_SUCCESS) {
+        if (PROXY_STRNCPY(worker->s->upgrade,
+                          strcasecmp(val, "ANY") ? val : "*") != APR_SUCCESS) {
             return apr_psprintf(p, "upgrade protocol length must be < %d characters",
                                 (int)sizeof(worker->s->upgrade));
         }
