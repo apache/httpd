@@ -1646,7 +1646,7 @@ AP_DECLARE(void) ap_log_pid(apr_pool_t *p, const char *filename)
     apr_snprintf(pidstr, sizeof pidstr, "%" APR_PID_T_FMT APR_EOL_STR, mypid);
 
     perms = APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD;
-    if ((rv = apr_file_perms_set(temp_fname, perms)) != APR_SUCCESS
+    if (((rv = apr_file_perms_set(temp_fname, perms)) != APR_SUCCESS && rv != APR_ENOTIMPL)
         || (rv = apr_file_write_full(pid_file, pidstr, strlen(pidstr), NULL)) != APR_SUCCESS
         || (rv = apr_file_close(pid_file)) != APR_SUCCESS
         || (rv = apr_file_rename(temp_fname, fname, p)) != APR_SUCCESS) {
