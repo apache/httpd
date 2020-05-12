@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_proxy_http: handle Upgrade request, 101 (Switching Protocol) response
+     and switched protocol forwarding.  [Yann Ylavic]
+
   *) mod_ssl: The "ssl_var_lookup" optional function API now takes a
      const char *name argument and returns a const char * string
      value.  The pool argument must now be non-NULL.  [Joe Orton]

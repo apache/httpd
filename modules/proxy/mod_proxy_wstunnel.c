@@ -304,7 +304,7 @@ static int proxy_wstunnel_handler(request_rec *r, proxy_worker *worker,
     int status;
     char server_portstr[32];
     proxy_conn_rec *backend = NULL;
-    const char *upgrade_method, *upgrade;
+    const char *upgrade;
     char *scheme;
     apr_pool_t *p = r->pool;
     char *locurl = url;
@@ -323,25 +323,20 @@ static int proxy_wstunnel_handler(request_rec *r, proxy_worker *worker,
         return DECLINED;
     }
 
-    /* XXX: what's the point of "NONE"? We probably should _always_ check
-     *      that the client wants an Upgrade..
-     */
-    upgrade_method = *worker->s->upgrade ? worker->s->upgrade : "WebSocket";
-    if (ap_cstr_casecmp(upgrade_method, "NONE") != 0) {
-        upgrade = apr_table_get(r->headers_in, "Upgrade");
-        if (!upgrade || (ap_cstr_casecmp(upgrade, upgrade_method) != 0 &&
-                         ap_cstr_casecmp(upgrade_method, "ANY") != 0)) {
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02900)
-                          "require upgrade for URL %s "
-                          "(Upgrade header is %s, expecting %s)", 
-                          url, upgrade ? upgrade : "missing", upgrade_method);
-            apr_table_setn(r->err_headers_out, "Connection", "Upgrade");
-            apr_table_setn(r->err_headers_out, "Upgrade", upgrade_method);
-            return HTTP_UPGRADE_REQUIRED;
-        }
-    }
-    else {
-        upgrade = "WebSocket";
+    upgrade = apr_table_get(r->headers_in, "Upgrade");
+    if (!upgrade || (*worker->s->upgrade &&
+                     !ap_proxy_worker_can_upgrade(p, worker, upgrade))
+                 || (!*worker->s->upgrade &&
+                     ap_cstr_casecmp(upgrade, "WebSocket") != 0)) {
+        const char *worker_upgrade = *worker->s->upgrade ? worker->s->upgrade
+                                                         : "WebSocket";
+        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02900)
+                      "require upgrade for URL %s "
+                      "(Upgrade header is %s, expecting %s)", 
+                      url, upgrade ? upgrade : "missing", worker_upgrade);
+        apr_table_setn(r->err_headers_out, "Connection", "Upgrade");
+        apr_table_setn(r->err_headers_out, "Upgrade", worker_upgrade);
+        return HTTP_UPGRADE_REQUIRED;
     }
 
     uri = apr_palloc(p, sizeof(*uri));
