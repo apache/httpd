@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.47
 
+  *) mod_proxy_http: handle Upgrade request, 101 (Switching Protocol) response
+     and switched protocol forwarding.  [Yann Ylavic]
+
   *) mod_proxy: Improve tunneling loop to support half closed connections and
      pending data draining (for protocols like rsync). PR 61616. [Yann Ylavic]
 

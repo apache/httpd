@@ -1658,6 +1658,17 @@ PROXY_DECLARE(char *) ap_proxy_worker_name(apr_pool_t *p,
     return apr_pstrcat(p, "unix:", worker->s->uds_path, "|", worker->s->name, NULL);
 }
 
+PROXY_DECLARE(int) ap_proxy_worker_can_upgrade(apr_pool_t *p,
+                                               const proxy_worker *worker,
+                                               const char *upgrade)
+{
+    const char *worker_upgrade = worker->s->upgrade;
+    return (*worker_upgrade
+            && (strcmp(worker_upgrade, "*") == 0
+                || ap_cstr_casecmp(worker_upgrade, upgrade) == 0
+                || ap_find_token(p, worker_upgrade, upgrade)));
+}
+
 /*
  * Taken from ap_strcmp_match() :
  * Match = 0, NoMatch = 1, Abort = -1, Inval = -2
