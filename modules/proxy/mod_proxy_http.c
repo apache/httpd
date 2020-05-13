@@ -1836,7 +1836,7 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
              * if we are overriding the errors, we can't put the content
              * of the page into the brigade
              */
-            if (!ap_proxy_should_override(dconf, proxy_status)) {
+            {
                 /* read the body, pass it to the output filters */
                 apr_read_type_e mode = APR_NONBLOCK_READ;
                 int finish = FALSE;
@@ -1846,8 +1846,7 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
                  * error status so that an underlying error (eg HTTP_NOT_FOUND)
                  * doesn't become an HTTP_OK.
                  */
-                if (!ap_proxy_should_override(dconf, proxy_status)
-                        && ap_proxy_should_override(dconf, original_status)) {
+                if (ap_proxy_should_override(dconf, original_status)) {
                     r->status = original_status;
                     r->status_line = original_status_line;
                 }
