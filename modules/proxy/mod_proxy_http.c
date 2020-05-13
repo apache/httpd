@@ -1689,6 +1689,8 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
         if ((!r->header_only) &&                   /* not HEAD request */
             (proxy_status != HTTP_NO_CONTENT) &&      /* not 204 */
             (proxy_status != HTTP_NOT_MODIFIED)) {    /* not 304 */
+            apr_read_type_e mode;
+            int finish;
 
             /* We need to copy the output headers and treat them as input
              * headers as well.  BUT, we need to do this before we remove
@@ -1709,149 +1711,144 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
 
             ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r, "start body send");
 
-            /*
-             * if we are overriding the errors, we can't put the content
-             * of the page into the brigade
-             */
-            {
-                /* read the body, pass it to the output filters */
-                apr_read_type_e mode = APR_NONBLOCK_READ;
-                int finish = FALSE;
+            /* read the body, pass it to the output filters */
 
-                /* Handle the case where the error document is itself reverse
-                 * proxied and was successful. We must maintain any previous
-                 * error status so that an underlying error (eg HTTP_NOT_FOUND)
-                 * doesn't become an HTTP_OK.
-                 */
-                if (ap_proxy_should_override(dconf, original_status)) {
-                    r->status = original_status;
-                    r->status_line = original_status_line;
+            /* Handle the case where the error document is itself reverse
+             * proxied and was successful. We must maintain any previous
+             * error status so that an underlying error (eg HTTP_NOT_FOUND)
+             * doesn't become an HTTP_OK.
+             */
+            if (ap_proxy_should_override(dconf, original_status)) {
+                r->status = original_status;
+                r->status_line = original_status_line;
+            }
+
+            mode = APR_NONBLOCK_READ;
+            finish = FALSE;
+            do {
+                apr_off_t readbytes;
+                apr_status_t rv;
+
+                rv = ap_get_brigade(backend->r->input_filters, bb,
+                                    AP_MODE_READBYTES, mode,
+                                    req->sconf->io_buffer_size);
+
+                /* ap_get_brigade will return success with an empty brigade
+                 * for a non-blocking read which would block: */
+                if (mode == APR_NONBLOCK_READ
+                    && (APR_STATUS_IS_EAGAIN(rv)
+                        || (rv == APR_SUCCESS && APR_BRIGADE_EMPTY(bb)))) {
+                    /* flush to the client and switch to blocking mode */
+                    e = apr_bucket_flush_create(c->bucket_alloc);
+                    APR_BRIGADE_INSERT_TAIL(bb, e);
+                    if (ap_pass_brigade(r->output_filters, bb)
+                        || c->aborted) {
+                        backend->close = 1;
+                        break;
+                    }
+                    apr_brigade_cleanup(bb);
+                    mode = APR_BLOCK_READ;
+                    continue;
+                }
+                else if (rv == APR_EOF) {
+                    backend->close = 1;
+                    break;
+                }
+                else if (rv != APR_SUCCESS) {
+                    /* In this case, we are in real trouble because
+                     * our backend bailed on us. Pass along a 502 error
+                     * error bucket
+                     */
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01110)
+                                  "error reading response");
+                    ap_proxy_backend_broke(r, bb);
+                    ap_pass_brigade(r->output_filters, bb);
+                    backend_broke = 1;
+                    backend->close = 1;
+                    break;
+                }
+                /* next time try a non-blocking read */
+                mode = APR_NONBLOCK_READ;
+
+                if (!apr_is_empty_table(backend->r->trailers_in)) {
+                    apr_table_do(add_trailers, r->trailers_out,
+                            backend->r->trailers_in, NULL);
+                    apr_table_clear(backend->r->trailers_in);
                 }
 
-                do {
-                    apr_off_t readbytes;
-                    apr_status_t rv;
-
-                    rv = ap_get_brigade(backend->r->input_filters, bb,
-                                        AP_MODE_READBYTES, mode,
-                                        req->sconf->io_buffer_size);
-
-                    /* ap_get_brigade will return success with an empty brigade
-                     * for a non-blocking read which would block: */
-                    if (mode == APR_NONBLOCK_READ
-                        && (APR_STATUS_IS_EAGAIN(rv)
-                            || (rv == APR_SUCCESS && APR_BRIGADE_EMPTY(bb)))) {
-                        /* flush to the client and switch to blocking mode */
-                        e = apr_bucket_flush_create(c->bucket_alloc);
-                        APR_BRIGADE_INSERT_TAIL(bb, e);
-                        if (ap_pass_brigade(r->output_filters, bb)
-                            || c->aborted) {
-                            backend->close = 1;
-                            break;
-                        }
-                        apr_brigade_cleanup(bb);
-                        mode = APR_BLOCK_READ;
-                        continue;
-                    }
-                    else if (rv == APR_EOF) {
-                        backend->close = 1;
-                        break;
-                    }
-                    else if (rv != APR_SUCCESS) {
-                        /* In this case, we are in real trouble because
-                         * our backend bailed on us. Pass along a 502 error
-                         * error bucket
-                         */
-                        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01110)
-                                      "error reading response");
-                        ap_proxy_backend_broke(r, bb);
-                        ap_pass_brigade(r->output_filters, bb);
-                        backend_broke = 1;
-                        backend->close = 1;
-                        break;
-                    }
-                    /* next time try a non-blocking read */
-                    mode = APR_NONBLOCK_READ;
-
-                    if (!apr_is_empty_table(backend->r->trailers_in)) {
-                        apr_table_do(add_trailers, r->trailers_out,
-                                backend->r->trailers_in, NULL);
-                        apr_table_clear(backend->r->trailers_in);
-                    }
-
-                    apr_brigade_length(bb, 0, &readbytes);
-                    backend->worker->s->read += readbytes;
+                apr_brigade_length(bb, 0, &readbytes);
+                backend->worker->s->read += readbytes;
 #if DEBUGGING
-                    {
-                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01111)
-                                  "readbytes: %#x", readbytes);
-                    }
+                {
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01111)
+                              "readbytes: %#x", readbytes);
+                }
 #endif
-                    /* sanity check */
-                    if (APR_BRIGADE_EMPTY(bb)) {
-                        break;
+                /* sanity check */
+                if (APR_BRIGADE_EMPTY(bb)) {
+                    break;
+                }
+
+                /* Switch the allocator lifetime of the buckets */
+                ap_proxy_buckets_lifetime_transform(r, bb, pass_bb);
+
+                /* found the last brigade? */
+                if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(pass_bb))) {
+
+                    /* signal that we must leave */
+                    finish = TRUE;
+
+                    /* the brigade may contain transient buckets that contain
+                     * data that lives only as long as the backend connection.
+                     * Force a setaside so these transient buckets become heap
+                     * buckets that live as long as the request.
+                     */
+                    for (e = APR_BRIGADE_FIRST(pass_bb); e
+                            != APR_BRIGADE_SENTINEL(pass_bb); e
+                            = APR_BUCKET_NEXT(e)) {
+                        apr_bucket_setaside(e, r->pool);
                     }
 
-                    /* Switch the allocator lifetime of the buckets */
-                    ap_proxy_buckets_lifetime_transform(r, bb, pass_bb);
-
-                    /* found the last brigade? */
-                    if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(pass_bb))) {
-
-                        /* signal that we must leave */
-                        finish = TRUE;
-
-                        /* the brigade may contain transient buckets that contain
-                         * data that lives only as long as the backend connection.
-                         * Force a setaside so these transient buckets become heap
-                         * buckets that live as long as the request.
-                         */
-                        for (e = APR_BRIGADE_FIRST(pass_bb); e
-                                != APR_BRIGADE_SENTINEL(pass_bb); e
-                                = APR_BUCKET_NEXT(e)) {
-                            apr_bucket_setaside(e, r->pool);
-                        }
-
-                        /* finally it is safe to clean up the brigade from the
-                         * connection pool, as we have forced a setaside on all
-                         * buckets.
-                         */
-                        apr_brigade_cleanup(bb);
-
-                        /* make sure we release the backend connection as soon
-                         * as we know we are done, so that the backend isn't
-                         * left waiting for a slow client to eventually
-                         * acknowledge the data.
-                         */
-                        ap_proxy_release_connection(backend->worker->s->scheme,
-                                backend, r->server);
-                        /* Ensure that the backend is not reused */
-                        req->backend = NULL;
-
-                    }
-
-                    /* try send what we read */
-                    if (ap_pass_brigade(r->output_filters, pass_bb) != APR_SUCCESS
-                        || c->aborted) {
-                        /* Ack! Phbtt! Die! User aborted! */
-                        /* Only close backend if we haven't got all from the
-                         * backend. Furthermore if req->backend is NULL it is no
-                         * longer safe to fiddle around with backend as it might
-                         * be already in use by another thread.
-                         */
-                        if (req->backend) {
-                            /* this causes socket close below */
-                            req->backend->close = 1;
-                        }
-                        finish = TRUE;
-                    }
-
-                    /* make sure we always clean up after ourselves */
-                    apr_brigade_cleanup(pass_bb);
+                    /* finally it is safe to clean up the brigade from the
+                     * connection pool, as we have forced a setaside on all
+                     * buckets.
+                     */
                     apr_brigade_cleanup(bb);
 
-                } while (!finish);
-            }
+                    /* make sure we release the backend connection as soon
+                     * as we know we are done, so that the backend isn't
+                     * left waiting for a slow client to eventually
+                     * acknowledge the data.
+                     */
+                    ap_proxy_release_connection(backend->worker->s->scheme,
+                            backend, r->server);
+                    /* Ensure that the backend is not reused */
+                    req->backend = NULL;
+
+                }
+
+                /* try send what we read */
+                if (ap_pass_brigade(r->output_filters, pass_bb) != APR_SUCCESS
+                    || c->aborted) {
+                    /* Ack! Phbtt! Die! User aborted! */
+                    /* Only close backend if we haven't got all from the
+                     * backend. Furthermore if req->backend is NULL it is no
+                     * longer safe to fiddle around with backend as it might
+                     * be already in use by another thread.
+                     */
+                    if (req->backend) {
+                        /* this causes socket close below */
+                        req->backend->close = 1;
+                    }
+                    finish = TRUE;
+                }
+
+                /* make sure we always clean up after ourselves */
+                apr_brigade_cleanup(pass_bb);
+                apr_brigade_cleanup(bb);
+
+            } while (!finish);
+
             ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r, "end body send");
         }
         else {
