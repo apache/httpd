@@ -1544,6 +1544,8 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
         }
 
         if (ap_is_HTTP_INFO(proxy_status)) {
+            const char *policy = NULL;
+
             /* RFC2616 tells us to forward this.
              *
              * OTOH, an interim response here may mean the backend
@@ -1558,19 +1560,32 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
              *
              * We need to set "r->expecting_100 = 1" otherwise origin
              * server behaviour will apply.
+             *
+             * 101 Switching Protocol has its own configuration which
+             * shouldn't be interfered by "proxy-interim-response".
              */
-            const char *policy = apr_table_get(r->subprocess_env,
-                                               "proxy-interim-response");
+            if (proxy_status != HTTP_SWITCHING_PROTOCOLS) {
+                policy = apr_table_get(r->subprocess_env,
+                                       "proxy-interim-response");
+            }
             ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
-                          "HTTP: received interim %d response", r->status);
+                          "HTTP: received interim %d response (policy: %s)",
+                          r->status, policy ? policy : "n/a");
             if (!policy
-                    || upgrade
                     || (!strcasecmp(policy, "RFC")
                         && (proxy_status != HTTP_CONTINUE
                             || (req->expecting_100 = 1)))) {
-                if (proxy_status == HTTP_CONTINUE) {
+                switch (proxy_status) {
+                case HTTP_CONTINUE:
                     r->expecting_100 = req->expecting_100;
                     req->expecting_100 = 0;
+                    break;
+                case HTTP_SWITCHING_PROTOCOLS:
+                    AP_DEBUG_ASSERT(upgrade != NULL);
+                    apr_table_setn(r->headers_out, "Connection", "Upgrade");
+                    apr_table_setn(r->headers_out, "Upgrade",
+                                   apr_pstrdup(p, upgrade));
+                    break;
                 }
                 ap_send_interim_response(r, 1);
             }
@@ -1761,7 +1776,10 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
             return proxy_status;
         }
 
-        /* Forward back Upgrade header if it matches the configured one(s). */
+        /* Forward back Upgrade header if it matches the configured one(s), it
+         * may be an HTTP_UPGRADE_REQUIRED response or some other status where
+         * Upgrade makes sense to negotiate the protocol by other means.
+         */
         if (upgrade && ap_proxy_worker_can_upgrade(p, worker, upgrade)) {
             apr_table_setn(r->headers_out, "Connection", "Upgrade");
             apr_table_setn(r->headers_out, "Upgrade", apr_pstrdup(p, upgrade));
