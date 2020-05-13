@@ -498,8 +498,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                              * error status so that an underlying error (eg HTTP_NOT_FOUND)
                              * doesn't become an HTTP_OK.
                              */
-                            if (!ap_proxy_should_override(conf, r->status)
-                                    && ap_proxy_should_override(conf, original_status)) {
+                            if (ap_proxy_should_override(conf, original_status)) {
                                 r->status = original_status;
                                 r->status_line = original_status_line;
                             }
