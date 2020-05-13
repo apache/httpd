@@ -59,10 +59,16 @@ interval or for <code>strftime(3)</code> formatting with size-based
 rotation.</dd>
 
 <dt><code>-L</code> <var>linkname</var></dt>
-<dd>Causes a hard link to be made from the current logfile
+<dd><p>Causes a hard link to be made from the current logfile
 to the specified link name.  This can be used to watch
 the log continuously across rotations using a command like
-<code>tail -F linkname</code>.</dd>
+<code>tail -F linkname</code>.</p>
+<p>If the linkname is not an absolute
+path, it is relative to <code>rotatelogs</code>' working directory,
+which is the <directive module="core">ServerRoot</directive> when
+<code>rotatelogs</code> is run by the server.  
+</p>
+</dd>
 
 <dt><code>-p</code> <var>program</var></dt>
 
@@ -137,6 +143,11 @@ one.  For example, if <var>logfile</var> was
 megabytes, but 5 megabytes was reached twice in the same day, the
 same log file name would be produced and log rotation would keep
 writing to the same file.</p>
+<p>If the logfile is not an absolute
+path, it is relative to <code>rotatelogs</code>' working directory,
+which is the <directive module="core">ServerRoot</directive> when
+<code>rotatelogs</code> is run by the server.
+</p>
 </dd>
 
 <dt><code><var>rotationtime</var></code></dt>
