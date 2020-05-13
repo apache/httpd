@@ -166,6 +166,33 @@ _tryserf:
 !ENDIF
 #     NOT EXIST("srclib\serf")
 
+!IF EXIST("srclib\jansson")
+
+_tryjson:
+!IF $(USEMAK) == 1
+    cd modules\loggers
+    $(MAKE) $(MAKEOPT) -f mod_log_json.mak CFG="mod_log_json - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+    cd ..\..
+!ELSEIF $(USESLN) == 1
+    devenv $(TLP).sln /useenv $(CTARGET) $(LONG) /project mod_log_json
+!ELSE
+    @msdev $(TLP).dsw /USEENV /MAKE \
+        "mod_log_json - Win32 $(LONG)" /NORECURSE $(CTARGET)
+!ENDIF
+
+!ELSE
+#     NOT EXIST("srclib\jansson")
+
+_tryjson:
+    @echo -----
+    @echo mod_log_json will not build unless jansson is built in srclib\jansson
+    @echo Version 2.0 and later available from https://github.com/akheron/jansson/releases
+    @echo build with:
+    @echo cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF
+    @echo nmake
+
+!ENDIF
+
 !IF EXIST("srclib\zlib")
 
 _tryzlib:
@@ -604,6 +631,9 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_log_config.mak  CFG="mod_log_config - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_log_debug.mak  CFG="mod_log_debug - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_log_forensic.mak CFG="mod_log_forensic - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+!IF EXIST("srclib\jansson")
+   	 $(MAKE) $(MAKEOPT) -f mod_log_json.mak	   CFG="mod_log_json - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+!ENDIF
 	 $(MAKE) $(MAKEOPT) -f mod_logio.mak       CFG="mod_logio - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 !IF EXIST("srclib\lua")
@@ -920,6 +950,10 @@ _copybin:
 	copy modules\loggers\$(LONG)\mod_log_debug.$(src_so) 	"$(inst_so)" <.y
 	copy modules\loggers\$(LONG)\mod_log_forensic.$(src_so) "$(inst_so)" <.y
 	copy modules\loggers\$(LONG)\mod_logio.$(src_so) 	"$(inst_so)" <.y
+!IF EXIST("srclib\jansson")
+    copy modules\loggers\$(LONG)\mod_log_json.$(src_so) 	"$(inst_so)" <.y
+    copy srclib\jansson\bin\jansson.$(src_dll) 			"$(inst_dll)" <.y
+!ENDIF
 !IF EXIST("srclib\lua")
 	copy modules\lua\$(LONG)\mod_lua.$(src_so) 		"$(inst_so)" <.y
 !IF EXIST("srclib\lua\src\lua51.$(src_dll)")

@@ -140,3 +140,4 @@ mod_socache_redis.so        0x70E20000    0x00020000
 mod_md.so                   0x70E40000    0x00030000
 mod_proxy_uwsgi.so          0x70E70000    0x00020000
 libapreq.dll                0x70E90000    0x00020000
+mod_log_json.so             0x70EB0000    0x00020000
