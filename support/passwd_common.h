@@ -28,7 +28,9 @@
 #include "apu_version.h"
 #endif
 
+#if !defined(WIN32) && !defined(NETWARE)
 #include "ap_config_auto.h"
+#endif
 
 #define MAX_STRING_LEN 256
 
