@@ -22,7 +22,7 @@
 #include "http_request.h"
 
 #include <mod_ssl.h>
-#include <mod_log_config.h>
+#include "mod_log_config.h"
 
 #include "apr_strings.h"
 
