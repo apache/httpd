@@ -1599,6 +1599,11 @@ static void *create_proxy_dir_config(apr_pool_t *p, char *dummy)
     return (void *) new;
 }
 
+static int int_order(const void *i1, const void *i2)
+{
+    return *(const int *)i1 - *(const int *)i2;
+}
+
 static void *merge_proxy_dir_config(apr_pool_t *p, void *basev, void *addv)
 {
     proxy_dir_conf *new = (proxy_dir_conf *) apr_pcalloc(p, sizeof(proxy_dir_conf));
@@ -1618,6 +1623,15 @@ static void *merge_proxy_dir_config(apr_pool_t *p, void *basev, void *addv)
         = apr_array_append(p, base->cookie_domains, add->cookie_domains);
     new->error_override_codes
         = apr_array_append(p, base->error_override_codes, add->error_override_codes);
+    /* Keep the array sorted for binary search (since "base" and "add" are
+     * already sorted, it's only needed only if both are merged).
+     */
+    if (base->error_override_codes->nelts
+            && add->error_override_codes->nelts) {
+        qsort(new->error_override_codes->elts,
+              new->error_override_codes->nelts,
+              sizeof(int), int_order);
+    }
     new->interpolate_env = (add->interpolate_env == -1) ? base->interpolate_env
                                                         : add->interpolate_env;
     new->preserve_host = (add->preserve_host_set == 0) ? base->preserve_host
@@ -2142,7 +2156,7 @@ static const char *
     }
     else if (conf->error_override_set == 1) {
         int *newcode;
-        int argcode;
+        int argcode, i;
         if (!apr_isdigit(arg[0]))
             return "ProxyErrorOverride: status codes to intercept must be numeric";
         if (!conf->error_override) 
@@ -2154,6 +2168,17 @@ static const char *
 
         newcode = apr_array_push(conf->error_override_codes);
         *newcode = argcode;
+
+        /* Keep the array sorted for binary search. */
+        for (i = conf->error_override_codes->nelts - 1; i > 0; --i) {
+            int *oldcode = &((int *)conf->error_override_codes->elts)[i - 1];
+            if (*oldcode <= argcode) {
+                break;
+            }
+            *newcode = *oldcode;
+            *oldcode = argcode;
+            newcode = oldcode;
+        }
     }
     else
         return "ProxyErrorOverride first parameter must be one of: off | on";
