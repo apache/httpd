@@ -546,10 +546,10 @@ typedef struct {
         NON_SSL_SET_ERROR_MSG  /* Need to set the error message */
     } non_ssl_request;
 
-#ifndef SSL_OP_NO_RENEGOTATION
+#ifndef SSL_OP_NO_RENEGOTIATION
     /* For OpenSSL < 1.1.1, track the handshake/renegotiation state
      * for the connection to block client-initiated renegotiations.
-     * For OpenSSL >=1.1.1, the SSL_OP_NO_RENEGOTATION flag is used in
+     * For OpenSSL >=1.1.1, the SSL_OP_NO_RENEGOTIATION flag is used in
      * the SSL * options state with equivalent effect. */
     modssl_reneg_state reneg_state;
 #endif

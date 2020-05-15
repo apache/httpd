@@ -2264,7 +2264,7 @@ static void log_tracing_state(const SSL *ssl, conn_rec *c,
 /*
  * This callback function is executed while OpenSSL processes the SSL
  * handshake and does SSL record layer stuff.  It's used to trap
- * client-initiated renegotiations (where SSL_OP_NO_RENEGOTATION is
+ * client-initiated renegotiations (where SSL_OP_NO_RENEGOTIATION is
  * not available), and for dumping everything to the log.
  */
 void ssl_callback_Info(const SSL *ssl, int where, int rc)
@@ -2277,12 +2277,12 @@ void ssl_callback_Info(const SSL *ssl, int where, int rc)
         return;
     }
 
-#ifndef SSL_OP_NO_RENEGOTATION
+#ifndef SSL_OP_NO_RENEGOTIATION
     /* With OpenSSL < 1.1.1 (implying TLS v1.2 or earlier), this
      * callback is used to block client-initiated renegotiation.  With
      * TLSv1.3 it is unnecessary since renegotiation is forbidden at
      * protocol level.  Otherwise (TLSv1.2 with OpenSSL >=1.1.1),
-     * SSL_OP_NO_RENEGOTATION is used to block renegotiation. */
+     * SSL_OP_NO_RENEGOTIATION is used to block renegotiation. */
     {
         SSLConnRec *sslconn;
 
