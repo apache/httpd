@@ -615,13 +615,13 @@ cleanup:
 
 void modssl_set_reneg_state(SSLConnRec *sslconn, modssl_reneg_state state)
 {
-#ifdef SSL_OP_NO_RENEGOTATION
+#ifdef SSL_OP_NO_RENEGOTIATION
     switch (state) {
     case RENEG_ALLOW:
-        SSL_clear_options(sslconn->ssl, SSL_OP_NO_RENEGOTATION);
+        SSL_clear_options(sslconn->ssl, SSL_OP_NO_RENEGOTIATION);
         break;
     default:
-        SSL_set_options(sslconn->ssl, SSL_OP_NO_RENEGOTATION);
+        SSL_set_options(sslconn->ssl, SSL_OP_NO_RENEGOTIATION);
         break;
     }
 #else
