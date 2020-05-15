@@ -1276,7 +1276,7 @@ AP_DECLARE_NONSTD(int) ap_filter_output_pending(conn_rec *c)
             }
 
             if ((fp->bb && !APR_BRIGADE_EMPTY(fp->bb))
-                    || ap_filter_should_yield(f->next)) {
+                    || (f->next && ap_filter_should_yield(f->next))) {
                 rc = OK;
                 break;
             }
