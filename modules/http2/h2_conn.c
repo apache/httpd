@@ -187,6 +187,12 @@ apr_status_t h2_conn_setup(conn_rec *c, request_rec *r, server_rec *s)
     if (APR_SUCCESS == (status = h2_session_create(&session, c, r, s, workers))) {
         ctx = h2_ctx_get(c, 1);
         h2_ctx_session_set(ctx, session);
+
+        /* remove the input filter of mod_reqtimeout, now that the connection
+         * is established and we have swtiched to h2. reqtimeout has supervised
+         * possibly configured handshake timeouts and needs to get out of the way
+         * now since the rest of its state handling assumes http/1.x to take place. */
+        ap_remove_input_filter_byhandle(c->input_filters, "reqtimeout");
     }
     
     return status;

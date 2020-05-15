@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_http2: Fixed regression that caused connections to close when mod_reqtimeout
+     was configured with a handshake timeout. Fixes gitub issue #196.
+     [Stefan Eissing]
+
   *) mod_proxy_http: handle Upgrade request, 101 (Switching Protocol) response
      and switched protocol forwarding.  [Yann Ylavic]
 
