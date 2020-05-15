@@ -171,6 +171,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1876548 ^/httpd/httpd/trunk .
      +1: gbechis, jorton
 
+  *) mod_http2: Fixed a regression that caused connections to close early
+     when mod_reqtimeout was configured with a handshake timeout. Fixes
+     <https://github.com/icing/mod_h2/issues/196>. [Stefan Eissing]
+     trunk patch:
+       - http://svn.apache.org/r1877783
+     2.4.x patch: svn merge -c 1877783 ^/httpd/httpd/trunk .
+     +1: icing
+ 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
