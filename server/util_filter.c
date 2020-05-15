@@ -1271,11 +1271,12 @@ AP_DECLARE_NONSTD(int) ap_filter_output_pending(conn_rec *c)
             if (rv != APR_SUCCESS) {
                 ap_log_cerror(APLOG_MARK, APLOG_DEBUG, rv, c, APLOGNO(00470)
                         "write failure in '%s' output filter", f->frec->name);
-                rc = rv;
+                rc = AP_FILTER_ERROR;
                 break;
             }
 
-            if (fp->bb && !APR_BRIGADE_EMPTY(fp->bb)) {
+            if ((fp->bb && !APR_BRIGADE_EMPTY(fp->bb))
+                    || ap_filter_should_yield(f->next)) {
                 rc = OK;
                 break;
             }
