@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1828738 -->
+<!-- English Revision : 1877709 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -63,10 +63,16 @@ de temps ou pour le formatage de <code>strftime(3)</code> avec une
 rotation basée sur la taille.</dd>
 
 <dt><code>-L</code> <var>nom-lien</var></dt>
-<dd>Etablit un lien physique entre le fichier journal courant et le lien
+<dd><p>Etablit un lien physique entre le fichier journal courant et le lien
 spécifié. Cette option permet de consulter le journal de manière
 continue malgré les rotations via une commande du style <code>tail -F
-nom-lien</code>.</dd>
+nom-lien</code>.</p>
+<p>Si le nom du lien spécifié n'est pas un chemin absolu, il est relatif au
+répertoire de travail de <code>rotatelogs</code> qui correspond à la valeur de
+la directive <directive module="core">ServerRoot</directive> lorsque la commande
+<code>rotatelogs</code> est exécutée par le serveur.
+</p>
+</dd>
 
 <dt><code>-p</code> <var>programme</var></dt>
 <dd>Avec cette option, <code>rotatelogs</code> exécutera le programme
@@ -145,6 +151,11 @@ nouveau. Par exemple, si <var>fichier-journal</var> était
 mégaoctets, et si la limite de 5 mégaoctets a été atteinte deux fois
 dans la même journée, le même nom de fichier va être généré, et la
 rotation va écraser le fichier existant.</p>
+<p>Si le nom du fichier journal n'est pas un chemin absolu, il est relatif au
+répertoire de travail de <code>rotatelogs</code> qui correspond à la valeur de
+la directive <directive module="core">ServerRoot</directive> lorsque la commande
+<code>rotatelogs</code> est exécutée par le serveur.  
+</p>
 </dd>
 
 <dt><code><var>temps-rotation</var></code></dt>
