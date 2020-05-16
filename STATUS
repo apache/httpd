@@ -178,6 +178,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        - http://svn.apache.org/r1877783
      2.4.x patch: svn merge -c 1877783 ^/httpd/httpd/trunk .
      +1: icing, steffenal
+
+  *) mod_proxy_fcgi: Don't unset when condition is false. PR64365
+     trunk patch: 
+        - http://svn.apache.org/r1877829
+        - http://svn.apache.org/r1877830
+     2.4.x patch: svn merge -c 1877829,1877830 ^/httpd/httpd/trunk .
+    +1: covener
  
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
