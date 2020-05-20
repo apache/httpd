@@ -804,9 +804,7 @@ static int ap_proxy_http_prefetch(proxy_http_req_t *req,
     }
     else if (req->old_cl_val) {
         if (r->input_filters == r->proto_input_filters) {
-            char *endstr;
-            status = apr_strtoff(&req->cl_val, req->old_cl_val, &endstr, 10);
-            if (status != APR_SUCCESS || *endstr || req->cl_val < 0) {
+            if (!ap_parse_strict_length(&req->cl_val, req->old_cl_val)) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(01085)
                               "could not parse request Content-Length (%s)",
                               req->old_cl_val);

@@ -24,6 +24,8 @@
 #include "apr_env.h"
 #include "apreq_util.h"
 
+#include "httpd.h"
+
 #define USER_DATA_KEY "apreq"
 
 /* Parroting APLOG_* ... */
@@ -351,16 +353,15 @@ static void init_body(apreq_handle_t *handle)
     apr_bucket *eos, *pipe;
 
     if (cl_header != NULL) {
-        char *dummy;
-        apr_int64_t content_length = apr_strtoi64(cl_header, &dummy, 10);
+        apr_off_t content_length;
 
-        if (dummy == NULL || *dummy != 0) {
+        if (!ap_parse_strict_length(&content_length, cl_header)) {
             req->body_status = APREQ_ERROR_BADHEADER;
             cgi_log_error(CGILOG_MARK, CGILOG_ERR, req->body_status, handle,
                           "Invalid Content-Length header (%s)", cl_header);
             return;
         }
-        else if ((apr_uint64_t)content_length > req->read_limit) {
+        if ((apr_uint64_t)content_length > req->read_limit) {
             req->body_status = APREQ_ERROR_OVERLIMIT;
             cgi_log_error(CGILOG_MARK, CGILOG_ERR, req->body_status, handle,
                           "Content-Length header (%s) exceeds configured "

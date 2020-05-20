@@ -364,16 +364,13 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
             lenp = NULL;
         }
         if (lenp) {
-            char *endstr;
-
             ctx->state = BODY_LENGTH;
 
             /* Protects against over/underflow, non-digit chars in the
-             * string (excluding leading space) (the endstr checks)
-             * and a negative number. */
-            if (apr_strtoff(&ctx->remaining, lenp, &endstr, 10)
-                    || endstr == lenp || *endstr || ctx->remaining < 0) {
-
+             * string, leading plus/minus signs, trailing characters and
+             * a negative number.
+             */
+            if (!ap_parse_strict_length(&ctx->remaining, lenp)) {
                 ctx->remaining = 0;
                 ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, f->r, APLOGNO(01587)
                               "Invalid Content-Length");
@@ -1667,13 +1664,10 @@ AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy)
         r->read_chunked = 1;
     }
     else if (lenp) {
-        char *endstr;
-
-        if (apr_strtoff(&r->remaining, lenp, &endstr, 10)
-            || *endstr || r->remaining < 0) {
+        if (!ap_parse_strict_length(&r->remaining, lenp)) {
             r->remaining = 0;
             ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(01594)
-                          "Invalid Content-Length");
+                          "Invalid Content-Length '%s'", lenp);
             return HTTP_BAD_REQUEST;
         }
     }

@@ -91,11 +91,16 @@ static int reflector_handler(request_rec * r)
 
         /* reflect the content length, if present */
         if ((content_length = apr_table_get(r->headers_in, "Content-Length"))) {
-            apr_off_t offset;
+            apr_off_t clen;
 
-            apr_strtoff(&offset, content_length, NULL, 10);
-            ap_set_content_length(r, offset);
+            if (!ap_parse_strict_length(&clen, content_length)) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10243)
+                              "reflector_handler: invalid content-length '%s'",
+                              content_length);
+                return HTTP_BAD_REQUEST;
+            }
 
+            ap_set_content_length(r, clen);
         }
 
         /* reflect the content type, if present */

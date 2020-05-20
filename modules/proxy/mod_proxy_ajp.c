@@ -126,11 +126,8 @@ static apr_off_t get_content_length(request_rec * r)
     if (r->main == NULL) {
         const char *clp = apr_table_get(r->headers_in, "Content-Length");
 
-        if (clp) {
-            char *errp;
-            if (apr_strtoff(&len, clp, &errp, 10) || *errp || len < 0) {
-                len = 0; /* parse error */
-            }
+        if (clp && !ap_parse_strict_length(&len, clp)) {
+            len = -1; /* parse error */
         }
     }
 
@@ -253,10 +250,14 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     } else {
         /* Get client provided Content-Length header */
         content_length = get_content_length(r);
-        status = ap_get_brigade(r->input_filters, input_brigade,
-                                AP_MODE_READBYTES, APR_BLOCK_READ,
-                                maxsize - AJP_HEADER_SZ);
-
+        if (content_length < 0) {
+            status = APR_EINVAL;
+        }
+        else {
+            status = ap_get_brigade(r->input_filters, input_brigade,
+                                    AP_MODE_READBYTES, APR_BLOCK_READ,
+                                    maxsize - AJP_HEADER_SZ);
+        }
         if (status != APR_SUCCESS) {
             /* We had a failure: Close connection to backend */
             conn->close = 1;

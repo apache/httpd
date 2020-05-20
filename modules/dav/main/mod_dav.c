@@ -814,7 +814,6 @@ static int dav_parse_range(request_rec *r,
     char *range;
     char *dash;
     char *slash;
-    char *errp;
 
     range_c = apr_table_get(r->headers_in, "content-range");
     if (range_c == NULL)
@@ -831,20 +830,19 @@ static int dav_parse_range(request_rec *r,
     *dash++ = *slash++ = '\0';
 
     /* detect invalid ranges */
-    if (apr_strtoff(range_start, range + 6, &errp, 10)
-        || *errp || *range_start < 0) {
+    if (!ap_parse_strict_length(range_start, range + 6)) {
         return -1;
     }
-    if (apr_strtoff(range_end, dash, &errp, 10)
-        || *errp || *range_end < 0 || *range_end < *range_start) {
+    if (!ap_parse_strict_length(range_end, dash)
+            || *range_end < *range_start) {
         return -1;
     }
 
     if (*slash != '*') {
         apr_off_t dummy;
 
-        if (apr_strtoff(&dummy, slash, &errp, 10)
-            || *errp || dummy <= *range_end) {
+        if (!ap_parse_strict_length(&dummy, slash)
+                || dummy <= *range_end) {
             return -1;
         }
     }
@@ -2538,20 +2536,13 @@ static int process_mkcol_body(request_rec *r)
         r->read_chunked = 1;
     }
     else if (lenp) {
-        const char *pos = lenp;
-
-        while (apr_isdigit(*pos) || apr_isspace(*pos)) {
-            ++pos;
-        }
-
-        if (*pos != '\0') {
+        if (!ap_parse_strict_length(&r->remaining, lenp)) {
+            r->remaining = 0;
             /* This supplies additional information for the default message. */
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00590)
                           "Invalid Content-Length %s", lenp);
             return HTTP_BAD_REQUEST;
         }
-
-        r->remaining = apr_atoi64(lenp);
     }
 
     if (r->read_chunked || r->remaining > 0) {

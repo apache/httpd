@@ -137,7 +137,6 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
     *indexes = apr_array_make(r->pool, ranges, sizeof(indexes_t));
     while ((cur = ap_getword(r->pool, &range, ','))) {
         char *dash;
-        char *errp;
         apr_off_t number, start, end;
 
         if (!*cur)
@@ -154,7 +153,7 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
 
         if (dash == cur) {
             /* In the form "-5" */
-            if (apr_strtoff(&number, dash+1, &errp, 10) || *errp) {
+            if (!ap_parse_strict_length(&number, dash+1)) {
                 return 0;
             }
             if (number < 1) {
@@ -165,12 +164,12 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
         }
         else {
             *dash++ = '\0';
-            if (apr_strtoff(&number, cur, &errp, 10) || *errp) {
+            if (!ap_parse_strict_length(&number, cur)) {
                 return 0;
             }
             start = number;
             if (*dash) {
-                if (apr_strtoff(&number, dash, &errp, 10) || *errp) {
+                if (!ap_parse_strict_length(&number, dash)) {
                     return 0;
                 }
                 end = number;

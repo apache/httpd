@@ -121,18 +121,16 @@ void apreq_filter_init_context(ap_filter_t *f)
     }
 
     cl_header = apr_table_get(r->headers_in, "Content-Length");
-
     if (cl_header != NULL) {
-        char *dummy;
-        apr_uint64_t content_length = apr_strtoi64(cl_header, &dummy, 10);
+        apr_off_t cl;
 
-        if (dummy == NULL || *dummy != 0) {
+        if (!ap_parse_strict_length(&cl, cl_header)) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_EGENERAL, r, APLOGNO(02045)
                           "Invalid Content-Length header (%s)", cl_header);
             ctx->body_status = APREQ_ERROR_BADHEADER;
             return;
         }
-        else if (content_length > ctx->read_limit) {
+        if ((apr_uint64_t)cl > ctx->read_limit) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_EGENERAL, r, APLOGNO(02046)
                           "Content-Length header (%s) exceeds configured "
                           "max_body limit (%" APR_UINT64_T_FMT ")",

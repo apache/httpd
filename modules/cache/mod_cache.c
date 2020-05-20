@@ -1229,6 +1229,16 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         return APR_SUCCESS;
     }
 
+    /* Set the content length if known.
+     */
+    cl = apr_table_get(r->err_headers_out, "Content-Length");
+    if (cl == NULL) {
+        cl = apr_table_get(r->headers_out, "Content-Length");
+    }
+    if (cl && !ap_parse_strict_length(&size, cl)) {
+        reason = "invalid content length";
+    }
+
     if (reason) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00768)
                 "cache: %s not cached for request %s. Reason: %s",
@@ -1250,19 +1260,6 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
     /* Make it so that we don't execute this path again. */
     cache->in_checked = 1;
-
-    /* Set the content length if known.
-     */
-    cl = apr_table_get(r->err_headers_out, "Content-Length");
-    if (cl == NULL) {
-        cl = apr_table_get(r->headers_out, "Content-Length");
-    }
-    if (cl) {
-        char *errp;
-        if (apr_strtoff(&size, cl, &errp, 10) || *errp || size < 0) {
-            cl = NULL; /* parse error, see next 'if' block */
-        }
-    }
 
     if (!cl) {
         /* if we don't get the content-length, see if we have all the

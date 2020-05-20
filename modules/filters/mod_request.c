@@ -76,7 +76,6 @@ static apr_status_t keep_body_filter(ap_filter_t *f, apr_bucket_brigade *b,
 
     if (!ctx) {
         const char *lenp;
-        char *endstr = NULL;
         request_dir_conf *dconf = ap_get_module_config(f->r->per_dir_config,
                                                        &request_module);
 
@@ -93,13 +92,12 @@ static apr_status_t keep_body_filter(ap_filter_t *f, apr_bucket_brigade *b,
         if (lenp) {
 
             /* Protects against over/underflow, non-digit chars in the
-             * string (excluding leading space) (the endstr checks)
-             * and a negative number. */
-            if (apr_strtoff(&ctx->remaining, lenp, &endstr, 10)
-                || endstr == lenp || *endstr || ctx->remaining < 0) {
-
+             * string, leading plus/minus signs, trailing characters and
+             * a negative number.
+             */
+            if (!ap_parse_strict_length(&ctx->remaining, lenp)) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, f->r, APLOGNO(01411)
-                              "Invalid Content-Length");
+                              "Invalid Content-Length '%s'", lenp);
 
                 ap_remove_input_filter(f);
                 return bail_out_on_error(b, f, HTTP_REQUEST_ENTITY_TOO_LARGE);

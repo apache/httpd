@@ -2177,6 +2177,15 @@ AP_DECLARE(char *) ap_append_pid(apr_pool_t *p, const char *string,
                                  const char *delim);
 
 /**
+ * Parse a length string with decimal characters only, no leading sign nor
+ * trailing character, like Content-Length or (Content-)Range headers.
+ * @param len The parsed length (apr_off_t)
+ * @param str The string to parse
+ * @return 1 (success), 0 (failure)
+ */
+AP_DECLARE(int) ap_parse_strict_length(apr_off_t *len, const char *str);
+
+/**
  * Parse a given timeout parameter string into an apr_interval_time_t value.
  * The unit of the time interval is given as postfix string to the numeric
  * string. Currently the following units are understood (case insensitive):
