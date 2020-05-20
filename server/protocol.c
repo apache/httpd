@@ -1493,7 +1493,7 @@ request_rec *ap_read_request(conn_rec *conn)
     apply_server_config(r);
 
     if (!r->assbackwards) {
-        const char *tenc;
+        const char *tenc, *clen;
 
         ap_get_mime_headers_core(r, tmp_bb);
         apr_brigade_cleanup(tmp_bb);
@@ -1527,6 +1527,17 @@ request_rec *ap_read_request(conn_rec *conn)
              * MUST remove the received Content-Length field".
              */
             apr_table_unset(r->headers_in, "Content-Length");
+        }
+        else if ((clen = apr_table_get(r->headers_in, "Content-Length"))) {
+            apr_off_t cl;
+
+            if (!ap_parse_strict_length(&cl, clen)) {
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(10242)
+                              "client sent invalid Content-Length "
+                              "(%s): %s", clen, r->uri);
+                access_status = HTTP_BAD_REQUEST;
+                goto die_unusable_input;
+            }
         }
     }
 
