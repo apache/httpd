@@ -64,7 +64,6 @@ typedef struct h2_proxy_ctx {
     int capacity;
     
     unsigned is_ssl : 1;
-    unsigned flushall : 1;
     
     request_rec *r;            /* the request processed in this ctx */
     apr_status_t r_status;     /* status of request work */
@@ -337,7 +336,6 @@ static int proxy_http2_handler(request_rec *r,
     ctx->is_ssl = is_ssl;
     ctx->worker = worker;
     ctx->conf = conf;
-    ctx->flushall = apr_table_get(r->subprocess_env, "proxy-flushall")? 1 : 0;
     ctx->req_buffer_size = (32*1024);
     ctx->r = r;
     ctx->r_status = status = HTTP_SERVICE_UNAVAILABLE;
