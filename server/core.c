@@ -4950,7 +4950,6 @@ AP_INIT_FLAG("MergeSlashes", set_core_server_flag,
              (void *)APR_OFFSETOF(core_server_config, merge_slashes),  
              RSRC_CONF,
              "Controls whether consecutive slashes in the URI path are merged"),
-
 { NULL }
 };
 
