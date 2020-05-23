@@ -347,7 +347,7 @@ _trymd:
 
 _trymd:
 	@echo -----
-	@echo mod_md not build unless OpenSSL, Jansson and Curl are built in placed
+	@echo mod_md will not build unless OpenSSL, Jansson and Curl are built and placed
 	@echo in srclib. Example: srclib/openssl, srclib/jansson and srclib/curl
 
 !ENDIF
