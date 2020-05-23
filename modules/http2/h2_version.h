@@ -37,5 +37,4 @@
  */
 #define MOD_HTTP2_VERSION_NUM 0x010f08
 
-
 #endif /* mod_h2_h2_version_h */
