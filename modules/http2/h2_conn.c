@@ -314,8 +314,8 @@ conn_rec *h2_slave_create(conn_rec *master, int slave_id, apr_pool_t *parent)
 #endif
     c->bucket_alloc           = apr_bucket_alloc_create(pool);
 #if !AP_MODULE_MAGIC_AT_LEAST(20180720, 1)
-     c->data_in_input_filters  = 0;
-     c->data_in_output_filters = 0;
+    c->data_in_input_filters  = 0;
+    c->data_in_output_filters = 0;
 #endif
     /* prevent mpm_event from making wrong assumptions about this connection,
      * like e.g. using its socket for an async read check. */
