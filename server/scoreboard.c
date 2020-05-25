@@ -381,7 +381,7 @@ AP_DECLARE(void) ap_increment_counts(ap_sb_handle_t *sb, request_rec *r)
     if (pfn_ap_logio_get_last_bytes != NULL) {
         bytes = pfn_ap_logio_get_last_bytes(r->connection);
     }
-    else if (r->method_number == M_GET && r->method[0] == 'H') {
+    else if (r->method_number == M_GET && r->method && r->method[0] == 'H') {
         bytes = 0;
     }
     else {
