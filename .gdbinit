@@ -157,7 +157,7 @@ define dump_bucket_ex
         set $fd = ((apr_bucket_file*)$bucket->data)->fd->filedes
         print_bkt_datacol "contents" "[***file***] fd=%-6ld" (long)$fd $sh
         set $refcount = ((apr_bucket_refcount *)$bucket->data)->refcount
-        print_bkt_datacol "rc" "%d" $refcount $sh
+        print_bkt_datacol "rc" "%-3d" $refcount $sh
 
     else
     if (($bucket->type == &apr_bucket_type_heap)      || \
@@ -219,7 +219,7 @@ define dump_bucket_ex
         end
 
         if $refcount != -1
-            print_bkt_datacol "rc" "%d" $refcount $sh
+            print_bkt_datacol "rc" "%-3d" $refcount $sh
         else
             print_bkt_datacol "rc" "n/%c" 'a' $sh
         end
@@ -228,25 +228,25 @@ define dump_bucket_ex
         if ($bucket->type == &apr_bucket_type_pipe)
 
             # pipe bucket, can show fd
-            set $fd = ((apr_file_t*)$bucket->data)->filedes;
-            print_bkt_datacol "contents" "[***pipe***] fd=%-6ld" (long)$fd $sh
+            set $fd = ((apr_file_t*)$bucket->data)->filedes
+            print_bkt_datacol "contents" "[***pipe***] fd=%-3ld" (long)$fd $sh
 
         else
         if ($bucket->type == &apr_bucket_type_socket)
 
             # file bucket, can show fd
-            set $fd = ((apr_socket_t*)$bucket->data)->socketdes;
-            print_bkt_datacol "contents" "[**socket**] fd=%-6ld" (long)$fd $sh
+            set $fd = ((apr_socket_t*)$bucket->data)->socketdes
+            print_bkt_datacol "contents" "[**socket**] fd=%-3ld" (long)$fd $sh
 
         else
 
             # 3rd-party bucket type
-            print_bkt_datacol "contents" "[**opaque**]%-10c" ' ' $sh
+            print_bkt_datacol "contents" "[**opaque**]%-7c" ' ' $sh
         end
         end
 
         # no refcount
-        printf "         "
+        printf "   "
         print_bkt_datacol "rc" "n/%c" 'a' $sh
     end
     end
@@ -273,7 +273,7 @@ define dump_brigade
 
     printf "   | type     (address)      | length | "
     printf "data address | contents               | rc\n"
-    printf "------------------------------------------"
+    printf "-------------------------------------------"
     printf "----------------------------------------\n"
 
     if $bucket == $sentinel
