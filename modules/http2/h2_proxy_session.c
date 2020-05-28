@@ -902,7 +902,7 @@ static apr_status_t h2_proxy_session_read(h2_proxy_session *session, int block,
         apr_socket_t *socket = NULL;
         apr_time_t save_timeout = -1;
         
-        if (block) {
+        if (block && timeout > 0) {
             socket = ap_get_conn_socket(session->c);
             if (socket) {
                 apr_socket_timeout_get(socket, &save_timeout);
@@ -972,6 +972,14 @@ static void stream_resume(h2_proxy_stream *stream)
     h2_proxy_iq_remove(session->suspended, stream->id);
     nghttp2_session_resume_data(session->ngh2, stream->id);
     dispatch_event(session, H2_PROXYS_EV_STREAM_RESUMED, 0, NULL);
+}
+
+static int is_waiting_for_backend(h2_proxy_session *session)
+{
+    return (session->check_ping 
+            || ((session->suspended->nelts <= 0)
+                && !nghttp2_session_want_write(session->ngh2)
+                && nghttp2_session_want_read(session->ngh2)));
 }
 
 static apr_status_t check_suspended(h2_proxy_session *session)
@@ -1428,7 +1436,22 @@ run_loop:
             break;
             
         case H2_PROXYS_ST_WAIT:
-            if (check_suspended(session) == APR_EAGAIN) {
+            if (is_waiting_for_backend(session)) {
+                /* we can do a blocking read with the default timeout (as
+                 * configured via ProxyTimeout in our socket. There is
+                 * nothing we want to send or check until we get more data
+                 * from the backend. */
+                status = h2_proxy_session_read(session, 1, 0);
+                if (status == APR_SUCCESS) {
+                    have_read = 1;
+                    dispatch_event(session, H2_PROXYS_EV_DATA_READ, 0, NULL);
+                }
+                else {
+                    dispatch_event(session, H2_PROXYS_EV_CONN_ERROR, status, NULL);
+                    return status;
+                }
+            }
+            else if (check_suspended(session) == APR_EAGAIN) {
                 /* no stream has become resumed. Do a blocking read with
                  * ever increasing timeouts... */
                 if (session->wait_timeout < 25) {
