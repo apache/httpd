@@ -539,7 +539,7 @@ class DumpPoolAndChilds (gdb.Command):
     while c:
         c_num = c_num + 1
         dc = c.dereference()
-        print("%s  pre_cleanup #%.2i: data = %s, plain_cleanup_fn = %s, child_cleanup_fn = %s" % (indent, c_num, dc['data'], dc['plain_cleanup_fn'].dereference(), dc['child_cleanup_fn'].dereference()))
+        print("%s  pre_cleanup #%.2i: data = %s, plain_cleanup_fn = %s" % (indent, c_num, dc['data'], dc['plain_cleanup_fn'].dereference()))
         c = dc['next']
     c = darg['cleanups']
     while c:
