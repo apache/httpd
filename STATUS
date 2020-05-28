@@ -214,6 +214,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  One is a doc file in r1734835 that has already been merged and the
                  other one is 'next-number' in r1876823.
  
+  *) mod_proxy_http2: respect ProxyTimeout settings on backend connections
+     while waiting on incoming data.
+     trunk patch:
+          http://svn.apache.org/r1878233
+     2.4.x patch: svn merge -c 1878233 ^/httpd/httpd/trunk . 
+     +1: icing 
+ 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
