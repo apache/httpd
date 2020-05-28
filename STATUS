@@ -150,6 +150,12 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1877783 ^/httpd/httpd/trunk .
      +1: icing, steffenal, rpluem
 
+  *) mod_ssl: Fix memory leak in stapling code. PR63687.
+     trunk patch:
+       - http://svn.apache.org/r1876548
+     2.4.x patch: svn merge -c 1876548 ^/httpd/httpd/trunk .
+     +1: gbechis, jorton, icing
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -171,12 +177,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              reworked, etc.. I would like to avoid a patch that is clearly wrong for some reviewer sitting here for
              months/years without any action item :)
      ylavic: will look at it ASAP..
-
-  *) mod_ssl: Fix memory leak in stapling code. PR63687.
-     trunk patch:
-       - http://svn.apache.org/r1876548
-     2.4.x patch: svn merge -c 1876548 ^/httpd/httpd/trunk .
-     +1: gbechis, jorton
 
   *) mod_proxy_fcgi: Don't unset when condition is false. PR64365
      trunk patch: 
