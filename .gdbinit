@@ -510,10 +510,11 @@ class DumpPoolAndChilds (gdb.Command):
     return kb
 
 
-  def _dump_one_pool(self, arg, indent):
+  def _dump_one_pool(self, arg, depth):
     size = 0
     free = 0
     nodes = 0
+    indent = depth * 4 + 1
     darg = arg.dereference()
     active = darg['active']
     node = active
@@ -530,29 +531,39 @@ class DumpPoolAndChilds (gdb.Command):
       tag = darg['tag'].string()
     else:
       tag = "No tag"
-    print("%sPool '%s' [%s]: %d/%d free (%d blocks) allocator: %s free blocks in allocator: %i kiB" % (indent, tag, arg, free, size, nodes, darg['allocator'], self._allocator_free_blocks(darg['allocator'])))
+    print("%*cPool '%s' [%s]: %d/%d free (%d blocks) allocator: %s free blocks in allocator: %i kiB" % \
+          (indent, ' ', tag, arg, free, size, nodes, darg['allocator'], \
+           self._allocator_free_blocks(darg['allocator'])))
     self.free = self.free + free
     self.size = self.size + size
     self.nodes = self.nodes + nodes
     c_num = 0
     c = darg['pre_cleanups']
+    if c:
+        print("%*cCleanups (pre):" % (indent + 1, ' '))
     while c:
         c_num = c_num + 1
         dc = c.dereference()
-        print("%s  pre_cleanup #%.2i: data = %s, plain_cleanup_fn = %s" % (indent, c_num, dc['data'], dc['plain_cleanup_fn'].dereference()))
+        print("%*c%.3i: data = %s, plain_cleanup = %s" % \
+              (indent + 2, ' ', c_num, \
+               dc['data'], dc['plain_cleanup_fn'].dereference()))
         c = dc['next']
     c = darg['cleanups']
+    if c:
+        print("%*cCleanups (post):" % (indent + 1, ' '))
     while c:
         c_num = c_num + 1
         dc = c.dereference()
-        print("%s  pst_cleanup #%.2i: data = %s, plain_cleanup_fn = %s, child_cleanup_fn = %s" % (indent, c_num, dc['data'], dc['plain_cleanup_fn'].dereference(), dc['child_cleanup_fn'].dereference()))
+        print("%*c%.3i: data = %s, plain_cleanup = %s, child_cleanup = %s" % \
+              (indent + 2, ' ', c_num, \
+               dc['data'], dc['plain_cleanup_fn'].dereference(), \
+               dc['child_cleanup_fn'].dereference()))
         c = dc['next']
 
   def _dump(self, arg, depth):
     pool = arg
-    indent = "%*c" % (depth * 4 + 1, " ")
     while pool:
-        self._dump_one_pool(pool, indent)
+        self._dump_one_pool(pool, depth)
         if pool['child'] != 0:
             self._dump(pool['child'], depth + 1)
         pool = pool['sibling']
