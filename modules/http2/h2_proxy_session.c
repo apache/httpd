@@ -1399,6 +1399,7 @@ apr_status_t h2_proxy_session_process(h2_proxy_session *session)
 {
     apr_status_t status;
     int have_written = 0, have_read = 0;
+    apr_interval_time_t timeout;
 
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c, 
                   "h2_proxy_session(%s): process", session->id);
@@ -1437,11 +1438,25 @@ run_loop:
             
         case H2_PROXYS_ST_WAIT:
             if (is_waiting_for_backend(session)) {
-                /* we can do a blocking read with the default timeout (as
-                 * configured via ProxyTimeout in our socket. There is
-                 * nothing we want to send or check until we get more data
-                 * from the backend. */
-                status = h2_proxy_session_read(session, 1, 0);
+                /*
+                 * We can do a blocking read. There is nothing we want to
+                 * send or check until we get more data from the backend.
+                 * The timeout used is either the one currently on the socket
+                 * as indicated by a passed value of 0 or the ping timeout
+                 * set via the ping parameter on the worker if set and if
+                 * we are waiting for a ping.
+                 * The timeout on the socket is configured via
+                 * Timeout -> ProxyTimeout -> timeout parameter on the used
+                 * worker with the later ones taking precedence.
+                 */
+                if (session->check_ping
+                    && session->p_conn->worker->s->ping_timeout_set) {
+                    timeout = session->p_conn->worker->s->ping_timeout;
+                }
+                else {
+                    timeout = 0;
+                }
+                status = h2_proxy_session_read(session, 1, timeout);
                 if (status == APR_SUCCESS) {
                     have_read = 1;
                     dispatch_event(session, H2_PROXYS_EV_DATA_READ, 0, NULL);
