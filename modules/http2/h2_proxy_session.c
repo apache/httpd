@@ -902,7 +902,7 @@ static apr_status_t h2_proxy_session_read(h2_proxy_session *session, int block,
         apr_socket_t *socket = NULL;
         apr_time_t save_timeout = -1;
         
-        if (block) {
+        if (block && timeout > 0) {
             socket = ap_get_conn_socket(session->c);
             if (socket) {
                 apr_socket_timeout_get(socket, &save_timeout);
@@ -972,6 +972,14 @@ static void stream_resume(h2_proxy_stream *stream)
     h2_proxy_iq_remove(session->suspended, stream->id);
     nghttp2_session_resume_data(session->ngh2, stream->id);
     dispatch_event(session, H2_PROXYS_EV_STREAM_RESUMED, 0, NULL);
+}
+
+static int is_waiting_for_backend(h2_proxy_session *session)
+{
+    return (session->check_ping 
+            || ((session->suspended->nelts <= 0)
+                && !nghttp2_session_want_write(session->ngh2)
+                && nghttp2_session_want_read(session->ngh2)));
 }
 
 static apr_status_t check_suspended(h2_proxy_session *session)
@@ -1391,6 +1399,7 @@ apr_status_t h2_proxy_session_process(h2_proxy_session *session)
 {
     apr_status_t status;
     int have_written = 0, have_read = 0;
+    apr_interval_time_t timeout;
 
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c, 
                   "h2_proxy_session(%s): process", session->id);
@@ -1428,7 +1437,36 @@ run_loop:
             break;
             
         case H2_PROXYS_ST_WAIT:
-            if (check_suspended(session) == APR_EAGAIN) {
+            if (is_waiting_for_backend(session)) {
+                /*
+                 * We can do a blocking read. There is nothing we want to
+                 * send or check until we get more data from the backend.
+                 * The timeout used is either the one currently on the socket
+                 * as indicated by a passed value of 0 or the ping timeout
+                 * set via the ping parameter on the worker if set and if
+                 * we are waiting for a ping.
+                 * The timeout on the socket is configured via
+                 * Timeout -> ProxyTimeout -> timeout parameter on the used
+                 * worker with the later ones taking precedence.
+                 */
+                if (session->check_ping
+                    && session->p_conn->worker->s->ping_timeout_set) {
+                    timeout = session->p_conn->worker->s->ping_timeout;
+                }
+                else {
+                    timeout = 0;
+                }
+                status = h2_proxy_session_read(session, 1, timeout);
+                if (status == APR_SUCCESS) {
+                    have_read = 1;
+                    dispatch_event(session, H2_PROXYS_EV_DATA_READ, 0, NULL);
+                }
+                else {
+                    dispatch_event(session, H2_PROXYS_EV_CONN_ERROR, status, NULL);
+                    return status;
+                }
+            }
+            else if (check_suspended(session) == APR_EAGAIN) {
                 /* no stream has become resumed. Do a blocking read with
                  * ever increasing timeouts... */
                 if (session->wait_timeout < 25) {
