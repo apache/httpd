@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_proxy_http: flush spooled request body in one go to avoid
+     leaking (or long lived) temporary file. PR 64452. [Yann Ylavic]
+
   *) mod_proxy_http2: respect ProxyTimeout settings on backend connections
      while waiting on incoming data. [Ruediger Pluem, Stefan Eissing]
 
