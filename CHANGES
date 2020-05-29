@@ -1,9 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
-  *) mod_proxy_http2: respect ProxyTimeout settings on backend connections
-     while waiting on incoming data. [Ruediger Pluem, Stefan Eissing]
-
   *) mod_proxy_fcgi: ProxyFCGISetEnvIf unsets variables when expression
      evaluates to false.  PR64365. [Michael König <mail ikoenig.net>]
 
