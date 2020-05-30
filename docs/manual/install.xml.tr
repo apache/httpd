@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1824884:1869920 (outdated) -->
+<!-- English Revision: 1869920 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -43,7 +43,7 @@
       Kaynak Kodlu projenin yaptığı gibi <code>libtool</code> ve
       <code>autoconf</code> kullanır.</p>
 
-    <p>Eğer sadece sürüm yükseltiyorsanız (2.4.9’dan 2.4.10’a yükseltmek
+    <p>Eğer sadece sürüm yükseltiyorsanız (2.4.8’dwn 2.4.9’a yükseltmek
       gibi) lütfen doğrudan <a href="#upgrading">Yükseltme</a> bölümüne
       atlayınız.</p>
 
