@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1745806:1875786 (outdated) -->
+<!-- English Revision: 1875786 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -33,6 +33,15 @@
 <identifier>userdir_module</identifier>
 
 <summary>
+<note type="warning">Bu modülü kullanarak, birden çok kullanıcının içeriği 
+aynı kaynaktan almasına izin verirsiniz. Aynı kaynak politikası Javascript 
+ve http güvenliğinin temelidir. Http sayfalarının aynı kaynaktan alınması
+nedeniyle bu sayfalar birbirini okuyabilir, denetleyebilir ve bir sayfadaki
+güvenlik sorunları başka bir sayfayı etkileyebilir. Bu, özellikle özdevinimli
+içerik ve kimlik doğrulaması içeren https sayfalarıyla birlikte ve 
+kullanıcılarınızın birbirlerine güvenmeleri gerekmediğinde tehlikelidir.
+</note>
+
 <p>Bu modül kullanıcılara özel dizinlere
   <code>http://example.com/~kullanıcı/</code> sözdizimi kullanılarak
   erişilebilmesini mümkün kılar.</p>

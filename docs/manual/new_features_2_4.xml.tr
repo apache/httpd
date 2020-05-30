@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
-<!-- English Revision: 1855817:1877395 (outdated) -->
+<!-- English Revision: 1877395 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -207,6 +207,11 @@
       <dd><a href="http://redis.io/">Redis</a> tabanlı paylaşımlı nesne arabelleği 
         sağlayıcı için destek.</dd>
       
+      <dt><module>mod_systemd</module> (2.4.42'den itibaren
+        kullanılabilir)</dt>
+      <dd>systemd bütünleştirmesi. Httpd'nin systemd <code>Type=notify</code> 
+        ile bir hizmette kullanılmasına izin verir.</dd>
+
     </dl>
   </section>
 
@@ -296,7 +301,7 @@
       <dd>Başlıkların ortam değişkenlerine dönüşümü, başlık zerki yoluyla bazı
         olası karşı-site-betik saldırılarının hafifletilmesinden önce daha
         hızlı ve doğru yapılmaktadır. Geçersiz karakterler (altçizgiler dahil)
-        içeren başlıklar artık sessizce bırakılmaktadır.<a
+        içeren başlık isimleri artık sessizce bırakılmaktadır.<a
         href="env.html">Apache'deki Ortam değişkenleri</a>, böyle başlıkları
         gerektiren bozulmuş meşru istemcilerin çevresinden dolanabilen
         göstericilere sahiptir. (Bu durum, bu değişkenleri kullanan tüm

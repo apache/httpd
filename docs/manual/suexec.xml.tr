@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1334033:1874169 (outdated) -->
+<!-- English Revision: 1874169 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -512,18 +512,14 @@ Group webgroup
 <section id="jabberwock">
     <title>Uyarılar ve Örnekler</title>
 
-    <p><strong>UYARI!</strong> Bu bölüm henüz bitmedi. Bu bölümün son hali
-      için <a
-      href="http://httpd.apache.org/docs/&httpd.docs;/suexec.html">çevrimiçi
-      belgelere</a> bakınız.</p>
+    <p><strong>UYARI!</strong> Bu bölüm henüz bitmedi.</p>
 
     <p>SuEXEC çalıştırıcısından dolayı sunucu ayarlarına bazı sınırlamalar
       getiren bir kaç önemli nokta mevcuttur. SuEXEC ile ilgili hata
       bildiriminde bulunmadan önce bunlara bir göz atmalısınız.</p>
 
+    <p><strong>suEXEC ile ilgili önemli noktalar</strong></p>  
     <ul>
-      <li><strong>suEXEC ile ilgili önemli noktalar</strong></li>
-
       <li>Hiyerarşik sınırlamalar
 
         <p class="indent">Güvenlik ve verimlilik adına, tüm suEXEC

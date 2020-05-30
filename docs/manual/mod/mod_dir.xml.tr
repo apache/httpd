@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1755988:1872258 (outdated) -->
+<!-- English Revision: 1872258 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -280,8 +280,16 @@ FallbackResource /index.php
 &lt;Directory "/web/example.com/htdocs/blog"&gt;
   FallbackResource /blog/index.php
 &lt;/Directory&gt;
+&lt;Directory "/web/example.com/htdocs/blog/images"&gt;
+  FallbackResource disabled
+&lt;/Directory&gt;
     </highlight>
 
+    <p>Bir acil durum işleyicisi (yukarıdaki durumda,
+     <code>/blog/index.php</code>) özgün istek URL'sine sunucu değişkeni
+     <code>REQUEST_URI</code> üzerinden erişebilir. Örneğin PHP'de bu 
+     değişkene erişmek için <code>$_SERVER['REQUEST_URI']</code>
+     kullanılır.</p>
 </usage>
 </directivesynopsis>
 <directivesynopsis>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1673563:1869063 (outdated) -->
+<!-- English Revision: 1869063 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -394,7 +394,9 @@
       durumla karşılaşırız. Sunucu yapılandırma dosyanızda aşağıdaki satırın
       mutlaka bulunmasını öneririz:</p>
 
-    <highlight language="config">UserDir disabled root</highlight>
+    <highlight language="config">
+UserDir disabled root
+    </highlight>
 
   </section>
 
@@ -452,7 +454,7 @@
       durumlarda yönergelere bağlıdır. Yönergeleri bir araya getirirken
       aralarındaki bağımlılıkları daima sınayın.</p>
 
-    <p><directive>mod_access_compat</directive> gibi henüz yönerge katıştırma
+    <p><module>mod_access_compat</module> gibi henüz yönerge katıştırma
       mantığını gerçeklememiş modüller için sonraki bölümlerdeki davranış, bu
       modüllerin yönergelerini içerip içermemesine bağlıdır. Yapılandırmada
       yönergelerin <em>yerleri değiştirildiğinde</em> fakat bir katıştırma

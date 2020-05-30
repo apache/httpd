@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1838946:1869920 (outdated) -->
+<!-- English Revision: 1869920 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -319,7 +319,7 @@ ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofail
 
 <highlight language="config">
 &lt;DirectoryMatch "^/var/www/combined/(?&lt;SITENAME&gt;[^/]+)"&gt;
-    require ldap-group "cn=%{env:MATCH_SITENAME},ou=combined,o=Example"
+    Require ldap-group "cn=%{env:MATCH_SITENAME},ou=combined,o=Example"
 &lt;/DirectoryMatch&gt;
 </highlight>
   </section>

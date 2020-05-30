@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1864213:1868823 (outdated) -->
+<!-- English Revision: 1868823 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -4236,8 +4236,8 @@ RegexDefaultOptions none
       içinde çökertmek için iyi bir yoldur.</p>
     </note>
 
-    <p><code>Registry-Strict</code> seçeneği Apache HTTP Sunucusunun 2.0
-      sürümünde yeni olup <code>Registry</code> seçeneğinin yaptığını
+    <p><code>Registry-Strict</code> seçeneği <code>Registry</code> 
+      seçeneğinin yaptığını
       <code>Shell\ExecCGI\Command</code> yolu için yapar. <code>ExecCGI</code>
       sistem tarafından bilinen bir anahtar olmadığından Windows Siciline elle
       kaydedilmesi gerekir ve dolayısıyla sisteminiz üzerinde istenmeyen
@@ -4512,14 +4512,14 @@ ServerRoot "/home/httpd"
       aslında hangi sunucu tarafından üretildiğini kullanıcıya bildirmektir.</p>
 
     <p><code>Off</code> değeri öntanımlı değer olup dipnot satırının
-      gösterilmemesini sağlar (Apache-1.2 ve öncesi ile uyumluluk).
+      gösterilmemesini sağlar.
       <code>On</code> değeri, sunucu sürüm numarası ve hizmeti sunan sanal
       konağın isminden (<directive module="core">ServerName</directive>) oluşan
       bir dipnot satırı oluşturulmasını sağlar; <code>EMail</code> değeri bu
       ikisine ek olarak satıra <directive module="core">ServerAdmin</directive>
       ile belirtilen adres için bir "mailto:" bağı ekler.</p>
 
-    <p>2.0.44 sürümünden beri sunucu sürüm numarasının ayrıntıları <directive
+    <p>Sunucu sürüm numarasının ayrıntıları <directive
       module="core">ServerTokens</directive> yönergesi ile belirlenmektedir.</p>
 </usage>
 <seealso><directive module="core">ServerTokens</directive></seealso>
@@ -4568,9 +4568,8 @@ ServerRoot "/home/httpd"
     <p>Bu ayarlama sunucunun tamamını etkiler ve her sanal konak için
       farklılaştırılamaz.</p>
 
-    <p>2.0.44 sürümünden itibaren bu yönerge <directive
-      module="core">ServerSignature</directive> yönergesi tarafından sunulan
-      bilgiyi de etkilemektedir.</p>
+    <p>Bu yönerge <directive module="core">ServerSignature</directive> 
+      yönergesi tarafından sunulan bilgiyi de etkilemektedir.</p>
 
     <note><directive>ServerTokens</directive> yönergesinde
     <code>minimal</code>'den azının belirtilmesi önerilmez. Bunun sebebi ara
@@ -5052,21 +5051,21 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</description>
 <name>QualifyRedirectURL</name>
 <description>REDIRECT_URL ortam değişkeninin tamamen nitelenmiş olup
 olmayacağını denetler</description>
-<syntax>QualifyRedirectURL ON|OFF</syntax>
-<default>QualifyRedirectURL OFF</default>
+<syntax>QualifyRedirectURL On|Off</syntax>
+<default>QualifyRedirectURL Off</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
 <override>FileInfo</override>
 <compatibility>Yönerge 2.4.18 ve sonrasında desteklenmektedir. 2.4.17
-sürümünde 'QualifyRedirectURL ON' yapılandırması mevcutmuş gibi
+sürümünde 'QualifyRedirectURL On' yapılandırması mevcutmuş gibi
 davranılır.</compatibility>
 
 <usage>
     <p>Bu yönerge sunucuya REDIRECT_URL ortam değişkenin tamamen nitelenmiş
       olacağını temin eder. Değişken öntanımlı olarak istemci tarafından talep
       edilen URL'yi harfi harfine içerir, "/index.html" gibi.
-      <directive module="core">QualifyRedirectURL ON</directive> belirtilseydi
+      <directive module="core">QualifyRedirectURL On</directive> belirtilseydi
       aynı istek "http://www.example.com/index.html" gibi bir değerle
       sonuçlanırdı.</p>
 

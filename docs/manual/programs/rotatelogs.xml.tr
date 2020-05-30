@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1828738:1877709 (outdated) -->
+<!-- English Revision: 1877709 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -62,9 +62,13 @@
     <dd>GMT yerine yerel zamanın kullanılmasını sağlar.</dd>
 
     <dt><code><strong>-L</strong></code> <var>bagismi</var></dt>
-    <dd>Belirtilen bağ dosyası ismine geçerli günlük dosyasından kalıcı bir bağ
+    <dd><p>Belirtilen bağ dosyası ismine geçerli günlük dosyasından kalıcı bir bağ
     oluşturulur. <code>tail -F bagismi</code> gibi bir komut kullanılarak
-    günlüğün sürekli izlenmesi için kullanılabilir.</dd>
+    günlüğün sürekli izlenmesi için kullanılabilir.</p>
+    <p>Bağ ismi mutlak bir yol içermiyorsa, <code>rotatelogs</code>'un çalışma 
+    dizinine, <code>rotatelogs</code> sunucu tarafından çalıştırılıyorsa 
+    <directive module="core">ServerRoot</directive> dizinine görelidir.</p>
+    </dd>
 
     <dt><code><strong>-p</strong></code> <var>program</var></dt>
 
@@ -137,6 +141,10 @@
       yeni bir günlük dosyasına başlanacaktır. Fakat 5 megabayta gün içinde iki
       kez ulaşılırsa aynı günlük dosyası üretilir ve günlük hep aynı dosyanın
       üzerine yazılır.</p>
+      <p>Günlük dosyası mutlak bir yol içermiyorsa, <code>rotatelogs</code>'un 
+      çalışma dizinine, <code>rotatelogs</code> sunucu tarafından 
+      çalıştırılıyorsa <directive module="core">ServerRoot</directive> 
+      dizinine görelidir.</p>
     </dd>
 
     <dt><code><var>süre</var></code></dt>
