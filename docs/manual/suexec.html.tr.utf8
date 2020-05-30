@@ -29,7 +29,6 @@
 <a href="./ko/suexec.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/suexec.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p><strong>SuEXEC</strong> özelliği, Apache HTTP Sunucusu kullanıcılarına
       <strong>CGI</strong> ve <strong>SSI</strong> programlarını sunucunun
@@ -511,17 +510,14 @@ Group webgroup</pre>
 <h2><a name="jabberwock" id="jabberwock">Uyarılar ve Örnekler</a></h2>
     
 
-    <p><strong>UYARI!</strong> Bu bölüm henüz bitmedi. Bu bölümün son hali
-      için <a href="http://httpd.apache.org/docs/2.4/suexec.html">çevrimiçi
-      belgelere</a> bakınız.</p>
+    <p><strong>UYARI!</strong> Bu bölüm henüz bitmedi.</p>
 
     <p>SuEXEC çalıştırıcısından dolayı sunucu ayarlarına bazı sınırlamalar
       getiren bir kaç önemli nokta mevcuttur. SuEXEC ile ilgili hata
       bildiriminde bulunmadan önce bunlara bir göz atmalısınız.</p>
 
+    <p><strong>suEXEC ile ilgili önemli noktalar</strong></p>  
     <ul>
-      <li><strong>suEXEC ile ilgili önemli noktalar</strong></li>
-
       <li>Hiyerarşik sınırlamalar
 
         <p class="indent">Güvenlik ve verimlilik adına, tüm suEXEC

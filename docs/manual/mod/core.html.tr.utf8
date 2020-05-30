@@ -33,7 +33,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Apache HTTP Sunucusunda daima mevcut olan çekirdek
  özellikler</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr></table>
@@ -4032,20 +4031,20 @@ Mutex fcntl:/var/httpd/locks mpm-accept</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>REDIRECT_URL ortam değişkeninin tamamen nitelenmiş olup
 olmayacağını denetler</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>QualifyRedirectURL ON|OFF</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>QualifyRedirectURL OFF</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>QualifyRedirectURL On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>QualifyRedirectURL Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Yönerge 2.4.18 ve sonrasında desteklenmektedir. 2.4.17
-sürümünde 'QualifyRedirectURL ON' yapılandırması mevcutmuş gibi
+sürümünde 'QualifyRedirectURL On' yapılandırması mevcutmuş gibi
 davranılır.</td></tr>
 </table>
     <p>Bu yönerge sunucuya REDIRECT_URL ortam değişkenin tamamen nitelenmiş
       olacağını temin eder. Değişken öntanımlı olarak istemci tarafından talep
       edilen URL'yi harfi harfine içerir, "/index.html" gibi.
-      <code class="directive"><a href="#qualifyredirecturl on">QualifyRedirectURL ON</a></code> belirtilseydi
+      <code class="directive"><a href="#qualifyredirecturl on">QualifyRedirectURL On</a></code> belirtilseydi
       aynı istek "http://www.example.com/index.html" gibi bir değerle
       sonuçlanırdı.</p>
 
@@ -4296,8 +4295,8 @@ RegexDefaultOptions none
       içinde çökertmek için iyi bir yoldur.</p>
     </div>
 
-    <p><code>Registry-Strict</code> seçeneği Apache HTTP Sunucusunun 2.0
-      sürümünde yeni olup <code>Registry</code> seçeneğinin yaptığını
+    <p><code>Registry-Strict</code> seçeneği <code>Registry</code> 
+      seçeneğinin yaptığını
       <code>Shell\ExecCGI\Command</code> yolu için yapar. <code>ExecCGI</code>
       sistem tarafından bilinen bir anahtar olmadığından Windows Siciline elle
       kaydedilmesi gerekir ve dolayısıyla sisteminiz üzerinde istenmeyen
@@ -4572,14 +4571,14 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
       aslında hangi sunucu tarafından üretildiğini kullanıcıya bildirmektir.</p>
 
     <p><code>Off</code> değeri öntanımlı değer olup dipnot satırının
-      gösterilmemesini sağlar (Apache-1.2 ve öncesi ile uyumluluk).
+      gösterilmemesini sağlar.
       <code>On</code> değeri, sunucu sürüm numarası ve hizmeti sunan sanal
       konağın isminden (<code class="directive"><a href="#servername">ServerName</a></code>) oluşan
       bir dipnot satırı oluşturulmasını sağlar; <code>EMail</code> değeri bu
       ikisine ek olarak satıra <code class="directive"><a href="#serveradmin">ServerAdmin</a></code>
       ile belirtilen adres için bir "mailto:" bağı ekler.</p>
 
-    <p>2.0.44 sürümünden beri sunucu sürüm numarasının ayrıntıları <code class="directive"><a href="#servertokens">ServerTokens</a></code> yönergesi ile belirlenmektedir.</p>
+    <p>Sunucu sürüm numarasının ayrıntıları <code class="directive"><a href="#servertokens">ServerTokens</a></code> yönergesi ile belirlenmektedir.</p>
 
 <h3>Ayrıca bakınız:</h3>
 <ul>
@@ -4631,8 +4630,8 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
     <p>Bu ayarlama sunucunun tamamını etkiler ve her sanal konak için
       farklılaştırılamaz.</p>
 
-    <p>2.0.44 sürümünden itibaren bu yönerge <code class="directive"><a href="#serversignature">ServerSignature</a></code> yönergesi tarafından sunulan
-      bilgiyi de etkilemektedir.</p>
+    <p>Bu yönerge <code class="directive"><a href="#serversignature">ServerSignature</a></code> 
+      yönergesi tarafından sunulan bilgiyi de etkilemektedir.</p>
 
     <div class="note"><code class="directive">ServerTokens</code> yönergesinde
     <code>minimal</code>'den azının belirtilmesi önerilmez. Bunun sebebi ara

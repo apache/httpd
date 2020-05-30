@@ -38,6 +38,15 @@
 <tr><th><a href="module-dict.html#SourceFile">Kaynak Dosyası:</a></th><td>mod_userdir.c</td></tr></table>
 <h3>Özet</h3>
 
+<div class="warning">Bu modülü kullanarak, birden çok kullanıcının içeriği 
+aynı kaynaktan almasına izin verirsiniz. Aynı kaynak politikası Javascript 
+ve http güvenliğinin temelidir. Http sayfalarının aynı kaynaktan alınması
+nedeniyle bu sayfalar birbirini okuyabilir, denetleyebilir ve bir sayfadaki
+güvenlik sorunları başka bir sayfayı etkileyebilir. Bu, özellikle özdevinimli
+içerik ve kimlik doğrulaması içeren https sayfalarıyla birlikte ve 
+kullanıcılarınızın birbirlerine güvenmeleri gerekmediğinde tehlikelidir.
+</div>
+
 <p>Bu modül kullanıcılara özel dizinlere
   <code>http://example.com/~kullanıcı/</code> sözdizimi kullanılarak
   erişilebilmesini mümkün kılar.</p>

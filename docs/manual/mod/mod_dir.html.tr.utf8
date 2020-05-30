@@ -32,7 +32,6 @@
 <a href="../ko/mod/mod_dir.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_dir.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Bölü çizgisiyle biten yönlendirmeleri yapar ve dizin içeriği dosyalarını sunar.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Modül Betimleyici:</a></th><td>dir_module</td></tr>
@@ -319,9 +318,17 @@
 
     <pre class="prettyprint lang-config">&lt;Directory "/web/example.com/htdocs/blog"&gt;
   FallbackResource /blog/index.php
+&lt;/Directory&gt;
+&lt;Directory "/web/example.com/htdocs/blog/images"&gt;
+  FallbackResource disabled
 &lt;/Directory&gt;</pre>
 
 
+    <p>Bir acil durum işleyicisi (yukarıdaki durumda,
+     <code>/blog/index.php</code>) özgün istek URL'sine sunucu değişkeni
+     <code>REQUEST_URI</code> üzerinden erişebilir. Örneğin PHP'de bu 
+     değişkene erişmek için <code>$_SERVER['REQUEST_URI']</code>
+     kullanılır.</p>
 
 </div>
 </div>

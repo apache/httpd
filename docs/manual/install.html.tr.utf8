@@ -31,7 +31,6 @@
 <a href="./ko/install.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/install.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
 
     <p>Bu belge Apache HTTP Sunucusunun sadece Unix ve Unix benzeri
@@ -46,7 +45,7 @@
       Kaynak Kodlu projenin yaptığı gibi <code>libtool</code> ve
       <code>autoconf</code> kullanır.</p>
 
-    <p>Eğer sadece sürüm yükseltiyorsanız (2.4.9’dan 2.4.10’a yükseltmek
+    <p>Eğer sadece sürüm yükseltiyorsanız (2.4.8’dwn 2.4.9’a yükseltmek
       gibi) lütfen doğrudan <a href="#upgrading">Yükseltme</a> bölümüne
       atlayınız.</p>
 

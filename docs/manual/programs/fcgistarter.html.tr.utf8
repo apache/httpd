@@ -7,7 +7,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>fcgistarter - Bir FastCGI programını çalıştır - Apache HTTP Sunucusu Sürüm 2.4</title>
+<title>fcgistarter - Bir FastCGI betiğini çalıştır - Apache HTTP Sunucusu Sürüm 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -21,13 +21,12 @@
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.4</a> &gt; <a href="./">Programlar</a></div><div id="page-content"><div id="preamble"><h1>fcgistarter - Bir FastCGI programını çalıştır</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.4</a> &gt; <a href="./">Programlar</a></div><div id="page-content"><div id="preamble"><h1>fcgistarter - Bir FastCGI betiğini çalıştır</h1>
 <div class="toplang">
 <p><span>Mevcut Diller: </span><a href="../en/programs/fcgistarter.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/programs/fcgistarter.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../tr/programs/fcgistarter.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p />
 </div>
@@ -53,16 +52,16 @@
 <h2><a name="options" id="options">Seçenekler</a></h2>
     <dl>
     <dt><code><strong>-c</strong> <var>komut</var></code></dt>
-    <dd>Çalıştırılacak FastCGI programı</dd>
+    <dd>Çalıştırılacak FastCGI betiğinin mutlak yolu</dd>
 
     <dt><code><strong>-p</strong> <var>port</var></code></dt>
-    <dd>Programın dinleyeceği port</dd>
+    <dd>Betiğin dinleyeceği port</dd>
 
     <dt><code><strong>-i</strong> <var>arabirim</var></code></dt>
-    <dd>Programın dinleyeceği arabirim</dd>
+    <dd>Betiğin dinleyeceği arabirim</dd>
 
     <dt><code><strong>-N</strong> <var>sayı</var></code></dt>
-    <dd>Program örneklerinin sayısı</dd>
+    <dd>Betik örneklerinin sayısı</dd>
     </dl>
 </div></div>
 <div class="bottomlang">

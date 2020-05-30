@@ -416,10 +416,12 @@
 <li><a href="prefork.html#maxspareservers">MaxSpareServers</a></li>
 <li><a href="mpm_common.html#maxsparethreads">MaxSpareThreads</a></li>
 <li><a href="mpm_netware.html#maxthreads">MaxThreads</a></li>
+<li><a href="mod_md.html#mdactivationdelay">MDActivationDelay</a></li>
 <li><a href="mod_md.html#mdbaseserver">MDBaseServer</a></li>
 <li><a href="mod_md.html#mdcachallenges">MDCAChallenges</a></li>
 <li><a href="mod_md.html#mdcertificateagreement">MDCertificateAgreement</a></li>
 <li><a href="mod_md.html#mdcertificateauthority">MDCertificateAuthority</a></li>
+<li><a href="mod_md.html#mdcertificatecheck">MDCertificateCheck</a></li>
 <li><a href="mod_md.html#mdcertificatefile">MDCertificateFile</a></li>
 <li><a href="mod_md.html#mdcertificatekeyfile">MDCertificateKeyFile</a></li>
 <li><a href="mod_md.html#mdcertificatemonitor">MDCertificateMonitor</a></li>

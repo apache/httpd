@@ -28,7 +28,6 @@
 <a href="../ko/misc/security_tips.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/misc/security_tips.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Bir HTTP Sunucusunu ayarlarken dikkat edilmesi gerekenler ve bazı
     ipuçları.  Öneriler kısmen Apache’ye özel kısmen de genel olacaktır.</p>
@@ -448,7 +447,7 @@
       durumlarda yönergelere bağlıdır. Yönergeleri bir araya getirirken
       aralarındaki bağımlılıkları daima sınayın.</p>
 
-    <p><code class="directive">mod_access_compat</code> gibi henüz yönerge katıştırma
+    <p><code class="module"><a href="../mod/mod_access_compat.html">mod_access_compat</a></code> gibi henüz yönerge katıştırma
       mantığını gerçeklememiş modüller için sonraki bölümlerdeki davranış, bu
       modüllerin yönergelerini içerip içermemesine bağlıdır. Yapılandırmada
       yönergelerin <em>yerleri değiştirildiğinde</em> fakat bir katıştırma
