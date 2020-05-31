@@ -950,10 +950,11 @@ AP_DECLARE(apr_status_t) ap_filter_setaside_brigade(ap_filter_t *f,
     struct ap_filter_private *fp = f->priv;
 
     ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, f->c,
-                  "setaside %s brigade to %s brigade in '%s' output filter",
+                  "setaside %s brigade to %s brigade in '%s' %sput filter",
                   APR_BRIGADE_EMPTY(bb) ? "empty" : "full",
                   (!fp->bb || APR_BRIGADE_EMPTY(fp->bb)) ? "empty" : "full",
-                  f->frec->name);
+                  f->frec->name,
+                  f->frec->direction == AP_FILTER_INPUT ? "in" : "out");
 
     /* This API is not suitable for request filters */
     if (f->frec->ftype < AP_FTYPE_CONNECTION) {
@@ -1041,10 +1042,11 @@ AP_DECLARE(void) ap_filter_adopt_brigade(ap_filter_t *f,
     struct ap_filter_private *fp = f->priv;
 
     ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, f->c,
-                  "adopt %s brigade to %s brigade in '%s' output filter",
+                  "adopt %s brigade to %s brigade in '%s' %sput filter",
                   APR_BRIGADE_EMPTY(bb) ? "empty" : "full",
                   (!fp->bb || APR_BRIGADE_EMPTY(fp->bb)) ? "empty" : "full",
-                  f->frec->name);
+                  f->frec->name,
+                  f->frec->direction == AP_FILTER_INPUT ? "in" : "out");
 
     if (!APR_BRIGADE_EMPTY(bb)) {
         ap_filter_prepare_brigade(f);
@@ -1063,10 +1065,11 @@ AP_DECLARE(apr_status_t) ap_filter_reinstate_brigade(ap_filter_t *f,
     core_server_config *conf;
  
     ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, f->c,
-                  "reinstate %s brigade to %s brigade in '%s' output filter",
+                  "reinstate %s brigade to %s brigade in '%s' %sput filter",
                   (!fp->bb || APR_BRIGADE_EMPTY(fp->bb) ? "empty" : "full"),
                   (APR_BRIGADE_EMPTY(bb) ? "empty" : "full"),
-                  f->frec->name);
+                  f->frec->name,
+                  f->frec->direction == AP_FILTER_INPUT ? "in" : "out");
 
     /* This API is not suitable for request filters */
     if (f->frec->ftype < AP_FTYPE_CONNECTION) {
