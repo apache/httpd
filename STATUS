@@ -185,7 +185,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1877829,1877830 ^/httpd/httpd/trunk .
     +1: covener
 
-   *) Easy patches: synch 2.4.x and trunk
+  *) Easy patches: synch 2.4.x and trunk
         - core: Re-introduce check for sufficient PCRE version.
         - core: Fix doc string for QualifyRedirectURL
         - mod_proxy: really return an error message on invalid "flusher" value.
@@ -214,6 +214,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  One is a doc file in r1734835 that has already been merged and the
                  other one is 'next-number' in r1876823.
  
+  *) mod_proxy_http: flush spooled request body in one go to avoid
+     leaking (or long lived) temporary file. PR 64452.
+     trunk patch: http://svn.apache.org/r1878280
+     2.4.x patch: svn merge -c 1878280 ^/httpd/httpd/trunk .
+                  (modulo CHANGES conflict)
+     +1: ylavic
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
