@@ -377,20 +377,26 @@ static int stream_reqbody(proxy_http_req_t *req)
                 }
             }
             else if (rb_method == RB_STREAM_CL
-                     && bytes_streamed > req->cl_val) {
-                /* C-L < bytes streamed?!?
-                 * We will error out after the body is completely
-                 * consumed, but we can't stream more bytes at the
-                 * back end since they would in part be interpreted
-                 * as another request!  If nothing is sent, then
-                 * just send nothing.
+                     && (bytes_streamed > req->cl_val
+                         || (seen_eos && bytes_streamed < req->cl_val))) {
+                /* C-L != bytes streamed?!?
                  *
-                 * Prevents HTTP Response Splitting.
+                 * Prevent HTTP Request/Response Splitting.
+                 *
+                 * We can't stream more (or less) bytes at the back end since
+                 * they could be interpreted in separate requests (more bytes
+                 * now would start a new request, less bytes would make the
+                 * first bytes of the next request be part of the current one).
+                 *
+                 * It can't happen from the client connection here thanks to
+                 * ap_http_filter(), but some module's filter may be playing
+                 * bad games, hence the HTTP_INTERNAL_SERVER_ERROR.
                  */
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01086)
-                              "read more bytes of request body than expected "
+                              "read %s bytes of request body than expected "
                               "(got %" APR_OFF_T_FMT ", expected "
                               "%" APR_OFF_T_FMT ")",
+                              bytes_streamed > req->cl_val ? "more" : "less",
                               bytes_streamed, req->cl_val);
                 return HTTP_INTERNAL_SERVER_ERROR;
             }
@@ -415,13 +421,6 @@ static int stream_reqbody(proxy_http_req_t *req)
             return rv;
         }
     } while (!seen_eos);
-
-    if (rb_method == RB_STREAM_CL && bytes_streamed != req->cl_val) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01087)
-                      "client %s given Content-Length did not match"
-                      " number of body bytes read", r->connection->client_ip);
-        return HTTP_BAD_REQUEST;
-    }
 
     return OK;
 }
