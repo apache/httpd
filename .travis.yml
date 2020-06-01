@@ -272,6 +272,14 @@ jobs:
            TEST_MALLOC=1 TEST_LDAP=1 TEST_ARGS="-defines LDAP"
            TESTS="t/modules/"
     # -------------------------------------------------------------------------
+    - name: Linux Ubuntu, event, APR trunk thread debug/concurrency
+      env: APR_VERSION=trunk APR_CONFIG="--with-crypto --enable-thread-debug --enable-pool-concurrency-check"
+           CONFIG="--enable-mods-shared=reallyall --with-mpm=event"
+    # -------------------------------------------------------------------------
+    - name: Linux Ubuntu, prefork, APR trunk thread debug/concurrency
+      env: APR_VERSION=trunk APR_CONFIG="--with-crypto --enable-thread-debug --enable-pool-concurrency-check"
+           CONFIG="--enable-mods-shared=reallyall --with-mpm=prefork"
+    # -------------------------------------------------------------------------
     - name: Linux Ubuntu, litmus WebDAV tests
       env: CONFIG="--enable-dav --enable-dav-fs"
            LITMUS=1 TESTS="t/modules/dav.t"
