@@ -1,6 +1,13 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_proxy_http2: the "ping" proxy parameter 
+     (see <https://httpd.apache.org/docs/2.4/mod/mod_proxy.html>) is now used
+     when checking the liveliness of a new or reused h2 connection to the backend.
+     With short durations, this makes load-balancing more responsive. The module
+     will hold back requests until ping conditions are met, using features of the
+     HTTP/2 protocol alone. [Ruediger Pluem, Stefan Eissing]
+
   *) mod_proxy_http: flush spooled request body in one go to avoid
      leaking (or long lived) temporary file. PR 64452. [Yann Ylavic]
 

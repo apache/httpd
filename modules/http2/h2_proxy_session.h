@@ -60,6 +60,11 @@ typedef enum {
     H2_PROXYS_EV_PRE_CLOSE,        /* connection will close after this */
 } h2_proxys_event_t;
 
+typedef enum {
+    H2_PING_ST_NONE,               /* normal connection mode, ProxyTimeout rules */
+    H2_PING_ST_AWAIT_ANY,          /* waiting for any frame from backend */
+    H2_PING_ST_AWAIT_PING,         /* waiting for PING frame from backend */
+} h2_ping_state_t;
 
 typedef struct h2_proxy_session h2_proxy_session;
 typedef void h2_proxy_request_done(h2_proxy_session *s, request_rec *r,
@@ -74,7 +79,6 @@ struct h2_proxy_session {
     nghttp2_session *ngh2;   /* the nghttp2 session itself */
     
     unsigned int aborted : 1;
-    unsigned int check_ping : 1;
     unsigned int h2_front : 1; /* if front-end connection is HTTP/2 */
 
     h2_proxy_request_done *done;
@@ -94,6 +98,10 @@ struct h2_proxy_session {
     
     apr_bucket_brigade *input;
     apr_bucket_brigade *output;
+
+    h2_ping_state_t ping_state;
+    apr_time_t ping_timeout;
+    apr_time_t save_timeout;
 };
 
 h2_proxy_session *h2_proxy_session_setup(const char *id, proxy_conn_rec *p_conn,
