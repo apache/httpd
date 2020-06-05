@@ -90,5 +90,9 @@ if ! test -v SKIP_TESTING; then
         RV=4
     fi
 
+    if test $RV -ne 0 -a -r test/perl-framework/t/logs/error_log; then
+        tail test/perl-framework/t/logs/error_log
+    fi
+
     exit $RV
 fi
