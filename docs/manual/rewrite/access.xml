@@ -206,13 +206,13 @@ SetEnvIfNoCase User-Agent ^NameOfBadRobot goaway
 
 <section id="host-deny">
 
-  <title>Denying Hosts in a Blacklist</title>
+  <title>Denying Hosts in a Reject List</title>
 
   <dl>
     <dt>Description:</dt>
 
     <dd>
-      <p>We wish to maintain a blacklist of hosts, rather like
+      <p>We wish to maintain a list of hosts, rather like
       <code>hosts.deny</code>, and have those hosts blocked from
       accessing our server.</p>
     </dd>
