@@ -417,6 +417,9 @@ static void pstartElement(void *ctxt, const xmlChar *uname,
     const char** attrs = (const char**) uattrs;
     const htmlElemDesc* desc = htmlTagLookup(uname);
     urlmap *themap = ctx->map;
+    const char *accept_charset = NULL;
+
+
 #ifdef HAVE_STACK
     const void** descp;
 #endif
@@ -445,6 +448,21 @@ static void pstartElement(void *ctxt, const xmlChar *uname,
     *descp = desc;
     /* TODO - implement HTML "allowed here" */
 #endif
+
+    /* PR#64443: for <FORM>, insert accept-charset attribute if necessary
+     * It's necessary if we've changed the charset (i.e. input not UTF-8)
+     *  UNLESS someone has taken charge.
+     * If there's already an accept-charset, then the backend is in charge.
+     * If ProxyHTMLCharsetOut is set, the sysop has taken charge.
+     */
+    if ((xml2enc_charset != NULL) && (ctx->cfg->charset_out == NULL)
+        && !strcasecmp(name, "FORM")) {
+        xmlCharEncoding enc;
+        if ((xml2enc_charset(ctx->f->r, &enc, &accept_charset) != APR_SUCCESS)
+            || (enc == XML_CHAR_ENCODING_UTF8)) {
+            accept_charset = NULL;  /* Now pay attention if not NULL */
+        }
+    }
 
     ap_fputc(ctx->f->next, ctx->bb, '<');
     ap_fputs(ctx->f->next, ctx->bb, name);
@@ -672,7 +690,16 @@ static void pstartElement(void *ctxt, const xmlChar *uname,
                 pcharacters(ctx, (const xmlChar*)ctx->buf, strlen(ctx->buf));
                 ap_fputc(ctx->f->next, ctx->bb, '"');
             }
+            /* PR#64443: watch for accept-charset from backend */
+            if (accept_charset && !strcasecmp(a[0], "accept-charset")) {
+                accept_charset = NULL;
+            }
         }
+    }
+    /* PR#64443: we've seen all we need, so add accept-charset if necessary */
+    if (accept_charset != NULL) {
+        ap_fprintf(ctx->f->next, ctx->bb, " accept-charset=\"%s\"",
+                   accept_charset);
     }
     ctx->offset = 0;
     if (desc && desc->empty)
