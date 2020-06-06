@@ -607,12 +607,12 @@ alias</description>
     <highlight language="config">
 # In this example, for both addresses to be taken into account, they MUST be enclosed
 # between quotation marks
-&lt;AuthzProviderAlias ip blacklisted-ips "XXX.XXX.XXX.XXX YYY.YYY.YYY.YYY"&gt;
+&lt;AuthzProviderAlias ip reject-ips "XXX.XXX.XXX.XXX YYY.YYY.YYY.YYY"&gt;
 &lt;/AuthzProviderAlias&gt;
 
 &lt;Directory "/path/to/dir"&gt;
     &lt;RequireAll&gt;
-        Require not blacklisted-ips
+        Require not reject-ips
         Require all granted
     &lt;/RequireAll&gt;
 &lt;/Directory&gt;
