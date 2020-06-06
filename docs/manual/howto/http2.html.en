@@ -137,7 +137,7 @@
     cipher suite will force it to simply refuse and fall back to HTTP 1.1. This is a common mistake
     that is done while configuring httpd for HTTP/2 the first time, so please keep it in mind to avoid
     long debugging sessions! If you want to be sure about the cipher suite to choose please avoid
-    the ones listed in the <a href="http://httpwg.org/specs/rfc7540.html#BadCipherSuites">HTTP/2 TLS blacklist</a>.</p>
+    the ones listed in the <a href="http://httpwg.org/specs/rfc7540.html#BadCipherSuites">HTTP/2 TLS reject list</a>.</p>
     </div>
     <p>The order of protocols mentioned is also relevant. By default, the first one is the 
     most preferred protocol. When a client offers multiple choices, the one most to the 

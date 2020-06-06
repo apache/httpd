@@ -291,8 +291,8 @@
           <code class="module"><a href="./mod/mod_isapi.html">mod_isapi</a></code>, ...</dt>
       <dd>Translation of headers to environment variables is more strict than
       before to mitigate some possible cross-site-scripting attacks via header
-      injection. Headers containing invalid characters (including underscores)
-      are now silently dropped. <a href="env.html">Environment Variables
+      injection. Header names containing invalid characters (including underscores)
+      are no longer converted to environment variables. <a href="env.html">Environment Variables
       in Apache</a> has some pointers on how to work around broken legacy
       clients which require such headers. (This affects all modules which
       use these environment variables.)</dd>
