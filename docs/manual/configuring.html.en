@@ -25,10 +25,10 @@
 <div class="toplang">
 <p><span>Available Languages: </span><a href="./de/configuring.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/configuring.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/configuring.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="./fr/configuring.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="./ja/configuring.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/configuring.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/configuring.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/configuring.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 
 <p>This document describes the files used to configure Apache HTTP
@@ -82,15 +82,23 @@ Server.</p>
     White space occurring before a directive is ignored, so
     you may indent directives for clarity. Blank lines are also ignored.</p>
 
-    <p>The values of variables defined with the <code class="directive"><a href="./mod/core.html#define">Define</a></code> of or shell environment variables can
-    be used in configuration file lines using the syntax <code>${VAR}</code>.
+    <p>The values of variables defined with the <code class="directive"><a href="./mod/core.html#define">Define</a></code> or of shell environment variables can
+    be used in configuration file lines using the syntax
+    <code>${VAR}</code>.<br />
     If "VAR" is the name of a valid variable, the value of that variable is
     substituted into that spot in the configuration file line, and processing
-    continues as if that text were found directly in the configuration file.
+    continues as if that text were found directly in the configuration
+    file.<br />
     Variables defined with <code class="directive"><a href="./mod/core.html#define">Define</a></code> take
-    precedence over shell environment variables.
-    If the "VAR" variable is not found, the characters <code>${VAR}</code>
-    are left unchanged, and a warning is logged.
+    precedence over shell environment variables.<br />
+    If the "VAR" variable is not defined, the characters <code>${VAR}</code>
+    are left unchanged, and a warning is logged. If instead a default value
+    should be substituted, the conditional form
+    <code>${VAR?=some default value}</code> can be used. Note that a
+    <strong>defined</strong> empty variable will <strong>not</strong> be
+    substituted with the default value, and that an empty default value like
+    in <code>${VAR?=}</code> is a valid substitution (which produces an empty
+    value if "VAR" is not defined, but no warning).<br />
     Variable names may not contain colon ":" characters, to avoid clashes with
     <code class="directive"><a href="./mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>'s syntax.</p>
 
@@ -204,10 +212,10 @@ Server.</p>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="./de/configuring.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/configuring.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/configuring.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="./fr/configuring.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="./ja/configuring.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/configuring.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/configuring.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/configuring.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';

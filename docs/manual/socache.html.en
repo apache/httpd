@@ -24,7 +24,7 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>Shared Object Cache in Apache HTTP Server</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="./en/socache.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/socache.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="./fr/socache.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
 
     <p>The Shared Object Cache provides a means to share simple data
@@ -37,7 +37,7 @@
 <div class="section">
 <h2><a name="providers" id="providers">Shared Object Cache Providers</a> <a title="Permanent link" href="#providers" class="permalink">&para;</a></h2>
     
-    <p>The shared object cache as such is an abstraction.  Four different
+    <p>The shared object cache as such is an abstraction.  Five different
     modules implement it.  To use the cache, one or more of these modules
     must be present, and configured.</p>
     <p>The only configuration required is to select which cache provider
@@ -120,7 +120,7 @@
   </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="./en/socache.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/socache.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="./fr/socache.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';

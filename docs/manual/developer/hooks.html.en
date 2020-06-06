@@ -46,7 +46,7 @@
     <p>The httpd's core modules offer a predefinined list of hooks
     used during the standard <a href="./request.html">request processing</a>
     phase. Creating a new hook will expose a function that 
-    implements it (see sections below) but it is essential to undestand that you will not 
+    implements it (see sections below) but it is essential to understand that you will not 
     extend the httpd's core hooks. Their presence and order in the request processing is in fact 
     a consequence of how they are called in <code>server/request.c</code> 
     (check <a href="./modguide.html#hooking">this section</a> 
@@ -55,7 +55,7 @@
 
     <p>Reading <a href="./modguide.html">guide for developing modules</a> and 
     <a href="./request.html">request processing</a> before proceeding is 
-    highly recomended.
+    highly recommended.
     </p> 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">

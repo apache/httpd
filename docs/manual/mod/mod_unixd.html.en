@@ -27,13 +27,13 @@
 <div id="preamble"><h1>Apache Module mod_unixd</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_unixd.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_unixd.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
-<a href="../tr/mod/mod_unixd.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
+<a href="../fr/mod/mod_unixd.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../tr/mod/mod_unixd.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Basic (required) security for Unix-family platforms.</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Base</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Module&#160;Identifier:</a></th><td>unixd_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source&#160;File:</a></th><td>mod_unixd.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>unixd_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_unixd.c</td></tr></table>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
@@ -97,12 +97,15 @@ requests</td></tr>
 </div>
 
     <p>It is recommended that you set up a new group specifically for
-    running the server. Some admins use user <code>nobody</code>,
-    but this is not always possible or desirable.</p>
+    running the server.  If the configured <code class="directive">User</code>
+    is a member of any supplementary groups, the process will also
+    become a member of these groups.</p>
 
     <div class="warning"><h3>Security</h3>
       <p>Don't set <code class="directive">Group</code> (or <code class="directive"><a href="#user">User</a></code>) to <code>root</code> unless
-      you know exactly what you are doing, and what the dangers are.</p>
+      you know exactly what you are doing, and what the dangers are.
+      It is not recommended to use the group <code>nobody</code>,
+      which is not intended for use by long-running daemons.</p>
     </div>
 
 
@@ -162,13 +165,13 @@ requests</td></tr>
     outside world, and similarly, the user should not be able to
     execute code that is not meant for HTTP requests. It is
     recommended that you set up a new user and group specifically for
-    running the server. Some admins use user <code>nobody</code>, but
-    this is not always desirable, since the <code>nobody</code> user
-    can have other uses on the system.</p>
+    running the server.</p>
 
     <div class="warning"><h3>Security</h3>
       <p>Don't set <code class="directive">User</code> (or <code class="directive"><a href="#group">Group</a></code>) to <code>root</code> unless
-      you know exactly what you are doing, and what the dangers are.</p>
+      you know exactly what you are doing, and what the dangers are.
+      It is not recommended to use the user <code>nobody</code>,
+      which is not intended for use by long-running daemons.</p>
     </div>
 
 
@@ -181,8 +184,8 @@ requests</td></tr>
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_unixd.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_unixd.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
-<a href="../tr/mod/mod_unixd.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
+<a href="../fr/mod/mod_unixd.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../tr/mod/mod_unixd.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';

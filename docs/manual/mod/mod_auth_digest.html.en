@@ -27,14 +27,14 @@
 <div id="preamble"><h1>Apache Module mod_auth_digest</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_auth_digest.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_auth_digest.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_auth_digest.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ko/mod/mod_auth_digest.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>User authentication using MD5
     Digest Authentication</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Module&#160;Identifier:</a></th><td>auth_digest_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source&#160;File:</a></th><td>mod_auth_digest.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>auth_digest_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_auth_digest.c</td></tr></table>
 <h3>Summary</h3>
 
     <p>This module implements HTTP Digest Authentication
@@ -91,7 +91,7 @@
     should list the locations that will be protected by this
     configuration.</p>
 
-    <p>The pasword file referenced in the <code class="directive"><a href="#authuserfile">AuthUserFile</a></code> directive may be
+    <p>The password file referenced in the <code class="directive"><a href="#authuserfile">AuthUserFile</a></code> directive may be
     created and managed using the <code class="program"><a href="../programs/htdigest.html">htdigest</a></code> tool.</p>
 
 
@@ -303,7 +303,7 @@ AuthDigestShmemSize 1M</pre>
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_auth_digest.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_auth_digest.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_auth_digest.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ko/mod/mod_auth_digest.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--

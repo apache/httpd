@@ -27,12 +27,12 @@
 <div id="preamble"><h1>Apache Module mod_session_cookie</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_session_cookie.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_session_cookie.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_session_cookie.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Cookie based session support</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Module&#160;Identifier:</a></th><td>session_cookie_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source&#160;File:</a></th><td>mod_session_cookie.c</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>session_cookie_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_session_cookie.c</td></tr>
 <tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3 and later</td></tr></table>
 <h3>Summary</h3>
 
@@ -65,6 +65,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#basicexamples">Basic Examples</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#sessioncookiemaxage">SessionCookieMaxAge</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sessioncookiename">SessionCookieName</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sessioncookiename2">SessionCookieName2</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sessioncookieremove">SessionCookieRemove</a></li>
@@ -94,6 +95,29 @@ SessionCookieName session path=/</pre>
       and password details, see the <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code> module.</p>
 
     </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SessionCookieMaxAge" id="SessionCookieMaxAge">SessionCookieMaxAge</a> <a name="sessioncookiemaxage" id="sessioncookiemaxage">Directive</a> <a title="Permanent link" href="#sessioncookiemaxage" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Control whether session cookies have Max-Age transmitted to the client</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionCookieMaxAge On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SessionCookieMaxAge On</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_cookie</td></tr>
+</table>
+    <p>The <code class="directive">SessionCookieMaxAge</code> flag controls whether 
+    the session expiration will be specified in the Max-Age attribute on the 
+    cookie sent to the client.  When set to 'Off', the attribute will not be
+    added and clients will only return the cookie until "the current
+    session is over". This often means until the browser is closed.  </p>
+
+    <p>The expiration of the session is still validated on the server by
+    the <code class="directive"><a href="../mod/mod_session.html#sessionmaxage">SessionMaxAge</a></code> directive.
+    </p>
+
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SessionCookieName" id="SessionCookieName">SessionCookieName</a> <a name="sessioncookiename" id="sessioncookiename">Directive</a> <a title="Permanent link" href="#sessioncookiename" class="permalink">&para;</a></h2>
 <table class="directive">
@@ -172,7 +196,7 @@ SessionCookieName2 session path=/private;domain=example.com;httponly;secure;vers
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_session_cookie.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_session_cookie.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_session_cookie.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';

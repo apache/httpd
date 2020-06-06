@@ -116,7 +116,7 @@ through the <code class="directive"><a href="../mod/mod_lua.html#luacodecache">L
 your scripts on a production server, and you do not need to update them regularly, it may be
 advantageous to set this directive to the <code>forever</code> value, which will cause mod_lua
 to skip the stat process and always reuse the compiled byte-code from the first access to the
-script, thus speeding up the processing. For Lua hooks, this can prove to increase peformance,
+script, thus speeding up the processing. For Lua hooks, this can prove to increase performance,
 while for scripts handled by the <code>lua-script</code> handler, the increase in performance
 may be negligible, as files httpd will stat the files regardless.
 </p>

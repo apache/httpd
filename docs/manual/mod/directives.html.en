@@ -25,11 +25,11 @@
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../de/mod/directives.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/directives.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/mod/directives.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
-<a href="../fr/mod/directives.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../es/mod/directives.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../fr/mod/directives.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/directives.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/directives.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/directives.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
+<a href="../tr/mod/directives.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/mod/directives.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
 
@@ -222,7 +222,10 @@
 <li><a href="core.html#contentdigest">ContentDigest</a></li>
 <li><a href="mod_usertrack.html#cookiedomain">CookieDomain</a></li>
 <li><a href="mod_usertrack.html#cookieexpires">CookieExpires</a></li>
+<li><a href="mod_usertrack.html#cookiehttponly">CookieHTTPOnly</a></li>
 <li><a href="mod_usertrack.html#cookiename">CookieName</a></li>
+<li><a href="mod_usertrack.html#cookiesamesite">CookieSameSite</a></li>
+<li><a href="mod_usertrack.html#cookiesecure">CookieSecure</a></li>
 <li><a href="mod_usertrack.html#cookiestyle">CookieStyle</a></li>
 <li><a href="mod_usertrack.html#cookietracking">CookieTracking</a></li>
 <li><a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li>
@@ -450,16 +453,19 @@
 <li><a href="prefork.html#maxspareservers">MaxSpareServers</a></li>
 <li><a href="mpm_common.html#maxsparethreads">MaxSpareThreads</a></li>
 <li><a href="mpm_netware.html#maxthreads">MaxThreads</a></li>
+<li><a href="mod_md.html#mdactivationdelay">MDActivationDelay</a></li>
 <li><a href="mod_md.html#mdbaseserver">MDBaseServer</a></li>
 <li><a href="mod_md.html#mdcachallenges">MDCAChallenges</a></li>
 <li><a href="mod_md.html#mdcertificateagreement">MDCertificateAgreement</a></li>
 <li><a href="mod_md.html#mdcertificateauthority">MDCertificateAuthority</a></li>
+<li><a href="mod_md.html#mdcertificatecheck">MDCertificateCheck</a></li>
 <li><a href="mod_md.html#mdcertificatefile">MDCertificateFile</a></li>
 <li><a href="mod_md.html#mdcertificatekeyfile">MDCertificateKeyFile</a></li>
 <li><a href="mod_md.html#mdcertificatemonitor">MDCertificateMonitor</a></li>
 <li><a href="mod_md.html#mdcertificateprotocol">MDCertificateProtocol</a></li>
 <li><a href="mod_md.html#mdcertificatestatus">MDCertificateStatus</a></li>
 <li><a href="mod_md.html#mdchallengedns01">MDChallengeDns01</a></li>
+<li><a href="mod_md.html#mdcontactemail">MDContactEmail</a></li>
 <li><a href="mod_md.html#mddrivemode">MDDriveMode</a></li>
 <li><a href="mod_md.html#mdhttpproxy">MDHttpProxy</a></li>
 <li><a href="mod_md.html#mdmember">MDMember</a></li>
@@ -650,6 +656,7 @@
 <li><a href="core.html#serversignature">ServerSignature</a></li>
 <li><a href="core.html#servertokens">ServerTokens</a></li>
 <li><a href="mod_session.html#session">Session</a></li>
+<li><a href="mod_session_cookie.html#sessioncookiemaxage">SessionCookieMaxAge</a></li>
 <li><a href="mod_session_cookie.html#sessioncookiename">SessionCookieName</a></li>
 <li><a href="mod_session_cookie.html#sessioncookiename2">SessionCookieName2</a></li>
 <li><a href="mod_session_cookie.html#sessioncookieremove">SessionCookieRemove</a></li>
@@ -802,11 +809,11 @@
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../de/mod/directives.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/directives.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/mod/directives.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
-<a href="../fr/mod/directives.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../es/mod/directives.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../fr/mod/directives.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/directives.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/directives.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/directives.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
+<a href="../tr/mod/directives.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/mod/directives.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--

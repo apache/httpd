@@ -27,7 +27,7 @@
 <div id="page-content"><div id="preamble"><h1>Override Class Index for .htaccess</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/overrides.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/overrides.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/overrides.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
 
     <p>
@@ -417,69 +417,71 @@ must succeed for the enclosing directive to not fail.</td></tr>
 user authentication</td></tr>
 <tr><td><a href="mod_session.html#session">Session</a></td><td class="module"><a href="mod_session.html">mod_session</a></td></tr>
 <tr><td colspan="2" class="descr">Enables a session for the current directory or location</td></tr>
-<tr class="odd"><td><a href="mod_session_cookie.html#sessioncookiename">SessionCookieName</a></td><td class="module"><a href="mod_session_cookie.html">mod_session_cookie</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Name and attributes for the RFC2109 cookie storing the session</td></tr>
-<tr><td><a href="mod_session_cookie.html#sessioncookiename2">SessionCookieName2</a></td><td class="module"><a href="mod_session_cookie.html">mod_session_cookie</a></td></tr>
-<tr><td colspan="2" class="descr">Name and attributes for the RFC2965 cookie storing the session</td></tr>
-<tr class="odd"><td><a href="mod_session_cookie.html#sessioncookieremove">SessionCookieRemove</a></td><td class="module"><a href="mod_session_cookie.html">mod_session_cookie</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Control for whether session cookies should be removed from incoming HTTP headers</td></tr>
-<tr><td><a href="mod_session_crypto.html#sessioncryptocipher">SessionCryptoCipher</a></td><td class="module"><a href="mod_session_crypto.html">mod_session_crypto</a></td></tr>
-<tr><td colspan="2" class="descr">The crypto cipher to be used to encrypt the session</td></tr>
-<tr class="odd"><td><a href="mod_session_crypto.html#sessioncryptopassphrase">SessionCryptoPassphrase</a></td><td class="module"><a href="mod_session_crypto.html">mod_session_crypto</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">The key used to encrypt the session</td></tr>
-<tr><td><a href="mod_session_dbd.html#sessiondbdcookiename">SessionDBDCookieName</a></td><td class="module"><a href="mod_session_dbd.html">mod_session_dbd</a></td></tr>
-<tr><td colspan="2" class="descr">Name and attributes for the RFC2109 cookie storing the session ID</td></tr>
-<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdcookiename2">SessionDBDCookieName2</a></td><td class="module"><a href="mod_session_dbd.html">mod_session_dbd</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Name and attributes for the RFC2965 cookie storing the session ID</td></tr>
-<tr><td><a href="mod_session_dbd.html#sessiondbdcookieremove">SessionDBDCookieRemove</a></td><td class="module"><a href="mod_session_dbd.html">mod_session_dbd</a></td></tr>
-<tr><td colspan="2" class="descr">Control for whether session ID cookies should be removed from incoming HTTP headers</td></tr>
-<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbddeletelabel">SessionDBDDeleteLabel</a></td><td class="module"><a href="mod_session_dbd.html">mod_session_dbd</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">The SQL query to use to remove sessions from the database</td></tr>
-<tr><td><a href="mod_session_dbd.html#sessiondbdinsertlabel">SessionDBDInsertLabel</a></td><td class="module"><a href="mod_session_dbd.html">mod_session_dbd</a></td></tr>
-<tr><td colspan="2" class="descr">The SQL query to use to insert sessions into the database</td></tr>
-<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdperuser">SessionDBDPerUser</a></td><td class="module"><a href="mod_session_dbd.html">mod_session_dbd</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Enable a per user session</td></tr>
-<tr><td><a href="mod_session_dbd.html#sessiondbdselectlabel">SessionDBDSelectLabel</a></td><td class="module"><a href="mod_session_dbd.html">mod_session_dbd</a></td></tr>
-<tr><td colspan="2" class="descr">The SQL query to use to select sessions from the database</td></tr>
-<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdupdatelabel">SessionDBDUpdateLabel</a></td><td class="module"><a href="mod_session_dbd.html">mod_session_dbd</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">The SQL query to use to update existing sessions in the database</td></tr>
-<tr><td><a href="mod_session.html#sessionenv">SessionEnv</a></td><td class="module"><a href="mod_session.html">mod_session</a></td></tr>
-<tr><td colspan="2" class="descr">Control whether the contents of the session are written to the
+<tr class="odd"><td><a href="mod_session_cookie.html#sessioncookiemaxage">SessionCookieMaxAge</a></td><td class="module"><a href="mod_session_cookie.html">mod_session_cookie</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Control whether session cookies have Max-Age transmitted to the client</td></tr>
+<tr><td><a href="mod_session_cookie.html#sessioncookiename">SessionCookieName</a></td><td class="module"><a href="mod_session_cookie.html">mod_session_cookie</a></td></tr>
+<tr><td colspan="2" class="descr">Name and attributes for the RFC2109 cookie storing the session</td></tr>
+<tr class="odd"><td><a href="mod_session_cookie.html#sessioncookiename2">SessionCookieName2</a></td><td class="module"><a href="mod_session_cookie.html">mod_session_cookie</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Name and attributes for the RFC2965 cookie storing the session</td></tr>
+<tr><td><a href="mod_session_cookie.html#sessioncookieremove">SessionCookieRemove</a></td><td class="module"><a href="mod_session_cookie.html">mod_session_cookie</a></td></tr>
+<tr><td colspan="2" class="descr">Control for whether session cookies should be removed from incoming HTTP headers</td></tr>
+<tr class="odd"><td><a href="mod_session_crypto.html#sessioncryptocipher">SessionCryptoCipher</a></td><td class="module"><a href="mod_session_crypto.html">mod_session_crypto</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">The crypto cipher to be used to encrypt the session</td></tr>
+<tr><td><a href="mod_session_crypto.html#sessioncryptopassphrase">SessionCryptoPassphrase</a></td><td class="module"><a href="mod_session_crypto.html">mod_session_crypto</a></td></tr>
+<tr><td colspan="2" class="descr">The key used to encrypt the session</td></tr>
+<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdcookiename">SessionDBDCookieName</a></td><td class="module"><a href="mod_session_dbd.html">mod_session_dbd</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Name and attributes for the RFC2109 cookie storing the session ID</td></tr>
+<tr><td><a href="mod_session_dbd.html#sessiondbdcookiename2">SessionDBDCookieName2</a></td><td class="module"><a href="mod_session_dbd.html">mod_session_dbd</a></td></tr>
+<tr><td colspan="2" class="descr">Name and attributes for the RFC2965 cookie storing the session ID</td></tr>
+<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdcookieremove">SessionDBDCookieRemove</a></td><td class="module"><a href="mod_session_dbd.html">mod_session_dbd</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Control for whether session ID cookies should be removed from incoming HTTP headers</td></tr>
+<tr><td><a href="mod_session_dbd.html#sessiondbddeletelabel">SessionDBDDeleteLabel</a></td><td class="module"><a href="mod_session_dbd.html">mod_session_dbd</a></td></tr>
+<tr><td colspan="2" class="descr">The SQL query to use to remove sessions from the database</td></tr>
+<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdinsertlabel">SessionDBDInsertLabel</a></td><td class="module"><a href="mod_session_dbd.html">mod_session_dbd</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">The SQL query to use to insert sessions into the database</td></tr>
+<tr><td><a href="mod_session_dbd.html#sessiondbdperuser">SessionDBDPerUser</a></td><td class="module"><a href="mod_session_dbd.html">mod_session_dbd</a></td></tr>
+<tr><td colspan="2" class="descr">Enable a per user session</td></tr>
+<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdselectlabel">SessionDBDSelectLabel</a></td><td class="module"><a href="mod_session_dbd.html">mod_session_dbd</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">The SQL query to use to select sessions from the database</td></tr>
+<tr><td><a href="mod_session_dbd.html#sessiondbdupdatelabel">SessionDBDUpdateLabel</a></td><td class="module"><a href="mod_session_dbd.html">mod_session_dbd</a></td></tr>
+<tr><td colspan="2" class="descr">The SQL query to use to update existing sessions in the database</td></tr>
+<tr class="odd"><td><a href="mod_session.html#sessionenv">SessionEnv</a></td><td class="module"><a href="mod_session.html">mod_session</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Control whether the contents of the session are written to the
 <var>HTTP_SESSION</var> environment variable</td></tr>
-<tr class="odd"><td><a href="mod_session.html#sessionexclude">SessionExclude</a></td><td class="module"><a href="mod_session.html">mod_session</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Define URL prefixes for which a session is ignored</td></tr>
-<tr><td><a href="mod_session.html#sessionexpiryupdateinterval">SessionExpiryUpdateInterval</a></td><td class="module"><a href="mod_session.html">mod_session</a></td></tr>
-<tr><td colspan="2" class="descr">Define the number of seconds a session's expiry may change without
+<tr><td><a href="mod_session.html#sessionexclude">SessionExclude</a></td><td class="module"><a href="mod_session.html">mod_session</a></td></tr>
+<tr><td colspan="2" class="descr">Define URL prefixes for which a session is ignored</td></tr>
+<tr class="odd"><td><a href="mod_session.html#sessionexpiryupdateinterval">SessionExpiryUpdateInterval</a></td><td class="module"><a href="mod_session.html">mod_session</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Define the number of seconds a session's expiry may change without
 the session being updated</td></tr>
-<tr class="odd"><td><a href="mod_session.html#sessionheader">SessionHeader</a></td><td class="module"><a href="mod_session.html">mod_session</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Import session updates from a given HTTP response header</td></tr>
-<tr><td><a href="mod_session.html#sessioninclude">SessionInclude</a></td><td class="module"><a href="mod_session.html">mod_session</a></td></tr>
-<tr><td colspan="2" class="descr">Define URL prefixes for which a session is valid</td></tr>
-<tr class="odd"><td><a href="mod_session.html#sessionmaxage">SessionMaxAge</a></td><td class="module"><a href="mod_session.html">mod_session</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Define a maximum age in seconds for a session</td></tr>
-<tr><td><a href="mod_ssl.html#sslcacertificatefile">SSLCACertificateFile</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
-<tr><td colspan="2" class="descr">File of concatenated PEM-encoded CA Certificates
+<tr><td><a href="mod_session.html#sessionheader">SessionHeader</a></td><td class="module"><a href="mod_session.html">mod_session</a></td></tr>
+<tr><td colspan="2" class="descr">Import session updates from a given HTTP response header</td></tr>
+<tr class="odd"><td><a href="mod_session.html#sessioninclude">SessionInclude</a></td><td class="module"><a href="mod_session.html">mod_session</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Define URL prefixes for which a session is valid</td></tr>
+<tr><td><a href="mod_session.html#sessionmaxage">SessionMaxAge</a></td><td class="module"><a href="mod_session.html">mod_session</a></td></tr>
+<tr><td colspan="2" class="descr">Define a maximum age in seconds for a session</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslcacertificatefile">SSLCACertificateFile</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">File of concatenated PEM-encoded CA Certificates
 for Client Auth</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslcacertificatepath">SSLCACertificatePath</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Directory of PEM-encoded CA Certificates for
+<tr><td><a href="mod_ssl.html#sslcacertificatepath">SSLCACertificatePath</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr><td colspan="2" class="descr">Directory of PEM-encoded CA Certificates for
 Client Auth</td></tr>
-<tr><td><a href="mod_ssl.html#sslciphersuite">SSLCipherSuite</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
-<tr><td colspan="2" class="descr">Cipher Suite available for negotiation in SSL
+<tr class="odd"><td><a href="mod_ssl.html#sslciphersuite">SSLCipherSuite</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Cipher Suite available for negotiation in SSL
 handshake</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslrenegbuffersize">SSLRenegBufferSize</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Set the size for the SSL renegotiation buffer</td></tr>
-<tr><td><a href="mod_ssl.html#sslrequire">SSLRequire</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
-<tr><td colspan="2" class="descr">Allow access only when an arbitrarily complex
+<tr><td><a href="mod_ssl.html#sslrenegbuffersize">SSLRenegBufferSize</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr><td colspan="2" class="descr">Set the size for the SSL renegotiation buffer</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslrequire">SSLRequire</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Allow access only when an arbitrarily complex
 boolean expression is true</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslrequiressl">SSLRequireSSL</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Deny access when SSL is not used for the
+<tr><td><a href="mod_ssl.html#sslrequiressl">SSLRequireSSL</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr><td colspan="2" class="descr">Deny access when SSL is not used for the
 HTTP request</td></tr>
-<tr><td><a href="mod_ssl.html#sslusername">SSLUserName</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
-<tr><td colspan="2" class="descr">Variable name to determine user name</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslverifyclient">SSLVerifyClient</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Type of Client Certificate verification</td></tr>
-<tr><td><a href="mod_ssl.html#sslverifydepth">SSLVerifyDepth</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
-<tr><td colspan="2" class="descr">Maximum depth of CA Certificates in Client
+<tr class="odd"><td><a href="mod_ssl.html#sslusername">SSLUserName</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Variable name to determine user name</td></tr>
+<tr><td><a href="mod_ssl.html#sslverifyclient">SSLVerifyClient</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr><td colspan="2" class="descr">Type of Client Certificate verification</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslverifydepth">SSLVerifyDepth</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Maximum depth of CA Certificates in Client
 Certificate verification</td></tr>
 </table></div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a name="override-fileinfo">FileInfo</a></h2>
     <p>
@@ -543,161 +545,167 @@ scripts</td></tr>
 <tr class="odd"><td colspan="2" class="descr">The domain to which the tracking cookie applies</td></tr>
 <tr><td><a href="mod_usertrack.html#cookieexpires">CookieExpires</a></td><td class="module"><a href="mod_usertrack.html">mod_usertrack</a></td></tr>
 <tr><td colspan="2" class="descr">Expiry time for the tracking cookie</td></tr>
-<tr class="odd"><td><a href="mod_usertrack.html#cookiename">CookieName</a></td><td class="module"><a href="mod_usertrack.html">mod_usertrack</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Name of the tracking cookie</td></tr>
-<tr><td><a href="mod_usertrack.html#cookiestyle">CookieStyle</a></td><td class="module"><a href="mod_usertrack.html">mod_usertrack</a></td></tr>
-<tr><td colspan="2" class="descr">Format of the cookie header field</td></tr>
-<tr class="odd"><td><a href="mod_usertrack.html#cookietracking">CookieTracking</a></td><td class="module"><a href="mod_usertrack.html">mod_usertrack</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Enables tracking cookie</td></tr>
-<tr><td><a href="mod_mime.html#defaultlanguage">DefaultLanguage</a></td><td class="module"><a href="mod_mime.html">mod_mime</a></td></tr>
-<tr><td colspan="2" class="descr">Defines a default language-tag to be sent in the Content-Language
+<tr class="odd"><td><a href="mod_usertrack.html#cookiehttponly">CookieHTTPOnly</a></td><td class="module"><a href="mod_usertrack.html">mod_usertrack</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Adds the 'HTTPOnly' attribute to the cookie</td></tr>
+<tr><td><a href="mod_usertrack.html#cookiename">CookieName</a></td><td class="module"><a href="mod_usertrack.html">mod_usertrack</a></td></tr>
+<tr><td colspan="2" class="descr">Name of the tracking cookie</td></tr>
+<tr class="odd"><td><a href="mod_usertrack.html#cookiesamesite">CookieSameSite</a></td><td class="module"><a href="mod_usertrack.html">mod_usertrack</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Adds the 'SameSite' attribute to the cookie</td></tr>
+<tr><td><a href="mod_usertrack.html#cookiesecure">CookieSecure</a></td><td class="module"><a href="mod_usertrack.html">mod_usertrack</a></td></tr>
+<tr><td colspan="2" class="descr">Adds the 'Secure' attribute to the cookie</td></tr>
+<tr class="odd"><td><a href="mod_usertrack.html#cookiestyle">CookieStyle</a></td><td class="module"><a href="mod_usertrack.html">mod_usertrack</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Format of the cookie header field</td></tr>
+<tr><td><a href="mod_usertrack.html#cookietracking">CookieTracking</a></td><td class="module"><a href="mod_usertrack.html">mod_usertrack</a></td></tr>
+<tr><td colspan="2" class="descr">Enables tracking cookie</td></tr>
+<tr class="odd"><td><a href="mod_mime.html#defaultlanguage">DefaultLanguage</a></td><td class="module"><a href="mod_mime.html">mod_mime</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Defines a default language-tag to be sent in the Content-Language
 header field for all resources in the current context that have not been
 assigned a language-tag by some other means.</td></tr>
-<tr class="odd"><td><a href="core.html#defaulttype">DefaultType</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">This directive has no effect other than to emit warnings
+<tr><td><a href="core.html#defaulttype">DefaultType</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr><td colspan="2" class="descr">This directive has no effect other than to emit warnings
 if the value is not <code>none</code>. In prior versions, DefaultType
 would specify a default media type to assign to response content for
 which no other media type configuration could be found.
 </td></tr>
-<tr><td><a href="core.html#enablemmap">EnableMMAP</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr><td colspan="2" class="descr">Use memory-mapping to read files during delivery</td></tr>
-<tr class="odd"><td><a href="core.html#enablesendfile">EnableSendfile</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Use the kernel sendfile support to deliver files to the client</td></tr>
-<tr><td><a href="core.html#errordocument">ErrorDocument</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr><td colspan="2" class="descr">What the server will return to the client
+<tr class="odd"><td><a href="core.html#enablemmap">EnableMMAP</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Use memory-mapping to read files during delivery</td></tr>
+<tr><td><a href="core.html#enablesendfile">EnableSendfile</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr><td colspan="2" class="descr">Use the kernel sendfile support to deliver files to the client</td></tr>
+<tr class="odd"><td><a href="core.html#errordocument">ErrorDocument</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">What the server will return to the client
 in case of an error</td></tr>
-<tr class="odd"><td><a href="core.html#fileetag">FileETag</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">File attributes used to create the ETag
+<tr><td><a href="core.html#fileetag">FileETag</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr><td colspan="2" class="descr">File attributes used to create the ETag
 HTTP response header for static files</td></tr>
-<tr><td><a href="mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority</a></td><td class="module"><a href="mod_negotiation.html">mod_negotiation</a></td></tr>
-<tr><td colspan="2" class="descr">Action to take if a single acceptable document is not
+<tr class="odd"><td><a href="mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority</a></td><td class="module"><a href="mod_negotiation.html">mod_negotiation</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Action to take if a single acceptable document is not
 found</td></tr>
-<tr class="odd"><td><a href="core.html#forcetype">ForceType</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Forces all matching files to be served with the specified
+<tr><td><a href="core.html#forcetype">ForceType</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr><td colspan="2" class="descr">Forces all matching files to be served with the specified
 media type in the HTTP Content-Type header field</td></tr>
-<tr><td><a href="mod_http2.html#h2copyfiles">H2CopyFiles</a></td><td class="module"><a href="mod_http2.html">mod_http2</a></td></tr>
-<tr><td colspan="2" class="descr">Determine file handling in responses</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2pushresource">H2PushResource</a></td><td class="module"><a href="mod_http2.html">mod_http2</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Declares resources for early pushing to the client</td></tr>
-<tr><td><a href="mod_headers.html#header">Header</a></td><td class="module"><a href="mod_headers.html">mod_headers</a></td></tr>
-<tr><td colspan="2" class="descr">Configure HTTP response headers</td></tr>
-<tr class="odd"><td><a href="mod_isapi.html#isapiappendlogtoerrors">ISAPIAppendLogToErrors</a></td><td class="module"><a href="mod_isapi.html">mod_isapi</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Record <code>HSE_APPEND_LOG_PARAMETER</code> requests from
-ISAPI extensions to the error log</td></tr>
-<tr><td><a href="mod_isapi.html#isapiappendlogtoquery">ISAPIAppendLogToQuery</a></td><td class="module"><a href="mod_isapi.html">mod_isapi</a></td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2copyfiles">H2CopyFiles</a></td><td class="module"><a href="mod_http2.html">mod_http2</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Determine file handling in responses</td></tr>
+<tr><td><a href="mod_http2.html#h2pushresource">H2PushResource</a></td><td class="module"><a href="mod_http2.html">mod_http2</a></td></tr>
+<tr><td colspan="2" class="descr">Declares resources for early pushing to the client</td></tr>
+<tr class="odd"><td><a href="mod_headers.html#header">Header</a></td><td class="module"><a href="mod_headers.html">mod_headers</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Configure HTTP response headers</td></tr>
+<tr><td><a href="mod_isapi.html#isapiappendlogtoerrors">ISAPIAppendLogToErrors</a></td><td class="module"><a href="mod_isapi.html">mod_isapi</a></td></tr>
 <tr><td colspan="2" class="descr">Record <code>HSE_APPEND_LOG_PARAMETER</code> requests from
+ISAPI extensions to the error log</td></tr>
+<tr class="odd"><td><a href="mod_isapi.html#isapiappendlogtoquery">ISAPIAppendLogToQuery</a></td><td class="module"><a href="mod_isapi.html">mod_isapi</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Record <code>HSE_APPEND_LOG_PARAMETER</code> requests from
 ISAPI extensions to the query field</td></tr>
-<tr class="odd"><td><a href="mod_isapi.html#isapifakeasync">ISAPIFakeAsync</a></td><td class="module"><a href="mod_isapi.html">mod_isapi</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Fake asynchronous support for ISAPI callbacks</td></tr>
-<tr><td><a href="mod_isapi.html#isapilognotsupported">ISAPILogNotSupported</a></td><td class="module"><a href="mod_isapi.html">mod_isapi</a></td></tr>
-<tr><td colspan="2" class="descr">Log unsupported feature requests from ISAPI
+<tr><td><a href="mod_isapi.html#isapifakeasync">ISAPIFakeAsync</a></td><td class="module"><a href="mod_isapi.html">mod_isapi</a></td></tr>
+<tr><td colspan="2" class="descr">Fake asynchronous support for ISAPI callbacks</td></tr>
+<tr class="odd"><td><a href="mod_isapi.html#isapilognotsupported">ISAPILogNotSupported</a></td><td class="module"><a href="mod_isapi.html">mod_isapi</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Log unsupported feature requests from ISAPI
 extensions</td></tr>
-<tr class="odd"><td><a href="mod_isapi.html#isapireadaheadbuffer">ISAPIReadAheadBuffer</a></td><td class="module"><a href="mod_isapi.html">mod_isapi</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Size of the Read Ahead Buffer sent to ISAPI
+<tr><td><a href="mod_isapi.html#isapireadaheadbuffer">ISAPIReadAheadBuffer</a></td><td class="module"><a href="mod_isapi.html">mod_isapi</a></td></tr>
+<tr><td colspan="2" class="descr">Size of the Read Ahead Buffer sent to ISAPI
 extensions</td></tr>
-<tr><td><a href="mod_negotiation.html#languagepriority">LanguagePriority</a></td><td class="module"><a href="mod_negotiation.html">mod_negotiation</a></td></tr>
-<tr><td colspan="2" class="descr">The precedence of language variants for cases where
+<tr class="odd"><td><a href="mod_negotiation.html#languagepriority">LanguagePriority</a></td><td class="module"><a href="mod_negotiation.html">mod_negotiation</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">The precedence of language variants for cases where
 the client does not express a preference</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#mimeoptions">MimeOptions</a></td><td class="module"><a href="mod_mime.html">mod_mime</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Configures mod_mime behavior</td></tr>
-<tr><td><a href="mod_mime.html#multiviewsmatch">MultiviewsMatch</a></td><td class="module"><a href="mod_mime.html">mod_mime</a></td></tr>
-<tr><td colspan="2" class="descr">The types of files that will be included when searching for
+<tr><td><a href="mod_mime.html#mimeoptions">MimeOptions</a></td><td class="module"><a href="mod_mime.html">mod_mime</a></td></tr>
+<tr><td colspan="2" class="descr">Configures mod_mime behavior</td></tr>
+<tr class="odd"><td><a href="mod_mime.html#multiviewsmatch">MultiviewsMatch</a></td><td class="module"><a href="mod_mime.html">mod_mime</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">The types of files that will be included when searching for
 a matching file with MultiViews</td></tr>
-<tr class="odd"><td><a href="mod_env.html#passenv">PassEnv</a></td><td class="module"><a href="mod_env.html">mod_env</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Passes environment variables from the shell</td></tr>
-<tr><td><a href="mod_proxy_express.html#proxyexpressdbmfile">ProxyExpressDBMFile</a></td><td class="module"><a href="mod_proxy_express.html">mod_proxy_express</a></td></tr>
-<tr><td colspan="2" class="descr">Pathname to DBM file.</td></tr>
-<tr class="odd"><td><a href="mod_proxy_express.html#proxyexpressdbmtype">ProxyExpressDBMType</a></td><td class="module"><a href="mod_proxy_express.html">mod_proxy_express</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">DBM type of file.</td></tr>
-<tr><td><a href="mod_proxy_express.html#proxyexpressenable">ProxyExpressEnable</a></td><td class="module"><a href="mod_proxy_express.html">mod_proxy_express</a></td></tr>
-<tr><td colspan="2" class="descr">Enable the module functionality.</td></tr>
-<tr class="odd"><td><a href="mod_proxy_fcgi.html#proxyfcgibackendtype">ProxyFCGIBackendType</a></td><td class="module"><a href="mod_proxy_fcgi.html">mod_proxy_fcgi</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Specify the type of backend FastCGI application</td></tr>
-<tr><td><a href="mod_proxy_fcgi.html#proxyfcgisetenvif">ProxyFCGISetEnvIf</a></td><td class="module"><a href="mod_proxy_fcgi.html">mod_proxy_fcgi</a></td></tr>
-<tr><td colspan="2" class="descr">Allow variables sent to FastCGI servers to be fixed up</td></tr>
-<tr class="odd"><td><a href="mod_proxy_hcheck.html#proxyhcexpr">ProxyHCExpr</a></td><td class="module"><a href="mod_proxy_hcheck.html">mod_proxy_hcheck</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Creates a named condition expression to use to determine health of the backend based on its response</td></tr>
-<tr><td><a href="mod_proxy_hcheck.html#proxyhctemplate">ProxyHCTemplate</a></td><td class="module"><a href="mod_proxy_hcheck.html">mod_proxy_hcheck</a></td></tr>
-<tr><td colspan="2" class="descr">Creates a named template for setting various health check parameters</td></tr>
-<tr class="odd"><td><a href="core.html#qualifyredirecturl">QualifyRedirectURL</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Controls whether the REDIRECT_URL environment variable is
+<tr><td><a href="mod_env.html#passenv">PassEnv</a></td><td class="module"><a href="mod_env.html">mod_env</a></td></tr>
+<tr><td colspan="2" class="descr">Passes environment variables from the shell</td></tr>
+<tr class="odd"><td><a href="mod_proxy_express.html#proxyexpressdbmfile">ProxyExpressDBMFile</a></td><td class="module"><a href="mod_proxy_express.html">mod_proxy_express</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Pathname to DBM file.</td></tr>
+<tr><td><a href="mod_proxy_express.html#proxyexpressdbmtype">ProxyExpressDBMType</a></td><td class="module"><a href="mod_proxy_express.html">mod_proxy_express</a></td></tr>
+<tr><td colspan="2" class="descr">DBM type of file.</td></tr>
+<tr class="odd"><td><a href="mod_proxy_express.html#proxyexpressenable">ProxyExpressEnable</a></td><td class="module"><a href="mod_proxy_express.html">mod_proxy_express</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Enable the module functionality.</td></tr>
+<tr><td><a href="mod_proxy_fcgi.html#proxyfcgibackendtype">ProxyFCGIBackendType</a></td><td class="module"><a href="mod_proxy_fcgi.html">mod_proxy_fcgi</a></td></tr>
+<tr><td colspan="2" class="descr">Specify the type of backend FastCGI application</td></tr>
+<tr class="odd"><td><a href="mod_proxy_fcgi.html#proxyfcgisetenvif">ProxyFCGISetEnvIf</a></td><td class="module"><a href="mod_proxy_fcgi.html">mod_proxy_fcgi</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Allow variables sent to FastCGI servers to be fixed up</td></tr>
+<tr><td><a href="mod_proxy_hcheck.html#proxyhcexpr">ProxyHCExpr</a></td><td class="module"><a href="mod_proxy_hcheck.html">mod_proxy_hcheck</a></td></tr>
+<tr><td colspan="2" class="descr">Creates a named condition expression to use to determine health of the backend based on its response</td></tr>
+<tr class="odd"><td><a href="mod_proxy_hcheck.html#proxyhctemplate">ProxyHCTemplate</a></td><td class="module"><a href="mod_proxy_hcheck.html">mod_proxy_hcheck</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Creates a named template for setting various health check parameters</td></tr>
+<tr><td><a href="core.html#qualifyredirecturl">QualifyRedirectURL</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr><td colspan="2" class="descr">Controls whether the REDIRECT_URL environment variable is
              fully qualified</td></tr>
-<tr><td><a href="mod_alias.html#redirect">Redirect</a></td><td class="module"><a href="mod_alias.html">mod_alias</a></td></tr>
-<tr><td colspan="2" class="descr">Sends an external redirect asking the client to fetch
+<tr class="odd"><td><a href="mod_alias.html#redirect">Redirect</a></td><td class="module"><a href="mod_alias.html">mod_alias</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Sends an external redirect asking the client to fetch
 a different URL</td></tr>
-<tr class="odd"><td><a href="mod_alias.html#redirectmatch">RedirectMatch</a></td><td class="module"><a href="mod_alias.html">mod_alias</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Sends an external redirect based on a regular expression match
+<tr><td><a href="mod_alias.html#redirectmatch">RedirectMatch</a></td><td class="module"><a href="mod_alias.html">mod_alias</a></td></tr>
+<tr><td colspan="2" class="descr">Sends an external redirect based on a regular expression match
 of the current URL</td></tr>
-<tr><td><a href="mod_alias.html#redirectpermanent">RedirectPermanent</a></td><td class="module"><a href="mod_alias.html">mod_alias</a></td></tr>
-<tr><td colspan="2" class="descr">Sends an external permanent redirect asking the client to fetch
+<tr class="odd"><td><a href="mod_alias.html#redirectpermanent">RedirectPermanent</a></td><td class="module"><a href="mod_alias.html">mod_alias</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Sends an external permanent redirect asking the client to fetch
 a different URL</td></tr>
-<tr class="odd"><td><a href="mod_alias.html#redirecttemp">RedirectTemp</a></td><td class="module"><a href="mod_alias.html">mod_alias</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Sends an external temporary redirect asking the client to fetch
+<tr><td><a href="mod_alias.html#redirecttemp">RedirectTemp</a></td><td class="module"><a href="mod_alias.html">mod_alias</a></td></tr>
+<tr><td colspan="2" class="descr">Sends an external temporary redirect asking the client to fetch
 a different URL</td></tr>
-<tr><td><a href="mod_mime.html#removecharset">RemoveCharset</a></td><td class="module"><a href="mod_mime.html">mod_mime</a></td></tr>
-<tr><td colspan="2" class="descr">Removes any character set associations for a set of file
+<tr class="odd"><td><a href="mod_mime.html#removecharset">RemoveCharset</a></td><td class="module"><a href="mod_mime.html">mod_mime</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Removes any character set associations for a set of file
 extensions</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#removeencoding">RemoveEncoding</a></td><td class="module"><a href="mod_mime.html">mod_mime</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Removes any content encoding associations for a set of file
+<tr><td><a href="mod_mime.html#removeencoding">RemoveEncoding</a></td><td class="module"><a href="mod_mime.html">mod_mime</a></td></tr>
+<tr><td colspan="2" class="descr">Removes any content encoding associations for a set of file
 extensions</td></tr>
-<tr><td><a href="mod_mime.html#removehandler">RemoveHandler</a></td><td class="module"><a href="mod_mime.html">mod_mime</a></td></tr>
-<tr><td colspan="2" class="descr">Removes any handler associations for a set of file
+<tr class="odd"><td><a href="mod_mime.html#removehandler">RemoveHandler</a></td><td class="module"><a href="mod_mime.html">mod_mime</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Removes any handler associations for a set of file
 extensions</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#removeinputfilter">RemoveInputFilter</a></td><td class="module"><a href="mod_mime.html">mod_mime</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Removes any input filter associations for a set of file
+<tr><td><a href="mod_mime.html#removeinputfilter">RemoveInputFilter</a></td><td class="module"><a href="mod_mime.html">mod_mime</a></td></tr>
+<tr><td colspan="2" class="descr">Removes any input filter associations for a set of file
 extensions</td></tr>
-<tr><td><a href="mod_mime.html#removelanguage">RemoveLanguage</a></td><td class="module"><a href="mod_mime.html">mod_mime</a></td></tr>
-<tr><td colspan="2" class="descr">Removes any language associations for a set of file
+<tr class="odd"><td><a href="mod_mime.html#removelanguage">RemoveLanguage</a></td><td class="module"><a href="mod_mime.html">mod_mime</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Removes any language associations for a set of file
 extensions</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#removeoutputfilter">RemoveOutputFilter</a></td><td class="module"><a href="mod_mime.html">mod_mime</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Removes any output filter associations for a set of file
+<tr><td><a href="mod_mime.html#removeoutputfilter">RemoveOutputFilter</a></td><td class="module"><a href="mod_mime.html">mod_mime</a></td></tr>
+<tr><td colspan="2" class="descr">Removes any output filter associations for a set of file
 extensions</td></tr>
-<tr><td><a href="mod_mime.html#removetype">RemoveType</a></td><td class="module"><a href="mod_mime.html">mod_mime</a></td></tr>
-<tr><td colspan="2" class="descr">Removes any content type associations for a set of file
+<tr class="odd"><td><a href="mod_mime.html#removetype">RemoveType</a></td><td class="module"><a href="mod_mime.html">mod_mime</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Removes any content type associations for a set of file
 extensions</td></tr>
-<tr class="odd"><td><a href="mod_headers.html#requestheader">RequestHeader</a></td><td class="module"><a href="mod_headers.html">mod_headers</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Configure HTTP request headers</td></tr>
-<tr><td><a href="mod_rewrite.html#rewritebase">RewriteBase</a></td><td class="module"><a href="mod_rewrite.html">mod_rewrite</a></td></tr>
-<tr><td colspan="2" class="descr">Sets the base URL for per-directory rewrites</td></tr>
-<tr class="odd"><td><a href="mod_rewrite.html#rewritecond">RewriteCond</a></td><td class="module"><a href="mod_rewrite.html">mod_rewrite</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Defines a condition under which rewriting will take place
+<tr><td><a href="mod_headers.html#requestheader">RequestHeader</a></td><td class="module"><a href="mod_headers.html">mod_headers</a></td></tr>
+<tr><td colspan="2" class="descr">Configure HTTP request headers</td></tr>
+<tr class="odd"><td><a href="mod_rewrite.html#rewritebase">RewriteBase</a></td><td class="module"><a href="mod_rewrite.html">mod_rewrite</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Sets the base URL for per-directory rewrites</td></tr>
+<tr><td><a href="mod_rewrite.html#rewritecond">RewriteCond</a></td><td class="module"><a href="mod_rewrite.html">mod_rewrite</a></td></tr>
+<tr><td colspan="2" class="descr">Defines a condition under which rewriting will take place
 </td></tr>
-<tr><td><a href="mod_rewrite.html#rewriteengine">RewriteEngine</a></td><td class="module"><a href="mod_rewrite.html">mod_rewrite</a></td></tr>
-<tr><td colspan="2" class="descr">Enables or disables runtime rewriting engine</td></tr>
-<tr class="odd"><td><a href="mod_rewrite.html#rewriteoptions">RewriteOptions</a></td><td class="module"><a href="mod_rewrite.html">mod_rewrite</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Sets some special options for the rewrite engine</td></tr>
-<tr><td><a href="mod_rewrite.html#rewriterule">RewriteRule</a></td><td class="module"><a href="mod_rewrite.html">mod_rewrite</a></td></tr>
-<tr><td colspan="2" class="descr">Defines rules for the rewriting engine</td></tr>
-<tr class="odd"><td><a href="core.html#scriptinterpretersource">ScriptInterpreterSource</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Technique for locating the interpreter for CGI
+<tr class="odd"><td><a href="mod_rewrite.html#rewriteengine">RewriteEngine</a></td><td class="module"><a href="mod_rewrite.html">mod_rewrite</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Enables or disables runtime rewriting engine</td></tr>
+<tr><td><a href="mod_rewrite.html#rewriteoptions">RewriteOptions</a></td><td class="module"><a href="mod_rewrite.html">mod_rewrite</a></td></tr>
+<tr><td colspan="2" class="descr">Sets some special options for the rewrite engine</td></tr>
+<tr class="odd"><td><a href="mod_rewrite.html#rewriterule">RewriteRule</a></td><td class="module"><a href="mod_rewrite.html">mod_rewrite</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Defines rules for the rewriting engine</td></tr>
+<tr><td><a href="core.html#scriptinterpretersource">ScriptInterpreterSource</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr><td colspan="2" class="descr">Technique for locating the interpreter for CGI
 scripts</td></tr>
-<tr><td><a href="mod_env.html#setenv">SetEnv</a></td><td class="module"><a href="mod_env.html">mod_env</a></td></tr>
-<tr><td colspan="2" class="descr">Sets environment variables</td></tr>
-<tr class="odd"><td><a href="mod_setenvif.html#setenvif">SetEnvIf</a></td><td class="module"><a href="mod_setenvif.html">mod_setenvif</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Sets environment variables based on attributes of the request
+<tr class="odd"><td><a href="mod_env.html#setenv">SetEnv</a></td><td class="module"><a href="mod_env.html">mod_env</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Sets environment variables</td></tr>
+<tr><td><a href="mod_setenvif.html#setenvif">SetEnvIf</a></td><td class="module"><a href="mod_setenvif.html">mod_setenvif</a></td></tr>
+<tr><td colspan="2" class="descr">Sets environment variables based on attributes of the request
 </td></tr>
-<tr><td><a href="mod_setenvif.html#setenvifexpr">SetEnvIfExpr</a></td><td class="module"><a href="mod_setenvif.html">mod_setenvif</a></td></tr>
-<tr><td colspan="2" class="descr">Sets environment variables based on an ap_expr expression</td></tr>
-<tr class="odd"><td><a href="mod_setenvif.html#setenvifnocase">SetEnvIfNoCase</a></td><td class="module"><a href="mod_setenvif.html">mod_setenvif</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Sets environment variables based on attributes of the request
+<tr class="odd"><td><a href="mod_setenvif.html#setenvifexpr">SetEnvIfExpr</a></td><td class="module"><a href="mod_setenvif.html">mod_setenvif</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Sets environment variables based on an ap_expr expression</td></tr>
+<tr><td><a href="mod_setenvif.html#setenvifnocase">SetEnvIfNoCase</a></td><td class="module"><a href="mod_setenvif.html">mod_setenvif</a></td></tr>
+<tr><td colspan="2" class="descr">Sets environment variables based on attributes of the request
 without respect to case</td></tr>
-<tr><td><a href="core.html#sethandler">SetHandler</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr><td colspan="2" class="descr">Forces all matching files to be processed by a
+<tr class="odd"><td><a href="core.html#sethandler">SetHandler</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Forces all matching files to be processed by a
 handler</td></tr>
-<tr class="odd"><td><a href="core.html#setinputfilter">SetInputFilter</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Sets the filters that will process client requests and POST
+<tr><td><a href="core.html#setinputfilter">SetInputFilter</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr><td colspan="2" class="descr">Sets the filters that will process client requests and POST
 input</td></tr>
-<tr><td><a href="core.html#setoutputfilter">SetOutputFilter</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr><td colspan="2" class="descr">Sets the filters that will process responses from the
+<tr class="odd"><td><a href="core.html#setoutputfilter">SetOutputFilter</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Sets the filters that will process responses from the
 server</td></tr>
-<tr class="odd"><td><a href="mod_substitute.html#substitute">Substitute</a></td><td class="module"><a href="mod_substitute.html">mod_substitute</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Pattern to filter the response content</td></tr>
-<tr><td><a href="mod_substitute.html#substituteinheritbefore">SubstituteInheritBefore</a></td><td class="module"><a href="mod_substitute.html">mod_substitute</a></td></tr>
-<tr><td colspan="2" class="descr">Change the merge order of inherited patterns</td></tr>
-<tr class="odd"><td><a href="mod_substitute.html#substitutemaxlinelength">SubstituteMaxLineLength</a></td><td class="module"><a href="mod_substitute.html">mod_substitute</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Set the maximum line size</td></tr>
-<tr><td><a href="mod_env.html#unsetenv">UnsetEnv</a></td><td class="module"><a href="mod_env.html">mod_env</a></td></tr>
-<tr><td colspan="2" class="descr">Removes variables from the environment</td></tr>
+<tr><td><a href="mod_substitute.html#substitute">Substitute</a></td><td class="module"><a href="mod_substitute.html">mod_substitute</a></td></tr>
+<tr><td colspan="2" class="descr">Pattern to filter the response content</td></tr>
+<tr class="odd"><td><a href="mod_substitute.html#substituteinheritbefore">SubstituteInheritBefore</a></td><td class="module"><a href="mod_substitute.html">mod_substitute</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Change the merge order of inherited patterns</td></tr>
+<tr><td><a href="mod_substitute.html#substitutemaxlinelength">SubstituteMaxLineLength</a></td><td class="module"><a href="mod_substitute.html">mod_substitute</a></td></tr>
+<tr><td colspan="2" class="descr">Set the maximum line size</td></tr>
+<tr class="odd"><td><a href="mod_env.html#unsetenv">UnsetEnv</a></td><td class="module"><a href="mod_env.html">mod_env</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Removes variables from the environment</td></tr>
 </table></div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a name="override-indexes">Indexes</a></h2>
     <p>
       The following directives are allowed in .htaccess files when
@@ -854,7 +862,7 @@ directory</td></tr>
 set</td></tr>
 </table></div></div></div><div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/overrides.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/overrides.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/overrides.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';

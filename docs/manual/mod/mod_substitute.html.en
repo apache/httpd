@@ -27,12 +27,12 @@
 <div id="preamble"><h1>Apache Module mod_substitute</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_substitute.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_substitute.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_substitute.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Perform search and replace operations on response bodies</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Module&#160;Identifier:</a></th><td>substitute_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source&#160;File:</a></th><td>mod_substitute.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>substitute_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_substitute.c</td></tr></table>
 <h3>Summary</h3>
 
     <p><code class="module"><a href="../mod/mod_substitute.html">mod_substitute</a></code> provides a mechanism to perform
@@ -88,7 +88,7 @@
 
     <p>The <var>substitution</var> may contain literal text and regular
     expression backreferences. If the substitution begins with the text 
-    <code>expr=</code> it is intepreted as an <a href="../expr.html">
+    <code>expr=</code> it is interpreted as an <a href="../expr.html">
     expression</a> which allows access to environment variables and
     header values.  </p>
 
@@ -99,7 +99,7 @@
 </div>
 
     <p>The character which is used to separate (or "delimit") the
-    various parts of the substituion string is referred to as the
+    various parts of the substitution string is referred to as the
     "delimiter", and it is most common to use a slash for this
     purpose.</p>
 
@@ -219,7 +219,7 @@ Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"<
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_substitute.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_substitute.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_substitute.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';

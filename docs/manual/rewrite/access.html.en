@@ -24,7 +24,7 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Using mod_rewrite to control access</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/rewrite/access.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/rewrite/access.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/rewrite/access.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
 
 
@@ -43,7 +43,7 @@ configuration.</div>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#blocked-inline-images">Forbidding Image "Hotlinking"</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#blocking-of-robots">Blocking of Robots</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#host-deny">Denying Hosts in a Blacklist</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#host-deny">Denying Hosts in a Reject List</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#referer-deflector">Referer-based Deflector</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="intro.html">mod_rewrite introduction</a></li><li><a href="remapping.html">Redirection and remapping</a></li><li><a href="vhosts.html">Virtual hosts</a></li><li><a href="proxy.html">Proxying</a></li><li><a href="rewritemap.html">Using RewriteMap</a></li><li><a href="advanced.html">Advanced techniques</a></li><li><a href="avoid.html">When not to use mod_rewrite</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -196,7 +196,7 @@ RewriteRule "^/secret/files/"      "-"                   [F]</pre>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="host-deny" id="host-deny">Denying Hosts in a Blacklist</a> <a title="Permanent link" href="#host-deny" class="permalink">&para;</a></h2>
+<h2><a name="host-deny" id="host-deny">Denying Hosts in a Reject List</a> <a title="Permanent link" href="#host-deny" class="permalink">&para;</a></h2>
 
   
 
@@ -204,7 +204,7 @@ RewriteRule "^/secret/files/"      "-"                   [F]</pre>
     <dt>Description:</dt>
 
     <dd>
-      <p>We wish to maintain a blacklist of hosts, rather like
+      <p>We wish to maintain a list of hosts, rather like
       <code>hosts.deny</code>, and have those hosts blocked from
       accessing our server.</p>
     </dd>
@@ -295,7 +295,7 @@ http://badguys.example.com/bad/index3.html   http://somewhere.example.com/</pre>
 </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/rewrite/access.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/rewrite/access.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/rewrite/access.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';

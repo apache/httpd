@@ -83,12 +83,11 @@
 CGI program</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CGIDScriptTimeout <var>time</var>[s|ms]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>value of <code class="directive"><a href="../mod/core.html#timeout">Timeout</a></code> directive when
-unset</code></td></tr>
+unset or set to 0</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cgid</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>CGIDScriptTimeout defaults to zero in releases 2.4 and earlier
-</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Available in httpd 2.4.10 and later; in prior releases no timeout was applied</td></tr>
 </table><p>このディレクティブの解説文書は
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
