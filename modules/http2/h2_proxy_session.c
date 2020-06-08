@@ -64,6 +64,121 @@ static apr_status_t check_suspended(h2_proxy_session *session);
 static void stream_resume(h2_proxy_stream *stream);
 static apr_status_t submit_trailers(h2_proxy_stream *stream);
 
+/*
+ * The H2_PING connection sub-state: a state independant of the H2_SESSION state
+ * of the connection:
+ * - H2_PING_ST_NONE: no interference with request handling, ProxyTimeout in effect.
+ *   When entered, all suspended streams are unsuspended again.
+ * - H2_PING_ST_AWAIT_ANY: new requests are suspended, a possibly configured "ping"
+ *   timeout is in effect. Any frame received transits to H2_PING_ST_NONE.
+ * - H2_PING_ST_AWAIT_PING: same as above, but only a PING frame transits 
+ *   to H2_PING_ST_NONE.
+ *
+ * An AWAIT state is entered on a new connection or when re-using a connection and
+ * the last frame received has been some time ago. The latter sends a PING frame
+ * and insists on an answer, the former is satisfied by any frame received from the
+ * backend.
+ *
+ * This works for new connections as there is always at least one SETTINGS frame
+ * that the backend sends. When re-using connection, we send a PING and insist on
+ * receiving one back, as there might be frames in our connection buffers from
+ * some time ago. Since some servers have protections against PING flooding, we
+ * only ever have one PING unanswered.
+ *
+ * Requests are suspended while in a PING state, as we do not want to send data
+ * before we can be reasonably sure that the connection is working (at least on
+ * the h2 protocol level). This also means that the session can do blocking reads
+ * when expecting PING answers.
+ */
+static void set_ping_timeout(h2_proxy_session *session)
+{
+    if (session->ping_timeout != -1 && session->save_timeout == -1) {
+        apr_socket_t *socket = NULL;
+
+        socket = ap_get_conn_socket(session->c);
+        if (socket) {
+            apr_socket_timeout_get(socket, &session->save_timeout);
+            apr_socket_timeout_set(socket, session->ping_timeout);
+        }
+    }
+}
+
+static void unset_ping_timeout(h2_proxy_session *session)
+{
+    if (session->save_timeout != -1) {
+        apr_socket_t *socket = NULL;
+
+        socket = ap_get_conn_socket(session->c);
+        if (socket) {
+            apr_socket_timeout_set(socket, session->save_timeout);
+            session->save_timeout = -1;
+        }
+    }
+}
+
+static void enter_ping_state(h2_proxy_session *session, h2_ping_state_t state)
+{
+    if (session->ping_state == state) return;
+    switch (session->ping_state) {
+    case H2_PING_ST_NONE:
+        /* leaving NONE, enforce timeout, send frame maybe */
+        if (H2_PING_ST_AWAIT_PING == state) {
+            unset_ping_timeout(session);
+            nghttp2_submit_ping(session->ngh2, 0, (const uint8_t *)"nevergonnagiveyouup");
+        }
+        set_ping_timeout(session);
+        session->ping_state = state;
+        break;
+    default:
+        /* no switching between the != NONE states */
+        if (H2_PING_ST_NONE == state) {
+            session->ping_state = state;
+            unset_ping_timeout(session);
+            ping_arrived(session);
+        }
+        break;
+    }
+}
+
+static void ping_new_session(h2_proxy_session *session, proxy_conn_rec *p_conn)
+{
+    session->save_timeout = -1;
+    session->ping_timeout = (p_conn->worker->s->ping_timeout_set?
+                             p_conn->worker->s->ping_timeout : -1);
+    session->ping_state = H2_PING_ST_NONE;
+    enter_ping_state(session, H2_PING_ST_AWAIT_ANY);
+}
+
+static void ping_reuse_session(h2_proxy_session *session)
+{
+    if (H2_PING_ST_NONE == session->ping_state) {
+        apr_interval_time_t age = apr_time_now() - session->last_frame_received;
+        if (age > apr_time_from_sec(1)) {
+            enter_ping_state(session, H2_PING_ST_AWAIT_PING);
+        }
+    }
+}
+
+static void ping_ev_frame_received(h2_proxy_session *session, const nghttp2_frame *frame)
+{
+    session->last_frame_received = apr_time_now();
+    switch (session->ping_state) {
+    case H2_PING_ST_NONE:
+        /* nop */
+        break;
+    case H2_PING_ST_AWAIT_ANY:
+        enter_ping_state(session, H2_PING_ST_NONE);
+        break;
+    case H2_PING_ST_AWAIT_PING:
+        if (NGHTTP2_PING == frame->hd.type) {
+            enter_ping_state(session, H2_PING_ST_NONE);
+        }
+        /* we may receive many other frames while we are waiting for the
+         * PING answer. They may come all from our connection buffers and
+         * say nothing about the current state of the backend. */
+        break;
+    }
+}
 
 static apr_status_t proxy_session_pre_close(void *theconn)
 {
@@ -154,7 +269,8 @@ static int on_frame_recv(nghttp2_session *ngh2, const nghttp2_frame *frame,
                       session->id, buffer);
     }
 
-    session->last_frame_received = apr_time_now();
+    ping_ev_frame_received(session, frame);
+    /* Action for frame types: */
     switch (frame->hd.type) {
         case NGHTTP2_HEADERS:
             stream = nghttp2_session_get_stream_user_data(ngh2, frame->hd.stream_id);
@@ -195,10 +311,6 @@ static int on_frame_recv(nghttp2_session *ngh2, const nghttp2_frame *frame,
             stream_resume(stream);
             break;
         case NGHTTP2_PING:
-            if (session->check_ping) {
-                session->check_ping = 0;
-                ping_arrived(session);
-            }
             break;
         case NGHTTP2_PUSH_PROMISE:
             break;
@@ -499,7 +611,7 @@ static ssize_t stream_request_data(nghttp2_session *ngh2, int32_t stream_id,
         return NGHTTP2_ERR_CALLBACK_FAILURE;
     }
     
-    if (stream->session->check_ping) {
+    if (stream->session->ping_state != H2_PING_ST_NONE) {
         /* suspend until we hear from the other side */
         stream->waiting_on_ping = 1;
         status = APR_EAGAIN;
@@ -654,18 +766,13 @@ h2_proxy_session *h2_proxy_session_setup(const char *id, proxy_conn_rec *p_conn,
         nghttp2_option_del(option);
         nghttp2_session_callbacks_del(cbs);
 
+        ping_new_session(session, p_conn);
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03362)
                       "setup session for %s", p_conn->hostname);
     }
     else {
         h2_proxy_session *session = p_conn->data;
-        if (!session->check_ping) {
-            apr_interval_time_t age = apr_time_now() - session->last_frame_received;
-            if (age > apr_time_from_sec(1)) {
-                session->check_ping = 1;
-                nghttp2_submit_ping(session->ngh2, 0, (const uint8_t *)"nevergonnagiveyouup");
-            }
-        }
+        ping_reuse_session(session);
     }
     return p_conn->data;
 }
@@ -976,7 +1083,7 @@ static void stream_resume(h2_proxy_stream *stream)
 
 static int is_waiting_for_backend(h2_proxy_session *session)
 {
-    return (session->check_ping 
+    return ((session->ping_state != H2_PING_ST_NONE) 
             || ((session->suspended->nelts <= 0)
                 && !nghttp2_session_want_write(session->ngh2)
                 && nghttp2_session_want_read(session->ngh2)));
@@ -1399,7 +1506,6 @@ apr_status_t h2_proxy_session_process(h2_proxy_session *session)
 {
     apr_status_t status;
     int have_written = 0, have_read = 0;
-    apr_interval_time_t timeout;
 
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c, 
                   "h2_proxy_session(%s): process", session->id);
@@ -1438,25 +1544,11 @@ run_loop:
             
         case H2_PROXYS_ST_WAIT:
             if (is_waiting_for_backend(session)) {
-                /*
-                 * We can do a blocking read. There is nothing we want to
-                 * send or check until we get more data from the backend.
-                 * The timeout used is either the one currently on the socket
-                 * as indicated by a passed value of 0 or the ping timeout
-                 * set via the ping parameter on the worker if set and if
-                 * we are waiting for a ping.
-                 * The timeout on the socket is configured via
-                 * Timeout -> ProxyTimeout -> timeout parameter on the used
-                 * worker with the later ones taking precedence.
-                 */
-                if (session->check_ping
-                    && session->p_conn->worker->s->ping_timeout_set) {
-                    timeout = session->p_conn->worker->s->ping_timeout;
-                }
-                else {
-                    timeout = 0;
-                }
-                status = h2_proxy_session_read(session, 1, timeout);
+                /* we can do a blocking read with the default timeout (as
+                 * configured via ProxyTimeout in our socket. There is
+                 * nothing we want to send or check until we get more data
+                 * from the backend. */
+                status = h2_proxy_session_read(session, 1, 0);
                 if (status == APR_SUCCESS) {
                     have_read = 1;
                     dispatch_event(session, H2_PROXYS_EV_DATA_READ, 0, NULL);

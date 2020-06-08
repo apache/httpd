@@ -1,6 +1,14 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.44
 
+  *) mod_proxy_http2: the "ping" proxy parameter·
+     (see <https://httpd.apache.org/docs/2.4/mod/mod_proxy.html>) is now used
+     when checking the liveliness of a new or reused h2 connection to the
+     backend.
+     With short durations, this makes load-balancing more responsive. The module
+     will hold back requests until ping conditions are met, using features of
+     the HTTP/2 protocol alone. [Ruediger Pluem, Stefan Eissing]
+
   *) core: httpd is no longer linked against -lsystemd if mod_systemd
      is enabled (and built as a DSO).  [Rainer Jung]
 
