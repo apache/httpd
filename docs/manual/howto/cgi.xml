@@ -564,8 +564,8 @@ foreach my $key (keys %ENV) {
 
     <p>If you're writing CGI programs in C, there are a variety of
     options. One of these is the <code>CGIC</code> library, from
-    <a href="http://www.boutell.com/cgic/"
-    >http://www.boutell.com/cgic/</a>.</p>
+    <a href="https://web.mit.edu/wwwdev/www/cgic.html"
+    >https://web.mit.edu/wwwdev/www/cgic.html</a>.</p>
   </section>
 
   <section id="moreinfo">
