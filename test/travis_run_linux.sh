@@ -91,7 +91,7 @@ if ! test -v SKIP_TESTING; then
     fi
 
     if test $RV -ne 0 -a -r test/perl-framework/t/logs/error_log; then
-        tail test/perl-framework/t/logs/error_log
+        tail -n200 test/perl-framework/t/logs/error_log
     fi
 
     exit $RV
