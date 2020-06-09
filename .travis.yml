@@ -278,9 +278,15 @@ before_script:
 script:
   - ./test/travis_run_${TRAVIS_OS_NAME}.sh
 
+# Send notifications by default to IRC and dev@, for everything but
+# forks, otherwise any build from a fork will spam the list with CI
+# results.
 notifications:
-  irc: "chat.freenode.net#httpd-dev"
-  # Disabled to avoid too many failure emails to dev@,
-  # some builds occasionally fail.
+  irc:
+    if: fork = false
+    channels:
+      - "chat.freenode.net#httpd-dev"
   email:
-    - dev@httpd.apache.org
+    if: fork = false
+    recipients:
+      - dev@httpd.apache.org
