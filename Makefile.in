@@ -36,7 +36,8 @@ EXTRACLEAN_TARGETS = configure include/ap_config_auto.h.in generated_lists \
 	httpd.spec
 PHONY_TARGETS := check check-conf check-dirs check-include unittest-objdir
 
-TESTS = 
+TESTS =
+TEST_CONFIG =
 
 include $(top_builddir)/build/rules.mk
 include $(top_srcdir)/build/program.mk
@@ -443,7 +444,7 @@ $(TEST_SUITE_LOCATION)/Makefile: $(TEST_SUITE_LOCATION)/Makefile.PL $(INSTALL_HE
 	cd "$(TEST_SUITE_LOCATION)" && \
 	    perl Makefile.PL -apxs "$(top_builddir)/check/bin/apxs" && \
 	    ./t/TEST -clean && \
-	    ./t/TEST -config
+	    ./t/TEST -config $(TEST_CONFIG)
 
 check-make: $(TEST_SUITE_LOCATION)/Makefile
 
@@ -453,7 +454,7 @@ check-no:
 
 check-yes: check-include check-dirs check-conf check/build/config_vars.mk \
 	check-binaries $(TEST_SUITE_LOCATION)/Makefile
-	cd $(TEST_SUITE_LOCATION) && $(MAKE) && ./t/TEST $(TESTS)
+	cd $(TEST_SUITE_LOCATION) && $(MAKE) && ./t/TEST $(TEST_CONFIG) $(TESTS)
 
 # Run the Apache::Test suite if it has been configured with --with-test-suite.
 check: check-$(WITH_TEST_SUITE)
