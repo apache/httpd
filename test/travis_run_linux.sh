@@ -52,13 +52,13 @@ if ! test -v SKIP_TESTING; then
     fi
 
     if test -v WITH_TEST_SUITE; then
-        make check TESTS="${TEST_ARGS}"
+        make check TESTS="${TESTS}" TEST_CONFIG="${TEST_ARGS}"
         RV=$?
     else
         test -v TEST_INSTALL || make install
         pushd test/perl-framework
             perl Makefile.PL -apxs $PREFIX/bin/apxs
-            make test APACHE_TEST_EXTRA_ARGS="${TEST_ARGS}"
+            make test APACHE_TEST_EXTRA_ARGS="${TEST_ARGS} ${TESTS}"
             RV=$?
         popd
     fi
@@ -66,6 +66,8 @@ if ! test -v SKIP_TESTING; then
         pushd test/perl-framework
            mkdir -p t/htdocs/modules/dav
            ./t/TEST -start
+           # litmus uses $TESTS, so unset it.
+           unset TESTS
            litmus http://localhost:8529/modules/dav/
            RV=$?
            ./t/TEST -stop

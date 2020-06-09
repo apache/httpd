@@ -81,6 +81,16 @@ if ! test -v SKIP_TESTING; then
     git clone --depth=1 https://github.com/apache/httpd-tests.git test/perl-framework
 fi
 
+# For LDAP testing, run slapd listening on port 8389 and populate the
+# directory as described in t/modules/ldap.t in the test framework:
+LDIF=test/perl-framework/scripts/httpd.ldif
+if test -v TEST_LDAP -a -r $LDIF ; then
+    docker build -t httpd_slapd -f test/travis_Dockerfile_slapd test/
+    docker run -d -p 8389:389 httpd_slapd | tee .slapd.cid
+    sleep 5
+    ldapadd -H ldap://localhost:8389 -D cn=admin,dc=example,dc=com -w travis < $LDIF
+fi
+
 if test -v APR_VERSION; then
     install_apx apr ${APR_VERSION} "${APR_CONFIG}"
     APU_CONFIG="$APU_CONFIG --with-apr=$HOME/root/apr-${APR_VERSION}"
