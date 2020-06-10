@@ -1,7 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
-  *) mod_proxy_http2: the "ping" proxy parameter 
+
+  *) core: Have the HTTP 0.9 / 1.1 processing code reject requests for
+     HTTP >= 2.0 with a HTTP Version Not Support status code. [Ruediger Pluem]
+
+  *) mod_proxy_http2: the "ping" proxy parameter
      (see <https://httpd.apache.org/docs/2.4/mod/mod_proxy.html>) is now used
      when checking the liveliness of a new or reused h2 connection to the backend.
      With short durations, this makes load-balancing more responsive. The module
