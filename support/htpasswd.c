@@ -111,7 +111,7 @@ static void usage(void)
         " -m  Force MD5 encryption of the password (default)." NL
         " -2  Force SHA-256 crypt() hash of the password (secure)." NL
         " -5  Force SHA-512 crypt() hash of the password (secure)." NL
-        " -B  Force bcrypt aencryption of the password (very secure)." NL
+        " -B  Force bcrypt encryption of the password (very secure)." NL
         " -C  Set the computing time used for the bcrypt algorithm" NL
         "     (higher is more secure but slower, default: %d, valid: 4 to 17)." NL
         " -r  Set the number of rounds used for the SHA-256, SHA-512 algorithms" NL
