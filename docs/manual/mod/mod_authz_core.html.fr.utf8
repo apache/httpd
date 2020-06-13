@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authz_core.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_authz_core.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Autorisation basique</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>authz_core_module</td></tr>
@@ -365,12 +363,12 @@ Paramètres-Require</var>&gt;
     
     <pre class="prettyprint lang-config"># Dans cet exemple, pour que les deux adresses IP soient prises en compte, elles
 # DOIVENT être entourées de guillemets
-&lt;AuthzProviderAlias ip blacklisted-ips "XXX.XXX.XXX.XXX YYY.YYY.YYY.YYY"&gt;
+&lt;AuthzProviderAlias ip reject-ips "XXX.XXX.XXX.XXX YYY.YYY.YYY.YYY"&gt;
 &lt;/AuthzProviderAlias&gt;
 
 &lt;Directory "/path/to/dir"&gt;
     &lt;RequireAll&gt;
-        Require not blacklisted-ips
+        Require not reject-ips
         Require all granted
     &lt;/RequireAll&gt;
 &lt;/Directory&gt;</pre>
