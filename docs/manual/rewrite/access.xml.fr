@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1741874:1878547 (outdated) -->
+<!-- English Revision: 1878547 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -215,14 +215,14 @@ SetEnvIfNoCase User-Agent ^NameOfBadRobot goaway
 
 <section id="host-deny">
 
-  <title>Rejet des clients contenus dans une liste noire</title>
+  <title>Rejet des clients contenus dans une liste de proscrits</title>
 
   <dl>
     <dt>Description :</dt>
 
     <dd>
       <p>Nous voulons interdire l'accès à notre serveur aux clients
-      contenus dans une liste noire similaire à
+      contenus dans une liste de proscrits similaire à
       <code>hosts.deny</code>.</p>
     </dd>
 

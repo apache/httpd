@@ -1,7 +1,7 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 1673947:1878547 (outdated) -->
+<!-- English Revision: 1878547 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -24,24 +24,24 @@
 
 <manualpage metafile="compliance.xml.meta">
 
-  <title>Conformit&eacute; au protocole HTTP</title>
+  <title>Conformité au protocole HTTP</title>
 
   <summary>
-    <p>Ce document d&eacute;crit le m&eacute;canisme utilis&eacute; pour d&eacute;finir une
-    politique de conformit&eacute; au protocole HTTP pour un espace d'URL au
-    niveau des serveurs d'origine ou des application sous-jacentes &agrave; cet
+    <p>Ce document décrit le mécanisme utilisé pour définir une
+    politique de conformité au protocole HTTP pour un espace d'URL au
+    niveau des serveurs d'origine ou des application sous-jacentes à cet
     espace d'URL.</p>
 
-    <p>Chaque politique de conformit&eacute; est d&eacute;crite ci-dessous &agrave;
-    destination de tous ceux qui ont re&ccedil;u un message d'erreur suite &agrave; un
-    rejet en provenance d'une politique, et ont donc besoin de savoir &agrave;
+    <p>Chaque politique de conformité est décrite ci-dessous à
+    destination de tous ceux qui ont reçu un message d'erreur suite à un
+    rejet en provenance d'une politique, et ont donc besoin de savoir à
     quoi est du ce rejet et ce qu'ils doivent faire pour corriger
     l'erreur.</p>
   </summary>
   <seealso><a href="filter.html">Filtres</a></seealso>
 
   <section id="intro">
-    <title>Imposer la conformit&eacute; au protocole HTTP dans Apache 2</title>
+    <title>Imposer la conformité au protocole HTTP dans Apache 2</title>
     <related>
       <modulelist>
         <module>mod_policy</module>
@@ -60,73 +60,73 @@
     </related>
 
     <p>Le protocole HTTP applique le <strong>principe de
-    robustesse</strong> d&eacute;crit dans la <a
+    robustesse</strong> décrit dans la <a
     href="http://tools.ietf.org/html/rfc1122">RFC1122</a>, et stipulant
-    <strong>"Soyez lib&eacute;ral pour ce que vous acceptez, conservateur pour
+    <strong>"Soyez libéral pour ce que vous acceptez, conservateur pour
     ce que vous envoyez"</strong>. Selon ce principe, les clients HTTP
-    vont compenser en corrigeant les r&eacute;ponses incorrectes ou mal
-    configur&eacute;es, ou ne pouvant pas &ecirc;tre mises en cache.</p>
+    vont compenser en corrigeant les réponses incorrectes ou mal
+    configurées, ou ne pouvant pas être mises en cache.</p>
 
-    <p>Comme un site web est configur&eacute; pour faire face &agrave; un trafic
-    toujours grandissant, des applications mal configur&eacute;es ou non
-    optimis&eacute;es ou certaines configurations de serveur peuvent menacer la stabilit&eacute;
-    et l'&eacute;volutivit&eacute; du site web, ainsi que les co&ucirc;ts d'h&eacute;bergement qui
-    y sont associ&eacute;s. L'&eacute;volution d'un site web pour faire face &agrave; une
-    complexit&eacute; croissante de sa configuration accro&icirc;t les
-    difficult&eacute;s rencontr&eacute;es pour d&eacute;tecter et enregistrer les espaces
-    d'URL mal configur&eacute;s pour un serveur donn&eacute;.</p>
+    <p>Comme un site web est configuré pour faire face à un trafic
+    toujours grandissant, des applications mal configurées ou non
+    optimisées ou certaines configurations de serveur peuvent menacer la stabilité
+    et l'évolutivité du site web, ainsi que les coûts d'hébergement qui
+    y sont associés. L'évolution d'un site web pour faire face à une
+    complexité croissante de sa configuration accroît les
+    difficultés rencontrées pour détecter et enregistrer les espaces
+    d'URL mal configurés pour un serveur donné.</p>
 
-    <p>De ce fait, un point peut &ecirc;tre atteint o&ugrave; le principe
-    "conservateur pour ce que vous envoyez" doit &ecirc;tre impos&eacute; par
+    <p>De ce fait, un point peut être atteint où le principe
+    "conservateur pour ce que vous envoyez" doit être imposé par
     l'administrateur du serveur.</p>
 
     <p>Le module <module>mod_policy</module> fournit un jeu de filtres
-    qui peuvent &ecirc;tre appliqu&eacute;s &agrave; un serveur, permettant de tester
-    explicitement les points cl&eacute; du protocle HTTP, et de journaliser en
-    tant qu'avertissements les r&eacute;ponses non conformes, ou m&ecirc;me de
+    qui peuvent être appliqués à un serveur, permettant de tester
+    explicitement les points clé du protocle HTTP, et de journaliser en
+    tant qu'avertissements les réponses non conformes, ou même de
     simplement les rejeter avec un code d'erreur. Chaque filtre peut
-    &ecirc;tre appliqu&eacute; s&eacute;par&eacute;ment, permettant &agrave; l'administrateur de choisir
-    quelles politiques de conformit&eacute; doivent &ecirc;tre impos&eacute;es en fonction
+    être appliqué séparément, permettant à l'administrateur de choisir
+    quelles politiques de conformité doivent être imposées en fonction
     de l'environnement.
     </p>
 
-    <p>Les filtres peuvent &ecirc;tre mis en place dans des environnements de
-    test ou de simulation &agrave; destination des d&eacute;veloppeurs d'applications
-    et de sites web, ou s'appliquer &agrave; des serveurs en production pour
-    prot&eacute;ger l'infrastructure de syst&egrave;mes en dehors du contr&ocirc;le direct
+    <p>Les filtres peuvent être mis en place dans des environnements de
+    test ou de simulation à destination des développeurs d'applications
+    et de sites web, ou s'appliquer à des serveurs en production pour
+    protéger l'infrastructure de systèmes en dehors du contrôle direct
     de l'administrateur.</p>
 
     <p class="figure">
     <img src="images/compliance-reverse-proxy.png" width="666" height="239" alt=
-    "Imposer la conformit&eacute; au protocole HTTP pour un serveur
+    "Imposer la conformité au protocole HTTP pour un serveur
     d'applications"/>
     </p>
 
-    <p>Dans l'exemple ci-dessus, un serveur Apache httpd a &eacute;t&eacute; intercal&eacute;
+    <p>Dans l'exemple ci-dessus, un serveur Apache httpd a été intercalé
     entre le serveur d'applications et l'internet au sens large, et
-    configur&eacute; pour mettre en cache les r&eacute;ponses en provenance du serveur
-    d'applications. Les filtres de <module>mod_policy</module> ont &eacute;t&eacute;
-    ajout&eacute;s pour imposer le support de la mise en cache de contenu et
-    des requ&ecirc;tes conditionnelles, assurant ainsi que
+    configuré pour mettre en cache les réponses en provenance du serveur
+    d'applications. Les filtres de <module>mod_policy</module> ont été
+    ajoutés pour imposer le support de la mise en cache de contenu et
+    des requêtes conditionnelles, assurant ainsi que
     <module>mod_cache</module> et les caches publics de l'internet
-    seront pleinement capables de mettre en cache le contenu cr&eacute;&eacute; avec
-    efficacit&eacute; par le serveur d'applications.</p>
+    seront pleinement capables de mettre en cache le contenu créé avec
+    efficacité par le serveur d'applications.</p>
 
     <p class="figure">
     <img src="images/compliance-static.png" width="469" height="239" alt=
-    "Imposer la conformit&eacute; au protocole HTTP pour un serveur statique"/>
+    "Imposer la conformité au protocole HTTP pour un serveur statique"/>
     </p>
 
     <p>Dans l'exemple plus simple ci-dessus, un serveur statique qui
-    sert du contenu ayant une forte probabilit&eacute; d'&ecirc;tre mis en cache,
-    se voit appliqu&eacute; un jeu de r&egrave;gles afin de
+    sert du contenu ayant une forte probabilité d'être mis en cache,
+    se voit appliqué un jeu de règles afin de
     s'assurer que sa configuration respecte un niveau minimum de
-    conformit&eacute; au protocole HTTP.</p>
+    conformité au protocole HTTP.</p>
 
   </section>
 
   <section id="policyconditional">
-    <title>Politique des requ&ecirc;tes conditionnelles</title>
+    <title>Politique des requêtes conditionnelles</title>
     <related>
       <modulelist>
         <module>mod_policy</module>
@@ -136,81 +136,81 @@
       </directivelist>
     </related>
 
-    <p>Cette politique sera rejet&eacute;e si le serveur ne r&eacute;pond pas &agrave; une
-    requ&ecirc;te conditionnelle avec le code d'&eacute;tat appropri&eacute;. </p>
+    <p>Cette politique sera rejetée si le serveur ne répond pas à une
+    requête conditionnelle avec le code d'état approprié. </p>
 
-    <p>C'est gr&acirc;ce aux requ&ecirc;tes conditionnelles qu'un cache HTTP peut
-    rafra&icirc;chir un contenu p&eacute;rim&eacute;, et en particulier dans le cas des
-    contenus &agrave; dur&eacute;e de validit&eacute; courte, l'absence de support des
-    requ&ecirc;tes conditionnelles peut augmenter la charge du serveur.</p>
+    <p>C'est grâce aux requêtes conditionnelles qu'un cache HTTP peut
+    rafraîchir un contenu périmé, et en particulier dans le cas des
+    contenus à durée de validité courte, l'absence de support des
+    requêtes conditionnelles peut augmenter la charge du serveur.</p>
 
-    <p>Plus particuli&egrave;rement, la pr&eacute;sence d'une des en-t&ecirc;tes suivantes
-    dans la requ&ecirc;te rend cette derni&egrave;re conditionnelle :</p>
+    <p>Plus particulièrement, la présence d'un des en-têtes suivants
+    dans la requête rend cette dernière conditionnelle :</p>
 
     <dl>
     <dt><code>If-Match</code></dt>
-    <dd>Si l'ETag fourni dans l'en-t&ecirc;te <code>If-Match</code> ne
-    correspond pas &agrave; l'ETag de la r&eacute;ponse, le serveur doit renvoyer un
+    <dd>Si l'ETag fourni dans l'en-tête <code>If-Match</code> ne
+    correspond pas à l'ETag de la réponse, le serveur doit renvoyer un
     code d'erreur <code>412 Precondition Failed</code>. Vous trouverez
-    tous les d&eacute;tails du traitement d'un en-t&ecirc;te <code>If-Match</code>
+    tous les détails du traitement d'un en-tête <code>If-Match</code>
     dans la <a
     href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.24">RFC2616
     section 14.24</a>.</dd>
 
     <dt><code>If-None-Match</code></dt>
-    <dd>Si l'ETag fourni dans l'en-t&ecirc;te <code>If-None-Match</code>
-    correspond &agrave; l'ETag de la r&eacute;ponse, le serveur doit renvoyer soit
-    <code>304 Not Modified</code> pour les requ&ecirc;tes GET/HEAD, soit
-    <code>412 Precondition Failed</code> pour les autres m&eacute;thodes. Vous trouverez
-    tous les d&eacute;tails du traitement d'un en-t&ecirc;te
+    <dd>Si l'ETag fourni dans l'en-tête <code>If-None-Match</code>
+    correspond à l'ETag de la réponse, le serveur doit renvoyer soit
+    <code>304 Not Modified</code> pour les requêtes GET/HEAD, soit
+    <code>412 Precondition Failed</code> pour les autres méthodes. Vous trouverez
+    tous les détails du traitement d'un en-tête
     <code>If-None-Match</code> dans la <a
     href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.26">RFC2616
     section 14.26</a>.</dd>
 
     <dt><code>If-Modified-Since</code></dt>
-    <dd>Si la date fournie dans l'en-t&ecirc;te <code>If-Modified-Since</code>
-    est plus ancienne que celle de l'en-t&ecirc;te <code>Last-Modified</code>
-    de la r&eacute;ponse, le serveur doit renvoyer <code>304 Not Modified</code>. Vous trouverez
-    tous les d&eacute;tails du traitement d'un en-t&ecirc;te
+    <dd>Si la date fournie dans l'en-tête <code>If-Modified-Since</code>
+    est plus ancienne que celle de l'en-tête <code>Last-Modified</code>
+    de la réponse, le serveur doit renvoyer <code>304 Not Modified</code>. Vous trouverez
+    tous les détails du traitement d'un en-tête
     <code>If-Modified-Since</code> dans la <a
     href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.25">RFC2616
     section 14.25</a>.</dd>
 
     <dt><code>If-Unmodified-Since</code></dt>
-    <dd>Si la date fournie dans l'en-t&ecirc;te
-    <code>If-Unmodified-Since</code> est plus r&eacute;cente que celle de
-    l'en-t&ecirc;te <code>Last-Modified</code> de la r&eacute;ponse, le serveur doit
+    <dd>Si la date fournie dans l'en-tête
+    <code>If-Unmodified-Since</code> est plus récente que celle de
+    l'en-tête <code>Last-Modified</code> de la réponse, le serveur doit
     renvoyer <code>412 Precondition Failed</code>. Vous trouverez
-    tous les d&eacute;tails du traitement d'un en-t&ecirc;te
+    tous les détails du traitement d'un en-tête
     <code>If-Unmodified-Since</code> dans la <a
     href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.28">RFC2616
     section 14.28</a>.</dd>
 
     <dt><code>If-Range</code></dt>
-    <dd>Si l'ETag fourni dans l'en-t&ecirc;te <code>If-Range</code> correspond
-    &agrave; l'ETag ou &agrave; l'en-t&ecirc;te Last-Modified de la r&eacute;ponse, et si un
-    en-t&ecirc;te <code>Range</code> valide est pr&eacute;sent, le serveur doit
+    <dd>Si l'ETag fourni dans l'en-tête <code>If-Range</code> correspond
+    à l'ETag ou à l'en-tête Last-Modified de la réponse, et si un
+    en-tête <code>Range</code> valide est présent, le serveur doit
     renvoyer <code>206 Partial Response</code>. Vous trouverez
-    tous les d&eacute;tails du traitement d'un en-t&ecirc;te <code>If-Range</code>
+    tous les détails du traitement d'un en-tête <code>If-Range</code>
     dans la <a
     href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.27">RFC2616
     section 14.27</a>.</dd>
 
     </dl>
 
-    <p>Si la r&eacute;ponse est consid&eacute;r&eacute;e comme ayant r&eacute;ussi (une r&eacute;ponse
-    2xx), alors qu'elle &eacute;tait conditionnelle et qu'une des r&eacute;ponses
-    ci-dessus &eacute;tait attendue &agrave; la place, cette politique sera rejet&eacute;e.
-    Les r&eacute;ponses qui indiquent une redirection ou une erreur de toute
-    sorte (3xx, 4xx, 5xx) seront ignor&eacute;es de cette politique.</p>
+    <p>Si la réponse est considérée comme ayant réussi (une réponse
+    2xx), alors qu'elle était conditionnelle et qu'une des réponses
+    ci-dessus était attendue à la place, cette politique sera rejetée.
+    Les réponses qui indiquent une redirection ou une erreur de toute
+    sorte (3xx, 4xx, 5xx) seront ignorées de cette politique.</p>
 
-    <p>Cette politique est impl&eacute;ment&eacute;e par le filtre
+    <p>Cette politique est implémentée par le filtre
     <strong>POLICY_CONDITIONAL</strong>.</p>
 
   </section>
 
   <section id="policylength">
-    <title>Politique de gestion de l'en-t&ecirc;te Content-Length</title>
+    <title>Politique de gestion de l'en-tête Content-Length</title>
     <related>
       <modulelist>
         <module>mod_policy</module>
@@ -220,54 +220,54 @@
       </directivelist>
     </related>
 
-    <p>Cette politique sera rejet&eacute;e si la r&eacute;ponse du serveur ne contient pas d'en-t&ecirc;te
+    <p>Cette politique sera rejetée si la réponse du serveur ne contient pas d'en-tête
     <code>Content-Length</code> explicite.</p>
 
-    <p>De nombreuses m&eacute;thodes pour d&eacute;terminer la taille d'un
-    corps de r&eacute;ponse sont d&eacute;crites dans la <a
+    <p>De nombreuses méthodes pour déterminer la taille d'un
+    corps de réponse sont décrites dans la <a
     href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.4">RFC2616
     section 4.4 Message Length</a>.</p>
 
-    <p>Lorsque l'en-t&ecirc;te <code>Content-Length</code> est pr&eacute;sente, la
-    taille du corps est d&eacute;clar&eacute;e au d&eacute;but de la r&eacute;ponse. Si cette
+    <p>Lorsque l'en-tête <code>Content-Length</code> est présent, la
+    taille du corps est déclarée au début de la réponse. Si cette
     information est manquante, un cache HTTP pourrait choisir d'ignorer
-    la r&eacute;ponse, car il ne pourrait pas d&eacute;terminer a priori si la r&eacute;ponse
-    reste dans les limites d&eacute;finies du cache.</p>
+    la réponse, car il ne pourrait pas déterminer a priori si la réponse
+    reste dans les limites définies du cache.</p>
 
-    <p>Pour indiquer la fin de la r&eacute;ponse au client sans que ce dernier
-    ait &agrave; en conna&icirc;tre la taille au pr&eacute;alable, HTTP/1.1 propose
-    l'en-t&ecirc;te <code>Transfer-Encoding</code> comme une alternative &agrave;
+    <p>Pour indiquer la fin de la réponse au client sans que ce dernier
+    ait à en connaître la taille au préalable, HTTP/1.1 propose
+    l'en-tête <code>Transfer-Encoding</code> comme une alternative à
     <code>Content-Length</code>. Cependant, lors du traitement de
-    requ&ecirc;tes HTTP/1.0, et si l'en-t&ecirc;te <code>Content-Length</code> est
-    absente, le seul m&eacute;canisme dont dispose le serveur pour indiquer la
-    fin de la requ&ecirc;te consiste &agrave; couper la connexion. Dans un
-    environnement contenant des r&eacute;partiteurs de charge, cela peut
-    court-circuiter le m&eacute;canisme des connexions persistantes
+    requêtes HTTP/1.0, et si l'en-tête <code>Content-Length</code> est
+    absent, le seul mécanisme dont dispose le serveur pour indiquer la
+    fin de la requête consiste à couper la connexion. Dans un
+    environnement contenant des répartiteurs de charge, cela peut
+    court-circuiter le mécanisme des connexions persistantes
     (keepalive).
     </p>
 
-    <p>Si la r&eacute;ponse est consid&eacute;r&eacute;e comme r&eacute;ussie (une r&eacute;ponse 2xx) et
-    poss&egrave;de un corps (ce qui exclut les r&eacute;ponses <code>204 No
-    Content</code>), et si l'en-t&ecirc;te <code>Content-Length</code> est
-    absente, la r&eacute;ponse sera rejet&eacute;e. Aucune r&eacute;ponse indiquant une
+    <p>Si la réponse est considérée comme réussie (une réponse 2xx) et
+    possède un corps (ce qui exclut les réponses <code>204 No
+    Content</code>), et si l'en-tête <code>Content-Length</code> est
+    absent, la réponse sera rejetée. Aucune réponse indiquant une
     redirection ou une erreur de toute nature (3xx, 4xx, 5xx) n'est
     prise en compte par cette politique.</p>
 
     <note type="warning">Notez que certains modules comme
-    <module>mod_proxy</module> ajoutent leur propre en-t&ecirc;te
-    <code>Content-Length</code> sous r&eacute;serve que la r&eacute;ponse o&ugrave; cette
-    en-t&ecirc;te est absente soit suffisamment courte pour que le module ait
-    pu la lire en une seule passe. De ce fait, des r&eacute;ponses courtes pourront
-    &ecirc;tre accept&eacute;es par la politique, alors que d'autres plus longues
-    seront rejet&eacute;es pour la m&ecirc;me URL.</note>
+    <module>mod_proxy</module> ajoutent leur propre en-tête
+    <code>Content-Length</code> sous réserve que la réponse où cette
+    en-tête est absent soit suffisamment courte pour que le module ait
+    pu la lire en une seule passe. De ce fait, des réponses courtes pourront
+    être acceptées par la politique, alors que d'autres plus longues
+    seront rejetées pour la même URL.</note>
 
-    <p>Cette politique est impl&eacute;ment&eacute;e par le filtre
+    <p>Cette politique est implémentée par le filtre
     <strong>POLICY_LENGTH</strong>.</p>
 
   </section>
 
   <section id="policytype">
-    <title>Politique de filtrage de l'en-t&ecirc;te Content-Type</title>
+    <title>Politique de filtrage de l'en-tête Content-Type</title>
     <related>
       <modulelist>
         <module>mod_policy</module>
@@ -277,23 +277,23 @@
       </directivelist>
     </related>
 
-    <p>Cette politique sera rejet&eacute;e si la r&eacute;ponse du serveur ne contient pas d'en-t&ecirc;te
+    <p>Cette politique sera rejetée si la réponse du serveur ne contient pas d'en-tête
     <code>Content-Type</code> explicite et valide du point de vue de la
-    syntaxe, correspondant au mod&egrave;le d&eacute;fini par le serveur.</p>
+    syntaxe, correspondant au modèle défini par le serveur.</p>
 
-    <p>Le type de media du corps est plac&eacute; dans une en-t&ecirc;te
-    <code>Content-Type</code> dont le format est d&eacute;crit en d&eacute;tail dans
+    <p>Le type de media du corps est placé dans un en-tête
+    <code>Content-Type</code> dont le format est décrit en détail dans
     la <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.7">
     RFC2616 section 3.7 Media Types</a>.</p>
 
-    <p>Une en-t&ecirc;te <code>Content-Type</code> dont la syntaxe est valide
+    <p>Un en-tête <code>Content-Type</code> dont la syntaxe est valide
     sera du style :</p>
 
     <example>
       Content-Type: text/html; charset=iso-8859-1
     </example>
 
-    <p>Exemples d'en-t&ecirc;tes <code>Content-Type</code> non valides :</p>
+    <p>Exemples d'en-têtes <code>Content-Type</code> non valides :</p>
 
     <example>
       # invalide<br />
@@ -302,8 +302,8 @@
       Content-Type:
     </example>
 
-    <p>L'administrateur peut restreindre la politique &agrave; un ou plusieurs
-    types sp&eacute;cifiques, ou utiliser des caract&egrave;res g&eacute;n&eacute;riques comme
+    <p>L'administrateur peut restreindre la politique à un ou plusieurs
+    types spécifiques, ou utiliser des caractères génériques comme
     <code>*/*</code>.</p>
 
     <p>Cette politique est mise en oeuvre par le filtre
@@ -322,71 +322,71 @@
       </directivelist>
     </related>
 
-    <p>Cette politique era rejet&eacute;e si la r&eacute;ponse du serveur ne contient pas d'en-t&ecirc;te
-    <code>Content-Length</code> explicite, ou d'en-t&ecirc;te
-    <code>Transfer-Encoding</code> d&eacute;fini &agrave; chunked.</p>
+    <p>Cette politique era rejetée si la réponse du serveur ne contient pas d'en-tête
+    <code>Content-Length</code> explicite, ou d'en-tête
+    <code>Transfer-Encoding</code> défini à chunked.</p>
 
-    <p>De nombreuses mani&egrave;res pour d&eacute;terminer la taille d'un
-    corps de r&eacute;ponse sont d&eacute;crites dans la <a
+    <p>De nombreuses manières pour déterminer la taille d'un
+    corps de réponse sont décrites dans la <a
     href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.4">RFC2616
     section 4.4 Message Length</a>.</p>
 
-    <p>Pour indiquer la fin de la r&eacute;ponse au client sans que ce dernier
-    ait &agrave; en conna&icirc;tre la taille au pr&eacute;alable, HTTP/1.1 propose
-    l'en-t&ecirc;te <code>Transfer-Encoding</code> comme une alternative &agrave;
+    <p>Pour indiquer la fin de la réponse au client sans que ce dernier
+    ait à en connaître la taille au préalable, HTTP/1.1 propose
+    l'en-tête <code>Transfer-Encoding</code> comme une alternative à
     <code>Content-Length</code>. Cependant, lors du traitement de
-    requ&ecirc;tes HTTP/1.0, et si l'en-t&ecirc;te <code>Content-Length</code> est
-    absent, le seul m&eacute;canisme dont dispose le serveur pour indiquer la
-    fin de la requ&ecirc;te consiste &agrave; couper la connexion. Dans un
-    environnement contenant des r&eacute;partiteurs de charge, cela peut
-    court-circuiter le m&eacute;canisme des connexions persistantes
+    requêtes HTTP/1.0, et si l'en-tête <code>Content-Length</code> est
+    absent, le seul mécanisme dont dispose le serveur pour indiquer la
+    fin de la requête consiste à couper la connexion. Dans un
+    environnement contenant des répartiteurs de charge, cela peut
+    court-circuiter le mécanisme des connexions persistantes
     (keepalive).
     </p>
 
-    <p>En particulier, les r&egrave;gles suivantes sont appliqu&eacute;es : </p>
+    <p>En particulier, les règles suivantes sont appliquées : </p>
 
     <dl>
     <dt>Si</dt>
-    <dd>cette connexion n'est pas marqu&eacute;e en erreur ;</dd>
+    <dd>cette connexion n'est pas marquée en erreur ;</dd>
 
     <dt>et</dt>
     <dd>le client n'attend pas 100-continue ;</dd>
 
     <dt>et</dt>
-    <dd>le code de statut de la r&eacute;ponse ne n&eacute;cessite pas de fermeture de connexion ;</dd>
+    <dd>le code de statut de la réponse ne nécessite pas de fermeture de connexion ;</dd>
 
     <dt>et</dt>
-    <dd>le corps de la r&eacute;ponse a une taille d&eacute;finie suite au code de
-    statut 304 ou 204, la m&eacute;thode de requ&ecirc;te est HEAD, un en-t&ecirc;te
-    Content-Length ou Transfer-Encoding: chunked a d&eacute;j&agrave; &eacute;t&eacute; d&eacute;fini, ou
-    la requ&ecirc;te est de type HTTP/1.1 et peut donc &ecirc;tre d&eacute;finie &agrave; chunked.</dd>
+    <dd>le corps de la réponse a une taille définie suite au code de
+    statut 304 ou 204, la méthode de requête est HEAD, un en-tête
+    Content-Length ou Transfer-Encoding: chunked a déjà été défini, ou
+    la requête est de type HTTP/1.1 et peut donc être définie à chunked.</dd>
 
     <dt>alors</dt>
-    <dd>keepalive est support&eacute;.</dd>
+    <dd>keepalive est supporté.</dd>
     </dl>
 
-    <note type="warning">Le serveur peut d&eacute;cider de d&eacute;sactiver les
-    connexions persistantes pour de nombreuses raisons, comme un arr&ecirc;t
+    <note type="warning">Le serveur peut décider de désactiver les
+    connexions persistantes pour de nombreuses raisons, comme un arrêt
     imminent, un Connection: close en provenance du client, ou une
-    requ&ecirc;te client de type HTTP/1.0 dont la r&eacute;ponse ne comporte pas
-    d'en-t&ecirc;te <code>Content-Length</code>, mais pour ce qui nous
-    concerne, nous ne v&eacute;rifions que la possibilit&eacute; des connexions
+    requête client de type HTTP/1.0 dont la réponse ne comporte pas
+    d'en-tête <code>Content-Length</code>, mais pour ce qui nous
+    concerne, nous ne vérifions que la possibilité des connexions
     persistantes depuis l'application, et non si les connexions
-    persistantes sont activ&eacute;es.</note>
+    persistantes sont activées.</note>
 
     <p>Notez aussi que le serveur HTTP Apache propose un filtre qui
-    ajoute un codage chunked aux r&eacute;ponses qui ne contiennent pas
-    d'en-t&ecirc;te <code>Content-Length</code> explicite. Cette politique
-    prend en compte les cas o&ugrave; le filtre est court-circuit&eacute; ou
-    d&eacute;sactiv&eacute;.</p>
+    ajoute un codage chunked aux réponses qui ne contiennent pas
+    d'en-tête <code>Content-Length</code> explicite. Cette politique
+    prend en compte les cas où le filtre est court-circuité ou
+    désactivé.</p>
 
-    <p>Cette politique est impl&eacute;ment&eacute;e par le filtre
+    <p>Cette politique est implémentée par le filtre
     <strong>POLICY_KEEPALIVE</strong>.</p>
 
   </section>
 
   <section id="policymaxage">
-    <title>Dur&eacute;e de fra&icirc;cheur / Politique de gestion de l'&acirc;ge maximum</title>
+    <title>Durée de fraîcheur / Politique de gestion de l'âge maximum</title>
     <related>
       <modulelist>
         <module>mod_policy</module>
@@ -396,39 +396,39 @@
       </directivelist>
     </related>
 
-    <p>Cette politique se verra rejet&eacute;e si la r&eacute;ponse du serveur ne
-    contient pas de <strong>dur&eacute;e de fra&icirc;cheur</strong> explicite au
-    moins grande que la limite d&eacute;finie par le serveur, ou si la
-    dur&eacute;e de fra&icirc;cheur est calcul&eacute;e &agrave; partir d'une heuristique.</p>
+    <p>Cette politique se verra rejetée si la réponse du serveur ne
+    contient pas de <strong>durée de fraîcheur</strong> explicite au
+    moins grande que la limite définie par le serveur, ou si la
+    durée de fraîcheur est calculée à partir d'une heuristique.</p>
 
-    <p>Vous trouverez tous les d&eacute;tails &agrave; propos du calcul d'une dur&eacute;e de
-    fra&icirc;cheur dans la <a
+    <p>Vous trouverez tous les détails à propos du calcul d'une durée de
+    fraîcheur dans la <a
     href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html#sec13.2">RFC2616
     section 13.2 Expiration Model</a>.</p>
 
-    <p>Pendant la dur&eacute;e de fra&icirc;cheur, un cache n'a pas besoin de
-    contacter le serveur original, et il peut renvoyer le contenu situ&eacute;
+    <p>Pendant la durée de fraîcheur, un cache n'a pas besoin de
+    contacter le serveur original, et il peut renvoyer le contenu situé
     dans le cache tel quel au client.</p>
 
-    <p>Lorsque la date de p&eacute;remption est atteinte, le cache doit
-    contacter le serveur original dans le but de v&eacute;rifier si le contenu
-    situ&eacute; dans le cache est encore &agrave; jour, et si ce n'est pas le cas, de
+    <p>Lorsque la date de péremption est atteinte, le cache doit
+    contacter le serveur original dans le but de vérifier si le contenu
+    situé dans le cache est encore à jour, et si ce n'est pas le cas, de
     le remplacer par le contenu correspondant sur le serveur original.</p>
 
-    <p>Lorsque la dur&eacute;e de fra&icirc;cheur est trop courte, il peut en
-    r&eacute;sulter un exc&egrave;s de charge pour le serveur. De plus, si une
-    interruption de service survient, et si cette derni&egrave;re est longue,
-    ou plus longue que la dur&eacute;e de fra&icirc;cheur, tout le contenu du cache
-    s'en trouvera p&eacute;rim&eacute;, ce qui causera un trafic tr&egrave;s important
-    lorsque le serveur ou le r&eacute;seau sera r&eacute;tabli.</p>
+    <p>Lorsque la durée de fraîcheur est trop courte, il peut en
+    résulter un excès de charge pour le serveur. De plus, si une
+    interruption de service survient, et si cette dernière est longue,
+    ou plus longue que la durée de fraîcheur, tout le contenu du cache
+    s'en trouvera périmé, ce qui causera un trafic très important
+    lorsque le serveur ou le réseau sera rétabli.</p>
 
-    <p>Cette politique est impl&eacute;ment&eacute;e par le filtre
+    <p>Cette politique est implémentée par le filtre
     <strong>POLICY_MAXAGE</strong>.</p>
 
   </section>
 
   <section id="policynocache">
-    <title>Politique de gestion des contenus qui ne peuvent pas &ecirc;tre mis
+    <title>Politique de gestion des contenus qui ne peuvent pas être mis
     en cache</title>
     <related>
       <modulelist>
@@ -439,20 +439,20 @@
       </directivelist>
     </related>
 
-    <p>Cette politique sera rejet&eacute;e si la r&eacute;ponse du serveur
-    d&eacute;clare elle-m&ecirc;me qu'elle ne doit pas &ecirc;tre mise en cache &agrave; l'aide
-    d'un en-t&ecirc;te <code>Cache-Control</code> ou <code>Pragma</code>.</p>
+    <p>Cette politique sera rejetée si la réponse du serveur
+    déclare elle-même qu'elle ne doit pas être mise en cache à l'aide
+    d'un en-tête <code>Cache-Control</code> ou <code>Pragma</code>.</p>
 
-    <p>Vous trouverez tous les d&eacute;tails &agrave; propos de la mani&egrave;re dont un
-    contenu peut &ecirc;tre d&eacute;clar&eacute; comme non cachable dans la <a
+    <p>Vous trouverez tous les détails à propos de la manière dont un
+    contenu peut être déclaré comme non cachable dans la <a
     href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.1">RFC2616
-    section 14.9.1 What is Cacheable</a>, et au sein de la d&eacute;finition de
-    l'en-t&ecirc;te <code>Pragma</code> dans la <a
+    section 14.9.1 What is Cacheable</a>, et au sein de la définition de
+    l'en-tête <code>Pragma</code> dans la <a
     href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.32">RFC2616
     section 14.32 Pragma</a>.</p>
 
-    <p>Plus pr&eacute;cis&eacute;ment, si une combinaison des en-t&ecirc;tes suivants existe
-    dans la r&eacute;ponse, cette derni&egrave;re sera rejet&eacute;e :</p>
+    <p>Plus précisément, si une combinaison des en-têtes suivants existe
+    dans la réponse, cette dernière sera rejetée :</p>
 
     <ul>
     <li><code>Cache-Control: no-cache</code></li>
@@ -461,12 +461,12 @@
     <li><code>Pragma: no-cache</code></li>
     </ul>
 
-    <p>D'une mani&egrave;re g&eacute;n&eacute;rale, lorsque cette politique est activ&eacute;e, et
-    si d'une mani&egrave;re inattendue un contenu non cachable peut induire un
-    niveau de charge du serveur inacceptable, tout contenu d&eacute;fini comme
-    non cachable par le serveur sera rejet&eacute;.</p>
+    <p>D'une manière générale, lorsque cette politique est activée, et
+    si d'une manière inattendue un contenu non cachable peut induire un
+    niveau de charge du serveur inacceptable, tout contenu défini comme
+    non cachable par le serveur sera rejeté.</p>
 
-    <p>Cette politique est impl&eacute;ment&eacute;e par le filtre
+    <p>Cette politique est implémentée par le filtre
     <strong>POLICY_NOCACHE</strong>.</p>
 
   </section>
@@ -482,34 +482,34 @@
       </directivelist>
     </related>
 
-    <p>Cette politique sera rejet&eacute;e si la r&eacute;ponse du serveur
-    ne contient aucune en-t&ecirc;te syntaxiquement correct <code>ETag</code>
+    <p>Cette politique sera rejetée si la réponse du serveur
+    ne contient aucun en-tête syntaxiquement correct <code>ETag</code>
     ou <code>Last-Modified</code>.</p>
 
-    <p>Vous trouverez une description compl&egrave;te de l'en-t&ecirc;te
+    <p>Vous trouverez une description complète de l'en-tête
     <code>ETag</code> dans la <a
     href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.19">RFC2616
-    section 14.19 Etag</a>, et de l'en-t&ecirc;te <code>Last-Modified</code>
+    section 14.19 Etag</a>, et de l'en-tête <code>Last-Modified</code>
     dans la <a
     href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.29">RFC2616
     section 14.29 Last-Modified</a>.</p>
 
-    <p>La v&eacute;rification est effectu&eacute;e non seulement en ce qui concerne la
-    pr&eacute;sence des en-t&ecirc;tes, mais aussi du point de vue de leur syntaxe.</p>
+    <p>La vérification est effectuée non seulement en ce qui concerne la
+    présence des en-têtes, mais aussi du point de vue de leur syntaxe.</p>
 
-    <p>Si une en-t&ecirc;te <code>ETag</code> n'est pas entour&eacute;e de guillemets,
-    ou n'est pas d&eacute;clar&eacute;e "weak" en le pr&eacute;fixant avec un "W/", la politique
-    sera rejet&eacute;e. De m&ecirc;me, si l'interpr&eacute;tation d'une en-t&ecirc;te
-    <code>Last-Modified</code> ne fournit pas de date valide, la r&eacute;ponse
-    sera rejet&eacute;e.</p>
+    <p>Si un en-tête <code>ETag</code> n'est pas entouré de guillemets,
+    ou n'est pas déclarée "weak" en le préfixant avec un "W/", la politique
+    sera rejetée. De même, si l'interprétation d'un en-tête
+    <code>Last-Modified</code> ne fournit pas de date valide, la réponse
+    sera rejetée.</p>
 
-    <p>Cette politique est impl&eacute;ment&eacute;e par le filtre
+    <p>Cette politique est implémentée par le filtre
     <strong>POLICY_VALIDATION</strong>.</p>
 
   </section>
 
   <section id="policyvary">
-    <title>Politique de gestion de l'en-t&ecirc;te Vary</title>
+    <title>Politique de gestion de l'en-tête Vary</title>
     <related>
       <modulelist>
         <module>mod_policy</module>
@@ -519,24 +519,24 @@
       </directivelist>
     </related>
 
-    <p>Cette politique se verra rejet&eacute;e si la r&eacute;ponse du serveur
-    contient une en-t&ecirc;te <code>Vary</code>, et si cette en-t&ecirc;te
-    contient &agrave; son tour une en-t&ecirc;te mise en liste noire par
+    <p>Cette politique se verra rejetée si la réponse du serveur contient un
+    en-tête <code>Vary</code>, et si cet en-tête contient à son tour un
+    en-tête dont la valeur appartient à une liste de valeurs proscrites par
     l'administrateur.</p>
 
-    <p>L'en-t&ecirc;te <code>Vary</code> est d&eacute;crite en d&eacute;tails dans la <a
+    <p>L'en-tête <code>Vary</code> est décrit en détails dans la <a
     href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.44">RFC2616
     section 14.44 Vary</a>.</p>
 
-    <p>Certaines en-t&ecirc;tes d&eacute;finies par les clients, comme
-    <code>User-Agent</code>, peuvent contenir des milliers ou m&ecirc;me des
+    <p>Certaines en-têtes définis par les clients, comme
+    <code>User-Agent</code>, peuvent contenir des milliers ou même des
     millions de combinaisons de valeurs au cours du temps, et si la
-    r&eacute;ponse est consid&eacute;r&eacute;e comme pouvant &ecirc;tre mise en cache, le cache
-    peut tenter d'enregistrer toutes ces r&eacute;ponses, ce qui peut l'amener
-    &agrave; saturation et &agrave; noyer les autres entr&eacute;es qu'il contient. Avec ce
-    sc&eacute;nario, cette politique sera rejet&eacute;e.</p>
+    réponse est considérée comme pouvant être mise en cache, le cache
+    peut tenter d'enregistrer toutes ces réponses, ce qui peut l'amener
+    à saturation et à noyer les autres entrées qu'il contient. Avec ce
+    scénario, cette politique sera rejetée.</p>
 
-    <p>Cette politique est impl&eacute;ment&eacute;e par le filtre
+    <p>Cette politique est implémentée par le filtre
     <strong>POLICY_VARY</strong>.</p>
 
   </section>
@@ -552,24 +552,24 @@
       </directivelist>
     </related>
 
-    <p>Cette politique sera rejet&eacute;e si la r&eacute;ponse du serveur
-    a &eacute;t&eacute; g&eacute;n&eacute;r&eacute;e avec un num&eacute;ro de version inf&eacute;rieur &agrave; la version
-    de HTTP sp&eacute;cifi&eacute;e.</p>
+    <p>Cette politique sera rejetée si la réponse du serveur
+    a été générée avec un numéro de version inférieur à la version
+    de HTTP spécifiée.</p>
 
-    <p>Cette politique s'utilise en g&eacute;n&eacute;ral avec les applications qui
-    n&eacute;cessitent un contr&ocirc;le du type du client. Elle peut &ecirc;tre utilis&eacute;e en
+    <p>Cette politique s'utilise en général avec les applications qui
+    nécessitent un contrôle du type du client. Elle peut être utilisée en
     concomitance avec le filtre <code>POLICY_KEEPALIVE</code> afin de
     s'assurer que les clients HTTP/1.0 n'engendrent pas la fermeture des
     connexions persistantes.</p>
 
-    <p>Les versions minimales pouvant &ecirc;tre sp&eacute;cifi&eacute;es sont :</p>
+    <p>Les versions minimales pouvant être spécifiées sont :</p>
 
     <ul><li><code>HTTP/1.1</code></li>
     <li><code>HTTP/1.0</code></li>
     <li><code>HTTP/0.9</code></li>
     </ul>
 
-    <p>Cette politique est impl&eacute;ment&eacute;e par le filtre
+    <p>Cette politique est implémentée par le filtre
     <strong>POLICY_VERSON</strong>.</p>
 
   </section>

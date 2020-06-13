@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1773244:1878627 (outdated) -->
+<!-- English Revision: 1878627 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -609,10 +609,10 @@ foreach my $key (keys %ENV) {
     fonctionnalités strictement nécessaires, mais suffisantes pour
     la majorité des programmes.</p>
 
-    <p>Si vous écrivez des programmes CGI en C, vous disposez de
-    nombreuses options. L'une d'elles est la bibliothèque
-    <code>CGIC</code> de <a href="http://www.boutell.com/cgic/"
-    >http://www.boutell.com/cgic/</a>.</p>
+    <p>Si vous écrivez des programmes CGI en C, vous disposez de nombreuses
+    options. L'une d'elles est la bibliothèque <code>CGIC</code> de <a
+    href="https://web.mit.edu/wwwdev/www/cgic.html"
+    >https://web.mit.edu/wwwdev/www/cgic.html</a>.</p>
   </section>
 
   <section id="moreinfo">
