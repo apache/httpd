@@ -26,8 +26,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/access.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/access.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
 <p>Ce document est un complément à la <a href="../mod/mod_rewrite.html">documentation de référence</a> de
@@ -45,7 +43,7 @@ copier/coller dans vos fichiers de configuration.</div>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#blocked-inline-images">Blocage du référencement à chaud (Hotlinking) d'images</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#blocking-of-robots">Blocage des robots</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#host-deny">Rejet des clients contenus dans une liste noire</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#host-deny">Rejet des clients contenus dans une liste de proscrits</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#referer-deflector">Aiguillage basé sur l'en-tête Referer</a></li>
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Documentation du module mod_rewrite</a></li><li><a href="intro.html">Introduction à mod_rewrite</a></li><li><a href="remapping.html">Redirection et remise en
 correspondance</a></li><li><a href="vhosts.html">Serveurs virtuels</a></li><li><a href="proxy.html">Serveurs mandataires</a></li><li><a href="rewritemap.html">Utilisation de RewriteMap</a></li><li><a href="advanced.html">Techniques avancées</a></li><li><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></li><li><a href="#comments_section">Commentaires</a></li></ul></div>
@@ -203,7 +201,7 @@ RewriteRule "^/secret/files/"   "-"   [F]</pre>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="host-deny" id="host-deny">Rejet des clients contenus dans une liste noire</a> <a title="Lien permanent" href="#host-deny" class="permalink">&para;</a></h2>
+<h2><a name="host-deny" id="host-deny">Rejet des clients contenus dans une liste de proscrits</a> <a title="Lien permanent" href="#host-deny" class="permalink">&para;</a></h2>
 
   
 
@@ -212,7 +210,7 @@ RewriteRule "^/secret/files/"   "-"   [F]</pre>
 
     <dd>
       <p>Nous voulons interdire l'accès à notre serveur aux clients
-      contenus dans une liste noire similaire à
+      contenus dans une liste de proscrits similaire à
       <code>hosts.deny</code>.</p>
     </dd>
 

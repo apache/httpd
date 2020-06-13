@@ -27,8 +27,6 @@
 <a href="../es/howto/http2.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../fr/howto/http2.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Ce document est le guide de l'utilisateur de l'implémentation de HTTP/2
     dans Apache httpd. Cette fonctionnalité en est au stade
@@ -182,8 +180,8 @@
     lorsqu'on configure httpd pour HTTP/2 pour la première fois ; donc gardez la
     à l'esprit si vous voulez éviter de longues sessions de débogage ! Si vous
     voulez être sûr de définir une chaîne d'algorithmes de chiffrement
-    appropriée, évitez ceux qui sont listés dans la <a href="http://httpwg.org/specs/rfc7540.html#BadCipherSuites">blacklist TLS
-    HTTP/2 </a>.</p>
+    appropriée, évitez ceux qui sont listés dans la <a href="http://httpwg.org/specs/rfc7540.html#BadCipherSuites">liste des
+    algorithmes de chiffrement TLS HTTP/2 à proscrire</a>.</p>
     </div>
     <p>L'ordre des protocoles indiqués est aussi important. Par défaut, le
     premier sera le protocole préféré. Lorsqu'un client offre plusieurs choix,

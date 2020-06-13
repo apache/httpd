@@ -26,8 +26,6 @@
 <p><span>Langues Disponibles: </span><a href="./en/compliance.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/compliance.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Ce document décrit le mécanisme utilisé pour définir une
     politique de conformité au protocole HTTP pour un espace d'URL au
@@ -132,7 +130,7 @@
     contenus à durée de validité courte, l'absence de support des
     requêtes conditionnelles peut augmenter la charge du serveur.</p>
 
-    <p>Plus particulièrement, la présence d'une des en-têtes suivantes
+    <p>Plus particulièrement, la présence d'un des en-têtes suivants
     dans la requête rend cette dernière conditionnelle :</p>
 
     <dl>
@@ -203,7 +201,7 @@
     corps de réponse sont décrites dans la <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.4">RFC2616
     section 4.4 Message Length</a>.</p>
 
-    <p>Lorsque l'en-tête <code>Content-Length</code> est présente, la
+    <p>Lorsque l'en-tête <code>Content-Length</code> est présent, la
     taille du corps est déclarée au début de la réponse. Si cette
     information est manquante, un cache HTTP pourrait choisir d'ignorer
     la réponse, car il ne pourrait pas déterminer a priori si la réponse
@@ -214,7 +212,7 @@
     l'en-tête <code>Transfer-Encoding</code> comme une alternative à
     <code>Content-Length</code>. Cependant, lors du traitement de
     requêtes HTTP/1.0, et si l'en-tête <code>Content-Length</code> est
-    absente, le seul mécanisme dont dispose le serveur pour indiquer la
+    absent, le seul mécanisme dont dispose le serveur pour indiquer la
     fin de la requête consiste à couper la connexion. Dans un
     environnement contenant des répartiteurs de charge, cela peut
     court-circuiter le mécanisme des connexions persistantes
@@ -224,14 +222,14 @@
     <p>Si la réponse est considérée comme réussie (une réponse 2xx) et
     possède un corps (ce qui exclut les réponses <code>204 No
     Content</code>), et si l'en-tête <code>Content-Length</code> est
-    absente, la réponse sera rejetée. Aucune réponse indiquant une
+    absent, la réponse sera rejetée. Aucune réponse indiquant une
     redirection ou une erreur de toute nature (3xx, 4xx, 5xx) n'est
     prise en compte par cette politique.</p>
 
     <div class="warning">Notez que certains modules comme
     <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code> ajoutent leur propre en-tête
     <code>Content-Length</code> sous réserve que la réponse où cette
-    en-tête est absente soit suffisamment courte pour que le module ait
+    en-tête est absent soit suffisamment courte pour que le module ait
     pu la lire en une seule passe. De ce fait, des réponses courtes pourront
     être acceptées par la politique, alors que d'autres plus longues
     seront rejetées pour la même URL.</div>
@@ -249,12 +247,12 @@
     <code>Content-Type</code> explicite et valide du point de vue de la
     syntaxe, correspondant au modèle défini par le serveur.</p>
 
-    <p>Le type de media du corps est placé dans une en-tête
+    <p>Le type de media du corps est placé dans un en-tête
     <code>Content-Type</code> dont le format est décrit en détail dans
     la <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.7">
     RFC2616 section 3.7 Media Types</a>.</p>
 
-    <p>Une en-tête <code>Content-Type</code> dont la syntaxe est valide
+    <p>Un en-tête <code>Content-Type</code> dont la syntaxe est valide
     sera du style :</p>
 
     <div class="example"><p><code>
@@ -419,7 +417,7 @@
     <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_policy.html">mod_policy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_policy.html#policyvalidation">PolicyValidation</a></code></li></ul></td></tr></table>
 
     <p>Cette politique sera rejetée si la réponse du serveur
-    ne contient aucune en-tête syntaxiquement correct <code>ETag</code>
+    ne contient aucun en-tête syntaxiquement correct <code>ETag</code>
     ou <code>Last-Modified</code>.</p>
 
     <p>Vous trouverez une description complète de l'en-tête
@@ -431,9 +429,9 @@
     <p>La vérification est effectuée non seulement en ce qui concerne la
     présence des en-têtes, mais aussi du point de vue de leur syntaxe.</p>
 
-    <p>Si une en-tête <code>ETag</code> n'est pas entourée de guillemets,
+    <p>Si un en-tête <code>ETag</code> n'est pas entouré de guillemets,
     ou n'est pas déclarée "weak" en le préfixant avec un "W/", la politique
-    sera rejetée. De même, si l'interprétation d'une en-tête
+    sera rejetée. De même, si l'interprétation d'un en-tête
     <code>Last-Modified</code> ne fournit pas de date valide, la réponse
     sera rejetée.</p>
 
@@ -446,15 +444,15 @@
     
     <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_policy.html">mod_policy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_policy.html#policyvary">PolicyVary</a></code></li></ul></td></tr></table>
 
-    <p>Cette politique se verra rejetée si la réponse du serveur
-    contient une en-tête <code>Vary</code>, et si cette en-tête
-    contient à son tour une en-tête mise en liste noire par
+    <p>Cette politique se verra rejetée si la réponse du serveur contient un
+    en-tête <code>Vary</code>, et si cet en-tête contient à son tour un
+    en-tête dont la valeur appartient à une liste de valeurs proscrites par
     l'administrateur.</p>
 
-    <p>L'en-tête <code>Vary</code> est décrite en détails dans la <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.44">RFC2616
+    <p>L'en-tête <code>Vary</code> est décrit en détails dans la <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.44">RFC2616
     section 14.44 Vary</a>.</p>
 
-    <p>Certaines en-têtes définies par les clients, comme
+    <p>Certaines en-têtes définis par les clients, comme
     <code>User-Agent</code>, peuvent contenir des milliers ou même des
     millions de combinaisons de valeurs au cours du temps, et si la
     réponse est considérée comme pouvant être mise en cache, le cache
