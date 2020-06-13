@@ -311,7 +311,7 @@ ProxyPass "/test" "balancer://mycluster" stickysession=JSESSIONID|jsessionid sco
     stickyness to the error log, if the log level is set to
     <code>debug</code> or higher. This is an easy way to
     troubleshoot stickyness problems, but the log volume might
-    be to high for production servers under high load.</p>
+    be too high for production servers under high load.</p>
 </section>
 
 </modulesynopsis>
