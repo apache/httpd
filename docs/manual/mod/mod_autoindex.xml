@@ -550,7 +550,7 @@ a directory</description>
 
 <usage>
     <p>The <directive>IndexIgnoreReset</directive> directive removes
-    any files ignored by <directive module="autoindex">IndexIgnore</directive> otherwise
+    any files ignored by <directive module="mod_autoindex">IndexIgnore</directive> otherwise
     inherited from other configuration sections. </p>
 
     <highlight language="config">
