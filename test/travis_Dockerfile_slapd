@@ -4,6 +4,6 @@ RUN echo slapd slapd/password2 password travis | debconf-set-selections
 RUN echo slapd slapd/internal/adminpw password travis | debconf-set-selections
 RUN echo slapd slapd/internal/generated_adminpw password travis | debconf-set-selections
 RUN echo slapd slapd/domain string example.com | debconf-set-selections
-RUN apt-get update && apt-get -y install slapd
+RUN apt-get update && apt-get -y install slapd ldap-utils
 # With -d passed, slapd stays in the foreground
-CMD /usr/sbin/slapd -d1
+CMD /usr/sbin/slapd -d1 '-h ldap:// ldapi:///'
