@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_ldap: Avoid performance overhead of APR-util rebind cache for
+     OpenLDAP 2.2+.  PR 64414.  [Joe Orton]
 
   *) core: Have the HTTP 0.9 / 1.1 processing code reject requests for
      HTTP >= 2.0 with a HTTP Version Not Support status code. [Ruediger Pluem]
