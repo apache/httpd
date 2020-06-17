@@ -666,7 +666,7 @@ static int h2_h2_pre_close_conn(conn_rec *c)
 {
     h2_ctx *ctx;
 
-    /* slave connection? */
+    /* secondary connection? */
     if (c->master) {
         return DECLINED;
     }
@@ -710,7 +710,7 @@ static void check_push(request_rec *r, const char *tag)
 
 static int h2_h2_post_read_req(request_rec *r)
 {
-    /* slave connection? */
+    /* secondary connection? */
     if (r->connection->master) {
         struct h2_task *task = h2_ctx_get_task(r->connection);
         /* This hook will get called twice on internal redirects. Take care
@@ -729,7 +729,7 @@ static int h2_h2_post_read_req(request_rec *r)
             ap_add_output_filter("H2_RESPONSE", task, r, r->connection);
             
             for (f = r->input_filters; f; f = f->next) {
-                if (!strcmp("H2_SLAVE_IN", f->frec->name)) {
+                if (!strcmp("H2_SECONDARY_IN", f->frec->name)) {
                     f->r = r;
                     break;
                 }
@@ -743,7 +743,7 @@ static int h2_h2_post_read_req(request_rec *r)
 
 static int h2_h2_late_fixups(request_rec *r)
 {
-    /* slave connection? */
+    /* secondary connection? */
     if (r->connection->master) {
         struct h2_task *task = h2_ctx_get_task(r->connection);
         if (task) {
@@ -751,7 +751,7 @@ static int h2_h2_late_fixups(request_rec *r)
             task->output.copy_files = h2_config_rgeti(r, H2_CONF_COPY_FILES);
             if (task->output.copy_files) {
                 ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, task->c,
-                              "h2_slave_out(%s): copy_files on", task->id);
+                              "h2_secondary_out(%s): copy_files on", task->id);
                 h2_beam_on_file_beam(task->output.beam, h2_beam_no_files, NULL);
             }
             check_push(r, "late_fixup");

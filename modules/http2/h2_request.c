@@ -278,7 +278,7 @@ request_rec *h2_request_create_rec(const h2_request *req, conn_rec *c)
     
     /* Time to populate r with the data we have. */
     r->request_time = req->request_time;
-    r->the_request = apr_psprintf(r->pool, "%s %s HTTP/2.0", 
+    r->the_request = apr_psprintf(r->pool, "%s %s HTTP/1.2", 
                                   req->method, req->path ? req->path : "");
     r->headers_in = apr_table_clone(r->pool, req->headers);
 
@@ -295,7 +295,9 @@ request_rec *h2_request_create_rec(const h2_request *req, conn_rec *c)
         r->status = HTTP_OK;
         goto die;
     }
-    
+    r->protocol = "HTTP/2.0";
+    r->proto_num = HTTP_VERSION(2, 0);
+
     /* we may have switched to another server */
     r->per_dir_config = r->server->lookup_defaults;
 

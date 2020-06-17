@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_http2: workaround to facilitate use of common internal protocol/method/uri
+     checks. The module now handles master/secondary connections and has marked
+     methods according to use.
+
   *) mod_ldap: Avoid performance overhead of APR-util rebind cache for
      OpenLDAP 2.2+.  PR 64414.  [Joe Orton]
 

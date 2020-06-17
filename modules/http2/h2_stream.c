@@ -911,7 +911,7 @@ apr_status_t h2_stream_out_prepare(h2_stream *stream, apr_off_t *plen,
     
     if (status == APR_EAGAIN) {
         /* TODO: ugly, someone needs to retrieve the response first */
-        h2_mplx_keep_active(stream->session->mplx, stream);
+        h2_mplx_m_keep_active(stream->session->mplx, stream);
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
                       H2_STRM_MSG(stream, "prep, response eagain"));
         return status;

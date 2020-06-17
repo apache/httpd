@@ -68,10 +68,10 @@ h2_mpm_type_t h2_conn_mpm_type(void);
 const char *h2_conn_mpm_name(void);
 int h2_mpm_supported(void);
 
-conn_rec *h2_slave_create(conn_rec *master, int slave_id, apr_pool_t *parent);
-void h2_slave_destroy(conn_rec *slave);
+conn_rec *h2_secondary_create(conn_rec *master, int sec_id, apr_pool_t *parent);
+void h2_secondary_destroy(conn_rec *secondary);
 
-apr_status_t h2_slave_run_pre_connection(conn_rec *slave, apr_socket_t *csd);
-void h2_slave_run_connection(conn_rec *slave);
+apr_status_t h2_secondary_run_pre_connection(conn_rec *secondary, apr_socket_t *csd);
+void h2_secondary_run_connection(conn_rec *secondary);
 
 #endif /* defined(__mod_h2__h2_conn__) */

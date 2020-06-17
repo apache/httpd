@@ -138,7 +138,7 @@ apr_status_t h2_conn_child_init(apr_pool_t *pool, server_rec *s)
     ap_register_input_filter("H2_IN", h2_filter_core_input,
                              NULL, AP_FTYPE_CONNECTION);
    
-    status = h2_mplx_child_init(pool, s);
+    status = h2_mplx_m_child_init(pool, s);
 
     if (status == APR_SUCCESS) {
         status = apr_socket_create(&dummy_socket, APR_INET, SOCK_STREAM,
@@ -275,7 +275,7 @@ static int abort_on_oom(int retcode)
     return retcode; /* unreachable, hopefully. */
 }
 
-conn_rec *h2_slave_create(conn_rec *master, int slave_id, apr_pool_t *parent)
+conn_rec *h2_secondary_create(conn_rec *master, int sec_id, apr_pool_t *parent)
 {
     apr_allocator_t *allocator;
     apr_status_t status;
@@ -286,7 +286,7 @@ conn_rec *h2_slave_create(conn_rec *master, int slave_id, apr_pool_t *parent)
     
     ap_assert(master);
     ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, master,
-                  "h2_stream(%ld-%d): create slave", master->id, slave_id);
+                  "h2_stream(%ld-%d): create secondary", master->id, sec_id);
     
     /* We create a pool with its own allocator to be used for
      * processing a request. This is the only way to have the processing
@@ -299,19 +299,19 @@ conn_rec *h2_slave_create(conn_rec *master, int slave_id, apr_pool_t *parent)
     status = apr_pool_create_ex(&pool, parent, NULL, allocator);
     if (status != APR_SUCCESS) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, status, master, 
-                      APLOGNO(10004) "h2_session(%ld-%d): create slave pool",
-                      master->id, slave_id);
+                      APLOGNO(10004) "h2_session(%ld-%d): create secondary pool",
+                      master->id, sec_id);
         return NULL;
     }
     apr_allocator_owner_set(allocator, pool);
     apr_pool_abort_set(abort_on_oom, pool);
-    apr_pool_tag(pool, "h2_slave_conn");
+    apr_pool_tag(pool, "h2_secondary_conn");
 
     c = (conn_rec *) apr_palloc(pool, sizeof(conn_rec));
     if (c == NULL) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, APR_ENOMEM, master, 
-                      APLOGNO(02913) "h2_session(%ld-%d): create slave",
-                      master->id, slave_id);
+                      APLOGNO(02913) "h2_session(%ld-%d): create secondary",
+                      master->id, sec_id);
         apr_pool_destroy(pool);
         return NULL;
     }
@@ -338,19 +338,19 @@ conn_rec *h2_slave_create(conn_rec *master, int slave_id, apr_pool_t *parent)
     c->clogging_input_filters = 1;
     c->log                    = NULL;
     c->log_id                 = apr_psprintf(pool, "%ld-%d", 
-                                             master->id, slave_id);
+                                             master->id, sec_id);
     c->aborted                = 0;
-    /* We cannot install the master connection socket on the slaves, as
+    /* We cannot install the master connection socket on the secondary, as
      * modules mess with timeouts/blocking of the socket, with
      * unwanted side effects to the master connection processing.
-     * Fortunately, since we never use the slave socket, we can just install
+     * Fortunately, since we never use the secondary socket, we can just install
      * a single, process-wide dummy and everyone is happy.
      */
     ap_set_module_config(c->conn_config, &core_module, dummy_socket);
     /* TODO: these should be unique to this thread */
     c->sbh                    = master->sbh;
-    /* TODO: not all mpm modules have learned about slave connections yet.
-     * copy their config from master to slave.
+    /* TODO: not all mpm modules have learned about secondary connections yet.
+     * copy their config from master to secondary.
      */
     if ((mpm = h2_conn_mpm_module()) != NULL) {
         cfg = ap_get_module_config(master->conn_config, mpm);
@@ -358,38 +358,38 @@ conn_rec *h2_slave_create(conn_rec *master, int slave_id, apr_pool_t *parent)
     }
 
     ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, c, 
-                  "h2_slave(%s): created", c->log_id);
+                  "h2_secondary(%s): created", c->log_id);
     return c;
 }
 
-void h2_slave_destroy(conn_rec *slave)
+void h2_secondary_destroy(conn_rec *secondary)
 {
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, slave,
-                  "h2_slave(%s): destroy", slave->log_id);
-    slave->sbh = NULL;
-    apr_pool_destroy(slave->pool);
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, secondary,
+                  "h2_secondary(%s): destroy", secondary->log_id);
+    secondary->sbh = NULL;
+    apr_pool_destroy(secondary->pool);
 }
 
-apr_status_t h2_slave_run_pre_connection(conn_rec *slave, apr_socket_t *csd)
+apr_status_t h2_secondary_run_pre_connection(conn_rec *secondary, apr_socket_t *csd)
 {
-    if (slave->keepalives == 0) {
+    if (secondary->keepalives == 0) {
         /* Simulate that we had already a request on this connection. Some
          * hooks trigger special behaviour when keepalives is 0. 
          * (Not necessarily in pre_connection, but later. Set it here, so it
          * is in place.) */
-        slave->keepalives = 1;
+        secondary->keepalives = 1;
         /* We signal that this connection will be closed after the request.
          * Which is true in that sense that we throw away all traffic data
-         * on this slave connection after each requests. Although we might
+         * on this secondary connection after each requests. Although we might
          * reuse internal structures like memory pools.
          * The wanted effect of this is that httpd does not try to clean up
          * any dangling data on this connection when a request is done. Which
          * is unnecessary on a h2 stream.
          */
-        slave->keepalive = AP_CONN_CLOSE;
-        return ap_run_pre_connection(slave, csd);
+        secondary->keepalive = AP_CONN_CLOSE;
+        return ap_run_pre_connection(secondary, csd);
     }
-    ap_assert(slave->output_filters);
+    ap_assert(secondary->output_filters);
     return APR_SUCCESS;
 }
 
