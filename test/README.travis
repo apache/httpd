@@ -32,6 +32,12 @@ The Travis scripts use the following environment variables:
 
 * TEST_MALLOC - set for builds using enhanced malloc debugging.
 
+* TEST_LDAP - set for builds with slapd running
+
+* TESTS - a list of Perl framework tests to run
+
+* TEST_ARGS - arguments to pass to ./t/TEST in the Perl test framework
+
 Caching
 -------
 
