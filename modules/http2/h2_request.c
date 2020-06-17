@@ -267,6 +267,7 @@ static request_rec *my_ap_create_request(conn_rec *c)
 request_rec *h2_request_create_rec(const h2_request *req, conn_rec *c)
 {
     int access_status;
+    int valid_request_line;
 
 #if AP_MODULE_MAGIC_AT_LEAST(20150222, 13)
     request_rec *r = ap_create_request(c);
@@ -291,19 +292,21 @@ request_rec *h2_request_create_rec(const h2_request *req, conn_rec *c)
      */
     r->hostname = NULL;
 
-    /* Validate HTTP/1 request and select vhost. */
-    if (!ap_parse_request_line(r) || !ap_check_request_header(r)) {
+    /* Validate HTTP/1 request line. */
+    valid_request_line = ap_parse_request_line(r);
+    /* Note that this is actually a HTTP/2.0 request */
+    r->protocol = "HTTP/2.0";
+    r->proto_num = HTTP_VERSION(2, 0);
+    r->the_request = apr_psprintf(r->pool, "%s %s HTTP/2.0",
+                                  req->method, req->path ? req->path : "");
+    /* Validate headers and select vhost. */
+    if (!valid_request_line || !ap_check_request_header(r)) {
         /* we may have switched to another server still */
         r->per_dir_config = r->server->lookup_defaults;
         access_status = r->status;
         r->status = HTTP_OK;
         goto die;
     }
-    /* Note that this is actually a HTTP/2.0 request */
-    r->protocol = "HTTP/2.0";
-    r->proto_num = HTTP_VERSION(2, 0);
-    r->the_request = apr_psprintf(r->pool, "%s %s HTTP/2.0",
-                                  req->method, req->path ? req->path : "");
 
     /* we may have switched to another server */
     r->per_dir_config = r->server->lookup_defaults;
