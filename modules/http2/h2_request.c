@@ -278,6 +278,10 @@ request_rec *h2_request_create_rec(const h2_request *req, conn_rec *c)
     
     /* Time to populate r with the data we have. */
     r->request_time = req->request_time;
+    /*
+     * Use HTTP/1.2 as ap_parse_request_line only deals with
+     * HTTP/1.x requests.
+     */
     r->the_request = apr_psprintf(r->pool, "%s %s HTTP/1.2", 
                                   req->method, req->path ? req->path : "");
     r->headers_in = apr_table_clone(r->pool, req->headers);
@@ -295,6 +299,7 @@ request_rec *h2_request_create_rec(const h2_request *req, conn_rec *c)
         r->status = HTTP_OK;
         goto die;
     }
+    /* Note that this is actually a HTTP/2.0 request */
     r->protocol = "HTTP/2.0";
     r->proto_num = HTTP_VERSION(2, 0);
 
