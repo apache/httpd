@@ -302,6 +302,8 @@ request_rec *h2_request_create_rec(const h2_request *req, conn_rec *c)
     /* Note that this is actually a HTTP/2.0 request */
     r->protocol = "HTTP/2.0";
     r->proto_num = HTTP_VERSION(2, 0);
+    r->the_request = apr_psprintf(r->pool, "%s %s HTTP/2.0",
+                                  req->method, req->path ? req->path : "");
 
     /* we may have switched to another server */
     r->per_dir_config = r->server->lookup_defaults;
