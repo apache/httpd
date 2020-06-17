@@ -640,8 +640,15 @@ AP_CORE_DECLARE(void) ap_parse_uri(request_rec *r, const char *uri)
         }
 
         r->args = r->parsed_uri.query;
-        r->uri = r->parsed_uri.path ? r->parsed_uri.path
-                 : apr_pstrdup(r->pool, "/");
+        if (r->parsed_uri.path) {
+            r->uri = r->parsed_uri.path;
+        }
+        else if (r->method_number == M_OPTIONS) {
+            r->uri = apr_pstrdup(r->pool, "*");
+        }
+        else {
+            r->uri = apr_pstrdup(r->pool, "/");
+        }
 
 #if defined(OS2) || defined(WIN32)
         /* Handle path translations for OS/2 and plug security hole.
@@ -910,6 +917,14 @@ rrl_done:
         r->header_only = 1;
 
     ap_parse_uri(r, uri);
+    if (r->status == HTTP_OK
+            && (r->parsed_uri.path != NULL)
+            && (r->parsed_uri.path[0] != '/')
+            && (r->method_number != M_OPTIONS
+                || strcmp(r->parsed_uri.path, "*") != 0)) {
+        /* Invalid request-target per RFC 7230 section 5.3 */
+        r->status = HTTP_BAD_REQUEST;
+    }
 
     /* With the request understood, we can consider HTTP/0.9 specific errors */
     if (r->proto_num == HTTP_VERSION(0, 9) && deferred_error == rrl_none) {
