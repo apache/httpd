@@ -886,7 +886,7 @@ rrl_done:
             memcpy((char*)r->protocol, "HTTP", 4);
     }
     else if (r->protocol[0]) {
-        r->proto_num = HTTP_VERSION(0,9);
+        r->proto_num = HTTP_VERSION(0, 9);
         /* Defer setting the r->protocol string till error msg is composed */
         if (deferred_error == rrl_none)
             deferred_error = rrl_badprotocol;
