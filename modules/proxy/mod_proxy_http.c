@@ -748,40 +748,22 @@ static int ap_proxy_http_prefetch(proxy_http_req_t *req,
         }
     }
 
-    /* Use chunked request body encoding or send a content-length body?
+    /*
+     * The request body is streamed by default, using either content-length
+     * or chunked transfer-encoding, like this:
      *
-     * Prefer C-L when:
+     *   The whole body (including no body) was received on prefetch, i.e.
+     *   the input brigade ends with EOS => RB_STREAM_CL.
      *
-     *   We have no request body (handled by RB_STREAM_CL)
+     *   C-L is known and reliable, i.e. only protocol filters in the input
+     *   chain thus none should change the body => RB_STREAM_CL.
      *
-     *   We have a request body length <= MAX_MEM_SPOOL
+     *   The administrator has not SetEnv "force-proxy-request-1.0" or
+     *   "proxy-sendcl" which prevents T-E => RB_STREAM_CHUNKED.
      *
-     *   The administrator has setenv force-proxy-request-1.0
-     *
-     *   The client sent a C-L body, and the administrator has
-     *   not setenv proxy-sendchunked or has set setenv proxy-sendcl
-     *
-     *   The client sent a T-E body, and the administrator has
-     *   setenv proxy-sendcl, and not setenv proxy-sendchunked
-     *
-     * If both proxy-sendcl and proxy-sendchunked are set, the
-     * behavior is the same as if neither were set, large bodies
-     * that can't be read will be forwarded in their original
-     * form of C-L, or T-E.
-     *
-     * To ensure maximum compatibility, setenv proxy-sendcl
-     * To reduce server resource use,   setenv proxy-sendchunked
-     *
-     * Then address specific servers with conditional setenv
-     * options to restore the default behavior where desirable.
-     *
-     * We have to compute content length by reading the entire request
-     * body; if request body is not small, we'll spool the remaining
-     * input to a temporary file.  Chunked is always preferable.
-     *
-     * We can only trust the client-provided C-L if the T-E header
-     * is absent, and the filters are unchanged (the body won't
-     * be resized by another content filter).
+     * Otherwise we need to determine and set a content-length, so spool the
+     * entire request body to memory or temporary file (above MAX_MEM_SPOOL),
+     * such that we finally know its length => RB_SPOOL_CL.
      */
     if (!APR_BRIGADE_EMPTY(input_brigade)
         && APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(input_brigade))) {
@@ -798,42 +780,23 @@ static int ap_proxy_http_prefetch(proxy_http_req_t *req,
         }
         req->rb_method = RB_STREAM_CL;
     }
-    else if (req->old_te_val) {
-        if (req->force10
-             || (apr_table_get(r->subprocess_env, "proxy-sendcl")
-                  && !apr_table_get(r->subprocess_env, "proxy-sendchunks")
-                  && !apr_table_get(r->subprocess_env, "proxy-sendchunked"))) {
-            req->rb_method = RB_SPOOL_CL;
+    else if (req->old_cl_val && r->input_filters == r->proto_input_filters) {
+        /* Streaming is possible by preserving the existing C-L */
+        if (!ap_parse_strict_length(&req->cl_val, req->old_cl_val)) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(01085)
+                          "could not parse request Content-Length (%s)",
+                          req->old_cl_val);
+            return HTTP_INTERNAL_SERVER_ERROR;
         }
-        else {
-            req->rb_method = RB_STREAM_CHUNKED;
-        }
+        req->rb_method = RB_STREAM_CL;
     }
-    else if (req->old_cl_val) {
-        if (r->input_filters == r->proto_input_filters) {
-            if (!ap_parse_strict_length(&req->cl_val, req->old_cl_val)) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(01085)
-                              "could not parse request Content-Length (%s)",
-                              req->old_cl_val);
-                return HTTP_BAD_REQUEST;
-            }
-            req->rb_method = RB_STREAM_CL;
-        }
-        else if (!req->force10
-                  && (apr_table_get(r->subprocess_env, "proxy-sendchunks")
-                      || apr_table_get(r->subprocess_env, "proxy-sendchunked"))
-                  && !apr_table_get(r->subprocess_env, "proxy-sendcl")) {
-            req->rb_method = RB_STREAM_CHUNKED;
-        }
-        else {
-            req->rb_method = RB_SPOOL_CL;
-        }
+    else if (!req->force10 && !apr_table_get(r->subprocess_env,
+                                             "proxy-sendcl")) {
+        /* Streaming is possible using T-E: chunked */
+        req->rb_method = RB_STREAM_CHUNKED;
     }
     else {
-        /* This is an appropriate default; very efficient for no-body
-         * requests, and has the behavior that it will not add any C-L
-         * when the old_cl_val is NULL.
-         */
+        /* No streaming, C-L is the only option so spool to memory/file */
         req->rb_method = RB_SPOOL_CL;
     }
 
@@ -849,8 +812,8 @@ static int ap_proxy_http_prefetch(proxy_http_req_t *req,
         break;
 
     default: /* => RB_SPOOL_CL */
-        /* If we have to spool the body, do it now, before connecting or
-         * reusing the backend connection.
+        /* Spool now, before connecting or reusing the backend connection
+         * which could expire and be closed in the meantime.
          */
         rv = spool_reqbody_cl(req, &bytes);
         if (rv != OK) {

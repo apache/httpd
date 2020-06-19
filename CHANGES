@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_proxy_http: remove proxy-sendchunked and proxy-sendchunks
+     handling, the defaut behaviour being now to stream the request body
+     using Content-Length when the length is known and fall back to chunked
+     Transfer-Encoding otherwise (unless proxy-sendcl is set thus requiring
+     that the request body be spooled to memory or filesystem). [Yann Ylavic]
+
   *) mod_ldap: Avoid performance overhead of APR-util rebind cache for
      OpenLDAP 2.2+.  PR 64414.  [Joe Orton]
 
