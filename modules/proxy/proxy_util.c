@@ -1951,12 +1951,12 @@ PROXY_DECLARE(char *) ap_proxy_define_match_worker(apr_pool_t *p,
                                              int do_malloc)
 {
     char *err;
-    char *rurl = apr_pstrdup(p, url);
-    char *pdollar = ap_strchr(rurl, '$');
+    const char *pdollar = ap_strchr_c(url, '$');
 
-    if (pdollar != NULL)
-        *pdollar = '\0'; 
-    err = ap_proxy_define_worker(p, worker, balancer, conf, rurl, do_malloc);
+    if (pdollar != NULL) {
+        url = apr_pstrmemdup(p, url, pdollar - url);
+    }
+    err = ap_proxy_define_worker(p, worker, balancer, conf, url, do_malloc);
     if (err) {
         return err;
     }
