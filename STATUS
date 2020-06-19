@@ -221,6 +221,24 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   (modulo CHANGES conflict)
      +1: ylavic
 
+  *) mod_proxy: Add ap_proxy_define_match_worker() and use it for ProxyPassMatch
+     and ProxyMatch section to distinguish between normal workers and workers
+     with regex substitutions in the name. Implement handling of such workers
+     in ap_proxy_get_worker(). Fixes the bug when regex workers were not
+     matched and used for request. PR 43513 and 64537.
+     trunk patch: http://svn.apache.org/r1609680
+                  http://svn.apache.org/r1609688
+                  http://svn.apache.org/r1641381
+                  http://svn.apache.org/r1826289
+                  http://svn.apache.org/r1826313
+                  http://svn.apache.org/r1878467
+                  http://svn.apache.org/r1878994
+     2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-ap_proxy_define_match_worker-v4.patch
+     +1: ylavic
+     -0: covener: lots of folks getting dns and connection reuse implicitly after we backport this.
+     ylavic: reviving this, should we have an opt-in for 2.4.x?
+             (eg. an explicit enablereuse=on)
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
@@ -275,7 +293,7 @@ PATCHES/ISSUES THAT ARE BEING WORKED
      comes for free with the same commit).
      trunk patch: http://svn.apache.org/r1554303
                   http://svn.apache.org/r1678215
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-preserve_head_cl_zero.patch <--- this is 404
+     2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-preserve_head_cl_zero.patch
      +1: ylavic, jim
      ylavic: r1554303 issued a major MMN bump, but since the ABI change is two
              ints added at the end of core_server_config, the proposed merge
@@ -342,23 +360,6 @@ PATCHES/ISSUES THAT ARE STALLED
              we open a door here (unconditionally)? 
              covener: seems like we need some kind of pattern for opting in
              to restricted arguments.
-
-  *) mod_proxy: Add ap_proxy_define_match_worker() and use it for ProxyPassMatch
-     and ProxyMatch section to distinguish between normal workers and workers
-     with regex substitutions in the name. Implement handling of such workers
-     in ap_proxy_get_worker(). Fixes the bug when regex workers were not
-     matched and used for request. PR 43513.
-     trunk patch: http://svn.apache.org/r1609680
-                  http://svn.apache.org/r1609688
-                  http://svn.apache.org/r1641381
-                  http://svn.apache.org/r1826289
-                  http://svn.apache.org/r1826313
-     ylavic: Merge patch provided (reusing new->real to avoid double de_socketfy() call).
-             Also added missing r1609688 to the patchset.
-     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-ap_proxy_define_match_worker-v2.patch
-     +1:
-     -0: covener: lots of folks getting dns and connection reuse implicitly after we backport this.
-     ylavic: agreed, withdrawing
 
    * core: Add ap_errorlog_provider to make ErrorLog logging modular. This
            backport keeps syslog logging as part of httpd core and only adds
