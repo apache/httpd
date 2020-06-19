@@ -748,7 +748,7 @@ AP_DECLARE(int) ap_parse_request_line(request_rec *r)
     enum {
         rrl_none, rrl_badmethod, rrl_badwhitespace, rrl_excesswhitespace,
         rrl_missinguri, rrl_baduri, rrl_badprotocol, rrl_trailingtext,
-        rrl_badmethod09, rrl_reject09, rrl_versionnotsupported
+        rrl_badmethod09, rrl_reject09
     } deferred_error = rrl_none;
     apr_size_t len = 0;
     char *uri, *ll;
@@ -897,11 +897,6 @@ rrl_done:
         r->proto_num = HTTP_VERSION(0, 9);
     }
 
-    if (strict && deferred_error == rrl_none
-        && r->proto_num >= HTTP_VERSION(2, 0)) {
-        deferred_error = rrl_versionnotsupported;
-    }
-
     /* Determine the method_number and parse the uri prior to invoking error
      * handling, such that these fields are available for substitution
      */
@@ -923,7 +918,6 @@ rrl_done:
      * we can safely resume any deferred error reporting
      */
     if (deferred_error != rrl_none) {
-        r->status = HTTP_BAD_REQUEST;
         if (deferred_error == rrl_badmethod)
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03445)
                           "HTTP Request Line; Invalid method token: '%.*s'",
@@ -960,13 +954,7 @@ rrl_done:
                           "HTTP Request Line; Unrecognized protocol '%.*s' "
                           "(perhaps whitespace was injected?)",
                           field_name_len(r->protocol), r->protocol);
-        else if (deferred_error == rrl_versionnotsupported) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO()
-                          "HTTP Request Line; Protocol '%.*s' >= HTTP/2.0 not"
-                          " supported", field_name_len(r->protocol),
-                          r->protocol);
-            r->status = HTTP_VERSION_NOT_SUPPORTED;
-        }
+        r->status = HTTP_BAD_REQUEST;
         goto rrl_failed;
     }
 
