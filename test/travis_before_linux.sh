@@ -7,6 +7,10 @@ fi
 : Travis tag = ${TRAVIS_TAG}
 : Travis branch = ${TRAVIS_BRANCH}
 
+: /etc/hosts --
+cat /etc/hosts
+: -- ends
+
 # Use a rudimental retry workflow as workaround to svn export hanging for minutes.
 # Travis automatically kills a build if one step takes more than 10 minutes without
 # reporting any progress. 
