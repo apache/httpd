@@ -187,7 +187,6 @@ AP_DECLARE(void) ap_internal_fast_redirect(request_rec *sub_req, request_rec *r)
  * @return 1 if authentication is required, 0 otherwise
  * @bug Behavior changed in 2.4.x refactoring, API no longer usable
  * @deprecated @see ap_some_authn_required()
- *
  */
 AP_DECLARE(int) ap_some_auth_required(request_rec *r);
 
