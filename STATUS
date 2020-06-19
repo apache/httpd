@@ -233,11 +233,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1826313
                   http://svn.apache.org/r1878467
                   http://svn.apache.org/r1878994
-     2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-ap_proxy_define_match_worker-v4.patch
+                  http://svn.apache.org/r1879000
+                  http://svn.apache.org/r1879001
+                  http://svn.apache.org/r1879002
+     2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-ap_proxy_define_match_worker-v5.patch
      +1: ylavic
      -0: covener: lots of folks getting dns and connection reuse implicitly after we backport this.
-     ylavic: reviving this, should we have an opt-in for 2.4.x?
-             (eg. an explicit enablereuse=on)
+     ylavic: should be addressed by r1879000
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
