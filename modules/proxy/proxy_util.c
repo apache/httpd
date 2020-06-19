@@ -1962,6 +1962,16 @@ PROXY_DECLARE(char *) ap_proxy_define_match_worker(apr_pool_t *p,
     }
 
     (*worker)->s->is_name_matchable = 1;
+    if (pdollar) {
+        /* Before ap_proxy_define_match_worker() existed, a regex worker
+         * with dollar substitution was never matched against the actual
+         * URL thus the request fell through the generic worker. To avoid
+         * dns and connection reuse compat issues, let's disable connection
+         * reuse by default, it can still be overwritten by an explicit
+         * enablereuse=on.
+         */
+        (*worker)->s->disablereuse = 1;
+    }
     return NULL;
 }
 
