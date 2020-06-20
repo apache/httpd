@@ -3,6 +3,10 @@ Changes with Apache 2.4.44
 
   *) mod_ssl: Fix memory leak in stapling code. PR63687. [Stefan Eissing]
 
+  *) mod_http2: Fixed regression that caused connections to close when mod_reqtimeout
+     was configured with a handshake timeout. Fixes gitub issue #196.
+     [Stefan Eissing]
+
   *) mod_proxy_http2: the "ping" proxy parameter·
      (see <https://httpd.apache.org/docs/2.4/mod/mod_proxy.html>) is now used
      when checking the liveliness of a new or reused h2 connection to the

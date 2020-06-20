@@ -1179,7 +1179,7 @@ struct h2_stream *h2_session_push(h2_session *session, h2_stream *is,
     stream = h2_session_open_stream(session, nid, is->id);
     if (!stream) {
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, 
-                      H2_STRM_LOG(APLOGNO(03077), stream, 
+                      H2_STRM_LOG(APLOGNO(03077), is,
                       "failed to create stream obj %d"), nid);
         /* kill the push_promise */
         nghttp2_submit_rst_stream(session->ngh2, NGHTTP2_FLAG_NONE, nid,
