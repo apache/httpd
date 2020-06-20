@@ -209,7 +209,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           http://svn.apache.org/r1876823
           http://svn.apache.org/r1877642
      2.4.x patch: svn merge --accept tc -c 1612945,1734835,1738875,1833416,1842898,1867257,1876745,1876807,1876823,1877642 ^/httpd/httpd/trunk . 
-     +1: jailletc36
+     +1: jailletc36, jim
      jailletc36: 2 files conflict in this merge. I've added '--accept tc' to skip them.
                  One is a doc file in r1734835 that has already been merged and the
                  other one is 'next-number' in r1876823.
@@ -245,7 +245,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      before the thread has started, avoiding mutex operations with undefined behaviour
      trunk patch: http://svn.apache.org/r1876511
      2.4.x patch: svn merge -c 1876511 ^/httpd/httpd/trunk .
-     +1: jailletc36 (by inspection)
+     +1: jailletc36 (by inspection), jim
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
