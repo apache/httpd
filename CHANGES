@@ -3,6 +3,9 @@ Changes with Apache 2.4.44
 
   *) mod_ssl: Fix memory leak in stapling code. PR63687. [Stefan Eissing]
 
+  *) mod_http2: Fixed regression that no longer set H2_STREAM_ID and H2_STREAM_TAG.
+     PR64330 [Stefan Eissing]
+
   *) mod_http2: Fixed regression that caused connections to close when mod_reqtimeout
      was configured with a handshake timeout. Fixes gitub issue #196.
      [Stefan Eissing]
