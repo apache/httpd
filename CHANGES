@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.44
 
+  *) mod_ssl: Fix memory leak in stapling code. PR63687. [Stefan Eissing]
+
   *) mod_proxy_http2: the "ping" proxy parameter·
      (see <https://httpd.apache.org/docs/2.4/mod/mod_proxy.html>) is now used
      when checking the liveliness of a new or reused h2 connection to the
