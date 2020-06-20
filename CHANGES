@@ -15,25 +15,11 @@ Changes with Apache 2.5.1
   *) mod_ldap: Avoid performance overhead of APR-util rebind cache for
      OpenLDAP 2.2+.  PR 64414.  [Joe Orton]
 
-  *) mod_proxy_http2: the "ping" proxy parameter
-     (see <https://httpd.apache.org/docs/2.4/mod/mod_proxy.html>) is now used
-     when checking the liveliness of a new or reused h2 connection to the backend.
-     With short durations, this makes load-balancing more responsive. The module
-     will hold back requests until ping conditions are met, using features of the
-     HTTP/2 protocol alone. [Ruediger Pluem, Stefan Eissing]
-
   *) mod_proxy_http: flush spooled request body in one go to avoid
      leaking (or long lived) temporary file. PR 64452. [Yann Ylavic]
 
-  *) mod_proxy_http2: respect ProxyTimeout settings on backend connections
-     while waiting on incoming data. [Ruediger Pluem, Stefan Eissing]
-
   *) mod_proxy_fcgi: ProxyFCGISetEnvIf unsets variables when expression
      evaluates to false.  PR64365. [Michael König <mail ikoenig.net>]
-
-  *) mod_http2: Fixed regression that caused connections to close when mod_reqtimeout
-     was configured with a handshake timeout. Fixes gitub issue #196.
-     [Stefan Eissing]
 
   *) mod_proxy_http: handle Upgrade request, 101 (Switching Protocol) response
      and switched protocol forwarding.  [Yann Ylavic]
@@ -59,17 +45,12 @@ Changes with Apache 2.5.1
      for when the variable is not defined, using format ${VAR?=default value}.
      [Yann Ylavic]
 
-  *) mod_http2: Fixed regression that no longer set H2_STREAM_ID and H2_STREAM_TAG.
-     PR64330 [Stefan Eissing]
-
   *) htcacheclean: Empty directories in CacheRoot are still present even after
      using "-t". PR64313 [Petros Marios Prokopiou <pprokopi redhat.com>,
      Ruediger Pluem, Jean-Frederic Clere]
 
   *) mod_reqtimeout: Cannot override default Virtualhost's mod_reqtimeout.
      PR64295 [Jean-Frederic Clere]
-
-  *) mod_ssl: Fix memory leak in stapling code. PR63687. [Stefan Eissing]
 
   *) mod_proxy: Allow ProxyErrorOverride to be restricted to specific status 
      codes.  PR63628. [Martin Drößler <mail martindroessler.de>]
