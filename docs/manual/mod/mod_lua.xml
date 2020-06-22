@@ -216,6 +216,13 @@ performing access control, or setting mime types:</p>
             been mapped to a host or virtual host</td>
     </tr>
     <tr>
+        <td>Pre-Translate name</td>
+        <td><directive module="mod_lua">LuaHookPreTranslateName</directive></td>
+        <td>This phase translates the requested URI into a filename on the
+            system, before decoding occurs. Modules such as <module>mod_proxy</module>
+            can operate in this phase.</td>
+    </tr>
+    <tr>
         <td>Translate name</td>
         <td><directive module="mod_lua">LuaHookTranslateName</directive></td>
         <td>This phase translates the requested URI into a filename on the
@@ -439,7 +446,7 @@ end
           <td>string</td>
           <td>yes</td>
           <td>The file name that the request maps to, f.x. /www/example.com/foo.txt. This can be
-            changed in the translate-name or map-to-storage phases of a request to allow the
+            changed in the pre-translate-name, translate-name or map-to-storage phases of a request to allow the
             default handler (or script handlers) to serve a different file than what was requested.</td>
         </tr>
         <tr>
@@ -538,7 +545,7 @@ end
           <td>string</td>
           <td>yes</td>
           <td>Denotes whether this is a proxy request or not. This value is generally set in
-            the post_read_request/translate_name phase of a request.</td>
+              the post_read_request/pre_translate_name/translate_name phase of a request.</td>
         </tr>
         <tr>
           <td><code>range</code></td>
@@ -1513,6 +1520,23 @@ end
    <note><title>Ordering</title><p>The optional arguments "early" or "late"
    control when this script runs relative to other modules.</p></note>
 
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LuaHookPreTranslate</name>
+<description>Provide a hook for the pre_translate phase of a request
+processing</description>
+<syntax>LuaHookPreTranslate  /path/to/lua/script.lua hook_function_name</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
+<usage>
+<p>
+    Just like LuaHookTranslateName, but executed at the pre_translate phase,
+    where the URI-path is not percent decoded.
+</p>
 </usage>
 </directivesynopsis>
 
