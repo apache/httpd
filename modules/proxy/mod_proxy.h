@@ -245,8 +245,8 @@ typedef struct {
 
     apr_array_header_t *error_override_codes;
 
-    /** Whether to map percent-decoded URI-path */
-    char mapping_decoded;
+    /** Whether to use original/encoded URI-path or not (default) */
+    char use_original_uri;
 } proxy_dir_conf;
 
 /* if we interpolate env vars per-request, we'll need a per-request

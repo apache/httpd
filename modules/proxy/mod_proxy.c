@@ -936,7 +936,7 @@ PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r, struct proxy_alias *ent,
          * might consider for instance that an original %3B is a delimiter
          * for path parameters (which is not).
          */
-        if (!dconf->mapping_decoded
+        if (dconf->use_original_uri > 0
                 && (ent->flags & PROXYPASS_MAPPING_SERVLET)) {
             nocanon = 0; /* ignored since servlet's normalization applies */
             len = alias_match_servlet(r->pool, r->uri, fake);
@@ -1019,10 +1019,10 @@ static int proxy_trans(request_rec *r, int pre_trans)
 
     dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
 
-    /* Do the work from the hook corresponding to the ProxyMappingDecoded
+    /* Do the work from the hook corresponding to the ProxyUseOriginalURI
      * configuration (on/default: translate hook, off: pre_translate hook).
      */
-    if (pre_trans ^ !dconf->mapping_decoded) {
+    if (pre_trans ^ (dconf->use_original_uri > 0)) {
         return DECLINED;
     }
 
@@ -1813,7 +1813,7 @@ static void *create_proxy_dir_config(apr_pool_t *p, char *dummy)
     new->add_forwarded_headers_set = 0;
     new->forward_100_continue = 1;
     new->forward_100_continue_set = 0;
-    new->mapping_decoded = -1; /* unset (on by default) */
+    new->use_original_uri = -1; /* unset (off by default) */
 
     return (void *) new;
 }
@@ -1872,8 +1872,9 @@ static void *merge_proxy_dir_config(apr_pool_t *p, void *basev, void *addv)
     new->forward_100_continue_set = add->forward_100_continue_set
                                     || base->forward_100_continue_set;
     
-    new->mapping_decoded = (add->mapping_decoded == -1) ? base->mapping_decoded
-                                                        : add->mapping_decoded;
+    new->use_original_uri = (add->use_original_uri == -1)
+                                ? base->use_original_uri
+                                : add->use_original_uri;
 
     return new;
 }
@@ -3026,9 +3027,9 @@ static const command_rec proxy_cmds[] =
     AP_INIT_FLAG("Proxy100Continue", forward_100_continue, NULL, RSRC_CONF|ACCESS_CONF,
      "on if 100-Continue should be forwarded to the origin server, off if the "
      "proxy should handle it by itself"),
-    AP_INIT_FLAG("ProxyMappingDecoded", ap_set_flag_slot_char,
-     (void*)APR_OFFSETOF(proxy_dir_conf, mapping_decoded), RSRC_CONF|ACCESS_CONF,
-     "Whether to percent-decode before URI-path mapping"),
+    AP_INIT_FLAG("ProxyUseOriginalURI", ap_set_flag_slot_char,
+     (void*)APR_OFFSETOF(proxy_dir_conf, use_original_uri), RSRC_CONF|ACCESS_CONF,
+     "Whether to use the original/encoded URI-path for mapping"),
     {NULL}
 };
 
