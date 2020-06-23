@@ -1022,7 +1022,7 @@ static int proxy_trans(request_rec *r, int pre_trans)
     /* Do the work from the hook corresponding to the ProxyUseOriginalURI
      * configuration (off/default: translate hook, on: pre_translate hook).
      */
-    if (pre_trans ^ dconf->use_original_uri == 1) {
+    if (pre_trans ^ (dconf->use_original_uri == 1)) {
         return DECLINED;
     }
 
