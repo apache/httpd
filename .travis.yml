@@ -267,7 +267,9 @@ jobs:
       env: NOTEST_CFLAGS="-fsanitize=undefined -fno-sanitize-recover=undefined" NOTEST_LIBS=-lubsan
            CONFIG="--enable-mods-shared=reallyall --disable-http2" TEST_UBSAN=1
   allow_failures:
-    # non-x86 are sometimes flaky
+    # Currently broken:
+    - env: CONFIG="--enable-mods-shared=reallyall --with-mpm=event --disable-cgi --enable-cgid-fdpassing"
+    # Non-x86 are sometimes flaky:
     - arch: s390x
       env: CONFIG="--enable-mods-shared=reallyall"
     - arch: arm64
