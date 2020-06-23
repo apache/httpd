@@ -108,7 +108,7 @@ jobs:
            SKIP_TESTING=1
     # -------------------------------------------------------------------------
     - if: *condition_not_24x
-    - name: Linux Ubuntu, Event MPM, all-modules, mod_cgid fdpassing
+      name: Linux Ubuntu, Event MPM, all-modules, mod_cgid fdpassing
       env: CONFIG="--enable-mods-shared=reallyall --with-mpm=event --enable-cgid-fdpassing"
     # -------------------------------------------------------------------------
     - if: *condition_not_24x
