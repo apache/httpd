@@ -936,7 +936,7 @@ PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r, struct proxy_alias *ent,
          * might consider for instance that an original %3B is a delimiter
          * for path parameters (which is not).
          */
-        if (dconf->use_original_uri > 0
+        if (dconf->use_original_uri == 1
                 && (ent->flags & PROXYPASS_MAPPING_SERVLET)) {
             nocanon = 0; /* ignored since servlet's normalization applies */
             len = alias_match_servlet(r->pool, r->uri, fake);
@@ -1020,9 +1020,9 @@ static int proxy_trans(request_rec *r, int pre_trans)
     dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
 
     /* Do the work from the hook corresponding to the ProxyUseOriginalURI
-     * configuration (on/default: translate hook, off: pre_translate hook).
+     * configuration (off/default: translate hook, on: pre_translate hook).
      */
-    if (pre_trans ^ (dconf->use_original_uri > 0)) {
+    if (pre_trans ^ dconf->use_original_uri == 1) {
         return DECLINED;
     }
 
