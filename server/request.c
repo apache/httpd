@@ -196,7 +196,10 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
 
     if (file_req) {
         /* File subrequests can have a relative path. */
-        normalize_flags = AP_NORMALIZE_ALLOW_RELATIVE;
+        normalize_flags |= AP_NORMALIZE_ALLOW_RELATIVE;
+    }
+    if (sconf->merge_slashes != AP_CORE_CONFIG_OFF) { 
+        normalize_flags |= AP_NORMALIZE_MERGE_SLASHES;
     }
 
     if (r->parsed_uri.path) {
@@ -259,18 +262,10 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
         }
 
         if (d->allow_encoded_slashes && d->decode_encoded_slashes) {
-            /* Decoding slashes might have created new /./ and /../
-             * segments (e.g. "/.%2F/"), so re-normalize. If asked to,
-             * merge slashes while at it.
+            /* Decoding slashes might have created new // or /./ or /../
+             * segments (e.g. "/.%2F/"), so re-normalize.
              */
-            if (sconf->merge_slashes != AP_CORE_CONFIG_OFF) { 
-                normalize_flags |= AP_NORMALIZE_MERGE_SLASHES;
-            }
             ap_normalize_path(r->parsed_uri.path, normalize_flags);
-        }
-        else if (sconf->merge_slashes != AP_CORE_CONFIG_OFF) { 
-            /* We still didn't merged slashes yet, do it now. */
-            ap_no2slash(r->parsed_uri.path);
         }
     }
 
