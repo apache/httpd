@@ -1413,7 +1413,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
     r->canonical_filename = r->filename;
 
     if (r->finfo.filetype == APR_DIR) {
-        cache->cached = r->filename;
+        cache->cached = apr_pstrdup(r->pool, r->filename);
     }
     else {
         cache->cached = ap_make_dirstr_parent(r->pool, r->filename);
@@ -1497,7 +1497,7 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
         apr_pool_t *rxpool = NULL;
 
         cached &= auth_internal_per_conf;
-        cache->cached = entry_uri;
+        cache->cached = apr_pstrdup(r->pool, entry_uri);
 
         /* Go through the location entries, and check for matches.
          * We apply the directive sections in given order, we should
