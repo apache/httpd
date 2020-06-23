@@ -108,6 +108,10 @@ jobs:
            SKIP_TESTING=1
     # -------------------------------------------------------------------------
     - if: *condition_not_24x
+    - name: Linux Ubuntu, Event MPM, all-modules, mod_cgid fdpassing
+      env: CONFIG="--enable-mods-shared=reallyall --with-mpm=event --enable-cgid-fdpassing"
+    # -------------------------------------------------------------------------
+    - if: *condition_not_24x
       name: Linux Ubuntu, PCRE 1, GCC 7 maintainer-mode w/-Werror
       os: linux
       env: CONFIG="--enable-mods-shared=reallyall --with-pcre=/usr/bin/pcre-config --enable-maintainer-mode NOTEST_CFLAGS=-Werror CC=gcc-7"
