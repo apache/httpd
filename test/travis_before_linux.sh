@@ -11,6 +11,16 @@ fi
 cat /etc/hosts
 : -- ends
 
+# ### FIXME: This is a workaround, non-x86 builds have an IPv6
+# configuration which somehow breaks the test suite runs.  Appears
+# that Apache::Test only configures the server to Listen on 0.0.0.0
+# (that is hard-coded), but then Apache::TestSerer::wait_till_is_up()
+# tries to connect via ::1, which fails/times out.
+if grep ip6-localhost /etc/hosts; then
+    sudo sed -i "/ip6-/d" /etc/hosts
+    cat /etc/hosts
+fi
+
 # Use a rudimental retry workflow as workaround to svn export hanging for minutes.
 # Travis automatically kills a build if one step takes more than 10 minutes without
 # reporting any progress. 
