@@ -78,7 +78,7 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server, int do_bind_
     int one = 1;
 #if APR_HAVE_IPV6
 #ifdef AP_ENABLE_V4_MAPPED
-    int v6only_setting = 0;
+    int v6only_setting = (server->flags & AP_LISTEN_V6ONLY) ? 1 : 0;
 #else
     int v6only_setting = 1;
 #endif
@@ -1048,6 +1048,8 @@ static const char *parse_listen_flags(apr_pool_t *temp_pool, const char *arg,
             flags |= AP_LISTEN_FREEBIND;
         else if (ap_cstr_casecmp(token, "reuseport") == 0)
             flags |= AP_LISTEN_REUSEPORT;
+        else if (ap_cstr_casecmp(token, "v6only") == 0)
+            flags |= AP_LISTEN_V6ONLY;
         else
             return apr_psprintf(temp_pool, "Unknown Listen option '%s' in '%s'",
                                 token, arg);

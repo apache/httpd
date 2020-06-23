@@ -270,6 +270,14 @@ Listen 192.170.2.5:8000
       <li><code>reuseport</code>: The <code>SO_REUSEPORT</code> socket
       option is enabled, allowing a Listen directive to bind to a port
       which may already be in use by another process.</li>
+
+      <li><code>v6only</code>: The <code>IPV6_V6ONLY</code> socket
+      option is enabled, allowing a Listen directive to bind to an
+      IPv6 address without also accepting connections via IPv4, or
+      conflicting with a Listen directive using an IPv4 address bound
+      to the same port.  (If the server is built with IPv4-mapped
+      addresses <em>disabled</em>, this is the default behaviour and
+      this option has no effect.)</li>
     </ul>
        
     <note><title>Error condition</title>

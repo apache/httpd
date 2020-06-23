@@ -38,7 +38,7 @@ Changes with Apache 2.5.1
      the connection inside mod_ssl.  [Joe Orton]
  
   *) core: Add optional "options=" argument to Listen.  Supported
-     keywords are "freebind" and "reuseport".  PR 61865.
+     keywords are "freebind", "reuseport" and "v6only".  PR 61865.
      [Jan Kaluza, Lubos Uhliarik <luhliari redhat.com>, Joe Orton]
 
   *) config: Allow for environment variable substitution with default value,
