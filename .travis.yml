@@ -109,7 +109,7 @@ jobs:
     # -------------------------------------------------------------------------
     - if: *condition_not_24x
       name: Linux Ubuntu, Event MPM, all-modules, mod_cgid fdpassing
-      env: CONFIG="--enable-mods-shared=reallyall --with-mpm=event --enable-cgid-fdpassing"
+      env: CONFIG="--enable-mods-shared=reallyall --with-mpm=event --disable-cgi --enable-cgid-fdpassing"
     # -------------------------------------------------------------------------
     - if: *condition_not_24x
       name: Linux Ubuntu, PCRE 1, GCC 7 maintainer-mode w/-Werror
