@@ -634,6 +634,8 @@
  * 20200420.3 (2.5.1-dev)  Add ap_parse_strict_length()
  * 20200420.4 (2.5.1-dev)  Add ap_normalize_path()
  * 20200420.5 (2.5.1-dev)  Add pre_translate_name hook
+ * 20200420.6 (2.5.1-dev)  Add map_encoded_one and map_encoded_all bits to
+ *                         proxy_server_conf
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -641,7 +643,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20200420
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 5            /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 6            /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

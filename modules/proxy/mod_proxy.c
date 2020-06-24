@@ -932,12 +932,7 @@ PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r, struct proxy_alias *ent,
         }
     }
     else {
-        /* Ignore servlet mapping if r->uri was decoded already, or we
-         * might consider for instance that an original %3B is a delimiter
-         * for path parameters (which is not).
-         */
-        if (dconf->use_original_uri == 1
-                && (ent->flags & PROXYPASS_MAPPING_SERVLET)) {
+        if ((ent->flags & PROXYPASS_MAP_SERVLET) == PROXYPASS_MAP_SERVLET) {
             nocanon = 0; /* ignored since servlet's normalization applies */
             len = alias_match_servlet(r->pool, r->uri, fake);
         }
@@ -1000,7 +995,7 @@ PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r, struct proxy_alias *ent,
 
 static int proxy_trans(request_rec *r, int pre_trans)
 {
-    int i;
+    int i, enc;
     struct proxy_alias *ent;
     proxy_dir_conf *dconf;
     proxy_server_conf *conf;
@@ -1019,11 +1014,17 @@ static int proxy_trans(request_rec *r, int pre_trans)
      */
 
     dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
+    conf = (proxy_server_conf *) ap_get_module_config(r->server->module_config,
+                                                      &proxy_module);
 
-    /* Do the work from the hook corresponding to the ProxyUseOriginalURI
-     * configuration (off/default: translate hook, on: pre_translate hook).
+    /* Always and only do PROXY_MAP_ENCODED mapping in pre_trans, when
+     * r->uri is still encoded, or we might consider for instance that
+     * a decoded sub-delim is now a delimiter (e.g. "%3B" => ';' for
+     * path parameters), which it's not.
      */
-    if (pre_trans ^ (dconf->use_original_uri == 1)) {
+    if ((pre_trans && !conf->map_encoded_one)
+            || (!pre_trans && conf->map_encoded_all)) {
+        /* Fast path, nothing at this stage */
         return DECLINED;
     }
 
@@ -1038,20 +1039,21 @@ static int proxy_trans(request_rec *r, int pre_trans)
 
     /* short way - this location is reverse proxied? */
     if (dconf->alias) {
-        int rv = ap_proxy_trans_match(r, dconf->alias, dconf);
-        if (DONE != rv) {
-            return rv;
+        enc = (dconf->alias->flags & PROXYPASS_MAP_ENCODED) != 0;
+        if (!(pre_trans ^ enc)) {
+            int rv = ap_proxy_trans_match(r, dconf->alias, dconf);
+            if (DONE != rv) {
+                return rv;
+            }
         }
     }
 
-    conf = (proxy_server_conf *) ap_get_module_config(r->server->module_config,
-                                                      &proxy_module);
-
     /* long way - walk the list of aliases, find a match */
-    if (conf->aliases->nelts) {
-        ent = (struct proxy_alias *) conf->aliases->elts;
-        for (i = 0; i < conf->aliases->nelts; i++) {
-            int rv = ap_proxy_trans_match(r, &ent[i], dconf);
+    for (i = 0; i < conf->aliases->nelts; i++) {
+        ent = &((struct proxy_alias *)conf->aliases->elts)[i];
+        enc = (ent->flags & PROXYPASS_MAP_ENCODED) != 0;
+        if (!(pre_trans ^ enc)) {
+            int rv = ap_proxy_trans_match(r, ent, dconf);
             if (DONE != rv) {
                 return rv;
             }
@@ -1065,6 +1067,7 @@ static int proxy_pre_translate_name(request_rec *r)
 {
     return proxy_trans(r, 1);
 }
+
 static int proxy_translate_name(request_rec *r)
 {
     return proxy_trans(r, 0);
@@ -1590,6 +1593,8 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->forward = NULL;
     ps->reverse = NULL;
     ps->domain = NULL;
+    ps->map_encoded_one = 0;
+    ps->map_encoded_all = 1;
     ps->id = apr_psprintf(p, "p%x", 1); /* simply for storage size */
     ps->viaopt = via_off; /* initially backward compatible with 1.3.1 */
     ps->viaopt_set = 0; /* 0 means default */
@@ -1747,6 +1752,9 @@ static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
     ps->forward = overrides->forward ? overrides->forward : base->forward;
     ps->reverse = overrides->reverse ? overrides->reverse : base->reverse;
 
+    ps->map_encoded_one = overrides->map_encoded_one || base->map_encoded_one;
+    ps->map_encoded_all = overrides->map_encoded_all && base->map_encoded_all;
+
     ps->domain = (overrides->domain == NULL) ? base->domain : overrides->domain;
     ps->id = (overrides->id == NULL) ? base->id : overrides->id;
     ps->viaopt = (overrides->viaopt_set == 0) ? base->viaopt : overrides->viaopt;
@@ -1814,7 +1822,6 @@ static void *create_proxy_dir_config(apr_pool_t *p, char *dummy)
     new->add_forwarded_headers_set = 0;
     new->forward_100_continue = 1;
     new->forward_100_continue_set = 0;
-    new->use_original_uri = -1; /* unset (off by default) */
 
     return (void *) new;
 }
@@ -1872,10 +1879,6 @@ static void *merge_proxy_dir_config(apr_pool_t *p, void *basev, void *addv)
                                              : add->forward_100_continue;
     new->forward_100_continue_set = add->forward_100_continue_set
                                     || base->forward_100_continue_set;
-    
-    new->use_original_uri = (add->use_original_uri == -1)
-                                ? base->use_original_uri
-                                : add->use_original_uri;
 
     return new;
 }
@@ -2032,9 +2035,6 @@ static const char *
         else if (!strcasecmp(word,"noquery")) {
             flags |= PROXYPASS_NOQUERY;
         }
-        else if (!strcasecmp(word,"mapping=servlet")) {
-            flags |= PROXYPASS_MAPPING_SERVLET;
-        }
         else {
             char *val = strchr(word, '=');
             if (!val) {
@@ -2053,11 +2053,31 @@ static const char *
                            "in the form 'key=value'.";
                 }
             }
-            else
+            else {
                 *val++ = '\0';
-            apr_table_setn(params, word, val);
+            }
+            if (!strcasecmp(word, "mapping")) {
+                if (!strcasecmp(val, "encoded")) {
+                    flags |= PROXYPASS_MAP_ENCODED;
+                }
+                else if (!strcasecmp(val, "servlet")) {
+                    flags |= PROXYPASS_MAP_SERVLET;
+                }
+                else {
+                    return "unknown mapping";
+                }
+            }
+            else {
+                apr_table_setn(params, word, val);
+            }
         }
-    };
+    }
+    if (flags & PROXYPASS_MAP_ENCODED) {
+        conf->map_encoded_one = 1;
+    }
+    else {
+        conf->map_encoded_all = 0;
+    }
 
     if (r == NULL) {
         return "ProxyPass|ProxyPassMatch needs a path when not defined in a location";
@@ -3028,9 +3048,6 @@ static const command_rec proxy_cmds[] =
     AP_INIT_FLAG("Proxy100Continue", forward_100_continue, NULL, RSRC_CONF|ACCESS_CONF,
      "on if 100-Continue should be forwarded to the origin server, off if the "
      "proxy should handle it by itself"),
-    AP_INIT_FLAG("ProxyUseOriginalURI", ap_set_flag_slot_char,
-     (void*)APR_OFFSETOF(proxy_dir_conf, use_original_uri), RSRC_CONF|ACCESS_CONF,
-     "Whether to use the original/encoded URI-path for mapping"),
     {NULL}
 };
 
