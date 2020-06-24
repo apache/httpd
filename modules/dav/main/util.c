@@ -665,6 +665,7 @@ static dav_error * dav_process_if_header(request_rec *r, dav_if_header **p_ih)
 
             /* clean up the URI a bit */
             if (!ap_normalize_path(parsed_uri.path,
+                                   AP_NORMALIZE_NOT_ABOVE_ROOT |
                                    AP_NORMALIZE_DECODE_UNRESERVED)) {
                 return dav_new_error(r->pool, HTTP_BAD_REQUEST,
                                      DAV_ERR_IF_TAGGED, rv,
