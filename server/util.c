@@ -607,7 +607,10 @@ AP_DECLARE(int) ap_normalize_path(char *path, unsigned int flags)
  */
 AP_DECLARE(void) ap_getparents(char *name)
 {
-    (void)ap_normalize_path(name, AP_NORMALIZE_ALLOW_RELATIVE);
+    if (!ap_normalize_path(name, AP_NORMALIZE_NOT_ABOVE_ROOT |
+                                 AP_NORMALIZE_ALLOW_RELATIVE)) {
+        name[0] = '\0';
+    }
 }
 
 AP_DECLARE(void) ap_no2slash_ex(char *name, int is_fs_path)
