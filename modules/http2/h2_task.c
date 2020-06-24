@@ -456,9 +456,9 @@ void h2_task_register_hooks(void)
     ap_hook_process_connection(h2_task_process_conn, 
                                NULL, NULL, APR_HOOK_FIRST);
 
-    ap_register_input_filter("H2_secondary_IN", h2_filter_secondary_in,
+    ap_register_input_filter("H2_SECONDARY_IN", h2_filter_secondary_in,
                              NULL, AP_FTYPE_NETWORK);
-    ap_register_output_filter("H2_secondary_OUT", h2_filter_secondary_output,
+    ap_register_output_filter("H2_SECONDARY_OUT", h2_filter_secondary_output,
                               NULL, AP_FTYPE_NETWORK);
     ap_register_output_filter("H2_PARSE_H1", h2_filter_parse_h1,
                               NULL, AP_FTYPE_NETWORK);
