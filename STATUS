@@ -135,6 +135,35 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) Easy patches: synch 2.4.x and trunk
+        - core: Re-introduce check for sufficient PCRE version.
+        - core: Fix doc string for QualifyRedirectURL
+        - mod_proxy: really return an error message on invalid "flusher" value.
+        - mod_http2: Remove extra and un-needed ""
+        - mod_ldap: fix a (unlikely) memory leak 
+        - ab: fix a typo
+        - suexec: Report error string after failure from setgid/initgroups or setuid
+        - mod_session_crypto: be less specific and don't echo passphrase
+        - mod_proxy_html: Fix proxy_html_conf.bufsz to have correct type, as
+                          it is used with ap_set_int_slot.
+        - mod_md: update duplicated APLOGNOs.
+     trunk patch:
+          http://svn.apache.org/r1612945
+          http://svn.apache.org/r1734835
+          http://svn.apache.org/r1738875
+          http://svn.apache.org/r1833416
+          http://svn.apache.org/r1842898
+          http://svn.apache.org/r1867257
+          http://svn.apache.org/r1876745
+          http://svn.apache.org/r1876807
+          http://svn.apache.org/r1876823
+          http://svn.apache.org/r1877642
+     2.4.x patch: svn merge --accept tc -c 1612945,1734835,1738875,1833416,1842898,1867257,1876745,1876807,1876823,1877642 ^/httpd/httpd/trunk . 
+     +1: jailletc36, jim, ylavic
+     jailletc36: 2 files conflict in this merge. I've added '--accept tc' to skip them.
+                 One is a doc file in r1734835 that has already been merged and the
+                 other one is 'next-number' in r1876823.
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -163,36 +192,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         - http://svn.apache.org/r1877829
         - http://svn.apache.org/r1877830
      2.4.x patch: svn merge -c 1877829,1877830 ^/httpd/httpd/trunk .
-    +1: covener
-
-  *) Easy patches: synch 2.4.x and trunk
-        - core: Re-introduce check for sufficient PCRE version.
-        - core: Fix doc string for QualifyRedirectURL
-        - mod_proxy: really return an error message on invalid "flusher" value.
-        - mod_http2: Remove extra and un-needed ""
-        - mod_ldap: fix a (unlikely) memory leak 
-        - ab: fix a typo
-        - suexec: Report error string after failure from setgid/initgroups or setuid
-        - mod_session_crypto: be less specific and don't echo passphrase
-        - mod_proxy_html: Fix proxy_html_conf.bufsz to have correct type, as
-                          it is used with ap_set_int_slot.
-        - mod_md: update duplicated APLOGNOs.
-     trunk patch:
-          http://svn.apache.org/r1612945
-          http://svn.apache.org/r1734835
-          http://svn.apache.org/r1738875
-          http://svn.apache.org/r1833416
-          http://svn.apache.org/r1842898
-          http://svn.apache.org/r1867257
-          http://svn.apache.org/r1876745
-          http://svn.apache.org/r1876807
-          http://svn.apache.org/r1876823
-          http://svn.apache.org/r1877642
-     2.4.x patch: svn merge --accept tc -c 1612945,1734835,1738875,1833416,1842898,1867257,1876745,1876807,1876823,1877642 ^/httpd/httpd/trunk . 
-     +1: jailletc36, jim
-     jailletc36: 2 files conflict in this merge. I've added '--accept tc' to skip them.
-                 One is a doc file in r1734835 that has already been merged and the
-                 other one is 'next-number' in r1876823.
+    +1: covener, ylavic
  
   *) mod_proxy_http: flush spooled request body in one go to avoid
      leaking (or long lived) temporary file. PR 64452.
