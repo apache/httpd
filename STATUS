@@ -230,7 +230,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_http2: connection terminology renamed to master/secondary.
      trunk patch: http://svn.apache.org/r1878926
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/h2-master-secondary.patch
-     +1: icing
+     +1: icing, ylavic
+     ylavic: nitpicking, mixed "H2_secondary_IN" and "H2_secondary_OUT" case to
+             register the filters, but not for adding them. IIRC filters names
+             are case insentive so shouldn't matter, just popped at my eyes..
   
 
 PATCHES/ISSUES THAT ARE BEING WORKED
