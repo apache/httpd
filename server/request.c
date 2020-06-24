@@ -227,11 +227,11 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
             return access_status;
         }
 
-        /* Let pre_translate_name hooks work with non-decoded URIs,
-         * and eventually apply their own transformations (return OK).
+        /* Let pre_translate_name hooks work with non-decoded URIs, and
+         * eventually prevent further URI transformations (return DONE).
          */
         access_status = ap_run_pre_translate_name(r);
-        if (access_status != OK && access_status != DECLINED) {
+        if (ap_is_HTTP_ERROR(access_status)) {
             return access_status;
         }
 
@@ -240,7 +240,7 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
     }
 
     /* Ignore URL unescaping for translated URIs already */
-    if (access_status == DECLINED && r->parsed_uri.path) {
+    if (access_status != DONE && r->parsed_uri.path) {
         core_dir_config *d = ap_get_core_module_config(r->per_dir_config);
 
         if (d->allow_encoded_slashes) {

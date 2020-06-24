@@ -1007,9 +1007,10 @@ static int proxy_trans(request_rec *r, int pre_trans)
 
     if (r->proxyreq) {
         /* someone has already set up the proxy, it was possibly ourselves
-         * in proxy_detect
+         * in proxy_detect (DONE will prevent further decoding of r->uri,
+         * only if proxyreq is set before pre_trans already).
          */
-        return OK;
+        return pre_trans ? DONE : OK;
     }
 
     /* In early pre_trans hook, r->uri was not manipulated yet so we are
