@@ -192,14 +192,15 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
     int file_req = (r->main && r->filename);
     core_server_config *sconf =
         ap_get_core_module_config(r->server->module_config);
-    unsigned int normalize_flags = 0;
+    unsigned int normalize_flags;
 
+    normalize_flags = AP_NORMALIZE_NOT_ABOVE_ROOT;
+    if (sconf->merge_slashes != AP_CORE_CONFIG_OFF) { 
+        normalize_flags |= AP_NORMALIZE_MERGE_SLASHES;
+    }
     if (file_req) {
         /* File subrequests can have a relative path. */
         normalize_flags |= AP_NORMALIZE_ALLOW_RELATIVE;
-    }
-    if (sconf->merge_slashes != AP_CORE_CONFIG_OFF) { 
-        normalize_flags |= AP_NORMALIZE_MERGE_SLASHES;
     }
 
     if (r->parsed_uri.path) {
