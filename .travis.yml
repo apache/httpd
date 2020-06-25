@@ -107,6 +107,13 @@ jobs:
       env: CONFIG="--enable-mods-shared=reallyall --enable-maintainer-mode" NOTEST_CFLAGS='-Werror -O2' CC=gcc-7
            SKIP_TESTING=1
     # -------------------------------------------------------------------------
+    - name: Linux Ubuntu, Event MPM, all-modules, mod_cgid only
+      env: CONFIG="--enable-mods-shared=reallyall --with-mpm=event --disable-cgi"
+    # -------------------------------------------------------------------------
+    - if: *condition_not_24x
+      name: Linux Ubuntu, Event MPM, all-modules, mod_cgid fdpassing
+      env: CONFIG="--enable-mods-shared=reallyall --with-mpm=event --disable-cgi --enable-cgid-fdpassing"
+    # -------------------------------------------------------------------------
     - if: *condition_not_24x
       name: Linux Ubuntu, PCRE 1, GCC 7 maintainer-mode w/-Werror
       os: linux
@@ -263,7 +270,9 @@ jobs:
       env: NOTEST_CFLAGS="-fsanitize=undefined -fno-sanitize-recover=undefined" NOTEST_LIBS=-lubsan
            CONFIG="--enable-mods-shared=reallyall --disable-http2" TEST_UBSAN=1
   allow_failures:
-    # non-x86 are sometimes flaky
+    # Currently broken:
+    - env: CONFIG="--enable-mods-shared=reallyall --with-mpm=event --disable-cgi --enable-cgid-fdpassing"
+    # Non-x86 are sometimes flaky:
     - arch: s390x
       env: CONFIG="--enable-mods-shared=reallyall"
     - arch: arm64
