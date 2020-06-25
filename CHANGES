@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_ssl: Fix a race condition and possible crash when using a proxy client
+     certificate (SSLProxyMachineCertificateFile).
+     [Armin Abfalterer <a.abfalterer gmail.com>]
+
   *) mod_proxy: recognize parameters from ProxyPassMatch workers with dollar
      substitution, such that they apply to the backend connection.  Note that
      connection reuse is disabled by default to avoid compatibility issues.
