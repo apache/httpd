@@ -199,7 +199,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1878280
      2.4.x patch: svn merge -c 1878280 ^/httpd/httpd/trunk .
                   (modulo CHANGES conflict)
-     +1: ylavic
+     +1: ylavic, jorton
 
   *) mod_proxy: Add ap_proxy_define_match_worker() and use it for ProxyPassMatch
      and ProxyMatch section to distinguish between normal workers and workers
@@ -242,7 +242,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1879179
                   http://svn.apache.org/r1879180
      2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-gh_129.diff
-     +1: ylavic
+     +1: ylavic, jorton
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
