@@ -548,6 +548,14 @@ static int spool_reqbody_cl(proxy_http_req_t *req, apr_off_t *bytes_spooled)
         e = apr_bucket_immortal_create(CRLF_ASCII, 2, bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(input_brigade, e);
     }
+    if (tmpfile) {
+        /* We dropped metadata buckets when spooling to tmpfile,
+         * terminate with EOS for stream_reqbody() to flush the
+         * whole in one go.
+         */
+        e = apr_bucket_eos_create(bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(input_brigade, e);
+    }
     return OK;
 }
 
