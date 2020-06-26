@@ -164,6 +164,27 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                  One is a doc file in r1734835 that has already been merged and the
                  other one is 'next-number' in r1876823.
 
+  *) mod_ssl: Fix a race condition and possible crash when using a proxy client
+     certificate (SSLProxyMachineCertificateFile).
+     trunk patch: http://svn.apache.org/r1879179
+                  http://svn.apache.org/r1879180
+     2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-gh_129.diff
+     +1: ylavic, jorton, rpluem
+
+  *) mod_proxy_http: flush spooled request body in one go to avoid
+     leaking (or long lived) temporary file. PR 64452.
+     trunk patch: http://svn.apache.org/r1878280
+     2.4.x patch: svn merge -c 1878280 ^/httpd/httpd/trunk .
+                  (modulo CHANGES conflict)
+     +1: ylavic, jorton, rpluem
+
+  *) mod_proxy_fcgi: Don't unset when condition is false. PR64365
+     trunk patch:
+        - http://svn.apache.org/r1877829
+        - http://svn.apache.org/r1877830
+     2.4.x patch: svn merge -c 1877829,1877830 ^/httpd/httpd/trunk .
+    +1: covener, ylavic, rpluem
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -186,20 +207,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              reworked, etc.. I would like to avoid a patch that is clearly wrong for some reviewer sitting here for
              months/years without any action item :)
      ylavic: will look at it ASAP..
-
-  *) mod_proxy_fcgi: Don't unset when condition is false. PR64365
-     trunk patch: 
-        - http://svn.apache.org/r1877829
-        - http://svn.apache.org/r1877830
-     2.4.x patch: svn merge -c 1877829,1877830 ^/httpd/httpd/trunk .
-    +1: covener, ylavic
- 
-  *) mod_proxy_http: flush spooled request body in one go to avoid
-     leaking (or long lived) temporary file. PR 64452.
-     trunk patch: http://svn.apache.org/r1878280
-     2.4.x patch: svn merge -c 1878280 ^/httpd/httpd/trunk .
-                  (modulo CHANGES conflict)
-     +1: ylavic, jorton
 
   *) mod_proxy: Add ap_proxy_define_match_worker() and use it for ProxyPassMatch
      and ProxyMatch section to distinguish between normal workers and workers
@@ -236,13 +243,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              register the filters, but not for adding them. IIRC filters names
              are case insentive so shouldn't matter, just popped at my eyes..
      icing: updated patch and added r1879156 to fix the eye bleed.
-  
-  *) mod_ssl: Fix a race condition and possible crash when using a proxy client
-     certificate (SSLProxyMachineCertificateFile).
-     trunk patch: http://svn.apache.org/r1879179
-                  http://svn.apache.org/r1879180
-     2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-gh_129.diff
-     +1: ylavic, jorton
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
