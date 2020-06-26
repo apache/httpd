@@ -164,13 +164,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                  One is a doc file in r1734835 that has already been merged and the
                  other one is 'next-number' in r1876823.
 
-  *) mod_ssl: Fix a race condition and possible crash when using a proxy client
-     certificate (SSLProxyMachineCertificateFile).
-     trunk patch: http://svn.apache.org/r1879179
-                  http://svn.apache.org/r1879180
-     2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-gh_129.diff
-     +1: ylavic, jorton, rpluem
-
   *) mod_proxy_http: flush spooled request body in one go to avoid
      leaking (or long lived) temporary file. PR 64452.
      trunk patch: http://svn.apache.org/r1878280
