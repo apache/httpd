@@ -164,13 +164,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                  One is a doc file in r1734835 that has already been merged and the
                  other one is 'next-number' in r1876823.
 
-  *) mod_proxy_http: flush spooled request body in one go to avoid
-     leaking (or long lived) temporary file. PR 64452.
-     trunk patch: http://svn.apache.org/r1878280
-     2.4.x patch: svn merge -c 1878280 ^/httpd/httpd/trunk .
-                  (modulo CHANGES conflict)
-     +1: ylavic, jorton, rpluem
-
   *) mod_proxy_fcgi: Don't unset when condition is false. PR64365
      trunk patch:
         - http://svn.apache.org/r1877829
