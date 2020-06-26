@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.44
 
+  *) mod_ssl: Fix a race condition and possible crash when using a proxy client
+     certificate (SSLProxyMachineCertificateFile).
+     [Armin Abfalterer <a.abfalterer gmail.com>]
+
   *) mod_ssl: Fix memory leak in stapling code. PR63687. [Stefan Eissing]
 
   *) mod_http2: Fixed regression that no longer set H2_STREAM_ID and H2_STREAM_TAG.

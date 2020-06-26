@@ -1914,7 +1914,7 @@ static void modssl_proxy_info_log(conn_rec *c,
     *cert = info->x509; \
     CRYPTO_add(&(*cert)->references, +1, CRYPTO_LOCK_X509); \
     *pkey = info->x_pkey->dec_pkey; \
-    CRYPTO_add(&(*pkey)->references, +1, CRYPTO_LOCK_X509_PKEY)
+    CRYPTO_add(&(*pkey)->references, +1, CRYPTO_LOCK_EVP_PKEY)
 #else
 #define modssl_set_cert_info(info, cert, pkey) \
     *cert = info->x509; \
