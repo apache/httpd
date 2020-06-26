@@ -1185,7 +1185,11 @@ PROXY_DECLARE(apr_status_t) ap_proxy_sync_balancer(proxy_balancer *b,
  * @param r     request
  * @param ent   proxy_alias record
  * @param dconf per-dir config or NULL
- * @return      DECLINED, DONE or OK if matched
+ * @return      OK if the alias matched,
+ *              DONE if the alias matched and r->uri was normalized so
+ *                   no further transformation should happen on it,
+ *              DECLINED if proxying is disabled for this alias,
+ *              HTTP_CONTINUE if the alias did not match
  */
 PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r,
                                         struct proxy_alias *ent,

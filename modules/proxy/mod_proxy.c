@@ -17,6 +17,7 @@
 #include "mod_proxy.h"
 #include "mod_core.h"
 #include "apr_optional.h"
+#include "apr_strings.h"
 #include "scoreboard.h"
 #include "mod_status.h"
 #include "proxy_util.h"
@@ -574,10 +575,11 @@ static int alias_match(const char *uri, const char *alias_fakename)
  * Inspired by mod_jk's jk_servlet_normalize().
  */
 static int alias_match_servlet(apr_pool_t *p,
-                               const char *uri,
+                               const char **urip,
                                const char *alias)
 {
     char *map;
+    const char *uri = *urip;
     apr_array_header_t *stack;
     int map_pos, uri_pos, alias_pos, first_pos;
     int alias_depth = 0, depth;
@@ -759,6 +761,8 @@ static int alias_match_servlet(apr_pool_t *p,
     if (alias[alias_pos - 1] != '/' && uri[uri_pos - 1] == '/') {
         uri_pos--;
     }
+
+    *urip = map;
     return uri_pos;
 }
 
@@ -872,6 +876,7 @@ PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r, struct proxy_alias *ent,
     int mismatch = 0;
     unsigned int nocanon = ent->flags & PROXYPASS_NOCANON;
     const char *use_uri = nocanon ? r->unparsed_uri : r->uri;
+    const char *servlet_uri = NULL;
 
     if (dconf && (dconf->interpolate_env == 1) && (ent->flags & PROXYPASS_INTERPOLATE)) {
         fake = proxy_interpolate(r, ent->fake);
@@ -933,8 +938,9 @@ PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r, struct proxy_alias *ent,
     }
     else {
         if ((ent->flags & PROXYPASS_MAP_SERVLET) == PROXYPASS_MAP_SERVLET) {
+            servlet_uri = r->uri;
+            len = alias_match_servlet(r->pool, &servlet_uri, fake);
             nocanon = 0; /* ignored since servlet's normalization applies */
-            len = alias_match_servlet(r->pool, r->uri, fake);
         }
         else {
             len = alias_match(r->uri, fake);
@@ -969,7 +975,7 @@ PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r, struct proxy_alias *ent,
          */
         int rc = proxy_run_check_trans(r, found + 6);
         if (rc != OK && rc != DECLINED) {
-            return DONE;
+            return HTTP_CONTINUE;
         }
 
         r->filename = found;
@@ -983,14 +989,28 @@ PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r, struct proxy_alias *ent,
             apr_table_setn(r->notes, "proxy-noquery", "1");
         }
 
+        if (servlet_uri) {
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO()
+                          "Servlet path '%s' (%s) matches proxy handler '%s'",
+                          r->uri, servlet_uri, found);
+            /* Apply servlet normalization to r->uri so that <Location> or any
+             * directory context match does not have to handle path parameters.
+             * We change r->uri in-place so that r->parsed_uri.path is updated
+             * too. Since normalized servlet_uri is necessarily shorter than
+             * the original r->uri, strcpy() is fine.
+             */
+            AP_DEBUG_ASSERT(strlen(r->uri) >= strlen(servlet_uri));
+            strcpy(r->uri, servlet_uri);
+            return DONE;
+        }
+
         ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(03464)
                       "URI path '%s' matches proxy handler '%s'", r->uri,
                       found);
-
         return OK;
     }
 
-    return DONE;
+    return HTTP_CONTINUE;
 }
 
 static int proxy_trans(request_rec *r, int pre_trans)
@@ -1042,7 +1062,7 @@ static int proxy_trans(request_rec *r, int pre_trans)
         enc = (dconf->alias->flags & PROXYPASS_MAP_ENCODED) != 0;
         if (!(pre_trans ^ enc)) {
             int rv = ap_proxy_trans_match(r, dconf->alias, dconf);
-            if (DONE != rv) {
+            if (rv != HTTP_CONTINUE) {
                 return rv;
             }
         }
@@ -1054,7 +1074,7 @@ static int proxy_trans(request_rec *r, int pre_trans)
         enc = (ent->flags & PROXYPASS_MAP_ENCODED) != 0;
         if (!(pre_trans ^ enc)) {
             int rv = ap_proxy_trans_match(r, ent, dconf);
-            if (DONE != rv) {
+            if (rv != HTTP_CONTINUE) {
                 return rv;
             }
         }
