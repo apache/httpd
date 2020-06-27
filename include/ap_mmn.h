@@ -636,6 +636,11 @@
  * 20200420.5 (2.5.1-dev)  Add pre_translate_name hook
  * 20200420.6 (2.5.1-dev)  Add map_encoded_one and map_encoded_all bits to
  *                         proxy_server_conf
+ * 20200420.7 (2.5.1-dev)  Add struct etag_rec, ap_make_etag_ex(),
+ *                         ap_set_etag_fd(). Add typedef ap_request_bnotes_t,
+ *                         macros AP_REQUEST_GET_BNOTE, AP_REQUEST_SET_BNOTE,
+ *                         AP_REQUEST_STRONG_ETAG, AP_REQUEST_IS_STRONG_ETAG.
+ *                         Add bnotes to request_rec.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -643,7 +648,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20200420
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 6            /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 7            /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

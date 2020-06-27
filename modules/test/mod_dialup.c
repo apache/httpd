@@ -187,7 +187,7 @@ dialup_handler(request_rec *r)
     /* copied from default handler: */
     ap_update_mtime(r, r->finfo.mtime);
     ap_set_last_modified(r);
-    ap_set_etag(r);
+    ap_set_etag_fd(r, fd);
     ap_set_accept_ranges(r);
     ap_set_content_length(r, r->finfo.size);
 

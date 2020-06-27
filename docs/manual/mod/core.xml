@@ -1926,15 +1926,18 @@ earlier.</compatibility>
          <highlight language="config">
 FileETag INode MTime Size
          </highlight></dd>
+     <dt><strong>Digest</strong></dt>
+     <dd>If a document is file-based, the <code>ETag</code> field will be
+       calculated by taking the digest over the file.</dd>
      <dt><strong>None</strong></dt>
      <dd>If a document is file-based, no <code>ETag</code> field will be
        included in the response</dd>
     </dl>
 
-    <p>The <code>INode</code>, <code>MTime</code>, and <code>Size</code>
-    keywords may be prefixed with either <code>+</code> or <code>-</code>,
-    which allow changes to be made to the default setting inherited
-    from a broader scope. Any keyword appearing without such a prefix
+    <p>The <code>INode</code>, <code>MTime</code>, <code>Size</code> and
+    <code>Digest</code> keywords may be prefixed with either <code>+</code>
+    or <code>-</code>, which allow changes to be made to the default setting
+    inherited from a broader scope. Any keyword appearing without such a prefix
     immediately and completely cancels the inherited setting.</p>
 
     <p>If a directory's configuration includes
@@ -1943,18 +1946,10 @@ FileETag INode MTime Size
     the setting for that subdirectory (which will be inherited by
     any sub-subdirectories that don't override it) will be equivalent to
     <code>FileETag&nbsp;MTime&nbsp;Size</code>.</p>
-    <note type="warning"><title>Warning</title>
-    Do not change the default for directories or locations that have WebDAV
-    enabled and use <module>mod_dav_fs</module> as a storage provider.
-    <module>mod_dav_fs</module> uses <code>MTime&nbsp;Size</code>
-    as a fixed format for <code>ETag</code> comparisons on conditional requests.
-    These conditional requests will break if the <code>ETag</code> format is
-    changed via <directive>FileETag</directive>.
-    </note>
     <note><title>Server Side Includes</title>
     An ETag is not generated for responses parsed by <module>mod_include</module>
-    since the response entity can change without a change of the INode, MTime, or Size
-    of the static file with embedded SSI directives.
+    since the response entity can change without a change of the INode, MTime,
+    Size or Digest of the static file with embedded SSI directives.
     </note>
 
 </usage>
