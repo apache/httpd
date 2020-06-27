@@ -263,8 +263,10 @@ PATCHES/ISSUES THAT ARE BEING WORKED
                   http://svn.apache.org/r1751139
                   http://svn.apache.org/r1751147
                   http://svn.apache.org/r1757818
+                  http://svn.apache.org/r1879253
      2.4.x: trunk patches work, final view:
             http://home.apache.org/~elukey/httpd-2.4.x-core-last_modified_tz_logging.patch
+            svn merge -c 1748379,1750747,1750749,1750953,1751138,1751139,1751139,1757818,1879253 ^/httpd/httpd/trunk .
      The problem has been discussed in dev@ extensively but we did not reach a common
      agreement about how to proceed in the long term. While we wait, I would really like
      to introduce useful logs for the users (the starting point of this change was a users@
@@ -277,6 +279,8 @@ PATCHES/ISSUES THAT ARE BEING WORKED
              rather than "silently" (at normal log-level) dropping the parsed header?
              [also nit: wrapping a lone ap_log_rerror(,APLOG_X) call in
              if (APLOGrX(..) is unnecessary/redundant]
+     elukey: Hopefully fixed the suggestions made with r1879253, let me know if this change
+             can go back to the proposed section (leaving the being worked one).
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
      it comes from an origin server, module or script. Allow the previous
