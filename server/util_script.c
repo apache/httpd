@@ -718,9 +718,8 @@ AP_DECLARE(int) ap_scan_script_header_err_core_ex(request_rec *r, char *buffer,
                 }
             }
             else {
-                if (APLOGrtrace1(r))
-                   ap_log_rerror(SCRIPT_LOG_MARK, APLOG_TRACE1, 0, r,
-                                 "Ignored invalid header value: Last-Modified: '%s'", l);
+                ap_log_rerror(SCRIPT_LOG_MARK, APLOG_INFO, 0, r,
+                              "Ignored invalid header value: Last-Modified: '%s'", l);
             }
         }
         else if (!ap_cstr_casecmp(w, "Set-Cookie")) {
