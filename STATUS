@@ -391,6 +391,8 @@ PATCHES/ISSUES THAT ARE STALLED
                   http://svn.apache.org/r1608744
      2.4.x patch: http://people.apache.org/~jkaluza/patches/mod_systemd/httpd-2.4.x-socket-activation.patch
      +1: jkaluza
+     elukey: Some reading context in https://lists.apache.org/list.html?dev@httpd.apache.org:gte=1M:systemd%20socket%20activation
+             Since mod_systemd has been backported, it would be nice to add this feature to httpd 2.4 as well. Thoughts?
 
   * mod_proxy: Ensure network errors detected by the proxy are returned as
     504 Gateway Timeout as opposed to 502 Bad Gateway
