@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) Add dav_get_provider(), dav_open_lockdb() and dav_close_lockdb() mod_dav.h.
+     [Graham Leggett]
+
   *) "[mod_dav_fs etag handling] should really honor the FileETag setting".
      - It now does.
      - Add "Digest" to FileETag directive, allowing a strong ETag to be

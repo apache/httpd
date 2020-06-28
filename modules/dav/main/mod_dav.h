@@ -50,7 +50,7 @@ extern "C" {
 
 #define DAV_READ_BLOCKSIZE      2048    /* used for reading input blocks */
 
-#define DAV_RESPONSE_BODY_1	"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">\n<html>\n<head>\n<title>"
+#define DAV_RESPONSE_BODY_1    "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">\n<html>\n<head>\n<title>"
 #define DAV_RESPONSE_BODY_2     "</title>\n</head><body>\n<h1>"
 #define DAV_RESPONSE_BODY_3     "</h1>\n<p>"
 #define DAV_RESPONSE_BODY_4     "</p>\n"
@@ -727,6 +727,7 @@ DAV_DECLARE(void) dav_register_provider(apr_pool_t *p, const char *name,
                                         const dav_provider *hooks);
 DAV_DECLARE(const dav_provider *) dav_lookup_provider(const char *name);
 DAV_DECLARE(const char *) dav_get_provider_name(request_rec *r);
+DAV_DECLARE(const dav_provider *) dav_get_provider(request_rec *r);
 
 
 /* ### deprecated */
@@ -1320,6 +1321,10 @@ DAV_DECLARE(const char *)dav_lock_get_activelock(request_rec *r,
                                                  dav_buffer *pbuf);
 
 /* LockDB-related public lock functions */
+DAV_DECLARE(dav_error *) dav_open_lockdb(request_rec *r,
+                                         int ro,
+                                         dav_lockdb **lockdb);
+DAV_DECLARE(void) dav_close_lockdb(dav_lockdb *lockdb);
 DAV_DECLARE(dav_error *) dav_lock_parse_lockinfo(request_rec *r,
                                                  const dav_resource *resrouce,
                                                  dav_lockdb *lockdb,

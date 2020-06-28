@@ -641,6 +641,8 @@
  *                         macros AP_REQUEST_GET_BNOTE, AP_REQUEST_SET_BNOTE,
  *                         AP_REQUEST_STRONG_ETAG, AP_REQUEST_IS_STRONG_ETAG.
  *                         Add bnotes to request_rec.
+ * 20200420.8 (2.5.1-dev)  Add dav_get_provider(), dav_open_lockdb() and
+ *                         dav_close_lockdb() mod_dav.h.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -648,7 +650,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20200420
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 7            /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 8            /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
