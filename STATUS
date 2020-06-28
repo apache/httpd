@@ -229,6 +229,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              register the filters, but not for adding them. IIRC filters names
              are case insentive so shouldn't matter, just popped at my eyes..
      icing: updated patch and added r1879156 to fix the eye bleed.
+     jailletc36: CHANGES could also be looked at if it makes sense to update the terminology
+                 also here
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
