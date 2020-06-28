@@ -650,10 +650,10 @@ DAV_DECLARE(void) dav_xmlns_generate(dav_xmlns_info *xi,
 ** mod_dav 1.0). There are too many dependencies between a dav_resource
 ** (defined by <repos>) and the other functionality.
 **
-** Live properties are not part of the dav_provider structure because they
-** are handled through the APR_HOOK interface (to allow for multiple liveprop
-** providers). The core always provides some properties, and then a given
-** provider will add more properties.
+** Live properties and report extensions are not part of the dav_provider
+** structure because they are handled through the APR_HOOK interface (to
+** allow for multiple providers). The core always provides some
+** properties, and then a given provider will add more properties.
 **
 ** Some providers may need to associate a context with the dav_provider
 ** structure -- the ctx field is available for storing this context. Just
@@ -716,6 +716,34 @@ APR_DECLARE_EXTERNAL_HOOK(dav, DAV, int, find_liveprop,
 APR_DECLARE_EXTERNAL_HOOK(dav, DAV, void, insert_all_liveprops,
                          (request_rec *r, const dav_resource *resource,
                           dav_prop_insert what, apr_text_header *phdr))
+
+/*
+** deliver_report: given a parsed report request, process the request
+**                 an deliver the resulting report.
+**
+** The hook implementer should decide whether it should handle the given
+** report, and if so, write the response to the output filter. If the
+** report is not relevant, return DECLINED.
+*/
+APR_DECLARE_EXTERNAL_HOOK(dav, DAV, int, deliver_report,
+                         (request_rec *r,
+                          const dav_resource *resource,
+                          const apr_xml_doc *doc,
+                          ap_filter_t *output, dav_error **err))
+
+/*
+** gather_reports: get all reports.
+**
+** The hook implementor should push one or more dav_report_elem structures
+** containing report names into the specified array. These names are returned
+** in the DAV:supported-reports-set property to let clients know
+** what reports are supported by the installation.
+**
+*/
+APR_DECLARE_EXTERNAL_HOOK(dav, DAV, void, gather_reports,
+                          (request_rec *r, const dav_resource *resource,
+                           apr_array_header_t *reports, dav_error **err))
+
 
 DAV_DECLARE(const dav_hooks_locks *) dav_get_lock_hooks(request_rec *r);
 DAV_DECLARE(const dav_hooks_propdb *) dav_get_propdb_hooks(request_rec *r);

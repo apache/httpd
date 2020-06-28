@@ -5005,6 +5005,8 @@ APR_HOOK_STRUCT(
     APR_HOOK_LINK(gather_propsets)
     APR_HOOK_LINK(find_liveprop)
     APR_HOOK_LINK(insert_all_liveprops)
+    APR_HOOK_LINK(deliver_report)
+    APR_HOOK_LINK(gather_reports)
     )
 
 APR_IMPLEMENT_EXTERNAL_HOOK_VOID(dav, DAV, gather_propsets,
@@ -5021,3 +5023,16 @@ APR_IMPLEMENT_EXTERNAL_HOOK_VOID(dav, DAV, insert_all_liveprops,
                                  (request_rec *r, const dav_resource *resource,
                                   dav_prop_insert what, apr_text_header *phdr),
                                  (r, resource, what, phdr))
+
+APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(dav, DAV, int, deliver_report,
+                                      (request_rec *r,
+                                       const dav_resource *resource,
+                                       const apr_xml_doc *doc,
+                                       ap_filter_t *output, dav_error **err),
+                                      (r, resource, doc, output, err), DECLINED)
+
+APR_IMPLEMENT_EXTERNAL_HOOK_VOID(dav, DAV, gather_reports,
+                                   (request_rec *r, const dav_resource *resource,
+                                    apr_array_header_t *reports, dav_error **err),
+                                   (r, resource, reports, err))
+
