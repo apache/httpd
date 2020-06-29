@@ -29,6 +29,8 @@
 #include "http_protocol.h"   /* For index_of_response().  Grump. */
 #include "http_request.h"
 
+#define SHA1_DIGEST_BASE64_LEN 4*(APR_SHA1_DIGESTSIZE/3)
+
 /* Generate the human-readable hex representation of an apr_uint64_t
  * (basically a faster version of 'sprintf("%llx")')
  */
@@ -168,7 +170,7 @@ AP_DECLARE(char *) ap_make_etag_ex(request_rec *r, etag_rec *er)
         }
 
         etag = apr_palloc(r->pool, weak_len + sizeof("\"\"") +
-                4*(APR_SHA1_DIGESTSIZE/3) + vlv_len + 4);
+        		SHA1_DIGEST_BASE64_LEN + vlv_len + 4);
 
         if (apr_file_seek(fd, APR_CUR, &offset) != APR_SUCCESS) {
             return "";
