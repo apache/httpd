@@ -718,7 +718,7 @@ AP_DECLARE(int) ap_scan_script_header_err_core_ex(request_rec *r, char *buffer,
                 }
             }
             else {
-                ap_log_rerror(SCRIPT_LOG_MARK, APLOG_INFO, 0, r,
+                ap_log_rerror(SCRIPT_LOG_MARK, APLOG_INFO, 0, r, APLOGNO(10247)
                               "Ignored invalid header value: Last-Modified: '%s'", l);
             }
         }
