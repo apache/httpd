@@ -238,7 +238,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      when taking out the format specifiers.
      trunk patch: http://svn.apache.org/1862270
      2.4.x patch: svn merge -c 1862270 ^/httpd/httpd/trunk .
-     +1: minfrin
+     +1: minfrin, rpluem
 
 
 
