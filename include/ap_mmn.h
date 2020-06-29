@@ -645,6 +645,7 @@
  *                         dav_close_lockdb() mod_dav.h.
  * 20200420.9 (2.5.1-dev)  Add hooks deliver_report and gather_reports to
  *                         mod_dav.h.
+ * 20200420.10 (2.5.1-dev) Add method_precondition hook to mod_dav.h.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -652,7 +653,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20200420
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 9            /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 10            /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
