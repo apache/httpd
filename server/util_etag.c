@@ -158,10 +158,10 @@ AP_DECLARE(char *) ap_make_etag_ex(request_rec *r, etag_rec *er)
             fd = er->fd;
         }
         else if (er->pathname) {
-        	if (apr_file_open(&fd, er->pathname, APR_READ | APR_BINARY,
-        			0, r->pool) != APR_SUCCESS) {
+            if (apr_file_open(&fd, er->pathname, APR_READ | APR_BINARY,
+                    0, r->pool) != APR_SUCCESS) {
                 return "";
-        	}
+            }
         }
         if (!fd) {
             return "";
