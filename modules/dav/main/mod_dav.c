@@ -875,12 +875,12 @@ static int dav_method_get(request_rec *r)
         return dav_handle_err(r, err, NULL);
 
     /* check for any method preconditions */
-	if (dav_run_method_precondition(r, resource, NULL, NULL, &err) != DECLINED
+    if (dav_run_method_precondition(r, resource, NULL, NULL, &err) != DECLINED
             && err) {
         return dav_handle_err(r, err, NULL);
     }
 
-	if (!resource->exists) {
+    if (!resource->exists) {
         /* Apache will supply a default error for this. */
         return HTTP_NOT_FOUND;
     }
@@ -928,7 +928,7 @@ static int dav_method_post(request_rec *r)
         return dav_handle_err(r, err, NULL);
 
     /* check for any method preconditions */
-	if (dav_run_method_precondition(r, resource, NULL, NULL, &err) != DECLINED
+    if (dav_run_method_precondition(r, resource, NULL, NULL, &err) != DECLINED
             && err) {
         return dav_handle_err(r, err, NULL);
     }
@@ -968,7 +968,7 @@ static int dav_method_put(request_rec *r)
         return dav_handle_err(r, err, NULL);
 
     /* check for any method preconditions */
-	if (dav_run_method_precondition(r, resource, NULL, NULL, &err) != DECLINED
+    if (dav_run_method_precondition(r, resource, NULL, NULL, &err) != DECLINED
             && err) {
         return dav_handle_err(r, err, NULL);
     }
@@ -1259,7 +1259,7 @@ static int dav_method_delete(request_rec *r)
         return dav_handle_err(r, err, NULL);
 
     /* check for any method preconditions */
-	if (dav_run_method_precondition(r, resource, NULL, NULL, &err) != DECLINED
+    if (dav_run_method_precondition(r, resource, NULL, NULL, &err) != DECLINED
             && err) {
         return dav_handle_err(r, err, NULL);
     }
@@ -1712,7 +1712,7 @@ static int dav_method_options(request_rec *r)
     /* note: doc == NULL if no request body */
 
     /* check for any method preconditions */
-	if (dav_run_method_precondition(r, resource, NULL, doc, &err) != DECLINED
+    if (dav_run_method_precondition(r, resource, NULL, doc, &err) != DECLINED
             && err) {
         return dav_handle_err(r, err, NULL);
     }
@@ -2138,7 +2138,7 @@ static int dav_method_propfind(request_rec *r)
     /* note: doc == NULL if no request body */
 
     /* check for any method preconditions */
-	if (dav_run_method_precondition(r, resource, NULL, doc, &err) != DECLINED
+    if (dav_run_method_precondition(r, resource, NULL, doc, &err) != DECLINED
             && err) {
         return dav_handle_err(r, err, NULL);
     }
@@ -2422,7 +2422,7 @@ static int dav_method_proppatch(request_rec *r)
     /* note: doc == NULL if no request body */
 
     /* check for any method preconditions */
-	if (dav_run_method_precondition(r, resource, NULL, doc, &err) != DECLINED
+    if (dav_run_method_precondition(r, resource, NULL, doc, &err) != DECLINED
             && err) {
         return dav_handle_err(r, err, NULL);
     }
@@ -2639,7 +2639,7 @@ static int dav_method_mkcol(request_rec *r)
         return dav_handle_err(r, err, NULL);
 
     /* check for any method preconditions */
-	if (dav_run_method_precondition(r, resource, NULL, NULL, &err) != DECLINED
+    if (dav_run_method_precondition(r, resource, NULL, NULL, &err) != DECLINED
             && err) {
         return dav_handle_err(r, err, NULL);
     }
@@ -2774,7 +2774,7 @@ static int dav_method_copymove(request_rec *r, int is_move)
         return dav_handle_err(r, err, NULL);
 
     /* check for any method preconditions */
-	if (dav_run_method_precondition(r, resource, NULL, NULL, &err) != DECLINED
+    if (dav_run_method_precondition(r, resource, NULL, NULL, &err) != DECLINED
             && err) {
         return dav_handle_err(r, err, NULL);
     }
@@ -2846,7 +2846,7 @@ static int dav_method_copymove(request_rec *r, int is_move)
         return dav_handle_err(r, err, NULL);
 
     /* check for any method preconditions */
-	if (dav_run_method_precondition(r, resource, resnew, NULL, &err) != DECLINED
+    if (dav_run_method_precondition(r, resource, resnew, NULL, &err) != DECLINED
             && err) {
         return dav_handle_err(r, err, NULL);
     }
@@ -3214,7 +3214,7 @@ static int dav_method_lock(request_rec *r)
         return dav_handle_err(r, err, NULL);
 
     /* check for any method preconditions */
-	if (dav_run_method_precondition(r, resource, NULL, doc, &err) != DECLINED
+    if (dav_run_method_precondition(r, resource, NULL, doc, &err) != DECLINED
             && err) {
         return dav_handle_err(r, err, NULL);
     }
@@ -3419,7 +3419,7 @@ static int dav_method_unlock(request_rec *r)
         return dav_handle_err(r, err, NULL);
 
     /* check for any method preconditions */
-	if (dav_run_method_precondition(r, resource, NULL, NULL, &err) != DECLINED
+    if (dav_run_method_precondition(r, resource, NULL, NULL, &err) != DECLINED
             && err) {
         return dav_handle_err(r, err, NULL);
     }
@@ -3490,7 +3490,7 @@ static int dav_method_vsn_control(request_rec *r)
     /* note: doc == NULL if no request body */
 
     /* check for any method preconditions */
-	if (dav_run_method_precondition(r, resource, NULL, doc, &err) != DECLINED
+    if (dav_run_method_precondition(r, resource, NULL, doc, &err) != DECLINED
             && err) {
         return dav_handle_err(r, err, NULL);
     }
@@ -3743,7 +3743,7 @@ static int dav_method_checkout(request_rec *r)
         return dav_handle_err(r, err, NULL);
 
     /* check for any method preconditions */
-	if (dav_run_method_precondition(r, resource, NULL, doc, &err) != DECLINED
+    if (dav_run_method_precondition(r, resource, NULL, doc, &err) != DECLINED
             && err) {
         return dav_handle_err(r, err, NULL);
     }
@@ -3825,7 +3825,7 @@ static int dav_method_uncheckout(request_rec *r)
         return dav_handle_err(r, err, NULL);
 
     /* check for any method preconditions */
-	if (dav_run_method_precondition(r, resource, NULL, NULL, &err) != DECLINED
+    if (dav_run_method_precondition(r, resource, NULL, NULL, &err) != DECLINED
             && err) {
         return dav_handle_err(r, err, NULL);
     }
@@ -3908,7 +3908,7 @@ static int dav_method_checkin(request_rec *r)
         return dav_handle_err(r, err, NULL);
 
     /* check for any method preconditions */
-	if (dav_run_method_precondition(r, resource, NULL, doc, &err) != DECLINED
+    if (dav_run_method_precondition(r, resource, NULL, doc, &err) != DECLINED
             && err) {
         return dav_handle_err(r, err, NULL);
     }
@@ -4035,7 +4035,7 @@ static int dav_method_update(request_rec *r)
         return dav_handle_err(r, err, NULL);
 
     /* check for any method preconditions */
-	if (dav_run_method_precondition(r, resource, NULL, doc, &err) != DECLINED
+    if (dav_run_method_precondition(r, resource, NULL, doc, &err) != DECLINED
             && err) {
         return dav_handle_err(r, err, NULL);
     }
@@ -4197,7 +4197,7 @@ static int dav_method_label(request_rec *r)
         return dav_handle_err(r, err, NULL);
 
     /* check for any method preconditions */
-	if (dav_run_method_precondition(r, resource, NULL, doc, &err) != DECLINED
+    if (dav_run_method_precondition(r, resource, NULL, doc, &err) != DECLINED
             && err) {
         return dav_handle_err(r, err, NULL);
     }
@@ -4373,7 +4373,7 @@ static int dav_method_report(request_rec *r)
     }
 
     /* check for any method preconditions */
-	if (dav_run_method_precondition(r, resource, NULL, doc, &err) != DECLINED
+    if (dav_run_method_precondition(r, resource, NULL, doc, &err) != DECLINED
             && err) {
         return dav_handle_err(r, err, NULL);
     }
@@ -4449,7 +4449,7 @@ static int dav_method_make_workspace(request_rec *r)
     }
 
     /* check for any method preconditions */
-	if (dav_run_method_precondition(r, resource, NULL, doc, &err) != DECLINED
+    if (dav_run_method_precondition(r, resource, NULL, doc, &err) != DECLINED
             && err) {
         return dav_handle_err(r, err, NULL);
     }
@@ -4514,7 +4514,7 @@ static int dav_method_make_activity(request_rec *r)
         return dav_handle_err(r, err, NULL);
 
     /* check for any method preconditions */
-	if (dav_run_method_precondition(r, resource, NULL, NULL, &err) != DECLINED
+    if (dav_run_method_precondition(r, resource, NULL, NULL, &err) != DECLINED
             && err) {
         return dav_handle_err(r, err, NULL);
     }
@@ -4645,7 +4645,7 @@ static int dav_method_merge(request_rec *r)
         return dav_handle_err(r, err, NULL);
 
     /* check for any method preconditions */
-	if (dav_run_method_precondition(r, source_resource, NULL, doc, &err) != DECLINED
+    if (dav_run_method_precondition(r, source_resource, NULL, doc, &err) != DECLINED
             && err) {
         return dav_handle_err(r, err, NULL);
     }
@@ -4669,7 +4669,7 @@ static int dav_method_merge(request_rec *r)
         return dav_handle_err(r, err, NULL);
 
     /* check for any method preconditions */
-	if (dav_run_method_precondition(r, source_resource, resource, doc, &err) != DECLINED
+    if (dav_run_method_precondition(r, source_resource, resource, doc, &err) != DECLINED
             && err) {
         return dav_handle_err(r, err, NULL);
     }
@@ -4742,7 +4742,7 @@ static int dav_method_bind(request_rec *r)
         return dav_handle_err(r, err, NULL);
 
     /* check for any method preconditions */
-	if (dav_run_method_precondition(r, resource, NULL, NULL, &err) != DECLINED
+    if (dav_run_method_precondition(r, resource, NULL, NULL, &err) != DECLINED
             && err) {
         return dav_handle_err(r, err, NULL);
     }
@@ -4798,7 +4798,7 @@ static int dav_method_bind(request_rec *r)
         return dav_handle_err(r, err, NULL);
 
     /* check for any method preconditions */
-	if (dav_run_method_precondition(r, resource, binding, NULL, &err) != DECLINED
+    if (dav_run_method_precondition(r, resource, binding, NULL, &err) != DECLINED
             && err) {
         return dav_handle_err(r, err, NULL);
     }
