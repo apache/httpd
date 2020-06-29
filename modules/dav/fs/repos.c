@@ -1861,7 +1861,7 @@ static const char *dav_fs_getetag(const dav_resource *resource)
 
     dav_resource_private *ctx = resource->info;
 
-    if (!resource->exists) {
+    if (!resource->exists || !ctx->r) {
         return "";
     }
 
