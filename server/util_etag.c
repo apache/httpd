@@ -152,13 +152,16 @@ AP_DECLARE(char *) ap_make_etag_ex(request_rec *r, etag_rec *er)
         apr_file_t *fd = NULL;
 
         apr_size_t nbytes;
-        apr_off_t offset = 0L;
+        apr_off_t offset;
 
         if (er->fd) {
             fd = er->fd;
         }
         else if (er->pathname) {
-             apr_file_open(&fd, er->pathname, APR_READ | APR_BINARY, 0, r->pool);
+        	if (apr_file_open(&fd, er->pathname, APR_READ | APR_BINARY,
+        			0, r->pool) != APR_SUCCESS) {
+                return "";
+        	}
         }
         if (!fd) {
             return "";
@@ -166,6 +169,10 @@ AP_DECLARE(char *) ap_make_etag_ex(request_rec *r, etag_rec *er)
 
         etag = apr_palloc(r->pool, weak_len + sizeof("\"\"") +
                 4*(APR_SHA1_DIGESTSIZE/3) + vlv_len + 4);
+
+        if (apr_file_seek(fd, APR_CUR, &offset) != APR_SUCCESS) {
+            return "";
+        }
 
         apr_sha1_init(&context);
         nbytes = sizeof(buf);
