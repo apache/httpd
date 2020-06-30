@@ -1534,7 +1534,7 @@ request_rec *ap_read_request(conn_rec *conn)
 
         tenc = apr_table_get(r->headers_in, "Transfer-Encoding");
         if (tenc) {
-            /* http://tools.ietf.org/html/draft-ietf-httpbis-p1-messaging-23
+            /* https://tools.ietf.org/html/rfc7230
              * Section 3.3.3.3: "If a Transfer-Encoding header field is
              * present in a request and the chunked transfer coding is not
              * the final encoding ...; the server MUST respond with the 400
@@ -1548,13 +1548,20 @@ request_rec *ap_read_request(conn_rec *conn)
                 goto die_unusable_input;
             }
 
-            /* http://tools.ietf.org/html/draft-ietf-httpbis-p1-messaging-23
+            /* https://tools.ietf.org/html/rfc7230
              * Section 3.3.3.3: "If a message is received with both a
              * Transfer-Encoding and a Content-Length header field, the
              * Transfer-Encoding overrides the Content-Length. ... A sender
              * MUST remove the received Content-Length field".
              */
-            apr_table_unset(r->headers_in, "Content-Length");
+            if (clen) {
+                apr_table_unset(r->headers_in, "Content-Length");
+
+                /* Don't reuse this connection anyway to avoid confusion with
+                 * intermediaries and request/reponse spltting.
+                 */
+                conn->keepalive = AP_CONN_CLOSE;
+            }
         }
     }
 
