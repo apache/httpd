@@ -592,6 +592,27 @@ document dump_pool_and_children
     Dump the whole pool hierarchy starting from the given pool.
 end
 
+python
+
+class isValidAddress (gdb.Function):
+    """Determines if the argument is a valid address."""
+
+    def __init__(self):
+        super(isValidAddress, self).__init__("isValidAddress")
+
+    def invoke(self, address):
+        inf = gdb.inferiors()[0]
+        result = 1
+        try:
+            inf.read_memory(address, 8)
+        except:
+            result = 0
+        return result
+
+isValidAddress()
+
+end
+
 # Set sane defaults for common signals:
 handle SIGPIPE noprint pass nostop
 handle SIGUSR1 print pass nostop
