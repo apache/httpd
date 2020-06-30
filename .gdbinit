@@ -281,13 +281,18 @@ define dump_brigade
     end
 
     set $j = 0
+    set $brigade_length = 0
     while $bucket != $sentinel
         printf "%2d", $j
         dump_bucket_ex $bucket 1
         set $j = $j + 1
+        if $bucket->length > 0
+            set $brigade_length = $brigade_length + $bucket->length
+        end
         set $bucket = $bucket->link.next
     end
     printf "end of brigade\n"
+    printf "Length of brigade (excluding buckets of unknown length): %u\n", $brigade_length
 end
 document dump_brigade
     Print bucket brigade info
