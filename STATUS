@@ -241,6 +241,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      jailletc36: CHANGES could also be looked at if it makes sense to update the terminology
                  also here
 
+ *) strict content-length parsing
+     trunk patch http://svn.apache.org/1877954
+                 http://svn.apache.org/1877955
+     2.4.x patch: svn merge -c 1877954,1877955  ^/httpd/httpd/trunk .
+                  (manual log-message-tags and ap_mmn and apreq conflicts need to be sorted)
+    +1: 
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
