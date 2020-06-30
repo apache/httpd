@@ -2185,21 +2185,10 @@ static const char *
             PROXY_COPY_CONF_PARAMS(worker, conf);
         }
         else if ((use_regex != 0) ^ (worker->s->is_name_matchable != 0)) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server, APLOGNO(10249)
-                         "ProxyPass/<Proxy> and ProxyPassMatch/<ProxyMatch> "
-                         "can't be used altogether with the same worker "
-                         "name (%s); ignoring ProxyPass%s",
-                         worker->s->name, use_regex ? "Match" : "");
-            /* Rollback new alias */
-            if (cmd->path) {
-                dconf->alias = NULL;
-                dconf->alias_set = 0;
-            }
-            else {
-                memset(new, 0, sizeof(*new));
-                apr_array_pop(conf->aliases);
-            }
-            return NULL;
+            return apr_pstrcat(cmd->temp_pool, "ProxyPass/<Proxy> and "
+                               "ProxyPassMatch/<ProxyMatch> can't be used "
+                               "together with the same worker name ",
+                               "(", worker->s->name, ")", NULL);
         }
         else {
             reuse = 1;
@@ -2966,15 +2955,10 @@ static const char *proxysection(cmd_parms *cmd, void *mconfig, const char *arg)
                                        " ", err, NULL);
             }
             else if ((use_regex != 0) ^ (worker->s->is_name_matchable != 0)) {
-                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server, APLOGNO(10250)
-                             "ProxyPass/<Proxy> and ProxyPassMatch/<ProxyMatch> "
-                             "can't be used altogether with the same worker "
-                             "name (%s); ignoring <Proxy%s>",
-                             worker->s->name, use_regex ? "Match" : "");
-                /* Rollback new section */
-                ((void **)sconf->sec_proxy->elts)[sconf->sec_proxy->nelts - 1] = NULL;
-                apr_array_pop(sconf->sec_proxy);
-                goto cleanup;
+                return apr_pstrcat(cmd->temp_pool, "ProxyPass/<Proxy> and "
+                                   "ProxyPassMatch/<ProxyMatch> can't be used "
+                                   "altogether with the same worker name ",
+                                   "(", worker->s->name, ")", NULL);
             }
             if (!worker->section_config) {
                 worker->section_config = new_dir_conf;
@@ -3005,7 +2989,6 @@ static const char *proxysection(cmd_parms *cmd, void *mconfig, const char *arg)
         }
     }
 
-cleanup:
     cmd->path = old_path;
     cmd->override = old_overrides;
 
