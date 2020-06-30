@@ -213,13 +213,13 @@ define dump_bucket_ex
             else
                 printmemn $data $datalen
             end
+            printf "]"
+            while $datalen < 20
+                printf " "
+                set $datalen = $datalen + 1
+            end
         else
-            printf "Invalid addresss %12lx", $data
-        end
-        printf "]"
-        while $datalen < 20
-            printf " "
-            set $datalen = $datalen + 1
+            printf "Iv addr %12lx]", $data
         end
 
         if $refcount != -1
