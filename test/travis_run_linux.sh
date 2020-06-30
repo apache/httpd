@@ -1,4 +1,15 @@
 #!/bin/bash -ex
+
+# Test for empty APLOGNO() macro use; if the script changes
+# any files, the git diff will be non-empty and fail.
+if test -v TEST_LOGNO; then
+    find server modules os -name \*.c | xargs perl \
+		docs/log-message-tags/update-log-msg-tags
+    git diff --exit-code .
+    : PASSED
+    exit 0
+fi
+
 ### Installed apr/apr-util don't include the *.m4 files but the
 ### Debian packages helpfully install them, so use the system APR to buildconf
 ./buildconf --with-apr=/usr/bin/apr-1-config ${BUILDCONFIG}
@@ -75,7 +86,7 @@ if ! test -v SKIP_TESTING; then
     fi
 
     if grep -q 'Segmentation fault' test/perl-framework/t/logs/error_log; then
-        grep -C5 'Segmentation fault' test/perl-framework/t/logs/error_log
+        grep --color=always -C5 'Segmentation fault' test/perl-framework/t/logs/error_log
         RV=2
     fi
 
@@ -88,12 +99,8 @@ if ! test -v SKIP_TESTING; then
     # malloc errors are detected.  This should get caught by the
     # segfault grep above, but in case it is not, catch it here too:
     if grep 'glibc detected' test/perl-framework/t/logs/error_log; then
-        grep -C20 'glibc detected' test/perl-framework/t/logs/error_log
+        grep --color=always -C20 'glibc detected' test/perl-framework/t/logs/error_log
         RV=4
-    fi
-
-    if test $RV -ne 0 -a -r test/perl-framework/t/logs/error_log; then
-        tail -n200 test/perl-framework/t/logs/error_log
     fi
 
     exit $RV
