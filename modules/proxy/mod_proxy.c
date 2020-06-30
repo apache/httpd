@@ -990,7 +990,7 @@ PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r, struct proxy_alias *ent,
         }
 
         if (servlet_uri) {
-            ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO()
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(10248)
                           "Servlet path '%s' (%s) matches proxy handler '%s'",
                           r->uri, servlet_uri, found);
             /* Apply servlet normalization to r->uri so that <Location> or any
