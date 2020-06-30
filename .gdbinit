@@ -205,12 +205,16 @@ define dump_bucket_ex
             printf " contents=["
         end
         set $datalen = $bucket->length
-        if $datalen > 17
-            printmem $data 17
-            printf "..."
-            set $datalen = 20
+        if $isValidAddress($data) == 1
+            if $datalen > 17
+                printmem $data 17
+                printf "..."
+                set $datalen = 20
+            else
+                printmemn $data $datalen
+            end
         else
-            printmemn $data $datalen
+            printf "Invalid addresss %12lx", $data
         end
         printf "]"
         while $datalen < 20
