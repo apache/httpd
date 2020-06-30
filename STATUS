@@ -171,6 +171,14 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1877829,1877830 ^/httpd/httpd/trunk .
     +1: covener, ylavic, rpluem
 
+  *) Replace apr_psprintf with apr_pstrcat where the format strings only
+     contain %s to improve efficiency. Leave out error messages as they
+     are not on a crtical code path and error message become less readable
+     when taking out the format specifiers.
+     trunk patch: http://svn.apache.org/1862270
+     2.4.x patch: svn merge -c 1862270 ^/httpd/httpd/trunk .
+     +1: minfrin, rpluem, ylavic
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -232,15 +240,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      icing: updated patch and added r1879156 to fix the eye bleed.
      jailletc36: CHANGES could also be looked at if it makes sense to update the terminology
                  also here
-
-  *) Replace apr_psprintf with apr_pstrcat where the format strings only
-     contain %s to improve efficiency. Leave out error messages as they
-     are not on a crtical code path and error message become less readable
-     when taking out the format specifiers.
-     trunk patch: http://svn.apache.org/1862270
-     2.4.x patch: svn merge -c 1862270 ^/httpd/httpd/trunk .
-     +1: minfrin, rpluem
-
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
