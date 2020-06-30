@@ -244,7 +244,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
  *) strict content-length parsing
      trunk patch http://svn.apache.org/1877954
                  http://svn.apache.org/1877955
-     2.4.x patch: svn merge -c 1877954,1877955  ^/httpd/httpd/trunk .
+                 http://svn.apache.org/1879369
+     2.4.x patch: svn merge -c 1877954,1877955,1879369  ^/httpd/httpd/trunk .
                   (manual log-message-tags and ap_mmn and apreq conflicts need to be sorted)
     +1: 
 
