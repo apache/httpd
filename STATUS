@@ -248,7 +248,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/r1879373
      2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-ap_parse_strict_length.patch
     +1: ylavic
-	ylavic: the patch drops changes to apreq, which seems to not be in 2.4.
+    ylavic: the patch drops changes to apreq, which seems to not be in 2.4.
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
