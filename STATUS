@@ -275,9 +275,10 @@ PATCHES/ISSUES THAT ARE BEING WORKED
                   http://svn.apache.org/r1751147
                   http://svn.apache.org/r1757818
                   http://svn.apache.org/r1879253
+                  http://svn.apache.org/r1879348
      2.4.x: trunk patches work, final view:
             http://home.apache.org/~elukey/httpd-2.4.x-core-last_modified_tz_logging.patch
-            svn merge -c 1748379,1750747,1750749,1750953,1751138,1751139,1751139,1757818,1879253 ^/httpd/httpd/trunk .
+            svn merge -c 1748379,1750747,1750749,1750953,1751138,1751139,1751139,1757818,1879253,r1879348 ^/httpd/httpd/trunk .
      The problem has been discussed in dev@ extensively but we did not reach a common
      agreement about how to proceed in the long term. While we wait, I would really like
      to introduce useful logs for the users (the starting point of this change was a users@
