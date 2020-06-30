@@ -242,12 +242,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  also here
 
  *) strict content-length parsing
-     trunk patch http://svn.apache.org/1877954
-                 http://svn.apache.org/1877955
-                 http://svn.apache.org/1879369
-     2.4.x patch: svn merge -c 1877954,1877955,1879369  ^/httpd/httpd/trunk .
-                  (manual log-message-tags and ap_mmn and apreq conflicts need to be sorted)
-    +1: 
+     trunk patch http://svn.apache.org/r1877954
+                 http://svn.apache.org/r1877955
+                 http://svn.apache.org/r1879369
+                 http://svn.apache.org/r1879373
+     2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-ap_parse_strict_length.patch
+    +1: ylavic
+	ylavic: the patch drops changes to apreq, which seems to not be in 2.4.
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
