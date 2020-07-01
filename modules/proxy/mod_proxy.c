@@ -1842,6 +1842,7 @@ static void *create_proxy_dir_config(apr_pool_t *p, char *dummy)
     new->add_forwarded_headers_set = 0;
     new->forward_100_continue = 1;
     new->forward_100_continue_set = 0;
+    new->async_delay = -1;
 
     return (void *) new;
 }
@@ -1889,16 +1890,29 @@ static void *merge_proxy_dir_config(apr_pool_t *p, void *basev, void *addv)
     new->error_override_set = add->error_override_set || base->error_override_set;
     new->alias = (add->alias_set == 0) ? base->alias : add->alias;
     new->alias_set = add->alias_set || base->alias_set;
+
     new->add_forwarded_headers =
         (add->add_forwarded_headers_set == 0) ? base->add_forwarded_headers
         : add->add_forwarded_headers;
     new->add_forwarded_headers_set = add->add_forwarded_headers_set
         || base->add_forwarded_headers_set;
+
     new->forward_100_continue =
         (add->forward_100_continue_set == 0) ? base->forward_100_continue
                                              : add->forward_100_continue;
     new->forward_100_continue_set = add->forward_100_continue_set
                                     || base->forward_100_continue_set;
+
+    new->async_delay =
+        (add->async_delay_set == 0) ? base->async_delay
+                                    : add->async_delay;
+    new->async_delay_set = add->async_delay_set
+                           || base->async_delay_set;
+    new->async_idle_timeout =
+        (add->async_idle_timeout_set == 0) ? base->async_idle_timeout
+                                           : add->async_idle_timeout;
+    new->async_idle_timeout_set = add->async_idle_timeout_set
+                                  || base->async_idle_timeout_set;
 
     return new;
 }
@@ -2477,6 +2491,33 @@ static const char *
    conf->forward_100_continue = flag;
    conf->forward_100_continue_set = 1;
    return NULL;
+}
+
+static const char *
+    set_proxy_async_delay(cmd_parms *parms, void *dconf, const char *arg)
+{
+    proxy_dir_conf *conf = dconf;
+    if (strcmp(arg, "-1") == 0) {
+        conf->async_delay = -1;
+    }
+    else if (ap_timeout_parameter_parse(arg, &conf->async_delay, "s")
+                || conf->async_delay < 0) {
+        return "ProxyAsyncDelay has wrong format";
+    }
+    conf->async_delay_set = 1;
+    return NULL;
+}
+
+static const char *
+    set_proxy_async_idle(cmd_parms *parms, void *dconf, const char *arg)
+{
+    proxy_dir_conf *conf = dconf;
+    if (ap_timeout_parameter_parse(arg, &conf->async_idle_timeout, "s")
+            || conf->async_idle_timeout < 0) {
+        return "ProxyAsyncIdleTimeout has wrong format";
+    }
+    conf->async_idle_timeout_set = 1;
+    return NULL;
 }
 
 static const char *
@@ -3068,6 +3109,10 @@ static const command_rec proxy_cmds[] =
     AP_INIT_FLAG("Proxy100Continue", forward_100_continue, NULL, RSRC_CONF|ACCESS_CONF,
      "on if 100-Continue should be forwarded to the origin server, off if the "
      "proxy should handle it by itself"),
+    AP_INIT_TAKE1("ProxyAsyncDelay", set_proxy_async_delay, NULL, RSRC_CONF|ACCESS_CONF,
+     "Amount of time to poll before going asynchronous"),
+    AP_INIT_TAKE1("ProxyAsyncIdleTimeout", set_proxy_async_idle, NULL, RSRC_CONF|ACCESS_CONF,
+     "Timeout for asynchronous inactivity, ProxyTimeout by default"),
     {NULL}
 };
 
