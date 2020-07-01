@@ -1694,11 +1694,6 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
                 tunnel->timeout = client_timeout;
             }
 
-            /* Bidirectional non-HTTP stream will confuse mod_reqtimeoout, we
-             * use a single idle timeout from now on.
-             */
-            ap_remove_input_filter_byhandle(c->input_filters, "reqtimeout");
-
             /* Let proxy tunnel forward everything */
             status = ap_proxy_tunnel_run(tunnel);
             if (ap_is_HTTP_ERROR(status)) {
