@@ -1334,9 +1334,10 @@ PROXY_DECLARE(apr_status_t) ap_proxy_buckets_lifetime_transform(request_rec *r,
  * The flags for ap_proxy_transfer_between_connections(), where for legacy and
  * compatibility reasons FLUSH_EACH and FLUSH_AFTER are boolean values.
  */
-#define AP_PROXY_TRANSFER_FLUSH_EACH    (0x0)
-#define AP_PROXY_TRANSFER_FLUSH_AFTER   (0x1)
-#define AP_PROXY_TRANSFER_SHOULD_YIELD  (0x2)
+#define AP_PROXY_TRANSFER_FLUSH_EACH        (0x00)
+#define AP_PROXY_TRANSFER_FLUSH_AFTER       (0x01)
+#define AP_PROXY_TRANSFER_YIELD_PENDING     (0x02)
+#define AP_PROXY_TRANSFER_YIELD_MAX_READS   (0x04)
 
 /*
  * Sends all data that can be read non blocking from the input filter chain of
@@ -1359,7 +1360,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_buckets_lifetime_transform(request_rec *r,
  * @return      apr_status_t of the operation. Could be any error returned from
  *              either the input filter chain of c_i or the output filter chain
  *              of c_o, APR_EPIPE if the outgoing connection was aborted, or
- *              APR_INCOMPLETE if AP_PROXY_TRANSFER_SHOULD_YIELD was set and
+ *              APR_INCOMPLETE if AP_PROXY_TRANSFER_YIELD_PENDING was set and
  *              the output stack gets full before the input stack is exhausted.
  */
 PROXY_DECLARE(apr_status_t) ap_proxy_transfer_between_connections(
