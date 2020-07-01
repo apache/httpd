@@ -4327,12 +4327,6 @@ PROXY_DECLARE(apr_status_t) ap_proxy_tunnel_create(proxy_tunnel_rec **ptunnel,
     apr_socket_opt_set(tunnel->client->pfd->desc.s, APR_SO_NONBLOCK, 1);
     apr_socket_opt_set(tunnel->origin->pfd->desc.s, APR_SO_NONBLOCK, 1);
 
-    /* No coalescing filters */
-    ap_remove_output_filter_byhandle(c_i->output_filters,
-                                     "SSL/TLS Coalescing Filter");
-    ap_remove_output_filter_byhandle(c_o->output_filters,
-                                     "SSL/TLS Coalescing Filter");
-
     /* Bidirectional non-HTTP stream will confuse mod_reqtimeoout */
     ap_remove_input_filter_byhandle(c_i->input_filters, "reqtimeout");
 

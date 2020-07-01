@@ -1715,6 +1715,20 @@ static apr_status_t ssl_io_filter_coalesce(ap_filter_t *f,
     apr_size_t buffered = ctx ? ctx->bytes : 0; /* space used on entry */
     unsigned count = 0;
 
+    /* Pass down everything if called from ap_filter_output_pending() */
+    if (APR_BRIGADE_EMPTY(bb)) {
+        if (!ctx || !ctx->bytes) {
+            return APR_SUCCESS;
+        }
+
+        e = apr_bucket_transient_create(ctx->buffer, ctx->bytes,
+                                        bb->bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(bb, e);
+        ctx->bytes = 0; /* buffer now emptied. */
+
+        return ap_pass_brigade(f->next, bb);
+    }
+
     /* The brigade consists of zero-or-more small data buckets which
      * can be coalesced (referred to as the "prefix"), followed by the
      * remainder of the brigade.
