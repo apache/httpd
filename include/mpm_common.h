@@ -440,13 +440,6 @@ AP_DECLARE_HOOK(apr_status_t, mpm_register_poll_callback_timeout,
                 void *baton,
                 apr_time_t timeout))
 
-/**
- * Unregister the specified callback
- * @ingroup hooks
- */
-AP_DECLARE_HOOK(apr_status_t, mpm_unregister_poll_callback,
-                (apr_array_header_t *pds))
-
 /** Resume the suspended connection 
  * @ingroup hooks
  */
