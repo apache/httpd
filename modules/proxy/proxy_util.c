@@ -4198,54 +4198,52 @@ PROXY_DECLARE(apr_status_t) ap_proxy_transfer_between_connections(
             }
             break;
         }
-        {
-            if (c_o->aborted) {
-                apr_brigade_cleanup(bb_i);
-                flags &= ~AP_PROXY_TRANSFER_FLUSH_AFTER;
-                rv = APR_EPIPE;
-                break;
-            }
-            if (APR_BRIGADE_EMPTY(bb_i)) {
-                break;
-            }
-#ifdef DEBUGGING
-            len = -1;
-            apr_brigade_length(bb_i, 0, &len);
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03306)
-                          "ap_proxy_transfer_between_connections: "
-                          "read %" APR_OFF_T_FMT
-                          " bytes from %s", len, name);
-#endif
-            if (sent) {
-                *sent = 1;
-            }
-            ap_proxy_buckets_lifetime_transform(r, bb_i, bb_o);
-            if (flush_each) {
-                apr_bucket *b;
 
-                /*
-                 * Do not use ap_fflush here since this would cause the flush
-                 * bucket to be sent in a separate brigade afterwards which
-                 * causes some filters to set aside the buckets from the first
-                 * brigade and process them when FLUSH arrives in the second
-                 * brigade. As set asides of our transformed buckets involve
-                 * memory copying we try to avoid this. If we have the flush
-                 * bucket in the first brigade they directly process the
-                 * buckets without setting them aside.
-                 */
-                b = apr_bucket_flush_create(bb_o->bucket_alloc);
-                APR_BRIGADE_INSERT_TAIL(bb_o, b);
-            }
-            rv = ap_pass_brigade(c_o->output_filters, bb_o);
-            apr_brigade_cleanup(bb_o);
-            if (rv != APR_SUCCESS) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(03307)
-                              "ap_proxy_transfer_between_connections: "
-                              "error on %s - ap_pass_brigade",
-                              name);
-                flags &= ~AP_PROXY_TRANSFER_FLUSH_AFTER;
-                break;
-            }
+        if (c_o->aborted) {
+            apr_brigade_cleanup(bb_i);
+            flags &= ~AP_PROXY_TRANSFER_FLUSH_AFTER;
+            rv = APR_EPIPE;
+            break;
+        }
+        if (APR_BRIGADE_EMPTY(bb_i)) {
+            break;
+        }
+#ifdef DEBUGGING
+        len = -1;
+        apr_brigade_length(bb_i, 0, &len);
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03306)
+                      "ap_proxy_transfer_between_connections: "
+                      "read %" APR_OFF_T_FMT
+                      " bytes from %s", len, name);
+#endif
+        if (sent) {
+            *sent = 1;
+        }
+        ap_proxy_buckets_lifetime_transform(r, bb_i, bb_o);
+        if (flush_each) {
+            apr_bucket *b;
+            /*
+             * Do not use ap_fflush here since this would cause the flush
+             * bucket to be sent in a separate brigade afterwards which
+             * causes some filters to set aside the buckets from the first
+             * brigade and process them when FLUSH arrives in the second
+             * brigade. As set asides of our transformed buckets involve
+             * memory copying we try to avoid this. If we have the flush
+             * bucket in the first brigade they directly process the
+             * buckets without setting them aside.
+             */
+            b = apr_bucket_flush_create(bb_o->bucket_alloc);
+            APR_BRIGADE_INSERT_TAIL(bb_o, b);
+        }
+        rv = ap_pass_brigade(c_o->output_filters, bb_o);
+        apr_brigade_cleanup(bb_o);
+        if (rv != APR_SUCCESS) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(03307)
+                          "ap_proxy_transfer_between_connections: "
+                          "error on %s - ap_pass_brigade",
+                          name);
+            flags &= ~AP_PROXY_TRANSFER_FLUSH_AFTER;
+            break;
         }
     }
 
