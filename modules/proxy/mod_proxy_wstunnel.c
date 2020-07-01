@@ -239,9 +239,7 @@ static int proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
 
     apr_brigade_cleanup(header_brigade);
 
-    ap_remove_input_filter_byhandle(c->input_filters, "reqtimeout");
-
-    rv = ap_proxy_tunnel_create(&tunnel, r, conn->connection, scheme);
+    rv = ap_proxy_tunnel_create(&tunnel, r, backconn, scheme);
     if (rv != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(02543)
                       "error creating websocket tunnel");
