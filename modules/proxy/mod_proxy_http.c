@@ -256,7 +256,6 @@ typedef struct {
     proxy_tunnel_rec *tunnel;
 
     apr_pool_t *async_pool;
-    apr_array_header_t *pfds;
     apr_interval_time_t idle_timeout;
 
     unsigned int can_go_async           :1,
@@ -319,26 +318,6 @@ static void proxy_http_async_cb(void *baton)
         /* Pump both ends until they'd block and then start over again */
         status = ap_proxy_tunnel_run(req->tunnel);
         if (status == HTTP_GATEWAY_TIME_OUT) {
-            if (!req->async_pool) {
-                /* Create the MPM's (req->)pfds off of our tunnel's, and
-                 * the subpool used by the MPM to alloc its own temporary
-                 * data, which we want to clear on the next round (above)
-                 * to avoid leaks.
-                 */
-                req->pfds = apr_array_copy(req->p, req->tunnel->pfds);
-                APR_ARRAY_IDX(req->pfds, 0, apr_pollfd_t).client_data = NULL;
-                APR_ARRAY_IDX(req->pfds, 1, apr_pollfd_t).client_data = NULL;
-                apr_pool_create(&req->async_pool, req->p);
-            }
-            else {
-                /* Update only reqevents of the MPM's pfds with our tunnel's,
-                 * the rest didn't change.
-                 */
-                APR_ARRAY_IDX(req->pfds, 0, apr_pollfd_t).reqevents =
-                    APR_ARRAY_IDX(req->tunnel->pfds, 0, apr_pollfd_t).reqevents;
-                APR_ARRAY_IDX(req->pfds, 1, apr_pollfd_t).reqevents =
-                    APR_ARRAY_IDX(req->tunnel->pfds, 1, apr_pollfd_t).reqevents;
-            }
             status = SUSPENDED;
         }
         break;
@@ -356,7 +335,16 @@ static void proxy_http_async_cb(void *baton)
                       "proxy %s: suspended, going async",
                       req->proto);
 
-        ap_mpm_register_poll_callback_timeout(req->async_pool, req->pfds,
+        if (!req->async_pool) {
+            /* Create the subpool used by the MPM to alloc its own
+             * temporary data, which we want to clear on the next
+             * round (above) to avoid leaks.
+             */
+            apr_pool_create(&req->async_pool, req->p);
+        }
+
+        ap_mpm_register_poll_callback_timeout(req->async_pool,
+                                              req->tunnel->pfds,
                                               proxy_http_async_cb, 
                                               proxy_http_async_cancel_cb, 
                                               req, req->idle_timeout);

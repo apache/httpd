@@ -650,7 +650,6 @@
  *                         mpm_unregister_poll_callback hook.
  * 20200702.0 (2.5.1-dev)  Add pool arg to mpm_register_poll_callback and
  *                         mpm_register_poll_callback_timeout hooks
- *                         
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */

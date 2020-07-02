@@ -1605,11 +1605,11 @@ static apr_status_t event_cleanup_poll_callback(void *data)
 }
 
 static apr_status_t event_register_poll_callback_ex(apr_pool_t *p,
-                                                    apr_array_header_t *pfds,
-                                                    ap_mpm_callback_fn_t *cbfn,
-                                                    ap_mpm_callback_fn_t *tofn,
-                                                    void *baton,
-                                                    apr_time_t timeout)
+                                                const apr_array_header_t *pfds,
+                                                ap_mpm_callback_fn_t *cbfn,
+                                                ap_mpm_callback_fn_t *tofn,
+                                                void *baton,
+                                                apr_time_t timeout)
 {
     socket_callback_baton_t *scb = apr_pcalloc(p, sizeof(*scb));
     listener_poll_type *pt = apr_palloc(p, sizeof(*pt));
@@ -1621,12 +1621,12 @@ static apr_status_t event_register_poll_callback_ex(apr_pool_t *p,
 
     scb->cbfunc = cbfn;
     scb->user_baton = baton;
-    scb->pfds = pfds;
+    scb->pfds = apr_array_copy(p, pfds);
 
-    apr_pool_pre_cleanup_register(p, pfds, event_cleanup_poll_callback);
+    apr_pool_pre_cleanup_register(p, scb->pfds, event_cleanup_poll_callback);
 
-    for (i = 0; i < pfds->nelts; i++) {
-        apr_pollfd_t *pfd = (apr_pollfd_t *)pfds->elts + i;
+    for (i = 0; i < scb->pfds->nelts; i++) {
+        apr_pollfd_t *pfd = (apr_pollfd_t *)scb->pfds->elts + i;
         if (pfd->reqevents) {
             if (pfd->reqevents & APR_POLLIN) {
                 pfd->reqevents |= APR_POLLHUP;
@@ -1641,10 +1641,10 @@ static apr_status_t event_register_poll_callback_ex(apr_pool_t *p,
 
     if (timeout > 0) { 
         /* XXX:  This cancel timer event can fire before the pollset is updated */
-        scb->cancel_event = event_get_timer_event(timeout, tofn, baton, 1, pfds);
+        scb->cancel_event = event_get_timer_event(timeout, tofn, baton, 1, scb->pfds);
     }
-    for (i = 0; i < pfds->nelts; i++) {
-        apr_pollfd_t *pfd = (apr_pollfd_t *)pfds->elts + i;
+    for (i = 0; i < scb->pfds->nelts; i++) {
+        apr_pollfd_t *pfd = (apr_pollfd_t *)scb->pfds->elts + i;
         if (pfd->client_data) {
             rc = apr_pollset_add(event_pollset, pfd);
             if (rc != APR_SUCCESS) {
@@ -1656,7 +1656,7 @@ static apr_status_t event_register_poll_callback_ex(apr_pool_t *p,
 }
 
 static apr_status_t event_register_poll_callback(apr_pool_t *p,
-                                                 apr_array_header_t *pfds,
+                                                 const apr_array_header_t *pfds,
                                                  ap_mpm_callback_fn_t *cbfn,
                                                  void *baton)
 {

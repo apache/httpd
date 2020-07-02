@@ -427,7 +427,7 @@ AP_DECLARE_HOOK(apr_status_t, mpm_register_timed_callback,
  * @ingroup hooks
  */
 AP_DECLARE_HOOK(apr_status_t, mpm_register_poll_callback,
-                (apr_pool_t *p, apr_array_header_t *pds,
+                (apr_pool_t *p, const apr_array_header_t *pds,
                  ap_mpm_callback_fn_t *cbfn, void *baton))
 
 /* register the specified callback, with timeout 
@@ -435,9 +435,8 @@ AP_DECLARE_HOOK(apr_status_t, mpm_register_poll_callback,
  *
  */
 AP_DECLARE_HOOK(apr_status_t, mpm_register_poll_callback_timeout,
-                (apr_pool_t *p, apr_array_header_t *pds,
-                ap_mpm_callback_fn_t *cbfn,
-                ap_mpm_callback_fn_t *tofn,
+                (apr_pool_t *p, const apr_array_header_t *pds,
+                ap_mpm_callback_fn_t *cbfn, ap_mpm_callback_fn_t *tofn,
                 void *baton, apr_time_t timeout))
 
 /** Resume the suspended connection 

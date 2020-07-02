@@ -29,7 +29,6 @@ typedef struct ws_baton_t {
     request_rec *r;
     proxy_conn_rec *backend;
     proxy_tunnel_rec *tunnel;
-    apr_array_header_t *pfds;
     apr_pool_t *async_pool;
     const char *scheme;
 } ws_baton_t;
@@ -96,15 +95,8 @@ static void proxy_wstunnel_callback(void *b)
         ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, baton->r,
                       "proxy_wstunnel_callback suspend");
 
-        /* Update only reqevents of the MPM's pfds with our tunnel's,
-         * the rest didn't change.
-         */
-        APR_ARRAY_IDX(baton->pfds, 0, apr_pollfd_t).reqevents =
-            APR_ARRAY_IDX(baton->tunnel->pfds, 0, apr_pollfd_t).reqevents;
-        APR_ARRAY_IDX(baton->pfds, 1, apr_pollfd_t).reqevents =
-            APR_ARRAY_IDX(baton->tunnel->pfds, 1, apr_pollfd_t).reqevents;
-
-        ap_mpm_register_poll_callback_timeout(baton->async_pool, baton->pfds,
+        ap_mpm_register_poll_callback_timeout(baton->async_pool,
+                                              baton->tunnel->pfds,
                                               proxy_wstunnel_callback, 
                                               proxy_wstunnel_cancel_callback, 
                                               baton, dconf->idle_timeout);
@@ -275,18 +267,15 @@ static int proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
         tunnel->timeout = dconf->async_delay;
         status = proxy_wstunnel_pump(baton, 1);
         if (status == SUSPENDED) {
-            /* Create the MPM's (baton->)pfds off of our tunnel's, and
-             * the subpool used by the MPM to alloc its own temporary
-             * data, which we want to clear on the next round (above)
-             * to avoid leaks.
+            /* Create the subpool used by the MPM to alloc its own
+             * temporary data, which we want to clear on the next
+             * round (above) to avoid leaks.
              */
-            baton->pfds = apr_array_copy(baton->r->pool, baton->tunnel->pfds);
-            APR_ARRAY_IDX(baton->pfds, 0, apr_pollfd_t).client_data = NULL;
-            APR_ARRAY_IDX(baton->pfds, 1, apr_pollfd_t).client_data = NULL;
             apr_pool_create(&baton->async_pool, baton->r->pool);
 
             rv = ap_mpm_register_poll_callback_timeout(
-                         baton->async_pool, baton->pfds,
+                         baton->async_pool,
+                         baton->tunnel->pfds,
                          proxy_wstunnel_callback, 
                          proxy_wstunnel_cancel_callback, 
                          baton, 

@@ -224,7 +224,7 @@ AP_DECLARE(apr_status_t) ap_mpm_register_timed_callback(
  */
 
 AP_DECLARE(apr_status_t) ap_mpm_register_poll_callback(
-        apr_pool_t *p, apr_array_header_t *pfds,
+        apr_pool_t *p, const apr_array_header_t *pfds,
         ap_mpm_callback_fn_t *cbfn, void *baton);
 
 /**
@@ -247,7 +247,7 @@ AP_DECLARE(apr_status_t) ap_mpm_register_poll_callback(
  */
 
 AP_DECLARE(apr_status_t) ap_mpm_register_poll_callback_timeout(
-        apr_pool_t *p, apr_array_header_t *pfds,
+        apr_pool_t *p, const apr_array_header_t *pfds,
         ap_mpm_callback_fn_t *cbfn, ap_mpm_callback_fn_t *tofn,
         void *baton, apr_time_t timeout);
 

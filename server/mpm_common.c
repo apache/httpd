@@ -110,11 +110,11 @@ AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t, mpm_resume_suspended,
                             (conn_rec *c),
                             (c), APR_ENOTIMPL)
 AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t, mpm_register_poll_callback,
-                            (apr_pool_t *p, apr_array_header_t *pds,
+                            (apr_pool_t *p, const apr_array_header_t *pds,
                              ap_mpm_callback_fn_t *cbfn, void *baton),
                             (p, pds, cbfn, baton), APR_ENOTIMPL)
 AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t, mpm_register_poll_callback_timeout,
-                            (apr_pool_t *p, apr_array_header_t *pds,
+                            (apr_pool_t *p, const apr_array_header_t *pds,
                              ap_mpm_callback_fn_t *cbfn,
                              ap_mpm_callback_fn_t *tofn,
                              void *baton, apr_time_t timeout),
@@ -572,15 +572,16 @@ AP_DECLARE(apr_status_t) ap_mpm_register_timed_callback(apr_time_t t,
 }
 
 AP_DECLARE(apr_status_t) ap_mpm_register_poll_callback(
-        apr_pool_t *p, apr_array_header_t *pfds,
+        apr_pool_t *p, const apr_array_header_t *pfds,
         ap_mpm_callback_fn_t *cbfn, void *baton)
 {
     return ap_run_mpm_register_poll_callback(p, pfds, cbfn, baton);
 }
 
 AP_DECLARE(apr_status_t) ap_mpm_register_poll_callback_timeout(
-        apr_pool_t *p, apr_array_header_t *pfds, ap_mpm_callback_fn_t *cbfn,
-        ap_mpm_callback_fn_t *tofn, void *baton, apr_time_t timeout)
+        apr_pool_t *p, const apr_array_header_t *pfds,
+        ap_mpm_callback_fn_t *cbfn, ap_mpm_callback_fn_t *tofn,
+        void *baton, apr_time_t timeout)
 {
     return ap_run_mpm_register_poll_callback_timeout(p, pfds, cbfn, tofn,
                                                      baton, timeout);
