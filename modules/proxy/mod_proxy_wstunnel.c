@@ -87,6 +87,7 @@ static void proxy_wstunnel_callback(void *b)
                                                    &proxy_wstunnel_module);
 
     if (baton->pfds) {
+        /* Clear MPM's temporary data */
         apr_pool_clear(baton->pfds->pool);
     }
 
@@ -94,15 +95,23 @@ static void proxy_wstunnel_callback(void *b)
         ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, baton->r,
                       "proxy_wstunnel_callback suspend");
 
-        if (baton->pfds) {
-            apr_pollfd_t *async_pfds = (void *)baton->pfds->elts;
-            apr_pollfd_t *tunnel_pfds = (void *)baton->tunnel->pfds->elts;
-            async_pfds[0].reqevents = tunnel_pfds[0].reqevents;
-            async_pfds[1].reqevents = tunnel_pfds[1].reqevents;
-        }
-        else {
+        if (!baton->pfds) {
+            /* Create the MPM's (baton->)pfds off of our tunnel's, and
+             * overwrite its pool with a subpool since the MPM will use
+             * that to alloc its own temporary data, which we want to
+             * clear on the next round (above) to avoid leaks.
+             */
             baton->pfds = apr_array_copy(baton->r->pool, baton->tunnel->pfds);
             apr_pool_create(&baton->pfds->pool, baton->r->pool);
+        }
+        else {
+            /* Update only reqevents of the MPM's pfds with our tunnel's,
+             * the rest didn't change.
+             */
+            APR_ARRAY_IDX(baton->pfds, 0, apr_pollfd_t).reqevents =
+                APR_ARRAY_IDX(baton->tunnel->pfds, 0, apr_pollfd_t).reqevents;
+            APR_ARRAY_IDX(baton->pfds, 1, apr_pollfd_t).reqevents =
+                APR_ARRAY_IDX(baton->tunnel->pfds, 1, apr_pollfd_t).reqevents;
         }
 
         ap_mpm_register_poll_callback_timeout(baton->pfds,
@@ -276,7 +285,15 @@ static int proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
         tunnel->timeout = dconf->async_delay;
         status = proxy_wstunnel_pump(baton, 1);
         if (status == SUSPENDED) {
-            rv = ap_mpm_register_poll_callback_timeout(tunnel->pfds,
+            /* Create the MPM's (baton->)pfds off of our tunnel's, and
+             * overwrite its pool with a subpool since the MPM will use
+             * that to alloc its own temporary data, which we want to
+             * clear on the next round (above) to avoid leaks.
+             */
+            baton->pfds = apr_array_copy(baton->r->pool, baton->tunnel->pfds);
+            apr_pool_create(&baton->pfds->pool, baton->r->pool);
+
+            rv = ap_mpm_register_poll_callback_timeout(baton->pfds,
                          proxy_wstunnel_callback, 
                          proxy_wstunnel_cancel_callback, 
                          baton, 
@@ -284,7 +301,8 @@ static int proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
             if (rv == APR_SUCCESS) { 
                 return SUSPENDED;
             }
-            else if (APR_STATUS_IS_ENOTIMPL(rv)) { 
+
+            if (APR_STATUS_IS_ENOTIMPL(rv)) { 
                 ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(02544) "No async support");
                 tunnel->timeout = dconf->idle_timeout;
                 status = proxy_wstunnel_pump(baton, 0); /* force no async */
