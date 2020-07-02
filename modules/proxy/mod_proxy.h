@@ -247,6 +247,11 @@ typedef struct {
     unsigned int forward_100_continue_set:1;
 
     apr_array_header_t *error_override_codes;
+
+    apr_interval_time_t async_delay;
+    apr_interval_time_t async_idle_timeout;
+    unsigned int async_delay_set:1;
+    unsigned int async_idle_timeout_set:1;
 } proxy_dir_conf;
 
 /* if we interpolate env vars per-request, we'll need a per-request
