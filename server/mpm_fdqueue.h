@@ -69,7 +69,7 @@ struct timer_event_t
     ap_mpm_callback_fn_t *cbfunc;
     void *baton;
     int canceled;
-    apr_array_header_t *remove;
+    apr_array_header_t *pfds;
 };
 typedef struct timer_event_t timer_event_t;
 
