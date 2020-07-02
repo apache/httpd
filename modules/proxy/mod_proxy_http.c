@@ -254,6 +254,8 @@ typedef struct {
 
     const char *upgrade;
     proxy_tunnel_rec *tunnel;
+
+    apr_pool_t *async_pool;
     apr_array_header_t *pfds;
     apr_interval_time_t idle_timeout;
 
@@ -307,9 +309,9 @@ static void proxy_http_async_cb(void *baton)
     proxy_http_req_t *req = (proxy_http_req_t *)baton;
     int status;
 
-    if (req->pfds) {
+    if (req->async_pool) {
         /* Clear MPM's temporary data */
-        apr_pool_clear(req->pfds->pool);
+        apr_pool_clear(req->async_pool);
     }
 
     switch (req->state) {
@@ -317,14 +319,16 @@ static void proxy_http_async_cb(void *baton)
         /* Pump both ends until they'd block and then start over again */
         status = ap_proxy_tunnel_run(req->tunnel);
         if (status == HTTP_GATEWAY_TIME_OUT) {
-            if (!req->pfds) {
+            if (!req->async_pool) {
                 /* Create the MPM's (req->)pfds off of our tunnel's, and
-                 * overwrite its pool with a subpool since the MPM will use
-                 * that to alloc its own temporary data, which we want to
-                 * clear on the next round (above) to avoid leaks.
+                 * the subpool used by the MPM to alloc its own temporary
+                 * data, which we want to clear on the next round (above)
+                 * to avoid leaks.
                  */
                 req->pfds = apr_array_copy(req->p, req->tunnel->pfds);
-                apr_pool_create(&req->pfds->pool, req->p);
+                APR_ARRAY_IDX(req->pfds, 0, apr_pollfd_t).client_data = NULL;
+                APR_ARRAY_IDX(req->pfds, 1, apr_pollfd_t).client_data = NULL;
+                apr_pool_create(&req->async_pool, req->p);
             }
             else {
                 /* Update only reqevents of the MPM's pfds with our tunnel's,
@@ -352,7 +356,7 @@ static void proxy_http_async_cb(void *baton)
                       "proxy %s: suspended, going async",
                       req->proto);
 
-        ap_mpm_register_poll_callback_timeout(req->pfds,
+        ap_mpm_register_poll_callback_timeout(req->async_pool, req->pfds,
                                               proxy_http_async_cb, 
                                               proxy_http_async_cancel_cb, 
                                               req, req->idle_timeout);

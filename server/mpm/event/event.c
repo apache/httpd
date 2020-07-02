@@ -1604,13 +1604,13 @@ static apr_status_t event_cleanup_poll_callback(void *data)
     return final_rc;
 }
 
-static apr_status_t event_register_poll_callback_ex(apr_array_header_t *pfds,
-                                                  ap_mpm_callback_fn_t *cbfn,
-                                                  ap_mpm_callback_fn_t *tofn,
-                                                  void *baton,
-                                                  apr_time_t timeout)
+static apr_status_t event_register_poll_callback_ex(apr_pool_t *p,
+                                                    apr_array_header_t *pfds,
+                                                    ap_mpm_callback_fn_t *cbfn,
+                                                    ap_mpm_callback_fn_t *tofn,
+                                                    void *baton,
+                                                    apr_time_t timeout)
 {
-    apr_pool_t *p = pfds->pool;
     socket_callback_baton_t *scb = apr_pcalloc(p, sizeof(*scb));
     listener_poll_type *pt = apr_palloc(p, sizeof(*pt));
     apr_status_t rc, final_rc = APR_SUCCESS;
@@ -1655,11 +1655,13 @@ static apr_status_t event_register_poll_callback_ex(apr_array_header_t *pfds,
     return final_rc;
 }
 
-static apr_status_t event_register_poll_callback(apr_array_header_t *pfds,
+static apr_status_t event_register_poll_callback(apr_pool_t *p,
+                                                 apr_array_header_t *pfds,
                                                  ap_mpm_callback_fn_t *cbfn,
                                                  void *baton)
 {
-    return event_register_poll_callback_ex(pfds,
+    return event_register_poll_callback_ex(p,
+                                           pfds,
                                            cbfn,
                                            NULL, /* no timeout function */
                                            baton,
@@ -4073,10 +4075,10 @@ static void event_hooks(apr_pool_t * p)
     ap_hook_mpm_query(event_query, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_mpm_register_timed_callback(event_register_timed_callback, NULL, NULL,
                                         APR_HOOK_MIDDLE);
-    ap_hook_mpm_register_poll_callback(event_register_poll_callback, NULL, NULL,
-                                        APR_HOOK_MIDDLE);
-    ap_hook_mpm_register_poll_callback_timeout(event_register_poll_callback_ex, NULL, NULL,
-                                        APR_HOOK_MIDDLE);
+    ap_hook_mpm_register_poll_callback(event_register_poll_callback,
+                                       NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_mpm_register_poll_callback_timeout(event_register_poll_callback_ex,
+                                               NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_pre_read_request(event_pre_read_request, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_read_request(event_post_read_request, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_mpm_get_name(event_get_name, NULL, NULL, APR_HOOK_MIDDLE);

@@ -30,6 +30,7 @@ typedef struct ws_baton_t {
     proxy_conn_rec *backend;
     proxy_tunnel_rec *tunnel;
     apr_array_header_t *pfds;
+    apr_pool_t *async_pool;
     const char *scheme;
 } ws_baton_t;
 
@@ -83,38 +84,27 @@ static void proxy_wstunnel_cancel_callback(void *b)
 static void proxy_wstunnel_callback(void *b)
 { 
     ws_baton_t *baton = (ws_baton_t*)b;
-    proxyws_dir_conf *dconf = ap_get_module_config(baton->r->per_dir_config,
-                                                   &proxy_wstunnel_module);
 
-    if (baton->pfds) {
-        /* Clear MPM's temporary data */
-        apr_pool_clear(baton->pfds->pool);
-    }
+    /* Clear MPM's temporary data */
+    AP_DEBUG_ASSERT(baton->async_pool != NULL);
+    apr_pool_clear(baton->async_pool);
 
     if (proxy_wstunnel_pump(baton, 1) == SUSPENDED) {
+        proxyws_dir_conf *dconf = ap_get_module_config(baton->r->per_dir_config,
+                                                       &proxy_wstunnel_module);
+
         ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, baton->r,
                       "proxy_wstunnel_callback suspend");
 
-        if (!baton->pfds) {
-            /* Create the MPM's (baton->)pfds off of our tunnel's, and
-             * overwrite its pool with a subpool since the MPM will use
-             * that to alloc its own temporary data, which we want to
-             * clear on the next round (above) to avoid leaks.
-             */
-            baton->pfds = apr_array_copy(baton->r->pool, baton->tunnel->pfds);
-            apr_pool_create(&baton->pfds->pool, baton->r->pool);
-        }
-        else {
-            /* Update only reqevents of the MPM's pfds with our tunnel's,
-             * the rest didn't change.
-             */
-            APR_ARRAY_IDX(baton->pfds, 0, apr_pollfd_t).reqevents =
-                APR_ARRAY_IDX(baton->tunnel->pfds, 0, apr_pollfd_t).reqevents;
-            APR_ARRAY_IDX(baton->pfds, 1, apr_pollfd_t).reqevents =
-                APR_ARRAY_IDX(baton->tunnel->pfds, 1, apr_pollfd_t).reqevents;
-        }
+        /* Update only reqevents of the MPM's pfds with our tunnel's,
+         * the rest didn't change.
+         */
+        APR_ARRAY_IDX(baton->pfds, 0, apr_pollfd_t).reqevents =
+            APR_ARRAY_IDX(baton->tunnel->pfds, 0, apr_pollfd_t).reqevents;
+        APR_ARRAY_IDX(baton->pfds, 1, apr_pollfd_t).reqevents =
+            APR_ARRAY_IDX(baton->tunnel->pfds, 1, apr_pollfd_t).reqevents;
 
-        ap_mpm_register_poll_callback_timeout(baton->pfds,
+        ap_mpm_register_poll_callback_timeout(baton->async_pool, baton->pfds,
                                               proxy_wstunnel_callback, 
                                               proxy_wstunnel_cancel_callback, 
                                               baton, dconf->idle_timeout);
@@ -286,14 +276,17 @@ static int proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
         status = proxy_wstunnel_pump(baton, 1);
         if (status == SUSPENDED) {
             /* Create the MPM's (baton->)pfds off of our tunnel's, and
-             * overwrite its pool with a subpool since the MPM will use
-             * that to alloc its own temporary data, which we want to
-             * clear on the next round (above) to avoid leaks.
+             * the subpool used by the MPM to alloc its own temporary
+             * data, which we want to clear on the next round (above)
+             * to avoid leaks.
              */
             baton->pfds = apr_array_copy(baton->r->pool, baton->tunnel->pfds);
-            apr_pool_create(&baton->pfds->pool, baton->r->pool);
+            APR_ARRAY_IDX(baton->pfds, 0, apr_pollfd_t).client_data = NULL;
+            APR_ARRAY_IDX(baton->pfds, 1, apr_pollfd_t).client_data = NULL;
+            apr_pool_create(&baton->async_pool, baton->r->pool);
 
-            rv = ap_mpm_register_poll_callback_timeout(baton->pfds,
+            rv = ap_mpm_register_poll_callback_timeout(
+                         baton->async_pool, baton->pfds,
                          proxy_wstunnel_callback, 
                          proxy_wstunnel_cancel_callback, 
                          baton, 

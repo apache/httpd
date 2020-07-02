@@ -646,14 +646,17 @@
  * 20200420.9 (2.5.1-dev)  Add hooks deliver_report and gather_reports to
  *                         mod_dav.h.
  * 20200420.10 (2.5.1-dev) Add method_precondition hook to mod_dav.h.
- * 20200701.0 (2.5.1-dev)  Axe ap_mpm_unregister_poll_callback and
+ * 20200701.0 (2.5.1-dev)  Axe ap_mpm_unregister_poll_callback() and
  *                         mpm_unregister_poll_callback hook.
+ * 20200702.0 (2.5.1-dev)  Add pool arg to mpm_register_poll_callback and
+ *                         mpm_register_poll_callback_timeout hooks
+ *                         
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20200701
+#define MODULE_MAGIC_NUMBER_MAJOR 20200702
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0             /* 0...n */
 

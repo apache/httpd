@@ -210,6 +210,7 @@ AP_DECLARE(apr_status_t) ap_mpm_register_timed_callback(
 /**
  * Register a callback on the readability or writability on a group of
  * sockets/pipes.
+ * @param p Pool used by the MPM for its internal allocations
  * @param pfds Array of apr_pollfd_t
  * @param cbfn The callback function
  * @param baton userdata for the callback function
@@ -217,14 +218,19 @@ AP_DECLARE(apr_status_t) ap_mpm_register_timed_callback(
  * APR_ENOTIMPL if no asynch support, or an apr_pollset_add error.
  * @remark When activity is found on any 1 socket/pipe in the list, all are removed
  * from the pollset and only 1 callback is issued.
+ * @remark The passed in pool can be cleared by cbfn and tofn when called back,
+ *         it retains no MPM persistent data and won't be used until the next call
+ *         to ap_mpm_register_poll_callback[_timeout].
  */
 
-AP_DECLARE(apr_status_t) ap_mpm_register_poll_callback(apr_array_header_t *pfds,
+AP_DECLARE(apr_status_t) ap_mpm_register_poll_callback(
+        apr_pool_t *p, apr_array_header_t *pfds,
         ap_mpm_callback_fn_t *cbfn, void *baton);
 
 /**
  * Register a callback on the readability or writability on a group of sockets/pipes,
  * with a timeout.
+ * @param p Pool used by the MPM for its internal allocations
  * @param pfds Array of apr_pollfd_t
  * @param cbfn The callback function
  * @param tofn The callback function if the timeout expires
@@ -235,11 +241,15 @@ AP_DECLARE(apr_status_t) ap_mpm_register_poll_callback(apr_array_header_t *pfds,
  * @remark When activity is found on any 1 socket/pipe in the list, all are removed
  * from the pollset and only 1 callback is issued. 
  * @remark For each call, only one of tofn or cbfn will be called, never both.
+ * @remark The passed in pool can be cleared by cbfn and tofn when called back,
+ *         it retains no MPM persistent data and won't be used until the next call
+ *         to ap_mpm_register_poll_callback[_timeout].
  */
 
 AP_DECLARE(apr_status_t) ap_mpm_register_poll_callback_timeout(
-        apr_array_header_t *pfds, ap_mpm_callback_fn_t *cbfn,
-        ap_mpm_callback_fn_t *tofn, void *baton, apr_time_t timeout);
+        apr_pool_t *p, apr_array_header_t *pfds,
+        ap_mpm_callback_fn_t *cbfn, ap_mpm_callback_fn_t *tofn,
+        void *baton, apr_time_t timeout);
 
 
 typedef enum mpm_child_status {
