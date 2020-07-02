@@ -29,6 +29,7 @@ typedef struct ws_baton_t {
     request_rec *r;
     proxy_conn_rec *backend;
     proxy_tunnel_rec *tunnel;
+    apr_array_header_t *pfds;
     const char *scheme;
 } ws_baton_t;
 
@@ -84,15 +85,30 @@ static void proxy_wstunnel_callback(void *b)
     ws_baton_t *baton = (ws_baton_t*)b;
     proxyws_dir_conf *dconf = ap_get_module_config(baton->r->per_dir_config,
                                                    &proxy_wstunnel_module);
-    int status = proxy_wstunnel_pump(baton, 1);
-    if (status == SUSPENDED) {
-        ap_mpm_register_poll_callback_timeout(baton->tunnel->pfds,
-            proxy_wstunnel_callback, 
-            proxy_wstunnel_cancel_callback, 
-            baton, 
-            dconf->idle_timeout);
+
+    if (baton->pfds) {
+        apr_pool_clear(baton->pfds->pool);
+    }
+
+    if (proxy_wstunnel_pump(baton, 1) == SUSPENDED) {
         ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, baton->r,
                       "proxy_wstunnel_callback suspend");
+
+        if (baton->pfds) {
+            apr_pollfd_t *async_pfds = (void *)baton->pfds->elts;
+            apr_pollfd_t *tunnel_pfds = (void *)baton->tunnel->pfds->elts;
+            async_pfds[0].reqevents = tunnel_pfds[0].reqevents;
+            async_pfds[1].reqevents = tunnel_pfds[1].reqevents;
+        }
+        else {
+            baton->pfds = apr_array_copy(baton->r->pool, baton->tunnel->pfds);
+            apr_pool_create(&baton->pfds->pool, baton->r->pool);
+        }
+
+        ap_mpm_register_poll_callback_timeout(baton->pfds,
+                                              proxy_wstunnel_callback, 
+                                              proxy_wstunnel_cancel_callback, 
+                                              baton, dconf->idle_timeout);
     }
     else { 
         proxy_wstunnel_finish(baton);
