@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_proxy_http: add asynchronous handling of Upgrade(d) protocols,
+     where idle connections are returned to the MPM and rescheduled on
+     another thread when ready. [Yann Ylavic]
+
   *) mod_dav: Add method_precondition hook. WebDAV extensions define
      conditions that must exist before a WebDAV method can be executed.
      This hook allows a WebDAV extension to verify these preconditions.
