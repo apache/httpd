@@ -1665,10 +1665,6 @@ static apr_status_t event_register_poll_callback(apr_array_header_t *pfds,
                                            baton,
                                            0     /* no timeout */);
 }
-static apr_status_t event_unregister_poll_callback(apr_array_header_t *pfds)
-{
-    return apr_pool_cleanup_run(pfds->pool, pfds, event_cleanup_poll_callback);
-}
 
 /*
  * Close socket and clean up if remote closed its end while we were in
@@ -4080,8 +4076,6 @@ static void event_hooks(apr_pool_t * p)
     ap_hook_mpm_register_poll_callback(event_register_poll_callback, NULL, NULL,
                                         APR_HOOK_MIDDLE);
     ap_hook_mpm_register_poll_callback_timeout(event_register_poll_callback_ex, NULL, NULL,
-                                        APR_HOOK_MIDDLE);
-    ap_hook_mpm_unregister_poll_callback(event_unregister_poll_callback, NULL, NULL,
                                         APR_HOOK_MIDDLE);
     ap_hook_pre_read_request(event_pre_read_request, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_read_request(event_post_read_request, NULL, NULL, APR_HOOK_MIDDLE);

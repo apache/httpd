@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mpm_common: remove ap_mpm_unregister_poll_callback() and
+     mpm_unregister_poll_callback hook. [Yann Ylavic]
+
   *) mod_proxy_http: add asynchronous handling of Upgrade(d) protocols,
      where idle connections are returned to the MPM and rescheduled on
      another thread when ready. [Yann Ylavic]

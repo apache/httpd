@@ -242,16 +242,6 @@ AP_DECLARE(apr_status_t) ap_mpm_register_poll_callback_timeout(
         ap_mpm_callback_fn_t *tofn, void *baton, apr_time_t timeout);
 
 
-/**
-* Unregister a previously registered callback.
-* @param pfds Array of apr_pollfd_t
-* @return APR_SUCCESS if all sockets/pipes could be removed from the pollset,
-* APR_ENOTIMPL if no asynch support, or an apr_pollset_remove error.
-* @remark This function triggers the cleanup registered on the pool p during
-* callback registration.
-*/
-AP_DECLARE(apr_status_t) ap_mpm_unregister_poll_callback(apr_array_header_t *pfds);
-
 typedef enum mpm_child_status {
     MPM_CHILD_STARTED,
     MPM_CHILD_EXITED,
