@@ -73,7 +73,21 @@ if ! test -v SKIP_TESTING; then
             RV=$?
         popd
     fi
-    if test -v LITMUS; then
+
+    if test -v TEST_SSL -a $RV -eq 0; then
+        pushd test/perl-framework
+            # A test suite run with SSLSessionCache defined (see t/conf/ssl.conf.in)
+            ./t/TEST -defines TEST_SSL_SESSCACHE t/ssl
+            RV=$?
+            if test $RV -eq 0; then
+                # A test suite run with "SSLProtocol TLSv1.2" (see t/conf/ssl.conf.in)
+                ./t/TEST -sslproto TLSv1.2 t/ssl
+                RV=$?
+            fi
+        popd
+    fi
+
+    if test -v LITMUS -a $RV -eq 0; then
         pushd test/perl-framework
            mkdir -p t/htdocs/modules/dav
            ./t/TEST -start
