@@ -308,6 +308,7 @@ static void proxy_http_async_cb(void *baton)
     int status;
 
     if (req->pfds) {
+        /* Clear MPM's temporary data */
         apr_pool_clear(req->pfds->pool);
     }
 
@@ -316,15 +317,23 @@ static void proxy_http_async_cb(void *baton)
         /* Pump both ends until they'd block and then start over again */
         status = ap_proxy_tunnel_run(req->tunnel);
         if (status == HTTP_GATEWAY_TIME_OUT) {
-            if (req->pfds) {
-                apr_pollfd_t *async_pfds = (void *)req->pfds->elts;
-                apr_pollfd_t *tunnel_pfds = (void *)req->tunnel->pfds->elts;
-                async_pfds[0].reqevents = tunnel_pfds[0].reqevents;
-                async_pfds[1].reqevents = tunnel_pfds[1].reqevents;
-            }
-            else {
+            if (!req->pfds) {
+                /* Create the MPM's (req->)pfds off of our tunnel's, and
+                 * overwrite its pool with a subpool since the MPM will use
+                 * that to alloc its own temporary data, which we want to
+                 * clear on the next round (above) to avoid leaks.
+                 */
                 req->pfds = apr_array_copy(req->p, req->tunnel->pfds);
                 apr_pool_create(&req->pfds->pool, req->p);
+            }
+            else {
+                /* Update only reqevents of the MPM's pfds with our tunnel's,
+                 * the rest didn't change.
+                 */
+                APR_ARRAY_IDX(req->pfds, 0, apr_pollfd_t).reqevents =
+                    APR_ARRAY_IDX(req->tunnel->pfds, 0, apr_pollfd_t).reqevents;
+                APR_ARRAY_IDX(req->pfds, 1, apr_pollfd_t).reqevents =
+                    APR_ARRAY_IDX(req->tunnel->pfds, 1, apr_pollfd_t).reqevents;
             }
             status = SUSPENDED;
         }
