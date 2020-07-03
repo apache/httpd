@@ -147,7 +147,7 @@ static char *make_digest_etag(request_rec *r, etag_rec *er, char *vlv,
 
         if ((status = apr_mmap_create(&mm, er->fd, 0, er->finfo->size,
                             APR_MMAP_READ, r->pool) != APR_SUCCESS)) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(10253)
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(10256)
                           "Make etag: could not mmap");
             return "";
         }
