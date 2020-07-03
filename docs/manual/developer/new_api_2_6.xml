@@ -71,8 +71,9 @@
     <title>If your module uses these existing APIs...</title>
 
     <dl>
-      <dt><code>ap_fillmein()</code></dt>
-      <dd>This is no longer available;</dd>
+      <dt><code>ap_md5digest()</code> / <code>ap_md5contextTo64</code></dt>
+      <dd>These functions are no longer available. Use the equivalent functions
+          from APR if needed.</dd>
 
     </dl>
   </section>

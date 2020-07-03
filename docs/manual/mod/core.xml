@@ -669,48 +669,6 @@ variables</description>
 </directivesynopsis>
 
 <directivesynopsis>
-<name>ContentDigest</name>
-<description>Enables the generation of <code>Content-MD5</code> HTTP Response
-headers</description>
-<syntax>ContentDigest On|Off</syntax>
-<default>ContentDigest Off</default>
-<contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context><context>.htaccess</context>
-</contextlist>
-<override>Options</override>
-<status>Experimental</status>
-
-<usage>
-    <p>This directive enables the generation of
-    <code>Content-MD5</code> headers as defined in RFC1864
-    respectively RFC2616.</p>
-
-    <p>MD5 is an algorithm for computing a "message digest"
-    (sometimes called "fingerprint") of arbitrary-length data, with
-    a high degree of confidence that any alterations in the data
-    will be reflected in alterations in the message digest.</p>
-
-    <p>The <code>Content-MD5</code> header provides an end-to-end
-    message integrity check (MIC) of the entity-body. A proxy or
-    client may check this header for detecting accidental
-    modification of the entity-body in transit. Example header:</p>
-
-    <example>
-      Content-MD5: AuLb7Dp1rqtRtxz2m9kRpA==
-    </example>
-
-    <p>Note that this can cause performance problems on your server
-    since the message digest is computed on every request (the
-    values are not cached).</p>
-
-    <p><code>Content-MD5</code> is only sent for documents served
-    by the <module>core</module>, and not by any module. For example,
-    SSI documents, output from CGI scripts, and byte range responses
-    do not have this header.</p>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
 <name>DefaultRuntimeDir</name>
 <description>Base directory for the server run-time files</description>
 <syntax>DefaultRuntimeDir <var>directory-path</var></syntax>

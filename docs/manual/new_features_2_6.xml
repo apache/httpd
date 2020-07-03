@@ -34,8 +34,13 @@
   <section id="core">
     <title>Core Enhancements</title>
     <dl>
-      <dt>Fill me in</dt>
-      <dd></dd>
+      <dt>ContentDigest directive and Content-MD5 header</dt>
+      <dd>The <code>ContentDigest</code> directive and support for the the
+          <code>Content-MD5</code> header has been removed from the server,
+          corresponding with the removal of this header from
+          <a href="https://tools.ietf.org/html/rfc7231#appendix-B">
+          RFC7231 Hypertext Transfer Protocol (HTTP/1.1): Semantics and
+          Content.</a></dd>
 
     </dl>
   </section>

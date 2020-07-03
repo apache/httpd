@@ -651,6 +651,8 @@
  * 20200702.1 (2.5.1-dev)  Add pool arg to mpm_register_poll_callback and
  *                         mpm_register_poll_callback_timeout hooks
  * 20200702.2 (2.5.1-dev)  Add dav_get_resource().
+ * 20200703.0 (2.5.1-dev)  Remove ap_md5digest(), ap_md5contextTo64(),
+ *                         ContentDigest directive.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */

@@ -41,7 +41,6 @@
 #include "http_vhost.h"
 #include "http_main.h"     /* For the default_handler below... */
 #include "http_log.h"
-#include "util_md5.h"
 #include "http_connection.h"
 #include "apr_buckets.h"
 #include "util_filter.h"
@@ -83,10 +82,6 @@
 
 /* valid in core-conf, but not in runtime r->used_path_info */
 #define AP_ACCEPT_PATHINFO_UNSET 3
-
-#define AP_CONTENT_MD5_OFF   0
-#define AP_CONTENT_MD5_ON    1
-#define AP_CONTENT_MD5_UNSET 2
 
 #define AP_FLUSH_MAX_THRESHOLD 65536
 #define AP_FLUSH_MAX_PIPELINED 5
@@ -159,7 +154,6 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
     conf->override = OR_UNSET|OR_NONE;
     conf->override_opts = OPT_UNSET | OPT_ALL | OPT_SYM_OWNER | OPT_MULTI;
 
-    conf->content_md5 = AP_CONTENT_MD5_UNSET;
     conf->accept_path_info = AP_ACCEPT_PATHINFO_UNSET;
 
     conf->use_canonical_name = USE_CANONICAL_NAME_UNSET;
@@ -284,10 +278,6 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
 
     if (new->hostname_lookups != HOSTNAME_LOOKUP_UNSET) {
         conf->hostname_lookups = new->hostname_lookups;
-    }
-
-    if (new->content_md5 != AP_CONTENT_MD5_UNSET) {
-        conf->content_md5 = new->content_md5;
     }
 
     if (new->accept_path_info != AP_ACCEPT_PATHINFO_UNSET) {
@@ -3394,14 +3384,6 @@ static const char *set_serverpath(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
-static const char *set_content_md5(cmd_parms *cmd, void *d_, int arg)
-{
-    core_dir_config *d = d_;
-
-    d->content_md5 = arg ? AP_CONTENT_MD5_ON : AP_CONTENT_MD5_OFF;
-    return NULL;
-}
-
 static const char *set_accept_path_info(cmd_parms *cmd, void *d_, const char *arg)
 {
     core_dir_config *d = d_;
@@ -4784,8 +4766,6 @@ AP_INIT_TAKE1("ServerPath", set_serverpath, NULL, RSRC_CONF,
   "The pathname the server can be reached at"),
 AP_INIT_TAKE1("Timeout", set_timeout, NULL, RSRC_CONF,
   "Timeout duration (sec)"),
-AP_INIT_FLAG("ContentDigest", set_content_md5, NULL, OR_OPTIONS,
-  "whether or not to send a Content-MD5 header with each request"),
 AP_INIT_TAKE1("UseCanonicalName", set_use_canonical_name, NULL,
   RSRC_CONF|ACCESS_CONF,
   "How to work out the ServerName : Port when constructing URLs"),
@@ -5099,18 +5079,8 @@ static int default_handler(request_rec *r)
     int errstatus;
     apr_file_t *fd = NULL;
     apr_status_t status;
-    /* XXX if/when somebody writes a content-md5 filter we either need to
-     *     remove this support or coordinate when to use the filter vs.
-     *     when to use this code
-     *     The current choice of when to compute the md5 here matches the 1.3
-     *     support fairly closely (unlike 1.3, we don't handle computing md5
-     *     when the charset is translated).
-     */
-    int bld_content_md5;
 
     d = (core_dir_config *)ap_get_core_module_config(r->per_dir_config);
-    bld_content_md5 = (d->content_md5 == AP_CONTENT_MD5_ON)
-                      && r->output_filters->frec->ftype != AP_FTYPE_RESOURCE;
 
     ap_allow_standard_methods(r, MERGE_ALLOW, M_GET, M_OPTIONS, M_POST, -1);
 
@@ -5187,10 +5157,6 @@ static int default_handler(request_rec *r)
         ap_set_etag_fd(r, fd);
         ap_set_accept_ranges(r);
         ap_set_content_length(r, r->finfo.size);
-        if (bld_content_md5) {
-            apr_table_setn(r->headers_out, "Content-MD5",
-                           ap_md5digest(r->pool, fd));
-        }
 
         bb = apr_brigade_create(r->pool, c->bucket_alloc);
 
