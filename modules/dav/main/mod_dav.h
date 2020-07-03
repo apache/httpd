@@ -433,6 +433,9 @@ typedef struct dav_resource {
 */
 typedef struct dav_locktoken dav_locktoken;
 
+DAV_DECLARE(dav_error *) dav_get_resource(request_rec *r, int label_allowed,
+                                          int use_checked_in, dav_resource **res_p);
+
 
 /* --------------------------------------------------------------------
 **

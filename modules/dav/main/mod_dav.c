@@ -732,7 +732,7 @@ static int dav_get_overwrite(request_rec *r)
  * the resource identified by the DAV:checked-in property of the resource
  * identified by the Request-URI.
  */
-static dav_error *dav_get_resource(request_rec *r, int label_allowed,
+DAV_DECLARE(dav_error *) dav_get_resource(request_rec *r, int label_allowed,
                                    int use_checked_in, dav_resource **res_p)
 {
     dav_dir_conf *conf;

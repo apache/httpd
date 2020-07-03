@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_dav: Allow other DAV modules to use dav_get_resource().
+     [Graham Leggett]
+
   *) mpm_common: remove ap_mpm_unregister_poll_callback() and
      mpm_unregister_poll_callback hook. [Yann Ylavic]
 
