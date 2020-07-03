@@ -308,10 +308,10 @@ static const char *set_worker_param(apr_pool_t *p,
         worker->s->conn_timeout_set = 1;
     }
     else if (!strcasecmp(key, "flusher")) {
-        if (strlen(val) >= sizeof(worker->s->flusher))
-            apr_psprintf(p, "flusher name length must be < %d characters",
-                    (int)sizeof(worker->s->flusher));
-        PROXY_STRNCPY(worker->s->flusher, val);
+        if (PROXY_STRNCPY(worker->s->flusher, val) != APR_SUCCESS) {
+            return apr_psprintf(p, "flusher name length must be < %d characters",
+                                (int)sizeof(worker->s->flusher));
+        }
     }
     else if (!strcasecmp(key, "upgrade")) {
         if (PROXY_STRNCPY(worker->s->upgrade, val) != APR_SUCCESS) {

@@ -4514,8 +4514,8 @@ AP_INIT_FLAG("CGIPassAuth", set_cgi_pass_auth, NULL, OR_AUTHCFG,
 AP_INIT_TAKE2("CGIVar", set_cgi_var, NULL, OR_FILEINFO,
               "Controls how some CGI variables are set"),
 AP_INIT_FLAG("QualifyRedirectURL", set_qualify_redirect_url, NULL, OR_FILEINFO,
-             "Controls whether HTTP authorization headers, normally hidden, will "
-             "be passed to scripts"),
+             "Controls whether the REDIRECT_URL environment variable is fully "
+             "qualified"),
 
 AP_INIT_TAKE1("ForceType", ap_set_string_slot_lower,
        (void *)APR_OFFSETOF(core_dir_config, mime_type), OR_FILEINFO,

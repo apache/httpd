@@ -293,7 +293,7 @@ static apr_status_t encrypt_string(request_rec * r, const apr_crypto_t *f,
             *cipher, APR_MODE_CBC, 1, 4096, f, r->pool);
     if (APR_STATUS_IS_ENOKEY(res)) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, APLOGNO(01825)
-                "the passphrase '%s' was empty", passphrase);
+                "failure generating key from passphrase");
     }
     if (APR_STATUS_IS_EPADDING(res)) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, APLOGNO(01826)
@@ -415,7 +415,7 @@ static apr_status_t decrypt_string(request_rec * r, const apr_crypto_t *f,
                                     f, r->pool);
         if (APR_STATUS_IS_ENOKEY(res)) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, res, r, APLOGNO(01832)
-                    "the passphrase '%s' was empty", passphrase);
+                    "failure generating key from passphrase");
             continue;
         }
         else if (APR_STATUS_IS_EPADDING(res)) {

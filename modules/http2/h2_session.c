@@ -1285,7 +1285,7 @@ apr_status_t h2_session_set_prio(h2_session *session, h2_stream *stream,
 
         rv = nghttp2_session_change_stream_priority(session->ngh2, stream->id, &ps);
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, 
-                      ""H2_STRM_LOG(APLOGNO(03203), stream, 
+                      H2_STRM_LOG(APLOGNO(03203), stream, 
                       "PUSH %s, weight=%d, depends=%d, returned=%d"),
                       ptype, ps.weight, ps.stream_id, rv);
         status = (rv < 0)? APR_EGENERAL : APR_SUCCESS;
