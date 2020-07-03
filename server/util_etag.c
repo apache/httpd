@@ -164,7 +164,7 @@ AP_DECLARE(char *) ap_make_etag_ex(request_rec *r, etag_rec *er)
         else if (er->pathname) {
             if ((status = apr_file_open(&fd, er->pathname, APR_READ | APR_BINARY,
                     0, r->pool)) != APR_SUCCESS) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO()
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(10251)
                               "Make etag: could not open %s", er->pathname);
                 return "";
             }
@@ -177,7 +177,7 @@ AP_DECLARE(char *) ap_make_etag_ex(request_rec *r, etag_rec *er)
                 SHA1_DIGEST_BASE64_LEN + vlv_len + 4);
 
         if ((status = apr_file_seek(fd, APR_CUR, &offset)) != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO()
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(10252)
                           "Make etag: could not seek");
             if (er->pathname) {
                 apr_file_close(fd);
@@ -186,7 +186,7 @@ AP_DECLARE(char *) ap_make_etag_ex(request_rec *r, etag_rec *er)
         }
 
         if ((status = apr_file_seek(fd, APR_SET, &zero)) != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO()
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(10253)
                           "Make etag: could not seek");
             if (er->pathname) {
                 apr_file_close(fd);
@@ -201,7 +201,7 @@ AP_DECLARE(char *) ap_make_etag_ex(request_rec *r, etag_rec *er)
             nbytes = sizeof(buf);
         }
         if (status != APR_EOF) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO()
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(10254)
                           "Make etag: could not read");
             if (er->pathname) {
                 apr_file_close(fd);
@@ -210,7 +210,7 @@ AP_DECLARE(char *) ap_make_etag_ex(request_rec *r, etag_rec *er)
         }
 
         if ((status = apr_file_seek(fd, APR_SET, &offset)) != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO()
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(10255)
                           "Make etag: could not seek");
             if (er->pathname) {
                 apr_file_close(fd);
