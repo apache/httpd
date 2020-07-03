@@ -30,6 +30,10 @@
 #include "http_protocol.h"   /* For index_of_response().  Grump. */
 #include "http_request.h"
 
+#if APR_HAS_MMAP
+#include "apr_mmap.h"
+#endif /* APR_HAS_MMAP */
+
 #define SHA1_DIGEST_BASE64_LEN 4*(APR_SHA1_DIGESTSIZE/3)
 
 /* Generate the human-readable hex representation of an apr_uint64_t
@@ -84,6 +88,113 @@ static void etag_end(char *next, const char *vlv, apr_size_t vlv_len)
 }
 
 /*
+ * Construct a strong ETag by creating a SHA1 hash across the file content.
+ */
+static char *make_digest_etag(request_rec *r, etag_rec *er, char *vlv,
+		apr_size_t vlv_len, char *weak, apr_size_t weak_len)
+{
+    apr_sha1_ctx_t context;
+    unsigned char buf[4096]; /* keep this a multiple of 64 */
+    unsigned char digest[APR_SHA1_DIGESTSIZE];
+    apr_file_t *fd = NULL;
+    core_dir_config *cfg;
+    char *etag, *next;
+
+    apr_size_t nbytes;
+    apr_off_t offset = 0, zero = 0;
+    apr_status_t status;
+
+    cfg = (core_dir_config *)ap_get_core_module_config(r->per_dir_config);
+
+    if (er->fd) {
+        fd = er->fd;
+    }
+    else if (er->pathname) {
+        if ((status = apr_file_open(&fd, er->pathname, APR_READ | APR_BINARY,
+                0, r->pool)) != APR_SUCCESS) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(10251)
+                          "Make etag: could not open %s", er->pathname);
+            return "";
+        }
+    }
+    if (!fd) {
+        return "";
+    }
+
+    if ((status = apr_file_seek(fd, APR_CUR, &offset)) != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(10252)
+                      "Make etag: could not seek");
+        if (er->pathname) {
+            apr_file_close(fd);
+        }
+        return "";
+    }
+
+    if ((status = apr_file_seek(fd, APR_SET, &zero)) != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(10253)
+                      "Make etag: could not seek");
+        if (er->pathname) {
+            apr_file_close(fd);
+        }
+        return "";
+    }
+
+#if APR_HAS_MMAP
+    if (cfg->enable_mmap != ENABLE_MMAP_OFF && er->fd &&
+            er->finfo->size >= APR_MMAP_THRESHOLD &&
+            er->finfo->size < APR_MMAP_LIMIT) {
+        apr_mmap_t *mm;
+
+        if ((status = apr_mmap_create(&mm, er->fd, 0, er->finfo->size,
+                            APR_MMAP_READ, r->pool) != APR_SUCCESS)) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(10253)
+                          "Make etag: could not mmap");
+            return "";
+        }
+
+    }
+#endif
+
+    apr_sha1_init(&context);
+    nbytes = sizeof(buf);
+    while ((status = apr_file_read(fd, buf, &nbytes)) == APR_SUCCESS) {
+        apr_sha1_update_binary(&context, buf, nbytes);
+        nbytes = sizeof(buf);
+    }
+    if (status != APR_EOF) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(10254)
+                      "Make etag: could not read");
+        if (er->pathname) {
+            apr_file_close(fd);
+        }
+        return "";
+    }
+
+    if ((status = apr_file_seek(fd, APR_SET, &offset)) != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(10255)
+                      "Make etag: could not seek");
+        if (er->pathname) {
+            apr_file_close(fd);
+        }
+        return "";
+    }
+    apr_sha1_final(digest, &context);
+
+    etag = apr_palloc(r->pool, weak_len + sizeof("\"\"") +
+            SHA1_DIGEST_BASE64_LEN + vlv_len + 4);
+
+    etag_start(etag, weak, &next);
+    next += apr_base64_encode_binary(next, digest, APR_SHA1_DIGESTSIZE) - 1;
+    etag_end(next, vlv, vlv_len);
+
+    if (er->pathname) {
+        apr_file_close(fd);
+    }
+
+    return etag;
+}
+
+/*
  * Construct an entity tag (ETag) from resource information.  If it's a real
  * file, build in some of the file characteristics.  If the modification time
  * is newer than (request-time minus 1 second), mark the ETag as weak - it
@@ -93,8 +204,7 @@ AP_DECLARE(char *) ap_make_etag_ex(request_rec *r, etag_rec *er)
 {
     char *weak = NULL;
     apr_size_t weak_len = 0, vlv_len = 0;
-    char *etag, *vlv;
-    char *next;
+    char *etag, *next, *vlv;
     core_dir_config *cfg;
     etag_components_t etag_bits;
     etag_components_t bits_added;
@@ -149,85 +259,7 @@ AP_DECLARE(char *) ap_make_etag_ex(request_rec *r, etag_rec *er)
     if (er->finfo->filetype == APR_REG &&
             (AP_REQUEST_IS_STRONG_ETAG(r) || (etag_bits & ETAG_DIGEST))) {
 
-        apr_sha1_ctx_t context;
-        unsigned char buf[4096]; /* keep this a multiple of 64 */
-        unsigned char digest[APR_SHA1_DIGESTSIZE];
-        apr_file_t *fd = NULL;
-
-        apr_size_t nbytes;
-        apr_off_t offset = 0, zero = 0;
-        apr_status_t status;
-
-        if (er->fd) {
-            fd = er->fd;
-        }
-        else if (er->pathname) {
-            if ((status = apr_file_open(&fd, er->pathname, APR_READ | APR_BINARY,
-                    0, r->pool)) != APR_SUCCESS) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(10251)
-                              "Make etag: could not open %s", er->pathname);
-                return "";
-            }
-        }
-        if (!fd) {
-            return "";
-        }
-
-        etag = apr_palloc(r->pool, weak_len + sizeof("\"\"") +
-                SHA1_DIGEST_BASE64_LEN + vlv_len + 4);
-
-        if ((status = apr_file_seek(fd, APR_CUR, &offset)) != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(10252)
-                          "Make etag: could not seek");
-            if (er->pathname) {
-                apr_file_close(fd);
-            }
-            return "";
-        }
-
-        if ((status = apr_file_seek(fd, APR_SET, &zero)) != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(10253)
-                          "Make etag: could not seek");
-            if (er->pathname) {
-                apr_file_close(fd);
-            }
-            return "";
-        }
-
-        apr_sha1_init(&context);
-        nbytes = sizeof(buf);
-        while ((status = apr_file_read(fd, buf, &nbytes)) == APR_SUCCESS) {
-            apr_sha1_update_binary(&context, buf, nbytes);
-            nbytes = sizeof(buf);
-        }
-        if (status != APR_EOF) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(10254)
-                          "Make etag: could not read");
-            if (er->pathname) {
-                apr_file_close(fd);
-            }
-            return "";
-        }
-
-        if ((status = apr_file_seek(fd, APR_SET, &offset)) != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(10255)
-                          "Make etag: could not seek");
-            if (er->pathname) {
-                apr_file_close(fd);
-            }
-            return "";
-        }
-        apr_sha1_final(digest, &context);
-
-        etag_start(etag, weak, &next);
-        next += apr_base64_encode_binary(next, digest, APR_SHA1_DIGESTSIZE) - 1;
-        etag_end(next, vlv, vlv_len);
-
-        if (er->pathname) {
-            apr_file_close(fd);
-        }
-
-        return etag;
+        return make_digest_etag(r, er, vlv, vlv_len, weak, weak_len);
     }
 
     /*
