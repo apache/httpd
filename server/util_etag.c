@@ -155,7 +155,7 @@ AP_DECLARE(char *) ap_make_etag_ex(request_rec *r, etag_rec *er)
         apr_file_t *fd = NULL;
 
         apr_size_t nbytes;
-        apr_off_t offset = 0;
+        apr_off_t offset = 0, zero = 0;
         apr_status_t status;
 
         if (er->fd) {
@@ -177,6 +177,15 @@ AP_DECLARE(char *) ap_make_etag_ex(request_rec *r, etag_rec *er)
                 SHA1_DIGEST_BASE64_LEN + vlv_len + 4);
 
         if ((status = apr_file_seek(fd, APR_CUR, &offset)) != APR_SUCCESS) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO()
+                          "Make etag: could not seek");
+            if (er->pathname) {
+                apr_file_close(fd);
+            }
+            return "";
+        }
+
+        if ((status = apr_file_seek(fd, APR_SET, &zero)) != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO()
                           "Make etag: could not seek");
             if (er->pathname) {
