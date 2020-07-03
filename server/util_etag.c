@@ -26,6 +26,7 @@
 #include "http_config.h"
 #include "http_connection.h"
 #include "http_core.h"
+#include "http_log.h"
 #include "http_protocol.h"   /* For index_of_response().  Grump. */
 #include "http_request.h"
 
@@ -154,14 +155,17 @@ AP_DECLARE(char *) ap_make_etag_ex(request_rec *r, etag_rec *er)
         apr_file_t *fd = NULL;
 
         apr_size_t nbytes;
-        apr_off_t offset;
+        apr_off_t offset = 0;
+        apr_status_t status;
 
         if (er->fd) {
             fd = er->fd;
         }
         else if (er->pathname) {
-            if (apr_file_open(&fd, er->pathname, APR_READ | APR_BINARY,
-                    0, r->pool) != APR_SUCCESS) {
+            if ((status = apr_file_open(&fd, er->pathname, APR_READ | APR_BINARY,
+                    0, r->pool)) != APR_SUCCESS) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO()
+                              "Make etag: could not open %s", er->pathname);
                 return "";
             }
         }
@@ -170,24 +174,49 @@ AP_DECLARE(char *) ap_make_etag_ex(request_rec *r, etag_rec *er)
         }
 
         etag = apr_palloc(r->pool, weak_len + sizeof("\"\"") +
-        		SHA1_DIGEST_BASE64_LEN + vlv_len + 4);
+                SHA1_DIGEST_BASE64_LEN + vlv_len + 4);
 
-        if (apr_file_seek(fd, APR_CUR, &offset) != APR_SUCCESS) {
+        if ((status = apr_file_seek(fd, APR_CUR, &offset)) != APR_SUCCESS) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO()
+                          "Make etag: could not seek");
+            if (er->pathname) {
+                apr_file_close(fd);
+            }
             return "";
         }
 
         apr_sha1_init(&context);
         nbytes = sizeof(buf);
-        while (apr_file_read(fd, buf, &nbytes) == APR_SUCCESS) {
+        while ((status = apr_file_read(fd, buf, &nbytes)) == APR_SUCCESS) {
             apr_sha1_update_binary(&context, buf, nbytes);
             nbytes = sizeof(buf);
         }
-        apr_file_seek(fd, APR_SET, &offset);
+        if (status != APR_EOF) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO()
+                          "Make etag: could not read");
+            if (er->pathname) {
+                apr_file_close(fd);
+            }
+            return "";
+        }
+
+        if ((status = apr_file_seek(fd, APR_SET, &offset)) != APR_SUCCESS) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO()
+                          "Make etag: could not seek");
+            if (er->pathname) {
+                apr_file_close(fd);
+            }
+            return "";
+        }
         apr_sha1_final(digest, &context);
 
         etag_start(etag, weak, &next);
         next += apr_base64_encode_binary(next, digest, APR_SHA1_DIGESTSIZE) - 1;
         etag_end(next, vlv, vlv_len);
+
+        if (er->pathname) {
+            apr_file_close(fd);
+        }
 
         return etag;
     }
