@@ -124,18 +124,19 @@ erreurs</td></tr>
     suivants sont supportés :</p>
 
     <table class="bordered"><tr class="header"><th>Nom</th></tr>
-<tr><td><code>translate_name</code></td></tr>
-<tr class="odd"><td><code>type_checker</code></td></tr>
-<tr><td><code>quick_handler</code></td></tr>
-<tr class="odd"><td><code>map_to_storage</code></td></tr>
-<tr><td><code>check_access</code></td></tr>
-<tr class="odd"><td><code>check_access_ex</code></td></tr>
-<tr><td><code>insert_filter</code></td></tr>
-<tr class="odd"><td><code>check_authn</code></td></tr>
-<tr><td><code>check_authz</code></td></tr>
-<tr class="odd"><td><code>fixups</code></td></tr>
-<tr><td><code>handler</code></td></tr>
-<tr class="odd"><td><code>log_transaction</code></td></tr>
+<tr><td><code>pre_translate_name</code></td></tr>
+<tr class="odd"><td><code>translate_name</code></td></tr>
+<tr><td><code>type_checker</code></td></tr>
+<tr class="odd"><td><code>quick_handler</code></td></tr>
+<tr><td><code>map_to_storage</code></td></tr>
+<tr class="odd"><td><code>check_access</code></td></tr>
+<tr><td><code>check_access_ex</code></td></tr>
+<tr class="odd"><td><code>insert_filter</code></td></tr>
+<tr><td><code>check_authn</code></td></tr>
+<tr class="odd"><td><code>check_authz</code></td></tr>
+<tr><td><code>fixups</code></td></tr>
+<tr class="odd"><td><code>handler</code></td></tr>
+<tr><td><code>log_transaction</code></td></tr>
 </table>
 
     <p>Le branchement par défaut est <code>log_transaction</code>. La

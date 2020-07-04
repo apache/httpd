@@ -173,74 +173,77 @@ traitement d'une requête</td></tr>
 <tr><td><a href="mod_lua.html#luahookmaptostorage">LuaHookMapToStorage</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
 <tr><td colspan="2" class="descr">Fournit un point d'entrée pour la phase map_to_storage du
 traitement de la requête</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luahooktranslatename">LuaHookTranslateName</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Fournit un point d'entrée à la phase du nom de
+<tr class="odd"><td><a href="mod_lua.html#luahookpretranslate">LuaHookPreTranslate</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Fournit un point d'entrée pour la phase de pré-traduction du
+traitement d'une requête</td></tr>
+<tr><td><a href="mod_lua.html#luahooktranslatename">LuaHookTranslateName</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr><td colspan="2" class="descr">Fournit un point d'entrée à la phase du nom de
 traduction du traitement de la requête</td></tr>
-<tr><td><a href="mod_lua.html#luahooktypechecker">LuaHookTypeChecker</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr><td colspan="2" class="descr">Fournit un point d'entrée pour la phase type_checker du
+<tr class="odd"><td><a href="mod_lua.html#luahooktypechecker">LuaHookTypeChecker</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Fournit un point d'entrée pour la phase type_checker du
 traitement de la requête</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luainherit">LuaInherit</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Contrôle la manière dont les sections de configuration
+<tr><td><a href="mod_lua.html#luainherit">LuaInherit</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr><td colspan="2" class="descr">Contrôle la manière dont les sections de configuration
 parentes sont fusionnées dans les enfants</td></tr>
-<tr><td><a href="mod_lua.html#luainputfilter">LuaInputFilter</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr><td colspan="2" class="descr">Fournit une fonction Lua pour le filtrage en entrée</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luamaphandler">LuaMapHandler</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Met en correspondance un chemin avec un gestionnaire lua</td></tr>
-<tr><td><a href="mod_lua.html#luaoutputfilter">LuaOutputFilter</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr><td colspan="2" class="descr">Fournit une fonction Lua pour le filtrage de contenu en
+<tr class="odd"><td><a href="mod_lua.html#luainputfilter">LuaInputFilter</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Fournit une fonction Lua pour le filtrage en entrée</td></tr>
+<tr><td><a href="mod_lua.html#luamaphandler">LuaMapHandler</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr><td colspan="2" class="descr">Met en correspondance un chemin avec un gestionnaire lua</td></tr>
+<tr class="odd"><td><a href="mod_lua.html#luaoutputfilter">LuaOutputFilter</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Fournit une fonction Lua pour le filtrage de contenu en
 sortie</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luapackagecpath">LuaPackageCPath</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Ajoute un répertoire au package.cpath de lua</td></tr>
-<tr><td><a href="mod_lua.html#luapackagepath">LuaPackagePath</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr><td colspan="2" class="descr">Ajoute un répertoire au package.path de lua</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luaquickhandler">LuaQuickHandler</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Fournit un point d'entrée pour la gestion rapide du
+<tr><td><a href="mod_lua.html#luapackagecpath">LuaPackageCPath</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr><td colspan="2" class="descr">Ajoute un répertoire au package.cpath de lua</td></tr>
+<tr class="odd"><td><a href="mod_lua.html#luapackagepath">LuaPackagePath</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Ajoute un répertoire au package.path de lua</td></tr>
+<tr><td><a href="mod_lua.html#luaquickhandler">LuaQuickHandler</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr><td colspan="2" class="descr">Fournit un point d'entrée pour la gestion rapide du
 traitement de la requête</td></tr>
-<tr><td><a href="mod_lua.html#luaroot">LuaRoot</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr><td colspan="2" class="descr">Spécifie le chemin de base pour la résolution des chemins
+<tr class="odd"><td><a href="mod_lua.html#luaroot">LuaRoot</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Spécifie le chemin de base pour la résolution des chemins
 relatifs dans les directives de mod_lua</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luascope">LuaScope</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Une valeur parmi once, request, conn, thread -- la valeur par défaut est once</td></tr>
-<tr><td><a href="mod_macro.html#macro">&lt;Macro&gt;</a></td><td class="module"><a href="mod_macro.html">mod_macro</a></td></tr>
-<tr><td colspan="2" class="descr">Définition d'une macro dans un fichier de configuration</td></tr>
-<tr class="odd"><td><a href="mod_macro.html#macroignorebadnesting">MacroIgnoreBadNesting</a></td><td class="module"><a href="mod_macro.html">mod_macro</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Ignore les avertissements et n'inscrit rien dans le journal à
-propos d'une imbrication de Macros non conforme</td></tr>
-<tr><td><a href="mod_macro.html#macroignoreemptyargs">MacroIgnoreEmptyArgs</a></td><td class="module"><a href="mod_macro.html">mod_macro</a></td></tr>
+<tr><td><a href="mod_lua.html#luascope">LuaScope</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr><td colspan="2" class="descr">Une valeur parmi once, request, conn, thread -- la valeur par défaut est once</td></tr>
+<tr class="odd"><td><a href="mod_macro.html#macro">&lt;Macro&gt;</a></td><td class="module"><a href="mod_macro.html">mod_macro</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Définition d'une macro dans un fichier de configuration</td></tr>
+<tr><td><a href="mod_macro.html#macroignorebadnesting">MacroIgnoreBadNesting</a></td><td class="module"><a href="mod_macro.html">mod_macro</a></td></tr>
 <tr><td colspan="2" class="descr">Ignore les avertissements et n'inscrit rien dans le journal à
+propos d'une imbrication de Macros non conforme</td></tr>
+<tr class="odd"><td><a href="mod_macro.html#macroignoreemptyargs">MacroIgnoreEmptyArgs</a></td><td class="module"><a href="mod_macro.html">mod_macro</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Ignore les avertissements et n'inscrit rien dans le journal à
 propos des arguments de Macro vides</td></tr>
-<tr class="odd"><td><a href="core.html#rlimitcpu">RLimitCPU</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Limite le temps CPU alloué aux processus initiés par les
+<tr><td><a href="core.html#rlimitcpu">RLimitCPU</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr><td colspan="2" class="descr">Limite le temps CPU alloué aux processus initiés par les
 processus enfants d'Apache httpd</td></tr>
-<tr><td><a href="core.html#rlimitmem">RLimitMEM</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr><td colspan="2" class="descr">Limite la mémoire allouée aux processus initiés par les
+<tr class="odd"><td><a href="core.html#rlimitmem">RLimitMEM</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Limite la mémoire allouée aux processus initiés par les
 processus enfants d'Apache httpd</td></tr>
-<tr class="odd"><td><a href="core.html#rlimitnproc">RLimitNPROC</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Limite le nombre de processus qui peuvent être initiés par
+<tr><td><a href="core.html#rlimitnproc">RLimitNPROC</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr><td colspan="2" class="descr">Limite le nombre de processus qui peuvent être initiés par
 les processus initiés par les processus enfants d'Apache httpd</td></tr>
-<tr><td><a href="core.html#serversignature">ServerSignature</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr><td colspan="2" class="descr">Définit un pied de page pour les documents générés par le
+<tr class="odd"><td><a href="core.html#serversignature">ServerSignature</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Définit un pied de page pour les documents générés par le
 serveur</td></tr>
-<tr class="odd"><td><a href="mod_include.html#ssierrormsg">SSIErrorMsg</a></td><td class="module"><a href="mod_include.html">mod_include</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Message d'erreur affiché lorsqu'une erreur SSI
+<tr><td><a href="mod_include.html#ssierrormsg">SSIErrorMsg</a></td><td class="module"><a href="mod_include.html">mod_include</a></td></tr>
+<tr><td colspan="2" class="descr">Message d'erreur affiché lorsqu'une erreur SSI
 survient</td></tr>
-<tr><td><a href="mod_include.html#ssitimeformat">SSITimeFormat</a></td><td class="module"><a href="mod_include.html">mod_include</a></td></tr>
-<tr><td colspan="2" class="descr">Configuration du format d'affichage des dates</td></tr>
-<tr class="odd"><td><a href="mod_include.html#ssiundefinedecho">SSIUndefinedEcho</a></td><td class="module"><a href="mod_include.html">mod_include</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Chaîne à afficher lorsqu'on tente d'extraire le contenu
+<tr class="odd"><td><a href="mod_include.html#ssitimeformat">SSITimeFormat</a></td><td class="module"><a href="mod_include.html">mod_include</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Configuration du format d'affichage des dates</td></tr>
+<tr><td><a href="mod_include.html#ssiundefinedecho">SSIUndefinedEcho</a></td><td class="module"><a href="mod_include.html">mod_include</a></td></tr>
+<tr><td colspan="2" class="descr">Chaîne à afficher lorsqu'on tente d'extraire le contenu
 d'une variable non définie</td></tr>
-<tr><td><a href="mod_macro.html#undefmacro">UndefMacro</a></td><td class="module"><a href="mod_macro.html">mod_macro</a></td></tr>
-<tr><td colspan="2" class="descr">Supprime une macro</td></tr>
-<tr class="odd"><td><a href="mod_macro.html#use">Use</a></td><td class="module"><a href="mod_macro.html">mod_macro</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Utilisation d'une macro</td></tr>
-<tr><td><a href="core.html#warning">Warning</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr><td colspan="2" class="descr">Message d'avertissement personnalisable en provenance de
+<tr class="odd"><td><a href="mod_macro.html#undefmacro">UndefMacro</a></td><td class="module"><a href="mod_macro.html">mod_macro</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Supprime une macro</td></tr>
+<tr><td><a href="mod_macro.html#use">Use</a></td><td class="module"><a href="mod_macro.html">mod_macro</a></td></tr>
+<tr><td colspan="2" class="descr">Utilisation d'une macro</td></tr>
+<tr class="odd"><td><a href="core.html#warning">Warning</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Message d'avertissement personnalisable en provenance de
 l'interprétation du fichier de configuration</td></tr>
-<tr class="odd"><td><a href="mod_xml2enc.html#xml2encdefault">xml2EncDefault</a></td><td class="module"><a href="mod_xml2enc.html">mod_xml2enc</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Définit un encodage par défaut à utiliser lorsqu'aucune
+<tr><td><a href="mod_xml2enc.html#xml2encdefault">xml2EncDefault</a></td><td class="module"><a href="mod_xml2enc.html">mod_xml2enc</a></td></tr>
+<tr><td colspan="2" class="descr">Définit un encodage par défaut à utiliser lorsqu'aucune
 information ne peut être <a href="#sniffing">automatiquement détectée</a></td></tr>
-<tr><td><a href="mod_xml2enc.html#xml2startparse">xml2StartParse</a></td><td class="module"><a href="mod_xml2enc.html">mod_xml2enc</a></td></tr>
-<tr><td colspan="2" class="descr">Indique à l'interpréteur à partir de quelle balise il doit
+<tr class="odd"><td><a href="mod_xml2enc.html#xml2startparse">xml2StartParse</a></td><td class="module"><a href="mod_xml2enc.html">mod_xml2enc</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Indique à l'interpréteur à partir de quelle balise il doit
 commencer son traitement.</td></tr>
 </table></div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a name="override-authconfig">AuthConfig</a></h2>
     <p>
@@ -966,30 +969,27 @@ extensions différentes</td></tr>
 majuscules</td></tr>
 <tr><td><a href="mod_speling.html#checkspelling">CheckSpelling</a></td><td class="module"><a href="mod_speling.html">mod_speling</a></td></tr>
 <tr><td colspan="2" class="descr">Active le module de correction</td></tr>
-<tr class="odd"><td><a href="core.html#contentdigest">ContentDigest</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Active la génération d'un en-tête <code>Content-MD5</code>
-dans la réponse HTTP</td></tr>
-<tr><td><a href="mod_example_hooks.html#example">Example</a></td><td class="module"><a href="mod_example_hooks.html">mod_example_hooks</a></td></tr>
-<tr><td colspan="2" class="descr">Directive de démonstration pour illustrer l'API des modules
+<tr class="odd"><td><a href="mod_example_hooks.html#example">Example</a></td><td class="module"><a href="mod_example_hooks.html">mod_example_hooks</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Directive de démonstration pour illustrer l'API des modules
 Apache</td></tr>
-<tr class="odd"><td><a href="mod_filter.html#filterchain">FilterChain</a></td><td class="module"><a href="mod_filter.html">mod_filter</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Configure la chaîne de filtrage</td></tr>
-<tr><td><a href="mod_filter.html#filterdeclare">FilterDeclare</a></td><td class="module"><a href="mod_filter.html">mod_filter</a></td></tr>
-<tr><td colspan="2" class="descr">Déclare un filtre intelligent</td></tr>
-<tr class="odd"><td><a href="mod_filter.html#filterprotocol">FilterProtocol</a></td><td class="module"><a href="mod_filter.html">mod_filter</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Vérifie le respect du protocole HTTP</td></tr>
-<tr><td><a href="mod_filter.html#filterprovider">FilterProvider</a></td><td class="module"><a href="mod_filter.html">mod_filter</a></td></tr>
-<tr><td colspan="2" class="descr">Enregistre un filtre de contenu</td></tr>
-<tr class="odd"><td><a href="core.html#options">Options</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Définit les fonctionnalités disponibles pour un répertoire
+<tr><td><a href="mod_filter.html#filterchain">FilterChain</a></td><td class="module"><a href="mod_filter.html">mod_filter</a></td></tr>
+<tr><td colspan="2" class="descr">Configure la chaîne de filtrage</td></tr>
+<tr class="odd"><td><a href="mod_filter.html#filterdeclare">FilterDeclare</a></td><td class="module"><a href="mod_filter.html">mod_filter</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Déclare un filtre intelligent</td></tr>
+<tr><td><a href="mod_filter.html#filterprotocol">FilterProtocol</a></td><td class="module"><a href="mod_filter.html">mod_filter</a></td></tr>
+<tr><td colspan="2" class="descr">Vérifie le respect du protocole HTTP</td></tr>
+<tr class="odd"><td><a href="mod_filter.html#filterprovider">FilterProvider</a></td><td class="module"><a href="mod_filter.html">mod_filter</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Enregistre un filtre de contenu</td></tr>
+<tr><td><a href="core.html#options">Options</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr><td colspan="2" class="descr">Définit les fonctionnalités disponibles pour un répertoire
 particulier</td></tr>
-<tr><td><a href="mod_reflector.html#reflectorheader">ReflectorHeader</a></td><td class="module"><a href="mod_reflector.html">mod_reflector</a></td></tr>
-<tr><td colspan="2" class="descr">Renvoie un en-tête d'entrée dans les en-têtes de sortie</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#ssloptions">SSLOptions</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Configure différentes options d'exécution du moteur
+<tr class="odd"><td><a href="mod_reflector.html#reflectorheader">ReflectorHeader</a></td><td class="module"><a href="mod_reflector.html">mod_reflector</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Renvoie un en-tête d'entrée dans les en-têtes de sortie</td></tr>
+<tr><td><a href="mod_ssl.html#ssloptions">SSLOptions</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr><td colspan="2" class="descr">Configure différentes options d'exécution du moteur
 SSL</td></tr>
-<tr><td><a href="mod_include.html#xbithack">XBitHack</a></td><td class="module"><a href="mod_include.html">mod_include</a></td></tr>
-<tr><td colspan="2" class="descr">Interprète les directives SSI dans les fichiers dont le bit
+<tr class="odd"><td><a href="mod_include.html#xbithack">XBitHack</a></td><td class="module"><a href="mod_include.html">mod_include</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Interprète les directives SSI dans les fichiers dont le bit
 d'exécution est positionné</td></tr>
 </table></div></div></div><div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/overrides.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |

@@ -50,7 +50,6 @@ disponibles</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#cgimapextension">CGIMapExtension</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cgipassauth">CGIPassAuth</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cgivar">CGIVar</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#contentdigest">ContentDigest</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#defaultruntimedir">DefaultRuntimeDir</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#defaultstatedir">DefaultStateDir</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#defaulttype">DefaultType</a></li>
@@ -775,48 +774,6 @@ Apache</td></tr>
     différente de la ressource demandée dans la requête initiale du client suite à
     d'éventuelles redirections internes ou sous-requêtes.</dd>
   </dl>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="contentdigest" id="contentdigest">Directive</a> <a name="ContentDigest" id="ContentDigest">ContentDigest</a> <a title="Lien permanent" href="#contentdigest" class="permalink">&para;</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la génération d'un en-tête <code>Content-MD5</code>
-dans la réponse HTTP</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ContentDigest On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ContentDigest Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>Options</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Noyau httpd</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-</table>
-    <p>Cette directive active la génération d'un en-tête
-    <code>Content-MD5</code> selon les définitions des RFC 1864 et
-    2616.</p>
-
-    <p>MD5 est un algorithme permettant de générer un condensé (parfois
-    appelé "empreinte") à partir de données d'une taille aléatoire ; le
-    degré de précision est tel que la moindre altération des données
-    d'origine entraîne une altération de l'empreinte.</p>
-
-    <p>L'en-tête <code>Content-MD5</code> permet de vérifier
-    l'intégrité de la réponse HTTP dans son ensemble. Un serveur mandataire
-    ou un client peut utiliser cet en-tête pour rechercher une
-    éventuelle modification accidentelle de la réponse au cours de sa
-    transmission. Exemple d'en-tête :</p>
-
-    <div class="example"><p><code>
-      Content-MD5: AuLb7Dp1rqtRtxz2m9kRpA==
-    </code></p></div>
-
-    <p>Notez que des problèmes de performances peuvent affecter votre
-    serveur, car l'empreinte est générée pour chaque requête (il n'y a
-    pas de mise en cache).</p>
-
-    <p>L'en-tête <code>Content-MD5</code> n'est envoyé qu'avec les
-    documents servis par le module <code class="module"><a href="../mod/core.html">core</a></code>, à l'exclusion
-    de tout autre module. Ainsi, les documents SSI, les sorties de
-    scripts CGI, et les réponses à des requêtes partielles (byte range)
-    ne comportent pas cet en-tête.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1918,7 +1875,7 @@ dans les versions 2.3.14 et antérieures.</td></tr>
     La directive <code class="directive">FileETag</code> définit les
     caractéristiques de fichier utilisées lors de la génération de
     l'en-tête de réponse HTTP <code>ETag</code> (entity tag) quand le
-    document est contenu dans un fichier statique(la valeur de
+    document est contenu dans un fichier statique (la valeur de
     <code>ETag</code>
     est utilisée dans le cadre de la gestion du cache pour préserver la
     bande passante réseau). La directive
@@ -1941,17 +1898,20 @@ dans les versions 2.3.14 et antérieures.</td></tr>
      est équivalente à : 
      <pre class="prettyprint lang-config">FileETag INode MTime Size</pre>
 </dd>
+     <dt><strong>Digest</strong></dt>
+     <dd>Si le document est à base de fichier, le champ <code>ETag</code> sera
+     calculé en prenant le condensé de ce fichier.</dd>
      <dt><strong>None</strong></dt>
      <dd>Si le document se compose d'un fichier, aucun champ
      <code>ETag</code> ne sera inclus dans la réponse</dd>
     </dl>
 
-    <p>Les mots-clés <code>INode</code>, <code>MTime</code>, et
-    <code>Size</code> peuvent être préfixés par <code>+</code> ou
-    <code>-</code>, ce qui permet de modifier les valeurs par défaut
-    héritées d'un niveau de configuration plus général. Tout mot-clé
-    apparaissant sans aucun préfixe annule entièrement et immédiatement
-    les configurations héritées.</p>
+    <p>Les mots-clés <code>INode</code>, <code>MTime</code>, <code>Size</code>
+    et <code>Digest</code> peuvent être préfixés par <code>+</code> ou
+    <code>-</code>, ce qui permet de modifier les valeurs par défaut héritées
+    d'un niveau de configuration plus général. Tout mot-clé apparaissant sans
+    aucun préfixe annule entièrement et immédiatement les configurations
+    héritées.</p>
 
     <p>Si la configuration d'un répertoire contient
     <code>FileETag&nbsp;INode&nbsp;MTime&nbsp;Size</code>, et si un de
@@ -1959,24 +1919,11 @@ dans les versions 2.3.14 et antérieures.</td></tr>
     configuration de ce sous-répertoire (qui sera propagée vers tout
     sous-répertoire qui ne la supplante pas), sera équivalente à
     <code>FileETag&nbsp;MTime&nbsp;Size</code>.</p>
-    <div class="warning"><h3>Avertissement</h3>
-    Ne modifiez pas les valeurs par défaut pour les répertoires ou
-    localisations où WebDAV est activé et qui utilisent
-    <code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code> comme fournisseur de stockage.
-    <code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code> utilise
-    <code>MTime&nbsp;Size</code> comme format fixe pour les
-    comparaisons de champs <code>ETag</code> dans les requêtes
-    conditionnelles. Ces requêtes conditionnelles échoueront si le
-    format <code>ETag</code> est modifié via la directive
-    <code class="directive">FileETag</code>.
-    </div>
-    <div class="note"><h3>Inclusions côté serveur</h3>
-    Aucun champ ETag n'est généré pour les réponses interprétées par
-    <code class="module"><a href="../mod/mod_include.html">mod_include</a></code>, car l'entité de la réponse peut
-    changer sans modification de l'INode, du MTime, ou de la taille du
-    fichier statique contenant les directives SSI.
-    </div>
-
+    <div class="note"><h3>Inclusions côté serveur</h3> Aucun champ ETag n'est généré
+    pour les réponses interprétées par <code class="module"><a href="../mod/mod_include.html">mod_include</a></code>, car
+    l'entité de la réponse peut changer sans modification de l'INode, du MTime,
+    de la taille ou du condensé du fichier statique contenant les directives
+    SSI.  </div>
 
 
 </div>

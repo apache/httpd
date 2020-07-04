@@ -83,6 +83,7 @@ fonctionnement interne de httpd.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#luahookinsertfilter">LuaHookInsertFilter</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luahooklog">LuaHookLog</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luahookmaptostorage">LuaHookMapToStorage</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#luahookpretranslate">LuaHookPreTranslate</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luahooktranslatename">LuaHookTranslateName</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luahooktypechecker">LuaHookTypeChecker</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luainherit">LuaInherit</a></li>
@@ -263,6 +264,13 @@ ou la définition de types MIME : </p>
 	a été associée à un serveur ou un serveur virtuel.</td>
     </tr>
 <tr class="odd">
+        <td>Phase de pré-traduction</td>
+        <td><code class="directive"><a href="#luahookpretranslatename">LuaHookPreTranslateName</a></code></td>
+        <td>Cette phase traduit l'URI de la requête en nom de fichier
+	sur le système avant la phase de décodage. Les modules tels que
+	<code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> peuvent intervenir au cours de cette phase.</td>
+    </tr>
+<tr>    
         <td>Phase de traduction</td>
         <td><code class="directive"><a href="#luahooktranslatename">LuaHookTranslateName</a></code></td>
         <td>Cette phase traduit l'URI de la requête en nom de fichier
@@ -270,14 +278,14 @@ ou la définition de types MIME : </p>
 	<code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> et <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> qui
 	interviennent au cours de cette phase.</td>
     </tr>
-<tr>
+<tr class="odd">
         <td>Choix du lieu de stockage de la ressource</td>
         <td><code class="directive"><a href="#luahookmaptostorage">LuaHookMapToStorage</a></code></td>
         <td>Cette phase définit le lieu de stockage de la ressource :
 	physique, en cache ou externe/mandaté. Elle est assurée par les
 	modules de mandat ou de mise en cache.</td>
     </tr>
-<tr class="odd">
+<tr>
         <td>Autorisation d'accès</td>
         <td><code class="directive"><a href="#luahookaccesschecker">LuaHookAccessChecker</a></code></td>
         <td>Cette phase vérifie si un client a l'autorisation d'accès à
@@ -285,13 +293,13 @@ ou la définition de types MIME : </p>
 	l'utisateur ; il faut donc être prudent.
         </td>
     </tr>
-<tr>
+<tr class="odd">
         <td>Vérification de l'identifiant utilisateur</td>
         <td><code class="directive"><a href="#luahookcheckuserid">LuaHookCheckUserID</a></code></td>
         <td>Cette phase vérifie l'identifiant de l'utilisateur ayant
 	fait l'objet d'une négociation.</td>
     </tr>
-<tr class="odd">
+<tr>
         <td>Vérification de l'autorisation d'accès</td>
         <td><code class="directive"><a href="#luahookauthchecker">LuaHookAuthChecker</a></code>
 	ou
@@ -301,27 +309,27 @@ ou la définition de types MIME : </p>
 	l'identifiant, le certificat, etc...
         </td>
     </tr>
-<tr>
+<tr class="odd">
         <td>Vérification du type de la ressource</td>
         <td><code class="directive"><a href="#luahooktypechecker">LuaHookTypeChecker</a></code></td>
         <td>Cette phase assigne un type de contenu et un gestionnaire à
 	la ressource.</td>
     </tr>
-<tr class="odd">
+<tr>
         <td>Derniers réglages</td>
         <td><code class="directive"><a href="#luahookfixups">LuaHookFixups</a></code></td>
         <td>C'est la dernière phase avant l'activation des gestionnaires
 	de contenu. Toute modification de dernière minute à la requête
 	doit être effectuée ici.</td>
     </tr>
-<tr>
+<tr class="odd">
         <td>Gestionnaire de contenu</td>
         <td>fichiers fx. <code>.lua</code> ou directive <code class="directive"><a href="#luamaphandler">LuaMapHandler</a></code></td>
         <td>C'est durant cette phase que le contenu est traité. Les
 	fichiers sont lus, interprétés, certains sont exécutés, et le
 	résultat obtenu est envoyé au client.</td>
     </tr>
-<tr class="odd">
+<tr>
         <td>Journalisation</td>
         <td><code class="directive"><a href="#luahooklog">LuaHookLog</a></code></td>
         <td>Lorsqu'une requête a été traitée, plusieurs phases de
@@ -501,12 +509,11 @@ end</pre>
           <td>string</td>
           <td>oui</td>
 	  <td>Le nom de fichier correspondant à la requête, par exemple
-	  /www/example.com/foo.txt. Il peut être modifié au cours des
-	  phases translate-name ou map-to-storage du traitement de la
-	  requête pour permettre au gestionnaire par défaut (ou aux
-	  gestionnaires de script) de servir une version du fichier
-	  autre que celle demandée.</td>
-        </tr>
+	  /www/example.com/foo.txt. Il peut être modifié au cours des phases
+	  pre-translate-name, translate-name ou map-to-storage du traitement de
+	  la requête pour permettre au gestionnaire par défaut (ou aux
+	  gestionnaires de script) de servir une version du fichier autre que
+	  celle demandée.</td> </tr>
 <tr class="odd">
           <td><code>handler</code></td>
           <td>string</td>
@@ -614,9 +621,10 @@ end</pre>
           <td><code>proxyreq</code></td>
           <td>string</td>
           <td>oui</td>
-	  <td>Indique s'il s'agit d'une requête mandatée ou non. Cette
-	  valeur est en général définie au cours de la phase
-	  post_read_request/translate_name du traitement de la requête.</td>
+	  <td>Indique s'il s'agit d'une requête mandatée ou non. Cette valeur
+	  est en général définie au cours de la phase
+	  post_read_request/pre_translate_name/translate_name du traitement de
+	  la requête.</td>
         </tr>
 <tr>
 	  <td><code>range</code></td>
@@ -1631,6 +1639,24 @@ end</pre>
 
 
     
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="luahookpretranslate" id="luahookpretranslate">Directive</a> <a name="LuaHookPreTranslate" id="LuaHookPreTranslate">LuaHookPreTranslate</a> <a title="Lien permanent" href="#luahookpretranslate" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fournit un point d'entrée pour la phase de pré-traduction du
+traitement d'une requête</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaHookPreTranslate  /path/to/lua/script.lua hook_function_name</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
+</table>
+<p>
+    Identique à LuaHookTranslateName, mais s'exécute au cours de la phase de
+    pré-traduction où les pourcentages du chemin de l'URI ne sont pas encore
+    décodés.
+</p>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="luahooktranslatename" id="luahooktranslatename">Directive</a> <a name="LuaHookTranslateName" id="LuaHookTranslateName">LuaHookTranslateName</a> <a title="Lien permanent" href="#luahooktranslatename" class="permalink">&para;</a></h2>

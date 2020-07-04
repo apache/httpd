@@ -303,6 +303,13 @@ Listen 192.170.2.5:8000</pre>
       <li><code>reuseport</code>: l'option de socket <code>SO_REUSEPORT</code>
       est activée ; elle permet de définir une directive Listen pour un port
       déjà utilisé par un autre processus.</li>
+
+      <li><code>v6only</code>: le socket <code>IPV6_V6ONLY</code> est activé, ce
+      qui permet à une directive Listen de spécifier une adresse IPv6 tout en
+      excluant les connexions en IPv4, ou entrant en conflit avec une directive
+      Listen utilisant une adresse IPv4 avec le même port (si le serveur a été
+      compilé en désactivant les adresses IPv4, il s'agit du comportement par
+      défaut et cette option n'a alors aucun effet).</li>
     </ul>
 
     <div class="note"><h3>Condition d'erreur</h3>

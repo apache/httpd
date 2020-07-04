@@ -167,50 +167,36 @@ shell Win32 <code>dir</code></td></tr>
     immédiatement s'il rencontre une option non reconnue. Les arguments
     de requête doivent être bien formés, selon la table ci-dessus.</p>
 
-    <p>Les options de requêtes sont illustrées par l'exemple ci-dessous,
-    qui peut être copié et collé dans un fichier header.html. Notez que
-    l'argument inconnu "X", pour le bouton submit, est introduit en
-    dernier afin de s'assurer que tous les arguments ont été
-    interprétés avant que mod_autoindex ne rencontre l'entrée X=Go.</p>
+    <p>Les options de requêtes sont illustrées par l'exemple ci-dessous, qui
+    peut être copié et collé dans un fichier header.html. Notez que l'argument
+    inconnu "X", pour le bouton submit, est introduit en dernier afin de
+    s'assurer que tous les arguments ont été interprétés avant que
+    <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code> ne rencontre l'entrée X=Go.</p>
 
-    <div class="example"><p><code>
-      &lt;form action="" method="get"&gt;<br />
-      <span class="indent">
-        Montre moi une &lt;select name="F"&gt;<br />
-        <span class="indent">
-          &lt;option value="0"&gt; liste simple&lt;/option&gt;<br />
-          &lt;option value="1" selected="selected"&gt; liste avec
-	  en-têtes&lt;/option&gt;<br />
-          &lt;option value="2"&gt; liste avec en-tête sous forme de
-	  table&lt;/option&gt;<br />
-        </span>
-        &lt;/select&gt;<br />
-        triée par &lt;select name="C"&gt;<br />
-        <span class="indent">
-          &lt;option value="N" selected="selected"&gt; nom&lt;/option&gt;<br />
-          &lt;option value="M"&gt; date de modification&lt;/option&gt;<br />
-          &lt;option value="S"&gt; taille&lt;/option&gt;<br />
-          &lt;option value="D"&gt; description&lt;/option&gt;<br />
-        </span>
-        &lt;/select&gt;<br />
-        &lt;select name="O"&gt;<br />
-        <span class="indent">
-          &lt;option value="A" selected="selected"&gt; croissant&lt;/option&gt;<br />
-          &lt;option value="D"&gt; décroissant&lt;/option&gt;<br />
-        </span>
-        &lt;/select&gt;<br />
-        &lt;select name="V"&gt;<br />
-        <span class="indent">
-          &lt;option value="0" selected="selected"&gt; dans l'ordre
-	  normal&lt;/option&gt;<br />
-          &lt;option value="1"&gt; en fonction de la version&lt;/option&gt;<br />
-        </span>
-        &lt;/select&gt;<br />
-        correspondant à &lt;input type="text" name="P" value="*" /&gt;<br />
-        &lt;input type="submit" name="X" value="Go" /&gt;<br />
-      </span>
-      &lt;/form&gt;
-    </code></p></div>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-html">&lt;form action="" method="get"&gt;
+    Show me a &lt;select name="F"&gt;
+        &lt;option value="0"&gt; Plain list&lt;/option&gt;
+        &lt;option value="1" selected="selected"&gt; Fancy list&lt;/option&gt;
+        &lt;option value="2"&gt; Table list&lt;/option&gt;
+    &lt;/select&gt;
+    Sorted by &lt;select name="C"&gt;
+        &lt;option value="N" selected="selected"&gt; Name&lt;/option&gt;
+        &lt;option value="M"&gt; Date Modified&lt;/option&gt;
+        &lt;option value="S"&gt; Size&lt;/option&gt;
+        &lt;option value="D"&gt; Description&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;select name="O"&gt;
+        &lt;option value="A" selected="selected"&gt; Ascending&lt;/option&gt;
+        &lt;option value="D"&gt; Descending&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;select name="V"&gt;
+        &lt;option value="0" selected="selected"&gt; in Normal order&lt;/option&gt;
+        &lt;option value="1"&gt; in Version order&lt;/option&gt;
+    &lt;/select&gt;
+    Matching &lt;input type="text" name="P" value="*" /&gt;
+    &lt;input type="submit" name="X" value="Go" /&gt;
+&lt;/form&gt;</pre>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -600,10 +586,9 @@ contenu d'un répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_autoindex</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Versions 2.3.10 et supérieures</td></tr>
 </table>
-    <p>La directive <code class="directive">IndexIgnoreReset</code> supprime
-    toute liste de fichiers définie par la directive
-    <code class="directive">IndexIgnore</code> et héritée par ailleurs d'autres
-    sections de configuration.</p>
+    <p>La directive <code class="directive">IndexIgnoreReset</code> supprime toute liste
+    de fichiers définie par la directive <code class="directive"><a href="#indexignore">IndexIgnore</a></code> et héritée par ailleurs
+    d'autres sections de configuration.</p>
 
     <pre class="prettyprint lang-config">&lt;Directory "/var/www"&gt;
     IndexIgnore *.bak .??* *~ *# HEADER* README* RCS CVS *,v *,t
