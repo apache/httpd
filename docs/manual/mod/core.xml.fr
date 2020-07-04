@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1876428 -->
+<!-- English Revision: 1879472 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -721,51 +721,6 @@ Apache</compatibility>
     différente de la ressource demandée dans la requête initiale du client suite à
     d'éventuelles redirections internes ou sous-requêtes.</dd>
   </dl>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
-<name>ContentDigest</name>
-<description>Active la génération d'un en-tête <code>Content-MD5</code>
-dans la réponse HTTP</description>
-<syntax>ContentDigest On|Off</syntax>
-<default>ContentDigest Off</default>
-<contextlist><context>server config</context><context>virtual
-host</context>
-<context>directory</context><context>.htaccess</context>
-</contextlist>
-<override>Options</override>
-<status>Expérimental</status>
-
-<usage>
-    <p>Cette directive active la génération d'un en-tête
-    <code>Content-MD5</code> selon les définitions des RFC 1864 et
-    2616.</p>
-
-    <p>MD5 est un algorithme permettant de générer un condensé (parfois
-    appelé "empreinte") à partir de données d'une taille aléatoire ; le
-    degré de précision est tel que la moindre altération des données
-    d'origine entraîne une altération de l'empreinte.</p>
-
-    <p>L'en-tête <code>Content-MD5</code> permet de vérifier
-    l'intégrité de la réponse HTTP dans son ensemble. Un serveur mandataire
-    ou un client peut utiliser cet en-tête pour rechercher une
-    éventuelle modification accidentelle de la réponse au cours de sa
-    transmission. Exemple d'en-tête :</p>
-
-    <example>
-      Content-MD5: AuLb7Dp1rqtRtxz2m9kRpA==
-    </example>
-
-    <p>Notez que des problèmes de performances peuvent affecter votre
-    serveur, car l'empreinte est générée pour chaque requête (il n'y a
-    pas de mise en cache).</p>
-
-    <p>L'en-tête <code>Content-MD5</code> n'est envoyé qu'avec les
-    documents servis par le module <module>core</module>, à l'exclusion
-    de tout autre module. Ainsi, les documents SSI, les sorties de
-    scripts CGI, et les réponses à des requêtes partielles (byte range)
-    ne comportent pas cet en-tête.</p>
 </usage>
 </directivesynopsis>
 
@@ -2073,7 +2028,7 @@ dans les versions 2.3.14 et antérieures.</compatibility>
     La directive <directive>FileETag</directive> définit les
     caractéristiques de fichier utilisées lors de la génération de
     l'en-tête de réponse HTTP <code>ETag</code> (entity tag) quand le
-    document est contenu dans un fichier statique(la valeur de
+    document est contenu dans un fichier statique (la valeur de
     <code>ETag</code>
     est utilisée dans le cadre de la gestion du cache pour préserver la
     bande passante réseau). La directive
@@ -2095,17 +2050,20 @@ dans les versions 2.3.14 et antérieures.</compatibility>
      <dd>Tous les champs disponibles seront utilisés. Cette définition
      est équivalente à : 
      <highlight language="config">FileETag INode MTime Size</highlight></dd>
+     <dt><strong>Digest</strong></dt>
+     <dd>Si le document est à base de fichier, le champ <code>ETag</code> sera
+     calculé en prenant le condensé de ce fichier.</dd>
      <dt><strong>None</strong></dt>
      <dd>Si le document se compose d'un fichier, aucun champ
      <code>ETag</code> ne sera inclus dans la réponse</dd>
     </dl>
 
-    <p>Les mots-clés <code>INode</code>, <code>MTime</code>, et
-    <code>Size</code> peuvent être préfixés par <code>+</code> ou
-    <code>-</code>, ce qui permet de modifier les valeurs par défaut
-    héritées d'un niveau de configuration plus général. Tout mot-clé
-    apparaissant sans aucun préfixe annule entièrement et immédiatement
-    les configurations héritées.</p>
+    <p>Les mots-clés <code>INode</code>, <code>MTime</code>, <code>Size</code>
+    et <code>Digest</code> peuvent être préfixés par <code>+</code> ou
+    <code>-</code>, ce qui permet de modifier les valeurs par défaut héritées
+    d'un niveau de configuration plus général. Tout mot-clé apparaissant sans
+    aucun préfixe annule entièrement et immédiatement les configurations
+    héritées.</p>
 
     <p>Si la configuration d'un répertoire contient
     <code>FileETag&nbsp;INode&nbsp;MTime&nbsp;Size</code>, et si un de
@@ -2113,24 +2071,11 @@ dans les versions 2.3.14 et antérieures.</compatibility>
     configuration de ce sous-répertoire (qui sera propagée vers tout
     sous-répertoire qui ne la supplante pas), sera équivalente à
     <code>FileETag&nbsp;MTime&nbsp;Size</code>.</p>
-    <note type="warning"><title>Avertissement</title>
-    Ne modifiez pas les valeurs par défaut pour les répertoires ou
-    localisations où WebDAV est activé et qui utilisent
-    <module>mod_dav_fs</module> comme fournisseur de stockage.
-    <module>mod_dav_fs</module> utilise
-    <code>MTime&nbsp;Size</code> comme format fixe pour les
-    comparaisons de champs <code>ETag</code> dans les requêtes
-    conditionnelles. Ces requêtes conditionnelles échoueront si le
-    format <code>ETag</code> est modifié via la directive
-    <directive>FileETag</directive>.
-    </note>
-    <note><title>Inclusions côté serveur</title>
-    Aucun champ ETag n'est généré pour les réponses interprétées par
-    <module>mod_include</module>, car l'entité de la réponse peut
-    changer sans modification de l'INode, du MTime, ou de la taille du
-    fichier statique contenant les directives SSI.
-    </note>
-
+    <note><title>Inclusions côté serveur</title> Aucun champ ETag n'est généré
+    pour les réponses interprétées par <module>mod_include</module>, car
+    l'entité de la réponse peut changer sans modification de l'INode, du MTime,
+    de la taille ou du condensé du fichier statique contenant les directives
+    SSI.  </note>
 
 </usage>
 </directivesynopsis>
