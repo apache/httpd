@@ -204,7 +204,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/r1879369
                  http://svn.apache.org/r1879373
      2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-ap_parse_strict_length.patch
-    +1: ylavic
+    +1: ylavic, minfrin
     ylavic: the patch drops changes to apreq, which seems to not be in 2.4.
 
   *) mod_ssl: deduplicate some code
@@ -221,7 +221,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) core: Fix a signed/unsigned comparison
      trunk patch http://svn.apache.org/r1864868
      2.4.x patch: svn merge -c 1864868 ^/httpd/httpd/trunk .
-     +1: jailletc36,
+     +1: jailletc36, minfrin, 
 
  *) "[mod_dav_fs etag handling] should really honor the FileETag setting".
      - It now does.
