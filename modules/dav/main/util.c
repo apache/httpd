@@ -470,8 +470,8 @@ DAV_DECLARE(void) dav_xmlns_generate(dav_xmlns_info *xi,
 
         apr_hash_this(hi, &prefix, NULL, &uri);
 
-        s = apr_psprintf(xi->pool, " xmlns:%s=\"%s\"",
-                         (const char *)prefix, (const char *)uri);
+        s = apr_pstrcat(xi->pool, " xmlns:", (const char *)prefix, "=\"",
+                        (const char *)uri, "\"", NULL);
         apr_text_append(xi->pool, phdr, s);
     }
 }

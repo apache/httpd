@@ -663,8 +663,8 @@ static int dav_created(request_rec *r, const char *locn, const char *what,
 
     /* Apache doesn't allow us to set a variable body for HTTP_CREATED, so
      * we must manufacture the entire response. */
-    body = apr_psprintf(r->pool, "%s %s has been created.",
-                        what, ap_escape_html(r->pool, locn));
+    body = apr_pstrcat(r->pool, what, " ", ap_escape_html(r->pool, locn),
+                       " has been created.", NULL);
     return dav_error_response(r, HTTP_CREATED, body);
 }
 
@@ -1320,10 +1320,10 @@ static dav_error *dav_gen_supported_methods(request_rec *r,
             if (elts[i].key == NULL)
                 continue;
 
-            s = apr_psprintf(r->pool,
-                             "<D:supported-method D:name=\"%s\"/>"
-                             DEBUG_CR,
-                             elts[i].key);
+            s = apr_pstrcat(r->pool,
+                            "<D:supported-method D:name=\"",
+                            elts[i].key,
+                            "\"/>" DEBUG_CR, NULL);
             apr_text_append(r->pool, body, s);
         }
     }
@@ -1349,10 +1349,9 @@ static dav_error *dav_gen_supported_methods(request_rec *r,
 
                 /* see if method is supported */
                 if (apr_table_get(methods, name) != NULL) {
-                    s = apr_psprintf(r->pool,
-                                     "<D:supported-method D:name=\"%s\"/>"
-                                     DEBUG_CR,
-                                     name);
+                    s = apr_pstrcat(r->pool,
+                                    "<D:supported-method D:name=\"",
+                                    name, "\"/>" DEBUG_CR, NULL);
                     apr_text_append(r->pool, body, s);
                 }
             }
@@ -1484,10 +1483,12 @@ static dav_error *dav_gen_supported_reports(request_rec *r,
                 for (rp = reports; rp->nmspace != NULL; ++rp) {
                     /* Note: we presume reports->namespace is
                      * properly XML/URL quoted */
-                    s = apr_psprintf(r->pool,
-                                     "<D:supported-report D:name=\"%s\" "
-                                     "D:namespace=\"%s\"/>" DEBUG_CR,
-                                     rp->name, rp->nmspace);
+                    s = apr_pstrcat(r->pool,
+                                    "<D:supported-report D:name=\"",
+                                    rp->name,
+                                    "\" D:namespace=\"",
+                                    rp->nmspace,
+                                    "\"/>" DEBUG_CR, NULL);
                     apr_text_append(r->pool, body, s);
                 }
             }
@@ -1525,12 +1526,13 @@ static dav_error *dav_gen_supported_reports(request_rec *r,
                                 /* Note: we presume reports->nmspace is
                                  * properly XML/URL quoted
                                  */
-                                s = apr_psprintf(r->pool,
-                                                 "<D:supported-report "
-                                                 "D:name=\"%s\" "
-                                                 "D:namespace=\"%s\"/>"
-                                                 DEBUG_CR,
-                                                 rp->name, rp->nmspace);
+                                s = apr_pstrcat(r->pool,
+                                                "<D:supported-report "
+                                                "D:name=\"",
+                                                rp->name,
+                                                "\" D:namespace=\"",
+                                                rp->nmspace,
+                                                "\"/>" DEBUG_CR, NULL);
                                 apr_text_append(r->pool, body, s);
                                 break;
                             }
@@ -2679,7 +2681,7 @@ static int dav_method_copymove(request_rec *r, int is_move)
         const char *nscp_path = apr_table_get(r->headers_in, "New-uri");
 
         if (nscp_host != NULL && nscp_path != NULL)
-            dest = apr_psprintf(r->pool, "http://%s%s", nscp_host, nscp_path);
+            dest = apr_pstrcat(r->pool, "http://", nscp_host, nscp_path, NULL);
     }
     if (dest == NULL) {
         /* This supplies additional information for the default message. */

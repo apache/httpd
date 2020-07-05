@@ -421,18 +421,18 @@ static dav_error * dav_insert_coreprop(dav_propdb *propdb,
             /* use D: prefix to refer to the DAV: namespace URI,
              * and let the namespace attribute default to "DAV:"
              */
-            s = apr_psprintf(propdb->p,
-                            "<D:supported-live-property D:name=\"%s\"/>" DEBUG_CR,
-                            name);
+            s = apr_pstrcat(propdb->p,
+                            "<D:supported-live-property D:name=\"",
+                            name, "\"/>" DEBUG_CR, NULL);
         }
         else if (what == DAV_PROP_INSERT_VALUE && *value != '\0') {
             /* use D: prefix to refer to the DAV: namespace URI */
-            s = apr_psprintf(propdb->p, "<D:%s>%s</D:%s>" DEBUG_CR,
-                            name, value, name);
+            s = apr_pstrcat(propdb->p, "<D:", name, ">", value, "</D:", name,
+                            ">" DEBUG_CR, NULL);
         }
         else {
             /* use D: prefix to refer to the DAV: namespace URI */
-            s = apr_psprintf(propdb->p, "<D:%s/>" DEBUG_CR, name);
+            s = apr_pstrcat(propdb->p, "<D:", name, "/>" DEBUG_CR, NULL);
         }
         apr_text_append(propdb->p, phdr, s);
 
@@ -473,11 +473,11 @@ static void dav_output_prop_name(apr_pool_t *pool,
     const char *s;
 
     if (*name->ns == '\0')
-        s = apr_psprintf(pool, "<%s/>" DEBUG_CR, name->name);
+        s = apr_pstrcat(pool, "<", name->name, "/>" DEBUG_CR, NULL);
     else {
         const char *prefix = dav_xmlns_add_uri(xi, name->ns);
 
-        s = apr_psprintf(pool, "<%s:%s/>" DEBUG_CR, prefix, name->name);
+        s = apr_pstrcat(pool, "<", prefix, ":", name->name, "/>" DEBUG_CR, NULL);
     }
 
     apr_text_append(pool, phdr, s);

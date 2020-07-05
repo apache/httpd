@@ -355,29 +355,33 @@ static void dav_append_prop(apr_pool_t *pool,
         /* the property is an empty value */
         if (*name == ':') {
             /* "no namespace" case */
-            s = apr_psprintf(pool, "<%s/>" DEBUG_CR, name+1);
+            s = apr_pstrcat(pool, "<", name+1, "/>" DEBUG_CR, NULL);
         }
         else {
-            s = apr_psprintf(pool, "<ns%s/>" DEBUG_CR, name);
+            s = apr_pstrcat(pool, "<ns", name, "/>" DEBUG_CR, NULL);
         }
     }
     else if (*lang != '\0') {
         if (*name == ':') {
             /* "no namespace" case */
-            s = apr_psprintf(pool, "<%s xml:lang=\"%s\">%s</%s>" DEBUG_CR,
-                             name+1, lang, value, name+1);
+            s = apr_pstrcat(pool, "<", name+1, " xml:lang=\"",
+                            lang, "\">", value, "</", name+1, ">" DEBUG_CR,
+                            NULL);
         }
         else {
-            s = apr_psprintf(pool, "<ns%s xml:lang=\"%s\">%s</ns%s>" DEBUG_CR,
-                             name, lang, value, name);
+            s = apr_pstrcat(pool, "<ns", name, " xml:lang=\"",
+                            lang, "\">", value, "</ns", name, ">" DEBUG_CR,
+                            NULL);
         }
     }
     else if (*name == ':') {
         /* "no namespace" case */
-        s = apr_psprintf(pool, "<%s>%s</%s>" DEBUG_CR, name+1, value, name+1);
+        s = apr_pstrcat(pool, "<", name+1, ">", value, "</", name+1, ">"
+                        DEBUG_CR, NULL);
     }
     else {
-        s = apr_psprintf(pool, "<ns%s>%s</ns%s>" DEBUG_CR, name, value, name);
+        s = apr_pstrcat(pool, "<ns", name, ">", value, "</ns", name, ">"
+                        DEBUG_CR, NULL);
     }
 
     apr_text_append(pool, phdr, s);
