@@ -198,7 +198,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      jailletc36: CHANGES could also be looked at if it makes sense to update the terminology
                  also here
 
- *) strict content-length parsing
+  *) strict content-length parsing
      trunk patch http://svn.apache.org/r1877954
                  http://svn.apache.org/r1877955
                  http://svn.apache.org/r1879369
@@ -206,6 +206,22 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-ap_parse_strict_length.patch
     +1: ylavic
     ylavic: the patch drops changes to apreq, which seems to not be in 2.4.
+
+  *) mod_ssl: deduplicate some code
+     mod_ssl: Use temporary pool for variable lookup results which don't need to live in pconf
+     mod_ssl: Factor out code to read a BIO into a palloc'ed string
+     mod_ssl: Use <16 character cname argument for socache ->init() per the API constraint
+     trunk patch http://svn.apache.org/r1705539
+                 http://svn.apache.org/r1877263
+                 http://svn.apache.org/r1877291
+                 http://svn.apache.org/r1879445
+     2.4.x patch: svn merge -c 1705539,1877263,1877291,1879445 ^/httpd/httpd/trunk .
+     +1: jailletc36,
+
+  *) core: Fix a signed/unsigned comparison
+     trunk patch http://svn.apache.org/r1864868
+     2.4.x patch: svn merge -c 1864868 ^/httpd/httpd/trunk .
+     +1: jailletc36,
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
