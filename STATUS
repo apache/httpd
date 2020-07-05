@@ -245,6 +245,31 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-etag1.patch
     +1: minfrin
 
+  *) core: Drop an invalid Last-Modified header value coming
+     from a (F)CGI script instead of replacing it with Unix epoch.
+     Warn the users about Last-Modified header value replacements
+     and violations of the RFC.
+     trunk patch: http://svn.apache.org/r1748379
+                  http://svn.apache.org/r1750747
+                  http://svn.apache.org/r1750749
+                  http://svn.apache.org/r1750953
+                  http://svn.apache.org/r1751138
+                  http://svn.apache.org/r1751139
+                  http://svn.apache.org/r1751147
+                  http://svn.apache.org/r1757818
+                  http://svn.apache.org/r1879253
+                  http://svn.apache.org/r1879348
+     2.4.x: trunk patches work, final view:
+            http://home.apache.org/~elukey/httpd-2.4.x-core-last_modified_tz_logging.patch
+            svn merge -c 1748379,1750747,1750749,1750953,1751138,1751139,1751139,1757818,1879253,r1879348 ^/httpd/httpd/trunk .
+     The code has been tested with a simple PHP script returning different Last-Modified
+     headers (GMT now, GMT now Europe/Paris, GMT tomorrow, GMT yesterday, PST now).
+     +1: elukey, jorton
+     jorton: +1 though I'd say log at WARN or INFO for the APR_BAD_DATE case
+             rather than "silently" (at normal log-level) dropping the parsed header?
+             [also nit: wrapping a lone ap_log_rerror(,APLOG_X) call in
+             if (APLOGrX(..) is unnecessary/redundant]
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
@@ -265,38 +290,6 @@ PATCHES/ISSUES THAT ARE BEING WORKED
                  suffer from the clash we created.
                  See also:
                  https://lists.apache.org/thread.html/b924afe0fcc58a8636b753e630421bf6dc2080653a79575fd5fd641a@%3Cdev.httpd.apache.org%3E
-
-  *) core: Drop an invalid Last-Modified header value coming
-     from a (F)CGI script instead of replacing it with Unix epoch.
-     Warn the users about Last-Modified header value replacements
-     and violations of the RFC.
-     trunk patch: http://svn.apache.org/r1748379
-                  http://svn.apache.org/r1750747
-                  http://svn.apache.org/r1750749
-                  http://svn.apache.org/r1750953
-                  http://svn.apache.org/r1751138
-                  http://svn.apache.org/r1751139
-                  http://svn.apache.org/r1751147
-                  http://svn.apache.org/r1757818
-                  http://svn.apache.org/r1879253
-                  http://svn.apache.org/r1879348
-     2.4.x: trunk patches work, final view:
-            http://home.apache.org/~elukey/httpd-2.4.x-core-last_modified_tz_logging.patch
-            svn merge -c 1748379,1750747,1750749,1750953,1751138,1751139,1751139,1757818,1879253,r1879348 ^/httpd/httpd/trunk .
-     The problem has been discussed in dev@ extensively but we did not reach a common
-     agreement about how to proceed in the long term. While we wait, I would really like
-     to introduce useful logs for the users (the starting point of this change was a users@
-     email thread). If this is not the right way to go I will move the patch to other
-     sections of STATUS (stalled or being worked).
-     The code has been tested with a simple PHP script returning different Last-Modified
-     headers (GMT now, GMT now Europe/Paris, GMT tomorrow, GMT yesterday, PST now).
-     +1: elukey, jorton
-     jorton: +1 though I'd say log at WARN or INFO for the APR_BAD_DATE case
-             rather than "silently" (at normal log-level) dropping the parsed header?
-             [also nit: wrapping a lone ap_log_rerror(,APLOG_X) call in
-             if (APLOGrX(..) is unnecessary/redundant]
-     elukey: Hopefully fixed the suggestions made with r1879253, let me know if this change
-             can go back to the proposed section (leaving the being worked one).
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
      it comes from an origin server, module or script. Allow the previous
