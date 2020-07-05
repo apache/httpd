@@ -653,12 +653,13 @@
  * 20200702.2 (2.5.1-dev)  Add dav_get_resource().
  * 20200703.0 (2.5.1-dev)  Remove ap_md5digest(), ap_md5contextTo64(),
  *                         ContentDigest directive.
+ * 20200705.0 (2.5.1-dev)  Update method_precondition hook.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20200703
+#define MODULE_MAGIC_NUMBER_MAJOR 20200705
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0             /* 0...n */
 

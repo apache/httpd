@@ -759,7 +759,7 @@ APR_DECLARE_EXTERNAL_HOOK(dav, DAV, void, gather_reports,
  ** the non-XML body of a request should register an input filter to do so
  ** within this hook.
  **
- ** Methods like PUT will supply a single src resource, and the dest will
+ ** Methods like PUT will supply a single src resource, and the dst will
  ** be NULL.
  **
  ** Methods like COPY or MOVE will trigger this hook twice. The first
@@ -767,10 +767,18 @@ APR_DECLARE_EXTERNAL_HOOK(dav, DAV, void, gather_reports,
  ** will supply a source and destination. This allows preconditions on the
  ** source resource to be verified before making an attempt to get the
  ** destination resource.
+ **
+ ** Methods like PROPFIND and LABEL will trigger this hook initially for
+ ** the src resource, and then subsequently for each resource that has
+ ** been walked during processing, with the walked resource passed in dst,
+ ** and NULL passed in src.
+ **
+ ** As a rule, the src resource originates from a request that has passed
+ ** through httpd's authn/authz hooks, while the dst resource has not.
  */
 APR_DECLARE_EXTERNAL_HOOK(dav, DAV, int, method_precondition,
                           (request_rec *r,
-                           dav_resource *src, dav_resource *dst,
+                           dav_resource *src, const dav_resource *dst,
                            const apr_xml_doc *doc, dav_error **err))
 
 

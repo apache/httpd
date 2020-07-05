@@ -2061,6 +2061,13 @@ static dav_error * dav_propfind_walker(dav_walk_resource *wres, int calltype)
     }
 #endif
 
+    /* check for any method preconditions */
+    if (dav_run_method_precondition(ctx->r, NULL, wres->resource, ctx->doc, &err) != DECLINED
+            && err) {
+        apr_pool_clear(ctx->scratchpool);
+        return NULL;
+    }
+
     /*
     ** Note: ctx->doc can only be NULL for DAV_PROPFIND_IS_ALLPROP. Since
     ** dav_get_allprops() does not need to do namespace translation,
@@ -4114,6 +4121,9 @@ typedef struct dav_label_walker_ctx
     /* input: */
     dav_walk_params w;
 
+    /* original request */
+    request_rec *r;
+
     /* label being manipulated */
     const char *label;
 
@@ -4133,13 +4143,19 @@ static dav_error * dav_label_walker(dav_walk_resource *wres, int calltype)
     dav_label_walker_ctx *ctx = wres->walk_ctx;
     dav_error *err = NULL;
 
+    /* check for any method preconditions */
+    if (dav_run_method_precondition(ctx->r, NULL, wres->resource, NULL, &err) != DECLINED
+            && err) {
+    	/* precondition failed, dropping through */
+    }
+
     /* Check the state of the resource: must be a version or
      * non-checkedout version selector
      */
     /* ### need a general mechanism for reporting precondition violations
      * ### (should be returning XML document for 403/409 responses)
      */
-    if (wres->resource->type != DAV_RESOURCE_TYPE_VERSION &&
+    else if (wres->resource->type != DAV_RESOURCE_TYPE_VERSION &&
         (wres->resource->type != DAV_RESOURCE_TYPE_REGULAR
          || !wres->resource->versioned)) {
         err = dav_new_error(ctx->w.pool, HTTP_CONFLICT, 0, 0,
@@ -4261,6 +4277,7 @@ static int dav_method_label(request_rec *r)
     ctx.w.walk_ctx = &ctx;
     ctx.w.pool = r->pool;
     ctx.w.root = resource;
+    ctx.r = r;
     ctx.vsn_hooks = vsn_hooks;
 
     err = (*resource->hooks->walk)(&ctx.w, depth, &multi_status);
@@ -5253,7 +5270,7 @@ APR_IMPLEMENT_EXTERNAL_HOOK_VOID(dav, DAV, gather_reports,
 
 APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(dav, DAV, int, method_precondition,
                                       (request_rec *r,
-                                       dav_resource *src, dav_resource *dest,
+                                       dav_resource *src, const dav_resource *dest,
                                        const apr_xml_doc *doc,
                                        dav_error **err),
                                        (r, src, dest, doc, err), DECLINED)
