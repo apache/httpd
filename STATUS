@@ -135,12 +135,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_proxy_fcgi: Don't unset when condition is false. PR64365
-     trunk patch:
-        - http://svn.apache.org/r1877829
-        - http://svn.apache.org/r1877830
-     2.4.x patch: svn merge -c 1877829,1877830 ^/httpd/httpd/trunk .
-    +1: covener, ylavic, rpluem
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:

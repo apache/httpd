@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.44
 
+  *) mod_proxy_fcgi: ProxyFCGISetEnvIf unsets variables when expression
+     evaluates to false.  PR64365. [Michael König <mail ikoenig.net>]
+
   *) mod_proxy_http: flush spooled request body in one go to avoid
      leaking (or long lived) temporary file. PR 64452. [Yann Ylavic]
 

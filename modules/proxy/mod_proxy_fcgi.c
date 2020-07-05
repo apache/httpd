@@ -164,7 +164,7 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
   ProxyFCGISetEnvIf "reqenv('PATH_INFO') =~ m#/foo(\d+)\.php$#" PATH_INFO "/foo.php"
   ProxyFCGISetEnvIf "reqenv('PATH_TRANSLATED') =~ m#(/.*foo)(\d+)(.*)#" PATH_TRANSLATED "$1$3"
 */
-static void fix_cgivars(request_rec *r, fcgi_dirconf_t *dconf)
+static apr_status_t fix_cgivars(request_rec *r, fcgi_dirconf_t *dconf)
 {
     sei_entry *entries;
     const char *err, *src;
@@ -175,10 +175,21 @@ static void fix_cgivars(request_rec *r, fcgi_dirconf_t *dconf)
     for (i = 0; i < dconf->env_fixups->nelts; i++) {
         sei_entry *entry = &entries[i];
 
+        rc = ap_expr_exec_re(r, entry->cond, AP_MAX_REG_MATCH, regm, &src, &err);
+        if (rc < 0) { 
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO() 
+                          "fix_cgivars: Condition eval returned %d: %s", 
+                          rc, err);
+            return APR_EGENERAL;
+        }
+        else if (rc == 0) { 
+            continue; /* evaluated false */
+        }
+
         if (entry->envname[0] == '!') {
             apr_table_unset(r->subprocess_env, entry->envname+1);
         }
-        else if (0 < (rc = ap_expr_exec_re(r, entry->cond, AP_MAX_REG_MATCH, regm, &src, &err)))  {
+        else {
             const char *val = ap_expr_str_exec_re(r, entry->subst, AP_MAX_REG_MATCH, regm, &src, &err);
             if (err) {
                 ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(03514)
@@ -195,10 +206,8 @@ static void fix_cgivars(request_rec *r, fcgi_dirconf_t *dconf)
             }
             apr_table_setn(r->subprocess_env, entry->envname, val);
         }
-        else {
-            ap_log_rerror(APLOG_MARK, APLOG_TRACE8, 0, r, "fix_cgivars: Condition returned %d", rc);
-        }
     }
+    return APR_SUCCESS;
 }
 
 /* Wrapper for apr_socket_sendv that handles updating the worker stats. */
@@ -367,7 +376,9 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
     /* XXX are there any FastCGI specific env vars we need to send? */
 
     /* Give admins final option to fine-tune env vars */
-    fix_cgivars(r, dconf);
+    if (APR_SUCCESS != (rv = fix_cgivars(r, dconf))) { 
+        return rv;
+    }
 
     /* XXX mod_cgi/mod_cgid use ap_create_environment here, which fills in
      *     the TZ value specially.  We could use that, but it would mean
