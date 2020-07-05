@@ -190,7 +190,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1878926
                   http://svn.apache.org/r1879156
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/h2-master-secondary.patch
-     +1: icing, ylavic
+     +1: icing, ylavic, minfrin
      ylavic: nitpicking, mixed "H2_secondary_IN" and "H2_secondary_OUT" case to
              register the filters, but not for adding them. IIRC filters names
              are case insentive so shouldn't matter, just popped at my eyes..
