@@ -388,7 +388,7 @@ static apr_status_t get_line(h2_response_parser *parser, apr_bucket_brigade *bb,
                  */
                 status = apr_brigade_length(parser->tmp, 0, &brigade_length);
                 if ((status != APR_SUCCESS) || (brigade_length > len)) {
-                    ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, task->c, APLOGNO()
+                    ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, task->c, APLOGNO(10257)
                                   "h2_task(%s): read response, line too long",
                                   task->id);
                     return APR_ENOSPC;
