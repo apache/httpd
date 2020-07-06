@@ -243,7 +243,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 http://svn.apache.org/r1879470
                 http://svn.apache.org/r1879488
                 http://svn.apache.org/r1879541
-    2.4.x patch https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-etag1.patch
+                http://svn.apache.org/r1879548
+    2.4.x patch https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-etag2.patch
     +1: minfrin
 
   *) core: Drop an invalid Last-Modified header value coming
