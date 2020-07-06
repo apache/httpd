@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.44
 
+  *) mod_http2: Avoid segfaults in case of handling certain responses for
+     already aborted connections.  [Stefan Eissing, Ruediger Pluem]
+
   *) mod_watchdog: Switch to simpler logic to avoid the thread cleanup running
      before the thread has started, avoiding mutex operations with undefined
      behaviour. [Joe Orton]
