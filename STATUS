@@ -242,6 +242,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 http://svn.apache.org/r1879469
                 http://svn.apache.org/r1879470
                 http://svn.apache.org/r1879488
+                http://svn.apache.org/r1879541
     2.4.x patch https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-etag1.patch
     +1: minfrin
 
