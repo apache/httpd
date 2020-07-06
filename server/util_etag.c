@@ -18,6 +18,7 @@
 #include "apr_thread_proc.h"    /* for RLIMIT stuff */
 #include "apr_sha1.h"
 #include "apr_base64.h"
+#include "apr_buckets.h"
 
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
@@ -91,17 +92,18 @@ static void etag_end(char *next, const char *vlv, apr_size_t vlv_len)
  * Construct a strong ETag by creating a SHA1 hash across the file content.
  */
 static char *make_digest_etag(request_rec *r, etag_rec *er, char *vlv,
-		apr_size_t vlv_len, char *weak, apr_size_t weak_len)
+        apr_size_t vlv_len, char *weak, apr_size_t weak_len)
 {
     apr_sha1_ctx_t context;
-    unsigned char buf[4096]; /* keep this a multiple of 64 */
     unsigned char digest[APR_SHA1_DIGESTSIZE];
     apr_file_t *fd = NULL;
     core_dir_config *cfg;
     char *etag, *next;
+    apr_bucket_brigade *bb;
+    apr_bucket *e;
 
     apr_size_t nbytes;
-    apr_off_t offset = 0, zero = 0;
+    apr_off_t offset = 0, zero = 0, len = 0;
     apr_status_t status;
 
     cfg = (core_dir_config *)ap_get_core_module_config(r->per_dir_config);
@@ -130,6 +132,15 @@ static char *make_digest_etag(request_rec *r, etag_rec *er, char *vlv,
         return "";
     }
 
+    if ((status = apr_file_seek(fd, APR_END, &len)) != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO()
+                      "Make etag: could not seek");
+        if (er->pathname) {
+            apr_file_close(fd);
+        }
+        return "";
+    }
+
     if ((status = apr_file_seek(fd, APR_SET, &zero)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(10253)
                       "Make etag: could not seek");
@@ -139,35 +150,35 @@ static char *make_digest_etag(request_rec *r, etag_rec *er, char *vlv,
         return "";
     }
 
+    bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+
+    e = apr_brigade_insert_file(bb, fd, 0, len, r->pool);
+
 #if APR_HAS_MMAP
-    if (cfg->enable_mmap != ENABLE_MMAP_OFF && er->fd &&
-            er->finfo->size >= APR_MMAP_THRESHOLD &&
-            er->finfo->size < APR_MMAP_LIMIT) {
-        apr_mmap_t *mm;
-
-        if ((status = apr_mmap_create(&mm, er->fd, 0, er->finfo->size,
-                            APR_MMAP_READ, r->pool) != APR_SUCCESS)) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(10256)
-                          "Make etag: could not mmap");
-            return "";
-        }
-
+    if (cfg->enable_mmap == ENABLE_MMAP_OFF) {
+        (void)apr_bucket_file_enable_mmap(e, 0);
     }
 #endif
 
     apr_sha1_init(&context);
-    nbytes = sizeof(buf);
-    while ((status = apr_file_read(fd, buf, &nbytes)) == APR_SUCCESS) {
-        apr_sha1_update_binary(&context, buf, nbytes);
-        nbytes = sizeof(buf);
-    }
-    if (status != APR_EOF) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(10254)
-                      "Make etag: could not read");
-        if (er->pathname) {
-            apr_file_close(fd);
+    while (!APR_BRIGADE_EMPTY(bb))
+    {
+        const char *str;
+
+        e = APR_BRIGADE_FIRST(bb);
+
+        if ((status = apr_bucket_read(e, &str, &nbytes, APR_BLOCK_READ)) != APR_SUCCESS) {
+        	apr_brigade_destroy(bb);
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(10254)
+                          "Make etag: could not read");
+            if (er->pathname) {
+                apr_file_close(fd);
+            }
+            return "";
         }
-        return "";
+
+        apr_sha1_update(&context, str, nbytes);
+        apr_bucket_delete(e);
     }
 
     if ((status = apr_file_seek(fd, APR_SET, &offset)) != APR_SUCCESS) {
