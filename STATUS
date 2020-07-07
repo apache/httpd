@@ -204,7 +204,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/r1879369
                  http://svn.apache.org/r1879373
      2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-ap_parse_strict_length.patch
-    +1: ylavic, minfrin
+    +1: ylavic, minfrin, jim
     ylavic: the patch drops changes to apreq, which seems to not be in 2.4.
 
   *) mod_ssl: deduplicate some code
@@ -216,12 +216,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/r1877291
                  http://svn.apache.org/r1879445
      2.4.x patch: svn merge -c 1705539,1877263,1877291,1879445 ^/httpd/httpd/trunk .
-     +1: jailletc36, minfrin, 
+     +1: jailletc36, minfrin, jim
 
   *) core: Fix a signed/unsigned comparison
      trunk patch http://svn.apache.org/r1864868
      2.4.x patch: svn merge -c 1864868 ^/httpd/httpd/trunk .
-     +1: jailletc36, minfrin, 
+     +1: jailletc36, minfrin, jim
 
  *) "[mod_dav_fs etag handling] should really honor the FileETag setting".
      - It now does.
@@ -245,7 +245,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 http://svn.apache.org/r1879541
                 http://svn.apache.org/r1879548
     2.4.x patch https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-etag2.patch
-    +1: minfrin
+    +1: minfrin, jm
 
   *) core: Drop an invalid Last-Modified header value coming
      from a (F)CGI script instead of replacing it with Unix epoch.
@@ -266,7 +266,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
             svn merge -c 1748379,1750747,1750749,1750953,1751138,1751139,1751139,1757818,1879253,r1879348 ^/httpd/httpd/trunk .
      The code has been tested with a simple PHP script returning different Last-Modified
      headers (GMT now, GMT now Europe/Paris, GMT tomorrow, GMT yesterday, PST now).
-     +1: elukey, jorton
+     +1: elukey, jorton, jim
      jorton: +1 though I'd say log at WARN or INFO for the APR_BAD_DATE case
              rather than "silently" (at normal log-level) dropping the parsed header?
              [also nit: wrapping a lone ap_log_rerror(,APLOG_X) call in
