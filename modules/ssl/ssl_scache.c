@@ -59,7 +59,7 @@ apr_status_t ssl_scache_init(server_rec *s, apr_pool_t *p)
         hints.expiry_interval = 300;
 
         rv = mc->stapling_cache->init(mc->stapling_cache_context,
-                                     "mod_ssl-stapling", &hints, s, p);
+                                     "mod_ssl-staple", &hints, s, p);
         if (rv) {
             ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(01872)
                          "Could not initialize stapling cache. Exiting.");
@@ -84,7 +84,7 @@ apr_status_t ssl_scache_init(server_rec *s, apr_pool_t *p)
     hints.avg_id_len = 30;
     hints.expiry_interval = 30;
 
-    rv = mc->sesscache->init(mc->sesscache_context, "mod_ssl-session", &hints, s, p);
+    rv = mc->sesscache->init(mc->sesscache_context, "mod_ssl-sess", &hints, s, p);
     if (rv) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(01874)
                      "Could not initialize session cache. Exiting.");

@@ -185,22 +185,11 @@ BOOL modssl_X509_getBC(X509 *cert, int *ca, int *pathlen)
     return TRUE;
 }
 
-/* Convert ASN.1 string to a pool-allocated char * string, escaping
- * control characters.  If raw is zero, convert to UTF-8, otherwise
- * unchanged from the character set. */
-static char *asn1_string_convert(apr_pool_t *p, ASN1_STRING *asn1str, int raw)
+char *modssl_bio_free_read(apr_pool_t *p, BIO *bio)
 {
+    int len = BIO_pending(bio);
     char *result = NULL;
-    BIO *bio;
-    int len, flags = ASN1_STRFLGS_ESC_CTRL;
 
-    if ((bio = BIO_new(BIO_s_mem())) == NULL)
-        return NULL;
-
-    if (!raw) flags |= ASN1_STRFLGS_UTF8_CONVERT;
-    
-    ASN1_STRING_print_ex(bio, asn1str, flags);
-    len = BIO_pending(bio);
     if (len > 0) {
         result = apr_palloc(p, len+1);
         len = BIO_read(bio, result, len);
@@ -208,6 +197,24 @@ static char *asn1_string_convert(apr_pool_t *p, ASN1_STRING *asn1str, int raw)
     }
     BIO_free(bio);
     return result;
+}
+
+/* Convert ASN.1 string to a pool-allocated char * string, escaping
+ * control characters.  If raw is zero, convert to UTF-8, otherwise
+ * unchanged from the character set. */
+static char *asn1_string_convert(apr_pool_t *p, ASN1_STRING *asn1str, int raw)
+{
+    BIO *bio;
+    int flags = ASN1_STRFLGS_ESC_CTRL;
+
+    if ((bio = BIO_new(BIO_s_mem())) == NULL)
+        return NULL;
+
+    if (!raw) flags |= ASN1_STRFLGS_UTF8_CONVERT;
+    
+    ASN1_STRING_print_ex(bio, asn1str, flags);
+
+    return modssl_bio_free_read(p, bio);
 }
 
 #define asn1_string_to_utf8(p, a) asn1_string_convert(p, a, 0)

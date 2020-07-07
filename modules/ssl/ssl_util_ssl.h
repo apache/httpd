@@ -78,6 +78,11 @@ BOOL        modssl_X509_getSAN(apr_pool_t *, X509 *, int, const char *, int, apr
 BOOL        modssl_X509_match_name(apr_pool_t *, X509 *, const char *, BOOL, server_rec *);
 char       *modssl_SSL_SESSION_id2sz(IDCONST unsigned char *, int, char *, int);
 
+/* Reads the remaining data in BIO, if not empty, and copies it into a
+ * pool-allocated string.  If empty, returns NULL.  BIO_free(bio) is
+ * called for both cases. */
+char *modssl_bio_free_read(apr_pool_t *p, BIO *bio);
+    
 #endif /* __SSL_UTIL_SSL_H__ */
 /** @} */
 
