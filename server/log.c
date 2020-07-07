@@ -538,14 +538,18 @@ static int log_tid(const ap_errorlog_info *info, const char *arg,
 #if APR_HAS_THREADS
     int result;
 #endif
-#if HAVE_GETTID
+#if defined(HAVE_GETTID) || defined(HAVE_SYS_GETTID)
     if (arg && *arg == 'g') {
+#ifdef HAVE_GETTID
+        pid_t tid = gettid();
+#else
         pid_t tid = syscall(SYS_gettid);
+#endif
         if (tid == -1)
             return 0;
         return apr_snprintf(buf, buflen, "%"APR_PID_T_FMT, tid);
     }
-#endif
+#endif /* HAVE_GETTID || HAVE_SYS_GETTID */
 #if APR_HAS_THREADS
     if (ap_mpm_query(AP_MPMQ_IS_THREADED, &result) == APR_SUCCESS
         && result != AP_MPMQ_NOT_SUPPORTED)
