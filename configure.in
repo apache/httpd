@@ -535,22 +535,26 @@ prctl \
 timegm \
 getpgid \
 fopen64 \
-getloadavg
+getloadavg \
+gettid
 )
 
 dnl confirm that a void pointer is large enough to store a long integer
 APACHE_CHECK_VOID_PTR_LEN
 
-AC_CACHE_CHECK([for gettid()], ac_cv_gettid,
+if test $ac_cv_func_gettid = no; then
+  # On Linux before glibc 2.30, gettid() is only usable via syscall()
+  AC_CACHE_CHECK([for gettid() via syscall], ap_cv_gettid,
 [AC_TRY_RUN(#define _GNU_SOURCE
 #include <unistd.h>
 #include <sys/syscall.h>
 #include <sys/types.h>
 int main(int argc, char **argv) {
 pid_t t = syscall(SYS_gettid); return t == -1 ? 1 : 0; },
-[ac_cv_gettid=yes], [ac_cv_gettid=no], [ac_cv_gettid=no])])
-if test "$ac_cv_gettid" = "yes"; then
-    AC_DEFINE(HAVE_GETTID, 1, [Define if you have gettid()])
+  [ap_cv_gettid=yes], [ap_cv_gettid=no], [ap_cv_gettid=no])])
+  if test "$ap_cv_gettid" = "yes"; then
+      AC_DEFINE(HAVE_SYS_GETTID, 1, [Define if you have gettid() via syscall()])
+  fi
 fi
 
 dnl ## Check for the tm_gmtoff field in struct tm to get the timezone diffs
