@@ -76,14 +76,11 @@ if ! test -v SKIP_TESTING; then
 
     if test -v TEST_SSL -a $RV -eq 0; then
         pushd test/perl-framework
-            # A test suite run with SSLSessionCache defined (see t/conf/ssl.conf.in)
-            SSL_SESSCACHE=shmcb ./t/TEST -defines TEST_SSL_SESSCACHE t/ssl
-            RV=$?
-            if test $RV -eq 0; then
-                # A test suite run with "SSLProtocol TLSv1.2" (see t/conf/ssl.conf.in)
-                ./t/TEST -sslproto TLSv1.2 t/ssl
+            for cache in shmcb redis:localhost:6379 memcache:localhost:11211; do
+                SSL_SESSCACHE=$cache ./t/TEST -sslproto TLSv1.2 -defines TEST_SSL_SESSCACHE t/ssl
                 RV=$?
-            fi
+                test $RV -eq 0 || break
+            done
         popd
     fi
 
