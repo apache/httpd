@@ -56,7 +56,7 @@
 #include "ap_provider.h"
 #include "ap_listen.h"
 
-#if HAVE_GETTID
+#ifdef HAVE_SYS_GETTID
 #include <sys/syscall.h>
 #include <sys/types.h>
 #endif
