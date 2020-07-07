@@ -270,7 +270,7 @@ apr_status_t ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
             while ((len < readbytes) && (rv == APR_SUCCESS)
                    && (e != APR_BRIGADE_SENTINEL(ctx->b))) {
                 /* Check for the availability of buckets with known length */
-                if (e->length != -1) {
+                if (e->length != (apr_size_t)-1) {
                     len += e->length;
                     e = APR_BUCKET_NEXT(e);
                 }
