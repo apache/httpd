@@ -135,6 +135,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_watchdog: Switch to simpler logic to avoid the thread cleanup running
+     before the thread has started, avoiding mutex operations with undefined behaviour
+     trunk patch: http://svn.apache.org/r1876511
+     2.4.x patch: svn merge -c 1876511 ^/httpd/httpd/trunk .
+     +1: jailletc36 (by inspection), jim, minfrin
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -178,12 +184,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: ylavic
      -0: covener: lots of folks getting dns and connection reuse implicitly after we backport this.
      ylavic: should be addressed by r1879000
-
-  *) mod_watchdog: Switch to simpler logic to avoid the thread cleanup running
-     before the thread has started, avoiding mutex operations with undefined behaviour
-     trunk patch: http://svn.apache.org/r1876511
-     2.4.x patch: svn merge -c 1876511 ^/httpd/httpd/trunk .
-     +1: jailletc36 (by inspection), jim
 
  *) "[mod_dav_fs etag handling] should really honor the FileETag setting".
      - It now does.
