@@ -177,8 +177,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1879361
      2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-ap_proxy_define_match_worker-v6.patch
      +1: ylavic, minfrin (with an MMN bump)
-     -0: covener: lots of folks getting dns and connection reuse implicitly after we backport this.
-     ylavic: should be addressed by r1879000
 
  *) "[mod_dav_fs etag handling] should really honor the FileETag setting".
      - It now does.
