@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.44
 
+  *) core: Drop an invalid Last-Modified header value coming
+     from a FCGI/CGI script instead of replacing it with Unix epoch.
+     [Luca Toscano]
+
   *) Add support for strict content-length parsing through addition of
      ap_parse_strict_length() [Yann Ylavic]
 

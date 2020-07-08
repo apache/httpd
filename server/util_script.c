@@ -669,11 +669,19 @@ AP_DECLARE(int) ap_scan_script_header_err_core_ex(request_rec *r, char *buffer,
         }
         /*
          * If the script gave us a Last-Modified header, we can't just
-         * pass it on blindly because of restrictions on future values.
+         * pass it on blindly because of restrictions on future or invalid values.
          */
         else if (!strcasecmp(w, "Last-Modified")) {
-            ap_update_mtime(r, apr_date_parse_http(l));
-            ap_set_last_modified(r);
+            apr_time_t last_modified_date = apr_date_parse_http(l);
+            if (last_modified_date != APR_DATE_BAD) {
+                ap_update_mtime(r, last_modified_date);
+                ap_set_last_modified(r);
+            }
+            else {
+                if (APLOGrtrace1(r))
+                   ap_log_rerror(SCRIPT_LOG_MARK, APLOG_TRACE1, 0, r,
+                                 "Ignored invalid header value: Last-Modified: '%s'", l);
+            }
         }
         else if (!strcasecmp(w, "Set-Cookie")) {
             apr_table_add(cookie_table, w, l);

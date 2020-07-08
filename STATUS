@@ -135,31 +135,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) core: Drop an invalid Last-Modified header value coming
-     from a (F)CGI script instead of replacing it with Unix epoch.
-     Warn the users about Last-Modified header value replacements
-     and violations of the RFC.
-     trunk patch: http://svn.apache.org/r1748379
-                  http://svn.apache.org/r1750747
-                  http://svn.apache.org/r1750749
-                  http://svn.apache.org/r1750953
-                  http://svn.apache.org/r1751138
-                  http://svn.apache.org/r1751139
-                  http://svn.apache.org/r1751147
-                  http://svn.apache.org/r1757818
-                  http://svn.apache.org/r1879253
-                  http://svn.apache.org/r1879348
-     2.4.x: trunk patches work, final view:
-            http://home.apache.org/~elukey/httpd-2.4.x-core-last_modified_tz_logging.patch
-            svn merge -c 1748379,1750747,1750749,1750953,1751138,1751139,1751139,1757818,1879253,r1879348 ^/httpd/httpd/trunk .
-     The code has been tested with a simple PHP script returning different Last-Modified
-     headers (GMT now, GMT now Europe/Paris, GMT tomorrow, GMT yesterday, PST now).
-     +1: elukey, jorton, jim
-     jorton: +1 though I'd say log at WARN or INFO for the APR_BAD_DATE case
-             rather than "silently" (at normal log-level) dropping the parsed header?
-             [also nit: wrapping a lone ap_log_rerror(,APLOG_X) call in
-             if (APLOGrX(..) is unnecessary/redundant]
-
   *) mod_http2: connection terminology renamed to master/secondary.
      trunk patch: http://svn.apache.org/r1878926
                   http://svn.apache.org/r1879156
