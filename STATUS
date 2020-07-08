@@ -135,17 +135,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_http2: connection terminology renamed to master/secondary.
-     trunk patch: http://svn.apache.org/r1878926
-                  http://svn.apache.org/r1879156
-     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/h2-master-secondary.patch
-     +1: icing, ylavic, minfrin
-     ylavic: nitpicking, mixed "H2_secondary_IN" and "H2_secondary_OUT" case to
-             register the filters, but not for adding them. IIRC filters names
-             are case insentive so shouldn't matter, just popped at my eyes..
-     icing: updated patch and added r1879156 to fix the eye bleed.
-     jailletc36: CHANGES could also be looked at if it makes sense to update the terminology
-                 also here
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

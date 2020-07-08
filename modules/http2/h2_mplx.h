@@ -31,8 +31,10 @@
  * queued in the multiplexer. If a task thread tries to write more
  * data, it is blocked until space becomes available.
  *
- * Writing input is never blocked. In order to use flow control on the input,
- * the mplx can be polled for input data consumption.
+ * Naming Convention: 
+ * "h2_mplx_m_" are methods only to be called by the main connection
+ * "h2_mplx_s_" are method only to be called by a secondary connection
+ * "h2_mplx_t_" are method only to be called by a task handler (can be master or secondary)
  */
 
 struct apr_pool_t;
@@ -88,25 +90,23 @@ struct h2_mplx {
     apr_size_t stream_max_mem;
     
     apr_pool_t *spare_io_pool;
-    apr_array_header_t *spare_slaves; /* spare slave connections */
+    apr_array_header_t *spare_secondary; /* spare secondary connections */
     
     struct h2_workers *workers;
 };
 
-
-
 /*******************************************************************************
- * Object lifecycle and information.
+ * From the main connection processing: h2_mplx_m_*
  ******************************************************************************/
 
-apr_status_t h2_mplx_child_init(apr_pool_t *pool, server_rec *s);
+apr_status_t h2_mplx_m_child_init(apr_pool_t *pool, server_rec *s);
 
 /**
  * Create the multiplexer for the given HTTP2 session. 
  * Implicitly has reference count 1.
  */
-h2_mplx *h2_mplx_create(conn_rec *c, server_rec *s, apr_pool_t *master, 
-                        struct h2_workers *workers);
+h2_mplx *h2_mplx_m_create(conn_rec *c, server_rec *s, apr_pool_t *master, 
+                          struct h2_workers *workers);
 
 /**
  * Decreases the reference counter of this mplx and waits for it
@@ -116,26 +116,14 @@ h2_mplx *h2_mplx_create(conn_rec *c, server_rec *s, apr_pool_t *master,
  * @param m the mplx to be released and destroyed
  * @param wait condition var to wait on for ref counter == 0
  */ 
-void h2_mplx_release_and_join(h2_mplx *m, struct apr_thread_cond_t *wait);
-
-apr_status_t h2_mplx_pop_task(h2_mplx *m, struct h2_task **ptask);
-
-void h2_mplx_task_done(h2_mplx *m, struct h2_task *task, struct h2_task **ptask);
+void h2_mplx_m_release_and_join(h2_mplx *m, struct apr_thread_cond_t *wait);
 
 /**
  * Shut down the multiplexer gracefully. Will no longer schedule new streams
  * but let the ongoing ones finish normally.
  * @return the highest stream id being/been processed
  */
-int h2_mplx_shutdown(h2_mplx *m);
-
-int h2_mplx_is_busy(h2_mplx *m);
-
-/*******************************************************************************
- * IO lifetime of streams.
- ******************************************************************************/
-
-struct h2_stream *h2_mplx_stream_get(h2_mplx *m, int id);
+int h2_mplx_m_shutdown(h2_mplx *m);
 
 /**
  * Notifies mplx that a stream has been completely handled on the main
@@ -144,20 +132,16 @@ struct h2_stream *h2_mplx_stream_get(h2_mplx *m, int id);
  * @param m the mplx itself
  * @param stream the stream ready for cleanup
  */
-apr_status_t h2_mplx_stream_cleanup(h2_mplx *m, struct h2_stream *stream);
+apr_status_t h2_mplx_m_stream_cleanup(h2_mplx *m, struct h2_stream *stream);
 
 /**
  * Waits on output data from any stream in this session to become available. 
  * Returns APR_TIMEUP if no data arrived in the given time.
  */
-apr_status_t h2_mplx_out_trywait(h2_mplx *m, apr_interval_time_t timeout,
-                                 struct apr_thread_cond_t *iowait);
+apr_status_t h2_mplx_m_out_trywait(h2_mplx *m, apr_interval_time_t timeout,
+                                   struct apr_thread_cond_t *iowait);
 
-apr_status_t h2_mplx_keep_active(h2_mplx *m, struct h2_stream *stream);
-
-/*******************************************************************************
- * Stream processing.
- ******************************************************************************/
+apr_status_t h2_mplx_m_keep_active(h2_mplx *m, struct h2_stream *stream);
 
 /**
  * Process a stream request.
@@ -168,8 +152,8 @@ apr_status_t h2_mplx_keep_active(h2_mplx *m, struct h2_stream *stream);
  * @param cmp the stream priority compare function
  * @param ctx context data for the compare function
  */
-apr_status_t h2_mplx_process(h2_mplx *m, struct h2_stream *stream, 
-                             h2_stream_pri_cmp *cmp, void *ctx);
+apr_status_t h2_mplx_m_process(h2_mplx *m, struct h2_stream *stream, 
+                               h2_stream_pri_cmp *cmp, void *ctx);
 
 /**
  * Stream priorities have changed, reschedule pending requests.
@@ -178,7 +162,7 @@ apr_status_t h2_mplx_process(h2_mplx *m, struct h2_stream *stream,
  * @param cmp the stream priority compare function
  * @param ctx context data for the compare function
  */
-apr_status_t h2_mplx_reprioritize(h2_mplx *m, h2_stream_pri_cmp *cmp, void *ctx);
+apr_status_t h2_mplx_m_reprioritize(h2_mplx *m, h2_stream_pri_cmp *cmp, void *ctx);
 
 typedef apr_status_t stream_ev_callback(void *ctx, struct h2_stream *stream);
 
@@ -186,7 +170,7 @@ typedef apr_status_t stream_ev_callback(void *ctx, struct h2_stream *stream);
  * Check if the multiplexer has events for the master connection pending.
  * @return != 0 iff there are events pending
  */
-int h2_mplx_has_master_events(h2_mplx *m);
+int h2_mplx_m_has_master_events(h2_mplx *m);
 
 /**
  * Dispatch events for the master connection, such as
@@ -194,108 +178,46 @@ int h2_mplx_has_master_events(h2_mplx *m);
  * @param on_resume new output data has arrived for a suspended stream 
  * @param ctx user supplied argument to invocation.
  */
-apr_status_t h2_mplx_dispatch_master_events(h2_mplx *m, 
-                                            stream_ev_callback *on_resume, 
-                                            void *ctx);
+apr_status_t h2_mplx_m_dispatch_master_events(h2_mplx *m, stream_ev_callback *on_resume, 
+                                              void *ctx);
 
-int h2_mplx_awaits_data(h2_mplx *m);
+int h2_mplx_m_awaits_data(h2_mplx *m);
 
 typedef int h2_mplx_stream_cb(struct h2_stream *s, void *ctx);
 
-apr_status_t h2_mplx_stream_do(h2_mplx *m, h2_mplx_stream_cb *cb, void *ctx);
+apr_status_t h2_mplx_m_stream_do(h2_mplx *m, h2_mplx_stream_cb *cb, void *ctx);
 
-apr_status_t h2_mplx_client_rst(h2_mplx *m, int stream_id);
-
-/*******************************************************************************
- * Output handling of streams.
- ******************************************************************************/
-
-/**
- * Opens the output for the given stream with the specified response.
- */
-apr_status_t h2_mplx_out_open(h2_mplx *mplx, int stream_id,
-                              struct h2_bucket_beam *beam);
-
-/*******************************************************************************
- * h2_mplx list Manipulation.
- ******************************************************************************/
-
-/**
- * The magic pointer value that indicates the head of a h2_mplx list
- * @param  b The mplx list
- * @return The magic pointer value
- */
-#define H2_MPLX_LIST_SENTINEL(b)	APR_RING_SENTINEL((b), h2_mplx, link)
-
-/**
- * Determine if the mplx list is empty
- * @param b The list to check
- * @return true or false
- */
-#define H2_MPLX_LIST_EMPTY(b)	APR_RING_EMPTY((b), h2_mplx, link)
-
-/**
- * Return the first mplx in a list
- * @param b The list to query
- * @return The first mplx in the list
- */
-#define H2_MPLX_LIST_FIRST(b)	APR_RING_FIRST(b)
-
-/**
- * Return the last mplx in a list
- * @param b The list to query
- * @return The last mplx int he list
- */
-#define H2_MPLX_LIST_LAST(b)	APR_RING_LAST(b)
-
-/**
- * Insert a single mplx at the front of a list
- * @param b The list to add to
- * @param e The mplx to insert
- */
-#define H2_MPLX_LIST_INSERT_HEAD(b, e) do {				\
-h2_mplx *ap__b = (e);                                        \
-APR_RING_INSERT_HEAD((b), ap__b, h2_mplx, link);	\
-} while (0)
-
-/**
- * Insert a single mplx at the end of a list
- * @param b The list to add to
- * @param e The mplx to insert
- */
-#define H2_MPLX_LIST_INSERT_TAIL(b, e) do {				\
-h2_mplx *ap__b = (e);					\
-APR_RING_INSERT_TAIL((b), ap__b, h2_mplx, link);	\
-} while (0)
-
-/**
- * Get the next mplx in the list
- * @param e The current mplx
- * @return The next mplx
- */
-#define H2_MPLX_NEXT(e)	APR_RING_NEXT((e), link)
-/**
- * Get the previous mplx in the list
- * @param e The current mplx
- * @return The previous mplx
- */
-#define H2_MPLX_PREV(e)	APR_RING_PREV((e), link)
-
-/**
- * Remove a mplx from its list
- * @param e The mplx to remove
- */
-#define H2_MPLX_REMOVE(e)	APR_RING_REMOVE((e), link)
-
-/*******************************************************************************
- * h2_mplx DoS protection
- ******************************************************************************/
+apr_status_t h2_mplx_m_client_rst(h2_mplx *m, int stream_id);
 
 /**
  * Master connection has entered idle mode.
  * @param m the mplx instance of the master connection
  * @return != SUCCESS iff connection should be terminated
  */
-apr_status_t h2_mplx_idle(h2_mplx *m);
+apr_status_t h2_mplx_m_idle(h2_mplx *m);
+
+/*******************************************************************************
+ * From a secondary connection processing: h2_mplx_s_*
+ ******************************************************************************/
+apr_status_t h2_mplx_s_pop_task(h2_mplx *m, struct h2_task **ptask);
+void h2_mplx_s_task_done(h2_mplx *m, struct h2_task *task, struct h2_task **ptask);
+
+/*******************************************************************************
+ * From a h2_task owner: h2_mplx_s_*
+ * (a task is transfered from master to secondary connection and back in
+ * its normal lifetime).
+ ******************************************************************************/
+
+/**
+ * Opens the output for the given stream with the specified response.
+ */
+apr_status_t h2_mplx_t_out_open(h2_mplx *mplx, int stream_id,
+                                struct h2_bucket_beam *beam);
+
+/**
+ * Get the stream that belongs to the given task.
+ */
+struct h2_stream *h2_mplx_t_stream_get(h2_mplx *m, struct h2_task *task);
+
 
 #endif /* defined(__mod_h2__h2_mplx__) */

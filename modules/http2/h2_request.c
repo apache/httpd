@@ -288,6 +288,9 @@ request_rec *h2_request_create_rec(const h2_request *req, conn_rec *c)
     if (r->method_number == M_GET && r->method[0] == 'H') {
         r->header_only = 1;
     }
+    r->the_request = apr_psprintf(r->pool, "%s %s HTTP/2.0", 
+                                  req->method, req->path ? req->path : "");
+    r->headers_in = apr_table_clone(r->pool, req->headers);
 
     rpath = (req->path ? req->path : "");
     ap_parse_uri(r, rpath);
@@ -304,7 +307,9 @@ request_rec *h2_request_create_rec(const h2_request *req, conn_rec *c)
      */
     r->hostname = NULL;
     ap_update_vhost_from_headers(r);
-    
+    r->protocol = "HTTP/2.0";
+    r->proto_num = HTTP_VERSION(2, 0);
+
     /* we may have switched to another server */
     r->per_dir_config = r->server->lookup_defaults;
     

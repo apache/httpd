@@ -370,7 +370,7 @@ static void add_streams(apr_bucket_brigade *bb, h2_session *s, int last)
     x.s = s;
     x.idx = 0;
     bbout(bb, "  \"streams\": {");
-    h2_mplx_stream_do(s->mplx, add_stream, &x);
+    h2_mplx_m_stream_do(s->mplx, add_stream, &x);
     bbout(bb, "\n  }%s\n", last? "" : ",");
 }
 
@@ -433,7 +433,7 @@ static void add_stats(apr_bucket_brigade *bb, h2_session *s,
 static apr_status_t h2_status_insert(h2_task *task, apr_bucket *b)
 {
     h2_mplx *m = task->mplx;
-    h2_stream *stream = h2_mplx_stream_get(m, task->stream_id);
+    h2_stream *stream = h2_mplx_t_stream_get(m, task);
     h2_session *s;
     conn_rec *c;
     

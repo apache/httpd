@@ -90,7 +90,7 @@ struct h2_task {
     apr_bucket *eor;
 };
 
-h2_task *h2_task_create(conn_rec *slave, int stream_id,
+h2_task *h2_task_create(conn_rec *secondary, int stream_id,
                         const h2_request *req, struct h2_mplx *m, 
                         struct h2_bucket_beam *input, 
                         apr_interval_time_t timeout,
