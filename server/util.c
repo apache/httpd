@@ -2589,6 +2589,15 @@ AP_DECLARE(apr_status_t) ap_timeout_parameter_parse(
     return APR_SUCCESS;
 }
 
+AP_DECLARE(int) ap_parse_strict_length(apr_off_t *len, const char *str)
+{
+    char *end;
+
+    return (apr_isdigit(*str)
+            && apr_strtoff(len, str, &end, 10) == APR_SUCCESS
+            && *end == '\0');
+}
+
 /**
  * Determine if a request has a request body or not.
  *
@@ -2598,20 +2607,13 @@ AP_DECLARE(apr_status_t) ap_timeout_parameter_parse(
 AP_DECLARE(int) ap_request_has_body(request_rec *r)
 {
     apr_off_t cl;
-    char *estr;
     const char *cls;
-    int has_body;
 
-    has_body = (!r->header_only
-                && (r->kept_body
-                    || apr_table_get(r->headers_in, "Transfer-Encoding")
-                    || ( (cls = apr_table_get(r->headers_in, "Content-Length"))
-                        && (apr_strtoff(&cl, cls, &estr, 10) == APR_SUCCESS)
-                        && (!*estr)
-                        && (cl > 0) )
-                    )
-                );
-    return has_body;
+    return (!r->header_only
+            && (r->kept_body
+                || apr_table_get(r->headers_in, "Transfer-Encoding")
+                || ((cls = apr_table_get(r->headers_in, "Content-Length"))
+                    && ap_parse_strict_length(&cl, cls) && cl > 0)));
 }
 
 AP_DECLARE_NONSTD(apr_status_t) ap_pool_cleanup_set_null(void *data_)

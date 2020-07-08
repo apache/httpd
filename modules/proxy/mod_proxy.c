@@ -1208,7 +1208,6 @@ static int proxy_handler(request_rec *r)
                     /* Did the scheme handler process the request? */
                     if (access_status != DECLINED) {
                         const char *cl_a;
-                        char *end;
                         apr_off_t cl;
 
                         /*
@@ -1218,18 +1217,17 @@ static int proxy_handler(request_rec *r)
                         if (access_status != HTTP_BAD_GATEWAY) {
                             goto cleanup;
                         }
+
                         cl_a = apr_table_get(r->headers_in, "Content-Length");
-                        if (cl_a) {
-                            apr_strtoff(&cl, cl_a, &end, 10);
+                        if (cl_a && (!ap_parse_strict_length(&cl, cl_a)
+                                     || cl > 0)) {
                             /*
                              * The request body is of length > 0. We cannot
                              * retry with a direct connection since we already
                              * sent (parts of) the request body to the proxy
                              * and do not have any longer.
                              */
-                            if (cl > 0) {
-                                goto cleanup;
-                            }
+                            goto cleanup;
                         }
                         /*
                          * Transfer-Encoding was set as input header, so we had

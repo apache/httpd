@@ -1044,7 +1044,8 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
     /* Was this the final bucket? If yes, perform sanity checks.
      */
     if (seen_eos) {
-        const char *cl_header = apr_table_get(r->headers_out, "Content-Length");
+        const char *cl_header;
+        apr_off_t cl;
 
         if (r->connection->aborted || r->no_cache) {
             ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02380)
@@ -1055,18 +1056,16 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
             sobj->pool = NULL;
             return APR_EGENERAL;
         }
-        if (cl_header) {
-            apr_off_t cl;
-            char *cl_endp;
-            if (apr_strtoff(&cl, cl_header, &cl_endp, 10) != APR_SUCCESS
-                    || *cl_endp != '\0' || cl != sobj->body_length) {
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02381)
-                        "URL %s didn't receive complete response, not caching",
-                        h->cache_obj->key);
-                apr_pool_destroy(sobj->pool);
-                sobj->pool = NULL;
-                return APR_EGENERAL;
-            }
+
+        cl_header = apr_table_get(r->headers_out, "Content-Length");
+        if (cl_header && (!ap_parse_strict_length(&cl, cl_header)
+                          || cl != sobj->body_length)) {
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02381)
+                    "URL %s didn't receive complete response, not caching",
+                    h->cache_obj->key);
+            apr_pool_destroy(sobj->pool);
+            sobj->pool = NULL;
+            return APR_EGENERAL;
         }
 
         /* All checks were fine, we're good to go when the commit comes */

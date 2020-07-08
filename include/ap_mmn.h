@@ -534,6 +534,7 @@
  * 20120211.90 (2.4.42-dev) AP_REG_DEFAULT macro in ap_regex.h
  * 20120211.91 (2.4.42-dev) Add ap_is_chunked() in httpd.h
  * 20120211.92 (2.4.42-dev) AP_REG_NO_DEFAULT macro in ap_regex.h
+ * 20120211.93 (2.4.44-dev) Add ap_parse_strict_length()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -541,7 +542,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 92                  /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 93                  /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

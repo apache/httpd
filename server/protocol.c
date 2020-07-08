@@ -1367,7 +1367,7 @@ request_rec *ap_read_request(conn_rec *conn)
     }
 
     if (!r->assbackwards) {
-        const char *tenc;
+        const char *tenc, *clen;
 
         ap_get_mime_headers_core(r, tmp_bb);
         if (r->status != HTTP_OK) {
@@ -1380,9 +1380,27 @@ request_rec *ap_read_request(conn_rec *conn)
             goto traceout;
         }
 
+        clen = apr_table_get(r->headers_in, "Content-Length");
+        if (clen) {
+            apr_off_t cl;
+
+            if (!ap_parse_strict_length(&cl, clen)) {
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(10242)
+                              "client sent invalid Content-Length "
+                              "(%s): %s", clen, r->uri);
+                r->status = HTTP_BAD_REQUEST;
+                conn->keepalive = AP_CONN_CLOSE;
+                ap_send_error_response(r, 0);
+                ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
+                ap_run_log_transaction(r);
+                apr_brigade_destroy(tmp_bb);
+                goto traceout;
+            }
+        }
+
         tenc = apr_table_get(r->headers_in, "Transfer-Encoding");
         if (tenc) {
-            /* http://tools.ietf.org/html/draft-ietf-httpbis-p1-messaging-23
+            /* https://tools.ietf.org/html/rfc7230
              * Section 3.3.3.3: "If a Transfer-Encoding header field is
              * present in a request and the chunked transfer coding is not
              * the final encoding ...; the server MUST respond with the 400
@@ -1401,13 +1419,20 @@ request_rec *ap_read_request(conn_rec *conn)
                 goto traceout;
             }
 
-            /* http://tools.ietf.org/html/draft-ietf-httpbis-p1-messaging-23
+            /* https://tools.ietf.org/html/rfc7230
              * Section 3.3.3.3: "If a message is received with both a
              * Transfer-Encoding and a Content-Length header field, the
              * Transfer-Encoding overrides the Content-Length. ... A sender
              * MUST remove the received Content-Length field".
              */
-            apr_table_unset(r->headers_in, "Content-Length");
+            if (clen) {
+                apr_table_unset(r->headers_in, "Content-Length");
+
+                /* Don't reuse this connection anyway to avoid confusion with
+                 * intermediaries and request/reponse spltting.
+                 */
+                conn->keepalive = AP_CONN_CLOSE;
+            }
         }
     }
 

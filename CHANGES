@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.44
 
+  *) Add support for strict content-length parsing through addition of
+     ap_parse_strict_length() [Yann Ylavic]
+
   *) mod_proxy_fcgi: ProxyFCGISetEnvIf unsets variables when expression
      evaluates to false.  PR64365. [Michael König <mail ikoenig.net>]
 
