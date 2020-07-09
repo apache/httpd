@@ -205,17 +205,21 @@ define dump_bucket_ex
             printf " contents=["
         end
         set $datalen = $bucket->length
-        if $datalen > 17
-            printmem $data 17
-            printf "..."
-            set $datalen = 20
+        if $isValidAddress($data) == 1
+            if $datalen > 17
+                printmem $data 17
+                printf "..."
+                set $datalen = 20
+            else
+                printmemn $data $datalen
+            end
+            printf "]"
+            while $datalen < 20
+                printf " "
+                set $datalen = $datalen + 1
+            end
         else
-            printmemn $data $datalen
-        end
-        printf "]"
-        while $datalen < 20
-            printf " "
-            set $datalen = $datalen + 1
+            printf "Iv addr %12lx]", $data
         end
 
         if $refcount != -1
@@ -281,13 +285,18 @@ define dump_brigade
     end
 
     set $j = 0
+    set $brigade_length = 0
     while $bucket != $sentinel
         printf "%2d", $j
         dump_bucket_ex $bucket 1
         set $j = $j + 1
+        if $bucket->length > 0
+            set $brigade_length = $brigade_length + $bucket->length
+        end
         set $bucket = $bucket->link.next
     end
     printf "end of brigade\n"
+    printf "Length of brigade (excluding buckets of unknown length): %u\n", $brigade_length
 end
 document dump_brigade
     Print bucket brigade info
@@ -561,6 +570,27 @@ DumpPoolAndChilds ()
 end
 document dump_pool_and_children
     Dump the whole pool hierarchy starting from the given pool.
+end
+
+python
+
+class isValidAddress (gdb.Function):
+    """Determines if the argument is a valid address."""
+
+    def __init__(self):
+        super(isValidAddress, self).__init__("isValidAddress")
+
+    def invoke(self, address):
+        inf = gdb.inferiors()[0]
+        result = 1
+        try:
+            inf.read_memory(address, 8)
+        except:
+            result = 0
+        return result
+
+isValidAddress()
+
 end
 
 # Set sane defaults for common signals:
