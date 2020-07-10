@@ -1,10 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.44
 
-  *) mod_watchdog: Switch to simpler logic to avoid the thread cleanup running
-     before the thread has started, avoiding mutex operations with undefined
-     behaviour. [Joe Orton]
-
   *) mod_http2: The module now handles master/secondary connections and has marked
      methods according to use. [Stefan Eissing]
 
