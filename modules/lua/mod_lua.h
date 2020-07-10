@@ -48,7 +48,13 @@
 #if LUA_VERSION_NUM > 501
 /* Load mode for lua_load() */
 #define lua_load(a,b,c,d)  lua_load(a,b,c,d,NULL)
-#define lua_resume(a,b)    lua_resume(a, NULL, b)
+
+#if LUA_VERSION_NUM > 503
+#define lua_resume(a,b,c)    lua_resume(a, NULL, b, c)
+#else
+#define lua_resume(a,b,c)    lua_resume(a, NULL, b)
+#endif
+
 #define luaL_setfuncs_compat(a,b) luaL_setfuncs(a,b,0)
 #else
 #define lua_rawlen(L,i)    lua_objlen(L, (i))
