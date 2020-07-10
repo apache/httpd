@@ -203,6 +203,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     +1: minfrin, jim
 
 
+ *) mod_http2: Avoid segfaults in case of handling certain responses for
+    already aborted connections.
+    Trunk version of patch:
+      http://svn.apache.org/r1879544
+      http://svn.apache.org/r1879546
+      http://svn.apache.org/r1879547
+    Backport version for 2.4.x of patch:
+      https://github.com/apache/httpd/pull/132.diff
+    +1: rpluem,
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
