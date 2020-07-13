@@ -408,6 +408,7 @@ dnl ## Check for programs
 AC_PATH_PROG(RM, rm)
 AC_PATH_PROG(PKGCONFIG, pkg-config)
 AC_PATH_PROG(RSYNC, rsync)
+AC_PATH_PROG(SVN, svn)
 AC_PROG_AWK
 AC_PROG_LN_S
 AC_CHECK_TOOL(RANLIB, ranlib, true)
