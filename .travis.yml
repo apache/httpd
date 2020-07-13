@@ -101,6 +101,7 @@ jobs:
     # -------------------------------------------------------------------------
     - name: Linux Ubuntu, Worker MPM, all-modules
       env: CONFIG="--enable-mods-shared=reallyall --with-mpm=worker"
+           CLEAR_CACHE=1
     # -------------------------------------------------------------------------
     - name: Linux Ubuntu, Shared MPMs, all-modules
       env: CONFIG="--enable-mods-shared=reallyall --enable-mpms-shared=all"
