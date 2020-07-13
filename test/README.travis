@@ -28,13 +28,17 @@ The Travis scripts use the following environment variables:
 * SKIP_TESTING - if set, the Perl test framework is not run for the
   build.
 
-* TEST_UBSAN - set for builds using UBSan ("Undefined Behaviour Sanitizer")
+* TEST_UBSAN - set for job using UBSan ("Undefined Behaviour Sanitizer")
 
-* TEST_MALLOC - set for builds using enhanced malloc debugging.
+* TEST_MALLOC - set for job using enhanced malloc debugging.
 
-* TEST_INSTALL - set for builds testing "make install"
+* TEST_INSTALL - set for job testing "make install"
 
-* TEST_LDAP - set for builds with slapd running
+* TEST_VPATH - set for job testing srcdir!=builddir 
+
+* TEST_LDAP - set for job with slapd, running LDAP tests
+
+* TEST_SSL - set for job with SSL/TLS testing variants
 
 * TESTS - a list of Perl framework tests to run
 
@@ -56,7 +60,6 @@ TODO list
 * Windows build
 * clang-on-Linux build
 * Use containers for non-Ubuntu-based Linux testing
-* VPATH builds
 * sanity checks for use of APLOGNO() - empty arguments, accidental duplicates, etc.
  - not sure how exactly
 * Known test failures

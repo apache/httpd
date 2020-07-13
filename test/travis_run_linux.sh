@@ -36,7 +36,14 @@ else
     CONFIG="$CONFIG --with-apr-util=/usr"
 fi
 
-./configure --prefix=$PREFIX $CONFIG
+srcdir=$PWD
+
+if test -v TEST_VPATH; then
+    mkdir ../vpath
+    cd ../vpath
+fi
+
+$srcdir/configure --prefix=$PREFIX $CONFIG
 make $MFLAGS
 
 if test -v TEST_INSTALL; then
