@@ -167,7 +167,7 @@ docs:
 	fi
 
 update-changes:
-	@for i in `find changes -type f`; do \
+	@for i in `find changes-entries -type f`; do \
 	    cp CHANGES CHANGES.tmp ; \
 	    awk -vfname=$$i 'BEGIN{done = 0} \
 	                    done == 0 && /^Changes with Apache /{ active = 1; print; next}; \
