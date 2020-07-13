@@ -877,6 +877,10 @@ const char  *ssl_cmd_SSLProxyCARevocationCheck(cmd_parms *, void *, const char *
 const char  *ssl_cmd_SSLProxyMachineCertificatePath(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyMachineCertificateFile(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyMachineCertificateChainFile(cmd_parms *, void *, const char *);
+#ifdef HAVE_SSL_CONF_CMD
+const char *ssl_cmd_SSLProxyOpenSSLConfCmd(cmd_parms *cmd, void *dcfg,
+                                           const char *arg1, const char *arg2);
+#endif
 #ifdef HAVE_TLS_SESSION_TICKETS
 const char *ssl_cmd_SSLSessionTicketKeyFile(cmd_parms *cmd, void *dcfg, const char *arg);
 #endif
