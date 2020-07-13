@@ -410,9 +410,14 @@ apr_status_t h2_res_create_ngheader(h2_ngheader **ph, apr_pool_t *p,
 apr_status_t h2_req_create_ngheader(h2_ngheader **ph, apr_pool_t *p, 
                                     const struct h2_request *req);
 
+/**
+ * Add a HTTP/2 header and return the table key if it really was added
+ * and not ignored.
+ */
 apr_status_t h2_req_add_header(apr_table_t *headers, apr_pool_t *pool, 
                                const char *name, size_t nlen,
-                               const char *value, size_t vlen);
+                               const char *value, size_t vlen,
+                               size_t max_field_len, int *pwas_added);
 
 /*******************************************************************************
  * h2_request helpers

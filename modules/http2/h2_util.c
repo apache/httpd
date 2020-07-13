@@ -1803,22 +1803,29 @@ int h2_res_ignore_trailer(const char *name, size_t len)
 }
 
 apr_status_t h2_req_add_header(apr_table_t *headers, apr_pool_t *pool, 
-                               const char *name, size_t nlen,
-                               const char *value, size_t vlen)
+                              const char *name, size_t nlen,
+                              const char *value, size_t vlen,
+                              size_t max_field_len, int *pwas_added)
 {
     char *hname, *hvalue;
+    const char *existing;
     
+    *pwas_added = 0;
     if (h2_req_ignore_header(name, nlen)) {
         return APR_SUCCESS;
     }
     else if (H2_HD_MATCH_LIT("cookie", name, nlen)) {
-        const char *existing = apr_table_get(headers, "cookie");
+        existing = apr_table_get(headers, "cookie");
         if (existing) {
             char *nval;
             
             /* Cookie header come separately in HTTP/2, but need
              * to be merged by "; " (instead of default ", ")
              */
+            if (max_field_len && strlen(existing) + vlen + nlen + 4 > max_field_len) {
+                /* "key: oldval, nval" is too long */
+                return APR_EINVAL;
+            }
             hvalue = apr_pstrndup(pool, value, vlen);
             nval = apr_psprintf(pool, "%s; %s", existing, hvalue);
             apr_table_setn(headers, "Cookie", nval);
@@ -1832,8 +1839,16 @@ apr_status_t h2_req_add_header(apr_table_t *headers, apr_pool_t *pool,
     }
     
     hname = apr_pstrndup(pool, name, nlen);
-    hvalue = apr_pstrndup(pool, value, vlen);
     h2_util_camel_case_header(hname, nlen);
+    existing = apr_table_get(headers, hname);
+    if (max_field_len) {
+        if ((existing? strlen(existing)+2 : 0) + vlen + nlen + 2 > max_field_len) {
+            /* "key: (oldval, )?nval" is too long */
+            return APR_EINVAL;
+        }
+    }
+    if (!existing) *pwas_added = 1;
+    hvalue = apr_pstrndup(pool, value, vlen);
     apr_table_mergen(headers, hname, hvalue);
     
     return APR_SUCCESS;
