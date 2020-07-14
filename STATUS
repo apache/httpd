@@ -211,7 +211,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/r1879547
     Backport version for 2.4.x of patch:
       https://github.com/apache/httpd/pull/132.diff
-    +1: rpluem,
+    +1: rpluem, icing
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
