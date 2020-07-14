@@ -213,6 +213,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       https://github.com/apache/httpd/pull/132.diff
     +1: rpluem, icing
 
+ *) mod_http2: Fixes LimitRequestFields configuration handling to compensate for
+    browsers that send request headers as multiple ones to make best use of HTTP/2
+    compression. 
+    Trunk version of patch:
+      http://svn.apache.org/r1879832
+    2.4.x:
+      svn merge -c 1879832 ^/httpd/httpd/trunk .
+    +1: icing  
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
