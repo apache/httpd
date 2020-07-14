@@ -1517,7 +1517,9 @@ static apr_status_t get_cgi_pid(request_rec *r,  cgid_server_conf *conf, pid_t *
         return stat;
     }
 
-    if (pid == 0) {
+    /* Don't accept zero as a pid here, calling kill(0, SIGTERM) etc
+     * later is unpleasant. */
+    if (*pid == 0) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01261)
                       "daemon couldn't find CGI process for connection %lu",
                       r->connection->id);
@@ -1650,9 +1652,7 @@ static int cgid_handler(request_rec *r)
     info->r = r;
     rv = get_cgi_pid(r, conf, &(info->pid));
 
-    /* Don't accept zero as a pid here, calling kill(0, SIGTERM) etc
-     * later is unpleasant. */
-    if (rv == APR_SUCCESS && info->pid) {
+    if (rv == APR_SUCCESS) {
         apr_pool_cleanup_register(r->pool, info,
                                   cleanup_script, apr_pool_cleanup_null);
     }
