@@ -657,6 +657,8 @@
  * 20200705.1 (2.5.1-dev)  Add dav_validate_root_ns(), dav_find_child_ns(),
  *                         dav_find_next_ns(), dav_find_attr_ns() and
  *                         dav_find_attr().
+ * 20200705.2 (2.5.1-dev)  Add dav_liveprop_elem structure and
+ *                         DAV_PROP_ELEMENT key.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -664,7 +666,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20200705
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 1             /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 2             /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

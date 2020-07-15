@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_dav: Some DAV extensions, like CalDAV, specify both document
+     elements and property elements that need to be taken into account
+     when generating a property. The document element and property element
+     are made available in the dav_liveprop_elem structure under the
+     DAV_PROP_ELEMENT key in the resource pool. [Graham Leggett]
+
   *) mod_dav: Add utility functions dav_validate_root_ns(),
      dav_find_child_ns(), dav_find_next_ns(), dav_find_attr_ns() and
      dav_find_attr() so that other modules get to play too.

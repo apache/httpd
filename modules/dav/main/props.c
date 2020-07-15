@@ -795,9 +795,17 @@ DAV_DECLARE(dav_get_props_result) dav_get_props(dav_propdb *propdb,
     apr_text_header hdr_ns = { 0 };
     int have_good = 0;
     dav_get_props_result result = { 0 };
+    dav_liveprop_elem *element;
     char *marks_liveprop;
     dav_xmlns_info *xi;
     int xi_filled = 0;
+
+    /* we lose both the document and the element when calling (insert_prop),
+     * make these available in the pool.
+     */
+    element = apr_pcalloc(propdb->resource->pool, sizeof(dav_liveprop_elem));
+    element->doc = doc;
+    apr_pool_userdata_setn(element, DAV_PROP_ELEMENT, NULL, propdb->resource->pool);
 
     /* ### NOTE: we should pass in TWO buffers -- one for keys, one for
        the marks */
@@ -821,6 +829,8 @@ DAV_DECLARE(dav_get_props_result) dav_get_props(dav_propdb *propdb,
         dav_error *err;
         dav_prop_insert inserted;
         dav_prop_name name;
+
+        element->elem = elem;
 
         /*
         ** First try live property providers; if they don't handle
