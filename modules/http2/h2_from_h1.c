@@ -315,6 +315,7 @@ typedef struct h2_response_parser {
     int http_status;
     apr_array_header_t *hlines;
     apr_bucket_brigade *tmp;
+    apr_bucket_brigade *saveto;
 } h2_response_parser;
 
 static apr_status_t parse_header(h2_response_parser *parser, char *line) {
@@ -351,13 +352,17 @@ static apr_status_t get_line(h2_response_parser *parser, apr_bucket_brigade *bb,
         parser->tmp = apr_brigade_create(task->pool, task->c->bucket_alloc);
     }
     status = apr_brigade_split_line(parser->tmp, bb, APR_BLOCK_READ, 
-                                    HUGE_STRING_LEN);
+                                    len);
     if (status == APR_SUCCESS) {
         --len;
         status = apr_brigade_flatten(parser->tmp, line, &len);
         if (status == APR_SUCCESS) {
             /* we assume a non-0 containing line and remove trailing crlf. */
             line[len] = '\0';
+            /*
+             * XXX: What to do if there is an LF but no CRLF?
+             *      Should we error out?
+             */
             if (len >= 2 && !strcmp(H2_CRLF, line + len - 2)) {
                 len -= 2;
                 line[len] = '\0';
@@ -367,10 +372,47 @@ static apr_status_t get_line(h2_response_parser *parser, apr_bucket_brigade *bb,
                               task->id, line);
             }
             else {
+                apr_off_t brigade_length;
+
+                /*
+                 * If the brigade parser->tmp becomes longer than our buffer
+                 * for flattening we never have a chance to get a complete
+                 * line. This can happen if we are called multiple times after
+                 * previous calls did not find a H2_CRLF and we returned
+                 * APR_EAGAIN. In this case parser->tmp (correctly) grows
+                 * with each call to apr_brigade_split_line.
+                 *
+                 * XXX: Currently a stack based buffer of HUGE_STRING_LEN is
+                 * used. This means we cannot cope with lines larger than
+                 * HUGE_STRING_LEN which might be an issue.
+                 */
+                status = apr_brigade_length(parser->tmp, 0, &brigade_length);
+                if ((status != APR_SUCCESS) || (brigade_length > len)) {
+                    ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, task->c, APLOGNO(10257)
+                                  "h2_task(%s): read response, line too long",
+                                  task->id);
+                    return APR_ENOSPC;
+                }
                 /* this does not look like a complete line yet */
                 ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, task->c,
                               "h2_task(%s): read response, incomplete line: %s", 
                               task->id, line);
+                if (!parser->saveto) {
+                    parser->saveto = apr_brigade_create(task->pool,
+                                                        task->c->bucket_alloc);
+                }
+                /*
+                 * Be on the save side and save the parser->tmp brigade
+                 * as it could contain transient buckets which could be
+                 * invalid next time we are here.
+                 *
+                 * NULL for the filter parameter is ok since we
+                 * provide our own brigade as second parameter
+                 * and ap_save_brigade does not need to create one.
+                 */
+                ap_save_brigade(NULL, &(parser->saveto), &(parser->tmp),
+                                parser->tmp->p);
+                APR_BRIGADE_CONCAT(parser->tmp, parser->saveto);
                 return APR_EAGAIN;
             }
         }

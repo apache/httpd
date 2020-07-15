@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.44
 
+  *) mod_http2: Avoid segfaults in case of handling certain responses for
+     already aborted connections.  [Stefan Eissing, Ruediger Pluem]
+
   *) mod_http2: The module now handles master/secondary connections and has marked
      methods according to use. [Stefan Eissing]
 
