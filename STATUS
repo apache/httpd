@@ -135,6 +135,15 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+ *) mod_http2: Avoid segfaults in case of handling certain responses for
+    already aborted connections.
+    Trunk version of patch:
+      http://svn.apache.org/r1879544
+      http://svn.apache.org/r1879546
+      http://svn.apache.org/r1879547
+    Backport version for 2.4.x of patch:
+      https://github.com/apache/httpd/pull/132.diff
+    +1: rpluem, icing, minfrin
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -201,17 +210,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 http://svn.apache.org/r1879548
     2.4.x patch https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-etag2.patch
     +1: minfrin, jim
-
-
- *) mod_http2: Avoid segfaults in case of handling certain responses for
-    already aborted connections.
-    Trunk version of patch:
-      http://svn.apache.org/r1879544
-      http://svn.apache.org/r1879546
-      http://svn.apache.org/r1879547
-    Backport version for 2.4.x of patch:
-      https://github.com/apache/httpd/pull/132.diff
-    +1: rpluem, icing
 
  *) mod_http2: Fixes LimitRequestFields configuration handling to compensate for
     browsers that send request headers as multiple ones to make best use of HTTP/2
