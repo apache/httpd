@@ -135,14 +135,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
- *) mod_http2: Fixes LimitRequestFields configuration handling to compensate for
-    browsers that send request headers as multiple ones to make best use of HTTP/2
-    compression.
-    Trunk version of patch:
-      http://svn.apache.org/r1879832
-    2.4.x:
-      svn merge -c 1879832 ^/httpd/httpd/trunk .
-    +1: icing, rpluem, minfrin
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -209,6 +201,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 http://svn.apache.org/r1879548
     2.4.x patch https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-etag2.patch
     +1: minfrin, jim
+
+ *) Add dav_get_provider(), dav_open_lockdb(), dav_close_lockdb() and
+    dav_get_resource() to mod_dav.h.
+    trunk patch: http://svn.apache.org/r1879305
+                 http://svn.apache.org/r1879466
+    2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-dav-functions2.patch
+    +1: minfrin
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
