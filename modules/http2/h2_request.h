@@ -24,7 +24,8 @@ apr_status_t h2_request_rcreate(h2_request **preq, apr_pool_t *pool,
 
 apr_status_t h2_request_add_header(h2_request *req, apr_pool_t *pool,
                                    const char *name, size_t nlen,
-                                   const char *value, size_t vlen);
+                                   const char *value, size_t vlen,
+                                   size_t max_field_len, int *pwas_added);
 
 apr_status_t h2_request_add_trailer(h2_request *req, apr_pool_t *pool,
                                     const char *name, size_t nlen,

@@ -1,6 +1,14 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.44
 
+  *) mod_http2: 
+     Fixes <https://github.com/icing/mod_h2/issues/200>: 
+     "LimitRequestFields 0" now disables the limit, as documented.
+     Fixes <https://github.com/icing/mod_h2/issues/201>: 
+     Do not count repeated headers with same name against the field
+     count limit. The are merged internally, as if sent in a single HTTP/1 line.
+     [Stefan Eissing]
+
   *) mod_http2: Avoid segfaults in case of handling certain responses for
      already aborted connections.  [Stefan Eissing, Ruediger Pluem]
 

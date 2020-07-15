@@ -47,9 +47,9 @@ typedef struct {
 static int set_h1_header(void *ctx, const char *key, const char *value)
 {
     h1_ctx *x = ctx;
-    x->status = h2_req_add_header(x->headers, x->pool, key, strlen(key), 
-                                  value, strlen(value));
-    return (x->status == APR_SUCCESS)? 1 : 0;
+    int was_added;
+    h2_req_add_header(x->headers, x->pool, key, strlen(key), value, strlen(value), 0, &was_added);
+    return 1;
 }
 
 apr_status_t h2_request_rcreate(h2_request **preq, apr_pool_t *pool, 
@@ -99,10 +99,12 @@ apr_status_t h2_request_rcreate(h2_request **preq, apr_pool_t *pool,
 
 apr_status_t h2_request_add_header(h2_request *req, apr_pool_t *pool, 
                                    const char *name, size_t nlen,
-                                   const char *value, size_t vlen)
+                                   const char *value, size_t vlen,
+                                   size_t max_field_len, int *pwas_added)
 {
     apr_status_t status = APR_SUCCESS;
     
+    *pwas_added = 0;
     if (nlen <= 0) {
         return status;
     }
@@ -143,8 +145,9 @@ apr_status_t h2_request_add_header(h2_request *req, apr_pool_t *pool,
         }
     }
     else {
-        /* non-pseudo header, append to work bucket of stream */
-        status = h2_req_add_header(req->headers, pool, name, nlen, value, vlen);
+        /* non-pseudo header, add to table */
+        status = h2_req_add_header(req->headers, pool, name, nlen, value, vlen, 
+                                   max_field_len, pwas_added);
     }
     
     return status;
