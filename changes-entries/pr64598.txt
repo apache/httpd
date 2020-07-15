@@ -1,0 +1,2 @@
+  *) mod_proxy_uwsgi: Fix a crash when sending environment variables with no
+     value. PR 64598 [Ruediger Pluem]
