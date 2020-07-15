@@ -42,33 +42,76 @@
           RFC7231 Hypertext Transfer Protocol (HTTP/1.1): Semantics and
           Content.</a></dd>
 
+      <dt><code>Listen</code> directive options</dt>
+      <dd>The <directive module="mpm_common">Listen</directive>
+      directive now supports an optional <code>options=...</code>
+      argument, allowing per-listener socket options to be
+      configured.</dd>
+
+      <dt><code>systemd</code> socket activation</dt>
+      <dd><program>httpd</program> can now be configured to start via
+      <code>systemd</code> <a href="https://www.freedesktop.org/software/systemd/man/systemd.socket.html">socket activation</a>.</dd>
+
+<!--      <dt>Loadable errorlog providers</dt>
+      <dd>TODO</dd> -->
+
+      <dt>New <code>DefaultStateDir</code> directive.</dt>
+      <dd>The <directive module="core">DefaultStateDir</directive>
+      directive has been added to specify a directory for storing
+      persistent state.</dd>
+
+      <dt>Zone/scope support in IPv6 addresses</dt>
+      <dd>If built against APR 1.7.0 or later, zones (scopes) can be
+      specified in an IPv6 link-local address used with the
+      <directive module="mpm_common">Listen</directive> or
+      <directive module="core">VirtualHost</directive> directive.</dd>
+      
     </dl>
   </section>
 
   <section id="newmods">
     <title>New Modules</title>
     <dl>
-      <dt><module>mod_example</module></dt>
-      <dd>Fill me in for <module>mod_example</module>.</dd>
+<!--      <dt><module>mod_ssl_ct</module></dt>
+      <dd>Fill me in.</dd> -->
 
-    </dl>
+      <dt><module>mod_journald</module>, <module>mod_syslog</module></dt>
+      <dd>These new modules provide support for logging to syslog or
+      <code>journald</code>.</dd>
+
+</dl>
   </section>
 
   <section id="module">
     <title>Module Enhancements</title>
     <dl>
-      <dt><module>mod_example</module></dt>
-      <dd>Fill me in.</dd>
+      <dt><module>mod_ssl</module></dt>
+      <dd>The following mod_ssl enhancements are included:
+      <ul>
+        <li><directive module="mod_ssl">SSLRandomSeed</directive>
+      directive is now deprecated and is ignored if building against
+        OpenSSL 1.1.1 or later.</li>
+        <li>The <code>SSLKEYLOGFILE</code> environment variable can
+        now be set to log private key material for off-line decryption
+        of SSL/TLS protocol dumps using third-party tools.</li>
+      </ul></dd>
 
+      <dt><module>mod_cgid</module></dt>
+      <dd>If configured with <code>--enable-cgid-fdpassing</code>, the
+      CGI daemon will set up stderr handling in the same way as
+      mod_cgi.</dd>
+
+      
     </dl>
   </section>
 
   <section id="programs">
     <title>Program Enhancements</title>
     <dl>
-        <dt><program>fillmein</program></dt>
-        <dd>Fill me in</dd>
-
+        <dt><program>htpasswd</program></dt>
+        <dd>The <program>htpasswd</program> utility can now generate
+        SHA-256 or SHA-512 <code>crypt()</code> hashes where supported
+        by the C library.</dd>
     </dl>
   </section>
 
@@ -84,10 +127,19 @@
   <section id="developer">
     <title>Module Developer Changes</title>
     <dl>
-      <dt>Fill Me In Hook Added</dt>
+      <dt>New type <code>ap_method_mask_t</code>.</dt>
 
-      <dd>A new hook, <code>fill_me_in</code>, has been added which fills
-          me in.</dd>
+      <dd>The <code>ap_method_mask_t</code> type has been added and is
+      now used for the method_mask field in ap_method_list_t,
+      AP_METHOD_BIT, allowed field of request_rec, limited field of
+      cmd_parms.</dd>
+
+      <dt><code>mod_ssl.h</code> mod_ssl API changes.</dt>
+
+      <dd>The <code>ssl_var_lookup</code> optional function API now
+      takes a <code>const char *</code><em>name</em> argument and
+      returns a <code>const char *</code> string value.  The pool
+      argument must now be non-NULL.</dd>
 
     </dl>
     <p>The developer documentation contains a
