@@ -8,6 +8,7 @@ my $serial_file = "$basedir/next-number";
 my $serial = read_serial($serial_file);
 my $orig_serial = $serial;
 my %tags;
+my $rv = 0;
 
 my %intended_duplicate_tags;
 if (open(my $fh, "<", "$basedir/intended-duplicates")) {
@@ -34,7 +35,7 @@ foreach my $tag (sort keys %tags) {
 }
 write_file("$basedir/list", $list);
 
-exit 0;
+exit $rv;
 
 sub process
 {
@@ -135,9 +136,11 @@ sub note_tag
     }
     if (exists $tags{$tag} and not exists $intended_duplicate_tags{$tag}) {
         print STDERR "WARNING: Duplicate tag $tag at $tags{$tag}->{file}:$tags{$tag}->{line} and $file:$lineno\n";
+        $rv = 1;
     }
     if ($tag >= $serial) {
         print STDERR "WARNING: next-number $serial inconsistent with tag $tag at $file:$lineno, adjusting\n";
+        $rv = 1;
         $serial = $tag + 1;
     }
     $tags{$tag} = { file => $file, line => $lineno, msg => $oneline };

@@ -60,8 +60,6 @@ TODO list
 * Windows build
 * clang-on-Linux build
 * Use containers for non-Ubuntu-based Linux testing
-* sanity checks for use of APLOGNO() - empty arguments, accidental duplicates, etc.
- - not sure how exactly
 * Known test failures
  - "apt-get install" timeout/fails - workaround by moving apt install to before_script phase?
 
