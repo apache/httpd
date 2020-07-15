@@ -654,6 +654,9 @@
  * 20200703.0 (2.5.1-dev)  Remove ap_md5digest(), ap_md5contextTo64(),
  *                         ContentDigest directive.
  * 20200705.0 (2.5.1-dev)  Update method_precondition hook.
+ * 20200705.1 (2.5.1-dev)  Add dav_validate_root_ns(), dav_find_child_ns(),
+ *                         dav_find_next_ns(), dav_find_attr_ns() and
+ *                         dav_find_attr().
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -661,7 +664,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20200705
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 0             /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 1             /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
