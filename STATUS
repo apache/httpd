@@ -220,7 +220,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/r1879832
     2.4.x:
       svn merge -c 1879832 ^/httpd/httpd/trunk .
-    +1: icing  
+    +1: icing, rpluem
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
