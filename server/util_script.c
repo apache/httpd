@@ -672,15 +672,50 @@ AP_DECLARE(int) ap_scan_script_header_err_core_ex(request_rec *r, char *buffer,
          * pass it on blindly because of restrictions on future or invalid values.
          */
         else if (!strcasecmp(w, "Last-Modified")) {
-            apr_time_t last_modified_date = apr_date_parse_http(l);
-            if (last_modified_date != APR_DATE_BAD) {
-                ap_update_mtime(r, last_modified_date);
+            apr_time_t parsed_date = apr_date_parse_http(l);
+            if (parsed_date != APR_DATE_BAD) {
+                ap_update_mtime(r, parsed_date);
                 ap_set_last_modified(r);
+                if (APLOGrtrace1(r)) {
+                    apr_time_t last_modified_date = apr_date_parse_http(apr_table_get(r->headers_out,
+                                                                                      "Last-Modified"));
+                    /*
+                     * A Last-Modified header value coming from a (F)CGI source
+                     * is considered HTTP input so we assume the GMT timezone.
+                     * The following logs should inform the admin about violations
+                     * and related actions taken by httpd.
+                     * The apr_date_parse_rfc function is 'timezone aware'
+                     * and it will be used to generate a more informative set of logs
+                     * (we don't use it as a replacement of apr_date_parse_http
+                     * for the aforementioned reason).
+                     */
+                    apr_time_t parsed_date_tz_aware = apr_date_parse_rfc(l);
+
+                    /* 
+                     * The parsed Last-Modified header datestring has been replaced by httpd.
+                     */
+                    if (parsed_date > last_modified_date) {
+                        ap_log_rerror(SCRIPT_LOG_MARK, APLOG_TRACE1, 0, r,
+                                      "The Last-Modified header value %s (%s) "
+                                      "has been replaced with '%s'", l,
+                                      parsed_date != parsed_date_tz_aware ? "not in GMT"
+                                                                          : "in the future",
+                                      apr_table_get(r->headers_out, "Last-Modified"));
+                    /* 
+                     * Last-Modified header datestring not in GMT and not considered in the future
+                     * by httpd (like now() + 1 hour in the PST timezone). No action is taken but
+                     * the admin is warned about the violation.
+                     */
+                    } else if (parsed_date != parsed_date_tz_aware) {
+                        ap_log_rerror(SCRIPT_LOG_MARK, APLOG_TRACE1, 0, r,
+                                      "The Last-Modified header value is not set "
+                                      "within the GMT timezone (as required)");
+                    }
+                }
             }
             else {
-                if (APLOGrtrace1(r))
-                   ap_log_rerror(SCRIPT_LOG_MARK, APLOG_TRACE1, 0, r,
-                                 "Ignored invalid header value: Last-Modified: '%s'", l);
+                ap_log_rerror(SCRIPT_LOG_MARK, APLOG_INFO, 0, r, APLOGNO(10247)
+                              "Ignored invalid header value: Last-Modified: '%s'", l);
             }
         }
         else if (!strcasecmp(w, "Set-Cookie")) {
