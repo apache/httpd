@@ -1223,6 +1223,7 @@ typedef struct {
     apr_interval_time_t timeout;
     struct proxy_tunnel_conn *client,
                              *origin;
+    apr_size_t read_buf_size;
     int replied;
 } proxy_tunnel_rec;
 
