@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_proxy_uwsgi: Error out on HTTP header larger than 16K (hard
+     protocol limit).  [Yann Ylavic]
+
   *) mod_dav: Some DAV extensions, like CalDAV, specify both document
      elements and property elements that need to be taken into account
      when generating a property. The document element and property element
