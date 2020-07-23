@@ -180,7 +180,7 @@ static int uwsgi_send_headers(request_rec *r, proxy_conn_rec * conn)
 
     pktsize = headerlen - 4;
     if (pktsize > APR_UINT16_MAX) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO()
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10259)
                       "can't send headers to %s:%u: packet size too "
                       "large (%" APR_SIZE_T_FMT ")",
                       conn->hostname, conn->port, pktsize);
