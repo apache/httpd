@@ -4147,40 +4147,6 @@ PROXY_DECLARE(apr_status_t) ap_proxy_transfer_between_connections(
     }
 
     for (;;) {
-        /* Yield if the output filters stack is full? This is to avoid
-         * blocking and give the caller a chance to POLLOUT async.
-         */
-        if (flags & AP_PROXY_TRANSFER_YIELD_PENDING) {
-            int rc = OK;
-
-            if (!ap_filter_should_yield(c_o->output_filters)) {
-                rc = ap_filter_output_pending(c_o);
-            }
-            if (rc == OK) {
-                ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
-                              "ap_proxy_transfer_between_connections: "
-                              "yield (output pending)");
-                rv = APR_INCOMPLETE;
-                break;
-            }
-            if (rc != DECLINED) {
-                rv = AP_FILTER_ERROR;
-                break;
-            }
-        }
-
-        /* Yield if we keep hold of the thread for too long? This gives
-         * the caller a chance to schedule the other direction too.
-         */
-        if ((flags & AP_PROXY_TRANSFER_YIELD_MAX_READS)
-                && ++num_reads > PROXY_TRANSFER_MAX_READS) {
-            ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
-                          "ap_proxy_transfer_between_connections: "
-                          "yield (max reads)");
-            rv = APR_SUCCESS;
-            break;
-        }
-
         apr_brigade_cleanup(bb_i);
         rv = ap_get_brigade(c_i->input_filters, bb_i, AP_MODE_READBYTES,
                             APR_NONBLOCK_READ, bsize);
@@ -4247,6 +4213,40 @@ PROXY_DECLARE(apr_status_t) ap_proxy_transfer_between_connections(
             flags &= ~AP_PROXY_TRANSFER_FLUSH_AFTER;
             break;
         }
+
+        /* Yield if the output filters stack is full? This is to avoid
+         * blocking and give the caller a chance to POLLOUT async.
+         */
+        if (flags & AP_PROXY_TRANSFER_YIELD_PENDING) {
+            int rc = OK;
+
+            if (!ap_filter_should_yield(c_o->output_filters)) {
+                rc = ap_filter_output_pending(c_o);
+            }
+            if (rc == OK) {
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
+                              "ap_proxy_transfer_between_connections: "
+                              "yield (output pending)");
+                rv = APR_INCOMPLETE;
+                break;
+            }
+            if (rc != DECLINED) {
+                rv = AP_FILTER_ERROR;
+                break;
+            }
+        }
+
+        /* Yield if we keep hold of the thread for too long? This gives
+         * the caller a chance to schedule the other direction too.
+         */
+        if ((flags & AP_PROXY_TRANSFER_YIELD_MAX_READS)
+                && ++num_reads > PROXY_TRANSFER_MAX_READS) {
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
+                          "ap_proxy_transfer_between_connections: "
+                          "yield (max reads)");
+            rv = APR_SUCCESS;
+            break;
+        }
     }
 
     if (flags & AP_PROXY_TRANSFER_FLUSH_AFTER) {
@@ -4268,13 +4268,17 @@ PROXY_DECLARE(apr_status_t) ap_proxy_transfer_between_connections(
 }
 
 struct proxy_tunnel_conn {
+    /* the other side of the tunnel */
+    struct proxy_tunnel_conn *other;
+
     conn_rec *c;
     const char *name;
+
     apr_pollfd_t *pfd;
     apr_bucket_brigade *bb;
-    struct proxy_tunnel_conn *other;
-    unsigned int readable:1,
-                 writable:1;
+
+    unsigned int down_in:1,
+                 down_out:1;
 };
 
 PROXY_DECLARE(apr_status_t) ap_proxy_tunnel_create(proxy_tunnel_rec **ptunnel,
@@ -4299,6 +4303,9 @@ PROXY_DECLARE(apr_status_t) ap_proxy_tunnel_create(proxy_tunnel_rec **ptunnel,
     tunnel->client = apr_pcalloc(r->pool, sizeof(struct proxy_tunnel_conn));
     tunnel->origin = apr_pcalloc(r->pool, sizeof(struct proxy_tunnel_conn));
     tunnel->pfds = apr_array_make(r->pool, 2, sizeof(apr_pollfd_t));
+    tunnel->read_buf_size = ap_get_read_buf_size(r);
+    tunnel->client->other = tunnel->origin;
+    tunnel->origin->other = tunnel->client;
     tunnel->timeout = -1;
 
     tunnel->client->c = c_i;
@@ -4309,8 +4316,6 @@ PROXY_DECLARE(apr_status_t) ap_proxy_tunnel_create(proxy_tunnel_rec **ptunnel,
     tunnel->client->pfd->desc_type = APR_POLL_SOCKET;
     tunnel->client->pfd->desc.s = ap_get_conn_socket(c_i);
     tunnel->client->pfd->client_data = tunnel->client;
-    tunnel->client->other = tunnel->origin;
-    tunnel->client->readable = 1;
 
     tunnel->origin->c = c_o;
     tunnel->origin->name = "origin";
@@ -4320,8 +4325,6 @@ PROXY_DECLARE(apr_status_t) ap_proxy_tunnel_create(proxy_tunnel_rec **ptunnel,
     tunnel->origin->pfd->desc_type = APR_POLL_SOCKET;
     tunnel->origin->pfd->desc.s = ap_get_conn_socket(c_o);
     tunnel->origin->pfd->client_data = tunnel->origin;
-    tunnel->origin->other = tunnel->client;
-    tunnel->origin->readable = 1;
 
     /* We should be nonblocking from now on the sockets */
     apr_socket_opt_set(tunnel->client->pfd->desc.s, APR_SO_NONBLOCK, 1);
@@ -4341,14 +4344,10 @@ PROXY_DECLARE(apr_status_t) ap_proxy_tunnel_create(proxy_tunnel_rec **ptunnel,
     /* Start with POLLOUT and let ap_proxy_tunnel_run() schedule both
      * directions when there are no output data pending (anymore).
      */
-    tunnel->client->pfd->reqevents = APR_POLLOUT;
-    rv = apr_pollset_add(tunnel->pollset, tunnel->client->pfd);
-    if (rv != APR_SUCCESS) {
-        return rv;
-    }
-    tunnel->origin->pfd->reqevents = APR_POLLOUT;
-    rv = apr_pollset_add(tunnel->pollset, tunnel->origin->pfd);
-    if (rv != APR_SUCCESS) {
+    tunnel->client->pfd->reqevents = APR_POLLOUT | APR_POLLERR;
+    tunnel->origin->pfd->reqevents = APR_POLLOUT | APR_POLLERR;
+    if ((rv = apr_pollset_add(tunnel->pollset, tunnel->client->pfd))
+            || (rv = apr_pollset_add(tunnel->pollset, tunnel->origin->pfd))) {
         return rv;
     }
 
@@ -4361,13 +4360,7 @@ static void add_pollset(apr_pollset_t *pollset, apr_pollfd_t *pfd,
 {
     apr_status_t rv;
 
-    if (events & APR_POLLIN) {
-        events |= APR_POLLHUP;
-    }
-
-    if ((pfd->reqevents & events) == events) {
-        return;
-    }
+    AP_DEBUG_ASSERT((pfd->reqevents & events) == 0);
 
     if (pfd->reqevents) {
         rv = apr_pollset_remove(pollset, pfd);
@@ -4376,7 +4369,10 @@ static void add_pollset(apr_pollset_t *pollset, apr_pollfd_t *pfd,
         }
     }
 
-    pfd->reqevents |= events;
+    if (events & APR_POLLIN) {
+        events |= APR_POLLHUP;
+    }
+    pfd->reqevents |= events | APR_POLLERR;
     rv = apr_pollset_add(pollset, pfd);
     if (rv != APR_SUCCESS) {
         AP_DEBUG_ASSERT(1);
@@ -4388,26 +4384,80 @@ static void del_pollset(apr_pollset_t *pollset, apr_pollfd_t *pfd,
 {
     apr_status_t rv;
 
-    if (events & APR_POLLIN) {
-        events |= APR_POLLHUP;
-    }
-
-    if ((pfd->reqevents & events) == 0) {
-        return;
-    }
+    AP_DEBUG_ASSERT((pfd->reqevents & events) != 0);
 
     rv = apr_pollset_remove(pollset, pfd);
     if (rv != APR_SUCCESS) {
-        AP_DEBUG_ASSERT(1);
+        AP_DEBUG_ASSERT(0);
+        return;
     }
 
-    pfd->reqevents &= ~events;
-    if (pfd->reqevents) {
+    if (events & APR_POLLIN) {
+        events |= APR_POLLHUP;
+    }
+    if (pfd->reqevents & ~(events | APR_POLLERR)) {
+        pfd->reqevents &= ~events;
         rv = apr_pollset_add(pollset, pfd);
         if (rv != APR_SUCCESS) {
-            AP_DEBUG_ASSERT(1);
+            AP_DEBUG_ASSERT(0);
+            return;
         }
     }
+    else {
+        pfd->reqevents = 0;
+    }
+}
+
+static int proxy_tunnel_forward(proxy_tunnel_rec *tunnel,
+                                 struct proxy_tunnel_conn *in)
+{
+    struct proxy_tunnel_conn *out = in->other;
+    apr_status_t rv;
+    int sent = 0;
+
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE8, 0, tunnel->r,
+                  "proxy: %s: %s input ready",
+                  tunnel->scheme, in->name);
+
+    rv = ap_proxy_transfer_between_connections(tunnel->r,
+                                               in->c, out->c,
+                                               in->bb, out->bb,
+                                               in->name, &sent,
+                                               tunnel->read_buf_size,
+                                           AP_PROXY_TRANSFER_YIELD_PENDING |
+                                           AP_PROXY_TRANSFER_YIELD_MAX_READS);
+    if (sent && out == tunnel->client) {
+        tunnel->replied = 1;
+    }
+    if (rv != APR_SUCCESS) {
+        if (APR_STATUS_IS_INCOMPLETE(rv)) {
+            /* Pause POLLIN while waiting for POLLOUT on the other
+             * side, hence avoid filling the output filters even
+             * more to avoid blocking there.
+             */
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, tunnel->r,
+                          "proxy: %s: %s wait writable",
+                          tunnel->scheme, out->name);
+        }
+        else if (APR_STATUS_IS_EOF(rv)) {
+            /* Stop POLLIN and wait for POLLOUT (flush) on the
+             * other side to shut it down.
+             */
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, tunnel->r,
+                          "proxy: %s: %s read shutdown",
+                          tunnel->scheme, in->name);
+            in->down_in = 1;
+        }
+        else {
+            /* Real failure, bail out */
+            return HTTP_INTERNAL_SERVER_ERROR;
+        }
+
+        del_pollset(tunnel->pollset, in->pfd, APR_POLLIN);
+        add_pollset(tunnel->pollset, out->pfd, APR_POLLOUT);
+    }
+
+    return OK;
 }
 
 PROXY_DECLARE(int) ap_proxy_tunnel_run(proxy_tunnel_rec *tunnel)
@@ -4418,7 +4468,6 @@ PROXY_DECLARE(int) ap_proxy_tunnel_run(proxy_tunnel_rec *tunnel)
     struct proxy_tunnel_conn *client = tunnel->client,
                              *origin = tunnel->origin;
     apr_interval_time_t timeout = tunnel->timeout >= 0 ? tunnel->timeout : -1;
-    apr_size_t read_buf_size = ap_get_read_buf_size(r);
     const char *scheme = tunnel->scheme;
     apr_status_t rv;
 
@@ -4455,7 +4504,7 @@ PROXY_DECLARE(int) ap_proxy_tunnel_run(proxy_tunnel_rec *tunnel)
                               "proxy: %s: polling failed", scheme);
                 rc = HTTP_INTERNAL_SERVER_ERROR;
             }
-            goto cleanup;
+            return rc;
         }
 
         ap_log_rerror(APLOG_MARK, APLOG_TRACE8, 0, r, APLOGNO(10215)
@@ -4474,19 +4523,25 @@ PROXY_DECLARE(int) ap_proxy_tunnel_run(proxy_tunnel_rec *tunnel)
                     && pfd->desc.s != origin->pfd->desc.s) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10222)
                               "proxy: %s: unknown socket in pollset", scheme);
-                rc = HTTP_INTERNAL_SERVER_ERROR;
-                goto cleanup;
+                return HTTP_INTERNAL_SERVER_ERROR;
             }
-            if (!(pfd->rtnevents & (APR_POLLIN | APR_POLLHUP | APR_POLLOUT))) {
-                /* this catches POLLERR/POLLNVAL etc.. */
+
+            if (!(pfd->rtnevents & (APR_POLLIN  | APR_POLLOUT |
+                                    APR_POLLHUP | APR_POLLERR))) {
+                /* this catches POLLNVAL etc.. */
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10220)
                               "proxy: %s: polling events error (%x)",
                               scheme, pfd->rtnevents);
-                rc = HTTP_INTERNAL_SERVER_ERROR;
-                goto cleanup;
+                return HTTP_INTERNAL_SERVER_ERROR;
             }
 
-            if (pfd->rtnevents & APR_POLLOUT) {
+            /* Write if we asked for POLLOUT, and got it or POLLERR
+             * alone (i.e. not with POLLIN|HUP). We want the output filters
+             * to know about the socket error if any, by failing the write.
+             */
+            if ((tc->pfd->reqevents & APR_POLLOUT)
+                    && ((pfd->rtnevents & APR_POLLOUT)
+                        || !(pfd->rtnevents & (APR_POLLIN | APR_POLLHUP)))) {
                 struct proxy_tunnel_conn *out = tc, *in = tc->other;
 
                 ap_log_rerror(APLOG_MARK, APLOG_TRACE8, 0, r,
@@ -4503,88 +4558,58 @@ PROXY_DECLARE(int) ap_proxy_tunnel_run(proxy_tunnel_rec *tunnel)
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10221)
                                   "proxy: %s: %s flushing failed (%i)",
                                   scheme, out->name, rc);
-                    goto cleanup;
+                    return rc;
                 }
-                rc = OK;
 
-                /* No more pending data. If the input side is not readable
+                /* No more pending data. If the other side is not readable
                  * anymore it's time to shutdown for write (this direction
                  * is over). Otherwise back to normal business.
                  */
                 del_pollset(pollset, out->pfd, APR_POLLOUT);
-                if (in->readable) {
-                    ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r,
-                                  "proxy: %s: %s resume writable",
-                                  scheme, out->name);
-                    add_pollset(pollset, in->pfd, APR_POLLIN);
-                    out->writable = 1;
-                }
-                else {
+                if (in->down_in) {
                     ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
                                   "proxy: %s: %s write shutdown",
                                   scheme, out->name);
                     apr_socket_shutdown(out->pfd->desc.s, 1);
+                    out->down_out = 1;
+                }
+                else {
+                    ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r,
+                                  "proxy: %s: %s resume writable",
+                                  scheme, out->name);
+                    add_pollset(pollset, in->pfd, APR_POLLIN);
+
+                    /* Flush any pending input data now, we don't know when
+                     * the next POLLIN will trigger and retaining data might
+                     * block the protocol.
+                     */
+                    if (ap_filter_input_pending(in->c) == OK) {
+                        rc = proxy_tunnel_forward(tunnel, in);
+                        if (rc != OK) {
+                            return rc;
+                        }
+                    }
                 }
             }
 
-            if (pfd->rtnevents & (APR_POLLIN | APR_POLLHUP)
-                    || (tc->readable && tc->other->writable
-                        && ap_filter_input_pending(tc->c) == OK)) {
-                struct proxy_tunnel_conn *in = tc, *out = tc->other;
-                int sent = 0;
-
-                ap_log_rerror(APLOG_MARK, APLOG_TRACE8, 0, r,
-                              "proxy: %s: %s input ready",
-                              scheme, in->name);
-
-                rv = ap_proxy_transfer_between_connections(r,
-                                           in->c, out->c,
-                                           in->bb, out->bb,
-                                           in->name, &sent,
-                                           read_buf_size,
-                                           AP_PROXY_TRANSFER_YIELD_PENDING |
-                                           AP_PROXY_TRANSFER_YIELD_MAX_READS);
-                if (sent && out == client) {
-                    tunnel->replied = 1;
-                }
-                if (rv != APR_SUCCESS) {
-                    if (APR_STATUS_IS_INCOMPLETE(rv)) {
-                        /* Pause POLLIN while waiting for POLLOUT on the other
-                         * side, hence avoid filling the output filters even
-                         * more and hence blocking there.
-                         */
-                        ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r,
-                                      "proxy: %s: %s wait writable",
-                                      scheme, out->name);
-                        out->writable = 0;
-                    }
-                    else if (APR_STATUS_IS_EOF(rv)) {
-                        /* Stop POLLIN and wait for POLLOUT (flush) on the
-                         * other side to shut it down.
-                         */
-                        ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
-                                      "proxy: %s: %s read shutdown",
-                                      scheme, in->name);
-                        in->readable = 0;
-                    }
-                    else {
-                        /* Real failure, bail out */
-                        rc = HTTP_INTERNAL_SERVER_ERROR;
-                        goto cleanup;
-                    }
-
-                    del_pollset(pollset, in->pfd, APR_POLLIN);
-                    add_pollset(pollset, out->pfd, APR_POLLOUT);
+            /* Read if we asked for POLLIN|HUP, and got it or POLLERR
+             * alone (i.e. not with POLLOUT). We want the input filters
+             * to know about the socket error if any, by failing the read.
+             */
+            if ((tc->pfd->reqevents & APR_POLLIN)
+                    && ((pfd->rtnevents & (APR_POLLIN | APR_POLLHUP))
+                        || !(pfd->rtnevents & APR_POLLOUT))) {
+                rc = proxy_tunnel_forward(tunnel, tc);
+                if (rc != OK) {
+                    return rc;
                 }
             }
         }
-    } while (client->pfd->reqevents || origin->pfd->reqevents);
+    } while (!client->down_out || !origin->down_out);
 
     ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(10223)
                   "proxy: %s: tunnel finished", scheme);
-
-cleanup:
-    return rc;
+    return OK;
 }
 
 PROXY_DECLARE (const char *) ap_proxy_show_hcmethod(hcmethod_t method)
