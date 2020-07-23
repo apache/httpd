@@ -219,6 +219,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       svn merge -c 1879822,1879831,1879840 ^/httpd/httpd/trunk .
    +1: rpluem,
 
+  *) mod_proxy_uwsgi: Error out on HTTP header larger than 16K (hard
+     protocol limit).
+     trunk patch: http://svn.apache.org/1880205
+     2.4.x patch: svn merge -c 1880205 ^/httpd/httpd/trunk .
+                  (modulo CHANGES)
+     +1: ylavic,
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
