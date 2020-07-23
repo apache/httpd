@@ -349,7 +349,7 @@ static void proxy_http_async_cb(void *baton)
                                               proxy_http_async_cancel_cb, 
                                               req, req->idle_timeout);
     }
-    else if (status != OK) {
+    else if (ap_is_HTTP_ERROR(status)) {
         proxy_http_async_cancel_cb(req);
     }
     else {
@@ -1757,6 +1757,7 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
                 return HTTP_INTERNAL_SERVER_ERROR;
             }
 
+            r->status = HTTP_SWITCHING_PROTOCOLS;
             req->proto = upgrade;
 
             if (req->can_go_async) {
@@ -1770,11 +1771,9 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
             /* Let proxy tunnel forward everything within this thread */
             req->tunnel->timeout = req->idle_timeout;
             status = ap_proxy_tunnel_run(req->tunnel);
-            if (!ap_is_HTTP_ERROR(status)) {
-                /* Update r->status for custom log */
-                status = HTTP_SWITCHING_PROTOCOLS;
+            if (ap_is_HTTP_ERROR(status)) {
+                r->status = status;
             }
-            r->status = status;
 
             /* We are done with both connections */
             r->connection->keepalive = AP_CONN_CLOSE;
