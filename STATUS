@@ -135,14 +135,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_proxy_uwsgi: Error out on HTTP header larger than 16K (hard
-     protocol limit).
-     trunk patch: http://svn.apache.org/1880205
-                  http://svn.apache.org/1880214 (APLOGNO)
-     2.4.x patch: svn merge -c 1880205 ^/httpd/httpd/trunk .
-                  (modulo CHANGES and docs/log-message-tags)
-     +1: ylavic, covener, icing
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
