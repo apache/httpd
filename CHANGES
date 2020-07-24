@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.44
 
+  *) mod_proxy_uwsgi: Error out on HTTP header larger than 16K (hard
+     protocol limit).  [Yann Ylavic]
+
   *) mod_http2: 
      Fixes <https://github.com/icing/mod_h2/issues/200>: 
      "LimitRequestFields 0" now disables the limit, as documented.
