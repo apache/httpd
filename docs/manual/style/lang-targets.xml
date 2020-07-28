@@ -75,7 +75,7 @@
 <!-- English                                                              -->
 <!-- ==================================================================== -->
 <property value=".xml" name="inputext.en"/>
-<property value=".html.en" name="outputext.en"/>
+<property value=".html.en.utf8" name="outputext.en"/>
 
 <target description="- builds English HTML files" name="en">
     <html.generic lang="en"/>
