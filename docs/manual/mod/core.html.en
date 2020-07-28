@@ -1486,9 +1486,6 @@ ErrorLog syslog:user:httpd.srv1
 ErrorLog syslog::httpd.srv2</pre>
 
 
-    <p>Additional modules can provide their own ErrorLog providers. The syntax
-    is similar to the <code>syslog</code> example above.</p>
-
     <p>SECURITY: See the <a href="../misc/security_tips.html#serverroot">security tips</a>
     document for details on why your security could be compromised
     if the directory where log files are stored is writable by
