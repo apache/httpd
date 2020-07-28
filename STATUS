@@ -305,15 +305,6 @@ PATCHES/ISSUES THAT ARE BEING WORKED
 
 PATCHES/ISSUES THAT ARE STALLED
 
-  *) core: Allow mod_env to override all system path envvars not just PATH
-     trunk patch: http://svn.apache.org/r1811831
-     2.4.x patch: svn merge -c 1811831 ^/httpd/httpd/trunk .
-     +1: jorton, rpluem
-     ylavic: same as dev@; since SetEnv* are usable from htaccess, wouldn't
-             we open a door here (unconditionally)? 
-             covener: seems like we need some kind of pattern for opting in
-             to restricted arguments.
-
    * core: Add ap_errorlog_provider to make ErrorLog logging modular. This
            backport keeps syslog logging as part of httpd core and only adds
            API to allow other modules to be used for error logging.
