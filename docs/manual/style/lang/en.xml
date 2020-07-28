@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE language SYSTEM "../lang.dtd">
 <!-- $LastChangedRevision$ -->
 
@@ -21,7 +21,7 @@
 
 <language id="en">
     <name>English</name>
-    <charset>ISO-8859-1</charset>
+    <charset>UTF-8</charset>
     <source-ext>.xml</source-ext>
     <target-ext>.html.en</target-ext>
 
@@ -33,7 +33,7 @@
     </chm>
 
     <man>
-        <charset>ISO-8859-1</charset>
+        <charset>UTF-8</charset>
     </man>
 
     <!-- Some strings might be used in other contexts, than stated in the -->
