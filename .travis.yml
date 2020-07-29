@@ -43,7 +43,8 @@ jobs:
   include:
     - name: Linux Ubuntu, Default module set
     # -------------------------------------------------------------------------
-    - name: Empty APLOGNO() test
+    - if: *condition_not_24x
+      name: Empty APLOGNO() test
       env: SKIP_TESTING=1 TEST_LOGNO=1
     # -------------------------------------------------------------------------
     - name: Linux s390x Ubuntu, all-modules
@@ -58,7 +59,7 @@ jobs:
       arch: arm64
       env: CONFIG="--enable-mods-shared=reallyall"
     # -------------------------------------------------------------------------
-    - if: branch = trunk
+    - if: *condition_not_24x
       name: Linux i386 Ubuntu, Shared MPMs, most modules, maintainer-mode w/-Werror
       env: CONFIG="--enable-mods-shared=reallyall --disable-xml2enc --disable-proxy-html --enable-mpms-shared=all --enable-maintainer-mode"
            PKG_CONFIG_PATH="/usr/lib/i386-linux-gnu/pkgconfig"
