@@ -43,6 +43,10 @@ jobs:
   include:
     - name: Linux Ubuntu, Default module set
     # -------------------------------------------------------------------------
+    - if: *condition_not_24x
+      name: Empty APLOGNO() test
+      env: SKIP_TESTING=1 TEST_LOGNO=1
+    # -------------------------------------------------------------------------
     - name: Linux s390x Ubuntu, all-modules
       arch: s390x
       env: CONFIG="--enable-mods-shared=reallyall"
@@ -55,7 +59,7 @@ jobs:
       arch: arm64
       env: CONFIG="--enable-mods-shared=reallyall"
     # -------------------------------------------------------------------------
-    - if: branch = trunk
+    - if: *condition_not_24x
       name: Linux i386 Ubuntu, Shared MPMs, most modules, maintainer-mode w/-Werror
       env: CONFIG="--enable-mods-shared=reallyall --disable-xml2enc --disable-proxy-html --enable-mpms-shared=all --enable-maintainer-mode"
            PKG_CONFIG_PATH="/usr/lib/i386-linux-gnu/pkgconfig"
@@ -98,6 +102,7 @@ jobs:
     # -------------------------------------------------------------------------
     - name: Linux Ubuntu, Worker MPM, all-modules
       env: CONFIG="--enable-mods-shared=reallyall --with-mpm=worker"
+           CLEAR_CACHE=1
     # -------------------------------------------------------------------------
     - name: Linux Ubuntu, Shared MPMs, all-modules
       env: CONFIG="--enable-mods-shared=reallyall --enable-mpms-shared=all"
@@ -286,7 +291,8 @@ jobs:
 # CC=gcc, e.g. for the CC="gcc -m32" case the builds are not correct
 # otherwise.
 before_install:
-  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then
+  - if [ "$TRAVIS_OS_NAME" = "linux" -a ! -v SKIP_TESTING ]; then
+        if [ -v CLEAR_CACHE ]; then rm -rf ~/perl5; fi;
         cpanm --local-lib=~/perl5 local::lib && eval $(perl -I ~/perl5/lib/perl5/ -Mlocal::lib);
         CC=gcc cpanm --notest Net::SSL LWP::Protocol::https ExtUtils::Embed Test::More AnyEvent DateTime HTTP::DAV Protocol::HTTP2::Client FCGI Apache::Test;
     fi
