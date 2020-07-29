@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.45
 
+  *) mod_http2: remote support for abandoned http-wg draft
+     <https://datatracker.ietf.org/doc/draft-kazuho-h2-cache-digest/>.
+     [Stefan Eissing]
+
 Changes with Apache 2.4.44
 
   *) mod_proxy_uwsgi: Error out on HTTP header larger than 16K (hard
