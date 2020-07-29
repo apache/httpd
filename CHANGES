@@ -1,4 +1,6 @@
                                                          -*- coding: utf-8 -*-
+Changes with Apache 2.4.46
+
 Changes with Apache 2.4.45
 
   *) mod_http2: remove support for abandoned http-wg draft
