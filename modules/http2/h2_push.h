@@ -35,6 +35,44 @@ typedef enum {
     H2_PUSH_DIGEST_SHA256
 } h2_push_digest_type;
 
+/*******************************************************************************
+ * push diary 
+ *
+ * - The push diary keeps track of resources already PUSHed via HTTP/2 on this
+ *   connection. It records a hash value from the absolute URL of the resource
+ *   pushed.
+ * - Lacking openssl, 
+ * - with openssl, it uses SHA256 to calculate the hash value, otherwise it
+ *   falls back to apr_hashfunc_default()
+ * - whatever the method to generate the hash, the diary keeps a maximum of 64
+ *   bits per hash, limiting the memory consumption to about 
+ *      H2PushDiarySize * 8 
+ *   bytes. Entries are sorted by most recently used and oldest entries are
+ *   forgotten first.
+ * - While useful by itself to avoid duplicated PUSHes on the same connection,
+ *   the original idea was that clients provided a 'Cache-Digest' header with
+ *   the values of *their own* cached resources. This was described in
+ *   <https://datatracker.ietf.org/doc/draft-kazuho-h2-cache-digest/> 
+ *   and some subsequent revisions that tweaked values but kept the overall idea.
+ * - The draft was abandoned by the IETF http-wg, as support from major clients,
+ *   e.g. browsers, was lacking for various reasons.
+ * - For these reasons, mod_h2 abandoned its support for client supplied values
+ *   but keeps the diary. It seems to provide value for applications using PUSH,
+ *   is configurable in size and defaults to a very moderate amount of memory
+ *   used.
+ * - The cache digest header is a Golomb Coded Set of hash values, but it may
+ *   limit the amount of bits per hash value even further. For a good description
+ *   of GCS, read here:
+ *   <http://giovanni.bajo.it/post/47119962313/golomb-coded-sets-smaller-than-bloom-filters>
+ ******************************************************************************/
+ 
+ 
+/*
+ * The push diary is based on the abandoned draft 
+ * <https://datatracker.ietf.org/doc/draft-kazuho-h2-cache-digest/>
+ * that describes how to use golomb filters.
+ */
+
 typedef struct h2_push_diary h2_push_diary;
 
 typedef void h2_push_digest_calc(h2_push_diary *diary, apr_uint64_t *phash, h2_push *push);
@@ -100,21 +138,5 @@ apr_array_header_t *h2_push_collect_update(struct h2_stream *stream,
 apr_status_t h2_push_diary_digest_get(h2_push_diary *diary, apr_pool_t *p, 
                                       int maxP, const char *authority, 
                                       const char **pdata, apr_size_t *plen);
-
-/**
- * Initialize the push diary by a cache digest as described in 
- * https://datatracker.ietf.org/doc/draft-kazuho-h2-cache-digest/
- * .
- * @param diary the diary to set the digest into
- * @param authority the authority to set the data for
- * @param data the binary cache digest
- * @param len the length of the cache digest
- * @return APR_EINVAL if digest was not successfully parsed
- */
-apr_status_t h2_push_diary_digest_set(h2_push_diary *diary, const char *authority, 
-                                      const char *data, apr_size_t len);
-
-apr_status_t h2_push_diary_digest64_set(h2_push_diary *diary, const char *authority, 
-                                        const char *data64url, apr_pool_t *pool);
 
 #endif /* defined(__mod_h2__h2_push__) */
