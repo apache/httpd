@@ -1,7 +1,7 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
-  *) mod_http2: remote support for abandoned http-wg draft
+  *) mod_http2: remove support for abandoned http-wg draft
      <https://datatracker.ietf.org/doc/draft-kazuho-h2-cache-digest/>.
      [Stefan Eissing]
 
