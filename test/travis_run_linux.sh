@@ -1,13 +1,28 @@
 #!/bin/bash -ex
 
-# Test for empty APLOGNO() macro use; if the script changes
-# any files, the git diff will be non-empty and fail.
+# Test for APLOGNO() macro errors (duplicates, empty args) etc.  For
+# trunk, run the updater script to see if it fails.  If it succeeds
+# and changes any files (because there was a missing argument), the
+# git diff will be non-empty, so fail for that case too.  For
+# non-trunk use a grep and only catch the empty argument case.
 if test -v TEST_LOGNO; then
-    find server modules os -name \*.c | xargs perl \
-		docs/log-message-tags/update-log-msg-tags
-    git diff --exit-code .
-    : PASSED
-    exit 0
+    if test -f docs/log-message-tags/update-log-msg-tags; then
+        find server modules os -name \*.c | \
+            xargs perl docs/log-message-tags/update-log-msg-tags
+        git diff --exit-code .
+        : PASSED
+        exit 0
+    else
+        set -o pipefail
+        if find server modules os -name \*.c | \
+                xargs grep -C1 --color=always 'APLOGNO()'; then
+            : FAILED
+            exit 1
+        else
+            : PASSED
+            exit 0
+        fi
+    fi
 fi
 
 ### Installed apr/apr-util don't include the *.m4 files but the
