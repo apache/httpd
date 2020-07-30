@@ -43,8 +43,7 @@ jobs:
   include:
     - name: Linux Ubuntu, Default module set
     # -------------------------------------------------------------------------
-    - if: *condition_not_24x
-      name: Empty APLOGNO() test
+    - name: Empty APLOGNO() test
       env: SKIP_TESTING=1 TEST_LOGNO=1
     # -------------------------------------------------------------------------
     - name: Linux s390x Ubuntu, all-modules
