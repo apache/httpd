@@ -159,7 +159,7 @@ static const char *dso_load(cmd_parms *cmd, apr_dso_handle_t **modhandlep,
                             cmd->cmd->name, filename);
     }
     *used_filename = fullname;
-    if (apr_dso_load(modhandlep, fullname, cmd->pool) == APR_SUCCESS) {
+    if (fullname && apr_dso_load(modhandlep, fullname, cmd->pool) == APR_SUCCESS) {
         return NULL;
     }
     if (retry) {
