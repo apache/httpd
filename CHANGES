@@ -1,4 +1,6 @@
                                                          -*- coding: utf-8 -*-
+Changes with Apache 2.4.47
+
 Changes with Apache 2.4.46
   *) mod_proxy_fcgi: Fix build warnings for Windows platform
      [Eric Covener, Christophe Jaillet]
