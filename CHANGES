@@ -2,7 +2,7 @@
 Changes with Apache 2.4.47
 
 Changes with Apache 2.4.46
-  *) mod_proxy_fcgi: Fix build warnings for Windows platform
+  *) mod_proxy_fcgi: Fix missing APLOGNO macro argument
      [Eric Covener, Christophe Jaillet]
 
 Changes with Apache 2.4.45
