@@ -2332,19 +2332,18 @@ static void ssl_io_data_dump(conn_rec *c, server_rec *s,
                              const char *b, long len)
 {
     char buf[256];
-    char tmp[64];
-    int i, j, rows, trunc;
+    int i, j, rows, trunc, pos;
     unsigned char ch;
 
     trunc = 0;
-    for(; (len > 0) && ((b[len-1] == ' ') || (b[len-1] == '\0')); len--)
+    for (; (len > 0) && ((b[len-1] == ' ') || (b[len-1] == '\0')); len--)
         trunc++;
     rows = (len / DUMP_WIDTH);
     if ((rows * DUMP_WIDTH) < len)
         rows++;
     ap_log_cserror(APLOG_MARK, APLOG_TRACE7, 0, c, s,
             "+-------------------------------------------------------------------------+");
-    for(i = 0 ; i< rows; i++) {
+    for (i = 0 ; i < rows; i++) {
 #if APR_CHARSET_EBCDIC
         char ebcdic_text[DUMP_WIDTH];
         j = DUMP_WIDTH;
@@ -2355,32 +2354,30 @@ static void ssl_io_data_dump(conn_rec *c, server_rec *s,
         memcpy(ebcdic_text,(char *)(b) + i * DUMP_WIDTH, j);
         ap_xlate_proto_from_ascii(ebcdic_text, j);
 #endif /* APR_CHARSET_EBCDIC */
-        apr_snprintf(tmp, sizeof(tmp), "| %04x: ", i * DUMP_WIDTH);
-        apr_cpystrn(buf, tmp, sizeof(buf));
+        pos = 0;
+        pos += apr_snprintf(buf, sizeof(buf)-pos, "| %04x: ", i * DUMP_WIDTH);
         for (j = 0; j < DUMP_WIDTH; j++) {
             if (((i * DUMP_WIDTH) + j) >= len)
-                apr_cpystrn(buf+strlen(buf), "   ", sizeof(buf)-strlen(buf));
+                pos += apr_snprintf(buf+pos, sizeof(buf)-pos, "   ");
             else {
                 ch = ((unsigned char)*((char *)(b) + i * DUMP_WIDTH + j)) & 0xff;
-                apr_snprintf(tmp, sizeof(tmp), "%02x%c", ch , j==7 ? '-' : ' ');
-                apr_cpystrn(buf+strlen(buf), tmp, sizeof(buf)-strlen(buf));
+                pos += apr_snprintf(buf+pos, sizeof(buf)-pos, "%02x%c", ch , j==7 ? '-' : ' ');
             }
         }
-        apr_cpystrn(buf+strlen(buf), " ", sizeof(buf)-strlen(buf));
+        pos += apr_snprintf(buf+pos, sizeof(buf)-pos, " ");
         for (j = 0; j < DUMP_WIDTH; j++) {
             if (((i * DUMP_WIDTH) + j) >= len)
-                apr_cpystrn(buf+strlen(buf), " ", sizeof(buf)-strlen(buf));
+                pos += apr_snprintf(buf+pos, sizeof(buf)-pos, " ");
             else {
                 ch = ((unsigned char)*((char *)(b) + i * DUMP_WIDTH + j)) & 0xff;
 #if APR_CHARSET_EBCDIC
-                apr_snprintf(tmp, sizeof(tmp), "%c", (ch >= 0x20 && ch <= 0x7F) ? ebcdic_text[j] : '.');
+                pos += apr_snprintf(buf+pos, sizeof(buf)-pos, "%c", (ch >= 0x20 && ch <= 0x7F) ? ebcdic_text[j] : '.');
 #else /* APR_CHARSET_EBCDIC */
-                apr_snprintf(tmp, sizeof(tmp), "%c", ((ch >= ' ') && (ch <= '~')) ? ch : '.');
+                pos += apr_snprintf(buf+pos, sizeof(buf)-pos, "%c", ((ch >= ' ') && (ch <= '~')) ? ch : '.');
 #endif /* APR_CHARSET_EBCDIC */
-                apr_cpystrn(buf+strlen(buf), tmp, sizeof(buf)-strlen(buf));
             }
         }
-        apr_cpystrn(buf+strlen(buf), " |", sizeof(buf)-strlen(buf));
+        pos += apr_snprintf(buf+pos, sizeof(buf)-pos, " |");
         ap_log_cserror(APLOG_MARK, APLOG_TRACE7, 0, c, s, "%s", buf);
     }
     if (trunc > 0)
@@ -2388,7 +2385,6 @@ static void ssl_io_data_dump(conn_rec *c, server_rec *s,
                 "| %04ld - <SPACES/NULS>", len + trunc);
     ap_log_cserror(APLOG_MARK, APLOG_TRACE7, 0, c, s,
             "+-------------------------------------------------------------------------+");
-    return;
 }
 
 long ssl_io_data_cb(BIO *bio, int cmd,
