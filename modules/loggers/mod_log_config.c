@@ -1206,11 +1206,9 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
 
     for (i = 0; i < format->nelts; ++i) {
         strs[i] = process_item(r, orig, &items[i]);
-    }
-
-    for (i = 0; i < format->nelts; ++i) {
         len += strl[i] = strlen(strs[i]);
     }
+
     if (!log_writer) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00645)
                 "log writer isn't correctly setup");
