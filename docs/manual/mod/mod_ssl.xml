@@ -371,6 +371,13 @@ source</description>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
+<note><title>SSLRandomSeed is deprecated</title>
+
+<p>The <code>SSLRandomSeed</code> directive is deprecated, and is
+completely ignored if httpd is built using OpenSSL version 1.1.1 or
+later.</p>
+</note>
+
 <p>
 This configures one or more sources for seeding the Pseudo Random Number
 Generator (PRNG) in OpenSSL at startup time (<em>context</em> is
