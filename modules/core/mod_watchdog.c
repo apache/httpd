@@ -280,7 +280,7 @@ static apr_status_t wd_startup(ap_watchdog_t *w, apr_pool_t *p)
     }
 
     /* Start the newly created watchdog */
-    rc = apr_thread_create(&w->thread, NULL, wd_worker, w, p);
+    rc = ap_thread_create(&w->thread, "watchdog worker", NULL, wd_worker, w, p);
     if (rc == APR_SUCCESS) {
         apr_pool_pre_cleanup_register(p, w, wd_worker_cleanup);
     }

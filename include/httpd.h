@@ -2547,6 +2547,22 @@ AP_DECLARE(void *) ap_realloc(void *ptr, size_t size)
                    AP_FN_ATTR_ALLOC_SIZE(2);
 
 /**
+ * Wrapper for apr_thread_create() which blocks signals in the created
+ * thread.
+ * @param new_thread The newly created thread handle.
+ * @param name Thread name
+ * @param attr The threadattr to use to determine how to create the thread
+ * @param func The function to start the new thread in
+ * @param data Any data to be passed to the starting function
+ * @param cont The pool to use
+ */
+AP_DECLARE(apr_status_t) ap_thread_create(apr_thread_t **new_thread,
+                                          const char *name,
+                                          apr_threadattr_t *attr,
+                                          apr_thread_start_t func,
+                                          void *data, apr_pool_t *p);
+
+/**
  * Get server load params
  * @param ld struct to populate: -1 in fields means error
  */
