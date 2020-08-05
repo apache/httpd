@@ -118,21 +118,31 @@ if ! test -v SKIP_TESTING; then
         popd
     fi
 
-    if grep -q 'Segmentation fault' test/perl-framework/t/logs/error_log; then
-        grep --color=always -C5 'Segmentation fault' test/perl-framework/t/logs/error_log
-        RV=2
-    fi
+    # Catch cases where abort()s get logged to stderr by libraries but
+    # only cause child processes to terminate e.g. during shutdown,
+    # which may not otherwise trigger test failures.
+
+    # "glibc detected": printed with LIBC_FATAL_STDERR_/MALLOC_CHECK_
+    # glibc will abort when malloc errors are detected.  This will get
+    # caught by the segfault grep as well.
+
+    # "pool concurrency check": printed by APR built with
+    # --enable-thread-debug when an APR pool concurrency check aborts
+
+    for phrase in 'Segmentation fault' 'glibc detected' 'pool concurrency check:'; do
+        if grep -q "$phrase" test/perl-framework/t/logs/error_log; then
+            grep --color=always -C5 "$phrase" test/perl-framework/t/logs/error_log
+            RV=2
+        fi
+    done
 
     if test -v TEST_UBSAN && ls ubsan.log.* &> /dev/null; then
         cat ubsan.log.*
         RV=3
     fi
 
-    # With LIBC_FATAL_STDERR_/MALLOC_CHECK_ glibc will abort when
-    # malloc errors are detected.  This should get caught by the
-    # segfault grep above, but in case it is not, catch it here too:
-    if grep 'glibc detected' test/perl-framework/t/logs/error_log; then
-        grep --color=always -C20 'glibc detected' test/perl-framework/t/logs/error_log
+    if test -f test/perl-framework/t/core; then
+        gdb -ex 'thread apply all backtrace' -batch ./httpd test/perl-framework/t/core
         RV=4
     fi
 
