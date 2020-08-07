@@ -1,6 +1,21 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.47
 
+  *) SECURITY: CVE-2020-11984 (cve.mitre.org)
+     mod_proxy_uwsgi: Malicious request may result in information disclosure
+     or RCE of existing file on the server running under a malicious process
+     environment. [Yann Ylavic]
+
+  *) SECURITY: CVE-2020-11993 (cve.mitre.org)
+     mod_http2: when throttling connection requests, log statements
+     where possibly made that result in concurrent, unsafe use of
+     a memory pool. [Stefan Eissing]
+
+  *) SECURITY: 
+     mod_http2: a specially crafted value for the 'Cache-Digest' header
+     request would result in a crash when the server actually tries
+     to HTTP/2 PUSH a resource afterwards. [Stefan Eissing]
+
 Changes with Apache 2.4.46
   *) mod_proxy_fcgi: Fix missing APLOGNO macro argument
      [Eric Covener, Christophe Jaillet]
