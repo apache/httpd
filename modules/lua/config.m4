@@ -34,7 +34,7 @@ AC_DEFUN([CHECK_LUA_PATH], [dnl
     fi
 ])
 
-dnl Check for Lua 5.3/5.2/5.1 Libraries
+dnl Check for Lua Libraries
 dnl CHECK_LUA(ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND])
 dnl Sets:
 dnl  LUA_CFLAGS
@@ -44,7 +44,7 @@ AC_DEFUN([CHECK_LUA],
 
 AC_ARG_WITH(
     lua,
-    [AC_HELP_STRING([--with-lua=PATH],[Path to the Lua 5.3/5.2/5.1 prefix])],
+    [AC_HELP_STRING([--with-lua=PATH],[Path to the Lua installation prefix])],
     lua_path="$withval",
     :)
 
@@ -55,7 +55,7 @@ else
     test_paths="${lua_path}"
 fi
 
-for pklua in lua lua5.3 lua5.2 lua5.1; do
+for pklua in lua lua5.4 lua5.3 lua5.2 lua5.1; do
   if test -n "$PKGCONFIG" -a -z "$lua_path" \
      && $PKGCONFIG --atleast-version=5.1 $pklua; then
     LUA_LIBS="`$PKGCONFIG --libs $pklua`"
