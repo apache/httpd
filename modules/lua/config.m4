@@ -55,7 +55,7 @@ else
     test_paths="${lua_path}"
 fi
 
-for pklua in lua lua5.3 lua5.2 lua5.1; do
+for pklua in lua lua5.4 lua5.3 lua5.2 lua5.1; do
   if test -n "$PKGCONFIG" -a -z "$lua_path" \
      && $PKGCONFIG --atleast-version=5.1 $pklua; then
     LUA_LIBS="`$PKGCONFIG --libs $pklua`"

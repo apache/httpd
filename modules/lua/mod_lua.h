@@ -52,7 +52,9 @@
 #if LUA_VERSION_NUM > 503
 #define lua_resume(a,b,c)    lua_resume(a, NULL, b, c)
 #else
-#define lua_resume(a,b,c)    lua_resume(a, NULL, b)
+/* ### For version < 5.4, assume that exactly one stack item is on the
+ * stack, which is what the code did before but seems dubious. */
+#define lua_resume(a,b,c)    (*(c) = 1, lua_resume(a, NULL, b))
 #endif
 
 #define luaL_setfuncs_compat(a,b) luaL_setfuncs(a,b,0)

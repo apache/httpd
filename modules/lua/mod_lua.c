@@ -492,7 +492,7 @@ static apr_status_t lua_output_filter_handle(ap_filter_t *f, apr_bucket_brigade 
             lua_setglobal(L, "bucket");
             
             /* If Lua yielded, it means we have something to pass on */
-            if (lua_resume(L, 0, &nres) == LUA_YIELD) {
+            if (lua_resume(L, 0, &nres) == LUA_YIELD && nres == 1) {
                 size_t olen;
                 const char* output = lua_tolstring(L, 1, &olen);
                 if (olen > 0) { 
@@ -524,7 +524,7 @@ static apr_status_t lua_output_filter_handle(ap_filter_t *f, apr_bucket_brigade 
             apr_bucket *pbktEOS;
             lua_pushnil(L);
             lua_setglobal(L, "bucket");
-            if (lua_resume(L, 0, &nres) == LUA_YIELD) {
+            if (lua_resume(L, 0, &nres) == LUA_YIELD && nres == 1) {
                 apr_bucket *pbktOut;
                 size_t olen;
                 const char* output = lua_tolstring(L, 1, &olen);
@@ -621,7 +621,7 @@ static apr_status_t lua_input_filter_handle(ap_filter_t *f,
             lua_setglobal(L, "bucket");
             
             /* If Lua yielded, it means we have something to pass on */
-            if (lua_resume(L, 0, &nres) == LUA_YIELD) {
+            if (lua_resume(L, 0, &nres) == LUA_YIELD && nres == 1) {
                 size_t olen;
                 const char* output = lua_tolstring(L, 1, &olen);
                 pbktOut = apr_bucket_heap_create(output, olen, 0, c->bucket_alloc);
@@ -643,7 +643,7 @@ static apr_status_t lua_input_filter_handle(ap_filter_t *f,
             apr_bucket *pbktEOS = apr_bucket_eos_create(c->bucket_alloc);
             lua_pushnil(L);
             lua_setglobal(L, "bucket");
-            if (lua_resume(L, 0, &nres) == LUA_YIELD) {
+            if (lua_resume(L, 0, &nres) == LUA_YIELD && nres == 1) {
                 apr_bucket *pbktOut;
                 size_t olen;
                 const char* output = lua_tolstring(L, 1, &olen);
