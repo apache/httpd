@@ -11,7 +11,7 @@ Changes with Apache 2.4.47
      where possibly made that result in concurrent, unsafe use of
      a memory pool. [Stefan Eissing]
 
-  *) SECURITY: 
+  *) SECURITY: CVE-2020-9490 (cve.mitre.org)
      mod_http2: a specially crafted value for the 'Cache-Digest' header
      request would result in a crash when the server actually tries
      to HTTP/2 PUSH a resource afterwards. [Stefan Eissing]
