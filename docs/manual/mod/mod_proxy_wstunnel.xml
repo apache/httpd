@@ -50,6 +50,28 @@ ProxyPass "/ws2/"  "ws://echo.websocket.org/"
 ProxyPass "/wss2/" "wss://echo.websocket.org/"
     </highlight>
 
+    <p>Proxying both HTTP and websockets at the same time, with a specific set of URL's being
+websocket-only, can be done by specifying the websockets 
+<directive type="ProxyPass" module="mod_proxy">ProxyPass</directive> directive before the
+HTTP directive:</p>
+<highlight language="config">
+ProxyPassMatch ^/(myApp/ws)$  ws://example.com:9080/$1
+ProxyPass / http://example.com:9080/
+</highlight>
+
+<p>Proxying both HTTP and websockets at the same time, where the websockets URL's are not
+websocket-only or not known in advance can be done by using the
+<directive type="RewriteRule" module="mod_rewrite">RewriteRule</directive> directive to
+configure the websockets proxying:</p>
+<highlight language="config">
+ProxyPass / http://example.com:9080/
+RewriteEngine on
+RewriteCond %{HTTP:Upgrade} websocket [NC]
+RewriteCond %{HTTP:Connection} upgrade [NC]
+RewriteRule ^/?(.*) "ws://example.com:9080/$1" [P,L]
+</highlight>
+
+
 <p>Load balancing for multiple backends can be achieved using <module>mod_proxy_balancer</module>.</p>
 
 <p>In fact the module can be used to upgrade to other protocols, you can set the <code>upgrade</code>
