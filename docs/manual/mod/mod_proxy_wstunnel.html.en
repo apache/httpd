@@ -51,6 +51,26 @@ Connection: Upgrade</pre>
 ProxyPass "/wss2/" "wss://echo.websocket.org/"</pre>
 
 
+    <p>Proxying both HTTP and websockets at the same time, with a specific set of URL's being
+websocket-only, can be done by specifying the websockets 
+<code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> directive before the
+HTTP directive:</p>
+<pre class="prettyprint lang-config">ProxyPassMatch ^/(myApp/ws)$  ws://example.com:9080/$1
+ProxyPass / http://example.com:9080/</pre>
+
+
+<p>Proxying both HTTP and websockets at the same time, where the websockets URL's are not
+websocket-only or not known in advance can be done by using the
+<code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> directive to
+configure the websockets proxying:</p>
+<pre class="prettyprint lang-config">ProxyPass / http://example.com:9080/
+RewriteEngine on
+RewriteCond %{HTTP:Upgrade} websocket [NC]
+RewriteCond %{HTTP:Connection} upgrade [NC]
+RewriteRule ^/?(.*) "ws://example.com:9080/$1" [P,L]</pre>
+
+
+
 <p>Load balancing for multiple backends can be achieved using <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code>.</p>
 
 <p>In fact the module can be used to upgrade to other protocols, you can set the <code>upgrade</code>
