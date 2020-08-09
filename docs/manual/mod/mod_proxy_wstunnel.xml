@@ -54,8 +54,8 @@ ProxyPass "/wss2/" "wss://echo.websocket.org/"
 <directive type="ProxyPass" module="mod_proxy">ProxyPass</directive> directive before the 
     HTTP directive:</p>
     <highlight language="config">
-ProxyPass "/myApp/"  "ws://backend.example.com/
-ProxyPass "/myApp/"  "http://backend.example.com/
+ProxyPass "/"  "ws://backend.example.com:9080/"
+ProxyPass "/"  "http://backend.example.com:9080/"
     </highlight>
 
 
