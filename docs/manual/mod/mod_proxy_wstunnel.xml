@@ -49,6 +49,15 @@ Connection: Upgrade
 ProxyPass "/ws2/"  "ws://echo.websocket.org/"
 ProxyPass "/wss2/" "wss://echo.websocket.org/"
     </highlight>
+    
+<p>Proxying both HTTP and websockets at the same time can be done by specifying the websockets
+<directive type="ProxyPass" module="mod_proxy">ProxyPass</directive> directive before the 
+    HTTP directive:</p>
+    <highlight language="config">
+ProxyPass "/myApp/"  "ws://backend.example.com/
+ProxyPass "/myApp/"  "http://backend.example.com/
+    </highlight>
+
 
 <p>Load balancing for multiple backends can be achieved using <module>mod_proxy_balancer</module>.</p>
 
