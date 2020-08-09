@@ -55,8 +55,8 @@ websocket-only, can be done by specifying the websockets
 <directive type="ProxyPass" module="mod_proxy">ProxyPass</directive> directive before the
 HTTP directive:</p>
 <highlight language="config">
-ProxyPassMatch ^/(myApp/ws)$  ws://example.com:9080/$1
-ProxyPass / http://example.com:9080/
+ProxyPassMatch ^/(myApp/ws)$  ws://backend.example.com:9080/$1
+ProxyPass / http://backend.example.com:9080/
 </highlight>
 
 <p>Proxying both HTTP and websockets at the same time, where the websockets URL's are not
