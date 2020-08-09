@@ -234,6 +234,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1870095,1870097 ^/httpd/httpd/trunk .
      +1: jorton, 
 
+  *) mod_proxy: Add proxy check_trans() hook and allow mod_proxy_wtunnel
+     to step out of the way of mod_proxy_http.
+     i.e.
+
+     trunk patch: http://svn.apache.org/r1869399
+                  http://svn.apache.org/r1776290
+     2.4.x patch: http://people.apache.org/~covener/patches/wstunnel-decline.diff
+     +1 covener,
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
