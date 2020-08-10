@@ -192,18 +192,6 @@ ELSE()
   SET(APR_HAS_LDAP FALSE)
 ENDIF()
 
-# See if we have OpenSSL 1.0.2
-SET(HAVE_OPENSSL_102 FALSE)
-IF(OPENSSL_FOUND)
-  STRING(REGEX REPLACE "^1\\.([0-9]+)\\.[0-9]+" "\\1" minor_ver ${OPENSSL_VERSION})
-  STRING(REGEX REPLACE "^1\\.[0-9]+\\.([0-9]+)" "\\1" patch_ver ${OPENSSL_VERSION})
-  IF(${minor_ver} GREATER "0")
-    SET(HAVE_OPENSSL_102 TRUE)
-  ELSEIF(${patch_ver} GREATER "1")
-    SET(HAVE_OPENSSL_102 TRUE)
-  ENDIF()
-ENDIF()
-
 # See if nghttp2 exists in a configured or defaulted location
 SET(NGHTTP2_FOUND TRUE)
 IF(EXISTS "${NGHTTP2_INCLUDE_DIR}/nghttp2/nghttp2.h")
@@ -580,7 +568,6 @@ SET(mod_ssl_extra_sources
   modules/ssl/ssl_util.c             modules/ssl/ssl_util_ocsp.c
   modules/ssl/ssl_util_ssl.c         modules/ssl/ssl_util_stapling.c
 )
-SET(mod_ssl_ct_requires              HAVE_OPENSSL_102)
 IF(OPENSSL_FOUND)
   SET(mod_ssl_ct_extra_includes        ${OPENSSL_INCLUDE_DIR})
   SET(mod_ssl_ct_extra_libs            ${OPENSSL_LIBRARIES})
