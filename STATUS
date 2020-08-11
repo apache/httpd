@@ -138,25 +138,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_proxy: Add ap_proxy_define_match_worker() and use it for ProxyPassMatch
-     and ProxyMatch section to distinguish between normal workers and workers
-     with regex substitutions in the name. Implement handling of such workers
-     in ap_proxy_get_worker(). Fixes the bug when regex workers were not
-     matched and used for request. PR 43513 and 64537.
-     trunk patch: http://svn.apache.org/r1609680
-                  http://svn.apache.org/r1609688
-                  http://svn.apache.org/r1641381
-                  http://svn.apache.org/r1826289
-                  http://svn.apache.org/r1826313
-                  http://svn.apache.org/r1878467
-                  http://svn.apache.org/r1878994
-                  http://svn.apache.org/r1879000
-                  http://svn.apache.org/r1879001
-                  http://svn.apache.org/r1879002
-                  http://svn.apache.org/r1879361
-     2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-ap_proxy_define_match_worker-v6.patch
-     +1: ylavic, minfrin (with an MMN bump), jim (agree w/ minfrin)
-
   *) mod_proxy_uwsgi: Avoid NULL pointer dereferences for empty environment variable values
       http://svn.apache.org/r1879878
    Backport version for 2.4.x of patch:

@@ -453,6 +453,7 @@ typedef struct {
     unsigned int     keepalive_set:1;
     unsigned int     disablereuse_set:1;
     unsigned int     was_malloced:1;
+    unsigned int     is_name_matchable:1;
     char      hcuri[PROXY_WORKER_MAX_ROUTE_SIZE];     /* health check uri */
     char      hcexpr[PROXY_WORKER_MAX_SCHEME_SIZE];   /* name of condition expr for health check */
     int             passes;     /* number of successes for check to pass */
@@ -747,6 +748,24 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
  * @return          error message or NULL if successful (*worker is new worker)
  */
 PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
+                                             proxy_worker **worker,
+                                             proxy_balancer *balancer,
+                                             proxy_server_conf *conf,
+                                             const char *url,
+                                             int do_malloc);
+
+/**
+ * Define and Allocate space for the ap_strcmp_match()able worker to proxy
+ * configuration.
+ * @param p         memory pool to allocate worker from
+ * @param worker    the new worker
+ * @param balancer  the balancer that the worker belongs to
+ * @param conf      current proxy server configuration
+ * @param url       url containing worker name (produces match pattern)
+ * @param do_malloc true if shared struct should be malloced
+ * @return          error message or NULL if successful (*worker is new worker)
+ */
+PROXY_DECLARE(char *) ap_proxy_define_match_worker(apr_pool_t *p,
                                              proxy_worker **worker,
                                              proxy_balancer *balancer,
                                              proxy_server_conf *conf,

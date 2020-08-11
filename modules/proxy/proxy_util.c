@@ -1658,6 +1658,46 @@ PROXY_DECLARE(char *) ap_proxy_worker_name(apr_pool_t *p,
     return apr_pstrcat(p, "unix:", worker->s->uds_path, "|", worker->s->name, NULL);
 }
 
+/*
+ * Taken from ap_strcmp_match() :
+ * Match = 0, NoMatch = 1, Abort = -1, Inval = -2
+ * Based loosely on sections of wildmat.c by Rich Salz
+ * Hmmm... shouldn't this really go component by component?
+ *
+ * Adds handling of the "\<any>" => "<any>" unescaping.
+ */
+static int ap_proxy_strcmp_ematch(const char *str, const char *expected)
+{
+    apr_size_t x, y;
+
+    for (x = 0, y = 0; expected[y]; ++y, ++x) {
+        if (expected[y] == '$' && apr_isdigit(expected[y + 1])) {
+            do {
+                y += 2;
+            } while (expected[y] == '$' && apr_isdigit(expected[y + 1]));
+            if (!expected[y])
+                return 0;
+            while (str[x]) {
+                int ret;
+                if ((ret = ap_proxy_strcmp_ematch(&str[x++], &expected[y])) != 1)
+                    return ret;
+            }
+            return -1;
+        }
+        else if (!str[x]) {
+            return -1;
+        }
+        else if (expected[y] == '\\' && !expected[++y]) {
+            /* NUL is an invalid char! */
+            return -2;
+        }
+        if (str[x] != expected[y])
+            return 1;
+    }
+    /* We got all the way through the worker path without a difference */
+    return 0;
+}
+
 PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
                                                   proxy_balancer *balancer,
                                                   proxy_server_conf *conf,
@@ -1720,11 +1760,15 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
             if ( ((worker_name_length = strlen(worker->s->name)) <= url_length)
                 && (worker_name_length >= min_match)
                 && (worker_name_length > max_match)
-                && (strncmp(url_copy, worker->s->name, worker_name_length) == 0) ) {
+                && (worker->s->is_name_matchable
+                    || strncmp(url_copy, worker->s->name,
+                               worker_name_length) == 0)
+                && (!worker->s->is_name_matchable
+                    || ap_proxy_strcmp_ematch(url_copy,
+                                              worker->s->name) == 0) ) {
                 max_worker = worker;
                 max_match = worker_name_length;
             }
-
         }
     } else {
         worker = (proxy_worker *)conf->workers->elts;
@@ -1732,7 +1776,12 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
             if ( ((worker_name_length = strlen(worker->s->name)) <= url_length)
                 && (worker_name_length >= min_match)
                 && (worker_name_length > max_match)
-                && (strncmp(url_copy, worker->s->name, worker_name_length) == 0) ) {
+                && (worker->s->is_name_matchable
+                    || strncmp(url_copy, worker->s->name,
+                               worker_name_length) == 0)
+                && (!worker->s->is_name_matchable
+                    || ap_proxy_strcmp_ematch(url_copy,
+                                              worker->s->name) == 0) ) {
                 max_worker = worker;
                 max_match = worker_name_length;
             }
@@ -1866,6 +1915,7 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
     wshared->hash.def = ap_proxy_hashfunc(wshared->name, PROXY_HASHFUNC_DEFAULT);
     wshared->hash.fnv = ap_proxy_hashfunc(wshared->name, PROXY_HASHFUNC_FNV);
     wshared->was_malloced = (do_malloc != 0);
+    wshared->is_name_matchable = 0;
     if (sockpath) {
         if (PROXY_STRNCPY(wshared->uds_path, sockpath) != APR_SUCCESS) {
             return apr_psprintf(p, "worker uds path (%s) too long", sockpath);
@@ -1885,6 +1935,38 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
     (*worker)->balancer = balancer;
     (*worker)->s = wshared;
 
+    return NULL;
+}
+
+PROXY_DECLARE(char *) ap_proxy_define_match_worker(apr_pool_t *p,
+                                             proxy_worker **worker,
+                                             proxy_balancer *balancer,
+                                             proxy_server_conf *conf,
+                                             const char *url,
+                                             int do_malloc)
+{
+    char *err;
+    const char *pdollar = ap_strchr_c(url, '$');
+
+    if (pdollar != NULL) {
+        url = apr_pstrmemdup(p, url, pdollar - url);
+    }
+    err = ap_proxy_define_worker(p, worker, balancer, conf, url, do_malloc);
+    if (err) {
+        return err;
+    }
+
+    (*worker)->s->is_name_matchable = 1;
+    if (pdollar) {
+        /* Before ap_proxy_define_match_worker() existed, a regex worker
+         * with dollar substitution was never matched against the actual
+         * URL thus the request fell through the generic worker. To avoid
+         * dns and connection reuse compat issues, let's disable connection
+         * reuse by default, it can still be overwritten by an explicit
+         * enablereuse=on.
+         */
+        (*worker)->s->disablereuse = 1;
+    }
     return NULL;
 }
 

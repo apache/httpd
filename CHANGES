@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.47
 
+  *) mod_proxy: recognize parameters from ProxyPassMatch workers with dollar
+     substitution, such that they apply to the backend connection.  Note that
+     connection reuse is disabled by default to avoid compatibility issues.
+     [Takashi Sato, Jan Kaluza, Eric Covener, Yann Ylavic, Jean-Frederic Clere]
+
 Changes with Apache 2.4.46
 
   *) SECURITY: CVE-2020-11984 (cve.mitre.org)

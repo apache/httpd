@@ -188,8 +188,6 @@ AP_DECLARE(int) ap_strcmp_match(const char *str, const char *expected)
     int x, y;
 
     for (x = 0, y = 0; expected[y]; ++y, ++x) {
-        if ((!str[x]) && (expected[y] != '*'))
-            return -1;
         if (expected[y] == '*') {
             while (expected[++y] == '*');
             if (!expected[y])
@@ -201,6 +199,8 @@ AP_DECLARE(int) ap_strcmp_match(const char *str, const char *expected)
             }
             return -1;
         }
+        else if (!str[x])
+            return -1;
         else if ((expected[y] != '?') && (str[x] != expected[y]))
             return 1;
     }
