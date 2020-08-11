@@ -178,7 +178,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1879002
                   http://svn.apache.org/r1879361
      2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-ap_proxy_define_match_worker-v6.patch
-     +1: ylavic, minfrin (with an MMN bump)
+     +1: ylavic, minfrin (with an MMN bump), jim (agree w/ minfrin)
 
  *) "[mod_dav_fs etag handling] should really honor the FileETag setting".
      - It now does.
@@ -219,14 +219,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    Backport version for 2.4.x of patch:
       Trunk version of patch works
       svn merge -c 1879822,1879831,1879840 ^/httpd/httpd/trunk .
-   +1: rpluem,
+   +1: rpluem, jim
 
   *) mod_proxy_uwsgi: Avoid NULL pointer dereferences for empty environment variable values
       http://svn.apache.org/r1879878
    Backport version for 2.4.x of patch:
       Trunk version of patch works
       svn merge -c 1879878 ^/httpd/httpd/trunk .
-   +1: jailletc36, covener, gbechis
+   +1: jailletc36, covener, gbechis, jim
 
   *) mod_ssl: Support HTTP request body buffering with TLSv1.3.
      trunk patch: http://svn.apache.org/r1870095
@@ -241,13 +241,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1869399
                   http://svn.apache.org/r1776290
      2.4.x patch: http://people.apache.org/~covener/patches/wstunnel-decline.diff
-     +1 covener,
+     +1 covener, jim
 
   *) mod_http2: Remove .gitignore. It is not present in trunk and
      contains problematic entries for our tree (especially Makefile.in).
 
      2.4.x patch: "svn rm modules/http2/.gitignore"
-     +1 rjung, 
+     +1 rjung, jim
      -1 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
