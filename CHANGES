@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.47
 
+  *) mod_proxy_uwsgi: Fix a crash when sending environment variables with no
+     value. PR 64598 [Ruediger Pluem]
+
   *) mod_proxy: recognize parameters from ProxyPassMatch workers with dollar
      substitution, such that they apply to the backend connection.  Note that
      connection reuse is disabled by default to avoid compatibility issues.

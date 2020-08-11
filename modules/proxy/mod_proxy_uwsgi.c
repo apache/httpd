@@ -175,7 +175,7 @@ static int uwsgi_send_headers(request_rec *r, proxy_conn_rec * conn)
     env = (apr_table_entry_t *) env_table->elts;
 
     for (j = 0; j < env_table->nelts; ++j) {
-        headerlen += 2 + strlen(env[j].key) + 2 + strlen(env[j].val);
+        headerlen += 2 + strlen(env[j].key) + 2 + (env[j].val ? strlen(env[j].val) : 0);
     }
 
     pktsize = headerlen - 4;
@@ -198,10 +198,12 @@ static int uwsgi_send_headers(request_rec *r, proxy_conn_rec * conn)
         memcpy(ptr, env[j].key, keylen);
         ptr += keylen;
 
-        vallen = strlen(env[j].val);
+        vallen = env[j].val ? strlen(env[j].val) : 0;
         *ptr++ = (apr_byte_t) (vallen & 0xff);
         *ptr++ = (apr_byte_t) ((vallen >> 8) & 0xff);
-        memcpy(ptr, env[j].val, vallen);
+        if (env[j].val) {
+            memcpy(ptr, env[j].val, vallen);
+        }
         ptr += vallen;
     }
 
