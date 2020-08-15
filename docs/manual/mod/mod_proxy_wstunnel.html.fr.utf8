@@ -52,6 +52,13 @@ Connection: Upgrade</pre>
     <pre class="prettyprint lang-config">ProxyPass "/ws2/"  "ws://echo.websocket.org/"
 ProxyPass "/wss2/" "wss://echo.websocket.org/"</pre>
 
+    
+<p>Il est possible de mandater les websockets et HTTP en même temps en
+définissant la directive <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> concernant les websockets avant celle
+concernant HTTP :</p>
+    <pre class="prettyprint lang-config">ProxyPass "/"  "ws://backend.example.com:9080/"
+ProxyPass "/"  "http://backend.example.com:9080/"</pre>
+
 
 <p>La répartition de charge entre plusieurs serveurs d'arrière-plan peut être
 configurée via le module <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code>.</p>
