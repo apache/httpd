@@ -33,8 +33,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fonctionnalités de base du serveur HTTP Apache toujours
 disponibles</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Noyau httpd</td></tr></table>
@@ -1572,10 +1570,6 @@ personnalisation des réponses</a></li>
 ErrorLog syslog:user:httpd.srv1
 ErrorLog syslog::httpd.srv2</pre>
 
-
-    <p>Des modules supplémentaires peuvent fournir leurs propres
-    fournisseurs ErrorLog. La syntaxe est similaire à celle de
-    l'exemple <code>syslog</code> ci-dessus.</p>
 
     <p>SECURITE : Voir le document <a href="../misc/security_tips.html#serverroot">conseils à propos de
     sécurité</a> pour des détails sur les raisons pour lesquelles votre

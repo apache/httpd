@@ -52,7 +52,25 @@ Connection: Upgrade</pre>
     <pre class="prettyprint lang-config">ProxyPass "/ws2/"  "ws://echo.websocket.org/"
 ProxyPass "/wss2/" "wss://echo.websocket.org/"</pre>
 
-    
+
+<p>Il est possible de mandater les websockets et HTTP en même temps, avec un jeu
+spécifique d'URLs pour les websockets, en définissant la directive <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> concernant les
+websockets avant celle concernant HTTP :</p>
+<pre class="prettyprint lang-config">ProxyPassMatch ^/(myApp/ws)$  ws://backend.example.com:9080/$1
+ProxyPass / http://backend.example.com:9080/</pre>
+
+
+<p>Il est possible de mandater les websockets et HTTP en même temps, lorsque
+les URLs websockets ne concernent pas uniquement les websockets ou ne sont pas
+connues à l'avance, en utilisant la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> pour configurer le mandatement des
+websockets :</p>
+<pre class="prettyprint lang-config">ProxyPass / http://example.com:9080/
+RewriteEngine on
+RewriteCond %{HTTP:Upgrade} websocket [NC]
+RewriteCond %{HTTP:Connection} upgrade [NC]
+RewriteRule ^/?(.*) "ws://example.com:9080/$1" [P,L]</pre>
+
+
 <p>La répartition de charge entre plusieurs serveurs d'arrière-plan peut être
 configurée via le module <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code>.</p>
 
