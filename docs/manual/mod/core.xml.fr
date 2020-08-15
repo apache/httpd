@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1868823:1880372 (outdated) -->
+<!-- English Revision: 1880372 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1694,10 +1694,6 @@ ErrorLog syslog:user
 ErrorLog syslog:user:httpd.srv1
 ErrorLog syslog::httpd.srv2  
     </highlight>
-
-    <p>Des modules supplémentaires peuvent fournir leurs propres
-    fournisseurs ErrorLog. La syntaxe est similaire à celle de
-    l'exemple <code>syslog</code> ci-dessus.</p>
 
     <p>SECURITE : Voir le document <a
     href="../misc/security_tips.html#serverroot">conseils à propos de
