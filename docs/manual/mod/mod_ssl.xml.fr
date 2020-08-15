@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1874243 -->
+<!-- English Revision: 1880564 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -463,6 +463,12 @@ Pseudo-Aléatoires (PRNG)</description>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
+<note><title>La directive SSLRandomSeed est obsolète</title>
+
+<p>La directive SSLRandomSeed est obsolète et sera ignorée si httpd a été
+compilé en utilisant une version d'OpenSSL égale ou supérieure à 1.1.1.</p>
+</note>
+
 <p>
 Cette directive permet de définir une ou plusieurs sources de
 déclenchement du Générateur de Nombres Pseudo-Aléatoires (PRNG) dans

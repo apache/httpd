@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1801594 -->
+<!-- English Revision : 1880724 -->
 <!-- French translation : Lucien GENTIS -->
-<!-- $LastChangedRevision: 2017071501 $ -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -30,64 +29,73 @@ websockets</description>
 <status>Extension</status>
 <sourcefile>mod_proxy_wstunnel.c</sourcefile>
 <identifier>proxy_wstunnel_module</identifier>
-<compatibility>Disponible &agrave; partir de la version 2.4.5 du serveur HTTP
+<compatibility>Disponible à partir de la version 2.4.5 du serveur HTTP
 Apache</compatibility>
 
 <summary>
-    <p>Pour utiliser ce module, <module>mod_proxy</module> doit &ecirc;tre
-    charg&eacute;. Il fournit le support du tunnelling pour les connexions
-    websocket vers un serveur websockets d'arri&egrave;re-plan. La connexion
+    <p>Pour utiliser ce module, <module>mod_proxy</module> doit être
+    chargé. Il fournit le support du tunnelling pour les connexions
+    websocket vers un serveur websockets d'arrière-plan. La connexion
     est automatiquement promue en connexion websocket :</p>
 
-    <example><title>R&eacute;ponse HTTP</title>
+    <example><title>Réponse HTTP</title>
         <highlight language="config">
 Upgrade: WebSocket
 Connection: Upgrade
         </highlight>
     </example>
 
-<p>Le mandatement des requ&ecirc;tes vers un serveur websockets comme
-<code>echo.websocket.org</code> peut &ecirc;tre configur&eacute; via la directive <directive
+<p>Le mandatement des requêtes vers un serveur websockets comme
+<code>echo.websocket.org</code> peut être configuré via la directive <directive
 type="ProxyPass" module="mod_proxy">ProxyPass</directive> :</p>
     <highlight language="config">
 ProxyPass "/ws2/"  "ws://echo.websocket.org/"
 ProxyPass "/wss2/" "wss://echo.websocket.org/"
     </highlight>
+    
+<p>Il est possible de mandater les websockets et HTTP en même temps en
+définissant la directive <directive type="ProxyPass"
+module="mod_proxy">ProxyPass</directive> concernant les websockets avant celle
+concernant HTTP :</p>
+    <highlight language="config">
+ProxyPass "/"  "ws://backend.example.com:9080/"
+ProxyPass "/"  "http://backend.example.com:9080/"
+    </highlight>
 
-<p>La r&eacute;partition de charge entre plusieurs serveurs d'arri&egrave;re-plan peut &ecirc;tre
-configur&eacute;e via le module <module>mod_proxy_balancer</module>.</p>
+<p>La répartition de charge entre plusieurs serveurs d'arrière-plan peut être
+configurée via le module <module>mod_proxy_balancer</module>.</p>
 
-<p>En fait, ce module permet d'accepter d'autres protocoles ; vous pouvez &agrave; cet
-effet utiliser le param&egrave;tre <code>upgrade</code> de la directive <directive
+<p>En fait, ce module permet d'accepter d'autres protocoles ; vous pouvez à cet
+effet utiliser le paramètre <code>upgrade</code> de la directive <directive
 type="ProxyPass" module="mod_proxy">ProxyPass</directive>. La valeur NONE
-signifie que vous court-circuitez la consultation de l'en-t&ecirc;te, mais que vous
-autorisez quand-m&ecirc;me WebSocket. La valeur ANY signifie que <code>Upgrade</code>
-va lire les en-t&ecirc;tes de la requ&ecirc;te et les utilisera dans l'en-t&ecirc;te
-<code>Upgrade</code> de la r&eacute;ponse.</p>
+signifie que vous court-circuitez la consultation de l'en-tête, mais que vous
+autorisez quand-même WebSocket. La valeur ANY signifie que <code>Upgrade</code>
+va lire les en-têtes de la requête et les utilisera dans l'en-tête
+<code>Upgrade</code> de la réponse.</p>
 </summary>
 
 <seealso><module>mod_proxy</module></seealso>
 
 <directivesynopsis>
 <name>ProxyWebsocketAsync</name>
-<description>Cr&eacute;ation d'un tunnel asynchrone</description>
+<description>Création d'un tunnel asynchrone</description>
 <syntax>ProxyWebsocketAsync ON|OFF</syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p>Cette directive permet d'imposer la cr&eacute;ation d'un tunnel
-    asynchrone. Si le module MPM utilis&eacute; ne supporte pas les
-    fonctionnalit&eacute;s n&eacute;cessaires, le tunnel est cr&eacute;&eacute; en mode synchrone.</p>
+    <p>Cette directive permet d'imposer la création d'un tunnel
+    asynchrone. Si le module MPM utilisé ne supporte pas les
+    fonctionnalités nécessaires, le tunnel est créé en mode synchrone.</p>
     <note><title>Note</title><p>Le support du mode asynchrone est
-    au stade exp&eacute;rimental et est susceptible d'&eacute;voluer.</p></note>
+    au stade expérimental et est susceptible d'évoluer.</p></note>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ProxyWebsocketIdleTimeout</name>
-<description>Temps d'attente maximum pour des donn&eacute;es sur le tunnel websockets</description>
+<description>Temps d'attente maximum pour des données sur le tunnel websockets</description>
 <syntax>ProxyWebsocketIdleTimeout <var>num</var>[ms]</syntax>
 <default>ProxyWebsocketIdleTimeout 0</default>
 <contextlist><context>server config</context>
@@ -95,16 +103,16 @@ va lire les en-t&ecirc;tes de la requ&ecirc;te et les utilisera dans l'en-t&ecir
 </contextlist>
 
 <usage>
-    <p>Cette directive permet de d&eacute;finir un temps maximum pendant lequel
-    le tunnel pourra rester ouvert et inactif. Par d&eacute;faut, ce temps est exprim&eacute;
-    en secondes, mais vous pouvez le sp&eacute;cifier en millisecondes en utilisant le
+    <p>Cette directive permet de définir un temps maximum pendant lequel
+    le tunnel pourra rester ouvert et inactif. Par défaut, ce temps est exprimé
+    en secondes, mais vous pouvez le spécifier en millisecondes en utilisant le
     suffixe <em>ms</em>.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ProxyWebsocketAsyncDelay</name>
-<description>Temps d'attente synchrone maximum pour des donn&eacute;es</description>
+<description>Temps d'attente synchrone maximum pour des données</description>
 <syntax>ProxyWebsocketAsyncDelay <var>num</var>[ms]</syntax>
 <default>ProxyWebsocketAsyncDelay 0</default>
 <contextlist><context>server config</context>
@@ -113,13 +121,13 @@ va lire les en-t&ecirc;tes de la requ&ecirc;te et les utilisera dans l'en-t&ecir
 
 <usage>
     <p>Si la directive <directive>ProxyWebsocketAsync</directive> est
-    activ&eacute;e, cette directive permet de d&eacute;finir le temps maximum pendant lequel
-    le serveur attendra des donn&eacute;es en mode synchrone. Par d&eacute;faut, ce temps est exprim&eacute;
-    en secondes, mais vous pouvez le sp&eacute;cifier en millisecondes en utilisant le
+    activée, cette directive permet de définir le temps maximum pendant lequel
+    le serveur attendra des données en mode synchrone. Par défaut, ce temps est exprimé
+    en secondes, mais vous pouvez le spécifier en millisecondes en utilisant le
     suffixe <em>ms</em>.</p>
 
     <note><title>Note</title><p>Le support du mode asynchrone est
-    au stade exp&eacute;rimental et est susceptible d'&eacute;voluer.</p></note>
+    au stade expérimental et est susceptible d'évoluer.</p></note>
 </usage>
 </directivesynopsis>
 
