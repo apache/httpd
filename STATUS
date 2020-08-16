@@ -224,6 +224,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1 rjung, jim
      -1 
 
+  *)  mpm_event: reset listener_is_wakeable on reload.
+     trunk patch: http://svn.apache.org/r1877552
+     2.4.x patch: svn merge -c 1877552 ^/httpd/httpd/trunk .
+     +1: 
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
