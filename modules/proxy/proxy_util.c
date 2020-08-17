@@ -2562,11 +2562,15 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                      * So let's make it configurable by env.
                      * The logic here is the same used in mod_proxy_http.
                      */
-                    proxy_auth = apr_table_get(r->headers_in, "Proxy-Authorization");
+                    proxy_auth = apr_table_get(r->notes, "proxy-basic-creds");
+                    if (proxy_auth == NULL)
+                        proxy_auth = apr_table_get(r->headers_in, "Proxy-Authorization");
+
                     if (proxy_auth != NULL &&
                         proxy_auth[0] != '\0' &&
-                        (r->user == NULL || /* we haven't yet authenticated */
-                        apr_table_get(r->subprocess_env, "Proxy-Chain-Auth"))) {
+                        (r->user == NULL /* we haven't yet authenticated */
+                         || apr_table_get(r->subprocess_env, "Proxy-Chain-Auth")
+                         || apr_table_get(r->notes, "proxy-basic-creds"))) {
                         forward->proxy_auth = apr_pstrdup(conn->pool, proxy_auth);
                     }
                 }
@@ -2798,7 +2802,8 @@ static apr_status_t send_http_connect(proxy_conn_rec *backend,
     nbytes = apr_snprintf(buffer, sizeof(buffer),
                           "CONNECT %s:%d HTTP/1.0" CRLF,
                           forward->target_host, forward->target_port);
-    /* Add proxy authorization from the initial request if necessary */
+    /* Add proxy authorization from the configuration, or initial
+     * request if necessary */
     if (forward->proxy_auth != NULL) {
         nbytes += apr_snprintf(buffer + nbytes, sizeof(buffer) - nbytes,
                                "Proxy-Authorization: %s" CRLF,
@@ -3741,7 +3746,7 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
     apr_bucket *e;
     int do_100_continue;
     conn_rec *origin = p_conn->connection;
-    const char *fpr1;
+    const char *fpr1, *creds;
     proxy_dir_conf *dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
 
     /*
@@ -3918,6 +3923,11 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
     proxy_run_fixups(r);
     if (ap_proxy_clear_connection(r, r->headers_in) < 0) {
         return HTTP_BAD_REQUEST;
+    }
+
+    creds = apr_table_get(r->notes, "proxy-basic-creds");
+    if (creds) {
+        apr_table_mergen(r->headers_in, "Proxy-Authorization", creds);
     }
 
     /* send request headers */
