@@ -138,6 +138,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_http2: Remove .gitignore. It is not present in trunk and
+     contains problematic entries for our tree (especially Makefile.in).
+
+     2.4.x patch: "svn rm modules/http2/.gitignore"
+     +1 rjung, jim, rpluem
+     -1 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -216,13 +222,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1776290
      2.4.x patch: http://people.apache.org/~covener/patches/wstunnel-decline.diff
      +1 covener, jim
-
-  *) mod_http2: Remove .gitignore. It is not present in trunk and
-     contains problematic entries for our tree (especially Makefile.in).
-
-     2.4.x patch: "svn rm modules/http2/.gitignore"
-     +1 rjung, jim
-     -1 
 
   *)  mpm_event: reset listener_is_wakeable on reload.
      trunk patch: http://svn.apache.org/r1877552
