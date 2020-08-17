@@ -145,6 +145,15 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      +1 rjung, jim, rpluem
      -1 
 
+  *) mod_proxy: Add proxy check_trans() hook and allow mod_proxy_wtunnel
+     to step out of the way of mod_proxy_http.
+     i.e.
+
+     trunk patch: http://svn.apache.org/r1869399
+                  http://svn.apache.org/r1776290
+     2.4.x patch: http://people.apache.org/~covener/patches/wstunnel-decline.diff
+     +1 covener, jim, rpluem
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -214,15 +223,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1880927
      2.4.x patch: svn merge --accept tf -c 1870095,1870097,1880927 ^/httpd/httpd/trunk .
      +1: jorton, 
-
-  *) mod_proxy: Add proxy check_trans() hook and allow mod_proxy_wtunnel
-     to step out of the way of mod_proxy_http.
-     i.e.
-
-     trunk patch: http://svn.apache.org/r1869399
-                  http://svn.apache.org/r1776290
-     2.4.x patch: http://people.apache.org/~covener/patches/wstunnel-decline.diff
-     +1 covener, jim
 
   *)  mpm_event: reset listener_is_wakeable on reload.
      trunk patch: http://svn.apache.org/r1877552
