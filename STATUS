@@ -222,7 +222,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1870097
                   http://svn.apache.org/r1880927
      2.4.x patch: svn merge --accept tf -c 1870095,1870097,1880927 ^/httpd/httpd/trunk .
-     +1: jorton, 
+     +1: jorton, rpluem
 
   *)  mpm_event: reset listener_is_wakeable on reload.
      trunk patch: http://svn.apache.org/r1877552
