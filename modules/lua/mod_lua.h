@@ -61,6 +61,7 @@
 #else
 #define lua_rawlen(L,i)    lua_objlen(L, (i))
 #define luaL_setfuncs_compat(a,b) luaL_register(a,NULL,b)
+#define lua_resume(a,b,c)    (*(c) = 1, lua_resume(a, b))
 #endif
 #if LUA_VERSION_NUM > 502
 #define lua_dump(a,b,c) lua_dump(a,b,c,0)
