@@ -1833,6 +1833,13 @@ directory contains the appropriate symbolic links.</p>
 <note type="warning">
 <p>Currently there is no support for encrypted private keys</p>
 </note>
+<note type="warning">
+<p>Only keys encoded in PKCS1 RSA, DSA or EC format are supported.
+Keys encoded in PKCS8 format, ie. starting with
+&quot;<code>-----BEGIN PRIVATE KEY-----</code>&quot;,
+must be converted, eg. using
+&quot;<code>openssl rsa -in private-pkcs8.pem -outform pem</code>&quot;.</p>
+</note>
 <example><title>Example</title>
 <highlight language="config">
 SSLProxyMachineCertificatePath "/usr/local/apache2/conf/proxy.crt/"
@@ -1862,6 +1869,13 @@ or additionally to <code>SSLProxyMachineCertificatePath</code>.
 </p>
 <note type="warning">
 <p>Currently there is no support for encrypted private keys</p>
+</note>
+<note type="warning">
+<p>Only keys encoded in PKCS1 RSA, DSA or EC format are supported.
+Keys encoded in PKCS8 format, ie. starting with
+&quot;<code>-----BEGIN PRIVATE KEY-----</code>&quot;,
+must be converted, eg. using
+&quot;<code>openssl rsa -in private-pkcs8.pem -outform pem</code>&quot;.</p>
 </note>
 <example><title>Example</title>
 <highlight language="config">
