@@ -34,7 +34,7 @@
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>proxy_http2_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_proxy_http2.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.4.19 and later</td></tr></table>
+<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.4.19 and later</td></tr></table>
 <h3>Summary</h3>
 
     <p><code class="module"><a href="../mod/mod_proxy_http2.html">mod_proxy_http2</a></code>

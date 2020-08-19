@@ -305,7 +305,7 @@ the condition expressions and value expressions.</p>
 <dd>Specifies the replacement value for the preceding environment variable.
    Backreferences, such as "$1", can be included from regular expression
    captures in <var>conditional-expression</var>. If omitted, the variable is
-   set (or overridden) to an empty string ¶ but see the Note below.</dd>
+   set (or overridden) to an empty string — but see the Note below.</dd>
 </dl>
 
 <div class="example"><pre class="prettyprint lang-config"># A basic, unconditional override

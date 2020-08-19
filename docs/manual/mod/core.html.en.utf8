@@ -50,7 +50,6 @@ available</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#cgimapextension">CGIMapExtension</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cgipassauth">CGIPassAuth</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cgivar">CGIVar</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#contentdigest">ContentDigest</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#defaultruntimedir">DefaultRuntimeDir</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#defaultstatedir">DefaultStateDir</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#defaulttype">DefaultType</a></li>
@@ -740,46 +739,6 @@ variables</td></tr>
     which may be different than the original request from the client
     due to internal redirects or subrequests.</dd>
   </dl>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ContentDigest" id="ContentDigest">ContentDigest</a> <a name="contentdigest" id="contentdigest">Directive</a> <a title="Permanent link" href="#contentdigest" class="permalink">&para;</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enables the generation of <code>Content-MD5</code> HTTP Response
-headers</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ContentDigest On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ContentDigest Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Options</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-</table>
-    <p>This directive enables the generation of
-    <code>Content-MD5</code> headers as defined in RFC1864
-    respectively RFC2616.</p>
-
-    <p>MD5 is an algorithm for computing a "message digest"
-    (sometimes called "fingerprint") of arbitrary-length data, with
-    a high degree of confidence that any alterations in the data
-    will be reflected in alterations in the message digest.</p>
-
-    <p>The <code>Content-MD5</code> header provides an end-to-end
-    message integrity check (MIC) of the entity-body. A proxy or
-    client may check this header for detecting accidental
-    modification of the entity-body in transit. Example header:</p>
-
-    <div class="example"><p><code>
-      Content-MD5: AuLb7Dp1rqtRtxz2m9kRpA==
-    </code></p></div>
-
-    <p>Note that this can cause performance problems on your server
-    since the message digest is computed on every request (the
-    values are not cached).</p>
-
-    <p><code>Content-MD5</code> is only sent for documents served
-    by the <code class="module"><a href="../mod/core.html">core</a></code>, and not by any module. For example,
-    SSI documents, output from CGI scripts, and byte range responses
-    do not have this header.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1820,15 +1779,18 @@ earlier.</td></tr>
      <dd>All available fields will be used. This is equivalent to:
          <pre class="prettyprint lang-config">FileETag INode MTime Size</pre>
 </dd>
+     <dt><strong>Digest</strong></dt>
+     <dd>If a document is file-based, the <code>ETag</code> field will be
+       calculated by taking the digest over the file.</dd>
      <dt><strong>None</strong></dt>
      <dd>If a document is file-based, no <code>ETag</code> field will be
        included in the response</dd>
     </dl>
 
-    <p>The <code>INode</code>, <code>MTime</code>, and <code>Size</code>
-    keywords may be prefixed with either <code>+</code> or <code>-</code>,
-    which allow changes to be made to the default setting inherited
-    from a broader scope. Any keyword appearing without such a prefix
+    <p>The <code>INode</code>, <code>MTime</code>, <code>Size</code> and
+    <code>Digest</code> keywords may be prefixed with either <code>+</code>
+    or <code>-</code>, which allow changes to be made to the default setting
+    inherited from a broader scope. Any keyword appearing without such a prefix
     immediately and completely cancels the inherited setting.</p>
 
     <p>If a directory's configuration includes
@@ -1837,18 +1799,10 @@ earlier.</td></tr>
     the setting for that subdirectory (which will be inherited by
     any sub-subdirectories that don't override it) will be equivalent to
     <code>FileETag&nbsp;MTime&nbsp;Size</code>.</p>
-    <div class="warning"><h3>Warning</h3>
-    Do not change the default for directories or locations that have WebDAV
-    enabled and use <code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code> as a storage provider.
-    <code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code> uses <code>MTime&nbsp;Size</code>
-    as a fixed format for <code>ETag</code> comparisons on conditional requests.
-    These conditional requests will break if the <code>ETag</code> format is
-    changed via <code class="directive">FileETag</code>.
-    </div>
     <div class="note"><h3>Server Side Includes</h3>
     An ETag is not generated for responses parsed by <code class="module"><a href="../mod/mod_include.html">mod_include</a></code>
-    since the response entity can change without a change of the INode, MTime, or Size
-    of the static file with embedded SSI directives.
+    since the response entity can change without a change of the INode, MTime,
+    Size or Digest of the static file with embedded SSI directives.
     </div>
 
 

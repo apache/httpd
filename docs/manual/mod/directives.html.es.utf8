@@ -221,7 +221,6 @@
 <li><a href="mod_speling.html#checkcaseonly">CheckCaseOnly</a></li>
 <li><a href="mod_speling.html#checkspelling">CheckSpelling</a></li>
 <li><a href="mod_unixd.html#chrootdir">ChrootDir</a></li>
-<li><a href="core.html#contentdigest">ContentDigest</a></li>
 <li><a href="mod_usertrack.html#cookiedomain">CookieDomain</a></li>
 <li><a href="mod_usertrack.html#cookieexpires">CookieExpires</a></li>
 <li><a href="mod_usertrack.html#cookiehttponly">CookieHTTPOnly</a></li>
@@ -431,6 +430,7 @@
 <li><a href="mod_lua.html#luahookinsertfilter">LuaHookInsertFilter</a></li>
 <li><a href="mod_lua.html#luahooklog">LuaHookLog</a></li>
 <li><a href="mod_lua.html#luahookmaptostorage">LuaHookMapToStorage</a></li>
+<li><a href="mod_lua.html#luahookpretranslate">LuaHookPreTranslate</a></li>
 <li><a href="mod_lua.html#luahooktranslatename">LuaHookTranslateName</a></li>
 <li><a href="mod_lua.html#luahooktypechecker">LuaHookTypeChecker</a></li>
 <li><a href="mod_lua.html#luainherit">LuaInherit</a></li>

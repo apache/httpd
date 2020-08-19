@@ -237,6 +237,7 @@ can create. Some other ways of hooking are:
 <li><code>ap_hook_child_init</code>: Place a hook that executes when a child process is spawned (commonly used for initializing modules after the server has forked)</li>
 <li><code>ap_hook_pre_config</code>: Place a hook that executes before any configuration data has been read (very early hook)</li>
 <li><code>ap_hook_post_config</code>: Place a hook that executes after configuration has been parsed, but before the server has forked</li>
+<li><code>ap_hook_pre_translate_name</code>: Place a hook that executes when a URI needs to be translated into a filename on the server, before decoding</li>
 <li><code>ap_hook_translate_name</code>: Place a hook that executes when a URI needs to be translated into a filename on the server (think <code>mod_rewrite</code>)</li>
 <li><code>ap_hook_quick_handler</code>: Similar to <code>ap_hook_handler</code>, except it is run before any other request hooks (translation, auth, fixups etc)</li>
 <li><code>ap_hook_log_transaction</code>: Place a hook that executes when the server is about to add a log entry of the current request</li>

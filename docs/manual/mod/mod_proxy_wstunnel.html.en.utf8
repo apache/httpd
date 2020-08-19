@@ -50,6 +50,14 @@ Connection: Upgrade</pre>
     <pre class="prettyprint lang-config">ProxyPass "/ws2/"  "ws://echo.websocket.org/"
 ProxyPass "/wss2/" "wss://echo.websocket.org/"</pre>
 
+    
+<p>Proxying both HTTP and websockets at the same time can be done by specifying the websockets
+<code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> directive before the 
+    HTTP directive:</p>
+    <pre class="prettyprint lang-config">ProxyPass "/"  "ws://backend.example.com:9080/"
+ProxyPass "/"  "http://backend.example.com:9080/"</pre>
+
+
 
 <p>Load balancing for multiple backends can be achieved using <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code>.</p>
 

@@ -99,7 +99,7 @@ DBDParams host=localhost,dbname=pony,user=shetland,pass=appaloosa</pre>
     Further usage examples appear in each of those modules'
     documentation.</p>
 
-    <p>See <code class="directive"><a href="#dbdparams">DBDParams</a></code> for connection string
+    <p>See <code class="directive">DBDParams</code> for connection string
     information for each of the supported database drivers.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -215,8 +215,8 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dbd</td></tr>
 </table>
     <p>Set the time to keep idle connections alive when the number
-    of connections specified in <code class="directive"><a href="#dbdkeep">DBDKeep</a></code>
-    has been exceeded (threaded platforms only).</p>
+    of connections specified in DBDKeep has been exceeded (threaded
+    platforms only).</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
