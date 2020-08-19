@@ -23,7 +23,7 @@
     <name>English</name>
     <charset>UTF-8</charset>
     <source-ext>.xml</source-ext>
-    <target-ext>.html.en</target-ext>
+    <target-ext>.html.en.utf8</target-ext>
 
     <chm>
         <lang>0x409 English (United States)</lang>
