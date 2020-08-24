@@ -425,7 +425,7 @@ run_connect:
             ctx->p_conn = NULL;
         }
         ++reconnects;
-        if (reconnects < 5) {
+        if (reconnects < 2) {
             goto run_connect;
         } 
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->owner, APLOGNO(10023)
