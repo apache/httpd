@@ -192,7 +192,7 @@ which means that the cookie is inaccessible to JavaScript code on
 browsers that support this feature.</dd>
 
 <dt>samesite</dt>
-<dd>If set to anything other than <code>0</code>, the <code>SameSite</code>
+<dd>If set to anything other than <code>false</code> or <code>0</code>, the <code>SameSite</code>
 attribute is set to the specified value.  Typical values are <code>None</code>,
 <code>Lax</code>, and <code>Strict</code>.Available in 2.5.1 and later.</dd>
 </dl>

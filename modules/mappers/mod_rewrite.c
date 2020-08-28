@@ -2647,7 +2647,7 @@ static void add_cookie(request_rec *r, char *s)
                                   "; HttpOnly" : NULL,
                                  NULL);
 
-            if (samesite && !strcasecmp(samesite, "0")) { 
+            if (samesite && strcmp(samesite, "0") && ap_cstr_casecmp(samesite,"false")) { 
                 cookie = apr_pstrcat(rmain->pool, cookie, "; SameSite=", 
                                      samesite, NULL);
             }
