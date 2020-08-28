@@ -229,6 +229,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1877552 ^/httpd/httpd/trunk .
      +1: 
 
+  *) mod_rewrite: Extend the [CO] (cookie) flag of RewriteRule to accept a
+     SameSite attribute.
+     Trunk version of patch:
+        https://svn.apache.org/r1873762
+        https://svn.apache.org/r1881263
+     Backport version for 2.4.x of patch:
+      Trunk version of patch works
+      svn merge -c 1873762,1881263 ^/httpd/httpd/trunk .
+     +1: rpluem,
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
