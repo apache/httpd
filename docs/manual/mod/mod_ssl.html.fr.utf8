@@ -2142,6 +2142,12 @@ directive s'utilise à la place ou en complément de la directive
 <div class="warning">
 <p>Actuellement, les clés privées chiffrées ne sont pas supportées.</p>
 </div>
+<div class="warning">
+<p>Seules les clés au format PKCS1 RSA, DSA ou EC sont supportées. Les clés
+au format PKCS8, autrement dit celles commençant par "<code>-----BEGIN
+PRIVATE KEY-----</code>", doivent être converties via une commande du style
+"<code>openssl rsa -in private-pkcs8.pem -outform pem</code>".</p>
+</div>
 <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">SSLProxyMachineCertificateFile
 "/usr/local/apache2/conf/ssl.crt/proxy.pem"</pre>
 </div>
@@ -2171,6 +2177,12 @@ devez donc aussi créer des liens symboliques nommés
 assurer que ce répertoire contient les liens symboliques appropriés.</p>
 <div class="warning">
 <p>Actuellement, les clés privées chiffrées ne sont pas supportées.</p>
+</div>
+<div class="warning">
+<p>Seules les clés au format PKCS1 RSA, DSA ou EC sont supportées. Les clés
+au format PKCS8, autrement dit celles commençant par "<code>-----BEGIN
+PRIVATE KEY-----</code>", doivent être converties via une commande du style
+"<code>openssl rsa -in private-pkcs8.pem -outform pem</code>".</p>
 </div>
 <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">SSLProxyMachineCertificatePath "/usr/local/apache2/conf/proxy.crt/"</pre>
 </div>
