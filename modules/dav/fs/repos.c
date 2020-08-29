@@ -948,15 +948,26 @@ static dav_error * dav_fs_open_stream(const dav_resource *resource,
         else if (APR_STATUS_IS_EEXIST(rv)) {
             rv = apr_file_open(&ds->f, ds->pathname, flags, APR_OS_DEFAULT,
                                ds->p);
+            if (rv != APR_SUCCESS) {
+                return dav_new_error(p, MAP_IO2HTTP(rv), 0, rv,
+                                    apr_psprintf(p, "Could not open an existing resource for writing: %s.",
+                                    ds->pathname) );
+            }
         }
     }
     else {
         rv = apr_file_open(&ds->f, ds->pathname, flags, APR_OS_DEFAULT, ds->p);
+        if (rv != APR_SUCCESS) {
+            return dav_new_error(p, MAP_IO2HTTP(rv), 0, rv,
+                                apr_psprintf(p, "Could not open an existing resource for reading: %s.",
+                                ds->pathname) );
+        }
     }
 
     if (rv != APR_SUCCESS) {
         return dav_new_error(p, MAP_IO2HTTP(rv), 0, rv,
-                             "An error occurred while opening a resource.");
+                            apr_psprintf(p, "An error occurred while opening a resource for writing: %s.",
+                            ds->pathname) );
     }
 
     /* (APR registers cleanups for the fd with the pool) */
