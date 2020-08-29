@@ -319,7 +319,7 @@ static void read_quoted(char **string, char **quoted_part)
 static const char *imap_url(request_rec *r, const char *base, const char *value)
 {
 /* translates a value into a URL. */
-    int slen, clen;
+    apr_size_t slen, clen;
     char *string_pos = NULL;
     const char *string_pos_const = NULL;
     char *directory = NULL;
