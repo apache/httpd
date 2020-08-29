@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1874455 -->
+<!-- English Revision: 1880960 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2075,6 +2075,12 @@ assurer que ce répertoire contient les liens symboliques appropriés.</p>
 <note type="warning">
 <p>Actuellement, les clés privées chiffrées ne sont pas supportées.</p>
 </note>
+<note type="warning">
+<p>Seules les clés au format PKCS1 RSA, DSA ou EC sont supportées. Les clés
+au format PKCS8, autrement dit celles commençant par &quot;<code>-----BEGIN
+PRIVATE KEY-----</code>&quot;, doivent être converties via une commande du style
+&quot;<code>openssl rsa -in private-pkcs8.pem -outform pem</code>&quot;.</p>
+</note>
 <example><title>Exemple</title>
 <highlight language="config">
 SSLProxyMachineCertificatePath "/usr/local/apache2/conf/proxy.crt/"
@@ -2108,6 +2114,12 @@ directive s'utilise à la place ou en complément de la directive
 </p>
 <note type="warning">
 <p>Actuellement, les clés privées chiffrées ne sont pas supportées.</p>
+</note>
+<note type="warning">
+<p>Seules les clés au format PKCS1 RSA, DSA ou EC sont supportées. Les clés
+au format PKCS8, autrement dit celles commençant par &quot;<code>-----BEGIN
+PRIVATE KEY-----</code>&quot;, doivent être converties via une commande du style
+&quot;<code>openssl rsa -in private-pkcs8.pem -outform pem</code>&quot;.</p>
 </note>
 <example><title>Exemple</title>
 <highlight language="config">
