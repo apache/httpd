@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1873799 -->
+<!-- English Revision: 1881263 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -212,10 +212,10 @@ code JavaScript pour les navigateurs qui supportent cette
 fonctionnalité.</dd>
 
 <dt>samesite</dt>
-<dd>S'il est différent de 0, l'attribut <code>SameSite</code> est défini à la
-valeur spécifiée. Les valeurs typiques sont <code>None</code>, <code>Lax</code>
-et <code>Strict</code>. Disponible à partir de la version 2.5.1 du serveur HTTP
-Apache.</dd>
+<dd>S'il est différent de <code>false</code> ou <code>0</code>, l'attribut
+<code>SameSite</code> est défini à la valeur spécifiée. Les valeurs typiques
+sont <code>None</code>, <code>Lax</code> et <code>Strict</code>. Disponible à
+partir de la version 2.5.1 du serveur HTTP Apache.</dd>
 </dl>
 
 <p>Voici un exemple :</p>
