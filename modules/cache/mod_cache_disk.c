@@ -713,7 +713,7 @@ static apr_status_t read_array(request_rec *r, apr_array_header_t* arr,
                                apr_file_t *file)
 {
     char w[MAX_STRING_LEN];
-    int p;
+    apr_size_t p;
     apr_status_t rv;
 
     while (1) {
@@ -778,7 +778,7 @@ static apr_status_t read_table(cache_handle_t *handle, request_rec *r,
 {
     char w[MAX_STRING_LEN];
     char *l;
-    int p;
+    apr_size_t p;
     apr_status_t rv;
 
     while (1) {
