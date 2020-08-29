@@ -32,7 +32,7 @@ extern module AP_MODULE_DECLARE_DATA cache_module;
 /* Determine if "url" matches the hostname, scheme and port and path
  * in "filter". All but the path comparisons are case-insensitive.
  */
-static int uri_meets_conditions(const apr_uri_t *filter, const int pathlen,
+static int uri_meets_conditions(const apr_uri_t *filter, const apr_size_t pathlen,
                                 const apr_uri_t *url, const char *path)
 {
     /* Scheme, hostname port and local part. The filter URI and the
