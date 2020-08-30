@@ -239,6 +239,38 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       svn merge -c 1873762,1881263 ^/httpd/httpd/trunk .
      +1: rpluem,
 
+  *) Slightly speed-up the execution of the test framework.
+     Trunk version of patch:
+        https://svn.apache.org/r1880500
+        https://svn.apache.org/r1880501
+        https://svn.apache.org/r1880509
+    Backport version for 2.4.x of patch:
+      Trunk version of patch works
+      svn merge -c 1880500,1880501,1880509 ^/httpd/httpd/trunk .
+     +1: jailletc36,
+
+  *) Fix some Windows 64 compilation warnings (if I get positive feedbacks
+     on such patches, I'll try to group more changes in future commits. However
+     fixing these warnings looks like a long and boring task)
+     Trunk version of patch:
+        https://svn.apache.org/r1881303
+        https://svn.apache.org/r1881304
+        https://svn.apache.org/r1881305
+        https://svn.apache.org/r1881306
+    Backport version for 2.4.x of patch:
+      Trunk version of patch works
+      svn merge -c 1881303,1881304,1881305,1881306 ^/httpd/httpd/trunk .
+     +1: jailletc36,
+
+  *) event, worker: avoid UBSan exception calling memcpy(,NULL,0) at startup.
+     Trunk version of patch:
+        https://svn.apache.org/r1874011
+        https://svn.apache.org/r1874055
+        https://svn.apache.org/r1874062
+    Backport version for 2.4.x of patch:
+      Trunk version of patch works
+      svn merge -c 1874011,1874055,1874062 ^/httpd/httpd/trunk .
+     +1: jailletc36,
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
