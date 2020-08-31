@@ -247,7 +247,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Backport version for 2.4.x of patch:
       Trunk version of patch works
       svn merge -c 1880500,1880501,1880509 ^/httpd/httpd/trunk .
-     +1: jailletc36,
+     +1: jailletc36, rpluem
 
   *) Fix some Windows 64 compilation warnings (if I get positive feedbacks
      on such patches, I'll try to group more changes in future commits. However
@@ -270,7 +270,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Backport version for 2.4.x of patch:
       Trunk version of patch works
       svn merge -c 1874011,1874055,1874062 ^/httpd/httpd/trunk .
-     +1: jailletc36,
+     +1: jailletc36, rpluem
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
