@@ -251,7 +251,7 @@
       nombreux alias du serveur, la définition de la directive
       <directive module="core">UseCanonicalName</directive> à
       <code>On</code> peut augmenter de manière significative le nombre
-      de correspondances positives dans le cache. Ceci est du au fait
+      de correspondances positives dans le cache. Ceci est dû au fait
       que la clé du cache contient le nom d'hôte du serveur virtuel.     
       Avec <directive module="core">UseCanonicalName</directive> positionnée
       à <code>On</code>,
@@ -527,7 +527,7 @@ CacheDirLength 1
       caractères de l'URL qui a fait l'objet d'une requête. Cette empreinte
       comprend le nom d'hôte, le protocole, le port, le chemin et tout argument
       de type CGI associé à l'URL, ainsi que les éléments
-      spécifiés dans l'en-tête Vary afin d'être sur que plusieurs URLs
+      spécifiés dans l'en-tête Vary afin d'être sûr que plusieurs URLs
       n'interfèrent pas entre elles.</p>
 
       <p>Chaque position de l'empreinte peut contenir un caractère
@@ -583,7 +583,7 @@ CacheDirLength 1
       <title>Maintenance du cache sur disque</title>
 
       <p>Le module <module>mod_cache_disk</module> n'effectue aucune
-      régulation de l'espace disque utilisé par le cache, mais s'il
+      régulation de l'espace disque utilisé par le cache, bien qu'il
       s'arrête en douceur en cas d'erreur disque et se comporte alors
       comme si le cache n'avait jamais existé.</p>
 
@@ -606,7 +606,7 @@ CacheDirLength 1
       conseillé de déterminer la durée typique d'un traitement, afin d'éviter
       d'exécuter plusieurs instances à la fois.</p>
 
-      <p>Il est aussi conseillé d'attribuer un niveau de priorité "nice"
+      <p>Il est aussi conseillé d'attribuer un niveau de priorité
       approprié à htcacheclean de façon à ce qu'il n'effectue pas trop
       d'accès disque pendant le fonctionnement du serveur.</p>
 
@@ -871,7 +871,7 @@ sys     0m0.000s</pre>
         </example>
 
       <p>Même pour ce petit fichier, il y a une grande différence entre les
-      temps nécessaires pour lire le fichier. Ceci est du au fait que le
+      temps nécessaires pour le lire. Ceci est dû au fait que le
       noyau a mis en cache le contenu du fichier en mémoire.</p>
 
       <p>Du fait de toujours pouvoir disposer de mémoire système, vous pouvez
@@ -990,7 +990,7 @@ sys     0m0.000s</pre>
       types d'attaques qu'il est possible de mener sous l'utilisateur apache.
       Si vous utilisez <module>mod_cache_disk</module>, vous devez garder ceci
       à l'esprit : effectuez toujours les mises à jour de
-      httpdquand des
+      httpd quand des
       correctifs de sécurité sont annoncés et exécutez les processus CGI sous
       un utilisateur autre qu'apache en utilisant
       <a href="suexec.html">suEXEC</a> dans la mesure du possible.</p>
@@ -1004,8 +1004,8 @@ sys     0m0.000s</pre>
       vous vous exposez aussi à un éventuel "Empoisonnement du
       cache" (Cache poisoning). L'empoisonnement du cache est un terme général
       pour désigner les attaques au cours desquelles l'attaquant fait en sorte
-      que le serveur mandataire renvoie à un contenu incorrect (et souvent
-      indésirable) suite à en provenance du serveur d'arrière-plan.
+      que le serveur mandataire renvoie un contenu incorrect (et souvent
+      indésirable) en provenance du serveur d'origine.
       </p>
 
       <p>Par exemple, si les serveur DNS qu'utilise votre système où tourne
@@ -1015,7 +1015,7 @@ sys     0m0.000s</pre>
       Un autre exemple est constitué par les attaques ainsi nommées
       "Dissimulation de requêtes HTTP" (HTTP request-smuggling).</p>
 
-      <p>Ce document n'est pas le bon endroit pour une discussion approfondie
+      <p>Ce document n'a pas vocation à comporter une discussion approfondie
       à propos de la Dissimulation de requêtes HTTP (utilisez plutôt votre
       moteur de recherche favori); il est cependant important de savoir qu'il
       est possible d'élaborer une série de requêtes, et d'exploiter une
