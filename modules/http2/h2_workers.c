@@ -341,7 +341,7 @@ h2_workers *h2_workers_create(server_rec *s, apr_pool_t *server_pool,
         n = workers->nslots = workers->max_workers;
         workers->slots = apr_pcalloc(workers->pool, n * sizeof(h2_slot));
         if (workers->slots == NULL) {
-            workers->nslots = 0;
+            n = workers->nslots = 0;
             status = APR_ENOMEM;
         }
         for (i = 0; i < n; ++i) {
