@@ -259,6 +259,13 @@ static int cgi_handle_response(request_rec *r, int nph, apr_bucket_brigade *bb,
         if ((ret = ap_scan_script_header_err_brigade_ex(r, bb, sbuf,
                                                         APLOG_MODULE_INDEX)))
         {
+            /* In the case of a timeout reading script output, clear
+             * the brigade to avoid a second attempt to read the
+             * output. */
+            if (ret == HTTP_GATEWAY_TIME_OUT) {
+                apr_brigade_cleanup(bb);
+            }
+
             ret = log_script(r, conf, ret, logdata, sbuf, bb, script_err);
 
             /*
