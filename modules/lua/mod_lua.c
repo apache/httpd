@@ -15,35 +15,34 @@
  * limitations under the License.
  */
 
-#include "mod_lua.h"
-#include <string.h>
-#include <stdlib.h>
-#include <ctype.h>
-#include <apr_thread_mutex.h>
-#include <apr_pools.h>
-#include "lua_apr.h"
-#include "lua_config.h"
+#include "apr_thread_mutex.h"
+#include "apr_pools.h"
 #include "apr_optional.h"
-#include "mod_ssl.h"
-#include "mod_auth.h"
-#include "util_mutex.h"
 
-
-#ifdef APR_HAS_THREADS
-#include "apr_thread_proc.h"
-#endif
-
-/* getpid for *NIX */
+/* getpid for *NIX vs Windows */
 #if APR_HAVE_SYS_TYPES_H
 #include <sys/types.h>
+#endif
+#if APR_HAVE_PROCESS_H
+#include <process.h>
 #endif
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 
-/* getpid for Windows */
-#if APR_HAVE_PROCESS_H
-#include <process.h>
+#include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
+
+#include "mod_lua.h"
+#include "lua_apr.h"
+#include "lua_config.h"
+#include "mod_ssl.h"
+#include "mod_auth.h"
+#include "util_mutex.h"
+
+#ifdef APR_HAS_THREADS
+#include "apr_thread_proc.h"
 #endif
 
 APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ap_lua, AP_LUA, int, lua_open,
