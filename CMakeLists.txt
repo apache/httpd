@@ -47,7 +47,13 @@ ENDIF()
 # PCRE names its libraries differently for debug vs. release builds.
 # We can't query our own CMAKE_BUILD_TYPE at configure time.
 # If the debug version exists in PREFIX/lib, default to that one.
-IF(EXISTS "${CMAKE_INSTALL_PREFIX}/lib/pcred.lib")
+IF(EXISTS "${CMAKE_INSTALL_PREFIX}/lib/pcre2-8d.lib")
+  SET(default_pcre_libraries ${CMAKE_INSTALL_PREFIX}/lib/pcre2-8d.lib)
+  SET(default_pcre_cflags "-DHAVE_PCRE2")
+ELSEIF(EXISTS "${CMAKE_INSTALL_PREFIX}/lib/pcre2-8.lib")
+  SET(default_pcre_libraries ${CMAKE_INSTALL_PREFIX}/lib/pcre2-8.lib)
+  SET(default_pcre_cflags "-DHAVE_PCRE2")
+ELSEIF(EXISTS "${CMAKE_INSTALL_PREFIX}/lib/pcred.lib")
   SET(default_pcre_libraries ${CMAKE_INSTALL_PREFIX}/lib/pcred.lib)
 ELSE()
   SET(default_pcre_libraries ${CMAKE_INSTALL_PREFIX}/lib/pcre.lib)
@@ -81,6 +87,7 @@ SET(APR_INCLUDE_DIR       "${CMAKE_INSTALL_PREFIX}/include" CACHE STRING "Direct
 SET(APR_LIBRARIES         ${default_apr_libraries}       CACHE STRING "APR libraries to link with")
 SET(NGHTTP2_INCLUDE_DIR   "${CMAKE_INSTALL_PREFIX}/include" CACHE STRING "Directory with NGHTTP2 include files within nghttp2 subdirectory")
 SET(NGHTTP2_LIBRARIES     ${default_nghttp2_libraries}   CACHE STRING "NGHTTP2 libraries to link with")
+SET(PCRE_CFLAGS           "${default_pcre_cflags}"       CACHE STRING "PCRE flags for util_pcre.c compilation")
 SET(PCRE_INCLUDE_DIR      "${CMAKE_INSTALL_PREFIX}/include" CACHE STRING "Directory with PCRE include files")
 SET(PCRE_LIBRARIES        ${default_pcre_libraries}      CACHE STRING "PCRE libraries to link with")
 SET(LIBXML2_ICONV_INCLUDE_DIR     ""                     CACHE STRING "Directory with iconv include files for libxml2")
@@ -895,7 +902,7 @@ SET(install_targets ${install_targets} libhttpd)
 SET(install_bin_pdb ${install_bin_pdb} $<TARGET_PDB_FILE:libhttpd>)
 TARGET_LINK_LIBRARIES(libhttpd ${EXTRA_LIBS} ${APR_LIBRARIES} ${PCRE_LIBRARIES} ${HTTPD_SYSTEM_LIBS})
 DEFINE_WITH_BLANKS(define_long_name "LONG_NAME" "Apache HTTP Server Core")
-SET_TARGET_PROPERTIES(libhttpd PROPERTIES COMPILE_FLAGS "-DAP_DECLARE_EXPORT -DAPREQ_DECLARE_EXPORT ${define_long_name} -DBIN_NAME=libhttpd.dll ${EXTRA_COMPILE_FLAGS}")
+SET_TARGET_PROPERTIES(libhttpd PROPERTIES COMPILE_FLAGS "-DAP_DECLARE_EXPORT -DAPREQ_DECLARE_EXPORT ${define_long_name} ${PCRE_CFLAGS} -DBIN_NAME=libhttpd.dll ${EXTRA_COMPILE_FLAGS}")
 ADD_DEPENDENCIES(libhttpd test_char_header)
 
 ###########   HTTPD EXECUTABLES   ##########
