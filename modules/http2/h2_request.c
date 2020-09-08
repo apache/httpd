@@ -294,8 +294,8 @@ request_rec *h2_request_create_rec(const h2_request *req, conn_rec *c)
     if (!ap_parse_request_line(r) || !ap_check_request_header(r)) {
         /* we may have switched to another server still */
         r->per_dir_config = r->server->lookup_defaults;
-        if (req->early_http_status) {
-            access_status = req->early_http_status;
+        if (req->http_status) {
+            access_status = req->http_status;
             /* Be safe and close the connection */
             c->keepalive = AP_CONN_CLOSE;
         }
@@ -309,8 +309,8 @@ request_rec *h2_request_create_rec(const h2_request *req, conn_rec *c)
     /* we may have switched to another server */
     r->per_dir_config = r->server->lookup_defaults;
 
-    if (req->early_http_status) {
-        access_status = req->early_http_status;
+    if (req->http_status) {
+        access_status = req->http_status;
         r->status = HTTP_OK;
         /* Be safe and close the connection */
         c->keepalive = AP_CONN_CLOSE;

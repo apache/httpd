@@ -141,7 +141,7 @@ struct h2_request {
     unsigned int chunked : 1;   /* iff request body needs to be forwarded as chunked */
     unsigned int serialize : 1; /* iff this request is written in HTTP/1.1 serialization */
     apr_off_t raw_bytes;        /* RAW network bytes that generated this request - if known. */
-    int early_http_status;      /* Store a possible http status code that gets
+    int http_status;            /* Store a possible http status code that gets
                                  * defined before creating the dummy HTTP/1.1
                                  * request e.g. due to an error already
                                  * detected.
