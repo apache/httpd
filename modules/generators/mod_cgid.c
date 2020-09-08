@@ -80,11 +80,6 @@ module AP_MODULE_DECLARE_DATA cgid_module;
 
 static int cgid_start(apr_pool_t *p, server_rec *main_server, apr_proc_t *procnew);
 static int cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *main_server);
-static int handle_exec(include_ctx_t *ctx, ap_filter_t *f, apr_bucket_brigade *bb);
-
-static APR_OPTIONAL_FN_TYPE(ap_register_include_handler) *cgid_pfn_reg_with_ssi;
-static APR_OPTIONAL_FN_TYPE(ap_ssi_get_tag_and_value) *cgid_pfn_gtv;
-static APR_OPTIONAL_FN_TYPE(ap_ssi_parse_string) *cgid_pfn_ps;
 
 static apr_pool_t *pcgi = NULL;
 static pid_t daemon_pid;
@@ -219,6 +214,15 @@ typedef struct {
     cgid_rlimit_t limits;
 #endif
 } cgid_req_t;
+
+#define cgi_server_conf cgid_server_conf
+#define cgi_module cgid_module
+
+#ifdef HAVE_CGID_FDPASSING
+/* Pull in CGI bucket implementation. */
+#define WANT_CGI_BUCKET
+#endif
+#include "cgi_common.h"
 
 /* This routine is called to create the argument list to be passed
  * to the CGI script.  When suexec is enabled, the suexec path, user, and
@@ -573,7 +577,7 @@ static apr_status_t get_req(int fd, request_rec *r, char **argv0, char ***env,
 }
 
 static apr_status_t send_req(int fd, apr_file_t *errpipe, request_rec *r,
-                             char *argv0, char **env, int req_type)
+                             const char *argv0, char **env, int req_type)
 {
     int i;
     cgid_req_t req = {0};
@@ -1072,16 +1076,6 @@ static int cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
         if (ret != OK ) {
             return ret;
         }
-        cgid_pfn_reg_with_ssi = APR_RETRIEVE_OPTIONAL_FN(ap_register_include_handler);
-        cgid_pfn_gtv          = APR_RETRIEVE_OPTIONAL_FN(ap_ssi_get_tag_and_value);
-        cgid_pfn_ps           = APR_RETRIEVE_OPTIONAL_FN(ap_ssi_parse_string);
-
-        if ((cgid_pfn_reg_with_ssi) && (cgid_pfn_gtv) && (cgid_pfn_ps)) {
-            /* Required by mod_include filter. This is how mod_cgid registers
-             *   with mod_include to provide processing of the exec directive.
-             */
-            cgid_pfn_reg_with_ssi("exec", handle_exec);
-        }
     }
     return ret;
 }
@@ -1192,68 +1186,6 @@ static const command_rec cgid_cmds[] =
     {NULL}
 };
 
-static int log_scripterror(request_rec *r, cgid_server_conf * conf, int ret,
-                           apr_status_t rv, char *error)
-{
-    apr_file_t *f = NULL;
-    struct stat finfo;
-    char time_str[APR_CTIME_LEN];
-    int log_flags = rv ? APLOG_ERR : APLOG_ERR;
-
-    /* Intentional no APLOGNO */
-    /* Callee provides APLOGNO in error text */
-    ap_log_rerror(APLOG_MARK, log_flags, rv, r,
-                "%s: %s", error, r->filename);
-
-    /* XXX Very expensive mainline case! Open, then getfileinfo! */
-    if (!conf->logname ||
-        ((stat(conf->logname, &finfo) == 0)
-         && (finfo.st_size > conf->logbytes)) ||
-         (apr_file_open(&f, conf->logname,
-                  APR_APPEND|APR_WRITE|APR_CREATE, APR_OS_DEFAULT, r->pool) != APR_SUCCESS)) {
-        return ret;
-    }
-
-    /* "%% [Wed Jun 19 10:53:21 1996] GET /cgid-bin/printenv HTTP/1.0" */
-    apr_ctime(time_str, apr_time_now());
-    apr_file_printf(f, "%%%% [%s] %s %s%s%s %s\n", time_str, r->method, r->uri,
-            r->args ? "?" : "", r->args ? r->args : "", r->protocol);
-    /* "%% 500 /usr/local/apache/cgid-bin */
-    apr_file_printf(f, "%%%% %d %s\n", ret, r->filename);
-
-    apr_file_printf(f, "%%error\n%s\n", error);
-
-    apr_file_close(f);
-    return ret;
-}
-
-/* Soak up stderr from a script and redirect it to the error log.
- * TODO: log_scripterror() and this could move to cgi_common.h. */
-static apr_status_t log_script_err(request_rec *r, apr_file_t *script_err)
-{
-    char argsbuffer[HUGE_STRING_LEN];
-    char *newline;
-    apr_status_t rv;
-    cgid_server_conf *conf = ap_get_module_config(r->server->module_config, &cgid_module);
-
-    while ((rv = apr_file_gets(argsbuffer, HUGE_STRING_LEN,
-                               script_err)) == APR_SUCCESS) {
-
-        newline = strchr(argsbuffer, '\n');
-        if (newline) {
-            char *prev = newline - 1;
-            if (prev >= argsbuffer && *prev == '\r') {
-                newline = prev;
-            }
-
-            *newline = '\0';
-        }
-        log_scripterror(r, conf, r->status, 0, argsbuffer);
-    }
-
-    return rv;
-}
-
 static int log_script(request_rec *r, cgid_server_conf * conf, int ret,
                       char *dbuf, const char *sbuf, apr_bucket_brigade *bb,
                       apr_file_t *script_err)
@@ -1359,13 +1291,6 @@ static int log_script(request_rec *r, cgid_server_conf * conf, int ret,
     return ret;
 }
 
-/* Pull in CGI bucket implementation. */
-#define cgi_server_conf cgid_server_conf
-#ifdef HAVE_CGID_FDPASSING
-#define WANT_CGI_BUCKET
-#endif
-#include "cgi_common.h"
-
 static int connect_to_daemon(int *sdptr, request_rec *r,
                              cgid_server_conf *conf)
 {
@@ -1381,7 +1306,7 @@ static int connect_to_daemon(int *sdptr, request_rec *r,
         ++connect_tries;
         if ((sd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0) {
             return log_scripterror(r, conf, HTTP_INTERNAL_SERVER_ERROR, errno,
-                                   APLOGNO(01255) "unable to create socket to cgi daemon");
+                                   APLOGNO(01255), "unable to create socket to cgi daemon");
         }
         if (connect(sd, (struct sockaddr *)server_addr, server_addr_len) < 0) {
             /* Save errno for later */
@@ -1402,7 +1327,7 @@ static int connect_to_daemon(int *sdptr, request_rec *r,
             }
             else {
                 close(sd);
-                return log_scripterror(r, conf, HTTP_SERVICE_UNAVAILABLE, errno, APLOGNO(01257)
+                return log_scripterror(r, conf, HTTP_SERVICE_UNAVAILABLE, errno, APLOGNO(01257),
                                        "unable to connect to cgi daemon after multiple tries");
             }
         }
@@ -1418,13 +1343,15 @@ static int connect_to_daemon(int *sdptr, request_rec *r,
         if (connect_errno == ENOENT &&
             apr_time_sec(apr_time_now() - ap_scoreboard_image->global->restart_time) > 
                 DEFAULT_CONNECT_STARTUP_DELAY) {
-            return log_scripterror(r, conf, HTTP_SERVICE_UNAVAILABLE, connect_errno, 
-                                   apr_pstrcat(r->pool, APLOGNO(02833) "ScriptSock ", sockname, " does not exist", NULL));
+            return log_scripterror(r, conf, HTTP_SERVICE_UNAVAILABLE, connect_errno,
+                                   APLOGNO(02833),
+                                   apr_pstrcat(r->pool,
+                                               "ScriptSock ", sockname, " does not exist", NULL));
         }
 
         /* gotta try again, but make sure the cgid daemon is still around */
         if (connect_errno != ENOENT && kill(daemon_pid, 0) != 0) {
-            return log_scripterror(r, conf, HTTP_SERVICE_UNAVAILABLE, connect_errno, APLOGNO(01258)
+            return log_scripterror(r, conf, HTTP_SERVICE_UNAVAILABLE, connect_errno, APLOGNO(01258),
                                    "cgid daemon is gone; is Apache terminating?");
         }
     }
@@ -1576,12 +1503,12 @@ static int cgid_handler(request_rec *r)
     argv0 = r->filename;
 
     if (!(ap_allow_options(r) & OPT_EXECCGI) && !is_scriptaliased(r)) {
-        return log_scripterror(r, conf, HTTP_FORBIDDEN, 0, APLOGNO(01262)
+        return log_scripterror(r, conf, HTTP_FORBIDDEN, 0, APLOGNO(01262),
                 "Options ExecCGI is off in this directory");
     }
 
     if (nph && is_included) {
-        return log_scripterror(r, conf, HTTP_FORBIDDEN, 0, APLOGNO(01263)
+        return log_scripterror(r, conf, HTTP_FORBIDDEN, 0, APLOGNO(01263),
                 "attempt to include NPH CGI script");
     }
 
@@ -1590,12 +1517,12 @@ static int cgid_handler(request_rec *r)
 #error at mod_cgi.c for required code in this path.
 #else
     if (r->finfo.filetype == APR_NOFILE) {
-        return log_scripterror(r, conf, HTTP_NOT_FOUND, 0, APLOGNO(01264)
+        return log_scripterror(r, conf, HTTP_NOT_FOUND, 0, APLOGNO(01264),
                 "script not found or unable to stat");
     }
 #endif
     if (r->finfo.filetype == APR_DIR) {
-        return log_scripterror(r, conf, HTTP_FORBIDDEN, 0, APLOGNO(01265)
+        return log_scripterror(r, conf, HTTP_FORBIDDEN, 0, APLOGNO(01265),
                 "attempt to invoke directory as script");
     }
 
@@ -1603,7 +1530,7 @@ static int cgid_handler(request_rec *r)
         r->path_info && *r->path_info)
     {
         /* default to accept */
-        return log_scripterror(r, conf, HTTP_NOT_FOUND, 0, APLOGNO(01266)
+        return log_scripterror(r, conf, HTTP_NOT_FOUND, 0, APLOGNO(01266),
                                "AcceptPathInfo off disallows user's path");
     }
     /*
@@ -1617,7 +1544,7 @@ static int cgid_handler(request_rec *r)
 #ifdef HAVE_CGID_FDPASSING
     rv = apr_file_pipe_create(&script_err, &errpipe_out, r->pool);
     if (rv) {
-        return log_scripterror(r, conf, HTTP_SERVICE_UNAVAILABLE, rv, APLOGNO(10176)
+        return log_scripterror(r, conf, HTTP_SERVICE_UNAVAILABLE, rv, APLOGNO(10176),
                                "could not create pipe for stderr");
     }
 #else
@@ -1639,7 +1566,7 @@ static int cgid_handler(request_rec *r)
 
     rv = send_req(sd, errpipe_out, r, argv0, env, CGI_REQ);
     if (rv != APR_SUCCESS) {
-        return log_scripterror(r, conf, HTTP_SERVICE_UNAVAILABLE, rv, APLOGNO(10245)
+        return log_scripterror(r, conf, HTTP_SERVICE_UNAVAILABLE, rv, APLOGNO(10245),
                                "could not send request to cgi daemon");
     }
 
@@ -1657,7 +1584,7 @@ static int cgid_handler(request_rec *r)
                                   cleanup_script, apr_pool_cleanup_null);
     }
     else { 
-        return log_scripterror(r, conf, HTTP_SERVICE_UNAVAILABLE, rv, APLOGNO(10246)
+        return log_scripterror(r, conf, HTTP_SERVICE_UNAVAILABLE, rv, APLOGNO(10246),
                                "failed reading PID from cgi daemon");
     }
 
@@ -1710,15 +1637,7 @@ static int cgid_handler(request_rec *r)
     return cgi_handle_response(r, nph, bb, timeout, conf, dbuf, script_err);
 }
 
-
-
-
-/*============================================================================
- *============================================================================
- * This is the beginning of the cgi filter code moved from mod_include. This
- *   is the code required to handle the "exec" SSI directive.
- *============================================================================
- *============================================================================*/
+/* Handling include= for mod_include. */
 static apr_status_t include_cgi(include_ctx_t *ctx, ap_filter_t *f,
                                 apr_bucket_brigade *bb, char *s)
 {
@@ -1803,7 +1722,7 @@ static void add_ssi_vars(request_rec *r)
 }
 
 static int include_cmd(include_ctx_t *ctx, ap_filter_t *f,
-                       apr_bucket_brigade *bb, char *command)
+                       apr_bucket_brigade *bb, const char *command)
 {
     char **env;
     int sd;
@@ -1869,91 +1788,6 @@ static int include_cmd(include_ctx_t *ctx, ap_filter_t *f,
     return APR_SUCCESS;
 }
 
-static apr_status_t handle_exec(include_ctx_t *ctx, ap_filter_t *f,
-                                apr_bucket_brigade *bb)
-{
-    char *tag     = NULL;
-    char *tag_val = NULL;
-    request_rec *r = f->r;
-    char *file = r->filename;
-    char parsed_string[MAX_STRING_LEN];
-
-    if (!ctx->argc) {
-        ap_log_rerror(APLOG_MARK,
-                      (ctx->flags & SSI_FLAG_PRINTING)
-                          ? APLOG_ERR : APLOG_WARNING,
-                      0, r, APLOGNO(03196)
-                      "missing argument for exec element in %s", r->filename);
-    }
-
-    if (!(ctx->flags & SSI_FLAG_PRINTING)) {
-        return APR_SUCCESS;
-    }
-
-    if (!ctx->argc) {
-        SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
-        return APR_SUCCESS;
-    }
-
-    if (ctx->flags & SSI_FLAG_NO_EXEC) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01271) "exec used but not allowed "
-                      "in %s", r->filename);
-        SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
-        return APR_SUCCESS;
-    }
-
-    while (1) {
-        cgid_pfn_gtv(ctx, &tag, &tag_val, SSI_VALUE_DECODED);
-        if (!tag || !tag_val) {
-            break;
-        }
-
-        if (!strcmp(tag, "cmd")) {
-            apr_status_t rv;
-
-            cgid_pfn_ps(ctx, tag_val, parsed_string, sizeof(parsed_string),
-                        SSI_EXPAND_LEAVE_NAME);
-
-            rv = include_cmd(ctx, f, bb, parsed_string);
-            if (rv != APR_SUCCESS) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01272)
-                              "execution failure for parameter \"%s\" "
-                              "to tag exec in file %s", tag, r->filename);
-                SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
-                break;
-            }
-        }
-        else if (!strcmp(tag, "cgi")) {
-            apr_status_t rv;
-
-            cgid_pfn_ps(ctx, tag_val, parsed_string, sizeof(parsed_string),
-                        SSI_EXPAND_DROP_NAME);
-
-            rv = include_cgi(ctx, f, bb, parsed_string);
-            if (rv != APR_SUCCESS) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01273) "invalid CGI ref "
-                              "\"%s\" in %s", tag_val, file);
-                SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
-                break;
-            }
-        }
-        else {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01274) "unknown parameter "
-                          "\"%s\" to tag exec in %s", tag, file);
-            SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
-            break;
-        }
-    }
-
-    return APR_SUCCESS;
-}
-/*============================================================================
- *============================================================================
- * This is the end of the cgi filter code moved from mod_include.
- *============================================================================
- *============================================================================*/
-
-
 static void register_hook(apr_pool_t *p)
 {
     static const char * const aszPre[] = { "mod_include.c", NULL };
@@ -1961,6 +1795,7 @@ static void register_hook(apr_pool_t *p)
     ap_hook_pre_config(cgid_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_config(cgid_init, aszPre, NULL, APR_HOOK_MIDDLE);
     ap_hook_handler(cgid_handler, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_optional_fn_retrieve(cgi_optfns_retrieve, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 AP_DECLARE_MODULE(cgid) = {
