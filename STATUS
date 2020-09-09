@@ -142,7 +142,7 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      contains problematic entries for our tree (especially Makefile.in).
 
      2.4.x patch: "svn rm modules/http2/.gitignore"
-     +1 rjung, jim, rpluem
+     +1 rjung, jim, rpluem, gbechis
      -1 
 
   *) mod_proxy: Add proxy check_trans() hook and allow mod_proxy_wtunnel
@@ -222,7 +222,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1870097
                   http://svn.apache.org/r1880927
      2.4.x patch: svn merge --accept tf -c 1870095,1870097,1880927 ^/httpd/httpd/trunk .
-     +1: jorton, rpluem
+     +1: jorton, rpluem, gbechis
 
   *)  mpm_event: reset listener_is_wakeable on reload.
      trunk patch: http://svn.apache.org/r1877552
@@ -237,7 +237,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
       Trunk version of patch works
       svn merge -c 1873762,1881263 ^/httpd/httpd/trunk .
-     +1: rpluem,
+     +1: rpluem, gbechis
 
   *) Slightly speed-up the execution of the test framework.
      Trunk version of patch:
