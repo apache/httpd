@@ -311,7 +311,9 @@ static int on_header_cb(nghttp2_session *ngh2, const nghttp2_frame *frame,
     
     status = h2_stream_add_header(stream, (const char *)name, namelen,
                                   (const char *)value, valuelen);
-    if (status != APR_SUCCESS && !h2_stream_is_ready(stream)) {
+    if (status != APR_SUCCESS
+        && (!stream->rtmp
+            || stream->rtmp->http_status == H2_HTTP_STATUS_UNSET)) {
         return NGHTTP2_ERR_TEMPORAL_CALLBACK_FAILURE;
     }
     return 0;

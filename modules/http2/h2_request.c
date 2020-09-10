@@ -79,11 +79,12 @@ apr_status_t h2_request_rcreate(h2_request **preq, apr_pool_t *pool,
     }
     
     req = apr_pcalloc(pool, sizeof(*req));
-    req->method    = apr_pstrdup(pool, r->method);
-    req->scheme    = scheme;
-    req->authority = authority;
-    req->path      = path;
-    req->headers   = apr_table_make(pool, 10);
+    req->method      = apr_pstrdup(pool, r->method);
+    req->scheme      = scheme;
+    req->authority   = authority;
+    req->path        = path;
+    req->headers     = apr_table_make(pool, 10);
+    req->http_status = H2_HTTP_STATUS_UNSET;
     if (r->server) {
         req->serialize = h2_config_rgeti(r, H2_CONF_SER_HEADERS);
     }
@@ -294,13 +295,28 @@ request_rec *h2_request_create_rec(const h2_request *req, conn_rec *c)
     if (!ap_parse_request_line(r) || !ap_check_request_header(r)) {
         /* we may have switched to another server still */
         r->per_dir_config = r->server->lookup_defaults;
-        access_status = r->status;
+        if (req->http_status != H2_HTTP_STATUS_UNSET) {
+            access_status = req->http_status;
+            /* Be safe and close the connection */
+            c->keepalive = AP_CONN_CLOSE;
+        }
+        else {
+            access_status = r->status;
+        }
         r->status = HTTP_OK;
         goto die;
     }
     
     /* we may have switched to another server */
     r->per_dir_config = r->server->lookup_defaults;
+
+    if (req->http_status != H2_HTTP_STATUS_UNSET) {
+        access_status = req->http_status;
+        r->status = HTTP_OK;
+        /* Be safe and close the connection */
+        c->keepalive = AP_CONN_CLOSE;
+        goto die;
+    }
 
     /*
      * Add the HTTP_IN filter here to ensure that ap_discard_request_body
