@@ -217,13 +217,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       svn merge -c 1879822,1879831,1879840 ^/httpd/httpd/trunk .
    +1: rpluem, jim, jorton
 
-  *) mod_ssl: Support HTTP request body buffering with TLSv1.3.
-     trunk patch: http://svn.apache.org/r1870095
-                  http://svn.apache.org/r1870097
-                  http://svn.apache.org/r1880927
-     2.4.x patch: svn merge --accept tf -c 1870095,1870097,1880927 ^/httpd/httpd/trunk .
-     +1: jorton, rpluem, gbechis
-
   *)  mpm_event: reset listener_is_wakeable on reload.
      trunk patch: http://svn.apache.org/r1877552
      2.4.x patch: svn merge -c 1877552 ^/httpd/httpd/trunk .
@@ -247,7 +240,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Backport version for 2.4.x of patch:
       Trunk version of patch works
       svn merge -c 1880500,1880501,1880509 ^/httpd/httpd/trunk .
-     +1: jailletc36, rpluem
+     +1: jailletc36, rpluem, jorton
 
   *) Fix some Windows 64 compilation warnings (if I get positive feedbacks
      on such patches, I'll try to group more changes in future commits. However
@@ -270,7 +263,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Backport version for 2.4.x of patch:
       Trunk version of patch works
       svn merge -c 1874011,1874055,1874062 ^/httpd/httpd/trunk .
-     +1: jailletc36, rpluem
+     +1: jailletc36, rpluem, jorton
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
