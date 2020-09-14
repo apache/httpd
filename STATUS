@@ -215,7 +215,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    Backport version for 2.4.x of patch:
       Trunk version of patch works
       svn merge -c 1879822,1879831,1879840 ^/httpd/httpd/trunk .
-   +1: rpluem, jim
+   +1: rpluem, jim, jorton
 
   *) mod_ssl: Support HTTP request body buffering with TLSv1.3.
      trunk patch: http://svn.apache.org/r1870095
