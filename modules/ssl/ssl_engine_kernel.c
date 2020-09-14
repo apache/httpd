@@ -114,6 +114,45 @@ static int has_buffered_data(request_rec *r)
     return result;
 }
 
+/* If a renegotiation is required for the location, and the request
+ * includes a message body (and the client has not requested a "100
+ * Continue" response), then the client will be streaming the request
+ * body over the wire already.  In that case, it is not possible to
+ * stop and perform a new SSL handshake immediately; once the SSL
+ * library moves to the "accept" state, it will reject the SSL packets
+ * which the client is sending for the request body.
+ *
+ * To allow authentication to complete in the hook, the solution used
+ * here is to fill a (bounded) buffer with the request body, and then
+ * to reinject that request body later.
+ *
+ * This function is called to fill the renegotiation buffer for the
+ * location as required, or fail.  Returns zero on success or HTTP_
+ * error code on failure.
+ */
+static int fill_reneg_buffer(request_rec *r, SSLDirConfigRec *dc)
+{
+    int rv;
+    apr_size_t rsize;
+
+    /* ### this is HTTP/1.1 specific, special case for protocol? */
+    if (r->expecting_100 || !ap_request_has_body(r)) {
+        return 0;
+    }
+
+    rsize = dc->nRenegBufferSize == UNSET ? DEFAULT_RENEG_BUFFER_SIZE : dc->nRenegBufferSize;
+    if (rsize > 0) {
+        /* Fill the I/O buffer with the request body if possible. */
+        rv = ssl_io_buffer_fill(r, rsize);
+    }
+    else {
+        /* If the reneg buffer size is set to zero, just fail. */
+        rv = HTTP_REQUEST_ENTITY_TOO_LARGE;
+    }
+
+    return rv;
+}
+
 #ifdef HAVE_TLSEXT
 static int ap_array_same_str_set(apr_array_header_t *s1, apr_array_header_t *s2)
 {
@@ -814,41 +853,14 @@ static int ssl_hook_Access_classic(request_rec *r, SSLSrvConfigRec *sc, SSLDirCo
         }
     }
 
-    /* If a renegotiation is now required for this location, and the
-     * request includes a message body (and the client has not
-     * requested a "100 Continue" response), then the client will be
-     * streaming the request body over the wire already.  In that
-     * case, it is not possible to stop and perform a new SSL
-     * handshake immediately; once the SSL library moves to the
-     * "accept" state, it will reject the SSL packets which the client
-     * is sending for the request body.
-     *
-     * To allow authentication to complete in this auth hook, the
-     * solution used here is to fill a (bounded) buffer with the
-     * request body, and then to reinject that request body later.
-     */
-    if (renegotiate && !renegotiate_quick
-        && !r->expecting_100
-        && ap_request_has_body(r)) {
-        int rv;
-        apr_size_t rsize;
-
-        rsize = dc->nRenegBufferSize == UNSET ? DEFAULT_RENEG_BUFFER_SIZE :
-                                                dc->nRenegBufferSize;
-        if (rsize > 0) {
-            /* Fill the I/O buffer with the request body if possible. */
-            rv = ssl_io_buffer_fill(r, rsize);
-        }
-        else {
-            /* If the reneg buffer size is set to zero, just fail. */
-            rv = HTTP_REQUEST_ENTITY_TOO_LARGE;
-        }
-
-        if (rv) {
+    /* Fill reneg buffer if required. */
+    if (renegotiate && !renegotiate_quick) {
+        rc = fill_reneg_buffer(r, dc);
+        if (rc) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02257)
                           "could not buffer message body to allow "
                           "SSL renegotiation to proceed");
-            return rv;
+            return rc;
         }
     }
 
@@ -1132,6 +1144,7 @@ static int ssl_hook_Access_modern(request_rec *r, SSLSrvConfigRec *sc, SSLDirCon
             }
         }
 
+        /* Fill reneg buffer if required. */
         if (change_vmode) {
             char peekbuf[1];
 
@@ -1144,6 +1157,14 @@ static int ssl_hook_Access_modern(request_rec *r, SSLSrvConfigRec *sc, SSLDirCon
                 return HTTP_FORBIDDEN;
             }
 
+            rc = fill_reneg_buffer(r, dc);
+            if (rc) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10228)
+                              "could not buffer message body to allow "
+                              "TLS Post-Handshake Authentication to proceed");
+                return rc;
+            }
+            
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(10129)
                           "verify client post handshake");
 

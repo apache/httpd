@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.47
 
+  *) mod_ssl: Fix request body buffering with PHA in TLSv1.3.  [Joe Orton]
+
   *) mod_proxy_uwsgi: Fix a crash when sending environment variables with no
      value. PR 64598 [Ruediger Pluem]
 
