@@ -155,6 +155,26 @@ docs:
 	    echo '  http://httpd.apache.org/docs-project/docsformat.html'; \
 	fi
 
+update-changes:
+	@for i in `find changes-entries -type f`; do \
+	    cp CHANGES CHANGES.tmp ; \
+	    awk -vfname=$$i 'BEGIN{done = 0} \
+	                    done == 0 && /^Changes with Apache /{ active = 1; print; next}; \
+	                    /^ *\*/ && active == 1 && done == 0{rec=$$0; while(getline<fname){if (! ($$0 ~ /^ *$$/)){print}}printf "\n";print rec; active = 0; done = 1; next} //;' \
+	    CHANGES.tmp > CHANGES ; \
+	    rm CHANGES.tmp ; \
+	    if [ -n "$(SVN)" ] ; then \
+	        if ! $(SVN) rm $$i 2>/dev/null ; then \
+	            $(RM) $$i ; \
+	        fi ; \
+	    else \
+	        $(RM) $$i ; \
+	    fi ; \
+	done ; \
+	if [ -n "$(SVN)" ] ; then \
+	    $(SVN) diff CHANGES ; \
+	fi
+
 validate-xml:
 	@if test -d $(top_srcdir)/docs/manual/build; then \
 	    cd $(top_srcdir)/docs/manual/build && ./build.sh validate-xml; \
