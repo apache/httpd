@@ -255,6 +255,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       svn merge -c 1881303,1881304,1881305,1881306 ^/httpd/httpd/trunk .
      +1: jailletc36,
 
+  *) mod_http2: Log requests and sent the configured error response in case of
+     early detected errors like too many or too long headers.
+     Trunk version of patch:
+        https://svn.apache.org/r1881620
+        https://svn.apache.org/r1881635
+     Backport version for 2.4.x of patch:
+        https://github.com/apache/httpd/pull/142
+        https://github.com/apache/httpd/pull/142.diff
+     +1: rpluem,
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
