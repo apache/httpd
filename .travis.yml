@@ -28,6 +28,7 @@ addons:
       - libpcre2-dev
       - libldap2-dev
       - ldap-utils
+      - gdb
 env:
   global:
     - MFLAGS=-j2
