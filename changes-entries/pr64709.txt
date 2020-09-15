@@ -1,3 +1,0 @@
-  *) mod_cgi/mod_cgid: Avoid a second read from a CGI script after a
-     timeout, which effectively doubled the configured timeout setting.
-     PR 64709.  [Joe Orton]

@@ -1,6 +1,17 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_http2: Log requests and sent the configured error response in case of
+     early detected errors like too many or too long headers.
+     [Ruediger Pluem, Stefan Eissing]
+
+  *) mod_proxy_uwsgi: Fix a crash when sending environment variables with no
+     value. PR 64598 [Ruediger Pluem]
+
+  *) mod_cgi/mod_cgid: Avoid a second read from a CGI script after a
+     timeout, which effectively doubled the configured timeout setting.
+     PR 64709.  [Joe Orton]
+
   *) core: handle headers when replying a 304 following RFC7234.
      [Giovanni Bechis]
 

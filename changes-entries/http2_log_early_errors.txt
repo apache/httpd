@@ -1,3 +1,0 @@
-  *) mod_http2: Log requests and sent the configured error response in case of
-     early detected errors like too many or too long headers.
-     [Ruediger Pluem, Stefan Eissing]
