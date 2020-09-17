@@ -121,6 +121,7 @@ struct proxy_remote {
     const char *protocol;   /* the scheme used to talk to this proxy */
     const char *hostname;   /* the hostname of this proxy */
     ap_regex_t *regexp;     /* compiled regex (if any) for the remote */
+    const char *creds;      /* auth credentials (if any) for the proxy */
     int use_regex;          /* simple boolean. True if we have a regex pattern */
     apr_port_t  port;       /* the port for this proxy */
 };
