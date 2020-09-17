@@ -1,0 +1,3 @@
+  *) mod_proxy: Add optional third argument for ProxyRemote, which
+     configures Basic authentication credentials to pass to the remote
+     proxy.  PR 37355.  [Joe Orton]
