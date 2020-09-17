@@ -1460,10 +1460,19 @@ static int proxy_handler(request_rec *r)
                     /* handle the scheme */
                     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01142)
                                   "Trying to run scheme_handler against proxy");
+
+                    if (ents[i].creds) {
+                        apr_table_set(r->notes, "proxy-basic-creds", ents[i].creds);
+                        ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
+                                      "Using proxy auth creds %s", ents[i].creds);
+                    }
+
                     access_status = proxy_run_scheme_handler(r, worker,
                                                              conf, url,
                                                              ents[i].hostname,
                                                              ents[i].port);
+
+                    if (ents[i].creds) apr_table_unset(r->notes, "proxy-basic-creds");
 
                     /* Did the scheme handler process the request? */
                     if (access_status != DECLINED) {
@@ -1902,8 +1911,8 @@ static void *merge_proxy_dir_config(apr_pool_t *p, void *basev, void *addv)
     return new;
 }
 
-static const char *
-    add_proxy(cmd_parms *cmd, void *dummy, const char *f1, const char *r1, int regex)
+static const char *add_proxy(cmd_parms *cmd, void *dummy, const char *f1,
+                             const char *r1, const char *creds, int regex)
 {
     server_rec *s = cmd->server;
     proxy_server_conf *conf =
@@ -1961,19 +1970,24 @@ static const char *
     new->port = port;
     new->regexp = reg;
     new->use_regex = regex;
+    if (creds) {
+        new->creds = apr_pstrcat(cmd->pool, "Basic ",
+                                 ap_pbase64encode(cmd->pool, (char *)creds),
+                                 NULL);
+    }
     return NULL;
 }
 
-static const char *
-    add_proxy_noregex(cmd_parms *cmd, void *dummy, const char *f1, const char *r1)
+static const char *add_proxy_noregex(cmd_parms *cmd, void *dummy, const char *f1,
+                                     const char *r1, const char *creds)
 {
-    return add_proxy(cmd, dummy, f1, r1, 0);
+    return add_proxy(cmd, dummy, f1, r1, creds, 0);
 }
 
-static const char *
-    add_proxy_regex(cmd_parms *cmd, void *dummy, const char *f1, const char *r1)
+static const char *add_proxy_regex(cmd_parms *cmd, void *dummy, const char *f1,
+                                   const char *r1, const char *creds)
 {
-    return add_proxy(cmd, dummy, f1, r1, 1);
+    return add_proxy(cmd, dummy, f1, r1, creds, 1);
 }
 
 PROXY_DECLARE(const char *) ap_proxy_de_socketfy(apr_pool_t *p, const char *url)
@@ -3012,9 +3026,9 @@ static const command_rec proxy_cmds[] =
     "location, in regular expression syntax"),
     AP_INIT_FLAG("ProxyRequests", set_proxy_req, NULL, RSRC_CONF,
      "on if the true proxy requests should be accepted"),
-    AP_INIT_TAKE2("ProxyRemote", add_proxy_noregex, NULL, RSRC_CONF,
+    AP_INIT_TAKE23("ProxyRemote", add_proxy_noregex, NULL, RSRC_CONF,
      "a scheme, partial URL or '*' and a proxy server"),
-    AP_INIT_TAKE2("ProxyRemoteMatch", add_proxy_regex, NULL, RSRC_CONF,
+    AP_INIT_TAKE23("ProxyRemoteMatch", add_proxy_regex, NULL, RSRC_CONF,
      "a regex pattern and a proxy server"),
     AP_INIT_FLAG("ProxyPassInterpolateEnv", ap_set_flag_slot_char,
         (void*)APR_OFFSETOF(proxy_dir_conf, interpolate_env),
