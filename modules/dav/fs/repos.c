@@ -364,7 +364,7 @@ static dav_error * dav_fs_copymove_file(
                                 APR_OS_DEFAULT, p)) != APR_SUCCESS) {
         /* ### use something besides 500? */
         return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0, status,
-                             apr_psprintf(p, "Could not open file"
+                             apr_psprintf(p, "Could not open file "
                                             "for reading: %s", src));
     }
 
@@ -375,7 +375,7 @@ static dav_error * dav_fs_copymove_file(
         apr_file_close(inf);
 
         return dav_new_error(p, MAP_IO2HTTP(status), 0, status,
-                             apr_psprintf(p, "Could not open file"
+                             apr_psprintf(p, "Could not open file "
                                             "for writing: %s", dst));
     }
 
