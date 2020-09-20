@@ -364,7 +364,8 @@ static dav_error * dav_fs_copymove_file(
                                 APR_OS_DEFAULT, p)) != APR_SUCCESS) {
         /* ### use something besides 500? */
         return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0, status,
-                             "Could not open file for reading");
+                             apr_psprintf(p, "Could not open file"
+                                            "for reading: %s", src));
     }
 
     /* ### do we need to deal with the umask? */
@@ -374,7 +375,8 @@ static dav_error * dav_fs_copymove_file(
         apr_file_close(inf);
 
         return dav_new_error(p, MAP_IO2HTTP(status), 0, status,
-                             "Could not open file for writing");
+                             apr_psprintf(p, "Could not open file"
+                                            "for writing: %s", dst));
     }
 
     while (1) {
