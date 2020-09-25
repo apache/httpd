@@ -154,26 +154,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~covener/patches/wstunnel-decline.diff
      +1 covener, jim, rpluem
 
-  *) Slightly speed-up the execution of the test framework.
-     Trunk version of patch:
-        https://svn.apache.org/r1880500
-        https://svn.apache.org/r1880501
-        https://svn.apache.org/r1880509
-    Backport version for 2.4.x of patch:
-      Trunk version of patch works
-      svn merge -c 1880500,1880501,1880509 ^/httpd/httpd/trunk .
-     +1: jailletc36, rpluem, jorton
-
-  *) event, worker: avoid UBSan exception calling memcpy(,NULL,0) at startup.
-     Trunk version of patch:
-        https://svn.apache.org/r1874011
-        https://svn.apache.org/r1874055
-        https://svn.apache.org/r1874062
-    Backport version for 2.4.x of patch:
-      Trunk version of patch works
-      svn merge -c 1874011,1874055,1874062 ^/httpd/httpd/trunk .
-     +1: jailletc36, rpluem, jorton
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
