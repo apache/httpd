@@ -1150,7 +1150,7 @@ Set-Cookie en provenance d'un serveur mandaté</td></tr>
 du mandataire</td></tr>
 <tr><td><a href="mod_proxy.html#proxyreceivebuffersize">ProxyReceiveBufferSize <var>octets</var></a></td><td> 0 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Taille du tampon réseau pour les connexions mandatées HTTP
 et FTP</td></tr>
-<tr class="odd"><td><a href="mod_proxy.html#proxyremote">ProxyRemote <var>comparaison</var> <var>serveur-distant</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Mandataire distant à utiliser pour traiter certaines
+<tr class="odd"><td><a href="mod_proxy.html#proxyremote">ProxyRemote <var>match</var> <var>remote-server</var> [<var>username:password</var>]</a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Mandataire distant à utiliser pour traiter certaines
 requêtes</td></tr>
 <tr><td><a href="mod_proxy.html#proxyremotematch">ProxyRemoteMatch <var>regex</var> <var>serveur-distant</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Le mandataire distant à utiliser pour traiter les requêtes
 correspondant à une expression rationnelle</td></tr>
