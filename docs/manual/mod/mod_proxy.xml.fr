@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1876404 -->
+<!-- English Revision: 1881790 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -753,17 +753,19 @@ inverses</a></seealso>
 <name>ProxyRemote</name>
 <description>Mandataire distant à utiliser pour traiter certaines
 requêtes</description>
-<syntax>ProxyRemote <var>comparaison</var> <var>serveur-distant</var></syntax>
+<syntax>ProxyRemote <var>match</var> <var>remote-server</var> [<var>username:password</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
+<compatibility>Le troisième argument optionnel est disponible à partir de la
+version 2.5.1 du serveur HTTP Apache.</compatibility>
 
 <usage>
     <p>Cette directive permet de définir des mandataires distants pour
-    ce mandataire. <var>comparaison</var> est soit le nom d'un protocole
+    ce mandataire. <var>match</var> est soit le nom d'un protocole
     que supporte le serveur distant, soit une URL partielle pour
     laquelle le serveur distant devra être utilisé, soit <code>*</code>
     pour indiquer que le serveur distant doit être utilisé pour toutes
-    les requêtes. <var>serveur-distant</var> est une URL partielle
+    les requêtes. <var>remote-server</var> est une URL partielle
     correspondant au serveur distant. Syntaxe : </p>
 
     <example>
@@ -793,6 +795,14 @@ ProxyRemote ftp http://ftpproxy.mydomain:8080
     inverse ; un serveur web d'arrière-plan peut être intégré dans
     l'espace d'URL d'un serveur virtuel, même si ce serveur est caché
     par un autre mandataire direct.</p>
+
+    <p>Le troisième argument optionnel <var>username:password</var> permet de
+    spécifier des données d'authentification basiques à transmettre au mandataire
+    distant défini. Ces données d'authentification seront toujoujours envoyées
+    sans attendre que le mandataire distant n'effectue une demande
+    d'authentification. La variable d'environnement <a
+    href="mod_proxy_http.html#env">Proxy-Chain-Auth</a> n'est plus prise en
+    compte si cet argument est utilisé.</p>
 </usage>
 </directivesynopsis>
 
