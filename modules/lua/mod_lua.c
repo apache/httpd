@@ -1652,7 +1652,7 @@ static const char *register_lua_scope(cmd_parms *cmd,
         return apr_psprintf(cmd->pool,
                             "Scope type of '%s' cannot be used because this "
                             "server does not have threading support "
-                            "(APR_HAS_THREADS)" 
+                            "(APR_HAS_THREADS)",
                             scope);
 #endif
         cfg->vm_scope = AP_LUA_SCOPE_THREAD;
@@ -1663,7 +1663,7 @@ static const char *register_lua_scope(cmd_parms *cmd,
         return apr_psprintf(cmd->pool,
                             "Scope type of '%s' cannot be used because this "
                             "server does not have threading support "
-                            "(APR_HAS_THREADS)" 
+                            "(APR_HAS_THREADS)",
                             scope);
 #endif
         cfg->vm_scope = AP_LUA_SCOPE_SERVER;
