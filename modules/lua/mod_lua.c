@@ -1853,7 +1853,7 @@ static const char *register_authz_provider(cmd_parms *cmd, void *_cfg,
 }
 
 
-command_rec lua_commands[] = {
+static const command_rec lua_commands[] = {
 
     AP_INIT_TAKE1("LuaRoot", register_lua_root, NULL, OR_ALL,
                   "Specify the base path for resolving relative paths for mod_lua directives"),
