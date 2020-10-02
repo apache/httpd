@@ -43,21 +43,23 @@ to provide the cryptographic engine.</p>
 <section id="envvars"><title>Environment Variables</title>
 
 <p>This module can be configured to provide several items of SSL information
-as additional environment variables to the SSI and CGI namespace. This
+as additional environment variables to the SSI and CGI namespace. Except for
+<code>HTTPS</code> and <code>SSL_TLS_SNI</code> which are always defined, this
 information is not provided by default for performance reasons. (See
-<directive>SSLOptions</directive> StdEnvVars, below.) The generated variables
+<directive module="mod_ssl">SSLOptions</directive> <code>StdEnvVars</code>, below)
+The generated variables
 are listed in the table below. For backward compatibility the information can
 be made available under different names, too. Look in the <a
 href="../ssl/ssl_compat.html">Compatibility</a> chapter for details on the
 compatibility variables.</p>
 
-<table border="1">
+<table border="1" style="zebra">
 <columnspec><column width=".3"/><column width=".2"/><column width=".5"/>
 </columnspec>
 <tr>
- <th><a name="table3">Variable Name:</a></th>
- <th>Value Type:</th>
- <th>Description:</th>
+ <th><a name="table3">Variable Name</a></th>
+ <th>Value Type</th>
+ <th>Description</th>
 </tr>
 <tr><td><code>HTTPS</code></td>                         <td>flag</td>      <td>HTTPS is being used.</td></tr>
 <tr><td><code>SSL_PROTOCOL</code></td>                  <td>string</td>    <td>The SSL protocol version (SSLv3, TLSv1, TLSv1.1, TLSv1.2)</td></tr>
@@ -1484,10 +1486,10 @@ SSLSRPUnknownUserSeed "secret"
 <usage>
 <p>
 This directive can be used to control various run-time options on a
-per-directory basis. Normally, if multiple <code>SSLOptions</code>
+per-directory basis. Normally, if multiple <directive>SSLOptions</directive>
 could apply to a directory, then the most specific one is taken
 completely; the options are not merged. However if <em>all</em> the
-options on the <code>SSLOptions</code> directive are preceded by a
+options on the <directive>SSLOptions</directive> directive are preceded by a
 plus (<code>+</code>) or minus (<code>-</code>) symbol, the options
 are merged. Any options preceded by a <code>+</code> are added to the
 options currently in force, and any options preceded by a
@@ -1547,8 +1549,8 @@ The available <em>option</em>s are:</p>
 </li>
 <li><code>StrictRequire</code>
     <p>
-    This <em>forces</em> forbidden access when <code>SSLRequireSSL</code> or
-    <code>SSLRequire</code> successfully decided that access should be
+    This <em>forces</em> forbidden access when <directive module="mod_ssl">SSLRequireSSL</directive> or
+    <directive module="mod_ssl">SSLRequire</directive> successfully decided that access should be
     forbidden. Usually the default is that in the case where a ``<code>Satisfy
     any</code>'' directive is used, and other access restrictions are passed,
     denial of access due to <code>SSLRequireSSL</code> or
