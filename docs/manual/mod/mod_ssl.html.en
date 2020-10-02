@@ -134,66 +134,66 @@ to provide the cryptography engine.</p>
 <h2><a name="envvars" id="envvars">Environment Variables</a></h2>
 
 <p>This module can be configured to provide several items of SSL information
-as additional environment variables to the SSI and CGI namespace. This
+as additional environment variables to the SSI and CGI namespace. Except for
+<code>HTTPS</code> and <code>SSL_TLS_SNI</code> which are always defined, this
 information is not provided by default for performance reasons. (See
-<code class="directive">SSLOptions</code> StdEnvVars, below.) The generated variables
+<code class="directive"><a href="#ssloptions">SSLOptions</a></code> <code>StdEnvVars</code>, below)
+The generated variables
 are listed in the table below. For backward compatibility the information can
 be made available under different names, too. Look in the <a href="../ssl/ssl_compat.html">Compatibility</a> chapter for details on the
 compatibility variables.</p>
 
-<table class="bordered">
-
-<tr>
- <th><a name="table3">Variable Name:</a></th>
- <th>Value Type:</th>
- <th>Description:</th>
+<table class="bordered"><tr class="header">
+ <th><a name="table3">Variable Name</a></th>
+ <th>Value Type</th>
+ <th>Description</th>
 </tr>
 <tr><td><code>HTTPS</code></td>                         <td>flag</td>      <td>HTTPS is being used.</td></tr>
-<tr><td><code>SSL_PROTOCOL</code></td>                  <td>string</td>    <td>The SSL protocol version (SSLv3, TLSv1, TLSv1.1, TLSv1.2)</td></tr>
+<tr class="odd"><td><code>SSL_PROTOCOL</code></td>                  <td>string</td>    <td>The SSL protocol version (SSLv3, TLSv1, TLSv1.1, TLSv1.2)</td></tr>
 <tr><td><code>SSL_SESSION_ID</code></td>                <td>string</td>    <td>The hex-encoded SSL session id</td></tr>
-<tr><td><code>SSL_SESSION_RESUMED</code></td>           <td>string</td>    <td>Initial or Resumed SSL Session.  Note: multiple requests may be served over the same (Initial or Resumed) SSL session if HTTP KeepAlive is in use</td></tr>
+<tr class="odd"><td><code>SSL_SESSION_RESUMED</code></td>           <td>string</td>    <td>Initial or Resumed SSL Session.  Note: multiple requests may be served over the same (Initial or Resumed) SSL session if HTTP KeepAlive is in use</td></tr>
 <tr><td><code>SSL_SECURE_RENEG</code></td>              <td>string</td>    <td><code>true</code> if secure renegotiation is supported, else <code>false</code></td></tr>
-<tr><td><code>SSL_CIPHER</code></td>                    <td>string</td>    <td>The cipher specification name</td></tr>
+<tr class="odd"><td><code>SSL_CIPHER</code></td>                    <td>string</td>    <td>The cipher specification name</td></tr>
 <tr><td><code>SSL_CIPHER_EXPORT</code></td>             <td>string</td>    <td><code>true</code> if cipher is an export cipher</td></tr>
-<tr><td><code>SSL_CIPHER_USEKEYSIZE</code></td>         <td>number</td>    <td>Number of cipher bits (actually used)</td></tr>
+<tr class="odd"><td><code>SSL_CIPHER_USEKEYSIZE</code></td>         <td>number</td>    <td>Number of cipher bits (actually used)</td></tr>
 <tr><td><code>SSL_CIPHER_ALGKEYSIZE</code></td>         <td>number</td>    <td>Number of cipher bits (possible)</td></tr>
-<tr><td><code>SSL_COMPRESS_METHOD</code></td>           <td>string</td>    <td>SSL compression method negotiated</td></tr>
+<tr class="odd"><td><code>SSL_COMPRESS_METHOD</code></td>           <td>string</td>    <td>SSL compression method negotiated</td></tr>
 <tr><td><code>SSL_VERSION_INTERFACE</code></td>         <td>string</td>    <td>The mod_ssl program version</td></tr>
-<tr><td><code>SSL_VERSION_LIBRARY</code></td>           <td>string</td>    <td>The OpenSSL program version</td></tr>
+<tr class="odd"><td><code>SSL_VERSION_LIBRARY</code></td>           <td>string</td>    <td>The OpenSSL program version</td></tr>
 <tr><td><code>SSL_CLIENT_M_VERSION</code></td>          <td>string</td>    <td>The version of the client certificate</td></tr>
-<tr><td><code>SSL_CLIENT_M_SERIAL</code></td>           <td>string</td>    <td>The serial of the client certificate</td></tr>
+<tr class="odd"><td><code>SSL_CLIENT_M_SERIAL</code></td>           <td>string</td>    <td>The serial of the client certificate</td></tr>
 <tr><td><code>SSL_CLIENT_S_DN</code></td>               <td>string</td>    <td>Subject DN in client's certificate</td></tr>
-<tr><td><code>SSL_CLIENT_S_DN_</code><em>x509</em></td> <td>string</td>    <td>Component of client's Subject DN</td></tr>
+<tr class="odd"><td><code>SSL_CLIENT_S_DN_</code><em>x509</em></td> <td>string</td>    <td>Component of client's Subject DN</td></tr>
 <tr><td><code>SSL_CLIENT_SAN_Email_</code><em>n</em></td> <td>string</td>  <td>Client certificate's subjectAltName extension entries of type rfc822Name</td></tr>
-<tr><td><code>SSL_CLIENT_SAN_DNS_</code><em>n</em></td> <td>string</td>    <td>Client certificate's subjectAltName extension entries of type dNSName</td></tr>
+<tr class="odd"><td><code>SSL_CLIENT_SAN_DNS_</code><em>n</em></td> <td>string</td>    <td>Client certificate's subjectAltName extension entries of type dNSName</td></tr>
 <tr><td><code>SSL_CLIENT_SAN_OTHER_msUPN_</code><em>n</em></td> <td>string</td>    <td>Client certificate's subjectAltName extension entries of type otherName, Microsoft User Principal Name form (OID 1.3.6.1.4.1.311.20.2.3)</td></tr>
-<tr><td><code>SSL_CLIENT_I_DN</code></td>               <td>string</td>    <td>Issuer DN of client's certificate</td></tr>
+<tr class="odd"><td><code>SSL_CLIENT_I_DN</code></td>               <td>string</td>    <td>Issuer DN of client's certificate</td></tr>
 <tr><td><code>SSL_CLIENT_I_DN_</code><em>x509</em></td> <td>string</td>    <td>Component of client's Issuer DN</td></tr>
-<tr><td><code>SSL_CLIENT_V_START</code></td>            <td>string</td>    <td>Validity of client's certificate (start time)</td></tr>
+<tr class="odd"><td><code>SSL_CLIENT_V_START</code></td>            <td>string</td>    <td>Validity of client's certificate (start time)</td></tr>
 <tr><td><code>SSL_CLIENT_V_END</code></td>              <td>string</td>    <td>Validity of client's certificate (end time)</td></tr>
-<tr><td><code>SSL_CLIENT_V_REMAIN</code></td>           <td>string</td>    <td>Number of days until client's certificate expires</td></tr>
+<tr class="odd"><td><code>SSL_CLIENT_V_REMAIN</code></td>           <td>string</td>    <td>Number of days until client's certificate expires</td></tr>
 <tr><td><code>SSL_CLIENT_A_SIG</code></td>              <td>string</td>    <td>Algorithm used for the signature of client's certificate</td></tr>
-<tr><td><code>SSL_CLIENT_A_KEY</code></td>              <td>string</td>    <td>Algorithm used for the public key of client's certificate</td></tr>
+<tr class="odd"><td><code>SSL_CLIENT_A_KEY</code></td>              <td>string</td>    <td>Algorithm used for the public key of client's certificate</td></tr>
 <tr><td><code>SSL_CLIENT_CERT</code></td>               <td>string</td>    <td>PEM-encoded client certificate</td></tr>
-<tr><td><code>SSL_CLIENT_CERT_CHAIN_</code><em>n</em></td> <td>string</td>    <td>PEM-encoded certificates in client certificate chain</td></tr>
+<tr class="odd"><td><code>SSL_CLIENT_CERT_CHAIN_</code><em>n</em></td> <td>string</td>    <td>PEM-encoded certificates in client certificate chain</td></tr>
 <tr><td><code>SSL_CLIENT_CERT_RFC4523_CEA</code></td>   <td>string</td>    <td>Serial number and issuer of the certificate. The format matches that of the CertificateExactAssertion in RFC4523</td></tr>
-<tr><td><code>SSL_CLIENT_VERIFY</code></td>             <td>string</td>    <td><code>NONE</code>, <code>SUCCESS</code>, <code>GENEROUS</code> or <code>FAILED:</code><em>reason</em></td></tr>
+<tr class="odd"><td><code>SSL_CLIENT_VERIFY</code></td>             <td>string</td>    <td><code>NONE</code>, <code>SUCCESS</code>, <code>GENEROUS</code> or <code>FAILED:</code><em>reason</em></td></tr>
 <tr><td><code>SSL_SERVER_M_VERSION</code></td>          <td>string</td>    <td>The version of the server certificate</td></tr>
-<tr><td><code>SSL_SERVER_M_SERIAL</code></td>           <td>string</td>    <td>The serial of the server certificate</td></tr>
+<tr class="odd"><td><code>SSL_SERVER_M_SERIAL</code></td>           <td>string</td>    <td>The serial of the server certificate</td></tr>
 <tr><td><code>SSL_SERVER_S_DN</code></td>               <td>string</td>    <td>Subject DN in server's certificate</td></tr>
-<tr><td><code>SSL_SERVER_SAN_Email_</code><em>n</em></td> <td>string</td>  <td>Server certificate's subjectAltName extension entries of type rfc822Name</td></tr>
+<tr class="odd"><td><code>SSL_SERVER_SAN_Email_</code><em>n</em></td> <td>string</td>  <td>Server certificate's subjectAltName extension entries of type rfc822Name</td></tr>
 <tr><td><code>SSL_SERVER_SAN_DNS_</code><em>n</em></td> <td>string</td>    <td>Server certificate's subjectAltName extension entries of type dNSName</td></tr>
-<tr><td><code>SSL_SERVER_SAN_OTHER_dnsSRV_</code><em>n</em></td> <td>string</td>    <td>Server certificate's subjectAltName extension entries of type otherName, SRVName form (OID 1.3.6.1.5.5.7.8.7, RFC 4985)</td></tr>
+<tr class="odd"><td><code>SSL_SERVER_SAN_OTHER_dnsSRV_</code><em>n</em></td> <td>string</td>    <td>Server certificate's subjectAltName extension entries of type otherName, SRVName form (OID 1.3.6.1.5.5.7.8.7, RFC 4985)</td></tr>
 <tr><td><code>SSL_SERVER_S_DN_</code><em>x509</em></td> <td>string</td>    <td>Component of server's Subject DN</td></tr>
-<tr><td><code>SSL_SERVER_I_DN</code></td>               <td>string</td>    <td>Issuer DN of server's certificate</td></tr>
+<tr class="odd"><td><code>SSL_SERVER_I_DN</code></td>               <td>string</td>    <td>Issuer DN of server's certificate</td></tr>
 <tr><td><code>SSL_SERVER_I_DN_</code><em>x509</em></td> <td>string</td>    <td>Component of server's Issuer DN</td></tr>
-<tr><td><code>SSL_SERVER_V_START</code></td>            <td>string</td>    <td>Validity of server's certificate (start time)</td></tr>
+<tr class="odd"><td><code>SSL_SERVER_V_START</code></td>            <td>string</td>    <td>Validity of server's certificate (start time)</td></tr>
 <tr><td><code>SSL_SERVER_V_END</code></td>              <td>string</td>    <td>Validity of server's certificate (end time)</td></tr>
-<tr><td><code>SSL_SERVER_A_SIG</code></td>              <td>string</td>    <td>Algorithm used for the signature of server's certificate</td></tr>
+<tr class="odd"><td><code>SSL_SERVER_A_SIG</code></td>              <td>string</td>    <td>Algorithm used for the signature of server's certificate</td></tr>
 <tr><td><code>SSL_SERVER_A_KEY</code></td>              <td>string</td>    <td>Algorithm used for the public key of server's certificate</td></tr>
-<tr><td><code>SSL_SERVER_CERT</code></td>               <td>string</td>    <td>PEM-encoded server certificate</td></tr>
+<tr class="odd"><td><code>SSL_SERVER_CERT</code></td>               <td>string</td>    <td>PEM-encoded server certificate</td></tr>
 <tr><td><code>SSL_SRP_USER</code></td>                  <td>string</td>    <td>SRP username</td></tr>
-<tr><td><code>SSL_SRP_USERINFO</code></td>              <td>string</td>    <td>SRP user info</td></tr>
+<tr class="odd"><td><code>SSL_SRP_USERINFO</code></td>              <td>string</td>    <td>SRP user info</td></tr>
 <tr><td><code>SSL_TLS_SNI</code></td>                   <td>string</td>    <td>Contents of the SNI TLS extension (if supplied with ClientHello)</td></tr>
 </table>
 
@@ -1144,8 +1144,8 @@ SSLOCSPOverrideResponder on</pre>
 <div class="directive-section"><h2><a name="SSLOCSPNoverify" id="SSLOCSPNoverify">SSLOCSPNoverify</a> <a name="sslocspnoverify" id="sslocspnoverify">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>skip the OCSP responder certificates verification</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLOCSPNoverify <em>On/Off</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLOCSPNoverify Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLOCSPNoverify on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLOCSPNoverify off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
@@ -1310,10 +1310,10 @@ SSLOpenSSLConfCmd SignatureAlgorithms RSA+SHA384:ECDSA+SHA256</pre>
 </table>
 <p>
 This directive can be used to control various run-time options on a
-per-directory basis. Normally, if multiple <code>SSLOptions</code>
+per-directory basis. Normally, if multiple <code class="directive">SSLOptions</code>
 could apply to a directory, then the most specific one is taken
 completely; the options are not merged. However if <em>all</em> the
-options on the <code>SSLOptions</code> directive are preceded by a
+options on the <code class="directive">SSLOptions</code> directive are preceded by a
 plus (<code>+</code>) or minus (<code>-</code>) symbol, the options
 are merged. Any options preceded by a <code>+</code> are added to the
 options currently in force, and any options preceded by a
@@ -1363,8 +1363,8 @@ The available <em>option</em>s are:</p>
 </li>
 <li><code>StrictRequire</code>
     <p>
-    This <em>forces</em> forbidden access when <code>SSLRequireSSL</code> or
-    <code>SSLRequire</code> successfully decided that access should be
+    This <em>forces</em> forbidden access when <code class="directive"><a href="#sslrequiressl">SSLRequireSSL</a></code> or
+    <code class="directive"><a href="#sslrequire">SSLRequire</a></code> successfully decided that access should be
     forbidden. Usually the default is that in the case where a ``<code>Satisfy
     any</code>'' directive is used, and other access restrictions are passed,
     denial of access due to <code>SSLRequireSSL</code> or
@@ -2230,9 +2230,9 @@ function ::= funcname "<strong>(</strong>" funcargs "<strong>)</strong>"</pre>
 the <a href="../expr.html#functions">ap_expr documentation</a>.</p>
 
 <p>The <em>expression</em> is parsed into an internal machine
-representation when the configuration is loaded, and then evaluated 
-during request processing.  In .htaccess context, the <em>expression</em> is 
-both parsed and executed each time the .htaccess file is encountered during 
+representation when the configuration is loaded, and then evaluated
+during request processing.  In .htaccess context, the <em>expression</em> is
+both parsed and executed each time the .htaccess file is encountered during
 request processing.</p>
 
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLRequire (    %{SSL_CIPHER} !~ m/^(EXP|NULL)-/                   \
@@ -2420,7 +2420,7 @@ should be shared between multiple nodes. For single-instance httpd setups,
 it is recommended to <em>not</em> configure a ticket key file, but to
 rely on (random) keys generated by mod_ssl at startup, instead.</p>
 <p>The ticket key file must contain 48 bytes of random data,
-preferrably created from a high-entropy source. On a Unix-based system,
+preferably created from a high-entropy source. On a Unix-based system,
 a ticket key file can be created as follows:</p>
 
 <div class="example"><p><code>
@@ -2508,7 +2508,7 @@ utility:</p>
 openssl srp -srpvfile passwd.srpv -userinfo "some info" -add username
 </code></p></div>
 <p> The value given with the optional <code>-userinfo</code> parameter is
-avalable in the <code>SSL_SRP_USERINFO</code> request environment variable.</p>
+available in the <code>SSL_SRP_USERINFO</code> request environment variable.</p>
 
 
 </div>
