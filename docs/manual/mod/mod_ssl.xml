@@ -2525,7 +2525,7 @@ Responder), this option should be turned <code>off</code>.</p>
 <directivesynopsis>
 <name>SSLOCSPNoverify</name>
 <description>skip the OCSP responder certificates verification</description>
-<syntax>SSLOCSPNoverify on|off</em></syntax>
+<syntax>SSLOCSPNoverify on|off</syntax>
 <default>SSLOCSPNoverify off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
