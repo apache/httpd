@@ -1343,7 +1343,7 @@ non sécurisée</td></tr>
 OCSP</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslocspenable">SSLOCSPEnable on|leaf|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active la validation OCSP de la chaîne de certificats du
 client</td></tr>
-<tr><td><a href="mod_ssl.html#sslocspnoverify">SSLOCSPNoverify <em>On/Off</em></a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Evite la vérification des certificats des répondeurs OCSP</td></tr>
+<tr><td><a href="mod_ssl.html#sslocspnoverify">SSLOCSPNoverify on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Evite la vérification des certificats des répondeurs OCSP</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslocspoverrideresponder">SSLOCSPOverrideResponder on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Force l'utilisation de l'URI du répondeur par défaut pour
 la validation OCSP</td></tr>
 <tr><td><a href="mod_ssl.html#sslocspproxyurl">SSLOCSPProxyURL <em>url</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Adresse de mandataire à utiliser pour les requêtes OCSP</td></tr>

@@ -137,125 +137,124 @@ disponibles avec Require</a></li>
 
 <p>Ce module peut être configuré pour fournir aux espaces de nommage SSI
 et CGI de nombreux éléments d'informations concernant SSL par le biais
-de variables d'environnement supplémentaires. Par défaut, et pour
-des raisons de performances, ces informations ne sont pas fournies (Voir
-la directive <code class="directive">SSLOptions</code> StdEnvVars ci-dessous).
+de variables d'environnement supplémentaires. Par défaut, sauf pour
+<code>HTTPS</code> et <code>SSL_TLS_SNI</code> qui sont toujours définies, ces
+informations ne sont pas fournies pour des raisons de performances (Voir
+la directive <code class="directive"><a href="#ssloptions">SSLOptions</a></code>
+<code>StdEnvVars</code> ci-dessous).
 Les variables générées se trouvent dans la table ci-dessous.
 Ces informations peuvent également être disponible sous des noms différents
 à des fins de compatibilité ascendante. Reportez-vous au chapitre <a href="../ssl/ssl_compat.html">Compatibilité</a> pour plus de détails à
 propos des variables de compatibilité.</p>
 
-<table class="bordered">
-
-<tr>
- <th><a name="table3">Nom de la variable :</a></th>
- <th>Type de valeur :</th>
- <th>Description :</th>
+<table class="bordered"><tr class="header">
+ <th><a name="table3">Nom de la variable</a></th>
+ <th>Type de valeur</th>
+ <th>Description</th>
 </tr>
 <tr><td><code>HTTPS</code></td>                         <td>drapeau</td>
 <td>HTTPS est utilisé.</td></tr>
-<tr><td><code>SSL_PROTOCOL</code></td>                  <td>chaîne</td>
+<tr class="odd"><td><code>SSL_PROTOCOL</code></td>                  <td>chaîne</td>
 <td>La version du protocole SSL (SSLv3, TLSv1, TLSv1.1, TLSv1.2)</td></tr>
 <tr><td><code>SSL_SESSION_ID</code></td>                <td>chaîne</td>
 <td>L'identifiant de session SSL codé en hexadécimal</td></tr>
-<tr><td><code>SSL_SESSION_RESUMED</code></td>           <td>chaîne</td>
+<tr class="odd"><td><code>SSL_SESSION_RESUMED</code></td>           <td>chaîne</td>
 <td>Session SSL initiale ou reprise. Note : plusieurs requêtes peuvent
 être servies dans le cadre de la même session SSL (initiale ou reprise)
 si les connexions persistantes (HTTP KeepAlive) sont utilisées</td></tr>
 <tr><td><code>SSL_SECURE_RENEG</code></td>              <td>chaîne</td>
 <td><code>true</code> si la renégociation sécurisée est supportée,
 <code>false</code> dans le cas contraire</td></tr>
-<tr><td><code>SSL_CIPHER</code></td>                    <td>chaîne</td>
+<tr class="odd"><td><code>SSL_CIPHER</code></td>                    <td>chaîne</td>
 <td>Le nom de l'algorithme de chiffrement</td></tr>
 <tr><td><code>SSL_CIPHER_EXPORT</code></td>             <td>chaîne</td>
 <td><code>true</code> si l'algorithme de chiffrement est un algorithme
 exporté</td></tr>
-<tr><td><code>SSL_CIPHER_USEKEYSIZE</code></td>         <td>nombre</td>
+<tr class="odd"><td><code>SSL_CIPHER_USEKEYSIZE</code></td>         <td>nombre</td>
 <td>Nombre de bits de chiffrement (réellement utilisés)</td></tr>
 <tr><td><code>SSL_CIPHER_ALGKEYSIZE</code></td>         <td>nombre</td>
 <td>Nombre de bits de chiffrement (possible)</td></tr>
-<tr><td><code>SSL_COMPRESS_METHOD</code></td>           <td>chaîne</td>
+<tr class="odd"><td><code>SSL_COMPRESS_METHOD</code></td>           <td>chaîne</td>
 <td>Méthode de compression SSL négociée</td></tr>
-
 <tr><td><code>SSL_VERSION_INTERFACE</code></td>         <td>chaîne</td>
 <td>La version du programme mod_ssl</td></tr>
-<tr><td><code>SSL_VERSION_LIBRARY</code></td>           <td>chaîne</td>
+<tr class="odd"><td><code>SSL_VERSION_LIBRARY</code></td>           <td>chaîne</td>
 <td>La version du programme OpenSSL</td></tr>
 <tr><td><code>SSL_CLIENT_M_VERSION</code></td>          <td>chaîne</td>
 <td>La version du certificat client</td></tr>
-<tr><td><code>SSL_CLIENT_M_SERIAL</code></td>           <td>chaîne</td>
+<tr class="odd"><td><code>SSL_CLIENT_M_SERIAL</code></td>           <td>chaîne</td>
 <td>Le numéro de série du certificat client</td></tr>
 <tr><td><code>SSL_CLIENT_S_DN</code></td>               <td>chaîne</td>
 <td>Le DN sujet du certificat client</td></tr>
-<tr><td><code>SSL_CLIENT_S_DN_</code><em>x509</em></td> <td>chaîne</td>
+<tr class="odd"><td><code>SSL_CLIENT_S_DN_</code><em>x509</em></td> <td>chaîne</td>
 <td>Elément du DN sujet du client</td></tr>
 <tr><td><code>SSL_CLIENT_SAN_Email_</code><em>n</em></td> <td>chaîne</td>
 <td>Les entrées d'extension subjectAltName du certificat client de type rfc822Name</td></tr>
-<tr><td><code>SSL_CLIENT_SAN_DNS_</code><em>n</em></td> <td>chaîne</td>
+<tr class="odd"><td><code>SSL_CLIENT_SAN_DNS_</code><em>n</em></td> <td>chaîne</td>
 <td>Les entrées d'extension subjectAltName du certificat client de type dNSName</td></tr>
 <tr><td><code>SSL_CLIENT_SAN_OTHER_msUPN_</code><em>n</em></td>
 <td>chaîne</td>    <td>Extensions subjectAltName de type otherName du
 certificat client, forme Microsoft du nom principal de l'utilisateur (OID 1.3.6.1.4.1.311.20.2.3)</td></tr>
-<tr><td><code>SSL_CLIENT_I_DN</code></td>               <td>chaîne</td>
+<tr class="odd"><td><code>SSL_CLIENT_I_DN</code></td>               <td>chaîne</td>
 <td>DN de l'émetteur du certificat du client</td></tr>
 <tr><td><code>SSL_CLIENT_I_DN_</code><em>x509</em></td> <td>chaîne</td>
 <td>Elément du DN de l'émetteur du certificat du client</td></tr>
-<tr><td><code>SSL_CLIENT_V_START</code></td>            <td>chaîne</td>
+<tr class="odd"><td><code>SSL_CLIENT_V_START</code></td>            <td>chaîne</td>
 <td>Validité du certificat du client (date de début)</td></tr>
 <tr><td><code>SSL_CLIENT_V_END</code></td>              <td>chaîne</td>
 <td>Validité du certificat du client (date de fin)</td></tr>
-<tr><td><code>SSL_CLIENT_V_REMAIN</code></td>           <td>chaîne</td>
+<tr class="odd"><td><code>SSL_CLIENT_V_REMAIN</code></td>           <td>chaîne</td>
 <td>Nombre de jours avant expiration du certificat du client</td></tr>
 <tr><td><code>SSL_CLIENT_A_SIG</code></td>              <td>chaîne</td>
 <td>Algorithme utilisé pour la signature du certificat du client</td></tr>
-<tr><td><code>SSL_CLIENT_A_KEY</code></td>              <td>chaîne</td>
+<tr class="odd"><td><code>SSL_CLIENT_A_KEY</code></td>              <td>chaîne</td>
 <td>Algorithme utilisé pour la clé publique du certificat du client</td></tr>
 <tr><td><code>SSL_CLIENT_CERT</code></td>               <td>chaîne</td>
 <td>Certificat du client au format PEM</td></tr>
-<tr><td><code>SSL_CLIENT_CERT_CHAIN_</code><em>n</em></td>
+<tr class="odd"><td><code>SSL_CLIENT_CERT_CHAIN_</code><em>n</em></td>
 <td>chaîne</td>    <td>Certificats de la chaîne de certification du
 client au format PEM</td></tr>
 <tr><td><code>SSL_CLIENT_CERT_RFC4523_CEA</code></td>   <td>chaîne</td>
 <td>Numéro de série et fournisseur du certificat. le format correspond à
 celui de la CertificateExactAssertion dans la RFC4523</td></tr>
-<tr><td><code>SSL_CLIENT_VERIFY</code></td>             <td>chaîne</td>
+<tr class="odd"><td><code>SSL_CLIENT_VERIFY</code></td>             <td>chaîne</td>
 <td><code>NONE</code>, <code>SUCCESS</code>, <code>GENEROUS</code> ou
 <code>FAILED:</code><em>raison</em></td></tr>
 <tr><td><code>SSL_SERVER_M_VERSION</code></td>          <td>chaîne</td>
 <td>La version du certificat du serveur</td></tr>
-<tr><td><code>SSL_SERVER_M_SERIAL</code></td>           <td>chaîne</td>    <td>
+<tr class="odd"><td><code>SSL_SERVER_M_SERIAL</code></td>           <td>chaîne</td>    <td>
 
 The serial of the server certificate</td></tr>
 <tr><td><code>SSL_SERVER_S_DN</code></td>               <td>chaîne</td>
 <td>DN sujet du certificat du serveur</td></tr>
-<tr><td><code>SSL_SERVER_S_DN_</code><em>x509</em></td> <td>chaîne</td>
+<tr class="odd"><td><code>SSL_SERVER_S_DN_</code><em>x509</em></td> <td>chaîne</td>
 <td>Elément du DN sujet du certificat du serveur</td></tr>
 <tr><td><code>SSL_SERVER_SAN_Email_</code><em>n</em></td>
 <td>chaîne</td>  <td>Les entrées d'extension subjectAltName du
 certificat de serveur de type rfc822Name</td></tr>
-<tr><td><code>SSL_SERVER_SAN_DNS_</code><em>n</em></td> <td>chaîne</td>
+<tr class="odd"><td><code>SSL_SERVER_SAN_DNS_</code><em>n</em></td> <td>chaîne</td>
 <td>Les entrées d'extension subjectAltName du
 certificat de serveur de type dNSName</td></tr>
 <tr><td><code>SSL_SERVER_SAN_OTHER_dnsSRV_</code><em>n</em></td>
 <td>chaîne</td>    <td>Extensions subjectAltName de type otherName du
 certificat serveur, sous la forme SRVName (OID 1.3.6.1.5.5.7.8.7, RFC 4985)</td></tr>
-<tr><td><code>SSL_SERVER_I_DN</code></td>               <td>chaîne</td>
+<tr class="odd"><td><code>SSL_SERVER_I_DN</code></td>               <td>chaîne</td>
 <td>DN de l'émetteur du certificat du serveur</td></tr>
 <tr><td><code>SSL_SERVER_I_DN_</code><em>x509</em></td> <td>chaîne</td>
 <td>Elément du DN de l'émetteur du certificat du serveur</td></tr>
-<tr><td><code>SSL_SERVER_V_START</code></td>            <td>chaîne</td>
+<tr class="odd"><td><code>SSL_SERVER_V_START</code></td>            <td>chaîne</td>
 <td>Validité du certificat du serveur (date de dédut)</td></tr>
 <tr><td><code>SSL_SERVER_V_END</code></td>              <td>chaîne</td>
 <td>Validité du certificat du serveur (date de fin)</td></tr>
-<tr><td><code>SSL_SERVER_A_SIG</code></td>              <td>chaîne</td>
+<tr class="odd"><td><code>SSL_SERVER_A_SIG</code></td>              <td>chaîne</td>
 <td>Algorithme utilisé pour la signature du certificat du serveur</td></tr>
 <tr><td><code>SSL_SERVER_A_KEY</code></td>              <td>chaîne</td>
 <td>Algorithme utilisé pour la clé publique du certificat du serveur</td></tr>
-<tr><td><code>SSL_SERVER_CERT</code></td>               <td>chaîne</td>
+<tr class="odd"><td><code>SSL_SERVER_CERT</code></td>               <td>chaîne</td>
 <td>Certificat du serveur au format PEM</td></tr>
 <tr><td><code>SSL_SRP_USER</code></td>                  <td>chaîne</td>
 <td>nom d'utilisateur SRP</td></tr>
-<tr><td><code>SSL_SRP_USERINFO</code></td>              <td>chaîne</td>
+<tr class="odd"><td><code>SSL_SRP_USERINFO</code></td>              <td>chaîne</td>
 <td>informations sur l'utilisateur SRP</td></tr>
 <tr><td><code>SSL_TLS_SNI</code></td>                   <td>string</td>
 <td>Contenu de l'extension SNI TLS (si supporté par ClientHello)</td></tr>
@@ -1296,8 +1295,8 @@ SSLOCSPOverrideResponder on</pre>
 <div class="directive-section"><h2><a name="sslocspnoverify" id="sslocspnoverify">Directive</a> <a name="SSLOCSPNoverify" id="SSLOCSPNoverify">SSLOCSPNoverify</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Evite la vérification des certificats des répondeurs OCSP</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLOCSPNoverify <em>On/Off</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLOCSPNoverify Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLOCSPNoverify on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLOCSPNoverify off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
@@ -1471,7 +1470,7 @@ SSLOpenSSLConfCmd SignatureAlgorithms RSA+SHA384:ECDSA+SHA256</pre>
 <p>
 Cette directive permet de contrôler différentes options d'exécution du
 moteur SSL dans un contexte de répertoire. Normalement, si plusieurs
-<code>SSLOptions</code> peuvent s'appliquer à un répertoire, c'est la
+<code class="directive">SSLOptions</code> peuvent s'appliquer à un répertoire, c'est la
 plus spécifique qui est véritablement prise en compte ; les options ne
 se combinent pas entre elles. Elles se combinent cependant entre elles
 si elles sont <em>toutes</em> précédées par un symbole plus
@@ -1533,7 +1532,7 @@ Les <em>option</em>s disponibles sont :</p>
 <li><code>StrictRequire</code>
     <p>
     Cette option <em>force</em> l'interdiction d'accès lorsque
-    <code>SSLRequireSSL</code> ou <code>SSLRequire</code> a décidé que
+    <code class="directive"><a href="#sslrequiressl">SSLRequireSSL</a></code> ou <code class="directive"><a href="#sslrequire">SSLRequire</a></code> a décidé que
     l'accès devait être interdit. Par défaut, dans le cas où
     une directive ``<code>Satisfy any</code>'' est utilisée, et si
     d'autres restrictions d'accès ont été franchies, on passe en général
