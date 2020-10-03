@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1880960:1882201 (outdated) -->
+<!-- English Revision: 1882201 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -46,22 +46,24 @@ href="../ssl/">documentation SSL</a>.</p>
 
 <p>Ce module peut être configuré pour fournir aux espaces de nommage SSI
 et CGI de nombreux éléments d'informations concernant SSL par le biais
-de variables d'environnement supplémentaires. Par défaut, et pour
-des raisons de performances, ces informations ne sont pas fournies (Voir
-la directive <directive>SSLOptions</directive> StdEnvVars ci-dessous).
+de variables d'environnement supplémentaires. Par défaut, sauf pour
+<code>HTTPS</code> et <code>SSL_TLS_SNI</code> qui sont toujours définies, ces
+informations ne sont pas fournies pour des raisons de performances (Voir
+la directive <directive module="mod_ssl">SSLOptions</directive>
+<code>StdEnvVars</code> ci-dessous).
 Les variables générées se trouvent dans la table ci-dessous.
 Ces informations peuvent également être disponible sous des noms différents
 à des fins de compatibilité ascendante. Reportez-vous au chapitre <a
 href="../ssl/ssl_compat.html">Compatibilité</a> pour plus de détails à
 propos des variables de compatibilité.</p>
 
-<table border="1">
+<table border="1" style="zebra">
 <columnspec><column width=".3"/><column width=".2"/><column width=".5"/>
 </columnspec>
 <tr>
- <th><a name="table3">Nom de la variable :</a></th>
- <th>Type de valeur :</th>
- <th>Description :</th>
+ <th><a name="table3">Nom de la variable</a></th>
+ <th>Type de valeur</th>
+ <th>Description</th>
 </tr>
 <tr><td><code>HTTPS</code></td>                         <td>drapeau</td>
 <td>HTTPS est utilisé.</td></tr>
@@ -1689,7 +1691,7 @@ SSLSRPUnknownUserSeed "secret"
 <p>
 Cette directive permet de contrôler différentes options d'exécution du
 moteur SSL dans un contexte de répertoire. Normalement, si plusieurs
-<code>SSLOptions</code> peuvent s'appliquer à un répertoire, c'est la
+<directive>SSLOptions</directive> peuvent s'appliquer à un répertoire, c'est la
 plus spécifique qui est véritablement prise en compte ; les options ne
 se combinent pas entre elles. Elles se combinent cependant entre elles
 si elles sont <em>toutes</em> précédées par un symbole plus
@@ -1752,7 +1754,8 @@ Les <em>option</em>s disponibles sont :</p>
 <li><code>StrictRequire</code>
     <p>
     Cette option <em>force</em> l'interdiction d'accès lorsque
-    <code>SSLRequireSSL</code> ou <code>SSLRequire</code> a décidé que
+    <directive module="mod_ssl">SSLRequireSSL</directive> ou <directive
+    module="mod_ssl">SSLRequire</directive> a décidé que
     l'accès devait être interdit. Par défaut, dans le cas où
     une directive ``<code>Satisfy any</code>'' est utilisée, et si
     d'autres restrictions d'accès ont été franchies, on passe en général
@@ -2826,8 +2829,8 @@ module="mod_ssl">SSLOCSPEnable</directive> est à on.</p>
 <directivesynopsis>
 <name>SSLOCSPNoverify</name>
 <description>Evite la vérification des certificats des répondeurs OCSP</description>
-<syntax>SSLOCSPNoverify <em>On/Off</em></syntax>
-<default>SSLOCSPNoverify Off</default>
+<syntax>SSLOCSPNoverify on|off</syntax>
+<default>SSLOCSPNoverify off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility>Disponible à partir de la version 2.4.26 du serveur HTTP Apache,
