@@ -128,9 +128,9 @@ AP_DECLARE(apr_status_t) ap_parse_mutex(const char *arg, apr_pool_t *pool,
 
 typedef struct {
     apr_int32_t options;
-    int set;
-    int none;
-    int omit_pid;
+    unsigned int set :      1;
+    unsigned int none :     1;
+    unsigned int omit_pid : 1;
     apr_lockmech_e mech;
     const char *dir;
 } mutex_cfg_t;
