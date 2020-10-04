@@ -1284,7 +1284,7 @@ static struct ent *make_parent_entry(apr_int32_t autoindex_opts,
     p->lm = -1;
     p->key = apr_toupper(keyid);
     p->ascending = (apr_toupper(direction) == D_ASCENDING);
-    p->version_sort = autoindex_opts & VERSION_SORT;
+    p->version_sort = !!(autoindex_opts & VERSION_SORT);
     if (autoindex_opts & FANCY_INDEXING) {
         if (!(p->icon = find_default_icon(d, testpath))) {
             p->icon = find_default_icon(d, "^^DIRECTORY^^");
