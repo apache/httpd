@@ -113,8 +113,8 @@ struct item {
 typedef struct ai_desc_t {
     char *pattern;
     char *description;
-    int full_path;
-    int wildcards;
+    unsigned int full_path : 1;
+    unsigned int wildcards : 1;
 } ai_desc_t;
 
 typedef struct autoindex_config_struct {
@@ -753,9 +753,11 @@ struct ent {
     apr_off_t size;
     apr_time_t lm;
     struct ent *next;
-    int ascending, ignore_case, version_sort;
+    unsigned int ascending    : 1;
+    unsigned int ignore_case  : 1;
+    unsigned int version_sort : 1;
+    unsigned int isdir        : 1;
     char key;
-    int isdir;
 };
 
 static char *find_item(const char *content_type, const char *content_encoding,
