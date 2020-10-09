@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "HTDBM" 1 "2020-06-10" "Apache HTTP Server" "htdbm"
+.TH "HTDBM" 1 "2020-10-09" "Apache HTTP Server" "htdbm"
 
 .SH NAME
 htdbm \- Manipulate DBM password databases
@@ -163,7 +163,7 @@ To convert an existing text file \fBhtpasswd\fR-generated password file to a \fB
 .nf
 
       htdbm -cbp passwords\&.dbm bogus bogus
-      awk &#8216;BEGIN { FS=&#8221;:&#8221; }; {system (&#8220;htdbm -bp passwords\&.dbm &#8221; $1 &#8221; &#8221; $2)}&#8217; passwords
+      awk ‘BEGIN { FS=”:” }; {system (“htdbm -bp passwords\&.dbm ” $1 ” ” $2)}’ passwords
       htdbm -x bogus
     
 .fi
