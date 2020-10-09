@@ -53,7 +53,6 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#cgimapextension">CGIMapExtension</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cgipassauth">CGIPassAuth</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cgivar">CGIVar</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#contentdigest">ContentDigest</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#defaultruntimedir">DefaultRuntimeDir</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#defaultstatedir">DefaultStateDir</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#defaulttype">DefaultType</a></li>
@@ -601,46 +600,6 @@ variables</td></tr>
 </table><p>The documentation for this directive has
             not been translated yet. Please have a look at the English
             version.</p></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="contentdigest" id="contentdigest">Directiva</a> <a name="ContentDigest" id="ContentDigest">ContentDigest</a> <a title="Enlace permanente" href="#contentdigest" class="permalink">&para;</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Enables the generation of <code>Content-MD5</code> HTTP Response
-headers</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>ContentDigest On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>ContentDigest Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Anula:</a></th><td>Options</td></tr>
-<tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
-<tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
-</table>
-    <p>This directive enables the generation of
-    <code>Content-MD5</code> headers as defined in RFC1864
-    respectively RFC2616.</p>
-
-    <p>MD5 is an algorithm for computing a "message digest"
-    (sometimes called "fingerprint") of arbitrary-length data, with
-    a high degree of confidence that any alterations in the data
-    will be reflected in alterations in the message digest.</p>
-
-    <p>The <code>Content-MD5</code> header provides an end-to-end
-    message integrity check (MIC) of the entity-body. A proxy or
-    client may check this header for detecting accidental
-    modification of the entity-body in transit. Example header:</p>
-
-    <div class="example"><p><code>
-      Content-MD5: AuLb7Dp1rqtRtxz2m9kRpA==
-    </code></p></div>
-
-    <p>Note that this can cause performance problems on your server
-    since the message digest is computed on every request (the
-    values are not cached).</p>
-
-    <p><code>Content-MD5</code> is only sent for documents served
-    by the <code class="module"><a href="../mod/core.html">core</a></code>, and not by any module. For example,
-    SSI documents, output from CGI scripts, and byte range responses
-    do not have this header.</p>
-
-</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="defaultruntimedir" id="defaultruntimedir">Directiva</a> <a name="DefaultRuntimeDir" id="DefaultRuntimeDir">DefaultRuntimeDir</a> <a title="Enlace permanente" href="#defaultruntimedir" class="permalink">&para;</a></h2>
 <table class="directive">

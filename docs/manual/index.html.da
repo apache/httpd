@@ -27,19 +27,20 @@ Dokumentation - Apache HTTP Server Version 2.5</title>
 <div id="page-content"><h1>Apache HTTP Server Version 2.5
 Dokumentation</h1>
 <div class="toplang">
-<p><span>Tilgængelige sprog: </span><a href="./da/" title="Dansk">&nbsp;da&nbsp;</a> |
+<p><span>Tilg&#230;ngelige sprog: </span><a href="./da/" title="Dansk">&nbsp;da&nbsp;</a> |
 <a href="./de/" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./es/" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./pt-br/" hreflang="pt-br" rel="alternate" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a> |
-<a href="./tr/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="./pt-br/" hreflang="pt-br" rel="alternate" title="Portugu&#234;s (Brasil)">&nbsp;pt-br&nbsp;</a> |
+<a href="./ru/" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a> |
+<a href="./tr/" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Denne oversættelse kan være forældet. Se den Engelske version for de seneste opdateringer.</div>
-<form method="get" action="https://www.google.com/search"><p><input name="as_q" value="" type="text" /> <input value="Google Søgning" type="submit" /><input value="10" name="num" type="hidden" /><input value="da" name="hl" type="hidden" /><input value="ISO-8859-1" name="ie" type="hidden" /><input value="Google Search" name="btnG" type="hidden" /><input name="as_epq" value="Version 2.5" type="hidden" /><input name="as_oq" value="" type="hidden" /><input name="as_eq" value="&quot;List-Post&quot;" type="hidden" /><input value="" name="lr" type="hidden" /><input value="i" name="as_ft" type="hidden" /><input value="" name="as_filetype" type="hidden" /><input value="all" name="as_qdr" type="hidden" /><input value="any" name="as_occt" type="hidden" /><input value="i" name="as_dt" type="hidden" /><input value="httpd.apache.org" name="as_sitesearch" type="hidden" /><input value="off" name="safe" type="hidden" /></p></form>
+<div class="outofdate">Denne overs&#230;ttelse kan v&#230;re for&#230;ldet. Se den Engelske version for de seneste opdateringer.</div>
+<form method="get" action="https://www.google.com/search"><p><input name="as_q" value="" type="text" /> <input value="Google S&#248;gning" type="submit" /><input value="10" name="num" type="hidden" /><input value="da" name="hl" type="hidden" /><input value="ISO-8859-1" name="ie" type="hidden" /><input value="Google Search" name="btnG" type="hidden" /><input name="as_epq" value="Version 2.5" type="hidden" /><input name="as_oq" value="" type="hidden" /><input name="as_eq" value="&quot;List-Post&quot;" type="hidden" /><input value="" name="lr" type="hidden" /><input value="i" name="as_ft" type="hidden" /><input value="" name="as_filetype" type="hidden" /><input value="all" name="as_qdr" type="hidden" /><input value="any" name="as_occt" type="hidden" /><input value="i" name="as_dt" type="hidden" /><input value="httpd.apache.org" name="as_sitesearch" type="hidden" /><input value="off" name="safe" type="hidden" /></p></form>
 <table id="indextable"><tr><td class="col1"><div class="category"><h2><a name="release" id="release">Udgivelses Noter</a></h2>
 <ul><li><a href="new_features_2_4.html">Nye funktioner i Apache 2.3/2.4</a></li>
 <li><a href="new_features_2_2.html">Nye funktioner i Apache 2.1/2.2</a></li>
@@ -51,14 +52,14 @@ Dokumentation</h1>
 <ul><li><a href="install.html">Kompilering og installation</a></li>
 <li><a href="invoking.html">Opstart</a></li>
 <li><a href="stopping.html">At starte og stoppe serveren</a></li>
-<li><a href="mod/directives.html">Kørselstidskonfigurationsdirektiver</a></li>
+<li><a href="mod/directives.html">K&#248;rselstidskonfigurationsdirektiver</a></li>
 <li><a href="mod/quickreference.html">Hurtig oversigt over direktiver</a></li>
 <li><a href="mod/">Moduler</a></li>
 <li><a href="mpm.html">Multibehandlingsmoduler (MPM)</a></li>
 <li><a href="filter.html">Filtre</a></li>
 <li><a href="handler.html">Behandlere</a></li>
 <li><a href="expr.html">Udtryksanalysering</a></li>
-<li><a href="programs/">Serveren og understøttende programmer</a></li>
+<li><a href="programs/">Serveren og underst&#248;ttende programmer</a></li>
 <li><a href="glossary.html">Anvendte gloser</a></li>
 </ul>
 </div></td><td><div class="category"><h2><a name="usersguide" id="usersguide">Brugerguide</a></h2>
@@ -68,7 +69,7 @@ Dokumentation</h1>
 <li><a href="caching.html">Caching af indhold</a></li>
 <li><a href="content-negotiation.html">Indholdsforhandling</a></li>
 <li><a href="dso.html">Dynamisk delte objekter (DSO)</a></li>
-<li><a href="env.html">Miljøvariabler</a></li>
+<li><a href="env.html">Milj&#248;variabler</a></li>
 <li><a href="logs.html">Logfiler</a></li>
 <li><a href="compliance.html">HTTP-protokoloverensstemmelse</a></li>
 <li><a href="urlmapping.html">Afbilding af URL'er til filsystem</a></li>
@@ -78,7 +79,7 @@ Dokumentation</h1>
 <li><a href="ssl/">SSL/TLS-Kryptering</a></li>
 <li><a href="suexec.html">Suexec-afvikling for CGI</a></li>
 <li><a href="rewrite/">URL-omskrivning med mod_rewrite</a></li>
-<li><a href="vhosts/">Virtuelle værter</a></li>
+<li><a href="vhosts/">Virtuelle v&#230;rter</a></li>
 </ul>
 </div></td><td class="col3"><div class="category"><h2><a name="howto" id="howto">How-To / Gennemgange</a></h2>
 <ul><li><a href="howto/auth.html">Godkendelse, autorisation og adgangskontrol</a></li>
@@ -94,24 +95,25 @@ Dokumentation</h1>
 <li><a href="platform/rpm.html">RPM-baserede systemer (Redhat / CentOS / Fedora)</a></li>
 </ul>
 </div><div class="category"><h2><a name="other" id="other">Andre emner</a></h2>
-<ul><li><a href="faq/">Ofte stillede spørgsmål</a></li>
+<ul><li><a href="faq/">Ofte stillede sp&#248;rgsm&#229;l</a></li>
 <li><a href="sitemap.html">Sitemap</a></li>
 <li><a href="developer/">Dokumentation for udviklere</a></li>
-<li><a href="http://httpd.apache.org/docs-project/">Hjælp med dokumentationen</a></li>
+<li><a href="http://httpd.apache.org/docs-project/">Hj&#230;lp med dokumentationen</a></li>
 <li><a href="misc/">Andre noter</a></li>
 <li><a href="http://wiki.apache.org/httpd/">Wiki</a></li>
 </ul>
 </div></td></tr></table></div>
 <div class="bottomlang">
-<p><span>Tilgængelige sprog: </span><a href="./da/" title="Dansk">&nbsp;da&nbsp;</a> |
+<p><span>Tilg&#230;ngelige sprog: </span><a href="./da/" title="Dansk">&nbsp;da&nbsp;</a> |
 <a href="./de/" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./es/" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./pt-br/" hreflang="pt-br" rel="alternate" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a> |
-<a href="./tr/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="./pt-br/" hreflang="pt-br" rel="alternate" title="Portugu&#234;s (Brasil)">&nbsp;pt-br&nbsp;</a> |
+<a href="./ru/" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a> |
+<a href="./tr/" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licenseret under <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>

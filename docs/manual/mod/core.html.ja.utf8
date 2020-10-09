@@ -53,7 +53,6 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#cgimapextension">CGIMapExtension</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cgipassauth">CGIPassAuth</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cgivar">CGIVar</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#contentdigest">ContentDigest</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#defaultruntimedir">DefaultRuntimeDir</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#defaultstatedir">DefaultStateDir</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#defaulttype">DefaultType</a></li>
@@ -558,47 +557,6 @@ variables</td></tr>
 </table><p>このディレクティブの解説文書は
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ContentDigest" id="ContentDigest">ContentDigest</a> <a name="contentdigest" id="contentdigest">ディレクティブ</a> <a title="Permanent link" href="#contentdigest" class="permalink">&para;</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td><code>Content-MD5</code> HTTP 応答ヘッダの生成を有効にする</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ContentDigest On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>ContentDigest Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>Options</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
-</table>
-    <p>このディレクティブは、RFC1864 及び RFC2616 において定義されている
-    <code>Content-MD5</code> ヘッダーの生成を有効にします。</p>
-
-    <p>MD5 は、任意長のデータの「メッセージダイジェスト」(「指紋」
-    と表現されることもある) を計算するアルゴリズムで、
-    データの変更があった場合には非常に高い信頼度でメッセージダイジェストに変更が
-    反映されます。</p>
-
-    <p><code>Content-MD5</code> ヘッダは、エンドツーエンドで
-    エンティティボディーに含まれるメッセージの完全性チェック
-    (Message Integrity Check - MIC)を提供します。
-    このヘッダを調べることで、プロキシやクライアントは、
-    途中経路におけるエンティティボディの予期せぬ変更などを
-    検出することができます。ヘッダの例:</p>
-
-    <div class="example"><p><code>
-      Content-MD5: AuLb7Dp1rqtRtxz2m9kRpA==
-    </code></p></div>
-
-    <p>リクエスト毎にメッセージダイジェストを計算する (値はキャッシュされません)
-    ことから、
-    サーバパフォーマンスが低下することについて注意してください。</p>
-
-    <p><code>Content-MD5</code>は、<code class="module"><a href="../mod/core.html">core</a></code> 機能により処理された
-    ドキュメントを送るときのみ有効であり、
-    SSI ドキュメントや CGI スクリプトの出力、バイトレンジを指定した
-    応答の場合にはこのヘッダは付与されません。
-    </p>
-
-</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="DefaultRuntimeDir" id="DefaultRuntimeDir">DefaultRuntimeDir</a> <a name="defaultruntimedir" id="defaultruntimedir">ディレクティブ</a> <a title="Permanent link" href="#defaultruntimedir" class="permalink">&para;</a></h2>
 <table class="directive">
