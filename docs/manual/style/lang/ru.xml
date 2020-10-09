@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="KOI8-R"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE language SYSTEM "../lang.dtd">
 <!-- English revision: 106753 -->
 
@@ -21,9 +21,9 @@
 
 <language id="ru">
     <name>Russian</name>
-    <charset>KOI8-R</charset>
+    <charset>UTF-8</charset>
     <source-ext>.xml.ru</source-ext>
-    <target-ext>.html.ru.koi8-r</target-ext>
+    <target-ext>.html.ru.utf8</target-ext>
 
 <!-- No CHM so far (no sitemap)
     <chm>
@@ -41,31 +41,31 @@
         <message id="nativename">Russian</message>
 
         <!-- Used for the moduleindex -->
-        <message id="corefeatures">Особенности ядра и мульти-процессные
-            модули</message>
-        <message id="othermodules">Другие модули</message>
+        <message id="corefeatures">п·я│п╬п╠п╣п╫п╫п╬я│я┌п╦ я▐п╢я─п╟ п╦ п╪я┐п╩я▄я┌п╦-п©я─п╬я├п╣я│я│п╫я▀п╣
+            п╪п╬п╢я┐п╩п╦</message>
+        <message id="othermodules">п■я─я┐пЁп╦п╣ п╪п╬п╢я┐п╩п╦</message>
         <message id="obsoletemodules">Obsolete Modules</message>
 
         <!-- Used for the modulesynopsis and sitemap -->
         <message id="obsoleteapachemodule">Obsolete Apache Module</message>
-        <message id="apachemodule">Модуль Apache</message>
-        <message id="apachecore">Особенности ядра Apache</message>
-        <message id="apachempmcommon">Общие для всех МП-модулей директивы
+        <message id="apachemodule">п°п╬п╢я┐п╩я▄ Apache</message>
+        <message id="apachecore">п·я│п╬п╠п╣п╫п╫п╬я│я┌п╦ я▐п╢я─п╟ Apache</message>
+        <message id="apachempmcommon">п·п╠я┴п╦п╣ п╢п╩я▐ п╡я│п╣я┘ п°п÷-п╪п╬п╢я┐п╩п╣п╧ п╢п╦я─п╣п╨я┌п╦п╡я▀
             Apache</message>
-        <message id="apachempm">Мульти-процессные модули Apache</message>
+        <message id="apachempm">п°я┐п╩я▄я┌п╦-п©я─п╬я├п╣я│я│п╫я▀п╣ п╪п╬п╢я┐п╩п╦ Apache</message>
 
         <!-- Used in description box for modulesynopsis -->
-        <message id="description">Описание</message>
-        <message id="seealso">См. также</message>
-        <message id="topics">Темы</message>
-        <message id="status">Статус</message>
-        <message id="moduleidentifier">Идентификатор&nbsp;модуля</message>
-        <message id="sourcefile">Исходный&nbsp;код</message>
-        <message id="compatibility">Совместимость</message>
+        <message id="description">п·п©п╦я│п╟п╫п╦п╣</message>
+        <message id="seealso">п║п╪. я┌п╟п╨п╤п╣</message>
+        <message id="topics">п╒п╣п╪я▀</message>
+        <message id="status">п║я┌п╟я┌я┐я│</message>
+        <message id="moduleidentifier">п≤п╢п╣п╫я┌п╦я└п╦п╨п╟я┌п╬я─&nbsp;п╪п╬п╢я┐п╩я▐</message>
+        <message id="sourcefile">п≤я│я┘п╬п╢п╫я▀п╧&nbsp;п╨п╬п╢</message>
+        <message id="compatibility">п║п╬п╡п╪п╣я│я┌п╦п╪п╬я│я┌я▄</message>
 
         <!-- Used in manualpage -->
-        <message id="relatedmodules">Смотрите также модули</message>
-        <message id="relateddirectives">Смотрите также директивы</message>
+        <message id="relatedmodules">п║п╪п╬я┌я─п╦я┌п╣ я┌п╟п╨п╤п╣ п╪п╬п╢я┐п╩п╦</message>
+        <message id="relateddirectives">п║п╪п╬я┌я─п╦я┌п╣ я┌п╟п╨п╤п╣ п╢п╦я─п╣п╨я┌п╦п╡я▀</message>
         <message id="lowercase">abcdefghijklmnopqrstuvwxyz</message>
         <message id="uppercase">ABCDEFGHIJKLMNOPQRSTUVWXYZ</message>
         <message id="name-section">NAME</message>
@@ -77,12 +77,12 @@
         <message id="permalink">Permanent link</message>
 
         <!-- Used in description box for directives -->
-        <message id="syntax">Синтаксис</message>
-        <message id="default">Значение по умолчанию</message>
-        <message id="context">Контекст</message>
-        <message id="override">Разрешение</message>
-        <message id="status">Статус</message>
-        <message id="module">Модуль</message>
+        <message id="syntax">п║п╦п╫я┌п╟п╨я│п╦я│</message>
+        <message id="default">п≈п╫п╟я┤п╣п╫п╦п╣ п©п╬ я┐п╪п╬п╩я┤п╟п╫п╦я▌</message>
+        <message id="context">п п╬п╫я┌п╣п╨я│я┌</message>
+        <message id="override">п═п╟п╥я─п╣я┬п╣п╫п╦п╣</message>
+        <message id="status">п║я┌п╟я┌я┐я│</message>
+        <message id="module">п°п╬п╢я┐п╩я▄</message>
 
         <!-- Status descriptions -->
         <message id="base" letter="B">Base</message>
@@ -99,7 +99,7 @@
         <message id="htaccess" letter="h">.htaccess</message>
 
         <!-- Used for directive lists -->
-        <message id="directives">Директивы</message>
+        <message id="directives">п■п╦я─п╣п╨я┌п╦п╡я▀</message>
         <!-- the optional attribute replace-space-with takes a string.
              if present, the space between <directive name> and 'Directive'
              in directivesynopsis headings will be replaced by the given string.
@@ -107,37 +107,37 @@
         <!-- the optional attribute before-name takes a string.
              if "yes", the 'Directive' word is place before the name instead of
              being placed behind. See fr.xml for an example. -->
-        <message id="directive">Директива</message>
-        <message id="nodirectives">Этот модуль не предоставляет никаких
-            директив.</message>
+        <message id="directive">п■п╦я─п╣п╨я┌п╦п╡п╟</message>
+        <message id="nodirectives">п╜я┌п╬я┌ п╪п╬п╢я┐п╩я▄ п╫п╣ п©я─п╣п╢п╬я│я┌п╟п╡п╩я▐п╣я┌ п╫п╦п╨п╟п╨п╦я┘
+            п╢п╦я─п╣п╨я┌п╦п╡.</message>
 
         <!-- Used in summaries -->
-        <message id="summary">Резюме</message>
+        <message id="summary">п═п╣п╥я▌п╪п╣</message>
 
         <!-- Used for glossary link titles -->
         <message id="glossarylink">see glossary</message>
 
         <!-- Used in headers and footers -->
-        <message id="apachetitle">- HTTP сервер Apache</message>
-        <message id="apachehttpserver">HTTP сервер Apache Версия
+        <message id="apachetitle">- HTTP я│п╣я─п╡п╣я─ Apache</message>
+        <message id="apachehttpserver">HTTP я│п╣я─п╡п╣я─ Apache п▓п╣я─я│п╦я▐
             &httpd.major;.&httpd.minor;</message>
-        <message id="apachedocalt">[ДОКУМЕНТАЦИЯ APACHE]</message>
+        <message id="apachedocalt">[п■п·п пёп°п∙п²п╒п░п╕п≤п╞ APACHE]</message>
         <message id="search">Google Search</message> <!-- search button -->
-        <message id="index">Оглавление</message> <!-- deprecated -->
-        <message id="home">На главную страницу</message> <!-- deprecated -->
+        <message id="index">п·пЁп╩п╟п╡п╩п╣п╫п╦п╣</message> <!-- deprecated -->
+        <message id="home">п²п╟ пЁп╩п╟п╡п╫я┐я▌ я│я┌я─п╟п╫п╦я├я┐</message> <!-- deprecated -->
         <message id="comments">Comments</message>
 
         <!-- breadcrumb links -->
         <message id="apache">Apache</message>
-        <message id="http-server">HTTP сервер</message>
-        <message id="documentation">Документация</message>
-        <message id="version">Версия &httpd.major;.&httpd.minor;</message>
+        <message id="http-server">HTTP я│п╣я─п╡п╣я─</message>
+        <message id="documentation">п■п╬п╨я┐п╪п╣п╫я┌п╟я├п╦я▐</message>
+        <message id="version">п▓п╣я─я│п╦я▐ &httpd.major;.&httpd.minor;</message>
 
         <!-- super menu -->
-        <message id="modules">Модули</message>
+        <message id="modules">п°п╬п╢я┐п╩п╦</message>
         <message id="faq">FAQ</message>
-        <message id="glossary">Глоссарий</message>
-        <message id="sitemap">Карта сайта</message>
+        <message id="glossary">п⌠п╩п╬я│я│п╟я─п╦п╧</message>
+        <message id="sitemap">п п╟я─я┌п╟ я│п╟п╧я┌п╟</message>
 
         <!-- footer line -->
         <message id="before-license">Licensed under the</message>
