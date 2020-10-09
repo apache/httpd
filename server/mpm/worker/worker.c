@@ -554,8 +554,8 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t *thd, void * dummy)
     /* Unblock the signal used to wake this thread up, and set a handler for
      * it.
      */
-    unblock_signal(LISTENER_SIGNAL);
     apr_signal(LISTENER_SIGNAL, dummy_signal_handler);
+    unblock_signal(LISTENER_SIGNAL);
 
     /* TODO: Switch to a system where threads reuse the results from earlier
        poll calls - manoj */
@@ -753,8 +753,8 @@ static void * APR_THREAD_FUNC worker_thread(apr_thread_t *thd, void * dummy)
                                         SERVER_STARTING, NULL);
 
 #ifdef HAVE_PTHREAD_KILL
-    unblock_signal(WORKER_SIGNAL);
     apr_signal(WORKER_SIGNAL, dummy_signal_handler);
+    unblock_signal(WORKER_SIGNAL);
 #endif
 
     while (!workers_may_exit) {
@@ -1235,8 +1235,8 @@ static void child_main(int child_num_arg, int child_bucket)
          * the other threads in the process needs to take us down
          * (e.g., for MaxConnectionsPerChild) it will send us SIGTERM
          */
-        unblock_signal(SIGTERM);
         apr_signal(SIGTERM, dummy_signal_handler);
+        unblock_signal(SIGTERM);
         /* Watch for any messages from the parent over the POD */
         while (1) {
             rv = ap_mpm_podx_check(my_bucket->pod);
