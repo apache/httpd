@@ -15,6 +15,7 @@
     <variant outdated="yes">ja</variant>
     <variant outdated="yes">ko</variant>
     <variant outdated="yes">pt-br</variant>
+    <variant>ru</variant>
     <variant outdated="yes">tr</variant>
     <variant outdated="yes">zh-cn</variant>
   </variants>

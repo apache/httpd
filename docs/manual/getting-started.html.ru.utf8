@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ru" xml:lang="ru"><head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Начало работы - HTTP сервер Apache Версия 2.5</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
+<script src="./style/scripts/prettify.min.js" type="text/javascript">
+</script>
+
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">Модули</a> | <a href="./mod/quickreference.html">Директивы</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Глоссарий</a> | <a href="./sitemap.html">Карта сайта</a></p>
+<p class="apache">HTTP сервер Apache Версия 2.5</p>
+<img alt="" src="./images/feather.png" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP сервер</a> &gt; <a href="http://httpd.apache.org/docs/">Документация</a> &gt; <a href="./">Версия 2.5</a></div><div id="page-content"><div id="preamble"><h1>Начало работы</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="./en/getting-started.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./fr/getting-started.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./ru/getting-started.html" title="Russian">&nbsp;ru&nbsp;</a></p>
+</div>
+
+<p>Если вы абсолютный новичок в работе с HTTP-сервером Apache или 
+в запуске веб-сайтов вообще, вы можете не знать с чего начать или какие
+вопросы задавать. Этот документ познакомит вас с основами.</p>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#clientserver">Клиенты, серверы и URL-адреса</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#dns">Имена хостов и DNS</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#configuration">Файлы конфигурации и директивы</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#content">Контент веб-сайта</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#logs">Файлы журналов и устранение неполадок</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#other">Что дальше?</a></li>
+</ul><h3>См. также</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="clientserver" id="clientserver">Клиенты, серверы и URL-адреса</a> <a title="Permanent link" href="#clientserver" class="permalink">&para;</a></h2>
+
+
+<p>Адреса в Интернете записываются с помощью URL — Uniform Resource
+Locator (унифицированный указатель ресурса), который указывает на
+используемый протокол (например, <code>http</code>), имя сервера
+(например, <code>www.apache.org</code>), URL-путь (например,
+<code>/docs/current/getting-started.html</code>) и, возможно,
+строку запроса (например, <code>?arg=value</code>), используемую для
+передачи серверу дополнительных аргументов.</p>
+
+<p>Клиент (например, веб-браузер) подключается к серверу
+(например, вашему HTTP-серверу Apache), используя определённый протокол,
+и отправляет <strong>запрос</strong> на ресурс, используя URL-путь.</p>
+
+<p>URL-путь может обозначать множество вещей на сервере. Это может быть
+файл (как <code>getting-started.html</code>), обработчик
+(как <a href="mod/mod_status.html">server-status</a>) или файл какой-то
+программы (как <code>index.php</code>). Мы рассмотрим это подробней ниже,
+в разделе <a href="#content">Контент веб-сайта</a>.</p>
+
+<p>Сервер отправляет <strong>ответ</strong>, содержащий код состояния и,
+опционально, тело ответа. Код состояния указывает, был ли запрос успешно
+обработан, а если нет, то какая ошибка произошла.
+Это говорит клиенту, что он должен делать с ответом.
+Вы можете прочитать о возможных кодах ответа на 
+<a href="http://wiki.apache.org/httpd/CommonHTTPStatusCodes">
+Вики HTTP-сервера Apache</a>.</p>
+
+<p>Детали транзакции и условия возникновения ошибки записываются
+в файлы журналов. Это описывается более подробно ниже, в разделе
+<a href="#logs">Файлы журналов и устранение неполадок</a>.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="dns" id="dns">Имена хостов и DNS</a> <a title="Permanent link" href="#dns" class="permalink">&para;</a></h2>
+
+
+<p>Для того чтобы соединиться с сервером, клиент сначала должен преобразовать
+имя сервера в IP-адрес — место в Интернете, где находится сервер.
+Таким образом, чтобы ваш веб-сервер был доступен, необходимо,
+чтобы имя сервера было в DNS.</p>
+
+<p>Если вы не знаете как это сделать, вам нужно обратиться к сетевому
+администратору или поставщику услуг Интернета (провайдеру).
+Они могут сделать это для вас.</p>
+
+<p>Несколько хостов могут указывать на один и тот же IP-адрес,
+а один физический сервер может иметь больше одного IP-адреса.
+Таким образом на одном физическом сервере вы можете запустить больше одного
+сайта с помощью особенности: <a href="vhosts/">виртуальные хосты</a>.</p>
+
+<p>Если вы тестируете сервер, не имеющий выхода в Интернет, можете поместить
+имена хостов в файл hosts для того что бы имя разрешалось локально.
+Например, вы можете добавить запись для отправки запросов к
+<code>www.example.com</code> на локальный компьютер, для тестирования.
+Эта запись будет выглядеть так:</p>
+
+<div class="example"><p><code>
+127.0.0.1 www.example.com
+</code></p></div>
+
+<p>Файл hosts, скорее всего, расположен в <code>/etc/hosts</code> или 
+<code>C:\Windows\system32\drivers\etc\hosts</code>.</p>
+
+<p>Вы можете узнать больше о файле 
+<a href="http://en.wikipedia.org/wiki/Hosts_(file)">hosts</a> и больше о
+<a href="http://en.wikipedia.org/wiki/Domain_Name_System">DNS</a>.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="configuration" id="configuration">Файлы конфигурации и директивы</a> <a title="Permanent link" href="#configuration" class="permalink">&para;</a></h2>
+
+
+<p>HTTP-сервер Apache настроен с помощью простых текстовых файлов.
+Эти файлы могут располагаться в разных местах, в зависимости от того как вы 
+установили сервер. Общие места расположения файлов можно найти в 
+<a href="http://wiki.apache.org/httpd/DistrosDefaultLayout">Вики
+HTTP-сервера Apache</a>. Если вы установили httpd из исходного кода,
+то расположение файлов конфигурации по умолчанию следующее:
+<code>/usr/local/apache2/conf</code>.
+По умолчанию файл конфигурации называется <code>httpd.conf</code>.
+Это тоже может варьироваться в сторонних дистрибутивах сервера.</p>
+
+<p>Конфигурация часто разбивается на несколько небольших файлов, для
+удобства управления. Эти файлы загружаются через директиву
+<code class="directive"><a href="./mod/core.html#include">Include</a></code>.
+Имена или расположения этих файлов конфигурации
+могут сильно отличаться от одной установки к другой.
+Расположите и разделите эти файлы наиболее подходящим для
+<strong>вас</strong> образом. Если расположение файлов по умолчанию,
+не имеет смысла для вас, не стесняйтесь изменить его.</p>
+
+<p>Сервер настраивается путём размещения <a href="mod/quickreference.html">
+директив конфигурации</a> в этих файлах конфигурации.
+Директива — это ключевое слово с одним или несколькими аргументами,
+устанавливающими её значение.</p>
+
+<p>На вопрос: «<em>Где я должен прописать эту директиву?</em>» – обычно
+отвечают, там где ты хочешь использовать её. Если это глобальная настройка,
+она должна располагаться в конфигурационном файле вне разделов
+<code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>,
+<code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>,
+<code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> или других
+разделов. Если настройка относится только к конкретному каталогу,
+значит она должна быть внутри секции
+<code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>,
+которая описывает этот каталог, и так далее.
+Смотри документ <a href="sections.html">Разделы конфигурации</a>
+с подробным описанием вышеуказанных разделов.</p>
+
+<p>В дополнение к основному файлу конфигурации, некоторые директивы могут
+располагаться в файлах <code>.htaccess</code>, расположенных в папках с
+контентом. Файлы <code>.htaccess</code> в первую очередь предназначены для
+людей у которых нет доступа к главному конфигурационному файлу сервера.
+Вы можете узнать больше о файлах <code>.htaccess</code> в инструкции
+<a href="howto/htaccess.html"><code>.htaccess</code></a>.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="content" id="content">Контент веб-сайта</a> <a title="Permanent link" href="#content" class="permalink">&para;</a></h2>
+
+
+<p>Содержимое сайта может принимать различные формы, но в широком смысле
+разделяется на статический и динамический контент.</p>
+
+<p>Статический контент — это, например, HTML-файлы, файлы изображений,
+CSS-файлы и другие файлы, которые просто лежат на диске.
+Директива <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code> указывает
+где в вашей файловой системе, вы должны разместить эти файлы.
+Эта директива устанавливается глобально или отдельно для каждого
+виртуального хоста. Посмотрите в своём файле(ах) конфигурации,
+чтобы узнать, как именно эта директива используется на вашем сервере.</p>
+
+<p>Обычно, когда запрашивается каталог, без указания имени файла, то будет
+отдан документ с именем <code>index.html</code>. Например, если для директивы
+<code>DocumentRoot</code> установлено значение <code>/var/www/html</code> 
+и приходит запрос на адрес
+<code>http://www.example.com/work/</code>,
+то файл расположенный по пути
+<code>/var/www/html/work/index.html</code>
+будет отдан клиенту.</p>
+
+<p>Динамический контент — это всё что генерируется во время запроса и может 
+изменяться от запроса к запросу. Существует множество способов создания
+динамического контента. Различные <a href="handler.html">обработчики</a>
+доступны для генерации содержимого. Могут быть написаны специальные
+<a href="howto/cgi.html">CGI программы</a> для генерации контента на сайте.</p>
+
+<p>Для написания кода с разнообразным функционалом
+могут использоваться сторонние модули, такие как mod_php.
+Множество сторонних приложений, написанных на различных языках
+программирования, и утилит доступны для скачивания и установки
+на ваш HTTP-сервер Apache.
+Поддержка сторонних продуктов выходит за рамки этой документации.
+При необходимости вы должны самостоятельно найти их документацию
+или форумы поддержки, где вы сможете получить ответы на свои вопросы.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="logs" id="logs">Файлы журналов и устранение неполадок</a> <a title="Permanent link" href="#logs" class="permalink">&para;</a></h2>
+
+<p>Для вас, как администратора HTTP-сервера Apache,
+самые ценные активы — это файлы журналов (лог-файлы),
+в частности, журнал ошибок. Исправление любой проблемы без журнала ошибок
+можно сравнить с вождением автомобиля с закрытыми глазами.</p>
+
+<p>Расположение журнала ошибок задаётся директивой
+<code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code>,
+которая может быть установлена глобально или для каждого виртуального хоста.
+Записи в журнале ошибок расскажут вам, что и когда пошло не так.
+Зачастую они также смогут подсказать, как что-то исправить.
+Каждая запись в журнале ошибок содержит код ошибки,
+по которому вы можете поискать в Интернете более подробное
+описание того, как решить проблему.
+Вы также можете настроить журнал ошибок так, чтобы в него записывался
+идентификатор журнала, который можно сопоставить с записями в журнале
+доступа — это поможет определить, какой запрос какую ошибку вызвал.</p>
+
+<p>Больше о логирование вы можете узнать в
+<a href="logs.html">документации о журналах</a>.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="other" id="other">Что дальше?</a> <a title="Permanent link" href="#other" class="permalink">&para;</a></h2>
+
+
+<p>Теперь, когда вы знакомы с основами, пора двигаться дальше.</p>
+
+<p>Этот документ содержит только базовую информацию.
+Мы надеемся, что она поможет вам начать работу,
+но есть множество других вещей, о которых вам, возможно, нужно узнать.</p>
+
+<ul>
+<li><a href="http://httpd.apache.org/download.cgi">Загрузки</a></li>
+<li><a href="install.html">Установка</a></li>
+<li><a href="configuring.html">Настройка</a></li>
+<li><a href="invoking.html">Старт</a></li>
+<li><a href="http://wiki.apache.org/httpd/FAQ">Часто задаваемые вопросы</a></li>
+</ul>
+
+</div></div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="./en/getting-started.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./fr/getting-started.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./ru/getting-started.html" title="Russian">&nbsp;ru&nbsp;</a></p>
+</div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+var comments_shortname = 'httpd';
+var comments_identifier = 'http://httpd.apache.org/docs/trunk/getting-started.html';
+(function(w, d) {
+    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
+        d.write('<div id="comments_thread"><\/div>');
+        var s = d.createElement('script');
+        s.type = 'text/javascript';
+        s.async = true;
+        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
+        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
+    }
+    else {
+        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
+    }
+})(window, document);
+//--><!]]></script></div><div id="footer">
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">Модули</a> | <a href="./mod/quickreference.html">Директивы</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Глоссарий</a> | <a href="./sitemap.html">Карта сайта</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+if (typeof(prettyPrint) !== 'undefined') {
+    prettyPrint();
+}
+//--><!]]></script>
+</body></html>
