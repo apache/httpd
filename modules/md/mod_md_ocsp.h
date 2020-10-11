@@ -21,8 +21,8 @@
 int md_ocsp_init_stapling_status(server_rec *s, apr_pool_t *p, 
                                  X509 *cert, X509 *issuer);
 
-apr_status_t md_ocsp_get_stapling_status(unsigned char **pder, int *pderlen, 
-                                         conn_rec *c, server_rec *s, X509 *cert);
+int md_ocsp_get_stapling_status(unsigned char **pder, int *pderlen, 
+                                conn_rec *c, server_rec *s, X509 *cert);
                           
 /**
  * Start watchdog for retrieving/updating ocsp status.

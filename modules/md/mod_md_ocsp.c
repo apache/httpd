@@ -75,7 +75,7 @@ declined:
     return DECLINED;
 }
 
-apr_status_t md_ocsp_get_stapling_status(unsigned char **pder, int *pderlen, 
+int md_ocsp_get_stapling_status(unsigned char **pder, int *pderlen, 
                                          conn_rec *c, server_rec *s, X509 *cert)
 {
     md_srv_conf_t *sc;
