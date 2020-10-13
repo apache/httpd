@@ -55,8 +55,8 @@ ProxyPass "/wss2/" "wss://echo.websocket.org/"</pre>
 websocket-only, can be done by specifying the websockets 
 <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> directive before the
 HTTP directive:</p>
-<pre class="prettyprint lang-config">ProxyPassMatch ^/(myApp/ws)$  ws://example.com:9080/$1
-ProxyPass / http://example.com:9080/</pre>
+<pre class="prettyprint lang-config">ProxyPassMatch ^/(myApp/ws)$  ws://backend.example.com:9080/$1
+ProxyPass / http://backend.example.com:9080/</pre>
 
 
 <p>Proxying both HTTP and websockets at the same time, where the websockets URL's are not
