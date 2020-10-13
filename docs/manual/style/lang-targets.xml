@@ -217,7 +217,7 @@
 <!-- Russian                                                              -->
 <!-- ==================================================================== -->
 <property value=".xml.ru" name="inputext.ru"/>
-<property value=".html.ru.koi8-r" name="outputext.ru"/>
+<property value=".html.ru.utf8" name="outputext.ru"/>
 
 <target description="- builds Russian HTML files" name="ru">
     <html.generic lang="ru"/>
