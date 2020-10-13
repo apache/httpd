@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.es.xsl"?>
-<!-- English Revision: 1793932:1880986 (outdated) -->
+<!-- English Revision: 1880986 -->
 <!-- Translated by: Luis Gil de Bernabé Pfeiffer  -->
 <!-- Reviewed by: Sergio Ramos -->
 
@@ -29,6 +29,7 @@
 Documentación</title>
 
 <category id="release"><title>Notas de la versión</title>
+    <page href="new_features_2_6.html">Nuevas funcionalidades en Apache 2.5/2.6</page>
     <page href="new_features_2_4.html">Nuevas funcionalidades en Apache 2.3/2.4</page>
     <page href="new_features_2_2.html">Nuevas funcionalidades en Apache 2.1/2.2</page>
     <page href="new_features_2_0.html">Nuevas funcionalidades en Apache 2.0</page>
