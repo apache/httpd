@@ -60,8 +60,29 @@ TODO list
 * Windows build
 * clang-on-Linux build
 * Use containers for non-Ubuntu-based Linux testing
-* Known test failures
- - "apt-get install" timeout/fails - workaround by moving apt install to before_script phase?
+
+Known Failures
+--------------
+
+Some known failures:
+
+* "apt-get install" timeout/fails - workaround by moving apt install
+  to before_script phase?
+
+* prefork, and more rarely non-prefork testing sometimes catches child
+  segfaults under pool-debug from assert()s in (e.g.)
+  __pthread_tpp_change_priority where one child is destroying threads
+  which another is waiting for, or iterating through via
+  apr_pool_walk_tree().
+
+  See dev@httpd threads:
+  msg <5f4abde1b5789_13fde2ecacb40795a1@travis-tasks-5b566d48fc-drkb9.mail>
+  msg <73060f7b-df7f-ad3c-a9fa-dd666a59b31e@kippdata.de> and
+  https://bz.apache.org/bugzilla/show_bug.cgi?id=63098
+  https://bz.apache.org/bugzilla/show_bug.cgi?id=46185
+
+  Not clear if there is a real bug here which can be reproduced
+  outside of pool-debug.
 
 Testing from a Feature Branch
 -----------------------------
