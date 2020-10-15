@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_md: lowered the required minimal libcurl version from 7.50 to 7.29
+     as proposed by <alexander.gerasimov@codeit.pro>.
+
   *) mod_http2: Log requests and sent the configured error response in case of
      early detected errors like too many or too long headers.
      [Ruediger Pluem, Stefan Eissing]
