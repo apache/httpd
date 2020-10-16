@@ -12,7 +12,7 @@ At the end of the tutorial you will have a cluster with an Apache up and runnnin
 * Click the **Catalog** button on the top 
 * Select **Service** from the catalog
 * Search for **Kubernetes Service** and click on it
-![Kubernetes](docs/install/kubernetes-select.png)
+![Kubernetes](httpd/docs/INSTALL/kubernetes-select.png)
 * You are now at the Kubernetes deployment page, you need to specify some details about the cluster 
 * Choose a plan **standard** or **free**, the free plan only has one worker node and no subnet, to provision a standard cluster, you will need to upgrade you account to Pay-As-You-Go 
   * To upgrade to a Pay-As-You-Go account, complete the following steps:
