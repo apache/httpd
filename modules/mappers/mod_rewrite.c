@@ -205,10 +205,6 @@ static const char* really_last_key = "rewrite_really_last";
 #define RAND_MAX 32767
 #endif
 
-/* max cookie size in rfc 2109 */
-/* XXX: not used at all. We should do a check somewhere and/or cut the cookie */
-#define MAX_COOKIE_LEN 4096
-
 /* max line length (incl.\n) in text rewrite maps */
 #ifndef REWRITE_MAX_TXT_MAP_LINE
 #define REWRITE_MAX_TXT_MAP_LINE 1024
