@@ -2558,9 +2558,8 @@ AP_DECLARE(char *) ap_pbase64encode(apr_pool_t *p, char *string)
     char *encoded;
     int l = strlen(string);
 
-    encoded = (char *) apr_palloc(p, 1 + apr_base64_encode_len(l));
-    l = apr_base64_encode(encoded, string, l);
-    encoded[l] = '\0'; /* make binary sequence into string */
+    encoded = (char *) apr_palloc(p, apr_base64_encode_len(l));
+    apr_base64_encode(encoded, string, l);
 
     return encoded;
 }
