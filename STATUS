@@ -152,7 +152,7 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1869399
                   http://svn.apache.org/r1776290
      2.4.x patch: http://people.apache.org/~covener/patches/wstunnel-decline.diff
-     +1 covener, jim, rpluem
+     +1 covener, jim, rpluem, jfclere
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
