@@ -214,8 +214,7 @@ jobs:
            CONFIG="--enable-mods-shared=reallyall"
            APU_CONFIG="--with-crypto --with-ldap"
     # -------------------------------------------------------------------------
-    - if: *condition_24x_only
-      name: Linux Ubuntu Focal, all-modules, system APR/APR-util
+    - name: Linux Ubuntu Focal, all-modules, system APR/APR-util
       os: linux
       dist: focal
       env: CONFIG="--enable-mods-shared=reallyall"
