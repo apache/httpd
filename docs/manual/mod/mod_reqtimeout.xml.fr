@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1855418 -->
+<!-- English Revision: 1882993 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -139,6 +139,11 @@ et/ou corps des requêtes en provenance du client.
     délais configurés via la directive <directive>RequestReadTimeout</directive>
     pour la négociation TLS et la réception des en-têtes n'entrent en ligne de
     compte qu'une fois le socket reçu par le processus du serveur.</p>
+
+    <p>Lorsqu'une connexion persistante est en attente d'une requête, c'est le
+    délai défini par la directive <directive
+    module="core">KeepAliveTimeout</directive> qui s'applique, et ceci que la
+    directive <directive>RequestReadTimeout</directive> soit définie ou non.</p>
 
     <p>Pour chaque étape (négociation, réception des en-têtes et/ou corps), il y
     a trois méthodes pour spécifier le délai :
