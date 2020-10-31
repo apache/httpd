@@ -149,6 +149,10 @@ et/ou corps des requêtes en provenance du client.
     pour la négociation TLS et la réception des en-têtes n'entrent en ligne de
     compte qu'une fois le socket reçu par le processus du serveur.</p>
 
+    <p>Lorsqu'une connexion persistante est en attente d'une requête, c'est le
+    délai défini par la directive <code class="directive"><a href="../mod/core.html#keepalivetimeout">KeepAliveTimeout</a></code> qui s'applique, et ceci que la
+    directive <code class="directive">RequestReadTimeout</code> soit définie ou non.</p>
+
     <p>Pour chaque étape (négociation, réception des en-têtes et/ou corps), il y
     a trois méthodes pour spécifier le délai :
     </p>
