@@ -196,6 +196,9 @@
       <dt><module>mod_md</module> (available since 2.4.30)</dt>
       <dd>Support the ACME protocol to automate certificate provisionning.</dd>
 
+      <dt><module>mod_proxy_uwsgi</module> (available since 2.4.30)</dt>
+      <dd>UWSGI gateway module for <module>mod_proxy</module>.</dd>
+
       <dt><module>mod_socache_redis</module> (available since 2.4.39)</dt>
       <dd>Support <a href="http://redis.io/">Redis</a> based shared object cache provider.</dd>
 
