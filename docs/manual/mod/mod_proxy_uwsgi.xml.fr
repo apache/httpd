@@ -33,7 +33,7 @@
 <summary>
     <p>Pour pouvoir fonctionner, ce module requiert le chargement préalable de
     <module>mod_proxy</module>. Il fournit le support du <a
-    >href="http://uwsgi-docs.readthedocs.io/en/latest/index.html">protocole
+    href="http://uwsgi-docs.readthedocs.io/en/latest/index.html">protocole
     UWSGI</a>.</p>
 
     <p>Pour être en mesure de gérer le protocole UWSGI, le serveur doit donc
