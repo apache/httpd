@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1877394 -->
+<!-- English Revision: 1883045 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -222,6 +222,9 @@ serveur HTTP Apache</title>
 
       <dt><module>mod_md</module> (disponible à partir de la version 2.4.30)</dt>
       <dd>Automatisation de l'obtention de certificats via le protocole ACME.</dd>
+
+      <dt><module>mod_proxy_uwsgi</module> (disponible à partir de la version 2.4.30)</dt>
+      <dd>module passerelle UWSGI pour <module>mod_proxy</module>.</dd>
 
       <dt><module>mod_socache_redis</module> (disponible à partir de la version 2.4.39)</dt>
       <dd>Supporte le fournisseur de cache d'objets partagés basé sur <a
