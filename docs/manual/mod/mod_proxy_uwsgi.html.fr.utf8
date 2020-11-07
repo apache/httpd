@@ -32,7 +32,8 @@
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Module de passerelle UWSGI pour <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>proxy_uwsgi_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_proxy_uwsgi.c</td></tr></table>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_proxy_uwsgi.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.30 du serveur HTTP Apache.</td></tr></table>
 <h3>Sommaire</h3>
 
     <p>Pour pouvoir fonctionner, ce module requiert le chargement préalable de
