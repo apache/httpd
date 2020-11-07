@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
-<!-- English Revision: 1825769 -->
+<!-- English Revision: 1883046 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -28,6 +28,7 @@
 <status>Extension</status>
 <sourcefile>mod_proxy_uwsgi.c</sourcefile>
 <identifier>proxy_uwsgi_module</identifier>
+<compatibility>Disponible à partir de la version 2.4.30 du serveur HTTP Apache.</compatibility>
 
 <summary>
     <p>Pour pouvoir fonctionner, ce module requiert le chargement préalable de
