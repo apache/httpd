@@ -227,6 +227,9 @@ serveur HTTP Apache</h1>
       <dt><code class="module"><a href="./mod/mod_md.html">mod_md</a></code> (disponible à partir de la version 2.4.30)</dt>
       <dd>Automatisation de l'obtention de certificats via le protocole ACME.</dd>
 
+      <dt><code class="module"><a href="./mod/mod_proxy_uwsgi.html">mod_proxy_uwsgi</a></code> (disponible à partir de la version 2.4.30)</dt>
+      <dd>module passerelle UWSGI pour <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>.</dd>
+
       <dt><code class="module"><a href="./mod/mod_socache_redis.html">mod_socache_redis</a></code> (disponible à partir de la version 2.4.39)</dt>
       <dd>Supporte le fournisseur de cache d'objets partagés basé sur <a href="http://redis.io/">Redis</a>.</dd>
 

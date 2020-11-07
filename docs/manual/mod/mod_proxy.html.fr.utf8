@@ -79,7 +79,9 @@
         <tr><td>ftp</td><td><code class="module"><a href="../mod/mod_proxy_ftp.html">mod_proxy_ftp</a></code></td></tr>
         <tr><td>HTTP/0.9, HTTP/1.0, et
           HTTP/1.1</td><td><code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code></td></tr>
+	<tr><td>HTTP/2.0</td><td><code class="module"><a href="../mod/mod_proxy_http2.html">mod_proxy_http2</a></code></td></tr>
         <tr><td>SCGI</td><td><code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code></td></tr>
+	<tr><td>UWSGI</td><td><code class="module"><a href="../mod/mod_proxy_uwsgi.html">mod_proxy_uwsgi</a></code></td></tr>
 	<tr><td>WS and WSS (Web-sockets)</td><td><code class="module"><a href="../mod/mod_proxy_wstunnel.html">mod_proxy_wstunnel</a></code></td></tr>
         </table>
       </li>
