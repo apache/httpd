@@ -89,6 +89,7 @@ jobs:
     - name: Linux Ubuntu, Default, all-modules + install
       env: CONFIG="--enable-mods-shared=reallyall"
            TEST_INSTALL=1
+           APACHE_TEST_EXTRA_ARGS=-v
     # -------------------------------------------------------------------------
     - name: Linux Ubuntu, Default, all-static modules
       env: CONFIG="--enable-mods-static=reallyall"
