@@ -165,10 +165,10 @@
     plusieurs des valeurs suivantes séparées par des virgules :</p>
 
     <dl>
-      <dt>configuration du serveur</dt>
+      <dt>configuration globale</dt>
 
       <dd>Signifie que la directive peut être utilisée dans les fichiers
-      de configuration du serveur (par exemple <code>httpd.conf</code>),
+      de configuration globale (par exemple <code>httpd.conf</code>),
       mais <strong>pas</strong> à l'intérieur d'un conteneur <directive
       module="core" type="section">VirtualHost</directive> ou <directive
       module="core" type="section">Directory</directive>. De même, elle
@@ -213,8 +213,8 @@
     <p>Les lieux de définition valides pour une directive résultent en
     fait d'un
     OU logique de tous les contextes spécifiés. En d'autres termes, une
-    directive spécifiée comme valide dans "<code>configuration du
-    serveur, .htaccess</code>" peut être utilisée dans le fichier
+    directive spécifiée comme valide dans "<code>configuration globale, 
+    .htaccess</code>" peut être utilisée dans le fichier
     <code>httpd.conf</code> et dans les fichiers <code>.htaccess</code>,
     mais pas dans un conteneur <directive module="core"
     type="section">Directory</directive> ou <directive module="core"
