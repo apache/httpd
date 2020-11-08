@@ -44,8 +44,11 @@
  */
 
 typedef struct am_conf_t {
-    int allowed_set;
-    ap_method_mask_t allowed;
+    int allowed_set;            /* AllowMethods has been set/changed flag */
+    int enforce_methods;        /* Enforce AllowMethods flag              */
+    ap_method_mask_t add;       /* Methods Added by +METHOD mask          */
+    ap_method_mask_t remove;    /* Methods Removed by -METHOD mask        */
+    ap_method_mask_t allowed;   /* Allowed Methods mask                   */
 } am_conf_t;
 
 module AP_MODULE_DECLARE_DATA allowmethods_module;
@@ -57,7 +60,8 @@ static int am_check_access(request_rec *r)
 
     conf = (am_conf_t *) ap_get_module_config(r->per_dir_config,
                                               &allowmethods_module);
-    if (!conf || conf->allowed == 0) {
+
+    if (!conf || conf->enforce_methods == 0) {
         return DECLINED;
     }
 
@@ -80,8 +84,11 @@ static void *am_create_conf(apr_pool_t *p, char *dummy)
 {
     am_conf_t *conf = apr_pcalloc(p, sizeof(am_conf_t));
 
-    conf->allowed = 0;
-    conf->allowed_set = 0;
+    conf->allowed         = INT_MAX;
+    conf->allowed_set     = 0;
+    conf->add             = 0;
+    conf->remove          = 0;
+    conf->enforce_methods = 0;
     return conf;
 }
 
@@ -92,12 +99,37 @@ static void *am_merge_conf(apr_pool_t *pool, void *a, void *b)
     am_conf_t *conf = apr_palloc(pool, sizeof(am_conf_t));
 
     if (add->allowed_set) {
-        conf->allowed = add->allowed;
-        conf->allowed_set = add->allowed_set;
+        conf->add    = 0;
+        conf->remove = 0;
+
+        /* Add/Remove AllowedMethods set with + or - */
+        if( add->add || add->remove ) {
+            conf->allowed = base->allowed | add->allowed;
+
+            if( add->add ) {
+                conf->allowed |= add->add;
+            }
+            if( add->remove ) {
+                conf->allowed &= ~(add->remove);
+            }
+
+            conf->enforce_methods = 1;
+            conf->allowed_set     = 1;
+        }
+        /* Straightforward AllowMethods settings, just set it */
+        else
+        {
+            conf->allowed          = add->allowed;
+            conf->allowed_set      = add->allowed_set;
+            conf->enforce_methods  = add->enforce_methods;
+        }
     }
     else {
-        conf->allowed = base->allowed;
-        conf->allowed_set = base->allowed_set;
+        conf->allowed         = base->allowed;
+        conf->add             = base->add;
+        conf->remove          = base->remove;
+        conf->allowed_set     = base->allowed_set;
+        conf->enforce_methods = base->enforce_methods;
     }
 
     return conf;
@@ -108,30 +140,75 @@ static const char *am_allowmethods(cmd_parms *cmd, void *d, int argc,
 {
     int i;
     am_conf_t *conf = (am_conf_t *)d;
+    int merge = 0;
+    int first = 1;
+    char *method;
+    char action;
 
     if (argc == 0) {
         return "AllowMethods: No method or 'reset' keyword given";
     }
     if (argc == 1) {
-        if (strcasecmp("reset", argv[0]) == 0) {
-            conf->allowed = 0;
-            conf->allowed_set = 1;
+        if (!ap_cstr_casecmp(argv[0], "reset")) {
+            conf->allowed         = 0;
+            conf->enforce_methods = 0;
+            conf->add             = 0;
+            conf->remove          = 0;
+            conf->allowed_set     = 1;
             return NULL;
         }
     }
 
+    conf->allowed = 0;
+    conf->add     = 0;
+    conf->remove  = 0;
+
     for (i = 0; i < argc; i++) {
         int m;
+        char *w = argv[i];
 
-        m = ap_method_number_of(argv[i]);
-        if (m == M_INVALID) {
-            return apr_pstrcat(cmd->pool, "AllowMethods: Invalid Method '",
-                               argv[i], "'", NULL);
+        if( *w == '-' || *w == '+' ) {
+            if (!merge && !first) {
+                return "Either all methods in AllowMethods must start with + or -, or no methods may.";
+            }
+
+            action = *(w++);
+            method = w;
+            merge = 1;
+        }
+        else if (merge) {
+            return "Either all methods in AllowMethods must start with + or -, or no methods may.";
+        }
+        else {
+            method = w;
         }
 
-        conf->allowed |= (AP_METHOD_BIT << m);
+        m = ap_method_number_of((char const*)method);
+
+        if (m == M_INVALID) {
+            return apr_pstrcat(cmd->pool, "AllowMethods: Invalid Method '",
+                               method, "'", NULL);
+        }
+
+        if (action == '-' ) {
+            conf->remove  |=  (AP_METHOD_BIT << m);
+            conf->add     &= ~(AP_METHOD_BIT << m);
+            conf->allowed &= ~(AP_METHOD_BIT << m);
+        }
+        else if (action == '+' ) {
+            conf->remove  &= ~(AP_METHOD_BIT << m);
+            conf->add     |=  (AP_METHOD_BIT << m);
+            conf->allowed |=  (AP_METHOD_BIT << m);
+        }
+        else {
+            conf->allowed |= (AP_METHOD_BIT << m);
+        }
+
+        first = 0;
     }
-    conf->allowed_set = 1;
+    conf->allowed_set     = 1;
+    conf->enforce_methods = 1;
+
     return NULL;
 }
 

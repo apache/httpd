@@ -46,6 +46,10 @@ used on a server. The most common configuration would be:</p>
 &lt;Location "/"&gt;
    AllowMethods GET POST OPTIONS
 &lt;/Location&gt;
+
+&lt;Location "/nopost"&gt;
+   AllowMethods -POST
+&lt;/Location&gt;
 </highlight>
 
 </summary>
@@ -53,11 +57,12 @@ used on a server. The most common configuration would be:</p>
 <directivesynopsis>
 <name>AllowMethods</name>
 <description>Restrict access to the listed HTTP methods</description>
-<syntax>AllowMethods reset|<em>HTTP-method</em>
-[<em>HTTP-method</em>]...</syntax>
+<syntax>AllowMethods reset | [+|-]<var>HTTP-method</var>
+[ [+|-]<var>HTTP-method</var> ] ...</syntax>
 <default>AllowMethods reset</default>
 <contextlist><context>directory</context></contextlist>
 <status>Experimental</status>
+<compatibility>+/- added in 2.5.1</compatibility>
 
 <usage>
 
@@ -77,9 +82,28 @@ turn off <module>mod_allowmethods</module> in a deeper nested context:</p>
   use <directive module="core">TraceEnable</directive> instead.</p>
 </note>
 
+<p>Normally, if multiple <directive>AllowMethods</directive> could
+apply to a directory, then the most specific one is used and
+others are ignored; the methods are not merged. (See <a
+href="../sections.html#merging">how sections are merged</a>.)
+However if <em>all</em> the methods on the
+<directive>AllowMethods</directive> directive are preceded by a
+<code>+</code> or <code>-</code> symbol, the options are
+merged. Any method preceded by a <code>+</code> are added to the
+methods currently in force, and any method preceded by a
+<code>-</code> are removed from the methods currently in
+force. </p>
+
+<note><title>Note</title>
+<p>Mixing <directive>AllowMethods</directive> with a <code>+</code> or
+<code>-</code> with those without is not valid syntax and will be
+rejected during server startup by the syntax check with an abort.</p>
+</note>
+
 <p><module>mod_allowmethods</module> was written to replace the rather
 kludgy implementation of <directive module="core">Limit</directive> and
 <directive module="core">LimitExcept</directive>.</p>
+
 </usage>
 </directivesynopsis>
 
