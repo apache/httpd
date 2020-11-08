@@ -143,7 +143,7 @@ static const char *am_allowmethods(cmd_parms *cmd, void *d, int argc,
     int merge = 0;
     int first = 1;
     char *method;
-    char action;
+    char action = '\0';
 
     if (argc == 0) {
         return "AllowMethods: No method or 'reset' keyword given";
