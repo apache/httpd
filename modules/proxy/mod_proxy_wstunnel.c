@@ -423,7 +423,7 @@ static const char * proxyws_set_idle(cmd_parms *cmd, void *conf, const char *val
     return NULL;
 }
 
-static const char * proxyws_set_aysnch_delay(cmd_parms *cmd, void *conf, const char *val)
+static const char * proxyws_set_asynch_delay(cmd_parms *cmd, void *conf, const char *val)
 {
     proxyws_dir_conf *dconf = conf;
     if (ap_timeout_parameter_parse(val, &(dconf->async_delay), "s") != APR_SUCCESS)
@@ -437,7 +437,7 @@ static const command_rec ws_proxy_cmds[] =
                   RSRC_CONF|ACCESS_CONF,
                   "timeout for activity in either direction, unlimited by default"),
 
-    AP_INIT_TAKE1("ProxyWebsocketAsyncDelay", proxyws_set_aysnch_delay, NULL,
+    AP_INIT_TAKE1("ProxyWebsocketAsyncDelay", proxyws_set_asynch_delay, NULL,
                  RSRC_CONF|ACCESS_CONF,
                  "amount of time to poll before going asynchronous"),
     {NULL}
