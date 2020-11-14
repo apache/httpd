@@ -3158,12 +3158,12 @@ requête HTTP</description>
     contenu détaillée. Les en-têtes d'authentification SPNEGO peuvent
     atteindre une taille de 12392 octets.</p>
 
-    <p>>L'administrateur du serveur peut utiliser cette directive pour
+    <p>L'administrateur du serveur peut utiliser cette directive pour
     contrôler plus efficacement les comportements anormaux des requêtes
     des clients, ce qui lui permettra de prévenir certaines formes
     d'attaques par déni de service.</p>
 
-    <p>Par exemple ::</p>
+    <p>Par exemple :</p>
 
     <highlight language="config">LimitRequestFieldSize 4094</highlight>
 
