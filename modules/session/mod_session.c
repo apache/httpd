@@ -657,7 +657,7 @@ static const char *
 
     conf->expiry_update_time = atoi(arg);
     if (conf->expiry_update_time < 0) {
-        return "SessionExpiryUpdateInterval must be positive or nul";
+        return "SessionExpiryUpdateInterval must be zero (disable) or a positive value";
     }
     conf->expiry_update_time = apr_time_from_sec(conf->expiry_update_time);
     conf->expiry_update_set = 1;
