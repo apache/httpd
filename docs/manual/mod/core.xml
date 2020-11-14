@@ -2138,7 +2138,7 @@ ForceType image/gif
     <p>Finally, if you have <a
     href="mod_authz_host.html#reqhost">hostname-based Require
     directives</a>, a hostname lookup will be performed regardless of
-    the setting of <code>HostnameLookups</code>.</p>
+    the setting of <directive>HostnameLookups</directive>.</p>
 </usage>
 </directivesynopsis>
 
@@ -2832,8 +2832,8 @@ will be accepted from the client</description>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
-    <p><var>Number</var> is an integer from 0 (meaning unlimited) to
-    32767. The default value is defined by the compile-time
+    <p>Setting <var>number</var> at 0 means unlimited.
+    The default value is defined by the compile-time
     constant <code>DEFAULT_LIMIT_REQUEST_FIELDS</code> (100 as
     distributed).</p>
 
