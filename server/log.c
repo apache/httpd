@@ -1875,8 +1875,8 @@ AP_DECLARE(void) ap_close_piped_log(piped_log *pl)
 
 AP_DECLARE(const char *) ap_parse_log_level(const char *str, int *val)
 {
-    char *err = "Log level keyword must be one of emerg/alert/crit/error/warn/"
-                "notice/info/debug/trace1/.../trace8";
+    const char *err = "Log level keyword must be one of emerg/alert/crit/error/"
+                      "warn/notice/info/debug/trace1/.../trace8";
     int i = 0;
 
     if (str == NULL)
