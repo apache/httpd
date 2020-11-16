@@ -154,16 +154,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~covener/patches/wstunnel-decline.diff
      +1 covener, jim, rpluem, jfclere
 
-  *) mod_http2: Log requests and sent the configured error response in case of
-     early detected errors like too many or too long headers.
-     Trunk version of patch:
-        https://svn.apache.org/r1881620
-        https://svn.apache.org/r1881635
-     Backport version for 2.4.x of patch:
-        https://github.com/apache/httpd/pull/142
-        https://github.com/apache/httpd/pull/142.diff
-     +1: rpluem, giovanni, ylavic
-
   *) core: Avoid a core dump if 'AllowOverride nonfatal' is used in a configuration
      file.
      Trunk version of patch:
