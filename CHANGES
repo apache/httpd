@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.47
 
+  *) mod_rewrite: Extend the [CO] (cookie) flag of RewriteRule to accept a
+     SameSite attribute. [Eric Covener]
+
   *) mod_proxy: Add proxy check_trans hook.  This allows proxy 
      modules to decline request handling at early stage.
 

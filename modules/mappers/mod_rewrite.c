@@ -2538,6 +2538,7 @@ static void add_cookie(request_rec *r, char *s)
     char *path;
     char *secure;
     char *httponly;
+    char *samesite;
 
     char *tok_cntx;
     char *cookie;
@@ -2572,6 +2573,7 @@ static void add_cookie(request_rec *r, char *s)
             path = expires ? apr_strtok(NULL, sep, &tok_cntx) : NULL;
             secure = path ? apr_strtok(NULL, sep, &tok_cntx) : NULL;
             httponly = secure ? apr_strtok(NULL, sep, &tok_cntx) : NULL;
+            samesite = httponly ? apr_strtok(NULL, sep, &tok_cntx) : NULL;
 
             if (expires) {
                 apr_time_exp_t tms;
@@ -2610,6 +2612,11 @@ static void add_cookie(request_rec *r, char *s)
                                                               "HttpOnly"))) ?
                                   "; HttpOnly" : NULL,
                                  NULL);
+
+            if (samesite && strcmp(samesite, "0") && ap_cstr_casecmp(samesite,"false")) { 
+                cookie = apr_pstrcat(rmain->pool, cookie, "; SameSite=", 
+                                     samesite, NULL);
+            }
 
             apr_table_addn(rmain->err_headers_out, "Set-Cookie", cookie);
             apr_pool_userdata_set("set", notename, NULL, rmain->pool);
