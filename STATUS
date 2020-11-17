@@ -217,7 +217,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mpm_event: reset listener_is_wakeable on reload.
      trunk patch: http://svn.apache.org/r1877552
      2.4.x patch: svn merge -c 1877552 ^/httpd/httpd/trunk .
-     +1: ylavic
+     +1: ylavic, jorton, 
 
   *) mod_rewrite: Extend the [CO] (cookie) flag of RewriteRule to accept a
      SameSite attribute.
@@ -252,13 +252,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      restoring prior to 2.4.30 behaviour.
      trunk patch: http://svn.apache.org/r1883096
      2.4.x patch: svn merge -c 1883096 ^/httpd/httpd/trunk .
-     +1: ylavic, 
+     +1: ylavic, jorton, 
 
   *) mpm_event: don't reset connections after lingering close, restoring prior
      to 2.4.28 behaviour.
      trunk patch: http://svn.apache.org/r1883097
      2.4.x patch: svn merge -c 1883097 ^/httpd/httpd/trunk .
-     +1: ylavic, 
+     +1: ylavic, jorton, 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
