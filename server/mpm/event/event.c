@@ -505,7 +505,7 @@ static APR_INLINE apr_uint32_t listeners_disabled(void)
     return apr_atomic_read32(&listensocks_disabled);
 }
 
-static APR_INLINE int connections_above_limit(void)
+static APR_INLINE int connections_above_limit(int *busy)
 {
     apr_uint32_t i_count = ap_queue_info_num_idlers(worker_queue_info);
     if (i_count > 0) {
@@ -518,6 +518,9 @@ static APR_INLINE int connections_above_limit(void)
                                        (worker_factor / WORKER_FACTOR_SCALE)) {
             return 0;
         }
+    }
+    else if (busy) {
+        *busy = 1;
     }
     return 1;
 }
@@ -771,7 +774,7 @@ static apr_status_t decrement_connection_count(void *cs_)
     is_last_connection = !apr_atomic_dec32(&connection_count);
     if (listener_is_wakeable
             && ((is_last_connection && listener_may_exit)
-                || (listeners_disabled() && !connections_above_limit()))) {
+                || (listeners_disabled() && !connections_above_limit(NULL)))) {
         apr_pollset_wakeup(event_pollset);
     }
     return APR_SUCCESS;
@@ -1802,7 +1805,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                                  "All workers busy, not accepting new conns "
                                  "in this process");
                 }
-                else if (connections_above_limit()) {
+                else if (connections_above_limit(&workers_were_busy)) {
                     disable_listensocks();
                     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
                                  "Too many open connections (%u), "
@@ -1811,7 +1814,6 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                     ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, ap_server_conf,
                                  "Idle workers: %u",
                                  ap_queue_info_num_idlers(worker_queue_info));
-                    workers_were_busy = 1;
                 }
                 else if (!listener_may_exit) {
                     void *csd = NULL;
@@ -1944,7 +1946,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
 
         if (listeners_disabled()
                 && !workers_were_busy
-                && !connections_above_limit()) {
+                && !connections_above_limit(NULL)) {
             enable_listensocks();
         }
     } /* listener main loop */
