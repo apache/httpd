@@ -758,6 +758,15 @@ PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r, struct proxy_alias *ent,
     }
 
     if (found) {
+        /* A proxy module is assigned this URL, check whether it's interested
+         * in the request itself (e.g. proxy_wstunnel cares about Upgrade
+         * requests only, and could hand over to proxy_http otherwise).
+         */
+        int rc = proxy_run_check_trans(r, found + 6);
+        if (rc != OK && rc != DECLINED) {
+            return DONE;
+        }
+
         r->filename = found;
         r->handler = "proxy-server";
         r->proxyreq = PROXYREQ_REVERSE;
@@ -3128,6 +3137,7 @@ APR_HOOK_STRUCT(
     APR_HOOK_LINK(pre_request)
     APR_HOOK_LINK(post_request)
     APR_HOOK_LINK(request_status)
+    APR_HOOK_LINK(check_trans)
 )
 
 APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(proxy, PROXY, int, scheme_handler,
@@ -3136,6 +3146,9 @@ APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(proxy, PROXY, int, scheme_handler,
                                       char *url, const char *proxyhost,
                                       apr_port_t proxyport),(r,worker,conf,
                                       url,proxyhost,proxyport),DECLINED)
+APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(proxy, PROXY, int, check_trans,
+                                      (request_rec *r, const char *url),
+                                      (r, url), DECLINED)
 APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(proxy, PROXY, int, canon_handler,
                                       (request_rec *r, char *url),(r,
                                       url),DECLINED)

@@ -620,6 +620,8 @@ APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, scheme_handler,
                           (request_rec *r, proxy_worker *worker,
                            proxy_server_conf *conf, char *url,
                            const char *proxyhost, apr_port_t proxyport))
+APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, check_trans,
+                          (request_rec *r, const char *url))
 APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, canon_handler,
                           (request_rec *r, char *url))
 

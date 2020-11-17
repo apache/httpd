@@ -138,22 +138,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_http2: Remove .gitignore. It is not present in trunk and
-     contains problematic entries for our tree (especially Makefile.in).
-
-     2.4.x patch: "svn rm modules/http2/.gitignore"
-     +1 rjung, jim, rpluem, gbechis
-     -1 
-
-  *) mod_proxy: Add proxy check_trans() hook and allow mod_proxy_wtunnel
-     to step out of the way of mod_proxy_http.
-     i.e.
-
-     trunk patch: http://svn.apache.org/r1869399
-                  http://svn.apache.org/r1776290
-     2.4.x patch: http://people.apache.org/~covener/patches/wstunnel-decline.diff
-     +1 covener, jim, rpluem, jfclere
-
   *) core: Avoid a core dump if 'AllowOverride nonfatal' is used in a configuration
      file.
      Trunk version of patch:

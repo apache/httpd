@@ -1,6 +1,13 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.47
 
+  *) mod_proxy: Add proxy check_trans hook.  This allows proxy 
+     modules to decline request handling at early stage.
+
+  *) mod_proxy_wstunnel: Decline requests without an Upgrade
+     header so ws/wss can be enabled overlapping with later
+     http/https.
+
   *) mod_http2: Log requests and sent the configured error response in case of
      early detected errors like too many or too long headers.
      [Ruediger Pluem, Stefan Eissing]
