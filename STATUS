@@ -145,11 +145,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     Backport version for 2.4.x of patch:
      +1: jailletc36, giovanni, ylavic
 
-  *) mpm_event: reset listener_is_wakeable on reload.
-     trunk patch: http://svn.apache.org/r1877552
-     2.4.x patch: svn merge -c 1877552 ^/httpd/httpd/trunk .
-     +1: ylavic, jorton, jim
-
   *) mod_rewrite: Extend the [CO] (cookie) flag of RewriteRule to accept a
      SameSite attribute.
      Trunk version of patch:
