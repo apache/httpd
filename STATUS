@@ -145,13 +145,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     Backport version for 2.4.x of patch:
      +1: jailletc36, giovanni, ylavic
 
-  *) mpm_event: don't reset connections after lingering close, restoring prior
-     to 2.4.28 behaviour.
-     trunk patch: http://svn.apache.org/r1883097
-     2.4.x patch: svn merge -c 1883097 ^/httpd/httpd/trunk .
-     +1: ylavic, jorton, jim
-
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 

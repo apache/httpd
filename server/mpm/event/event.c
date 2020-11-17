@@ -529,21 +529,6 @@ static void abort_socket_nonblocking(apr_socket_t *csd)
 {
     apr_status_t rv;
     apr_socket_timeout_set(csd, 0);
-#if defined(SOL_SOCKET) && defined(SO_LINGER)
-    /* This socket is over now, and we don't want to block nor linger
-     * anymore, so reset it. A normal close could still linger in the
-     * system, while RST is fast, nonblocking, and what the peer will
-     * get if it sends us further data anyway.
-     */
-    {
-        apr_os_sock_t osd = -1;
-        struct linger opt;
-        opt.l_onoff = 1;
-        opt.l_linger = 0; /* zero timeout is RST */
-        apr_os_sock_get(&osd, csd);
-        setsockopt(osd, SOL_SOCKET, SO_LINGER, (void *)&opt, sizeof opt);
-    }
-#endif
     rv = apr_socket_close(csd);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, APLOGNO(00468)
