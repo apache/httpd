@@ -259,7 +259,6 @@ typedef struct {
     apr_interval_time_t idle_timeout;
 
     unsigned int can_go_async           :1,
-                 expecting_100          :1,
                  do_100_continue        :1,
                  prefetch_nonblocking   :1,
                  force10                :1;
@@ -531,21 +530,6 @@ static int spool_reqbody_cl(proxy_http_req_t *req, apr_off_t *bytes_spooled)
     apr_file_t *tmpfile = NULL;
     apr_off_t limit;
 
-    /* Send "100 Continue" now if the client expects one, before
-     * blocking on the body, otherwise we'd wait for each other.
-     */
-    if (req->expecting_100) {
-        int saved_status = r->status;
-
-        r->expecting_100 = 1;
-        r->status = HTTP_CONTINUE;
-        ap_send_interim_response(r, 0);
-        AP_DEBUG_ASSERT(!r->expecting_100);
-
-        r->status = saved_status;
-        req->expecting_100 = 0;
-    }
-
     body_brigade = apr_brigade_create(p, bucket_alloc);
     *bytes_spooled = 0;
 
@@ -719,7 +703,7 @@ static int ap_proxy_http_prefetch(proxy_http_req_t *req,
     apr_read_type_e block;
     int rv;
 
-    if (req->force10 && req->expecting_100) {
+    if (req->force10 && r->expecting_100) {
         return HTTP_EXPECTATION_FAILED;
     }
 
@@ -820,18 +804,6 @@ static int ap_proxy_http_prefetch(proxy_http_req_t *req,
 
         apr_brigade_length(temp_brigade, 1, &bytes);
         bytes_read += bytes;
-
-        /* From https://tools.ietf.org/html/rfc7231#section-5.1.1
-         *   A server MAY omit sending a 100 (Continue) response if it has
-         *   already received some or all of the message body for the
-         *   corresponding request, or if [snip].
-         */
-        if (req->expecting_100 && bytes > 0) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r, APLOGNO(10206)
-                          "prefetching request body while 100-continue is"
-                          "expected, omit sending interim response");
-            req->expecting_100 = 0;
-        }
 
         /*
          * Save temp_brigade in input_brigade. (At least) in the SSL case
@@ -1629,8 +1601,9 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
              *
              * So let's make it configurable.
              *
-             * We need to set "r->expecting_100 = 1" otherwise origin
-             * server behaviour will apply.
+             * We need to force "r->expecting_100 = 1" for RFC behaviour
+             * otherwise ap_send_interim_response() does nothing when
+             * the client did not ask for 100-continue.
              *
              * 101 Switching Protocol has its own configuration which
              * shouldn't be interfered by "proxy-interim-response".
@@ -1645,12 +1618,8 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
             if (!policy
                     || (!strcasecmp(policy, "RFC")
                         && (proxy_status != HTTP_CONTINUE
-                            || (req->expecting_100 = 1)))) {
+                            || (r->expecting_100 = 1)))) {
                 switch (proxy_status) {
-                case HTTP_CONTINUE:
-                    r->expecting_100 = req->expecting_100;
-                    req->expecting_100 = 0;
-                    break;
                 case HTTP_SWITCHING_PROTOCOLS:
                     AP_DEBUG_ASSERT(upgrade != NULL);
                     apr_table_setn(r->headers_out, "Connection", "Upgrade");
@@ -1723,12 +1692,10 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
                  * here though, because error_override or a potential retry on
                  * another backend could finally read that data and finalize
                  * the request processing, making keep-alive possible. So what
-                 * we do is restoring r->expecting_100 for ap_set_keepalive()
-                 * to do the right thing according to the final response and
+                 * we do is leaving r->expecting_100 alone, ap_set_keepalive()
+                 * will do the right thing according to the final response and
                  * any later update of r->expecting_100.
                  */
-                r->expecting_100 = req->expecting_100;
-                req->expecting_100 = 0;
             }
 
             /* Once only! */
@@ -1740,7 +1707,7 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
 
             /* If we didn't send the full body yet, do it now */
             if (do_100_continue) {
-                req->expecting_100 = 0;
+                r->expecting_100 = 0;
                 status = send_continue_body(req);
                 if (status != OK) {
                     return status;
@@ -2228,17 +2195,7 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
     /* Should we handle end-to-end or ping 100-continue? */
     if ((r->expecting_100 && (dconf->forward_100_continue || input_brigade))
             || PROXY_DO_100_CONTINUE(worker, r)) {
-        /* We need to reset r->expecting_100 or prefetching will cause
-         * ap_http_filter() to send "100 Continue" response by itself. So
-         * we'll use req->expecting_100 in mod_proxy_http to determine whether
-         * the client should be forwarded "100 continue", and r->expecting_100
-         * will be restored at the end of the function with the actual value of
-         * req->expecting_100 (i.e. cleared only if mod_proxy_http sent the
-         * "100 Continue" according to its policy).
-         */
         req->do_100_continue = 1;
-        req->expecting_100 = (r->expecting_100 != 0);
-        r->expecting_100 = 0;
     }
 
     /* Should we block while prefetching the body or try nonblocking and flush
@@ -2384,10 +2341,6 @@ cleanup:
             req->backend->close = 1;
         ap_proxy_release_connection(proxy_function, req->backend,
                                     r->server);
-    }
-    if (req->expecting_100) {
-        /* Restore r->expecting_100 if we didn't touch it */
-        r->expecting_100 = req->expecting_100;
     }
     return status;
 }
