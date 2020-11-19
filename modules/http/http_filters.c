@@ -407,43 +407,41 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
         }
     }
 
-    {
-        /* Since we're about to read data, send 100-Continue if needed.
-         * Only valid on chunked and C-L bodies where the C-L is > 0.
-         *
-         * If the read is to be nonblocking though, the caller may not want to
-         * handle this just now (e.g. mod_proxy_http), and is prepared to read
-         * nothing if the client really waits for 100 continue, so we don't
-         * send it now and wait for later blocking read.
-         *
-         * In any case, even if r->expecting remains set at the end of the
-         * request handling, ap_set_keepalive() will finally do the right
-         * thing (i.e. "Connection: close" the connection).
-         */
-        if (block == APR_BLOCK_READ
-                && (ctx->state == BODY_CHUNK
-                    || (ctx->state == BODY_LENGTH && ctx->remaining > 0))
-                && f->r->expecting_100 && f->r->proto_num >= HTTP_VERSION(1,1)
-                && !(ctx->at_eos || f->r->eos_sent || f->r->bytes_sent)) {
-            if (!ap_is_HTTP_SUCCESS(f->r->status)) {
-                ctx->state = BODY_NONE;
-                ctx->at_eos = 1; /* send EOS below */
-            }
-            else if (!ctx->seen_data) {
-                int saved_status = f->r->status;
-                f->r->status = HTTP_CONTINUE;
-                ap_send_interim_response(f->r, 0);
-                AP_DEBUG_ASSERT(!f->r->expecting_100);
-                f->r->status = saved_status;
-            }
-            else {
-                /* https://tools.ietf.org/html/rfc7231#section-5.1.1
-                 *   A server MAY omit sending a 100 (Continue) response if it
-                 *   has already received some or all of the message body for
-                 *   the corresponding request [...]
-                 */
-                f->r->expecting_100 = 0;
-            }
+    /* Since we're about to read data, send 100-Continue if needed.
+     * Only valid on chunked and C-L bodies where the C-L is > 0.
+     *
+     * If the read is to be nonblocking though, the caller may not want to
+     * handle this just now (e.g. mod_proxy_http), and is prepared to read
+     * nothing if the client really waits for 100 continue, so we don't
+     * send it now and wait for later blocking read.
+     *
+     * In any case, even if r->expecting remains set at the end of the
+     * request handling, ap_set_keepalive() will finally do the right
+     * thing (i.e. "Connection: close" the connection).
+     */
+    if (block == APR_BLOCK_READ
+            && (ctx->state == BODY_CHUNK
+                || (ctx->state == BODY_LENGTH && ctx->remaining > 0))
+            && f->r->expecting_100 && f->r->proto_num >= HTTP_VERSION(1,1)
+            && !(ctx->at_eos || f->r->eos_sent || f->r->bytes_sent)) {
+        if (!ap_is_HTTP_SUCCESS(f->r->status)) {
+            ctx->state = BODY_NONE;
+            ctx->at_eos = 1; /* send EOS below */
+        }
+        else if (!ctx->seen_data) {
+            int saved_status = f->r->status;
+            f->r->status = HTTP_CONTINUE;
+            ap_send_interim_response(f->r, 0);
+            AP_DEBUG_ASSERT(!f->r->expecting_100);
+            f->r->status = saved_status;
+        }
+        else {
+            /* https://tools.ietf.org/html/rfc7231#section-5.1.1
+             *   A server MAY omit sending a 100 (Continue) response if it
+             *   has already received some or all of the message body for
+             *   the corresponding request [...]
+             */
+            f->r->expecting_100 = 0;
         }
     }
 
