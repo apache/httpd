@@ -441,6 +441,10 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
              *   has already received some or all of the message body for
              *   the corresponding request [...]
              */
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, f->r, APLOGNO(10260)
+                          "request body already/partly received while "
+                          "100-continue is expected, omit sending interim "
+                          "response");
             f->r->expecting_100 = 0;
         }
     }
