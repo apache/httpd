@@ -864,6 +864,7 @@ static void * APR_THREAD_FUNC run_service_thread(apr_thread_t *me, void *data)
     ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s, APLOGNO(03243)
                  SERVICE_THREAD_NAME " exiting");
 
+    apr_thread_exit(me, APR_SUCCESS);
     return NULL;
 }
 
@@ -1112,6 +1113,7 @@ static void *sct_daemon_thread(apr_thread_t *me, void *data)
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03246)
                  DAEMON_THREAD_NAME " - exiting");
 
+    apr_thread_exit(me, APR_SUCCESS);
     return NULL;
 }
 
@@ -1130,8 +1132,7 @@ static int daemon_thread_start(apr_pool_t *pconf, server_rec *s_main)
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
-    apr_pool_cleanup_register(pconf, daemon_thread, wait_for_thread,
-                              apr_pool_cleanup_null);
+    apr_pool_pre_cleanup_register(pconf, daemon_thread, wait_for_thread);
 
     return OK;
 }
@@ -2532,8 +2533,7 @@ static void ssl_ct_child_init(apr_pool_t *p, server_rec *s)
         exit(APEXIT_CHILDSICK);
     }
 
-    apr_pool_cleanup_register(p, service_thread, wait_for_thread,
-                              apr_pool_cleanup_null);
+    apr_pool_pre_cleanup_register(p, service_thread, wait_for_thread);
 
     if (sconf->proxy_awareness != PROXY_OBLIVIOUS) {
         rv = apr_thread_mutex_create(&cached_server_data_mutex,
