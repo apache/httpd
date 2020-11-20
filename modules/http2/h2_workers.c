@@ -244,6 +244,8 @@ static void* APR_THREAD_FUNC slot_run(apr_thread_t *thread, void *wctx)
     }
 
     slot_done(slot);
+
+    apr_thread_exit(thread, APR_SUCCESS);
     return NULL;
 }
 
