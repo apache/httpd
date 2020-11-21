@@ -30,8 +30,6 @@
 <a href="../es/mod/mod_allowmethods.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../fr/mod/mod_allowmethods.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Limitation simple des méthodes HTTP acceptées par e serveur</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>allowmethods_module</td></tr>
@@ -45,6 +43,10 @@ est du style :</p>
 
 <pre class="prettyprint lang-config">&lt;Location "/"&gt;
    AllowMethods GET POST OPTIONS
+&lt;/Location&gt;
+
+&lt;Location "/nopost"&gt;
+   AllowMethods -POST
 &lt;/Location&gt;</pre>
 
 
@@ -61,12 +63,14 @@ est du style :</p>
 <div class="directive-section"><h2><a name="allowmethods" id="allowmethods">Directive</a> <a name="AllowMethods" id="AllowMethods">AllowMethods</a> <a title="Lien permanent" href="#allowmethods" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Restreint l'accès aux méthodes HTTP spécifiées</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AllowMethods reset|<em>HTTP-method</em>
-[<em>HTTP-method</em>]...</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AllowMethods reset | [+|-]<var>HTTP-method</var>
+[ [+|-]<var>HTTP-method</var> ] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AllowMethods reset</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_allowmethods</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>[+|-] disponible à partir de la version 2.5.1 du serveur HTTP
+Apache</td></tr>
 </table>
 
 <p>Le nom de chaque méthode HTTP est sensible à la casse, et est le plus
@@ -86,8 +90,28 @@ d'imbrication :</p>
   faire, vous devez utiliser la directive <code class="directive"><a href="../mod/core.html#traceenable">TraceEnable</a></code>.</p>
 </div>
 
+<p>Normalement, si plusieurs directives <code class="directive">AllowMethods</code>
+peuvent s'appliquer à un répertoire, c'est la plus spécifique d'entre elles qui
+sera prise en compte, les autres étant ignorées ; les différentes méthodes
+spécifiées ne sont en effet pas fusionnées (voir <a href="../sections.html#merging">comment sont fusionnées les sections</a>). Si
+cependant <em>toutes</em> les méthodes spécifiées dans la directive
+<code class="directive">AllowMethods</code> sont précédées d'un symbole <code>+</code>
+ou <code>-</code>, alors les méthodes spécifiées seront fusionnées. Pour plus de
+précision, les méthodes précédées d'un <code>+</code> seront ajoutées à la liste
+des méthodes autorisées, alors que celles qui sont précédées d'un <code>-</code>
+en seront supprimées.</p>
+
+<div class="note"><h3>Note</h3>
+<p>Mélanger des directives <code class="directive">AllowMethods</code> contenant des
+symboles <code>+</code> ou <code>-</code> avec des directives
+<code class="directive">AllowMethods</code> qui n'en contiennent pas constitue une
+erreur de syntaxe. Cette erreur interrompra le démarrage du serveur au cours de
+la vérification de la syntaxe du fichier de configuration.</p>
+</div>
+
 <p>Le module <code class="module"><a href="../mod/mod_allowmethods.html">mod_allowmethods</a></code> a été écrit pour
 remplacer l'implémentation "bricolée" des directives <code class="directive"><a href="../mod/core.html#limit">Limit</a></code> et <code class="directive"><a href="../mod/core.html#limitexcept">LimitExcept</a></code>.</p>
+
 
 </div>
 </div>
