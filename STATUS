@@ -91,12 +91,12 @@ THINGS THAT SHOULD BE CONSIDERED EARLY IN THE 2.6/3.0 DEVELOPMENT CYCLE:
     analysis/attention.
 
   * Better H2 integration?
-    - adding handling of slave connections to mpm, no extra H2 workers, 
+    - adding handling of slave connections to mpm, no extra H2 workers,
       triggering "events" read/write/timer from main/slave
     - add slave writes/done/abort to events that wake up master connection
     - disentangle core filters to server one purpose only, so that H2
       versions can reuse them properly.
- 
+
   * Remove mod_access_compat?
 
   * Ditch platforms/89/old prereqs or anything else?
