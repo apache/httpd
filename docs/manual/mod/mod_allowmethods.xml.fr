@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1840964:1883203 (outdated) -->
+<!-- English Revision: 1883203 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -49,6 +49,10 @@ est du style :</p>
 &lt;Location "/"&gt;
    AllowMethods GET POST OPTIONS
 &lt;/Location&gt;
+
+&lt;Location "/nopost"&gt;
+   AllowMethods -POST
+&lt;/Location&gt;
 </highlight>
 
 </summary>
@@ -56,11 +60,13 @@ est du style :</p>
 <directivesynopsis>
 <name>AllowMethods</name>
 <description>Restreint l'accès aux méthodes HTTP spécifiées</description>
-<syntax>AllowMethods reset|<em>HTTP-method</em>
-[<em>HTTP-method</em>]...</syntax>
+<syntax>AllowMethods reset | [+|-]<var>HTTP-method</var>
+[ [+|-]<var>HTTP-method</var> ] ...</syntax>
 <default>AllowMethods reset</default>
 <contextlist><context>directory</context></contextlist>
 <status>Experimental</status>
+<compatibility>[+|-] disponible à partir de la version 2.5.1 du serveur HTTP
+Apache</compatibility>
 
 <usage>
 
@@ -83,10 +89,31 @@ d'imbrication :</p>
   module="core">TraceEnable</directive>.</p>
 </note>
 
+<p>Normalement, si plusieurs directives <directive>AllowMethods</directive>
+peuvent s'appliquer à un répertoire, c'est la plus spécifique d'entre elles qui
+sera prise en compte, les autres étant ignorées ; les différentes méthodes
+spécifiées ne sont en effet pas fusionnées (voir <a
+href="../sections.html#merging">comment sont fusionnées les sections</a>). Si
+cependant <em>toutes</em> les méthodes spécifiées dans la directive
+<directive>AllowMethods</directive> sont précédées d'un symbole <code>+</code>
+ou <code>-</code>, alors les méthodes spécifiées seront fusionnées. Pour plus de
+précision, les méthodes précédées d'un <code>+</code> seront ajoutées à la liste
+des méthodes autorisées, alors que celles qui sont précédées d'un <code>-</code>
+en seront supprimées.</p>
+
+<note><title>Note</title>
+<p>Mélanger des directives <directive>AllowMethods</directive> contenant des
+symboles <code>+</code> ou <code>-</code> avec des directives
+<directive>AllowMethods</directive> qui n'en contiennent pas constitue une
+erreur de syntaxe. Cette erreur interrompra le démarrage du serveur au cours de
+la vérification de la syntaxe du fichier de configuration.</p>
+</note>
+
 <p>Le module <module>mod_allowmethods</module> a été écrit pour
 remplacer l'implémentation "bricolée" des directives <directive
 module="core">Limit</directive> et <directive
 module="core">LimitExcept</directive>.</p>
+
 </usage>
 </directivesynopsis>
 
