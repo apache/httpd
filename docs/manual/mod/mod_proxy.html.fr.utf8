@@ -704,7 +704,7 @@ NoProxy         ".example.com" "192.168.112.0/21"</pre>
       compte de la casse, et les parties droites des <var>Domaine</var>s
       sont toujours censées correspondre à la racine de l'arborescence
       DNS, si bien que les domaines <code>.ExEmple.com</code> et
-      <code>.example.com.</code> (notez le point à la fin du nom) sont
+      <code>.exemple.com.</code> (notez le point à la fin du nom) sont
       considérés comme identiques. Comme une comparaison de domaines ne
       nécessite pas de recherche DNS, elle est beaucoup plus efficace
       qu'une comparaison de sous-réseaux.</p>
