@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1870428 -->
+<!-- English Revision: 1883536 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1473,7 +1473,7 @@ substitution !
         <td>cookie|CO=<em>NAME</em>:<em>VAL</em></td>
         <td>Définit un cookie au niveau du navigateur client. La syntaxe
 	complète est :
-	CO=<em>NAME</em>:<em>VAL</em>:<em>domain</em>[:<em>lifetime</em>[:<em>path</em>[:<em>secure</em>[:<em>httponly</em>]]]] <em><a href="../rewrite/flags.html#flag_co">details ...</a></em>
+	CO=<em>NAME</em>:<em>VAL</em>:<em>domain</em>[:<em>lifetime</em>[:<em>path</em>[:<em>secure</em>[:<em>httponly</em>[<em>samesite</em>]]]]] <em><a href="../rewrite/flags.html#flag_co">details ...</a></em>
 	<em><a href="../rewrite/flags.html#flag_co">détails ...</a></em>
         </td>
     </tr>

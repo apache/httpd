@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1874169 -->
+<!-- English Revision : 1883419 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -144,50 +144,38 @@ shell Win32 <code>dir</code></description>
     immédiatement s'il rencontre une option non reconnue. Les arguments
     de requête doivent être bien formés, selon la table ci-dessus.</p>
 
-    <p>Les options de requêtes sont illustrées par l'exemple ci-dessous,
-    qui peut être copié et collé dans un fichier header.html. Notez que
-    l'argument inconnu "X", pour le bouton submit, est introduit en
-    dernier afin de s'assurer que tous les arguments ont été
-    interprétés avant que mod_autoindex ne rencontre l'entrée X=Go.</p>
+    <p>Les options de requêtes sont illustrées par l'exemple ci-dessous, qui
+    peut être copié et collé dans un fichier header.html. Notez que l'argument
+    inconnu "X", pour le bouton submit, est introduit en dernier afin de
+    s'assurer que tous les arguments ont été interprétés avant que
+    <module>mod_autoindex</module> ne rencontre l'entrée X=Go.</p>
 
-    <example>
-      &lt;form action="" method="get"&gt;<br />
-      <indent>
-        Montre moi une &lt;select name="F"&gt;<br />
-        <indent>
-          &lt;option value="0"&gt; liste simple&lt;/option&gt;<br />
-          &lt;option value="1" selected="selected"&gt; liste avec
-	  en-têtes&lt;/option&gt;<br />
-          &lt;option value="2"&gt; liste avec en-tête sous forme de
-	  table&lt;/option&gt;<br />
-        </indent>
-        &lt;/select&gt;<br />
-        triée par &lt;select name="C"&gt;<br />
-        <indent>
-          &lt;option value="N" selected="selected"&gt; nom&lt;/option&gt;<br />
-          &lt;option value="M"&gt; date de modification&lt;/option&gt;<br />
-          &lt;option value="S"&gt; taille&lt;/option&gt;<br />
-          &lt;option value="D"&gt; description&lt;/option&gt;<br />
-        </indent>
-        &lt;/select&gt;<br />
-        &lt;select name="O"&gt;<br />
-        <indent>
-          &lt;option value="A" selected="selected"&gt; croissant&lt;/option&gt;<br />
-          &lt;option value="D"&gt; décroissant&lt;/option&gt;<br />
-        </indent>
-        &lt;/select&gt;<br />
-        &lt;select name="V"&gt;<br />
-        <indent>
-          &lt;option value="0" selected="selected"&gt; dans l'ordre
-	  normal&lt;/option&gt;<br />
-          &lt;option value="1"&gt; en fonction de la version&lt;/option&gt;<br />
-        </indent>
-        &lt;/select&gt;<br />
-        correspondant à &lt;input type="text" name="P" value="*" /&gt;<br />
-        &lt;input type="submit" name="X" value="Go" /&gt;<br />
-      </indent>
-      &lt;/form&gt;
-    </example>
+    <example><title>Exemple</title>
+        <highlight language="html">
+&lt;form action="" method="get"&gt;
+    Show me a &lt;select name="F"&gt;
+        &lt;option value="0"&gt; Plain list&lt;/option&gt;
+        &lt;option value="1" selected="selected"&gt; Fancy list&lt;/option&gt;
+        &lt;option value="2"&gt; Table list&lt;/option&gt;
+    &lt;/select&gt;
+    Sorted by &lt;select name="C"&gt;
+        &lt;option value="N" selected="selected"&gt; Name&lt;/option&gt;
+        &lt;option value="M"&gt; Date Modified&lt;/option&gt;
+        &lt;option value="S"&gt; Size&lt;/option&gt;
+        &lt;option value="D"&gt; Description&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;select name="O"&gt;
+        &lt;option value="A" selected="selected"&gt; Ascending&lt;/option&gt;
+        &lt;option value="D"&gt; Descending&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;select name="V"&gt;
+        &lt;option value="0" selected="selected"&gt; in Normal order&lt;/option&gt;
+        &lt;option value="1"&gt; in Version order&lt;/option&gt;
+    &lt;/select&gt;
+    Matching &lt;input type="text" name="P" value="*" /&gt;
+    &lt;input type="submit" name="X" value="Go" /&gt;
+&lt;/form&gt;
+    </highlight></example>
 
 </section>
 
@@ -597,10 +585,10 @@ contenu d'un répertoire</description>
 <compatibility>Versions 2.3.10 et supérieures</compatibility>
 
 <usage>
-    <p>La directive <directive>IndexIgnoreReset</directive> supprime
-    toute liste de fichiers définie par la directive
-    <directive>IndexIgnore</directive> et héritée par ailleurs d'autres
-    sections de configuration.</p>
+    <p>La directive <directive>IndexIgnoreReset</directive> supprime toute liste
+    de fichiers définie par la directive <directive
+    module="mod_autoindex">IndexIgnore</directive> et héritée par ailleurs
+    d'autres sections de configuration.</p>
 
     <highlight language="config">
 &lt;Directory "/var/www"&gt;
@@ -655,8 +643,7 @@ répertoire</description>
 
       <dt><a name="indexoptions.charset"
                id="indexoptions.charset"
-      >Charset=<var>jeu de caractères</var></a> (<em>Versions 2.0.61 et
-      supérieures du serveur HTTP Apache</em>)</dt>
+      >Charset=<var>jeu de caractères</var></a></dt>
 
       <dd>Le mot-clé <code>Charset</code> vous permet de spécifier le
       jeu de caractères de la page générée. La valeur par défaut est
@@ -955,8 +942,7 @@ répertoire</description>
 
       <dt><a name="indexoptions.type"
                id="indexoptions.type"
-      >Type=<var>type MIME</var></a> (<em>Versions 2.0.61 et
-      supérieures du serveur HTTP Apache</em>)</dt>
+      >Type=<var>type MIME</var></a></dt>
 
       <dd>Le mot-clé <code>Type</code> vous permet de spécifier le type
       MIME de la page générée. La valeur par défaut est
@@ -978,8 +964,7 @@ répertoire</description>
       de restaurer le format de date des versions 2.2 et antérieures.</dd>
 
       <dt><a name="indexoptions.versionsort"
-               id="indexoptions.versionsort">VersionSort</a>
-      (<em>Versions 2.0a3 et supérieures du serveur HTTP Apache</em>)</dt>
+               id="indexoptions.versionsort">VersionSort</a></dt>
 
       <dd>Le mot-clé <code>VersionSort</code> permet de trier les
       fichiers contenant des numéros de version d'une manière
@@ -1008,8 +993,7 @@ répertoire</description>
       </dd>
 
       <dt><a name="indexoptions.xhtml"
-               id="indexoptions.xhtml">XHTML</a>
-      (<em>Versions 2.0.49 et supérieures du serveur HTTP Apache</em>)</dt>
+               id="indexoptions.xhtml">XHTML</a></dt>
 
       <dd>Le mot-clé <code>XHTML</code> enjoint
       <module>mod_autoindex</module> de générer du code XHTML 1.0 au

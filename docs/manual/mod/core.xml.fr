@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1880372 -->
+<!-- English Revision: 1883418 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2337,7 +2337,7 @@ host</context>
     <p>Enfin, si vous avez des <a
     href="mod_authz_host.html#reqhost">directives Require à base de
     nom</a>, une recherche de nom d'hôte sera effectuée quelle que soit
-    la définition de la directive <code>HostnameLookups</code>.</p>
+    la définition de la directive <directive>HostnameLookups</directive>.</p>
 </usage>
 </directivesynopsis>
 
@@ -3068,9 +3068,9 @@ requête HTTP</description>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
-    <p><var>nombre</var> est un entier de 0 (nombre de champs illimité)
-    à 32767. La valeur par défaut est définie à la compilation par la
-    constante <code>DEFAULT_LIMIT_REQUEST_FIELDS</code> (100 selon la
+    <p><var>nombre</var> est un entier de 0 à 32767. La valeur 0 signifie un
+    nombre de champs illimité. La valeur par défaut est définie à la compilation
+    par la constante <code>DEFAULT_LIMIT_REQUEST_FIELDS</code> (100 selon la
     distribution).</p>
 
     <p>La directive <directive>LimitRequestFields</directive> permet à
@@ -5231,9 +5231,16 @@ host</context></contextlist>
     section <directive module="core" type="section">IfDefine</directive>
     sans avoir à modifier les arguments <code>-D</code> dans les scripts
     de démarrage.</p>
-    <p>Si cette directive est définie au sein d'un bloc VirtualHost, les
-    changements qu'elle induit sont visibles de toute directive
-    ultérieure, au delà de tout bloc VirtualHost.</p>
+    
+    <p>Afin d'éviter tout risque de collision avec la syntaxe de la directive
+    <directive module="mod_rewrite">RewriteMap</directive>, les noms de
+    variables ne doivent pas contenir de caractère ":".</p>
+
+    <note><title>Piège de la portée de cette directive</title>
+      <p>Si cette directive est définie au sein d'un bloc VirtualHost, les
+      changements qu'elle induit sont visibles de toute directive
+      ultérieure, au delà de tout bloc VirtualHost.</p>
+    </note>    
 </usage>
 <seealso><directive module="core">Define</directive></seealso>
 <seealso><directive module="core">IfDefine</directive></seealso>
