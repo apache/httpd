@@ -5846,6 +5846,7 @@ static int core_upgrade_storage(request_rec *r)
 
 static void register_hooks(apr_pool_t *p)
 {
+    ap_runtime_dir = NULL;
     errorlog_hash = apr_hash_make(p);
     ap_register_log_hooks(p);
     ap_register_config_hooks(p);
