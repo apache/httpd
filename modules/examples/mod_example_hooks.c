@@ -743,7 +743,7 @@ static int x_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
     /*
      * Log the call and exit.
      */
-    trace_startup(ptemp, NULL, NULL, "x_pre_config()");
+    trace_startup(pconf, NULL, NULL, "x_pre_config()");
     return OK;
 }
 
@@ -764,7 +764,7 @@ static int x_check_config(apr_pool_t *pconf, apr_pool_t *plog,
     /*
      * Log the call and exit.
      */
-    trace_startup(ptemp, s, NULL, "x_check_config()");
+    trace_startup(pconf, s, NULL, "x_check_config()");
     return OK;
 }
 
@@ -801,7 +801,7 @@ static int x_open_logs(apr_pool_t *pconf, apr_pool_t *plog,
     /*
      * Log the call and exit.
      */
-    trace_startup(ptemp, s, NULL, "x_open_logs()");
+    trace_startup(pconf, s, NULL, "x_open_logs()");
     return OK;
 }
 
@@ -821,7 +821,7 @@ static int x_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     /*
      * Log the call and exit.
      */
-    trace_startup(ptemp, s, NULL, "x_post_config()");
+    trace_startup(pconf, s, NULL, "x_post_config()");
     return OK;
 }
 
@@ -1465,6 +1465,7 @@ static int x_monitor(apr_pool_t *p, server_rec *s)
  */
 static void x_register_hooks(apr_pool_t *p)
 {
+    trace = NULL;
     ap_hook_pre_config(x_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_check_config(x_check_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_test_config(x_test_config, NULL, NULL, APR_HOOK_MIDDLE);
