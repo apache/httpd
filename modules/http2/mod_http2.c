@@ -189,13 +189,16 @@ static void h2_child_init(apr_pool_t *pchild, server_rec *s)
     /* The allocator of pchild has no mutex with MPM prefork, but we need one
      * for h2 workers threads synchronization. Even though mod_http2 shouldn't
      * be used with prefork, better be safe than sorry, so forcibly set the
-     * mutex here.
+     * mutex here. For MPM event/worker, pchild has no allocator so pconf's
+     * is used, with its mutex.
      */
     allocator = apr_pool_allocator_get(pchild);
-    mutex = apr_allocator_mutex_get(allocator);
-    if (!mutex) {
-        apr_thread_mutex_create(&mutex, APR_THREAD_MUTEX_DEFAULT, pchild);
-        apr_allocator_mutex_set(allocator, mutex);
+    if (allocator) {
+        mutex = apr_allocator_mutex_get(allocator);
+        if (!mutex) {
+            apr_thread_mutex_create(&mutex, APR_THREAD_MUTEX_DEFAULT, pchild);
+            apr_allocator_mutex_set(allocator, mutex);
+        }
     }
 
     /* Set up our connection processing */
