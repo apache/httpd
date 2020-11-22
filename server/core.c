@@ -5437,7 +5437,6 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *s,
     c->slaves = apr_array_make(c->pool, 20, sizeof(conn_slave_rec *));
     c->requests = apr_array_make(c->pool, 20, sizeof(request_rec *));
 
-
     if ((rv = apr_socket_addr_get(&c->local_addr, APR_LOCAL, csd))
         != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_INFO, rv, s, APLOGNO(00137)
@@ -5445,8 +5444,17 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *s,
         apr_socket_close(csd);
         return NULL;
     }
+    if (apr_sockaddr_ip_get(&c->local_ip, c->local_addr)) {
+#if APR_HAVE_SOCKADDR_UN
+        if (c->local_addr->family == APR_UNIX) {
+            c->local_ip = apr_pstrndup(c->pool, c->local_addr->ipaddr_ptr,
+                                       c->local_addr->ipaddr_len);
+        }
+        else
+#endif
+        c->local_ip = apr_pstrdup(c->pool, "unknown");
+    }
 
-    apr_sockaddr_ip_get(&c->local_ip, c->local_addr);
     if ((rv = apr_socket_addr_get(&c->client_addr, APR_REMOTE, csd))
         != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_INFO, rv, s, APLOGNO(00138)
@@ -5454,8 +5462,17 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *s,
         apr_socket_close(csd);
         return NULL;
     }
+    if (apr_sockaddr_ip_get(&c->client_ip, c->client_addr)) {
+#if APR_HAVE_SOCKADDR_UN
+        if (c->client_addr->family == APR_UNIX) {
+            c->client_ip = apr_pstrndup(c->pool, c->client_addr->ipaddr_ptr,
+                                        c->client_addr->ipaddr_len);
+        }
+        else
+#endif
+        c->client_ip = apr_pstrdup(c->pool, "unknown");
+    }
 
-    apr_sockaddr_ip_get(&c->client_ip, c->client_addr);
     c->base_server = s;
 
     c->id = id;
