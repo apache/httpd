@@ -44,6 +44,8 @@ The Travis scripts use the following environment variables:
 
 * TEST_ARGS - arguments to pass to ./t/TEST in the Perl test framework
 
+* CLEAR_CACHE - if set, the cached $HOME/root is removed before each build
+
 Caching
 -------
 
@@ -52,6 +54,15 @@ Perl modules installed in $HOME/perl5 are cached.
 Anything installed into the $HOME/root directory is cached - notably,
 versions of APR/APR-util are installed here and cached across httpd
 build jobs without needing to be rebuilt every time.
+
+The cached installs of APR/APR-util are refreshed if the
+last-changed-revision of the build is stale.
+
+If APR_VERSION and APU_VERSION are both set to 1.x versions, then
+CLEAR_CACHE should also be set to disable APR* caching.  APR-util can
+only be rebuilt if an APR checkout is present, so a APR-util cannot be
+built from source alone.  (i.e. the scripts do not handle the case of
+cached, fresh APR plus a cached but stale APR-util)
 
 TODO list
 ---------
