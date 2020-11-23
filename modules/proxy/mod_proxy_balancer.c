@@ -2014,7 +2014,7 @@ static void balancer_child_init(apr_pool_t *p, server_rec *s)
                              balancer->s->name);
                 exit(1); /* Ugly, but what else? */
             }
-            init_balancer_members(conf->pool, s, balancer);
+            init_balancer_members(p, s, balancer);
         }
         s = s->next;
     }
