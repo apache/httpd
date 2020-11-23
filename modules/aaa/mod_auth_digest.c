@@ -167,15 +167,16 @@ static unsigned char *secret;
 
 /* client-list, opaque, and one-time-nonce stuff */
 
-static apr_shm_t      *client_shm =  NULL;
-static apr_rmm_t      *client_rmm = NULL;
-static unsigned long  *opaque_cntr;
-static apr_time_t     *otn_counter;     /* one-time-nonce counter */
-static apr_global_mutex_t *client_lock = NULL;
-static apr_global_mutex_t *opaque_lock = NULL;
+static apr_shm_t      *main_client_shm;
+static apr_rmm_t      *main_client_rmm, *client_rmm;
+static apr_global_mutex_t *main_client_lock, *client_lock;
+static apr_global_mutex_t *main_opaque_lock, *opaque_lock;
 static const char     *client_mutex_type = "authdigest-client";
 static const char     *opaque_mutex_type = "authdigest-opaque";
 static const char     *client_shm_filename;
+
+static unsigned long  *opaque_cntr;
+static apr_time_t     *otn_counter;     /* one-time-nonce counter */
 
 #define DEF_SHMEM_SIZE  1000L           /* ~ 12 entries */
 #define DEF_NUM_BUCKETS 15L
@@ -196,24 +197,24 @@ static apr_status_t cleanup_tables(void *not_used)
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, NULL, APLOGNO(01756)
                   "cleaning up shared memory");
 
-    if (client_rmm) {
-        apr_rmm_destroy(client_rmm);
-        client_rmm = NULL;
+    if (main_client_rmm) {
+        apr_rmm_destroy(main_client_rmm);
+        main_client_rmm = NULL;
     }
 
-    if (client_shm) {
-        apr_shm_destroy(client_shm);
-        client_shm = NULL;
+    if (main_client_shm) {
+        apr_shm_destroy(main_client_shm);
+        main_client_shm = NULL;
     }
 
-    if (client_lock) {
-        apr_global_mutex_destroy(client_lock);
-        client_lock = NULL;
+    if (main_client_lock) {
+        apr_global_mutex_destroy(main_client_lock);
+        main_client_lock = NULL;
     }
 
-    if (opaque_lock) {
-        apr_global_mutex_destroy(opaque_lock);
-        opaque_lock = NULL;
+    if (main_opaque_lock) {
+        apr_global_mutex_destroy(main_opaque_lock);
+        main_opaque_lock = NULL;
     }
 
     client_list = NULL;
@@ -269,14 +270,14 @@ static int initialize_tables(server_rec *s, apr_pool_t *ctx)
     client_shm_filename = ap_append_pid(ctx, client_shm_filename, ".");
 
     /* Use anonymous shm by default, fall back on name-based. */
-    sts = apr_shm_create(&client_shm, shmem_size, NULL, ctx);
+    sts = apr_shm_create(&main_client_shm, shmem_size, NULL, ctx);
     if (APR_STATUS_IS_ENOTIMPL(sts)) {
         /* For a name-based segment, remove it first in case of a
          * previous unclean shutdown. */
         apr_shm_remove(client_shm_filename, ctx);
 
         /* Now create that segment */
-        sts = apr_shm_create(&client_shm, shmem_size,
+        sts = apr_shm_create(&main_client_shm, shmem_size,
                             client_shm_filename, ctx);
     }
 
@@ -288,17 +289,18 @@ static int initialize_tables(server_rec *s, apr_pool_t *ctx)
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
-    sts = apr_rmm_init(&client_rmm,
+    sts = apr_rmm_init(&main_client_rmm,
                        NULL, /* no lock, we'll do the locking ourselves */
-                       apr_shm_baseaddr_get(client_shm),
+                       apr_shm_baseaddr_get(main_client_shm),
                        shmem_size, ctx);
     if (sts != APR_SUCCESS) {
         log_error_and_cleanup("failed to initialize rmm", sts, s);
         return !OK;
     }
 
-    client_list = rmm_malloc(client_rmm, sizeof(*client_list) +
-                                         sizeof(client_entry *) * num_buckets);
+    client_list = rmm_malloc(main_client_rmm,
+                             sizeof(*client_list) +
+                             sizeof(client_entry *) * num_buckets);
     if (!client_list) {
         log_error_and_cleanup("failed to allocate shared memory", -1, s);
         return !OK;
@@ -310,8 +312,8 @@ static int initialize_tables(server_rec *s, apr_pool_t *ctx)
     client_list->tbl_len     = num_buckets;
     client_list->num_entries = 0;
 
-    sts = ap_global_mutex_create(&client_lock, NULL, client_mutex_type, NULL,
-                                 s, ctx, 0);
+    sts = ap_global_mutex_create(&main_client_lock, NULL, client_mutex_type,
+                                 NULL, s, ctx, 0);
     if (sts != APR_SUCCESS) {
         log_error_and_cleanup("failed to create lock (client_lock)", sts, s);
         return !OK;
@@ -320,15 +322,15 @@ static int initialize_tables(server_rec *s, apr_pool_t *ctx)
 
     /* setup opaque */
 
-    opaque_cntr = rmm_malloc(client_rmm, sizeof(*opaque_cntr));
+    opaque_cntr = rmm_malloc(main_client_rmm, sizeof(*opaque_cntr));
     if (opaque_cntr == NULL) {
         log_error_and_cleanup("failed to allocate shared memory", -1, s);
         return !OK;
     }
     *opaque_cntr = 1UL;
 
-    sts = ap_global_mutex_create(&opaque_lock, NULL, opaque_mutex_type, NULL,
-                                 s, ctx, 0);
+    sts = ap_global_mutex_create(&main_opaque_lock, NULL, opaque_mutex_type,
+                                 NULL, s, ctx, 0);
     if (sts != APR_SUCCESS) {
         log_error_and_cleanup("failed to create lock (opaque_lock)", sts, s);
         return !OK;
@@ -337,7 +339,7 @@ static int initialize_tables(server_rec *s, apr_pool_t *ctx)
 
     /* setup one-time-nonce counter */
 
-    otn_counter = rmm_malloc(client_rmm, sizeof(*otn_counter));
+    otn_counter = rmm_malloc(main_client_rmm, sizeof(*otn_counter));
     if (otn_counter == NULL) {
         log_error_and_cleanup("failed to allocate shared memory", -1, s);
         return !OK;
@@ -417,20 +419,22 @@ static void initialize_child(apr_pool_t *p, server_rec *s)
 {
     apr_status_t sts;
 
-    if (!client_shm) {
+    if (!main_client_shm) {
         return;
     }
 
     /* Get access to rmm in child */
+    client_rmm = main_client_rmm;
     sts = apr_rmm_attach(&client_rmm,
                          NULL,
-                         apr_shm_baseaddr_get(client_shm),
+                         apr_shm_baseaddr_get(main_client_shm),
                          p);
     if (sts != APR_SUCCESS) {
         log_error_and_cleanup("failed to attach to rmm", sts, s);
         return;
     }
 
+    client_lock = main_client_lock;
     sts = apr_global_mutex_child_init(&client_lock,
                                       apr_global_mutex_lockfile(client_lock),
                                       p);
@@ -438,6 +442,8 @@ static void initialize_child(apr_pool_t *p, server_rec *s)
         log_error_and_cleanup("failed to create lock (client_lock)", sts, s);
         return;
     }
+
+    opaque_lock = main_opaque_lock;
     sts = apr_global_mutex_child_init(&opaque_lock,
                                       apr_global_mutex_lockfile(opaque_lock),
                                       p);
@@ -757,8 +763,9 @@ static client_entry *get_client(unsigned long key, const request_rec *r)
     int bucket;
     client_entry *entry, *prev = NULL;
 
-
-    if (!key || !client_shm)  return NULL;
+    if (!key || !main_client_shm) {
+        return NULL;
+    }
 
     bucket = key % client_list->tbl_len;
     entry  = client_list->table[bucket];
@@ -854,8 +861,7 @@ static client_entry *add_client(unsigned long key, client_entry *info,
     int bucket;
     client_entry *entry;
 
-
-    if (!key || !client_shm) {
+    if (!key || !main_client_shm) {
         return NULL;
     }
 
@@ -1370,14 +1376,14 @@ static int check_nc(const request_rec *r, const digest_header_rec *resp,
     const char *snc = resp->nonce_count;
     char *endptr;
 
-    if (conf->check_nc && !client_shm) {
+    if (conf->check_nc && !main_client_shm) {
         /* Shouldn't happen, but just in case... */
         ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01771)
                       "cannot check nonce count without shared memory");
         return OK;
     }
 
-    if (!conf->check_nc || !client_shm) {
+    if (!conf->check_nc || !main_client_shm) {
         return OK;
     }
 
