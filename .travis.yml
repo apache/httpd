@@ -237,7 +237,7 @@ jobs:
            APU_CONFIG="--with-crypto --with-ldap"
            CLEAR_CACHE=1
     # -------------------------------------------------------------------------
-    - name: Linux Ubuntu, APR 1.7.0 --enable-pool-debug, APR-util 1.6.1
+    - name: Linux Ubuntu, --enable-pool-debug
       env: APR_VERSION=1.7.x APR_CONFIG="--enable-pool-debug"
            APU_VERSION=1.7.x APU_CONFIG="--with-crypto --with-ldap"
            CONFIG="--enable-mods-shared=reallyall"
