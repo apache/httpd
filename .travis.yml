@@ -238,22 +238,25 @@ jobs:
            CLEAR_CACHE=1
     # -------------------------------------------------------------------------
     - name: Linux Ubuntu, APR 1.7.0 --enable-pool-debug, APR-util 1.6.1
-      env: APR_VERSION=1.7.0 APR_CONFIG="--enable-pool-debug"
-           APU_VERSION=1.6.1 APU_CONFIG="--with-crypto --with-ldap"
+      env: APR_VERSION=1.7.x APR_CONFIG="--enable-pool-debug"
+           APU_VERSION=1.7.x APU_CONFIG="--with-crypto --with-ldap"
            CONFIG="--enable-mods-shared=reallyall"
            TEST_MALLOC=1
+           CLEAR_CACHE=1
     # -------------------------------------------------------------------------
     - name: Linux Ubuntu, Shared MPMs (event), pool-debug, SSL/TLS variants
-      env: APR_VERSION=1.7.0 APR_CONFIG="--enable-pool-debug"
-           APU_VERSION=1.6.1 APU_CONFIG="--with-crypto --with-ldap"
+      env: APR_VERSION=1.7.x APR_CONFIG="--enable-pool-debug"
+           APU_VERSION=1.7.x APU_CONFIG="--with-crypto --with-ldap"
            CONFIG="--enable-mods-shared=reallyall --enable-mpms-shared=all --with-mpm=event"
            TEST_MALLOC=1 TEST_SSL=1
+           CLEAR_CACHE=1
     # -------------------------------------------------------------------------
     - name: Linux Ubuntu, Shared MPMs (prefork), pool-debug, SSL/TLS variants
-      env: APR_VERSION=1.7.0 APR_CONFIG="--enable-pool-debug"
-           APU_VERSION=1.6.1 APU_CONFIG="--with-crypto --with-ldap"
-           CONFIG="--enable-mods-shared=reallyall --enable-mpms-shared=all --with-mpm=prefork --disable-http2 --disable-ssl-ct"
+      env: APR_VERSION=1.7.x APR_CONFIG="--enable-pool-debug"
+           APU_VERSION=1.7.x APU_CONFIG="--with-crypto --with-ldap"
+           CONFIG="--enable-mods-shared=reallyall --enable-mpms-shared=all --with-mpm=prefork"
            TEST_MALLOC=1 TEST_SSL=1
+           CLEAR_CACHE=1
     # -------------------------------------------------------------------------
     - name: Linux Ubuntu, APR 1.7.0, APR-util 1.6.1, pool-debug, LDAP
       env: APR_VERSION=1.7.0 APR_CONFIG="--enable-pool-debug"
