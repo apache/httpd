@@ -424,7 +424,6 @@ static void initialize_child(apr_pool_t *p, server_rec *s)
     }
 
     /* Get access to rmm in child */
-    client_rmm = main_client_rmm;
     sts = apr_rmm_attach(&client_rmm,
                          NULL,
                          apr_shm_baseaddr_get(main_client_shm),
