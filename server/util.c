@@ -2474,11 +2474,9 @@ char *ap_get_local_host(apr_pool_t *a)
 AP_DECLARE(char *) ap_pbase64decode(apr_pool_t *p, const char *bufcoded)
 {
     char *decoded;
-    int l;
 
-    decoded = (char *) apr_palloc(p, 1 + apr_base64_decode_len(bufcoded));
-    l = apr_base64_decode(decoded, bufcoded);
-    decoded[l] = '\0'; /* make binary sequence into string */
+    decoded = (char *) apr_palloc(p, apr_base64_decode_len(bufcoded));
+    apr_base64_decode(decoded, bufcoded);
 
     return decoded;
 }
