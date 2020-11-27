@@ -96,6 +96,12 @@ if ! test -v SKIP_TESTING; then
         popd
     fi
 
+    # Skip further testing if a core dump was created during the test
+    # suite run above.
+    if test $RV -eq 0 -a -f test/perl-framework/t/core; then
+        RV=4
+    fi            
+    
     if test -v TEST_SSL -a $RV -eq 0; then
         pushd test/perl-framework
             for cache in shmcb redis:localhost:6379 memcache:localhost:11211; do
