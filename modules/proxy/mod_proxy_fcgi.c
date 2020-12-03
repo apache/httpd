@@ -1092,7 +1092,10 @@ static int proxy_fcgi_handler(request_rec *r, proxy_worker *worker,
     if (input_brigade == NULL) {
         const char *old_te = apr_table_get(r->headers_in, "Transfer-Encoding");
         const char *old_cl = NULL;
-        if (!old_te) {
+        if (old_te) {
+            apr_table_unset(r->headers_in, "Content-Length");
+        }
+        else {
             old_cl = apr_table_get(r->headers_in, "Content-Length");
         }
 
@@ -1140,8 +1143,8 @@ static int proxy_fcgi_handler(request_rec *r, proxy_worker *worker,
              * no body, do not set the Content-Length.
              */
             if (old_cl || old_te || input_bytes) {
-                apr_table_set(r->headers_in, "Content-Length",
-                              apr_off_t_toa(p, input_bytes));
+                apr_table_setn(r->headers_in, "Content-Length",
+                               apr_off_t_toa(p, input_bytes));
                 if (old_te) {
                     apr_table_unset(r->headers_in, "Transfer-Encoding");
                 }
@@ -1169,9 +1172,11 @@ static int proxy_fcgi_handler(request_rec *r, proxy_worker *worker,
             APR_BRIGADE_CONCAT(input_brigade, tmp_bb);
             input_bytes += remaining_bytes;
 
-            apr_table_unset(r->headers_in, "Transfer-Encoding");
-            apr_table_set(r->headers_in, "Content-Length",
-                          apr_off_t_toa(p, input_bytes));
+            apr_table_setn(r->headers_in, "Content-Length",
+                           apr_off_t_toa(p, input_bytes));
+            if (old_te) {
+                apr_table_unset(r->headers_in, "Transfer-Encoding");
+            }
         }
     }
 
