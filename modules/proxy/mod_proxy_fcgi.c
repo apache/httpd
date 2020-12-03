@@ -1085,45 +1085,94 @@ static int proxy_fcgi_handler(request_rec *r, proxy_worker *worker,
         goto cleanup;
     }
 
-    /* Prefetch (nonlocking) the request body so to increase the chance to get
-     * the whole (or enough) body and determine Content-Length vs chunked or
-     * spooled. By doing this before connecting or reusing the backend, we want
-     * to minimize the delay between this connection is considered alive and
-     * the first bytes sent (should the client's link be slow or some input
-     * filter retain the data). This is a best effort to prevent the backend
-     * from closing (from under us) what it thinks is an idle connection, hence
-     * to reduce to the minimum the unavoidable local is_socket_connected() vs
-     * remote keepalive race condition.
+    /* We possibly reuse input data prefetched in previous call(s), e.g. for a
+     * balancer fallback scenario.
      */
-    input_brigade = apr_brigade_create(p, r->connection->bucket_alloc);
-    status = ap_proxy_prefetch_input(r, backend, input_brigade,
-                                     APR_NONBLOCK_READ, &input_bytes,
-                                     MAX_MEM_SPOOL);
-    if (status != OK) {
-        goto cleanup;
-    }
-    if (apr_table_get(r->subprocess_env, "proxy-sendcl")
-            && (APR_BRIGADE_EMPTY(input_brigade)
-                || !APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(input_brigade)))) {
-        apr_bucket_brigade *tmp_bb;
-        apr_off_t remaining_bytes = 0;
+    apr_pool_userdata_get((void **)&input_brigade, "proxy-fcgi-input", p);
+    if (input_brigade == NULL) {
+        const char *old_te = apr_table_get(r->headers_in, "Transfer-Encoding");
+        const char *old_cl = NULL;
+        if (!old_te) {
+            old_cl = apr_table_get(r->headers_in, "Content-Length");
+        }
 
-        AP_DEBUG_ASSERT(MAX_MEM_SPOOL >= input_bytes);
-        tmp_bb = apr_brigade_create(p, r->connection->bucket_alloc);
-        status = ap_proxy_spool_input(r, backend, tmp_bb, &remaining_bytes,
-                                      MAX_MEM_SPOOL - input_bytes);
+        input_brigade = apr_brigade_create(p, r->connection->bucket_alloc);
+        apr_pool_userdata_setn(input_brigade, "proxy-fcgi-input", NULL, p);
+
+        /* Prefetch (nonlocking) the request body so to increase the chance
+         * to get the whole (or enough) body and determine Content-Length vs
+         * chunked or spooled. By doing this before connecting or reusing the
+         * backend, we want to minimize the delay between this connection is
+         * considered alive and the first bytes sent (should the client's link
+         * be slow or some input filter retain the data). This is a best effort
+         * to prevent the backend from closing (from under us) what it thinks is
+         * an idle connection, hence to reduce to the minimum the unavoidable
+         * local is_socket_connected() vs remote keepalive race condition.
+         */
+        status = ap_proxy_prefetch_input(r, backend, input_brigade,
+                                         APR_NONBLOCK_READ, &input_bytes,
+                                         MAX_MEM_SPOOL);
         if (status != OK) {
             goto cleanup;
         }
 
-        APR_BRIGADE_CONCAT(input_brigade, tmp_bb);
-        input_bytes += remaining_bytes;
-    }
-    if (!APR_BRIGADE_EMPTY(input_brigade)
-            && APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(input_brigade))) {
-        apr_table_unset(r->headers_in, "Transfer-Encoding");
-        apr_table_set(r->headers_in, "Content-Length",
-                      apr_off_t_toa(p, input_bytes));
+        /*
+         * The request body is streamed by default, using either C-L or
+         * chunked T-E, like this:
+         *
+         *   The whole body (including no body) was received on prefetch, i.e.
+         *   the input brigade ends with EOS => C-L = input_bytes.
+         *
+         *   C-L is known and reliable, i.e. only protocol filters in the input
+         *   chain thus none should change the body => use C-L from client.
+         *
+         *   The administrator has not "proxy-sendcl" which prevents T-E => use
+         *   T-E and chunks.
+         *
+         *   Otherwise we need to determine and set a content-length, so spool
+         *   the entire request body to memory/temporary file (MAX_MEM_SPOOL),
+         *   such that we finally know its length => C-L = input_bytes.
+         */
+        if (!APR_BRIGADE_EMPTY(input_brigade)
+                && APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(input_brigade))) {
+            /* The whole thing fit, so our decision is trivial, use the input
+             * bytes for the Content-Length. If we expected no body, and read
+             * no body, do not set the Content-Length.
+             */
+            if (old_cl || old_te || input_bytes) {
+                apr_table_set(r->headers_in, "Content-Length",
+                              apr_off_t_toa(p, input_bytes));
+                if (old_te) {
+                    apr_table_unset(r->headers_in, "Transfer-Encoding");
+                }
+            }
+        }
+        else if (old_cl && r->input_filters == r->proto_input_filters) {
+            /* Streaming is possible by preserving the existing C-L */
+        }
+        else if (!apr_table_get(r->subprocess_env, "proxy-sendcl")) {
+            /* Streaming is possible using T-E: chunked */
+        }
+        else {
+            /* No streaming, C-L is the only option so spool to memory/file */
+            apr_bucket_brigade *tmp_bb;
+            apr_off_t remaining_bytes = 0;
+
+            AP_DEBUG_ASSERT(MAX_MEM_SPOOL >= input_bytes);
+            tmp_bb = apr_brigade_create(p, r->connection->bucket_alloc);
+            status = ap_proxy_spool_input(r, backend, tmp_bb, &remaining_bytes,
+                                          MAX_MEM_SPOOL - input_bytes);
+            if (status != OK) {
+                goto cleanup;
+            }
+
+            APR_BRIGADE_CONCAT(input_brigade, tmp_bb);
+            input_bytes += remaining_bytes;
+
+            apr_table_unset(r->headers_in, "Transfer-Encoding");
+            apr_table_set(r->headers_in, "Content-Length",
+                          apr_off_t_toa(p, input_bytes));
+        }
     }
 
     /* This scheme handler does not reuse connections by default, to
