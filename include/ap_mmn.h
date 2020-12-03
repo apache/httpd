@@ -545,6 +545,9 @@
  * 20120211.99 (2.4.47-dev) Add proxy_tunnel_rec, ap_proxy_tunnel_create()
  *                          and ap_proxy_tunnel_run() to proxy_util.
  * 20120211.99 (2.4.47-dev) Add ap_proxy_worker_can_upgrade()
+ * 20120211.100 (2.4.47-dev) Add ap_proxy_prefetch_input(),
+ *                           ap_proxy_spool_input() and
+ *                           ap_proxy_read_input().
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -552,7 +555,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 99                  /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 100                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
