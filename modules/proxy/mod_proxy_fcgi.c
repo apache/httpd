@@ -532,7 +532,8 @@ static int handle_headers(request_rec *r, int *state,
 static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
                              request_rec *r, apr_pool_t *setaside_pool,
                              apr_uint16_t request_id, const char **err,
-                             int *bad_request, int *has_responded)
+                             int *bad_request, int *has_responded,
+                             apr_bucket_brigade *input_brigade)
 {
     apr_bucket_brigade *ib, *ob;
     int seen_end_of_headers = 0, done = 0, ignore_body = 0;
@@ -594,9 +595,26 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
             int last_stdin = 0;
             char *iobuf_cursor;
 
-            rv = ap_get_brigade(r->input_filters, ib,
-                                AP_MODE_READBYTES, APR_BLOCK_READ,
-                                iobuf_size);
+            if (APR_BRIGADE_EMPTY(input_brigade)) {
+                rv = ap_get_brigade(r->input_filters, ib,
+                                    AP_MODE_READBYTES, APR_BLOCK_READ,
+                                    iobuf_size);
+            }
+            else {
+                apr_bucket *e;
+                APR_BRIGADE_CONCAT(ib, input_brigade);
+                rv = apr_brigade_partition(ib, iobuf_size, &e);
+                if (rv == APR_SUCCESS) {
+                    while (e != APR_BRIGADE_SENTINEL(ib)
+                           && APR_BUCKET_IS_METADATA(e)) {
+                        e = APR_BUCKET_NEXT(e);
+                    }
+                    apr_brigade_split_ex(ib, e, input_brigade);
+                }
+                else if (rv == APR_INCOMPLETE) {
+                    rv = APR_SUCCESS;
+                }
+            }
             if (rv != APR_SUCCESS) {
                 *err = "reading input brigade";
                 *bad_request = 1;
@@ -934,7 +952,8 @@ static int fcgi_do_request(apr_pool_t *p, request_rec *r,
                            conn_rec *origin,
                            proxy_dir_conf *conf,
                            apr_uri_t *uri,
-                           char *url, char *server_portstr)
+                           char *url, char *server_portstr,
+                           apr_bucket_brigade *input_brigade)
 {
     /* Request IDs are arbitrary numbers that we assign to a
      * single request. This would allow multiplex/pipelining of
@@ -970,7 +989,8 @@ static int fcgi_do_request(apr_pool_t *p, request_rec *r,
 
     /* Step 3: Read records from the back end server and handle them. */
     rv = dispatch(conn, conf, r, temp_pool, request_id,
-                  &err, &bad_request, &has_responded);
+                  &err, &bad_request, &has_responded,
+                  input_brigade);
     if (rv != APR_SUCCESS) {
         /* If the client aborted the connection during retrieval or (partially)
          * sending the response, don't return a HTTP_SERVICE_UNAVAILABLE, since
@@ -1006,6 +1026,8 @@ static int fcgi_do_request(apr_pool_t *p, request_rec *r,
 
 #define FCGI_SCHEME "FCGI"
 
+#define MAX_MEM_SPOOL 16384
+
 /*
  * This handles fcgi:(dest) URLs
  */
@@ -1018,6 +1040,8 @@ static int proxy_fcgi_handler(request_rec *r, proxy_worker *worker,
     char server_portstr[32];
     conn_rec *origin = NULL;
     proxy_conn_rec *backend = NULL;
+    apr_bucket_brigade *input_brigade;
+    apr_off_t input_bytes = 0;
     apr_uri_t *uri;
 
     proxy_dir_conf *dconf = ap_get_module_config(r->per_dir_config,
@@ -1060,6 +1084,47 @@ static int proxy_fcgi_handler(request_rec *r, proxy_worker *worker,
         goto cleanup;
     }
 
+    /* Prefetch (nonlocking) the request body so to increase the chance to get
+     * the whole (or enough) body and determine Content-Length vs chunked or
+     * spooled. By doing this before connecting or reusing the backend, we want
+     * to minimize the delay between this connection is considered alive and
+     * the first bytes sent (should the client's link be slow or some input
+     * filter retain the data). This is a best effort to prevent the backend
+     * from closing (from under us) what it thinks is an idle connection, hence
+     * to reduce to the minimum the unavoidable local is_socket_connected() vs
+     * remote keepalive race condition.
+     */
+    input_brigade = apr_brigade_create(p, r->connection->bucket_alloc);
+    status = ap_proxy_prefetch_input(r, backend, input_brigade,
+                                     APR_NONBLOCK_READ, &input_bytes,
+                                     MAX_MEM_SPOOL);
+    if (status != OK) {
+        goto cleanup;
+    }
+    if (apr_table_get(r->subprocess_env, "proxy-sendcl")
+            && (APR_BRIGADE_EMPTY(input_brigade)
+                || !APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(input_brigade)))) {
+        apr_bucket_brigade *tmp_bb;
+        apr_off_t remaining_bytes = 0;
+
+        AP_DEBUG_ASSERT(MAX_MEM_SPOOL >= input_bytes);
+        tmp_bb = apr_brigade_create(p, r->connection->bucket_alloc);
+        status = ap_proxy_spool_input(r, backend, tmp_bb, &remaining_bytes,
+                                      MAX_MEM_SPOOL - input_bytes);
+        if (status != OK) {
+            goto cleanup;
+        }
+
+        APR_BRIGADE_CONCAT(input_brigade, tmp_bb);
+        input_bytes += remaining_bytes;
+    }
+    if (!APR_BRIGADE_EMPTY(input_brigade)
+            && APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(input_brigade))) {
+        apr_table_unset(r->headers_in, "Transfer-Encoding");
+        apr_table_set(r->headers_in, "Content-Length",
+                      apr_off_t_toa(p, input_bytes));
+    }
+
     /* This scheme handler does not reuse connections by default, to
      * avoid tying up a fastcgi that isn't expecting to work on
      * parallel requests.  But if the user went out of their way to
@@ -1084,7 +1149,7 @@ static int proxy_fcgi_handler(request_rec *r, proxy_worker *worker,
 
     /* Step Three: Process the Request */
     status = fcgi_do_request(p, r, backend, origin, dconf, uri, url,
-                             server_portstr);
+                             server_portstr, input_brigade);
 
 cleanup:
     ap_proxy_release_connection(FCGI_SCHEME, backend, r->server);
