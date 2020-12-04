@@ -109,7 +109,7 @@ THINGS THAT SHOULD BE CONSIDERED EARLY IN THE 2.6/3.0 DEVELOPMENT CYCLE:
       the main connection.
     - solve multi-threaded access to master connection props/module conf
       (e.g. ssl vars)
-    
+
   * make mod_ssl more "core"?
   
   * add high-level server configuration directives that can steer/influence
