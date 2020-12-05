@@ -176,25 +176,43 @@ static void show_compile_settings(void)
 #if APR_USE_FLOCK_SERIALIZE
     printf(" -D APR_USE_FLOCK_SERIALIZE\n");
 #endif
-
 #if APR_USE_SYSVSEM_SERIALIZE
     printf(" -D APR_USE_SYSVSEM_SERIALIZE\n");
 #endif
-
 #if APR_USE_POSIXSEM_SERIALIZE
     printf(" -D APR_USE_POSIXSEM_SERIALIZE\n");
 #endif
-
 #if APR_USE_FCNTL_SERIALIZE
     printf(" -D APR_USE_FCNTL_SERIALIZE\n");
 #endif
-
 #if APR_USE_PROC_PTHREAD_SERIALIZE
     printf(" -D APR_USE_PROC_PTHREAD_SERIALIZE\n");
 #endif
 
 #if APR_USE_PTHREAD_SERIALIZE
     printf(" -D APR_USE_PTHREAD_SERIALIZE\n");
+#endif
+
+#if APR_USE_SHMEM_MMAP_TMP
+    printf(" -D APR_USE_SHMEM_MMAP_TMP\n");
+#endif
+#if APR_USE_SHMEM_MMAP_SHM
+    printf(" -D APR_USE_SHMEM_MMAP_SHM\n");
+#endif
+#if APR_USE_SHMEM_MMAP_ZERO
+    printf(" -D APR_USE_SHMEM_MMAP_ZERO\n");
+#endif
+#if APR_USE_SHMEM_SHMGET_ANON
+    printf(" -D APR_USE_SHMEM_SHMGET_ANON\n");
+#endif
+#if APR_USE_SHMEM_SHMGET
+    printf(" -D APR_USE_SHMEM_SHMGET\n");
+#endif
+#if APR_USE_SHMEM_MMAP_ANON
+    printf(" -D APR_USE_SHMEM_MMAP_ANON\n");
+#endif
+#if APR_USE_SHMEM_BEOS
+    printf(" -D APR_USE_SHMEM_BEOS\n");
 #endif
 
 #if APR_PROCESS_LOCK_IS_GLOBAL
