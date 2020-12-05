@@ -150,17 +150,10 @@ if ! test -v SKIP_TESTING; then
         cat ubsan.log.*
         RV=3
     fi
-
     if test -v TEST_ASAN && ls asan.log.* &> /dev/null; then
         cat asan.log.*
         RV=4
     fi
-    if test -v TEST_ASAN && test -f test/perl-framework/t/logs/error_log &> /dev/null; then
-        cat test/perl-framework/t/t/logs/error_log
-        RV=4
-    fi
-
-           CONFIG="--enable-mods-shared=reallyall" TEST_ASAN=1
 
     if test -f test/perl-framework/t/core; then
         gdb -ex 'thread apply all backtrace' -batch ./httpd test/perl-framework/t/core
