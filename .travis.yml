@@ -301,7 +301,8 @@ jobs:
     - name: Linux Ubuntu Focal, UBSan
       dist: focal
       env: NOTEST_CFLAGS="-fsanitize=undefined -fno-sanitize-recover=undefined" NOTEST_LIBS=-lubsan
-           CONFIG="--enable-mods-shared=reallyall --disable-http2" TEST_UBSAN=1
+           CONFIG="--enable-mods-shared=reallyall --disable-http2"
+           TEST_UBSAN=1
     # -------------------------------------------------------------------------
     - name: Linux Ubuntu Focal, ASan
       dist: focal
