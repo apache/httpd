@@ -196,6 +196,7 @@ jobs:
       os: linux
       env: CONFIG="--enable-mods-shared=reallyall --enable-maintainer-mode NOTEST_CFLAGS=-Werror"
            BUILDCONFIG="--with-regen-expr"
+           TEST_ARGS="-v"
            MFLAGS=
     # -------------------------------------------------------------------------
     - if: *condition_not_24x
