@@ -306,7 +306,7 @@ jobs:
     - name: Linux Ubuntu Focal, ASan
       dist: focal
       env: NOTEST_CFLAGS="-fsanitize=address -fno-sanitize-recover=address -fno-omit-frame-pointer" NOTEST_LIBS=-lasan
-           CONFIG="--enable-mods-shared=reallyall TEST_ASAN=1
+           CONFIG="--enable-mods-shared=reallyall" TEST_ASAN=1
   allow_failures:
     # Non-x86 are sometimes flaky:
     - arch: s390x
