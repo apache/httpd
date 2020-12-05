@@ -155,8 +155,8 @@ if ! test -v SKIP_TESTING; then
         cat asan.log.*
         RV=4
     fi
-    if test -v TEST_ASAN && test -f test/perl-framework.t/logs/error_log &> /dev/null; then
-        cat test/perl-framework.t/t/logs/error_log
+    if test -v TEST_ASAN && test -f test/perl-framework/t/logs/error_log &> /dev/null; then
+        cat test/perl-framework/t/t/logs/error_log
         RV=4
     fi
 

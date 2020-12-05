@@ -305,7 +305,7 @@ jobs:
     # -------------------------------------------------------------------------
     - name: Linux Ubuntu Focal, ASan
       dist: focal
-      env: NOTEST_CFLAGS="-DAP_DEBUG -fsanitize=address -fno-sanitize-recover=address -fno-omit-frame-pointer" NOTEST_LIBS=-lasan
+      env: NOTEST_CFLAGS="-ggdb -fsanitize=address -fno-sanitize-recover=address -fno-omit-frame-pointer"
            APR_VERSION=1.7.x APR_CONFIG="--enable-pool-debug"
            APU_VERSION=1.7.x APU_CONFIG="--with-crypto --with-ldap"
            CONFIG="--enable-mods-shared=reallyall"
