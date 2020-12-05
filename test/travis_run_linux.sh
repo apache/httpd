@@ -84,6 +84,10 @@ if ! test -v SKIP_TESTING; then
         export UBSAN_OPTIONS="log_path=$PWD/ubsan.log"
     fi
 
+    if test -v TEST_ASAN; then
+        export ASAN_OPTIONS="log_path=$PWD/asan.log"
+    fi
+
     if test -v WITH_TEST_SUITE; then
         make check TESTS="${TESTS}" TEST_CONFIG="${TEST_ARGS}"
         RV=$?
@@ -144,6 +148,11 @@ if ! test -v SKIP_TESTING; then
 
     if test -v TEST_UBSAN && ls ubsan.log.* &> /dev/null; then
         cat ubsan.log.*
+        RV=3
+    fi
+
+    if test -v TEST_ASAN && ls asan.log.* &> /dev/null; then
+        cat asan.log.*
         RV=3
     fi
 

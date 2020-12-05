@@ -196,7 +196,6 @@ jobs:
       os: linux
       env: CONFIG="--enable-mods-shared=reallyall --enable-maintainer-mode NOTEST_CFLAGS=-Werror"
            BUILDCONFIG="--with-regen-expr"
-           TEST_ARGS="-v"
            MFLAGS=
     # -------------------------------------------------------------------------
     - if: *condition_not_24x
@@ -303,6 +302,11 @@ jobs:
       dist: focal
       env: NOTEST_CFLAGS="-fsanitize=undefined -fno-sanitize-recover=undefined" NOTEST_LIBS=-lubsan
            CONFIG="--enable-mods-shared=reallyall --disable-http2" TEST_UBSAN=1
+    # -------------------------------------------------------------------------
+    - name: Linux Ubuntu Focal, ASan
+      dist: focal
+      env: NOTEST_CFLAGS="-fsanitize=address -fno-sanitize-recover=address -fno-omit-frame-pointer" NOTEST_LIBS=-lasan
+           CONFIG="--enable-mods-shared=reallyall TEST_ASAN=1
   allow_failures:
     # Non-x86 are sometimes flaky:
     - arch: s390x
