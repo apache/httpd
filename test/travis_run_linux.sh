@@ -150,9 +150,14 @@ if ! test -v SKIP_TESTING; then
         cat ubsan.log.*
         RV=3
     fi
+
     if test -v TEST_ASAN && ls asan.log.* &> /dev/null; then
         cat asan.log.*
-        RV=4
+
+        # ASan can report memory leaks, fail on errors only
+        if grep -q "ERROR: AddressSanitizer:" `ls asan.log.*`; then
+            RV=4
+        fi
     fi
 
     if test -f test/perl-framework/t/core; then
