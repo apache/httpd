@@ -366,10 +366,11 @@ h2_workers *h2_workers_create(server_rec *s, apr_pool_t *pchild,
     }
     if (status == APR_SUCCESS) {
         /* Stop/join the workers threads when the MPM child exits (pchild is
-         * destroyed), as a pre_cleanup of workers->pool so that the threads
-         * don't last more than the resources they are using.
+         * destroyed), and as a pre_cleanup of pchild thus before the threads
+         * pools (children of workers->pool) so that they are not destroyed
+         * before/under us.
          */
-        apr_pool_pre_cleanup_register(pool, workers, workers_pool_cleanup);    
+        apr_pool_pre_cleanup_register(pchild, workers, workers_pool_cleanup);    
         return workers;
     }
     return NULL;
