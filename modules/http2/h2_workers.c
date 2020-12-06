@@ -277,7 +277,7 @@ static apr_status_t workers_pool_cleanup(void *data)
     return APR_SUCCESS;
 }
 
-h2_workers *h2_workers_create(server_rec *s, apr_pool_t *server_pool,
+h2_workers *h2_workers_create(server_rec *s, apr_pool_t *pchild,
                               int min_workers, int max_workers,
                               int idle_secs)
 {
@@ -287,14 +287,14 @@ h2_workers *h2_workers_create(server_rec *s, apr_pool_t *server_pool,
     int i, n;
 
     ap_assert(s);
-    ap_assert(server_pool);
+    ap_assert(pchild);
 
     /* let's have our own pool that will be parent to all h2_worker
      * instances we create. This happens in various threads, but always
      * guarded by our lock. Without this pool, all subpool creations would
      * happen on the pool handed to us, which we do not guard.
      */
-    apr_pool_create(&pool, server_pool);
+    apr_pool_create(&pool, pchild);
     apr_pool_tag(pool, "h2_workers");
     workers = apr_pcalloc(pool, sizeof(h2_workers));
     if (!workers) {
@@ -365,6 +365,10 @@ h2_workers *h2_workers_create(server_rec *s, apr_pool_t *server_pool,
         workers->dynamic = (workers->worker_count < workers->max_workers);
     }
     if (status == APR_SUCCESS) {
+        /* Stop/join the workers threads when the MPM child exits (pchild is
+         * destroyed), as a pre_cleanup of workers->pool so that the threads
+         * don't last more than the resources they are using.
+         */
         apr_pool_pre_cleanup_register(pool, workers, workers_pool_cleanup);    
         return workers;
     }
