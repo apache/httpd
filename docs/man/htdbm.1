@@ -74,19 +74,19 @@ Create the \fIpasswdfile\fR\&. If \fIpasswdfile\fR already exists, it is rewritt
 Display the results on standard output rather than updating a database\&. This option changes the syntax of the command line, since the \fIpasswdfile\fR argument (usually the first one) is omitted\&. It cannot be combined with the \fB-c\fR option\&.  
 .TP
 \fB-m\fR
-Use MD5 encryption for passwords\&. On Windows and Netware, this is the default\&.  
+Use MD5 hashing for passwords\&. On Windows and Netware, this is the default\&.  
 .TP
 \fB-B\fR
-Use bcrypt encryption for passwords\&. This is currently considered to be very secure\&.  
+Use bcrypt hashing for passwords\&. This is currently considered to be very secure\&.  
 .TP
 \fB-C\fR
-This flag is only allowed in combination with \fB-B\fR (bcrypt encryption)\&. It sets the computing time used for the bcrypt algorithm (higher is more secure but slower, default: 5, valid: 4 to 31)\&.  
+This flag is only allowed in combination with \fB-B\fR (bcrypt hashing)\&. It sets the computing time used for the bcrypt algorithm (higher is more secure but slower, default: 5, valid: 4 to 31)\&.  
 .TP
 \fB-d\fR
-Use \fBcrypt()\fR encryption for passwords\&. The default on all platforms but Windows and Netware\&. Though possibly supported by \fBhtdbm\fR on all platforms, it is not supported by the httpd server on Windows and Netware\&. This algorithm is \fBinsecure\fR by today's standards\&.  
+Use \fBcrypt()\fR hashing for passwords\&. The default on all platforms but Windows and Netware\&. Though possibly supported by \fBhtdbm\fR on all platforms, it is not supported by the httpd server on Windows and Netware\&. This algorithm is \fBinsecure\fR by today's standards\&.  
 .TP
 \fB-s\fR
-Use SHA encryption for passwords\&. Facilitates migration from/to Netscape servers using the LDAP Directory Interchange Format (ldif)\&. This algorithm is \fBinsecure\fR by today's standards\&.  
+Use SHA hashing for passwords\&. Facilitates migration from/to Netscape servers using the LDAP Directory Interchange Format (ldif)\&. This algorithm is \fBinsecure\fR by today's standards\&.  
 .TP
 \fB-p\fR
 Use plaintext passwords\&. Though \fBhtdbm\fR will support creation on all platforms, the httpd daemon will only accept plain text passwords on Windows and Netware\&.  
@@ -110,7 +110,7 @@ The filename of the DBM format file\&. Usually without the extension \fB\&.db\fR
 The username to create or update in \fIpasswdfile\fR\&. If \fIusername\fR does not exist in this file, an entry is added\&. If it does exist, the password is changed\&.  
 .TP
 \fB\fIpassword\fR\fR
-The plaintext password to be encrypted and stored in the DBM file\&. Used only with the \fB-b\fR flag\&.  
+The plaintext password to be hashed and stored in the DBM file\&. Used only with the \fB-b\fR flag\&.  
 .TP
 \fB-T\fIDBTYPE\fR\fR
 Type of DBM file (SDBM, GDBM, DB, or "default")\&.  
@@ -137,7 +137,7 @@ One can usually use the \fBfile\fR program supplied with most Unix systems to se
 .fi
  
 .PP
-Adds or modifies the password for user \fBjsmith\fR\&. The user is prompted for the password\&. If executed on a Windows system, the password will be encrypted using the modified Apache MD5 algorithm; otherwise, the system's \fBcrypt()\fR routine will be used\&. If the file does not exist, \fBhtdbm\fR will do nothing except return an error\&.
+Adds or modifies the password for user \fBjsmith\fR\&. The user is prompted for the password\&. If executed on a Windows system, the password will be hashed using the modified Apache MD5 algorithm; otherwise, the system's \fBcrypt()\fR routine will be used\&. If the file does not exist, \fBhtdbm\fR will do nothing except return an error\&.
  
 .nf
 
@@ -177,13 +177,13 @@ The first line creates a new password database with a temporary placeholder entr
 Web password files such as those managed by \fBhtdbm\fR should \fInot\fR be within the Web server's URI space -- that is, they should not be fetchable with a browser\&.
  
 .PP
-The use of the \fB-b\fR option is discouraged, since when it is used the unencrypted password appears on the command line\&.
+The use of the \fB-b\fR option is discouraged, since when it is used the plaintext password appears on the command line\&.
  
 .PP
 When using the \fBcrypt()\fR algorithm, note that only the first 8 characters of the password are used to form the password\&. If the supplied password is longer, the extra characters will be silently discarded\&.
  
 .PP
-The SHA encryption format does not use salting: for a given password, there is only one encrypted representation\&. The \fBcrypt()\fR and MD5 formats permute the representation by prepending a random salt string, to make dictionary attacks against the passwords more difficult\&.
+The SHA hashing format does not use salting: for a given password, there is only one hashed representation\&. The \fBcrypt()\fR and MD5 formats permute the representation by prepending a random salt string, to make dictionary attacks against the passwords more difficult\&.
  
 .PP
 The SHA and \fBcrypt()\fR formats are insecure by today's standards\&.
@@ -191,10 +191,10 @@ The SHA and \fBcrypt()\fR formats are insecure by today's standards\&.
 .SH "RESTRICTIONS"
  
 .PP
-On the Windows platform, passwords encrypted with \fBhtdbm\fR are limited to no more than \fB255\fR characters in length\&. Longer passwords will be truncated to 255 characters\&.
+On the Windows platform, passwords hashed with \fBhtdbm\fR are limited to no more than \fB255\fR characters in length\&. Longer passwords will be truncated to 255 characters\&.
  
 .PP
-The MD5 algorithm used by \fBhtdbm\fR is specific to the Apache software; passwords encrypted using it will not be usable with other Web servers\&.
+The MD5 algorithm used by \fBhtdbm\fR is specific to the Apache software; passwords hashed using it will not be usable with other Web servers\&.
  
 .PP
 Usernames are limited to \fB255\fR bytes and may not include the character \fB:\fR\&.

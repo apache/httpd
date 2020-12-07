@@ -32,9 +32,9 @@ sub usage {
     die <<SYNTAX;
 Usage: dbmmanage [enc] dbname command [username [pw [group[,group] [comment]]]]
 
-    where enc is  -d for crypt encryption (default except on Win32, Netware)
-                  -m for MD5 encryption (default on Win32, Netware)
-                  -s for SHA1 encryption
+    where enc is  -d for crypt hashing (default except on Win32, Netware)
+                  -m for MD5 hashing (default on Win32, Netware)
+                  -s for SHA1 hashing
                   -p for plaintext
 
     command is one of: $cmds
@@ -265,7 +265,7 @@ sub dbmc::add {
     $crypted_pwd .= ":" . $groups if $groups;
     $DB{$key} = $crypted_pwd;
     my $action = $is_update ? "updated" : "added";
-    print "User $key $action with password encrypted to $DB{$key} using $crypt_method\n";
+    print "User $key $action with password hashed to $DB{$key} using $crypt_method\n";
 }
 
 sub dbmc::adduser {
