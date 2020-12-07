@@ -237,7 +237,7 @@ jobs:
            APU_CONFIG="--with-crypto --with-ldap"
            CLEAR_CACHE=1
     # -------------------------------------------------------------------------
-    - name: Linux Ubuntu, --enable-pool-debug
+    - name: Linux Ubuntu, pool-debug
       env: APR_VERSION=1.7.x APR_CONFIG="--enable-pool-debug"
            APU_VERSION=1.7.x APU_CONFIG="--with-crypto --with-ldap"
            CONFIG="--enable-mods-shared=reallyall"
@@ -305,6 +305,15 @@ jobs:
            TEST_UBSAN=1
     # -------------------------------------------------------------------------
     - name: Linux Ubuntu Focal, ASan
+      dist: focal
+      env: NOTEST_CFLAGS="-ggdb -fsanitize=address -fno-sanitize-recover=address -fno-omit-frame-pointer"
+           APR_VERSION=1.7.x
+           APU_VERSION=1.7.x APU_CONFIG="--with-crypto --with-ldap"
+           CONFIG="--enable-mods-shared=reallyall"
+           TEST_ASAN=1
+           CLEAR_CACHE=1
+    # -------------------------------------------------------------------------
+    - name: Linux Ubuntu Focal, ASan, pool-debug
       dist: focal
       env: NOTEST_CFLAGS="-ggdb -fsanitize=address -fno-sanitize-recover=address -fno-omit-frame-pointer"
            APR_VERSION=1.7.x APR_CONFIG="--enable-pool-debug"
