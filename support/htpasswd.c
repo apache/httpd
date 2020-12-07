@@ -108,17 +108,17 @@ static void usage(void)
         " -b  Use the password from the command line rather than prompting "
             "for it." NL
         " -i  Read password from stdin without verification (for script usage)." NL
-        " -m  Force MD5 encryption of the password (default)." NL
+        " -m  Force MD5 hashing of the password (default)." NL
         " -2  Force SHA-256 crypt() hash of the password (secure)." NL
         " -5  Force SHA-512 crypt() hash of the password (secure)." NL
-        " -B  Force bcrypt encryption of the password (very secure)." NL
+        " -B  Force bcrypt hashing of the password (very secure)." NL
         " -C  Set the computing time used for the bcrypt algorithm" NL
         "     (higher is more secure but slower, default: %d, valid: 4 to 17)." NL
         " -r  Set the number of rounds used for the SHA-256, SHA-512 algorithms" NL
         "     (higher is more secure but slower, default: 5000)." NL
-        " -d  Force CRYPT encryption of the password (8 chars max, insecure)." NL
-        " -s  Force SHA-1 encryption of the password (insecure)." NL
-        " -p  Do not encrypt the password (plaintext, insecure)." NL
+        " -d  Force CRYPT hashing of the password (8 chars max, insecure)." NL
+        " -s  Force SHA-1 hashing of the password (insecure)." NL
+        " -p  Do not hash the password (plaintext, insecure)." NL
         " -D  Delete the specified user." NL
         " -v  Verify password for the specified user." NL
         "On other systems than Windows and NetWare the '-p' flag will "
