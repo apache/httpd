@@ -215,11 +215,26 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Trunk version of patch:
         http://svn.apache.org/r1881590
         http://svn.apache.org/r1881624
+     +1: ylavic, 
+     ylavic: +1 with CHANGES entry
 
   *) mod_unique_id: Use base64url encoding for UNIQUE_ID
      trunk patch: https://svn.apache.org/r1883947
      2.4.x patch: svn merge -c 1883947 ^/httpd/httpd/trunk .
-     +1: jorton, 
+     +1: jorton, ylavic, 
+
+  *) mod_proxy_http: Fix 100-continue deadlock for spooled request bodies,
+     leading to Request Timeout (408). PR 63855.
+     trunk patch: https://svn.apache.org/r1769760
+                  https://svn.apache.org/r1770220
+                  https://svn.apache.org/r1868576
+                  https://svn.apache.org/r1868653
+                  https://svn.apache.org/r1883639
+                  https://svn.apache.org/r1883640
+                  https://svn.apache.org/r1884218
+                  https://svn.apache.org/r1884220
+     2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-bz63855.patch
+     +1: ylavic, 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
