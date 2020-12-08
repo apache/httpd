@@ -59,7 +59,6 @@
 
 AP_DECLARE_DATA const char *ap_server_argv0 = NULL;
 AP_DECLARE_DATA const char *ap_server_root = NULL;
-AP_DECLARE_DATA const char *ap_runtime_dir = NULL;
 AP_DECLARE_DATA server_rec *ap_server_conf = NULL;
 AP_DECLARE_DATA apr_pool_t *ap_pglobal = NULL;
 

@@ -127,14 +127,17 @@ AP_DECLARE_DATA int ap_document_root_check = 1;
 /* magic pointer for ErrorDocument xxx "default" */
 static char errordocument_default;
 
+/* Global state allocated out of pconf: variables here MUST be
+ * cleared/reset in reset_config(), a pconf cleanup, to avoid the
+ * variable getting reused after the pool is cleared. */
 static apr_array_header_t *saved_server_config_defines = NULL;
 static apr_table_t *server_config_defined_vars = NULL;
+AP_DECLARE_DATA const char *ap_runtime_dir = NULL;
+static const char *core_state_dir;
 
 AP_DECLARE_DATA int ap_main_state = AP_SQ_MS_INITIAL_STARTUP;
 AP_DECLARE_DATA int ap_run_mode = AP_SQ_RM_UNKNOWN;
 AP_DECLARE_DATA int ap_config_generation = 0;
-
-static const char *core_state_dir;
 
 typedef struct {
     apr_ipsubnet_t *subnet;
@@ -1489,6 +1492,7 @@ static apr_status_t reset_config(void *dummy)
     saved_server_config_defines = NULL;
     server_config_defined_vars = NULL;
     core_state_dir = NULL;
+    ap_runtime_dir = NULL;
 
     return APR_SUCCESS;
 }
@@ -5863,7 +5867,6 @@ static int core_upgrade_storage(request_rec *r)
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_runtime_dir = NULL;
     errorlog_hash = apr_hash_make(p);
     ap_register_log_hooks(p);
     ap_register_config_hooks(p);
