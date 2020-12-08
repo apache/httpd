@@ -662,6 +662,7 @@
  * 20200705.3 (2.5.1-dev)  Add ap_proxy_prefetch_input(),
  *                         ap_proxy_spool_input() and
  *                         ap_proxy_read_input().
+ * 20200705.4 (2.5.1-dev)  Add ap_get_status_line_ex()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -669,7 +670,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20200705
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 3             /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 4             /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
