@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.47
 
+  *) mod_proxy: Improve tunneling loop to support half closed connections and
+     pending data draining (for protocols like rsync). PR 61616. [Yann Ylavic]
+
   *) mod_proxy: Put mod_proxy_{connect,wstunnel} tunneling code in common in
      proxy_util.  [Yann Ylavic]
 
