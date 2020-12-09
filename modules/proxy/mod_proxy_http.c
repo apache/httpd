@@ -261,7 +261,6 @@ typedef struct {
 
     rb_methods rb_method;
 
-    int expecting_100;
     unsigned int do_100_continue:1,
                  prefetch_nonblocking:1;
 } proxy_http_req_t;
@@ -580,7 +579,7 @@ static int ap_proxy_http_prefetch(proxy_http_req_t *req,
     conn_rec *origin = p_conn->connection;
 
     if (apr_table_get(r->subprocess_env, "force-proxy-request-1.0")) {
-        if (req->expecting_100) {
+        if (r->expecting_100) {
             return HTTP_EXPECTATION_FAILED;
         }
         force10 = 1;
@@ -1499,8 +1498,9 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
              *
              * So let's make it configurable.
              *
-             * We need to set "r->expecting_100 = 1" otherwise origin
-             * server behaviour will apply.
+             * We need to force "r->expecting_100 = 1" for RFC behaviour
+             * otherwise ap_send_interim_response() does nothing when
+             * the client did not ask for 100-continue.
              */
             const char *policy = apr_table_get(r->subprocess_env,
                                                "proxy-interim-response");
@@ -1509,11 +1509,7 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
             if (!policy
                     || (!strcasecmp(policy, "RFC")
                         && (proxy_status != HTTP_CONTINUE
-                            || (req->expecting_100 = 1)))) {
-                if (proxy_status == HTTP_CONTINUE) {
-                    r->expecting_100 = req->expecting_100;
-                    req->expecting_100 = 0;
-                }
+                            || (r->expecting_100 = 1)))) {
                 ap_send_interim_response(r, 1);
             }
             /* FIXME: refine this to be able to specify per-response-status
@@ -1601,12 +1597,10 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
                  * here though, because error_override or a potential retry on
                  * another backend could finally read that data and finalize
                  * the request processing, making keep-alive possible. So what
-                 * we do is restoring r->expecting_100 for ap_set_keepalive()
-                 * to do the right thing according to the final response and
+                 * we do is leaving r->expecting_100 alone, ap_set_keepalive()
+                 * will do the right thing according to the final response and
                  * any later update of r->expecting_100.
                  */
-                r->expecting_100 = req->expecting_100;
-                req->expecting_100 = 0;
             }
 
             /* Once only! */
@@ -2010,17 +2004,7 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
     /* Should we handle end-to-end or ping 100-continue? */
     if ((r->expecting_100 && (dconf->forward_100_continue || input_brigade))
             || PROXY_DO_100_CONTINUE(worker, r)) {
-        /* We need to reset r->expecting_100 or prefetching will cause
-         * ap_http_filter() to send "100 Continue" response by itself. So
-         * we'll use req->expecting_100 in mod_proxy_http to determine whether
-         * the client should be forwarded "100 continue", and r->expecting_100
-         * will be restored at the end of the function with the actual value of
-         * req->expecting_100 (i.e. cleared only if mod_proxy_http sent the
-         * "100 Continue" according to its policy).
-         */
         req->do_100_continue = req->prefetch_nonblocking = 1;
-        req->expecting_100 = r->expecting_100;
-        r->expecting_100 = 0;
     }
     /* Should we block while prefetching the body or try nonblocking and flush
      * data to the backend ASAP?
@@ -2154,10 +2138,6 @@ cleanup:
         if (status != OK)
             req->backend->close = 1;
         ap_proxy_http_cleanup(proxy_function, r, req->backend);
-    }
-    if (req->expecting_100) {
-        /* Restore r->expecting_100 if we didn't touch it */
-        r->expecting_100 = req->expecting_100;
     }
     return status;
 }
