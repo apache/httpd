@@ -537,6 +537,7 @@
  * 20120211.93 (2.4.44-dev) Add ap_parse_strict_length()
  * 20120211.94 (2.4.47-dev) Add ap_proxy_define_match_worker()
  * 20120211.95 (2.4.47-dev) Add proxy check_trans hook
+ * 20120211.96 (2.4.47-dev) Add ap_get_status_line_ex()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -544,7 +545,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 95                  /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 96                  /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
