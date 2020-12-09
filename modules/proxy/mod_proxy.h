@@ -1203,14 +1203,15 @@ PROXY_DECLARE(int) ap_proxy_pass_brigade(apr_bucket_alloc_t *bucket_alloc,
                                          conn_rec *origin, apr_bucket_brigade *bb,
                                          int flush);
 
+struct proxy_tunnel_conn; /* opaque */
 typedef struct {
     request_rec *r;
-    conn_rec *origin;
+    const char *scheme;
     apr_pollset_t *pollset;
     apr_array_header_t *pfds;
     apr_interval_time_t timeout;
-    apr_bucket_brigade *bb_i;
-    apr_bucket_brigade *bb_o;
+    struct proxy_tunnel_conn *client,
+                             *origin;
     int replied;
 } proxy_tunnel_rec;
 
@@ -1218,22 +1219,20 @@ typedef struct {
  * Create a tunnel, to be activated by ap_proxy_tunnel_run().
  * @param tunnel   tunnel created
  * @param r        client request
- * @param origin   backend connection
+ * @param c_o      connection to origin
+ * @param scheme   caller proxy scheme (connect, ws(s), http(s), ...)
  * @return         APR_SUCCESS or error status
  */
 PROXY_DECLARE(apr_status_t) ap_proxy_tunnel_create(proxy_tunnel_rec **tunnel,
-                                                   request_rec *r,
-                                                   conn_rec *origin);
+                                                   request_rec *r, conn_rec *c_o,
+                                                   const char *scheme);
 
 /**
  * Forward anything from either side of the tunnel to the other,
  * until one end aborts or a polling timeout/error occurs.
- * @param tunnel  tunnel created
- * @return        OK: closed/aborted on one side,
- *                HTTP_GATEWAY_TIME_OUT: polling timeout,
- *                HTTP_INTERNAL_SERVER_ERROR: polling error,
- *                HTTP_BAD_GATEWAY: no response from backend, ever,
- *                                  so client may expect one still.
+ * @param tunnel  tunnel to run
+ * @return        OK if completion is full, HTTP_GATEWAY_TIME_OUT on timeout
+ *                or another HTTP_ error otherwise.
  */
 PROXY_DECLARE(int) ap_proxy_tunnel_run(proxy_tunnel_rec *tunnel);
 
@@ -1320,6 +1319,14 @@ PROXY_DECLARE(apr_status_t) ap_proxy_buckets_lifetime_transform(request_rec *r,
                                                       apr_bucket_brigade *from,
                                                       apr_bucket_brigade *to);
 
+/* 
+ * The flags for ap_proxy_transfer_between_connections(), where for legacy and
+ * compatibility reasons FLUSH_EACH and FLUSH_AFTER are boolean values.
+ */
+#define AP_PROXY_TRANSFER_FLUSH_EACH    (0x0)
+#define AP_PROXY_TRANSFER_FLUSH_AFTER   (0x1)
+#define AP_PROXY_TRANSFER_SHOULD_YIELD  (0x2)
+
 /*
  * Sends all data that can be read non blocking from the input filter chain of
  * c_i and send it down the output filter chain of c_o. For reading it uses
@@ -1337,10 +1344,12 @@ PROXY_DECLARE(apr_status_t) ap_proxy_buckets_lifetime_transform(request_rec *r,
  * @param name  string for logging from where data was pulled
  * @param sent  if not NULL will be set to 1 if data was sent through c_o
  * @param bsize maximum amount of data pulled in one iteration from c_i
- * @param after if set flush data on c_o only once after the loop
+ * @param flags AP_PROXY_TRANSFER_* bitmask
  * @return      apr_status_t of the operation. Could be any error returned from
  *              either the input filter chain of c_i or the output filter chain
- *              of c_o. APR_EPIPE if the outgoing connection was aborted.
+ *              of c_o, APR_EPIPE if the outgoing connection was aborted, or
+ *              APR_INCOMPLETE if AP_PROXY_TRANSFER_SHOULD_YIELD was set and
+ *              the output stack gets full before the input stack is exhausted.
  */
 PROXY_DECLARE(apr_status_t) ap_proxy_transfer_between_connections(
                                                        request_rec *r,
@@ -1351,7 +1360,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_transfer_between_connections(
                                                        const char *name,
                                                        int *sent,
                                                        apr_off_t bsize,
-                                                       int after);
+                                                       int flags);
 
 extern module PROXY_DECLARE_DATA proxy_module;
 
