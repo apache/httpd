@@ -236,6 +236,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-bz63855.patch
      +1: ylavic, 
 
+  *) core: reset ap_runtime_dir to NULL after AP_SQ_MS_DESTROY_CONFIG.
+     trunk patch: https://svn.apache.org/r1883708
+                  https://svn.apache.org/r1884208
+     2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-ap_runtime_dir.patch
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
