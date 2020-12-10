@@ -981,10 +981,6 @@ Changes with Apache 2.5.0-alpha
      clean mapping from APR codes to HTTP status codes, and use it where
      needed. [Graham Leggett]
 
-  *) mod_proxy: Ensure network errors detected by the proxy are returned as
-     504 Gateway Timeout as opposed to 502 Bad Gateway, in order to be
-     compliant with RFC2616 14.9.4 Cache Revalidation and Reload Controls.
-
   *) mod_dav: mod_dav overrides dav_fs response on PUT failure. PR 35981
      [Basant Kumar Kukreja <basant.kukreja sun.com>, Alejandro Alvarez
      <alejandro.alvarez.ayllon cern.ch>]

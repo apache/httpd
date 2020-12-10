@@ -869,11 +869,7 @@ static int ftp_set_TYPE(char xfer_type, request_rec *r, conn_rec *ftp_ctrl,
     /* 501 Syntax error in parameters or arguments. */
     /* 504 Command not implemented for that parameter. */
     /* 530 Not logged in. */
-    if (rc == -1) {
-        ret = ap_proxyerror(r, HTTP_GATEWAY_TIME_OUT,
-                             "Error reading from remote server");
-    }
-    else if (rc == 421) {
+    if (rc == -1 || rc == 421) {
         ret = ap_proxyerror(r, HTTP_BAD_GATEWAY,
                              "Error reading from remote server");
     }
@@ -905,10 +901,6 @@ static char *ftp_get_PWD(request_rec *r, conn_rec *ftp_ctrl, apr_bucket_brigade 
     /* 550 Requested action not taken. */
     switch (proxy_ftp_command("PWD" CRLF, r, ftp_ctrl, bb, &ftpmessage)) {
         case -1:
-            ap_proxyerror(r, HTTP_GATEWAY_TIME_OUT,
-                             "Failed to read PWD on ftp server");
-            break;
-
         case 421:
         case 550:
             ap_proxyerror(r, HTTP_BAD_GATEWAY,
@@ -1164,7 +1156,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
      * them until we get a successful connection
      */
     if (APR_SUCCESS != err) {
-        return ap_proxyerror(r, HTTP_GATEWAY_TIME_OUT, apr_pstrcat(p,
+        return ap_proxyerror(r, HTTP_BAD_GATEWAY, apr_pstrcat(p,
                                                  "DNS lookup failure for: ",
                                                         connectname, NULL));
     }
@@ -1235,15 +1227,10 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
     /* 220 Service ready for new user. */
     /* 421 Service not available, closing control connection. */
     rc = proxy_ftp_command(NULL, r, origin, bb, &ftpmessage);
-    if (rc == -1) {
-        return ftp_proxyerror(r, backend, HTTP_GATEWAY_TIME_OUT,
-                "Error reading from remote server");
+    if (rc == -1 || rc == 421) {
+        return ftp_proxyerror(r, backend, HTTP_BAD_GATEWAY, "Error reading from remote server");
     }
-    else if (rc == 421) {
-        return ftp_proxyerror(r, backend, HTTP_BAD_GATEWAY,
-                "Error reading from remote server");
-    }
-    else if (rc == 120) {
+    if (rc == 120) {
         /*
          * RFC2616 states: 14.37 Retry-After
          *
@@ -1269,7 +1256,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
         }
         return ftp_proxyerror(r, backend, HTTP_SERVICE_UNAVAILABLE, ftpmessage);
     }
-    else if (rc != 220) {
+    if (rc != 220) {
         return ftp_proxyerror(r, backend, HTTP_BAD_GATEWAY, ftpmessage);
     }
 
@@ -1285,20 +1272,15 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
     /* (This may include errors such as command line too long.) */
     /* 501 Syntax error in parameters or arguments. */
     /* 530 Not logged in. */
-    if (rc == -1) {
-        return ftp_proxyerror(r, backend, HTTP_GATEWAY_TIME_OUT,
-                "Error reading from remote server");
+    if (rc == -1 || rc == 421) {
+        return ftp_proxyerror(r, backend, HTTP_BAD_GATEWAY, "Error reading from remote server");
     }
-    else if (rc == 421) {
-        return ftp_proxyerror(r, backend, HTTP_BAD_GATEWAY,
-                "Error reading from remote server");
-    }
-    else if (rc == 530) {
+    if (rc == 530) {
         proxy_ftp_cleanup(r, backend);
         return ftp_unauthorized(r, 1);  /* log it: user name guessing
                                          * attempt? */
     }
-    else if (rc != 230 && rc != 331) {
+    if (rc != 230 && rc != 331) {
         return ftp_proxyerror(r, backend, HTTP_BAD_GATEWAY, ftpmessage);
     }
 
@@ -1318,25 +1300,21 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
         /* 501 Syntax error in parameters or arguments. */
         /* 503 Bad sequence of commands. */
         /* 530 Not logged in. */
-        if (rc == -1) {
-            return ftp_proxyerror(r, backend, HTTP_GATEWAY_TIME_OUT,
-                                  "Error reading from remote server");
-        }
-        else if (rc == 421) {
+        if (rc == -1 || rc == 421) {
             return ftp_proxyerror(r, backend, HTTP_BAD_GATEWAY,
                                   "Error reading from remote server");
         }
-        else if (rc == 332) {
+        if (rc == 332) {
             return ftp_proxyerror(r, backend, HTTP_UNAUTHORIZED,
                   apr_pstrcat(p, "Need account for login: ", ftpmessage, NULL));
         }
         /* @@@ questionable -- we might as well return a 403 Forbidden here */
-        else if (rc == 530) {
+        if (rc == 530) {
             proxy_ftp_cleanup(r, backend);
             return ftp_unauthorized(r, 1);      /* log it: passwd guessing
                                                  * attempt? */
         }
-        else if (rc != 230 && rc != 202) {
+        if (rc != 230 && rc != 202) {
             return ftp_proxyerror(r, backend, HTTP_BAD_GATEWAY, ftpmessage);
         }
     }
@@ -1352,14 +1330,9 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
             ++path;
 
         rc = proxy_ftp_command("CWD /" CRLF, r, origin, bb, &ftpmessage);
-        if (rc == -1) {
-            return ftp_proxyerror(r, backend, HTTP_GATEWAY_TIME_OUT,
-                    "Error reading from remote server");
-        }
-        else if (rc == 421) {
+        if (rc == -1 || rc == 421)
             return ftp_proxyerror(r, backend, HTTP_BAD_GATEWAY,
-                    "Error reading from remote server");
-        }
+                                  "Error reading from remote server");
     }
 
     /*
@@ -1396,18 +1369,14 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
         /* 502 Command not implemented. */
         /* 530 Not logged in. */
         /* 550 Requested action not taken. */
-        if (rc == -1) {
-            return ftp_proxyerror(r, backend, HTTP_GATEWAY_TIME_OUT,
-                    "Error reading from remote server");
-        }
-        else if (rc == 421) {
+        if (rc == -1 || rc == 421) {
             return ftp_proxyerror(r, backend, HTTP_BAD_GATEWAY,
-                    "Error reading from remote server");
+                                  "Error reading from remote server");
         }
-        else if (rc == 550) {
+        if (rc == 550) {
             return ftp_proxyerror(r, backend, HTTP_NOT_FOUND, ftpmessage);
         }
-        else if (rc != 250) {
+        if (rc != 250) {
             return ftp_proxyerror(r, backend, HTTP_BAD_GATEWAY, ftpmessage);
         }
 
@@ -1441,15 +1410,11 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
         /* 501 Syntax error in parameters or arguments. */
         /* 502 Command not implemented. */
         /* 530 Not logged in. */
-        if (rc == -1) {
-            return ftp_proxyerror(r, backend, HTTP_GATEWAY_TIME_OUT,
-                    "Error reading from remote server");
-        }
-        else if (rc == 421) {
+        if (rc == -1 || rc == 421) {
             return ftp_proxyerror(r, backend, HTTP_BAD_GATEWAY,
-                    "Error reading from remote server");
+                                  "Error reading from remote server");
         }
-        else if (rc != 229 && rc != 500 && rc != 501 && rc != 502) {
+        if (rc != 229 && rc != 500 && rc != 501 && rc != 502) {
             return ftp_proxyerror(r, backend, HTTP_BAD_GATEWAY, ftpmessage);
         }
         else if (rc == 229) {
@@ -1511,10 +1476,8 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01043)
                                   "EPSV attempt to connect to %pI failed - "
                                   "Firewall/NAT?", &epsv_addr);
-                    return ftp_proxyerror(r, backend, HTTP_GATEWAY_TIME_OUT,
-                            apr_psprintf(r->pool,
-                                    "EPSV attempt to connect to %pI failed - firewall/NAT?",
-                                    &epsv_addr));
+                    return ftp_proxyerror(r, backend, HTTP_BAD_GATEWAY, apr_psprintf(r->pool,
+                                                                           "EPSV attempt to connect to %pI failed - firewall/NAT?", &epsv_addr));
                 }
                 else {
                     ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
@@ -1536,15 +1499,11 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
         /* 501 Syntax error in parameters or arguments. */
         /* 502 Command not implemented. */
         /* 530 Not logged in. */
-        if (rc == -1) {
-            return ftp_proxyerror(r, backend, HTTP_GATEWAY_TIME_OUT,
-                    "Error reading from remote server");
-        }
-        else if (rc == 421) {
+        if (rc == -1 || rc == 421) {
             return ftp_proxyerror(r, backend, HTTP_BAD_GATEWAY,
-                    "Error reading from remote server");
+                                  "Error reading from remote server");
         }
-        else if (rc != 227 && rc != 502) {
+        if (rc != 227 && rc != 502) {
             return ftp_proxyerror(r, backend, HTTP_BAD_GATEWAY, ftpmessage);
         }
         else if (rc == 227) {
@@ -1606,10 +1565,8 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
                 if (rv != APR_SUCCESS) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01048)
                                   "PASV attempt to connect to %pI failed - Firewall/NAT?", pasv_addr);
-                    return ftp_proxyerror(r, backend, HTTP_GATEWAY_TIME_OUT,
-                            apr_psprintf(r->pool,
-                                    "PASV attempt to connect to %pI failed - firewall/NAT?",
-                                    pasv_addr));
+                    return ftp_proxyerror(r, backend, HTTP_BAD_GATEWAY, apr_psprintf(r->pool,
+                                                                           "PASV attempt to connect to %pI failed - firewall/NAT?", pasv_addr));
                 }
                 else {
                     connect = 1;
@@ -1679,15 +1636,11 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
             /* 501 Syntax error in parameters or arguments. */
             /* 502 Command not implemented. */
             /* 530 Not logged in. */
-            if (rc == -1) {
-                return ftp_proxyerror(r, backend, HTTP_GATEWAY_TIME_OUT,
-                        "Error reading from remote server");
-            }
-            else if (rc == 421) {
+            if (rc == -1 || rc == 421) {
                 return ftp_proxyerror(r, backend, HTTP_BAD_GATEWAY,
-                        "Error reading from remote server");
+                                      "Error reading from remote server");
             }
-            else if (rc != 200) {
+            if (rc != 200) {
                 return ftp_proxyerror(r, backend, HTTP_BAD_GATEWAY, ftpmessage);
             }
 
@@ -1748,13 +1701,9 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
         rc = proxy_ftp_command(apr_pstrcat(p, "SIZE ",
                            ftp_escape_globbingchars(p, path, fdconf), CRLF, NULL),
                            r, origin, bb, &ftpmessage);
-        if (rc == -1) {
-            return ftp_proxyerror(r, backend, HTTP_GATEWAY_TIME_OUT,
-                    "Error reading from remote server");
-        }
-        else if (rc == 421) {
+        if (rc == -1 || rc == 421) {
             return ftp_proxyerror(r, backend, HTTP_BAD_GATEWAY,
-                    "Error reading from remote server");
+                                  "Error reading from remote server");
         }
         else if (rc == 213) {/* Size command ok */
             int j;
@@ -1779,18 +1728,14 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
             /* 502 Command not implemented. */
             /* 530 Not logged in. */
             /* 550 Requested action not taken. */
-            if (rc == -1) {
-                return ftp_proxyerror(r, backend, HTTP_GATEWAY_TIME_OUT,
-                        "Error reading from remote server");
-            }
-            else if (rc == 421) {
+            if (rc == -1 || rc == 421) {
                 return ftp_proxyerror(r, backend, HTTP_BAD_GATEWAY,
-                        "Error reading from remote server");
+                                      "Error reading from remote server");
             }
-            else if (rc == 550) {
+            if (rc == 550) {
                 return ftp_proxyerror(r, backend, HTTP_NOT_FOUND, ftpmessage);
             }
-            else if (rc != 250) {
+            if (rc != 250) {
                 return ftp_proxyerror(r, backend, HTTP_BAD_GATEWAY, ftpmessage);
             }
             path = "";
@@ -1897,15 +1842,11 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
     /* 501 Syntax error in parameters or arguments. */
     /* 530 Not logged in. */
     /* 550 Requested action not taken. */
-    if (rc == -1) {
-        return ftp_proxyerror(r, backend, HTTP_GATEWAY_TIME_OUT,
-                              "Error reading from remote server");
-    }
-    else if (rc == 421) {
+    if (rc == -1 || rc == 421) {
         return ftp_proxyerror(r, backend, HTTP_BAD_GATEWAY,
                               "Error reading from remote server");
     }
-    else if (rc == 550) {
+    if (rc == 550) {
         ap_log_rerror(APLOG_MARK, APLOG_TRACE4, 0, r,
                       "RETR failed, trying LIST instead");
 
@@ -1924,18 +1865,14 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
         /* 502 Command not implemented. */
         /* 530 Not logged in. */
         /* 550 Requested action not taken. */
-        if (rc == -1) {
-            return ftp_proxyerror(r, backend, HTTP_GATEWAY_TIME_OUT,
-                    "Error reading from remote server");
-        }
-        else if (rc == 421) {
+        if (rc == -1 || rc == 421) {
             return ftp_proxyerror(r, backend, HTTP_BAD_GATEWAY,
-                    "Error reading from remote server");
+                                  "Error reading from remote server");
         }
-        else if (rc == 550) {
+        if (rc == 550) {
             return ftp_proxyerror(r, backend, HTTP_NOT_FOUND, ftpmessage);
         }
-        else if (rc != 250) {
+        if (rc != 250) {
             return ftp_proxyerror(r, backend, HTTP_BAD_GATEWAY, ftpmessage);
         }
 
@@ -1951,14 +1888,9 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
                                r, origin, bb, &ftpmessage);
 
         /* rc is an intermediate response for the LIST command (125 transfer starting, 150 opening data connection) */
-        if (rc == -1) {
-            return ftp_proxyerror(r, backend, HTTP_GATEWAY_TIME_OUT,
-                    "Error reading from remote server");
-        }
-        else if (rc == 421) {
+        if (rc == -1 || rc == 421)
             return ftp_proxyerror(r, backend, HTTP_BAD_GATEWAY,
-                    "Error reading from remote server");
-        }
+                                  "Error reading from remote server");
     }
     if (rc != 125 && rc != 150 && rc != 226 && rc != 250) {
         return ftp_proxyerror(r, backend, HTTP_BAD_GATEWAY, ftpmessage);
@@ -2030,7 +1962,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01053)
                               "failed to accept data connection");
                 proxy_ftp_cleanup(r, backend);
-                return HTTP_GATEWAY_TIME_OUT;
+                return HTTP_BAD_GATEWAY;
             }
         }
     }

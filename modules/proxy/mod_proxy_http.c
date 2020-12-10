@@ -1136,7 +1136,7 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
                               " Number of keepalives %i", backend->hostname,
                               backend->port, c->keepalives);
 
-                e = ap_bucket_error_create(HTTP_GATEWAY_TIME_OUT, NULL,
+                e = ap_bucket_error_create(HTTP_BAD_GATEWAY, NULL,
                         r->pool, c->bucket_alloc);
                 APR_BRIGADE_INSERT_TAIL(bb, e);
                 e = ap_bucket_eoc_create(c->bucket_alloc);
@@ -1154,7 +1154,7 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
                               " failed.",
                               backend->hostname, backend->port);
             }
-            return ap_proxyerror(r, HTTP_GATEWAY_TIME_OUT,
+            return ap_proxyerror(r, HTTP_BAD_GATEWAY,
                                  "Error reading from remote server");
         }
         /* XXX: Is this a real headers length send from remote? */
@@ -1686,7 +1686,7 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
                      * disconnect the client too.
                      */
                     apr_brigade_cleanup(bb);
-                    e = ap_bucket_error_create(HTTP_GATEWAY_TIME_OUT, NULL,
+                    e = ap_bucket_error_create(HTTP_BAD_GATEWAY, NULL,
                             r->pool, c->bucket_alloc);
                     APR_BRIGADE_INSERT_TAIL(bb, e);
                     e = ap_bucket_eoc_create(c->bucket_alloc);

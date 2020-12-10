@@ -2639,7 +2639,7 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
     }
 
     if (err != APR_SUCCESS) {
-        return ap_proxyerror(r, HTTP_GATEWAY_TIME_OUT,
+        return ap_proxyerror(r, HTTP_BAD_GATEWAY,
                              apr_pstrcat(p, "DNS lookup failure for: ",
                                          conn->hostname, NULL));
     }
@@ -3461,7 +3461,7 @@ PROXY_DECLARE(void) ap_proxy_backend_broke(request_rec *r,
      */
     if (r->main)
         r->main->no_cache = 1;
-    e = ap_bucket_error_create(HTTP_GATEWAY_TIME_OUT, NULL, c->pool,
+    e = ap_bucket_error_create(HTTP_BAD_GATEWAY, NULL, c->pool,
                                c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(brigade, e);
     e = apr_bucket_eos_create(c->bucket_alloc);
@@ -4294,7 +4294,8 @@ PROXY_DECLARE(int) ap_proxy_pass_brigade(apr_bucket_alloc_t *bucket_alloc,
                                      "Error during SSL Handshake with"
                                      " remote server");
             }
-            return HTTP_GATEWAY_TIME_OUT;
+            return APR_STATUS_IS_TIMEUP(status) ? HTTP_GATEWAY_TIME_OUT
+                                                : HTTP_BAD_GATEWAY;
         }
         else {
             return HTTP_BAD_REQUEST;
