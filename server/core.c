@@ -83,8 +83,8 @@
 /* valid in core-conf, but not in runtime r->used_path_info */
 #define AP_ACCEPT_PATHINFO_UNSET 3
 
-#define AP_FLUSH_MAX_THRESHOLD 65536
-#define AP_FLUSH_MAX_PIPELINED 5
+#define AP_FLUSH_MAX_THRESHOLD 65535
+#define AP_FLUSH_MAX_PIPELINED 4
 
 APR_HOOK_STRUCT(
     APR_HOOK_LINK(get_mgmt_items)
@@ -2344,10 +2344,10 @@ static const char *set_read_buf_size(cmd_parms *cmd, void *d_,
     char *end;
 
     if (apr_strtoff(&size, arg, &end, 10)
-            || size < 0 || size > APR_SIZE_MAX || *end)
+            || *end || size < 0 || size > APR_UINT32_MAX)
         return apr_pstrcat(cmd->pool,
                            "parameter must be a number between 0 and "
-                           APR_STRINGIFY(APR_SIZE_MAX) "): ",
+                           APR_STRINGIFY(APR_UINT32_MAX) "): ",
                            arg, NULL);
 
     d->read_buf_size = (apr_size_t)size;
@@ -2364,10 +2364,10 @@ static const char *set_flush_max_threshold(cmd_parms *cmd, void *d_,
     char *end;
 
     if (apr_strtoff(&size, arg, &end, 10)
-            || size <= 0 || size > APR_SIZE_MAX || *end)
+            || *end || size < 0 || size > APR_UINT32_MAX)
         return apr_pstrcat(cmd->pool,
-                           "parameter must be a number between 1 and "
-                           APR_STRINGIFY(APR_SIZE_MAX) "): ",
+                           "parameter must be a number between 0 and "
+                           APR_STRINGIFY(APR_UINT32_MAX) "): ",
                            arg, NULL);
 
     conf->flush_max_threshold = (apr_size_t)size;
@@ -2384,9 +2384,9 @@ static const char *set_flush_max_pipelined(cmd_parms *cmd, void *d_,
     char *end;
 
     if (apr_strtoff(&num, arg, &end, 10)
-            || num < 0 || num > APR_INT32_MAX || *end)
+            || *end || num < -1 || num > APR_INT32_MAX)
         return apr_pstrcat(cmd->pool,
-                           "parameter must be a number between 0 and "
+                           "parameter must be a number between -1 and "
                            APR_STRINGIFY(APR_INT32_MAX) ": ",
                            arg, NULL);
 
@@ -2394,7 +2394,6 @@ static const char *set_flush_max_pipelined(cmd_parms *cmd, void *d_,
 
     return NULL;
 }
-
 
 /*
  * Report a missing-'>' syntax error.
@@ -4733,9 +4732,10 @@ AP_INIT_TAKE1("EnableSendfile", set_enable_sendfile, NULL, OR_FILEINFO,
 AP_INIT_TAKE1("ReadBufferSize", set_read_buf_size, NULL, ACCESS_CONF|RSRC_CONF,
   "Size (in bytes) of the memory buffers used to read data"),
 AP_INIT_TAKE1("FlushMaxThreshold", set_flush_max_threshold, NULL, RSRC_CONF,
-  "Maximum size (in bytes) above which pending data are flushed (blocking) to the network"),
+  "Maximum threshold above which pending data are flushed to the network"),
 AP_INIT_TAKE1("FlushMaxPipelined", set_flush_max_pipelined, NULL, RSRC_CONF,
-  "Number of pipelined/pending responses above which they are flushed to the network"),
+  "Maximum number of pipelined responses (pending) above which they are "
+  "flushed to the network"),
 
 /* Old server config file commands */
 

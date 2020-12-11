@@ -610,7 +610,7 @@ static apr_status_t send_brigade_nonblocking(apr_socket_t *s,
          * we are at the end of the brigade, the write will happen outside
          * the loop anyway).
          */
-        if (nbytes >= conf->flush_max_threshold
+        if (nbytes > conf->flush_max_threshold
                 && next != APR_BRIGADE_SENTINEL(bb)
                 && !is_in_memory_bucket(next)) {
             (void)apr_socket_opt_set(s, APR_TCP_NOPUSH, 1);

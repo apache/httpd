@@ -1104,7 +1104,7 @@ AP_DECLARE(apr_status_t) ap_filter_reinstate_brigade(ap_filter_t *f,
      *     sent to the client.)
      *
      *  c) The brigade contains at least flush_max_pipelined EOR buckets: do
-     *     blocking writes until the last EOR above flush_max_pipelined.
+     *     blocking writes until after the last EOR above flush_max_pipelined.
      *     (The point of this rule is to prevent too many FDs being kept open
      *     by pipelined requests, possibly allowing a DoS).
      *
@@ -1140,14 +1140,15 @@ AP_DECLARE(apr_status_t) ap_filter_reinstate_brigade(ap_filter_t *f,
         }
 
         if (APR_BUCKET_IS_FLUSH(bucket)
-            || memory_bytes_in_brigade >= conf->flush_max_threshold
-            || eor_buckets_in_brigade >= conf->flush_max_pipelined) {
+            || (memory_bytes_in_brigade > conf->flush_max_threshold)
+            || (conf->flush_max_pipelined >= 0
+                && eor_buckets_in_brigade > conf->flush_max_pipelined)) {
             /* this segment of the brigade MUST be sent before returning. */
 
             if (APLOGctrace6(f->c)) {
                 char *reason = APR_BUCKET_IS_FLUSH(bucket) ?
                                "FLUSH bucket" :
-                               (memory_bytes_in_brigade >= conf->flush_max_threshold) ?
+                               (memory_bytes_in_brigade > conf->flush_max_threshold) ?
                                "max threshold" : "max requests in pipeline";
                 ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, f->c,
                               "will flush because of %s", reason);
