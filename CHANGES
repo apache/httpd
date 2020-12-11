@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.47
 
+  *) core: add ReadBufferSize, FlushMaxThreshold and FlushMaxPipelined
+     directives.  [Yann Ylavic]
+
   *) mpm_event: don't reset connections after lingering close, restoring prior
      to 2.4.28 behaviour.  [Yann Ylavic]
 
