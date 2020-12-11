@@ -161,11 +161,7 @@ if ! test -v SKIP_TESTING; then
         fi
     fi
 
-    if test -f test/perl-framework/t/core; then
-        gdb -ex 'thread apply all backtrace' -batch ./httpd test/perl-framework/t/core
-        RV=5
-    fi
-    for core in test/perl-framework/t/core.*; do
+    for core in `ls test/perl-framework/t/core test/perl-framework/t/core.* 2>/dev/null`; do
         gdb -ex 'thread apply all backtrace' -batch ./httpd "$core"
         RV=5
     done
