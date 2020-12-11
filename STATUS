@@ -215,13 +215,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Trunk version of patch:
         http://svn.apache.org/r1881590
         http://svn.apache.org/r1881624
-     +1: ylavic, 
+     +1: ylavic, covener
      ylavic: +1 with CHANGES entry
 
   *) mod_unique_id: Use base64url encoding for UNIQUE_ID
      trunk patch: https://svn.apache.org/r1883947
      2.4.x patch: svn merge -c 1883947 ^/httpd/httpd/trunk .
-     +1: jorton, ylavic, 
+     +1: jorton, ylavic, covener 
 
   *) mod_proxy_http: Fix 100-continue deadlock for spooled request bodies,
      leading to Request Timeout (408). PR 63855.
@@ -234,19 +234,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1884218
                   https://svn.apache.org/r1884220
      2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-bz63855.patch
-     +1: ylavic,
+     +1: ylavic, covener
 
   *) core: reset ap_runtime_dir to NULL after AP_SQ_MS_DESTROY_CONFIG.
      trunk patch: https://svn.apache.org/r1883708
                   https://svn.apache.org/r1884208
      2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-ap_runtime_dir.patch
-     +1: ylavic, jorton, 
+     +1: ylavic, jorton, covener
 
   *) mod_http2: stop/wait the workers threads before their pool is killed.
      trunk patch: https://svn.apache.org/r1884169
                   https://svn.apache.org/r1884170
      2.4.x patch: svn merge -c 1884169,1884170 ^/httpd/httpd/trunk .
-     +1: ylavic, jorton
+     +1: ylavic, jorton, covener
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
