@@ -104,6 +104,13 @@ if test -v TEST_LDAP -a -x test/perl-framework/scripts/ldap-init.sh; then
     popd
 fi
 
+if test -v TEST_SSL; then
+    pushd test/perl-framework
+       ./scripts/memcached-init.sh
+       ./scripts/redis-init.sh
+    popd
+fi
+
 if test -v APR_VERSION; then
     install_apx apr ${APR_VERSION} "${APR_CONFIG}"
     APU_CONFIG="$APU_CONFIG --with-apr=$HOME/root/apr-${APR_VERSION}"

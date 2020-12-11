@@ -77,6 +77,10 @@ if ! test -v SKIP_TESTING; then
         export UBSAN_OPTIONS="log_path=$PWD/ubsan.log"
     fi
 
+    if test -v TEST_ASAN; then
+        export ASAN_OPTIONS="log_path=$PWD/asan.log"
+    fi
+
     if test -v WITH_TEST_SUITE; then
         make check TESTS="${TESTS}" TEST_CONFIG="${TEST_ARGS}"
         RV=$?
@@ -88,7 +92,24 @@ if ! test -v SKIP_TESTING; then
             RV=$?
         popd
     fi
-    if test -v LITMUS; then
+
+    # Skip further testing if a core dump was created during the test
+    # suite run above.
+    if test $RV -eq 0 -a -f test/perl-framework/t/core; then
+        RV=4
+    fi            
+    
+    if test -v TEST_SSL -a $RV -eq 0; then
+        pushd test/perl-framework
+            for cache in shmcb redis:localhost:6379 memcache:localhost:11211; do
+                SSL_SESSCACHE=$cache ./t/TEST -sslproto TLSv1.2 -defines TEST_SSL_SESSCACHE t/ssl
+                RV=$?
+                test $RV -eq 0 || break
+            done
+        popd
+    fi
+
+    if test -v LITMUS -a $RV -eq 0; then
         pushd test/perl-framework
            mkdir -p t/htdocs/modules/dav
            ./t/TEST -start
@@ -123,9 +144,18 @@ if ! test -v SKIP_TESTING; then
         RV=3
     fi
 
+    if test -v TEST_ASAN && ls asan.log.* &> /dev/null; then
+        cat asan.log.*
+
+        # ASan can report memory leaks, fail on errors only
+        if grep -q "ERROR: AddressSanitizer:" `ls asan.log.*`; then
+            RV=4
+        fi
+    fi
+
     if test -f test/perl-framework/t/core; then
         gdb -ex 'thread apply all backtrace' -batch ./httpd test/perl-framework/t/core
-        RV=4
+        RV=5
     fi
 
     exit $RV
