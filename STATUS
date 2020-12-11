@@ -145,12 +145,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     Backport version for 2.4.x of patch:
      +1: jailletc36, giovanni, ylavic
 
-  *) core: reset ap_runtime_dir to NULL after AP_SQ_MS_DESTROY_CONFIG.
-     trunk patch: https://svn.apache.org/r1883708
-                  https://svn.apache.org/r1884208
-     2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-ap_runtime_dir.patch
-     +1: ylavic, jorton, covener
-
   *) mod_http2: stop/wait the workers threads before their pool is killed.
      trunk patch: https://svn.apache.org/r1884169
                   https://svn.apache.org/r1884170
