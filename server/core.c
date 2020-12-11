@@ -122,8 +122,12 @@ AP_DECLARE_DATA int ap_document_root_check = 1;
 /* magic pointer for ErrorDocument xxx "default" */
 static char errordocument_default;
 
+/* Global state allocated out of pconf: variables here MUST be
+ * cleared/reset in reset_config(), a pconf cleanup, to avoid the
+ * variable getting reused after the pool is cleared. */
 static apr_array_header_t *saved_server_config_defines = NULL;
 static apr_table_t *server_config_defined_vars = NULL;
+AP_DECLARE_DATA const char *ap_runtime_dir = NULL;
 
 AP_DECLARE_DATA int ap_main_state = AP_SQ_MS_INITIAL_STARTUP;
 AP_DECLARE_DATA int ap_run_mode = AP_SQ_RM_UNKNOWN;
@@ -1414,6 +1418,7 @@ static int reset_config_defines(void *dummy)
     ap_server_config_defines = saved_server_config_defines;
     saved_server_config_defines = NULL;
     server_config_defined_vars = NULL;
+    ap_runtime_dir = NULL;
     return OK;
 }
 
