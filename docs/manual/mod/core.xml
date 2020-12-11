@@ -2030,6 +2030,45 @@ filenames</description>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>FlushMaxPipelined</name>
+<description>Threshold above which pipelined responses are flushed to the
+network</description>
+<syntax>FlushMaxPipelined <var>number</var></syntax>
+<default>FlushMaxPipelined 5</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+<compatibility>2.5 and later</compatibility>
+
+<usage>
+    <p>This directive allows to configure the threshold for pipelined
+    responses, which remain pending so long as pipelined request are handled.
+    When this limit is reached, are forcibly flushed to the network in blocking
+    mode, until passing under the threshold again.</p>
+
+    <p>This threshold helps maintaning constrained memory usage.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>FlushMaxThreshold</name>
+<description>Threshold above which pending data are flushed to the
+network</description>
+<syntax>FlushMaxThreshold<var>number-of-bytes</var></syntax>
+<default>FlushMaxThreshold 65536</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+<compatibility>2.5 and later</compatibility>
+
+<usage>
+    <p>This directive allows to configure the threshold (in bytes) for pending
+    output data. When this limit is reached, data are forcibly flushed to the
+    network in blocking mode, until passing under the threshold again.</p>
+
+    <p>This threshold helps maintaning constrained memory usage.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>ForceType</name>
 <description>Forces all matching files to be served with the specified
 media type in the HTTP Content-Type header field</description>
@@ -4137,6 +4176,25 @@ Protocols h2 http/1.1
     <seealso><directive module="core">Protocols</directive></seealso>
 </directivesynopsis>
 
+
+<directivesynopsis>
+<name>ReadBufferSize</name>
+<description>Size of the buffers used to read network data</description>
+<syntax>ReadBufferSize <var>number-of-bytes</var></syntax>
+<default>ReadBufferSize 8192</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+<compatibility>2.5 and later</compatibility>
+
+<usage>
+    <p>This directive allows to configure the size in bytes of the memory
+    buffers used to read data from the network.</p>
+
+    <p>Larger buffer can increase peformances for large data but consume more
+    memory (per connection).</p>
+</usage>
+</directivesynopsis>
+ 
 
 <directivesynopsis>
     <name>RegexDefaultOptions</name>
