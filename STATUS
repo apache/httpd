@@ -145,6 +145,19 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     Backport version for 2.4.x of patch:
      +1: jailletc36, giovanni, ylavic
 
+  *) core: reset ap_runtime_dir to NULL after AP_SQ_MS_DESTROY_CONFIG.
+     trunk patch: https://svn.apache.org/r1883708
+                  https://svn.apache.org/r1884208
+     2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-ap_runtime_dir.patch
+     +1: ylavic, jorton, covener
+
+  *) mod_http2: stop/wait the workers threads before their pool is killed.
+     trunk patch: https://svn.apache.org/r1884169
+                  https://svn.apache.org/r1884170
+     2.4.x patch: svn merge -c 1884169,1884170 ^/httpd/httpd/trunk .
+     +1: ylavic, jorton, covener
+
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -235,18 +248,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1884220
      2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-bz63855.patch
      +1: ylavic, covener
-
-  *) core: reset ap_runtime_dir to NULL after AP_SQ_MS_DESTROY_CONFIG.
-     trunk patch: https://svn.apache.org/r1883708
-                  https://svn.apache.org/r1884208
-     2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-ap_runtime_dir.patch
-     +1: ylavic, jorton, covener
-
-  *) mod_http2: stop/wait the workers threads before their pool is killed.
-     trunk patch: https://svn.apache.org/r1884169
-                  https://svn.apache.org/r1884170
-     2.4.x patch: svn merge -c 1884169,1884170 ^/httpd/httpd/trunk .
-     +1: ylavic, jorton, covener
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
