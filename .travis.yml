@@ -320,7 +320,8 @@ jobs:
            TEST_ASAN=1
            CLEAR_CACHE=1
     # -------------------------------------------------------------------------
-    - name: Linux Ubuntu Focal, ASan, pool-debug
+    - if: *condition_not_24x
+      name: Linux Ubuntu Focal, ASan, pool-debug
       dist: focal
       env: NOTEST_CFLAGS="-ggdb -fsanitize=address -fno-sanitize-recover=address -fno-omit-frame-pointer"
            APR_VERSION=1.7.x APR_CONFIG="--enable-pool-debug"
