@@ -621,6 +621,10 @@ connexion.</td></tr>
 <tr><td><a href="mod_firehose.html#firehoseproxyconnectionoutput">FirehoseProxyConnectionOutput <var>[ block | nonblock ]</var> <var>filename</var></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Capture le trafic envoyé par mod_proxy</td></tr>
 <tr class="odd"><td><a href="mod_firehose.html#firehoserequestinput">FirehoseRequestInput <var>[ block | nonblock ]</var> <var>filename</var></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Capture le trafic entrant dans le serveur à chaque requête</td></tr>
 <tr><td><a href="mod_firehose.html#firehoserequestoutput">FirehoseRequestOutput <var>[ block | nonblock ]</var> <var>filename</var></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Capture le trafic sortant du serveur à chaque requête</td></tr>
+<tr class="odd"><td><a href="core.html#flushmaxpipelined">FlushMaxPipelined <var>number</var></a></td><td> 5 </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Nombre maximal de réponses en attente (pipelined) au-delà duquel
+elles sont envoyées sur le réseau</td></tr>
+<tr><td><a href="core.html#flushmaxthreshold">FlushMaxThreshold<var>number-of-bytes</var></a></td><td> 65536 </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Seuil au-delà duquel les données en attente sont envoyées sur le
+réseau</td></tr>
 <tr class="odd"><td><a href="mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority None|Prefer|Fallback [Prefer|Fallback]</a></td><td> Prefer </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Action à entreprendre si un document acceptable unique
 n'est pas trouvé</td></tr>
 <tr><td><a href="core.html#forcetype">ForceType <var>type médium</var>|None</a></td><td></td><td>dh</td><td>C</td></tr><tr><td class="descr" colspan="4">Force le type de médium spécifié dans le champ d'en-tête
@@ -1176,442 +1180,443 @@ mandatées</td></tr>
 <tr class="odd"><td><a href="mod_proxy_wstunnel.html#proxywebsocketidletimeout">ProxyWebsocketIdleTimeout <var>num</var>[ms]</a></td><td> 0 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Temps d'attente maximum pour des données sur le tunnel websockets</td></tr>
 <tr><td><a href="core.html#qualifyredirecturl" id="Q" name="Q">QualifyRedirectURL On|Off</a></td><td> Off </td><td>svd</td><td>C</td></tr><tr><td class="descr" colspan="4">Vérifie si la variable d'environnement REDIRECT_URL est
 pleinement qualifiée</td></tr>
-<tr class="odd"><td><a href="mod_autoindex.html#readmename" id="R" name="R">ReadmeName <var>nom-fichier</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Nom du fichier dont le contenu sera inséré à la fin de
+<tr class="odd"><td><a href="core.html#readbuffersize" id="R" name="R">ReadBufferSize <var>bytes</var></a></td><td> 8192 </td><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Taille des tampons utilisés pour lire les données</td></tr>
+<tr><td><a href="mod_autoindex.html#readmename">ReadmeName <var>nom-fichier</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Nom du fichier dont le contenu sera inséré à la fin de
 l'index</td></tr>
-<tr><td><a href="mpm_common.html#receivebuffersize">ReceiveBufferSize <var>octets</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Taille du tampon TCP en entrée</td></tr>
-<tr class="odd"><td><a href="mod_alias.html#redirect">Redirect [<var>état</var>] [<var>URL-path</var>]
-<var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Envoie une redirection externe demandant au client
+<tr class="odd"><td><a href="mpm_common.html#receivebuffersize">ReceiveBufferSize <var>octets</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Taille du tampon TCP en entrée</td></tr>
+<tr><td><a href="mod_alias.html#redirect">Redirect [<var>état</var>] [<var>URL-path</var>]
+<var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Envoie une redirection externe demandant au client
 d'effectuer une autre requête avec une URL différente</td></tr>
-<tr><td><a href="mod_alias.html#redirectmatch">RedirectMatch [<var>état</var>] <var>regex</var>
-<var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Envoie une redirection externe faisant appel aux
+<tr class="odd"><td><a href="mod_alias.html#redirectmatch">RedirectMatch [<var>état</var>] <var>regex</var>
+<var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Envoie une redirection externe faisant appel aux
 expressions rationnelles pour la mise en correspondance de l'URL
 courante</td></tr>
-<tr class="odd"><td><a href="mod_alias.html#redirectpermanent">RedirectPermanent <var>chemin URL</var> <var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Envoie une redirection externe permanente demandant au
+<tr><td><a href="mod_alias.html#redirectpermanent">RedirectPermanent <var>chemin URL</var> <var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Envoie une redirection externe permanente demandant au
 client d'effectuer une nouvelle requête avec une URL
 différente</td></tr>
-<tr><td><a href="mod_alias.html#redirectrelative">RedirectRelative OFF|ON</a></td><td> OFF </td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Redirection relative de cibles.</td></tr>
-<tr class="odd"><td><a href="mod_alias.html#redirecttemp">RedirectTemp <var>chemin URL</var> <var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Envoie une redirection externe temporaire demandant au
+<tr class="odd"><td><a href="mod_alias.html#redirectrelative">RedirectRelative OFF|ON</a></td><td> OFF </td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Redirection relative de cibles.</td></tr>
+<tr><td><a href="mod_alias.html#redirecttemp">RedirectTemp <var>chemin URL</var> <var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Envoie une redirection externe temporaire demandant au
 client d'effectuer une nouvelle requête avec une URL
 différente</td></tr>
-<tr><td><a href="mod_socache_redis.html#redisconnpoolttl">RedisConnPoolTTL <em>num</em>[<em>units</em>]</a></td><td> 15s </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Durée de vie du jeu de connexions avec le(s) serveur(s) Redis.</td></tr>
-<tr class="odd"><td><a href="mod_socache_redis.html#redistimeout">RedisTimeout <em>num</em>[<em>units</em>]</a></td><td> 5s </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Durée maximale de lecture/écriture sur la connexion avec le(s)
+<tr class="odd"><td><a href="mod_socache_redis.html#redisconnpoolttl">RedisConnPoolTTL <em>num</em>[<em>units</em>]</a></td><td> 15s </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Durée de vie du jeu de connexions avec le(s) serveur(s) Redis.</td></tr>
+<tr><td><a href="mod_socache_redis.html#redistimeout">RedisTimeout <em>num</em>[<em>units</em>]</a></td><td> 5s </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Durée maximale de lecture/écriture sur la connexion avec le(s)
 serveur(s) Redis.</td></tr>
-<tr><td><a href="mod_reflector.html#reflectorheader">ReflectorHeader <var>en-tête-entrée</var> <var>[en-tête-sortie]</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Renvoie un en-tête d'entrée dans les en-têtes de sortie</td></tr>
-<tr class="odd"><td><a href="core.html#regexdefaultoptions">RegexDefaultOptions [none] [+|-]<var>option</var> [[+|-]<var>option</var>] ...</a></td><td> DOTALL DOLLAR_ENDON +</td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Configuration des options globales par défaut pour les
+<tr class="odd"><td><a href="mod_reflector.html#reflectorheader">ReflectorHeader <var>en-tête-entrée</var> <var>[en-tête-sortie]</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Renvoie un en-tête d'entrée dans les en-têtes de sortie</td></tr>
+<tr><td><a href="core.html#regexdefaultoptions">RegexDefaultOptions [none] [+|-]<var>option</var> [[+|-]<var>option</var>] ...</a></td><td> DOTALL DOLLAR_ENDON +</td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Configuration des options globales par défaut pour les
     expressions rationnelles</td></tr>
-<tr><td><a href="core.html#registerhttpmethod">RegisterHttpMethod <var>method</var> [<var>method</var> [...]]</a></td><td></td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Enregistrement de méthodes HTTP non standards</td></tr>
-<tr class="odd"><td><a href="mod_remoteip.html#remoteipheader">RemoteIPHeader <var>en-tête</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Définit le champ d'en-tête qui contiendra les adresses IP
+<tr class="odd"><td><a href="core.html#registerhttpmethod">RegisterHttpMethod <var>method</var> [<var>method</var> [...]]</a></td><td></td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Enregistrement de méthodes HTTP non standards</td></tr>
+<tr><td><a href="mod_remoteip.html#remoteipheader">RemoteIPHeader <var>en-tête</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Définit le champ d'en-tête qui contiendra les adresses IP
 du client</td></tr>
-<tr><td><a href="mod_remoteip.html#remoteipinternalproxy">RemoteIPInternalProxy
-<var>ip-mandataire</var>|<var>ip-mandataire/sous-réseau</var>|<var>nom-hôte</var> ...</a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Déclare les adresses IP intranet clients comme dignes de
+<tr class="odd"><td><a href="mod_remoteip.html#remoteipinternalproxy">RemoteIPInternalProxy
+<var>ip-mandataire</var>|<var>ip-mandataire/sous-réseau</var>|<var>nom-hôte</var> ...</a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Déclare les adresses IP intranet clients comme dignes de
 confiance pour présenter la valeur RemoteIPHeader</td></tr>
-<tr class="odd"><td><a href="mod_remoteip.html#remoteipinternalproxylist">RemoteIPInternalProxyList <var>nom-fichier</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Déclare les adresses IP intranet clients comme dignes de
+<tr><td><a href="mod_remoteip.html#remoteipinternalproxylist">RemoteIPInternalProxyList <var>nom-fichier</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Déclare les adresses IP intranet clients comme dignes de
 confiance pour présenter la valeur RemoteIPHeader</td></tr>
-<tr><td><a href="mod_remoteip.html#remoteipproxiesheader">RemoteIPProxiesHeader <var>Nom_en-tête</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Déclare le champ d'en-tête qui contiendra toutes les
+<tr class="odd"><td><a href="mod_remoteip.html#remoteipproxiesheader">RemoteIPProxiesHeader <var>Nom_en-tête</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Déclare le champ d'en-tête qui contiendra toutes les
 adresses IP intermédiaires</td></tr>
-<tr class="odd"><td><a href="mod_remoteip.html#remoteipproxyprotocol">RemoteIPProxyProtocol On|Off</a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Active ou désactive la gestion du protocole PROXY</td></tr>
-<tr><td><a href="mod_remoteip.html#remoteipproxyprotocolexceptions">RemoteIPProxyProtocolExceptions host|range [host|range] [host|range]</a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Désactive la prise en compte de l'en-tête PROXY pour certains hôtes
+<tr><td><a href="mod_remoteip.html#remoteipproxyprotocol">RemoteIPProxyProtocol On|Off</a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Active ou désactive la gestion du protocole PROXY</td></tr>
+<tr class="odd"><td><a href="mod_remoteip.html#remoteipproxyprotocolexceptions">RemoteIPProxyProtocolExceptions host|range [host|range] [host|range]</a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Désactive la prise en compte de l'en-tête PROXY pour certains hôtes
 ou réseaux</td></tr>
-<tr class="odd"><td><a href="mod_remoteip.html#remoteiptrustedproxy">RemoteIPTrustedProxy
-<var>ip-mandataire</var>|<var>ip-mandataire/sous-réseau</var>|<var>nom-hôte</var> ...</a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Restreint les adresses IP clients dignes de
+<tr><td><a href="mod_remoteip.html#remoteiptrustedproxy">RemoteIPTrustedProxy
+<var>ip-mandataire</var>|<var>ip-mandataire/sous-réseau</var>|<var>nom-hôte</var> ...</a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Restreint les adresses IP clients dignes de
 confiance pour présenter la valeur RemoteIPHeader</td></tr>
-<tr><td><a href="mod_remoteip.html#remoteiptrustedproxylist">RemoteIPTrustedProxyList <var>nom-fichier</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Restreint les adresses IP clients dignes de
+<tr class="odd"><td><a href="mod_remoteip.html#remoteiptrustedproxylist">RemoteIPTrustedProxyList <var>nom-fichier</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Restreint les adresses IP clients dignes de
 confiance pour présenter la valeur RemoteIPHeader</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#removecharset">RemoveCharset <var>extension</var> [<var>extension</var>]
-...</a></td><td></td><td>vdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Supprime toute association de jeu de caractères pour un
+<tr><td><a href="mod_mime.html#removecharset">RemoveCharset <var>extension</var> [<var>extension</var>]
+...</a></td><td></td><td>vdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Supprime toute association de jeu de caractères pour un
 ensemble d'extensions de noms de fichiers</td></tr>
-<tr><td><a href="mod_mime.html#removeencoding">RemoveEncoding <var>extension</var> [<var>extension</var>]
-...</a></td><td></td><td>vdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Supprime toute association de codage de contenu pour un
+<tr class="odd"><td><a href="mod_mime.html#removeencoding">RemoveEncoding <var>extension</var> [<var>extension</var>]
+...</a></td><td></td><td>vdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Supprime toute association de codage de contenu pour un
 ensemble d'extensions de noms de fichiers</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#removehandler">RemoveHandler <var>extension</var> [<var>extension</var>]
-...</a></td><td></td><td>vdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Supprime toute association de gestionnaire à un ensemble
+<tr><td><a href="mod_mime.html#removehandler">RemoveHandler <var>extension</var> [<var>extension</var>]
+...</a></td><td></td><td>vdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Supprime toute association de gestionnaire à un ensemble
 d'extensions de noms de fichiers</td></tr>
-<tr><td><a href="mod_mime.html#removeinputfilter">RemoveInputFilter <var>extension</var> [<var>extension</var>]
-...</a></td><td></td><td>vdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Supprime toute association de filtre en entrée à un
+<tr class="odd"><td><a href="mod_mime.html#removeinputfilter">RemoveInputFilter <var>extension</var> [<var>extension</var>]
+...</a></td><td></td><td>vdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Supprime toute association de filtre en entrée à un
 ensemble d'extensions de noms de fichiers</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#removelanguage">RemoveLanguage <var>extension</var> [<var>extension</var>]
-...</a></td><td></td><td>vdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Supprime toute association de langage à un ensemble
+<tr><td><a href="mod_mime.html#removelanguage">RemoveLanguage <var>extension</var> [<var>extension</var>]
+...</a></td><td></td><td>vdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Supprime toute association de langage à un ensemble
 d'extensions de noms de fichiers</td></tr>
-<tr><td><a href="mod_mime.html#removeoutputfilter">RemoveOutputFilter <var>extension</var> [<var>extension</var>]
-...</a></td><td></td><td>vdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Supprime toute association de filtre en sortie à un
+<tr class="odd"><td><a href="mod_mime.html#removeoutputfilter">RemoveOutputFilter <var>extension</var> [<var>extension</var>]
+...</a></td><td></td><td>vdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Supprime toute association de filtre en sortie à un
 ensemble d'extensions de noms de fichiers</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#removetype">RemoveType <var>extension</var> [<var>extension</var>]
-...</a></td><td></td><td>vdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Supprime toute association de type de contenu à un ensemble
+<tr><td><a href="mod_mime.html#removetype">RemoveType <var>extension</var> [<var>extension</var>]
+...</a></td><td></td><td>vdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Supprime toute association de type de contenu à un ensemble
 d'extensions de noms de fichiers</td></tr>
-<tr><td><a href="mod_headers.html#requestheader">RequestHeader add|append|edit|edit*|merge|set|setifempty|unset
+<tr class="odd"><td><a href="mod_headers.html#requestheader">RequestHeader add|append|edit|edit*|merge|set|setifempty|unset
 <var>en-tête</var> [[expr=]<var>valeur</var>
 [<var>remplacement</var>]
 [early|env=[!]<var>variable</var>|expr=<var>expression</var>]]
-</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure les en-têtes d'une requête HTTP</td></tr>
-<tr class="odd"><td><a href="mod_reqtimeout.html#requestreadtimeout">RequestReadTimeout
+</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configure les en-têtes d'une requête HTTP</td></tr>
+<tr><td><a href="mod_reqtimeout.html#requestreadtimeout">RequestReadTimeout
 [handshake=<var>timeout</var>[-<var>maxtimeout</var>][,MinRate=<var>rate</var>]
 [header=<var>délai</var>[-<var>délai-maxi</var>][,MinRate=<var>taux-mini</var>]
 [body=<var>délai</var>[-<var>délai-maxi</var>][,MinRate=<var>taux-mini</var>]
-</a></td><td> handshake=0 header= +</td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit des délais maximums pour la négociation TLS, la réception des en-têtes
+</a></td><td> handshake=0 header= +</td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit des délais maximums pour la négociation TLS, la réception des en-têtes
 et/ou corps des requêtes en provenance du client.
 </td></tr>
-<tr><td><a href="mod_authz_core.html#require">Require [not] <var>nom-entité</var> [<var>nom-entité</var>]
-...</a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Vérifie si un utilisateur authentifié a une
+<tr class="odd"><td><a href="mod_authz_core.html#require">Require [not] <var>nom-entité</var> [<var>nom-entité</var>]
+...</a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Vérifie si un utilisateur authentifié a une
 autorisation d'accès accordée par un fournisseur
 d'autorisation.</td></tr>
-<tr class="odd"><td><a href="mod_authz_core.html#requireall">&lt;RequireAll&gt; ... &lt;/RequireAll&gt;</a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Regroupe plusieurs directives d'autorisation dont aucune ne
+<tr><td><a href="mod_authz_core.html#requireall">&lt;RequireAll&gt; ... &lt;/RequireAll&gt;</a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Regroupe plusieurs directives d'autorisation dont aucune ne
 doit échouer et dont au moins une doit retourner un résultat positif
 pour que la directive globale retourne elle-même un résultat
 positif.</td></tr>
-<tr><td><a href="mod_authz_core.html#requireany">&lt;RequireAny&gt; ... &lt;/RequireAny&gt;</a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Regroupe des directives d'autorisation dont au moins une
+<tr class="odd"><td><a href="mod_authz_core.html#requireany">&lt;RequireAny&gt; ... &lt;/RequireAny&gt;</a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Regroupe des directives d'autorisation dont au moins une
 doit retourner un résultat positif pour que la directive globale
 retourne elle-même un résultat positif.</td></tr>
-<tr class="odd"><td><a href="mod_authz_core.html#requirenone">&lt;RequireNone&gt; ... &lt;/RequireNone&gt;</a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Regroupe des directives d'autorisation dont aucune ne doit
+<tr><td><a href="mod_authz_core.html#requirenone">&lt;RequireNone&gt; ... &lt;/RequireNone&gt;</a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Regroupe des directives d'autorisation dont aucune ne doit
 retourner un résultat positif pour que la directive globale n'échoue
 pas.</td></tr>
-<tr><td><a href="mod_rewrite.html#rewritebase">RewriteBase <em>chemin_URL</em></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit l'URL de base pour les réécritures au niveau
+<tr class="odd"><td><a href="mod_rewrite.html#rewritebase">RewriteBase <em>chemin_URL</em></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit l'URL de base pour les réécritures au niveau
 répertoire</td></tr>
-<tr class="odd"><td><a href="mod_rewrite.html#rewritecond"> RewriteCond
-      <em>chaîne_de_test</em> <em>expression_de_comparaison</em> [<em>drapeaux</em>]</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit une condition qui devra être satisfaite pour que
+<tr><td><a href="mod_rewrite.html#rewritecond"> RewriteCond
+      <em>chaîne_de_test</em> <em>expression_de_comparaison</em> [<em>drapeaux</em>]</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit une condition qui devra être satisfaite pour que
 la réécriture soit effectuée
 </td></tr>
-<tr><td><a href="mod_rewrite.html#rewriteengine">RewriteEngine on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Active ou désactive l'exécution du
+<tr class="odd"><td><a href="mod_rewrite.html#rewriteengine">RewriteEngine on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active ou désactive l'exécution du
 moteur de réécriture</td></tr>
-<tr class="odd"><td><a href="mod_rewrite.html#rewritemap">RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em> [<em>MapTypeOptions</em>]
-</a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit une fonction de mise en correspondance pour la
+<tr><td><a href="mod_rewrite.html#rewritemap">RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em> [<em>MapTypeOptions</em>]
+</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit une fonction de mise en correspondance pour la
 recherche de mots-clés</td></tr>
-<tr><td><a href="mod_rewrite.html#rewriteoptions">RewriteOptions <var>Options</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure certaines options spéciales
+<tr class="odd"><td><a href="mod_rewrite.html#rewriteoptions">RewriteOptions <var>Options</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configure certaines options spéciales
 pour le moteur de réécriture</td></tr>
-<tr class="odd"><td><a href="mod_rewrite.html#rewriterule">RewriteRule
-      <em>Modèle</em> <em>Substitution</em> [<em>drapeaux</em>]</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit les règles pour le moteur de réécriture</td></tr>
-<tr><td><a href="core.html#rlimitcpu">RLimitCPU <var>secondes</var>|max [<var>secondes</var>|max]</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Limite le temps CPU alloué aux processus initiés par les
+<tr><td><a href="mod_rewrite.html#rewriterule">RewriteRule
+      <em>Modèle</em> <em>Substitution</em> [<em>drapeaux</em>]</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit les règles pour le moteur de réécriture</td></tr>
+<tr class="odd"><td><a href="core.html#rlimitcpu">RLimitCPU <var>secondes</var>|max [<var>secondes</var>|max]</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Limite le temps CPU alloué aux processus initiés par les
 processus enfants d'Apache httpd</td></tr>
-<tr class="odd"><td><a href="core.html#rlimitmem">RLimitMEM <var>octets</var>|max [<var>octets</var>|max]</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Limite la mémoire allouée aux processus initiés par les
+<tr><td><a href="core.html#rlimitmem">RLimitMEM <var>octets</var>|max [<var>octets</var>|max]</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Limite la mémoire allouée aux processus initiés par les
 processus enfants d'Apache httpd</td></tr>
-<tr><td><a href="core.html#rlimitnproc">RLimitNPROC <var>nombre</var>|max [<var>nombre</var>|max]</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Limite le nombre de processus qui peuvent être initiés par
+<tr class="odd"><td><a href="core.html#rlimitnproc">RLimitNPROC <var>nombre</var>|max [<var>nombre</var>|max]</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Limite le nombre de processus qui peuvent être initiés par
 les processus initiés par les processus enfants d'Apache httpd</td></tr>
-<tr class="odd"><td><a href="mod_access_compat.html#satisfy" id="S" name="S">Satisfy Any|All</a></td><td> All </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Interaction entre le contrôle d'accès en fonction de l'hôte
+<tr><td><a href="mod_access_compat.html#satisfy" id="S" name="S">Satisfy Any|All</a></td><td> All </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Interaction entre le contrôle d'accès en fonction de l'hôte
 et l'authentification utilisateur</td></tr>
-<tr><td><a href="mpm_common.html#scoreboardfile">ScoreBoardFile <var>file-path</var></a></td><td> apache_runtime_stat +</td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Chemin du fichier où sont stockées les données concernant
+<tr class="odd"><td><a href="mpm_common.html#scoreboardfile">ScoreBoardFile <var>file-path</var></a></td><td> apache_runtime_stat +</td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Chemin du fichier où sont stockées les données concernant
 la coordination des processus enfants</td></tr>
-<tr class="odd"><td><a href="mod_actions.html#script">Script <var>méthode</var> <var>script cgi</var></a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Active un script CGI dans le cas d'une méthode de requête
+<tr><td><a href="mod_actions.html#script">Script <var>méthode</var> <var>script cgi</var></a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Active un script CGI dans le cas d'une méthode de requête
 particulière.</td></tr>
-<tr><td><a href="mod_alias.html#scriptalias">ScriptAlias [<var>chemin URL</var>]
-<var>chemin fichier</var>|<var>chemin répertoire</var></a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Fait correspondre une URL à une zone du système de fichiers
+<tr class="odd"><td><a href="mod_alias.html#scriptalias">ScriptAlias [<var>chemin URL</var>]
+<var>chemin fichier</var>|<var>chemin répertoire</var></a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Fait correspondre une URL à une zone du système de fichiers
 et désigne la cible comme script CGI</td></tr>
-<tr class="odd"><td><a href="mod_alias.html#scriptaliasmatch">ScriptAliasMatch <var>regex</var>
-<var>chemin fichier</var>|<var>chemin répertoire</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Fait correspondre une URL à une zone du système de fichiers
+<tr><td><a href="mod_alias.html#scriptaliasmatch">ScriptAliasMatch <var>regex</var>
+<var>chemin fichier</var>|<var>chemin répertoire</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Fait correspondre une URL à une zone du système de fichiers
 en faisant appel aux expressions rationnelles et en désignant la cible
 comme un script CGI</td></tr>
-<tr><td><a href="core.html#scriptinterpretersource">ScriptInterpreterSource Registry|Registry-Strict|Script</a></td><td> Script </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Permet de localiser l'interpréteur des scripts
+<tr class="odd"><td><a href="core.html#scriptinterpretersource">ScriptInterpreterSource Registry|Registry-Strict|Script</a></td><td> Script </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Permet de localiser l'interpréteur des scripts
 CGI</td></tr>
-<tr class="odd"><td><a href="mod_cgi.html#scriptlog">ScriptLog <var>chemin fichier</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Chemin du fichier journal des erreurs du script
+<tr><td><a href="mod_cgi.html#scriptlog">ScriptLog <var>chemin fichier</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Chemin du fichier journal des erreurs du script
 CGI</td></tr>
-<tr><td><a href="mod_cgi.html#scriptlogbuffer">ScriptLogBuffer <var>octets</var></a></td><td> 1024 </td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Taille maximale des requêtes PUT ou POST qui seront
+<tr class="odd"><td><a href="mod_cgi.html#scriptlogbuffer">ScriptLogBuffer <var>octets</var></a></td><td> 1024 </td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Taille maximale des requêtes PUT ou POST qui seront
 enregistrées dans le journal du script</td></tr>
-<tr class="odd"><td><a href="mod_cgi.html#scriptloglength">ScriptLogLength <var>octets</var></a></td><td> 10385760 </td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Taille maximale du fichier journal des scripts
+<tr><td><a href="mod_cgi.html#scriptloglength">ScriptLogLength <var>octets</var></a></td><td> 10385760 </td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Taille maximale du fichier journal des scripts
 CGI</td></tr>
-<tr><td><a href="mod_cgid.html#scriptsock">ScriptSock <var>chemin fichier</var></a></td><td> cgisock </td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Le préfixe du nom de fichier du socket à utiliser pour
+<tr class="odd"><td><a href="mod_cgid.html#scriptsock">ScriptSock <var>chemin fichier</var></a></td><td> cgisock </td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Le préfixe du nom de fichier du socket à utiliser pour
 communiquer avec le démon CGI</td></tr>
-<tr class="odd"><td><a href="mod_nw_ssl.html#securelisten">SecureListen [<var>adresse-IP</var>:]<var>num-port</var>
-<var>nom-certificat</var> [MUTUAL]</a></td><td></td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Active le chiffrement SSL pour le port
+<tr><td><a href="mod_nw_ssl.html#securelisten">SecureListen [<var>adresse-IP</var>:]<var>num-port</var>
+<var>nom-certificat</var> [MUTUAL]</a></td><td></td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Active le chiffrement SSL pour le port
 spécifié</td></tr>
-<tr><td><a href="core.html#seerequesttail">SeeRequestTail On|Off</a></td><td> Off </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Détermine si mod_status affiche les 63 premiers caractères
+<tr class="odd"><td><a href="core.html#seerequesttail">SeeRequestTail On|Off</a></td><td> Off </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Détermine si mod_status affiche les 63 premiers caractères
 d'une requête ou les 63 derniers, en supposant que la requête
 elle-même possède plus de 63 caractères.</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#sendbuffersize">SendBufferSize <var>octets</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Taille du tampon TCP en sortie</td></tr>
-<tr><td><a href="core.html#serveradmin">ServerAdmin <var>adresse électronique</var>|<var>URL</var></a></td><td></td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">L'adresse électronique que le serveur inclut dans les
+<tr><td><a href="mpm_common.html#sendbuffersize">SendBufferSize <var>octets</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Taille du tampon TCP en sortie</td></tr>
+<tr class="odd"><td><a href="core.html#serveradmin">ServerAdmin <var>adresse électronique</var>|<var>URL</var></a></td><td></td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">L'adresse électronique que le serveur inclut dans les
 messages d'erreur envoyés au client</td></tr>
-<tr class="odd"><td><a href="core.html#serveralias">ServerAlias <var>nom serveur</var> [<var>nom serveur</var>]
-...</a></td><td></td><td>v</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Autres noms d'un serveur utilisables pour atteindre des
+<tr><td><a href="core.html#serveralias">ServerAlias <var>nom serveur</var> [<var>nom serveur</var>]
+...</a></td><td></td><td>v</td><td>C</td></tr><tr><td class="descr" colspan="4">Autres noms d'un serveur utilisables pour atteindre des
 serveurs virtuels à base de nom</td></tr>
-<tr><td><a href="mpm_common.html#serverlimit">ServerLimit <var>nombre</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Limite supérieure de la définition du nombre de
+<tr class="odd"><td><a href="mpm_common.html#serverlimit">ServerLimit <var>nombre</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Limite supérieure de la définition du nombre de
 processus</td></tr>
-<tr class="odd"><td><a href="core.html#servername">ServerName
-[<var>protocole</var>://]<var>nom-de-domaine</var>|<var>adresse-ip</var>[:<var>port</var>]</a></td><td></td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Nom d'hôte et port que le serveur utilise pour
+<tr><td><a href="core.html#servername">ServerName
+[<var>protocole</var>://]<var>nom-de-domaine</var>|<var>adresse-ip</var>[:<var>port</var>]</a></td><td></td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Nom d'hôte et port que le serveur utilise pour
 s'authentifier lui-même</td></tr>
-<tr><td><a href="core.html#serverpath">ServerPath <var>chemin d'URL</var></a></td><td></td><td>v</td><td>C</td></tr><tr><td class="descr" colspan="4">Nom de chemin d'URL hérité pour un serveur virtuel à base
+<tr class="odd"><td><a href="core.html#serverpath">ServerPath <var>chemin d'URL</var></a></td><td></td><td>v</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Nom de chemin d'URL hérité pour un serveur virtuel à base
 de nom accédé par un navigateur incompatible</td></tr>
-<tr class="odd"><td><a href="core.html#serverroot">ServerRoot <var>chemin de répertoire</var></a></td><td> /usr/local/apache </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Racine du répertoire d'installation du
+<tr><td><a href="core.html#serverroot">ServerRoot <var>chemin de répertoire</var></a></td><td> /usr/local/apache </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Racine du répertoire d'installation du
 serveur</td></tr>
-<tr><td><a href="core.html#serversignature">ServerSignature On|Off|EMail</a></td><td> Off </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Définit un pied de page pour les documents générés par le
+<tr class="odd"><td><a href="core.html#serversignature">ServerSignature On|Off|EMail</a></td><td> Off </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Définit un pied de page pour les documents générés par le
 serveur</td></tr>
-<tr class="odd"><td><a href="core.html#servertokens">ServerTokens Major|Minor|Min[imal]|Prod[uctOnly]|OS|Full</a></td><td> Full </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Configure l'en-tête <code>Server</code> de la réponse
+<tr><td><a href="core.html#servertokens">ServerTokens Major|Minor|Min[imal]|Prod[uctOnly]|OS|Full</a></td><td> Full </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Configure l'en-tête <code>Server</code> de la réponse
 HTTP</td></tr>
-<tr><td><a href="mod_session.html#session">Session On|Off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Ouvre une session pour le contexte courant</td></tr>
-<tr class="odd"><td><a href="mod_session_cookie.html#sessioncookiemaxage">SessionCookieMaxAge On|Off</a></td><td> On </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit si les cookies de session doivent spécifier une durée de vie à
+<tr class="odd"><td><a href="mod_session.html#session">Session On|Off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Ouvre une session pour le contexte courant</td></tr>
+<tr><td><a href="mod_session_cookie.html#sessioncookiemaxage">SessionCookieMaxAge On|Off</a></td><td> On </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit si les cookies de session doivent spécifier une durée de vie à
 transmettre au client</td></tr>
-<tr><td><a href="mod_session_cookie.html#sessioncookiename">SessionCookieName <var>nom</var> <var>attributs</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Nom et attributs du cookie RFC2109 dans lequel la session
+<tr class="odd"><td><a href="mod_session_cookie.html#sessioncookiename">SessionCookieName <var>nom</var> <var>attributs</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Nom et attributs du cookie RFC2109 dans lequel la session
 est stockée</td></tr>
-<tr class="odd"><td><a href="mod_session_cookie.html#sessioncookiename2">SessionCookieName2 <var>nom</var> <var>attributs</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Nom et attributs pour le cookie RFC2965 dans lequel est
+<tr><td><a href="mod_session_cookie.html#sessioncookiename2">SessionCookieName2 <var>nom</var> <var>attributs</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Nom et attributs pour le cookie RFC2965 dans lequel est
 stockée la session</td></tr>
-<tr><td><a href="mod_session_cookie.html#sessioncookieremove">SessionCookieRemove On|Off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Détermine si les cookies de session doivent être supprimés
+<tr class="odd"><td><a href="mod_session_cookie.html#sessioncookieremove">SessionCookieRemove On|Off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Détermine si les cookies de session doivent être supprimés
 des en-têtes HTTP entrants</td></tr>
-<tr class="odd"><td><a href="mod_session_crypto.html#sessioncryptocipher">SessionCryptoCipher <var>algorithme</var></a></td><td> aes256 </td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">L'algorithme à utiliser pour le chiffrement de la session</td></tr>
-<tr><td><a href="mod_session_crypto.html#sessioncryptodriver">SessionCryptoDriver <var>nom</var> <var>[param[=valeur]]</var></a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Le pilote de chiffrement à utiliser pour chiffrer les
+<tr><td><a href="mod_session_crypto.html#sessioncryptocipher">SessionCryptoCipher <var>algorithme</var></a></td><td> aes256 </td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">L'algorithme à utiliser pour le chiffrement de la session</td></tr>
+<tr class="odd"><td><a href="mod_session_crypto.html#sessioncryptodriver">SessionCryptoDriver <var>nom</var> <var>[param[=valeur]]</var></a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Le pilote de chiffrement à utiliser pour chiffrer les
 sessions</td></tr>
-<tr class="odd"><td><a href="mod_session_crypto.html#sessioncryptopassphrase">SessionCryptoPassphrase <var>secret</var> [ <var>secret</var> ... ] </a></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">La clé utilisée pour chiffrer la session</td></tr>
-<tr><td><a href="mod_session_crypto.html#sessioncryptopassphrasefile">SessionCryptoPassphraseFile <var>nom-fichier</var></a></td><td></td><td>svd</td><td>X</td></tr><tr><td class="descr" colspan="4">Le fichier contenant les clés utilisées pour chiffrer la
+<tr><td><a href="mod_session_crypto.html#sessioncryptopassphrase">SessionCryptoPassphrase <var>secret</var> [ <var>secret</var> ... ] </a></td><td></td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">La clé utilisée pour chiffrer la session</td></tr>
+<tr class="odd"><td><a href="mod_session_crypto.html#sessioncryptopassphrasefile">SessionCryptoPassphraseFile <var>nom-fichier</var></a></td><td></td><td>svd</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Le fichier contenant les clés utilisées pour chiffrer la
 session</td></tr>
-<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdcookiename">SessionDBDCookieName <var>nom</var> <var>attributs</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Nom et attributs du cookie RFC2109 qui contient
+<tr><td><a href="mod_session_dbd.html#sessiondbdcookiename">SessionDBDCookieName <var>nom</var> <var>attributs</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Nom et attributs du cookie RFC2109 qui contient
 l'identifiant de session</td></tr>
-<tr><td><a href="mod_session_dbd.html#sessiondbdcookiename2">SessionDBDCookieName2 <var>nom</var> <var>attributs</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Nom et attributs du cookie RFC2965 qui contient
+<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdcookiename2">SessionDBDCookieName2 <var>nom</var> <var>attributs</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Nom et attributs du cookie RFC2965 qui contient
 l'identifiant de session</td></tr>
-<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdcookieremove">SessionDBDCookieRemove On|Off</a></td><td> On </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Détermine si les cookies de session doivent être supprimés
+<tr><td><a href="mod_session_dbd.html#sessiondbdcookieremove">SessionDBDCookieRemove On|Off</a></td><td> On </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Détermine si les cookies de session doivent être supprimés
 des en-têtes HTTP entrants</td></tr>
-<tr><td><a href="mod_session_dbd.html#sessiondbddeletelabel">SessionDBDDeleteLabel <var>étiquette</var></a></td><td> deletesession </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">La requête SQL à utiliser pour supprimer des sessions de la
+<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbddeletelabel">SessionDBDDeleteLabel <var>étiquette</var></a></td><td> deletesession </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">La requête SQL à utiliser pour supprimer des sessions de la
 base de données</td></tr>
-<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdinsertlabel">SessionDBDInsertLabel <var>étiquette</var></a></td><td> insertsession </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">La requête SQL à utiliser pour insérer des sessions dans la
+<tr><td><a href="mod_session_dbd.html#sessiondbdinsertlabel">SessionDBDInsertLabel <var>étiquette</var></a></td><td> insertsession </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">La requête SQL à utiliser pour insérer des sessions dans la
 base de données</td></tr>
-<tr><td><a href="mod_session_dbd.html#sessiondbdperuser">SessionDBDPerUser On|Off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Active une session propre à un utilisateur</td></tr>
-<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdselectlabel">SessionDBDSelectLabel <var>étiquette</var></a></td><td> selectsession </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">La requête SQL à utiliser pour sélectionner des sessions
+<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdperuser">SessionDBDPerUser On|Off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active une session propre à un utilisateur</td></tr>
+<tr><td><a href="mod_session_dbd.html#sessiondbdselectlabel">SessionDBDSelectLabel <var>étiquette</var></a></td><td> selectsession </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">La requête SQL à utiliser pour sélectionner des sessions
 dans la base de données</td></tr>
-<tr><td><a href="mod_session_dbd.html#sessiondbdupdatelabel">SessionDBDUpdateLabel <var>étiquette</var></a></td><td> updatesession </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">La requête SQL à utiliser pour mettre à jour des sessions
+<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdupdatelabel">SessionDBDUpdateLabel <var>étiquette</var></a></td><td> updatesession </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">La requête SQL à utiliser pour mettre à jour des sessions
 préexistantes dans la base de données</td></tr>
-<tr class="odd"><td><a href="mod_session.html#sessionenv">SessionEnv On|Off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit si le contenu de la session doit être enregistré
+<tr><td><a href="mod_session.html#sessionenv">SessionEnv On|Off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit si le contenu de la session doit être enregistré
 dans la variable d'environnement <var>HTTP_SESSION</var></td></tr>
-<tr><td><a href="mod_session.html#sessionexclude">SessionExclude <var>chemin</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit les préfixes d'URLs pour lesquels une session sera
+<tr class="odd"><td><a href="mod_session.html#sessionexclude">SessionExclude <var>chemin</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit les préfixes d'URLs pour lesquels une session sera
 ignorée</td></tr>
-<tr class="odd"><td><a href="mod_session.html#sessionexpiryupdateinterval">SessionExpiryUpdateInterval <var>interval</var></a></td><td> 0 (mise à jour syst +</td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit le nombre de secondes dont la durée d'expiration d'une
+<tr><td><a href="mod_session.html#sessionexpiryupdateinterval">SessionExpiryUpdateInterval <var>interval</var></a></td><td> 0 (mise à jour syst +</td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit le nombre de secondes dont la durée d'expiration d'une
 session peut changer sans que cette session soit mise à jour</td></tr>
-<tr><td><a href="mod_session.html#sessionheader">SessionHeader <var>en-tête</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Importation des mises à jour de session depuis l'en-tête de
+<tr class="odd"><td><a href="mod_session.html#sessionheader">SessionHeader <var>en-tête</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Importation des mises à jour de session depuis l'en-tête de
 réponse HTTP spécifié</td></tr>
-<tr class="odd"><td><a href="mod_session.html#sessioninclude">SessionInclude <var>chemin</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit les préfixes d'URL pour lesquels une session est
+<tr><td><a href="mod_session.html#sessioninclude">SessionInclude <var>chemin</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit les préfixes d'URL pour lesquels une session est
 valide</td></tr>
-<tr><td><a href="mod_session.html#sessionmaxage">SessionMaxAge <var>durée de vie maximale</var></a></td><td> 0 </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit une durée de vie maximale pour la session en
+<tr class="odd"><td><a href="mod_session.html#sessionmaxage">SessionMaxAge <var>durée de vie maximale</var></a></td><td> 0 </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit une durée de vie maximale pour la session en
 secondes</td></tr>
-<tr class="odd"><td><a href="mod_env.html#setenv">SetEnv <var>var-env</var> [<var>valeur</var>]</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Définit des variables d'environnement</td></tr>
-<tr><td><a href="mod_setenvif.html#setenvif">SetEnvIf <em>attribut
+<tr><td><a href="mod_env.html#setenv">SetEnv <var>var-env</var> [<var>valeur</var>]</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Définit des variables d'environnement</td></tr>
+<tr class="odd"><td><a href="mod_setenvif.html#setenvif">SetEnvIf <em>attribut
     regex [!]env-variable</em>[=<em>valeur</em>]
-    [[!]<em>env-variable</em>[=<em>valeur</em>]] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Définit des variables d'environnement en fonction des
+    [[!]<em>env-variable</em>[=<em>valeur</em>]] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Définit des variables d'environnement en fonction des
 attributs de la requête</td></tr>
-<tr class="odd"><td><a href="mod_setenvif.html#setenvifexpr">SetEnvIfExpr <em>expr
+<tr><td><a href="mod_setenvif.html#setenvifexpr">SetEnvIfExpr <em>expr
     [!]env-variable</em>[=<em>valeur</em>]
-    [[!]<em>env-variable</em>[=<em>valeur</em>]] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Définit des variables d'environnement en fonction d'une expression ap_expr</td></tr>
-<tr><td><a href="mod_setenvif.html#setenvifnocase">SetEnvIfNoCase <em>attribut regex
+    [[!]<em>env-variable</em>[=<em>valeur</em>]] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Définit des variables d'environnement en fonction d'une expression ap_expr</td></tr>
+<tr class="odd"><td><a href="mod_setenvif.html#setenvifnocase">SetEnvIfNoCase <em>attribut regex
         [!]env-variable</em>[=<em>valeur</em>]
-    [[!]<em>env-variable</em>[=<em>valeur</em>]] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Définit des variables d'environnement en fonction des
+    [[!]<em>env-variable</em>[=<em>valeur</em>]] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Définit des variables d'environnement en fonction des
 attributs de la requête sans tenir compte de la casse</td></tr>
-<tr class="odd"><td><a href="core.html#sethandler">SetHandler <var>handler-name</var>|none|<var>expression</var></a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Force le traitement des fichiers spécifiés par un
+<tr><td><a href="core.html#sethandler">SetHandler <var>handler-name</var>|none|<var>expression</var></a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Force le traitement des fichiers spécifiés par un
 gestionnaire particulier</td></tr>
-<tr><td><a href="core.html#setinputfilter">SetInputFilter <var>filtre</var>[;<var>filtre</var>...]</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Définit les filtres par lesquels vont passer les requêtes
+<tr class="odd"><td><a href="core.html#setinputfilter">SetInputFilter <var>filtre</var>[;<var>filtre</var>...]</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Définit les filtres par lesquels vont passer les requêtes
 client et les données POST</td></tr>
-<tr class="odd"><td><a href="core.html#setoutputfilter">SetOutputFilter <var>filtre</var>[;<var>filtre</var>...]</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Définit les filtres par lesquels vont passer les réponses
+<tr><td><a href="core.html#setoutputfilter">SetOutputFilter <var>filtre</var>[;<var>filtre</var>...]</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Définit les filtres par lesquels vont passer les réponses
 du serveur</td></tr>
-<tr><td><a href="mod_include.html#ssiendtag">SSIEndTag <var>tag</var></a></td><td> "--&gt;" </td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Chaîne qui termine l'élément include</td></tr>
-<tr class="odd"><td><a href="mod_include.html#ssierrormsg">SSIErrorMsg <var>message</var></a></td><td> "[an error occurred +</td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Message d'erreur affiché lorsqu'une erreur SSI
+<tr class="odd"><td><a href="mod_include.html#ssiendtag">SSIEndTag <var>tag</var></a></td><td> "--&gt;" </td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Chaîne qui termine l'élément include</td></tr>
+<tr><td><a href="mod_include.html#ssierrormsg">SSIErrorMsg <var>message</var></a></td><td> "[an error occurred +</td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Message d'erreur affiché lorsqu'une erreur SSI
 survient</td></tr>
-<tr><td><a href="mod_include.html#ssietag">SSIETag on|off</a></td><td> off </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Définit si des en-têtes ETags sont générés par le serveur.</td></tr>
-<tr class="odd"><td><a href="mod_include.html#ssilastmodified">SSILastModified on|off</a></td><td> off </td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Définit si des en-têtes <code>Last-Modified</code> sont
+<tr class="odd"><td><a href="mod_include.html#ssietag">SSIETag on|off</a></td><td> off </td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Définit si des en-têtes ETags sont générés par le serveur.</td></tr>
+<tr><td><a href="mod_include.html#ssilastmodified">SSILastModified on|off</a></td><td> off </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Définit si des en-têtes <code>Last-Modified</code> sont
 générés par le serveur.</td></tr>
-<tr><td><a href="mod_include.html#ssilegacyexprparser">SSILegacyExprParser on|off</a></td><td> off </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Active le mode de compatibilité pour les expressions
+<tr class="odd"><td><a href="mod_include.html#ssilegacyexprparser">SSILegacyExprParser on|off</a></td><td> off </td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Active le mode de compatibilité pour les expressions
 conditionnelles.</td></tr>
-<tr class="odd"><td><a href="mod_include.html#ssistarttag">SSIStartTag <var>tag</var></a></td><td> "&lt;!--#" </td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Chaîne qui marque le début d'un élément
+<tr><td><a href="mod_include.html#ssistarttag">SSIStartTag <var>tag</var></a></td><td> "&lt;!--#" </td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Chaîne qui marque le début d'un élément
 include</td></tr>
-<tr><td><a href="mod_include.html#ssitimeformat">SSITimeFormat <var>chaîne de formatage</var></a></td><td> "%A, %d-%b-%Y %H:%M +</td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Configuration du format d'affichage des dates</td></tr>
-<tr class="odd"><td><a href="mod_include.html#ssiundefinedecho">SSIUndefinedEcho <var>chaîne</var></a></td><td> "(none)" </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Chaîne à afficher lorsqu'on tente d'extraire le contenu
+<tr class="odd"><td><a href="mod_include.html#ssitimeformat">SSITimeFormat <var>chaîne de formatage</var></a></td><td> "%A, %d-%b-%Y %H:%M +</td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Configuration du format d'affichage des dates</td></tr>
+<tr><td><a href="mod_include.html#ssiundefinedecho">SSIUndefinedEcho <var>chaîne</var></a></td><td> "(none)" </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Chaîne à afficher lorsqu'on tente d'extraire le contenu
 d'une variable non définie</td></tr>
-<tr><td><a href="mod_ssl.html#sslcacertificatefile">SSLCACertificateFile <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Fichier contenant une concaténation des certificats de CA
+<tr class="odd"><td><a href="mod_ssl.html#sslcacertificatefile">SSLCACertificateFile <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fichier contenant une concaténation des certificats de CA
 codés en PEM pour l'authentification des clients</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslcacertificatepath">SSLCACertificatePath <em>chemin-répertoire</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Répertoire des certificats de CA codés en PEM pour
+<tr><td><a href="mod_ssl.html#sslcacertificatepath">SSLCACertificatePath <em>chemin-répertoire</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Répertoire des certificats de CA codés en PEM pour
 l'authentification des clients</td></tr>
-<tr><td><a href="mod_ssl.html#sslcadnrequestfile">SSLCADNRequestFile <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Fichier contenant la concaténation des certificats de CA
+<tr class="odd"><td><a href="mod_ssl.html#sslcadnrequestfile">SSLCADNRequestFile <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fichier contenant la concaténation des certificats de CA
 codés en PEM pour la définition de noms de CA acceptables</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslcadnrequestpath">SSLCADNRequestPath <em>chemin-répertoire</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Répertoire contenant des fichiers de certificats de CA
+<tr><td><a href="mod_ssl.html#sslcadnrequestpath">SSLCADNRequestPath <em>chemin-répertoire</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Répertoire contenant des fichiers de certificats de CA
 codés en PEM pour la définition de noms de CA acceptables</td></tr>
-<tr><td><a href="mod_ssl.html#sslcarevocationcheck">SSLCARevocationCheck chain|leaf|none [<em>flag</em>s ...]</a></td><td> none </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Active la vérification des révocations basée sur les CRL</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslcarevocationfile">SSLCARevocationFile <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fichier contenant la concaténation des CRLs des CA codés en
+<tr class="odd"><td><a href="mod_ssl.html#sslcarevocationcheck">SSLCARevocationCheck chain|leaf|none [<em>flag</em>s ...]</a></td><td> none </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active la vérification des révocations basée sur les CRL</td></tr>
+<tr><td><a href="mod_ssl.html#sslcarevocationfile">SSLCARevocationFile <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Fichier contenant la concaténation des CRLs des CA codés en
 PEM pour l'authentification des clients</td></tr>
-<tr><td><a href="mod_ssl.html#sslcarevocationpath">SSLCARevocationPath <em>chemin-répertoire</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Répertoire des CRLs de CA codés en PEM pour
+<tr class="odd"><td><a href="mod_ssl.html#sslcarevocationpath">SSLCARevocationPath <em>chemin-répertoire</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Répertoire des CRLs de CA codés en PEM pour
 l'authentification des clients</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslcertificatechainfile">SSLCertificateChainFile <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fichier contenant les certificats de CA du serveur codés en
+<tr><td><a href="mod_ssl.html#sslcertificatechainfile">SSLCertificateChainFile <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Fichier contenant les certificats de CA du serveur codés en
 PEM</td></tr>
-<tr><td><a href="mod_ssl.html#sslcertificatefile">SSLCertificateFile <var>file-path</var>|<var>certid</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Fichier de données contenant les informations de certificat X.509 du serveur
+<tr class="odd"><td><a href="mod_ssl.html#sslcertificatefile">SSLCertificateFile <var>file-path</var>|<var>certid</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fichier de données contenant les informations de certificat X.509 du serveur
 codées au format PEM ou identificateur de jeton</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslcertificatekeyfile">SSLCertificateKeyFile <var>file-path</var>|<var>keyid</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fichier contenant la clé privée du serveur codée en
+<tr><td><a href="mod_ssl.html#sslcertificatekeyfile">SSLCertificateKeyFile <var>file-path</var>|<var>keyid</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Fichier contenant la clé privée du serveur codée en
 PEM</td></tr>
-<tr><td><a href="mod_ssl.html#sslciphersuite">SSLCipherSuite [<em>protocol</em>] <em>cipher-spec</em></a></td><td> DEFAULT (dépend de  +</td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Algorithmes de chiffrement disponibles pour la négociation
+<tr class="odd"><td><a href="mod_ssl.html#sslciphersuite">SSLCipherSuite [<em>protocol</em>] <em>cipher-spec</em></a></td><td> DEFAULT (dépend de  +</td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Algorithmes de chiffrement disponibles pour la négociation
 au cours de l'initialisation de la connexion SSL</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslcompression">SSLCompression on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Permet d'activer la compression au niveau SSL</td></tr>
-<tr><td><a href="mod_ssl.html#sslcryptodevice">SSLCryptoDevice <em>moteur</em></a></td><td> builtin </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Active l'utilisation d'un accélérateur matériel de
+<tr><td><a href="mod_ssl.html#sslcompression">SSLCompression on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Permet d'activer la compression au niveau SSL</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslcryptodevice">SSLCryptoDevice <em>moteur</em></a></td><td> builtin </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active l'utilisation d'un accélérateur matériel de
 chiffrement</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslengine">SSLEngine on|off|optional</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Interrupteur marche/arrêt du moteur SSL</td></tr>
-<tr><td><a href="mod_ssl.html#sslfips">SSLFIPS on|off</a></td><td> off </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Coimmutateur du mode SSL FIPS</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslhonorcipherorder">SSLHonorCipherOrder on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Option permettant de classer les algorithmes de chiffrement
+<tr><td><a href="mod_ssl.html#sslengine">SSLEngine on|off|optional</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Interrupteur marche/arrêt du moteur SSL</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslfips">SSLFIPS on|off</a></td><td> off </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Coimmutateur du mode SSL FIPS</td></tr>
+<tr><td><a href="mod_ssl.html#sslhonorcipherorder">SSLHonorCipherOrder on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Option permettant de classer les algorithmes de chiffrement
 du serveur par ordre de préférence</td></tr>
-<tr><td><a href="mod_ssl.html#sslinsecurerenegotiation">SSLInsecureRenegotiation on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Option permettant d'activer le support de la renégociation
+<tr class="odd"><td><a href="mod_ssl.html#sslinsecurerenegotiation">SSLInsecureRenegotiation on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Option permettant d'activer le support de la renégociation
 non sécurisée</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslocspdefaultresponder">SSLOCSPDefaultResponder <em>uri</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit l'URI du répondeur par défaut pour la validation
+<tr><td><a href="mod_ssl.html#sslocspdefaultresponder">SSLOCSPDefaultResponder <em>uri</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit l'URI du répondeur par défaut pour la validation
 OCSP</td></tr>
-<tr><td><a href="mod_ssl.html#sslocspenable">SSLOCSPEnable on|leaf|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Active la validation OCSP de la chaîne de certificats du
+<tr class="odd"><td><a href="mod_ssl.html#sslocspenable">SSLOCSPEnable on|leaf|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active la validation OCSP de la chaîne de certificats du
 client</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslocspnoverify">SSLOCSPNoverify on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Evite la vérification des certificats des répondeurs OCSP</td></tr>
-<tr><td><a href="mod_ssl.html#sslocspoverrideresponder">SSLOCSPOverrideResponder on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Force l'utilisation de l'URI du répondeur par défaut pour
+<tr><td><a href="mod_ssl.html#sslocspnoverify">SSLOCSPNoverify on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Evite la vérification des certificats des répondeurs OCSP</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslocspoverrideresponder">SSLOCSPOverrideResponder on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Force l'utilisation de l'URI du répondeur par défaut pour
 la validation OCSP</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslocspproxyurl">SSLOCSPProxyURL <em>url</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Adresse de mandataire à utiliser pour les requêtes OCSP</td></tr>
-<tr><td><a href="mod_ssl.html#sslocsprespondercertificatefile">SSLOCSPResponderCertificateFile <em>file</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Fournit un jeu de certificats de confiance du répondeur OCSP avec
+<tr><td><a href="mod_ssl.html#sslocspproxyurl">SSLOCSPProxyURL <em>url</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Adresse de mandataire à utiliser pour les requêtes OCSP</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslocsprespondercertificatefile">SSLOCSPResponderCertificateFile <em>file</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fournit un jeu de certificats de confiance du répondeur OCSP avec
 encodage PEM</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslocsprespondertimeout">SSLOCSPResponderTimeout <em>secondes</em></a></td><td> 10 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Délai d'attente pour les requêtes OCSP</td></tr>
-<tr><td><a href="mod_ssl.html#sslocspresponsemaxage">SSLOCSPResponseMaxAge <em>secondes</em></a></td><td> -1 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Age maximum autorisé pour les réponses OCSP</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslocspresponsetimeskew">SSLOCSPResponseTimeSkew <em>secondes</em></a></td><td> 300 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Dérive temporelle maximale autorisée pour la validation des
+<tr><td><a href="mod_ssl.html#sslocsprespondertimeout">SSLOCSPResponderTimeout <em>secondes</em></a></td><td> 10 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Délai d'attente pour les requêtes OCSP</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslocspresponsemaxage">SSLOCSPResponseMaxAge <em>secondes</em></a></td><td> -1 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Age maximum autorisé pour les réponses OCSP</td></tr>
+<tr><td><a href="mod_ssl.html#sslocspresponsetimeskew">SSLOCSPResponseTimeSkew <em>secondes</em></a></td><td> 300 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Dérive temporelle maximale autorisée pour la validation des
 réponses OCSP</td></tr>
-<tr><td><a href="mod_ssl.html#sslocspuserequestnonce">SSLOCSPUseRequestNonce on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Utilisation d'un nombre à usage unique au sein des requêtes
+<tr class="odd"><td><a href="mod_ssl.html#sslocspuserequestnonce">SSLOCSPUseRequestNonce on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Utilisation d'un nombre à usage unique au sein des requêtes
 OCSP</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslopensslconfcmd">SSLOpenSSLConfCmd <em>commande</em> <em>valeur</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configuration des paramètres d'OpenSSL via son API <em>SSL_CONF</em></td></tr>
-<tr><td><a href="mod_ssl.html#ssloptions">SSLOptions [+|-]<em>option</em> ...</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure différentes options d'exécution du moteur
+<tr><td><a href="mod_ssl.html#sslopensslconfcmd">SSLOpenSSLConfCmd <em>commande</em> <em>valeur</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Configuration des paramètres d'OpenSSL via son API <em>SSL_CONF</em></td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#ssloptions">SSLOptions [+|-]<em>option</em> ...</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configure différentes options d'exécution du moteur
 SSL</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslpassphrasedialog">SSLPassPhraseDialog <em>type</em></a></td><td> builtin </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Méthode utilisée pour entrer le mot de passe pour les clés
+<tr><td><a href="mod_ssl.html#sslpassphrasedialog">SSLPassPhraseDialog <em>type</em></a></td><td> builtin </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Méthode utilisée pour entrer le mot de passe pour les clés
 privées chiffrées</td></tr>
-<tr><td><a href="mod_ssl.html#sslpolicy">SSLPolicy <em>name</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Applique une politique SSL en la référençant par son nom</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslprotocol">SSLProtocol [+|-]<em>protocole</em> ...</a></td><td> all -SSLv3 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Indique les versions du protocole SSL/TLS
+<tr class="odd"><td><a href="mod_ssl.html#sslpolicy">SSLPolicy <em>name</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Applique une politique SSL en la référençant par son nom</td></tr>
+<tr><td><a href="mod_ssl.html#sslprotocol">SSLProtocol [+|-]<em>protocole</em> ...</a></td><td> all -SSLv3 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Indique les versions du protocole SSL/TLS
 disponibles</td></tr>
-<tr><td><a href="mod_ssl.html#sslproxycacertificatefile">SSLProxyCACertificateFile <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Fichier contenant la concaténation des certificats de CA
+<tr class="odd"><td><a href="mod_ssl.html#sslproxycacertificatefile">SSLProxyCACertificateFile <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fichier contenant la concaténation des certificats de CA
 codés en PEM pour l'authentification des serveurs distants</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslproxycacertificatepath">SSLProxyCACertificatePath <em>chemin-répertoire</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Répertoire des certificats de CA codés en PEM pour
+<tr><td><a href="mod_ssl.html#sslproxycacertificatepath">SSLProxyCACertificatePath <em>chemin-répertoire</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Répertoire des certificats de CA codés en PEM pour
 l'authentification des serveurs distants</td></tr>
-<tr><td><a href="mod_ssl.html#sslproxycarevocationcheck">SSLProxyCARevocationCheck chain|leaf|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Active la vérification des révocations basée sur les CRLs
+<tr class="odd"><td><a href="mod_ssl.html#sslproxycarevocationcheck">SSLProxyCARevocationCheck chain|leaf|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active la vérification des révocations basée sur les CRLs
 pour l'authentification du serveur distant</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslproxycarevocationfile">SSLProxyCARevocationFile <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fichier contenant la concaténation des CRLs de CA codés en
+<tr><td><a href="mod_ssl.html#sslproxycarevocationfile">SSLProxyCARevocationFile <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Fichier contenant la concaténation des CRLs de CA codés en
 PEM pour l'authentification des serveurs distants</td></tr>
-<tr><td><a href="mod_ssl.html#sslproxycarevocationpath">SSLProxyCARevocationPath <em>chemin-répertoire</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Répertoire des CRLs de CA codés en PEM pour
+<tr class="odd"><td><a href="mod_ssl.html#sslproxycarevocationpath">SSLProxyCARevocationPath <em>chemin-répertoire</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Répertoire des CRLs de CA codés en PEM pour
 l'authentification des serveurs distants</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslproxycheckpeercn">SSLProxyCheckPeerCN on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configuration de la vérification du champ CN du certificat
+<tr><td><a href="mod_ssl.html#sslproxycheckpeercn">SSLProxyCheckPeerCN on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Configuration de la vérification du champ CN du certificat
 du serveur distant
 </td></tr>
-<tr><td><a href="mod_ssl.html#sslproxycheckpeerexpire">SSLProxyCheckPeerExpire on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Configuration de la vérification de l'expiration du
+<tr class="odd"><td><a href="mod_ssl.html#sslproxycheckpeerexpire">SSLProxyCheckPeerExpire on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configuration de la vérification de l'expiration du
 certificat du serveur distant
 </td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslproxycheckpeername">SSLProxyCheckPeerName on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configure la vérification du nom d'hôte pour les
+<tr><td><a href="mod_ssl.html#sslproxycheckpeername">SSLProxyCheckPeerName on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure la vérification du nom d'hôte pour les
 certificats serveur distant
 </td></tr>
-<tr><td><a href="mod_ssl.html#sslproxyciphersuite">SSLProxyCipherSuite [<em>protocol</em>] <em>cipher-spec</em></a></td><td> ALL:!ADH:RC4+RSA:+H +</td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Algorithmes de chiffrement disponibles pour la négociation
+<tr class="odd"><td><a href="mod_ssl.html#sslproxyciphersuite">SSLProxyCipherSuite [<em>protocol</em>] <em>cipher-spec</em></a></td><td> ALL:!ADH:RC4+RSA:+H +</td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Algorithmes de chiffrement disponibles pour la négociation
 lors de l'initialisation d'une connexion SSL de mandataire</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslproxyengine">SSLProxyEngine on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Interrupteur marche/arrêt du moteur de mandataire
+<tr><td><a href="mod_ssl.html#sslproxyengine">SSLProxyEngine on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Interrupteur marche/arrêt du moteur de mandataire
 SSL</td></tr>
-<tr><td><a href="mod_ssl.html#sslproxymachinecertificatechainfile">SSLProxyMachineCertificateChainFile <em>nom-fichier</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Fichier de certificats de CA encodés PEM concaténés permettant au
+<tr class="odd"><td><a href="mod_ssl.html#sslproxymachinecertificatechainfile">SSLProxyMachineCertificateChainFile <em>nom-fichier</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fichier de certificats de CA encodés PEM concaténés permettant au
 mandataire de choisir un certificat</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslproxymachinecertificatefile">SSLProxyMachineCertificateFile <em>file-path</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fichier contenant la concaténation des clés et certificats
+<tr><td><a href="mod_ssl.html#sslproxymachinecertificatefile">SSLProxyMachineCertificateFile <em>file-path</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Fichier contenant la concaténation des clés et certificats
 clients codés en PEM que le mandataire doit utiliser</td></tr>
-<tr><td><a href="mod_ssl.html#sslproxymachinecertificatepath">SSLProxyMachineCertificatePath <em>chemin-répertoire</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Répertoire des clés et certificats clients codés en PEM que
+<tr class="odd"><td><a href="mod_ssl.html#sslproxymachinecertificatepath">SSLProxyMachineCertificatePath <em>chemin-répertoire</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Répertoire des clés et certificats clients codés en PEM que
 le mandataire doit utiliser</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslproxyprotocol">SSLProxyProtocol [+|-]<em>protocole</em> ...</a></td><td> all -SSLv3 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit les protocoles SSL disponibles pour la fonction de
+<tr><td><a href="mod_ssl.html#sslproxyprotocol">SSLProxyProtocol [+|-]<em>protocole</em> ...</a></td><td> all -SSLv3 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit les protocoles SSL disponibles pour la fonction de
 mandataire</td></tr>
-<tr><td><a href="mod_ssl.html#sslproxyverify">SSLProxyVerify <em>niveau</em></a></td><td> none </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Niveau de vérification du certificat du serveur
+<tr class="odd"><td><a href="mod_ssl.html#sslproxyverify">SSLProxyVerify <em>niveau</em></a></td><td> none </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Niveau de vérification du certificat du serveur
 distant</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslproxyverifydepth">SSLProxyVerifyDepth <em>niveau</em></a></td><td> 1 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Niveau de profondeur maximum dans les certificats de CA
+<tr><td><a href="mod_ssl.html#sslproxyverifydepth">SSLProxyVerifyDepth <em>niveau</em></a></td><td> 1 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Niveau de profondeur maximum dans les certificats de CA
 lors de la vérification du certificat du serveur distant</td></tr>
-<tr><td><a href="mod_ssl.html#sslrandomseed">SSLRandomSeed <em>contexte</em> <em>source</em>
-[<em>nombre</em>]</a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Source de déclenchement du Générateur de Nombres
+<tr class="odd"><td><a href="mod_ssl.html#sslrandomseed">SSLRandomSeed <em>contexte</em> <em>source</em>
+[<em>nombre</em>]</a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Source de déclenchement du Générateur de Nombres
 Pseudo-Aléatoires (PRNG)</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslrenegbuffersize">SSLRenegBufferSize <var>taille</var></a></td><td> 131072 </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit la taille du tampon de renégociation
+<tr><td><a href="mod_ssl.html#sslrenegbuffersize">SSLRenegBufferSize <var>taille</var></a></td><td> 131072 </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit la taille du tampon de renégociation
 SSL</td></tr>
-<tr><td><a href="mod_ssl.html#sslrequire">SSLRequire <em>expression</em></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">N'autorise l'accès que lorsqu'une expression booléenne
+<tr class="odd"><td><a href="mod_ssl.html#sslrequire">SSLRequire <em>expression</em></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">N'autorise l'accès que lorsqu'une expression booléenne
 complexe et arbitraire est vraie</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslrequiressl">SSLRequireSSL</a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Interdit l'accès lorsque la requête HTTP n'utilise pas
+<tr><td><a href="mod_ssl.html#sslrequiressl">SSLRequireSSL</a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Interdit l'accès lorsque la requête HTTP n'utilise pas
 SSL</td></tr>
-<tr><td><a href="mod_ssl.html#sslsessioncache">SSLSessionCache <em>type</em></a></td><td> none </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Type du cache de session SSL global et
+<tr class="odd"><td><a href="mod_ssl.html#sslsessioncache">SSLSessionCache <em>type</em></a></td><td> none </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Type du cache de session SSL global et
 inter-processus</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslsessioncachetimeout">SSLSessionCacheTimeout <em>secondes</em></a></td><td> 300 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Nombre de secondes avant l'expiration d'une session SSL
+<tr><td><a href="mod_ssl.html#sslsessioncachetimeout">SSLSessionCacheTimeout <em>secondes</em></a></td><td> 300 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Nombre de secondes avant l'expiration d'une session SSL
 dans le cache de sessions</td></tr>
-<tr><td><a href="mod_ssl.html#sslsessionticketkeyfile">SSLSessionTicketKeyFile <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Clé de chiffrement/déchiffrement permanente pour les
+<tr class="odd"><td><a href="mod_ssl.html#sslsessionticketkeyfile">SSLSessionTicketKeyFile <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Clé de chiffrement/déchiffrement permanente pour les
 tickets de session TLS</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslsessiontickets">SSLSessionTickets on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active ou désactive les tickets de session TLS</td></tr>
-<tr><td><a href="mod_ssl.html#sslsrpunknownuserseed">SSLSRPUnknownUserSeed <em>secret-string</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Source de randomisation pour utilisateur SRP inconnu</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslsrpverifierfile">SSLSRPVerifierFile <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Chemin du fichier de vérification SRP</td></tr>
-<tr><td><a href="mod_ssl.html#sslstaplingcache">SSLStaplingCache <em>type</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Configuration du cache pour l'agrafage OCSP</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslstaplingerrorcachetimeout">SSLStaplingErrorCacheTimeout <em>secondes</em></a></td><td> 600 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Durée de vie des réponses invalides dans le cache pour
+<tr><td><a href="mod_ssl.html#sslsessiontickets">SSLSessionTickets on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Active ou désactive les tickets de session TLS</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslsrpunknownuserseed">SSLSRPUnknownUserSeed <em>secret-string</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Source de randomisation pour utilisateur SRP inconnu</td></tr>
+<tr><td><a href="mod_ssl.html#sslsrpverifierfile">SSLSRPVerifierFile <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Chemin du fichier de vérification SRP</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslstaplingcache">SSLStaplingCache <em>type</em></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configuration du cache pour l'agrafage OCSP</td></tr>
+<tr><td><a href="mod_ssl.html#sslstaplingerrorcachetimeout">SSLStaplingErrorCacheTimeout <em>secondes</em></a></td><td> 600 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Durée de vie des réponses invalides dans le cache pour
 agrafage OCSP</td></tr>
-<tr><td><a href="mod_ssl.html#sslstaplingfaketrylater">SSLStaplingFakeTryLater on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Génère une réponse "tryLater" pour les requêtes OCSP échouées</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslstaplingforceurl">SSLStaplingForceURL <em>uri</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Remplace l'URI du serveur OCSP spécifié dans l'extension
+<tr class="odd"><td><a href="mod_ssl.html#sslstaplingfaketrylater">SSLStaplingFakeTryLater on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Génère une réponse "tryLater" pour les requêtes OCSP échouées</td></tr>
+<tr><td><a href="mod_ssl.html#sslstaplingforceurl">SSLStaplingForceURL <em>uri</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Remplace l'URI du serveur OCSP spécifié dans l'extension
 AIA du certificat</td></tr>
-<tr><td><a href="mod_ssl.html#sslstaplingrespondertimeout">SSLStaplingResponderTimeout <em>secondes</em></a></td><td> 10 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Temps d'attente maximum pour les requêtes vers les serveurs
+<tr class="odd"><td><a href="mod_ssl.html#sslstaplingrespondertimeout">SSLStaplingResponderTimeout <em>secondes</em></a></td><td> 10 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Temps d'attente maximum pour les requêtes vers les serveurs
 OCSP</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslstaplingresponsemaxage">SSLStaplingResponseMaxAge <em>secondes</em></a></td><td> -1 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Age maximum autorisé des réponses OCSP incluses dans la
+<tr><td><a href="mod_ssl.html#sslstaplingresponsemaxage">SSLStaplingResponseMaxAge <em>secondes</em></a></td><td> -1 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Age maximum autorisé des réponses OCSP incluses dans la
 négociation TLS</td></tr>
-<tr><td><a href="mod_ssl.html#sslstaplingresponsetimeskew">SSLStaplingResponseTimeSkew <em>secondes</em></a></td><td> 300 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Durée de vie maximale autorisée des réponses OCSP incluses dans la
+<tr class="odd"><td><a href="mod_ssl.html#sslstaplingresponsetimeskew">SSLStaplingResponseTimeSkew <em>secondes</em></a></td><td> 300 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Durée de vie maximale autorisée des réponses OCSP incluses dans la
 négociation TLS</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslstaplingreturnrespondererrors">SSLStaplingReturnResponderErrors on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Transmet au client les erreurs survenues lors des requêtes
+<tr><td><a href="mod_ssl.html#sslstaplingreturnrespondererrors">SSLStaplingReturnResponderErrors on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Transmet au client les erreurs survenues lors des requêtes
 OCSP</td></tr>
-<tr><td><a href="mod_ssl.html#sslstaplingstandardcachetimeout">SSLStaplingStandardCacheTimeout <em>secondes</em></a></td><td> 3600 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Durée de vie des réponses OCSP dans le cache</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslstrictsnivhostcheck">SSLStrictSNIVHostCheck on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Contrôle de l'accès des clients non-SNI à un serveur virtuel à
+<tr class="odd"><td><a href="mod_ssl.html#sslstaplingstandardcachetimeout">SSLStaplingStandardCacheTimeout <em>secondes</em></a></td><td> 3600 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Durée de vie des réponses OCSP dans le cache</td></tr>
+<tr><td><a href="mod_ssl.html#sslstrictsnivhostcheck">SSLStrictSNIVHostCheck on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Contrôle de l'accès des clients non-SNI à un serveur virtuel à
 base de nom.
 </td></tr>
-<tr><td><a href="mod_ssl.html#sslusername">SSLUserName <em>nom-var</em></a></td><td></td><td>sdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Nom de la variable servant à déterminer le nom de
+<tr class="odd"><td><a href="mod_ssl.html#sslusername">SSLUserName <em>nom-var</em></a></td><td></td><td>sdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Nom de la variable servant à déterminer le nom de
 l'utilisateur</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslusestapling">SSLUseStapling on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active l'ajout des réponses OCSP à la négociation TLS</td></tr>
-<tr><td><a href="mod_ssl.html#sslverifyclient">SSLVerifyClient <em>niveau</em></a></td><td> none </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Niveau de vérification du certificat client</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslverifydepth">SSLVerifyDepth <em>nombre</em></a></td><td> 1 </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Profondeur maximale des certificats de CA pour la
+<tr><td><a href="mod_ssl.html#sslusestapling">SSLUseStapling on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Active l'ajout des réponses OCSP à la négociation TLS</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslverifyclient">SSLVerifyClient <em>niveau</em></a></td><td> none </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Niveau de vérification du certificat client</td></tr>
+<tr><td><a href="mod_ssl.html#sslverifydepth">SSLVerifyDepth <em>nombre</em></a></td><td> 1 </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Profondeur maximale des certificats de CA pour la
 vérification des certificats clients</td></tr>
-<tr><td><a href="mpm_common.html#startservers">StartServers <var>nombre</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Nombre de processus enfants du serveur créés au
+<tr class="odd"><td><a href="mpm_common.html#startservers">StartServers <var>nombre</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Nombre de processus enfants du serveur créés au
 démarrage</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#startthreads">StartThreads <var>nombre</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Nombre de threads créés au démarrage</td></tr>
-<tr><td><a href="core.html#stricthostcheck">StrictHostCheck ON|OFF</a></td><td> OFF </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Détermine si le nom d'hôte contenu dans une requête doit être
+<tr><td><a href="mpm_common.html#startthreads">StartThreads <var>nombre</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Nombre de threads créés au démarrage</td></tr>
+<tr class="odd"><td><a href="core.html#stricthostcheck">StrictHostCheck ON|OFF</a></td><td> OFF </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Détermine si le nom d'hôte contenu dans une requête doit être
 explicitement spécifié au niveau du serveur virtuel qui a pris en compte cette
 dernière.
              </td></tr>
-<tr class="odd"><td><a href="mod_substitute.html#substitute">Substitute <var>s/modèle/substitution/[infq]</var></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Modèle de substition dans le contenu de la
+<tr><td><a href="mod_substitute.html#substitute">Substitute <var>s/modèle/substitution/[infq]</var></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Modèle de substition dans le contenu de la
 réponse</td></tr>
-<tr><td><a href="mod_substitute.html#substituteinheritbefore">SubstituteInheritBefore on|off</a></td><td> on </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Modifie l'ordre de fusion des modèles hérités</td></tr>
-<tr class="odd"><td><a href="mod_substitute.html#substitutemaxlinelength">SubstituteMaxLineLength <var>octets</var>(b|B|k|K|m|M|g|G)</a></td><td> 1m </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit la longueur de ligne maximale</td></tr>
-<tr><td><a href="mod_unixd.html#suexec">Suexec On|Off</a></td><td></td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Active ou désactive la fonctionnalité suEXEC</td></tr>
-<tr class="odd"><td><a href="mod_suexec.html#suexecusergroup">SuexecUserGroup <em>Utilisateur Groupe</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">L'utilisateur et le groupe sous lesquels les programmes CGI
+<tr class="odd"><td><a href="mod_substitute.html#substituteinheritbefore">SubstituteInheritBefore on|off</a></td><td> on </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Modifie l'ordre de fusion des modèles hérités</td></tr>
+<tr><td><a href="mod_substitute.html#substitutemaxlinelength">SubstituteMaxLineLength <var>octets</var>(b|B|k|K|m|M|g|G)</a></td><td> 1m </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit la longueur de ligne maximale</td></tr>
+<tr class="odd"><td><a href="mod_unixd.html#suexec">Suexec On|Off</a></td><td></td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Active ou désactive la fonctionnalité suEXEC</td></tr>
+<tr><td><a href="mod_suexec.html#suexecusergroup">SuexecUserGroup <em>Utilisateur Groupe</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">L'utilisateur et le groupe sous lesquels les programmes CGI
 doivent s'exécuter</td></tr>
-<tr><td><a href="mpm_common.html#threadlimit" id="T" name="T">ThreadLimit <var>nombre</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Le nombre de threads maximum que l'on peut définir par
+<tr class="odd"><td><a href="mpm_common.html#threadlimit" id="T" name="T">ThreadLimit <var>nombre</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Le nombre de threads maximum que l'on peut définir par
 processus enfant</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#threadsperchild">ThreadsPerChild <var>nombre</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Nombre de threads créés par chaque processus
+<tr><td><a href="mpm_common.html#threadsperchild">ThreadsPerChild <var>nombre</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Nombre de threads créés par chaque processus
 enfant</td></tr>
-<tr><td><a href="mpm_common.html#threadstacksize">ThreadStackSize <var>taille</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">La taille en octets de la pile qu'utilisent les threads qui
+<tr class="odd"><td><a href="mpm_common.html#threadstacksize">ThreadStackSize <var>taille</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">La taille en octets de la pile qu'utilisent les threads qui
 traitent les connexions clients</td></tr>
-<tr class="odd"><td><a href="core.html#timeout">TimeOut <var>time-interval</var>[s]</a></td><td> 60 </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Temps pendant lequel le serveur va attendre certains
+<tr><td><a href="core.html#timeout">TimeOut <var>time-interval</var>[s]</a></td><td> 60 </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Temps pendant lequel le serveur va attendre certains
 évènements avant de considérer qu'une requête a échoué</td></tr>
-<tr><td><a href="core.html#traceenable">TraceEnable <var>[on|off|extended]</var></a></td><td> on </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Détermine le comportement des requêtes
+<tr class="odd"><td><a href="core.html#traceenable">TraceEnable <var>[on|off|extended]</var></a></td><td> on </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Détermine le comportement des requêtes
 <code>TRACE</code></td></tr>
-<tr class="odd"><td><a href="mod_log_config.html#transferlog">TransferLog <var>fichier</var>|<var>pipe</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Spécifie l'emplacement d'un fichier journal</td></tr>
-<tr><td><a href="mod_mime.html#typesconfig">TypesConfig <var>chemin-fichier</var></a></td><td> conf/mime.types </td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Le chemin du fichier <code>mime.types</code></td></tr>
-<tr class="odd"><td><a href="core.html#undefine" id="U" name="U">UnDefine <var>nom-variable</var></a></td><td></td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Invalide la définition d'une variable</td></tr>
-<tr><td><a href="mod_macro.html#undefmacro">UndefMacro <var>nom</var></a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Supprime une macro</td></tr>
-<tr class="odd"><td><a href="mod_env.html#unsetenv">UnsetEnv <var>var-env</var> [<var>var-env</var>]
-...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Supprime des variables de l'environnement</td></tr>
-<tr><td><a href="mod_macro.html#use">Use <var>nom</var> [<var>valeur1</var> ... <var>valeurN</var>]
-</a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Utilisation d'une macro</td></tr>
-<tr class="odd"><td><a href="core.html#usecanonicalname">UseCanonicalName On|Off|DNS</a></td><td> Off </td><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Définit la manière dont le serveur détermine son propre nom
+<tr><td><a href="mod_log_config.html#transferlog">TransferLog <var>fichier</var>|<var>pipe</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Spécifie l'emplacement d'un fichier journal</td></tr>
+<tr class="odd"><td><a href="mod_mime.html#typesconfig">TypesConfig <var>chemin-fichier</var></a></td><td> conf/mime.types </td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Le chemin du fichier <code>mime.types</code></td></tr>
+<tr><td><a href="core.html#undefine" id="U" name="U">UnDefine <var>nom-variable</var></a></td><td></td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Invalide la définition d'une variable</td></tr>
+<tr class="odd"><td><a href="mod_macro.html#undefmacro">UndefMacro <var>nom</var></a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Supprime une macro</td></tr>
+<tr><td><a href="mod_env.html#unsetenv">UnsetEnv <var>var-env</var> [<var>var-env</var>]
+...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Supprime des variables de l'environnement</td></tr>
+<tr class="odd"><td><a href="mod_macro.html#use">Use <var>nom</var> [<var>valeur1</var> ... <var>valeurN</var>]
+</a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Utilisation d'une macro</td></tr>
+<tr><td><a href="core.html#usecanonicalname">UseCanonicalName On|Off|DNS</a></td><td> Off </td><td>svd</td><td>C</td></tr><tr><td class="descr" colspan="4">Définit la manière dont le serveur détermine son propre nom
 et son port</td></tr>
-<tr><td><a href="core.html#usecanonicalphysicalport">UseCanonicalPhysicalPort On|Off</a></td><td> Off </td><td>svd</td><td>C</td></tr><tr><td class="descr" colspan="4">Définit la manière dont le serveur
+<tr class="odd"><td><a href="core.html#usecanonicalphysicalport">UseCanonicalPhysicalPort On|Off</a></td><td> Off </td><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Définit la manière dont le serveur
 détermine son propre port</td></tr>
-<tr class="odd"><td><a href="mod_unixd.html#user">User <var>utilisateur unix</var></a></td><td> #-1 </td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">L'utilisateur sous lequel le serveur va traiter les
+<tr><td><a href="mod_unixd.html#user">User <var>utilisateur unix</var></a></td><td> #-1 </td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">L'utilisateur sous lequel le serveur va traiter les
 requêtes</td></tr>
-<tr><td><a href="mod_userdir.html#userdir">UserDir <em>nom-répertoire</em> [<em>nom-répertoire</em>] ...
-</a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Chemin des répertoires propres à un
+<tr class="odd"><td><a href="mod_userdir.html#userdir">UserDir <em>nom-répertoire</em> [<em>nom-répertoire</em>] ...
+</a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Chemin des répertoires propres à un
 utilisateur</td></tr>
-<tr class="odd"><td><a href="mod_privileges.html#vhostcgimode" id="V" name="V">VHostCGIMode On|Off|Secure</a></td><td> On </td><td>v</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Détermine si le serveur virtuel peut exécuter des
+<tr><td><a href="mod_privileges.html#vhostcgimode" id="V" name="V">VHostCGIMode On|Off|Secure</a></td><td> On </td><td>v</td><td>X</td></tr><tr><td class="descr" colspan="4">Détermine si le serveur virtuel peut exécuter des
 sous-processus, et définit les privilèges disponibles pour ces
 dernier.</td></tr>
-<tr><td><a href="mod_privileges.html#vhostcgiprivs">VHostCGIPrivs [+-]?<var>privilege-name</var> [[+-]?privilege-name] ...</a></td><td></td><td>v</td><td>X</td></tr><tr><td class="descr" colspan="4">Assigne des privilèges au choix aux sous-processus créés
+<tr class="odd"><td><a href="mod_privileges.html#vhostcgiprivs">VHostCGIPrivs [+-]?<var>privilege-name</var> [[+-]?privilege-name] ...</a></td><td></td><td>v</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Assigne des privilèges au choix aux sous-processus créés
 par un serveur virtuel.</td></tr>
-<tr class="odd"><td><a href="mod_privileges.html#vhostgroup">VHostGroup <var>identifiant-groupe-unix</var></a></td><td></td><td>v</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Définit l'identifiant du groupe sous lequel s'exécute un
+<tr><td><a href="mod_privileges.html#vhostgroup">VHostGroup <var>identifiant-groupe-unix</var></a></td><td></td><td>v</td><td>X</td></tr><tr><td class="descr" colspan="4">Définit l'identifiant du groupe sous lequel s'exécute un
 serveur virtuel.</td></tr>
-<tr><td><a href="mod_privileges.html#vhostprivs">VHostPrivs [+-]?<var>nom-privilège</var> [[+-]?nom-privilège] ...</a></td><td></td><td>v</td><td>X</td></tr><tr><td class="descr" colspan="4">Assigne des privilèges à un serveur virtuel.</td></tr>
-<tr class="odd"><td><a href="mod_privileges.html#vhostsecure">VHostSecure On|Off</a></td><td> On </td><td>v</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Détermine si le serveur s'exécute avec une sécurité avancée
+<tr class="odd"><td><a href="mod_privileges.html#vhostprivs">VHostPrivs [+-]?<var>nom-privilège</var> [[+-]?nom-privilège] ...</a></td><td></td><td>v</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Assigne des privilèges à un serveur virtuel.</td></tr>
+<tr><td><a href="mod_privileges.html#vhostsecure">VHostSecure On|Off</a></td><td> On </td><td>v</td><td>X</td></tr><tr><td class="descr" colspan="4">Détermine si le serveur s'exécute avec une sécurité avancée
 pour les serveurs virtuels.</td></tr>
-<tr><td><a href="mod_privileges.html#vhostuser">VHostUser <var>identifiant-utilisateur-unix</var></a></td><td></td><td>v</td><td>X</td></tr><tr><td class="descr" colspan="4">Définit l'identifiant utilisateur sous lequel s'exécute un
+<tr class="odd"><td><a href="mod_privileges.html#vhostuser">VHostUser <var>identifiant-utilisateur-unix</var></a></td><td></td><td>v</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Définit l'identifiant utilisateur sous lequel s'exécute un
 serveur virtuel.</td></tr>
-<tr class="odd"><td><a href="mod_vhost_alias.html#virtualdocumentroot">VirtualDocumentRoot <em>répertoire-interpolé</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Permet une configuration dynamique de la racine des
+<tr><td><a href="mod_vhost_alias.html#virtualdocumentroot">VirtualDocumentRoot <em>répertoire-interpolé</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Permet une configuration dynamique de la racine des
 documents d'un serveur virtuel donné</td></tr>
-<tr><td><a href="mod_vhost_alias.html#virtualdocumentrootip">VirtualDocumentRootIP <em>répertoire-interpolé</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Configuration dynamique de la racine des documents pour un
+<tr class="odd"><td><a href="mod_vhost_alias.html#virtualdocumentrootip">VirtualDocumentRootIP <em>répertoire-interpolé</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configuration dynamique de la racine des documents pour un
 serveur virtuel donné</td></tr>
-<tr class="odd"><td><a href="core.html#virtualhost">&lt;VirtualHost
+<tr><td><a href="core.html#virtualhost">&lt;VirtualHost
     <var>adresse IP</var>[:<var>port</var>] [<var>adresse
     IP</var>[:<var>port</var>]] ...&gt; ...
-    &lt;/VirtualHost&gt;</a></td><td></td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Contient des directives qui ne s'appliquent qu'à un nom
+    &lt;/VirtualHost&gt;</a></td><td></td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Contient des directives qui ne s'appliquent qu'à un nom
 d'hôte spécifique ou à une adresse IP</td></tr>
-<tr><td><a href="mod_vhost_alias.html#virtualscriptalias">VirtualScriptAlias <em>répertoire-interpolé</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Configuration dynamique du répertoire des scripts CGI pour
+<tr class="odd"><td><a href="mod_vhost_alias.html#virtualscriptalias">VirtualScriptAlias <em>répertoire-interpolé</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configuration dynamique du répertoire des scripts CGI pour
 un serveur virtuel donné</td></tr>
-<tr class="odd"><td><a href="mod_vhost_alias.html#virtualscriptaliasip">VirtualScriptAliasIP <em>répertoire-interpolé</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configuration dynamique du répertoire des scripts CGI pour
+<tr><td><a href="mod_vhost_alias.html#virtualscriptaliasip">VirtualScriptAliasIP <em>répertoire-interpolé</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Configuration dynamique du répertoire des scripts CGI pour
 un serveur virtuel donné</td></tr>
-<tr><td><a href="core.html#warning" id="W" name="W">Warning <var>message</var></a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Message d'avertissement personnalisable en provenance de
+<tr class="odd"><td><a href="core.html#warning" id="W" name="W">Warning <var>message</var></a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Message d'avertissement personnalisable en provenance de
 l'interprétation du fichier de configuration</td></tr>
-<tr class="odd"><td><a href="mod_watchdog.html#watchdoginterval">WatchdogInterval <var>time-interval</var>[s]</a></td><td> 1 </td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Intervalle Watchdog en secondes</td></tr>
-<tr><td><a href="mod_include.html#xbithack" id="X" name="X">XBitHack on|off|full</a></td><td> off </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Interprète les directives SSI dans les fichiers dont le bit
+<tr><td><a href="mod_watchdog.html#watchdoginterval">WatchdogInterval <var>time-interval</var>[s]</a></td><td> 1 </td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Intervalle Watchdog en secondes</td></tr>
+<tr class="odd"><td><a href="mod_include.html#xbithack" id="X" name="X">XBitHack on|off|full</a></td><td> off </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Interprète les directives SSI dans les fichiers dont le bit
 d'exécution est positionné</td></tr>
-<tr class="odd"><td><a href="mod_xml2enc.html#xml2encalias">xml2EncAlias <var>jeu-de-caractères alias [alias ...]</var></a></td><td></td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Définit des alias pour les valeurs d'encodage</td></tr>
-<tr><td><a href="mod_xml2enc.html#xml2encdefault">xml2EncDefault <var>nom</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Définit un encodage par défaut à utiliser lorsqu'aucune
+<tr><td><a href="mod_xml2enc.html#xml2encalias">xml2EncAlias <var>jeu-de-caractères alias [alias ...]</var></a></td><td></td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Définit des alias pour les valeurs d'encodage</td></tr>
+<tr class="odd"><td><a href="mod_xml2enc.html#xml2encdefault">xml2EncDefault <var>nom</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Définit un encodage par défaut à utiliser lorsqu'aucune
 information ne peut être <a href="#sniffing">automatiquement détectée</a></td></tr>
-<tr class="odd"><td><a href="mod_xml2enc.html#xml2startparse">xml2StartParse <var>élément [élément ...]</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Indique à l'interpréteur à partir de quelle balise il doit
+<tr><td><a href="mod_xml2enc.html#xml2startparse">xml2StartParse <var>élément [élément ...]</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Indique à l'interpréteur à partir de quelle balise il doit
 commencer son traitement.</td></tr>
 </table></div>
 <div class="bottomlang">

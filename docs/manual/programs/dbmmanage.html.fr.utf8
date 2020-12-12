@@ -61,7 +61,7 @@ utilisateurs au format DBM</h1>
     <p><code><strong>dbmmanage</strong> [ <var>codage</var> ]
     <var>nom-fichier</var> add|adduser|check|delete|update
     <var>nom-utilisateur</var>
-    [ <var>mot-de-passe-chiffré</var>
+    [ <var>mot-de-passe-hashé</var>
       [ <var>groupe</var>[,<var>groupe</var>...]
         [ <var>commentaire</var> ] ] ]</code></p>
 
@@ -82,8 +82,8 @@ utilisateurs au format DBM</h1>
     <var>nom-utilisateur</var> ne doit pas contenir de caractère
     <code>:</code>.</dd>
 
-    <dt><code><var>mot-de-passe-chiffré</var></code></dt>
-    <dd>C'est le mot de passe sous sa forme chiffrée à utiliser avec les
+    <dt><code><var>mot-de-passe-hashé</var></code></dt>
+    <dd>C'est le mot de passe sous sa forme condensée (hashée) à utiliser avec les
     commandes <code>update</code> et <code>add</code>. Vous pouvez
     utiliser un tiret (<code>-</code>) si vous voulez que le mot de
     passe vous soit demandé, mais remplissez les champs par la suite. En
@@ -107,15 +107,15 @@ utilisateurs au format DBM</h1>
     <h3><a name="options.encodings" id="options.encodings">Codages</a></h3>
       <dl>
       <dt><code>-d</code></dt>
-      <dd>chiffrement crypt (chiffrement par défaut sauf sous Win32,
+      <dd>hashage crypt (chiffrement par défaut sauf sous Win32,
       Netware)</dd>
 
       <dt><code>-m</code></dt>
-      <dd>chiffrement MD5 (chiffrement par défaut sous Win32,
+      <dd>hashage MD5 (chiffrement par défaut sous Win32,
       Netware)</dd>
 
       <dt><code>-s</code></dt>
-      <dd>chiffrement SHA1</dd>
+      <dd>hashage SHA1</dd>
 
       <dt><code>-p</code></dt>
       <dd>en clair (<em>déconseillé</em>)</dd>
@@ -126,8 +126,8 @@ utilisateurs au format DBM</h1>
       <dl>
       <dt><code>add</code></dt>
       <dd>Ajoute une entrée pour <var>nom-utilisateur</var> à
-      <var>nom-fichier</var> en utilisant le mot de passe chiffré
-      <var>mot-de-passe-chiffré</var>.
+      <var>nom-fichier</var> en utilisant le mot de passe hashé
+      <var>mot-de-passe-hashé</var>.
 
       <div class="example"><p><code>dbmmanage passwords.dat add rbowen foKntnEF3KSXA</code></p></div>
       </dd>
