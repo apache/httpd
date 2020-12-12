@@ -326,7 +326,7 @@ jobs:
            APR_VERSION=1.7.x APR_CONFIG="--enable-pool-debug"
            APU_VERSION=1.7.x APU_CONFIG="--with-crypto --with-ldap"
            CONFIG="--enable-mods-shared=reallyall"
-           TEST_ASAN=1
+           TEST_ASAN=1 TEST_ARGS="-order=random"
            CLEAR_CACHE=1
   allow_failures:
     # Intermittent failures:
