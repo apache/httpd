@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1874148 -->
+<!-- English Revision: 1884207 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -157,16 +157,16 @@ passe</title>
     l'option <code>-c</code>.</dd>
 
     <dt><code>-m</code></dt>
-    <dd>Utilise un chiffrement MD5 pour les mots de passe. Sous Windows
+    <dd>Utilise un hashage MD5 pour les mots de passe. Sous Windows
     et Netware, c'est l'option par défaut..</dd>
 
     <dt><code>-B</code></dt>
-    <dd>Utilise l'algorythme de chiffrement bcrypt pour les mots de
+    <dd>Utilise le hashage bcrypt pour les mots de
     passe. C'est un algorythme actuellement considéré comme sûr.</dd>
 
     <dt><code>-C</code></dt>
     <dd>Ce drapeau n'est autorisé qu'en conjonction avec le drapeau
-    <code>-B</code> (chiffrement bcrypt). Il permet de définir la durée
+    <code>-B</code> (hashage bcrypt). Il permet de définir la durée
     de traitement pour l'algorythme de chiffrement bcrypt (plus elle est
     longue, plus la sécurité est élevée, mais la rapidité est diminuée
     d'autant) ; la valeur par défaut est 5, les valeurs valides vont de
@@ -174,7 +174,7 @@ passe</title>
 
 
     <dt><code>-d</code></dt>
-    <dd>Utilise un chiffrement <code>crypt()</code> pour les mots de
+    <dd>Utilise un hashage <code>crypt()</code> pour les mots de
     passe. C'est l'option par défaut sur toutes les plates-formes, sauf
     Windows et Netware. Bien que <code>htdbm</code> supporte ce
     chiffrement sur toutes les plates-formes, il n'est pas supporté par
@@ -183,7 +183,7 @@ passe</title>
     standards actuels.</dd>
 
     <dt><code>-s</code></dt>
-    <dd>Utilise le chiffrement SHA pour les mots de passe. Facilite la
+    <dd>Utilise le hashage SHA pour les mots de passe. Facilite la
     migration vers/depuis les serveurs Netscape qui utilisent le format
     LDAP Directory Interchange (ldif). Cet
     algorythme est considéré comme <strong>non sûr</strong> selon les
@@ -229,7 +229,7 @@ passe</title>
     son mot de passe est modifié.</dd>
 
     <dt><code><var>mot-de-passe</var></code></dt>
-    <dd>Le mot de passe en clair destiné à être chiffré et stocké dans
+    <dd>Le mot de passe en clair destiné à être hashé et stocké dans
     le fichier DBM. Ne s'utilise qu'avec l'option <code>-b</code>.</dd>
 
     <dt><code>-T<var>DBTYPE</var></code></dt>
@@ -281,7 +281,7 @@ passe</title>
 
     <p>Ajoute ou modifie le mot de passe de l'utilisateur
     <code>jsmith</code>. Le mot de passe est demandé à l'opérateur. Sous
-    Windows, le mot de passe sera chiffré en utilisant l'algorithme MD5
+    Windows, le mot de passe sera hashé en utilisant l'algorithme MD5
     Apache modifié ; dans les autres cas, c'est la routine
     <code>crypt()</code> du système qui sera utilisée. Si le fichier
     n'existe pas, <code>htdbm</code> s'arrêtera et renverra une
@@ -328,18 +328,18 @@ passe</title>
     être possible d'y accéder à l'aide d'un navigateur.</p>
 
     <p>L'utilisation de l'option <code>-b</code> est déconseillée, car
-    lorsqu'il est utilisé, le mot de passe apparaît en clair dans la
-    ligne de commande.</p>
+    lorsqu'il est utilisé, le mot de passe apparaît sous forme d'une chaîne
+    en clair dans la ligne de commande.</p>
 
     <p>Notez que lorsque vous utilisez l'algorythme
     <code>crypt()</code>, seuls les 8 premiers caractères du mot de
     passe sont pris en compte. Si le mot de passe fourni est plus long,
     les caractères supplémentaires seront ignorés sans avertissement.</p>
 
-    <p>L'algorythme SHA ne permet pas de spécifier une valeur
+    <p>L'option de hashage SHA ne permet pas de spécifier une valeur
     d'initialisation pour la génération de nombres aléatoires (salting)
     : un mot de passe donné ne possède ainsi qu'une réprésentation
-    chiffrée. Les algorythmes <code>crypt()</code> et MD5 permettent quant à
+    hashée. Les algorythmes <code>crypt()</code> et MD5 permettent quant à
     eux des représentations chiffrées multiples en acceptant comme
     paramètre une chaîne d'initialisation (salt), rendant les attaques à
     base de dictionnaires contre les mots de passe plus difficiles.</p>
@@ -349,13 +349,13 @@ passe</title>
 </section>
 
 <section id="restrictions"><title>Restrictions</title>
-    <p>Sur la plate-forme Windows, les mots de passe chiffrés avec
+    <p>Sur la plate-forme Windows, les mots de passe hashés avec
     <code>htdbm</code> ont une taille limitée à <code>255</code>
     caractères. Si le mot de passe fourni est plus long, il sera tronqué
     à 255 caractères.</p>
 
     <p>L'algorithme MD5 utilisé par <code>htdbm</code> est spécifique à
-    Apache ; les mots de passe chiffrés en utilisant cet algorithme
+    Apache ; les mots de passe hashés en utilisant cet algorithme
     seront inutilisables sur d'autres serveurs Web.</p>
 
     <p>Les noms d'utilisateurs ont une taille limitée à <code>255</code>
