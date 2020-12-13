@@ -320,8 +320,7 @@ jobs:
            TEST_ASAN=1
            CLEAR_CACHE=1
     # -------------------------------------------------------------------------
-    - if: *condition_not_24x
-      name: Linux Ubuntu Focal, ASan, pool-debug
+    - name: Linux Ubuntu Focal, ASan, pool-debug
       dist: focal
       env: NOTEST_CFLAGS="-ggdb -fsanitize=address -fno-sanitize-recover=address -fno-omit-frame-pointer"
            APR_VERSION=1.7.x APR_CONFIG="--enable-pool-debug"
@@ -341,7 +340,7 @@ jobs:
       env: CONFIG="--enable-mods-shared=reallyall"
     - arch: ppc64le
       env: CONFIG="--enable-mods-shared=reallyall"
-           
+
 # CPAN modules are to be used with the system Perl and always with
 # CC=gcc, e.g. for the CC="gcc -m32" case the builds are not correct
 # otherwise.
