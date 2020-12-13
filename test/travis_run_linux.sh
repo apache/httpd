@@ -88,7 +88,6 @@ if ! test -v SKIP_TESTING; then
         test -v TEST_INSTALL || make install
         pushd test/perl-framework
             perl Makefile.PL -apxs $PREFIX/bin/apxs
-            (sleep 60; ps -ef |grep "[h]ttpd"; cat t/logs/error_log; killall -SEGV httpd) &
             make test APACHE_TEST_EXTRA_ARGS="${TEST_ARGS} ${TESTS}"
             RV=$?
         popd
