@@ -5551,7 +5551,7 @@ static int core_pre_connection(conn_rec *c, void *csd)
     net->out_ctx = NULL;
     net->client_socket = csd;
 
-    conn_config = apr_palloc(c->pool, sizeof(conn_config));
+    conn_config = apr_palloc(c->pool, sizeof(*conn_config));
     conn_config->socket = csd;
     ap_set_core_module_config(net->c->conn_config, conn_config);
 
