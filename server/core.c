@@ -5508,15 +5508,14 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *s,
 
 static int core_pre_connection(conn_rec *c, void *csd)
 {
-    core_net_rec *net;
     conn_config_t *conn_config;
     apr_status_t rv;
 
+    /* only the master connection talks to the network */
     if (c->master) {
         return DONE;
     }
-    
-    net = apr_palloc(c->pool, sizeof(*net));
+
     /* The Nagle algorithm says that we should delay sending partial
      * packets in hopes of getting more data.  We don't want to do
      * this; we are not telnet.  There are bad interactions between
@@ -5546,22 +5545,13 @@ static int core_pre_connection(conn_rec *c, void *csd)
                       "apr_socket_timeout_set");
     }
 
-    net->c = c;
-    net->in_ctx = NULL;
-    net->out_ctx = NULL;
-    net->client_socket = csd;
-
-    conn_config = apr_palloc(c->pool, sizeof(conn_config));
+    conn_config = apr_pcalloc(c->pool, sizeof(*conn_config));
     conn_config->socket = csd;
-    ap_set_core_module_config(net->c->conn_config, conn_config);
+    ap_set_core_module_config(c->conn_config, conn_config);
 
-    /* only the master connection talks to the network */
-    if (c->master == NULL) {
-        ap_add_input_filter_handle(ap_core_input_filter_handle, net, NULL,
-                                   net->c);
-        ap_add_output_filter_handle(ap_core_output_filter_handle, net, NULL,
-                                    net->c);
-    }
+    ap_add_input_filter_handle(ap_core_input_filter_handle, NULL, NULL, c);
+    ap_add_output_filter_handle(ap_core_output_filter_handle, NULL, NULL, c);
+
     return DONE;
 }
 

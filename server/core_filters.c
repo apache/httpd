@@ -74,26 +74,27 @@ do { \
 #undef APLOG_MODULE_INDEX
 #define APLOG_MODULE_INDEX AP_CORE_MODULE_INDEX
 
-struct core_output_filter_ctx {
+typedef struct {
     apr_bucket_brigade *empty_bb;
     apr_size_t bytes_written;
     struct iovec *vec;
     apr_size_t nvec;
-};
+} core_output_ctx_t;
 
-struct core_filter_ctx {
+typedef struct {
     apr_bucket_brigade *bb;
     apr_bucket_brigade *tmpbb;
-};
+} core_input_ctx_t;
 
 
 apr_status_t ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
                                   ap_input_mode_t mode, apr_read_type_e block,
                                   apr_off_t readbytes)
 {
+    conn_rec *c = f->c;
+    core_input_ctx_t *ctx = f->ctx;
+    conn_config_t *cconf = ap_get_core_module_config(c->conn_config);
     apr_status_t rv = APR_SUCCESS;
-    core_net_rec *net = f->ctx;
-    core_ctx_t *ctx = net->in_ctx;
     const char *str;
     apr_size_t len;
 
@@ -111,13 +112,12 @@ apr_status_t ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
         return APR_SUCCESS;
     }
 
-    if (!ctx)
-    {
-        net->in_ctx = ctx = apr_palloc(f->c->pool, sizeof(*ctx));
-        ctx->bb = apr_brigade_create(f->c->pool, f->c->bucket_alloc);
-        ctx->tmpbb = apr_brigade_create(f->c->pool, f->c->bucket_alloc);
+    if (!ctx) {
+        f->ctx = ctx = apr_pcalloc(c->pool, sizeof(*ctx));
+        ctx->bb = apr_brigade_create(c->pool, c->bucket_alloc);
+        ctx->tmpbb = apr_brigade_create(c->pool, c->bucket_alloc);
         /* seed the brigade with the client socket. */
-        rv = ap_run_insert_network_bucket(f->c, ctx->bb, net->client_socket);
+        rv = ap_run_insert_network_bucket(c, ctx->bb, cconf->socket);
         if (rv != APR_SUCCESS)
             return rv;
     }
@@ -156,7 +156,7 @@ apr_status_t ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
      * this mode.  Determine whether anyone actually uses this or not. */
     if (mode == AP_MODE_EATCRLF) {
         apr_bucket *e;
-        const char *c;
+        const char *ch;
 
         /* The purpose of this loop is to ignore any CRLF (or LF) at the end
          * of a request.  Many browsers send extra lines at the end of POST
@@ -179,12 +179,12 @@ apr_status_t ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
                 goto cleanup;
             }
 
-            c = str;
-            while (c < str + len) {
-                if (*c == APR_ASCII_LF)
-                    c++;
-                else if (*c == APR_ASCII_CR && *(c + 1) == APR_ASCII_LF)
-                    c += 2;
+            ch = str;
+            while (ch < str + len) {
+                if (*ch == APR_ASCII_LF)
+                    ch++;
+                else if (*ch == APR_ASCII_CR && *(ch + 1) == APR_ASCII_LF)
+                    ch += 2;
                 else
                     goto cleanup;
             }
@@ -220,7 +220,7 @@ apr_status_t ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
          * so tack on an EOS too. */
         /* We have read until the brigade was empty, so we know that we
          * must be EOS. */
-        e = apr_bucket_eos_create(f->c->bucket_alloc);
+        e = apr_bucket_eos_create(c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(b, e);
 
         rv = APR_SUCCESS;
@@ -255,7 +255,7 @@ apr_status_t ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
             apr_bucket_delete(e);
 
             if (mode == AP_MODE_READBYTES) {
-                e = apr_bucket_eos_create(f->c->bucket_alloc);
+                e = apr_bucket_eos_create(c->bucket_alloc);
                 APR_BRIGADE_INSERT_TAIL(b, e);
             }
             goto cleanup;
@@ -333,12 +333,12 @@ cleanup:
 
 static apr_status_t send_brigade_nonblocking(apr_socket_t *s,
                                              apr_bucket_brigade *bb,
-                                             core_output_filter_ctx_t *ctx,
+                                             core_output_ctx_t *ctx,
                                              conn_rec *c);
 
 static apr_status_t writev_nonblocking(apr_socket_t *s,
                                        apr_bucket_brigade *bb,
-                                       core_output_filter_ctx_t *ctx,
+                                       core_output_ctx_t *ctx,
                                        apr_size_t bytes_to_write,
                                        apr_size_t nvec,
                                        conn_rec *c);
@@ -346,7 +346,7 @@ static apr_status_t writev_nonblocking(apr_socket_t *s,
 #if APR_HAS_SENDFILE
 static apr_status_t sendfile_nonblocking(apr_socket_t *s,
                                          apr_bucket *bucket,
-                                         core_output_filter_ctx_t *ctx,
+                                         core_output_ctx_t *ctx,
                                          conn_rec *c);
 #endif
 
@@ -358,9 +358,9 @@ extern APR_OPTIONAL_FN_TYPE(ap_logio_add_bytes_out) *ap__logio_add_bytes_out;
 apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 {
     conn_rec *c = f->c;
-    core_net_rec *net = f->ctx;
-    apr_socket_t *sock = net->client_socket;
-    core_output_filter_ctx_t *ctx = net->out_ctx;
+    core_output_ctx_t *ctx = f->ctx;
+    conn_config_t *cconf = ap_get_core_module_config(c->conn_config);
+    apr_socket_t *sock = cconf->socket;
     apr_interval_time_t sock_timeout = 0;
     apr_status_t rv;
 
@@ -371,8 +371,7 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     }
 
     if (ctx == NULL) {
-        ctx = apr_pcalloc(c->pool, sizeof(*ctx));
-        net->out_ctx = (core_output_filter_ctx_t *)ctx;
+        f->ctx = ctx = apr_pcalloc(c->pool, sizeof(*ctx));
     }
 
     /* remain compatible with legacy MPMs that passed NULL to this filter */
@@ -483,11 +482,11 @@ static APR_INLINE int can_sendfile_bucket(apr_bucket *b)
 
 static apr_status_t send_brigade_nonblocking(apr_socket_t *s,
                                              apr_bucket_brigade *bb,
-                                             core_output_filter_ctx_t *ctx,
+                                             core_output_ctx_t *ctx,
                                              conn_rec *c)
 {
     apr_status_t rv = APR_SUCCESS;
-    core_server_config *conf =
+    core_server_config *sconf =
         ap_get_core_module_config(c->base_server->module_config);
     apr_size_t nvec = 0, nbytes = 0;
     apr_bucket *bucket, *next;
@@ -603,7 +602,7 @@ static apr_status_t send_brigade_nonblocking(apr_socket_t *s,
          * we are at the end of the brigade, the write will happen outside
          * the loop anyway).
          */
-        if (nbytes > conf->flush_max_threshold
+        if (nbytes > sconf->flush_max_threshold
                 && next != APR_BRIGADE_SENTINEL(bb)
                 && !is_in_memory_bucket(next)) {
             (void)apr_socket_opt_set(s, APR_TCP_NOPUSH, 1);
@@ -626,7 +625,7 @@ cleanup:
 
 static apr_status_t writev_nonblocking(apr_socket_t *s,
                                        apr_bucket_brigade *bb,
-                                       core_output_filter_ctx_t *ctx,
+                                       core_output_ctx_t *ctx,
                                        apr_size_t bytes_to_write,
                                        apr_size_t nvec,
                                        conn_rec *c)
@@ -686,7 +685,7 @@ static apr_status_t writev_nonblocking(apr_socket_t *s,
 
 static apr_status_t sendfile_nonblocking(apr_socket_t *s,
                                          apr_bucket *bucket,
-                                         core_output_filter_ctx_t *ctx,
+                                         core_output_ctx_t *ctx,
                                          conn_rec *c)
 {
     apr_status_t rv;
