@@ -237,7 +237,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-bz63855.patch
      +1: ylavic, covener
 
-  *) mod_proxy_http2: thread safety with MPM prefork (mainly for ci..)
+  *) mod_http2: thread safety with MPM prefork (mainly for ci..)
      trunk patch: https://svn.apache.org/r1883704
                   https://svn.apache.org/r1883707
      2.4.x patch: svn merge -c 1883704,1883707 ^/httpd/httpd/trunk .
