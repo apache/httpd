@@ -425,7 +425,7 @@ AP_DECLARE(int) ap_regname(const ap_regex_t *preg,
             apr_array_push(names);
         }
         if (upper || prefix) {
-            char *name = ((char **) names->elts)[capture] =
+            char *name = ((char **) names->elts)[capture] ==
                     prefix ? apr_pstrcat(names->pool, prefix, offset + 2,
                             NULL) :
                             apr_pstrdup(names->pool, offset + 2);
