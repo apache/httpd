@@ -61,17 +61,13 @@
 #define BRIGADE_NORMALIZE(b) \
 do { \
     apr_bucket *e = APR_BRIGADE_FIRST(b); \
-    do {  \
+    while (e != APR_BRIGADE_SENTINEL(b)) { \
+        apr_bucket *next = APR_BUCKET_NEXT(e); \
         if (e->length == 0 && !APR_BUCKET_IS_METADATA(e)) { \
-            apr_bucket *d; \
-            d = APR_BUCKET_NEXT(e); \
             apr_bucket_delete(e); \
-            e = d; \
         } \
-        else { \
-            e = APR_BUCKET_NEXT(e); \
-        } \
-    } while (!APR_BRIGADE_EMPTY(b) && (e != APR_BRIGADE_SENTINEL(b))); \
+        e = next; \
+    } \
 } while (0)
 
 /* we know core's module_index is 0 */
@@ -127,9 +123,6 @@ apr_status_t ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
     }
     else {
         ap_filter_reinstate_brigade(f, ctx->bb, NULL);
-        if (APR_BRIGADE_EMPTY(ctx->bb)) {
-            return APR_EOF;
-        }
     }
 
     /* ### This is bad. */
