@@ -1161,7 +1161,9 @@ static apr_status_t ssl_init_ctx_crl(server_rec *s,
 /*
  * Read a file that optionally contains the server certificate in PEM
  * format, possibly followed by a sequence of CA certificates that
- * should be sent to the peer in the SSL Certificate message.
+ * should be sent to the peer in the SSL Certificate message.  Returns
+ * 0 on success, otherwise the OpenSSL error stack contents should be
+ * reported.
  */
 static int use_certificate_chain(
     SSL_CTX *ctx, char *file, int skipfirst, pem_password_cb *cb)
@@ -1258,6 +1260,7 @@ static apr_status_t ssl_init_ctx_cert_chain(server_rec *s,
     if (n < 0) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(01903)
                 "Failed to configure CA certificate chain!");
+        ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
         return ssl_die(s);
     }
 
