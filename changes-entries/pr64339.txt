@@ -1,0 +1,4 @@
+  *) mod_xml2enc: Update check to match MIME types matching
+     "+xml" rather than anything containing "xml", avoiding
+     corruption of Microsoft OOXML formats.  PR 64339.
+     [Joseph Heenan <joseph.heenan fintechlabs.io>]

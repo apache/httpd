@@ -343,8 +343,8 @@ static apr_status_t xml2enc_ffunc(ap_filter_t* f, apr_bucket_brigade* bb)
         if (isupper(*p))
             *p = tolower(*p);
 
-    /* only act if starts-with "text/" or contains "xml" */
-    if (strncmp(ctype, "text/", 5) && !strstr(ctype, "xml"))  {
+    /* only act if starts-with "text/" or contains "+xml" */
+    if (strncmp(ctype, "text/", 5) && !strstr(ctype, "+xml"))  {
         ap_remove_output_filter(f);
         return ap_pass_brigade(f->next, bb) ;
     }
