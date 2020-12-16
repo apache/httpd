@@ -1,6 +1,36 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mpm_event: don't reset connections after lingering close, restoring prior
+     to 2.4.28 behaviour.  [Yann Ylavic]
+
+  *) mod_dav_fs: Improve logging output when failing to open files for
+     writing.  PR 64413.  [Bingyu Shen <ahshenbingyu gmail.com>]
+
+  *) mod_proxy: Add optional third argument for ProxyRemote, which
+     configures Basic authentication credentials to pass to the remote
+     proxy.  PR 37355.  [Joe Orton]
+
+  *) mod_proxy_http: Fix 100-continue deadlock for spooled request bodies,
+     leading to Request Timeout (408).  PR 63855.  [Yann Ylavic]
+  *) http: Allow unknown response status' lines returned in the form of
+     "HTTP/x.x xxx Status xxx".  [Yann Ylavic]
+
+  *) mod_proxy_fcgi: Honor "SetEnv proxy-sendcl" to forward a chunked
+     Transfer-Encoding from the client, spooling the request body when needed
+     to provide a Content-Length to the backend.  PR 57087.  [Yann Ylavic]
+
+  *) mpm_event: kill connections in keepalive state only when there is no more
+     workers available, not when the maximum number of connections is reached,
+     restoring prior to 2.4.30 behaviour.  [Yann Ylavic]
+
+  *) mod_allowmethods: Allow methods to be added/removed with +/- prefix.  PR64785.
+     [Marcel Montes <spiceman gmail.com>]
+
+  *) mod_unique_id: Use base64url encoding for UNIQUE_ID variable,
+     avoiding the use of '@'.  PR 57044.
+     [Michael Kaufmann <apache-bugzilla michael-kaufmann.ch>]
+
   *) core: add ReadBufferSize, FlushMaxThreshold and FlushMaxPipelined
      directives.  [Yann Ylavic]
 

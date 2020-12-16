@@ -1,3 +1,0 @@
-  *) mod_proxy_fcgi: Honor "SetEnv proxy-sendcl" to forward a chunked
-     Transfer-Encoding from the client, spooling the request body when needed
-     to provide a Content-Length to the backend.  PR 57087.  [Yann Ylavic]

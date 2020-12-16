@@ -1,3 +1,0 @@
-  *) mod_allowmethods: Allow methods to be added/removed with +/- prefix.  PR64785.
-     [Marcel Montes <spiceman gmail.com>]
-

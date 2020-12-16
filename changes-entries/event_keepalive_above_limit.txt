@@ -1,4 +1,0 @@
-  *) mpm_event: kill connections in keepalive state only when there is no more
-     workers available, not when the maximum number of connections is reached,
-     restoring prior to 2.4.30 behaviour.  [Yann Ylavic]
-

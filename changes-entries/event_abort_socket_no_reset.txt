@@ -1,3 +1,0 @@
-  *) mpm_event: don't reset connections after lingering close, restoring prior
-     to 2.4.28 behaviour.  [Yann Ylavic]
-
