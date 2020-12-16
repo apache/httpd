@@ -219,8 +219,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: ylavic, covener
      ylavic: +1 with CHANGES entry
 
-  *) mod_proxy_http: Fix 100-continue deadlock for spooled request bodies,
-     leading to Request Timeout (408). PR 63855.
+  [ start of series (staged/cumulative patches) ]
+  *) mod_proxy_http: Fix 100-continue deadlock for spooled request bodies. BZ 63855.
      trunk patch: https://svn.apache.org/r1769760
                   https://svn.apache.org/r1770220
                   https://svn.apache.org/r1868576
@@ -229,8 +229,78 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1883640
                   https://svn.apache.org/r1884218
                   https://svn.apache.org/r1884220
-     2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-bz63855.patch
+     2.4.x patch: http://people.apache.org/~ylavic/patches/2.4.x-bz63855-1on5.patch
+                  https://github.com/apache/httpd/pull/154
      +1: ylavic, covener
+
+  *) core: output filtering improvements (ease following patches, align trunk/2.4)
+     trunk patch: https://svn.apache.org/r1836032
+                  https://svn.apache.org/r1884295
+                  https://svn.apache.org/r1884296
+                  https://svn.apache.org/r1884304
+                  https://svn.apache.org/r1836237
+                  https://svn.apache.org/r1836258
+                  https://svn.apache.org/r1836354
+                  https://svn.apache.org/r1843939
+     2.4.x patch: http://people.apache.org/~ylavic/patches/2.4.x-core_output_filtering-2on5.patch
+                  https://github.com/apache/httpd/pull/156
+     +1: ylavic,
+     ylavic: These core output filter changes are needed for the proxy
+             tunneling loop to work properly/non-blocking (PR 158 below). They
+             do not include the major filter setaside/reinstate changes from
+             trunk, reluing on existing 2.4 c->data_in_{input,output}_filter
+             flags only. 
+
+  *) mod_proxy_http: individual status codes for ProxyErrorOverride. BZ 63628
+     trunk patch: https://svn.apache.org/r1754974
+                  https://svn.apache.org/r1754975
+                  https://svn.apache.org/r1876404
+                  https://svn.apache.org/r1877696
+                  https://svn.apache.org/r1877697
+                  https://svn.apache.org/r1877728
+     2.4.x patch: http://people.apache.org/~ylavic/patches/2.4.x-mod_proxy_http-override-3on5.patch
+                  https://github.com/apache/httpd/pull/157
+     +1: ylavic,
+     ylavic: Besides ProxyErrorOverride individual status codes, merging now
+             the non-functional changes in ap_proxy_http_process_response()
+             around ProxyErrorOverride code helps reducing conflicts with the
+             following commits, and with trunk/2.4 alignment still.
+
+  *) mod_proxy_http: handle upgrade/tunneling protocols. BZ 61616 is about
+                     mod_proxy_connect but there has been wstunnel reports
+                     on dev@ about that too lately.
+     trunk patch: https://svn.apache.org/r1678771
+                  https://svn.apache.org/r1832348
+                  https://svn.apache.org/r1869338
+                  https://svn.apache.org/r1869420
+                  https://svn.apache.org/r1878367
+                  https://svn.apache.org/r1877557
+                  https://svn.apache.org/r1877558
+                  https://svn.apache.org/r1877646
+                  https://svn.apache.org/r1877695
+                  https://svn.apache.org/r1879401
+                  https://svn.apache.org/r1879402
+                  https://svn.apache.org/r1880200
+     2.4.x patch: http://people.apache.org/~ylavic/patches/2.4.x-mod_proxy_http-upgrade-4on5.patch
+                  https://github.com/apache/httpd/pull/158
+     +1: ylavic,
+     ylavic: All the changes to mod_proxy_wstunnel have been dropped for this
+             backport proposal, the goal being to handle tunneling/upgrade in
+             mod_proxy_http from now (replacing/obsoleting wstunnel).
+
+  *) mod_proxy: common spooling code to allow mod_proxy_fgci proxy-sendcl. BZ 57087 
+     trunk patch: https://svn.apache.org/r1884067
+                  https://svn.apache.org/r1884068
+                  https://svn.apache.org/r1884069
+                  https://svn.apache.org/r1884070
+     2.4.x patch: http://people.apache.org/~ylavic/patches/2.4.x-mod_proxy_fcgi-sendcl-5on5.patch
+                  https://github.com/apache/httpd/pull/162
+     +1: ylavic,
+     ylavic: Long standing BZ (always send Content-Length, according to the CGI
+             specs) which is addressed by reusing mod_proxy_http's spooling
+             code (moved to proxy_util) in mod_proxy_fcgi. The user still needs
+             to SetEnv proxy-sendcl for that (2.4 compat).
+  [ End of series ]
 
   *) mod_http2: thread safety with MPM prefork (mainly for ci..)
      trunk patch: https://svn.apache.org/r1883704
