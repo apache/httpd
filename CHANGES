@@ -1,6 +1,17 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.47
 
+  *) mpm_event: don't reset connections after lingering close, restoring prior
+     to 2.4.28 behaviour.  [Yann Ylavic]
+
+  *) mpm_event: kill connections in keepalive state only when there is no more
+     workers available, not when the maximum number of connections is reached,
+     restoring prior to 2.4.30 behaviour.  [Yann Ylavic]
+
+  *) mod_unique_id: Use base64url encoding for UNIQUE_ID variable,
+     avoiding the use of '@'.  PR 57044.
+     [Michael Kaufmann <apache-bugzilla michael-kaufmann.ch>]
+
   *) mod_rewrite: Extend the [CO] (cookie) flag of RewriteRule to accept a
      SameSite attribute. [Eric Covener]
 

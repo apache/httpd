@@ -1,3 +1,0 @@
-  *) mod_unique_id: Use base64url encoding for UNIQUE_ID variable,
-     avoiding the use of '@'.  PR 57044.
-     [Michael Kaufmann <apache-bugzilla michael-kaufmann.ch>]
