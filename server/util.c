@@ -3744,3 +3744,35 @@ AP_DECLARE(const char *)ap_dir_fnmatch(ap_dir_match_t *w, const char *path,
 
     return NULL;
 }
+
+struct wrapper_args {
+    const char *name;
+    apr_thread_start_t func;
+    void *data;
+};
+
+static void *thread_wrapper(apr_thread_t *thread, void *data)
+{
+    struct wrapper_args *args = data;
+
+    /* ### call pthread_setname_np() etc using args->name */
+
+    apr_setup_signal_thread();
+
+    return args->func(thread, args->data);
+}
+
+AP_DECLARE(apr_status_t) ap_thread_create(apr_thread_t **new_thread,
+                                          const char *name,
+                                          apr_threadattr_t *attr, 
+                                          apr_thread_start_t func, 
+                                          void *data, apr_pool_t *p)
+{
+    struct wrapper_args *args = apr_palloc(p, sizeof *args);
+
+    args->name = apr_pstrdup(p, name);
+    args->func = func;
+    args->data = data;
+
+    return apr_thread_create(new_thread, attr, thread_wrapper, args, p);
+}

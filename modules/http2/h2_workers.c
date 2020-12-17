@@ -103,11 +103,11 @@ static apr_status_t activate_slot(h2_workers *workers, h2_slot *slot)
                  "h2_workers: new thread for slot %d", slot->id); 
     /* thread will either immediately start work or add itself
      * to the idle queue */
-    apr_thread_create(&slot->thread, workers->thread_attr, slot_run, slot, 
-                      workers->pool);
-    if (!slot->thread) {
+    status = ap_thread_create(&slot->thread, "h2 worker", workers->thread_attr,
+                              slot_run, slot, workers->pool);
+    if (status) {
         push_slot(&workers->free, slot);
-        return APR_ENOMEM;
+        return status;
     }
     
     apr_atomic_inc32(&workers->worker_count);
