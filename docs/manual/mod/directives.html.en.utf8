@@ -314,6 +314,8 @@
 <li><a href="mod_firehose.html#firehoseproxyconnectionoutput">FirehoseProxyConnectionOutput</a></li>
 <li><a href="mod_firehose.html#firehoserequestinput">FirehoseRequestInput</a></li>
 <li><a href="mod_firehose.html#firehoserequestoutput">FirehoseRequestOutput</a></li>
+<li><a href="core.html#flushmaxpipelined">FlushMaxPipelined</a></li>
+<li><a href="core.html#flushmaxthreshold">FlushMaxThreshold</a></li>
 <li><a href="mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority</a></li>
 <li><a href="core.html#forcetype">ForceType</a></li>
 <li><a href="mod_log_forensic.html#forensiclog">ForensicLog</a></li>
@@ -592,7 +594,8 @@
 <li><a href="mod_proxy_wstunnel.html#proxywebsocketasyncdelay">ProxyWebsocketAsyncDelay</a></li>
 <li><a href="mod_proxy_wstunnel.html#proxywebsocketidletimeout">ProxyWebsocketIdleTimeout</a></li>
 <li><a href="core.html#qualifyredirecturl" id="Q" name="Q">QualifyRedirectURL</a></li>
-<li><a href="mod_autoindex.html#readmename" id="R" name="R">ReadmeName</a></li>
+<li><a href="core.html#readbuffersize" id="R" name="R">ReadBufferSize</a></li>
+<li><a href="mod_autoindex.html#readmename">ReadmeName</a></li>
 <li><a href="mpm_common.html#receivebuffersize">ReceiveBufferSize</a></li>
 <li><a href="mod_alias.html#redirect">Redirect</a></li>
 <li><a href="mod_alias.html#redirectmatch">RedirectMatch</a></li>

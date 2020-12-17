@@ -1935,7 +1935,8 @@ SSLProxyCACertificateFile</a></code>.</p>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, proxy section</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>The proxy section context is allowed in httpd 2.4.30 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>The proxy section context is allowed in httpd 2.4.30 and later<br />
+Inclusion of non-leaf (CA) certificates is permitted in httpd 2.5.1 and later.</td></tr>
 </table>
 <p>
 This directive sets the all-in-one file where you keep the certificates and
@@ -1946,7 +1947,8 @@ This referenced file is simply the concatenation of the various
 PEM-encoded certificate files. Use this directive alternatively or
 additionally to <code>SSLProxyMachineCertificatePath</code>.  The referenced file can contain any number of pairs of client
 certificate and associated private key.  Each pair can be specified in
-either (certificate, key) or (key, certificate) order.</p>
+either (certificate, key) or (key, certificate) order.  Non-leaf (CA) certificates can
+also be included in the file, and will treated as if configured with  <code class="directive"><a href="#sslproxymachinecertificatechainfile">SSLProxyMachineCertificateChainFile</a></code>.</p>
 
 <p>When challenged to provide a client certificate by a remote server,
 the server should provide a list of <em>acceptable certificate
@@ -1957,7 +1959,7 @@ client cert/key.  If a list of CA names <em>is</em> provided,
 to find a configured client cert which was issued either directly by
 that CA, or indirectly via any number of intermediary CA certificates.
 The chain of intermediate CA certificates can be built from those
-configured with <code class="directive"><a href="#sslproxymachinecertificatechainfile">SSLProxyMachineCertificateChainFile</a></code>.  The
+included in the file, or configured with <code class="directive"><a href="#sslproxymachinecertificatechainfile">SSLProxyMachineCertificateChainFile</a></code>.  The
 first configured matching certificate will then be supplied in
 response to the challenge.</p>
 
