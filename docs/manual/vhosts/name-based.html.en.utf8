@@ -171,13 +171,19 @@
     first have your DNS server properly configured to map those names to an IP
     address associated with your server.</p>
 
+    <p>Typically, IP addresses of local interfaces or the wildcard '*' are specified within the 
+    <code class="directive"><a href="../mod/core.html#virtualhost">&lt;virtualhost&gt;</a></code> tag and hostnames are
+    specified only in <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> or <code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code>.  When a hostname is specified within the virtualhost tag,
+    its addresses are resolved and added for IP based virtual host resolution and the hostname:port
+    combination is also checked prior to ServerName and ServerAlias checks for name-based virtual host
+    resolution.  The use of hostnames within the virtualhost tag is relatively obscure, error prone,
+    and should generally be avoided.
+    </p>
+
     <p>Name-based virtual hosts for the best-matching set of  <code class="directive"><a href="../mod/core.html#virtualhost">&lt;virtualhost&gt;</a></code>s are processed
     in the order they appear in the configuration.  The first matching <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> or <code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code> is used, with no different precedence for wildcards
-    (nor for ServerName vs. ServerAlias).  </p>
-
-    <p>The complete list of names in the <code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code>
-    directive are treated just like a (non wildcard)
-    <code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code>.</p>
+    (nor for ServerName vs. ServerAlias).  
+    </p>
 
     <p>Finally, you can fine-tune the configuration of the virtual hosts
     by placing other directives inside the <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> containers. Most directives can be

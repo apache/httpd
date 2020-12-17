@@ -144,6 +144,11 @@ the request headers and/or body from client.
     configured with <code class="directive">RequestReadTimeout</code> are only effective
     after the server process has received the socket.</p>
 
+    <p>When waiting for a subsequent request on a kept-alive
+    connection, the timeout configured by <code class="directive"><a href="../mod/core.html#keepalivetimeout">KeepAliveTimeout</a></code> applies regardless of
+    whether <code class="directive">RequestReadTimeout</code> is also
+    used.</p>
+    
     <p>For each of the three timeout stages (handshake, header or body), there are
     three ways to specify the timeout:
     </p>

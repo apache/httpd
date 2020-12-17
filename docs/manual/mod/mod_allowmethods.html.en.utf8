@@ -42,6 +42,10 @@ used on a server. The most common configuration would be:</p>
 
 <pre class="prettyprint lang-config">&lt;Location "/"&gt;
    AllowMethods GET POST OPTIONS
+&lt;/Location&gt;
+
+&lt;Location "/nopost"&gt;
+   AllowMethods -POST
 &lt;/Location&gt;</pre>
 
 
@@ -58,12 +62,13 @@ used on a server. The most common configuration would be:</p>
 <div class="directive-section"><h2><a name="AllowMethods" id="AllowMethods">AllowMethods</a> <a name="allowmethods" id="allowmethods">Directive</a> <a title="Permanent link" href="#allowmethods" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Restrict access to the listed HTTP methods</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AllowMethods reset|<em>HTTP-method</em>
-[<em>HTTP-method</em>]...</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AllowMethods reset | [+|-]<var>HTTP-method</var>
+[ [+|-]<var>HTTP-method</var> ] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AllowMethods reset</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_allowmethods</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>+/- added in 2.5.1</td></tr>
 </table>
 
 <p>The HTTP-methods are case sensitive and are generally, as per
@@ -81,9 +86,27 @@ turn off <code class="module"><a href="../mod/mod_allowmethods.html">mod_allowme
   use <code class="directive"><a href="../mod/core.html#traceenable">TraceEnable</a></code> instead.</p>
 </div>
 
+<p>Normally, if multiple <code class="directive">AllowMethods</code> could
+apply to a directory, then the most specific one is used and
+others are ignored; the methods are not merged. (See <a href="../sections.html#merging">how sections are merged</a>.)
+However if <em>all</em> the methods on the
+<code class="directive">AllowMethods</code> directive are preceded by a
+<code>+</code> or <code>-</code> symbol, the options are
+merged. Any method preceded by a <code>+</code> are added to the
+methods currently in force, and any method preceded by a
+<code>-</code> are removed from the methods currently in
+force. </p>
+
+<div class="note"><h3>Note</h3>
+<p>Mixing <code class="directive">AllowMethods</code> with a <code>+</code> or
+<code>-</code> with those without is not valid syntax and will be
+rejected during server startup by the syntax check with an abort.</p>
+</div>
+
 <p><code class="module"><a href="../mod/mod_allowmethods.html">mod_allowmethods</a></code> was written to replace the rather
 kludgy implementation of <code class="directive"><a href="../mod/core.html#limit">Limit</a></code> and
 <code class="directive"><a href="../mod/core.html#limitexcept">LimitExcept</a></code>.</p>
+
 
 </div>
 </div>

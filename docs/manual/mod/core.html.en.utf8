@@ -69,6 +69,8 @@ available</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#fileetag">FileETag</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#files">&lt;Files&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#filesmatch">&lt;FilesMatch&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flushmaxpipelined">FlushMaxPipelined</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flushmaxthreshold">FlushMaxThreshold</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#forcetype">ForceType</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#gprofdir">GprofDir</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#hostnamelookups">HostnameLookups</a></li>
@@ -108,6 +110,7 @@ available</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#protocols">Protocols</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#protocolshonororder">ProtocolsHonorOrder</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#qualifyredirecturl">QualifyRedirectURL</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#readbuffersize">ReadBufferSize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#regexdefaultoptions">RegexDefaultOptions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#registerhttpmethod">RegisterHttpMethod</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rlimitcpu">RLimitCPU</a></li>
@@ -1916,6 +1919,52 @@ filenames</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="FlushMaxPipelined" id="FlushMaxPipelined">FlushMaxPipelined</a> <a name="flushmaxpipelined" id="flushmaxpipelined">Directive</a> <a title="Permanent link" href="#flushmaxpipelined" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum number of pipelined responses above which they are flushed
+to the network</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FlushMaxPipelined <var>number</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>FlushMaxPipelined 5</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>2.5 and later</td></tr>
+</table>
+    <p>This directive allows to configure the maximum number of pipelined
+    responses, which remain pending so long as pipelined request are received.
+    When the limit is reached, reponses are forcibly flushed to the network in
+    blocking mode, until passing under the limit again.</p>
+
+    <p><code class="directive">FlushMaxPipelined</code> helps constraining memory
+    usage. When set to <var>0</var> pipelining is disabled, when set to
+    <var>-1</var> there is no limit (<code class="directive">FlushMaxThreshold</code>
+    still applies).</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="FlushMaxThreshold" id="FlushMaxThreshold">FlushMaxThreshold</a> <a name="flushmaxthreshold" id="flushmaxthreshold">Directive</a> <a title="Permanent link" href="#flushmaxthreshold" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Threshold above which pending data are flushed to the
+network</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FlushMaxThreshold<var>number-of-bytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>FlushMaxThreshold 65536</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>2.5 and later</td></tr>
+</table>
+    <p>This directive allows to configure the threshold for pending output
+    data (in bytes). When the limit is reached, data are forcibly flushed to
+    the network in blocking mode, until passing under the limit again.</p>
+
+    <p><code class="directive">FlushMaxThreshold</code> helps constraining memory
+    usage. When set to <var>0</var> or a too small value there are actually
+    no pending data, but for threaded MPMs there can be more threads busy
+    waiting for the network thus less ones available to handle the other
+    simultaneous connections.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ForceType" id="ForceType">ForceType</a> <a name="forcetype" id="forcetype">Directive</a> <a title="Permanent link" href="#forcetype" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Forces all matching files to be served with the specified
@@ -2050,7 +2099,7 @@ media type in the HTTP Content-Type header field</td></tr>
 
     <p>Finally, if you have <a href="mod_authz_host.html#reqhost">hostname-based Require
     directives</a>, a hostname lookup will be performed regardless of
-    the setting of <code>HostnameLookups</code>.</p>
+    the setting of <code class="directive">HostnameLookups</code>.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2838,8 +2887,8 @@ will be accepted from the client</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
-    <p><var>Number</var> is an integer from 0 (meaning unlimited) to
-    32767. The default value is defined by the compile-time
+    <p>Setting <var>number</var> at 0 means unlimited.
+    The default value is defined by the compile-time
     constant <code>DEFAULT_LIMIT_REQUEST_FIELDS</code> (100 as
     distributed).</p>
 
@@ -4157,6 +4206,25 @@ as if 'QualifyRedirectURL On' was configured.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ReadBufferSize" id="ReadBufferSize">ReadBufferSize</a> <a name="readbuffersize" id="readbuffersize">Directive</a> <a title="Permanent link" href="#readbuffersize" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Size of the buffers used to read data</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ReadBufferSize <var>bytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ReadBufferSize 8192</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>2.5 and later</td></tr>
+</table>
+    <p>This directive allows to configure the size (in bytes) of the memory
+    buffer used to read data from the network or files.</p>
+
+    <p>A larger buffer can increase peformances with larger data, but consumes
+    more memory per connection. The minimum configurable size is
+    <var>1024</var>.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="RegexDefaultOptions" id="RegexDefaultOptions">RegexDefaultOptions</a> <a name="regexdefaultoptions" id="regexdefaultoptions">Directive</a> <a title="Permanent link" href="#regexdefaultoptions" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Allow to configure global/default options for regexes</td></tr>
@@ -5014,9 +5082,15 @@ certain events before failing a request</td></tr>
     of passing a <code>-D</code> argument to <code class="program"><a href="../programs/httpd.html">httpd</a></code>.</p>
     <p>This directive can be used to toggle the use of <code class="directive"><a href="#ifdefine">&lt;IfDefine&gt;</a></code> sections without needing to alter
     <code>-D</code> arguments in any startup scripts.</p>
-    <p>While this directive is supported in virtual host context,
-       the changes it makes are visible to any later configuration
-       directives, beyond any enclosing virtual host.</p>
+
+    <p>Variable names may not contain colon ":" characters, to avoid clashes
+    with <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>'s syntax.</p>
+
+    <div class="note"><h3>Virtual Host scope and pitfalls</h3>
+      <p>While this directive is supported in virtual host context,
+         the changes it makes are visible to any later configuration
+         directives, beyond any enclosing virtual host.</p>
+    </div>
 
 <h3>See also</h3>
 <ul>
