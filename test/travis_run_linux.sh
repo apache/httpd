@@ -58,6 +58,8 @@ if test -v TEST_VPATH; then
     cd ../vpath
 fi
 
+builddir=$PWD
+
 $srcdir/configure --prefix=$PREFIX $CONFIG
 make $MFLAGS
 
@@ -110,8 +112,21 @@ if ! test -v SKIP_TESTING; then
     if test -v TEST_SSL -a $RV -eq 0; then
         pushd test/perl-framework
             for cache in shmcb redis:localhost:6379 memcache:localhost:11211; do
-                SSL_SESSCACHE=$cache ./t/TEST -sslproto TLSv1.2 -defines TEST_SSL_SESSCACHE t/ssl
+                SSL_SESSCACHE=$cache ./t/TEST -sslproto TLSv1.2 -defines TEST_SSL_SESSCACHE -start
+                ./t/TEST t/ssl
                 RV=$?
+                if test $RV -eq 0; then
+                    # TODO: only really useful in e.g. triggering
+                    # server segfaults which are caught later, doesn't
+                    # directly catch non-200 responses etc.
+                    $builddir/support/ab -qd -n 4000 -c 20 -f TLS1.2 https://localhost:8532/
+                    RV=$?
+                fi
+                ./t/TEST -stop
+                SRV=$?
+                if test $RV -eq 0 -a $SRV -ne 0; then
+                    RV=$SRV
+                fi
                 test $RV -eq 0 || break
             done
         popd
