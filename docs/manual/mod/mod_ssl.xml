@@ -1872,7 +1872,8 @@ SSLProxyMachineCertificatePath "/usr/local/apache2/conf/proxy.crt/"
 <syntax>SSLProxyMachineCertificateFile <em>filename</em></syntax>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
-<compatibility>The proxy section context is allowed in httpd 2.4.30 and later</compatibility>
+<compatibility>The proxy section context is allowed in httpd 2.4.30 and later<br/>
+Inclusion of non-leaf (CA) certificates is permitted only in httpd 2.5.1 and later.</compatibility>
 
 <usage>
 <p>
@@ -1884,7 +1885,9 @@ This referenced file is simply the concatenation of the various
 PEM-encoded certificate files. Use this directive alternatively or
 additionally to <code>SSLProxyMachineCertificatePath</code>.  The referenced file can contain any number of pairs of client
 certificate and associated private key.  Each pair can be specified in
-either (certificate, key) or (key, certificate) order.</p>
+either (certificate, key) or (key, certificate) order.  Non-leaf (CA) certificates can
+also be included in the file, and are treated as if configured with  <directive
+module="mod_ssl">SSLProxyMachineCertificateChainFile</directive>.</p>
 
 <p>When challenged to provide a client certificate by a remote server,
 the server should provide a list of <em>acceptable certificate
@@ -1895,7 +1898,7 @@ client cert/key.  If a list of CA names <em>is</em> provided,
 to find a configured client cert which was issued either directly by
 that CA, or indirectly via any number of intermediary CA certificates.
 The chain of intermediate CA certificates can be built from those
-configured with <directive
+included in the file, or configured with <directive
 module="mod_ssl">SSLProxyMachineCertificateChainFile</directive>.  The
 first configured matching certificate will then be supplied in
 response to the challenge.</p>

@@ -1715,6 +1715,10 @@ static apr_status_t ssl_init_proxy_certs(server_rec *s,
     STACK_OF(X509) *chain;
     X509_STORE_CTX *sctx;
     X509_STORE *store = SSL_CTX_get_cert_store(mctx->ssl_ctx);
+    int addl_chain = 0; /* non-zero if additional chain certs were
+                         * added to store */
+
+    ap_assert(store != NULL); /* safe to assume always non-NULL? */
 
 #if OPENSSL_VERSION_NUMBER >= 0x1010100fL && !defined(LIBRESSL_VERSION_NUMBER)
     /* For OpenSSL >=1.1.1, turn on client cert support which is
@@ -1740,20 +1744,28 @@ static apr_status_t ssl_init_proxy_certs(server_rec *s,
         ssl_init_ca_cert_path(s, ptemp, pkp->cert_path, NULL, sk);
     }
 
-    if ((ncerts = sk_X509_INFO_num(sk)) <= 0) {
-        sk_X509_INFO_free(sk);
-        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(02206)
-                     "no client certs found for SSL proxy");
-        return APR_SUCCESS;
-    }
-
     /* Check that all client certs have got certificates and private
-     * keys. */
-    for (n = 0; n < ncerts; n++) {
+     * keys.  Note the number of certs in the stack may decrease
+     * during the loop. */
+    for (n = 0; n < sk_X509_INFO_num(sk); n++) {
         X509_INFO *inf = sk_X509_INFO_value(sk, n);
+        int has_privkey = inf->x_pkey && inf->x_pkey->dec_pkey;
 
-        if (!inf->x509 || !inf->x_pkey || !inf->x_pkey->dec_pkey ||
-            inf->enc_data) {
+        /* For a lone certificate in the file, trust it as a
+         * CA/intermediate certificate. */
+        if (inf->x509 && !has_privkey && !inf->enc_data) {
+            ssl_log_xerror(SSLLOG_MARK, APLOG_DEBUG, 0, ptemp, s, inf->x509,
+                           APLOGNO(10261) "Trusting non-leaf certificate");
+            X509_STORE_add_cert(store, inf->x509); /* increments inf->x509 */
+            /* Delete from the stack and iterate again. */
+            X509_INFO_free(inf);
+            sk_X509_INFO_delete(sk, n);
+            n--;
+            addl_chain = 1;
+            continue;
+        }
+
+        if (!has_privkey || inf->enc_data) {
             sk_X509_INFO_free(sk);
             ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, s, APLOGNO(02252)
                          "incomplete client cert configured for SSL proxy "
@@ -1770,13 +1782,21 @@ static apr_status_t ssl_init_proxy_certs(server_rec *s,
         }
     }
 
+    if ((ncerts = sk_X509_INFO_num(sk)) <= 0) {
+        sk_X509_INFO_free(sk);
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(02206)
+                     "no client certs found for SSL proxy");
+        return APR_SUCCESS;
+    }
+
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02207)
                  "loaded %d client certs for SSL proxy",
                  ncerts);
     pkp->certs = sk;
 
-
-    if (!pkp->ca_cert_file || !store) {
+    /* If any chain certs are configured, build the ->ca_certs chains
+     * corresponding to the loaded keypairs. */
+    if (!pkp->ca_cert_file && !addl_chain) {
         return APR_SUCCESS;
     }
 
