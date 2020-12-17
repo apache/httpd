@@ -656,10 +656,13 @@ typedef struct {
     const char  *cert_file;
     const char  *cert_path;
     const char  *ca_cert_file;
-    STACK_OF(X509_INFO) *certs; /* Contains End Entity certs */
-    STACK_OF(X509) **ca_certs; /* Contains ONLY chain certs for
-                                * each item in certs.
-                                * (ptr to array of ptrs) */
+    /* certs is a stack of configured cert, key pairs. */
+    STACK_OF(X509_INFO) *certs;
+    /* ca_certs contains ONLY chain certs for each item in certs.
+     * ca_certs[n] is a pointer to the (STACK_OF(X509) *) stack which
+     * holds the cert chain for the 'n'th cert in the certs stack, or
+     * NULL if no chain is configured. */
+    STACK_OF(X509) **ca_certs;
 } modssl_pk_proxy_t;
 
 /** stuff related to authentication that can also be per-dir */
