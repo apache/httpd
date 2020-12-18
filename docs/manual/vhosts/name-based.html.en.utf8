@@ -60,8 +60,9 @@
     applicable to a general-purpose web server.</p>
 
     <p> Name-based virtual hosting builds off of the IP-based virtual host
-    selection algorithm, meaning that searches for the proper server name
-    occur only between virtual hosts that have the best IP-based address.</p>
+    selection algorithm, meaning that comparisons of ther requested hostname
+    to configured hostnames occurs only within the set of virtual hosts that 
+    share the most specific IP:PORT based match at the network layer.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -70,7 +71,7 @@
     <p>It is important to recognize that the first step in name-based virtual
     host resolution is IP-based resolution.  Name-based virtual host
     resolution only chooses the most appropriate name-based virtual host
-    after narrowing down the candidates to the best IP-based match.  Using a wildcard (*)
+    after narrowing down the candidates to the best (most specific) IP-based match.  Using a wildcard (*)
     for the IP address in all of the VirtualHost directives makes this
     IP-based mapping irrelevant.</p>
 
