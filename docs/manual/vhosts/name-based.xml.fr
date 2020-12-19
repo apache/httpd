@@ -1,7 +1,7 @@
 <?xml version='1.0' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1673945:1884555 (outdated) -->
+<!-- English Revision: 1884608 -->
 <!-- French translation by alain B, review by Vincent Deffontaines
 	updated by Lucien GENTIS -->
 
@@ -62,10 +62,10 @@
 
     <p>La sélection du serveur virtuel en fonction du nom s'opère en
     dehors de l'algorithme de sélection du serveur virtuel en fonction
-    de l'adresse IP, ce qui signifie que les recherches du point de vue
-    du nom du serveur ne s'effectuent que parmi le jeu de serveurs
+    de l'adresse IP, ce qui signifie que les comparaisons entre les noms d'hôtes
+    demandés et les noms d'hôtes configurés ne s'effectuent que parmi le jeu de serveurs
     virtuels pour lesquels la correspondance avec la paire adresse
-    IP/port est la plus exacte.</p>
+    IP/PORT est la plus exacte au niveau réseau.</p>
 
 </section>
 
@@ -76,7 +76,8 @@ virtuel basé sur le nom approprié</title>
     de serveur virtuel basée sur le nom est une résolution basée sur IP.
     La résolution de serveur virtuel basée sur le nom ne fait que
     choisir le serveur virtuel basé sur le nom le plus approprié, en se
-    limitant aux candidats qui conviennent le mieux du point de vue IP.
+    limitant aux candidats dont la correspondance est la meilleure (la plus
+    spécifique) du point de vue IP.
     La résolution basée sur IP est sans objet si l'on
     utilise un caractère générique (*) pour l'adresse IP dans
     toutes les directives VirtualHost.</p>
@@ -224,6 +225,19 @@ virtuel basé sur le nom approprié</title>
     doit être correctement configuré pour lier ces noms à une
     adresse IP associée avec votre serveur.</p>
 
+    <p>En général, seuls les adresses IP des interfaces locales ou le caractère
+    générique '*' sont spécifiés au sein de la balise <directive type="section"
+    module="core">virtualhost</directive>, et les noms d'hôtes ne sont spécifiés
+    que dans les directives <directive module="core">ServerName</directive> ou
+    <directive module="core">ServerAlias</directive>. Lorsque le nom d'hôte est
+    spécifié au sein de la balise virtualhost, ses adresses sont résolues et
+    prises en compte pour la sélection du serveur virtuel basée sur IP ; le
+    couple nom d'hôte:port est aussi testé pour la sélection du serveur virtuel
+    à base de nom avant de tester ServerName et ServerAlias. L'utilisation de
+    noms d'hôtes au sein de la balise virtualhost est assez obscure, source
+    d'erreurs, et doit être évitée dans la mesure du possible.
+    </p>
+
     <p>La recherche du serveur virtuel à base de nom qui correspond au
     plus près à la requête s'effectue parmi les <directive
     type="section" module="core">virtualhost</directive> selon leur
@@ -233,11 +247,6 @@ virtuel basé sur le nom approprié</title>
     module="core">ServerAlias</directive> correspond est utilisé, sans
     priorité particulière en cas de présence de caractères génériques
     (que ce soit pour le ServerName ou le ServerAlias).</p>
-
-    <p>La liste complète des noms dans la section <directive
-    module="core">VirtualHost</directive> sont traités comme une
-    directive <directive module="core">ServerAlias</directive> sans
-    caractères génériques.</p>
 
     <p>Finalement, vous pouvez affiner la configuration des serveurs
     virtuels en plaçant d'autres directives à l'intérieur des sections

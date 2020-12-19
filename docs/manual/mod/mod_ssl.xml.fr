@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1884097:1884552 (outdated) -->
+<!-- English Revision: 1884552 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2127,7 +2127,9 @@ clients codés en PEM que le mandataire doit utiliser</description>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
 <compatibility>Le contexte d'une section proxy est supporté à partir de la
-version 2.4.30 du serveur HTTP Apache</compatibility>
+version 2.4.30 du serveur HTTP Apache<br/>
+L'inclusion de certificats non-feuilles (CA) est supportée à partir de la
+version 2.5.1.</compatibility>
 
 <usage>
 <p>
@@ -2141,7 +2143,9 @@ certificats codés en PEM. Cette directive s'utilise à la place ou en compléme
 de la directive <code>SSLProxyMachineCertificatePath</code>. Le fichier spécifié
 peut contenir un nombre quelconque de paires certificat client/clé privée
 associée, et chaque paire peut être spécifiée selon l'ordre (certificat, clé) ou
-(clé, certificat).
+(clé, certificat). Des certificats non-feuilles (CA) peuvent aussi être inclus
+dans le fichier et sont traités comme s'ils avaient été définis via la directive
+<directive module="mod_ssl">SSLProxyMachineCertificateChainFile</directive>.
 </p>
 
 <p>Lorsqu'un serveur distant sollicite le serveur pour obtenir un certificat
@@ -2153,7 +2157,8 @@ client définie. Si par contre cette liste <em>est</em> fournie,
 défini qui a été fourni soit directement par l'autorité de certification
 considérée, soit indirectement via un nombre quelconque de certificats d'autorités de
 certification intermédiaires. La chaîne de certificats d'autorités de
-certification intermédiaires peut être construite à partir de ceux configurés
+certification intermédiaires peut être construite à partir de ceux qui sont
+inclus dans le fichier ou configurés
 via la directive <directive
 module="mod_ssl">SSLProxyMachineCertificateChainFile</directive>. Le premier
 certificat défini correspondant sera alors fourni comme réponse au cours de la
