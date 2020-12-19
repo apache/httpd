@@ -2195,7 +2195,9 @@ clients codés en PEM que le mandataire doit utiliser</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
-version 2.4.30 du serveur HTTP Apache</td></tr>
+version 2.4.30 du serveur HTTP Apache<br />
+L'inclusion de certificats non-feuilles (CA) est supportée à partir de la
+version 2.5.1.</td></tr>
 </table>
 <p>
 Cette directive permet de définir le fichier tout-en-un où sont stockés
@@ -2208,7 +2210,9 @@ certificats codés en PEM. Cette directive s'utilise à la place ou en compléme
 de la directive <code>SSLProxyMachineCertificatePath</code>. Le fichier spécifié
 peut contenir un nombre quelconque de paires certificat client/clé privée
 associée, et chaque paire peut être spécifiée selon l'ordre (certificat, clé) ou
-(clé, certificat).
+(clé, certificat). Des certificats non-feuilles (CA) peuvent aussi être inclus
+dans le fichier et sont traités comme s'ils avaient été définis via la directive
+<code class="directive"><a href="#sslproxymachinecertificatechainfile">SSLProxyMachineCertificateChainFile</a></code>.
 </p>
 
 <p>Lorsqu'un serveur distant sollicite le serveur pour obtenir un certificat
@@ -2220,7 +2224,8 @@ client définie. Si par contre cette liste <em>est</em> fournie,
 défini qui a été fourni soit directement par l'autorité de certification
 considérée, soit indirectement via un nombre quelconque de certificats d'autorités de
 certification intermédiaires. La chaîne de certificats d'autorités de
-certification intermédiaires peut être construite à partir de ceux configurés
+certification intermédiaires peut être construite à partir de ceux qui sont
+inclus dans le fichier ou configurés
 via la directive <code class="directive"><a href="#sslproxymachinecertificatechainfile">SSLProxyMachineCertificateChainFile</a></code>. Le premier
 certificat défini correspondant sera alors fourni comme réponse au cours de la
 négociation</p>

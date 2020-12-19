@@ -67,10 +67,10 @@ virtuel basé sur le nom approprié</a></li>
 
     <p>La sélection du serveur virtuel en fonction du nom s'opère en
     dehors de l'algorithme de sélection du serveur virtuel en fonction
-    de l'adresse IP, ce qui signifie que les recherches du point de vue
-    du nom du serveur ne s'effectuent que parmi le jeu de serveurs
+    de l'adresse IP, ce qui signifie que les comparaisons entre les noms d'hôtes
+    demandés et les noms d'hôtes configurés ne s'effectuent que parmi le jeu de serveurs
     virtuels pour lesquels la correspondance avec la paire adresse
-    IP/port est la plus exacte.</p>
+    IP/PORT est la plus exacte au niveau réseau.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -81,7 +81,8 @@ virtuel basé sur le nom approprié</a> <a title="Lien permanent" href="#alg" cl
     de serveur virtuel basée sur le nom est une résolution basée sur IP.
     La résolution de serveur virtuel basée sur le nom ne fait que
     choisir le serveur virtuel basé sur le nom le plus approprié, en se
-    limitant aux candidats qui conviennent le mieux du point de vue IP.
+    limitant aux candidats dont la correspondance est la meilleure (la plus
+    spécifique) du point de vue IP.
     La résolution basée sur IP est sans objet si l'on
     utilise un caractère générique (*) pour l'adresse IP dans
     toutes les directives VirtualHost.</p>
@@ -208,16 +209,24 @@ virtuel basé sur le nom approprié</a> <a title="Lien permanent" href="#alg" cl
     doit être correctement configuré pour lier ces noms à une
     adresse IP associée avec votre serveur.</p>
 
+    <p>En général, seuls les adresses IP des interfaces locales ou le caractère
+    générique '*' sont spécifiés au sein de la balise <code class="directive"><a href="../mod/core.html#virtualhost">&lt;virtualhost&gt;</a></code>, et les noms d'hôtes ne sont spécifiés
+    que dans les directives <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> ou
+    <code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code>. Lorsque le nom d'hôte est
+    spécifié au sein de la balise virtualhost, ses adresses sont résolues et
+    prises en compte pour la sélection du serveur virtuel basée sur IP ; le
+    couple nom d'hôte:port est aussi testé pour la sélection du serveur virtuel
+    à base de nom avant de tester ServerName et ServerAlias. L'utilisation de
+    noms d'hôtes au sein de la balise virtualhost est assez obscure, source
+    d'erreurs, et doit être évitée dans la mesure du possible.
+    </p>
+
     <p>La recherche du serveur virtuel à base de nom qui correspond au
     plus près à la requête s'effectue parmi les <code class="directive"><a href="../mod/core.html#virtualhost">&lt;virtualhost&gt;</a></code> selon leur
     ordre d'apparition dans le fichier de configuration. Le premier
     serveur virtuel dont le <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> ou le <code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code> correspond est utilisé, sans
     priorité particulière en cas de présence de caractères génériques
     (que ce soit pour le ServerName ou le ServerAlias).</p>
-
-    <p>La liste complète des noms dans la section <code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code> sont traités comme une
-    directive <code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code> sans
-    caractères génériques.</p>
 
     <p>Finalement, vous pouvez affiner la configuration des serveurs
     virtuels en plaçant d'autres directives à l'intérieur des sections
