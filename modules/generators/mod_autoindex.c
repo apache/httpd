@@ -73,6 +73,7 @@ module AP_MODULE_DECLARE_DATA autoindex_module;
 #define SHOW_FORBIDDEN      (1 << 18)
 #define ADDALTCLASS         (1 << 19)
 #define OPTION_UNSET        (1 << 20)
+#define JSON_INDEXING       (1 << 21)
 
 #define K_NOADJUST 0
 #define K_ADJUST 1
@@ -402,6 +403,9 @@ static const char *add_opts(cmd_parms *cmd, void *d, int argc, char *const argv[
         }
         else if (!strcasecmp(w, "AddAltClass")) {
             option = ADDALTCLASS;
+        }
+        else if (!strcasecmp(w, "JsonIndexing")) {
+            option = JSON_INDEXING;
         }
         else if (!strcasecmp(w, "None")) {
             if (action != '\0') {
@@ -1372,7 +1376,7 @@ static struct ent *make_autoindex_entry(const apr_finfo_t *dirent,
     p->version_sort = !!(autoindex_opts & VERSION_SORT);
     p->ignore_case = !!(autoindex_opts & IGNORE_CASE);
 
-    if (autoindex_opts & (FANCY_INDEXING | TABLE_INDEXING)) {
+    if (autoindex_opts & (FANCY_INDEXING | TABLE_INDEXING | JSON_INDEXING)) {
         p->lm = rr->finfo.mtime;
         if (dirent->filetype == APR_DIR) {
             if (autoindex_opts & FOLDERS_FIRST) {
@@ -1553,7 +1557,10 @@ static void output_directories(struct ent **ar, int n,
     memset(pad_scratch, ' ', name_width);
     pad_scratch[name_width] = '\0';
 
-    if (autoindex_opts & TABLE_INDEXING) {
+    if (autoindex_opts & JSON_INDEXING) {
+        ap_rputs("[", r);
+    }
+    else if (autoindex_opts & TABLE_INDEXING) {
         int cols = 1;
         if (d->style_sheet != NULL) {
             /* Emit table with style id */
@@ -1674,13 +1681,14 @@ static void output_directories(struct ent **ar, int n,
     }
 
     for (x = 0; x < n; x++) {
-        char *anchor, *t, *t2;
+        char *anchor, *t, *t2, *t_escaped_path;
         int nwidth;
 
         apr_pool_clear(scratch);
 
         t = ar[x]->name;
-        anchor = ap_escape_html(scratch, ap_os_escape_path(scratch, t, 0));
+        t_escaped_path = ap_os_escape_path(scratch, t, 0);
+        anchor = ap_escape_html(scratch, t_escaped_path);
 
         if (!x && t[0] == '/') {
             t2 = "Parent Directory";
@@ -1689,7 +1697,30 @@ static void output_directories(struct ent **ar, int n,
             t2 = t;
         }
 
-        if (autoindex_opts & TABLE_INDEXING) {
+        if (autoindex_opts & JSON_INDEXING) {
+            if (x > 0) {
+                ap_rvputs(r, ",[\"", t_escaped_path, "\"", NULL);
+            }
+            else {
+                ap_rvputs(r, "[\"", t_escaped_path, "\"", NULL);
+            }
+            if (!(autoindex_opts & SUPPRESS_LAST_MOD)) {
+                char buf[MAX_STRING_LEN];
+                if (ar[x]->lm != -1) {
+                    apr_time_exp_t ts;
+                    apr_time_exp_lt(&ts, ar[x]->lm);
+                    apr_strftime(buf, &rv, MAX_STRING_LEN,
+                                 ",\"%d-%b-%Y %H:%M\"",
+                                 &ts);
+                    ap_rputs(buf, r);
+                }
+            }
+            if (!(autoindex_opts & SUPPRESS_SIZE)) {
+                ap_rvputs(r, ",", apr_ltoa(scratch, ar[x]->size), NULL);
+            }
+            ap_rputs("]", r);
+        }
+        else if (autoindex_opts & TABLE_INDEXING) {
             /* Even/Odd rows for IndexStyleSheet */
             if (d->style_sheet != NULL) {
                 if (ar[x]->alt && (autoindex_opts & ADDALTCLASS)) {
@@ -1884,7 +1915,10 @@ static void output_directories(struct ent **ar, int n,
                       "</a></li>\n", NULL);
         }
     }
-    if (autoindex_opts & TABLE_INDEXING) {
+        if (autoindex_opts & JSON_INDEXING) {
+        ap_rvputs(r, "]", NULL);
+    }
+    else if (autoindex_opts & TABLE_INDEXING) {
         ap_rvputs(r, breakrow, "</table>\n", NULL);
     }
     else if (autoindex_opts & FANCY_INDEXING) {
@@ -2022,7 +2056,7 @@ static int index_directory(request_rec *r,
     apr_dir_t *thedir;
     apr_status_t status;
     int num_ent = 0, x;
-    struct ent *head, *p;
+    struct ent *head = NULL, *p = NULL;
     struct ent **ar = NULL;
     const char *qstring;
     apr_int32_t autoindex_opts = autoindex_conf->opts;
@@ -2118,20 +2152,25 @@ static int index_directory(request_rec *r,
                 qstring += qstring[3] ? 4 : 3;
             }
 
-            /* F= Output Format (0 plain, 1 fancy (pre), 2 table) */
+            /* F= Output Format (0 plain, 1 fancy (pre), 2 table, J json) */
             else if (   qstring[0] == 'F' && qstring[1] == '='
-                     && qstring[2] && strchr("012", qstring[2])
+                     && qstring[2] && strchr("012J", qstring[2])
                      && (   qstring[3] == '&' || qstring[3] == ';'
                          || !qstring[3])) {
                 if (qstring[2] == '0') {
-                    autoindex_opts &= ~(FANCY_INDEXING | TABLE_INDEXING);
+                    autoindex_opts &= ~(FANCY_INDEXING | TABLE_INDEXING | JSON_INDEXING);
                 }
                 else if (qstring[2] == '1') {
                     autoindex_opts = (autoindex_opts | FANCY_INDEXING)
-                        & ~TABLE_INDEXING;
+                        & ~TABLE_INDEXING
+                        & ~JSON_INDEXING;
                 }
                 else if (qstring[2] == '2') {
-                    autoindex_opts |= FANCY_INDEXING | TABLE_INDEXING;
+                    autoindex_opts = (autoindex_opts | FANCY_INDEXING | TABLE_INDEXING)
+                        & ~JSON_INDEXING;
+                }
+                else if (qstring[2] == 'J') {
+                    autoindex_opts |= FANCY_INDEXING | TABLE_INDEXING | JSON_INDEXING;
                 }
                 strcpy(fval, ";F= ");
                 fval[3] = qstring[2];
@@ -2200,17 +2239,18 @@ static int index_directory(request_rec *r,
     while (title_endp > title_name && *title_endp == '/') {
         *title_endp-- = '\0';
     }
-
-    emit_head(r, autoindex_conf->header,
+    if (!(autoindex_opts & JSON_INDEXING)) {
+        emit_head(r, autoindex_conf->header,
               autoindex_opts & SUPPRESS_PREAMBLE,
               autoindex_opts & EMIT_XHTML, title_name);
 
-    /*
-     * Since we don't know how many dir. entries there are, put them into a
-     * linked list and then arrayificate them so qsort can use them.
-     */
-    head = NULL;
-    p = make_parent_entry(autoindex_opts, autoindex_conf, r, keyid, direction);
+        /*
+         * Since we don't know how many dir. entries there are, put them into a
+         * linked list and then arrayificate them so qsort can use them.
+         */
+        head = NULL;
+        p = make_parent_entry(autoindex_opts, autoindex_conf, r, keyid, direction);
+    }
     if (p != NULL) {
         p->next = head;
         head = p;
@@ -2273,9 +2313,10 @@ static int index_directory(request_rec *r,
                        keyid, direction, colargs);
     apr_dir_close(thedir);
 
-    emit_tail(r, autoindex_conf->readme,
+    if (!(autoindex_opts & JSON_INDEXING)) {
+        emit_tail(r, autoindex_conf->readme,
               autoindex_opts & SUPPRESS_PREAMBLE);
-
+    }
     return 0;
 }
 
