@@ -25,8 +25,8 @@
                   xmlns="http://www.w3.org/1999/xhtml">
 
 <!--                                                                      -->
-<!-- three columns, select were the particular categories shall be        -->
-<!-- placed in. (order is irrelevant, they're placed in document order)   -->
+<!-- three columns, select where the particular categories shall be       -->
+<!-- placed. (order is irrelevant, they're placed in document order)      -->
 <!--                                                                      -->
 <xsl:variable name="indexpage-column1" select="'
     release
