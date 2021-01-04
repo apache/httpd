@@ -145,6 +145,32 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     Backport version for 2.4.x of patch:
      +1: jailletc36, giovanni, ylavic
 
+  *) mod_http2: thread safety with MPM prefork (mainly for ci..)
+     trunk patch: https://svn.apache.org/r1883704
+                  https://svn.apache.org/r1883707
+     2.4.x patch: svn merge -c 1883704,1883707 ^/httpd/httpd/trunk .
+     +1: ylavic, jorton, covener
+
+  *) core: fix c->client_ip for unix socket connections (e.g. proxy_fcgi)
+     trunk patch: https://svn.apache.org/r1883729
+     2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-uds_client_ip.patch
+     +1: ylavic, jorton, covener
+
+  *) mod_case_filter_in: fix memory leak.
+     trunk patch: https://svn.apache.org/r1883730
+     2.4.x patch: svn merge -c 1883730 ^/httpd/httpd/trunk .
+     +1: ylavic, jorton, covener
+
+  *) mod_proxy: pconf vs pchild consistency, and correctness in ONE_PROCESS mode
+     trunk patch: https://svn.apache.org/r1883744
+     2.4.x patch: svn merge -c 1883744 ^/httpd/httpd/trunk .
+     +1: ylavic, jorton, covener
+
+  *) mod_auth_digest: fix crash with ONE_PROCESS (debug) mode shutdown
+     trunk patch: https://svn.apache.org/r1883810
+     2.4.x patch: svn merge -c 1883810 ^/httpd/httpd/trunk .
+     +1: ylavic, jorton, covener
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -244,7 +270,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1843939
      2.4.x patch: http://people.apache.org/~ylavic/patches/2.4.x-core_output_filtering-2on5.patch
                   https://github.com/apache/httpd/pull/156
-     +1: ylavic,
+     +1: ylavic, covener
      ylavic: These core output filter changes are needed for the proxy
              tunneling loop to work properly/non-blocking (PR 158 below). They
              do not include the major filter setaside/reinstate changes from
@@ -260,7 +286,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1877728
      2.4.x patch: http://people.apache.org/~ylavic/patches/2.4.x-mod_proxy_http-override-3on5.patch
                   https://github.com/apache/httpd/pull/157
-     +1: ylavic,
+     +1: ylavic, covener
      ylavic: Besides ProxyErrorOverride individual status codes, merging now
              the non-functional changes in ap_proxy_http_process_response()
              around ProxyErrorOverride code helps reducing conflicts with the
@@ -283,7 +309,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1880200
      2.4.x patch: http://people.apache.org/~ylavic/patches/2.4.x-mod_proxy_http-upgrade-4on5.patch
                   https://github.com/apache/httpd/pull/158
-     +1: ylavic,
+     +1: ylavic, covener
      ylavic: All the changes to mod_proxy_wstunnel have been dropped for this
              backport proposal, the goal being to handle tunneling/upgrade in
              mod_proxy_http from now (replacing/obsoleting wstunnel).
@@ -295,38 +321,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1884070
      2.4.x patch: http://people.apache.org/~ylavic/patches/2.4.x-mod_proxy_fcgi-sendcl-5on5.patch
                   https://github.com/apache/httpd/pull/162
-     +1: ylavic,
+     +1: ylavic, covener
      ylavic: Long standing BZ (always send Content-Length, according to the CGI
              specs) which is addressed by reusing mod_proxy_http's spooling
              code (moved to proxy_util) in mod_proxy_fcgi. The user still needs
              to SetEnv proxy-sendcl for that (2.4 compat).
   [ End of series ]
-
-  *) mod_http2: thread safety with MPM prefork (mainly for ci..)
-     trunk patch: https://svn.apache.org/r1883704
-                  https://svn.apache.org/r1883707
-     2.4.x patch: svn merge -c 1883704,1883707 ^/httpd/httpd/trunk .
-     +1: ylavic, jorton, 
-
-  *) core: fix c->client_ip for unix socket connections (e.g. proxy_fcgi)
-     trunk patch: https://svn.apache.org/r1883729
-     2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-uds_client_ip.patch
-     +1: ylavic, jorton,
-
-  *) mod_case_filter_in: fix memory leak.
-     trunk patch: https://svn.apache.org/r1883730
-     2.4.x patch: svn merge -c 1883730 ^/httpd/httpd/trunk .
-     +1: ylavic, jorton, 
-
-  *) mod_proxy: pconf vs pchild consistency, and correctness in ONE_PROCESS mode
-     trunk patch: https://svn.apache.org/r1883744
-     2.4.x patch: svn merge -c 1883744 ^/httpd/httpd/trunk .
-     +1: ylavic, jorton, 
-
-  *) mod_auth_digest: fix crash with ONE_PROCESS (debug) mode shutdown
-     trunk patch: https://svn.apache.org/r1883810
-     2.4.x patch: svn merge -c 1883810 ^/httpd/httpd/trunk .
-     +1: ylavic, jorton, 
 
   *) core: Make writing the pidfile atomic to avoid startup failures
      after (e.g.) system crashes, but also races with multiple
@@ -336,7 +336,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1875240
                   https://svn.apache.org/r1877645
      2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/163.patch
-     +1: jorton,            
+     +1: jorton, covener            
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
