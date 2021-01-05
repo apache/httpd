@@ -138,13 +138,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) core: Avoid a core dump if 'AllowOverride nonfatal' is used in a configuration
-     file.
-     Trunk version of patch:
-        https://svn.apache.org/r1881311
-    Backport version for 2.4.x of patch:
-     +1: jailletc36, giovanni, ylavic
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
