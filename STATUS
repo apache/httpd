@@ -145,33 +145,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     Backport version for 2.4.x of patch:
      +1: jailletc36, giovanni, ylavic
 
-  *) mod_http2: thread safety with MPM prefork (mainly for ci..)
-     trunk patch: https://svn.apache.org/r1883704
-                  https://svn.apache.org/r1883707
-     2.4.x patch: svn merge -c 1883704,1883707 ^/httpd/httpd/trunk .
-     +1: ylavic, jorton, covener
-
-  *) core: fix c->client_ip for unix socket connections (e.g. proxy_fcgi)
-     trunk patch: https://svn.apache.org/r1883729
-     2.4.x patch: http://people.apache.org/~ylavic/patches/httpd-2.4.x-uds_client_ip.patch
-     +1: ylavic, jorton, covener
-
-  *) mod_case_filter_in: fix memory leak.
-     trunk patch: https://svn.apache.org/r1883730
-     2.4.x patch: svn merge -c 1883730 ^/httpd/httpd/trunk .
-     +1: ylavic, jorton, covener
-
-  *) mod_proxy: pconf vs pchild consistency, and correctness in ONE_PROCESS mode
-     trunk patch: https://svn.apache.org/r1883744
-     2.4.x patch: svn merge -c 1883744 ^/httpd/httpd/trunk .
-     +1: ylavic, jorton, covener
-
-  *) mod_auth_digest: fix crash with ONE_PROCESS (debug) mode shutdown
-     trunk patch: https://svn.apache.org/r1883810
-     2.4.x patch: svn merge -c 1883810 ^/httpd/httpd/trunk .
-     +1: ylavic, jorton, covener
-
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
