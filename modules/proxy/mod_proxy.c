@@ -3018,12 +3018,13 @@ static void child_init(apr_pool_t *p, server_rec *s)
          */
         worker = (proxy_worker *)conf->workers->elts;
         for (i = 0; i < conf->workers->nelts; i++, worker++) {
-            ap_proxy_initialize_worker(worker, s, conf->pool);
+            ap_proxy_initialize_worker(worker, s, p);
         }
         /* Create and initialize forward worker if defined */
         if (conf->req_set && conf->req) {
             proxy_worker *forward;
-            ap_proxy_define_worker(p, &forward, NULL, NULL, "http://www.apache.org", 0);
+            ap_proxy_define_worker(conf->pool, &forward, NULL, NULL,
+                                   "http://www.apache.org", 0);
             conf->forward = forward;
             PROXY_STRNCPY(conf->forward->s->name,     "proxy:forward");
             PROXY_STRNCPY(conf->forward->s->hostname, "*"); /* for compatibility */
@@ -3037,12 +3038,13 @@ static void child_init(apr_pool_t *p, server_rec *s)
             conf->forward->s->status |= PROXY_WORKER_IGNORE_ERRORS;
             /* Mark as the "generic" worker */
             conf->forward->s->status |= PROXY_WORKER_GENERIC;
-            ap_proxy_initialize_worker(conf->forward, s, conf->pool);
+            ap_proxy_initialize_worker(conf->forward, s, p);
             /* Disable address cache for generic forward worker */
             conf->forward->s->is_address_reusable = 0;
         }
         if (!reverse) {
-            ap_proxy_define_worker(p, &reverse, NULL, NULL, "http://www.apache.org", 0);
+            ap_proxy_define_worker(conf->pool, &reverse, NULL, NULL,
+                                   "http://www.apache.org", 0);
             PROXY_STRNCPY(reverse->s->name,     "proxy:reverse");
             PROXY_STRNCPY(reverse->s->hostname, "*"); /* for compatibility */
             PROXY_STRNCPY(reverse->s->hostname_ex, "*");
@@ -3056,7 +3058,7 @@ static void child_init(apr_pool_t *p, server_rec *s)
             /* Mark as the "generic" worker */
             reverse->s->status |= PROXY_WORKER_GENERIC;
             conf->reverse = reverse;
-            ap_proxy_initialize_worker(conf->reverse, s, conf->pool);
+            ap_proxy_initialize_worker(conf->reverse, s, p);
             /* Disable address cache for generic reverse worker */
             reverse->s->is_address_reusable = 0;
         }

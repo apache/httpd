@@ -1494,6 +1494,8 @@ static void init_conn_pool(apr_pool_t *p, proxy_worker *worker)
     cp->pool = pool;
     cp->dns_pool = dns_pool;
     worker->cp = cp;
+
+    apr_pool_pre_cleanup_register(p, worker, conn_pool_cleanup);
 }
 
 PROXY_DECLARE(int) ap_proxy_connection_reusable(proxy_conn_rec *conn)
@@ -2107,9 +2109,6 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
                                         worker->s->hmax, worker->s->ttl,
                                         connection_constructor, connection_destructor,
                                         worker, worker->cp->pool);
-
-                apr_pool_pre_cleanup_register(worker->cp->pool, worker,
-                                              conn_pool_cleanup);
 
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00930)
                     "initialized pool in child %" APR_PID_T_FMT " for (%s) min=%d max=%d smax=%d",
