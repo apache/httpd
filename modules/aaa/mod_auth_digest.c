@@ -262,6 +262,12 @@ static int initialize_tables(server_rec *s, apr_pool_t *ctx)
 
     /* Create the shared memory segment */
 
+    client_shm = NULL;
+    client_rmm = NULL;
+    client_lock = NULL;
+    opaque_lock = NULL;
+    client_list = NULL;
+
     /*
      * Create a unique filename using our pid. This information is
      * stashed in the global variable so the children inherit it.
@@ -408,8 +414,6 @@ static int initialize_module(apr_pool_t *p, apr_pool_t *plog,
     if (initialize_tables(s, p) != OK) {
         return !OK;
     }
-    /* Call cleanup_tables on exit or restart */
-    apr_pool_cleanup_register(p, NULL, cleanup_tables, apr_pool_cleanup_null);
 #endif  /* APR_HAS_SHARED_MEMORY */
     return OK;
 }
