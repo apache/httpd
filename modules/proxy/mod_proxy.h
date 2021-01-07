@@ -733,11 +733,13 @@ PROXY_DECLARE(char *) ap_proxy_worker_name(apr_pool_t *p,
  * @param p       memory pool used for displaying worker name
  * @param worker  the worker
  * @param upgrade the Upgrade header to match
+ * @param dflt    default protocol (NULL for none)
  * @return        1 (true) or 0 (false)
  */
 PROXY_DECLARE(int) ap_proxy_worker_can_upgrade(apr_pool_t *p,
                                                const proxy_worker *worker,
-                                               const char *upgrade);
+                                               const char *upgrade,
+                                               const char *dflt);
 
 /**
  * Get the worker from proxy configuration

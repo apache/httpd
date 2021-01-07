@@ -1,0 +1,4 @@
+  *) mod_proxy_wstunnel: Leave Upgrade requests handling to mod_proxy_http,
+     allowing for (non-)Upgrade negotiation with the origin server.
+     [Yann Ylavic]
+
