@@ -93,6 +93,13 @@ if ! test -v SKIP_TESTING; then
     rm -rf $HOME/root/framework
     # Make a shallow clone of httpd-tests git repo.
     git clone --depth=1 https://github.com/apache/httpd-tests.git test/perl-framework
+    # TODO: remove block below when upstream httpd-test is adjusted
+    (
+        cd test/perl-framework
+        git remote add andrii-suse https://github.com/andrii-suse/httpd-tests.git
+        git fetch andrii-suse
+        git cherry-pick c7f69e9ab4d08
+    )
 fi
 
 # For LDAP testing, run slapd listening on port 8389 and populate the
