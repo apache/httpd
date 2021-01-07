@@ -35,3 +35,9 @@ jobs:
           cd test/integration/environs && ./002-autoindex-format-2.sh
         env:
           ENVIRON_DOCKERFILE: Dockerfile.environs.${{ matrix.docker-baseimage }}
+
+      - name: Test 002-autoindex-format-J.t
+        run: |
+          cd test/integration/environs && ./002-autoindex-format-J.sh
+        env:
+          ENVIRON_DOCKERFILE: Dockerfile.environs.${{ matrix.docker-baseimage }}
