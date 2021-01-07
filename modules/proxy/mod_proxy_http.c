@@ -61,7 +61,7 @@ static const char *get_url_scheme(const char **url, int *is_ssl)
                 return "ws";
             }
             if (apr_tolower(u[2]) == 's' && u[3] == ':') {
-                *is_ssl = 0;
+                *is_ssl = 1;
                 *url = u + 4;
                 return "wss";
             }
