@@ -409,17 +409,8 @@ cleanup:
 static int proxy_wstunnel_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                                       apr_pool_t *ptemp, server_rec *s)
 {
-    fallback_to_mod_proxy_http = 0;
-    if (ap_state_query(AP_SQ_MAIN_STATE) != AP_SQ_MS_CREATE_PRE_CONFIG) {
-        apr_size_t i = 0;
-        const module *mod;
-        while ((mod = ap_loaded_modules[i++])) {
-            if (strcmp(mod->name, "mod_proxy_http.c") == 0) {
-                fallback_to_mod_proxy_http = 1;
-                break;
-            }
-        }
-    }
+    fallback_to_mod_proxy_http =
+        (ap_find_linked_module("mod_proxy_http.c") != NULL);
 
     return OK;
 }
