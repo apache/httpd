@@ -1656,13 +1656,19 @@ PROXY_DECLARE(char *) ap_proxy_worker_name(apr_pool_t *p,
 
 PROXY_DECLARE(int) ap_proxy_worker_can_upgrade(apr_pool_t *p,
                                                const proxy_worker *worker,
-                                               const char *upgrade)
+                                               const char *upgrade,
+                                               const char *dflt)
 {
+    /* Find in worker->s->upgrade list (if any) */
     const char *worker_upgrade = worker->s->upgrade;
-    return (*worker_upgrade
-            && (strcmp(worker_upgrade, "*") == 0
+    if (*worker_upgrade) {
+        return (strcmp(worker_upgrade, "*") == 0
                 || ap_cstr_casecmp(worker_upgrade, upgrade) == 0
-                || ap_find_token(p, worker_upgrade, upgrade)));
+                || ap_find_token(p, worker_upgrade, upgrade));
+    }
+
+    /* Compare to the provided default (if any) */
+    return (dflt && ap_cstr_casecmp(dflt, upgrade) == 0);
 }
 
 /*

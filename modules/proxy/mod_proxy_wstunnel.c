@@ -15,6 +15,7 @@
  */
 
 #include "mod_proxy.h"
+#include "http_config.h"
 #include "ap_mpm.h"
 
 module AP_MODULE_DECLARE_DATA proxy_wstunnel_module;
@@ -32,6 +33,8 @@ typedef struct ws_baton_t {
     apr_pool_t *async_pool;
     const char *scheme;
 } ws_baton_t;
+
+static int fallback_to_mod_proxy_http;
 
 static void proxy_wstunnel_callback(void *b);
 
@@ -108,6 +111,11 @@ static void proxy_wstunnel_callback(void *b)
 
 static int proxy_wstunnel_check_trans(request_rec *r, const char *url)
 {
+    if (fallback_to_mod_proxy_http) {
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r, "check_trans fallback");
+        return DECLINED;
+    }
+
     if (ap_cstr_casecmpn(url, "ws:", 3) != 0
             && ap_cstr_casecmpn(url, "wss:", 4) != 0) {
         return DECLINED;
@@ -137,6 +145,11 @@ static int proxy_wstunnel_canon(request_rec *r, char *url)
     const char *err;
     char *scheme;
     apr_port_t port, def_port;
+
+    if (fallback_to_mod_proxy_http) {
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r, "canon fallback");
+        return DECLINED;
+    }
 
     /* ap_port_of_scheme() */
     if (ap_cstr_casecmpn(url, "ws:", 3) == 0) {
@@ -325,6 +338,11 @@ static int proxy_wstunnel_handler(request_rec *r, proxy_worker *worker,
     apr_uri_t *uri;
     int is_ssl = 0;
 
+    if (fallback_to_mod_proxy_http) {
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r, "handler fallback");
+        return DECLINED;
+    }
+
     if (ap_cstr_casecmpn(url, "wss:", 4) == 0) {
         scheme = "WSS";
         is_ssl = 1;
@@ -333,15 +351,15 @@ static int proxy_wstunnel_handler(request_rec *r, proxy_worker *worker,
         scheme = "WS";
     }
     else {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02450) "declining URL %s", url);
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02450)
+                      "declining URL %s", url);
         return DECLINED;
     }
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, "serving URL %s", url);
 
     upgrade = apr_table_get(r->headers_in, "Upgrade");
-    if (!upgrade || (*worker->s->upgrade &&
-                     !ap_proxy_worker_can_upgrade(p, worker, upgrade))
-                 || (!*worker->s->upgrade &&
-                     ap_cstr_casecmp(upgrade, "WebSocket") != 0)) {
+    if (!upgrade || !ap_proxy_worker_can_upgrade(p, worker, upgrade,
+                                                 "WebSocket")) {
         const char *worker_upgrade = *worker->s->upgrade ? worker->s->upgrade
                                                          : "WebSocket";
         ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02900)
@@ -431,6 +449,24 @@ static const char * proxyws_set_asynch_delay(cmd_parms *cmd, void *conf, const c
     return NULL;
 }
 
+static int proxy_wstunnel_post_config(apr_pool_t *pconf, apr_pool_t *plog,
+                                      apr_pool_t *ptemp, server_rec *s)
+{
+    fallback_to_mod_proxy_http = 0;
+    if (ap_state_query(AP_SQ_MAIN_STATE) != AP_SQ_MS_CREATE_PRE_CONFIG) {
+        apr_size_t i = 0;
+        const module *mod;
+        while ((mod = ap_loaded_modules[i++])) {
+            if (strcmp(mod->name, "mod_proxy_http.c") == 0) {
+                fallback_to_mod_proxy_http = 1;
+                break;
+            }
+        }
+    }
+
+    return OK;
+}
+
 static const command_rec ws_proxy_cmds[] =
 {
     AP_INIT_TAKE1("ProxyWebsocketIdleTimeout", proxyws_set_idle, NULL,
@@ -443,9 +479,10 @@ static const command_rec ws_proxy_cmds[] =
     {NULL}
 };
 
-static void ap_proxy_http_register_hook(apr_pool_t *p)
+static void ws_proxy_hooks(apr_pool_t *p)
 {
     static const char * const aszSucc[] = { "mod_proxy_http.c", NULL};
+    ap_hook_post_config(proxy_wstunnel_post_config, NULL, NULL, APR_HOOK_MIDDLE);
     proxy_hook_scheme_handler(proxy_wstunnel_handler, NULL, aszSucc, APR_HOOK_FIRST);
     proxy_hook_check_trans(proxy_wstunnel_check_trans, NULL, aszSucc, APR_HOOK_MIDDLE);
     proxy_hook_canon_handler(proxy_wstunnel_canon, NULL, aszSucc, APR_HOOK_FIRST);
@@ -458,5 +495,5 @@ AP_DECLARE_MODULE(proxy_wstunnel) = {
     NULL,                       /* create per-server config structure */
     NULL,                       /* merge per-server config structures */
     ws_proxy_cmds,              /* command apr_table_t */
-    ap_proxy_http_register_hook /* register hooks */
+    ws_proxy_hooks              /* register hooks */
 };

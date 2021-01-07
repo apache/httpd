@@ -28,37 +28,71 @@ static int (*ap_proxy_clear_connection_fn)(request_rec *r, apr_table_t *headers)
 static apr_status_t ap_proxygetline(apr_bucket_brigade *bb, char *s, int n,
                                     request_rec *r, int flags, int *read);
 
+static const char *get_url_scheme(const char **url, int *is_ssl)
+{
+    const char *u = *url;
+
+    switch (u[0]) {
+    case 'h':
+    case 'H':
+        if (strncasecmp(u + 1, "ttp", 3) == 0) {
+            if (u[4] == ':') {
+                *is_ssl = 0;
+                *url = u + 5;
+                return "http";
+            }
+            if (apr_tolower(u[4]) == 's' && u[5] == ':') {
+                *is_ssl = 1;
+                *url = u + 6;
+                return "https";
+            }
+        }
+        break;
+
+    case 'w':
+    case 'W':
+        if (apr_tolower(u[1]) == 's') {
+            if (u[2] == ':') {
+                *is_ssl = 0;
+                *url = u + 3;
+                return "ws";
+            }
+            if (apr_tolower(u[2]) == 's' && u[3] == ':') {
+                *is_ssl = 0;
+                *url = u + 4;
+                return "wss";
+            }
+        }
+        break;
+    }
+
+    *is_ssl = 0;
+    return NULL;
+}
 
 /*
  * Canonicalise http-like URLs.
  *  scheme is the scheme for the URL
  *  url    is the URL starting with the first '/'
- *  def_port is the default port for this scheme.
  */
 static int proxy_http_canon(request_rec *r, char *url)
 {
+    const char *base_url = url;
     char *host, *path, sport[7];
     char *search = NULL;
     const char *err;
     const char *scheme;
     apr_port_t port, def_port;
+    int is_ssl = 0;
 
-    /* ap_port_of_scheme() */
-    if (ap_cstr_casecmpn(url, "http:", 5) == 0) {
-        url += 5;
-        scheme = "http";
-    }
-    else if (ap_cstr_casecmpn(url, "https:", 6) == 0) {
-        url += 6;
-        scheme = "https";
-    }
-    else {
+    scheme = get_url_scheme((const char **)&url, &is_ssl);
+    if (!scheme) {
         return DECLINED;
     }
-    port = def_port = ap_proxy_port_of_scheme(scheme);
+    port = def_port = (is_ssl) ? DEFAULT_HTTPS_PORT : DEFAULT_HTTP_PORT;
 
     ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
-                  "HTTP: canonicalising URL %s", url);
+                  "HTTP: canonicalising URL %s", base_url);
 
     /* do syntatic check.
      * We break the URL into host, port, path, search
@@ -66,7 +100,7 @@ static int proxy_http_canon(request_rec *r, char *url)
     err = ap_proxy_canon_netloc(r->pool, &url, NULL, NULL, &host, &port);
     if (err) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01083)
-                      "error parsing URL %s: %s", url, err);
+                      "error parsing URL %s: %s", base_url, err);
         return HTTP_BAD_REQUEST;
     }
 
@@ -106,8 +140,9 @@ static int proxy_http_canon(request_rec *r, char *url)
     if (ap_strchr_c(host, ':')) { /* if literal IPv6 address */
         host = apr_pstrcat(r->pool, "[", host, "]", NULL);
     }
+
     r->filename = apr_pstrcat(r->pool, "proxy:", scheme, "://", host, sport,
-            "/", path, (search) ? "?" : "", (search) ? search : "", NULL);
+                              "/", path, (search) ? "?" : "", search, NULL);
     return OK;
 }
 
@@ -1568,7 +1603,9 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
          * may be an HTTP_UPGRADE_REQUIRED response or some other status where
          * Upgrade makes sense to negotiate the protocol by other means.
          */
-        if (upgrade && ap_proxy_worker_can_upgrade(p, worker, upgrade)) {
+        if (upgrade && ap_proxy_worker_can_upgrade(p, worker, upgrade,
+                                                   (*req->proto == 'w')
+                                                   ? "WebSocket" : NULL)) {
             apr_table_setn(r->headers_out, "Connection", "Upgrade");
             apr_table_setn(r->headers_out, "Upgrade", apr_pstrdup(p, upgrade));
         }
@@ -1840,9 +1877,8 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
                               apr_port_t proxyport)
 {
     int status;
-    char *scheme;
-    const char *proxy_function;
-    const char *u;
+    const char *scheme;
+    const char *u = url;
     proxy_http_req_t *req = NULL;
     proxy_conn_rec *backend = NULL;
     apr_bucket_brigade *input_brigade = NULL;
@@ -1860,41 +1896,31 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
     apr_pool_t *p = r->pool;
     apr_uri_t *uri;
 
-    /* find the scheme */
-    u = strchr(url, ':');
-    if (u == NULL || u[1] != '/' || u[2] != '/' || u[3] == '\0')
-        return DECLINED;
-    if ((u - url) > 14)
-        return HTTP_BAD_REQUEST;
-    scheme = apr_pstrmemdup(p, url, u - url);
-    /* scheme is lowercase */
-    ap_str_tolower(scheme);
-    /* is it for us? */
-    if (strcmp(scheme, "https") == 0) {
-        if (!ap_proxy_ssl_enable(NULL)) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01112)
-                          "HTTPS: declining URL %s (mod_ssl not configured?)",
-                          url);
-            return DECLINED;
+    scheme = get_url_scheme(&u, &is_ssl);
+    if (!scheme && proxyname && strncasecmp(url, "ftp:", 4) == 0) {
+        u = url + 4;
+        scheme = "ftp";
+        is_ssl = 0;
+    }
+    if (!scheme || u[0] != '/' || u[1] != '/' || u[2] == '\0') {
+        if (!scheme && (u = strchr(url, ':')) && (u - url) > 14) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10262)
+                          "overlong proxy URL scheme in %s", url);
+            return HTTP_BAD_REQUEST;
         }
-        is_ssl = 1;
-        proxy_function = "HTTPS";
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01113)
+                      "HTTP: declining URL %s", url);
+        return DECLINED; /* only interested in HTTP, WS or FTP via proxy */
     }
-    else if (!(strcmp(scheme, "http") == 0 || (strcmp(scheme, "ftp") == 0 && proxyname))) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01113) "HTTP: declining URL %s",
-                      url);
-        return DECLINED; /* only interested in HTTP, or FTP via proxy */
-    }
-    else {
-        if (*scheme == 'h')
-            proxy_function = "HTTP";
-        else
-            proxy_function = "FTP";
+    if (is_ssl && !ap_proxy_ssl_enable(NULL)) {
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01112)
+                      "HTTP: declining URL %s (mod_ssl not configured?)", url);
+        return DECLINED;
     }
     ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, "HTTP: serving URL %s", url);
 
     /* create space for state information */
-    if ((status = ap_proxy_acquire_connection(proxy_function, &backend,
+    if ((status = ap_proxy_acquire_connection(scheme, &backend,
                                               worker, r->server)) != OK) {
         return status;
     }
@@ -1910,7 +1936,7 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
     req->dconf = dconf;
     req->worker = worker;
     req->backend = backend;
-    req->proto = proxy_function;
+    req->proto = scheme;
     req->bucket_alloc = c->bucket_alloc;
     req->can_go_async = (mpm_can_poll &&
                          dconf->async_delay_set &&
@@ -1921,10 +1947,14 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
     if (apr_table_get(r->subprocess_env, "force-proxy-request-1.0")) {
         req->force10 = 1;
     }
-    else if (*worker->s->upgrade) {
-        /* Forward Upgrade header if it matches the configured one(s). */
+    else if (*worker->s->upgrade || *req->proto == 'w') {
+        /* Forward Upgrade header if it matches the configured one(s),
+         * the default being "WebSocket" for ws[s] schemes.
+         */
         const char *upgrade = apr_table_get(r->headers_in, "Upgrade");
-        if (upgrade && ap_proxy_worker_can_upgrade(p, worker, upgrade)) {
+        if (upgrade && ap_proxy_worker_can_upgrade(p, worker, upgrade,
+                                                   (*req->proto == 'w')
+                                                   ? "WebSocket" : NULL)) {
             req->upgrade = upgrade;
         }
     }
@@ -2046,9 +2076,9 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
         }
 
         /* Step Two: Make the Connection */
-        if (ap_proxy_check_connection(proxy_function, backend, r->server, 1,
+        if (ap_proxy_check_connection(scheme, backend, r->server, 1,
                                       PROXY_CHECK_CONN_EMPTY)
-                && ap_proxy_connect_backend(proxy_function, backend, worker,
+                && ap_proxy_connect_backend(scheme, backend, worker,
                                             r->server)) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01114)
                           "HTTP: failed to make connection to backend: %s",
@@ -2058,8 +2088,7 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
         }
 
         /* Step Three: Create conn_rec */
-        if ((status = ap_proxy_connection_create_ex(proxy_function,
-                                                    backend, r)) != OK)
+        if ((status = ap_proxy_connection_create_ex(scheme, backend, r)) != OK)
             break;
         req->origin = backend->connection;
 
@@ -2104,8 +2133,7 @@ cleanup:
     if (req->backend) {
         if (status != OK)
             req->backend->close = 1;
-        ap_proxy_release_connection(proxy_function, req->backend,
-                                    r->server);
+        ap_proxy_release_connection(scheme, req->backend, r->server);
     }
     return status;
 }
