@@ -327,7 +327,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           http://svn.apache.org/r1882399
           http://svn.apache.org/r1883414
      2.4.x patch: svn merge -c 1837388,1876549,1877551,1882210,1882399,1883414 ^/httpd/httpd/trunk . 
-     +1: jailletc36
+     +1: jailletc36, ylavic
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
