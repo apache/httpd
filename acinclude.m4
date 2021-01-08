@@ -593,9 +593,9 @@ AC_DEFUN([APACHE_CHECK_OPENSSL],[
 #if OPENSSL_VERSION_NUMBER < 0x0090801f
 #error "Unsupported OpenSSL version " OPENSSL_VERSION_TEXT
 #endif],
-      [AC_MSG_RESULT(OK)
+      [AC_MSG_RESULT(yes)
        ac_cv_openssl=yes],
-      [AC_MSG_RESULT(FAILED)])
+      [AC_MSG_RESULT(no)])
 
     if test "x$ac_cv_openssl" = "xyes"; then
       ap_openssl_libs="${ap_openssl_libs:--lssl -lcrypto} `$apr_config --libs`"
