@@ -329,6 +329,32 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1837388,1876549,1877551,1882210,1882399,1883414 ^/httpd/httpd/trunk . 
      +1: jailletc36, ylavic
 
+  *) Easy patches: synch 2.4.x and trunk
+        - mod_http2: Fix ascii art
+        - mod_http2: fix some dox comments
+        - mod_dav: Don't call memcpy(,NULL,0)
+        - mod_ssl: Pass base_server in OpenSSL init log message 
+        - .gdbinit: tab to space
+        - mod_so: don't try to load modules from a NULL path
+        - mod_cache_file/mod_lua: Add missing "const" or "static const" qualifiers
+                                  in some command_rec definitions
+        - mod_lua: Fix compilation error if APR_HAS_THREADS is not defined
+        - core/log: fix an harmless warning spoted by gcc 10
+        - mod_ssl: update comment
+     trunk patch:
+          http://svn.apache.org/r1810233
+          http://svn.apache.org/r1827530
+          http://svn.apache.org/r1874144
+          http://svn.apache.org/r1877262
+          http://svn.apache.org/r1878263
+          http://svn.apache.org/r1880461
+          http://svn.apache.org/r1882053
+          http://svn.apache.org/r1882060
+          http://svn.apache.org/r1883452
+          http://svn.apache.org/r1884551
+     2.4.x patch: svn merge -c 1810233,1827530,1874144,1877262,1878263,1880461,1882053,1882060,1883452,1884551 ^/httpd/httpd/trunk .
+     +1: jailletc36
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
