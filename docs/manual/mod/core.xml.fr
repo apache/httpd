@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1884304 -->
+<!-- English Revision: 1885075 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -4799,18 +4799,18 @@ elle-même possède plus de 63 caractères.</description>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p>Avec <code>ExtendedStatus On</code>, mod_status affiche la
-    véritable requête en cours de traitement. Pour des raisons
-    historiques, seuls 63 caractères de la requête sont réellement
-    stockés à des fins d'affichage. Cette directive permet de déterminer
-    si ce sont les 63 premiers caractères qui seront stockés (c'est le
-    comportement par défaut),
-    ou si ce sont les 63 derniers. Ceci ne s'applique bien entendu que
-    si la taille de la requête est de 64 caractères ou plus.</p>
+    <p>Avec <code>ExtendedStatus On</code>, <module>mod_status</module> affiche
+    la véritable requête en cours de traitement. Pour des raisons historiques,
+    seuls 63 caractères de la requête sont réellement stockés à des fins
+    d'affichage. Cette directive permet de déterminer si ce sont les 63 premiers
+    caractères qui seront stockés (c'est le comportement par défaut), ou si ce
+    sont les 63 derniers. Ceci ne s'applique bien entendu que si la taille de la
+    requête est de 64 caractères ou plus.</p>
 
-    <p>Si Apache httpd traite la requête <code
-    >GET&nbsp;/disque1/stockage/apache/htdocs/images/rep-images1/nourriture/pommes.jpg&nbsp;HTTP/1.1</code>
-    , l'affichage de la requête par mod_status se présentera comme suit :
+    <p>Si Apache httpd traite la requête
+    <code>GET&nbsp;/disque1/stockage/apache/htdocs/images/rep-images1/nourriture/pommes.jpg&nbsp;HTTP/1.1</code>
+    , l'affichage de la requête par <module>mod_status</module> se présentera
+    comme suit :
     </p>
 
     <table border="1">
