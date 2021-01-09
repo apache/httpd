@@ -4811,17 +4811,18 @@ elle-même possède plus de 63 caractères.</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Noyau httpd</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
-    <p>Avec <code>ExtendedStatus On</code>, mod_status affiche la
-    véritable requête en cours de traitement. Pour des raisons
-    historiques, seuls 63 caractères de la requête sont réellement
-    stockés à des fins d'affichage. Cette directive permet de déterminer
-    si ce sont les 63 premiers caractères qui seront stockés (c'est le
-    comportement par défaut),
-    ou si ce sont les 63 derniers. Ceci ne s'applique bien entendu que
-    si la taille de la requête est de 64 caractères ou plus.</p>
+    <p>Avec <code>ExtendedStatus On</code>, <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> affiche
+    la véritable requête en cours de traitement. Pour des raisons historiques,
+    seuls 63 caractères de la requête sont réellement stockés à des fins
+    d'affichage. Cette directive permet de déterminer si ce sont les 63 premiers
+    caractères qui seront stockés (c'est le comportement par défaut), ou si ce
+    sont les 63 derniers. Ceci ne s'applique bien entendu que si la taille de la
+    requête est de 64 caractères ou plus.</p>
 
-    <p>Si Apache httpd traite la requête <code>GET&nbsp;/disque1/stockage/apache/htdocs/images/rep-images1/nourriture/pommes.jpg&nbsp;HTTP/1.1</code>
-    , l'affichage de la requête par mod_status se présentera comme suit :
+    <p>Si Apache httpd traite la requête
+    <code>GET&nbsp;/disque1/stockage/apache/htdocs/images/rep-images1/nourriture/pommes.jpg&nbsp;HTTP/1.1</code>
+    , l'affichage de la requête par <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> se présentera
+    comme suit :
     </p>
 
     <table class="bordered">
