@@ -355,6 +355,27 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1810233,1827530,1874144,1877262,1878263,1880461,1882053,1882060,1883452,1884551 ^/httpd/httpd/trunk .
      +1: jailletc36
 
+  *) Synch 2.4.x and trunk
+         When ap_cstr_casecmp[n] have been introduced, in r1747469, it has introduced
+         many differences between 2.4.x and trunk.
+         Direct backporting was not that easy because:
+            - it was initialy introduced as ap_casecmpstr[n] with several patches
+            - it touched some files that were not in 2.4.x branch
+         Later, parts of it have already been backported.
+         The proposed patch try to clean all this.
+         I've done my best to remove parts that rely on code that has not been
+         been backported in 2.4.x yet (r1610674 for example). Should it be done
+         one day, leaving it as-is can ease the backport.
+         To ease the review, a few greps:
+             grep "^-.*strcasecmp"          r1747469.diff | wc -l   --> 233
+             grep "^+.*ap_cstr_casecmp[^n]" r1747469.diff | wc -l   --> 233
+             grep "^-.*strncasecmp"         r1747469.diff | wc -l   --> 51
+             grep "^+.*ap_cstr_casecmpn"    r1747469.diff | wc -l   --> 51
+         It has been compile tested and, unless I've missed something, should be
+         compatible with the huge Yann's serie above.
+     2.4.x patch: http://home.apache.org/~jailletc36/r1747469.diff
+     +1: jailletc36
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
