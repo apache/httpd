@@ -353,7 +353,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           http://svn.apache.org/r1883452
           http://svn.apache.org/r1884551
      2.4.x patch: svn merge -c 1810233,1827530,1874144,1877262,1878263,1880461,1882053,1882060,1883452,1884551 ^/httpd/httpd/trunk .
-     +1: jailletc36
+     +1: jailletc36, jorton, 
 
   *) Synch 2.4.x and trunk
          When ap_cstr_casecmp[n] have been introduced, in r1747469, it has introduced
