@@ -4105,10 +4105,6 @@ directory</description>
        to apply protocol specific optimizations with the
        <directive module="core">AcceptFilter</directive> directive.</p>
 
-    <p>You only need to set the protocol if you are running on non-standard ports;
-       otherwise, <code>https</code> is assumed for port 443 and <code>http</code> 
-       for all other ports.</p>
-
     <p>For example, if you are running <code>https</code> on a non-standard port,
        specify the protocol explicitly:</p>
 
