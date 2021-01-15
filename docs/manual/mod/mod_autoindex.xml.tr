@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1874169:1883419 (outdated) -->
+<!-- English Revision: 1883419 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -144,31 +144,32 @@ yaptığı gibi dizin içeriğini listeler.</description>
       <module>mod_autoindex</module> tarafından son argüman olarak ele
       alınacak ve çözümleme işlemi o noktada duracaktır.</p>
 
-    <example><pre>
-&lt;form action="" method="get">
-  &lt;input type="text" name="P" value="*" /> ile eşleşen
-  &lt;select name="C">
-    &lt;option value="N" selected="selected">isme&lt;/option>
-    &lt;option value="M"> değişiklik tarihine&lt;/option>
-    &lt;option value="S"> boyuta&lt;/option>
-    &lt;option value="D"> açıklamaya&lt;/option>
-  &lt;/select> göre
-  &lt;select name="O">
-    &lt;option value="A" selected="selected"> artan&lt;/option>
-    &lt;option value="D"> azalan&lt;/option>
-  &lt;/select>
-  &lt;select name="V">
-    &lt;option value="0" selected="selected">normal&lt;/option>
-    &lt;option value="1"> sürümlü&lt;/option>
-  &lt;/select> sıralamayla bir
-  &lt;select name="F">
-    &lt;option value="0"> basit liste&lt;/option>
-    &lt;option value="1" selected="selected"> süslü liste&lt;/option>
-    &lt;option value="2"> tablolu liste&lt;/option>
-  &lt;/select>
-  &lt;input type="submit" name="X" value="Göster" />
-&lt;/form></pre>
-    </example>
+    <example><title>Örnek</title>
+        <highlight language="html">
+&lt;form action="" method="get"&gt;
+   &lt;input type="text" name="P" value="*" /&gt; ile eşleşen
+   &lt;select name="C"&gt;
+       &lt;option value="N" selected="selected"&gt;isme&lt;/option&gt;
+       &lt;option value="M"&gt; değişiklik tarihine&lt;/option&gt;
+       &lt;option value="S"&gt; boyuta&lt;/option&gt;
+       &lt;option value="D"&gt; açıklamaya&lt;/option&gt;
+   &lt;/select> göre
+   &lt;select name="O"&gt;
+       &lt;option value="A" selected="selected"&gt; artan&lt;/option&gt;
+       &lt;option value="D"&gt; azalan&lt;/option&gt;
+   &lt;/select&gt;
+   &lt;select name="V"&gt;
+       &lt;option value="0" selected="selected"&gt;normal&lt;/option&gt;
+       &lt;option value="1"&gt; sürümlü&lt;/option&gt;
+   &lt;/select> sıralamayla bir
+   &lt;select name="F"&gt;
+       &lt;option value="0"&gt; basit liste&lt;/option&gt;
+       &lt;option value="1" selected="selected"&gt; süslü liste&lt;/option&gt;
+       &lt;option value="2"&gt; tablolu liste&lt;/option&gt;
+   &lt;/select>
+   &lt;input type="submit" name="X" value="Göster" /&gt;
+&lt;/form&gt;
+    </highlight></example>
 
 </section>
 
@@ -560,8 +561,8 @@ IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t
 
 <usage>
     <p>Bu yönerge, diğer yapılandırma bölümlerince bir şekilde miras alınmayan
-      ve <directive>IndexIgnore</directive> tarafından yoksayılan dosyaları
-      kaldırır. </p>
+      ve <directive module="mod_autoindex">IndexIgnore</directive> tarafından
+      yoksayılan dosyaları kaldırır. </p>
 
     <highlight language="config">
 &lt;Directory "/var/www"&gt;
@@ -611,8 +612,7 @@ IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t
       </dd>
 
       <dt><a name="indexoptions.charset" id="indexoptions.charset"
-        ><code>Charset=<em>karakter-kümesi</em></code></a> (<em>Apache HTTP
-        Sunucusunun 2.0.61 ve sonraki sürümleri</em>)</dt>
+        ><code>Charset=<em>karakter-kümesi</em></code></a></dt>
 
       <dd><code>Charset</code> seçeneği üretilen sayfa için bir karakter
         kümesi belirtebilmenizi sağlar. Dizinin bulunduğu dosya sisteminin
@@ -878,18 +878,18 @@ IndexOptions Charset=UTF-8
 IndexOptions Type=text/plain
       </highlight>
       </dd>
-      
+
       <dt><a name="indexoptions.useolddateformat"
                id="indexoptions.useolddateformat"
       >UseOldDateFormat</a>
       (<em>Apache HTTP Sunucusu 2.4.26 ve sonrasında</em>)</dt>
 
-      <dd><code>Last Modified</code> alanı tarafından kullanılan tarih biçemi 
-        <code>"%Y-%m-%d %H:%M"</code> dikkatsizlik sonucu 2.4.0 sürümünde 
-        <code>"%d-%b-%Y %H:%M"</code> olarak değişmiştir. Bu seçenekle tarih 
+      <dd><code>Last Modified</code> alanı tarafından kullanılan tarih biçemi
+        <code>"%Y-%m-%d %H:%M"</code> dikkatsizlik sonucu 2.4.0 sürümünde
+        <code>"%d-%b-%Y %H:%M"</code> olarak değişmiştir. Bu seçenekle tarih
         biçemini 2.2 ve öncesindeki biçemiyle kullanabilirsiniz.</dd>
 
-      
+
       <dt><a name="indexoptions.versionsort"
                id="indexoptions.versionsort"><code>VersionSort</code></a>
       </dt>

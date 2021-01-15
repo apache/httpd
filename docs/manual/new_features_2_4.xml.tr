@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
-<!-- English Revision: 1877395:1883046 (outdated) -->
+<!-- English Revision: 1883046 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -179,37 +179,45 @@
       <dt><module>mod_macro</module> (2.4.5'den itibaren kullanılabilir)</dt>
       <dd>Yapılandırma dosyalarında makro kullanımını sağlar.</dd>
 
-      <dt><module>mod_proxy_wstunnel</module> (2.4.5'den itibaren kullanılabilir)</dt>
+      <dt><module>mod_proxy_wstunnel</module> (2.4.5'den itibaren
+        kullanılabilir)</dt>
       <dd>Web-socket tünelleri için destek.</dd>
 
-      <dt><module>mod_authnz_fcgi</module> (2.4.10'dan itibaren kullanılabilir)</dt>
+      <dt><module>mod_authnz_fcgi</module> (2.4.10'dan itibaren
+        kullanılabilir)</dt>
       <dd>Kimlik kanıtlama ve/veya istemcileri yetkilendirmek için FastCGI
         yetkilendirme uygulamalarını etkinleştirir.</dd>
 
       <dt><module>mod_http2</module> (2.4.17'den itibaren kullanılabilir)</dt>
       <dd>HTTP/2 aktarım katmanı desteği.</dd>
-      
-      <dt><module>mod_proxy_http2</module> (2.4.19'dan itibaren kullanılabilir)</dt>
+
+      <dt><module>mod_proxy_http2</module> (2.4.19'dan itibaren
+        kullanılabilir)</dt>
       <dd><module>mod_proxy</module> için HTTP/2 Protokol arayüzü</dd>
 
       <dt><module>mod_proxy_hcheck</module> (2.4.21'den itibaren
         kullanılabilir)</dt>
-      <dd>Uzak vekil artuç sunucuları için bağımsız özdevinimli sağlık sınamalarını 
-        destekler.</dd>
-      
+      <dd>Uzak vekil artuç sunucuları için bağımsız özdevinimli sağlık
+        sınamalarını destekler.</dd>
+
       <dt><module>mod_brotli</module> (2.4.26'dan itibaren kullanılabilir)</dt>
       <dd>Brotli sıkıştırma algoritması desteği.</dd>
 
       <dt><module>mod_md</module> (2.4.30'dan itibaren kullanılabilir)</dt>
       <dd>Sertifika sağlama işlemi için ACME protokolü desteği.</dd>
 
-      <dt><module>mod_socache_redis</module> (2.4.39'dan itibaren kullanılabilir)</dt>
-      <dd><a href="http://redis.io/">Redis</a> tabanlı paylaşımlı nesne arabelleği 
-        sağlayıcı için destek.</dd>
-      
+      <dt><module>mod_proxy_uwsgi</module> (2.4.30'dan itibaren
+        kullanılabilir)</dt>
+      <dd><module>mod_proxy</module> UWSGI ağ geçidi modülü.</dd>
+
+      <dt><module>mod_socache_redis</module> (2.4.39'dan itibaren
+        kullanılabilir)</dt>
+      <dd><a href="http://redis.io/">Redis</a> tabanlı paylaşımlı nesne
+        arabelleği sağlayıcı için destek.</dd>
+
       <dt><module>mod_systemd</module> (2.4.42'den itibaren
         kullanılabilir)</dt>
-      <dd>systemd bütünleştirmesi. Httpd'nin systemd <code>Type=notify</code> 
+      <dd>systemd bütünleştirmesi. Httpd'nin systemd <code>Type=notify</code>
         ile bir hizmette kullanılmasına izin verir.</dd>
 
     </dl>

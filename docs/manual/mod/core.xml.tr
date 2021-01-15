@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1880372:1883418 (outdated) -->
+<!-- English Revision: 1885465 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -109,20 +109,20 @@ AcceptFilter https connect
       yer değiştirmez. Sürücü desteği bozuk ağ bağdaştırıcılarından başka
       vpn sürücüleri gibi bazı sanal ağ sağlayıcılar veya spam, virus veya
       casus yazılım süzgeçleri için kullanışlıdır.</p>
-    
+
     <note type="warning">
       <title><code>data</code> AcceptFilter (Windows)</title>
 
       <p>2.4.23 ve öncesi sürümlerde, Windows <code>data</code> accept
-         süzgeci veri aktarılana kadar bekletildikten sonra ilk veri 
-         tamponlanır ve uç ağ adresi için tek bir AcceptEx() çağrısı yapılır. 
-         Bu gerçeklenim hizmet reddi saldırısına konu olduğundan iptal 
+         süzgeci veri aktarılana kadar bekletildikten sonra ilk veri
+         tamponlanır ve uç ağ adresi için tek bir AcceptEx() çağrısı yapılır.
+         Bu gerçeklenim hizmet reddi saldırısına konu olduğundan iptal
          edilmiştir.</p>
 
-      <p>httpd'nin şu anki dağıtımları için Windows'da <code>connect</code> 
-        süzgeci öntanımlıdır ve <code>data</code> belirtilmiş olsa dahi  
-        <code>connect</code> belirtilmiş gibi davranılır. Önceki sürümleri 
-        kullananların AcceptFilter satırını yukarıdaki gibi 
+      <p>httpd'nin şu anki dağıtımları için Windows'da <code>connect</code>
+        süzgeci öntanımlıdır ve <code>data</code> belirtilmiş olsa dahi
+        <code>connect</code> belirtilmiş gibi davranılır. Önceki sürümleri
+        kullananların AcceptFilter satırını yukarıdaki gibi
         <code>connect</code> süzgecine ayarlamaları gerekmektedir.</p>
     </note>
 
@@ -357,9 +357,9 @@ AddDefaultCharset utf-8
 
     <p>Bu yönergeye <code>All</code> değeri atanırsa, .htaccess <a
       href="directive-dict.html#Context">bağlamında</a> kullanılabilecek her
-      yönergeye <code>.htaccess</code> dosyalarında izin verilir. (Hangi 
-      <var>yönerge-türü</var> türü için hangi yönergelerin etkin olduğunu görmek 
-      için <a href="overrides.html">.htaccess için Geçersizleştirme Sınıfları</a> 
+      yönergeye <code>.htaccess</code> dosyalarında izin verilir. (Hangi
+      <var>yönerge-türü</var> türü için hangi yönergelerin etkin olduğunu görmek
+      için <a href="overrides.html">.htaccess için Geçersizleştirme Sınıfları</a>
       sayfasına bakınız)</p>
 
     <p><code><var>yönerge-türü</var></code> olarak aşağıdaki yönerge grup
@@ -469,9 +469,9 @@ AddDefaultCharset utf-8
       </note>
       </dd>
 
-      <dt><a href="overrides.html#override-options" 
+      <dt><a href="overrides.html#override-options"
              >Options</a>[=<var>seçenek</var>,...]</dt>
-      
+
       <dd>Dizinlere özgü özellikleri denetleyen
         <directive module="core">Options</directive> ve
         <directive module="mod_include">XBitHack</directive> yönergelerinin
@@ -505,7 +505,7 @@ AllowOverride AuthConfig Indexes
     <p>Bu örnekte <code>AuthConfig</code> ve <code>Indexes</code> grubundaki
       yönergeler bir dahili sunucu hatasına yol açmayacaktır.</p>
 
-    <note><p>Güvenlik ve başarımı arttırmak için 
+    <note><p>Güvenlik ve başarımı arttırmak için
       <code>&lt;Directory "/"&gt;</code>
       bloğu içinde <code>AllowOverride</code> yönergesine <code>None</code>
       dışında bir değer atamayın. Böyle yapmak yerine bir <code>.htaccess</code>
@@ -651,10 +651,10 @@ olarak aktarılmasını etkin kılar</description>
   <p><strong>REQUEST_URI</strong> kuralları:</p>
   <dl>
     <dt><code>original-uri</code> (default)</dt>
-    <dd>Değer özgün istek satırından alınır ve dahili yöneldirmeler veya 
+    <dd>Değer özgün istek satırından alınır ve dahili yöneldirmeler veya
     istenen özkaynakları değiştiren alt istekler dikkate alınmaz.</dd>
     <dt><code>current-uri</code></dt>
-    <dd>Değer özgün istek satırından farklı olabilecek dahili yönlendirmeleri 
+    <dd>Değer özgün istek satırından farklı olabilecek dahili yönlendirmeleri
     veya istenen özkaynakları değiştiren alt istekleri de yansıtır.</dd>
   </dl>
 </usage>
@@ -806,8 +806,8 @@ DocumentRoot "/var/www/${servername}/htdocs"
       karışmalardan kaçınmak için değişken isimleri ikinokta ":" karakterleri
       içeremez.</p>
     <note><title>Sanal konak bağlamı ve tuzaklar</title>
-      <p>Bu yönerge sanal konakta ve dizin içeriğinde desteklendiğinden yapılan 
-      değişiklikler (eşleşsin eşleşmesin) yönergeyi sarmalayan yapılandırma 
+      <p>Bu yönerge sanal konakta ve dizin içeriğinde desteklendiğinden yapılan
+      değişiklikler (eşleşsin eşleşmesin) yönergeyi sarmalayan yapılandırma
       bölümünden başka, sonraki yapılandırma yönergelerine de görünür olur.</p>
     </note>
 </usage>
@@ -1266,78 +1266,78 @@ EnableSendfile On
       (<a href="https://tools.ietf.org/html/rfc7230#section-3.1.1"
        >RFC 7230 &sect;3.1.1</a>) ve the HTTP istek başlığı alanlarına
       (<a href="https://tools.ietf.org/html/rfc7230#section-3.2"
-       >RFC 7230 &sect;3.2</a>) uygulanmış kuralları öntanımlı olarak veya 
-      <code>Strict</code> seçeneği kullanılarak  değiştirir. Eski modüller, 
-      uygulamalar veya kullanımı önerilmeyen özel istemciler için eski davranışlara 
+       >RFC 7230 &sect;3.2</a>) uygulanmış kuralları öntanımlı olarak veya
+      <code>Strict</code> seçeneği kullanılarak  değiştirir. Eski modüller,
+      uygulamalar veya kullanımı önerilmeyen özel istemciler için eski davranışlara
       dönmeyi sağlamak üzere <code>Unsafe</code> seçeneği eklenmiştir.</p>
-      
-    <p>Bu kurallar istek işlenmeden önce uygulanır. Dolayısıyla yönerge, IP/port  
-      arabirimine göre ana bölümde veya öntanımlı (ilk) eşleşen sanal konak 
+
+    <p>Bu kurallar istek işlenmeden önce uygulanır. Dolayısıyla yönerge, IP/port
+      arabirimine göre ana bölümde veya öntanımlı (ilk) eşleşen sanal konak
       bölümünde yapılandırılmalıdır.</p>
-    
-    <p>Bu yönergeye aşağıdaki parametrelerden seçilen üç tanesi uygulanabilir.      
+
+    <p>Bu yönergeye aşağıdaki parametrelerden seçilen üç tanesi uygulanabilir.
       Belirtilmeyenlerin yerine öntanımlılar uygulanır.</p>
-    
+
     <dl>
       <dt>Strict|Unsafe</dt>
       <dd>
-        <p>Bu yönerge devreye girmeden önce, Apache HTTP Sunucusunun istek iletisi 
-        ayrıştırıcıları protokolle uyumlu olmayan bir dizi girdi şekline 
+        <p>Bu yönerge devreye girmeden önce, Apache HTTP Sunucusunun istek iletisi
+        ayrıştırıcıları protokolle uyumlu olmayan bir dizi girdi şekline
         toleranslıydı. <a href="https://tools.ietf.org/html/rfc7230#section-9.4"
         >RFC 7230 &sect;9.4 İstek bölme</a> ve
         <a href="https://tools.ietf.org/html/rfc7230#section-9.5"
-        >&sect;9.5 Yanıt kaçırma</a> çağrıları uyumsuz istek iletilerinin 
+        >&sect;9.5 Yanıt kaçırma</a> çağrıları uyumsuz istek iletilerinin
         kabulündeki olası risklerden yalnızca iki tanesidir.
-        <a href="https://tools.ietf.org/html/rfc7230#section-3.5">RFC 7230 
-        &sect;3.5</a> "İleti Ayrıştırma Sağlamlığı" belirsiz boşlukların kabul ve 
-        istek iletisi biçimleme risklerini tanımlar. Bu yönergenin devreye 
-        girmesini takiben belirtimin tüm imla kurallarına öntanımlı 
-        <code>Strict</code> işlem kipi ve 3.5 bölümünde tavsiye edilen hoşgörüsüz 
+        <a href="https://tools.ietf.org/html/rfc7230#section-3.5">RFC 7230
+        &sect;3.5</a> "İleti Ayrıştırma Sağlamlığı" belirsiz boşlukların kabul ve
+        istek iletisi biçimleme risklerini tanımlar. Bu yönergenin devreye
+        girmesini takiben belirtimin tüm imla kurallarına öntanımlı
+        <code>Strict</code> işlem kipi ve 3.5 bölümünde tavsiye edilen hoşgörüsüz
         boşluk uygulanır ve esnekliğe müsamaha edilmez.</p>
 
         <note type="warning"><title>Unsafe için güvenlik riskleri</title>
-          <p>Kullanıcılar, özellikle dışa bakan, herkes tarafından erişilebilen 
-          sunucu konuşlandırmalarında  <code>Unsafe</code> işlem kipine geçiş 
-          yapmaya karşı kesinlikle uyarılır. Eğer bir arayüz hataları izlemek 
-          veya bir intranette çalışan özel hizmet tüketicileri için gerekliyse, 
-          kullanıcılar, sadece, dahili özel ağlarına hizmet etmek üzere 
-          yapılandırılmış özel bir sanal konak üzerinde <code>Unsafe</code> işlem 
+          <p>Kullanıcılar, özellikle dışa bakan, herkes tarafından erişilebilen
+          sunucu konuşlandırmalarında  <code>Unsafe</code> işlem kipine geçiş
+          yapmaya karşı kesinlikle uyarılır. Eğer bir arayüz hataları izlemek
+          veya bir intranette çalışan özel hizmet tüketicileri için gerekliyse,
+          kullanıcılar, sadece, dahili özel ağlarına hizmet etmek üzere
+          yapılandırılmış özel bir sanal konak üzerinde <code>Unsafe</code> işlem
           kipine geçiş yapmalıdır.</p>
         </note>
-        
+
         <example>
           <title>Strict kipte HTTP 400 ile sonuçlanan bir istek örneği</title>
           # Eksik CRLF<br />
           GET / HTTP/1.0\n\n
         </example>
         <note type="warning"><title>Komut satırı araçları ve CRLF</title>
-          <p>Bazı araçların CRLF kullanmaya zorlanması gerekir, aksi takdirde httpd 
-          yukarıdaki örnekte belirtildiği gibi bir HTTP 400 yanıtı ile döner. 
-          Örneğin,  <strong>OpenSSL s_client düzgün çalışmak için -crlf 
+          <p>Bazı araçların CRLF kullanmaya zorlanması gerekir, aksi takdirde httpd
+          yukarıdaki örnekte belirtildiği gibi bir HTTP 400 yanıtı ile döner.
+          Örneğin,  <strong>OpenSSL s_client düzgün çalışmak için -crlf
           değiştirgesine ihtiyaç duyar</strong>.</p>
-          <p>CRLF yokluğu gibi durumları saptamak için HTTP isteğini görünümlemek 
-          isterseniz <directive module="mod_dumpio">DumpIOInput</directive> 
+          <p>CRLF yokluğu gibi durumları saptamak için HTTP isteğini görünümlemek
+          isterseniz <directive module="mod_dumpio">DumpIOInput</directive>
           yönergesi yardımcı olabilir.</p>
         </note>
       </dd>
       <dt>RegisteredMethods|LenientMethods</dt>
       <dd>
-        <p><a href="https://tools.ietf.org/html/rfc7231#section-4.1">RFC 7231 
-        &sect;4.1</a> "İstek Yöntemleri" "Genel Bakış" bölümlerinde bir istek 
-        satırında desteklenmeyen bir yöntem saptadığında özgün sunucuların bir 
-        hatayla yanıt vermesini gerekli görmüştür. <code>LenientMethods</code> 
-        seçeneği kullanıldığında olan zaten budur. <code>RegisteredMethods</code> 
-        seçeneğine geçiş yapmak isteyen yöneticiler 
-        <directive>RegisterHttpMethod</directive> yönergesini kullanarak standart 
-        olmayan yöntemleri belirlemelidir. Özellikle <code>Unsafe</code> seçeneğine 
+        <p><a href="https://tools.ietf.org/html/rfc7231#section-4.1">RFC 7231
+        &sect;4.1</a> "İstek Yöntemleri" "Genel Bakış" bölümlerinde bir istek
+        satırında desteklenmeyen bir yöntem saptadığında özgün sunucuların bir
+        hatayla yanıt vermesini gerekli görmüştür. <code>LenientMethods</code>
+        seçeneği kullanıldığında olan zaten budur. <code>RegisteredMethods</code>
+        seçeneğine geçiş yapmak isteyen yöneticiler
+        <directive>RegisterHttpMethod</directive> yönergesini kullanarak standart
+        olmayan yöntemleri belirlemelidir. Özellikle <code>Unsafe</code> seçeneğine
         geçiş yapılacaksa bu yol izlenmelidir.</p>
-      
+
         <note type="warning"><title>İleri Vekil Uyumluluğu</title>
-          <p>Özgün sunucunun kullandığı yöntemleri vekil sunucu bilemeyeceği için 
-          ileri vekil konaklarda <code>RegisteredMethods</code> seçeneğine geçiş 
+          <p>Özgün sunucunun kullandığı yöntemleri vekil sunucu bilemeyeceği için
+          ileri vekil konaklarda <code>RegisteredMethods</code> seçeneğine geçiş
           yapılmamalıdır.</p>
         </note>
-  
+
         <example>
           <title>Example of a request leading to HTTP 501 with LenientMethods mode</title>
           # Unknown HTTP method<br />
@@ -1348,19 +1348,19 @@ EnableSendfile On
       </dd>
       <dt>Allow0.9|Require1.0</dt>
       <dd>
-        <p><a href="https://tools.ietf.org/html/rfc2616#section-19.6">RFC 2616 
-        &sect;19.6</a> "Önceki Sürümlerle Uyumluluk" bölümünde HTTP sunucularının 
-        eski HTTP/0.9 isteklerini desteklemesi tavsiye edilmektedir. RFC 7230 
-        "HTTP/0.9 isteklerini destekleme beklentisi kaldırılmıştır." cümlesiyle 
-        bunu  geçersiz kılmış ve <a 
+        <p><a href="https://tools.ietf.org/html/rfc2616#section-19.6">RFC 2616
+        &sect;19.6</a> "Önceki Sürümlerle Uyumluluk" bölümünde HTTP sunucularının
+        eski HTTP/0.9 isteklerini desteklemesi tavsiye edilmektedir. RFC 7230
+        "HTTP/0.9 isteklerini destekleme beklentisi kaldırılmıştır." cümlesiyle
+        bunu  geçersiz kılmış ve <a
         href="https://tools.ietf.org/html/rfc7230#appendix-A"
-        >RFC 7230 Ek A</a> bölümünde bununla ilgili yorumlar yer almıştır. 
-        <code>Require1.0</code> seçeneği kullanıcıya öntanımlı 
-        <code>Allow0.9</code> seçeneğinin davranışına verilen desteği kaldırma 
+        >RFC 7230 Ek A</a> bölümünde bununla ilgili yorumlar yer almıştır.
+        <code>Require1.0</code> seçeneği kullanıcıya öntanımlı
+        <code>Allow0.9</code> seçeneğinin davranışına verilen desteği kaldırma
         imkanını vermektedir.</p>
-      
+
         <example>
-          <title>Require1.0 kipinde HTTP 400 ile sonuçlanan bir istek 
+          <title>Require1.0 kipinde HTTP 400 ile sonuçlanan bir istek
           örneği</title>
           # Desteklenmeyen HTTP sürümü<br />
           GET /\r\n\r\n
@@ -1368,11 +1368,11 @@ EnableSendfile On
       </dd>
     </dl>
 
-    <p><directive>LogLevel</directive> <code>debug</code> seviyesiyle 
-      yapılandırılmış <directive>ErrorLog</directive> ile kaydedilmiş günlüklerin  
-      gözden geçirilmesi, böyle hatalı isteklerin kaynaklandıkları yerle birlikte  
-      belirlenmesine yardımcı olabilir. Kullanıcılar, beklenmedik bir şekilde 
-      reddedilmiş geçersiz istekleri bulmak için erişim günlüklerindeki 400 
+    <p><directive>LogLevel</directive> <code>debug</code> seviyesiyle
+      yapılandırılmış <directive>ErrorLog</directive> ile kaydedilmiş günlüklerin
+      gözden geçirilmesi, böyle hatalı isteklerin kaynaklandıkları yerle birlikte
+      belirlenmesine yardımcı olabilir. Kullanıcılar, beklenmedik bir şekilde
+      reddedilmiş geçersiz istekleri bulmak için erişim günlüklerindeki 400
       yanıtlarına özellikle dikkat etmelidir.</p>
 </usage>
 </directivesynopsis>
@@ -1560,10 +1560,10 @@ ErrorLog "|/usr/local/bin/httpd_errors"
       syslog.conf(5) kılavuz sayfasında belirtilen oluşum isimlerinden biri
       olabilir. Oluşum aslında küreseldir ve sanal konaklardan bazılarında
       değiştirilmişse, belirtilen en son oluşum tüm sunucuyu
-      etkileyecektir. <code><var>etiket</var></code> için de aynı kurallar 
-      uygulanır. Genellikle, öntanımlı etiket olarak Apache çalıştırılabilirinin 
-      ismi olan <code>httpd</code> kullanılır. Öntanımlı etiketi 
-      <code>syslog::<var>etiket</var></code> sözdizimini kullanarak 
+      etkileyecektir. <code><var>etiket</var></code> için de aynı kurallar
+      uygulanır. Genellikle, öntanımlı etiket olarak Apache çalıştırılabilirinin
+      ismi olan <code>httpd</code> kullanılır. Öntanımlı etiketi
+      <code>syslog::<var>etiket</var></code> sözdizimini kullanarak
       değiştirebilirsiniz </p>
 
     <highlight language="config">
@@ -2154,7 +2154,7 @@ ForceType image/gif
 
     <p>Son olarak, <a href="mod_authz_host.html#reqhost">konak ismine dayalı
       Require yönergeleri</a>ne sahipseniz konak ismi araması
-      <code>HostnameLookups</code> ayarına bakılmaksızın
+      <directive>HostnameLookups</directive> ayarına bakılmaksızın
       gerçekleştirilecektir.</p>
 </usage>
 </directivesynopsis>
@@ -2298,27 +2298,27 @@ sokulacak yönergeleri sarmalar.</description>
 
 <usage>
     <p><code>&lt;IfFile <var>dosyaadı</var>&gt;...&lt;/IfFile&gt;
-    </code> bölümü bir dosyanın diskteki mevcudiyetine bağlı olarak 
+    </code> bölümü bir dosyanın diskteki mevcudiyetine bağlı olarak
     çalıştırılacak yönergeleri belirtmekte kullanılır.
-    <directive type="section">IfFile</directive> bölümü içindeki yönergeler 
+    <directive type="section">IfFile</directive> bölümü içindeki yönergeler
     sadece diskte <var>dosyaadı</var> mevcutsa çalıştırılır. <var>dosyaadı</var>
-    mevcut değilse bölüm içindeki yönergeler yok sayılır. <var>dosyaadı</var> 
+    mevcut değilse bölüm içindeki yönergeler yok sayılır. <var>dosyaadı</var>
     sunucu kök dizinine göreli veya mutlak bir yol olarak belirtilebilir.</p>
 
-    <p><directive type="section">IfFile</directive> bölüm yönergesindeki 
+    <p><directive type="section">IfFile</directive> bölüm yönergesindeki
     <var>dosyaadı</var>, <directive type="section" module="core"
-    >IfDefine</directive> yönergesindeki <var>sınama</var> değişkenindeki gibi 
-    ele alınır, yani <var>dosyaadı</var> bir ! ile öncelenirse bölüm içindeki 
-    yonergeler dosyanın yokluğu durumunda çalıştırılır. 
+    >IfDefine</directive> yönergesindeki <var>sınama</var> değişkenindeki gibi
+    ele alınır, yani <var>dosyaadı</var> bir ! ile öncelenirse bölüm içindeki
+    yonergeler dosyanın yokluğu durumunda çalıştırılır.
     </p>
-   
-    <p>Göreli bir <var>dosyaadı</var> belirtilmişse sınama <directive 
-    module="core">ServerRoot</directive> yönergesinde belirtilen dizinde göre 
-    yapılır. <directive type="section">IfFile</directive> yönergesinin 
-    <directive module="core">ServerRoot</directive> yönergesinde önce yer alması 
-    durumunda dosya yolu derleme sırasında kullanılan sunucu köküne veya komut 
+
+    <p>Göreli bir <var>dosyaadı</var> belirtilmişse sınama <directive
+    module="core">ServerRoot</directive> yönergesinde belirtilen dizinde göre
+    yapılır. <directive type="section">IfFile</directive> yönergesinin
+    <directive module="core">ServerRoot</directive> yönergesinde önce yer alması
+    durumunda dosya yolu derleme sırasında kullanılan sunucu köküne veya komut
     satırında <code>-d</code> seçeneği ile belirtilen dizine göre sınanır.</p>
-    
+
 </usage>
 </directivesynopsis>
 
@@ -2374,7 +2374,7 @@ yönergeleri sarmalar.</description>
       gerekmez.</note>
 </usage>
 </directivesynopsis>
- 
+
 <directivesynopsis type="section">
 <name>IfDirective</name>
 <description>Belirtilen yönerge adının varlığı veya yokluğuna bağlı olarak çalıştırılacak yönergeleri sarmalar.</description>
@@ -2387,9 +2387,9 @@ yönergeleri sarmalar.</description>
 <compatibility>2.4.34 ve sonrasında kullanılabilir.</compatibility>
 
 <usage>
-    <p><code>&lt;IfDirective <var>yönerge-adı</var>&gt; 
-    ...&lt;/IfDirective&gt;</code> bölümü içindeki yönergeler 
-    <var>yönerge-adı</var> ile belirtilen yönerge mevcutsa çalıştırılır yoksa 
+    <p><code>&lt;IfDirective <var>yönerge-adı</var>&gt;
+    ...&lt;/IfDirective&gt;</code> bölümü içindeki yönergeler
+    <var>yönerge-adı</var> ile belirtilen yönerge mevcutsa çalıştırılır yoksa
     yok sayılır.</p>
 
     <p><directive type="section">IfDirective</directive> yönergenide sınama iki türlü yapılır:</p>
@@ -2400,16 +2400,16 @@ yönergeleri sarmalar.</description>
       <li>!<var>yönerge-adı</var></li>
     </ul>
 
-    <p>İlk durumda bölüm içinde kalan yönergeler, yönerge başlangıç satırına 
-    belirtilen yönerge işlem sırasında mevcutsa çalıştırılır, değilse 
-    çalıştırılmaz. İkinci durumda ise, bölüm içinde kalan yönergeler, yönerge 
-    başlangıç satırına belirtilen yönerge işlem sırasında mevcut 
+    <p>İlk durumda bölüm içinde kalan yönergeler, yönerge başlangıç satırına
+    belirtilen yönerge işlem sırasında mevcutsa çalıştırılır, değilse
+    çalıştırılmaz. İkinci durumda ise, bölüm içinde kalan yönergeler, yönerge
+    başlangıç satırına belirtilen yönerge işlem sırasında mevcut
     <strong>değilse</strong> çalıştırılır, mevcutsa çalıştırılmaz.</p>
 
-  <note>Bu yönergeyi kullanma ihtiyacı sadece çok sayıda  
-    <program>httpd</program> tek bir yapılandırma dosyası ile çalıştırılmak 
-    zorundaysa ortaya çıkar. Böyle bir ihtiyacın olmadığı normal durumlarda 
-    yönergelerin <directive type="section">IfDirective</directive> bölümlerine 
+  <note>Bu yönergeyi kullanma ihtiyacı sadece çok sayıda
+    <program>httpd</program> tek bir yapılandırma dosyası ile çalıştırılmak
+    zorundaysa ortaya çıkar. Böyle bir ihtiyacın olmadığı normal durumlarda
+    yönergelerin <directive type="section">IfDirective</directive> bölümlerine
     yerleştirlmesine gerek yoktur.</note>
 </usage>
 <seealso><directive module="core" type="section">IfSection</directive></seealso>
@@ -2427,19 +2427,19 @@ yönergeleri sarmalar.</description>
 <compatibility>2.4.34 ve sonrasında kullanılabilir.</compatibility>
 
 <usage>
-    <p><code>&lt;IfSection <var>bölüm-adı</var>&gt; 
-    ...&lt;/IfSection&gt;</code> bölümü içindeki yönergeler 
-    <var>bölüm-adı</var> ile belirtilen bölüm mevcutsa çalıştırılır yoksa 
-    yok sayılır. Bir bölüm yönergesi "&lt;" ile öncelenmiş bir yönerge adına 
-    sahip olmalı ve <directive type="section">VirtualHost</directive> gibi başka 
+    <p><code>&lt;IfSection <var>bölüm-adı</var>&gt;
+    ...&lt;/IfSection&gt;</code> bölümü içindeki yönergeler
+    <var>bölüm-adı</var> ile belirtilen bölüm mevcutsa çalıştırılır yoksa
+    yok sayılır. Bir bölüm yönergesi "&lt;" ile öncelenmiş bir yönerge adına
+    sahip olmalı ve <directive type="section">VirtualHost</directive> gibi başka
     yönergeleri sarmalayan bir yönerge olmalıdır.</p>
 
-    <p><directive type="section">IfSection</directive> bölümü içindeki 
-    yönergeler sadece <var>sınama</var> doğru ise çalıştırılır, 
+    <p><directive type="section">IfSection</directive> bölümü içindeki
+    yönergeler sadece <var>sınama</var> doğru ise çalıştırılır,
     <var>sınama</var> yanlışsa çalıştırılmaz.</p>
 
-    <p><var>bölüm-adı</var> başında "&lt;" veya sonunda "&gt;" olmaksızın 
-    belirtilmelidir. <directive type="section">IfSection</directive> 
+    <p><var>bölüm-adı</var> başında "&lt;" veya sonunda "&gt;" olmaksızın
+    belirtilmelidir. <directive type="section">IfSection</directive>
     yönergesindeki <var>bölüm-adı</var> iki türlü ele alınır:</p>
 
     <ul>
@@ -2447,10 +2447,10 @@ yönergeleri sarmalar.</description>
       <li>!<var>bölüm-adı</var></li>
     </ul>
 
-    <p>İlk durumda bölüm içinde kalan yönergeler, yönerge başlangıç satırına 
-    belirtilen bölüm işlem sırasında mevcutsa çalıştırılır, değilse 
-    çalıştırılmaz. İkinci durumda ise, bölüm içinde kalan yönergeler, yönerge 
-    başlangıç satırına belirtilen bölüm işlem sırasında mevcut 
+    <p>İlk durumda bölüm içinde kalan yönergeler, yönerge başlangıç satırına
+    belirtilen bölüm işlem sırasında mevcutsa çalıştırılır, değilse
+    çalıştırılmaz. İkinci durumda ise, bölüm içinde kalan yönergeler, yönerge
+    başlangıç satırına belirtilen bölüm işlem sırasında mevcut
     <strong>değilse</strong> çalıştırılır, mevcutsa çalıştırılmaz.</p>
 
     <p>Örnek:</p>
@@ -2460,12 +2460,12 @@ yönergeleri sarmalar.</description>
    ...
 &lt;/IfSection&gt;
     </highlight>
-    
-    <note>Bu yönergeyi kullanma ihtiyacı sadece çok sayıda  
-    <program>httpd</program> tek bir yapılandırma dosyası ile (belli bir bölüm 
-    yönergesinin var olup olmamasına bakmaksızın) çalıştırılmak 
-    zorundaysa ortaya çıkar. Böyle bir ihtiyacın olmadığı normal durumlarda 
-    yönergelerin <directive type="section">IfSection</directive> bölümlerine 
+
+    <note>Bu yönergeyi kullanma ihtiyacı sadece çok sayıda
+    <program>httpd</program> tek bir yapılandırma dosyası ile (belli bir bölüm
+    yönergesinin var olup olmamasına bakmaksızın) çalıştırılmak
+    zorundaysa ortaya çıkar. Böyle bir ihtiyacın olmadığı normal durumlarda
+    yönergelerin <directive type="section">IfSection</directive> bölümlerine
     yerleştirlmesine gerek yoktur.</note>
 </usage>
 <seealso><directive module="core" type="section">IfDirective</directive></seealso>
@@ -2549,8 +2549,8 @@ IncludeOptional conf/vhosts/*/*.conf
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
-<compatibility>2.3.6 ve sonrasına kullanılabilmektedir. Dosya kalıp karakterleri 
-  içermeyen dosya yollarından mevcut olmayanlar 2.4.30 sürümünden itibaren 
+<compatibility>2.3.6 ve sonrasına kullanılabilmektedir. Dosya kalıp karakterleri
+  içermeyen dosya yollarından mevcut olmayanlar 2.4.30 sürümünden itibaren
   sözdizimi hatalarına sebep olmamaktadır.</compatibility>
 
 <usage>
@@ -2558,7 +2558,7 @@ IncludeOptional conf/vhosts/*/*.conf
       dosyasında içerilmesini sağlar. Çalışması <directive
       module="core">Include</directive> yönergesi ile bir istisna dışında
       aynıdır. Dosya kalıp karakterlerinin hiçbir dosya veya dizinle
-      eşleşmemesi veya dosya yolunun dosya sisteminde mevcut olmaması durumunda 
+      eşleşmemesi veya dosya yolunun dosya sisteminde mevcut olmaması durumunda
       bir hata oluşmayacak ve bu durum sadece yoksayılacaktır.</p>
 </usage>
 
@@ -2834,8 +2834,8 @@ sınırlar.</description>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
-    <p><var>sayı</var>, en küçük 0 (sınırsız anlamında), en büyük 32767
-      olabilir. Öntanımlı değer bir derleme zamanı sabiti olan
+    <p><var>sayı</var>ya 0 atanması sınırsız anlamına gelir.
+      Öntanımlı değer bir derleme zamanı sabiti olan
       <code>DEFAULT_LIMIT_REQUEST_FIELDS</code> ile belirlenir (dağıtımla gelen
       değeri 100’dür).</p>
 
@@ -2859,7 +2859,7 @@ sınırlar.</description>
     <p>Örnek:</p>
 
     <highlight language="config">
-LimitRequestFields 50      
+LimitRequestFields 50
     </highlight>
 
      <note type="warning"><title>Uyarı</title>
@@ -3176,24 +3176,24 @@ uygulanır.</description>
     </highlight>
 
     <note><title>/ (bölü çizgisi) hakkında</title>
-      <p>Bölü çizgisi karakteri URL üzerinde göründüğü yere bağlı olarak farklı anlamlar içerir. İnsanlar, birden çok bitişik bölü çizgisinin sık sık 
-      tek bir bölü çizgisine daraltıldığı dosya sistemindeki davranışına 
+      <p>Bölü çizgisi karakteri URL üzerinde göründüğü yere bağlı olarak farklı anlamlar içerir. İnsanlar, birden çok bitişik bölü çizgisinin sık sık
+      tek bir bölü çizgisine daraltıldığı dosya sistemindeki davranışına
       alışkın olabilir (<em>örn</em>, <code>/home///foo</code> ile
-      <code>/home/foo</code> aynıdır). URL bakımından bu her zaman doğru 
-      değildir. Eğer niyetiniz buysa, <directive type="section" 
-      module="core">LocationMatch</directive> yönergesi ve <directive 
+      <code>/home/foo</code> aynıdır). URL bakımından bu her zaman doğru
+      değildir. Eğer niyetiniz buysa, <directive type="section"
+      module="core">LocationMatch</directive> yönergesi ve <directive
       type="section">Location</directive> yönergesinin regex ile kullanımı,
-      bölü çizgisinin özel anlam ifade etmesi nedeniyle gerektiği kadarının 
+      bölü çizgisinin özel anlam ifade etmesi nedeniyle gerektiği kadarının
       belirtilmesini gerektirir.</p>
 
-      <p>Örneğin, <code>&lt;LocationMatch "^/abc"&gt;</code> ile 
-      <code>/abc</code> isteği eşleşirken <code>//abc</code> isteği 
+      <p>Örneğin, <code>&lt;LocationMatch "^/abc"&gt;</code> ile
+      <code>/abc</code> isteği eşleşirken <code>//abc</code> isteği
       eşleşmez. <directive type="section">Location</directive> yönergesinin
       regex olmayan kullanımı vekil isteklerindeki gibi davranır. Fakat
-      vekil harici işlemlerde <directive type="section">Location</directive> 
-      yönergesinin regex olmayan kullanımında çok sayıda bölü çizgisi örtük 
+      vekil harici işlemlerde <directive type="section">Location</directive>
+      yönergesinin regex olmayan kullanımında çok sayıda bölü çizgisi örtük
       olarak tek bölü çizgisiyle eşleşir. Örneğin,
-      <code>&lt;Location "/abc/def"&gt;</code> belirtirseniz 
+      <code>&lt;Location "/abc/def"&gt;</code> belirtirseniz
       <code>/abc//def</code> isteği bu ifade ile eşleşecektir.</p>
     </note>
 </usage>
@@ -3616,11 +3616,11 @@ MaxKeepAliveRequests 500
           bir muteksi tutarken olağandışı bir şekilde sonlanırsa httpd donar
           ve isteklere yanıt vermeyi durdurur. Bu olduğunda sunucuyu bu
           durumdan kurtarmak için elle yeniden başlatmak gerekir.</p>
-        <p>Bu duruma karşı bir mekanizma sağlayan Solaris ve Linux dikkate 
-          değer bir istisnadır. Bu mekanizma, bir muteksi tutan bir çocuk 
-          süreç olağandışı bir şekilde sonlandıktan sonra muteksin 
+        <p>Bu duruma karşı bir mekanizma sağlayan Solaris ve Linux dikkate
+          değer bir istisnadır. Bu mekanizma, bir muteksi tutan bir çocuk
+          süreç olağandışı bir şekilde sonlandıktan sonra muteksin
           kurtarılmasını sağlar.</p>
-        <p>Sisteminiz POSIX uyumluysa veya 
+        <p>Sisteminiz POSIX uyumluysa veya
           <code>pthread_mutexattr_setrobust_np()</code> işlevini
           sağlıyorsa <code>pthread</code> seçeneğini rahatça
           kullanabilirsiniz.</p>
@@ -3756,11 +3756,11 @@ Mutex fcntl:/var/httpd/locks mpm-accept
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p>2.3.11 öncesinde, <directive>NameVirtualHost</directive> yönergesi, 
-      isme dayalı sanal konaklar için belli bir IP adresi ve port çiftini 
-      sunucuya tanıtmak için gerekliydi. 2.3.11 ve sonrasında, bir IP adresi 
-      ve port çifti  her zaman çok sayıda sanal konakta kullanılabilmekte, 
-      isme dayalı sanal barındırma bu adres için özdevinimli olarak etkin 
+    <p>2.3.11 öncesinde, <directive>NameVirtualHost</directive> yönergesi,
+      isme dayalı sanal konaklar için belli bir IP adresi ve port çiftini
+      sunucuya tanıtmak için gerekliydi. 2.3.11 ve sonrasında, bir IP adresi
+      ve port çifti  her zaman çok sayıda sanal konakta kullanılabilmekte,
+      isme dayalı sanal barındırma bu adres için özdevinimli olarak etkin
       kılınmaktadır.</p>
 
     <p>Bu yönerge şu an etkisizdir.</p>
@@ -3931,9 +3931,12 @@ Mutex fcntl:/var/httpd/locks mpm-accept
       <directive>AcceptFilter</directive> yönergesiyle yapılan özel
       eniyilemelere uygulanacak protokolü belirler.</p>
 
-    <p>Bir protokol belirtme ihtiyacını sadece standartdışı portlarda
-      çalışıyorsanız duyarsınız. Aksi takdirde, <code>http</code> protokolünün
-      port 80'i, <code>https</code>'in ise 443'ü kullandığı varsayılır.</p>
+    <p>Bu yönerge çoğu yapılandırma için gerekli değildir. Belirtilmezse,
+      port 443 için <code>https</code> öntanımlıdır ve diğer tüm portlar
+      için <code>http</code> ntanımlıdır. Protokol, hangi modülün bir isteği
+      işleyeceğini belirlemek ve <directive
+      module="core">AcceptFilter</directive> yönergesi ile protokole özgü
+      eniyilemeleri uygulamak için kullanılır.</p>
 
     <p>Örneğin, <code>https</code>'i standartdışı bir portta çalıştırmak
       isterseniz protokolü şöyle belirtebilirsiniz:</p>
@@ -4027,16 +4030,16 @@ Protocols h2 http/1.1
 <default>RegexDefaultOptions DOTALL DOLLAR_ENDONLY</default>
 <contextlist><context>server config</context></contextlist>
 <compatibility>Sadece Apache 2.4.30 ve sonrasında kullanılabilmektedir.</compatibility>
-    
+
     <usage>
-        <p>Bu yönerge kendisinden sonra kullanılan bütün düzenli ifsdelerin 
+        <p>Bu yönerge kendisinden sonra kullanılan bütün düzenli ifsdelerin
         davranışını etkiler.</p>
 
-        <p>'+' ile öncelenmiş bütün seçenekler önceden atanmış seçeneklere 
+        <p>'+' ile öncelenmiş bütün seçenekler önceden atanmış seçeneklere
         eklenir.<br />
-        '-' ile öncelenmiş bütün seçenekler önceden atanmış seçeneklerden 
+        '-' ile öncelenmiş bütün seçenekler önceden atanmış seçeneklerden
         çıkarılır.<br />
-        '+' veya '-' ile öncelenmemiş her seçenek önceden atanmış seçenekleri 
+        '+' veya '-' ile öncelenmemiş her seçenek önceden atanmış seçenekleri
         silerek onların yerini alır.<br />
         <code>none</code> ile önceden atanmış tüm seçenekler sıfırlanır.</p>
 
@@ -4046,11 +4049,11 @@ Protocols h2 http/1.1
             <dd>Harf büyüklüğüne duyarlı eşleşmeler kullanılır.</dd>
 
             <dt><code>EXTENDED</code></dt>
-            <dd>Perl'ün /x seçeneği; kalıp içindeki açıklamaları ve 
+            <dd>Perl'ün /x seçeneği; kalıp içindeki açıklamaları ve
             (öncelenmemiş) boşlukları yoksayar.</dd>
 
             <dt><code>DOTALL</code></dt>
-            <dd>Perl'ün /s seçeneği; '.' karakteri, satırsonu karakteri ile 
+            <dd>Perl'ün /s seçeneği; '.' karakteri, satırsonu karakteri ile
              eşleşir.</dd>
 
             <dt><code>DOLLAR_ENDONLY</code></dt>
@@ -4232,7 +4235,7 @@ RegexDefaultOptions none
       içinde çökertmek için iyi bir yoldur.</p>
     </note>
 
-    <p><code>Registry-Strict</code> seçeneği <code>Registry</code> 
+    <p><code>Registry-Strict</code> seçeneği <code>Registry</code>
       seçeneğinin yaptığını
       <code>Shell\ExecCGI\Command</code> yolu için yapar. <code>ExecCGI</code>
       sistem tarafından bilinen bir anahtar olmadığından Windows Siciline elle
@@ -4341,7 +4344,7 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
       kullanılır.</p>
 
     <p><directive type="section" module="core">VirtualHost</directive>
-      bölümü içindeki isimlerin sırası (jokersiz) 
+      bölümü içindeki isimlerin sırası (jokersiz)
       <directive>ServerAlias</directive> yönergesindeki gibi ele
       alınır.</p>
 
@@ -4368,10 +4371,10 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
       için <directive>ServerName</directive> kullanılır (muhtemelen
       <directive module="core">ServerAlias</directive> ile birlikte).</p>
 
-    <p>Ek olarak, <directive module="core">UseCanonicalName</directive> 
-      yönergesine öntanımlı olmayan bir değer atanarak özüne yönlendiren 
+    <p>Ek olarak, <directive module="core">UseCanonicalName</directive>
+      yönergesine öntanımlı olmayan bir değer atanarak özüne yönlendiren
       URL'ler oluştururken de bu yönerge kullanılır.</p>
-      
+
     <p>Örneğin, HTTP
       sunucusunun barındırıldığı makinenin ismi <code>mail.example.com</code>
       olduğu halde makinenin bir de <code>www.example.com</code> diye bir de
@@ -4387,8 +4390,8 @@ ServerName www.example.com
       iptal eder.</p>
 
     <p>Bir <directive>ServerName</directive> ataması yapılmamışsa sunucu
-      istemciye görünen sunucu ismini anlamak için önce işletim sistemine 
-      sistemin konak adını sorar. Bu başarılı olmazsa sistem üzerinde IP 
+      istemciye görünen sunucu ismini anlamak için önce işletim sistemine
+      sistemin konak adını sorar. Bu başarılı olmazsa sistem üzerinde IP
       adresine bir ters DNS sorgusu yapar.</p>
 
     <p><directive>ServerName</directive> yönergesinde bir port belirtilmediği
@@ -4564,7 +4567,7 @@ ServerRoot "/home/httpd"
     <p>Bu ayarlama sunucunun tamamını etkiler ve her sanal konak için
       farklılaştırılamaz.</p>
 
-    <p>Bu yönerge <directive module="core">ServerSignature</directive> 
+    <p>Bu yönerge <directive module="core">ServerSignature</directive>
       yönergesi tarafından sunulan bilgiyi de etkilemektedir.</p>
 
     <note><directive>ServerTokens</directive> yönergesinde
@@ -4623,8 +4626,8 @@ SetHandler imap-file
 &lt;/FilesMatch&gt;
     </highlight>
 
-    <p>Dizge değerli ifadeler istek öncesi değişkenleri içerecek şekilde 
-      düzenlenebilir. Buna ismli düzenli ifadelere yapılan geriye başvurular 
+    <p>Dizge değerli ifadeler istek öncesi değişkenleri içerecek şekilde
+      düzenlenebilir. Buna ismli düzenli ifadelere yapılan geriye başvurular
       dahildir:</p>
 
     <highlight language="config">
@@ -4717,17 +4720,17 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</description>
       durumlarda G/Ç için bekleyeceği süreyi belirler:</p>
 
     <ul>
-      <li><p>Veriyi istemciden okurken, okuma tamponu boş olduğu takdirde bir 
+      <li><p>Veriyi istemciden okurken, okuma tamponu boş olduğu takdirde bir
         TCP paketinin gelmesini bekleyeceği süre.</p>
-      <p>Yeni bir bağlantıda ilk veri için, sunucuya yeni bağlantıyı aktaran 
-        bir <directive module="core">AcceptFilter</directive> yönergesi ile 
+      <p>Yeni bir bağlantıda ilk veri için, sunucuya yeni bağlantıyı aktaran
+        bir <directive module="core">AcceptFilter</directive> yönergesi ile
         ilgili yapılandırma ele alınıncaya kadar bu yönerge etkilenmez.</p>
       </li>
 
       <li>Veriyi istemciye yazarken, gönderme tamponu dolu olduğu takdirde bir
         paket alındısı için beklenecek süre.</li>
 
-      <li><module>mod_cgi</module> ve <module>mod_cgid</module> modülünde, bir CGI 
+      <li><module>mod_cgi</module> ve <module>mod_cgid</module> modülünde, bir CGI
         betiğinden belli bir çıktı kümesi için beklenecek süre.</li>
 
       <li><module>mod_ext_filter</module> modülünde, bir süzme işleminden çıktı
@@ -4768,8 +4771,8 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</description>
       Vekil sunucuda ise istek gövdesi için 64kB’lık sınır yoktur.</p>
 
     <note><title>Bilgi</title>
-    <p>Aksine iddialara rağmen, <code>TRACE</code> yöntemini etkinleştirmek 
-      Apache httpd'de bir güvenlik açığı değildir. <code>TRACE</code> yöntemi 
+    <p>Aksine iddialara rağmen, <code>TRACE</code> yöntemini etkinleştirmek
+      Apache httpd'de bir güvenlik açığı değildir. <code>TRACE</code> yöntemi
       HTTP/1.1 belirtiminde tanımlanmış olup desteklenmesi umulmuştur.</p>
     </note>
 
@@ -4786,13 +4789,17 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</description>
     <p><directive module="core">Define</directive> yönergesinde veya
       <program>httpd</program>'nin <code>-D</code> seçeneğiyle belirtileni
       geri alır.</p>
-    <p>Bu yönerge başlatma betiklerinde <code>-D</code> seçeneğinin argümanını
-      değiştirmek gerekmeksizin <directive module="core" type="section"
-      >IfDefine</directive> bölümlerinin kullanımını değiştirmek için
-      kullanılabilir.</p>
-    <p>Bu yönerge sanal konak bağlamında desteklenirken, kapsanan sanal
-      konaklar haricinde, değişiklikleri kendisinden sonraki tüm yapılandırma
-      yönergelerinde görünür kılar.</p>
+
+    <p><directive module="mod_rewrite">RewriteMap</directive> yönergesinin
+      sözdizimi ile çatışmalardan kaçınmak için değişken isimleri iki nokta
+      üst üste ":" karakterlerini içerebilir.</p>
+
+    <note><title>Virtual Host scope and pitfalls</title>
+      <p>Bu yönerge başlatma betiklerinde <code>-D</code> seçeneğinin
+        argümanını değiştirmek gerekmeksizin <directive module="core"
+        type="section">IfDefine</directive> bölümlerinin kullanımını
+        değiştirmek için kullanılabilir.</p>
+    </note>
 </usage>
 <seealso><directive module="core">Define</directive></seealso>
 <seealso><directive module="core">IfDefine</directive></seealso>
@@ -5076,14 +5083,14 @@ davranılır.</compatibility>
 <description>Standart olmayan HTTP yöntemlerini devreye alır</description>
 <syntax>RegisterHttpMethod <var>yöntem</var> [<var>yöntem</var> [...]]</syntax>
 <contextlist><context>server config</context></contextlist>
-<compatibility>Apache HTTP Sunucusunun 2.4.24 ve sonraki sürümlerinde kullanılabilmektedir.</compatibility> 
+<compatibility>Apache HTTP Sunucusunun 2.4.24 ve sonraki sürümlerinde kullanılabilmektedir.</compatibility>
 
 <usage>
-    <p>Bu yönerge sunucunun standatta bulunmayan ek HTTP yöntemlerini 
-      kullanabilmesini sağlar. Yönergelerde standartta olmayan yöntem isimleri 
-      kullanmak gerektiğinde veya sunucunun modüllere sadece standart yöntemleri 
-      aktaracak şekilde yapılandırıldığı durumlarda bazı standart-dışı 
-      yöntemleri vekil veya CGI betikleriyle aktarmayı mümkün kılmak için bu 
+    <p>Bu yönerge sunucunun standatta bulunmayan ek HTTP yöntemlerini
+      kullanabilmesini sağlar. Yönergelerde standartta olmayan yöntem isimleri
+      kullanmak gerektiğinde veya sunucunun modüllere sadece standart yöntemleri
+      aktaracak şekilde yapılandırıldığı durumlarda bazı standart-dışı
+      yöntemleri vekil veya CGI betikleriyle aktarmayı mümkün kılmak için bu
       gereklidir.</p>
 </usage>
 <seealso><directive module="core">HTTPProtocolOptions</directive></seealso>
@@ -5101,17 +5108,17 @@ davranılır.</compatibility>
 <compatibility>2.4.39 sürümünde eklendi</compatibility>
 
 <usage>
-    <p>Öntanımlı olarak, sunucu istek adresinin yol bileşenindeki ardışık bölü 
+    <p>Öntanımlı olarak, sunucu istek adresinin yol bileşenindeki ardışık bölü
     çizgilerini ('/') birleştirip tek bölü çizgisi olarak ele alır.</p>
 
-    <p>Bu adresleri dosya sistemi ile eşleştirirken bu ardışık bölü 
-    çizgilerinin önemi yoktur. Ancak. bu adresler CGI veya vekil gibi başka 
-    yollardan değerlendiriliyorsa bu ardışık bölü çizgilerinin olduğu gibi 
-    kalması tercih edilebilir. Bu durumlarda ardışık bölü çizgilerinin 
-    birleştirilmesini önlemek için <directive>MergeSlashes</directive> 
-    yönergesine <em>OFF</em> atanabilir. Bu atamayla, yapılandırma dosyasında, 
-    adresin yol bileşenini ile eşleşen düzenli ifadelerde 
-    (<directive>LocationMatch</directive>, <directive>RewriteRule</directive>, 
+    <p>Bu adresleri dosya sistemi ile eşleştirirken bu ardışık bölü
+    çizgilerinin önemi yoktur. Ancak. bu adresler CGI veya vekil gibi başka
+    yollardan değerlendiriliyorsa bu ardışık bölü çizgilerinin olduğu gibi
+    kalması tercih edilebilir. Bu durumlarda ardışık bölü çizgilerinin
+    birleştirilmesini önlemek için <directive>MergeSlashes</directive>
+    yönergesine <em>OFF</em> atanabilir. Bu atamayla, yapılandırma dosyasında,
+    adresin yol bileşenini ile eşleşen düzenli ifadelerde
+    (<directive>LocationMatch</directive>, <directive>RewriteRule</directive>,
     ...) ardışık bölü çizgileri hesaba katılacaktır.</p>
 </usage>
 </directivesynopsis>
