@@ -1968,11 +1968,12 @@ header for proxied requests</description>
 <directivesynopsis>
 <name>ProxyErrorOverride</name>
 <description>Override error pages for proxied content</description>
-<syntax>ProxyErrorOverride On|Off</syntax>
+<syntax>ProxyErrorOverride Off|On [<var>code</var> ...]</syntax>
 <default>ProxyErrorOverride Off</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
+<compatibility>The list of status codes was added in 2.5.1</compatibility>
 
 <usage>
     <p>This directive is useful for reverse-proxy setups where you want to
@@ -1985,6 +1986,26 @@ header for proxied requests</description>
 
     <p>This directive does not affect the processing of informational (1xx),
     normal success (2xx), or redirect (3xx) responses.</p>
+
+    <p>By default <directive>ProxyErrorOverride</directive> affects all responses with codes between 400 (including)
+        and 600 (excluding).</p>
+
+    <example><title>Example for default behavior</title>
+        <highlight language="config">
+            ProxyErrorOverride  On
+        </highlight>
+    </example>
+
+    <p>To change the default behavior, you can specify the status codes to consider, separated by spaces.
+        If you do so, all other status codes will be ignored.
+        You can only specify status codes, that are considered error codes: between 400 (including)
+        and 600 (excluding).</p>
+
+    <example><title>Example for custom status codes</title>
+        <highlight language="config">
+            ProxyErrorOverride  On 403 405 500 501 502 503 504
+        </highlight>
+    </example>
 </usage>
 </directivesynopsis>
 

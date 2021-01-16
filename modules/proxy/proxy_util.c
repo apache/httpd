@@ -3401,6 +3401,45 @@ int ap_proxy_lb_workers(void)
     return lb_workers_limit;
 }
 
+static APR_INLINE int error_code_overridden(const int *elts, int nelts,
+                                            int code)
+{
+    int min = 0;
+    int max = nelts - 1;
+    AP_DEBUG_ASSERT(max >= 0);
+
+    while (min < max) {
+        int mid = (min + max) / 2;
+        int val = elts[mid];
+
+        if (val < code) {
+            min = mid + 1;
+        }
+        else if (val > code) {
+            max = mid - 1;
+        }
+        else {
+            return 1;
+        }
+    }
+
+    return elts[min] == code;
+}
+
+PROXY_DECLARE(int) ap_proxy_should_override(proxy_dir_conf *conf, int code)
+{
+    if (!conf->error_override) 
+        return 0;
+
+    if (apr_is_empty_array(conf->error_override_codes))
+        return ap_is_HTTP_ERROR(code);
+
+    /* Since error_override_codes is sorted, apply binary search. */
+    return error_code_overridden((int *)conf->error_override_codes->elts,
+                                 conf->error_override_codes->nelts,
+                                 code);
+}
+
 PROXY_DECLARE(void) ap_proxy_backend_broke(request_rec *r,
                                            apr_bucket_brigade *brigade)
 {

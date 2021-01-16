@@ -475,7 +475,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                     /* If we are overriding the errors, we can't put the content
                      * of the page into the brigade.
                      */
-                    if (!conf->error_override || !ap_is_HTTP_ERROR(r->status)) {
+                    if (!ap_proxy_should_override(conf, r->status)) {
                         /* AJP13_SEND_BODY_CHUNK with zero length
                          * is explicit flush message
                          */
@@ -498,8 +498,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                              * error status so that an underlying error (eg HTTP_NOT_FOUND)
                              * doesn't become an HTTP_OK.
                              */
-                            if (conf->error_override && !ap_is_HTTP_ERROR(r->status)
-                                    && ap_is_HTTP_ERROR(original_status)) {
+                            if (ap_proxy_should_override(conf, original_status)) {
                                 r->status = original_status;
                                 r->status_line = original_status_line;
                             }
@@ -548,7 +547,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                 if (status != APR_SUCCESS) {
                     backend_failed = 1;
                 }
-                if (!conf->error_override || !ap_is_HTTP_ERROR(r->status)) {
+                if (!ap_proxy_should_override(conf, r->status)) {
                     e = apr_bucket_eos_create(r->connection->bucket_alloc);
                     APR_BRIGADE_INSERT_TAIL(output_brigade, e);
                     if (ap_pass_brigade(r->output_filters,
@@ -643,7 +642,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                       conn->worker->cp->addr,
                       conn->worker->s->hostname_ex);
 
-        if (conf->error_override && ap_is_HTTP_ERROR(r->status)) {
+        if (ap_proxy_should_override(conf, r->status)) {
             /* clear r->status for override error, otherwise ErrorDocument
              * thinks that this is a recursive error, and doesn't find the
              * custom error page
