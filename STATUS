@@ -138,6 +138,20 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_proxy_http: individual status codes for ProxyErrorOverride. BZ 63628
+     trunk patch: https://svn.apache.org/r1754974
+                  https://svn.apache.org/r1754975
+                  https://svn.apache.org/r1876404
+                  https://svn.apache.org/r1877696
+                  https://svn.apache.org/r1877697
+                  https://svn.apache.org/r1877728
+     2.4.x patch: http://people.apache.org/~ylavic/patches/2.4.x-mod_proxy_http-override-3on5.patch
+                  https://github.com/apache/httpd/pull/157
+     +1: ylavic, covener, minfrin
+     ylavic: Besides ProxyErrorOverride individual status codes, merging now
+             the non-functional changes in ap_proxy_http_process_response()
+             around ProxyErrorOverride code helps reducing conflicts with the
+             following commits, and with trunk/2.4 alignment still.
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -207,21 +221,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: jailletc36, minfrin
 
   [ start of series (staged/cumulative patches) ]
-  *) mod_proxy_http: individual status codes for ProxyErrorOverride. BZ 63628
-     trunk patch: https://svn.apache.org/r1754974
-                  https://svn.apache.org/r1754975
-                  https://svn.apache.org/r1876404
-                  https://svn.apache.org/r1877696
-                  https://svn.apache.org/r1877697
-                  https://svn.apache.org/r1877728
-     2.4.x patch: http://people.apache.org/~ylavic/patches/2.4.x-mod_proxy_http-override-3on5.patch
-                  https://github.com/apache/httpd/pull/157
-     +1: ylavic, covener
-     ylavic: Besides ProxyErrorOverride individual status codes, merging now
-             the non-functional changes in ap_proxy_http_process_response()
-             around ProxyErrorOverride code helps reducing conflicts with the
-             following commits, and with trunk/2.4 alignment still.
-
   *) mod_proxy_http: handle upgrade/tunneling protocols. BZ 61616 is about
                      mod_proxy_connect but there has been wstunnel reports
                      on dev@ about that too lately.
