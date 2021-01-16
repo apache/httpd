@@ -138,6 +138,18 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_proxy_http: Fix 100-continue deadlock for spooled request bodies. BZ 63855.
+     trunk patch: https://svn.apache.org/r1769760
+                  https://svn.apache.org/r1770220
+                  https://svn.apache.org/r1868576
+                  https://svn.apache.org/r1868653
+                  https://svn.apache.org/r1883639
+                  https://svn.apache.org/r1883640
+                  https://svn.apache.org/r1884218
+                  https://svn.apache.org/r1884220
+     2.4.x patch: http://people.apache.org/~ylavic/patches/2.4.x-bz63855-1on5.patch
+                  https://github.com/apache/httpd/pull/154
+     +1: ylavic, covener, minfrin
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -206,26 +218,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       svn merge -c 1881303,1881304,1881305,1881306 ^/httpd/httpd/trunk .
      +1: jailletc36, minfrin
 
-  *) core: Correctly strip unwanted headers on 304 response
-     Trunk version of patch:
-        http://svn.apache.org/r1881590
-        http://svn.apache.org/r1881624
-     +1: ylavic, covener, minfrin
-
   [ start of series (staged/cumulative patches) ]
-  *) mod_proxy_http: Fix 100-continue deadlock for spooled request bodies. BZ 63855.
-     trunk patch: https://svn.apache.org/r1769760
-                  https://svn.apache.org/r1770220
-                  https://svn.apache.org/r1868576
-                  https://svn.apache.org/r1868653
-                  https://svn.apache.org/r1883639
-                  https://svn.apache.org/r1883640
-                  https://svn.apache.org/r1884218
-                  https://svn.apache.org/r1884220
-     2.4.x patch: http://people.apache.org/~ylavic/patches/2.4.x-bz63855-1on5.patch
-                  https://github.com/apache/httpd/pull/154
-     +1: ylavic, covener
-
   *) core: output filtering improvements (ease following patches, align trunk/2.4)
      trunk patch: https://svn.apache.org/r1836032
                   https://svn.apache.org/r1884295
