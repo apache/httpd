@@ -4369,10 +4369,12 @@ serveur HTTP Apache.</td></tr>
     spécifiques au protocole via la directive
     <code class="directive">AcceptFilter</code>.</p>
 
-    <p>Vous ne devez définir le protocole que si vous travaillez avec
-    des ports non standards ; dans le cas général, le protocole
-    <code>http</code> est associé au port 80 et le protocole
-    <code>https</code> au port 443.</p>
+    <p>Dans la plupart des configurations, cette directive n'est pas nécessaire.
+    Si elle n'est pas définie, le protocole par défaut pour le port 443 est
+    <code>https</code> et <code>http</code> pour tous les autres ports. La
+    connaissance du protocole permet de déterminer quel module doit traiter la
+    requête, et d'appliquer les optimisations spécifiques au protocole via la
+    directive <code class="directive"><a href="#acceptfilter">AcceptFilter</a></code>.</p>
 
     <p>Par exemple, si vous travaillez avec le protocole
     <code>https</code> sur un port non standard, spécifiez le protocole
