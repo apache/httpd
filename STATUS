@@ -138,6 +138,13 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) core: Correctly strip unwanted headers on 304 response
+     Trunk version of patch:
+        http://svn.apache.org/r1881590
+        http://svn.apache.org/r1881624
+     +1: ylavic, covener, minfrin
+
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -209,8 +216,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Trunk version of patch:
         http://svn.apache.org/r1881590
         http://svn.apache.org/r1881624
-     +1: ylavic, covener
-     ylavic: +1 with CHANGES entry
+     +1: ylavic, covener, minfrin
 
   [ start of series (staged/cumulative patches) ]
   *) mod_proxy_http: Fix 100-continue deadlock for spooled request bodies. BZ 63855.
