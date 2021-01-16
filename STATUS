@@ -138,15 +138,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) core: Make writing the pidfile atomic to avoid startup failures
-     after (e.g.) system crashes, but also races with multiple
-     concurrent "httpd -k restart" runs which have a race between
-     reading and writing a fresh pidfile.
-     trunk patch: https://svn.apache.org/r1875153
-                  https://svn.apache.org/r1875240
-                  https://svn.apache.org/r1877645
-     2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/163.patch
-     +1: jorton, covener, ylavic
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

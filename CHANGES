@@ -143,6 +143,11 @@ Changes with Apache 2.4.42
      with an empty body (regression introduced in 2.4.41). PR63891. 
      [Yann Ylavic]
 
+  *) core: Use a temporary file when writing the pid file, avoiding
+     startup failure if an empty pidfile is left over from a
+     previous crashed or aborted invocation of httpd.  PR 63140.
+     [Nicolas Carrier <carrier.nicolas0 gmail.com>, Joe Orton]
+
   *) mod_http2: Fixes issue where mod_unique_id would generate non-unique request
      identifier under load, see <https://github.com/icing/mod_h2/issues/195>.
      [Michael Kaufmann, Stefan Eissing]
