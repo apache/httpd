@@ -138,12 +138,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) core: Correctly strip unwanted headers on 304 response
-     Trunk version of patch:
-        http://svn.apache.org/r1881590
-        http://svn.apache.org/r1881624
-     +1: ylavic, covener, minfrin
-
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:

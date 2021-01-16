@@ -1497,25 +1497,21 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
     h.bb = b2;
 
     if (r->status == HTTP_NOT_MODIFIED) {
-        apr_table_do((int (*)(void *, const char *, const char *)) form_header_field,
-                     (void *) &h, r->headers_out,
-                     "Connection",
-                     "Keep-Alive",
-                     "ETag",
-                     "Content-Location",
-                     "Expires",
-                     "Cache-Control",
-                     "Vary",
-                     "Warning",
-                     "WWW-Authenticate",
-                     "Proxy-Authenticate",
-                     "Set-Cookie",
-                     "Set-Cookie2",
-                     NULL);
+      /*
+       * List of headers that must not be updated on a 304 (or 206 partial content)
+       * https://tools.ietf.org/id/draft-ietf-httpbis-cache-08.txt
+       */
+      apr_table_unset(r->headers_out, "Content-Encoding");
+      apr_table_unset(r->headers_out, "Content-Length");
+      apr_table_unset(r->headers_out, "Content-MD5");
+      apr_table_unset(r->headers_out, "Content-Range");
+      apr_table_unset(r->headers_out, "ETag");
+      apr_table_unset(r->headers_out, "TE");
+      apr_table_unset(r->headers_out, "Trailer");
+      apr_table_unset(r->headers_out, "Transfer-Encoding");
+      apr_table_unset(r->headers_out, "Upgrade");
     }
-    else {
-        send_all_header_fields(&h, r);
-    }
+    send_all_header_fields(&h, r);
 
     terminate_header(b2);
 

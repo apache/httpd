@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.47
 
+  *) core: Remove headers on 304 Not Modified as specified by RFC7234, as
+     opposed to passing an explicit subset of headers. PR 61820.
+     [Giovanni Bechis]
+
   *) mpm_event: don't reset connections after lingering close, restoring prior
      to 2.4.28 behaviour.  [Yann Ylavic]
 
