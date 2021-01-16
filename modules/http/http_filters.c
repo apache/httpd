@@ -79,7 +79,8 @@ typedef struct http_filter_ctx
         BODY_CHUNK_END_LF, /* got CR after data, expect LF */
         BODY_CHUNK_TRAILER /* trailers */
     } state;
-    unsigned int eos_sent :1;
+    unsigned int eos_sent :1,
+                 seen_data:1;
     apr_bucket_brigade *bb;
 } http_ctx_t;
 
@@ -348,7 +349,6 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
     http_ctx_t *ctx = f->ctx;
     apr_status_t rv;
     int http_error = HTTP_REQUEST_ENTITY_TOO_LARGE;
-    apr_bucket_brigade *bb;
     int again;
 
     /* just get out of the way of things we don't want. */
@@ -361,7 +361,6 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
         f->ctx = ctx = apr_pcalloc(f->r->pool, sizeof(*ctx));
         ctx->state = BODY_NONE;
         ctx->bb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
-        bb = ctx->bb;
 
         /* LimitRequestBody does not apply to proxied responses.
          * Consider implementing this check in its own filter.
@@ -448,42 +447,43 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
             ctx->eos_sent = 1;
             return APR_SUCCESS;
         }
+    }
 
-        /* Since we're about to read data, send 100-Continue if needed.
-         * Only valid on chunked and C-L bodies where the C-L is > 0. */
-        if ((ctx->state == BODY_CHUNK ||
-            (ctx->state == BODY_LENGTH && ctx->remaining > 0)) &&
-            f->r->expecting_100 && f->r->proto_num >= HTTP_VERSION(1,1) &&
-            !(f->r->eos_sent || f->r->bytes_sent)) {
-            if (!ap_is_HTTP_SUCCESS(f->r->status)) {
-                ctx->state = BODY_NONE;
-                ctx->eos_sent = 1;
-            }
-            else {
-                char *tmp;
-                int len;
-
-                /* if we send an interim response, we're no longer
-                 * in a state of expecting one.
-                 */
-                f->r->expecting_100 = 0;
-                tmp = apr_pstrcat(f->r->pool, AP_SERVER_PROTOCOL " ",
-                                  ap_get_status_line(HTTP_CONTINUE), CRLF CRLF,
-                                  NULL);
-                len = strlen(tmp);
-                ap_xlate_proto_to_ascii(tmp, len);
-                apr_brigade_cleanup(bb);
-                e = apr_bucket_pool_create(tmp, len, f->r->pool,
-                                           f->c->bucket_alloc);
-                APR_BRIGADE_INSERT_HEAD(bb, e);
-                e = apr_bucket_flush_create(f->c->bucket_alloc);
-                APR_BRIGADE_INSERT_TAIL(bb, e);
-
-                rv = ap_pass_brigade(f->c->output_filters, bb);
-                if (rv != APR_SUCCESS) {
-                    return AP_FILTER_ERROR;
-                }
-            }
+    /* Since we're about to read data, send 100-Continue if needed.
+     * Only valid on chunked and C-L bodies where the C-L is > 0.
+     *
+     * If the read is to be nonblocking though, the caller may not want to
+     * handle this just now (e.g. mod_proxy_http), and is prepared to read
+     * nothing if the client really waits for 100 continue, so we don't
+     * send it now and wait for later blocking read.
+     *
+     * In any case, even if r->expecting remains set at the end of the
+     * request handling, ap_set_keepalive() will finally do the right
+     * thing (i.e. "Connection: close" the connection).
+     */
+    if (block == APR_BLOCK_READ
+            && (ctx->state == BODY_CHUNK
+                || (ctx->state == BODY_LENGTH && ctx->remaining > 0))
+            && f->r->expecting_100 && f->r->proto_num >= HTTP_VERSION(1,1)
+            && !(ctx->eos_sent || f->r->eos_sent || f->r->bytes_sent)) {
+        if (!ap_is_HTTP_SUCCESS(f->r->status)) {
+            ctx->state = BODY_NONE;
+            ctx->eos_sent = 1; /* send EOS below */
+        }
+        else if (!ctx->seen_data) {
+            int saved_status = f->r->status;
+            f->r->status = HTTP_CONTINUE;
+            ap_send_interim_response(f->r, 0);
+            AP_DEBUG_ASSERT(!f->r->expecting_100);
+            f->r->status = saved_status;
+        }
+        else {
+            /* https://tools.ietf.org/html/rfc7231#section-5.1.1
+             *   A server MAY omit sending a 100 (Continue) response if it
+             *   has already received some or all of the message body for
+             *   the corresponding request [...]
+             */
+            f->r->expecting_100 = 0;
         }
     }
 
@@ -534,9 +534,11 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                     int parsing = 0;
 
                     rv = apr_bucket_read(e, &buffer, &len, APR_BLOCK_READ);
-
                     if (rv == APR_SUCCESS) {
                         parsing = 1;
+                        if (len > 0) {
+                            ctx->seen_data = 1;
+                        }
                         rv = parse_chunk_size(ctx, buffer, len,
                                 f->r->server->limit_req_fieldsize, strict);
                     }
@@ -598,6 +600,9 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
 
                 /* How many bytes did we just read? */
                 apr_brigade_length(b, 0, &totalread);
+                if (totalread > 0) {
+                    ctx->seen_data = 1;
+                }
 
                 /* If this happens, we have a bucket of unknown length.  Die because
                  * it means our assumptions have changed. */

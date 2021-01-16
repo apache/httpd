@@ -2201,7 +2201,8 @@ static int send_header(void *data, const char *key, const char *val)
 AP_DECLARE(void) ap_send_interim_response(request_rec *r, int send_headers)
 {
     hdr_ptr x;
-    char *status_line = NULL;
+    char *response_line = NULL;
+    const char *status_line;
     request_rec *rr;
 
     if (r->proto_num < HTTP_VERSION(1,1)) {
@@ -2232,13 +2233,19 @@ AP_DECLARE(void) ap_send_interim_response(request_rec *r, int send_headers)
         }
     }
 
-    status_line = apr_pstrcat(r->pool, AP_SERVER_PROTOCOL, " ", r->status_line, CRLF, NULL);
-    ap_xlate_proto_to_ascii(status_line, strlen(status_line));
+    status_line = r->status_line;
+    if (status_line == NULL) {
+        status_line = ap_get_status_line_ex(r->pool, r->status);
+    }
+    response_line = apr_pstrcat(r->pool,
+                                AP_SERVER_PROTOCOL " ", status_line, CRLF,
+                                NULL);
+    ap_xlate_proto_to_ascii(response_line, strlen(response_line));
 
     x.f = r->connection->output_filters;
     x.bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
 
-    ap_fputs(x.f, x.bb, status_line);
+    ap_fputs(x.f, x.bb, response_line);
     if (send_headers) {
         apr_table_do(send_header, &x, r->headers_out, NULL);
         apr_table_clear(r->headers_out);

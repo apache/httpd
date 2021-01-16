@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.47
 
+  *) http: Allow unknown response status' lines returned in the form of
+     "HTTP/x.x xxx Status xxx".  [Yann Ylavic]
+
+  *) mod_proxy_http: Fix 100-continue deadlock for spooled request bodies,
+     leading to Request Timeout (408).  PR 63855.  [Yann Ylavic]
+
   *) core: Remove headers on 304 Not Modified as specified by RFC7234, as
      opposed to passing an explicit subset of headers. PR 61820.
      [Giovanni Bechis]
