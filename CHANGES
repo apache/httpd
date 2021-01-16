@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.47
 
+  *) core: add ReadBufferSize, FlushMaxThreshold and FlushMaxPipelined
+     directives.  [Yann Ylavic]
+
+  *) core: Ensure that aborted connections are logged as such. PR 62823
+     [Arnaud Grandville <contact@grandville.net>]
+
   *) http: Allow unknown response status' lines returned in the form of
      "HTTP/x.x xxx Status xxx".  [Yann Ylavic]
 

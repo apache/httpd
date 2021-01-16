@@ -138,23 +138,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) core: output filtering improvements (ease following patches, align trunk/2.4)
-     trunk patch: https://svn.apache.org/r1836032
-                  https://svn.apache.org/r1884295
-                  https://svn.apache.org/r1884296
-                  https://svn.apache.org/r1884304
-                  https://svn.apache.org/r1836237
-                  https://svn.apache.org/r1836258
-                  https://svn.apache.org/r1836354
-                  https://svn.apache.org/r1843939
-     2.4.x patch: http://people.apache.org/~ylavic/patches/2.4.x-core_output_filtering-2on5.patch
-                  https://github.com/apache/httpd/pull/156
-     +1: ylavic, covener, minfrin
-     ylavic: These core output filter changes are needed for the proxy
-             tunneling loop to work properly/non-blocking (PR 158 below). They
-             do not include the major filter setaside/reinstate changes from
-             trunk, reluing on existing 2.4 c->data_in_{input,output}_filter
-             flags only.
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
