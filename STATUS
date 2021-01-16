@@ -227,15 +227,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1885244
      2.4.x patch: http://people.apache.org/~ylavic/patches/2.4.x-mod_proxy_http-upgrade-4on5-v2.patch
                   https://github.com/apache/httpd/pull/158
-     +1: ylavic,
+     +1: ylavic, covener
      ylavic: All the corresponding trunk changes to mod_proxy_wstunnel (but
              r1885239) have been dropped for this backport proposal, the goal
              being to handle upgrade in mod_proxy_http from now, while r1885239
              allows to benefit from the Upgrade improvements done in proxy_http
              with existing wstunnel configurations (provided mod_proxy_http
              module is loaded).
-     ylavic: +1 from covener dropped after adding r1885239, r1885240 and
-             r1885244 in v2.
 
   *) mod_proxy: common spooling code to allow mod_proxy_fgci proxy-sendcl. BZ 57087 
      trunk patch: https://svn.apache.org/r1884067
