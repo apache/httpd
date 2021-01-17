@@ -138,6 +138,19 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_proxy: common spooling code to allow mod_proxy_fgci proxy-sendcl. BZ 57087
+     trunk patch: https://svn.apache.org/r1884067
+                  https://svn.apache.org/r1884068
+                  https://svn.apache.org/r1884069
+                  https://svn.apache.org/r1884070
+     2.4.x patch: http://people.apache.org/~ylavic/patches/2.4.x-mod_proxy_fcgi-sendcl-5on5.patch
+                  https://github.com/apache/httpd/pull/162
+     +1: ylavic, covener, minfrin
+     ylavic: Long standing BZ (always send Content-Length, according to the CGI
+             specs) which is addressed by reusing mod_proxy_http's spooling
+             code (moved to proxy_util) in mod_proxy_fcgi. The user still needs
+             to SetEnv proxy-sendcl for that (2.4 compat).
+
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -205,21 +218,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Trunk version of patch works
       svn merge -c 1881303,1881304,1881305,1881306 ^/httpd/httpd/trunk .
      +1: jailletc36, minfrin
-
-  [ start of series (staged/cumulative patches) ]
-  *) mod_proxy: common spooling code to allow mod_proxy_fgci proxy-sendcl. BZ 57087 
-     trunk patch: https://svn.apache.org/r1884067
-                  https://svn.apache.org/r1884068
-                  https://svn.apache.org/r1884069
-                  https://svn.apache.org/r1884070
-     2.4.x patch: http://people.apache.org/~ylavic/patches/2.4.x-mod_proxy_fcgi-sendcl-5on5.patch
-                  https://github.com/apache/httpd/pull/162
-     +1: ylavic, covener
-     ylavic: Long standing BZ (always send Content-Length, according to the CGI
-             specs) which is addressed by reusing mod_proxy_http's spooling
-             code (moved to proxy_util) in mod_proxy_fcgi. The user still needs
-             to SetEnv proxy-sendcl for that (2.4 compat).
-  [ End of series ]
 
   *) Easy patches: synch 2.4.x and trunk
         - mod_dav: save a few cycles
