@@ -1,6 +1,19 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.47
 
+  *) mod_proxy: Put mod_proxy_{connect,wstunnel} tunneling code in common in
+     proxy_util.  [Yann Ylavic]
+
+  *) mod_proxy: Improve tunneling loop to support half closed connections and
+     pending data draining (for protocols like rsync). PR 61616. [Yann Ylavic]
+
+  *) mod_proxy_http: handle Upgrade request, 101 (Switching Protocol) response
+     and switched protocol forwarding.  [Yann Ylavic]
+
+  *) mod_proxy_wstunnel: Leave Upgrade requests handling to mod_proxy_http,
+     allowing for (non-)Upgrade negotiation with the origin server.
+     [Yann Ylavic]
+
   *) mod_proxy: Allow ProxyErrorOverride to be restricted to specific status 
      codes.  PR63628. [Martin Drößler <mail martindroessler.de>]
 

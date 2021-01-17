@@ -542,6 +542,9 @@
  *                          flush_max_threshold and flush_max_pipelined to
  *                          core_server_config, and ap_get_read_buf_size().
  * 20120211.98 (2.4.47-dev) Add ap_proxy_should_override to mod_proxy.h
+ * 20120211.99 (2.4.47-dev) Add proxy_tunnel_rec, ap_proxy_tunnel_create()
+ *                          and ap_proxy_tunnel_run() to proxy_util.
+ * 20120211.99 (2.4.47-dev) Add ap_proxy_worker_can_upgrade()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -549,7 +552,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 98                  /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 99                  /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

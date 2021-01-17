@@ -31,36 +31,71 @@ static apr_status_t ap_proxy_http_cleanup(const char *scheme,
 static apr_status_t ap_proxygetline(apr_bucket_brigade *bb, char *s, int n,
                                     request_rec *r, int flags, int *read);
 
+static const char *get_url_scheme(const char **url, int *is_ssl)
+{
+    const char *u = *url;
+
+    switch (u[0]) {
+    case 'h':
+    case 'H':
+        if (strncasecmp(u + 1, "ttp", 3) == 0) {
+            if (u[4] == ':') {
+                *is_ssl = 0;
+                *url = u + 5;
+                return "http";
+            }
+            if (apr_tolower(u[4]) == 's' && u[5] == ':') {
+                *is_ssl = 1;
+                *url = u + 6;
+                return "https";
+            }
+        }
+        break;
+
+    case 'w':
+    case 'W':
+        if (apr_tolower(u[1]) == 's') {
+            if (u[2] == ':') {
+                *is_ssl = 0;
+                *url = u + 3;
+                return "ws";
+            }
+            if (apr_tolower(u[2]) == 's' && u[3] == ':') {
+                *is_ssl = 1;
+                *url = u + 4;
+                return "wss";
+            }
+        }
+        break;
+    }
+
+    *is_ssl = 0;
+    return NULL;
+}
+
 /*
  * Canonicalise http-like URLs.
  *  scheme is the scheme for the URL
  *  url    is the URL starting with the first '/'
- *  def_port is the default port for this scheme.
  */
 static int proxy_http_canon(request_rec *r, char *url)
 {
+    const char *base_url = url;
     char *host, *path, sport[7];
     char *search = NULL;
     const char *err;
     const char *scheme;
     apr_port_t port, def_port;
+    int is_ssl = 0;
 
-    /* ap_port_of_scheme() */
-    if (strncasecmp(url, "http:", 5) == 0) {
-        url += 5;
-        scheme = "http";
-    }
-    else if (strncasecmp(url, "https:", 6) == 0) {
-        url += 6;
-        scheme = "https";
-    }
-    else {
+    scheme = get_url_scheme((const char **)&url, &is_ssl);
+    if (!scheme) {
         return DECLINED;
     }
-    port = def_port = ap_proxy_port_of_scheme(scheme);
+    port = def_port = (is_ssl) ? DEFAULT_HTTPS_PORT : DEFAULT_HTTP_PORT;
 
     ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
-                  "HTTP: canonicalising URL %s", url);
+                  "HTTP: canonicalising URL %s", base_url);
 
     /* do syntatic check.
      * We break the URL into host, port, path, search
@@ -68,7 +103,7 @@ static int proxy_http_canon(request_rec *r, char *url)
     err = ap_proxy_canon_netloc(r->pool, &url, NULL, NULL, &host, &port);
     if (err) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01083)
-                      "error parsing URL %s: %s", url, err);
+                      "error parsing URL %s: %s", base_url, err);
         return HTTP_BAD_REQUEST;
     }
 
@@ -108,8 +143,9 @@ static int proxy_http_canon(request_rec *r, char *url)
     if (ap_strchr_c(host, ':')) { /* if literal IPv6 address */
         host = apr_pstrcat(r->pool, "[", host, "]", NULL);
     }
+
     r->filename = apr_pstrcat(r->pool, "proxy:", scheme, "://", host, sport,
-            "/", path, (search) ? "?" : "", (search) ? search : "", NULL);
+                              "/", path, (search) ? "?" : "", search, NULL);
     return OK;
 }
 
@@ -223,17 +259,6 @@ static void add_cl(apr_pool_t *p,
 #define ZERO_ASCII  "\060"
 #endif
 
-static void terminate_headers(apr_bucket_alloc_t *bucket_alloc,
-                              apr_bucket_brigade *header_brigade)
-{
-    apr_bucket *e;
-
-    /* add empty line at the end of the headers */
-    e = apr_bucket_immortal_create(CRLF_ASCII, 2, bucket_alloc);
-    APR_BRIGADE_INSERT_TAIL(header_brigade, e);
-}
-
-
 #define MAX_MEM_SPOOL 16384
 
 typedef enum {
@@ -246,6 +271,7 @@ typedef enum {
 typedef struct {
     apr_pool_t *p;
     request_rec *r;
+    const char *proto;
     proxy_worker *worker;
     proxy_server_conf *sconf;
 
@@ -261,8 +287,11 @@ typedef struct {
 
     rb_methods rb_method;
 
-    unsigned int do_100_continue:1,
-                 prefetch_nonblocking:1;
+    const char *upgrade;
+
+    unsigned int do_100_continue        :1,
+                 prefetch_nonblocking   :1,
+                 force10                :1;
 } proxy_http_req_t;
 
 /* Read what's in the client pipe. If nonblocking is set and read is EAGAIN,
@@ -377,20 +406,26 @@ static int stream_reqbody(proxy_http_req_t *req)
                 }
             }
             else if (rb_method == RB_STREAM_CL
-                     && bytes_streamed > req->cl_val) {
-                /* C-L < bytes streamed?!?
-                 * We will error out after the body is completely
-                 * consumed, but we can't stream more bytes at the
-                 * back end since they would in part be interpreted
-                 * as another request!  If nothing is sent, then
-                 * just send nothing.
+                     && (bytes_streamed > req->cl_val
+                         || (seen_eos && bytes_streamed < req->cl_val))) {
+                /* C-L != bytes streamed?!?
                  *
-                 * Prevents HTTP Response Splitting.
+                 * Prevent HTTP Request/Response Splitting.
+                 *
+                 * We can't stream more (or less) bytes at the back end since
+                 * they could be interpreted in separate requests (more bytes
+                 * now would start a new request, less bytes would make the
+                 * first bytes of the next request be part of the current one).
+                 *
+                 * It can't happen from the client connection here thanks to
+                 * ap_http_filter(), but some module's filter may be playing
+                 * bad games, hence the HTTP_INTERNAL_SERVER_ERROR.
                  */
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01086)
-                              "read more bytes of request body than expected "
+                              "read %s bytes of request body than expected "
                               "(got %" APR_OFF_T_FMT ", expected "
                               "%" APR_OFF_T_FMT ")",
+                              bytes_streamed > req->cl_val ? "more" : "less",
                               bytes_streamed, req->cl_val);
                 return HTTP_INTERNAL_SERVER_ERROR;
             }
@@ -415,13 +450,6 @@ static int stream_reqbody(proxy_http_req_t *req)
             return rv;
         }
     } while (!seen_eos);
-
-    if (rb_method == RB_STREAM_CL && bytes_streamed != req->cl_val) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01087)
-                      "client %s given Content-Length did not match"
-                      " number of body bytes read", r->connection->client_ip);
-        return HTTP_BAD_REQUEST;
-    }
 
     return OK;
 }
@@ -558,6 +586,43 @@ static int spool_reqbody_cl(proxy_http_req_t *req, apr_off_t *bytes_spooled)
     return OK;
 }
 
+static void terminate_headers(proxy_http_req_t *req)
+{
+    apr_bucket_alloc_t *bucket_alloc = req->bucket_alloc;
+    apr_bucket *e;
+    char *buf;
+
+    /*
+     * Handle Connection: header if we do HTTP/1.1 request:
+     * If we plan to close the backend connection sent Connection: close
+     * otherwise sent Connection: Keep-Alive.
+     */
+    if (!req->force10) {
+        if (req->upgrade) {
+            buf = apr_pstrdup(req->p, "Connection: Upgrade" CRLF);
+            ap_xlate_proto_to_ascii(buf, strlen(buf));
+            e = apr_bucket_pool_create(buf, strlen(buf), req->p, bucket_alloc);
+            APR_BRIGADE_INSERT_TAIL(req->header_brigade, e);
+
+            /* Tell the backend that it can upgrade the connection. */
+            buf = apr_pstrcat(req->p, "Upgrade: ", req->upgrade, CRLF, NULL);
+        }
+        else if (ap_proxy_connection_reusable(req->backend)) {
+            buf = apr_pstrdup(req->p, "Connection: Keep-Alive" CRLF);
+        }
+        else {
+            buf = apr_pstrdup(req->p, "Connection: close" CRLF);
+        }
+        ap_xlate_proto_to_ascii(buf, strlen(buf));
+        e = apr_bucket_pool_create(buf, strlen(buf), req->p, bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(req->header_brigade, e);
+    }
+
+    /* add empty line at the end of the headers */
+    e = apr_bucket_immortal_create(CRLF_ASCII, 2, bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(req->header_brigade, e);
+}
+
 static int ap_proxy_http_prefetch(proxy_http_req_t *req,
                                   apr_uri_t *uri, char *url)
 {
@@ -570,21 +635,14 @@ static int ap_proxy_http_prefetch(proxy_http_req_t *req,
     apr_bucket_brigade *input_brigade = req->input_brigade;
     apr_bucket_brigade *temp_brigade;
     apr_bucket *e;
-    char *buf;
     apr_status_t status;
     apr_off_t bytes_read = 0;
     apr_off_t bytes;
-    int force10, rv;
+    int rv;
     apr_read_type_e block;
-    conn_rec *origin = p_conn->connection;
 
-    if (apr_table_get(r->subprocess_env, "force-proxy-request-1.0")) {
-        if (r->expecting_100) {
-            return HTTP_EXPECTATION_FAILED;
-        }
-        force10 = 1;
-    } else {
-        force10 = 0;
+    if (req->force10 && r->expecting_100) {
+        return HTTP_EXPECTATION_FAILED;
     }
 
     rv = ap_proxy_create_hdrbrgd(p, header_brigade, r, p_conn,
@@ -636,7 +694,6 @@ static int ap_proxy_http_prefetch(proxy_http_req_t *req,
                       "chunked body with Content-Length (C-L ignored)",
                       c->client_ip, c->remote_host ? c->remote_host: "");
         req->old_cl_val = NULL;
-        origin->keepalive = AP_CONN_CLOSE;
         p_conn->close = 1;
     }
 
@@ -756,7 +813,7 @@ static int ap_proxy_http_prefetch(proxy_http_req_t *req,
         req->rb_method = RB_STREAM_CL;
     }
     else if (req->old_te_val) {
-        if (force10
+        if (req->force10
              || (apr_table_get(r->subprocess_env, "proxy-sendcl")
                   && !apr_table_get(r->subprocess_env, "proxy-sendchunks")
                   && !apr_table_get(r->subprocess_env, "proxy-sendchunked"))) {
@@ -776,7 +833,7 @@ static int ap_proxy_http_prefetch(proxy_http_req_t *req,
             }
             req->rb_method = RB_STREAM_CL;
         }
-        else if (!force10
+        else if (!req->force10
                   && (apr_table_get(r->subprocess_env, "proxy-sendchunks")
                       || apr_table_get(r->subprocess_env, "proxy-sendchunked"))
                   && !apr_table_get(r->subprocess_env, "proxy-sendcl")) {
@@ -820,23 +877,7 @@ static int ap_proxy_http_prefetch(proxy_http_req_t *req,
 
 /* Yes I hate gotos.  This is the subrequest shortcut */
 skip_body:
-    /*
-     * Handle Connection: header if we do HTTP/1.1 request:
-     * If we plan to close the backend connection sent Connection: close
-     * otherwise sent Connection: Keep-Alive.
-     */
-    if (!force10) {
-        if (!ap_proxy_connection_reusable(p_conn)) {
-            buf = apr_pstrdup(p, "Connection: close" CRLF);
-        }
-        else {
-            buf = apr_pstrdup(p, "Connection: Keep-Alive" CRLF);
-        }
-        ap_xlate_proto_to_ascii(buf, strlen(buf));
-        e = apr_bucket_pool_create(buf, strlen(buf), p, c->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(header_brigade, e);
-    }
-    terminate_headers(bucket_alloc, header_brigade);
+    terminate_headers(req);
 
     return OK;
 }
@@ -1147,6 +1188,36 @@ static int add_trailers(void *data, const char *key, const char *val)
     return 1;
 }
 
+static int send_continue_body(proxy_http_req_t *req)
+{
+    int status;
+
+    /* Send the request body (fully). */
+    switch(req->rb_method) {
+    case RB_SPOOL_CL:
+    case RB_STREAM_CL:
+    case RB_STREAM_CHUNKED:
+        status = stream_reqbody(req);
+        break;
+    default:
+        /* Shouldn't happen */
+        status = HTTP_INTERNAL_SERVER_ERROR;
+        break;
+    }
+    if (status != OK) {
+        conn_rec *c = req->r->connection;
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, req->r,
+                APLOGNO(10154) "pass request body failed "
+                "to %pI (%s) from %s (%s) with status %i",
+                req->backend->addr,
+                req->backend->hostname ? req->backend->hostname : "",
+                c->client_ip, c->remote_host ? c->remote_host : "",
+                status);
+        req->backend->close = 1;
+    }
+    return status;
+}
+
 static
 int ap_proxy_http_process_response(proxy_http_req_t *req)
 {
@@ -1157,6 +1228,7 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
     proxy_conn_rec *backend = req->backend;
     conn_rec *origin = req->origin;
     int do_100_continue = req->do_100_continue;
+    int status;
 
     char *buffer;
     char fixed_buffer[HUGE_STRING_LEN];
@@ -1228,6 +1300,7 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
                    origin->local_addr->port));
     do {
         apr_status_t rc;
+        const char *upgrade = NULL;
         int major = 0, minor = 0;
         int toclose = 0;
 
@@ -1248,7 +1321,8 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
                 apr_table_setn(r->notes, "proxy_timedout", "1");
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01103) "read timeout");
                 if (do_100_continue) {
-                    return ap_proxyerror(r, HTTP_SERVICE_UNAVAILABLE, "Timeout on 100-Continue");
+                    return ap_proxyerror(r, HTTP_SERVICE_UNAVAILABLE,
+                                         "Timeout on 100-Continue");
                 }
             }
             /*
@@ -1300,12 +1374,12 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
                 /* Need to return OK to avoid sending an error message */
                 return OK;
             }
-            else if (!c->keepalives) {
-                     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01105)
-                                   "NOT Closing connection to client"
-                                   " although reading from backend server %s:%d"
-                                   " failed.",
-                                   backend->hostname, backend->port);
+            if (!c->keepalives) {
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01105)
+                              "NOT Closing connection to client"
+                              " although reading from backend server %s:%d"
+                              " failed.",
+                              backend->hostname, backend->port);
             }
             return ap_proxyerror(r, HTTP_BAD_GATEWAY,
                                  "Error reading from remote server");
@@ -1325,8 +1399,8 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
              */
             if ((major != 1) || (len >= response_field_size - 1)) {
                 return ap_proxyerror(r, HTTP_BAD_GATEWAY,
-                apr_pstrcat(p, "Corrupt status line returned by remote "
-                            "server: ", buffer, NULL));
+                            apr_pstrcat(p, "Corrupt status line returned "
+                                        "by remote server: ", buffer, NULL));
             }
             backasswards = 0;
 
@@ -1423,10 +1497,29 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
              */
             te = apr_table_get(r->headers_out, "Transfer-Encoding");
 
+            upgrade = apr_table_get(r->headers_out, "Upgrade");
+            if (proxy_status == HTTP_SWITCHING_PROTOCOLS) {
+                if (!upgrade || !req->upgrade || (strcasecmp(req->upgrade,
+                                                             upgrade) != 0)) {
+                    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
+                                         apr_pstrcat(p, "Unexpected Upgrade: ",
+                                                     upgrade ? upgrade : "n/a",
+                                                     " (expecting ",
+                                                     req->upgrade ? req->upgrade
+                                                                  : "n/a", ")",
+                                                     NULL));
+                }
+                backend->close = 1;
+            }
+
             /* strip connection listed hop-by-hop headers from response */
             toclose = ap_proxy_clear_connection_fn(r, r->headers_out);
             if (toclose) {
                 backend->close = 1;
+                if (toclose < 0) {
+                    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
+                                         "Malformed connection header");
+                }
             }
 
             if ((buf = apr_table_get(r->headers_out, "Content-Type"))) {
@@ -1486,6 +1579,8 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
         }
 
         if (ap_is_HTTP_INFO(proxy_status)) {
+            const char *policy = NULL;
+
             /* RFC2616 tells us to forward this.
              *
              * OTOH, an interim response here may mean the backend
@@ -1501,15 +1596,29 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
              * We need to force "r->expecting_100 = 1" for RFC behaviour
              * otherwise ap_send_interim_response() does nothing when
              * the client did not ask for 100-continue.
+             *
+             * 101 Switching Protocol has its own configuration which
+             * shouldn't be interfered by "proxy-interim-response".
              */
-            const char *policy = apr_table_get(r->subprocess_env,
-                                               "proxy-interim-response");
+            if (proxy_status != HTTP_SWITCHING_PROTOCOLS) {
+                policy = apr_table_get(r->subprocess_env,
+                                       "proxy-interim-response");
+            }
             ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
-                          "HTTP: received interim %d response", r->status);
+                          "HTTP: received interim %d response (policy: %s)",
+                          r->status, policy ? policy : "n/a");
             if (!policy
                     || (!strcasecmp(policy, "RFC")
                         && (proxy_status != HTTP_CONTINUE
                             || (r->expecting_100 = 1)))) {
+                switch (proxy_status) {
+                case HTTP_SWITCHING_PROTOCOLS:
+                    AP_DEBUG_ASSERT(upgrade != NULL);
+                    apr_table_setn(r->headers_out, "Connection", "Upgrade");
+                    apr_table_setn(r->headers_out, "Upgrade",
+                                   apr_pstrdup(p, upgrade));
+                    break;
+                }
                 ap_send_interim_response(r, 1);
             }
             /* FIXME: refine this to be able to specify per-response-status
@@ -1563,30 +1672,8 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
                           major, minor, proxy_status_line);
 
             if (do_send_body) {
-                int status;
-
-                /* Send the request body (fully). */
-                switch(req->rb_method) {
-                case RB_SPOOL_CL:
-                case RB_STREAM_CL:
-                case RB_STREAM_CHUNKED:
-                    status = stream_reqbody(req);
-                    break;
-                default:
-                    /* Shouldn't happen */
-                    status = HTTP_INTERNAL_SERVER_ERROR;
-                    break;
-                }
+                status = send_continue_body(req);
                 if (status != OK) {
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                            APLOGNO(10154) "pass request body failed "
-                            "to %pI (%s) from %s (%s) with status %i",
-                            backend->addr,
-                            backend->hostname ? backend->hostname : "",
-                            c->client_ip,
-                            c->remote_host ? c->remote_host : "",
-                            status);
-                    backend->close = 1;
                     return status;
                 }
             }
@@ -1605,6 +1692,62 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
 
             /* Once only! */
             do_100_continue = 0;
+        }
+
+        if (proxy_status == HTTP_SWITCHING_PROTOCOLS) {
+            apr_status_t rv;
+            proxy_tunnel_rec *tunnel;
+            apr_interval_time_t client_timeout = -1,
+                                backend_timeout = -1;
+
+            /* If we didn't send the full body yet, do it now */
+            if (do_100_continue) {
+                r->expecting_100 = 0;
+                status = send_continue_body(req);
+                if (status != OK) {
+                    return status;
+                }
+            }
+
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(10239)
+                          "HTTP: tunneling protocol %s", upgrade);
+
+            rv = ap_proxy_tunnel_create(&tunnel, r, origin, "HTTP");
+            if (rv != APR_SUCCESS) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(10240)
+                              "can't create tunnel for %s", upgrade);
+                return HTTP_INTERNAL_SERVER_ERROR;
+            }
+
+            /* Set timeout to the lowest configured for client or backend */
+            apr_socket_timeout_get(backend->sock, &backend_timeout);
+            apr_socket_timeout_get(ap_get_conn_socket(c), &client_timeout);
+            if (backend_timeout >= 0 && backend_timeout < client_timeout) {
+                tunnel->timeout = backend_timeout;
+            }
+            else {
+                tunnel->timeout = client_timeout;
+            }
+
+            /* Let proxy tunnel forward everything */
+            status = ap_proxy_tunnel_run(tunnel);
+            if (ap_is_HTTP_ERROR(status)) {
+                /* Tunnel always return HTTP_GATEWAY_TIME_OUT on timeout,
+                 * but we can differentiate between client and backend here.
+                 */
+                if (status == HTTP_GATEWAY_TIME_OUT
+                        && tunnel->timeout == client_timeout) {
+                    status = HTTP_REQUEST_TIME_OUT;
+                }
+            }
+            else {
+                /* Update r->status for custom log */
+                status = HTTP_SWITCHING_PROTOCOLS;
+            }
+            r->status = status;
+
+            /* We are done with both connections */
+            return DONE;
         }
 
         if (interim_response) {
@@ -1636,7 +1779,7 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
              */
             r->status = HTTP_OK;
             /* Discard body, if one is expected */
-        if (!r->header_only && !AP_STATUS_IS_HEADER_ONLY(proxy_status)) {
+            if (!r->header_only && !AP_STATUS_IS_HEADER_ONLY(proxy_status)) {
                 const char *tmp;
                 /* Add minimal headers needed to allow http_in filter
                  * detecting end of body without waiting for a timeout. */
@@ -1657,6 +1800,17 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
              */
             apr_table_setn(r->notes, "proxy-error-override", "1");
             return proxy_status;
+        }
+
+        /* Forward back Upgrade header if it matches the configured one(s), it
+         * may be an HTTP_UPGRADE_REQUIRED response or some other status where
+         * Upgrade makes sense to negotiate the protocol by other means.
+         */
+        if (upgrade && ap_proxy_worker_can_upgrade(p, worker, upgrade,
+                                                   (*req->proto == 'w')
+                                                   ? "WebSocket" : NULL)) {
+            apr_table_setn(r->headers_out, "Connection", "Upgrade");
+            apr_table_setn(r->headers_out, "Upgrade", apr_pstrdup(p, upgrade));
         }
 
         r->sent_bodyct = 1;
@@ -1861,6 +2015,7 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
              */
             ap_proxy_release_connection(backend->worker->s->scheme,
                     backend, r->server);
+            /* Ensure that the backend is not reused */
             req->backend = NULL;
 
             /* Pass EOS bucket down the filter chain. */
@@ -1915,9 +2070,8 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
                               apr_port_t proxyport)
 {
     int status;
-    char *scheme;
-    const char *proxy_function;
-    const char *u;
+    const char *scheme;
+    const char *u = url;
     proxy_http_req_t *req = NULL;
     proxy_conn_rec *backend = NULL;
     apr_bucket_brigade *input_brigade = NULL;
@@ -1934,41 +2088,31 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
     apr_pool_t *p = r->pool;
     apr_uri_t *uri;
 
-    /* find the scheme */
-    u = strchr(url, ':');
-    if (u == NULL || u[1] != '/' || u[2] != '/' || u[3] == '\0')
-        return DECLINED;
-    if ((u - url) > 14)
-        return HTTP_BAD_REQUEST;
-    scheme = apr_pstrmemdup(p, url, u - url);
-    /* scheme is lowercase */
-    ap_str_tolower(scheme);
-    /* is it for us? */
-    if (strcmp(scheme, "https") == 0) {
-        if (!ap_proxy_ssl_enable(NULL)) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01112)
-                          "HTTPS: declining URL %s (mod_ssl not configured?)",
-                          url);
-            return DECLINED;
+    scheme = get_url_scheme(&u, &is_ssl);
+    if (!scheme && proxyname && strncasecmp(url, "ftp:", 4) == 0) {
+        u = url + 4;
+        scheme = "ftp";
+        is_ssl = 0;
+    }
+    if (!scheme || u[0] != '/' || u[1] != '/' || u[2] == '\0') {
+        if (!scheme && (u = strchr(url, ':')) && (u - url) > 14) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10262)
+                          "overlong proxy URL scheme in %s", url);
+            return HTTP_BAD_REQUEST;
         }
-        is_ssl = 1;
-        proxy_function = "HTTPS";
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01113)
+                      "HTTP: declining URL %s", url);
+        return DECLINED; /* only interested in HTTP, WS or FTP via proxy */
     }
-    else if (!(strcmp(scheme, "http") == 0 || (strcmp(scheme, "ftp") == 0 && proxyname))) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01113) "HTTP: declining URL %s",
-                      url);
-        return DECLINED; /* only interested in HTTP, or FTP via proxy */
-    }
-    else {
-        if (*scheme == 'h')
-            proxy_function = "HTTP";
-        else
-            proxy_function = "FTP";
+    if (is_ssl && !ap_proxy_ssl_enable(NULL)) {
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01112)
+                      "HTTP: declining URL %s (mod_ssl not configured?)", url);
+        return DECLINED;
     }
     ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, "HTTP: serving URL %s", url);
 
     /* create space for state information */
-    if ((status = ap_proxy_acquire_connection(proxy_function, &backend,
+    if ((status = ap_proxy_acquire_connection(scheme, &backend,
                                               worker, r->server)) != OK) {
         return status;
     }
@@ -1981,10 +2125,26 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
     req->sconf = conf;
     req->worker = worker;
     req->backend = backend;
+    req->proto = scheme;
     req->bucket_alloc = c->bucket_alloc;
     req->rb_method = RB_INIT;
 
     dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
+
+    if (apr_table_get(r->subprocess_env, "force-proxy-request-1.0")) {
+        req->force10 = 1;
+    }
+    else if (*worker->s->upgrade || *req->proto == 'w') {
+        /* Forward Upgrade header if it matches the configured one(s),
+         * the default being "WebSocket" for ws[s] schemes.
+         */
+        const char *upgrade = apr_table_get(r->headers_in, "Upgrade");
+        if (upgrade && ap_proxy_worker_can_upgrade(p, worker, upgrade,
+                                                   (*req->proto == 'w')
+                                                   ? "WebSocket" : NULL)) {
+            req->upgrade = upgrade;
+        }
+    }
 
     /* We possibly reuse input data prefetched in previous call(s), e.g. for a
      * balancer fallback scenario, and in this case the 100 continue settings
@@ -2001,13 +2161,16 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
     /* Should we handle end-to-end or ping 100-continue? */
     if ((r->expecting_100 && (dconf->forward_100_continue || input_brigade))
             || PROXY_DO_100_CONTINUE(worker, r)) {
-        req->do_100_continue = req->prefetch_nonblocking = 1;
+        req->do_100_continue = 1;
     }
+
     /* Should we block while prefetching the body or try nonblocking and flush
      * data to the backend ASAP?
      */
-    else if (input_brigade || apr_table_get(r->subprocess_env,
-                                            "proxy-prefetch-nonblocking")) {
+    if (input_brigade
+            || req->do_100_continue
+            || apr_table_get(r->subprocess_env,
+                             "proxy-prefetch-nonblocking")) {
         req->prefetch_nonblocking = 1;
     }
 
@@ -2083,9 +2246,9 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
         }
 
         /* Step Two: Make the Connection */
-        if (ap_proxy_check_connection(proxy_function, backend, r->server, 1,
+        if (ap_proxy_check_connection(scheme, backend, r->server, 1,
                                       PROXY_CHECK_CONN_EMPTY)
-                && ap_proxy_connect_backend(proxy_function, backend, worker,
+                && ap_proxy_connect_backend(scheme, backend, worker,
                                             r->server)) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01114)
                           "HTTP: failed to make connection to backend: %s",
@@ -2095,8 +2258,7 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
         }
 
         /* Step Three: Create conn_rec */
-        if ((status = ap_proxy_connection_create_ex(proxy_function,
-                                                    backend, r)) != OK)
+        if ((status = ap_proxy_connection_create_ex(scheme, backend, r)) != OK)
             break;
         req->origin = backend->connection;
 
@@ -2134,7 +2296,7 @@ cleanup:
     if (req->backend) {
         if (status != OK)
             req->backend->close = 1;
-        ap_proxy_http_cleanup(proxy_function, r, req->backend);
+        ap_proxy_http_cleanup(scheme, r, req->backend);
     }
     return status;
 }
