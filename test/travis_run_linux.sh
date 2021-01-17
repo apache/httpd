@@ -90,8 +90,10 @@ if ! test -v SKIP_TESTING; then
         export ASAN_OPTIONS="log_path=$PWD/asan.log"
     fi
 
+    # Try to keep all potential coredumps from all processes
+    sudo sysctl -w kernel.core_uses_pid=1 2>/dev/null || true
+
     if test -v WITH_TEST_SUITE; then
-        sysctl -w kernel.core_uses_pid=1 2>/dev/null || true
         make check TESTS="${TESTS}" TEST_CONFIG="${TEST_ARGS}"
         RV=$?
     else
