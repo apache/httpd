@@ -104,7 +104,7 @@ THINGS THAT SHOULD BE CONSIDERED EARLY IN THE 2.6/3.0 DEVELOPMENT CYCLE:
   * Leverage libmill? Drop serf?
 
   * Better abstraction of slave connections and "requests".
-    - add abstraction for "response" as something that can be passed 
+    - add abstraction for "response" as something that can be passed
       through filters. To be serialized into the correct HTTP bytes on
       the main connection.
     - solve multi-threaded access to master connection props/module conf
