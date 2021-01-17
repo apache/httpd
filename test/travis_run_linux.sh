@@ -81,6 +81,9 @@ if ! test -v SKIP_TESTING; then
         export ASAN_OPTIONS="log_path=$PWD/asan.log"
     fi
 
+    # Try to keep all potential coredumps from all processes
+    sudo sysctl -w kernel.core_uses_pid=1 2>/dev/null || true
+
     if test -v WITH_TEST_SUITE; then
         make check TESTS="${TESTS}" TEST_CONFIG="${TEST_ARGS}"
         RV=$?
@@ -95,7 +98,7 @@ if ! test -v SKIP_TESTING; then
 
     # Skip further testing if a core dump was created during the test
     # suite run above.
-    if test $RV -eq 0 -a -f test/perl-framework/t/core; then
+    if test $RV -eq 0 && ls test/perl-framework/t/core test/perl-framework/t/core.* &>/dev/null; then
         RV=4
     fi            
     
@@ -157,6 +160,10 @@ if ! test -v SKIP_TESTING; then
         gdb -ex 'thread apply all backtrace' -batch ./httpd test/perl-framework/t/core
         RV=5
     fi
+    for core in test/perl-framework/t/core.*; do
+        gdb -ex 'thread apply all backtrace' -batch ./httpd "$core"
+        RV=5
+    done
 
     exit $RV
 fi

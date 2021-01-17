@@ -19,7 +19,7 @@ addons:
       - libapr1-dev
       - libaprutil1-dev
       - perl-doc
-      - lua5.3-dev
+      - liblua5.3-dev
       - libbrotli-dev
       - libcurl4-openssl-dev
       - libsystemd-dev
@@ -136,7 +136,7 @@ jobs:
             - libapr1-dev
             - libaprutil1-dev
             - perl-doc
-            - lua5.3-dev
+            - liblua5.3-dev
             - libbrotli-dev
             - libcurl4-openssl-dev
             - libsystemd-dev
@@ -158,7 +158,7 @@ jobs:
             - libapr1-dev
             - libaprutil1-dev
             - perl-doc
-            - lua5.3-dev
+            - liblua5.3-dev
             - libbrotli-dev
             - libcurl4-openssl-dev
             - libsystemd-dev
@@ -180,7 +180,7 @@ jobs:
             - libapr1-dev
             - libaprutil1-dev
             - perl-doc
-            - lua5.3-dev
+            - liblua5.3-dev
             - libbrotli-dev
             - libcurl4-openssl-dev
             - libsystemd-dev
@@ -285,7 +285,7 @@ jobs:
             - libapr1-dev
             - libaprutil1-dev
             - perl-doc
-            - lua5.3-dev
+            - liblua5.3-dev
             - libbrotli-dev
             - libcurl4-openssl-dev
             - libsystemd-dev
