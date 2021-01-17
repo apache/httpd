@@ -113,7 +113,7 @@ void h2_util_camel_case_header(char *s, size_t len)
     }
 }
 
-/* base64 url encoding ****************************************************************************/
+/* base64 url encoding */
 
 #define N6 (unsigned int)-1
 

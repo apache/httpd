@@ -96,8 +96,8 @@ typedef int h2_iq_cmp(int i1, int i2, void *ctx);
 
 /**
  * Allocate a new queue from the pool and initialize.
- * @param id the identifier of the queue
  * @param pool the memory pool
+ * @param capacity the initial capacity of the queue
  */
 h2_iqueue *h2_iq_create(apr_pool_t *pool, int capacity);
 
@@ -179,7 +179,7 @@ size_t h2_iq_mshift(h2_iqueue *q, int *pint, size_t max);
 /**
  * Determine if int is in the queue already
  *
- * @parm q the queue
+ * @param q the queue
  * @param sid the integer id to check for
  * @return != 0 iff sid is already in the queue
  */

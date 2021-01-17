@@ -380,7 +380,7 @@ static int file_cache_handler(request_rec *r)
     return rc;
 }
 
-static command_rec file_cache_cmds[] =
+static const command_rec file_cache_cmds[] =
 {
 AP_INIT_ITERATE("cachefile", cachefilehandle, NULL, RSRC_CONF,
      "A space separated list of files to add to the file handle cache at config time"),

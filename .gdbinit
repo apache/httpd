@@ -6,12 +6,12 @@ define dump_table
     set $n = ((apr_array_header_t *)$arg0)->nelts
     set $i = 0
     while $i < $n
-	if $t[$i].val == (void *)0L
-	   printf "[%u] '%s'=>NULL\n", $i, $t[$i].key
-	else
-	   printf "[%u] '%s'='%s' [%p]\n", $i, $t[$i].key, $t[$i].val, $t[$i].val
-	end
-	set $i = $i + 1
+    if $t[$i].val == (void *)0L
+        printf "[%u] '%s'=>NULL\n", $i, $t[$i].key
+    else
+        printf "[%u] '%s'='%s' [%p]\n", $i, $t[$i].key, $t[$i].val, $t[$i].val
+    end
+    set $i = $i + 1
     end
 end
 document dump_table
@@ -47,7 +47,7 @@ define dump_string_hash
             printf "'%s' => '%p'\n", $ent->key, $ent->val
             set $ent = $ent->next
         end
-	set $i = $i + 1
+        set $i = $i + 1
     end
 end
 document dump_string_hash
@@ -64,7 +64,7 @@ define dump_string_shash
             printf "'%s' => '%s'\n", $ent->key, $ent->val
             set $ent = $ent->next
         end
-	set $i = $i + 1
+        set $i = $i + 1
     end
 end
 document dump_string_shash
@@ -72,7 +72,7 @@ document dump_string_shash
 end
 
 define ro
-	run -DONE_PROCESS
+    run -DONE_PROCESS
 end
 
 define dump_string_array
@@ -80,8 +80,8 @@ define dump_string_array
     set $n = (int)((apr_array_header_t *)$arg0)->nelts
     set $i = 0
     while $i < $n
-	printf "[%u] '%s'\n", $i, $a[$i]
-	set $i = $i + 1
+        printf "[%u] '%s'\n", $i, $a[$i]
+        set $i = $i + 1
     end
 end
 document dump_string_array

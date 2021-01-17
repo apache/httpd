@@ -8,6 +8,17 @@ Changes with Apache 2.4.47
        - mod_proxy_balancer: Add a missing </tr>
        - mod_md: get_stapling_status hooks should return an int
        - mod_session: Improve a message about SessionExpiryUpdateInterval values
+       - mod_http2: Fix ascii art
+       - mod_http2: fix some dox comments
+       - mod_dav: Don't call memcpy(,NULL,0)
+       - mod_ssl: Pass base_server in OpenSSL init log message
+       - .gdbinit: tab to space
+       - mod_so: don't try to load modules from a NULL path
+       - mod_cache_file/mod_lua: Add missing "const" or "static const" qualifiers
+                                 in some command_rec definitions
+       - mod_lua: Fix compilation error if APR_HAS_THREADS is not defined
+       - core/log: fix an harmless warning spoted by gcc 10
+       - mod_ssl: update comment
      [Christophe Jaillet]
 
   *) mod_proxy_fcgi: Honor "SetEnv proxy-sendcl" to forward a chunked

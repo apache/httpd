@@ -320,7 +320,7 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
     }
 #endif
 
-    ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(01883)
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, base_server, APLOGNO(01883)
                  "Init: Initialized %s library", MODSSL_LIBRARY_NAME);
 
     /*
