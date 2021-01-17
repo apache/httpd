@@ -1,6 +1,15 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.47
 
+  *) Synch 2.4.x and trunk
+       - mod_dav: save a few cycles
+       - mod_{ssl,md}: init_stapling_status hooks should return an int
+       - util_md5: avoid temporary stack result in ap_md5_binary()
+       - mod_proxy_balancer: Add a missing </tr>
+       - mod_md: get_stapling_status hooks should return an int
+       - mod_session: Improve a message about SessionExpiryUpdateInterval values
+     [Christophe Jaillet]
+
   *) mod_proxy_fcgi: Honor "SetEnv proxy-sendcl" to forward a chunked
      Transfer-Encoding from the client, spooling the request body when needed
      to provide a Content-Length to the backend.  PR 57087.  [Yann Ylavic]

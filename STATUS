@@ -138,23 +138,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) Easy patches: synch 2.4.x and trunk
-        - mod_dav: save a few cycles
-        - mod_{ssl,md}: init_stapling_status hooks should return an int
-        - util_md5: avoid temporary stack result in ap_md5_binary()
-        - mod_proxy_balancer: Add a missing </tr>
-        - mod_md: get_stapling_status hooks should return an int
-        - mod_session: Improve a message about SessionExpiryUpdateInterval values
-     trunk patch:
-          http://svn.apache.org/r1837388
-          http://svn.apache.org/r1876549
-          http://svn.apache.org/r1877551
-          http://svn.apache.org/r1882210
-          http://svn.apache.org/r1882399
-          http://svn.apache.org/r1883414
-     2.4.x patch: svn merge -c 1837388,1876549,1877551,1882210,1882399,1883414 ^/httpd/httpd/trunk .
-     +1: jailletc36, ylavic, minfrin
-
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:

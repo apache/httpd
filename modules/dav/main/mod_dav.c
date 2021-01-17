@@ -807,8 +807,8 @@ static int dav_parse_range(request_rec *r,
 
     range = apr_pstrdup(r->pool, range_c);
     if (strncasecmp(range, "bytes ", 6) != 0
-        || (dash = ap_strchr(range, '-')) == NULL
-        || (slash = ap_strchr(range, '/')) == NULL) {
+        || (dash = ap_strchr(range + 6, '-')) == NULL
+        || (slash = ap_strchr(range + 6, '/')) == NULL) {
         /* malformed header */
         return -1;
     }

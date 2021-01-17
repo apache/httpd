@@ -1750,7 +1750,7 @@ static int balancer_handler(request_rec *r)
             ap_rvputs(r, balancer->s->vpath, "</td>\n", NULL);
             ap_rprintf(r, "<td>%s</td>\n",
                        !balancer->s->inactive ? "Yes" : "No");
-            ap_rputs("</table>\n<br />", r);
+            ap_rputs("</tr>\n</table>\n<br />", r);
             ap_rputs("\n\n<table><tr>"
                 "<th>Worker URL</th>"
                 "<th>Route</th><th>RouteRedir</th>"
