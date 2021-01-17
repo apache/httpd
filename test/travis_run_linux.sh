@@ -179,7 +179,7 @@ if ! test -v SKIP_TESTING; then
     fi
 
     shopt -s nullglob 
-    for core in test/perl-framework/t/core* 2>/dev/null`; do
+    for core in test/perl-framework/t/core* ; do
         gdb -ex 'thread apply all backtrace' -batch ./httpd "$core"
         RV=5
     done
