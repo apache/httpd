@@ -1,26 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.47
 
-  *) Synch 2.4.x and trunk
-       - mod_dav: save a few cycles
-       - mod_{ssl,md}: init_stapling_status hooks should return an int
-       - util_md5: avoid temporary stack result in ap_md5_binary()
-       - mod_proxy_balancer: Add a missing </tr>
-       - mod_md: get_stapling_status hooks should return an int
-       - mod_session: Improve a message about SessionExpiryUpdateInterval values
-       - mod_http2: Fix ascii art
-       - mod_http2: fix some dox comments
-       - mod_dav: Don't call memcpy(,NULL,0)
-       - mod_ssl: Pass base_server in OpenSSL init log message
-       - .gdbinit: tab to space
-       - mod_so: don't try to load modules from a NULL path
-       - mod_cache_file/mod_lua: Add missing "const" or "static const" qualifiers
-                                 in some command_rec definitions
-       - mod_lua: Fix compilation error if APR_HAS_THREADS is not defined
-       - core/log: fix an harmless warning spoted by gcc 10
-       - mod_ssl: update comment
-     [Christophe Jaillet]
-
   *) mod_proxy_fcgi: Honor "SetEnv proxy-sendcl" to forward a chunked
      Transfer-Encoding from the client, spooling the request body when needed
      to provide a Content-Length to the backend.  PR 57087.  [Yann Ylavic]
@@ -41,7 +21,7 @@ Changes with Apache 2.4.47
   *) mod_proxy: Allow ProxyErrorOverride to be restricted to specific status 
      codes.  PR63628. [Martin Drößler <mail martindroessler.de>]
 
-  *) core: add ReadBufferSize, FlushMaxThreshold and FlushMaxPipelined
+  *) core: Add ReadBufferSize, FlushMaxThreshold and FlushMaxPipelined
      directives.  [Yann Ylavic]
 
   *) core: Ensure that aborted connections are logged as such. PR 62823
@@ -57,10 +37,10 @@ Changes with Apache 2.4.47
      opposed to passing an explicit subset of headers. PR 61820.
      [Giovanni Bechis]
 
-  *) mpm_event: don't reset connections after lingering close, restoring prior
+  *) mpm_event: Don't reset connections after lingering close, restoring prior
      to 2.4.28 behaviour.  [Yann Ylavic]
 
-  *) mpm_event: kill connections in keepalive state only when there is no more
+  *) mpm_event: Kill connections in keepalive state only when there is no more
      workers available, not when the maximum number of connections is reached,
      restoring prior to 2.4.30 behaviour.  [Yann Ylavic]
 
@@ -82,15 +62,15 @@ Changes with Apache 2.4.47
      early detected errors like too many or too long headers.
      [Ruediger Pluem, Stefan Eissing]
 
-  *) mod_md: lowered the required minimal libcurl version from 7.50 to 7.29
-     as proposed by <alexander.gerasimov@codeit.pro>. [Stefan Eissing]
+  *) mod_md: Lowered the required minimal libcurl version from 7.50 to 7.29
+     as proposed by <alexander.gerasimov codeit.pro>. [Stefan Eissing]
 
   *) mod_ssl: Fix request body buffering with PHA in TLSv1.3.  [Joe Orton]
 
   *) mod_proxy_uwsgi: Fix a crash when sending environment variables with no
      value. PR 64598 [Ruediger Pluem]
 
-  *) mod_proxy: recognize parameters from ProxyPassMatch workers with dollar
+  *) mod_proxy: Recognize parameters from ProxyPassMatch workers with dollar
      substitution, such that they apply to the backend connection.  Note that
      connection reuse is disabled by default to avoid compatibility issues.
      [Takashi Sato, Jan Kaluza, Eric Covener, Yann Ylavic, Jean-Frederic Clere]
