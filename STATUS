@@ -221,9 +221,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              grep "^+.*ap_cstr_casecmpn"    r1747469-v2.diff | wc -l   --> 49
          It has been compile tested.
      2.4.x patch: http://home.apache.org/~jailletc36/r1747469-v2.diff
-     +1: jailletc36
-     minfrin: Looks good, but had two places where patch didn't apply.
-     jailletc36: updated as v2 to fix the issues
+     +1: jailletc36, minfrin
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
