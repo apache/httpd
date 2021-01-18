@@ -137,6 +137,26 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) Synch 2.4.x and trunk
+         When ap_cstr_casecmp[n] have been introduced, in r1747469, it has introduced
+         many differences between 2.4.x and trunk.
+         Direct backporting was not that easy because:
+            - it was initialy introduced as ap_casecmpstr[n] with several patches
+            - it touched some files that were not in 2.4.x branch
+         Later, parts of it have already been backported.
+         The proposed patch try to clean all this.
+         I've done my best to remove parts that rely on code that has not been
+         been backported in 2.4.x yet (r1610674 for example). Should it be done
+         one day, leaving it as-is can ease the backport.
+         To ease the review, a few greps:
+             grep "^-.*strcasecmp"          r1747469-v2.diff | wc -l   --> 233
+             grep "^+.*ap_cstr_casecmp[^n]" r1747469-v2.diff | wc -l   --> 233
+             grep "^-.*strncasecmp"         r1747469-v2.diff | wc -l   --> 49
+             grep "^+.*ap_cstr_casecmpn"    r1747469-v2.diff | wc -l   --> 49
+         It has been compile tested.
+     2.4.x patch: http://home.apache.org/~jailletc36/r1747469-v2.diff
+     +1: jailletc36, minfrin, ylavic
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -201,26 +221,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Backport version for 2.4.x of patch:
       Trunk version of patch works
       svn merge -c 1881303,1881304,1881305,1881306 ^/httpd/httpd/trunk .
-     +1: jailletc36, minfrin
-
-  *) Synch 2.4.x and trunk
-         When ap_cstr_casecmp[n] have been introduced, in r1747469, it has introduced
-         many differences between 2.4.x and trunk.
-         Direct backporting was not that easy because:
-            - it was initialy introduced as ap_casecmpstr[n] with several patches
-            - it touched some files that were not in 2.4.x branch
-         Later, parts of it have already been backported.
-         The proposed patch try to clean all this.
-         I've done my best to remove parts that rely on code that has not been
-         been backported in 2.4.x yet (r1610674 for example). Should it be done
-         one day, leaving it as-is can ease the backport.
-         To ease the review, a few greps:
-             grep "^-.*strcasecmp"          r1747469-v2.diff | wc -l   --> 233
-             grep "^+.*ap_cstr_casecmp[^n]" r1747469-v2.diff | wc -l   --> 233
-             grep "^-.*strncasecmp"         r1747469-v2.diff | wc -l   --> 49
-             grep "^+.*ap_cstr_casecmpn"    r1747469-v2.diff | wc -l   --> 49
-         It has been compile tested.
-     2.4.x patch: http://home.apache.org/~jailletc36/r1747469-v2.diff
      +1: jailletc36, minfrin
 
 PATCHES/ISSUES THAT ARE BEING WORKED
