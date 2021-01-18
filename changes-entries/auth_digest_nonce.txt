@@ -1,0 +1,3 @@
+  *) mod_auth_digest: Fast validation of the nonce's base64 to fail early if
+     the format can't match anyway.  [Yann Ylavic]
+

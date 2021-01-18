@@ -1427,9 +1427,14 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
     time_rec nonce_time;
     char tmp, hash[NONCE_HASH_LEN+1];
 
-    if (strlen(resp->nonce) != NONCE_LEN) {
+    /* Since the time part of the nonce is a base64 encoding of an
+     * apr_time_t (8 bytes), it should end with a '=', fail early otherwise.
+     */
+    if (strlen(resp->nonce) != NONCE_LEN
+            || resp->nonce[NONCE_TIME_LEN - 1] != '=') {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01775)
-                      "invalid nonce %s received - length is not %d",
+                      "invalid nonce '%s' received - length is not %d "
+                      "or time encoding is incorrect",
                       resp->nonce, NONCE_LEN);
         note_digest_auth_failure(r, conf, resp, 1);
         return HTTP_UNAUTHORIZED;
