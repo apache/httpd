@@ -1,6 +1,19 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_xml2enc: Update check to match MIME types matching
+     "+xml" rather than anything containing "xml", avoiding
+     corruption of Microsoft OOXML formats.  PR 64339.
+     [Joseph Heenan <joseph.heenan fintechlabs.io>]
+
+  *) mod_proxy_wstunnel: Leave Upgrade requests handling to mod_proxy_http,
+     allowing for (non-)Upgrade negotiation with the origin server.
+     [Yann Ylavic]
+
+  *) mod_ssl: SSLProxyMachineCertificateFile/Path may reference files
+     which include CA certificates; those CA certs are treated as if
+     configured with SSLProxyMachineCertificateChainFile.  [Joe Orton]
+
   *) mpm_event: don't reset connections after lingering close, restoring prior
      to 2.4.28 behaviour.  [Yann Ylavic]
 
