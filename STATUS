@@ -137,13 +137,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_auth_digest: Fast validation of the nonce's base64 to fail early if
-     the format can't match anyway.
-     trunk patch: http://svn.apache.org/r1885659
-     2.4.x patch: svn merge -c 1885659 ^/httpd/httpd/trunk .
-                  make update-changes
-     +1: ylavic, covener, jailletc36
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
