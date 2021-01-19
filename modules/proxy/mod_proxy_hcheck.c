@@ -33,7 +33,6 @@ module AP_MODULE_DECLARE_DATA proxy_hcheck_module;
 #endif
 #else
 #define HC_USE_THREADS 0
-typedef void apr_thread_pool_t;
 #endif
 
 typedef struct {
@@ -73,7 +72,7 @@ typedef struct {
     proxy_balancer *balancer;
     proxy_worker *worker;
     proxy_worker *hc;
-    apr_time_t now;
+    apr_time_t *now;
 } baton_t;
 
 static void *hc_create_config(apr_pool_t *p, server_rec *s)
@@ -89,7 +88,10 @@ static void *hc_create_config(apr_pool_t *p, server_rec *s)
 }
 
 static ap_watchdog_t *watchdog;
-static int tpsize = HC_THREADPOOL_SIZE;
+#if HC_USE_THREADS
+static apr_thread_pool_t *hctp;
+static int tpsize;
+#endif
 
 /*
  * This serves double duty by not only validating (and creating)
@@ -836,29 +838,28 @@ static void * APR_THREAD_FUNC hc_check(apr_thread_t *thread, void *b)
     server_rec *s = baton->ctx->s;
     proxy_worker *worker = baton->worker;
     proxy_worker *hc = baton->hc;
-    apr_time_t now = baton->now;
+    apr_time_t now;
     apr_status_t rv;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03256)
                  "%sHealth checking %s", (thread ? "Threaded " : ""),
                  worker->s->name);
 
-    worker->s->updated = now;
     if (hc->s->method == TCP) {
         rv = hc_check_tcp(baton);
     }
     else {
         rv = hc_check_http(baton);
     }
+
+    now = apr_time_now();
     if (rv == APR_ENOTIMPL) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(03257)
                          "Somehow tried to use unimplemented hcheck method: %d",
                          (int)hc->s->method);
-        apr_pool_destroy(baton->ptemp);
-        return NULL;
     }
     /* what state are we in ? */
-    if (PROXY_WORKER_IS_HCFAILED(worker)) {
+    else if (PROXY_WORKER_IS_HCFAILED(worker)) {
         if (rv == APR_SUCCESS) {
             worker->s->pcount += 1;
             if (worker->s->pcount >= worker->s->passes) {
@@ -871,7 +872,8 @@ static void * APR_THREAD_FUNC hc_check(apr_thread_t *thread, void *b)
 
             }
         }
-    } else {
+    }
+    else {
         if (rv != APR_SUCCESS) {
             worker->s->error_time = now;
             worker->s->fcount += 1;
@@ -884,7 +886,12 @@ static void * APR_THREAD_FUNC hc_check(apr_thread_t *thread, void *b)
             }
         }
     }
+    if (baton->now) {
+        *baton->now = now;
+    }
     apr_pool_destroy(baton->ptemp);
+    worker->s->updated = now;
+
     return NULL;
 }
 
@@ -892,12 +899,10 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
                                          apr_pool_t *pool)
 {
     apr_status_t rv = APR_SUCCESS;
-    apr_time_t now = apr_time_now();
     proxy_balancer *balancer;
     sctx_t *ctx = (sctx_t *)data;
     server_rec *s = ctx->s;
     proxy_server_conf *conf;
-    static apr_thread_pool_t *hctp = NULL;
 
     switch (state) {
         case AP_WATCHDOG_STATE_STARTING:
@@ -924,7 +929,6 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
                              "Skipping apr_thread_pool_create()");
                 hctp = NULL;
             }
-
 #endif
             break;
 
@@ -937,45 +941,53 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
                 ctx->s = s;
                 for (i = 0; i < conf->balancers->nelts; i++, balancer++) {
                     int n;
+                    apr_time_t now;
                     proxy_worker **workers;
                     proxy_worker *worker;
                     /* Have any new balancers or workers been added dynamically? */
                     ap_proxy_sync_balancer(balancer, s, conf);
                     workers = (proxy_worker **)balancer->workers->elts;
+                    now = apr_time_now();
                     for (n = 0; n < balancer->workers->nelts; n++) {
                         worker = *workers;
                         if (!PROXY_WORKER_IS(worker, PROXY_WORKER_STOPPED) &&
-                           (worker->s->method != NONE) &&
-                           (now > worker->s->updated + worker->s->interval)) {
+                            (worker->s->method != NONE) &&
+                            (worker->s->updated != 0) &&
+                            (now > worker->s->updated + worker->s->interval)) {
                             baton_t *baton;
                             apr_pool_t *ptemp;
+
                             ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, s,
                                          "Checking %s worker: %s  [%d] (%pp)", balancer->s->name,
                                          worker->s->name, worker->s->method, worker);
 
                             if ((rv = hc_init_worker(ctx, worker)) != APR_SUCCESS) {
+                                worker->s->updated = now;
                                 return rv;
                             }
-                            /* This pool must last the lifetime of the (possible) thread */
+                            worker->s->updated = 0;
+
+                            /* This pool has the lifetime of the check */
                             apr_pool_create(&ptemp, ctx->p);
                             apr_pool_tag(ptemp, "hc_request");
-                            baton = apr_palloc(ptemp, sizeof(baton_t));
+                            baton = apr_pcalloc(ptemp, sizeof(baton_t));
                             baton->ctx = ctx;
-                            baton->now = now;
                             baton->balancer = balancer;
                             baton->worker = worker;
                             baton->ptemp = ptemp;
                             baton->hc = hc_get_hcworker(ctx, worker, ptemp);
-
-                            if (!hctp) {
+#if HC_USE_THREADS
+                            if (hctp) {
+                                apr_thread_pool_push(hctp, hc_check, (void *)baton,
+                                                     APR_THREAD_TASK_PRIORITY_NORMAL,
+                                                     NULL);
+                            }
+                            else
+#endif
+                            {
+                                baton->now = &now;
                                 hc_check(NULL, baton);
                             }
-#if HC_USE_THREADS
-                            else {
-                                rv = apr_thread_pool_push(hctp, hc_check, (void *)baton,
-                                                          APR_THREAD_TASK_PRIORITY_NORMAL, NULL);
-                            }
-#endif
                         }
                         workers++;
                     }
@@ -994,9 +1006,9 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
                     ap_log_error(APLOG_MARK, APLOG_INFO, rv, s, APLOGNO(03315)
                                  "apr_thread_pool_destroy() failed");
                 }
+                hctp = NULL;
             }
 #endif
-            hctp = NULL;
             break;
     }
     return rv;
@@ -1004,7 +1016,10 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
 static int hc_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
                          apr_pool_t *ptemp)
 {
+#if HC_USE_THREADS
+    hctp = NULL;
     tpsize = HC_THREADPOOL_SIZE;
+#endif
     return OK;
 }
 static int hc_post_config(apr_pool_t *p, apr_pool_t *plog,
