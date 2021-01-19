@@ -1706,7 +1706,7 @@ static int core_expr_lookup(ap_expr_lookup_parms *parms)
             while (prov->func) {
                 const char **name = prov->names;
                 while (*name) {
-                    if (strcasecmp(*name, parms->name) == 0) {
+                    if (ap_cstr_casecmp(*name, parms->name) == 0) {
                         *parms->func = prov->func;
                         *parms->data = name;
                         return OK;
@@ -1739,7 +1739,7 @@ static int core_expr_lookup(ap_expr_lookup_parms *parms)
                 if (parms->type == AP_EXPR_FUNC_OP_UNARY)
                     match = !strcmp(prov->name, parms->name);
                 else
-                    match = !strcasecmp(prov->name, parms->name);
+                    match = !ap_cstr_casecmp(prov->name, parms->name);
                 if (match) {
                     if ((parms->flags & AP_EXPR_FLAG_RESTRICTED)
                         && prov->restricted) {

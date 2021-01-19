@@ -586,7 +586,7 @@ static int proxy_detect(request_rec *r)
     if (conf->req && r->parsed_uri.scheme) {
         /* but it might be something vhosted */
         if (!(r->parsed_uri.hostname
-              && !strcasecmp(r->parsed_uri.scheme, ap_http_scheme(r))
+              && !ap_cstr_casecmp(r->parsed_uri.scheme, ap_http_scheme(r))
               && ap_matches_request_vhost(r, r->parsed_uri.hostname,
                                           (apr_port_t)(r->parsed_uri.port_str ? r->parsed_uri.port
                                                        : ap_default_port(r))))) {
@@ -995,7 +995,7 @@ static int proxy_needsdomain(request_rec *r, const char *url, const char *domain
     /* If host does contain a dot already, or it is "localhost", decline */
     if (strchr(r->parsed_uri.hostname, '.') != NULL /* has domain, or IPv4 literal */
      || strchr(r->parsed_uri.hostname, ':') != NULL /* IPv6 literal */
-     || strcasecmp(r->parsed_uri.hostname, "localhost") == 0)
+     || ap_cstr_casecmp(r->parsed_uri.hostname, "localhost") == 0)
         return DECLINED;    /* host name has a dot already */
 
     ref = apr_table_get(r->headers_in, "Referer");
@@ -1202,9 +1202,9 @@ static int proxy_handler(request_rec *r)
                 if (strcmp(ents[i].scheme, "*") == 0 ||
                     (ents[i].use_regex &&
                      ap_regexec(ents[i].regexp, url, 0, NULL, 0) == 0) ||
-                    (p2 == NULL && strcasecmp(scheme, ents[i].scheme) == 0) ||
+                    (p2 == NULL && ap_cstr_casecmp(scheme, ents[i].scheme) == 0) ||
                     (p2 != NULL &&
-                    strncasecmp(url, ents[i].scheme,
+                    ap_cstr_casecmpn(url, ents[i].scheme,
                                 strlen(ents[i].scheme)) == 0)) {
 
                     /* handle the scheme */
@@ -1728,7 +1728,7 @@ PROXY_DECLARE(const char *) ap_proxy_de_socketfy(apr_pool_t *p, const char *url)
      * We could be passed a URL during the config stage that contains
      * the UDS path... ignore it
      */
-    if (!strncasecmp(url, "unix:", 5) &&
+    if (!ap_cstr_casecmpn(url, "unix:", 5) &&
         ((ptr = ap_strchr_c(url, '|')) != NULL)) {
         /* move past the 'unix:...|' UDS path info */
         const char *ret, *c;

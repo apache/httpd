@@ -244,7 +244,7 @@ DAV_DECLARE(dav_lookup_result) dav_lookup_uri(const char *uri,
            request. the port must match our port.
         */
         port = r->connection->local_addr->port;
-        if (strcasecmp(comp.scheme, scheme) != 0
+        if (ap_cstr_casecmp(comp.scheme, scheme) != 0
 #ifdef APACHE_PORT_HANDLING_IS_BUSTED
             || comp.port != port
 #endif

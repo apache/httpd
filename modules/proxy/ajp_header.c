@@ -633,15 +633,15 @@ static apr_status_t ajp_unmarshal_response(ajp_msg_t *msg,
         }
 
         /* Set-Cookie need additional processing */
-        if (!strcasecmp(stringname, "Set-Cookie")) {
+        if (!ap_cstr_casecmp(stringname, "Set-Cookie")) {
             value = ap_proxy_cookie_reverse_map(r, dconf, value);
         }
         /* Location, Content-Location, URI and Destination need additional
          * processing */
-        else if (!strcasecmp(stringname, "Location")
-                 || !strcasecmp(stringname, "Content-Location")
-                 || !strcasecmp(stringname, "URI")
-                 || !strcasecmp(stringname, "Destination"))
+        else if (!ap_cstr_casecmp(stringname, "Location")
+                 || !ap_cstr_casecmp(stringname, "Content-Location")
+                 || !ap_cstr_casecmp(stringname, "URI")
+                 || !ap_cstr_casecmp(stringname, "Destination"))
         {
           value = ap_proxy_location_reverse_map(r, dconf, value);
         }
@@ -654,7 +654,7 @@ static apr_status_t ajp_unmarshal_response(ajp_msg_t *msg,
         apr_table_add(r->headers_out, stringname, value);
 
         /* Content-type needs an additional handling */
-        if (strcasecmp(stringname, "Content-Type") == 0) {
+        if (ap_cstr_casecmp(stringname, "Content-Type") == 0) {
              /* add corresponding filter */
             ap_set_content_type(r, apr_pstrdup(r->pool, value));
             ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r,

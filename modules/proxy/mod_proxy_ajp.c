@@ -35,7 +35,7 @@ static int proxy_ajp_canon(request_rec *r, char *url)
     apr_port_t port, def_port;
 
     /* ap_port_of_scheme() */
-    if (strncasecmp(url, "ajp:", 4) == 0) {
+    if (ap_cstr_casecmpn(url, "ajp:", 4) == 0) {
         url += 4;
     }
     else {
@@ -246,7 +246,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     /* read the first block of data */
     input_brigade = apr_brigade_create(p, r->connection->bucket_alloc);
     tenc = apr_table_get(r->headers_in, "Transfer-Encoding");
-    if (tenc && (strcasecmp(tenc, "chunked") == 0)) {
+    if (tenc && (ap_cstr_casecmp(tenc, "chunked") == 0)) {
         /* The AJP protocol does not want body data yet */
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00870) "request is chunked");
     } else {
@@ -739,7 +739,7 @@ static int proxy_ajp_handler(request_rec *r, proxy_worker *worker,
     apr_pool_t *p = r->pool;
     apr_uri_t *uri;
 
-    if (strncasecmp(url, "ajp:", 4) != 0) {
+    if (ap_cstr_casecmpn(url, "ajp:", 4) != 0) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00894) "declining URL %s", url);
         return DECLINED;
     }

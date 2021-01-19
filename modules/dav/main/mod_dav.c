@@ -677,7 +677,7 @@ DAV_DECLARE(int) dav_get_depth(request_rec *r, int def_depth)
         return def_depth;
     }
 
-    if (strcasecmp(depth, "infinity") == 0) {
+    if (ap_cstr_casecmp(depth, "infinity") == 0) {
         return DAV_INFINITY;
     }
     else if (strcmp(depth, "0") == 0) {
@@ -806,7 +806,7 @@ static int dav_parse_range(request_rec *r,
         return 0;
 
     range = apr_pstrdup(r->pool, range_c);
-    if (strncasecmp(range, "bytes ", 6) != 0
+    if (ap_cstr_casecmpn(range, "bytes ", 6) != 0
         || (dash = ap_strchr(range + 6, '-')) == NULL
         || (slash = ap_strchr(range + 6, '/')) == NULL) {
         /* malformed header */
@@ -2473,7 +2473,7 @@ static int process_mkcol_body(request_rec *r)
     r->remaining = 0;
 
     if (tenc) {
-        if (strcasecmp(tenc, "chunked")) {
+        if (ap_cstr_casecmp(tenc, "chunked")) {
             /* Use this instead of Apache's default error string */
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00589)
                           "Unknown Transfer-Encoding %s", tenc);

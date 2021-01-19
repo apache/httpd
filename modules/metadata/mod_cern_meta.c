@@ -240,7 +240,7 @@ static int scan_meta_file(request_rec *r, apr_file_t *f)
         while (apr_isspace(*l))
             ++l;
 
-        if (!strcasecmp(w, "Content-type")) {
+        if (!ap_cstr_casecmp(w, "Content-type")) {
             char *tmp;
             /* Nuke trailing whitespace */
 
@@ -252,7 +252,7 @@ static int scan_meta_file(request_rec *r, apr_file_t *f)
             ap_content_type_tolower(tmp);
             ap_set_content_type(r, tmp);
         }
-        else if (!strcasecmp(w, "Status")) {
+        else if (!ap_cstr_casecmp(w, "Status")) {
             sscanf(l, "%d", &r->status);
             r->status_line = apr_pstrdup(r->pool, l);
         }

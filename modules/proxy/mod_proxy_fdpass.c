@@ -32,7 +32,7 @@ static int proxy_fdpass_canon(request_rec *r, char *url)
 {
     const char *path;
 
-    if (strncasecmp(url, "fd://", 5) == 0) {
+    if (ap_cstr_casecmpn(url, "fd://", 5) == 0) {
         url += 5;
     }
     else {
@@ -129,7 +129,7 @@ static int proxy_fdpass_handler(request_rec *r, proxy_worker *worker,
     apr_socket_t *sock;
     apr_socket_t *clientsock;
 
-    if (strncasecmp(url, "fd://", 5) == 0) {
+    if (ap_cstr_casecmpn(url, "fd://", 5) == 0) {
         url += 5;
     }
     else {

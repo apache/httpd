@@ -566,7 +566,7 @@ static const char *set_qop(cmd_parms *cmd, void *config, const char *op)
     if (!strcasecmp(op, "auth-int")) {
         return "AuthDigestQop auth-int is not implemented";
     }
-    else if (strcasecmp(op, "auth")) {
+    else if (ap_cstr_casecmp(op, "auth")) {
         return apr_pstrcat(cmd->pool, "Unrecognized qop: ", op, NULL);
     }
 
@@ -618,7 +618,7 @@ static const char *set_algorithm(cmd_parms *cmd, void *config, const char *alg)
         return "AuthDigestAlgorithm: ERROR: algorithm `MD5-sess' "
                 "is not implemented";
     }
-    else if (strcasecmp(alg, "MD5")) {
+    else if (ap_cstr_casecmp(alg, "MD5")) {
         return apr_pstrcat(cmd->pool, "Invalid algorithm in AuthDigestAlgorithm: ", alg, NULL);
     }
 
@@ -931,7 +931,7 @@ static int get_digest_rec(request_rec *r, digest_header_rec *resp)
     }
 
     resp->scheme = ap_getword_white(r->pool, &auth_line);
-    if (strcasecmp(resp->scheme, "Digest")) {
+    if (ap_cstr_casecmp(resp->scheme, "Digest")) {
         resp->auth_hdr_sts = NOT_DIGEST;
         return !OK;
     }
@@ -995,25 +995,25 @@ static int get_digest_rec(request_rec *r, digest_header_rec *resp)
             auth_line++;
         }
 
-        if (!strcasecmp(key, "username"))
+        if (!ap_cstr_casecmp(key, "username"))
             resp->username = apr_pstrdup(r->pool, value);
-        else if (!strcasecmp(key, "realm"))
+        else if (!ap_cstr_casecmp(key, "realm"))
             resp->realm = apr_pstrdup(r->pool, value);
-        else if (!strcasecmp(key, "nonce"))
+        else if (!ap_cstr_casecmp(key, "nonce"))
             resp->nonce = apr_pstrdup(r->pool, value);
-        else if (!strcasecmp(key, "uri"))
+        else if (!ap_cstr_casecmp(key, "uri"))
             resp->uri = apr_pstrdup(r->pool, value);
-        else if (!strcasecmp(key, "response"))
+        else if (!ap_cstr_casecmp(key, "response"))
             resp->digest = apr_pstrdup(r->pool, value);
-        else if (!strcasecmp(key, "algorithm"))
+        else if (!ap_cstr_casecmp(key, "algorithm"))
             resp->algorithm = apr_pstrdup(r->pool, value);
-        else if (!strcasecmp(key, "cnonce"))
+        else if (!ap_cstr_casecmp(key, "cnonce"))
             resp->cnonce = apr_pstrdup(r->pool, value);
-        else if (!strcasecmp(key, "opaque"))
+        else if (!ap_cstr_casecmp(key, "opaque"))
             resp->opaque = apr_pstrdup(r->pool, value);
-        else if (!strcasecmp(key, "qop"))
+        else if (!ap_cstr_casecmp(key, "qop"))
             resp->message_qop = apr_pstrdup(r->pool, value);
-        else if (!strcasecmp(key, "nc"))
+        else if (!ap_cstr_casecmp(key, "nc"))
             resp->nonce_count = apr_pstrdup(r->pool, value);
     }
 
@@ -1186,7 +1186,7 @@ static void note_digest_auth_failure(request_rec *r,
     if (apr_is_empty_array(conf->qop_list)) {
         qop = ", qop=\"auth\"";
     }
-    else if (!strcasecmp(*(const char **)(conf->qop_list->elts), "none")) {
+    else if (!ap_cstr_casecmp(*(const char **)(conf->qop_list->elts), "none")) {
         qop = "";
     }
     else {
@@ -1275,7 +1275,7 @@ static int hook_note_digest_auth_failure(request_rec *r, const char *auth_type)
     digest_header_rec *resp;
     digest_config_rec *conf;
 
-    if (strcasecmp(auth_type, "Digest"))
+    if (ap_cstr_casecmp(auth_type, "Digest"))
         return DECLINED;
 
     /* get the client response and mark */
@@ -1385,7 +1385,7 @@ static int check_nc(const request_rec *r, const digest_header_rec *resp,
     }
 
     if (!apr_is_empty_array(conf->qop_list) &&
-        !strcasecmp(*(const char **)(conf->qop_list->elts), "none")) {
+        !ap_cstr_casecmp(*(const char **)(conf->qop_list->elts), "none")) {
         /* qop is none, client must not send a nonce count */
         if (snc != NULL) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01772)
@@ -1590,7 +1590,7 @@ static int authenticate_digest_user(request_rec *r)
 
     /* do we require Digest auth for this URI? */
 
-    if (!(t = ap_auth_type(r)) || strcasecmp(t, "Digest")) {
+    if (!(t = ap_auth_type(r)) || ap_cstr_casecmp(t, "Digest")) {
         return DECLINED;
     }
 
@@ -1758,7 +1758,7 @@ static int authenticate_digest_user(request_rec *r)
     }
 
     if (resp->algorithm != NULL
-        && strcasecmp(resp->algorithm, "MD5")) {
+        && ap_cstr_casecmp(resp->algorithm, "MD5")) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01789)
                       "unknown algorithm `%s' received: %s",
                       resp->algorithm, r->uri);
@@ -1809,7 +1809,7 @@ static int authenticate_digest_user(request_rec *r)
         int match = 0, idx;
         const char **tmp = (const char **)(conf->qop_list->elts);
         for (idx = 0; idx < conf->qop_list->nelts; idx++) {
-            if (!strcasecmp(*tmp, resp->message_qop)) {
+            if (!ap_cstr_casecmp(*tmp, resp->message_qop)) {
                 match = 1;
                 break;
             }
@@ -1818,7 +1818,7 @@ static int authenticate_digest_user(request_rec *r)
 
         if (!match
             && !(apr_is_empty_array(conf->qop_list)
-                 && !strcasecmp(resp->message_qop, "auth"))) {
+                 && !ap_cstr_casecmp(resp->message_qop, "auth"))) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01793)
                           "invalid qop `%s' received: %s",
                           resp->message_qop, r->uri);
@@ -1900,7 +1900,7 @@ static int add_auth_info(request_rec *r)
     /* do rfc-2069 digest
      */
     if (!apr_is_empty_array(conf->qop_list) &&
-        !strcasecmp(*(const char **)(conf->qop_list->elts), "none")
+        !ap_cstr_casecmp(*(const char **)(conf->qop_list->elts), "none")
         && resp->message_qop == NULL) {
         /* use only RFC-2069 format */
         ai = nextnonce;

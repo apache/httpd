@@ -1077,7 +1077,7 @@ PROXY_DECLARE(int) ap_proxy_valid_balancer_name(char *name, int i)
 {
     if (!i)
         i = sizeof(BALANCER_PREFIX)-1;
-    return (!strncasecmp(name, BALANCER_PREFIX, i));
+    return (!ap_cstr_casecmpn(name, BALANCER_PREFIX, i));
 }
 
 
@@ -1838,7 +1838,7 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
     if (ptr) {
         *ptr = '\0';
         rv = apr_uri_parse(p, url, &urisock);
-        if (rv == APR_SUCCESS && !strcasecmp(urisock.scheme, "unix")) {
+        if (rv == APR_SUCCESS && !ap_cstr_casecmp(urisock.scheme, "unix")) {
             sockpath = ap_runtime_dir_relative(p, urisock.path);;
             url = ptr+1;    /* so we get the scheme for the uds */
         }
@@ -3883,7 +3883,7 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
 
         /* Add the Expect header if not already there. */
         if (((val = apr_table_get(r->headers_in, "Expect")) == NULL)
-                || (strcasecmp(val, "100-Continue") != 0 /* fast path */
+                || (ap_cstr_casecmp(val, "100-Continue") != 0 /* fast path */
                     && !ap_find_token(r->pool, val, "100-Continue"))) {
             apr_table_mergen(r->headers_in, "Expect", "100-Continue");
         }
@@ -3948,15 +3948,15 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
             || headers_in[counter].val == NULL
 
             /* Already sent */
-            || !strcasecmp(headers_in[counter].key, "Host")
+            || !ap_cstr_casecmp(headers_in[counter].key, "Host")
 
             /* Clear out hop-by-hop request headers not to send
              * RFC2616 13.5.1 says we should strip these headers
              */
-            || !strcasecmp(headers_in[counter].key, "Keep-Alive")
-            || !strcasecmp(headers_in[counter].key, "TE")
-            || !strcasecmp(headers_in[counter].key, "Trailer")
-            || !strcasecmp(headers_in[counter].key, "Upgrade")
+            || !ap_cstr_casecmp(headers_in[counter].key, "Keep-Alive")
+            || !ap_cstr_casecmp(headers_in[counter].key, "TE")
+            || !ap_cstr_casecmp(headers_in[counter].key, "Trailer")
+            || !ap_cstr_casecmp(headers_in[counter].key, "Upgrade")
 
             ) {
             continue;
@@ -3966,7 +3966,7 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
          * If we have used it then MAYBE: RFC2616 says we MAY propagate it.
          * So let's make it configurable by env.
          */
-        if (!strcasecmp(headers_in[counter].key,"Proxy-Authorization")) {
+        if (!ap_cstr_casecmp(headers_in[counter].key,"Proxy-Authorization")) {
             if (r->user != NULL) { /* we've authenticated */
                 if (!apr_table_get(r->subprocess_env, "Proxy-Chain-Auth")) {
                     continue;
@@ -3976,22 +3976,22 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
 
         /* Skip Transfer-Encoding and Content-Length for now.
          */
-        if (!strcasecmp(headers_in[counter].key, "Transfer-Encoding")) {
+        if (!ap_cstr_casecmp(headers_in[counter].key, "Transfer-Encoding")) {
             *old_te_val = headers_in[counter].val;
             continue;
         }
-        if (!strcasecmp(headers_in[counter].key, "Content-Length")) {
+        if (!ap_cstr_casecmp(headers_in[counter].key, "Content-Length")) {
             *old_cl_val = headers_in[counter].val;
             continue;
         }
 
         /* for sub-requests, ignore freshness/expiry headers */
         if (r->main) {
-            if (   !strcasecmp(headers_in[counter].key, "If-Match")
-                || !strcasecmp(headers_in[counter].key, "If-Modified-Since")
-                || !strcasecmp(headers_in[counter].key, "If-Range")
-                || !strcasecmp(headers_in[counter].key, "If-Unmodified-Since")
-                || !strcasecmp(headers_in[counter].key, "If-None-Match")) {
+            if (   !ap_cstr_casecmp(headers_in[counter].key, "If-Match")
+                || !ap_cstr_casecmp(headers_in[counter].key, "If-Modified-Since")
+                || !ap_cstr_casecmp(headers_in[counter].key, "If-Range")
+                || !ap_cstr_casecmp(headers_in[counter].key, "If-Unmodified-Since")
+                || !ap_cstr_casecmp(headers_in[counter].key, "If-None-Match")) {
                 continue;
             }
         }
@@ -4342,7 +4342,7 @@ PROXY_DECLARE(apr_port_t) ap_proxy_port_of_scheme(const char *scheme)
         } else {
             proxy_schemes_t *pscheme;
             for (pscheme = pschemes; pscheme->name != NULL; ++pscheme) {
-                if (strcasecmp(scheme, pscheme->name) == 0) {
+                if (ap_cstr_casecmp(scheme, pscheme->name) == 0) {
                     return pscheme->default_port;
                 }
             }

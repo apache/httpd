@@ -296,7 +296,7 @@ static int proxy_ftp_canon(request_rec *r, char *url)
     apr_port_t port, def_port;
 
     /* */
-    if (strncasecmp(url, "ftp:", 4) == 0) {
+    if (ap_cstr_casecmpn(url, "ftp:", 4) == 0) {
         url += 4;
     }
     else {
@@ -504,7 +504,7 @@ static apr_status_t proxy_send_dir_filter(ap_filter_t *f,
         path = apr_uri_unparse(p, &f->r->parsed_uri, APR_URI_UNP_OMITSITEPART | APR_URI_UNP_OMITQUERY);
 
         /* If path began with /%2f, change the basedir */
-        if (strncasecmp(path, "/%2f", 4) == 0) {
+        if (ap_cstr_casecmpn(path, "/%2f", 4) == 0) {
             basedir = "/%2f";
         }
 
@@ -1017,7 +1017,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
                       proxyhost);
         return DECLINED;        /* proxy connections are via HTTP */
     }
-    if (strncasecmp(url, "ftp:", 4)) {
+    if (ap_cstr_casecmpn(url, "ftp:", 4)) {
         ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
                       "declining URL %s - not ftp:", url);
         return DECLINED;        /* only interested in FTP */
@@ -1089,7 +1089,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
      * still smaller that the URL is logged regularly.
      */
     if ((password = apr_table_get(r->headers_in, "Authorization")) != NULL
-        && strcasecmp(ap_getword(r->pool, &password, ' '), "Basic") == 0
+        && ap_cstr_casecmp(ap_getword(r->pool, &password, ' '), "Basic") == 0
         && (password = ap_pbase64decode(r->pool, password))[0] != ':') {
         /* Check the decoded string for special characters. */
         if (!ftp_check_string(password)) {
@@ -1324,7 +1324,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
     /* Special handling for leading "%2f": this enforces a "cwd /"
      * out of the $HOME directory which was the starting point after login
      */
-    if (strncasecmp(path, "%2f", 3) == 0) {
+    if (ap_cstr_casecmpn(path, "%2f", 3) == 0) {
         path += 3;
         while (*path == '/') /* skip leading '/' (after root %2f) */
             ++path;

@@ -774,7 +774,7 @@ static enum header_state get_header_line(char *buffer, int len, apr_file_t *map)
     /* We need to shortcut the rest of this block following the Body:
      * tag - we will not look for continutation after this line.
      */
-    if (!strncasecmp(buffer, "Body:", 5))
+    if (!ap_cstr_casecmpn(buffer, "Body:", 5))
         return header_seen;
 
     while (apr_file_getc(&c, map) != APR_EOF) {

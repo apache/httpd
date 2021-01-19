@@ -941,7 +941,7 @@ AP_DECLARE(apr_status_t) ap_pcfg_openfile(ap_configfile_t **ret_cfg,
 
     if (finfo.filetype != APR_REG &&
 #if defined(WIN32) || defined(OS2) || defined(NETWARE)
-        strcasecmp(apr_filepath_name_get(name), "nul") != 0) {
+        ap_cstr_casecmp(apr_filepath_name_get(name), "nul") != 0) {
 #else
         strcmp(name, "/dev/null") != 0) {
 #endif /* WIN32 || OS2 */
@@ -1698,7 +1698,7 @@ AP_DECLARE(int) ap_find_token(apr_pool_t *p, const char *line, const char *tok)
         while (*s && !TEST_CHAR(*s, T_HTTP_TOKEN_STOP)) {
             ++s;
         }
-        if (!strncasecmp((const char *)start_token, (const char *)tok,
+        if (!ap_cstr_casecmpn((const char *)start_token, (const char *)tok,
                          s - start_token)) {
             return 1;
         }
@@ -2712,7 +2712,7 @@ AP_DECLARE(int) ap_parse_form_data(request_rec *r, ap_filter_t *f,
 
     /* sanity check - we only support forms for now */
     ct = apr_table_get(r->headers_in, "Content-Type");
-    if (!ct || strncasecmp("application/x-www-form-urlencoded", ct, 33)) {
+    if (!ct || ap_cstr_casecmpn("application/x-www-form-urlencoded", ct, 33)) {
         return ap_discard_request_body(r);
     }
 

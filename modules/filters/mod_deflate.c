@@ -118,8 +118,8 @@ static int check_gzip(request_rec *r, apr_table_t *hdrs1, apr_table_t *hdrs2)
     if (encoding && *encoding) {
 
         /* check the usual/simple case first */
-        if (!strcasecmp(encoding, "gzip")
-            || !strcasecmp(encoding, "x-gzip")) {
+        if (!ap_cstr_casecmp(encoding, "gzip")
+            || !ap_cstr_casecmp(encoding, "x-gzip")) {
             found = 1;
             if (hdrs) {
                 apr_table_unset(hdrs, "Content-Encoding");
@@ -137,8 +137,8 @@ static int check_gzip(request_rec *r, apr_table_t *hdrs1, apr_table_t *hdrs2)
             for(;;) {
                 char *token = ap_strrchr(new_encoding, ',');
                 if (!token) {        /* gzip:identity or other:identity */
-                    if (!strcasecmp(new_encoding, "gzip")
-                        || !strcasecmp(new_encoding, "x-gzip")) {
+                    if (!ap_cstr_casecmp(new_encoding, "gzip")
+                        || !ap_cstr_casecmp(new_encoding, "x-gzip")) {
                         found = 1;
                         if (hdrs) {
                             apr_table_unset(hdrs, "Content-Encoding");
@@ -150,8 +150,8 @@ static int check_gzip(request_rec *r, apr_table_t *hdrs1, apr_table_t *hdrs2)
                     break; /* seen all tokens */
                 }
                 for (ptr=token+1; apr_isspace(*ptr); ++ptr);
-                if (!strcasecmp(ptr, "gzip")
-                    || !strcasecmp(ptr, "x-gzip")) {
+                if (!ap_cstr_casecmp(ptr, "gzip")
+                    || !ap_cstr_casecmp(ptr, "x-gzip")) {
                     *token = '\0';
                     if (hdrs) {
                         apr_table_setn(hdrs, "Content-Encoding", new_encoding);
@@ -161,7 +161,7 @@ static int check_gzip(request_rec *r, apr_table_t *hdrs1, apr_table_t *hdrs2)
                     }
                     found = 1;
                 }
-                else if (!ptr[0] || !strcasecmp(ptr, "identity")) {
+                else if (!ptr[0] || !ap_cstr_casecmp(ptr, "identity")) {
                     *token = '\0';
                     continue; /* strip the token and find the next one */
                 }
@@ -709,7 +709,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             }
 
             token = ap_get_token(r->pool, &accepts, 0);
-            while (token && token[0] && strcasecmp(token, "gzip")) {
+            while (token && token[0] && ap_cstr_casecmp(token, "gzip")) {
                 /* skip parameters, XXX: ;q=foo evaluation? */
                 while (*accepts == ';') {
                     ++accepts;
@@ -794,7 +794,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
          */
 
         /* If the entire Content-Encoding is "identity", we can replace it. */
-        if (!encoding || !strcasecmp(encoding, "identity")) {
+        if (!encoding || !ap_cstr_casecmp(encoding, "identity")) {
             apr_table_setn(r->headers_out, "Content-Encoding", "gzip");
         }
         else {

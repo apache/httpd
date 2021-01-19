@@ -681,7 +681,7 @@ static int mod_fcgid_modify_auth_header(void *vars,
     /* When the application gives a 200 response, the server ignores response
        headers whose names aren't prefixed with Variable- prefix, and ignores
        any response content */
-    if (strncasecmp(key, "Variable-", 9) == 0)
+    if (ap_cstr_casecmpn(key, "Variable-", 9) == 0)
         apr_table_setn(vars, key, val);
     return 1;
 }
@@ -809,7 +809,7 @@ static int fcgi_check_authn(request_rec *r)
 
     prov = dconf && dconf->name ? dconf->name : NULL;
 
-    if (!prov || !strcasecmp(prov, "None")) {
+    if (!prov || !ap_cstr_casecmp(prov, "None")) {
         return DECLINED;
     }
 
@@ -824,7 +824,7 @@ static int fcgi_check_authn(request_rec *r)
                   dconf->user_expr ? "yes" : "no",
                   auth_type);
 
-    if (auth_type && !strcasecmp(auth_type, "Basic")) {
+    if (auth_type && !ap_cstr_casecmp(auth_type, "Basic")) {
         if ((res = ap_get_basic_auth_pw(r, &password))) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                           APLOGNO(02517) "%s: couldn't retrieve basic auth "

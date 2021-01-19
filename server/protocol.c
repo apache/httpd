@@ -601,7 +601,7 @@ AP_CORE_DECLARE(void) ap_parse_uri(request_rec *r, const char *uri)
     if (status == APR_SUCCESS) {
         /* if it has a scheme we may need to do absoluteURI vhost stuff */
         if (r->parsed_uri.scheme
-            && !strcasecmp(r->parsed_uri.scheme, ap_http_scheme(r))) {
+            && !ap_cstr_casecmp(r->parsed_uri.scheme, ap_http_scheme(r))) {
             r->hostname = r->parsed_uri.hostname;
         }
         else if (r->method_number == M_CONNECT) {
@@ -1498,7 +1498,7 @@ request_rec *ap_read_request(conn_rec *conn)
          * unfortunately, to signal a poor man's mandatory extension that
          * the server must understand or return 417 Expectation Failed.
          */
-        if (strcasecmp(expect, "100-continue") == 0) {
+        if (ap_cstr_casecmp(expect, "100-continue") == 0) {
             r->expecting_100 = 1;
         }
         else {
@@ -1651,7 +1651,7 @@ AP_DECLARE(int) ap_get_basic_auth_pw(request_rec *r, const char **pw)
                                               : "Authorization");
     const char *t;
 
-    if (!(t = ap_auth_type(r)) || strcasecmp(t, "Basic"))
+    if (!(t = ap_auth_type(r)) || ap_cstr_casecmp(t, "Basic"))
         return DECLINED;
 
     if (!ap_auth_name(r)) {
@@ -1665,7 +1665,7 @@ AP_DECLARE(int) ap_get_basic_auth_pw(request_rec *r, const char **pw)
         return HTTP_UNAUTHORIZED;
     }
 
-    if (strcasecmp(ap_getword(r->pool, &auth_line, ' '), "Basic")) {
+    if (ap_cstr_casecmp(ap_getword(r->pool, &auth_line, ' '), "Basic")) {
         /* Client tried to authenticate using wrong auth scheme */
         ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00573)
                       "client used wrong authentication scheme: %s", r->uri);

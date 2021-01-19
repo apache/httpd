@@ -152,7 +152,7 @@ static const char *vhost_alias_set(cmd_parms *cmd, void *dummy, const char *map)
     }
 
     if (!ap_os_is_path_absolute(cmd->pool, map)) {
-        if (strcasecmp(map, "none")) {
+        if (ap_cstr_casecmp(map, "none")) {
             return "format string must be an absolute path, or 'none'";
         }
         *pmap = NULL;

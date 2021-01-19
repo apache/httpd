@@ -64,12 +64,12 @@ static int proxy_wstunnel_canon(request_rec *r, char *url)
     }
 
     /* ap_port_of_scheme() */
-    if (strncasecmp(url, "ws:", 3) == 0) {
+    if (ap_cstr_casecmpn(url, "ws:", 3) == 0) {
         url += 3;
         scheme = "ws:";
         def_port = apr_uri_port_of_scheme("http");
     }
-    else if (strncasecmp(url, "wss:", 4) == 0) {
+    else if (ap_cstr_casecmpn(url, "wss:", 4) == 0) {
         url += 4;
         scheme = "wss:";
         def_port = apr_uri_port_of_scheme("https");
@@ -329,11 +329,11 @@ static int proxy_wstunnel_handler(request_rec *r, proxy_worker *worker,
         return DECLINED;
     }
 
-    if (strncasecmp(url, "wss:", 4) == 0) {
+    if (ap_cstr_casecmpn(url, "wss:", 4) == 0) {
         scheme = "WSS";
         is_ssl = 1;
     }
-    else if (strncasecmp(url, "ws:", 3) == 0) {
+    else if (ap_cstr_casecmpn(url, "ws:", 3) == 0) {
         scheme = "WS";
     }
     else {

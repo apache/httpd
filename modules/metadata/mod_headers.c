@@ -791,14 +791,14 @@ static int do_headers_fixup(request_rec *r, apr_table_t *headers,
             }
             break;
         case hdr_set:
-            if (!strcasecmp(hdr->header, "Content-Type")) {
+            if (!ap_cstr_casecmp(hdr->header, "Content-Type")) {
                  ap_set_content_type(r, process_tags(hdr, r));
             }
             apr_table_setn(headers, hdr->header, process_tags(hdr, r));
             break;
         case hdr_setifempty:
             if (NULL == apr_table_get(headers, hdr->header)) {
-                if (!strcasecmp(hdr->header, "Content-Type")) {
+                if (!ap_cstr_casecmp(hdr->header, "Content-Type")) {
                     ap_set_content_type(r, process_tags(hdr, r));
                 }
                 apr_table_setn(headers, hdr->header, process_tags(hdr, r));
@@ -814,7 +814,7 @@ static int do_headers_fixup(request_rec *r, apr_table_t *headers,
             break;
         case hdr_edit:
         case hdr_edit_r:
-            if (!strcasecmp(hdr->header, "Content-Type") && r->content_type) {
+            if (!ap_cstr_casecmp(hdr->header, "Content-Type") && r->content_type) {
                 const char *repl = process_regexp(hdr, r->content_type, r);
                 if (repl == NULL)
                     return 0;

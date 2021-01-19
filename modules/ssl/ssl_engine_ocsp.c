@@ -86,7 +86,7 @@ static apr_uri_t *determine_responder_uri(SSLSrvConfigRec *sc, X509 *cert,
         return NULL;
     }
 
-    if (strcasecmp(u->scheme, "http") != 0) {
+    if (ap_cstr_casecmp(u->scheme, "http") != 0) {
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, rv, c, APLOGNO(01920)
                       "cannot handle OCSP responder URI '%s'", s);
         return NULL;
