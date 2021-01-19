@@ -223,6 +223,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-dav-functions2.patch
     +1: minfrin
 
+  *) mod_proxy_hcheck: Don't pile up health checks if the previous one did
+     not finish before hcinterval.  PR 63010.
+     trunk patch: http://svn.apache.org/r1885691
+     2.4.x patch: svn merge -c 1885691 ^/httpd/httpd/trunk .
+     +1: ylavic, 
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
