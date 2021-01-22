@@ -137,19 +137,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) Fix some Windows 64 compilation warnings (if I get positive feedbacks
-     on such patches, I'll try to group more changes in future commits. However
-     fixing these warnings looks like a long and boring task)
-     Trunk version of patch:
-        https://svn.apache.org/r1881303
-        https://svn.apache.org/r1881304
-        https://svn.apache.org/r1881305
-        https://svn.apache.org/r1881306
-    Backport version for 2.4.x of patch:
-      Trunk version of patch works
-      svn merge -c 1881303,1881304,1881305,1881306 ^/httpd/httpd/trunk .
-     +1: jailletc36, minfrin, ylavic (by inspection)
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
