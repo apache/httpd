@@ -119,7 +119,7 @@ LDAPOpCacheTTL 600
     caching strategy to minimize the number of times that the LDAP
     server must be contacted. Caching can easily double or triple
     the throughput of Apache when it is serving pages protected
-    with mod_authnz_ldap. In addition, the load on the LDAP server
+    with <module>mod_authnz_ldap</module>. In addition, the load on the LDAP server
     will be significantly decreased.</p>
 
     <p><module>mod_ldap</module> supports two types of LDAP caching during
@@ -270,7 +270,8 @@ LDAPTrustedGlobalCert CA_DER "/certs/certfile.der"
         installation.</p>
 
         <p>Client certificates are specified per connection using the
-        LDAPTrustedClientCert directive by referring
+        <directive module="mod_ldap">LDAPTrustedClientCert</directive>
+        directive by referring
         to the certificate "nickname". An optional password may be
         specified to unlock the certificate's private key.</p>
 
@@ -309,13 +310,16 @@ LDAPTrustedGlobalCert CA_SECMOD "/certs/secmod"
         binary DER or Base64 (PEM) encoded files.</p>
 
         <p>Note: Client certificates are specified globally rather than per
-        connection, and so must be specified with the LDAPTrustedGlobalCert
+        connection, and so must be specified with the <directive module="mod_ldap"
+        >LDAPTrustedGlobalCert</directive>
         directive as below. Trying to set client certificates via the
-        LDAPTrustedClientCert directive will cause an error to be logged
-        when an attempt is made to connect to the LDAP server..</p>
+        <directive module="mod_ldap">LDAPTrustedClientCert</directive>
+        directive will cause an error to be logged
+        when an attempt is made to connect to the LDAP server.</p>
 
         <p>The SDK supports both SSL and STARTTLS, set using the
-        LDAPTrustedMode parameter. If an ldaps:// URL is specified,
+        <directive module="mod_ldap">LDAPTrustedMode</directive> parameter.
+        If an ldaps:// URL is specified,
         SSL mode is forced, override this directive.</p>
 
         <highlight language="config">
@@ -338,7 +342,8 @@ LDAPTrustedGlobalCert KEY_BASE64 "/certs/key1.pem" [password]
         binary DER or Base64 (PEM) encoded files.</p>
 
         <p>Both CA and client certificates may be specified globally
-        (LDAPTrustedGlobalCert) or per-connection (LDAPTrustedClientCert).
+        (<directive module="mod_ldap">LDAPTrustedGlobalCert</directive>) or
+        per-connection (<directive module="mod_ldap">LDAPTrustedClientCert</directive>).
         When any settings are specified per-connection, the global
         settings are superseded.</p>
 
@@ -390,7 +395,8 @@ LDAPTrustedGlobalCert CA_BASE64 "/certs/cacert2.pem"
         configuration directives are required.</p>
 
         <p>Both SSL and TLS are supported by using the ldaps:// URL
-        format, or by using the LDAPTrustedMode directive accordingly.</p>
+        format, or by using the <directive module="mod_ldap"
+        >LDAPTrustedMode</directive> directive accordingly.</p>
 
         <p>Note: The status of support for client certificates is not yet known
         for this toolkit.</p>
@@ -494,7 +500,7 @@ valid</description>
 <override>AuthConfig</override>
 
 <usage>
-    <p>This directive, if enabled by the <directive>LDAPReferrals</directive> directive,
+    <p>This directive, if enabled by the <directive module="mod_ldap">LDAPReferrals</directive> directive,
     limits the number of referral hops that are followed before terminating an
     LDAP query.</p>
 
@@ -507,7 +513,7 @@ valid</description>
 <directivesynopsis>
 <name>LDAPReferrals</name>
 <description>Enable referral chasing during queries to the LDAP server.</description>
-<syntax>LDAPReferrals <var>On|Off|default</var></syntax>
+<syntax>LDAPReferrals On|Off|default</syntax>
 <default>LDAPReferrals On</default>
 <contextlist><context>directory</context><context>.htaccess</context></contextlist>
 <override>AuthConfig</override>
@@ -524,7 +530,7 @@ valid</description>
     <dl>
      <dt>"on"</dt>
      <dd> <p> When set to "on", the underlying SDK's referral chasing state
-              is enabled, <directive>LDAPReferralHopLimit</directive> is used to
+              is enabled, <directive module="mod_ldap">LDAPReferralHopLimit</directive> is used to
               override the SDK's hop limit, and an LDAP rebind callback is
               registered.</p></dd>
      <dt>"off"</dt>
@@ -532,12 +538,12 @@ valid</description>
               is disabled completely.</p></dd>
      <dt>"default"</dt>
      <dd> <p> When set to "default", the underlying SDK's referral chasing state
-              is not changed, <directive>LDAPReferralHopLimit</directive> is not
+              is not changed, <directive module="mod_ldap">LDAPReferralHopLimit</directive> is not
               used to override the SDK's hop limit, and no LDAP rebind callback is
               registered.</p></dd>
     </dl>
 
-    <p>The directive <directive>LDAPReferralHopLimit</directive> works in conjunction with
+    <p>The directive <directive module="mod_ldap">LDAPReferralHopLimit</directive> works in conjunction with
     this directive to limit the number of referral hops to follow before terminating the LDAP query.
     When referral processing is enabled by a value of "On", client credentials will be provided,
     via a rebind callback, for any LDAP server requiring them.</p>
@@ -590,7 +596,8 @@ Certificate Authority or global client certificates</description>
     is applied globally to the entire server installation. Some LDAP toolkits
     (notably Novell) require all client certificates to be set globally using
     this directive. Most other toolkits require clients certificates to be set
-    per Directory or per Location using LDAPTrustedClientCert. If you get this
+    per Directory or per Location using <directive module="mod_ldap"
+    >LDAPTrustedClientCert</directive>. If you get this
     wrong, an error may be logged when an attempt is made to contact the LDAP
     server, or the connection may silently fail (See the SSL/TLS certificate
     guide above for details).
@@ -629,7 +636,8 @@ connection client certificates.</description>
     settings. Some LDAP toolkits (notably Novell)
     do not support per connection client certificates, and will throw an
     error on LDAP server connection if you try to use this directive
-    (Use the LDAPTrustedGlobalCert directive instead for Novell client
+    (Use the <directive module="mod_ldap">LDAPTrustedGlobalCert</directive>
+    directive instead for Novell client
     certificates - See the SSL/TLS certificate guide above for details).
     The type specifies the kind of certificate parameter being
     set, depending on the LDAP toolkit being used. Supported types are:</p>
@@ -665,7 +673,7 @@ connection client certificates.</description>
     </p>
 
     <p>If an ldaps:// URL is specified, the mode becomes SSL and the setting
-    of LDAPTrustedMode is ignored.</p>
+    of <directive>LDAPTrustedMode</directive> is ignored.</p>
 </usage>
 </directivesynopsis>
 
@@ -725,7 +733,7 @@ connection client certificates.</description>
 <directivesynopsis>
 <name>LDAPVerifyServerCert</name>
 <description>Force server certificate verification</description>
-<syntax>LDAPVerifyServerCert <var>On|Off</var></syntax>
+<syntax>LDAPVerifyServerCert On|Off</syntax>
 <default>LDAPVerifyServerCert On</default>
 <contextlist><context>server config</context></contextlist>
 
