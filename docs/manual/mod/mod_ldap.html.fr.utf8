@@ -154,12 +154,12 @@ LDAPOpCacheTTL 600
 <div class="section">
 <h2><a name="cache" id="cache">Cache LDAP</a> <a title="Lien permanent" href="#cache" class="permalink">&para;</a></h2>
 
-    <p>Pour améliorer les performances, <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> met en
-    oeuvre une stratégie de mise en cache agressive visant à minimiser
-    le nombre de fois que le serveur LDAP doit être contacté. La mise en
-    cache peut facilement doubler et même tripler le débit d'Apache
-    lorsqu'il sert des pages protégées par mod_authnz_ldap. De plus, le
-    serveur LDAP verra lui-même sa charge sensiblement diminuée.</p>
+    <p>Pour améliorer les performances, <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> met en oeuvre
+    une stratégie de mise en cache agressive visant à minimiser le nombre de
+    fois que le serveur LDAP doit être contacté. La mise en cache peut
+    facilement doubler et même tripler le débit d'Apache lorsqu'il sert des
+    pages protégées par <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code>. De plus, le serveur
+    LDAP verra lui-même sa charge sensiblement diminuée.</p>
 
     <p><code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> supporte deux types de mise en cache
     LDAP : un <em>cache recherche/identification</em> durant la phase
@@ -316,11 +316,10 @@ LDAPTrustedGlobalCert CA_DER /certs/certfile.der
 	moyen le plus simple pour obtenir ces fichiers consiste à les
 	extraire de l'installation de votre navigateur.</p>
 
-        <p>Les certificats clients sont spécifiés pour chaque connexion
-	en utilisant la directive LDAPTrustedClientCert et en se
-	référant au certificat "nickname". On peut éventuellement
-	spécifier un mot de passe pour déverrouiller la clé privée du
-	certificat.</p>
+	<p>Les certificats clients sont spécifiés pour chaque connexion en
+	utilisant la directive <code class="directive"><a href="#ldaptrustedclientcert">LDAPTrustedClientCert</a></code> et en se référant au
+	certificat "nickname". On peut éventuellement spécifier un mot de passe
+	pour déverrouiller la clé privée du certificat.</p>
 
         <p>Le SDK supporte seulement SSL. Toute tentative d'utilisation
 	de STARTTLS engendrera une erreur lors des tentatives de
@@ -357,17 +356,17 @@ LDAPTrustedGlobalCert CA_SECMOD /certs/secmod
 	peuvent être spécifiés sous forme de fichiers au format binaire
 	DER ou codés en Base64 (PEM).</p>
 
-        <p>Note: Les certificats clients sont spécifiés globalement
-	plutôt qu'à chaque connexion, et doivent être spécifiés à l'aide
-	de la directive LDAPTrustedGlobalCert comme ci-dessous. Définir
-	des certificats clients via la directive LDAPTrustedClientCert
-	engendrera une erreur qui sera journalisée, au moment de la
-	tentative de connexion avec le serveur LDAP.</p>
+	<p>Note: Les certificats clients sont spécifiés globalement plutôt qu'à
+	chaque connexion, et doivent être spécifiés à l'aide de la directive
+	<code class="directive"><a href="#ldaptrustedglobalcert">LDAPTrustedGlobalCert</a></code> comme
+	ci-dessous. Définir des certificats clients via la directive <code class="directive"><a href="#ldaptrustedclientcert">LDAPTrustedClientCert</a></code> engendrera une
+	erreur qui sera journalisée, au moment de la tentative de connexion avec
+	le serveur LDAP.</p>
 
-        <p>Le SDK supporte SSL et STARTTLS, le choix étant défini par le
-	paramètre de la directive LDAPTrustedMode. Si une URL de type
-	ldaps:// est spécifiée, le mode SSL est forcé, et l'emporte sur
-	cette directive.</p>
+	<p>Le SDK supporte SSL et STARTTLS, le choix étant défini par le
+	paramètre de la directive <code class="directive"><a href="#ldaptrustedmode">LDAPTrustedMode</a></code>. Si une URL de type
+	ldaps:// est spécifiée, le mode SSL est forcé, et l'emporte sur cette
+	directive.</p>
 
         <pre class="prettyprint lang-config"># Spécifie deux fichiers contenant des certificats de CA
 LDAPTrustedGlobalCert CA_DER /certs/cacert1.der
@@ -390,8 +389,10 @@ LDAPTrustedGlobalCert KEY_BASE64 /certs/key1.pem [password]
 	peuvent être spécifiés sous forme de fichiers au format binaire
 	DER ou codés en Base64 (PEM).</p>
 
-        <p>Les certificats clients sont spécifiés pour chaque connexion
-	à l'aide de la directive LDAPTrustedClientCert.</p>
+        <p>Les certificats clients et CA peuvent être spécifiés globalement
+	(<code class="directive"><a href="#ldaptrustedglobalcert">LDAPTrustedGlobalCert</a></code>) ou pour
+	chaque connexion (<code class="directive"><a href="#ldaptrustedclientcert">LDAPTrustedClientCert</a></code>). Les définitions au
+	niveau d'une connexion l'emportent sur les définitions globales.</p>
 
         <p>La documentation du SDK prétend que SSL et STARTTLS sont
 	supportés ; cependant, STARTTLS semble ne pas fonctionner avec
@@ -442,7 +443,7 @@ LDAPTrustedGlobalCert CA_BASE64 /certs/cacert2.pem
 	requise.</p>
 
         <p>SSL et TLS sont tous deux supportés en utilisant des URLs de
-	type ldaps://, ou en définissant la directive LDAPTrustedMode à
+	type ldaps://, ou en définissant la directive <code class="directive"><a href="#ldaptrustedmode">LDAPTrustedMode</a></code> à
 	cet effet.</p>
 
         <p>Note: L'état du support des certificats clients n'est pas
@@ -643,10 +644,9 @@ LDAP.</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
-    <p>Si elle est activée par la directive <code class="directive">LDAPReferrals</code>,
-    cette directive permet de définir le nombre maximum de sauts vers
-    des serveurs alternatifs (referrals) avant l'abandon de la requête
-    LDAP.</p>
+    <p>Si elle est activée par la directive <code class="directive"><a href="#ldapreferrals">LDAPReferrals</a></code>, cette directive permet de
+    définir le nombre maximum de sauts vers des serveurs alternatifs (referrals)
+    avant l'abandon de la requête LDAP.</p>
 
 <div class="warning">
 <p>L'ajustement de ce paramètre n'est pas commun à tous les SDKs LDAP.</p>
@@ -658,7 +658,7 @@ LDAP.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la redirection vers des serveurs alternatifs au
 cours des requêtes vers le serveur LDAP.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPReferrals <var>On|Off|default</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPReferrals On|Off|default</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LDAPReferrals On</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>AuthConfig</td></tr>
@@ -680,26 +680,25 @@ version 2.4.7 du serveur HTTP Apache.</td></tr>
 
     <dl>
      <dt>"on"</dt>
-     <dd> <p>Avec la valeur "on", la prise en compte des redirections
-     LDAP par le SDK sous-jacent est activée, la directive
-     <code class="directive">LDAPReferralHopLimit</code> permet de surcharger la
+     <dd> <p>Avec la valeur "on", la prise en compte des redirections LDAP par
+     le SDK sous-jacent est activée, la directive <code class="directive"><a href="#ldapreferralhoplimit">LDAPReferralHopLimit</a></code> permet de surcharger la
      "hop limit" du SDK, et un "LDAP rebind callback" est enregistré.</p></dd>
      <dt>"off"</dt>
      <dd> <p>Avec la valeur "off", la prise en compte des redirections
      LDAP par le SDK sous-jacent est complètement désactivée.</p></dd>
      <dt>"default"</dt>
-     <dd> <p>Avec la valeur "default", la prise en compte des redirections
-     LDAP par le SDK sous-jacent n'est pas modifiée, la directive
-     <code class="directive">LDAPReferralHopLimit</code> ne permet pas de surcharger la
-     "hop limit" du SDK, et aucun "LDAP rebind callback" n'est enregistré.</p></dd>
+     <dd> <p>Avec la valeur "default", la prise en compte des redirections LDAP
+     par le SDK sous-jacent n'est pas modifiée, la directive <code class="directive"><a href="#ldapreferralhoplimit">LDAPReferralHopLimit</a></code> ne permet pas de
+     surcharger la "hop limit" du SDK, et aucun "LDAP rebind callback" n'est
+     enregistré.</p></dd>
     </dl>
     
-    <p>La directive <code class="directive">LDAPReferralHopLimit</code> travaille en
-    conjonction avec cette directive pour limiter le nombre de
-    redirections à suivre pour achever le traitement de la requête LDAP.
-    Lorsque le processus de redirection est activé par la valeur "On",
-    les données d'authentification du client sont transmises via un
-    "rebind callback" à tout serveur LDAP qui en fait la demande.</p>
+    <p>La directive <code class="directive"><a href="#ldapreferralhoplimit">LDAPReferralHopLimit</a></code> travaille en conjonction
+    avec cette directive pour limiter le nombre de redirections à suivre pour
+    achever le traitement de la requête LDAP.  Lorsque le processus de
+    redirection est activé par la valeur "On", les données d'authentification du
+    client sont transmises via un "rebind callback" à tout serveur LDAP qui en
+    fait la demande.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -822,19 +821,18 @@ connexion.</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
-    <p>Cette directive permet de spécifier le chemin et le nom de
-    fichier ou l'alias d'un certificat client par connexion utilisé lors
-    de l'établissement d'une connexion SSL ou TLS avec un serveur LDAP.
-    Les sections directory ou location peuvent posséder leurs propres
-    configurations de certificats clients. Certains SDK LDAP (en
-    particulier Novell) ne supportent pas les certificats clients par
-    connexion, et renvoient une erreur lors de la connexion au serveur
-    LDAP si vous tenter d'utiliser cette directive (Utilisez à la place
-    la directive LDAPTrustedGlobalCert pour les certificats clients sous
-    Novell - Voir plus haut le guide des certificats SSL/TLS pour plus
-    de détails). Le paramètre type spécifie le type du certificat en
-    cours de définition, en fonction du SDK LDAP utilisé. Les types
-    supportés sont :</p>
+    <p>Cette directive permet de spécifier le chemin et le nom de fichier ou
+    l'alias d'un certificat client par connexion utilisé lors de l'établissement
+    d'une connexion SSL ou TLS avec un serveur LDAP.  Les sections directory ou
+    location peuvent posséder leurs propres configurations de certificats
+    clients. Certains SDK LDAP (en particulier Novell) ne supportent pas les
+    certificats clients par connexion, et renvoient une erreur lors de la
+    connexion au serveur LDAP si vous tenter d'utiliser cette directive
+    (Utilisez à la place la directive <code class="directive"><a href="#ldaptrustedglobalcert">LDAPTrustedGlobalCert</a></code> pour les certificats
+    clients sous Novell - Voir plus haut le guide des certificats SSL/TLS pour
+    plus de détails). Le paramètre type spécifie le type du certificat en cours
+    de définition, en fonction du SDK LDAP utilisé. Les types supportés sont
+    :</p>
     <ul>
       <li>CA_DER - certificat de CA codé en binaire DER</li>
       <li>CA_BASE64 - certificat de CA codé en PEM</li>
@@ -858,23 +856,21 @@ clients globaux</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
-    <p>Cette directive permet de spécifier le chemin et le nom du
-    fichier contenant les certificats des CA de confiance et/ou les
-    certificats clients du système global que <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code>
-    utilisera pour établir une connexion SSL ou TLS avec un serveur
-    LDAP. Notez que toute information relative aux certificats spécifiée
-    en utilisant cette directive s'applique globalement à l'ensemble de
-    l'installation du serveur. Certains SDK LDAP (en particulier Novell)
-    nécessitent la définition globale de tous les certificats clients en
-    utilisant cette directive. La plupart des autres SDK nécessitent la
-    définition des certificats clients dans une section Directory ou
-    Location en utilisant la directive LDAPTrustedClientCert. Si vous ne
-    définissez pas ces directives correctement, une erreur sera générée
-    lors des tentatives de contact avec un serveur LDAP, ou la connexion
-    échouera silencieusement (Voir plus haut le guide des certificats
-    SSL/TLS pour plus de détails). Le paramètre type spécifie le type de
-    certificat en cours de définition, en fonction du SDK LDAP utilisé.
-    Les types supportés sont :</p>
+    <p>Cette directive permet de spécifier le chemin et le nom du fichier
+    contenant les certificats des CA de confiance et/ou les certificats clients
+    du système global que <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> utilisera pour établir une
+    connexion SSL ou TLS avec un serveur LDAP. Notez que toute information
+    relative aux certificats spécifiée en utilisant cette directive s'applique
+    globalement à l'ensemble de l'installation du serveur. Certains SDK LDAP (en
+    particulier Novell) nécessitent la définition globale de tous les
+    certificats clients en utilisant cette directive. La plupart des autres SDK
+    nécessitent la définition des certificats clients dans une section Directory
+    ou Location en utilisant la directive <code class="directive"><a href="#ldaptrustedclientcert">LDAPTrustedClientCert</a></code>. Si vous ne définissez
+    pas ces directives correctement, une erreur sera générée lors des tentatives
+    de contact avec un serveur LDAP, ou la connexion échouera silencieusement
+    (Voir plus haut le guide des certificats SSL/TLS pour plus de détails). Le
+    paramètre type spécifie le type de certificat en cours de définition, en
+    fonction du SDK LDAP utilisé.  Les types supportés sont :</p>
     <ul>
       <li>CA_DER - certificat de CA codé en binaire DER</li>
       <li>CA_BASE64 - certificat de CA codé en PEM</li>
@@ -916,7 +912,7 @@ connexion à un serveur LDAP.</td></tr>
     </p>
 
     <p>Si une URL de type ldaps:// est spécifiée, le mode est forcé à
-    SSL et la définition de LDAPTrustedMode est ignorée.</p>
+    SSL et la définition de <code class="directive">LDAPTrustedMode</code> est ignorée.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -924,7 +920,7 @@ connexion à un serveur LDAP.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Force la vérification du certificat du
 serveur</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPVerifyServerCert <var>On|Off</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPVerifyServerCert On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LDAPVerifyServerCert On</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -957,7 +953,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_ldap.html'
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
