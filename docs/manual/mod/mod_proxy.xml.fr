@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1883046 -->
+<!-- English Revision: 1885575 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2269,11 +2269,13 @@ ProxyDomain     ".example.com"
 <name>ProxyErrorOverride</name>
 <description>Outrepasser les pages d'erreur pour les contenus
 mandatés</description>
-<syntax>ProxyErrorOverride On|Off</syntax>
+<syntax>ProxyErrorOverride Off|On [<var>code</var> ...]</syntax>
 <default>ProxyErrorOverride Off</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
+<compatibility>La liste de codes d'états a été ajoutée à partir de la version
+2.5.1. du serveur HTTP Apache.</compatibility>
 
 <usage>
     <p>Cette directive est utile pour les configurations de mandataires
@@ -2288,6 +2290,27 @@ mandatés</description>
     <p>Cette directive n'affecte pas le traitement des réponses
     informatives (1xx), de type succès normal (2xx), ou de redirection
     (3xx).</p>
+
+    <p>Par défaut, <directive>ProxyErrorOverride</directive> affecte toutes les
+    réponses avec un code compris entre 400 inclus et 600 exclus.</p>
+
+    <example><title>Exemple de configuration par défaut</title>
+        <highlight language="config">
+            ProxyErrorOverride  On
+        </highlight>
+    </example>
+
+    <p>Pour n'affecter que les réponses possèdant certains codes d'état
+    particuliers, vous pouvez spécifier ces derniers sous la forme d'une liste
+    en les séparant par des espaces. Les réponses dont le code d'état ne fait
+    pas partie de la liste ne seront pas affectées. Vous ne pouvez spécifier que
+    des codes d'erreurs, donc compris entre 400 inclus et 600 exclus.</p>
+
+    <example><title>Exemple de configuration personnalisée</title>
+        <highlight language="config">
+            ProxyErrorOverride  On 403 405 500 501 502 503 504
+        </highlight>
+    </example>
 </usage>
 </directivesynopsis>
 
