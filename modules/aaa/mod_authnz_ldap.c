@@ -1719,6 +1719,10 @@ static const char *set_bind_password(cmd_parms *cmd, void *_cfg, const char *arg
         sec->bindpw = (char *)arg;
     }
 
+    if (!(*sec->bindpw)) {
+        return "Empty passwords are invalid for AuthLDAPBindPassword";
+    }
+
     return NULL;
 }
 
