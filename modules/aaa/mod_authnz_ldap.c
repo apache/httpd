@@ -560,7 +560,7 @@ static authn_status authn_ldap_check_password(request_rec *r, const char *user,
      * problem.
      */
     if (!(*password)) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO()
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(10263)
                       "auth_ldap authenticate: empty password specified");
         return AUTH_DENIED;
     }
