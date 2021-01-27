@@ -500,6 +500,32 @@ static authn_status authn_ldap_check_password(request_rec *r, const char *user,
         return AUTH_GENERAL_ERROR;
     }
 
+    /* Get the password that the client sent */
+    if (password == NULL) {
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01692)
+                      "auth_ldap authenticate: no password specified");
+        return AUTH_GENERAL_ERROR;
+    }
+
+    if (user == NULL) {
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01693)
+                      "auth_ldap authenticate: no user specified");
+        return AUTH_GENERAL_ERROR;
+    }
+
+    /*
+     * A bind to the server with an empty password always succeeds, so
+     * we check to ensure that the password is not empty. This implies
+     * that users who actually do have empty passwords will never be
+     * able to authenticate with this module. I don't see this as a big
+     * problem.
+     */
+    if (!(*password)) {
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO()
+                      "auth_ldap authenticate: empty password specified");
+        return AUTH_DENIED;
+    }
+
     /* There is a good AuthLDAPURL, right? */
     if (sec->host) {
         const char *binddn = sec->binddn;
@@ -521,21 +547,6 @@ static authn_status authn_ldap_check_password(request_rec *r, const char *user,
 
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01691)
                   "auth_ldap authenticate: using URL %s", sec->url);
-
-    /* Get the password that the client sent */
-    if (password == NULL) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01692)
-                      "auth_ldap authenticate: no password specified");
-        util_ldap_connection_close(ldc);
-        return AUTH_GENERAL_ERROR;
-    }
-
-    if (user == NULL) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01693)
-                      "auth_ldap authenticate: no user specified");
-        util_ldap_connection_close(ldc);
-        return AUTH_GENERAL_ERROR;
-    }
 
     /* build the username filter */
     authn_ldap_build_filter(filtbuf, r, user, NULL, sec);
