@@ -211,6 +211,28 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1885691 ^/httpd/httpd/trunk .
      +1: ylavic, 
 
+  *) mod_ssl: Set the Connection header to close to indicate that we do not want
+     to keep the HTTP connection to the OCSP responder alive
+     trunk patch: http://svn.apache.org/r1874007
+     2.4.x patch: svn merge -c 1874007 ^/httpd/httpd/trunk .
+     +1: 
+
+  *) mod_seesion_crypto: Bubble up an error if none of the passhrases work
+     trunk patch: http://svn.apache.org/r1874674
+     2.4.x patch: svn merge -c 1874674 ^/httpd/httpd/trunk .
+     +1: jailletc36,
+
+  *) core: Optimize 'ap_list_provider_names'. Save some memory and potentialy
+     avoid some useless copy.
+     trunk patch: http://svn.apache.org/r1883184
+     2.4.x patch: svn merge -c 1883184 ^/httpd/httpd/trunk .
+     +1: jailletc36,
+
+  *) mod_proxy_http2: explicitely apr_thread_exit() at the end of slot_run().
+     trunk patch: http://svn.apache.org/r1883668
+     2.4.x patch: svn merge -c 1883668 ^/httpd/httpd/trunk .
+     +1: 
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
