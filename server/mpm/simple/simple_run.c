@@ -260,7 +260,7 @@ static int simple_setup_pollcb(simple_core_t * sc)
     apr_status_t rv;
     int good_methods[] = {APR_POLLSET_KQUEUE, APR_POLLSET_PORT, APR_POLLSET_EPOLL};
 
-    for (i = 0; i < sizeof(good_methods) / sizeof(void*); i++) {
+    for (i = 0; i < sizeof(good_methods) / sizeof(good_methods[0]); i++) {
         /* pqXXXXX: make size of pollcb configrable or dynamic */
         rv = apr_pollcb_create_ex(&sc->pollcb, 512,
                                   sc->pool, APR_POLLSET_NODEFAULT, good_methods[i]);
