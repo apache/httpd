@@ -137,6 +137,21 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) Makefile: Do variable setting for awk in a more portable way such that it
+     works on MacOS as well.
+     Trunk version of patch:
+        https://svn.apache.org/r1886098
+     Backport version for 2.4.x of patch:
+      Trunk version of patch works
+      svn merge -c 1886098 ^/httpd/httpd/trunk .
+     +1: rpluem, jorton, ylavic
+
+  *) core: Optimize 'ap_list_provider_names'. Save some memory and potentialy
+     avoid some useless copy.
+     trunk patch: http://svn.apache.org/r1883184
+     2.4.x patch: svn merge -c 1883184 ^/httpd/httpd/trunk .
+     +1: jailletc36, jorton, ylavic
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -203,7 +218,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1876787
      2.4.x patch: https://github.com/apache/httpd/pull/113/commits/ed83740a67b63c678c666ffa6e63f456e6ee71d8
      CI results:  https://travis-ci.com/github/apache/httpd/builds/213760432
-     +1: jorton, 
+     +1: jorton, ylavic, 
 
   *) mod_proxy_hcheck: Don't pile up health checks if the previous one did
      not finish before hcinterval.  PR 63010.
@@ -215,33 +230,25 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      to keep the HTTP connection to the OCSP responder alive
      trunk patch: http://svn.apache.org/r1874007
      2.4.x patch: svn merge -c 1874007 ^/httpd/httpd/trunk .
-     +1: jorton, 
+     +1: jorton, ylavic, 
 
   *) mod_seesion_crypto: Bubble up an error if none of the passhrases work
      trunk patch: http://svn.apache.org/r1874674
      2.4.x patch: svn merge -c 1874674 ^/httpd/httpd/trunk .
-     +1: jailletc36,
-
-  *) core: Optimize 'ap_list_provider_names'. Save some memory and potentialy
-     avoid some useless copy.
-     trunk patch: http://svn.apache.org/r1883184
-     2.4.x patch: svn merge -c 1883184 ^/httpd/httpd/trunk .
-     +1: jailletc36, jorton, 
+     +1: jailletc36, ylavic, 
 
   *) mod_proxy_http2: explicitely apr_thread_exit() at the end of slot_run().
      trunk patch: http://svn.apache.org/r1883668
      2.4.x patch: svn merge -c 1883668 ^/httpd/httpd/trunk .
-     +1: jorton, 
+     +1: jorton, ylavic, 
 
-  *) Makefile: Do variable setting for awk in a more portable way such that it
-     works on MacOS as well.
-     Trunk version of patch:
-        https://svn.apache.org/r1886098
-     Backport version for 2.4.x of patch:
-      Trunk version of patch works
-      svn merge -c 1886098 ^/httpd/httpd/trunk .
-     +1: rpluem, jorton, 
-
+  *) mod_proxy_http, core: Fixes against 2.4.x's r1885239 and r1885573, the
+     former for declining CONNECT requests in mod_proxy_http, the latter for
+     ignored poll timeouts and errors in the core output filter.
+     trunk patch: http://svn.apache.org/r1886141
+     2.4.x patch: http://home.apache.org/~ylavic/patches/follow_up_to_r1885239_and_r1885573.patch
+                  (includes follow up to r1885573 which is 2.4.x only)
+     +1: ylavic, 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
