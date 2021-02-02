@@ -215,7 +215,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      to keep the HTTP connection to the OCSP responder alive
      trunk patch: http://svn.apache.org/r1874007
      2.4.x patch: svn merge -c 1874007 ^/httpd/httpd/trunk .
-     +1: 
+     +1: jorton, 
 
   *) mod_seesion_crypto: Bubble up an error if none of the passhrases work
      trunk patch: http://svn.apache.org/r1874674
@@ -226,12 +226,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      avoid some useless copy.
      trunk patch: http://svn.apache.org/r1883184
      2.4.x patch: svn merge -c 1883184 ^/httpd/httpd/trunk .
-     +1: jailletc36,
+     +1: jailletc36, jorton, 
 
   *) mod_proxy_http2: explicitely apr_thread_exit() at the end of slot_run().
      trunk patch: http://svn.apache.org/r1883668
      2.4.x patch: svn merge -c 1883668 ^/httpd/httpd/trunk .
-     +1: 
+     +1: jorton, 
 
   *) Makefile: Do variable setting for awk in a more portable way such that it
      works on MacOS as well.
@@ -240,7 +240,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
       Trunk version of patch works
       svn merge -c 1886098 ^/httpd/httpd/trunk .
-     +1: rpluem,
+     +1: rpluem, jorton, 
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
