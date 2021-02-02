@@ -1903,14 +1903,14 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
         is_ssl = 0;
     }
     if (!scheme || u[0] != '/' || u[1] != '/' || u[2] == '\0') {
-        if (!scheme && (u = strchr(url, ':')) && (u - url) > 14) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10262)
-                          "overlong proxy URL scheme in %s", url);
-            return HTTP_BAD_REQUEST;
-        }
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01113)
                       "HTTP: declining URL %s", url);
         return DECLINED; /* only interested in HTTP, WS or FTP via proxy */
+    }
+    if (!scheme && (u = strchr(url, ':')) && (u - url) > 14) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10262)
+                      "overlong proxy URL scheme in %s", url);
+        return HTTP_BAD_REQUEST;
     }
     if (is_ssl && !ap_proxy_ssl_enable(NULL)) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01112)
