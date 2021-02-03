@@ -246,7 +246,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      former for declining CONNECT requests in mod_proxy_http, the latter for
      ignored poll timeouts and errors in the core output filter.
      trunk patch: http://svn.apache.org/r1886141
-     2.4.x patch: http://home.apache.org/~ylavic/patches/follow_up_to_r1885239_and_r1885573.patch
+                  http://svn.apache.org/r1886151
+     2.4.x patch: http://home.apache.org/~ylavic/patches/follow_up_to_r1885239_and_r1885573-v2.patch
                   (includes follow up to r1885573 which is 2.4.x only)
      +1: ylavic, 
 
