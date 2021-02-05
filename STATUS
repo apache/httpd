@@ -251,6 +251,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   (includes follow up to r1885573 which is 2.4.x only)
      +1: ylavic, 
 
+  *) mod_authnz_ldap: What Prevent authentications with empty passwords for the
+     initial bind to fail with status 500
+     Trunk version of patch:
+        https://svn.apache.org/r1885939
+        https://svn.apache.org/r1885940
+        https://svn.apache.org/r1885941
+        https://svn.apache.org/r1885945
+     Backport version for 2.4.x of patch:
+        https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/168.diff
+     +1: rpluem,
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
