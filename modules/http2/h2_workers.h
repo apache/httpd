@@ -42,7 +42,7 @@ struct h2_workers {
     apr_uint32_t max_workers;
     int max_idle_secs;
     
-    int aborted;
+    volatile int aborted;
     int dynamic;
 
     apr_threadattr_t *thread_attr;
@@ -58,6 +58,7 @@ struct h2_workers {
     struct h2_fifo *mplxs;
     
     struct apr_thread_mutex_t *lock;
+    struct apr_thread_cond_t *all_done;
 };
 
 
