@@ -34,9 +34,9 @@
 typedef struct h2_slot h2_slot;
 struct h2_slot {
     int id;
+    int sticks;
     h2_slot *next;
     h2_workers *workers;
-    int sticks;
     h2_task *task;
     apr_thread_t *thread;
     apr_thread_mutex_t *lock;
@@ -136,7 +136,7 @@ static void wake_idle_worker(h2_workers *workers)
     }
 }
 
-static void cleanup_zombies(h2_workers *workers)
+static void join_zombies(h2_workers *workers)
 {
     h2_slot *slot;
     while ((slot = pop_slot(&workers->zombies))) {
@@ -145,7 +145,6 @@ static void cleanup_zombies(h2_workers *workers)
         apr_thread_join(&status, slot->thread);
         slot->thread = NULL;
 
-        slot->next = NULL;
         push_slot(&workers->free, slot);
     }
 }
@@ -189,13 +188,16 @@ static int get_next(h2_slot *slot)
 
     while (!workers->aborted) {
         if (h2_fifo_try_peek(workers->mplxs, mplx_peek, slot) == APR_EOF) {
+            /* The queue is terminated with the MPM child being cleaned up,
+             * just leave.
+             */
             break;
         }
         if (slot->task) {
             return 1;
         }
         
-        cleanup_zombies(workers);
+        join_zombies(workers);
 
         apr_thread_mutex_lock(slot->lock);
         if (!workers->aborted) {
@@ -213,6 +215,10 @@ static void slot_done(h2_slot *slot)
     h2_workers *workers = slot->workers;
 
     push_slot(&workers->zombies, slot);
+
+    /* If this worker is the last one exiting and the MPM child is stopping,
+     * unblock workers_pool_cleanup().
+     */
     if (!apr_atomic_dec32(&workers->worker_count) && workers->aborted) {
         apr_thread_mutex_lock(workers->lock);
         apr_thread_cond_signal(workers->all_done);
@@ -225,7 +231,7 @@ static void* APR_THREAD_FUNC slot_run(apr_thread_t *thread, void *wctx)
 {
     h2_slot *slot = wctx;
     
-    /* Get the h2_task(s) from the mplxs queue. */
+    /* Get the h2_task(s) from the ->mplxs queue. */
     while (get_next(slot)) {
         ap_assert(slot->task != NULL);
         do {
@@ -255,32 +261,24 @@ static apr_status_t workers_pool_cleanup(void *data)
     h2_workers *workers = data;
     h2_slot *slot;
     
-    if (!workers->aborted) {
-        workers->aborted = 1;
+    workers->aborted = 1;
+    h2_fifo_term(workers->mplxs);
 
-        h2_fifo_term(workers->mplxs);
-
-        /* abort all idle slots */
-        for (;;) {
-            slot = pop_slot(&workers->idle);
-            if (slot) {
-                apr_thread_mutex_lock(slot->lock);
-                apr_thread_cond_signal(slot->not_idle);
-                apr_thread_mutex_unlock(slot->lock);
-            }
-            else {
-                break;
-            }
-        }
-
-        apr_thread_mutex_lock(workers->lock);
-        if (apr_atomic_read32(&workers->worker_count)) {
-            apr_thread_cond_wait(workers->all_done, workers->lock);
-        }
-        apr_thread_mutex_unlock(workers->lock);
-
-        cleanup_zombies(workers);
+    /* abort all idle slots */
+    while ((slot = pop_slot(&workers->idle))) {
+        apr_thread_mutex_lock(slot->lock);
+        apr_thread_cond_signal(slot->not_idle);
+        apr_thread_mutex_unlock(slot->lock);
     }
+
+    /* wait for all the workers to become zombies and join them */
+    apr_thread_mutex_lock(workers->lock);
+    if (apr_atomic_read32(&workers->worker_count)) {
+        apr_thread_cond_wait(workers->all_done, workers->lock);
+    }
+    apr_thread_mutex_unlock(workers->lock);
+    join_zombies(workers);
+
     return APR_SUCCESS;
 }
 
