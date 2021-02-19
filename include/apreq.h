@@ -42,7 +42,7 @@
  * Read chucks of data in 64k blocks from the request 
  */
 
-#define APREQ_DEFAULT_READ_BLOCK_SIZE   (64  * 1024)
+#define APREQ_DEFAULT_READ_BLOCK_SIZE        65536   
 
 /**
  * Maximum number of bytes mod_apreq2 will send off to libapreq2 for parsing. 
@@ -50,14 +50,14 @@
  * from the filter chain.  
  * @see ap_set_read_limit  
  */
-#define APREQ_DEFAULT_READ_LIMIT        (64 * 1024 * 1024)
+#define APREQ_DEFAULT_READ_LIMIT        67108864
 /**
  * Maximum number of bytes mod_apreq2 will let accumulate within the 
  * heap-buckets in a brigade. Excess data will be spooled to an 
  * appended file bucket
  * @see ap_set_brigade_read_limit
  */
-#define APREQ_DEFAULT_BRIGADE_LIMIT     (256 * 1024)
+#define APREQ_DEFAULT_BRIGADE_LIMIT     262144
 
 /**
  * Number of elements in the initial apr_table
