@@ -81,4 +81,9 @@ h2_headers *h2_headers_die(apr_status_t type,
 
 int h2_headers_are_response(h2_headers *headers);
 
+/**
+ * Give the number of bytes of all contained header strings.
+ */
+apr_size_t h2_headers_length(h2_headers *headers);
+
 #endif /* defined(__mod_h2__h2_headers__) */

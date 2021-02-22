@@ -278,11 +278,12 @@ request_rec *h2_request_create_rec(const h2_request *req, conn_rec *c)
     request_rec *r = my_ap_create_request(c);
 #endif
 
+#if AP_MODULE_MAGIC_AT_LEAST(20200331, 3)
     ap_run_pre_read_request(r, c);
-    
+
     /* Time to populate r with the data we have. */
     r->request_time = req->request_time;
-    r->the_request = apr_psprintf(r->pool, "%s %s HTTP/2.0", 
+    r->the_request = apr_psprintf(r->pool, "%s %s HTTP/2.0",
                                   req->method, req->path ? req->path : "");
     r->headers_in = apr_table_clone(r->pool, req->headers);
 
@@ -306,7 +307,50 @@ request_rec *h2_request_create_rec(const h2_request *req, conn_rec *c)
         r->status = HTTP_OK;
         goto die;
     }
-    
+#else
+    {
+        const char *s;
+
+        r->headers_in = apr_table_clone(r->pool, req->headers);
+        ap_run_pre_read_request(r, c);
+
+        /* Time to populate r with the data we have. */
+        r->request_time = req->request_time;
+        r->method = apr_pstrdup(r->pool, req->method);
+        /* Provide quick information about the request method as soon as known */
+        r->method_number = ap_method_number_of(r->method);
+        if (r->method_number == M_GET && r->method[0] == 'H') {
+            r->header_only = 1;
+        }
+        ap_parse_uri(r, req->path ? req->path : "");
+        r->protocol = (char*)"HTTP/2.0";
+        r->proto_num = HTTP_VERSION(2, 0);
+        r->the_request = apr_psprintf(r->pool, "%s %s HTTP/2.0",
+                                      r->method, req->path ? req->path : "");
+
+        /* Start with r->hostname = NULL, ap_check_request_header() will get it
+         * form Host: header, otherwise we get complains about port numbers.
+         */
+        r->hostname = NULL;
+        ap_update_vhost_from_headers(r);
+
+         /* we may have switched to another server */
+         r->per_dir_config = r->server->lookup_defaults;
+
+         s = apr_table_get(r->headers_in, "Expect");
+         if (s && s[0]) {
+            if (ap_cstr_casecmp(s, "100-continue") == 0) {
+                r->expecting_100 = 1;
+            }
+            else {
+                r->status = HTTP_EXPECTATION_FAILED;
+                access_status = r->status;
+                goto die;
+            }
+         }
+    }
+#endif
+
     /* we may have switched to another server */
     r->per_dir_config = r->server->lookup_defaults;
 
@@ -350,11 +394,19 @@ die:
      */
     {
         apr_bucket_brigade *eor_bb;
+#if AP_MODULE_MAGIC_AT_LEAST(20180905, 1)
         eor_bb = ap_acquire_brigade(c);
         APR_BRIGADE_INSERT_TAIL(eor_bb,
                                 ap_bucket_eor_create(c->bucket_alloc, r));
         ap_pass_brigade(c->output_filters, eor_bb);
         ap_release_brigade(c, eor_bb);
+#else
+        eor_bb = apr_brigade_create(c->pool, c->bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(eor_bb,
+                                ap_bucket_eor_create(c->bucket_alloc, r));
+        ap_pass_brigade(c->output_filters, eor_bb);
+        apr_brigade_destroy(eor_bb);
+#endif
     }
 
     r = NULL;

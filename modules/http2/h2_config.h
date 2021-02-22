@@ -44,6 +44,7 @@ typedef enum {
     H2_CONF_EARLY_HINTS,
     H2_CONF_PADDING_BITS,
     H2_CONF_PADDING_ALWAYS,
+    H2_CONF_OUTPUT_BUFFER,
 } h2_config_var_t;
 
 struct apr_hash_t;

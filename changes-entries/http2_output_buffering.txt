@@ -1,0 +1,5 @@
+  *) mod_http2: new option 'H2OutputBuffering on/off' which controls the 
+     buffering of stream output. The default is on, which is the behaviour of 
+     previous mod-h2 versions. When off, all bytes are made available immediately 
+     to the main connection for sending them out to the client. This fixes interop 
+     issues with certain flavours of gRPC. [Stefan Eissing]

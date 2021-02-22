@@ -78,6 +78,7 @@ typedef struct h2_config {
     int early_hints;              /* support status code 103 */
     int padding_bits;
     int padding_always;
+    int output_buffered;
 } h2_config;
 
 typedef struct h2_dir_config {
@@ -115,6 +116,7 @@ static h2_config defconf = {
     0,                      /* early hints, http status 103 */
     0,                      /* padding bits */
     1,                      /* padding always */
+    1,                      /* strean output buffered */
 };
 
 static h2_dir_config defdconf = {
@@ -159,6 +161,7 @@ void *h2_config_create_svr(apr_pool_t *pool, server_rec *s)
     conf->early_hints          = DEF_VAL;
     conf->padding_bits         = DEF_VAL;
     conf->padding_always       = DEF_VAL;
+    conf->output_buffered      = DEF_VAL;
     return conf;
 }
 
@@ -193,6 +196,7 @@ static void *h2_config_merge(apr_pool_t *pool, void *basev, void *addv)
     }
     n->push_diary_size      = H2_CONFIG_GET(add, base, push_diary_size);
     n->copy_files           = H2_CONFIG_GET(add, base, copy_files);
+    n->output_buffered      = H2_CONFIG_GET(add, base, output_buffered);
     if (add->push_list && base->push_list) {
         n->push_list        = apr_array_append(pool, base->push_list, add->push_list);
     }
@@ -286,6 +290,8 @@ static apr_int64_t h2_srv_config_geti64(const h2_config *conf, h2_config_var_t v
             return H2_CONFIG_GET(conf, &defconf, padding_bits);
         case H2_CONF_PADDING_ALWAYS:
             return H2_CONFIG_GET(conf, &defconf, padding_always);
+        case H2_CONF_OUTPUT_BUFFER:
+            return H2_CONFIG_GET(conf, &defconf, output_buffered);
         default:
             return DEF_VAL;
     }
@@ -350,6 +356,9 @@ static void h2_srv_config_seti(h2_config *conf, h2_config_var_t var, int val)
             break;
         case H2_CONF_PADDING_ALWAYS:
             H2_CONFIG_SET(conf, padding_always, val);
+            break;
+        case H2_CONF_OUTPUT_BUFFER:
+            H2_CONFIG_SET(conf, output_buffered, val);
             break;
         default:
             break;
@@ -905,6 +914,19 @@ static const char *h2_conf_set_padding(cmd_parms *cmd, void *dirconf, const char
     return NULL;
 }
 
+static const char *h2_conf_set_output_buffer(cmd_parms *cmd,
+                                      void *dirconf, const char *value)
+{
+    if (!strcasecmp(value, "On")) {
+        CONFIG_CMD_SET(cmd, dirconf, H2_CONF_OUTPUT_BUFFER, 1);
+        return NULL;
+    }
+    else if (!strcasecmp(value, "Off")) {
+        CONFIG_CMD_SET(cmd, dirconf, H2_CONF_OUTPUT_BUFFER, 0);
+        return NULL;
+    }
+    return "value must be On or Off";
+}
 
 void h2_get_num_workers(server_rec *s, int *minw, int *maxw)
 {
@@ -976,6 +998,8 @@ const command_rec h2_cmds[] = {
                   RSRC_CONF, "on to enable interim status 103 responses"),
     AP_INIT_TAKE1("H2Padding", h2_conf_set_padding, NULL,
                   RSRC_CONF, "set payload padding"),
+    AP_INIT_TAKE1("H2OutputBuffering", h2_conf_set_output_buffer, NULL,
+                  RSRC_CONF, "set stream output buffer on/off"),
     AP_END_CMD
 };
 
