@@ -1048,6 +1048,66 @@ AP_DECLARE(void) ap_finalize_sub_req_protocol(request_rec *sub_r);
 AP_DECLARE(void) ap_send_interim_response(request_rec *r, int send_headers);
 
 
+/**
+ * Setup optional functions for ssl related queries so that functions
+ * registered by old-style SSL module functions are interrogated by the 
+ * the new ap_is_ssl() and friends. Installs own optional functions, so that
+ * old modules looking for these find one and get the correct results (shadowing).
+ * 
+ * Needs to run in core's very early POST_CONFIG hook.
+ * Modules providing such functions register their own optionals during 
+ * register_hooks(). Modules using such functions retrieve them often 
+ * in their own post-config or in the even later retrieval hook. When shadowing
+ * other modules functions, core's early post-config is a good time. 
+ * @param pool The pool to use for allocations
+ */
+AP_DECLARE(void) ap_setup_ssl_optional_fns(apr_pool_t *pool);
+
+/**
+ * This hook allows modules that manage SSL connection to register their
+ * inquiry function for checking if a connection is using SSL from them.
+ * @param c The current connection
+ * @return OK if the connection is using SSL, DECLINED if not.
+ * @ingroup hooks
+ */
+AP_DECLARE_HOOK(int,ssl_conn_is_ssl,(conn_rec *c))
+
+/**
+ * This hook allows modules to look up SSL related variables for a 
+ * server/connection/request, depending on what they inquire. Some 
+ * variables will only be available for a connection/request, for example.
+ * @param p The pool to allocate a returned value in, MUST be provided
+ * @param s The server to inquire a value for, maybe NULL
+ * @param c The current connection, maybe NULL
+ * @param r The current request, maybe NULL
+ * @param name The name of the variable to retrieve, MUST be provided
+ * @return value or the variable or NULL if not provided/available
+ * @ingroup hooks
+ */
+AP_DECLARE_HOOK(const char *,ssl_var_lookup,
+    (apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, const char *name))
+
+/**
+ * Return != 0 iff the connection is encrypted with SSL.
+ * @param c the connection
+ */
+AP_DECLARE(int) ap_ssl_conn_is_ssl(conn_rec *c);
+
+/**
+ * Lookup an SSL related variable for the server/connection/request or a global
+ * value when all those parameters are set to NULL. Pool and name must always be
+ * provided and the returned value (if not NULL) will be allocated fromt he pool.
+ * @param p The pool to allocate a returned value in, MUST be provided
+ * @param s The server to inquire a value for, maybe NULL
+ * @param c The current connection, maybe NULL
+ * @param r The current request, maybe NULL
+ * @param name The name of the variable to retrieve, MUST be provided
+ * @return value or the variable or NULL if not provided/available
+ */
+AP_DECLARE(const char *) ap_ssl_var_lookup(apr_pool_t *p, server_rec *s,
+                                           conn_rec *c, request_rec *r,
+                                           const char *name);                                           
+
 #ifdef __cplusplus
 }
 #endif

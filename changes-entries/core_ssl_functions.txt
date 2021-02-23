@@ -1,0 +1,18 @@
+  *) core: Adding SSL related inquiry functions to the server API.
+     These function are always available, even when no module providing
+     SSL is loaded. They provide their own "shadowing" implementation for
+     the optional functions of similar name that mod_ssl and impersonators
+     of mod_ssl provide.
+     This enables loading of several SSL providing modules when all but
+     one of them registers itself into the new hooks. Two old-style SSL
+     modules will not work, as they replace the others optional functions
+     with their own.
+     Modules using the old-style optional functions will continue to work
+     as core supplies its own versions of those.
+     The following has been added so far:
+     - ap_ssl_conn_is_ssl() to query if a connection is using SSL.
+     - ap_ssl_var_lookup() to query SSL related variables for a 
+       server/connection/request.
+     - Hooks for 'ssl_conn_is_ssl' and 'ssl_var_lookup' where modules
+       providing SSL can install their own value supplying functions.
+     [Stefan Eissing]
