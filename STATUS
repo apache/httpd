@@ -223,15 +223,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1874007 ^/httpd/httpd/trunk .
      +1: jorton, ylavic, 
 
-  *) mod_seesion_crypto: Bubble up an error if none of the passhrases work
+  *) mod_session_crypto: Bubble up an error if none of the passhrases work
      trunk patch: http://svn.apache.org/r1874674
      2.4.x patch: svn merge -c 1874674 ^/httpd/httpd/trunk .
      +1: jailletc36, ylavic, 
 
-  *) mod_proxy_http2: explicitely apr_thread_exit() at the end of slot_run().
+  *) mod_http2: explicitely apr_thread_exit() at the end of slot_run(), and
+                fix workers synchronization on pchild cleanup.
      trunk patch: http://svn.apache.org/r1883668
-     2.4.x patch: svn merge -c 1883668 ^/httpd/httpd/trunk .
-     +1: jorton, ylavic, 
+                  http://svn.apache.org/r1886255
+     2.4.x patch: svn merge -c 1883668,1886255 ^/httpd/httpd/trunk .
+     +1: ylavic, 
+     ylavic: jorton's vote reset after adding r1886255
 
   *) mod_proxy_http, core: Fixes against 2.4.x's r1885239 and r1885573, the
      former for declining CONNECT requests in mod_proxy_http, the latter for
