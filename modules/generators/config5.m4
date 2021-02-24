@@ -78,15 +78,4 @@ fi
 
 APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current])
 
-AC_ARG_ENABLE(cgid-fdpassing,
-  [APACHE_HELP_STRING(--enable-cgid-fdpassing,Enable experimental mod_cgid support for fd passing)],
-  [if test "$enableval" = "yes"; then
-     AC_CHECK_DECL(CMSG_DATA,
-       [AC_DEFINE([HAVE_CGID_FDPASSING], 1, [Enable FD passing support in mod_cgid])],
-       [AC_MSG_ERROR([cannot support mod_cgid fd-passing on this system])], [
-#include <sys/types.h>
-#include <sys/socket.h>])
-  fi
-])
-
 APACHE_MODPATH_FINISH

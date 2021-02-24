@@ -567,6 +567,16 @@ if test "$ac_cv_struct_tm_gmtoff" = "yes"; then
     AC_DEFINE(HAVE_GMTOFF, 1, [Define if struct tm has a tm_gmtoff field])
 fi
 
+AC_CHECK_DECL(CMSG_DATA,,, [#include <sys/types.h>
+#include <sys/socket.h>])
+if test $ac_cv_have_decl_CMSG_DATA = "yes"; then
+   AC_DEFINE([HAVE_FDPASSING], 1, [Define if file descriptor passing is supported])
+   ap_has_fdpassing=1
+else
+   ap_has_fdpassing=0
+   AC_MSG_WARN([This system does not support file descriptor passing.])
+fi
+
 APACHE_CHECK_SYSTEMD
 
 dnl ## Set up any appropriate OS-specific environment variables for apachectl

@@ -40,12 +40,7 @@ APACHE_MODULE(proxy_fcgi, Apache proxy FastCGI module.  Requires --enable-proxy.
 APACHE_MODULE(proxy_scgi, Apache proxy SCGI module.  Requires --enable-proxy., $proxy_scgi_objs, , most, , proxy)
 APACHE_MODULE(proxy_uwsgi, Apache proxy UWSGI module.  Requires --enable-proxy., $proxy_uwsgi_objs, , most, , proxy)
 APACHE_MODULE(proxy_fdpass, Apache proxy to Unix Daemon Socket module.  Requires --enable-proxy., $proxy_fdpass_objs, , most, [
-  AC_CHECK_DECL(CMSG_DATA,,, [
-    #include <sys/types.h>
-    #include <sys/socket.h>
-  ])
-  if test $ac_cv_have_decl_CMSG_DATA = "no"; then
-    AC_MSG_WARN([Your system does not support CMSG_DATA.])
+  if test $ap_has_fdpassing = 0; then
     enable_proxy_fdpass=no
   fi
 ],proxy)
