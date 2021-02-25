@@ -287,6 +287,7 @@ int verbosity = 0;      /* no verbosity by default */
 int recverrok = 0;      /* ok to proceed after socket receive errors */
 enum {NO_METH = 0, GET, HEAD, PUT, POST, CUSTOM_METHOD} method = NO_METH;
 const char *method_str[] = {"bug", "GET", "HEAD", "PUT", "POST", ""};
+enum {HTTP_1_0, HTTP_1_1} http_spec = HTTP_1_0;
 int send_body = 0;      /* non-zero if sending body with request */
 int requests = 1;       /* Number of requests to make */
 int heartbeatres = 100; /* How often do we say we're alive */
@@ -1870,30 +1871,29 @@ static void test(void)
     }
 
     /* setup request */
+    const char *const http_version = http_spec == HTTP_1_1 ? "HTTP/1.1" : "HTTP/1.0";
+    const char *const request_uri = isproxy ? fullurl : path;
+    const char *const connection = keepalive ? "Connection: Keep-Alive\r\n" 
+                                             : http_spec == HTTP_1_1 ? "Connection: Close\r\n" : "";
     if (!send_body) {
         snprintf_res = apr_snprintf(request, sizeof(_request),
-            "%s %s HTTP/1.0\r\n"
-            "%s" "%s" "%s"
-            "%s" "\r\n",
-            method_str[method],
-            (isproxy) ? fullurl : path,
-            keepalive ? "Connection: Keep-Alive\r\n" : "",
-            cookie, auth, hdrs);
+            "%s %s %s\r\n"
+            "%s" "%s" "%s" "%s" "\r\n",
+            method_str[method], request_uri, http_version,
+            connection, cookie, auth, hdrs);
     }
     else {
         snprintf_res = apr_snprintf(request,  sizeof(_request),
-            "%s %s HTTP/1.0\r\n"
+            "%s %s %s\r\n"
             "%s" "%s" "%s"
             "Content-length: %" APR_SIZE_T_FMT "\r\n"
             "Content-type: %s\r\n"
-            "%s"
-            "\r\n",
-            method_str[method],
-            (isproxy) ? fullurl : path,
-            keepalive ? "Connection: Keep-Alive\r\n" : "",
-            cookie, auth,
+            "%s" "\r\n",
+            method_str[method], request_uri, http_version,
+            connection, cookie, auth,
             postlen,
-            (content_type != NULL) ? content_type : "text/plain", hdrs);
+            (content_type != NULL) ? content_type : "text/plain", 
+            hdrs);
     }
     if (snprintf_res >= sizeof(_request)) {
         err("Request too long\n");
@@ -2135,6 +2135,7 @@ static void usage(const char *progname)
     fprintf(stderr, "                    are a colon separated username and password.\n");
     fprintf(stderr, "    -X proxy:port   Proxyserver and port number to use\n");
     fprintf(stderr, "    -V              Print version number and exit\n");
+    fprintf(stderr, "    -1              Use HTTP/1.1 (defaults to HTTP/1.0)\n");
     fprintf(stderr, "    -k              Use HTTP KeepAlive feature\n");
     fprintf(stderr, "    -d              Do not show percentiles served table.\n");
     fprintf(stderr, "    -S              Do not show confidence estimators and warnings.\n");
@@ -2340,7 +2341,7 @@ int main(int argc, const char * const argv[])
     myhost = NULL; /* 0.0.0.0 or :: */
 
     apr_getopt_init(&opt, cntxt, argc, argv);
-    while ((status = apr_getopt(opt, "n:c:t:s:b:T:p:u:v:lrkVhwiIx:y:z:C:H:P:A:g:X:de:SqB:m:"
+    while ((status = apr_getopt(opt, "n:c:t:s:b:T:p:u:v:lr1kVhwiIx:y:z:C:H:P:A:g:X:de:SqB:m:"
 #ifdef USE_SSL
             "Z:f:E:"
 #endif
@@ -2351,6 +2352,9 @@ int main(int argc, const char * const argv[])
                 if (requests <= 0) {
                     err("Invalid number of requests\n");
                 }
+                break;
+            case '1':
+                http_spec = HTTP_1_1;
                 break;
             case 'k':
                 keepalive = 1;
