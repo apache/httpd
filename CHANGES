@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_cgid: Intercept and log stderr output correctly on Unix systems
+     supporting fd passing.  PR 54221.  [Joe Orton]
+
   *) mod_auth_digest: Fast validation of the nonce's base64 to fail early if
      the format can't match anyway.  [Yann Ylavic]
 

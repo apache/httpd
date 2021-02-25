@@ -117,9 +117,8 @@ jobs:
     - name: Linux Ubuntu, Event MPM, all-modules, mod_cgid only
       env: CONFIG="--enable-mods-shared=reallyall --with-mpm=event --disable-cgi"
     # -------------------------------------------------------------------------
-    - if: *condition_not_24x
-      name: Linux Ubuntu, Event MPM, all-modules, mod_cgid fdpassing
-      env: CONFIG="--enable-mods-shared=reallyall --with-mpm=event --disable-cgi --enable-cgid-fdpassing"
+    - name: Linux Ubuntu, Event MPM, all-modules, no CMSG_DATA
+      env: CONFIG="--enable-mods-shared=reallyall --with-mpm=event ac_cv_have_decl_CMSG_DATA=no"
     # -------------------------------------------------------------------------
     - if: *condition_not_24x
       name: Linux Ubuntu, PCRE 1, GCC 7 maintainer-mode w/-Werror
