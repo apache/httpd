@@ -254,13 +254,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/r1885945
      Backport version for 2.4.x of patch:
         https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/168.diff
-     +1: rpluem,
+     +1: rpluem, ylavic,
 
   *) mod_proxy_ajp: If we face a timeout during receiving the response from the
      backend and if we pinged it successfully before don't assume the whole
      backend has failed. Assume that only the request has failed and return a
      gateway timeout then.
-
      Hint the changes to the other files in r1465839, r1530603, r1729507 were
      already backported earlier.
      Trunk version of patch:
@@ -271,7 +270,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/r1729507
      Backport version for 2.4.x of patch:
         https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/170.diff
-     +1: rpluem,
+     +1: rpluem, ylavic,
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
