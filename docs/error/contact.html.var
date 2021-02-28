@@ -96,6 +96,13 @@ por favor entre em contato com o
 <a href="mailto:<!--#echo encoding="url" var="SERVER_ADMIN" -->">webmaster</a>.
 -------pt-br--
 
+Content-language: pt
+Content-type: text/html; charset=ISO-8859-1
+Body:----------pt--
+Se considera que o servidor est&aacute; errado, por favor contacte o
+<a href="mailto:<!--#echo encoding="url" var="SERVER_ADMIN" -->">webmaster</a>.
+----------pt--
+
 Content-language: ro
 Content-type: text/html; charset=UTF-8
 Body:----------ro--
