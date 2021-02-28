@@ -58,7 +58,18 @@
 
     <example><title>Simple Reverse Proxy</title>
     <highlight language="config">
-    ProxyPass "/app" "ajp://backend.example.com:8009/app"
+ProxyPass "/app" "ajp://backend.example.com:8009/app"
+    </highlight>
+    </example>
+
+    <p>Options such as the <code>secret</code> option of Tomcat (required by
+    default since Tomcat 8.5.51 and 9.0.31) can just be added as a separate
+    parameter at the end of <directive module="mod_proxy">ProxyPass</directive>
+    or <directive module="mod_proxy">BalancerMember</directive>. This parameter
+    is available in Apache HTTP Server 2.4.42 and later:</p>
+    <example><title>Simple Reverse Proxy with <code>secret</code> option</title>
+    <highlight language="config">
+ProxyPass "/app" "ajp://backend.example.com:8009/app" secret=YOUR_AJP_SECRET
     </highlight>
     </example>
 
@@ -80,7 +91,7 @@ ProxyPass "/app" "balancer://cluster/app"
     header given to the proxy, and the application server can be expected
     to generate self-referential headers relative to this host, so no
     rewriting is necessary.</p>
-    
+
     <p>The main exception is when the URL path on the proxy differs from that
     on the
     backend. In this case, a redirect header can be rewritten relative to the
@@ -100,7 +111,7 @@ ProxyPassReverse "/apps/foo" "http://www.example.com/foo"
 <section id="env"><title>Environment Variables</title>
     <p>Environment variables whose names have the prefix <code>AJP_</code>
     are forwarded to the origin server as AJP request attributes
-    (with the AJP_ prefix removed from the name of the key).</p>
+    (with the <code>AJP_</code> prefix removed from the name of the key).</p>
 </section>
 
 <section id="overviewprotocol"><title>Overview of the protocol</title>
@@ -492,11 +503,19 @@ attribute_value := (string)
     username and the type of authentication used to establish their identity
     (e.g. Basic, Digest).</p>
     <p>The <code>query_string</code>, <code>ssl_cert</code>,
-    <code>ssl_cipher</code>, and <code>ssl_session</code> refer to the
+    <code>ssl_cipher</code>, <code>ssl_session</code> and
+    <code>ssl_key_size</code> refer to the
     corresponding pieces of HTTP and HTTPS.</p>
     <p>The <code>jvm_route</code>, is used to support sticky
     sessions -- associating a user's sesson with a particular Tomcat instance
     in the presence of multiple, load-balancing servers.</p>
+    <p>The <code>secret</code> is sent when the <code>secret=secret_keyword</code>
+    parameter is used in
+    <directive module="mod_proxy">ProxyPass</directive> or
+    <directive module="mod_proxy">BalancerMember</directive> directives.
+    The backend needs to support secret and the values must match.
+    <code>request.secret</code> or <code>requiredSecret</code> are documented in the AJP
+    configuration of the Apache Tomcat.</p>
     <p>Beyond this list of basic attributes, any number of other attributes
     can be sent via the <code>req_attribute</code> code <code>0x0A</code>.
     A pair of strings to represent the attribute name and value are sent
