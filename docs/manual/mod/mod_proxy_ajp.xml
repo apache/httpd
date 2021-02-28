@@ -57,16 +57,27 @@
 
     <example><title>Simple Reverse Proxy</title>
     <highlight language="config">
-    ProxyPass "/app" "ajp://backend.example.com:8009/app"
+ProxyPass "/app" "ajp://backend.example.com:8009/app"
+    </highlight>
+    </example>
+
+    <p>Options such as the <code>secret</code> option of Tomcat (required by
+    default since Tomcat 8.5.51 and 9.0.31) can just be added as a separate
+    parameter at the end of <directive module="mod_proxy">ProxyPass</directive>
+    or <directive module="mod_proxy">BalancerMember</directive>. This parameter
+    is available in Apache HTTP Server 2.4.42 and later:</p>
+    <example><title>Simple Reverse Proxy with <code>secret</code> option</title>
+    <highlight language="config">
+ProxyPass "/app" "ajp://backend.example.com:8009/app" secret=YOUR_AJP_SECRET
     </highlight>
     </example>
 
     <p>Balancers may also be used:</p>
     <example><title>Balancer Reverse Proxy</title>
     <highlight language="config">
-&lt;Proxy balancer://cluster&gt;
-    BalancerMember ajp://app1.example.com:8009 loadfactor=1
-    BalancerMember ajp://app2.example.com:8009 loadfactor=2
+&lt;Proxy "balancer://cluster"&gt;
+    BalancerMember "ajp://app1.example.com:8009" loadfactor=1
+    BalancerMember "ajp://app2.example.com:8009" loadfactor=2
     ProxySet lbmethod=bytraffic
 &lt;/Proxy&gt;
 ProxyPass "/app" "balancer://cluster/app"
@@ -99,7 +110,7 @@ ProxyPassReverse "/apps/foo" "http://www.example.com/foo"
 <section id="env"><title>Environment Variables</title>
     <p>Environment variables whose names have the prefix <code>AJP_</code>
     are forwarded to the origin server as AJP request attributes
-    (with the AJP_ prefix removed from the name of the key).</p>
+    (with the <code>AJP_</code> prefix removed from the name of the key).</p>
 </section>
 
 <section id="overviewprotocol"><title>Overview of the protocol</title>
@@ -477,7 +488,7 @@ attribute_value := (string)
       <tr><td>?req_attribute</td><td>0x0A</td><td>String</td><td>Name (the name of the
       attribute follows)</td></tr>
       <tr><td>?ssl_key_size</td><td>0x0B</td><td>Integer</td><td></td></tr>
-      <tr><td>?secret</td><td>0x0C</td><td>String</td><td>Sent if secret is configured</td></tr>
+      <tr><td>?secret</td><td>0x0C</td><td>String</td><td>Supported since 2.4.42</td></tr>
       <tr><td>are_done</td><td>0xFF</td><td>-</td><td>request_terminator</td></tr>
     </table>
     <p>The <code>context</code> and <code>servlet_path</code> are not
@@ -497,18 +508,18 @@ attribute_value := (string)
     <p>The <code>jvm_route</code>, is used to support sticky
     sessions -- associating a user's sesson with a particular Tomcat instance
     in the presence of multiple, load-balancing servers.</p>
-    <p>Beyond this list of basic attributes, any number of other attributes
-    can be sent via the <code>req_attribute</code> code <code>0x0A</code>.
-    A pair of strings to represent the attribute name and value are sent
-    immediately after each instance of that code.  Environment values are passed
-    in via this method.</p>
-    <p>The <code>secret</code> is sent when the <code>secret=secret_keyword</code> parameter is
-    used in
+    <p>The <code>secret</code> is sent when the <code>secret=secret_keyword</code>
+    parameter is used in
     <directive module="mod_proxy">ProxyPass</directive> or
     <directive module="mod_proxy">BalancerMember</directive> directives.
     The backend needs to support secret and the values must match.
     <code>request.secret</code> or <code>requiredSecret</code> are documented in the AJP
     configuration of the Apache Tomcat.</p>
+    <p>Beyond this list of basic attributes, any number of other attributes
+    can be sent via the <code>req_attribute</code> code <code>0x0A</code>.
+    A pair of strings to represent the attribute name and value are sent
+    immediately after each instance of that code.  Environment values are passed
+    in via this method.</p>
     <p>Finally, after all the attributes have been sent, the attribute
     terminator, <code>0xFF</code>, is sent.  This signals both the end of the
     list of attributes and also then end of the Request Packet.</p>
