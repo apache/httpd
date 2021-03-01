@@ -272,6 +272,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/170.diff
      +1: rpluem, ylavic,
 
+  *) mod_session: Improve session parsing.
+     trunk patch: http://svn.apache.org/r1887050
+                  http://svn.apache.org/r1887052
+     2.4.x patch: svn merge -c r1887050,r1887052 ^/httpd/httpd/trunk .
+	              make update-changes
+     +1: ylavic,
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
