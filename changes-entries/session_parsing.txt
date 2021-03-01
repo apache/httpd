@@ -1,0 +1,2 @@
+  *) mod_session: Improve session parsing.  [Yann Yalvic]
+

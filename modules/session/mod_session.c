@@ -326,7 +326,7 @@ static apr_status_t ap_session_set(request_rec * r, session_rec * z,
 static int identity_count(void *v, const char *key, const char *val)
 {
     int *count = v;
-    *count += strlen(key) * 3 + strlen(val) * 3 + 1;
+    *count += strlen(key) * 3 + strlen(val) * 3 + 2;
     return 1;
 }
 
@@ -362,7 +362,6 @@ static int identity_concat(void *v, const char *key, const char *val)
  */
 static apr_status_t session_identity_encode(request_rec * r, session_rec * z)
 {
-
     char *buffer = NULL;
     int length = 0;
     if (z->expiry) {
