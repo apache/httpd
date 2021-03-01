@@ -413,8 +413,8 @@ static apr_status_t session_identity_decode(request_rec * r, session_rec * z)
         char *plast = NULL;
         const char *psep = "=";
         char *key = apr_strtok(pair, psep, &plast);
-        char *val = apr_strtok(NULL, psep, &plast);
         if (key && *key) {
+            char *val = apr_strtok(NULL, sep, &plast);
             if (!val || !*val) {
                 apr_table_unset(z->entries, key);
             }
