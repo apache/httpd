@@ -143,6 +143,28 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1883184 ^/httpd/httpd/trunk .
      +1: jailletc36, jorton, ylavic
 
+  *) mod_authnz_ldap: Prevent authentications with empty passwords for the
+     initial bind to fail with status 500
+     Trunk version of patch:
+        https://svn.apache.org/r1885939
+        https://svn.apache.org/r1885940
+        https://svn.apache.org/r1885941
+        https://svn.apache.org/r1885945
+     Backport version for 2.4.x of patch:
+        https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/168.diff
+     +1: rpluem, ylavic, covener
+
+  *) mod_ssl: Set the Connection header to close to indicate that we do not want
+     to keep the HTTP connection to the OCSP responder alive
+     trunk patch: http://svn.apache.org/r1874007
+     2.4.x patch: svn merge -c 1874007 ^/httpd/httpd/trunk .
+     +1: jorton, ylavic, covener
+
+  *) mod_session_crypto: Bubble up an error if none of the passhrases work
+     trunk patch: http://svn.apache.org/r1874674
+     2.4.x patch: svn merge -c 1874674 ^/httpd/httpd/trunk .
+     +1: jailletc36, ylavic, covener 
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -215,18 +237,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      not finish before hcinterval.  PR 63010.
      trunk patch: http://svn.apache.org/r1885691
      2.4.x patch: svn merge -c 1885691 ^/httpd/httpd/trunk .
-     +1: ylavic, 
-
-  *) mod_ssl: Set the Connection header to close to indicate that we do not want
-     to keep the HTTP connection to the OCSP responder alive
-     trunk patch: http://svn.apache.org/r1874007
-     2.4.x patch: svn merge -c 1874007 ^/httpd/httpd/trunk .
-     +1: jorton, ylavic, 
-
-  *) mod_session_crypto: Bubble up an error if none of the passhrases work
-     trunk patch: http://svn.apache.org/r1874674
-     2.4.x patch: svn merge -c 1874674 ^/httpd/httpd/trunk .
-     +1: jailletc36, ylavic, 
+     +1: ylavic, covener
 
   *) mod_http2: explicitely apr_thread_exit() at the end of slot_run(), and
                 fix workers synchronization on pchild cleanup.
@@ -243,18 +254,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1886151
      2.4.x patch: http://home.apache.org/~ylavic/patches/follow_up_to_r1885239_and_r1885573-v2.patch
                   (includes follow up to r1885573 which is 2.4.x only)
-     +1: ylavic, 
-
-  *) mod_authnz_ldap: What Prevent authentications with empty passwords for the
-     initial bind to fail with status 500
-     Trunk version of patch:
-        https://svn.apache.org/r1885939
-        https://svn.apache.org/r1885940
-        https://svn.apache.org/r1885941
-        https://svn.apache.org/r1885945
-     Backport version for 2.4.x of patch:
-        https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/168.diff
-     +1: rpluem, ylavic,
+     +1: ylavic, covener
 
   *) mod_proxy_ajp: If we face a timeout during receiving the response from the
      backend and if we pinged it successfully before don't assume the whole
@@ -277,7 +277,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1887052
      2.4.x patch: svn merge -c r1887050,r1887052 ^/httpd/httpd/trunk .
 	              make update-changes
-     +1: ylavic,
+     +1: ylavic, covener
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
