@@ -1,6 +1,0 @@
-  *) mod_http2: Fixed reporting of transferred bytes for mod_logio for 
-     modifiers %O (and %S) to report the number of transferred header and 
-     body lengths. This is still only an approximation of the bytes on the 
-     connection. The data is subject to header compression and h2 framing 
-     afterwards. [Stefan Eissing]
-

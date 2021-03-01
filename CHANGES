@@ -1,6 +1,45 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_session: Improve session parsing.  [Yann Yalvic]
+
+  *) mod_proxy_hcheck: Don't pile up health checks if the previous one did
+     not finish before hcinterval.  PR 63010.  [Yann Ylavic]
+
+  *) core: Adding SSL related inquiry functions to the server API.
+     These function are always available, even when no module providing
+     SSL is loaded. They provide their own "shadowing" implementation for
+     the optional functions of similar name that mod_ssl and impersonators
+     of mod_ssl provide.
+     This enables loading of several SSL providing modules when all but
+     one of them registers itself into the new hooks. Two old-style SSL
+     modules will not work, as they replace the others optional functions
+     with their own.
+     Modules using the old-style optional functions will continue to work
+     as core supplies its own versions of those.
+     The following has been added so far:
+     - ap_ssl_conn_is_ssl() to query if a connection is using SSL.
+     - ap_ssl_var_lookup() to query SSL related variables for a 
+       server/connection/request.
+     - Hooks for 'ssl_conn_is_ssl' and 'ssl_var_lookup' where modules
+       providing SSL can install their own value supplying functions.
+     [Stefan Eissing]
+
+  *) mod_http2: new option 'H2OutputBuffering on/off' which controls the 
+     buffering of stream output. The default is on, which is the behaviour of 
+     previous mod-h2 versions. When off, all bytes are made available immediately 
+     to the main connection for sending them out to the client. This fixes interop 
+     issues with certain flavours of gRPC. [Stefan Eissing]
+
+  *) mod_authnz_ldap: Prevent authentications with empty passwords for the
+     initial bind to fail with status 500. [Ruediger Pluem]
+
+  *) mod_http2: Fixed reporting of transferred bytes for mod_logio for 
+     modifiers %O (and %S) to report the number of transferred header and 
+     body lengths. This is still only an approximation of the bytes on the 
+     connection. The data is subject to header compression and h2 framing 
+     afterwards. [Stefan Eissing]
+
   *) mod_cgid: Intercept and log stderr output correctly on Unix systems
      supporting fd passing.  PR 54221.  [Joe Orton]
 

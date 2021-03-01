@@ -1,3 +1,0 @@
-  *) mod_proxy_hcheck: Don't pile up health checks if the previous one did
-     not finish before hcinterval.  PR 63010.  [Yann Ylavic]
-
