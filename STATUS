@@ -176,6 +176,22 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      CI results:  https://travis-ci.com/github/apache/httpd/builds/213760432
      +1: jorton, ylavic, icing 
 
+  *) mod_proxy_ajp: If we face a timeout during receiving the response from the
+     backend and if we pinged it successfully before don't assume the whole
+     backend has failed. Assume that only the request has failed and return a
+     gateway timeout then.
+     Hint the changes to the other files in r1465839, r1530603, r1729507 were
+     already backported earlier.
+     Trunk version of patch:
+        https://svn.apache.org/r1398307
+        https://svn.apache.org/r1465839
+        https://svn.apache.org/r1530603
+        https://svn.apache.org/r1578759
+        https://svn.apache.org/r1729507
+     Backport version for 2.4.x of patch:
+        https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/170.diff
+     +1: rpluem, ylavic, icing
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -232,22 +248,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://home.apache.org/~ylavic/patches/follow_up_to_r1885239_and_r1885573-v2.patch
                   (includes follow up to r1885573 which is 2.4.x only)
      +1: ylavic, covener
-
-  *) mod_proxy_ajp: If we face a timeout during receiving the response from the
-     backend and if we pinged it successfully before don't assume the whole
-     backend has failed. Assume that only the request has failed and return a
-     gateway timeout then.
-     Hint the changes to the other files in r1465839, r1530603, r1729507 were
-     already backported earlier.
-     Trunk version of patch:
-        https://svn.apache.org/r1398307
-        https://svn.apache.org/r1465839
-        https://svn.apache.org/r1530603
-        https://svn.apache.org/r1578759
-        https://svn.apache.org/r1729507
-     Backport version for 2.4.x of patch:
-        https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/170.diff
-     +1: rpluem, ylavic,
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
