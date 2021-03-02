@@ -361,8 +361,7 @@ static apr_status_t sendfile_nonblocking(apr_socket_t *s,
  */
 extern APR_OPTIONAL_FN_TYPE(ap_logio_add_bytes_out) *ap__logio_add_bytes_out;
 
-static apr_status_t should_send_brigade(apr_bucket_brigade *bb,
-                                        conn_rec *c, int *flush)
+static int should_send_brigade(apr_bucket_brigade *bb, conn_rec *c, int *flush)
 {
     core_server_config *conf =
         ap_get_core_module_config(c->base_server->module_config);
@@ -502,7 +501,6 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
     if (!new_bb || should_send_brigade(bb, c, NULL)) {
         apr_socket_t *sock = net->client_socket;
         apr_interval_time_t sock_timeout = 0;
-        int flush;
 
         /* Non-blocking writes on the socket in any case. */
         apr_socket_timeout_get(sock, &sock_timeout);
@@ -510,24 +508,28 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
 
         do {
             rv = send_brigade_nonblocking(sock, bb, ctx, c);
-            if (!new_bb || !APR_STATUS_IS_EAGAIN(rv)) {
-                break;
+            if (new_bb && APR_STATUS_IS_EAGAIN(rv)) {
+                /* Scan through the brigade and decide whether we must absolutely
+                 * flush the remaining data, based on should_send_brigade() &flush
+                 * rules. If so, wait for writability and retry, otherwise we did
+                 * our best already and can wait for the next call.
+                 */
+                int flush;
+                (void)should_send_brigade(bb, c, &flush);
+                if (flush) {
+                    apr_int32_t nfd;
+                    apr_pollfd_t pfd;
+                    memset(&pfd, 0, sizeof(pfd));
+                    pfd.reqevents = APR_POLLOUT;
+                    pfd.desc_type = APR_POLL_SOCKET;
+                    pfd.desc.s = sock;
+                    pfd.p = c->pool;
+                    do {
+                        rv = apr_poll(&pfd, 1, &nfd, sock_timeout);
+                    } while (APR_STATUS_IS_EINTR(rv));
+                }
             }
-
-            should_send_brigade(bb, c, &flush);
-            if (flush) {
-                apr_int32_t nfd;
-                apr_pollfd_t pfd;
-                memset(&pfd, 0, sizeof(pfd));
-                pfd.reqevents = APR_POLLOUT;
-                pfd.desc_type = APR_POLL_SOCKET;
-                pfd.desc.s = sock;
-                pfd.p = c->pool;
-                do {
-                    rv = apr_poll(&pfd, 1, &nfd, sock_timeout);
-                } while (APR_STATUS_IS_EINTR(rv));
-            }
-        } while (flush);
+        } while (rv == APR_SUCCESS && !APR_BRIGADE_EMPTY(bb));
 
         /* Restore original socket timeout before leaving. */
         apr_socket_timeout_set(sock, sock_timeout);
