@@ -154,13 +154,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1874674 ^/httpd/httpd/trunk .
      +1: jailletc36, ylavic, covener 
 
-  *) mod_session: Improve session parsing.
-     trunk patch: https://svn.apache.org/r1887050
-                  https://svn.apache.org/r1887052
-     2.4.x patch: svn merge -c r1887050,r1887052 ^/httpd/httpd/trunk .
-                  make update-changes
-     +1: ylavic, covener, jailletc36
-
   *) mod_ssl: Improve the coalescing filter to buffer into larger TLS
      records, and avoid revealing the HTTP header size via TLS record
      boundaries (for common response generators).
