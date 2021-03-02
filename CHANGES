@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.47
 
+  *) mod_proxy_hcheck: Don't pile up health checks if the previous one did
+     not finish before hcinterval.  PR 63010.  [Yann Ylavic]
+
   *) mod_session: Improve session parsing.  [Yann Yalvic]
 
   *) mod_authnz_ldap: Prevent authentications with empty passwords for the
