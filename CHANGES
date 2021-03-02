@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.47
 
+  *) mod_authnz_ldap: Prevent authentications with empty passwords for the
+     initial bind to fail with status 500. [Ruediger Pluem]
+
   *) mod_auth_digest: Fast validation of the nonce's base64 to fail early if
      the format can't match anyway.  [Yann Ylavic]
 
