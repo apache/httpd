@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.47
 
+  *) mod_session: Improve session parsing.  [Yann Yalvic]
+
   *) mod_authnz_ldap: Prevent authentications with empty passwords for the
      initial bind to fail with status 500. [Ruediger Pluem]
 
