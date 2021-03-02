@@ -221,7 +221,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1883668
                   http://svn.apache.org/r1886255
      2.4.x patch: svn merge -c 1883668,1886255 ^/httpd/httpd/trunk .
-     +1: ylavic, 
+     +1: ylavic, icing
      ylavic: jorton's vote reset after adding r1886255
 
   *) mod_proxy_http, core: Fixes against 2.4.x's r1885239 and r1885573, the
