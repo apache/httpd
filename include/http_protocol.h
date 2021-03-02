@@ -1108,6 +1108,91 @@ AP_DECLARE(const char *) ap_ssl_var_lookup(apr_pool_t *p, server_rec *s,
                                            conn_rec *c, request_rec *r,
                                            const char *name);                                           
 
+/**
+ * Register to provide certificate/key files for servers. Certificate files are
+ * exepcted to contain the certificate chain, beginning with the server's certificate,
+ * excluding the trust anchor, in PEM format. 
+ * They must be accompanied by a private key file, also in PEM format.
+ *  
+ * @param s the server certificates are collected for
+ * @param p the pool to use for allocations
+ * @param cert_file and array of const char* with the path to the certificate chain
+ * @param key_file and array of const char* with the path to the private key file
+ * @return OK if files were added, DECLINED if not, or other for error.
+ */
+
+AP_DECLARE_HOOK(int, ssl_add_cert_files, (server_rec *s, apr_pool_t *p,
+                                          apr_array_header_t *cert_files,
+                                          apr_array_header_t *key_files))
+
+/**
+ * Collect certificate/key files from all providers registered. This includes
+ * providers registered at the global 'ssl_add_cert_files', as well as those
+ * installed in the OPTIONAL 'ssl_add_cert_files' hook as may be provided by 
+ * ssl modules.
+ *  
+ * @param s the server certificates are collected for
+ * @param p the pool to use for allocations
+ * @param cert_file and array of const char* with the path to the certificate chain
+ * @param key_file and array of const char* with the path to the private key file
+ */
+AP_DECLARE(apr_status_t) ap_ssl_add_cert_files(server_rec *s, apr_pool_t *p,
+                                               apr_array_header_t *cert_files,
+                                               apr_array_header_t *key_files);         
+
+
+/** 
+ * Register to provide 'fallback' certificates in case no 'real' certificates
+ * have been configured/added by other providers. Modules using these certificates
+ * are encouraged to answer requests to this server with a 503 response code.
+ * 
+ * @param s the server certificates are collected for
+ * @param p the pool to use for allocations
+ * @param cert_file and array of const char* with the path to the certificate chain
+ * @param key_file and array of const char* with the path to the private key file
+ * @return OK if files were added, DECLINED if not, or other for error.
+ */
+AP_DECLARE_HOOK(int, ssl_add_fallback_cert_files, (server_rec *s, apr_pool_t *p,
+                                                   apr_array_header_t *cert_files,
+                                                   apr_array_header_t *key_files))
+
+/**
+ * Collect 'fallback' certificate/key files from all registered providers, either
+ * in the global 'ssl_add_fallback_cert_files' hook or the optional one of similar
+ * name as provided by mod_ssl and sorts.
+ * Certificates obtained this way are commonly self signed, temporary crutches.
+ * To be used to the time it takes to retrieve a 'read', trusted certificate. 
+ * A module using fallbacks is encouraged to answer all requests with a 503.
+ * 
+ * @param s the server certificates are collected for
+ * @param p the pool to use for allocations
+ * @param cert_file and array of const char* with the path to the certificate chain
+ * @param key_file and array of const char* with the path to the private key file
+ */
+AP_DECLARE(apr_status_t) ap_ssl_add_fallback_cert_files(server_rec *s, apr_pool_t *p,
+                                                        apr_array_header_t *cert_files,
+                                                        apr_array_header_t *key_files);         
+
+
+/** 
+ * On TLS connections that do not relate to a configured virtual host,
+ * allow modules to provide a certificate and key to
+ * be used on the connection. 
+ */
+AP_DECLARE_HOOK(int, ssl_answer_challenge, (conn_rec *c, const char *server_name, 
+                                            const char **pcert_file, const char **pkey_file))
+
+/**
+ * Returns != 0 iff the connection is a challenge to the server, for example
+ * as defined in RFC 8555 for the 'tls-alpn-01' domain verification, and needs
+ * a specific certificate as answer in the handshake.
+ * ALPN protocol negotiation via the hooks 'protocol_propose' and 'protocol_switch'
+ * need to have run before this call is made.
+ */
+AP_DECLARE(int) ap_ssl_answer_challenge(conn_rec *c, const char *server_name, 
+                                        const char **pcert_file, const char **pkey_file);
+
+
 #ifdef __cplusplus
 }
 #endif

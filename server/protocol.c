@@ -72,6 +72,9 @@ APR_HOOK_STRUCT(
     APR_HOOK_LINK(protocol_get)
     APR_HOOK_LINK(ssl_conn_is_ssl)
     APR_HOOK_LINK(ssl_var_lookup)
+    APR_HOOK_LINK(ssl_add_cert_files) 
+    APR_HOOK_LINK(ssl_add_fallback_cert_files) 
+    APR_HOOK_LINK(ssl_answer_challenge) 
 )
 
 AP_DECLARE_DATA ap_filter_rec_t *ap_old_write_func = NULL;
@@ -2697,6 +2700,27 @@ AP_DECLARE(void) ap_setup_ssl_optional_fns(apr_pool_t *pool)
     APR_REGISTER_OPTIONAL_FN(ssl_var_lookup);
 }
 
+AP_DECLARE(apr_status_t) ap_ssl_add_cert_files(server_rec *s, apr_pool_t *p,
+                                               apr_array_header_t *cert_files,
+                                               apr_array_header_t *key_files)
+{
+    int rv = ap_run_ssl_add_cert_files(s, p, cert_files, key_files);
+    return (rv == OK || rv == DECLINED)? APR_SUCCESS : APR_EGENERAL;
+}         
+
+AP_DECLARE(apr_status_t) ap_ssl_add_fallback_cert_files(server_rec *s, apr_pool_t *p,
+                                                        apr_array_header_t *cert_files,
+                                                        apr_array_header_t *key_files)
+{
+    int rv = ap_run_ssl_add_fallback_cert_files(s, p, cert_files, key_files);
+    return (rv == OK || rv == DECLINED)? APR_SUCCESS : APR_EGENERAL;
+}         
+
+AP_DECLARE(int) ap_ssl_answer_challenge(conn_rec *c, const char *server_name, 
+                                        const char **pcert_file, const char **pkey_file)
+{
+    return (ap_run_ssl_answer_challenge(c, server_name, pcert_file, pkey_file) == OK);
+}
 
 AP_IMPLEMENT_HOOK_VOID(pre_read_request,
                        (request_rec *r, conn_rec *c),
@@ -2728,3 +2752,15 @@ AP_IMPLEMENT_HOOK_RUN_FIRST(int, ssl_conn_is_ssl,
 AP_IMPLEMENT_HOOK_RUN_FIRST(const char *,ssl_var_lookup,
         (apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, const char *name),
         (p, s, c, r, name), NULL)
+AP_IMPLEMENT_HOOK_RUN_ALL(int, ssl_add_cert_files, 
+        (server_rec *s, apr_pool_t *p, 
+         apr_array_header_t *cert_files, apr_array_header_t *key_files),
+        (s, p, cert_files, key_files), OK, DECLINED)
+AP_IMPLEMENT_HOOK_RUN_ALL(int, ssl_add_fallback_cert_files, 
+        (server_rec *s, apr_pool_t *p,
+         apr_array_header_t *cert_files, apr_array_header_t *key_files),
+        (s, p, cert_files, key_files), OK, DECLINED)
+AP_IMPLEMENT_HOOK_RUN_FIRST(int, ssl_answer_challenge, 
+        (conn_rec *c, const char *server_name, const char **pcert_file, const char **pkey_file),
+        (c, server_name, pcert_file, pkey_file), DECLINED)
+

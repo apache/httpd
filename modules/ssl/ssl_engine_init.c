@@ -198,13 +198,18 @@ static void ssl_add_version_components(apr_pool_t *ptemp, apr_pool_t *pconf,
 */
 
 int ssl_is_challenge(conn_rec *c, const char *servername, 
-                     X509 **pcert, EVP_PKEY **pkey)
+                     X509 **pcert, EVP_PKEY **pkey,
+                     const char **pcert_file, const char **pkey_file)
 {
-    if (APR_SUCCESS == ssl_run_answer_challenge(c, servername, pcert, pkey)) {
-        return 1;
-    }
     *pcert = NULL;
     *pkey = NULL;
+    *pcert_file = *pkey_file = NULL;
+    if (ap_ssl_answer_challenge(c, servername, pcert_file, pkey_file)) {
+        return 1;
+    }
+    else if (OK == ssl_run_answer_challenge(c, servername, pcert, pkey)) {
+        return 1;
+    }
     return 0;
 }
 
@@ -1973,10 +1978,12 @@ static apr_status_t ssl_init_server_ctx(server_rec *s,
     /* Allow others to provide certificate files */
     pks = sc->server->pks;
     n = pks->cert_files->nelts;
+    ap_ssl_add_cert_files(s, p, pks->cert_files, pks->key_files);
     ssl_run_add_cert_files(s, p, pks->cert_files, pks->key_files);
 
     if (apr_is_empty_array(pks->cert_files)) {
         /* does someone propose a certiciate to fall back on here? */
+        ap_ssl_add_fallback_cert_files(s, p, pks->cert_files, pks->key_files);
         ssl_run_add_fallback_cert_files(s, p, pks->cert_files, pks->key_files);
         if (n < pks->cert_files->nelts) {
             pks->service_unavailable = 1;
