@@ -1,0 +1,2 @@
+  *) mod_md: Tolerate a missing "revokeCert" or "keyChange" resource.
+     [Fraser Tweedale <ftweedal redhat.com>]

@@ -726,8 +726,12 @@ static apr_status_t update_directory(const md_http_response_t *res, void *data)
         acme->api.v2.revoke_cert = md_json_dups(acme->p, json, "revokeCert", NULL);
         acme->api.v2.key_change = md_json_dups(acme->p, json, "keyChange", NULL);
         acme->api.v2.new_nonce = md_json_dups(acme->p, json, "newNonce", NULL);
-        if (acme->api.v2.new_account && acme->api.v2.new_order 
-            && acme->api.v2.revoke_cert && acme->api.v2.key_change
+        /* RFC 8555 only requires "directory" and "newNonce" resources.
+         * mod_md uses "newAccount" and "newOrder" so check for them.
+         * But mod_md does not use the "revokeCert" or "keyChange"
+         * resources, so tolerate the absense of those keys. */
+        if (acme->api.v2.new_account
+            && acme->api.v2.new_order
             && acme->api.v2.new_nonce) {
             acme->version = MD_ACME_VERSION_2;
         }
