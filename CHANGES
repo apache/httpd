@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.47
 
+  *) mod_ssl: Do not keep connections to OCSP responders alive when doing
+     OCSP requests.  PR 64135.  [Ruediger Pluem]
+
   *) mod_ssl: Improve the coalescing filter to buffer into larger TLS
      records, and avoid revealing the HTTP header size via TLS record
      boundaries (for common response generators).
