@@ -2323,7 +2323,7 @@ static apr_status_t set_challenge_creds(conn_rec *c, const char *servername,
     
     sslcon->service_unavailable = 1;
     if (cert_file) {
-        if (SSL_use_certificate_chain_file(ssl, cert_file) < 1) {
+        if (SSL_use_certificate_file(ssl, cert_file, SSL_FILETYPE_PEM) < 1) {
             ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c, APLOGNO(10264)
                           "Failed to configure challenge certificate %s",
                           servername);
