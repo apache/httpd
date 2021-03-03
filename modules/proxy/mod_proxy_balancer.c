@@ -1109,12 +1109,12 @@ static void push2table(const char *input, apr_table_t *params,
  */
 static int balancer_process_balancer_worker(request_rec *r, proxy_server_conf *conf,
                                             proxy_balancer *bsel,
-                                            proxy_worker *wsel,
+                                            proxy_worker *wsel, int ok2change,
                                             apr_table_t *params)
 {
     apr_status_t rv;
     /* First set the params */
-    if (wsel) {
+    if (wsel && ok2change) {
         const char *val;
         int was_usable = PROXY_WORKER_IS_USABLE(wsel);
 
@@ -1223,7 +1223,7 @@ static int balancer_process_balancer_worker(request_rec *r, proxy_server_conf *c
 
     }
 
-    if (bsel) {
+    if (bsel && ok2change) {
         const char *val;
         int ival;
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01193)
@@ -1371,42 +1371,6 @@ static int balancer_process_balancer_worker(request_rec *r, proxy_server_conf *c
 
     }
     return APR_SUCCESS;
-}
-
-/*
- * Process a request for balancer or worker management from another module
- */
-static int balancer_manage(request_rec *r, apr_table_t *params)
-{
-    void *sconf;
-    proxy_server_conf *conf;
-    proxy_balancer *bsel = NULL;
-    proxy_worker *wsel = NULL;
-    const char *name;
-    sconf = r->server->module_config;
-    conf = (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
-
-    /* Process the parameters */
-    if ((name = apr_table_get(params, "b"))) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "balancer_manage "
-                  "balancer: %s", name);
-        bsel = ap_proxy_get_balancer(r->pool, conf,
-            apr_pstrcat(r->pool, BALANCER_PREFIX, name, NULL), 0);
-    }
-
-    if ((name = apr_table_get(params, "w"))) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "balancer_manage "
-                  "worker: %s", name);
-        wsel = ap_proxy_get_worker(r->pool, bsel, conf, name);
-    }
-    if (bsel) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "balancer_manage "
-                  "balancer: %s",  bsel->s->name);
-        return(balancer_process_balancer_worker(r, conf, bsel, wsel, params));
-    }
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "balancer_manage failed: "
-                      "No balancer!");
-    return HTTP_BAD_REQUEST;
 }
 
 /*
@@ -1983,23 +1947,21 @@ static int balancer_handler(request_rec *r)
 
     /* Check that the supplied nonce matches this server's nonce;
      * otherwise ignore all parameters, to prevent a CSRF attack. */
-    if ((name = apr_table_get(params, "nonce"))) {
-        /* we have a nonce */
-        if (bsel) {
-            /* we have a balancer */
-            if (*bsel->s->nonce && strcmp(bsel->s->nonce, name) != 0)
-                ok2change = 0;
-        }
-    } else {
+    if (!bsel ||
+        (*bsel->s->nonce &&
+         (
+          (name = apr_table_get(params, "nonce")) == NULL ||
+          strcmp(bsel->s->nonce, name) != 0
+         )
+        )
+       ) {
         ok2change = 0;
     }
 
     /* process the parameters and  add the worker to the balancer */
-    if (ok2change) {
-        rv = balancer_process_balancer_worker(r, conf, bsel, wsel, params);
-        if (rv != APR_SUCCESS) {
-           return HTTP_BAD_REQUEST;
-        }
+    rv = balancer_process_balancer_worker(r, conf, bsel, wsel, ok2change, params);
+    if (rv != APR_SUCCESS) {
+       return HTTP_BAD_REQUEST;
     }
 
     /* display the HTML or XML page */
@@ -2068,7 +2030,6 @@ static void ap_proxy_balancer_register_hook(apr_pool_t *p)
     static const char *const aszPred[] = { "mpm_winnt.c", "mod_slotmem_shm.c", NULL};
     static const char *const aszPred2[] = { "mod_proxy.c", NULL};
      /* manager handler */
-    ap_register_provider(p, "balancer", "manager", "0", &balancer_manage);
     ap_hook_post_config(balancer_post_config, aszPred2, NULL, APR_HOOK_MIDDLE);
     ap_hook_pre_config(balancer_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_handler(balancer_handler, NULL, NULL, APR_HOOK_FIRST);
