@@ -143,31 +143,10 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1883184 ^/httpd/httpd/trunk .
      +1: jailletc36, jorton, ylavic
 
-  *) mod_ssl: Set the Connection header to close to indicate that we do not want
-     to keep the HTTP connection to the OCSP responder alive
-     trunk patch: http://svn.apache.org/r1874007
-     2.4.x patch: svn merge -c 1874007 ^/httpd/httpd/trunk .
-     +1: jorton, ylavic, covener
-
   *) mod_session_crypto: Bubble up an error if none of the passhrases work
      trunk patch: http://svn.apache.org/r1874674
      2.4.x patch: svn merge -c 1874674 ^/httpd/httpd/trunk .
      +1: jailletc36, ylavic, covener 
-
-  *) mod_ssl: Improve the coalescing filter to buffer into larger TLS
-     records, and avoid revealing the HTTP header size via TLS record
-     boundaries (for common response generators).
-     trunk patch: http://svn.apache.org/r1875871
-                  http://svn.apache.org/r1875879
-                  http://svn.apache.org/r1875881
-                  http://svn.apache.org/r1875883
-                  http://svn.apache.org/r1875988
-                  http://svn.apache.org/r1876014
-                  http://svn.apache.org/r1876037
-                  http://svn.apache.org/r1876787
-     2.4.x patch: https://github.com/apache/httpd/commit/ed83740a67b63c678c666ffa6e63f456e6ee71d8.diff 
-     CI results:  https://travis-ci.com/github/apache/httpd/builds/213760432
-     +1: jorton, ylavic, icing 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
