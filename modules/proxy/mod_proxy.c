@@ -2969,79 +2969,78 @@ static const char *proxysection(cmd_parms *cmd, void *mconfig, const char *arg)
 
     ap_add_per_proxy_conf(cmd->server, new_dir_conf);
 
-    if (*arg != '\0') {
-        if (thiscmd->cmd_data)
-            return "Multiple <ProxyMatch> arguments not (yet) supported.";
-        if (conf->p_is_fnmatch)
-            return apr_pstrcat(cmd->pool, thiscmd->name,
-                               "> arguments are not supported for wildchar url.",
-                               NULL);
-        if (!ap_strchr_c(conf->p, ':'))
-            return apr_pstrcat(cmd->pool, thiscmd->name,
-                               "> arguments are not supported for non url.",
-                               NULL);
-        if (ap_proxy_valid_balancer_name((char *)conf->p, 9)) {
-            balancer = ap_proxy_get_balancer(cmd->pool, sconf, conf->p, 0);
-            if (!balancer) {
-                err = ap_proxy_define_balancer(cmd->pool, &balancer,
-                                               sconf, conf->p, "/", 0);
-                if (err)
-                    return apr_pstrcat(cmd->temp_pool, thiscmd->name,
-                                       " ", err, NULL);
-            }
-            if (!balancer->section_config) {
-                balancer->section_config = new_dir_conf;
-            }
-        }
-        else {
-            worker = ap_proxy_get_worker(cmd->temp_pool, NULL, sconf,
-                                         ap_proxy_de_socketfy(cmd->temp_pool, (char*)conf->p));
-            if (!worker) {
-                if (use_regex) {
-                    err = ap_proxy_define_match_worker(cmd->pool, &worker, NULL,
-                                                       sconf, conf->p, 0);
-                }
-                else {
-                    err = ap_proxy_define_worker(cmd->pool, &worker, NULL,
-                                                 sconf, conf->p, 0);
-                }
-                if (err)
-                    return apr_pstrcat(cmd->temp_pool, thiscmd->name,
-                                       " ", err, NULL);
-            }
-            else if ((use_regex != 0) ^ (worker->s->is_name_matchable != 0)) {
-                return apr_pstrcat(cmd->temp_pool, "ProxyPass/<Proxy> and "
-                                   "ProxyPassMatch/<ProxyMatch> can't be used "
-                                   "altogether with the same worker name ",
-                                   "(", worker->s->name, ")", NULL);
-            }
-            if (!worker->section_config) {
-                worker->section_config = new_dir_conf;
-            }
-        }
-        if (worker == NULL && balancer == NULL) {
-            return apr_pstrcat(cmd->pool, thiscmd->name,
-                               "> arguments are supported only for workers.",
-                               NULL);
-        }
-        while (*arg) {
-            word = ap_getword_conf(cmd->pool, &arg);
-            val = strchr(word, '=');
-            if (!val) {
-                return "Invalid Proxy parameter. Parameter must be "
-                       "in the form 'key=value'";
-            }
-            else
-                *val++ = '\0';
-            if (worker)
-                err = set_worker_param(cmd->pool, cmd->server, worker, word, val);
-            else
-                err = set_balancer_param(sconf, cmd->pool, balancer,
-                                         word, val);
+    /* if (*arg != '\0') { Yann Ylavic <ylavic.dev@gmail.com> */
+    if (thiscmd->cmd_data)
+        return "Multiple <ProxyMatch> arguments not (yet) supported.";
+    if (conf->p_is_fnmatch)
+        return apr_pstrcat(cmd->pool, thiscmd->name,
+                           "> arguments are not supported for wildchar url.",
+                           NULL);
+    if (!ap_strchr_c(conf->p, ':'))
+        return apr_pstrcat(cmd->pool, thiscmd->name,
+                           "> arguments are not supported for non url.",
+                           NULL);
+    if (ap_proxy_valid_balancer_name((char *)conf->p, 9)) {
+        balancer = ap_proxy_get_balancer(cmd->pool, sconf, conf->p, 0);
+        if (!balancer) {
+            err = ap_proxy_define_balancer(cmd->pool, &balancer,
+                                           sconf, conf->p, "/", 0);
             if (err)
-                return apr_pstrcat(cmd->temp_pool, thiscmd->name, " ", err, " ",
-                                   word, "=", val, "; ", conf->p, NULL);
+                return apr_pstrcat(cmd->temp_pool, thiscmd->name,
+                                   " ", err, NULL);
         }
+        if (!balancer->section_config) {
+            balancer->section_config = new_dir_conf;
+        }
+    }
+    else {
+        worker = ap_proxy_get_worker(cmd->temp_pool, NULL, sconf,
+                                     ap_proxy_de_socketfy(cmd->temp_pool, (char*)conf->p));
+        if (!worker) {
+            if (use_regex) {
+                err = ap_proxy_define_match_worker(cmd->pool, &worker, NULL,
+                                                   sconf, conf->p, 0);
+            }
+            else {
+                err = ap_proxy_define_worker(cmd->pool, &worker, NULL,
+                                             sconf, conf->p, 0);
+            }
+            if (err)
+                return apr_pstrcat(cmd->temp_pool, thiscmd->name,
+                                   " ", err, NULL);
+        }
+        else if ((use_regex != 0) ^ (worker->s->is_name_matchable != 0)) {
+            return apr_pstrcat(cmd->temp_pool, "ProxyPass/<Proxy> and "
+                               "ProxyPassMatch/<ProxyMatch> can't be used "
+                               "altogether with the same worker name ",
+                               "(", worker->s->name, ")", NULL);
+        }
+        if (!worker->section_config) {
+            worker->section_config = new_dir_conf;
+        }
+    }
+    if (worker == NULL && balancer == NULL) {
+        return apr_pstrcat(cmd->pool, thiscmd->name,
+                           "> arguments are supported only for workers.",
+                           NULL);
+    }
+    while (*arg) {
+        word = ap_getword_conf(cmd->pool, &arg);
+        val = strchr(word, '=');
+        if (!val) {
+            return "Invalid Proxy parameter. Parameter must be "
+                   "in the form 'key=value'";
+        }
+        else
+            *val++ = '\0';
+        if (worker)
+            err = set_worker_param(cmd->pool, cmd->server, worker, word, val);
+        else
+            err = set_balancer_param(sconf, cmd->pool, balancer,
+                                     word, val);
+        if (err)
+            return apr_pstrcat(cmd->temp_pool, thiscmd->name, " ", err, " ",
+                               word, "=", val, "; ", conf->p, NULL);
     }
 
     cmd->path = old_path;
