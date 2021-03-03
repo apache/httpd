@@ -2331,7 +2331,7 @@ static apr_status_t set_challenge_creds(conn_rec *c, const char *servername,
         
         rv = modssl_read_cert(c->pool, cert_pem, key_pem, NULL, NULL, &cert, &key);
         if (rv != APR_SUCCESS) {
-            ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c, APLOGNO()
+            ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c, APLOGNO(10266)
                           "Failed to parse PEM of challenge certificate %s",
                           servername);
             goto cleanup;
