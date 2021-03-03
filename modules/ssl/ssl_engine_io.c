@@ -1594,18 +1594,32 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
 }
 
 
-/* ssl_io_filter_output() produces one SSL/TLS message per bucket
+/* ssl_io_filter_output() produces one SSL/TLS record per bucket
  * passed down the output filter stack.  This results in a high
- * overhead (network packets) for any output comprising many small
- * buckets.  SSI page applied through the HTTP chunk filter, for
- * example, may produce many brigades containing small buckets -
- * [chunk-size CRLF] [chunk-data] [CRLF].
+ * overhead (more network packets & TLS processing) for any output
+ * comprising many small buckets.  SSI output passed through the HTTP
+ * chunk filter, for example, may produce many brigades containing
+ * small buckets - [chunk-size CRLF] [chunk-data] [CRLF].
  *
- * The coalescing filter merges many small buckets into larger buckets
- * where possible, allowing the SSL I/O output filter to handle them
- * more efficiently. */
+ * Sending HTTP response headers as a separate TLS record to the
+ * response body also reveals information to a network observer (the
+ * size of headers) which can be significant.
+ *
+ * The coalescing filter merges data buckets with the aim of producing
+ * fewer, larger TLS records - without copying/buffering all content
+ * and introducing unnecessary overhead.
+ *
+ * ### This buffering could be probably be done more comprehensively
+ * ### in ssl_io_filter_output itself. 
+ * 
+ * ### Another possible performance optimisation in particular for the
+ * ### [HEAP] [FILE] HTTP response case is using a brigade rather than
+ * ### a char array to buffer; using apr_brigade_write() to append
+ * ### will use already-allocated memory from the HEAP, reducing # of
+ * ### copies.
+ */
 
-#define COALESCE_BYTES (2048)
+#define COALESCE_BYTES (AP_IOBUFSIZE)
 
 struct coalesce_ctx {
     char buffer[COALESCE_BYTES];
@@ -1618,11 +1632,12 @@ static apr_status_t ssl_io_filter_coalesce(ap_filter_t *f,
     apr_bucket *e, *upto;
     apr_size_t bytes = 0;
     struct coalesce_ctx *ctx = f->ctx;
+    apr_size_t buffered = ctx ? ctx->bytes : 0; /* space used on entry */
     unsigned count = 0;
 
     /* The brigade consists of zero-or-more small data buckets which
-     * can be coalesced (the prefix), followed by the remainder of the
-     * brigade.
+     * can be coalesced (referred to as the "prefix"), followed by the
+     * remainder of the brigade.
      *
      * Find the last bucket - if any - of that prefix.  count gives
      * the number of buckets in the prefix.  The "prefix" must contain
@@ -1637,10 +1652,8 @@ static apr_status_t ssl_io_filter_coalesce(ap_filter_t *f,
          e != APR_BRIGADE_SENTINEL(bb)
              && !APR_BUCKET_IS_METADATA(e)
              && e->length != (apr_size_t)-1
-             && e->length < COALESCE_BYTES
-             && (bytes + e->length) < COALESCE_BYTES
-             && (ctx == NULL
-                 || bytes + ctx->bytes + e->length < COALESCE_BYTES);
+             && e->length <= COALESCE_BYTES
+             && (buffered + bytes + e->length) <= COALESCE_BYTES;
          e = APR_BUCKET_NEXT(e)) {
         /* don't count zero-length buckets */
         if (e->length) {
@@ -1648,16 +1661,91 @@ static apr_status_t ssl_io_filter_coalesce(ap_filter_t *f,
             count++;
         }
     }
+
+    /* If there is room remaining and the next bucket is a data
+     * bucket, try to include it in the prefix to coalesce.  For a
+     * typical [HEAP] [FILE] HTTP response brigade, this handles
+     * merging the headers and the start of the body into a single TLS
+     * record. */
+    if (bytes + buffered > 0
+        && bytes + buffered < COALESCE_BYTES
+        && e != APR_BRIGADE_SENTINEL(bb)
+        && !APR_BUCKET_IS_METADATA(e)) {
+        apr_status_t rv = APR_SUCCESS;
+
+        /* For an indeterminate length bucket (PIPE/CGI/...), try a
+         * non-blocking read to have it morph into a HEAP.  If the
+         * read fails with EAGAIN, it is harmless to try a split
+         * anyway, split is ENOTIMPL for most PIPE-like buckets. */
+        if (e->length == (apr_size_t)-1) {
+            const char *discard;
+            apr_size_t ignore;
+
+            rv = apr_bucket_read(e, &discard, &ignore, APR_NONBLOCK_READ);
+            if (rv != APR_SUCCESS && !APR_STATUS_IS_EAGAIN(rv)) {
+                ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, f->c, APLOGNO(10232)
+                              "coalesce failed to read from %s bucket",
+                              e->type->name);
+                return AP_FILTER_ERROR;
+            }
+        }
+
+        if (rv == APR_SUCCESS) {
+            /* If the read above made the bucket morph, it may now fit
+             * entirely within the buffer.  Otherwise, split it so it does
+             * fit. */
+            if (e->length > COALESCE_BYTES
+                || e->length + buffered + bytes > COALESCE_BYTES) {
+                rv = apr_bucket_split(e, COALESCE_BYTES - (buffered + bytes));
+            }
+
+            if (rv == APR_SUCCESS && e->length == 0) {
+                /* As above, don't count in the prefix if the bucket is
+                 * now zero-length. */
+            }
+            else if (rv == APR_SUCCESS) {
+                ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, f->c,
+                              "coalesce: adding %" APR_SIZE_T_FMT " bytes "
+                              "from split %s bucket, total %" APR_SIZE_T_FMT,
+                              e->length, e->type->name, bytes + buffered);
+
+                count++;
+                bytes += e->length;
+                e = APR_BUCKET_NEXT(e);
+            }
+            else if (rv != APR_ENOTIMPL) {
+                ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, f->c, APLOGNO(10233)
+                              "coalesce: failed to split data bucket");
+                return AP_FILTER_ERROR;
+            }
+        }
+    }
+
+    /* The prefix is zero or more buckets.  upto now points to the
+     * bucket AFTER the end of the prefix, which may be the brigade
+     * sentinel. */
     upto = e;
 
-    /* Coalesce the prefix, if:
-     * a) more than one bucket is found to coalesce, or
-     * b) the brigade contains only a single data bucket, or
-     * c) the data bucket is not last but we have buffered data already.
+    /* Coalesce the prefix, if any of the following are true:
+     * 
+     * a) the prefix is more than one bucket
+     * OR
+     * b) the prefix is the entire brigade, which is a single bucket
+     *    AND the prefix length is smaller than the buffer size,
+     * OR
+     * c) the prefix is a single bucket
+     *    AND there is buffered data from a previous pass.
+     * 
+     * The aim with (b) is to buffer a small bucket so it can be
+     * coalesced with future invocations of this filter.  e.g.  three
+     * calls each with a single 100 byte HEAP bucket should get
+     * coalesced together.  But an invocation with a 8192 byte HEAP
+     * should pass through untouched.
      */
     if (bytes > 0
         && (count > 1
-            || (upto == APR_BRIGADE_SENTINEL(bb))
+            || (upto == APR_BRIGADE_SENTINEL(bb)
+                && bytes < COALESCE_BYTES)
             || (ctx && ctx->bytes > 0))) {
         /* If coalescing some bytes, ensure a context has been
          * created. */
@@ -1668,7 +1756,8 @@ static apr_status_t ssl_io_filter_coalesce(ap_filter_t *f,
 
         ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, f->c,
                       "coalesce: have %" APR_SIZE_T_FMT " bytes, "
-                      "adding %" APR_SIZE_T_FMT " more", ctx->bytes, bytes);
+                      "adding %" APR_SIZE_T_FMT " more (buckets=%u)",
+                      ctx->bytes, bytes, count);
 
         /* Iterate through the prefix segment.  For non-fatal errors
          * in this loop it is safe to break out and fall back to the
@@ -1683,7 +1772,8 @@ static apr_status_t ssl_io_filter_coalesce(ap_filter_t *f,
             if (APR_BUCKET_IS_METADATA(e)
                 || e->length == (apr_size_t)-1) {
                 ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, f->c, APLOGNO(02012)
-                              "unexpected bucket type during coalesce");
+                              "unexpected %s bucket during coalesce",
+                              e->type->name);
                 break; /* non-fatal error; break out */
             }
 
