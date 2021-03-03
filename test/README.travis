@@ -103,7 +103,7 @@ tested in the same way that trunk is in Travis, so this workflow is
 available for those familiar with using Subversion and the standard
 ASF/httpd repository layout.
 
-Tested branches are listed at: https://travis-ci.org/github/apache/httpd/branches
+Tested branches are listed at: https://travis-ci.com/github/apache/httpd/branches
 
 Travis will also run the tests for a PR filed against the httpd Github
 repository at https://github.com/apache/httpd or from a fork of this
@@ -121,16 +121,17 @@ $USERNAME for your github username:
   $ git push -u $USERNAME my-feature:my-feature
 
 To enable testing for a fork, visit the settings page at
-https://travis-ci.org/$USERNAME/httpd/settings - you may need to sync
-your account via https://travis-ci.org/account/repositories for a
+https://travis-ci.com/$USERNAME/httpd/settings - you may need to sync
+your account via https://travis-ci.com/account/repositories for a
 freshly created fork.
 
-To create a Pull Request, go to a URL like:
+To create a Pull Request, go to the URL produced in the "git push"
+command output when pushing to your fork, which is something like:
 https://github.com/apache/httpd/compare/trunk...$USERNAME:trunk
 
 Once a PR has been created, travis will run the tests and link the
 results from a PR comment. All tested PRs are listed here:
-https://travis-ci.org/github/apache/httpd/pull_requests
+https://travis-ci.com/github/apache/httpd/pull_requests
 
 To merge from github back to SVN trunk, create a patch from e.g.:
 
