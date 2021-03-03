@@ -211,6 +211,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: ylavic, icing
      ylavic: jorton's vote reset after adding r1886255
 
+  *) mod_http2: sync with github standalone version 1.15.17
+     - Log requests and sent the configured error response in case of early detected
+       errors like too many or too long headers. [Ruediger Pluem]
+     - new option 'H2OutputBuffering on/off' which controls the buffering of stream output.
+       The default is on, which is the behaviour of older mod-h2 versions. When off, all
+       bytes are made available immediately to the main connection for sending them
+       out to the client. This fixes interop issues with certain flavours of gRPC, see
+       also <https://github.com/icing/mod_h2/issues/207>.
+     PR: https://github.com/apache/httpd/pull/175
+     +1: icing
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
