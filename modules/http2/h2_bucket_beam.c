@@ -1039,6 +1039,7 @@ transfer:
                 H2_BLIST_INSERT_TAIL(&beam->hold_list, bsender);
 
                 remain -= bsender->length;
+                beam->received_bytes += bsender->length;
                 ++transferred;
                 ++transferred_buckets;
                 continue;

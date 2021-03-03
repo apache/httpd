@@ -92,7 +92,8 @@ struct h2_stream {
     unsigned int input_eof : 1; /* no more request data coming */
     unsigned int out_checked : 1; /* output eof was double checked */
     unsigned int push_policy;   /* which push policy to use for this request */
-    
+    unsigned int input_buffering : 1; /* buffer request bodies for efficiency */
+
     struct h2_task *task;       /* assigned task to fullfill request */
     
     const h2_priority *pref_priority; /* preferred priority for this stream */
