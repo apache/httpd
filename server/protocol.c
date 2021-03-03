@@ -2548,9 +2548,9 @@ AP_DECLARE(apr_status_t) ap_ssl_add_fallback_cert_files(server_rec *s, apr_pool_
 }         
 
 AP_DECLARE(int) ap_ssl_answer_challenge(conn_rec *c, const char *server_name, 
-                                        const char **pcert_file, const char **pkey_file)
+                                        const char **pcert_pem, const char **pkey_pem)
 {
-    return (ap_run_ssl_answer_challenge(c, server_name, pcert_file, pkey_file) == OK);
+    return (ap_run_ssl_answer_challenge(c, server_name, pcert_pem, pkey_pem) == OK);
 }
 
 AP_IMPLEMENT_HOOK_VOID(pre_read_request,
@@ -2592,6 +2592,6 @@ AP_IMPLEMENT_HOOK_RUN_ALL(int, ssl_add_fallback_cert_files,
          apr_array_header_t *cert_files, apr_array_header_t *key_files),
         (s, p, cert_files, key_files), OK, DECLINED)
 AP_IMPLEMENT_HOOK_RUN_FIRST(int, ssl_answer_challenge, 
-        (conn_rec *c, const char *server_name, const char **pcert_file, const char **pkey_file),
-        (c, server_name, pcert_file, pkey_file), DECLINED)
+        (conn_rec *c, const char *server_name, const char **pcert_pem, const char **pkey_pem),
+        (c, server_name, pcert_pem, pkey_pem), DECLINED)
 

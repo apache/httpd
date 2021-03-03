@@ -82,7 +82,15 @@ char       *modssl_SSL_SESSION_id2sz(IDCONST unsigned char *, int, char *, int);
  * pool-allocated string.  If empty, returns NULL.  BIO_free(bio) is
  * called for both cases. */
 char *modssl_bio_free_read(apr_pool_t *p, BIO *bio);
-    
+
+/* Read a single certificate and its private key from the give string in PEM format.
+ * If `key_pem` is NULL, it will expect the key in `cert_pem`.
+ */
+apr_status_t modssl_read_cert(apr_pool_t *p, 
+                              const char *cert_pem, const char *key_pem,
+                              pem_password_cb *cb, void *ud, 
+                              X509 **pcert, EVP_PKEY **pkey);
+                              
 #endif /* __SSL_UTIL_SSL_H__ */
 /** @} */
 

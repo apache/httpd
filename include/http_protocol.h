@@ -1151,23 +1151,34 @@ AP_DECLARE(apr_status_t) ap_ssl_add_fallback_cert_files(server_rec *s, apr_pool_
                                                         apr_array_header_t *key_files);         
 
 
-/** 
- * On TLS connections that do not relate to a configured virtual host,
- * allow modules to provide a certificate and key to
- * be used on the connection. 
+/**
+ * On TLS connections that do not relate to a configured virtual host
+ * allow modules to provide a certificate and key to be used on the connection.
+ *
+ * A Certificate PEM added must be accompanied by a private key PEM. The private
+ * key PEM may be given by a NULL pointer, in which case it is expected to be found in
+ * the certificate PEM string.
  */
-AP_DECLARE_HOOK(int, ssl_answer_challenge, (conn_rec *c, const char *server_name, 
-                                            const char **pcert_file, const char **pkey_file))
+AP_DECLARE_HOOK(int, ssl_answer_challenge, (conn_rec *c, const char *server_name,
+                                            const char **pcert_pem, const char **pkey_pem))
 
 /**
  * Returns != 0 iff the connection is a challenge to the server, for example
  * as defined in RFC 8555 for the 'tls-alpn-01' domain verification, and needs
  * a specific certificate as answer in the handshake.
+ *
  * ALPN protocol negotiation via the hooks 'protocol_propose' and 'protocol_switch'
  * need to have run before this call is made.
+ *
+ * Certificate PEMs added must be accompanied by a private key PEM. The private
+ * key PEM may be given by a NULL pointer, in which case it is expected to be found in
+ * the certificate PEM string.
+ *
+ * A certificate provided this way needs to replace any other certificates selected
+ * by configuration or 'ssl_add_cert_pems` on this connection.
  */
-AP_DECLARE(int) ap_ssl_answer_challenge(conn_rec *c, const char *server_name, 
-                                        const char **pcert_file, const char **pkey_file);
+AP_DECLARE(int) ap_ssl_answer_challenge(conn_rec *c, const char *server_name,
+                                        const char **pcert_pem, const char **pkey_pem);
 
 
 #ifdef __cplusplus
