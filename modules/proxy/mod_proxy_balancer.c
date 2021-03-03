@@ -1105,16 +1105,18 @@ static void push2table(const char *input, apr_table_t *params,
 }
 
 /*
- * Process the parameters and add or update the worker of the balancer
+ * Process the parameters and add or update the worker of the
+ * balancer.  Must only be called if the nonce has been validated to
+ * match, to avoid XSS attacks.
  */
 static int balancer_process_balancer_worker(request_rec *r, proxy_server_conf *conf,
                                             proxy_balancer *bsel,
-                                            proxy_worker *wsel, int ok2change,
+                                            proxy_worker *wsel,
                                             apr_table_t *params)
 {
     apr_status_t rv;
     /* First set the params */
-    if (wsel && ok2change) {
+    if (wsel) {
         const char *val;
         int was_usable = PROXY_WORKER_IS_USABLE(wsel);
 
@@ -1223,7 +1225,7 @@ static int balancer_process_balancer_worker(request_rec *r, proxy_server_conf *c
 
     }
 
-    if (bsel && ok2change) {
+    if (bsel) {
         const char *val;
         int ival;
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01193)
@@ -1865,7 +1867,6 @@ static int balancer_handler(request_rec *r)
     proxy_worker *wsel = NULL;
     apr_table_t *params;
     int i;
-    int ok2change = 1;
     const char *name, *ref;
     apr_status_t rv;
 
@@ -1946,30 +1947,23 @@ static int balancer_handler(request_rec *r)
 
 
     /* Check that the supplied nonce matches this server's nonce;
-     * otherwise ignore all parameters, to prevent a CSRF attack. */
-    if (!bsel ||
-        (*bsel->s->nonce &&
-         (
-          (name = apr_table_get(params, "nonce")) == NULL ||
-          strcmp(bsel->s->nonce, name) != 0
-         )
-        )
-       ) {
-        ok2change = 0;
+     * otherwise don't process any input, preventing a CSRF
+     * attacks. */
+    if (bsel
+        && (*bsel->s->nonce
+            && ((name = apr_table_get(params, "nonce")) != NULL
+                && strcmp(bsel->s->nonce, name) == 0))) {
+        /* Process the parameters and add the worker to the balancer */
+        rv = balancer_process_balancer_worker(r, conf, bsel, wsel, params);
+        if (rv != APR_SUCCESS) {
+            return HTTP_BAD_REQUEST;
+        }
     }
 
-    /* process the parameters and  add the worker to the balancer */
-    rv = balancer_process_balancer_worker(r, conf, bsel, wsel, ok2change, params);
-    if (rv != APR_SUCCESS) {
-       return HTTP_BAD_REQUEST;
-    }
+    /* Produce response, in XML if required by parameters. */
+    balancer_display_page(r, conf, bsel, wsel,
+                          apr_table_get(params, "xml") != NULL);
 
-    /* display the HTML or XML page */
-    if (apr_table_get(params, "xml")) {
-        balancer_display_page(r, conf, bsel, wsel, 1);
-    } else {
-        balancer_display_page(r, conf, bsel, wsel, 0);
-    }
     return DONE;
 }
 
