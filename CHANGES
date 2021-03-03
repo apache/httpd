@@ -30,7 +30,8 @@ Changes with Apache 2.5.1
        available for an SSL module like mod_ssl.
      - ap_ssl_answer_challenge() to enable other modules like mod_md to
        provide a certificate as used in the RFC 8555 'tls-alpn-01' challenge
-       for the ACME protocol for an SSL module like mod_ssl.
+       for the ACME protocol for an SSL module like mod_ssl. The function
+       and its hook provide PEM encoded data instead of file names.
      - Hooks for 'ssl_add_cert_files', 'ssl_add_fallback_cert_files' and
        'ssl_answer_challenge' where modules like mod_md can provide providers
        to the above mentioned functions.

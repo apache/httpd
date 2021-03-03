@@ -199,12 +199,12 @@ static void ssl_add_version_components(apr_pool_t *ptemp, apr_pool_t *pconf,
 
 int ssl_is_challenge(conn_rec *c, const char *servername, 
                      X509 **pcert, EVP_PKEY **pkey,
-                     const char **pcert_file, const char **pkey_file)
+                     const char **pcert_pem, const char **pkey_pem)
 {
     *pcert = NULL;
     *pkey = NULL;
-    *pcert_file = *pkey_file = NULL;
-    if (ap_ssl_answer_challenge(c, servername, pcert_file, pkey_file)) {
+    *pcert_pem = *pkey_pem = NULL;
+    if (ap_ssl_answer_challenge(c, servername, pcert_pem, pkey_pem)) {
         return 1;
     }
     else if (OK == ssl_run_answer_challenge(c, servername, pcert, pkey)) {
