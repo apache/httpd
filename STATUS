@@ -201,6 +201,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR: https://github.com/apache/httpd/pull/175
      +1: icing
 
+  *) mod_lua: Support Lua 5.4 and use pkg-config to detect Lua
+     properly on Debian systems.
+     trunk patch: http://svn.apache.org/r1826206
+                  http://svn.apache.org/r1880678
+                  http://svn.apache.org/r1880743
+     2.4.x patch: svn merge -c 1826206,1880678,1880743 ^/httpd/httpd/trunk .
+     PR: https://github.com/apache/httpd/pull/176
+     +1: jorton, 
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
