@@ -1376,6 +1376,42 @@ static int balancer_process_balancer_worker(request_rec *r, proxy_server_conf *c
 }
 
 /*
+ * Process a request for balancer or worker management from another module
+ */
+static int balancer_manage(request_rec *r, apr_table_t *params)
+{
+    void *sconf;
+    proxy_server_conf *conf;
+    proxy_balancer *bsel = NULL;
+    proxy_worker *wsel = NULL;
+    const char *name;
+    sconf = r->server->module_config;
+    conf = (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
+
+    /* Process the parameters */
+    if ((name = apr_table_get(params, "b"))) {
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "balancer_manage "
+                  "balancer: %s", name);
+        bsel = ap_proxy_get_balancer(r->pool, conf,
+            apr_pstrcat(r->pool, BALANCER_PREFIX, name, NULL), 0);
+    }
+
+    if ((name = apr_table_get(params, "w"))) {
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "balancer_manage "
+                  "worker: %s", name);
+        wsel = ap_proxy_get_worker(r->pool, bsel, conf, name);
+    }
+    if (bsel) {
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "balancer_manage "
+                  "balancer: %s",  bsel->s->name);
+        return(balancer_process_balancer_worker(r, conf, bsel, wsel, params));
+    }
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "balancer_manage failed: "
+                      "No balancer!");
+    return HTTP_BAD_REQUEST;
+}
+
+/*
  * builds the page and links to configure via HTLM or XML.
  */
 static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
@@ -2024,6 +2060,7 @@ static void ap_proxy_balancer_register_hook(apr_pool_t *p)
     static const char *const aszPred[] = { "mpm_winnt.c", "mod_slotmem_shm.c", NULL};
     static const char *const aszPred2[] = { "mod_proxy.c", NULL};
      /* manager handler */
+    ap_register_provider(p, "balancer", "manager", "0", &balancer_manage);
     ap_hook_post_config(balancer_post_config, aszPred2, NULL, APR_HOOK_MIDDLE);
     ap_hook_pre_config(balancer_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_handler(balancer_handler, NULL, NULL, APR_HOOK_FIRST);
