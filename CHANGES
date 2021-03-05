@@ -516,12 +516,6 @@ Changes with Apache 2.4.39
      mod_php) from modifying it persistently to abuse the privileged main
      process.  [Charles Fol <folcharles gmail.com>, Yann Ylavic]
 
-  *) SECURITY: CVE-2019-0196 (cve.mitre.org)
-     mod_http2: using fuzzed network input, the http/2 request
-     handling could be made to access freed memory in string
-     comparison when determining the method of a request and
-     thus process the request incorrectly. [Stefan Eissing]
-
   *) SECURITY: CVE-2019-0217 (cve.mitre.org)
      mod_auth_digest: Fix a race condition checking user credentials which
      could allow a user with valid credentials to impersonate another,
