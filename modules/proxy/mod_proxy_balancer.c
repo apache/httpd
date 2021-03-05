@@ -1438,6 +1438,7 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
             ap_rputs("    <httpd:balancer>\n", r);
             /* Start proxy_balancer */
             ap_rvputs(r, "      <httpd:name>", balancer->s->name, "</httpd:name>\n", NULL);
+            ap_rvputs(r, "      <httpd:nonce>", balancer->s->nonce, "</httpd:nonce>\n", NULL);
             if (*balancer->s->sticky) {
                 ap_rvputs(r, "      <httpd:stickysession>", ap_escape_html(r->pool, balancer->s->sticky),
                           "</httpd:stickysession>\n", NULL);
