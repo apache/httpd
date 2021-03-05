@@ -323,7 +323,7 @@ Changes with Apache 2.4.42
        documented for `MDCAChallenges`. Fixes #156. Thanks again to @mkauf for finding this.
      - Fixing a potential, low memory null pointer dereference [thanks to @uhliarik].
      - Fixing an incompatibility with a change in libcurl v7.66.0 that added unwanted
-       "transfer-encoding" to POST requests. This failed in directy communication with
+       "transfer-encoding" to POST requests. This failed in direct communication with
        Let's Encrypt boulder server. Thanks to @mkauf for finding and fixing. [Stefan Eissing]
 
   *) mod_md: Adding the several new features.
@@ -332,7 +332,7 @@ Changes with Apache 2.4.42
      is part of mod_md's monitoring and message notifications. If can be used
      for sites that do not have ACME certificates.
      The url for a CTLog Monitor can be configured. It is used in the server-status
-     to link to the external status page of a certicate.
+     to link to the external status page of a certificate.
      The MDMessageCmd is called with argument "installed" when a new certificate
      has been activated on server restart/reload. This allows for processing of
      the new certificate, for example to applications that require it in different
@@ -506,20 +506,20 @@ Changes with Apache 2.4.39
   *) SECURITY: CVE-2019-0196 (cve.mitre.org)
      mod_http2: using fuzzed network input, the http/2 request
      handling could be made to access freed memory in string
-     comparision when determining the method of a request and
+     comparison when determining the method of a request and
      thus process the request incorrectly. [Stefan Eissing]
 
   *) SECURITY: CVE-2019-0211 (cve.mitre.org)
-     MPMs unix: Fix a local priviledge escalation vulnerability by not
+     MPMs unix: Fix a local privilege escalation vulnerability by not
      maintaining each child's listener bucket number in the scoreboard,
      preventing unprivileged code like scripts run by/on the server (e.g. via
-     mod_php) from modifying it persistently to abuse the priviledged main
+     mod_php) from modifying it persistently to abuse the privileged main
      process.  [Charles Fol <folcharles gmail.com>, Yann Ylavic]
 
   *) SECURITY: CVE-2019-0196 (cve.mitre.org)
      mod_http2: using fuzzed network input, the http/2 request
      handling could be made to access freed memory in string
-     comparision when determining the method of a request and
+     comparison when determining the method of a request and
      thus process the request incorrectly. [Stefan Eissing]
 
   *) SECURITY: CVE-2019-0217 (cve.mitre.org)
@@ -560,7 +560,7 @@ Changes with Apache 2.4.39
   
   *) mod_http2: ripping out all the h2_req_engine internal features now that mod_proxy_http2
      has no more need for it. Optional functions are still declared but no longer implemented.
-     While previous mod_proxy_http2 will work with this, it is recommeneded to run the matching
+     While previous mod_proxy_http2 will work with this, it is recommended to run the matching
      versions of both modules. [Stefan Eissing]
   
   *) mod_proxy_http2: changed mod_proxy_http2 implementation and fixed several bugs which
@@ -1080,7 +1080,7 @@ Changes with Apache 2.4.30 (not released)
      [Joe Orton]
 
   *) mpm_event,worker: Mask signals for threads created by modules in child
-     init, so that they don't receive (implicitely) the ones meant for the MPM.
+     init, so that they don't receive (implicitly) the ones meant for the MPM.
      PR 62009. [Armin Abfalterer <a.abfalterer gmail com>, Yann Ylavic]
 
   *) mod_md: new experimental, module for managing domains across virtual hosts,
@@ -1197,7 +1197,7 @@ Changes with Apache 2.4.28
   *) mod_proxy_wstunnel: Allow upgrade to any protocol dynamically.
      PR 61142.
 
-  *) mod_watchdog/mod_proxy_hcheck: Time intervals can now be spefified
+  *) mod_watchdog/mod_proxy_hcheck: Time intervals can now be specified
      down to the millisecond. Supports 'mi' (minute), 'ms' (millisecond),
      's' (second) and 'hr' (hour!) time suffixes. [Jim Jagielski]
 
@@ -1403,7 +1403,7 @@ Changes with Apache 2.4.26
      in use (ProxyHCTPsize > 0).  PR 60071.  [Yann Ylavic, Jim Jagielski]
 
   *) core: %{DOCUMENT_URI} used in nested SSI expressions should point to the
-     URI originally requsted by the user, not the nested documents URI. This
+     URI originally requested by the user, not the nested documents URI. This
      restores the behavior of this variable to match the "legacy" SSI parser.
      PR60624. [Hank Ibell <hwibell gmail.com>]
 
@@ -1439,7 +1439,7 @@ Changes with Apache 2.4.26
      [Luca Toscano]
 
   *) mod_http2: not counting file buckets again stream max buffer limits.
-     Effectively transfering static files in one step from slave to master
+     Effectively transferring static files in one step from slave to master
      connection. [Stefan Eissing]
 
   *) mod_http2: comforting ap_check_pipeline() on slave connections
@@ -1688,7 +1688,7 @@ Changes with Apache 2.4.24 (not released)
      master and slave connection. Reduction of internal states for tasks
      and streams, stability. Heuristic id generation for slave connections
      to better keep promise of connection ids unique at given point int time.
-     Fix for mod_cgid interop in high load situtations.
+     Fix for mod_cgid interop in high load situations.
      Fix for handling of incoming trailers when no request body is sent.
      [Stefan Eissing]
 
@@ -2201,7 +2201,7 @@ Changes with Apache 2.4.18
      [Stefan Eissing]
 
   *) mod_proxy_fdpass: Fix AH01153 error when using the default configuration.
-     In earlier version of httpd, you can explicitelly set the 'flusher' parameter
+     In earlier version of httpd, you can explicitly set the 'flusher' parameter
      to 'flush' as a workaround. (i.e. flusher=flush)
      Add documentation for the 'flusher' parameter when defining a proxy worker.
      [Christophe Jaillet]
@@ -2287,7 +2287,7 @@ Changes with Apache 2.4.17
   *) mod_http2: added donated HTTP/2 implementation via core module. Similar
      configuration options to mod_ssl. [Stefan Eissing]
 
-  *) mod_proxy: don't recyle backend announced "Connection: close" connections
+  *) mod_proxy: don't recycle backend announced "Connection: close" connections
      to avoid reusing it should the close be effective after some new request
      is ready to be sent.  [Yann Ylavic]
 
@@ -2551,7 +2551,7 @@ Changes with Apache 2.4.13 (not released)
      to avoid a crash when relocation occurs.  PR 57177.  [Yann Ylavic]
 
   *) mod_dav: Avoid a potential integer underflow in the lock timeout value sent
-     back to a client. The answer to a LOCK request could be an extremly large
+     back to a client. The answer to a LOCK request could be an extremely large
      integer if the time needed to lock the resource was longer that the
      requested timeout given in the LOCK request. In such a case, we now answer
      "Second-0".  PR55420
@@ -2773,7 +2773,7 @@ Changes with Apache 2.4.11 (not released)
   *) mod_proxy_connect: Fix ProxyRemote to https:// backends on EBCDIC
      systems. PR 57092 [Edward Lu <Chaosed0 gmail.com>]
 
-  *) mod_cache: Avoid a 304 response to an unconditional requst when an AH00752
+  *) mod_cache: Avoid a 304 response to an unconditional request when an AH00752
      CacheLock error occurs during cache revalidation. [Eric Covener]
 
   *) mod_ssl: Move OCSP stapling information from a per-certificate store to
