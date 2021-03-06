@@ -170,7 +170,7 @@ static const char uuencoder[64] = {
     '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '_',
 };
 
-#define THREADED_COUNTER "unique_id_thread_counter"
+#define THREADED_COUNTER "unique_id_counter"
 
 static const char *gen_unique_id(const request_rec *r)
 {
@@ -187,12 +187,13 @@ static const char *gen_unique_id(const request_rec *r)
     unsigned char *x,*y;
     unsigned short counter;
     int i,j,k;
+
 #if APR_HAS_THREADS
     apr_status_t rv;
     unsigned short *pcounter;
     apr_thread_t *thread = r->connection->current_thread;
     
-    rv = apr_thread_data_get(&pcounter, THREADED_COUNTER, thread);
+    rv = apr_thread_data_get((void **)&pcounter, THREADED_COUNTER, thread);
     if (rv == APR_SUCCESS && pcounter) {
         counter = *pcounter;
     }
@@ -206,12 +207,11 @@ static const char *gen_unique_id(const request_rec *r)
     new_unique_id.counter = htons(counter++);
 #if APR_HAS_THREADS
     if (!pcounter) {
-        pcounter = apr_palloc(apr_thread_pool_get(r->connection->current_thread),
-                              sizeof(*pcounter));
+        pcounter = apr_palloc(apr_thread_pool_get(thread), sizeof(*pcounter));
     }
     
     *pcounter = counter;
-    rv = apr_thread_data_set(pcounter, THREADED_COUNTER, thread);
+    rv = apr_thread_data_set(pcounter, THREADED_COUNTER, NULL, thread);
     if (rv != APR_SUCCESS)
 #endif
     {
