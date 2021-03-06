@@ -218,6 +218,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://bz.apache.org/bugzilla/attachment.cgi?id=37749
      +1: jailletc36,
 
+  *) mod_proxy_http: Fix a potential random memory corruption issue
+     PR 64234
+     trunk patch: https://svn.apache.org/r1875353
+     2.4.x patch: https://bz.apache.org/bugzilla/show_bug.cgi?id=64234#c2
+     +1:
+     jailletc36: if applied on 2.4.x, a CHANGES entry should be added
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
