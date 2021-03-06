@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1792168 -->
+<!-- English Revision: 1886996 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -61,16 +61,28 @@ d'environnement</a></seealso>
 
     <example><title>Mandataire inverse simple</title>
     <highlight language="config">
-    ProxyPass "/app" "ajp://backend.example.com:8009/app"
+ProxyPass "/app" "ajp://backend.example.com:8009/app"
+    </highlight>
+    </example>
+
+    <p>Les options telles que l'option <code>secret</code> de Tomcat (requise
+    par défaut depuis Tomcat 8.5.51 et 9.0.31) peut tout simplement être ajoutée
+    en tant que paramètre séparé à la fin des directives <directive
+    module="mod_proxy">ProxyPass</directive> ou <directive
+    module="mod_proxy">BalancerMember</directive>. Ce paramètre est disponible à
+    partir de la version 2.4.42 du serveur HTTP Apache :</p>
+    <example><title>Mandataire inverse simple avec l'option <code>secret</code></title>
+    <highlight language="config">
+ProxyPass "/app" "ajp://backend.example.com:8009/app" secret=YOUR_AJP_SECRET
     </highlight>
     </example>
 
     <p>On peut aussi configurer un répartiteur de charge :</p>
     <example><title>Mandataire inverse avec répartiteur de charge</title>
       <highlight language="config">
-&lt;Proxy balancer://cluster&gt;
-    BalancerMember ajp://app1.example.com:8009 loadfactor=1
-    BalancerMember ajp://app2.example.com:8009 loadfactor=2
+&lt;Proxy "balancer://cluster"&gt;
+    BalancerMember "ajp://app1.example.com:8009" loadfactor=1
+    BalancerMember "ajp://app2.example.com:8009" loadfactor=2
     ProxySet lbmethod=bytraffic
 &lt;/Proxy&gt;
 ProxyPass "/app" "balancer://cluster/app"
@@ -106,8 +118,8 @@ ProxyPassReverse "/apps/foo" "http://www.example.com/foo"
 <section id="env"><title>Variables d'environnement</title>
     <p>Les variables d'environnement dont le nom possède le préfixe
     <code>AJP_</code> sont transmises au serveur original en tant
-    qu'attributs de requête AJP (le préfixe AJP_ étant supprimé du nom
-    de la clé).</p>
+    qu'attributs de requête AJP (le préfixe <code>AJP_</code> étant supprimé du
+    nom de la clé).</p>
 </section>
 
 <section id="overviewprotocol"><title>Vue d'ensemble du protocole</title>
@@ -521,8 +533,8 @@ attribute_value := (string)
       <tr><td>?req_attribute</td><td>0x0A</td><td>String</td><td>Nom (le
       nom de l'attribut vient ensuite)</td></tr>
       <tr><td>?ssl_key_size</td><td>0x0B</td><td>Integer</td><td></td></tr>
-      <tr><td>?secret</td><td>0x0C</td><td>String</td><td>Envoyé si un mot de
-      passe est défini</td></tr>
+      <tr><td>?secret</td><td>0x0C</td><td>String</td><td>Supporté depuis la
+      version 2.4.42</td></tr>
       <tr><td>are_done</td><td>0xFF</td><td>-</td><td>request_terminator</td></tr>
     </table>
     <p><code>context</code> et <code>servlet_path</code> ne sont pas
@@ -545,12 +557,6 @@ attribute_value := (string)
     persistantes, en associant une session utilisateur à une instance
     Tomcat particulière en présence de plusieurs répartiteurs de
     charge.</p>
-    <p>Au delà de cette liste de base, tout autre attribut
-    supplémentaire peut être envoyé via le code
-    <code>req_attribute</code> <code>0x0A</code>. Une paire de chaînes
-    représentant le nom et la valeur de l'attribut est envoyée
-    immédiatement après chaque instance de ce code. Les variables
-    d'environnement sont transmises par cette méthode.</p>
     <p>Le <code>mot de passe</code> est envoyé lorsque la directive <directive
     module="mod_proxy">ProxyPass</directive> ou <directive
     module="mod_proxy">BalancerMember</directive> utilise le paramètre
@@ -558,6 +564,12 @@ attribute_value := (string)
     utiliser les mots de passe et les valeurs doivent correspondre.
     <code>request.secret</code> ou <code>requiredSecret</code> sont documentés
     dans la configuration AJP d'Apache Tomcat.</p>
+    <p>Au delà de cette liste de base, tout autre attribut
+    supplémentaire peut être envoyé via le code
+    <code>req_attribute</code> <code>0x0A</code>. Une paire de chaînes
+    représentant le nom et la valeur de l'attribut est envoyée
+    immédiatement après chaque instance de ce code. Les variables
+    d'environnement sont transmises par cette méthode.</p>
     <p>Enfin, lorsque tous les attributs ont été transmis, le
     terminateur d'attributs, <code>0xFF</code>, est envoyé. Ce dernier
     indique à la fois la fin de la liste d'attributs et la fin du paquet
