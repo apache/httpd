@@ -1607,6 +1607,15 @@ int ssl_hook_Fixup(request_rec *r)
         }
     }
 
+    if (dc->nOptions & SSL_OPT_EXPORTCB64DATA) {
+        val = ssl_var_lookup(r->pool, r->server, r->connection,
+                             r, "SSL_SERVER_B64CERT");
+        apr_table_setn(env, "SSL_SERVER_B64CERT", val);
+
+        val = ssl_var_lookup(r->pool, r->server, r->connection,
+                             r, "SSL_CLIENT_B64CERT");
+        apr_table_setn(env, "SSL_CLIENT_B64CERT", val);
+    }
 
 #ifdef SSL_get_secure_renegotiation_support
     apr_table_setn(r->notes, "ssl-secure-reneg",
