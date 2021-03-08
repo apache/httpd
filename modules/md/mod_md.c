@@ -173,7 +173,7 @@ static apr_status_t notify(md_job_t *job, const char *reason,
         if (since_last.start > 0 && md_timeperiod_length(&since_last) < min_interim) {
             /* not enough time has passed since we sent the last notification
              * for this reason. */
-            md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, p, APLOGNO()
+            md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, p, APLOGNO(10267)
                 "%s: rate limiting notification about '%s'", job->mdomain, reason);
             return APR_SUCCESS;
         }
