@@ -832,6 +832,32 @@ int md_json_itera(md_json_itera_cb *cb, void *baton, md_json_t *json, ...)
     return 1;
 }
 
+int md_json_iterkey(md_json_iterkey_cb *cb, void *baton, md_json_t *json, ...)
+{
+    json_t *j;
+    va_list ap;
+    const char *key;
+    json_t *val;
+    md_json_t wrap;
+    
+    va_start(ap, json);
+    j = jselect(json, ap);
+    va_end(ap);
+    
+    if (!j || !json_is_object(j)) {
+        return 0;
+    }
+        
+    wrap.p = json->p;
+    json_object_foreach(j, key, val) {
+        wrap.j = val;
+        if (!cb(baton, key, &wrap)) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
 /**************************************************************************************************/
 /* array strings */
 
@@ -1156,8 +1182,13 @@ apr_status_t md_json_readf(md_json_t **pjson, apr_pool_t *p, const char *fpath)
 apr_status_t md_json_read_http(md_json_t **pjson, apr_pool_t *pool, const md_http_response_t *res)
 {
     apr_status_t rv = APR_ENOENT;
-    const char *ctype = apr_table_get(res->headers, "content-type");
-    if (ctype && res->body && (strstr(ctype, "/json") || strstr(ctype, "+json"))) {
+    const char *ctype = apr_table_get(res->headers, "content-type"), *p;
+
+    *pjson = NULL;
+    ctype = md_util_parse_ct(res->req->pool, ctype);
+    p = ctype + strlen(ctype) +1;
+    if (ctype && res->body && (!strcmp(p - sizeof("/json"), "/json") ||
+                               !strcmp(p - sizeof("+json"), "+json"))) {
         rv = md_json_readb(pjson, pool, res->body);
     }
     return rv;

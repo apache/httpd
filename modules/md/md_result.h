@@ -23,6 +23,8 @@ struct md_t;
 typedef struct md_result_t md_result_t;
 
 typedef void md_result_change_cb(md_result_t *result, void *data);
+typedef apr_status_t md_result_raise_cb(md_result_t *result, void *data, const char *event, apr_pool_t *p);
+typedef void md_result_holler_cb(md_result_t *result, void *data, const char *event, apr_pool_t *p);
 
 struct md_result_t {
     apr_pool_t *p;
@@ -35,6 +37,10 @@ struct md_result_t {
     apr_time_t ready_at;
     md_result_change_cb *on_change;
     void *on_change_data;
+    md_result_raise_cb *on_raise;
+    void *on_raise_data;
+    md_result_holler_cb *on_holler;
+    void *on_holler_data;
 };
 
 md_result_t *md_result_make(apr_pool_t *p, apr_status_t status);
@@ -69,5 +75,13 @@ void md_result_dup(md_result_t *dest, const md_result_t *src);
 void md_result_log(md_result_t *result, unsigned int level);
 
 void md_result_on_change(md_result_t *result, md_result_change_cb *cb, void *data);
+
+/* events in the context of a result genesis */
+
+apr_status_t md_result_raise(md_result_t *result, const char *event, apr_pool_t *p);
+void md_result_holler(md_result_t *result, const char *event, apr_pool_t *p);
+
+void md_result_on_raise(md_result_t *result, md_result_raise_cb *cb, void *data);
+void md_result_on_holler(md_result_t *result, md_result_holler_cb *cb, void *data);
 
 #endif /* mod_md_md_result_h */

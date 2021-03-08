@@ -30,9 +30,11 @@ struct md_http_t {
     int next_id;
     apr_off_t resp_limit;
     md_http_impl_t *impl;
+    void *impl_data;         /* to be used by the implementation */
     const char *user_agent;
     const char *proxy_url;
     md_http_timeouts_t timeout;
+    const char *ca_file;
 };
 
 static md_http_impl_t *cur_impl;
@@ -44,6 +46,15 @@ void md_http_use_implementation(md_http_impl_t *impl)
         cur_impl = impl;
         cur_init_done = 0;
     }
+}
+
+static apr_status_t http_cleanup(void *data)
+{
+    md_http_t *http = data;
+    if (http && http->impl && http->impl->cleanup) {
+        http->impl->cleanup(http, http->pool);
+    }
+    return APR_SUCCESS;
 }
 
 apr_status_t md_http_create(md_http_t **phttp, apr_pool_t *p, const char *user_agent,
@@ -75,8 +86,19 @@ apr_status_t md_http_create(md_http_t **phttp, apr_pool_t *p, const char *user_a
     if (!http->bucket_alloc) {
         return APR_EGENERAL;
     }
+    apr_pool_cleanup_register(p, http, http_cleanup, apr_pool_cleanup_null);
     *phttp = http;
     return APR_SUCCESS;
+}
+
+void md_http_set_impl_data(md_http_t *http, void *data)
+{
+    http->impl_data = data;
+}
+
+void *md_http_get_impl_data(md_http_t *http)
+{
+    return http->impl_data;
 }
 
 void md_http_set_response_limit(md_http_t *http, apr_off_t resp_limit)
@@ -114,6 +136,11 @@ void md_http_set_stalling(md_http_request_t *req, long bytes_per_sec, apr_time_t
 {
     req->timeout.stall_bytes_per_sec = bytes_per_sec;
     req->timeout.stalled = timeout;
+}
+
+void md_http_set_ca_file(md_http_t *http, const char *ca_file)
+{
+    http->ca_file = ca_file;
 }
 
 static apr_status_t req_set_body(md_http_request_t *req, const char *content_type,
@@ -182,6 +209,7 @@ static apr_status_t req_create(md_http_request_t **preq, md_http_t *http,
     req->user_agent = http->user_agent;
     req->proxy_url = http->proxy_url;
     req->timeout = http->timeout;
+    req->ca_file = http->ca_file;
     *preq = req;
     return rv;
 }

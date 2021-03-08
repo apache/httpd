@@ -471,7 +471,7 @@ SET(mod_md_extra_libs                ${OPENSSL_LIBRARIES} ${CURL_LIBRARIES} ${JA
 SET(mod_md_extra_sources
   modules/md/md_acme.c               modules/md/md_acme_acct.c
   modules/md/md_acme_authz.c         modules/md/md_acme_drive.c
-  modules/md/md_acmev1_drive.c       modules/md/md_acmev2_drive.c
+  modules/md/md_acmev2_drive.c       modules/md/md_event.c
   modules/md/md_acme_order.c         modules/md/md_core.c
   modules/md/md_curl.c               modules/md/md_crypt.c
   modules/md/md_http.c               modules/md/md_json.c
@@ -482,7 +482,7 @@ SET(mod_md_extra_sources
   modules/md/md_ocsp.c               modules/md/md_util.c               
   modules/md/mod_md_config.c         modules/md/mod_md_drive.c
   modules/md/mod_md_os.c             modules/md/mod_md_status.c
-  modules/md/mod_md_ocsp.c
+  modules/md/mod_md_ocsp.c           
 )
 SET(mod_optional_hook_export_extra_defines AP_DECLARE_EXPORT) # bogus reuse of core API prefix
 SET(mod_proxy_extra_defines          PROXY_DECLARE_EXPORT)

@@ -101,7 +101,7 @@ apr_status_t md_acmev2_drive_renew(md_acme_driver_t *ad, md_proto_driver_t *d, m
     rv = md_acme_drive_set_acct(d, result);
     if (APR_SUCCESS != rv) goto leave;
 
-    if (!md_array_is_empty(ad->certs)) goto leave;
+    if (!md_array_is_empty(ad->cred->chain)) goto leave;
         
     /* ACMEv2 strategy:
      * 1. load an md_acme_order_t from STAGING, if present
@@ -141,22 +141,26 @@ apr_status_t md_acmev2_drive_renew(md_acme_driver_t *ad, md_proto_driver_t *d, m
     rv = md_acme_order_monitor_authzs(ad->order, ad->acme, d->md,
                                       ad->authz_monitor_timeout, result, d->p);
     if (APR_SUCCESS != rv) goto leave;
-    
-    rv = md_acme_order_await_ready(ad->order, ad->acme, d->md, 
+
+    rv = md_acme_order_await_ready(ad->order, ad->acme, d->md,
                                    ad->authz_monitor_timeout, result, d->p);
     if (APR_SUCCESS != rv) goto leave;
-    
-    rv = md_acme_drive_setup_certificate(d, result);
-    if (APR_SUCCESS != rv) goto leave;
-    
-    md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, d->p, "%s: finalized order", d->md->name);
-    
+
+    if (MD_ACME_ORDER_ST_READY == ad->order->status) {
+        rv = md_acme_drive_setup_cred_chain(d, result);
+        if (APR_SUCCESS != rv) goto leave;
+        md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, d->p, "%s: finalized order", d->md->name);
+    }
+
     rv = md_acme_order_await_valid(ad->order, ad->acme, d->md, 
                                    ad->authz_monitor_timeout, result, d->p);
     if (APR_SUCCESS != rv) goto leave;
     
-    if (ad->order->certificate) goto leave;
-    md_result_set(result, APR_EINVAL, "Order valid, but certifiate url is missing.");
+    if (!ad->order->certificate) {
+        md_result_set(result, APR_EINVAL, "Order valid, but certifiate url is missing.");
+        goto leave;
+    }
+    md_result_set(result, APR_SUCCESS, NULL);
 
 leave:    
     md_result_log(result, MD_LOG_DEBUG);

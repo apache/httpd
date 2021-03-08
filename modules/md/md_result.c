@@ -260,3 +260,26 @@ void md_result_on_change(md_result_t *result, md_result_change_cb *cb, void *dat
     result->on_change = cb;
     result->on_change_data = data;
 }
+
+apr_status_t md_result_raise(md_result_t *result, const char *event, apr_pool_t *p)
+{
+    if (result->on_raise) return result->on_raise(result, result->on_raise_data, event, p);
+    return APR_SUCCESS;
+}
+
+void md_result_holler(md_result_t *result, const char *event, apr_pool_t *p)
+{
+    if (result->on_holler) result->on_holler(result, result->on_holler_data, event, p);
+}
+
+void md_result_on_raise(md_result_t *result, md_result_raise_cb *cb, void *data)
+{
+    result->on_raise = cb;
+    result->on_raise_data = data;
+}
+
+void md_result_on_holler(md_result_t *result, md_result_holler_cb *cb, void *data)
+{
+    result->on_holler = cb;
+    result->on_holler_data = data;
+}

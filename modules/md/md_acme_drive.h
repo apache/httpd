@@ -18,23 +18,25 @@
 
 struct apr_array_header_t;
 struct md_acme_order_t;
+struct md_credentials_t;
 struct md_result_t;
 
 typedef struct md_acme_driver_t {
     md_proto_driver_t *driver;
     void *sub_driver;
     
-    int complete;
-
-    md_pkey_t *privkey;              /* the new private key */
-    apr_array_header_t *certs;       /* the certifiacte chain, starting with the new one */
-    const char *next_up_link;        /* where the next chain cert is */
-    
     md_acme_t *acme;
     md_t *md;
     struct apr_array_header_t *domains;
-    
     apr_array_header_t *ca_challenges;
+    
+    int complete;
+    apr_array_header_t *creds;       /* the new md_credentials_t */
+
+    struct md_credentials_t *cred;   /* credentials currently being processed */ 
+    const char *chain_up_link;       /* Link header "up" from last chain retrieval,
+                                        needs to be followed */
+
     struct md_acme_order_t *order;
     apr_interval_time_t authz_monitor_timeout;
     
@@ -45,8 +47,8 @@ typedef struct md_acme_driver_t {
 
 apr_status_t md_acme_drive_set_acct(struct md_proto_driver_t *d, 
                                     struct md_result_t *result);
-apr_status_t md_acme_drive_setup_certificate(struct md_proto_driver_t *d, 
-                                             struct md_result_t *result);
+apr_status_t md_acme_drive_setup_cred_chain(struct md_proto_driver_t *d, 
+                                            struct md_result_t *result);
 apr_status_t md_acme_drive_cert_poll(struct md_proto_driver_t *d, int only_once);
 
 #endif /* md_acme_drive_h */

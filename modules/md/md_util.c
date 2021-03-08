@@ -25,6 +25,10 @@
 #include <apr_tables.h>
 #include <apr_uri.h>
 
+#if APR_HAVE_STDLIB_H
+#include <stdlib.h>
+#endif
+
 #include "md.h"
 #include "md_log.h"
 #include "md_util.h"
@@ -152,7 +156,7 @@ int md_array_remove_at(struct apr_array_header_t *a, int idx)
     else {
         ps = (a->elts + (idx * a->elt_size));
         pe = ps + a->elt_size;
-        memmove(ps, pe, (a->nelts - (idx+1)) * a->elt_size);
+        memmove(ps, pe, (size_t)((a->nelts - (idx+1)) * a->elt_size));
         --a->nelts;
     }
     return 1;
@@ -222,7 +226,7 @@ int md_array_str_eq(const struct apr_array_header_t *a1,
     const char *s1, *s2;
     
     if (a1 == a2) return 1;
-    if (!a1) return 0;
+    if (!a1 || !a2) return 0;
     if (a1->nelts != a2->nelts) return 0;
     for (i = 0; i < a1->nelts; ++i) {
         s1 = APR_ARRAY_IDX(a1, i, const char *);
@@ -1009,23 +1013,31 @@ apr_status_t md_util_try(md_util_try_fn *fn, void *baton, int ignore_errs,
 /* execute process ********************************************************************************/
 
 apr_status_t md_util_exec(apr_pool_t *p, const char *cmd, const char * const *argv,
-                          int *exit_code)
+                          apr_array_header_t *env, int *exit_code)
 {
     apr_status_t rv;
     apr_procattr_t *procattr;
     apr_proc_t *proc;
     apr_exit_why_e ewhy;
+    const char * const *envp = NULL;
     char buffer[1024];
     
     *exit_code = 0;
     if (!(proc = apr_pcalloc(p, sizeof(*proc)))) {
         return APR_ENOMEM;
     }
+    if (env && env->nelts > 0) {
+        apr_array_header_t *nenv;
+        
+        nenv = apr_array_copy(p, env);
+        APR_ARRAY_PUSH(nenv, const char *) = NULL;
+        envp = (const char * const *)nenv->elts;
+    }
     if (   APR_SUCCESS == (rv = apr_procattr_create(&procattr, p))
         && APR_SUCCESS == (rv = apr_procattr_io_set(procattr, APR_NO_FILE, 
                                                     APR_NO_PIPE, APR_FULL_BLOCK))
         && APR_SUCCESS == (rv = apr_procattr_cmdtype_set(procattr, APR_PROGRAM))
-        && APR_SUCCESS == (rv = apr_proc_create(proc, cmd, argv, NULL, procattr, p))) {
+        && APR_SUCCESS == (rv = apr_proc_create(proc, cmd, argv, envp, procattr, p))) {
         
         /* read stderr and log on INFO for possible fault analysis. */
         while(APR_SUCCESS == (rv = apr_file_gets(buffer, sizeof(buffer)-1, proc->err))) {
@@ -1471,3 +1483,23 @@ const char *md_link_find_relation(const apr_table_t *headers,
     return ctx.url;
 }
 
+const char *md_util_parse_ct(apr_pool_t *pool, const char *cth)
+{
+    char       *type;
+    const char *p;
+    apr_size_t  hlen;
+
+    if (!cth) return NULL;
+
+    for( p = cth; *p && *p != ' ' && *p != ';'; ++p)
+        ;
+    hlen = (apr_size_t)(p - cth);
+    type = apr_pcalloc( pool, hlen + 1 );
+    assert(type);
+    memcpy(type, cth, hlen);
+    type[hlen] = '\0';
+
+    return type;
+    /* Could parse and return parameters here, but we don't need any at present.
+     */
+}
