@@ -1214,7 +1214,11 @@ apr_status_t md_cert_get_alt_names(apr_array_header_t **pnames, const md_cert_t 
                     break;
                 case GEN_IPADD:
                     len = ASN1_STRING_length(cval->d.iPAddress);
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
+                    ip = ASN1_STRING_get_data(cval->d.iPAddress);
+#else
                     ip = ASN1_STRING_get0_data(cval->d.iPAddress);
+#endif
                     if (len ==  4)      /* IPv4 address */
                         APR_ARRAY_PUSH(names, const char *) = apr_psprintf(p, "%u.%u.%u.%u",
                                                                            ip[0], ip[1], ip[2], ip[3]);
