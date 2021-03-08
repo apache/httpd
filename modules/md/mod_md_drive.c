@@ -31,6 +31,7 @@
 #include "md.h"
 #include "md_curl.h"
 #include "md_crypt.h"
+#include "md_event.h"
 #include "md_http.h"
 #include "md_json.h"
 #include "md_status.h"
@@ -79,7 +80,7 @@ static void process_drive_job(md_renew_ctx_t *dctx, md_job_t *job, apr_pool_t *p
     if (apr_time_now() < job->next_run) return;
     
     job->next_run = 0;
-    if (job->finished && job->notified) {
+    if (job->finished && job->notified_renewed) {
         /* finished and notification handled, nothing to do. */
         goto leave;
     }
@@ -101,7 +102,7 @@ static void process_drive_job(md_renew_ctx_t *dctx, md_job_t *job, apr_pool_t *p
     if (md_will_renew_cert(md)) {
         /* Renew the MDs credentials in a STAGING area. Might be invoked repeatedly 
          * without discarding previous/intermediate results.
-         * Only returns SUCCESS when the renewal is complete, e.g. STAGING as a
+         * Only returns SUCCESS when the renewal is complete, e.g. STAGING has a
          * complete set of new credentials.
          */
         ap_log_error( APLOG_MARK, APLOG_DEBUG, 0, dctx->s, APLOGNO(10052) 
@@ -113,7 +114,17 @@ static void process_drive_job(md_renew_ctx_t *dctx, md_job_t *job, apr_pool_t *p
             goto expiry;
         }
     
-        md_job_start_run(job, result, md_reg_store_get(dctx->mc->reg)); 
+        /* The (possibly configured) event handler may veto renewals. This
+         * is used in cluster installtations, see #233. */
+        rv = md_event_raise("renewing", md->name, job, result, ptemp);
+        if (APR_SUCCESS != rv) {
+                ap_log_error(APLOG_MARK, APLOG_INFO, 0, dctx->s, APLOGNO(10060)
+                             "%s: event-handler for 'renewing' returned %d, preventing renewal to proceed.",
+                             job->mdomain, rv);
+                goto leave;
+        }
+
+        md_job_start_run(job, result, md_reg_store_get(dctx->mc->reg));
         md_reg_renew(dctx->mc->reg, md, dctx->mc->env, 0, result, ptemp);
         md_job_end_run(job, result);
         
@@ -125,13 +136,15 @@ static void process_drive_job(md_renew_ctx_t *dctx, md_job_t *job, apr_pool_t *p
                 goto leave;
             }
             
-            if (!job->notified) md_job_notify(job, "renewed", result);
+            if (!job->notified_renewed) {
+                md_job_notify(job, "renewed", result);
+            }
         }
         else {
             ap_log_error( APLOG_MARK, APLOG_ERR, result->status, dctx->s, APLOGNO(10056) 
                          "processing %s: %s", job->mdomain, result->detail);
             md_job_log_append(job, "renewal-error", result->problem, result->detail);
-            md_job_holler(job, "errored");
+            md_event_holler("errored", job->mdomain, job, result, ptemp);
             ap_log_error(APLOG_MARK, APLOG_INFO, 0, dctx->s, APLOGNO(10057) 
                          "%s: encountered error for the %d. time, next run in %s",
                          job->mdomain, job->error_runs, 
@@ -144,9 +157,7 @@ expiry:
         ap_log_error( APLOG_MARK, APLOG_TRACE1, 0, dctx->s,
                      "md(%s): warn about expiration", md->name);
         md_job_start_run(job, result, md_reg_store_get(dctx->mc->reg));
-        if (APR_SUCCESS == md_job_notify(job, "expiring", result)) {
-            md_result_set(result, APR_SUCCESS, NULL);
-        }
+        md_job_notify(job, "expiring", result);
         md_job_end_run(job, result);
     }
 

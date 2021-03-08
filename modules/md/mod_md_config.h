@@ -21,7 +21,7 @@ struct apr_hash_t;
 struct md_store_t;
 struct md_reg_t;
 struct md_ocsp_reg_t;
-struct md_pkey_spec_t;
+struct md_pkeys_spec_t;
 
 typedef enum {
     MD_CONFIG_CA_URL,
@@ -70,6 +70,7 @@ struct md_mod_conf_t {
     md_timeslice_t *ocsp_renew_window; /* time before exp. that we start renewing ocsp resp. */
     const char *cert_check_name;       /* name of the linked certificate check site */
     const char *cert_check_url;        /* url "template for" checking a certificate */
+    const char *ca_certs;              /* root certificates to use for connections */
 };
 
 typedef struct md_srv_conf_t {
@@ -81,9 +82,9 @@ typedef struct md_srv_conf_t {
     md_require_t require_https;        /* If MDs require https: access */
     int renew_mode;                    /* mode of obtaining credentials */
     int must_staple;                   /* certificates should set the OCSP Must Staple extension */
-    struct md_pkey_spec_t *pkey_spec;  /* specification for generating private keys */
-    md_timeslice_t *renew_window; /* time before expiration that starts renewal */
-    md_timeslice_t *warn_window;  /* time before expiration that warning are sent out */
+    struct md_pkeys_spec_t *pks;       /* specification for private keys */
+    md_timeslice_t *renew_window;      /* time before expiration that starts renewal */
+    md_timeslice_t *warn_window;       /* time before expiration that warning are sent out */
     
     const char *ca_url;                /* url of CA certificate service */
     const char *ca_contact;            /* contact email registered to account */

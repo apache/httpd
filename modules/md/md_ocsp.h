@@ -60,7 +60,6 @@ apr_status_t md_ocsp_remove_responses_older_than(md_ocsp_reg_t *reg, apr_pool_t 
 void md_ocsp_get_summary(struct md_json_t **pjson, md_ocsp_reg_t *reg, apr_pool_t *p);
 void md_ocsp_get_status_all(struct md_json_t **pjson, md_ocsp_reg_t *reg, apr_pool_t *p);
 
-void md_ocsp_set_notify_cb(md_ocsp_reg_t *reg, md_job_notify_cb *cb, void *baton);
 struct md_job_t *md_ocsp_job_make(md_ocsp_reg_t *ocsp, const char *mdomain, apr_pool_t *p);
 
 #endif /* md_ocsp_h */

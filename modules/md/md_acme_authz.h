@@ -56,31 +56,24 @@ struct md_acme_authz_t {
 };
 
 #define MD_FN_HTTP01            "acme-http-01.txt"
-#define MD_FN_TLSSNI01_CERT     "acme-tls-sni-01.cert.pem"
-#define MD_FN_TLSSNI01_PKEY     "acme-tls-sni-01.key.pem"
-#define MD_FN_TLSALPN01_CERT    "acme-tls-alpn-01.cert.pem"
-#define MD_FN_TLSALPN01_PKEY    "acme-tls-alpn-01.key.pem"
 
+void tls_alpn01_fnames(apr_pool_t *p, struct md_pkey_spec_t *kspec, char **keyfn, char **certfn );
 
 md_acme_authz_t *md_acme_authz_create(apr_pool_t *p);
 
-/* authz interaction with ACME server */
-apr_status_t md_acme_authz_register(struct md_acme_authz_t **pauthz, struct md_acme_t *acme,
-                                    const char *domain, apr_pool_t *p);
-
-apr_status_t md_acme_authz_retrieve(md_acme_t *acme, apr_pool_t *p, const char *url, 
+apr_status_t md_acme_authz_retrieve(md_acme_t *acme, apr_pool_t *p, const char *url,
                                     md_acme_authz_t **pauthz);
 apr_status_t md_acme_authz_update(md_acme_authz_t *authz, struct md_acme_t *acme, apr_pool_t *p);
 
 apr_status_t md_acme_authz_respond(md_acme_authz_t *authz, struct md_acme_t *acme, 
                                    struct md_store_t *store, apr_array_header_t *challenges, 
-                                   struct md_pkey_spec_t *key_spec,
-                                   apr_array_header_t *acme_tls_1_domains, 
+                                   struct md_pkeys_spec_t *key_spec,
+                                   apr_array_header_t *acme_tls_1_domains, const char *mdomain,
                                    struct apr_table_t *env,
                                    apr_pool_t *p, const char **setup_token,
                                    struct md_result_t *result);
 
 apr_status_t md_acme_authz_teardown(struct md_store_t *store, const char *setup_token, 
-                                    struct apr_table_t *env, apr_pool_t *p);
+                                    const char *mdomain, struct apr_table_t *env, apr_pool_t *p);
 
 #endif /* md_acme_authz_h */

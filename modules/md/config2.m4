@@ -140,12 +140,12 @@ md_acme.lo dnl
 md_acme_acct.lo dnl
 md_acme_authz.lo dnl
 md_acme_drive.lo dnl
-md_acmev1_drive.lo dnl
 md_acmev2_drive.lo dnl
 md_acme_order.lo dnl
 md_core.lo dnl
 md_curl.lo dnl
 md_crypt.lo dnl
+md_event.lo dnl
 md_http.lo dnl
 md_json.lo dnl
 md_jws.lo dnl

@@ -64,6 +64,7 @@ struct md_http_request_t {
     const char *url;
     const char *user_agent;
     const char *proxy_url;
+    const char *ca_file;
     apr_table_t *headers;
     struct apr_bucket_brigade *body;
     apr_off_t body_len;
@@ -108,6 +109,13 @@ void md_http_set_connect_timeout(md_http_request_t *req, apr_time_t timeout);
  */
 void md_http_set_stalling_default(md_http_t *http, long bytes_per_sec, apr_time_t timeout);
 void md_http_set_stalling(md_http_request_t *req, long bytes_per_sec, apr_time_t timeout);
+
+/**
+ * Set a CA file (in PERM format) to use for root certificates when
+ * verifying SSL connections. If not set (or set to NULL), the systems
+ * certificate store will be used.
+ */
+void md_http_set_ca_file(md_http_t *http, const char *ca_file);
 
 /**
  * Perform the request. Then this function returns, the request and
@@ -222,6 +230,7 @@ apr_status_t md_http_multi_perform(md_http_t *http, md_http_next_req *nextreq, v
 /* interface to implementation */
 
 typedef apr_status_t md_http_init_cb(void);
+typedef void md_http_cleanup_cb(md_http_t *req, apr_pool_t *p);
 typedef void md_http_req_cleanup_cb(md_http_request_t *req);
 typedef apr_status_t md_http_perform_cb(md_http_request_t *req);
 typedef apr_status_t md_http_multi_perform_cb(md_http_t *http, apr_pool_t *p, 
@@ -233,10 +242,17 @@ struct md_http_impl_t {
     md_http_req_cleanup_cb *req_cleanup;
     md_http_perform_cb *perform;
     md_http_multi_perform_cb *multi_perform;
+    md_http_cleanup_cb *cleanup;
 };
 
 void md_http_use_implementation(md_http_impl_t *impl);
 
+/**
+ * get/set data the implementation wants to remember between requests
+ * in the same md_http_t instance.
+ */
+void md_http_set_impl_data(md_http_t *http, void *data);
+void *md_http_get_impl_data(md_http_t *http);
 
 
 #endif /* md_http_h */

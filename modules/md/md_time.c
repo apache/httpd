@@ -311,3 +311,15 @@ int md_timeslice_eq(const md_timeslice_t *ts1, const md_timeslice_t *ts2)
     if (!ts1 || !ts2) return 0;
     return (ts1->norm == ts2->norm) && (ts1->len == ts2->len);
 }
+
+md_timeperiod_t md_timeperiod_common(const md_timeperiod_t *a, const md_timeperiod_t *b)
+{
+    md_timeperiod_t c;
+    
+    c.start = (a->start > b->start)? a->start : b->start;
+    c.end = (a->end < b->end)? a->end : b->end;
+    if (c.start > c.end) {
+        c.start = c.end = 0;
+    }
+    return c;
+}

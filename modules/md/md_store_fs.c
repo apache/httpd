@@ -256,6 +256,11 @@ static apr_status_t setup_store_file(void *baton, apr_pool_t *p, apr_pool_t *pte
 
     (void)ap;
     s_fs->plain_pkey[MD_SG_DOMAINS] = 1;
+    /* Added: the encryption of tls-alpn-01 certificate keys is not a security issue
+     * for these self-signed, short-lived certificates. Having them unencrypted let's
+     * use pass around the files insteak of an *SSL implementation dependent PKEY_something.
+     */
+    s_fs->plain_pkey[MD_SG_CHALLENGES] = 1;
     s_fs->plain_pkey[MD_SG_TMP] = 1;
     
     if (!MD_OK(md_util_path_merge(&fname, ptemp, s_fs->base, FS_STORE_JSON, NULL))) {

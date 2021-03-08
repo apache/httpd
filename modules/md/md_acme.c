@@ -43,29 +43,30 @@ static const char *base_product= "-";
 typedef struct acme_problem_status_t acme_problem_status_t;
 
 struct acme_problem_status_t {
-    const char *type;
-    apr_status_t rv;
+    const char *type; /* the ACME error string */
+    apr_status_t rv;  /* what Apache status code we give it */
+    int input_related; /* if error indicates wrong input value */
 };
 
 static acme_problem_status_t Problems[] = {
-    { "acme:error:badCSR",                       APR_EINVAL },
-    { "acme:error:badNonce",                     APR_EAGAIN },
-    { "acme:error:badSignatureAlgorithm",        APR_EINVAL },
-    { "acme:error:invalidContact",               APR_BADARG },
-    { "acme:error:unsupportedContact",           APR_EGENERAL },
-    { "acme:error:malformed",                    APR_EINVAL },
-    { "acme:error:rateLimited",                  APR_BADARG },
-    { "acme:error:rejectedIdentifier",           APR_BADARG },
-    { "acme:error:serverInternal",               APR_EGENERAL },
-    { "acme:error:unauthorized",                 APR_EACCES },
-    { "acme:error:unsupportedIdentifier",        APR_BADARG },
-    { "acme:error:userActionRequired",           APR_EAGAIN },
-    { "acme:error:badRevocationReason",          APR_EINVAL },
-    { "acme:error:caa",                          APR_EGENERAL },
-    { "acme:error:dns",                          APR_EGENERAL },
-    { "acme:error:connection",                   APR_EGENERAL },
-    { "acme:error:tls",                          APR_EGENERAL },
-    { "acme:error:incorrectResponse",            APR_EGENERAL },
+    { "acme:error:badCSR",                       APR_EINVAL,   1 },
+    { "acme:error:badNonce",                     APR_EAGAIN,   0 },
+    { "acme:error:badSignatureAlgorithm",        APR_EINVAL,   1 },
+    { "acme:error:invalidContact",               APR_BADARG,   1 },
+    { "acme:error:unsupportedContact",           APR_EGENERAL, 1 },
+    { "acme:error:malformed",                    APR_EINVAL,   1 },
+    { "acme:error:rateLimited",                  APR_BADARG,   0 },
+    { "acme:error:rejectedIdentifier",           APR_BADARG,   1 },
+    { "acme:error:serverInternal",               APR_EGENERAL, 0 },
+    { "acme:error:unauthorized",                 APR_EACCES,   0 },
+    { "acme:error:unsupportedIdentifier",        APR_BADARG,   1 },
+    { "acme:error:userActionRequired",           APR_EAGAIN,   0 },
+    { "acme:error:badRevocationReason",          APR_EINVAL,   1 },
+    { "acme:error:caa",                          APR_EGENERAL, 0 },
+    { "acme:error:dns",                          APR_EGENERAL, 0 },
+    { "acme:error:connection",                   APR_EGENERAL, 0 },
+    { "acme:error:tls",                          APR_EGENERAL, 0 },
+    { "acme:error:incorrectResponse",            APR_EGENERAL, 0 },
 };
 
 static apr_status_t problem_status_get(const char *type) {
@@ -86,6 +87,25 @@ static apr_status_t problem_status_get(const char *type) {
     return APR_EGENERAL;
 }
 
+int md_acme_problem_is_input_related(const char *problem) {
+    size_t i;
+
+    if (!problem) return 0;
+    if (strstr(problem, "urn:ietf:params:") == problem) {
+        problem += strlen("urn:ietf:params:");
+    }
+    else if (strstr(problem, "urn:") == problem) {
+        problem += strlen("urn:");
+    }
+
+    for(i = 0; i < (sizeof(Problems)/sizeof(Problems[0])); ++i) {
+        if (!apr_strnatcasecmp(problem, Problems[i].type)) {
+            return Problems[i].input_related;
+        }
+    }
+    return 0;
+}
+
 /**************************************************************************************************/
 /* acme requests */
 
@@ -101,13 +121,7 @@ static void req_update_nonce(md_acme_t *acme, apr_table_t *hdrs)
 
 static apr_status_t http_update_nonce(const md_http_response_t *res, void *data)
 {
-    md_acme_t *acme = data;
-    if (res->headers) {
-        const char *nonce = apr_table_get(res->headers, "Replay-Nonce");
-        if (nonce) {
-            acme->nonce = apr_pstrdup(acme->p, nonce);
-        }
-    }
+    req_update_nonce(data, res->headers);
     return APR_SUCCESS;
 }
 
@@ -143,11 +157,6 @@ static md_acme_req_t *md_acme_req_create(md_acme_t *acme, const char *method, co
     return req;
 }
  
-static apr_status_t acmev1_new_nonce(md_acme_t *acme)
-{
-    return md_http_HEAD_perform(acme->http, acme->api.v1.new_reg, NULL, http_update_nonce, acme);
-}
-
 static apr_status_t acmev2_new_nonce(md_acme_t *acme)
 {
     return md_http_HEAD_perform(acme->http, acme->api.v2.new_nonce, NULL, http_update_nonce, acme);
@@ -163,13 +172,15 @@ apr_status_t md_acme_init(apr_pool_t *p, const char *base,  int init_ssl)
 static apr_status_t inspect_problem(md_acme_req_t *req, const md_http_response_t *res)
 {
     const char *ctype;
-    md_json_t *problem;
-    
+    md_json_t *problem = NULL;
+    apr_status_t rv;
+
     ctype = apr_table_get(req->resp_hdrs, "content-type");
+    ctype = md_util_parse_ct(res->req->pool, ctype);
     if (ctype && !strcmp(ctype, "application/problem+json")) {
         /* RFC 7807 */
-        md_json_read_http(&problem, req->p, res);
-        if (problem) {
+        rv = md_json_read_http(&problem, req->p, res);
+        if (rv == APR_SUCCESS && problem) {
             const char *ptype, *pdetail;
             
             req->resp_json = problem;
@@ -212,30 +223,6 @@ static apr_status_t inspect_problem(md_acme_req_t *req, const md_http_response_t
 
 /**************************************************************************************************/
 /* ACME requests with nonce handling */
-
-static apr_status_t acmev1_req_init(md_acme_req_t *req, md_json_t *jpayload)
-{
-    md_data_t payload;
-    
-    if (!req->acme->acct) {
-        return APR_EINVAL;
-    }
-    if (jpayload) {
-        payload.data = md_json_writep(jpayload, req->p, MD_JSON_FMT_COMPACT);
-        if (!payload.data) {
-            return APR_EINVAL;
-        }
-    }
-    else {
-        payload.data = "";
-    }
-
-    payload.len = strlen(payload.data);
-    md_log_perror(MD_LOG_MARK, MD_LOG_TRACE1, 0, req->p, 
-                  "acme payload(len=%" APR_SIZE_T_FMT "): %s", payload.len, payload.data);
-    return md_jws_sign(&req->req_json, req->p, &payload,
-                       req->prot_hdrs, req->acme->acct_key, NULL);
-}
 
 static apr_status_t acmev2_req_init(md_acme_req_t *req, md_json_t *jpayload)
 {
@@ -366,8 +353,7 @@ static apr_status_t md_acme_req_send(md_acme_req_t *req)
         if (APR_SUCCESS != rv) goto leave;
     }
     
-    if (!strcmp("GET", req->method) && !req->on_init && !req->req_json 
-        && MD_ACME_VERSION_MAJOR(acme->version) > 1) {
+    if (!strcmp("GET", req->method) && !req->on_init && !req->req_json) {
         /* See <https://ietf-wg-acme.github.io/acme/draft-ietf-acme-acme.html#rfc.section.6.3>
          * and <https://mailarchive.ietf.org/arch/msg/acme/sotffSQ0OWV-qQJodLwWYWcEVKI>
          * and <https://community.letsencrypt.org/t/acme-v2-scheduled-deprecation-of-unauthenticated-resource-gets/74380>
@@ -376,6 +362,7 @@ static apr_status_t md_acme_req_send(md_acme_req_t *req)
          * our HTTP client. */
         req->method = "POST";
         req->on_init = acmev2_GET_as_POST_init;
+        /*req->max_retries = 0;  don't do retries on these "GET"s */
     }
     
     /* Besides GET/HEAD, we always need a fresh nonce */
@@ -391,9 +378,7 @@ static apr_status_t md_acme_req_send(md_acme_req_t *req)
         }
         
         apr_table_set(req->prot_hdrs, "nonce", acme->nonce);
-        if (MD_ACME_VERSION_MAJOR(acme->version) > 1) {
-            apr_table_set(req->prot_hdrs, "url", req->url);
-        }
+        apr_table_set(req->prot_hdrs, "url", req->url);
         acme->nonce = NULL;
     }
     
@@ -573,7 +558,7 @@ apr_status_t md_acme_use_acct(md_acme_t *acme, md_store_t *store,
             rv = md_acme_acct_validate(acme, store, p);
         }
         else {
-            /* account is from a nother server or, more likely, from another
+            /* account is from another server or, more likely, from another
              * protocol endpoint on the same server */
             rv = APR_ENOENT;
         }
@@ -586,17 +571,7 @@ apr_status_t md_acme_save_acct(md_acme_t *acme, apr_pool_t *p, md_store_t *store
     return md_acme_acct_save(store, p, acme, &acme->acct_id, acme->acct, acme->acct_key);
 }
 
-static apr_status_t acmev1_POST_new_account(md_acme_t *acme, 
-                                            md_acme_req_init_cb *on_init,
-                                            md_acme_req_json_cb *on_json,
-                                            md_acme_req_res_cb *on_res,
-                                            md_acme_req_err_cb *on_err,
-                                            void *baton)
-{
-    return md_acme_POST(acme, acme->api.v1.new_reg, on_init, on_json, on_res, on_err, baton);
-}
-
-static apr_status_t acmev2_POST_new_account(md_acme_t *acme, 
+static apr_status_t acmev2_POST_new_account(md_acme_t *acme,
                                             md_acme_req_init_cb *on_init,
                                             md_acme_req_json_cb *on_json,
                                             md_acme_req_res_cb *on_res,
@@ -620,7 +595,7 @@ apr_status_t md_acme_POST_new_account(md_acme_t *acme,
 /* ACME setup */
 
 apr_status_t md_acme_create(md_acme_t **pacme, apr_pool_t *p, const char *url,
-                            const char *proxy_url)
+                            const char *proxy_url, const char *ca_file)
 {
     md_acme_t *acme;
     const char *err = NULL;
@@ -644,8 +619,9 @@ apr_status_t md_acme_create(md_acme_t **pacme, apr_pool_t *p, const char *url,
     acme->user_agent = apr_psprintf(p, "%s mod_md/%s", 
                                     base_product, MOD_MD_VERSION);
     acme->proxy_url = proxy_url? apr_pstrdup(p, proxy_url) : NULL;
-    acme->max_retries = 3;
-    
+    acme->max_retries = 99;
+    acme->ca_file = ca_file;
+
     if (APR_SUCCESS != (rv = apr_uri_parse(p, url, &uri_parsed))) {
         md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, p, "parsing ACME uri: %s", url);
         return APR_EINVAL;
@@ -706,21 +682,7 @@ static apr_status_t update_directory(const md_http_response_t *res, void *data)
     }
     
     /* What have we got? */
-    if ((s = md_json_dups(acme->p, json, "new-authz", NULL))) {
-        acme->api.v1.new_authz = s;
-        acme->api.v1.new_cert = md_json_dups(acme->p, json, "new-cert", NULL);
-        acme->api.v1.new_reg = md_json_dups(acme->p, json, "new-reg", NULL);
-        acme->api.v1.revoke_cert = md_json_dups(acme->p, json, "revoke-cert", NULL);
-        if (acme->api.v1.new_authz && acme->api.v1.new_cert 
-            && acme->api.v1.new_reg && acme->api.v1.revoke_cert) {
-            acme->version = MD_ACME_VERSION_1;
-        }
-        acme->ca_agreement = md_json_dups(acme->p, json, "meta", "terms-of-service", NULL);
-        acme->new_nonce_fn = acmev1_new_nonce;
-        acme->req_init_fn = acmev1_req_init;
-        acme->post_new_account_fn = acmev1_POST_new_account;
-    }
-    else if ((s = md_json_dups(acme->p, json, "newAccount", NULL))) {
+    if ((s = md_json_dups(acme->p, json, "newAccount", NULL))) {
         acme->api.v2.new_account = s;
         acme->api.v2.new_order = md_json_dups(acme->p, json, "newOrder", NULL);
         acme->api.v2.revoke_cert = md_json_dups(acme->p, json, "revokeCert", NULL);
@@ -729,7 +691,10 @@ static apr_status_t update_directory(const md_http_response_t *res, void *data)
         /* RFC 8555 only requires "directory" and "newNonce" resources.
          * mod_md uses "newAccount" and "newOrder" so check for them.
          * But mod_md does not use the "revokeCert" or "keyChange"
-         * resources, so tolerate the absense of those keys. */
+         * resources, so tolerate the absense of those keys.  In the
+         * future if mod_md implements revocation or key rollover then
+         * the use of those features should be predicated on the
+         * server's advertised capabilities. */
         if (acme->api.v2.new_account
             && acme->api.v2.new_order
             && acme->api.v2.new_nonce) {
@@ -740,7 +705,19 @@ static apr_status_t update_directory(const md_http_response_t *res, void *data)
         acme->req_init_fn = acmev2_req_init;
         acme->post_new_account_fn = acmev2_POST_new_account;
     }
-    
+    else if ((s = md_json_dups(acme->p, json, "new-authz", NULL))) {
+        acme->api.v1.new_authz = s;
+        acme->api.v1.new_cert = md_json_dups(acme->p, json, "new-cert", NULL);
+        acme->api.v1.new_reg = md_json_dups(acme->p, json, "new-reg", NULL);
+        acme->api.v1.revoke_cert = md_json_dups(acme->p, json, "revoke-cert", NULL);
+        if (acme->api.v1.new_authz && acme->api.v1.new_cert
+            && acme->api.v1.new_reg && acme->api.v1.revoke_cert) {
+            acme->version = MD_ACME_VERSION_1;
+        }
+        acme->ca_agreement = md_json_dups(acme->p, json, "meta", "terms-of-service", NULL);
+        /* we init that far, but will not use the v1 api */
+    }
+
     if (MD_ACME_VERSION_UNKNOWN == acme->version) {
         md_result_printf(result, APR_EINVAL,
             "Unable to understand ACME server response from <%s>. "
@@ -770,6 +747,7 @@ apr_status_t md_acme_setup(md_acme_t *acme, md_result_t *result)
     md_http_set_timeout_default(acme->http, apr_time_from_sec(10 * 60));
     md_http_set_connect_timeout_default(acme->http, apr_time_from_sec(30));
     md_http_set_stalling_default(acme->http, 10, apr_time_from_sec(30));
+    md_http_set_ca_file(acme->http, acme->ca_file);
     
     md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, acme->p, "get directory from %s", acme->url);
     

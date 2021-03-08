@@ -1,6 +1,67 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+ 
+  *) mod_md: v2.4.0 with improvements and bugfixes
+     - MDPrivateKeys allows the specification of several types. Beside "RSA" plus 
+     optional key lengths elliptic curves can be configured. This means you can 
+     have multiple certificates for a Managed Domain with different key types.
+     With ```MDPrivateKeys secp384r1 rsa2048``` you get one ECDSA  and one RSA 
+     certificate and all modern client will use the shorter ECDSA, while older 
+     client will get the RSA certificate.
+     Many thanks to @tlhackque who pushed and helped on this.
+     - Support added for MDomains consisting of a wildcard. Configuring 
+     ```MDomain *.host.net``` will match all virtual hosts matching that pattern 
+     and obtain one certificate for it (assuming you have 'dns-01' challenge 
+     support configured). Addresses #239.
+     - Removed support for ACMEv1 servers. The only known installation used to 
+     be Let's Encrypt which has disabled that version more than a year ago for 
+     new accounts.
+     - Andreas Ulm (<https://github.com/root360-AndreasUlm>) implemented the 
+     ```renewing``` call to ```MDMessageCmd``` that can deny a certificate 
+     renewal attempt. This is useful in clustered installations, as 
+     discussed in #233).
+     - New event ```challenge-setup:<type>:<domain>```, triggered when the 
+     challenge data for a domain has been created. This is invoked before the 
+     ACME server is told to check for it. The type is one of the ACME challenge 
+     types. This is invoked for every DNS name in a MDomain.
+     - The max delay for retries has been raised to daily (this is like all 
+     retries jittered somewhat to avoid repeats at fixed time of day).
+     - Certain error codes reported by the ACME server that indicate a problem 
+     with the configured data now immediately switch to daily retries. For 
+     example: if the ACME server rejects a contact email or a domain name, 
+     frequent retries will most likely not solve the problem. But daily retries 
+     still make sense as there might be an error at the server and un-supervised 
+     certificate renewal is the goal. Refs #222.
+     - Test case and work around for domain names > 64 octets. Fixes #227.
+     When the first DNS name of an MD is longer than 63 octets, the certificate
+     request will not contain a CN field, but leave it up to the CA to choose one.
+     Currently, Lets Encrypt looks for a shorter name in the SAN list given and
+     fails the request if none is found. But it is really up to the CA (and what
+     browsers/libs accept here) and may change over the years. That is why
+     the decision is best made at the CA.
+     - Retry delays now have a random +/-[0-50]% modification applied to let 
+     retries from several servers spread out more, should they have been 
+     restarted at the same time of day.
+     - Fixed several places where the 'badNonce' return code from an ACME server 
+     was not handled correctly. The test server 'pebble' simulates this behaviour 
+     by default and helps nicely in verifying this behaviour. Thanks, pebble!
+     - Set the default `MDActivationDelay` to 0. This was confusing to users that
+     new certificates were deemed not usably before a day of delay. When clocks are
+     correct, using a new certificate right away should not pose a problem.
+     - When handling ACME authorization resources, the module no longer requires 
+     the server to return a "Location" header, as was necessary in ACMEv1. 
+     Fixes #216.
+     - Fixed a theoretical uninitialized read when testing for JSON error responses 
+     from the ACME CA. Reported at <https://bz.apache.org/bugzilla/show_bug.cgi?id=64297>.
+     - ACME problem reports from CAs that include parameters in the Content-Type 
+     header are handled correctly. (Previously, the problem text would not be 
+     reported and retries could exist CA limits.)
+     - Account Update transactions to V2 CAs now use the correct POST-AS-GET method.  
+     Previously, an empty JSON object was sent - which apparently LE accepted, 
+     but others reject.
+     [Stefan Eissing, @tlhackque, Andreas Ulm]
+
   *) mod_session: Improve session parsing.  [Yann Yalvic]
 
   *) mod_proxy_hcheck: Don't pile up health checks if the previous one did

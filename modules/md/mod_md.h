@@ -39,4 +39,9 @@ APR_DECLARE_OPTIONAL_FN(int,
                         md_is_challenge, (struct conn_rec *, const char *,
                                           X509 **pcert, EVP_PKEY **pkey));
 
+APR_DECLARE_OPTIONAL_FN(apr_status_t,
+                        md_answer_challenges, (conn_rec *c, const char *servername,
+                                               apr_array_header_t *certs,
+                                               apr_array_header_t *pkeys));
+
 #endif /* mod_md_mod_md_h */

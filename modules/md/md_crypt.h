@@ -25,7 +25,7 @@ struct md_http_response_t;
 struct md_cert_t;
 struct md_pkey_t;
 struct md_data_t;
-
+struct md_timeperiod_t;
 
 /**************************************************************************************************/
 /* random */
@@ -51,22 +51,54 @@ typedef struct md_pkey_t md_pkey_t;
 typedef enum {
     MD_PKEY_TYPE_DEFAULT,
     MD_PKEY_TYPE_RSA,
+    MD_PKEY_TYPE_EC,
 } md_pkey_type_t;
 
-typedef struct md_pkey_rsa_spec_t {
+typedef struct md_pkey_rsa_params_t {
     apr_uint32_t bits;
-} md_pkey_rsa_spec_t;
+} md_pkey_rsa_params_t;
+
+typedef struct md_pkey_ec_params_t {
+    const char *curve;
+} md_pkey_ec_params_t;
 
 typedef struct md_pkey_spec_t {
     md_pkey_type_t type;
     union {
-        md_pkey_rsa_spec_t rsa;
+        md_pkey_rsa_params_t rsa;
+        md_pkey_ec_params_t ec;
     } params;
 } md_pkey_spec_t;
 
+typedef struct md_pkeys_spec_t {
+    apr_pool_t *p;
+    struct apr_array_header_t *specs;
+} md_pkeys_spec_t;
+
 apr_status_t md_crypt_init(apr_pool_t *pool);
 
-apr_status_t md_pkey_gen(md_pkey_t **ppkey, apr_pool_t *p, md_pkey_spec_t *spec);
+const char *md_pkey_spec_name(const md_pkey_spec_t *spec);
+
+md_pkeys_spec_t *md_pkeys_spec_make(apr_pool_t *p);
+void md_pkeys_spec_add_default(md_pkeys_spec_t *pks);
+int md_pkeys_spec_contains_rsa(md_pkeys_spec_t *pks);
+void md_pkeys_spec_add_rsa(md_pkeys_spec_t *pks, unsigned int bits);
+int md_pkeys_spec_contains_ec(md_pkeys_spec_t *pks, const char *curve);
+void md_pkeys_spec_add_ec(md_pkeys_spec_t *pks, const char *curve);
+int md_pkeys_spec_eq(md_pkeys_spec_t *pks1, md_pkeys_spec_t *pks2);
+md_pkeys_spec_t *md_pkeys_spec_clone(apr_pool_t *p, const md_pkeys_spec_t *pks);
+int md_pkeys_spec_is_empty(const md_pkeys_spec_t *pks);
+md_pkey_spec_t *md_pkeys_spec_get(const md_pkeys_spec_t *pks, int index);
+int md_pkeys_spec_count(const md_pkeys_spec_t *pks);
+void md_pkeys_spec_add(md_pkeys_spec_t *pks, md_pkey_spec_t *spec);
+
+struct md_json_t *md_pkey_spec_to_json(const md_pkey_spec_t *spec, apr_pool_t *p);
+md_pkey_spec_t *md_pkey_spec_from_json(struct md_json_t *json, apr_pool_t *p);
+struct md_json_t *md_pkeys_spec_to_json(const md_pkeys_spec_t *pks, apr_pool_t *p);
+md_pkeys_spec_t *md_pkeys_spec_from_json(struct md_json_t *json, apr_pool_t *p);
+
+
+apr_status_t md_pkey_gen(md_pkey_t **ppkey, apr_pool_t *p, md_pkey_spec_t *key_props);
 void md_pkey_free(md_pkey_t *pkey);
 
 const char *md_pkey_get_rsa_e64(md_pkey_t *pkey, apr_pool_t *p);
@@ -83,10 +115,6 @@ apr_status_t md_crypt_sign64(const char **psign64, md_pkey_t *pkey, apr_pool_t *
                              const char *d, size_t dlen);
 
 void *md_pkey_get_EVP_PKEY(struct md_pkey_t *pkey);
-
-struct md_json_t *md_pkey_spec_to_json(const md_pkey_spec_t *spec, apr_pool_t *p);
-md_pkey_spec_t *md_pkey_spec_from_json(struct md_json_t *json, apr_pool_t *p);
-int md_pkey_spec_eq(md_pkey_spec_t *spec1, md_pkey_spec_t *spec2);
 
 /**************************************************************************************************/
 /* X509 certificates */
@@ -142,6 +170,7 @@ int md_cert_covers_md(md_cert_t *cert, const struct md_t *md);
 int md_cert_must_staple(const md_cert_t *cert);
 apr_time_t md_cert_get_not_after(const md_cert_t *cert);
 apr_time_t md_cert_get_not_before(const md_cert_t *cert);
+struct md_timeperiod_t md_cert_get_valid(const md_cert_t *cert);
 
 apr_status_t md_cert_get_issuers_uri(const char **puri, const md_cert_t *cert, apr_pool_t *p);
 apr_status_t md_cert_get_alt_names(apr_array_header_t **pnames, const md_cert_t *cert, apr_pool_t *p);
@@ -182,7 +211,6 @@ apr_status_t md_cert_make_tls_alpn_01(md_cert_t **pcert, const char *domain,
                                       apr_interval_time_t valid_for, apr_pool_t *p);
 
 apr_status_t md_cert_get_ct_scts(apr_array_header_t *scts, apr_pool_t *p, const md_cert_t *cert);
-
 
 /**************************************************************************************************/
 /* X509 certificate transparency */
