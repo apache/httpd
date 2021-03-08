@@ -537,7 +537,7 @@ Changes with Apache 2.5.1
      before signals handling to avoid lifetime issues on restart or shutdown.
      PR 62658. [Yann Ylavic]
 
-  *) core: Add StrictHostCheck to allow ucnonfigured hostnames to be
+  *) core: Add StrictHostCheck to allow unconfigured hostnames to be
      rejected. [Eric Covener]
 
   *) mod_status: Cumulate CPU time of exited child processes in the
