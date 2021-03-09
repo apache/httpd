@@ -223,7 +223,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR 64234
      trunk patch: https://svn.apache.org/r1875353
      2.4.x patch: https://bz.apache.org/bugzilla/show_bug.cgi?id=64234#c2
-     +1: ylavic, jorton, 
+     +1: ylavic, jorton, jfclere
      jailletc36: if applied on 2.4.x, a CHANGES entry should be added
 
 
