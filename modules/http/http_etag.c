@@ -133,7 +133,7 @@ static char *make_digest_etag(request_rec *r, etag_rec *er, char *vlv,
     }
 
     if ((status = apr_file_seek(fd, APR_END, &len)) != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO()
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(10258)
                       "Make etag: could not seek");
         if (er->pathname) {
             apr_file_close(fd);
