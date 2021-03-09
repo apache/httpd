@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.47
 
+  *) mod_unique_id: Fix potential duplicated ID generation under heavy load.
+     PR 65159
+     [Jonas Müntener <jonas.muentener ergon.ch>, Christophe Jaillet]
+
   *) "[mod_dav_fs etag handling] should really honor the FileETag setting".
      - It now does.
      - Add "Digest" to FileETag directive, allowing a strong ETag to be
