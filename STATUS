@@ -137,14 +137,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_unique_id: Fix potential duplicated ID generation under heavy load.
-     PR 65159
-     trunk patch: http://svn.apache.org/r1887244
-                  http://svn.apache.org/r1887245
-     2.4.x patch: svn merge -c 1887244,1887245 ^/httpd/httpd/trunk .
-                  https://bz.apache.org/bugzilla/attachment.cgi?id=37749
-     +1: jailletc36, ylavic, jorton
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
