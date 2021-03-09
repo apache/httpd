@@ -137,11 +137,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_session_crypto: Bubble up an error if none of the passhrases work
-     trunk patch: http://svn.apache.org/r1874674
-     2.4.x patch: svn merge -c 1874674 ^/httpd/httpd/trunk .
-     +1: jailletc36, ylavic, covener 
-
  *) "[mod_dav_fs etag handling] should really honor the FileETag setting".
      - It now does.
      - Add "Digest" to FileETag directive, allowing a strong ETag to be
