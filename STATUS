@@ -137,30 +137,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
- *) "[mod_dav_fs etag handling] should really honor the FileETag setting".
-     - It now does.
-     - Add "Digest" to FileETag directive, allowing a strong ETag to be
-       generated using a file digest.
-     - Add ap_make_etag_ex() and ap_set_etag_fd() to allow full control over
-       ETag generation.
-     - Add concept of "binary notes" to request_rec, allowing packed bit flags
-       to be added to a request.
-     - First binary note - AP_REQUEST_STRONG_ETAG - allows modules to force
-       the ETag to a strong ETag to comply with RFC requirements, such as those
-       mandated by various WebDAV extensions.
-    trunk patch http://svn.apache.org/r1879285
-                http://svn.apache.org/r1879322
-                http://svn.apache.org/r1879345
-                http://svn.apache.org/r1879346
-                http://svn.apache.org/r1879465
-                http://svn.apache.org/r1879469
-                http://svn.apache.org/r1879470
-                http://svn.apache.org/r1879488
-                http://svn.apache.org/r1879541
-                http://svn.apache.org/r1879548
-    2.4.x patch https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-etag2.patch
-    +1: minfrin, jim, ylavic
-
   *) mod_unique_id: Fix potential duplicated ID generation under heavy load.
      PR 65159
      trunk patch: http://svn.apache.org/r1887244
