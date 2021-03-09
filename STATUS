@@ -172,13 +172,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.4.x patch https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-etag2.patch
     +1: minfrin, jim, ylavic
 
-  *) mod_http2: explicitely apr_thread_exit() at the end of slot_run(), and
-                fix workers synchronization on pchild cleanup.
-     trunk patch: http://svn.apache.org/r1883668
-                  http://svn.apache.org/r1886255
-     2.4.x patch: svn merge -c 1883668,1886255 ^/httpd/httpd/trunk .
-     +1: ylavic, icing, jorton
-
   *) mod_unique_id: Fix potential duplicated ID generation under heavy load.
      PR 65159
      trunk patch: http://svn.apache.org/r1887244
@@ -186,13 +179,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1887244,1887245 ^/httpd/httpd/trunk .
                   https://bz.apache.org/bugzilla/attachment.cgi?id=37749
      +1: jailletc36, ylavic, jorton
-
-  *) mod_proxy_http: Fix a potential random memory corruption issue
-     PR 64234
-     trunk patch: https://svn.apache.org/r1875353
-     2.4.x patch: https://bz.apache.org/bugzilla/show_bug.cgi?id=64234#c2
-     +1: ylavic, jorton, jfclere
-     jailletc36: if applied on 2.4.x, a CHANGES entry should be added
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
