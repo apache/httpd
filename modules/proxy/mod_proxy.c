@@ -29,10 +29,6 @@ APR_DECLARE_OPTIONAL_FN(int, ssl_engine_disable, (conn_rec *));
 APR_DECLARE_OPTIONAL_FN(int, ssl_engine_set, (conn_rec *,
                                               ap_conf_vector_t *,
                                               int proxy, int enable));
-APR_DECLARE_OPTIONAL_FN(int, ssl_is_https, (conn_rec *));
-APR_DECLARE_OPTIONAL_FN(char *, ssl_var_lookup,
-                        (apr_pool_t *, server_rec *,
-                         conn_rec *, request_rec *, char *));
 #endif
 
 #ifndef MAX
@@ -2815,8 +2811,6 @@ static const command_rec proxy_cmds[] =
 static APR_OPTIONAL_FN_TYPE(ssl_proxy_enable) *proxy_ssl_enable = NULL;
 static APR_OPTIONAL_FN_TYPE(ssl_engine_disable) *proxy_ssl_disable = NULL;
 static APR_OPTIONAL_FN_TYPE(ssl_engine_set) *proxy_ssl_engine = NULL;
-static APR_OPTIONAL_FN_TYPE(ssl_is_https) *proxy_is_https = NULL;
-static APR_OPTIONAL_FN_TYPE(ssl_var_lookup) *proxy_ssl_val = NULL;
 
 PROXY_DECLARE(int) ap_proxy_ssl_enable(conn_rec *c)
 {
@@ -2866,23 +2860,14 @@ PROXY_DECLARE(int) ap_proxy_ssl_engine(conn_rec *c,
 
 PROXY_DECLARE(int) ap_proxy_conn_is_https(conn_rec *c)
 {
-    if (proxy_is_https) {
-        return proxy_is_https(c);
-    }
-    else
-        return 0;
+    return ap_ssl_conn_is_ssl(c);
 }
 
 PROXY_DECLARE(const char *) ap_proxy_ssl_val(apr_pool_t *p, server_rec *s,
                                              conn_rec *c, request_rec *r,
                                              const char *var)
 {
-    if (proxy_ssl_val) {
-        /* XXX Perhaps the casting useless */
-        return (const char *)proxy_ssl_val(p, s, c, r, (char *)var);
-    }
-    else
-        return NULL;
+    return ap_ssl_var_lookup(p, s, c, r, (char *)var);
 }
 
 static int proxy_post_config(apr_pool_t *pconf, apr_pool_t *plog,
@@ -2900,8 +2885,6 @@ static int proxy_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     proxy_ssl_enable = APR_RETRIEVE_OPTIONAL_FN(ssl_proxy_enable);
     proxy_ssl_disable = APR_RETRIEVE_OPTIONAL_FN(ssl_engine_disable);
     proxy_ssl_engine = APR_RETRIEVE_OPTIONAL_FN(ssl_engine_set);
-    proxy_is_https = APR_RETRIEVE_OPTIONAL_FN(ssl_is_https);
-    proxy_ssl_val = APR_RETRIEVE_OPTIONAL_FN(ssl_var_lookup);
     ap_proxy_strmatch_path = apr_strmatch_precompile(pconf, "path=", 0);
     ap_proxy_strmatch_domain = apr_strmatch_precompile(pconf, "domain=", 0);
 

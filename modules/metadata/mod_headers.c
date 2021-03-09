@@ -83,8 +83,6 @@
 #include "http_protocol.h"
 #include "ap_expr.h"
 
-#include "mod_ssl.h" /* for the ssl_var_lookup optional function defn */
-
 /* format_tag_hash is initialized during pre-config */
 static apr_hash_t *format_tag_hash;
 
@@ -161,9 +159,6 @@ typedef struct {
 
 module AP_MODULE_DECLARE_DATA headers_module;
 
-/* Pointer to ssl_var_lookup, if available. */
-static APR_OPTIONAL_FN_TYPE(ssl_var_lookup) *header_ssl_lookup = NULL;
-
 /*
  * Tag formatting functions
  */
@@ -210,17 +205,12 @@ static const char *header_request_env_var(request_rec *r, char *a)
 
 static const char *header_request_ssl_var(request_rec *r, char *name)
 {
-    if (header_ssl_lookup) {
-        const char *val = header_ssl_lookup(r->pool, r->server,
-                                            r->connection, r, name);
-        if (val && val[0])
-            return unwrap_header(r->pool, val);
-        else
-            return "(null)";
-    }
-    else {
+    const char *val = ap_ssl_var_lookup(r->pool, r->server,
+                                        r->connection, r, name);
+    if (val && val[0])
+        return unwrap_header(r->pool, val);
+    else
         return "(null)";
-    }
 }
 
 static const char *header_request_loadavg(request_rec *r, char *a)
@@ -989,7 +979,6 @@ static int header_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
 static int header_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                               apr_pool_t *ptemp, server_rec *s)
 {
-    header_ssl_lookup = APR_RETRIEVE_OPTIONAL_FN(ssl_var_lookup);
     return OK;
 }
 

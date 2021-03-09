@@ -43,10 +43,10 @@
 #include "apr_general.h"
 #include "util_filter.h"
 #include "apr_buckets.h"
+#include "http_protocol.h"
 #include "http_request.h"
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
-#include "mod_ssl.h"
 
 #include "zlib.h"
 
@@ -93,8 +93,6 @@ static const char deflate_magic[2] = { '\037', '\213' };
 #define DEFAULT_WINDOWSIZE -15
 #define DEFAULT_MEMLEVEL 9
 #define DEFAULT_BUFFERSIZE 8096
-
-static APR_OPTIONAL_FN_TYPE(ssl_var_lookup) *mod_deflate_ssl_var = NULL;
 
 /* Check whether a request is gzipped, so we can un-gzip it.
  * If a request has multiple encodings, we need the gzip
@@ -514,10 +512,8 @@ static int check_ratio(request_rec *r, deflate_ctx *ctx,
 static int have_ssl_compression(request_rec *r)
 {
     const char *comp;
-    if (mod_deflate_ssl_var == NULL)
-        return 0;
-    comp = mod_deflate_ssl_var(r->pool, r->server, r->connection, r,
-                               "SSL_COMPRESS_METHOD");
+    comp = ap_ssl_var_lookup(r->pool, r->server, r->connection, r,
+                             "SSL_COMPRESS_METHOD");
     if (comp == NULL || *comp == '\0' || strcmp(comp, "NULL") == 0)
         return 0;
     return 1;
@@ -1879,7 +1875,6 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
 static int mod_deflate_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                                    apr_pool_t *ptemp, server_rec *s)
 {
-    mod_deflate_ssl_var = APR_RETRIEVE_OPTIONAL_FN(ssl_var_lookup);
     return OK;
 }
 

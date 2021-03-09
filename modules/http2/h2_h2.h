@@ -41,10 +41,6 @@ const char *h2_h2_err_description(unsigned int h2_error);
  */
 apr_status_t h2_h2_init(apr_pool_t *pool, server_rec *s);
 
-/* Is the connection a TLS connection?
- */
-int h2_h2_is_tls(conn_rec *c);
-
 /* Register apache hooks for h2 protocol
  */
 void h2_h2_register_hooks(void);
