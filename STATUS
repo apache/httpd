@@ -137,12 +137,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) core: Optimize 'ap_list_provider_names'. Save some memory and potentialy
-     avoid some useless copy.
-     trunk patch: http://svn.apache.org/r1883184
-     2.4.x patch: svn merge -c 1883184 ^/httpd/httpd/trunk .
-     +1: jailletc36, jorton, ylavic
-
   *) mod_session_crypto: Bubble up an error if none of the passhrases work
      trunk patch: http://svn.apache.org/r1874674
      2.4.x patch: svn merge -c 1874674 ^/httpd/httpd/trunk .
