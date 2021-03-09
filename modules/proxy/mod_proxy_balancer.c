@@ -1378,7 +1378,7 @@ static int balancer_process_balancer_worker(request_rec *r, proxy_server_conf *c
 /*
  * Process a request for balancer or worker management from another module
  */
-static int balancer_manage(request_rec *r, apr_table_t *params)
+static apr_status_t balancer_manage(request_rec *r, apr_table_t *params)
 {
     void *sconf;
     proxy_server_conf *conf;
@@ -2061,7 +2061,7 @@ static void ap_proxy_balancer_register_hook(apr_pool_t *p)
     static const char *const aszPred[] = { "mpm_winnt.c", "mod_slotmem_shm.c", NULL};
     static const char *const aszPred2[] = { "mod_proxy.c", NULL};
      /* manager handler */
-    ap_register_provider(p, "balancer", "manager", "0", &balancer_manage);
+    APR_REGISTER_OPTIONAL_FN(balancer_manage);
     ap_hook_post_config(balancer_post_config, aszPred2, NULL, APR_HOOK_MIDDLE);
     ap_hook_pre_config(balancer_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_handler(balancer_handler, NULL, NULL, APR_HOOK_FIRST);
