@@ -2165,6 +2165,9 @@ static const char *set_etag_bits(cmd_parms *cmd, void *mconfig,
         else if (ap_cstr_casecmp(token, "INode") == 0) {
             bit = ETAG_INODE;
         }
+        else if (ap_cstr_casecmp(token, "Digest") == 0) {
+            bit = ETAG_DIGEST;
+        }
         else {
             return apr_pstrcat(cmd->pool, "Unknown keyword '",
                                token, "' for ", cmd->cmd->name,
@@ -4915,7 +4918,7 @@ static int default_handler(request_rec *r)
 
         ap_update_mtime(r, r->finfo.mtime);
         ap_set_last_modified(r);
-        ap_set_etag(r);
+        ap_set_etag_fd(r, fd);
         ap_set_accept_ranges(r);
         ap_set_content_length(r, r->finfo.size);
         if (bld_content_md5) {

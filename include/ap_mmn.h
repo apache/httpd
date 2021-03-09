@@ -548,6 +548,12 @@
  * 20120211.100 (2.4.47-dev) Add ap_proxy_prefetch_input(),
  *                           ap_proxy_spool_input() and
  *                           ap_proxy_read_input().
+ * 20120211.101 (2.4.47-dev) ETAG_DIGEST in http_core.h. struct etag_rec,
+ *                           ap_make_etag_ex() and ap_set_etag_fd() in
+ *                           http_protocol.h. ap_request_bnotes_t,
+ *                           AP_REQUEST_STRONG_ETAG, AP_REQUEST_GET_BNOTE,
+ *                           AP_REQUEST_SET_BNOTE and AP_REQUEST_IS_STRONG_ETAG
+ *                           in httpd.h.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -555,7 +561,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 100                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 101                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
