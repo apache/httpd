@@ -2316,11 +2316,29 @@ void ssl_callback_Info(const SSL *ssl, int where, int rc)
 #ifdef HAVE_TLSEXT
 
 static apr_status_t set_challenge_creds(conn_rec *c, const char *servername,
-                                        SSL *ssl, X509 *cert, EVP_PKEY *key)
+                                        SSL *ssl, X509 *cert, EVP_PKEY *key,
+                                        const char *cert_file, const char *key_file)
 {
     SSLConnRec *sslcon = myConnConfig(c);
     
     sslcon->service_unavailable = 1;
+    if (cert_file) {
+        if (SSL_use_certificate_chain_file(ssl, cert_file) < 1) {
+            ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c, APLOGNO()
+                          "Failed to configure challenge certificate %s",
+                          servername);
+            return APR_EGENERAL;
+        }
+        if (key_file == NULL) key_file = cert_file;
+        if (SSL_use_PrivateKey_file(ssl, key_file, SSL_FILETYPE_PEM) < 1) {
+            ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c, APLOGNO()
+                          "Failed to configure challenge private key %s",
+                          servername);
+            return APR_EGENERAL;
+        }
+        goto check;
+    }
+    
     if ((SSL_use_certificate(ssl, cert) < 1)) {
         ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c, APLOGNO(10086)
                       "Failed to configure challenge certificate %s",
@@ -2336,6 +2354,7 @@ static apr_status_t set_challenge_creds(conn_rec *c, const char *servername,
         return APR_EGENERAL;
     }
     
+check:
     if (SSL_check_private_key(ssl) < 1) {
         ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c, APLOGNO(10088)
                       "Challenge certificate and private key %s "
@@ -2353,6 +2372,7 @@ static apr_status_t init_vhost(conn_rec *c, SSL *ssl, const char *servername)
 {
     X509 *cert;
     EVP_PKEY *key;
+    const char *cert_file, *key_file;
     
     if (c) {
         SSLConnRec *sslcon = myConnConfig(c);
@@ -2376,11 +2396,12 @@ static apr_status_t init_vhost(conn_rec *c, SSL *ssl, const char *servername)
                 sslcon->vhost_found = +1;
                 return APR_SUCCESS;
             }
-            else if (ssl_is_challenge(c, servername, &cert, &key)) {
+            else if (ssl_is_challenge(c, servername, &cert, &key, &cert_file, &key_file)) {
                 /* With ACMEv1 we can have challenge connections to a unknown domains
                  * that need to be answered with a special certificate and will
                  * otherwise not answer any requests. */
-                if (set_challenge_creds(c, servername, ssl, cert, key) != APR_SUCCESS) {
+                if (set_challenge_creds(c, servername, ssl, cert, key, 
+                                        cert_file, key_file) != APR_SUCCESS) {
                     return APR_EGENERAL;
                 }
                 SSL_set_verify(ssl, SSL_VERIFY_NONE, ssl_callback_SSLVerify);
@@ -2759,9 +2780,11 @@ int ssl_callback_alpn_select(SSL *ssl,
             const char *servername = SSL_get_servername(ssl, TLSEXT_NAMETYPE_host_name);
             X509 *cert;
             EVP_PKEY *key;
-            
-            if (ssl_is_challenge(c, servername, &cert, &key)) {
-                if (set_challenge_creds(c, servername, ssl, cert, key) != APR_SUCCESS) {
+            const char *cert_file, *key_file;
+
+            if (ssl_is_challenge(c, servername, &cert, &key, &cert_file, &key_file)) {
+                if (set_challenge_creds(c, servername, ssl, cert, key, 
+                                        cert_file, key_file) != APR_SUCCESS) {
                     return SSL_TLSEXT_ERR_ALERT_FATAL;
                 }
                 SSL_set_verify(ssl, SSL_VERIFY_NONE, ssl_callback_SSLVerify);

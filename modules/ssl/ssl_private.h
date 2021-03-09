@@ -1122,7 +1122,8 @@ DH *modssl_get_dh_params(unsigned keylen);
 int modssl_request_is_tls(const request_rec *r, SSLConnRec **sslconn);
 
 int ssl_is_challenge(conn_rec *c, const char *servername, 
-                     X509 **pcert, EVP_PKEY **pkey);
+                     X509 **pcert, EVP_PKEY **pkey,
+                    const char **pcert_file, const char **pkey_file);
 
 /* Returns non-zero if the cert/key filename should be handled through
  * the configured ENGINE. */

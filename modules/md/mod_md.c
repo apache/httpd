@@ -1237,7 +1237,7 @@ static int md_answer_challenge(conn_rec *c, const char *servername,
                                X509 **pcert, EVP_PKEY **pkey)
 {
     if (md_is_challenge(c, servername, pcert, pkey)) {
-        return APR_SUCCESS;
+        return OK;
     }
     return DECLINED;
 }

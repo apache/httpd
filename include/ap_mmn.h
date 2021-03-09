@@ -548,6 +548,9 @@
  * 20120211.100 (2.4.47-dev) Add ap_proxy_prefetch_input(),
  *                           ap_proxy_spool_input() and
  *                           ap_proxy_read_input().
+ * 20120211.101 (2.4.47-dev)  Add ap_ssl_conn_is_ssl()/ap_ssl_var_lookup() and hooks
+ * 20120211.102 (2.4.47-dev)  Add ap_ssl_add_cert_files, ap_ssl_add_fallback_cert_files
+ *                          and ap_ssl_answer_challenge and hooks.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -555,7 +558,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 100                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 102                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
