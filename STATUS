@@ -188,7 +188,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1883668
                   http://svn.apache.org/r1886255
      2.4.x patch: svn merge -c 1883668,1886255 ^/httpd/httpd/trunk .
-     +1: ylavic, icing
+     +1: ylavic, icing, jorton
      ylavic: jorton's vote reset after adding r1886255
 
   *) mod_http2: sync with github standalone version 1.15.17
@@ -217,13 +217,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1887245
      2.4.x patch: svn merge -c 1887244,1887245 ^/httpd/httpd/trunk .
                   https://bz.apache.org/bugzilla/attachment.cgi?id=37749
-     +1: jailletc36, ylavic
+     +1: jailletc36, ylavic, jorton
 
   *) mod_proxy_http: Fix a potential random memory corruption issue
      PR 64234
      trunk patch: https://svn.apache.org/r1875353
      2.4.x patch: https://bz.apache.org/bugzilla/show_bug.cgi?id=64234#c2
-     +1: ylavic,
+     +1: ylavic, jorton, 
      jailletc36: if applied on 2.4.x, a CHANGES entry should be added
 
 
