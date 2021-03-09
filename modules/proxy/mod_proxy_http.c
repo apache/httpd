@@ -1681,6 +1681,7 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
                      */
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01110)
                                   "error reading response");
+                    apr_brigade_cleanup(bb);
                     ap_proxy_backend_broke(r, bb);
                     ap_pass_brigade(r->output_filters, bb);
                     backend_broke = 1;
