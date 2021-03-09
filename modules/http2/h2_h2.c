@@ -28,8 +28,6 @@
 #include <http_request.h>
 #include <http_log.h>
 
-#include "mod_ssl.h"
-
 #include "mod_http2.h"
 #include "h2_private.h"
 
@@ -56,13 +54,6 @@ const char *h2_clear_protos[] = {
 };
 
 const char *H2_MAGIC_TOKEN = "PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n";
-
-/*******************************************************************************
- * The optional mod_ssl functions we need. 
- */
-static APR_OPTIONAL_FN_TYPE(ssl_is_https) *opt_ssl_is_https;
-static APR_OPTIONAL_FN_TYPE(ssl_var_lookup) *opt_ssl_var_lookup;
-
 
 /*******************************************************************************
  * HTTP/2 error stuff
@@ -445,27 +436,14 @@ apr_status_t h2_h2_init(apr_pool_t *pool, server_rec *s)
 {
     (void)pool;
     ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, s, "h2_h2, child_init");
-    opt_ssl_is_https = APR_RETRIEVE_OPTIONAL_FN(ssl_is_https);
-    opt_ssl_var_lookup = APR_RETRIEVE_OPTIONAL_FN(ssl_var_lookup);
-    
-    if (!opt_ssl_is_https || !opt_ssl_var_lookup) {
-        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
-                     APLOGNO(02951) "mod_ssl does not seem to be enabled");
-    }
-    
     cipher_init(pool);
     
     return APR_SUCCESS;
 }
 
-int h2_h2_is_tls(conn_rec *c)
-{
-    return opt_ssl_is_https && opt_ssl_is_https(c);
-}
-
 int h2_is_acceptable_connection(conn_rec *c, request_rec *r, int require_all) 
 {
-    int is_tls = h2_h2_is_tls(c);
+    int is_tls = ap_ssl_conn_is_ssl(c);
 
     if (is_tls && h2_config_cgeti(c, H2_CONF_MODERN_TLS_ONLY) > 0) {
         /* Check TLS connection for modern TLS parameters, as defined in
@@ -475,14 +453,9 @@ int h2_is_acceptable_connection(conn_rec *c, request_rec *r, int require_all)
         server_rec *s = c->base_server;
         const char *val;
 
-        if (!opt_ssl_var_lookup) {
-            /* unable to check */
-            return 0;
-        }
-        
         /* Need Tlsv1.2 or higher, rfc 7540, ch. 9.2
          */
-        val = opt_ssl_var_lookup(pool, s, c, NULL, (char*)"SSL_PROTOCOL");
+        val = ap_ssl_var_lookup(pool, s, c, NULL, (char*)"SSL_PROTOCOL");
         if (val && *val) {
             if (strncmp("TLS", val, 3) 
                 || !strcmp("TLSv1", val) 
@@ -501,7 +474,7 @@ int h2_is_acceptable_connection(conn_rec *c, request_rec *r, int require_all)
 
         /* Check TLS cipher blacklist
          */
-        val = opt_ssl_var_lookup(pool, s, c, NULL, (char*)"SSL_CIPHER");
+        val = ap_ssl_var_lookup(pool, s, c, NULL, (char*)"SSL_CIPHER");
         if (val && *val) {
             const char *source;
             if (cipher_is_blacklisted(val, &source)) {
@@ -522,7 +495,7 @@ int h2_is_acceptable_connection(conn_rec *c, request_rec *r, int require_all)
 
 static int h2_allows_h2_direct(conn_rec *c)
 {
-    int is_tls = h2_h2_is_tls(c);
+    int is_tls = ap_ssl_conn_is_ssl(c);
     const char *needed_protocol = is_tls? "h2" : "h2c";
     int h2_direct = h2_config_cgeti(c, H2_CONF_DIRECT);
     
@@ -535,7 +508,7 @@ static int h2_allows_h2_direct(conn_rec *c)
 int h2_allows_h2_upgrade(request_rec *r)
 {
     int h2_upgrade = h2_config_rgeti(r, H2_CONF_UPGRADE);
-    return h2_upgrade > 0 || (h2_upgrade < 0 && !h2_h2_is_tls(r->connection));
+    return h2_upgrade > 0 || (h2_upgrade < 0 && !ap_ssl_conn_is_ssl(r->connection));
 }
 
 /*******************************************************************************
@@ -631,7 +604,7 @@ int h2_h2_process_conn(conn_rec* c)
                 if (!ctx) {
                     ctx = h2_ctx_get(c, 1);
                 }
-                h2_ctx_protocol_set(ctx, h2_h2_is_tls(c)? "h2" : "h2c");
+                h2_ctx_protocol_set(ctx, ap_ssl_conn_is_ssl(c)? "h2" : "h2c");
             }
             else if (APLOGctrace2(c)) {
                 ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c,

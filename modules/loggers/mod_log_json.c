@@ -21,7 +21,6 @@
 #include "http_protocol.h"
 #include "http_request.h"
 
-#include <mod_ssl.h>
 #include "mod_log_config.h"
 
 #include "apr_strings.h"
@@ -49,8 +48,6 @@ APLOG_USE_MODULE(log_json);
 
 module AP_MODULE_DECLARE_DATA log_json_module;
 
-static APR_OPTIONAL_FN_TYPE(ssl_var_lookup) *log_json_ssl_lookup = NULL;
-static APR_OPTIONAL_FN_TYPE(ssl_is_https) *log_json_ssl_is_https = NULL;
 static APR_OPTIONAL_FN_TYPE(ap_register_log_handler) *log_json_register = NULL;
 
 static const char *crit_error =
@@ -99,21 +96,20 @@ log_json(request_rec *r, char *a)
         json_string(apr_table_get(r->headers_in, "User-Agent")));
     json_object_set_new_nocheck(obj, "hdrs", hdrs);
 
-    if (log_json_ssl_is_https != NULL && log_json_ssl_lookup != NULL &&
-        log_json_ssl_is_https(r->connection)) {
+    if (ap_ssl_conn_is_ssl(r->connection)) {
         json_t *tls = json_object();
 
         json_object_set_new_nocheck(tls, "v",
-            json_string(log_json_ssl_lookup(
+            json_string(ap_ssl_var_lookup(
                 r->pool, r->server, r->connection, r, "SSL_PROTOCOL")));
         json_object_set_new_nocheck(tls, "cipher",
-            json_string(log_json_ssl_lookup(
+            json_string(ap_ssl_var_lookup(
                 r->pool, r->server, r->connection, r, "SSL_CIPHER")));
         json_object_set_new_nocheck(tls, "client_verify",
-            json_string(log_json_ssl_lookup(
+            json_string(ap_ssl_var_lookup(
                 r->pool, r->server, r->connection, r, "SSL_CLIENT_VERIFY")));
         json_object_set_new_nocheck(tls, "sni",
-            json_string(log_json_ssl_lookup(
+            json_string(ap_ssl_var_lookup(
                 r->pool, r->server, r->connection, r, "SSL_TLS_SNI")));
 
         json_object_set_new_nocheck(obj, "tls", tls);
@@ -161,9 +157,6 @@ log_json_post_config(
             apr_pool_cleanup_null, s->process->pool);
         return OK;
     }
-
-    log_json_ssl_lookup = APR_RETRIEVE_OPTIONAL_FN(ssl_var_lookup);
-    log_json_ssl_is_https = APR_RETRIEVE_OPTIONAL_FN(ssl_is_https);
 
     /* http://jansson.readthedocs.io/en/2.8/portability.html#portability-thread-safety
      */

@@ -37,7 +37,6 @@
 #include "mod_lua.h"
 #include "lua_apr.h"
 #include "lua_config.h"
-#include "mod_ssl.h"
 #include "mod_auth.h"
 #include "util_mutex.h"
 
@@ -52,8 +51,6 @@ APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ap_lua, AP_LUA, int, lua_open,
 APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ap_lua, AP_LUA, int, lua_request,
                                     (lua_State *L, request_rec *r),
                                     (L, r), OK, DECLINED)
-static APR_OPTIONAL_FN_TYPE(ssl_var_lookup) *lua_ssl_val = NULL;
-static APR_OPTIONAL_FN_TYPE(ssl_is_https) *lua_ssl_is_https = NULL;
 
 module AP_MODULE_DECLARE_DATA lua_module;
 
@@ -1707,15 +1704,12 @@ static const char *register_lua_root(cmd_parms *cmd, void *_cfg,
 const char *ap_lua_ssl_val(apr_pool_t *p, server_rec *s, conn_rec *c,
                            request_rec *r, const char *var)
 {
-    if (lua_ssl_val) { 
-        return (const char *)lua_ssl_val(p, s, c, r, (char *)var);
-    }
-    return NULL;
+    return ap_ssl_var_lookup(p, s, c, r, (char *)var);
 }
 
 int ap_lua_ssl_is_https(conn_rec *c)
 {
-    return lua_ssl_is_https ? lua_ssl_is_https(c) : 0;
+    return ap_ssl_conn_is_ssl(c);
 }
 
 /*******************************/
@@ -2029,9 +2023,6 @@ static int lua_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     apr_pool_t **pool;
     apr_status_t rs;
 
-    lua_ssl_val = APR_RETRIEVE_OPTIONAL_FN(ssl_var_lookup);
-    lua_ssl_is_https = APR_RETRIEVE_OPTIONAL_FN(ssl_is_https);
-    
     if (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_PRE_CONFIG)
         return OK;
 
