@@ -1087,6 +1087,8 @@ static void push2table(const char *input, apr_table_t *params,
         }
         ap_unescape_url(key);
         ap_unescape_url(val);
+        /* hcuri, worker name, balancer name, at least  are escaped when building the form, so twice */
+        ap_unescape_url(val);
         if (allowed == NULL) { /* allow all */
             apr_table_set(params, key, val);
         }
@@ -1215,7 +1217,7 @@ static int balancer_process_balancer_worker(request_rec *r, proxy_server_conf *c
                 *wsel->s->hcexpr = '\0';
         }
         /* If the health check method doesn't support an expr, then null it */
-        if (wsel->s->method == NONE || wsel->s->method == TCP) {
+        if (wsel->s->method == NONE || wsel->s->method == TCP || wsel->s->method == CPING) {
             *wsel->s->hcexpr = '\0';
         }
         /* if enabling, we need to reset all lb params */
