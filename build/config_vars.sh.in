@@ -41,7 +41,8 @@ test -n "@APU_CONFIG@" && APU_INCLUDEDIR="`${APU_CONFIG} --includedir`"
 
 installbuilddir="@exp_installbuilddir@"
 
-### this might be better as a whitelist.
+# This might be better by listing explicitly what to include
+# rather than trying to work out what to exclude.
 exec sed "
 /^[A-Z0-9_]*_LDADD/d
 /MPM_LIB/d
