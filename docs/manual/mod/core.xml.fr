@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1885573 -->
+<!-- English Revision: 1887384 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2001,7 +2001,7 @@ dans les versions 2.3.14 et antérieures.</compatibility>
     La directive <directive>FileETag</directive> définit les
     caractéristiques de fichier utilisées lors de la génération de
     l'en-tête de réponse HTTP <code>ETag</code> (entity tag) quand le
-    document est contenu dans un fichier statique(la valeur de
+    document est contenu dans un fichier statique (la valeur de
     <code>ETag</code>
     est utilisée dans le cadre de la gestion du cache pour préserver la
     bande passante réseau). La directive
@@ -2023,13 +2023,16 @@ dans les versions 2.3.14 et antérieures.</compatibility>
      <dd>Tous les champs disponibles seront utilisés. Cette définition
      est équivalente à : 
      <highlight language="config">FileETag INode MTime Size</highlight></dd>
+     <dt><strong>Digest</strong></dt>
+     <dd>Si un document est à base de fichier, le champ <code>ETag</code> sera
+     généré à partir du condensé du fichier.</dd>
      <dt><strong>None</strong></dt>
      <dd>Si le document se compose d'un fichier, aucun champ
      <code>ETag</code> ne sera inclus dans la réponse</dd>
     </dl>
 
-    <p>Les mots-clés <code>INode</code>, <code>MTime</code>, et
-    <code>Size</code> peuvent être préfixés par <code>+</code> ou
+    <p>Les mots-clés <code>INode</code>, <code>MTime</code>, 
+    <code>Size</code> et <code>Digest</code> peuvent être préfixés par <code>+</code> ou
     <code>-</code>, ce qui permet de modifier les valeurs par défaut
     héritées d'un niveau de configuration plus général. Tout mot-clé
     apparaissant sans aucun préfixe annule entièrement et immédiatement
@@ -2041,21 +2044,10 @@ dans les versions 2.3.14 et antérieures.</compatibility>
     configuration de ce sous-répertoire (qui sera propagée vers tout
     sous-répertoire qui ne la supplante pas), sera équivalente à
     <code>FileETag&nbsp;MTime&nbsp;Size</code>.</p>
-    <note type="warning"><title>Avertissement</title>
-    Ne modifiez pas les valeurs par défaut pour les répertoires ou
-    localisations où WebDAV est activé et qui utilisent
-    <module>mod_dav_fs</module> comme fournisseur de stockage.
-    <module>mod_dav_fs</module> utilise
-    <code>MTime&nbsp;Size</code> comme format fixe pour les
-    comparaisons de champs <code>ETag</code> dans les requêtes
-    conditionnelles. Ces requêtes conditionnelles échoueront si le
-    format <code>ETag</code> est modifié via la directive
-    <directive>FileETag</directive>.
-    </note>
     <note><title>Inclusions côté serveur</title>
     Aucun champ ETag n'est généré pour les réponses interprétées par
     <module>mod_include</module>, car l'entité de la réponse peut
-    changer sans modification de l'INode, du MTime, ou de la taille du
+    changer sans modification de l'INode, MTime, Size ou Digest du
     fichier statique contenant les directives SSI.
     </note>
 

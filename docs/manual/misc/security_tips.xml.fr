@@ -139,7 +139,7 @@
 
       <li>Il existe de nombreux modules tiers disponibles à <a
       href="http://modules.apache.org/">http://modules.apache.org/</a> qui
-      peuvent retreindre les comportements de certains clients et ainsi
+      peuvent restreindre les comportements de certains clients et ainsi
       minimiser les problèmes de DoS.</li>
 
     </ul>
