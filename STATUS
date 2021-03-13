@@ -167,6 +167,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1826206,1880678,1880743 ^/httpd/httpd/trunk .
      PR: https://github.com/apache/httpd/pull/176
      +1: jorton, ylavic,
+     jailletc36: r1880924 seems to be missing for <= Lua 5.1 compatibility.
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
