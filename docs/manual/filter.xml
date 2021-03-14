@@ -89,9 +89,7 @@ independent of the traditional request processing phases.</p>
 functions like chunking and byte-range handling.</p>
 
 <p>A wider range of applications are implemented by third-party filter
-modules available from <a
-href="http://modules.apache.org/">modules.apache.org</a> and
-elsewhere.  A few of these are:</p>
+modules.  A few of these are:</p>
 
 <ul>
 <li>HTML and XML processing and rewriting</li>

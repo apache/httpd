@@ -126,9 +126,7 @@
       cases it falls back to the behaviour of the
       <module>worker</module> mpm.</li>
 
-      <li>There are a number of third-party modules available through
-      <a
-      href="http://modules.apache.org/">http://modules.apache.org/</a>
+      <li>There are a number of third-party modules available
       that can restrict certain client behaviors and thereby mitigate
       DoS problems.</li>
 

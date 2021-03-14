@@ -259,9 +259,7 @@ Require user rbowen
     files can be created and manipulated with the <program>
     dbmmanage</program> and <program>htdbm</program> programs. Many
     other types of authentication options are available from third
-    party modules in the <a
-    href="http://modules.apache.org/">Apache Modules
-    Database</a>.</p>
+    party modules.</p>
 
     <p>Finally, the <directive module="mod_authz_core">Require</directive>
     directive provides the authorization part of the process by
