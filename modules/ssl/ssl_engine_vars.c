@@ -477,7 +477,7 @@ static const char *ssl_var_lookup_ssl(apr_pool_t *p, const SSLConnRec *sslconn,
         sk = SSL_get_peer_cert_chain(ssl);
         result = ssl_var_lookup_ssl_cert_chain(p, sk, var+18, 1);
     }
-    else if (ssl != NULL && strlen(var) > 18 && strcEQn(var, "CLIENT_B64CERT_CHAIN_", 18)) {
+    else if (ssl != NULL && strlen(var) > 21 && strcEQn(var, "CLIENT_B64CERT_CHAIN_", 21)) {
         sk = SSL_get_peer_cert_chain(ssl);
         result = ssl_var_lookup_ssl_cert_chain(p, sk, var+18, 0);
     }
