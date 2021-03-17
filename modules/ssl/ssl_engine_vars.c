@@ -47,7 +47,7 @@ static const char *ssl_var_lookup_ssl_cert_san(apr_pool_t *p, X509 *xs, const ch
 static const char *ssl_var_lookup_ssl_cert_valid(apr_pool_t *p, ASN1_TIME *tm);
 static const char *ssl_var_lookup_ssl_cert_remain(apr_pool_t *p, ASN1_TIME *tm);
 static const char *ssl_var_lookup_ssl_cert_serial(apr_pool_t *p, X509 *xs);
-static const char *ssl_var_lookup_ssl_cert_chain(apr_pool_t *p, STACK_OF(X509) *sk, const char *var);
+static const char *ssl_var_lookup_ssl_cert_chain(apr_pool_t *p, STACK_OF(X509) *sk, const char *var, int pem);
 static const char *ssl_var_lookup_ssl_cert_rfc4523_cea(apr_pool_t *p, SSL *ssl);
 static const char *ssl_var_lookup_ssl_cert_verify(apr_pool_t *p, const SSLConnRec *sslconn);
 static const char *ssl_var_lookup_ssl_cipher(apr_pool_t *p, const SSLConnRec *sslconn, const char *var);
@@ -475,7 +475,11 @@ static const char *ssl_var_lookup_ssl(apr_pool_t *p, const SSLConnRec *sslconn,
     }
     else if (ssl != NULL && strlen(var) > 18 && strcEQn(var, "CLIENT_CERT_CHAIN_", 18)) {
         sk = SSL_get_peer_cert_chain(ssl);
-        result = ssl_var_lookup_ssl_cert_chain(p, sk, var+18);
+        result = ssl_var_lookup_ssl_cert_chain(p, sk, var+18, 1);
+    }
+    else if (ssl != NULL && strlen(var) > 18 && strcEQn(var, "CLIENT_B64CERT_CHAIN_", 18)) {
+        sk = SSL_get_peer_cert_chain(ssl);
+        result = ssl_var_lookup_ssl_cert_chain(p, sk, var+18, 0);
     }
     else if (ssl != NULL && strcEQ(var, "CLIENT_CERT_RFC4523_CEA")) {
         result = ssl_var_lookup_ssl_cert_rfc4523_cea(p, ssl);
@@ -816,7 +820,8 @@ static const char *ssl_var_lookup_ssl_cert_serial(apr_pool_t *p, X509 *xs)
     return modssl_bio_free_read(p, bio);
 }
 
-static const char *ssl_var_lookup_ssl_cert_chain(apr_pool_t *p, STACK_OF(X509) *sk, const char *var)
+static const char *ssl_var_lookup_ssl_cert_chain(apr_pool_t *p, STACK_OF(X509) *sk,
+                                                 const char *var, int pem)
 {
     const char *result;
     X509 *xs;
