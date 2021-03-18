@@ -479,7 +479,7 @@ static const char *ssl_var_lookup_ssl(apr_pool_t *p, const SSLConnRec *sslconn,
     }
     else if (ssl != NULL && strlen(var) > 21 && strcEQn(var, "CLIENT_B64CERT_CHAIN_", 21)) {
         sk = SSL_get_peer_cert_chain(ssl);
-        result = ssl_var_lookup_ssl_cert_chain(p, sk, var+18, 0);
+        result = ssl_var_lookup_ssl_cert_chain(p, sk, var+21, 0);
     }
     else if (ssl != NULL && strcEQ(var, "CLIENT_CERT_RFC4523_CEA")) {
         result = ssl_var_lookup_ssl_cert_rfc4523_cea(p, ssl);
@@ -833,7 +833,7 @@ static const char *ssl_var_lookup_ssl_cert_chain(apr_pool_t *p, STACK_OF(X509) *
         n = atoi(var);
         if (n < sk_X509_num(sk)) {
             xs = sk_X509_value(sk, n);
-            result = ssl_var_lookup_ssl_cert_data(p, xs, 1);
+            result = ssl_var_lookup_ssl_cert_data(p, xs, pem);
         }
     }
 
