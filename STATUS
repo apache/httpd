@@ -157,7 +157,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        out to the client. This fixes interop issues with certain flavours of gRPC, see
        also <https://github.com/icing/mod_h2/issues/207>.
      PR: https://github.com/apache/httpd/pull/175
-     +1: icing, ylavic,
+     +1: icing, ylavic, jorton
 
   *) mod_lua: Support Lua 5.4 and use pkg-config to detect Lua
      properly on Debian systems.
@@ -172,7 +172,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mpm_event/worker: Adjust signal handler before unblocking. PR 64533.
      trunk patch: http://svn.apache.org/r1882370
      2.4.x patch: svn merge -c 1882370 ^/httpd/httpd/trunk .
-     +1: ylavic,
+     +1: ylavic, jorton, 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
