@@ -1903,10 +1903,35 @@ This directive sets the all-in-one file where you keep the certificates and
 keys used for authentication of the proxy server to remote servers.
 </p>
 <p>
-This referenced file is simply the concatenation of the various PEM-encoded
-certificate files, in order of preference. Use this directive alternatively
-or additionally to <code>SSLProxyMachineCertificatePath</code>.
+This referenced file is simply the concatenation of the various
+PEM-encoded certificate files. Use this directive alternatively or
+additionally to <code>SSLProxyMachineCertificatePath</code>.  The
+referenced file can contain any number of pairs of client certificate
+and associated private key.  Each pair can be specified in either
+(certificate, key) or (key, certificate) order.  If the file includes
+any non-leaf certificate, or any unmatched key and certificate pair, a
+configuration error will be issued at startup.
 </p>
+
+<p>When challenged to provide a client certificate by a remote server,
+the server should provide a list of <em>acceptable certificate
+authority names</em> in the challenge.  If such a list is <em>not</em>
+provided, <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> will use the first configured
+client cert/key.  If a list of CA names <em>is</em> provided,
+<code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> will iterate through that list, and attempt
+to find a configured client cert which was issued either directly by
+that CA, or indirectly via any number of intermediary CA certificates.
+The chain of intermediate CA certificates can be built from those
+configured with <code class="directive"><a href="#sslproxymachinecertificatechainfile">SSLProxyMachineCertificateChainFile</a></code>.  The
+first configured matching certificate will then be supplied in
+response to the challenge.</p>
+
+<p>If the list of CA names <em>is</em> provided by the remote server,
+and <em>no</em> matching client certificate can be found, no client
+certificate will be provided by <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>, which will
+likely fail the SSL/TLS handshake (depending on the remote server
+configuration).</p>
+
 <div class="warning">
 <p>Currently there is no support for encrypted private keys</p>
 </div>
@@ -1932,13 +1957,14 @@ must be converted, eg. using
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>The proxy section context is allowed in httpd 2.4.30 and later</td></tr>
 </table>
 <p>
-This directive sets the directory where you keep the certificates and
-keys used for authentication of the proxy server to remote servers.
+This directive sets the directory where you keep the client
+certificates and keys used for authentication of the proxy server to
+remote servers.
 </p>
-<p>The files in this directory must be PEM-encoded and are accessed through
-hash filenames. Additionally, you must create symbolic links named
-<code><em>hash-value</em>.N</code>. And you should always make sure this
-directory contains the appropriate symbolic links.</p>
+<p>
+mod_ssl will attempt to load every file inside the specified directory
+as if it was configured individually with <code class="directive"><a href="#sslproxymachinecertificatefile">SSLProxyMachineCertificateFile</a></code>.
+</p>
 <div class="warning">
 <p>Currently there is no support for encrypted private keys</p>
 </div>
@@ -2853,7 +2879,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/mod_ssl.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
