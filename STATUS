@@ -164,10 +164,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1826206
                   http://svn.apache.org/r1880678
                   http://svn.apache.org/r1880743
-     2.4.x patch: svn merge -c 1826206,1880678,1880743 ^/httpd/httpd/trunk .
+                  http://svn.apache.org/r1880924
+     2.4.x patch: svn merge -c 1826206,1880678,1880743,1880924 ^/httpd/httpd/trunk .
      PR: https://github.com/apache/httpd/pull/176
-     +1: jorton, ylavic,
-     jailletc36: r1880924 seems to be missing for <= Lua 5.1 compatibility.
+     +1: jorton, 
 
   *) mpm_event/worker: Adjust signal handler before unblocking. PR 64533.
      trunk patch: http://svn.apache.org/r1882370
