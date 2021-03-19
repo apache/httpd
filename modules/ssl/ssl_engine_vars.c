@@ -46,9 +46,8 @@ static const char *ssl_var_lookup_ssl_cert_san(apr_pool_t *p, X509 *xs, const ch
 static const char *ssl_var_lookup_ssl_cert_valid(apr_pool_t *p, ASN1_TIME *tm);
 static const char *ssl_var_lookup_ssl_cert_remain(apr_pool_t *p, ASN1_TIME *tm);
 static const char *ssl_var_lookup_ssl_cert_serial(apr_pool_t *p, X509 *xs);
-static const char *ssl_var_lookup_ssl_cert_chain(apr_pool_t *p, STACK_OF(X509) *sk, const char *var);
+static const char *ssl_var_lookup_ssl_cert_chain(apr_pool_t *p, STACK_OF(X509) *sk, const char *var, int pem);
 static const char *ssl_var_lookup_ssl_cert_rfc4523_cea(apr_pool_t *p, SSL *ssl);
-static const char *ssl_var_lookup_ssl_cert_PEM(apr_pool_t *p, X509 *xs);
 static const char *ssl_var_lookup_ssl_cert_verify(apr_pool_t *p, const SSLConnRec *sslconn);
 static const char *ssl_var_lookup_ssl_cipher(apr_pool_t *p, const SSLConnRec *sslconn, const char *var);
 static void  ssl_var_lookup_ssl_cipher_bits(SSL *ssl, int *usekeysize, int *algkeysize);
@@ -69,6 +68,36 @@ static int ssl_is_https(conn_rec *c)
 {
     const SSLConnRec *sslconn = ssl_get_effective_config(c);
     return sslconn && sslconn->ssl;
+}
+
+/* Returns certificate data, either PEM encoded if 'pem' is non-zero,
+ * else plain base64-encoded DER. */
+static const char *ssl_var_lookup_ssl_cert_data(apr_pool_t *p, X509 *xs,
+                                                int pem)
+{
+    BIO *bio;
+
+    if ((bio = BIO_new(BIO_s_mem())) == NULL)
+        return NULL;
+
+    if (pem) {
+        PEM_write_bio_X509(bio, xs);
+    }
+    else {
+        BIO *b64 = BIO_new(BIO_f_base64());
+        if (b64 == NULL) {
+            BIO_free(bio);
+            return NULL;
+        }
+        BIO_set_flags(b64, BIO_FLAGS_BASE64_NO_NL);
+        b64 = BIO_push(b64, bio);
+        i2d_X509_bio(b64, xs);
+        BIO_flush(b64); /* ensures trailing bytes are padded */
+        BIO_pop(b64);
+        BIO_free(b64);
+    }
+
+    return modssl_bio_free_read(p, bio);
 }
 
 /* SSLv3 uses 36 bytes for Finishd messages, TLS1.0 12 bytes,
@@ -445,7 +474,11 @@ static const char *ssl_var_lookup_ssl(apr_pool_t *p, const SSLConnRec *sslconn,
     }
     else if (ssl != NULL && strlen(var) > 18 && strcEQn(var, "CLIENT_CERT_CHAIN_", 18)) {
         sk = SSL_get_peer_cert_chain(ssl);
-        result = ssl_var_lookup_ssl_cert_chain(p, sk, var+18);
+        result = ssl_var_lookup_ssl_cert_chain(p, sk, var+18, 1);
+    }
+    else if (ssl != NULL && strlen(var) > 21 && strcEQn(var, "CLIENT_B64CERT_CHAIN_", 21)) {
+        sk = SSL_get_peer_cert_chain(ssl);
+        result = ssl_var_lookup_ssl_cert_chain(p, sk, var+21, 0);
     }
     else if (ssl != NULL && strcEQ(var, "CLIENT_CERT_RFC4523_CEA")) {
         result = ssl_var_lookup_ssl_cert_rfc4523_cea(p, ssl);
@@ -593,7 +626,10 @@ static const char *ssl_var_lookup_ssl_cert(apr_pool_t *p, request_rec *r, X509 *
         result = (nid == NID_undef) ? "UNKNOWN" : OBJ_nid2ln(nid);
     }
     else if (strcEQ(var, "CERT")) {
-        result = ssl_var_lookup_ssl_cert_PEM(p, xs);
+        result = ssl_var_lookup_ssl_cert_data(p, xs, 1);
+    }
+    else if (strcEQ(var, "B64CERT")) {
+        result = ssl_var_lookup_ssl_cert_data(p, xs, 0);
     }
 
     return result;
@@ -781,7 +817,8 @@ static const char *ssl_var_lookup_ssl_cert_serial(apr_pool_t *p, X509 *xs)
     return modssl_bio_free_read(p, bio);
 }
 
-static const char *ssl_var_lookup_ssl_cert_chain(apr_pool_t *p, STACK_OF(X509) *sk, const char *var)
+static const char *ssl_var_lookup_ssl_cert_chain(apr_pool_t *p, STACK_OF(X509) *sk,
+                                                 const char *var, int pem)
 {
     const char *result;
     X509 *xs;
@@ -793,7 +830,7 @@ static const char *ssl_var_lookup_ssl_cert_chain(apr_pool_t *p, STACK_OF(X509) *
         n = atoi(var);
         if (n < sk_X509_num(sk)) {
             xs = sk_X509_value(sk, n);
-            result = ssl_var_lookup_ssl_cert_PEM(p, xs);
+            result = ssl_var_lookup_ssl_cert_data(p, xs, pem);
         }
     }
 
@@ -829,17 +866,6 @@ static const char *ssl_var_lookup_ssl_cert_rfc4523_cea(apr_pool_t *p, SSL *ssl)
 
     X509_free(xs);
     return result;
-}
-
-static const char *ssl_var_lookup_ssl_cert_PEM(apr_pool_t *p, X509 *xs)
-{
-    BIO *bio;
-
-    if ((bio = BIO_new(BIO_s_mem())) == NULL)
-        return NULL;
-    PEM_write_bio_X509(bio, xs);
-
-    return modssl_bio_free_read(p, bio);
 }
 
 static const char *ssl_var_lookup_ssl_cert_verify(apr_pool_t *p,

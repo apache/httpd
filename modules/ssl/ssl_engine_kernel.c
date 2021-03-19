@@ -1536,6 +1536,18 @@ static const char *const ssl_hook_Fixup_vars[] = {
     NULL
 };
 
+/* Lookup SSL variable @arg varname and set in the table @arg env.
+ * Returns the value if the value is non-NULL and not the empty
+ * string; otherwise returns NULL. */
+static const char *extract_to_env(request_rec *r, apr_table_t *env,
+                                  const char *varname)
+{
+    const char *val = ssl_var_lookup(r->pool, r->server, r->connection,
+                                     r, varname);
+    apr_table_setn(env, varname, val);
+    return val && *val ? val : NULL;
+}
+
 int ssl_hook_Fixup(request_rec *r)
 {
     SSLDirConfigRec *dc = myDirConfig(r);
@@ -1544,7 +1556,6 @@ int ssl_hook_Fixup(request_rec *r)
 #ifdef HAVE_TLSEXT
     const char *servername;
 #endif
-    STACK_OF(X509) *peer_certs;
     SSLConnRec *sslconn;
     SSL *ssl;
     int i;
@@ -1585,28 +1596,24 @@ int ssl_hook_Fixup(request_rec *r)
      * On-demand bloat up the SSI/CGI environment with certificate data
      */
     if (dc->nOptions & SSL_OPT_EXPORTCERTDATA) {
-        val = ssl_var_lookup(r->pool, r->server, r->connection,
-                             r, "SSL_SERVER_CERT");
+        extract_to_env(r, env, "SSL_SERVER_CERT");
+        extract_to_env(r, env, "SSL_CLIENT_CERT");
 
-        apr_table_setn(env, "SSL_SERVER_CERT", val);
-
-        val = ssl_var_lookup(r->pool, r->server, r->connection,
-                             r, "SSL_CLIENT_CERT");
-
-        apr_table_setn(env, "SSL_CLIENT_CERT", val);
-
-        if ((peer_certs = (STACK_OF(X509) *)SSL_get_peer_cert_chain(ssl))) {
-            for (i = 0; i < sk_X509_num(peer_certs); i++) {
-                var = apr_psprintf(r->pool, "SSL_CLIENT_CERT_CHAIN_%d", i);
-                val = ssl_var_lookup(r->pool, r->server, r->connection,
-                                     r, var);
-                if (val) {
-                    apr_table_setn(env, var, val);
-                }
-            }
-        }
+        i = 0;
+        do {
+            var = apr_psprintf(r->pool, "SSL_CLIENT_CERT_CHAIN_%d", i++);
+        } while (extract_to_env(r, env, var));
     }
 
+    if (dc->nOptions & SSL_OPT_EXPORTCB64DATA) {
+        extract_to_env(r, env, "SSL_SERVER_B64CERT");
+        extract_to_env(r, env, "SSL_CLIENT_B64CERT");
+
+        i = 0;
+        do {
+            var = apr_psprintf(r->pool, "SSL_CLIENT_B64CERT_CHAIN_%d", i++);
+        } while (extract_to_env(r, env, var));
+    }
 
 #ifdef SSL_get_secure_renegotiation_support
     apr_table_setn(r->notes, "ssl-secure-reneg",

@@ -1,0 +1,6 @@
+  *) mod_ssl: Add SSL_{CLIENT,SERVER}_B64CERT variables with
+     base64-encoded DER certificates.  Add SSL_CLIENT_B64CERT_CHAIN_n
+     equivalents for SSL_CLIENT_CERT_CHAIN_n, and new
+     "ExportBase64CertData" argument for SSLOptions.  PR 65169.
+     [Joe Orton]
+

@@ -1438,6 +1438,9 @@ const char *ssl_cmd_SSLOptions(cmd_parms *cmd,
         else if (strcEQ(w, "ExportCertData")) {
             opt = SSL_OPT_EXPORTCERTDATA;
         }
+        else if (strcEQ(w, "ExportBase64CertData")) {
+            opt = SSL_OPT_EXPORTCB64DATA;
+        }
         else if (strcEQ(w, "FakeBasicAuth")) {
             opt = SSL_OPT_FAKEBASICAUTH;
         }
