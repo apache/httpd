@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1766314 -->
+<!-- English Revision: 1887636 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviwed by : Vincent Deffontaines -->
 
@@ -274,11 +274,8 @@ Require user rbowen
     <module>mod_authn_dbm</module> fournit la directive <directive
     module="mod_authn_dbm">AuthDBMUserFile</directive>. Les programmes <program>
     dbmmanage</program> et <program>htdbm</program> permettent de
-    créer et manipuler ces fichiers. Vous
-    trouverez de nombreuses options d'autres types d'authentification
-    fournies par des modules tiers dans la <a
-    href="http://modules.apache.org/">Base de données des modules
-    d'Apache</a>.</p>
+    créer et manipuler ces fichiers. Enfin, de nombreux modules tiers
+    fournissent d'autres types d'authentification.</p>
 
     <p>Enfin, la directive <directive
     module="mod_authz_core">Require</directive> implémente la partie
