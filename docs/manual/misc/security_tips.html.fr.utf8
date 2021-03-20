@@ -150,9 +150,9 @@
       en entrée. Dans ces cas, son comportement se ramène à celui
       du module mpm <code class="module"><a href="../mod/worker.html">worker</a></code>.</li>
 
-      <li>Il existe de nombreux modules tiers disponibles à <a href="http://modules.apache.org/">http://modules.apache.org/</a> qui
-      peuvent retreindre les comportements de certains clients et ainsi
-      minimiser les problèmes de DoS.</li>
+      <li>Il existe de nombreux modules tiers qui peuvent restreindre les
+      comportements de certains clients et ainsi minimiser les problèmes de
+      DoS.</li>
 
     </ul>
 

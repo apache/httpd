@@ -71,8 +71,7 @@ comme le découpage des grosses requêtes (chunking) et la gestion des
 requêtes portant sur une partie d'un fichier (byte-range).</p>
 
 <p>Un grand choix d'applications sont implémentées par des modules de filtrage
-tiers disponibles à <a href="http://modules.apache.org/">modules.apache.org</a> entre autres.
-En voici quelques exemples :</p>
+tiers. En voici quelques exemples :</p>
 
 <ul>
 <li>Traitement et réécriture HTML et XML</li>
