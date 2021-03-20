@@ -2133,11 +2133,37 @@ les clés et certificats permettant au serveur mandataire de
 s'authentifier auprès des serveurs distants.
 </p>
 <p>
-Le fichier spécifié est la simple concaténation des différents fichiers
-de certificats codés en PEM, classés par ordre de préférence. Cette
-directive s'utilise à la place ou en complément de la directive
-<code>SSLProxyMachineCertificatePath</code>.
+Le fichier spécifié est la simple concaténation des différents fichiers de
+certificats codés en PEM. Cette directive s'utilise à la place ou en complément
+de la directive <code>SSLProxyMachineCertificatePath</code>. Le fichier spécifié
+peut contenir un nombre quelconque de paires certificat client/clé privée
+associée, et chaque paire peut être spécifiée selon l'ordre (certificat, clé) ou
+(clé, certificat). Des certificats non-feuilles (CA) peuvent aussi être inclus
+dans le fichier et sont traités comme s'ils avaient été définis via la directive
+<code class="directive"><a href="#sslproxymachinecertificatechainfile">SSLProxyMachineCertificateChainFile</a></code>.
 </p>
+
+<p>Lorsqu'un serveur distant sollicite le serveur pour obtenir un certificat
+client, ce dernier doit fournir une liste de <em>noms d'autorités de
+certification acceptables</em> au cours de la négociation. Si cette liste n'est
+<em>pas</em> fournie, <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> utilisera la première paire certificat/clé
+client définie. Si par contre cette liste <em>est</em> fournie,
+<code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> va la parcourir afin de trouver un certificat client
+défini qui a été fourni soit directement par l'autorité de certification
+considérée, soit indirectement via un nombre quelconque de certificats d'autorités de
+certification intermédiaires. La chaîne de certificats d'autorités de
+certification intermédiaires peut être construite à partir de ceux qui sont
+inclus dans le fichier ou configurés
+via la directive <code class="directive"><a href="#sslproxymachinecertificatechainfile">SSLProxyMachineCertificateChainFile</a></code>. Le premier
+certificat défini correspondant sera alors fourni comme réponse au cours de la
+négociation</p>
+
+<p>Si la liste de noms de CA <em>est</em> fournie au serveur distant, et si
+<em>aucun</em> certificat client correspondant n'est trouvé, aucun certificat
+client ne sera fourni par <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>, ce qui fera probablement
+échouer la négociation SSL/TLS (en fonction de la configuration du serveur
+distant).</p>
+
 <div class="warning">
 <p>Actuellement, les clés privées chiffrées ne sont pas supportées.</p>
 </div>
@@ -2166,14 +2192,13 @@ version 2.4.30 du serveur HTTP Apache</td></tr>
 </table>
 <p>
 Cette directive permet de définir le répertoire où sont stockés les clés
-et certificats permettant au serveur mandataire de s'authentifier auprès
+et certificats clients permettant au serveur mandataire de s'authentifier auprès
 des serveurs distants.
 </p>
-<p>Les fichiers de ce répertoire doivent être codés en PEM et ils sont
-accédés via des noms de fichier sous forme de condensés ou hash. Vous
-devez donc aussi créer des liens symboliques nommés
-<em>valeur-de-hashage</em><code>.N</code>, et vous devez toujours vous
-assurer que ce répertoire contient les liens symboliques appropriés.</p>
+<p>mod_ssl va essayer de charger tous les fichiers contenus dans le répertoire
+spécifié, comme si ces derniers étaient définis individuellement via la
+directive <code class="directive"><a href="#sslproxymachinecertificatefile">SSLProxyMachineCertificateFile</a></code>.</p>
+
 <div class="warning">
 <p>Actuellement, les clés privées chiffrées ne sont pas supportées.</p>
 </div>
