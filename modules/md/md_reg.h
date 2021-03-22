@@ -113,7 +113,7 @@ apr_status_t md_reg_update(md_reg_t *reg, apr_pool_t *p,
  * of the domain and going up the issuers. Returns APR_ENOENT when not available. 
  */
 apr_status_t md_reg_get_pubcert(const md_pubcert_t **ppubcert, md_reg_t *reg, 
-                                const md_t *md, struct md_pkey_spec_t *spec, apr_pool_t *p);
+                                const md_t *md, int i, apr_pool_t *p);
 
 /**
  * Get the filenames of private key and pubcert of the MD - if they exist.

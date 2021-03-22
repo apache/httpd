@@ -183,6 +183,15 @@ md_t *md_get_by_dns_overlap(struct apr_array_header_t *mds, const md_t *md)
     return NULL;
 }
 
+int md_cert_count(const md_t *md)
+{
+    /* cert are defined as a list of static files or a list of private key specs */
+    if (md->cert_files && md->cert_files->nelts) {
+        return md->cert_files->nelts;
+    }
+    return md_pkeys_spec_count(md->pks);
+}
+
 md_t *md_create(apr_pool_t *p, apr_array_header_t *domains)
 {
     md_t *md;
@@ -242,8 +251,8 @@ md_t *md_clone(apr_pool_t *p, const md_t *src)
         }
         md->acme_tls_1_domains = md_array_str_compact(p, src->acme_tls_1_domains, 0);
         md->stapling = src->stapling;
-        if (src->cert_file) md->cert_file = apr_pstrdup(p, src->cert_file);
-        if (src->pkey_file) md->pkey_file = apr_pstrdup(p, src->pkey_file);
+        if (src->cert_files) md->cert_files = md_array_str_clone(p, src->cert_files);
+        if (src->pkey_files) md->pkey_files = md_array_str_clone(p, src->pkey_files);
     }    
     return md;   
 }
@@ -290,8 +299,8 @@ md_json_t *md_to_json(const md_t *md, apr_pool_t *p)
         }
         md_json_setb(md->must_staple > 0, json, MD_KEY_MUST_STAPLE, NULL);
         md_json_setsa(md->acme_tls_1_domains, json, MD_KEY_PROTO, MD_KEY_ACME_TLS_1, NULL);
-        md_json_sets(md->cert_file, json, MD_KEY_CERT_FILE, NULL);
-        md_json_sets(md->pkey_file, json, MD_KEY_PKEY_FILE, NULL);
+        if (md->cert_files) md_json_setsa(md->cert_files, json, MD_KEY_CERT_FILES, NULL);
+        if (md->pkey_files) md_json_setsa(md->pkey_files, json, MD_KEY_PKEY_FILES, NULL);
         md_json_setb(md->stapling > 0, json, MD_KEY_STAPLING, NULL);
         return json;
     }
@@ -337,8 +346,12 @@ md_t *md_from_json(md_json_t *json, apr_pool_t *p)
         md->must_staple = (int)md_json_getb(json, MD_KEY_MUST_STAPLE, NULL);
         md_json_dupsa(md->acme_tls_1_domains, p, json, MD_KEY_PROTO, MD_KEY_ACME_TLS_1, NULL);
             
-        md->cert_file = md_json_dups(p, json, MD_KEY_CERT_FILE, NULL); 
-        md->pkey_file = md_json_dups(p, json, MD_KEY_PKEY_FILE, NULL); 
+        if (md_json_has_key(json, MD_KEY_CERT_FILES, NULL)) {
+            md->cert_files = apr_array_make(p, 3, sizeof(char*));
+            md->pkey_files = apr_array_make(p, 3, sizeof(char*));
+            md_json_dupsa(md->cert_files, p, json, MD_KEY_CERT_FILES, NULL);
+            md_json_dupsa(md->pkey_files, p, json, MD_KEY_PKEY_FILES, NULL);
+        }
         md->stapling = (int)md_json_getb(json, MD_KEY_STAPLING, NULL);
         
         return md;

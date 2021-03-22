@@ -173,7 +173,7 @@ int md_will_renew_cert(const md_t *md)
     if (md->renew_mode == MD_RENEW_MANUAL) {
         return 0;
     }
-    else if (md->renew_mode == MD_RENEW_AUTO && md->cert_file) {
+    else if (md->renew_mode == MD_RENEW_AUTO && md->cert_files && md->cert_files->nelts) {
         return 0;
     } 
     return 1;

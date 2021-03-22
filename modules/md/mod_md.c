@@ -671,17 +671,20 @@ static apr_status_t merge_mds_with_conf(md_mod_conf_t *mc, apr_pool_t *p,
             }
         }
 
-        if (md->cert_file && !md->pkey_file) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, base_server, APLOGNO(10170)
-                         "The Managed Domain '%s', defined in %s(line %d), "
-                         "has a MDCertificateFile but no MDCertificateKeyFile.",
-                         md->name, md->defn_name, md->defn_line_number);
-            return APR_EINVAL;
+        if (md->cert_files && md->cert_files->nelts) {
+            if (!md->pkey_files || (md->cert_files->nelts != md->pkey_files->nelts)) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0, base_server, APLOGNO(10170)
+                             "The Managed Domain '%s', defined in %s(line %d), "
+                             "needs one MDCertificateKeyFile for each MDCertificateFile.",
+                             md->name, md->defn_name, md->defn_line_number);
+                return APR_EINVAL;
+            }
         }
-        if (!md->cert_file && md->pkey_file) {
+        else if (md->pkey_files && md->pkey_files->nelts 
+            && (!md->cert_files || !md->cert_files->nelts)) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, base_server, APLOGNO(10171)
                          "The Managed Domain '%s', defined in %s(line %d), "
-                         "has a MDCertificateKeyFile but no MDCertificateFile.",
+                         "has MDCertificateKeyFile(s) but no MDCertificateFile.",
                          md->name, md->defn_name, md->defn_line_number);
             return APR_EINVAL;
         }
@@ -950,13 +953,16 @@ static apr_status_t md_post_config_after_ssl(apr_pool_t *p, apr_pool_t *plog,
     for (i = 0; i < mc->mds->nelts; ++i) {
         md = APR_ARRAY_IDX(mc->mds, i, md_t *);
 
+        ap_log_error( APLOG_MARK, APLOG_TRACE2, rv, s, "md{%s}: auto_add", md->name);
         if (APR_SUCCESS != (rv = auto_add_domains(md, s, p))) {
             goto leave;
         }
         init_acme_tls_1_domains(md, s);
+        ap_log_error( APLOG_MARK, APLOG_TRACE2, rv, s, "md{%s}: check_usage", md->name);
         if (APR_SUCCESS != (rv = check_usage(mc, md, s, p, ptemp))) {
             goto leave;
         }
+        ap_log_error( APLOG_MARK, APLOG_TRACE2, rv, s, "md{%s}: sync_finish", md->name);
         if (APR_SUCCESS != (rv = md_reg_sync_finish(mc->reg, md, p, ptemp))) {
             ap_log_error( APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10172)
                          "md[%s]: error syncing to store", md->name);
@@ -964,8 +970,10 @@ static apr_status_t md_post_config_after_ssl(apr_pool_t *p, apr_pool_t *plog,
         }
     }
     /*8*/
+    ap_log_error( APLOG_MARK, APLOG_TRACE2, rv, s, "init_cert_watch");
     watched = init_cert_watch_status(mc, p, ptemp, s);
     /*9*/
+    ap_log_error( APLOG_MARK, APLOG_TRACE2, rv, s, "cleanup challenges");
     md_reg_cleanup_challenges(mc->reg, p, ptemp, mc->mds);
 
     /* From here on, the domains in the registry are readonly
@@ -990,6 +998,7 @@ static apr_status_t md_post_config_after_ssl(apr_pool_t *p, apr_pool_t *plog,
     rv = md_ocsp_start_watching(mc, s, p);
 
 leave:
+    ap_log_error( APLOG_MARK, APLOG_TRACE2, rv, s, "post_config done");
     return rv;
 }
 
@@ -1087,7 +1096,6 @@ static apr_status_t get_certificates(server_rec *s, apr_pool_t *p, int fallback,
     const md_t *md;
     apr_array_header_t *key_files, *chain_files;
     const char *keyfile, *chainfile;
-    md_pkey_spec_t *spec;
     int i;
 
     *pkey_files = *pcert_files = NULL;
@@ -1127,53 +1135,61 @@ static apr_status_t get_certificates(server_rec *s, apr_pool_t *p, int fallback,
     }
     md = APR_ARRAY_IDX(sc->assigned, 0, const md_t*);
 
-    for (i = 0; i < md_pkeys_spec_count(md->pks); ++i) {
-        spec = md_pkeys_spec_get(md->pks, i);
-        rv = md_reg_get_cred_files(&keyfile, &chainfile, reg, MD_SG_DOMAINS, md, spec, p);
-        if (APR_SUCCESS == rv) {
-            APR_ARRAY_PUSH(key_files, const char*) = keyfile;
-            APR_ARRAY_PUSH(chain_files, const char*) = chainfile;
-        }
-        else if (!APR_STATUS_IS_ENOENT(rv)) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10110)
-                         "retrieving credentials for MD %s (%s)",
-                         md->name, md_pkey_spec_name(spec));
-            return rv;
-        }
+    if (md->cert_files && md->cert_files->nelts) {
+        apr_array_cat(chain_files, md->cert_files);
+        apr_array_cat(key_files, md->pkey_files);
+        rv = APR_SUCCESS;
     }
-
-    if (md_array_is_empty(key_files)) {
-        if (fallback) {
-            /* Provide temporary, self-signed certificate as fallback, so that
-             * clients do not get obscure TLS handshake errors or will see a fallback
-             * virtual host that is not intended to be served here. */
-            char *kfn, *cfn;
-
-            store = md_reg_store_get(reg);
-            assert(store);
-
-            for (i = 0; i < md_pkeys_spec_count(md->pks); ++i) {
-                spec = md_pkeys_spec_get(md->pks, i);
-                fallback_fnames(p, spec, &kfn, &cfn);
-
-                md_store_get_fname(&keyfile, store, MD_SG_DOMAINS, md->name, kfn, p);
-                md_store_get_fname(&chainfile, store, MD_SG_DOMAINS, md->name, cfn, p);
-                if (!md_file_exists(keyfile, p) || !md_file_exists(chainfile, p)) {
-                    if (APR_SUCCESS != (rv = make_fallback_cert(store, md, spec, s, p, kfn, cfn))) {
-                        return rv;
-                    }
-                }
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(10116)
-                             "%s: providing %s fallback certificate for server %s",
-                             md->name, md_pkey_spec_name(spec), s->server_hostname);
+    else {
+        md_pkey_spec_t *spec;
+        
+        for (i = 0; i < md_cert_count(md); ++i) {
+            spec = md_pkeys_spec_get(md->pks, i);
+            rv = md_reg_get_cred_files(&keyfile, &chainfile, reg, MD_SG_DOMAINS, md, spec, p);
+            if (APR_SUCCESS == rv) {
                 APR_ARRAY_PUSH(key_files, const char*) = keyfile;
                 APR_ARRAY_PUSH(chain_files, const char*) = chainfile;
             }
-            rv = APR_EAGAIN;
-            goto leave;
+            else if (!APR_STATUS_IS_ENOENT(rv)) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10110)
+                             "retrieving credentials for MD %s (%s)",
+                             md->name, md_pkey_spec_name(spec));
+                return rv;
+            }
+        }
+
+        if (md_array_is_empty(key_files)) {
+            if (fallback) {
+                /* Provide temporary, self-signed certificate as fallback, so that
+                 * clients do not get obscure TLS handshake errors or will see a fallback
+                 * virtual host that is not intended to be served here. */
+                char *kfn, *cfn;
+
+                store = md_reg_store_get(reg);
+                assert(store);
+
+                for (i = 0; i < md_cert_count(md); ++i) {
+                    spec = md_pkeys_spec_get(md->pks, i);
+                    fallback_fnames(p, spec, &kfn, &cfn);
+
+                    md_store_get_fname(&keyfile, store, MD_SG_DOMAINS, md->name, kfn, p);
+                    md_store_get_fname(&chainfile, store, MD_SG_DOMAINS, md->name, cfn, p);
+                    if (!md_file_exists(keyfile, p) || !md_file_exists(chainfile, p)) {
+                        if (APR_SUCCESS != (rv = make_fallback_cert(store, md, spec, s, p, kfn, cfn))) {
+                            return rv;
+                        }
+                    }
+                    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(10116)
+                                 "%s: providing %s fallback certificate for server %s",
+                                 md->name, md_pkey_spec_name(spec), s->server_hostname);
+                    APR_ARRAY_PUSH(key_files, const char*) = keyfile;
+                    APR_ARRAY_PUSH(chain_files, const char*) = chainfile;
+                }
+                rv = APR_EAGAIN;
+                goto leave;
+            }
         }
     }
-
     ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s, APLOGNO(10077)
                  "%s[state=%d]: providing certificates for server %s",
                  md->name, md->state, s->server_hostname);
@@ -1345,7 +1361,8 @@ static int md_http_challenge_pr(request_rec *r)
                     return DONE;
                 }
                 else if (!md || md->renew_mode == MD_RENEW_MANUAL
-                    || (md->cert_file && md->renew_mode == MD_RENEW_AUTO)) {
+                    || (md->cert_files && md->cert_files->nelts
+                        && md->renew_mode == MD_RENEW_AUTO)) {
                     /* The request hostname is not for a domain - or at least not for
                      * a domain that we renew ourselves. We are not
                      * the sole authority here for /.well-known/acme-challenge (see PR62189).

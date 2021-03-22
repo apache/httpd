@@ -22,6 +22,8 @@
 #include <apr_buckets.h>
 #include <apr_file_io.h>
 #include <apr_strings.h>
+#include <httpd.h>
+#include <http_core.h>
 
 #include <openssl/err.h>
 #include <openssl/evp.h>

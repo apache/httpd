@@ -60,6 +60,8 @@ Changes with Apache 2.5.1
      - Account Update transactions to V2 CAs now use the correct POST-AS-GET method.  
      Previously, an empty JSON object was sent - which apparently LE accepted, 
      but others reject.
+     - MDCertificateFile and MDCertificateKeyFile can now be specified several
+     times to add multiple, static certificates to a MDomain.
      [Stefan Eissing, @tlhackque, Andreas Ulm]
 
   *) mod_session: Improve session parsing.  [Yann Yalvic]
