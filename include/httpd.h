@@ -645,6 +645,49 @@ struct ap_method_list_t {
     /** the array used for extension methods */
     apr_array_header_t *method_list;
 };
+/** @} */
+
+/**
+ * @defgroup bnotes Binary notes recognized by the server
+ * @ingroup APACHE_CORE_DAEMON
+ * @{
+ *
+ * @brief Binary notes recognized by the server.
+ */
+
+/**
+ * The type used for request binary notes.
+ */
+typedef apr_uint64_t ap_request_bnotes_t;
+
+/**
+ * These constants represent bitmasks for notes associated with this
+ * request. There are space for 64 bits in the apr_uint64_t.
+ *
+ */
+#define AP_REQUEST_STRONG_ETAG 1 >> 0
+
+/**
+ * This is a convenience macro to ease with getting specific request
+ * binary notes.
+ */
+#define AP_REQUEST_GET_BNOTE(r, mask) \
+    ((mask) & ((r)->bnotes))
+
+/**
+ * This is a convenience macro to ease with setting specific request
+ * binary notes.
+ */
+#define AP_REQUEST_SET_BNOTE(r, mask, val) \
+    (r)->bnotes = (((r)->bnotes & ~(mask)) | (val))
+
+/**
+ * Returns true if the strong etag flag is set for this request.
+ */
+#define AP_REQUEST_IS_STRONG_ETAG(r) \
+        AP_REQUEST_GET_BNOTE((r), AP_REQUEST_STRONG_ETAG)
+/** @} */
+
 
 /**
  * @defgroup module_magic Module Magic mime types
@@ -1062,6 +1105,11 @@ struct request_rec {
      *  1 yes/success
      */
     int double_reverse;
+    /** Request flags associated with this request. Use
+     * AP_REQUEST_GET_FLAGS() and AP_REQUEST_SET_FLAGS() to access
+     * the elements of this field.
+     */
+    ap_request_bnotes_t bnotes;
 };
 
 /**

@@ -391,6 +391,8 @@ static apr_status_t decrypt_string(request_rec * r, const apr_crypto_t *f,
         return res;
     }
 
+    res = APR_ECRYPT; /* in case we exhaust all passphrases */
+
     /* try each passphrase in turn */
     for (; i < dconf->passphrases->nelts; i++) {
         const char *passphrase = APR_ARRAY_IDX(dconf->passphrases, i, char *);

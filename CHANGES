@@ -61,7 +61,27 @@ Changes with Apache 2.4.47
      but others reject.
      [Stefan Eissing, @tlhackque, Andreas Ulm]
 
-  *) mod_session: Improve session parsing.  [Yann Yalvic]
+  *) mod_unique_id: Fix potential duplicated ID generation under heavy load.
+     PR 65159
+     [Jonas Müntener <jonas.muentener ergon.ch>, Christophe Jaillet]
+
+  *) "[mod_dav_fs etag handling] should really honor the FileETag setting".
+     - It now does.
+     - Add "Digest" to FileETag directive, allowing a strong ETag to be
+       generated using a file digest.
+     - Add ap_make_etag_ex() and ap_set_etag_fd() to allow full control over
+       ETag generation.
+     - Add concept of "binary notes" to request_rec, allowing packed bit flags
+       to be added to a request.
+     - First binary note - AP_REQUEST_STRONG_ETAG - allows modules to force
+       the ETag to a strong ETag to comply with RFC requirements, such as those
+       mandated by various WebDAV extensions.
+     [Graham Leggett]
+
+  *) mod_proxy_http: Fix a possibly crash when the origin connection gets
+     interrupted before completion.  PR 64234.
+     [Barnim Dzwillo <dzwillo strato.de>, Ruediger Pluem]
+
   *) mod_ssl: Do not keep connections to OCSP responders alive when doing
      OCSP requests.  PR 64135.  [Ruediger Pluem]
 

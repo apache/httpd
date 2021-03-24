@@ -279,10 +279,8 @@ Require user rbowen</pre>
     stocker les données relatives aux
     utilisateurs dans des bases de données rapides. Le module
     <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> fournit la directive <code class="directive"><a href="../mod/mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile</a></code>. Les programmes <code class="program"><a href="../programs/dbmmanage.html">dbmmanage</a></code> et <code class="program"><a href="../programs/htdbm.html">htdbm</a></code> permettent de
-    créer et manipuler ces fichiers. Vous
-    trouverez de nombreuses options d'autres types d'authentification
-    fournies par des modules tiers dans la <a href="http://modules.apache.org/">Base de données des modules
-    d'Apache</a>.</p>
+    créer et manipuler ces fichiers. Enfin, de nombreux modules tiers
+    fournissent d'autres types d'authentification.</p>
 
     <p>Enfin, la directive <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> implémente la partie
     autorisation du processus en définissant l'utilisateur autorisé à

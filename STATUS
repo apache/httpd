@@ -137,41 +137,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) core: Optimize 'ap_list_provider_names'. Save some memory and potentialy
-     avoid some useless copy.
-     trunk patch: http://svn.apache.org/r1883184
-     2.4.x patch: svn merge -c 1883184 ^/httpd/httpd/trunk .
-     +1: jailletc36, jorton, ylavic
-
-  *) mod_session_crypto: Bubble up an error if none of the passhrases work
-     trunk patch: http://svn.apache.org/r1874674
-     2.4.x patch: svn merge -c 1874674 ^/httpd/httpd/trunk .
-     +1: jailletc36, ylavic, covener 
-
- *) "[mod_dav_fs etag handling] should really honor the FileETag setting".
-     - It now does.
-     - Add "Digest" to FileETag directive, allowing a strong ETag to be
-       generated using a file digest.
-     - Add ap_make_etag_ex() and ap_set_etag_fd() to allow full control over
-       ETag generation.
-     - Add concept of "binary notes" to request_rec, allowing packed bit flags
-       to be added to a request.
-     - First binary note - AP_REQUEST_STRONG_ETAG - allows modules to force
-       the ETag to a strong ETag to comply with RFC requirements, such as those
-       mandated by various WebDAV extensions.
-    trunk patch http://svn.apache.org/r1879285
-                http://svn.apache.org/r1879322
-                http://svn.apache.org/r1879345
-                http://svn.apache.org/r1879346
-                http://svn.apache.org/r1879465
-                http://svn.apache.org/r1879469
-                http://svn.apache.org/r1879470
-                http://svn.apache.org/r1879488
-                http://svn.apache.org/r1879541
-                http://svn.apache.org/r1879548
-    2.4.x patch https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-etag2.patch
-    +1: minfrin, jim, ylavic
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -183,14 +148,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     +1: minfrin
     ylavic: patch is 404
 
-  *) mod_http2: explicitely apr_thread_exit() at the end of slot_run(), and
-                fix workers synchronization on pchild cleanup.
-     trunk patch: http://svn.apache.org/r1883668
-                  http://svn.apache.org/r1886255
-     2.4.x patch: svn merge -c 1883668,1886255 ^/httpd/httpd/trunk .
-     +1: ylavic, icing
-     ylavic: jorton's vote reset after adding r1886255
-
   *) mod_http2: sync with github standalone version 1.15.17
      - Log requests and sent the configured error response in case of early detected
        errors like too many or too long headers. [Ruediger Pluem]
@@ -200,32 +157,22 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        out to the client. This fixes interop issues with certain flavours of gRPC, see
        also <https://github.com/icing/mod_h2/issues/207>.
      PR: https://github.com/apache/httpd/pull/175
-     +1: icing, ylavic,
+     +1: icing, ylavic, jorton
 
   *) mod_lua: Support Lua 5.4 and use pkg-config to detect Lua
      properly on Debian systems.
      trunk patch: http://svn.apache.org/r1826206
                   http://svn.apache.org/r1880678
                   http://svn.apache.org/r1880743
-     2.4.x patch: svn merge -c 1826206,1880678,1880743 ^/httpd/httpd/trunk .
+                  http://svn.apache.org/r1880924
+     2.4.x patch: svn merge -c 1826206,1880678,1880743,1880924 ^/httpd/httpd/trunk .
      PR: https://github.com/apache/httpd/pull/176
-     +1: jorton, ylavic,
+     +1: jorton, 
 
-  *) mod_unique_id: Fix potential duplicated ID generation under heavy load.
-     PR 65159
-     trunk patch: http://svn.apache.org/r1887244
-                  http://svn.apache.org/r1887245
-     2.4.x patch: svn merge -c 1887244,1887245 ^/httpd/httpd/trunk .
-                  https://bz.apache.org/bugzilla/attachment.cgi?id=37749
-     +1: jailletc36, ylavic
-
-  *) mod_proxy_http: Fix a potential random memory corruption issue
-     PR 64234
-     trunk patch: https://svn.apache.org/r1875353
-     2.4.x patch: https://bz.apache.org/bugzilla/show_bug.cgi?id=64234#c2
-     +1: ylavic,
-     jailletc36: if applied on 2.4.x, a CHANGES entry should be added
-
+  *) mpm_event/worker: Adjust signal handler before unblocking. PR 64533.
+     trunk patch: http://svn.apache.org/r1882370
+     2.4.x patch: svn merge -c 1882370 ^/httpd/httpd/trunk .
+     +1: ylavic, jorton, 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
