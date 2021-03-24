@@ -174,6 +174,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1882370 ^/httpd/httpd/trunk .
      +1: ylavic, jorton, 
 
+  *) core/mod_ssl/mod_md:
+     - adding new ap_ssl_*() functions for a backward
+       compatible replacement of the major optional mod_ssl functions. This
+       allows other ssl modules to work without impersonating mod_ssl and
+       also allows different ssl modules being active on separate ports.
+     - latest mod_md with support for multiple certificates per domain
+       and ECDSA certificates. Removed ACMEv1 support.
+     - Interworking mod_md and ssl modules changed to exchange PEM strings
+       instead of file paths for ACME challenges.
+     Sorry, large patch, but it all hangs together.
+     PR: https://github.com/apache/httpd/pull/178
+     +1: icing
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
