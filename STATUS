@@ -161,7 +161,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mpm_event/worker: Adjust signal handler before unblocking. PR 64533.
      trunk patch: http://svn.apache.org/r1882370
      2.4.x patch: svn merge -c 1882370 ^/httpd/httpd/trunk .
-     +1: ylavic, jorton, 
+     +1: ylavic, jorton, icing
 
   *) core/mod_ssl/mod_md:
      - adding new ap_ssl_*() functions for a backward
