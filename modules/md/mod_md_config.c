@@ -878,27 +878,37 @@ static const char *md_config_set_dns01_cmd(cmd_parms *cmd, void *mconfig, const 
     return NULL;
 }
 
-static const char *md_config_set_cert_file(cmd_parms *cmd, void *mconfig, const char *arg)
+static const char *md_config_add_cert_file(cmd_parms *cmd, void *mconfig, const char *arg)
 {
     md_srv_conf_t *sc = md_config_get(cmd->server);
-    const char *err;
+    const char *err, *fpath;
     
     (void)mconfig;
     if ((err = md_conf_check_location(cmd, MD_LOC_MD))) return err;
     assert(sc->current);
-    sc->current->cert_file = arg;
+    fpath = ap_server_root_relative(cmd->pool, arg);
+    if (!fpath) return apr_psprintf(cmd->pool, "certificate file not found: %s", arg);
+    if (!sc->current->cert_files) {
+        sc->current->cert_files = apr_array_make(cmd->pool, 3, sizeof(char*));
+    }
+    APR_ARRAY_PUSH(sc->current->cert_files, const char*) = fpath;
     return NULL;
 }
 
-static const char *md_config_set_key_file(cmd_parms *cmd, void *mconfig, const char *arg)
+static const char *md_config_add_key_file(cmd_parms *cmd, void *mconfig, const char *arg)
 {
     md_srv_conf_t *sc = md_config_get(cmd->server);
-    const char *err;
+    const char *err, *fpath;
     
     (void)mconfig;
     if ((err = md_conf_check_location(cmd, MD_LOC_MD))) return err;
     assert(sc->current);
-    sc->current->pkey_file = arg;
+    fpath = ap_server_root_relative(cmd->pool, arg);
+    if (!fpath) return apr_psprintf(cmd->pool, "certificate key file not found: %s", arg);
+    if (!sc->current->pkey_files) {
+        sc->current->pkey_files = apr_array_make(cmd->pool, 3, sizeof(char*));
+    }
+    APR_ARRAY_PUSH(sc->current->pkey_files, const char*) = fpath;
     return NULL;
 }
 
@@ -1049,9 +1059,9 @@ const command_rec md_cmds[] = {
                   "Allow managing of base server outside virtual hosts."),
     AP_INIT_RAW_ARGS("MDChallengeDns01", md_config_set_dns01_cmd, NULL, RSRC_CONF, 
                   "Set the command for setup/teardown of dns-01 challenges"),
-    AP_INIT_TAKE1("MDCertificateFile", md_config_set_cert_file, NULL, RSRC_CONF, 
+    AP_INIT_TAKE1("MDCertificateFile", md_config_add_cert_file, NULL, RSRC_CONF, 
                   "set the static certificate (chain) file to use for this domain."),
-    AP_INIT_TAKE1("MDCertificateKeyFile", md_config_set_key_file, NULL, RSRC_CONF, 
+    AP_INIT_TAKE1("MDCertificateKeyFile", md_config_add_key_file, NULL, RSRC_CONF, 
                   "set the static private key file to use for this domain."),
     AP_INIT_TAKE1("MDServerStatus", md_config_set_server_status, NULL, RSRC_CONF, 
                   "On to see Managed Domains in server-status."),

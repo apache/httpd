@@ -104,7 +104,7 @@ int md_http_cert_status(request_rec *r)
          md_json_setj(md_json_getj(mdj, MD_KEY_CERT, MD_KEY_VALID, NULL), resp, MD_KEY_VALID, NULL);
      }
 
-    for (i = 0; i < md_pkeys_spec_count(md->pks); ++i) {
+    for (i = 0; i < md_cert_count(md); ++i) {
         spec = md_pkeys_spec_get(md->pks, i);
         keyname = md_pkey_spec_name(spec);
         cj = md_json_create(r->pool);

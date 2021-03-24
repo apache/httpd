@@ -92,8 +92,8 @@ struct md_t {
     const char *ca_account;         /* account used at CA */
     const char *ca_agreement;       /* accepted agreement uri between CA and user */ 
     struct apr_array_header_t *ca_challenges; /* challenge types configured for this MD */
-    const char *cert_file;          /* != NULL iff pubcert file explicitly configured */
-    const char *pkey_file;          /* != NULL iff privkey file explicitly configured */
+    struct apr_array_header_t *cert_files; /* != NULL iff pubcerts explicitly configured */
+    struct apr_array_header_t *pkey_files; /* != NULL iff privkeys explicitly configured */
     
     md_state_t state;               /* state of this MD */
     
@@ -118,7 +118,7 @@ struct md_t {
 #define MD_KEY_CA               "ca"
 #define MD_KEY_CA_URL           "ca-url"
 #define MD_KEY_CERT             "cert"
-#define MD_KEY_CERT_FILE        "cert-file"
+#define MD_KEY_CERT_FILES       "cert-files"
 #define MD_KEY_CERTIFICATE      "certificate"
 #define MD_KEY_CHALLENGE        "challenge"
 #define MD_KEY_CHALLENGES       "challenges"
@@ -164,7 +164,7 @@ struct md_t {
 #define MD_KEY_ORDERS           "orders"
 #define MD_KEY_PERMANENT        "permanent"
 #define MD_KEY_PKEY             "privkey"
-#define MD_KEY_PKEY_FILE        "pkey-file"
+#define MD_KEY_PKEY_FILES       "pkey-files"
 #define MD_KEY_PROBLEM          "problem"
 #define MD_KEY_PROTO            "proto"
 #define MD_KEY_READY            "ready"
@@ -284,6 +284,9 @@ struct md_json_t *md_to_json (const md_t *md, apr_pool_t *p);
 md_t *md_from_json(struct md_json_t *json, apr_pool_t *p);
 
 int md_is_covered_by_alt_names(const md_t *md, const struct apr_array_header_t* alt_names);
+
+/* how many certificates this domain has/will eventually have. */
+int md_cert_count(const md_t *md);
 
 #define LE_ACMEv1_PROD      "https://acme-v01.api.letsencrypt.org/directory"
 #define LE_ACMEv1_STAGING   "https://acme-staging.api.letsencrypt.org/directory"

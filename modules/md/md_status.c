@@ -116,7 +116,7 @@ static apr_status_t status_get_certs_json(md_json_t **pjson, apr_array_header_t 
     apr_status_t rv = APR_SUCCESS;   
     
     json = md_json_create(p);
-    for (i = 0; i < md_pkeys_spec_count(md->pks); ++i) {
+    for (i = 0; i < md_cert_count(md); ++i) {
         spec = md_pkeys_spec_get(md->pks, i);
         cert = APR_ARRAY_IDX(certs, i, md_cert_t*);
         if (!cert) continue;
@@ -157,7 +157,7 @@ static apr_status_t get_staging_certs_json(md_json_t **pjson, const md_t *md,
     apr_status_t rv;
     
     certs = apr_array_make(p, 5, sizeof(md_cert_t*));
-    for (i = 0; i < md_pkeys_spec_count(md->pks); ++i) {
+    for (i = 0; i < md_cert_count(md); ++i) {
         spec = md_pkeys_spec_get(md->pks, i);
         cert = NULL;
         rv = md_pubcert_load(md_reg_store_get(reg), MD_SG_STAGING, md->name, spec, &chain, p);
@@ -180,15 +180,13 @@ static apr_status_t status_get_md_json(md_json_t **pjson, const md_t *md,
     apr_array_header_t *certs;
     apr_status_t rv = APR_SUCCESS;
     apr_time_t renew_at;
-    md_pkey_spec_t *spec;
     int i;
 
     mdj = md_to_json(md, p);
     certs = apr_array_make(p, 5, sizeof(md_cert_t*));
-    for (i = 0; i < md_pkeys_spec_count(md->pks); ++i) {
-        spec = md_pkeys_spec_get(md->pks, i);
+    for (i = 0; i < md_cert_count(md); ++i) {
         cert = NULL;
-        if (APR_SUCCESS == md_reg_get_pubcert(&pubcert, reg, md, spec, p)) {
+        if (APR_SUCCESS == md_reg_get_pubcert(&pubcert, reg, md, i, p)) {
             cert = APR_ARRAY_IDX(pubcert->certs, 0, const md_cert_t*);
         }
         APR_ARRAY_PUSH(certs, const md_cert_t*) = cert;

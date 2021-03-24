@@ -1127,11 +1127,14 @@ apr_status_t md_json_readb(md_json_t **pjson, apr_pool_t *pool, apr_bucket_briga
     json_t *j;
     
     j = json_load_callback(load_cb, bb, 0, &error);
-    if (!j) {
-        return APR_EINVAL;
+    if (j) {
+        *pjson = json_create(pool, j);
+    } else {
+        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, pool,
+                      "failed to load JSON file: %s (line %d:%d)",
+                      error.text, error.line, error.column);
     }
-    *pjson = json_create(pool, j);
-    return APR_SUCCESS;
+    return (j && *pjson) ? APR_SUCCESS : APR_EINVAL;
 }
 
 static size_t load_file_cb(void *data, size_t max_len, void *baton)
