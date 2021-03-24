@@ -173,11 +173,11 @@ Require host .net example.edu
     not used, it will work with clients which use a dynamic DNS service.</p>
 
     <highlight language="config">
-Require forward-dns bla.example.org
+Require forward-dns dynamic.example.org
     </highlight>
 
     <p>A client the IP of which is resolved from the name
-    <code>bla.example.org</code> will be granted access.</p>
+    <code>dynamic.example.org</code> will be granted access.</p>
 
     <p>The <code>forward-dns</code> provider was added in 2.4.19.</p>
 </section>
