@@ -576,7 +576,7 @@ apr_status_t md_reg_get_pubcert(const md_pubcert_t **ppubcert, md_reg_t *reg,
     const md_pubcert_t *pubcert;
     const char *name;
 
-    name = apr_psprintf(p, "%s[%d]", md->name, i, NULL);
+    name = apr_psprintf(p, "%s[%d]", md->name, i);
     pubcert = apr_hash_get(reg->certs, name, (apr_ssize_t)strlen(name));
     if (!pubcert && !reg->domains_frozen) {
         rv = md_util_pool_vdo(pubcert_load, reg, reg->p, &pubcert, MD_SG_DOMAINS, md, i, NULL);
