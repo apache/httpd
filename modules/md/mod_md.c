@@ -1461,7 +1461,7 @@ static void md_child_init(apr_pool_t *pool, server_rec *s)
  */
 static void md_hooks(apr_pool_t *pool)
 {
-    static const char *const mod_ssl[] = { "mod_ssl.c", NULL};
+    static const char *const mod_ssl[] = { "mod_ssl.c", "mod_tls.c", NULL};
 
     /* Leave the ssl initialization to mod_ssl or friends. */
     md_acme_init(pool, AP_SERVER_BASEVERSION, 0);
@@ -1472,7 +1472,7 @@ static void md_hooks(apr_pool_t *pool)
      * Run again after mod_ssl is done.
      */
     ap_hook_post_config(md_post_config_before_ssl, NULL, mod_ssl, APR_HOOK_MIDDLE);
-    ap_hook_post_config(md_post_config_after_ssl, mod_ssl, NULL, APR_HOOK_MIDDLE);
+    ap_hook_post_config(md_post_config_after_ssl, mod_ssl, NULL, APR_HOOK_LAST);
 
     /* Run once after a child process has been created.
      */
