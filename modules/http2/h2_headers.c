@@ -64,6 +64,7 @@ apr_bucket * h2_bucket_headers_make(apr_bucket *b, h2_headers *r)
 
     b = apr_bucket_shared_make(b, br, 0, 0);
     b->type = &h2_bucket_type_headers;
+    b->length = h2_headers_length(r);
     
     return b;
 } 
@@ -123,6 +124,20 @@ h2_headers *h2_headers_create(int status, apr_table_t *headers_in,
     headers->notes     = (notes? apr_table_clone(pool, notes)
                            : apr_table_make(pool, 5));
     return headers;
+}
+
+static int add_header_lengths(void *ctx, const char *name, const char *value) 
+{
+    apr_size_t *plen = ctx;
+    *plen += strlen(name) + strlen(value); 
+    return 1;
+}
+
+apr_size_t h2_headers_length(h2_headers *headers)
+{
+    apr_size_t len = 0;
+    apr_table_do(add_header_lengths, &len, headers->headers, NULL);
+    return len;
 }
 
 h2_headers *h2_headers_rcreate(request_rec *r, int status,

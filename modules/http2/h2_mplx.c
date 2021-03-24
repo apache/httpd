@@ -91,10 +91,6 @@ apr_status_t h2_mplx_m_child_init(apr_pool_t *pool, server_rec *s)
 
 static void mst_check_data_for(h2_mplx *m, h2_stream *stream, int mplx_is_locked);
 
-static void mst_stream_output_consumed(void *ctx, h2_bucket_beam *beam, apr_off_t length)
-{
-}
-
 static void mst_stream_input_ev(void *ctx, h2_bucket_beam *beam)
 {
     h2_stream *stream = ctx;
@@ -299,18 +295,6 @@ static int m_stream_destroy_iter(void *ctx, void *val)
         stream->task = NULL;
         secondary = task->c;
         if (secondary) {
-            /* On non-serialized requests, the IO logging has not accounted for any
-             * meta data send over the network: response headers and h2 frame headers. we
-             * counted this on the stream and need to add this now.
-             * This is supposed to happen before the EOR bucket triggers the
-             * logging of the transaction. *fingers crossed* */
-            if (task->request && !task->request->serialize && h2_task_logio_add_bytes_out) {
-                apr_off_t unaccounted = stream->out_frame_octets - stream->out_data_octets;
-                if (unaccounted > 0) {
-                    h2_task_logio_add_bytes_out(secondary, unaccounted);
-                }
-            }
-        
             if (m->s->keep_alive_max == 0 || secondary->keepalives < m->s->keep_alive_max) {
                 reuse_secondary = ((m->spare_secondary->nelts < (m->limit_active * 3 / 2))
                                    && !task->rst_error);
@@ -540,7 +524,6 @@ static apr_status_t t_out_open(h2_mplx *m, int stream_id, h2_bucket_beam *beam)
                       "h2_mplx(%s): out open", stream->task->id);
     }
     
-    h2_beam_on_consumed(stream->output, NULL, mst_stream_output_consumed, stream);
     h2_beam_on_produced(stream->output, mst_output_produced, stream);
     if (stream->task->output.copy_files) {
         h2_beam_on_file_beam(stream->output, h2_beam_no_files, NULL);
