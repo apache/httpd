@@ -173,7 +173,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      - Interworking mod_md and ssl modules changed to exchange PEM strings
        instead of file paths for ACME challenges.
      Sorry, large patch, but it all hangs together.
-     PR: https://github.com/apache/httpd/pull/178
+     PR: https://github.com/apache/httpd/pull/179
      +1: icing
 
 PATCHES/ISSUES THAT ARE BEING WORKED
