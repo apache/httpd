@@ -176,6 +176,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR: https://github.com/apache/httpd/pull/179
      +1: icing
 
+  *) modules/http/http_core.c server/protocol.c:
+     Make sure that conn->keepalive is NOT reset after being set in ap_read_request().
+     trunk patch: http://svn.apache.org/r1887999
+     +1: jfclere
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
