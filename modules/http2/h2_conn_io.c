@@ -24,6 +24,7 @@
 #include <http_connection.h>
 #include <http_protocol.h>
 #include <http_request.h>
+#include <http_ssl.h>
 
 #include "h2_private.h"
 #include "h2_bucket_eos.h"

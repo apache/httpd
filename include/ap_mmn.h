@@ -412,6 +412,7 @@
  *                         ap_condition_if_none_match(),
  *                         ap_condition_if_modified_since(),
  *                         ap_condition_if_range()
+<<<<<<< HEAD
  * 20120211.19 (2.4.5-dev) Add post_perdir_config hook.
  * 20120211.20 (2.4.5-dev) Add dirwalk_stat hook.
  * 20120211.21 (2.4.5-dev) Add in ap_proxy_create_hdrbrgd() and
@@ -557,6 +558,7 @@
  * 20120211.102 (2.4.47-dev)  Add ap_ssl_conn_is_ssl()/ap_ssl_var_lookup() and hooks
  * 20120211.103 (2.4.47-dev)  Add ap_ssl_add_cert_files, ap_ssl_add_fallback_cert_files
  *                          and ap_ssl_answer_challenge and hooks.
+ * 20120211.104 (2.4.47-dev) Move ap_ssl_* into new http_ssl.h header file
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -564,7 +566,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 103                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 104                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

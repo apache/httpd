@@ -36,6 +36,7 @@
 #include "http_connection.h"
 #include "http_request.h"
 #include "http_protocol.h"
+#include "http_ssl.h"
 #include "http_vhost.h"
 #include "util_script.h"
 #include "util_filter.h"

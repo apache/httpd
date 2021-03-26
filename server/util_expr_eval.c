@@ -23,6 +23,7 @@
 #include "http_core.h"
 #include "http_protocol.h"
 #include "http_request.h"
+#include "http_ssl.h"
 #include "ap_provider.h"
 #include "util_expr_private.h"
 #include "util_md5.h"

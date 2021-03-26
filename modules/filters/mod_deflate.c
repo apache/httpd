@@ -45,6 +45,7 @@
 #include "apr_buckets.h"
 #include "http_protocol.h"
 #include "http_request.h"
+#include "http_ssl.h"
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
 

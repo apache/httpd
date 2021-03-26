@@ -25,6 +25,7 @@
 #include <http_config.h>
 #include <http_connection.h>
 #include <http_protocol.h>
+#include <http_ssl.h>
 #include <http_log.h>
 
 #include "h2_private.h"

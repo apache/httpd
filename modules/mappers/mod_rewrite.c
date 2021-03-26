@@ -93,6 +93,7 @@
 #include "http_core.h"
 #include "http_log.h"
 #include "http_protocol.h"
+#include "http_ssl.h"
 #include "http_vhost.h"
 #include "util_mutex.h"
 
