@@ -89,6 +89,14 @@ static apr_status_t open_output(h2_task *task)
     return h2_mplx_t_out_open(task->mplx, task->stream_id, task->output.beam);
 }
 
+static void output_consumed(void *ctx, h2_bucket_beam *beam, apr_off_t length)
+{
+    h2_task *task = ctx;
+    if (task && h2_task_logio_add_bytes_out) {
+        h2_task_logio_add_bytes_out(task->c, length);
+    }
+}
+
 static apr_status_t send_out(h2_task *task, apr_bucket_brigade* bb, int block)
 {
     apr_off_t written, left;
@@ -108,9 +116,6 @@ static apr_status_t send_out(h2_task *task, apr_bucket_brigade* bb, int block)
         status = APR_SUCCESS;
     }
     if (status == APR_SUCCESS) {
-        if (h2_task_logio_add_bytes_out) {
-            h2_task_logio_add_bytes_out(task->c, written);
-        }
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, task->c, 
                       "h2_task(%s): send_out done", task->id);
     }
@@ -183,7 +188,9 @@ send:
         }
     }
     
-    if (APR_SUCCESS == rv && !task->output.opened && flush) {
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, task->c,
+                  "h2_secondary_out(%s): buffered=%d", task->id, task->output.buffered);
+    if (APR_SUCCESS == rv && !task->output.opened && (flush || !task->output.buffered)) {
         /* got a flush or could not write all, time to tell someone to read */
         rv = open_output(task);
     }
@@ -597,7 +604,8 @@ apr_status_t h2_task_do(h2_task *task, apr_thread_t *thread, int worker_id)
     
     h2_beam_buffer_size_set(task->output.beam, task->output.max_buffer);
     h2_beam_send_from(task->output.beam, task->pool);
-    
+    h2_beam_on_consumed(task->output.beam, NULL, output_consumed, task);
+
     h2_ctx_create_for(c, task);
     apr_table_setn(c->notes, H2_TASK_ID_NOTE, task->id);
 

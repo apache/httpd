@@ -148,17 +148,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     +1: minfrin
     ylavic: patch is 404
 
-  *) mod_http2: sync with github standalone version 1.15.17
-     - Log requests and sent the configured error response in case of early detected
-       errors like too many or too long headers. [Ruediger Pluem]
-     - new option 'H2OutputBuffering on/off' which controls the buffering of stream output.
-       The default is on, which is the behaviour of older mod-h2 versions. When off, all
-       bytes are made available immediately to the main connection for sending them
-       out to the client. This fixes interop issues with certain flavours of gRPC, see
-       also <https://github.com/icing/mod_h2/issues/207>.
-     PR: https://github.com/apache/httpd/pull/175
-     +1: icing, ylavic, jorton
-
   *) mod_lua: Support Lua 5.4 and use pkg-config to detect Lua
      properly on Debian systems.
      trunk patch: http://svn.apache.org/r1826206
@@ -172,7 +161,25 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mpm_event/worker: Adjust signal handler before unblocking. PR 64533.
      trunk patch: http://svn.apache.org/r1882370
      2.4.x patch: svn merge -c 1882370 ^/httpd/httpd/trunk .
-     +1: ylavic, jorton, 
+     +1: ylavic, jorton, icing
+
+  *) core/mod_ssl/mod_md:
+     - adding new ap_ssl_*() functions for a backward
+       compatible replacement of the major optional mod_ssl functions. This
+       allows other ssl modules to work without impersonating mod_ssl and
+       also allows different ssl modules being active on separate ports.
+     - latest mod_md with support for multiple certificates per domain
+       and ECDSA certificates. Removed ACMEv1 support.
+     - Interworking mod_md and ssl modules changed to exchange PEM strings
+       instead of file paths for ACME challenges.
+     Sorry, large patch, but it all hangs together.
+     PR: https://github.com/apache/httpd/pull/179
+     +1: icing
+
+  *) modules/http/http_core.c server/protocol.c:
+     Make sure that conn->keepalive is NOT reset after being set in ap_read_request().
+     trunk patch: http://svn.apache.org/r1887999
+     +1: jfclere
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]

@@ -749,6 +749,7 @@ static int h2_h2_late_fixups(request_rec *r)
         if (task) {
             /* check if we copy vs. setaside files in this location */
             task->output.copy_files = h2_config_rgeti(r, H2_CONF_COPY_FILES);
+            task->output.buffered = h2_config_rgeti(r, H2_CONF_OUTPUT_BUFFER);
             if (task->output.copy_files) {
                 ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, task->c,
                               "h2_secondary_out(%s): copy_files on", task->id);
