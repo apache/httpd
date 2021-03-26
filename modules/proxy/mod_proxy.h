@@ -58,6 +58,7 @@
 #include "http_main.h"
 #include "http_log.h"
 #include "http_connection.h"
+#include "http_ssl.h"
 #include "util_filter.h"
 #include "util_ebcdic.h"
 #include "ap_provider.h"

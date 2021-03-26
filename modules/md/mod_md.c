@@ -23,6 +23,7 @@
 #include <http_core.h>
 #include <http_protocol.h>
 #include <http_request.h>
+#include <http_ssl.h>
 #include <http_log.h>
 #include <http_vhost.h>
 #include <ap_listen.h>

@@ -38,6 +38,7 @@
 #include "http_core.h"
 #include "http_protocol.h" /* For index_of_response().  Grump. */
 #include "http_request.h"
+#include "http_ssl.h"
 #include "http_vhost.h"
 #include "http_main.h"     /* For the default_handler below... */
 #include "http_log.h"

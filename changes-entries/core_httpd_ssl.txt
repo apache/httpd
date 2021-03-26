@@ -1,0 +1,2 @@
+  *) core: provide ap_ssl_* functions in new http_ssl.h header file.
+     [Stefan Eissing]

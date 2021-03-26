@@ -712,6 +712,7 @@ SET(LIBHTTPD_SOURCES
   server/protocol.c
   server/provider.c
   server/request.c
+  server/ssl.c
   server/scoreboard.c
   server/util.c
   server/util_cfgtree.c
