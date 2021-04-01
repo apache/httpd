@@ -2,6 +2,32 @@
 Changes with Apache 2.5.1
 
  
+  *) mod_md: Tolerate a missing "revokeCert" or "keyChange" resource.
+     [Fraser Tweedale <ftweedal redhat.com>]
+
+  *) mod_ssl: Add SSL_{CLIENT,SERVER}_B64CERT variables with
+     base64-encoded DER certificates.  Add SSL_CLIENT_B64CERT_CHAIN_n
+     equivalents for SSL_CLIENT_CERT_CHAIN_n, and new
+     "ExportBase64CertData" argument for SSLOptions.  PR 65169.
+     [Joe Orton]
+
+  *) mod_proxy_balancer: Include nonce in XML output.  PR 63074.
+     Federico Mennite <federico.mennite lifeware.ch>
+
+  *) mod_http2: Fixed a race condition that could lead to streams being
+     aborted (RST to the client), although a response had been produced.
+     [Stefan Eissing]
+
+  *) mod_unique_id: Fix potential duplicated ID generation under heavy load.
+     PR 65159
+     [Jonas Müntener <jonas.muentener ergon.ch>, Christophe Jaillet]
+
+  *) core: provide ap_ssl_* functions in new http_ssl.h header file.
+     [Stefan Eissing]
+
+  *) mod_socache_shmcb: Avoid double SHM cleanup and possible crash on
+     restart/stop.  PR 59798.  [Yann Ylavic]
+
   *) mod_md: v2.4.0 with improvements and bugfixes
      - MDPrivateKeys allows the specification of several types. Beside "RSA" plus 
      optional key lengths elliptic curves can be configured. This means you can 

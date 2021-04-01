@@ -1,3 +1,0 @@
-  *) mod_unique_id: Fix potential duplicated ID generation under heavy load.
-     PR 65159
-     [Jonas Müntener <jonas.muentener ergon.ch>, Christophe Jaillet]

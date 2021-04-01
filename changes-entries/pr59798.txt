@@ -1,3 +1,0 @@
-  *) mod_socache_shmcb: Avoid double SHM cleanup and possible crash on
-     restart/stop.  PR 59798.  [Yann Ylavic]
-
