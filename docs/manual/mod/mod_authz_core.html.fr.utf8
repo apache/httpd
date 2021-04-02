@@ -467,7 +467,13 @@ d'autorisation.</td></tr>
       <dt><code>Require ip 10 172.20 192.168.2</code></dt>
       <dd>Les clients dont les adresses IP font partie des tranches
       spécifiées auront accès à la ressource.</dd>
-    </dl>
+
+      <dt><code>Require forward-dns dynamic.example.org</code></dt>
+      <dd>Un client dont l'adresse IP est résolue à partir du nom
+      dynamic.example.org aura l'autorisation d'accès.
+      </dd>
+
+    </dl>    
 
     <p>D'autres modules d'autorisation comme
     <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code>, <code class="module"><a href="../mod/mod_authz_dbm.html">mod_authz_dbm</a></code>,
