@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1878552 -->
+<!-- English Revision: 1888003 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -330,7 +330,13 @@ d'autorisation.</description>
       <dt><code>Require ip 10 172.20 192.168.2</code></dt>
       <dd>Les clients dont les adresses IP font partie des tranches
       sp&eacute;cifi&eacute;es auront acc&egrave;s &agrave; la ressource.</dd>
-    </dl>
+
+      <dt><code>Require forward-dns dynamic.example.org</code></dt>
+      <dd>Un client dont l'adresse IP est résolue à partir du nom
+      dynamic.example.org aura l'autorisation d'accès.
+      </dd>
+
+    </dl>    
 
     <p>D'autres modules d'autorisation comme
     <module>mod_authnz_ldap</module>, <module>mod_authz_dbm</module>,
