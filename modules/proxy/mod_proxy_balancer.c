@@ -1255,6 +1255,7 @@ static int balancer_process_balancer_worker(request_rec *r, proxy_server_conf *c
             ival = atoi(val);
             if (ival >= 0 && ival <= 99) {
                 bsel->s->max_attempts = ival;
+                bsel->s->max_attempts_set = 1;
             }
         }
         if ((val = apr_table_get(params, "b_sforce"))) {
