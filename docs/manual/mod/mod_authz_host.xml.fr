@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1874169 -->
+<!-- English Revision: 1888005 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -183,11 +183,11 @@ Require host .net example.edu
     dynamique.</p>
 
     <highlight language="config">
-Require forward-dns bla.example.org
+Require forward-dns dynamic.example.org
     </highlight>
 
     <p>Un client dont l'adresse IP correspond au nom d'hôte
-    <code>bla.example.org</code> se verra autoriser l'accès.</p>
+    <code>dynamic.example.org</code>  se verra autoriser l'accès.</p>
 
 </section>
 

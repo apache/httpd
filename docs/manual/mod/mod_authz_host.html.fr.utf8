@@ -184,11 +184,11 @@ Require host .net example.edu</pre>
     sollicité, il fonctionnera avec des clients qui utilisent un service de DNS
     dynamique.</p>
 
-    <pre class="prettyprint lang-config">Require forward-dns bla.example.org</pre>
+    <pre class="prettyprint lang-config">Require forward-dns dynamic.example.org</pre>
 
 
     <p>Un client dont l'adresse IP correspond au nom d'hôte
-    <code>bla.example.org</code> se verra autoriser l'accès.</p>
+    <code>dynamic.example.org</code>  se verra autoriser l'accès.</p>
 
 
 

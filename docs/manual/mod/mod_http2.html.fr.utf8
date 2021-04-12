@@ -90,6 +90,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#h2maxworkers">H2MaxWorkers</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2minworkers">H2MinWorkers</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2moderntlsonly">H2ModernTLSOnly</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#h2outputbuffering">H2OutputBuffering</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2padding">H2Padding</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2push">H2Push</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2pushdiarysize">H2PushDiarySize</a></li>
@@ -493,6 +494,29 @@
             </p>
             <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">H2ModernTLSOnly off</pre>
 </div>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="h2outputbuffering" id="h2outputbuffering">Directive</a> <a name="H2OutputBuffering" id="H2OutputBuffering">H2OutputBuffering</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contrôle la mise en tampon du flux de sortie</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2OutputBuffering on/off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>H2OutputBuffering on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.48 du serveur HTTP
+	Apache.</td></tr>
+</table>
+            <p>
+                L'option 'H2OutputBuffering on/off' permet de contrôler la mise
+		en tampon du flux de sortie. La valeur par défaut est on, ce qui
+		correspond au comportement des versions précédentes. Lorsqu'elle
+		est à off, chaque octet est immédiatement disponible pour envoi
+		au client via la connexion principale. Ceci permet de résoudre
+		les problèmes d'inter-opérations avec certaines versions de
+		gRPC.
+            </p>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

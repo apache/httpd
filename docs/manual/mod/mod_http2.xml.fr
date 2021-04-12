@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1874169 -->
+<!-- English Revision : 1888011 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1241,5 +1241,30 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut
             </p>
         </usage>
     </directivesynopsis>
+
+    <directivesynopsis>
+        <name>H2OutputBuffering</name>
+        <description>Contrôle la mise en tampon du flux de sortie</description>
+        <syntax>H2OutputBuffering on/off</syntax>
+        <default>H2OutputBuffering on</default>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+        </contextlist>
+        <compatibility>Disponible à partir de la version 2.4.48 du serveur HTTP
+	Apache.</compatibility>
+        
+        <usage>
+            <p>
+                L'option 'H2OutputBuffering on/off' permet de contrôler la mise
+		en tampon du flux de sortie. La valeur par défaut est on, ce qui
+		correspond au comportement des versions précédentes. Lorsqu'elle
+		est à off, chaque octet est immédiatement disponible pour envoi
+		au client via la connexion principale. Ceci permet de résoudre
+		les problèmes d'inter-opérations avec certaines versions de
+		gRPC.
+            </p>
+        </usage>
+    </directivesynopsis>    
     
 </modulesynopsis>
