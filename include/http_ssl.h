@@ -190,6 +190,86 @@ AP_DECLARE(int) ap_ssl_answer_challenge(conn_rec *c, const char *server_name,
  */
 AP_DECLARE(void) ap_setup_ssl_optional_fns(apr_pool_t *pool);
 
+/**
+ * Providers of OCSP status responses register at this hook. Installed hooks returning OK
+ * are expected to provide later OCSP responses via a 'ap_ssl_ocsp_get_resp_hook'.
+ * @param s     the server being configured
+ * @params p    a memory pool to use
+ * @param id    opaque data uniquely identifying the certificate, provided by caller
+ * @param pem   PEM data of certificate first, followed by PEM of issuer cert
+ * @return OK iff stapling is being provided
+ */
+AP_DECLARE_HOOK(int, ssl_ocsp_prime_hook, (server_rec *s, apr_pool_t *p,
+                                           const ap_bytes_t *id, const char *pem))
+
+/**
+ * Registering a certificate for Provisioning of OCSP responses. It is the caller's
+ * responsibility to provide a global (apache instance) unique id for the certificate
+ * that is then used later in retrieving the OCSP response.
+ * A certificate can be primed this way more than once, however the same identifier
+ * has to be provided each time (byte-wise same, not pointer same).
+ * The memory pointed to by `id` and `pem` is only valid for the duration of the call.
+ *
+ * @param s     the server being configured
+ * @params p    a memory pool to use
+ * @param id    opaque data uniquely identifying the certificate, provided by caller
+ * @param pem   PEM data of certificate first, followed by chain certs, at least the issuer
+ * @return APR_SUCCESS iff OCSP responses will be provided.
+ *         APR_ENOENT when no provided was found or took responsibility.
+ */
+AP_DECLARE(apr_status_t) ap_ssl_ocsp_prime(server_rec *s, apr_pool_t *p,
+                                           const ap_bytes_t *id,
+                                           const char *pem);
+
+/**
+ * Callback to copy over the OCSP response data. If OCSP response data is not
+ * available, this will be called with NULL, 0 parameters!
+ *
+ * Memory allocation methods and lifetime of data will vary per module and
+ * SSL library used. The caller requesting OCSP data will need to make a copy
+ * for his own use.
+ * Any passed data may only be valid for the duration of the call.
+ */
+typedef void ap_ssl_ocsp_copy_resp(const unsigned char *der, apr_size_t der_len, void *userdata);
+
+/**
+ * Asking for OCSP response DER data for a certificate formerly primed.
+ * @param s     the (SNI selected) server of the connection
+ * @param c     the connection
+ * @param id    identifier for the certifate, as used in ocsp_stapling_prime()
+ * @param cb    callback to invoke when response data is available
+ * @param userdata caller supplied data passed to callback
+ * @return OK iff response data has been provided, DECLINED otherwise
+ */
+AP_DECLARE_HOOK(int, ssl_ocsp_get_resp_hook,
+                (server_rec *s, conn_rec *c, const ap_bytes_t *id,
+                 ap_ssl_ocsp_copy_resp *cb, void *userdata))
+
+/**
+ * Retrieve the OCSP response data for a previously primed certificate. The id needs
+ * to be byte-wise identical to the one used on priming. If the call return ARP_SUCCESS,
+ * the callback has been invoked with the OCSP response DER data.
+ * Otherwise, a different status code must be returned. Callers in SSL connection
+ * handshakes are encouraged to continue the handshake without OCSP data for
+ * server reliability. The decision to accept or reject a handshake with missing
+ * OCSP stapling data needs to be done by the client.
+ * For similar reasons, providers of responses might return seemingly expired ones
+ * if they were unable to refresh a response in time.
+ *
+ * The memory pointed to by `id` is only valid for the duration of the call.
+ * Also, the DER data passed to the callback is only valid for the duration
+ * of the call.
+ *
+ * @param s     the (SNI selected) server of the connection
+ * @param c     the connection
+ * @param id    identifier for the certifate, as used in ocsp_stapling_prime()
+ * @param cb    callback to invoke when response data is available
+ * @param userdata caller supplied data passed to callback
+ * @return APR_SUCCESS iff data has been provided
+ */
+AP_DECLARE(apr_status_t) ap_ssl_ocsp_get_resp(server_rec *s, conn_rec *c,
+                                              const ap_bytes_t *id,
+                                              ap_ssl_ocsp_copy_resp *cb, void *userdata);
 
 #ifdef __cplusplus
 }

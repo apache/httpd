@@ -134,6 +134,8 @@ int ssl_stapling_init_cert(server_rec *s, apr_pool_t *p, apr_pool_t *ptemp,
     X509 *issuer = NULL;
     OCSP_CERTID *cid = NULL;
     STACK_OF(OPENSSL_STRING) *aia = NULL;
+    const char *pem = NULL;
+    ap_bytes_t key;
     int rv = 1; /* until further notice */
 
     if (x == NULL)
@@ -153,7 +155,20 @@ int ssl_stapling_init_cert(server_rec *s, apr_pool_t *p, apr_pool_t *ptemp,
         return 1;
     }
 
-    if (ssl_run_init_stapling_status(s, p, x, issuer) == OK) {
+    if (X509_digest(x, EVP_sha1(), idx, NULL) != 1) {
+        rv = 0;
+        goto cleanup;
+    }
+
+    if (modssl_cert_get_pem(ptemp, x, issuer, &pem) != APR_SUCCESS) {
+        rv = 0;
+        goto cleanup;
+    }
+
+    key.data = idx;
+    key.len = sizeof(idx);
+    if (ap_ssl_ocsp_prime(s, p, &key, pem) == APR_SUCCESS
+        || ssl_run_init_stapling_status(s, p, x, issuer) == OK) {
         /* Someone's taken over or mod_ssl's own implementation is not enabled */
         if (mctx->stapling_enabled != TRUE) {
             SSL_CTX_set_tlsext_status_cb(mctx->ssl_ctx, stapling_cb);
@@ -167,11 +182,6 @@ int ssl_stapling_init_cert(server_rec *s, apr_pool_t *p, apr_pool_t *ptemp,
         goto cleanup;
     }
     
-    if (X509_digest(x, EVP_sha1(), idx, NULL) != 1) {
-        rv = 0;
-        goto cleanup;
-    }
-
     cinf = apr_hash_get(stapling_certinfo, idx, sizeof(idx));
     if (cinf) {
         /* 
@@ -232,14 +242,11 @@ cleanup:
     return rv;
 }
 
-static certinfo *stapling_get_certinfo(server_rec *s, X509 *x, modssl_ctx_t *mctx,
-                                        SSL *ssl)
+static certinfo *stapling_get_certinfo(server_rec *s, UCHAR *idx, apr_size_t idx_len,
+                                       modssl_ctx_t *mctx, SSL *ssl)
 {
     certinfo *cinf;
-    UCHAR idx[SHA_DIGEST_LENGTH];
-    if (X509_digest(x, EVP_sha1(), idx, NULL) != 1)
-        return NULL;
-    cinf = apr_hash_get(stapling_certinfo, idx, sizeof(idx));
+    cinf = apr_hash_get(stapling_certinfo, idx, idx_len);
     if (cinf && cinf->cid)
         return cinf;
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(01926)
@@ -776,6 +783,18 @@ static int get_and_check_cached_response(server_rec *s, modssl_ctx_t *mctx,
     return 0;
 }
 
+static void copy_ocsp_resp(const unsigned char *der, apr_size_t der_len, void *userdata)
+{
+    ap_bytes_t *resp = userdata;
+
+    resp->len = 0;
+    resp->data = der? OPENSSL_malloc(der_len) : NULL;
+    if (resp->data) {
+        memcpy(resp->data, der, der_len);
+        resp->len = der_len;
+    }
+}
+
 /* Certificate Status callback. This is called when a client includes a
  * certificate status request extension.
  *
@@ -790,13 +809,14 @@ static int stapling_cb(SSL *ssl, void *arg)
     SSLSrvConfigRec *sc = mySrvConfig(s);
     SSLConnRec *sslconn = myConnConfig(conn);
     modssl_ctx_t *mctx  = myCtxConfig(sslconn, sc);
+    UCHAR idx[SHA_DIGEST_LENGTH];
+    ap_bytes_t key, resp;
     certinfo *cinf = NULL;
     OCSP_RESPONSE *rsp = NULL;
     int rv;
     BOOL ok = TRUE;
     X509 *x;
-    unsigned char *rspder = NULL;
-    int rspderlen;
+    int rspderlen, provided = 0;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01951)
                  "stapling_cb: OCSP Stapling callback called");
@@ -806,12 +826,26 @@ static int stapling_cb(SSL *ssl, void *arg)
         return SSL_TLSEXT_ERR_NOACK;
     }
 
-    if (ssl_run_get_stapling_status(&rspder, &rspderlen, conn, s, x) == APR_SUCCESS) {
+    if (X509_digest(x, EVP_sha1(), idx, NULL) != 1) {
+        return SSL_TLSEXT_ERR_NOACK;
+    }
+    key.data = idx;
+    key.len = sizeof(idx);
+
+    if (ap_ssl_ocsp_get_resp(s, conn, &key, copy_ocsp_resp, &resp) == APR_SUCCESS) {
+        provided = 1;
+    }
+    else if (ssl_run_get_stapling_status(&resp.data, &rspderlen, conn, s, x) == APR_SUCCESS) {
+        resp.len = (apr_size_t)rspderlen;
+        provided = 1;
+    }
+
+    if (provided) {
         /* a hook handles stapling for this certificate and determines the response */
-        if (rspder == NULL || rspderlen <= 0) {
+        if (resp.data == NULL || resp.len == 0) {
             return SSL_TLSEXT_ERR_NOACK;
         }
-        SSL_set_tlsext_status_ocsp_resp(ssl, rspder, rspderlen);
+        SSL_set_tlsext_status_ocsp_resp(ssl, resp.data, (int)resp.len);
         return SSL_TLSEXT_ERR_OK;
     }
     
@@ -821,7 +855,7 @@ static int stapling_cb(SSL *ssl, void *arg)
         return SSL_TLSEXT_ERR_NOACK;
     }
 
-    if ((cinf = stapling_get_certinfo(s, x, mctx, ssl)) == NULL) {
+    if ((cinf = stapling_get_certinfo(s, idx, sizeof(idx), mctx, ssl)) == NULL) {
         return SSL_TLSEXT_ERR_NOACK;
     }
 

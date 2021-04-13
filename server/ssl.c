@@ -62,6 +62,8 @@ APR_HOOK_STRUCT(
     APR_HOOK_LINK(ssl_add_cert_files)
     APR_HOOK_LINK(ssl_add_fallback_cert_files)
     APR_HOOK_LINK(ssl_answer_challenge)
+    APR_HOOK_LINK(ssl_ocsp_prime_hook)
+    APR_HOOK_LINK(ssl_ocsp_get_resp_hook)
 )
 
 APR_DECLARE_OPTIONAL_FN(int, ssl_is_https, (conn_rec *));
@@ -150,6 +152,22 @@ AP_DECLARE(int) ap_ssl_answer_challenge(conn_rec *c, const char *server_name,
     return (ap_run_ssl_answer_challenge(c, server_name, pcert_pem, pkey_pem) == OK);
 }
 
+AP_DECLARE(apr_status_t) ap_ssl_ocsp_prime(server_rec *s, apr_pool_t *p,
+                                           const ap_bytes_t *id,
+                                           const char *pem)
+{
+    int rv = ap_run_ssl_ocsp_prime_hook(s, p, id, pem);
+    return rv == OK? APR_SUCCESS : (rv == DECLINED? APR_ENOENT : APR_EGENERAL);
+}
+
+AP_DECLARE(apr_status_t) ap_ssl_ocsp_get_resp(server_rec *s, conn_rec *c,
+                                              const ap_bytes_t *id,
+                                              ap_ssl_ocsp_copy_resp *cb, void *userdata)
+{
+    int rv = ap_run_ssl_ocsp_get_resp_hook(s, c, id, cb, userdata);
+    return rv == OK? APR_SUCCESS : (rv == DECLINED? APR_ENOENT : APR_EGENERAL);
+}
+
 AP_IMPLEMENT_HOOK_RUN_FIRST(int, ssl_conn_is_ssl,
                             (conn_rec *c), (c), DECLINED)
 AP_IMPLEMENT_HOOK_RUN_FIRST(const char *,ssl_var_lookup,
@@ -166,4 +184,9 @@ AP_IMPLEMENT_HOOK_RUN_ALL(int, ssl_add_fallback_cert_files,
 AP_IMPLEMENT_HOOK_RUN_FIRST(int, ssl_answer_challenge,
         (conn_rec *c, const char *server_name, const char **pcert_pem, const char **pkey_pem),
         (c, server_name, pcert_pem, pkey_pem), DECLINED)
-
+AP_IMPLEMENT_HOOK_RUN_FIRST(int, ssl_ocsp_prime_hook,
+        (server_rec *s, apr_pool_t *p, const ap_bytes_t *id, const char *pem),
+        (s, p, id, pem), DECLINED)
+AP_IMPLEMENT_HOOK_RUN_FIRST(int, ssl_ocsp_get_resp_hook,
+         (server_rec *s, conn_rec *c, const ap_bytes_t *id, ap_ssl_ocsp_copy_resp *cb, void *userdata),
+         (s, c, id, cb, userdata), DECLINED)
