@@ -159,7 +159,7 @@ int md_ocsp_get_stapling_status(unsigned char **pder, int *pderlen,
     rv = md_ocsp_get_status(ocsp_copy_der, &ctx, sc->mc->ocsp, &id, c->pool, md);
     if (APR_STATUS_IS_ENOENT(rv)) goto declined;
     *pder = ctx.der;
-    *pderlen = ctx.der_len;
+    *pderlen = (int)ctx.der_len;
     return OK;
     
 declined:
