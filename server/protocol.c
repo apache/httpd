@@ -70,11 +70,6 @@ APR_HOOK_STRUCT(
     APR_HOOK_LINK(protocol_propose)
     APR_HOOK_LINK(protocol_switch)
     APR_HOOK_LINK(protocol_get)
-    APR_HOOK_LINK(ssl_conn_is_ssl)
-    APR_HOOK_LINK(ssl_var_lookup)
-    APR_HOOK_LINK(ssl_add_cert_files) 
-    APR_HOOK_LINK(ssl_add_fallback_cert_files) 
-    APR_HOOK_LINK(ssl_answer_challenge) 
 )
 
 AP_DECLARE_DATA ap_filter_rec_t *ap_old_write_func = NULL;
