@@ -191,7 +191,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      stream and the valid response was not sent.
      trunk patch: http://svn.apache.org/r1888087
      2.4.x patch: svn merge -c 1888087 ^/httpd/httpd/trunk .
-     +1: icing
+     +1: icing, rpluem
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
