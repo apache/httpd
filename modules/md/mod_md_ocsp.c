@@ -93,12 +93,12 @@ int md_ocsp_prime_status(server_rec *s, apr_pool_t *p,
     chain = apr_array_make(p, 5, sizeof(md_cert_t*));
     rv = md_cert_read_chain(chain, p, pem, strlen(pem));
     if (APR_SUCCESS != rv) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO() "init stapling for: %s, "
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10268) "init stapling for: %s, "
                      "unable to parse PEM data", md? md->name : s->server_hostname);
         goto cleanup;
     }
     else if (chain->nelts < 2) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO() "init stapling for: %s, "
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10269) "init stapling for: %s, "
                      "need at least 2 certificates in PEM data", md? md->name : s->server_hostname);
         rv = APR_EINVAL;
         goto cleanup;
