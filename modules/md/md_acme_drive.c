@@ -201,6 +201,8 @@ static apr_status_t add_http_certs(apr_array_header_t *chain, apr_pool_t *p,
     
     ct = apr_table_get(res->headers, "Content-Type");
     ct = md_util_parse_ct(res->req->pool, ct);
+    md_log_perror(MD_LOG_MARK, MD_LOG_TRACE1, rv, p,
+                  "parse certs from %s -> %d (%s)", res->req->url, res->status, ct);
     if (ct && !strcmp("application/x-pkcs7-mime", ct)) {
         /* this looks like a root cert and we do not want those in our chain */
         goto out; 

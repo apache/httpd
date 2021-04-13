@@ -1359,19 +1359,41 @@ static int md_cert_read_pem(BIO *bf, apr_pool_t *p, md_cert_t **pcert)
 {
     md_cert_t *cert;
     X509 *x509;
-    apr_status_t rv;
+    apr_status_t rv = APR_ENOENT;
     
     ERR_clear_error();
     x509 = PEM_read_bio_X509(bf, NULL, NULL, NULL);
-    if (x509 == NULL) {
-        rv = APR_ENOENT;
-        goto out;
-    }
+    if (x509 == NULL) goto cleanup;
     cert = md_cert_make(p, x509);
     rv = APR_SUCCESS;
-    
-out:
+cleanup:
     *pcert = (APR_SUCCESS == rv)? cert : NULL;
+    return rv;
+}
+
+apr_status_t md_cert_read_chain(apr_array_header_t *chain, apr_pool_t *p,
+                                const char *pem, apr_size_t pem_len)
+{
+    BIO *bf = NULL;
+    apr_status_t rv = APR_SUCCESS;
+    md_cert_t *cert;
+    int added = 0;
+
+    if (NULL == (bf = BIO_new_mem_buf(pem, (int)pem_len))) {
+        rv = APR_ENOMEM;
+        goto cleanup;
+    }
+    while (APR_SUCCESS == (rv = md_cert_read_pem(bf, chain->pool, &cert))) {
+        APR_ARRAY_PUSH(chain, md_cert_t *) = cert;
+        added = 1;
+    }
+    if (APR_ENOENT == rv && added) {
+        rv = APR_SUCCESS;
+    }
+
+cleanup:
+    md_log_perror(MD_LOG_MARK, MD_LOG_TRACE2, rv, p, "read chain with %d certs", chain->nelts);
+    if (bf) BIO_free(bf);
     return rv;
 }
 
@@ -1420,64 +1442,40 @@ out:
 apr_status_t md_cert_chain_read_http(struct apr_array_header_t *chain,
                                      apr_pool_t *p, const struct md_http_response_t *res)
 {
-    const char *ct;
+    const char *ct = NULL;
     apr_off_t blen;
-    apr_size_t data_len;
+    apr_size_t data_len = 0;
     char *data;
-    BIO *bf = NULL;
-    apr_status_t rv;
+    md_cert_t *cert;
+    apr_status_t rv = APR_ENOENT;
     
-    if (APR_SUCCESS != (rv = apr_brigade_length(res->body, 1, &blen))) goto out;
+    md_log_perror(MD_LOG_MARK, MD_LOG_TRACE2, 0, p,
+        "chain_read, processing %d response", res->status);
+    if (APR_SUCCESS != (rv = apr_brigade_length(res->body, 1, &blen))) goto cleanup;
     if (blen > 1024*1024) { /* certs usually are <2k each */
         rv = APR_EINVAL;
-        goto out;
+        goto cleanup;
     }
     
     data_len = (apr_size_t)blen;
     ct = apr_table_get(res->headers, "Content-Type");
-    if (!res->body || !ct) {
-        rv = APR_ENOENT;
-        goto out;
-    }
+    if (!res->body || !ct) goto cleanup;
     ct = md_util_parse_ct(res->req->pool, ct);
     if (!strcmp("application/pem-certificate-chain", ct)
         || !strncmp("text/plain", ct, sizeof("text/plain")-1)) {
         /* Some servers seem to think 'text/plain' is sufficient, see #232 */
-        if (APR_SUCCESS == (rv = apr_brigade_pflatten(res->body, &data, &data_len, res->req->pool))) {
-            int added = 0;
-            md_cert_t *cert;
-            
-            if (NULL == (bf = BIO_new_mem_buf(data, (int)data_len))) {
-                rv = APR_ENOMEM;
-                goto out;
-            }
-            
-            while (APR_SUCCESS == (rv = md_cert_read_pem(bf, p, &cert))) {
-                APR_ARRAY_PUSH(chain, md_cert_t *) = cert;
-                added = 1;
-            }
-            if (APR_ENOENT == rv && added) {
-                rv = APR_SUCCESS;
-            }
-        }
-        md_log_perror(MD_LOG_MARK, MD_LOG_TRACE2, rv, p,
-            "parsing cert from content-type=%s, content-length=%ld", ct, (long)data_len);
+        rv = apr_brigade_pflatten(res->body, &data, &data_len, res->req->pool);
+        if (APR_SUCCESS != rv) goto cleanup;
+        rv = md_cert_read_chain(chain, res->req->pool, data, data_len);
     }
     else if (!strcmp("application/pkix-cert", ct)) {
-        md_cert_t *cert;
-        
         rv = md_cert_read_http(&cert, p, res);
-        if (APR_SUCCESS == rv) {
-            APR_ARRAY_PUSH(chain, md_cert_t *) = cert;
-        }
+        if (APR_SUCCESS != rv) goto cleanup;
+        APR_ARRAY_PUSH(chain, md_cert_t *) = cert;
     }
-    else {
-        /* unrecongized content type */
-        rv = APR_ENOENT;
-        goto out;
-    }
-out:
-    if (bf) BIO_free(bf);
+cleanup:
+    md_log_perror(MD_LOG_MARK, MD_LOG_TRACE2, rv, p,
+        "parsed certs from content-type=%s, content-length=%ld", ct, (long)data_len);
     return rv;
 }
 

@@ -830,6 +830,8 @@ typedef struct conn_slave_rec conn_slave_rec;
 typedef struct request_rec request_rec;
 /** A structure that represents the status of the current connection */
 typedef struct conn_state_t conn_state_t;
+/** A structure that represents a number of bytes */
+typedef struct ap_bytes_t ap_bytes_t;
 
 /* ### would be nice to not include this from httpd.h ... */
 /* This comes after we have defined the request_rec type */
@@ -1480,6 +1482,15 @@ struct ap_loadavg_t {
     float loadavg5;
     /* 15 min loadavg */
     float loadavg15;
+};
+
+/**
+ * @struct ap_bytes_t
+ * @brief A structure to hold a number of bytes
+ */
+struct ap_bytes_t {
+    unsigned char *data;
+    apr_size_t len;
 };
 
 /**

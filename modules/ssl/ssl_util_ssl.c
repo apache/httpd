@@ -578,3 +578,26 @@ cleanup:
     if (in != NULL) BIO_free(in);
     return rv;
 }
+
+apr_status_t modssl_cert_get_pem(apr_pool_t *p,
+                                 X509 *cert1, X509 *cert2,
+                                 const char **ppem)
+{
+    apr_status_t rv = APR_ENOMEM;
+    BIO *bio;
+
+    if ((bio = BIO_new(BIO_s_mem())) == NULL) goto cleanup;
+    if (PEM_write_bio_X509(bio, cert1) != 1) goto cleanup;
+    if (cert2 && PEM_write_bio_X509(bio, cert2) != 1) goto cleanup;
+    rv = APR_SUCCESS;
+
+cleanup:
+    if (rv != APR_SUCCESS) {
+        *ppem = NULL;
+        if (bio) BIO_free(bio);
+    }
+    else {
+        *ppem = modssl_bio_free_read(p, bio);
+    }
+    return rv;
+}

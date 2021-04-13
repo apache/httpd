@@ -154,6 +154,12 @@ apr_status_t md_cert_read_http(md_cert_t **pcert, apr_pool_t *pool,
                                const struct md_http_response_t *res);
 
 /**
+ * Read at least one certificate from the given PEM data.
+ */
+apr_status_t md_cert_read_chain(apr_array_header_t *chain, apr_pool_t *p,
+                                const char *pem, apr_size_t pem_len);
+
+/**
  * Read one or even a chain of certificates from a http response.
  * Will return APR_ENOENT if content-type is not recognized (currently
  * supports only "application/pem-certificate-chain" and "application/pkix-cert").

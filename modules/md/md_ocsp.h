@@ -17,6 +17,7 @@
 #ifndef md_ocsp_h
 #define md_ocsp_h
 
+struct md_data_t;
 struct md_job_t;
 struct md_json_t;
 struct md_result_t;
@@ -39,11 +40,15 @@ apr_status_t md_ocsp_reg_make(md_ocsp_reg_t **preg, apr_pool_t *p,
                               const md_timeslice_t *renew_window,
                               const char *user_agent, const char *proxy_url);
 
-apr_status_t md_ocsp_prime(md_ocsp_reg_t *reg, md_cert_t *x, 
-                           md_cert_t *issuer, const md_t *md);
+apr_status_t md_ocsp_init_id(struct md_data_t *id, apr_pool_t *p, const md_cert_t *cert);
 
-apr_status_t md_ocsp_get_status(unsigned char **pder, int *pderlen,
-                                md_ocsp_reg_t *reg, const md_cert_t *cert,
+apr_status_t md_ocsp_prime(md_ocsp_reg_t *reg, const struct md_data_t *external_id,
+                           md_cert_t *x, md_cert_t *issuer, const md_t *md);
+
+typedef void md_ocsp_copy_der(const unsigned char *der, apr_size_t der_len, void *userdata);
+
+apr_status_t md_ocsp_get_status(md_ocsp_copy_der *cb, void *userdata,
+                                md_ocsp_reg_t *reg, const struct md_data_t *external_id,
                                 apr_pool_t *p, const md_t *md);
 
 apr_status_t md_ocsp_get_meta(md_ocsp_cert_stat_t *pstat, md_timeperiod_t *pvalid,

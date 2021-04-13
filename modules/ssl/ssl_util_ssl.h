@@ -90,7 +90,18 @@ apr_status_t modssl_read_cert(apr_pool_t *p,
                               const char *cert_pem, const char *key_pem,
                               pem_password_cb *cb, void *ud, 
                               X509 **pcert, EVP_PKEY **pkey);
-                              
+
+/* Convert a certificate (and optionally a second) into a PEM string.
+ * @param p pool for allocations
+ * @param cert1 the certificate to convert
+ * @param cert2 a second cert to add to the PEM afterwards or NULL.
+ * @param ppem the certificate(s) in PEM format, NUL-terminated.
+ * @return APR_SUCCESS if ppem is valid.
+ */
+apr_status_t modssl_cert_get_pem(apr_pool_t *p,
+                                 X509 *cert1, X509 *cert2,
+                                 const char **ppem);
+
 #endif /* __SSL_UTIL_SSL_H__ */
 /** @} */
 

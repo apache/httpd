@@ -667,6 +667,8 @@
  * 20201214.1 (2.5.1-dev)  Add ap_ssl_conn_is_ssl()/ap_ssl_var_lookup() and hooks
  * 20201214.2 (2.5.1-dev)  Add ap_ssl_add_cert_files, ap_ssl_add_fallback_cert_files
  * 20201214.3 (2.5.1-dev)  Move ap_ssl_* into new http_ssl.h header file
+ * 20201214.4 (2.5.1-dev)  Add `ap_bytes_t` to httpd.h.
+ *                         Add ap_ssl_ocsp* hooks and functions to http_ssl.h.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -674,7 +676,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20201214
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 3             /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 4             /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
