@@ -1202,7 +1202,7 @@ AP_DECLARE(int) ap_update_vhost_from_headers_ex(request_rec *r, int require_matc
         else
             check_serverpath(r);
     }
-    else if (require_match) { 
+    else if (require_match && r->hostname) { 
         /* check the base server config */
         rc = update_server_from_aliases(r);
     }
