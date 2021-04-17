@@ -183,6 +183,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) modules/http/http_core.c server/protocol.c:
      Make sure that conn->keepalive is NOT reset after being set in ap_read_request().
      trunk patch: http://svn.apache.org/r1887999
+     2.4.x patch: svn merge -c 1887999 ^/httpd/httpd/trunk .
      +1: jfclere
 
   *) mod_http2: fixes a race when checking short responses with
@@ -192,6 +193,28 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1888087
      2.4.x patch: svn merge -c 1888087 ^/httpd/httpd/trunk .
      +1: icing, rpluem
+
+  *) mod_socache_shmcb: be safe from socache_shmcb_destroy() late call.  PR 59798
+     trunk patch: http://svn.apache.org/r1888266
+     2.4.x patch: svn merge -c 1888266 ^/httpd/httpd/trunk .
+     +1: 
+
+  *) mod_cgid: Register cleanup for socket earlier to avoid possible leaks on
+     error paths
+     trunk patch: http://svn.apache.org/r1887727
+     2.4.x patch: svn merge -c 1887727 ^/httpd/httpd/trunk .
+     +1: 
+
+  *) mod_xml2enc: Correctly handle Microsoft OOXML documents.  PR 64339
+     trunk patch: http://svn.apache.org/r1884505
+     2.4.x patch: svn merge -c 1884505 ^/httpd/httpd/trunk .
+     +1: 
+     jailletc36: there has been some discussion about how to fix the issue.
+     I'm not sure that the commit above is the best solution
+     and other alternatives have been discussed in PR 64339.  If rr1884505
+     is not the right fix, then it should be removed from trunk.
+     Putting it here is a way to revive the discussion
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
