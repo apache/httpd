@@ -137,6 +137,19 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+ *) mpm_event/worker: Adjust signal handler before unblocking. PR 64533.
+     trunk patch: http://svn.apache.org/r1882370
+     2.4.x patch: svn merge -c 1882370 ^/httpd/httpd/trunk .
+     +1: ylavic, jorton, icing
+
+  *) mod_http2: fixes a race when checking short responses with
+     an intermediate 1xx status. Before seeing the real response status, the
+     HTTP/2 noticed the EOF on the data. This led to protocol reset of the
+     stream and the valid response was not sent.
+     trunk patch: http://svn.apache.org/r1888087
+     2.4.x patch: svn merge -c 1888087 ^/httpd/httpd/trunk .
+     +1: icing, rpluem, covener
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -158,12 +171,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR: https://github.com/apache/httpd/pull/176
      +1: jorton, 
 
-  *) mpm_event/worker: Adjust signal handler before unblocking. PR 64533.
-     trunk patch: http://svn.apache.org/r1882370
-     2.4.x patch: svn merge -c 1882370 ^/httpd/httpd/trunk .
-     +1: ylavic, jorton, icing
-
-  *) core/mod_ssl/mod_md:
+   *) core/mod_ssl/mod_md:
      - adding new ap_ssl_*() functions for a backward
        compatible replacement of the major optional mod_ssl functions. This
        allows other ssl modules to work without impersonating mod_ssl and
@@ -184,15 +192,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Make sure that conn->keepalive is NOT reset after being set in ap_read_request().
      trunk patch: http://svn.apache.org/r1887999
      2.4.x patch: svn merge -c 1887999 ^/httpd/httpd/trunk .
-     +1: jfclere
-
-  *) mod_http2: fixes a race when checking short responses with
-     an intermediate 1xx status. Before seeing the real response status, the
-     HTTP/2 noticed the EOF on the data. This led to protocol reset of the
-     stream and the valid response was not sent.
-     trunk patch: http://svn.apache.org/r1888087
-     2.4.x patch: svn merge -c 1888087 ^/httpd/httpd/trunk .
-     +1: icing, rpluem
+     +1: jfclere, covener
 
   *) mod_socache_shmcb: be safe from socache_shmcb_destroy() late call.  PR 59798
      trunk patch: http://svn.apache.org/r1888266
