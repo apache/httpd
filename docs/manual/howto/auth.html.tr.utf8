@@ -273,8 +273,7 @@ Require user umut</pre>
     <code class="directive"><a href="../mod/mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile</a></code>
     yönergesi kullanılabilir. Bu dosyalar <code class="program"><a href="../programs/dbmmanage.html">dbmmanage</a></code> ve
     <code class="program"><a href="../programs/htdbm.html">htdbm</a></code> programı ile oluşturulabilir ve değiştirilebilir.
-    <a href="http://modules.apache.org/">Apache modülleri
-    Veritabanı</a> içindeki üçüncü parti modüllerinde çok sayıda
+    Üçüncü parti modüllerinde çok sayıda
     başka kimlik doğrulama türü de vardır.</p>
 
     <p>Son olarak <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>
@@ -501,13 +500,15 @@ Require group Grupismi</pre>
       çağırılacak yetkilendirme tedarikçilerini kayda geçirir. Örneğin:
       </p>
 
-      <pre class="prettyprint lang-config">Require ip <var>adres</var></pre>
+      <pre class="prettyprint lang-config">Require ip <var>adres</var>
+      </pre>
 
 
       <p>Burada, <var>adres</var> bir IP adresidir (veya kısmi bir IP
         addresidir)</p>
 
-      <pre class="prettyprint lang-config">Require host <var>alan_adı</var></pre>
+      <pre class="prettyprint lang-config">Require host <var>alan_adı</var>
+      </pre>
 
 
       <p>Burada, <var>alan_adı</var> bir tam nitelikli alan adıdır
@@ -567,14 +568,14 @@ Require group Grupismi</pre>
       <code class="module"><a href="../mod/mod_access_compat.html">mod_access_compat</a></code> modülüne taşınmıştır.</p>
 
       <div class="warning"><h3>Note</h3>
-        <p><code class="module"><a href="../mod/mod_access_compat.html">mod_access_compat</a></code> ile sağlanan yönergelerin 
-        kullanımı artık önerilmemekte, <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> 
+        <p><code class="module"><a href="../mod/mod_access_compat.html">mod_access_compat</a></code> ile sağlanan yönergelerin
+        kullanımı artık önerilmemekte, <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>
         modülündeki yönergeler önerilmektedir. <code class="directive"><a href="../mod/mod_access_compat.html#order">Order</a></code>, <code class="directive"><a href="../mod/mod_access_compat.html#allow">Allow</a></code> veya <code class="directive"><a href="../mod/mod_access_compat.html#deny">Deny</a></code> ile
-        <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> gibi daha yeni 
-        olanlarının yenilerle karışık kullanımı teknik olarak mümkünse de 
-        önerilmemektedir. <code class="module"><a href="../mod/mod_access_compat.html">mod_access_compat</a></code> modülü, 2.4 
-        yükseltmesini kolaylaştırmak için sadece eski yönergeleri içeren 
-        yapılandırmaları desteklemek üzere oluşturulmuştur.  Daha ayrıntılı 
+        <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> gibi daha yeni
+        olanlarının yenilerle karışık kullanımı teknik olarak mümkünse de
+        önerilmemektedir. <code class="module"><a href="../mod/mod_access_compat.html">mod_access_compat</a></code> modülü, 2.4
+        yükseltmesini kolaylaştırmak için sadece eski yönergeleri içeren
+        yapılandırmaları desteklemek üzere oluşturulmuştur.  Daha ayrıntılı
         bilgi için <a href="../upgrading.html">yükseltme</a> belgesine bakınız.
         </p>
       </div>
@@ -629,7 +630,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/howto/auth.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="apache">Copyright 2021 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
 <p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/directives.html">Yönergeler</a> | <a href="http://wiki.apache.org/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
