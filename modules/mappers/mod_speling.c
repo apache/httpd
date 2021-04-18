@@ -425,6 +425,7 @@ static int check_speling(request_rec *r)
 
             if (apr_pool_create(&sub_pool, p) != APR_SUCCESS)
                 return DECLINED;
+            apr_pool_tag(sub_pool, "speling_sub");
 
             t = apr_array_make(sub_pool, candidates->nelts * 8 + 8,
                               sizeof(char *));

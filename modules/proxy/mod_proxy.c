@@ -873,6 +873,7 @@ static int proxy_walk(request_rec *r)
             if (entry_proxy->refs && entry_proxy->refs->nelts) {
                 if (!rxpool) {
                     apr_pool_create(&rxpool, r->pool);
+                    apr_pool_tag(rxpool, "proxy_rxpool");
                 }
                 nmatch = entry_proxy->refs->nelts;
                 pmatch = apr_palloc(rxpool, nmatch*sizeof(ap_regmatch_t));

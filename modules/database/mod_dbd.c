@@ -525,6 +525,7 @@ static apr_status_t dbd_construct(void **data_ptr,
                      "Failed to create memory pool");
         return rv;
     }
+    apr_pool_tag(rec_pool, "dbd_rec_pool");
 
     rec = apr_pcalloc(rec_pool, sizeof(ap_dbd_t));
 
@@ -589,6 +590,7 @@ static apr_status_t dbd_construct(void **data_ptr,
         apr_pool_destroy(rec->pool);
         return rv;
     }
+    apr_pool_tag(prepared_pool, "dbd_prepared_pool");
 
     rv = dbd_prepared_init(prepared_pool, cfg, rec);
     if (rv != APR_SUCCESS) {
@@ -673,6 +675,7 @@ static apr_status_t dbd_setup_init(apr_pool_t *pool, server_rec *s)
                          "Failed to create reslist cleanup memory pool");
             return rv2;
         }
+        apr_pool_tag(group->pool, "dbd_group");
 
 #if APR_HAS_THREADS
         rv2 = dbd_setup(s, group);

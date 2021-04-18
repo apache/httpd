@@ -254,6 +254,7 @@ static apr_status_t init_context(ap_filter_t *f, sed_expr_config *sed_cfg, int u
     ctx->bufsize = MODSED_OUTBUF_SIZE;
     if (usetpool) {
         apr_pool_create(&(ctx->tpool), r->pool);
+        apr_pool_tag(ctx->tpool, "sed_tpool");
     }
     else {
         ctx->tpool = r->pool;

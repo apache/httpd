@@ -1342,6 +1342,7 @@ static proxy_worker *proxy_balancer_get_best_worker(proxy_balancer *balancer,
                  balancer->lbmethod->name, balancer->s->name);
 
     apr_pool_create(&tpool, r->pool);
+    apr_pool_tag(tpool, "proxy_lb_best");
 
     spares = apr_array_make(tpool, 1, sizeof(proxy_worker*));
     standbys = apr_array_make(tpool, 1, sizeof(proxy_worker*));
@@ -2013,6 +2014,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_share_worker(proxy_worker *worker, proxy_wo
     if (APLOGdebug(ap_server_conf)) {
         apr_pool_t *pool;
         apr_pool_create(&pool, ap_server_conf->process->pool);
+        apr_pool_tag(pool, "proxy_worker_name");
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02338)
                      "%s shm[%d] (0x%pp) for worker: %s", action, i, (void *)shm,
                      ap_proxy_worker_name(pool, worker));

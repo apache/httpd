@@ -817,6 +817,7 @@ static util_ldap_connection_t *
 #endif
             return NULL;
         }
+        apr_pool_tag(newpool, "util_ldap_connection");
 
         /*
          * Add the new connection entry to the linked list. Note that we
@@ -864,6 +865,7 @@ static util_ldap_connection_t *
 #endif
                 return NULL;
             }
+            apr_pool_tag(l->rebind_pool, "util_ldap_rebind");
         }
 
         if (p) {
@@ -2810,6 +2812,7 @@ static void *util_ldap_create_config(apr_pool_t *p, server_rec *s)
      * no shared memory managed by either.
      */
     apr_pool_create(&st->pool, p);
+    apr_pool_tag(st->pool, "util_ldap_state");
 #if APR_HAS_THREADS
     apr_thread_mutex_create(&st->mutex, APR_THREAD_MUTEX_DEFAULT, st->pool);
 #endif

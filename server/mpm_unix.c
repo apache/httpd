@@ -632,6 +632,7 @@ static apr_status_t dummy_connection(ap_pod_t *pod)
     if (rv != APR_SUCCESS) {
         return rv;
     }
+    apr_pool_tag(p, "dummy_connection");
 
     /* If possible, find a listener which is configured for
      * plain-HTTP, not SSL; using an SSL port would either be

@@ -121,6 +121,7 @@ static md_acme_req_t *md_acme_req_create(md_acme_t *acme, const char *method, co
     if (rv != APR_SUCCESS) {
         return NULL;
     }
+    apr_pool_tag(pool, "md_acme_req");
     
     req = apr_pcalloc(pool, sizeof(*req));
     if (!req) {
