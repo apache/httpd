@@ -137,55 +137,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_http2: fixes a race when checking short responses with
-     an intermediate 1xx status. Before seeing the real response status, the
-     HTTP/2 noticed the EOF on the data. This led to protocol reset of the
-     stream and the valid response was not sent.
-     trunk patch: http://svn.apache.org/r1888087
-     2.4.x patch: svn merge -c 1888087 ^/httpd/httpd/trunk .
-     +1: icing, rpluem, covener
-
-  *) mod_lua: Support Lua 5.4 and use pkg-config to detect Lua
-     properly on Debian systems.
-     trunk patch: http://svn.apache.org/r1826206
-                  http://svn.apache.org/r1880678
-                  http://svn.apache.org/r1880743
-                  http://svn.apache.org/r1880924
-     2.4.x patch: svn merge -c 1826206,1880678,1880743,1880924 ^/httpd/httpd/trunk .
-     PR: https://github.com/apache/httpd/pull/176
-     +1: jorton, gbechis, ylavic
-
-  *) modules/http/http_core.c server/protocol.c:
-     Make sure that conn->keepalive is NOT reset after being set in ap_read_request().
-     trunk patch: http://svn.apache.org/r1887999
-     2.4.x patch: svn merge -c 1887999 ^/httpd/httpd/trunk .
-     +1: jfclere, covener, ylavic
-
-  *) Add missing pool tags to help debugging
-     trunk patch: http://svn.apache.org/r1876599
-     2.4.x patch: http://home.apache.org/~jailletc36/r1876599.diff
-     +1: jailletc36, gbechis, ylavic
-
-  *) Easy patches: synch 2.4.x and trunk
-         - doxygen: Correct doxygen groupname
-         - .gdbinit: align columns
-         - .gdbinit: fix indentation
-         - mod_dav: Add specific logs for different modes
-         - core: ap_pbase64encode(): save double NUL byte allocation and assignment
-         - core: ap_pbase64decode(): save double NUL byte allocation and assignment
-         - support: Fix a typo in a comment
-         - proxy_util.c: Fix leak in error path in the do_malloc case
-     trunk patch:
-          http://svn.apache.org/r1730128
-          http://svn.apache.org/r1878140
-          http://svn.apache.org/r1878265
-          http://svn.apache.org/r1881736
-          http://svn.apache.org/r1882775
-          http://svn.apache.org/r1883872
-          http://svn.apache.org/r1884509
-          http://svn.apache.org/r1887720
-     2.4.x patch: svn merge -c 1730128,1878140,1878265,1881736,1882775,1883872,1884509,1887720 ^/httpd/httpd/trunk .
-     +1: jailletc36, gbechis, ylavic
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
