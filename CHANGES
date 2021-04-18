@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.47
 
+  *) mod_lua: Add support to Lua 5.4 [Joe Orton, [Giovanni Bechis, Ruediger Pluem]
+
   *) MPM event/worker: Fix possible crash in child process on early signal
      delivery.  PR 64533.  [Ruediger Pluem]
 
