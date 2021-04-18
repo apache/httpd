@@ -901,7 +901,7 @@ apr_status_t h2_stream_out_prepare(h2_stream *stream, apr_off_t *plen,
     apr_status_t status = APR_SUCCESS;
     apr_off_t requested, missing, max_chunk = H2_DATA_CHUNK_SIZE;
     conn_rec *c;
-    int complete;
+    int complete, was_closed = 0;
 
     ap_assert(stream);
     
@@ -950,9 +950,11 @@ apr_status_t h2_stream_out_prepare(h2_stream *stream, apr_off_t *plen,
         
         if (stream->output) {
             H2_STREAM_OUT_LOG(APLOG_TRACE2, stream, "pre");
-            rv = h2_beam_receive(stream->output, stream->out_buffer, 
-                                 APR_NONBLOCK_READ, stream->max_mem - *plen);
+            h2_beam_log(stream->output, c, APLOG_TRACE2, "pre read output");
+            rv = h2_beam_receive(stream->output, stream->out_buffer,
+                                 APR_NONBLOCK_READ, stream->max_mem - *plen, &was_closed);
             H2_STREAM_OUT_LOG(APLOG_TRACE2, stream, "post");
+            h2_beam_log(stream->output, c, APLOG_TRACE2, "post read output");
         }
         
         if (rv == APR_SUCCESS) {
@@ -982,7 +984,7 @@ apr_status_t h2_stream_out_prepare(h2_stream *stream, apr_off_t *plen,
                           (long)*plen, *peos);
         }
         else {
-            status = (stream->output && h2_beam_is_closed(stream->output))? APR_EOF : APR_EAGAIN;
+            status = was_closed? APR_EOF : APR_EAGAIN;
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
                           H2_STRM_MSG(stream, "prepare, no data"));
         }

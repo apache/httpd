@@ -1,0 +1,3 @@
+  *) mod_http2: Fixed a race condition that could lead to streams being
+     aborted (RST to the client), although a response had been produced.
+     [Stefan Eissing]

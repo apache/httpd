@@ -258,11 +258,15 @@ void h2_beam_send_from(h2_bucket_beam *beam, apr_pool_t *p);
  * if no data is available.
  *
  * Call from the receiver side only.
+ * @param pclosed  on return != 0 iff the beam has been closed by the sender. It
+ *                 may still hold untransfered data. Maybe NULL if the caller is
+ *                 not interested in this.
  */
 apr_status_t h2_beam_receive(h2_bucket_beam *beam, 
                              apr_bucket_brigade *green_buckets, 
                              apr_read_type_e block,
-                             apr_off_t readbytes);
+                             apr_off_t readbytes,
+                             int *pclosed);
 
 /**
  * Determine if beam is empty. 
