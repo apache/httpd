@@ -2413,11 +2413,9 @@ char *ap_get_local_host(apr_pool_t *a)
 AP_DECLARE(char *) ap_pbase64decode(apr_pool_t *p, const char *bufcoded)
 {
     char *decoded;
-    int l;
 
-    decoded = (char *) apr_palloc(p, 1 + apr_base64_decode_len(bufcoded));
-    l = apr_base64_decode(decoded, bufcoded);
-    decoded[l] = '\0'; /* make binary sequence into string */
+    decoded = (char *) apr_palloc(p, apr_base64_decode_len(bufcoded));
+    apr_base64_decode(decoded, bufcoded);
 
     return decoded;
 }
@@ -2427,9 +2425,8 @@ AP_DECLARE(char *) ap_pbase64encode(apr_pool_t *p, char *string)
     char *encoded;
     int l = strlen(string);
 
-    encoded = (char *) apr_palloc(p, 1 + apr_base64_encode_len(l));
-    l = apr_base64_encode(encoded, string, l);
-    encoded[l] = '\0'; /* make binary sequence into string */
+    encoded = (char *) apr_palloc(p, apr_base64_encode_len(l));
+    apr_base64_encode(encoded, string, l);
 
     return encoded;
 }

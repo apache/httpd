@@ -1187,6 +1187,7 @@ PROXY_DECLARE(char *) ap_proxy_define_balancer(apr_pool_t *p,
     bshared->was_malloced = (do_malloc != 0);
     PROXY_STRNCPY(bshared->lbpname, "byrequests");
     if (PROXY_STRNCPY(bshared->name, uri) != APR_SUCCESS) {
+        if (do_malloc) free(bshared);
         return apr_psprintf(p, "balancer name (%s) too long", uri);
     }
     (*balancer)->lbmethod_set = 1;
@@ -1199,6 +1200,7 @@ PROXY_DECLARE(char *) ap_proxy_define_balancer(apr_pool_t *p,
                    &sname);
     sname = apr_pstrcat(p, conf->id, "_", sname, NULL);
     if (PROXY_STRNCPY(bshared->sname, sname) != APR_SUCCESS) {
+        if (do_malloc) free(bshared);
         return apr_psprintf(p, "balancer safe-name (%s) too long", sname);
     }
     bshared->hash.def = ap_proxy_hashfunc(bshared->name, PROXY_HASHFUNC_DEFAULT);

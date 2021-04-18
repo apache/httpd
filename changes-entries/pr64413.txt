@@ -1,0 +1,3 @@
+  *) mod_dav_fs: Improve logging output when failing to open files for
+     writing.  PR 64413.  [Bingyu Shen <ahshenbingyu gmail.com>]
+
