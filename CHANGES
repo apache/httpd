@@ -1,6 +1,13 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.47
 
+  *) mod_dav_fs: Improve logging output when failing to open files for
+     writing.  PR 64413.  [Bingyu Shen <ahshenbingyu gmail.com>]
+
+  *) mod_http2: Fixed a race condition that could lead to streams being
+     aborted (RST to the client), although a response had been produced.
+     [Stefan Eissing]
+
   *) mod_lua: Add support to Lua 5.4 [Joe Orton, [Giovanni Bechis, Ruediger Pluem]
 
   *) MPM event/worker: Fix possible crash in child process on early signal
