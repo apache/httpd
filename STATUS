@@ -215,6 +215,31 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      is not the right fix, then it should be removed from trunk.
      Putting it here is a way to revive the discussion
 
+  *) Add missing pool tags to help debugging
+     trunk patch: http://svn.apache.org/r1876599
+     2.4.x patch: http://home.apache.org/~jailletc36/r1876599.diff
+     +1: jailletc36
+
+  *) Easy patches: synch 2.4.x and trunk
+         - doxygen: Correct doxygen groupname
+         - .gdbinit: align columns
+         - .gdbinit: fix indentation
+         - mod_dav: Add specific logs for different modes
+         - core: ap_pbase64encode(): save double NUL byte allocation and assignment
+         - core: ap_pbase64decode(): save double NUL byte allocation and assignment
+         - support: Fix a typo in a comment
+         - proxy_util.c: Fix leak in error path in the do_malloc case
+     trunk patch:
+          http://svn.apache.org/r1730128
+          http://svn.apache.org/r1878140
+          http://svn.apache.org/r1878265
+          http://svn.apache.org/r1881736
+          http://svn.apache.org/r1882775
+          http://svn.apache.org/r1883872
+          http://svn.apache.org/r1884509
+          http://svn.apache.org/r1887720
+     2.4.x patch: svn merge -c 1730128,1878140,1878265,1881736,1882775,1883872,1884509,1887720 ^/httpd/httpd/trunk .
+     +1: jailletc36
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
