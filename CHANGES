@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.47
 
+  *) MPM event/worker: Fix possible crash in child process on early signal
+     delivery.  PR 64533.  [Ruediger Pluem]
+
   *) mod_http2: sync with github standalone version 1.15.17
      - Log requests and sent the configured error response in case of early detected
        errors like too many or too long headers. [Ruediger Pluem]
