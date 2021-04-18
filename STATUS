@@ -137,11 +137,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
- *) mpm_event/worker: Adjust signal handler before unblocking. PR 64533.
-     trunk patch: http://svn.apache.org/r1882370
-     2.4.x patch: svn merge -c 1882370 ^/httpd/httpd/trunk .
-     +1: ylavic, jorton, icing
-
   *) mod_http2: fixes a race when checking short responses with
      an intermediate 1xx status. Before seeing the real response status, the
      HTTP/2 noticed the EOF on the data. This led to protocol reset of the
