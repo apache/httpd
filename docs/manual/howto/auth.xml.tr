@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1738542:1887638 (outdated) -->
+<!-- English Revision: 1887638 -->
 <!-- =====================================================
  Translated by: Umut Samuk <umut belgeler.org>
    Reviewed by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
@@ -133,7 +133,9 @@
     şekilde bir <directive module="core"
     >AllowOverride</directive> yönergesine ihtiyacınız olacaktır:</p>
 
-    <highlight language="config">AllowOverride AuthConfig</highlight>
+    <highlight language="config">
+AllowOverride AuthConfig
+    </highlight>
 
     <p>Yönergeleri doğrudan ana sunucunun yapılandırma dosyasına
     koyacaksanız bu dosyaya yazma izniniz olmalıdır.</p>
@@ -264,8 +266,7 @@ Require user umut
     <directive module="mod_authn_dbm">AuthDBMUserFile</directive>
     yönergesi kullanılabilir. Bu dosyalar <program>dbmmanage</program> ve
     <program>htdbm</program> programı ile oluşturulabilir ve değiştirilebilir.
-    <a href="http://modules.apache.org/">Apache modülleri
-    Veritabanı</a> içindeki üçüncü parti modüllerinde çok sayıda
+    Üçüncü parti modüllerinde çok sayıda
     başka kimlik doğrulama türü de vardır.</p>
 
     <p>Son olarak <directive module="mod_authz_core">Require</directive>
@@ -331,7 +332,9 @@ Require group Grupismi
     yol daha mevcuttur. Bir gurup dosyası oluşturmaktansa, şu yönergeyi
     kullanabilirsiniz:</p>
 
-    <highlight language="config">Require valid-user</highlight>
+    <highlight language="config">
+Require valid-user
+    </highlight>
 
     <p><code>Require user umut</code> satırı ile parola dosyasında
     listelenmiş ve parolayı doğru olarak giren herhangi bir kişiye izin
@@ -507,12 +510,16 @@ Require group Grupismi
       çağırılacak yetkilendirme tedarikçilerini kayda geçirir. Örneğin:
       </p>
 
-      <highlight language="config">Require ip <var>adres</var></highlight>
+      <highlight language="config">
+Require ip <var>adres</var>
+      </highlight>
 
       <p>Burada, <var>adres</var> bir IP adresidir (veya kısmi bir IP
         addresidir)</p>
 
-      <highlight language="config">Require host <var>alan_adı</var></highlight>
+      <highlight language="config">
+Require host <var>alan_adı</var>
+      </highlight>
 
       <p>Burada, <var>alan_adı</var> bir tam nitelikli alan adıdır
       (ya da kısmi alan adıdır); gerekirse çok sayıda alan adı veya IP
@@ -576,17 +583,17 @@ Require group Grupismi
       <module>mod_access_compat</module> modülüne taşınmıştır.</p>
 
       <note type="warning"><title>Note</title>
-        <p><module>mod_access_compat</module> ile sağlanan yönergelerin 
-        kullanımı artık önerilmemekte, <module>mod_authz_host</module> 
-        modülündeki yönergeler önerilmektedir. <directive 
+        <p><module>mod_access_compat</module> ile sağlanan yönergelerin
+        kullanımı artık önerilmemekte, <module>mod_authz_host</module>
+        modülündeki yönergeler önerilmektedir. <directive
         module="mod_access_compat">Order</directive>, <directive
         module="mod_access_compat">Allow</directive> veya <directive
         module="mod_access_compat">Deny</directive> ile
-        <directive module="mod_authz_core">Require</directive> gibi daha yeni 
-        olanlarının yenilerle karışık kullanımı teknik olarak mümkünse de 
-        önerilmemektedir. <module>mod_access_compat</module> modülü, 2.4 
-        yükseltmesini kolaylaştırmak için sadece eski yönergeleri içeren 
-        yapılandırmaları desteklemek üzere oluşturulmuştur.  Daha ayrıntılı 
+        <directive module="mod_authz_core">Require</directive> gibi daha yeni
+        olanlarının yenilerle karışık kullanımı teknik olarak mümkünse de
+        önerilmemektedir. <module>mod_access_compat</module> modülü, 2.4
+        yükseltmesini kolaylaştırmak için sadece eski yönergeleri içeren
+        yapılandırmaları desteklemek üzere oluşturulmuştur.  Daha ayrıntılı
         bilgi için <a href="../upgrading.html">yükseltme</a> belgesine bakınız.
         </p>
       </note>

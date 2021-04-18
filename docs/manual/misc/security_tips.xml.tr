@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1869063:1887638 (outdated) -->
+<!-- English Revision: 1887638 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -125,8 +125,7 @@
         süzgeçleri ile henüz uyumlu değildir. Bu durumlarda,
         <module>worker</module> MPM'inin davranışına geri döner.</li>
 
-      <li><a href="http://modules.apache.org/">http://modules.apache.org/</a>
-        adresinde, belli istemci davranışlarını sınırlayacak ve HRS ile
+      <li>Belli istemci davranışlarını sınırlayacak ve HRS ile
         ilgili sorunları azaltmaya yardımcı olacak üçüncü parti modüller
         bulunabilir.</li>
     </ul>

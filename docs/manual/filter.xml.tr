@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1562488:1887638 (outdated) -->
+<!-- English Revision: 1887638 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -99,9 +99,7 @@
       bölünmesi gibi işlemleri gerçekleştirmek için bir takım dahili süzgeçler
       de  kullanabilir.</p>
 
-    <p>Üçüncü parti süzgeç modülleri tarafından gerçeklenmiş çok geniş bir
-      uygulama alanı mevcuttur; <a href="http://modules.apache.org/"
-      >modules.apache.org</a> ve benzerlerinden temin edilebilecek bu tür
+    <p>Üçüncü parti süzgeç modülleri tarafından gerçeklenmiş
       modüllerden bazılarının uygulama alanları:</p>
 
     <ul>
