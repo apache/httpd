@@ -48,11 +48,20 @@
 #if LUA_VERSION_NUM > 501
 /* Load mode for lua_load() */
 #define lua_load(a,b,c,d)  lua_load(a,b,c,d,NULL)
-#define lua_resume(a,b)    lua_resume(a, NULL, b)
+
+#if LUA_VERSION_NUM > 503
+#define lua_resume(a,b,c)    lua_resume(a, NULL, b, c)
+#else
+/* ### For version < 5.4, assume that exactly one stack item is on the
+ * stack, which is what the code did before but seems dubious. */
+#define lua_resume(a,b,c)    (*(c) = 1, lua_resume(a, NULL, b))
+#endif
+
 #define luaL_setfuncs_compat(a,b) luaL_setfuncs(a,b,0)
 #else
 #define lua_rawlen(L,i)    lua_objlen(L, (i))
 #define luaL_setfuncs_compat(a,b) luaL_register(a,NULL,b)
+#define lua_resume(a,b,c)    (*(c) = 1, lua_resume(a, b))
 #endif
 #if LUA_VERSION_NUM > 502
 #define lua_dump(a,b,c) lua_dump(a,b,c,0)

@@ -342,7 +342,7 @@ static apr_status_t lua_setup_filter_ctx(ap_filter_t* f, request_rec* r, lua_fil
 {
     apr_pool_t *pool;
     ap_lua_vm_spec *spec;
-    int n, rc;
+    int n, rc, nres;
     lua_State *L;
     lua_filter_ctx *ctx;    
     ap_lua_server_cfg *server_cfg = ap_get_module_config(r->server->module_config,
@@ -410,7 +410,7 @@ static apr_status_t lua_setup_filter_ctx(ap_filter_t* f, request_rec* r, lua_fil
             /* If a Lua filter is interested in filtering a request, it must first do a yield, 
              * otherwise we'll assume that it's not interested and pretend we didn't find it.
              */
-            rc = lua_resume(L, 1);
+            rc = lua_resume(L, 1, &nres);
             if (rc == LUA_YIELD) {
                 if (f->frec->providers == NULL) { 
                     /* Not wired by mod_filter */
@@ -432,7 +432,7 @@ static apr_status_t lua_setup_filter_ctx(ap_filter_t* f, request_rec* r, lua_fil
 static apr_status_t lua_output_filter_handle(ap_filter_t *f, apr_bucket_brigade *pbbIn)
 {
     request_rec *r = f->r;
-    int rc;
+    int rc, nres;
     lua_State *L;
     lua_filter_ctx* ctx;
     conn_rec *c = r->connection;
@@ -492,7 +492,7 @@ static apr_status_t lua_output_filter_handle(ap_filter_t *f, apr_bucket_brigade 
             lua_setglobal(L, "bucket");
             
             /* If Lua yielded, it means we have something to pass on */
-            if (lua_resume(L, 0) == LUA_YIELD) {
+            if (lua_resume(L, 0, &nres) == LUA_YIELD && nres == 1) {
                 size_t olen;
                 const char* output = lua_tolstring(L, 1, &olen);
                 if (olen > 0) { 
@@ -524,7 +524,7 @@ static apr_status_t lua_output_filter_handle(ap_filter_t *f, apr_bucket_brigade 
             apr_bucket *pbktEOS;
             lua_pushnil(L);
             lua_setglobal(L, "bucket");
-            if (lua_resume(L, 0) == LUA_YIELD) {
+            if (lua_resume(L, 0, &nres) == LUA_YIELD && nres == 1) {
                 apr_bucket *pbktOut;
                 size_t olen;
                 const char* output = lua_tolstring(L, 1, &olen);
@@ -558,7 +558,7 @@ static apr_status_t lua_input_filter_handle(ap_filter_t *f,
                                        apr_off_t nBytes) 
 {
     request_rec *r = f->r;
-    int rc, lastCall = 0;
+    int rc, lastCall = 0, nres;
     lua_State *L;
     lua_filter_ctx* ctx;
     conn_rec *c = r->connection;
@@ -621,7 +621,7 @@ static apr_status_t lua_input_filter_handle(ap_filter_t *f,
             lua_setglobal(L, "bucket");
             
             /* If Lua yielded, it means we have something to pass on */
-            if (lua_resume(L, 0) == LUA_YIELD) {
+            if (lua_resume(L, 0, &nres) == LUA_YIELD && nres == 1) {
                 size_t olen;
                 const char* output = lua_tolstring(L, 1, &olen);
                 pbktOut = apr_bucket_heap_create(output, olen, 0, c->bucket_alloc);
@@ -643,7 +643,7 @@ static apr_status_t lua_input_filter_handle(ap_filter_t *f,
             apr_bucket *pbktEOS = apr_bucket_eos_create(c->bucket_alloc);
             lua_pushnil(L);
             lua_setglobal(L, "bucket");
-            if (lua_resume(L, 0) == LUA_YIELD) {
+            if (lua_resume(L, 0, &nres) == LUA_YIELD && nres == 1) {
                 apr_bucket *pbktOut;
                 size_t olen;
                 const char* output = lua_tolstring(L, 1, &olen);
