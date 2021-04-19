@@ -553,7 +553,7 @@ chunk_size = (speed / (1000 / RATE_INTERVAL_MS));
         blocks, store the remaining bytes (located in the tail of the bucket brigade) 
         in a temporary holding area (namely another bucket brigade) and then use
         <code>ap_save_brigade</code> to set them aside.
-        These bytes will be preprended to the next bucket brigade that will be handled
+        These bytes will be prepended to the next bucket brigade that will be handled
         in the subsequent invocation.</li>
         <li>Avoid the previous logic if the bucket brigade that is currently being
         processed contains the end of stream bucket (EOS). There is no need to sleep
