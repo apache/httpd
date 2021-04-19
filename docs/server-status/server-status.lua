@@ -18,7 +18,7 @@ under the License.
 ]]
 
 --[[ mod_lua implementation of the server-status page ]]
-local ssversion = "0.11" -- verion of this script
+local ssversion = "0.11" -- version of this script
 local redact_ips = true -- whether to replace the last two bits of every IP with 'x.x'
 local warning_banner = [[
     <div style="float: left; color: #222; margin-bottom: 8px; margin-top: 24px; text-align: center; width: 200px; font-size: 0.7rem; border: 1px dashed #333; background: #F8C940;">
@@ -679,7 +679,7 @@ function refreshThreads(json, state) {
             }
             phtml += "</table>";
         } else {
-            phtml += "<p>No thread information avaialable</p>";
+            phtml += "<p>No thread information available</p>";
         }
         phtml += "</div>";
         box.innerHTML += phtml;
