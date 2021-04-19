@@ -185,7 +185,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      error paths
      trunk patch: http://svn.apache.org/r1887727
      2.4.x patch: svn merge -c 1887727 ^/httpd/httpd/trunk .
-     +1: ylavic
+     +1: ylavic, icing
 
   *) mod_xml2enc: Correctly handle Microsoft OOXML documents.  PR 64339
      trunk patch: http://svn.apache.org/r1884505
