@@ -125,6 +125,7 @@ CURRENT RELEASE NOTES:
 
   * Current exceptions for RTC for this branch:
     . mod_proxy_http2
+    . mod_md
     . documentation
     . non-Unix build
     . non-Unix, single-platform code
@@ -164,12 +165,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        and ECDSA certificates. Removed ACMEv1 support.
      - Interworking mod_md and ssl modules changed to exchange PEM strings
        instead of file paths for ACME challenges.
+     - core/mod_ssl/mod_md: adding OCSP response provisioning as core feature.
      Sorry, large patch, but it all hangs together. Trunk changed integrated
      into the PR: 
        r1886840, r1887085, r1887087, r1887134, r1887151, r1887152, 
        r1887337, r1887340, r1887342, r1887343, r1887360, r1887364, 
-       r1887923, r1887965, r1887993, r1888006, r1888083, r1888084
+       r1887923, r1887965, r1887993, r1888006, r1888083, r1888084,
+       r1888723, r1888724, r1888726, r1888729
      PR: https://github.com/apache/httpd/pull/179
+     patch: https://github.com/apache/httpd/pull/179.diff
      +1: icing
 
   *) mod_socache_shmcb: be safe from socache_shmcb_destroy() late call.  PR 59798
