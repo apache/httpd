@@ -215,7 +215,7 @@ ProxyVia On
       for a reverse proxy:</p>
 
       <highlight language="config">
-          ProxyPass "/example" "http://backend.example.com" connectiontimeout=5 timeout=30
+ProxyPass "/example" "http://backend.example.com" connectiontimeout=5 timeout=30
       </highlight>
 
       <p>This will create a worker associated with the origin server URL
@@ -224,7 +224,7 @@ ProxyVia On
       via the <directive module="mod_proxy">ProxySet</directive> directive:</p>
 
       <highlight language="config">
-          ProxySet "http://backend.example.com" connectiontimeout=5 timeout=30
+ProxySet "http://backend.example.com" connectiontimeout=5 timeout=30
       </highlight>
 
       <p>or alternatively using <directive module="mod_proxy">Proxy</directive>
@@ -473,7 +473,7 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10
     other request headers.</p>
 
     <p>Note:  If you need to specify custom request headers to be
-    added to the forwarded request, use the 
+    added to the forwarded request, use the
     <directive module="mod_headers">RequestHeader</directive>
     directive.</p>
 
@@ -513,14 +513,14 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10
     </highlight>
 
     <note><title>Differences from the Location configuration section</title>
-      <p>A backend URL matches the configuration section if it begins with the 
+      <p>A backend URL matches the configuration section if it begins with the
       the <var>wildcard-url</var> string, even if the last path segment in the
-      directive only matches a prefix of the backend URL.  For example, 
-      &lt;Proxy "http://example.com/foo"&gt; matches all of 
-      http://example.com/foo, http://example.com/foo/bar, and 
+      directive only matches a prefix of the backend URL.  For example,
+      &lt;Proxy "http://example.com/foo"&gt; matches all of
+      http://example.com/foo, http://example.com/foo/bar, and
       http://example.com/foobar.  The matching of the final URL differs
       from the behavior of the <directive type="section" module="core"
-      >Location</directive> section, which for purposes of this note 
+      >Location</directive> section, which for purposes of this note
       treats the final path component as if it ended in a slash.</p>
       <p>For more control over the matching, see <directive type="section"
       >ProxyMatch</directive>.</p>
@@ -1030,7 +1030,7 @@ ProxyPass "/mirror/foo/i" "!"
 
     <example><title>Example</title>
         <highlight language="config">
-        ProxyPass "/example" "http://backend.example.com" max=20 ttl=120 retry=300
+ProxyPass "/example" "http://backend.example.com" max=20 ttl=120 retry=300
         </highlight>
     </example>
 
@@ -1292,7 +1292,7 @@ ProxyPass "/mirror/foo/i" "!"
     <tr><td>stickysessionsep</td>
         <td>"."</td>
         <td>Sets the separation symbol in the session cookie. Some backend application servers
-        do not use the '.' as the symbol. For example, the Oracle Weblogic server uses 
+        do not use the '.' as the symbol. For example, the Oracle Weblogic server uses
         '!'. The correct symbol can be set using this option. The setting of 'Off'
         signifies that no symbol is used.
     </td></tr>
@@ -1397,8 +1397,8 @@ ProxyPass "/" "balancer://hotcluster/"
     But this may be incompatible with some backends, particularly those
     that make use of <var>PATH_INFO</var>.  The optional <var>nocanon</var>
     keyword suppresses this and passes the URL path "raw" to the
-    backend.  Note that this keyword may affect the security of your backend, 
-	as it removes the normal limited protection against URL-based attacks
+    backend.  Note that this keyword may affect the security of your backend,
+    as it removes the normal limited protection against URL-based attacks
     provided by the proxy.</p>
 
     <p>Normally, mod_proxy will include the query string when
@@ -1451,14 +1451,14 @@ ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"
        matches, the server will substitute any parenthesized matches into the given
        string and use it as a new <var>url</var>.</p>
 
-    <note><strong>Note: </strong>This directive cannot be used within a 
+    <note><strong>Note: </strong>This directive cannot be used within a
     <code>&lt;Directory&gt;</code> context.</note>
     
     <p>Suppose the local server has address <code>http://example.com/</code>;
     then</p>
 
     <highlight language="config">
-      ProxyPassMatch "^/(.*\.gif)$" "http://backend.example.com/$1"
+ProxyPassMatch "^/(.*\.gif)$" "http://backend.example.com/$1"
     </highlight>
 
     <p>will cause a local request for
@@ -1469,13 +1469,13 @@ ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"
       substitutions (as well as after).  This limits the matches you can use.
       For instance, if we had used</p>
       <highlight language="config">
-        ProxyPassMatch "^(/.*\.gif)$" "http://backend.example.com:8000$1"
+ProxyPassMatch "^(/.*\.gif)$" "http://backend.example.com:8000$1"
       </highlight>
       <p>in our previous example, it would fail with a syntax error
       at server startup.  This is a bug (PR 46665 in the ASF bugzilla),
       and the workaround is to reformulate the match:</p>
       <highlight language="config">
-        ProxyPassMatch "^/(.*\.gif)$" "http://backend.example.com:8000/$1"
+ProxyPassMatch "^/(.*\.gif)$" "http://backend.example.com:8000/$1"
       </highlight>
     </note>
     <p>The <code>!</code> directive is useful in situations where you don't want
@@ -1552,7 +1552,7 @@ ProxyPassReverseCookiePath  "/"  "/mirror/foo/"
     <p>will not only cause a local request for the
     <code>http://example.com/mirror/foo/bar</code> to be internally converted
     into a proxy request to <code>http://backend.example.com/bar</code>
-    (the functionality which <code>ProxyPass</code> provides here). 
+    (the functionality which <code>ProxyPass</code> provides here).
     It also takes care of redirects which the server <code>backend.example.com</code>
     sends when redirecting <code>http://backend.example.com/bar</code> to
     <code>http://backend.example.com/quux</code> . Apache httpd adjusts this to
@@ -1626,7 +1626,7 @@ reverse proxy. This directive rewrites the <code>path</code> string in
 <var>internal-path</var>, the cookie path will be replaced with
 <var>public-path</var>.
 </p><p>
-In the example given with 
+In the example given with
 <directive module="mod_proxy">ProxyPassReverse</directive>, the directive:
 </p>
     <highlight language="config">
@@ -1733,7 +1733,7 @@ connections</description>
 
 <directivesynopsis>
 <name>ProxyMaxForwards</name>
-<description>Maximium number of proxies that a request can be forwarded
+<description>Maximum number of proxies that a request can be forwarded
 through</description>
 <syntax>ProxyMaxForwards <var>number</var></syntax>
 <default>ProxyMaxForwards -1</default>
@@ -1898,7 +1898,7 @@ NoProxy         ".example.com" "192.168.112.0/21"
 </contextlist>
 
 <usage>
-    <p>This directive allows a user to specifiy a timeout on proxy requests.
+    <p>This directive allows a user to specify a timeout on proxy requests.
     This is useful when you have a slow/buggy appserver which hangs, and you
     would rather just return a timeout and fail gracefully instead of waiting
     however long it takes the server to return.</p>
