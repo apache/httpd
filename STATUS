@@ -138,7 +138,7 @@ RELEASE SHOWSTOPPERS:
      trunk patch: http://svn.apache.org/r1876619
                   http://svn.apache.org/r1876675
      2.4.x patch: svn merge -c 1876619,1876675 ^/httpd/httpd/trunk .
-     +1: ylavic
+     +1: ylavic, jorton
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
