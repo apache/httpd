@@ -46,7 +46,7 @@ struct md_data_t {
 md_data_t *md_data_make(apr_pool_t *p, apr_size_t len);
 md_data_t *md_data_create(apr_pool_t *p, const char *data, apr_size_t len);
 
-void md_data_assign_pcopy(md_data_t *dest, const md_data_t *src, apr_pool_t *p);
+void md_data_assign_pcopy(md_data_t *dest, const char *src, apr_size_t src_len, apr_pool_t *p);
 
 apr_status_t md_data_to_hex(const char **phex, char separator,
                             apr_pool_t *p, const md_data_t *data);

@@ -456,7 +456,7 @@ int h2_is_acceptable_connection(conn_rec *c, request_rec *r, int require_all)
 
         /* Need Tlsv1.2 or higher, rfc 7540, ch. 9.2
          */
-        val = ap_ssl_var_lookup(pool, s, c, NULL, (char*)"SSL_PROTOCOL");
+        val = ap_ssl_var_lookup(pool, s, c, NULL, "SSL_PROTOCOL");
         if (val && *val) {
             if (strncmp("TLS", val, 3) 
                 || !strcmp("TLSv1", val) 
@@ -475,7 +475,7 @@ int h2_is_acceptable_connection(conn_rec *c, request_rec *r, int require_all)
 
         /* Check TLS cipher blacklist
          */
-        val = ap_ssl_var_lookup(pool, s, c, NULL, (char*)"SSL_CIPHER");
+        val = ap_ssl_var_lookup(pool, s, c, NULL, "SSL_CIPHER");
         if (val && *val) {
             const char *source;
             if (cipher_is_blacklisted(val, &source)) {
