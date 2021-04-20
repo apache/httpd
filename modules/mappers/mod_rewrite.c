@@ -1026,6 +1026,7 @@ static void set_cache_value(const char *name, apr_time_t t, char *key,
 #endif
                 return;
             }
+            apr_pool_tag(p, "rewrite_cachedmap");
 
             map = apr_palloc(cachep->pool, sizeof(cachedmap));
             map->pool = p;
@@ -1103,6 +1104,7 @@ static int init_cache(apr_pool_t *p)
         cachep = NULL; /* turns off cache */
         return 0;
     }
+    apr_pool_tag(cachep->pool, "rewrite_cachep");
 
     cachep->maps = apr_hash_make(cachep->pool);
 #if APR_HAS_THREADS

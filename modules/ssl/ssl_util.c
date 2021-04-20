@@ -298,6 +298,7 @@ static struct CRYPTO_dynlock_value *ssl_dyn_create_function(const char *file,
      * away in the destruction callback.
      */
     apr_pool_create(&p, dynlockpool);
+    apr_pool_tag(p, "modssl_dynlock_value");
     ap_log_perror(file, line, APLOG_MODULE_INDEX, APLOG_TRACE1, 0, p,
                   "Creating dynamic lock");
 

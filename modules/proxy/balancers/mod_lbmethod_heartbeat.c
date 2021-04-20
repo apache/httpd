@@ -281,6 +281,7 @@ static proxy_worker *find_best_hb(proxy_balancer *balancer,
     }
 
     apr_pool_create(&tpool, r->pool);
+    apr_pool_tag(tpool, "lb_heartbeat_tpool");
 
     servers = apr_hash_make(tpool);
 

@@ -125,6 +125,7 @@ CURRENT RELEASE NOTES:
 
   * Current exceptions for RTC for this branch:
     . mod_proxy_http2
+    . mod_md
     . documentation
     . non-Unix build
     . non-Unix, single-platform code
@@ -134,8 +135,15 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+  *) mod_watchdog: Fix incomplete backport in r1888928.
+     trunk patch: http://svn.apache.org/r1876619
+                  http://svn.apache.org/r1876675
+     2.4.x patch: svn merge -c 1876619,1876675 ^/httpd/httpd/trunk .
+     +1: ylavic, jorton
+
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -148,22 +156,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     +1: minfrin
     ylavic: patch is 404
 
-  *) mod_lua: Support Lua 5.4 and use pkg-config to detect Lua
-     properly on Debian systems.
-     trunk patch: http://svn.apache.org/r1826206
-                  http://svn.apache.org/r1880678
-                  http://svn.apache.org/r1880743
-                  http://svn.apache.org/r1880924
-     2.4.x patch: svn merge -c 1826206,1880678,1880743,1880924 ^/httpd/httpd/trunk .
-     PR: https://github.com/apache/httpd/pull/176
-     +1: jorton, 
-
-  *) mpm_event/worker: Adjust signal handler before unblocking. PR 64533.
-     trunk patch: http://svn.apache.org/r1882370
-     2.4.x patch: svn merge -c 1882370 ^/httpd/httpd/trunk .
-     +1: ylavic, jorton, icing
-
-  *) core/mod_ssl/mod_md:
+   *) core/mod_ssl/mod_md:
      - adding new ap_ssl_*() functions for a backward
        compatible replacement of the major optional mod_ssl functions. This
        allows other ssl modules to work without impersonating mod_ssl and
@@ -172,27 +165,38 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        and ECDSA certificates. Removed ACMEv1 support.
      - Interworking mod_md and ssl modules changed to exchange PEM strings
        instead of file paths for ACME challenges.
+     - core/mod_ssl/mod_md: adding OCSP response provisioning as core feature.
      Sorry, large patch, but it all hangs together. Trunk changed integrated
      into the PR: 
        r1886840, r1887085, r1887087, r1887134, r1887151, r1887152, 
        r1887337, r1887340, r1887342, r1887343, r1887360, r1887364, 
-       r1887923, r1887965, r1887993, r1888006, r1888083, r1888084
+       r1887923, r1887965, r1887993, r1888006, r1888083, r1888084,
+       r1888723, r1888724, r1888726, r1888729
      PR: https://github.com/apache/httpd/pull/179
+     patch: https://github.com/apache/httpd/pull/179.diff
      +1: icing
 
-  *) modules/http/http_core.c server/protocol.c:
-     Make sure that conn->keepalive is NOT reset after being set in ap_read_request().
-     trunk patch: http://svn.apache.org/r1887999
-     +1: jfclere
+  *) mod_socache_shmcb: be safe from socache_shmcb_destroy() late call.  PR 59798
+     trunk patch: http://svn.apache.org/r1888266
+     2.4.x patch: svn merge -c 1888266 ^/httpd/httpd/trunk .
+     +1: ylavic, icing
 
-  *) mod_http2: fixes a race when checking short responses with
-     an intermediate 1xx status. Before seeing the real response status, the
-     HTTP/2 noticed the EOF on the data. This led to protocol reset of the
-     stream and the valid response was not sent.
-     trunk patch: http://svn.apache.org/r1888087
-     2.4.x patch: svn merge -c 1888087 ^/httpd/httpd/trunk .
-     +1: icing, rpluem
+  *) mod_cgid: Register cleanup for socket earlier to avoid possible leaks on
+     error paths
+     trunk patch: http://svn.apache.org/r1887727
+     2.4.x patch: svn merge -c 1887727 ^/httpd/httpd/trunk .
+     +1: ylavic, icing
 
+  *) mod_xml2enc: Correctly handle Microsoft OOXML documents.  PR 64339
+     trunk patch: http://svn.apache.org/r1884505
+     2.4.x patch: svn merge -c 1884505 ^/httpd/httpd/trunk .
+     +1: 
+     jailletc36: there has been some discussion about how to fix the issue.
+     I'm not sure that the commit above is the best solution
+     and other alternatives have been discussed in PR 64339.  If r1884505
+     is not the right fix, then it should be removed from trunk.
+     Putting it here is a way to revive the discussion
+                  
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 

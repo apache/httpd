@@ -896,6 +896,7 @@ static int netware_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     set_signals();
 
     apr_pool_create(&pmain, pconf);
+    apr_pool_tag(pmain, "pmain");
     ap_run_child_init(pmain, ap_server_conf);
 
     if (ap_threads_max_free < ap_threads_min_free + 1)  /* Don't thrash... */

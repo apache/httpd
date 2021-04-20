@@ -714,6 +714,7 @@ static void req_rsp(request_rec *r, const fcgi_provider_conf *conf,
     }
 
     apr_pool_create(&temp_pool, r->pool);
+    apr_pool_tag(temp_pool, "mod_authnz_fcgi (req_rsp)");
 
     setupenv(r, password, apache_role);
 

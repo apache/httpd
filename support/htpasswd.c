@@ -351,7 +351,7 @@ int main(int argc, const char * const argv[])
         }
         else {
             /*
-             * Error out if -c was omitted for this non-existant file.
+             * Error out if -c was omitted for this non-existent file.
              */
             if (!(mask & APHTP_NEWFILE)) {
                 apr_file_printf(errfile,

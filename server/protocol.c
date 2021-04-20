@@ -1315,6 +1315,7 @@ request_rec *ap_read_request(conn_rec *conn)
     r->useragent_ip = conn->client_ip;
 
     tmp_bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+    conn->keepalive = AP_CONN_UNKNOWN;
 
     ap_run_pre_read_request(r, conn);
 

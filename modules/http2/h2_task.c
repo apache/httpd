@@ -266,7 +266,7 @@ static apr_status_t h2_filter_secondary_in(ap_filter_t* f,
         }
         if (task->input.beam) {
             status = h2_beam_receive(task->input.beam, task->input.bb, block, 
-                                     128*1024);
+                                     128*1024, NULL);
         }
         else {
             status = APR_EOF;

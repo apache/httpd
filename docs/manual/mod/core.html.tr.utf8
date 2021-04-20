@@ -68,6 +68,8 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#fileetag">FileETag</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#files">&lt;Files&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#filesmatch">&lt;FilesMatch&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flushmaxpipelined">FlushMaxPipelined</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flushmaxthreshold">FlushMaxThreshold</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#forcetype">ForceType</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#gprofdir">GprofDir</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#hostnamelookups">HostnameLookups</a></li>
@@ -106,6 +108,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#protocols">Protocols</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#protocolshonororder">ProtocolsHonorOrder</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#qualifyredirecturl">QualifyRedirectURL</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#readbuffersize">ReadBufferSize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#regexdefaultoptions">RegexDefaultOptions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#registerhttpmethod">RegisterHttpMethod</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rlimitcpu">RLimitCPU</a></li>
@@ -1767,16 +1770,19 @@ ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"</pre>
      <dd>Olası tüm alanlar kullanılır. Bu şuna eşdeğerdir:
          <pre class="prettyprint lang-config">FileETag INode MTime Size</pre>
 </dd>
+     <dt><strong>Digest</strong></dt>
+     <dd>Bir belge dosya tabanlı ise <code>ETag</code> alanı dosyanın özeti
+      alınarak hesaplanır.</dd>
      <dt><strong>None</strong></dt>
      <dd>Bir belge dosyasıyla sunulsa bile yanıta hiçbir <code>ETag</code>
       alanı dahil edilmez.</dd>
     </dl>
 
     <p>Öntanımlı ayarları miras alıp bunların kapsamını genişletmek/daraltmak
-      için <code>INode</code>, <code>MTime</code> ve <code>Size</code>
-      anahtar sözcüklerinin önüne <code>+</code> veya <code>-</code> imi
-      konabilir. Bu imlerin bulunmadığı bir anahtar sözcüğün varlığı halinde
-      hiçbir değer miras alınmaz.</p>
+      için <code>INode</code>, <code>MTime</code>, <code>Size</code> ve
+      <code>Digest</code> anahtar sözcüklerinin önüne <code>+</code> veya
+      <code>-</code> imi konabilir. Bu imlerin bulunmadığı bir anahtar
+      sözcüğün varlığı halinde hiçbir değer miras alınmaz.</p>
 
     <p>Eğer bir dizinin yapılandırması
       <code>FileETag&nbsp;INode&nbsp;MTime&nbsp;Size</code> ve alt dizini
@@ -1784,21 +1790,11 @@ ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"</pre>
       geçersizleştirme olmadığı takdirde onun alt dizinlerinin) ayarları
       <code>FileETag&nbsp;MTime&nbsp;Size</code> yapılandırmasına eşdeğer
       olacaktır.</p>
-    <div class="warning"><h3>Uyarı</h3>
-      WebDAV’ın etkin olduğu yerlerde veya dizinlerde saklama alanı sağlayıcı
-      olarak <code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code> kullanılıyorsa öntanımlı ayarları
-      değiştirmeyiniz. <code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code>, koşullu isteklerde
-      <code>ETag</code> karşılaştırmaları yapabilmek için
-      <code>MTime&nbsp;Size</code> yapılandırmasını kullanır. Eğer
-      <code>ETag</code> ayarı <code class="directive">FileETag</code> yönergesi
-      kullanılarak değiştirilirse koşullu istekler gerektiği gibi yerine
-      getirilemez.
-    </div>
     <div class="note"><h3>Sunucu Taraflı İçerik</h3>
       Gömülü SSI yönergeleri ile bir duruk dosyanın <code>FileETag</code>,
-      <code>MTime</code> ve <code>Size</code> değerleri değişmeksizin yanıt
-      öğesi değişebileceğinden <code class="module"><a href="../mod/mod_include.html">mod_include</a></code> tarafından
-      çözümlenen yanıtlar için bir <code>ETag</code> üretilmez.
+      <code>MTime</code>, <code>Size</code> ve <code>Digest</code> değerleri
+      değişmeksizin yanıt öğesi değişebileceğinden <code class="module"><a href="../mod/mod_include.html">mod_include</a></code>
+      tarafından çözümlenen yanıtlar için bir <code>ETag</code> üretilmez.
     </div>
 
 </div>
@@ -1914,6 +1910,50 @@ ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"</pre>
   &lt;Directory&gt;, &lt;Location&gt; ve &lt;Files&gt; bölümleri nasıl
   çalışır?</a> belgesine bakınız.</li>
 </ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="FlushMaxPipelined" id="FlushMaxPipelined">FlushMaxPipelined</a> <a name="flushmaxpipelined" id="flushmaxpipelined">Yönergesi</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Ağa akıtılacak azami ardışık yanıt sayısı</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>FlushMaxPipelined <var>sayı</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>FlushMaxPipelined 5</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>2.4.47 ve sonrası</td></tr>
+</table>
+    <p>Bu yönerge, ardışık düzenli istek alındığı sürece beklemede kalan azami
+    ardışık yanıt sayısını yapılandırmaya izin verir. Sınıra ulaşıldığında,
+    yanıtlar tekrar sınırın altına inene kadar engelleme kipinde ağa zorla
+    boşaltılır.</p>
+
+    <p><code class="directive">FlushMaxPipelined</code>, bellek kullanımını
+    kısıtlamaya yardımcı olur. <var>0</var> olarak ayarlandığında ardışık
+    düzen devre dışı bırakılır, <var>-1</var> olarak ayarlandığında sınır
+    yoktur (<code class="directive">FlushMaxThreshold</code> hala geçerlidir).</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="FlushMaxThreshold" id="FlushMaxThreshold">FlushMaxThreshold</a> <a name="flushmaxthreshold" id="flushmaxthreshold">Yönergesi</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bekleyen verilerin ağa boşaltılacağı eşik değer</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>FlushMaxThreshold<var>bayt-sayısı</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>FlushMaxThreshold 65536</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>2.4.47 ve sonrası</td></tr>
+</table>
+    <p>Bu yönerge, bekleyen çıktı verileri için eşiği (bayt cinsinden)
+    yapılandırmaya izin verir. Sınıra ulaşıldığında, veriler tekrar sınırın
+    altına inene kadar engelleme kipinde ağa zorla boşaltılır.</p>
+
+    <p><code class="directive">FlushMaxThreshold</code>, bellek kullanımını kısıtlamaya
+    yardımcı olur. <var>0</var>'a veya çok küçük bir değere ayarlandığında,
+    gerçekte hiç bekleyen veri yoktur, ancak iş parçacıklı MPM'ler için ağı
+    bekleyen daha fazla iş parçacığı olabilir, dolayısıyla diğer eşzamanlı
+    bağlantıları işlemek için daha az sayıda kullanılabilir.</p>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ForceType" id="ForceType">ForceType</a> <a name="forcetype" id="forcetype">Yönergesi</a></h2>
@@ -4052,6 +4092,25 @@ davranılır.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ReadBufferSize" id="ReadBufferSize">ReadBufferSize</a> <a name="readbuffersize" id="readbuffersize">Yönergesi</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Veriyi okumakta kullanılacak tampon sayısı</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>ReadBufferSize <var>bayt-sayısı</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>ReadBufferSize 8192</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>2.4.27 ve sonrası</td></tr>
+</table>
+    <p>Bu yönerge, ağdan veya dosyalardan veri okumak için kullanılan bellek
+    tamponunun boyutunu (bayt cinsinden) yapılandırmaya izin verir.</p>
+
+    <p>Daha büyük bir arabellek, daha büyük verilerle başarımı artırabilir,
+    ancak bağlantı başına tüketilen bellek artar. Yapılandırılabilir en küçük
+    boyut <var>1024</var>'tür.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="RegexDefaultOptions" id="RegexDefaultOptions">RegexDefaultOptions</a> <a name="regexdefaultoptions" id="regexdefaultoptions">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Regex düzenli ifadeleri için öntanımlı/küresel seçenekleri yapılandırır</td></tr>
@@ -5119,7 +5178,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/core.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="apache">Copyright 2021 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
 <p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/directives.html">Yönergeler</a> | <a href="http://wiki.apache.org/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

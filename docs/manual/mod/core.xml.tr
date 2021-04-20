@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1885465:1887384 (outdated) -->
+<!-- English Revision: 1887384 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -1869,16 +1869,19 @@ ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"
          <highlight language="config">
 FileETag INode MTime Size
          </highlight></dd>
+     <dt><strong>Digest</strong></dt>
+     <dd>Bir belge dosya tabanlı ise <code>ETag</code> alanı dosyanın özeti
+      alınarak hesaplanır.</dd>
      <dt><strong>None</strong></dt>
      <dd>Bir belge dosyasıyla sunulsa bile yanıta hiçbir <code>ETag</code>
       alanı dahil edilmez.</dd>
     </dl>
 
     <p>Öntanımlı ayarları miras alıp bunların kapsamını genişletmek/daraltmak
-      için <code>INode</code>, <code>MTime</code> ve <code>Size</code>
-      anahtar sözcüklerinin önüne <code>+</code> veya <code>-</code> imi
-      konabilir. Bu imlerin bulunmadığı bir anahtar sözcüğün varlığı halinde
-      hiçbir değer miras alınmaz.</p>
+      için <code>INode</code>, <code>MTime</code>, <code>Size</code> ve
+      <code>Digest</code> anahtar sözcüklerinin önüne <code>+</code> veya
+      <code>-</code> imi konabilir. Bu imlerin bulunmadığı bir anahtar
+      sözcüğün varlığı halinde hiçbir değer miras alınmaz.</p>
 
     <p>Eğer bir dizinin yapılandırması
       <code>FileETag&nbsp;INode&nbsp;MTime&nbsp;Size</code> ve alt dizini
@@ -1886,21 +1889,11 @@ FileETag INode MTime Size
       geçersizleştirme olmadığı takdirde onun alt dizinlerinin) ayarları
       <code>FileETag&nbsp;MTime&nbsp;Size</code> yapılandırmasına eşdeğer
       olacaktır.</p>
-    <note type="warning"><title>Uyarı</title>
-      WebDAV’ın etkin olduğu yerlerde veya dizinlerde saklama alanı sağlayıcı
-      olarak <module>mod_dav_fs</module> kullanılıyorsa öntanımlı ayarları
-      değiştirmeyiniz. <module>mod_dav_fs</module>, koşullu isteklerde
-      <code>ETag</code> karşılaştırmaları yapabilmek için
-      <code>MTime&nbsp;Size</code> yapılandırmasını kullanır. Eğer
-      <code>ETag</code> ayarı <directive>FileETag</directive> yönergesi
-      kullanılarak değiştirilirse koşullu istekler gerektiği gibi yerine
-      getirilemez.
-    </note>
     <note><title>Sunucu Taraflı İçerik</title>
       Gömülü SSI yönergeleri ile bir duruk dosyanın <code>FileETag</code>,
-      <code>MTime</code> ve <code>Size</code> değerleri değişmeksizin yanıt
-      öğesi değişebileceğinden <module>mod_include</module> tarafından
-      çözümlenen yanıtlar için bir <code>ETag</code> üretilmez.
+      <code>MTime</code>, <code>Size</code> ve <code>Digest</code> değerleri
+      değişmeksizin yanıt öğesi değişebileceğinden <module>mod_include</module>
+      tarafından çözümlenen yanıtlar için bir <code>ETag</code> üretilmez.
     </note>
 </usage>
 </directivesynopsis>
@@ -2025,6 +2018,50 @@ FileETag INode MTime Size
   arada ele alındığının açıklaması için <a href="../sections.html">
   &lt;Directory&gt;, &lt;Location&gt; ve &lt;Files&gt; bölümleri nasıl
   çalışır?</a> belgesine bakınız.</seealso>
+</directivesynopsis>
+
+ <directivesynopsis>
+<name>FlushMaxPipelined</name>
+<description>Ağa akıtılacak azami ardışık yanıt sayısı</description>
+<syntax>FlushMaxPipelined <var>sayı</var></syntax>
+<default>FlushMaxPipelined 5</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+<compatibility>2.4.47 ve sonrası</compatibility>
+
+<usage>
+    <p>Bu yönerge, ardışık düzenli istek alındığı sürece beklemede kalan azami
+    ardışık yanıt sayısını yapılandırmaya izin verir. Sınıra ulaşıldığında,
+    yanıtlar tekrar sınırın altına inene kadar engelleme kipinde ağa zorla
+    boşaltılır.</p>
+
+    <p><directive>FlushMaxPipelined</directive>, bellek kullanımını
+    kısıtlamaya yardımcı olur. <var>0</var> olarak ayarlandığında ardışık
+    düzen devre dışı bırakılır, <var>-1</var> olarak ayarlandığında sınır
+    yoktur (<directive>FlushMaxThreshold</directive> hala geçerlidir).</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>FlushMaxThreshold</name>
+<description>Bekleyen verilerin ağa boşaltılacağı eşik değer</description>
+<syntax>FlushMaxThreshold<var>bayt-sayısı</var></syntax>
+<default>FlushMaxThreshold 65536</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+<compatibility>2.4.47 ve sonrası</compatibility>
+
+<usage>
+    <p>Bu yönerge, bekleyen çıktı verileri için eşiği (bayt cinsinden)
+    yapılandırmaya izin verir. Sınıra ulaşıldığında, veriler tekrar sınırın
+    altına inene kadar engelleme kipinde ağa zorla boşaltılır.</p>
+
+    <p><directive>FlushMaxThreshold</directive>, bellek kullanımını kısıtlamaya
+    yardımcı olur. <var>0</var>'a veya çok küçük bir değere ayarlandığında,
+    gerçekte hiç bekleyen veri yoktur, ancak iş parçacıklı MPM'ler için ağı
+    bekleyen daha fazla iş parçacığı olabilir, dolayısıyla diğer eşzamanlı
+    bağlantıları işlemek için daha az sayıda kullanılabilir.</p>
+</usage>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -4021,6 +4058,25 @@ Protocols h2 http/1.1
 
 </usage>
 <seealso><directive module="core">Protocols</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ReadBufferSize</name>
+<description>Veriyi okumakta kullanılacak tampon sayısı</description>
+<syntax>ReadBufferSize <var>bayt-sayısı</var></syntax>
+<default>ReadBufferSize 8192</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+<compatibility>2.4.27 ve sonrası</compatibility>
+
+<usage>
+    <p>Bu yönerge, ağdan veya dosyalardan veri okumak için kullanılan bellek
+    tamponunun boyutunu (bayt cinsinden) yapılandırmaya izin verir.</p>
+
+    <p>Daha büyük bir arabellek, daha büyük verilerle başarımı artırabilir,
+    ancak bağlantı başına tüketilen bellek artar. Yapılandırılabilir en küçük
+    boyut <var>1024</var>'tür.</p>
+</usage>
 </directivesynopsis>
 
 <directivesynopsis>

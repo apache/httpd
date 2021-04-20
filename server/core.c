@@ -722,6 +722,7 @@ void ap_core_reorder_directories(apr_pool_t *p, server_rec *s)
 
     /* we have to allocate tmp space to do a stable sort */
     apr_pool_create(&tmp, p);
+    apr_pool_tag(tmp, "core_reorder_directories");
     sortbin = apr_palloc(tmp, sec_dir->nelts * sizeof(*sortbin));
     for (i = 0; i < nelts; ++i) {
         sortbin[i].orig_index = i;

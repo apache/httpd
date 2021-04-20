@@ -29,7 +29,7 @@
      version 2.2 to 2.4, that may be of interest to module/application
      developers and core hacks.  As of the first GA release of the
      2.4 branch API compatibility is preserved for the life of the
-     2.4 branch.  (The 
+     2.4 branch.  (The
      <a href="http://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x/VERSIONING">VERSIONING</a>
      description for the 2.4 release provides more information about API
      compatibility.)</p>
@@ -114,9 +114,9 @@
       <li>New API to retain data across module unload/load</li>
       <li>New <code>check_config</code> hook</li>
       <li>New <code>ap_process_fnmatch_configs()</code> function to process wildcards</li>
-      <li>Change <code>ap_configfile_t</code>, <code>ap_cfg_getline()</code>, 
-          <code>ap_cfg_getc()</code> to return error codes, and add 
-          <code>ap_pcfg_strerror()</code> for retrieving an error description.</li> 
+      <li>Change <code>ap_configfile_t</code>, <code>ap_cfg_getline()</code>,
+          <code>ap_cfg_getc()</code> to return error codes, and add
+          <code>ap_pcfg_strerror()</code> for retrieving an error description.</li>
       <li>Any config directive permitted in ACCESS_CONF context must now
           correctly handle being called from an .htaccess file via the new
           <directive module="core">AllowOverrideList</directive> directive.
@@ -128,7 +128,7 @@
   <section id="http_core">
     <title>http_core (changed)</title>
     <ul>
-      <li>REMOVED <code>ap_default_type</code>, <code>ap_requires</code>, all 
+      <li>REMOVED <code>ap_default_type</code>, <code>ap_requires</code>, all
           2.2 authnz API</li>
       <li>Introduces Optional Functions for logio and authnz</li>
       <li>New function <code>ap_get_server_name_for_url</code> to support IPv6
@@ -156,11 +156,11 @@
       <li>Support for mod_request kept_body</li>
       <li>Support buffering filter data for async requests</li>
       <li>New <code>CONN_STATE</code> values</li>
-      <li>Function changes: <code>ap_escape_html</code> updated; 
+      <li>Function changes: <code>ap_escape_html</code> updated;
           <code>ap_unescape_all</code>, <code>ap_escape_path_segment_buffer</code></li>
       <li>Modules that load other modules later than the <code>EXEC_ON_READ</code> config
           reading stage need to call <code>ap_reserve_module_slots()</code> or
-          <code>ap_reserve_module_slots_directive()</code> in their 
+          <code>ap_reserve_module_slots_directive()</code> in their
           <code>pre_config hook</code>.</li>
       <li>The useragent IP address per request can now be tracked
           independently of the client IP address of the connection, for
@@ -188,16 +188,16 @@
       <li>New auth_internal API and auth_provider API</li>
       <li>New <code>EOR</code> bucket type</li>
       <li>New function <code>ap_process_async_request</code></li>
-      <li>New flags <code>AP_AUTH_INTERNAL_PER_CONF</code> and 
+      <li>New flags <code>AP_AUTH_INTERNAL_PER_CONF</code> and
           <code>AP_AUTH_INTERNAL_PER_URI</code></li>
-      <li>New <code>access_checker_ex</code> hook to apply additional access control 
+      <li>New <code>access_checker_ex</code> hook to apply additional access control
           and/or bypass authentication.</li>
-      <li>New functions <code>ap_hook_check_access_ex</code>, 
-          <code>ap_hook_check_access</code>, <code>ap_hook_check_authn</code>, 
-          <code>ap_hook_check_authz</code> which accept 
+      <li>New functions <code>ap_hook_check_access_ex</code>,
+          <code>ap_hook_check_access</code>, <code>ap_hook_check_authn</code>,
+          <code>ap_hook_check_authz</code> which accept
           <code>AP_AUTH_INTERNAL_PER_*</code> flags</li>
-      <li>DEPRECATED direct use of <code>ap_hook_access_checker</code>, 
-          <code>access_checker_ex</code>, <code>ap_hook_check_user_id</code>, 
+      <li>DEPRECATED direct use of <code>ap_hook_access_checker</code>,
+          <code>access_checker_ex</code>, <code>ap_hook_check_user_id</code>,
           <code>ap_hook_auth_checker</code></li>
     </ul>
     <p>When possible, registering all access control hooks (including
@@ -210,7 +210,7 @@
     <p>If your module requires the old behavior and must perform access
        control checks on every sub-request with a different URI from the
        initial request, even if that URI matches the same set of access
-       control configuration directives, then use 
+       control configuration directives, then use
        <code>AP_AUTH_INTERNAL_PER_URI</code>.</p>
   </section>
 
@@ -221,7 +221,7 @@
 
   <section id="mod_cache">
     <title>mod_cache (changed)</title>
-    <p>Introduces a <code>commit_entity()</code> function to the cache provider 
+    <p>Introduces a <code>commit_entity()</code> function to the cache provider
     interface, allowing atomic writes to cache. Add a <code>cache_status()</code>
     hook to report the cache decision. All private structures and functions were
     removed.</p>
@@ -262,10 +262,10 @@
           <code>set_scoreboard</code> (locking uses the new ap_mutex API)</li>
       <li>NEW API to drop privileges (delegates this platform-dependent
           function to modules)</li>
-      <li>NEW Hooks: <code>mpm_query</code>, <code>timed_callback</code>, and 
+      <li>NEW Hooks: <code>mpm_query</code>, <code>timed_callback</code>, and
           <code>get_name</code></li>
       <li>CHANGED interfaces: <code>monitor</code> hook,
-          <code>ap_reclaim_child_processes</code>, 
+          <code>ap_reclaim_child_processes</code>,
           <code>ap_relieve_child_processes</code></li>
     </ul>
   </section>
@@ -358,7 +358,7 @@
     <p><code>ap_log_*error</code> are now implemented as macros. This means
        that it is no longer possible to use <code>#ifdef</code> inside the
        argument list of <code>ap_log_*error</code>, as this would cause
-       undefined behavor according to C99.</p>
+       undefined behavior according to C99.</p>
 
     <p>A <code>server_rec</code> pointer must be passed to
        <code>ap_log_error()</code> when called after startup.  This
@@ -494,9 +494,9 @@
       <dd>This has been renamed to ap_unixd_setup_child(), but most callers
           should call the added ap_run_drop_privileges() hook.</dd>
 
-      <dt><code>conn_rec->remote_ip</code> and 
+      <dt><code>conn_rec->remote_ip</code> and
           <code>conn_rec->remote_addr</code></dt>
-      <dd>These fields have been renamed in order to distinguish between 
+      <dd>These fields have been renamed in order to distinguish between
       the client IP address of the connection and the useragent IP address
       of the request (potentially overridden by a load balancer or proxy).
       References to either of these fields must be updated with one of the
@@ -510,7 +510,7 @@
         <li>When you require the IP address of the client that is
         connected directly to the server, which might be the useragent or
         might be the load balancer or proxy itself, use
-        <code>conn_rec->client_ip</code> and 
+        <code>conn_rec->client_ip</code> and
         <code>conn_rec->client_addr</code>.</li>
       </ul>
       </dd>

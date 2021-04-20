@@ -1692,6 +1692,7 @@ static int isapi_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pte
                      "could not create the isapi cache pool");
         return APR_EGENERAL;
     }
+    apr_pool_tag(loaded.pool, "mod_isapi_load");
 
     loaded.hash = apr_hash_make(loaded.pool);
     if (!loaded.hash) {

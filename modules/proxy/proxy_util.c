@@ -1187,6 +1187,7 @@ PROXY_DECLARE(char *) ap_proxy_define_balancer(apr_pool_t *p,
     bshared->was_malloced = (do_malloc != 0);
     PROXY_STRNCPY(bshared->lbpname, "byrequests");
     if (PROXY_STRNCPY(bshared->name, uri) != APR_SUCCESS) {
+        if (do_malloc) free(bshared);
         return apr_psprintf(p, "balancer name (%s) too long", uri);
     }
     (*balancer)->lbmethod_set = 1;
@@ -1199,6 +1200,7 @@ PROXY_DECLARE(char *) ap_proxy_define_balancer(apr_pool_t *p,
                    &sname);
     sname = apr_pstrcat(p, conf->id, "_", sname, NULL);
     if (PROXY_STRNCPY(bshared->sname, sname) != APR_SUCCESS) {
+        if (do_malloc) free(bshared);
         return apr_psprintf(p, "balancer safe-name (%s) too long", sname);
     }
     bshared->hash.def = ap_proxy_hashfunc(bshared->name, PROXY_HASHFUNC_DEFAULT);
@@ -1342,6 +1344,7 @@ static proxy_worker *proxy_balancer_get_best_worker(proxy_balancer *balancer,
                  balancer->lbmethod->name, balancer->s->name);
 
     apr_pool_create(&tpool, r->pool);
+    apr_pool_tag(tpool, "proxy_lb_best");
 
     spares = apr_array_make(tpool, 1, sizeof(proxy_worker*));
     standbys = apr_array_make(tpool, 1, sizeof(proxy_worker*));
@@ -2013,6 +2016,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_share_worker(proxy_worker *worker, proxy_wo
     if (APLOGdebug(ap_server_conf)) {
         apr_pool_t *pool;
         apr_pool_create(&pool, ap_server_conf->process->pool);
+        apr_pool_tag(pool, "proxy_worker_name");
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02338)
                      "%s shm[%d] (0x%pp) for worker: %s", action, i, (void *)shm,
                      ap_proxy_worker_name(pool, worker));
