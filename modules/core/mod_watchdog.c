@@ -112,7 +112,7 @@ static void* APR_THREAD_FUNC wd_worker(apr_thread_t *thread, void *data)
     int probed = 0;
     int inited = 0;
     int mpmq_s = 0;
-    apr_pool_t *ctx = NULL;
+    apr_pool_t *temp_pool = NULL;
 
     w->pool = apr_thread_pool_get(thread);
     w->is_running = 1;
@@ -159,6 +159,10 @@ static void* APR_THREAD_FUNC wd_worker(apr_thread_t *thread, void *data)
             apr_sleep(AP_WD_TM_SLICE);
         }
     }
+
+    apr_pool_create(&temp_pool, w->pool);
+    apr_pool_tag(temp_pool, "wd_running");
+
     if (w->is_running) {
         watchdog_list_t *wl = w->callbacks;
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, wd_server_conf->s,
@@ -166,15 +170,13 @@ static void* APR_THREAD_FUNC wd_worker(apr_thread_t *thread, void *data)
                      w->singleton ? "Singleton " : "", w->name);
         apr_time_clock_hires(w->pool);
         if (wl) {
-            apr_pool_create(&ctx, w->pool);
-            apr_pool_tag(ctx, "wd_running");
             while (wl && w->is_running) {
                 /* Execute watchdog callback */
                 wl->status = (*wl->callback_fn)(AP_WATCHDOG_STATE_STARTING,
-                                                (void *)wl->data, ctx);
+                                                (void *)wl->data, temp_pool);
                 wl = wl->next;
             }
-            apr_pool_destroy(ctx);
+            apr_pool_clear(temp_pool);
         }
         else {
             ap_run_watchdog_init(wd_server_conf->s, w->name, w->pool);
@@ -202,14 +204,10 @@ static void* APR_THREAD_FUNC wd_worker(apr_thread_t *thread, void *data)
             if (wl->status == APR_SUCCESS) {
                 wl->step += (apr_time_now() - curr);
                 if (wl->step >= wl->interval) {
-                    if (!ctx) {
-                        apr_pool_create(&ctx, w->pool);
-                        apr_pool_tag(ctx, "wd_running");
-                    }
                     wl->step = 0;
                     /* Execute watchdog callback */
                     wl->status = (*wl->callback_fn)(AP_WATCHDOG_STATE_RUNNING,
-                                                    (void *)wl->data, ctx);
+                                                    (void *)wl->data, temp_pool);
                     if (ap_mpm_query(AP_MPMQ_MPM_STATE, &mpmq_s) != APR_SUCCESS) {
                         w->is_running = 0;
                     }
@@ -226,21 +224,17 @@ static void* APR_THREAD_FUNC wd_worker(apr_thread_t *thread, void *data)
              */
             w->step += (apr_time_now() - curr);
             if (w->step >= wd_interval) {
-                if (!ctx) {
-                    apr_pool_create(&ctx, w->pool);
-                    apr_pool_tag(ctx, "wd_running");
-                }
                 w->step = 0;
                 /* Run watchdog step hook */
-                ap_run_watchdog_step(wd_server_conf->s, w->name, ctx);
+                ap_run_watchdog_step(wd_server_conf->s, w->name, temp_pool);
             }
         }
-        if (ctx)
-            apr_pool_destroy(ctx);
-        if (!w->is_running) {
-            break;
-        }
+
+        apr_pool_clear(temp_pool);
     }
+
+    apr_pool_destroy(temp_pool);
+
     if (inited) {
         /* Run the watchdog exit hooks.
          * If this was singleton watchdog the init hook
