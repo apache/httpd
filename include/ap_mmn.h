@@ -412,6 +412,7 @@
  *                         ap_condition_if_none_match(),
  *                         ap_condition_if_modified_since(),
  *                         ap_condition_if_range()
+<<<<<<< HEAD
  * 20120211.19 (2.4.5-dev) Add post_perdir_config hook.
  * 20120211.20 (2.4.5-dev) Add dirwalk_stat hook.
  * 20120211.21 (2.4.5-dev) Add in ap_proxy_create_hdrbrgd() and
@@ -554,12 +555,11 @@
  *                           AP_REQUEST_STRONG_ETAG, AP_REQUEST_GET_BNOTE,
  *                           AP_REQUEST_SET_BNOTE and AP_REQUEST_IS_STRONG_ETAG
  *                           in httpd.h.
- * 20120211.102 (2.4.47-dev)  Add ap_ssl_conn_is_ssl()/ap_ssl_var_lookup() and hooks
- * 20120211.103 (2.4.47-dev)  Add ap_ssl_add_cert_files, ap_ssl_add_fallback_cert_files
- *                          and ap_ssl_answer_challenge and hooks.
+ * 20120211.102 (2.4.47-dev) Add ap_ssl_conn_is_ssl()/ap_ssl_var_lookup() and hooks
+ * 20120211.103 (2.4.47-dev) Add ap_ssl_add_cert_files, ap_ssl_add_fallback_cert_files
+ *                           and ap_ssl_answer_challenge and hooks.
  * 20120211.104 (2.4.47-dev) Move ap_ssl_* into new http_ssl.h header file
- * 20120211.105 (2.4.47-dev) Add `ap_bytes_t` to httpd.h.
- *                         Add ap_ssl_ocsp* hooks and functions to http_ssl.h.
+ * 20120211.105 (2.4.47-dev) Add ap_ssl_ocsp* hooks and functions to http_ssl.h.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */

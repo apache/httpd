@@ -324,7 +324,7 @@ cleanup:
     return rv;
 }
 
-apr_status_t md_ocsp_prime(md_ocsp_reg_t *reg, const md_data_t *external_id,
+apr_status_t md_ocsp_prime(md_ocsp_reg_t *reg, const char *ext_id, apr_size_t ext_id_len,
                            md_cert_t *cert, md_cert_t *issuer, const md_t *md)
 {
     md_ocsp_status_t *ostat;
@@ -384,12 +384,12 @@ apr_status_t md_ocsp_prime(md_ocsp_reg_t *reg, const md_data_t *external_id,
                   "md[%s]: adding ocsp info (responder=%s)", 
                   name, ostat->responder_url);
     apr_hash_set(reg->ostat_by_id, ostat->id.data, (apr_ssize_t)ostat->id.len, ostat);
-    if (external_id) {
+    if (ext_id) {
         md_ocsp_id_map_t *id_map;
 
         id_map = apr_pcalloc(reg->p, sizeof(*id_map));
         id_map->id = id;
-        md_data_assign_pcopy(&id_map->external_id, external_id, reg->p);
+        md_data_assign_pcopy(&id_map->external_id, ext_id, ext_id_len, reg->p);
         /* check for collision/uniqness? */
         apr_hash_set(reg->id_by_external_id, id_map->external_id.data,
                      (apr_ssize_t)id_map->external_id.len, id_map);
@@ -399,15 +399,16 @@ cleanup:
     return rv;
 }
 
-apr_status_t md_ocsp_get_status(md_ocsp_copy_der *cb, void *userdata,
-                                md_ocsp_reg_t *reg, const md_data_t *external_id,
+apr_status_t md_ocsp_get_status(md_ocsp_copy_der *cb, void *userdata, md_ocsp_reg_t *reg,
+                                const char *ext_id, apr_size_t ext_id_len,
                                 apr_pool_t *p, const md_t *md)
 {
     md_ocsp_status_t *ostat;
     const char *name;
     apr_status_t rv = APR_SUCCESS;
     md_ocsp_id_map_t *id_map;
-    const md_data_t *id;
+    const char *id;
+    apr_size_t id_len;
     int locked = 0;
 
     (void)p;
@@ -416,10 +417,10 @@ apr_status_t md_ocsp_get_status(md_ocsp_copy_der *cb, void *userdata,
     md_log_perror(MD_LOG_MARK, MD_LOG_TRACE2, 0, reg->p, 
                   "md[%s]: OCSP, get_status", name);
 
-    id_map = apr_hash_get(reg->id_by_external_id,
-                          external_id->data, (apr_ssize_t)external_id->len);
-    id = id_map? &id_map->id : external_id;
-    ostat = apr_hash_get(reg->ostat_by_id, id->data, (apr_ssize_t)id->len);
+    id_map = apr_hash_get(reg->id_by_external_id, ext_id, (apr_ssize_t)ext_id_len);
+    id = id_map? id_map->id.data : ext_id;
+    id_len = id_map? id_map->id.len : ext_id_len;
+    ostat = apr_hash_get(reg->ostat_by_id, id, (apr_ssize_t)id_len);
     if (!ostat) {
         rv = APR_ENOENT;
         goto cleanup;

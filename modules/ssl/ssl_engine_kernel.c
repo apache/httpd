@@ -2342,7 +2342,8 @@ static apr_status_t set_challenge_creds(conn_rec *c, const char *servername,
         ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c, APLOGNO(10086)
                       "Failed to configure challenge certificate %s",
                       servername);
-        rv = APR_EGENERAL; goto cleanup;
+        rv = APR_EGENERAL;
+        goto cleanup;
     }
     
     if (!SSL_use_PrivateKey(ssl, key)) {
@@ -2350,14 +2351,16 @@ static apr_status_t set_challenge_creds(conn_rec *c, const char *servername,
                       "error '%s' using Challenge key: %s",
                       ERR_error_string(ERR_peek_last_error(), NULL), 
                       servername);
-        rv = APR_EGENERAL; goto cleanup;
+        rv = APR_EGENERAL;
+        goto cleanup;
     }
     
     if (SSL_check_private_key(ssl) < 1) {
         ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c, APLOGNO(10088)
                       "Challenge certificate and private key %s "
                       "do not match", servername);
-        rv = APR_EGENERAL; goto cleanup;
+        rv = APR_EGENERAL;
+        goto cleanup;
     }
     
 cleanup:

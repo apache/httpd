@@ -42,13 +42,13 @@ apr_status_t md_ocsp_reg_make(md_ocsp_reg_t **preg, apr_pool_t *p,
 
 apr_status_t md_ocsp_init_id(struct md_data_t *id, apr_pool_t *p, const md_cert_t *cert);
 
-apr_status_t md_ocsp_prime(md_ocsp_reg_t *reg, const struct md_data_t *external_id,
+apr_status_t md_ocsp_prime(md_ocsp_reg_t *reg, const char *ext_id, apr_size_t ext_id_len,
                            md_cert_t *x, md_cert_t *issuer, const md_t *md);
 
 typedef void md_ocsp_copy_der(const unsigned char *der, apr_size_t der_len, void *userdata);
 
-apr_status_t md_ocsp_get_status(md_ocsp_copy_der *cb, void *userdata,
-                                md_ocsp_reg_t *reg, const struct md_data_t *external_id,
+apr_status_t md_ocsp_get_status(md_ocsp_copy_der *cb, void *userdata, md_ocsp_reg_t *reg,
+                                const char *ext_id, apr_size_t ext_id_len,
                                 apr_pool_t *p, const md_t *md);
 
 apr_status_t md_ocsp_get_meta(md_ocsp_cert_stat_t *pstat, md_timeperiod_t *pvalid,

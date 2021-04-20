@@ -96,10 +96,10 @@ md_data_t *md_data_make(apr_pool_t *p, apr_size_t len)
     return d;
 }
 
-void md_data_assign_pcopy(md_data_t *dest, const md_data_t *src, apr_pool_t *p)
+void md_data_assign_pcopy(md_data_t *dest, const char *src, apr_size_t src_len, apr_pool_t *p)
 {
-    dest->data = (src->data && src->len)? apr_pmemdup(p, src->data, src->len) : NULL;
-    dest->len = dest->data? src->len : 0;
+    dest->data = (src && src_len)? apr_pmemdup(p, src, src_len) : NULL;
+    dest->len = dest->data? src_len : 0;
 }
 
 static const char * const hex_const[] = {

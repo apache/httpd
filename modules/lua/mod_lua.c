@@ -1685,7 +1685,7 @@ static const char *register_lua_root(cmd_parms *cmd, void *_cfg,
 const char *ap_lua_ssl_val(apr_pool_t *p, server_rec *s, conn_rec *c,
                            request_rec *r, const char *var)
 {
-    return ap_ssl_var_lookup(p, s, c, r, (char *)var);
+    return ap_ssl_var_lookup(p, s, c, r, var);
 }
 
 int ap_lua_ssl_is_https(conn_rec *c)

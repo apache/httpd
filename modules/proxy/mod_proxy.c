@@ -2868,7 +2868,7 @@ PROXY_DECLARE(const char *) ap_proxy_ssl_val(apr_pool_t *p, server_rec *s,
                                              conn_rec *c, request_rec *r,
                                              const char *var)
 {
-    return ap_ssl_var_lookup(p, s, c, r, (char *)var);
+    return ap_ssl_var_lookup(p, s, c, r, var);
 }
 
 static int proxy_post_config(apr_pool_t *pconf, apr_pool_t *plog,
