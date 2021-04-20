@@ -169,7 +169,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        r1888723, r1888724, r1888726, r1888729
      PR: https://github.com/apache/httpd/pull/179
      patch: https://github.com/apache/httpd/pull/179.diff
-     +1: icing
+     +1: icing, ylavic
+     ylavic: some "<<<<<<< HEAD" hunk in ap_mmn.h should be remove on
+             backport..
 
   *) mod_socache_shmcb: be safe from socache_shmcb_destroy() late call.  PR 59798
      trunk patch: http://svn.apache.org/r1888266
