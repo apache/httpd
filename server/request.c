@@ -1471,7 +1471,20 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
 
     cache = prep_walk_cache(AP_NOTE_LOCATION_WALK, r);
     cached = (cache->cached != NULL);
-    entry_uri = r->uri;
+
+   /*
+    * When merge_slashes is set to AP_CORE_CONFIG_OFF the slashes in r->uri
+    * have not been merged. But for Location walks we always go with merged
+    * slashes no matter what merge_slashes is set to.
+    */
+    if (sconf->merge_slashes != AP_CORE_CONFIG_OFF) {
+        entry_uri = r->uri;
+    }
+    else {
+        char *uri = apr_pstrdup(r->pool, r->uri);
+        ap_no2slash(uri);
+        entry_uri = uri;
+    }
 
     /* If we have an cache->cached location that matches r->uri,
      * and the vhost's list of locations hasn't changed, we can skip
@@ -1539,7 +1552,7 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
                     pmatch = apr_palloc(rxpool, nmatch*sizeof(ap_regmatch_t));
                 }
 
-                if (ap_regexec(entry_core->r, entry_uri, nmatch, pmatch, 0)) {
+                if (ap_regexec(entry_core->r, r->uri, nmatch, pmatch, 0)) {
                     continue;
                 }
 
@@ -1549,7 +1562,7 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
                         apr_table_setn(r->subprocess_env,
                                        ((const char **)entry_core->refs->elts)[i],
                                        apr_pstrndup(r->pool,
-                                       entry_uri + pmatch[i].rm_so,
+                                       r->uri + pmatch[i].rm_so,
                                        pmatch[i].rm_eo - pmatch[i].rm_so));
                     }
                 }
