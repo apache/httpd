@@ -627,6 +627,9 @@ static int cgid_server(void *data)
         return errno;
     }
 
+    apr_pool_cleanup_register(pcgi, (void *)((long)sd),
+                              close_unix_socket, close_unix_socket);
+
     omask = umask(0077); /* so that only Apache can use socket */
     rc = bind(sd, (struct sockaddr *)server_addr, server_addr_len);
     umask(omask); /* can't fail, so can't clobber errno */
@@ -660,9 +663,6 @@ static int cgid_server(void *data)
             return errno;
         }
     }
-
-    apr_pool_cleanup_register(pcgi, (void *)((long)sd),
-                              close_unix_socket, close_unix_socket);
 
     /* if running as root, switch to configured user/group */
     if ((rc = ap_run_drop_privileges(pcgi, ap_server_conf)) != 0) {
