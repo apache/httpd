@@ -139,7 +139,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -169,17 +168,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        r1888723, r1888724, r1888726, r1888729
      PR: https://github.com/apache/httpd/pull/179
      patch: https://github.com/apache/httpd/pull/179.diff
-     +1: icing
+     +1: icing, ylavic
+     ylavic: some "<<<<<<< HEAD" hunk in ap_mmn.h should be remove on
+             backport..
+    jailletc36: pull/179 has been updated with r1889009
 
   *) mod_socache_shmcb: be safe from socache_shmcb_destroy() late call.  PR 59798
      trunk patch: http://svn.apache.org/r1888266
      2.4.x patch: svn merge -c 1888266 ^/httpd/httpd/trunk .
-     +1: ylavic, icing
-
-  *) mod_cgid: Register cleanup for socket earlier to avoid possible leaks on
-     error paths
-     trunk patch: http://svn.apache.org/r1887727
-     2.4.x patch: svn merge -c 1887727 ^/httpd/httpd/trunk .
      +1: ylavic, icing
 
   *) mod_xml2enc: Correctly handle Microsoft OOXML documents.  PR 64339
