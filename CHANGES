@@ -8,7 +8,7 @@ Changes with Apache 2.4.47
      aborted (RST to the client), although a response had been produced.
      [Stefan Eissing]
 
-  *) mod_lua: Add support to Lua 5.4 [Joe Orton, [Giovanni Bechis, Ruediger Pluem]
+  *) mod_lua: Add support to Lua 5.4  [Joe Orton, Giovanni Bechis, Ruediger Pluem]
 
   *) MPM event/worker: Fix possible crash in child process on early signal
      delivery.  PR 64533.  [Ruediger Pluem]
