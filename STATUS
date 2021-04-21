@@ -171,6 +171,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: icing, ylavic
      ylavic: some "<<<<<<< HEAD" hunk in ap_mmn.h should be remove on
              backport..
+    jailletc36: pull/179 has been updated with r1889009
 
   *) mod_socache_shmcb: be safe from socache_shmcb_destroy() late call.  PR 59798
      trunk patch: http://svn.apache.org/r1888266
