@@ -497,7 +497,7 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10</pre>
     other request headers.</p>
 
     <p>Note:  If you need to specify custom request headers to be
-    added to the forwarded request, use the 
+    added to the forwarded request, use the
     <code class="directive"><a href="../mod/mod_headers.html#requestheader">RequestHeader</a></code>
     directive.</p>
 
@@ -741,13 +741,13 @@ NoProxy         ".example.com" "192.168.112.0/21"</pre>
 
 
     <div class="note"><h3>Differences from the Location configuration section</h3>
-      <p>A backend URL matches the configuration section if it begins with the 
+      <p>A backend URL matches the configuration section if it begins with the
       the <var>wildcard-url</var> string, even if the last path segment in the
-      directive only matches a prefix of the backend URL.  For example, 
-      &lt;Proxy "http://example.com/foo"&gt; matches all of 
-      http://example.com/foo, http://example.com/foo/bar, and 
+      directive only matches a prefix of the backend URL.  For example,
+      &lt;Proxy "http://example.com/foo"&gt; matches all of
+      http://example.com/foo, http://example.com/foo/bar, and
       http://example.com/foobar.  The matching of the final URL differs
-      from the behavior of the <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> section, which for purposes of this note 
+      from the behavior of the <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> section, which for purposes of this note
       treats the final path component as if it ended in a slash.</p>
       <p>For more control over the matching, see <code class="directive">&lt;ProxyMatch&gt;</code>.</p>
     </div>
@@ -889,11 +889,12 @@ ProxyDomain     ".example.com"</pre>
 <div class="directive-section"><h2><a name="ProxyErrorOverride" id="ProxyErrorOverride">ProxyErrorOverride</a> <a name="proxyerroroverride" id="proxyerroroverride">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Override error pages for proxied content</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyErrorOverride On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyErrorOverride Off|On [<var>code</var> ...]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ProxyErrorOverride Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>The list of status codes was added in 2.5.1</td></tr>
 </table>
     <p>This directive is useful for reverse-proxy setups where you want to
     have a common look and feel on the error pages seen by the end user.
@@ -905,6 +906,20 @@ ProxyDomain     ".example.com"</pre>
 
     <p>This directive does not affect the processing of informational (1xx),
     normal success (2xx), or redirect (3xx) responses.</p>
+
+    <p>By default <code class="directive">ProxyErrorOverride</code> affects all responses with codes between 400 (including)
+        and 600 (excluding).</p>
+
+    <div class="example"><h3>Example for default behavior</h3><pre class="prettyprint lang-config">ProxyErrorOverride  On</pre>
+</div>
+
+    <p>To change the default behavior, you can specify the status codes to consider, separated by spaces.
+        If you do so, all other status codes will be ignored.
+        You can only specify status codes, that are considered error codes: between 400 (including)
+        and 600 (excluding).</p>
+
+    <div class="example"><h3>Example for custom status codes</h3><pre class="prettyprint lang-config">ProxyErrorOverride  On 403 405 500 501 502 503 504</pre>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -970,7 +985,7 @@ proxied resources</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ProxyMaxForwards" id="ProxyMaxForwards">ProxyMaxForwards</a> <a name="proxymaxforwards" id="proxymaxforwards">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximium number of proxies that a request can be forwarded
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum number of proxies that a request can be forwarded
 through</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyMaxForwards <var>number</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ProxyMaxForwards -1</code></td></tr>
@@ -1420,7 +1435,7 @@ ProxyPass "/mirror/foo" "http://backend.example.com"</pre>
     <tr><td>stickysessionsep</td>
         <td>"."</td>
         <td>Sets the separation symbol in the session cookie. Some backend application servers
-        do not use the '.' as the symbol. For example, the Oracle Weblogic server uses 
+        do not use the '.' as the symbol. For example, the Oracle Weblogic server uses
         '!'. The correct symbol can be set using this option. The setting of 'Off'
         signifies that no symbol is used.
     </td></tr>
@@ -1522,8 +1537,8 @@ ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofail
     But this may be incompatible with some backends, particularly those
     that make use of <var>PATH_INFO</var>.  The optional <var>nocanon</var>
     keyword suppresses this and passes the URL path "raw" to the
-    backend.  Note that this keyword may affect the security of your backend, 
-	as it removes the normal limited protection against URL-based attacks
+    backend.  Note that this keyword may affect the security of your backend,
+    as it removes the normal limited protection against URL-based attacks
     provided by the proxy.</p>
 
     <p>Normally, mod_proxy will include the query string when
@@ -1633,7 +1648,7 @@ ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"</pre>
        matches, the server will substitute any parenthesized matches into the given
        string and use it as a new <var>url</var>.</p>
 
-    <div class="note"><strong>Note: </strong>This directive cannot be used within a 
+    <div class="note"><strong>Note: </strong>This directive cannot be used within a
     <code>&lt;Directory&gt;</code> context.</div>
     
     <p>Suppose the local server has address <code>http://example.com/</code>;
@@ -1727,7 +1742,7 @@ ProxyPassReverseCookiePath  "/"  "/mirror/foo/"</pre>
     <p>will not only cause a local request for the
     <code>http://example.com/mirror/foo/bar</code> to be internally converted
     into a proxy request to <code>http://backend.example.com/bar</code>
-    (the functionality which <code>ProxyPass</code> provides here). 
+    (the functionality which <code>ProxyPass</code> provides here).
     It also takes care of redirects which the server <code>backend.example.com</code>
     sends when redirecting <code>http://backend.example.com/bar</code> to
     <code>http://backend.example.com/quux</code> . Apache httpd adjusts this to
@@ -1792,7 +1807,7 @@ reverse proxy. This directive rewrites the <code>path</code> string in
 <var>internal-path</var>, the cookie path will be replaced with
 <var>public-path</var>.
 </p><p>
-In the example given with 
+In the example given with
 <code class="directive"><a href="#proxypassreverse">ProxyPassReverse</a></code>, the directive:
 </p>
     <pre class="prettyprint lang-config">ProxyPassReverseCookiePath  "/"  "/mirror/foo/"</pre>
@@ -2028,7 +2043,7 @@ expressions</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 </table>
-    <p>This directive allows a user to specifiy a timeout on proxy requests.
+    <p>This directive allows a user to specify a timeout on proxy requests.
     This is useful when you have a slow/buggy appserver which hangs, and you
     would rather just return a timeout and fail gracefully instead of waiting
     however long it takes the server to return.</p>
@@ -2091,7 +2106,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/mod_proxy.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

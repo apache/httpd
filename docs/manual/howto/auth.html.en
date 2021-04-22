@@ -227,7 +227,7 @@ Require user rbowen</pre>
 
 
     <p>Let's examine each of those directives individually. The <code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code> directive selects
-    that method that is used to authenticate the user. The most
+    the method that is used to authenticate the user. The most
     common method is <code>Basic</code>, and this is the method
     implemented by <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code>. It is important to be aware,
     however, that Basic authentication sends the password from the client to
@@ -269,8 +269,7 @@ Require user rbowen</pre>
     The <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> module provides the <code class="directive"><a href="../mod/mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile</a></code> directive. These
     files can be created and manipulated with the <code class="program"><a href="../programs/dbmmanage.html">dbmmanage</a></code> and <code class="program"><a href="../programs/htdbm.html">htdbm</a></code> programs. Many
     other types of authentication options are available from third
-    party modules in the <a href="http://modules.apache.org/">Apache Modules
-    Database</a>.</p>
+    party modules.</p>
 
     <p>Finally, the <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>
     directive provides the authorization part of the process by
@@ -504,13 +503,15 @@ Require group GroupName</pre>
         that will be called during the authorization stage of the request
         processing. For example:</p>
 
-        <pre class="prettyprint lang-config">Require ip <var>address</var></pre>
+        <pre class="prettyprint lang-config">Require ip <var>address</var>
+        </pre>
 
 
         <p>where <var>address</var> is an IP address (or a partial IP
         address) or:</p>
 
-        <pre class="prettyprint lang-config">Require host <var>domain_name</var></pre>
+        <pre class="prettyprint lang-config">Require host <var>domain_name</var>
+        </pre>
 
 
         <p>where <var>domain_name</var> is a fully qualified domain name
@@ -630,7 +631,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/howto/auth.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

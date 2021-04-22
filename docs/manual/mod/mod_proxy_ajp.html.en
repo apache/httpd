@@ -78,6 +78,14 @@
     <div class="example"><h3>Simple Reverse Proxy</h3><pre class="prettyprint lang-config">ProxyPass "/app" "ajp://backend.example.com:8009/app"</pre>
 </div>
 
+    <p>Options such as the <code>secret</code> option of Tomcat (required by
+    default since Tomcat 8.5.51 and 9.0.31) can just be added as a separate
+    parameter at the end of <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>
+    or <code class="directive"><a href="../mod/mod_proxy.html#balancermember">BalancerMember</a></code>. This parameter
+    is available in Apache HTTP Server 2.4.42 and later:</p>
+    <div class="example"><h3>Simple Reverse Proxy with <code>secret</code> option</h3><pre class="prettyprint lang-config">ProxyPass "/app" "ajp://backend.example.com:8009/app" secret=YOUR_AJP_SECRET</pre>
+</div>
+
     <p>Balancers may also be used:</p>
     <div class="example"><h3>Balancer Reverse Proxy</h3><pre class="prettyprint lang-config">&lt;Proxy "balancer://cluster"&gt;
     BalancerMember "ajp://app1.example.com:8009" loadfactor=1
@@ -93,7 +101,7 @@ ProxyPass "/app" "balancer://cluster/app"</pre>
     header given to the proxy, and the application server can be expected
     to generate self-referential headers relative to this host, so no
     rewriting is necessary.</p>
-    
+
     <p>The main exception is when the URL path on the proxy differs from that
     on the
     backend. In this case, a redirect header can be rewritten relative to the
@@ -110,7 +118,7 @@ ProxyPassReverse "/apps/foo" "http://www.example.com/foo"</pre>
 <h2><a name="env" id="env">Environment Variables</a></h2>
     <p>Environment variables whose names have the prefix <code>AJP_</code>
     are forwarded to the origin server as AJP request attributes
-    (with the AJP_ prefix removed from the name of the key).</p>
+    (with the <code>AJP_</code> prefix removed from the name of the key).</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="overviewprotocol" id="overviewprotocol">Overview of the protocol</a></h2>
@@ -496,11 +504,19 @@ attribute_value := (string)</pre></div>
     username and the type of authentication used to establish their identity
     (e.g. Basic, Digest).</p>
     <p>The <code>query_string</code>, <code>ssl_cert</code>,
-    <code>ssl_cipher</code>, and <code>ssl_session</code> refer to the
+    <code>ssl_cipher</code>, <code>ssl_session</code> and
+    <code>ssl_key_size</code> refer to the
     corresponding pieces of HTTP and HTTPS.</p>
     <p>The <code>jvm_route</code>, is used to support sticky
     sessions -- associating a user's sesson with a particular Tomcat instance
     in the presence of multiple, load-balancing servers.</p>
+    <p>The <code>secret</code> is sent when the <code>secret=secret_keyword</code>
+    parameter is used in
+    <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> or
+    <code class="directive"><a href="../mod/mod_proxy.html#balancermember">BalancerMember</a></code> directives.
+    The backend needs to support secret and the values must match.
+    <code>request.secret</code> or <code>requiredSecret</code> are documented in the AJP
+    configuration of the Apache Tomcat.</p>
     <p>Beyond this list of basic attributes, any number of other attributes
     can be sent via the <code>req_attribute</code> code <code>0x0A</code>.
     A pair of strings to represent the attribute name and value are sent
@@ -614,7 +630,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/mod_proxy_ajp.ht
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

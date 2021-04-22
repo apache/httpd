@@ -73,7 +73,7 @@
     same header repeatedly toggles between ascending and descending
     order. These column header links are suppressed with the
     <code class="directive"><a href="#indexoptions">IndexOptions</a></code> directive's
-    <code><a href="#indexoptions.suppresscolumnsorting">SuppressColumnSorting</a></code> 
+    <code><a href="#indexoptions.suppresscolumnsorting">SuppressColumnSorting</a></code>
     option.</p>
 
     <p>Note that when the display is sorted by "Size", it's the
@@ -169,44 +169,33 @@
     <p>The simple example below, which can be clipped and saved in
     a header.html file, illustrates these query options. Note that
     the unknown "X" argument, for the submit button, is listed last
-    to assure the arguments are all parsed before mod_autoindex
+    to assure the arguments are all parsed before <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>
     encounters the X=Go input.</p>
 
-    <div class="example"><p><code>
-      &lt;form action="" method="get"&gt;<br />
-      <span class="indent">
-        Show me a &lt;select name="F"&gt;<br />
-        <span class="indent">
-          &lt;option value="0"&gt; Plain list&lt;/option&gt;<br />
-          &lt;option value="1" selected="selected"&gt; Fancy list&lt;/option&gt;<br />
-          &lt;option value="2"&gt; Table list&lt;/option&gt;<br />
-        </span>
-        &lt;/select&gt;<br />
-        Sorted by &lt;select name="C"&gt;<br />
-        <span class="indent">
-          &lt;option value="N" selected="selected"&gt; Name&lt;/option&gt;<br />
-          &lt;option value="M"&gt; Date Modified&lt;/option&gt;<br />
-          &lt;option value="S"&gt; Size&lt;/option&gt;<br />
-          &lt;option value="D"&gt; Description&lt;/option&gt;<br />
-        </span>
-        &lt;/select&gt;<br />
-        &lt;select name="O"&gt;<br />
-        <span class="indent">
-          &lt;option value="A" selected="selected"&gt; Ascending&lt;/option&gt;<br />
-          &lt;option value="D"&gt; Descending&lt;/option&gt;<br />
-        </span>
-        &lt;/select&gt;<br />
-        &lt;select name="V"&gt;<br />
-        <span class="indent">
-          &lt;option value="0" selected="selected"&gt; in Normal order&lt;/option&gt;<br />
-          &lt;option value="1"&gt; in Version order&lt;/option&gt;<br />
-        </span>
-        &lt;/select&gt;<br />
-        Matching &lt;input type="text" name="P" value="*" /&gt;<br />
-        &lt;input type="submit" name="X" value="Go" /&gt;<br />
-      </span>
-      &lt;/form&gt;
-    </code></p></div>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-html">&lt;form action="" method="get"&gt;
+    Show me a &lt;select name="F"&gt;
+        &lt;option value="0"&gt; Plain list&lt;/option&gt;
+        &lt;option value="1" selected="selected"&gt; Fancy list&lt;/option&gt;
+        &lt;option value="2"&gt; Table list&lt;/option&gt;
+    &lt;/select&gt;
+    Sorted by &lt;select name="C"&gt;
+        &lt;option value="N" selected="selected"&gt; Name&lt;/option&gt;
+        &lt;option value="M"&gt; Date Modified&lt;/option&gt;
+        &lt;option value="S"&gt; Size&lt;/option&gt;
+        &lt;option value="D"&gt; Description&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;select name="O"&gt;
+        &lt;option value="A" selected="selected"&gt; Ascending&lt;/option&gt;
+        &lt;option value="D"&gt; Descending&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;select name="V"&gt;
+        &lt;option value="0" selected="selected"&gt; in Normal order&lt;/option&gt;
+        &lt;option value="1"&gt; in Version order&lt;/option&gt;
+    &lt;/select&gt;
+    Matching &lt;input type="text" name="P" value="*" /&gt;
+    &lt;input type="submit" name="X" value="Go" /&gt;
+&lt;/form&gt;</pre>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -332,7 +321,7 @@ AddDescription "My friend Marshall" friends/mars.gif</pre>
     <div class="note"><h3>Arguments with path information</h3>
       <p>Absolute paths are not currently supported and do not match
       anything at runtime. Arguments with relative path information,
-      which would normally only be used in htaccess context, are implicitly 
+      which would normally only be used in htaccess context, are implicitly
       prefixed with '*/' to avoid matching partial directory names.</p>
     </div>
 
@@ -566,7 +555,7 @@ a directory</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>2.3.10 and later</td></tr>
 </table>
     <p>The <code class="directive">IndexIgnoreReset</code> directive removes
-    any files ignored by <code class="directive">IndexIgnore</code> otherwise
+    any files ignored by <code class="directive"><a href="#indexignore">IndexIgnore</a></code> otherwise
     inherited from other configuration sections. </p>
 
     <pre class="prettyprint lang-config">&lt;Directory "/var/www"&gt;
@@ -614,8 +603,7 @@ indexing</td></tr>
       the various <code>AddAlt*</code> directives.
       </dd>
 
-      <dt><a name="indexoptions.charset" id="indexoptions.charset">Charset=<var>character-set</var></a> (<em>Apache HTTP Server 2.0.61 and
-      later</em>)</dt>
+      <dt><a name="indexoptions.charset" id="indexoptions.charset">Charset=<var>character-set</var></a></dt>
 
       <dd>The <code>Charset</code> keyword allows you to
       specify the character set of the generated page. The
@@ -662,7 +650,7 @@ indexing</td></tr>
       <code>FoldersFirst</code> is enabled, subdirectory
       <code>Zed</code> will be listed before subdirectory
       <code>Beta</code>, which will be listed before normal files
-      <code>Gamma</code> and <code>Alpha</code>. 
+      <code>Gamma</code> and <code>Alpha</code>.
       <strong>This option only has an effect if <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
       is also enabled.</strong>
       </dd>
@@ -689,7 +677,7 @@ indexing</td></tr>
       to wait until all the images have been loaded. If no value is given for
       the option, it defaults to the standard height of the icons supplied
       with the Apache httpd software.
-     
+
       <strong>This option
       only has an effect if <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a> is also enabled.</strong>
 
@@ -767,7 +755,7 @@ indexing</td></tr>
       space to use for something else. See <code class="directive"><a href="#adddescription">AddDescription</a></code> for information about setting the file
       description. See also the <code><a href="#indexoptions.descriptionwidth">DescriptionWidth</a></code>
       index option to limit the size of the description column.
-      
+
       <strong>This option
       only has an effect if <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a> is also enabled.</strong>
       </dd>
@@ -801,7 +789,7 @@ indexing</td></tr>
 
       <dd>This will suppress the display of the last modification date,
       in fancy indexing listings.
-      
+
       <strong>This option
       only has an effect if <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a> is also enabled.</strong>
       </dd>
@@ -815,7 +803,7 @@ indexing</td></tr>
       by the final specification prohibits <code>img</code> and
       <code>hr</code> elements from the <code>pre</code> block (used to
       format FancyIndexed listings.)
-      
+
       <strong>This option
       only has an effect if <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a> is also enabled.</strong>
 
@@ -824,7 +812,7 @@ indexing</td></tr>
       <dt><a name="indexoptions.suppresssize" id="indexoptions.suppresssize">SuppressSize</a></dt>
 
       <dd>This will suppress the file size in fancy indexing listings.
-      
+
       <strong>This option
       only has an effect if <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a> is also enabled.</strong>
       </dd>
@@ -845,8 +833,7 @@ indexing</td></tr>
       <code>Last-Modified</code> header on all Unix platforms.</strong>
       If this is a concern, leave this option disabled.</dd>
 
-      <dt><a name="indexoptions.type" id="indexoptions.type">Type=<var>MIME content-type</var></a> (<em>Apache HTTP Server 2.0.61 and
-      later</em>)</dt>
+      <dt><a name="indexoptions.type" id="indexoptions.type">Type=<var>MIME content-type</var></a></dt>
 
       <dd>The <code>Type</code> keyword allows you to
       specify the MIME content-type of the generated page. The default
@@ -864,8 +851,7 @@ indexing</td></tr>
       <code>"%d-%b-%Y %H:%M"</code> in 2.4.0. Setting this option 
       restores the date format from 2.2 and earlier.</dd>
 
-      <dt><a name="indexoptions.versionsort" id="indexoptions.versionsort">VersionSort</a>
-      (<em>Apache HTTP Server 2.0a3 and later</em>)</dt>
+      <dt><a name="indexoptions.versionsort" id="indexoptions.versionsort">VersionSort</a></dt>
 
       <dd>The <code>VersionSort</code> keyword causes files containing
       version numbers to sort in a natural way. Strings are sorted as
@@ -892,8 +878,7 @@ indexing</td></tr>
       </code></p></div>
       </dd>
 
-      <dt><a name="indexoptions.xhtml" id="indexoptions.xhtml">XHTML</a>
-      (<em>Apache HTTP Server 2.0.49 and later</em>)</dt>
+      <dt><a name="indexoptions.xhtml" id="indexoptions.xhtml">XHTML</a></dt>
 
       <dd>The <code>XHTML</code> keyword forces <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>
       to emit XHTML 1.0 code instead of HTML 3.2.
@@ -1078,7 +1063,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/mod_autoindex.ht
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
