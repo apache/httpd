@@ -71,6 +71,8 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#fileetag">FileETag</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#files">&lt;Files&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#filesmatch">&lt;FilesMatch&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flushmaxpipelined">FlushMaxPipelined</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flushmaxthreshold">FlushMaxThreshold</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#forcetype">ForceType</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#gprofdir">GprofDir</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#hostnamelookups">HostnameLookups</a></li>
@@ -109,6 +111,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#protocols">Protocols</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#protocolshonororder">ProtocolsHonorOrder</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#qualifyredirecturl">QualifyRedirectURL</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#readbuffersize">ReadBufferSize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#regexdefaultoptions">RegexDefaultOptions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#registerhttpmethod">RegisterHttpMethod</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rlimitcpu">RLimitCPU</a></li>
@@ -1616,6 +1619,34 @@ filenames</td></tr>
     different sections are combined when a request is received</li>
 </ul>
 </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="flushmaxpipelined" id="flushmaxpipelined">Directiva</a> <a name="FlushMaxPipelined" id="FlushMaxPipelined">FlushMaxPipelined</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Descripci&#243;n:</a></th><td>Maximum number of pipelined responses above which they are flushed
+to the network</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>FlushMaxPipelined <var>number</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>FlushMaxPipelined 5</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">M&#243;dulo:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>2.4.47 and later</td></tr>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="flushmaxthreshold" id="flushmaxthreshold">Directiva</a> <a name="FlushMaxThreshold" id="FlushMaxThreshold">FlushMaxThreshold</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Descripci&#243;n:</a></th><td>Threshold above which pending data are flushed to the
+network</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>FlushMaxThreshold<var>number-of-bytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>FlushMaxThreshold 65536</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">M&#243;dulo:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>2.4.47 and later</td></tr>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="forcetype" id="forcetype">Directiva</a> <a name="ForceType" id="ForceType">ForceType</a></h2>
 <table class="directive">
@@ -3531,6 +3562,19 @@ as if 'QualifyRedirectURL On' was configured.</td></tr>
             not been translated yet. Please have a look at the English
             version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="readbuffersize" id="readbuffersize">Directiva</a> <a name="ReadBufferSize" id="ReadBufferSize">ReadBufferSize</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Descripci&#243;n:</a></th><td>Size of the buffers used to read data</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>ReadBufferSize <var>bytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>ReadBufferSize 8192</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">M&#243;dulo:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>2.4.27 and later</td></tr>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="regexdefaultoptions" id="regexdefaultoptions">Directiva</a> <a name="RegexDefaultOptions" id="RegexDefaultOptions">RegexDefaultOptions</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripci&#243;n:</a></th><td>Allow to configure global/default options for regexes</td></tr>
@@ -4533,7 +4577,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/core.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licencia bajo los t&#233;rminos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Licencia bajo los t&#233;rminos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">M&#243;dulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

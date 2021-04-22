@@ -143,14 +143,14 @@ skipped.</p>
 <h2><a name="flag_co" id="flag_co">CO|cookie</a></h2>
 <p>The [CO], or [cookie] flag, allows you to set a cookie when a
 particular <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
-matches. The argument consists of three required fields and four optional
+matches. The argument consists of three required fields and five optional
 fields.</p>
 
 <p>The full syntax for the flag, including all attributes, is as
 follows:</p>
 
 <div class="example"><p><code>
-[CO=NAME:VALUE:DOMAIN:lifetime:path:secure:httponly]
+[CO=NAME:VALUE:DOMAIN:lifetime:path:secure:httponly:samesite]
 </code></p></div>
 
 <p>If a literal ':' character is needed in any of the cookie fields, an 
@@ -159,7 +159,7 @@ alternate syntax is available.  To opt-in to the alternate syntax, the cookie
 specified as ';'.</p>
 
 <div class="example"><p><code>
-[CO=;NAME;VALUE:MOREVALUE;DOMAIN;lifetime;path;secure;httponly]
+[CO=;NAME;VALUE:MOREVALUE;DOMAIN;lifetime;path;secure;httponly;samesite]
 </code></p></div>
 
 <p>You must declare a name, a value, and a domain for the cookie to be set.</p>
@@ -199,7 +199,13 @@ connections.</dd>
 <code>1</code>, the cookie will have the <code>HttpOnly</code> flag set,
 which means that the cookie is inaccessible to JavaScript code on
 browsers that support this feature.</dd>
+
+<dt>samesite</dt>
+<dd>If set to anything other than <code>false</code> or <code>0</code>, the <code>SameSite</code>
+attribute is set to the specified value.  Typical values are <code>None</code>,
+<code>Lax</code>, and <code>Strict</code>.Available in 2.5.1 and later.</dd>
 </dl>
+
 
 <p>Consider this example:</p>
 
@@ -780,7 +786,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/rewrite/flags.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

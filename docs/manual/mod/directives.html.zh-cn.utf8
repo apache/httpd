@@ -281,6 +281,8 @@
 <li><a href="mod_filter.html#filterprotocol">FilterProtocol</a></li>
 <li><a href="mod_filter.html#filterprovider">FilterProvider</a></li>
 <li><a href="mod_filter.html#filtertrace">FilterTrace</a></li>
+<li><a href="core.html#flushmaxpipelined">FlushMaxPipelined</a></li>
+<li><a href="core.html#flushmaxthreshold">FlushMaxThreshold</a></li>
 <li><a href="mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority</a></li>
 <li><a href="core.html#forcetype">ForceType</a></li>
 <li><a href="mod_log_forensic.html#forensiclog">ForensicLog</a></li>
@@ -296,6 +298,7 @@
 <li><a href="mod_http2.html#h2maxworkers">H2MaxWorkers</a></li>
 <li><a href="mod_http2.html#h2minworkers">H2MinWorkers</a></li>
 <li><a href="mod_http2.html#h2moderntlsonly">H2ModernTLSOnly</a></li>
+<li><a href="mod_http2.html#h2outputbuffering">H2OutputBuffering</a></li>
 <li><a href="mod_http2.html#h2padding">H2Padding</a></li>
 <li><a href="mod_http2.html#h2push">H2Push</a></li>
 <li><a href="mod_http2.html#h2pushdiarysize">H2PushDiarySize</a></li>
@@ -530,7 +533,8 @@
 <li><a href="mod_proxy.html#proxytimeout">ProxyTimeout</a></li>
 <li><a href="mod_proxy.html#proxyvia">ProxyVia</a></li>
 <li><a href="core.html#qualifyredirecturl" id="Q" name="Q">QualifyRedirectURL</a></li>
-<li><a href="mod_autoindex.html#readmename" id="R" name="R">ReadmeName</a></li>
+<li><a href="core.html#readbuffersize" id="R" name="R">ReadBufferSize</a></li>
+<li><a href="mod_autoindex.html#readmename">ReadmeName</a></li>
 <li><a href="mpm_common.html#receivebuffersize">ReceiveBufferSize</a></li>
 <li><a href="mod_alias.html#redirect">Redirect</a></li>
 <li><a href="mod_alias.html#redirectmatch">RedirectMatch</a></li>
@@ -766,7 +770,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/directives.html'
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />基于 <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> 许可证.</p>
+<p class="apache">Copyright 2021 The Apache Software Foundation.<br />基于 <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> 许可证.</p>
 <p class="menu"><a href="../mod/">模块</a> | <a href="../mod/directives.html">指令</a> | <a href="http://wiki.apache.org/httpd/FAQ">常见问题</a> | <a href="../glossary.html">术语</a> | <a href="../sitemap.html">网站导航</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
