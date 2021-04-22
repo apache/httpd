@@ -1,4 +1,6 @@
                                                          -*- coding: utf-8 -*-
+Changes with Apache 2.4.48
+
 Changes with Apache 2.4.47
 
   *) mod_dav_fs: Improve logging output when failing to open files for
