@@ -5,7 +5,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -667,16 +667,16 @@
  * 20201214.1 (2.5.1-dev)  Add ap_ssl_conn_is_ssl()/ap_ssl_var_lookup() and hooks
  * 20201214.2 (2.5.1-dev)  Add ap_ssl_add_cert_files, ap_ssl_add_fallback_cert_files
  * 20201214.3 (2.5.1-dev)  Move ap_ssl_* into new http_ssl.h header file
- * 20201214.4 (2.5.1-dev)  Add ap_ssl_ocsp* hooks and functions to http_ssl.h.
- * 20210420.0 (2.5.1-dev)  Removed `ap_bytes_t` again from httpd.h and usage in ap_ssl_ocsp*()
+ * 20201214.4 (2.5.1-dev)  Add `ap_bytes_t` to httpd.h.
+ *                         Add ap_ssl_ocsp* hooks and functions to http_ssl.h.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20210420
+#define MODULE_MAGIC_NUMBER_MAJOR 20201214
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 0             /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 4             /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

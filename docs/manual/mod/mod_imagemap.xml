@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -109,7 +109,7 @@ AddType application/x-httpd-imap map
       <code>.htaccess</code> file or in the server configuration files.
       In the absence of an <directive>ImapBase</directive> configuration
       directive, <code>base</code> defaults to
-      <code>http://server_name/</code>.</p>
+      <code>https://server_name/</code>.</p>
       <p><code>base_uri</code> is synonymous with <code>base</code>.
       Note that a trailing slash on the URL is significant.</p></dd>
 
@@ -180,7 +180,7 @@ AddType application/x-httpd-imap map
       <dt><code>referer</code></dt>
 
       <dd>Equivalent to the URL of the referring document. Defaults
-      to <code>http://servername/</code> if no <code>Referer:</code>
+      to <code>https://servername/</code> if no <code>Referer:</code>
       header was present.</dd>
 
       <dt><code>nocontent</code></dt>
@@ -223,14 +223,14 @@ AddType application/x-httpd-imap map
       generated:</p>
 
       <example>
-        &lt;a href="http://example.com/"&gt;<var>Menu text</var>&lt;/a&gt;
+        &lt;a href="https://example.com/"&gt;<var>Menu text</var>&lt;/a&gt;
       </example>
 
       <p>If no quoted text is present, the name of the link will be
       used as the text:</p>
 
       <example>
-        &lt;a href="http://example.com/"&gt;http://example.com&lt;/a&gt;
+        &lt;a href="https://example.com/"&gt;https://example.com&lt;/a&gt;
       </example>
 
       <p>If you want to use double quotes within this text, you have to
@@ -248,10 +248,10 @@ AddType application/x-httpd-imap map
       base referer<br />
       poly map "Could I have a menu, please?" 0,0 0,10 10,10 10,0<br />
       rect .. 0,0 77,27 "the directory of the referer"<br />
-      circle http://www.inetnebr.example.com/lincoln/feedback/ 195,0 305,27<br />
+      circle https://www.inetnebr.example.com/lincoln/feedback/ 195,0 305,27<br />
       rect another_file "in same directory as referer" 306,0 419,27<br />
-      point http://www.zyzzyva.example.com/ 100,100<br />
-      point http://www.tripod.example.com/ 200,200<br />
+      point https://www.zyzzyva.example.com/ 100,100<br />
+      point https://www.tripod.example.com/ 200,200<br />
       rect mailto:nate@tripod.example.com 100,150 200,0 "Bugs?"<br />
     </example>
 
@@ -347,7 +347,7 @@ that are not explicitly mapped</description>
 <name>ImapBase</name>
 <description>Default <code>base</code> for imagemap files</description>
 <syntax>ImapBase map|referer|<var>URL</var></syntax>
-<default>ImapBase http://servername/</default>
+<default>ImapBase https://servername/</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>Indexes</override>
@@ -357,7 +357,7 @@ that are not explicitly mapped</description>
     <code>base</code> used in the imagemap files. Its value is
     overridden by a <code>base</code> directive within the imagemap
     file. If not present, the <code>base</code> defaults to
-    <code>http://<var>servername</var>/</code>.</p>
+    <code>https://<var>servername</var>/</code>.</p>
 </usage>
 <seealso><directive module="core">UseCanonicalName</directive></seealso>
 </directivesynopsis>

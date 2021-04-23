@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -43,7 +43,7 @@
     cette raison qu'il est crucial de se tenir informé des mises à jour. Si
     vous avez obtenu votre version du serveur HTTP directement depuis Apache,
     nous vous conseillons grandement de vous abonner à la <a
-    href="http://httpd.apache.org/lists.html#http-announce">Liste de diffusion
+    href="https://httpd.apache.org/lists.html#http-announce">Liste de diffusion
     des annonces du serveur HTTP</a> qui vous informera de
     la parution des nouvelles versions et des mises à jour de sécurité. La
     plupart des distributeurs tiers d'Apache fournissent des services
@@ -266,7 +266,7 @@
     programme est inclus dans la distribution d'Apache depuis la version 1.2
     et est appelé à partir de certaines portions de code du serveur Apache. Une
     autre méthode plus connue est l'utilisation de
-    <a href="http://cgiwrap.sourceforge.net/">CGIWrap</a>.</p>
+    <a href="https://cgiwrap.sourceforge.net/">CGIWrap</a>.</p>
 
   </section>
 
@@ -363,7 +363,7 @@
 
     <example>
       # cd /; ln -s / public_html <br />
-      puis accès à <code>http://localhost/~root/</code>
+      puis accès à <code>https://localhost/~root/</code>
     </example>
 
     <p>Ceci permettrait aux clients de parcourir l'ensemble du système de
@@ -427,7 +427,7 @@
     </example>
 
     <p>Le premier exemple listera les attaques essayant d'exploiter la
-    <a href="http://online.securityfocus.com/bid/4876/info/">vulnérabilité
+    <a href="https://online.securityfocus.com/bid/4876/info/">vulnérabilité
     d'Apache Tomcat pouvant provoquer la divulgation d'informations par des
     requêtes Source.JSP mal formées</a>, le second donnera la liste des dix
     dernières interdictions client ; par exemple :</p>

@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -105,8 +105,8 @@
 
     <highlight language="config">
 &lt;Proxy balancer://mycluster&gt;
-    BalancerMember http://192.168.1.50:80
-    BalancerMember http://192.168.1.51:80
+    BalancerMember https://192.168.1.50:80
+    BalancerMember https://192.168.1.51:80
 &lt;/Proxy&gt;
 ProxyPass        "/test" "balancer://mycluster"
 ProxyPassReverse "/test" "balancer://mycluster"
@@ -120,8 +120,8 @@ ProxyPassReverse "/test" "balancer://mycluster"
     <highlight language="config">
 Header add Set-Cookie "ROUTEID=.%{BALANCER_WORKER_ROUTE}e; path=/" env=BALANCER_ROUTE_CHANGED
 &lt;Proxy balancer://mycluster&gt;
-    BalancerMember http://192.168.1.50:80 route=1
-    BalancerMember http://192.168.1.51:80 route=2
+    BalancerMember https://192.168.1.50:80 route=1
+    BalancerMember https://192.168.1.51:80 route=2
     ProxySet stickysession=ROUTEID
 &lt;/Proxy&gt;
 ProxyPass        "/test" "balancer://mycluster"
@@ -159,7 +159,7 @@ ProxyPassReverse "/test" "balancer://mycluster"
     <dt><var><a name="balancer_worker_name" id="balancer_worker_name">BALANCER_WORKER_NAME</a></var></dt>
     <dd>
     <p>This is assigned the name of the worker used for the current request.
-    The value is something like <code>http://hostA:1234</code>.</p>
+    The value is something like <code>https://hostA:1234</code>.</p>
     </dd>
 
     <!-- ============= BALANCER_WORKER_ROUTE ================= -->
@@ -208,7 +208,7 @@ ProxyPassReverse "/test" "balancer://mycluster"
 
     <p>You can now access load balancer manager by using a Web browser
     to access the page
-    <code>http://your.server.name/balancer-manager</code>. Please note
+    <code>https://your.server.name/balancer-manager</code>. Please note
     that only Balancers defined outside of <code>&lt;Location ...&gt;</code>
     containers can be dynamically controlled by the Manager.</p>
 </section>
@@ -263,8 +263,8 @@ ProxyPassReverse "/test" "balancer://mycluster"
     <highlight language="config">
 ProxyPass "/test" "balancer://mycluster" stickysession=JSESSIONID|jsessionid scolonpathdelim=On
 &lt;Proxy balancer://mycluster&gt;
-    BalancerMember http://192.168.1.50:80 route=node1
-    BalancerMember http://192.168.1.51:80 route=node2
+    BalancerMember https://192.168.1.50:80 route=node1
+    BalancerMember https://192.168.1.51:80 route=node2
 &lt;/Proxy&gt;
     </highlight>
     <p>If the cookie and the request parameter both provide routing information

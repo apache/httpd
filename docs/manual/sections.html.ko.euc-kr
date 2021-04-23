@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
 <meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>¼½¼Ç ¼³Á¤ - Apache HTTP Server Version 2.5</title>
+<title>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ - Apache HTTP Server Version 2.5</title>
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
@@ -16,69 +16,69 @@
 
 <link href="./images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">¸ðµâ</a> | <a href="./mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">¿ë¾î</a> | <a href="./sitemap.html">»çÀÌÆ®¸Ê</a></p>
+<p class="menu"><a href="./mod/">ï¿½ï¿½ï¿½</a> | <a href="./mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">ï¿½ï¿½ï¿½</a> | <a href="./sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="./images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>¼½¼Ç ¼³Á¤</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</h1>
 <div class="toplang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="./en/sections.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="./en/sections.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/sections.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/sections.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/sections.html" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/sections.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">ÀÌ ¹®¼­´Â ÃÖ½ÅÆÇ ¹ø¿ªÀÌ ¾Æ´Õ´Ï´Ù.
-            ÃÖ±Ù¿¡ º¯°æµÈ ³»¿ëÀº ¿µ¾î ¹®¼­¸¦ Âü°íÇÏ¼¼¿ä.</div>
- <p><a href="configuring.html">¼³Á¤ÆÄÀÏ</a>¿¡ ÀÖ´Â
-Áö½Ã¾î´Â ¼­¹ö ÀüÃ¼¿¡ Àû¿ëµÇ°Å³ª, Æ¯Á¤ µð·ºÅä¸®, ÆÄÀÏ, È£½ºÆ®,
-URL¿¡¸¸ Àû¿ëµÉ ¼ö ÀÖ´Ù. ÀÌ ¹®¼­´Â ´Ù¸¥ Áö½Ã¾îÀÇ Àû¿ë¹üÀ§¸¦
-Á¦ÇÑÇÏ±âÀ§ÇØ ¼³Á¤ ¼½¼ÇÀÌ³ª <code>.htaccess</code> ÆÄÀÏÀ»
-»ç¿ëÇÏ´Â ¹æ¹ýÀ» ¼³¸íÇÑ´Ù.</p>
+<div class="outofdate">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Õ´Ï´ï¿½.
+            ï¿½Ö±Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.</div>
+ <p><a href="configuring.html">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</a>ï¿½ï¿½ ï¿½Ö´ï¿½
+ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç°Å³ï¿½, Æ¯ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®, ï¿½ï¿½ï¿½ï¿½, È£ï¿½ï¿½Æ®,
+URLï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì³ï¿½ <code>.htaccess</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#types">¼³Á¤ ¼½¼ÇÀÇ Á¾·ù</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#file-and-web">ÆÄÀÏ½Ã½ºÅÛ°ú À¥°ø°£</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#virtualhost">°¡»óÈ£½ºÆ®</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#proxy">ÇÁ·Ï½Ã</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#whatwhere">¾È¿¡ ¾î¶² Áö½Ã¾î¸¦ »ç¿ëÇÒ ¼ö
-ÀÖ³ª?</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#mergin">¼½¼ÇµéÀÌ °áÇÕÇÏ´Â ¹æ¹ý</a></li>
-</ul><h3>Âü°í</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#types">ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#file-and-web">ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½Û°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#virtualhost">ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#proxy">ï¿½ï¿½ï¿½Ï½ï¿½</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#whatwhere">ï¿½È¿ï¿½ ï¿½î¶² ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+ï¿½Ö³ï¿½?</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#mergin">ï¿½ï¿½ï¿½Çµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½</a></li>
+</ul><h3>ï¿½ï¿½ï¿½ï¿½</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="types" id="types">¼³Á¤ ¼½¼ÇÀÇ Á¾·ù</a> <a title="Permanent link" href="#types" class="permalink">&para;</a></h2>
+<h2><a name="types" id="types">ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a> <a title="Permanent link" href="#types" class="permalink">&para;</a></h2>
 
-<table class="related"><tr><th>°ü·ÃµÈ ¸ðµâ</th><th>°ü·ÃµÈ Áö½Ã¾î</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li><li><code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxymatch">&lt;ProxyMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li></ul></td></tr></table>
+<table class="related"><tr><th>ï¿½ï¿½ï¿½Ãµï¿½ ï¿½ï¿½ï¿½</th><th>ï¿½ï¿½ï¿½Ãµï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li><li><code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxymatch">&lt;ProxyMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li></ul></td></tr></table>
 
-<p>¼½¼Ç¿¡´Â µÎ°¡Áö Á¾·ù°¡ ÀÖ´Ù. ´ëºÎºÐÀº ¸Å¿äÃ»¸¶´Ù Ã³¸®µÈ´Ù.
-ÇØ´çÇÏ´Â ¿äÃ»¿¡¸¸ ¾È¿¡ Æ÷ÇÔÇÑ Áö½Ã¾î¸¦ Àû¿ëÇÑ´Ù. ¹Ý´ë·Î, <code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code>°ú <code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code>Àº ¼­¹ö°¡
-½ÃÀÛÇÒ¶§¿Í ²¨Áú¶§¸¸ Ã³¸®ÇÑ´Ù. ½ÃÀÛÇÒ¶§ »óÅÂ°¡ ÂüÀÌ¸é ¾È¿¡ ÀÖ´Â
-Áö½Ã¾î°¡ ¸ðµç ¿äÃ»¿¡ Àû¿ëµÈ´Ù. ÂüÀÌ ¾Æ´Ï¸é ¾È¿¡ ÀÖ´Â Áö½Ã¾î´Â
-¹«½ÃÇÑ´Ù.</p>
+<p>ï¿½ï¿½ï¿½Ç¿ï¿½ï¿½ï¿½ ï¿½Î°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½Îºï¿½ï¿½ï¿½ ï¿½Å¿ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½È´ï¿½.
+ï¿½Ø´ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ ï¿½È¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½Ý´ï¿½ï¿½, <code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code>ï¿½ï¿½ <code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ ï¿½ï¿½ï¿½Â°ï¿½ ï¿½ï¿½ï¿½Ì¸ï¿½ ï¿½È¿ï¿½ ï¿½Ö´ï¿½
+ï¿½ï¿½ï¿½Ã¾î°¡ ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Ï¸ï¿½ ï¿½È¿ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
 <p><code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code>
-Áö½Ã¾î´Â <code>httpd</code> ¸í·ÉÇà¿¡ ÀûÀýÇÑ ÆÄ¶ó¹ÌÅÍ°¡ ÀÖ´Â
-°æ¿ì¿¡¸¸ ¾È¿¡ Æ÷ÇÔÇÑ Áö½Ã¾î¸¦ Àû¿ëÇÑ´Ù. ´ÙÀ½ ¼³Á¤À» ¿¹·Î µé¸é,
-¼­¹ö¸¦ <code>httpd -DClosedForNow</code>·Î ½ÃÀÛÇÒ °æ¿ì¿¡¸¸
-¸ðµç ¿äÃ»ÀÌ ´Ù¸¥ »çÀÌÆ®·Î ¸®´ÙÀÌ·º¼ÇµÈ´Ù:</p>
+ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ <code>httpd</code> ï¿½ï¿½ï¿½ï¿½ï¿½à¿¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ä¶ï¿½ï¿½ï¿½Í°ï¿½ ï¿½Ö´ï¿½
+ï¿½ï¿½ì¿¡ï¿½ï¿½ ï¿½È¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½,
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>httpd -DClosedForNow</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ì¿¡ï¿½ï¿½
+ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ÇµÈ´ï¿½:</p>
 
 <div class="example"><p><code>
 &lt;IfDefine ClosedForNow&gt;<br />
-Redirect / http://otherserver.example.com/<br />
+Redirect / https://otherserver.example.com/<br />
 &lt;/IfDefine&gt;
 </code></p></div>
 
 <p><code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code>
-Áö½Ã¾îµµ Æ¯Á¤ ¸ðµâÀÌ ¼­¹ö¿¡ Æ÷ÇÔµÈ °æ¿ì¿¡¸¸ ¾È¿¡ µç Áö½Ã¾î¸¦
-Àû¿ëÇÑ´Ù´Â Á¡À» Á¦¿ÜÇÏ°í´Â ¸Å¿ì ºñ½ÁÇÏ´Ù. ¸ðµâÀ» ¼­¹ö¿¡ Á¤ÀûÀ¸·Î
-ÄÄÆÄÀÏÇÏ°Å³ª µ¿ÀûÀ¸·Î ÄÄÆÄÀÏÇÑÈÄ ¼³Á¤ÆÄÀÏ ¾Õ¿¡ <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> ÁÙÀÌ ÀÖ¾î¾ß ÇÑ´Ù. ÀÌ
-Áö½Ã¾î´Â Æ¯Á¤ ¸ðµâÀÇ ¼³Ä¡À¯¹«¿¡ µû¶ó ¼³Á¤ÆÄÀÏÀÌ ´Ù¸¦ ÇÊ¿ä°¡
-ÀÖÀ»¶§¸¸ »ç¿ëÇØ¾ß ÇÑ´Ù. ¸ðµâÀÌ ¾ø´Â °æ¿ì À¯¿ëÇÑ ¿À·ù¹®ÀÌ ³ª¿ÀÁö¾ÊÀ»
-¼ö ÀÖ±â ¶§¹®¿¡ ¾ðÁ¦³ª »ç¿ëÇÏ±æ ¿øÇÏ´Â Áö½Ã¾î¸¦ ¾È¿¡ µÎ¸é ¾ÈµÈ´Ù.</p>
+ï¿½ï¿½ï¿½Ã¾îµµ Æ¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ôµï¿½ ï¿½ï¿½ì¿¡ï¿½ï¿½ ï¿½È¿ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦
+ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´Ù´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ï¿½ï¿½ ï¿½Å¿ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï°Å³ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Õ¿ï¿½ <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¾ï¿½ï¿½ ï¿½Ñ´ï¿½. ï¿½ï¿½
+ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ Æ¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½Ê¿ä°¡
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ ï¿½Ö±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½È¿ï¿½ ï¿½Î¸ï¿½ ï¿½ÈµÈ´ï¿½.</p>
 
-<p>´ÙÀ½ ¿¹¿¡¼­ <code class="module"><a href="./mod/mod_mime_magic.html">mod_mime_magic</a></code>ÀÌ ÀÖÀ»¶§¸¸ <code class="directive"><a href="./mod/mod_mime_magic.html#mimemagicfiles">MimeMagicFiles</a></code> Áö½Ã¾î¸¦
-Ã³¸®ÇÑ´Ù.</p>
+<p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code class="module"><a href="./mod/mod_mime_magic.html">mod_mime_magic</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code class="directive"><a href="./mod/mod_mime_magic.html#mimemagicfiles">MimeMagicFiles</a></code> ï¿½ï¿½ï¿½Ã¾î¸¦
+Ã³ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
 <div class="example"><p><code>
 &lt;IfModule mod_mime_magic.c&gt;<br />
@@ -86,39 +86,39 @@ MimeMagicFile conf/magic<br />
 &lt;/IfModule&gt;
 </code></p></div>
 
-<p><code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code>°ú
-<code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code>ÀÇ
-°Ë»ç ¾Õ¿¡ "!"À» ºÙ¿© Á¶°ÇÀ» ¿ªÀ¸·Î ÇÒ ¼ö ÀÖ´Ù. ¶Ç, ¿©·¯ ¼½¼ÇµéÀ»
-°ãÃÄ¼­ »ç¿ëÇÏ¿© ´õ º¹ÀâÇÑ È¿°ú¸¦ ¾òÀ» ¼ö ÀÖ´Ù.</p>
+<p><code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code>ï¿½ï¿½
+<code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code>ï¿½ï¿½
+ï¿½Ë»ï¿½ ï¿½Õ¿ï¿½ "!"ï¿½ï¿½ ï¿½Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Çµï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½Ä¼ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¿ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="file-and-web" id="file-and-web">ÆÄÀÏ½Ã½ºÅÛ°ú À¥°ø°£</a> <a title="Permanent link" href="#file-and-web" class="permalink">&para;</a></h2>
+<h2><a name="file-and-web" id="file-and-web">ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½Û°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</a> <a title="Permanent link" href="#file-and-web" class="permalink">&para;</a></h2>
 
-<p>°¡Àå ÀÚÁÖ »ç¿ëµÇ´Â ¼³Á¤ ¼½¼ÇÀº ÆÄÀÏ½Ã½ºÅÛ°ú À¥°ø°£(webspace)ÀÇ
-Æ¯Á¤ Àå¼Ò¿¡ ´ëÇÑ ¼³Á¤À» º¯°æÇÏ´Â °ÍµéÀÌ´Ù. ¸ÕÀú ÀÌ µÑÀÇ Â÷ÀÌ¸¦
-ÀÌÇØÇÏ´Â °ÍÀÌ Áß¿äÇÏ´Ù. ÆÄÀÏ½Ã½ºÅÛÀº ¿î¿µÃ¼Á¦ ÀÔÀå¿¡¼­ µð½ºÅ©¸¦
-º¸´Â °üÁ¡ÀÌ´Ù. ¿¹¸¦ µé¾î, ±âº»°ªÀ¸·Î ¾ÆÆÄÄ¡¸¦ ¼³Ä¡¸¦ ÇÏ¸é À¯´Ð½º
-ÆÄÀÏ½Ã½ºÅÛÀÇ °æ¿ì <code>/usr/local/apache2</code>, À©µµ¿ìÁî
-ÆÄÀÏ½Ã½ºÅÛÀÇ °æ¿ì <code>"c:/Program Files/Apache
-Group/Apache2"</code>¿¡ ¼³Ä¡µÈ´Ù. (¾ÆÆÄÄ¡´Â À©µµ¿ìÁî¿¡¼­ Á¶Â÷
-Ç×»ó, ¿ª½½·¡½¬°¡ ¾Æ´Ñ, ½½·¡½¬¸¦ »ç¿ëÇÔÀ» ÁÖÀÇÇÏ¶ó.) ¹Ý´ë·Î
-À¥°ø°£Àº À¥¼­¹ö°¡ Á¦°øÇÏ°í Å¬¶óÀÌ¾ðÆ®°¡ º¸°ÔµÉ »çÀÌÆ®ÀÇ °üÁ¡ÀÌ´Ù.
-±×·¡¼­ À¯´Ð½º¿¡¼­ ±âº» ¾ÆÆÄÄ¡ ¼³Ä¡¸¦ ÇÑ °æ¿ì À¥°æ·ÎÀÇ °æ·Î
-<code>/dir/</code>Àº ÆÄÀÏ½Ã½ºÅÛ °æ·Î
-<code>/usr/local/apache2/htdocs/dir/</code>¿¡ ÇØ´çÇÑ´Ù. À¥°ø°£Àº
-µ¥ÀÌÅ¸º£ÀÌ½º µî¿¡¼­ µ¿ÀûÀ¸·Î »ý¼ºµÉ ¼ö ÀÖ±â¶§¹®¿¡ ¹Ýµå½Ã
-ÆÄÀÏ½Ã½ºÅÛ¿¡ Á÷Á¢ ´ëÀÀµÉ ÇÊ¿ä´Â ¾ø´Ù.</p>
+<p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ç´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½Û°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(webspace)ï¿½ï¿½
+Æ¯ï¿½ï¿½ ï¿½ï¿½Ò¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Íµï¿½ï¿½Ì´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¸ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß¿ï¿½ï¿½Ï´ï¿½. ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½î¿µÃ¼ï¿½ï¿½ ï¿½ï¿½ï¿½å¿¡ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½Ð½ï¿½
+ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ <code>/usr/local/apache2</code>, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ <code>"c:/Program Files/Apache
+Group/Apache2"</code>ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½È´ï¿½. (ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½î¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+ï¿½×»ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.) ï¿½Ý´ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½Ôµï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½.
+ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ð½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½âº» ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+<code>/dir/</code>ï¿½ï¿½ ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+<code>/usr/local/apache2/htdocs/dir/</code>ï¿½ï¿½ ï¿½Ø´ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½Å¸ï¿½ï¿½ï¿½Ì½ï¿½ ï¿½î¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö±â¶§ï¿½ï¿½ï¿½ï¿½ ï¿½Ýµï¿½ï¿½
+ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½Û¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</p>
 
-<h3><a name="filesystem" id="filesystem">ÆÄÀÏ½Ã½ºÅÛ ¼½¼Ç</a></h3>
+<h3><a name="filesystem" id="filesystem">ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a></h3>
 
-<p><code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>¿Í
-<code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code> Áö½Ã¾î¿Í
-Á¤±ÔÇ¥Çö½ÄÀ» »ç¿ëÇÏ´Â Áö½Ã¾î´Â ÆÄÀÏ½Ã½ºÅÛÀÇ Æ¯Á¤ ºÎºÐ¿¡ Áö½Ã¾î¸¦
-Àû¿ëÇÑ´Ù. <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> Áö½Ã¾î¿¡ Æ÷ÇÔµÈ Áö½Ã¾îµéÀº
-ÁöÁ¤ÇÑ ÆÄÀÏ½Ã½ºÅÛ µð·ºÅä¸®¿Í ±× ÇÏÀ§ µð·ºÅä¸®¿¡ Àû¿ëµÈ´Ù. <a href="howto/htaccess.html">.htaccess ÆÄÀÏ</a>À» »ç¿ëÇØµµ °á°ú´Â
-°°´Ù. ´ÙÀ½ ¼³Á¤À» ¿¹·Î µé¸é, µð·ºÅä¸® ¸ñ·Ï(index)ÀÌ
-<code>/var/web/dir1</code> ÀÌÇÏ µð·ºÅä¸®¿¡¼­ µð·ºÅä¸® ¸ñ·Ï(index)ÀÌ
-°¡´ÉÇÏ´Ù.</p>
+<p><code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>ï¿½ï¿½
+<code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½Ç¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ Æ¯ï¿½ï¿½ ï¿½ÎºÐ¿ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦
+ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> ï¿½ï¿½ï¿½Ã¾î¿¡ ï¿½ï¿½ï¿½Ôµï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È´ï¿½. <a href="howto/htaccess.html">.htaccess ï¿½ï¿½ï¿½ï¿½</a>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Øµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ä¸® ï¿½ï¿½ï¿½(index)ï¿½ï¿½
+<code>/var/web/dir1</code> ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸® ï¿½ï¿½ï¿½(index)ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.</p>
 
 <div class="example"><p><code>
 &lt;Directory /var/web/dir1&gt;<br />
@@ -126,11 +126,11 @@ Options +Indexes<br />
 &lt;/Directory&gt;
 </code></p></div>
 
-<p><code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code> ¼½¼Ç¿¡ Æ÷ÇÔµÈ Áö½Ã¾îµéÀº ¾î¶²
-µð·ºÅä¸®¿¡ ÀÖ´ÂÁö °ü°è¾øÀÌ ÁöÁ¤ÇÑ ÀÌ¸§À» °¡Áø ÆÄÀÏ¿¡ Àû¿ëµÈ´Ù.
-¼³Á¤ÆÄÀÏÀÇ ÁÖ¼³Á¤ºÎºÐ¿¡ ÀÖ´Â ´ÙÀ½ ¼³Á¤À» ¿¹·Î µé¸é, Àå¼Ò¿Í
-°ü°è¾øÀÌ <code>private.html</code>ÀÌ¶õ ÀÌ¸§À» ÇÑ ÆÄÀÏÀÇ Á¢±ÙÀ»
-°ÅºÎÇÑ´Ù.</p>
+<p><code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code> ï¿½ï¿½ï¿½Ç¿ï¿½ ï¿½ï¿½ï¿½Ôµï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ï¿½ï¿½ ï¿½î¶²
+ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½È´ï¿½.
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ÎºÐ¿ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, ï¿½ï¿½Ò¿ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>private.html</code>ï¿½Ì¶ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½Åºï¿½ï¿½Ñ´ï¿½.</p>
 
 <div class="example"><p><code>
 &lt;Files private.html&gt;<br />
@@ -139,13 +139,13 @@ Deny from all<br />
 &lt;/Files&gt;
 </code></p></div>
 
-<p>ÆÄÀÏ½Ã½ºÅÛÀÇ Æ¯Á¤ ºÎºÐ¿¡ ÀÖ´Â ÆÄÀÏÀ» ÁöÄªÇÏ±âÀ§ÇØ <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>¿Í <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> ¼½¼ÇÀ» °°ÀÌ
-»ç¿ëÇÑ´Ù. ´ÙÀ½ ¼³Á¤À» ¿¹·Î µé¸é,
+<p>ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ Æ¯ï¿½ï¿½ ï¿½ÎºÐ¿ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Äªï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>ï¿½ï¿½ <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½,
 <code>/var/web/dir1/private.html</code>,
 <code>/var/web/dir1/subdir2/private.html</code>,
-<code>/var/web/dir1/subdir3/private.html</code> °°ÀÌ
-<code>/var/web/dir1/</code> µð·ºÅä¸® ¾Æ·¡¿¡ ÀÖ´Â ÀÌ¸§ÀÌ
-<code>private.html</code>ÀÎ ÆÄÀÏÀÇ Á¢±ÙÀ» °ÅºÎÇÑ´Ù.</p>
+<code>/var/web/dir1/subdir3/private.html</code> ï¿½ï¿½ï¿½ï¿½
+<code>/var/web/dir1/</code> ï¿½ï¿½ï¿½ä¸® ï¿½Æ·ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½
+<code>private.html</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Åºï¿½ï¿½Ñ´ï¿½.</p>
 
 <div class="example"><p><code>
 &lt;Directory /var/web/dir1&gt;<br />
@@ -157,16 +157,16 @@ Deny from all<br />
 </code></p></div>
 
 
-<h3><a name="webspace" id="webspace">À¥°ø°£ ¼½¼Ç</a></h3>
+<h3><a name="webspace" id="webspace">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a></h3>
 
 <p><code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>
-Áö½Ã¾î¿Í ÀÌ¿¡ ÇØ´çÇÏ´Â Á¤±ÔÇ¥Çö½ÄÀ» »ç¿ëÇÏ´Â Áö½Ã¾î´Â ¹Ý´ë·Î
-Æ¯Á¤ À¥°ø°£ÀÇ ¼³Á¤À» ¹Ù²Û´Ù. ´ÙÀ½ ¼³Á¤À» ¿¹·Î µé¸é, /privateÀ¸·Î
-½ÃÀÛÇÏ´Â URL-°æ·ÎÀÇ Á¢±ÙÀÌ °ÅºÎµÈ´Ù. ¿©±â¿¡´Â
-<code>http://yoursite.example.com/private</code>,
-<code>http://yoursite.example.com/private123</code>,
-<code>http://yoursite.example.com/private/dir/file.html</code>
-°°ÀÌ <code>/private</code> ¹®ÀÚ¿­·Î ½ÃÀÛÇÏ´Â ¿äÃ»ÀÌ ÇØ´çµÈ´Ù.</p>
+ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½Ì¿ï¿½ ï¿½Ø´ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½Ý´ï¿½ï¿½
+Æ¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù²Û´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, /privateï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ URL-ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ÅºÎµÈ´ï¿½. ï¿½ï¿½ï¿½â¿¡ï¿½ï¿½
+<code>https://yoursite.example.com/private</code>,
+<code>https://yoursite.example.com/private123</code>,
+<code>https://yoursite.example.com/private/dir/file.html</code>
+ï¿½ï¿½ï¿½ï¿½ <code>/private</code> ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½Ø´ï¿½È´ï¿½.</p>
 
 <div class="example"><p><code>
 &lt;Location /private&gt;<br />
@@ -176,10 +176,10 @@ Deny from all<br />
 </code></p></div>
 
 <p><code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>
-Áö½Ã¾î´Â ÆÄÀÏ½Ã½ºÅÛ¿¡ ´ëÀÀÇÒ ÇÊ¿ä°¡ ¾ø´Ù. ´ÙÀ½ ¿¹´Â ¾î¶»°Ô Æ¯Á¤
-URLÀ» <code class="module"><a href="./mod/mod_status.html">mod_status</a></code>°¡ Á¦°øÇÏ´Â ¾ÆÆÄÄ¡ ³»ºÎ ÇÚµé·¯·Î
-´ëÀÀ½ÃÅ°´ÂÁö¸¦ º¸¿©ÁØ´Ù. ÆÄÀÏ½Ã½ºÅÛ¿¡ <code>server-status</code>¶ó´Â
-ÆÄÀÏÀº ÇÊ¿ä¾ø´Ù.</p>
+ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½Û¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ä°¡ ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½î¶»ï¿½ï¿½ Æ¯ï¿½ï¿½
+URLï¿½ï¿½ <code class="module"><a href="./mod/mod_status.html">mod_status</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ ï¿½Úµé·¯ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½. ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½Û¿ï¿½ <code>server-status</code>ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ï¿½.</p>
 
 <div class="example"><p><code>
 &lt;Location /server-status&gt;<br />
@@ -188,24 +188,24 @@ SetHandler server-status<br />
 </code></p></div>
 
 
-<h3><a name="wildcards" id="wildcards">¿ÍÀÏµåÄ«µå¿Í Á¤±ÔÇ¥Çö½Ä</a></h3>
+<h3><a name="wildcards" id="wildcards">ï¿½ï¿½ï¿½Ïµï¿½Ä«ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¥ï¿½ï¿½ï¿½ï¿½</a></h3>
 
 <p><code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>,
 <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>,
 <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>
-Áö½Ã¾î¿¡¼­ C Ç¥ÁØ ÆÄÀÌºê·¯¸®ÀÇ <code>fnmatch</code>¿Í °°Àº
-½©¿¡¼­ »ç¿ëÇÏ´Â ¿ÍÀÏµåÄ«µå ¹®ÀÚ¸¦ »ç¿ëÇÒ ¼ö ÀÖ´Ù.
-"*" ¹®ÀÚ´Â ¾î¶² ¹®ÀÚ¿­ÀÌ¶óµµ ³ªÅ¸³»°í, "?" ¹®ÀÚ´Â ¾î¶² ¹®ÀÚ ÇÑ°³¸¦
-³ªÅ¸³»¸ç, "[<em>seq</em>]"´Â <em>seq</em> Áß¿¡ ÇÑ ¹®ÀÚ¸¦ ³ªÅ¸³½´Ù.
-¾î¶² ¿ÍÀÏµåÄ«µåµµ "/" ¹®ÀÚ¸¦ ³ªÅ¸³»Áö´Â ¸øÇÑ´Ù. ±×·¡¼­ ÀÌ ¹®ÀÚ´Â
-Á÷Á¢ »ç¿ëÇØ¾ß ÇÑ´Ù.</p>
+ï¿½ï¿½ï¿½Ã¾î¿¡ï¿½ï¿½ C Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½Ìºê·¯ï¿½ï¿½ï¿½ï¿½ <code>fnmatch</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½Ïµï¿½Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.
+"*" ï¿½ï¿½ï¿½Ú´ï¿½ ï¿½î¶² ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½Ì¶ï¿½ ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½, "?" ï¿½ï¿½ï¿½Ú´ï¿½ ï¿½î¶² ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ°ï¿½ï¿½ï¿½
+ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½, "[<em>seq</em>]"ï¿½ï¿½ <em>seq</em> ï¿½ß¿ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½.
+ï¿½î¶² ï¿½ï¿½ï¿½Ïµï¿½Ä«ï¿½åµµ "/" ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ú´ï¿½
+ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½.</p>
 
-<p>´õ À¯¿¬ÇÑ ¼³Á¤ÀÌ ÇÊ¿äÇÏ¸é perlÈ£È¯ <a href="glossary.html#regex">Á¤±ÔÇ¥Çö½Ä</a>À» »ç¿ëÇÏ´Â <code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code>, <code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code>, <code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>¸¦ »ç¿ëÇÒ
-¼ö ÀÖ´Ù. ±×·¯³ª ¾Æ·¡ ¼³Á¤ÀÇ °áÇÕ¿¡ °üÇÑ Àý¿¡¼­ Á¤±ÔÇ¥Çö½Ä ¼½¼ÇÀ»
-»ç¿ëÇÏ¸é Áö½Ã¾î°¡ Àû¿ëµÇ´Â ¹æ¹ýÀÌ ¾î¶»°Ô º¯ÇÏ´ÂÁö »ìÆìºÁ¶ó.</p>
+<p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Ï¸ï¿½ perlÈ£È¯ <a href="glossary.html#regex">ï¿½ï¿½ï¿½ï¿½Ç¥ï¿½ï¿½ï¿½ï¿½</a>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ <code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code>, <code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code>, <code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½×·ï¿½ï¿½ï¿½ ï¿½Æ·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Õ¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¥ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½Ã¾î°¡ ï¿½ï¿½ï¿½ï¿½Ç´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½î¶»ï¿½ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.</p>
 
-<p>¸ðµç »ç¿ëÀÚ µð·ºÅä¸® ¼³Á¤À» º¯°æÇÏ´Â ºñÁ¤±ÔÇ¥Çö½Ä ¿ÍÀÏµåÄ«µå
-¼½¼ÇÀº ´ÙÀ½°ú °°´Ù:</p>
+<p>ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç¥ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ïµï¿½Ä«ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½:</p>
 
 <div class="example"><p><code>
 &lt;Directory /home/*/public_html&gt;<br />
@@ -213,8 +213,8 @@ Options Indexes<br />
 &lt;/Directory&gt;
 </code></p></div>
 
-<p>Á¤±ÔÇ¥Çö½Ä ¼½¼ÇÀ» »ç¿ëÇÏ¿© ÇÑ¹ø¿¡ ¿©·¯ Á¾·ùÀÇ ±×¸²ÆÄÀÏ¿¡
-´ëÇÑ Á¢±ÙÀ» °ÅºÎÇÒ ¼ö ÀÖ´Ù:</p>
+<p>ï¿½ï¿½ï¿½ï¿½Ç¥ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½Ñ¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×¸ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½
+ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Åºï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½:</p>
 <div class="example"><p><code>
 &lt;FilesMatch \.(?i:gif|jpe?g|png)$&gt;<br />
 Order allow,deny<br />
@@ -224,19 +224,19 @@ Deny from all<br />
 
 
 
-<h3><a name="whichwhen" id="whichwhen">¹«¾ùÀ» »ç¿ëÇÏ³ª</a></h3>
+<h3><a name="whichwhen" id="whichwhen">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï³ï¿½</a></h3>
 
-<p>ÆÄÀÏ½Ã½ºÅÛ ¼½¼Ç°ú À¥°ø°£ ¼½¼Ç Áß ÇÏ³ª¸¦ ¼±ÅÃÇÏ´Â °ÍÀº ½ÇÁ¦·Î
-¸Å¿ì ½±´Ù. ÆÄÀÏ½Ã½ºÅÛ¿¡ ÀÖ´Â °´Ã¼¿¡ Áö½Ã¾î¸¦ Àû¿ëÇÒ¶§´Â Ç×»ó
-<code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>³ª
-<code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>¸¦
-»ç¿ëÇÑ´Ù. (µ¥ÀÌÅ¸º£ÀÌ½º¿¡¼­ »ý¼ºÇÑ À¥ÆäÀÌÁö¿Í °°ÀÌ) ÆÄÀÏ½Ã½ºÅÛ¿¡
-ÀÖÁö ¾Ê´Â °´Ã¼¿¡ Áö½Ã¾î¸¦ Àû¿ëÇÒ¶§´Â <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>À» »ç¿ëÇÑ´Ù.</p>
+<p>ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ç°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ï³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½Å¿ï¿½ ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½Û¿ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ï¿½ï¿½ ï¿½×»ï¿½
+<code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>ï¿½ï¿½
+<code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. (ï¿½ï¿½ï¿½ï¿½Å¸ï¿½ï¿½ï¿½Ì½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½) ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½Û¿ï¿½
+ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´ï¿½ ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ï¿½ï¿½ <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-<p>ÆÄÀÏ½Ã½ºÅÛ¿¡ ÀÖ´Â °´Ã¼ÀÇ Á¢±ÙÀ» Á¦ÇÑÇÏ±âÀ§ÇØ <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>À» »ç¿ëÇÏ¸é
-Àý´ë ¾ÈµÈ´Ù. ¿©·¯ ´Ù¸¥ À¥°ø°£ Àå¼Ò(URL)°¡ °°Àº ÆÄÀÏ½Ã½ºÅÛ Àå¼Ò¿¡
-´ëÀÀµÉ ¼ö ÀÖÀ¸¹Ç·Î, °É¾îµÐ Á¦ÇÑÀ» ¿ìÈ¸ÇÒ ¼ö ÀÖ±â ¶§¹®ÀÌ´Ù. ´ÙÀ½
-¼³Á¤ÀÇ ¿¹¸¦ »ìÆìº¸ÀÚ:</p>
+<p>ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½Û¿ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½
+ï¿½ï¿½ï¿½ï¿½ ï¿½ÈµÈ´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½(URL)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½ï¿½ ï¿½ï¿½Ò¿ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½, ï¿½É¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¸ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½. ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ìº¸ï¿½ï¿½:</p>
 
 <div class="example"><p><code>
 &lt;Location /dir/&gt;<br />
@@ -245,132 +245,132 @@ Deny from all<br />
 &lt;/Location&gt;
 </code></p></div>
 
-<p>ÀÌ ¼³Á¤Àº <code>http://yoursite.example.com/dir/</code>À»
-¿äÃ»ÇÑ´Ù¸é Àß ÀÛµ¿ÇÑ´Ù. ±×·¯³ª ´ë¼Ò¹®ÀÚ¸¦ ±¸º°ÇÏÁö¾Ê´Â ÆÄÀÏ½Ã½ºÅÛÀ»
-»ç¿ëÇÑ´Ù¸é ¾î¶»°ÔµÇ³ª?
-<code>http://yoursite.example.com/DIR/</code>À» ¿äÃ»ÇÏ¿© ½±°Ô
-Á¦ÇÑÀ» ¿ìÈ¸ÇÒ ¼ö ÀÖ´Ù. ¹Ý´ë·Î <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> Áö½Ã¾î´Â ¾î¶»°Ô ¿äÃ»ÇÏ¿´´ÂÁö
-°ü°è¾øÀÌ ±× Àå¼Ò¿¡¼­ ¼­ºñ½ºµÇ´Â ³»¿ë¿¡ Àû¿ëµÈ´Ù. (¿¹¿Ü´Â ÆÄÀÏ½Ã½ºÅÛ
-¸µÅ©¸¦ »ç¿ëÇÏ´Â °æ¿ì´Ù. ½Éº¼¸µÅ©¸¦ »ç¿ëÇÏ¿© ÇÑ µð·ºÅä¸®¸¦
-ÆÄÀÏ½Ã½ºÅÛÀÇ ¿©·¯ Àå¼Ò¿¡ µÑ ¼ö ÀÖ´Ù. <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> Áö½Ã¾î´Â ½Éº¼¸µÅ©¸¦ µû¶ó°£´Ù.
-±×·¯¹Ç·Î ³ôÀº ¼öÁØÀÇ º¸¾ÈÀ» À§ÇØ¼­´Â ÀûÀýÇÑ <code class="directive"><a href="./mod/core.html#options">Options</a></code> Áö½Ã¾î¸¦ »ç¿ëÇÏ¿© ½Éº¼¸µÅ©¸¦
-¹«½ÃÇØ¾ß ÇÑ´Ù.)</p>
+<p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>https://yoursite.example.com/dir/</code>ï¿½ï¿½
+ï¿½ï¿½Ã»ï¿½Ñ´Ù¸ï¿½ ï¿½ï¿½ ï¿½Ûµï¿½ï¿½Ñ´ï¿½. ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½Ò¹ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê´ï¿½ ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½ ï¿½î¶»ï¿½ÔµÇ³ï¿½?
+<code>https://yoursite.example.com/DIR/</code>ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¸ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½Ý´ï¿½ï¿½ <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½î¶»ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½Ï¿ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Ò¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ñ½ºµÇ´ï¿½ ï¿½ï¿½ï¿½ë¿¡ ï¿½ï¿½ï¿½ï¿½È´ï¿½. (ï¿½ï¿½ï¿½Ü´ï¿½ ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½ï¿½
+ï¿½ï¿½Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½. ï¿½Éºï¿½ï¿½ï¿½Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½
+ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ò¿ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½Éºï¿½ï¿½ï¿½Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ó°£´ï¿½.
+ï¿½×·ï¿½ï¿½Ç·ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ø¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code class="directive"><a href="./mod/core.html#options">Options</a></code> ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½Éºï¿½ï¿½ï¿½Å©ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½.)</p>
 
-<p>¾Æ¸¶µµ ´ç½ÅÀº ´ë¼Ò¹®ÀÚ¸¦ ±¸º°ÇÏ´Â ÆÄÀÏ½Ã½ºÅÛÀ» »ç¿ëÇÏ¹Ç·Î
-ÀÌ·± ÀÏÀÌ ÀÏ¾î³ªÁö ¾Ê´Â´Ù°í »ý°¢ÇÒÁöµµ ¸ð¸¥´Ù. ±×·¯³ª ´Ù¸¥
-¹æ¹ýÀ¸·Îµµ ¿©·¯ À¥°ø°£ À§Ä¡°¡ ÇÑ ÆÄÀÏ½Ã½ºÅÛ À§Ä¡¿¡ ´ëÀÀµÉ ¼ö
-ÀÖÀ½À» ±â¾ïÇÏ¶ó. ±×·¡¼­ °¡´ÉÇÏ¸é Ç×»ó ÆÄÀÏ½Ã½ºÅÛ ¼½¼ÇÀ» »ç¿ëÇØ¾ß
-ÇÑ´Ù. ±×·¯³ª ÀÌ ±ÔÄ¢¿¡ ¿¹¿Ü°¡ ÇÏ³ª ÀÖ´Ù. ¼³Á¤ Á¦ÇÑÀ»
-<code>&lt;Location /&gt;</code> ¼½¼Ç¿¡ µÎ¸é ÀÌ ¼½¼ÇÀÌ Æ¯Á¤
-URLÀÌ ¾Æ´Ñ ¸ðµç ¿äÃ»¿¡ Àû¿ëµÇ¹Ç·Î ¿Ïº®ÇÏ°Ô ¾ÈÀüÇÏ´Ù.</p>
+<p>ï¿½Æ¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ò¹ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¹Ç·ï¿½
+ï¿½Ì·ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ï¾î³ªï¿½ï¿½ ï¿½Ê´Â´Ù°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ð¸¥´ï¿½. ï¿½×·ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½. ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½×»ï¿½ ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½
+ï¿½Ñ´ï¿½. ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Ä¢ï¿½ï¿½ ï¿½ï¿½ï¿½Ü°ï¿½ ï¿½Ï³ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+<code>&lt;Location /&gt;</code> ï¿½ï¿½ï¿½Ç¿ï¿½ ï¿½Î¸ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Æ¯ï¿½ï¿½
+URLï¿½ï¿½ ï¿½Æ´ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¹Ç·ï¿½ ï¿½Ïºï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.</p>
 
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="virtualhost" id="virtualhost">°¡»óÈ£½ºÆ®</a> <a title="Permanent link" href="#virtualhost" class="permalink">&para;</a></h2>
+<h2><a name="virtualhost" id="virtualhost">ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®</a> <a title="Permanent link" href="#virtualhost" class="permalink">&para;</a></h2>
 
 <p><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
-¼½¼ÇÀº Æ¯Á¤ È£½ºÆ®¿¡ Àû¿ëµÇ´Â Áö½Ã¾îµéÀ» Æ÷ÇÔÇÑ´Ù. ÀÌ´Â ÇÑ
-ÄÄÇ»ÅÍ¿¡¼­ °¢°¢ ´Ù¸¥ ¼³Á¤À» »ç¿ëÇÑ ¿©·¯ È£½ºÆ®¸¦ ¼­ºñ½ºÇÒ¶§
-À¯¿ëÇÏ´Ù. ´õ ÀÚ¼¼ÇÑ Á¤º¸´Â <a href="vhosts/">°¡»óÈ£½ºÆ® ¹®¼­</a>¸¦
-Âü°íÇÏ¶ó.</p>
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Æ¯ï¿½ï¿½ È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç´ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½Ì´ï¿½ ï¿½ï¿½
+ï¿½ï¿½Ç»ï¿½Í¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½. ï¿½ï¿½ ï¿½Ú¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <a href="vhosts/">ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½</a>ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="proxy" id="proxy">ÇÁ·Ï½Ã</a> <a title="Permanent link" href="#proxy" class="permalink">&para;</a></h2>
+<h2><a name="proxy" id="proxy">ï¿½ï¿½ï¿½Ï½ï¿½</a> <a title="Permanent link" href="#proxy" class="permalink">&para;</a></h2>
 
-<p><code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code>¿Í
+<p><code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code>ï¿½ï¿½
 <code class="directive"><a href="./mod/mod_proxy.html#proxymatch">&lt;ProxyMatch&gt;</a></code>
-¼½¼ÇÀº ÁöÁ¤ÇÑ URL¿¡ ´ëÇØ <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code> ÇÁ·Ï½Ã ¼­¹ö¸¦
-°ÅÃÄ Á¢±ÙÇÏ´Â °æ¿ì¿¡¸¸ Àû¿ëµÈ´Ù. ´ÙÀ½ ¼³Á¤À» ¿¹·Î µé¸é, ÇÁ·Ï½Ã
-¼­¹ö¸¦ ÅëÇØ <code>cnn.com</code> À¥»çÀÌÆ®¿¡ Á¢±ÙÇÒ ¼ö ¾ø´Ù.</p>
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ URLï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code> ï¿½ï¿½ï¿½Ï½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ì¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½Ï½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ <code>cnn.com</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</p>
 
 <div class="example"><p><code>
-&lt;Proxy http://cnn.com/*&gt;<br />
+&lt;Proxy https://cnn.com/*&gt;<br />
 Order allow,deny<br />
 Deny from all<br />
 &lt;/Proxy&gt;
 </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="whatwhere" id="whatwhere">¾È¿¡ ¾î¶² Áö½Ã¾î¸¦ »ç¿ëÇÒ ¼ö
-ÀÖ³ª?</a> <a title="Permanent link" href="#whatwhere" class="permalink">&para;</a></h2>
+<h2><a name="whatwhere" id="whatwhere">ï¿½È¿ï¿½ ï¿½î¶² ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+ï¿½Ö³ï¿½?</a> <a title="Permanent link" href="#whatwhere" class="permalink">&para;</a></h2>
 
-<p>¾î¶² ¼³Á¤ ¼½¼Ç¾È¿¡ »ç¿ëÇÒ ¼ö ÀÖ´Â Áö½Ã¾î¸¦ ¾Ë·Á¸é Áö½Ã¾îÀÇ
-<a href="mod/directive-dict.html#Context">»ç¿ëÀå¼Ò</a>¸¦ È®ÀÎÇÏ¶ó.
-<code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>¿¡¼­
-»ç¿ë°¡´ÉÇÑ Áö½Ã¾î´Â <code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code>, <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>, <code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code>, <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>, <code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>, <code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code>, <code class="directive"><a href="./mod/mod_proxy.html#proxymatch">&lt;ProxyMatch&gt;</a></code> ¼½¼Ç¿¡¼­µµ »ç¿ë°¡´ÉÇÏ´Ù.
-±×·¯³ª, ¿¹¿Ü°¡ ÀÖ´Ù:</p>
+<p>ï¿½î¶² ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ç¾È¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½Ë·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ï¿½
+<a href="mod/directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</a>ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ï¶ï¿½.
+<code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ë°¡ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ <code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code>, <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>, <code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code>, <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>, <code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>, <code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code>, <code class="directive"><a href="./mod/mod_proxy.html#proxymatch">&lt;ProxyMatch&gt;</a></code> ï¿½ï¿½ï¿½Ç¿ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ë°¡ï¿½ï¿½ï¿½Ï´ï¿½.
+ï¿½×·ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½Ü°ï¿½ ï¿½Ö´ï¿½:</p>
 
 <ul>
-<li><code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code> Áö½Ã¾î´Â
+<li><code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½
 <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>
-¼½¼Ç¿¡¼­¸¸ »ç¿ëÇÒ ¼ö ÀÖ´Ù.</li>
+ï¿½ï¿½ï¿½Ç¿ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</li>
 
 <li><code>FollowSymLinks</code>, <code>SymLinksIfOwnerMatch</code>,
-<code class="directive"><a href="./mod/core.html#options">Options</a></code>´Â <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> ¼½¼ÇÀÌ³ª
-<code>.htaccess</code> ÆÄÀÏ¿¡¼­¸¸ »ç¿ëÇÒ ¼ö ÀÖ´Ù.</li>
+<code class="directive"><a href="./mod/core.html#options">Options</a></code>ï¿½ï¿½ <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> ï¿½ï¿½ï¿½ï¿½ï¿½Ì³ï¿½
+<code>.htaccess</code> ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</li>
 
-<li><code class="directive"><a href="./mod/core.html#options">Options</a></code> Áö½Ã¾î´Â
-<code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>°ú
+<li><code class="directive"><a href="./mod/core.html#options">Options</a></code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½
+<code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>ï¿½ï¿½
 <code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code>
-¼½¼Ç¿¡¼­ »ç¿ëÇÒ ¼ö ¾ø´Ù.</li>
+ï¿½ï¿½ï¿½Ç¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="mergin" id="mergin">¼½¼ÇµéÀÌ °áÇÕÇÏ´Â ¹æ¹ý</a> <a title="Permanent link" href="#mergin" class="permalink">&para;</a></h2>
+<h2><a name="mergin" id="mergin">ï¿½ï¿½ï¿½Çµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½</a> <a title="Permanent link" href="#mergin" class="permalink">&para;</a></h2>
 
-<p>¼³Á¤ ¼½¼ÇÀº ¸Å¿ì Æ¯º°ÇÑ ¹æ¹ýÀ¸·Î Àû¿ëµÈ´Ù. ÀÌ ¼ø¼­°¡ ¼³Á¤
-Áö½Ã¾î¸¦ ÇØ¼®ÇÏ´Â ¹æ¹ý¿¡ Áß¿äÇÑ ¿µÇâÀ» ÁÖ±â¶§¹®¿¡ ÀÌ ¹æ¹ýÀ»
-ÀÌÇØÇÏ´Â °ÍÀÌ Áß¿äÇÏ´Ù.</p>
+<p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Å¿ï¿½ Æ¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½Ø¼ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö±â¶§ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß¿ï¿½ï¿½Ï´ï¿½.</p>
 
-    <p>°áÇÕÇÏ´Â ¼ø¼­´Â:</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</p>
 
     <ol>
-      <li> (Á¤±ÔÇ¥Çö½ÄÀ» »ç¿ëÇÏÁö¾Ê´Â) <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>¿Í <code>.htaccess</code>´Â
-      µ¿½Ã¿¡ ÀÏ¾î³­´Ù (°æ¿ì¿¡ µû¶ó <code>.htaccess</code>ÀÌ
-      <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>¸¦
-      ¹«½ÃÇÏµµ·Ï ¼³Á¤ÇÒ ¼ö ÀÖ´Ù)</li>
+      <li> (ï¿½ï¿½ï¿½ï¿½Ç¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê´ï¿½) <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>ï¿½ï¿½ <code>.htaccess</code>ï¿½ï¿½
+      ï¿½ï¿½ï¿½Ã¿ï¿½ ï¿½Ï¾î³­ï¿½ï¿½ (ï¿½ï¿½ì¿¡ ï¿½ï¿½ï¿½ï¿½ <code>.htaccess</code>ï¿½ï¿½
+      <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½)</li>
 
-      <li><code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code> (±×¸®°í
+      <li><code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code> (ï¿½×¸ï¿½ï¿½ï¿½
       <code>&lt;Directory ~&gt;</code>)</li>
 
-      <li><code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>¿Í <code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code>´Â µ¿½Ã¿¡ ÀÏ¾î³­´Ù</li>
+      <li><code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>ï¿½ï¿½ <code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¿ï¿½ ï¿½Ï¾î³­ï¿½ï¿½</li>
 
-      <li><code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>°ú <code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>´Â µ¿½Ã¿¡ ÀÏ¾î³­´Ù</li>
+      <li><code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>ï¿½ï¿½ <code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¿ï¿½ ï¿½Ï¾î³­ï¿½ï¿½</li>
     </ol>
 
-    <p><code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>¸¦ Á¦¿ÜÇÏ°í °¢ ¼½¼ÇµéÀ»
-    ¼³Á¤ÆÄÀÏ¿¡ ³ª¿Â ¼ø¼­´ë·Î Ã³¸®µÈ´Ù. (À§ÀÇ ¼ø¼­ 1) <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>´Â µð·ºÅä¸®
-    ³»¿ëÀÌ °¡Àå ÂªÀº °Í¿¡¼­ ±äÂÊÀ¸·Î Ã³¸®µÈ´Ù. ±×·¡¼­ ¿¹¸¦ µé¾î,
-    <code>&lt;Directory /var/web/dir&gt;</code>À»
-    <code>&lt;Directory /var/web/dir/subdir&gt;</code> ÀÌÀü¿¡
-    Ã³¸®ÇÑ´Ù. °°Àº µð·ºÅä¸®¸¦ ÁöÄªÇÏ´Â ¿©·¯ <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> ¼½¼ÇÀÌ
-    ÀÖ´Ù¸é ÀÌµéÀ» ¼³Á¤ÆÄÀÏ ¼ø¼­´ë·Î Ã³¸®ÇÑ´Ù. <code class="directive"><a href="./mod/core.html#include">Include</a></code> Áö½Ã¾î·Î Æ÷ÇÔÇÑ ¼³Á¤Àº
-    <code class="directive"><a href="./mod/core.html#include">Include</a></code> Áö½Ã¾î À§Ä¡¿¡
-    Æ÷ÇÔÇÑ ÆÄÀÏ ³»¿ëÀÌ ÀÖ´Â °ÍÃ³·³ Ã³¸®ÇÑ´Ù.</p>
+    <p><code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Çµï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½È´ï¿½. (ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 1) <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Âªï¿½ï¿½ ï¿½Í¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½È´ï¿½. ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½,
+    <code>&lt;Directory /var/web/dir&gt;</code>ï¿½ï¿½
+    <code>&lt;Directory /var/web/dir/subdir&gt;</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    Ã³ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½Äªï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ö´Ù¸ï¿½ ï¿½Ìµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ñ´ï¿½. <code class="directive"><a href="./mod/core.html#include">Include</a></code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    <code class="directive"><a href="./mod/core.html#include">Include</a></code> ï¿½ï¿½ï¿½Ã¾ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½Ã³ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <p><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> ¼½¼Ç ¾È¿¡ Æ÷ÇÔµÈ ¼½¼ÇÀº
-    °¡»óÈ£½ºÆ® Á¤ÀÇ ¹Û¿¡ ÀÖ´Â ÇØ´ç ¼½¼Ç <em>ÀÌÈÄ¿¡</em> Àû¿ëµÈ´Ù.
-    ±×·¡¼­ °¡»óÈ£½ºÆ® ¾È¿¡¼­ ÁÖ¼­¹öÀÇ ¼³Á¤»çÇ×À» ¼öÁ¤ÇÒ ¼ö ÀÖ´Ù.</p>
+    <p><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> ï¿½ï¿½ï¿½ï¿½ ï¿½È¿ï¿½ ï¿½ï¿½ï¿½Ôµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ ï¿½Û¿ï¿½ ï¿½Ö´ï¿½ ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ <em>ï¿½ï¿½ï¿½Ä¿ï¿½</em> ï¿½ï¿½ï¿½ï¿½È´ï¿½.
+    ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ® ï¿½È¿ï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <p><code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>°¡ ¿äÃ» ¼­ºñ½ºÇÒ¶§, <code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code> ¼½¼ÇÀÇ
-    Ã³¸®¼ø¼­´Â <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> ¼½¼Ç°ú °°´Ù.</p>
+    <p><code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>ï¿½ï¿½ ï¿½ï¿½Ã» ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½, <code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    Ã³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> ï¿½ï¿½ï¿½Ç°ï¿½ ï¿½ï¿½ï¿½ï¿½.</p>
 
-    <p>´ÙÀ½¿¡ ³ª¿À´Â ¼½¼ÇÀº ÀÌÀü ¼½¼ÇÀÇ °á°ú¸¦ ¼öÁ¤ÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-<div class="note"><h3>±â¼úÀû ÁÖÀÇ</h3>
-      ½ÇÁ¦·Î
-      <code>&lt;Location&gt;</code>/<code>&lt;LocationMatch&gt;</code>´Â
-      (<code>Aliases</code>¿Í <code>DocumentRoot</code>¸¦ »ç¿ëÇÏ¿©
-      URLÀ» ÆÄÀÏ¸íÀ¸·Î º¯È¯ÇÏ´Â) ÀÌ¸§¹ø¿ª ´Ü°è ÀÌÀü¿¡ Ã³¸®µÈ´Ù.
-      º¯¿ªÀÌ ³¡³­ ÀÌÈÄ¿¡´Â ¿ÏÀüÈ÷ ¹«½ÃÇÑ´Ù.
+<div class="note"><h3>ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</h3>
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      <code>&lt;Location&gt;</code>/<code>&lt;LocationMatch&gt;</code>ï¿½ï¿½
+      (<code>Aliases</code>ï¿½ï¿½ <code>DocumentRoot</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½
+      URLï¿½ï¿½ ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½Ï´ï¿½) ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ü°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½È´ï¿½.
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
 </div>
 
-<h3><a name="merge-examples" id="merge-examples">¿¹Á¦</a></h3>
+<h3><a name="merge-examples" id="merge-examples">ï¿½ï¿½ï¿½ï¿½</a></h3>
 
-<p>´ÙÀ½Àº °ãÇÕÇÏ´Â ¼ø¼­¸¦ ¼³¸íÇÏ´Â ¿¹´Ù. ÀÌµé ¸ðµÎ ¿äÃ»¿¡
-Àû¿ëµÈ´Ù°í °¡Á¤ÇÏ¸é Áö½Ã¾î´Â A &gt; B &gt; C &gt; D &gt; E
-¼ø¼­·Î Ã³¸®µÈ´Ù.</p>
+<p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½. ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½È´Ù°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ A &gt; B &gt; C &gt; D &gt; E
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½È´ï¿½.</p>
 
 <div class="example"><p><code>
 &lt;Location /&gt;<br />
@@ -397,10 +397,10 @@ A<br />
 <br />
 </code></p></div>
 
-<p>´õ Çö½ÇÀûÀÎ ¿¹´Â ´ÙÀ½°ú °°´Ù. <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code> ¼½¼ÇÀ» ³ªÁß¿¡ Ã³¸®ÇÏ¹Ç·Î
+<p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½. <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ß¿ï¿½ Ã³ï¿½ï¿½ï¿½Ï¹Ç·ï¿½
 <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>
-¼½¼Ç¿¡ ÀÖ´Â Á¢±ÙÁ¦ÇÑ°ú °ü°è¾øÀÌ ¼­¹ö¿¡ ¹«Á¦ÇÑ Á¢±ÙÀ» °¡´ÉÇÏ´Ù.
-Áï, °áÇÕÇÏ´Â ¼ø¼­´Â Áß¿äÇÏ¹Ç·Î ÁÖÀÇÇÏ¶ó!</p>
+ï¿½ï¿½ï¿½Ç¿ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.
+ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß¿ï¿½ï¿½Ï¹Ç·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½!</p>
 
 <div class="example"><p><code>
 &lt;Location /&gt;<br />
@@ -408,7 +408,7 @@ Order deny,allow<br />
 Allow from all<br />
 &lt;/Location&gt;<br />
 <br />
-# ¾Ç!  ÀÌ &lt;Directory&gt; ¼½¼ÇÀº ¾Æ¹«·± È¿°ú°¡ ¾ø´Ù<br />
+# ï¿½ï¿½!  ï¿½ï¿½ &lt;Directory&gt; ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ¹ï¿½ï¿½ï¿½ È¿ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½<br />
 &lt;Directory /&gt;<br />
 Order allow,deny<br />
 Allow from all<br />
@@ -420,7 +420,7 @@ Deny from badguy.example.com<br />
 
 </div></div>
 <div class="bottomlang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="./en/sections.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="./en/sections.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/sections.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/sections.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/sections.html" title="Korean">&nbsp;ko&nbsp;</a> |
@@ -428,7 +428,7 @@ Deny from badguy.example.com<br />
 </div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/sections.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/sections.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -443,8 +443,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/sections.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">¸ðµâ</a> | <a href="./mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">¿ë¾î</a> | <a href="./sitemap.html">»çÀÌÆ®¸Ê</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">ï¿½ï¿½ï¿½</a> | <a href="./mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">ï¿½ï¿½ï¿½</a> | <a href="./sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

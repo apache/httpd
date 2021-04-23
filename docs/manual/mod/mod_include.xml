@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -720,8 +720,8 @@ Options +Includes
       <dd><p>Compare <var>string1</var> with <var>string2</var>. If
       <var>string2</var> has the form <code>/<var>string2</var>/</code>
       then it is treated as a regular expression. Regular expressions are
-      implemented by the <a href="http://www.pcre.org">PCRE</a> engine and
-      have the same syntax as those in <a href="http://www.perl.com">perl
+      implemented by the <a href="https://www.pcre.org">PCRE</a> engine and
+      have the same syntax as those in <a href="https://www.perl.com">perl
       5</a>. Note that <code>==</code> is just an alias for <code>=</code>
       and behaves exactly the same way.</p>
 

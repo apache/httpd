@@ -12,7 +12,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -46,7 +46,7 @@
     <p>Se ha escrito mucho sobre HTTP/2 y de cómo funciona. La norma más
     estándar es, por supuesto, su 
     <a href="https://tools.ietf.org/html/rfc7540">RFC 7540</a> 
-    (<a href="http://httpwg.org/specs/rfc7540.html"> también disponible en un
+    (<a href="https://httpwg.org/specs/rfc7540.html"> también disponible en un
     formato más legible, YMMV</a>). Así que, ahí encontrará toda la especificación 
     del protocolo.</p>
 
@@ -76,14 +76,14 @@
         dentro de una conexión HTTP/2, que consiste en una cabecera y una secuencia 
         de octetos de longitud variable estructurada de acuerdo con el tipo de 
         frame. Más información en la documentación oficial 
-        <a href="http://httpwg.org/specs/rfc7540.html#FramingLayer">Sección de 
+        <a href="https://httpwg.org/specs/rfc7540.html#FramingLayer">Sección de 
             Capa de Frame</a>.</li>
 
         <li>Un <strong>stream</strong> es un flujo bidireccional de frames dentro 
         de una conexión HTTP/2. El concepto correspondiente en HTTP 1.1 es un 
         intercambio de mensajes de solicitud/respuesta. Más información en la 
         documentación oficial 
-        <a href="http://httpwg.org/specs/rfc7540.html#StreamsLayer">Sección Capa 
+        <a href="https://httpwg.org/specs/rfc7540.html#StreamsLayer">Sección Capa 
             de Stream</a>.</li>
 
         <li>
@@ -174,7 +174,7 @@ Protocols http/1.1
     <p>Esto solo permite HTTP/1, excepto conexiones SSL hacia <code>test.example.org</code> que ofrecen HTTP/2.</p>
 
     <note><title>Escoger un SSLCipherSuite seguro</title>
-     <p>Es necesario configurar <directive module="mod_ssl">SSLCipherSuite</directive> con una suite segura de cifrado TLS. La versión actual de mod_http2 no fuerza ningún cifrado pero la mayoría de los clientes si lo hacen. Encaminar un navegador hacia un servidor con <code>h2</code> activado con una suite inapropiada de cifrados forzará al navegador a rehusar e intentar conectar por HTTP 1.1. Esto es un error común cuando se configura httpd con HTTP/2 por primera vez, ¡así que por favor tenga en cuenta que debe evitar largas sesiones de depuración! Si quiere estar seguro de la suite de cifrados que escoja, por favor evite los listados en la <a href="http://httpwg.org/specs/rfc7540.html#BadCipherSuites">Lista Negra de TLS para HTTP/2</a>.</p>
+     <p>Es necesario configurar <directive module="mod_ssl">SSLCipherSuite</directive> con una suite segura de cifrado TLS. La versión actual de mod_http2 no fuerza ningún cifrado pero la mayoría de los clientes si lo hacen. Encaminar un navegador hacia un servidor con <code>h2</code> activado con una suite inapropiada de cifrados forzará al navegador a rehusar e intentar conectar por HTTP 1.1. Esto es un error común cuando se configura httpd con HTTP/2 por primera vez, ¡así que por favor tenga en cuenta que debe evitar largas sesiones de depuración! Si quiere estar seguro de la suite de cifrados que escoja, por favor evite los listados en la <a href="https://httpwg.org/specs/rfc7540.html#BadCipherSuites">Lista Negra de TLS para HTTP/2</a>.</p>
     </note>
 
     <p>El orden de los protocolos mencionados también es relevante. Por defecto, el primero es el protocolo preferido. Cuando un cliente ofrece múltiples opciones, la que esté más a la izquierda será la escogida. En</p>
@@ -220,7 +220,7 @@ ProtocolsHonorOrder Off
   <section id="clients">
     <title>Clientes</title>
     
-    <p>Casi todos los navegadores modernos dan soporte a HTTP/2, pero solo en conexiones SSL: Firefox (v43), Chrome (v45), Safari (since v9), iOS Safari (v9), Opera (v35), Chrome para Android (v49) e Internet Explorer (v11 en Windows10) (<a href="http://caniuse.com/#search=http2">Fuente</a>).</p>
+    <p>Casi todos los navegadores modernos dan soporte a HTTP/2, pero solo en conexiones SSL: Firefox (v43), Chrome (v45), Safari (since v9), iOS Safari (v9), Opera (v35), Chrome para Android (v49) e Internet Explorer (v11 en Windows10) (<a href="https://caniuse.com/#search=http2">Fuente</a>).</p>
 
     <p>Otros clientes, así cómo otros servidores, están listados en la 
     <a href="https://github.com/http2/http2-spec/wiki/Implementations">wiki de Implementaciones</a>, entre ellos, implementaciones para c, c++, common lisp, dart, erlang, haskell, java, nodejs, php, python, perl, ruby, rust, scala y swift.</p>

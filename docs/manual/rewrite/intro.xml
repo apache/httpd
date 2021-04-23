@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -73,13 +73,13 @@ it will tell you exactly how each rule is processed.</p>
 
 <section id="regex"><title>Regular Expressions</title>
 
-<p><module>mod_rewrite</module> uses the <a href="http://pcre.org/">Perl Compatible
+<p><module>mod_rewrite</module> uses the <a href="https://pcre.org/">Perl Compatible
 Regular Expression</a> vocabulary. In this document, we do not attempt
 to provide a detailed reference to regular expressions. For that, we
-recommend the <a href="http://pcre.org/pcre.txt">PCRE man pages</a>, the
-<a href="http://perldoc.perl.org/perlre.html">Perl regular
+recommend the <a href="https://pcre.org/pcre.txt">PCRE man pages</a>, the
+<a href="https://perldoc.perl.org/perlre.html">Perl regular
 expression man page</a>, and <a
-href="http://shop.oreilly.com/product/9780596528126.do">Mastering
+href="https://shop.oreilly.com/product/9780596528126.do">Mastering
 Regular Expressions, by Jeffrey Friedl</a>.</p>
 
 <p>In this document, we attempt to provide enough of a regex vocabulary
@@ -252,14 +252,14 @@ RewriteRule "^/foo$" "/bar"
 </highlight>
 <p>If <directive module="core">DocumentRoot</directive> is set
 to <code>/usr/local/apache2/htdocs</code>, then this directive would
-map requests for <code>http://example.com/foo</code> to the
+map requests for <code>https://example.com/foo</code> to the
 path <code>/usr/local/apache2/htdocs/bar</code>.</p>
 </dd>
 
 <dt>An absolute URL</dt>
 <dd>
 <highlight language="config">
-RewriteRule "^/product/view$" "http://site2.example.com/seeproduct.html" [R]
+RewriteRule "^/product/view$" "https://site2.example.com/seeproduct.html" [R]
 </highlight>
 <p>This tells the client to make a new request for the specified URL.</p>
 </dd>
@@ -274,7 +274,7 @@ RewriteRule "^/product/(.*)/view$" "/var/web/productdb/$1"
 <p>The variable <code>$1</code> will be replaced with whatever text
 was matched by the expression inside the parenthesis in
 the <var>Pattern</var>. For example, a request
-for <code>http://example.com/product/r14df/view</code> will be mapped
+for <code>https://example.com/product/r14df/view</code> will be mapped
 to the path <code>/var/web/productdb/r14df</code>.</p>
 
 <p>If there is more than one expression in parenthesis, they are
@@ -322,7 +322,7 @@ argument is a list of flags that modify how the match is evaluated.</p>
 different server, you could use:</p>
 <highlight language="config">
 RewriteCond "%{REMOTE_ADDR}" "^10\.2\."
-RewriteRule "(.*)"           "http://intranet.example.com$1"
+RewriteRule "(.*)"           "https://intranet.example.com$1"
 </highlight>
 
 <p>When more than
@@ -350,7 +350,7 @@ hostname used to access the site:</p>
 RewriteCond "%{HTTP_HOST}" "(.*)"
 RewriteRule "^/(.*)"       "/sites/%1/$1"
 </highlight>
-<p>If the request was for <code>http://example.com/foo/bar</code>,
+<p>If the request was for <code>https://example.com/foo/bar</code>,
 then <code>%1</code> would contain <code>example.com</code>
 and <code>$1</code> would contain <code>foo/bar</code>.</p>
 

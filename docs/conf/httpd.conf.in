@@ -1,9 +1,9 @@
 #
 # This is the main Apache HTTP server configuration file.  It contains the
 # configuration directives that give the server its instructions.
-# See <URL:http://httpd.apache.org/docs/trunk/> for detailed information.
+# See <URL:https://httpd.apache.org/docs/trunk/> for detailed information.
 # In particular, see 
-# <URL:http://httpd.apache.org/docs/trunk/mod/directives.html>
+# <URL:https://httpd.apache.org/docs/trunk/mod/directives.html>
 # for a discussion of each configuration directive.
 #
 # Do NOT simply read the instructions in here without understanding
@@ -142,7 +142,7 @@ DocumentRoot "${DOCROOT}"
     # doesn't give it to you.
     #
     # The Options directive is both complicated and important.  Please see
-    # http://httpd.apache.org/docs/trunk/mod/core.html#options
+    # https://httpd.apache.org/docs/trunk/mod/core.html#options
     # for more information.
     #
     Options Indexes FollowSymLinks
@@ -227,7 +227,7 @@ LogLevel warn
     # exist in your server's namespace, but do not anymore. The client 
     # will make a new request for the document at its new location.
     # Example:
-    # Redirect permanent /foo http://www.example.com/bar
+    # Redirect permanent /foo https://www.example.com/bar
 
     #
     # Alias: Maps web paths into filesystem paths and is used to
@@ -342,7 +342,7 @@ LogLevel warn
 #ErrorDocument 500 "The server made a boo boo."
 #ErrorDocument 404 /missing.html
 #ErrorDocument 404 "/cgi-bin/missing_handler.pl"
-#ErrorDocument 402 http://www.example.com/subscription_info.html
+#ErrorDocument 402 https://www.example.com/subscription_info.html
 #
 
 #

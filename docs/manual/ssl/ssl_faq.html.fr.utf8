@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -16,12 +16,12 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">SSL/TLS</a></div><div id="page-content"><div id="preamble"><h1>Chiffrement SSL/TLS fort: foire aux questions</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">SSL/TLS</a></div><div id="page-content"><div id="preamble"><h1>Chiffrement SSL/TLS fort: foire aux questions</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/ssl/ssl_faq.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/ssl/ssl_faq.html" title="Français">&nbsp;fr&nbsp;</a></p>
@@ -146,11 +146,11 @@ de test ?</a></h3>
     directement HTTP et HTTPS, qui peut effectuer des opérations GET et POST,
     peut utiliser un mandataire, supporte les requêtes portant sur une partie
     d'un fichier (byte-range), etc..., vous devriez vous tourner vers
-    l'excellent outil <a href="http://curl.haxx.se/">cURL</a>. Grâce à lui,
+    l'excellent outil <a href="https://curl.haxx.se/">cURL</a>. Grâce à lui,
     vous pouvez vérifier si Apache répond correctement aux requêtes via
     HTTP et HTTPS comme suit :</p>
 
-    <div class="example"><p><code>$ curl http://localhost/<br />
+    <div class="example"><p><code>$ curl https://localhost/<br />
     $ curl https://localhost/</code></p></div>
 
 
@@ -158,7 +158,7 @@ de test ?</a></h3>
 me connecte à mon serveur Apache configuré pour SSL ?</a></h3>
 <p>Ceci peut arriver si vous vous connectez à un serveur HTTPS (ou à
 un serveur virtuel) via HTTP (par exemple, en utilisant
-<code>http://example.com/</code> au lieu de <code>https://example.com</code>).
+<code>https://example.com/</code> au lieu de <code>https://example.com</code>).
 Cela peut aussi arriver en essayant de vous connecter via HTTPS à un
 serveur HTTP (par exemple, en utilisant <code>https://example.com/</code>
 avec un serveur qui ne supporte pas HTTPS, ou le supporte, mais sur un
@@ -191,7 +191,7 @@ Cependant, à l'aide du module <code class="module"><a href="../mod/mod_rewrite.
 manipuler des hyperliens relatifs, pour obtenir le même effet.</p>
     <pre class="prettyprint lang-config">RewriteEngine on
 RewriteRule   "^/(.*)_SSL$"   "https://%{SERVER_NAME}/$1" [R,L]
-RewriteRule   "^/(.*)_NOSSL$" "http://%{SERVER_NAME}/$1"  [R,L]</pre>
+RewriteRule   "^/(.*)_NOSSL$" "https://%{SERVER_NAME}/$1"  [R,L]</pre>
 
 
     <p>Ce jeu de règles rewrite vous permet d'utiliser des hyperliens de la
@@ -833,7 +833,7 @@ de 1024 bits ?</a></h3>
 
     <p>Pour générer des paramètres DH personnalisés, utilisez la
     commande <code>openssl dhparam 1024</code>. Vous pouvez aussi
-    utiliser les paramètres DH standards issus de la <a href="http://www.ietf.org/rfc/rfc2409.txt">RFC 2409</a>, section 6.2 :</p>
+    utiliser les paramètres DH standards issus de la <a href="https://www.ietf.org/rfc/rfc2409.txt">RFC 2409</a>, section 6.2 :</p>
     <div class="example"><pre>-----BEGIN DH PARAMETERS-----
 MIGHAoGBAP//////////yQ/aoiFowjTExmKLgNwc0SkCTgiKZ8x0Agu+pjsTmyJR
 Sgh5jjQE3e+VGbPNOkMbMCsKbfJfFDdP4TVtbVHCReSFtXZiXn7G9ExC6aY37WsL
@@ -870,8 +870,8 @@ ici en cas de problème.</p>
     <dl>
     <dt>Vous trouverez des réponses dans la Foire Aux Questions du
     manuel utilisateur (ce document)</dt>
-    <dd><a href="http://httpd.apache.org/docs/trunk/ssl/ssl_faq.html">
-    	http://httpd.apache.org/docs/trunk/ssl/ssl_faq.html</a><br />
+    <dd><a href="https://httpd.apache.org/docs/trunk/ssl/ssl_faq.html">
+    	https://httpd.apache.org/docs/trunk/ssl/ssl_faq.html</a><br />
 	Cherchez tout d'abord dans la foire aux questions
 	(ce document). Si votre question est courante, on a déjà dû y
 	répondre de nombreuses fois, et elle fait probablement partie
@@ -900,8 +900,8 @@ problème avec mod_ssl ?</a></h3>
 
     <li><em>Ecrire un rapport de problème dans la base de données des
     bogues</em><br />
-	<a href="http://httpd.apache.org/bug_report.html">
-	http://httpd.apache.org/bug_report.html</a><br />
+	<a href="https://httpd.apache.org/bug_report.html">
+	https://httpd.apache.org/bug_report.html</a><br />
         C'est la dernière manière de soumettre votre rapport de
 	problème. Vous ne devez utiliser cette solution que si vous
 	avez déjà écrit aux listes de diffusion, et n'avez pas trouvé
@@ -922,7 +922,7 @@ suivantes :</p>
     <code>httpd -v</code>. La version d'OpenSSL peut être déterminée
     en exécutant <code>openssl version</code>. Si Lynx est installé,
     vous pouvez aussi exécuter la commande<code>lynx -mime_header
-    http://localhost/ | grep Server</code> et ainsi obtenir ces
+    https://localhost/ | grep Server</code> et ainsi obtenir ces
     informations en une seule fois.
     </dd>
 
@@ -1011,7 +1011,7 @@ d'obtenir une journalisation des évènements (backtrace) :</p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/ssl/ssl_faq.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/ssl/ssl_faq.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -1026,8 +1026,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/ssl/ssl_faq.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -5,7 +5,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -425,7 +425,7 @@ void ap_process_async_request(request_rec *r)
      *
      * This hook was added to enable serving files out of a URI keyed
      * content cache ( e.g., Mike Abbott's Quick Shortcut Cache,
-     * described here: http://oss.sgi.com/projects/apache/mod_qsc.html )
+     * described here: https://oss.sgi.com/projects/apache/mod_qsc.html )
      *
      * It may have other uses as well, such as routing requests directly to
      * content handlers that have the ability to grok HTTP and do their

@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -24,14 +24,14 @@
 
 <name>mod_dav</name>
 <description>Distributed Authoring and Versioning
-(<a href="http://www.webdav.org/">WebDAV</a>) functionality</description>
+(<a href="https://www.webdav.org/">WebDAV</a>) functionality</description>
 <status>Extension</status>
 <sourcefile>mod_dav.c</sourcefile>
 <identifier>dav_module</identifier>
 
 <summary>
     <p>This module provides class 1 and class 2 <a
-    href="http://www.webdav.org">WebDAV</a> ('Web-based Distributed
+    href="https://www.webdav.org">WebDAV</a> ('Web-based Distributed
     Authoring and Versioning') functionality for Apache. This
     extension to the HTTP protocol allows creating, moving,
     copying, and deleting resources and collections on a remote web
@@ -39,7 +39,7 @@
 </summary>
 <seealso><directive module="mod_dav_fs">DavLockDB</directive></seealso>
 <seealso><directive module="core">LimitXMLRequestBody</directive></seealso>
-<seealso><a href="http://www.webdav.org">WebDAV Resources</a></seealso>
+<seealso><a href="https://www.webdav.org">WebDAV Resources</a></seealso>
 
 <section id="example"><title>Enabling WebDAV</title>
     <p>To enable <module>mod_dav</module>, add the following to a
@@ -159,9 +159,9 @@ Alias "/php-source" "/home/gstein/php_files"
 &lt;/Location&gt;
 </highlight>
 
-    <p>With this setup, <code>http://example.com/phparea</code> can be
+    <p>With this setup, <code>https://example.com/phparea</code> can be
     used to access the output of the PHP scripts, and
-    <code>http://example.com/php-source</code> can be used with a DAV
+    <code>https://example.com/php-source</code> can be used with a DAV
     client to manipulate them.</p>
 </section>
 

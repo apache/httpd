@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -520,8 +520,8 @@
       <dd><p><var>string1</var> と <var>string2</var> を比較します。
       <var>string2</var> が <code>/<var>string</var>/</code>
       という形式であれば、正規表現として比較されます。正規表現は
-      <a href="http://www.pcre.org">PCRE</a> エンジンで実装されていて、
-      <a href="http://www.perl.com">perl 5</a> と同じ構文を使用します。
+      <a href="https://www.pcre.org">PCRE</a> エンジンで実装されていて、
+      <a href="https://www.perl.com">perl 5</a> と同じ構文を使用します。
       <code>==</code> は単に <code>=</code> の別名で、まったく同じ動作を
       します。</p>
 

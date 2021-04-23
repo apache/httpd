@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -17,12 +17,12 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Module Apache mod_ssl</h1>
 <div class="toplang">
@@ -40,7 +40,7 @@ Sockets Layer (SSL) et Transport Layer Security (TLS)</td></tr>
 <p>Ce module fournit le support SSL v3 et TLS v1.x au serveur HTTP
 Apache. SSL v2 n'est plus supporté.</p>
 
-<p>Ce module s'appuie sur <a href="http://www.openssl.org/">OpenSSL</a>
+<p>Ce module s'appuie sur <a href="https://www.openssl.org/">OpenSSL</a>
 pour fournir le moteur de chiffrement.</p>
 
 <p>D'autres détails, discussions et exemples sont fournis dans la <a href="../ssl/">documentation SSL</a>.</p>
@@ -782,7 +782,7 @@ plus de 1024 bits</h3>
 Depuis la version 2.4.7, mod_ssl utilise des
 paramètres DH standardisés avec des nombres premiers de 2048, 3072 et
 4096 bits, et avec des nombres premiers de 6144 et 8192 bits depuis la
-version 2.4.10 (voir <a href="http://www.ietf.org/rfc/rfc3526.txt">RFC
+version 2.4.10 (voir <a href="https://www.ietf.org/rfc/rfc3526.txt">RFC
 3526</a>), et les fournit aux clients en fonction de la longueur de la
 clé du certificat RSA/DSA. En particulier avec les clients basés sur
 Java (versions 7 et antérieures), ceci peut provoquer des erreurs au
@@ -1169,7 +1169,7 @@ SSLEngine on
 &lt;/VirtualHost&gt;</pre>
 </div>
 <p><code class="directive">SSLEngine</code> peut être définie à <code>optional</code>,
-ce qui active le support de <a href="http://www.ietf.org/rfc/rfc2817.txt">RFC
+ce qui active le support de <a href="https://www.ietf.org/rfc/rfc2817.txt">RFC
 2817</a>.
 </p>
 
@@ -1239,7 +1239,7 @@ ou supérieure d'OpenSSL est utilisée</td></tr>
 </table>
 <p>Comme il a été spécifié, toutes les versions des protocoles SSL et
 TLS (jusqu'à la version 1.2 de TLS incluse) étaient vulnérables à une
-attaque de type Man-in-the-Middle (<a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CAN-2009-3555">CVE-2009-3555</a>)
+attaque de type Man-in-the-Middle (<a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CAN-2009-3555">CVE-2009-3555</a>)
 au cours d'une renégociation. Cette vulnérabilité permettait à un
 attaquant de préfixer la requête HTTP (telle qu'elle était vue du
 serveur) avec un texte choisi. Une extension du protocole a été
@@ -1254,7 +1254,7 @@ clients (non patchés), quoique de manière non sécurisée</p>
 
 <div class="warning"><h3>Avertissement à propos de la sécurité</h3>
 <p>Si cette directive est activée, les connexions SSL seront vulnérables
-aux attaques de type préfixe Man-in-the-Middle comme décrit dans <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CAN-2009-3555">CVE-2009-3555</a>.</p>
+aux attaques de type préfixe Man-in-the-Middle comme décrit dans <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CAN-2009-3555">CVE-2009-3555</a>.</p>
 </div>
 
 <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">SSLInsecureRenegotiation on</pre>
@@ -1306,7 +1306,7 @@ soit spécifié dans la configuration ; voir les directives <code class="directi
 
 <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">SSLVerifyClient on
 SSLOCSPEnable on
-SSLOCSPDefaultResponder "http://responder.example.com:8888/responder"
+SSLOCSPDefaultResponder "https://responder.example.com:8888/responder"
 SSLOCSPOverrideResponder on</pre>
 </div>
 
@@ -1469,7 +1469,7 @@ ce dernier beaucoup plus souple.</p>
 utilisée pour <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> (la version minimale 1.0.2 est un
 prérequis). Pour obtenir la liste des commandes supportées, voir la
 section <em>Supported configuration file commands</em> de la page de
-manuel d'OpenSSL <a href="http://www.openssl.org/docs/man1.0.2/ssl/SSL_CONF_cmd.html#SUPPORTED-CONFIGURATION-FILE-COMMANDS">SSL_CONF_cmd(3)</a>.</p>
+manuel d'OpenSSL <a href="https://www.openssl.org/docs/man1.0.2/ssl/SSL_CONF_cmd.html#SUPPORTED-CONFIGURATION-FILE-COMMANDS">SSL_CONF_cmd(3)</a>.</p>
 
 <p>Certaines commandes peuvent remplacer des directives existantes
 (comme <code class="directive"><a href="#sslciphersuite">SSLCipherSuite</a></code> ou
@@ -1773,26 +1773,26 @@ casse) :</p>
     Il s'agit du protocole Secure Sockets Layer (SSL) version 3.0 de
     Netscape Corporation. C'est le successeur de SSLv2 et le
     prédécesseur de TLSv1, mais est considéré comme
-    obsolète dans la <a href="http://www.ietf.org/rfc/rfc7568.txt">RFC
+    obsolète dans la <a href="https://www.ietf.org/rfc/rfc7568.txt">RFC
     7568</a></p></li>
 
 <li><code>TLSv1</code>
     <p>
     Il s'agit du protocole  Transport Layer Security (TLS) version 1.0.
-    C'est le successeur de SSLv3, et il est défini dans la <a href="http://www.ietf.org/rfc/rfc2246.txt">RFC2246</a>.</p></li>
+    C'est le successeur de SSLv3, et il est défini dans la <a href="https://www.ietf.org/rfc/rfc2246.txt">RFC2246</a>.</p></li>
 
 <li><code>TLSv1.1</code> (à partir de la version 1.0.1 d'OpenSSL)
     <p>
-    Une révision du protocole TLS 1.0 définie dans la <a href="http://www.ietf.org/rfc/rfc4346.txt">RFC 4346</a>. Il est
+    Une révision du protocole TLS 1.0 définie dans la <a href="https://www.ietf.org/rfc/rfc4346.txt">RFC 4346</a>. Il est
     supporté par la plupart des clients.</p></li>
 
 <li><code>TLSv1.2</code> (à partir de la version 1.0.1 d'OpenSSL)
     <p>
-    Une révision du protocole TLS 1.1 définie dans la <a href="http://www.ietf.org/rfc/rfc5246.txt">RFC 5246</a>.</p></li>
+    Une révision du protocole TLS 1.1 définie dans la <a href="https://www.ietf.org/rfc/rfc5246.txt">RFC 5246</a>.</p></li>
 
 <li><code>TLSv1.3</code> (avec OpenSSL version 1.1.1 et supérieures)
     <p>
-    Une nouvelle version du protocole TLS définie dans la <a href="http://www.ietf.org/rfc/rfc8446.txt">RFC 8446</a>.</p></li>
+    Une nouvelle version du protocole TLS définie dans la <a href="https://www.ietf.org/rfc/rfc8446.txt">RFC 8446</a>.</p></li>
 
 <li><code>all</code>
     <p>
@@ -2472,7 +2472,7 @@ Les différentes valeurs de <em>source</em> disponibles sont :</p>
 <li><code>egd:/chemin/vers/socket-egd</code> (Unix seulement)
     <p>Cette variante utilise le socket de domaine Unix du Démon
     Générateur d'Entropie externe ou Entropy Gathering Daemon ou EGD
-    (voir <a href="http://www.lothar.com/tech/crypto/">http://www.lothar.com/tech
+    (voir <a href="https://www.lothar.com/tech/crypto/">https://www.lothar.com/tech
     /crypto/</a>) pour déclencher le PRNG. N'utilisez cette variante que
     si votre plate-forme ne possède pas de périphérique random ou
     urandom.</p></li>
@@ -2738,7 +2738,7 @@ supportés :</p>
 <li><code>dc:UNIX:/chemin/vers/socket</code>
 
     <p>Cette valeur utilise les bibliothèques de mise en cache de
-    sessions distribuée sur <a href="http://distcache.sourceforge.net/">distcache</a>.
+    sessions distribuée sur <a href="https://distcache.sourceforge.net/">distcache</a>.
     L'argument doit spécifier le serveur ou mandataire à utiliser en
     utilisant la syntaxe d'adressage distcache ; par exemple,
     <code>UNIX:/chemin/vers/socket</code> spécifie un socket de domaine
@@ -2797,7 +2797,7 @@ d'OpenSSL</td></tr>
 </table>
 <p>Cette directive permet de définir une clé secrète pour le chiffrement
 et le déchiffrement des tickets de session TLS selon les préconisations
-de la <a href="http://www.ietf.org/rfc/rfc5077.txt">RFC 5077</a>. Elle a
+de la <a href="https://www.ietf.org/rfc/rfc5077.txt">RFC 5077</a>. Elle a
 été conçue à l'origine pour les environnements de clusters où les
 données des sessions TLS doivent être partagées entre plusieurs noeuds.
 Pour les configurations ne comportant qu'une seule instance de httpd, il
@@ -3161,7 +3161,7 @@ certificats de serveur comportant des certificats de CA intermédiaires
 dans leur chaîne (c'est un cas typique de nos jours), l'implémentation
 actuelle de l'agrafage OCSP n'atteint que partiellement l'objectif d'
 "économie en questions/réponse et en ressources". Pour plus de détails,
-voir la <a href="http://www.ietf.org/rfc/rfc6961.txt">RFC 6961</a> (TLS
+voir la <a href="https://www.ietf.org/rfc/rfc6961.txt">RFC 6961</a> (TLS
 Multiple Certificate Status Extension).
 </p>
 
@@ -3257,7 +3257,7 @@ certificat de la CA doit être référencé par la directive <code class="direct
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_ssl.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/mod/mod_ssl.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -3272,8 +3272,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_ssl.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

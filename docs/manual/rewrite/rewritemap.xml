@@ -10,7 +10,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -214,7 +214,7 @@ basketball 418<br />
 telephone  328
     </example>
 
-    <p>Thus, when <code>http://example.com/product/television</code> is
+    <p>Thus, when <code>https://example.com/product/television</code> is
     requested, the <directive module="mod_rewrite">RewriteRule</directive> is
     applied, and the request
     is internally mapped to <code>/prods.php?id=993</code>.</p>
@@ -266,8 +266,8 @@ dynamic  www5|www6
     <highlight language="config">
 RewriteMap servers "rnd:/path/to/file/map.txt"
 
-RewriteRule "^/(.*\.(png|gif|jpg))" "http://${servers:static}/$1"  [NC,P,L]
-RewriteRule "^/(.*)"                "http://${servers:dynamic}/$1" [P,L]
+RewriteRule "^/(.*\.(png|gif|jpg))" "https://${servers:static}/$1"  [NC,P,L]
+RewriteRule "^/(.*)"                "https://${servers:dynamic}/$1" [P,L]
     </highlight>
 
     <p>So, when an image is requested and the first of these rules is

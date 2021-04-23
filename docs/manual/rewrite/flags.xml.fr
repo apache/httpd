@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -500,7 +500,7 @@ transmise par Apache à votre serveur d'images dédié. La correspondance est
 insensible à la casse, si bien que par exemple, <code>.jpg</code> aussi
 bien que <code>.JPG</code> seront acceptés.</p>
 
-<highlight language="config">RewriteRule "(.*\.(jpg|gif|png))$" "http://images.example.com$1" [P,NC]</highlight>
+<highlight language="config">RewriteRule "(.*\.(jpg|gif|png))$" "https://images.example.com$1" [P,NC]</highlight>
 </section>
 
 <section id="flag_ne"><title>NE|noescape</title>
@@ -554,7 +554,7 @@ mandataire. Par exemple, si vous voulez que toutes les requêtes d'images
 soient traitées par un serveur d'images annexe, vous pouvez utiliser
 une règle de ce style :</p>
 
-<highlight language="config">RewriteRule "/(.*)\.(jpg|gif|png)$" "http://images.example.com/$1.$2" [P]</highlight>
+<highlight language="config">RewriteRule "/(.*)\.(jpg|gif|png)$" "https://images.example.com/$1.$2" [P]</highlight>
 
 <p>L'utilisation du drapeau [P] provoque aussi l'effet du drapeau [L] -
 autrement dit, la requête est immédiatement envoyée au mandataire, et
@@ -562,7 +562,7 @@ toute règle ultérieure sera ignorée.</p>
 
 <p>
 Vous devez vous assurer que la chaîne de substitution soit un URI valide
-(commençant typiquement par <code>http://</code><em>nom-serveur</em>)
+(commençant typiquement par <code>https://</code><em>nom-serveur</em>)
 qui puisse être traitée par le module <module>mod_proxy</module>. Dans
 le cas contraire, le module mandataire vous renverra une erreur.
 L'utilisation de ce drapeau implémente de manière plus puissante la
@@ -712,7 +712,7 @@ Apache.</p>
 <p>
 L'utilisation du drapeau [R] provoque l'envoi d'une redirection au
 navigateur. Si une URL pleinement qualifiée (FQDN - fully qualified domain name)
- est spécifiée (c'est à dire incluant <code>http://nom-du-serveur/</code>),
+ est spécifiée (c'est à dire incluant <code>https://nom-du-serveur/</code>),
  une redirection sera effectuée vers cette adresse. Dans le cas contraire,
  le protocole courant, le nom du serveur et le numéro de port seront
  utilisés pour générer l'URL envoyée avec la redirection.
@@ -735,7 +735,7 @@ codes de redirection en utilisant leurs noms symboliques :
 <p>
 Vous utiliserez presque toujours [R] en conjonction avec [L] (c'est à
 dire [R,L]), car employé seul, le drapeau [R] préfixe l'URI avec
-<code>http://cet-hôte[:ce-port]</code>, mais passe ensuite cette adresse
+<code>https://cet-hôte[:ce-port]</code>, mais passe ensuite cette adresse
 à la règle suivante, ce qui provoquera le plus souvent des
 avertissements 'Invalid URI in request'.
 </p>

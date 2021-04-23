@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -17,12 +17,12 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
 <p class="apache">Apache HTTP サーバ バージョン 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.5</a> &gt; <a href="./">モジュール</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="https://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.5</a> &gt; <a href="./">モジュール</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache モジュール mod_ident</h1>
 <div class="toplang">
@@ -37,7 +37,7 @@
 <tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_ident.c</td></tr></table>
 <h3>概要</h3>
 
-    <p>このモジュールはリモートホストの <a href="http://www.ietf.org/rfc/rfc1413.txt">RFC 1413</a> 互換デーモン
+    <p>このモジュールはリモートホストの <a href="https://www.ietf.org/rfc/rfc1413.txt">RFC 1413</a> 互換デーモン
     にコネクションの所有者を訊きます。</p>
 </div>
 <div id="quickview"><h3 class="directives">ディレクティブ</h3>
@@ -63,7 +63,7 @@
 </table>
     <p>このディレクティブは、クライアントマシン上で
     identd やそれに類似したデーモンが動作しているときに、
-    それぞれの接続に対して <a href="http://www.ietf.org/rfc/rfc1413.txt">RFC 1413</a> に準処したリモートユーザの
+    それぞれの接続に対して <a href="https://www.ietf.org/rfc/rfc1413.txt">RFC 1413</a> に準処したリモートユーザの
     名前のロギングを行なうようにします。
     この情報は、<code>%...l</code> <a href="mod_log_config.html#formats">フォーマット文字列</a>を使ってアクセスログに収集されます。</p>
 
@@ -91,7 +91,7 @@
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_ident</td></tr>
 </table>
     <p>このディレクティブは ident リクエストのタイムアウト時間を決めます。
-    デフォルトの値である 30 秒は、主にネットワーク遅延の考慮のために <a href="http://www.ietf.org/rfc/rfc1413.txt">RFC 1413</a> により
+    デフォルトの値である 30 秒は、主にネットワーク遅延の考慮のために <a href="https://www.ietf.org/rfc/rfc1413.txt">RFC 1413</a> により
     推奨されています。しかし、おそらくローカルネットワークの速度に
     合わせてタイムアウト値を調節するのがよいでしょう。</p>
 
@@ -105,7 +105,7 @@
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">コメント</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_ident.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/mod/mod_ident.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -120,8 +120,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_ident.html
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />この文書は <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
-<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

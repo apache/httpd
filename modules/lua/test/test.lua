@@ -7,7 +7,7 @@
 -- (the "License"); you may not use this file except in compliance with
 -- the License.  You may obtain a copy of the License at
 --
--- http://www.apache.org/licenses/LICENSE-2.0
+-- https://www.apache.org/licenses/LICENSE-2.0
 --
 -- Unless required by applicable law or agreed to in writing, software
 -- distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,7 +18,7 @@
 local mu = require "moonunit" 
 local http = require "helpers"
 
-http.base_url = "http://localhost:8008"
+http.base_url = "https://localhost:8008"
 
 local test = mu.TestCase:new{}
 

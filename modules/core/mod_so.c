@@ -5,7 +5,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -67,7 +67,7 @@
  * file under CFLAGS_SHLIB, LDFLAGS_SHLIB and LDFLAGS_SHLIB_EXPORT.
  *
  * If you still have problems figuring out the flags both try the paper
- *     http://developer.netscape.com/library/documentation/enterprise
+ *     https://developer.netscape.com/library/documentation/enterprise
  *                                          /unix/svrplug.htm#1013807
  * or install a Perl 5 interpreter on your platform and then run the command
  *

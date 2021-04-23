@@ -5,7 +5,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -1863,7 +1863,7 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
 }
 
 /*
- * This handles http:// URLs, and other URLs using a remote proxy over http
+ * This handles https:// URLs, and other URLs using a remote proxy over http
  * If proxyhost is NULL, then contact the server directly, otherwise
  * go via the proxy.
  * Note that if a proxy is used, then URLs other than http: can be accessed,

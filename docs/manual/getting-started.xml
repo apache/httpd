@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -58,7 +58,7 @@ code and, optionally, a response body.
 The status code indicates whether the request was successful, and, if not, what
 kind of error condition there was. This tells the client what it should
 do with the response. You can read about the possible response codes in
-<a href="http://wiki.apache.org/httpd/CommonHTTPStatusCodes">HTTP Server
+<a href="https://wiki.apache.org/httpd/CommonHTTPStatusCodes">HTTP Server
 wiki</a>.</p>
 
 <p>Details of the transaction, and any error conditions, are written to
@@ -98,9 +98,9 @@ testing purposes. This entry would look like:</p>
 <code>C:\Windows\system32\drivers\etc\hosts</code>.</p>
 
 <p>You can read more about the hosts file at <a
-href="http://en.wikipedia.org/wiki/Hosts_(file)">Wikipedia.org/wiki/Hosts_(file)</a>, and
+href="https://en.wikipedia.org/wiki/Hosts_(file)">Wikipedia.org/wiki/Hosts_(file)</a>, and
 more about DNS at <a
-href="http://en.wikipedia.org/wiki/Domain_Name_System">Wikipedia.org/wiki/Domain_Name_System</a>.</p>
+href="https://en.wikipedia.org/wiki/Domain_Name_System">Wikipedia.org/wiki/Domain_Name_System</a>.</p>
 </section>
 
 <section id="configuration">
@@ -109,7 +109,7 @@ href="http://en.wikipedia.org/wiki/Domain_Name_System">Wikipedia.org/wiki/Domain
 <p>The Apache HTTP Server is configured via simple text files.
 These files may be located any of a variety of places, depending on how
 exactly you installed the server. Common locations for these files may
-be found <a href="http://wiki.apache.org/httpd/DistrosDefaultLayout">in
+be found <a href="https://wiki.apache.org/httpd/DistrosDefaultLayout">in
 the httpd wiki</a>. If you installed httpd from source, the default
 location of the configuration files is
 <code>/usr/local/apache2/conf</code>. The default configuration file is
@@ -167,7 +167,7 @@ determine how this is set for your server.</p>
 when a directory is requested without a file name being specified. For
 example, if <code>DocumentRoot</code> is set to
 <code>/var/www/html</code> and a request is made for
-<code>http://www.example.com/work/</code>, the file
+<code>https://www.example.com/work/</code>, the file
 <code>/var/www/html/work/index.html</code> will be served to the
 client.</p>
 
@@ -218,11 +218,11 @@ started, but there are many other things that you might need to
 know.</p>
 
 <ul>
-<li><a href="http://httpd.apache.org/download.cgi">Download</a></li>
+<li><a href="https://httpd.apache.org/download.cgi">Download</a></li>
 <li><a href="install.html">Install</a></li>
 <li><a href="configuring.html">Configure</a></li>
 <li><a href="invoking.html">Start</a></li>
-<li><a href="http://wiki.apache.org/httpd/FAQ">Frequently Asked Questions</a></li>
+<li><a href="https://wiki.apache.org/httpd/FAQ">Frequently Asked Questions</a></li>
 </ul>
 
 </section>

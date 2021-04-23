@@ -5,7 +5,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -153,7 +153,7 @@ typedef struct {
     apr_array_header_t *aliases;
     apr_array_header_t *noproxies;
     apr_array_header_t *dirconn;
-    apr_array_header_t *workers;    /* non-balancer workers, eg ProxyPass http://example.com */
+    apr_array_header_t *workers;    /* non-balancer workers, eg ProxyPass https://example.com */
     apr_array_header_t *balancers;  /* list of balancers @ config time */
     proxy_worker       *forward;    /* forward proxy worker */
     proxy_worker       *reverse;    /* reverse "module-driven" proxy worker */
@@ -217,7 +217,7 @@ typedef struct {
  * more than one <Location>, because the server_conf can't see it.
  * We need to move them to the per-dir config.
  * Discussed in February 2005:
- * http://marc.theaimsgroup.com/?l=apache-httpd-dev&m=110726027118798&w=2
+ * https://marc.theaimsgroup.com/?l=apache-httpd-dev&m=110726027118798&w=2
  */
     apr_array_header_t *raliases;
     apr_array_header_t* cookie_paths;
@@ -965,7 +965,7 @@ PROXY_DECLARE(proxy_balancer_shared *) ap_proxy_find_balancershm(ap_slotmem_prov
  * @param url      request url that balancer can rewrite.
  * @return         OK or  HTTP_XXX error
  * @note It calls balancer pre_request hook if the url starts with balancer://
- * The balancer then rewrites the url to particular worker, like http://host:port
+ * The balancer then rewrites the url to particular worker, like https://host:port
  */
 PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
                                         proxy_balancer **balancer,

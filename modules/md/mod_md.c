@@ -5,7 +5,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -993,10 +993,7 @@ static apr_status_t md_post_config_after_ssl(apr_pool_t *p, apr_pool_t *plog,
         ap_log_error( APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(10075) "no mds to supervise");
     }
 
-    if (!mc->ocsp || md_ocsp_count(mc->ocsp) == 0) {
-        ap_log_error( APLOG_MARK, APLOG_TRACE1, 0, s, "no ocsp to manage");
-        goto leave;
-    }
+    if (!mc->ocsp || md_ocsp_count(mc->ocsp) == 0) goto leave;
 
     md_http_use_implementation(md_curl_get_impl(p));
     rv = md_ocsp_start_watching(mc, s, p);
@@ -1466,7 +1463,6 @@ static void md_child_init(apr_pool_t *pool, server_rec *s)
 static void md_hooks(apr_pool_t *pool)
 {
     static const char *const mod_ssl[] = { "mod_ssl.c", "mod_tls.c", NULL};
-    static const char *const mod_wd[] = { "mod_watchdog.c", NULL};
 
     /* Leave the ssl initialization to mod_ssl or friends. */
     md_acme_init(pool, AP_SERVER_BASEVERSION, 0);
@@ -1477,7 +1473,7 @@ static void md_hooks(apr_pool_t *pool)
      * Run again after mod_ssl is done.
      */
     ap_hook_post_config(md_post_config_before_ssl, NULL, mod_ssl, APR_HOOK_MIDDLE);
-    ap_hook_post_config(md_post_config_after_ssl, mod_ssl, mod_wd, APR_HOOK_LAST);
+    ap_hook_post_config(md_post_config_after_ssl, mod_ssl, NULL, APR_HOOK_LAST);
 
     /* Run once after a child process has been created.
      */
@@ -1501,7 +1497,7 @@ static void md_hooks(apr_pool_t *pool)
     ap_hook_ssl_add_cert_files(md_add_cert_files, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_ssl_add_fallback_cert_files(md_add_fallback_cert_files, NULL, NULL, APR_HOOK_MIDDLE);
 
-#if AP_MODULE_MAGIC_AT_LEAST(20210420, 0)
+#if AP_MODULE_MAGIC_AT_LEAST(20201214, 4)
     ap_hook_ssl_ocsp_prime_hook(md_ocsp_prime_status, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_ssl_ocsp_get_resp_hook(md_ocsp_provide_status, NULL, NULL, APR_HOOK_MIDDLE);
 #else

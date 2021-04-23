@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -39,7 +39,7 @@
     is crucial to keep aware of updates to the software.  If you have
     obtained your version of the HTTP Server directly from Apache, we
     highly recommend you subscribe to the <a
-    href="http://httpd.apache.org/lists.html#http-announce">Apache
+    href="https://httpd.apache.org/lists.html#http-announce">Apache
     HTTP Server Announcements List</a> where you can keep informed of
     new releases and security updates.  Similar services are available
     from most third-party distributors of Apache software.</p>
@@ -246,7 +246,7 @@
     <a href="../suexec.html">suEXEC</a> which is included with Apache as of
     1.2 and is called from special hooks in the Apache server code. Another
     popular way of doing this is with
-    <a href="http://cgiwrap.sourceforge.net/">CGIWrap</a>.</p>
+    <a href="https://cgiwrap.sourceforge.net/">CGIWrap</a>.</p>
 
   </section>
 
@@ -303,13 +303,13 @@
   <code>mod_perl</code> or <code>mod_python</code>, many security considerations
   get out of the scope of <code>httpd</code> itself, and you need to consult
   documentation from those modules. For example, PHP lets you setup <a
-  href="http://www.php.net/manual/en/ini.sect.safe-mode.php">Safe Mode</a>,
+  href="https://www.php.net/manual/en/ini.sect.safe-mode.php">Safe Mode</a>,
   which is most usually disabled by default. Another example is <a
-  href="http://www.hardened-php.net/suhosin/">Suhosin</a>, a PHP addon for more
+  href="https://www.hardened-php.net/suhosin/">Suhosin</a>, a PHP addon for more
   security. For more information about those, consult each project
   documentation.</p>
 
-  <p>At the Apache level, a module named <a href="http://modsecurity.org/">mod_security</a>
+  <p>At the Apache level, a module named <a href="https://modsecurity.org/">mod_security</a>
   can be seen as a HTTP firewall and, provided you configure it finely enough,
   can help you enhance your dynamic content security.</p>
 
@@ -351,7 +351,7 @@
 
     <example>
       # cd /; ln -s / public_html <br />
-      Accessing <code>http://localhost/~root/</code>
+      Accessing <code>https://localhost/~root/</code>
     </example>
 
     <p>This would allow clients to walk through the entire filesystem. To
@@ -414,7 +414,7 @@ UserDir disabled root
     </example>
 
     <p>The first example will list the number of attacks trying to exploit the
-    <a href="http://online.securityfocus.com/bid/4876/info/">Apache Tomcat
+    <a href="https://online.securityfocus.com/bid/4876/info/">Apache Tomcat
     Source.JSP Malformed Request Information Disclosure Vulnerability</a>,
     the second example will list the ten last denied clients, for example:</p>
 

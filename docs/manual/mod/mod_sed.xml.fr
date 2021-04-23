@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -37,7 +37,7 @@
 filtre <module>mod_sed</module> fournit les commandes d'édition de
 <code>sed</code> implémentées par le programme <code>sed</code> de
 Solaris 10 comme décrit dans la <a
-href="http://www.gnu.org/software/sed/manual/sed.txt">page de
+href="https://www.gnu.org/software/sed/manual/sed.txt">page de
 manuel</a>. Cependant, à la différence de <code>sed</code>,
 <module>mod_sed</module> ne reçoit pas de données sur son entrée
 standard. Au lieu de cela, le filtre agit sur les données échangées
@@ -97,7 +97,7 @@ données, ce qui reste est traité comme la dernière ligne.
 <section id="sed_commands"><title>Commandes sed</title>
     <p>
     Vous trouverez tous les détails à propos de la commande
-    <code>sed</code> dans sa <a href="http://www.gnu.org/software/sed/manual/sed.txt">page
+    <code>sed</code> dans sa <a href="https://www.gnu.org/software/sed/manual/sed.txt">page
     de manuel</a>.
     </p>
     <dl>

@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -85,7 +85,7 @@
     <dd>Un jeu de bibliothèques qui fournit la plupart des interfaces de base
       entre le serveur et le système d'exploitation.  APR est développé
       parallèlement au serveur HTTP Apache comme projet indépendant.<br />
-      Voir : <a href="http://apr.apache.org/">Apache Portable Runtime
+      Voir : <a href="https://apr.apache.org/">Apache Portable Runtime
       Project</a>
     </dd>
 
@@ -254,10 +254,10 @@
       qu'alias de $0 dans certains cas, mais ceci n'est plus possible
       depuis la version 2.3.6. Apache utilise les Expressions
       Rationnelles Compatibles avec Perl fournies par la librairie <a
-      href="http://www.pcre.org/">PCRE</a>. Vous trouverez plus
+      href="https://www.pcre.org/">PCRE</a>. Vous trouverez plus
       d'information à propos de la syntaxe des expressions rationnelles
       PCRE sur ce site, ou dans le <a
-      href="http://en.wikipedia.org/wiki/PCRE">Wikipedia de la PCRE</a>.
+      href="https://en.wikipedia.org/wiki/PCRE">Wikipedia de la PCRE</a>.
   </dd>
 
     <dt><a name="configurationfile" id="configurationfile">
@@ -344,7 +344,7 @@
     <a name="URI" id="URI">(URI)</a></dt>
   <dd>Une chaîne de caractères compacte servant à identifier une ressource
   abstraite ou physique.  Elle est formellement définie par la <a
-      href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>.  Les URIs
+      href="https://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>.  Les URIs
       utilisées sur le world-wide web sont souvent appelées <glossary
       ref="url">URLs</glossary>.
   </dd>
@@ -369,7 +369,7 @@
     Cette fonctionnalité a été ajoutée
     à SSL lorsque sont apparues les extensions TLS, RFC 3546.<br />
       Voir <a href="ssl/ssl_faq.html">la FAQ SSL</a>
-      et <a href="http://www.ietf.org/rfc/rfc3546.txt">la RFC 3546</a>
+      et <a href="https://www.ietf.org/rfc/rfc3546.txt">la RFC 3546</a>
     </dd>
 
 
@@ -380,7 +380,7 @@ Interface commune avec les programmes externes
 	 <a name="cgi" id="cgi">(CGI)</a></dt>
     <dd>La définition standard d'une interface entre un serveur web et un
     programme externe pour permettre à ce dernier de traiter des requêtes.
-     Il existe une <a href="http://www.ietf.org/rfc/rfc3875">RFC
+     Il existe une <a href="https://www.ietf.org/rfc/rfc3875">RFC
      informationnelle</a> qui en couvre les spécificités.<br />
       Voir : <a href="howto/cgi.html">Contenu dynamique avec CGI</a>
     </dd>
@@ -399,7 +399,7 @@ Localisation de Ressource Uniformisée
     <code>http</code> ou
     <code>https</code>, un nom d'hôte, et un chemin.  Une URL pour cette page
     pourrait être
-    <code>http://httpd.apache.org/docs/&httpd.docs;/glossary.html</code>.
+    <code>https://httpd.apache.org/docs/&httpd.docs;/glossary.html</code>.
   </dd>
 
 
@@ -491,7 +491,7 @@ Localisation de Ressource Uniformisée
 
 <dt><a name="openssl" id="openssl">OpenSSL</a></dt>
     <dd>L'ensemble d'outils Open Source pour SSL/TLS<br />
-      Voir <a href="http://www.openssl.org/">http://www.openssl.org/</a>#
+      Voir <a href="https://www.openssl.org/">https://www.openssl.org/</a>#
     </dd>
 
 <dt><a name="apacheextensiontool" id="apacheextensiontool">
@@ -518,7 +518,7 @@ Localisation de Ressource Uniformisée
     <dd>Le protocole de transmission standard utilisé sur le World Wide Web.
     Apache implémente la version 1.1 du protocole, référencée comme HTTP/1.1 et
       définie par la
-      <a href="http://ietf.org/rfc/rfc2616.txt">RFC 2616</a>.
+      <a href="https://ietf.org/rfc/rfc2616.txt">RFC 2616</a>.
     </dd>
 
     <dt><a name="messagedigest" id="messagedigest">Résumé de message

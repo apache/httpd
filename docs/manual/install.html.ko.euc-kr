@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
 <meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>ÄÄÆÄÀÏ°ú ¼³Ä¡ - Apache HTTP Server Version 2.5</title>
+<title>ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½Ä¡ - Apache HTTP Server Version 2.5</title>
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
@@ -16,14 +16,14 @@
 
 <link href="./images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">¸ðµâ</a> | <a href="./mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">¿ë¾î</a> | <a href="./sitemap.html">»çÀÌÆ®¸Ê</a></p>
+<p class="menu"><a href="./mod/">ï¿½ï¿½ï¿½</a> | <a href="./mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">ï¿½ï¿½ï¿½</a> | <a href="./sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="./images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>ÄÄÆÄÀÏ°ú ¼³Ä¡</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½Ä¡</h1>
 <div class="toplang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="./de/install.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="./de/install.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/install.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/install.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
 <a href="./fr/install.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
@@ -31,223 +31,223 @@
 <a href="./ko/install.html" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/install.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">ÀÌ ¹®¼­´Â ÃÖ½ÅÆÇ ¹ø¿ªÀÌ ¾Æ´Õ´Ï´Ù.
-            ÃÖ±Ù¿¡ º¯°æµÈ ³»¿ëÀº ¿µ¾î ¹®¼­¸¦ Âü°íÇÏ¼¼¿ä.</div>
+<div class="outofdate">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Õ´Ï´ï¿½.
+            ï¿½Ö±Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.</div>
 
 
-    <p>ÀÌ ¹®¼­´Â À¯´Ð½º¿Í À¯´Ð½º·ù ½Ã½ºÅÛ¿¡¼­ ¾ÆÆÄÄ¡¸¦ ÄÄÆÄÀÏÇÏ°í
-    ¼³Ä¡ÇÏ´Â °Í¸¸À» ´Ù·é´Ù. À©µµ¿ìÁî¿¡¼­ ÄÄÆÄÀÏÇÏ°í ¼³Ä¡ÇÏ´Â ¹æ¹ýÀº
-    <a href="platform/windows.html">¸¶ÀÌÅ©·Î¼ÒÇÁÆ® À©µµ¿ìÁî¿¡¼­
-    ¾ÆÆÄÄ¡ »ç¿ë</a>À» Âü°íÇÏ¶ó. ´Ù¸¥ ÇÃ·¡Æû¿¡ ´ëÇØ¼­´Â <a href="platform/">ÇÃ·¡Æû</a> ¹®¼­¸¦ Âü°íÇÏ¶ó.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ð½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ð½ï¿½ï¿½ï¿½ ï¿½Ã½ï¿½ï¿½Û¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½
+    ï¿½ï¿½Ä¡ï¿½Ï´ï¿½ ï¿½Í¸ï¿½ï¿½ï¿½ ï¿½Ù·ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½î¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½Ä¡ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+    <a href="platform/windows.html">ï¿½ï¿½ï¿½ï¿½Å©ï¿½Î¼ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½î¿¡ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½</a>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½. ï¿½Ù¸ï¿½ ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ø¼ï¿½ï¿½ï¿½ <a href="platform/">ï¿½Ã·ï¿½ï¿½ï¿½</a> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.</p>
 
-    <p>¾ÆÆÄÄ¡ 2.0ÀÇ ±¸¼º°ú ¼³Ä¡ È¯°æÀº 1.3°ú ¸Å¿ì ´Ù¸£´Ù.
-    ¾ÆÆÄÄ¡ 1.3Àº ½¬¿î ¼³Ä¡¸¦ À§ÇØ ÀÚÃ¼ ½ºÅ©¸³Æ®¸¦ »ç¿ëÇß´Ù.
-    ¾ÆÆÄÄ¡ 2.0Àº ÀÌÁ¦ ´Ù¸¥ ¿©·¯ ¿ÀÇÂ¼Ò½º ÇÁ·ÎÁ§Æ®¿Í ºñ½ÁÇÑ È¯°æÀ»
-    ¸¸µé±âÀ§ÇØ <code>libtool</code>°ú <code>autoconf</code>¸¦
-    »ç¿ëÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½Ä¡ 2.0ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ È¯ï¿½ï¿½ï¿½ï¿½ 1.3ï¿½ï¿½ ï¿½Å¿ï¿½ ï¿½Ù¸ï¿½ï¿½ï¿½.
+    ï¿½ï¿½ï¿½ï¿½Ä¡ 1.3ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ß´ï¿½.
+    ï¿½ï¿½ï¿½ï¿½Ä¡ 2.0ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â¼Ò½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ È¯ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>libtool</code>ï¿½ï¿½ <code>autoconf</code>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <p>¸¸¾à ÀÛÀº ¹öÀüÀ» ÇÑ´Ü°è ¾÷±×·¹ÀÌµåÇÑ´Ù¸é (¿¹¸¦ µé¾î,
-    2.0.50¿¡¼­ 2.0.51), <a href="#upgrading">¾÷±×·¹ÀÌµå</a>
-    ÀåÀ¸·Î ¹Ù·Î °¡±æ ¹Ù¶õ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´Ü°ï¿½ ï¿½ï¿½ï¿½×·ï¿½ï¿½Ìµï¿½ï¿½Ñ´Ù¸ï¿½ (ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½,
+    2.0.50ï¿½ï¿½ï¿½ï¿½ 2.0.51), <a href="#upgrading">ï¿½ï¿½ï¿½×·ï¿½ï¿½Ìµï¿½</a>
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù·ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¶ï¿½ï¿½ï¿½.</p>
 
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">¼º¹Ì ±ÞÇÑ »ç¶÷À» À§ÇÑ °³¿ä</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#requirements">¿ä±¸»çÇ×</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#download">´Ù¿î·Îµå</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#extract">¾ÐÃà Ç®±â</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#configure">¼Ò½º Æ®¸® ±¸¼ºÇÏ±â</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#compile">ÄÄÆÄÀÏ</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#install">¼³Ä¡</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#customize">¼³Á¤</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#test">°Ë»ç</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#upgrading">¾÷±×·¹ÀÌµå</a></li>
-</ul><h3>Âü°í</h3><ul class="seealso"><li><a href="programs/configure.html">¼Ò½º Æ®¸® ±¸¼º</a></li><li><a href="invoking.html">¾ÆÆÄÄ¡ ½ÃÀÛ</a></li><li><a href="stopping.html">¾ÆÆÄÄ¡ Áß´Ü°ú Àç½ÃÀÛ</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#requirements">ï¿½ä±¸ï¿½ï¿½ï¿½ï¿½</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#download">ï¿½Ù¿ï¿½Îµï¿½</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#extract">ï¿½ï¿½ï¿½ï¿½ Ç®ï¿½ï¿½</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#configure">ï¿½Ò½ï¿½ Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#compile">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#install">ï¿½ï¿½Ä¡</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#customize">ï¿½ï¿½ï¿½ï¿½</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#test">ï¿½Ë»ï¿½</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#upgrading">ï¿½ï¿½ï¿½×·ï¿½ï¿½Ìµï¿½</a></li>
+</ul><h3>ï¿½ï¿½ï¿½ï¿½</h3><ul class="seealso"><li><a href="programs/configure.html">ï¿½Ò½ï¿½ Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a></li><li><a href="invoking.html">ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½</a></li><li><a href="stopping.html">ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ß´Ü°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="overview" id="overview">¼º¹Ì ±ÞÇÑ »ç¶÷À» À§ÇÑ °³¿ä</a> <a title="Permanent link" href="#overview" class="permalink">&para;</a></h2>
+<h2><a name="overview" id="overview">ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a> <a title="Permanent link" href="#overview" class="permalink">&para;</a></h2>
 
     <table>
       
       <tr>
-        <td><a href="#download">´Ù¿î·Îµå</a></td>
+        <td><a href="#download">ï¿½Ù¿ï¿½Îµï¿½</a></td>
 
-        <td><code>$ lynx http://httpd.apache.org/download.cgi</code>
+        <td><code>$ lynx https://httpd.apache.org/download.cgi</code>
         </td>
       </tr>
 
       <tr>
-        <td><a href="#extract">¾ÐÃà Ç®±â</a></td>
+        <td><a href="#extract">ï¿½ï¿½ï¿½ï¿½ Ç®ï¿½ï¿½</a></td>
 
         <td><code>$ gzip -d httpd-2_1_<em>NN</em>.tar.gz<br />
          $ tar xvf httpd-2_1_<em>NN</em>.tar</code> </td>
       </tr>
 
       <tr>
-        <td><a href="#configure">±¸¼º</a></td>
+        <td><a href="#configure">ï¿½ï¿½ï¿½ï¿½</a></td>
 
         <td><code>$ ./configure --prefix=<em>PREFIX</em></code>
         </td>
       </tr>
 
       <tr>
-        <td><a href="#compile">ÄÄÆÄÀÏ</a></td>
+        <td><a href="#compile">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</a></td>
 
         <td><code>$ make</code> </td>
       </tr>
 
       <tr>
-        <td><a href="#install">¼³Ä¡</a></td>
+        <td><a href="#install">ï¿½ï¿½Ä¡</a></td>
 
         <td><code>$ make install</code> </td>
       </tr>
 
       <tr>
-        <td><a href="#customize">¼³Á¤</a></td>
+        <td><a href="#customize">ï¿½ï¿½ï¿½ï¿½</a></td>
 
         <td><code>$ vi <em>PREFIX</em>/conf/httpd.conf</code> </td>
       </tr>
 
       <tr>
-        <td><a href="#test">°Ë»ç</a></td>
+        <td><a href="#test">ï¿½Ë»ï¿½</a></td>
 
         <td><code>$ <em>PREFIX</em>/bin/apachectl start</code>
         </td>
       </tr>
     </table>
 
-    <p><em>NN</em>Àº ÇöÀç ÀÛÀº ¹öÀü ¼ýÀÚ·Î, <em>PREFIX</em>´Â
-    ¼­¹ö°¡ ¼³Ä¡µÉ ÆÄÀÏ½Ã½ºÅÛ °æ·Î·Î ´ëÃ¼ÇØ¾ß ÇÑ´Ù. <em>PREFIX</em>¸¦
-    ÁöÁ¤ÇÏÁö ¾ÊÀ¸¸é ±âº»°ªÀ¸·Î <code>/usr/local/apache2</code>¸¦
-    »ç¿ëÇÑ´Ù.</p>
+    <p><em>NN</em>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ú·ï¿½, <em>PREFIX</em>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½ï¿½ ï¿½ï¿½Î·ï¿½ ï¿½ï¿½Ã¼ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½. <em>PREFIX</em>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>/usr/local/apache2</code>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <p>¾Æ·¡´Â ¾ÆÆÄÄ¡ À¥¼­¹ö¸¦ ÄÄÆÄÀÏÇÏ°í ¼³Ä¡ÇÏ±âÀ§ÇÑ ¿ä±¸»çÇ×ºÎÅÍ
-    ÄÄÆÄÀÏ°ú ¼³Ä¡ °úÁ¤À» °¢°¢ ÀÚ¼¼È÷ ¼³¸íÇÑ´Ù.</p>
+    <p>ï¿½Æ·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½Ä¡ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ä±¸ï¿½ï¿½ï¿½×ºï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ú¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="requirements" id="requirements">¿ä±¸»çÇ×</a> <a title="Permanent link" href="#requirements" class="permalink">&para;</a></h2>
+<h2><a name="requirements" id="requirements">ï¿½ä±¸ï¿½ï¿½ï¿½ï¿½</a> <a title="Permanent link" href="#requirements" class="permalink">&para;</a></h2>
 
-    <p>¾ÆÆÄÄ¡¸¦ ÄÄÆÄÀÏÇÏ±âÀ§ÇØ ´ÙÀ½°ú °°Àº °ÍµéÀÌ ÇÊ¿äÇÏ´Ù:</p>
+    <p>ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Íµï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Ï´ï¿½:</p>
 
     <dl>
-      <dt>µð½ºÅ© °ø°£</dt>
-      <dd>µð½ºÅ© ¿©À¯°ø°£ÀÌ ÃÖ¼Ò 50 MB ÀÌ»óÀÎÁö È®ÀÎÇÏ¶ó.
-      ¼³Ä¡ÈÄ ¾ÆÆÄÄ¡´Â ¾à 10 MBÀÇ µð½ºÅ© °ø°£À» Â÷ÁöÇÑ´Ù.
-      ½ÇÁ¦ ÇÊ¿äÇÑ µð½ºÅ© °ø°£Àº ¼±ÅÃÇÑ ±¸¼º ¿É¼Ç°ú Ãß°¡ ¸ðµâ¿¡
-      µû¶ó »ó´çÈ÷ Â÷ÀÌ°¡ ³­´Ù.</dd>
+      <dt>ï¿½ï¿½Å© ï¿½ï¿½ï¿½ï¿½</dt>
+      <dd>ï¿½ï¿½Å© ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½ 50 MB ï¿½Ì»ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ï¶ï¿½.
+      ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ 10 MBï¿½ï¿½ ï¿½ï¿½Å© ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+      ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½Å© ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½É¼Ç°ï¿½ ï¿½ß°ï¿½ ï¿½ï¿½â¿¡
+      ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì°ï¿½ ï¿½ï¿½ï¿½ï¿½.</dd>
 
-      <dt>ANSI-C ÄÄÆÄÀÏ·¯¿Í ÄÄÆÄÀÏ ½Ã½ºÅÛ</dt>
-      <dd>ANSI-C ÄÄÆÄÀÏ·¯°¡ ¼³Ä¡µÇÀÖ´ÂÁö È®ÀÎÇÏ¶ó. <a href="http://www.gnu.org/">Free Software Foundation (FSF)</a>ÀÇ
-      <a href="http://www.gnu.org/software/gcc/gcc.html">GNU C
-      compiler (GCC)</a>¸¦ ÃßÃµÇÑ´Ù. (¹öÀü 2.7.2¸é µÈ´Ù.) GCC°¡
-      ¾ø´Ù¸é ÃÖ¼ÒÇÑ »ç¿ëÇÏ´Â ÄÄÆÄÀÏ·¯°¡ ANSI È£È¯ÀÎÁö È®ÀÎÇÏ¶ó.
-      Ãß°¡·Î <code>PATH</code> È¯°æº¯¼ö´Â <code>make</code>¿Í
-      °°Àº ±âº»ÀûÀÎ ÄÄÆÄÀÏ µµ±¸¸¦ Æ÷ÇÔÇØ¾ß ÇÑ´Ù.</dd>
+      <dt>ANSI-C ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã½ï¿½ï¿½ï¿½</dt>
+      <dd>ANSI-C ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ï¶ï¿½. <a href="https://www.gnu.org/">Free Software Foundation (FSF)</a>ï¿½ï¿½
+      <a href="https://www.gnu.org/software/gcc/gcc.html">GNU C
+      compiler (GCC)</a>ï¿½ï¿½ ï¿½ï¿½Ãµï¿½Ñ´ï¿½. (ï¿½ï¿½ï¿½ï¿½ 2.7.2ï¿½ï¿½ ï¿½È´ï¿½.) GCCï¿½ï¿½
+      ï¿½ï¿½ï¿½Ù¸ï¿½ ï¿½Ö¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ ANSI È£È¯ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ï¶ï¿½.
+      ï¿½ß°ï¿½ï¿½ï¿½ <code>PATH</code> È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ <code>make</code>ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½.</dd>
 
-      <dt>Á¤È®ÇÑ ½Ã°£</dt>
-      <dd>HTTP ÇÁ·ÎÅäÄÝ¿¡´Â ÇÏ·çÁß ½Ã°£À» Ç¥ÇöÇÏ´Â ºÎºÐÀÌ ÀÖ´Ù. ±×·¡¼­
-      ÀÌÁ¦ ½Ã½ºÅÛÀÇ ½Ã°£ µ¿±âÈ­ ±â´ÉÀ» »ìÆìº¼ ½Ã°£ÀÌ´Ù. º¸Åë
-      ÀÌ¸¦ À§ÇØ Network Time Protocol (NTP)¿¡ ±â¹ÝÇÑ
-      <code>ntpdate</code>³ª <code>xntpd</code>¸¦ »ç¿ëÇÑ´Ù.
-      NTP ¼ÒÇÁÆ®¿þ¾î¿Í °ø°³ ½Ã°£ ¼­¹ö¿¡ ´ëÇÑ Á¤º¸´Â ´º½º±×·ì
-      <a href="news:comp.protocols.time.ntp">comp.protocols.time.ntp</a>¿Í
-      <a href="http://www.ntp.org">NTP È¨ÆäÀÌÁö</a>¸¦
-      Âü°íÇÏ¶ó.</dd>
+      <dt>ï¿½ï¿½È®ï¿½ï¿½ ï¿½Ã°ï¿½</dt>
+      <dd>HTTP ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¿ï¿½ï¿½ï¿½ ï¿½Ï·ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Îºï¿½ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½×·ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ ï¿½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ ï¿½ï¿½ï¿½ï¿½È­ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ìº¼ ï¿½Ã°ï¿½ï¿½Ì´ï¿½. ï¿½ï¿½ï¿½ï¿½
+      ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ Network Time Protocol (NTP)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+      <code>ntpdate</code>ï¿½ï¿½ <code>xntpd</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+      NTP ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½×·ï¿½
+      <a href="news:comp.protocols.time.ntp">comp.protocols.time.ntp</a>ï¿½ï¿½
+      <a href="https://www.ntp.org">NTP È¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</a>ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.</dd>
 
-      <dt><a href="http://www.perl.org/">Perl 5</a>
-      [¼±ÅÃ»çÇ×]</dt>
-      <dd>(Perl·Î ¾²¿©Áø) <a href="programs/apxs.html">apxs</a>³ª
-      <a href="programs/dbmmanage.html">dbmmanage</a>¿Í °°Àº
-      Áö¿ø ½ºÅ©¸³Æ®¸¦ À§ÇØ Perl 5 ÀÎÅÍÇÁ¸®ÅÍ°¡ ÇÊ¿äÇÏ´Ù. (¹öÀü
-      5.003 ÀÌ»óÀÌ¸é µÈ´Ù.) `<code>configure</code>' ½ºÅ©¸³Æ®°¡
-      ÀÌ ÀÎÅÍÇÁ¸®ÅÍ¸¦ Ã£Áö ¸øÇØµµ ¹®Á¦¾øÀÌ ¾ÆÆÄÄ¡ 2.0À»
-      ÄÄÆÄÀÏÇÏ°í ¼³Ä¡ÇÒ ¼ö ÀÖ´Ù. ´Ù¸¸ Áö¿ø ½ºÅ©¸³Æ®¸¦ »ç¿ëÇÏÁö
-      ¸øÇÒ »ÓÀÌ´Ù. ¿©·¯ Perl ÀÎÅÍÇÁ¸®ÅÍ°¡ ¼³Ä¡µÇÀÖ´Ù¸é (¾Æ¸¶µµ
-      »ì¶§ Æ÷ÇÔµÈ Perl 4¿Í Á÷Á¢ ÄÄÆÄÀÏÇÑ Perl 5)
-      <code>./configure</code>°¡ ¿Ã¹Ù¸¥ °ÍÀ» Ã£±âÀ§ÇØ
-      <code>--with-perl</code> ¿É¼ÇÀ» (¾Æ·¡ Âü°í) »ç¿ëÇÏ±æ ¹Ù¶õ´Ù.</dd>
+      <dt><a href="https://www.perl.org/">Perl 5</a>
+      [ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½]</dt>
+      <dd>(Perlï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½) <a href="programs/apxs.html">apxs</a>ï¿½ï¿½
+      <a href="programs/dbmmanage.html">dbmmanage</a>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Perl 5 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í°ï¿½ ï¿½Ê¿ï¿½ï¿½Ï´ï¿½. (ï¿½ï¿½ï¿½ï¿½
+      5.003 ï¿½Ì»ï¿½ï¿½Ì¸ï¿½ ï¿½È´ï¿½.) `<code>configure</code>' ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½
+      ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ï¿½Øµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ 2.0ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½. ï¿½ï¿½ï¿½ï¿½ Perl ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í°ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½Ö´Ù¸ï¿½ (ï¿½Æ¸ï¿½ï¿½ï¿½
+      ï¿½ì¶§ ï¿½ï¿½ï¿½Ôµï¿½ Perl 4ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Perl 5)
+      <code>./configure</code>ï¿½ï¿½ ï¿½Ã¹Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      <code>--with-perl</code> ï¿½É¼ï¿½ï¿½ï¿½ (ï¿½Æ·ï¿½ ï¿½ï¿½ï¿½ï¿½) ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½Ù¶ï¿½ï¿½ï¿½.</dd>
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="download" id="download">´Ù¿î·Îµå</a> <a title="Permanent link" href="#download" class="permalink">&para;</a></h2>
+<h2><a name="download" id="download">ï¿½Ù¿ï¿½Îµï¿½</a> <a title="Permanent link" href="#download" class="permalink">&para;</a></h2>
 
-    <p>¾ÆÆÄÄ¡´Â ¿©·¯ ¹Ì·¯ ¸ñ·ÏÀÌ ÀÖ´Â <a href="http://httpd.apache.org/download.cgi">¾ÆÆÄÄ¡ À¥¼­¹ö
-    ´Ù¿î·Îµå »çÀÌÆ®</a>¿¡¼­ ´Ù¿î·ÎµåÇÒ ¼ö ÀÖ´Ù. À¯´Ð½º·ù ½Ã½ºÅÛÀ»
-    »ç¿ëÇÑ´Ù¸é ¼Ò½ºÄÚµå¸¦ ´Ù¿î¹Þ¾Æ¼­ ÄÄÆÄÀÏÇÏ´Â ÆíÀÌ ³´´Ù. ½±°Ô
-    (¾Æ·¡¿¡¼­ ¼³¸í) ÄÄÆÄÀÏÇÒ ¼ö ÀÖ°í, ÀÚ½ÅÀÇ ¿ëµµ¿¡ ¾Ë¸Â°Ô ¼­¹ö¸¦
-    ¸ÂÃâ ¼ö ÀÖ´Ù. ¶Ç, ÃÖ½Å ¹öÀü ¹ÙÀÌ³Ê¸® ¹èÆ÷º»ÀÌ ¾ø´Â °æ¿ìµµ
-    ¸¹´Ù. ¹ÙÀÌ³Ê¸®¸¦ ´Ù¿î¹Þ´Â´Ù¸é ¹èÆ÷º»¿¡ ÀÖ´Â
-    <code>INSTALL.bindist</code> ÆÄÀÏÀÇ Áö½Ã¸¦ µû¸£¶ó.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ì·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ <a href="https://httpd.apache.org/download.cgi">ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ù¿ï¿½Îµï¿½ ï¿½ï¿½ï¿½ï¿½Æ®</a>ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¿ï¿½Îµï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½Ð½ï¿½ï¿½ï¿½ ï¿½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½ ï¿½Ò½ï¿½ï¿½Úµå¸¦ ï¿½Ù¿ï¿½Þ¾Æ¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½
+    (ï¿½Æ·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö°ï¿½, ï¿½Ú½ï¿½ï¿½ï¿½ ï¿½ëµµï¿½ï¿½ ï¿½Ë¸Â°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½, ï¿½Ö½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì³Ê¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ìµµ
+    ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½Ì³Ê¸ï¿½ï¿½ï¿½ ï¿½Ù¿ï¿½Þ´Â´Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½
+    <code>INSTALL.bindist</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.</p>
 
-    <p>´Ù¿î·ÎµåÈÄ ´Ù¿î¹ÞÀº ÆÄÀÏÀÌ ¿ÏÀüÇÏ°í
-    º¯°æµÇÁö¾ÊÀº ¾ÆÆÄÄ¡ À¥¼­¹öÀÓÀ» È®ÀÎÇÏ´Â °ÍÀÌ Áß¿äÇÏ´Ù.
-    PGP ¼­¸íÀ» °¡Áö°í ´Ù¿î·ÎµåÇÑ Å¸º¼(tarball)À» °Ë»çÇÏ¿© È®ÀÎÇÑ´Ù.
-    ÀÚ¼¼ÇÑ ¹æ¹ýÀº <a href="http://httpd.apache.org/download.cgi#verify">´Ù¿î·Îµå
-    ÆäÀÌÁö</a>¿¡ ÀÖ°í, <a href="http://httpd.apache.org/dev/verification.html">PGP
-    »ç¿ë¹ý</a>À» ¼³¸íÇÏ´Â »ó¼¼ÇÑ ¿¹µµ ÀÖ´Ù.</p>
+    <p>ï¿½Ù¿ï¿½Îµï¿½ï¿½ï¿½ ï¿½Ù¿ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß¿ï¿½ï¿½Ï´ï¿½.
+    PGP ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¿ï¿½Îµï¿½ï¿½ï¿½ Å¸ï¿½ï¿½(tarball)ï¿½ï¿½ ï¿½Ë»ï¿½ï¿½Ï¿ï¿½ È®ï¿½ï¿½ï¿½Ñ´ï¿½.
+    ï¿½Ú¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ <a href="https://httpd.apache.org/download.cgi#verify">ï¿½Ù¿ï¿½Îµï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</a>ï¿½ï¿½ ï¿½Ö°ï¿½, <a href="https://httpd.apache.org/dev/verification.html">PGP
+    ï¿½ï¿½ï¿½ï¿½</a>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="extract" id="extract">¾ÐÃà Ç®±â</a> <a title="Permanent link" href="#extract" class="permalink">&para;</a></h2>
+<h2><a name="extract" id="extract">ï¿½ï¿½ï¿½ï¿½ Ç®ï¿½ï¿½</a> <a title="Permanent link" href="#extract" class="permalink">&para;</a></h2>
 
-    <p>¾ÆÆÄÄ¡ À¥¼­¹ö Å¸º¼¿¡¼­ ¼Ò½º¸¦ Çª´Â ÀÛ¾÷Àº ´Ü¼øÈ÷ ¾ÐÃà°ú
-    tar¸¦ Çª´Â °ÍÀÌ´Ù:</p>
+    <p>ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ò½ï¿½ï¿½ï¿½ Çªï¿½ï¿½ ï¿½Û¾ï¿½ï¿½ï¿½ ï¿½Ü¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+    tarï¿½ï¿½ Çªï¿½ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½:</p>
 
 <div class="example"><p><code>
 $ gzip -d httpd-2_1_<em>NN</em>.tar.gz<br />
 $ tar xvf httpd-2_1_<em>NN</em>.tar
 </code></p></div>
 
-    <p>±×·¯¸é ÇöÀç µð·ºÅä¸® ¾Æ·¡¿¡ ¹èÆ÷º»ÀÇ ¼Ò½ºÄÚµå¸¦ ´ãÀº
-    »õ·Î¿î µð·ºÅä¸®°¡ »ý±ä´Ù. ¼­¹ö¸¦ ÄÄÆÄÀÏÇÏ±â Àü¿¡ ±×
-    µð·ºÅä¸®·Î <code>cd</code>ÇØ¾ß ÇÑ´Ù.</p>
+    <p>ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸® ï¿½Æ·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ò½ï¿½ï¿½Úµå¸¦ ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+    ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ <code>cd</code>ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="configure" id="configure">¼Ò½º Æ®¸® ±¸¼ºÇÏ±â</a> <a title="Permanent link" href="#configure" class="permalink">&para;</a></h2>
+<h2><a name="configure" id="configure">ï¿½Ò½ï¿½ Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½</a> <a title="Permanent link" href="#configure" class="permalink">&para;</a></h2>
 
-    <p>´ÙÀ½ °úÁ¤Àº Æ¯Á¤ ÇÃ·¡Æû°ú °³ÀÎÀûÀÎ ÇÊ¿ä¿¡ µû¶ó ¾ÆÆÄÄ¡
-    ¼Ò½º Æ®¸®¸¦ ±¸¼ºÇÏ´Â ÀÏÀÌ´Ù. ÀÌ¸¦ À§ÇØ ¹èÆ÷º»ÀÇ ÃÖ»óÀ§ µð·ºÅä¸®¿¡
-    ÀÖ´Â <code><a href="programs/configure.html">configure</a></code>
-    ½ºÅ©¸³Æ®¸¦ »ç¿ëÇÑ´Ù. (¾ÆÆÄÄ¡
-    ¼Ò½º Æ®¸®ÀÇ CVS ¹öÀüÀ» ´Ù¿î·ÎµåÇÑ °³¹ßÀÚ´Â ÀÌ¹Ì
-    <code>autoconf</code>¿Í <code>libtool</code>°¡ ¼³Ä¡µÇÀÖ°í,
-    ´ÙÀ½ °úÁ¤À¸·Î ³Ñ¾î°¡±â Àü¿¡ <code>buildconf</code>¸¦ ½ÇÇàÇØ¾ß
-    ÇÑ´Ù. ÀÌ´Â Á¤½Ä ¹öÀü¿¡¼­´Â ÇÊ¿ä¾ø´Ù.)</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Æ¯ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ä¿¡ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡
+    ï¿½Ò½ï¿½ Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½. ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö»ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½
+    ï¿½Ö´ï¿½ <code><a href="programs/configure.html">configure</a></code>
+    ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. (ï¿½ï¿½ï¿½ï¿½Ä¡
+    ï¿½Ò½ï¿½ Æ®ï¿½ï¿½ï¿½ï¿½ CVS ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¿ï¿½Îµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ ï¿½Ì¹ï¿½
+    <code>autoconf</code>ï¿½ï¿½ <code>libtool</code>ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½Ö°ï¿½,
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ¾î°¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ <code>buildconf</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½
+    ï¿½Ñ´ï¿½. ï¿½Ì´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ï¿½.)</p>
 
-    <p>¸ðµÎ ±âº» ¿É¼ÇÀ» »ç¿ëÇÏ¿© ¼Ò½º Æ®¸®¸¦ ±¸¼ºÇÏ·Á¸é °£´ÜÈ÷
-    <code>./configure</code>¸¦ ÀÔ·ÂÇÏ¸éµÈ´Ù. ±âº» ¿É¼ÇÀ» ¼öÁ¤ÇÏ·Á¸é
-    <code>./configure</code>¿¡ ¿©·¯ º¯¼ö¿Í ¸í·ÉÇà ¿É¼ÇÀ» »ç¿ëÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ ï¿½âº» ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½Ò½ï¿½ Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    <code>./configure</code>ï¿½ï¿½ ï¿½Ô·ï¿½ï¿½Ï¸ï¿½È´ï¿½. ï¿½âº» ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½
+    <code>./configure</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <p>°¡Àå Áß¿äÇÑ ¿É¼ÇÀº ¾ÆÆÄÄ¡°¡ Á¤»óÀûÀ¸·Î ÀÛµ¿ÇÏ±âÀ§ÇØ ¾ÆÆÄÄ¡¸¦
-    ±¸¼ºÇÏ°í ¼³Ä¡ÇÒ Àå¼ÒÀÎ <code>--prefix</code>´Ù. ´Ù¸¥ <a href="programs/configure.html#installationdirectories">configure
-    ¿É¼Çµé</a>À» »ç¿ëÇÏ¿© ÆÄÀÏÀÇ À§Ä¡¸¦ ´õ ÀÚ¼¼È÷ ¼³Á¤ÇÒ ¼öµµ
-    ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ ï¿½ß¿ï¿½ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ûµï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ <code>--prefix</code>ï¿½ï¿½. ï¿½Ù¸ï¿½ <a href="programs/configure.html#installationdirectories">configure
+    ï¿½É¼Çµï¿½</a>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ ï¿½Ú¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ö´ï¿½.</p>
 
-    <p><a href="mod/">¸ðµâ</a>À» Æ÷ÇÔÇÏ°Å³ª »©¼­ ¾ÆÆÄÄ¡¿¡ Æ÷ÇÔÇÒ
-    <a href="programs/configure.html#optionalfeatures">±â´É</a>À»
-    ¼±ÅÃÇÑ´Ù. <a href="mod/module-dict.html#Status">Base</a>
-    »óÅÂÀÎ ¸ðµâÀº ±âº»ÀûÀ¸·Î ¾ÆÆÄÄ¡¿¡ Æ÷ÇÔµÈ´Ù. ´Ù¸¥ »óÅÂÀÇ
-    ¸ðµâÀº <code>--enable-<var>module</var></code> ¿É¼ÇÀ» »ç¿ëÇÏ¿©
-    Æ÷ÇÔÇÑ´Ù. ¿©±â¼­ <em>module</em>Àº ¸ðµâ ÀÌ¸§¿¡¼­
-    <code>mod_</code>¸¦ »©°í ¹ØÁÙÀ» »©±â±âÈ£·Î º¯°æÇÑ °á°ú´Ù.
-    <code>--enable-<var>module</var>=shared</code> ¿É¼ÇÀ» »ç¿ëÇÏ¸é
-    ¸ðµâÀ» ½ÇÇàÁß¿¡ Æ÷ÇÔÇÏ°Å³ª »¬ ¼ö ÀÖ´Â <a href="dso.html">°øÀ¯°´Ã¼(shared object, DSO)</a>·Î ÄÄÆÄÀÏÇÑ´Ù.
-    ¶Ç, <code>--disable-<var>module</var></code> ¿É¼ÇÀ» »ç¿ëÇÏ¿©
-    Base ¸ðµâÀ» »¬ ¼ö ÀÖ´Ù. ÁöÁ¤ÇÑ ¸ðµâÀÌ ¾ø¾îµµ
-    <code>configure</code>°¡ °æ°íÇÏÁö¾Ê°í ±×³É ¹«½ÃÇÏ±â¶§¹®¿¡
-    ¸ðµâ ÀÌ¸§À» Á¤È®È÷ ÀÔ·ÂÇÏ¶ó.</p>
+    <p><a href="mod/">ï¿½ï¿½ï¿½</a>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°Å³ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    <a href="programs/configure.html#optionalfeatures">ï¿½ï¿½ï¿½</a>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <a href="mod/module-dict.html#Status">Base</a>
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ÔµÈ´ï¿½. ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ <code>--enable-<var>module</var></code> ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½â¼­ <em>module</em>ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½ï¿½
+    <code>mod_</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½.
+    <code>--enable-<var>module</var>=shared</code> ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ß¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°Å³ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ <a href="dso.html">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã¼(shared object, DSO)</a>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+    ï¿½ï¿½, <code>--disable-<var>module</var></code> ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½
+    Base ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½îµµ
+    <code>configure</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê°ï¿½ ï¿½×³ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±â¶§ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½È®ï¿½ï¿½ ï¿½Ô·ï¿½ï¿½Ï¶ï¿½.</p>
 
-    <p>°¡²û <code>configure</code> ½ºÅ©¸³Æ®¿¡°Ô ÄÄÆÄÀÏ·¯,
-    ¶óÀÌºê·¯¸®, Çì´õÆÄÀÏ µîÀÇ À§Ä¡¸¦ ¾Ë·ÁÁà¾ß ÇÒ °æ¿ì°¡ ÀÖ´Ù.
-    ÀÌ Á¤º¸´Â È¯°æº¯¼ö³ª <code>configure</code>ÀÇ ¸í·ÉÇà ¿É¼ÇÀ»
-    »ç¿ëÇÏ¿© Àü´ÞÇÑ´Ù. ÀÚ¼¼ÇÑ ³»¿ëÀº <a href="programs/configure.html">configure manpage</a>¸¦
-    Âü°íÇÏ¶ó.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ <code>configure</code> ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½,
+    ï¿½ï¿½ï¿½Ìºê·¯ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Ë·ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ì°¡ ï¿½Ö´ï¿½.
+    ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ <code>configure</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½Ú¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <a href="programs/configure.html">configure manpage</a>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.</p>
 
-    <p>¿©·¯ºÐÀÌ ¼±ÅÃÇÒ ¼ö ÀÖ´Â °¡´É¼ºÀ» º¸¿©ÁÖ±âÀ§ÇØ ´ÙÀ½Àº
-    Æ¯Á¤ ÄÄÆÄÀÏ·¯¿Í ÇÃ·¡±×¸¦ »ç¿ëÇÏ°í ³ªÁß¿¡ DSO·Î ÀÐ¾îµéÀÏ
-    µÎ ¸ðµâ <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>¿Í
-    <code class="module"><a href="./mod/mod_speling.html">mod_speling</a></code>À» Ãß°¡ÇÏ¿©
-    <code>/sw/pkg/apache</code>¿¡ ¼³Ä¡ÇÒ ¾ÆÆÄÄ¡¸¦ ÄÄÆÄÀÏÇÏ´Â
-    ÀüÇüÀûÀÎ ¿¹ÀÌ´Ù:</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    Æ¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½×¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ß¿ï¿½ DSOï¿½ï¿½ ï¿½Ð¾ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ ï¿½ï¿½ï¿½ <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>ï¿½ï¿½
+    <code class="module"><a href="./mod/mod_speling.html">mod_speling</a></code>ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ï¿ï¿½
+    <code>/sw/pkg/apache</code>ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½:</p>
 
 <div class="example"><p><code>
       $ CC="pgcc" CFLAGS="-O2" \<br />
@@ -256,88 +256,88 @@ $ tar xvf httpd-2_1_<em>NN</em>.tar
        --enable-speling=shared
 </code></p></div>
 
-    <p><code>configure</code>¸¦ ½ÇÇàÇÏ¸é ¸îºÐ°£ ½Ã½ºÅÛÀÇ ±â´ÉÀ»
-    °Ë»çÇÏ¿© ³ªÁß¿¡ ¼­¹ö¸¦ ÄÄÆÄÀÏÇÒ¶§ »ç¿ëÇÒ MakefileµéÀ»
-    ¸¸µç´Ù.</p>
+    <p><code>configure</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½Ð°ï¿½ ï¿½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ë»ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ß¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ Makefileï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½.</p>
 
-    <p><code>configure</code> ¿É¼Çµé¿¡ ´ëÇÑ ÀÚ¼¼ÇÑ ¼³¸íÀº <a href="programs/configure.html">configure manpage</a>¿¡ ÀÖ´Ù.</p>
+    <p><code>configure</code> ï¿½É¼Çµé¿¡ ï¿½ï¿½ï¿½ï¿½ ï¿½Ú¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <a href="programs/configure.html">configure manpage</a>ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="compile" id="compile">ÄÄÆÄÀÏ</a> <a title="Permanent link" href="#compile" class="permalink">&para;</a></h2>
+<h2><a name="compile" id="compile">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</a> <a title="Permanent link" href="#compile" class="permalink">&para;</a></h2>
 
-    <p>ÀÌÁ¦ ´ÙÀ½ ¸í·É¾î ÇÏ³ª·Î ¾ÆÆÄÄ¡ÀÇ ¿©·¯ ºÎºÐÀ» ÄÄÆÄÀÏÇÒ
-    ¼ö ÀÖ´Ù:</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½É¾ï¿½ ï¿½Ï³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Îºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ ï¿½Ö´ï¿½:</p>
 
 <div class="example"><p><code>$ make</code></p></div>
 
-    <p>¿©±â¼­ Á» ±â´Ù·Á¶ó. ÆæÆ¼¾ö III/¸®´ª½º 2.2 ½Ã½ºÅÛ¿¡¼­
-    ±âº» ±¸¼ºÀ» ÄÄÆÄÀÏÇÏ´Âµ¥ ¾à 3ºÐ Á¤µµ °É¸°´Ù. ÀÌ ½Ã°£Àº
-    ÇÏµå¿þ¾î¿Í Æ÷ÇÔÇÑ ¸ðµâ¼ö¿¡ µû¶ó Å©°Ô º¯ÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½â¼­ ï¿½ï¿½ ï¿½ï¿½Ù·ï¿½ï¿½ï¿½. ï¿½ï¿½Æ¼ï¿½ï¿½ III/ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 2.2 ï¿½Ã½ï¿½ï¿½Û¿ï¿½ï¿½ï¿½
+    ï¿½âº» ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´Âµï¿½ ï¿½ï¿½ 3ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½É¸ï¿½ï¿½ï¿½. ï¿½ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½
+    ï¿½Ïµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Å©ï¿½ï¿½ ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="install" id="install">¼³Ä¡</a> <a title="Permanent link" href="#install" class="permalink">&para;</a></h2>
+<h2><a name="install" id="install">ï¿½ï¿½Ä¡</a> <a title="Permanent link" href="#install" class="permalink">&para;</a></h2>
 
-    <p>ÀÌÁ¦ ´ÙÀ½ ¸í·É¾î·Î ÆÐÅ°Áö¸¦ (À§ÀÇ <code>--prefix</code>
-    ¿É¼Ç Âü°í) ÁöÁ¤ÇÑ ¼³Ä¡ À§Ä¡ <em>PREFIX</em>¿¡ ¼³Ä¡ÇÑ´Ù:</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½É¾ï¿½ï¿½ ï¿½ï¿½Å°ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ <code>--prefix</code>
+    ï¿½É¼ï¿½ ï¿½ï¿½ï¿½ï¿½) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½Ä¡ <em>PREFIX</em>ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½Ñ´ï¿½:</p>
 
 <div class="example"><p><code>$ make install</code></p></div>
 
-    <p>¾÷±×·¹ÀÌµåÇÑ´Ù¸é ÀÌ ¼³Ä¡ °úÁ¤ÀÌ ±âÁ¸ ¼³Á¤ÆÄÀÏÀÌ³ª ¹®¼­¸¦
-    µ¤¾î¾²Áö ¾Ê´Â´Ù.</p>
+    <p>ï¿½ï¿½ï¿½×·ï¿½ï¿½Ìµï¿½ï¿½Ñ´Ù¸ï¿½ ï¿½ï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì³ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½î¾²ï¿½ï¿½ ï¿½Ê´Â´ï¿½.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="customize" id="customize">¼³Á¤</a> <a title="Permanent link" href="#customize" class="permalink">&para;</a></h2>
+<h2><a name="customize" id="customize">ï¿½ï¿½ï¿½ï¿½</a> <a title="Permanent link" href="#customize" class="permalink">&para;</a></h2>
 
-    <p>´ÙÀ½À¸·Î <code><em>PREFIX</em>/conf/</code>¿¡ ÀÖ´Â
-    <a href="configuring.html">¼³Á¤ÆÄÀÏ</a>À» ÆíÁýÇÏ¿© ¾ÆÆÄÄ¡
-    À¥¼­¹ö¸¦ ¼³Á¤ÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code><em>PREFIX</em>/conf/</code>ï¿½ï¿½ ï¿½Ö´ï¿½
+    <a href="configuring.html">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</a>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
 <div class="example"><p><code>$ vi <em>PREFIX</em>/conf/httpd.conf</code></p></div>
 
-    <p>»ç¿ë°¡´ÉÇÑ <a href="mod/directives.html">¼³Á¤ Áö½Ã¾î</a>¿¡
-    ´ëÇÑ ¿ÏÀüÇÑ ¼³¸í°ú ÀÌ ¹®¼­ÀÇ °¡Àå ÃÖ±Ù ÆÇÀº <a href="./">docs/manual/</a>ÀÌ³ª <a href="http://httpd.apache.org/docs/trunk/">http://httpd.apache.org/docs/trunk/</a>¿¡ ÀÖ´Â ¾ÆÆÄÄ¡ ¼³¸í¼­¸¦
-    Âü°íÇÏ¶ó.</p>
+    <p>ï¿½ï¿½ë°¡ï¿½ï¿½ï¿½ï¿½ <a href="mod/directives.html">ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½</a>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö±ï¿½ ï¿½ï¿½ï¿½ï¿½ <a href="./">docs/manual/</a>ï¿½Ì³ï¿½ <a href="https://httpd.apache.org/docs/trunk/">https://httpd.apache.org/docs/trunk/</a>ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="test" id="test">°Ë»ç</a> <a title="Permanent link" href="#test" class="permalink">&para;</a></h2>
+<h2><a name="test" id="test">ï¿½Ë»ï¿½</a> <a title="Permanent link" href="#test" class="permalink">&para;</a></h2>
 
-    <p>ÀÌÁ¦ ´ÙÀ½°ú °°ÀÌ ¾ÆÆÄÄ¡ À¥¼­¹ö¸¦ <a href="invoking.html">½ÃÀÛ</a>ÇÒ ¼ö ÀÖ´Ù:</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <a href="invoking.html">ï¿½ï¿½ï¿½ï¿½</a>ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½:</p>
 
 <div class="example"><p><code>$ <em>PREFIX</em>/bin/apachectl start</code></p></div>
 
-    <p>±×¸®°í URL <code>http://localhost/</code>·Î Ã¹ ¹®¼­¸¦
-    ¿äÃ»ÇÑ´Ù. º¸°ÔµÉ À¥ÆäÀÌÁö´Â ¾Æ¸¶µµ
-    <code><em>PREFIX</em>/htdocs/</code>ÀÏ <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code> ¾Æ·¡¿¡ ÀÖ´Ù. ±×¸®°í
-    ´ÙÀ½ ¸í·É¾î·Î ´Ù½Ã ¼­¹ö¸¦ <a href="stopping.html">Áß´Ü</a>ÇÑ´Ù:</p>
+    <p>ï¿½×¸ï¿½ï¿½ï¿½ URL <code>https://localhost/</code>ï¿½ï¿½ Ã¹ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½Ã»ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½Ôµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ¸ï¿½ï¿½ï¿½
+    <code><em>PREFIX</em>/htdocs/</code>ï¿½ï¿½ <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code> ï¿½Æ·ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½×¸ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½É¾ï¿½ï¿½ ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <a href="stopping.html">ï¿½ß´ï¿½</a>ï¿½Ñ´ï¿½:</p>
 
 <div class="example"><p><code>$ <em>PREFIX</em>/bin/apachectl stop</code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="upgrading" id="upgrading">¾÷±×·¹ÀÌµå</a> <a title="Permanent link" href="#upgrading" class="permalink">&para;</a></h2>
+<h2><a name="upgrading" id="upgrading">ï¿½ï¿½ï¿½×·ï¿½ï¿½Ìµï¿½</a> <a title="Permanent link" href="#upgrading" class="permalink">&para;</a></h2>
 
-    <p>¾÷±×·¹ÀÌµåÇÑ´Ù¸é ¸ÕÀú »çÀÌÆ®¿¡ ¿µÇâÀ» ÁÙ ¼ö ÀÖ´Â º¯È­°¡
-    ÀÖ´ÂÁö ¾Ë¾Æº¸±âÀ§ÇØ ¹ßÇ¥¹®°ú ¼Ò½º ¹èÆ÷º»ÀÇ <code>CHANGES</code>
-    ÆÄÀÏÀ» ÀÐ´Â´Ù. (¿¹¸¦ µé¾î, 1.3¿¡¼­ 2.0ÀÌ³ª 2.0¿¡¼­ 2.2¿Í
-    °°Àº) Å« ¹öÀüÀÌ º¯ÇÑ °æ¿ì ÄÄÆÄÀÏ ¿É¼Ç°ú ¼³Á¤À» Á÷Á¢ ¼öÁ¤ÇØ¾ßÇÒ
-    Á¤µµÀÇ Å« º¯È­°¡ ÀÖÀ» °ÍÀÌ´Ù. ¸ðµç ¸ðµâµµ ¸ðµâ APIÀÇ º¯È­¿¡
-    ¾Ë¸Â°Ô ¾÷±×·¹ÀÌµåÇØ¾ß ÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½×·ï¿½ï¿½Ìµï¿½ï¿½Ñ´Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½È­ï¿½ï¿½
+    ï¿½Ö´ï¿½ï¿½ï¿½ ï¿½Ë¾Æºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ç¥ï¿½ï¿½ï¿½ï¿½ ï¿½Ò½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>CHANGES</code>
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ð´Â´ï¿½. (ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, 1.3ï¿½ï¿½ï¿½ï¿½ 2.0ï¿½Ì³ï¿½ 2.0ï¿½ï¿½ï¿½ï¿½ 2.2ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½) Å« ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½É¼Ç°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å« ï¿½ï¿½È­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½. ï¿½ï¿½ï¿½ ï¿½ï¿½âµµ ï¿½ï¿½ï¿½ APIï¿½ï¿½ ï¿½ï¿½È­ï¿½ï¿½
+    ï¿½Ë¸Â°ï¿½ ï¿½ï¿½ï¿½×·ï¿½ï¿½Ìµï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½.</p>
 
-    <p>ÀÛÀº ¹öÀüÀ» ÇÑ´Ü°è ¾÷±×·¹ÀÌµåÇÏ´Â °ÍÀº (¿¹¸¦ µé¾î,
-    2.0.55¿¡¼­ 2.0.57) ½±´Ù. <code>make install</code> ÀÛ¾÷Àº
-    ±âÁ¸ÀÇ ¹®¼­, ·Î±×ÆÄÀÏ, ¼³Á¤ÆÄÀÏÀ» ¼öÁ¤ÇÏÁö ¾Ê´Â´Ù. ¶Ç,
-    °³¹ßÀÚ´Â ÀÛÀº ¹öÀü°£¿¡ <code>configure</code> ¿É¼Ç, ¼³Á¤,
-    ¸ðµâ APIÀÇ È£È¯¼º¾ø´Â º¯È­¸¦ ÃÖ´ëÇÑ ¸·´Â´Ù. ´ëºÎºÐÀÇ °æ¿ì
-    µ¿ÀÏÇÑ <code>configure</code> ¸í·ÉÇà, µ¿ÀÏÇÑ ¼³Á¤ÆÄÀÏÀ»
-    »ç¿ëÇÒ ¼ö ÀÖ°í, ¸ðµâµéµµ ¸ðµÎ °è¼Ó µ¿ÀÛÇÒ °ÍÀÌ´Ù. (ÀÌ ¸»Àº
-    2.0.41ÀÌÈÄ ¹öÀü¿¡¸¸ ÇØ´çÇÑ´Ù. ÀÌÀü ¹öÀüµé¿¡´Â È£È¯¼º¾ø´Â
-    º¯È­°¡ ÀÖ´Ù.)</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´Ü°ï¿½ ï¿½ï¿½ï¿½×·ï¿½ï¿½Ìµï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½,
+    2.0.55ï¿½ï¿½ï¿½ï¿½ 2.0.57) ï¿½ï¿½ï¿½ï¿½. <code>make install</code> ï¿½Û¾ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½, ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½. ï¿½ï¿½,
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>configure</code> ï¿½É¼ï¿½, ï¿½ï¿½ï¿½ï¿½,
+    ï¿½ï¿½ï¿½ APIï¿½ï¿½ È£È¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È­ï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â´ï¿½. ï¿½ï¿½Îºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>configure</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö°ï¿½, ï¿½ï¿½ï¿½éµµ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½. (ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    2.0.41ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ø´ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½é¿¡ï¿½ï¿½ È£È¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½È­ï¿½ï¿½ ï¿½Ö´ï¿½.)</p>
 
-    <p>ÀÌÀü¿¡ ¼³Ä¡Çß´ø ¼Ò½º¸¦ °¡Áö°í ÀÖ´Ù¸é, ¾÷±×·¹ÀÌµå°¡ ´õ
-    ½¬¿öÁø´Ù. ÀÌÀü ¼Ò½º ÃÖ»óÀ§¿¡ ÀÖ´Â <code>config.nice</code>
-    ÆÄÀÏ¿¡´Â ¼Ò½º¸¦ ±¸¼ºÇÒ ¶§ »ç¿ëÇß´ø <code>configure</code>
-    ¸í·ÉÇà ¿É¼ÇÀÌ ±×´ë·Î ÀÖ´Ù. ±×·¡¼­ ´ÙÀ½ ¹öÀüÀ¸·Î ¾÷±×·¹ÀÌµåÇÑ´Ù¸é
-    »õ·Î¿î ¹öÀü ¼Ò½º·Î <code>config.nice</code> ÆÄÀÏÀ» º¹»çÇÏ°í,
-    ¿øÇÑ´Ù¸é Á¶±Ý ¼öÁ¤À» ÇÑ ÈÄ, ´ÙÀ½°ú °°ÀÌ ½ÇÇàÇÑ´Ù:</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ß´ï¿½ ï¿½Ò½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ù¸ï¿½, ï¿½ï¿½ï¿½×·ï¿½ï¿½Ìµå°¡ ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½Ò½ï¿½ ï¿½Ö»ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ <code>config.nice</code>
+    ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ ï¿½Ò½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ß´ï¿½ <code>configure</code>
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½×´ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½×·ï¿½ï¿½Ìµï¿½ï¿½Ñ´Ù¸ï¿½
+    ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ò½ï¿½ï¿½ï¿½ <code>config.nice</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½,
+    ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½:</p>
 
     <div class="example"><p><code>
     $ ./config.nice<br />
@@ -347,14 +347,14 @@ $ tar xvf httpd-2_1_<em>NN</em>.tar
     $ <em>PREFIX</em>/bin/apachectl start<br />
     </code></p></div>
 
-    <div class="warning">»õ·Î¿î ¹öÀüÀ» »ç¿ëÇÏ±â Àü¿¡ Ç×»ó °Ë»çÇØºÁ¾ß
-    ÇÑ´Ù. ¿¹¸¦ µé¾î, ¾÷±×·¹ÀÌµå¸¦ ¸¶Ä¡±â Àü¿¡ È£È¯¼º ¹®Á¦°¡
-    ÀÖ´ÂÁö ¾Ë¾Æº¸±âÀ§ÇØ ´Ù¸¥ <code>--prefix</code>¿Í (<code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> Áö½Ã¾î·Î) ´Ù¸¥ Æ÷Æ®¸¦
-    »ç¿ëÇÏ¿© »õ·Î¿î ¹öÀüÀ» ¼³Ä¡ÇÑÈÄ ÀÌÀü ¹öÀü°ú °°ÀÌ ½ÇÇàÇØº¼
-    ¼ö ÀÖ´Ù.</div>
+    <div class="warning">ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½×»ï¿½ ï¿½Ë»ï¿½ï¿½Øºï¿½ï¿½ï¿½
+    ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½×·ï¿½ï¿½Ìµå¸¦ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È£È¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ö´ï¿½ï¿½ï¿½ ï¿½Ë¾Æºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ <code>--prefix</code>ï¿½ï¿½ (<code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½) ï¿½Ù¸ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Øºï¿½
+    ï¿½ï¿½ ï¿½Ö´ï¿½.</div>
 </div></div>
 <div class="bottomlang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="./de/install.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="./de/install.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/install.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/install.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
 <a href="./fr/install.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
@@ -364,7 +364,7 @@ $ tar xvf httpd-2_1_<em>NN</em>.tar
 </div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/install.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/install.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -379,8 +379,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/install.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">¸ðµâ</a> | <a href="./mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">¿ë¾î</a> | <a href="./sitemap.html">»çÀÌÆ®¸Ê</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">ï¿½ï¿½ï¿½</a> | <a href="./mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">ï¿½ï¿½ï¿½</a> | <a href="./sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

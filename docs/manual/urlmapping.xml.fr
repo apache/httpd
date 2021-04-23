@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -87,7 +87,7 @@
     <p>Par exemple, si la directive
     <directive module="core">DocumentRoot</directive> contient
     <code>/var/www/html</code>, une requête pour
-    <code>http://www.example.com/fish/guppies.html</code> retournera le
+    <code>https://www.example.com/fish/guppies.html</code> retournera le
     fichier <code>/var/www/html/fish/guppies.html</code> au client.</p>
 
     <p>Si la requête concerne un répertoire (autrement dit un chemin se
@@ -101,7 +101,7 @@
     <example>DirectoryIndex index.html index.php</example>
 
     <p>Si httpd reçoit alors une requête pour
-    <code>http://www.example.com/fish/</code>, il tentera de servir le
+    <code>https://www.example.com/fish/</code>, il tentera de servir le
     fichier <code>/var/www/html/fish/index.html</code>. Si ce fichier
     n'existe pas, il tentera de servir le fichier
     <code>/var/www/html/fish/index.php</code>.</p>
@@ -148,7 +148,7 @@ l'arborescence DocumentRoot</title>
 
 <highlight language="config">Alias "/docs" "/var/web"</highlight>
 
-    <p>l'URL <code>http://www.example.com/docs/dir/file.html</code>
+    <p>l'URL <code>https://www.example.com/docs/dir/file.html</code>
     correspondra au fichier <code>/var/web/dir/file.html</code>. La
     directive
     <directive module="mod_alias">ScriptAlias</directive>
@@ -168,7 +168,7 @@ l'arborescence DocumentRoot</title>
     </highlight>
 
     <p>fera correspondre une requête du style
-    <code>http://example.com/~user/cgi-bin/script.cgi</code> au chemin
+    <code>https://example.com/~user/cgi-bin/script.cgi</code> au chemin
     <code>/home/user/cgi-bin/script.cgi</code>, et traitera le fichier résultant
     comme un script CGI.</p>
 </section>
@@ -183,7 +183,7 @@ l'arborescence DocumentRoot</title>
     répertoires home des utilisateurs à l'aide d'URLs
     comme dans ce qui suit :</p>
 
-<example>http://www.example.com/~user/file.html</example>
+<example>https://www.example.com/~user/file.html</example>
 
     <p>Pour des raisons de sécurité, il est déconseillé de permettre un accès
     direct à un répertoire home d'utilisateur depuis le web. A cet effet, la
@@ -209,7 +209,7 @@ l'arborescence DocumentRoot</title>
     il est possible d'utiliser la directive
     <directive module="mod_alias">AliasMatch</directive>
     pour obtenir l'effet désiré. Par exemple, pour faire correspondre
-    <code>http://www.example.com/upages/user/file.html</code> à
+    <code>https://www.example.com/upages/user/file.html</code> à
     <code>/home/user/public_html/file.html</code>, utilisez la directive
     <code>AliasMatch</code> suivante :</p>
 
@@ -235,7 +235,7 @@ l'arborescence DocumentRoot</title>
     de le requérir à sa nouvelle localisation comme suit :</p>
 
 <highlight language="config">
-    Redirect permanent "/foo/"   "http://www.example.com/bar/"
+    Redirect permanent "/foo/"   "https://www.example.com/bar/"
     </highlight>
 
     <p>Ceci aura pour effet de rediriger tout chemin d'URL commençant par
@@ -252,14 +252,14 @@ l'arborescence DocumentRoot</title>
     configuration suivante :</p>
 
 <highlight language="config">
-   RedirectMatch permanent "^/$" "http://www.example.com/startpage.html"
+   RedirectMatch permanent "^/$" "https://www.example.com/startpage.html"
     </highlight>
 
     <p>De même, pour rediriger temporairement toutes les pages d'un site
     vers une page particulière d'un autre site, utilisez ce qui suit :</p>
 
 <highlight language="config">
-    RedirectMatch temp ".*" "http://othersite.example.com/startpage.html"
+    RedirectMatch temp ".*" "https://othersite.example.com/startpage.html"
     </highlight>
 </section>
 
@@ -280,8 +280,8 @@ dans le répertoire
 et les renvoie au client comme s'ils appartenaient au serveur local.</p>
 
 <highlight language="config">
-ProxyPass        "/foo/" "http://internal.example.com/bar/"
-ProxyPassReverse "/foo/" "http://internal.example.com/bar/"
+ProxyPass        "/foo/" "https://internal.example.com/bar/"
+ProxyPassReverse "/foo/" "https://internal.example.com/bar/"
 ProxyPassReverseCookieDomain internal.example.com public.example.com
 ProxyPassReverseCookiePath "/foo/" "/bar/"
 </highlight>

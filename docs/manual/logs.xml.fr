@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -224,7 +224,7 @@
     dehors du sujet de ce document et ne fait pas vraiment partie intégrante
     du travail du serveur web lui-même. Pour plus d'informations à propos de ce
     sujet et des applications dédiées à l'analyse de journaux, vous pouvez vous
-    référer à <a href="http://dmoz.org/Computers/Software/Internet/
+    référer à <a href="https://dmoz.org/Computers/Software/Internet/
     Site_Management/Log_analysis/">Open Directory</a>.
     </p>
 
@@ -381,7 +381,7 @@ CustomLog "logs/access_log" common
 	redirection (codes commençant par 3), une erreur due au client (codes
 	commençant par 4), ou une erreur due au serveur (codes commençant
 	par 5). Vous trouverez la liste complète des codes de statut possibles
-	dans la <a href="http://www.w3.org/Protocols/rfc2616/
+	dans la <a href="https://www.w3.org/Protocols/rfc2616/
 	rfc2616.txt">specification HTTP</a> (RFC2616 section 10).</dd>
 
         <dt><code>2326</code> (<code>%b</code>)</dt>
@@ -415,14 +415,14 @@ CustomLog "log/access_log" combined
       <example>
         127.0.0.1 - frank [10/Oct/2000:13:55:36 -0700] "GET
         /apache_pb.gif HTTP/1.0" 200 2326
-        "http://www.example.com/start.html" "Mozilla/4.08 [en]
+        "https://www.example.com/start.html" "Mozilla/4.08 [en]
         (Win98; I ;Nav)"
       </example>
 
       <p>Les champs supplémentaires sont :</p>
 
       <dl>
-        <dt><code>"http://www.example.com/start.html"</code>
+        <dt><code>"https://www.example.com/start.html"</code>
         (<code>\"%{Referer}i\"</code>)</dt>
 
         <dd>L'en-tête "Referer" (sic) de la requête HTTP. Il indique le site

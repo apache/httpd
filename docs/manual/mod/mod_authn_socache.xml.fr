@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -101,7 +101,7 @@ AuthnCacheSOCache dbm
     fonction de l'API <var>ap_authn_cache_store</var> permet de mettre en cache
     les données d'authentification qu'un fournisseur vient de rechercher ou de
     générer. Vous trouverez des exemples d'utilisation à <a
-    href="http://svn.eu.apache.org/viewvc?view=revision&amp;revision=957072"
+    href="https://svn.eu.apache.org/viewvc?view=revision&amp;revision=957072"
     >r957072</a>, où trois fournisseurs authn sont activés pour la mise
     en cache.</p>
 </section>

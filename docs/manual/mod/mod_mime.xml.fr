@@ -12,7 +12,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -170,10 +170,10 @@ multiples</title>
     qui est conçu pour transmettre un fichier binaire sous un format
     ASCII (texte).</p>
 
-    <p>La <a href="http://www.ietf.org/rfc/rfc2616.txt">RFC
+    <p>La <a href="https://www.ietf.org/rfc/rfc2616.txt">RFC
     HTTP/1.1</a>, section 14.11 stipule à ce titre :</p>
 
-    <blockquote cite="http://www.ietf.org/rfc/rfc2616.txt">
+    <blockquote cite="https://www.ietf.org/rfc/rfc2616.txt">
       <p>Le champ d'en-tête Content-Encoding de l'entité est utilisé en
       tant que modificateur du type de médium. Lorsqu'il est présent, sa
       valeur indique quels codages de contenu additionnels ont été
@@ -269,7 +269,7 @@ jeu de caractères spécifié</description>
     les extensions de noms de fichiers spécifiées au jeu de caractères
     spécifié (le nom enregistré sur l'Internet d'un codage de caractères
     donné). <var>jeu-car</var> est le <a
-    href="http://www.iana.org/assignments/character-sets">paramètre jeu
+    href="https://www.iana.org/assignments/character-sets">paramètre jeu
     de caractères du type de médium</a> pour les ressources dont le nom
     de fichier contient <var>extension</var>. Cette association est
     ajoutée à toutes les autres déjà en vigueur, et écrase toute
@@ -1080,8 +1080,8 @@ d'extensions de noms de fichiers</description>
     qui associe les extensions de noms de fichiers courantes à la liste
     officielle des types de média enregistrés par l'IANA et maintenue à
     <a href=
-    "http://www.iana.org/assignments/media-types/index.html"
-    >http://www.iana.org/assignments/media-types/index.html</a>, ainsi
+    "https://www.iana.org/assignments/media-types/index.html"
+    >https://www.iana.org/assignments/media-types/index.html</a>, ainsi
     qu'un grand nombre de types non officiels. Ce fichier permet de
     simplifier le fichier <code>httpd.conf</code> en fournissant la
     majorité des définitions de types de média, et ses définitions

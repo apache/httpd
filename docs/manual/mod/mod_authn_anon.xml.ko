@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,60 +23,60 @@
 <modulesynopsis metafile="mod_authn_anon.xml.meta">
 
 <name>mod_authn_anon</name>
-<description>ÀÎÁõ¿µ¿ª¿¡ "ÀÍ¸í(anonymous)" »ç¿ëÀÚÀÇ Á¢±ÙÀ»
-Çã¿ëÇÑ´Ù</description>
+<description>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ "ï¿½Í¸ï¿½(anonymous)" ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</description>
 <status>Extension</status>
 <sourcefile>mod_authn_anon.c</sourcefile>
 <identifier>authn_anon_module</identifier>
-<compatibility>¾ÆÆÄÄ¡ 2.1 ÀÌÈÄºÎÅÍ</compatibility>
+<compatibility>ï¿½ï¿½ï¿½ï¿½Ä¡ 2.1 ï¿½ï¿½ï¿½Äºï¿½ï¿½ï¿½</compatibility>
 
 <summary>
-    <p>ÀÌ ¸ðµâÀº <module>mod_auth_basic</module> µî ÀÎÁõ¾Õ´Ü¸ðµâÀ»
-    À§ÇØ (<em>¿¹¸¦ µé¾î</em> 'Æ¯º°ÇÑ' »ç¿ëÀÚ ¾ÆÀÌµð 'anonymous'¿Í
-    ÀüÀÚ¿ìÆí ÁÖ¼Ò¸¦ ¾ÏÈ£·Î »ç¿ëÇÏ´Â) ÀÍ¸í-ftp »çÀÌÆ®¿Í À¯»çÇÑ
-    »ç¿ëÀÚ ÀÎÁõÀ» ÇÑ´Ù. ÀüÀÚ¿ìÆí ÁÖ¼Ò¸¦ ·Î±×¿¡ ±â·ÏÇÒ ¼ö ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ <module>mod_auth_basic</module> ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ü¸ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ (<em>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½</em> 'Æ¯ï¿½ï¿½ï¿½ï¿½' ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ 'anonymous'ï¿½ï¿½
+    ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½Ö¼Ò¸ï¿½ ï¿½ï¿½È£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½) ï¿½Í¸ï¿½-ftp ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½Ö¼Ò¸ï¿½ ï¿½Î±×¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <p>´Ù¸¥ (µ¥ÀÌÅÍº£ÀÌ½º) Á¢±ÙÁ¦¾î ¹æ½Ä°ú ÇÔ²² »ç¿ëÇÏ¿©
-    'µî·ÏÇÏÁö¾ÊÀº' »ç¿ëÀÚ¿¡°Ô »çÀÌÆ®¸¦ ¿­¾îµÎ¸é¼­ È¿À²ÀûÀÎ »ç¿ëÀÚ
-    ÃßÀû°ú »ç¿ëÀÚÁ¤ÀÇ°¡ °¡´ÉÇÏ´Ù. ÀÎÁõ±â¹Ý »ç¿ëÀÚ ÃßÀûÀº ÄíÅ°³ª
-    ±«»óÇÑ URL Á¢µÎ»ç/Á¢¹Ì»ç¿Í ´Þ¸® ¿ÏÀüÈ÷ ºê¶ó¿ìÀú µ¶¸³ÀûÀÌ°í
-    »ç¿ëÀÚ°¡ URLÀ» °øÀ¯ÇÒ ¼ö ÀÖ´Ù´Â ÀåÁ¡ÀÌ ÀÖ´Ù.</p>
+    <p>ï¿½Ù¸ï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½Íºï¿½ï¿½Ì½ï¿½) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä°ï¿½ ï¿½Ô²ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½
+    'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½' ï¿½ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Î¸é¼­ È¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å°ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ URL ï¿½ï¿½ï¿½Î»ï¿½/ï¿½ï¿½ï¿½Ì»ï¿½ï¿½ ï¿½Þ¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì°ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ URLï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´Ù´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <p><module>mod_auth_basic</module>À» »ç¿ëÇÒ¶§ <directive
-    module="mod_auth_basic">AuthBasicProvider</directive>ÀÇ
-    °ªÀ¸·Î <code>anon</code>À» ¼³Á¤ÇÏ¸é ÀÌ ¸ðµâÀ» »ç¿ëÇÑ´Ù.</p>
+    <p><module>mod_auth_basic</module>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ <directive
+    module="mod_auth_basic">AuthBasicProvider</directive>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>anon</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 </summary>
 
-<section id="example"><title>¿¹Á¦</title>
-    <p>´ÙÀ½ ¿¹´Â "ÀÏ¹ÝÀûÀÎ" htpasswd-ÆÄÀÏ±â¹Ý ÀÎÁõ¿¡ Ãß°¡·Î
-    »ç¿ëÀÚ°¡ ´ÙÀ½ Á¶°ÇÀ» ¸¸Á·ÇÑ´Ù¸é '¼Õ´Ô(guest)'À¸·Î Á¢±ÙÇÒ
-    ¼ö ÀÖµµ·Ï ÇÑ´Ù:</p>
+<section id="example"><title>ï¿½ï¿½ï¿½ï¿½</title>
+    <p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ "ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½" htpasswd-ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½ 'ï¿½Õ´ï¿½(guest)'ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ ï¿½Öµï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½:</p>
 
     <ul>
-      <li>»ç¿ëÀÚ´Â »ç¿ëÀÚ ¾ÆÀÌµð¸¦ ÀÔ·ÂÇØ¾ß ÇÑ´Ù. (<directive
+      <li>ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ ï¿½Ô·ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½. (<directive
       module="mod_authn_anon">Anonymous_NoUserID</directive>)</li>
 
-      <li>»ç¿ëÀÚ´Â ¾ÏÈ£¸¦ ÀÔ·ÂÇØ¾ß ÇÑ´Ù. (<directive
+      <li>ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ ï¿½ï¿½È£ï¿½ï¿½ ï¿½Ô·ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½. (<directive
       module="mod_authn_anon">Anonymous_MustGiveEmail</directive>)</li>
 
-      <li>¾ÏÈ£·Î À¯È¿ÇÑ ÀüÀÚ¿ìÆí ÁÖ¼Ò¸¦ ÀÔ·ÂÇØ¾ß ÇÑ´Ù. <em>¿¹¸¦
-      µé¾î</em> ÃÖ¼ÒÇÑ '@'¿Í '.' ÇÑ°³¸¦ Æ÷ÇÔÇØ¾ß ÇÑ´Ù. (<directive
+      <li>ï¿½ï¿½È£ï¿½ï¿½ ï¿½ï¿½È¿ï¿½ï¿½ ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½Ö¼Ò¸ï¿½ ï¿½Ô·ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½. <em>ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½</em> ï¿½Ö¼ï¿½ï¿½ï¿½ '@'ï¿½ï¿½ '.' ï¿½Ñ°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½. (<directive
       module="mod_authn_anon">Anonymous_VerifyEmail</directive>)</li>
 
-      <li>»ç¿ëÀÚ ¾ÆÀÌµð´Â <code>anonymous guest www test
-      welcome</code> Áß ÇÏ³ªÀÌ¸ç, ´ë¼Ò¹®ÀÚ¸¦ ±¸º°ÇÏÁö
-      <strong>¾Ê´Â´Ù</strong>. (<directive module="mod_authn_anon"
+      <li>ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ï¿½ <code>anonymous guest www test
+      welcome</code> ï¿½ï¿½ ï¿½Ï³ï¿½ï¿½Ì¸ï¿½, ï¿½ï¿½Ò¹ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      <strong>ï¿½Ê´Â´ï¿½</strong>. (<directive module="mod_authn_anon"
       >Anonymous</directive>)</li>
 
-      <li>±×¸®°í ¾ÏÈ£·Î ÀÔ·ÂÇÑ ÀüÀÚ¿ìÆí ÁÖ¼Ò¸¦ ¿À·ù·Î±×ÆÄÀÏ¿¡
-      ±â·ÏÇÑ´Ù. (<directive
+      <li>ï¿½×¸ï¿½ï¿½ï¿½ ï¿½ï¿½È£ï¿½ï¿½ ï¿½Ô·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½Ö¼Ò¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Î±ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½
+      ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. (<directive
       module="mod_authn_anon">Anonymous_LogEmail</directive>)</li>
     </ul>
 
-    <example><title>¿¹Á¦</title>
+    <example><title>ï¿½ï¿½ï¿½ï¿½</title>
       &lt;Directory /foo&gt;
       <indent>
-        AuthName "¼Õ´ÔÀ¸·Î ¹æ¹®ÇÏ·Á¸é 'anonymous'¿Í ÀüÀÚ¿ìÆí ÁÖ¼Ò¸¦ »ç¿ëÇÏ¶ó"<br />
+        AuthName "ï¿½Õ´ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½æ¹®ï¿½Ï·ï¿½ï¿½ï¿½ 'anonymous'ï¿½ï¿½ ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½Ö¼Ò¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½"<br />
         AuthType Basic<br />
         AuthBasicProvider file anon<br />
         AuthUserFile /path/to/your/.htpasswd<br />
@@ -98,39 +98,39 @@
 
 <directivesynopsis>
 <name>Anonymous</name>
-<description>¾ÏÈ£°Ë»ç¾øÀÌ Á¢±ÙÀ» Çã¿ëÇÒ »ç¿ëÀÚ ¾ÆÀÌµðµéÀ»
-ÁöÁ¤ÇÑ´Ù</description>
+<description>ï¿½ï¿½È£ï¿½Ë»ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</description>
 <syntax>Anonymous <var>user</var> [<var>user</var>] ...</syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
 
 <usage>
-    <p>¾ÏÈ£°Ë»ç¾øÀÌ Á¢±ÙÀ» Çã¿ëÇÒ 'Æ¯º°ÇÑ' »ç¿ëÀÚ ¾ÆÀÌµð ¸ñ·Ï.
-    »ç¿ëÀÚ ¾ÆÀÌµðµéÀ» °ø¹éÀ¸·Î ±¸ºÐÇÑ´Ù. µû¿ÈÇ¥ '¿Í "³ª Å»Ãâ¹®ÀÚ
-    \¸¦ »ç¿ëÇÏ¿© »ç¿ëÀÚ ¾ÆÀÌµð ¾È¿¡ °ø¹éÀ» Æ÷ÇÔÇÒ ¼ö ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½È£ï¿½Ë»ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ 'Æ¯ï¿½ï¿½ï¿½ï¿½' ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ ï¿½ï¿½ï¿½.
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½Ç¥ 'ï¿½ï¿½ "ï¿½ï¿½ Å»ï¿½â¹®ï¿½ï¿½
+    \ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ ï¿½È¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <p>¾ÆÀÌµð´Â <strong>´ë¼Ò¹®ÀÚ¸¦ ±¸º°ÇÏÁö¾ÊÀ½</strong>À»
-    ÁÖÀÇÇÏ¶ó.<br />
-    Çã¿ëÇÒ »ç¿ëÀÚ ¾ÆÀÌµð¿¡ Æ¯º°ÇÑ »ç¿ëÀÚ¸íÀÎ
-    '<code>anonymous</code>'¸¦ Ç×»ó Æ÷ÇÔÇÏ±æ °­·ÂÈ÷ ±ÇÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½Ìµï¿½ï¿½ <strong>ï¿½ï¿½Ò¹ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</strong>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.<br />
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ Æ¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ï¿½ï¿½
+    '<code>anonymous</code>'ï¿½ï¿½ ï¿½×»ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <example><title>¿¹Á¦:</title>
+    <example><title>ï¿½ï¿½ï¿½ï¿½:</title>
       Anonymous anonymous "Not Registered" "I don't know"
     </example>
 
     <p>"anonymous", "AnonyMous", "Not Registered", "I Don't Know"
-    µî »ç¿ëÀÚ ¾ÆÀÌµð¸¦ »ç¿ëÇÏ¸é ¾ÏÈ£°Ë»ç¾øÀÌ »ç¿ëÀÚ¸¦ Çã¿ëÇÑ´Ù.</p>
+    ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½È£ï¿½Ë»ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <p>¾ÆÆÄÄ¡ 2.1¿¡¼­´Â »ç¿ëÀÚ ¾ÆÀÌµð·Î "<code>*</code>"¸¦
-    »ç¿ëÇÒ ¼ö ÀÖ´Ù. ±×·¯¸é <em>¾î¶²</em> »ç¿ëÀÚ ¾ÆÀÌµð¶óµµ
-    ¹Þ¾ÆµéÀÎ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½Ä¡ 2.1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ï¿½ "<code>*</code>"ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½×·ï¿½ï¿½ï¿½ <em>ï¿½î¶²</em> ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ï¿½
+    ï¿½Þ¾Æµï¿½ï¿½Î´ï¿½.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>Anonymous_LogEmail</name>
-<description>ÀÔ·ÂÇÑ ¾ÏÈ£¸¦ ¿À·ù·Î±×¿¡ ±â·ÏÇÒÁö ¿©ºÎ</description>
+<description>ï¿½Ô·ï¿½ï¿½ï¿½ ï¿½ï¿½È£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Î±×¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</description>
 <syntax>Anonymous_LogEmail On|Off</syntax>
 <default>Anonymous_LogEmail On</default>
 <contextlist><context>directory</context><context>.htaccess</context>
@@ -138,14 +138,14 @@
 <override>AuthConfig</override>
 
 <usage>
-    <p>±âº»°ªÀÎ <code>On</code>À¸·Î ¼³Á¤ÇÏ¸é (¾Æ¸¶µµ ÀüÀÚ¿ìÆí
-    ÁÖ¼ÒÀÏ) ÀÔ·ÂÇÑ '¾ÏÈ£'¸¦ ¿À·ù·Î±×¿¡ ±â·ÏÇÑ´Ù.</p>
+    <p>ï¿½âº»ï¿½ï¿½ï¿½ï¿½ <code>On</code>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ (ï¿½Æ¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½
+    ï¿½Ö¼ï¿½ï¿½ï¿½) ï¿½Ô·ï¿½ï¿½ï¿½ 'ï¿½ï¿½È£'ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Î±×¿ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>Anonymous_MustGiveEmail</name>
-<description>¾ÏÈ£°¡ ¾ø¾îµµ °¡´ÉÇÑÁö ¿©ºÎ</description>
+<description>ï¿½ï¿½È£ï¿½ï¿½ ï¿½ï¿½ï¿½îµµ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</description>
 <syntax>Anonymous_MustGiveEmail On|Off</syntax>
 <default>Anonymous_MustGiveEmail On</default>
 <contextlist><context>directory</context><context>.htaccess</context>
@@ -153,14 +153,14 @@
 <override>AuthConfig</override>
 
 <usage>
-    <p>»ç¿ëÀÚ°¡ ¾ÏÈ£·Î ÀüÀÚ¿ìÆí ÁÖ¼Ò¸¦ ÀÔ·ÂÇØ¾ß ÇÏ´ÂÁö ¿©ºÎ¸¦
-    °áÁ¤ÇÑ´Ù. ¾ÏÈ£°¡ ¾øÀ¸¸é °ÅºÎÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½ï¿½È£ï¿½ï¿½ ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½Ö¼Ò¸ï¿½ ï¿½Ô·ï¿½ï¿½Ø¾ï¿½ ï¿½Ï´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î¸ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½È£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Åºï¿½ï¿½Ñ´ï¿½.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>Anonymous_NoUserID</name>
-<description>»ç¿ëÀÚ ¾ÆÀÌµð°¡ ¾ø¾îµµ °¡´ÉÇÏÁö ¿©ºÎ</description>
+<description>ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ ï¿½ï¿½ï¿½îµµ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</description>
 <syntax>Anonymous_NoUserID On|Off</syntax>
 <default>Anonymous_NoUserID Off</default>
 <contextlist><context>directory</context><context>.htaccess</context>
@@ -168,17 +168,17 @@
 <override>AuthConfig</override>
 
 <usage>
-    <p><code>On</code>À¸·Î ¼³Á¤ÇÏ¸é »ç¿ëÀÚ´Â »ç¿ëÀÚ ¾ÆÀÌµð¸¦
-    (¾Æ¸¶ ¾ÏÈ£µµ) ÀÔ·ÂÇÏÁö ¾Ê¾Æµµ µÈ´Ù. ÀÌ´Â ÀÚ¿¬½º·´°Ô ±×³É
-    returnÀ» Ä¡°Å³ª OK ¹öÆ°À» Å¬¸¯ÇÏ´Â MS-Explorer »ç¿ëÀÚ¿¡°Ô
-    ¸Å¿ì Æí¸®ÇÏ´Ù.</p>
+    <p><code>On</code>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½
+    (ï¿½Æ¸ï¿½ ï¿½ï¿½È£ï¿½ï¿½) ï¿½Ô·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¾Æµï¿½ ï¿½È´ï¿½. ï¿½Ì´ï¿½ ï¿½Ú¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×³ï¿½
+    returnï¿½ï¿½ Ä¡ï¿½Å³ï¿½ OK ï¿½ï¿½Æ°ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ï´ï¿½ MS-Explorer ï¿½ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½
+    ï¿½Å¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>Anonymous_VerifyEmail</name>
-<description>¾ÏÈ£°¡ ¿Ã¹Ù¸¥ Çü½ÄÀÇ ÀüÀÚ¿ìÆí ÁÖ¼ÒÀÎÁö °Ë»ç
-¿©ºÎ</description>
+<description>ï¿½ï¿½È£ï¿½ï¿½ ï¿½Ã¹Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½
+ï¿½ï¿½ï¿½ï¿½</description>
 <syntax>Anonymous_VerifyEmail On|Off</syntax>
 <default>Anonymous_VerifyEmail Off</default>
 <contextlist><context>directory</context><context>.htaccess</context>
@@ -186,10 +186,10 @@
 <override>AuthConfig</override>
 
 <usage>
-    <p><code>On</code>À¸·Î ¼³Á¤ÇÏ¸é »ç¿ëÀÚ°¡ ¿Ã¹Ù¸¥ ÀüÀÚ¿ìÆí
-    ÁÖ¼Ò¸¦ ÀÔ·ÂÇÏµµ·Ï ÀÔ·ÂÇÑ '¾ÏÈ£'°¡ ÃÖ¼ÒÇÑ '@'¿Í '.'¸¦ ÇÑ°³¾¿
-    Æ÷ÇÔÇÏ´ÂÁö °Ë»çÇÑ´Ù (À§ÀÇ <directive
-    module="mod_authn_anon">Anonymous_LogEmail</directive> Âü°í).</p>
+    <p><code>On</code>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½Ã¹Ù¸ï¿½ ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½
+    ï¿½Ö¼Ò¸ï¿½ ï¿½Ô·ï¿½ï¿½Ïµï¿½ï¿½ï¿½ ï¿½Ô·ï¿½ï¿½ï¿½ 'ï¿½ï¿½È£'ï¿½ï¿½ ï¿½Ö¼ï¿½ï¿½ï¿½ '@'ï¿½ï¿½ '.'ï¿½ï¿½ ï¿½Ñ°ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½ï¿½Ñ´ï¿½ (ï¿½ï¿½ï¿½ï¿½ <directive
+    module="mod_authn_anon">Anonymous_LogEmail</directive> ï¿½ï¿½ï¿½ï¿½).</p>
 </usage>
 </directivesynopsis>
 

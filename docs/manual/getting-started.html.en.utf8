@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -16,12 +16,12 @@
 
 <link href="./images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="./images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>Getting Started</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>Getting Started</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="./en/getting-started.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/getting-started.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
@@ -68,7 +68,7 @@ code and, optionally, a response body.
 The status code indicates whether the request was successful, and, if not, what
 kind of error condition there was. This tells the client what it should
 do with the response. You can read about the possible response codes in
-<a href="http://wiki.apache.org/httpd/CommonHTTPStatusCodes">HTTP Server
+<a href="https://wiki.apache.org/httpd/CommonHTTPStatusCodes">HTTP Server
 wiki</a>.</p>
 
 <p>Details of the transaction, and any error conditions, are written to
@@ -106,8 +106,8 @@ testing purposes. This entry would look like:</p>
 <p>A hosts file will probably be located at <code>/etc/hosts</code> or
 <code>C:\Windows\system32\drivers\etc\hosts</code>.</p>
 
-<p>You can read more about the hosts file at <a href="http://en.wikipedia.org/wiki/Hosts_(file)">Wikipedia.org/wiki/Hosts_(file)</a>, and
-more about DNS at <a href="http://en.wikipedia.org/wiki/Domain_Name_System">Wikipedia.org/wiki/Domain_Name_System</a>.</p>
+<p>You can read more about the hosts file at <a href="https://en.wikipedia.org/wiki/Hosts_(file)">Wikipedia.org/wiki/Hosts_(file)</a>, and
+more about DNS at <a href="https://en.wikipedia.org/wiki/Domain_Name_System">Wikipedia.org/wiki/Domain_Name_System</a>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="configuration" id="configuration">Configuration Files and Directives</a> <a title="Permanent link" href="#configuration" class="permalink">&para;</a></h2>
@@ -116,7 +116,7 @@ more about DNS at <a href="http://en.wikipedia.org/wiki/Domain_Name_System">Wiki
 <p>The Apache HTTP Server is configured via simple text files.
 These files may be located any of a variety of places, depending on how
 exactly you installed the server. Common locations for these files may
-be found <a href="http://wiki.apache.org/httpd/DistrosDefaultLayout">in
+be found <a href="https://wiki.apache.org/httpd/DistrosDefaultLayout">in
 the httpd wiki</a>. If you installed httpd from source, the default
 location of the configuration files is
 <code>/usr/local/apache2/conf</code>. The default configuration file is
@@ -167,7 +167,7 @@ determine how this is set for your server.</p>
 when a directory is requested without a file name being specified. For
 example, if <code>DocumentRoot</code> is set to
 <code>/var/www/html</code> and a request is made for
-<code>http://www.example.com/work/</code>, the file
+<code>https://www.example.com/work/</code>, the file
 <code>/var/www/html/work/index.html</code> will be served to the
 client.</p>
 
@@ -215,11 +215,11 @@ started, but there are many other things that you might need to
 know.</p>
 
 <ul>
-<li><a href="http://httpd.apache.org/download.cgi">Download</a></li>
+<li><a href="https://httpd.apache.org/download.cgi">Download</a></li>
 <li><a href="install.html">Install</a></li>
 <li><a href="configuring.html">Configure</a></li>
 <li><a href="invoking.html">Start</a></li>
-<li><a href="http://wiki.apache.org/httpd/FAQ">Frequently Asked Questions</a></li>
+<li><a href="https://wiki.apache.org/httpd/FAQ">Frequently Asked Questions</a></li>
 </ul>
 
 </div></div>
@@ -230,7 +230,7 @@ know.</p>
 </div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/getting-started.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/getting-started.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -245,8 +245,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/getting-started.ht
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

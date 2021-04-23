@@ -12,7 +12,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -177,7 +177,7 @@ Para desahabilitar la autenticación básica falsa para una URL, especifique "Au
 
     <p>Cuando se usa 
     <directive module="mod_auth_digest">AuthDigestProvider</directive> y Autenticación Digest, los proveedores realizan una comprobación similar para encontrar un nombre de usuario en sus almacenes de datos.  Sin embargo, al contrario que en el caso de la Autenticación Básica, el valor asociado con cada nombre de usuario almacenado debe ser una cadena de caracteres encriptada compuesta del nombre de usuario, nombre real y contraseña.  (Vea el
-    <a href="http://tools.ietf.org/html/rfc2617#section-3.2.2.2">
+    <a href="https://tools.ietf.org/html/rfc2617#section-3.2.2.2">
     RFC 2617, Sección 3.2.2.2</a> para más detalles en el formato usado para la cadena de caracteres encriptada.)</p>
 
     <p>Como consecuencia de la diferencia entre los valores almacenados entre la Autenticación Básica y la Digest, convertir desde Autenticación Digest a Autenticación Básica generalmente requiere que a todos los usuarios se les asigne nuevas contraseñas, puesto que sus contraseñas actuales no pueden ser recuperadas desde el esquema de almacenamiento de contraseñas impuesto en esos proveedores que soportan la Autenticación Digest.</p>

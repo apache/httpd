@@ -140,7 +140,7 @@ if ! test -v SKIP_TESTING; then
            ./t/TEST -start
            # litmus uses $TESTS, so unset it.
            unset TESTS
-           litmus http://localhost:8529/modules/dav/
+           litmus https://localhost:8529/modules/dav/
            RV=$?
            ./t/TEST -stop
         popd

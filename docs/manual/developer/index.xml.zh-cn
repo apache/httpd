@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -28,7 +28,7 @@
 <summary>
     <p>开发者页面的许多文档都来自于 Apache 1.3。当更新到 Apache 2
     时，它们可能位于不同的阶段。请耐心等待，或者直接向
-    <a href="http://httpd.apache.org/lists.html#http-dev"
+    <a href="https://httpd.apache.org/lists.html#http-dev"
     >dev@httpd.apache.org</a> 邮件列表报告开发者页面的差异或错误。</p>
 </summary>
 
@@ -50,29 +50,29 @@
 <section id="external"><title>外部资源</title>
     <ul>
         <li><a
-        href="http://ci.apache.org/projects/httpd/trunk/doxygen/"
+        href="https://ci.apache.org/projects/httpd/trunk/doxygen/"
         >自动生成的 Apache HTTP 服务器 (trunk) 代码文档</a></li>
 
       <li>Kevin O'Donnell 的模块开发教程
       <ul>
         <li><a
-        href="http://threebit.net/tutorials/apache2_modules/tut1/tutorial1.html"
+        href="https://threebit.net/tutorials/apache2_modules/tut1/tutorial1.html"
         >集成模块到 Apache 构建系统</a></li>
 
         <li><a
-        href="http://threebit.net/tutorials/apache2_modules/tut2/tutorial2.html"
+        href="https://threebit.net/tutorials/apache2_modules/tut2/tutorial2.html"
         >处理配置指令</a></li>
       </ul></li>
 
-      <li><a href="http://www.onlamp.com/pub/ct/38">Ryan Bloom 对 Apache 模块开发的说明</a></li>
+      <li><a href="https://www.onlamp.com/pub/ct/38">Ryan Bloom 对 Apache 模块开发的说明</a></li>
 
-      <li>位于 <a href="http://www.apachetutor.org/">apachetutor</a> 的开发者文章:
+      <li>位于 <a href="https://www.apachetutor.org/">apachetutor</a> 的开发者文章:
       <ul>
-        <li><a href="http://www.apachetutor.org/dev/request">Apache 中的请求处理</a></li>
-        <li><a href="http://www.apachetutor.org/dev/config">模块的配置</a></li>
-        <li><a href="http://www.apachetutor.org/dev/pools">Apache 中的资源管理</a></li>
-        <li><a href="http://www.apachetutor.org/dev/reslist">Apache 中的连接池</a></li>
-        <li><a href="http://www.apachetutor.org/dev/brigades">桶与队列简介</a></li>
+        <li><a href="https://www.apachetutor.org/dev/request">Apache 中的请求处理</a></li>
+        <li><a href="https://www.apachetutor.org/dev/config">模块的配置</a></li>
+        <li><a href="https://www.apachetutor.org/dev/pools">Apache 中的资源管理</a></li>
+        <li><a href="https://www.apachetutor.org/dev/reslist">Apache 中的连接池</a></li>
+        <li><a href="https://www.apachetutor.org/dev/brigades">桶与队列简介</a></li>
       </ul></li>
     </ul>
 </section>

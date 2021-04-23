@@ -5,7 +5,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -240,33 +240,33 @@ extern "C" {
 /** HTML 4.0 Strict Doctype */
 #define DOCTYPE_HTML_4_0S "<!DOCTYPE HTML PUBLIC \"-//W3C//" \
                           "DTD HTML 4.0//EN\"\n" \
-                          "\"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+                          "\"https://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 /** HTML 4.0 Transitional Doctype */
 #define DOCTYPE_HTML_4_0T "<!DOCTYPE HTML PUBLIC \"-//W3C//" \
                           "DTD HTML 4.0 Transitional//EN\"\n" \
-                          "\"http://www.w3.org/TR/REC-html40/loose.dtd\">\n"
+                          "\"https://www.w3.org/TR/REC-html40/loose.dtd\">\n"
 /** HTML 4.0 Frameset Doctype */
 #define DOCTYPE_HTML_4_0F "<!DOCTYPE HTML PUBLIC \"-//W3C//" \
                           "DTD HTML 4.0 Frameset//EN\"\n" \
-                          "\"http://www.w3.org/TR/REC-html40/frameset.dtd\">\n"
+                          "\"https://www.w3.org/TR/REC-html40/frameset.dtd\">\n"
 /** HTML 4.01 Doctype */
-#define DOCTYPE_HTML_4_01 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">\n"
+#define DOCTYPE_HTML_4_01 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"https://www.w3.org/TR/html4/strict.dtd\">\n"
 /** HTML 5 Doctype */
 #define DOCTYPE_HTML_5 "<!DOCTYPE html>\n"
 /** XHTML 1.0 Strict Doctype */
 #define DOCTYPE_XHTML_1_0S "<!DOCTYPE html PUBLIC \"-//W3C//" \
                            "DTD XHTML 1.0 Strict//EN\"\n" \
-                           "\"http://www.w3.org/TR/xhtml1/DTD/" \
+                           "\"https://www.w3.org/TR/xhtml1/DTD/" \
                            "xhtml1-strict.dtd\">\n"
 /** XHTML 1.0 Transitional Doctype */
 #define DOCTYPE_XHTML_1_0T "<!DOCTYPE html PUBLIC \"-//W3C//" \
                            "DTD XHTML 1.0 Transitional//EN\"\n" \
-                           "\"http://www.w3.org/TR/xhtml1/DTD/" \
+                           "\"https://www.w3.org/TR/xhtml1/DTD/" \
                            "xhtml1-transitional.dtd\">\n"
 /** XHTML 1.0 Frameset Doctype */
 #define DOCTYPE_XHTML_1_0F "<!DOCTYPE html PUBLIC \"-//W3C//" \
                            "DTD XHTML 1.0 Frameset//EN\"\n" \
-                           "\"http://www.w3.org/TR/xhtml1/DTD/" \
+                           "\"https://www.w3.org/TR/xhtml1/DTD/" \
                            "xhtml1-frameset.dtd\">"
 
 /** Internal representation for a HTTP protocol number, e.g., HTTP/1.1 */
@@ -830,6 +830,8 @@ typedef struct conn_slave_rec conn_slave_rec;
 typedef struct request_rec request_rec;
 /** A structure that represents the status of the current connection */
 typedef struct conn_state_t conn_state_t;
+/** A structure that represents a number of bytes */
+typedef struct ap_bytes_t ap_bytes_t;
 
 /* ### would be nice to not include this from httpd.h ... */
 /* This comes after we have defined the request_rec type */
@@ -1480,6 +1482,15 @@ struct ap_loadavg_t {
     float loadavg5;
     /* 15 min loadavg */
     float loadavg15;
+};
+
+/**
+ * @struct ap_bytes_t
+ * @brief A structure to hold a number of bytes
+ */
+struct ap_bytes_t {
+    unsigned char *data;
+    apr_size_t len;
 };
 
 /**

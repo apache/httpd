@@ -5,7 +5,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -148,7 +148,7 @@ static apr_off_t get_content_length(request_rec * r)
  * fixed this code should be removed.
  *
  * For further discussion see PR37100.
- * http://issues.apache.org/bugzilla/show_bug.cgi?id=37100
+ * https://issues.apache.org/bugzilla/show_bug.cgi?id=37100
  */
 
 /*

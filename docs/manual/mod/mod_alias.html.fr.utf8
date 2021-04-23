@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -17,12 +17,12 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Module Apache mod_alias</h1>
 <div class="toplang">
@@ -154,11 +154,11 @@ de fichiers</td></tr>
     <pre class="prettyprint lang-config">Alias "/image" "/ftp/pub/image"</pre>
 
 
-    <p>Une requête pour <code>http://example.com/image/foo.gif</code> fera
+    <p>Une requête pour <code>https://example.com/image/foo.gif</code> fera
     renvoyer par le serveur le fichier
     <code>/ftp/pub/image/foo.gif</code>. Seuls les éléments de chemin
     complets sont testés ; ainsi l'alias précédent ne conviendra pas
-    pour une requête du style <code>http://example.com/imagefoo.gif</code>.
+    pour une requête du style <code>https://example.com/imagefoo.gif</code>.
     Pour des mises en correspondance plus complexes faisant intervenir
     les expressions rationnelles, veuillez vous reporter à la directive
     <code class="directive"><a href="#aliasmatch">AliasMatch</a></code>.</p>
@@ -327,25 +327,25 @@ d'effectuer une autre requête avec une URL différente</td></tr>
     ajouté à l'URL cible.</p>
 
     <pre class="prettyprint lang-config"># Redirige vers une URL sur un serveur différent
-Redirect "/service" "http://foo2.example.com/service"
+Redirect "/service" "https://foo2.example.com/service"
 
 # Redirige vers une URL sur le même serveur
 Redirect "/one" "/two"</pre>
 
 
     <p>Si le client effectue une requête pour l'URL
-    <code>http://example.com/service/foo.txt</code>, il lui sera demandé
+    <code>https://example.com/service/foo.txt</code>, il lui sera demandé
     d'en effectuer une autre pour l'URL
-    <code>http://foo2.example.com/service/foo.txt</code>. Ceci concerne
+    <code>https://foo2.example.com/service/foo.txt</code>. Ceci concerne
     les requêtes avec paramètres <code>GET</code>, comme
-    <code>http://example.com/service/foo.pl?q=23&amp;a=42</code>, qui
+    <code>https://example.com/service/foo.pl?q=23&amp;a=42</code>, qui
     seront redirigées vers
-    <code>http://foo2.example.com/service/foo.pl?q=23&amp;a=42</code>.
+    <code>https://foo2.example.com/service/foo.pl?q=23&amp;a=42</code>.
     Notez que les <code>POST</code>s seront ignorés.<br />
     Seuls les
     éléments de chemin complets sont testés, si bien que l'exemple
     précédent ne s'appliquera pas à l'URL
-    <code>http://example.com/servicefoo.txt</code>. Pour des mises en
+    <code>https://example.com/servicefoo.txt</code>. Pour des mises en
     correspondance plus complexes utilisant la <a href="../expr.html">syntaxe des expressions</a>, ne spécifiez pas
     d'argument <var>URL-path</var> comme décrit ci-dessous. En outre,
     pour une mise en correspondance en utilisant les expressions
@@ -399,8 +399,8 @@ Redirect "/one" "/two"</pre>
     fonction <code>send_error_response</code> dans
     http_protocol.c).</p>
 
-    <pre class="prettyprint lang-config">Redirect permanent "/one" "http://example.com/two"
-Redirect 303 "/three" "http://example.com/other"</pre>
+    <pre class="prettyprint lang-config">Redirect permanent "/one" "https://example.com/two"
+Redirect 303 "/three" "https://example.com/other"</pre>
 
 
     <p>Si une directive <code class="directive">Redirect</code> est définie au
@@ -410,13 +410,13 @@ Redirect 303 "/three" "http://example.com/other"</pre>
     serveur HTTP Apache.</p>
 
     <pre class="prettyprint lang-config">&lt;Location "/one"&gt;
-    Redirect permanent "http://example.com/two"
+    Redirect permanent "https://example.com/two"
 &lt;/Location&gt;
 &lt;Location "/three"&gt;
-    Redirect 303 "http://example.com/other"
+    Redirect 303 "https://example.com/other"
 &lt;/Location&gt;
 &lt;LocationMatch "/error/(?&lt;NUMBER&gt;[0-9]+)"&gt;
-    Redirect permanent "http://example.com/errors/%{env:MATCH_NUMBER}.html"
+    Redirect permanent "https://example.com/errors/%{env:MATCH_NUMBER}.html"
 &lt;/LocationMatch&gt;</pre>
 
 
@@ -445,7 +445,7 @@ courante</td></tr>
     les fichiers GIF vers les fichiers JPEG de même nom sur un autre
     serveur, on peut utiliser :</p>
 
-    <pre class="prettyprint lang-config">RedirectMatch "(.*)\.gif$" "http://autre.example.com$1.jpg"</pre>
+    <pre class="prettyprint lang-config">RedirectMatch "(.*)\.gif$" "https://autre.example.com$1.jpg"</pre>
 
 
     <p>Les remarques à propos de la différence entre <code class="directive"><a href="#alias">Alias</a></code> et <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> s'appliquent aussi à la
@@ -532,7 +532,7 @@ et désigne la cible comme script CGI</td></tr>
     <pre class="prettyprint lang-config">ScriptAlias "/cgi-bin/" "/web/cgi-bin/"</pre>
 
 
-    <p>Une requête pour <code>http://example.com/cgi-bin/foo</code>
+    <p>Une requête pour <code>https://example.com/cgi-bin/foo</code>
     ferait exécuter par le serveur le script
     <code>/web/cgi-bin/foo</code>. Cette configuration est sensiblement
     équivalente à :</p>
@@ -645,7 +645,7 @@ comme un script CGI</td></tr>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_alias.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/mod/mod_alias.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -660,8 +660,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_alias.html
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

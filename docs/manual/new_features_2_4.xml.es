@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -140,7 +140,7 @@
       autenticación o autorización.</dd>
 
       <dt><module>mod_lua</module></dt>
-      <dd>Embebe el lenguaje<a href="http://www.lua.org/">Lua</a> en httpd,
+      <dd>Embebe el lenguaje<a href="https://www.lua.org/">Lua</a> en httpd,
       para la configuración y las funciones lógicas de negocios pequeños. (Experimental)</dd>
 
       <dt><module>mod_log_debug</module></dt>

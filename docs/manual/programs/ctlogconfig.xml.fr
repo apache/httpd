@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -185,27 +185,27 @@ transparence des certificats</title>
   certificats sont enregistr&eacute;s :</p>
 
   <example>
-    $ ctlogconfig /path/to/conf/log-config configure-url http://log1.example.com/<br />
-    $ ctlogconfig /path/to/conf/log-config configure-url http://log2.example.com/<br />
+    $ ctlogconfig /path/to/conf/log-config configure-url https://log1.example.com/<br />
+    $ ctlogconfig /path/to/conf/log-config configure-url https://log2.example.com/<br />
     $ ctlogconfig /path/to/conf/log-config dump<br />
     Log entry:<br />
       Record 1<br />
       Log id         : (not configured)<br />
       Public key file: (not configured)<br />
-      URL            : http://log1.example.com/<br />
+      URL            : https://log1.example.com/<br />
       Time range     : -INF to +INF<br />
 <br />
     Log entry:<br />
       Record 2<br />
       Log id         : (not configured)<br />
       Public key file: (not configured)<br />
-      URL            : http://log2.example.com/<br />
+      URL            : https://log2.example.com/<br />
       Time range     : -INF to +INF<br />
   </example>
 
   <p>Nous pouvons maintenant attribuer une cl&eacute; publique &agrave; un log o&ugrave; le
   certificat de notre seul serveur d'arri&egrave;re-plan est publi&eacute;. Dans notre
-  cas, il s'agit du log dont l'URL est http://log2.example.com/, et qui
+  cas, il s'agit du log dont l'URL est https://log2.example.com/, et qui
   a d&eacute;j&agrave; &eacute;t&eacute; configur&eacute;.</p>
 
   <example>
@@ -215,14 +215,14 @@ transparence des certificats</title>
       Record 1<br />
       Log id         : (not configured)<br />
       Public key file: (not configured)<br />
-      URL            : http://log1.example.com/<br />
+      URL            : https://log1.example.com/<br />
       Time range     : -INF to +INF<br />
 <br />
     Log entry:<br />
       Record 2<br />
       Log id         : (not configured)<br />
       Public key file: /path/to/conf/log2-pub.pem<br />
-      URL            : http://log2.example.com/<br />
+      URL            : https://log2.example.com/<br />
       Time range     : -INF to +INF<br />
   </example>
 </section>

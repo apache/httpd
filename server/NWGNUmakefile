@@ -244,7 +244,7 @@ install :: nlms FORCE
 
 # Make sure that the build doesn't attempt to regenerate the shipping files.
 # This requires a 'touch' utility.  Can be downloaded from 'coreutils' at
-#  http://sourceforge.net/projects/gnuwin32/
+#  https://sourceforge.net/projects/gnuwin32/
 util_expr_parse.h : util_expr_parse.y
 	touch util_expr_parse.h
 util_expr_parse.c : util_expr_parse.y

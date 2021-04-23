@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -364,8 +364,8 @@ Listen 80
     <highlight language="config">
 &lt;VirtualHost *:*&gt;
     ProxyPreserveHost On
-    ProxyPass "/" "http://192.168.111.2/"
-    ProxyPassReverse "/" "http://192.168.111.2/"
+    ProxyPass "/" "https://192.168.111.2/"
+    ProxyPassReverse "/" "https://192.168.111.2/"
     ServerName hostname.example.com
 &lt;/VirtualHost&gt;
     </highlight>
@@ -540,14 +540,14 @@ DocumentRoot "/www/subdomain/sub1"
 
     <p>À cause de la directive 
     <directive module="core">ServerPath</directive>, une requête sur 
-    une URL <code>http://www.sub1.domain.tld/sub1/</code> est 
+    une URL <code>https://www.sub1.domain.tld/sub1/</code> est 
     <em>toujours</em> servie par le serveur sub1-vhost.<br />
-    Une requête sur une URL <code>http://www.sub1.domain.tld/</code> n'est 
+    Une requête sur une URL <code>https://www.sub1.domain.tld/</code> n'est 
     servie par le serveur sub1-vhost que si le client envoie un en-tête 
     <code>Host:</code> correct. Si aucun en-tête <code>Host:</code> 
     n'est transmis, le serveur primaire sera utilisé.</p>
     <p>Notez qu'il y a une singularité&nbsp;: une requête sur 
-    <code>http://www.sub2.domain.tld/sub1/</code> est également servie 
+    <code>https://www.sub2.domain.tld/sub1/</code> est également servie 
     par le serveur sub1-vhost si le client n'envoie pas d'en-tête 
     <code>Host:</code>.</p>
     <p>Les directives <directive module="mod_rewrite">RewriteRule</directive> 

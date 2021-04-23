@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -27,7 +27,7 @@
 
 <summary>
 <p>Apache HTTP 服务器模块 <module>mod_ssl</module>
-提供了与 <a href="http://www.openssl.org/">OpenSSL</a>
+提供了与 <a href="https://www.openssl.org/">OpenSSL</a>
 的接口，它使用安全套接字层和传输层安全协议提供了强加密。
 此模块与这篇文档都基于
 Ralf S. Engelschall 的 mod_ssl 项目。</p>

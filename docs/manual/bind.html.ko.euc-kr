@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
 <meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>ÁÖ¼Ò¿Í Æ÷Æ® ÁöÁ¤ (Binding) - Apache HTTP Server Version 2.5</title>
+<title>ï¿½Ö¼Ò¿ï¿½ ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ (Binding) - Apache HTTP Server Version 2.5</title>
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
@@ -16,14 +16,14 @@
 
 <link href="./images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">¸ðµâ</a> | <a href="./mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">¿ë¾î</a> | <a href="./sitemap.html">»çÀÌÆ®¸Ê</a></p>
+<p class="menu"><a href="./mod/">ï¿½ï¿½ï¿½</a> | <a href="./mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">ï¿½ï¿½ï¿½</a> | <a href="./sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="./images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>ÁÖ¼Ò¿Í Æ÷Æ® ÁöÁ¤ (Binding)</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>ï¿½Ö¼Ò¿ï¿½ ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ (Binding)</h1>
 <div class="toplang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="./de/bind.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="./de/bind.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/bind.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/bind.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
 <a href="./fr/bind.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
@@ -31,123 +31,123 @@
 <a href="./ko/bind.html" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/bind.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">ÀÌ ¹®¼­´Â ÃÖ½ÅÆÇ ¹ø¿ªÀÌ ¾Æ´Õ´Ï´Ù.
-            ÃÖ±Ù¿¡ º¯°æµÈ ³»¿ëÀº ¿µ¾î ¹®¼­¸¦ Âü°íÇÏ¼¼¿ä.</div>
+<div class="outofdate">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Õ´Ï´ï¿½.
+            ï¿½Ö±Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.</div>
 
-    <p>¾ÆÆÄÄ¡°¡ Æ¯Á¤ ÁÖ¼Ò¿Í Æ÷Æ®¿¡¼­ ¼­ºñ½ºÇÏµµ·Ï ¼³Á¤ÇÏ±â.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ Æ¯ï¿½ï¿½ ï¿½Ö¼Ò¿ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½.</p>
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">°³¿ä</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#ipv6">IPv6¿¡¼­ Æ¯º°È÷ °í·ÁÇÒ Á¡</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#virtualhost">°¡»óÈ£½ºÆ®¿Í ¾î¶»°Ô ¿¬°üµÇ³ª</a></li>
-</ul><h3>Âü°í</h3><ul class="seealso"><li><a href="vhosts/">°¡»óÈ£½ºÆ®</a></li><li><a href="dns-caveats.html">DNS ¹®Á¦</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">ï¿½ï¿½ï¿½ï¿½</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#ipv6">IPv6ï¿½ï¿½ï¿½ï¿½ Æ¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#virtualhost">ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½î¶»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç³ï¿½</a></li>
+</ul><h3>ï¿½ï¿½ï¿½ï¿½</h3><ul class="seealso"><li><a href="vhosts/">ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®</a></li><li><a href="dns-caveats.html">DNS ï¿½ï¿½ï¿½ï¿½</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="overview" id="overview">°³¿ä</a> <a title="Permanent link" href="#overview" class="permalink">&para;</a></h2>
+<h2><a name="overview" id="overview">ï¿½ï¿½ï¿½ï¿½</a> <a title="Permanent link" href="#overview" class="permalink">&para;</a></h2>
     
 
-    <table class="related"><tr><th>°ü·ÃµÈ ¸ðµâ</th><th>°ü·ÃµÈ Áö½Ã¾î</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li><li><code class="module"><a href="./mod/mpm_common.html">mpm_common</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>ï¿½ï¿½ï¿½Ãµï¿½ ï¿½ï¿½ï¿½</th><th>ï¿½ï¿½ï¿½Ãµï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li><li><code class="module"><a href="./mod/mpm_common.html">mpm_common</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code></li></ul></td></tr></table>
 
 
-    <p>¾ÆÆÄÄ¡¸¦ ½ÃÀÛÇÏ¸é ¾ÆÆÄÄ¡´Â ÄÄÇ»ÅÍÀÇ ¾î¶² Æ÷Æ®¿Í ÁÖ¼Ò¿¡
-    ¿¬°áÇÏ¿©, µé¾î¿À´Â ¿äÃ»À» ±â´Ù¸°´Ù. ±âº»ÀûÀ¸·Î ¾ÆÆÄÄ¡´Â
-    ÄÄÇ»ÅÍÀÇ ¸ðµç ÁÖ¼Ò¿¡¼­ ±â´Ù¸°´Ù. ±×·¯³ª ¾ÆÆÄÄ¡°¡ Æ¯Á¤ Æ÷Æ®³ª
-    ¼±ÅÃÇÑ ÁÖ¼Ò¸¸À» ±â´Ù¸®°Ô ÇØ¾ßÇÒ °æ¿ì°¡ ÀÖ´Ù. ¶Ç ÀÌ ¹®Á¦´Â
-    ¾ÆÆÄÄ¡°¡ ¾î¶»°Ô ´Ù¸¥ IP ÁÖ¼Ò, È£½ºÆ®¸í, Æ÷Æ®¿¡ ¹ÝÀÀÇÒÁö¸¦
-    °áÁ¤ÇÏ´Â °¡»óÈ£½ºÆ® ±â´É°úµµ °ü·ÃµÇÀÖ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½Ç»ï¿½ï¿½ï¿½ï¿½ ï¿½î¶² ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ö¼Ò¿ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½Ù¸ï¿½ï¿½ï¿½. ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½
+    ï¿½ï¿½Ç»ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ö¼Ò¿ï¿½ï¿½ï¿½ ï¿½ï¿½Ù¸ï¿½ï¿½ï¿½. ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ Æ¯ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼Ò¸ï¿½ï¿½ï¿½ ï¿½ï¿½Ù¸ï¿½ï¿½ï¿½ ï¿½Ø¾ï¿½ï¿½ï¿½ ï¿½ï¿½ì°¡ ï¿½Ö´ï¿½. ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½î¶»ï¿½ï¿½ ï¿½Ù¸ï¿½ IP ï¿½Ö¼ï¿½, È£ï¿½ï¿½Æ®ï¿½ï¿½, ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ® ï¿½ï¿½É°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ãµï¿½ï¿½Ö´ï¿½.</p>
 
-    <p><code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> Áö½Ã¾î´Â
-    ¼­¹ö°¡ Æ¯Á¤ Æ÷Æ®³ª ÁÖ¼Ò¿Í Æ÷Æ® Á¶ÇÕ¿¡¼­¸¸ ¿äÃ»À» ¹Þ°Ô
-    ÇÑ´Ù. <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
-    Áö½Ã¾î¿¡ Æ÷Æ® ¹øÈ£¸¸ ÁöÁ¤ÇÏ¸é, ¼­¹ö´Â ¸ðµç ÀÎÅÍÆäÀÌ½º¿¡¼­
-    ÁöÁ¤ÇÑ Æ÷Æ®¸¦ ±â´Ù¸°´Ù. ¿©·¯ <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> Áö½Ã¾î·Î ±â´Ù¸± ¿©·¯
-    ÁÖ¼Ò¿Í Æ÷Æ®¸¦ ÁöÁ¤ÇÒ ¼öµµ ÀÖ´Ù. ¼­¹ö´Â ¿­°ÅÇÑ ÁÖ¼Ò¿Í Æ÷Æ®·Î
-    ¿äÃ»ÀÌ µé¾î¿À¸é ÀÀ´äÇÑ´Ù.</p>
+    <p><code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Æ¯ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ö¼Ò¿ï¿½ ï¿½ï¿½Æ® ï¿½ï¿½ï¿½Õ¿ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½Þ°ï¿½
+    ï¿½Ñ´ï¿½. <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
+    ï¿½ï¿½ï¿½Ã¾î¿¡ ï¿½ï¿½Æ® ï¿½ï¿½È£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½Ù¸ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½ <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ö¼Ò¿ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼Ò¿ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½
+    ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <p>¿¹¸¦ µé¾î, ¼­¹ö°¡ 80¹ø°ú 8000¹ø Æ÷Æ® ¸ðµÎ¿¡¼­ ¿¬°áÀ»
-    ¹Þµµ·Ï ÇÏ·Á¸é:</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 80ï¿½ï¿½ï¿½ï¿½ 8000ï¿½ï¿½ ï¿½ï¿½Æ® ï¿½ï¿½Î¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Þµï¿½ï¿½ï¿½ ï¿½Ï·ï¿½ï¿½ï¿½:</p>
 
     <div class="example"><p><code>
       Listen 80<br />
       Listen 8000
     </code></p></div>
 
-    <p>¼­¹ö°¡ ÁöÁ¤ÇÑ µÎ ÀÎÅÍÆäÀÌ½º¿Í Æ÷Æ®¿¡¼­ ¿¬°áÀ» ±â´Ù¸®µµ·Ï
-    ÇÏ·Á¸é,</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ù¸ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ï·ï¿½ï¿½ï¿½,</p>
 
     <div class="example"><p><code>
       Listen 192.0.2.1:80<br />
       Listen 192.0.2.5:8000
     </code></p></div>
 
-    <p>IPv6 ÁÖ¼Ò´Â ´ÙÀ½°ú °°ÀÌ ´ë°ýÈ£·Î ¹­¾î¾ß ÇÑ´Ù:</p>
+    <p>IPv6 ï¿½Ö¼Ò´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½È£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½:</p>
 
     <div class="example"><p><code>
       Listen [2001:db8::a00:20ff:fea7:ccea]:80
     </code></p></div>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="ipv6" id="ipv6">IPv6¿¡¼­ Æ¯º°È÷ °í·ÁÇÒ Á¡</a> <a title="Permanent link" href="#ipv6" class="permalink">&para;</a></h2>
+<h2><a name="ipv6" id="ipv6">IPv6ï¿½ï¿½ï¿½ï¿½ Æ¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½</a> <a title="Permanent link" href="#ipv6" class="permalink">&para;</a></h2>
     
 
-    <p>IPv6¸¦ ±¸ÇöÇÑ ÇÃ·¡ÆûÀÌ ´Ã°í ÀÖ°í APRÀÌ ÀÌµé ÇÃ·¡Æû ´ëºÎºÐ¿¡¼­
-	IPv6¸¦ Áö¿øÇÏ±â¶§¹®¿¡, ¾ÆÆÄÄ¡´Â IPv6 ¼ÒÄÏÀ» ÇÒ´çÇÏ¿© IPv6·Î
-	¹ÞÀº ¿äÃ»À» Ã³¸®ÇÒ ¼ö ÀÖ´Ù.</p>
+    <p>IPv6ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ ï¿½Ö°ï¿½ APRï¿½ï¿½ ï¿½Ìµï¿½ ï¿½Ã·ï¿½ï¿½ï¿½ ï¿½ï¿½ÎºÐ¿ï¿½ï¿½ï¿½
+	IPv6ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±â¶§ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ IPv6 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ò´ï¿½ï¿½Ï¿ï¿½ IPv6ï¿½ï¿½
+	ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <p>¾ÆÆÄÄ¡ °ü¸®ÀÚ¿¡°Ô º¹ÀâÇÑ ºÎºÐÀº IPv6 ¼ÒÄÏÀÌ IPv4 ¿¬°á°ú
-	IPv6 ¿¬°áÀ» ¸ðµÎ Ã³¸®ÇÒ ¼ö ÀÖ´À³Ä´Â Á¡ÀÌ´Ù. ´ëºÎºÐÀÇ ÇÃ·¡Æû¿¡¼­´Â
-    IPv4-´ëÀÀ(mapped) IPv6 ÁÖ¼Ò¸¦ »ç¿ëÇÏ¿© IPv6 ¼ÒÄÏ¿¡¼­ IPv4
-	¿¬°áÀ» ¹ÞÁö¸¸, FreeBSD¿Í NetBSD¿Í OpenBSDÀº ½Ã½ºÅÛÀüÃ¼ Á¤Ã¥¶§¹®¿¡
-	±âº»ÀûÀ¸·Î Çã¿ëÇÏÁö ¾Ê´Â´Ù. ±×·¯³ª ±âº»ÀûÀ¸·Î Çã¿ëÇÏÁö¾Ê´Â
-	½Ã½ºÅÛÀÌ¶óµµ ¾ÆÆÄÄ¡¸¦ À§ÇØ Æ¯º°ÇÑ ¼³Á¤ ÆÄ¶ó¹ÌÅÍ·Î º¯°æÇÒ
-	¼ö ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Îºï¿½ï¿½ï¿½ IPv6 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ IPv4 ï¿½ï¿½ï¿½ï¿½ï¿½
+	IPv6 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ï¿½Ä´ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½. ï¿½ï¿½Îºï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    IPv4-ï¿½ï¿½ï¿½ï¿½(mapped) IPv6 ï¿½Ö¼Ò¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ IPv6 ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ IPv4
+	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, FreeBSDï¿½ï¿½ NetBSDï¿½ï¿½ OpenBSDï¿½ï¿½ ï¿½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½Ã¼ ï¿½ï¿½Ã¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½. ï¿½×·ï¿½ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê´ï¿½
+	ï¿½Ã½ï¿½ï¿½ï¿½ï¿½Ì¶ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Æ¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ä¶ï¿½ï¿½ï¿½Í·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <p>¹Ý¸é ¸®´ª½º¿Í Tru64 °°Àº ÀÏºÎ ÇÃ·¡Æû¿¡¼­ IPv4¿Í IPv6À»
-    ¸ðµÎ Ã³¸®ÇÏ·Á¸é ´ëÀÀ ÁÖ¼Ò¸¦ <strong>»ç¿ëÇØ¾ß¸¸</strong>
-    ÇÑ´Ù. ¾ÆÆÄÄ¡°¡ ÃÖ¼ÒÇÑÀÇ ¼ÒÄÏÀ» »ç¿ëÇÏ¿© IPv4 ¿¬°á°ú IPv6
-    ¿¬°áÀ» ¸ðµÎ ¹Þµµ·ÏÇÏ·Á¸é, IPv4-´ëÀÀ IPv6 ÁÖ¼Ò¸¦ »ç¿ëÇÏ°í
-	<a href="programs/configure.html">configure</a> ¿É¼Ç
-    <code>--enable-v4-mapped</code>¸¦ ÁöÁ¤ÇÑ´Ù.</p>
+    <p>ï¿½Ý¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Tru64 ï¿½ï¿½ï¿½ï¿½ ï¿½Ïºï¿½ ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ IPv4ï¿½ï¿½ IPv6ï¿½ï¿½
+    ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼Ò¸ï¿½ <strong>ï¿½ï¿½ï¿½ï¿½Ø¾ß¸ï¿½</strong>
+    ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ IPv4 ï¿½ï¿½ï¿½ï¿½ï¿½ IPv6
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Þµï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½, IPv4-ï¿½ï¿½ï¿½ï¿½ IPv6 ï¿½Ö¼Ò¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½
+	<a href="programs/configure.html">configure</a> ï¿½É¼ï¿½
+    <code>--enable-v4-mapped</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <p><code>--enable-v4-mapped</code>´Â FreeBSD, NetBSD, OpenBSD¸¦
-	Á¦¿ÜÇÑ ¸ðµç ÇÃ·¡Æû¿¡¼­ ±âº»°ªÀÌ°í, ¾Æ¸¶µµ ´ç½ÅÀÇ ¾ÆÆÄÄ¡µµ
-	¸¶Âù°¡ÁöÀÏ °ÍÀÌ´Ù.</p>
+    <p><code>--enable-v4-mapped</code>ï¿½ï¿½ FreeBSD, NetBSD, OpenBSDï¿½ï¿½
+	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½Ì°ï¿½, ï¿½Æ¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½
+	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½.</p>
 
-    <p>ÇÃ·¡Æû°ú APRÀÇ Áö¿ø¿©ºÎ¿Í °ü°è¾øÀÌ ¾ÆÆÄÄ¡°¡ IPv4 ¿¬°á¸¸À»
-	¹Þµµ·ÏÇÏ·Á¸é, ´ÙÀ½ ¿¹Á¦¿Í °°ÀÌ ¸ðµç <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> Áö½Ã¾î¿¡ IPv4 ÁÖ¼Ò¸¦
-	»ç¿ëÇÑ´Ù:</p>
+    <p>ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ APRï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ IPv4 ï¿½ï¿½ï¿½á¸¸ï¿½ï¿½
+	ï¿½Þµï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> ï¿½ï¿½ï¿½Ã¾î¿¡ IPv4 ï¿½Ö¼Ò¸ï¿½
+	ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½:</p>
 
     <div class="example"><p><code>
       Listen 0.0.0.0:80<br />
       Listen 192.0.2.1:80
     </code></p></div>
 
-    <p>ÇÃ·¡Æû¿¡¼­ Áö¿øÇÏ¸ç ¾ÆÆÄÄ¡°¡ ¼­·Î ´Ù¸¥ ¼ÒÄÏÀ¸·Î IPv4
-    ¿¬°á°ú IPv6 ¿¬°áÀ» ¹Þµµ·ÏÇÏ·Á¸é (Áï IPv4-´ëÀÀ ÁÖ¼Ò¸¦ »ç¿ëÇÏÁö
-    ¾ÊÀ¸·Á¸é), <a href="programs/configure.html">configure</a>
-    ¿É¼Ç <code>--disable-v4-mapped</code>¸¦
-    ÁöÁ¤ÇÑ´Ù. <code>--disable-v4-mapped</code>´Â FreeBSD, NetBSD,
-    OpenBSD¿¡¼­ ±âº»°ªÀÌ´Ù.</p>
+    <p>ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ IPv4
+    ï¿½ï¿½ï¿½ï¿½ï¿½ IPv6 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Þµï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ (ï¿½ï¿½ IPv4-ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼Ò¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½), <a href="programs/configure.html">configure</a>
+    ï¿½É¼ï¿½ <code>--disable-v4-mapped</code>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <code>--disable-v4-mapped</code>ï¿½ï¿½ FreeBSD, NetBSD,
+    OpenBSDï¿½ï¿½ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½Ì´ï¿½.</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="virtualhost" id="virtualhost">°¡»óÈ£½ºÆ®¿Í ¾î¶»°Ô ¿¬°üµÇ³ª</a> <a title="Permanent link" href="#virtualhost" class="permalink">&para;</a></h2>
+<h2><a name="virtualhost" id="virtualhost">ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½î¶»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç³ï¿½</a> <a title="Permanent link" href="#virtualhost" class="permalink">&para;</a></h2>
     
 
-    <p><code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>Àº
-    °¡»óÈ£½ºÆ®¸¦ ¸¸µéÁö ¾Ê´Â´Ù. ÀÌ´Â ´ÜÁö ÁÖ¼­¹ö°¡
-    ¾î¶² ÁÖ¼Ò¿Í Æ÷Æ®¸¦ ±â´Ù¸±Áö¸¸ ¾Ë·ÁÁØ´Ù. <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> Áö½Ã¾î¸¦
-    »ç¿ëÇÏÁö ¾ÊÀ¸¸é, ¼­¹ö´Â ¹ÞÀº ¸ðµç ¿äÃ»À» ¶È°°ÀÌ Ã³¸®ÇÑ´Ù.
-    ±×·¯³ª <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>·Î ¿©·¯ ÁÖ¼Ò¿Í Æ÷Æ®¿¡
-    ´ëÇØ ´Ù¸¥ Çàµ¿À» ÁöÁ¤ÇÒ ¼ö ÀÖ´Ù. °¡»óÈ£½ºÆ®¸¦ ¸¸µé·Á¸é
-    ¸ÕÀú ¼­¹ö¿¡°Ô »ç¿ëÇÒ ÁÖ¼Ò¿Í Æ÷Æ®¸¦ ¾Ë·ÁÁà¾ß ÇÑ´Ù. ±×¸®°í
-    Æ¯Á¤ ÁÖ¼Ò¿Í Æ÷Æ®¿¡ ´ëÇÑ °¡»óÈ£½ºÆ®ÀÇ Çàµ¿À» ÁöÁ¤ÇÒ
+    <p><code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½. ï¿½Ì´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½î¶² ï¿½Ö¼Ò¿ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½Ù¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ë·ï¿½ï¿½Ø´ï¿½. <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> ï¿½ï¿½ï¿½Ã¾î¸¦
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½È°ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ñ´ï¿½.
+    ï¿½×·ï¿½ï¿½ï¿½ <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼Ò¿ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½àµ¿ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼Ò¿ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ë·ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½. ï¿½×¸ï¿½ï¿½ï¿½
+    Æ¯ï¿½ï¿½ ï¿½Ö¼Ò¿ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½àµ¿ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
-    ¼½¼ÇÀÌ ÇÊ¿äÇÏ´Ù. ÁÖ¼­¹ö°¡ ±â´Ù¸®Áö¾Ê´Â ÁÖ¼Ò¿Í Æ÷Æ®¸¦ »ç¿ëÇÏ´Â
-    <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>´Â
-    Á¢±ÙÇÒ ¼ö ¾øÀ½À» ÁÖÀÇÇÏ¶ó.</p>
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Ï´ï¿½. ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ù¸ï¿½ï¿½ï¿½ï¿½Ê´ï¿½ ï¿½Ö¼Ò¿ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½
+    <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.</p>
   </div></div>
 <div class="bottomlang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="./de/bind.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="./de/bind.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/bind.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/bind.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
 <a href="./fr/bind.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
@@ -157,7 +157,7 @@
 </div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/bind.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/bind.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -172,8 +172,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/bind.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">¸ðµâ</a> | <a href="./mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">¿ë¾î</a> | <a href="./sitemap.html">»çÀÌÆ®¸Ê</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">ï¿½ï¿½ï¿½</a> | <a href="./mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">ï¿½ï¿½ï¿½</a> | <a href="./sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

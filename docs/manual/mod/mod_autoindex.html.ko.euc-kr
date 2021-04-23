@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
 <meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -17,68 +17,68 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">¸ðµâ</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">ï¿½ï¿½ï¿½</a></div>
 <div id="page-content">
-<div id="preamble"><h1>¾ÆÆÄÄ¡ ¸ðµâ mod_autoindex</h1>
+<div id="preamble"><h1>ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ mod_autoindex</h1>
 <div class="toplang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/mod/mod_autoindex.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/mod/mod_autoindex.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_autoindex.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_autoindex.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_autoindex.html" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_autoindex.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">ÀÌ ¹®¼­´Â ÃÖ½ÅÆÇ ¹ø¿ªÀÌ ¾Æ´Õ´Ï´Ù.
-            ÃÖ±Ù¿¡ º¯°æµÈ ³»¿ëÀº ¿µ¾î ¹®¼­¸¦ Âü°íÇÏ¼¼¿ä.</div>
-<table class="module"><tr><th><a href="module-dict.html#Description">¼³¸í:</a></th><td>ÀÚµ¿À¸·Î À¯´Ð½ºÀÇ <code>ls</code> ¸í·É¾î³ª Win32ÀÇ
-    <code>dir</code> ½©¸í·É¾î¿Í À¯»çÇÑ µð·ºÅä¸® ¸ñ·ÏÀ» ¸¸µç´Ù</td></tr>
-<tr><th><a href="module-dict.html#Status">»óÅÂ:</a></th><td>Base</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">¸ðµâ¸í:</a></th><td>autoindex_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">¼Ò½ºÆÄÀÏ:</a></th><td>mod_autoindex.c</td></tr></table>
-<h3>¿ä¾à</h3>
+<div class="outofdate">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Õ´Ï´ï¿½.
+            ï¿½Ö±Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ð½ï¿½ï¿½ï¿½ <code>ls</code> ï¿½ï¿½ï¿½É¾î³ª Win32ï¿½ï¿½
+    <code>dir</code> ï¿½ï¿½ï¿½ï¿½ï¿½É¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸® ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½</td></tr>
+<tr><th><a href="module-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Base</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">ï¿½ï¿½ï¿½ï¿½:</a></th><td>autoindex_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">ï¿½Ò½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>mod_autoindex.c</td></tr></table>
+<h3>ï¿½ï¿½ï¿½</h3>
  
-      <p>µð·ºÅä¸® ¸ñ·ÏÀº ¾ò´Â ¹æ¹ýÀº µÎ°¡Áö´Ù:</p>
+      <p>ï¿½ï¿½ï¿½ä¸® ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î°ï¿½ï¿½ï¿½ï¿½ï¿½:</p>
 
     <ul>
-      <li>º¸Åë <code>index.html</code>ÀÌ¶õ ÀÌ¸§À¸·Î »ç¿ëÀÚ°¡
-      ÀÛ¼ºÇÑ ÆÄÀÏ. ÀÌ ÆÄÀÏÀÇ ÀÌ¸§Àº <code class="directive"><a href="../mod/mod_dir.html#directoryindex">DirectoryIndex</a></code> Áö½Ã¾î·Î
-      ÁöÁ¤ÇÑ´Ù. ÀÌ ÀÛ¾÷Àº <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code>ÀÌ ÇÑ´Ù.</li>
+      <li>ï¿½ï¿½ï¿½ï¿½ <code>index.html</code>ï¿½Ì¶ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú°ï¿½
+      ï¿½Û¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ <code class="directive"><a href="../mod/mod_dir.html#directoryindex">DirectoryIndex</a></code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ ï¿½Û¾ï¿½ï¿½ï¿½ <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code>ï¿½ï¿½ ï¿½Ñ´ï¿½.</li>
 
-      <li>¾Æ´Ï¸é ¼­¹ö°¡ ¸ñ·ÏÀ» ¸¸µç´Ù. ÀÌ ¸ñ·ÏÀÇ Çü½ÄÀ» ÁöÁ¤ÇÏ´Â
-      Áö½Ã¾îµéÀÌ ÀÖ´Ù. <code class="directive"><a href="#addicon">AddIcon</a></code>, <code class="directive"><a href="#addiconbyencoding">AddIconByEncoding</a></code>,
-      <code class="directive"><a href="#addiconbytype">AddIconByType</a></code>Àº
-      ¿©·¯ ÆÄÀÏÁ¾·ù¸¶´Ù º¸¿©ÁÙ ¾ÆÀÌÄÜµéÀ» ÁöÁ¤ÇÑ´Ù. °¢ ÆÄÀÏ¿¡
-      ´ëÀÀÇÏ´Â Ã¹¹øÂ° ¾ÆÀÌÄÜÀ» º¸ÀÎ´Ù. ÀÌ ÀÛ¾÷À»
-      <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>°¡ ÇÑ´Ù.</li>
+      <li>ï¿½Æ´Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½
+      ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½. <code class="directive"><a href="#addicon">AddIcon</a></code>, <code class="directive"><a href="#addiconbyencoding">AddIconByEncoding</a></code>,
+      <code class="directive"><a href="#addiconbytype">AddIconByType</a></code>ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Üµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ Ã¹ï¿½ï¿½Â° ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î´ï¿½. ï¿½ï¿½ ï¿½Û¾ï¿½ï¿½ï¿½
+      <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>ï¿½ï¿½ ï¿½Ñ´ï¿½.</li>
     </ul>
-    <p>ÀÌ µÎ ±â´ÉÀº ¼­·Î º°°³·Î, ¿øÇÑ´Ù¸é ÀÚµ¿ ¸ñ·Ï »ý¼ºÀ» ¿ÏÀüÈ÷
-    Á¦¿ÜÇÒ (È¤Àº ´ëÃ¼ÇÒ) ¼ö ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½ ï¿½Úµï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (È¤ï¿½ï¿½ ï¿½ï¿½Ã¼ï¿½ï¿½) ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <p>ÀÚµ¿ ¸ñ·Ï »ý¼ºÀº <code>Options +Indexes</code>·Î °¡´ÉÇÏ´Ù.
-    ÀÚ¼¼ÇÑ ³»¿ëÀº <code class="directive"><a href="../mod/core.html#options">Options</a></code>
-    Áö½Ã¾î¸¦ Âü°íÇÏ¶ó.</p>
+    <p>ï¿½Úµï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>Options +Indexes</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.
+    ï¿½Ú¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code class="directive"><a href="../mod/core.html#options">Options</a></code>
+    ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.</p>
 
     <p><code class="directive"><a href="#indexoptions">IndexOptions</a></code>
-    Áö½Ã¾î¿¡ <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code> ¿É¼ÇÀ» ÁÖ¸é, ¿­ ÀÌ¸§À» Ãâ·ÂÇÒ
-    ¼ø¼­¸¦ ¹Ù²Ù´Â ¸µÅ©·Î ¸¸µç´Ù. ÀÌ¸§ ¸µÅ©¸¦ ¼±ÅÃÇÏ¸é ±× ¿­ÀÇ
-    °ª ¼ø¼­·Î ¸ñ·ÏÀ» ´Ù½Ã ¸¸µç´Ù. °°Àº ÀÌ¸§À» ¹Ýº¹ÇØ¼­ ¼±ÅÃÇÏ¸é
-    ¿À¸§Â÷¼ø°ú ³»¸²Â÷¼ø »çÀÌ¸¦ ¿À°£´Ù. <code class="directive"><a href="#indexoptions">IndexOptions</a></code> Áö½Ã¾îÀÇ
-    <code>SuppressColumnSorting</code> ¿É¼ÇÀº ÀÌ·± ¿­ ÀÌ¸§ ¸µÅ©¸¦
-    ¸¸µéÁö ¾Ê´Â´Ù.</p>
+    ï¿½ï¿½ï¿½Ã¾î¿¡ <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code> ï¿½É¼ï¿½ï¿½ï¿½ ï¿½Ö¸ï¿½, ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù²Ù´ï¿½ ï¿½ï¿½Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½. ï¿½Ì¸ï¿½ ï¿½ï¿½Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½Ýºï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½. <code class="directive"><a href="#indexoptions">IndexOptions</a></code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ï¿½
+    <code>SuppressColumnSorting</code> ï¿½É¼ï¿½ï¿½ï¿½ ï¿½Ì·ï¿½ ï¿½ï¿½ ï¿½Ì¸ï¿½ ï¿½ï¿½Å©ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.</p>
 
-    <p>"Size(Å©±â)" ¼øÀ¸·Î º¼¶§ Ãâ·ÂµÇ´Â °ª ¼ø¼­°¡ ¾Æ´Ï¶ó <em>½ÇÁ¦</em>
-    ÆÄÀÏÅ©±â ¼ø¼­ÀÓÀ» ÁÖÀÇÇÏ¶ó. Áï, 1010 ¹ÙÀÌÆ® ÆÄÀÏ°ú 1011
-    ¹ÙÀÌÆ® ÆÄÀÏÀº µÑ´Ù "1K"·Î º¸ÀÌ´õ¶óµµ Ç×»ó 1010 ¹ÙÀÌÆ® ÆÄÀÏÀÌ
-    ¾Õ¿¡ ³ª¿Â´Ù.</p>
+    <p>"Size(Å©ï¿½ï¿½)" ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ÂµÇ´ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Ï¶ï¿½ <em>ï¿½ï¿½ï¿½ï¿½</em>
+    ï¿½ï¿½ï¿½ï¿½Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½. ï¿½ï¿½, 1010 ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½Ï°ï¿½ 1011
+    ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½ "1K"ï¿½ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½ï¿½ï¿½ ï¿½×»ï¿½ 1010 ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Õ¿ï¿½ ï¿½ï¿½ï¿½Â´ï¿½.</p>
 </div>
-<div id="quickview"><h3>ÁÖÁ¦</h3>
+<div id="quickview"><h3>ï¿½ï¿½ï¿½ï¿½</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#query">Autoindex ¿äÃ» ¾Æ±Ô¸ÕÆ®</a></li>
-</ul><h3 class="directives">Áö½Ã¾îµé</h3>
+<li><img alt="" src="../images/down.gif" /> <a href="#query">Autoindex ï¿½ï¿½Ã» ï¿½Æ±Ô¸ï¿½Æ®</a></li>
+</ul><h3 class="directives">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#addalt">AddAlt</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#addaltbyencoding">AddAltByEncoding</a></li>
@@ -97,62 +97,62 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#indexstylesheet">IndexStyleSheet</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#readmename">ReadmeName</a></li>
 </ul>
-<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_autoindex">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_autoindex">Report a bug</a></li></ul><h3>Âü°í</h3>
+<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_autoindex">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_autoindex">Report a bug</a></li></ul><h3>ï¿½ï¿½ï¿½ï¿½</h3>
 <ul class="seealso">
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="query" id="query">Autoindex ¿äÃ» ¾Æ±Ô¸ÕÆ®</a> <a title="Permanent link" href="#query" class="permalink">&para;</a></h2>
+<h2><a name="query" id="query">Autoindex ï¿½ï¿½Ã» ï¿½Æ±Ô¸ï¿½Æ®</a> <a title="Permanent link" href="#query" class="permalink">&para;</a></h2>
     
 
-    <p>¾ÆÆÄÄ¡ 2.0.23´Â ¿­¼ø¼­¿¡ ´ëÇÑ ¿äÃ» ¾Æ±Ô¸ÕÆ®¸¦ Á¤¸®ÇÏ°í,
-    »õ·Î¿î ¿É¼ÇµéÀ» Ãß°¡Çß´Ù. Ãâ·ÂÀ» Å¬¶óÀÌ¾ðÆ®°¡ Á¶ÀýÇÒ ¼ö
-    ¾øµµ·Ï ¸¸µå´Â <code><a href="#indexoptions.ignoreclient">IndexOptions
-    IgnoreClient</a></code> ¿É¼ÇÀÌ Ãß°¡µÇ¾ú´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½Ä¡ 2.0.23ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã» ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½,
+    ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½É¼Çµï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½ß´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ <code><a href="#indexoptions.ignoreclient">IndexOptions
+    IgnoreClient</a></code> ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½.</p>
 
-    <p>¿­¼ø¼­ ÀÌ¸§Àº ¾Æ·¡ ³ª¿Â ¼ø¼­ ¿äÃ» ¿É¼ÇÀ» ´õÇÑ ÀÚ±âÂüÁ¶
-    ¸µÅ©´Ù. ¾Æ·¡ ¿É¼ÇÀº µð·ºÅä¸® ÀÚ¿ø¿¡ ´ëÇÑ ¾î¶² ¿äÃ»¿¡µµ
-    »ç¿ëÇÒ ¼ö ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½Æ·ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã» ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ú±ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½Å©ï¿½ï¿½. ï¿½Æ·ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸® ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½î¶² ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
     <ul>
-      <li><code>C=N</code>Àº ÆÄÀÏ¸í ¼øÀÌ´Ù</li>
+      <li><code>C=N</code>ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½</li>
 
-      <li><code>C=M</code>Àº ÃÖ±Ù ¼öÁ¤ÀÏ ¼ø, ±×¸®°í ÆÄÀÏ¸í ¼øÀÌ´Ù</li>
+      <li><code>C=M</code>ï¿½ï¿½ ï¿½Ö±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½, ï¿½×¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½</li>
 
-      <li><code>C=S</code>´Â Å©±â ¼ø, ±×¸®°í ÆÄÀÏ¸í ¼øÀÌ´Ù</li>
+      <li><code>C=S</code>ï¿½ï¿½ Å©ï¿½ï¿½ ï¿½ï¿½, ï¿½×¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½</li>
 
-      <li class="separate"><code>C=D</code>´Â ¼³¸í ¼ø, ±×¸®°í ÆÄÀÏ¸í
-      ¼øÀÌ´Ù</li>
+      <li class="separate"><code>C=D</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½, ï¿½×¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¸ï¿½
+      ï¿½ï¿½ï¿½Ì´ï¿½</li>
 
-      <li><code>O=A</code>´Â ¿À¸§Â÷¼øÀ¸·Î ¸ñ·ÏÀ» Á¤·ÄÇÑ´Ù</li>
+      <li><code>O=A</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</li>
 
-      <li class="separate"><code>O=D</code>´Â ³»¸²Â÷¼øÀ¸·Î ¸ñ·ÏÀ» Á¤·ÄÇÑ´Ù</li>
+      <li class="separate"><code>O=D</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</li>
 
-      <li><code>F=0</code>Àº (FancyIndexed°¡ ¾Æ´Ñ) °£´ÜÇÑ ¸ñ·Ï Çü½ÄÀÌ´Ù</li>
+      <li><code>F=0</code>ï¿½ï¿½ (FancyIndexedï¿½ï¿½ ï¿½Æ´ï¿½) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½</li>
 
-      <li><code>F=1</code>Àº FancyIndexed ¸ñ·Ï Çü½ÄÀÌ´Ù</li>
+      <li><code>F=1</code>ï¿½ï¿½ FancyIndexed ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½</li>
 
-      <li class="separate"><code>F=2</code>´Â HTMLTable FancyIndexed ¸ñ·Ï
-      Çü½ÄÀÌ´Ù</li>
+      <li class="separate"><code>F=2</code>ï¿½ï¿½ HTMLTable FancyIndexed ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½</li>
 
-      <li><code>V=0</code>Àº ¹öÀü ¼øÀ¸·Î Á¤·ÄÇÏÁö ¾Ê´Â´Ù</li>
+      <li><code>V=0</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½</li>
 
-      <li class="separate"><code>V=1</code>Àº ¹öÀü ¼øÀ¸·Î Á¤·ÄÇÑ´Ù</li>
+      <li class="separate"><code>V=1</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</li>
 
-      <li><code>P=<var>pattern</var></code>Àº ÁÖ¾îÁø <var>pattern</var>¿¡
-      ÇØ´çÇÏ´Â ÆÄÀÏ¸¸À» ¸ñ·ÏÀ¸·Î ¸¸µç´Ù</li>
+      <li><code>P=<var>pattern</var></code>ï¿½ï¿½ ï¿½Ö¾ï¿½ï¿½ï¿½ <var>pattern</var>ï¿½ï¿½
+      ï¿½Ø´ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½</li>
     </ul>
 
-    <p>'P'attern ¾Æ±Ô¸ÕÆ®´Â ÀÏ¹ÝÀûÀÎ <code class="directive"><a href="#indexignore">IndexIgnore</a></code> Áö½Ã¾î¸¦ Ã³¸®ÇÑ <em>ÈÄ¿¡</em>
-    °Ë»çÇÏ±â¶§¹®¿¡, ¸ñ·ÏÀº ´Ù¸¥ autoindex Á¶°ÇÀ» µû¸§À» ÁÖÀÇÇÏ¶ó.
-    <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>ÀÇ ¿äÃ» ¾Æ±Ô¸ÕÆ®¸¦ ÀÐ¾îµéÀÏ¶§
-    ¾Ë ¼ö ¾ø´Â ¿É¼ÇÀ» ¹ß°ßÇÏ¸é ´õ ÀÌ»ó ÀÐÁö¾Ê´Â´Ù. ¿äÃ» ¾Æ±Ô¸ÕÆ®´Â
-    À§ÀÇ Ç¥¿¡ µû¶ó ¸¸µé¾î¾ß ÇÑ´Ù.</p>
+    <p>'P'attern ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½ <code class="directive"><a href="#indexignore">IndexIgnore</a></code> ï¿½ï¿½ï¿½Ã¾î¸¦ Ã³ï¿½ï¿½ï¿½ï¿½ <em>ï¿½Ä¿ï¿½</em>
+    ï¿½Ë»ï¿½ï¿½Ï±â¶§ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ autoindex ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.
+    <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>ï¿½ï¿½ ï¿½ï¿½Ã» ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ ï¿½Ð¾ï¿½ï¿½ï¿½Ï¶ï¿½
+    ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ ï¿½Ì»ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ê´Â´ï¿½. ï¿½ï¿½Ã» ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½.</p>
 
-    <p>header.html ÆÄÀÏ¿¡ »ç¿ëÇÒ ¼ö ÀÖ´Â ¾Æ·¡ °£´ÜÇÑ ¿¹Á¦´Â
-    ÀÌ ¿É¼ÇµéÀ» ¼³¸íÇÑ´Ù. submit ¹öÅÏÀÇ ¾Ë ¼ö ¾ø´Â "X" ¾Æ±Ô¸ÕÆ®´Â
-    mod_autoindex°¡ X=Go Àü±îÁö ¸ðµç ¾Æ±Ô¸ÕÆ®¸¦ ÀÐ¾îµéÀÓÀ»
-    È®ÀÎÇÏ±âÀ§ÇØ ¸¶Áö¸·¿¡ »ç¿ëÇß´Ù.</p>
+    <p>header.html ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½Æ·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ ï¿½É¼Çµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. submit ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ "X" ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½
+    mod_autoindexï¿½ï¿½ X=Go ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ ï¿½Ð¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    È®ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ß´ï¿½.</p>
 
     <div class="example"><p><code>
       &lt;form action="" method="get"&gt;<br />
@@ -192,299 +192,299 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddAlt" id="AddAlt">AddAlt</a> <a name="addalt" id="addalt">Áö½Ã¾î</a> <a title="Permanent link" href="#addalt" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="AddAlt" id="AddAlt">AddAlt</a> <a name="addalt" id="addalt">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#addalt" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>ÆÄÀÏ¸íÀ¸·Î ¼±ÅÃÇÑ ¾ÆÀÌÄÜ´ë½Å »ç¿ëÇÒ ÆÄÀÏ ¼³¸í±Û</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>AddAlt <var>string</var> <var>file</var> [<var>file</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override ¿É¼Ç:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_autoindex</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ü´ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>AddAlt <var>string</var> <var>file</var> [<var>file</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override ï¿½É¼ï¿½:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_autoindex</td></tr>
 </table>
-    <p><code class="directive">AddAlt</code>´Â <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>¿¡¼­
-    ÆÄÀÏ¿¡ ´ëÇÑ ¾ÆÀÌÄÜ´ë½Å º¸ÀÏ ±ÛÀ» ÁöÁ¤ÇÑ´Ù. <var>File</var>¿¡´Â
-    ¼³¸íÇÒ ÆÄÀÏÀÇ ÆÄÀÏ È®ÀåÀÚ, ÆÄÀÏ¸í ÀÏºÎ, ¿ÍÀÏµåÄ«µå Ç¥Çö,
-    ÀüÃ¼ ÆÄÀÏ¸íÀ» »ç¿ëÇÒ ¼ö ÀÖ´Ù. <var>String</var>¿¡ °ø¹éÀÌ
-    µé¾î°£´Ù¸é µû¿ÈÇ¥(<code>"</code> È¤Àº <code>'</code>)·Î
-    ¹­¾î¾ß ÇÑ´Ù. Å¬¶óÀÌ¾ðÆ®°¡ ÀÌ¹ÌÁö¸¦ º¼ ¼ö ¾ø°Å³ª, ÀÌ¹ÌÁö¸¦
-    ÀÐÁö¾Ê°Å³ª, ¾ÆÀÌÄÜÀ» ¸ø ¾òÀº °æ¿ì ÀÌ Ãß°¡ ±ÛÀÌ º¸ÀÌ°Ô µÈ´Ù.</p>
+    <p><code class="directive">AddAlt</code>ï¿½ï¿½ <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ü´ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <var>File</var>ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½Ïºï¿½, ï¿½ï¿½ï¿½Ïµï¿½Ä«ï¿½ï¿½ Ç¥ï¿½ï¿½,
+    ï¿½ï¿½Ã¼ ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. <var>String</var>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½î°£ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¥(<code>"</code> È¤ï¿½ï¿½ <code>'</code>)ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½. Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Å³ï¿½, ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ê°Å³ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ß°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì°ï¿½ ï¿½È´ï¿½.</p>
 
-    <div class="example"><h3>¿¹Á¦</h3><p><code>
+    <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½</h3><p><code>
       AddAlt "PDF file" *.pdf<br />
       AddAlt Compressed *.gz *.zip *.Z
     </code></p></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddAltByEncoding" id="AddAltByEncoding">AddAltByEncoding</a> <a name="addaltbyencoding" id="addaltbyencoding">Áö½Ã¾î</a> <a title="Permanent link" href="#addaltbyencoding" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="AddAltByEncoding" id="AddAltByEncoding">AddAltByEncoding</a> <a name="addaltbyencoding" id="addaltbyencoding">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#addaltbyencoding" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>MIME-encodingÀ¸·Î ¼±ÅÃÇÑ ¾ÆÀÌÄÜ´ë½Å »ç¿ëÇÒ ÆÄÀÏ
-¼³¸í±Û</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>AddAltByEncoding <var>string</var> <var>MIME-encoding</var>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>MIME-encodingï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ü´ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>AddAltByEncoding <var>string</var> <var>MIME-encoding</var>
 [<var>MIME-encoding</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override ¿É¼Ç:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_autoindex</td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override ï¿½É¼ï¿½:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_autoindex</td></tr>
 </table>
-    <p><code class="directive">AddAltByEncoding</code>Àº <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>¿¡¼­
-    ÆÄÀÏ¿¡ ´ëÇÑ ¾ÆÀÌÄÜ´ë½Å º¸ÀÏ ±ÛÀ» ÁöÁ¤ÇÑ´Ù. <var>MIME-encoding</var>Àº
-    <code>x-compress</code>¿Í °°Àº À¯È¿ÇÑ content-encodingÀÌ´Ù.
-    <var>String</var>¿¡ °ø¹éÀÌ µé¾î°£´Ù¸é µû¿ÈÇ¥(<code>"</code>
-    È¤Àº <code>'</code>)·Î ¹­¾î¾ß ÇÑ´Ù. Å¬¶óÀÌ¾ðÆ®°¡ ÀÌ¹ÌÁö¸¦
-    º¼ ¼ö ¾ø°Å³ª, ÀÌ¹ÌÁö¸¦ ÀÐÁö¾Ê°Å³ª, ¾ÆÀÌÄÜÀ» ¸ø ¾òÀº °æ¿ì
-    ÀÌ Ãß°¡ ±ÛÀÌ º¸ÀÌ°Ô µÈ´Ù.</p>
+    <p><code class="directive">AddAltByEncoding</code>ï¿½ï¿½ <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ü´ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <var>MIME-encoding</var>ï¿½ï¿½
+    <code>x-compress</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¿ï¿½ï¿½ content-encodingï¿½Ì´ï¿½.
+    <var>String</var>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½î°£ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¥(<code>"</code>
+    È¤ï¿½ï¿½ <code>'</code>)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½. Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Å³ï¿½, ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ê°Å³ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+    ï¿½ï¿½ ï¿½ß°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì°ï¿½ ï¿½È´ï¿½.</p>
 
-    <div class="example"><h3>¿¹Á¦</h3><p><code>
+    <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½</h3><p><code>
       AddAltByEncoding gzip x-gzip
     </code></p></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddAltByType" id="AddAltByType">AddAltByType</a> <a name="addaltbytype" id="addaltbytype">Áö½Ã¾î</a> <a title="Permanent link" href="#addaltbytype" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="AddAltByType" id="AddAltByType">AddAltByType</a> <a name="addaltbytype" id="addaltbytype">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#addaltbytype" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>MIME content-typeÀ¸·Î ¼±ÅÃÇÑ ¾ÆÀÌÄÜ´ë½Å »ç¿ëÇÒ ÆÄÀÏ
-¼³¸í±Û</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>AddAltByType <var>string</var> <var>MIME-type</var>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>MIME content-typeï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ü´ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>AddAltByType <var>string</var> <var>MIME-type</var>
 [<var>MIME-type</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override ¿É¼Ç:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_autoindex</td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override ï¿½É¼ï¿½:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_autoindex</td></tr>
 </table>
-    <p><code class="directive">AddAltByType</code>Àº <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>¿¡¼­
-    ÆÄÀÏ¿¡ ´ëÇÑ ¾ÆÀÌÄÜ´ë½Å º¸ÀÏ ±ÛÀ» ÁöÁ¤ÇÑ´Ù. <var>MIME-type</var>Àº
-    <code>text/html</code>°ú °°Àº À¯È¿ÇÑ content-typeÀÌ´Ù.
-    <var>String</var>¿¡ °ø¹éÀÌ µé¾î°£´Ù¸é µû¿ÈÇ¥(<code>"</code>
-    È¤Àº <code>'</code>)·Î ¹­¾î¾ß ÇÑ´Ù. Å¬¶óÀÌ¾ðÆ®°¡ ÀÌ¹ÌÁö¸¦
-    º¼ ¼ö ¾ø°Å³ª, ÀÌ¹ÌÁö¸¦ ÀÐÁö¾Ê°Å³ª, ¾ÆÀÌÄÜÀ» ¸ø ¾òÀº °æ¿ì
-    ÀÌ Ãß°¡ ±ÛÀÌ º¸ÀÌ°Ô µÈ´Ù.</p>
+    <p><code class="directive">AddAltByType</code>ï¿½ï¿½ <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ü´ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <var>MIME-type</var>ï¿½ï¿½
+    <code>text/html</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¿ï¿½ï¿½ content-typeï¿½Ì´ï¿½.
+    <var>String</var>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½î°£ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¥(<code>"</code>
+    È¤ï¿½ï¿½ <code>'</code>)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½. Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Å³ï¿½, ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ê°Å³ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+    ï¿½ï¿½ ï¿½ß°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì°ï¿½ ï¿½È´ï¿½.</p>
 
-    <div class="example"><h3>¿¹Á¦</h3><p><code>
+    <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½</h3><p><code>
       AddAltByType 'plain text' text/plain
     </code></p></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddDescription" id="AddDescription">AddDescription</a> <a name="adddescription" id="adddescription">Áö½Ã¾î</a> <a title="Permanent link" href="#adddescription" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="AddDescription" id="AddDescription">AddDescription</a> <a name="adddescription" id="adddescription">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#adddescription" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>ÆÄÀÏ¿¡ ´ëÇÑ ¼³¸í</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>AddDescription <var>string file</var> [<var>file</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override ¿É¼Ç:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_autoindex</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>AddDescription <var>string file</var> [<var>file</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override ï¿½É¼ï¿½:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_autoindex</td></tr>
 </table>
-    <p>ÀÌ Áö½Ã¾î´Â <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>¿¡¼­ ÆÄÀÏ¿¡ ´ëÇÑ ¼³¸íÀ» ÁöÁ¤ÇÑ´Ù.
-    <var>File</var>¿¡´Â ¼³¸íÇÒ ÆÄÀÏÀÇ ÆÄÀÏ È®ÀåÀÚ, ÆÄÀÏ¸í ÀÏºÎ,
-    ¿ÍÀÏµåÄ«µå Ç¥Çö, ÀüÃ¼ ÆÄÀÏ¸íÀ» »ç¿ëÇÒ ¼ö ÀÖ´Ù. <var>String</var>Àº
-    µû¿ÈÇ¥(<code>"</code>)·Î ¹­¾î¾ß ÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+    <var>File</var>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½Ïºï¿½,
+    ï¿½ï¿½ï¿½Ïµï¿½Ä«ï¿½ï¿½ Ç¥ï¿½ï¿½, ï¿½ï¿½Ã¼ ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. <var>String</var>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ç¥(<code>"</code>)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½.</p>
 
-    <div class="example"><h3>¿¹Á¦</h3><p><code>
+    <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½</h3><p><code>
       AddDescription "The planet Mars" /web/pics/mars.gif
     </code></p></div>
 
-    <p>ÀüÇüÀûÀÎ ±âº» ¼³¸í ÇÊµåÆøÀº 23 ¹ÙÀÌÆ®´Ù. <code><a href="#indexoptions.suppressicon">IndexOptions
-    SuppressIcon</a></code> ¿É¼ÇÀ» »ç¿ëÇÏ¸é ±âº»Æø¿¡ 6 ¹ÙÀÌÆ®¸¦
-    ´õ Ãß°¡ÇÏ°í, <code><a href="#indexoptions.suppresssize">IndexOptions SuppressSize</a></code> ¿É¼ÇÀº 7 ¹ÙÀÌÆ®¸¦,
-    <code><a href="#indexoptions.suppresslastmodified">IndexOptions SuppressLastModified</a></code> ¿É¼ÇÀº 19
-    ¹ÙÀÌÆ®¸¦ ´õ Ãß°¡ÇÑ´Ù. ±×·¯¹Ç·Î °¡Àå ³ÐÀº ¼³¸íÆøÀº 55 ¹ÙÀÌÆ®´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½âº» ï¿½ï¿½ï¿½ï¿½ ï¿½Êµï¿½ï¿½ï¿½ï¿½ï¿½ 23 ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½. <code><a href="#indexoptions.suppressicon">IndexOptions
+    SuppressIcon</a></code> ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½ 6 ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½
+    ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ï°ï¿½, <code><a href="#indexoptions.suppresssize">IndexOptions SuppressSize</a></code> ï¿½É¼ï¿½ï¿½ï¿½ 7 ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½,
+    <code><a href="#indexoptions.suppresslastmodified">IndexOptions SuppressLastModified</a></code> ï¿½É¼ï¿½ï¿½ï¿½ 19
+    ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ñ´ï¿½. ï¿½×·ï¿½ï¿½Ç·ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 55 ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½.</p>
 
-    <p>ÀÌ ÇÊµåÀÇ Æø¸¦ ¹Ù²Ù°Å³ª ¼³¸íÀÇ ±æÀÌ¸¦ ¹«ÇÑ´ë·Î ¸¸µå·Á¸é
-    <a href="#indexoptions.descriptionwidth">DescriptionWidth</a> <code class="directive"><a href="#indexoptions">IndexOptions</a></code> Å°¿öµå¸¦ Âü°íÇÏ¶ó.</p>
+    <p>ï¿½ï¿½ ï¿½Êµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù²Ù°Å³ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½Ñ´ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    <a href="#indexoptions.descriptionwidth">DescriptionWidth</a> <code class="directive"><a href="#indexoptions">IndexOptions</a></code> Å°ï¿½ï¿½ï¿½å¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.</p>
 
-    <div class="note"><h3>Á¶½É</h3>
-      <p><code class="directive">AddDescription</code>À¸·Î ÁöÁ¤ÇÑ ¼³¸í±Û¿¡
-      ÅÂ±×³ª character entity<span class="transnote">(<em>¿ªÁÖ;</em> &amp;lt;, &amp;amp; µîÀ»
-      ÁöÄª)</span>°°Àº HTMLÀ» »ç¿ëÇÒ ¼ö ÀÖ´Ù. ±×·¯³ª Æø¶§¹®¿¡
-      ÅÂ±×°¡ ÀÖ´Â ºÎºÐÀÌ Â©¸®°ÔµÇ¸é (¿¹¸¦ µé¾î ±½ÀºÃ¼ ºÎºÐ ³¡ÀÌ
-      Â©¸®¸é) ³ª¸ÓÁö µð·ºÅä¸® ¸ñ·Ï¿¡ ¿µÇâÀ» ÁÙ ¼ö ÀÖ´Ù.</p>
+    <div class="note"><h3>ï¿½ï¿½ï¿½ï¿½</h3>
+      <p><code class="directive">AddDescription</code>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Û¿ï¿½
+      ï¿½Â±×³ï¿½ character entity<span class="transnote">(<em>ï¿½ï¿½ï¿½ï¿½;</em> &amp;lt;, &amp;amp; ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½Äª)</span>ï¿½ï¿½ï¿½ï¿½ HTMLï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½Â±×°ï¿½ ï¿½Ö´ï¿½ ï¿½Îºï¿½ï¿½ï¿½ Â©ï¿½ï¿½ï¿½ÔµÇ¸ï¿½ (ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ã¼ ï¿½Îºï¿½ ï¿½ï¿½ï¿½ï¿½
+      Â©ï¿½ï¿½ï¿½ï¿½) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸® ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
     </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddIcon" id="AddIcon">AddIcon</a> <a name="addicon" id="addicon">Áö½Ã¾î</a> <a title="Permanent link" href="#addicon" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="AddIcon" id="AddIcon">AddIcon</a> <a name="addicon" id="addicon">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#addicon" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>ÀÌ¸§À¸·Î ¼±ÅÃÇÑ ÆÄÀÏ¿¡ »ç¿ëÇÒ ¾ÆÀÌÄÜ</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>AddIcon <var>icon</var> <var>name</var> [<var>name</var>]
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>AddIcon <var>icon</var> <var>name</var> [<var>name</var>]
 ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override ¿É¼Ç:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_autoindex</td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override ï¿½É¼ï¿½:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_autoindex</td></tr>
 </table>
-    <p>ÀÌ Áö½Ã¾î´Â <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>¿¡¼­ <var>name</var>À¸·Î ³¡³ª´Â
-    ÆÄÀÏ ¿·¿¡ º¸¿©ÁÙ ¾ÆÀÌÄÜÀ» ÁöÁ¤ÇÑ´Ù. <var>Icon</var>Àº
-    ¾ÆÀÌÄÜÀÇ (%-escaped) »ó´ë URL È¤Àº
-    <code>(<var>alttext</var>,<var>url</var>)</code> Çü½ÄÀÌ´Ù.
-    ¿©±â¼­ <var>alttext</var>´Â ±×¸²À» º¸¿©ÁÙ ¼ö ¾ø´Â ºê¶ó¿ìÀú°¡
-    ¾ÆÀÌÄÜ´ë½Å »ç¿ëÇÒ ¹®±¸ÀÌ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>ï¿½ï¿½ï¿½ï¿½ <var>name</var>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <var>Icon</var>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (%-escaped) ï¿½ï¿½ï¿½ URL È¤ï¿½ï¿½
+    <code>(<var>alttext</var>,<var>url</var>)</code> ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½.
+    ï¿½ï¿½ï¿½â¼­ <var>alttext</var>ï¿½ï¿½ ï¿½×¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ü´ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½.</p>
 
-    <p><var>Name</var>¿¡´Â µð·ºÅä¸®¸¦ ³ªÅ¸³»´Â <code>^^DIRECTORY^^</code>,
-    (¸ñ·Ï Çü½ÄÀ» ¿Ã¹Ù·Î ¸ÂÃß±âÀ§ÇØ) ºóÁÙÀ» ³ªÅ¸³»´Â
-    <code>^^BLANKICON^^</code>, ÆÄÀÏ È®ÀåÀÚ, ¿ÍÀÏµåÄ«µå Ç¥Çö,
-    ÆÄÀÏ¸í ÀÏºÎ È¤Àº ÀüÃ¼¸¦ »ç¿ëÇÒ ¼ö ÀÖ´Ù.</p>
+    <p><var>Name</var>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ <code>^^DIRECTORY^^</code>,
+    (ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã¹Ù·ï¿½ ï¿½ï¿½ï¿½ß±ï¿½ï¿½ï¿½ï¿½ï¿½) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½
+    <code>^^BLANKICON^^</code>, ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½Ïµï¿½Ä«ï¿½ï¿½ Ç¥ï¿½ï¿½,
+    ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½Ïºï¿½ È¤ï¿½ï¿½ ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <div class="example"><h3>¿¹Á¦</h3><p><code>
+    <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½</h3><p><code>
       AddIcon (IMG,/icons/image.xbm) .gif .jpg .xbm<br />
       AddIcon /icons/dir.xbm ^^DIRECTORY^^<br />
       AddIcon /icons/backup.xbm *~
     </code></p></div>
     
-    <p>°¡´ÉÇÏ¸é <code class="directive">AddIcon</code>º¸´Ù´Â <code class="directive"><a href="#addiconbytype">AddIconByType</a></code>À» »ç¿ëÇØ¾ß ÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ <code class="directive">AddIcon</code>ï¿½ï¿½ï¿½Ù´ï¿½ <code class="directive"><a href="#addiconbytype">AddIconByType</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddIconByEncoding" id="AddIconByEncoding">AddIconByEncoding</a> <a name="addiconbyencoding" id="addiconbyencoding">Áö½Ã¾î</a> <a title="Permanent link" href="#addiconbyencoding" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="AddIconByEncoding" id="AddIconByEncoding">AddIconByEncoding</a> <a name="addiconbyencoding" id="addiconbyencoding">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#addiconbyencoding" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>MIME content-encodingÀ¸·Î ¼±ÅÃÇÑ ÆÄÀÏ¿¡ »ç¿ëÇÒ ¾ÆÀÌÄÜ</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>AddIconByEncoding <var>icon</var> <var>MIME-encoding</var>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>MIME content-encodingï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>AddIconByEncoding <var>icon</var> <var>MIME-encoding</var>
 [<var>MIME-encoding</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override ¿É¼Ç:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_autoindex</td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override ï¿½É¼ï¿½:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_autoindex</td></tr>
 </table>
-    <p>ÀÌ Áö½Ã¾î´Â <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>¿¡¼­
-    ÆÄÀÏ ¿·¿¡ º¸¿©ÁÙ ¾ÆÀÌÄÜÀ» ÁöÁ¤ÇÑ´Ù. <var>Icon</var>Àº
-    ¾ÆÀÌÄÜÀÇ (%-escaped) »ó´ë URL È¤Àº
-    <code>(<var>alttext</var>,<var>url</var>)</code> Çü½ÄÀÌ´Ù.
-    ¿©±â¼­ <var>alttext</var>´Â ±×¸²À» º¸¿©ÁÙ ¼ö ¾ø´Â ºê¶ó¿ìÀú°¡
-    ¾ÆÀÌÄÜ´ë½Å »ç¿ëÇÒ ¹®±¸ÀÌ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <var>Icon</var>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (%-escaped) ï¿½ï¿½ï¿½ URL È¤ï¿½ï¿½
+    <code>(<var>alttext</var>,<var>url</var>)</code> ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½.
+    ï¿½ï¿½ï¿½â¼­ <var>alttext</var>ï¿½ï¿½ ï¿½×¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ü´ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½.</p>
 
-    <p><var>MIME-encoding</var>´Â content-encoding¿¡ ÇØ´çÇÏ´Â
-    ¿ÍÀÏµåÄ«µå Ç¥ÇöÀÌ´Ù.</p>
+    <p><var>MIME-encoding</var>ï¿½ï¿½ content-encodingï¿½ï¿½ ï¿½Ø´ï¿½ï¿½Ï´ï¿½
+    ï¿½ï¿½ï¿½Ïµï¿½Ä«ï¿½ï¿½ Ç¥ï¿½ï¿½ï¿½Ì´ï¿½.</p>
 
-    <div class="example"><h3>¿¹Á¦</h3><p><code>
+    <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½</h3><p><code>
       AddIconByEncoding /icons/compress.xbm x-compress
     </code></p></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddIconByType" id="AddIconByType">AddIconByType</a> <a name="addiconbytype" id="addiconbytype">Áö½Ã¾î</a> <a title="Permanent link" href="#addiconbytype" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="AddIconByType" id="AddIconByType">AddIconByType</a> <a name="addiconbytype" id="addiconbytype">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#addiconbytype" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>MIME content-typeÀ¸·Î ¼±ÅÃÇÑ ÆÄÀÏ¿¡ »ç¿ëÇÒ ¾ÆÀÌÄÜ</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>AddIconByType <var>icon</var> <var>MIME-type</var>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>MIME content-typeï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>AddIconByType <var>icon</var> <var>MIME-type</var>
 [<var>MIME-type</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override ¿É¼Ç:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_autoindex</td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override ï¿½É¼ï¿½:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_autoindex</td></tr>
 </table>
-    <p>ÀÌ Áö½Ã¾î´Â <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>¿¡¼­
-    <var>MIME-type</var>ÀÇ ÆÄÀÏ ¿·¿¡ º¸¿©ÁÙ ¾ÆÀÌÄÜÀ» ÁöÁ¤ÇÑ´Ù.
-    <var>Icon</var>Àº ¾ÆÀÌÄÜÀÇ (%-escaped) »ó´ë URL È¤Àº
-    <code>(<var>alttext</var>,<var>url</var>)</code> Çü½ÄÀÌ´Ù.
-    ¿©±â¼­ <var>alttext</var>´Â ±×¸²À» º¸¿©ÁÙ ¼ö ¾ø´Â ºê¶ó¿ìÀú°¡
-    ¾ÆÀÌÄÜ´ë½Å »ç¿ëÇÒ ¹®±¸ÀÌ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>ï¿½ï¿½ï¿½ï¿½
+    <var>MIME-type</var>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+    <var>Icon</var>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (%-escaped) ï¿½ï¿½ï¿½ URL È¤ï¿½ï¿½
+    <code>(<var>alttext</var>,<var>url</var>)</code> ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½.
+    ï¿½ï¿½ï¿½â¼­ <var>alttext</var>ï¿½ï¿½ ï¿½×¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ü´ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½.</p>
 
-    <p><var>MIME-type</var>Àº mime type¿¡ ÇØ´çÇÏ´Â ¿ÍÀÏµåÄ«µå
-    Ç¥ÇöÀÌ´Ù.</p>
+    <p><var>MIME-type</var>ï¿½ï¿½ mime typeï¿½ï¿½ ï¿½Ø´ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½Ïµï¿½Ä«ï¿½ï¿½
+    Ç¥ï¿½ï¿½ï¿½Ì´ï¿½.</p>
 
-    <div class="example"><h3>¿¹Á¦</h3><p><code>
+    <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½</h3><p><code>
       AddIconByType (IMG,/icons/image.xbm) image/*
     </code></p></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DefaultIcon" id="DefaultIcon">DefaultIcon</a> <a name="defaulticon" id="defaulticon">Áö½Ã¾î</a> <a title="Permanent link" href="#defaulticon" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="DefaultIcon" id="DefaultIcon">DefaultIcon</a> <a name="defaulticon" id="defaulticon">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#defaulticon" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>Æ¯Á¤ ¾ÆÀÌÄÜÀ» ¼³Á¤ÇÏÁö¾ÊÀº ÆÄÀÏ¿¡ »ç¿ëÇÒ ¾ÆÀÌÄÜ</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>DefaultIcon <var>url-path</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override ¿É¼Ç:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_autoindex</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Æ¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>DefaultIcon <var>url-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override ï¿½É¼ï¿½:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_autoindex</td></tr>
 </table>
-    <p><code class="directive">DefaultIcon</code> Áö½Ã¾î´Â <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>¿¡¼­
-    Æ¯Á¤ ¾ÆÀÌÄÜÀ» ¼³Á¤ÇÏÁö¾ÊÀº ÆÄÀÏ ¿·¿¡ ³ª¿Ã ¾ÆÀÌÄÜÀÌ´Ù.
-    <var>Icon</var>Àº ¾ÆÀÌÄÜÀÇ (%-escaped) »ó´ë URLÀÌ´Ù.</p>
+    <p><code class="directive">DefaultIcon</code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>ï¿½ï¿½ï¿½ï¿½
+    Æ¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½.
+    <var>Icon</var>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (%-escaped) ï¿½ï¿½ï¿½ URLï¿½Ì´ï¿½.</p>
 
-    <div class="example"><h3>¿¹Á¦</h3><p><code>
+    <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½</h3><p><code>
       DefaultIcon /icon/unknown.xbm
     </code></p></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="HeaderName" id="HeaderName">HeaderName</a> <a name="headername" id="headername">Áö½Ã¾î</a> <a title="Permanent link" href="#headername" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="HeaderName" id="HeaderName">HeaderName</a> <a name="headername" id="headername">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#headername" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>ÆÄÀÏ¸ñ·Ï À§¿¡ »ðÀÔÇÒ ÆÄÀÏÀÇ ÀÌ¸§</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>HeaderName <var>filename</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override ¿É¼Ç:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_autoindex</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>HeaderName <var>filename</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override ï¿½É¼ï¿½:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_autoindex</td></tr>
 </table>
-    <p><code class="directive">HeaderName</code> Áö½Ã¾î´Â ÆÄÀÏ¸ñ·Ï ¾Õ¿¡
-    »ðÀÔÇÒ ÆÄÀÏÀÇ ÀÌ¸§À» ÁöÁ¤ÇÑ´Ù. <var>Filename</var>Àº »ðÀÔÇÒ
-    ÆÄÀÏ¸íÀÌ´Ù.</p>
+    <p><code class="directive">HeaderName</code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ ï¿½Õ¿ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <var>Filename</var>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½Ì´ï¿½.</p>
 
-    <div class="example"><h3>¿¹Á¦</h3><p><code>
+    <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½</h3><p><code>
       HeaderName HEADER.html
     </code></p></div>
 
     <div class="note">
-      <p>ÇöÀç HeaderName°ú <code class="directive"><a href="#readmename">ReadmeName</a></code> µÑ ¸ðµÎ
-      <var>Filename</var>À» Á¢±ÙÇÏ·Á´Â µð·ºÅä¸®ÀÇ »ó´ë URI °æ·Î·Î
-      ¹Þ¾ÆµéÀÎ´Ù. <var>Filename</var>ÀÌ ½½·¡½¬·Î ½ÃÀÛÇÏ¸é <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>¿¡ »ó´ëÀûÀÎ °æ·Î·Î
-      ¹Þ¾ÆµéÀÎ´Ù.</p>
+      <p>ï¿½ï¿½ï¿½ï¿½ HeaderNameï¿½ï¿½ <code class="directive"><a href="#readmename">ReadmeName</a></code> ï¿½ï¿½ ï¿½ï¿½ï¿½
+      <var>Filename</var>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ URI ï¿½ï¿½Î·ï¿½
+      ï¿½Þ¾Æµï¿½ï¿½Î´ï¿½. <var>Filename</var>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Î·ï¿½
+      ï¿½Þ¾Æµï¿½ï¿½Î´ï¿½.</p>
 
-      <div class="example"><h3>¿¹Á¦</h3><p><code>
+      <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½</h3><p><code>
         HeaderName /include/HEADER.html
       </code></p></div>
       
-      <p><var>Filename</var>¿¡´Â major content typeÀÌ <code>text/*</code>ÀÎ
-      (<em>¿¹¸¦ µé¾î</em>, <code>text/html</code>, <code>text/plain</code>,
-      µî) ¹®¼­¸¦ »ç¿ëÇØ¾ß ÇÑ´Ù. Áï, ½ºÅ©¸³Æ®ÀÇ (Ãâ·ÂÀÌ ¾Æ´Ñ) ½ÇÁ¦ ÆÄÀÏ
-      typeÀ» ´ÙÀ½°ú °°ÀÌ <code>text/html</code>·Î ÁöÁ¤ÇÑ´Ù¸é
-      <var>filename</var>À¸·Î CGI ½ºÅ©¸³Æ®¸¦ ÁöÁ¤ÇÒ ¼öµµ ÀÖ´Ù:</p>
+      <p><var>Filename</var>ï¿½ï¿½ï¿½ï¿½ major content typeï¿½ï¿½ <code>text/*</code>ï¿½ï¿½
+      (<em>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½</em>, <code>text/html</code>, <code>text/plain</code>,
+      ï¿½ï¿½) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½. ï¿½ï¿½, ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´ï¿½) ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+      typeï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ <code>text/html</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½
+      <var>filename</var>ï¿½ï¿½ï¿½ï¿½ CGI ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½:</p>
 
       <div class="example"><p><code>
         AddType text/html .cgi
       </code></p></div>
 
       <p><code class="directive"><a href="../mod/core.html#options">Options</a></code>
-      <code>MultiViews</code>À» »ç¿ëÇÏ¸é <a href="../content-negotiation.html">³»¿ëÇù»ó</a>À» ÇÑ´Ù.
-      <var>filename</var>ÀÌ (CGI ½ºÅ©¸³Æ®°¡ ¾Æ´Ñ) °íÁ¤µÈ
-      <code>text/html</code> ¹®¼­ÀÌ°í <code class="directive"><a href="../mod/core.html#options">options</a></code> <code>Includes</code>³ª
-      <code>IncludesNOEXEC</code> Áß ÇÏ³ª¸¦ »ç¿ëÇÑ´Ù¸é ÆÄÀÏÀ»
-      server-side includes·Î Ã³¸®ÇÑ´Ù. (<code class="module"><a href="../mod/mod_include.html">mod_include</a></code>
-      ¹®¼­ Âü°í)</p>
+      <code>MultiViews</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ <a href="../content-negotiation.html">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</a>ï¿½ï¿½ ï¿½Ñ´ï¿½.
+      <var>filename</var>ï¿½ï¿½ (CGI ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Æ´ï¿½) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      <code>text/html</code> ï¿½ï¿½ï¿½ï¿½ï¿½Ì°ï¿½ <code class="directive"><a href="../mod/core.html#options">options</a></code> <code>Includes</code>ï¿½ï¿½
+      <code>IncludesNOEXEC</code> ï¿½ï¿½ ï¿½Ï³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      server-side includesï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ñ´ï¿½. (<code class="module"><a href="../mod/mod_include.html">mod_include</a></code>
+      ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)</p>
     </div>
 
-    <p><code class="directive">HeaderName</code>À¸·Î ÁöÁ¤ÇÑ ÆÄÀÏ¿¡
-    (&lt;html&gt;, &lt;head&gt;, µî) HTML ¹®¼­ ½ÃÀÛºÎºÐÀÌ Æ÷ÇÔµÇÀÖ´Ù¸é
+    <p><code class="directive">HeaderName</code>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½
+    (&lt;html&gt;, &lt;head&gt;, ï¿½ï¿½) HTML ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ÛºÎºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ôµï¿½ï¿½Ö´Ù¸ï¿½
     <a href="#indexoptions.suppresshtmlpreamble"><code>IndexOptions
-    +SuppressHTMLPreamble</code></a>À» »ç¿ëÇÏ¿© ÀÌ ºÎºÐÀ» Ãß°¡ÇÏÁö¾Ê´Â
-    °ÍÀÌ ÁÁ´Ù.</p>
+    +SuppressHTMLPreamble</code></a>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ ï¿½Îºï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê´ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IndexHeadInsert" id="IndexHeadInsert">IndexHeadInsert</a> <a name="indexheadinsert" id="indexheadinsert">Áö½Ã¾î</a> <a title="Permanent link" href="#indexheadinsert" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="IndexHeadInsert" id="IndexHeadInsert">IndexHeadInsert</a> <a name="indexheadinsert" id="indexheadinsert">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#indexheadinsert" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>Inserts text in the HEAD section of an index page.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code /></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_autoindex</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Inserts text in the HEAD section of an index page.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code /></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_autoindex</td></tr>
 </table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IndexIgnore" id="IndexIgnore">IndexIgnore</a> <a name="indexignore" id="indexignore">Áö½Ã¾î</a> <a title="Permanent link" href="#indexignore" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="IndexIgnore" id="IndexIgnore">IndexIgnore</a> <a name="indexignore" id="indexignore">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#indexignore" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>µð·ºÅä¸® ¸ñ·Ï¿¡¼­ ¼û±æ ÆÄÀÏ¸ñ·ÏÀ» Ãß°¡ÇÑ´Ù</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>IndexIgnore <var>file</var> [<var>file</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override ¿É¼Ç:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_autoindex</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½ï¿½ä¸® ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ñ´ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>IndexIgnore <var>file</var> [<var>file</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override ï¿½É¼ï¿½:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_autoindex</td></tr>
 </table>
-    <p><code class="directive">IndexIgnore</code> Áö½Ã¾î´Â µð·ºÅä¸®
-    ¸ñ·Ï¿¡¼­ °¨Ãâ ÆÄÀÏ¸ñ·ÏÀ» Ãß°¡ÇÑ´Ù. <var>File</var>¿¡´Â °¨Ãâ
-    (½©¿¡¼­ »ç¿ëÇÏ´Â) È­ÀÏµåÄ«µå Ç¥ÇöÀÌ³ª ÀüÃ¼ ÆÄÀÏ¸íÀ»
-    »ç¿ëÇÒ ¼ö ÀÖ´Ù. ¿©·¯ IndexIgnore Áö½Ã¾î¸¦ »ç¿ëÇÏ¸é ±âÁ¸ÀÇ
-    °¨Ãâ ÆÄÀÏ¸ñ·ÏÀ» ´ëÃ¼ÇÏÁö¾Ê°í ¸ñ·Ï¿¡ ÁöÁ¤ÇÑ ÆÄÀÏµéÀ» Ãß°¡ÇÑ´Ù.
-    ±âº»ÀûÀ¸·Î ¸ñ·ÏÀº <code>.</code>À» (ÇöÀç µð·ºÅä¸®) Æ÷ÇÔÇÑ´Ù.</p>
+    <p><code class="directive">IndexIgnore</code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®
+    ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ñ´ï¿½. <var>File</var>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½) È­ï¿½Ïµï¿½Ä«ï¿½ï¿½ Ç¥ï¿½ï¿½ï¿½Ì³ï¿½ ï¿½ï¿½Ã¼ ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½ï¿½ IndexIgnore ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ï¿½ï¿½ï¿½ï¿½ï¿½Ê°ï¿½ ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ñ´ï¿½.
+    ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ <code>.</code>ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®) ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
     <div class="example"><p><code>
       IndexIgnore README .htaccess *.bak *~
@@ -492,218 +492,218 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IndexIgnoreReset" id="IndexIgnoreReset">IndexIgnoreReset</a> <a name="indexignorereset" id="indexignorereset">Áö½Ã¾î</a> <a title="Permanent link" href="#indexignorereset" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="IndexIgnoreReset" id="IndexIgnoreReset">IndexIgnoreReset</a> <a name="indexignorereset" id="indexignorereset">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#indexignorereset" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>Empties the list of files to hide when listing
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Empties the list of files to hide when listing
 a directory</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>IndexIgnoreReset ON|OFF</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override ¿É¼Ç:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_autoindex</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Áö¿ø:</a></th><td>2.3.10 and later</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>IndexIgnoreReset ON|OFF</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override ï¿½É¼ï¿½:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_autoindex</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">ï¿½ï¿½ï¿½ï¿½:</a></th><td>2.3.10 and later</td></tr>
 </table><p>The documentation for this directive has
             not been translated yet. Please have a look at the English
             version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IndexOptions" id="IndexOptions">IndexOptions</a> <a name="indexoptions" id="indexoptions">Áö½Ã¾î</a> <a title="Permanent link" href="#indexoptions" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="IndexOptions" id="IndexOptions">IndexOptions</a> <a name="indexoptions" id="indexoptions">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#indexoptions" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>µð·ºÅä¸® ¸ñ·ÏÀÇ ¿©·¯ ¼³Á¤µé</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>IndexOptions  [+|-]<var>option</var> [[+|-]<var>option</var>]
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½ï¿½ä¸® ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>IndexOptions  [+|-]<var>option</var> [[+|-]<var>option</var>]
 ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override ¿É¼Ç:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_autoindex</td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override ï¿½É¼ï¿½:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_autoindex</td></tr>
 </table>
-    <p><code class="directive">IndexOptions</code> Áö½Ã¾î´Â µð·ºÅä¸®
-    ¸ñ·ÏÀ» ¼³Á¤ÇÑ´Ù. <var>Option</var>Àº ´ÙÀ½ Áß ÇÏ³ªÀÌ´Ù</p>
+    <p><code class="directive">IndexOptions</code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <var>Option</var>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ï³ï¿½ï¿½Ì´ï¿½</p>
 
     <dl>
-      <dt><a name="indexoptions.descriptionwidth" id="indexoptions.descriptionwidth">DescriptionWidth=[<var>n</var> | *]</a> (<em>¾ÆÆÄÄ¡
-      2.0.23 ÀÌÈÄ</em>)</dt>
+      <dt><a name="indexoptions.descriptionwidth" id="indexoptions.descriptionwidth">DescriptionWidth=[<var>n</var> | *]</a> (<em>ï¿½ï¿½ï¿½ï¿½Ä¡
+      2.0.23 ï¿½ï¿½ï¿½ï¿½</em>)</dt>
 
-      <dd><code>DescriptionWidth</code> Å°¿öµå¸¦ »ç¿ëÇÏ¿© ¹®ÀÚ´ÜÀ§·Î
-      ¼³¸í¿­ÀÇ ÆøÀ» ÁöÁ¤ÇÒ ¼ö ÀÖ´Ù.</dd>
+      <dd><code>DescriptionWidth</code> Å°ï¿½ï¿½ï¿½å¸¦ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</dd>
 
-      <dd><code>-DescriptionWidth</code>¸¦ ÁöÁ¤ÇÏ¸é (È¤Àº ¾Æ¹«°Íµµ
-      ÁöÁ¤ÇÏÁö¾ÊÀ¸¸é) <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>°¡ ÃÖÀûÀÇ
-      ÆøÀ» °è»êÇÑ´Ù.</dd>
+      <dd><code>-DescriptionWidth</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ (È¤ï¿½ï¿½ ï¿½Æ¹ï¿½ï¿½Íµï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½) <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
-      <dd><code>DescriptionWidth=<var>n</var></code>Àº ¿­ÀÇ
-      ÆøÀ» <var>n</var> ¹ÙÀÌÆ®·Î °íÁ¤ÇÑ´Ù.</dd>
+      <dd><code>DescriptionWidth=<var>n</var></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ <var>n</var> ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
-      <dd><code>DescriptionWidth=*</code>Àº ¿­ÀÇ ÆøÀ» °¡Àå ±ä
-      ¼³¸í±ÛÀ» ´ãÀ» ¼ö ÀÖ´Â¸¸Å­ ´Ã¸°´Ù.</dd>
+      <dd><code>DescriptionWidth=*</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´Â¸ï¿½Å­ ï¿½Ã¸ï¿½ï¿½ï¿½.</dd>
 
-      <dd><strong>¼³Á¤ÀÌ Â©¸± ¼ö ÀÖ´Â ¹®Á¦´Â <code class="directive"><a href="#adddescription">AddDescription</a></code>
-      ÀýÀ» Âü°íÇÏ¶ó.</strong></dd>
+      <dd><strong>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Â©ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code class="directive"><a href="#adddescription">AddDescription</a></code>
+      ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.</strong></dd>
 
       <dt><a name="indexoptions.fancyindexing" id="indexoptions.fancyindexing">FancyIndexing</a></dt>
 
-      <dd>µð·ºÅä¸®ÀÇ fancy ¸ñ·ÏÀ» ¸¸µç´Ù.</dd>
+      <dd>ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ fancy ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½.</dd>
 
       <dt><a name="indexoptions.foldersfirst" id="indexoptions.foldersfirst">FoldersFirst</a>
-               (<em>¾ÆÆÄÄ¡ 2.0.23 ÀÌÈÄ</em>)</dt>
+               (<em>ï¿½ï¿½ï¿½ï¿½Ä¡ 2.0.23 ï¿½ï¿½ï¿½ï¿½</em>)</dt>
 
-      <dd>ÀÌ ¿É¼ÇÀ» »ç¿ëÇÏ¸é ÇÏÀ§µð·ºÅä¸® ¸ñ·ÏÀÌ <em>Ç×»ó</em>
-      ¸ÕÀú ³ª¿À°í, µð·ºÅä¸®¿¡ ÀÖ´Â ÀÏ¹Ý ÆÄÀÏÀÌ µÚ¿¡ ³ª¿Â´Ù.
-      ±âº»ÀûÀ¸·Î ¸ñ·ÏÀº ÆÄÀÏ°ú ÇÏÀ§µð·ºÅä¸®·Î ³ª´µ°í, µû·Î
-      °¢°¢ÀÇ ¼ø¼­¸¦ Á¤¸®ÇÏ¿© ÇÏÀ§µð·ºÅä¸®µéÀ» ¸ÕÀú º¸ÀÎ´Ù.
-      ¿¹¸¦ µé¾î, ÀÌ¸§ ¿ª¼øÀ¸·Î Á¤·ÄÇÏ°í <code>FoldersFirst</code>¸¦
-      »ç¿ëÇÑ´Ù¸é ÇÏÀ§µð·ºÅä¸® <code>Zed</code>°¡ ÇÏÀ§µð·ºÅä¸®
-      <code>Beta</code> ¾Õ¿¡ ³ª¿À°í, ÇÏÀ§µð·ºÅä¸® <code>Beta</code>´Â
-      ÀÏ¹Ý ÆÄÀÏ <code>Gamma</code>¿Í <code>Alpha</code> ¾Õ¿¡
-      ³ª¿Â´Ù. <strong>ÀÌ ¿É¼ÇÀº <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>À» ÇÔ²² »ç¿ëÇÒ¶§¸¸ È¿°ú°¡
-      ÀÖ´Ù.</strong></dd>
+      <dd>ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸® ï¿½ï¿½ï¿½ï¿½ï¿½ <em>ï¿½×»ï¿½</em>
+      ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½Ï¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ú¿ï¿½ ï¿½ï¿½ï¿½Â´ï¿½.
+      ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î´ï¿½.
+      ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ <code>FoldersFirst</code>ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸® <code>Zed</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸®
+      <code>Beta</code> ï¿½Õ¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸® <code>Beta</code>ï¿½ï¿½
+      ï¿½Ï¹ï¿½ ï¿½ï¿½ï¿½ï¿½ <code>Gamma</code>ï¿½ï¿½ <code>Alpha</code> ï¿½Õ¿ï¿½
+      ï¿½ï¿½ï¿½Â´ï¿½. <strong>ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>ï¿½ï¿½ ï¿½Ô²ï¿½ ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ï¿½ï¿½ È¿ï¿½ï¿½ï¿½ï¿½
+      ï¿½Ö´ï¿½.</strong></dd>
 
-      <dt><a name="indexoptions.htmltable" id="indexoptions.htmltable">HTMLTable</a> (<em>½ÇÇèÀû,
-      ¾ÆÆÄÄ¡ 2.0.23 ÀÌÈÄ</em>)</dt>
+      <dt><a name="indexoptions.htmltable" id="indexoptions.htmltable">HTMLTable</a> (<em>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,
+      ï¿½ï¿½ï¿½ï¿½Ä¡ 2.0.23 ï¿½ï¿½ï¿½ï¿½</em>)</dt>
 
-      <dd>ÀÌ ½ÇÇèÀûÀÎ FancyIndexing ¿É¼ÇÀº °£´ÜÇÑ HTML Ç¥·Î
-      fancy µð·ºÅä¸® ¸ñ·ÏÀ» ¸¸µç´Ù. ÀÌ ¿É¼ÇÀº ¿À·¡µÈ ºê¶ó¿ìÀú¸¦
-      È¥¶õ½º·´°Ô ÇÒ ¼ö ÀÖÀ½À» ÁÖÀÇÇÏ¶ó. ÀÌ ¿É¼ÇÀº WinNT³ª ´Ù¸¥
-      utf-8 »ç¿ë ÇÃ·¡Æû¿¡¼­ ÆÄÀÏ¸íÀÌ³ª ¼³¸í¹®ÀÇ ÀÐ±â ¼ø¼­(¿ÞÂÊ¿¡¼­
-      ¿À¸¥ÂÊ È¤Àº ¿À¸¥ÂÊ¿¡¼­ ¿ÞÂÊÀ¸·Î)°¡ ´Ù¸¦¶§ Æ¯º°È÷ À¯¿ëÇÏ´Ù.</dd>
+      <dd>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ FancyIndexing ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ HTML Ç¥ï¿½ï¿½
+      fancy ï¿½ï¿½ï¿½ä¸® ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      È¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½. ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ WinNTï¿½ï¿½ ï¿½Ù¸ï¿½
+      utf-8 ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½Ì³ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ð±ï¿½ ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½Ê¿ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¤ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)ï¿½ï¿½ ï¿½Ù¸ï¿½ï¿½ï¿½ Æ¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.</dd>
 
       <dt><a name="indexoptions.iconsarelinks" id="indexoptions.iconsarelinks">IconsAreLinks</a></dt>
 
-      <dd>fancy ¸ñ·Ï¿¡¼­ ÆÄÀÏ¸í ¸µÅ©¿¡ ¾ÆÀÌÄÜÀ» Æ÷ÇÔÇÑ´Ù.</dd>
+      <dd>fancy ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
       <dt><a name="indexoptions.iconheight" id="indexoptions.iconheight">IconHeight[=<var>pixels</var>]</a></dt>
 
-      <dd>ÀÌ ¿É¼ÇÀ» IconWidth¿Í °°ÀÌ »ç¿ëÇÏ¸é ¼­¹ö´Â ÆÄÀÏ ¾ÆÀÌÄÜÀÇ
-      <code>img</code> ÅÂ±×¿¡ <code>height</code>¿Í <code>width</code>
-      ¼Ó¼ºÀ» Æ÷ÇÔÇÑ´Ù. ±×·¯¸é ºê¶ó¿ìÀú´Â ¸ðµç ÀÌ¹ÌÁö¸¦ ¹ÞÁö¾ÊÀº
-      »óÈ²¿¡¼­µµ ÆäÀÌÁö ±¸¼ºÀ» ¹Ì¸® °è»êÇÒ ¼ö ÀÖ´Ù. ¿É¼Ç¿¡ °ªÀ»
-      ÁÖÁö¾ÊÀ¸¸é ¾ÆÆÄÄ¡°¡ Á¦°øÇÏ´Â ¾ÆÀÌÄÜÀÇ Ç¥ÁØ ³ôÀÌ¸¦ »ç¿ëÇÑ´Ù.</dd>
+      <dd>ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ IconWidthï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      <code>img</code> ï¿½Â±×¿ï¿½ <code>height</code>ï¿½ï¿½ <code>width</code>
+      ï¿½Ó¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½È²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½É¼Ç¿ï¿½ ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
       <dt><a name="indexoptions.iconwidth" id="indexoptions.iconwidth">IconWidth[=<var>pixels</var>]</a></dt>
 
-      <dd>ÀÌ ¿É¼ÇÀ» <code>IconHeight</code>¿Í °°ÀÌ »ç¿ëÇÏ¸é
-      ¼­¹ö´Â ÆÄÀÏ ¾ÆÀÌÄÜÀÇ <code>img</code> ÅÂ±×¿¡
-      <code>height</code>¿Í <code>width</code> ¼Ó¼ºÀ» Æ÷ÇÔÇÑ´Ù.
-      ±×·¯¸é ºê¶ó¿ìÀú´Â ¸ðµç ÀÌ¹ÌÁö¸¦ ¹ÚÁö¾ÊÀº »óÈ²¿¡¼­µµ ÆäÀÌÁö
-      ±¸¼ºÀ» ¹Ì¸® °è»êÇÒ ¼ö ÀÖ´Ù. ¿É¼Ç¿¡ °ªÀ» ÁÖÁö¾ÊÀ¸¸é ¾ÆÆÄÄ¡°¡
-      Á¦°øÇÏ´Â ¾ÆÀÌÄÜÀÇ Ç¥ÁØ ÆøÀ» »ç¿ëÇÑ´Ù.</dd>
+      <dd>ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ <code>IconHeight</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>img</code> ï¿½Â±×¿ï¿½
+      <code>height</code>ï¿½ï¿½ <code>width</code> ï¿½Ó¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+      ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½É¼Ç¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
       <dt><a name="indexoptions.ignorecase" id="indexoptions.ignorecase">IgnoreCase</a></dt>
 
-      <dd>ÀÌ ¿É¼ÇÀ» »ç¿ëÇÏ¸é ´ë¼Ò¹®ÀÚ ±¸º°ÇÏÁö¾Ê°í ÀÌ¸§À» Á¤·ÄÇÑ´Ù.
-      ¿¹¸¦ µé¾î, ÀÌ¸§À¸·Î ¿À¸§Â÷¼øÀÌ°í IgnoreCase¸¦ »ç¿ëÇÏ¸é
-      ÆÄÀÏ Zeta´Â ÆÄÀÏ alfa µÚ¿¡ ³ª¿Â´Ù (ÁÖÀÇ: ÆÄÀÏ GAMMA´Â
-      Ç×»ó ÆÄÀÏ gamma ¾Õ¿¡ ³ª¿Â´Ù). </dd>
+      <dd>ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½Ò¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê°ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+      ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì°ï¿½ IgnoreCaseï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½
+      ï¿½ï¿½ï¿½ï¿½ Zetaï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ alfa ï¿½Ú¿ï¿½ ï¿½ï¿½ï¿½Â´ï¿½ (ï¿½ï¿½ï¿½ï¿½: ï¿½ï¿½ï¿½ï¿½ GAMMAï¿½ï¿½
+      ï¿½×»ï¿½ ï¿½ï¿½ï¿½ï¿½ gamma ï¿½Õ¿ï¿½ ï¿½ï¿½ï¿½Â´ï¿½). </dd>
 
       <dt><a name="indexoptions.ignoreclient" id="indexoptions.ignoreclient">IgnoreClient</a></dt>
 
-      <dd>ÀÌ ¿É¼ÇÀ» »ç¿ëÇÏ¸é <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>´Â
-      ¼ø¼­¸¦ Æ÷ÇÔÇÏ¿© Å¬¶óÀÌ¾ðÆ®°¡ º¸³»´Â ¸ðµç ÁúÀÇº¯¼ö¸¦ ¹«½ÃÇÑ´Ù.
-      (<code><a href="#indexoptions.suppresscolumnsorting">SuppressColumnSorting</a></code>À» °¡Á¤ÇÑ´Ù.)</dd>
+      <dd>ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Çºï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+      (<code><a href="#indexoptions.suppresscolumnsorting">SuppressColumnSorting</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.)</dd>
 
       <dt><a name="indexoptions.namewidth" id="indexoptions.namewidth">NameWidth=[<var>n</var>
                | *]</a></dt>
 
-      <dd><code>NameWidth</code> Å°¿öµå´Â ¹ÙÀÌÆ®´ÜÀ§·Î ÆÄÀÏ¸í
-      ¿­ÀÇ ÆøÀ» ÁöÁ¤ÇÑ´Ù.</dd>
+      <dd><code>NameWidth</code> Å°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¸ï¿½
+      ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
-      <dd><code>-NameWidth</code>À» ÁöÁ¤ÇÏ¸é (È¤Àº ¾Æ¹«°Íµµ
-      ÁöÁ¤ÇÏÁö¾ÊÀ¸¸é) <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>°¡ ÃÖÀûÀÇ
-      ÆøÀ» °è»êÇÑ´Ù.</dd>
+      <dd><code>-NameWidth</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ (È¤ï¿½ï¿½ ï¿½Æ¹ï¿½ï¿½Íµï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½) <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
-      <dd><code>NameWidth=<var>n</var></code>´Â ¿­ÀÇ ÆøÀ» <var>n</var>
-      ¹ÙÀÌÆ®·Î °íÁ¤ÇÑ´Ù.</dd>
+      <dd><code>NameWidth=<var>n</var></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ <var>n</var>
+      ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
-      <dd><code>NameWidth=*</code>Àº ¿­ÀÇ ÆøÀ» ÇÊ¿äÇÑ¸¸Å­ ´Ã¸°´Ù.</dd>
+      <dd><code>NameWidth=*</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Ñ¸ï¿½Å­ ï¿½Ã¸ï¿½ï¿½ï¿½.</dd>
 
       <dt><a name="indexoptions.scanhtmltitles" id="indexoptions.scanhtmltitles">ScanHTMLTitles</a></dt>
 
-      <dd>fancy ¸ñ·Ï¿¡¼­ HTML ¹®¼­ÀÇ titleÀ» »Ì´Â´Ù. ÆÄÀÏ¿¡
-      <code class="directive"><a href="#adddescription">AddDescription</a></code>·Î
-      ÁöÁ¤ÇÑ ¼³¸íÀÌ ¾ø´Ù¸é À¥¼­¹ö´Â ¹®¼­ÀÇ <code>title</code>
-      ¿ä¼Ò°ªÀ» ÀÐ¾îµéÀÎ´Ù. ÀÌ ÀÛ¾÷Àº CPU¿Í µð½ºÅ©¸¦ ¸¹ÀÌ »ç¿ëÇÑ´Ù.</dd>
+      <dd>fancy ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ HTML ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ titleï¿½ï¿½ ï¿½Ì´Â´ï¿½. ï¿½ï¿½ï¿½Ï¿ï¿½
+      <code class="directive"><a href="#adddescription">AddDescription</a></code>ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>title</code>
+      ï¿½ï¿½Ò°ï¿½ï¿½ï¿½ ï¿½Ð¾ï¿½ï¿½ï¿½Î´ï¿½. ï¿½ï¿½ ï¿½Û¾ï¿½ï¿½ï¿½ CPUï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
       <dt><a name="indexoptions.suppresscolumnsorting" id="indexoptions.suppresscolumnsorting">SuppressColumnSorting</a></dt>
 
-      <dd>ÀÌ ¿É¼ÇÀ» »ç¿ëÇÏ¸é ¾ÆÆÄÄ¡´Â FancyIndexed µð·ºÅä¸®
-      ¸ñ·Ï¿¡¼­ ¿­ ÀÌ¸§À» ¼ø¼­¸¦ ¹Ù²Ù´Â ¸µÅ©·Î ¸¸µéÁö ¾Ê´Â´Ù.
-      º¸ÅëÀº ¿­ ÀÌ¸§À» ¸µÅ©·Î ¸¸µé¾î¼­, ¿­ ÀÌ¸§À» ¼±ÅÃÇÏ¸é ±×
-      ¿­¿¡ ÀÖ´Â °ª¼ø¼­·Î µð·ºÅä¸® ¸ñ·ÏÀ» ¸¸µç´Ù. <strong>¾ÆÆÄÄ¡
-      2.0.23 ÀÌÀü¿¡´Â ¼ø¼­ ¾Æ±Ô¸ÕÆ®µµ ÀÐÁö ¾Ê¾Ò´Ù.</strong>
-      ¾ÆÆÄÄ¡ 2.0.23¿¡¼­´Â <a href="#indexoptions.ignoreclient">IndexOptions
-      IgnoreClient</a>¸¦ »ç¿ëÇÏ¿© ¼ø¼­ ¾Æ±Ô¸ÕÆ®¸¦ ÀÐÁö ¾Ê´Â´Ù.</dd>
+      <dd>ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ FancyIndexed ï¿½ï¿½ï¿½ä¸®
+      ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù²Ù´ï¿½ ï¿½ï¿½Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½î¼­, ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸® ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½. <strong>ï¿½ï¿½ï¿½ï¿½Ä¡
+      2.0.23 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¾Ò´ï¿½.</strong>
+      ï¿½ï¿½ï¿½ï¿½Ä¡ 2.0.23ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <a href="#indexoptions.ignoreclient">IndexOptions
+      IgnoreClient</a>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.</dd>
 
       <dt><a name="indexoptions.suppressdescription" id="indexoptions.suppressdescription">SuppressDescription</a></dt>
 
-      <dd>fancy ¸ñ·Ï¿¡¼­ ÆÄÀÏ ¼³¸íÀ» Æ÷ÇÔÇÏÁö ¾Ê´Â´Ù. ±âº»ÀûÀ¸·Î
-      ¾î¶² ÆÄÀÏ ¼³¸íµµ Á¤ÀÇµÇÀÖÁö¾Ê°í, ÀÌ ¿É¼ÇÀ» »ç¿ëÇÏ¸é 23
-      ¹®ÀÚ °ø°£À» ´Ù¸¥ ¿ëµµ·Î »ç¿ëÇÑ´Ù. ÆÄÀÏ ¼³¸íÀ» ÁöÁ¤ÇÏ´Â
-      ¹æ¹ýÀº <code class="directive"><a href="#adddescription">AddDescription</a></code>À» Âü°íÇÏ¶ó. ¼³¸í¿­ÀÇ Å©±â¸¦
-      ÁöÁ¤ÇÏ´Â <code><a href="#indexoptions.descriptionwidth">DescriptionWidth</a></code>
-      ¿É¼Çµµ Âü°íÇÏ¶ó.</dd>
+      <dd>fancy ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½. ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½î¶² ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Çµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê°ï¿½, ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ 23
+      ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½ëµµï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ <code class="directive"><a href="#adddescription">AddDescription</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å©ï¿½â¸¦
+      ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ <code><a href="#indexoptions.descriptionwidth">DescriptionWidth</a></code>
+      ï¿½É¼Çµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.</dd>
 
       <dt><a name="indexoptions.suppresshtmlpreamble" id="indexoptions.suppresshtmlpreamble">SuppressHTMLPreamble</a></dt>
 
-      <dd>µð·ºÅä¸®¿¡ <code class="directive"><a href="#headername">HeaderName</a></code> Áö½Ã¾î·Î
-      ÁöÁ¤ÇÑ ÆÄÀÏÀÌ ÀÖ´Â °æ¿ì ¸ðµâÀº º¸Åë Ç¥ÁØ HTML ½ÃÀÛºÎºÐ
+      <dd>ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ <code class="directive"><a href="#headername">HeaderName</a></code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½ HTML ï¿½ï¿½ï¿½ÛºÎºï¿½
       (<code>&lt;html&gt;</code>, <code>&lt;head&gt;</code>,
-      <em>et cetera</em>) µÚ¿¡ ÆÄÀÏ ³»¿ëÀ» Ã·°¡ÇÑ´Ù. ±×·¯³ª
-      <code>SuppressHTMLPreamble</code> ¿É¼ÇÀ» »ç¿ëÇÏ¸é Ã³À½ºÎÅÍ
-      header ÆÄÀÏ ³»¿ëÀ» Æ÷ÇÔÇÑ´Ù. ÀÌ °æ¿ì header ÆÄÀÏ¿¡´Â ÀûÀýÇÑ
-      HTML ¸í·ÉÀÌ ÀÖ¾î¾ß ÇÑ´Ù. header ÆÄÀÏÀÌ ¾ø´Ù¸é ÀÏ¹ÝÀûÀÎ
-      ½ÃÀÛºÎºÐÀÌ ¸¸µé¾îÁø´Ù.</dd>
+      <em>et cetera</em>) ï¿½Ú¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã·ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½×·ï¿½ï¿½ï¿½
+      <code>SuppressHTMLPreamble</code> ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      header ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ header ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      HTML ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¾ï¿½ï¿½ ï¿½Ñ´ï¿½. header ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ù¸ï¿½ ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ÛºÎºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.</dd>
 
       <dt><a name="indexoptions.suppressicon" id="indexoptions.suppressicon">SuppressIcon</a>
-               (<em>¾ÆÆÄÄ¡ 2.0.23 ÀÌÈÄ</em>)</dt>
+               (<em>ï¿½ï¿½ï¿½ï¿½Ä¡ 2.0.23 ï¿½ï¿½ï¿½ï¿½</em>)</dt>
 
-      <dd>fancy ¸ñ·Ï¿¡¼­ ¾ÆÀÌÄÜÀ» »«´Ù. <code>SuppressIcon</code>°ú
-      <code>SuppressRules</code>¸¦ °°ÀÌ »ç¿ëÇÏ¸é, (FancyIndexed
-      ¸ñ·ÏÀÌ »ç¿ëÇÑ) <code>pre</code> ¾È¿¡ <code>img</code>¿Í
-      <code>hr</code> ¿ä¼Ò »ç¿ëÀ» ±ÝÁöÇÑ ¸¶Áö¸· Ç¥ÁØÀÎ HTML 3.2¿¡
-      ¾Ë¸ÂÀº Ãâ·ÂÀÌ µÈ´Ù.</dd>
+      <dd>fancy ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½. <code>SuppressIcon</code>ï¿½ï¿½
+      <code>SuppressRules</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½, (FancyIndexed
+      ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½) <code>pre</code> ï¿½È¿ï¿½ <code>img</code>ï¿½ï¿½
+      <code>hr</code> ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½ï¿½ï¿½ HTML 3.2ï¿½ï¿½
+      ï¿½Ë¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½È´ï¿½.</dd>
 
       <dt><a name="indexoptions.suppresslastmodified" id="indexoptions.suppresslastmodified">SuppressLastModified</a></dt>
 
-      <dd>fancy ¸ñ·Ï¿¡¼­ ¸¶Áö¸· ¼öÁ¤ÀÏÀ» Ç¥½ÃÇÏÁö ¾Ê´Â´Ù.</dd>
+      <dd>fancy ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.</dd>
 
       <dt><a name="indexoptions.suppressrules" id="indexoptions.suppressrules">SuppressRules</a>
-      (<em>¾ÆÆÄÄ¡ 2.0.23 ÀÌÈÄ</em>)</dt>
+      (<em>ï¿½ï¿½ï¿½ï¿½Ä¡ 2.0.23 ï¿½ï¿½ï¿½ï¿½</em>)</dt>
 
-      <dd>µð·ºÅä¸® ¸ñ·Ï¿¡¼­ ¼öÆòÁÙÀ» (<code>hr</code> ¿ä¼Ò)
-      »ç¿ëÇÏÁö ¾Ê´Â´Ù. <code>SuppressIcon</code>°ú
-      <code>SuppressRules</code>¸¦ °°ÀÌ »ç¿ëÇÏ¸é, (FancyIndexed
-      ¸ñ·ÏÀÌ »ç¿ëÇÑ) <code>pre</code> ¾È¿¡ <code>img</code>¿Í
-      <code>hr</code> ¿ä¼Ò »ç¿ëÀ» ±ÝÁöÇÑ ¸¶Áö¸· Ç¥ÁØÀÎ HTML 3.2¿¡
-      ¾Ë¸ÂÀº Ãâ·ÂÀÌ µÈ´Ù.</dd>
+      <dd>ï¿½ï¿½ï¿½ä¸® ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (<code>hr</code> ï¿½ï¿½ï¿½)
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½. <code>SuppressIcon</code>ï¿½ï¿½
+      <code>SuppressRules</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½, (FancyIndexed
+      ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½) <code>pre</code> ï¿½È¿ï¿½ <code>img</code>ï¿½ï¿½
+      <code>hr</code> ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½ï¿½ï¿½ HTML 3.2ï¿½ï¿½
+      ï¿½Ë¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½È´ï¿½.</dd>
 
       <dt><a name="indexoptions.suppresssize" id="indexoptions.suppresssize">SuppressSize</a></dt>
 
-      <dd>fancy ¸ñ·Ï¿¡¼­ ÆÄÀÏÅ©±â¸¦ Ç¥½ÃÇÏÁö ¾Ê´Â´Ù.</dd>
+      <dd>fancy ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Å©ï¿½â¸¦ Ç¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.</dd>
 
       <dt><a name="indexoptions.trackmodified" id="indexoptions.trackmodified">TrackModified</a>
-               (<em>¾ÆÆÄÄ¡ 2.0.23 ÀÌÈÄ</em>)</dt>
+               (<em>ï¿½ï¿½ï¿½ï¿½Ä¡ 2.0.23 ï¿½ï¿½ï¿½ï¿½</em>)</dt>
 
-      <dd>µð·ºÅä¸® ¸ñ·ÏÀÇ HTTP Çì´õ¿¡ Last-Modified¿Í ETag °ªÀ»
-      Æ÷ÇÔÇÑ´Ù. ÀÌ ¿É¼ÇÀº ¿î¿µÃ¼Á¦¿Í ÆÄÀÏ½Ã½ºÅÛ¿¡¼­ ÀûÀýÇÑ stat()
-      °á°ú¸¦ ¾òÀ» ¼ö ÀÖÀ»¶§¸¸ À¯È¿ÇÏ´Ù. À¯´Ð½º ½Ã½ºÅÛ°ú OS2ÀÇ
-      JFS, Win32ÀÇ NTFS¿¡¼­´Â °¡´ÉÇÏ´Ù. ¿¹¸¦ µé¾î, OS2¿Í Win32ÀÇ
-      FATÀº ºÒ°¡´ÉÇÏ´Ù. ÀÌ ±â´ÉÀ» »ç¿ëÇÏ¸é Å¬¶óÀÌ¾ðÆ®³ª ÇÁ·Ï½Ã´Â
-      <code>HEAD</code> ¿äÃ»À» »ç¿ëÇÏ¿© ÆÄÀÏ¸ñ·ÏÀÇ º¯È­¸¦ ÃßÀûÇÒ
-      ¼ö ÀÖ´Ù. ¾î¶² ¿î¿µÃ¼Á¦´Â »õ·Î¿î ÆÄÀÏ°ú »èÁ¦ÇÑ ÆÄÀÏÀ» ¿Ã¹Ù·Î
-      ÃßÀûÇÏÁö¸¸, µð·ºÅä¸®¿¡ ÀÖ´Â ÆÄÀÏÀÇ Å©±â³ª ³¯Â¥ º¯È­¸¦
-      ÃßÀûÇÏÁö ¸øÇÔÀ» ÁÖÀÇÇÏ¶ó. <strong>¸ðµç À¯´Ð½º ÇÃ·¡Æû¿¡¼­
-      ±âÁ¸ ÆÄÀÏÀÇ Å©±â³ª ³¯Â¥ º¯È­½Ã Last-Modified Çì´õ°¡
-      ¹Ù²îÁö¾Ê´Â´Ù.</strong> ÀÌ·± º¯È­°¡ Áß¿äÇÏ´Ù¸é ÀÌ ¿É¼ÇÀ»
-      »ç¿ëÇÏÁö ¸¶¶ó.</dd>
+      <dd>ï¿½ï¿½ï¿½ä¸® ï¿½ï¿½ï¿½ï¿½ï¿½ HTTP ï¿½ï¿½ï¿½ï¿½ï¿½ Last-Modifiedï¿½ï¿½ ETag ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½î¿µÃ¼ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½Û¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ stat()
+      ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¿ï¿½Ï´ï¿½. ï¿½ï¿½ï¿½Ð½ï¿½ ï¿½Ã½ï¿½ï¿½Û°ï¿½ OS2ï¿½ï¿½
+      JFS, Win32ï¿½ï¿½ NTFSï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, OS2ï¿½ï¿½ Win32ï¿½ï¿½
+      FATï¿½ï¿½ ï¿½Ò°ï¿½ï¿½ï¿½ï¿½Ï´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½Ï½Ã´ï¿½
+      <code>HEAD</code> ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½î¶² ï¿½î¿µÃ¼ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã¹Ù·ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å©ï¿½â³ª ï¿½ï¿½Â¥ ï¿½ï¿½È­ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½. <strong>ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ð½ï¿½ ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å©ï¿½â³ª ï¿½ï¿½Â¥ ï¿½ï¿½È­ï¿½ï¿½ Last-Modified ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½Ù²ï¿½ï¿½ï¿½ï¿½Ê´Â´ï¿½.</strong> ï¿½Ì·ï¿½ ï¿½ï¿½È­ï¿½ï¿½ ï¿½ß¿ï¿½ï¿½Ï´Ù¸ï¿½ ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</dd>
 
       <dt><a name="indexoptions.versionsort" id="indexoptions.versionsort">VersionSort</a>
-               (<em>¾ÆÆÄÄ¡ 2.0a3 ÀÌÈÄ</em>)</dt>
+               (<em>ï¿½ï¿½ï¿½ï¿½Ä¡ 2.0a3 ï¿½ï¿½ï¿½ï¿½</em>)</dt>
 
-      <dd><code>VersionSort</code> Å°¿öµå´Â ¹öÀü ¹øÈ£¸¦ Æ÷ÇÔÇÑ
-      ÆÄÀÏ¸íÀ» ÀÚ¿¬½º·´°Ô Á¤·ÄÇÑ´Ù. ¹®ÀÚ ºÎºÐÀº Á¤»óÀûÀÎ ¼ø¼­¸¦
-      Á¤·ÄÇÏÁö¸¸, ÆÄÀÏ°ú ¼³¸í¿¡ ÀÖ´Â ¼ýÀÚ ºÎºÐÀº ¼ýÀÚ°ªÀ¸·Î
-      ºñ±³ÇÑ´Ù.
+      <dd><code>VersionSort</code> Å°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ ï¿½Ú¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½Îºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Îºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ú°ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½Ñ´ï¿½.
 
-      <div class="example"><h3>¿¹Á¦:</h3><p><code>
+      <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½:</h3><p><code>
         foo-1.7<br />
         foo-1.7.2<br />
         foo-1.7.12<br />
@@ -712,7 +712,7 @@ a directory</td></tr>
         foo-1.12
       </code></p></div>
 
-      <p>¼ö°¡ 0À¸·Î ½ÃÀÛÇÏ¸é, ±× ¼ö¸¦ ºÐ¼ö·Î Ãë±ÞÇÑ´Ù:</p>
+      <p>ï¿½ï¿½ï¿½ï¿½ 0ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½, ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ð¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½:</p>
 
       <div class="example"><p><code>
         foo-1.001<br />
@@ -723,23 +723,23 @@ a directory</td></tr>
       </dd>
 
       <dt><a name="indexoptions.xhtml" id="indexoptions.xhtml">XHTML</a>
-      (<em>¾ÆÆÄÄ¡ 2.0.49 ÀÌÈÄ</em>)</dt>
+      (<em>ï¿½ï¿½ï¿½ï¿½Ä¡ 2.0.49 ï¿½ï¿½ï¿½ï¿½</em>)</dt>
 
-      <dd><code>XHTML</code> Å°¿öµå¸¦ »ç¿ëÇÏ¸é
-      <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>´Â HTML 3.2 ´ë½Å XHTML 1.0
-      ÄÚµå¸¦ »ý¼ºÇÑ´Ù.</dd>
+      <dd><code>XHTML</code> Å°ï¿½ï¿½ï¿½å¸¦ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½
+      <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>ï¿½ï¿½ HTML 3.2 ï¿½ï¿½ï¿½ XHTML 1.0
+      ï¿½Úµå¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
     </dl>
 
    
-   <dl><dt>Á¡ÁøÀûÀÎ IndexOptions</dt>
+   <dl><dt>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ IndexOptions</dt>
    <dd>
-     <p>¾ÆÆÄÄ¡ 1.3.3¿¡¼­ <code class="directive">IndexOptions</code>
-     Áö½Ã¾î Ã³¸®¹æ½ÄÀÌ Å©°Ô º¯È­µÇ¾ú´Ù. Æ¯º°È÷:</p>
+     <p>ï¿½ï¿½ï¿½ï¿½Ä¡ 1.3.3ï¿½ï¿½ï¿½ï¿½ <code class="directive">IndexOptions</code>
+     ï¿½ï¿½ï¿½Ã¾ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å©ï¿½ï¿½ ï¿½ï¿½È­ï¿½Ç¾ï¿½ï¿½ï¿½. Æ¯ï¿½ï¿½ï¿½ï¿½:</p>
 
      <ul>
-     <li>ÀÌÁ¦ ÇÑ µð·ºÅä¸®¿¡ ´ëÇÑ ¿©·¯
-     <code class="directive">IndexOptions</code> Áö½Ã¾îµéÀ» ¼­·Î °áÇÕÇÑ´Ù.
-     ´ÙÀ½ÀÇ °á°ú´Â:
+     <li>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+     <code class="directive">IndexOptions</code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+     ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½:
 
      <div class="example"><p><code>
        &lt;Directory /foo&gt;
@@ -750,81 +750,81 @@ a directory</td></tr>
        &lt;/Directory&gt;
      </code></p></div>
 
-     <p>´ÙÀ½°ú °°´Ù</p>
+     <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</p>
 
      <div class="example"><p><code>
        IndexOptions HTMLTable SuppressColumnsorting
      </code></p></div>
      </li>
 
-     <li>(<em>¿¹¸¦ µé¾î</em>, Å°¿öµå ¾Õ¿¡ <code>+</code>³ª
-     <code>-</code>¸¦ ºÙÀÌ´Â) Á¡ÁøÀûÀÎ ¹®¹ýÀÌ Ãß°¡µÇ¾ú´Ù.</li>
+     <li>(<em>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½</em>, Å°ï¿½ï¿½ï¿½ï¿½ ï¿½Õ¿ï¿½ <code>+</code>ï¿½ï¿½
+     <code>-</code>ï¿½ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½.</li>
      </ul>
 
-     <p>Å°¿öµå ¾Õ¿¡ '+'³ª '-'°¡ ºÙÀ»¶§¸¶´Ù ÇØ´ç Å°¿öµå°¡ ÇöÀç
-     (»óÀ§ µð·ºÅä¸®¿¡¼­ »ó¼ÓµÇ¾úÀ») <code class="directive">IndexOptions</code>
-     ¼³Á¤¿¡ ¹Ý¿µµÈ´Ù. ±×·¯³ª ¾Õ¿¡ ¾Æ¹«°Íµµ ¾ø´Â Å°¿öµå¸¦ ¸¸³ª¸é
-     ¾ÆÁ÷±îÁö »ó¼ÓµÇ°Å³ª Á¡ÁøÀûÀ¸·Î º¯°æµÈ ¼³Á¤À» ¸ðµÎ Áö¿î´Ù.
-     ´ÙÀ½ ¿¹Á¦¸¦ »ìÆìº¸ÀÚ:</p>
+     <p>Å°ï¿½ï¿½ï¿½ï¿½ ï¿½Õ¿ï¿½ '+'ï¿½ï¿½ '-'ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ø´ï¿½ Å°ï¿½ï¿½ï¿½å°¡ ï¿½ï¿½ï¿½ï¿½
+     (ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ÓµÇ¾ï¿½ï¿½ï¿½) <code class="directive">IndexOptions</code>
+     ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ý¿ï¿½ï¿½È´ï¿½. ï¿½×·ï¿½ï¿½ï¿½ ï¿½Õ¿ï¿½ ï¿½Æ¹ï¿½ï¿½Íµï¿½ ï¿½ï¿½ï¿½ï¿½ Å°ï¿½ï¿½ï¿½å¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+     ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ÓµÇ°Å³ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½.
+     ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ìº¸ï¿½ï¿½:</p>
 
      <div class="example"><p><code>
        IndexOptions +ScanHTMLTitles -IconsAreLinks FancyIndexing<br />
        IndexOptions +SuppressSize
      </code></p></div>
 
-     <p>¾Õ¿¡ ¾Æ¹«°Íµµ ¾ø´Â <code>FancyIndexing</code>ÀÌ ÀÌÀüÀÇ
-     Á¡ÁøÀûÀÎ ¼³Á¤À» Áö¿ö¹ö·ÈÁö¸¸ ¼³Á¤ÀÌ ´Ù½Ã Ãß°¡µÇ¿© °á°ú´Â
-     <code>IndexOptions FancyIndexing +SuppressSize</code>¿Í °°´Ù.</p>
+     <p>ï¿½Õ¿ï¿½ ï¿½Æ¹ï¿½ï¿½Íµï¿½ ï¿½ï¿½ï¿½ï¿½ <code>FancyIndexing</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+     ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù½ï¿½ ï¿½ß°ï¿½ï¿½Ç¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+     <code>IndexOptions FancyIndexing +SuppressSize</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</p>
 
-     <p>Æ¯Á¤ µð·ºÅä¸®¿¡ ´ëÇØ ¹«Á¶°ÇÀûÀÎ
-     <code class="directive">IndexOptions</code>¸¦ ¼³Á¤ÇÏ·Á¸é Å°¿öµå
-     ¾Õ¿¡ <code>+</code>³ª <code>-</code>¸¦ »ç¿ëÇÏÁö¸»°í
-     »ó¼ÓµÈ ¼³Á¤À» Áö¿î´Ù.</p>
+     <p>Æ¯ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+     <code class="directive">IndexOptions</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ Å°ï¿½ï¿½ï¿½ï¿½
+     ï¿½Õ¿ï¿½ <code>+</code>ï¿½ï¿½ <code>-</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+     ï¿½ï¿½Óµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½.</p>
    </dd>
    </dl>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IndexOrderDefault" id="IndexOrderDefault">IndexOrderDefault</a> <a name="indexorderdefault" id="indexorderdefault">Áö½Ã¾î</a> <a title="Permanent link" href="#indexorderdefault" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="IndexOrderDefault" id="IndexOrderDefault">IndexOrderDefault</a> <a name="indexorderdefault" id="indexorderdefault">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#indexorderdefault" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>µð·ºÅä¸® ¸ñ·ÏÀÇ ±âº» ¼ø¼­¸¦ ¼³Á¤ÇÑ´Ù</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>IndexOrderDefault Ascending|Descending
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½ï¿½ä¸® ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½âº» ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>IndexOrderDefault Ascending|Descending
 Name|Date|Size|Description</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">±âº»°ª:</a></th><td><code>IndexOrderDefault Ascending Name</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override ¿É¼Ç:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_autoindex</td></tr>
+<tr><th><a href="directive-dict.html#Default">ï¿½âº»ï¿½ï¿½:</a></th><td><code>IndexOrderDefault Ascending Name</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override ï¿½É¼ï¿½:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_autoindex</td></tr>
 </table>
-    <p><code class="directive">IndexOrderDefault</code> Áö½Ã¾î´Â <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>
-    ¸ñ·Ï ¿É¼Ç°ú ÇÔ²² »ç¿ëÇÑ´Ù. ±âº»ÀûÀ¸·Î fancyindexed µð·ºÅä¸®
-    ¸ñ·ÏÀº ÆÄÀÏ¸í ¿À¸§Â÷¼øÀÌ´Ù. <code class="directive">IndexOrderDefault</code>´Â
-    ÀÌ ÃÊ±â ¼ø¼­¸¦ º¯°æÇÒ ¼ö ÀÖ´Ù.</p>
+    <p><code class="directive">IndexOrderDefault</code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>
+    ï¿½ï¿½ï¿½ ï¿½É¼Ç°ï¿½ ï¿½Ô²ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ fancyindexed ï¿½ï¿½ï¿½ä¸®
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½. <code class="directive">IndexOrderDefault</code>ï¿½ï¿½
+    ï¿½ï¿½ ï¿½Ê±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <p><code class="directive">IndexOrderDefault</code>´Â µÎ ¾Æ±Ô¸ÕÆ®¸¦
-    ¹Þ´Â´Ù. Ã¹¹øÂ°´Â ¼ø¼­ÀÇ ¹æÇâÀ» Áö½ÃÇÏ´Â <code>Ascending</code>
-    (¿À¸¥Â÷¼ø) ÀÌ³ª <code>Descending</code> (³»¸²Â÷¼ø) Áß ÇÏ³ª´Ù.
-    µÎ¹øÂ° ¾Æ±Ô¸ÕÆ®´Â ÀÏÂ÷ ¼ø¼­¸¦ ³ªÅ¸³»´Â Å°¿öµå <code>Name</code>,
+    <p><code class="directive">IndexOrderDefault</code>ï¿½ï¿½ ï¿½ï¿½ ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½
+    ï¿½Þ´Â´ï¿½. Ã¹ï¿½ï¿½Â°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ <code>Ascending</code>
+    (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½) ï¿½Ì³ï¿½ <code>Descending</code> (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½) ï¿½ï¿½ ï¿½Ï³ï¿½ï¿½ï¿½.
+    ï¿½Î¹ï¿½Â° ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ Å°ï¿½ï¿½ï¿½ï¿½ <code>Name</code>,
     <code>Date</code>, <code>Size</code>, <code>Description</code>
-    Áß ÇÏ³ª´Ù. ÀÌÂ÷ ¼ø¼­´Â <em>Ç×»ó</em> ÆÄÀÏ¸í ¿À¸§Â÷¼øÀÌ´Ù.</p>
+    ï¿½ï¿½ ï¿½Ï³ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <em>ï¿½×»ï¿½</em> ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½.</p>
 
-    <p>ÀÌ Áö½Ã¾î¿Í <code><a href="#indexoptions.suppresscolumnsorting">SuppressColumnSorting</a></code> ¸ñ·Ï ¿É¼ÇÀ» °°ÀÌ »ç¿ëÇÏ¸é
-    Æ¯Á¤ ¼ø¼­·Î¸¸ µð·ºÅä¸® ¸ñ·ÏÀ» ¸¸µç´Ù. ÀÌ °æ¿ì Å¬¶óÀÌ¾ðÆ®´Â
-    ´Ù¸¥ ¼ø¼­·Î µð·ºÅä¸® ¸ñ·ÏÀ» ¿äÃ»ÇÏÁö ¸øÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ <code><a href="#indexoptions.suppresscolumnsorting">SuppressColumnSorting</a></code> ï¿½ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½
+    Æ¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Î¸ï¿½ ï¿½ï¿½ï¿½ä¸® ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½
+    ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸® ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IndexStyleSheet" id="IndexStyleSheet">IndexStyleSheet</a> <a name="indexstylesheet" id="indexstylesheet">Áö½Ã¾î</a> <a title="Permanent link" href="#indexstylesheet" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="IndexStyleSheet" id="IndexStyleSheet">IndexStyleSheet</a> <a name="indexstylesheet" id="indexstylesheet">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#indexstylesheet" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>µð·ºÅä¸® ¸ñ·Ï¿¡ CSS ½ºÅ¸ÀÏ½¬Æ®¸¦ Ãß°¡ÇÑ´Ù</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>IndexStyleSheet <var>url-path</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override ¿É¼Ç:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_autoindex</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½ï¿½ä¸® ï¿½ï¿½Ï¿ï¿½ CSS ï¿½ï¿½Å¸ï¿½Ï½ï¿½Æ®ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ñ´ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>IndexStyleSheet <var>url-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override ï¿½É¼ï¿½:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_autoindex</td></tr>
 </table>
-    <p><code class="directive">IndexStyleSheet</code> Áö½Ã¾î´Â µð·ºÅä¸®
-    ¸ñ·Ï¿¡¼­ CSS·Î »ç¿ëÇÒ ÆÄÀÏ¸íÀ» ÁöÁ¤ÇÑ´Ù.
+    <p><code class="directive">IndexStyleSheet</code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®
+    ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ CSSï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
     </p>
     <div class="example"><h3>Example</h3><p><code>
       
@@ -833,35 +833,35 @@ Name|Date|Size|Description</code></td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ReadmeName" id="ReadmeName">ReadmeName</a> <a name="readmename" id="readmename">Áö½Ã¾î</a> <a title="Permanent link" href="#readmename" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ReadmeName" id="ReadmeName">ReadmeName</a> <a name="readmename" id="readmename">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#readmename" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>ÆÄÀÏ¸ñ·Ï ¸¶Áö¸·¿¡ »ðÀÔÇÒ ÆÄÀÏÀÇ ÀÌ¸§</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>ReadmeName <var>filename</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override ¿É¼Ç:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_autoindex</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>ReadmeName <var>filename</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override ï¿½É¼ï¿½:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_autoindex</td></tr>
 </table>
-    <p><code class="directive">ReadmeName</code> Áö½Ã¾î´Â ÆÄÀÏ¸ñ·Ï ³¡¿¡
-    »ðÀÔÇÒ ÆÄÀÏÀÇ ÀÌ¸§À» ÁöÁ¤ÇÑ´Ù. <var>Filename</var>Àº Æ÷ÇÔÇÒ
-    ÆÄÀÏ¸íÀÌ°í, ¸ñ·ÏÀ» ¸¸µé·Á´Â À§Ä¡ÀÇ »ó´ë°æ·Î·Î ¹Þ¾ÆµéÀÎ´Ù.
-    <var>Filename</var>ÀÌ ½½·¡½¬·Î ½ÃÀÛÇÏ¸é <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>¿¡ »ó´ë°æ·Î·Î ¹Þ¾ÆµéÀÎ´Ù.
+    <p><code class="directive">ReadmeName</code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <var>Filename</var>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½Ì°ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Î·ï¿½ ï¿½Þ¾Æµï¿½ï¿½Î´ï¿½.
+    <var>Filename</var>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Î·ï¿½ ï¿½Þ¾Æµï¿½ï¿½Î´ï¿½.
     </p>
 
-    <div class="example"><h3>¿¹Á¦</h3><p><code>
+    <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½</h3><p><code>
       ReadmeName FOOTER.html
     </code></p></div>
 
-    <div class="example"><h3>¿¹Á¦ 2</h3><p><code>
+    <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½ 2</h3><p><code>
       ReadmeName /include/FOOTER.html
     </code></p></div>
 
-    <p>ÀÌ µ¿ÀÛÀ» ÀÚ¼¼È÷ ¼³¸íÇÑ <code class="directive"><a href="#headername">HeaderName</a></code>µµ Âü°íÇÏ¶ó.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ú¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code class="directive"><a href="#headername">HeaderName</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.</p>
 
 </div>
 </div>
 <div class="bottomlang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/mod/mod_autoindex.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/mod/mod_autoindex.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_autoindex.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_autoindex.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_autoindex.html" title="Korean">&nbsp;ko&nbsp;</a> |
@@ -869,7 +869,7 @@ Name|Date|Size|Description</code></td></tr>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_autoindex.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/mod/mod_autoindex.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -884,8 +884,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_autoindex.
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

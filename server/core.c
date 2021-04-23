@@ -5,7 +5,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -4982,7 +4982,7 @@ AP_DECLARE_NONSTD(int) ap_core_translate(request_rec *r)
      * /'s in a row.  This happens under windows when the document
      * root ends with a /
      */
-    /* skip all leading /'s (e.g. http://localhost///foo)
+    /* skip all leading /'s (e.g. https://localhost///foo)
      * so we are looking at only the relative path.
      */
     while (*path == '/') {

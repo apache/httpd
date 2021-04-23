@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -74,8 +74,8 @@
 	appliqués aux paquets tiers, ce qui permet de s'assurer que le
 	code fourni est bien compilable et déboguable. Ces correctifs
 	sont disponibles à <a
-        href="http://www.apache.org/dist/httpd/binaries/win32/patches_applied/"
-        >http://www.apache.org/dist/httpd/binaries/win32/patches_applied/</a>,
+        href="https://www.apache.org/dist/httpd/binaries/win32/patches_applied/"
+        >https://www.apache.org/dist/httpd/binaries/win32/patches_applied/</a>,
 	et il est recommandé de les appliquer afin d'obtenir un
 	résultat identique aux binaires "officiels" distribués par
 	l'ASF.</p>
@@ -147,11 +147,11 @@
 	au moment de l'installation ; il a été choisi car il nécessite
 	un téléchargement de petite taille (par rapport à Perl ou
 	WSH/VB). Le site de Brian Kernighan <a
-	href="http://www.cs.princeton.edu/~bwk/btl.mirror/"
-        >http://www.cs.princeton.edu/~bwk/btl.mirror/</a> propose un
+	href="https://www.cs.princeton.edu/~bwk/btl.mirror/"
+        >https://www.cs.princeton.edu/~bwk/btl.mirror/</a> propose un
 	binaire précompilé pour Win32, <a
-	href="http://www.cs.princeton.edu/~bwk/btl.mirror/awk95.exe"
-        >http://www.cs.princeton.edu/~bwk/btl.mirror/awk95.exe</a>, que
+	href="https://www.cs.princeton.edu/~bwk/btl.mirror/awk95.exe"
+        >https://www.cs.princeton.edu/~bwk/btl.mirror/awk95.exe</a>, que
 	vous devez enregistrer sous le nom <code>awk.exe</code> (plutôt
 	que <code>awk95.exe</code>).</p>
 
@@ -169,7 +169,7 @@
 	qu'awk.exe est bien dans votre chemin système.</note>
 
         <note>Notez aussi, si vous utilisez les outils Cygwin (<a
-	href="http://www.cygwin.com/">http://www.cygwin.com/</a>), que
+	href="https://www.cygwin.com/">https://www.cygwin.com/</a>), que
 	l'utilitaire awk de nomme <code>gawk.exe</code> et que le
 	fichier <code>awk.exe</code> est en fait un lien symbolique vers
 	le fichier <code>gawk.exe</code>. Le shell de commandes Windows
@@ -191,7 +191,7 @@
 	répertoire <code>srclib</code> et nommé <code>zlib</code>. Elle
 	doit être compilée directement à cette place. Zlib est
 	disponible à l'adresse <a
-	href="http://www.zlib.net/">http://www.zlib.net/</a> -- le
+	href="https://www.zlib.net/">https://www.zlib.net/</a> -- le
 	fonctionnement correct du module <module>mod_deflate</module> a
 	été vérifié avec la version 1.2.3.</p>
 
@@ -215,7 +215,7 @@
 	d'importation, de possession, ou d'utilisation, et de
 	réexportation des logiciels de chiffrement, afin de déterminer
 	si vous en avez le droit. Voir <a
-	href="http://www.wassenaar.org/">http://www.wassenaar.org/</a>
+	href="https://www.wassenaar.org/">https://www.wassenaar.org/</a>
 	pour plus de détails.</note>
 
         <p>La configuration et la compilation d'OpenSSL nécessite
@@ -225,7 +225,7 @@
 	<code>abs.exe</code>, qui devient ab.c avec le support SSL
 	activé, vous devez
 	télécharger OpenSSL à l'adresse <a
-	href="http://www.openssl.org/source/">http://www.openssl.org/source/</a>,
+	href="https://www.openssl.org/source/">https://www.openssl.org/source/</a>,
 	et l'installer dans un sous-répertoire du répertoire
 	<code>srclib</code> que vous nommerez <code>openssl</code>. Afin
 	de préparer OpenSSL à la liaison avec le module Apache mod_ssl

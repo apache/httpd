@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -90,7 +90,7 @@ sudo service apache2 start
       <tr>
         <td><a href="#download">Téléchargement</a></td>
 
-        <td>Téléchargez la dernière version depuis <a href="http://httpd.apache.org/download.cgi#apache24">http://httpd.apache.org/download.cgi</a>
+        <td>Téléchargez la dernière version depuis <a href="https://httpd.apache.org/download.cgi#apache24">https://httpd.apache.org/download.cgi</a>
         </td>
       </tr>
 
@@ -150,7 +150,7 @@ sudo service apache2 start
 
     <note type="warning">L'installation sous votre plateforme favorite n'est pas
     traitée ici ? N'hésitez pas à nous <a
-    href="http://httpd.apache.org/docs-project/">aider à compléter cette
+    href="https://httpd.apache.org/docs-project/">aider à compléter cette
     documentation</a> en nous faisant profiter de votre expérience.</note>
 
 
@@ -166,7 +166,7 @@ sudo service apache2 start
       Si ce n'est pas le cas, ou si vous préférez ne pas utiliser les
       versions fournies par le système, téléchargez les dernières
       versions d'APR et APR-Util depuis <a
-      href="http://apr.apache.org/">Apache APR</a>, décompressez-les
+      href="https://apr.apache.org/">Apache APR</a>, décompressez-les
       respectivement dans <code>/racine_sources_httpd/srclib/apr</code> et
       <code>/racine_sources_httpd/srclib/apr-util</code> (les noms des répertoires ne
       doivent pas comporter de numéros de versions ; par exemple, la
@@ -181,7 +181,7 @@ sudo service apache2 start
       (PCRE)</dt>
       <dd>Cette bibliothèque est nécessaire mais n'est plus fournie avec la
       distribution de httpd. Téléchargez le code source depuis <a
-      href="http://www.pcre.org/">http://www.pcre.org</a> ou installez
+      href="https://www.pcre.org/">https://www.pcre.org</a> ou installez
       un portage du paquet. Si votre suite de compilation ne trouve pas
       le script pcre-config installé au cours du processus de
       construction de PCRE, indiquez son chemin via l'option
@@ -202,8 +202,8 @@ sudo service apache2 start
 
       <dt>Compilateur ANSI-C et système de construction</dt>
       <dd>Vous devez disposer d'un compilateur ANSI-C. Le compilateur <a
-      href="http://gcc.gnu.org/">GNU C (GCC)</a> de la <a
-      href="http://www.gnu.org/">Free Software Foundation (FSF)</a>
+      href="https://gcc.gnu.org/">GNU C (GCC)</a> de la <a
+      href="https://www.gnu.org/">Free Software Foundation (FSF)</a>
       est recommandé. Si vous ne possédez pas GCC,
       assurez-vous au moins que votre compilateur soit compatible ANSI.
       En outre, votre <code>PATH</code> doit contenir
@@ -215,11 +215,11 @@ sudo service apache2 start
       dispositif de synchronisation du temps. Les programmes
       <code>ntpdate</code> ou <code>xntpd</code>, basés sur le protocole NTP,
       sont couramment utilisés à cet effet.
-      Voir la <a href="http://www.ntp.org">page d'accueil de NTP</a>
+      Voir la <a href="https://www.ntp.org">page d'accueil de NTP</a>
       pour plus de détails à propos du logiciel NTP et des serveurs
       de temps publics.</dd>
 
-      <dt><a href="http://www.perl.org/">Perl 5</a>
+      <dt><a href="https://www.perl.org/">Perl 5</a>
       [OPTIONNEL]</dt>
       <dd>L'interpréteur Perl 5 (les versions 5.003 ou supérieures conviennent)
       est nécessaire pour l'exécution de certains scripts comme
@@ -236,7 +236,7 @@ sudo service apache2 start
 <section id="download"><title>Téléchargement</title>
 
     <p>Le serveur HTTP Apache peut être téléchargé à partir du
-    <a href="http://httpd.apache.org/download.cgi">site de téléchargement
+    <a href="https://httpd.apache.org/download.cgi">site de téléchargement
     du serveur HTTP Apache</a>, qui fournit la liste de nombreux miroirs.
     Il sera plus commode à la plupart des utilisateurs d'Apache sur les
     systèmes UNIX ou similaires de télécharger et de compiler
@@ -251,9 +251,9 @@ sudo service apache2 start
     disposez d'une version complète et non modifiée du serveur HTTP Apache.
     Vous pouvez le faire en testant l'archive téléchargée à l'aide de
     la signature PGP. Vous trouverez les détails de cette opération sur la <a
-    href="http://httpd.apache.org/download.cgi#verify"
+    href="https://httpd.apache.org/download.cgi#verify"
     >page de téléchargement</a> ainsi qu'un exemple précis décrivant <a
-    href="http://httpd.apache.org/dev/verification.html">l'utilisation de
+    href="https://httpd.apache.org/dev/verification.html">l'utilisation de
     PGP</a>.</p>
 
 </section>
@@ -392,8 +392,8 @@ $ tar xvf httpd-<em>NN</em>.tar
 
     <p>Consultez le manuel d'Apache situé dans
     <code><em>PREFIX</em>/docs/manual/</code> ou
-    <a href="http://httpd.apache.org/docs/&httpd.docs;/"
-    >http://httpd.apache.org/docs/&httpd.docs;/</a> pour la version la plus
+    <a href="https://httpd.apache.org/docs/&httpd.docs;/"
+    >https://httpd.apache.org/docs/&httpd.docs;/</a> pour la version la plus
     récente de ce manuel et la liste complète des <a
     href="mod/directives.html">directives de configuration</a> disponibles.</p>
 </section>
@@ -406,7 +406,7 @@ $ tar xvf httpd-<em>NN</em>.tar
 <example>$ <em>PREFIX</em>/bin/apachectl -k start</example>
 
     <p>Vous devriez alors pouvoir requérir votre premier document
-    à l'aide de l'URL <code>http://localhost/</code>. La page web que vous
+    à l'aide de l'URL <code>https://localhost/</code>. La page web que vous
     voyez est située dans le répertoire défini par la directive
     <directive module="core">DocumentRoot</directive>,
     qui est généralement <code><em>PREFIX</em>/htdocs/</code>.
@@ -491,7 +491,7 @@ $ tar xvf httpd-<em>NN</em>.tar
     situation n'est pas appelée à évoluer de sitôt.</p>
 
     <p>Une  <a
-    href="http://wiki.apache.org/httpd/DistrosDefaultLayout">description
+    href="https://wiki.apache.org/httpd/DistrosDefaultLayout">description
     de ces distributions tierces</a> est maintenue dans le wiki du
     serveur HTTP, et doit en refléter l'état actuel. Vous devrez
     cependant vous familiariser par vous-même avec la gestion du paquet

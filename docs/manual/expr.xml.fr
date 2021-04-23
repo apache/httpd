@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -81,7 +81,7 @@
 
   <section id="grammar">
     <title>Syntaxe en Forme de Backus-Naur</title>
-      <p>La <a href="http://fr.wikipedia.org/wiki/Forme_de_Backus-Naur">Forme de Backus-Naur</a>
+      <p>La <a href="https://fr.wikipedia.org/wiki/Forme_de_Backus-Naur">Forme de Backus-Naur</a>
       (souvent abrégée en BNF, de l'anglais Backus-Naur Form) est une notation permettant de décrire
       les règles syntaxiques des langages de programmation. En
       général, les expressions représentent des valeurs booléennes. Dans
@@ -753,7 +753,7 @@ DIGIT       ::= &lt;any US-ASCII digit "0".."9"&gt;
 # Comparer le nom d'hôte avec example.com et rediriger vers
 # www.example.com si le nom d'hôte correspond
 &lt;If "%{HTTP_HOST} == 'example.com'"&gt;
-    Redirect permanent "/" "http://www.example.com/"
+    Redirect permanent "/" "https://www.example.com/"
 &lt;/If&gt;
 
 # Forcer le type text/plain si un fichier fait l'objet d'une

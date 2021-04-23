@@ -15,7 +15,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -78,7 +78,7 @@
     <dd>Sunucu ile işletim sistemi arasındaki temel arayüzleri oluşturan
       kütüphaneler kümesine verilen ad. APR, Apache HTTP Sunucusuna paralel
       bağımsız bir proje olarak geliştirilmektedir.<br />
-      Bakınız: <a href="http://apr.apache.org/">Apache Taşınabilir Arayüzü
+      Bakınız: <a href="https://apr.apache.org/">Apache Taşınabilir Arayüzü
       Projesi</a>
     </dd>
 
@@ -135,10 +135,10 @@
       işaretini kendisi olarak kullanmak isterseniz önüne bir \ imi
       koymalısınız. Geçmişe uyumluluk adına bazı yerlerde $0 yerine &amp;
       değişkeni kullanılabilir. Ancak 2.3.6 sürümünden beri bu artık mümkün
-      değildir. Apache, <a href="http://www.pcre.org/">PCRE</a> kütüphanesi ile
+      değildir. Apache, <a href="https://www.pcre.org/">PCRE</a> kütüphanesi ile
       sağlanan Perl uyumlu düzenli ifadeleri kullanır. PCRE düzenli
       ifadelerinin sözdizimi ile ilgili ayrıntılı bilgiyi <a
-      href="http://en.wikipedia.org/wiki/PCRE">Wikipedia</a>'da bulabilirsiniz.
+      href="https://en.wikipedia.org/wiki/PCRE">Wikipedia</a>'da bulabilirsiniz.
     </dd>
 
     <dt><a name="accesscontrol" id="accesscontrol">Erişim Denetimi</a></dt>
@@ -209,7 +209,7 @@
       <a name="http" id="hhtp">(HTTP)</a></dt>
     <dd>İngilizcesi: HyperText Transfer Protocol (HTTP)</dd>
     <dd>Genel Ağ’da kullanılan standart aktarım protokollerinden biri.
-      Apache, <a href="http://ietf.org/rfc/rfc2616.txt">RFC 2616</a> ile
+      Apache, <a href="https://ietf.org/rfc/rfc2616.txt">RFC 2616</a> ile
       tanımlanmış protokolün HTTP/1.1 olarak bilinen 1.1 sürümünü gerçekler.
     </dd>
 
@@ -291,7 +291,7 @@
 
     <dt><a name="openssl" id="openssl">OpenSSL</a></dt>
     <dd>SSL/TLS için açık kaynak kodlu araç kiti.<br />Daha ayrıntılı bilgi
-    için <a href="http://www.openssl.org/">http://www.openssl.org/</a>
+    için <a href="https://www.openssl.org/">https://www.openssl.org/</a>
     adresine bakınız.
     </dd>
 
@@ -301,7 +301,7 @@
     <dd>Bir HTTP sunucusunun bir harici programa hizmet istekleri yapmasını
       mümkün kılan, sunucu ile bir harici program arasındaki bir arayüz
       standardı. Özellikleri kapsayan bir
-      <a href="http://www.ietf.org/rfc/rfc3875">Bilgilendirici RFC </a>
+      <a href="https://www.ietf.org/rfc/rfc3875">Bilgilendirici RFC </a>
       vardır.<br />
       Bakınız: <a href="howto/cgi.html">CGI ile Devingen İçerik</a>
     </dd>
@@ -403,7 +403,7 @@
       bir şekilde seçebilmesi sağlanmıştır. Bu özellik RFC 3546'da TLS
       eklentili SSL başlatma bölümüne eklenmiştir.<br />
       Bakınız: <a href="ssl/ssl_faq.html">SSL SSS</a>
-      ve <a href="http://www.ietf.org/rfc/rfc3546.txt">RFC 3546</a>
+      ve <a href="https://www.ietf.org/rfc/rfc3546.txt">RFC 3546</a>
     </dd>
 
     <dt><a name="serversideincludes" id="serversideincludes"
@@ -456,7 +456,7 @@
     <dd>İngilizcesi: Uniform Resource Identifier
       <a name="URI" id="URI">(URI)</a></dd>
     <dd>Soyut veya somut bir özkaynağı betimlemek için kullanılan bütünleşik
-      bir karakter dizisi. Aslen <a href="http://www.ietf.org/rfc/rfc2396.txt"
+      bir karakter dizisi. Aslen <a href="https://www.ietf.org/rfc/rfc2396.txt"
       >RFC 2396</a> tarafından tanımlanmıştır. Genel Ağ’da kullanılan URI’lerden
       genellikle <glossary ref="url">URL</glossary>’ler olarak bahsedilir.
     </dd>
@@ -469,7 +469,7 @@
       denilen terimin gayrı resmi karşılığıdır. URL’ler <code>http</code> veya
       <code>https</code> gibi bir şemayı takip eden bir konak adı ve bir dosya
       yolundan oluşurlar.  Örneğin, bu sayfanın URL’si
-      <code>http://httpd.apache.org/docs/&httpd.docs;/glossary.html</code> olurdu.
+      <code>https://httpd.apache.org/docs/&httpd.docs;/glossary.html</code> olurdu.
     </dd>
 
     <dt><a name="proxy" id="proxy">Vekil</a></dt>

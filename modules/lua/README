@@ -1,7 +1,7 @@
 -*- mode:org -*-
 * Requirements:
-** lua 5.1, 5.2, 5.3 ( http://www.lua.org/ ) or LuaJIT 2.x ( http://www.luajit.org/ )
-** Apache HTTPD 2.4 ( http://httpd.apache.org/ ) or higher
+** lua 5.1, 5.2, 5.3 ( https://www.lua.org/ ) or LuaJIT 2.x ( https://www.luajit.org/ )
+** Apache HTTPD 2.4 ( https://httpd.apache.org/ ) or higher
 
 * Documentation
   See docs/README
@@ -30,7 +30,7 @@
 * License
   Apache License, Version 2.0,
   
-  http://www.apache.org/licenses/LICENSE-2.0 
+  https://www.apache.org/licenses/LICENSE-2.0 
 
   See NOTICE file for more information
         

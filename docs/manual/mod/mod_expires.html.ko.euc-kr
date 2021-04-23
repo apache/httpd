@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
 <meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -17,64 +17,64 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">¸ðµâ</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">ï¿½ï¿½ï¿½</a></div>
 <div id="page-content">
-<div id="preamble"><h1>¾ÆÆÄÄ¡ ¸ðµâ mod_expires</h1>
+<div id="preamble"><h1>ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ mod_expires</h1>
 <div class="toplang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/mod/mod_expires.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/mod/mod_expires.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_expires.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_expires.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_expires.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">ÀÌ ¹®¼­´Â ÃÖ½ÅÆÇ ¹ø¿ªÀÌ ¾Æ´Õ´Ï´Ù.
-            ÃÖ±Ù¿¡ º¯°æµÈ ³»¿ëÀº ¿µ¾î ¹®¼­¸¦ Âü°íÇÏ¼¼¿ä.</div>
-<table class="module"><tr><th><a href="module-dict.html#Description">¼³¸í:</a></th><td>»ç¿ëÀÚ°¡ ÁöÁ¤ÇÑ ±âÁØ¿¡ µû¶ó <code>Expires</code>¿Í
-<code>Cache-Control</code> HTTP Çì´õ¸¦ »ý¼ºÇÑ´Ù</td></tr>
-<tr><th><a href="module-dict.html#Status">»óÅÂ:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">¸ðµâ¸í:</a></th><td>expires_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">¼Ò½ºÆÄÀÏ:</a></th><td>mod_expires.c</td></tr></table>
-<h3>¿ä¾à</h3>
+<div class="outofdate">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Õ´Ï´ï¿½.
+            ï¿½Ö±Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ø¿ï¿½ ï¿½ï¿½ï¿½ï¿½ <code>Expires</code>ï¿½ï¿½
+<code>Cache-Control</code> HTTP ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</td></tr>
+<tr><th><a href="module-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">ï¿½ï¿½ï¿½ï¿½:</a></th><td>expires_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">ï¿½Ò½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>mod_expires.c</td></tr></table>
+<h3>ï¿½ï¿½ï¿½</h3>
 
-    <p>ÀÌ ¸ðµâÀº ¼­¹ö ÀÀ´äÀÇ <code>Expires</code> HTTP Çì´õ¿Í
-    <code>Cache-Control</code> HTTP Çì´õÀÇ <code>max-age</code>
-    Áö½Ã¾î ¼³Á¤À» Á¶ÀýÇÑ´Ù. ¸¸±âÀÏÀ» ÆÄÀÏÀÌ ¸¶Á÷¸· ¼öÁ¤µÈ ½Ã°£
-    È¤Àº Å¬¶óÀÌ¾ðÆ®°¡ Á¢¼ÓÇÑ ½Ã°£¿¡ »ó´ëÀûÀ¸·Î ¼³Á¤ÇÒ ¼ö ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>Expires</code> HTTP ï¿½ï¿½ï¿½ï¿½ï¿½
+    <code>Cache-Control</code> HTTP ï¿½ï¿½ï¿½ï¿½ï¿½ <code>max-age</code>
+    ï¿½ï¿½ï¿½Ã¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½
+    È¤ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <p>ÀÌ HTTP Çì´õµéÀº Å¬¶óÀÌ¾ðÆ®¿¡°Ô ¹®¼­ÀÇ
-    À¯È¿¼º°ú Áö¼Ó¼ºÀ» ¾Ë·ÁÁØ´Ù. ÀÌ ½Ã°£ÀÌ ¾ÆÁ÷ Áö³ªÁö¾Ê¾Ò´Ù¸é,
-    ¹®¼­¸¦ Ä³½¬¿¡¼­ °¡Á®¿Íµµ µÈ´Ù. ¸¸±âÀÏÀÌ Áö³µ´Ù¸é Ä³½¬µÈ
-    °ÍÀ» "¸¸·áµÇ°í" À¯È¿ÇÏÁö ¾Ê´Ù°í °£ÁÖÇÏ¿©, ¼Ò½º¿¡¼­ ¹®¼­¸¦
-    »õ·Î ¾ò¾î¿Í¾ß ÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ HTTP ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½È¿ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ó¼ï¿½ï¿½ï¿½ ï¿½Ë·ï¿½ï¿½Ø´ï¿½. ï¿½ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾Ò´Ù¸ï¿½,
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Íµï¿½ ï¿½È´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ù¸ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ "ï¿½ï¿½ï¿½ï¿½Ç°ï¿½" ï¿½ï¿½È¿ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Ù°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½, ï¿½Ò½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Í¾ï¿½ ï¿½Ñ´ï¿½.</p>
 
-    <p><code class="directive"><a href="../mod/mod_headers.html#header">Header</a></code> Áö½Ã¾î¸¦
-    »ç¿ëÇÏ¿© <code>max-age</code> ¿ÜÀÇ ´Ù¸¥
-    <code>Cache-Control</code> Áö½Ã¾î(<a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9">RFC
-    2616, 14.9 Àý</a> Âü°í)¸¦ ¼öÁ¤ÇÒ ¼ö ÀÖ´Ù.</p>
+    <p><code class="directive"><a href="../mod/mod_headers.html#header">Header</a></code> ï¿½ï¿½ï¿½Ã¾î¸¦
+    ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ <code>max-age</code> ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½
+    <code>Cache-Control</code> ï¿½ï¿½ï¿½Ã¾ï¿½(<a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9">RFC
+    2616, 14.9 ï¿½ï¿½</a> ï¿½ï¿½ï¿½ï¿½)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
 </div>
-<div id="quickview"><h3>ÁÖÁ¦</h3>
+<div id="quickview"><h3>ï¿½ï¿½ï¿½ï¿½</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#AltSyn">´Ù¸¥ ³»ºÎ ¹®¹ý</a></li>
-</ul><h3 class="directives">Áö½Ã¾îµé</h3>
+<li><img alt="" src="../images/down.gif" /> <a href="#AltSyn">ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a></li>
+</ul><h3 class="directives">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#expiresactive">ExpiresActive</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#expiresbytype">ExpiresByType</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#expiresdefault">ExpiresDefault</a></li>
 </ul>
-<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_expires">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_expires">Report a bug</a></li></ul><h3>Âü°í</h3>
+<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_expires">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_expires">Report a bug</a></li></ul><h3>ï¿½ï¿½ï¿½ï¿½</h3>
 <ul class="seealso">
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="AltSyn" id="AltSyn">´Ù¸¥ ³»ºÎ ¹®¹ý</a> <a title="Permanent link" href="#AltSyn" class="permalink">&para;</a></h2>
-    <p><code class="directive"><a href="#expiresdefault">ExpiresDefault</a></code>¿Í
+<h2><a name="AltSyn" id="AltSyn">ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a> <a title="Permanent link" href="#AltSyn" class="permalink">&para;</a></h2>
+    <p><code class="directive"><a href="#expiresdefault">ExpiresDefault</a></code>ï¿½ï¿½
     <code class="directive"><a href="#expiresbytype">ExpiresByType</a></code>
-    Áö½Ã¾î¸¦ ´õ ÀÐ±â ÁÁÀº Çü½ÄÀ¸·Î ±â¼úÇÒ ¼ö ÀÖ´Ù:</p>
+    ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ ï¿½Ð±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½:</p>
 
     <div class="example"><p><code>
       ExpiresDefault "&lt;base&gt; [plus] {&lt;num&gt;
@@ -83,19 +83,19 @@
       {&lt;num&gt; &lt;type&gt;}*"
     </code></p></div>
 
-    <p>&lt;base&gt;´Â ´ÙÀ½Áß ÇÏ³ªÀÌ´Ù:</p>
+    <p>&lt;base&gt;ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï³ï¿½ï¿½Ì´ï¿½:</p>
 
     <ul>
       <li><code>access</code></li>
 
-      <li><code>now</code> ('<code>access</code>'¿Í °°À½)</li>
+      <li><code>now</code> ('<code>access</code>'ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)</li>
 
       <li><code>modification</code></li>
     </ul>
 
-    <p><code>plus</code> Å°¿öµå´Â ¾ø¾îµµ µÈ´Ù. &lt;num&gt;Àº
-    [<code>atoi()</code>¿¡ »ç¿ëÇÒ ¼ö ÀÖ´Â] Á¤¼ö°ªÀÌ´Ù.
-    &lt;type&gt;Àº ´ÙÀ½Áß ÇÏ³ªÀÌ´Ù:</p>
+    <p><code>plus</code> Å°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½îµµ ï¿½È´ï¿½. &lt;num&gt;ï¿½ï¿½
+    [<code>atoi()</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½] ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½.
+    &lt;type&gt;ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï³ï¿½ï¿½Ì´ï¿½:</p>
 
     <ul>
       <li><code>years</code></li>
@@ -107,8 +107,8 @@
       <li><code>seconds</code></li>
     </ul>
 
-    <p>¿¹¸¦ µé¾î, ´ÙÀ½ ¸ðµÎ´Â ¹®¼­°¡ ±âº»ÀûÀ¸·Î Á¢¼ÓµÈÁö 1´ÞÈÄ¿¡
-    ¸¸±âµÈ´Ù°í ¼³Á¤ÇÑ´Ù:</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Î´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Óµï¿½ï¿½ï¿½ 1ï¿½ï¿½ï¿½Ä¿ï¿½
+    ï¿½ï¿½ï¿½ï¿½È´Ù°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½:</p>
 
     <div class="example"><p><code>
       ExpiresDefault "access plus 1 month"<br />
@@ -116,8 +116,8 @@
       ExpiresDefault "access plus 30 days"
     </code></p></div>
 
-    <p>'&lt;num&gt; &lt;type&gt;' ±¸¹®À» ¹Ýº¹ÇØ¼­ »ç¿ëÇÏ¿©
-    ¸¸±â½Ã°£À» ÀÚ¼¼È÷ ¼³Á¤ÇÒ ¼ö ÀÖ´Ù:</p>
+    <p>'&lt;num&gt; &lt;type&gt;' ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ýºï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½Ú¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½:</p>
 
     <div class="example"><p><code>
       ExpiresByType text/html "access plus 1 month 15
@@ -126,114 +126,114 @@
       minutes"
     </code></p></div>
 
-    <p>¸¸¾à ¼öÁ¤½Ã°£(modification)À» ±âÁØÀ¸·Î ¸¸±â½Ã°£À» ¼³Á¤ÇÏ´Â
-    °æ¿ì ³»¿ëÀ» µð½ºÅ©¿¡ ÀÖ´Â ÆÄÀÏ¿¡¼­ °¡Á®¿ÀÁö ¾Ê´Â´Ù¸é Expires
-    Çì´õ¸¦ ºÙÀÌÁö <strong>¾Ê´Â´Ù</strong>. ÀÌ °æ¿ì ³»¿ë¿¡ ¼öÁ¤½Ã°£ÀÌ
-    ¾ø±â ¶§¹®ÀÌ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ã°ï¿½(modification)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½
+    ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´Ù¸ï¿½ Expires
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <strong>ï¿½Ê´Â´ï¿½</strong>. ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ë¿¡ ï¿½ï¿½ï¿½ï¿½ï¿½Ã°ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ExpiresActive" id="ExpiresActive">ExpiresActive</a> <a name="expiresactive" id="expiresactive">Áö½Ã¾î</a> <a title="Permanent link" href="#expiresactive" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ExpiresActive" id="ExpiresActive">ExpiresActive</a> <a name="expiresactive" id="expiresactive">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#expiresactive" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td><code>Expires</code> Çì´õ¸¦ »ý¼ºÇÑ´Ù</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>ExpiresActive On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override ¿É¼Ç:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_expires</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>Expires</code> ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>ExpiresActive On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override ï¿½É¼ï¿½:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_expires</td></tr>
 </table>
-    <p>ÀÌ Áö½Ã¾î´Â ÇØ´ç ¿µ¿ª¿¡ ´ëÇØ (Áï, <code>.htaccess</code>
-    ÆÄÀÏ¿¡¼­ »ç¿ëÇÑ´Ù¸é ±× µð·ºÅä¸® ¾Æ·¡¿¡ ÀÖ´Â ¹®¼­µé¸¸ ÇØ´çµÈ´Ù.)
-    <code>Expires</code>¿Í <code>Cache-Control</code> Çì´õ¸¦
-    »ý¼ºÇÒÁö À¯¹«¸¦ °áÁ¤ÇÑ´Ù. (<code>.htaccess</code> ÆÄÀÏ µîÀ¸·Î
-    ´õ ÇÏÀ§ ´Ü°è¿¡¼­ ¼­¹ö¼³Á¤À» º¯°æÇÏÁö¾Ê´Â ÇÑ)
-    <code>Off</code>ÀÌ¸é ÇØ´ç ¿µ¿ª¿¡ ÀÖ´Â ¹®¼­¿¡ ÀÌµé Çì´õ¸¦
-    »ý¼ºÇÏÁö ¾Ê´Â´Ù. <code>On</code>ÀÌ¸é <code class="directive"><a href="#expiresbytype">ExpiresByType</a></code>°ú <code class="directive"><a href="#expiresdefault">ExpiresDefault</a></code> Áö½Ã¾î·Î
-    (<em>ÇØ´ç Ç×¸ñÀ» Âü°íÇÏ¶ó</em>) ÁöÁ¤ÇÑ ±ÔÄ¢¿¡ µû¶ó ¼­ºñ½ºÇÏ·Á´Â
-    ¹®¼­¿¡ ÀÌ Çì´õµéÀ» »ý¼ºÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½, <code>.htaccess</code>
+    ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸® ï¿½Æ·ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½é¸¸ ï¿½Ø´ï¿½È´ï¿½.)
+    <code>Expires</code>ï¿½ï¿½ <code>Cache-Control</code> ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. (<code>.htaccess</code> ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ü°è¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê´ï¿½ ï¿½ï¿½)
+    <code>Off</code>ï¿½Ì¸ï¿½ ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½. <code>On</code>ï¿½Ì¸ï¿½ <code class="directive"><a href="#expiresbytype">ExpiresByType</a></code>ï¿½ï¿½ <code class="directive"><a href="#expiresdefault">ExpiresDefault</a></code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½
+    (<em>ï¿½Ø´ï¿½ ï¿½×¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½</em>) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¢ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <p>ÀÌ Áö½Ã¾î°¡ <code>Expires</code>³ª <code>Cache-Control</code>
-    Çì´õ¸¦ º¸ÀåÇÏÁö´Â ¾Ê´Â´Ù. ±ÔÄ¢¿¡ ÇØ´çÇÏÁö ¾Ê´Ù¸é ¸¶Ä¡ ÀÌ
-    Áö½Ã¾î°¡ ¾ø´Â °ÍÃ³·³ Çì´õ¸¦ ¸¸µéÁö ¾Ê´Â´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î°¡ <code>Expires</code>ï¿½ï¿½ <code>Cache-Control</code>
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½. ï¿½ï¿½Ä¢ï¿½ï¿½ ï¿½Ø´ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Ù¸ï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½
+    ï¿½ï¿½ï¿½Ã¾î°¡ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ExpiresByType" id="ExpiresByType">ExpiresByType</a> <a name="expiresbytype" id="expiresbytype">Áö½Ã¾î</a> <a title="Permanent link" href="#expiresbytype" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ExpiresByType" id="ExpiresByType">ExpiresByType</a> <a name="expiresbytype" id="expiresbytype">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#expiresbytype" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>MIME typeÀ¸·Î <code>Expires</code> Çì´õ°ªÀ» ¼³Á¤ÇÑ´Ù</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>ExpiresByType <var>MIME-type</var>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>MIME typeï¿½ï¿½ï¿½ï¿½ <code>Expires</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>ExpiresByType <var>MIME-type</var>
 <var>&lt;code&gt;seconds</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override ¿É¼Ç:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_expires</td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override ï¿½É¼ï¿½:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_expires</td></tr>
 </table>
-    <p>ÀÌ Áö½Ã¾î´Â Æ¯Á¤ Á¾·ùÀÇ (<em>¿¡¸¦ µé¾î</em>,
-    <code>text/html</code>) ¹®¼­¿¡ ´ëÇÑ <code>Expires</code>
-    Çì´õ°ª°ú <code>Cache-Control</code> Çì´õÀÇ <code>max-age</code>
-    Áö½Ã¾î°ªÀ» Á¤ÀÇÇÑ´Ù. µÎ¹øÂ° ¾Æ±Ô¸ÕÆ®´Â ¸¸±â½Ã°£À» °áÁ¤ÇÒ¶§
-    ±âÁØ ½Ã°£¿¡ ´õÇÒ ÃÊ´ÜÀ§ °ªÀ» ÁöÁ¤ÇÑ´Ù. <code>Cache-Control:
-    max-age</code>´Â ¸¸±â½Ã°£¿¡¼­ ¿äÃ»ÇÑ ½Ã°£À» »©¼­ °è»êÇÏ°í,
-    °á°ú´Â ÃÊ´ÜÀ§·Î Ç¥½ÃÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ Æ¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (<em>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½</em>,
+    <code>text/html</code>) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ <code>Expires</code>
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>Cache-Control</code> ï¿½ï¿½ï¿½ï¿½ï¿½ <code>max-age</code>
+    ï¿½ï¿½ï¿½Ã¾î°ªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½Î¹ï¿½Â° ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <code>Cache-Control:
+    max-age</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ã°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½,
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´ï¿½ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <p>±âÁØ ½Ã°£Àº ÆÄÀÏÀÇ ÃÖ±Ù ¼öÁ¤½Ã°£ È¤Àº Å¬¶óÀÌ¾ðÆ®°¡ ¹®¼­¿¡
-    Á¢±ÙÇÑ ½Ã°£ÀÌ´Ù. ÀÌ¶² °ÍÀ» »ç¿ëÇÒÁö´Â
-    <code><var>&lt;code&gt;</var></code> ÇÊµå·Î °áÁ¤ÇØ¾ß ÇÑ´Ù.
-    <code>M</code>Àº ±âÁØ ½Ã°£À¸·Î ÆÄÀÏÀÇ ÃÖ±Ù ¼öÁ¤½Ã°£À»
-    »ç¿ëÇÏ°í, <code>A</code>´Â Å¬¶óÀÌ¾ðÆ®ÀÇ Á¢±Ù ½Ã°£À» »ç¿ëÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ã°ï¿½ È¤ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ï¿½Ì´ï¿½. ï¿½Ì¶ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    <code><var>&lt;code&gt;</var></code> ï¿½Êµï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½.
+    <code>M</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ã°ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ï°ï¿½, <code>A</code>ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <p>Â÷ÀÌ´Â ¹Ì¹¦ÇÏ´Ù. <code>M</code>À» »ç¿ëÇÏ¸é Ä³½¬¿¡ ÀÖ´Â
-    ¸ðµç º¹»çº»ÀÌ °°Àº ½Ã°£¿¡ ¸¸·áµÈ´Ù. ±×·¡¼­ Ç×»ó °°Àº URL·Î
-    Ã£¾Æº¼ ¼ö ÀÖ´Â ÁÖ°£ÀÏÁ¤ °°Àº ¿ëµµ¿¡ ÁÁ´Ù. <code>A</code>¸¦
-    »ç¿ëÇÏ¸é º¹»çº»ÀÇ ¸¸±â½Ã°£ÀÌ °¢°¢ ´Ù¸£´Ù. ÀÌ´Â ÀÚÁÖ ¼öÁ¤µÇÁö¾Ê´Â
-    ±×¸²ÆÄÀÏ¿¡, Æ¯È÷ ¿©·¯ ¹®¼­¿¡¼­ °°Àº ±×¸²À» ÂüÁ¶ÇÒ¶§ (<em>¿¹¸¦
-    µé¾î</em>, ÀÌ¹ÌÁö´Â »ó´ëÀûÀ¸·Î ÂªÀº ±â°£µ¿¾È ¹Ýº¹ÇØ¼­ Á¢±ÙµÈ´Ù),
-    À¯¿ëÇÏ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½Ì´ï¿½ ï¿½Ì¹ï¿½ï¿½Ï´ï¿½. <code>M</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½
+    ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½çº»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È´ï¿½. ï¿½×·ï¿½ï¿½ï¿½ ï¿½×»ï¿½ ï¿½ï¿½ï¿½ï¿½ URLï¿½ï¿½
+    Ã£ï¿½Æºï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½Ö°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ëµµï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½. <code>A</code>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½çº»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ï¿½ï¿½. ï¿½Ì´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê´ï¿½
+    ï¿½×¸ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½, Æ¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½×¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ (<em>ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½</em>, ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Âªï¿½ï¿½ ï¿½â°£ï¿½ï¿½ï¿½ï¿½ ï¿½Ýºï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ÙµÈ´ï¿½),
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.</p>
 
-    <div class="example"><h3>¿¹Á¦:</h3><p><code>
-      # ¸¸±âÇì´õ¸¦ »ç¿ëÇÑ´Ù<br />
+    <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½:</h3><p><code>
+      # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½<br />
       ExpiresActive On<br />
-      # Å¬¶óÀÌ¾ðÆ® Ä³½¬ÀÇ GIF ±×¸²Àº ÇÑ ´ÞÈÄ¿¡ ¸¸±âÇÑ´Ù<br />
+      # Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ® Ä³ï¿½ï¿½ï¿½ï¿½ GIF ï¿½×¸ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ä¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½<br />
       ExpiresByType image/gif A2592000<br />
-      # HTML ¹®¼­´Â º¯°æÈÄ ÀÏÁÖÀÏ°£ À¯È¿ÇÏ´Ù
+      # HTML ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½È¿ï¿½Ï´ï¿½
       ExpiresByType text/html M604800
     </code></p></div>
 
-    <p>ÀÌ Áö½Ã¾î´Â <code>ExpiresActive On</code>À» »ç¿ëÇÒ¶§¸¸
-    À¯È¿ÇÔÀ» ÁÖÀÇÇÏ¶ó. <code class="directive"><a href="#expiresdefault">ExpiresDefault</a></code> Áö½Ã¾î¸¦
-    »ç¿ëÇÏ¿© Æ¯Á¤ MIME type¿¡ ´ëÇØ¼­<em>¸¸</em> ¸¸±â½Ã°£À»
-    ¼³Á¤ÇÒ ¼ö ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ <code>ExpiresActive On</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ï¿½ï¿½
+    ï¿½ï¿½È¿ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½. <code class="directive"><a href="#expiresdefault">ExpiresDefault</a></code> ï¿½ï¿½ï¿½Ã¾î¸¦
+    ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ Æ¯ï¿½ï¿½ MIME typeï¿½ï¿½ ï¿½ï¿½ï¿½Ø¼ï¿½<em>ï¿½ï¿½</em> ï¿½ï¿½ï¿½ï¿½Ã°ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <p>¾Õ¿¡¼­ ¼³¸íÇÑ <a href="#AltSyn">´Ù¸¥ ¹®¹ý</a>À» »ç¿ëÇÏ¿©
-    ¸¸±â½Ã°£À» °è»êÇÒ ¼öµµ ÀÖ´Ù.</p>
+    <p>ï¿½Õ¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <a href="#AltSyn">ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½</a>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ExpiresDefault" id="ExpiresDefault">ExpiresDefault</a> <a name="expiresdefault" id="expiresdefault">Áö½Ã¾î</a> <a title="Permanent link" href="#expiresdefault" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ExpiresDefault" id="ExpiresDefault">ExpiresDefault</a> <a name="expiresdefault" id="expiresdefault">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#expiresdefault" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>¸¸±â½Ã°£À» °è»êÇÏ´Â ±âº» ¾Ë°í¸®Áò</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>ExpiresDefault <var>&lt;code&gt;seconds</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override ¿É¼Ç:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_expires</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½ï¿½ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½âº» ï¿½Ë°ï¿½ï¿½ï¿½ï¿½ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>ExpiresDefault <var>&lt;code&gt;seconds</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override ï¿½É¼ï¿½:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_expires</td></tr>
 </table>
-    <p>ÀÌ Áö½Ã¾î´Â ÇØ´ç ¿µ¿ª¿¡ ÀÖ´Â ¸ðµç ¹®¼­ÀÇ ¸¸±â½Ã°£À»
-    °è»êÇÏ´Â ±âº» ¾Ë°í¸®ÁòÀ» ÁöÁ¤ÇÑ´Ù. <code class="directive"><a href="#expiresbytype">ExpiresByType</a></code> Áö½Ã¾î¸¦
-    »ç¿ëÇÏ¿© Á¾·ùº°·Î ¼³Á¤ÇÒ ¼ö ÀÖ´Ù. ¾Æ±Ô¸ÕÆ® ¹®¹ý¿¡ ´ëÇÑ
-    ÀÚ¼¼ÇÑ ¼³¸íÀº ±× Áö½Ã¾î¿Í <a href="#AltSyn">´Ù¸¥ ¹®¹ý</a>À»
-    Âü°íÇÏ¶ó.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ã°ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½âº» ï¿½Ë°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <code class="directive"><a href="#expiresbytype">ExpiresByType</a></code> ï¿½ï¿½ï¿½Ã¾î¸¦
+    ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½Æ±Ô¸ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ú¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ <a href="#AltSyn">ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½</a>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.</p>
 
 </div>
 </div>
 <div class="bottomlang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/mod/mod_expires.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/mod/mod_expires.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_expires.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_expires.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_expires.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_expires.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/mod/mod_expires.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -248,8 +248,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_expires.ht
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -83,7 +83,7 @@
     </p>
 
     <highlight language="config">
-ProxyPass "/"  "http://www.example.com/"
+ProxyPass "/"  "https://www.example.com/"
     </highlight>
 
     <p>
@@ -94,15 +94,15 @@ ProxyPass "/"  "http://www.example.com/"
     </p>
 
     <highlight language="config">
-ProxyPass "/"  "http://www.example.com/"
-ProxyPassReverse "/"  "http://www.example.com/"
+ProxyPass "/"  "https://www.example.com/"
+ProxyPassReverse "/"  "https://www.example.com/"
     </highlight>
 
     <p>Sólo se hará proxy de ciertas URIs, como se muestra en este ejemplo:</p>
 
     <highlight language="config">
-ProxyPass "/images/"  "http://www.example.com/"
-ProxyPassReverse "/images/"  "http://www.example.com/"
+ProxyPass "/images/"  "https://www.example.com/"
+ProxyPassReverse "/images/"  "https://www.example.com/"
     </highlight>
 
     <p>En este ejemplo, se hará proxy al backend especificado,
@@ -129,8 +129,8 @@ ProxyPassReverse "/images/"  "http://www.example.com/"
 
     <highlight language="config">
 &lt;Proxy balancer://myset&gt;
-    BalancerMember http://www2.example.com:8080
-    BalancerMember http://www3.example.com:8080
+    BalancerMember https://www2.example.com:8080
+    BalancerMember https://www3.example.com:8080
     ProxySet lbmethod=bytraffic
 &lt;/Proxy&gt;
 
@@ -165,14 +165,14 @@ ProxyPassReverse "/images/"  "balancer://myset/"
       Puede ajustar numerosos parámetros de los <em>balanceadores</em>
       y los <em>workers</em> definiéndolos a través de la directiva
       <directive module="mod_proxy">ProxyPass</directive>. Por ejemplo,
-      asumiendo que quisiéramos que <code>http://www3.example.com:8080</code> gestionara 
+      asumiendo que quisiéramos que <code>https://www3.example.com:8080</code> gestionara 
       3 veces más tráfico con un "timeout" de 1 segundo, ajustaríamos la configuración como sigue:
     </p>
 
     <highlight language="config">
 &lt;Proxy balancer://myset&gt;
-    BalancerMember http://www2.example.com:8080
-    BalancerMember http://www3.example.com:8080 loadfactor=3 timeout=1
+    BalancerMember https://www2.example.com:8080
+    BalancerMember https://www3.example.com:8080 loadfactor=3 timeout=1
     ProxySet lbmethod=bytraffic
 &lt;/Proxy&gt;
 
@@ -190,19 +190,19 @@ ProxyPassReverse "/images/"  "balancer://myset/"
       qué workers, e incluso balanceadores, deberían usarse en tales casos. 
       Por ejemplo, la siguiente configuración implementa dos casos de tolerancia 
       a fallos: En el primero, sólo se envía tráfico a 
-      <code>http://hstandby.example.com:8080</code> si todos los demás workers en 
+      <code>https://hstandby.example.com:8080</code> si todos los demás workers en 
       el balanceador <em>myset</em> no están disponibles. Si ese worker tampoco está 
-      disponible, sólo entonces los workers de <code>http://bkup1.example.com:8080</code> 
-      y <code>http://bkup2.example.com:8080</code> serán incluidos en la rotación:
+      disponible, sólo entonces los workers de <code>https://bkup1.example.com:8080</code> 
+      y <code>https://bkup2.example.com:8080</code> serán incluidos en la rotación:
     </p>
 
     <highlight language="config">
 &lt;Proxy balancer://myset&gt;
-    BalancerMember http://www2.example.com:8080
-    BalancerMember http://www3.example.com:8080 loadfactor=3 timeout=1
-    BalancerMember http://hstandby.example.com:8080 status=+H
-    BalancerMember http://bkup1.example.com:8080 lbset=1
-    BalancerMember http://bkup2.example.com:8080 lbset=1
+    BalancerMember https://www2.example.com:8080
+    BalancerMember https://www3.example.com:8080 loadfactor=3 timeout=1
+    BalancerMember https://hstandby.example.com:8080 status=+H
+    BalancerMember https://bkup1.example.com:8080 lbset=1
+    BalancerMember https://bkup2.example.com:8080 lbset=1
     ProxySet lbmethod=byrequests
 &lt;/Proxy&gt;
 
@@ -212,7 +212,7 @@ ProxyPassReverse "/images/"  "balancer://myset/"
 
     <p>
       La "magia" de ésta configuración de tolerancia a fallos es configurar 
-      <code>http://hstandby.example.com:8080</code> con la marca de estado 
+      <code>https://hstandby.example.com:8080</code> con la marca de estado 
       <code>+H</code>, que lo pone en modo <em>hot standby</em> (en reserva), 
       y hacen que los 2 servidores <code>bkup#</code> sean parte del set nº 1 del balanceo de carga (el valor por defecto es 0); para tolerancia a fallos, los "hot standby" (si existen) se usan primero cuando todos los workers estándar no están disponibles; los set de balanceo con el número inferior se intentan usar siempre primero.
     </p>
@@ -249,7 +249,7 @@ ProxyPassReverse "/images/"  "balancer://myset/"
 
     <p>
       Cuando se accede al proxy inverso en la url
-      (p.e: <code>http://rproxy.example.com/balancer-manager/</code>, verá una 
+      (p.e: <code>https://rproxy.example.com/balancer-manager/</code>, verá una 
       página similar a la siguiente:
     </p>
     <p class="centered"><img src="../images/bal-man.png" alt="balancer-manager page" /></p>

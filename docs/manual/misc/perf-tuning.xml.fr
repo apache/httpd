@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -626,7 +626,7 @@ DocumentRoot "/www/htdocs"
       jusqu'à ce que suffisamment de nouvelles requêtes apparaissent sur ce
       socket pour les réactiver tous. Cette lacune a été documentée pour la
       première fois dans
-      <a href="http://bugs.apache.org/index/full/467">PR#467</a>. Il existe
+      <a href="https://bugs.apache.org/index/full/467">PR#467</a>. Il existe
       au moins deux solutions.</p>
 
       <p>La première consiste à rendre les sockets non blocants. Dans ce cas,
@@ -751,7 +751,7 @@ DocumentRoot "/www/htdocs"
       <title>Fermeture en prenant son temps (Lingering close)</title>
 
       <p>Comme discuté dans <a
-      href="http://www.ics.uci.edu/pub/ietf/http/draft-ietf-http-connection-00.txt">
+      href="https://www.ics.uci.edu/pub/ietf/http/draft-ietf-http-connection-00.txt">
       draft-ietf-http-connection-00.txt</a> section 8, pour implémenter de
       manière <strong>fiable</strong> le protocole, un serveur HTTP doit fermer
       les deux directions d'une communication indépendamment (rappelez-vous
@@ -820,7 +820,7 @@ DocumentRoot "/www/htdocs"
       pipeline de HTTP/1.1 commencent à être utilisées,
       <code>lingering_close</code> devient une absolue nécessité (et les
       <a
-      href="http://www.w3.org/Protocols/HTTP/Performance/Pipeline.html">
+      href="https://www.w3.org/Protocols/HTTP/Performance/Pipeline.html">
       connexions en pipeline sont plus rapides</a> ; vous avez donc tout
       intérêt à les supporter).</p>
 

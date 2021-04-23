@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -49,10 +49,10 @@ de répertoire</description>
 
     <p>Une redirection "slash de fin" est effectuée lorsque le serveur
     reçoit une requête pour une URL du style
-    <code>http://nom-serveur/foo/nom-rep</code> où <code>nom-rep</code>
+    <code>https://nom-serveur/foo/nom-rep</code> où <code>nom-rep</code>
     est le nom d'un répertoire. Comme les répertoires nécessitent un slash de
     fin, <module>mod_dir</module> effectue une redirection vers
-    <code>http://nom-serveur/foo/nom-rep/</code>.</p>
+    <code>https://nom-serveur/foo/nom-rep/</code>.</p>
 </summary>
 
 <directivesynopsis>
@@ -87,8 +87,8 @@ client envoie une requête pour un répertoire</description>
     </example>
 
     <p>Avec cette configuration, une requête pour l'URL
-    <code>http://example.com/docs/</code> renverrait au client la
-    ressource <code>http://example.com/docs/index.html</code> si elle
+    <code>https://example.com/docs/</code> renverrait au client la
+    ressource <code>https://example.com/docs/index.html</code> si elle
     existe, ou provoquerait la génération du listing du répertoire si la
     ressource n'existe pas.</p>
 
@@ -179,9 +179,9 @@ répertoires.
       </highlight>
     </example>
 
-    <p>Une requête pour <code>http://example.com/docs/</code> se
+    <p>Une requête pour <code>https://example.com/docs/</code> se
     solderait par une redirection temporaire vers
-    <code>http://example.com/docs/index.html</code> si cette ressource
+    <code>https://example.com/docs/index.html</code> si cette ressource
     existe.</p>
 
 </usage>
@@ -296,7 +296,7 @@ version 2.4.4 du serveur HTTP Apache</compatibility>
     fonctionnalité si l'héritage d'un répertoire parent n'est pas
     souhaité.</p>
     <p>Pour un URI intermédiaire tel que
-    <em>http://example.com/blog/</em>, cet URI intermédiaire doit être
+    <em>https://example.com/blog/</em>, cet URI intermédiaire doit être
     spécifié en tant que <var>url-locale</var> :</p>
     <highlight language="config">
 &lt;Directory "/web/example.com/htdocs/blog"&gt;

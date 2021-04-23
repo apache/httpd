@@ -5,7 +5,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -25,9 +25,9 @@ int md_ocsp_get_stapling_status(unsigned char **pder, int *pderlen,
                                 conn_rec *c, server_rec *s, X509 *cert);
                           
 int md_ocsp_prime_status(server_rec *s, apr_pool_t *p,
-                         const char *id, apr_size_t id_len, const char *pem);
+                         const ap_bytes_t *id, const char *pem);
 
-int md_ocsp_provide_status(server_rec *s, conn_rec *c, const char *id, apr_size_t id_len,
+int md_ocsp_provide_status(server_rec *s, conn_rec *c, const ap_bytes_t *id,
                            ap_ssl_ocsp_copy_resp *cb, void *userdata);
 
 /**

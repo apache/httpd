@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -17,12 +17,12 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Module Apache mod_proxy_hcheck</h1>
 <div class="toplang">
@@ -137,32 +137,32 @@ ProxyHCExpr gdown {%{REQUEST_STATUS} =~ /^[5]/}
 ProxyHCExpr in_maint {hc('body') !~ /Under maintenance/}
 
 &lt;Proxy balancer://foo&gt;
-  BalancerMember http://www.example.com/  hcmethod=GET hcexpr=in_maint hcuri=/status.php
-  BalancerMember http://www2.example.com/ hcmethod=HEAD hcexpr=ok234 hcinterval=10
-  BalancerMember http://www3.example.com/ hcmethod=TCP hcinterval=5 hcpasses=2 hcfails=3
-  BalancerMember http://www4.example.com/
+  BalancerMember https://www.example.com/  hcmethod=GET hcexpr=in_maint hcuri=/status.php
+  BalancerMember https://www2.example.com/ hcmethod=HEAD hcexpr=ok234 hcinterval=10
+  BalancerMember https://www3.example.com/ hcmethod=TCP hcinterval=5 hcpasses=2 hcfails=3
+  BalancerMember https://www4.example.com/
 &lt;/Proxy&gt;
 
 ProxyPass "/" "balancer://foo"
 ProxyPassReverse "/" "balancer://foo"</pre>
 
 
-<p>Dans ce scénario, on teste l'équipier <code>http://www.example.com/</code> en lui
+<p>Dans ce scénario, on teste l'équipier <code>https://www.example.com/</code> en lui
 envoyant une requête <code>GET /status.php</code> et en regardant si la réponse
 contient la chaîne <em>Under maintenance</em>. Si c'est le cas, le check up est
 considéré comme ayant échoué et l'équipier est mis hors service. Ce check up
 dynamique est effectué toutes les 30 secondes, ce qui correspond à la valeur par
 défaut.</p>
 
-<p>On teste l'équipier <code>http://www2.example.com/</code> en lui envoyant
+<p>On teste l'équipier <code>https://www2.example.com/</code> en lui envoyant
 simplement une requête <code>HEAD</code> toutes les 10 secondes et en vérifiant
 que la réponse HTTP est bien un code d'état de 2xx, 3xx ou 4xx. On teste
-l'équipier <code>http://www3.example.com/</code>  en vérifiant simplement toutes
+l'équipier <code>https://www3.example.com/</code>  en vérifiant simplement toutes
 les 5 secondes que le socket vers ce serveur est bien opérationnel. Si ce
 serveur est marqué "hors service", il lui faudra 2 check up réussis pour être
 réactivé et participer à nouveau à la répartition de charge. Si à ce moment-là
 il échoue à 3 check up successifs, il sera à nouveau mis hors service. Enfin,
-l'équipier <code>http://www4.example.com/</code> ne fait l'objet d'aucun check
+l'équipier <code>https://www4.example.com/</code> ne fait l'objet d'aucun check
 up.</p>
 
 </div>
@@ -188,7 +188,7 @@ déterminer la santé d'un serveur d'arrière-plan en fonction de sa valeur</td>
 ProxyPass "/apps"     "balancer://foo"
 
 &lt;Proxy balancer://foo&gt;
-  BalancerMember http://www2.example.com/  hcmethod=HEAD hcexpr=ok234 hcinterval=10
+  BalancerMember https://www2.example.com/  hcmethod=HEAD hcexpr=ok234 hcinterval=10
 &lt;/Proxy&gt;</pre>
 </div>
 
@@ -210,7 +210,7 @@ ProxyPass "/apps"     "balancer://foo"
 ProxyPass "/apps"     "balancer://foo"
 
 &lt;Proxy balancer://foo&gt;
-  BalancerMember http://www.example.com/ hcexpr=in_maint hcmethod=get hcuri=/status.php
+  BalancerMember https://www.example.com/ hcexpr=in_maint hcmethod=get hcuri=/status.php
 &lt;/Proxy&gt;</pre>
 </div>
 
@@ -237,7 +237,7 @@ paramètres de check up</td></tr>
 ProxyPass "/apps"     "balancer://foo"
 
 &lt;Proxy balancer://foo&gt;
-  BalancerMember http://www2.example.com/ hctemplate=tcp5
+  BalancerMember https://www2.example.com/ hctemplate=tcp5
 &lt;/Proxy&gt;</pre>
 </div>
 
@@ -275,7 +275,7 @@ serveur, du jeu de threads utilisé pour le check up des
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_proxy_hcheck.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/mod/mod_proxy_hcheck.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -290,8 +290,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_proxy_hche
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

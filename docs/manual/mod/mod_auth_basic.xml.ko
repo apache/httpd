@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -27,20 +27,20 @@
 <status>Base</status>
 <sourcefile>mod_auth_basic.c</sourcefile>
 <identifier>auth_basic_module</identifier>
-<compatibility>¾ÆÆÄÄ¡ 2.1 ÀÌÈÄºÎÅÍ</compatibility>
+<compatibility>ï¿½ï¿½ï¿½ï¿½Ä¡ 2.1 ï¿½ï¿½ï¿½Äºï¿½ï¿½ï¿½</compatibility>
 
 <summary>
-    <p>ÀÌ ¸ðµâÀº ÇØ´ç Á¦°øÀÚ(provider)¸¦ »ç¿ëÇÏ¿© »ç¿ëÀÚº°·Î
-    Á¢±ÙÀ» Á¦ÇÑÇÏ´Â HTTP Basic AuthenticationÀ» Á¦°øÇÑ´Ù.
-    HTTP Digest AuthenticationÀº <module>mod_auth_digest</module>°¡
-    Á¦°øÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(provider)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½Úºï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ HTTP Basic Authenticationï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+    HTTP Digest Authenticationï¿½ï¿½ <module>mod_auth_digest</module>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 </summary>
 <seealso><directive module="core">AuthName</directive></seealso>
 <seealso><directive module="core">AuthType</directive></seealso>
 
 <directivesynopsis>
 <name>AuthBasicProvider</name>
-<description>ÀÌ À§Ä¡¿¡ ´ëÇÑ ÀÎÁõÁ¦°øÀÚ¸¦ ÁöÁ¤ÇÑ´Ù</description>
+<description>ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</description>
 <syntax>AuthBasicProvider On|Off|<var>provider-name</var>
 [<var>provider-name</var>] ...</syntax>
 <default>AuthBasicProvider On</default>
@@ -49,14 +49,14 @@
 <override>AuthConfig</override>
 
 <usage>
-    <p><directive>AuthBasicProvider</directive> Áö½Ã¾î´Â ÀÌ
-    À§Ä¡¿¡¼­ »ç¿ëÀÚ¸¦ ÀÎÁõÇÒ Á¦°øÀÚ¸¦ ÁöÁ¤ÇÑ´Ù. °ªÀÌ
-    <code>On</code>ÀÌ¸é ±âº»Á¦°øÀÚ(<code>file</code>)¸¦ ¼±ÅÃÇÑ´Ù.
-    <module>mod_authn_file</module> ¸ðµâÀÌ <code>file</code>
-    Á¦°øÀÚ¸¦ ±¸ÇöÇÏ±â¶§¹®¿¡ ¼­¹ö¿¡ ÀÌ ¸ðµâÀÌ ÀÖ´ÂÁö È®ÀÎÇØ¾ß
-    ÇÑ´Ù.</p>
+    <p><directive>AuthBasicProvider</directive> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½
+    ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½
+    <code>On</code>ï¿½Ì¸ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(<code>file</code>)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+    <module>mod_authn_file</module> ï¿½ï¿½ï¿½ï¿½ï¿½ <code>file</code>
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±â¶§ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ø¾ï¿½
+    ï¿½Ñ´ï¿½.</p>
 
-    <example><title>¿¹Á¦</title>
+    <example><title>ï¿½ï¿½ï¿½ï¿½</title>
       &lt;Location /secure&gt;<br />
       <indent>
         AuthBasicProvider  dbm<br />
@@ -67,17 +67,17 @@
       &lt;/Location&gt;
     </example>
 
-    <p>Á¦°øÀÚ´Â <module>mod_authn_dbm</module>°ú
-    <module>mod_authn_file</module>À» Âü°íÇÏ¶ó.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ <module>mod_authn_dbm</module>ï¿½ï¿½
+    <module>mod_authn_file</module>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.</p>
 
-    <p>°ªÀÌ <code>Off</code>ÀÌ¸é Á¦°øÀÚ ¸ñ·ÏÀ» Áö¿ì°í ±âº»»óÅÂ·Î
-    µ¹¾Æ°£´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ <code>Off</code>ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½Â·ï¿½
+    ï¿½ï¿½ï¿½Æ°ï¿½ï¿½ï¿½.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>AuthBasicAuthoritative</name>
-<description>ÀÎÁõ°ú ±ÇÇÑºÎ¿©¸¦ Àú¼öÁØ ¸ðµâ¿¡ ³Ñ°ÜÁÙÁö °áÁ¤ÇÑ´Ù</description>
+<description>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ÑºÎ¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½â¿¡ ï¿½Ñ°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</description>
 <syntax>AuthBasicAuthoritative On|Off</syntax>
 <default>AuthBasicAuthoritative On</default>
 <contextlist><context>directory</context><context>.htaccess</context>
@@ -85,25 +85,25 @@
 <override>AuthConfig</override>
 
 <usage>
-    <p><directive>AuthBasicAuthoritative</directive> Áö½Ã¾î¸¦
-    <code>Off</code>·Î ¼³Á¤ÇÏ¸é ÁÖ¾îÁø »ç¿ëÀÚ ¾ÆÀÌµð¿¡ ÇØ´çÇÏ´Â
-    <strong>»ç¿ëÀÚ ¾ÆÀÌµð</strong>³ª <strong>±ÔÄ¢</strong>À»
-    Ã£À» ¼ö ¾ø´Â °æ¿ì ÀÎÁõ°ú ±ÇÇÑºÎ¿© ¸ðµÎ¸¦ (<code>modules.c</code>
-    ÆÄÀÏ¿¡¼­ Á¤ÀÇÇÑ) Àú¼öÁØ ¸ðµâ·Î ³Ñ°ÜÁØ´Ù. ÁÖ¾îÁø »ç¿ëÀÚ
-    ¾ÆÀÌµð³ª ±ÔÄ¢À» Ã£¾Ò´Ù¸é º¸Åë¶§¿Í °°ÀÌ ¾ÏÈ£¿Í Á¢±ÙÇã¿ë¿©ºÎ¸¦
-    °Ë»çÇÏ°í, ½ÇÆÐÇÏ¸é "Authentication Required (ÀÎÁõ ÇÊ¿ä)"
-    ÀÀ´äÀ» ÇÑ´Ù.</p>
+    <p><directive>AuthBasicAuthoritative</directive> ï¿½ï¿½ï¿½Ã¾î¸¦
+    <code>Off</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½Ö¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ ï¿½Ø´ï¿½ï¿½Ï´ï¿½
+    <strong>ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½</strong>ï¿½ï¿½ <strong>ï¿½ï¿½Ä¢</strong>ï¿½ï¿½
+    Ã£ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ÑºÎ¿ï¿½ ï¿½ï¿½Î¸ï¿½ (<code>modules.c</code>
+    ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ°ï¿½ï¿½Ø´ï¿½. ï¿½Ö¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½Ìµï¿½ ï¿½ï¿½Ä¢ï¿½ï¿½ Ã£ï¿½Ò´Ù¸ï¿½ ï¿½ï¿½ï¿½ë¶§ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ë¿©ï¿½Î¸ï¿½
+    ï¿½Ë»ï¿½ï¿½Ï°ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ "Authentication Required (ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½)"
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½.</p>
 
-    <p>±×·¡¼­ ¿©·¯ ¸ðµâÀÇ µ¥ÀÌÅÍº£ÀÌ½º¿¡ »ç¿ëÀÚ ¾ÆÀÌµð°¡ ÀÖ°Å³ª
-    À¯È¿ÇÑ <directive module="core">Require</directive> Áö½Ã¾î¸¦
-    ¿©·¯ ¸ðµâ¿¡ Àû¿ëÇÏ¸é, Ã¹¹øÂ° ¸ðµâÀÌ »ç¿ëÀÚ¸¦ °Ë»çÇÏ°í,
-    <directive>AuthBasicAuthoritative</directive> ¼³Á¤°ú °ü°è¾øÀÌ
-    Á¢±ÙÀ» ³Ñ±âÁö¾Ê´Â´Ù.</p>
+    <p>ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Íºï¿½ï¿½Ì½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ ï¿½Ö°Å³ï¿½
+    ï¿½ï¿½È¿ï¿½ï¿½ <directive module="core">Require</directive> ï¿½ï¿½ï¿½Ã¾î¸¦
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½â¿¡ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½, Ã¹ï¿½ï¿½Â° ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½Ë»ï¿½ï¿½Ï°ï¿½,
+    <directive>AuthBasicAuthoritative</directive> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ±ï¿½ï¿½ï¿½ï¿½Ê´Â´ï¿½.</p>
 
-    <p>±âº»ÀûÀ¸·Î Á¦¾î¸¦ ³Ñ±âÁö¾Ê°í, ¸ð¸£´Â »ç¿ëÀÚ ¾ÆÀÌµð¿Í
-    ±ÔÄ¢ÀÎ °æ¿ì "Authentication Required (ÀÎÁõ ÇÊ¿ä)" ÀÀ´äÀ»
-    ÇÑ´Ù. ÀÌ Áö½Ã¾î¸¦ ¼³Á¤ÇÏÁö¾ÊÀ¸¸é ½Ã½ºÅÛÀÌ ¾ÈÀüÇÏ°Ô À¯ÁöµÇ¸ç,
-    NCSA À¥¼­¹ö¿Í °°ÀÌ µ¿ÀÛÇÑ´Ù.</p>
+    <p>ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½î¸¦ ï¿½Ñ±ï¿½ï¿½ï¿½ï¿½Ê°ï¿½, ï¿½ð¸£´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ï¿½
+    ï¿½ï¿½Ä¢ï¿½ï¿½ ï¿½ï¿½ï¿½ "Authentication Required (ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½)" ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ñ´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç¸ï¿½,
+    NCSA ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 </usage>
 </directivesynopsis>
 

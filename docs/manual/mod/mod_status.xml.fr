@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -98,7 +98,7 @@ du serveur</description>
 
     <p>Il est alors possible d'obtenir les statistiques du serveur en
     utilisant un navigateur web et en accédant à la page
-    <code>http://votre.serveur/etat-serveur</code>.</p>
+    <code>https://votre.serveur/etat-serveur</code>.</p>
 </section>
 
 <section id="autoupdate">
@@ -107,7 +107,7 @@ du serveur</description>
     <p>Vous pouvez faire en sorte que cette page d'état s'actualise
     elle-même automatiquement si votre navigateur supporte "refresh".
     Pour ce faire, accédez à la page
-    <code>http://votre.serveur/etat-serveur?refresh=N</code>, pour que
+    <code>https://votre.serveur/etat-serveur?refresh=N</code>, pour que
     cette dernière soit actualisée toutes les N secondes.</p>
 
 </section>
@@ -115,7 +115,7 @@ du serveur</description>
 <section id="machinereadable">
 
     <title>Fichier d'état lisible par une machine</title>
-    <p>La page <code>http://votre.serveur/etat-serveur?auto</code>
+    <p>La page <code>https://votre.serveur/etat-serveur?auto</code>
     permet d'obtenir une version du fichier d'état lisible par une
     machine. Ceci s'avère intéressant dans le cadre d'une exécution
     automatique : voir le programme en Perl

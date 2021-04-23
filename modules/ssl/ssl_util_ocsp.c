@@ -5,7 +5,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -40,7 +40,7 @@ static BIO *serialize_request(OCSP_REQUEST *req, const apr_uri_t *uri,
     BIO_printf(bio, "POST ");
     /* Use full URL instead of URI in case of a request through a proxy */
     if (proxy_uri) {
-        BIO_printf(bio, "http://%s:%d",
+        BIO_printf(bio, "https://%s:%d",
                    uri->hostname, uri->port);
     }
     BIO_printf(bio, "%s%s%s HTTP/1.0\r\n"

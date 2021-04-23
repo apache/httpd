@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -17,12 +17,12 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Module Apache mod_mime</h1>
 <div class="toplang">
@@ -187,10 +187,10 @@ multiples</a> <a title="Lien permanent" href="#multipleext" class="permalink">&p
     qui est conçu pour transmettre un fichier binaire sous un format
     ASCII (texte).</p>
 
-    <p>La <a href="http://www.ietf.org/rfc/rfc2616.txt">RFC
+    <p>La <a href="https://www.ietf.org/rfc/rfc2616.txt">RFC
     HTTP/1.1</a>, section 14.11 stipule à ce titre :</p>
 
-    <blockquote cite="http://www.ietf.org/rfc/rfc2616.txt">
+    <blockquote cite="https://www.ietf.org/rfc/rfc2616.txt">
       <p>Le champ d'en-tête Content-Encoding de l'entité est utilisé en
       tant que modificateur du type de médium. Lorsqu'il est présent, sa
       valeur indique quels codages de contenu additionnels ont été
@@ -280,7 +280,7 @@ jeu de caractères spécifié</td></tr>
     <p>La directive <code class="directive">AddCharset</code> permet d'associer
     les extensions de noms de fichiers spécifiées au jeu de caractères
     spécifié (le nom enregistré sur l'Internet d'un codage de caractères
-    donné). <var>jeu-car</var> est le <a href="http://www.iana.org/assignments/character-sets">paramètre jeu
+    donné). <var>jeu-car</var> est le <a href="https://www.iana.org/assignments/character-sets">paramètre jeu
     de caractères du type de médium</a> pour les ressources dont le nom
     de fichier contient <var>extension</var>. Cette association est
     ajoutée à toutes les autres déjà en vigueur, et écrase toute
@@ -1104,7 +1104,7 @@ d'extensions de noms de fichiers</td></tr>
     par leur OS,
     qui associe les extensions de noms de fichiers courantes à la liste
     officielle des types de média enregistrés par l'IANA et maintenue à
-    <a href="http://www.iana.org/assignments/media-types/index.html">http://www.iana.org/assignments/media-types/index.html</a>, ainsi
+    <a href="https://www.iana.org/assignments/media-types/index.html">https://www.iana.org/assignments/media-types/index.html</a>, ainsi
     qu'un grand nombre de types non officiels. Ce fichier permet de
     simplifier le fichier <code>httpd.conf</code> en fournissant la
     majorité des définitions de types de média, et ses définitions
@@ -1153,7 +1153,7 @@ d'extensions de noms de fichiers</td></tr>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_mime.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/mod/mod_mime.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -1168,8 +1168,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_mime.html'
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

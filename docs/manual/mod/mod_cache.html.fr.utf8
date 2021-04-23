@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -17,12 +17,12 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Module Apache mod_cache</h1>
 <div class="toplang">
@@ -46,7 +46,7 @@
     d'environnement.</div>
 
     <p><code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> implémente un <strong>filtre de mise
-    en cache de contenu HTTP</strong> conforme à la <a href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a>, avec
+    en cache de contenu HTTP</strong> conforme à la <a href="https://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a>, avec
     support de la mise en cache des réponses dont le contenu a été
     négocié et comportant l'en-tête Vary.</p>
 
@@ -55,7 +55,7 @@
     jour, et peut apporter un gain de performances significatif si le
     serveur original supporte les <strong>requêtes
     conditionnelles</strong> en prenant en compte l'en-tête de requête
-    HTTP <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.26">If-None-Match</a>.
+    HTTP <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.26">If-None-Match</a>.
     Le contenu n'est ainsi régénéré que lorsqu'il a été modifié, et non
     lorsqu'il a expiré.</p>
 
@@ -86,8 +86,8 @@
     éventuellement compressé par le filtre <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code>.</p>
 
     <p>Dans le mode de fonctionnement normal, <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>
-    peut être contrôlé par les en-têtes <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9">Cache-Control</a>
-    et <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.32">Pragma</a>
+    peut être contrôlé par les en-têtes <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9">Cache-Control</a>
+    et <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.32">Pragma</a>
     envoyés par un client dans une requête, ou par un serveur dans une
     réponse. Dans des circonstances exceptionnelles,
     <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> peut cependant être configuré pour
@@ -101,12 +101,12 @@
     pendant que l'entrée périmée correspondante est mise à jour depuis
     le serveur original, et <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> supporte cette
     fonctionnalité lorsque la directive <code class="directive"><a href="#cachelock">CacheLock</a></code> est configurée en
-    conséquence. De telles réponses comportent un en-tête HTTP <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.46">Warning</a>
+    conséquence. De telles réponses comportent un en-tête HTTP <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.46">Warning</a>
     contenant un code de réponse 110. La RFC 2616 permet aussi au cache
     de renvoyer des données périmées lorsque la tentative de mise à jour
     des données périmées renvoie une erreur 500 ou supérieure, et cette
     fonctionnalité est supportée par défaut par
-    <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>. De telles réponses comportent un en-tête HTTP <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.46">Warning</a>
+    <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>. De telles réponses comportent un en-tête HTTP <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.46">Warning</a>
     contenant un code de réponse 111.</p>
 
     <p><code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> requiert les services d'un ou
@@ -195,7 +195,7 @@ LoadModule cache_module modules/mod_cache.so
     
     # Lorsqu'on sert de mandataire, on ne met pas en cache la liste
 # des mises à jour de sécurité
-    CacheDisable http://security.update.server/update-list/
+    CacheDisable https://security.update.server/update-list/
 &lt;/IfModule&gt;</pre>
 </div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -541,7 +541,7 @@ CacheEnable  disk  /
 CacheEnable  disk  ftp://
 
 # Mise en cache des contenus mandatés en direct depuis www.example.org (gestionnaire normal ou rapide)
-CacheEnable  disk  http://www.example.org/</pre>
+CacheEnable  disk  https://www.example.org/</pre>
 
 
     <p>Un nom d'hôte commençant par un caractère <strong>"*"</strong>
@@ -551,9 +551,9 @@ CacheEnable  disk  http://www.example.org/</pre>
     composant de nom de domaine qui suit ce caractère.</p>
 
     <pre class="prettyprint lang-config"># Correspond à www.example.org et fooexample.org
-CacheEnable  disk  http://*example.org/
+CacheEnable  disk  https://*example.org/
 # Correspond à www.example.org, mais pas à fooexample.org
-CacheEnable  disk  http://.example.org/</pre>
+CacheEnable  disk  https://.example.org/</pre>
 
 
     <p>Depuis la version 2.2.12, on peut définir la variable
@@ -812,7 +812,7 @@ inverse</td></tr>
   cette directive permet de spécifier une nouvelle URL de base.</p>
 
   <pre class="prettyprint lang-config"># Remplace l'URL de base de la clé de cache.
-CacheKeyBaseURL http://www.example.com/</pre>
+CacheKeyBaseURL https://www.example.com/</pre>
 
 
   <div class="warning">Prenez garde en définissant cette directive. Si
@@ -1156,7 +1156,7 @@ marquées comme privées</td></tr>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_cache.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/mod/mod_cache.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -1171,8 +1171,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_cache.html
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

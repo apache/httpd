@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -16,12 +16,12 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Les drapeaux de réécriture</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Les drapeaux de réécriture</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/flags.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/flags.html" title="Français">&nbsp;fr&nbsp;</a></p>
@@ -504,7 +504,7 @@ transmise par Apache à votre serveur d'images dédié. La correspondance est
 insensible à la casse, si bien que par exemple, <code>.jpg</code> aussi
 bien que <code>.JPG</code> seront acceptés.</p>
 
-<pre class="prettyprint lang-config">RewriteRule "(.*\.(jpg|gif|png))$" "http://images.example.com$1" [P,NC]</pre>
+<pre class="prettyprint lang-config">RewriteRule "(.*\.(jpg|gif|png))$" "https://images.example.com$1" [P,NC]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -560,7 +560,7 @@ mandataire. Par exemple, si vous voulez que toutes les requêtes d'images
 soient traitées par un serveur d'images annexe, vous pouvez utiliser
 une règle de ce style :</p>
 
-<pre class="prettyprint lang-config">RewriteRule "/(.*)\.(jpg|gif|png)$" "http://images.example.com/$1.$2" [P]</pre>
+<pre class="prettyprint lang-config">RewriteRule "/(.*)\.(jpg|gif|png)$" "https://images.example.com/$1.$2" [P]</pre>
 
 
 <p>L'utilisation du drapeau [P] provoque aussi l'effet du drapeau [L] -
@@ -569,7 +569,7 @@ toute règle ultérieure sera ignorée.</p>
 
 <p>
 Vous devez vous assurer que la chaîne de substitution soit un URI valide
-(commençant typiquement par <code>http://</code><em>nom-serveur</em>)
+(commençant typiquement par <code>https://</code><em>nom-serveur</em>)
 qui puisse être traitée par le module <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>. Dans
 le cas contraire, le module mandataire vous renverra une erreur.
 L'utilisation de ce drapeau implémente de manière plus puissante la
@@ -710,7 +710,7 @@ Apache.</p>
 <p>
 L'utilisation du drapeau [R] provoque l'envoi d'une redirection au
 navigateur. Si une URL pleinement qualifiée (FQDN - fully qualified domain name)
- est spécifiée (c'est à dire incluant <code>http://nom-du-serveur/</code>),
+ est spécifiée (c'est à dire incluant <code>https://nom-du-serveur/</code>),
  une redirection sera effectuée vers cette adresse. Dans le cas contraire,
  le protocole courant, le nom du serveur et le numéro de port seront
  utilisés pour générer l'URL envoyée avec la redirection.
@@ -733,7 +733,7 @@ codes de redirection en utilisant leurs noms symboliques :
 <p>
 Vous utiliserez presque toujours [R] en conjonction avec [L] (c'est à
 dire [R,L]), car employé seul, le drapeau [R] préfixe l'URI avec
-<code>http://cet-hôte[:ce-port]</code>, mais passe ensuite cette adresse
+<code>https://cet-hôte[:ce-port]</code>, mais passe ensuite cette adresse
 à la règle suivante, ce qui provoquera le plus souvent des
 avertissements 'Invalid URI in request'.
 </p>
@@ -835,7 +835,7 @@ utiliser le drapeau <code>L</code> pour terminer la séquence
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/rewrite/flags.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/rewrite/flags.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -850,8 +850,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/rewrite/flags.html
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

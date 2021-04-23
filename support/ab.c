@@ -5,7 +5,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,7 +17,7 @@
 /*
    ** This program is based on ZeusBench V1.0 written by Adam Twiss
    ** which is Copyright (c) 1996 by Zeus Technology Ltd.
-   ** http://web.archive.org/web/20000304112933/http://www.zeustech.net/
+   ** https://web.archive.org/web/20000304112933/https://www.zeustech.net/
    **
    ** This software is provided "as is" and any express or implied warranties,
    ** including but not limited to, the implied warranties of merchantability and
@@ -2084,15 +2084,15 @@ static void copyright(void)
 {
     if (!use_html) {
         printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision$>");
-        printf("Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://web.archive.org/web/20000304112933/http://www.zeustech.net/\n");
-        printf("Licensed to The Apache Software Foundation, http://www.apache.org/\n");
+        printf("Copyright 1996 Adam Twiss, Zeus Technology Ltd, https://web.archive.org/web/20000304112933/https://www.zeustech.net/\n");
+        printf("Licensed to The Apache Software Foundation, https://www.apache.org/\n");
         printf("\n");
     }
     else {
         printf("<p>\n");
         printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i><br>\n", AP_AB_BASEREVISION, "$Revision$");
-        printf(" Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://web.archive.org/web/20000304112933/http://www.zeustech.net/<br>\n");
-        printf(" Licensed to The Apache Software Foundation, http://www.apache.org/<br>\n");
+        printf(" Copyright 1996 Adam Twiss, Zeus Technology Ltd, https://web.archive.org/web/20000304112933/https://www.zeustech.net/<br>\n");
+        printf(" Licensed to The Apache Software Foundation, https://www.apache.org/<br>\n");
         printf("</p>\n<p>\n");
     }
 }
@@ -2191,7 +2191,7 @@ static int parse_url(const char *url)
     /* Save a copy for the proxy */
     fullurl = apr_pstrdup(cntxt, url);
 
-    if (strlen(url) > 7 && strncmp(url, "http://", 7) == 0) {
+    if (strlen(url) > 7 && strncmp(url, "https://", 7) == 0) {
         url += 7;
 #ifdef USE_SSL
         is_ssl = 0;

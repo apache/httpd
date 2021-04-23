@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -36,7 +36,7 @@
 <p>Este módulo ofrece soporte para SSL v3 y TLS v1.x para el Servidor Apache
   HTTP. SSL v2 ya no está soportado.</p>
 
-<p>Este módulo depende de <a href="http://www.openssl.org/">OpenSSL</a> para
+<p>Este módulo depende de <a href="https://www.openssl.org/">OpenSSL</a> para
 proveer el motor criptográfico.</p>
 
 <p>Se facilitan más detalles, discusión y ejemplos en la 
@@ -447,7 +447,7 @@ SSLPassPhraseDialog "exec:/usr/local/apache/sbin/pp-filter"
     <p>
     Esta variante usa el socket de dominio Unix del Demonio de Recolección de 
     Entropía externo (Entropy Gathering Daemon (EGD)) (vea <a
-    href="http://www.lothar.com/tech/crypto/">http://www.lothar.com/tech
+    href="https://www.lothar.com/tech/crypto/">https://www.lothar.com/tech
     /crypto/</a>) para generar semilla de PRNG. Use esto si no hay un 
     dispositivo de generación de datos aleatorios en su sistema.</p></li>
 </ul>
@@ -521,7 +521,7 @@ Los cinto <em>tipos</em> de almacenamientos siguientes están soportados:</p>
 <li><code>dc:UNIX:/ruta/al/socket</code>
 
     <p>Esto hace uso de las librerías de almacenamiento en caché de sesión 
-      distribuida.<a href="http://distcache.sourceforge.net/">distcache</a>.
+      distribuida.<a href="https://distcache.sourceforge.net/">distcache</a>.
       El parámetro debería especificar la ubicación del servidor o proxy para 
       ser usado con distcache usando sintaxis de dirección; por ejemplo, 
     <code>UNIX:/ruta/al/socket</code> especifica un socket de dominio UNIX
@@ -613,7 +613,7 @@ SSLEngine *:443
 </example>
 <p><directive>SSLEngine</directive> puede ser configurado a
 <code>optional</code>: esto activa el soporte de 
-<a href="http://www.ietf.org/rfc/rfc2817.txt">RFC 2817</a>.
+<a href="https://www.ietf.org/rfc/rfc2817.txt">RFC 2817</a>.
 </p>
 </usage>
 </directivesynopsis>
@@ -666,24 +666,24 @@ Los <em>protocolos</em> disponibles (no sensibles a mayúsculas) son:</p>
     Este es el protocolo de Secure Sockets Layer (SSL), versión 3.0, de la 
     empresa Netscape. Es el sucesor a SSLv2 y el predecesor de TLSv1, pero
     se ha marcado ya como obsoleto en 
-    <a href="http://www.ietf.org/rfc/rfc7568.txt">RFC 7568</a>.</p></li>
+    <a href="https://www.ietf.org/rfc/rfc7568.txt">RFC 7568</a>.</p></li>
 
 <li><code>TLSv1</code>
     <p>
     Este es el protocolo Transport Layer Security (TLS), versión 1.0.
     Es el sucesor de SSLv3 y está definido en
-    <a href="http://www.ietf.org/rfc/rfc2246.txt">RFC 2246</a>.
+    <a href="https://www.ietf.org/rfc/rfc2246.txt">RFC 2246</a>.
     Está soportado por casi cualquier cliente.</p></li>
 
 <li><code>TLSv1.1</code> (cuando se usa OpenSSL 1.0.1 y posterior)
     <p>
     Una revisión del protocolo TLS 1.0, tal y como se define en
-    <a href="http://www.ietf.org/rfc/rfc4346.txt">RFC 4346</a>.</p></li>
+    <a href="https://www.ietf.org/rfc/rfc4346.txt">RFC 4346</a>.</p></li>
 
 <li><code>TLSv1.2</code> (cuando se usa OpenSSL 1.0.1 y posterior)
     <p>
     Una revisión del protocolo TLS 1.1, tal y como se define en
-    <a href="http://www.ietf.org/rfc/rfc5246.txt">RFC 5246</a>.</p></li>
+    <a href="https://www.ietf.org/rfc/rfc5246.txt">RFC 5246</a>.</p></li>
 
 <li><code>all</code>
     <p>
@@ -947,7 +947,7 @@ usan una clave privada en un fichero aparte. Si la clave privada está encriptad
 Comenzando con la versión 2.4.7, mod_ssl hace uso de parámetros DH 
 estandarizados con longitud de primos de 2048, 3072 y 4096 bits y con longitud 
 adicional de primos de 6144 y 8192 bits comenzando con la versión 2.4.10
-(from <a href="http://www.ietf.org/rfc/rfc3526.txt">RFC 3526</a>), y los
+(from <a href="https://www.ietf.org/rfc/rfc3526.txt">RFC 3526</a>), y los
 envía a clientes basándose en la longitud de la clave RSA/DSA del certificado.
 Con clientes basados en Java en particular (Java 7 o anterior), esto puede
 llevar a fallos de saludo inicial SSL - vea esta
@@ -2441,7 +2441,7 @@ directives.</p>
 <highlight language="config">
 SSLVerifyClient on
 SSLOCSPEnable on
-SSLOCSPDefaultResponder "http://responder.example.com:8888/responder"
+SSLOCSPDefaultResponder "https://responder.example.com:8888/responder"
 SSLOCSPOverrideResponder on
 </highlight>
 </example>
@@ -2609,7 +2609,7 @@ todas las consultas a respondedores OCSP.</p>
 <usage>
 <p>Tal y como se especificó originalmente, todas las versiones de protocolo SSL y
 TLS (incluído TLS/1.2) eran vulnerables a ataques tipo Man-in-the-Middle
-(<a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CAN-2009-3555">CVE-2009-3555</a>)
+(<a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CAN-2009-3555">CVE-2009-3555</a>)
 durante una renegociación. Esta vulnerabilidad permitía a un atancante poner
 un prefijo a un texto plano específico en la petición HTTP tal y como se veía 
 en el servidor web. Se desarrolló una extensión del protocolo para esta vulnerabilidad si estaba soportada tanto por el cliente como por el 
@@ -2624,7 +2624,7 @@ parcheados), aunque de manera insegura.</p>
 <note type="warning"><title>Aviso de Seguridad</title>
 <p>Si se activa esta directiva, las conexiones SSL serán vulnerables a ataques
 Man-in-the-Middle de prefijo tal y como se describe en
-<a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CAN-2009-3555">CVE-2009-3555</a>.</p>
+<a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CAN-2009-3555">CVE-2009-3555</a>.</p>
 </note>
 
 <example><title>Ejemplo</title>
@@ -2665,7 +2665,7 @@ una respuesta OCSP de un sólo certificado. Para los certificados de servidor
 con certificados de CA intermedias en su cadena (lo típico hoy en día),
 stapling en su implementación actual por tanto sólo consigue su objetivo
 parcialmente de "ahorrar varias peticiones y consumo de recursos" - vea también
-el <a href="http://www.ietf.org/rfc/rfc6961.txt">RFC 6961</a>
+el <a href="https://www.ietf.org/rfc/rfc6961.txt">RFC 6961</a>
 (Extensión de TLS del Estado de Múltiples Certificados).
 </p>
 
@@ -2858,7 +2858,7 @@ posterior</compatibility>
 <usage>
 <p>Opcionalmente configura una clave secreta para la encriptación y 
 desencriptación de tickets de sesión TLS, tal y como se define en 
-<a href="http://www.ietf.org/rfc/rfc5077.txt">RFC 5077</a>. Principalmente
+<a href="https://www.ietf.org/rfc/rfc5077.txt">RFC 5077</a>. Principalmente
 adecuado para entornos clusterizados donde la información de sesiones TLS
 debería ser compartida entre varios nodos. Para configuraciones de una sola
 instancia http, es recomendable <em>no</em> configurar un fichero clave
@@ -2953,7 +2953,7 @@ para <module>mod_ssl</module> (al menos la versión 1.0.2 es necesaria). Para un
 lista de nombres de comandos
 soportados, vea la sección <em>Comandos soportados para fichero de 
 configuración</em> en la página de manual 
-<a href="http://www.openssl.org/docs/man1.0.2/ssl/SSL_CONF_cmd.html#SUPPORTED-CONFIGURATION-FILE-COMMANDS">SSL_CONF_cmd(3)</a> 
+<a href="https://www.openssl.org/docs/man1.0.2/ssl/SSL_CONF_cmd.html#SUPPORTED-CONFIGURATION-FILE-COMMANDS">SSL_CONF_cmd(3)</a> 
 de OpenSSL.</p>
 
 <p>Algunos de los comandos de <directive>SSLOpenSSLConfCmd</directive> se pueden

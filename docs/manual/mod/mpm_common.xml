@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -291,7 +291,7 @@ Listen 192.170.2.5:8000
 <seealso><a href="../bind.html">Setting which addresses and ports Apache HTTP Server
     uses</a></seealso>
 <seealso><a
-href="http://wiki.apache.org/httpd/CouldNotBindToAddress">Further
+href="https://wiki.apache.org/httpd/CouldNotBindToAddress">Further
 discussion of the <code>Address already in use</code> error message,
 including other causes.</a></seealso>
 </directivesynopsis>

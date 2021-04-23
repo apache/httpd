@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -16,12 +16,12 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p>
+<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p>
 <p class="apache">Versión 2.5 del Servidor HTTP Apache</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentación</a> &gt; <a href="../">Versión 2.5</a> &gt; <a href="./">How-To / Tutorials</a></div><div id="page-content"><div id="preamble"><h1>Directorios web por usuario</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentación</a> &gt; <a href="../">Versión 2.5</a> &gt; <a href="./">How-To / Tutorials</a></div><div id="page-content"><div id="preamble"><h1>Directorios web por usuario</h1>
 <div class="toplang">
 <p><span>Idiomas disponibles: </span><a href="../en/howto/public_html.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/howto/public_html.html" title="Español">&nbsp;es&nbsp;</a> |
@@ -33,7 +33,7 @@
 
 	<p>En sistemas con múltiples usuarios, cada usuario puede tener un website 
     en su directorio home usando la directiva <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code>. Los visitantes de una URL 
-    <code>http://example.com/~username/</code> recibirán el contenido del 
+    <code>https://example.com/~username/</code> recibirán el contenido del 
     directorio home del usuario "<code>username</code>", en el subdirectorio 
     especificado por la directiva <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code>.</p>
 
@@ -78,7 +78,7 @@
     <pre class="prettyprint lang-config">UserDir public_html</pre>
 
 
-    <p>La URL <code>http://example.com/~rbowen/file.html</code> se traducirá en 
+    <p>La URL <code>https://example.com/~rbowen/file.html</code> se traducirá en 
     la ruta del fichero <code>/home/rbowen/public_html/file.html</code></p>
 
     <p>Si la ruta que se especifica comienza con una barra ("/"), la ruta del 
@@ -88,7 +88,7 @@
     <pre class="prettyprint lang-config">UserDir /var/html</pre>
 
 
-    <p>La URL <code>http://example.com/~rbowen/file.html</code> se traducirá en 
+    <p>La URL <code>https://example.com/~rbowen/file.html</code> se traducirá en 
     la ruta del fichero <code>/var/html/rbowen/file.html</code></p>
 
     <p>Si se especifica una ruta que contiene un asterisco (*), se usará una ruta 
@@ -97,7 +97,7 @@
     <pre class="prettyprint lang-config">UserDir /var/www/*/docs</pre>
 
 
-    <p>La URL <code>http://example.com/~rbowen/file.html</code> se traducirá en 
+    <p>La URL <code>https://example.com/~rbowen/file.html</code> se traducirá en 
     la ruta del fichero <code>/var/www/rbowen/docs/file.html</code></p>
 
     <p>También se pueden configurar múltiples directorios o rutas de directorios.</p>
@@ -105,7 +105,7 @@
     <pre class="prettyprint lang-config">UserDir public_html /var/html</pre>
 
 
-    <p>Para la URL <code>http://example.com/~rbowen/file.html</code>,
+    <p>Para la URL <code>https://example.com/~rbowen/file.html</code>,
     Apache buscará <code>~rbowen</code>. Si no lo encuentra, Apache buscará
     <code>rbowen</code> en <code>/var/html</code>. Si lo encuentra, la URL de más 
     arriba se traducirá en la ruta del fichero 
@@ -118,12 +118,12 @@
     <p>La directiva <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> puede 
     usarse para redirigir solcitudes de directorios de usuario a URLs externas.</p>
 
-    <pre class="prettyprint lang-config">UserDir http://example.org/users/*/</pre>
+    <pre class="prettyprint lang-config">UserDir https://example.org/users/*/</pre>
 
 
     <p>El ejemplo de aquí arriba redirigirá una solicitud para
-    <code>http://example.com/~bob/abc.html</code> hacia
-    <code>http://example.org/users/bob/abc.html</code>.</p>
+    <code>https://example.com/~bob/abc.html</code> hacia
+    <code>https://example.org/users/bob/abc.html</code>.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="enable" id="enable">Restringiendo qué usuarios pueden usar esta característica</a> <a title="Enlace permanente" href="#enable" class="permalink">&para;</a></h2>
@@ -167,7 +167,7 @@ UserDir enabled rbowen krietz</pre>
     podría cargarse de ese directorio así:</p>
 
     <div class="example"><p><code>
-    http://example.com/~rbowen/cgi-bin/example.cgi
+    https://example.com/~rbowen/cgi-bin/example.cgi
     </code></p></div>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -192,7 +192,7 @@ UserDir enabled rbowen krietz</pre>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comentarios</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/howto/public_html.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/howto/public_html.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -207,8 +207,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/howto/public_html.
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

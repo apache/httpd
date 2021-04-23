@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -75,7 +75,7 @@
   <section id="grammar">
     <title>Grammar in Backus-Naur Form notation</title>
       <p><a
-      href="http://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form">Backus-Naur
+      href="https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form">Backus-Naur
       Form</a> (BNF) is a notation technique for context-free grammars,
       often used to describe the syntax of languages used in computing.
       In most cases, expressions are used to express boolean values.
@@ -712,7 +712,7 @@ DIGIT       ::= &lt;any US-ASCII digit "0".."9"&gt;
     <highlight language="config">
 # Compare the host name to example.com and redirect to www.example.com if it matches
 &lt;If "%{HTTP_HOST} == 'example.com'"&gt;
-    Redirect permanent "/" "http://www.example.com/"
+    Redirect permanent "/" "https://www.example.com/"
 &lt;/If&gt;
 
 # Force text/plain if requesting a file with the query string contains 'forcetext'

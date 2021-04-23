@@ -12,7 +12,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -192,8 +192,8 @@ end
     This is similar to mixing AliasMatch and ProxyPass, but
     without them clashing in any way. Assuming we are on example.com, then:
 
-    http://example.com/photos/test.png will be rewritten as /uploads/www/test.png
-    http://example.com/ext/foo.html will be proxied to http://www.external.com/foo.html
+    https://example.com/photos/test.png will be rewritten as /uploads/www/test.png
+    https://example.com/ext/foo.html will be proxied to https://www.external.com/foo.html
     URIs that do not match, will be served by their respective default handlers
 ]]--
 
@@ -205,7 +205,7 @@ local map = {
                 },
       externals = {
                    source = [[^/ext/(.*)$]],
-                   destination = [[http://www.external.com/$1]],
+                   destination = [[https://www.external.com/$1]],
                    proxy = true
                 }
 }
@@ -531,9 +531,9 @@ LuaHookTranslateName /path/to/script.lua proxy_handler
 ]]--
 
 local backends = {
-  "http://backend1.foo.com/",
-  "http://backend2.foo.com/",
-  "http://backend3.foo.com/"
+  "https://backend1.foo.com/",
+  "https://backend2.foo.com/",
+  "https://backend3.foo.com/"
 }
 
 function pick_backend(r)

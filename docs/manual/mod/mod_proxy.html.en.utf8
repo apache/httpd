@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -17,12 +17,12 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache Module mod_proxy</h1>
 <div class="toplang">
@@ -208,8 +208,8 @@
     <p>In addition, if you wish to have caching enabled, consult
     the documentation from <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>.</p>
 
-    <div class="example"><h3>Reverse Proxy</h3><pre class="prettyprint lang-config">ProxyPass        "/foo" "http://foo.example.com/bar"
-ProxyPassReverse "/foo" "http://foo.example.com/bar"</pre>
+    <div class="example"><h3>Reverse Proxy</h3><pre class="prettyprint lang-config">ProxyPass        "/foo" "https://foo.example.com/bar"
+ProxyPassReverse "/foo" "https://foo.example.com/bar"</pre>
 </div>
 
     <div class="example"><h3>Forward Proxy</h3><pre class="prettyprint lang-config">ProxyRequests On
@@ -257,22 +257,22 @@ ProxyVia On
       <code class="directive"><a href="#proxypassmatch">ProxyPassMatch</a></code> when used
       for a reverse proxy:</p>
 
-      <pre class="prettyprint lang-config">ProxyPass "/example" "http://backend.example.com" connectiontimeout=5 timeout=30</pre>
+      <pre class="prettyprint lang-config">ProxyPass "/example" "https://backend.example.com" connectiontimeout=5 timeout=30</pre>
 
 
       <p>This will create a worker associated with the origin server URL
-      <code>http://backend.example.com</code> that will use the given timeout
+      <code>https://backend.example.com</code> that will use the given timeout
       values. All timeouts use the <a href="directive-dict.html#Syntax">time-interval</a>
       directive syntax. When used in a forward proxy, workers are usually defined
       via the <code class="directive"><a href="#proxyset">ProxySet</a></code> directive:</p>
 
-      <pre class="prettyprint lang-config">ProxySet http://backend.example.com connectiontimeout=5 timeout=30</pre>
+      <pre class="prettyprint lang-config">ProxySet https://backend.example.com connectiontimeout=5 timeout=30</pre>
 
 
       <p>or alternatively using <code class="directive"><a href="#proxy">Proxy</a></code>
       and <code class="directive"><a href="#proxyset">ProxySet</a></code>:</p>
 
-      <pre class="prettyprint lang-config">&lt;Proxy http://backend.example.com&gt;
+      <pre class="prettyprint lang-config">&lt;Proxy https://backend.example.com&gt;
   ProxySet connectiontimeout=5 timeout=30
 &lt;/Proxy&gt;</pre>
 
@@ -291,8 +291,8 @@ ProxyVia On
       <p>The URL identifying a direct worker is the URL of its
       origin server including any path components given:</p>
 
-     <pre class="prettyprint lang-config">ProxyPass "/examples" "http://backend.example.com/examples"
-ProxyPass "/docs"     "http://backend.example.com/docs"</pre>
+     <pre class="prettyprint lang-config">ProxyPass "/examples" "https://backend.example.com/examples"
+ProxyPass "/docs"     "https://backend.example.com/docs"</pre>
 
 
       <p>This example defines two different workers, each using a separate
@@ -303,8 +303,8 @@ ProxyPass "/docs"     "http://backend.example.com/docs"</pre>
         the URL of some worker is a leading substring of the URL of another
         worker defined later in the configuration file. In the following example</p>
 
-        <pre class="prettyprint lang-config">ProxyPass "/apps"     "http://backend.example.com/" timeout=60
-ProxyPass "/examples" "http://backend.example.com/examples" timeout=10</pre>
+        <pre class="prettyprint lang-config">ProxyPass "/apps"     "https://backend.example.com/" timeout=60
+ProxyPass "/examples" "https://backend.example.com/examples" timeout=10</pre>
 
 
         <p>the second worker isn't actually created. Instead the first
@@ -324,7 +324,7 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10</pre>
 
       <div class="warning"><h3>Host part in the URL</h3>
         <p>The host part needs to start with a letter [a-z]. For example:</p>
-        <pre class="prettyprint lang-config">ProxyPass "/apps"     "http://127"</pre>
+        <pre class="prettyprint lang-config">ProxyPass "/apps"     "https://127"</pre>
 
         <p>is not valid and will cause an error while processing a request that
         maps the path.</p>
@@ -412,8 +412,8 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10</pre>
       should be accessed directly.</p>
 
       <p>Users within an intranet tend to omit the local domain name from their
-      WWW requests, thus requesting "http://somehost/" instead of
-      <code>http://somehost.example.com/</code>. Some commercial proxy servers
+      WWW requests, thus requesting "https://somehost/" instead of
+      <code>https://somehost.example.com/</code>. Some commercial proxy servers
       let them get away with this and simply serve the request, implying a
       configured local domain. When the <code class="directive"><a href="#proxydomain">ProxyDomain</a></code> directive is used and the server is <a href="#proxyrequests">configured for proxy service</a>, Apache httpd can return
       a redirect response and send the client to the correct, fully qualified,
@@ -432,7 +432,7 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10</pre>
       <code>proxy-nokeepalive</code> notes.</p>
 
       <pre class="prettyprint lang-config">&lt;Location "/buggyappserver/"&gt;
-  ProxyPass "http://buggyappserver:7001/foo/"
+  ProxyPass "https://buggyappserver:7001/foo/"
   SetEnv force-proxy-request-1.0 1
   SetEnv proxy-nokeepalive 1
 &lt;/Location&gt;</pre>
@@ -609,7 +609,7 @@ directly</td></tr>
     always served directly, without forwarding to the configured
     <code class="directive"><a href="#proxyremote">ProxyRemote</a></code> proxy server(s).</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">ProxyRemote  *  http://firewall.example.com:81
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">ProxyRemote  *  https://firewall.example.com:81
 NoProxy         .example.com 192.168.112.0/21</pre>
 </div>
 
@@ -742,7 +742,7 @@ NoProxy         .example.com 192.168.112.0/21</pre>
     directory of <code>example.com</code> through the <code>INCLUDES</code>
     filter when they are sent through the proxy server:</p>
 
-   <pre class="prettyprint lang-config">&lt;Proxy http://example.com/foo/*&gt;
+   <pre class="prettyprint lang-config">&lt;Proxy https://example.com/foo/*&gt;
   SetOutputFilter INCLUDES
 &lt;/Proxy&gt;</pre>
 
@@ -762,9 +762,9 @@ NoProxy         .example.com 192.168.112.0/21</pre>
       <p>A backend URL matches the configuration section if it begins with the
       the <var>wildcard-url</var> string, even if the last path segment in the
       directive only matches a prefix of the backend URL.  For example,
-      &lt;Proxy http://example.com/foo&gt; matches all of
-      http://example.com/foo, http://example.com/foo/bar, and
-      http://example.com/foobar.  The matching of the final URL differs
+      &lt;Proxy https://example.com/foo&gt; matches all of
+      https://example.com/foo, https://example.com/foo/bar, and
+      https://example.com/foobar.  The matching of the final URL differs
       from the behavior of the <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> section, which for purposes of this note
       treats the final path component as if it ended in a slash.</p>
       <p>For more control over the matching, see <code class="directive">&lt;ProxyMatch&gt;</code>.</p>
@@ -917,7 +917,7 @@ response</td></tr>
     response to the same host with the configured <var>Domain</var> appended
     will be generated.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">ProxyRemote  "*"  "http://firewall.example.com:81"
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">ProxyRemote  "*"  "https://firewall.example.com:81"
 NoProxy           ".example.com" "192.168.112.0/21"
 ProxyDomain       ".example.com"</pre>
 </div>
@@ -1010,7 +1010,7 @@ proxied resources</td></tr>
     <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. In order to prevent confusion, numbered
     (unnamed) backreferences are ignored. Use named groups instead.</p>
 
-<pre class="prettyprint lang-config">&lt;ProxyMatch ^http://(?&lt;sitename&gt;[^/]+)&gt;
+<pre class="prettyprint lang-config">&lt;ProxyMatch ^https://(?&lt;sitename&gt;[^/]+)&gt;
     require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/ProxyMatch&gt;</pre>
 
@@ -1084,7 +1084,7 @@ through</td></tr>
     <p>In 2.4.7 and later, support for using a Unix Domain Socket is available by using a target
     which prepends <code>unix:/path/lis.sock|</code>. For example, to proxy
     HTTP and target the UDS at /home/www.socket, you would use
-    <code>unix:/home/www.socket|http://localhost/whatever/</code>. Since
+    <code>unix:/home/www.socket|https://localhost/whatever/</code>. Since
     the socket is local, the hostname used (in this case <code>localhost</code>)
     is moot, but it is passed as the Host: header value of the request.</p>
 
@@ -1101,17 +1101,17 @@ through</td></tr>
     however, ProxyPass does not interpret the regexp as such, so it is necessary
     to use <code class="directive">ProxyPassMatch</code> in this situation instead.</p>
 
-    <p>Suppose the local server has address <code>http://example.com/</code>;
+    <p>Suppose the local server has address <code>https://example.com/</code>;
     then</p>
 
     <pre class="prettyprint lang-config">&lt;Location "/mirror/foo/"&gt;
-    ProxyPass "http://backend.example.com/"
+    ProxyPass "https://backend.example.com/"
 &lt;/Location&gt;</pre>
 
 
     <p>will cause a local request for
-    <code>http://example.com/mirror/foo/bar</code> to be internally converted
-    into a proxy request to <code>http://backend.example.com/bar</code>.</p>
+    <code>https://example.com/mirror/foo/bar</code> to be internally converted
+    into a proxy request to <code>https://backend.example.com/bar</code>.</p>
 
     <p>If you require a more flexible reverse-proxy configuration, see the
     <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> directive with the
@@ -1122,7 +1122,7 @@ through</td></tr>
     the below syntax is that it allows for dynamic control via the
     <a href="mod_proxy_balancer.html#balancer_manager">Balancer Manager</a> interface:</p>
 
-    <pre class="prettyprint lang-config">ProxyPass "/mirror/foo/" "http://backend.example.com/"</pre>
+    <pre class="prettyprint lang-config">ProxyPass "/mirror/foo/" "https://backend.example.com/"</pre>
 
 
     <div class="warning">
@@ -1137,7 +1137,7 @@ through</td></tr>
     to reverse-proxy a subdirectory, <em>e.g.</em></p>
 
     <pre class="prettyprint lang-config">&lt;Location "/mirror/foo/"&gt;
-    ProxyPass "http://backend.example.com/"
+    ProxyPass "https://backend.example.com/"
 &lt;/Location&gt;
 &lt;Location "/mirror/foo/i"&gt;
     ProxyPass "!"
@@ -1145,7 +1145,7 @@ through</td></tr>
 
 
     <pre class="prettyprint lang-config">ProxyPass "/mirror/foo/i" "!"
-ProxyPass "/mirror/foo"   "http://backend.example.com"</pre>
+ProxyPass "/mirror/foo"   "https://backend.example.com"</pre>
 
 
     <p>will proxy all requests to <code>/mirror/foo</code> to
@@ -1155,7 +1155,7 @@ ProxyPass "/mirror/foo"   "http://backend.example.com"</pre>
     <p>Mixing ProxyPass settings in different contexts does not work:</p>
     <pre class="prettyprint lang-config">ProxyPass "/mirror/foo/i" "!"
 &lt;Location "/mirror/foo/"&gt;
-    ProxyPass "http://backend.example.com/"
+    ProxyPass "https://backend.example.com/"
 &lt;/Location&gt;</pre>
 
     <p>In this case, a request to <code>/mirror/foo/i</code> will get proxied,
@@ -1217,7 +1217,7 @@ ProxyPass "/mirror/foo"   "http://backend.example.com"</pre>
     to avoid using a connection which is subject to closing because of the
     backend server's keep-alive timeout.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">ProxyPass "/example" "http://backend.example.com" max=20 ttl=120 retry=300</pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">ProxyPass "/example" "https://backend.example.com" max=20 ttl=120 retry=300</pre>
 </div>
 
     <table class="bordered"><tr><th>Worker|BalancerMember parameters</th></tr></table>
@@ -1542,7 +1542,7 @@ ProxyPass "/mirror/foo"   "http://backend.example.com"</pre>
 
     </table>
     <p>A sample balancer setup:</p>
-    <pre class="prettyprint lang-config">ProxyPass "/special-area" "http://special.example.com" smax=5 max=10
+    <pre class="prettyprint lang-config">ProxyPass "/special-area" "https://special.example.com" smax=5 max=10
 ProxyPass "/"             "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofailover=On
 &lt;Proxy balancer://mycluster&gt;
     BalancerMember ajp://1.2.3.4:8009
@@ -1616,7 +1616,7 @@ RewriteCond %{HTTPS} =on
 RewriteRule . - [E=protocol:https]
 
 RewriteRule ^/mirror/foo/(.*) %{ENV:protocol}://backend.example.com/$1 [P]
-ProxyPassReverse  "/mirror/foo/" "http://backend.example.com/"
+ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"
 ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"</pre>
 
 
@@ -1698,25 +1698,25 @@ ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"</pre>
     <div class="note"><strong>Note: </strong>This directive cannot be used within a
     <code>&lt;Directory&gt;</code> context.</div>
 
-    <p>Suppose the local server has address <code>http://example.com/</code>;
+    <p>Suppose the local server has address <code>https://example.com/</code>;
     then</p>
 
-    <pre class="prettyprint lang-config">ProxyPassMatch "^/(.*\.gif)$" "http://backend.example.com/$1"</pre>
+    <pre class="prettyprint lang-config">ProxyPassMatch "^/(.*\.gif)$" "https://backend.example.com/$1"</pre>
 
 
     <p>will cause a local request for
-    <code>http://example.com/foo/bar.gif</code> to be internally converted
-    into a proxy request to <code>http://backend.example.com/foo/bar.gif</code>.</p>
+    <code>https://example.com/foo/bar.gif</code> to be internally converted
+    into a proxy request to <code>https://backend.example.com/foo/bar.gif</code>.</p>
     <div class="note"><h3>Note</h3>
       <p>The URL argument must be parsable as a URL <em>before</em> regexp
       substitutions (as well as after).  This limits the matches you can use.
       For instance, if we had used</p>
-      <pre class="prettyprint lang-config">ProxyPassMatch "^(/.*\.gif)$" "http://backend.example.com:8000$1"</pre>
+      <pre class="prettyprint lang-config">ProxyPassMatch "^(/.*\.gif)$" "https://backend.example.com:8000$1"</pre>
 
       <p>in our previous example, it would fail with a syntax error
       at server startup.  This is a bug (PR 46665 in the ASF bugzilla),
       and the workaround is to reformulate the match:</p>
-      <pre class="prettyprint lang-config">ProxyPassMatch "^/(.*\.gif)$" "http://backend.example.com:8000/$1"</pre>
+      <pre class="prettyprint lang-config">ProxyPassMatch "^/(.*\.gif)$" "https://backend.example.com:8000/$1"</pre>
 
     </div>
     <p>The <code>!</code> directive is useful in situations where you don't want
@@ -1793,22 +1793,22 @@ proxied server</td></tr>
     </p>
 
     <p>For example, suppose the local server has address
-    <code>http://example.com/</code>; then</p>
+    <code>https://example.com/</code>; then</p>
 
-    <pre class="prettyprint lang-config">ProxyPass         "/mirror/foo/" "http://backend.example.com/"
-ProxyPassReverse  "/mirror/foo/" "http://backend.example.com/"
+    <pre class="prettyprint lang-config">ProxyPass         "/mirror/foo/" "https://backend.example.com/"
+ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"
 ProxyPassReverseCookieDomain  backend.example.com  public.example.com
 ProxyPassReverseCookiePath  "/"  "/mirror/foo/"</pre>
 
 
     <p>will not only cause a local request for the
-    <code>http://example.com/mirror/foo/bar</code> to be internally converted
-    into a proxy request to <code>http://backend.example.com/bar</code>
+    <code>https://example.com/mirror/foo/bar</code> to be internally converted
+    into a proxy request to <code>https://backend.example.com/bar</code>
     (the functionality which <code>ProxyPass</code> provides here).
     It also takes care of redirects which the server <code>backend.example.com</code> sends
-    when redirecting <code>http://backend.example.com/bar</code> to
-    <code>http://backend.example.com/quux</code> . Apache httpd adjusts this to
-    <code>http://example.com/mirror/foo/quux</code> before forwarding the HTTP
+    when redirecting <code>https://backend.example.com/bar</code> to
+    <code>https://backend.example.com/quux</code> . Apache httpd adjusts this to
+    <code>https://example.com/mirror/foo/quux</code> before forwarding the HTTP
     redirect response to the client. Note that the hostname used for
     constructing the URL is chosen in respect to the setting of the <code class="directive"><a href="../mod/core.html#usecanonicalname">UseCanonicalName</a></code> directive.</p>
 
@@ -1950,9 +1950,9 @@ connections</td></tr>
     are supported by this module. When using <code>https</code>, the requests
     are forwarded through the remote proxy using the HTTP CONNECT method.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">ProxyRemote http://goodguys.example.com/ http://mirrorguys.example.com:8000
-ProxyRemote * http://cleverproxy.localdomain
-ProxyRemote ftp http://ftpproxy.mydomain:8080</pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">ProxyRemote https://goodguys.example.com/ https://mirrorguys.example.com:8000
+ProxyRemote * https://cleverproxy.localdomain
+ProxyRemote ftp https://ftpproxy.mydomain:8080</pre>
 </div>
 
     <p>In the last example, the proxy will forward FTP requests, encapsulated
@@ -2043,13 +2043,13 @@ expressions</td></tr>
     <code class="directive"><a href="#proxypass">ProxyPass</a></code> directive.</p>
 
     <div class="example"><pre class="prettyprint lang-config">&lt;Proxy balancer://hotcluster&gt;
-    BalancerMember http://www2.example.com:8080 loadfactor=1
-    BalancerMember http://www3.example.com:8080 loadfactor=2
+    BalancerMember https://www2.example.com:8080 loadfactor=1
+    BalancerMember https://www3.example.com:8080 loadfactor=2
     ProxySet lbmethod=bytraffic
 &lt;/Proxy&gt;</pre>
 </div>
 
-    <pre class="prettyprint lang-config">&lt;Proxy http://backend&gt;
+    <pre class="prettyprint lang-config">&lt;Proxy https://backend&gt;
     ProxySet keepalive=On
 &lt;/Proxy&gt;</pre>
 
@@ -2130,7 +2130,7 @@ header for proxied requests</td></tr>
 </table>
     <p>This directive controls the use of the <code>Via:</code> HTTP
     header by the proxy. Its intended use is to control the flow of
-    proxy requests along a chain of proxy servers.  See <a href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a> (HTTP/1.1), section
+    proxy requests along a chain of proxy servers.  See <a href="https://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a> (HTTP/1.1), section
     14.45 for an explanation of <code>Via:</code> header lines.</p>
 
     <ul>
@@ -2159,7 +2159,7 @@ header for proxied requests</td></tr>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_proxy.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/mod/mod_proxy.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -2174,8 +2174,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_proxy.html
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

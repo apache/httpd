@@ -5,7 +5,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -638,7 +638,7 @@ void h2_stream_set_request(h2_stream *stream, const h2_request *r)
 
 static void set_error_response(h2_stream *stream, int http_status)
 {
-    if (!h2_stream_is_ready(stream) && stream->rtmp) {
+    if (!h2_stream_is_ready(stream)) {
         stream->rtmp->http_status = http_status;
     }
 }

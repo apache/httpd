@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -83,7 +83,7 @@ si le serveur est démarré en utilisant la ligne de commande : <code>httpd
 
 <highlight language="config">
 &lt;IfDefine ClosedForNow&gt;
-    Redirect "/" "http://otherserver.example.com/"
+    Redirect "/" "https://otherserver.example.com/"
 &lt;/IfDefine&gt;
 </highlight>
 
@@ -225,9 +225,9 @@ configuration de parties de l'arborescence du site web.  Par exemple, la
 configuration suivante interdit l'accès à toute URL dont la partie chemin
 commence par /private.
 En particulier, l'interdiction s'appliquera aux requêtes pour :
-<code>http://yoursite.example.com/private</code>,
-<code>http://yoursite.example.com/private123</code>, et
-<code>http://yoursite.example.com/private/dir/file.html</code> ainsi qu'à
+<code>https://yoursite.example.com/private</code>,
+<code>https://yoursite.example.com/private123</code>, et
+<code>https://yoursite.example.com/private/dir/file.html</code> ainsi qu'à
 toute requête commençant par la chaîne de caractères <code>/private</code>.</p>
 
 <highlight language="config">
@@ -271,7 +271,7 @@ Alias "/foo" "/srv/www/common/foo"
 <p>Ceci est aussi vrai pour les directives <directive
 module="mod_proxy">ProxyPass</directive> :</p>
 <highlight language="config">
-ProxyPass "/special-area" "http://special.example.com" smax=5 max=10
+ProxyPass "/special-area" "https://special.example.com" smax=5 max=10
 ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofailover=On
 </highlight>
 </section>
@@ -346,9 +346,9 @@ href="expr.html">expression</a> et au sein de modules comme
 permet de modifier la configuration en fonction d'une condition qui peut
 être définie sous la forme d'une expression booléenne. Dans l'exemple
 suivant, l'accès est interdit si l'en-tête HTTP Referer ne commence pas
-par "http://www.example.com/".</p>
+par "https://www.example.com/".</p>
 <highlight language="config">
-&lt;If "!(%{HTTP_REFERER} -strmatch 'http://www.example.com/*')"&gt;
+&lt;If "!(%{HTTP_REFERER} -strmatch 'https://www.example.com/*')"&gt;
     Require all denied
 &lt;/If&gt;
 </highlight>
@@ -381,11 +381,11 @@ Par exemple, imaginez la configuration suivante :</p>
 </highlight>
 
 <p>Elle fonctionne correctement si la requête appelle
-<code>http://yoursite.example.com/dir/</code>.  Mais que va-t-il se passer si
+<code>https://yoursite.example.com/dir/</code>.  Mais que va-t-il se passer si
 votre système de fichiers est insensible à la casse ?
 Votre restriction va pouvoir être tout simplement contournée en envoyant une
 requête sur
-<code>http://yoursite.example.com/DIR/</code>.  Le conteneur <directive
+<code>https://yoursite.example.com/DIR/</code>.  Le conteneur <directive
 type="section" module="core">Directory</directive>, quant à lui, s'appliquera
 à tout contenu servi à partir de cette localisation,
 sans tenir compte de la manière dont il est appelé.
@@ -454,7 +454,7 @@ clients à accéder au site <code>www.example.com</code> en passant par le serve
 mandataire :.</p>
 
 <highlight language="config">
-&lt;Proxy "http://www.example.com/*"&gt;
+&lt;Proxy "https://www.example.com/*"&gt;
     Require host yournetwork.example.com
 &lt;/Proxy&gt;
 </highlight>

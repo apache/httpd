@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -59,7 +59,7 @@
     <dl>
       <dt><em>URL</em></dt>
 
-      <dd><code>http://www.example.com/path/to/file.html</code>
+      <dd><code>https://www.example.com/path/to/file.html</code>
       のように、
       スキーム、ホスト名、パス名(省略可能)を含んでいる完全な
       Uniform Resource Locator。</dd>

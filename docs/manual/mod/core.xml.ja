@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -38,7 +38,7 @@
        有効にするディレクティブです。大前提となる条件は、データが受信されるか
        HTTP リクエスト全体がバッファされるかするまで、カーネルがサーバプロセスに
        ソケットを送らないようになっている、ということです。現在サポートされているのは、
-       <a href="http://www.freebsd.org/cgi/man.cgi?query=accept_filter&amp;sektion=9">
+       <a href="https://www.freebsd.org/cgi/man.cgi?query=accept_filter&amp;sektion=9">
        FreeBSD の Accept Filter</a> と Linux のプリミティブな
        <code>TCP_DEFER_ACCEPT</code> のみです。</p>
 
@@ -51,9 +51,9 @@
     <p><code>httpready</code> Accept Filter は HTTP リクエスト全体を、
        カーネルレベルでバッファリングします。リクエスト全体を受信し終わると、
        その後サーバプロセスにそれを送ります。詳細については <a 
-       href="http://www.freebsd.org/cgi/man.cgi?query=accf_http&amp;sektion=9">accf_http(9)</a> 
+       href="https://www.freebsd.org/cgi/man.cgi?query=accf_http&amp;sektion=9">accf_http(9)</a> 
        を参照してください。HTTPS のリクエストは暗号化されているので <a 
-       href="http://www.freebsd.org/cgi/man.cgi?query=accf_data&amp;sektion=9">accf_data(9)</a>
+       href="https://www.freebsd.org/cgi/man.cgi?query=accf_data&amp;sektion=9">accf_data(9)</a>
        フィルタのみが使用されます。</p>
 
     <p>Linux でのデフォルト値は :</p>
@@ -66,7 +66,7 @@
        サポートしていません。<code>none</code> 以外の値で
        <code>TCP_DEFER_ACCEPT</code> が有効になります。詳細については Linux 
        man ページ <a 
-       href="http://homepages.cwi.nl/~aeb/linux/man2html/man7/tcp.7.html">tcp(7)</a>
+       href="https://homepages.cwi.nl/~aeb/linux/man2html/man7/tcp.7.html">tcp(7)</a>
        を参照してください。</p>
 
     <p>引数に <code>none</code> を指定すると、プロトコルに対する全ての Accept 
@@ -204,7 +204,7 @@
     Apache 内部のデフォルト文字セット <code>iso-8859-1</code> に設定されます。
     その他 <var>charset</var> に指定できる値であれば、どんな値でも使えます。
     指定する値は、MIME メディアタイプとして使われる
-    <a href="http://www.iana.org/assignments/character-sets">IANA 
+    <a href="https://www.iana.org/assignments/character-sets">IANA 
     に登録されている文字セット名</a>のうちの一つにすべきです。
     例えば:</p>
 
@@ -776,7 +776,7 @@ module="core">Directory</directive></seealso>
     </example>
 
     <p>この場合、
-    <code>http://www.my.host.com/index.html</code> へのアクセスがあれば
+    <code>https://www.my.host.com/index.html</code> へのアクセスがあれば
     <code>/usr/web/index.html</code> が返されます。
     <var>directory-path</var> が絶対パスでない場合は、
     <directive module="core">ServerRoot</directive> 
@@ -940,7 +940,7 @@ module="core">Directory</directive></seealso>
     例:</p>
 
     <example>
-      ErrorDocument 500 http://foo.example.com/cgi-bin/tester<br />
+      ErrorDocument 500 https://foo.example.com/cgi-bin/tester<br />
       ErrorDocument 404 /cgi-bin/bad_urls.pl<br />
       ErrorDocument 401 /subscription_info.html<br />
       ErrorDocument 403 "Sorry can't allow you access today"
@@ -983,7 +983,7 @@ module="core">Directory</directive></seealso>
     一般的にはエラーの文書を 512 バイトよりも大きくすると、MSIE は
     サーバが生成したエラーを隠さずに表示します。詳しい情報は Microsoft
     Knowledge Base の記事 <a
-    href="http://support.microsoft.com/default.aspx?scid=kb;en-us;Q294807">Q294807</a>
+    href="https://support.microsoft.com/default.aspx?scid=kb;en-us;Q294807">Q294807</a>
     にあります。</p>
 
     <p>ほとんどのエラーメッセージを上書きすることができますが、特定の状況下では
@@ -1930,7 +1930,7 @@ module="core">Directory</directive></seealso>
 
     <p>全ての (プロキシ以外の) リクエストに対し、
     URL は <code>/path/</code> という、
-    接頭辞 <code>http://servername</code> を含まない形でマッチします。
+    接頭辞 <code>https://servername</code> を含まない形でマッチします。
     プロキシリクエストの場合には、<code>scheme://servername/path</code>
     という接頭辞を含む形でマッチし、接頭辞を含めて指定する必要があります。</p>
 
@@ -2851,7 +2851,7 @@ module="core">Directory</directive></seealso>
       SetHandler imap-file
     </example>
 
-    <p>別の例: URL <code>http://servername/status</code>
+    <p>別の例: URL <code>https://servername/status</code>
     が指定されたときにサーバが状態報告をするようにしたいときは、以下を
     <code>httpd.conf</code> に記述します:</p>
 
@@ -3030,17 +3030,17 @@ module="core">Directory</directive></seealso>
     <p>このような挙動が便利な例は、イントラネットのサーバで <code>www</code>
     のような短い名前でユーザがマシンに接続するときです。
     ユーザの入力で短いホスト名が使われていて、URL が<em>最後のスラッシュ無しの</em>
-    ディレクトリになっている <code>http://www/splat</code> のようなとき、
-    Apache はリクエストを <code>http://www.domain.com/splat/</code> 
+    ディレクトリになっている <code>https://www/splat</code> のようなとき、
+    Apache はリクエストを <code>https://www.domain.com/splat/</code> 
     へリダイレクトします。
     認証をするように設定していると、この場合
     ユーザは 2 回認証をしなければならなくなります (<code>www</code> に
     対して 1 回、<code>www.domain.com</code> に対してもう 1 回 -- 
     詳細は <a 
-    href="http://httpd.apache.org/docs/misc/FAQ.html#prompted-twice">この話題の
+    href="https://httpd.apache.org/docs/misc/FAQ.html#prompted-twice">この話題の
     FAQ</a> を参照してください)。
     しかし <directive>UseCanonicalName</directive> が <code>Off</code> になっていると、
-    Apache は <code>http://www/splat/</code> にリダイレクトします。</p>
+    Apache は <code>https://www/splat/</code> にリダイレクトします。</p>
 
     <p>三つ目のオプション <code>UseCanonicalName DNS</code> は、
     大規模な IP ベースのバーチャルホスティングで、

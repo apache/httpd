@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,14 +22,14 @@
 
 <manualpage metafile="filter.xml.meta">
 
-  <title>ÇÊÅÍ</title>
+  <title>ï¿½ï¿½ï¿½ï¿½</title>
 
   <summary>
-    <p>ÀÌ ¹®¼­´Â ¾ÆÆÄÄ¡¿¡¼­ ÇÊÅÍ¸¦ »ç¿ëÇÏ´Â ¹æ¹ýÀ» ¼³¸íÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
   </summary>
 
   <section id="filters">
-    <title>ÇÊÅÍ</title>
+    <title>ï¿½ï¿½ï¿½ï¿½</title>
     <related>
       <modulelist>
         <module>mod_deflate</module>
@@ -48,37 +48,37 @@
       </directivelist>
     </related>
 
-    <p><em>ÇÊÅÍ(filter)</em>´Â ¼­¹ö°¡ º¸³»°Å³ª ¹Þ´Â ÀÚ·á¿¡
-    Àû¿ëµÇ´Â ÀÛ¾÷ÀÌ´Ù. Å¬¶óÀÌ¾ðÆ®°¡ ¼­¹ö¿¡°Ô º¸³»´Â ÀÚ·á´Â
-    <em>ÀÔ·ÂÇÊÅÍ(input filter)</em>°¡ Ã³¸®ÇÏ°í, ¼­¹ö°¡
-    Å¬¶óÀÌ¾ðÆ®¿¡°Ô º¸³»´Â ÀÚ·á´Â <em>Ãâ·ÂÇÊÅÍ(output filter)</em>°¡
-    Ã³¸®ÇÑ´Ù. ÀÚ·á¿¡ ¿©·¯ ÇÊÅÍ¸¦ »ç¿ëÇÒ ¼ö ÀÖ°í, Á÷Á¢ ÇÊÅÍÀÇ
-    ¼ø¼­¸¦ ÁöÁ¤ÇÒ ¼ö ÀÖ´Ù.</p>
+    <p><em>ï¿½ï¿½ï¿½ï¿½(filter)</em>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Å³ï¿½ ï¿½Þ´ï¿½ ï¿½Ú·á¿¡
+    ï¿½ï¿½ï¿½ï¿½Ç´ï¿½ ï¿½Û¾ï¿½ï¿½Ì´ï¿½. Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ú·ï¿½ï¿½
+    <em>ï¿½Ô·ï¿½ï¿½ï¿½ï¿½ï¿½(input filter)</em>ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ï°ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ú·ï¿½ï¿½ <em>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(output filter)</em>ï¿½ï¿½
+    Ã³ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½Ú·á¿¡ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö°ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <p>¾ÆÆÄÄ¡´Â ÀÌ¾î¹Þ±â(byte-range) ¿äÃ» µîÀ» Ã³¸®ÇÏ±âÀ§ÇØ
-    ³»ºÎÀûÀ¸·Î ÇÊÅÍ¸¦ »ç¿ëÇÑ´Ù. ¶Ç, ¼³Á¤ Áö½Ã¾î¸¦
-    »ç¿ëÇÏ¿© ¼±ÅÃ°¡´ÉÇÑ ÇÊÅÍ¸¦ Á¦°øÇÏ´Â ¸ðµâµµ ÀÖ´Ù.
+    <p>ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Ì¾ï¿½Þ±ï¿½(byte-range) ï¿½ï¿½Ã» ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦
+    ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½Ã°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½âµµ ï¿½Ö´ï¿½.
     <directive module="core">SetInputFilter</directive>,
     <directive module="core">SetOutputFilter</directive>,
     <directive module="mod_mime">AddInputFilter</directive>,
     <directive module="mod_mime">AddOutputFilter</directive>,
     <directive module="mod_mime">RemoveInputFilter</directive>,
     <directive module="mod_mime">RemoveOutputFilter</directive>
-    Áö½Ã¾î·Î ÀÚ·á¸¦ Ã³¸®ÇÏ´Â ÇÊÅÍ¸¦ Á¶ÀýÇÑ´Ù.</p>
+    ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½Ú·á¸¦ Ã³ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <p>ÇöÀç ¾ÆÆÄÄ¡ À¥¼­¹ö ¹èÆ÷º»Àº »ç¿ëÀÚ°¡ ¼±ÅÃÇÒ ¼ö ÀÖ´Â ´ÙÀ½°ú
-    °°Àº ÇÊÅÍ¸¦ Á¦°øÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
     <dl>
       <dt>INCLUDES</dt>
-      <dd><module>mod_include</module>°¡ Ã³¸®ÇÏ´Â Server-Side Includes</dd>
+      <dd><module>mod_include</module>ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ï´ï¿½ Server-Side Includes</dd>
       <dt>DEFLATE</dt>
-      <dd><module>mod_deflate</module>¸¦ »ç¿ëÇÏ¿© Ãâ·ÂÀ»
-          Å¬¶óÀÌ¾ðÆ®·Î º¸³»±â Àü¿¡ ¾ÐÃà
+      <dd><module>mod_deflate</module>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+          Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
       </dd>
     </dl>
 
-    <p>¶Ç, <module>mod_ext_filter</module> ¸ðµâÀ» »ç¿ëÇÏ¿©
-    ¿ÜºÎ ÇÁ·Î±×·¥À» ÇÊÅÍ·Î »ç¿ëÇÒ ¼öµµ ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½, <module>mod_ext_filter</module> ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½
+    ï¿½Üºï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Í·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
   </section>
 </manualpage>

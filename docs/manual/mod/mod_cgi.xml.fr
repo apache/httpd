@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -61,13 +61,13 @@
 <seealso><directive module="mod_mime">AddHandler</directive></seealso>
 <seealso><a href="../suexec.html">Exécuter des programmes CGI sous des
 utilisateurs différents</a></seealso>
-<seealso><a href="http://www.ietf.org/rfc/rfc3875">La spécification
+<seealso><a href="https://www.ietf.org/rfc/rfc3875">La spécification
 CGI</a></seealso>
 
 <section id="env"><title>Les variables d'environnement CGI</title>
     <p>Le serveur va définir les variables d'environnement CGI comme
     décrit dans la <a
-    href="http://www.ietf.org/rfc/rfc3875">Spécification CGI</a>, de la
+    href="https://www.ietf.org/rfc/rfc3875">Spécification CGI</a>, de la
     manière suivante :</p>
 
     <dl>

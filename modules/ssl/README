@@ -9,7 +9,7 @@ SYNOPSIS
  and was originally derived from software developed by Ben Laurie for 
  use in the Apache-SSL HTTP server project.  The mod_ssl implementation 
  for Apache 1.3 continues to be supported by the modssl project 
- <http://www.modssl.org/>.
+ <https://www.modssl.org/>.
 
 SOURCES
 

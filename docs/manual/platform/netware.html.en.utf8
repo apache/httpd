@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -16,12 +16,12 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Platform Specific Notes</a></div><div id="page-content"><div id="preamble"><h1>Using Apache With Novell NetWare</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Platform Specific Notes</a></div><div id="page-content"><div id="preamble"><h1>Using Apache With Novell NetWare</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/platform/netware.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/platform/netware.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
@@ -32,13 +32,13 @@
     <p>This document explains how to install, configure and run
     Apache 2.0 under Novell NetWare 6.0 and above. If you find any bugs,
     or wish to contribute in other ways, please use our
-    <a href="http://httpd.apache.org/bug_report.html">bug reporting
+    <a href="https://httpd.apache.org/bug_report.html">bug reporting
     page.</a></p>
 
     <p>The bug reporting page and dev-httpd mailing list are
     <em>not</em> provided to answer questions about configuration or
     running Apache.  Before you submit a bug report or request, first
-    consult this document, the <a href="http://wiki.apache.org/httpd/FAQ">Frequently Asked
+    consult this document, the <a href="https://wiki.apache.org/httpd/FAQ">Frequently Asked
     Questions</a> page and the other relevant documentation topics. If
     you still have a question or problem, post it to the <a href="news://developer-forums.novell.com/novell.devsup.webserver">
     novell.devsup.webserver</a> newsgroup, where many Apache users are
@@ -68,14 +68,14 @@
     <p>Apache 2.0 is designed to run on NetWare 6.0 service pack 3
     and above. If you are running a service pack less
     than SP3, you must install the latest
-    <a href="http://developer.novell.com/ndk/libc.htm">NetWare Libraries
+    <a href="https://developer.novell.com/ndk/libc.htm">NetWare Libraries
     for C (LibC)</a>.</p>
 
-    <p>NetWare service packs are available <a href="http://support.novell.com/misc/patlst.htm#nw">here</a>.</p>
+    <p>NetWare service packs are available <a href="https://support.novell.com/misc/patlst.htm#nw">here</a>.</p>
 
     <p>Apache 2.0 for NetWare can also be run in a NetWare 5.1 environment
     as long as the latest service pack or the latest version
-    of the <a href="http://developer.novell.com/ndk/libc.htm">NetWare Libraries
+    of the <a href="https://developer.novell.com/ndk/libc.htm">NetWare Libraries
     for C (LibC)</a> has been installed .  <strong>WARNING:</strong> Apache 2.0
     for NetWare has not been targeted for or tested in this environment.</p>
 
@@ -86,12 +86,12 @@
     
 
     <p>Information on the latest version of Apache can be found on
-    the Apache web server at <a href="http://www.apache.org/">http://www.apache.org/</a>. This
+    the Apache web server at <a href="https://www.apache.org/">https://www.apache.org/</a>. This
     will list the current release, any more recent alpha or
     beta-test releases, together with details of mirror web and
     anonymous ftp sites. Binary builds of the latest releases of
     Apache 2.0 for NetWare can be downloaded from
-    <a href="http://www.apache.org/dist/httpd/binaries/netware">here</a>.</p>
+    <a href="https://www.apache.org/dist/httpd/binaries/netware">here</a>.</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -454,23 +454,23 @@
 
       <ul>
         <li>Metrowerks CodeWarrior 6.0 or higher with the
-        <a href="http://developer.novell.com/ndk/cwpdk.htm">NetWare PDK 3.0</a>
+        <a href="https://developer.novell.com/ndk/cwpdk.htm">NetWare PDK 3.0</a>
         or higher.</li>
 
-        <li><a href="http://developer.novell.com/ndk/libc.htm">NetWare Libraries
+        <li><a href="https://developer.novell.com/ndk/libc.htm">NetWare Libraries
         for C (LibC)</a></li>
 
-        <li><a href="http://developer.novell.com/ndk/cldap.htm">LDAP Libraries
+        <li><a href="https://developer.novell.com/ndk/cldap.htm">LDAP Libraries
         for C</a></li>
 
-        <li><a href="http://www.gzip.org/zlib/">ZLIB Compression Library source code</a></li>
+        <li><a href="https://www.gzip.org/zlib/">ZLIB Compression Library source code</a></li>
 
         <li>AWK utility (awk, gawk or similar). AWK can be downloaded from
-        <a href="http://developer.novell.com/ndk/apache.htm">http://developer.novell.com/ndk/apache.htm</a>.
+        <a href="https://developer.novell.com/ndk/apache.htm">https://developer.novell.com/ndk/apache.htm</a>.
         The utility must be found in your windows path and must be named <code>awk.exe</code>.</li>
 
         <li>To build using the makefiles, you will need GNU make version 3.78.1 (GMake) available at
-        <a href="http://developer.novell.com/ndk/apache.htm">http://developer.novell.com/ndk/apache.htm</a>.</li>
+        <a href="https://developer.novell.com/ndk/apache.htm">https://developer.novell.com/ndk/apache.htm</a>.</li>
       </ul>
 
     
@@ -626,7 +626,7 @@
 
       <ul>
           <li>Download the recent OpenSSL 0.9.8 release source code from the
-          <a href="http://www.openssl.org/source/">OpenSSL Source</a>
+          <a href="https://www.openssl.org/source/">OpenSSL Source</a>
           page (older 0.9.7 versions need to be patched and are therefore not
           recommended).</li>
 
@@ -641,7 +641,7 @@
               Netware\build netware-libc
           </code></p></div>
           For performance reasons you should enable to build with ASM code.
-          Download NASM from the <a href="http://nasm.sourceforge.net/">SF site</a>.
+          Download NASM from the <a href="https://nasm.sourceforge.net/">SF site</a>.
           Then configure OpenSSL to use ASM code:
           <div class="example"><p><code>
               Netware\build netware-libc nw-nasm enable-mdc2 enable-md5
@@ -669,7 +669,7 @@
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/platform/netware.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/platform/netware.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -684,8 +684,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/platform/netware.h
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
 <meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -17,92 +17,92 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">¸ðµâ</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">ï¿½ï¿½ï¿½</a></div>
 <div id="page-content">
-<div id="preamble"><h1>¾ÆÆÄÄ¡ ¸ðµâ mod_headers</h1>
+<div id="preamble"><h1>ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ mod_headers</h1>
 <div class="toplang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/mod/mod_headers.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/mod/mod_headers.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_headers.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_headers.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_headers.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">ÀÌ ¹®¼­´Â ÃÖ½ÅÆÇ ¹ø¿ªÀÌ ¾Æ´Õ´Ï´Ù.
-            ÃÖ±Ù¿¡ º¯°æµÈ ³»¿ëÀº ¿µ¾î ¹®¼­¸¦ Âü°íÇÏ¼¼¿ä.</div>
-<table class="module"><tr><th><a href="module-dict.html#Description">¼³¸í:</a></th><td>HTTP ¿äÃ» Çì´õ¿Í ÀÀ´ä Çì´õ ¼öÁ¤</td></tr>
-<tr><th><a href="module-dict.html#Status">»óÅÂ:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">¸ðµâ¸í:</a></th><td>headers_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">¼Ò½ºÆÄÀÏ:</a></th><td>mod_headers.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Áö¿ø:</a></th><td><code class="directive"><a href="#requestheader">RequestHeader</a></code>´Â ¾ÆÆÄÄ¡ 2.0¿¡¸¸
-ÀÖ´Ù</td></tr></table>
-<h3>¿ä¾à</h3>
+<div class="outofdate">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Õ´Ï´ï¿½.
+            ï¿½Ö±Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>HTTP ï¿½ï¿½Ã» ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</td></tr>
+<tr><th><a href="module-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">ï¿½ï¿½ï¿½ï¿½:</a></th><td>headers_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">ï¿½Ò½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>mod_headers.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code class="directive"><a href="#requestheader">RequestHeader</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ 2.0ï¿½ï¿½ï¿½ï¿½
+ï¿½Ö´ï¿½</td></tr></table>
+<h3>ï¿½ï¿½ï¿½</h3>
 
-    <p>ÀÌ ¸ðµâÀº HTTP ¿äÃ» Çì´õ¿Í ÀÀ´ä Çì´õ¸¦ Á¶ÀýÇÏ°í ¼öÁ¤ÇÏ´Â
-    Áö½Ã¾îµéÀ» Á¦°øÇÑ´Ù. Çì´õ¸¦ ÇÕÄ¡°Å³ª ´ëÃ¼, Á¦°ÅÇÒ ¼ö ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ HTTP ï¿½ï¿½Ã» ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½
+    ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½Å³ï¿½ ï¿½ï¿½Ã¼, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 </div>
-<div id="quickview"><h3>ÁÖÁ¦</h3>
+<div id="quickview"><h3>ï¿½ï¿½ï¿½ï¿½</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#order">Ã³¸® ¼ø¼­</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#early">ÀÌ¸¥(early) Ã³¸®¿Í ´ÊÀº(late) Ã³¸®</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#examples">¿¹Á¦</a></li>
-</ul><h3 class="directives">Áö½Ã¾îµé</h3>
+<li><img alt="" src="../images/down.gif" /> <a href="#order">Ã³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#early">ï¿½Ì¸ï¿½(early) Ã³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(late) Ã³ï¿½ï¿½</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#examples">ï¿½ï¿½ï¿½ï¿½</a></li>
+</ul><h3 class="directives">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#header">Header</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#requestheader">RequestHeader</a></li>
 </ul>
-<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_headers">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_headers">Report a bug</a></li></ul><h3>Âü°í</h3>
+<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_headers">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_headers">Report a bug</a></li></ul><h3>ï¿½ï¿½ï¿½ï¿½</h3>
 <ul class="seealso">
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="order" id="order">Ã³¸® ¼ø¼­</a> <a title="Permanent link" href="#order" class="permalink">&para;</a></h2>
+<h2><a name="order" id="order">Ã³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a> <a title="Permanent link" href="#order" class="permalink">&para;</a></h2>
 
-    <p><code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code>°¡ Á¦°øÇÏ´Â Áö½Ã¾î´Â ¼­¹ö¼³Á¤ÀÇ
-    °ÅÀÇ ¸ðµç Àå¼Ò¿¡¼­ »ç¿ëÇÒ ¼ö ÀÖÀ¸¸ç, <a href="../sections.html">¼³Á¤ ¼½¼Ç</a>À¸·Î °¨½Î¼­ Áö½Ã¾îÀÇ
-    ¹üÀ§¸¦ Á¦ÇÑÇÒ ¼öµµ ÀÖ´Ù.</p>
+    <p><code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½Ò¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, <a href="../sections.html">ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î¼ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <p>Ã³¸®¼ø¼­´Â Áß¿äÇÏ¸ç, ¼³Á¤ÆÄÀÏ¿¡ ³ª¿Â ¼ø¼­¿Í <a href="../sections.html#mergin">¼³Á¤ ¼½¼Ç</a>ÀÇ ¿µÇâÀ» ¹Þ´Â´Ù.
-    ´ÙÀ½ µÎ Áö½Ã¾î¸¦ ¹Ý´ë·Î ÀûÀ¸¸é È¿°ú°¡ ´Þ¶óÁø´Ù.</p>
+    <p>Ã³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß¿ï¿½ï¿½Ï¸ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <a href="../sections.html#mergin">ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Þ´Â´ï¿½.
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½Ý´ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¿ï¿½ï¿½ï¿½ï¿½ ï¿½Þ¶ï¿½ï¿½ï¿½ï¿½ï¿½.</p>
 
     <div class="example"><p><code>
       RequestHeader append MirrorID "mirror 12"<br />
       RequestHeader unset MirrorID
     </code></p></div>
 
-    <p>À§¿Í °°ÀÌ ÀûÀ¸¸é <code>MirrorID</code> Çì´õ°¡ ³ª¿ÀÁö
-    ¾Ê´Â´Ù. ¹Ý´ë·Î ÀûÀ¸¸é MirrorID Çì´õ¸¦ "mirror 12"·Î ¼³Á¤ÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>MirrorID</code> ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ê´Â´ï¿½. ï¿½Ý´ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ MirrorID ï¿½ï¿½ï¿½ï¿½ï¿½ "mirror 12"ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="early" id="early">ÀÌ¸¥(early) Ã³¸®¿Í ´ÊÀº(late) Ã³¸®</a> <a title="Permanent link" href="#early" class="permalink">&para;</a></h2>
-    <p><code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code>¸¦ ¿äÃ» ÃÊ±â³ª ³ªÁß¿¡ Àû¿ëÇÒ
-    ¼ö ÀÖ´Ù. º¸ÅëÀº ³»¿ë»ý¼ºÀÚ¸¦ ½ÇÇàÇÏ±â Á÷Àü¿¡ ¿äÃ» Çì´õ¸¦
-    ¼³Á¤ÇÏ°í ÀÀ´äÀ» ³×Æ®¿÷¿¡ ¾µ¶§ ÀÀ´ä Çì´õ¸¦ ¼³Á¤ÇÏ´Â ´ÊÀº(late)
-    ¹æ½ÄÀ» »ç¿ëÇÑ´Ù. ½ÇÁ¦ ¼­ºñ½ºÇÏ´Â ¼­¹ö¿¡¼­´Â Ç×»ó ´À¸° ¹æ½ÄÀ»
-    »ç¿ëÇÏ¶ó.</p>
+<h2><a name="early" id="early">ï¿½Ì¸ï¿½(early) Ã³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(late) Ã³ï¿½ï¿½</a> <a title="Permanent link" href="#early" class="permalink">&para;</a></h2>
+    <p><code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code>ï¿½ï¿½ ï¿½ï¿½Ã» ï¿½Ê±â³ª ï¿½ï¿½ï¿½ß¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã» ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½(late)
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×»ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.</p>
 
-    <p>ÀÌ¸¥(early) ¹æ½ÄÀº °³¹ßÀÚ¸¦ À§ÇØ °Ë»ç/µð¹ö±ë¿ëÀ¸·Î ¸¸µé¾ú´Ù.
-    <code>early</code> Å°¿öµå¸¦ »ç¿ëÇÏ¿© Á¤ÀÇÇÑ Áö½Ã¾î´Â ¿äÃ»À»
-    Ã³¸®ÇÏ±â ½ÃÀÛÇÒ¶§ ¼³Á¤ÇÑ´Ù. Áï, ´Ù¸¥ ¿äÃ»À» ¸ðÀÇ½ÇÇèÇÏ°Å³ª
-    °Ë»ç¸¦ ÇÏ±âÀ§ÇØ »ç¿ëÇÒ ¼ö ÀÖÁö¸¸, ÀÀ´äÀ» »ý¼ºÇÏ±â Àü¿¡ ´Ù¸¥
-    ¸ðµâÀÌ ºÒ½Ã¿¡ Çì´õ¸¦ ¼öÁ¤ÇÒ ¼ö ÀÖ´Ù.</p>
+    <p>ï¿½Ì¸ï¿½(early) ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½/ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
+    <code>early</code> Å°ï¿½ï¿½ï¿½å¸¦ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½
+    Ã³ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½, ï¿½Ù¸ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½Ç½ï¿½ï¿½ï¿½ï¿½Ï°Å³ï¿½
+    ï¿½Ë»ç¸¦ ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ò½Ã¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <p>¿äÃ»°æ·Î¿¡ ´ëÇÑ ¼³Á¤À» »ìÆìº¸±â Àü¿¡ ÀÌ¸¥ Áö½Ã¾î¸¦
-    Ã³¸®ÇÏ±â¶§¹®¿¡ ÀÌ¸¥ Çì´õ Áö½Ã¾î´Â ÁÖ¼­¹öÀÌ³ª °¡»óÈ£½ºÆ®
-    »ç¿ëÀå¼Ò¿¡¼­¸¸ »ç¿ëÇÒ ¼ö ÀÖ´Ù. ÀÌ¸¥ Áö½Ã¾î´Â ¿äÃ»°æ·Î¿¡
-    ÀÇÁ¸ÇÒ ¼ö ¾ø±â¶§¹®¿¡ <code>&lt;Directory&gt;</code>³ª
-    <code>&lt;Location&gt;</code>°°Àº »ç¿ëÀå¼Ò¿¡¼­ »ç¿ëÇÒ ¼ö
-    ¾ø´Ù.</p>
+    <p>ï¿½ï¿½Ã»ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ìº¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦
+    Ã³ï¿½ï¿½ï¿½Ï±â¶§ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½Ì³ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ò¿ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½Î¿ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½â¶§ï¿½ï¿½ï¿½ï¿½ <code>&lt;Directory&gt;</code>ï¿½ï¿½
+    <code>&lt;Location&gt;</code>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ò¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">¿¹Á¦</a> <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
+<h2><a name="examples" id="examples">ï¿½ï¿½ï¿½ï¿½</a> <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
 
     <ol>
       <li>
-        "TS"·Î ½ÃÀÛÇÏ´Â ¸ðµç ¿äÃ» Çì´õ¸¦ ÀÀ´ä Çì´õ·Î º¹»çÇÑ´Ù.
+        "TS"ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½Ã» ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
 
         <div class="example"><p><code>
           Header echo ^TS
@@ -110,16 +110,16 @@
       </li>
 
       <li>
-        ÀÀ´ä¿¡ ¿äÃ»À» ¹ÞÀº ½Ã°£°ú ¿äÃ»À» ¼­ºñ½ºÇÏ´Âµ¥ °É¸± ½Ã°£À»
-        ¾Ë·ÁÁÖ´Â <code>MyHeader</code> Çì´õ¸¦ Ãß°¡ÇÑ´Ù. Å¬¶óÀÌ¾ðÆ®´Â
-        ÀÌ Çì´õ¸¦ º¸°í ¼­¹öÀÇ ºÎÇÏ¸¦ ÃßÁ¤ÇÏ°Å³ª Å¬¶óÀÌ¾ðÆ®¿Í
-        ¼­¹ö°£ÀÇ º´¸ñÁ¡À» Ã£À» ¼ö ÀÖ´Ù.
+        ï¿½ï¿½ï¿½ä¿¡ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´Âµï¿½ ï¿½É¸ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½
+        ï¿½Ë·ï¿½ï¿½Ö´ï¿½ <code>MyHeader</code> ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ñ´ï¿½. Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½
+        ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°Å³ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.
 
         <div class="example"><p><code>
           Header add MyHeader "%D %t"
         </code></p></div>
 
-        <p>ÀÀ´ä¿¡ ´ÙÀ½°ú °°Àº Çì´õ°¡ »ý±ä´Ù.</p>
+        <p>ï¿½ï¿½ï¿½ä¿¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½.</p>
 
         <div class="example"><p><code>
           MyHeader: D=3775428 t=991424704447256
@@ -127,14 +127,14 @@
       </li>
 
       <li>
-        Joe¿¡°Ô ¾È³ç
+        Joeï¿½ï¿½ï¿½ï¿½ ï¿½È³ï¿½
 
         <div class="example"><p><code>
           Header add MyHeader "Hello Joe. It took %D microseconds \<br />
           for Apache to serve this request."
         </code></p></div>
 
-        <p>ÀÀ´ä¿¡ ´ÙÀ½°ú °°Àº Çì´õ°¡ »ý±ä´Ù.</p>
+        <p>ï¿½ï¿½ï¿½ä¿¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½.</p>
 
         <div class="example"><p><code>
           MyHeader: Hello Joe. It took D=3775428 microseconds for Apache
@@ -143,18 +143,18 @@
       </li>
 
       <li>
-        ¿äÃ»¿¡ "MyRequestHeader" Çì´õ°¡ ÀÖ´Â °æ¿ì¿¡¸¸ ¼±ÅÃÀûÀ¸·Î
-        ÀÀ´ä¿¡ <code>MyHeader</code>¸¦ º¸³½´Ù. Æ¯Á¤ Å¬¶óÀÌ¾ðÆ®¿¡°Ô¸¸
-        ÀÀ´ä¿¡ Çì´õ¸¦ Ãß°¡ÇÒ¶§ À¯¿ëÇÏ´Ù. ÀÌ ¿¹Á¦°¡ µ¿ÀÛÇÏ·Á¸é
-        <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code> ¸ðµâÀÌ ÇÊ¿äÇÏ´Ù.
+        ï¿½ï¿½Ã»ï¿½ï¿½ "MyRequestHeader" ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ì¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        ï¿½ï¿½ï¿½ä¿¡ <code>MyHeader</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½. Æ¯ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ï¿½Ô¸ï¿½
+        ï¿½ï¿½ï¿½ä¿¡ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ò¶ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½
+        <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code> ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Ï´ï¿½.
 
         <div class="example"><p><code>
           SetEnvIf MyRequestHeader value HAVE_MyRequestHeader<br />
           Header add MyHeader "%D %t mytext" env=HAVE_MyRequestHeader<br />
        </code></p></div>
 
-       <p>HTTP ¿äÃ»¿¡ <code>MyRequestHeader: value</code> Çì´õ°¡
-       ÀÖ´Ù¸é, ÀÀ´ä¿¡ ´ÙÀ½°ú °°Àº Çì´õ°¡ »ý±ä´Ù.</p>
+       <p>HTTP ï¿½ï¿½Ã»ï¿½ï¿½ <code>MyRequestHeader: value</code> ï¿½ï¿½ï¿½ï¿½ï¿½
+       ï¿½Ö´Ù¸ï¿½, ï¿½ï¿½ï¿½ä¿¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½.</p>
 
        <div class="example"><p><code>
          MyHeader: D=3775428 t=991424704447256 mytext
@@ -163,189 +163,189 @@
     </ol>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Header" id="Header">Header</a> <a name="header" id="header">Áö½Ã¾î</a> <a title="Permanent link" href="#header" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="Header" id="Header">Header</a> <a name="header" id="header">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#header" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>HTTP ÀÀ´ä Çì´õ¸¦ ±¸¼ºÇÑ´Ù</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>Header [<var>condition</var>] set|append|add|unset|echo
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>HTTP ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>Header [<var>condition</var>] set|append|add|unset|echo
 <var>header</var> [<var>value</var>] [early|env=[!]<var>variable</var>]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override ¿É¼Ç:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_headers</td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override ï¿½É¼ï¿½:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_headers</td></tr>
 </table>
-    <p>ÀÌ Áö½Ã¾î´Â HTTP ÀÀ´ä Çì´õ¸¦ ÇÕÄ¡°Å³ª ´ëÃ¼, Á¦°ÅÇÑ´Ù.
-    ³»¿ë ÇÚµé·¯¿Í Ãâ·Â ÇÊÅÍ°¡ ½ÇÇàÇÑ Á÷ÈÄ¿¡ Çì´õ¸¦ ¼öÁ¤ÇÏ±â¶§¹®¿¡
-    º¸³¾ Çì´õ¸¦ ¼öÁ¤ÇÒ ¼ö ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ HTTP ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½Å³ï¿½ ï¿½ï¿½Ã¼, ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+    ï¿½ï¿½ï¿½ï¿½ ï¿½Úµé·¯ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Í°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ä¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±â¶§ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <p><var>condition</var>Àº ¼±ÅÃÀûÀ¸·Î »ç¿ëÇÏ¸ç, °ªÀ¸·Î
-    <code>onsuccess</code> È¤Àº <code>always</code>¸¦ »ç¿ëÇÑ´Ù.
-    ÀÌ´Â ¾î¶² ³»ºÎ Çì´õÇ¥¿¡ µ¿ÀÛÇÒÁö¸¦ °áÁ¤ÇÑ´Ù.
-    <code>onsuccess</code>´Â <code>2<var>xx</var></code> »óÅÂÄÚµå¸¦
-    ¶æÇÏ°í, <code>always</code>´Â (<code>2<var>xx</var></code>¸¦
-    Æ÷ÇÔÇÑ) ¸ðµç »óÅÂÄÚµå¸¦ ¶æÇÑ´Ù. Æ¯È÷ ¾î¶² ¸ðµâÀÌ ¼³Á¤ÇÑ
-    Çì´õ¸¦ ÇØÁ¦ÇÏ°í ½Í´Ù¸é, µÑÁß ¾î¶² °ÍÀ» »ç¿ëÇÒÁö Àß »ìÆìºÁ¾ß
-    ÇÑ´Ù.</p>
+    <p><var>condition</var>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    <code>onsuccess</code> È¤ï¿½ï¿½ <code>always</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+    ï¿½Ì´ï¿½ ï¿½î¶² ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+    <code>onsuccess</code>ï¿½ï¿½ <code>2<var>xx</var></code> ï¿½ï¿½ï¿½ï¿½ï¿½Úµå¸¦
+    ï¿½ï¿½ï¿½Ï°ï¿½, <code>always</code>ï¿½ï¿½ (<code>2<var>xx</var></code>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½) ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Úµå¸¦ ï¿½ï¿½ï¿½Ñ´ï¿½. Æ¯ï¿½ï¿½ ï¿½î¶² ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½Í´Ù¸ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½î¶² ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ñ´ï¿½.</p>
 
-    <p>µÎ¹øÂ° ¾Æ±Ô¸ÕÆ®¿¡ µû¶ó ±â´ÉÀÌ ´Ù¸£´Ù. µÎ¹øÂ° ¾Æ±Ô¸ÕÆ®·Î
-    ¾Æ·¡ °ªÁß ÇÏ³ª¸¦ »ç¿ëÇÒ ¼ö ÀÖ´Ù.</p>
+    <p>ï¿½Î¹ï¿½Â° ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ï¿½ï¿½. ï¿½Î¹ï¿½Â° ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½
+    ï¿½Æ·ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ï³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
     <dl>
     <dt><code>set</code></dt>
-    <dd>ÀÀ´ä Çì´õ¸¦ ¼³Á¤ÇÑ´Ù. °°Àº ÀÌ¸§À¸·Î ÀÌ¹Ì Çì´õ°¡ ÀÖ´Ù¸é
-    ´ëÃ¼ÇÑ´Ù. <var>value</var>¿¡ Çü½Ä¹®ÀÚ¿­À» »ç¿ëÇÒ ¼ö ÀÖ´Ù.</dd>
+    <dd>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ù¸ï¿½
+    ï¿½ï¿½Ã¼ï¿½Ñ´ï¿½. <var>value</var>ï¿½ï¿½ ï¿½ï¿½ï¿½Ä¹ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</dd>
 
     <dt><code>append</code></dt>
-    <dd>ÀÌ¹Ì Á¸ÀçÇÏ´Â °°Àº ÀÌ¸§ÀÇ ÀÀ´ä Çì´õ¿¡ Ãß°¡ÇÑ´Ù. ±âÁ¸
-    Çì´õ¿¡ »õ·Î¿î °ªÀ» ÇÕÄ¡¸é, ±âÁ¸ Çì´õ¿Í »õ·Î¿î °ª »çÀÌ¿¡
-    ½°Ç¥¸¦ ºÙÀÎ´Ù. ÀÌ´Â ¿©·¯ Çì´õ°ªÀ» ÁöÁ¤ÇÏ´Â HTTP Ç¥ÁØ ¹æ½ÄÀÌ´Ù.</dd>
+    <dd>ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¿ï¿½
+    ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½Î´ï¿½. ï¿½Ì´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ HTTP Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ì´ï¿½.</dd>
 
     <dt><code>add</code></dt>
-    <dd>Çì´õ°¡ ÀÌ¹Ì ÀÖ´õ¶óµµ ÀÀ´ä Çì´õ¸¦ Ãß°¡ÇÑ´Ù. ±×·¡¼­ °°Àº
-    ÀÌ¸§ÀÇ Çì´õ°¡ µÎ°³ (È¤Àº ¸¹ÀÌ) »ý±æ ¼ö ÀÖ´Ù. ÀÌ °æ¿ì ÀÇ¿ÜÀÇ
-    °á°ú°¡ ¹ß»ýÇÒ ¼ö ÀÖ±â¶§¹®¿¡ º¸Åë ´ë½Å <code>append</code>¸¦
-    »ç¿ëÇØ¾ß ÇÑ´Ù.</dd>
+    <dd>ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ñ´ï¿½. ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î°ï¿½ (È¤ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½) ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ç¿ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß»ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö±â¶§ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ <code>append</code>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½.</dd>
 
     <dt><code>unset</code></dt>
-    <dd>ÀÌ·± ÀÌ¸§ÀÇ ÀÀ´ä Çì´õ°¡ ÀÖ´Ù¸é »èÁ¦ÇÑ´Ù. °°Àº ÀÌ¸§À»
-    °¡Áø Çì´õ°¡ ¿©·¯°³ ÀÖ´Ù¸é ¸ðµÎ Á¦°ÅÇÑ´Ù. <var>value</var>´Â
-    ÀûÁö ¾Ê´Â´Ù.</dd>
+    <dd>ï¿½Ì·ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ù¸ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <var>value</var>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.</dd>
 
     <dt><code>echo</code></dt>
-    <dd>ÀÌ·± ÀÌ¸§ÀÇ ¿äÃ» Çì´õ¸¦ ±×´ë·Î ÀÀ´ä Çì´õ·Î º¸³½´Ù.
-    <var>header</var>¿¡ Á¤±ÔÇ¥Çö½ÄÀ» »ç¿ëÇÒ ¼ö ÀÖ´Ù.
-    <var>value</var>´Â ÀûÁö ¾Ê´Â´Ù.</dd>
+    <dd>ï¿½Ì·ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½Ã» ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×´ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
+    <var>header</var>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.
+    <var>value</var>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.</dd>
     </dl>
 
-    <p>¾Æ±Ô¸ÕÆ® µÚ¿¡ <var>header</var> ÀÌ¸§ÀÌ ³ª¿Â´Ù. Çì´õ¸í
-    µÚ¿¡ ÄÝ·ÐÀ» ÀûÀ» ¼ö ÀÖÁö¸¸, ¾ø¾îµµ µÈ´Ù. <code>set</code>,
-    <code>append</code>, <code>add</code>, <code>unset</code>¿¡¼­
-    ´ë¼Ò¹®ÀÚ´Â ¹«½ÃÇÑ´Ù. <code>echo</code>ÀÇ <var>header</var>
-    ÀÌ¸§Àº ´ë¼ö¹®ÀÚ¸¦ ±¸º°ÇÏ°í Á¤±ÔÇ¥Çö½ÄÀ» »ç¿ëÇÒ ¼ö ÀÖ´Ù.</p>
+    <p>ï¿½Æ±Ô¸ï¿½Æ® ï¿½Ú¿ï¿½ <var>header</var> ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ú¿ï¿½ ï¿½Ý·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½îµµ ï¿½È´ï¿½. <code>set</code>,
+    <code>append</code>, <code>add</code>, <code>unset</code>ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½Ò¹ï¿½ï¿½Ú´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <code>echo</code>ï¿½ï¿½ <var>header</var>
+    ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <p><code>add</code>, <code>append</code>, <code>set</code>À»
-    »ç¿ëÇÒ¶§´Â ¼¼¹øÂ° ¾Æ±Ô¸ÕÆ® <var>value</var>°¡ ÇÊ¿äÇÏ´Ù.
-    <var>value</var> ¾È¿¡ °ø¹éÀÌ ÀÖ´Ù¸é ½Öµû¿ÈÇ¥·Î ¹­¾î¾ß ÇÑ´Ù.
-    <var>value</var>´Â ÀÏ¹Ý ¹®ÀÚ¿­ÀÌ³ª Çü½ÄÀ» ±â¼úÇÏ´Â ¹®ÀÚ¿­ÀÌ¸ç,
-    µÎ°¡Áö¸¦ °°ÀÌ »ç¿ëÇÒ ¼öµµ ÀÖ´Ù. <var>value</var>¿¡¼­ Áö¿øÇÏ´Â
-    Çü½Ä±â¼úÀÚ´Â ´ÙÀ½°ú °°´Ù.</p>
+    <p><code>add</code>, <code>append</code>, <code>set</code>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Â° ï¿½Æ±Ô¸ï¿½Æ® <var>value</var>ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Ï´ï¿½.
+    <var>value</var> ï¿½È¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ù¸ï¿½ ï¿½Öµï¿½ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½.
+    <var>value</var>ï¿½ï¿½ ï¿½Ï¹ï¿½ ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½Ì³ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½Ì¸ï¿½,
+    ï¿½Î°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½. <var>value</var>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½
+    ï¿½ï¿½ï¿½Ä±ï¿½ï¿½ï¿½Ú´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</p>
 
-    <table class="bordered"><tr class="header"><th>Çü½Ä</th><th>¼³¸í</th></tr>
+    <table class="bordered"><tr class="header"><th>ï¿½ï¿½ï¿½ï¿½</th><th>ï¿½ï¿½ï¿½ï¿½</th></tr>
 <tr><td><code>%%</code></td>
-        <td>ÆÛ¼¾Æ® ±âÈ£</td></tr>
+        <td>ï¿½Û¼ï¿½Æ® ï¿½ï¿½È£</td></tr>
 <tr class="odd"><td><code>%t</code></td>
-        <td>¿äÃ»À» ¹ÞÀº ½Ã°£À» ±¹Á¦Ç¥ÁØ½Ã·Î epoch (1970³â 1¿ù
-        1ÀÏ) ÀÌÈÄ Áö³­ ¸¶ÀÌÅ©·ÎÃÊ ´ÜÀ§·Î. °ª ¾Õ¿¡ <code>t=</code>ÀÌ
-        ºÙ´Â´Ù.</td></tr>
+        <td>ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¥ï¿½Ø½Ã·ï¿½ epoch (1970ï¿½ï¿½ 1ï¿½ï¿½
+        1ï¿½ï¿½) ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Å©ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ ï¿½Õ¿ï¿½ <code>t=</code>ï¿½ï¿½
+        ï¿½Ù´Â´ï¿½.</td></tr>
 <tr><td><code>%D</code></td>
-        <td>¿äÃ»À» ¹ÞÀº ½Ã°£ºÎÅÍ Çì´õ¸¦ ³×Æ®¿÷¿¡ ¾µ¶§±îÁö °É¸°
-        ½Ã°£. ¿äÃ»ÀÇ ±â°£À» Àé´Ù. °ª ¾Õ¿¡ <code>D=</code>ÀÌ
-        ºÙ´Â´Ù.</td></tr>
+        <td>ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½É¸ï¿½
+        ï¿½Ã°ï¿½. ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½â°£ï¿½ï¿½ ï¿½ï¿½ï¿½. ï¿½ï¿½ ï¿½Õ¿ï¿½ <code>D=</code>ï¿½ï¿½
+        ï¿½Ù´Â´ï¿½.</td></tr>
 <tr class="odd"><td><code>%{FOOBAR}e</code></td>
-        <td><a href="../env.html">È¯°æº¯¼ö</a> <code>FOOBAR</code>ÀÇ
-        ³»¿ë.</td></tr>
+        <td><a href="../env.html">È¯ï¿½æº¯ï¿½ï¿½</a> <code>FOOBAR</code>ï¿½ï¿½
+        ï¿½ï¿½ï¿½ï¿½.</td></tr>
 <tr><td><code>%{FOOBAR}s</code></td>
-        <td><code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>ÀÌ µ¿ÀÛÇÑ´Ù¸é, <a href="mod_ssl.html#envvars">SSL È¯°æº¯¼ö</a>
-        <code>FOOBAR</code>ÀÇ ³»¿ë.</td></tr>
+        <td><code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½, <a href="mod_ssl.html#envvars">SSL È¯ï¿½æº¯ï¿½ï¿½</a>
+        <code>FOOBAR</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</td></tr>
 </table>
 
-    <div class="note"><h3>ÁÖÀÇ</h3>
-      <p><code>%s</code> Çü½Ä Áö½ÃÀÚ´Â ¾ÆÆÄÄ¡ 2.1 ÀÌÈÄ¿¡¸¸ ÀÖ´Ù.
-      ÀÌ Áö½ÃÀÚ´Â <code>SSLOptions +StdEnvVars</code>¸¦ »ç¿ëÇÏ´Â
-      ºÎ´ãÀ» ´ú±âÀ§ÇØ <code>%e</code> ´ë½Å »ç¿ëÇÒ ¼ö ÀÖ´Ù. ¾î¶²
-      ÀÌÀ¯¿¡¼­°Ç <code>SSLOptions +StdEnvVars</code>¸¦ »ç¿ëÇØ¾ß
-      ÇÑ´Ù¸é, <code>%e</code>´Â <code>%s</code> º¸´Ù ÈÎ¾À ´õ
-      È¿À²ÀûÀÌ´Ù.</p>
+    <div class="note"><h3>ï¿½ï¿½ï¿½ï¿½</h3>
+      <p><code>%s</code> ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ 2.1 ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½.
+      ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ <code>SSLOptions +StdEnvVars</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½
+      ï¿½Î´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>%e</code> ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½î¶²
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>SSLOptions +StdEnvVars</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½
+      ï¿½Ñ´Ù¸ï¿½, <code>%e</code>ï¿½ï¿½ <code>%s</code> ï¿½ï¿½ï¿½ï¿½ ï¿½Î¾ï¿½ ï¿½ï¿½
+      È¿ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½.</p>
     </div> 
 
-    <p><code class="directive">Header</code> Áö½Ã¾î µÚ¿¡ Çàµ¿ÀÌ ÀÏ¾î³¯
-    Á¶°ÇÀ» Áö½ÃÇÏ´Â Ãß°¡ ¾Æ±Ô¸ÕÆ®³ª <a href="#early">ÀÌ¸¥ Ã³¸®</a>¸¦
-    ¶æÇÏ´Â Å°¿öµå <code>early</code>°¡ ³ª¿Ã ¼ö ÀÖ´Ù.
-    <code>env=<var>...</var></code> ¾Æ±Ô¸ÕÆ®¸¦ »ç¿ëÇÑ °æ¿ì ÇØ´ç
-    <a href="../env.html">È¯°æº¯¼ö</a>°¡ Á¸ÀçÇÑ´Ù¸é (È¤Àº
-    <code>env=!<var>...</var></code>¿¡ ³ª¿Â È¯°æº¯¼ö°¡ Á¸ÀçÇÏÁö
-    ¾Ê´Ù¸é) <code class="directive">Header</code> Áö½Ã¾î°¡ µ¿ÀÛÇÑ´Ù.
-    ±×·¸Áö ¾ÊÀ¸¸é Áö½Ã¾î´Â ¿äÃ»¿¡ ¾Æ¹« ¿µÇâÀ» ¹ÌÄ¡Áö ¾Ê´Â´Ù.</p>
+    <p><code class="directive">Header</code> ï¿½ï¿½ï¿½Ã¾ï¿½ ï¿½Ú¿ï¿½ ï¿½àµ¿ï¿½ï¿½ ï¿½Ï¾î³¯
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ß°ï¿½ ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ <a href="#early">ï¿½Ì¸ï¿½ Ã³ï¿½ï¿½</a>ï¿½ï¿½
+    ï¿½ï¿½ï¿½Ï´ï¿½ Å°ï¿½ï¿½ï¿½ï¿½ <code>early</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.
+    <code>env=<var>...</var></code> ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ø´ï¿½
+    <a href="../env.html">È¯ï¿½æº¯ï¿½ï¿½</a>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½ (È¤ï¿½ï¿½
+    <code>env=!<var>...</var></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ê´Ù¸ï¿½) <code class="directive">Header</code> ï¿½ï¿½ï¿½Ã¾î°¡ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+    ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½Æ¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Ê´Â´ï¿½.</p>
 
-    <p><a href="#early">ÀÌ¸¥</a> ¹æ½ÄÀÌ ¾Æ´Ï¶ó¸é ÀÀ´äÀ» ³×Æ®¿÷À¸·Î
-    º¸³»±â Á÷Àü¿¡ <code class="directive">Header</code> Áö½Ã¾î¸¦ Ã³¸®ÇÑ´Ù.
-    ±×·¡¼­ Çì´õ ÇÊÅÍ°¡ Ãß°¡ÇÏ´Â Çì´õ¸¦ Á¦¿ÜÇÑ ´ëºÎºÐÀÇ Çì´õ¸¦
-    ¼³Á¤ÇÏ°Å³ª µ¤¾î¾µ ¼ö ÀÖ´Ù.</p>
+    <p><a href="#early">ï¿½Ì¸ï¿½</a> ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Ï¶ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code class="directive">Header</code> ï¿½ï¿½ï¿½Ã¾î¸¦ Ã³ï¿½ï¿½ï¿½Ñ´ï¿½.
+    ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Í°ï¿½ ï¿½ß°ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Îºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï°Å³ï¿½ ï¿½ï¿½ï¿½î¾µ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RequestHeader" id="RequestHeader">RequestHeader</a> <a name="requestheader" id="requestheader">Áö½Ã¾î</a> <a title="Permanent link" href="#requestheader" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="RequestHeader" id="RequestHeader">RequestHeader</a> <a name="requestheader" id="requestheader">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#requestheader" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>HTTP ¿äÃ» Çì´õ¸¦ ±¸¼ºÇÑ´Ù</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>RequestHeader set|append|add|unset <var>header</var>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>HTTP ï¿½ï¿½Ã» ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>RequestHeader set|append|add|unset <var>header</var>
 [<var>value</var>] [early|env=[!]<var>variable</var>]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override ¿É¼Ç:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_headers</td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override ï¿½É¼ï¿½:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_headers</td></tr>
 </table>
-    <p>ÀÌ Áö½Ã¾î´Â HTTP ¿äÃ» Çì´õ¸¦ ÇÕÄ¡°Å³ª ´ëÃ¼, Á¦°ÅÇÑ´Ù.
-    ³»¿ë ÇÚµé·¯°¡ ½ÇÇàÇÏ±â Á÷Àü¿¡ Çì´õ¸¦ ¼öÁ¤ÇÏ±â¶§¹®¿¡ ¹ÞÀº
-    Çì´õ¸¦ ¼öÁ¤ÇÒ ¼ö ÀÖ´Ù. Ã¹¹øÂ° ¾Æ±Ô¸ÕÆ®¿¡ µû¶ó ±â´ÉÀÌ ´Ù¸£´Ù.
-    Ã¹¹øÂ° ¾Æ±Ô¸ÕÆ®·Î ¾Æ·¡ °ªÁß ÇÏ³ª¸¦ »ç¿ëÇÒ ¼ö ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ HTTP ï¿½ï¿½Ã» ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½Å³ï¿½ ï¿½ï¿½Ã¼, ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+    ï¿½ï¿½ï¿½ï¿½ ï¿½Úµé·¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±â¶§ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. Ã¹ï¿½ï¿½Â° ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ï¿½ï¿½.
+    Ã¹ï¿½ï¿½Â° ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ ï¿½Æ·ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ï³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
     <dl>
     <dt><code>set</code></dt>
-    <dd>¿äÃ» Çì´õ¸¦ ¼³Á¤ÇÑ´Ù. °°Àº ÀÌ¸§À¸·Î ÀÌ¹Ì Çì´õ°¡ ÀÖ´Ù¸é
-    ´ëÃ¼ÇÑ´Ù</dd>
+    <dd>ï¿½ï¿½Ã» ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ù¸ï¿½
+    ï¿½ï¿½Ã¼ï¿½Ñ´ï¿½</dd>
 
     <dt><code>append</code></dt>
-    <dd>ÀÌ¹Ì Á¸ÀçÇÏ´Â °°Àº ÀÌ¸§ÀÇ ¿äÃ» Çì´õ¿¡ Ãß°¡ÇÑ´Ù. ±âÁ¸
-    Çì´õ¿¡ »õ·Î¿î °ªÀ» ÇÕÄ¡¸é, ±âÁ¸ Çì´õ¿Í »õ·Î¿î °ª »çÀÌ¿¡
-    ½°Ç¥¸¦ ºÙÀÎ´Ù. ÀÌ´Â ¿©·¯ Çì´õ°ªÀ» ÁöÁ¤ÇÏ´Â HTTP Ç¥ÁØ ¹æ½ÄÀÌ´Ù.</dd>
+    <dd>ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½Ã» ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¿ï¿½
+    ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½Î´ï¿½. ï¿½Ì´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ HTTP Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ì´ï¿½.</dd>
 
     <dt><code>add</code></dt>
-    <dd>Çì´õ°¡ ÀÌ¹Ì ÀÖ´õ¶óµµ ¿äÃ» Çì´õ¸¦ Ãß°¡ÇÑ´Ù. ±×·¡¼­ °°Àº
-    ÀÌ¸§ÀÇ Çì´õ°¡ µÎ°³ (È¤Àº ¸¹ÀÌ) »ý±æ ¼ö ÀÖ´Ù. ÀÌ °æ¿ì ÀÇ¿ÜÀÇ
-    °á°ú°¡ ¹ß»ýÇÒ ¼ö ÀÖ±â¶§¹®¿¡ º¸Åë ´ë½Å <code>append</code>¸¦
-    »ç¿ëÇØ¾ß ÇÑ´Ù.</dd>
+    <dd>ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ ï¿½ï¿½Ã» ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ñ´ï¿½. ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î°ï¿½ (È¤ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½) ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ç¿ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß»ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö±â¶§ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ <code>append</code>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½.</dd>
 
     <dt><code>unset</code></dt>
-    <dd>ÀÌ·± ÀÌ¸§ÀÇ ¿äÃ» Çì´õ°¡ ÀÖ´Ù¸é »èÁ¦ÇÑ´Ù. °°Àº ÀÌ¸§À»
-    °¡Áø Çì´õ°¡ ¿©·¯°³ ÀÖ´Ù¸é ¸ðµÎ Á¦°ÅÇÑ´Ù. <var>value</var>´Â
-    ÀûÁö ¾Ê´Â´Ù.</dd>
+    <dd>ï¿½Ì·ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½Ã» ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ù¸ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <var>value</var>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.</dd>
     </dl>
 
-    <p>¾Æ±Ô¸ÕÆ® µÚ¿¡ Çì´õ¸íÀÌ ³ª¿Â´Ù. Çì´õ¸í µÚ¿¡ ÄÝ·ÐÀ» ÀûÀ»
-    ¼ö ÀÖÁö¸¸, ¾ø¾îµµ µÈ´Ù. ´ë¼Ò¹®ÀÚ´Â ¹«½ÃÇÑ´Ù. <code>add</code>,
-    <code>append</code>, <code>set</code>À» »ç¿ëÇÒ¶§´Â ¼¼¹øÂ°
-    ¾Æ±Ô¸ÕÆ® <var>value</var>°¡ ÇÊ¿äÇÏ´Ù. <var>value</var> ¾È¿¡
-    °ø¹éÀÌ ÀÖ´Ù¸é ½Öµû¿ÈÇ¥·Î ¹­¾î¾ß ÇÑ´Ù. unsetÀ» »ç¿ëÇÒ¶§´Â
-    <var>value</var>¸¦ ÀûÀ¸¸é ¾ÈµÈ´Ù. <var>value</var>´Â ÀÏ¹Ý
-    ¹®ÀÚ¿­ÀÌ³ª Çü½ÄÀ» ±â¼úÇÏ´Â ¹®ÀÚ¿­ÀÌ¸ç, µÎ°¡Áö¸¦ °°ÀÌ »ç¿ëÇÒ
-    ¼öµµ ÀÖ´Ù. Áö¿øÇÏ´Â Çü½Ä±â¼úÀÚ´Â <code class="directive"><a href="#header">Header</a></code>¿Í °°À¸¹Ç·Î ÀÚ¼¼ÇÑ
-    ³»¿ëÀº ±×°÷À» Âü°íÇÏ¶ó.</p>
+    <p>ï¿½Æ±Ô¸ï¿½Æ® ï¿½Ú¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ú¿ï¿½ ï¿½Ý·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½îµµ ï¿½È´ï¿½. ï¿½ï¿½Ò¹ï¿½ï¿½Ú´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <code>add</code>,
+    <code>append</code>, <code>set</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Â°
+    ï¿½Æ±Ô¸ï¿½Æ® <var>value</var>ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Ï´ï¿½. <var>value</var> ï¿½È¿ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ù¸ï¿½ ï¿½Öµï¿½ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½. unsetï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ï¿½ï¿½
+    <var>value</var>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ÈµÈ´ï¿½. <var>value</var>ï¿½ï¿½ ï¿½Ï¹ï¿½
+    ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½Ì³ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½Ì¸ï¿½, ï¿½Î°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½Ä±ï¿½ï¿½ï¿½Ú´ï¿½ <code class="directive"><a href="#header">Header</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ ï¿½Ú¼ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.</p>
 
-    <p><code class="directive">RequestHeader</code> Áö½Ã¾î µÚ¿¡ Çàµ¿ÀÌ
-    ÀÏ¾î³¯ Á¶°ÇÀ» Áö½ÃÇÏ´Â Ãß°¡ ¾Æ±Ô¸ÕÆ®³ª <a href="#early">ÀÌ¸¥ Ã³¸®</a>¸¦ ¶æÇÏ´Â Å°¿öµå
-    <code>early</code>°¡ ³ª¿Ã ¼ö ÀÖ´Ù. <code>env=<var>...</var></code>
-    ¾Æ±Ô¸ÕÆ®¸¦ »ç¿ëÇÑ °æ¿ì ÇØ´ç <a href="../env.html">È¯°æº¯¼ö</a>°¡
-    Á¸ÀçÇÑ´Ù¸é (È¤Àº <code>env=!<var>...</var></code>¿¡ ³ª¿Â
-    È¯°æº¯¼ö°¡ Á¸ÀçÇÏÁö ¾Ê´Ù¸é) <code class="directive">RequestHeader</code>
-    Áö½Ã¾î°¡ µ¿ÀÛÇÑ´Ù. ±×·¸Áö ¾ÊÀ¸¸é Áö½Ã¾î´Â ¿äÃ»¿¡ ¾Æ¹« ¿µÇâÀ»
-    ¹ÌÄ¡Áö ¾Ê´Â´Ù.</p>
+    <p><code class="directive">RequestHeader</code> ï¿½ï¿½ï¿½Ã¾ï¿½ ï¿½Ú¿ï¿½ ï¿½àµ¿ï¿½ï¿½
+    ï¿½Ï¾î³¯ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ß°ï¿½ ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ <a href="#early">ï¿½Ì¸ï¿½ Ã³ï¿½ï¿½</a>ï¿½ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½ Å°ï¿½ï¿½ï¿½ï¿½
+    <code>early</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. <code>env=<var>...</var></code>
+    ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ø´ï¿½ <a href="../env.html">È¯ï¿½æº¯ï¿½ï¿½</a>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½ (È¤ï¿½ï¿½ <code>env=!<var>...</var></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Ù¸ï¿½) <code class="directive">RequestHeader</code>
+    ï¿½ï¿½ï¿½Ã¾î°¡ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½Æ¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Ê´Â´ï¿½.</p>
 
-    <p><a href="#early">ÀÌ¸¥</a> ¹æ½ÄÀÌ ¾Æ´Ï¶ó¸é fixup ´Ü°è¿¡¼­
-    ¿äÃ»¿¡ ÇØ´çÇÏ´Â ÇÚµé·¯¸¦ ½ÇÇàÇÏ±â Á÷Àü¿¡
-    <code class="directive">RequestHeader</code> Áö½Ã¾î¸¦ Ã³¸®ÇÑ´Ù.
-    ±×·¡¼­ ºê¶ó¿ìÀú¿¡ µû¶ó È¤Àº ¾ÆÆÄÄ¡ ÀÔ·ÂÇÊÅÍ°¡ Çì´õ¸¦ µ¤¾î¾²°Å³ª
-    ¼öÁ¤ÇÒ ¼ö ÀÖ´Ù.</p>
+    <p><a href="#early">ï¿½Ì¸ï¿½</a> ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Ï¶ï¿½ï¿½ fixup ï¿½Ü°è¿¡ï¿½ï¿½
+    ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½Ø´ï¿½ï¿½Ï´ï¿½ ï¿½Úµé·¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    <code class="directive">RequestHeader</code> ï¿½ï¿½ï¿½Ã¾î¸¦ Ã³ï¿½ï¿½ï¿½Ñ´ï¿½.
+    ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È¤ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½Ô·ï¿½ï¿½ï¿½ï¿½Í°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½î¾²ï¿½Å³ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
 </div>
 </div>
 <div class="bottomlang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/mod/mod_headers.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/mod/mod_headers.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_headers.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_headers.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_headers.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_headers.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/mod/mod_headers.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -360,8 +360,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_headers.ht
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

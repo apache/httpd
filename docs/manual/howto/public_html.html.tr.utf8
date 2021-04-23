@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -16,12 +16,12 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="http://wiki.apache.org/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p>
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://wiki.apache.org/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p>
 <p class="apache">Apache HTTP Sunucusu Sürüm 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.5</a> &gt; <a href="./">Nasıllar ve Öğreticiler</a></div><div id="page-content"><div id="preamble"><h1>Kullanıcı Dizinleri (public_html)</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.5</a> &gt; <a href="./">Nasıllar ve Öğreticiler</a></div><div id="page-content"><div id="preamble"><h1>Kullanıcı Dizinleri (public_html)</h1>
 <div class="toplang">
 <p><span>Mevcut Diller: </span><a href="../en/howto/public_html.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/howto/public_html.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
@@ -34,7 +34,7 @@
 
   <p>Çok kullanıcılı sistemlerde, <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> yönergesi ile her kullanıcının kendi ev dizininde
     bir sitesi olması sağlanabilir.
-    <code>http://example.com/~kullanıcı/</code> adresinin ziyaretçileri
+    <code>https://example.com/~kullanıcı/</code> adresinin ziyaretçileri
     "kullanıcı" isimli kullanıcının ev dizininin içeriğini değil, <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> yönergesinde belirtilen alt
     dizinin içeriğini görürler.</p>
 
@@ -81,7 +81,7 @@
       UserDir public_html
     </code></p></div>
 
-    <p><code>http://example.com/~orhan/dosya.html</code> adresine karşılık
+    <p><code>https://example.com/~orhan/dosya.html</code> adresine karşılık
       gelen dosya yolu <code>/home/orhan/public_html/dosya.html</code> olarak
       çözümlenir.</p>
 
@@ -94,7 +94,7 @@
       UserDir /var/html
     </code></p></div>
 
-    <p><code>http://example.com/~orhan/dosya.html</code> adresine karşılık
+    <p><code>https://example.com/~orhan/dosya.html</code> adresine karşılık
       gelen dosya yolu <code>/var/html/orhan/dosya.html</code> olarak
       çözümlenir.</p>
 
@@ -106,7 +106,7 @@
       UserDir /var/siteler/*/sayfam
     </code></p></div>
 
-    <p><code>http://example.com/~orhan/dosya.html</code> adresine karşılık
+    <p><code>https://example.com/~orhan/dosya.html</code> adresine karşılık
       gelen dosya yolu <code>/var/siteler/orhan/sayfam/dosya.html</code>
       olarak çözümlenir.</p>
 
@@ -116,7 +116,7 @@
       UserDir public_html /var/siteler
     </code></p></div>
 
-    <p><code>http://example.com/~orhan/dosya.html</code> adresini Apache önce
+    <p><code>https://example.com/~orhan/dosya.html</code> adresini Apache önce
       <code>/home/orhan/public_html/dosya.html</code> olarak arayacak,
       bulamazsa <code>/var/siteler/orhan/sayfam/dosya.html</code> olarak
       arayacak, bulduğunda istenen dosyayı sunacaktır.</p>
@@ -130,11 +130,11 @@
       kullanılabilir.</p>
 
     <div class="example"><p><code>
-      UserDir http://example.org/users/*/
+      UserDir https://example.org/users/*/
     </code></p></div>
 
-    <p>Bu yapılandırmaya göre <code>http://example.com/~bob/abc.html</code>
-    için yapılan bir istek <code>http://example.org/users/bob/abc.html</code>
+    <p>Bu yapılandırmaya göre <code>https://example.com/~bob/abc.html</code>
+    için yapılan bir istek <code>https://example.org/users/bob/abc.html</code>
     adresine yönlendirilecektir.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -185,7 +185,7 @@
       yüklenebilir:</p>
 
     <div class="example"><p><code>
-      http://example.com/~orhan/cgi-bin/mesela.cgi
+      https://example.com/~orhan/cgi-bin/mesela.cgi
     </code></p></div>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -213,7 +213,7 @@
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Yorum</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/howto/public_html.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/howto/public_html.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -228,8 +228,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/howto/public_html.
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="http://wiki.apache.org/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://wiki.apache.org/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

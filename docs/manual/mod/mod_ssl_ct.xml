@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -37,8 +37,8 @@ conjunction with <module>mod_ssl</module> and command-line tools from the
 open source project.  The goal of Certificate Transparency is to expose the
 use of server certificates which are trusted by browsers but were mistakenly
 or maliciously issued.  More information about Certificate Transparency is
-available at <a href="http://www.certificate-transparency.org/">
-http://www.certificate-transparency.org/</a>.  Key terminology used in
+available at <a href="https://www.certificate-transparency.org/">
+https://www.certificate-transparency.org/</a>.  Key terminology used in
 this documentation:</p>
 
 <dl>

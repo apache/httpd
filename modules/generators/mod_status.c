@@ -5,7 +5,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,7 +26,7 @@
  * You may want to protect this location by password or domain so no one
  * else can look at it.  Then you can access the statistics with a URL like:
  *
- * http://your_server_name/server-status
+ * https://your_server_name/server-status
  *
  * /server-status - Returns page using tables
  * /server-status?notable - Returns page for browsers without table support

@@ -12,7 +12,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -42,10 +42,10 @@ HTTP Server 2.4, by exploring an example module called
 <code>mod_example</code>. In the first part of this document, the purpose
 of this module will be to calculate and print out various digest values for
 existing files on your web server, whenever we access the URL <code>
-http://hostname/filename.sum</code>. For instance, if we want to know the
+https://hostname/filename.sum</code>. For instance, if we want to know the
 MD5 digest value of the file located at <code>
-http://www.example.com/index.html</code>, we would visit <code>
-http://www.example.com/index.html.sum</code>.
+https://www.example.com/index.html</code>, we would visit <code>
+https://www.example.com/index.html.sum</code>.
 </p>
 
 <p>
@@ -296,7 +296,7 @@ static int example_handler(request_rec *r)
 <p>
 Now, we put all we have learned together and end up with a program that
 looks like
-<a href="http://people.apache.org/~humbedooh/mods/examples/mod_example_1.c">mod_example_1.c</a>
+<a href="https://people.apache.org/~humbedooh/mods/examples/mod_example_1.c">mod_example_1.c</a>
 . The functions used in this example will be explained later in the section
 <a href= "#functions">&quot;Some useful functions you should know&quot;</a>.
 </p>
@@ -324,8 +324,8 @@ request_rec </code> structure are:
 </ul>
 <p>
 A complete list of all the values contained within the <code>request_rec</code> structure can be found in
-the <a href="http://svn.apache.org/repos/asf/httpd/httpd/trunk/include/httpd.h"><code>httpd.h</code></a> header
-file or at <a href="http://ci.apache.org/projects/httpd/trunk/doxygen/structrequest__rec.html">http://ci.apache.org/projects/httpd/trunk/doxygen/structrequest__rec.html</a>.
+the <a href="https://svn.apache.org/repos/asf/httpd/httpd/trunk/include/httpd.h"><code>httpd.h</code></a> header
+file or at <a href="https://ci.apache.org/projects/httpd/trunk/doxygen/structrequest__rec.html">https://ci.apache.org/projects/httpd/trunk/doxygen/structrequest__rec.html</a>.
 </p>
 
 
@@ -418,7 +418,7 @@ the next, without informing other handlers.
 <li>
     <code>ap_rputs(const char *string, request_rec *r)</code>: <br/>
     Sends a string of text to the client. This is a shorthand version of <a
-    href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__PROTO.html#gac827cd0537d2b6213a7c06d7c26cc36e">
+    href="https://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__PROTO.html#gac827cd0537d2b6213a7c06d7c26cc36e">
     ap_rwrite</a>.
 
 
@@ -430,7 +430,7 @@ the next, without informing other handlers.
 </li>
 <li>
     <code>
-    <a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__PROTO.html#ga5e91eb6ca777c9a427b2e82bf1eeb81d">ap_rprintf</a></code>: <br/>
+    <a href="https://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__PROTO.html#ga5e91eb6ca777c9a427b2e82bf1eeb81d">ap_rprintf</a></code>: <br/>
     This function works just like <code>printf</code>, except it sends the result to the client.
 
 
@@ -441,7 +441,7 @@ the next, without informing other handlers.
 </li>
 <li>
     <code>
-    <a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__PROTO.html#gaa2f8412c400197338ec509f4a45e4579">ap_set_content_type</a>(request_rec *r, const char *type)</code>: <br/>
+    <a href="https://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__PROTO.html#gaa2f8412c400197338ec509f4a45e4579">ap_set_content_type</a>(request_rec *r, const char *type)</code>: <br/>
     Sets the content type of the output you are sending.
 
 
@@ -472,13 +472,13 @@ reference when creating new objects. A few of the functions for allocating
 memory within a pool are:
 </p>
 <ul>
-<li><code>void* <a href="http://apr.apache.org/docs/apr/1.4/group__apr__pools.html#ga85f1e193c31d109affda72f9a92c6915">apr_palloc</a>(
+<li><code>void* <a href="https://apr.apache.org/docs/apr/1.4/group__apr__pools.html#ga85f1e193c31d109affda72f9a92c6915">apr_palloc</a>(
 apr_pool_t *p, apr_size_t size)</code>: Allocates <code>size</code> number of bytes in the pool for you</li>
-<li><code>void* <a href="http://apr.apache.org/docs/apr/1.4/group__apr__pools.html#gaf61c098ad258069d64cdf8c0a9369f9e">apr_pcalloc</a>(
+<li><code>void* <a href="https://apr.apache.org/docs/apr/1.4/group__apr__pools.html#gaf61c098ad258069d64cdf8c0a9369f9e">apr_pcalloc</a>(
 apr_pool_t *p, apr_size_t size)</code>: Allocates <code>size</code> number of bytes in the pool for you and sets all bytes to 0</li>
-<li><code>char* <a href="http://apr.apache.org/docs/apr/1.4/group__apr__strings.html#gabc79e99ff19abbd7cfd18308c5f85d47">apr_pstrdup</a>(
+<li><code>char* <a href="https://apr.apache.org/docs/apr/1.4/group__apr__strings.html#gabc79e99ff19abbd7cfd18308c5f85d47">apr_pstrdup</a>(
 apr_pool_t *p, const char *s)</code>: Creates a duplicate of the string <code>s</code>. This is useful for copying constant values so you can edit them</li>
-<li><code>char* <a href="http://apr.apache.org/docs/apr/1.4/group__apr__strings.html#ga3eca76b8d293c5c3f8021e45eda813d8">apr_psprintf</a>(
+<li><code>char* <a href="https://apr.apache.org/docs/apr/1.4/group__apr__strings.html#ga3eca76b8d293c5c3f8021e45eda813d8">apr_psprintf</a>(
 apr_pool_t *p, const char *fmt, ...)</code>: Similar to <code>sprintf</code>, except the server supplies you with an appropriately allocated target variable</li>
 </ul>
 
@@ -552,13 +552,13 @@ POST data is four simple lines:
 
 <!-- BEGIN EXAMPLE CODE -->
 <highlight language="c">
-<a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__apr__tables.html#gad7ea82d6608a4a633fc3775694ab71e4">apr_table_t</a> *GET; <em>
-</em><a href="http://ci.apache.org/projects/httpd/trunk/doxygen/structapr__array__header__t.html">apr_array_header_t</a>*POST;
+<a href="https://ci.apache.org/projects/httpd/trunk/doxygen/group__apr__tables.html#gad7ea82d6608a4a633fc3775694ab71e4">apr_table_t</a> *GET; <em>
+</em><a href="https://ci.apache.org/projects/httpd/trunk/doxygen/structapr__array__header__t.html">apr_array_header_t</a>*POST;
 <em>
 </em>
-<a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__SCRIPT.html#gaed25877b529623a4d8f99f819ba1b7bd">
+<a href="https://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__SCRIPT.html#gaed25877b529623a4d8f99f819ba1b7bd">
 ap_args_to_table</a>(r, &amp;GET); <em>
-</em><a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__DAEMON.html#ga9d426b6382b49754d4f87c55f65af202">
+</em><a href="https://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__DAEMON.html#ga9d426b6382b49754d4f87c55f65af202">
 ap_parse_form_data</a>(r, NULL, &amp;POST, -1, 8192);
 </highlight>
 <!-- END EXAMPLE CODE -->
@@ -711,7 +711,7 @@ static int example_handler(request_rec *r)
 
 <p>
 This version in its entirety can be found here:
-<a href="http://people.apache.org/~humbedooh/mods/examples/mod_example_2.c">mod_example_2.c</a>.
+<a href="https://people.apache.org/~humbedooh/mods/examples/mod_example_2.c">mod_example_2.c</a>.
 </p>
 </section>
 
@@ -872,8 +872,8 @@ static const command_rec        example_directives[] =
 As you can see, each directive needs at least 5 parameters set:
 </p>
 <ol>
-<li><code><a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__CONFIG.html#ga07c7d22ae17805e61204463326cf9c34">AP_INIT_TAKE1</a></code>: This is a macro that tells the server that this directive takes one and only one argument.
-If we required two arguments, we could use the macro <code><a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__CONFIG.html#gafaec43534fcf200f37d9fecbf9247c21">AP_INIT_TAKE2</a></code> and so on (refer to httpd_conf.h
+<li><code><a href="https://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__CONFIG.html#ga07c7d22ae17805e61204463326cf9c34">AP_INIT_TAKE1</a></code>: This is a macro that tells the server that this directive takes one and only one argument.
+If we required two arguments, we could use the macro <code><a href="https://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__CONFIG.html#gafaec43534fcf200f37d9fecbf9247c21">AP_INIT_TAKE2</a></code> and so on (refer to httpd_conf.h
 for more macros).</li>
 <li><code>exampleEnabled</code>: This is the name of our directive. More precisely, it is what the user must put in his/her
 configuration in order to invoke a configuration change in our module.</li>
@@ -1089,7 +1089,7 @@ configuration set up for mod_rewrite:
 <highlight language="config">
 &lt;Directory "/var/www"&gt;
     RewriteCond "%{HTTP_HOST}" "^example.com$"
-    RewriteRule "(.*)"         "http://www.example.com/$1"
+    RewriteRule "(.*)"         "https://www.example.com/$1"
 &lt;/Directory&gt;
 &lt;Directory "/var/www/sub"&gt;
     RewriteRule "^foobar$" "index.php?foobar=true"
@@ -1099,7 +1099,7 @@ configuration set up for mod_rewrite:
 In this example, you will have set up two different contexts for
 mod_rewrite:</p>
 <ol>
-<li>Inside <code>/var/www</code>, all requests for <code>http://example.com</code> must go to <code>http://www.example.com</code></li>
+<li>Inside <code>/var/www</code>, all requests for <code>https://example.com</code> must go to <code>https://www.example.com</code></li>
 <li>Inside <code>/var/www/sub</code>, all requests for <code>foobar</code> must go to <code>index.php?foobar=true</code></li>
 </ol>
 <p>
@@ -1117,7 +1117,7 @@ directory or location in question? It does so by making one simple call:
 
 <!-- BEGIN EXAMPLE CODE -->
 <highlight language="c">
-example_config *config = (example_config*) <a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__CONFIG.html#ga1093a5908a384eacc929b028c79f2a02">ap_get_module_config</a>(r-&gt;per_dir_config, &amp;example_module);
+example_config *config = (example_config*) <a href="https://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__CONFIG.html#ga1093a5908a384eacc929b028c79f2a02">ap_get_module_config</a>(r-&gt;per_dir_config, &amp;example_module);
 </highlight>
 <!-- END EXAMPLE CODE -->
 
@@ -1581,7 +1581,7 @@ We have now looked at how to create simple modules for Apache HTTP Server 2.4 an
 configuring them. What you do next is entirely up to you, but it is my
 hope that something valuable has come out of reading this documentation.
 If you have questions on how to further develop modules, you are welcome
-to join our <a href="http://httpd.apache.org/lists.html">mailing lists</a>
+to join our <a href="https://httpd.apache.org/lists.html">mailing lists</a>
 or check out the rest of our documentation for further tips.
 </p>
 </section>

@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -30,19 +30,19 @@
 
 <summary>
     <note type="warning">
-      ÀÌ ¸ðµâÀº ½ÇÇèÀûÀÎ »óÅÂÀÌ´Ù. ¹®¼­´Â ¾ÆÁ÷ ÀÛ¾÷ÁßÀÌ´Ù...
+      ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Û¾ï¿½ï¿½ï¿½ï¿½Ì´ï¿½...
     </note>
 
-    <p><module>mod_cache_disk</module>´Â µð½ºÅ©±â¹Ý ÀúÀå°ü¸®ÀÚ¸¦
-    ±¸ÇöÇÑ´Ù. ÀÌ ¸ðµâÀº ±âº»ÀûÀ¸·Î <module>mod_proxy</module>¿Í
-    °°ÀÌ »ç¿ëÇÑ´Ù.</p>
+    <p><module>mod_cache_disk</module>ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <module>mod_proxy</module>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <p>³»¿ëÀ» URI¸¦ Åä´ë·Î ¸¸µç Å°·Î Ä³½¬¿¡ ÀúÀåÇÏ°í °¡Á®¿Â´Ù.
-    Á¢±Ùº¸È£°¡ µÈ ³»¿ëÀº Ä³½¬ÇÏÁö¾Ê´Â´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ URIï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Å°ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Â´ï¿½.
+    ï¿½ï¿½ï¿½Ùºï¿½È£ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê´Â´ï¿½.</p>
 
-    <note><title>ÁÖÀÇ:</title>
-      <p><module>mod_cache_disk</module>´Â
-      <module>mod_cache</module>°¡ ÇÊ¿äÇÏ´Ù.</p>
+    <note><title>ï¿½ï¿½ï¿½ï¿½:</title>
+      <p><module>mod_cache_disk</module>ï¿½ï¿½
+      <module>mod_cache</module>ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Ï´ï¿½.</p>
     </note>
 </summary>
 
@@ -63,21 +63,21 @@
 
 <directivesynopsis>
 <name>CacheRoot</name>
-<description>Ä³½¬ ÆÄÀÏÀ» ÀúÀåÇÒ µð·ºÅä¸® root</description>
+<description>Ä³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸® root</description>
 <syntax>CacheRoot <var>directory</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p><directive>CacheRoot</directive> Áö½Ã¾î´Â µð½ºÅ©¿¡¼­
-    Ä³½¬ ÆÄÀÏÀ» ÀúÀåÇÒ µð·ºÅä¸®¸¦ ÁöÁ¤ÇÑ´Ù. <module
-    >mod_cache_disk</module> ¸ðµâÀ» ¾ÆÆÄÄ¡ ¼­¹ö¿Í °°ÀÌ ÄÄÆÄÀÏÇÏ¿´°Å³ª
-    ÀÐ¾îµéÀÎ °æ¿ì <em>¹Ýµå½Ã</em> ÀÌ Áö½Ã¾î¸¦ Á¤ÀÇÇØ¾ß ÇÑ´Ù.
-    <directive>CacheRoot</directive>¿¡ °ªÀÌ ¾øÀ¸¸é ¼³Á¤ÆÄÀÏÀ»
-    Ã³¸®ÇÏÁö ¾Ê´Â´Ù. <directive
-    module="mod_cache_disk">CacheDirLevels</directive>¿Í <directive
-    module="mod_cache_disk">CacheDirLength</directive> Áö½Ã¾î´Â
-    ÀÌ Áö½Ã¾î·Î ÁöÁ¤ÇÑ root µð·ºÅä¸®ÀÇ ÇÏÀ§µð·ºÅä¸® ±¸Á¶¸¦ Áö½ÃÇÑ´Ù.</p>
+    <p><directive>CacheRoot</directive> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½ï¿½ï¿½
+    Ä³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <module
+    >mod_cache_disk</module> ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½Å³ï¿½
+    ï¿½Ð¾ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ <em>ï¿½Ýµï¿½ï¿½</em> ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½.
+    <directive>CacheRoot</directive>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    Ã³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½. <directive
+    module="mod_cache_disk">CacheDirLevels</directive>ï¿½ï¿½ <directive
+    module="mod_cache_disk">CacheDirLength</directive> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½
+    ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ root ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
     <example>
       CacheRoot c:/cacheroot
@@ -87,22 +87,22 @@
 
 <directivesynopsis>
 <name>CacheDirLevels</name>
-<description>Ä³½¬ÀÇ ÇÏÀ§µð·ºÅä¸® ±íÀÌ.</description>
+<description>Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸® ï¿½ï¿½ï¿½ï¿½.</description>
 <syntax>CacheDirLevels <var>levels</var></syntax>
 <default>CacheDirLevels 3</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p><directive>CacheDirLevels</directive> Áö½Ã¾î´Â Ä³½¬ÀÇ
-    ÇÏÀ§µð·ºÅä¸® ±íÀÌ¸¦ ÁöÁ¤ÇÑ´Ù. Ä³½¬µÈ ÀÚ·á¸¦ <directive
-    module="mod_cache_disk">CacheRoot</directive> µð·ºÅä¸®
-    ¾Æ·¡ ÀÌ ±íÀÌ±îÁö ÀúÀåÇÑ´Ù.</p>
+    <p><directive>CacheDirLevels</directive> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸® ï¿½ï¿½ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½Ú·á¸¦ <directive
+    module="mod_cache_disk">CacheRoot</directive> ï¿½ï¿½ï¿½ä¸®
+    ï¿½Æ·ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ì±ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
     <note>
-      <p><directive>CacheDirLevels</directive>¿Í <directive
-      module="mod_cache_disk">CacheDirLength</directive>¸¦
-      °öÇÏ¿© 20 º¸´Ù Å©¸é ¾ÈµÈ´Ù.</p>
+      <p><directive>CacheDirLevels</directive>ï¿½ï¿½ <directive
+      module="mod_cache_disk">CacheDirLength</directive>ï¿½ï¿½
+      ï¿½ï¿½ï¿½Ï¿ï¿½ 20 ï¿½ï¿½ï¿½ï¿½ Å©ï¿½ï¿½ ï¿½ÈµÈ´ï¿½.</p>
     </note>
 
     <example>
@@ -113,20 +113,20 @@
 
 <directivesynopsis>
 <name>CacheDirLength</name>
-<description>ÇÏÀ§µð·ºÅä¸®¸íÀÇ ¹®ÀÚ°³¼ö</description>
+<description>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ú°ï¿½ï¿½ï¿½</description>
 <syntax>CacheDirLength <var>length</var></syntax>
 <default>CacheDirLength 2</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p><directive>CacheDirLength</directive> Áö½Ã¾î´Â Ä³½¬
-    °èÃþ±¸Á¶¿¡¼­ °¢ ÇÏÀ§µð·ºÅä¸®¸íÀÇ ¹®ÀÚ¼ö¸¦ ÁöÁ¤ÇÑ´Ù.</p>
+    <p><directive>CacheDirLength</directive> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ Ä³ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ú¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
     <note>
-      <p><directive module="mod_cache_disk">CacheDirLevels</directive>¿Í
-      <directive>CacheDirLength</directive>¸¦ °öÇÏ¿© 20 º¸´Ù
-      Å©¸é ¾ÈµÈ´Ù.</p>
+      <p><directive module="mod_cache_disk">CacheDirLevels</directive>ï¿½ï¿½
+      <directive>CacheDirLength</directive>ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½ 20 ï¿½ï¿½ï¿½ï¿½
+      Å©ï¿½ï¿½ ï¿½ÈµÈ´ï¿½.</p>
     </note>
 
     <example>
@@ -137,15 +137,15 @@
 
 <directivesynopsis>
 <name>CacheMinFileSize</name>
-<description>Ä³½¬¿¡ ÀúÀåÇÒ ¹®¼­ÀÇ ÃÖ¼ÒÅ©±â (¹ÙÀÌÆ® ´ÜÀ§)</description>
+<description>Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½Å©ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½)</description>
 <syntax>CacheMinFileSize <var>bytes</var></syntax>
 <default>CacheMinFileSize 1</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p><directive>CacheMinFileSize</directive> Áö½Ã¾î´Â Ä³½¬¿¡
-    ÀúÀåÇÒ ¹®¼­ÀÇ ÃÖ¼ÒÅ©±â¸¦ ¹ÙÀÌÆ® ´ÜÀ§·Î ÁöÁ¤ÇÑ´Ù.</p>
+    <p><directive>CacheMinFileSize</directive> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½Å©ï¿½â¸¦ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
     <example>
       CacheMinFileSize 64
@@ -155,15 +155,15 @@
 
 <directivesynopsis>
 <name>CacheMaxFileSize</name>
-<description>Ä³½¬¿¡ ÀúÀåÇÒ ¹®¼­ÀÇ ÃÖ´ëÅ©±â (¹ÙÀÌÆ® ´ÜÀ§)</description>
+<description>Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½Å©ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½)</description>
 <syntax>CacheMaxFileSize <var>bytes</var></syntax>
 <default>CacheMaxFileSize 1000000</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p><directive>CacheMaxFileSize</directive> Áö½Ã¾î´Â Ä³½¬¿¡
-    ÀúÀåÇÒ ¹®¼­ÀÇ ÃÖ´ëÅ©±â¸¦ ¹ÙÀÌÆ® ´ÜÀ§·Î ÁöÁ¤ÇÑ´Ù.</p>
+    <p><directive>CacheMaxFileSize</directive> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½Å©ï¿½â¸¦ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
     <example>
       CacheMaxFileSize 64000

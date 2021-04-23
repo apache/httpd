@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -33,7 +33,7 @@ Layer (SSL) and Transport Layer Security (TLS) protocols</description>
 <p>This module provides SSL v3 and TLS v1.x support for the Apache
 HTTP Server. SSL v2 is no longer supported.</p>
 
-<p>This module relies on <a href="http://www.openssl.org/">OpenSSL</a>
+<p>This module relies on <a href="https://www.openssl.org/">OpenSSL</a>
 to provide the cryptographic engine.</p>
 
 <p>Further details, discussion, and examples are provided in the
@@ -441,7 +441,7 @@ The following <em>source</em> variants are available:</p>
     <p>
     This variant uses the Unix domain socket of the
     external Entropy Gathering Daemon (EGD) (see <a
-    href="http://www.lothar.com/tech/crypto/">http://www.lothar.com/tech
+    href="https://www.lothar.com/tech/crypto/">https://www.lothar.com/tech
     /crypto/</a>) to seed the PRNG. Use this if no random device exists
     on your platform.</p></li>
 </ul>
@@ -513,7 +513,7 @@ The following five storage <em>type</em>s are currently supported:</p>
 <li><code>dc:UNIX:/path/to/socket</code>
 
     <p>This makes use of the <a
-    href="http://distcache.sourceforge.net/">distcache</a> distributed session
+    href="https://distcache.sourceforge.net/">distcache</a> distributed session
     caching libraries.  The argument should specify the location of
     the server or proxy to be used using the distcache address syntax;
     for example, <code>UNIX:/path/to/socket</code> specifies a UNIX
@@ -587,7 +587,7 @@ SSLEngine on
 </example>
 <p><directive>SSLEngine</directive> can be set to <code>optional</code>: 
 this enables support for
-<a href="http://www.ietf.org/rfc/rfc2817.txt">RFC 2817</a>.
+<a href="https://www.ietf.org/rfc/rfc2817.txt">RFC 2817</a>.
 </p>
 </usage>
 </directivesynopsis>
@@ -639,29 +639,29 @@ The available (case-insensitive) <em>protocol</em>s are:</p>
     This is the Secure Sockets Layer (SSL) protocol, version 3.0, from
     the Netscape Corporation.
     It is the successor to SSLv2 and the predecessor to TLSv1, but is
-    deprecated in <a href="http://www.ietf.org/rfc/rfc7568.txt">RFC 7568</a>.</p></li>
+    deprecated in <a href="https://www.ietf.org/rfc/rfc7568.txt">RFC 7568</a>.</p></li>
 
 <li><code>TLSv1</code>
     <p>
     This is the Transport Layer Security (TLS) protocol, version 1.0.
     It is the successor to SSLv3 and is defined in
-    <a href="http://www.ietf.org/rfc/rfc2246.txt">RFC 2246</a>.
+    <a href="https://www.ietf.org/rfc/rfc2246.txt">RFC 2246</a>.
     It is supported by nearly every client.</p></li>
 
 <li><code>TLSv1.1</code> (when using OpenSSL 1.0.1 and later)
     <p>
     A revision of the TLS 1.0 protocol, as defined in
-    <a href="http://www.ietf.org/rfc/rfc4346.txt">RFC 4346</a>.</p></li>
+    <a href="https://www.ietf.org/rfc/rfc4346.txt">RFC 4346</a>.</p></li>
 
 <li><code>TLSv1.2</code> (when using OpenSSL 1.0.1 and later)
     <p>
     A revision of the TLS 1.1 protocol, as defined in
-    <a href="http://www.ietf.org/rfc/rfc5246.txt">RFC 5246</a>.</p></li>
+    <a href="https://www.ietf.org/rfc/rfc5246.txt">RFC 5246</a>.</p></li>
 
 <li><code>TLSv1.3</code> (when using OpenSSL 1.1.1 and later)
     <p>
     A new version of the TLS protocol, as defined in
-    <a href="http://www.ietf.org/rfc/rfc8446.txt">RFC 8446</a>.</p></li>
+    <a href="https://www.ietf.org/rfc/rfc8446.txt">RFC 8446</a>.</p></li>
 
 <li><code>all</code>
     <p>
@@ -967,7 +967,7 @@ Beginning with version 2.4.7, mod_ssl makes use of
 standardized DH parameters with prime lengths of 2048, 3072 and 4096 bits
 and with additional prime lengths of 6144 and 8192 bits beginning with
 version 2.4.10
-(from <a href="http://www.ietf.org/rfc/rfc3526.txt">RFC 3526</a>), and hands
+(from <a href="https://www.ietf.org/rfc/rfc3526.txt">RFC 3526</a>), and hands
 them out to clients based on the length of the certificate's RSA/DSA key.
 With Java-based clients in particular (Java 7 or earlier), this may lead
 to handshake failures - see this
@@ -2464,7 +2464,7 @@ directives.</p>
 <highlight language="config">
 SSLVerifyClient on
 SSLOCSPEnable on
-SSLOCSPDefaultResponder "http://responder.example.com:8888/responder"
+SSLOCSPDefaultResponder "https://responder.example.com:8888/responder"
 SSLOCSPOverrideResponder on
 </highlight>
 </example>
@@ -2620,7 +2620,7 @@ all queries to OCSP responders.</p>
 <p>As originally specified, all versions of the SSL and TLS protocols
 (up to and including TLS/1.2) were vulnerable to a Man-in-the-Middle
 attack
-(<a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CAN-2009-3555">CVE-2009-3555</a>)
+(<a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CAN-2009-3555">CVE-2009-3555</a>)
 during a renegotiation.  This vulnerability allowed an attacker to
 "prefix" a chosen plaintext to the HTTP request as seen by the web
 server.  A protocol extension was developed which fixed this
@@ -2635,7 +2635,7 @@ albeit insecurely.</p>
 <note type="warning"><title>Security warning</title>
 <p>If this directive is enabled, SSL connections will be vulnerable to
 the Man-in-the-Middle prefix attack as described
-in <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CAN-2009-3555">CVE-2009-3555</a>.</p>
+in <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CAN-2009-3555">CVE-2009-3555</a>.</p>
 </note>
 
 <example><title>Example</title>
@@ -2675,7 +2675,7 @@ OCSP response for a single cert. For server certificates with intermediate
 CA certificates in their chain (the typical case nowadays),
 stapling in its current implementation therefore only partially achieves the
 stated goal of "saving roundtrips and resources" - see also
-<a href="http://www.ietf.org/rfc/rfc6961.txt">RFC 6961</a>
+<a href="https://www.ietf.org/rfc/rfc6961.txt">RFC 6961</a>
 (TLS Multiple Certificate Status Extension).
 </p>
 
@@ -2858,7 +2858,7 @@ One potential use is when a proxy is used for retrieving OCSP queries.</p>
 <usage>
 <p>Optionally configures a secret key for encrypting and decrypting
 TLS session tickets, as defined in
-<a href="http://www.ietf.org/rfc/rfc5077.txt">RFC 5077</a>.
+<a href="https://www.ietf.org/rfc/rfc5077.txt">RFC 5077</a>.
 Primarily suitable for clustered environments where TLS sessions information
 should be shared between multiple nodes. For single-instance httpd setups,
 it is recommended to <em>not</em> configure a ticket key file, but to
@@ -2944,7 +2944,7 @@ features are added to OpenSSL.</p>
 depends on the OpenSSL version being used for <module>mod_ssl</module>
 (at least version 1.0.2 is required). For a list of supported command
 names, see the section <em>Supported configuration file commands</em> in the
-<a href="http://www.openssl.org/docs/man1.0.2/ssl/SSL_CONF_cmd.html#SUPPORTED-CONFIGURATION-FILE-COMMANDS">SSL_CONF_cmd(3)</a> manual page for OpenSSL.</p>
+<a href="https://www.openssl.org/docs/man1.0.2/ssl/SSL_CONF_cmd.html#SUPPORTED-CONFIGURATION-FILE-COMMANDS">SSL_CONF_cmd(3)</a> manual page for OpenSSL.</p>
 
 <p>Some of the <directive>SSLOpenSSLConfCmd</directive> commands can be used
 as an alternative to existing directives (such as

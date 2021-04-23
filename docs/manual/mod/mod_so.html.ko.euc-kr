@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
 <meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -17,166 +17,166 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">¸ðµâ</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">ï¿½ï¿½ï¿½</a></div>
 <div id="page-content">
-<div id="preamble"><h1>¾ÆÆÄÄ¡ ¸ðµâ mod_so</h1>
+<div id="preamble"><h1>ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ mod_so</h1>
 <div class="toplang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/mod/mod_so.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/mod/mod_so.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_so.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_so.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_so.html" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_so.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">ÀÌ ¹®¼­´Â ÃÖ½ÅÆÇ ¹ø¿ªÀÌ ¾Æ´Õ´Ï´Ù.
-            ÃÖ±Ù¿¡ º¯°æµÈ ³»¿ëÀº ¿µ¾î ¹®¼­¸¦ Âü°íÇÏ¼¼¿ä.</div>
-<table class="module"><tr><th><a href="module-dict.html#Description">¼³¸í:</a></th><td>½ÃÀÛÇÒ¶§ È¤Àº Àç½ÃÀÛÇÒ¶§ ½ÇÇà°¡´ÉÇÑ ÄÚµå¿Í ¸ðµâÀ»
-¼­¹ö·Î ÀÐ¾îµéÀÎ´Ù</td></tr>
-<tr><th><a href="module-dict.html#Status">»óÅÂ:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">¸ðµâ¸í:</a></th><td>so_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">¼Ò½ºÆÄÀÏ:</a></th><td>mod_so.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Áö¿ø:</a></th><td>À©µµ¿ìÁî¿¡¼­ (Ç×»ó Æ÷ÇÔÇÏ´Â) Base ¸ðµâÀÌ´Ù.</td></tr></table>
-<h3>¿ä¾à</h3>
+<div class="outofdate">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Õ´Ï´ï¿½.
+            ï¿½Ö±Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ È¤ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ ï¿½ï¿½ï¿½à°¡ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ð¾ï¿½ï¿½ï¿½Î´ï¿½</td></tr>
+<tr><th><a href="module-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">ï¿½ï¿½ï¿½ï¿½:</a></th><td>so_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">ï¿½Ò½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>mod_so.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½î¿¡ï¿½ï¿½ (ï¿½×»ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½) Base ï¿½ï¿½ï¿½ï¿½Ì´ï¿½.</td></tr></table>
+<h3>ï¿½ï¿½ï¿½</h3>
 
 
-    <p>¸î¸î ¿î¿µÃ¼Á¦¿¡¼­ ¾ÆÆÄÄ¡´Â <a href="../dso.html">µ¿Àû°øÀ¯°´Ã¼</a>
-    (DSO) ±â¼úÀ» »ç¿ëÇÏ¿© ¼­¹ö¸¦ ´Ù½Ã ÄÄÆÄÀÏÇÏÁö ¾Ê°íµµ ½ÇÇàÁß¿¡
-    ¸ðµâÀ» ÀÐ¾îµéÀÏ ¼ö ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ ï¿½î¿µÃ¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ <a href="../dso.html">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã¼</a>
+    (DSO) ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ß¿ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ð¾ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
     
-    <p>ÀÐ¾îµéÀÏ ÄÚµå´Â, À¯´Ð½º¿¡¼­´Â (<code>.so</code> È®ÀåÀÚ¸¦
-    °¡Áø) ÀÏ¹ÝÀûÀÎ °øÀ¯°´Ã¼ÆÄÀÏÀÌ°í, À©µµ¿ìÁî¿¡¼­´Â <code>.so</code>
-    È¤Àº <code>.dll</code> È®ÀåÀÚ¸¦ °¡Áø´Ù.</p>
+    <p>ï¿½Ð¾ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ï¿½, ï¿½ï¿½ï¿½Ð½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (<code>.so</code> È®ï¿½ï¿½ï¿½Ú¸ï¿½
+    ï¿½ï¿½ï¿½ï¿½) ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã¼ï¿½ï¿½ï¿½ï¿½ï¿½Ì°ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½î¿¡ï¿½ï¿½ï¿½ï¿½ <code>.so</code>
+    È¤ï¿½ï¿½ <code>.dll</code> È®ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.</p>
 
-    <div class="warning"><h3>°æ°í</h3>
-    <p>¾ÆÆÄÄ¡ 1.3 ¸ðµâÀ» ¾ÆÆÄÄ¡ 2.0¿¡¼­ »ç¿ëÇÒ ¼ö ¾ø´Ù.
-    ¾ÆÆÄÄ¡ 2.0ÀÌ µ¿ÀûÀ¸·Î ÀÐ¾îµéÀÌ°Å³ª ¾ÆÆÄÄ¡¿Í °°ÀÌ ÄÄÆÄÀÏÇÏ·Á¸é
-    ¸ðµâÀ» ¼öÁ¤ÇØ¾ß ÇÑ´Ù.</p>
+    <div class="warning"><h3>ï¿½ï¿½ï¿½</h3>
+    <p>ï¿½ï¿½ï¿½ï¿½Ä¡ 1.3 ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ 2.0ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
+    ï¿½ï¿½ï¿½ï¿½Ä¡ 2.0ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ð¾ï¿½ï¿½ï¿½Ì°Å³ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½.</p>
     </div>
 </div>
-<div id="quickview"><h3>ÁÖÁ¦</h3>
+<div id="quickview"><h3>ï¿½ï¿½ï¿½ï¿½</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#windows">À©µµ¿ìÁî¿¡¼­ ÀÐ¾îµéÀÏ ¸ðµâ ¸¸µé±â</a></li>
-</ul><h3 class="directives">Áö½Ã¾îµé</h3>
+<li><img alt="" src="../images/down.gif" /> <a href="#windows">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½î¿¡ï¿½ï¿½ ï¿½Ð¾ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½</a></li>
+</ul><h3 class="directives">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#loadfile">LoadFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#loadmodule">LoadModule</a></li>
 </ul>
-<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_so">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_so">Report a bug</a></li></ul><h3>Âü°í</h3>
+<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_so">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_so">Report a bug</a></li></ul><h3>ï¿½ï¿½ï¿½ï¿½</h3>
 <ul class="seealso">
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="windows" id="windows">À©µµ¿ìÁî¿¡¼­ ÀÐ¾îµéÀÏ ¸ðµâ ¸¸µé±â</a> <a title="Permanent link" href="#windows" class="permalink">&para;</a></h2>
+<h2><a name="windows" id="windows">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½î¿¡ï¿½ï¿½ ï¿½Ð¾ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½</a> <a title="Permanent link" href="#windows" class="permalink">&para;</a></h2>
 
-    <div class="note"><h3>ÁÖÀÇ</h3>
-    <p>À©µµ¿ìÁîÀÇ ¸ðµâ¸í Çü½ÄÀº ¾ÆÆÄÄ¡ 1.3.15¿Í 2.0¿¡¼­ º¯°æµÇ¾ú´Ù.
-    ¸ðµâ¸íÀº ÀÌÁ¦ mod_foo.so½ÄÀÌ´Ù.</p>
+    <div class="note"><h3>ï¿½ï¿½ï¿½ï¿½</h3>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ 1.3.15ï¿½ï¿½ 2.0ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½.
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ mod_foo.soï¿½ï¿½ï¿½Ì´ï¿½.</p>
 
-    <p>mod_so´Â ¾ÆÁ÷µµ ApacheModuleFoo.dll ½ÄÀÇ ¸ðµâÀ» ÀÐ¾îµéÀÏ
-    ¼ö ÀÖÁö¸¸, »õ·Î¿î ÀÌ¸§ ±ÔÄ¢À» ¼±È£ÇÑ´Ù. ¸ðµâÀ» 2.0¿¡ ¸Â°Ô
-    ¼öÁ¤ÇÑ´Ù¸é ÀÌ¸§À» 2.0 ±ÔÄ¢¿¡ ¾Ë¸Â°Ô °íÄ¡±æ ¹Ù¶õ´Ù.</p></div>
+    <p>mod_soï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ApacheModuleFoo.dll ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ð¾ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½Ì¸ï¿½ ï¿½ï¿½Ä¢ï¿½ï¿½ ï¿½ï¿½È£ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ 2.0ï¿½ï¿½ ï¿½Â°ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ 2.0 ï¿½ï¿½Ä¢ï¿½ï¿½ ï¿½Ë¸Â°ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Ù¶ï¿½ï¿½ï¿½.</p></div>
 
-    <p>¾ÆÆÄÄ¡ ¸ðµâ API´Â À¯´Ð½º ¹öÀüÀÌ°Å³ª À©µµ¿ìÁî ¹öÀüÀÌ°Å³ª
-    °°´Ù. ¸î¸î API´Â À©µµ¿ìÁî¿¡ ¾ø´Â À¯´Ð½º ±¸Á¶¿¡ ÀÇÁ¸ÇÏ±â¶§¹®¿¡
-    »ç¿ëÇÒ ¼ö ¾øÁö¸¸, À¯´Ð½º¿¡¼­ ½ÇÇàµÇ´Â ¸¹Àº ¸ðµâÀ» ¼öÁ¤¾øÀÌ
-    È¤Àº Á¶±Ý ¼öÁ¤ÇÏ¿© À©µµ¿ìÁî¿¡¼­ »ç¿ëÇÒ ¼ö ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ APIï¿½ï¿½ ï¿½ï¿½ï¿½Ð½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì°Å³ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì°Å³ï¿½
+    ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ APIï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½î¿¡ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ð½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±â¶§ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½Ð½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    È¤ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½î¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <p>¸ðµâÀº µÎ°¡Áö ¹æ¹ýÀ¸·Î ¼­¹ö¿¡ Ãß°¡ÇÒ ¼ö ÀÖ´Ù. À¯´Ð½º¿¡¼­´Â
-    ¸ðµâÀ» ¼­¹ö¿Í °°ÀÌ ÄÄÆÄÀÏÇÒ ¼ö ÀÖ´Ù. À©µµ¿ìÁî¿ë ¾ÆÆÄÄ¡´Â
-    À¯´Ð½º¿Í ´Þ¸® <code>Configure</code> ÇÁ·Î±×·¥ÀÌ ¾ø±â¶§¹®¿¡
-    ¸ðµâÀÇ ¼Ò½ºÆÄÀÏÀ» ApacheCore ÇÁ·ÎÁ§Æ® ÆÄÀÏ¿¡ Ãß°¡ÇÏ°í, ½Éº¼À»
-    <code>os\win32\modules.c</code> ÆÄÀÏ¿¡ Ãß°¡ÇØ¾ß ÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½Ð½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½
+    ï¿½ï¿½ï¿½Ð½ï¿½ï¿½ï¿½ ï¿½Þ¸ï¿½ <code>Configure</code> ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½â¶§ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ò½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ApacheCore ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ß°ï¿½ï¿½Ï°ï¿½, ï¿½Éºï¿½ï¿½ï¿½
+    <code>os\win32\modules.c</code> ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ß°ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½.</p>
 
-    <p>µÎ¹øÂ° ¹æ¹ýÀº ¸ðµâÀ» ¼­¹ö°¡
-    <code><code class="directive">LoadModule</code></code> Áö½Ã¾î¸¦
-    »ç¿ëÇÏ¿© ½ÃÀÛÇÒ¶§ ÀÐ¾îµéÀÏ ¼ö ÀÖ´Â °øÀ¯¶óÀÌºê·¯¸® DLL·Î
-    ¸¸µå´Â °ÍÀÌ´Ù. ÀÌ ¸ðµâ DLLÀ» ¹èÆ÷ÇÏ¸é ¼­¹ö¸¦ ÀçÄÄÆÄÀÏÇÏÁö
-    ¾Ê°í ¾î¶² À©µµ¿ìÁî¿ë ¾ÆÆÄÄ¡¿¡¼­µµ ¸ðµâÀ» »ç¿ëÇÒ ¼ö ÀÖ´Ù.</p>
+    <p>ï¿½Î¹ï¿½Â° ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    <code><code class="directive">LoadModule</code></code> ï¿½ï¿½ï¿½Ã¾î¸¦
+    ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ ï¿½Ð¾ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ìºê·¯ï¿½ï¿½ DLLï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ DLLï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ê°ï¿½ ï¿½î¶² ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <p>¸ðµâ DLLÀ» ¸¸µé±âÀ§ÇØ¼­´Â ¸ðµâÀÇ ¼Ò½ºÆÄÀÏÀ» Á¶±Ý ¼öÁ¤ÇØ¾ß
-    ÇÑ´Ù. DLLÀº module record¸¦ exportÇØ¾ß ÇÑ´Ù. (¾Æ·¡ Âü°í)
-    ÀÌ¸¦ À§ÇØ ¸ðµâÀÇ module record Á¤ÀÇ¿¡ (¾ÆÆÄÄ¡ Çì´õÆÄÀÏ¿¡
-    Á¤ÀÇµÈ) <code>AP_MODULE_DECLARE_DATA</code>¸¦ Ãß°¡ÇÑ´Ù.
-    ¿¹¸¦ µé¾î, ´ÙÀ½°ú °°Àº ¸ðµâÀÌ ÀÖ´Ù¸é:</p>
+    <p>ï¿½ï¿½ï¿½ DLLï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ò½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½
+    ï¿½Ñ´ï¿½. DLLï¿½ï¿½ module recordï¿½ï¿½ exportï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½. (ï¿½Æ·ï¿½ ï¿½ï¿½ï¿½ï¿½)
+    ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ module record ï¿½ï¿½ï¿½Ç¿ï¿½ (ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½
+    ï¿½ï¿½ï¿½Çµï¿½) <code>AP_MODULE_DECLARE_DATA</code>ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ñ´ï¿½.
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ù¸ï¿½:</p>
 
 <div class="example"><p><code>
     module foo_module;
 </code></p></div>
 
-    <p>´ÙÀ½°ú °°ÀÌ ¼öÁ¤ÇÑ´Ù:</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½:</p>
 <div class="example"><p><code>
     module AP_MODULE_DECLARE_DATA foo_module;
 </code></p></div>
 
-    <p>ÀÌ ºÎºÐÀº À©µµ¿ìÁî¿¡¼­¸¸ »ç¿ëÇÏ±â¶§¹®¿¡ º¯°æÇÏ¿©µµ À¯´Ð½º¿¡¼­
-    ¼Ò½º¸¦ ±×´ë·Î »ç¿ëÇÒ ¼ö ÀÖ´Ù. ¶Ç, <code>.DEF</code> ÆÄÀÏ¿¡
-    ÀÍ¼÷ÇÏ´Ù¸é ´ë½Å ÀÌ ÆÄÀÏÀ» »ç¿ëÇÏ¿© module record¸¦ exportÇÒ
-    ¼öµµ ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½Îºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½î¿¡ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï±â¶§ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ð½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ò½ï¿½ï¿½ï¿½ ï¿½×´ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½, <code>.DEF</code> ï¿½ï¿½ï¿½Ï¿ï¿½
+    ï¿½Í¼ï¿½ï¿½Ï´Ù¸ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ module recordï¿½ï¿½ exportï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <p>ÀÌÁ¦ ¸ðµâÀ» Æ÷ÇÔÇÑ DLLÀ» ¸¸µç´Ù. ÀÌ¸¦ °øÀ¯¶óÀÌºê·¯¸®
-    libhttpd.dllÀ» ÄÄÆÄÀÏÇÒ¶§ ¸¸µç libhttpd.lib export ¶óÀÌºê·¯¸®¿Í
-    ¸µÅ©ÇÑ´Ù. ¾ÆÆÄÄ¡ Çì´õÆÄÀÏÀ» ¿Ã¹Ù·Î Ã£µµ·Ï ÄÄÆÄÀÏ·¯ ¼³Á¤À»
-    ¼öÁ¤ÇØ¾ß ÇÒÁöµµ ¸ð¸¥´Ù. ¼­¹öÀÇ modules µð·ºÅä¸®¿¡¼­ ÀÌ
-    ¶óÀÌºê·¯¸®¸¦ Ã£À» ¼ö ÀÖ´Ù. ÄÄÆÄÀÏÈ¯°æÀ» ¿Ã¹Ù·Î ¼³Á¤ÇÏ±âÀ§ÇØ
-    ±âÁ¸ ¸ðµâÀÇ .dsp ÆÄÀÏÀ» °¡Á®´Ù ¾²°Å³ª Á÷Á¢ ¸¸µç .dsp¿Í
-    ÄÄÆÄÀÏ·¯/¸µÄ¿ ¿É¼ÇÀ» ºñ±³ÇÏ´Â °ÍÀÌ ÁÁ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ DLLï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½. ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ìºê·¯ï¿½ï¿½
+    libhttpd.dllï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ ï¿½ï¿½ï¿½ï¿½ libhttpd.lib export ï¿½ï¿½ï¿½Ìºê·¯ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½Å©ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã¹Ù·ï¿½ Ã£ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ð¸¥´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ modules ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+    ï¿½ï¿½ï¿½Ìºê·¯ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯ï¿½ï¿½ï¿½ï¿½ ï¿½Ã¹Ù·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ .dsp ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Å³ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ .dspï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½/ï¿½ï¿½Ä¿ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</p>
 
-    <p>ÀÌÁ¦ ¸ðµâÀ» DLL·Î ¸¸µç´Ù. ÀÌ°ÍÀ» ¼­¹öÀÇ
-    <code>modules</code> µð·ºÅä¸®¿¡ µÎ°í,
-    <code class="directive">LoadModule</code> Áö½Ã¾î¸¦ »ç¿ëÇÏ¿© ÀÐ¾îµéÀÎ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ DLLï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½. ï¿½Ì°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    <code>modules</code> ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½Î°ï¿½,
+    <code class="directive">LoadModule</code> ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½Ð¾ï¿½ï¿½ï¿½Î´ï¿½.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LoadFile" id="LoadFile">LoadFile</a> <a name="loadfile" id="loadfile">Áö½Ã¾î</a> <a title="Permanent link" href="#loadfile" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="LoadFile" id="LoadFile">LoadFile</a> <a name="loadfile" id="loadfile">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#loadfile" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>ÁöÁ¤ÇÑ ¸ñÀûÆÄÀÏÀÌ³ª ¶óÀÌºê·¯¸®¸¦ ÀÐ¾îµéÀÎ´Ù</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>LoadFile <em>filename</em> [<em>filename</em>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_so</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì³ï¿½ ï¿½ï¿½ï¿½Ìºê·¯ï¿½ï¿½ï¿½ï¿½ ï¿½Ð¾ï¿½ï¿½ï¿½Î´ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>LoadFile <em>filename</em> [<em>filename</em>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_so</td></tr>
 </table>
 
-    <p>LoadFile Áö½Ã¾î´Â ¼­¹ö°¡ ½ÃÀÛÇÏ°Å³ª Àç½ÃÀÛÇÒ¶§ ÁöÁ¤ÇÑ
-    ¸ñÀûÆÄÀÏÀÌ³ª ¶óÀÌºê·¯¸®¸¦ ÀÐ¾îµéÀÎ´Ù(link in). ÀÌ Áö½Ã¾î´Â
-    ¾î¶² ¸ðµâÀÌ µ¿ÀÛÇÏ±âÀ§ÇØ ÇÊ¿äÇÑ ÄÚµå¸¦ Ãß°¡·Î ÀÐ¾îµéÀÏ¶§
-    »ç¿ëÇÑ´Ù. <em>Filename</em>Àº Àý´ë°æ·ÎÀÌ°Å³ª <a href="core.html#serverroot">ServerRoot</a>¿¡ ´ëÇÑ »ó´ë°æ·ÎÀÌ´Ù.</p>
+    <p>LoadFile ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°Å³ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì³ï¿½ ï¿½ï¿½ï¿½Ìºê·¯ï¿½ï¿½ï¿½ï¿½ ï¿½Ð¾ï¿½ï¿½ï¿½Î´ï¿½(link in). ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½
+    ï¿½î¶² ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½Úµå¸¦ ï¿½ß°ï¿½ï¿½ï¿½ ï¿½Ð¾ï¿½ï¿½ï¿½Ï¶ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <em>Filename</em>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì°Å³ï¿½ <a href="core.html#serverroot">ServerRoot</a>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½.</p>
 
-    <p>¿¹¸¦ µé¾î:</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½:</p>
 
     <div class="example"><p><code>LoadFile libexec/libxmlparse.so</code></p></div>
 
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LoadModule" id="LoadModule">LoadModule</a> <a name="loadmodule" id="loadmodule">Áö½Ã¾î</a> <a title="Permanent link" href="#loadmodule" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="LoadModule" id="LoadModule">LoadModule</a> <a name="loadmodule" id="loadmodule">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#loadmodule" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>¸ñÀûÆÄÀÏÀÌ³ª ¶óÀÌºê·¯¸®¸¦ ÀÐ¾îµéÀÌ°í, »ç¿ë°¡´ÉÇÑ
-¸ðµâ ¸ñ·Ï¿¡ Ãß°¡ÇÑ´Ù</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>LoadModule <em>module filename</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_so</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì³ï¿½ ï¿½ï¿½ï¿½Ìºê·¯ï¿½ï¿½ï¿½ï¿½ ï¿½Ð¾ï¿½ï¿½ï¿½Ì°ï¿½, ï¿½ï¿½ë°¡ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ ï¿½ï¿½Ï¿ï¿½ ï¿½ß°ï¿½ï¿½Ñ´ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>LoadModule <em>module filename</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_so</td></tr>
 </table>
-    <p>LoadModule Áö½Ã¾î´Â ¸ñÀûÆÄÀÏ È¤Àº ¶óÀÌºê·¯¸® <em>filename</em>À»
-    ÀÐ¾îµéÀÌ°í, »ç¿ë°¡´ÉÇÑ ¸ðµâ ¸ñ·Ï¿¡ <em>module</em>ÀÌ¶ó´Â
-    ¸ðµâ ±¸Á¶Ã¼¸¦ Ãß°¡ÇÑ´Ù. <em>Module</em>Àº ÆÄÀÏÀÇ
-    <code>module</code> ÀÚ·áÇü ¿ÜºÎº¯¼ö¸íÀÌ¸ç, ¸ðµâ ¹®¼­ÀÇ <a href="module-dict.html#ModuleIdentifier">¸ðµâ¸í</a>¿¡
-    ³ª¿Â´Ù. ¿¹¸¦ µé¸é:</p>
+    <p>LoadModule ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¤ï¿½ï¿½ ï¿½ï¿½ï¿½Ìºê·¯ï¿½ï¿½ <em>filename</em>ï¿½ï¿½
+    ï¿½Ð¾ï¿½ï¿½ï¿½Ì°ï¿½, ï¿½ï¿½ë°¡ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½Ï¿ï¿½ <em>module</em>ï¿½Ì¶ï¿½ï¿½
+    ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ñ´ï¿½. <em>Module</em>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    <code>module</code> ï¿½Ú·ï¿½ï¿½ï¿½ ï¿½ÜºÎºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì¸ï¿½, ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <a href="module-dict.html#ModuleIdentifier">ï¿½ï¿½ï¿½ï¿½</a>ï¿½ï¿½
+    ï¿½ï¿½ï¿½Â´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½:</p>
 
     <div class="example"><p><code>
       LoadModule status_module modules/mod_status.so
     </code></p></div>
 
-    <p>ServerRootÀÇ modules ÇÏÀ§µð·ºÅä¸®¿¡¼­ ÁöÁ¤ÇÑ ¸ðµâÀ» ÀÐ¾îµéÀÎ´Ù.</p>
+    <p>ServerRootï¿½ï¿½ modules ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ð¾ï¿½ï¿½ï¿½Î´ï¿½.</p>
 
 </div>
 </div>
 <div class="bottomlang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/mod/mod_so.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/mod/mod_so.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_so.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_so.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_so.html" title="Korean">&nbsp;ko&nbsp;</a> |
@@ -184,7 +184,7 @@
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_so.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/mod/mod_so.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -199,8 +199,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_so.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

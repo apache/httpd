@@ -7,7 +7,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,9 +16,9 @@
  limitations under the License.
 -->
 
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+<xsl:stylesheet xmlns:xsl="https://www.w3.org/1999/XSL/Transform" version="1.0">
 
-<xsl:output method="xml" encoding="ISO-8859-1" indent="no" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
+<xsl:output method="xml" encoding="ISO-8859-1" indent="no" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
 
 <!-- Read the localized messages from the specified language file -->
 <xsl:variable name="message" select="document('lang/da.xml')/language/messages/message"/>

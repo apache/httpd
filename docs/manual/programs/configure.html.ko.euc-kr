@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
 <meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>configure - ¼Ò½º Æ®¸®¸¦ ±¸¼ºÇÑ´Ù - Apache HTTP Server Version 2.5</title>
+<title>configure - ï¿½Ò½ï¿½ Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½ - Apache HTTP Server Version 2.5</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -16,927 +16,927 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Programs</a></div><div id="page-content"><div id="preamble"><h1>configure - ¼Ò½º Æ®¸®¸¦ ±¸¼ºÇÑ´Ù</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Programs</a></div><div id="page-content"><div id="preamble"><h1>configure - ï¿½Ò½ï¿½ Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</h1>
 <div class="toplang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/programs/configure.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/programs/configure.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/programs/configure.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/programs/configure.html" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/configure.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">ÀÌ ¹®¼­´Â ÃÖ½ÅÆÇ ¹ø¿ªÀÌ ¾Æ´Õ´Ï´Ù.
-            ÃÖ±Ù¿¡ º¯°æµÈ ³»¿ëÀº ¿µ¾î ¹®¼­¸¦ Âü°íÇÏ¼¼¿ä.</div>
+<div class="outofdate">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Õ´Ï´ï¿½.
+            ï¿½Ö±Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.</div>
 
-    <p><code>configure</code> ½ºÅ©¸³Æ®´Â Æ¯Á¤ ÇÃ·¡Æû¿¡¼­ ¾ÆÆÄÄ¡
-    À¥¼­¹ö¸¦ ÄÄÆÄÀÏÇÏ°í ¼³Ä¡ÇÏ±âÀ§ÇØ ¼Ò½º Æ®¸®¸¦ ±¸¼ºÇÑ´Ù. ¿©·¯
-    ¿É¼ÇÀ» »ç¿ëÇÏ¿© ¿øÇÏ´Â ¿ä±¸Á¶°Ç¿¡ ¸Â°Ô ¼­¹ö¸¦ ÄÄÆÄÀÏÇÒ ¼ö
-    ÀÖ´Ù.</p>
+    <p><code>configure</code> ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ Æ¯ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½Ä¡ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ò½ï¿½ Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½
+    ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ä±¸ï¿½ï¿½ï¿½Ç¿ï¿½ ï¿½Â°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+    ï¿½Ö´ï¿½.</p>
 
-    <p>¼Ò½º ¹èÆ÷º»ÀÇ ÃÖ»óÀ§ µð·ºÅä¸®¿¡ ÀÖ´Â ÀÌ ½ºÅ©¸³Æ®´Â À¯´Ð½º¿Í
-    À¯´Ð½º·ù ½Ã½ºÅÛ¿¡¼­¸¸ »ç¿ëÇÑ´Ù. ´Ù¸¥ ÇÃ·¡ÆûÀ» »ç¿ëÇÑ´Ù¸é
-    <a href="../platform/">ÇÃ·¡Æû</a> ¹®¼­¸¦ Âü°íÇÏ¶ó.</p>
+    <p>ï¿½Ò½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö»ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½Ð½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½Ð½ï¿½ï¿½ï¿½ ï¿½Ã½ï¿½ï¿½Û¿ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½Ù¸ï¿½ ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½
+    <a href="../platform/">ï¿½Ã·ï¿½ï¿½ï¿½</a> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">°³¿ä</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#options">¿É¼Ç</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#env">È¯°æº¯¼ö</a></li>
-</ul><h3>Âü°í</h3><ul class="seealso"><li><a href="../install.html">ÄÄÆÄÀÏ°ú ¼³Ä¡</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">ï¿½ï¿½ï¿½ï¿½</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#options">ï¿½É¼ï¿½</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#env">È¯ï¿½æº¯ï¿½ï¿½</a></li>
+</ul><h3>ï¿½ï¿½ï¿½ï¿½</h3><ul class="seealso"><li><a href="../install.html">ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½Ä¡</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="synopsis" id="synopsis">°³¿ä</a> <a title="Permanent link" href="#synopsis" class="permalink">&para;</a></h2>
-    <p><code>configure</code> ½ºÅ©¸³Æ®´Â ¹èÆ÷º»ÀÇ ÃÖ»óÀ§
-    µð·ºÅä¸®¿¡¼­ ½ÇÇàÇØ¾ß ÇÑ´Ù.</p>
+<h2><a name="synopsis" id="synopsis">ï¿½ï¿½ï¿½ï¿½</a> <a title="Permanent link" href="#synopsis" class="permalink">&para;</a></h2>
+    <p><code>configure</code> ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö»ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½.</p>
 
     <p><code><strong>./configure</strong> [<var>OPTION</var>]...
     [<var>VAR</var>=<var>VALUE</var>]...</code></p>
 
-    <p>È¯°æº¯¼ö¸¦ (¿¹¸¦ µé¾î, <code>CC</code>, <code>CFLAGS</code>,
-    ...) ÁöÁ¤ÇÏ·Á¸é, <code><var>VAR</var>=<var>VALUE</var></code>¿Í
-    °°ÀÌ Áö½ÃÇÑ´Ù. <a href="#env">¾Æ·¡¿¡¼­</a> À¯¿ëÇÑ È¯°æº¯¼öµéÀ»
-    ¼³¸íÇÑ´Ù.</p>
+    <p>È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, <code>CC</code>, <code>CFLAGS</code>,
+    ...) ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½, <code><var>VAR</var>=<var>VALUE</var></code>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <a href="#env">ï¿½Æ·ï¿½ï¿½ï¿½ï¿½ï¿½</a> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="options" id="options">¿É¼Ç</a> <a title="Permanent link" href="#options" class="permalink">&para;</a></h2>
+<h2><a name="options" id="options">ï¿½É¼ï¿½</a> <a title="Permanent link" href="#options" class="permalink">&para;</a></h2>
   <ul>
-    <li><a href="#configurationoptions">±¸¼º ¿É¼Ç</a></li>
-    <li><a href="#installationdirectories">¼³Ä¡ µð·ºÅä¸®</a></li>
-    <li><a href="#systemtypes">½Ã½ºÅÛ Á¾·ù</a></li>
-    <li><a href="#optionalfeatures">±â´É ¼±ÅÃ</a></li>
-    <li><a href="#supportopt">Áö¿ø ÇÁ·Î±×·¥À» À§ÇÑ ¿É¼Ç</a></li>
+    <li><a href="#configurationoptions">ï¿½ï¿½ï¿½ï¿½ ï¿½É¼ï¿½</a></li>
+    <li><a href="#installationdirectories">ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ä¸®</a></li>
+    <li><a href="#systemtypes">ï¿½Ã½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a></li>
+    <li><a href="#optionalfeatures">ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a></li>
+    <li><a href="#supportopt">ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½É¼ï¿½</a></li>
   </ul>
 
-  <h3><a name="configurationoptions" id="configurationoptions">±¸¼º ¿É¼Ç</a></h3>
+  <h3><a name="configurationoptions" id="configurationoptions">ï¿½ï¿½ï¿½ï¿½ ï¿½É¼ï¿½</a></h3>
 
-    <p>ÀÌ ¿É¼ÇµéÀº <code>configure</code> ÀÚÃ¼ Çàµ¿¿¡ ¿µÇâÀ»
-    ÁØ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½É¼Çµï¿½ï¿½ï¿½ <code>configure</code> ï¿½ï¿½Ã¼ ï¿½àµ¿ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ø´ï¿½.</p>
 
     <dl>
       <dt><code>-C</code></dt>
       <dt><code>--config-cache</code></dt>
-      <dd><code>--cache-file=config.cache</code>¿Í °°´Ù.</dd>
+      <dd><code>--cache-file=config.cache</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</dd>
 
       <dt><code>--cache-file=<var>FILE</var></code></dt>
-      <dd>°Ë»ç °á°ú¸¦ <var>FILE</var> ÆÄÀÏ¿¡ Ä³½ÌÇÑ´Ù.
-        ±âº»°ªÀº °Ë»ç °á°ú¸¦ ±â·ÏÇÏÁö ¾Ê´Â´Ù.</dd>
+      <dd>ï¿½Ë»ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ <var>FILE</var> ï¿½ï¿½ï¿½Ï¿ï¿½ Ä³ï¿½ï¿½ï¿½Ñ´ï¿½.
+        ï¿½âº»ï¿½ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.</dd>
 
       <dt><code>-h</code></dt>
       <dt><code>--help [short|recursive]</code></dt>
-      <dd>µµ¿ò¸»À» Ãâ·ÂÇÏ°í Á¾·áÇÑ´Ù. <code>short</code> ¾Æ±Ô¸ÕÆ®´Â
-        ÀÌ ÆÐÅ°Áö Æ¯À¯ÀÇ ¿É¼Ç¸¸À» Ãâ·ÂÇÑ´Ù. <code>recursive</code>
-        ¾Æ±Ô¸ÕÆ®´Â Æ÷ÇÔµÈ ¸ðµç ÆÐÅ°Áö¿¡ ´ëÇÑ ÂªÀº µµ¿ò¸»À»
-        º¸¿©ÁØ´Ù.</dd>
+      <dd>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <code>short</code> ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½
+        ï¿½ï¿½ ï¿½ï¿½Å°ï¿½ï¿½ Æ¯ï¿½ï¿½ï¿½ï¿½ ï¿½É¼Ç¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <code>recursive</code>
+        ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½Ôµï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½Å°ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Âªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½.</dd>
 
       <dt><code>-n</code></dt>
       <dt><code>--no-create</code></dt>
-      <dd><code>configure</code> ½ºÅ©¸³Æ®¸¦ Á¤»óÀûÀ¸·Î ½ÇÇàÇÏÁö¸¸,
-        Ãâ·ÂÆÄÀÏÀ» ¸¸µéÁö ¾Ê´Â´Ù. ÀÌ ¿É¼ÇÀº ÄÄÆÄÀÏÀ» À§ÇÑ makefileÀ»
-        ¸¸µé±â ÀÌÀü¿¡ °Ë»ç °á°ú¸¦ È®ÀÎÇØº¼¶§ À¯¿ëÇÏ´Ù.</dd>
+      <dd><code>configure</code> ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½. ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ makefileï¿½ï¿½
+        ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Øºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.</dd>
 
       <dt><code>-q</code></dt>
       <dt><code>--quiet</code></dt>
-      <dd>½ÇÇàÁß¿¡ <code>checking ...</code> ¹®±¸¸¦ Ãâ·ÂÇÏÁö
-        ¾Ê´Â´Ù.</dd>
+      <dd>ï¿½ï¿½ï¿½ï¿½ï¿½ß¿ï¿½ <code>checking ...</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        ï¿½Ê´Â´ï¿½.</dd>
 
       <dt><code>--srcdir=<var>DIR</var></code></dt>
-      <dd><var>DIR</var> µð·ºÅä¸®¸¦ ¼Ò½ºÆÄÀÏ µð·ºÅä¸®·Î ÁöÁ¤ÇÑ´Ù.
-        ±âº»°ªÀº configure°¡ ÀÖ´Â µð·ºÅä¸® È¤Àº »óÀ§µð·ºÅä¸®
-        <code>..</code>ÀÌ´Ù.</dd>
+      <dd><var>DIR</var> ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½Ò½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+        ï¿½âº»ï¿½ï¿½ï¿½ï¿½ configureï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ä¸® È¤ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸®
+        <code>..</code>ï¿½Ì´ï¿½.</dd>
 
       <dt><code>--silent</code></dt>
-      <dd><code>--quiet</code>¿Í °°´Ù.</dd>
+      <dd><code>--quiet</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</dd>
 
       <dt>-V</dt>
       <dt>--version</dt>
-      <dd>ÀúÀÛ±Ç Á¤º¸¸¦ Ãâ·ÂÇÏ°í Á¾·áÇÑ´Ù.</dd>
+      <dd>ï¿½ï¿½ï¿½Û±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
     </dl>
   
 
-  <h3><a name="installationdirectories" id="installationdirectories">¼³Ä¡ µð·ºÅä¸®</a></h3>
+  <h3><a name="installationdirectories" id="installationdirectories">ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ä¸®</a></h3>
 
-    <p>ÀÌ ¿É¼ÇµéÀº ¼³Ä¡ µð·ºÅä¸®¸¦ ÁöÁ¤ÇÑ´Ù. ¼³Ä¡ À§Ä¡´Â
-      ¼±ÅÃÇÑ ±¸Á¶(layout)¿¡ µû¶ó ´Ù¸£´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½É¼Çµï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½Ä¡ ï¿½ï¿½Ä¡ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(layout)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ï¿½ï¿½.</p>
 
     <dl>
       <dt><code>--prefix=<var>PREFIX</var></code></dt>
-      <dd>¾ÆÅ°ÅØÃÄ¿¡ µ¶¸³ÀûÀÎ ÆÄÀÏÀ» <var>PREFIX</var>¿¡ ¼³Ä¡ÇÑ´Ù.
-        ±âº»°ªÀº <code>/usr/local/apache2</code>ÀÌ´Ù.</dd>
+      <dd>ï¿½ï¿½Å°ï¿½ï¿½ï¿½Ä¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <var>PREFIX</var>ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½Ñ´ï¿½.
+        ï¿½âº»ï¿½ï¿½ï¿½ï¿½ <code>/usr/local/apache2</code>ï¿½Ì´ï¿½.</dd>
 
       <dt><code>--exec-prefix=<var>EPREFIX</var></code></dt>
-      <dd>¾ÆÅ°ÅØÃÄ¿¡ ÀÇÁ¸ÀûÀÎ ÆÄÀÏÀ» <var>EPREFIX</var>¿¡ ¼³Ä¡ÇÑ´Ù.
-        ±âº»°ªÀº <var>PREFIX</var> µð·ºÅä¸®ÀÌ´Ù.</dd>
+      <dd>ï¿½ï¿½Å°ï¿½ï¿½ï¿½Ä¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <var>EPREFIX</var>ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½Ñ´ï¿½.
+        ï¿½âº»ï¿½ï¿½ï¿½ï¿½ <var>PREFIX</var> ï¿½ï¿½ï¿½ä¸®ï¿½Ì´ï¿½.</dd>
     </dl>
 
-    <p>±âº»ÀûÀ¸·Î <code>make install</code>Àº
+    <p>ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>make install</code>ï¿½ï¿½
       <code>/usr/local/apache2/bin</code>,
-      <code>/usr/local/apache2/lib</code>¿Í °°Àº À§Ä¡¿¡ ¸ðµç
-      ÆÄÀÏÀ» ¼³Ä¡ÇÑ´Ù. <code>--prefix=$HOME</code>°ú °°ÀÌ
-      <code>--prefix</code> ¿É¼ÇÀ» »ç¿ëÇÏ¿©
-      <code>/usr/local/apache2</code> ÀÌ¿ÜÀÇ ¼³Ä¡ »óÀ§µð·ºÅä¸®¸¦
-      ÁöÁ¤ÇÒ ¼ö ÀÖ´Ù.</p>
+      <code>/usr/local/apache2/lib</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½Ñ´ï¿½. <code>--prefix=$HOME</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+      <code>--prefix</code> ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½
+      <code>/usr/local/apache2</code> ï¿½Ì¿ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <h4><a name="layout" id="layout">µð·ºÅä¸® ±¸Á¶ ÁöÁ¤</a></h4>
+    <h4><a name="layout" id="layout">ï¿½ï¿½ï¿½ä¸® ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a></h4>
       <dl>
         <dt><code>--enable-layout=<var>LAYOUT</var></code></dt>
-        <dd>¼³Ä¡ À§Ä¡¸¦ <var>LAYOUT</var> ±¸Á¶¿¡ µû¸£µµ·Ï
-          ¼Ò½ºÄÚµå¿Í ÄÄÆÄÀÏ ½ºÅ©¸³Æ®¸¦ ±¸¼ºÇÑ´Ù. ±¸Á¶¸¦ »ç¿ëÇÏ¸é
-          ÆÄÀÏ Á¾·ù¿¡ µû¶ó ¼³Ä¡ À§Ä¡¸¦ µû·Î ÁöÁ¤ÇÒ ¼ö ÀÖ´Ù.
-          <code>config.layout</code> ÆÄÀÏ¿¡ ¿©·¯ ¼³Á¤ ¿¹°¡ ÀÖ°í,
-          ÀÌ¸¦ Âü°íÇÏ¿© Á÷Á¢ ¼³Á¤À» ¸¸µé ¼öµµ ÀÖ´Ù. ÆÄÀÏ¿¡¼­
-          °¢ ±¸Á¶´Â <code>&lt;Layout
-            FOO&gt;...&lt;/Layout&gt;</code>·Î ±¸ºÐµÇ¸ç, ÀÌ
-          ºÎºÐÀº <code>FOO</code>¶ó´Â ÀÌ¸§ÀÇ ±¸Á¶¸¦ ³ªÅ¸³½´Ù.
-          ±¸Á¶ÀÇ ±âº»°ªÀº <code>Apache</code>ÀÌ´Ù.</dd>
+        <dd>ï¿½ï¿½Ä¡ ï¿½ï¿½Ä¡ï¿½ï¿½ <var>LAYOUT</var> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+          ï¿½Ò½ï¿½ï¿½Úµï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½
+          ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.
+          <code>config.layout</code> ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö°ï¿½,
+          ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½
+          ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>&lt;Layout
+            FOO&gt;...&lt;/Layout&gt;</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ÐµÇ¸ï¿½, ï¿½ï¿½
+          ï¿½Îºï¿½ï¿½ï¿½ <code>FOO</code>ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½.
+          ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½ <code>Apache</code>ï¿½Ì´ï¿½.</dd>
       </dl>
     
 
-    <h4><a name="directoryfinetuning" id="directoryfinetuning">¼³Ä¡ µð·ºÅä¸®ÀÇ
-      ÀÚ¼¼ÇÑ Á¶Á¤</a></h4>
+    <h4><a name="directoryfinetuning" id="directoryfinetuning">ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½
+      ï¿½Ú¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a></h4>
     
-      <p>¼³Ä¡ µð·ºÅä¸®¸¦ ´õ ¼öÁ¤ÇÑ´Ù¸é ¾Æ·¡ ¿É¼ÇÀ» »ç¿ëÇÑ´Ù.
-        °¢ µð·ºÅä¸®ÀÇ ±âº»°ªÀº <code>autoconf</code>°¡ ÁöÁ¤ÇÏ¸ç,
-        ¼±ÅÃÇÑ ±¸Á¶¿¡ µû¶ó ´Ù¸§À» ÁÖÀÇÇÏ¶ó.</p>
+      <p>ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½ ï¿½Æ·ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+        ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½ <code>autoconf</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½,
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.</p>
 
       <dl>
         
         <dt><code>--bindir=<var>DIR</var></code></dt>
-        <dd>»ç¿ëÀÚ ½ÇÇàÆÄÀÏÀ» <var>DIR</var>¿¡ ¼³Ä¡ÇÑ´Ù. »ç¿ëÀÚ
-          ½ÇÇàÆÄÀÏ¿¡´Â »çÀÌÆ® °ü¸®ÀÚ¿¡°Ô À¯¿ëÇÑ
-          <code>htpasswd</code>¿Í <code>dbmmanage</code> °°Àº
-          Áö¿ø ÇÁ·Î±×·¥µµ Æ÷ÇÔµÈ´Ù. <var>DIR</var>ÀÇ ±âº»°ªÀº
-          <code><var>EPREFIX</var>/bin</code>ÀÌ´Ù.</dd>
+        <dd>ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <var>DIR</var>ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½
+          ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+          <code>htpasswd</code>ï¿½ï¿½ <code>dbmmanage</code> ï¿½ï¿½ï¿½ï¿½
+          ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ÔµÈ´ï¿½. <var>DIR</var>ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½
+          <code><var>EPREFIX</var>/bin</code>ï¿½Ì´ï¿½.</dd>
 
         <dt><code>--datadir=<var>DIR</var></code></dt>
-        <dd>¾ÆÅ°ÅØÃÄ µ¶¸³ÀûÀÎ ÀÐ±âÀü¿ë ÀÚ·á¸¦ <var>DIR</var>¿¡
-          ¼³Ä¡ÇÑ´Ù. <code>datadir</code>ÀÇ ±âº»°ªÀº
-          <code><var>PREFIX</var>/share</code>ÀÌ´Ù.
-          <code>autoconf</code>¿¡ ÀÌ ¿É¼ÇÀÌ ÀÖÁö¸¸ ÇöÀç »ç¿ëÇÏÁö
-          ¾Ê´Â´Ù.</dd>
+        <dd>ï¿½ï¿½Å°ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ð±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ú·á¸¦ <var>DIR</var>ï¿½ï¿½
+          ï¿½ï¿½Ä¡ï¿½Ñ´ï¿½. <code>datadir</code>ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½
+          <code><var>PREFIX</var>/share</code>ï¿½Ì´ï¿½.
+          <code>autoconf</code>ï¿½ï¿½ ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+          ï¿½Ê´Â´ï¿½.</dd>
 
         <dt><code>--includedir=<var>DIR</var></code></dt>
-        <dd>C Çì´õÆÄÀÏÀ» <var>DIR</var>¿¡ ¼³Ä¡ÇÑ´Ù.
-          <code>includedir</code>ÀÇ ±âº»°ªÀº
-          <code><var>EPREFIX</var>/include</code>ÀÌ´Ù.</dd>
+        <dd>C ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <var>DIR</var>ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½Ñ´ï¿½.
+          <code>includedir</code>ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½
+          <code><var>EPREFIX</var>/include</code>ï¿½Ì´ï¿½.</dd>
 
         <dt><code>--infodir=<var>DIR</var></code></dt>
-        <dd>info ¹®¼­¸¦ <var>DIR</var>¿¡ ¼³Ä¡ÇÑ´Ù.
-          <code>infodir</code>ÀÇ ±âº»°ªÀº
-          <code><var>PREFIX</var>/info</code>ÀÌ´Ù. ÇöÀç ÀÌ ¿É¼ÇÀº
-          »ç¿ëÇÏÁö ¾Ê´Â´Ù.</dd>
+        <dd>info ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <var>DIR</var>ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½Ñ´ï¿½.
+          <code>infodir</code>ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½
+          <code><var>PREFIX</var>/info</code>ï¿½Ì´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½
+          ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.</dd>
         
         <dt><code>--libdir=<var>DIR</var></code></dt>
-        <dd>¿ÀºêÁ§Æ®ÄÚµå ¶óÀÌºê·¯¸®¸¦ <var>DIR</var>¿¡ ¼³Ä¡ÇÑ´Ù.
-          <code>libdir</code>ÀÇ ±âº»°ªÀº
-          <code><var>EPREFIX</var>/lib</code>ÀÌ´Ù.</dd>
+        <dd>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½Úµï¿½ ï¿½ï¿½ï¿½Ìºê·¯ï¿½ï¿½ï¿½ï¿½ <var>DIR</var>ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½Ñ´ï¿½.
+          <code>libdir</code>ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½
+          <code><var>EPREFIX</var>/lib</code>ï¿½Ì´ï¿½.</dd>
 
         <dt><code>--libexecdir=<var>DIR</var></code></dt>
-        <dd>ÇÁ·Î±×·¥ ½ÇÇàÆÄÀÏÀ» (Áï, °øÀ¯¸ðµâ) <var>DIR</var>¿¡
-          ¼³Ä¡ÇÑ´Ù. <code>libexecdir</code>ÀÇ ±âº»°ªÀº
-          <code><var>EPREFIX</var>/libexec</code>ÀÌ´Ù.</dd>
+        <dd>ï¿½ï¿½ï¿½Î±×·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½) <var>DIR</var>ï¿½ï¿½
+          ï¿½ï¿½Ä¡ï¿½Ñ´ï¿½. <code>libexecdir</code>ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½
+          <code><var>EPREFIX</var>/libexec</code>ï¿½Ì´ï¿½.</dd>
 
         <dt><code>--localstatedir=<var>DIR</var></code></dt>
-        <dd>º¯°æµÇ´Â ¸Ó½®º° Á¤º¸¸¦ <var>DIR</var>¿¡ ¼³Ä¡ÇÑ´Ù.
-          <code>localstatedir</code>ÀÇ ±âº»°ªÀº
-          <code><var>PREFIX</var>/var</code>ÀÌ´Ù.
-          <code>autoconf</code>¿¡ ÀÌ ¿É¼ÇÀÌ ÀÖÁö¸¸ ÇöÀç »ç¿ëÇÏÁö
-          ¾Ê´Â´Ù.</dd>
+        <dd>ï¿½ï¿½ï¿½ï¿½Ç´ï¿½ ï¿½Ó½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <var>DIR</var>ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½Ñ´ï¿½.
+          <code>localstatedir</code>ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½
+          <code><var>PREFIX</var>/var</code>ï¿½Ì´ï¿½.
+          <code>autoconf</code>ï¿½ï¿½ ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+          ï¿½Ê´Â´ï¿½.</dd>
 
         <dt><code>--mandir=<var>DIR</var></code></dt>
-        <dd>man ¹®¼­¸¦ <var>DIR</var>¿¡ ¼³Ä¡ÇÑ´Ù.
-          <code>mandir</code>ÀÇ ±âº»°ªÀº
-          <code><var>EPREFIX</var>/man</code>ÀÌ´Ù.</dd>
+        <dd>man ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <var>DIR</var>ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½Ñ´ï¿½.
+          <code>mandir</code>ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½
+          <code><var>EPREFIX</var>/man</code>ï¿½Ì´ï¿½.</dd>
       
         <dt><code>--oldincludedir=<var>DIR</var></code></dt>
-        <dd>gcc°¡ ¾Æ´Ñ ÄÄÆÄÀÏ·¯¸¦ À§ÇÑ C Çì´õÆÄÀÏÀ» <var>DIR</var>¿¡
-          ¼³Ä¡ÇÑ´Ù. <code>oldincludedir</code>ÀÇ ±âº»°ªÀº
-          <code>/usr/include</code>ÀÌ´Ù. <code>autoconf</code>¿¡
-          ÀÌ ¿É¼ÇÀÌ ÀÖÁö¸¸ ÇöÀç »ç¿ëÇÏÁö ¾Ê´Â´Ù.</dd>
+        <dd>gccï¿½ï¿½ ï¿½Æ´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ C ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <var>DIR</var>ï¿½ï¿½
+          ï¿½ï¿½Ä¡ï¿½Ñ´ï¿½. <code>oldincludedir</code>ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½
+          <code>/usr/include</code>ï¿½Ì´ï¿½. <code>autoconf</code>ï¿½ï¿½
+          ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.</dd>
         
         <dt><code>--sbindir=<var>DIR</var></code></dt>
-        <dd>½Ã½ºÅÛ °ü¸®ÀÚ¿ë ½ÇÇàÆÄÀÏÀ» <var>DIR</var>¿¡ ¼³Ä¡ÇÑ´Ù.
-          ½Ã½ºÅÛ °ü¸®ÀÚ¿ë ½ÇÇàÆÄÀÏÀÌ¶õ ¾ÆÆÄÄ¡ À¥¼­¹ö¸¦ ½ÇÇàÇÏ´Âµ¥
-          ÇÊ¿äÇÑ <code>httpd</code>, <code>apachectl</code>,
-          <code>suexec</code> µî ¼­¹ö ÇÁ·Î±×·¥À» ¸»ÇÑ´Ù.
-          <code>sbindir</code>ÀÇ ±âº»°ªÀº
-          <code><var>EPREFIX</var>/sbin</code>ÀÌ´Ù.</dd>
+        <dd>ï¿½Ã½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ú¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <var>DIR</var>ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½Ñ´ï¿½.
+          ï¿½Ã½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ú¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì¶ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´Âµï¿½
+          ï¿½Ê¿ï¿½ï¿½ï¿½ <code>httpd</code>, <code>apachectl</code>,
+          <code>suexec</code> ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ñ´ï¿½.
+          <code>sbindir</code>ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½
+          <code><var>EPREFIX</var>/sbin</code>ï¿½Ì´ï¿½.</dd>
 
         <dt><code>--sharedstatedir=<var>DIR</var></code></dt>
-        <dd>º¯°æµÇ´Â ¾ÆÅ°ÅØÃÄ µ¶¸³ÀûÀÎ ÀÚ·á¸¦ <var>DIR</var>¿¡
-          ¼³Ä¡ÇÑ´Ù. <code>sharedstatedir</code>ÀÇ ±âº»°ªÀº
-          <code><var>PREFIX</var>/com</code>ÀÌ´Ù.
-          <code>autoconf</code>¿¡ ÀÌ ¿É¼ÇÀÌ ÀÖÁö¸¸ ÇöÀç »ç¿ëÇÏÁö
-          ¾Ê´Â´Ù.</dd>
+        <dd>ï¿½ï¿½ï¿½ï¿½Ç´ï¿½ ï¿½ï¿½Å°ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ú·á¸¦ <var>DIR</var>ï¿½ï¿½
+          ï¿½ï¿½Ä¡ï¿½Ñ´ï¿½. <code>sharedstatedir</code>ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½
+          <code><var>PREFIX</var>/com</code>ï¿½Ì´ï¿½.
+          <code>autoconf</code>ï¿½ï¿½ ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+          ï¿½Ê´Â´ï¿½.</dd>
 
         <dt><code>--sysconfdir=<var>DIR</var></code></dt>
-        <dd>¼­¹ö ¼³Á¤ÆÄÀÏ <code>httpd.conf</code>,
-          <code>mime.types</code>¿Í °°Àº ÀÐ±âÀü¿ë ¸Ó½®º° ÀÚ·á¸¦
-          <var>DIR</var>¿¡ ¼³Ä¡ÇÑ´Ù. <code>sysconfdir</code>ÀÇ
-          ±âº»°ªÀº <code><var>PREFIX</var>/etc</code>ÀÌ´Ù.</dd>
+        <dd>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>httpd.conf</code>,
+          <code>mime.types</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ð±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ó½ï¿½ï¿½ï¿½ ï¿½Ú·á¸¦
+          <var>DIR</var>ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½Ñ´ï¿½. <code>sysconfdir</code>ï¿½ï¿½
+          ï¿½âº»ï¿½ï¿½ï¿½ï¿½ <code><var>PREFIX</var>/etc</code>ï¿½Ì´ï¿½.</dd>
       </dl>        
     
   
   
-  <h3><a name="systemtypes" id="systemtypes">½Ã½ºÅÛ Á¾·ù</a></h3>
+  <h3><a name="systemtypes" id="systemtypes">ï¿½Ã½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a></h3>
 
-    <p>´Ù¸¥ ½Ã½ºÅÛ¿¡¼­ ½ÇÇàÇÒ ¾ÆÆÄÄ¡ À¥¼­¹ö¸¦
-      ±³Â÷ÄÄÆÄÀÏÇÏ±â(cross-compile)ÇÏ±â À§ÇÑ ¿É¼ÇµéÀÌ´Ù. ¼­¹ö¸¦
-      ÄÄÆÄÀÏÇÑ ½Ã½ºÅÛ¿¡¼­ ¼­¹ö¸¦ ½ÇÇàÇÏ´Â ÀÏ¹ÝÀûÀÎ °æ¿ì, ÀÌ
-      ¿É¼ÇÀ» »ç¿ëÇÏÁö ¾Ê´Â´Ù.</p>
+    <p>ï¿½Ù¸ï¿½ ï¿½Ã½ï¿½ï¿½Û¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½(cross-compile)ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½É¼Çµï¿½ï¿½Ì´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã½ï¿½ï¿½Û¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, ï¿½ï¿½
+      ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.</p>
 
     <dl>
       <dt><code>--build=<var>BUILD</var></code></dt>
-      <dd>µµ±¸¸¦ ÄÄÆÄÀÏÇÏ´Â ½Ã½ºÅÛÀÇ Á¾·ù¸¦ ÁöÁ¤ÇÑ´Ù. ±âº»°ªÀº
-        <code>config.guess</code> ½ºÅ©¸³Æ®ÀÇ °á°úÀÌ´Ù.</dd>
+      <dd>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½âº»ï¿½ï¿½ï¿½ï¿½
+        <code>config.guess</code> ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ì´ï¿½.</dd>
 
       <dt><code>--host=<var>HOST</var></code></dt>
-      <dd>¼­¹ö¸¦ ½ÇÇàÇÒ ½Ã½ºÅÛÀÇ Á¾·ù¸¦ ÁöÁ¤ÇÑ´Ù. <var>HOST</var>ÀÇ
-        ±âº»°ªÀº <var>BUILD</var>ÀÌ´Ù.</dd>
+      <dd>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <var>HOST</var>ï¿½ï¿½
+        ï¿½âº»ï¿½ï¿½ï¿½ï¿½ <var>BUILD</var>ï¿½Ì´ï¿½.</dd>
 
       <dt><code>--target=<var>TARGET</var></code></dt>
-      <dd><var>TARGET</var> ½Ã½ºÅÛ Á¾·ù¸¦ À§ÇÑ ÄÄÆÄÀÏ·¯¸¦ ¸¸µé¶§
-        »ç¿ëÇÑ´Ù. ±âº»°ªÀº <var>HOST</var>ÀÌ´Ù.
-        <code>autoconf</code>¿¡ ÀÌ ¿É¼ÇÀÌ ÀÖÁö¸¸ ¾ÆÆÄÄ¡ À¥¼­¹ö¿Í´Â
-        °ü·ÃÀÌ ¾ø´Ù.</dd>
+      <dd><var>TARGET</var> ï¿½Ã½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½é¶§
+        ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½âº»ï¿½ï¿½ï¿½ï¿½ <var>HOST</var>ï¿½Ì´ï¿½.
+        <code>autoconf</code>ï¿½ï¿½ ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í´ï¿½
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</dd>
     </dl>
   
 
-  <h3><a name="optionalfeatures" id="optionalfeatures">±â´É ¼±ÅÃ</a></h3>
+  <h3><a name="optionalfeatures" id="optionalfeatures">ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a></h3>
 
-    <p>ÀÌ ¿É¼ÇÀº À¥¼­¹öÀÇ ¼¼ºÎ ±â´ÉÀ» Á¶ÀýÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <h4><a name="generaloptfeat" id="generaloptfeat">ÀÏ¹ÝÀûÀÎ ¹®¹ý</a></h4>
-      <p>ÀÏ¹ÝÀûÀ¸·Î ´ÙÀ½ ¹®¹ýÀ» »ç¿ëÇÏ¿© ±â´ÉÀ» Æ÷ÇÔÇÏ°í »«´Ù:</p>
+    <h4><a name="generaloptfeat" id="generaloptfeat">ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a></h4>
+      <p>ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½:</p>
 
       <dl>
         <dt><code>--disable-<var>FEATURE</var></code></dt>
-        <dd><var>FEATURE</var> ±â´ÉÀ» »«´Ù.
-          <code>--enable-<var>FEATURE</var>=no</code>¿Í °°´Ù.</dd>
+        <dd><var>FEATURE</var> ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
+          <code>--enable-<var>FEATURE</var>=no</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</dd>
 
         <dt><code>--enable-<var>FEATURE</var>[=<var>ARG</var>]</code></dt>
-        <dd><var>FEATURE</var> ±â´ÉÀ» Æ÷ÇÔÇÑ´Ù. <var>ARG</var>ÀÇ
-          ±âº»°ªÀº <code>yes</code>ÀÌ´Ù.</dd>
+        <dd><var>FEATURE</var> ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <var>ARG</var>ï¿½ï¿½
+          ï¿½âº»ï¿½ï¿½ï¿½ï¿½ <code>yes</code>ï¿½Ì´ï¿½.</dd>
 
         <dt><code>--enable-<var>MODULE</var>=shared</code></dt>
-        <dd>ÇØ´ç ¸ðµâÀ» DSO ¸ðµâ·Î ÄÄÆÄÀÏÇÑ´Ù.</dd>
+        <dd>ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ DSO ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
         <dt><code>--enable-<var>MODULE</var>=static</code></dt>
-        <dd>Æ÷ÇÔÇÏ´Â ¸ðµâÀº ±âº»ÀûÀ¸·Î Á¤ÀûÀ¸·Î ¸µÅ©µÈ´Ù. ÀÌ
-          ¿É¼ÇÀº ¸í½ÃÀûÀ¸·Î Á¤Àû ¸µÅ©¸¦ °­Á¦ÇÑ´Ù.</dd>
+        <dd>ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½È´ï¿½. ï¿½ï¿½
+          ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
       </dl>
 
-      <div class="note"><h3>ÁÖÀÇ</h3>
-        <code>configure</code>´Â <var>foo</var>°¡ ¾ø´Â °æ¿ì
-        <code>--enable-<var>foo</var></code>¸¦ »ç¿ëÇØµµ ÀÌ »ç½ÇÀ»
-        ¾Ë·ÁÁÖÁö ¾ÊÀ¸¹Ç·Î ÁÖÀÇÇØ¼­ ÀÔ·ÂÇØ¾ß ÇÑ´Ù.
+      <div class="note"><h3>ï¿½ï¿½ï¿½ï¿½</h3>
+        <code>configure</code>ï¿½ï¿½ <var>foo</var>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+        <code>--enable-<var>foo</var></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Øµï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+        ï¿½Ë·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½Ô·ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½.
       </div>
     
 
     
-    <h4><a name="enabledmodules" id="enabledmodules">±âº»ÀûÀ¸·Î Æ÷ÇÔÇÏ´Â ¸ðµâ</a></h4>
-      <p>¾î¶² ¸ðµâÀº ±âº»ÀûÀ¸·Î ÄÄÆÄÀÏµÇ±â¶§¹®¿¡ »ç¿ëÇÏÁö ¾Ê´Â´Ù¸é
-        ¸í½ÃÀûÀ¸·Î »©Áà¾ß ÇÑ´Ù. ´ÙÀ½ ¿É¼ÇÀº Æ¯Á¤ ¸ðµâÀ» ÄÄÆÄÀÏ
-        °úÁ¤¿¡¼­ Á¦¿ÜÇÑ´Ù.</p>
+    <h4><a name="enabledmodules" id="enabledmodules">ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½</a></h4>
+      <p>ï¿½î¶² ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ÏµÇ±â¶§ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´Ù¸ï¿½
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ Æ¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
       <dl>
         <dt><code>--disable-actions</code></dt>
-        <dd><code class="module"><a href="../mod/mod_actions.html">mod_actions</a></code>°¡ Á¦°øÇÏ´Â ¿äÃ»¿¡ ´ëÇÑ
-          Çàµ¿ ±â´ÉÀ» »ç¿ëÇÏÁö ¾Ê´Â´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_actions.html">mod_actions</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+          ï¿½àµ¿ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.</dd>
 
         <dt><code>--disable-alias</code></dt>
-        <dd><code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code>°¡ Á¦°øÇÏ´Â ¿äÃ»À»
-          ÆÄÀÏ½Ã½ºÅÛÀÇ ´Ù¸¥ ºÎºÐÀ¸·Î ´ëÀÀÇÏ´Â ±â´ÉÀ» »ç¿ëÇÏÁö
-          ¾Ê´Â´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½
+          ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½Îºï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+          ï¿½Ê´Â´ï¿½.</dd>
 
         <dt><code>--disable-asis</code></dt>
-        <dd><code class="module"><a href="../mod/mod_asis.html">mod_asis</a></code>°¡ Á¦°øÇÏ´Â as-is ÆÄÀÏÇüÀ»
-          Áö¿øÇÏÁö ¾Ê´Â´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_asis.html">mod_asis</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ as-is ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+          ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.</dd>
 
         <dt><code>--disable-auth</code></dt>
-        <dd><code class="module"><a href="../mod/mod_auth.html">mod_auth</a></code>°¡ Á¦°øÇÏ´Â »ç¿ëÀÚº° Á¢±ÙÁ¦¾î
-          ±â´ÉÀ» »ç¿ëÇÏÁö ¾Ê´Â´Ù. ÀÌ ¸ðµâÀº »ç¿ëÀÚ¸í°ú ¾ÏÈ£¸¦
-          ÀÏ¹Ý ¹®ÀÚÆÄÀÏ¿¡ ÀúÀåÇÏ´Â HTTP Basic Authentication¿¡¼­
-          »ç¿ëÇÑ´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_auth.html">mod_auth</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½Úºï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+          ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ï¿½ï¿½ ï¿½ï¿½È£ï¿½ï¿½
+          ï¿½Ï¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ HTTP Basic Authenticationï¿½ï¿½ï¿½ï¿½
+          ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
         <dt><code>--disable-autoindex</code></dt>
-        <dd><code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>°¡ Á¦°øÇÏ´Â µð·ºÅä¸®
-          ¸ñ·Ï ±â´ÉÀ» »ç¿ëÇÏÁö ¾Ê´Â´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ä¸®
+          ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.</dd>
 
         <dt><code>--disable-access</code></dt>
-        <dd><code class="module"><a href="../mod/mod_access.html">mod_access</a></code>°¡ Á¦°øÇÏ´Â È£½ºÆ®º°
-          Á¢±ÙÁ¦¾î ±â´ÉÀ» »ç¿ëÇÏÁö ¾Ê´Â´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_access.html">mod_access</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ È£ï¿½ï¿½Æ®ï¿½ï¿½
+          ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.</dd>
 
         <dt><code>--disable-cgi</code></dt>
-        <dd>ºñ¾²·¹µå MPMÀ» »ç¿ëÇÏ´Â °æ¿ì CGI ½ºÅ©¸³Æ®¸¦ Áö¿øÇÏ´Â
-          <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>¸¦ ±âº»ÀûÀ¸·Î Æ÷ÇÔÇÑ´Ù. ÀÌ
-          ¿É¼ÇÀ» »ç¿ëÇÏ¸é CGI¸¦ Áö¿øÇÏÁö ¾Ê´Â´Ù.</dd>
+        <dd>ï¿½ñ¾²·ï¿½ï¿½ï¿½ MPMï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ CGI ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½
+          <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½
+          ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ CGIï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.</dd>
 
         <dt><code>--disable-cgid</code></dt>
-        <dd>¾²·¹µå MPMÀÎ <code class="module"><a href="../mod/worker.html">worker</a></code>³ª
-          ¸¦ »ç¿ëÇÏ´Â °æ¿ì ±âº»ÀûÀ¸·Î
-          <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code>°¡ CGI ½ºÅ©¸³Æ®¸¦ Áö¿øÇÑ´Ù.
-          ÀÌ ¿É¼ÇÀ» »ç¿ëÇÏ¸é CGI¸¦ Áö¿øÇÏÁö ¾Ê´Â´Ù.</dd>
+        <dd>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ MPMï¿½ï¿½ <code class="module"><a href="../mod/worker.html">worker</a></code>ï¿½ï¿½
+          ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+          <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code>ï¿½ï¿½ CGI ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+          ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ CGIï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.</dd>
 
         <dt><code>--disable-charset-lite</code></dt>
-        <dd><code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code>°¡ Á¦°øÇÏ´Â ¹®ÀÚÁýÇÕ
-          º¯È¯ ±â´ÉÀ» »ç¿ëÇÏÁö ¾Ê´Â´Ù. ÀÌ ¸ðµâÀº EBCDIC ½Ã½ºÅÛ¿¡¼­¸¸
-          ±âº»ÀûÀ¸·Î Æ÷ÇÔÇÑ´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+          ï¿½ï¿½È¯ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ EBCDIC ï¿½Ã½ï¿½ï¿½Û¿ï¿½ï¿½ï¿½ï¿½ï¿½
+          ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
         <dt><code>--disable-dir</code></dt>
-        <dd><code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code>ÀÌ Á¦°øÇÏ´Â µð·ºÅä¸® ¿äÃ»
-          Ã³¸® ±â´ÉÀ» »ç¿ëÇÏÁö ¾Ê´Â´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ä¸® ï¿½ï¿½Ã»
+          Ã³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.</dd>
 
         <dt><code>--disable-env</code></dt>
-        <dd><code class="module"><a href="../mod/mod_env.html">mod_env</a></code>°¡ Á¦°øÇÏ´Â È¯°æº¯¼ö ¼³Á¤/ÇØÁ¦
-          ±â´ÉÀ» »ç¿ëÇÏÁö ¾Ê´Â´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_env.html">mod_env</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ È¯ï¿½æº¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½
+          ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.</dd>
 
         
         <dt><code>--disable-http</code></dt>
-          <dd>HTTP ÇÁ·ÎÅäÄÝÀ» Ã³¸®ÇÏÁö ¾Ê´Â´Ù. <code>http</code>
-            ¸ðµâÀº ¼­¹ö°¡ À¥¼­¹ö·Î µ¿ÀÛÇÏ´Âµ¥ ±âº»ÀûÀÎ ¸ðµâÀÌ´Ù.
-            ´ë½Å ´Ù¸¥ ÇÁ·ÎÅäÄÝ ¸ðµâÀ» »ç¿ëÇÒ °æ¿ì¿¡¸¸ ÀÌ ¸ðµâÀÌ
-            À¯¿ëÇÏ´Ù. <strong>ÀÚ½ÅÀÌ ¹«¾ùÀ» ÇÏ´ÂÁö È®½ÇÈ÷ ¾ËÁö
-            ¸øÇÑ´Ù¸é ÀÌ ¿É¼ÇÀ» »©Áö ¸¶¶ó</strong>
+          <dd>HTTP ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½. <code>http</code>
+            ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´Âµï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ì´ï¿½.
+            ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ì¿¡ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+            ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½. <strong>ï¿½Ú½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï´ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+            ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½ ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</strong>
             <br />
-            ÁÖÀÇ: ÀÌ ¸ðµâÀº Ç×»ó Á¤ÀûÀ¸·Î ¸µÅ©µÈ´Ù.</dd>
+            ï¿½ï¿½ï¿½ï¿½: ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×»ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½È´ï¿½.</dd>
 
         <dt><code>--disable-imagemap</code></dt>
-        <dd><code class="module"><a href="../mod/mod_imagemap.html">mod_imagemap</a></code>ÀÌ Á¦°øÇÏ´Â ¼­¹ö±â¹Ý imagemap
-          ±â´ÉÀ» »ç¿ëÇÏÁö ¾Ê´Â´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_imagemap.html">mod_imagemap</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ imagemap
+          ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.</dd>
 
         <dt><code>--disable-include</code></dt>
-        <dd><code class="module"><a href="../mod/mod_include.html">mod_include</a></code>°¡ Á¦°øÇÏ´Â Server Side
-          Includes ±â´ÉÀ» »ç¿ëÇÏÁö ¾Ê´Â´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_include.html">mod_include</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ Server Side
+          Includes ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.</dd>
 
         <dt><code>--disable-log-config</code></dt>
-        <dd><code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code>°¡ Á¦°øÇÏ´Â ·Î±×
-          ¼³Á¤À» »ç¿ëÇÏÁö ¾Ê´Â´Ù. ÀÌ ¸ðµâÀÌ ¾øÀ¸¸é ¼­¹öÀÇ ¿äÃ»À»
-          ·Î±×¿¡ ±â·ÏÇÒ ¼ö ¾ø´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Î±ï¿½
+          ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½
+          ï¿½Î±×¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</dd>
 
         <dt><code>--disable-mime</code></dt>
-        <dd><code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code>Àº ¿äÃ»ÇÑ ÆÄÀÏ¸íÀÇ È®ÀåÀÚ¿¡
-          µû¶ó ÆÄÀÏÀÇ Çàµ¿°ú ³»¿ë(mime-type, ¾ð¾î, ¹®ÀÚÁýÇÕ,
-          ÀÎÄÚµù)À» °áÁ¤ÇÑ´Ù. (ÀÌ ¸ðµâÀ» Á¦°ÅÇÏ¿©) ÆÄÀÏ È®ÀåÀÚ¸¦
-          MIME°ú ¿¬°üÇÏÁö ¾Ê´Â °ÍÀ» ÀÏ¹ÝÀûÀ¸·Î ÃßÃµÇÏÁö ¾Ê´Â´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code>ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ú¿ï¿½
+          ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½àµ¿ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(mime-type, ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,
+          ï¿½ï¿½ï¿½Úµï¿½)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. (ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½) ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ú¸ï¿½
+          MIMEï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ãµï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.</dd>
 
         <dt><code>--disable-negotiation</code></dt>
-        <dd><code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code>ÀÌ Á¦°øÇÏ´Â ³»¿ëÇù»ó
-          ±â´ÉÀ» »ç¿ëÇÏÁö ¾Ê´Â´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+          ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.</dd>
 
         <dt><code>--disable-setenvif</code></dt>
-        <dd><code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code>°¡ Á¦°øÇÏ´Â Çì´õ¿¡
-          µû¶ó È¯°æº¯¼ö¸¦ ¼³Á¤ÇÏ´Â ±â´ÉÀ» »ç¿ëÇÏÁö ¾Ê´Â´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+          ï¿½ï¿½ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.</dd>
 
         <dt><code>--disable-status</code></dt>
-        <dd><code class="module"><a href="../mod/mod_status.html">mod_status</a></code>°¡ Á¦°øÇÏ´Â ÇÁ·Î¼¼½º/¾²·¹µå
-          °¨½Ã ±â´ÉÀ» »ç¿ëÇÏÁö ¾Ê´Â´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_status.html">mod_status</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½Î¼ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+          ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.</dd>
 
         <dt><code>--disable-userdir</code></dt>
-        <dd><code class="module"><a href="../mod/mod_userdir.html">mod_userdir</a></code>ÀÌ Á¦°øÇÏ´Â ¿äÃ»À» »ç¿ëÀÚº°
-          µð·ºÅä¸®¿¡ ´ëÀÀÇÏ´Â ±â´ÉÀ» »ç¿ëÇÏÁö ¾Ê´Â´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_userdir.html">mod_userdir</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Úºï¿½
+          ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.</dd>
       </dl>
     
 
-    <h4><a name="disabledmodules" id="disabledmodules">±âº»ÀûÀ¸·Î Æ÷ÇÔÇÏÁö ¾Ê´Â ¸ðµâ</a></h4>
-      <p>±âº»ÀûÀ¸·Î ÄÄÆÄÀÏµÇ´Â ¸ðµâµµ ÀÖÁö¸¸, ¸ðµâÀ» »ç¿ëÇÏ·Á¸é
-        Á÷Á¢ È¤Àº <code>most</code>³ª <code>all</code> Å°¿öµå¸¦
-        »ç¿ëÇÏ¿© ¸í½ÃÀûÀ¸·Î Æ÷ÇÔÇØ¾ß ÇÏ´Â ¸ðµâÀÌ ÀÖ´Ù. ±×·¡¼­
-        ¾Æ·¡ ¿É¼ÇµéÀ» »ç¿ëÇÑ´Ù.</p>
+    <h4><a name="disabledmodules" id="disabledmodules">ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´ï¿½ ï¿½ï¿½ï¿½</a></h4>
+      <p>ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ÏµÇ´ï¿½ ï¿½ï¿½âµµ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½
+        ï¿½ï¿½ï¿½ï¿½ È¤ï¿½ï¿½ <code>most</code>ï¿½ï¿½ <code>all</code> Å°ï¿½ï¿½ï¿½å¸¦
+        ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½×·ï¿½ï¿½ï¿½
+        ï¿½Æ·ï¿½ ï¿½É¼Çµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
       <dl>
         <dt><code>--enable-auth-anon</code></dt>
-        <dd><code class="module"><a href="../mod/mod_auth_anon.html">mod_auth_anon</a></code>ÀÌ Á¦°øÇÏ´Â ÀÍ¸í»ç¿ëÀÚ
-          Á¢±Ù ±â´ÉÀ» »ç¿ëÇÑ´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_auth_anon.html">mod_auth_anon</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Í¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+          ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
         <dt><code>--enable-auth-dbm</code></dt>
-        <dd><code class="module"><a href="../mod/mod_auth_dbm.html">mod_auth_dbm</a></code>Àº »ç¿ëÀÚ¸í°ú ¾ÏÈ£¸¦
-          DBMÇü½ÄÀÇ µ¥ÀÌÅÍº£ÀÌ½º ÆÄÀÏ¿¡ ÀúÀåÇÏ´Â HTTP Basic
-          Authentication¿¡¼­ »ç¿ëÇÑ´Ù. ¸ðµâÀ» »ç¿ëÇÏ·Á¸é ÀÌ
-          ¿É¼ÇÀ» »ç¿ëÇÑ´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_auth_dbm.html">mod_auth_dbm</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ï¿½ï¿½ ï¿½ï¿½È£ï¿½ï¿½
+          DBMï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Íºï¿½ï¿½Ì½ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ HTTP Basic
+          Authenticationï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ ï¿½ï¿½
+          ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
         <dt><code>--enable-auth-digest</code></dt>
-        <dd><code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>°¡ Á¦°øÇÏ´Â RFC2617
-          Digest authenticationÀ» »ç¿ëÇÑ´Ù. ÀÌ ¸ðµâÀº Á¤º¸¸¦
-          ÀÏ¹Ý ¹®ÀÚÆÄÀÏ¿¡ ÀúÀåÇÑ´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ RFC2617
+          Digest authenticationï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+          ï¿½Ï¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
         <dt><code>--enable-authnz-ldap</code></dt>
-        <dd><code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code>ÀÌ Á¦°øÇÏ´Â LDAP±â¹Ý
-          ÀÎÁõ ±â´ÉÀ» »ç¿ëÇÑ´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ LDAPï¿½ï¿½ï¿½
+          ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
           
         <dt><code>--enable-cache</code></dt>
-        <dd><code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>°¡ Á¦°øÇÏ´Â µ¿ÀûÀ¸·Î »ý¼ºÇÏ´Â
-          ÆÄÀÏÀÇ Ä³½Ì ±â´ÉÀ» »ç¿ëÇÑ´Ù. ¸Å¿ì ºÎÇÏ°¡ ¸¹°Å³ª ÇÁ·Ï½Ã
-          ¼­¹ö¸¦ Ä³½ÌÇÏ´Â ¼­¹ö¿¡°Ô ÀÌ ½ÇÇèÀûÀÎ ¸ðµâÀÌ À¯¿ëÇÒ
-          ¼ö ÀÖ´Ù. ÃÖ¼ÒÇÑ ÇÑ°¡Áö ÀúÀå°ü¸®¸ðµâ(storage management
-          module)À» (¿¹¸¦ µé¾î, <code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code>³ª
-          <code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code>) °°ÀÌ »ç¿ëÇØ¾ß ÇÑ´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½
+          ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½Å¿ï¿½ ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½Å³ï¿½ ï¿½ï¿½ï¿½Ï½ï¿½
+          ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+          ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½Ö¼ï¿½ï¿½ï¿½ ï¿½Ñ°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(storage management
+          module)ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, <code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code>ï¿½ï¿½
+          <code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code>) ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½.</dd>
 
         <dt><code>--enable-cern-meta</code></dt>
-        <dd><code class="module"><a href="../mod/mod_cern_meta.html">mod_cern_meta</a></code>°¡ Á¦°øÇÏ´Â CERN ¸ÞÅ¸ÆÄÀÏ
-          Áö¿ø ±â´ÉÀ» »ç¿ëÇÑ´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_cern_meta.html">mod_cern_meta</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ CERN ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½
+          ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
         <dt><code>--enable-charset-lite</code></dt>
-        <dd><code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code>°¡ Á¦°øÇÏ´Â ¹®ÀÚÁýÇÕ
-          º¯È¯ ±â´ÉÀ» »ç¿ëÇÑ´Ù. ÀÌ ¸ðµâÀº EBCDIC ½Ã½ºÅÛ¿¡¼­¸¸
-          ±âº»ÀûÀ¸·Î Æ÷ÇÔµÈ´Ù. ´Ù¸¥ ½Ã½ºÅÛ¿¡¼­´Â Á÷Á¢ Æ÷ÇÔ½ÃÄÑÁà¾ß
-          ÇÑ´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+          ï¿½ï¿½È¯ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ EBCDIC ï¿½Ã½ï¿½ï¿½Û¿ï¿½ï¿½ï¿½ï¿½ï¿½
+          ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ÔµÈ´ï¿½. ï¿½Ù¸ï¿½ ï¿½Ã½ï¿½ï¿½Û¿ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ô½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+          ï¿½Ñ´ï¿½.</dd>
 
         <dt><code>--enable-dav</code></dt>
-        <dd><code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>°¡ Á¦°øÇÏ´Â WebDAV ÇÁ·ÎÅäÄÝ
-          Ã³¸® ±â´ÉÀ» »ç¿ëÇÑ´Ù. µ¶¸³µÈ <code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code>
-          ¸ðµâÀÌ ÆÄÀÏ½Ã½ºÅÛ ÀÚ¿øÀ» Áö¿øÇÑ´Ù. ÀÌ ¸ðµâÀº
-          <code>--enable-dav</code>¸¦ »ç¿ëÇÏ¸é ÀÚµ¿À¸·Î Æ÷ÇÔÇÑ´Ù.<br />
-          ÁÖÀÇ: <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>´Â <code>http</code>
-          ÇÁ·ÎÅäÄÝ ¸ðµâ°ú °°ÀÌ »ç¿ëÇØ¾ß ÇÑ´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ WebDAV ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+          Ã³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code>
+          ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½ï¿½ ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+          <code>--enable-dav</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.<br />
+          ï¿½ï¿½ï¿½ï¿½: <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>ï¿½ï¿½ <code>http</code>
+          ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½.</dd>
 
         <dt><code>--enable-dav-fs</code></dt>
-        <dd><code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code>°¡ Á¦°øÇÏ´Â DAVÀÇ ÆÄÀÏ½Ã½ºÅÛ
-          ÀÚ¿ø Áö¿ø ±â´ÉÀ» »ç¿ëÇÑ´Ù. ÀÌ ¸ðµâÀº
-          <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code> ¸ðµâÀ» À§ÇÑ Á¦°øÀÚÀÌ±â ¶§¹®¿¡
-          <code>--enable-dav</code>µµ »ç¿ëÇØ¾ß ÇÑ´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ DAVï¿½ï¿½ ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½ï¿½
+          ï¿½Ú¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+          <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code> ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+          <code>--enable-dav</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½.</dd>
 
         <dt><code>--enable-deflate</code></dt>
-        <dd><code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code>°¡ Á¦°øÇÏ´Â ¾ÐÃàÀü¼Û
-          ÀÎÄÚµù ±â´ÉÀ» »ç¿ëÇÑ´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+          ï¿½ï¿½ï¿½Úµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
         <dt><code>--enable-disk-cache</code></dt>
-        <dd><code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code>°¡ Á¦°øÇÏ´Â µð½ºÅ©
-          Ä³½Ì ±â´ÉÀ» »ç¿ëÇÑ´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½Å©
+          Ä³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
         <dt><code>--enable-expires</code></dt>
-        <dd><code class="module"><a href="../mod/mod_expires.html">mod_expires</a></code>°¡ Á¦°øÇÏ´Â Expires
-          Çì´õ Á¶Àý ±â´ÉÀ» »ç¿ëÇÑ´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_expires.html">mod_expires</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ Expires
+          ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
         <dt><code>--enable-ext-filter</code></dt>
-        <dd><code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code>°¡ Á¦°øÇÏ´Â ¿ÜºÎ
-          ÇÊÅÍ Áö¿ø ±â´ÉÀ» »ç¿ëÇÑ´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Üºï¿½
+          ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
         <dt><code>--enable-file-cache</code></dt>
-        <dd><code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code>°¡ Á¦°øÇÏ´Â ÆÄÀÏ
-          Ä³½Ì ±â´ÉÀ» »ç¿ëÇÑ´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½
+          Ä³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
         <dt><code>--enable-headers</code></dt>
-        <dd><code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code>°¡ Á¦°øÇÏ´Â HTTP Çì´õ
-          Á¶Àý ±â´ÉÀ» »ç¿ëÇÑ´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ HTTP ï¿½ï¿½ï¿½
+          ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
         <dt><code>--enable-info</code></dt>
-        <dd><code class="module"><a href="../mod/mod_info.html">mod_info</a></code>°¡ Á¦°øÇÏ´Â ¼­¹öÁ¤º¸ ±â´ÉÀ»
-          »ç¿ëÇÑ´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_info.html">mod_info</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+          ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
         <dt><code>--enable-ldap</code></dt>
-        <dd><code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code>ÀÌ Á¦°øÇÏ´Â LDAP Ä³½Ì°ú
-          ¿¬°áÇ® ±â´ÉÀ» »ç¿ëÇÑ´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ LDAP Ä³ï¿½Ì°ï¿½
+          ï¿½ï¿½ï¿½ï¿½Ç® ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
         <dt><code>--enable-logio</code></dt>
-        <dd><code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code>°¡ Á¦°øÇÏ´Â ·Î±×¿¡ Çì´õ¿Í
-          ÀÔÃâ·Â ¹ÙÀÌÆ®¼ö¸¦ ±â·ÏÇÏ´Â ±â´ÉÀ» »ç¿ëÇÑ´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Î±×¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+          ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
         <dt><code>--enable-mem-cache</code></dt>
-        <dd><code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code>°¡ Á¦°øÇÏ´Â ¸Þ¸ð¸®
-          Ä³½Ì ±â´ÉÀ» »ç¿ëÇÑ´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Þ¸ï¿½
+          Ä³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
         <dt><code>--enable-mime-magic</code></dt>
-        <dd><code class="module"><a href="../mod/mod_mime_magic.html">mod_mime_magic</a></code>ÀÌ Á¦°øÇÏ´Â MIME
-          type ÀÚµ¿ ÀÎ½Ä ±â´ÉÀ» »ç¿ëÇÑ´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_mime_magic.html">mod_mime_magic</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ MIME
+          type ï¿½Úµï¿½ ï¿½Î½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
         <dt><code>--enable-isapi</code></dt>
-        <dd><code class="module"><a href="../mod/mod_isapi.html">mod_isapi</a></code>°¡ Á¦°øÇÏ´Â isapi È®ÀåÀ»
-          Áö¿øÇÑ´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_isapi.html">mod_isapi</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ isapi È®ï¿½ï¿½ï¿½ï¿½
+          ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
         <dt><code>--enable-proxy</code></dt>
-        <dd><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>°¡ Á¦°øÇÏ´Â ÇÁ·Ï½Ã/°ÔÀÌÆ®¿þÀÌ
-          ±â´ÉÀ» »ç¿ëÇÑ´Ù. <code>CONNECT</code>, <code>FTP</code>,
-          <code>HTTP</code>¿¡ ´ëÇÑ ÇÁ·Ï½Ã ±â´ÉÀ» °¢°¢
+        <dd><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½Ï½ï¿½/ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½
+          ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <code>CONNECT</code>, <code>FTP</code>,
+          <code>HTTP</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
           <code class="module"><a href="../mod/mod_proxy_connect.html">mod_proxy_connect</a></code>,
           <code class="module"><a href="../mod/mod_proxy_ftp.html">mod_proxy_ftp</a></code>,
           <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>
-          ¸ðµâÀÌ Á¦°øÇÑ´Ù. <code>--enable-proxy</code>¸¦ »ç¿ëÇÏ¸é
-          ÀÌ ¼¼ ¸ðµâÀ» ÀÚµ¿À¸·Î Æ÷ÇÔÇÑ´Ù.</dd>
+          ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <code>--enable-proxy</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½
+          ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
         <dt><code>--enable-proxy-connect</code></dt>
-        <dd><code class="module"><a href="../mod/mod_proxy_connect.html">mod_proxy_connect</a></code>°¡ Á¦°øÇÏ´Â
-          <code>CONNECT</code> ¿äÃ»¿¡ ´ëÇÑ ÇÁ·Ï½Ã Áö¿ø ±â´ÉÀ»
-          »ç¿ëÇÑ´Ù. ÀÌ ¸ðµâÀº <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> ¸ðµâÀÇ
-          È®ÀåÀÌ¹Ç·Î, <code>--enable-proxy</code>µµ °°ÀÌ »ç¿ëÇØ¾ß
-          ÇÑ´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_proxy_connect.html">mod_proxy_connect</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½
+          <code>CONNECT</code> ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+          ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> ï¿½ï¿½ï¿½ï¿½ï¿½
+          È®ï¿½ï¿½ï¿½Ì¹Ç·ï¿½, <code>--enable-proxy</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½
+          ï¿½Ñ´ï¿½.</dd>
 
         <dt><code>--enable-proxy-ftp</code></dt>
-        <dd><code class="module"><a href="../mod/mod_proxy_ftp.html">mod_proxy_ftp</a></code>°¡ Á¦°øÇÏ´Â
-          <code>FTP</code> ¿äÃ»¿¡ ´ëÇÑ ÇÁ·Ï½Ã Áö¿ø ±â´ÉÀ» »ç¿ëÇÑ´Ù.
-          ÀÌ ¸ðµâÀº <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> ¸ðµâÀÇ È®ÀåÀÌ¹Ç·Î,
-          <code>--enable-proxy</code>µµ °°ÀÌ »ç¿ëÇØ¾ß ÇÑ´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_proxy_ftp.html">mod_proxy_ftp</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½
+          <code>FTP</code> ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+          ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ì¹Ç·ï¿½,
+          <code>--enable-proxy</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½.</dd>
 
         <dt><code>--enable-proxy-http</code></dt>
-        <dd><code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>°¡ Á¦°øÇÏ´Â
-          <code>HTTP</code> ¿äÃ»¿¡ ´ëÇÑ ÇÁ·Ï½Ã Áö¿ø ±â´ÉÀ» »ç¿ëÇÑ´Ù.
-          ÀÌ ¸ðµâÀº <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> ¸ðµâÀÇ È®ÀåÀÌ¹Ç·Î,
-          <code>--enable-proxy</code>µµ °°ÀÌ »ç¿ëÇØ¾ß ÇÑ´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½
+          <code>HTTP</code> ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+          ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ì¹Ç·ï¿½,
+          <code>--enable-proxy</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½.</dd>
 
         <dt><code>--enable-rewrite</code></dt>
-        <dd><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>°¡ Á¦°øÇÏ´Â ±ÔÄ¢±â¹Ý
-          URL Á¶ÀÛ ±â´ÉÀ» »ç¿ëÇÑ´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½Ä¢ï¿½ï¿½ï¿½
+          URL ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
         <dt><code>--enable-so</code></dt>
-        <dd><code class="module"><a href="../mod/mod_so.html">mod_so</a></code>°¡ Á¦°øÇÏ´Â DSO ±â´ÉÀ» »ç¿ëÇÑ´Ù.
-          <code>--enable-mods-shared</code> ¿É¼ÇÀ» »ç¿ëÇÏ¸é
-          ÀÚµ¿À¸·Î ÀÌ ¸ðµâÀ» Æ÷ÇÔÇÑ´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_so.html">mod_so</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ DSO ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+          <code>--enable-mods-shared</code> ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½
+          ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
         <dt><code>--enable-speling</code></dt>
-        <dd><code class="module"><a href="../mod/mod_spelling.html">mod_spelling</a></code>ÀÌ Á¦°øÇÏ´Â URL¿¡¼­
-          ÀÏ¹ÝÀûÀÎ ¸ÂÃã¹ý ½Ç¼ö¸¦ °íÄ¡´Â ±â´ÉÀ» »ç¿ëÇÑ´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_spelling.html">mod_spelling</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ URLï¿½ï¿½ï¿½ï¿½
+          ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ç¼ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
         <dt><code>--enable-ssl</code></dt>
-        <dd><code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>ÀÌ Á¦°øÇÏ´Â SSL/TLS ±â´ÉÀ»
-          »ç¿ëÇÑ´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ SSL/TLS ï¿½ï¿½ï¿½ï¿½ï¿½
+          ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
         <dt><code>--enable-unique-id</code></dt>
-        <dd><code class="module"><a href="../mod/mod_unique_id.html">mod_unique_id</a></code>°¡ Á¦°øÇÏ´Â ¿äÃ»¸¶´Ù
-          À¯ÀÏÇÑ ½Äº°ÀÚ¸¦ ¸¸µå´Â ±â´ÉÀ» »ç¿ëÇÑ´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_unique_id.html">mod_unique_id</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½
+          ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Äºï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
         <dt><code>--enable-usertrack</code></dt>
-        <dd><code class="module"><a href="../mod/mod_usertrack.html">mod_usertrack</a></code>ÀÌ Á¦°øÇÏ´Â »ç¿ëÀÚ¼¼¼Ç
-          ÃßÀû ±â´ÉÀ» »ç¿ëÇÑ´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_usertrack.html">mod_usertrack</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¼ï¿½ï¿½ï¿½
+          ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
         <dt><code>--enable-vhost-alias</code></dt>
-        <dd><code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code>°¡ Á¦°øÇÏ´Â ´ë·®
-          °¡»óÈ£½ºÆ® ±â´ÉÀ» »ç¿ëÇÑ´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ë·®
+          ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
       </dl>
     
 
-    <h4><a name="developermodules" id="developermodules">°³¹ßÀÚ¸¦ À§ÇÑ ¸ðµâ</a></h4>
-      <p>´ÙÀ½ ¸ðµâÀº Å×½ºÆ®¿ëÀ¸·Î °³¹ßÀÚ¿¡°Ô¸¸ À¯¿ëÇÏ¸ç, ±âº»ÀûÀ¸·Î
-        Æ÷ÇÔÇÏÁö ¾Ê´Â´Ù. ÀÌ ¸ðµâÀ» »ç¿ëÇÏ·Á¸é ´ÙÀ½ ¿É¼ÇÀ» »ç¿ëÇÑ´Ù.
-        ÀÌ ¸ðµâÀÌ ÇÊ¿äÇÑÁö È®½ÇÄ¡¾Ê´Ù¸é »ç¿ëÇÏÁö ¸¶¶ó.</p>
+    <h4><a name="developermodules" id="developermodules">ï¿½ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½</a></h4>
+      <p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½Ô¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½, ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+        ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½Ä¡ï¿½Ê´Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</p>
 
       <dl>
         
         <dt><code>--enable-bucketeer</code></dt>
-        <dd><code>mod_bucketeer</code>°¡ Á¦°øÇÏ´Â ¹öÅ¶(bucket)
-          Á¶ÀÛ ÇÊÅÍ¸¦ »ç¿ëÇÑ´Ù.</dd>
+        <dd><code>mod_bucketeer</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½Å¶(bucket)
+          ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
         
         <dt><code>--enable-case-filter</code></dt>
-        <dd><code>mod_case_filter</code>ÀÇ ´ë¹®ÀÚº¯È¯ Ãâ·ÂÇÊÅÍ
-          °ßº»À» »ç¿ëÇÑ´Ù.</dd>
+        <dd><code>mod_case_filter</code>ï¿½ï¿½ ï¿½ë¹®ï¿½Úºï¿½È¯ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+          ï¿½ßºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
         
         <dt><code>--enable-case-filter-in</code></dt>
-        <dd><code>mod_case_filter_in</code>ÀÇ ´ë¹®ÀÚº¯È¯ ÀÔ·ÂÇÊÅÍ
-          °ßº»À» »ç¿ëÇÑ´Ù.</dd>
+        <dd><code>mod_case_filter_in</code>ï¿½ï¿½ ï¿½ë¹®ï¿½Úºï¿½È¯ ï¿½Ô·ï¿½ï¿½ï¿½ï¿½ï¿½
+          ï¿½ßºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
         <dt><code>--enable-echo</code></dt>
-        <dd><code class="module"><a href="../mod/mod_echo.html">mod_echo</a></code>°¡ Á¦°øÇÏ´Â ECHO ¼­¹ö¸¦
-          »ç¿ëÇÑ´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_echo.html">mod_echo</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ECHO ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+          ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
         <dt><code>--enable-example</code></dt>
-        <dd>°ßº» ¿¹Á¦¸ðµâÀÎ <code class="module"><a href="../mod/mod_example.html">mod_example</a></code>À»
-          »ç¿ëÇÑ´Ù.</dd>
+        <dd>ï¿½ßºï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code class="module"><a href="../mod/mod_example.html">mod_example</a></code>ï¿½ï¿½
+          ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
         
         <dt><code>--enable-optional-fn-export</code></dt>
-        <dd><code>mod_optional_fn_export</code>°¡ Á¦°øÇÏ´Â ¼±ÅÃÀûÀÎ
-          ÇÔ¼ö ¿¢½ºÆ÷Æ®(exporter)ÀÇ ¿¹¸¦ »ç¿ëÇÑ´Ù.</dd>
+        <dd><code>mod_optional_fn_export</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+          ï¿½Ô¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®(exporter)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
         
         <dt><code>--enable-optional-fn-import</code></dt>
-        <dd><code>mod_optional_fn_import</code>°¡ Á¦°øÇÏ´Â ¼±ÅÃÀûÀÎ
-          ÇÔ¼ö ÀÓÆ÷Æ®(importer)ÀÇ ¿¹¸¦ »ç¿ëÇÑ´Ù.</dd>
+        <dd><code>mod_optional_fn_import</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+          ï¿½Ô¼ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®(importer)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
         
         <dt><code>--enable-optional-hook-export</code></dt>
-        <dd><code>mod_optional_hook_export</code>°¡ Á¦°øÇÏ´Â
-          ¼±ÅÃÀûÀÎ ÈÅ(hook) ¿¢½ºÆ÷Æ®ÀÇ ¿¹¸¦ »ç¿ëÇÑ´Ù.</dd>
+        <dd><code>mod_optional_hook_export</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½
+          ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½(hook) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
         
         <dt><code>--enable-optional-hook-import</code></dt>
-        <dd><code>mod_optional_hook_import</code>°¡ Á¦°øÇÏ´Â
-          ¼±ÅÃÀûÀÎ ÈÅ ÀÓÆ÷Æ®ÀÇ ¿¹¸¦ »ç¿ëÇÑ´Ù.</dd>
+        <dd><code>mod_optional_hook_import</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½
+          ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
       </dl>
     
 
-    <h4><a name="modules" id="modules">MPM°ú Á¦»ïÀÚ°¡ ¸¸µç ¸ðµâ</a></h4>
-      <p>´ÙÀ½ ¿É¼ÇÀ» »ç¿ëÇÏ¿© ÇÊ¿äÇÑ ´ÙÁßÃ³¸®¸ðµâ°ú Á¦»ïÀÚ°¡
-        ¸¸µç ¸ðµâÀ» Ãß°¡ÇÑ´Ù:</p>
+    <h4><a name="modules" id="modules">MPMï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½</a></h4>
+      <p>ï¿½ï¿½ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ã³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ú°ï¿½
+        ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ñ´ï¿½:</p>
 
       <dl>
         <dt><code>--with-module=<var>module-type</var>:<var>module-file</var>
           </code></dt>
-        <dd><p>Á¦»ïÀÚ°¡ ¸¸µç ¸ðµâÀ» Á¤ÀûÀ¸·Î ¸µÅ©ÇÒ ¸ðµâ ¸ñ·Ï¿¡
-            Ãß°¡ÇÑ´Ù. ¾ÆÆÄÄ¡ À¥¼­¹ö ¼Ò½º Æ®¸®ÀÇ
-            <code>modules/<var>module-type</var></code>¿¡¼­ ¸ðµâÀÇ
-            ¼Ò½ºÆÄÀÏ <code><var>module-file</var></code>À» Ã£±â¶§¹®¿¡
-            ±×°÷¿¡ ¼Ò½ºÆÄÀÏÀÌ ÀÖ¾î¾ß ÇÑ´Ù. ±×°÷¿¡ ÆÄÀÏÀÌ ¾ø´Ù¸é
-            <code>configure</code>´Â <var>module-file</var>ÀÌ
-            Àý´ëÆÄÀÏ°æ·Î¶ó°í °¡Á¤ÇÏ°í ¼Ò½ºÆÄÀÏÀ»
-            <var>module-type</var> ÇÏÀ§µð·ºÅä¸®¿¡ º¹»çÇÏ·Á°í
-            ½ÃµµÇÑ´Ù.</p>
-          <p>ÀÌ ¿É¼ÇÀº ¼Ò½ºÆÄÀÏÀÌ ÇÑ°³ÀÎ ÀÛÀº ¿ÜºÎ ¸ðµâÀ» Ãß°¡ÇÏ´Âµ¥
-            À¯¿ëÇÏ´Ù. ´õ º¹ÀâÇÑ ¸ðµâÀº °³¹ß»ç°¡ Á¦°øÇÑ ¹®¼­¸¦
-            Âü°íÇØ¾ß ÇÑ´Ù.</p>
-          <div class="note"><h3>ÁÖÀÇ</h3>
-            Á¤ÀûÀ¸·Î ¸µÅ©µÈ ¸ðµâÀÌ ¾Æ´Ñ DSO ¸ðµâÀ» ¿øÇÑ´Ù¸é
-            <a href="apxs.html">apxs</a>¸¦ »ç¿ëÇÏ¶ó.</div>
+        <dd><p>ï¿½ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½Ï¿ï¿½
+            ï¿½ß°ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ò½ï¿½ Æ®ï¿½ï¿½ï¿½ï¿½
+            <code>modules/<var>module-type</var></code>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+            ï¿½Ò½ï¿½ï¿½ï¿½ï¿½ï¿½ <code><var>module-file</var></code>ï¿½ï¿½ Ã£ï¿½â¶§ï¿½ï¿½ï¿½ï¿½
+            ï¿½×°ï¿½ï¿½ï¿½ ï¿½Ò½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¾ï¿½ï¿½ ï¿½Ñ´ï¿½. ï¿½×°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ù¸ï¿½
+            <code>configure</code>ï¿½ï¿½ <var>module-file</var>ï¿½ï¿½
+            ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½Î¶ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½Ò½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+            <var>module-type</var> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½
+            ï¿½Ãµï¿½ï¿½Ñ´ï¿½.</p>
+          <p>ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½Ò½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Üºï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ï´Âµï¿½
+            ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ß»ç°¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+            ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½.</p>
+          <div class="note"><h3>ï¿½ï¿½ï¿½ï¿½</h3>
+            ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´ï¿½ DSO ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½
+            <a href="apxs.html">apxs</a>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.</div>
         </dd>
 
         <dt><code>--with-mpm=MPM</code></dt>
-        <dd>¼­¹öÀÇ µ¿ÀÛ¹æ½ÄÀ» ¼±ÅÃÇÑ´Ù. Á¤È®È÷ ÇÑ°¡Áö <a href="../mpm.html">´ÙÁßÃ³¸®¸ðµâ</a>¸¸À» ¼±ÅÃÇØ¾ß ÇÑ´Ù.
-          ¼±ÅÃÇÏÁö ¾ÊÀ¸¸é »ç¿ëÇÏ´Â ¿î¿µÃ¼Á¦ÀÇ <a href="../mpm.html#defaults">±âº» MPM</a>À» »ç¿ëÇÑ´Ù.
-          »ç¿ëÇÒ ¼ö ÀÖ´Â MPM¿¡´Â <code class="module"><a href="../mod/beos.html">beos</a></code>,
+        <dd>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Û¹ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½È®ï¿½ï¿½ ï¿½Ñ°ï¿½ï¿½ï¿½ <a href="../mpm.html">ï¿½ï¿½ï¿½ï¿½Ã³ï¿½ï¿½ï¿½ï¿½ï¿½</a>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½.
+          ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½î¿µÃ¼ï¿½ï¿½ï¿½ï¿½ <a href="../mpm.html#defaults">ï¿½âº» MPM</a>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+          ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ MPMï¿½ï¿½ï¿½ï¿½ <code class="module"><a href="../mod/beos.html">beos</a></code>,
           <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>,
           <code class="module"><a href="../mod/prefork.html">prefork</a></code>,
-          <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>°¡
-          ÀÖ´Ù.</dd>
+          <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>ï¿½ï¿½
+          ï¿½Ö´ï¿½.</dd>
       </dl>
     
 
-    <h4><a name="otheroptfeat" id="otheroptfeat">±âÅ¸ ¿É¼Ç</a></h4>
+    <h4><a name="otheroptfeat" id="otheroptfeat">ï¿½ï¿½Å¸ ï¿½É¼ï¿½</a></h4>
       <dl>
         <dt><code>--enable-maintainer-mode</code></dt>
-        <dd>µð¹ö±ë ¸ðµå¿Í ÄÄÆÄÀÏ½Ã °æ°í¸¦ ÀÛµ¿ÇÑ´Ù.</dd>
+        <dd>ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ûµï¿½ï¿½Ñ´ï¿½.</dd>
 
         <dt><code>--enable-mods-shared=<var>MODULE-LIST</var></code></dt>
         <dd>
-          <p>µ¿Àû°øÀ¯¸ðµâ·Î ÄÄÆÄÀÏÇÒ ¸ðµâ ¸ñ·ÏÀ» ÁöÁ¤ÇÑ´Ù. Áï,
-            ÀÌ ¸ðµâµéÀº <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code> Áö½Ã¾î¸¦
-            »ç¿ëÇÏ¿© µ¿ÀûÀ¸·Î ÀÐ¾îµé¿©¾ß ÇÑ´Ù.</p>
-          <p><var>MODULE-LIST</var>´Â °ø¹éÀ¸·Î ±¸ºÐÇÑ ¸ðµâ¸íµéÀ»
-            µû¿ÈÇ¥·Î ¹­Àº ¸ñ·ÏÀÌ´Ù. ¸ðµâ¸í¿¡¼­ ¾Õ¿¡
-            <code>mod_</code>´Â »«´Ù. ¿¹¸¦ µé¾î:</p>
+          <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½,
+            ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code> ï¿½ï¿½ï¿½Ã¾î¸¦
+            ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ð¾ï¿½é¿©ï¿½ï¿½ ï¿½Ñ´ï¿½.</p>
+          <p><var>MODULE-LIST</var>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+            ï¿½ï¿½ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ì´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Õ¿ï¿½
+            <code>mod_</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½:</p>
           <div class="example"><p><code>
             --enable-mods-shared='headers rewrite dav'
           </code></p></div>
-          <p>¶Ç, Æ¯º°ÇÑ Å°¿öµå <code>all</code>°ú <code>most</code>¸¦
-            »ç¿ëÇÒ ¼ö ÀÖ´Ù. ¿¹¸¦ µé¾î,</p>
+          <p>ï¿½ï¿½, Æ¯ï¿½ï¿½ï¿½ï¿½ Å°ï¿½ï¿½ï¿½ï¿½ <code>all</code>ï¿½ï¿½ <code>most</code>ï¿½ï¿½
+            ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½,</p>
           <div class="example"><p><code>
             --enable-mods-shared=most
           </code></p></div>
-          <p>´Â ´ëºÎºÐÀÇ ¸ðµâÀ» DSO ¸ðµâ·Î ÄÄÆÄÀÏÇÑ´Ù.
+          <p>ï¿½ï¿½ ï¿½ï¿½Îºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ DSO ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
             </p>
         </dd>
                     
         <dt><code>--enable-modules=<var>MODULE-LIST</var></code></dt>
-        <dd><code>--enable-mods-shared</code>¿Í ºñ½ÁÇÏÁö¸¸,
-          ÀÌ ¿É¼ÇÀº ¿­°ÅÇÑ ¸ðµâµéÀ» Á¤ÀûÀ¸·Î ¸µÅ©ÇÑ´Ù. Áï, ÀÌ
-          ¸ðµâµéÀº <code>httpd</code> ½ÇÇàÇÏ¸é ¾ðÁ¦³ª »ç¿ëÇÒ
-          ¼ö ÀÖ´Ù. <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code>·Î ÀÐ¾îµéÀÏ
-          ÇÊ¿ä°¡ ¾ø´Ù.</dd>
+        <dd><code>--enable-mods-shared</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,
+          ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½Ñ´ï¿½. ï¿½ï¿½, ï¿½ï¿½
+          ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>httpd</code> ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+          ï¿½ï¿½ ï¿½Ö´ï¿½. <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code>ï¿½ï¿½ ï¿½Ð¾ï¿½ï¿½ï¿½ï¿½
+          ï¿½Ê¿ä°¡ ï¿½ï¿½ï¿½ï¿½.</dd>
 
         <dt><code>--enable-v4-mapped</code></dt>
-        <dd>IPv6 ¼ÒÄÏÀÌ IPv4 ¿¬°áÀ» Ã³¸®ÇÒ ¼ö ÀÖµµ·Ï ÇÑ´Ù.</dd>
+        <dd>IPv6 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ IPv4 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Öµï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½.</dd>
 
         <dt><code>--with-port=<var>PORT</var></code></dt>
-        <dd><code>httpd</code>°¡ ±â´Ù¸± Æ÷Æ®¸¦ ÁöÁ¤ÇÑ´Ù. ÀÌ
-          Æ÷Æ®¹øÈ£´Â ¼³Á¤ÆÄÀÏ <code>httpd.conf</code>¸¦ ¸¸µé¶§
-          ¾²ÀÎ´Ù. ±âº»°ªÀº 80ÀÌ´Ù.</dd>
+        <dd><code>httpd</code>ï¿½ï¿½ ï¿½ï¿½Ù¸ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½
+          ï¿½ï¿½Æ®ï¿½ï¿½È£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>httpd.conf</code>ï¿½ï¿½ ï¿½ï¿½ï¿½é¶§
+          ï¿½ï¿½ï¿½Î´ï¿½. ï¿½âº»ï¿½ï¿½ï¿½ï¿½ 80ï¿½Ì´ï¿½.</dd>
 
         <dt><code>--with-program-name</code></dt>
-        <dd>´Ù¸¥ ½ÇÇàÆÄÀÏ¸íÀ» ÁöÁ¤ÇÑ´Ù. ±âº»°ªÀº
-          <code>httpd</code>ÀÌ´Ù.</dd>
+        <dd>ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½âº»ï¿½ï¿½ï¿½ï¿½
+          <code>httpd</code>ï¿½Ì´ï¿½.</dd>
       </dl>
     
   
 
-  <h3><a name="packages" id="packages">Ãß°¡ ÆÐÅ°Áö ¼±ÅÃ</a></h3>
-    <p>´ÙÀ½ ¿É¼ÇÀº Ãß°¡ ÆÐÅ°Áö¸¦ ¼±ÅÃÇÑ´Ù.</p>
+  <h3><a name="packages" id="packages">ï¿½ß°ï¿½ ï¿½ï¿½Å°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a></h3>
+    <p>ï¿½ï¿½ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ ï¿½ï¿½Å°ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <h4><a name="generalpackages" id="generalpackages">ÀÏ¹ÝÀûÀÎ ¹®¹ý</a></h4>
-      <p>ÀÏ¹ÝÀûÀ¸·Î ´ÙÀ½°ú °°Àº ¹®¹ýÀ» »ç¿ëÇÏ¿© Ãß°¡ ÆÐÅ°Áö¸¦
-        ´Ù·é´Ù:</p>
+    <h4><a name="generalpackages" id="generalpackages">ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a></h4>
+      <p>ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ß°ï¿½ ï¿½ï¿½Å°ï¿½ï¿½ï¿½ï¿½
+        ï¿½Ù·ï¿½ï¿½:</p>
 
       <dl>
         <dt><code>--with-<var>PACKAGE</var>[=<var>ARG</var>]</code></dt>
-        <dd>ÆÐÅ°Áö <var>PACKAGE</var>¸¦ »ç¿ëÇÑ´Ù.
-          <var>ARG</var>ÀÇ ±âº»°ªÀº <code>yes</code>ÀÌ´Ù.</dd>
+        <dd>ï¿½ï¿½Å°ï¿½ï¿½ <var>PACKAGE</var>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+          <var>ARG</var>ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½ <code>yes</code>ï¿½Ì´ï¿½.</dd>
 
         <dt><code>--without-<var>PACKAGE</var></code></dt>
-        <dd>ÆÐÅ°Áö <var>PACKAGE</var>¸¦ »ç¿ëÇÏÁö ¾Ê´Â´Ù.
-          <code>--with-<var>PACKAGE</var>=no</code>¿Í °°´Ù.
-          <code>autoconf</code>¿¡ ÀÌ ¿É¼ÇÀÌ ÀÖÁö¸¸ ¾ÆÆÄÄ¡ À¥¼­¹ö¿Í´Â
-          °ü°è°¡ ¾ø´Ù.</dd>
+        <dd>ï¿½ï¿½Å°ï¿½ï¿½ <var>PACKAGE</var>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.
+          <code>--with-<var>PACKAGE</var>=no</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
+          <code>autoconf</code>ï¿½ï¿½ ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í´ï¿½
+          ï¿½ï¿½ï¿½è°¡ ï¿½ï¿½ï¿½ï¿½.</dd>
       </dl>
     
 
     
 
-    <h4><a name="packageopt" id="packageopt">Æ¯Á¤ ÆÐÅ°Áö</a></h4>
+    <h4><a name="packageopt" id="packageopt">Æ¯ï¿½ï¿½ ï¿½ï¿½Å°ï¿½ï¿½</a></h4>
       <dl>
         <dt><code>--with-apr=<var>DIR</var>|<var>FILE</var></code></dt>
-        <dd><code>httpd</code> ¼Ò½º ¹èÆ÷º»¿¡ Æ÷ÇÔµÈ Apache Portable
-          Runtime (APR)Àº ÀÚµ¿À¸·Î À¥¼­¹ö¿Í °°ÀÌ ÄÄÆÄÀÏµÈ´Ù.
-          ¸¸¾à ÀÌ¹Ì ¼³Ä¡µÈ APRÀ» ´ë½Å »ç¿ëÇÏ°í ½Í´Ù¸é
-          <code>configure</code>¿¡°Ô <code>apr-config</code>
-          ½ºÅ©¸³Æ®ÀÇ °æ·Î¸¦ ¾Ë·ÁÁÖ¾î¾ß ÇÑ´Ù. APR°¡ ¼³Ä¡µÈ Àý´ë°æ·Î,
-          ÆÄÀÏ¸í, µð·ºÅä¸®¸íÀ» »ç¿ëÇÒ ¼ö ÀÖ´Ù. ÁöÁ¤ÇÑ µð·ºÅä¸®³ª
-          ±× µð·ºÅä¸®ÀÇ ÇÏÀ§µð·ºÅä¸® <code>bin</code>¿¡
-          <code>apr-config</code>°¡ ÀÖ¾î¾ß ÇÑ´Ù.</dd>
+        <dd><code>httpd</code> ï¿½Ò½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ôµï¿½ Apache Portable
+          Runtime (APR)ï¿½ï¿½ ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ÏµÈ´ï¿½.
+          ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ APRï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½Í´Ù¸ï¿½
+          <code>configure</code>ï¿½ï¿½ï¿½ï¿½ <code>apr-config</code>
+          ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½Î¸ï¿½ ï¿½Ë·ï¿½ï¿½Ö¾ï¿½ï¿½ ï¿½Ñ´ï¿½. APRï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,
+          ï¿½ï¿½ï¿½Ï¸ï¿½, ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½
+          ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸® <code>bin</code>ï¿½ï¿½
+          <code>apr-config</code>ï¿½ï¿½ ï¿½Ö¾ï¿½ï¿½ ï¿½Ñ´ï¿½.</dd>
         
         <dt><code>--with-apr-util=<var>DIR</var>|<var>FILE</var></code></dt>
-        <dd><code>httpd</code> ¼Ò½º ¹èÆ÷º»¿¡ Æ÷ÇÔµÈ Apache Portable
-          Runtime Utilities (APU)´Â ÀÚµ¿À¸·Î À¥¼­¹ö¿Í °°ÀÌ
-          ÄÄÆÄÀÏµÈ´Ù. ¸¸¾à ÀÌ¹Ì ¼³Ä¡µÈ APUÀ» ´ë½Å »ç¿ëÇÏ°í ½Í´Ù¸é
-          <code>configure</code>¿¡°Ô <code>apu-config</code>
-          ½ºÅ©¸³Æ®ÀÇ °æ·Î¸¦ ¾Ë·ÁÁÖ¾î¾ß ÇÑ´Ù. APU°¡ ¼³Ä¡µÈ Àý´ë°æ·Î,
-          ÆÄÀÏ¸í, µð·ºÅä¸®¸íÀ» »ç¿ëÇÒ ¼ö ÀÖ´Ù. ÁöÁ¤ÇÑ µð·ºÅä¸®³ª
-          ±× µð·ºÅä¸®ÀÇ ÇÏÀ§µð·ºÅä¸® <code>bin</code>¿¡
-          <code>apu-config</code>°¡ ÀÖ¾î¾ß ÇÑ´Ù.</dd>
+        <dd><code>httpd</code> ï¿½Ò½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ôµï¿½ Apache Portable
+          Runtime Utilities (APU)ï¿½ï¿½ ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+          ï¿½ï¿½ï¿½ï¿½ï¿½ÏµÈ´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ APUï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½Í´Ù¸ï¿½
+          <code>configure</code>ï¿½ï¿½ï¿½ï¿½ <code>apu-config</code>
+          ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½Î¸ï¿½ ï¿½Ë·ï¿½ï¿½Ö¾ï¿½ï¿½ ï¿½Ñ´ï¿½. APUï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,
+          ï¿½ï¿½ï¿½Ï¸ï¿½, ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½
+          ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸® <code>bin</code>ï¿½ï¿½
+          <code>apu-config</code>ï¿½ï¿½ ï¿½Ö¾ï¿½ï¿½ ï¿½Ñ´ï¿½.</dd>
 
         <dt><code>--with-ssl=<var>DIR</var></code></dt>
-        <dd><code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>À» »ç¿ëÇÏ´Â °æ¿ì
-          <code>configure</code>´Â ¼³Ä¡µÈ OpenSSLÀ» Ã£´Â´Ù.
-          ´ë½Å ÀÌ ¿É¼ÇÀ» »ç¿ëÇÏ¿© SSL/TLS µµ±¸ÀÇ µð·ºÅä¸®°æ·Î¸¦
-          ¾Ë·ÁÁÙ ¼ö ÀÖ´Ù.</dd>
+        <dd><code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½
+          <code>configure</code>ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ OpenSSLï¿½ï¿½ Ã£ï¿½Â´ï¿½.
+          ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ SSL/TLS ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½Î¸ï¿½
+          ï¿½Ë·ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</dd>
 
         <dt><code>--with-z=<var>DIR</var></code></dt>
-        <dd>(<code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code>¸¦ »ç¿ëÇÏ´Â °æ¿ì¿Í
-          °°ÀÌ) ±¸¼º¿¡ ÇÊ¿äÇÏ´Ù¸é ÀÚµ¿À¸·Î <code>configure</code>´Â
-          ¼³Ä¡µÈ <code>zlib</code> ¶óÀÌºê·¯¸®¸¦ Ã£´Â´Ù. ´ë½Å
-          ÀÌ ¿É¼ÇÀ» »ç¿ëÇÏ¿© ¾ÐÃà ¶óÀÌºê·¯¸®ÀÇ µð·ºÅä¸®°æ·Î¸¦
-          ¾Ë·ÁÁÙ ¼ö ÀÖ´Ù.</dd>
+        <dd>(<code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½
+          ï¿½ï¿½ï¿½ï¿½) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Ï´Ù¸ï¿½ ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ <code>configure</code>ï¿½ï¿½
+          ï¿½ï¿½Ä¡ï¿½ï¿½ <code>zlib</code> ï¿½ï¿½ï¿½Ìºê·¯ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½Â´ï¿½. ï¿½ï¿½ï¿½
+          ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìºê·¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½Î¸ï¿½
+          ï¿½Ë·ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</dd>
       </dl>
 
-      <p><code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code>°ú
-        <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>ÀÇ DBM <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> °°Àº ¾ÆÆÄÄ¡
-        À¥¼­¹öÀÇ ÀÏºÎ ±â´ÉÀº Á¤º¸¸¦ »¡¸® Ã£±âÀ§ÇØ °£´ÜÇÑ Å°/°ª
-        µ¥ÀÌÅÍº£ÀÌ½º¸¦ »ç¿ëÇÑ´Ù. APU¿¡ SDBMÀÌ µé¾îÀÖ¾î¼­ ¾ðÁ¦³ª
-        ÃÖ¼ÒÇÑ ÀÌ µ¥ÀÌÅÍº£ÀÌ½º´Â »ç¿ëÇÒ ¼ö ÀÖ´Ù. ´Ù¸¥ Á¾·ùÀÇ
-        µ¥ÀÌÅÍº£ÀÌ½º¸¦ »ç¿ëÇÏ°í ½Í´Ù¸é ¾Æ·¡ ¿É¼ÇÀ» »ç¿ëÇÑ´Ù:</p>
+      <p><code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code>ï¿½ï¿½
+        <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>ï¿½ï¿½ DBM <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ïºï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å°/ï¿½ï¿½
+        ï¿½ï¿½ï¿½ï¿½ï¿½Íºï¿½ï¿½Ì½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. APUï¿½ï¿½ SDBMï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ö¾î¼­ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        ï¿½Ö¼ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Íºï¿½ï¿½Ì½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        ï¿½ï¿½ï¿½ï¿½ï¿½Íºï¿½ï¿½Ì½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½Í´Ù¸ï¿½ ï¿½Æ·ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½:</p>
 
       <dl>
         <dt><code>--with-gdbm[=<var>path</var>]</code></dt>
-        <dd><var>path</var>¸¦ ÁöÁ¤ÇÏÁö ¾ÊÀ¸¸é,
-          <code>configure</code>´Â ÀÏ¹ÝÀûÀÎ °Ë»ö°æ·Î¿¡¼­ ¼³Ä¡µÈ
-          GNU DBM Çì´õÆÄÀÏ°ú ¶óÀÌºê·¯¸®¸¦ Ã£´Â´Ù. Á÷Á¢
-          <var>path</var>¸¦ ÁöÁ¤ÇÏ¸é <code>configure</code>´Â
-          <code><var>path</var>/lib</code>°ú
-          <code><var>path</var>/include</code>¿¡¼­ ÇÊ¿äÇÑ ÆÄÀÏÀ»
-          Ã£´Â´Ù. ¸¶Áö¸·À¸·Î <var>path</var>¿¡ Çì´õÆÄÀÏ °æ·Î¿Í
-          ¶óÀÌºê·¯¸® °æ·Î¸¦ ÄÝ·ÐÀ» »çÀÌ¿¡ µÎ°í °°ÀÌ ÀûÀ» ¼ö
-          ÀÖ´Ù.</dd>
+        <dd><var>path</var>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,
+          <code>configure</code>ï¿½ï¿½ ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½ï¿½ï¿½Î¿ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½
+          GNU DBM ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½Ìºê·¯ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½Â´ï¿½. ï¿½ï¿½ï¿½ï¿½
+          <var>path</var>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ <code>configure</code>ï¿½ï¿½
+          <code><var>path</var>/lib</code>ï¿½ï¿½
+          <code><var>path</var>/include</code>ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+          Ã£ï¿½Â´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <var>path</var>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Î¿ï¿½
+          ï¿½ï¿½ï¿½Ìºê·¯ï¿½ï¿½ ï¿½ï¿½Î¸ï¿½ ï¿½Ý·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¿ï¿½ ï¿½Î°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+          ï¿½Ö´ï¿½.</dd>
 
         <dt><code>--with-ndbm[=<var>path</var>]</code></dt>
-        <dd><code>--with-gdbm</code>°ú °°Áö¸¸ ¼³Ä¡µÈ New DBMÀ»
-          Ã£´Â´Ù.</dd>
+        <dd><code>--with-gdbm</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ New DBMï¿½ï¿½
+          Ã£ï¿½Â´ï¿½.</dd>
 
         <dt><code>--with-berkeley-db[=<var>path</var>]</code></dt>
-        <dd><code>--with-gdbm</code>°ú °°Áö¸¸ ¼³Ä¡µÈ Berkeley
-          DB¸¦ Ã£´Â´Ù.</dd>
+        <dd><code>--with-gdbm</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ Berkeley
+          DBï¿½ï¿½ Ã£ï¿½Â´ï¿½.</dd>
       </dl>
 
-      <div class="note"><h3>ÁÖÀÇ</h3>
-        <p>DBM ¿É¼ÇÀº APU°¡ Á¦°øÇÏ¸ç APU ±¸¼º½ºÅ©¸³Æ®·Î Á÷Á¢
-          Àü´ÞµÈ´Ù. ±×·¡¼­ <code>--with-apr-util</code>À» »ç¿ëÇÏ¿©
-          ÀÌ¹Ì ¼³Ä¡µÈ APU¸¦ »ç¿ëÇÑ´Ù¸é DBM ¿É¼ÇÀº ¼Ò¿ëÀÌ ¾ø´Ù.</p>
-        <p>À¥¼­¹ö´Â ¿©·¯ DBM ±¸ÇöÀ» °°ÀÌ »ç¿ëÇÒ ¼ö ÀÖ´Ù. ½ÇÇà½Ã
-          ÀûÀýÇÑ DBM Á¾·ù¸¦ ¼³Á¤ÇÒ ¼ö ÀÖ´Ù.</p>
+      <div class="note"><h3>ï¿½ï¿½ï¿½ï¿½</h3>
+        <p>DBM ï¿½É¼ï¿½ï¿½ï¿½ APUï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ APU ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+          ï¿½ï¿½ï¿½ÞµÈ´ï¿½. ï¿½×·ï¿½ï¿½ï¿½ <code>--with-apr-util</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½
+          ï¿½Ì¹ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ APUï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½ DBM ï¿½É¼ï¿½ï¿½ï¿½ ï¿½Ò¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</p>
+        <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ DBM ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½
+          ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ DBM ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
       </div>
     
   
   
-  <h3><a name="supportopt" id="supportopt">Áö¿ø ÇÁ·Î±×·¥À» À§ÇÑ ¿É¼Ç</a></h3>
+  <h3><a name="supportopt" id="supportopt">ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½É¼ï¿½</a></h3>
     <dl>
       <dt><code>--enable-static-support</code></dt>
-      <dd>Áö¿ø ÇÁ·Î±×·¥À» Á¤ÀûÀ¸·Î ¸µÅ©µÈ ½ÇÇàÆÄÀÏ·Î ¸¸µç´Ù.
-        Áï, ÇÊ¿äÇÑ ¶óÀÌºê·¯¸®¸¦ ¸ðµÎ Æ÷ÇÔÇÏµµ·Ï ½ÇÇàÆÄÀÏÀ»
-        ÄÄÆÄÀÏÇÑ´Ù. ÀÌ ¿É¼ÇÀ» »ç¿ëÇÏÁö ¾ÊÀ¸¸é ±âº»°ªÀ¸·Î Áö¿ø
-        ÇÁ·Î±×·¥À» µ¿ÀûÀ¸·Î ¸µÅ©ÇÑ´Ù.</dd>
+      <dd>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½.
+        ï¿½ï¿½, ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìºê·¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+        ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½Ñ´ï¿½.</dd>
 
       <dt><code>--enable-suexec</code></dt>
-      <dd>À¥¼­¹ö°¡ ½ÇÇàÇÏ´Â ÇÁ·Î¼¼½ºÀÇ uid¿Í gid¸¦ ¼³Á¤ÇÏ´Â
-        <code><a href="suexec.html">suexec</a></code>¸¦ »ç¿ëÇÏ·Á¸é
-        ÀÌ ¿É¼ÇÀ» »ç¿ëÇÑ´Ù. <strong>suid ½ÇÇàÆÄÀÏÀÇ º¸¾È»ó À§ÇèÀ»
-        ¸ðµÎ ¾ËÁö ¸øÇÑ´Ù¸é ÀÌ ¿É¼ÇÀ» »ç¿ëÇÏÁö ¸¶¶ó.</strong>
-        <code>suexec</code>¸¦ ±¸¼ºÇÏ´Â ¿É¼ÇÀº
-        <a href="#suexec">¾Æ·¡¿¡¼­</a> ¼³¸íÇÑ´Ù.</dd>
+      <dd>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½Î¼ï¿½ï¿½ï¿½ï¿½ï¿½ uidï¿½ï¿½ gidï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½
+        <code><a href="suexec.html">suexec</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½
+        ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <strong>suid ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½È»ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½ ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</strong>
+        <code>suexec</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½É¼ï¿½ï¿½ï¿½
+        <a href="#suexec">ï¿½Æ·ï¿½ï¿½ï¿½ï¿½ï¿½</a> ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
     </dl>
 
-    <p>´ÙÀ½ ¿É¼ÇÀ» »ç¿ëÇÏ¿© Áö¿ø ÇÁ·Î±×·¥º°·Î Á¤ÀûÀ¸·Î ¸µÅ©µÈ
-      ½ÇÇàÆÄÀÏÀ» ¸¸µé ¼ö ÀÖ´Ù:</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½:</p>
 
     <dl>
       <dt><code>--enable-static-ab</code></dt>
-      <dd><code><a href="ab.html">ab</a></code>¸¦ Á¤ÀûÀ¸·Î ¸µÅ©µÈ
-        ½ÇÇàÆÄÀÏ·Î ÄÄÆÄÀÏÇÑ´Ù.</dd>
+      <dd><code><a href="ab.html">ab</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
       
       <dt><code>--enable-static-checkgid</code></dt>
-      <dd><code>checkgid</code>¸¦ Á¤ÀûÀ¸·Î ¸µÅ©µÈ ½ÇÇàÆÄÀÏ·Î
-        ÄÄÆÄÀÏÇÑ´Ù.</dd>
+      <dd><code>checkgid</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
       
       <dt><code>--enable-static-htdbm</code></dt>
-      <dd><code>htdbm</code>À» Á¤ÀûÀ¸·Î ¸µÅ©µÈ ½ÇÇàÆÄÀÏ·Î
-        ÄÄÆÄÀÏÇÑ´Ù.</dd>
+      <dd><code>htdbm</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
       <dt><code>--enable-static-htdigest</code></dt>
-      <dd><code><a href="htdigest.html">htdigest</a></code>¸¦
-        Á¤ÀûÀ¸·Î ¸µÅ©µÈ ½ÇÇàÆÄÀÏ·Î ÄÄÆÄÀÏÇÑ´Ù.</dd>
+      <dd><code><a href="htdigest.html">htdigest</a></code>ï¿½ï¿½
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
         
       <dt><code>--enable-static-htpasswd</code></dt>
-      <dd><code><a href="htpasswd.html">htpasswd</a></code>¸¦
-        Á¤ÀûÀ¸·Î ¸µÅ©µÈ ½ÇÇàÆÄÀÏ·Î ÄÄÆÄÀÏÇÑ´Ù.</dd>
+      <dd><code><a href="htpasswd.html">htpasswd</a></code>ï¿½ï¿½
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
       <dt><code>--enable-static-logresolve</code></dt>
-      <dd><code><a href="logresolve.html">logresolve</a></code>¸¦
-        Á¤ÀûÀ¸·Î ¸µÅ©µÈ ½ÇÇàÆÄÀÏ·Î ÄÄÆÄÀÏÇÑ´Ù.</dd>
+      <dd><code><a href="logresolve.html">logresolve</a></code>ï¿½ï¿½
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
       <dt><code>--enable-static-rotatelogs</code></dt>
-      <dd><code><a href="rotatelogs.html">rotatelogs</a></code>¸¦
-        Á¤ÀûÀ¸·Î ¸µÅ©µÈ ½ÇÇàÆÄÀÏ·Î ÄÄÆÄÀÏÇÑ´Ù.</dd>
+      <dd><code><a href="rotatelogs.html">rotatelogs</a></code>ï¿½ï¿½
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
     </dl>
 
-    <h4><a name="suexec" id="suexec">suexec ¼³Á¤ ¿É¼Ç</a></h4>
-      <p>¾Æ·¡ ¿É¼ÇÀº <code><a href="../suexec.html">suexec</a></code>¸¦ ÀÚ¼¼È÷ ¼³Á¤ÇÑ´Ù.
-        ´õ ÀÚ¼¼ÇÑ Á¤º¸´Â <a href="../suexec.html#install">suEXEC
-        ±¸¼º°ú ¼³Ä¡</a>¸¦ Âü°íÇÏ¶ó.</p>
+    <h4><a name="suexec" id="suexec">suexec ï¿½ï¿½ï¿½ï¿½ ï¿½É¼ï¿½</a></h4>
+      <p>ï¿½Æ·ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ <code><a href="../suexec.html">suexec</a></code>ï¿½ï¿½ ï¿½Ú¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+        ï¿½ï¿½ ï¿½Ú¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <a href="../suexec.html#install">suEXEC
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡</a>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.</p>
 
       <dl>
         <dt><code>--with-suexec-bin</code></dt>
-        <dd>suexec ½ÇÇàÆÄÀÏÀÇ °æ·Î¸¦ ÁöÁ¤ÇÑ´Ù. ±âº»°ªÀº
-          <code>--sbindir</code>ÀÌ´Ù (<a href="#directoryfinetuning">¼³Ä¡ µð·ºÅä¸®ÀÇ ÀÚ¼¼ÇÑ
-          Á¶Á¤</a> Âü°í).</dd>
+        <dd>suexec ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Î¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½âº»ï¿½ï¿½ï¿½ï¿½
+          <code>--sbindir</code>ï¿½Ì´ï¿½ (<a href="#directoryfinetuning">ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½Ú¼ï¿½ï¿½ï¿½
+          ï¿½ï¿½ï¿½ï¿½</a> ï¿½ï¿½ï¿½ï¿½).</dd>
 
         <dt><code>--with-suexec-caller</code></dt>
-        <dd><code>suexec</code>¸¦ ½ÇÇàÇÒ »ç¿ëÀÚ¸¦ ÁöÁ¤ÇÑ´Ù.
-          ÀÌ »ç¿ëÀÚ´Â º¸Åë <code>httpd</code>¸¦ ½ÇÇàÇÏ´Â »ç¿ëÀÚ¿Í
-          °°¾Æ¾ß ÇÑ´Ù.</dd>
+        <dd><code>suexec</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+          ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ ï¿½ï¿½ï¿½ï¿½ <code>httpd</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¿ï¿½
+          ï¿½ï¿½ï¿½Æ¾ï¿½ ï¿½Ñ´ï¿½.</dd>
 
         <dt><code>--with-suexec-docroot</code></dt>
-        <dd><code>suexec</code>´Â ÀÌ ¿É¼ÇÀ¸·Î ÁöÁ¤ÇÑ µð·ºÅä¸®
-          ¾Æ·¡¿¡ ÀÖ´Â ½ÇÇàÆÄÀÏ¸¸À» ½ÇÇàÇÒ ¼ö ÀÖ´Ù. ±âº»°ªÀº
-          <code>--datadir/htdocs</code>´Ù.</dd>
+        <dd><code>suexec</code>ï¿½ï¿½ ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®
+          ï¿½Æ·ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½âº»ï¿½ï¿½ï¿½ï¿½
+          <code>--datadir/htdocs</code>ï¿½ï¿½.</dd>
 
         <dt><code>--with-suexec-gidmin</code></dt>
-        <dd><code>suexec</code>¿¡¼­ ÁöÁ¤°¡´ÉÇÑ ÃÖ¼Ò GID¸¦ ¼³Á¤ÇÑ´Ù.
-          ±âº»°ªÀº 100ÀÌ´Ù.</dd>
+        <dd><code>suexec</code>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½ GIDï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+          ï¿½âº»ï¿½ï¿½ï¿½ï¿½ 100ï¿½Ì´ï¿½.</dd>
 
         <dt><code>--with-suexec-logfile</code></dt>
-        <dd><code>suexec</code> ·Î±×ÆÄÀÏ¸íÀ» ÁöÁ¤ÇÑ´Ù. ·Î±×ÆÄÀÏ¸íÀÇ
-          ±âº»°ªÀº <code>suexec_log</code>ÀÌ°í,
-          <code>--logfiledir</code>¿¡ À§Ä¡ÇÑ´Ù.</dd>
+        <dd><code>suexec</code> ï¿½Î±ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½Î±ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½
+          ï¿½âº»ï¿½ï¿½ï¿½ï¿½ <code>suexec_log</code>ï¿½Ì°ï¿½,
+          <code>--logfiledir</code>ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½Ñ´ï¿½.</dd>
 
         <dt><code>--with-suexec-safepath</code></dt>
-        <dd><code>suexec</code>°¡ ½ÃÀÛÇÏ´Â ÇÁ·Î¼¼½ºÀÇ
-          <code>PATH</code> È¯°æº¯¼ö°ªÀ» ÁöÁ¤ÇÑ´Ù. ±âº»°ªÀº
-          <code>/usr/local/bin:/usr/bin:/bin</code>ÀÌ´Ù.</dd>
+        <dd><code>suexec</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½Î¼ï¿½ï¿½ï¿½ï¿½ï¿½
+          <code>PATH</code> È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½âº»ï¿½ï¿½ï¿½ï¿½
+          <code>/usr/local/bin:/usr/bin:/bin</code>ï¿½Ì´ï¿½.</dd>
 
         <dt><code>--with-suexec-userdir</code></dt>
-        <dd>»ç¿ëÀÚ µð·ºÅä¸®¿¡¼­ <code>suexec</code>°¡ Á¢±ÙÇÒ
-          ¼ö ÀÖ´Â (½ÇÇàÆÄÀÏÀÌ ÀÖ´Â) ÇÏÀ§µð·ºÅä¸®¸¦ ÁöÁ¤ÇÑ´Ù.
-          ÀÌ ¼³Á¤Àº <code>suexec</code>¿Í
-          (<code class="module"><a href="../mod/mod_userdir.html">mod_userdir</a></code>ÀÌ Á¦°øÇÏ´Â) »ç¿ëÀÚº°
-          µð·ºÅä¸®¸¦ °°ÀÌ »ç¿ëÇÒ¶§ ÇÊ¿äÇÏ´Ù. ±âº»°ªÀº
-          <code>public_html</code>ÀÌ´Ù.</dd>
+        <dd>ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ï¿½ï¿½ <code>suexec</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+          ï¿½ï¿½ ï¿½Ö´ï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+          ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>suexec</code>ï¿½ï¿½
+          (<code class="module"><a href="../mod/mod_userdir.html">mod_userdir</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½) ï¿½ï¿½ï¿½ï¿½Úºï¿½
+          ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ ï¿½Ê¿ï¿½ï¿½Ï´ï¿½. ï¿½âº»ï¿½ï¿½ï¿½ï¿½
+          <code>public_html</code>ï¿½Ì´ï¿½.</dd>
 
         <dt><code>--with-suexec-uidmin</code></dt>
-        <dd><code>suexec</code>¿¡¼­ ÁöÁ¤°¡´ÉÇÑ ÃÖ¼Ò UID¸¦ ¼³Á¤ÇÑ´Ù.
-          ±âº»°ªÀº 100ÀÌ´Ù.</dd>
+        <dd><code>suexec</code>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½ UIDï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+          ï¿½âº»ï¿½ï¿½ï¿½ï¿½ 100ï¿½Ì´ï¿½.</dd>
 
         <dt><code>--with-suexec-umask</code></dt>
-        <dd><code>suexec</code>°¡ ½ÇÇàÇÏ´Â ÇÁ·Î¼¼½ºÀÇ
-          <code>umask</code>¸¦ ÁöÁ¤ÇÑ´Ù. ±âº»°ªÀº »ç¿ëÇÏ´Â ½Ã½ºÅÛÀÇ
-          ±âº» ¼³Á¤°ú °°´Ù.</dd>
+        <dd><code>suexec</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½Î¼ï¿½ï¿½ï¿½ï¿½ï¿½
+          <code>umask</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½âº»ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½
+          ï¿½âº» ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</dd>
       </dl>
     
   
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="env" id="env">È¯°æº¯¼ö</a> <a title="Permanent link" href="#env" class="permalink">&para;</a></h2>
-  <p><code>configure</code>ÀÇ ¼±ÅÃÀ» ¹«½ÃÇÏ°Å³ª °ü·Ê¿Í ´Ù¸¥
-    ÀÌ¸§ÀÌ³ª À§Ä¡¿¡ ÀÖ´Â ¶óÀÌºê·¯¸®¿Í ÇÁ·Î±×·¥À» Ã£µµ·Ï µµ¿ÍÁÖ´Â
-    À¯¿ëÇÑ È¯°æº¯¼öµéÀÌ ÀÖ´Ù.</p>
+<h2><a name="env" id="env">È¯ï¿½æº¯ï¿½ï¿½</a> <a title="Permanent link" href="#env" class="permalink">&para;</a></h2>
+  <p><code>configure</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°Å³ï¿½ ï¿½ï¿½ï¿½Ê¿ï¿½ ï¿½Ù¸ï¿½
+    ï¿½Ì¸ï¿½ï¿½Ì³ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½Ìºê·¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
   
   <dl>
     <dt><code>CC</code></dt>
-    <dd>ÄÄÆÄÀÏ¿¡ »ç¿ëÇÒ C ÄÄÆÄÀÏ·¯ ¸í·É¾î¸¦ ÁöÁ¤ÇÑ´Ù.</dd>
+    <dd>ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ C ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ ï¿½ï¿½ï¿½É¾î¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
     <dt><code>CFLAGS</code></dt>
-    <dd>ÄÄÆÄÀÏ¶§ »ç¿ëÇÏ±æ ¹Ù¶ó´Â C ÄÄÆÄÀÏ·¯ ¿É¼ÇÀ» ÁöÁ¤ÇÑ´Ù.</dd>
+    <dd>ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½ ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½Ù¶ï¿½ï¿½ C ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
     <dt><code>CPP</code></dt>
-    <dd>»ç¿ëÇÒ C ¼±Ã³¸®±â ¸í·É¾î¸¦ ÁöÁ¤ÇÑ´Ù.</dd>
+    <dd>ï¿½ï¿½ï¿½ï¿½ï¿½ C ï¿½ï¿½Ã³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½É¾î¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
     <dt><code>CPPFLAGS</code></dt>
-    <dd>C/C++ ¼±Ã³¸®±â ¿É¼Ç. ¿¹¸¦ µé¾î, Çì´õÆÄÀÏÀÌ °ü·Ê¿Í ´Þ¸®
-      <var>includedir</var> µð·ºÅä¸®¿¡ ÀÖ´Ù¸é
-      <code>-I<var>includedir</var></code>À» »ç¿ëÇÑ´Ù.</dd>
+    <dd>C/C++ ï¿½ï¿½Ã³ï¿½ï¿½ï¿½ï¿½ ï¿½É¼ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ê¿ï¿½ ï¿½Þ¸ï¿½
+      <var>includedir</var> ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½Ö´Ù¸ï¿½
+      <code>-I<var>includedir</var></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
     <dt><code>LDFLAGS</code></dt>
-    <dd>¸µÄ¿ ¿É¼Ç. ¿¹¸¦ µé¾î, ¶óÀÌºê·¯¸®°¡ °ü·Ê¿Í ´Þ¸®
-      <var>libdir</var> µð·ºÅä¸®¿¡ ÀÖ´Ù¸é
-      <code>-L<var>libdir</var></code>À» »ç¿ëÇÑ´Ù.</dd>
+    <dd>ï¿½ï¿½Ä¿ ï¿½É¼ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½Ìºê·¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ê¿ï¿½ ï¿½Þ¸ï¿½
+      <var>libdir</var> ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½Ö´Ù¸ï¿½
+      <code>-L<var>libdir</var></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
   </dl>
 </div></div>
 <div class="bottomlang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/programs/configure.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/programs/configure.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/programs/configure.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/programs/configure.html" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/configure.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/programs/configure.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/programs/configure.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -951,8 +951,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/programs/configure
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

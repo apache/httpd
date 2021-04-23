@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -95,7 +95,7 @@
         <p>複数ユーザの存在するシステムでは、それぞれのユーザは <directive
         module="mod_userdir">UserDir</directive> ディレクティブを使うことによって
         ホームディレクトリ上にウェブサイトを作成することができます。
-        URL <code>http://example.com/~username/</code> を訪れた人は
+        URL <code>https://example.com/~username/</code> を訪れた人は
         ユーザ "<code>username</code>" のホームディレクトリの、<directive
         module="mod_userdir">UserDir</directive> ディレクティブで指定された
        サブディレクトリからコンテンツを得ることになります。</p>

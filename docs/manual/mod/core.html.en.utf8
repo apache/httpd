@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -17,12 +17,12 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache Core Features</h1>
 <div class="toplang">
@@ -154,7 +154,7 @@ available</td></tr>
        listening socket by the <code class="directive">Protocol</code> type.
        The basic premise is for the kernel to not send a socket to the server
        process until either data is received or an entire HTTP Request is buffered.
-       Only <a href="http://www.freebsd.org/cgi/man.cgi?query=accept_filter&amp;sektion=9">
+       Only <a href="https://www.freebsd.org/cgi/man.cgi?query=accept_filter&amp;sektion=9">
        FreeBSD's Accept Filters</a>, Linux's more primitive
        <code>TCP_DEFER_ACCEPT</code>, and Windows' optimized AcceptEx()
        are currently supported.</p>
@@ -179,9 +179,9 @@ AcceptFilter https dataready</pre>
     <p>The <code>httpready</code> accept filter buffers entire HTTP requests at
        the kernel level.  Once an entire request is received, the kernel then
        sends it to the server. See the
-       <a href="http://www.freebsd.org/cgi/man.cgi?query=accf_http&amp;sektion=9">
+       <a href="https://www.freebsd.org/cgi/man.cgi?query=accf_http&amp;sektion=9">
        accf_http(9)</a> man page for more details.  Since HTTPS requests are
-       encrypted, only the <a href="http://www.freebsd.org/cgi/man.cgi?query=accf_data&amp;sektion=9">
+       encrypted, only the <a href="https://www.freebsd.org/cgi/man.cgi?query=accf_data&amp;sektion=9">
        accf_data(9)</a> filter is used.</p>
 
     <p>The default values on Linux are:</p>
@@ -193,7 +193,7 @@ AcceptFilter https data</pre>
        requests.  Any value besides <code>none</code> will enable
        <code>TCP_DEFER_ACCEPT</code> on that listener. For more details
        see the Linux
-       <a href="http://man7.org/linux/man-pages/man7/tcp.7.html">
+       <a href="https://man7.org/linux/man-pages/man7/tcp.7.html">
        tcp(7)</a> man page.</p>
 
     <p>The default values on Windows are:</p>
@@ -359,7 +359,7 @@ content-type is <code>text/plain</code> or <code>text/html</code></td></tr>
     disables this functionality. <code>AddDefaultCharset On</code> enables
     a default charset of <code>iso-8859-1</code>. Any other value is assumed
     to be the <var>charset</var> to be used, which should be one of the
-    <a href="http://www.iana.org/assignments/character-sets">IANA registered
+    <a href="https://www.iana.org/assignments/character-sets">IANA registered
     charset values</a> for use in Internet media types (MIME types).
     For example:</p>
 
@@ -1112,7 +1112,7 @@ from the web</td></tr>
 
 
     <p>then an access to
-    <code>http://my.example.com/index.html</code> refers to
+    <code>https://my.example.com/index.html</code> refers to
     <code>/usr/web/index.html</code>. If the <var>directory-path</var> is
     not absolute then it is assumed to be relative to the <code class="directive"><a href="#serverroot">ServerRoot</a></code>.</p>
 
@@ -1408,7 +1408,7 @@ in case of an error</td></tr>
     whether the parameter is an URL, a path or a message is performed
     before any expression is parsed. Examples:</p>
 
-    <pre class="prettyprint lang-config">ErrorDocument 500 http://example.com/cgi-bin/server-error.cgi
+    <pre class="prettyprint lang-config">ErrorDocument 500 https://example.com/cgi-bin/server-error.cgi
 ErrorDocument 404 /errors/bad_urls.php
 ErrorDocument 401 /subscription_info.html
 ErrorDocument 403 "Sorry, can't allow you access today"
@@ -1451,7 +1451,7 @@ ErrorDocument 403 /errors/forbidden.py?referrer=%{escape:%{HTTP_REFERER}}</pre>
     the type of error, but in general, if you make your error document
     greater than 512 bytes, then MSIE will show the server-generated
     error rather than masking it.  More information is available in
-    Microsoft Knowledge Base article <a href="http://support.microsoft.com/default.aspx?scid=kb;en-us;Q294807">Q294807</a>.</p>
+    Microsoft Knowledge Base article <a href="https://support.microsoft.com/default.aspx?scid=kb;en-us;Q294807">Q294807</a>.</p>
 
     <p>Although most error messages can be overridden, there are certain
     circumstances where the internal messages are used regardless of the
@@ -4199,7 +4199,7 @@ as if 'QualifyRedirectURL On' was configured.</td></tr>
     REDIRECT_URL environment variable is fully qualified.  By default, 
     the variable contains the verbatim URL requested by the client, 
     such as "/index.html".  With <code class="directive">QualifyRedirectURL On</code>, the same request would result in a
-    value such as "http://www.example.com/index.html".</p>
+    value such as "https://www.example.com/index.html".</p>
     <p>Even without this directive set, when a request is issued against a 
     fully qualified URL, REDIRECT_URL will remain fully qualified.
     </p>
@@ -4858,7 +4858,7 @@ handler</td></tr>
 
     <p>Another example: if you wanted to have the server display a
     status report whenever a URL of
-    <code>http://servername/status</code> was called, you might put
+    <code>https://servername/status</code> was called, you might put
     the following into <code>httpd.conf</code>:</p>
 
     <pre class="prettyprint lang-config">&lt;Location "/status"&gt;
@@ -5130,15 +5130,15 @@ port</td></tr>
     where you have users connecting to the machine using short
     names such as <code>www</code>. You'll notice that if the users
     type a shortname and a URL which is a directory, such as
-    <code>http://www/splat</code>, <em>without the trailing
+    <code>https://www/splat</code>, <em>without the trailing
     slash</em>, then Apache httpd will redirect them to
-    <code>http://www.example.com/splat/</code>. If you have
+    <code>https://www.example.com/splat/</code>. If you have
     authentication enabled, this will cause the user to have to
     authenticate twice (once for <code>www</code> and once again
-    for <code>www.example.com</code> -- see <a href="http://wiki.apache.org/httpd/FAQ#Why_does_Apache_ask_for_my_password_twice_before_serving_a_file.3F">
+    for <code>www.example.com</code> -- see <a href="https://wiki.apache.org/httpd/FAQ#Why_does_Apache_ask_for_my_password_twice_before_serving_a_file.3F">
     the FAQ on this subject for more information</a>). But if
     <code class="directive">UseCanonicalName</code> is set <code>Off</code>, then
-    Apache httpd will redirect to <code>http://www/splat/</code>.</p>
+    Apache httpd will redirect to <code>https://www/splat/</code>.</p>
 
     <p>There is a third option, <code>UseCanonicalName DNS</code>,
     which is intended for use with mass IP-based virtual hosting to
@@ -5368,7 +5368,7 @@ hostname or IP address</td></tr>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/core.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/mod/core.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -5383,8 +5383,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/core.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

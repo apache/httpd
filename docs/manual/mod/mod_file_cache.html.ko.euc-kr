@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
 <meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -17,125 +17,125 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">¸ðµâ</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">ï¿½ï¿½ï¿½</a></div>
 <div id="page-content">
-<div id="preamble"><h1>¾ÆÆÄÄ¡ ¸ðµâ mod_file_cache</h1>
+<div id="preamble"><h1>ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ mod_file_cache</h1>
 <div class="toplang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/mod/mod_file_cache.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/mod/mod_file_cache.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_file_cache.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/mod/mod_file_cache.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">ÀÌ ¹®¼­´Â ÃÖ½ÅÆÇ ¹ø¿ªÀÌ ¾Æ´Õ´Ï´Ù.
-            ÃÖ±Ù¿¡ º¯°æµÈ ³»¿ëÀº ¿µ¾î ¹®¼­¸¦ Âü°íÇÏ¼¼¿ä.</div>
-<table class="module"><tr><th><a href="module-dict.html#Description">¼³¸í:</a></th><td>¸Þ¸ð¸®¿¡ Á¤Àû ÆÄÀÏµéÀ» Ä³½¬</td></tr>
-<tr><th><a href="module-dict.html#Status">»óÅÂ:</a></th><td>Experimental</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">¸ðµâ¸í:</a></th><td>file_cache_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">¼Ò½ºÆÄÀÏ:</a></th><td>mod_file_cache.c</td></tr></table>
-<h3>¿ä¾à</h3>
+<div class="outofdate">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Õ´Ï´ï¿½.
+            ï¿½Ö±Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Þ¸ð¸®¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ Ä³ï¿½ï¿½</td></tr>
+<tr><th><a href="module-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Experimental</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">ï¿½ï¿½ï¿½ï¿½:</a></th><td>file_cache_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">ï¿½Ò½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>mod_file_cache.c</td></tr></table>
+<h3>ï¿½ï¿½ï¿½</h3>
 
 
     <div class="warning">
-      ÀÌ ¸ðµâÀº Á¶½ÉÇØ¼­ »ç¿ëÇØ¾ß ÇÑ´Ù. <code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code>¸¦
-      »ç¿ëÇÏ¿© »çÀÌÆ®¸¦ ¾û¸ÁÀ¸·Î ¸¸µé±â ½±±â¶§¹®¿¡ ÀÌ ¹®¼­¸¦
-      ²Ä²ÄÈ÷ ÀÐ±æ ¹Ù¶õ´Ù.
+      ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½. <code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code>ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½â¶§ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½Ä²ï¿½ï¿½ï¿½ ï¿½Ð±ï¿½ ï¿½Ù¶ï¿½ï¿½ï¿½.
     </div>
 
-    <p>°ÅÀÇ º¯ÇÏÁö ¾Ê°í ÀÚÁÖ ¿äÃ»µÇ´Â ÆÄÀÏÀ» <em>Ä³½¬</em>¿¡
-    ÀúÀåÇÏ¿© ¼­¹ö ºÎÇÏ¸¦ ÁÙÀÏ ¼ö ÀÖ´Ù. <code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code>´Â
-    ÀÚÁÖ ¿äÃ»µÇ´Â <em>Á¤Àû</em> ÆÄÀÏÀ» µÎ°¡Áö ¹æ½ÄÀ¸·Î Ä³½¬¿¡
-    ÀúÀåÇÑ´Ù. ¼³Á¤ Áö½Ã¾î¸¦ »ç¿ëÇÏ¿© <code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code>°¡
-    ÆÄÀÏÀ» ¿­°í(open) <code>mmap()</code>ÇÒÁö ¾Æ´Ï¸é ÆÄÀÏÀ»
-    ¿­°í <em>ÆÄÀÏ ÇÚµé</em>À» ÀúÀåÇÒÁö °áÁ¤ÇÑ´Ù. µÎ ¹æ½Ä ¸ðµÎ
-    ÆÄÀÏÀ» ¼­ºñ½ºÇÏ±âÀ§ÇØ ÇÊ¿äÇÑ ÀÛ¾÷ÀÇ ÀÏºÎ¸¦ (Æ¯È÷ ÆÄÀÏ ÀÔÃâ·Â
-    ÀÛ¾÷) ÆÄÀÏÀ» ¿äÃ»ÇÒ ¶§¸¶´Ù ¸Å¹ø ÇÏ´Â ´ë½Å ¼­¹ö°¡ ½ÃÀÛÇÒ¶§
-    ÇÑ¹ø¸¸ ÇÏ¿© ¼­¹ö ºÎÇÏ°¡ °¨¼ÒÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½Ç´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <em>Ä³ï¿½ï¿½</em>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. <code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½Ç´ï¿½ <em>ï¿½ï¿½ï¿½ï¿½</em> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ <code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(open) <code>mmap()</code>ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ <em>ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½</em>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½Û¾ï¿½ï¿½ï¿½ ï¿½ÏºÎ¸ï¿½ (Æ¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Û¾ï¿½) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Å¹ï¿½ ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½
+    ï¿½Ñ¹ï¿½ï¿½ï¿½ ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <p>ÁÖÀÇ: ÀÌ ¹æ¹ýÀº CGI ÇÁ·Î±×·¥ÀÌ³ª Æ¯º°ÇÑ ³»¿ëÇÚµé·¯¸¦
-    ÅëÇØ ¼­ºñ½ºÇÏ´Â ÆÄÀÏÀÇ ¼­ºñ½º ¼Óµµ¸¦ ³ôÀÏ ¼ö ¾ø´Ù. ÀÌ ¹æ¹ýÀº
-    º¸Åë ¾ÆÆÄÄ¡ core ³»¿ëÇÚµé·¯°¡ ¼­ºñ½ºÇÏ´Â ÀÏ¹ÝÆÄÀÏ¿¡¸¸
-    Àû¿ëµÈ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½: ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ CGI ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½Ì³ï¿½ Æ¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Úµé·¯ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Óµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ core ï¿½ï¿½ï¿½ï¿½ï¿½Úµé·¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½È´ï¿½.</p>
 
-    <p>ÀÌ ¸ðµâÀº ¾ÆÆÄÄ¡ 1.3¿¡ ÀÖ´Â <code>mod_mmap_static</code>
-    ¸ðµâÀÇ ±â´ÉÀ» È®ÀåÇÑ °á°ú´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ 1.3ï¿½ï¿½ ï¿½Ö´ï¿½ <code>mod_mmap_static</code>
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½.</p>
 </div>
-<div id="quickview"><h3>ÁÖÁ¦</h3>
+<div id="quickview"><h3>ï¿½ï¿½ï¿½ï¿½</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#using">mod_file_cache »ç¿ëÇÏ±â</a></li>
-</ul><h3 class="directives">Áö½Ã¾îµé</h3>
+<li><img alt="" src="../images/down.gif" /> <a href="#using">mod_file_cache ï¿½ï¿½ï¿½ï¿½Ï±ï¿½</a></li>
+</ul><h3 class="directives">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#cachefile">CacheFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mmapfile">MMapFile</a></li>
 </ul>
-<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_file_cache">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_file_cache">Report a bug</a></li></ul><h3>Âü°í</h3>
+<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_file_cache">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_file_cache">Report a bug</a></li></ul><h3>ï¿½ï¿½ï¿½ï¿½</h3>
 <ul class="seealso">
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="using" id="using">mod_file_cache »ç¿ëÇÏ±â</a> <a title="Permanent link" href="#using" class="permalink">&para;</a></h2>
+<h2><a name="using" id="using">mod_file_cache ï¿½ï¿½ï¿½ï¿½Ï±ï¿½</a> <a title="Permanent link" href="#using" class="permalink">&para;</a></h2>
 
-    <p><code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code>´Â ÁÖ¼­¹ö ¼³Á¤¿¡¼­ <code class="directive"><a href="#mmapfile">MMapFile</a></code>°ú <code class="directive"><a href="#cachefile">CacheFile</a></code> Áö½Ã¾î¸¦ »ç¿ëÇÏ¿©
-    ¼³Á¤ÇÑ Á¤Àû ÆÄÀÏµéÀ» Ä³½¬¿¡ ÀúÀåÇÑ´Ù.</p>
+    <p><code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code>ï¿½ï¿½ ï¿½Ö¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code class="directive"><a href="#mmapfile">MMapFile</a></code>ï¿½ï¿½ <code class="directive"><a href="#cachefile">CacheFile</a></code> ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <p>¸ðµç ÇÃ·¡ÆûÀÌ µÎ Áö½Ã¾î¸¦ ¸ðµÎ Áö¿øÇÏ´Â °ÍÀº ¾Æ´Ï´Ù.
-    ¿¹¸¦ µé¾î, À©µµ¿ìÁî¿ë ¾ÆÆÄÄ¡´Â ÇöÀç <code class="directive"><a href="#mmapstatic">MMapStatic</a></code> Áö½Ã¾î¸¦
-    Áö¿øÇÏÁö ¾ÊÁö¸¸, AIX °°Àº ´Ù¸¥ ÇÃ·¡ÆûÀº µÑ ¸ðµÎ¸¦ Áö¿øÇÑ´Ù.
-    Áö¿øÇÏÁö¾Ê´Â Áö½Ã¾î¸¦ »ç¿ëÇÒ °æ¿ì ¼­¹ö ¿À·ù ·Î±×¿¡ ¿À·ù¹®À»
-    ³²±ä´Ù. Áö¿øÇÏÁö¾Ê´Â Áö½Ã¾î¸¦ »ç¿ëÇØµµ ¼­¹ö´Â µ¿ÀÛÇÏÁö¸¸
-    ÆÄÀÏÀ» Ä³½¬¿¡ ÀúÀåÇÏÁö ¾Ê´Â´Ù. µÎ Áö½Ã¾î¸¦ ¸ðµÎ Áö¿øÇÏ´Â
-    ÇÃ·¡ÆûÀ» »ç¿ëÇÑ´Ù¸é ¾î¶² ¹æ½ÄÀÌ ´õ ÁÁÀºÁö ½ÇÇèÇØº¸¶ó.</p>
+    <p>ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Ï´ï¿½.
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ <code class="directive"><a href="#mmapstatic">MMapStatic</a></code> ï¿½ï¿½ï¿½Ã¾î¸¦
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, AIX ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Î¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê´ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Î±×¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê´ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½Øµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½
+    ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½ ï¿½î¶² ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Øºï¿½ï¿½ï¿½.</p>
 
-    <h3>MMapFile Áö½Ã¾î</h3>
+    <h3>MMapFile ï¿½ï¿½ï¿½Ã¾ï¿½</h3>
 
-      <p><code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code>ÀÇ <code class="directive"><a href="#mmapfile">MMapFile</a></code> Áö½Ã¾î´Â
-      ¼³Á¤ÇÑ Á¤Àû ÆÄÀÏµéÀ» <code>mmap()</code> ½Ã½ºÅÛÈ£ÃâÀ»
-      »ç¿ëÇÏ¿© ¸Þ¸ð¸®¿¡ ´ëÀÀÇÑ´Ù. ÃÖ½Å À¯´Ð½º·ù ¿î¿µÃ¼Á¦¶ó¸é
-      º¸Åë ÀÌ ½Ã½ºÅÛÈ£ÃâÀÌ ÀÖÁö¸¸, ¾ø´Â ¿î¿µÃ¼Á¦µµ ÀÖ´Ù. ¶Ç,
-      <code>mmap()</code>ÇÒ ¼ö ÀÖ´Â ÆÄÀÏ Å©±â¿Í °³¼ö¸¦ ½Ã½ºÅÛÀÌ
-      Á¦ÇÑÇÒ ¼ö ÀÖÀ¸¹Ç·Î ¹Ì¸® ½ÇÇèÇØº¸´Â °ÍÀÌ ÁÁ´Ù.</p>
+      <p><code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code>ï¿½ï¿½ <code class="directive"><a href="#mmapfile">MMapFile</a></code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ <code>mmap()</code> ï¿½Ã½ï¿½ï¿½ï¿½È£ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½Þ¸ð¸®¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½Ö½ï¿½ ï¿½ï¿½ï¿½Ð½ï¿½ï¿½ï¿½ ï¿½î¿µÃ¼ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ã½ï¿½ï¿½ï¿½È£ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½î¿µÃ¼ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½,
+      <code>mmap()</code>ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ Å©ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Øºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</p>
 
-      <p>¼­¹ö´Â ½ÃÀÛÇÒ¶§¿Í Àç½ÃÀÛÇÒ¶§¸¸ <code>mmap()</code>ÇÑ´Ù.
-      ±×·¡¼­ ÆÄÀÏ½Ã½ºÅÛ¿¡¼­ ÇØ´ç ÆÄÀÏÁß ÇÏ³ª¶óµµ º¯°æµÇ¸é ¼­¹ö¸¦
-      Àç½ÃÀÛ<em>ÇØ¾ß</em> ÇÑ´Ù (<a href="../stopping.html">Áß´Ü°ú
-      Àç½ÃÀÛ</a> ¹®¼­ Âü°í). ´Ù½Ã ¸»ÇØ¼­ ÆÄÀÏÀÌ º¯°æµÇ¾ú´Âµ¥
-      ¼­¹ö¸¦ Àç½ÃÀÛÇÏÁö ¾ÊÀ¸¸é ¿ÏÀüÈ÷ ÀÌ»óÇÏ°Ô ¿äÃ»À» ¼­ºñ½ºÇÒÁöµµ
-      ¸ð¸¥´Ù. ÀÌÀü ÆÄÀÏÀ» Áö¿ì°í(unlink) ±× ÀÚ¸®¿¡ »õ·Î¿î ÆÄÀÏÀ»
-      ¸¸µé´Â ¹æ½ÄÀ¸·Î ÆÄÀÏÀ» ¼öÁ¤ÇØ¾ß ÇÑ´Ù. <code>rdist</code>³ª
-      <code>mv</code>¿Í °°Àº ´ë´Ù¼öÀÇ µµ±¸°¡ ÀÌ·± ¹æ½ÄÀ¸·Î µ¿ÀÛÇÑ´Ù.
-      ¸Å¹ø Ãß°¡·Î ºÒÇÊ¿äÇÑ <code>stat()</code> °Ë»ç°¡ ÇÊ¿äÇÏ°í
-      ÀÔÃâ·Â °¨¼Ò¶ó´Â ¿ø·¡ ÀÇµµ¿¡ ¹ÝÇÏ±â¶§¹®¿¡ ÀÌ ¸ðµâÀº ÆÄÀÏÀÇ
-      º¯È­¸¦ ¹«½ÃÇÑ´Ù.</p>
+      <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ï¿½ï¿½ <code>mmap()</code>ï¿½Ñ´ï¿½.
+      ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½Û¿ï¿½ï¿½ï¿½ ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½<em>ï¿½Ø¾ï¿½</em> ï¿½Ñ´ï¿½ (<a href="../stopping.html">ï¿½ß´Ü°ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½</a> ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½). ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½Âµï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì»ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ð¸¥´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½(unlink) ï¿½ï¿½ ï¿½Ú¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½. <code>rdist</code>ï¿½ï¿½
+      <code>mv</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ù¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+      ï¿½Å¹ï¿½ ï¿½ß°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ê¿ï¿½ï¿½ï¿½ <code>stat()</code> ï¿½Ë»ç°¡ ï¿½Ê¿ï¿½ï¿½Ï°ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ò¶ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Çµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï±â¶§ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½È­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
     
 
-    <h3>CacheFile Áö½Ã¾î</h3>
+    <h3>CacheFile ï¿½ï¿½ï¿½Ã¾ï¿½</h3>
 
-      <p><code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code>ÀÇ <code class="directive"><a href="#cachefile">CacheFile</a></code> Áö½Ã¾î´Â
-      ¼³Á¤ Áö½Ã¾î¿¡ ¿­°ÅÇÑ ÆÄÀÏ(°ú ÆÄÀÏµé)À» ¿­¾î¼­ ÆÄÀÏÀÇ
-      <em>ÇÚµé(handle)</em> È¤Àº <em>ÆÄÀÏ ±â¼úÀÚ(file descriptor)</em>¸¦
-      Ä³½¬¿¡ ÀúÀåÇÑ´Ù. ÆÄÀÏÀ» ¿äÃ»ÇÏ¸é ¼­¹ö´Â Ä³½¬¿¡¼­ ÇÚµéÀ»
-      Ã£¾Æ¼­ ¼ÒÄÏ API <code>sendfile()</code>¿¡ (À©µµ¿ìÁî¿¡¼­´Â
-      <code>TransmitFile()</code>) ³Ñ±ä´Ù.</p>
+      <p><code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code>ï¿½ï¿½ <code class="directive"><a href="#cachefile">CacheFile</a></code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î¿¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ ï¿½ï¿½ï¿½Ïµï¿½)ï¿½ï¿½ ï¿½ï¿½ï¿½î¼­ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      <em>ï¿½Úµï¿½(handle)</em> È¤ï¿½ï¿½ <em>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½(file descriptor)</em>ï¿½ï¿½
+      Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ï¿½ï¿½
+      Ã£ï¿½Æ¼ï¿½ ï¿½ï¿½ï¿½ï¿½ API <code>sendfile()</code>ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½î¿¡ï¿½ï¿½ï¿½ï¿½
+      <code>TransmitFile()</code>) ï¿½Ñ±ï¿½ï¿½.</p>
 
       
 
-      <p>¼­¹ö´Â ½ÃÀÛÇÒ¶§¿Í Àç½ÃÀÛÇÒ¶§¸¸ ÆÄÀÏ ÇÚµéÀ» Ä³½¬ÇÑ´Ù.
-      ±×·¡¼­ ÆÄÀÏ½Ã½ºÅÛ¿¡¼­ Ä³½¬ÇÑ ÆÄÀÏÁß ÇÏ³ª¶óµµ º¯°æµÇ¸é
-      ¼­¹ö¸¦ Àç½ÃÀÛ<em>ÇØ¾ß</em> ÇÑ´Ù (<a href="../stopping.html">Áß´Ü°ú Àç½ÃÀÛ</a> ¹®¼­ Âü°í).
-      ´Ù½Ã ¸»ÇØ¼­ ÆÄÀÏÀÌ º¯°æµÇ¾ú´Âµ¥ ¼­¹ö¸¦ Àç½ÃÀÛÇÏÁö ¾ÊÀ¸¸é
-      ¿ÏÀüÈ÷ ÀÌ»óÇÏ°Ô ¿äÃ»À» ¼­ºñ½ºÇÒÁöµµ ¸ð¸¥´Ù. ÀÌÀü ÆÄÀÏÀ»
-      Áö¿ì°í(unlink) ±× ÀÚ¸®¿¡ »õ·Î¿î ÆÄÀÏÀ» ¸¸µå´Â ¹æ½ÄÀ¸·Î
-      ÆÄÀÏÀ» ¼öÁ¤ÇØ¾ß ÇÑ´Ù. <code>rdist</code>³ª <code>mv</code>¿Í
-      °°Àº ´ë´Ù¼öÀÇ µµ±¸°¡ ÀÌ·± ¹æ½ÄÀ¸·Î µ¿ÀÛÇÑ´Ù.</p>
+      <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½Ñ´ï¿½.
+      ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½Û¿ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¸ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½<em>ï¿½Ø¾ï¿½</em> ï¿½Ñ´ï¿½ (<a href="../stopping.html">ï¿½ß´Ü°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½</a> ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½).
+      ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½Âµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì»ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ð¸¥´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½(unlink) ï¿½ï¿½ ï¿½Ú¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½. <code>rdist</code>ï¿½ï¿½ <code>mv</code>ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ù¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
     
 
-    <div class="note"><h3>ÁÖÀÇ</h3>
-      <p>µð·ºÅä¸®ÀÇ ¸ðµç ÆÄÀÏÀ» Àç±ÍÀûÀ¸·Î Ä³½¬¿¡ ÀúÀåÇÏ´Â Áö½Ã¾î´Â
-      ¾ø´Ù. ´ë½Å ´ÙÀ½°ú °°ÀÌ ÇØº¸¶ó... <code class="directive"><a href="../mod/core.html#include">Include</a></code> Áö½Ã¾î¸¦ Âü°íÇÏ¿© ´ÙÀ½°ú
-      °°Àº ¸í·É¾î¸¦ ½ÇÇàÇÑ´Ù:</p>
+    <div class="note"><h3>ï¿½ï¿½ï¿½ï¿½</h3>
+      <p>ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Øºï¿½ï¿½ï¿½... <code class="directive"><a href="../mod/core.html#include">Include</a></code> ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½É¾î¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½:</p>
 
       <div class="example"><p><code>
         find /www/htdocs -type f -print \<br />
@@ -144,71 +144,71 @@
     </div>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheFile" id="CacheFile">CacheFile</a> <a name="cachefile" id="cachefile">Áö½Ã¾î</a> <a title="Permanent link" href="#cachefile" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="CacheFile" id="CacheFile">CacheFile</a> <a name="cachefile" id="cachefile">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#cachefile" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>½ÃÀÛ½Ã ¿©·¯ ÆÄÀÏ ÇÚµéÀ» Ä³½¬ÇÑ´Ù</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>CacheFile <var>file-path</var> [<var>file-path</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Experimental</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_file_cache</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½ï¿½Û½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½Ñ´ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>CacheFile <var>file-path</var> [<var>file-path</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_file_cache</td></tr>
 </table>
-    <p><code class="directive">CacheFile</code> Áö½Ã¾î´Â ¼­¹ö°¡ ½ÃÀÛÇÒ¶§
-    ¿©·¯ ÆÄÀÏÀ» ¿­°í(open) ÆÄÀÏµéÀÇ ÇÚµéÀ» Ä³½¬¿¡ ÀúÀåÇÑ´Ù.
-    ¼­¹ö Á¾·á½Ã ÀÚµ¿À¸·Î Ä³½¬ÇÑ ÆÄÀÏÀÇ ÇÚµéÀ» ´Ý´Â´Ù(close).
-    ÆÄÀÏ½Ã½ºÅÛ¿¡¼­ ÆÄÀÏÀÌ º¯°æµÇ¸é ÆÄÀÏÀ» ´Ù½Ã Ä³½¬ÇÏ±âÀ§ÇØ
-    ¼­¹ö¸¦ Àç½ÃÀÛÇØ¾ß ÇÑ´Ù.</p>
+    <p><code class="directive">CacheFile</code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(open) ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ ï¿½Úµï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ï¿½ï¿½ ï¿½Ý´Â´ï¿½(close).
+    ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½Û¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù½ï¿½ Ä³ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½.</p>
 
-    <p><var>file-path</var> ¾Æ±Ô¸ÕÆ®¸¦ Á¶½ÉÇØ¶ó. ¾Æ±Ô¸ÕÆ®´Â
-    ¾ÆÆÄÄ¡ÀÇ URL-ÆÄÀÏ¸í º¯È¯ ÇÚµé·¯°¡ ¸¸µç ÆÄÀÏ½Ã½ºÅÛ °æ·Î¿Í
-    Á¤È®È÷ ÀÏÄ¡ÇØ¾ß ÇÑ´Ù. ÇÑ¹ø ´õ ºÒÇÊ¿äÇÑ <code>stat()</code>
-    ½Ã½ºÅÛÈ£ÃâÀÌ ÇÊ¿äÇÏ±â¶§¹®¿¡ inode³ª ½Éº¼¸µÅ© <em>µî</em>À»
-    °æ·Î¸¦ ÁöÁ¤ÇÒ ¼ö ¾ø´Ù. ÀÌ ¸ðµâÀº <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code>³ª
-    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>·Î ÀçÀÛ¼ºÇÑ ÆÄÀÏ¸íÀ» ´Ù·ê ¼ö
-    ÀÖ±âµµ ¾ø±âµµ ÇÏ´Ù.</p>
+    <p><var>file-path</var> ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¶ï¿½. ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ URL-ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½È¯ ï¿½Úµé·¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½ï¿½ ï¿½ï¿½Î¿ï¿½
+    ï¿½ï¿½È®ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½. ï¿½Ñ¹ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ê¿ï¿½ï¿½ï¿½ <code>stat()</code>
+    ï¿½Ã½ï¿½ï¿½ï¿½È£ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Ï±â¶§ï¿½ï¿½ï¿½ï¿½ inodeï¿½ï¿½ ï¿½Éºï¿½ï¿½ï¿½Å© <em>ï¿½ï¿½</em>ï¿½ï¿½
+    ï¿½ï¿½Î¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code>ï¿½ï¿½
+    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½Û¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ ï¿½Ù·ï¿½ ï¿½ï¿½
+    ï¿½Ö±âµµ ï¿½ï¿½ï¿½âµµ ï¿½Ï´ï¿½.</p>
 
-    <div class="example"><h3>¿¹Á¦</h3><p><code>
+    <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½</h3><p><code>
       CacheFile /usr/local/apache/htdocs/index.html
     </code></p></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MMapFile" id="MMapFile">MMapFile</a> <a name="mmapfile" id="mmapfile">Áö½Ã¾î</a> <a title="Permanent link" href="#mmapfile" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="MMapFile" id="MMapFile">MMapFile</a> <a name="mmapfile" id="mmapfile">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#mmapfile" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>½ÃÀÛ½Ã ¿©·¯ ÆÄÀÏÀ» ¸Þ¸ð¸®¿¡ ´ëÀÀÇÑ´Ù</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>MMapFile <var>file-path</var> [<var>file-path</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Experimental</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_file_cache</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½ï¿½Û½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Þ¸ð¸®¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>MMapFile <var>file-path</var> [<var>file-path</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_file_cache</td></tr>
 </table>
-    <p><code class="directive">MMapFile</code> Áö½Ã¾î´Â ¼­¹ö°¡ ½ÃÀÛÇÒ¶§
-    (°ø¹éÀ¸·Î ±¸ºÐÇÑ ¾Æ±Ô¸ÕÆ®·Î ÁöÁ¤ÇÑ) ¿©·¯ ÆÄÀÏÀ» ¸Þ¸ð¸®¿¡
-    ´ëÀÀÇÑ´Ù(map). ¼­¹ö Á¾·á½Ã ÀÚµ¿À¸·Î ´ëÀÀÀ» Ç¬´Ù(unmap).
-    ÆÄÀÏ½Ã½ºÅÛ¿¡¼­ ÆÄÀÏÀÌ º¯°æµÇ¸é ÆÄÀÏµéÀ» ´Ù½Ã
-    <code>mmap()</code>ÇÏ±âÀ§ÇØ ÃÖ¼ÒÇÑ ¼­¹ö¿¡ <code>HUP</code>ÀÌ³ª
-    <code>USR1</code> ½Ã±×³ÎÀ» º¸³»¾ß ÇÑ´Ù.</p>
+    <p><code class="directive">MMapFile</code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½
+    (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½) ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Þ¸ð¸®¿ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½(map). ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ç¬ï¿½ï¿½(unmap).
+    ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½Û¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¸ï¿½ ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ ï¿½Ù½ï¿½
+    <code>mmap()</code>ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>HUP</code>ï¿½Ì³ï¿½
+    <code>USR1</code> ï¿½Ã±×³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½.</p>
 
-    <p><var>file-path</var> ¾Æ±Ô¸ÕÆ®¸¦ Á¶½ÉÇØ¶ó. ¾Æ±Ô¸ÕÆ®´Â
-    ¾ÆÆÄÄ¡ÀÇ URL-ÆÄÀÏ¸í º¯È¯ ÇÚµé·¯°¡ ¸¸µç ÆÄÀÏ½Ã½ºÅÛ °æ·Î¿Í
-    Á¤È®È÷ ÀÏÄ¡ÇØ¾ß ÇÑ´Ù. ÇÑ¹ø ´õ ºÒÇÊ¿äÇÑ <code>stat()</code>
-    ½Ã½ºÅÛÈ£ÃâÀÌ ÇÊ¿äÇÏ±â¶§¹®¿¡ inode³ª ½Éº¼¸µÅ© <em>µî</em>À»
-    °æ·Î¸¦ ÁöÁ¤ÇÒ ¼ö ¾ø´Ù. ÀÌ ¸ðµâÀº <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code>³ª
-    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>·Î ÀçÀÛ¼ºÇÑ ÆÄÀÏ¸íÀ» ´Ù·ê ¼ö
-    ÀÖ±âµµ ¾ø±âµµ ÇÏ´Ù.</p>
+    <p><var>file-path</var> ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¶ï¿½. ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ URL-ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½È¯ ï¿½Úµé·¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½ï¿½ ï¿½ï¿½Î¿ï¿½
+    ï¿½ï¿½È®ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½. ï¿½Ñ¹ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ê¿ï¿½ï¿½ï¿½ <code>stat()</code>
+    ï¿½Ã½ï¿½ï¿½ï¿½È£ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Ï±â¶§ï¿½ï¿½ï¿½ï¿½ inodeï¿½ï¿½ ï¿½Éºï¿½ï¿½ï¿½Å© <em>ï¿½ï¿½</em>ï¿½ï¿½
+    ï¿½ï¿½Î¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code>ï¿½ï¿½
+    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½Û¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ ï¿½Ù·ï¿½ ï¿½ï¿½
+    ï¿½Ö±âµµ ï¿½ï¿½ï¿½âµµ ï¿½Ï´ï¿½.</p>
 
-    <div class="example"><h3>¿¹Á¦</h3><p><code>
+    <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½</h3><p><code>
       MMapFile /usr/local/apache/htdocs/index.html
     </code></p></div>
 
 </div>
 </div>
 <div class="bottomlang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/mod/mod_file_cache.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/mod/mod_file_cache.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_file_cache.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/mod/mod_file_cache.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_file_cache.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/mod/mod_file_cache.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -223,8 +223,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_file_cache
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

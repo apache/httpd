@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -266,18 +266,18 @@
     "<code>/domain</code>" で始まる URI へのリクエストはすべて、
     バーチャルホスト <code>www.domain.tld</code> で処理される、
     という意味です。つまり、すべてのクライアントで
-    <code>http://www.domain.tld/domain/</code> でアクセスできるページが、
+    <code>https://www.domain.tld/domain/</code> でアクセスできるページが、
     <code>Host:</code> ヘッダを送ってくるクライアントであれば
-    <code>http://www.domain.tld/</code> としてもアクセスできる、
+    <code>https://www.domain.tld/</code> としてもアクセスできる、
     という意味です。</p>
 
     <p>これが動作するようにするには、
     プライマリのバーチャルホストのページに
-    <code>http://www.domain.tld/domain/</code> へのリンクを設置します。
+    <code>https://www.domain.tld/domain/</code> へのリンクを設置します。
     そして、バーチャルホストのページでは、純粋な相対リンク (<em>例:</em>
     "<code>file.html</code>" や "<code>../icons/image.gif</code>")、
     あるいは <code>/domain/</code> で始まるリンク (<em>例:</em>
-    "<code>http://www.domain.tld/domain/misc/file.html</code>" や
+    "<code>https://www.domain.tld/domain/misc/file.html</code>" や
     "<code>/domain/misc/file.html</code>") だけを設置します。</p>
 
     <p>これには、幾分かの規律が必要となりますが、

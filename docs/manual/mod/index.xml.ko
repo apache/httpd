@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,16 +21,16 @@
 -->
 
 <moduleindex metafile="index.xml.meta">
-  <title>¸ðµâ ¸ñ·Ï</title>
+  <title>ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½</title>
   <summary>
     <p>
-      ´ÙÀ½Àº ¾ÆÆÄÄ¡ ¹èÆ÷º»¿¡ Æ÷ÇÔµÈ ¸ðµç ¸ðµâ ¸ñ·ÏÀÌ´Ù. <a
-      href="directives.html">¸ðµç ¾ÆÆÄÄ¡ Áö½Ã¾î</a> ¸ñ·Ïµµ
-      Âü°íÇÏ¶ó.
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ôµï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ì´ï¿½. <a
+      href="directives.html">ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½Ã¾ï¿½</a> ï¿½ï¿½Ïµï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.
     </p>
   </summary>
-  <seealso><a href="../mpm.html">´ÙÁßÃ³¸®¸ðµâ (MPM)</a>
+  <seealso><a href="../mpm.html">ï¿½ï¿½ï¿½ï¿½Ã³ï¿½ï¿½ï¿½ï¿½ï¿½ (MPM)</a>
   </seealso>
-  <seealso><a href="quickreference.html">Áö½Ã¾î ºü¸¥Âü°í</a>
+  <seealso><a href="quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</a>
   </seealso>
 </moduleindex>

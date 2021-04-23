@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -74,7 +74,7 @@
 
 <example>
 &lt;IfDefine ClosedForNow&gt;<br />
-Redirect / http://otherserver.example.com/<br />
+Redirect / https://otherserver.example.com/<br />
 &lt;/IfDefine&gt;
 </example>
 
@@ -200,9 +200,9 @@ Deny from all<br />
 ウェブ空間上の内容に対して設定を変更します。
 たとえば、次の設定では /private で始まる URL パスへのアクセスを制限します。
 具体的には、
-<code>http://yoursite.example.com/private</code>,
-<code>http://yoursite.example.com/private123</code>, 
-<code>http://yoursite.example.com/private/dir/file.html</code> 
+<code>https://yoursite.example.com/private</code>,
+<code>https://yoursite.example.com/private123</code>, 
+<code>https://yoursite.example.com/private/dir/file.html</code> 
 へのリクエストや、
 他の同様に <code>/private</code> 文字列で始まるリクエストに
 適用されます。</p>
@@ -297,10 +297,10 @@ Deny from all<br />
 &lt;/Location&gt;
 </example>
 
-<p><code>http://yoursite.example.com/dir/</code>
+<p><code>https://yoursite.example.com/dir/</code>
 へのリクエストでは上手く動作します。しかし大文字小文字を区別しない
 ファイルシステムを使っていたらどうなるでしょう?
-<code>http://yoursite.example.com/DIR/</code> 
+<code>https://yoursite.example.com/DIR/</code> 
 へのリクエストで簡単にアクセス制限を迂回されてしまいます。これに対して
 <directive type="section" module="core">Directory</directive>
 ディレクティブを使用すると、どのように呼び出されたかに関わらず
@@ -345,7 +345,7 @@ Deny from all<br />
 制限します。</p>
 
 <example>
-&lt;Proxy http://cnn.com/*&gt;<br />
+&lt;Proxy https://cnn.com/*&gt;<br />
 Order allow,deny<br />
 Deny from all<br />
 &lt;/Proxy&gt;

@@ -5,7 +5,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -767,7 +767,7 @@ static int alias_match_servlet(apr_pool_t *p,
  * "short-circuiting"... i.e. translate_names will end when the first
  * module returns OK.  So for example, if the request is something like:
  *
- * GET http://othervhost/cgi-bin/printenv HTTP/1.0
+ * GET https://othervhost/cgi-bin/printenv HTTP/1.0
  *
  * mod_alias will notice the /cgi-bin part and ScriptAlias it and
  * short-circuit the proxy... just because of the ordering in the
@@ -3185,7 +3185,7 @@ PROXY_DECLARE(const char *) ap_proxy_ssl_val(apr_pool_t *p, server_rec *s,
                                              conn_rec *c, request_rec *r,
                                              const char *var)
 {
-    return ap_ssl_var_lookup(p, s, c, r, var);
+    return ap_ssl_var_lookup(p, s, c, r, (char *)var);
 }
 
 static int proxy_post_config(apr_pool_t *pconf, apr_pool_t *plog,
@@ -3379,7 +3379,7 @@ static void child_init(apr_pool_t *p, server_rec *s)
         if (conf->req_set && conf->req) {
             proxy_worker *forward;
             ap_proxy_define_worker(conf->pool, &forward, NULL, NULL,
-                                   "http://www.apache.org", 0);
+                                   "https://www.apache.org", 0);
             conf->forward = forward;
             PROXY_STRNCPY(conf->forward->s->name,     "proxy:forward");
             PROXY_STRNCPY(conf->forward->s->hostname, "*"); /* for compatibility */
@@ -3399,7 +3399,7 @@ static void child_init(apr_pool_t *p, server_rec *s)
         }
         if (!reverse) {
             ap_proxy_define_worker(conf->pool, &reverse, NULL, NULL,
-                                   "http://www.apache.org", 0);
+                                   "https://www.apache.org", 0);
             PROXY_STRNCPY(reverse->s->name,     "proxy:reverse");
             PROXY_STRNCPY(reverse->s->hostname, "*"); /* for compatibility */
             PROXY_STRNCPY(reverse->s->hostname_ex, "*");

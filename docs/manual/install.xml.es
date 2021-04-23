@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -85,8 +85,8 @@
         <td><a href="#download">Descarga</a></td>
 
         <td>Descarga la última versión 
-          desde <a href="http://httpd.apache.org/download.cgi#apache24">
-          http://httpd.apache.org/download.cgi</a>
+          desde <a href="https://httpd.apache.org/download.cgi#apache24">
+          https://httpd.apache.org/download.cgi</a>
         </td>
       </tr>
 
@@ -136,7 +136,7 @@
     <p>Cada parte del proceso de configuración e instalación se describe detalladamente más abajo, empezando por los requisitos para compilar e instalar Apache.</p>
 
      <note type="warning">¿No se encuentra aquí su plataforma o sistema favorito?
-    <a href="http://httpd.apache.org/docs-project/">únete a colaborar y mejorar esta documentación.
+    <a href="https://httpd.apache.org/docs-project/">únete a colaborar y mejorar esta documentación.
     </a></note>
   </dd>
 </dl>
@@ -149,7 +149,7 @@
     <dl>
       <dt>APR y APR-Util</dt>
       <dd>Asegúrate de que tiene instalado ya en su sistema APR y APR-Util. Si no es así, o no quiere utilizar la versión que le proporciona el sistema, puede descargar la última versión de ambos APR y APR-Util de
-      <a href="http://apr.apache.org/">Apache APR</a>, descomprimelo en
+      <a href="https://apr.apache.org/">Apache APR</a>, descomprimelo en
        <code>/httpd_source_tree_root/srclib/apr</code> y /httpd_source_tree_root<code>/srclib/apr-util</code>
       (cerciórate de que no existen directorios con números de versiones; por ejemplo,
       la distribución de APR debe estar en /httpd_source_tree_root/srclib/apr/) y usa el comando
@@ -159,7 +159,7 @@
 
       <dt>Librería Compatible de expresiones regulares de Perl (PCRE)</dt>
       <dd>Esta librería es requerida, pero ya no incluido con httpd.
-      Descarga el código fuente de <a href="http://www.pcre.org/">http://www.pcre.org</a>,
+      Descarga el código fuente de <a href="https://www.pcre.org/">https://www.pcre.org</a>,
       o instala un Port o un  Paquete. Si la distrubución de su sistema no puede encontrar el escript pcre-config instalado por PCRE, seleccione utilizando el parámetro<code>--with-pcre</code>.En algunas plataformas,
       deberás instalar la correspondiente versión <code>-dev</code>
       del paquete para permitir a httpd que se genere contra la instalación de la copia del PCRE que se ha instalado.</dd>
@@ -174,8 +174,8 @@
       use, y como no del tamaño de la página web</dd>
 
       <dt>Systema de compilación ANSI-C</dt>
-      <dd>Compruebe que tiene instalado un compilador de ANSI-C. Se recomienda el <a href="http://gcc.gnu.org/">Compilador GNU C
-      (GCC)</a> de la <a href="http://www.gnu.org/">Free Software
+      <dd>Compruebe que tiene instalado un compilador de ANSI-C. Se recomienda el <a href="https://gcc.gnu.org/">Compilador GNU C
+      (GCC)</a> de la <a href="https://www.gnu.org/">Free Software
       Foundation (FSF)</a> es el recomendado. Si no tiene instalado el GCC, entonces compruebe que
       el compilador que va a utilizar cumple con los estándares
       ANSI. Además, su <code>PATH</code> debe contener la
@@ -189,11 +189,11 @@
       utilidad para sincronizar la hora de su sistema. Para esto,
       normalmente, se usan los programas <code>ntpdate</code> o
       <code>xntpd</code>, que están basados en el protocolo
-      "Network Time Protocol" (NTP). Consulte el<a href="http://www.ntp.org">sitio web de NTP
+      "Network Time Protocol" (NTP). Consulte el<a href="https://www.ntp.org">sitio web de NTP
       </a> para obtener más información sobre NTP y los
       servidores públicos de tiempo.</dd>
 
-      <dt><a href="http://www.perl.org/">Perl 5</a>[OPCIONAL]</dt>
+      <dt><a href="https://www.perl.org/">Perl 5</a>[OPCIONAL]</dt>
       <dd>Para algunos de los scripts de soporte como<program>
       apxs</program> o <program>dbmmanage</program> (que están
       escritos en Perl) es necesario el intérprete de Perl 5 (las
@@ -207,7 +207,7 @@
 <section id="download"><title>Descargar</title>
 
     <p>Puede descargar Apache desde <a
-    href="http://httpd.apache.org/download.cgi">la sección de
+    href="https://httpd.apache.org/download.cgi">la sección de
     descargas del sitio web de Apache</a> el cual tiene varios
     mirrors. Para la mayoría de los usuarios de Apache que tienen
     sistemas tipo Unix, se recomienda que se descarguen y compilen el
@@ -225,9 +225,9 @@
     sin modificaciones.  Esto puede hacerlo comparando el archivo
     descargado (.tgz) con su firma PGP. Instrucciones detalladas de
     cómo hacer esto están disponibles en <a
-    href="http://httpd.apache.org/download.cgi#verify"> la
+    href="https://httpd.apache.org/download.cgi#verify"> la
     sección de descargas</a> junto con un ejemplo de cómo <a
-    href="http://httpd.apache.org/dev/verification.html">usar
+    href="https://httpd.apache.org/dev/verification.html">usar
     PGP</a>.</p>
 
 </section>
@@ -368,8 +368,8 @@ directorios</title>
 
     <p>Échele un vistazo al Manual de Apache que está en
     <code><em>PREFIX</em>/docs/manual/</code> o consulta <a
-    href="http://httpd.apache.org/docs/&httpd.docs;/"
-    >http://httpd.apache.org/docs/&httpd.docs;/</a> para la versión más
+    href="https://httpd.apache.org/docs/&httpd.docs;/"
+    >https://httpd.apache.org/docs/&httpd.docs;/</a> para la versión más
     reciente de este manual y su completa
     referencia de las <a href="mod/directives.html">directivas de configuracion</a> disponibles.</p>
 </section>
@@ -383,7 +383,7 @@ funciona</title>
 <example>$ <em>PREFIX</em>/bin/apachectl -k start</example>
 
     <p>Ahora debe poder acceder a su primer documento
-    bajo la URL <code>http://localhost/</code>. La página o documento que ve se encuentra en
+    bajo la URL <code>https://localhost/</code>. La página o documento que ve se encuentra en
     <directive module="core">DocumentRoot</directive>,
     que por norma general casi siempre será <code><em>PREFIX</em>/htdocs/</code>.
     Si quiere  <a href="stopping.html">parar</a> el servidor, puede hacerlo ejecutando:</p>
@@ -465,7 +465,7 @@ funciona</title>
     en la documentación. Mientras lamentablemente, esta situación no es probable que cambie a corto plazo.</p>
 
     <p>Una <a
-    href="http://wiki.apache.org/httpd/DistrosDefaultLayout">descripción
+    href="https://wiki.apache.org/httpd/DistrosDefaultLayout">descripción
     de estas distribuciones de terceros </a> está siendo actualizada en el servidor de la WIKI de HTTP
     Server, y debería reflejar el actual estado de éstas distribuciones de terceros. 
     Sin embargo, tendrá que familiarizarse con los procedimientos de gestión

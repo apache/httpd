@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
 <meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -17,48 +17,48 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">¸ðµâ</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">ï¿½ï¿½ï¿½</a></div>
 <div id="page-content">
-<div id="preamble"><h1>¾ÆÆÄÄ¡ ¸ðµâ mod_authn_anon</h1>
+<div id="preamble"><h1>ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ mod_authn_anon</h1>
 <div class="toplang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/mod/mod_authn_anon.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/mod/mod_authn_anon.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_authn_anon.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_authn_anon.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_authn_anon.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">ÀÌ ¹®¼­´Â ÃÖ½ÅÆÇ ¹ø¿ªÀÌ ¾Æ´Õ´Ï´Ù.
-            ÃÖ±Ù¿¡ º¯°æµÈ ³»¿ëÀº ¿µ¾î ¹®¼­¸¦ Âü°íÇÏ¼¼¿ä.</div>
-<table class="module"><tr><th><a href="module-dict.html#Description">¼³¸í:</a></th><td>ÀÎÁõ¿µ¿ª¿¡ "ÀÍ¸í(anonymous)" »ç¿ëÀÚÀÇ Á¢±ÙÀ»
-Çã¿ëÇÑ´Ù</td></tr>
-<tr><th><a href="module-dict.html#Status">»óÅÂ:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">¸ðµâ¸í:</a></th><td>authn_anon_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">¼Ò½ºÆÄÀÏ:</a></th><td>mod_authn_anon.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Áö¿ø:</a></th><td>¾ÆÆÄÄ¡ 2.1 ÀÌÈÄºÎÅÍ</td></tr></table>
-<h3>¿ä¾à</h3>
+<div class="outofdate">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Õ´Ï´ï¿½.
+            ï¿½Ö±Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ "ï¿½Í¸ï¿½(anonymous)" ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</td></tr>
+<tr><th><a href="module-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">ï¿½ï¿½ï¿½ï¿½:</a></th><td>authn_anon_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">ï¿½Ò½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>mod_authn_anon.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½ï¿½ï¿½Ä¡ 2.1 ï¿½ï¿½ï¿½Äºï¿½ï¿½ï¿½</td></tr></table>
+<h3>ï¿½ï¿½ï¿½</h3>
 
-    <p>ÀÌ ¸ðµâÀº <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> µî ÀÎÁõ¾Õ´Ü¸ðµâÀ»
-    À§ÇØ (<em>¿¹¸¦ µé¾î</em> 'Æ¯º°ÇÑ' »ç¿ëÀÚ ¾ÆÀÌµð 'anonymous'¿Í
-    ÀüÀÚ¿ìÆí ÁÖ¼Ò¸¦ ¾ÏÈ£·Î »ç¿ëÇÏ´Â) ÀÍ¸í-ftp »çÀÌÆ®¿Í À¯»çÇÑ
-    »ç¿ëÀÚ ÀÎÁõÀ» ÇÑ´Ù. ÀüÀÚ¿ìÆí ÁÖ¼Ò¸¦ ·Î±×¿¡ ±â·ÏÇÒ ¼ö ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ü¸ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ (<em>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½</em> 'Æ¯ï¿½ï¿½ï¿½ï¿½' ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ 'anonymous'ï¿½ï¿½
+    ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½Ö¼Ò¸ï¿½ ï¿½ï¿½È£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½) ï¿½Í¸ï¿½-ftp ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½Ö¼Ò¸ï¿½ ï¿½Î±×¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <p>´Ù¸¥ (µ¥ÀÌÅÍº£ÀÌ½º) Á¢±ÙÁ¦¾î ¹æ½Ä°ú ÇÔ²² »ç¿ëÇÏ¿©
-    'µî·ÏÇÏÁö¾ÊÀº' »ç¿ëÀÚ¿¡°Ô »çÀÌÆ®¸¦ ¿­¾îµÎ¸é¼­ È¿À²ÀûÀÎ »ç¿ëÀÚ
-    ÃßÀû°ú »ç¿ëÀÚÁ¤ÀÇ°¡ °¡´ÉÇÏ´Ù. ÀÎÁõ±â¹Ý »ç¿ëÀÚ ÃßÀûÀº ÄíÅ°³ª
-    ±«»óÇÑ URL Á¢µÎ»ç/Á¢¹Ì»ç¿Í ´Þ¸® ¿ÏÀüÈ÷ ºê¶ó¿ìÀú µ¶¸³ÀûÀÌ°í
-    »ç¿ëÀÚ°¡ URLÀ» °øÀ¯ÇÒ ¼ö ÀÖ´Ù´Â ÀåÁ¡ÀÌ ÀÖ´Ù.</p>
+    <p>ï¿½Ù¸ï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½Íºï¿½ï¿½Ì½ï¿½) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä°ï¿½ ï¿½Ô²ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½
+    'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½' ï¿½ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Î¸é¼­ È¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å°ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ URL ï¿½ï¿½ï¿½Î»ï¿½/ï¿½ï¿½ï¿½Ì»ï¿½ï¿½ ï¿½Þ¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì°ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ URLï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´Ù´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <p><code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code>À» »ç¿ëÇÒ¶§ <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code>ÀÇ
-    °ªÀ¸·Î <code>anon</code>À» ¼³Á¤ÇÏ¸é ÀÌ ¸ðµâÀ» »ç¿ëÇÑ´Ù.</p>
+    <p><code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>anon</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 </div>
-<div id="quickview"><h3>ÁÖÁ¦</h3>
+<div id="quickview"><h3>ï¿½ï¿½ï¿½ï¿½</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#example">¿¹Á¦</a></li>
-</ul><h3 class="directives">Áö½Ã¾îµé</h3>
+<li><img alt="" src="../images/down.gif" /> <a href="#example">ï¿½ï¿½ï¿½ï¿½</a></li>
+</ul><h3 class="directives">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#anonymous">Anonymous</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#anonymous_logemail">Anonymous_LogEmail</a></li>
@@ -66,36 +66,36 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#anonymous_nouserid">Anonymous_NoUserID</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#anonymous_verifyemail">Anonymous_VerifyEmail</a></li>
 </ul>
-<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_authn_anon">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_authn_anon">Report a bug</a></li></ul><h3>Âü°í</h3>
+<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_authn_anon">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_authn_anon">Report a bug</a></li></ul><h3>ï¿½ï¿½ï¿½ï¿½</h3>
 <ul class="seealso">
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="example" id="example">¿¹Á¦</a> <a title="Permanent link" href="#example" class="permalink">&para;</a></h2>
-    <p>´ÙÀ½ ¿¹´Â "ÀÏ¹ÝÀûÀÎ" htpasswd-ÆÄÀÏ±â¹Ý ÀÎÁõ¿¡ Ãß°¡·Î
-    »ç¿ëÀÚ°¡ ´ÙÀ½ Á¶°ÇÀ» ¸¸Á·ÇÑ´Ù¸é '¼Õ´Ô(guest)'À¸·Î Á¢±ÙÇÒ
-    ¼ö ÀÖµµ·Ï ÇÑ´Ù:</p>
+<h2><a name="example" id="example">ï¿½ï¿½ï¿½ï¿½</a> <a title="Permanent link" href="#example" class="permalink">&para;</a></h2>
+    <p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ "ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½" htpasswd-ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½ 'ï¿½Õ´ï¿½(guest)'ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ ï¿½Öµï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½:</p>
 
     <ul>
-      <li>»ç¿ëÀÚ´Â »ç¿ëÀÚ ¾ÆÀÌµð¸¦ ÀÔ·ÂÇØ¾ß ÇÑ´Ù. (<code class="directive"><a href="#anonymous_nouserid">Anonymous_NoUserID</a></code>)</li>
+      <li>ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ ï¿½Ô·ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½. (<code class="directive"><a href="#anonymous_nouserid">Anonymous_NoUserID</a></code>)</li>
 
-      <li>»ç¿ëÀÚ´Â ¾ÏÈ£¸¦ ÀÔ·ÂÇØ¾ß ÇÑ´Ù. (<code class="directive"><a href="#anonymous_mustgiveemail">Anonymous_MustGiveEmail</a></code>)</li>
+      <li>ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ ï¿½ï¿½È£ï¿½ï¿½ ï¿½Ô·ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½. (<code class="directive"><a href="#anonymous_mustgiveemail">Anonymous_MustGiveEmail</a></code>)</li>
 
-      <li>¾ÏÈ£·Î À¯È¿ÇÑ ÀüÀÚ¿ìÆí ÁÖ¼Ò¸¦ ÀÔ·ÂÇØ¾ß ÇÑ´Ù. <em>¿¹¸¦
-      µé¾î</em> ÃÖ¼ÒÇÑ '@'¿Í '.' ÇÑ°³¸¦ Æ÷ÇÔÇØ¾ß ÇÑ´Ù. (<code class="directive"><a href="#anonymous_verifyemail">Anonymous_VerifyEmail</a></code>)</li>
+      <li>ï¿½ï¿½È£ï¿½ï¿½ ï¿½ï¿½È¿ï¿½ï¿½ ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½Ö¼Ò¸ï¿½ ï¿½Ô·ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½. <em>ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½</em> ï¿½Ö¼ï¿½ï¿½ï¿½ '@'ï¿½ï¿½ '.' ï¿½Ñ°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½. (<code class="directive"><a href="#anonymous_verifyemail">Anonymous_VerifyEmail</a></code>)</li>
 
-      <li>»ç¿ëÀÚ ¾ÆÀÌµð´Â <code>anonymous guest www test
-      welcome</code> Áß ÇÏ³ªÀÌ¸ç, ´ë¼Ò¹®ÀÚ¸¦ ±¸º°ÇÏÁö
-      <strong>¾Ê´Â´Ù</strong>. (<code class="directive"><a href="#anonymous">Anonymous</a></code>)</li>
+      <li>ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ï¿½ <code>anonymous guest www test
+      welcome</code> ï¿½ï¿½ ï¿½Ï³ï¿½ï¿½Ì¸ï¿½, ï¿½ï¿½Ò¹ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      <strong>ï¿½Ê´Â´ï¿½</strong>. (<code class="directive"><a href="#anonymous">Anonymous</a></code>)</li>
 
-      <li>±×¸®°í ¾ÏÈ£·Î ÀÔ·ÂÇÑ ÀüÀÚ¿ìÆí ÁÖ¼Ò¸¦ ¿À·ù·Î±×ÆÄÀÏ¿¡
-      ±â·ÏÇÑ´Ù. (<code class="directive"><a href="#anonymous_logemail">Anonymous_LogEmail</a></code>)</li>
+      <li>ï¿½×¸ï¿½ï¿½ï¿½ ï¿½ï¿½È£ï¿½ï¿½ ï¿½Ô·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½Ö¼Ò¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Î±ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½
+      ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. (<code class="directive"><a href="#anonymous_logemail">Anonymous_LogEmail</a></code>)</li>
     </ul>
 
-    <div class="example"><h3>¿¹Á¦</h3><p><code>
+    <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½</h3><p><code>
       &lt;Directory /foo&gt;
       <span class="indent">
-        AuthName "¼Õ´ÔÀ¸·Î ¹æ¹®ÇÏ·Á¸é 'anonymous'¿Í ÀüÀÚ¿ìÆí ÁÖ¼Ò¸¦ »ç¿ëÇÏ¶ó"<br />
+        AuthName "ï¿½Õ´ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½æ¹®ï¿½Ï·ï¿½ï¿½ï¿½ 'anonymous'ï¿½ï¿½ ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½Ö¼Ò¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½"<br />
         AuthType Basic<br />
         AuthBasicProvider file anon<br />
         AuthUserFile /path/to/your/.htpasswd<br />
@@ -115,111 +115,111 @@
     </code></p></div>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Anonymous" id="Anonymous">Anonymous</a> <a name="anonymous" id="anonymous">Áö½Ã¾î</a> <a title="Permanent link" href="#anonymous" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="Anonymous" id="Anonymous">Anonymous</a> <a name="anonymous" id="anonymous">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#anonymous" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>¾ÏÈ£°Ë»ç¾øÀÌ Á¢±ÙÀ» Çã¿ëÇÒ »ç¿ëÀÚ ¾ÆÀÌµðµéÀ»
-ÁöÁ¤ÇÑ´Ù</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>Anonymous <var>user</var> [<var>user</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override ¿É¼Ç:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_authn_anon</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½È£ï¿½Ë»ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>Anonymous <var>user</var> [<var>user</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override ï¿½É¼ï¿½:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_authn_anon</td></tr>
 </table>
-    <p>¾ÏÈ£°Ë»ç¾øÀÌ Á¢±ÙÀ» Çã¿ëÇÒ 'Æ¯º°ÇÑ' »ç¿ëÀÚ ¾ÆÀÌµð ¸ñ·Ï.
-    »ç¿ëÀÚ ¾ÆÀÌµðµéÀ» °ø¹éÀ¸·Î ±¸ºÐÇÑ´Ù. µû¿ÈÇ¥ '¿Í "³ª Å»Ãâ¹®ÀÚ
-    \¸¦ »ç¿ëÇÏ¿© »ç¿ëÀÚ ¾ÆÀÌµð ¾È¿¡ °ø¹éÀ» Æ÷ÇÔÇÒ ¼ö ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½È£ï¿½Ë»ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ 'Æ¯ï¿½ï¿½ï¿½ï¿½' ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ ï¿½ï¿½ï¿½.
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½Ç¥ 'ï¿½ï¿½ "ï¿½ï¿½ Å»ï¿½â¹®ï¿½ï¿½
+    \ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ ï¿½È¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <p>¾ÆÀÌµð´Â <strong>´ë¼Ò¹®ÀÚ¸¦ ±¸º°ÇÏÁö¾ÊÀ½</strong>À»
-    ÁÖÀÇÇÏ¶ó.<br />
-    Çã¿ëÇÒ »ç¿ëÀÚ ¾ÆÀÌµð¿¡ Æ¯º°ÇÑ »ç¿ëÀÚ¸íÀÎ
-    '<code>anonymous</code>'¸¦ Ç×»ó Æ÷ÇÔÇÏ±æ °­·ÂÈ÷ ±ÇÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½Ìµï¿½ï¿½ <strong>ï¿½ï¿½Ò¹ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</strong>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.<br />
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ Æ¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ï¿½ï¿½
+    '<code>anonymous</code>'ï¿½ï¿½ ï¿½×»ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <div class="example"><h3>¿¹Á¦:</h3><p><code>
+    <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½:</h3><p><code>
       Anonymous anonymous "Not Registered" "I don't know"
     </code></p></div>
 
     <p>"anonymous", "AnonyMous", "Not Registered", "I Don't Know"
-    µî »ç¿ëÀÚ ¾ÆÀÌµð¸¦ »ç¿ëÇÏ¸é ¾ÏÈ£°Ë»ç¾øÀÌ »ç¿ëÀÚ¸¦ Çã¿ëÇÑ´Ù.</p>
+    ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½È£ï¿½Ë»ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <p>¾ÆÆÄÄ¡ 2.1¿¡¼­´Â »ç¿ëÀÚ ¾ÆÀÌµð·Î "<code>*</code>"¸¦
-    »ç¿ëÇÒ ¼ö ÀÖ´Ù. ±×·¯¸é <em>¾î¶²</em> »ç¿ëÀÚ ¾ÆÀÌµð¶óµµ
-    ¹Þ¾ÆµéÀÎ´Ù.</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Anonymous_LogEmail" id="Anonymous_LogEmail">Anonymous_LogEmail</a> <a name="anonymous_logemail" id="anonymous_logemail">Áö½Ã¾î</a> <a title="Permanent link" href="#anonymous_logemail" class="permalink">&para;</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>ÀÔ·ÂÇÑ ¾ÏÈ£¸¦ ¿À·ù·Î±×¿¡ ±â·ÏÇÒÁö ¿©ºÎ</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>Anonymous_LogEmail On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">±âº»°ª:</a></th><td><code>Anonymous_LogEmail On</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override ¿É¼Ç:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_authn_anon</td></tr>
-</table>
-    <p>±âº»°ªÀÎ <code>On</code>À¸·Î ¼³Á¤ÇÏ¸é (¾Æ¸¶µµ ÀüÀÚ¿ìÆí
-    ÁÖ¼ÒÀÏ) ÀÔ·ÂÇÑ '¾ÏÈ£'¸¦ ¿À·ù·Î±×¿¡ ±â·ÏÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½Ä¡ 2.1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ï¿½ "<code>*</code>"ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½×·ï¿½ï¿½ï¿½ <em>ï¿½î¶²</em> ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ï¿½
+    ï¿½Þ¾Æµï¿½ï¿½Î´ï¿½.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Anonymous_MustGiveEmail" id="Anonymous_MustGiveEmail">Anonymous_MustGiveEmail</a> <a name="anonymous_mustgiveemail" id="anonymous_mustgiveemail">Áö½Ã¾î</a> <a title="Permanent link" href="#anonymous_mustgiveemail" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="Anonymous_LogEmail" id="Anonymous_LogEmail">Anonymous_LogEmail</a> <a name="anonymous_logemail" id="anonymous_logemail">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#anonymous_logemail" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>¾ÏÈ£°¡ ¾ø¾îµµ °¡´ÉÇÑÁö ¿©ºÎ</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>Anonymous_MustGiveEmail On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">±âº»°ª:</a></th><td><code>Anonymous_MustGiveEmail On</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override ¿É¼Ç:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_authn_anon</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ô·ï¿½ï¿½ï¿½ ï¿½ï¿½È£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Î±×¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>Anonymous_LogEmail On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">ï¿½âº»ï¿½ï¿½:</a></th><td><code>Anonymous_LogEmail On</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override ï¿½É¼ï¿½:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_authn_anon</td></tr>
 </table>
-    <p>»ç¿ëÀÚ°¡ ¾ÏÈ£·Î ÀüÀÚ¿ìÆí ÁÖ¼Ò¸¦ ÀÔ·ÂÇØ¾ß ÇÏ´ÂÁö ¿©ºÎ¸¦
-    °áÁ¤ÇÑ´Ù. ¾ÏÈ£°¡ ¾øÀ¸¸é °ÅºÎÇÑ´Ù.</p>
+    <p>ï¿½âº»ï¿½ï¿½ï¿½ï¿½ <code>On</code>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ (ï¿½Æ¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½
+    ï¿½Ö¼ï¿½ï¿½ï¿½) ï¿½Ô·ï¿½ï¿½ï¿½ 'ï¿½ï¿½È£'ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Î±×¿ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Anonymous_NoUserID" id="Anonymous_NoUserID">Anonymous_NoUserID</a> <a name="anonymous_nouserid" id="anonymous_nouserid">Áö½Ã¾î</a> <a title="Permanent link" href="#anonymous_nouserid" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="Anonymous_MustGiveEmail" id="Anonymous_MustGiveEmail">Anonymous_MustGiveEmail</a> <a name="anonymous_mustgiveemail" id="anonymous_mustgiveemail">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#anonymous_mustgiveemail" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>»ç¿ëÀÚ ¾ÆÀÌµð°¡ ¾ø¾îµµ °¡´ÉÇÏÁö ¿©ºÎ</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>Anonymous_NoUserID On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">±âº»°ª:</a></th><td><code>Anonymous_NoUserID Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override ¿É¼Ç:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_authn_anon</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½È£ï¿½ï¿½ ï¿½ï¿½ï¿½îµµ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>Anonymous_MustGiveEmail On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">ï¿½âº»ï¿½ï¿½:</a></th><td><code>Anonymous_MustGiveEmail On</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override ï¿½É¼ï¿½:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_authn_anon</td></tr>
 </table>
-    <p><code>On</code>À¸·Î ¼³Á¤ÇÏ¸é »ç¿ëÀÚ´Â »ç¿ëÀÚ ¾ÆÀÌµð¸¦
-    (¾Æ¸¶ ¾ÏÈ£µµ) ÀÔ·ÂÇÏÁö ¾Ê¾Æµµ µÈ´Ù. ÀÌ´Â ÀÚ¿¬½º·´°Ô ±×³É
-    returnÀ» Ä¡°Å³ª OK ¹öÆ°À» Å¬¸¯ÇÏ´Â MS-Explorer »ç¿ëÀÚ¿¡°Ô
-    ¸Å¿ì Æí¸®ÇÏ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½ï¿½È£ï¿½ï¿½ ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½Ö¼Ò¸ï¿½ ï¿½Ô·ï¿½ï¿½Ø¾ï¿½ ï¿½Ï´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î¸ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½È£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Åºï¿½ï¿½Ñ´ï¿½.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Anonymous_VerifyEmail" id="Anonymous_VerifyEmail">Anonymous_VerifyEmail</a> <a name="anonymous_verifyemail" id="anonymous_verifyemail">Áö½Ã¾î</a> <a title="Permanent link" href="#anonymous_verifyemail" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="Anonymous_NoUserID" id="Anonymous_NoUserID">Anonymous_NoUserID</a> <a name="anonymous_nouserid" id="anonymous_nouserid">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#anonymous_nouserid" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>¾ÏÈ£°¡ ¿Ã¹Ù¸¥ Çü½ÄÀÇ ÀüÀÚ¿ìÆí ÁÖ¼ÒÀÎÁö °Ë»ç
-¿©ºÎ</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>Anonymous_VerifyEmail On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">±âº»°ª:</a></th><td><code>Anonymous_VerifyEmail Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override ¿É¼Ç:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_authn_anon</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ ï¿½ï¿½ï¿½îµµ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>Anonymous_NoUserID On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">ï¿½âº»ï¿½ï¿½:</a></th><td><code>Anonymous_NoUserID Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override ï¿½É¼ï¿½:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_authn_anon</td></tr>
 </table>
-    <p><code>On</code>À¸·Î ¼³Á¤ÇÏ¸é »ç¿ëÀÚ°¡ ¿Ã¹Ù¸¥ ÀüÀÚ¿ìÆí
-    ÁÖ¼Ò¸¦ ÀÔ·ÂÇÏµµ·Ï ÀÔ·ÂÇÑ '¾ÏÈ£'°¡ ÃÖ¼ÒÇÑ '@'¿Í '.'¸¦ ÇÑ°³¾¿
-    Æ÷ÇÔÇÏ´ÂÁö °Ë»çÇÑ´Ù (À§ÀÇ <code class="directive"><a href="#anonymous_logemail">Anonymous_LogEmail</a></code> Âü°í).</p>
+    <p><code>On</code>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½
+    (ï¿½Æ¸ï¿½ ï¿½ï¿½È£ï¿½ï¿½) ï¿½Ô·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¾Æµï¿½ ï¿½È´ï¿½. ï¿½Ì´ï¿½ ï¿½Ú¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×³ï¿½
+    returnï¿½ï¿½ Ä¡ï¿½Å³ï¿½ OK ï¿½ï¿½Æ°ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ï´ï¿½ MS-Explorer ï¿½ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½
+    ï¿½Å¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Anonymous_VerifyEmail" id="Anonymous_VerifyEmail">Anonymous_VerifyEmail</a> <a name="anonymous_verifyemail" id="anonymous_verifyemail">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#anonymous_verifyemail" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½È£ï¿½ï¿½ ï¿½Ã¹Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½
+ï¿½ï¿½ï¿½ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>Anonymous_VerifyEmail On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">ï¿½âº»ï¿½ï¿½:</a></th><td><code>Anonymous_VerifyEmail Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override ï¿½É¼ï¿½:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_authn_anon</td></tr>
+</table>
+    <p><code>On</code>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½Ã¹Ù¸ï¿½ ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½
+    ï¿½Ö¼Ò¸ï¿½ ï¿½Ô·ï¿½ï¿½Ïµï¿½ï¿½ï¿½ ï¿½Ô·ï¿½ï¿½ï¿½ 'ï¿½ï¿½È£'ï¿½ï¿½ ï¿½Ö¼ï¿½ï¿½ï¿½ '@'ï¿½ï¿½ '.'ï¿½ï¿½ ï¿½Ñ°ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½ï¿½Ñ´ï¿½ (ï¿½ï¿½ï¿½ï¿½ <code class="directive"><a href="#anonymous_logemail">Anonymous_LogEmail</a></code> ï¿½ï¿½ï¿½ï¿½).</p>
 
 </div>
 </div>
 <div class="bottomlang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/mod/mod_authn_anon.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/mod/mod_authn_anon.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_authn_anon.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_authn_anon.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_authn_anon.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_authn_anon.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/mod/mod_authn_anon.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -234,8 +234,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_authn_anon
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

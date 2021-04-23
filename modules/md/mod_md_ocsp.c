@@ -5,7 +5,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -65,7 +65,7 @@ int md_ocsp_init_stapling_status(server_rec *s, apr_pool_t *p,
     md = ((sc->assigned && sc->assigned->nelts == 1)?
           APR_ARRAY_IDX(sc->assigned, 0, const md_t*) : NULL);
 
-    rv = md_ocsp_prime(sc->mc->ocsp, NULL, 0, md_cert_wrap(p, cert),
+    rv = md_ocsp_prime(sc->mc->ocsp, NULL, md_cert_wrap(p, cert),
                        md_cert_wrap(p, issuer), md);
     ap_log_error(APLOG_MARK, APLOG_TRACE1, rv, s, "init stapling for: %s", 
                  md? md->name : s->server_hostname);
@@ -77,12 +77,13 @@ declined:
 }
 
 int md_ocsp_prime_status(server_rec *s, apr_pool_t *p,
-                         const char *id, apr_size_t id_len, const char *pem)
+                         const ap_bytes_t *external_id, const char *pem)
 {
     md_srv_conf_t *sc;
     const md_t *md;
     apr_array_header_t *chain;
     apr_status_t rv = APR_ENOENT;
+    md_data_t eid;
 
     sc = md_config_get(s);
     if (!staple_here(sc)) goto cleanup;
@@ -103,7 +104,9 @@ int md_ocsp_prime_status(server_rec *s, apr_pool_t *p,
         goto cleanup;
     }
 
-    rv = md_ocsp_prime(sc->mc->ocsp, id, id_len,
+    eid.data = (char*)external_id->data;
+    eid.len = external_id->len;
+    rv = md_ocsp_prime(sc->mc->ocsp, &eid,
                        APR_ARRAY_IDX(chain, 0, md_cert_t*),
                        APR_ARRAY_IDX(chain, 1, md_cert_t*), md);
     ap_log_error(APLOG_MARK, APLOG_TRACE1, rv, s, "init stapling for: %s",
@@ -153,7 +156,7 @@ int md_ocsp_get_stapling_status(unsigned char **pder, int *pderlen,
     rv = md_ocsp_init_id(&id, c->pool, cert);
     if (APR_SUCCESS != rv) goto declined;
 
-    rv = md_ocsp_get_status(ocsp_copy_der, &ctx, sc->mc->ocsp, id.data, id.len, c->pool, md);
+    rv = md_ocsp_get_status(ocsp_copy_der, &ctx, sc->mc->ocsp, &id, c->pool, md);
     if (APR_STATUS_IS_ENOENT(rv)) goto declined;
     *pder = ctx.der;
     *pderlen = (int)ctx.der_len;
@@ -164,11 +167,12 @@ declined:
 }
 
 int md_ocsp_provide_status(server_rec *s, conn_rec *c,
-                           const char *id, apr_size_t id_len,
+                           const ap_bytes_t *external_id,
                            ap_ssl_ocsp_copy_resp *cb, void *userdata)
 {
     md_srv_conf_t *sc;
     const md_t *md;
+    md_data_t eid;
     apr_status_t rv;
 
     sc = md_config_get(s);
@@ -179,7 +183,9 @@ int md_ocsp_provide_status(server_rec *s, conn_rec *c,
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c, "get stapling for: %s",
                   md? md->name : s->server_hostname);
 
-    rv = md_ocsp_get_status(cb, userdata, sc->mc->ocsp, id, id_len, c->pool, md);
+    eid.data = (const char *)external_id->data;
+    eid.len = external_id->len;
+    rv = md_ocsp_get_status(cb, userdata, sc->mc->ocsp, &eid, c->pool, md);
     if (APR_STATUS_IS_ENOENT(rv)) goto declined;
     return OK;
 

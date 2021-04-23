@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -139,7 +139,7 @@
       <dt>Bibliothek f&#252;r regul&#228;re Ausdr&#252;cke aktualisiert</dt>
 
       <dd>Der Apache httpd 2.0 enth&#228;lt die <a
-      href="http://www.pcre.org/">"Perl Compatible
+      href="https://www.pcre.org/">"Perl Compatible
       Regular Expression Library"</a> (PCRE).
       Bei der Auswertung aller regul&#228;ren Ausdr&#252;cke wird nun
       die leistungsf&#228;higere Syntax von Perl 5 verwendet.</dd>

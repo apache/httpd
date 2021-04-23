@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,7 +21,7 @@
 -->
 
 <indexpage metafile="index.xml.meta">
-<parentdocument href="http://httpd.apache.org/docs-project/" />
+<parentdocument href="https://httpd.apache.org/docs-project/" />
 
 <title>Apache HTTP サーバ バージョン &httpd.major;.&httpd.minor;
 ドキュメント</title>
@@ -86,12 +86,12 @@
 </category>
 
 <category id="other"><title>その他</title>
-    <page href="http://wiki.apache.org/httpd/FAQ">よくある質問 (FAQ)</page>
+    <page href="https://wiki.apache.org/httpd/FAQ">よくある質問 (FAQ)</page>
     <page href="sitemap.html">サイトマップ</page>
     <page href="developer/">開発者のためのドキュメント</page>
-    <page href="http://httpd.apache.org/docs-project/">ドキュメンテーションプロジェクトへの協力</page>
+    <page href="https://httpd.apache.org/docs-project/">ドキュメンテーションプロジェクトへの協力</page>
     <page href="misc/">その他</page>
-    <page href="http://wiki.apache.org/httpd/">ウィキ</page>
+    <page href="https://wiki.apache.org/httpd/">ウィキ</page>
 </category>
 
 </indexpage>

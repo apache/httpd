@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
 <meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>°¡»óÈ£½ºÆ® ¿¹ - Apache HTTP Server Version 2.5</title>
+<title>ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ® ï¿½ï¿½ - Apache HTTP Server Version 2.5</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -16,75 +16,75 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">°¡»óÈ£½ºÆ®</a></div><div id="page-content"><div id="preamble"><h1>°¡»óÈ£½ºÆ® ¿¹</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®</a></div><div id="page-content"><div id="preamble"><h1>ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ® ï¿½ï¿½</h1>
 <div class="toplang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/vhosts/examples.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/vhosts/examples.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/vhosts/examples.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/vhosts/examples.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/vhosts/examples.html" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/examples.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">ÀÌ ¹®¼­´Â ÃÖ½ÅÆÇ ¹ø¿ªÀÌ ¾Æ´Õ´Ï´Ù.
-            ÃÖ±Ù¿¡ º¯°æµÈ ³»¿ëÀº ¿µ¾î ¹®¼­¸¦ Âü°íÇÏ¼¼¿ä.</div>
+<div class="outofdate">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Õ´Ï´ï¿½.
+            ï¿½Ö±Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.</div>
 
 
-    <p>ÀÌ ¹®¼­´Â ÀÚÁÖ ¹®ÀÇµÇ´Â °¡»óÈ£½ºÆ®
-    Áú¹®¿¡ ´äÀ» ÇÏ·Á°í ¾²¿©Á³´Ù. »óÈ²Àº <a href="name-based.html">ÀÌ¸§±â¹Ý</a>ÀÌ³ª <a href="ip-based.html">IP±â¹Ý</a> °¡»óÈ£½ºÆ®¸¦ ÅëÇØ ÇÑ ¼­¹ö¿¡¼­
-    ¿©·¯ À¥»çÀÌÆ®¸¦ ¼­ºñ½ºÇÏ·Á´Â °æ¿ìÀÌ´Ù. ÇÑ ÇÁ·Ï½Ã ¼­¹ö µÚ¿¡¼­
-    ¿©·¯ ¼­¹ö¸¦ »ç¿ëÇÏ¿© »çÀÌÆ®¸¦ ¿î¿µÇÏ´Â °æ¿ì¸¦ ´Ù·é ¹®¼­µµ
-    °ð ³ª¿Ã °ÍÀÌ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ÇµÇ´ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ï·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½È²ï¿½ï¿½ <a href="name-based.html">ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½</a>ï¿½Ì³ï¿½ <a href="ip-based.html">IPï¿½ï¿½ï¿½</a> ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ì´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½Ï½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ú¿ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½î¿µï¿½Ï´ï¿½ ï¿½ï¿½ì¸¦ ï¿½Ù·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½.</p>
 
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#purename">IP ÁÖ¼Ò ÇÑ°³¿¡ ¿©·¯ ÀÌ¸§±â¹Ý
-    À¥»çÀÌÆ® ¿î¿µÇÏ±â.</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#twoips">¿©·¯ IP ÁÖ¼Ò¿¡¼­ ÀÌ¸§±â¹Ý
-    È£½ºÆ®.</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#intraextra">(³»ºÎ¿Í ¿ÜºÎ ÁÖ¼Ò¿Í °°ÀÌ)
-    ´Ù¸¥ IP ÁÖ¼Ò·Î °°Àº ³»¿ëÀ» ¼­ºñ½ºÇÏ±â.</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#port">¿©·¯ Æ÷Æ®¿¡¼­ ¼­·Î ´Ù¸¥ »çÀÌÆ®
-    ¿î¿µÇÏ±â.</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ip">IP±â¹Ý °¡»óÈ£½ºÆ®</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ipport">Æ÷Æ®±â¹Ý°ú ip±â¹ÝÀÌ È¥ÇÕµÈ
-    °¡»óÈ£½ºÆ®</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mixed">ÀÌ¸§±â¹Ý°ú IP±â¹ÝÀÌ È¥ÇÕµÈ
-    °¡»óÈ£½ºÆ®</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#default"><code>_default_</code> °¡»óÈ£½ºÆ®
-    »ç¿ëÇÏ±â</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#migrate">ÀÌ¸§±â¹Ý °¡»óÈ£½ºÆ®¸¦ IP±â¹Ý
-    °¡»óÈ£½ºÆ®·Î ¿Å±â±â</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#purename">IP ï¿½Ö¼ï¿½ ï¿½Ñ°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½î¿µï¿½Ï±ï¿½.</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#twoips">ï¿½ï¿½ï¿½ï¿½ IP ï¿½Ö¼Ò¿ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½
+    È£ï¿½ï¿½Æ®.</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#intraextra">(ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½Üºï¿½ ï¿½Ö¼Ò¿ï¿½ ï¿½ï¿½ï¿½ï¿½)
+    ï¿½Ù¸ï¿½ IP ï¿½Ö¼Ò·ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½.</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#port">ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®
+    ï¿½î¿µï¿½Ï±ï¿½.</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ip">IPï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ipport">ï¿½ï¿½Æ®ï¿½ï¿½Ý°ï¿½ ipï¿½ï¿½ï¿½ï¿½ï¿½ È¥ï¿½Õµï¿½
+    ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mixed">ï¿½Ì¸ï¿½ï¿½ï¿½Ý°ï¿½ IPï¿½ï¿½ï¿½ï¿½ï¿½ È¥ï¿½Õµï¿½
+    ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#default"><code>_default_</code> ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®
+    ï¿½ï¿½ï¿½ï¿½Ï±ï¿½</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#migrate">ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ IPï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Å±ï¿½ï¿½</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#serverpath"><code>ServerPath</code>
-	Áö½Ã¾î »ç¿ëÇÏ±â</a></li>
-</ul><h3>Âü°í</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+	ï¿½ï¿½ï¿½Ã¾ï¿½ ï¿½ï¿½ï¿½ï¿½Ï±ï¿½</a></li>
+</ul><h3>ï¿½ï¿½ï¿½ï¿½</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="purename" id="purename">IP ÁÖ¼Ò ÇÑ°³¿¡ ¿©·¯ ÀÌ¸§±â¹Ý
-    À¥»çÀÌÆ® ¿î¿µÇÏ±â.</a> <a title="Permanent link" href="#purename" class="permalink">&para;</a></h2>
+<h2><a name="purename" id="purename">IP ï¿½Ö¼ï¿½ ï¿½Ñ°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½î¿µï¿½Ï±ï¿½.</a> <a title="Permanent link" href="#purename" class="permalink">&para;</a></h2>
 
-    <p>¼­¹ö¿¡ IP ÁÖ¼Ò°¡ ÇÑ°³ ÀÖ°í, DNS¿¡¼­ ¿©·¯ ÁÖ¼Ò(CNAMES)°¡
-    ÀÌ ÄÄÇ»ÅÍ¸¦ °¡¸®Å²´Ù. ÀÌ ÄÄÇ»ÅÍ¿¡¼­ <code>www.example.com</code>°ú
-    <code>www.example.org</code>ÀÇ À¥¼­¹ö¸¦ ½ÇÇàÇÏ°í ½Í´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ IP ï¿½Ö¼Ò°ï¿½ ï¿½Ñ°ï¿½ ï¿½Ö°ï¿½, DNSï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½(CNAMES)ï¿½ï¿½
+    ï¿½ï¿½ ï¿½ï¿½Ç»ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½Å²ï¿½ï¿½. ï¿½ï¿½ ï¿½ï¿½Ç»ï¿½Í¿ï¿½ï¿½ï¿½ <code>www.example.com</code>ï¿½ï¿½
+    <code>www.example.org</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½Í´ï¿½.</p>
 
-    <div class="note"><h3>Note</h3><p>¾ÆÆÄÄ¡ ¼­¹ö¿¡ °¡»óÈ£½ºÆ® ¼³Á¤À»
-          ÇÑ´Ù°í ±× È£½ºÆ®¸í¿¡ ´ëÇÑ DNS Ç×¸ñÀÌ ÀÚµ¿ÀÌ·Î »ý¼ºµÇÁö
-          ¾Ê´Â´Ù. <em>¹Ýµå½Ã</em> DNS¿¡ IP ÁÖ¼Ò¸¦ °¡¸®Å°´Â
-          ÀÌ¸§ÀÌ ÀÖ¾î¾ß ÇÑ´Ù. ¾È±×·¯¸é ¾Æ¹«µµ À¥»çÀÌÆ®¸¦ º¼
-          ¼ö ¾ø´Ù. °Ë»çÇØº¸±â À§ÇØ <code>hosts</code> ÆÄÀÏ¿¡ Ç×¸ñÀ»
-          Ãß°¡ÇÒ ¼ö ÀÖÁö¸¸, ÀÌ´Â hosts Ç×¸ñÀ» °¡Áø ÄÄÇ»ÅÍ¿¡¸¸
-          ¹Ý¿µµÈ´Ù.</p>
+    <div class="note"><h3>Note</h3><p>ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+          ï¿½Ñ´Ù°ï¿½ ï¿½ï¿½ È£ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ DNS ï¿½×¸ï¿½ï¿½ï¿½ ï¿½Úµï¿½ï¿½Ì·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+          ï¿½Ê´Â´ï¿½. <em>ï¿½Ýµï¿½ï¿½</em> DNSï¿½ï¿½ IP ï¿½Ö¼Ò¸ï¿½ ï¿½ï¿½ï¿½ï¿½Å°ï¿½ï¿½
+          ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½Ö¾ï¿½ï¿½ ï¿½Ñ´ï¿½. ï¿½È±×·ï¿½ï¿½ï¿½ ï¿½Æ¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½
+          ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½. ï¿½Ë»ï¿½ï¿½Øºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ <code>hosts</code> ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½×¸ï¿½ï¿½ï¿½
+          ï¿½ß°ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½Ì´ï¿½ hosts ï¿½×¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ç»ï¿½Í¿ï¿½ï¿½ï¿½
+          ï¿½Ý¿ï¿½ï¿½È´ï¿½.</p>
     </div>
 
-    <div class="example"><h3>¼­¹ö ¼³Á¤</h3><p><code>
+    <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</h3><p><code>
     
 
-    # ¾ÆÆÄÄ¡°¡ Æ÷Æ® 80À» ±â´Ù¸°´Ù<br />
+    # ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½Æ® 80ï¿½ï¿½ ï¿½ï¿½Ù¸ï¿½ï¿½ï¿½<br />
     Listen 80<br />
     <br />
-    # ¸ðµç IP ÁÖ¼Ò¿¡¼­ °¡»óÈ£½ºÆ® ¿äÃ»À» ±â´Ù¸°´Ù<br />
+    # ï¿½ï¿½ï¿½ IP ï¿½Ö¼Ò¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ® ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½Ù¸ï¿½ï¿½ï¿½<br />
     NameVirtualHost *:80<br />
     <br />
     &lt;VirtualHost *:80&gt;<br />
@@ -92,7 +92,7 @@
       DocumentRoot /www/example1<br />
       ServerName www.example.com<br />
       <br />
-      # ´Ù¸¥ Áö½Ã¾îµéµµ ÀÖ´Ù<br />
+      # ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½éµµ ï¿½Ö´ï¿½<br />
       <br />
     </span>
     &lt;/VirtualHost&gt;<br />
@@ -102,72 +102,72 @@
       DocumentRoot /www/example2<br />
       ServerName www.example.org<br />
       <br />
-      # ´Ù¸¥ Áö½Ã¾îµéµµ ÀÖ´Ù<br />
+      # ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½éµµ ï¿½Ö´ï¿½<br />
       <br />
     </span>
     &lt;/VirtualHost&gt;
     </code></p></div>
 
-    <p>º°Ç¥´Â ¸ðµç ÁÖ¼Ò¸¦ °¡¸®Å°¹Ç·Î, ÁÖ¼­¹ö´Â ¾î¶² ¿äÃ»µµ
-    ¼­ºñ½ºÇÏÁö ¾Ê´Â´Ù. <code>www.example.com</code>ÀÌ
-    ¼³Á¤ÆÄÀÏ¿¡ Ã³À½À¸·Î ³ª¿À¹Ç·Î °¡Àå ³ôÀº ¿ì¼±¼øÀ§¸¦ °¡Áö¸ç,
-    <cite>±âº»</cite>È¤Àº <cite>ÃÊ±â</cite> ¼­¹ö°¡ µÈ´Ù.
-    ¾î¶² <code>ServerName</code> Áö½Ã¾î¿¡µµ ÇØ´çµÇÁö¾Ê´Â ¿äÃ»Àº
-    Ã¹¹øÂ° <code>VirtualHost</code>°¡ ¼­ºñ½ºÇÑ´Ù.</p>
+    <p>ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ö¼Ò¸ï¿½ ï¿½ï¿½ï¿½ï¿½Å°ï¿½Ç·ï¿½, ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½î¶² ï¿½ï¿½Ã»ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½. <code>www.example.com</code>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ì¼±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,
+    <cite>ï¿½âº»</cite>È¤ï¿½ï¿½ <cite>ï¿½Ê±ï¿½</cite> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½È´ï¿½.
+    ï¿½î¶² <code>ServerName</code> ï¿½ï¿½ï¿½Ã¾î¿¡ï¿½ï¿½ ï¿½Ø´ï¿½ï¿½ï¿½ï¿½ï¿½Ê´ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½
+    Ã¹ï¿½ï¿½Â° <code>VirtualHost</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
     <div class="note">
-            <h3>ÁÖÀÇ</h3>
+            <h3>ï¿½ï¿½ï¿½ï¿½</h3>
 
-            <p>¿øÇÑ´Ù¸é <code>*</code> ´ë½Å ½Ã½ºÅÛÀÇ ½ÇÁ¦ IP
-            ÁÖ¼Ò¸¦ »ç¿ëÇÒ ¼ö ÀÖ´Ù. ÀÌ °æ¿ì
-            <code>VirtualHost</code>ÀÇ ¾Æ±Ô¸ÕÆ®´Â
-            <code>NameVirtualHost</code>ÀÇ ¾Æ±Ô¸ÕÆ®¿Í ÀÏÄ¡ÇØ¾ß
-            <em>ÇÑ´Ù</em>:</p>
+            <p>ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½ <code>*</code> ï¿½ï¿½ï¿½ ï¿½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ IP
+            ï¿½Ö¼Ò¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½
+            <code>VirtualHost</code>ï¿½ï¿½ ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½
+            <code>NameVirtualHost</code>ï¿½ï¿½ ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½Ø¾ï¿½
+            <em>ï¿½Ñ´ï¿½</em>:</p>
 
             <div class="example"><p><code>
             NameVirtualHost 172.20.30.40<br />
 						<br />
             &lt;VirtualHost 172.20.30.40&gt;<br />
- 		        # »ý·« ...
+ 		        # ï¿½ï¿½ï¿½ï¿½ ...
             </code></p></div>
 
-           <p>±×·¯³ª ISP¿¡¼­ µ¿ÀûÀ¸·Î IP ÁÖ¼Ò¸¦ °¡Á®¿À´Â µî
-           IP ÁÖ¼Ò¸¦ ¸ð¸£´Â °æ¿ì¿¡´Â <code>*</code>¸¦ »ç¿ëÇÏ´Â
-           °ÍÀÌ À¯¿ëÇÏ´Ù. <code>*</code>´Â ¸ðµç IP ÁÖ¼Ò¿¡
-           ÇØ´çÇÏ¹Ç·Î, IP ÁÖ¼Ò°¡ º¯°æµÇ¾îµµ ¼³Á¤À» º¯°æÇÒ
-           ÇÊ¿ä°¡ ¾ø´Ù.</p>
+           <p>ï¿½×·ï¿½ï¿½ï¿½ ISPï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ IP ï¿½Ö¼Ò¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+           IP ï¿½Ö¼Ò¸ï¿½ ï¿½ð¸£´ï¿½ ï¿½ï¿½ì¿¡ï¿½ï¿½ <code>*</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½
+           ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½. <code>*</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ IP ï¿½Ö¼Ò¿ï¿½
+           ï¿½Ø´ï¿½ï¿½Ï¹Ç·ï¿½, IP ï¿½Ö¼Ò°ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¾îµµ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+           ï¿½Ê¿ä°¡ ï¿½ï¿½ï¿½ï¿½.</p>
     </div>
 
-    <p>°ÅÀÇ ´ëºÎºÐÀÇ ÀÌ¸§±â¹Ý °¡»óÈ£½ºÆ® ¼³Á¤Àº À§¿Í °°´Ù.
-    ¿¹¿Ü´Â ´Ù¸¥ IP ÁÖ¼Ò³ª Æ÷Æ®·Î ´Ù¸¥ ³»¿ëÀ» ¼­ºñ½ºÇÏ·Á´Â
-    °æ¿ìÀÌ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Îºï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
+    ï¿½ï¿½ï¿½Ü´ï¿½ ï¿½Ù¸ï¿½ IP ï¿½Ö¼Ò³ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ì´ï¿½.</p>
 
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="twoips" id="twoips">¿©·¯ IP ÁÖ¼Ò¿¡¼­ ÀÌ¸§±â¹Ý
-    È£½ºÆ®.</a> <a title="Permanent link" href="#twoips" class="permalink">&para;</a></h2>
+<h2><a name="twoips" id="twoips">ï¿½ï¿½ï¿½ï¿½ IP ï¿½Ö¼Ò¿ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½
+    È£ï¿½ï¿½Æ®.</a> <a title="Permanent link" href="#twoips" class="permalink">&para;</a></h2>
 
   	<div class="note">
-		  <h3>ÁÖÀÇ</h3><p>¿©±â¼­ ¼³¸íÇÑ ¹æ¹ýÀº IP ÁÖ¼Ò°¡
-          ¸î°³¶óµµ Àû¿ë°¡´ÉÇÏ´Ù.</p>
+		  <h3>ï¿½ï¿½ï¿½ï¿½</h3><p>ï¿½ï¿½ï¿½â¼­ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ IP ï¿½Ö¼Ò°ï¿½
+          ï¿½î°³ï¿½ï¿½ ï¿½ï¿½ï¿½ë°¡ï¿½ï¿½ï¿½Ï´ï¿½.</p>
     </div>
 
-    <p>¼­¹ö´Â IP ÁÖ¼Ò°¡ µÎ°³ÀÖ´Ù. ÇÏ³ª¿¡¼­
-    (<code>172.20.30.40</code>) "ÁÖ" ¼­¹ö
-    <code>server.domain.com</code>À» ¼­ºñ½ºÇÏ°í, ´Ù¸¥ ÇÏ³ª¿¡¼­
-    (<code>172.20.30.50</code>) ¿©·¯ °¡»óÈ£½ºÆ®¸¦ ¼­ºñ½ºÇÒ
-    °ÍÀÌ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ IP ï¿½Ö¼Ò°ï¿½ ï¿½Î°ï¿½ï¿½Ö´ï¿½. ï¿½Ï³ï¿½ï¿½ï¿½ï¿½ï¿½
+    (<code>172.20.30.40</code>) "ï¿½ï¿½" ï¿½ï¿½ï¿½ï¿½
+    <code>server.domain.com</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½, ï¿½Ù¸ï¿½ ï¿½Ï³ï¿½ï¿½ï¿½ï¿½ï¿½
+    (<code>172.20.30.50</code>) ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½Ì´ï¿½.</p>
 
-    <div class="example"><h3>¼­¹ö ¼³Á¤</h3><p><code>
+    <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</h3><p><code>
     
 
     Listen 80<br />
 		<br />
-    # 172.20.30.40¿¡¼­ ½ÇÇàÇÏ´Â "ÁÖ"¼­¹öÀÌ´Ù<br />
+    # 172.20.30.40ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ "ï¿½ï¿½"ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½<br />
     ServerName server.domain.com<br />
     DocumentRoot /www/mainserver<br />
 		<br />
-    # ´Ù¸¥ ÁÖ¼Ò´Ù<br />
+    # ï¿½Ù¸ï¿½ ï¿½Ö¼Ò´ï¿½<br />
     NameVirtualHost 172.20.30.50<br />
 		<br />
     &lt;VirtualHost 172.20.30.50&gt;<br />
@@ -175,7 +175,7 @@
         DocumentRoot /www/example1<br />
         ServerName www.example.com<br />
    			<br />
-        # ´Ù¸¥ Áö½Ã¾îµéµµ ÀÖ´Ù ...<br />
+        # ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½éµµ ï¿½Ö´ï¿½ ...<br />
 				<br />
     </span>
     &lt;/VirtualHost&gt;<br />
@@ -185,33 +185,33 @@
         DocumentRoot /www/example2<br />
         ServerName www.example.org<br />
 				<br />
-        # ´Ù¸¥ Áö½Ã¾îµéµµ ÀÖ´Ù ...<br />
+        # ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½éµµ ï¿½Ö´ï¿½ ...<br />
 				<br />
     </span>
     &lt;/VirtualHost&gt;
     </code></p></div>
 
-    <p><code>172.20.30.50</code>ÀÌ ¾Æ´Ñ ÁÖ¼Ò¿¡ ´ëÇÑ ¿äÃ»Àº
-    ÁÖ¼­¹ö°¡ ¼­ºñ½ºÇÑ´Ù. È£½ºÆ®¸í ¾øÀÌ, Áï <code>Host:</code>
-    Çì´õ¾øÀÌ <code>172.20.30.50</code>·Î ¿äÃ»ÇÏ¸é
-    <code>www.example.com</code>ÀÌ ¼­ºñ½ºÇÑ´Ù.</p>
+    <p><code>172.20.30.50</code>ï¿½ï¿½ ï¿½Æ´ï¿½ ï¿½Ö¼Ò¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½
+    ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ <code>Host:</code>
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>172.20.30.50</code>ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½Ï¸ï¿½
+    <code>www.example.com</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="intraextra" id="intraextra">(³»ºÎ¿Í ¿ÜºÎ ÁÖ¼Ò¿Í °°ÀÌ)
-    ´Ù¸¥ IP ÁÖ¼Ò·Î °°Àº ³»¿ëÀ» ¼­ºñ½ºÇÏ±â.</a> <a title="Permanent link" href="#intraextra" class="permalink">&para;</a></h2>
+<h2><a name="intraextra" id="intraextra">(ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½Üºï¿½ ï¿½Ö¼Ò¿ï¿½ ï¿½ï¿½ï¿½ï¿½)
+    ï¿½Ù¸ï¿½ IP ï¿½Ö¼Ò·ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½.</a> <a title="Permanent link" href="#intraextra" class="permalink">&para;</a></h2>
 
-    <p>¼­¹ö ÄÄÇ»ÅÍ¿¡ IP ÁÖ¼Ò°¡ µÎ°³ (<code>192.168.1.1</code>°ú
-    <code>172.20.30.40</code>) ÀÖ´Ù. ÄÄÇ»ÅÍ´Â ³»ºÎ (ÀÎÆ®¶ó³Ý)
-    ³×Æ®¿÷°ú ¿ÜºÎ (ÀÎÅÍ³Ý) ³×Æ®¿÷ »çÀÌ¿¡ À§Ä¡ÇÑ´Ù. ³×Æ®¿÷ ¹Û¿¡¼­
-    <code>server.example.com</code>Àº ¿ÜºÎ ÁÖ¼Ò¸¦
-    (<code>172.20.30.40</code>) ÀÇ¹ÌÇÏ°í, ³×Æ®¿÷ ³»ºÎ¿¡¼­ °°Àº
-    ÀÌ¸§À» ³»ºÎ ÁÖ¼Ò·Î (<code>192.168.1.1</code>) »ç¿ëÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ç»ï¿½Í¿ï¿½ IP ï¿½Ö¼Ò°ï¿½ ï¿½Î°ï¿½ (<code>192.168.1.1</code>ï¿½ï¿½
+    <code>172.20.30.40</code>) ï¿½Ö´ï¿½. ï¿½ï¿½Ç»ï¿½Í´ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½Æ®ï¿½ï¿½ï¿½)
+    ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½Üºï¿½ (ï¿½ï¿½ï¿½Í³ï¿½) ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¿ï¿½ ï¿½ï¿½Ä¡ï¿½Ñ´ï¿½. ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Û¿ï¿½ï¿½ï¿½
+    <code>server.example.com</code>ï¿½ï¿½ ï¿½Üºï¿½ ï¿½Ö¼Ò¸ï¿½
+    (<code>172.20.30.40</code>) ï¿½Ç¹ï¿½ï¿½Ï°ï¿½, ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½Î¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼Ò·ï¿½ (<code>192.168.1.1</code>) ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <p>¼­¹ö´Â <code>VirtualHost</code> ¼½¼Ç ÇÑ°³·Î ³»ºÎ¿Í ¿ÜºÎ
-    ÀÀ´ä¿¡ °°Àº ³»¿ëÀ» ¼­ºñ½ºÇÒ ¼ö ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>VirtualHost</code> ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½Üºï¿½
+    ï¿½ï¿½ï¿½ä¿¡ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <div class="example"><h3>¼­¹ö ¼³Á¤</h3><p><code>
+    <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</h3><p><code>
     
 
     NameVirtualHost 192.168.1.1<br />
@@ -226,30 +226,30 @@
     &lt;/VirtualHost&gt;
     </code></p></div>
 
-    <p>ÀÌÁ¦ µÎ ³×Æ®¿÷¿¡¼­ µé¾î¿Â ¿äÃ»À» °°Àº
-    <code>VirtualHost</code>¿¡¼­ ¼­ºñ½ºÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    <code>VirtualHost</code>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
     <div class="note">
-          <h3>ÁÖÀÇ:</h3><p>³»ºÎ ³×Æ®¿÷¿¡¼­´Â ¿ÏÀüÇÑ È£½ºÆ®¸í
-          <code>server.example.com</code> ´ë½Å ÀÌ¸§
-          <code>server</code>µµ °¡´ÉÇÏ´Ù.</p>
+          <h3>ï¿½ï¿½ï¿½ï¿½:</h3><p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È£ï¿½ï¿½Æ®ï¿½ï¿½
+          <code>server.example.com</code> ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½
+          <code>server</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.</p>
 
-          <p>¶ÇÇÑ À§ÀÇ ¿¹¿¡¼­ IP ÁÖ¼Ò ´ë½Å <code>*</code>À»
-          »ç¿ëÇÏ¿© ¼­¹ö°¡ ¸ðµç ÁÖ¼Ò¿¡ µ¿ÀÏÇÏ°Ô µ¿ÀÛÇÒ ¼ö
-          ÀÖ´Ù.</p>
+          <p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ IP ï¿½Ö¼ï¿½ ï¿½ï¿½ï¿½ <code>*</code>ï¿½ï¿½
+          ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ö¼Ò¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+          ï¿½Ö´ï¿½.</p>
     </div>
 
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="port" id="port">¿©·¯ Æ÷Æ®¿¡¼­ ¼­·Î ´Ù¸¥ »çÀÌÆ®
-    ¿î¿µÇÏ±â.</a> <a title="Permanent link" href="#port" class="permalink">&para;</a></h2>
+<h2><a name="port" id="port">ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®
+    ï¿½î¿µï¿½Ï±ï¿½.</a> <a title="Permanent link" href="#port" class="permalink">&para;</a></h2>
 
-    <p>°°Àº IPÀÇ ¿©·¯ Æ÷Æ®¿¡¼­ ¼­·Î ´Ù¸¥ µµ¸ÞÀÎÀ» ¼­ºñ½ºÇÑ´Ù°í
-    °¡Á¤ÇÏÀÚ. ÀÌ´Â "NameVirtualHost" ÅÂ±×¿¡ Æ÷Æ®¸¦ Á¤ÀÇÇÏ¸é
-    °¡´ÉÇÏ´Ù. NameVirtualHost name:port¾øÀÌ &lt;VirtualHost
-    name:port&gt;¸¸ È¤Àº Listen Áö½Ã¾î¸¸ »ç¿ëÇÏ¸é ¾ÈµÈ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ IPï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´Ù°ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½. ï¿½Ì´ï¿½ "NameVirtualHost" ï¿½Â±×¿ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½. NameVirtualHost name:portï¿½ï¿½ï¿½ï¿½ &lt;VirtualHost
+    name:port&gt;ï¿½ï¿½ È¤ï¿½ï¿½ Listen ï¿½ï¿½ï¿½Ã¾î¸¸ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ÈµÈ´ï¿½.</p>
 
-    <div class="example"><h3>¼­¹ö ¼³Á¤</h3><p><code>
+    <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</h3><p><code>
     
 
     Listen 80<br />
@@ -289,14 +289,14 @@
 
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="ip" id="ip">IP±â¹Ý °¡»óÈ£½ºÆ®</a> <a title="Permanent link" href="#ip" class="permalink">&para;</a></h2>
+<h2><a name="ip" id="ip">IPï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®</a> <a title="Permanent link" href="#ip" class="permalink">&para;</a></h2>
 
-    <p>¼­¹ö´Â °¢°¢ <code>www.example.com</code>°ú
-    <code>www.example.org</code>¿¡ ÇØ´çÇÏ´Â µÎ IP ÁÖ¼Ò¸¦
-    (<code>172.20.30.40</code>°ú <code>172.20.30.50</code>)
-    °¡Áø´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ <code>www.example.com</code>ï¿½ï¿½
+    <code>www.example.org</code>ï¿½ï¿½ ï¿½Ø´ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ IP ï¿½Ö¼Ò¸ï¿½
+    (<code>172.20.30.40</code>ï¿½ï¿½ <code>172.20.30.50</code>)
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.</p>
 
-    <div class="example"><h3>¼­¹ö ¼³Á¤</h3><p><code>
+    <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</h3><p><code>
     
 
     Listen 80<br />
@@ -316,21 +316,21 @@
     &lt;/VirtualHost&gt;
     </code></p></div>
 
-    <p><code>&lt;VirtualHost&gt;</code> Áö½Ã¾î·Î ÁöÁ¤ÇÑ ÁÖ¼Ò¿¡
-    ÇØ´çÇÏÁö¾Ê´Â ÁÖ¼Ò·Î (¿¹¸¦ µé¾î, <code>localhost</code>)
-    ¿äÃ»ÀÌ µé¾î¿À¸é ÁÖ¼­¹ö°¡ ÀÖ´Â °æ¿ì ÁÖ¼­¹ö°¡ ¼­ºñ½ºÇÑ´Ù.</p>
+    <p><code>&lt;VirtualHost&gt;</code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼Ò¿ï¿½
+    ï¿½Ø´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê´ï¿½ ï¿½Ö¼Ò·ï¿½ (ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, <code>localhost</code>)
+    ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="ipport" id="ipport">Æ÷Æ®±â¹Ý°ú ip±â¹ÝÀÌ È¥ÇÕµÈ
-    °¡»óÈ£½ºÆ®</a> <a title="Permanent link" href="#ipport" class="permalink">&para;</a></h2>
+<h2><a name="ipport" id="ipport">ï¿½ï¿½Æ®ï¿½ï¿½Ý°ï¿½ ipï¿½ï¿½ï¿½ï¿½ï¿½ È¥ï¿½Õµï¿½
+    ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®</a> <a title="Permanent link" href="#ipport" class="permalink">&para;</a></h2>
 
-    <p>¼­¹ö´Â °¢°¢ <code>www.example.com</code>°ú
-    <code>www.example.org</code>¿¡ ÇØ´çÇÏ´Â µÎ IP ÁÖ¼Ò¸¦
-    (<code>172.20.30.40</code>°ú <code>172.20.30.50</code>)
-    °¡Áø´Ù. °¢ IPÀÇ 80¹ø°ú 8080¹ø Æ÷Æ®¿¡ °¡»óÈ£½ºÆ®¸¦ µ¹¸°´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ <code>www.example.com</code>ï¿½ï¿½
+    <code>www.example.org</code>ï¿½ï¿½ ï¿½Ø´ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ IP ï¿½Ö¼Ò¸ï¿½
+    (<code>172.20.30.40</code>ï¿½ï¿½ <code>172.20.30.50</code>)
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ IPï¿½ï¿½ 80ï¿½ï¿½ï¿½ï¿½ 8080ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.</p>
 
-    <div class="example"><h3>¼­¹ö ¼³Á¤</h3><p><code>
+    <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</h3><p><code>
     
 
     Listen 172.20.30.40:80<br />
@@ -369,13 +369,13 @@
 
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="mixed" id="mixed">ÀÌ¸§±â¹Ý°ú IP±â¹ÝÀÌ È¥ÇÕµÈ
-    °¡»óÈ£½ºÆ®</a> <a title="Permanent link" href="#mixed" class="permalink">&para;</a></h2>
+<h2><a name="mixed" id="mixed">ï¿½Ì¸ï¿½ï¿½ï¿½Ý°ï¿½ IPï¿½ï¿½ï¿½ï¿½ï¿½ È¥ï¿½Õµï¿½
+    ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®</a> <a title="Permanent link" href="#mixed" class="permalink">&para;</a></h2>
 
-    <p>ÁÖ¼ÒÁß ¸î¸îÀº ÀÌ¸§±â¹Ý °¡»óÈ£½ºÆ®·Î, ´Ù¸¥ °ÍÀº IP±â¹Ý
-    °¡»óÈ£½ºÆ®·Î ¼­ºñ½ºÇÏ°í ½Í´Ù.</p>
+    <p>ï¿½Ö¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½, ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ IPï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½Í´ï¿½.</p>
 
-    <div class="example"><h3>¼­¹ö ¼³Á¤</h3><p><code>
+    <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</h3><p><code>
     
 
     Listen 80<br />
@@ -403,7 +403,7 @@
     </span>
     &lt;/VirtualHost&gt;<br />
 		<br />
-    # IP-±â¹Ý<br />
+    # IP-ï¿½ï¿½ï¿½<br />
     &lt;VirtualHost 172.20.30.50&gt;<br />
     <span class="indent">
         DocumentRoot /www/example4<br />
@@ -421,16 +421,16 @@
 
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="default" id="default"><code>_default_</code> °¡»óÈ£½ºÆ®
-    »ç¿ëÇÏ±â</a> <a title="Permanent link" href="#default" class="permalink">&para;</a></h2>
+<h2><a name="default" id="default"><code>_default_</code> ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®
+    ï¿½ï¿½ï¿½ï¿½Ï±ï¿½</a> <a title="Permanent link" href="#default" class="permalink">&para;</a></h2>
 
-  	<h3><a name="defaultallports" id="defaultallports">¸ðµç Æ÷Æ®¿¡ ´ëÇÑ
-    <code>_default_</code> °¡»óÈ£½ºÆ®</a></h3>
+  	<h3><a name="defaultallports" id="defaultallports">ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    <code>_default_</code> ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®</a></h3>
 
-    <p>¾î¶² °¡»óÈ£½ºÆ®¿¡µµ ÇØ´çÇÏÁö¾ÊÀº IP ÁÖ¼Ò¿Í Æ÷Æ®¿¡ ´ëÇÑ
-    <em>¸ðµç</em> ¿äÃ»À» Ã³¸®ÇÏ±â.</p>
+    <p>ï¿½î¶² ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½Ø´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ IP ï¿½Ö¼Ò¿ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    <em>ï¿½ï¿½ï¿½</em> ï¿½ï¿½Ã»ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ï±ï¿½.</p>
 
-    <div class="example"><h3>¼­¹ö ¼³Á¤</h3><p><code>
+    <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</h3><p><code>
     
 
     &lt;VirtualHost _default_:*&gt;<br />
@@ -440,29 +440,29 @@
     &lt;/VirtualHost&gt;
     </code></p></div>
 
-    <p>default(±âº») °¡»óÈ£½ºÆ®ÀÇ Æ÷Æ®·Î ¿ÍÀÏµåÄ«µå¸¦ »ç¿ëÇÏ¿© ¾î¶² ¿äÃ»µµ
-    ÁÖ¼­¹ö·Î ¸ø°¡µµ·Ï ¸¸µç´Ù.</p>
+    <p>default(ï¿½âº») ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½Ïµï¿½Ä«ï¿½å¸¦ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½î¶² ï¿½ï¿½Ã»ï¿½ï¿½
+    ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½.</p>
 
-    <p>default °¡»óÈ£½ºÆ®´Â Àý´ë·Î ÀÌ¸§±â¹Ý °¡»óÈ£½ºÆ®°¡ »ç¿ëÇÏ´Â
-    ÁÖ¼Ò/Æ÷Æ®·ÎÀÇ ¿äÃ»À» ¼­ºñ½ºÇÏÁö ¾Ê´Â´Ù. ¾Ë ¼ö ¾ø°Å³ª
-    <code>Host:</code> Çì´õ°¡ »ý·«µÈ ¿äÃ»Àº Ç×»ó ÃÖÃÊÀÇ ÀÌ¸§±â¹Ý
-    °¡»óÈ£½ºÆ®(¼³Á¤ÆÄÀÏ¿¡¼­
-    ÁÖ¼Ò/Æ÷Æ®°¡ Ã³À½À¸·Î ³ª¿Â °¡»óÈ£½ºÆ®)°¡ ¼­ºñ½ºÇÑ´Ù.</p>
+    <p>default ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½
+    ï¿½Ö¼ï¿½/ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½. ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Å³ï¿½
+    <code>Host:</code> ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½×»ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½
+    ï¿½Ö¼ï¿½/ï¿½ï¿½Æ®ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <p><code class="directive"><a href="../mod/mod_alias.html#aliasmatch">AliasMatch</a></code>³ª
-    <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>À»
-    »ç¿ëÇÏ¿© ¾î¶² ¿äÃ»À» Æ¯Á¤ ÆäÀÌÁö(È¤Àº ½ºÅ©¸³Æ®)·Î
-    ÀçÀÛ¼ºÇÒ(rewrite) ¼ö ÀÖ´Ù.</p>
+    <p><code class="directive"><a href="../mod/mod_alias.html#aliasmatch">AliasMatch</a></code>ï¿½ï¿½
+    <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½î¶² ï¿½ï¿½Ã»ï¿½ï¿½ Æ¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(È¤ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½Æ®)ï¿½ï¿½
+    ï¿½ï¿½ï¿½Û¼ï¿½ï¿½ï¿½(rewrite) ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
     
 
-    <h3><a name="defaultdifferentports" id="defaultdifferentports">¿©·¯ Æ÷Æ®¿¡ ´ëÇÑ
-    <code>_default_</code> °¡»óÈ£½ºÆ®</a></h3>
+    <h3><a name="defaultdifferentports" id="defaultdifferentports">ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    <code>_default_</code> ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®</a></h3>
 
-    <p>À§ÀÇ °æ¿ì¿Í °°Áö¸¸, ¼­¹ö´Â ¿©·¯ Æ÷Æ®¸¦ ±â´Ù¸®°í 80¹ø
-    Æ÷Æ®¿¡ ´ëÇØ¼­ Ãß°¡·Î <code>_default_</code> °¡»óÈ£½ºÆ®¸¦
-    »ç¿ëÇÏ°í ½Í´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½Ù¸ï¿½ï¿½ï¿½ 80ï¿½ï¿½
+    ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½ß°ï¿½ï¿½ï¿½ <code>_default_</code> ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½Í´ï¿½.</p>
 
-    <div class="example"><h3>¼­¹ö ¼³Á¤</h3><p><code>
+    <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</h3><p><code>
     
 
     &lt;VirtualHost _default_:80&gt;<br />
@@ -480,18 +480,18 @@
     &lt;/VirtualHost&gt;
     </code></p></div>
 
-    <p>80¹ø Æ÷Æ®¿¡ ´ëÇÑ default °¡»óÈ£½ºÆ®´Â (<em>¹Ýµå½Ã</em>
-    ¿ÍÀÏµåÄ«µå Æ÷Æ®¸¦ °¡Áø ±âº» °¡»óÈ£½ºÆ® ÀÌÀü¿¡ ³ª¿Í¾ß ÇÑ´Ù)
-    ÁöÁ¤ÇÏÁö¾ÊÀº IP ÁÖ¼Ò·Î º¸³»Áø ¸ðµç ¿äÃ»À» ¼­ºñ½ºÇÑ´Ù.
-    ÁÖ¼­¹ö´Â Àý´ë·Î ¿äÃ»À» ¼­ºñ½ºÇÏÁö ¸øÇÑ´Ù.</p>
+    <p>80ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ default ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ (<em>ï¿½Ýµï¿½ï¿½</em>
+    ï¿½ï¿½ï¿½Ïµï¿½Ä«ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½âº» ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Í¾ï¿½ ï¿½Ñ´ï¿½)
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ IP ï¿½Ö¼Ò·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+    ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
     
 
-    <h3><a name="defaultoneport" id="defaultoneport">ÇÑ Æ÷Æ®¿¡ ´ëÇÑ
-    <code>_default_</code> °¡»óÈ£½ºÆ®</a></h3>
+    <h3><a name="defaultoneport" id="defaultoneport">ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    <code>_default_</code> ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®</a></h3>
 
-    <p>80¹ø Æ÷Æ®¿¡ ´ëÇØ¼­¸¸ default °¡»óÈ£½ºÆ®¸¦ ¸¸µé°í ½Í´Ù.</p>
+    <p>80ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½Ø¼ï¿½ï¿½ï¿½ default ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Í´ï¿½.</p>
 
-    <div class="example"><h3>¼­¹ö ¼³Á¤</h3><p><code>
+    <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</h3><p><code>
     
 
     &lt;VirtualHost _default_:80&gt;<br />
@@ -500,27 +500,27 @@
     &lt;/VirtualHost&gt;
     </code></p></div>
 
-    <p>Æ÷Æ® 80¹ø¿¡ ÁöÁ¤ÇÏÁö¾ÊÀº ÁÖ¼Ò¿¡ ´ëÇÑ ¿äÃ»Àº ±âº»
-    °¡»óÈ£½ºÆ®°¡ ¼­ºñ½ºÇÏ°í, ´Ù¸¥ ÁöÁ¤ÇÏÁö¾ÊÀº ÁÖ¼Ò¿Í Æ÷Æ®¸¦
-    °¡Áø ¿äÃ»Àº ÁÖ ¼­¹ö°¡ ¼­ºñ½ºÇÑ´Ù.</p>
+    <p>ï¿½ï¿½Æ® 80ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼Ò¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½âº»
+    ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½, ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼Ò¿ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
     
 
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="migrate" id="migrate">ÀÌ¸§±â¹Ý °¡»óÈ£½ºÆ®¸¦ IP±â¹Ý
-    °¡»óÈ£½ºÆ®·Î ¿Å±â±â</a> <a title="Permanent link" href="#migrate" class="permalink">&para;</a></h2>
+<h2><a name="migrate" id="migrate">ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ IPï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Å±ï¿½ï¿½</a> <a title="Permanent link" href="#migrate" class="permalink">&para;</a></h2>
 
-    <p>(<a href="#name">ÀÌ¸§±â¹Ý</a>ÀÇ Ã¹¹øÂ° ¿¹¿¡¼­) È£½ºÆ®¸í
-    <code>www.example.org</code>¿¡ ´ëÇÑ ÀÌ¸§±â¹Ý °¡»óÈ£½ºÆ®´Â
-    ÀÚ½ÅÀÇ IP ÁÖ¼Ò¸¦ °¡Á®¾ß ÇÑ´Ù. ÀÌ¸§±â¹Ý °¡»óÈ£½ºÆ®ÀÇ ÀÌÀü
-    IP ÁÖ¼Ò¸¦ Ä³½ÌÇÏ´Â ³×ÀÓ¼­¹ö³ª ÇÁ·Ï½Ã¿ÍÀÇ ¹®Á¦¸¦ ÇÇÇÏ±âÀ§ÇØ
-    ¿Å±â´Â µ¿¾È µÑ ¸ðµÎ¸¦ ¼­ºñ½ºÇÏ°í ½Í´Ù.</p>
+    <p>(<a href="#name">ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½</a>ï¿½ï¿½ Ã¹ï¿½ï¿½Â° ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½) È£ï¿½ï¿½Æ®ï¿½ï¿½
+    <code>www.example.org</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½
+    ï¿½Ú½ï¿½ï¿½ï¿½ IP ï¿½Ö¼Ò¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½. ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    IP ï¿½Ö¼Ò¸ï¿½ Ä³ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½Ó¼ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï½Ã¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Å±ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Î¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½Í´ï¿½.</p>
 
     <p>
-     ¹æ¹ýÀº <code>VirtualHost</code> Áö½Ã¾î¿¡ »õ IP ÁÖ¼Ò¸¸À»
-    (<code>172.20.30.50</code>) Ãß°¡ÇÏ¸éµÇ¹Ç·Î ½±´Ù.</p>
+     ï¿½ï¿½ï¿½ï¿½ï¿½ <code>VirtualHost</code> ï¿½ï¿½ï¿½Ã¾î¿¡ ï¿½ï¿½ IP ï¿½Ö¼Ò¸ï¿½ï¿½ï¿½
+    (<code>172.20.30.50</code>) ï¿½ß°ï¿½ï¿½Ï¸ï¿½Ç¹Ç·ï¿½ ï¿½ï¿½ï¿½ï¿½.</p>
 
-    <div class="example"><h3>¼­¹ö ¼³Á¤</h3><p><code>
+    <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</h3><p><code>
     
 
     Listen 80<br />
@@ -547,26 +547,26 @@
     &lt;/VirtualHost&gt;
     </code></p></div>
 
-    <p>ÀÌÁ¦ (IP±â¹Ý °¡»óÈ£½ºÆ®¸¦ ÅëÇÑ) »õ·Î¿î ÁÖ¼Ò¿Í (ÀÌ¸§±â¹Ý
-    °¡»óÈ£½ºÆ®¸¦ ÅëÇÑ) ÀÌÀü ÁÖ¼Ò ¸ðµÎ °¡»óÈ£½ºÆ®¿¡ Á¢±ÙÇÒ
-    ¼ö ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ (IPï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½) ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½Ö¼Ò¿ï¿½ (ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½) ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="serverpath" id="serverpath"><code>ServerPath</code>
-	Áö½Ã¾î »ç¿ëÇÏ±â</a> <a title="Permanent link" href="#serverpath" class="permalink">&para;</a></h2>
+	ï¿½ï¿½ï¿½Ã¾ï¿½ ï¿½ï¿½ï¿½ï¿½Ï±ï¿½</a> <a title="Permanent link" href="#serverpath" class="permalink">&para;</a></h2>
 
-    <p>µÎ ÀÌ¸§±â¹Ý °¡»óÈ£½ºÆ®¸¦ °¡Áø ¼­¹ö°¡ ÀÖ´Ù. ¿Ã¹Ù¸¥
-    °¡»óÈ£½ºÆ®¸¦ ¼±ÅÃÇÏ±âÀ§ÇØ Å¬¶óÀÌ¾ðÆ®´Â ¿Ã¹Ù¸¥
-    <code>Host:</code> Çì´õ¸¦ º¸³»¾ß ÇÑ´Ù. ¿À·¡µÈ HTTP/1.0
-    Å¬¶óÀÌ¾ðÆ®°¡ ÀÌ Çì´õ¸¦ º¸³»Áö ¸øÇÏ¸é ¾ÆÆÄÄ¡´Â Å¬¶óÀÌ¾ðÆ®°¡
-    ¾î¶² °¡»óÈ£½ºÆ®¸¦ º¸·Á°íÇÏ´ÂÁö ¾Ë ¼ö ¾ø´Ù (±×·¡¼­ ÃÖÃÊÀÇ
-    °¡»óÈ£½ºÆ®°¡ ¿äÃ»À» ¼­ºñ½ºÇÑ´Ù). ¿À·¡µÈ ºê¶ó¿ìÀú¿Í °¡´ÉÇÑ È£È¯À»
-    À¯ÁöÇÏ±âÀ§ÇØ ÃÖÃÊÀÇ °¡»óÈ£½ºÆ®¸¦ ¸¸µé°í, ¿©±â¿¡ ÀÌ¸§±â¹Ý
-    °¡»óÈ£½ºÆ®ÀÇ URL Á¢µÎ»ç¸¦ Æ÷ÇÔÇÏ´Â ¸µÅ© ¸ñ·Ï ÆäÀÌÁö¸¦
-    µÐ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½Ã¹Ù¸ï¿½
+    ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½Ã¹Ù¸ï¿½
+    <code>Host:</code> ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ HTTP/1.0
+    Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½
+    ï¿½î¶² ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½). ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È£È¯ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½â¿¡ ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ URL ï¿½ï¿½ï¿½Î»ç¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½Å© ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ð´ï¿½.</p>
 
-    <div class="example"><h3>¼­¹ö ¼³Á¤</h3><p><code>
+    <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</h3><p><code>
     
 
     NameVirtualHost 172.20.30.40<br />
@@ -604,28 +604,28 @@
     &lt;/VirtualHost&gt;
     </code></p></div>
 
-    <p><code class="directive"><a href="../mod/core.html#serverpath">ServerPath</a></code> Áö½Ã¾î¶§¹®¿¡
-    URL <code>http://www.sub1.domain.tld/sub1/</code>¿¡ ´ëÇÑ
-    ¿äÃ»Àº <em>Ç×»ó</em> subl-°¡»óÈ£½ºÆ®°¡ ¼­ºñ½ºÇÑ´Ù.<br />
-    Å¬¶óÀÌ¾ðÆ®°¡ ¿Ã¹Ù¸¥ <code>Host:</code> Çì´õ¸¦ º¸³½´Ù¸é,
-    URL <code>http://www.sub1.domain.tld/</code>¿¡ ´ëÇÑ ¿äÃ»Àº
-    subl-°¡»óÈ£½ºÆ®¿¡¼­¸¸ ¼­ºñ½ºÇÑ´Ù. ¸¸¾à <code>Host:</code> Çì´õ¸¦
-    º¸³»Áö¾ÊÀ¸¸é Å¬¶óÀÌ¾ðÆ®´Â ÃÖÃÊÀÇ È£½ºÆ®¿¡ ÀÖ´Â Á¤º¸ÆäÀÌÁö¸¦
-    º¸°ÔµÈ´Ù.</p>
+    <p><code class="directive"><a href="../mod/core.html#serverpath">ServerPath</a></code> ï¿½ï¿½ï¿½Ã¾î¶§ï¿½ï¿½ï¿½ï¿½
+    URL <code>https://www.sub1.domain.tld/sub1/</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½Ã»ï¿½ï¿½ <em>ï¿½×»ï¿½</em> subl-ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.<br />
+    Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½Ã¹Ù¸ï¿½ <code>Host:</code> ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ù¸ï¿½,
+    URL <code>https://www.sub1.domain.tld/</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½
+    subl-ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ <code>Host:</code> ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ÔµÈ´ï¿½.</p>
 
-    <p>¿©±â¿¡ ¹®Á¦°¡ ÀÖÀ½À» ÁÖÀÇÇÏ¶ó: Å¬¶óÀÌ¾ðÆ®°¡
-    <code>Host:</code> Çì´õ¸¦ º¸³»Áö¾ÊÀ¸¸é
-    <code>http://www.sub2.domain.tld/sub1/</code>¿¡ ´ëÇÑ ¿äÃ»µµ
-    subl-°¡»óÈ£½ºÆ®°¡ ¼­ºñ½ºÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½â¿¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½: Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½
+    <code>Host:</code> ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    <code>https://www.sub2.domain.tld/sub1/</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½
+    subl-ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
     <p><code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
-    Áö½Ã¾î¸¦ »ç¿ëÇÏ¿© ¿Ã¹Ù¸¥ <code>Host:</code> Çì´õ¸¦ º¸³»´Â
-    Å¬¶óÀÌ¾ðÆ®´Â (<em>¿¹¸¦ µé¾î</em>, URL ÀüÄ¡»ç°¡ ÀÖ°Å³ª ¾ø´Â)
-    µÎ URLÀ» ¸ðµÎ »ç¿ëÇÒ ¼ö ÀÖ´Ù.</p>
+    ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½Ã¹Ù¸ï¿½ <code>Host:</code> ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ (<em>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½</em>, URL ï¿½ï¿½Ä¡ï¿½ç°¡ ï¿½Ö°Å³ï¿½ ï¿½ï¿½ï¿½ï¿½)
+    ï¿½ï¿½ URLï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
 	</div></div>
 <div class="bottomlang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/vhosts/examples.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/vhosts/examples.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/vhosts/examples.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/vhosts/examples.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/vhosts/examples.html" title="Korean">&nbsp;ko&nbsp;</a> |
@@ -633,7 +633,7 @@
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/vhosts/examples.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/vhosts/examples.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -648,8 +648,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/vhosts/examples.ht
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

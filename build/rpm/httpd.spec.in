@@ -6,9 +6,9 @@ Summary: Apache HTTP Server
 Name: httpd
 Version: APACHE_VERSION
 Release: APACHE_RELEASE
-URL: http://httpd.apache.org/
+URL: https://httpd.apache.org/
 Vendor: Apache Software Foundation
-Source0: http://www.apache.org/dist/httpd/httpd-%{version}.tar.bz2
+Source0: https://www.apache.org/dist/httpd/httpd-%{version}.tar.bz2
 License: Apache License, Version 2.0
 Group: System Environment/Daemons
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
@@ -53,7 +53,7 @@ Obsoletes: secureweb-manual, apache-manual
 %description manual
 The httpd-manual package contains the complete manual and
 reference guide for the Apache HTTP server. The information can
-also be found at http://httpd.apache.org/docs/.
+also be found at https://httpd.apache.org/docs/.
 
 %package tools
 Group: System Environment/Daemons

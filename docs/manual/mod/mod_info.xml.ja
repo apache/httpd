@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -55,7 +55,7 @@
       &lt;/Location&gt;
     </example>
 
-    <p>一旦設定すると、<code>http://your.host.example.com/server-info</code>
+    <p>一旦設定すると、<code>https://your.host.example.com/server-info</code>
     にアクセスすることでサーバの情報を得られるようになります。</p>
 </summary>
 
@@ -97,7 +97,7 @@
 
     <p><code>server-info</code> リクエストへクエリーを追加することで、
     設定情報の他の表示形式を選ぶことができます。例えば、
-    <code>http://your.host.example.com/server-info?config</code> は
+    <code>https://your.host.example.com/server-info?config</code> は
     すべての設定ディレクティブを表示します。</p>
     
     <dl>
@@ -159,8 +159,8 @@
     <example>
       AddModuleInfo mod_deflate.c 'See &lt;a \<br />
       <indent>
-        href="http://www.apache.org/docs/&httpd.docs;/mod/mod_deflate.html"&gt;\<br />
-        http://www.apache.org/docs/&httpd.docs;/mod/mod_deflate.html&lt;/a&gt;'
+        href="https://www.apache.org/docs/&httpd.docs;/mod/mod_deflate.html"&gt;\<br />
+        https://www.apache.org/docs/&httpd.docs;/mod/mod_deflate.html&lt;/a&gt;'
       </indent>
     </example>
 </usage>

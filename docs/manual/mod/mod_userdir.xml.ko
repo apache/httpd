@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,24 +23,24 @@
 <modulesynopsis metafile="mod_userdir.xml.meta">
 
 <name>mod_userdir</name>
-<description>»ç¿ëÀÚº° µð·ºÅä¸®</description>
+<description>ï¿½ï¿½ï¿½ï¿½Úºï¿½ ï¿½ï¿½ï¿½ä¸®</description>
 <status>Base</status>
 <sourcefile>mod_userdir.c</sourcefile>
 <identifier>userdir_module</identifier>
 
 <summary>
-<p>ÀÌ ¸ðµâÀ» »ç¿ëÇÏ¸é <code>http://example.com/~user/</code> ½ÄÀ¸·Î
-»ç¿ëÀÚº° µð·ºÅä¸®¿¡ Á¢±ÙÇÒ ¼ö ÀÖ´Ù.</p>
+<p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ <code>https://example.com/~user/</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½Úºï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 </summary>
 
-<seealso><a href="../urlmapping.html">URLÀ» ÆÄÀÏ½Ã½ºÅÛ¿¡ ´ëÀÀ</a></seealso>
+<seealso><a href="../urlmapping.html">URLï¿½ï¿½ ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½Û¿ï¿½ ï¿½ï¿½ï¿½ï¿½</a></seealso>
 <seealso><a href="../howto/public_html.html">public_html
-ÅõÅä¸®¾ó</a></seealso>
+ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½</a></seealso>
 
 <directivesynopsis>
 
 <name>UserDir</name>
-<description>»ç¿ëÀÚº° µð·ºÅä¸® À§Ä¡</description>
+<description>ï¿½ï¿½ï¿½ï¿½Úºï¿½ ï¿½ï¿½ï¿½ä¸® ï¿½ï¿½Ä¡</description>
 <syntax>UserDir <em>directory-filename</em></syntax>
 <default>UserDir public_html</default>
 <contextlist><context>server config</context> <context>virtual
@@ -48,97 +48,97 @@ host</context></contextlist>
 
 <usage>
 
-    <p><directive>UserDir</directive> Áö½Ã¾î´Â »ç¿ëÀÚÀÇ ¹®¼­¿¡ ´ëÇÑ
-¿äÃ»À» ¹ÞÀ»¶§ »ç¿ëÀÚ È¨µð·ºÅä¸® ¾È¿¡¼­ »ç¿ëÇÒ ½ÇÁ¦ µð·ºÅä¸®¸¦
-ÁöÁ¤ÇÑ´Ù. <em>Directory-filename</em>Àº ´ÙÀ½ Áß ÇÏ³ªÀÌ´Ù:</p>
+    <p><directive>UserDir</directive> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ È¨ï¿½ï¿½ï¿½ä¸® ï¿½È¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <em>Directory-filename</em>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ï³ï¿½ï¿½Ì´ï¿½:</p>
 
     <ul>
-      <li>¾Æ·¡¿Í °°Àº µð·ºÅä¸®¸í È¤Àº ÆÐÅÏ.</li>
+      <li>ï¿½Æ·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ È¤ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</li>
 
-      <li><code>disabled</code> Å°¿öµå. 
-<code>enabled</code> Å°¿öµå·Î (¾Æ·¡ Âü°í) Á÷Á¢ ÀÌ¸§À» ÁöÁ¤ÇÏÁö ¾Ê¾Ò´Ù¸é
-<em>¸ðµç</em> »ç¿ëÀÚ¸í-µð·ºÅä¸® º¯È¯À» ÇÏÁö ¾Ê´Â´Ù.</li>
+      <li><code>disabled</code> Å°ï¿½ï¿½ï¿½ï¿½. 
+<code>enabled</code> Å°ï¿½ï¿½ï¿½ï¿½ï¿½ (ï¿½Æ·ï¿½ ï¿½ï¿½ï¿½ï¿½) ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¾Ò´Ù¸ï¿½
+<em>ï¿½ï¿½ï¿½</em> ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½-ï¿½ï¿½ï¿½ä¸® ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.</li>
 
-      <li><code>disabled</code> Å°¿öµå µÚ¿¡ °ø¹éÀ¸·Î ±¸ºÐÇÑ »ç¿ëÀÚ¸í ¸ñ·Ï.
-»ç¿ëÀÚ¸íÀÌ <code>enabled</code> ±¸¹®¿¡ ÀÖ´Ù°í ÇÏ´õ¶óµµ, ÀÌ ¸ñ·Ï¿¡
-ÀÖ´Â »ç¿ëÀÚ¸íÀº µð·ºÅä¸® º¯È¯À» ÇÏÁö <em>¾Ê´Â´Ù</em>.</li>
+      <li><code>disabled</code> Å°ï¿½ï¿½ï¿½ï¿½ ï¿½Ú¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½.
+ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ï¿½ï¿½ <code>enabled</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ù°ï¿½ ï¿½Ï´ï¿½ï¿½ï¿½, ï¿½ï¿½ ï¿½ï¿½Ï¿ï¿½
+ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸® ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ <em>ï¿½Ê´Â´ï¿½</em>.</li>
 
-      <li><code>enabled</code> Å°¿öµå µÚ¿¡ °ø¹éÀ¸·Î ±¸ºÐÇÑ »ç¿ëÀÚ¸í ¸ñ·Ï.
-ÀüÃ¼ disableÀ» »ç¿ëÇÏ°í »ç¿ëÀÚ¸íÀÌ <code>disabled</code> ±¸¹®¿¡
-¾ø´õ¶óµµ, »ç¿ëÀÚ¸íÀ» µð·ºÅä¸® º¯È¯ÇÑ´Ù.</li>
+      <li><code>enabled</code> Å°ï¿½ï¿½ï¿½ï¿½ ï¿½Ú¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½.
+ï¿½ï¿½Ã¼ disableï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ï¿½ï¿½ <code>disabled</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸® ï¿½ï¿½È¯ï¿½Ñ´ï¿½.</li>
     </ul>
 
-    <p><code>Userdir</code> Áö½Ã¾î¿¡ <code>enabled</code>³ª
-<code>disabled</code> Å°¿öµå¸¦ »ç¿ëÇÏÁö ¾ÊÀ¸¸é, ¾Æ±Ô¸ÕÆ®¸¦
-ÆÄÀÏ¸í ÆÐÅÏÀ¸·Î Ã³¸®ÇÏ¿© µð·ºÅä¸®·Î º¯È¯ÇÑ´Ù.
-<code>http://www.foo.com/~bob/one/two.html</code>¿¡ ´ëÇÑ ¿äÃ»Àº
-´ÙÀ½°ú °°ÀÌ º¯È¯µÈ´Ù:</p>
+    <p><code>Userdir</code> ï¿½ï¿½ï¿½Ã¾î¿¡ <code>enabled</code>ï¿½ï¿½
+<code>disabled</code> Å°ï¿½ï¿½ï¿½å¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½
+ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½È¯ï¿½Ñ´ï¿½.
+<code>https://www.foo.com/~bob/one/two.html</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½È´ï¿½:</p>
 
 <table>
-<tr><th>»ç¿ëÇÑ UserDir Áö½Ã¾î</th>
-<th>º¯È¯ÇÑ °æ·Î</th></tr>
+<tr><th>ï¿½ï¿½ï¿½ï¿½ï¿½ UserDir ï¿½ï¿½ï¿½Ã¾ï¿½</th>
+<th>ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½ï¿½</th></tr>
 <tr><td>UserDir public_html</td><td>~bob/public_html/one/two.html</td></tr>
 <tr><td>UserDir /usr/web</td><td>/usr/web/bob/one/two.html</td></tr>
 <tr><td>UserDir /home/*/www</td><td>/home/bob/www/one/two.html</td></tr>
 </table>
 
-    <p>´ÙÀ½ Áö½Ã¾î´Â Å¬¶óÀÌ¾ðÆ®¿¡°Ô ¸®´ÙÀÌ·º¼ÇÀ» º¸³½´Ù:</p> 
+    <p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</p> 
 
 <table>
-<tr><th>»ç¿ëÇÑ UserDir Áö½Ã¾î</th>
-<th>º¯È¯ÇÑ °æ·Î</th></tr>
-<tr><td>UserDir http://www.foo.com/users</td><td>http://www.foo.com/users/bob/one/two.html</td></tr>
+<tr><th>ï¿½ï¿½ï¿½ï¿½ï¿½ UserDir ï¿½ï¿½ï¿½Ã¾ï¿½</th>
+<th>ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½ï¿½</th></tr>
+<tr><td>UserDir https://www.foo.com/users</td><td>https://www.foo.com/users/bob/one/two.html</td></tr>
 <tr><td>UserDir
-http://www.foo.com/*/usr</td><td>http://www.foo.com/bob/usr/one/two.html</td></tr>
+https://www.foo.com/*/usr</td><td>https://www.foo.com/bob/usr/one/two.html</td></tr>
 <tr><td>UserDir
-http://www.foo.com/~*/</td><td>http://www.foo.com/~bob/one/two.html</td></tr>
+https://www.foo.com/~*/</td><td>https://www.foo.com/~bob/one/two.html</td></tr>
 </table> 
 
 <note>
-      <strong>ÀÌ Áö½Ã¾î¸¦ »ç¿ëÇÒ¶§ ÁÖÀÇÇÏ¶ó; ¿¹¸¦ µé¾î,
-<code>"UserDir ./"</code>´Â <code>"/~root"</code>¸¦ ¾Æ¸¶µµ ¹Ù¶÷Á÷ÇÏÁö ¾Ê°Ô
-<code>"/"</code>·Î º¯È¯ÇÑ´Ù. ¼³Á¤¿¡ "<code>UserDir
-      disabled root</code>"¸¦ Æ÷ÇÔÇÏ±æ °­·ÂÈ÷ ±ÇÇÑ´Ù. ÀÚ¼¼ÇÑ Á¤º¸¸¦ ¾Ë·Á¸é
+      <strong>ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½; ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½,
+<code>"UserDir ./"</code>ï¿½ï¿½ <code>"/~root"</code>ï¿½ï¿½ ï¿½Æ¸ï¿½ï¿½ï¿½ ï¿½Ù¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê°ï¿½
+<code>"/"</code>ï¿½ï¿½ ï¿½ï¿½È¯ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ "<code>UserDir
+      disabled root</code>"ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½Ú¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ë·ï¿½ï¿½ï¿½
 <directive
-      module="core">Directory</directive> Áö½Ã¾î¿Í <a
-      href="../misc/security_tips.html">º¸¾È ÆÁ</a>µµ Âü°íÇÏ¶ó.</strong>
+      module="core">Directory</directive> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ <a
+      href="../misc/security_tips.html">ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½</a>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.</strong>
 </note>
 
-<p>Ãß°¡ ¿¹Á¦:</p>
+<p>ï¿½ß°ï¿½ ï¿½ï¿½ï¿½ï¿½:</p>
 
-<p>¸î¸î »ç¿ëÀÚ¿¡°Ô¸¸ <code>UserDir</code> µð·ºÅä¸®¸¦ Çã¿ëÇÑ´Ù¸é,
-´ÙÀ½°ú °°´Ù:</p>
+<p>ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½Ô¸ï¿½ <code>UserDir</code> ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½,
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½:</p>
 
 <example>
 UserDir disabled<br />
 UserDir enabled user1 user2 user3
 </example>
 
-<p>´ëºÎºÐÀÇ »ç¿ëÀÚ¿¡°Ô <code>UserDir</code> µð·ºÅä¸®¸¦ Çã¿ëÇÏ°í
-ÀÏºÎ¸¸ °ÅºÎÇÑ´Ù¸é, ´ÙÀ½°ú °°´Ù:</p>
+<p>ï¿½ï¿½Îºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ <code>UserDir</code> ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½
+ï¿½ÏºÎ¸ï¿½ ï¿½Åºï¿½ï¿½Ñ´Ù¸ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½:</p>
 
 <example>
 UserDir enabled<br />
 UserDir disabled user4 user5 user6
 </example>
 
-<p>´Ù¸¥ »ç¿ëÀÚ µð·ºÅä¸®¸¦ ÁöÁ¤ÇÒ ¼öµµ ÀÖ´Ù.
-´ÙÀ½°ú °°Àº ¸í·É¾î¸¦ »ç¿ëÇÑ´Ù¸é:</p>
+<p>ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½.
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½É¾î¸¦ ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½:</p>
 <example>
-Userdir public_html /usr/web http://www.foo.com/
+Userdir public_html /usr/web https://www.foo.com/
 </example>
-<p>http://www.foo.com/~bob/one/two.html ¿äÃ»À» ÇÏ¸é,
-¸ÕÀú ~bob/public_html/one/two.html ÆäÀÌÁö¸¦ Ã£°í,
-/usr/web/bob/one/two.htmlÀ» Ã£Àº ÈÄ, ¸¶Áö¸·À¸·Î
-http://www.foo.com/bob/one/two.htmlÀ¸·Î ¸®´ÙÀÌ·º¼ÇÀ» º¸³½´Ù.</p>
-<p>¸®´ÙÀÌ·º¼ÇÀ» »ç¿ëÇÑ´Ù¸é ¸ñ·ÏÀÇ ¸¶Áö¸·¿¡ µÎ¾î¾ß ÇÑ´Ù.
-¾ÆÆÄÄ¡´Â ¸®´ÙÀÌ·º¼ÇÀÌ ¼º°øÇß´ÂÁö ¾Ë ¼ö ¾ø±â¶§¹®¿¡, ¸®´ÙÀÌ·º¼ÇÀ»
-¸ñ·Ï ¾Õ¿¡ µÎ¸é Ç×»ó ¸®´ÙÀÌ·º¼ÇÀ» »ç¿ëÇÏ°Ô µÈ´Ù.</p>
+<p>https://www.foo.com/~bob/one/two.html ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½Ï¸ï¿½,
+ï¿½ï¿½ï¿½ï¿½ ~bob/public_html/one/two.html ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½,
+/usr/web/bob/one/two.htmlï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+https://www.foo.com/bob/one/two.htmlï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.</p>
+<p>ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î¾ï¿½ï¿½ ï¿½Ñ´ï¿½.
+ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ß´ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½â¶§ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ ï¿½Õ¿ï¿½ ï¿½Î¸ï¿½ ï¿½×»ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½È´ï¿½.</p>
 
 </usage>
 
 <seealso><a href="../howto/public_html.html">public_html
-ÅõÅä¸®¾ó</a></seealso>
+ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½</a></seealso>
 
 </directivesynopsis>
 </modulesynopsis>

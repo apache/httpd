@@ -56,7 +56,7 @@ split-logfile
 suexec
 	Switch User For Exec. Used internally by apache, 
         see  the  document  `Apache  suEXEC  Support'
-	under http://www.apache.org/docs/suexec.html .
+	under https://www.apache.org/docs/suexec.html .
 
 SHA1
 	This directory includes some utilities to allow Apache 1.3.6 to 

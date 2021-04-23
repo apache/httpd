@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -17,12 +17,12 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Module Apache mod_privileges</h1>
 <div class="toplang">
@@ -41,7 +41,7 @@ plates-formes Solaris 10 et OpenSolaris</td></tr></table>
 
 <p>Ce module permet l'exécution de différents serveurs virtuels sous
 différents identifiants Unix <var>User</var> et <var>Group</var>,
-et avec différents <a href="http://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp">Privilèges
+et avec différents <a href="https://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp">Privilèges
 Solaris</a>. En particulier, il apporte au problème de
 séparation des privilèges entre les différents serveurs virtuels la
 solution que devait apporter le module MPM abandonné perchild. Il
@@ -173,7 +173,7 @@ modules MPM non-threadés (<code class="module"><a href="../mod/prefork.html">pr
 personnalisé).</td></tr>
 </table>
     <p>Cette directive qui s'applique à l'ensemble du serveur permet de
-    déterminer si Apache s'exécutera avec les <a href="http://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp">privilèges</a> requis pour exécuter <a href="http://sosc-dr.sun.com/bigadmin/content/dtrace/">dtrace</a>.
+    déterminer si Apache s'exécutera avec les <a href="https://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp">privilèges</a> requis pour exécuter <a href="https://sosc-dr.sun.com/bigadmin/content/dtrace/">dtrace</a>.
     Notez que la définition <var>DTracePrivileges On</var> n'activera
     pas à elle-seule DTrace, mais que <var>DTracePrivileges Off</var>
     l'empêchera de fonctionner.</p>
@@ -241,7 +241,7 @@ modules MPM non-threadés (<code class="module"><a href="../mod/prefork.html">pr
 personnalisé).</td></tr>
 </table>
     <p>Détermine si le serveur virtuel est autorisé à exécuter fork et
-    exec, et définit les <a href="http://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp">privilèges</a> requis pour exécuter des sous-processus. Si cette
+    exec, et définit les <a href="https://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp">privilèges</a> requis pour exécuter des sous-processus. Si cette
     directive est définie à <var>Off</var> le serveur virtuel ne
     disposera d'aucun privilège et ne pourra exécuter ni des programmes
     ou scripts CGI classiques via le module traditionnel
@@ -278,7 +278,7 @@ avec l'option de compilation
 <var>BIG_SECURITY_HOLE</var>.</td></tr>
 </table>
     <p>La directive <code class="directive">VHostCGIPrivs</code> permet
-    d'assigner des <a href="http://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp">privilèges</a> au choix aux sous-processus créés par un serveur
+    d'assigner des <a href="https://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp">privilèges</a> au choix aux sous-processus créés par un serveur
     virtuel, comme décrit dans la directive
     <code class="directive">VHostCGIMode</code>. Chaque
     <var>nom-privilège</var> correspond à un privilège Solaris tel que
@@ -317,7 +317,7 @@ personnalisé).</td></tr>
     l'identifiant du groupe unix sous lequel le serveur va traiter les
     requêtes par l'intermédiaire d'un serveur virtuel. L'identifiant
     du groupe est défini avant le traitement de la requête, puis
-    restauré à sa valeur de départ via les <a href="http://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp">Privilèges
+    restauré à sa valeur de départ via les <a href="https://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp">Privilèges
     Solaris</a>. Comme la définition
     s'applique au <em>processus</em>, cette directive est incompatible
     avec les modules MPM threadés.</p>
@@ -358,7 +358,7 @@ avec l'option de compilation
 <var>BIG_SECURITY_HOLE</var>.</td></tr>
 </table>
     <p>La directive <code class="directive">VHostPrivs</code> permet d'assigner
-    des <a href="http://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp">privilèges</a> au choix à un serveur virtuel. Chaque
+    des <a href="https://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp">privilèges</a> au choix à un serveur virtuel. Chaque
     <var>nom-privilège</var> correspond à un privilège Solaris tel que
     <var>file_setid</var> ou <var>sys_nfs</var>.</p>
 
@@ -391,7 +391,7 @@ modules MPM non-threadés (<code class="module"><a href="../mod/prefork.html">pr
 personnalisé).</td></tr>
 </table>
     <p>Détermine si les serveurs virtuels traitent les requêtes avec une
-    sécurité avancée en supprimant les <a href="http://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp">Privilèges</a> rarement requis par un serveur web, mais disponibles
+    sécurité avancée en supprimant les <a href="https://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp">Privilèges</a> rarement requis par un serveur web, mais disponibles
     par défaut pour un utilisateur Unix standard, et donc susceptibles
     d'être demandés par des modules et des applications. Il est
     recommandé de conserver la définition par défaut (On), sauf si elle
@@ -424,7 +424,7 @@ personnalisé).</td></tr>
     l'identifiant utilisateur unix sous lequel le serveur va traiter les
     requêtes par l'intermédiaire d'un serveur virtuel. L'identifiant
     utilisateur est défini avant le traitement de la requête, puis
-    restauré à sa valeur de départ via les <a href="http://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp">Privilèges
+    restauré à sa valeur de départ via les <a href="https://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp">Privilèges
     Solaris</a>. Comme la définition
     s'applique au <em>processus</em>, cette directive est incompatible
     avec les modules MPM threadés.</p>
@@ -456,7 +456,7 @@ personnalisé).</td></tr>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_privileges.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/mod/mod_privileges.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -471,8 +471,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_privileges
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

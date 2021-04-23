@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -134,10 +134,10 @@ Alias "/foo" "/gaq"
 Alias "/image" "/ftp/pub/image"
     </highlight>
 
-    <p>A request for <code>http://example.com/image/foo.gif</code> would cause
+    <p>A request for <code>https://example.com/image/foo.gif</code> would cause
     the server to return the file <code>/ftp/pub/image/foo.gif</code>.  Only
     complete path segments are matched, so the above alias would not match a
-    request for <code>http://example.com/imagefoo.gif</code>.  For more complex
+    request for <code>https://example.com/imagefoo.gif</code>.  For more complex
     matching using regular expressions, see the <directive module="mod_alias"
     >AliasMatch</directive> directive.</p>
 
@@ -320,23 +320,23 @@ a different URL</description>
 
     <highlight language="config">
 # Redirect to a URL on a different host
-Redirect "/service" "http://foo2.example.com/service"
+Redirect "/service" "https://foo2.example.com/service"
 
 # Redirect to a URL on the same host
 Redirect "/one" "/two"
     </highlight>
 
-    <p>If the client requests <code>http://example.com/service/foo.txt</code>,
+    <p>If the client requests <code>https://example.com/service/foo.txt</code>,
     it will be told to access
-    <code>http://foo2.example.com/service/foo.txt</code>
+    <code>https://foo2.example.com/service/foo.txt</code>
     instead. This includes requests with <code>GET</code> parameters, such as
-    <code>http://example.com/service/foo.pl?q=23&amp;a=42</code>,
+    <code>https://example.com/service/foo.pl?q=23&amp;a=42</code>,
     it will be redirected to
-    <code>http://foo2.example.com/service/foo.pl?q=23&amp;a=42</code>.
+    <code>https://foo2.example.com/service/foo.pl?q=23&amp;a=42</code>.
     Note that <code>POST</code>s will be discarded.<br />
     Only complete path segments are matched, so the above
     example would not match a request for
-    <code>http://example.com/servicefoo.txt</code>. For more complex matching
+    <code>https://example.com/servicefoo.txt</code>. For more complex matching
     using the <a href="../expr.html">expression syntax</a>, omit the URL-path
     argument as described below. Alternatively, for matching using regular
     expressions, see the <directive
@@ -390,8 +390,8 @@ Redirect "/one" "/two"
     <code>send_error_response</code> in http_protocol.c).</p>
 
     <highlight language="config">
-Redirect permanent "/one" "http://example.com/two"
-Redirect 303 "/three" "http://example.com/other"
+Redirect permanent "/one" "https://example.com/two"
+Redirect 303 "/three" "https://example.com/other"
     </highlight>
 
     <p>If the <directive>Redirect</directive> directive is used within a
@@ -403,13 +403,13 @@ Redirect 303 "/three" "http://example.com/other"
 
     <highlight language="config">
 &lt;Location "/one"&gt;
-    Redirect permanent "http://example.com/two"
+    Redirect permanent "https://example.com/two"
 &lt;/Location&gt;
 &lt;Location "/three"&gt;
-    Redirect 303 "http://example.com/other"
+    Redirect 303 "https://example.com/other"
 &lt;/Location&gt;
 &lt;LocationMatch "/error/(?&lt;NUMBER&gt;[0-9]+)"&gt;
-    Redirect permanent "http://example.com/errors/%{env:MATCH_NUMBER}.html"
+    Redirect permanent "https://example.com/errors/%{env:MATCH_NUMBER}.html"
 &lt;/LocationMatch&gt;
     </highlight>
 
@@ -438,7 +438,7 @@ of the current URL</description>
     another server, one might use:</p>
 
     <highlight language="config">
-RedirectMatch "(.*)\.gif$" "http://other.example.com$1.jpg"
+RedirectMatch "(.*)\.gif$" "https://other.example.com$1.jpg"
     </highlight>
 
     <p>The considerations related to the difference between
@@ -509,7 +509,7 @@ target as a CGI script</description>
 ScriptAlias "/cgi-bin/" "/web/cgi-bin/"
     </highlight>
 
-    <p>A request for <code>http://example.com/cgi-bin/foo</code> would cause the
+    <p>A request for <code>https://example.com/cgi-bin/foo</code> would cause the
     server to run the script <code>/web/cgi-bin/foo</code>.  This configuration
     is essentially equivalent to:</p>
     <highlight language="config">

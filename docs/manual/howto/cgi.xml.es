@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -113,7 +113,7 @@
             programa CGI.</p>
 
             <p>Por ejemplo, si se solicita la URL
-            <code>http://www.example.com/cgi-bin/test.pl</code>,
+            <code>https://www.example.com/cgi-bin/test.pl</code>,
             Apache intentará ejecutar el archivo
             <code>/usr/local/apache2/cgi-bin/test.pl</code> y dar
             el resultado. Por supuesto el archivo debe existir y ser ejecutable, 
@@ -263,7 +263,7 @@ print "Hola, Mundo.";
             dirección</p>
 
             <example>
-                http://www.example.com/cgi-bin/first.pl
+                https://www.example.com/cgi-bin/first.pl
             </example>
 
             <p>o donde quiera que pusiera el archivo, verá una línea
@@ -378,7 +378,7 @@ print "Hola, Mundo.";
 
             <p>Cuando no encuentra ciertas cabeceras HTTP del entorno, asegúrese 
             de que están formateadas según el 
-            <a href="http://tools.ietf.org/html/rfc2616">RFC 2616</a>, 
+            <a href="https://tools.ietf.org/html/rfc2616">RFC 2616</a>, 
             sección 4.2: Nombres de Cabeceras deben empezar con una letra, 
             seguida solo de letras, números o guión. Cualquier cabecera 
             que no cumpla esta regla será ignorada de manera silenciosa.</p>
@@ -481,7 +481,7 @@ print "Hola, Mundo.";
             <p>Estas variables están disponibles para el programador de CGI, y son 
             la mitad de la historia de la comunicación cliente-servidor. La 
             lista completa de las variables necesarias se encuentra en 
-            <a href="http://www.ietf.org/rfc/rfc3875">el RFC de Common Gateway
+            <a href="https://www.ietf.org/rfc/rfc3875">el RFC de Common Gateway
             Interface</a>.</p>
 
             <p>Este sencillo programa CGI en Perl mostrará todas las variables 
@@ -560,14 +560,14 @@ foreach my $key (keys %ENV) {
         rápido.</p>
 
         <p>Si está escribiendo un programa CGI en Perl, existen módulos 
-        disponibles en <a href="http://www.cpan.org/">CPAN</a>. El módulo más
+        disponibles en <a href="https://www.cpan.org/">CPAN</a>. El módulo más
         conocido para este propósito es <code>CGI.pm</code>. Quizás quiera
         considerar <code>CGI::Lite</code>, que implementa una funcionalidad 
         mínima, que es todo lo que se necesita en la mayoría de los programas.</p>
 
         <p>Si está escribiendo programas CGI en C, hay varidad de opciones. Una
         de estas es la librería <code>CGIC</code>, de
-        <a href="http://www.boutell.com/cgic/">http://www.boutell.com/cgic/</a>.
+        <a href="https://www.boutell.com/cgic/">https://www.boutell.com/cgic/</a>.
         </p>
     </section>
 
@@ -575,7 +575,7 @@ foreach my $key (keys %ENV) {
         <title>Para más información</title>
 
         <p>La especificación actual de CGI está disponible en el
-        <a href="http://www.ietf.org/rfc/rfc3875">RFC de Common Gateway
+        <a href="https://www.ietf.org/rfc/rfc3875">RFC de Common Gateway
         Interface</a>.</p>
 
         <p>Cuando envíe una pregunta sobre un problema de CGI, o bien a una 

@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -33,7 +33,7 @@
 <p>
 <module>mod_sed</module> is an in-process content filter. The <module>mod_sed</module> filter implements the <code>sed</code> editing
 commands implemented by the Solaris 10 <code>sed</code>
-program as described in the <a href="http://www.gnu.org/software/sed/manual/sed.txt">manual
+program as described in the <a href="https://www.gnu.org/software/sed/manual/sed.txt">manual
 page</a>. However, unlike <code>sed</code>, <module>mod_sed</module> doesn't take data from
 standard
 input. Instead, the filter acts on the entity data sent between client and
@@ -85,7 +85,7 @@ Both the input and output filters only process the data if newline characters ar
 <section id="sed_commands"><title>Sed Commands</title>
     <p>
     Complete details of the <code>sed</code> command can be found from the
-   <a href="http://www.gnu.org/software/sed/manual/sed.txt">sed manual
+   <a href="https://www.gnu.org/software/sed/manual/sed.txt">sed manual
 page</a>.
     </p>
     <dl>

@@ -5,7 +5,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -367,7 +367,7 @@ static int dav_error_response_tag(request_rec *r,
 
     if (err->desc != NULL) {
         /* ### should move this namespace somewhere (with the others!) */
-        ap_rputs(" xmlns:m=\"http://apache.org/dav/xmlns\"", r);
+        ap_rputs(" xmlns:m=\"https://apache.org/dav/xmlns\"", r);
     }
 
     if (err->childtags) {
@@ -1942,8 +1942,8 @@ static int dav_method_options(request_rec *r)
 
     /* If there is search set_option_head function, set head */
     /* DASL: <DAV:basicsearch>
-     * DASL: <http://foo.bar.com/syntax1>
-     * DASL: <http://akuma.com/syntax2>
+     * DASL: <https://foo.bar.com/syntax1>
+     * DASL: <https://akuma.com/syntax2>
      */
     if (search_hooks != NULL
         && *search_hooks->set_option_head != NULL) {
@@ -2808,7 +2808,7 @@ static int dav_method_copymove(request_rec *r, int is_move)
         const char *nscp_path = apr_table_get(r->headers_in, "New-uri");
 
         if (nscp_host != NULL && nscp_path != NULL)
-            dest = apr_pstrcat(r->pool, "http://", nscp_host, nscp_path, NULL);
+            dest = apr_pstrcat(r->pool, "https://", nscp_host, nscp_path, NULL);
     }
     if (dest == NULL) {
         /* This supplies additional information for the default message. */

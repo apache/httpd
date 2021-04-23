@@ -61,7 +61,7 @@ bug with AF_UNIX sockets.
 If you can not apply these patches, you can do one of the following:
  - run configure with --disable-cgid
  - switch to the prefork MPM
-For more info: <http://issues.apache.org/bugzilla/show_bug.cgi?id=34264>])
+For more info: <https://issues.apache.org/bugzilla/show_bug.cgi?id=34264>])
           else
             AC_MSG_RESULT(yes)
           fi

@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -113,7 +113,7 @@
         <p>On systems with multiple users, each user can be permitted to have a
         web site in their home directory using the <directive
         module="mod_userdir">UserDir</directive> directive. Visitors
-        to a URL <code>http://example.com/~username/</code> will get content
+        to a URL <code>https://example.com/~username/</code> will get content
         out of the home directory of the user "<code>username</code>", out of
         the subdirectory specified by the <directive
         module="mod_userdir">UserDir</directive> directive.</p>

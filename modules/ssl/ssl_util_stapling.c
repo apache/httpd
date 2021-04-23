@@ -5,7 +5,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -131,6 +131,7 @@ int ssl_stapling_init_cert(server_rec *s, apr_pool_t *p, apr_pool_t *ptemp,
     OCSP_CERTID *cid = NULL;
     STACK_OF(OPENSSL_STRING) *aia = NULL;
     const char *pem = NULL;
+    ap_bytes_t key;
     int rv = 1; /* until further notice */
 
     if (x == NULL)
@@ -160,7 +161,9 @@ int ssl_stapling_init_cert(server_rec *s, apr_pool_t *p, apr_pool_t *ptemp,
         goto cleanup;
     }
 
-    if (ap_ssl_ocsp_prime(s, p, (const char*)idx, sizeof(idx), pem) == APR_SUCCESS
+    key.data = idx;
+    key.len = sizeof(idx);
+    if (ap_ssl_ocsp_prime(s, p, &key, pem) == APR_SUCCESS
         || ssl_run_init_stapling_status(s, p, x, issuer) == OK) {
         /* Someone's taken over or mod_ssl's own implementation is not enabled */
         if (mctx->stapling_enabled != TRUE) {
@@ -769,14 +772,9 @@ static int get_and_check_cached_response(server_rec *s, modssl_ctx_t *mctx,
     return 0;
 }
 
-typedef struct {
-    unsigned char *data;
-    apr_size_t len;
-} ocsp_resp;
-
 static void copy_ocsp_resp(const unsigned char *der, apr_size_t der_len, void *userdata)
 {
-    ocsp_resp *resp = userdata;
+    ap_bytes_t *resp = userdata;
 
     resp->len = 0;
     resp->data = der? OPENSSL_malloc(der_len) : NULL;
@@ -801,7 +799,7 @@ static int stapling_cb(SSL *ssl, void *arg)
     SSLConnRec *sslconn = myConnConfig(conn);
     modssl_ctx_t *mctx  = myCtxConfig(sslconn, sc);
     UCHAR idx[SHA_DIGEST_LENGTH];
-    ocsp_resp resp;
+    ap_bytes_t key, resp;
     certinfo *cinf = NULL;
     OCSP_RESPONSE *rsp = NULL;
     int rv;
@@ -820,9 +818,10 @@ static int stapling_cb(SSL *ssl, void *arg)
     if (X509_digest(x, EVP_sha1(), idx, NULL) != 1) {
         return SSL_TLSEXT_ERR_NOACK;
     }
+    key.data = idx;
+    key.len = sizeof(idx);
 
-    if (ap_ssl_ocsp_get_resp(s, conn, (const char*)idx, sizeof(idx),
-                             copy_ocsp_resp, &resp) == APR_SUCCESS) {
+    if (ap_ssl_ocsp_get_resp(s, conn, &key, copy_ocsp_resp, &resp) == APR_SUCCESS) {
         provided = 1;
     }
     else if (ssl_run_get_stapling_status(&resp.data, &rspderlen, conn, s, x) == APR_SUCCESS) {

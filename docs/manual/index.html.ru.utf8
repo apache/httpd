@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ru" xml:lang="ru"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ru" xml:lang="ru"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -18,12 +18,12 @@
 <link href="./images/favicon.ico" rel="shortcut icon" /></head>
 <body id="index-page">
 <div id="page-header">
-<p class="menu"><a href="./mod/">Модули</a> | <a href="./mod/quickreference.html">Директивы</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Глоссарий</a> | <a href="./sitemap.html">Карта сайта</a></p>
+<p class="menu"><a href="./mod/">Модули</a> | <a href="./mod/quickreference.html">Директивы</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Глоссарий</a> | <a href="./sitemap.html">Карта сайта</a></p>
 <p class="apache">HTTP сервер Apache Версия 2.5</p>
 <img alt="" src="./images/feather.png" /></div>
-<div class="up"><a href="http://httpd.apache.org/docs-project/"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div class="up"><a href="https://httpd.apache.org/docs-project/"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP сервер</a> &gt; <a href="http://httpd.apache.org/docs/">Документация</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP сервер</a> &gt; <a href="https://httpd.apache.org/docs/">Документация</a></div>
 <div id="page-content"><h1>Apache HTTP Server версия 2.5
 Документация</h1>
 <div class="toplang">
@@ -99,12 +99,12 @@
 <li><a href="platform/netware.html">Novell NetWare</a></li>
 </ul>
 </div><div class="category"><h2><a name="other" id="other">Другие темы</a></h2>
-<ul><li><a href="http://wiki.apache.org/httpd/FAQ">Часто задаваемые вопросы</a></li>
+<ul><li><a href="https://wiki.apache.org/httpd/FAQ">Часто задаваемые вопросы</a></li>
 <li><a href="sitemap.html">Карта сайта</a></li>
 <li><a href="developer/">Документация для разработчиков</a></li>
-<li><a href="http://httpd.apache.org/docs-project/">Помощь с документацией</a></li>
+<li><a href="https://httpd.apache.org/docs-project/">Помощь с документацией</a></li>
 <li><a href="misc/">Прочие примечания</a></li>
-<li><a href="http://wiki.apache.org/httpd/">Вики</a></li>
+<li><a href="https://wiki.apache.org/httpd/">Вики</a></li>
 </ul>
 </div></td></tr></table></div>
 <div class="bottomlang">
@@ -120,8 +120,8 @@
 <a href="./tr/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Модули</a> | <a href="./mod/quickreference.html">Директивы</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Глоссарий</a> | <a href="./sitemap.html">Карта сайта</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">Модули</a> | <a href="./mod/quickreference.html">Директивы</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Глоссарий</a> | <a href="./sitemap.html">Карта сайта</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -5,7 +5,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,9 +15,9 @@
  */
 
 /* Overview of what this is and does:
- * http://www.apache.org/~niq/dbd.html
+ * https://www.apache.org/~niq/dbd.html
  * or
- * http://apache.webthing.com/database/
+ * https://apache.webthing.com/database/
  */
 
 #include "apr_reslist.h"

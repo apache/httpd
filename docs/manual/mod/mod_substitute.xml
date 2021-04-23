@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -146,10 +146,10 @@
 
     <example><title>Rewriting URLs embedded in proxied content</title>
     <highlight language="config">
-ProxyPass        "/blog/" "http://internal.blog.example.com/"
-ProxyPassReverse "/blog/" "http://internal.blog.example.com/"
+ProxyPass        "/blog/" "https://internal.blog.example.com/"
+ProxyPassReverse "/blog/" "https://internal.blog.example.com/"
 
-Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"
+Substitute "s|https://internal.blog.example.com/|https://www.example.com/blog/|i"
     </highlight>
     </example>
 

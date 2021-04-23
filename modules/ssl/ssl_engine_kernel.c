@@ -5,7 +5,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -360,9 +360,9 @@ int ssl_hook_ReadReq(request_rec *r)
              * SSLCACertificateFile/Path and SSLCADNRequestFile/Path which
              * cannot be renegotiated (SSLCA* due to current limitations in
              * OpenSSL, see:
-             * http://mail-archives.apache.org/mod_mbox/httpd-dev/200806.mbox/%3C48592955.2090303@velox.ch%3E
+             * https://mail-archives.apache.org/mod_mbox/httpd-dev/200806.mbox/%3C48592955.2090303@velox.ch%3E
              * and
-             * http://mail-archives.apache.org/mod_mbox/httpd-dev/201312.mbox/%3CCAKQ1sVNpOrdiBm-UPw1hEdSN7YQXRRjeaT-MCWbW_7mN%3DuFiOw%40mail.gmail.com%3E
+             * https://mail-archives.apache.org/mod_mbox/httpd-dev/201312.mbox/%3CCAKQ1sVNpOrdiBm-UPw1hEdSN7YQXRRjeaT-MCWbW_7mN%3DuFiOw%40mail.gmail.com%3E
              * )
              */
             if (!r->hostname) {
@@ -1015,7 +1015,7 @@ static int ssl_hook_Access_classic(request_rec *r, SSLSrvConfigRec *sc, SSLDirCo
              */
             /* Need to trigger renegotiation handshake by reading.
              * Peeking 0 bytes actually works.
-             * See: http://marc.info/?t=145493359200002&r=1&w=2
+             * See: https://marc.info/?t=145493359200002&r=1&w=2
              */
             SSL_peek(ssl, peekbuf, 0);
 
@@ -1185,7 +1185,7 @@ static int ssl_hook_Access_modern(request_rec *r, SSLSrvConfigRec *sc, SSLDirCon
             SSL_do_handshake(ssl);
             /* Need to trigger renegotiation handshake by reading.
              * Peeking 0 bytes actually works.
-             * See: http://marc.info/?t=145493359200002&r=1&w=2
+             * See: https://marc.info/?t=145493359200002&r=1&w=2
              */
             SSL_peek(ssl, peekbuf, 0);
 
@@ -2349,8 +2349,7 @@ static apr_status_t set_challenge_creds(conn_rec *c, const char *servername,
         ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c, APLOGNO(10086)
                       "Failed to configure challenge certificate %s",
                       servername);
-        rv = APR_EGENERAL;
-        goto cleanup;
+        rv = APR_EGENERAL; goto cleanup;
     }
     
     if (!SSL_use_PrivateKey(ssl, key)) {
@@ -2358,16 +2357,14 @@ static apr_status_t set_challenge_creds(conn_rec *c, const char *servername,
                       "error '%s' using Challenge key: %s",
                       ERR_error_string(ERR_peek_last_error(), NULL), 
                       servername);
-        rv = APR_EGENERAL;
-        goto cleanup;
+        rv = APR_EGENERAL; goto cleanup;
     }
     
     if (SSL_check_private_key(ssl) < 1) {
         ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c, APLOGNO(10088)
                       "Challenge certificate and private key %s "
                       "do not match", servername);
-        rv = APR_EGENERAL;
-        goto cleanup;
+        rv = APR_EGENERAL; goto cleanup;
     }
     
 cleanup:

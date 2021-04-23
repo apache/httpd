@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -44,7 +44,7 @@
 
     <p><module>mod_cache</module> implémente un <strong>filtre de mise
     en cache de contenu HTTP</strong> conforme à la <a
-    href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a>, avec
+    href="https://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a>, avec
     support de la mise en cache des réponses dont le contenu a été
     négocié et comportant l'en-tête Vary.</p>
 
@@ -54,7 +54,7 @@
     serveur original supporte les <strong>requêtes
     conditionnelles</strong> en prenant en compte l'en-tête de requête
     HTTP <a
-    href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.26">If-None-Match</a>.
+    href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.26">If-None-Match</a>.
     Le contenu n'est ainsi régénéré que lorsqu'il a été modifié, et non
     lorsqu'il a expiré.</p>
 
@@ -86,9 +86,9 @@
 
     <p>Dans le mode de fonctionnement normal, <module>mod_cache</module>
     peut être contrôlé par les en-têtes <a
-    href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9">Cache-Control</a>
+    href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9">Cache-Control</a>
     et <a
-    href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.32">Pragma</a>
+    href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.32">Pragma</a>
     envoyés par un client dans une requête, ou par un serveur dans une
     réponse. Dans des circonstances exceptionnelles,
     <module>mod_cache</module> peut cependant être configuré pour
@@ -104,13 +104,13 @@
     fonctionnalité lorsque la directive <directive
     module="mod_cache">CacheLock</directive> est configurée en
     conséquence. De telles réponses comportent un en-tête HTTP <a
-    href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.46">Warning</a>
+    href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.46">Warning</a>
     contenant un code de réponse 110. La RFC 2616 permet aussi au cache
     de renvoyer des données périmées lorsque la tentative de mise à jour
     des données périmées renvoie une erreur 500 ou supérieure, et cette
     fonctionnalité est supportée par défaut par
     <module>mod_cache</module>. De telles réponses comportent un en-tête HTTP <a
-    href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.46">Warning</a>
+    href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.46">Warning</a>
     contenant un code de réponse 111.</p>
 
     <p><module>mod_cache</module> requiert les services d'un ou
@@ -182,7 +182,7 @@ LoadModule cache_module modules/mod_cache.so
     
     # Lorsqu'on sert de mandataire, on ne met pas en cache la liste
 # des mises à jour de sécurité
-    CacheDisable http://security.update.server/update-list/
+    CacheDisable https://security.update.server/update-list/
 &lt;/IfModule&gt;
       </highlight>
     </example>
@@ -449,7 +449,7 @@ CacheEnable  disk  /
 CacheEnable  disk  ftp://
 
 # Mise en cache des contenus mandatés en direct depuis www.example.org (gestionnaire normal ou rapide)
-CacheEnable  disk  http://www.example.org/
+CacheEnable  disk  https://www.example.org/
     </highlight>
 
     <p>Un nom d'hôte commençant par un caractère <strong>"*"</strong>
@@ -460,9 +460,9 @@ CacheEnable  disk  http://www.example.org/
 
     <highlight language="config">
 # Correspond à www.example.org et fooexample.org
-CacheEnable  disk  http://*example.org/
+CacheEnable  disk  https://*example.org/
 # Correspond à www.example.org, mais pas à fooexample.org
-CacheEnable  disk  http://.example.org/
+CacheEnable  disk  https://.example.org/
     </highlight>
 
     <p>Depuis la version 2.2.12, on peut définir la variable
@@ -1158,7 +1158,7 @@ inverse</description>
 
   <highlight language="config">
 # Remplace l'URL de base de la clé de cache.
-CacheKeyBaseURL http://www.example.com/
+CacheKeyBaseURL https://www.example.com/
   </highlight>
 
   <note type="warning">Prenez garde en définissant cette directive. Si

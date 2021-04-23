@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -42,7 +42,7 @@ Protokolle</description>
     &uuml;bergibt, bis entweder Daten verf&uuml;gbar sind oder eine komplette
     HTTP-Anfrage zwischengespeichert wurde. Derzeit werden
     ausschlie&szlig;lich die <a
-    href="http://www.freebsd.org/cgi/man.cgi?query=accept_filter&amp;sektion=9"
+    href="https://www.freebsd.org/cgi/man.cgi?query=accept_filter&amp;sektion=9"
     >Accept-Filter von FreeBSD</a> und das primitivere
     <code>TCP_DEFER_ACCEPT</code> von Linux unterst&uuml;tzt.</p>
 
@@ -56,10 +56,10 @@ Protokolle</description>
     HTTP-Anfragen auf Kernelebene. Sobald eine Anfrage vollst&auml;ndig
     vorliegt, schickt der Kernel sie an den Server weiter. Bitte schlagen Sie
     in der <a
-    href="http://www.freebsd.org/cgi/man.cgi?query=accf_http&amp;sektion=9"
+    href="https://www.freebsd.org/cgi/man.cgi?query=accf_http&amp;sektion=9"
     >accf_http(9)</a>-Manpage f&uuml;r weitere Details nach. HTTPS-Anfragen
     sind verschl&uuml;sselt. Daher wird daf&uuml;r nur der <a
-    href="http://www.freebsd.org/cgi/man.cgi?query=accf_data&amp;sektion=9"
+    href="https://www.freebsd.org/cgi/man.cgi?query=accf_data&amp;sektion=9"
     >accf_data(9)</a>-Filter verwendet.</p>
 
     <p>Die Standardeinstellungen f&uuml;r Linux sind:</p>
@@ -72,7 +72,7 @@ Protokolle</description>
     Zwischenspeicherung von HTTP-Anfragen. Jeder andere Wert als
     <code>none</code> aktiviert <code>TCP_DEFER_ACCEPT</code> auf dem
     Lauschsocket. Mehr Details finden Sie in der <a
-    href="http://homepages.cwi.nl/~aeb/linux/man2html/man7/tcp.7.html"
+    href="https://homepages.cwi.nl/~aeb/linux/man2html/man7/tcp.7.html"
     >tcp(7)</a>-Manpage von Linux.</p>
 
     <p>Wenn Sie <code>none</code> als Argument verwenden, werden alle
@@ -228,7 +228,7 @@ Protokolle</description>
     <code>AddDefaultCharset On</code> aktiviert die Standard-Zeichenkodierung
     <code>iso-8859-1</code>. Jeder andere Wert wird als die zu verwendende
     <var>Zeichenkodierung</var> aufgefa&szlig;t, die eines der bei <a
-      href="http://www.iana.org/assignments/character-sets">IANA registrierten
+      href="https://www.iana.org/assignments/character-sets">IANA registrierten
       Charset-Werte</a> zur Verwendung in MIME-Medientypen sein sollte. Zum
     Beispiel:</p>
 
@@ -888,7 +888,7 @@ Web sichtbar ist.</description>
     </example>
 
     <p>Damit bezieht sich ein Zugriff auf
-    <code>http://www.my.host.com/index.html</code> auf
+    <code>https://www.my.host.com/index.html</code> auf
     <code>/usr/web/index.html</code>. Wenn das <var>Verzeichnis</var> nicht
     absolut angegeben ist, wird es relativ zu <directive
     module="core">ServerRoot</directive> betrachtet.</p>
@@ -1071,7 +1071,7 @@ sich im Apache 2.0 ge&auml;ndert</compatibility>
     Nachricht f&uuml;r die Anzeige im Browser angeboten werden. Beispiel:</p>
 
     <example>
-      ErrorDocument 500 http://foo.example.com/cgi-bin/tester<br />
+      ErrorDocument 500 https://foo.example.com/cgi-bin/tester<br />
       ErrorDocument 404 /cgi-bin/falsche_urls.pl<br />
       ErrorDocument 401 /info_zur_anmeldung.html<br />
       ErrorDocument 403 "Der Zugriff ist nicht erlaubt."
@@ -1120,7 +1120,7 @@ sich im Apache 2.0 ge&auml;ndert</compatibility>
     serverseitig generierten Fehler, anstatt ihn zu verstecken, wenn Ihr
     Fehlerdokument gr&ouml;&szlig;er als 512 Bytes ist. Weitere Informationen
     sind im Artikel  <a
-    href="http://support.microsoft.com/default.aspx?scid=kb;en-us;Q294807"
+    href="https://support.microsoft.com/default.aspx?scid=kb;en-us;Q294807"
     >Q294807</a> in der Microsoft Knowledgebase verf&uuml;gbar.</p>
 
     <p>Obwohl die meisten Fehlermeldungen &uuml;berschrieben werden
@@ -3110,7 +3110,7 @@ einen Handler</description>
     </example>
 
     <p>Noch ein Beispiel: wenn Sie den Server immer, wenn die URL
-    <code>http://servername/status</code> aufgerufen wird, einen
+    <code>https://servername/status</code> aufgerufen wird, einen
     Statusbericht anzeigen lassen m&ouml;chten, dann k&ouml;nnen
     Sie folgendes in die <code>httpd.conf</code> schreiben:</p>
 
@@ -3288,17 +3288,17 @@ ermittelt</description>
     <p>Ein Intranet-Server, auf den Anwender mit kurzen Namen wie
     <code>www</code> zugreifen, ist ein Beispiel, wo dies sinnvoll sein kann.
     Sie werden bemerken, dass der Apache den Benutzer auf
-    <code>http://www.domain.com/splat/</code> umleitet, wenn dieser einen
+    <code>https://www.domain.com/splat/</code> umleitet, wenn dieser einen
     Kurznamen und eine URL, die einem Verzeichnis entspricht, ohne
     abschlie&szlig;enden Schr&auml;gstrich eingibt, wie z.B.
-    <code>http://www/splat</code>. Wenn Sie Authentisierung aktiviert haben,
+    <code>https://www/splat</code>. Wenn Sie Authentisierung aktiviert haben,
     bewirkt dies, dass der Benutzer sich zweimal identifizieren muss
     (einmal f&uuml;r <code>www</code> und noch einmal f&uuml;r
     <code>www.domain.com</code> -- lesen Sie f&uuml;r weitere Informationen <a
-    href="http://httpd.apache.org/docs/misc/FAQ.html#prompted-twice">die
+    href="https://httpd.apache.org/docs/misc/FAQ.html#prompted-twice">die
     FAQ zu diesem Thema</a>). Wenn <directive>UseCanonicalName</directive>
     jedoch auf <code>Off</code> gesetzt ist, denn wird der Apache zu
-    <code>http://www/splat/</code> umleiten.</p>
+    <code>https://www/splat/</code> umleiten.</p>
 
     <p>Es existiert noch eine dritte Option, <code>UseCanonicalName DNS</code>,
     die f&uuml;r den Betrieb von IP-basierten Massen-Virtual-Hosts gedacht ist,

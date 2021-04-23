@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,7 +21,7 @@
 -->
 
 <indexpage metafile="index.xml.meta">
-<parentdocument href="http://httpd.apache.org/docs-project/" />
+<parentdocument href="https://httpd.apache.org/docs-project/" />
 
 <title>Dokumentation zum Apache HTTP Server Version
 &httpd.major;.&httpd.minor;</title>
@@ -87,13 +87,13 @@
 </category>
 
 <category id="other"><title>Weitere Themen</title>
-    <page href="http://wiki.apache.org/httpd/FAQ">H&auml;ufig gestellte
+    <page href="https://wiki.apache.org/httpd/FAQ">H&auml;ufig gestellte
     Fragen (FAQ)</page>
     <page href="sitemap.html">Seitenindex</page>
     <page href="developer/">Dokumentation f&uuml;r Entwickler</page>
-    <page href="http://httpd.apache.org/docs-project/">Mithilfe bei der Dokumentation</page>
+    <page href="https://httpd.apache.org/docs-project/">Mithilfe bei der Dokumentation</page>
     <page href="misc/">Sonstiges</page>
-    <page href="http://wiki.apache.org/httpd/">Wiki</page>
+    <page href="https://wiki.apache.org/httpd/">Wiki</page>
 </category>
 
 </indexpage>

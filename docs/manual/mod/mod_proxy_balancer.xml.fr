@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -120,8 +120,8 @@ la répartition de charge</description>
 
     <highlight language="config">
 &lt;Proxy balancer://mycluster&gt;
-    BalancerMember http://192.168.1.50:80
-    BalancerMember http://192.168.1.51:80
+    BalancerMember https://192.168.1.50:80
+    BalancerMember https://192.168.1.51:80
 &lt;/Proxy&gt;
 ProxyPass 	 "/test" "balancer://mycluster"
 ProxyPassReverse "/test" "balancer://mycluster"
@@ -137,8 +137,8 @@ ProxyPassReverse "/test" "balancer://mycluster"
     <highlight language="config">
 Header add Set-Cookie "ROUTEID=.%{BALANCER_WORKER_ROUTE}e; path=/" env=BALANCER_ROUTE_CHANGED
 &lt;Proxy balancer://mycluster&gt;
-    BalancerMember http://192.168.1.50:80 route=1
-    BalancerMember http://192.168.1.51:80 route=2
+    BalancerMember https://192.168.1.50:80 route=1
+    BalancerMember https://192.168.1.51:80 route=2
     ProxySet stickysession=ROUTEID
 &lt;/Proxy&gt;
 ProxyPass 	 "/test" "balancer://mycluster"
@@ -181,7 +181,7 @@ ProxyPassReverse "/test" "balancer://mycluster"
     <dd>
     <p>Cette variable se voit assigné le nom du membre du groupe de
     répartition de charge utilisé pour la requête courante. Il s'agit
-    d'une valeur du style <code>http://hostA:1234</code>.</p>
+    d'une valeur du style <code>https://hostA:1234</code>.</p>
     </dd>
 
     <!-- ============= BALANCER_WORKER_ROUTE ================= -->
@@ -233,7 +233,7 @@ ProxyPassReverse "/test" "balancer://mycluster"
 
     <p>Vous pourrez alors accéder au gestionnaire du répartiteur de
     charge en utilisant un navigateur web pour afficher la page
-    <code>http://nom.de.votre.serveur/balancer-manager</code>. Notez que
+    <code>https://nom.de.votre.serveur/balancer-manager</code>. Notez que
     pour pouvoir contrôler dynamiquement un membre de groupe de
     répartition, ce dernier ne doit pas être défini au sein d'une
     section <code>&lt;Location ...&gt;</code>.</p>
@@ -302,8 +302,8 @@ ProxyPassReverse "/test" "balancer://mycluster"
     <highlight language="config">
 ProxyPass "/test" "balancer://mycluster" stickysession=JSESSIONID|jsessionid scolonpathdelim=On
 &lt;Proxy balancer://mycluster&gt;
-    BalancerMember http://192.168.1.50:80 route=node1
-    BalancerMember http://192.168.1.51:80 route=node2
+    BalancerMember https://192.168.1.50:80 route=node1
+    BalancerMember https://192.168.1.51:80 route=node2
 &lt;/Proxy&gt;
     </highlight>
     <p>Si le cookie et le paramètre de requête fournissent tous deux une

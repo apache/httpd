@@ -12,7 +12,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -32,7 +32,7 @@ En esta página se cubre la compatibilidad entre el módulo <module>mod_ssl</mod
 y otras soluciones SSL.
 <module>mod_ssl</module> no es la única solución de SSL para Apache HTTPD Server;
 Para productos adicionales que están (o estaban) disponibles como Ben Laurie's
-en su web, que ahora no existe (http://www.apache-ssl.org/), donde fue la 
+en su web, que ahora no existe (https://www.apache-ssl.org/), donde fue la 
 derivación original en 1998 del módulo.
 Tanto el sistema de <a href="https://www.redhat.com/archives/redhat-secure-server/"> Red Hat 
 Secure Web Server </a> se basó en mod_ssl así como la versión comercial del

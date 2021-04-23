@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -93,7 +93,7 @@ and URL matching.</p>
     In per-directory context, care must be taken to
     create rules which will eventually (in some future "round" of per-directory
     rewrite processing) not perform a substitution to avoid looping.
-    (See <a href="http://wiki.apache.org/httpd/RewriteLooping">RewriteLooping</a>
+    (See <a href="https://wiki.apache.org/httpd/RewriteLooping">RewriteLooping</a>
     for further discussion of this problem.)</p>
 
     <p>Because of this further manipulation of the URL in per-directory

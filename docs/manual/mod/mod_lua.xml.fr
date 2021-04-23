@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -43,7 +43,7 @@ réponses dynamiques, le contrôle d'accès, l'authentification et
 l'autorisation.</p>
 
 <p>Vous trouverez davantage d'informations à propos du langage de
-programmation Lua sur <a href="http://www.lua.org/">le site web de
+programmation Lua sur <a href="https://www.lua.org/">le site web de
 Lua</a>.</p>
 
 <note type="warning"><title>Avertissement</title>
@@ -779,7 +779,7 @@ local hash = r:sha1("This is a test") -- returns a54d88e06612d820bc3be72877c74f2
 <highlight language="lua">
 r:escape(string) -- Echappe une chaîne de type URL.
 
-local url = "http://foo.bar/1 2 3 &amp; 4 + 5"
+local url = "https://foo.bar/1 2 3 &amp; 4 + 5"
 local escaped = r:escape(url) -- renvoie 'http%3a%2f%2ffoo.bar%2f1+2+3+%26+4+%2b+5'
 </highlight>
 
@@ -787,7 +787,7 @@ local escaped = r:escape(url) -- renvoie 'http%3a%2f%2ffoo.bar%2f1+2+3+%26+4+%2b
 r:unescape(string) -- Déséchappe une chaîne de type URL.
 
 local url = "http%3a%2f%2ffoo.bar%2f1+2+3+%26+4+%2b+5"
-local unescaped = r:unescape(url) -- renvoie 'http://foo.bar/1 2 3 &amp; 4 + 5'
+local unescaped = r:unescape(url) -- renvoie 'https://foo.bar/1 2 3 &amp; 4 + 5'
 </highlight>
 
 <highlight language="lua">

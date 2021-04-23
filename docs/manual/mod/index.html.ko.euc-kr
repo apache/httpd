@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
 <meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>¸ðµâ ¸ñ·Ï - Apache HTTP Server Version 2.5</title>
+<title>ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ - Apache HTTP Server Version 2.5</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -16,14 +16,14 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="module-index"><div id="page-header">
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>¸ðµâ ¸ñ·Ï</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½</h1>
 <div class="toplang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../de/mod/" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../de/mod/" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/mod/" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
 <a href="../fr/mod/" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
@@ -32,24 +32,24 @@
 <a href="../tr/mod/" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/mod/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">ÀÌ ¹®¼­´Â ÃÖ½ÅÆÇ ¹ø¿ªÀÌ ¾Æ´Õ´Ï´Ù.
-            ÃÖ±Ù¿¡ º¯°æµÈ ³»¿ëÀº ¿µ¾î ¹®¼­¸¦ Âü°íÇÏ¼¼¿ä.</div>
+<div class="outofdate">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Õ´Ï´ï¿½.
+            ï¿½Ö±Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.</div>
 
     <p>
-      ´ÙÀ½Àº ¾ÆÆÄÄ¡ ¹èÆ÷º»¿¡ Æ÷ÇÔµÈ ¸ðµç ¸ðµâ ¸ñ·ÏÀÌ´Ù. <a href="directives.html">¸ðµç ¾ÆÆÄÄ¡ Áö½Ã¾î</a> ¸ñ·Ïµµ
-      Âü°íÇÏ¶ó.
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ôµï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ì´ï¿½. <a href="directives.html">ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½Ã¾ï¿½</a> ï¿½ï¿½Ïµï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.
     </p>
   </div>
 <div id="quickview"><ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#core">ÇÙ½É ±â´É°ú ´ÙÁßÃ³¸® ¸ðµâ</a></li><li><img alt="" src="../images/down.gif" /> <a href="#other">´Ù¸¥ ¸ðµâ</a></li></ul><h3>Âü°í</h3>
+<li><img alt="" src="../images/down.gif" /> <a href="#core">ï¿½Ù½ï¿½ ï¿½ï¿½É°ï¿½ ï¿½ï¿½ï¿½ï¿½Ã³ï¿½ï¿½ ï¿½ï¿½ï¿½</a></li><li><img alt="" src="../images/down.gif" /> <a href="#other">ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½</a></li></ul><h3>ï¿½ï¿½ï¿½ï¿½</h3>
 <ul class="seealso">
-<li><a href="../mpm.html">´ÙÁßÃ³¸®¸ðµâ (MPM)</a>
+<li><a href="../mpm.html">ï¿½ï¿½ï¿½ï¿½Ã³ï¿½ï¿½ï¿½ï¿½ï¿½ (MPM)</a>
   </li>
-<li><a href="quickreference.html">Áö½Ã¾î ºü¸¥Âü°í</a>
+<li><a href="quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</a>
   </li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section"><h2><a id="core" name="core">ÇÙ½É ±â´É°ú ´ÙÁßÃ³¸® ¸ðµâ</a></h2>
+<div class="section"><h2><a id="core" name="core">ï¿½Ù½ï¿½ ï¿½ï¿½É°ï¿½ ï¿½ï¿½ï¿½ï¿½Ã³ï¿½ï¿½ ï¿½ï¿½ï¿½</a></h2>
 <dl>
 <dt><a href="core.html">core</a></dt><dd>Core Apache HTTP Server features that are always
 available</dd>
@@ -66,26 +66,26 @@ of consuming threads only for connections with active processing</dd>
     multi-threaded multi-process web server</dd>
 </dl></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section"><h2><a id="other" name="other">´Ù¸¥ ¸ðµâ</a></h2>
+<div class="section"><h2><a id="other" name="other">ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½</a></h2>
 <p class="letters"><a href="#A">&nbsp;A&nbsp;</a> | <a href="#B">&nbsp;B&nbsp;</a> | <a href="#C">&nbsp;C&nbsp;</a> | <a href="#D">&nbsp;D&nbsp;</a> | <a href="#E">&nbsp;E&nbsp;</a> | <a href="#F">&nbsp;F&nbsp;</a> | <a href="#H">&nbsp;H&nbsp;</a> | <a href="#I">&nbsp;I&nbsp;</a> | <a href="#J">&nbsp;J&nbsp;</a> | <a href="#L">&nbsp;L&nbsp;</a> | <a href="#M">&nbsp;M&nbsp;</a> | <a href="#N">&nbsp;N&nbsp;</a> | <a href="#P">&nbsp;P&nbsp;</a> | <a href="#R">&nbsp;R&nbsp;</a> | <a href="#S">&nbsp;S&nbsp;</a> | <a href="#U">&nbsp;U&nbsp;</a> | <a href="#V">&nbsp;V&nbsp;</a> | <a href="#W">&nbsp;W&nbsp;</a> | <a href="#X">&nbsp;X&nbsp;</a></p>
 <dl><dt><a href="mod_access_compat.html" id="A" name="A">mod_access_compat</a></dt><dd>Group authorizations based on host (name or IP
 address)</dd>
-<dt><a href="mod_actions.html">mod_actions</a></dt><dd>ÀÌ ¸ðµâÀº ¹Ìµð¾îÁ¾·ù³ª ¿äÃ»¸Þ¼­µå¿¡ µû¶ó CGI
-½ºÅ©¸³Æ®¸¦ ½ÇÇàÇÑ´Ù.</dd>
-<dt><a href="mod_alias.html">mod_alias</a></dt><dd>ÆÄÀÏ½Ã½ºÅÛÀÇ ´Ù¸¥ ºÎºÐµéÀ» ¹®¼­ °èÃþ±¸Á¶¿¡ Æ÷ÇÔÇÏ°í,
-    URL ¸®´ÙÀÌ·º¼ÇÀ» Á¦°øÇÑ´Ù</dd>
+<dt><a href="mod_actions.html">mod_actions</a></dt><dd>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½Þ¼ï¿½ï¿½å¿¡ ï¿½ï¿½ï¿½ï¿½ CGI
+ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
+<dt><a href="mod_alias.html">mod_alias</a></dt><dd>ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½ÎºÐµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½,
+    URL ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</dd>
 <dt><a href="mod_allowhandlers.html">mod_allowhandlers</a></dt><dd>Easily restrict what HTTP handlers can be used on the server</dd>
 <dt><a href="mod_allowmethods.html">mod_allowmethods</a></dt><dd>Easily restrict what HTTP methods can be used on the server</dd>
-<dt><a href="mod_asis.html">mod_asis</a></dt><dd>HTTP Çì´õ¸¦ Æ÷ÇÔÇÑ ÆÄÀÏÀ» º¸³½´Ù</dd>
+<dt><a href="mod_asis.html">mod_asis</a></dt><dd>HTTP ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</dd>
 <dt><a href="mod_auth_basic.html">mod_auth_basic</a></dt><dd>Basic authentication</dd>
-<dt><a href="mod_auth_digest.html">mod_auth_digest</a></dt><dd>MD5 Digest AuthenticationÀ» »ç¿ëÇÑ »ç¿ëÀÚÀÎÁõ.</dd>
+<dt><a href="mod_auth_digest.html">mod_auth_digest</a></dt><dd>MD5 Digest Authenticationï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.</dd>
 <dt><a href="mod_auth_form.html">mod_auth_form</a></dt><dd>Form authentication</dd>
-<dt><a href="mod_authn_anon.html">mod_authn_anon</a></dt><dd>ÀÎÁõ¿µ¿ª¿¡ "ÀÍ¸í(anonymous)" »ç¿ëÀÚÀÇ Á¢±ÙÀ»
-Çã¿ëÇÑ´Ù</dd>
+<dt><a href="mod_authn_anon.html">mod_authn_anon</a></dt><dd>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ "ï¿½Í¸ï¿½(anonymous)" ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</dd>
 <dt><a href="mod_authn_core.html">mod_authn_core</a></dt><dd>Core Authentication</dd>
 <dt><a href="mod_authn_dbd.html">mod_authn_dbd</a></dt><dd>User authentication using an SQL database</dd>
-<dt><a href="mod_authn_dbm.html">mod_authn_dbm</a></dt><dd>DBM ÆÄÀÏÀ» »ç¿ëÇÑ »ç¿ëÀÚ ÀÎÁõ</dd>
-<dt><a href="mod_authn_file.html">mod_authn_file</a></dt><dd>¹®ÀÚÆÄÀÏÀ» ÀÌ¿ëÇÑ »ç¿ëÀÚ ÀÎÁõ</dd>
+<dt><a href="mod_authn_dbm.html">mod_authn_dbm</a></dt><dd>DBM ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</dd>
+<dt><a href="mod_authn_file.html">mod_authn_file</a></dt><dd>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</dd>
 <dt><a href="mod_authn_socache.html">mod_authn_socache</a></dt><dd>Manages a cache of authentication credentials to relieve
 the load on backends</dd>
 <dt><a href="mod_authnz_fcgi.html">mod_authnz_fcgi</a></dt><dd>Allows a FastCGI authorizer application to handle Apache
@@ -94,57 +94,57 @@ httpd authentication and authorization</dd>
 for HTTP Basic authentication.</dd>
 <dt><a href="mod_authz_core.html">mod_authz_core</a></dt><dd>Core Authorization</dd>
 <dt><a href="mod_authz_dbd.html">mod_authz_dbd</a></dt><dd>Group Authorization and Login using SQL</dd>
-<dt><a href="mod_authz_dbm.html">mod_authz_dbm</a></dt><dd>DBM ÆÄÀÏÀ» »ç¿ëÇÑ ±×·ì ÀÎÁõ</dd>
-<dt><a href="mod_authz_groupfile.html">mod_authz_groupfile</a></dt><dd>ÀÏ¹Ý ¹®ÀÚÆÄÀÏÀ» ÀÌ¿ëÇÑ ±×·ì ±ÇÇÑºÎ¿©</dd>
+<dt><a href="mod_authz_dbm.html">mod_authz_dbm</a></dt><dd>DBM ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×·ï¿½ ï¿½ï¿½ï¿½ï¿½</dd>
+<dt><a href="mod_authz_groupfile.html">mod_authz_groupfile</a></dt><dd>ï¿½Ï¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¿ï¿½ï¿½ï¿½ ï¿½×·ï¿½ ï¿½ï¿½ï¿½ÑºÎ¿ï¿½</dd>
 <dt><a href="mod_authz_host.html">mod_authz_host</a></dt><dd>Group authorizations based on host (name or IP
 address)</dd>
-<dt><a href="mod_authz_owner.html">mod_authz_owner</a></dt><dd>ÆÄÀÏ ¼ÒÀ¯ÀÚ¸¦ ÀÌ¿ëÇÑ ±ÇÇÑºÎ¿©</dd>
-<dt><a href="mod_authz_user.html">mod_authz_user</a></dt><dd>»ç¿ëÀÚ ±ÇÇÑºÎ¿©</dd>
-<dt><a href="mod_autoindex.html">mod_autoindex</a></dt><dd>ÀÚµ¿À¸·Î À¯´Ð½ºÀÇ <code>ls</code> ¸í·É¾î³ª Win32ÀÇ
-    <code>dir</code> ½©¸í·É¾î¿Í À¯»çÇÑ µð·ºÅä¸® ¸ñ·ÏÀ» ¸¸µç´Ù</dd>
+<dt><a href="mod_authz_owner.html">mod_authz_owner</a></dt><dd>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½Ì¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ÑºÎ¿ï¿½</dd>
+<dt><a href="mod_authz_user.html">mod_authz_user</a></dt><dd>ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ÑºÎ¿ï¿½</dd>
+<dt><a href="mod_autoindex.html">mod_autoindex</a></dt><dd>ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ð½ï¿½ï¿½ï¿½ <code>ls</code> ï¿½ï¿½ï¿½É¾î³ª Win32ï¿½ï¿½
+    <code>dir</code> ï¿½ï¿½ï¿½ï¿½ï¿½É¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸® ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½</dd>
 <dt><a href="mod_brotli.html" id="B" name="B">mod_brotli</a></dt><dd>Compress content via Brotli before it is delivered to the
 client</dd>
 <dt><a href="mod_buffer.html">mod_buffer</a></dt><dd>Support for request buffering</dd>
-<dt><a href="mod_cache.html" id="C" name="C">mod_cache</a></dt><dd>URI¸¦ Å°·Î »ç¿ëÇÏ¿© ³»¿ëÀ» Ä³½¬ÇÑ´Ù.</dd>
+<dt><a href="mod_cache.html" id="C" name="C">mod_cache</a></dt><dd>URIï¿½ï¿½ Å°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 <dt><a href="mod_cache_disk.html">mod_cache_disk</a></dt><dd>Content cache storage manager keyed to URIs</dd>
 <dt><a href="mod_cache_socache.html">mod_cache_socache</a></dt><dd>Shared object cache (socache) based storage module for the
 HTTP caching filter.</dd>
-<dt><a href="mod_cern_meta.html">mod_cern_meta</a></dt><dd>CERN À¥¼­¹ö ¸ÞÅ¸ÆÄÀÏ Áö¿ø</dd>
-<dt><a href="mod_cgi.html">mod_cgi</a></dt><dd>CGI ½ºÅ©¸³Æ® ½ÇÇà</dd>
-<dt><a href="mod_cgid.html">mod_cgid</a></dt><dd>¿ÜºÎ CGI µ¥¸óÀ» »ç¿ëÇÏ¿© CGI ½ºÅ©¸³Æ®¸¦ ½ÇÇà</dd>
-<dt><a href="mod_charset_lite.html">mod_charset_lite</a></dt><dd>¹®ÀÚÁýÇÕ º¯È¯À» ÁöÁ¤</dd>
+<dt><a href="mod_cern_meta.html">mod_cern_meta</a></dt><dd>CERN ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</dd>
+<dt><a href="mod_cgi.html">mod_cgi</a></dt><dd>CGI ï¿½ï¿½Å©ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½</dd>
+<dt><a href="mod_cgid.html">mod_cgid</a></dt><dd>ï¿½Üºï¿½ CGI ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ CGI ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</dd>
+<dt><a href="mod_charset_lite.html">mod_charset_lite</a></dt><dd>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</dd>
 <dt><a href="mod_crypto.html">mod_crypto</a></dt><dd>Support for symmetrical encryption and decryption</dd>
 <dt><a href="mod_data.html" id="D" name="D">mod_data</a></dt><dd>Convert response body into an RFC2397 data URL</dd>
 <dt><a href="mod_dav.html">mod_dav</a></dt><dd>Distributed Authoring and Versioning
-(<a href="http://www.webdav.org/">WebDAV</a>) ±â´É</dd>
-<dt><a href="mod_dav_fs.html">mod_dav_fs</a></dt><dd><code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>À» À§ÇÑ ÆÄÀÏ½Ã½ºÅÛ Á¦°øÀÚ</dd>
+(<a href="https://www.webdav.org/">WebDAV</a>) ï¿½ï¿½ï¿½</dd>
+<dt><a href="mod_dav_fs.html">mod_dav_fs</a></dt><dd><code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</dd>
 <dt><a href="mod_dav_lock.html">mod_dav_lock</a></dt><dd>Generic locking module for <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code></dd>
 <dt><a href="mod_dbd.html">mod_dbd</a></dt><dd>Manages SQL database connections</dd>
-<dt><a href="mod_deflate.html">mod_deflate</a></dt><dd>³»¿ëÀ» Å¬¶óÀÌ¾ðÆ®·Î º¸³»±â Àü¿¡ ¾ÐÃàÇÑ´Ù</dd>
+<dt><a href="mod_deflate.html">mod_deflate</a></dt><dd>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</dd>
 <dt><a href="mod_dialup.html">mod_dialup</a></dt><dd>Send static content at a bandwidth rate limit, defined by the various old modem standards</dd>
-<dt><a href="mod_dir.html">mod_dir</a></dt><dd>"¸¶Áö¸· ½½·¡½¬" ¸®´ÙÀÌ·º¼ÇÀ» Á¦°øÇÏ°í µð·ºÅä¸®
-index ÆÄÀÏÀ» ¼­ºñ½ºÇÑ´Ù</dd>
+<dt><a href="mod_dir.html">mod_dir</a></dt><dd>"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½" ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ä¸®
+index ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</dd>
 <dt><a href="mod_dumpio.html">mod_dumpio</a></dt><dd>Dumps all I/O to error log as desired.</dd>
-<dt><a href="mod_echo.html" id="E" name="E">mod_echo</a></dt><dd>ÇÁ·ÎÅäÄÝ ¸ðµâÀ» ¼³¸íÇÏ±âÀ§ÇÑ °£´ÜÇÑ echo ¼­¹ö</dd>
-<dt><a href="mod_env.html">mod_env</a></dt><dd>CGI ½ºÅ©¸³Æ®³ª SSI ÆäÀÌÁö¿¡ Àü´ÞÇÒ È¯°æº¯¼ö¸¦
-¼öÁ¤ÇÑ´Ù</dd>
-<dt><a href="mod_example_hooks.html">mod_example_hooks</a></dt><dd>¾ÆÆÄÄ¡ ¸ðµâ API¸¦ ¼³¸íÇÑ´Ù</dd>
-<dt><a href="mod_expires.html">mod_expires</a></dt><dd>»ç¿ëÀÚ°¡ ÁöÁ¤ÇÑ ±âÁØ¿¡ µû¶ó <code>Expires</code>¿Í
-<code>Cache-Control</code> HTTP Çì´õ¸¦ »ý¼ºÇÑ´Ù</dd>
-<dt><a href="mod_ext_filter.html">mod_ext_filter</a></dt><dd>ÀÀ´ä ³»¿ëÀ» ¿ÜºÎ ÇÁ·Î±×·¥À¸·Î Ã³¸®ÇÑ ÈÄ Å¬¶óÀÌ¾ðÆ®·Î
-º¸³½´Ù</dd>
-<dt><a href="mod_file_cache.html" id="F" name="F">mod_file_cache</a></dt><dd>¸Þ¸ð¸®¿¡ Á¤Àû ÆÄÀÏµéÀ» Ä³½¬</dd>
+<dt><a href="mod_echo.html" id="E" name="E">mod_echo</a></dt><dd>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ echo ï¿½ï¿½ï¿½ï¿½</dd>
+<dt><a href="mod_env.html">mod_env</a></dt><dd>CGI ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ SSI ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</dd>
+<dt><a href="mod_example_hooks.html">mod_example_hooks</a></dt><dd>ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ APIï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</dd>
+<dt><a href="mod_expires.html">mod_expires</a></dt><dd>ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ø¿ï¿½ ï¿½ï¿½ï¿½ï¿½ <code>Expires</code>ï¿½ï¿½
+<code>Cache-Control</code> HTTP ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</dd>
+<dt><a href="mod_ext_filter.html">mod_ext_filter</a></dt><dd>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Üºï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</dd>
+<dt><a href="mod_file_cache.html" id="F" name="F">mod_file_cache</a></dt><dd>ï¿½Þ¸ð¸®¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ Ä³ï¿½ï¿½</dd>
 <dt><a href="mod_filter.html">mod_filter</a></dt><dd>Context-sensitive smart filter configuration module</dd>
 <dt><a href="mod_firehose.html">mod_firehose</a></dt><dd>Multiplexes all I/O to a given file or pipe.</dd>
-<dt><a href="mod_headers.html" id="H" name="H">mod_headers</a></dt><dd>HTTP ¿äÃ» Çì´õ¿Í ÀÀ´ä Çì´õ ¼öÁ¤</dd>
+<dt><a href="mod_headers.html" id="H" name="H">mod_headers</a></dt><dd>HTTP ï¿½ï¿½Ã» ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</dd>
 <dt><a href="mod_heartbeat.html">mod_heartbeat</a></dt><dd>Sends messages with server status to frontend proxy</dd>
 <dt><a href="mod_heartmonitor.html">mod_heartmonitor</a></dt><dd>Centralized monitor for mod_heartbeat origin servers</dd>
 <dt><a href="mod_http2.html">mod_http2</a></dt><dd>Support for the HTTP/2 transport layer</dd>
-<dt><a href="mod_ident.html" id="I" name="I">mod_ident</a></dt><dd>RFC 1413 ident °Ë»ö</dd>
-<dt><a href="mod_imagemap.html">mod_imagemap</a></dt><dd>¼­¹öÃø ÀÌ¹ÌÁö¸Ê(imagemap) Ã³¸®</dd>
+<dt><a href="mod_ident.html" id="I" name="I">mod_ident</a></dt><dd>RFC 1413 ident ï¿½Ë»ï¿½</dd>
+<dt><a href="mod_imagemap.html">mod_imagemap</a></dt><dd>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½(imagemap) Ã³ï¿½ï¿½</dd>
 <dt><a href="mod_include.html">mod_include</a></dt><dd>Server-parsed html documents (Server Side Includes)</dd>
-<dt><a href="mod_info.html">mod_info</a></dt><dd>¼­¹ö ¼³Á¤¿¡ ´ëÇÑ Á¾ÇÕÀûÀÎ Á¤º¸¸¦ º¸¿©ÁØ´Ù</dd>
-<dt><a href="mod_isapi.html">mod_isapi</a></dt><dd>Windows¿ë ¾ÆÆÄÄ¡¿¡¼­ ISAPI Extension »ç¿ë</dd>
+<dt><a href="mod_info.html">mod_info</a></dt><dd>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½</dd>
+<dt><a href="mod_isapi.html">mod_isapi</a></dt><dd>Windowsï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ ISAPI Extension ï¿½ï¿½ï¿½</dd>
 <dt><a href="mod_journald.html" id="J" name="J">mod_journald</a></dt><dd>Provides "journald" ErrorLog provider</dd>
 <dt><a href="mod_lbmethod_bybusyness.html" id="L" name="L">mod_lbmethod_bybusyness</a></dt><dd>Pending Request Counting load balancer scheduler algorithm for <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></dd>
 <dt><a href="mod_lbmethod_byrequests.html">mod_lbmethod_byrequests</a></dt><dd>Request Counting load balancer scheduler algorithm for <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></dd>
@@ -152,10 +152,10 @@ index ÆÄÀÏÀ» ¼­ºñ½ºÇÑ´Ù</dd>
 <dt><a href="mod_lbmethod_heartbeat.html">mod_lbmethod_heartbeat</a></dt><dd>Heartbeat Traffic Counting load balancer scheduler algorithm for <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></dd>
 <dt><a href="mod_ldap.html">mod_ldap</a></dt><dd>LDAP connection pooling and result caching services for use
 by other LDAP modules</dd>
-<dt><a href="mod_log_config.html">mod_log_config</a></dt><dd>¼­¹ö·ÎÀÇ ¿äÃ»À» ·Î±×¿¡ ±â·ÏÇÑ´Ù</dd>
+<dt><a href="mod_log_config.html">mod_log_config</a></dt><dd>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½Î±×¿ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</dd>
 <dt><a href="mod_log_debug.html">mod_log_debug</a></dt><dd>Additional configurable debug logging</dd>
 <dt><a href="mod_log_forensic.html">mod_log_forensic</a></dt><dd>Forensic Logging of the requests made to the server</dd>
-<dt><a href="mod_logio.html">mod_logio</a></dt><dd>¿äÃ»´ç ÀÔÃâ·Â ¹ÙÀÌÆ®¼ö¸¦ ±â·Ï</dd>
+<dt><a href="mod_logio.html">mod_logio</a></dt><dd>ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½</dd>
 <dt><a href="mod_lua.html">mod_lua</a></dt><dd>Provides Lua hooks into various portions of the httpd
 request processing</dd>
 <dt><a href="mod_macro.html" id="M" name="M">mod_macro</a></dt><dd>Provides macros within apache httpd runtime configuration files</dd>
@@ -215,35 +215,35 @@ URLs on the fly</dd>
 <dt><a href="mod_session_cookie.html">mod_session_cookie</a></dt><dd>Cookie based session support</dd>
 <dt><a href="mod_session_crypto.html">mod_session_crypto</a></dt><dd>Session encryption support</dd>
 <dt><a href="mod_session_dbd.html">mod_session_dbd</a></dt><dd>DBD/SQL based session support</dd>
-<dt><a href="mod_setenvif.html">mod_setenvif</a></dt><dd>¿äÃ»ÀÇ ¼º°Ý¿¡ µû¶ó È¯°æº¯¼ö ¼³Á¤À» º¯°æÇÑ´Ù</dd>
+<dt><a href="mod_setenvif.html">mod_setenvif</a></dt><dd>ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½Ý¿ï¿½ ï¿½ï¿½ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</dd>
 <dt><a href="mod_slotmem_plain.html">mod_slotmem_plain</a></dt><dd>Slot-based shared memory provider.</dd>
 <dt><a href="mod_slotmem_shm.html">mod_slotmem_shm</a></dt><dd>Slot-based shared memory provider.</dd>
-<dt><a href="mod_so.html">mod_so</a></dt><dd>½ÃÀÛÇÒ¶§ È¤Àº Àç½ÃÀÛÇÒ¶§ ½ÇÇà°¡´ÉÇÑ ÄÚµå¿Í ¸ðµâÀ»
-¼­¹ö·Î ÀÐ¾îµéÀÎ´Ù</dd>
+<dt><a href="mod_so.html">mod_so</a></dt><dd>ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ È¤ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ ï¿½ï¿½ï¿½à°¡ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ð¾ï¿½ï¿½ï¿½Î´ï¿½</dd>
 <dt><a href="mod_socache_dbm.html">mod_socache_dbm</a></dt><dd>DBM based shared object cache provider.</dd>
 <dt><a href="mod_socache_dc.html">mod_socache_dc</a></dt><dd>Distcache based shared object cache provider.</dd>
 <dt><a href="mod_socache_memcache.html">mod_socache_memcache</a></dt><dd>Memcache based shared object cache provider.</dd>
 <dt><a href="mod_socache_redis.html">mod_socache_redis</a></dt><dd>Redis based shared object cache provider.</dd>
 <dt><a href="mod_socache_shmcb.html">mod_socache_shmcb</a></dt><dd>shmcb based shared object cache provider.</dd>
-<dt><a href="mod_speling.html">mod_speling</a></dt><dd>»ç¿ëÀÚ°¡ ´ë¼Ò¹®ÀÚ¸¦ Àß¸ø »ç¿ëÇÏ°Å³ª ¸ÂÃã¹ýÀÌ Æ²¸®´Â
-°ÍÀ» ÇÑ¹ø±îÁö Çã¿ëÇÏ¿© Àß¸øµÈ URLÀ» °íÄ¡·Á°í ½ÃµµÇÑ´Ù</dd>
+<dt><a href="mod_speling.html">mod_speling</a></dt><dd>ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½ï¿½Ò¹ï¿½ï¿½Ú¸ï¿½ ï¿½ß¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°Å³ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Æ²ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ß¸ï¿½ï¿½ï¿½ URLï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ ï¿½Ãµï¿½ï¿½Ñ´ï¿½</dd>
 <dt><a href="mod_ssl.html">mod_ssl</a></dt><dd>Strong cryptography using the Secure Sockets
 Layer (SSL) and Transport Layer Security (TLS) protocols</dd>
 <dt><a href="mod_ssl_ct.html">mod_ssl_ct</a></dt><dd>Implementation of Certificate Transparency (RFC 6962)
 </dd>
-<dt><a href="mod_status.html">mod_status</a></dt><dd>¼­¹ö È°µ¿°ú ¼º´É¿¡ ´ëÇÑ Á¤º¸¸¦ Á¦°øÇÑ´Ù</dd>
+<dt><a href="mod_status.html">mod_status</a></dt><dd>ï¿½ï¿½ï¿½ï¿½ È°ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½É¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</dd>
 <dt><a href="mod_substitute.html">mod_substitute</a></dt><dd>Perform search and replace operations on response bodies</dd>
-<dt><a href="mod_suexec.html">mod_suexec</a></dt><dd>CGI ½ºÅ©¸³Æ®¸¦ Æ¯Á¤ »ç¿ëÀÚ¿Í ±×·ì ±ÇÇÑÀ¸·Î ½ÇÇàÇÑ´Ù</dd>
+<dt><a href="mod_suexec.html">mod_suexec</a></dt><dd>CGI ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ Æ¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¿ï¿½ ï¿½×·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</dd>
 <dt><a href="mod_syslog.html">mod_syslog</a></dt><dd>Provides "syslog" ErrorLog provider</dd>
 <dt><a href="mod_systemd.html">mod_systemd</a></dt><dd>Provides better support for systemd integration</dd>
-<dt><a href="mod_unique_id.html" id="U" name="U">mod_unique_id</a></dt><dd>°¢ ¿äÃ»¸¶´Ù À¯ÀÏÇÑ ½Äº°ÀÚ¸¦ °¡Áö´Â È¯°æº¯¼ö¸¦
-Á¦°øÇÑ´Ù</dd>
+<dt><a href="mod_unique_id.html" id="U" name="U">mod_unique_id</a></dt><dd>ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Äºï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</dd>
 <dt><a href="mod_unixd.html">mod_unixd</a></dt><dd>Basic (required) security for Unix-family platforms.</dd>
-<dt><a href="mod_userdir.html">mod_userdir</a></dt><dd>»ç¿ëÀÚº° µð·ºÅä¸®</dd>
+<dt><a href="mod_userdir.html">mod_userdir</a></dt><dd>ï¿½ï¿½ï¿½ï¿½Úºï¿½ ï¿½ï¿½ï¿½ä¸®</dd>
 <dt><a href="mod_usertrack.html">mod_usertrack</a></dt><dd>
 <em>Clickstream</em> logging of user activity on a site
 </dd>
-<dt><a href="mod_version.html" id="V" name="V">mod_version</a></dt><dd>¹öÀüº° ¼³Á¤</dd>
+<dt><a href="mod_version.html" id="V" name="V">mod_version</a></dt><dd>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</dd>
 <dt><a href="mod_vhost_alias.html">mod_vhost_alias</a></dt><dd>Provides for dynamically configured mass virtual
 hosting</dd>
 <dt><a href="mod_watchdog.html" id="W" name="W">mod_watchdog</a></dt><dd>provides infrastructure for other modules to periodically run
@@ -252,7 +252,7 @@ hosting</dd>
 filter modules</dd>
 </dl></div></div>
 <div class="bottomlang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../de/mod/" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../de/mod/" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/mod/" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
 <a href="../fr/mod/" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
@@ -261,8 +261,8 @@ filter modules</dd>
 <a href="../tr/mod/" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/mod/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

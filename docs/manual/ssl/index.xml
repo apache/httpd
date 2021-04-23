@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -28,7 +28,7 @@
 <summary>
 <p>The Apache HTTP Server module <module>mod_ssl</module>
 provides an interface to the <a
-href="http://www.openssl.org/">OpenSSL</a> library, which provides
+href="https://www.openssl.org/">OpenSSL</a> library, which provides
 Strong Encryption using the Secure Sockets Layer and Transport Layer
 Security protocols.</p>
 </summary>

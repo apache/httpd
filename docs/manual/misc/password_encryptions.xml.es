@@ -12,7 +12,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -38,12 +38,12 @@
        <dt>bcrypt</dt>
        <dd>"$2y$" + el resultado del algoritmo crypt_blowfish.
        Vea el fichero código fuente de APR
-       <a href="http://svn.apache.org/viewvc/apr/apr/trunk/crypto/crypt_blowfish.c?view=markup">crypt_blowfish.c</a>
+       <a href="https://svn.apache.org/viewvc/apr/apr/trunk/crypto/crypt_blowfish.c?view=markup">crypt_blowfish.c</a>
        para más detalles sobre este algoritmo.</dd>
 
        <dt>MD5</dt>
        <dd>"$apr1$" + el resultado de un algoritmo específico-de-Apache usando una digest MD5 iterado (1.000 veces) de varias combinaciones aleatorias de un valor salt de 32-bit y la contraseña. Vea el fichero código fuente de APR
-       <a href="http://svn.apache.org/viewvc/apr/apr/trunk/crypto/apr_md5.c?view=markup">apr_md5.c</a>
+       <a href="https://svn.apache.org/viewvc/apr/apr/trunk/crypto/apr_md5.c?view=markup">apr_md5.c</a>
        para más detalles sobre este algoritmo.</dd>
 
        <dt>SHA1</dt>

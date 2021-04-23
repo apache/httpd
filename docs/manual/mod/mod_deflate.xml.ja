@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -157,7 +157,7 @@
       <example>
         &lt;Location /dav-area&gt;<br />
         <indent>
-          ProxyPass http://example.com/<br />
+          ProxyPass https://example.com/<br />
           SetOutputFilter INFLATE<br />
         </indent>
         &lt;/Location&gt;
@@ -187,7 +187,7 @@
       <p>この設定であれば、<code>Content-Encoding: gzip</code>
       ヘッダを含むリクエストが来ると、本体は自動的に伸張されます。
       gzip リクエスト本体を送信するブラウザはあまりありません。
-      しかし、例えば <a href="http://www.webdav.org">WebDAV</a>
+      しかし、例えば <a href="https://www.webdav.org">WebDAV</a>
       クライアントの幾つかなど、特別なアプリケーションでリクエストの
       圧縮を実際にサポートしているものもあります。</p>
 

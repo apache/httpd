@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -83,13 +83,13 @@ exactement comment chaque r&egrave;gle est trait&eacute;e.</p>
 <section id="regex"><title>Expressions rationnelles</title>
 
 <p>mod_rewrite utilise le vocabulaire des <a
-href="http://pcre.org/">Expressions rationnelles compatibles Perl</a>.
+href="https://pcre.org/">Expressions rationnelles compatibles Perl</a>.
 Ce document n'a pas pour pr&eacute;tention d'&ecirc;tre une r&eacute;f&eacute;rence d&eacute;taill&eacute;e des
 expressions rationnelles. A cet effet, nous recommandons les <a
-href="http://pcre.org/pcre.txt">pages de manuel de PCRE</a>, la <a
-href="http://perldoc.perl.org/perlre.html">page de manuel des
+href="https://pcre.org/pcre.txt">pages de manuel de PCRE</a>, la <a
+href="https://perldoc.perl.org/perlre.html">page de manuel des
 expressions rationnelles Perl</a>, et l'ouvrage <a
-href="http://shop.oreilly.com/product/9780596528126.do">Mastering
+href="https://shop.oreilly.com/product/9780596528126.do">Mastering
 Regular Expressions, by Jeffrey Friedl</a>.</p>
 
 <p>Dans ce document, nous avons pour but de vous fournir suffisamment de
@@ -256,14 +256,14 @@ RewriteRule "^/foo$" "/bar"
 </highlight>
 <p>Si la directive <directive module="core">DocumentRoot</directive> a
 pour valeur <code>/usr/local/apache2/htdocs</code>, cette r&egrave;gle va faire
-correspondre les requ&ecirc;tes pour <code>http://example.com/foo</code> au
+correspondre les requ&ecirc;tes pour <code>https://example.com/foo</code> au
 chemin <code>/usr/local/apache2/htdocs/bar</code>.</p>
 </dd>
 
 <dt>Une URL absolue</dt>
 <dd>
 <highlight language="config">
-RewriteRule "^/produits/vues$" "http://site2.example.com/voirproduits.html" [R]
+RewriteRule "^/produits/vues$" "https://site2.example.com/voirproduits.html" [R]
 </highlight>
 <p>Ceci informe le client qu'il doit effectuer une nouvelle requ&ecirc;te vers
 l'URL sp&eacute;cifi&eacute;e.</p>
@@ -279,7 +279,7 @@ RewriteRule "^/produits/(.*)/view$" "/var/web/produitsdb/$1"
 <p>La variable <code>$1</code> sera remplac&eacute;e par tout texte
 correspondant &agrave; l'expression situ&eacute;e entre les parenth&egrave;ses dans le
 <var>Mod&egrave;le</var>. Par exemple, une requ&ecirc;te pour
-<code>http://example.com/produits/r14df/vue</code> correspondra au
+<code>https://example.com/produits/r14df/vue</code> correspondra au
 chemin <code>/var/web/produitsdb/r14df</code>.</p>
 
 <p>S'il y a plus d'une expression entre parenth&egrave;ses, elle seront
@@ -330,7 +330,7 @@ certaine tranche d'adresses IP vers un autre serveur, vous pouvez
 utiliser :</p>
 <highlight language="config">
 RewriteCond "%{REMOTE_ADDR}" "^10\.2\."
-RewriteRule "(.*)" "http://intranet.example.com$1"
+RewriteRule "(.*)" "https://intranet.example.com$1"
 </highlight>
 
 <p>Si vous sp&eacute;cifiez plus d'une directive <directive
@@ -359,7 +359,7 @@ en fonction du nom d'h&ocirc;te utilis&eacute; pour acc&eacute;der au site :</p>
 RewriteCond "%{HTTP_HOST}" "(.*)"
 RewriteRule "^/(.*)" "/sites/%1/$1"
 </highlight>
-<p>Si la requ&ecirc;te concernait <code>http://example.com/foo/bar</code>,
+<p>Si la requ&ecirc;te concernait <code>https://example.com/foo/bar</code>,
 alors <code>%1</code> contiendrait <code>example.com</code> et
 <code>$1</code> contiendrait <code>foo/bar</code>.</p>
 

@@ -5,7 +5,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -875,9 +875,9 @@ PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r,
                     l3 = strlen(urlpart);
             }
             /* The balancer comparison is a bit trickier.  Given the context
-             *   BalancerMember balancer://alias http://example.com/foo
+             *   BalancerMember balancer://alias https://example.com/foo
              *   ProxyPassReverse /bash balancer://alias/bar
-             * translate url http://example.com/foo/bar/that to /bash/that
+             * translate url https://example.com/foo/bar/that to /bash/that
              */
             for (n = 0; n < balancer->workers->nelts; n++) {
                 l2 = strlen((*worker)->s->name);
@@ -1827,7 +1827,7 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
 
     /*
      * Look to see if we are using UDS:
-     * require format: unix:/path/foo/bar.sock|http://ignored/path2/
+     * require format: unix:/path/foo/bar.sock|https://ignored/path2/
      * This results in talking http to the socket at /path/foo/bar.sock
      */
     ptr = ap_strchr((char *)url, '|');
@@ -1868,7 +1868,7 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
      * own; ie: the generic reverse-proxy or a worker
      * in a simple ProxyPass statement. eg:
      *
-     *      ProxyPass / http://www.example.com
+     *      ProxyPass / https://www.example.com
      *
      * in which case the worker goes in the conf slot.
      */

@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -59,7 +59,7 @@
     <highlight language="config">
 ErrorDocument 500 "Perdón, Nuestro escript ha fallado. ¡Ay Madre!"<br />
 ErrorDocument 500 /cgi-bin/crash-recover<br />
-ErrorDocument 500 http://error.example.com/server_error.html<br />
+ErrorDocument 500 https://error.example.com/server_error.html<br />
 ErrorDocument 404 /errors/not_found.html <br />
 ErrorDocument 401 /subscription/como_suscribirse.html
     </highlight>

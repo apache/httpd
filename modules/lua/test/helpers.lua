@@ -4,7 +4,7 @@ local io = require("io")
 local http = require("socket.http")
 local string = require("string")
 
-base_url = "http://localhost"
+base_url = "https://localhost"
 
 function get(uri)
   return http.request(base_url .. uri)  

@@ -1,8 +1,8 @@
 #
 # Provide access to the documentation on your server as
-#  http://yourserver.example.com/manual/
+#  https://yourserver.example.com/manual/
 # The documentation is always available at
-#  http://httpd.apache.org/docs/trunk/
+#  https://httpd.apache.org/docs/trunk/
 #
 # Required modules: mod_alias, mod_authz_core, mod_authz_host,
 #                   mod_setenvif, mod_negotiation

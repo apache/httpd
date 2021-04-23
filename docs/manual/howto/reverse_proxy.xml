@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -80,7 +80,7 @@
     </p>
 
     <highlight language="config">
-ProxyPass "/"  "http://www.example.com/"
+ProxyPass "/"  "https://www.example.com/"
     </highlight>
 
     <p>
@@ -91,15 +91,15 @@ ProxyPass "/"  "http://www.example.com/"
     </p>
 
     <highlight language="config">
-ProxyPass "/"  "http://www.example.com/"
-ProxyPassReverse "/"  "http://www.example.com/"
+ProxyPass "/"  "https://www.example.com/"
+ProxyPassReverse "/"  "https://www.example.com/"
     </highlight>
 
     <p>Only specific URIs can be proxied, as shown in this example:</p>
 
     <highlight language="config">
-ProxyPass "/images"  "http://www.example.com/"
-ProxyPassReverse "/images"  "http://www.example.com/"
+ProxyPass "/images"  "https://www.example.com/"
+ProxyPassReverse "/images"  "https://www.example.com/"
     </highlight>
 
     <p>In the above, any requests which start with the <code>/images</code>
@@ -126,8 +126,8 @@ ProxyPassReverse "/images"  "http://www.example.com/"
 
     <highlight language="config">
 &lt;Proxy balancer://myset&gt;
-    BalancerMember http://www2.example.com:8080
-    BalancerMember http://www3.example.com:8080
+    BalancerMember https://www2.example.com:8080
+    BalancerMember https://www3.example.com:8080
     ProxySet lbmethod=bytraffic
 &lt;/Proxy&gt;
 
@@ -160,15 +160,15 @@ ProxyPassReverse "/images/"  "balancer://myset/"
       You can adjust numerous configuration details of the <em>balancers</em>
       and the <em>workers</em> via the various parameters defined in
       <directive module="mod_proxy">ProxyPass</directive>. For example,
-      assuming we would want <code>http://www3.example.com:8080</code> to
+      assuming we would want <code>https://www3.example.com:8080</code> to
       handle 3x the traffic with a timeout of 1 second, we would adjust the
       configuration as follows:
     </p>
 
     <highlight language="config">
 &lt;Proxy balancer://myset&gt;
-    BalancerMember http://www2.example.com:8080
-    BalancerMember http://www3.example.com:8080 loadfactor=3 timeout=1
+    BalancerMember https://www2.example.com:8080
+    BalancerMember https://www3.example.com:8080 loadfactor=3 timeout=1
     ProxySet lbmethod=bytraffic
 &lt;/Proxy&gt;
 
@@ -188,21 +188,21 @@ ProxyPassReverse "/images"  "balancer://myset/"
     </p>
     <ol>
       <li>
-        <code>http://spare1.example.com:8080</code> and
-        <code>http://spare2.example.com:8080</code> are only sent traffic if one
-        or both of <code>http://www2.example.com:8080</code> or
-        <code>http://www3.example.com:8080</code> is unavailable. (One spare
+        <code>https://spare1.example.com:8080</code> and
+        <code>https://spare2.example.com:8080</code> are only sent traffic if one
+        or both of <code>https://www2.example.com:8080</code> or
+        <code>https://www3.example.com:8080</code> is unavailable. (One spare
         will be used to replace one unusable member of the same balancer set.)
       </li>
       <li>
-        <code>http://hstandby.example.com:8080</code> is only sent traffic if
+        <code>https://hstandby.example.com:8080</code> is only sent traffic if
         all other workers in balancer set <code>0</code> are not available.
       </li>
       <li>
         If all load balancer set <code>0</code> workers, spares, and the standby
         are unavailable, only then will the
-        <code>http://bkup1.example.com:8080</code> and
-        <code>http://bkup2.example.com:8080</code> workers from balancer set
+        <code>https://bkup1.example.com:8080</code> and
+        <code>https://bkup2.example.com:8080</code> workers from balancer set
         <code>1</code> be brought into rotation.
       </li>
     </ol>
@@ -213,13 +213,13 @@ ProxyPassReverse "/images"  "balancer://myset/"
 
     <highlight language="config">
 &lt;Proxy balancer://myset&gt;
-    BalancerMember http://www2.example.com:8080
-    BalancerMember http://www3.example.com:8080 loadfactor=3 timeout=1
-    BalancerMember http://spare1.example.com:8080 status=+R
-    BalancerMember http://spare2.example.com:8080 status=+R
-    BalancerMember http://hstandby.example.com:8080 status=+H
-    BalancerMember http://bkup1.example.com:8080 lbset=1
-    BalancerMember http://bkup2.example.com:8080 lbset=1
+    BalancerMember https://www2.example.com:8080
+    BalancerMember https://www3.example.com:8080 loadfactor=3 timeout=1
+    BalancerMember https://spare1.example.com:8080 status=+R
+    BalancerMember https://spare2.example.com:8080 status=+R
+    BalancerMember https://hstandby.example.com:8080 status=+H
+    BalancerMember https://bkup1.example.com:8080 lbset=1
+    BalancerMember https://bkup2.example.com:8080 lbset=1
     ProxySet lbmethod=byrequests
 &lt;/Proxy&gt;
 
@@ -269,7 +269,7 @@ ProxyPassReverse "/images/"  "balancer://myset/"
 
     <p>
       When the reverse proxy server is accessed at that url
-      (eg: <code>http://rproxy.example.com/balancer-manager/</code>, you will see a
+      (eg: <code>https://rproxy.example.com/balancer-manager/</code>, you will see a
       page similar to the below:
     </p>
     <p class="centered"><img src="../images/bal-man.png" alt="balancer-manager page" /></p>

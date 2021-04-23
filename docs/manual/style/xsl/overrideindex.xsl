@@ -8,7 +8,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,13 +22,13 @@
 ]>
 
 <xsl:stylesheet version="1.0"
-                xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:exslt="http://exslt.org/common"
-                xmlns:func="http://exslt.org/functions"
-                xmlns:httpd="http://httpd.apache.org/xsl/manual"
-                xmlns:set="http://exslt.org/sets"
-                xmlns:str="http://exslt.org/strings"
-                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:xsl="https://www.w3.org/1999/XSL/Transform"
+                xmlns:exslt="https://exslt.org/common"
+                xmlns:func="https://exslt.org/functions"
+                xmlns:httpd="https://httpd.apache.org/xsl/manual"
+                xmlns:set="https://exslt.org/sets"
+                xmlns:str="https://exslt.org/strings"
+                xmlns="https://www.w3.org/1999/xhtml"
                 exclude-result-prefixes="exslt func httpd set str">
 
 <!-- ======================================================================= -->

@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -469,7 +469,7 @@ to your dedicated image server. The match is case-insensitive, so that
 example.</p>
 
 <highlight language="config">
-RewriteRule "(.*\.(jpg|gif|png))$" "http://images.example.com$1" [P,NC]
+RewriteRule "(.*\.(jpg|gif|png))$" "https://images.example.com$1" [P,NC]
 </highlight>
 </section>
 
@@ -523,7 +523,7 @@ example, if you wanted all image requests to be handled by a back-end
 image server, you might do something like the following:</p>
 
 <highlight language="config">
-RewriteRule "/(.*)\.(jpg|gif|png)$" "http://images.example.com/$1.$2" [P]
+RewriteRule "/(.*)\.(jpg|gif|png)$" "https://images.example.com/$1.$2" [P]
 </highlight>
 
 <p>Use of the [P] flag implies [L] - that is, the request is immediately
@@ -532,7 +532,7 @@ considered.</p>
 
 <p>
 You must make sure that the substitution string is a valid URI
-(typically starting with <code>http://</code><em>hostname</em>) which can be
+(typically starting with <code>https://</code><em>hostname</em>) which can be
 handled by the <module>mod_proxy</module>. If not, you will get an
 error from the proxy module. Use this flag to achieve a
 more powerful implementation of the <directive
@@ -675,7 +675,7 @@ a question mark can be appended to it in combination with this flag.  </p>
 <p>
 Use of the [R] flag causes a HTTP redirect to be issued to the browser.
 If a fully-qualified URL is specified (that is, including
-<code>http://servername/</code>) then a redirect will be issued to that
+<code>https://servername/</code>) then a redirect will be issued to that
 location. Otherwise, the current protocol, servername, and port number
 will be used to generate the URL sent with the redirect.
 </p>
@@ -696,7 +696,7 @@ status using their symbolic names: <code>temp</code> (default),
 <p>
 You will almost always want to use [R] in conjunction with [L] (that is,
 use [R,L]) because on its own, the [R] flag prepends
-<code>http://thishost[:thisport]</code> to the URI, but then passes this
+<code>https://thishost[:thisport]</code> to the URI, but then passes this
 on to the next rule in the ruleset, which can often result in 'Invalid
 URI in request' warnings.
 </p>

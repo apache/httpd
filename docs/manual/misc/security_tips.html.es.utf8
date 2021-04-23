@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -16,12 +16,12 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p>
+<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p>
 <p class="apache">Versión 2.5 del Servidor HTTP Apache</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentación</a> &gt; <a href="../">Versión 2.5</a> &gt; <a href="./">Documentación diversa</a></div><div id="page-content"><div id="preamble"><h1>Consejos de Seguridad</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentación</a> &gt; <a href="../">Versión 2.5</a> &gt; <a href="./">Documentación diversa</a></div><div id="page-content"><div id="preamble"><h1>Consejos de Seguridad</h1>
 <div class="toplang">
 <p><span>Idiomas disponibles: </span><a href="../en/misc/security_tips.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/misc/security_tips.html" title="Español">&nbsp;es&nbsp;</a> |
@@ -54,7 +54,7 @@
 <div class="section">
 <h2><a name="uptodate" id="uptodate">Mantenerse al Día</a> <a title="Enlace permanente" href="#uptodate" class="permalink">&para;</a></h2>
 
-    <p>El Servidor Apache HTTP tiene un buen historial de seguridad y comunidad de desarrolladores con una alta preocupación por los problemas de seguridad. Pero será inevitable que algunos problemas -- pequeños o grandes -- sean descubiertos en el software después de que éste ha sido publicado. Por esta razón, es crucial estar al tanto de las actualizaciones de software.  Si ha obtenido su versión del Servidor HTTP directamente de Apache, le recomendamos encarecidamente que se suscriba a la <a href="http://httpd.apache.org/lists.html#http-announce">Lista de Anuncios del Servidor Apache HTTP</a> donde puede estar informado de nuevas versiones y actualizaciones de seguridad. Hay servicios similares disponibles desde la mayoría de distribuidores de terceros del Software Apache.</p>
+    <p>El Servidor Apache HTTP tiene un buen historial de seguridad y comunidad de desarrolladores con una alta preocupación por los problemas de seguridad. Pero será inevitable que algunos problemas -- pequeños o grandes -- sean descubiertos en el software después de que éste ha sido publicado. Por esta razón, es crucial estar al tanto de las actualizaciones de software.  Si ha obtenido su versión del Servidor HTTP directamente de Apache, le recomendamos encarecidamente que se suscriba a la <a href="https://httpd.apache.org/lists.html#http-announce">Lista de Anuncios del Servidor Apache HTTP</a> donde puede estar informado de nuevas versiones y actualizaciones de seguridad. Hay servicios similares disponibles desde la mayoría de distribuidores de terceros del Software Apache.</p>
 
     <p>Desde luego, la mayor parte de las veces que el servidor web se ve comprometido, no es por problemas en el código del Servidor HTTP. Si no, más bien ocurre por problemas en código externo, scripts CGI, o el sistema operativo sobre el que se opera. Debe entonces estar al tanto de los problemas y actualizaciones de todo el software en su sistema.</p>
 
@@ -156,7 +156,7 @@
 
     <p>Primero, siempre tiene que recordar que debe confiar en los desarrolladores de scripts/programas CGI o su habilidad para localizar agujeros potenciales de seguridad en CGI, sean deliberados o accidentales. Los scripts CGI pueden ejecutar comandos de manera arbitraria en su sistema con los permisos del usuario del servidor web y pueden por tanto ser extremadamente peligrosos si no se revisan cuidadosamente.</p>
 
-    <p>Todos los scripts CGI se ejecutarán con el mismo usuario, así que tienen potencial para el conflicto (accidental o deliberado) con otros scripts p. ej. Usuario A odia a Usuario B, así que escribe un script para borrar la base de datos CGI del usuario B. Un programa que puede usarse para permitir que scripts se ejecuten como distintos usuarios es <a href="../suexec.html">suEXEC</a> que está incluido con Apache desde la versión 1.2 y es llamado desde hooks especiales en el código del servidor Apache. Otra forma popular de hacer esto es con <a href="http://cgiwrap.sourceforge.net/">CGIWrap</a>.</p>
+    <p>Todos los scripts CGI se ejecutarán con el mismo usuario, así que tienen potencial para el conflicto (accidental o deliberado) con otros scripts p. ej. Usuario A odia a Usuario B, así que escribe un script para borrar la base de datos CGI del usuario B. Un programa que puede usarse para permitir que scripts se ejecuten como distintos usuarios es <a href="../suexec.html">suEXEC</a> que está incluido con Apache desde la versión 1.2 y es llamado desde hooks especiales en el código del servidor Apache. Otra forma popular de hacer esto es con <a href="https://cgiwrap.sourceforge.net/">CGIWrap</a>.</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -197,9 +197,9 @@
 
   
 
-  <p>Cuando se configura contenido dinámico, como por ejemplo <code>mod_php</code>, <code>mod_perl</code> o <code>mod_python</code>, muchas consideraciones de seguridad escapan al ámbito del mismo <code>httpd</code>, y necesita consultar la documnetación de estos módulos. Por ejemplo, PHP le permite configurar un <a href="http://www.php.net/manual/en/ini.sect.safe-mode.php">Modo Seguro</a>, que generalmente está deshabilitado por defecto. Otro ejemplo es <a href="http://www.hardened-php.net/suhosin/">Suhosin</a>, un addon PHP para más seguridad. Para más información sobre estos, consulte la documnetación de cada projecto.</p>
+  <p>Cuando se configura contenido dinámico, como por ejemplo <code>mod_php</code>, <code>mod_perl</code> o <code>mod_python</code>, muchas consideraciones de seguridad escapan al ámbito del mismo <code>httpd</code>, y necesita consultar la documnetación de estos módulos. Por ejemplo, PHP le permite configurar un <a href="https://www.php.net/manual/en/ini.sect.safe-mode.php">Modo Seguro</a>, que generalmente está deshabilitado por defecto. Otro ejemplo es <a href="https://www.hardened-php.net/suhosin/">Suhosin</a>, un addon PHP para más seguridad. Para más información sobre estos, consulte la documnetación de cada projecto.</p>
 
-  <p>A nivel de Apache, un módulo que se llama <a href="http://modsecurity.org/">mod_security</a> puede ser considerado como un firewall HTTP y, asumiento que lo configura correctamente, puede ayudarle a mejorar la seguridad de su contenido dinámico.</p>
+  <p>A nivel de Apache, un módulo que se llama <a href="https://modsecurity.org/">mod_security</a> puede ser considerado como un firewall HTTP y, asumiento que lo configura correctamente, puede ayudarle a mejorar la seguridad de su contenido dinámico.</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -232,7 +232,7 @@
 
     <div class="example"><p><code>
       # cd /; ln -s / public_html <br />
-      Accessing <code>http://localhost/~root/</code>
+      Accessing <code>https://localhost/~root/</code>
     </code></p></div>
 
     <p>Esto permitiría clientes navegar por el sistema de ficheros al completo. Para corregir esto, añada el siguiente bloque a la configuración del servidor:</p>
@@ -275,7 +275,7 @@
     </code></p></div>
 
     <p>El primer ejemplo le enseñará una lista de ataques intentando explotar la
-    <a href="http://online.securityfocus.com/bid/4876/info/">Vulnerabilidad de Revelado de Información de Apache Tomcat con Peticiones Malformadas Source.JSP</a>, el segundo ejemplo listará los últimos 10 clientes a los que se les ha denegado el acceso, por ejemplo:</p>
+    <a href="https://online.securityfocus.com/bid/4876/info/">Vulnerabilidad de Revelado de Información de Apache Tomcat con Peticiones Malformadas Source.JSP</a>, el segundo ejemplo listará los últimos 10 clientes a los que se les ha denegado el acceso, por ejemplo:</p>
 
     <div class="example"><p><code>
       [Thu Jul 11 17:18:39 2002] [error] [client foo.example.com] client denied
@@ -314,7 +314,7 @@
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comentarios</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/misc/security_tips.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/misc/security_tips.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -329,8 +329,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/misc/security_tips
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

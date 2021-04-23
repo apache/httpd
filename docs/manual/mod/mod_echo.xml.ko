@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,32 +23,32 @@
 <modulesynopsis metafile="mod_echo.xml.meta">
 
 <name>mod_echo</name>
-<description>ÇÁ·ÎÅäÄÝ ¸ðµâÀ» ¼³¸íÇÏ±âÀ§ÇÑ °£´ÜÇÑ echo ¼­¹ö</description>
+<description>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ echo ï¿½ï¿½ï¿½ï¿½</description>
 <status>Experimental</status>
 <sourcefile>mod_echo.c</sourcefile>
 <identifier>echo_module</identifier>
-<compatibility>Apache 2.0 ÀÌÈÄºÎÅÍ</compatibility>
+<compatibility>Apache 2.0 ï¿½ï¿½ï¿½Äºï¿½ï¿½ï¿½</compatibility>
 
 <summary>
-    <p>ÀÌ ¸ðµâÀº ÇÁ·ÎÅäÄÝ ¸ðµâÀÇ °³³äÀ» ¼³¸íÇÏ±âÀ§ÇÑ ¿¹Á¦ÀÌ´Ù.
-    ÀÌ ¸ðµâÀº °£´ÜÇÑ echo ¼­¹ö¸¦ ±¸ÇöÇÑ´Ù. ÀÌ ¼­¹ö·Î telnetÇÏ¿©
-    ¹«¾ð°¡¸¦ ÀÔ·ÂÇÏ¸é, ¼­¹ö´Â ÀÔ·ÂÇÑ ³»¿ëÀÌ ±×´ë·Î ¹ÝÈ¯ÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½.
+    ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ echo ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ telnetï¿½Ï¿ï¿½
+    ï¿½ï¿½ï¿½ð°¡¸ï¿½ ï¿½Ô·ï¿½ï¿½Ï¸ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×´ï¿½ï¿½ ï¿½ï¿½È¯ï¿½Ñ´ï¿½.</p>
 </summary>
 
 <directivesynopsis>
 
 <name>ProtocolEcho</name>
-<description>echo ¼­¹ö¸¦ Å°°í ²ö´Ù</description>
+<description>echo ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</description>
 <syntax>ProtocolEcho On|Off</syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>ProtocolEcho´Â 2.0 ÀÌÈÄ¿¡¸¸ ÀÖ´Ù.</compatibility>
+<compatibility>ProtocolEchoï¿½ï¿½ 2.0 ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½.</compatibility>
 
 <usage>
-    <p><directive>ProtocolEcho</directive> Áö½Ã¾î´Â echo ¼­¹ö¸¦
-    Å°°í ²ö´Ù.</p>
+    <p><directive>ProtocolEcho</directive> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ echo ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    Å°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</p>
 
-    <example><title>¿¹Á¦</title>
+    <example><title>ï¿½ï¿½ï¿½ï¿½</title>
       ProtocolEcho On
     </example>
 </usage>

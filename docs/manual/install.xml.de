@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -56,7 +56,7 @@
       <tr>
         <td><a href="#download">Download</a></td>
 
-        <td><code>$ lynx http://httpd.apache.org/download.cgi</code>
+        <td><code>$ lynx https://httpd.apache.org/download.cgi</code>
         </td>
       </tr>
 
@@ -128,8 +128,8 @@
 
       <dt>ANSI-C-Compiler und Generierungswerkzeuge</dt>
       <dd>Stellen Sie sicher, dass Sie einen ANSI-C Compiler installiert
-      haben. Der <a href="http://www.gnu.org/software/gcc/gcc.html">GNU C
-      Compiler (GCC)</a> der <a href="http://www.gnu.org/">Free Software
+      haben. Der <a href="https://www.gnu.org/software/gcc/gcc.html">GNU C
+      Compiler (GCC)</a> der <a href="https://www.gnu.org/">Free Software
       Foundation (FSF)</a> ist empfehlenswert (Version 2.7.2 ist gut). Wenn
       Sie den GCC nicht besitzen, stellen Sie zumindest sicher, dass der
       Compiler Ihres Anbieters ANSI-kompatibel ist. Au&#223;erdem muss Ihr
@@ -146,10 +146,10 @@
       Informationen &#252;ber NTP Software und &#246;ffentliche Zeitserver
       finden Sie in der Usenet Newsgroup <a
       href="news:comp.protocols.time.ntp">comp.protocols.time.ntp</a>
-      und auf der <a href="http://www.ntp.org">NTP
+      und auf der <a href="https://www.ntp.org">NTP
       Homepage</a>.</dd>
 
-      <dt><a href="http://www.perl.org/">Perl 5</a>
+      <dt><a href="https://www.perl.org/">Perl 5</a>
       [OPTIONAL]</dt>
       <dd>F&#252;r einige Hilfsskripte wie <program>apxs</program>
       oder <program>dbmmanage</program> (die in Perl
@@ -170,7 +170,7 @@
 <section id="download"><title>Download</title>
 
     <p>Der Apache kann von der <a
-    href="http://httpd.apache.org/download.cgi">Apache HTTP Server
+    href="https://httpd.apache.org/download.cgi">Apache HTTP Server
     Downloadseite</a> heruntergeladen werden, auf der verschiedene Spiegelserver
     angegeben sind. F&uuml;r die meisten Benutzer des Apache ist es auf
     Unix-&auml;hnlichen Systemen am Besten, die Quellcodeversion herunterzuladen
@@ -186,9 +186,9 @@
     Apache HTTP Servers handelt. Das k&ouml;nnen Sie erreichen, indem Sie das
     heruntergeladene Paket gegen die PGP-Signatur pr&uuml;fen. Einzelheiten dazu
     erfahren Sie auf der <a
-    href="http://httpd.apache.org/download.cgi#verify">Download-Seite</a>. Es
+    href="https://httpd.apache.org/download.cgi#verify">Download-Seite</a>. Es
     ist auch ein erweitertes Beispiel verf&uuml;gbar, dass die <a
-    href="http://httpd.apache.org/dev/verification.html">Anwendung von PGP</a>
+    href="https://httpd.apache.org/dev/verification.html">Anwendung von PGP</a>
     beschreibt.</p>
 
 </section>
@@ -324,8 +324,8 @@
     href="./">docs/manual/</a>. Die aktuellste Version dieses Handbuchs
     sowie eine komplette Referenz der verf&#252;gbaren <a
     href="mod/directives.html">Konfigurationsanweisungen</a> finden
-    Sie unter <a href="http://httpd.apache.org/docs/&httpd.docs;/"
-    >http://httpd.apache.org/docs/&httpd.docs;/</a>.</p>
+    Sie unter <a href="https://httpd.apache.org/docs/&httpd.docs;/"
+    >https://httpd.apache.org/docs/&httpd.docs;/</a>.</p>
 </section>
 
 <section id="test"><title>Testen</title>
@@ -338,7 +338,7 @@
     <p>ausf&#252;hren.</p>
 
     <p>Danach sollten Sie Ihr erstes Dokument unter dem URL
-    <code>http://localhost/</code> anfordern k&#246;nnen. Die Webseite,
+    <code>https://localhost/</code> anfordern k&#246;nnen. Die Webseite,
     die Sie sehen, ist im <directive module="core">DocumentRoot</directive>
     abgelegt, welches &#252;blicherweise <code><em>PREFIX</em>/htdocs/</code>
     ist. Den Server <a href="stopping.html">stoppen</a> Sie wieder durch

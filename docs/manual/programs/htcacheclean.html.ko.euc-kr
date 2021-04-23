@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
 <meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>htcacheclean - µð½ºÅ© Ä³½¬¸¦ Ã»¼ÒÇÑ´Ù - Apache HTTP Server Version 2.5</title>
+<title>htcacheclean - ï¿½ï¿½Å© Ä³ï¿½ï¿½ï¿½ï¿½ Ã»ï¿½ï¿½ï¿½Ñ´ï¿½ - Apache HTTP Server Version 2.5</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -16,35 +16,35 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Programs</a></div><div id="page-content"><div id="preamble"><h1>htcacheclean - µð½ºÅ© Ä³½¬¸¦ Ã»¼ÒÇÑ´Ù</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Programs</a></div><div id="page-content"><div id="preamble"><h1>htcacheclean - ï¿½ï¿½Å© Ä³ï¿½ï¿½ï¿½ï¿½ Ã»ï¿½ï¿½ï¿½Ñ´ï¿½</h1>
 <div class="toplang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/programs/htcacheclean.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/programs/htcacheclean.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/programs/htcacheclean.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/programs/htcacheclean.html" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/htcacheclean.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">ÀÌ ¹®¼­´Â ÃÖ½ÅÆÇ ¹ø¿ªÀÌ ¾Æ´Õ´Ï´Ù.
-            ÃÖ±Ù¿¡ º¯°æµÈ ³»¿ëÀº ¿µ¾î ¹®¼­¸¦ Âü°íÇÏ¼¼¿ä.</div>
+<div class="outofdate">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Õ´Ï´ï¿½.
+            ï¿½Ö±Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.</div>
 
-    <p><code>htcacheclean</code>Àº <code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code>°¡
-    »ç¿ëÇÏ´Â ÀúÀå¼Ò ¿ë·®À» ÀÏÁ¤ ÇÑµµ·Î À¯ÁöÇÑ´Ù. ÀÌ µµ±¸´Â Á÷Á¢
-    ½ÇÇàÇÏ°Å³ª µ¥¸ó(daemon)À¸·Î ½ÇÇàÇÒ ¼ö ÀÖ´Ù. ÇÁ·Î±×·¥À» µ¥¸óÀ¸·Î
-    ½ÇÇàÇÏ¸é ¹é±×¶ó¿îµå¿¡¼­ ÀáÀÚ°í ÀÖ´Ù°¡ ÀÏÁ¤ ÁÖ±â·Î Ä³½¬
-    µð·ºÅä¸®¿¡¼­ Áö¿ï °ÍÀÌ ÀÖ´ÂÁö °Ë»çÇÑ´Ù. µ¥¸ó¿¡°Ô TERMÀÌ³ª
-    INT ½Ã±×³ÎÀ» º¸³»¸é ¾ÈÀüÇÏ°Ô Á¾·áÇÑ´Ù.</p>
+    <p><code>htcacheclean</code>ï¿½ï¿½ <code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ë·®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ñµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï°Å³ï¿½ ï¿½ï¿½ï¿½ï¿½(daemon)ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½×¶ï¿½ï¿½å¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½Ö´Ù°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö±ï¿½ï¿½ Ä³ï¿½ï¿½
+    ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ó¿¡°ï¿½ TERMï¿½Ì³ï¿½
+    INT ï¿½Ã±×³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">°³¿ä</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#options">¿É¼Ç</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#exit">Á¾·áÄÚµå</a></li>
-</ul><h3>Âü°í</h3><ul class="seealso"><li><code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code></li><li><a href="#comments_section">Comments</a></li></ul></div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">ï¿½ï¿½ï¿½ï¿½</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#options">ï¿½É¼ï¿½</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#exit">ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½</a></li>
+</ul><h3>ï¿½ï¿½ï¿½ï¿½</h3><ul class="seealso"><li><code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code></li><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="synopsis" id="synopsis">°³¿ä</a> <a title="Permanent link" href="#synopsis" class="permalink">&para;</a></h2>
+<h2><a name="synopsis" id="synopsis">ï¿½ï¿½ï¿½ï¿½</a> <a title="Permanent link" href="#synopsis" class="permalink">&para;</a></h2>
     <p><code><strong>htcacheclean</strong>
     [ -<strong>D</strong> ]
     [ -<strong>v</strong> ]
@@ -61,65 +61,65 @@
     -<strong>l</strong><var>limit</var></code></p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="options" id="options">¿É¼Ç</a> <a title="Permanent link" href="#options" class="permalink">&para;</a></h2>
+<h2><a name="options" id="options">ï¿½É¼ï¿½</a> <a title="Permanent link" href="#options" class="permalink">&para;</a></h2>
     <dl>
     <dt><code>-d<var>interval</var></code></dt>
-    <dd>µ¥¸óÀ¸·Î ½ÇÇàÇÏ¿© <var>interval</var> ºÐ¸¶´Ù Ä³½¬¸¦
-    Ã»¼ÒÇÑ´Ù. ÀÌ ¿É¼ÇÀº <code>-D</code>, <code>-v</code>,
-    <code>-r</code> ¿É¼Ç°ú ÇÔ²² »ç¿ëÇÒ ¼ö ¾ø´Ù. µ¥¸óÀ» ¾ÈÀüÇÏ°Ô
-    Á¾·áÇÏ·Á¸é µ¥¸ó¿¡°Ô <code>SIGTERM</code> È¤Àº
-    <code>SIGINT</code> ½Ã±×³ÎÀ» º¸³»¸é µÈ´Ù.</dd>
+    <dd>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ <var>interval</var> ï¿½Ð¸ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½
+    Ã»ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ <code>-D</code>, <code>-v</code>,
+    <code>-r</code> ï¿½É¼Ç°ï¿½ ï¿½Ô²ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ó¿¡°ï¿½ <code>SIGTERM</code> È¤ï¿½ï¿½
+    <code>SIGINT</code> ï¿½Ã±×³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½È´ï¿½.</dd>
 
     <dt><code>-D</code></dt>
-    <dd>°Ë»ç¸¸ ÇÏ°í ½ÇÁ¦ ¾Æ¹«°Íµµ Áö¿ìÁö ¾Ê´Â´Ù. ÀÌ ¿É¼ÇÀº
-    <code>-d</code> ¿É¼Ç°ú ÇÔ²² »ç¿ëÇÒ ¼ö ¾ø´Ù.</dd>
+    <dd>ï¿½Ë»ç¸¸ ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Æ¹ï¿½ï¿½Íµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½. ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½
+    <code>-d</code> ï¿½É¼Ç°ï¿½ ï¿½Ô²ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</dd>
 
     <dt><code>-v</code></dt>
-    <dd>ÀÚ¼¼ÇÑ Åë°è¸¦ Ãâ·ÂÇÑ´Ù. ÀÌ ¿É¼ÇÀº <code>-d</code> ¿É¼Ç°ú
-    ÇÔ²² »ç¿ëÇÒ ¼ö ¾ø´Ù.</dd>
+    <dd>ï¿½Ú¼ï¿½ï¿½ï¿½ ï¿½ï¿½è¸¦ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ <code>-d</code> ï¿½É¼Ç°ï¿½
+    ï¿½Ô²ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</dd>
 
     <dt><code>-r</code></dt>
-    <dd>¿ÏÀüÈ÷ Ã»¼ÒÇÑ´Ù. ¾ÆÆÄÄ¡ À¥¼­¹ö°¡ µ¿ÀÛÇÏÁö ¾Ê´Â´Ù°í °¡Á¤ÇÑ´Ù
-    (¸¸¾à µ¿ÀÛÇÑ´Ù¸é Ä³½¬¿¡ ÀÌ»óÇÑ °ªÀÌ ÀúÀåµÈ´Ù). ÀÌ ¿É¼ÇÀº
-    <code>-d</code> ¿É¼Ç°ú ÇÔ²² »ç¿ëÇÒ ¼ö ¾ø´Ù.</dd>
+    <dd>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã»ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´Ù°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½
+    (ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½Ì»ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È´ï¿½). ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½
+    <code>-d</code> ï¿½É¼Ç°ï¿½ ï¿½Ô²ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</dd>
 
     <dt><code>-n</code></dt>
-    <dd>Ä£ÀýÇÏ°Ô(nice) µ¿ÀÛÇÑ´Ù. ´Ù¸¥ ÇÁ·Î¼¼½º¸¦ À§ÇØ ´À¸®°Ô
-    µ¿ÀÛÇÑ´Ù. <code>htcacheclean</code>°¡ ÀÚÁÖ ÀáÀ» ÀÚ°ÔµÇ¿©
-    (1) µð½ºÅ© ÀÔÃâ·ÂÀÌ Áö¿¬µÇ°í (2) ±×µ¿¾È Ä¿³ÎÀº ´Ù¸¥ ÇÁ·Î¼¼½º¸¦
-    ½ºÄÉÁÙÇÒ ¼ö ÀÖ´Ù.</dd>
+    <dd>Ä£ï¿½ï¿½ï¿½Ï°ï¿½(nice) ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½Î¼ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <code>htcacheclean</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ú°ÔµÇ¿ï¿½
+    (1) ï¿½ï¿½Å© ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ (2) ï¿½×µï¿½ï¿½ï¿½ Ä¿ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½Î¼ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</dd>
 
     <dt><code>-p<var>path</var></code></dt>
-    <dd><var>path</var>¸¦ µð½ºÅ© Ä³½¬ÀÇ ÃÖ»óÀ§ µð·ºÅä¸®·Î ÁöÁ¤ÇÑ´Ù.
+    <dd><var>path</var>ï¿½ï¿½ ï¿½ï¿½Å© Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½Ö»ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
     <code class="directive"><a href="../mod/mod_cache_disk.html#cacheroot">CacheRoot</a></code>
-    Áö½Ã¾î¿¡ »ç¿ëÇÑ °ª°ú µ¿ÀÏÇÑ °ªÀ» »ç¿ëÇØ¾ß ÇÑ´Ù.</dd>
+    ï¿½ï¿½ï¿½Ã¾î¿¡ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½.</dd>
 
     <dt><code>-l<var>limit</var></code></dt>
-    <dd>ÀüÃ¼ µð½ºÅ© Ä³½¬ ¿ë·® Á¦ÇÑÀ» <var>limit</var>·Î Á¦ÇÑÇÑ´Ù.
-    °ªÀº ±âº»ÀûÀ¸·Î (È¤Àº ¼ýÀÚ¿¡ <code>B</code>¸¦ ºÙÀÌ¸é) ¹ÙÀÌÆ®
-    ´ÜÀ§ÀÌ´Ù. Å³·Î¹ÙÀÌÆ®´Â <code>K</code>¸¦, ¸Þ°¡¹ÙÀÌÆ®´Â
-    <code>M</code>À» µÚ¿¡ ºÙÀÎ´Ù.</dd>
+    <dd>ï¿½ï¿½Ã¼ ï¿½ï¿½Å© Ä³ï¿½ï¿½ ï¿½ë·® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <var>limit</var>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+    ï¿½ï¿½ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (È¤ï¿½ï¿½ ï¿½ï¿½ï¿½Ú¿ï¿½ <code>B</code>ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¸ï¿½) ï¿½ï¿½ï¿½ï¿½Æ®
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½. Å³ï¿½Î¹ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ <code>K</code>ï¿½ï¿½, ï¿½Þ°ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½
+    <code>M</code>ï¿½ï¿½ ï¿½Ú¿ï¿½ ï¿½ï¿½ï¿½Î´ï¿½.</dd>
 
     <dt><code>-i</code></dt>
-    <dd>Áö´ÉÀûÀ¸·Î µð½ºÅ© Ä³½¬°¡ º¯°æµÈ °æ¿ì¿¡¸¸ µ¿ÀÛÇÑ´Ù. ÀÌ
-    ¿É¼ÇÀº <code>-d</code> ¿É¼Ç°ú ÇÔ²²¸¸ »ç¿ëÇÒ ¼ö ÀÖ´Ù.</dd>
+    <dd>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å© Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ì¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½
+    ï¿½É¼ï¿½ï¿½ï¿½ <code>-d</code> ï¿½É¼Ç°ï¿½ ï¿½Ô²ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</dd>
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="exit" id="exit">Á¾·áÄÚµå</a> <a title="Permanent link" href="#exit" class="permalink">&para;</a></h2>
-    <p><code>htcacheclean</code>´Â ¸ðµç ÀÛ¾÷ÀÌ ¼º°øÇÑ °æ¿ì¿¡
-    ("Âü") Á¾·áÄÚµå 0À» ¹ÝÈ¯ÇÏ°í, ½ÇÆÐÇÑ °æ¿ì¿¡´Â <code>1</code>À»
-    ¹ÝÈ¯ÇÑ´Ù.</p>
+<h2><a name="exit" id="exit">ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½</a> <a title="Permanent link" href="#exit" class="permalink">&para;</a></h2>
+    <p><code>htcacheclean</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Û¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ì¿¡
+    ("ï¿½ï¿½") ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½ 0ï¿½ï¿½ ï¿½ï¿½È¯ï¿½Ï°ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ì¿¡ï¿½ï¿½ <code>1</code>ï¿½ï¿½
+    ï¿½ï¿½È¯ï¿½Ñ´ï¿½.</p>
 </div></div>
 <div class="bottomlang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/programs/htcacheclean.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/programs/htcacheclean.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/programs/htcacheclean.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/programs/htcacheclean.html" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/htcacheclean.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/programs/htcacheclean.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/programs/htcacheclean.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -134,8 +134,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/programs/htcachecl
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

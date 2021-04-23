@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -42,7 +42,7 @@ Le but de la transparence des certificats consiste &agrave; r&eacute;v&eacute;le
 l'utilisation de certificats de confiance d&eacute;livr&eacute;s par
 erreur ou dans un but malintentionn&eacute;. Vous trouverez plus de d&eacute;tails &agrave;
 propos de la transparence des certificats ici : <a
-href="http://www.certificate-transparency.org/">http://www.certificate-transparency.org/</a>.
+href="https://www.certificate-transparency.org/">https://www.certificate-transparency.org/</a>.
 Voici la signification des termes utilis&eacute;s dans cette documentation :</p>
 
 <dl>

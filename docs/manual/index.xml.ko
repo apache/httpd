@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,68 +21,68 @@
 -->
 
 <indexpage metafile="index.xml.meta">
-<parentdocument href="http://httpd.apache.org/docs-project/" />
+<parentdocument href="https://httpd.apache.org/docs-project/" />
 
-<title>Apache HTTP Server Version &httpd.major;.&httpd.minor; ¹®¼­</title>
+<title>Apache HTTP Server Version &httpd.major;.&httpd.minor; ï¿½ï¿½ï¿½ï¿½</title>
 
-<category id="release"><title>¹ßÇ¥¹®</title>
-    <page href="new_features_2_0.html">¹öÀü 2.0ÀÇ »õ·Î¿î ±â´É</page>
-    <page href="upgrading.html">1.3¿¡¼­ 2.0 ¹öÀüÀ¸·Î ¾÷±×·¹ÀÌµå</page>
-    <page href="license.html">¾ÆÆÄÄ¡ ¶óÀÌ¼±½º</page>
+<category id="release"><title>ï¿½ï¿½Ç¥ï¿½ï¿½</title>
+    <page href="new_features_2_0.html">ï¿½ï¿½ï¿½ï¿½ 2.0ï¿½ï¿½ ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½</page>
+    <page href="upgrading.html">1.3ï¿½ï¿½ï¿½ï¿½ 2.0 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½×·ï¿½ï¿½Ìµï¿½</page>
+    <page href="license.html">ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½Ì¼ï¿½ï¿½ï¿½</page>
 </category>
 
-<category id="manual"><title>ÂüÁ¶ ¼³¸í¼­</title>
-    <page href="install.html">ÄÄÆÄÀÏ°ú ¼³Ä¡</page>
-    <page href="invoking.html">½ÃÀÛ</page>
-    <page href="stopping.html">Áß´Ü°ú Àç½ÃÀÛ</page>
-    <page href="mod/directives.html">¼³Á¤ Áö½Ã¾î</page>
-    <page href="mod/quickreference.html">Áö½Ã¾î ºü¸¥ÂüÁ¶</page>
-    <page href="mod/">¸ðµâ</page>
-    <page href="mpm.html">´ÙÁßÃ³¸®¸ðµâ (MPM)</page>
-    <page href="filter.html">ÇÊÅÍ</page>
-    <page href="handler.html">ÇÚµé·¯</page>
-    <page href="programs/">¼­¹ö¿Í Áö¿ø ÇÁ·Î±×·¥</page>
-    <page href="glossary.html">¿ë¾î</page>
+<category id="manual"><title>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</title>
+    <page href="install.html">ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½Ä¡</page>
+    <page href="invoking.html">ï¿½ï¿½ï¿½ï¿½</page>
+    <page href="stopping.html">ï¿½ß´Ü°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½</page>
+    <page href="mod/directives.html">ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½</page>
+    <page href="mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</page>
+    <page href="mod/">ï¿½ï¿½ï¿½</page>
+    <page href="mpm.html">ï¿½ï¿½ï¿½ï¿½Ã³ï¿½ï¿½ï¿½ï¿½ï¿½ (MPM)</page>
+    <page href="filter.html">ï¿½ï¿½ï¿½ï¿½</page>
+    <page href="handler.html">ï¿½Úµé·¯</page>
+    <page href="programs/">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½</page>
+    <page href="glossary.html">ï¿½ï¿½ï¿½</page>
 </category>    
 
-<category id="usersguide"><title>»ç¿ëÀÚ ÁöÄ§¼­</title>
-    <page href="bind.html">ÁÖ¼Ò¿Í Æ÷Æ® ÁöÁ¤</page>
-    <page href="configuring.html">¼³Á¤ÆÄÀÏ</page>
-    <page href="sections.html">¼½¼Ç ¼³Á¤</page>
-    <page href="content-negotiation.html">³»¿ëÇù»ó (content negotiation)</page>
-    <page href="dso.html">µ¿Àû°øÀ¯°´Ã¼ (DSO)</page>
-    <page href="env.html">È¯°æº¯¼ö</page>
-    <page href="logs.html">·Î±×ÆÄÀÏ</page>
-    <page href="urlmapping.html">URLÀ» ÆÄÀÏ½Ã½ºÅÛ¿¡ ´ëÀÀ</page>
-    <page href="misc/perf-tuning.html">¼º´ÉÇâ»ó</page>
-    <page href="misc/security_tips.html">º¸¾È ÆÁ</page>
-    <page href="server-wide.html">¼­¹ö Àü¿ª ¼³Á¤</page>
-    <page href="ssl/">SSL/TLS ¾ÏÈ£È­</page>
-    <page href="suexec.html">CGIÀÇ Suexec ½ÇÇà</page>
-    <page href="rewrite/">URL ÀçÀÛ¼º(rewriting) ÁöÄ§¼­</page>
-    <page href="vhosts/">°¡»óÈ£½ºÆ®</page>
+<category id="usersguide"><title>ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä§ï¿½ï¿½</title>
+    <page href="bind.html">ï¿½Ö¼Ò¿ï¿½ ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½</page>
+    <page href="configuring.html">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</page>
+    <page href="sections.html">ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</page>
+    <page href="content-negotiation.html">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (content negotiation)</page>
+    <page href="dso.html">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã¼ (DSO)</page>
+    <page href="env.html">È¯ï¿½æº¯ï¿½ï¿½</page>
+    <page href="logs.html">ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½</page>
+    <page href="urlmapping.html">URLï¿½ï¿½ ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½Û¿ï¿½ ï¿½ï¿½ï¿½ï¿½</page>
+    <page href="misc/perf-tuning.html">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</page>
+    <page href="misc/security_tips.html">ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½</page>
+    <page href="server-wide.html">ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</page>
+    <page href="ssl/">SSL/TLS ï¿½ï¿½È£È­</page>
+    <page href="suexec.html">CGIï¿½ï¿½ Suexec ï¿½ï¿½ï¿½ï¿½</page>
+    <page href="rewrite/">URL ï¿½ï¿½ï¿½Û¼ï¿½(rewriting) ï¿½ï¿½Ä§ï¿½ï¿½</page>
+    <page href="vhosts/">ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®</page>
 </category>
 
-<category id="howto"><title>How-To / ÅõÅä¸®¾ó</title>
-    <page href="howto/auth.html">ÀÎÁõ, ±ÇÇÑºÎ¿©,
-    Á¢±ÙÁ¦¾î</page>
-    <page href="howto/cgi.html">CGI: µ¿Àû ÆäÀÌÁö »ý¼º</page>
-    <page href="howto/htaccess.html">.htaccess ÆÄÀÏ</page>
+<category id="howto"><title>How-To / ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½</title>
+    <page href="howto/auth.html">ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ÑºÎ¿ï¿½,
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</page>
+    <page href="howto/cgi.html">CGI: ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</page>
+    <page href="howto/htaccess.html">.htaccess ï¿½ï¿½ï¿½ï¿½</page>
     <page href="howto/ssi.html">Server Side Includes (SSI)</page>
-    <page href="howto/public_html.html">»ç¿ëÀÚº° À¥µð·ºÅä¸®
+    <page href="howto/public_html.html">ï¿½ï¿½ï¿½ï¿½Úºï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ä¸®
     (public_html)</page>
 </category>
 
-<category id="platform"><title>ÇÃ·¡Æûº° ¼³¸í</title>
+<category id="platform"><title>ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</title>
     <page href="platform/windows.html">Microsoft Windows</page>
     <page href="platform/netware.html">Novell NetWare</page>
 </category>
 
-<category id="other"><title>´Ù¸¥ ÁÖÁ¦</title>
-    <page href="faq/">ÀÚÁÖ ¹°¾îº¸´Â Áú¹® (FAQ)</page>
-    <page href="sitemap.html">»çÀÌÆ®¸Ê</page>
-    <page href="developer/">°³¹ßÀÚ¸¦ À§ÇÑ ¹®¼­</page>
-    <page href="misc/">±âÅ¸</page>
+<category id="other"><title>ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½</title>
+    <page href="faq/">ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½îº¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (FAQ)</page>
+    <page href="sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</page>
+    <page href="developer/">ï¿½ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</page>
+    <page href="misc/">ï¿½ï¿½Å¸</page>
 </category>
 
 </indexpage>

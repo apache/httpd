@@ -12,7 +12,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -41,7 +41,7 @@
        hasta que o bien los datos se hayan recibido o bien se haya almacenado
        en el buffer una Respuesta HTTP completa.  
        Actualmente sólo están soportados
-       <a href="http://www.freebsd.org/cgi/man.cgi?query=accept_filter&amp;sektion=9">
+       <a href="https://www.freebsd.org/cgi/man.cgi?query=accept_filter&amp;sektion=9">
        Accept Filters</a> sobre FreeBSD, <code>TCP_DEFER_ACCEPT</code> sobre Linux, 
        y AcceptEx() sobre Windows.</p>
 
@@ -66,10 +66,10 @@ AcceptFilter https dataready
     <p>El filtro <code>httpready</code> almacena en el buffer peticiones HTTP completas
        a nivel de kernel.  Una vez que la petición es recibida, el kernel la envía al servidor. 
        Consulta la página man de
-       <a href="http://www.freebsd.org/cgi/man.cgi?query=accf_http&amp;sektion=9">
+       <a href="https://www.freebsd.org/cgi/man.cgi?query=accf_http&amp;sektion=9">
        accf_http(9)</a> para más detalles.  Puesto que las peticiones HTTPS
        están encriptadas, sólo se utiliza el filtro
-       <a href="http://www.freebsd.org/cgi/man.cgi?query=accf_data&amp;sektion=9">accf_data(9)</a>.</p>
+       <a href="https://www.freebsd.org/cgi/man.cgi?query=accf_data&amp;sektion=9">accf_data(9)</a>.</p>
 
     <p>Los valores por defecto en Linux son:</p>
     <highlight language="config">
@@ -81,7 +81,7 @@ AcceptFilter https data
        Cualquier valor además de <code>none</code> habilitará 
        <code>TCP_DEFER_ACCEPT</code> en ese socket. Para más detalles 
        ver la página man de Linux 
-       <a href="http://linux.die.net/man/7/tcp">
+       <a href="https://linux.die.net/man/7/tcp">
        tcp(7)</a>.</p>
 
     <p>Los valores por defecto en Windows son:</p>
@@ -240,7 +240,7 @@ AccessFileName .acl
     	<code>AddDefaultCharset On</code> habilita un conjunto de caracteres por defecto
     	de <code>iso-8859-1</code>. Cualquier otro valor se asume que sea el <var>charset</var>
     	que va a ser usado, que debe ser uno de los juegos de carácteres  
-    	<a href="http://www.iana.org/assignments/character-sets">registradas por el IANA
+    	<a href="https://www.iana.org/assignments/character-sets">registradas por el IANA
     </a> para su uso en los tipos de medios de Internet (MIME types).
     Por ejemplo:</p>
   	  
@@ -759,7 +759,7 @@ from the web</description>
     </example>
 
     <p>then an access to
-    <code>http://www.my.host.com/index.html</code> refers to
+    <code>https://www.my.host.com/index.html</code> refers to
     <code>/usr/web/index.html</code>. If the <var>directory-path</var> is 
     not absolute then it is assumed to be relative to the <directive 
     module="core">ServerRoot</directive>.</p>
@@ -963,7 +963,7 @@ in case of an error</description>
     can be provided to be displayed by the browser. Examples:</p>
 
     <example>
-      ErrorDocument 500 http://foo.example.com/cgi-bin/tester<br />
+      ErrorDocument 500 https://foo.example.com/cgi-bin/tester<br />
       ErrorDocument 404 /cgi-bin/bad_urls.pl<br />
       ErrorDocument 401 /subscription_info.html<br />
       ErrorDocument 403 "Sorry can't allow you access today"
@@ -1007,7 +1007,7 @@ in case of an error</description>
     greater than 512 bytes, then MSIE will show the server-generated
     error rather than masking it.  More information is available in
     Microsoft Knowledge Base article <a
-    href="http://support.microsoft.com/default.aspx?scid=kb;en-us;Q294807"
+    href="https://support.microsoft.com/default.aspx?scid=kb;en-us;Q294807"
     >Q294807</a>.</p>
 
     <p>Although most error messages can be overriden, there are certain
@@ -3699,7 +3699,7 @@ handler</description>
 
     <p>Another example: if you wanted to have the server display a
     status report whenever a URL of
-    <code>http://servername/status</code> was called, you might put
+    <code>https://servername/status</code> was called, you might put
     the following into <code>httpd.conf</code>:</p>
 
     <example>
@@ -3892,16 +3892,16 @@ port</description>
     where you have users connecting to the machine using short
     names such as <code>www</code>. You'll notice that if the users
     type a shortname, and a URL which is a directory, such as
-    <code>http://www/splat</code>, <em>without the trailing
+    <code>https://www/splat</code>, <em>without the trailing
     slash</em> then Apache httpd will redirect them to
-    <code>http://www.domain.com/splat/</code>. If you have
+    <code>https://www.domain.com/splat/</code>. If you have
     authentication enabled, this will cause the user to have to
     authenticate twice (once for <code>www</code> and once again
     for <code>www.domain.com</code> -- see <a
-    href="http://httpd.apache.org/docs/misc/FAQ.html#prompted-twice">the
+    href="https://httpd.apache.org/docs/misc/FAQ.html#prompted-twice">the
     FAQ on this subject for more information</a>). But if
     <directive>UseCanonicalName</directive> is set <code>Off</code>, then
-    Apache httpd will redirect to <code>http://www/splat/</code>.</p>
+    Apache httpd will redirect to <code>https://www/splat/</code>.</p>
 
     <p>There is a third option, <code>UseCanonicalName DNS</code>,
     which is intended for use with mass IP-based virtual hosting to

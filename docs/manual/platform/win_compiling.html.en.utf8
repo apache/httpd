@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -16,12 +16,12 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Platform Specific Notes</a></div><div id="page-content"><div id="preamble"><h1>Compiling Apache for Microsoft Windows</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Platform Specific Notes</a></div><div id="page-content"><div id="preamble"><h1>Compiling Apache for Microsoft Windows</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/platform/win_compiling.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/platform/win_compiling.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
@@ -74,7 +74,7 @@
 
         <p>The httpd binary is built with the help of several patches to
         third party packages, which ensure the released code is buildable
-        and debuggable.  These patches are available and distributed from <a href="http://www.apache.org/dist/httpd/binaries/win32/patches_applied/">http://www.apache.org/dist/httpd/binaries/win32/patches_applied/</a>
+        and debuggable.  These patches are available and distributed from <a href="https://www.apache.org/dist/httpd/binaries/win32/patches_applied/">https://www.apache.org/dist/httpd/binaries/win32/patches_applied/</a>
         and are recommended to be applied to obtain identical results as the
         "official" ASF distributed binaries.</p>
       </li>
@@ -133,9 +133,9 @@
         it is a very small download (compared with Perl or WSH/VB) and
         accomplishes the task of modifying configuration files upon
         installation.  Brian Kernighan's
-        <a href="http://www.cs.princeton.edu/~bwk/btl.mirror/">http://www.cs.princeton.edu/~bwk/btl.mirror/</a>
+        <a href="https://www.cs.princeton.edu/~bwk/btl.mirror/">https://www.cs.princeton.edu/~bwk/btl.mirror/</a>
         site has a compiled native Win32 binary,
-        <a href="http://www.cs.princeton.edu/~bwk/btl.mirror/awk95.exe">http://www.cs.princeton.edu/~bwk/btl.mirror/awk95.exe</a> which
+        <a href="https://www.cs.princeton.edu/~bwk/btl.mirror/awk95.exe">https://www.cs.princeton.edu/~bwk/btl.mirror/awk95.exe</a> which
         you must save with the name <code>awk.exe</code> (rather than
         <code>awk95.exe</code>).</p>
 
@@ -151,7 +151,7 @@
         awk.exe is in your system path.</div>
 
         <div class="note">Also note that if you are using Cygwin tools
-        (<a href="http://www.cygwin.com/">http://www.cygwin.com/</a>)
+        (<a href="https://www.cygwin.com/">https://www.cygwin.com/</a>)
         the awk utility is named <code>gawk.exe</code> and that the file
         <code>awk.exe</code> is really a symlink to the <code>gawk.exe</code>
         file. The Windows command shell does not recognize symlinks, and
@@ -167,7 +167,7 @@
 
         <p>Zlib must be installed into a <code>srclib</code> subdirectory named
         <code>zlib</code>.  This must be built in-place.  Zlib can be obtained
-        from <a href="http://www.zlib.net/">http://www.zlib.net/</a> -- the
+        from <a href="https://www.zlib.net/">https://www.zlib.net/</a> -- the
         <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> is confirmed to work correctly with
         version 1.2.3.</p>
 
@@ -188,14 +188,14 @@
         country's laws, regulations and policies concerning the import,
         possession, or use, and re-export of encryption software, to see
         if this is permitted.  See
-        <a href="http://www.wassenaar.org/">http://www.wassenaar.org/</a>
+        <a href="https://www.wassenaar.org/">https://www.wassenaar.org/</a>
         for more information.</div>
 
         <p>Configuring and building OpenSSL requires perl to be installed.</p>
 
         <p>OpenSSL must be installed into a <code>srclib</code> subdirectory
         named <code>openssl</code>, obtained from
-        <a href="http://www.openssl.org/source/">http://www.openssl.org/source/</a>, in order to compile
+        <a href="https://www.openssl.org/source/">https://www.openssl.org/source/</a>, in order to compile
         <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> or the <code>abs.exe</code> project, which
         is ab.c with SSL support enabled.  To prepare OpenSSL to be linked
         to Apache mod_ssl or abs.exe, and disable patent encumbered features
@@ -484,7 +484,7 @@
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/platform/win_compiling.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/platform/win_compiling.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -499,8 +499,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/platform/win_compi
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

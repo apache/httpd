@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -51,13 +51,13 @@
      The choice of underlying DBM used may be configurable
      if the installed APR version supports multiple DBM implementations.</dd>
     <dt>"dc" (<module>mod_socache_dc</module>)</dt>
-    <dd>This makes use of the <a href="http://distcache.sourceforge.net/">distcache</a>
+    <dd>This makes use of the <a href="https://distcache.sourceforge.net/">distcache</a>
     distributed session caching libraries.</dd>
     <dt>"memcache" (<module>mod_socache_memcache</module>)</dt>
-    <dd>This makes use of the <a href="http://memcached.org/">memcached</a>
+    <dd>This makes use of the <a href="https://memcached.org/">memcached</a>
     high-performance, distributed memory object caching system.</dd>
     <dt>"redis" (<module>mod_socache_redis</module>)</dt>
-    <dd>This makes use of the <a href="http://redis.io/">Redis</a>
+    <dd>This makes use of the <a href="https://redis.io/">Redis</a>
     high-performance, distributed memory object caching system.</dd>
     <dt>"shmcb" (<module>mod_socache_shmcb</module>)</dt>
     <dd>This makes use of a high-performance cyclic buffer inside a

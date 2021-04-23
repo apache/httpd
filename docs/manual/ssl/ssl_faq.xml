@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -129,11 +129,11 @@ relative hyperlinks?</a></li>
     line client which directly understands both HTTP and HTTPS, can
     perform GET and POST operations, can use a proxy, supports byte
     ranges, etc. you should have a look at the nifty
-    <a href="http://curl.haxx.se/">cURL</a> tool. Using this, you can
+    <a href="https://curl.haxx.se/">cURL</a> tool. Using this, you can
     check that Apache is responding correctly to requests via HTTP and
     HTTPS as follows:</p>
 
-    <example>$ curl http://localhost/<br />
+    <example>$ curl https://localhost/<br />
     $ curl https://localhost/</example>
 </section>
 
@@ -141,7 +141,7 @@ relative hyperlinks?</a></li>
     to my SSL-aware Apache server?</title>
 
 <p>This can happen when you try to connect to a HTTPS server (or virtual
-    server) via HTTP (eg, using <code>http://example.com/</code> instead of
+    server) via HTTP (eg, using <code>https://example.com/</code> instead of
     <code>https://example.com</code>). It can also happen when trying to
     connect via HTTPS to a HTTP server (eg, using
     <code>https://example.com/</code> on a server which doesn't support HTTPS,
@@ -175,7 +175,7 @@ relative hyperlinks?</a></li>
     <highlight language="config">
 RewriteEngine on
 RewriteRule   "^/(.*)_SSL$"   "https://%{SERVER_NAME}/$1" [R,L]
-RewriteRule   "^/(.*)_NOSSL$" "http://%{SERVER_NAME}/$1"  [R,L]
+RewriteRule   "^/(.*)_NOSSL$" "https://%{SERVER_NAME}/$1"  [R,L]
     </highlight>
 
     <p>This rewrite ruleset lets you use hyperlinks of the form
@@ -762,7 +762,7 @@ SetEnvIf User-Agent "MSIE [2-5]" \
 
     <p>To generate custom DH parameters, use the <code>openssl dhparam 1024</code>
     command. Alternatively, you can use the following standard 1024-bit DH
-    parameters from <a href="http://www.ietf.org/rfc/rfc2409.txt">RFC 2409</a>,
+    parameters from <a href="https://www.ietf.org/rfc/rfc2409.txt">RFC 2409</a>,
     section 6.2:</p>
     <example><pre>-----BEGIN DH PARAMETERS-----
 MIGHAoGBAP//////////yQ/aoiFowjTExmKLgNwc0SkCTgiKZ8x0Agu+pjsTmyJR
@@ -797,8 +797,8 @@ for my core dump?</a></li>
 
     <dl>
     <dt>Answers in the User Manual's F.A.Q. List (this)</dt>
-    <dd><a href="http://httpd.apache.org/docs/&httpd.docs;/ssl/ssl_faq.html">
-        http://httpd.apache.org/docs/&httpd.docs;/ssl/ssl_faq.html</a><br />
+    <dd><a href="https://httpd.apache.org/docs/&httpd.docs;/ssl/ssl_faq.html">
+        https://httpd.apache.org/docs/&httpd.docs;/ssl/ssl_faq.html</a><br />
         First check the F.A.Q. (this text). If your problem is a common
         one, it may have been answered several times before, and been included
         in this doc.
@@ -822,8 +822,8 @@ of mod_ssl problems?</title>
     </li>
 
     <li><em>Write a Problem Report in the Bug Database</em><br />
-        <a href="http://httpd.apache.org/bug_report.html">
-        http://httpd.apache.org/bug_report.html</a><br />
+        <a href="https://httpd.apache.org/bug_report.html">
+        https://httpd.apache.org/bug_report.html</a><br />
         This is the last way of submitting your problem report. You should only
         do this if you've already posted to the mailing lists, and had no success.
         Please follow the instructions on the above page <em>carefully</em>.
@@ -841,7 +841,7 @@ provide when writing a bug report?</title>
         by running <code>httpd -v</code>. The OpenSSL version can be
         determined by running <code>openssl version</code>. Alternatively, if
         you have Lynx installed, you can run the command <code>lynx -mime_header
-        http://localhost/ | grep Server</code> to gather this information in a
+        https://localhost/ | grep Server</code> to gather this information in a
         single step.
     </dd>
 

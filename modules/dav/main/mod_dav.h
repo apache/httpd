@@ -5,7 +5,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -50,7 +50,7 @@ extern "C" {
 
 #define DAV_READ_BLOCKSIZE      2048    /* used for reading input blocks */
 
-#define DAV_RESPONSE_BODY_1    "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">\n<html>\n<head>\n<title>"
+#define DAV_RESPONSE_BODY_1    "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"https://www.w3.org/TR/html4/strict.dtd\">\n<html>\n<head>\n<title>"
 #define DAV_RESPONSE_BODY_2     "</title>\n</head><body>\n<h1>"
 #define DAV_RESPONSE_BODY_3     "</h1>\n<p>"
 #define DAV_RESPONSE_BODY_4     "</p>\n"
@@ -696,7 +696,7 @@ typedef struct {
 ** will place open/close angle brackets around each value (much like
 ** a Coded-URL); quotes and brackets should not be in the value.
 **
-** Example:    http://apache.org/dav/props/
+** Example:    https://apache.org/dav/props/
 **
 ** (of course, use your own domain to ensure a unique value)
 */
@@ -2614,8 +2614,8 @@ struct dav_hooks_search {
      *
      * Examples:
      * DASL: <DAV:basicsearch>
-     * DASL: <http://foo.bar.com/syntax1>
-     * DASL: <http://akuma.com/syntax2>
+     * DASL: <https://foo.bar.com/syntax1>
+     * DASL: <https://akuma.com/syntax2>
      */
     dav_error * (*set_option_head)(request_rec *r);
 

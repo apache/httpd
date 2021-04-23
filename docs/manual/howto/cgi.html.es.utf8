@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -16,12 +16,12 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p>
+<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p>
 <p class="apache">Versión 2.5 del Servidor HTTP Apache</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentación</a> &gt; <a href="../">Versión 2.5</a> &gt; <a href="./">How-To / Tutoriales</a></div><div id="page-content"><div id="preamble"><h1>Tutorial de Apache: Contenido Dinámico con CGI</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentación</a> &gt; <a href="../">Versión 2.5</a> &gt; <a href="./">How-To / Tutoriales</a></div><div id="page-content"><div id="preamble"><h1>Tutorial de Apache: Contenido Dinámico con CGI</h1>
 <div class="toplang">
 <p><span>Idiomas disponibles: </span><a href="../en/howto/cgi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/howto/cgi.html" title="Español">&nbsp;es&nbsp;</a> |
@@ -116,7 +116,7 @@
             programa CGI.</p>
 
             <p>Por ejemplo, si se solicita la URL
-            <code>http://www.example.com/cgi-bin/test.pl</code>,
+            <code>https://www.example.com/cgi-bin/test.pl</code>,
             Apache intentará ejecutar el archivo
             <code>/usr/local/apache2/cgi-bin/test.pl</code> y dar
             el resultado. Por supuesto el archivo debe existir y ser ejecutable, 
@@ -261,7 +261,7 @@ print "Hola, Mundo.";</pre>
             dirección</p>
 
             <div class="example"><p><code>
-                http://www.example.com/cgi-bin/first.pl
+                https://www.example.com/cgi-bin/first.pl
             </code></p></div>
 
             <p>o donde quiera que pusiera el archivo, verá una línea
@@ -374,7 +374,7 @@ print "Hola, Mundo.";</pre>
 
             <p>Cuando no encuentra ciertas cabeceras HTTP del entorno, asegúrese 
             de que están formateadas según el 
-            <a href="http://tools.ietf.org/html/rfc2616">RFC 2616</a>, 
+            <a href="https://tools.ietf.org/html/rfc2616">RFC 2616</a>, 
             sección 4.2: Nombres de Cabeceras deben empezar con una letra, 
             seguida solo de letras, números o guión. Cualquier cabecera 
             que no cumpla esta regla será ignorada de manera silenciosa.</p>
@@ -477,7 +477,7 @@ print "Hola, Mundo.";</pre>
             <p>Estas variables están disponibles para el programador de CGI, y son 
             la mitad de la historia de la comunicación cliente-servidor. La 
             lista completa de las variables necesarias se encuentra en 
-            <a href="http://www.ietf.org/rfc/rfc3875">el RFC de Common Gateway
+            <a href="https://www.ietf.org/rfc/rfc3875">el RFC de Common Gateway
             Interface</a>.</p>
 
             <p>Este sencillo programa CGI en Perl mostrará todas las variables 
@@ -555,14 +555,14 @@ foreach my $key (keys %ENV) {
         rápido.</p>
 
         <p>Si está escribiendo un programa CGI en Perl, existen módulos 
-        disponibles en <a href="http://www.cpan.org/">CPAN</a>. El módulo más
+        disponibles en <a href="https://www.cpan.org/">CPAN</a>. El módulo más
         conocido para este propósito es <code>CGI.pm</code>. Quizás quiera
         considerar <code>CGI::Lite</code>, que implementa una funcionalidad 
         mínima, que es todo lo que se necesita en la mayoría de los programas.</p>
 
         <p>Si está escribiendo programas CGI en C, hay varidad de opciones. Una
         de estas es la librería <code>CGIC</code>, de
-        <a href="http://www.boutell.com/cgic/">http://www.boutell.com/cgic/</a>.
+        <a href="https://www.boutell.com/cgic/">https://www.boutell.com/cgic/</a>.
         </p>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -570,7 +570,7 @@ foreach my $key (keys %ENV) {
         
 
         <p>La especificación actual de CGI está disponible en el
-        <a href="http://www.ietf.org/rfc/rfc3875">RFC de Common Gateway
+        <a href="https://www.ietf.org/rfc/rfc3875">RFC de Common Gateway
         Interface</a>.</p>
 
         <p>Cuando envíe una pregunta sobre un problema de CGI, o bien a una 
@@ -595,7 +595,7 @@ foreach my $key (keys %ENV) {
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comentarios</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/howto/cgi.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/howto/cgi.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -610,8 +610,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/howto/cgi.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

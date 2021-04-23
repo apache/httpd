@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -57,7 +57,7 @@
       zwischen dem Server und dem Betriebssystem anbietet. Die APR
       wird parallel zum Apache HTTP Server in einem eigenst&auml;ndigen Projekt
       entwickelt.<br />
-      Siehe auch: <a href="http://apr.apache.org/">Apache Portable Runtime
+      Siehe auch: <a href="https://apr.apache.org/">Apache Portable Runtime
       Project</a>
     </dd>
 
@@ -118,9 +118,9 @@
       Webserver und einem externen Programm, welcher dem externen Programm die
       Behandlung von Anfragen erm&ouml;glicht. Die Schnittstelle ist
       urspr&uuml;nglich von der <a
-      href="http://hoohoo.ncsa.uiuc.edu/cgi/overview.html">NCSA</a>
+      href="https://hoohoo.ncsa.uiuc.edu/cgi/overview.html">NCSA</a>
       definiert worden. Es exisitert jedoch auch ein <a
-      href="http://cgi-spec.golux.com/">RFC-Projekt</a>.<br />
+      href="https://cgi-spec.golux.com/">RFC-Projekt</a>.<br />
       Siehe: <a href="howto/cgi.html">Dynamische Inhalte mit CGI</a>
     </dd>
 
@@ -248,7 +248,7 @@
       <a name="http" id="http">(HTTP)</a></dt>
     <dd>Das Standard-&Uuml;bertragungsprotokoll im World Wide Web. Der Apache
       implementiert die Protokollversion 1.1, bezeichnet als HTTP/1.1 und
-      definiert in <a href="http://ietf.org/rfc/rfc2616.txt">RFC 2616</a>.
+      definiert in <a href="https://ietf.org/rfc/rfc2616.txt">RFC 2616</a>.
     </dd>
 
     <dt><a name="plaintext" id="plaintext">Klartext</a></dt>
@@ -350,7 +350,7 @@
       <phonetic>&#x02C8;&#x0259;up&#x0259;n&#x025B;s&#x025B;s&#x02C8;&#x025B;l</phonetic>
     </dt>
     <dd>Das Open-Source-Toolkit f&uuml;r SSL/TLS<br />
-      Siehe: <a href="http://www.openssl.org/">http://www.openssl.org/</a>
+      Siehe: <a href="https://www.openssl.org/">https://www.openssl.org/</a>
     </dd>
 
     <dt><a name="passphrase" id="passphrase">Passphrase</a>
@@ -408,7 +408,7 @@
       .jpg-Dateien eines Verzeichnis "images" mit
       "<code>/images/.*(jpg|gif)$</code>" beschrieben werden. Der Apache
       verwendet Perl-kompatible regul&auml;re Ausdr&uuml;cke, wie sie die
-      <a href="http://www.pcre.org/">PCRE</a>-Bibliothek bereitstellt.
+      <a href="https://www.pcre.org/">PCRE</a>-Bibliothek bereitstellt.
     </dd>
 
     <dt><a name="reverseproxy" id="reverseproxy">Reverse Proxy</a>
@@ -496,7 +496,7 @@
       Identifier</glossary>. URLs bestehen &uuml;blicherweise aus einem
       Schema wie <code>http</code> oder <code>https</code>, einem Hostnamen
       und einem Pfad. Die URL f&uuml;r diese Seite ist
-      <code>http://httpd.apache.org/docs/&httpd.docs;/glossary.html</code>.
+      <code>https://httpd.apache.org/docs/&httpd.docs;/glossary.html</code>.
     </dd>
 
     <dt><a name="uniformresourceidentifier"
@@ -506,7 +506,7 @@
       <a name="URI" id="URI">(URI)</a></dt>
     <dd>Eine kompakte Zeichenfolge zur Identifizierung einer abstrakten oder
       physischen Ressource. Er wird in dem <a
-      href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a> formell
+      href="https://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a> formell
       definiert. Im World Wide Web verwendete URIs werden &uuml;blicherweise
       als <glossary ref="url">URLs</glossary> bezeichnet.
     </dd>

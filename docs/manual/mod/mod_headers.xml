@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -145,7 +145,7 @@ Header set MyHeader "%D %t mytext" env=HAVE_MyRequestHeader
 
       <li>
         Enable DAV to work with Apache running HTTP through SSL hardware
-        (<a href="http://svn.haxx.se/users/archive-2006-03/0549.shtml">problem
+        (<a href="https://svn.haxx.se/users/archive-2006-03/0549.shtml">problem
         description</a>) by replacing <var>https:</var> with
         <var>http:</var> in the <var>Destination</var> header:
 

@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -120,7 +120,7 @@
       tant que programme CGI.</p>
 
       <p>Par exemple, si une requête pour l'URL
-      <code>http://www.example.com/cgi-bin/test.pl</code> est
+      <code>https://www.example.com/cgi-bin/test.pl</code> est
       effectuée, Apache tentera d'exécuter le fichier
       <code>/usr/local/apache2/cgi-bin/test.pl</code> et en renverra la
       sortie. Bien entendu, le fichier doit exister, être exécutable, et
@@ -282,7 +282,7 @@ print "Hello, World.";
       l'adresse</p>
 
       <example>
-        http://www.example.com/cgi-bin/premier.pl
+        https://www.example.com/cgi-bin/premier.pl
       </example>
 
       <p>ou toute autre URL correspondant à votre programme CGI, Vous
@@ -406,7 +406,7 @@ print "Hello, World.";
 
       <p>Lorsque des en-têtes HTTP ne sont pas transmis à
       l'environnement, assurez-vous qu'ils sont bien formatés selon la
-      <a href="http://tools.ietf.org/html/rfc2616">RFC 2616</a>, section
+      <a href="https://tools.ietf.org/html/rfc2616">RFC 2616</a>, section
       4.2 : les noms d'en-têtes doivent commencer par une lettre,
       elle-même suivie de lettres, chiffres ou traits d'union. Tout
       en-tête dont le nom viole cette règle sera ignoré.</p>
@@ -520,7 +520,7 @@ print "Hello, World.";
       <p>Ces variables sont à la disposition du programmeur CGI, et
       elles constituent 50% de la communication client-serveur. La liste
       complète des variables requises se trouve à
-      <a href="http://www.ietf.org/rfc/rfc3875">Common Gateway
+      <a href="https://www.ietf.org/rfc/rfc3875">Common Gateway
       Interface RFC</a>.</p>
 
       <p>Ce programme CGI basique en Perl permet d'afficher toutes les
@@ -603,7 +603,7 @@ foreach my $key (keys %ENV) {
     le nombre d'erreurs et d'accélérer le développement.</p>
 
     <p>Si vous écrivez des programmes CGI en Perl, des modules sont à
-    votre disposition à <a href="http://www.cpan.org/">CPAN</a>. A ce
+    votre disposition à <a href="https://www.cpan.org/">CPAN</a>. A ce
     sujet, le module le plus populaire est <code>CGI.pm</code>. Vous
     pouvez aussi essayer <code>CGI::Lite</code>, qui implémente les
     fonctionnalités strictement nécessaires, mais suffisantes pour
@@ -619,7 +619,7 @@ foreach my $key (keys %ENV) {
     <title>Pour plus d'informations</title>
 
     <p>La spécification CGI actuelle est disponible dans la <a
-    href="http://www.ietf.org/rfc/rfc3875">Common Gateway
+    href="https://www.ietf.org/rfc/rfc3875">Common Gateway
     Interface RFC</a>.</p>
 
     <p>Lorsque vous postez une question à propos d'un problème CGI que

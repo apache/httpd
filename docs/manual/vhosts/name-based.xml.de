@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -275,19 +275,19 @@
   <p>Was bedeutet das? Es bedeutet, dass eine Anfrage f&uuml;r eine mit
     "<code>/domain</code>" beginnende URI von dem virtuellen Host
     <code>www.domain.tld</code> bedient wird. Dies hei&szlig;t, dass die Seiten
-    f&uuml;r alle Clients unter <code>http://www.domain.tld/domain/</code>
+    f&uuml;r alle Clients unter <code>https://www.domain.tld/domain/</code>
     abrufbar sind, wenngleich Clients, die den Header <code>Host:</code>
-    senden, auch &uuml;ber <code>http://www.domain.tld/</code> auf sie zugreifen
+    senden, auch &uuml;ber <code>https://www.domain.tld/</code> auf sie zugreifen
     k&ouml;nnen.</p>
 
   <p>Legen Sie einen Link auf der Seite Ihres prim&auml;ren virtuellen Hosts zu 
-    <code>http://www.domain.tld/domain/</code>, um die Behelfsl&ouml;sung
+    <code>https://www.domain.tld/domain/</code>, um die Behelfsl&ouml;sung
     verf&uuml;gbar zu machen. Bei den Seiten der virtuellen Hosts m&uuml;ssen
     Sie dann sicherstellen, entweder au&szlig;schlie&szlig;lich relative Links
     (<em>z.B.</em> "<code>file.html</code>" oder
     "<code>../icons/image.gif</code>") zu verwenden oder Links, die das
     einleitende <code>/domain/</code> enthalten (<em>z.B.</em>,
-    "<code>http://www.domain.tld/domain/misc/file.html</code>" oder
+    "<code>https://www.domain.tld/domain/misc/file.html</code>" oder
     "<code>/domain/misc/file.html</code>").</p>
 
   <p>Dies erfordert etwas Disziplin, die Befolgung dieser Richtlinien stellt

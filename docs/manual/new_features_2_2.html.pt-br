@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="pt-br" xml:lang="pt-br"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="pt-br" xml:lang="pt-br"><head>
 <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Descrição das novas funcionalidades do Apache 2.2 - Servidor HTTP Apache Versão 2.5</title>
+<title>Descriï¿½ï¿½o das novas funcionalidades do Apache 2.2 - Servidor HTTP Apache Versï¿½o 2.5</title>
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
@@ -16,33 +16,33 @@
 
 <link href="./images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/quickreference.html">Diretrizes</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossário</a> | <a href="./sitemap.html">Mapa do site</a></p>
-<p class="apache">Servidor HTTP Apache Versão 2.5</p>
+<p class="menu"><a href="./mod/">Mï¿½dulos</a> | <a href="./mod/quickreference.html">Diretrizes</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossï¿½rio</a> | <a href="./sitemap.html">Mapa do site</a></p>
+<p class="apache">Servidor HTTP Apache Versï¿½o 2.5</p>
 <img alt="" src="./images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentação</a> &gt; <a href="./">Versão 2.5</a></div><div id="page-content"><div id="preamble"><h1>Descrição das novas funcionalidades do Apache 2.2</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentaï¿½ï¿½o</a> &gt; <a href="./">Versï¿½o 2.5</a></div><div id="page-content"><div id="preamble"><h1>Descriï¿½ï¿½o das novas funcionalidades do Apache 2.2</h1>
 <div class="toplang">
-<p><span>Línguas Disponíveis: </span><a href="./en/new_features_2_2.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/new_features_2_2.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/new_features_2_2.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<p><span>Lï¿½nguas Disponï¿½veis: </span><a href="./en/new_features_2_2.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./es/new_features_2_2.html" hreflang="es" rel="alternate" title="Espaï¿½ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/new_features_2_2.html" hreflang="fr" rel="alternate" title="Franï¿½ais">&nbsp;fr&nbsp;</a> |
 <a href="./ko/new_features_2_2.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./pt-br/new_features_2_2.html" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a> |
-<a href="./tr/new_features_2_2.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./pt-br/new_features_2_2.html" title="Portuguï¿½s (Brasil)">&nbsp;pt-br&nbsp;</a> |
+<a href="./tr/new_features_2_2.html" hreflang="tr" rel="alternate" title="Tï¿½rkï¿½e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Esta tradução pode estar desatualizada.
-        Confira a versão em Inglês para mudanças recentes.</div>
+<div class="outofdate">Esta traduï¿½ï¿½o pode estar desatualizada.
+        Confira a versï¿½o em Inglï¿½s para mudanï¿½as recentes.</div>
 
-  <p>Esse documento descreve algumas das principais mudanças
-     entre as versões 2.0 e 2.2 do Servidor HTTP Apache.
-     Para a lista de mudanças desde a versão 1.3, veja a página
-     de documentação <a href="new_features_2_0.html">novas funcionalidades
+  <p>Esse documento descreve algumas das principais mudanï¿½as
+     entre as versï¿½es 2.0 e 2.2 do Servidor HTTP Apache.
+     Para a lista de mudanï¿½as desde a versï¿½o 1.3, veja a pï¿½gina
+     de documentaï¿½ï¿½o <a href="new_features_2_0.html">novas funcionalidades
      do Apache 2.0</a>.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#core">Principais Melhorias</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#module">Melhorias nos Módulos</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#developer">Mudanças ao Desenvolvedor de Módulos</a></li>
-</ul><h3>Veja também</h3><ul class="seealso"><li><a href="#comments_section">Comentários</a></li></ul></div>
+<li><img alt="" src="./images/down.gif" /> <a href="#module">Melhorias nos Mï¿½dulos</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#developer">Mudanï¿½as ao Desenvolvedor de Mï¿½dulos</a></li>
+</ul><h3>Veja tambï¿½m</h3><ul class="seealso"><li><a href="#comments_section">Comentï¿½rios</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="core" id="core">Principais Melhorias</a> <a title="Permanent link" href="#core" class="permalink">&para;</a></h2>
@@ -56,75 +56,75 @@
       <dd>...</dd>
 
       <dt>Proxying</dt>
-      <dd>O novo módulo <code class="module"><a href="./mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> fornece
-          serviços de carregamento de balenceamento para <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>. O novo módulo <code class="module"><a href="./mod/mod_proxy_ajp.html">mod_proxy_ajp</a></code> oferece suporte para o <code>Protocolo Apache JServ
-          versão 1.3</code>, usado pelo <a href="http://tomcat.apache.org/">Apache Tomcat</a>.</dd>
+      <dd>O novo mï¿½dulo <code class="module"><a href="./mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> fornece
+          serviï¿½os de carregamento de balenceamento para <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>. O novo mï¿½dulo <code class="module"><a href="./mod/mod_proxy_ajp.html">mod_proxy_ajp</a></code> oferece suporte para o <code>Protocolo Apache JServ
+          versï¿½o 1.3</code>, usado pelo <a href="https://tomcat.apache.org/">Apache Tomcat</a>.</dd>
 
       <dt>Filtragem Inteligente (Smart Filtering)</dt>
-      <dd>O <code class="module"><a href="./mod/mod_filter.html">mod_filter</a></code> introduz configuração dinâmica para
-          o filtro de saída de dados. Permitindo que os filtros sejam
-	  condicionalmente inseridos, baseando-se nos cabeçalhos <em>Request</em> ou <em>Response</em> ou em variáveis do
-	  ambiente, ele acaba com os problemas de dependências e pedidos
+      <dd>O <code class="module"><a href="./mod/mod_filter.html">mod_filter</a></code> introduz configuraï¿½ï¿½o dinï¿½mica para
+          o filtro de saï¿½da de dados. Permitindo que os filtros sejam
+	  condicionalmente inseridos, baseando-se nos cabeï¿½alhos <em>Request</em> ou <em>Response</em> ou em variï¿½veis do
+	  ambiente, ele acaba com os problemas de dependï¿½ncias e pedidos
           da arquitetura 2.0.</dd>
 
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="module" id="module">Melhorias nos Módulos</a> <a title="Permanent link" href="#module" class="permalink">&para;</a></h2>
+<h2><a name="module" id="module">Melhorias nos Mï¿½dulos</a> <a title="Permanent link" href="#module" class="permalink">&para;</a></h2>
     
     <dl>
       <dt><code class="module"><a href="./mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code></dt>
-      <dd>Este módulo é uma migração do <code>mod_auth_ldap</code>,
-          da versão 2.0 para a estrutura 2.2 de <code>Authn/Authz</code>.
+      <dd>Este mï¿½dulo ï¿½ uma migraï¿½ï¿½o do <code>mod_auth_ldap</code>,
+          da versï¿½o 2.0 para a estrutura 2.2 de <code>Authn/Authz</code>.
 	  As novas funcionalidades incluem o uso de atributos LDAP e
 	  filtros de procura complexos na diretriz <code class="directive"><a href="./mod/mod_authz_core.html#require">Require</a></code>.</dd>
 
       <dt><code class="module"><a href="./mod/mod_info.html">mod_info</a></code></dt>
       <dd>Adicionado um novo argumento <code>?config</code> que
-          mostra a configuração das diretrizes analisadas pelo
-	  Apache, incluindo o nome do arquivo e o número da linha.
-	  Esse módulo também mostra a ordem de todos os ganchos de
-          pedidos (request hooks) e informações adicionais sobre
-          a compilação, similar ao comando <code>httpd -V</code>.</dd>
+          mostra a configuraï¿½ï¿½o das diretrizes analisadas pelo
+	  Apache, incluindo o nome do arquivo e o nï¿½mero da linha.
+	  Esse mï¿½dulo tambï¿½m mostra a ordem de todos os ganchos de
+          pedidos (request hooks) e informaï¿½ï¿½es adicionais sobre
+          a compilaï¿½ï¿½o, similar ao comando <code>httpd -V</code>.</dd>
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="developer" id="developer">Mudanças ao Desenvolvedor de Módulos</a> <a title="Permanent link" href="#developer" class="permalink">&para;</a></h2>
+<h2><a name="developer" id="developer">Mudanï¿½as ao Desenvolvedor de Mï¿½dulos</a> <a title="Permanent link" href="#developer" class="permalink">&para;</a></h2>
     
     <dl>
       <dt>API do APR 1.0</dt>
 
-      <dd>O Apache 2.2 utiliza a API do APR 1.0. Todas as funções e
-          símbolos antigos foram removidos do <code>APR</code> e
+      <dd>O Apache 2.2 utiliza a API do APR 1.0. Todas as funï¿½ï¿½es e
+          sï¿½mbolos antigos foram removidos do <code>APR</code> e
 	  <code>APR-Util</code>. Para mais detalhes, visite o
-          <a href="http://apr.apache.org/">Website do APR</a>.</dd>
+          <a href="https://apr.apache.org/">Website do APR</a>.</dd>
 
-      <dt>Registros de Erros de Conexão (logs)</dt>
+      <dt>Registros de Erros de Conexï¿½o (logs)</dt>
 
-      <dd>Uma nova função <code>ap_log_cerror</code>, foi adicionada
-          para registrar erros que ocorrem na conexão do cliente.
-	  Quando documentado no diário de log, a mensagem inclui o
-	  endereço IP do cliente.</dd>
+      <dd>Uma nova funï¿½ï¿½o <code>ap_log_cerror</code>, foi adicionada
+          para registrar erros que ocorrem na conexï¿½o do cliente.
+	  Quando documentado no diï¿½rio de log, a mensagem inclui o
+	  endereï¿½o IP do cliente.</dd>
 
-      <dt>Adicionado Gancho de Teste de Configuração</dt>
+      <dt>Adicionado Gancho de Teste de Configuraï¿½ï¿½o</dt>
 
       <dd>Um novo gancho (hook), <code>test_config</code> foi
-          adicionado para auxiliar módulos que querem executar
-	  códigos especiais apenas quando o usuário passa o
-	  parâmetro <code>-t</code> para o httpd.</dd>
+          adicionado para auxiliar mï¿½dulos que querem executar
+	  cï¿½digos especiais apenas quando o usuï¿½rio passa o
+	  parï¿½metro <code>-t</code> para o httpd.</dd>
 
       <dt>Ajustar o Stacksize dos "Threaded MPM's"</dt>
 
       <dd>Uma nova diretriz chamada <code>ThreadStackSize</code>,
           foi adicionada para ajustar o tamanho das stacks em todos
-          os threadeds MPMs. Essa é uma prática necessário para alguns
-	  módulos de terceiros em plataformas com tamanhos de stacks
-	  pequenos por padrão.</dd>
+          os threadeds MPMs. Essa ï¿½ uma prï¿½tica necessï¿½rio para alguns
+	  mï¿½dulos de terceiros em plataformas com tamanhos de stacks
+	  pequenos por padrï¿½o.</dd>
 
-      <dt>Negociação de Protocolo para filtros de saída</dt>
+      <dt>Negociaï¿½ï¿½o de Protocolo para filtros de saï¿½da</dt>
 
-      <dd>No passado, todo filtro era responsável por garantir
-          a geração de cabeçalhos de resposta correto que os afetava.
+      <dd>No passado, todo filtro era responsï¿½vel por garantir
+          a geraï¿½ï¿½o de cabeï¿½alhos de resposta correto que os afetava.
 	  Os filtros agora podem delegar o gerenciamento de protocolos
 	  comuns para <code class="module"><a href="./mod/mod_filter.html">mod_filter</a></code>, usando chamadas
 	  de <code>ap_register_output_filter_protocol</code> ou
@@ -134,16 +134,16 @@
 
   </div></div>
 <div class="bottomlang">
-<p><span>Línguas Disponíveis: </span><a href="./en/new_features_2_2.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/new_features_2_2.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/new_features_2_2.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<p><span>Lï¿½nguas Disponï¿½veis: </span><a href="./en/new_features_2_2.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./es/new_features_2_2.html" hreflang="es" rel="alternate" title="Espaï¿½ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/new_features_2_2.html" hreflang="fr" rel="alternate" title="Franï¿½ais">&nbsp;fr&nbsp;</a> |
 <a href="./ko/new_features_2_2.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./pt-br/new_features_2_2.html" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a> |
-<a href="./tr/new_features_2_2.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comentários</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
+<a href="./pt-br/new_features_2_2.html" title="Portuguï¿½s (Brasil)">&nbsp;pt-br&nbsp;</a> |
+<a href="./tr/new_features_2_2.html" hreflang="tr" rel="alternate" title="Tï¿½rkï¿½e">&nbsp;tr&nbsp;</a></p>
+</div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comentï¿½rios</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/new_features_2_2.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/new_features_2_2.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -158,8 +158,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/new_features_2_2.h
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licenciado sob a <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/quickreference.html">Diretrizes</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossário</a> | <a href="./sitemap.html">Mapa do site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licenciado sob a <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">Mï¿½dulos</a> | <a href="./mod/quickreference.html">Diretrizes</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossï¿½rio</a> | <a href="./sitemap.html">Mapa do site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

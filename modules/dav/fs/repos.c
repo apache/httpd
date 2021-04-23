@@ -5,7 +5,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -107,7 +107,7 @@ static const dav_hooks_liveprop dav_hooks_liveprop_fs;
 static const char * const dav_fs_namespace_uris[] =
 {
     "DAV:",
-    "http://apache.org/dav/props/",
+    "https://apache.org/dav/props/",
 
     NULL        /* sentinel */
 };
@@ -2210,7 +2210,7 @@ void dav_fs_gather_propsets(apr_array_header_t *uris)
 {
 #ifdef DAV_FS_HAS_EXECUTABLE
     *(const char **)apr_array_push(uris) =
-        "<http://apache.org/dav/propset/fs/1>";
+        "<https://apache.org/dav/propset/fs/1>";
 #endif
 }
 

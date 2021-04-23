@@ -12,7 +12,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -111,9 +111,9 @@ Alias "/foo" "/gaq"
 Alias "/image" "/ftp/pub/image"
     </highlight>
 
-    <p>Una petición para <code>http://example.com/image/foo.gif</code> haría que el servidor respondiera con el fichero 
+    <p>Una petición para <code>https://example.com/image/foo.gif</code> haría que el servidor respondiera con el fichero 
     <code>/ftp/pub/image/foo.gif</code>. Solo se comparan segmentos de ruta completos, así que el alias de más arriba no valdría para la petición 
-    <code>http://example.com/imagefoo.gif</code>. Para ejemplos más complejos de expresiones regulares, vea la directiva 
+    <code>https://example.com/imagefoo.gif</code>. Para ejemplos más complejos de expresiones regulares, vea la directiva 
     <directive module="mod_alias">AliasMatch</directive>.</p>
 
     <p>Tenga en cuenta que si incluye una / final en el 
@@ -257,21 +257,21 @@ AliasMatch "^/image/(.*)\.gif$" "/files/gif.images/$1.gif"
 
     <highlight language="config">
 # Redirect hacia una URL en un host diferente
-Redirect "/service" "http://foo2.example.com/service"
+Redirect "/service" "https://foo2.example.com/service"
 
 # Redirect hacia una URL en el mismo host
 Redirect "/one" "/two"
     </highlight>
 
-    <p>Si el cliente solicita <code>http://example.com/service/foo.txt</code>, se le indicará que acceda a 
-    <code>http://foo2.example.com/service/foo.txt</code> en su lugar. Esto incluye solicitudes con parámetros 
+    <p>Si el cliente solicita <code>https://example.com/service/foo.txt</code>, se le indicará que acceda a 
+    <code>https://foo2.example.com/service/foo.txt</code> en su lugar. Esto incluye solicitudes con parámetros 
     <code>GET</code>, tales como
-    <code>http://example.com/service/foo.pl?q=23&amp;a=42</code>,que será
+    <code>https://example.com/service/foo.pl?q=23&amp;a=42</code>,que será
     redirigido a
-    <code>http://foo2.example.com/service/foo.pl?q=23&amp;a=42</code>.
+    <code>https://foo2.example.com/service/foo.pl?q=23&amp;a=42</code>.
     Tenga en cuenta que los <code>POST</code> serán descartados.<br />
     Solo se comparan segmentos completos de ruta, así que el ejemplo de más arriba no coincidiría con una petición a
-    <code>http://example.com/servicefoo.txt</code>. Para comparaciones más complejas usando la 
+    <code>https://example.com/servicefoo.txt</code>. Para comparaciones más complejas usando la 
     <a href="../expr.html">sintáxis de expresión</a>, omita el argumento de URL-path tal y como se indica más abajo. Alternativamente, para coincidencias usando expresiones regulares, vea la directiva 
     <directive module="mod_alias">RedirectMatch</directive>.</p>
 
@@ -312,8 +312,8 @@ Redirect "/one" "/two"
     <em>no</em> está entre 300 and 399, el parámetro <var>URL</var> debe ser omitido. El estado debe ser un código de estado válido HTTP, conocido por el Servidor Apache HTTP (vea la función <code>send_error_response</code> en http_protocol.c).</p>
 
     <highlight language="config">
-Redirect permanent "/one" "http://example.com/two"
-Redirect 303 "/three" "http://example.com/other"
+Redirect permanent "/one" "https://example.com/two"
+Redirect 303 "/three" "https://example.com/other"
     </highlight>
 
     <p>Si se usa la directiva <directive>Redirect</directive> dentro de una sección
@@ -325,13 +325,13 @@ Redirect 303 "/three" "http://example.com/other"
 
     <highlight language="config">
 &lt;Location "/one"&gt;
-    Redirect permanent "http://example.com/two"
+    Redirect permanent "https://example.com/two"
 &lt;/Location&gt;
 &lt;Location "/three"&gt;
-    Redirect 303 "http://example.com/other"
+    Redirect 303 "https://example.com/other"
 &lt;/Location&gt;
 &lt;LocationMatch "/error/(?&lt;NUMBER&gt;[0-9]+)"&gt;
-    Redirect permanent "http://example.com/errors/%{env:MATCH_NUMBER}.html"
+    Redirect permanent "https://example.com/errors/%{env:MATCH_NUMBER}.html"
 &lt;/LocationMatch&gt;
     </highlight>
 </usage>
@@ -357,7 +357,7 @@ Redirect 303 "/three" "http://example.com/other"
     la cadena de caracteres facilitada y la usa como el nombre de fichero. Por ejemplo, para redirigir todos los ficheros GIF al mismo nombre pero del tipo JPEG en otro servidor, uno podría usar:</p>
 
     <highlight language="config">
-RedirectMatch "(.*)\.gif$" "http://other.example.com$1.jpg"
+RedirectMatch "(.*)\.gif$" "https://other.example.com$1.jpg"
     </highlight>
 
     <p>Las consideraciones relacionadas con las diferencias entre
@@ -419,7 +419,7 @@ RedirectMatch "(.*)\.gif$" "http://other.example.com$1.jpg"
 ScriptAlias "/cgi-bin/" "/web/cgi-bin/"
     </highlight>
 
-    <p>Una petición para <code>http://example.com/cgi-bin/foo</code> haría que el servidor ejecute el script <code>/web/cgi-bin/foo</code>. Esta configuración es esencialmente equivalente a:</p>
+    <p>Una petición para <code>https://example.com/cgi-bin/foo</code> haría que el servidor ejecute el script <code>/web/cgi-bin/foo</code>. Esta configuración es esencialmente equivalente a:</p>
     <highlight language="config">
 Alias "/cgi-bin/" "/web/cgi-bin/"
 &lt;Location "/cgi-bin"&gt;

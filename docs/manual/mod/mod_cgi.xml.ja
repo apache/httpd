@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -55,10 +55,10 @@
 <seealso><directive module="mod_alias">ScriptAlias</directive></seealso>
 <seealso><directive module="mod_mime">AddHandler</directive></seealso>
 <seealso><a href="../suexec.html">CGI プログラムを別のユーザ ID で実行する</a></seealso>
-<seealso><a href="http://www.ietf.org/rfc/rfc3875">CGI 規格書</a></seealso>
+<seealso><a href="https://www.ietf.org/rfc/rfc3875">CGI 規格書</a></seealso>
 
 <section id="env"><title>CGI 環境変数</title>
-    <p>サーバは <a href="http://www.ietf.org/rfc/rfc3875">CGI
+    <p>サーバは <a href="https://www.ietf.org/rfc/rfc3875">CGI
     規格</a> で決められている CGI
     環境変数を設定します。以下のものは、条件付きで設定されます。</p>
 

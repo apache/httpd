@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -153,15 +153,15 @@ RewriteRule    "^<strong>foo</strong>\.html$"  "<strong>bar</strong>.html"  [<st
 
 <highlight language="config">#Avec mod_rewrite
 RewriteEngine on
-RewriteRule   "^/docs/(.+)"  "http://nouveau.example.com/docs/$1"  [R,L]
+RewriteRule   "^/docs/(.+)"  "https://nouveau.example.com/docs/$1"  [R,L]
 </highlight>
 
 <highlight language="config">#Avec RedirectMatch
-RedirectMatch "^/docs/(.*)" "http://nouveau.example.com/docs/$1"
+RedirectMatch "^/docs/(.*)" "https://nouveau.example.com/docs/$1"
 </highlight>
 
 <highlight language="config">#Avec Redirect
-Redirect "/docs/" "http://nouveau.example.com/docs/"
+Redirect "/docs/" "https://nouveau.example.com/docs/"
 </highlight>
     </dd>
   </dl>
@@ -295,7 +295,7 @@ une section de serveur virtuel pour le/les noms d'hôte non canoniques.</p>
   ServerName undesired.example.com
   ServerAlias example.com notthis.example.com
 
-  Redirect "/" "http://www.example.com/"
+  Redirect "/" "https://www.example.com/"
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost *:80&gt;
@@ -308,7 +308,7 @@ type="section">If</directive> (versions 2.4 et ultérieures) :</p>
 
 <highlight language="config">
 &lt;If "%{HTTP_HOST} != 'www.example.com'"&gt;
-	Redirect "/" "http://www.example.com/"
+	Redirect "/" "https://www.example.com/"
 &lt;/If&gt;
 </highlight>
 
@@ -331,14 +331,14 @@ la recette suivante :</p>
 RewriteCond "%{HTTP_HOST}"   "!^www\.example\.com" [NC]
 RewriteCond "%{HTTP_HOST}"   "!^$"
 RewriteCond "%{SERVER_PORT}" "!^80$"
-RewriteRule "^/?(.*)"         "http://www.example.com:%{SERVER_PORT}/$1" [L,R,NE]
+RewriteRule "^/?(.*)"         "https://www.example.com:%{SERVER_PORT}/$1" [L,R,NE]
 </highlight>
 
 <p>Et pour un site écoutant sur le port 80</p>
 <highlight language="config">
 RewriteCond "%{HTTP_HOST}"   "!^www\.example\.com" [NC]
 RewriteCond "%{HTTP_HOST}"   "!^$"
-RewriteRule "^/?(.*)"         "http://www.example.com/$1" [L,R,NE]
+RewriteRule "^/?(.*)"         "https://www.example.com/$1" [L,R,NE]
 </highlight>
 	<p>
 	Si vous souhaitez que cette règle s'applique à tous les noms de
@@ -351,7 +351,7 @@ RewriteRule "^/?(.*)"         "http://www.example.com/$1" [L,R,NE]
 <highlight language="config">
 RewriteCond "%{HTTP_HOST}" "!^www\." [NC]
 RewriteCond "%{HTTP_HOST}" "!^$"
-RewriteRule "^/?(.*)" "http://www.%{HTTP_HOST}/$1" [L,R,NE]
+RewriteRule "^/?(.*)" "https://www.%{HTTP_HOST}/$1" [L,R,NE]
 </highlight>
 	<p>
 	Vous pouvez utiliser ce jeu de règles aussi bien dans le fichier
@@ -438,15 +438,15 @@ HostnameLookups on
 RewriteEngine on
 RewriteMap    multiplex         "txt:/path/to/map.mirrors"
 RewriteCond  "%{REMOTE_HOST}"     "([a-z]+)$ [NC]"
-RewriteRule   "^/(.*)$"  "${multiplex:<strong>%1</strong>|http://www.example.com/}$1"  [R,L]
+RewriteRule   "^/(.*)$"  "${multiplex:<strong>%1</strong>|https://www.example.com/}$1"  [R,L]
 </highlight>
 
 <example>
 ##  liste_miroirs -- Table de correspondance pays - serveurs<br />
 <br />
-de        http://www.exemple.de/<br />
-uk        http://www.exemple.uk/<br />
-com       http://www.example.com/<br />
+de        https://www.exemple.de/<br />
+uk        https://www.exemple.uk/<br />
+com       https://www.example.com/<br />
 ##EOF##
 </example>
     </dd>
@@ -539,11 +539,11 @@ RewriteRule   "^/$"  "/a-propos-de/"  [<strong>R</strong>]
 <p>Notez que l'on peut aussi y parvenir en utilisant la directive
 <directive module="mod_alias">RedirectMatch</directive> :</p>
 
-<highlight language="config">RedirectMatch "^/$" "http://example.com/a-propos-de/"</highlight>
+<highlight language="config">RedirectMatch "^/$" "https://example.com/a-propos-de/"</highlight>
 
 <p>Notez aussi que cet exemple ne réécrit que l'URL racine. En d'autres
-termes, il réécrit une requête pour <code>http://example.com/</code>,
-mais pas pour une requête <code>http://example.com/page.html</code>. Si
+termes, il réécrit une requête pour <code>https://example.com/</code>,
+mais pas pour une requête <code>https://example.com/page.html</code>. Si
 vous avez effectivement modifié la racine de vos documents - c'est à dire
 si <strong>tous</strong> vos contenus se trouvent dans un
 sous-répertoire, il est largement préférable de modifier simplement

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -16,12 +16,12 @@
 
 <link href="./images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa del sitio web</a></p>
+<p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/quickreference.html">Directivas</a> | <a href="https://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa del sitio web</a></p>
 <p class="apache">Versión 2.5 del Servidor HTTP Apache</p>
 <img alt="" src="./images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentación</a> &gt; <a href="./">Versión 2.5</a></div><div id="page-content"><div id="preamble"><h1>Compilar e Instalar</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentación</a> &gt; <a href="./">Versión 2.5</a></div><div id="page-content"><div id="preamble"><h1>Compilar e Instalar</h1>
 <div class="toplang">
 <p><span>Idiomas disponibles: </span><a href="./de/install.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/install.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
@@ -98,8 +98,8 @@ funciona</a></li>
         <td><a href="#download">Descarga</a></td>
 
         <td>Descarga la última versión 
-          desde <a href="http://httpd.apache.org/download.cgi#apache24">
-          http://httpd.apache.org/download.cgi</a>
+          desde <a href="https://httpd.apache.org/download.cgi#apache24">
+          https://httpd.apache.org/download.cgi</a>
         </td>
       </tr>
 
@@ -149,7 +149,7 @@ funciona</a></li>
     <p>Cada parte del proceso de configuración e instalación se describe detalladamente más abajo, empezando por los requisitos para compilar e instalar Apache.</p>
 
      <div class="warning">¿No se encuentra aquí su plataforma o sistema favorito?
-    <a href="http://httpd.apache.org/docs-project/">únete a colaborar y mejorar esta documentación.
+    <a href="https://httpd.apache.org/docs-project/">únete a colaborar y mejorar esta documentación.
     </a></div>
   </dd>
 </dl>
@@ -162,7 +162,7 @@ funciona</a></li>
     <dl>
       <dt>APR y APR-Util</dt>
       <dd>Asegúrate de que tiene instalado ya en su sistema APR y APR-Util. Si no es así, o no quiere utilizar la versión que le proporciona el sistema, puede descargar la última versión de ambos APR y APR-Util de
-      <a href="http://apr.apache.org/">Apache APR</a>, descomprimelo en
+      <a href="https://apr.apache.org/">Apache APR</a>, descomprimelo en
        <code>/httpd_source_tree_root/srclib/apr</code> y /httpd_source_tree_root<code>/srclib/apr-util</code>
       (cerciórate de que no existen directorios con números de versiones; por ejemplo,
       la distribución de APR debe estar en /httpd_source_tree_root/srclib/apr/) y usa el comando
@@ -172,7 +172,7 @@ funciona</a></li>
 
       <dt>Librería Compatible de expresiones regulares de Perl (PCRE)</dt>
       <dd>Esta librería es requerida, pero ya no incluido con httpd.
-      Descarga el código fuente de <a href="http://www.pcre.org/">http://www.pcre.org</a>,
+      Descarga el código fuente de <a href="https://www.pcre.org/">https://www.pcre.org</a>,
       o instala un Port o un  Paquete. Si la distrubución de su sistema no puede encontrar el escript pcre-config instalado por PCRE, seleccione utilizando el parámetro<code>--with-pcre</code>.En algunas plataformas,
       deberás instalar la correspondiente versión <code>-dev</code>
       del paquete para permitir a httpd que se genere contra la instalación de la copia del PCRE que se ha instalado.</dd>
@@ -187,8 +187,8 @@ funciona</a></li>
       use, y como no del tamaño de la página web</dd>
 
       <dt>Systema de compilación ANSI-C</dt>
-      <dd>Compruebe que tiene instalado un compilador de ANSI-C. Se recomienda el <a href="http://gcc.gnu.org/">Compilador GNU C
-      (GCC)</a> de la <a href="http://www.gnu.org/">Free Software
+      <dd>Compruebe que tiene instalado un compilador de ANSI-C. Se recomienda el <a href="https://gcc.gnu.org/">Compilador GNU C
+      (GCC)</a> de la <a href="https://www.gnu.org/">Free Software
       Foundation (FSF)</a> es el recomendado. Si no tiene instalado el GCC, entonces compruebe que
       el compilador que va a utilizar cumple con los estándares
       ANSI. Además, su <code>PATH</code> debe contener la
@@ -202,11 +202,11 @@ funciona</a></li>
       utilidad para sincronizar la hora de su sistema. Para esto,
       normalmente, se usan los programas <code>ntpdate</code> o
       <code>xntpd</code>, que están basados en el protocolo
-      "Network Time Protocol" (NTP). Consulte el<a href="http://www.ntp.org">sitio web de NTP
+      "Network Time Protocol" (NTP). Consulte el<a href="https://www.ntp.org">sitio web de NTP
       </a> para obtener más información sobre NTP y los
       servidores públicos de tiempo.</dd>
 
-      <dt><a href="http://www.perl.org/">Perl 5</a>[OPCIONAL]</dt>
+      <dt><a href="https://www.perl.org/">Perl 5</a>[OPCIONAL]</dt>
       <dd>Para algunos de los scripts de soporte como<code class="program"><a href="./programs/apxs.html">apxs</a></code> o <code class="program"><a href="./programs/dbmmanage.html">dbmmanage</a></code> (que están
       escritos en Perl) es necesario el intérprete de Perl 5 (las
       versiones 5.003 o posteriores son suficientes). Si el escript
@@ -218,7 +218,7 @@ funciona</a></li>
 <div class="section">
 <h2><a name="download" id="download">Descargar</a> <a title="Enlace permanente" href="#download" class="permalink">&para;</a></h2>
 
-    <p>Puede descargar Apache desde <a href="http://httpd.apache.org/download.cgi">la sección de
+    <p>Puede descargar Apache desde <a href="https://httpd.apache.org/download.cgi">la sección de
     descargas del sitio web de Apache</a> el cual tiene varios
     mirrors. Para la mayoría de los usuarios de Apache que tienen
     sistemas tipo Unix, se recomienda que se descarguen y compilen el
@@ -235,8 +235,8 @@ funciona</a></li>
     archivo descargado del servidor HTTP Apache está completo y
     sin modificaciones.  Esto puede hacerlo comparando el archivo
     descargado (.tgz) con su firma PGP. Instrucciones detalladas de
-    cómo hacer esto están disponibles en <a href="http://httpd.apache.org/download.cgi#verify"> la
-    sección de descargas</a> junto con un ejemplo de cómo <a href="http://httpd.apache.org/dev/verification.html">usar
+    cómo hacer esto están disponibles en <a href="https://httpd.apache.org/download.cgi#verify"> la
+    sección de descargas</a> junto con un ejemplo de cómo <a href="https://httpd.apache.org/dev/verification.html">usar
     PGP</a>.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -375,7 +375,7 @@ directorios</a> <a title="Enlace permanente" href="#configure" class="permalink"
 <div class="example"><p><code>$ vi <em>PREFIX</em>/conf/httpd.conf</code></p></div>
 
     <p>Échele un vistazo al Manual de Apache que está en
-    <code><em>PREFIX</em>/docs/manual/</code> o consulta <a href="http://httpd.apache.org/docs/trunk/">http://httpd.apache.org/docs/trunk/</a> para la versión más
+    <code><em>PREFIX</em>/docs/manual/</code> o consulta <a href="https://httpd.apache.org/docs/trunk/">https://httpd.apache.org/docs/trunk/</a> para la versión más
     reciente de este manual y su completa
     referencia de las <a href="mod/directives.html">directivas de configuracion</a> disponibles.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -389,7 +389,7 @@ funciona</a> <a title="Enlace permanente" href="#test" class="permalink">&para;<
 <div class="example"><p><code>$ <em>PREFIX</em>/bin/apachectl -k start</code></p></div>
 
     <p>Ahora debe poder acceder a su primer documento
-    bajo la URL <code>http://localhost/</code>. La página o documento que ve se encuentra en
+    bajo la URL <code>https://localhost/</code>. La página o documento que ve se encuentra en
     <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code>,
     que por norma general casi siempre será <code><em>PREFIX</em>/htdocs/</code>.
     Si quiere  <a href="stopping.html">parar</a> el servidor, puede hacerlo ejecutando:</p>
@@ -472,7 +472,7 @@ funciona</a> <a title="Enlace permanente" href="#test" class="permalink">&para;<
     de la instalación del servidor pueden diferir de lo que se indica
     en la documentación. Mientras lamentablemente, esta situación no es probable que cambie a corto plazo.</p>
 
-    <p>Una <a href="http://wiki.apache.org/httpd/DistrosDefaultLayout">descripción
+    <p>Una <a href="https://wiki.apache.org/httpd/DistrosDefaultLayout">descripción
     de estas distribuciones de terceros </a> está siendo actualizada en el servidor de la WIKI de HTTP
     Server, y debería reflejar el actual estado de éstas distribuciones de terceros. 
     Sin embargo, tendrá que familiarizarse con los procedimientos de gestión
@@ -490,7 +490,7 @@ funciona</a> <a title="Enlace permanente" href="#test" class="permalink">&para;<
 </div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comentarios</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/install.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/install.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -505,8 +505,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/install.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/quickreference.html">Directivas</a> | <a href="https://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

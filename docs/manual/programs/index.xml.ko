@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,67 +23,67 @@
 <manualpage metafile="index.xml.meta">
 <parentdocument href="../"/>
 
-  <title>¼­¹ö¿Í Áö¿ø ÇÁ·Î±×·¥</title>
+  <title>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½</title>
 
 <summary>
-    <p>¾ÆÆÄÄ¡ À¥¼­¹ö¿¡ Æ÷ÇÔµÈ ÇÁ·Î±×·¥µéÀÌ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ôµï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ï¿½Ì´ï¿½.</p>
 </summary>
 
-<section id="index"><title>¸ñ·Ï</title>
+<section id="index"><title>ï¿½ï¿½ï¿½</title>
 
     <dl>
       <dt><a href="httpd.html">httpd</a></dt>
 
-      <dd>¾ÆÆÄÄ¡ ÇÏÀÌÆÛÅØ½ºÆ® Àü¼Û ÇÁ·ÎÅäÄÝ ¼­¹ö</dd>
+      <dd>ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</dd>
 
       <dt><a href="apachectl.html">apachectl</a></dt>
 
-      <dd>¾ÆÆÄÄ¡ À¥¼­¹ö Á¶Àý ÀÎÅÍÆäÀÌ½º</dd>
+      <dd>ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì½ï¿½</dd>
 
       <dt><a href="ab.html">ab</a></dt>
 
-      <dd>¾ÆÆÄÄ¡ À¥¼­¹ö ¼º´É°Ë»ç µµ±¸</dd>
+      <dd>ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½É°Ë»ï¿½ ï¿½ï¿½ï¿½ï¿½</dd>
 
       <dt><a href="apxs.html">apxs</a></dt>
 
-      <dd>¾ÆÆÄÄ¡ È®Àå µµ±¸ (APache eXtenSion tool)</dd>
+      <dd>ï¿½ï¿½ï¿½ï¿½Ä¡ È®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (APache eXtenSion tool)</dd>
 
       <dt><a href="configure.html">configure</a></dt>
 
-      <dd>¼Ò½º Æ®¸®¸¦ ±¸¼ºÇÑ´Ù</dd>
+      <dd>ï¿½Ò½ï¿½ Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</dd>
 
       <dt><a href="dbmmanage.html">dbmmanage</a></dt>
 
-      <dd>basic authentication¿¡ »ç¿ëÇÒ DBM Çü½ÄÀÇ »ç¿ëÀÚ
-      ÀÎÁõÆÄÀÏÀ» ¸¸µé°í ¼öÁ¤ÇÑ´Ù</dd>
+      <dd>basic authenticationï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ DBM ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</dd>
 
       <dt><a href="htcacheclean.html">htcacheclean</a></dt>
-      <dd>µð½ºÅ© Ä³½¬¸¦ Ã»¼ÒÇÑ´Ù</dd>
+      <dd>ï¿½ï¿½Å© Ä³ï¿½ï¿½ï¿½ï¿½ Ã»ï¿½ï¿½ï¿½Ñ´ï¿½</dd>
 
       <dt><a href="htdigest.html">htdigest</a></dt>
 
-      <dd>digest authentication¿¡ »ç¿ëÇÒ »ç¿ëÀÚ ÀÎÁõÆÄÀÏÀ»
-      ¸¸µé°í ¼öÁ¤ÇÑ´Ù</dd>
+      <dd>digest authenticationï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</dd>
 
       <dt><a href="htpasswd.html">htpasswd</a></dt>
 
-      <dd>basic authentication¿¡ »ç¿ëÇÒ »ç¿ëÀÚ ÀÎÁõÆÄÀÏÀ» ¸¸µé°í
-      ¼öÁ¤ÇÑ´Ù</dd>
+      <dd>basic authenticationï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</dd>
 
       <dt><a href="logresolve.html">logresolve</a></dt>
 
-      <dd>¾ÆÆÄÄ¡ ·Î±×ÆÄÀÏÀÇ IP-ÁÖ¼Ò¸¦ È£½ºÆ®¸íÀ¸·Î º¯È¯ÇÑ´Ù</dd>
+      <dd>ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ IP-ï¿½Ö¼Ò¸ï¿½ È£ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½Ñ´ï¿½</dd>
 
       <dt><a href="rotatelogs.html">rotatelogs</a></dt>
 
-      <dd>¼­¹ö¸¦ Á×ÀÌÁö¾Ê°í ¾ÆÆÄÄ¡ ·Î±×¸¦ ¼øÈ¯ÇÑ´Ù</dd>
+      <dd>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê°ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½Î±×¸ï¿½ ï¿½ï¿½È¯ï¿½Ñ´ï¿½</dd>
 
       <dt><a href="suexec.html">suexec</a></dt>
 
-      <dd>½ÇÇàÀ» À§ÇØ »ç¿ëÀÚ¸¦ º¯°æÇÑ´Ù (Switch User For Exec)</dd>
+      <dd>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½ (Switch User For Exec)</dd>
 
-      <dt><a href="other.html">´Ù¸¥ ÇÁ·Î±×·¥µé</a></dt>
-      <dd>manpage°¡ ¾ø´Â Áö¿ø µµ±¸µé.</dd>
+      <dt><a href="other.html">ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½</a></dt>
+      <dd>manpageï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.</dd>
     </dl>
 </section>
 

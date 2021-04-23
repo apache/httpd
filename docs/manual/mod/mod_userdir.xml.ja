@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -31,7 +31,7 @@
 
 <summary>
 <p>このモジュールは、
-<code>http://example.com/~user/</code>
+<code>https://example.com/~user/</code>
 構文を使ってユーザ専用ディレクトリにアクセスできるようにします。</p>
 </summary>
 
@@ -81,7 +81,7 @@
     キーワードも <code>UserDir</code> に現われていなければ、
     引数はファイル名パターンとして扱われ、
     名前からディレクトリへの変換の指定を行なう時に使われます。
-    <code>http://www.example.com/~bob/one/two.html</code>
+    <code>https://www.example.com/~bob/one/two.html</code>
     へのリクエストは次のように変換されます:</p>
 
 <table>
@@ -98,11 +98,11 @@
 <table>
 <tr><th>UserDir ディレクティブ</th>
 <th>変換後のパス</th></tr>
-<tr><td>UserDir http://www.example.com/users</td><td>http://www.example.com/users/bob/one/two.html</td></tr>
+<tr><td>UserDir https://www.example.com/users</td><td>https://www.example.com/users/bob/one/two.html</td></tr>
 <tr><td>UserDir
-http://www.example.com/*/usr</td><td>http://www.example.com/bob/usr/one/two.html</td></tr>
+https://www.example.com/*/usr</td><td>https://www.example.com/bob/usr/one/two.html</td></tr>
 <tr><td>UserDir
-http://www.example.com/~*/</td><td>http://www.example.com/~bob/one/two.html</td></tr>
+https://www.example.com/~*/</td><td>https://www.example.com/~bob/one/two.html</td></tr>
 </table> 
 
 <note>
@@ -141,12 +141,12 @@ UserDir disabled user4 user5 user6
 次のようなコマンドを使うと:</p>
 
 <example>
-Userdir public_html /usr/web http://www.example.com/
+Userdir public_html /usr/web https://www.example.com/
 </example>
 
-<p>http://www.example.com/~bob/one/two.html へのリクエストはまず
+<p>https://www.example.com/~bob/one/two.html へのリクエストはまず
 ~bob/public_html/one/two.html のページを調べ、その次に
-/usr/web/bob/one/two.html を調べ、最後に http://www.example.com/bob/one/two.html
+/usr/web/bob/one/two.html を調べ、最後に https://www.example.com/bob/one/two.html
 へのリダイレクトを送ります。</p>
 
 <p>リダイレクトを加える場合は、リストの最後の選択肢でなければなりません。

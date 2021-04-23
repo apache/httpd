@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -55,7 +55,7 @@ serveur</description>
 
     <p>Une fois cette configuration effectuée, les informations du
     serveur sont disponibles à l'adresse
-    <code>http://votre-serveur.com/infos-serveur</code>.</p>
+    <code>https://votre-serveur.com/infos-serveur</code>.</p>
 </summary>
 
 <section id="security"><title>Problèmes liés à la sécurité</title>
@@ -101,7 +101,7 @@ serveur</description>
 
     <p>Il est possible d'afficher d'autres vues de la configuration en
     ajoutant un argument à la requête <code>infos-serveur</code>. Par
-    exemple, <code>http://votre-serveur.com/infos-serveur?config</code>
+    exemple, <code>https://votre-serveur.com/infos-serveur?config</code>
     affichera toutes les directives de configuration.</p>
 
     <dl>
@@ -177,7 +177,7 @@ serveur</description>
       <directive type="section" module="core"
       name="Directory">/Directory</directive>.</li>
       <li>Les directives générées par des modules tiers comme
-      <a href="http://perl.apache.org">mod_perl</a> peuvent ne pas être
+      <a href="https://perl.apache.org">mod_perl</a> peuvent ne pas être
       prises en compte.</li>
     </ul>
 </section>
@@ -197,8 +197,8 @@ module affichées par le gestionnaire server-info</description>
 
     <highlight language="config">
 AddModuleInfo mod_deflate.c 'See &lt;a \
-    href="http://httpd.apache.org/docs/&httpd.docs;/mod/mod_deflate.html"&gt;\
-    http://httpd.apache.org/docs/&httpd.docs;/mod/mod_deflate.html&lt;/a&gt;'
+    href="https://httpd.apache.org/docs/&httpd.docs;/mod/mod_deflate.html"&gt;\
+    https://httpd.apache.org/docs/&httpd.docs;/mod/mod_deflate.html&lt;/a&gt;'
     </highlight>
 </usage>
 

@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -99,7 +99,7 @@ utilisateur2  serveur_physique_utilisateur2<br />
   <p>avec</p>
 
 <example>
-http://serveur_physique_utilisateur1/u/utilisateur/chemin
+https://serveur_physique_utilisateur1/u/utilisateur/chemin
 </example>
 
       <p>il n'est ainsi pas nécessaire que tous les chemins URL soient
@@ -112,7 +112,7 @@ http://serveur_physique_utilisateur1/u/utilisateur/chemin
 <highlight language="config">
 RewriteEngine on
 RewriteMap      users-to-hosts   "txt:/path/to/map.users-to-hosts"
-RewriteRule   "^/u/([^/]+)/?(.*)"   "http://${users-to-hosts:$1|server0}/u/$1/$2"
+RewriteRule   "^/u/([^/]+)/?(.*)"   "https://${users-to-hosts:$1|server0}/u/$1/$2"
 </highlight>
     </dd>
   </dl>
@@ -192,7 +192,7 @@ RewriteRule "^(.+)\.html$"          "/regenerate_page.cgi"   [PT,L]
 <highlight language="config">
 RewriteEngine on
 RewriteMap lb "rnd:/path/to/serverlist.txt"
-RewriteRule "^/(.*)" "http://${lb:serveurs}/$1" [P,L]
+RewriteRule "^/(.*)" "https://${lb:serveurs}/$1" [P,L]
 </highlight>
 
 <p><code>liste-serveurs.txt</code> contiendra la liste des serveurs :</p>

@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,21 +23,21 @@
 <modulesynopsis metafile="mod_env.xml.meta">
 
 <name>mod_env</name>
-<description>CGI ½ºÅ©¸³Æ®³ª SSI ÆäÀÌÁö¿¡ Àü´ÞÇÒ È¯°æº¯¼ö¸¦
-¼öÁ¤ÇÑ´Ù</description>
+<description>CGI ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ SSI ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</description>
 <status>Base</status>
 <sourcefile>mod_env.c</sourcefile>
 <identifier>env_module</identifier>
 <summary>
-    <p>ÀÌ ¸ðµâÀº CGI ½ºÅ©¸³Æ®³ª SSI ÆäÀÌÁö¿¡ Àü´ÞÇÒ È¯°æº¯¼ö¸¦
-    Á¶ÀýÇÑ´Ù. À¥¼­¹ö¸¦ ½ÃÀÛÇÑ ½©¿¡¼­ È¯°æº¯¼ö¸¦ °¡Á®¿Ã ¼ö ÀÖ´Ù.
-    ¾Æ´Ï¸é ¼³Á¤°úÁ¤Áß¿¡ È¯°æº¯¼ö¸¦ ¼³Á¤ÇÏ°í Á¦°ÅÇÒ ¼ö ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ CGI ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ SSI ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.
+    ï¿½Æ´Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß¿ï¿½ È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 </summary>
-<seealso><a href="../env.html">È¯°æº¯¼ö</a></seealso>
+<seealso><a href="../env.html">È¯ï¿½æº¯ï¿½ï¿½</a></seealso>
 
 <directivesynopsis>
 <name>PassEnv</name>
-<description>½©¿¡¼­ È¯°æº¯¼ö¸¦ °¡Á®¿Â´Ù</description>
+<description>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Â´ï¿½</description>
 <syntax>PassEnv <var>env-variable</var> [<var>env-variable</var>]
 ...</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -45,10 +45,10 @@
 <override>FileInfo</override>
 
 <usage>
-    <p>À¥¼­¹ö¸¦ ½ÇÇàÇÑ ½©ÀÇ Æ¯Á¤ È¯°æº¯¼ö¸¦ CGI ½ºÅ©¸³Æ®³ª
-    SSI ÆäÀÌÁö·Î Àü´ÞÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Æ¯ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ CGI ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½
+    SSI ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <example><title>¿¹Á¦</title>
+    <example><title>ï¿½ï¿½ï¿½ï¿½</title>
       PassEnv LD_LIBRARY_PATH
     </example>
 </usage>
@@ -56,16 +56,16 @@
 
 <directivesynopsis>
 <name>SetEnv</name>
-<description>È¯°æº¯¼ö¸¦ ¼³Á¤ÇÑ´Ù</description>
+<description>È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</description>
 <syntax>SetEnv <var>env-variable</var> <var>value</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
 
 <usage>
-    <p>CGI ½ºÅ©¸³Æ®³ª SSI ÆäÀÌÁö¿¡ Àü´ÞÇÒ È¯°æº¯¼ö¸¦ ¼³Á¤ÇÑ´Ù.</p>
+    <p>CGI ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ SSI ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <example><title>¿¹Á¦</title>
+    <example><title>ï¿½ï¿½ï¿½ï¿½</title>
       SetEnv SPECIAL_PATH /foo/bin
     </example>
 </usage>
@@ -73,7 +73,7 @@
 
 <directivesynopsis>
 <name>UnsetEnv</name>
-<description>È¯°æº¯¼ö¸¦ Á¦°ÅÇÑ´Ù</description>
+<description>È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</description>
 <syntax>UnsetEnv <var>env-variable</var> [<var>env-variable</var>]
 ...</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -81,9 +81,9 @@
 <override>FileInfo</override>
 
 <usage>
-    <p>CGI ½ºÅ©¸³Æ®³ª SSI ÆäÀÌÁö¿¡ È¯°æº¯¼ö¸¦ Àü´ÞÇÏÁö ¾Ê´Â´Ù.</p>
+    <p>CGI ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ SSI ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.</p>
 
-    <example><title>¿¹Á¦</title>
+    <example><title>ï¿½ï¿½ï¿½ï¿½</title>
       UnsetEnv LD_LIBRARY_PATH
     </example>
 </usage>

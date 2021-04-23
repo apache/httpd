@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -157,8 +157,8 @@
 
     <example><title>Reverse Proxy</title>
     <highlight language="config">
-ProxyPass        "/foo" "http://foo.example.com/bar"
-ProxyPassReverse "/foo" "http://foo.example.com/bar"
+ProxyPass        "/foo" "https://foo.example.com/bar"
+ProxyPassReverse "/foo" "https://foo.example.com/bar"
     </highlight>
     </example>
 
@@ -214,24 +214,24 @@ ProxyVia On
       for a reverse proxy:</p>
 
       <highlight language="config">
-ProxyPass "/example" "http://backend.example.com" connectiontimeout=5 timeout=30
+ProxyPass "/example" "https://backend.example.com" connectiontimeout=5 timeout=30
       </highlight>
 
       <p>This will create a worker associated with the origin server URL
-      <code>http://backend.example.com</code> that will use the given timeout
+      <code>https://backend.example.com</code> that will use the given timeout
       values. All timeouts use the <a href="directive-dict.html#Syntax">time-interval</a>
       directive syntax. When used in a forward proxy, workers are usually defined
       via the <directive module="mod_proxy">ProxySet</directive> directive:</p>
 
       <highlight language="config">
-          ProxySet http://backend.example.com connectiontimeout=5 timeout=30
+          ProxySet https://backend.example.com connectiontimeout=5 timeout=30
       </highlight>
 
       <p>or alternatively using <directive module="mod_proxy">Proxy</directive>
       and <directive module="mod_proxy">ProxySet</directive>:</p>
 
       <highlight language="config">
-&lt;Proxy http://backend.example.com&gt;
+&lt;Proxy https://backend.example.com&gt;
   ProxySet connectiontimeout=5 timeout=30
 &lt;/Proxy&gt;
       </highlight>
@@ -251,8 +251,8 @@ ProxyPass "/example" "http://backend.example.com" connectiontimeout=5 timeout=30
       origin server including any path components given:</p>
 
      <highlight language="config">
-ProxyPass "/examples" "http://backend.example.com/examples"
-ProxyPass "/docs"     "http://backend.example.com/docs"
+ProxyPass "/examples" "https://backend.example.com/examples"
+ProxyPass "/docs"     "https://backend.example.com/docs"
       </highlight>
 
       <p>This example defines two different workers, each using a separate
@@ -264,8 +264,8 @@ ProxyPass "/docs"     "http://backend.example.com/docs"
         worker defined later in the configuration file. In the following example</p>
 
         <highlight language="config">
-ProxyPass "/apps"     "http://backend.example.com/" timeout=60
-ProxyPass "/examples" "http://backend.example.com/examples" timeout=10
+ProxyPass "/apps"     "https://backend.example.com/" timeout=60
+ProxyPass "/examples" "https://backend.example.com/examples" timeout=10
         </highlight>
 
         <p>the second worker isn't actually created. Instead the first
@@ -286,7 +286,7 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10
       <note type="warning"><title>Host part in the URL</title>
         <p>The host part needs to start with a letter [a-z]. For example:</p>
         <highlight language="config">
-ProxyPass "/apps"     "http://127"
+ProxyPass "/apps"     "https://127"
         </highlight>
         <p>is not valid and will cause an error while processing a request that
         maps the path.</p>
@@ -380,8 +380,8 @@ ProxyPass "/apps"     "http://127"
       should be accessed directly.</p>
 
       <p>Users within an intranet tend to omit the local domain name from their
-      WWW requests, thus requesting "http://somehost/" instead of
-      <code>http://somehost.example.com/</code>. Some commercial proxy servers
+      WWW requests, thus requesting "https://somehost/" instead of
+      <code>https://somehost.example.com/</code>. Some commercial proxy servers
       let them get away with this and simply serve the request, implying a
       configured local domain. When the <directive module="mod_proxy"
       >ProxyDomain</directive> directive is used and the server is <a
@@ -404,7 +404,7 @@ ProxyPass "/apps"     "http://127"
 
       <highlight language="config">
 &lt;Location "/buggyappserver/"&gt;
-  ProxyPass "http://buggyappserver:7001/foo/"
+  ProxyPass "https://buggyappserver:7001/foo/"
   SetEnv force-proxy-request-1.0 1
   SetEnv proxy-nokeepalive 1
 &lt;/Location&gt;
@@ -516,7 +516,7 @@ ProxyPass "/apps"     "http://127"
     filter when they are sent through the proxy server:</p>
 
    <highlight language="config">
-&lt;Proxy http://example.com/foo/*&gt;
+&lt;Proxy https://example.com/foo/*&gt;
   SetOutputFilter INCLUDES
 &lt;/Proxy&gt;
     </highlight>
@@ -537,9 +537,9 @@ ProxyPass "/apps"     "http://127"
       <p>A backend URL matches the configuration section if it begins with the
       the <var>wildcard-url</var> string, even if the last path segment in the
       directive only matches a prefix of the backend URL.  For example,
-      &lt;Proxy http://example.com/foo&gt; matches all of
-      http://example.com/foo, http://example.com/foo/bar, and
-      http://example.com/foobar.  The matching of the final URL differs
+      &lt;Proxy https://example.com/foo&gt; matches all of
+      https://example.com/foo, https://example.com/foo/bar, and
+      https://example.com/foobar.  The matching of the final URL differs
       from the behavior of the <directive type="section" module="core"
       >Location</directive> section, which for purposes of this note
       treats the final path component as if it ended in a slash.</p>
@@ -604,7 +604,7 @@ proxied resources</description>
     (unnamed) backreferences are ignored. Use named groups instead.</p>
 
 <highlight language="config">
-&lt;ProxyMatch ^http://(?&lt;sitename&gt;[^/]+)&gt;
+&lt;ProxyMatch ^https://(?&lt;sitename&gt;[^/]+)&gt;
     require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/ProxyMatch&gt;
 </highlight>
@@ -697,9 +697,9 @@ context in 2.3.3 and later.</compatibility>
 
     <example><title>Example</title>
     <highlight language="config">
-ProxyRemote http://goodguys.example.com/ http://mirrorguys.example.com:8000
-ProxyRemote * http://cleverproxy.localdomain
-ProxyRemote ftp http://ftpproxy.mydomain:8080
+ProxyRemote https://goodguys.example.com/ https://mirrorguys.example.com:8000
+ProxyRemote * https://cleverproxy.localdomain
+ProxyRemote ftp https://ftpproxy.mydomain:8080
     </highlight>
     </example>
 
@@ -854,15 +854,15 @@ expressions</description>
     <example>
         <highlight language="config">
 &lt;Proxy balancer://hotcluster&gt;
-    BalancerMember http://www2.example.com:8080 loadfactor=1
-    BalancerMember http://www3.example.com:8080 loadfactor=2
+    BalancerMember https://www2.example.com:8080 loadfactor=1
+    BalancerMember https://www3.example.com:8080 loadfactor=2
     ProxySet lbmethod=bytraffic
 &lt;/Proxy&gt;
       </highlight>
     </example>
 
     <highlight language="config">
-&lt;Proxy http://backend&gt;
+&lt;Proxy https://backend&gt;
     ProxySet keepalive=On
 &lt;/Proxy&gt;
     </highlight>
@@ -921,7 +921,7 @@ expressions</description>
     <p>In 2.4.7 and later, support for using a Unix Domain Socket is available by using a target
     which prepends <code>unix:/path/lis.sock|</code>. For example, to proxy
     HTTP and target the UDS at /home/www.socket, you would use
-    <code>unix:/home/www.socket|http://localhost/whatever/</code>. Since
+    <code>unix:/home/www.socket|https://localhost/whatever/</code>. Since
     the socket is local, the hostname used (in this case <code>localhost</code>)
     is moot, but it is passed as the Host: header value of the request.</p>
 
@@ -940,18 +940,18 @@ expressions</description>
     however, ProxyPass does not interpret the regexp as such, so it is necessary
     to use <directive>ProxyPassMatch</directive> in this situation instead.</p>
 
-    <p>Suppose the local server has address <code>http://example.com/</code>;
+    <p>Suppose the local server has address <code>https://example.com/</code>;
     then</p>
 
     <highlight language="config">
 &lt;Location "/mirror/foo/"&gt;
-    ProxyPass "http://backend.example.com/"
+    ProxyPass "https://backend.example.com/"
 &lt;/Location&gt;
     </highlight>
 
     <p>will cause a local request for
-    <code>http://example.com/mirror/foo/bar</code> to be internally converted
-    into a proxy request to <code>http://backend.example.com/bar</code>.</p>
+    <code>https://example.com/mirror/foo/bar</code> to be internally converted
+    into a proxy request to <code>https://backend.example.com/bar</code>.</p>
 
     <p>If you require a more flexible reverse-proxy configuration, see the
     <directive module="mod_rewrite">RewriteRule</directive> directive with the
@@ -963,7 +963,7 @@ expressions</description>
     <a href="mod_proxy_balancer.html#balancer_manager">Balancer Manager</a> interface:</p>
 
     <highlight language="config">
-        ProxyPass "/mirror/foo/" "http://backend.example.com/"
+        ProxyPass "/mirror/foo/" "https://backend.example.com/"
     </highlight>
 
     <note type="warning">
@@ -979,7 +979,7 @@ expressions</description>
 
     <highlight language="config">
 &lt;Location "/mirror/foo/"&gt;
-    ProxyPass "http://backend.example.com/"
+    ProxyPass "https://backend.example.com/"
 &lt;/Location&gt;
 &lt;Location "/mirror/foo/i"&gt;
     ProxyPass "!"
@@ -988,7 +988,7 @@ expressions</description>
 
     <highlight language="config">
 ProxyPass "/mirror/foo/i" "!"
-ProxyPass "/mirror/foo"   "http://backend.example.com"
+ProxyPass "/mirror/foo"   "https://backend.example.com"
     </highlight>
 
     <p>will proxy all requests to <code>/mirror/foo</code> to
@@ -999,7 +999,7 @@ ProxyPass "/mirror/foo"   "http://backend.example.com"
     <highlight language="config">
 ProxyPass "/mirror/foo/i" "!"
 &lt;Location "/mirror/foo/"&gt;
-    ProxyPass "http://backend.example.com/"
+    ProxyPass "https://backend.example.com/"
 &lt;/Location&gt;
     </highlight>
     <p>In this case, a request to <code>/mirror/foo/i</code> will get proxied,
@@ -1064,7 +1064,7 @@ ProxyPass "/mirror/foo/i" "!"
 
     <example><title>Example</title>
         <highlight language="config">
-ProxyPass "/example" "http://backend.example.com" max=20 ttl=120 retry=300
+ProxyPass "/example" "https://backend.example.com" max=20 ttl=120 retry=300
         </highlight>
     </example>
 
@@ -1391,7 +1391,7 @@ ProxyPass "/example" "http://backend.example.com" max=20 ttl=120 retry=300
     </table>
     <p>A sample balancer setup:</p>
     <highlight language="config">
-ProxyPass "/special-area" "http://special.example.com" smax=5 max=10
+ProxyPass "/special-area" "https://special.example.com" smax=5 max=10
 ProxyPass "/"             "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofailover=On
 &lt;Proxy balancer://mycluster&gt;
     BalancerMember ajp://1.2.3.4:8009
@@ -1468,7 +1468,7 @@ RewriteCond %{HTTPS} =on
 RewriteRule . - [E=protocol:https]
 
 RewriteRule ^/mirror/foo/(.*) %{ENV:protocol}://backend.example.com/$1 [P]
-ProxyPassReverse  "/mirror/foo/" "http://backend.example.com/"
+ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"
 ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"
     </highlight>
 </usage>
@@ -1493,28 +1493,28 @@ ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"
     <note><strong>Note: </strong>This directive cannot be used within a
     <code>&lt;Directory&gt;</code> context.</note>
 
-    <p>Suppose the local server has address <code>http://example.com/</code>;
+    <p>Suppose the local server has address <code>https://example.com/</code>;
     then</p>
 
     <highlight language="config">
-ProxyPassMatch "^/(.*\.gif)$" "http://backend.example.com/$1"
+ProxyPassMatch "^/(.*\.gif)$" "https://backend.example.com/$1"
     </highlight>
 
     <p>will cause a local request for
-    <code>http://example.com/foo/bar.gif</code> to be internally converted
-    into a proxy request to <code>http://backend.example.com/foo/bar.gif</code>.</p>
+    <code>https://example.com/foo/bar.gif</code> to be internally converted
+    into a proxy request to <code>https://backend.example.com/foo/bar.gif</code>.</p>
     <note><title>Note</title>
       <p>The URL argument must be parsable as a URL <em>before</em> regexp
       substitutions (as well as after).  This limits the matches you can use.
       For instance, if we had used</p>
       <highlight language="config">
-ProxyPassMatch "^(/.*\.gif)$" "http://backend.example.com:8000$1"
+ProxyPassMatch "^(/.*\.gif)$" "https://backend.example.com:8000$1"
       </highlight>
       <p>in our previous example, it would fail with a syntax error
       at server startup.  This is a bug (PR 46665 in the ASF bugzilla),
       and the workaround is to reformulate the match:</p>
       <highlight language="config">
-ProxyPassMatch "^/(.*\.gif)$" "http://backend.example.com:8000/$1"
+ProxyPassMatch "^/(.*\.gif)$" "https://backend.example.com:8000/$1"
       </highlight>
     </note>
     <p>The <code>!</code> directive is useful in situations where you don't want
@@ -1594,23 +1594,23 @@ proxied server</description>
     </p>
 
     <p>For example, suppose the local server has address
-    <code>http://example.com/</code>; then</p>
+    <code>https://example.com/</code>; then</p>
 
     <highlight language="config">
-ProxyPass         "/mirror/foo/" "http://backend.example.com/"
-ProxyPassReverse  "/mirror/foo/" "http://backend.example.com/"
+ProxyPass         "/mirror/foo/" "https://backend.example.com/"
+ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"
 ProxyPassReverseCookieDomain  backend.example.com  public.example.com
 ProxyPassReverseCookiePath  "/"  "/mirror/foo/"
     </highlight>
 
     <p>will not only cause a local request for the
-    <code>http://example.com/mirror/foo/bar</code> to be internally converted
-    into a proxy request to <code>http://backend.example.com/bar</code>
+    <code>https://example.com/mirror/foo/bar</code> to be internally converted
+    into a proxy request to <code>https://backend.example.com/bar</code>
     (the functionality which <code>ProxyPass</code> provides here).
     It also takes care of redirects which the server <code>backend.example.com</code> sends
-    when redirecting <code>http://backend.example.com/bar</code> to
-    <code>http://backend.example.com/quux</code> . Apache httpd adjusts this to
-    <code>http://example.com/mirror/foo/quux</code> before forwarding the HTTP
+    when redirecting <code>https://backend.example.com/bar</code> to
+    <code>https://backend.example.com/quux</code> . Apache httpd adjusts this to
+    <code>https://example.com/mirror/foo/quux</code> before forwarding the HTTP
     redirect response to the client. Note that the hostname used for
     constructing the URL is chosen in respect to the setting of the <directive
     module="core">UseCanonicalName</directive> directive.</p>
@@ -1854,7 +1854,7 @@ directly</description>
 
     <example><title>Example</title>
     <highlight language="config">
-ProxyRemote  *  http://firewall.example.com:81
+ProxyRemote  *  https://firewall.example.com:81
 NoProxy         .example.com 192.168.112.0/21
     </highlight>
     </example>
@@ -1995,7 +1995,7 @@ NoProxy         .example.com 192.168.112.0/21
 
     <example><title>Example</title>
     <highlight language="config">
-ProxyRemote  "*"  "http://firewall.example.com:81"
+ProxyRemote  "*"  "https://firewall.example.com:81"
 NoProxy           ".example.com" "192.168.112.0/21"
 ProxyDomain       ".example.com"
       </highlight>
@@ -2016,7 +2016,7 @@ header for proxied requests</description>
     <p>This directive controls the use of the <code>Via:</code> HTTP
     header by the proxy. Its intended use is to control the flow of
     proxy requests along a chain of proxy servers.  See <a
-    href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a> (HTTP/1.1), section
+    href="https://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a> (HTTP/1.1), section
     14.45 for an explanation of <code>Via:</code> header lines.</p>
 
     <ul>

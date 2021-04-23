@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -84,7 +84,7 @@ sudo service apache2 start
       <tr>
         <td><a href="#download">Download</a></td>
 
-        <td>Download the latest release from <a href="http://httpd.apache.org/download.cgi#apache24">http://httpd.apache.org/download.cgi</a>
+        <td>Download the latest release from <a href="https://httpd.apache.org/download.cgi#apache24">https://httpd.apache.org/download.cgi</a>
         </td>
       </tr>
 
@@ -142,7 +142,7 @@ sudo service apache2 start
     </dl>
 
     <note type="warning">Don't see your favorite platform mentioned
-    here? <a href="http://httpd.apache.org/docs-project/">Come help us
+    here? <a href="https://httpd.apache.org/docs-project/">Come help us
     improve this doc.</a></note>
 
 </section>
@@ -156,7 +156,7 @@ sudo service apache2 start
       <dd>Make sure you have APR and APR-Util already installed on
       your system. If you don't, or prefer to not use the system-provided
       versions, download the latest versions of both APR and APR-Util
-      from <a href="http://apr.apache.org/">Apache APR</a>, unpack
+      from <a href="https://apr.apache.org/">Apache APR</a>, unpack
       them into <code>/httpd_source_tree_root/srclib/apr</code> and <code>/httpd_source_tree_root/srclib/apr-util</code>
       (be sure the directory names do not have version numbers; for example,
       the APR distribution must be under /httpd_source_tree_root/srclib/apr/) and use
@@ -167,7 +167,7 @@ sudo service apache2 start
 
       <dt>Perl-Compatible Regular Expressions Library (PCRE)</dt>
       <dd>This library is required but not longer bundled with httpd.
-      Download the source code from <a href="http://www.pcre.org/">http://www.pcre.org</a>,
+      Download the source code from <a href="https://www.pcre.org/">https://www.pcre.org</a>,
       or install a Port or Package.  If your build system can't find
       the pcre-config script installed by the PCRE build, point to it
       using the <code>--with-pcre</code> parameter.  On some platforms,
@@ -185,9 +185,9 @@ sudo service apache2 start
 
       <dt>ANSI-C Compiler and Build System</dt>
       <dd>Make sure you have an ANSI-C compiler installed. The <a
-      href="http://gcc.gnu.org/">GNU C
+      href="https://gcc.gnu.org/">GNU C
       compiler (GCC)</a> from the <a
-      href="http://www.gnu.org/">Free Software Foundation (FSF)</a>
+      href="https://www.gnu.org/">Free Software Foundation (FSF)</a>
       is recommended. If you don't have GCC
       then at least make sure your vendor's compiler is ANSI
       compliant. In addition, your <code>PATH</code> must contain
@@ -199,11 +199,11 @@ sudo service apache2 start
       synchronization facility on your system. Usually the
       <code>ntpdate</code> or <code>xntpd</code> programs are used for
       this purpose which are based on the Network Time Protocol (NTP).
-      See the <a href="http://www.ntp.org">NTP
+      See the <a href="https://www.ntp.org">NTP
       homepage</a> for more details about NTP software and public
       time servers.</dd>
 
-      <dt><a href="http://www.perl.org/">Perl 5</a>
+      <dt><a href="https://www.perl.org/">Perl 5</a>
       [OPTIONAL]</dt>
       <dd>For some of the support scripts like <program>
       apxs</program> or <program>dbmmanage</program> (which are
@@ -218,7 +218,7 @@ sudo service apache2 start
 <section id="download"><title>Download</title>
 
     <p>The Apache HTTP Server can be downloaded from the <a
-    href="http://httpd.apache.org/download.cgi">Apache HTTP Server
+    href="https://httpd.apache.org/download.cgi">Apache HTTP Server
     download site</a>, which lists several mirrors.  Most users of
     Apache on unix-like systems will be better off downloading and
     compiling a source version.  The build process (described below) is
@@ -231,9 +231,9 @@ sudo service apache2 start
     complete and unmodified version of the Apache HTTP Server. This
     can be accomplished by testing the downloaded tarball against the
     PGP signature.  Details on how to do this are available on the <a
-    href="http://httpd.apache.org/download.cgi#verify">download
+    href="https://httpd.apache.org/download.cgi#verify">download
     page</a> and an extended example is available describing the <a
-    href="http://httpd.apache.org/dev/verification.html">use of
+    href="https://httpd.apache.org/dev/verification.html">use of
     PGP</a>.</p>
 
 </section>
@@ -365,8 +365,8 @@ $ tar xvf httpd-<em>NN</em>.tar
 
     <p>Have a look at the Apache manual under
     <code><em>PREFIX</em>/docs/manual/</code> or consult <a
-    href="http://httpd.apache.org/docs/&httpd.docs;/"
-    >http://httpd.apache.org/docs/&httpd.docs;/</a> for the most recent
+    href="https://httpd.apache.org/docs/&httpd.docs;/"
+    >https://httpd.apache.org/docs/&httpd.docs;/</a> for the most recent
     version of this manual and a complete reference of available <a
     href="mod/directives.html">configuration directives</a>.</p>
 </section>
@@ -379,7 +379,7 @@ $ tar xvf httpd-<em>NN</em>.tar
 <example>$ <em>PREFIX</em>/bin/apachectl -k start</example>
 
     <p>You should then be able to request your first document
-    via the URL <code>http://localhost/</code>. The web page you see is located
+    via the URL <code>https://localhost/</code>. The web page you see is located
     under the <directive module="core">DocumentRoot</directive>,
     which will usually be <code><em>PREFIX</em>/htdocs/</code>.
     Then <a href="stopping.html">stop</a> the server again by
@@ -459,7 +459,7 @@ $ tar xvf httpd-<em>NN</em>.tar
     soon.</p>
 
     <p>A <a
-    href="http://wiki.apache.org/httpd/DistrosDefaultLayout">description
+    href="https://wiki.apache.org/httpd/DistrosDefaultLayout">description
     of these third-party distributions</a> is maintained in the HTTP
     Server wiki, and should reflect the current state of these
     third-party distributions. However, you will need to familiarize

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
 <meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -17,83 +17,83 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">¸ðµâ</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">ï¿½ï¿½ï¿½</a></div>
 <div id="page-content">
-<div id="preamble"><h1>¾ÆÆÄÄ¡ ¸ðµâ mod_imagemap</h1>
+<div id="preamble"><h1>ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ mod_imagemap</h1>
 <div class="toplang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/mod/mod_imagemap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/mod/mod_imagemap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_imagemap.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/mod/mod_imagemap.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">ÀÌ ¹®¼­´Â ÃÖ½ÅÆÇ ¹ø¿ªÀÌ ¾Æ´Õ´Ï´Ù.
-            ÃÖ±Ù¿¡ º¯°æµÈ ³»¿ëÀº ¿µ¾î ¹®¼­¸¦ Âü°íÇÏ¼¼¿ä.</div>
-<table class="module"><tr><th><a href="module-dict.html#Description">¼³¸í:</a></th><td>¼­¹öÃø ÀÌ¹ÌÁö¸Ê(imagemap) Ã³¸®</td></tr>
-<tr><th><a href="module-dict.html#Status">»óÅÂ:</a></th><td>Base</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">¸ðµâ¸í:</a></th><td>imagemap_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">¼Ò½ºÆÄÀÏ:</a></th><td>mod_imagemap.c</td></tr></table>
-<h3>¿ä¾à</h3>
+<div class="outofdate">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Õ´Ï´ï¿½.
+            ï¿½Ö±Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½(imagemap) Ã³ï¿½ï¿½</td></tr>
+<tr><th><a href="module-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Base</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">ï¿½ï¿½ï¿½ï¿½:</a></th><td>imagemap_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">ï¿½Ò½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>mod_imagemap.c</td></tr></table>
+<h3>ï¿½ï¿½ï¿½</h3>
 
-    <p>ÀÌ ¸ðµâÀº <code>imagemap</code> CGI ÇÁ·Î±×·¥À» ´ë½ÅÇÏ¿©
-    <code>.map</code> ÆÄÀÏÀ» Ã³¸®ÇÑ´Ù. ÀÌ ¸ðµâÀº (<code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code>³ª <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code>¸¦ »ç¿ëÇÏ¿©)
-    <code>imap-file</code> ÇÚµé·¯¸¦ »ç¿ëÇÏµµ·Ï ¼³Á¤ÇÑ µð·ºÅä¸®³ª
-    ¹®¼­¸¦ Ã³¸®ÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ <code>imagemap</code> CGI ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½
+    <code>.map</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ (<code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code>ï¿½ï¿½ <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½)
+    <code>imap-file</code> ï¿½Úµé·¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <p>¾Æ·¡ Áö½Ã¾î´Â <code>.map</code>À¸·Î ³¡³ª´Â ÆÄÀÏÀ» ÀÌ¹ÌÁö¸Ê
-    ÆÄÀÏ·Î ¼³Á¤ÇÑ´Ù.</p>
+    <p>ï¿½Æ·ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ <code>.map</code>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½Ï·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
     <div class="example"><p><code>AddHandler imap-file map</code></p></div>
 
-    <p>¾ÆÁ÷µµ ¾Æ·¡¿Í °°Àº ¼³Á¤À» Áö¿øÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
     <div class="example"><p><code>AddType application/x-httpd-imap map</code></p></div>
 
-    <p>±×·¯³ª ¿ì¸®´Â Á¡Â÷ "¼­¹ö¿¡°Ô Æ¯º°ÇÑ ÀÇ¹Ì°¡ ÀÖ´Â MIME
-    type"À» Á¦°ÅÇÏ·Á°í ÇÏ±â¶§¹®¿¡ ÀÌ ¹æ¹ýÀº ¾ø¾îÁú °ÍÀÌ´Ù.</p>
+    <p>ï¿½×·ï¿½ï¿½ï¿½ ï¿½ì¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Æ¯ï¿½ï¿½ï¿½ï¿½ ï¿½Ç¹Ì°ï¿½ ï¿½Ö´ï¿½ MIME
+    type"ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ ï¿½Ï±â¶§ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½.</p>
 </div>
-<div id="quickview"><h3>ÁÖÁ¦</h3>
+<div id="quickview"><h3>ï¿½ï¿½ï¿½ï¿½</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#features">»õ·Î¿î ±â´É</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#imapfile">ÀÌ¹ÌÁö¸Ê ÆÄÀÏ</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#example">¸ÊÆÄÀÏ ¿¹Á¦</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#referencing">¸ÊÆÄÀÏ »ç¿ëÇÏ±â</a></li>
-</ul><h3 class="directives">Áö½Ã¾îµé</h3>
+<li><img alt="" src="../images/down.gif" /> <a href="#features">ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#imapfile">ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#example">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#referencing">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï±ï¿½</a></li>
+</ul><h3 class="directives">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#imapbase">ImapBase</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#imapdefault">ImapDefault</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#imapmenu">ImapMenu</a></li>
 </ul>
-<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_imagemap">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_imagemap">Report a bug</a></li></ul><h3>Âü°í</h3>
+<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_imagemap">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_imagemap">Report a bug</a></li></ul><h3>ï¿½ï¿½ï¿½ï¿½</h3>
 <ul class="seealso">
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="features" id="features">»õ·Î¿î ±â´É</a> <a title="Permanent link" href="#features" class="permalink">&para;</a></h2>
+<h2><a name="features" id="features">ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½</a> <a title="Permanent link" href="#features" class="permalink">&para;</a></h2>
 
-    <p>ÀÌ¹ÌÁö¸Ê ¸ðµâ¿¡´Â ÀÌÀü ÀÌ¹ÌÁö¸Ê ÇÁ·Î±×·¥¿¡´Â ¾ø´Â ¸î°¡Áö
-    »õ·Î¿î ±â´ÉÀÌ ÀÖ´Ù.</p>
+    <p>ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½â¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½î°¡ï¿½ï¿½
+    ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
     <ul>
-      <li>Referer: Á¤º¸¿¡ »ó´ëÀûÀÎ URL ÂüÁ¶.</li>
+      <li>Referer: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ URL ï¿½ï¿½ï¿½ï¿½.</li>
 
-      <li>»õ·Î¿î <code>base</code> ¸ÊÁö½Ã¾î¸¦ »ç¿ëÇÏ¿© ±âº»
-      <code>&lt;base&gt;</code> ÁöÁ¤.</li>
+      <li>ï¿½ï¿½ï¿½Î¿ï¿½ <code>base</code> ï¿½ï¿½ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½âº»
+      <code>&lt;base&gt;</code> ï¿½ï¿½ï¿½ï¿½.</li>
 
-      <li><code>imagemap.conf</code> ÆÄÀÏ ÇÊ¿ä¾øÀ½.</li>
+      <li><code>imagemap.conf</code> ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ï¿½.</li>
 
-      <li>Á¡(point) ÂüÁ¶.</li>
+      <li>ï¿½ï¿½(point) ï¿½ï¿½ï¿½ï¿½.</li>
 
-      <li>ÀÌ¹ÌÁö¸Ê ¸Þ´º Á¶Á¤ °¡´É.</li>
+      <li>ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Þ´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</li>
     </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="imapfile" id="imapfile">ÀÌ¹ÌÁö¸Ê ÆÄÀÏ</a> <a title="Permanent link" href="#imapfile" class="permalink">&para;</a></h2>
+<h2><a name="imapfile" id="imapfile">ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a> <a title="Permanent link" href="#imapfile" class="permalink">&para;</a></h2>
 
-    <p>ÀÌ¹ÌÁö¸Ê ÆÄÀÏÀº ¾Æ·¡¿Í °°Àº Çü½ÄÀ¸·Î ÀÛ¼ºÇÑ´Ù.</p>
+    <p>ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Û¼ï¿½ï¿½Ñ´ï¿½.</p>
 
     <div class="example"><p><code>
       directive value [<var>x</var>,<var>y</var> ...]<br />
@@ -102,167 +102,167 @@
       directive value <var>x</var>,<var>y</var> ... "<var>Menu text</var>"
     </code></p></div>
 
-    <p>directive´Â <code>base</code>, <code>default</code>,
+    <p>directiveï¿½ï¿½ <code>base</code>, <code>default</code>,
     <code>poly</code>, <code>circle</code>, <code>rect</code>,
-    <code>point</code> Áß ÇÏ³ª´Ù. value¿¡´Â Àý´ë URLÀÌ³ª »ó´ë
-    URL È¤Àº ¾Æ·¡¿¡¼­ ¿­°ÅÇÒ Æ¯¼ö°ªÀ» »ç¿ëÇÑ´Ù. ÁÂÇ¥´Â °ø¹éÀ¸·Î
-    ±¸ºÐÇÑ <code><var>x</var>,<var>y</var></code> ½ÖÀÌ´Ù. µû¿ÈÇ¥·Î
-    ¹­Àº ¹®±¸´Â ÀÌ¹ÌÁö¸Ê ¸Þ´º¸¦ ¸¸µé¶§ ¸µÅ© Á¦¸ñÀ¸·Î »ç¿ëÇÑ´Ù.
-    '#'·Î ½ÃÀÛÇÏ´Â ÁÙÀº ÁÖ¼®ÀÌ´Ù.</p>
+    <code>point</code> ï¿½ï¿½ ï¿½Ï³ï¿½ï¿½ï¿½. valueï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ URLï¿½Ì³ï¿½ ï¿½ï¿½ï¿½
+    URL È¤ï¿½ï¿½ ï¿½Æ·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Æ¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code><var>x</var>,<var>y</var></code> ï¿½ï¿½ï¿½Ì´ï¿½. ï¿½ï¿½ï¿½ï¿½Ç¥ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Þ´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½é¶§ ï¿½ï¿½Å© ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+    '#'ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½ï¿½Ì´ï¿½.</p>
 
-    <h3><a name="imapfile.directives" id="imapfile.directives">ÀÌ¹ÌÁö¸Ê ÆÄÀÏ Áö½Ã¾î</a></h3>
-      <p>ÀÌ¹ÌÁö¸Ê ÆÄÀÏ¿¡¼­ 6°¡Áö Áö½Ã¾î¸¦ »ç¿ëÇÒ ¼ö ÀÖ´Ù. Áö½Ã¾î´Â
-      Æ¯º°ÇÑ ¼ø¼­¾øÀÌ »ç¿ëÇÒ ¼ö ÀÖÁö¸¸, ÀÌ¹ÌÁö¸Ê ÆÄÀÏ¿¡ ³ª¿Â
-      ¼ø¼­´ë·Î Ã³¸®ÇÑ´Ù.</p>
+    <h3><a name="imapfile.directives" id="imapfile.directives">ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½</a></h3>
+      <p>ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ 6ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½
+      Æ¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
       <dl>
-      <dt><code>base</code> Áö½Ã¾î</dt>
+      <dt><code>base</code> ï¿½ï¿½ï¿½Ã¾ï¿½</dt>
 
       <dd><p><code>&lt;base href="<var>value</var>"&gt;</code>
-      ±â´ÉÀ» ÇÑ´Ù. ¸ÊÆÄÀÏ¿¡¼­ ³ª¿À´Â URLÀº Àý´ë URLÀÌ ¾Æ´Ï¶ó¸é
-      ÀÌ °ª¿¡ »ó´ë URL·Î Ãë±ÞÇÑ´Ù. <code>base</code> Áö½Ã¾î´Â
-      <code>.htaccess</code> ÆÄÀÏÀÌ³ª ¼­¹ö¼³Á¤ÆÄÀÏ¿¡¼­ ¼³Á¤ÇÑ
-      <code class="directive"><a href="#imapbase">ImapBase</a></code> °ªÀ»
-      ¹«½ÃÇÑ´Ù. <code class="directive">ImapBase</code> ¼³Á¤Áö½Ã¾î°¡
-      ¾ø´Ù¸é ±âº» <code>base</code> °ªÀº
-      <code>http://server_name/</code>ÀÌ´Ù.</p>
-      <p><code>base_uri</code>´Â <code>base</code>¿Í °°´Ù. URL¿¡¼­
-      ¸¶Áö¸· ½½·¡½¬¸¦ ÀØÁö¸¶¶ó.</p></dd>
+      ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ URLï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ URLï¿½ï¿½ ï¿½Æ´Ï¶ï¿½ï¿½
+      ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ URLï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <code>base</code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½
+      <code>.htaccess</code> ï¿½ï¿½ï¿½ï¿½ï¿½Ì³ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      <code class="directive"><a href="#imapbase">ImapBase</a></code> ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <code class="directive">ImapBase</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã¾î°¡
+      ï¿½ï¿½ï¿½Ù¸ï¿½ ï¿½âº» <code>base</code> ï¿½ï¿½ï¿½ï¿½
+      <code>https://server_name/</code>ï¿½Ì´ï¿½.</p>
+      <p><code>base_uri</code>ï¿½ï¿½ <code>base</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½. URLï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.</p></dd>
 
-      <dt><code>default</code> Áö½Ã¾î</dt>
+      <dt><code>default</code> ï¿½ï¿½ï¿½Ã¾ï¿½</dt>
 
-      <dd>ÇØ´ç ÁÂÇ¥°¡ <code>poly</code>, <code>circle</code>,
-      <code>rect</code> Áö½Ã¾î¿¡ ÇØ´çÇÏÁö ¾Ê°í <code>point</code>
-      Áö½Ã¾î¸¦ »ç¿ëÇÏÁö ¾ÊÀº °æ¿ì Çàµ¿À» ÁöÁ¤ÇÑ´Ù. <code class="directive"><a href="#imapdefault">ImapDefault</a></code> ¼³Á¤ÀÌ ¾ø´Ù¸é
-      ±âº»°ªÀº <code>204 No Content</code> »óÅÂÄÚµå¸¦ ¹ÝÈ¯ÇÏ´Â
-      <code>nocontent</code>ÀÌ´Ù. ÀÌ °æ¿ì Å¬¶óÀÌ¾ðÆ®´Â µ¿ÀÏÇÑ
-      ÆäÀÌÁö¸¦ º¸¿©Áà¾ß ÇÑ´Ù.</dd>
+      <dd>ï¿½Ø´ï¿½ ï¿½ï¿½Ç¥ï¿½ï¿½ <code>poly</code>, <code>circle</code>,
+      <code>rect</code> ï¿½ï¿½ï¿½Ã¾î¿¡ ï¿½Ø´ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê°ï¿½ <code>point</code>
+      ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½àµ¿ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <code class="directive"><a href="#imapdefault">ImapDefault</a></code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ù¸ï¿½
+      ï¿½âº»ï¿½ï¿½ï¿½ï¿½ <code>204 No Content</code> ï¿½ï¿½ï¿½ï¿½ï¿½Úµå¸¦ ï¿½ï¿½È¯ï¿½Ï´ï¿½
+      <code>nocontent</code>ï¿½Ì´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½.</dd>
 
-      <dt><code>poly</code> Áö½Ã¾î</dt>
+      <dt><code>poly</code> ï¿½ï¿½ï¿½Ã¾ï¿½</dt>
 
-      <dd>Á¡À» ¼¼°³¿¡¼­ ¹é°³±îÁö ÁöÁ¤ÇÒ ¼ö ÀÖ´Ù. »ç¿ëÀÚ°¡ ÀÌ
-      Á¡µé·Î ÀÌ·ç¾îÁø ´Ù°¢Çü ¾ÈÀÇ ÁÂÇ¥¸¦ ¼±ÅÃÇÑ °æ¿ì¿¡ »ç¿ëÇÑ´Ù.</dd>
+      <dd>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½é°³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì·ï¿½ï¿½ï¿½ï¿½ ï¿½Ù°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ì¿¡ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
       <dt><code>circle</code></dt>
 
-      <dd>¿øÀÇ Áß½É°ú ¿øÀ§ÀÇ ÇÑ Á¡ÀÇ ÁÂÇ¥¸¦ ¹Þ´Â´Ù. »ç¿ëÀÚ°¡
-      ¿ø ¾ÈÀÇ ÁÂÇ¥¸¦ ¼±ÅÃÇÑ °æ¿ì¿¡ »ç¿ëÇÑ´Ù.</dd>
+      <dd>ï¿½ï¿½ï¿½ï¿½ ï¿½ß½É°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½Þ´Â´ï¿½. ï¿½ï¿½ï¿½ï¿½Ú°ï¿½
+      ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ì¿¡ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
-      <dt><code>rect</code> Áö½Ã¾î</dt>
+      <dt><code>rect</code> ï¿½ï¿½ï¿½Ã¾ï¿½</dt>
 
-      <dd>»ç°¢ÇüÀÇ µÎ ¸ð¼­¸® Á¡ÀÇ ÁÂÇ¥¸¦ ¹Þ´Â´Ù. »ç°¢Çü ¾ÈÀÇ
-      ÁÂÇ¥¸¦ ¼±ÅÃÇÑ °æ¿ì¿¡ »ç¿ëÇÑ´Ù.</dd>
+      <dd>ï¿½ç°¢ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ð¼­¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½Þ´Â´ï¿½. ï¿½ç°¢ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ì¿¡ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
-      <dt><code>point</code> Áö½Ã¾î</dt>
+      <dt><code>point</code> ï¿½ï¿½ï¿½Ã¾ï¿½</dt>
 
-      <dd>ÇÑ Á¡ÀÇ ÁÂÇ¥¸¦ ¹Þ´Â´Ù. ´Ù¸¥ Áö½Ã¾îµéÀ» ¸¸Á·ÇÏÁö ¾ÊÀº
-      °æ¿ì »ç¿ëÀÚ°¡ ¼±ÅÃÇÑ ÁÂÇ¥¿¡ °¡Àå °¡±î¿î point Áö½Ã¾î¸¦
-      »ç¿ëÇÑ´Ù. <code>point</code> Áö½Ã¾î¸¦ »ç¿ëÇÏ°í À¯È¿ÇÑ
-      ÁÂÇ¥¸¦ ¼±ÅÃÇÑ °æ¿ì <code>default</code>´Â Àý´ë·Î »ç¿ëµÇÁö
-      ¾Ê´Â´Ù.</dd>
+      <dd>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½Þ´Â´ï¿½. ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ point ï¿½ï¿½ï¿½Ã¾î¸¦
+      ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <code>point</code> ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½È¿ï¿½ï¿½
+      ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ <code>default</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½Ê´Â´ï¿½.</dd>
       </dl>
     
 
-    <h3><a name="imapfile.values" id="imapfile.values">Áö½Ã¾î¿¡ »ç¿ëÇÒ ¼ö ÀÖ´Â °ªµé</a></h3>
+    <h3><a name="imapfile.values" id="imapfile.values">ï¿½ï¿½ï¿½Ã¾î¿¡ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½</a></h3>
 
-      <p>Áö½Ã¾î¿¡ ¾Æ·¡ value¸¦ »ç¿ëÇÒ ¼ö ÀÖ´Ù.</p>
+      <p>ï¿½ï¿½ï¿½Ã¾î¿¡ ï¿½Æ·ï¿½ valueï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
       <dl>
       <dt>URL</dt>
 
-      <dd><p>»ó´ë URLÀÌ³ª Àý´ë URLÀ» »ç¿ëÇÒ ¼ö ÀÖ´Ù. »ó´ë URL¿¡
-      '..'À» »ç¿ëÇÒ ¼ö ÀÖÀ¸¸ç, <code>base</code> °ªÀ» ±âÁØÀ¸·Î
-      Ã£´Â´Ù.</p>
-      <p><code>base</code>¸¦ ¼³Á¤ÇÒ¶§´Â ÇöÀç base°ªÀº ¹«½ÃÇÑ´Ù.
-      ±×·¯³ª, <code>base mailto:</code> ¹®Àº »ç¿ëÇÒ ¼ö ÀÖ´Ù.</p></dd>
+      <dd><p>ï¿½ï¿½ï¿½ URLï¿½Ì³ï¿½ ï¿½ï¿½ï¿½ï¿½ URLï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½ URLï¿½ï¿½
+      '..'ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, <code>base</code> ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      Ã£ï¿½Â´ï¿½.</p>
+      <p><code>base</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ baseï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+      ï¿½×·ï¿½ï¿½ï¿½, <code>base mailto:</code> ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p></dd>
 
       <dt><code>map</code></dt>
 
-      <dd>ÀÌ¹ÌÁö¸Ê ÆÄÀÏ ÀÚÃ¼ URL°ú °°´Ù. ÁÂÇ¥°¡ ¾ø°í <code class="directive"><a href="#imapmenu">ImapMenu</a></code>°¡ <code>none</code>ÀÌ
-      ¾Æ´Ï¶ó¸é ¸Þ´º¸¦ ¸¸µç´Ù.</dd>
+      <dd>ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ URLï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ <code class="directive"><a href="#imapmenu">ImapMenu</a></code>ï¿½ï¿½ <code>none</code>ï¿½ï¿½
+      ï¿½Æ´Ï¶ï¿½ï¿½ ï¿½Þ´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½.</dd>
 
       <dt><code>menu</code></dt>
-      <dd><code>map</code>°ú °°´Ù.</dd>
+      <dd><code>map</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</dd>
 
       <dt><code>referer</code></dt>
 
-      <dd>ÂüÁ¶(¸µÅ©¸¦ µû¶ó¿À±â Àü) ¹®¼­ URL°ú °°´Ù.
-      <code>Referer:</code> Çì´õ°¡ ¾ø´Ù¸é ±âº»°ªÀº
-      <code>http://servername/</code>ÀÌ´Ù.</dd>
+      <dd>ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½) ï¿½ï¿½ï¿½ï¿½ URLï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
+      <code>Referer:</code> ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ù¸ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½
+      <code>https://servername/</code>ï¿½Ì´ï¿½.</dd>
 
       <dt><code>nocontent</code></dt>
 
-      <dd>Å¬¶óÀÌ¾ðÆ®¿¡°Ô µ¿ÀÏÇÑ ÆäÀÌÁö¸¦ ±×´ë·Î º¸¿©ÁÖ¶ó´Â
-      <code>204 No Content</code> »óÅÂÄÚµå¸¦ º¸³½´Ù.
-      <code>base</code>¸¦ Á¦¿ÜÇÑ ¸ðµç Áö½Ã¾î¿¡¼­ »ç¿ëÇÒ ¼ö ÀÖ´Ù.</dd>
+      <dd>Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×´ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ö¶ï¿½ï¿½
+      <code>204 No Content</code> ï¿½ï¿½ï¿½ï¿½ï¿½Úµå¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
+      <code>base</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</dd>
 
       <dt><code>error</code></dt>
 
-      <dd>½ÇÆÐ¸¦ ³ªÅ¸³»´Â <code>500 Server Error</code>¸¦ º¸³½´Ù.
-      <code>base</code>¸¦ Á¦¿ÜÇÑ ¸ðµç Áö½Ã¾î¿¡¼­ »ç¿ëÇÒ ¼ö ÀÖÁö¸¸,
-      <code>default</code> ¿Ü¿¡´Â »ç¿ëÇÒ ÀÏÀÌ ¾ø´Ù.</dd>
+      <dd>ï¿½ï¿½ï¿½Ð¸ï¿½ ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ <code>500 Server Error</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
+      <code>base</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,
+      <code>default</code> ï¿½Ü¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</dd>
       </dl>
     
 
-    <h3><a name="imapfile.coords" id="imapfile.coords">ÁÂÇ¥</a></h3>
+    <h3><a name="imapfile.coords" id="imapfile.coords">ï¿½ï¿½Ç¥</a></h3>
 
       <dl>
       <dt><code>0,0 200,200</code></dt>
 
-      <dd>ÁÂÇ¥´Â ½°Ç¥·Î ±¸ºÐÇÑ <var>x</var>¿Í <var>y</var> °ªÀÌ´Ù.
-      ÁÂÇ¥µéÀº ¼­·Î °ø¹éÀ¸·Î ±¸ºÐÇÑ´Ù. ÀÌ¹ÌÁö¸ÊÀ» ´Ù·ç´Â ¹æ½Ä»ó
-      LynxÀÇ ÆíÀÇ¸¦ À§ÇØ »ç¿ëÀÚ°¡ <code>0,0</code> ÁÂÇ¥¸¦ ¼±ÅÃÇÏ¿´´Ù¸é
-      ÁÂÇ¥¸¦ ¼±ÅÃÇÏÁö ¾ÊÀº °ÍÃ³·³ µ¿ÀÛÇÑ´Ù.</dd>
+      <dd>ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <var>x</var>ï¿½ï¿½ <var>y</var> ï¿½ï¿½ï¿½Ì´ï¿½.
+      ï¿½ï¿½Ç¥ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù·ï¿½ï¿½ ï¿½ï¿½Ä»ï¿½
+      Lynxï¿½ï¿½ ï¿½ï¿½ï¿½Ç¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ <code>0,0</code> ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½Ù¸ï¿½
+      ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
       </dl>
 
     
 
-    <h3><a name="imapfile.quotedtext" id="imapfile.quotedtext">µû¿ÈÇ¥·Î ¹­Àº ¹®±¸</a></h3>
+    <h3><a name="imapfile.quotedtext" id="imapfile.quotedtext">ï¿½ï¿½ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a></h3>
 
       <dl>
       <dt><code>"<var>Menu Text</var>"</code></dt>
 
-      <dd><p>value µÚ³ª ÁÂÇ¥ µÚ¿¡ ½Öµû¿ÈÇ¥·Î ¹­Àº ¹®±¸¸¦ ÀûÀ»
-      ¼öµµ ÀÖ´Ù. ÀÌ ¹®ÀÚ¿­Àº ¸Þ´º¸¦ ¸¸µé¶§ ¸µÅ© Á¦¸ñÀ¸·Î »ç¿ëÇÑ´Ù.</p>
+      <dd><p>value ï¿½Ú³ï¿½ ï¿½ï¿½Ç¥ ï¿½Ú¿ï¿½ ï¿½Öµï¿½ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½Þ´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½é¶§ ï¿½ï¿½Å© ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
       <div class="example"><p><code>
-        &lt;a href="http://foo.com/"&gt;<var>Menu text</var>&lt;/a&gt;
+        &lt;a href="https://foo.com/"&gt;<var>Menu text</var>&lt;/a&gt;
       </code></p></div>
 
-      <p>µû¿ÈÇ¥·Î ¹­Àº ¹®±¸°¡ ¾ø´Ù¸é ´ÙÀ½°ú °°ÀÌ ¸µÅ©¸¦ ¸µÅ©
-      Á¦¸ñÀ¸·Î »ç¿ëÇÑ´Ù.</p>
+      <p>ï¿½ï¿½ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½ ï¿½ï¿½Å©
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
       <div class="example"><p><code>
-        &lt;a href="http://foo.com/"&gt;http://foo.com&lt;/a&gt;
+        &lt;a href="https://foo.com/"&gt;https://foo.com&lt;/a&gt;
       </code></p></div>
 
-      <p>¹®±¸¿¡ ½Öµû¿ÈÇ¥¸¦ ¾²·Á¸é <code>&amp;quot;</code>¿Í
-      °°ÀÌ Àû¾î¾ß ÇÑ´Ù.</p></dd>
+      <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Öµï¿½ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>&amp;quot;</code>ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½.</p></dd>
       </dl>
 
     
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="example" id="example">¸ÊÆÄÀÏ ¿¹Á¦</a> <a title="Permanent link" href="#example" class="permalink">&para;</a></h2>
+<h2><a name="example" id="example">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a> <a title="Permanent link" href="#example" class="permalink">&para;</a></h2>
 
     <div class="example"><p><code>
-      #'formatted'³ª 'semiformatted' ¸Þ´º´Â ÁÖ¼®À» Ãâ·ÂÇÑ´Ù.<br />
-      #±×¸®°í ÁÖ¼®¿¡ html ÅÂ±×¸¦ ¾µ ¼ö ÀÖ´Ù. &lt;hr&gt;<br />
+      #'formatted'ï¿½ï¿½ 'semiformatted' ï¿½Þ´ï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.<br />
+      #ï¿½×¸ï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½ï¿½ï¿½ html ï¿½Â±×¸ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. &lt;hr&gt;<br />
       base referer<br />
-      poly map "¸Þ´º¸¦ º¸¿©ÁÖ¼¼¿ä." 0,0 0,10 10,10 10,0<br />
-      rect .. 0,0 77,27 "ÂüÁ¶ ¹®¼­°¡ ÀÖ´Â µð·ºÅä¸®"<br />
-      circle http://www.inetnebr.com/lincoln/feedback/ 195,0 305,27<br />
-      rect another_file "ÂüÁ¶ ¹®¼­¿Í °°Àº µð·ºÅä¸®¿¡ ÀÖ´Â" 306,0 419,27<br />
-      point http://www.zyzzyva.com/ 100,100<br />
-      point http://www.tripod.com/ 200,200<br />
-      rect mailto:nate@tripod.com 100,150 200,0 "¹ö±×?"<br />
+      poly map "ï¿½Þ´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ö¼ï¿½ï¿½ï¿½." 0,0 0,10 10,10 10,0<br />
+      rect .. 0,0 77,27 "ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ä¸®"<br />
+      circle https://www.inetnebr.com/lincoln/feedback/ 195,0 305,27<br />
+      rect another_file "ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½Ö´ï¿½" 306,0 419,27<br />
+      point https://www.zyzzyva.com/ 100,100<br />
+      point https://www.tripod.com/ 200,200<br />
+      rect mailto:nate@tripod.com 100,150 200,0 "ï¿½ï¿½ï¿½ï¿½?"<br />
     </code></p></div>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="referencing" id="referencing">¸ÊÆÄÀÏ »ç¿ëÇÏ±â</a> <a title="Permanent link" href="#referencing" class="permalink">&para;</a></h2>
+<h2><a name="referencing" id="referencing">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï±ï¿½</a> <a title="Permanent link" href="#referencing" class="permalink">&para;</a></h2>
 
-    <div class="example"><h3>HTML ¿¡Á¦</h3><p><code>
+    <div class="example"><h3>HTML ï¿½ï¿½ï¿½ï¿½</h3><p><code>
       &lt;a href="/maps/imagemap1.map"&gt;<br />
       <span class="indent">
         &lt;img ismap src="/images/imagemap1.gif"&gt;<br />
@@ -270,7 +270,7 @@
       &lt;/a&gt;
     </code></p></div>
 
-    <div class="example"><h3>XHTML ¿¹Á¦</h3><p><code>
+    <div class="example"><h3>XHTML ï¿½ï¿½ï¿½ï¿½</h3><p><code>
       &lt;a href="/maps/imagemap1.map"&gt;<br />
       <span class="indent">
         &lt;img ismap="ismap" src="/images/imagemap1.gif" /&gt;<br />
@@ -280,96 +280,96 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ImapBase" id="ImapBase">ImapBase</a> <a name="imapbase" id="imapbase">Áö½Ã¾î</a> <a title="Permanent link" href="#imapbase" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ImapBase" id="ImapBase">ImapBase</a> <a name="imapbase" id="imapbase">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#imapbase" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>ÀÌ¹ÌÁö¸Ê ÆÄÀÏ¿¡¼­ <code>base</code> ±âº»°ª</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>ImapBase map|referer|<var>URL</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">±âº»°ª:</a></th><td><code>ImapBase http://servername/</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override ¿É¼Ç:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_imagemap</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ <code>base</code> ï¿½âº»ï¿½ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>ImapBase map|referer|<var>URL</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">ï¿½âº»ï¿½ï¿½:</a></th><td><code>ImapBase https://servername/</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override ï¿½É¼ï¿½:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_imagemap</td></tr>
 </table>
-    <p><code class="directive">ImapBase</code> Áö½Ã¾î´Â ÀÌ¹ÌÁö¸Ê ÆÄÀÏ¿¡¼­
-    »ç¿ëÇÒ <code>base</code> ±âº»°ªÀ» ¼³Á¤ÇÑ´Ù. ÀÌ¹ÌÁö¸Ê ÆÄÀÏ
-    ¾È¿¡¼­ <code>base</code> Áö½Ã¾î¸¦ »ç¿ëÇÏ¸é ¿©±â¼­ ¼³Á¤ÇÑ
-    °ªÀº ¹«½ÃÇÑ´Ù. µÑ ¸ðµÎ ¾ø´Ù¸é, <code>base</code> ±âº»°ªÀº
-    <code>http://<var>servername</var>/</code>ÀÌ´Ù.</p>
+    <p><code class="directive">ImapBase</code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ <code>base</code> ï¿½âº»ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    ï¿½È¿ï¿½ï¿½ï¿½ <code>base</code> ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½â¼­ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ù¸ï¿½, <code>base</code> ï¿½âº»ï¿½ï¿½ï¿½ï¿½
+    <code>https://<var>servername</var>/</code>ï¿½Ì´ï¿½.</p>
 
-<h3>Âü°í</h3>
+<h3>ï¿½ï¿½ï¿½ï¿½</h3>
 <ul>
 <li><code class="directive"><a href="../mod/core.html#usecanonicalname">UseCanonicalName</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ImapDefault" id="ImapDefault">ImapDefault</a> <a name="imapdefault" id="imapdefault">Áö½Ã¾î</a> <a title="Permanent link" href="#imapdefault" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ImapDefault" id="ImapDefault">ImapDefault</a> <a name="imapdefault" id="imapdefault">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#imapdefault" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>ÀÌ¹ÌÁö¸Ê¿¡ ¾î´À ¿µ¿ª¿¡µµ ÇØ´çÇÏÁö ¾Ê´Â ÁÂÇ¥¸¦ ÁØ
-°æ¿ì ±âº» Çàµ¿</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>ImapDefault error|nocontent|map|referer|<var>URL</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">±âº»°ª:</a></th><td><code>ImapDefault nocontent</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override ¿É¼Ç:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_imagemap</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½Ê¿ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ø´ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´ï¿½ ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½
+ï¿½ï¿½ï¿½ ï¿½âº» ï¿½àµ¿</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>ImapDefault error|nocontent|map|referer|<var>URL</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">ï¿½âº»ï¿½ï¿½:</a></th><td><code>ImapDefault nocontent</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override ï¿½É¼ï¿½:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_imagemap</td></tr>
 </table>
-    <p><code class="directive">ImapDefault</code> Áö½Ã¾î´Â ÀÌ¹ÌÁö¸Ê
-    ÆÄÀÏ¿¡¼­ »ç¿ëÇÒ <code>default</code> ±âº»°ªÀ» ¼³Á¤ÇÑ´Ù.
-    ÀÌ¹ÌÁö¸Ê ÆÄÀÏ ¾È¿¡¼­ <code>default</code> Áö½Ã¾î¸¦ »ç¿ëÇÏ¸é
-    ¿©±â¼­ ¼³Á¤ÇÑ °ªÀº ¹«½ÃÇÑ´Ù. µÑ ¸ðµÎ ¾ø´Ù¸é, <code>default</code>
-    Çàµ¿Àº Å¬¶óÀÌ¾ðÆ®¿¡°Ô <code>204 No Content</code>¸¦ º¸³»´Â
-    <code>nocontent</code>ÀÌ´Ù. ÀÌ °æ¿ì Å¬¶óÀÌ¾ðÆ®´Â ¿ø·¡ ÆäÀÌÁö¸¦
-    ±×´ë·Î º¸¿©Áà¾ß ÇÑ´Ù.</p>
+    <p><code class="directive">ImapDefault</code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ <code>default</code> ï¿½âº»ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+    ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½È¿ï¿½ï¿½ï¿½ <code>default</code> ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½
+    ï¿½ï¿½ï¿½â¼­ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ù¸ï¿½, <code>default</code>
+    ï¿½àµ¿ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ <code>204 No Content</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    <code>nocontent</code>ï¿½Ì´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½×´ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ImapMenu" id="ImapMenu">ImapMenu</a> <a name="imapmenu" id="imapmenu">Áö½Ã¾î</a> <a title="Permanent link" href="#imapmenu" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ImapMenu" id="ImapMenu">ImapMenu</a> <a name="imapmenu" id="imapmenu">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#imapmenu" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>ÁÂÇ¥¾øÀÌ ÀÌ¹ÌÁö¸Ê ¿äÃ»½Ã ÃëÇÒ Çàµ¿</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>ImapMenu none|formatted|semiformatted|unformatted</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override ¿É¼Ç:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_imagemap</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½Ç¥ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½àµ¿</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>ImapMenu none|formatted|semiformatted|unformatted</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override ï¿½É¼ï¿½:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_imagemap</td></tr>
 </table>
-    <p><code class="directive">ImapMenu</code> Áö½Ã¾î´Â ÀÌ¹ÌÁö¸Ê ÆÄÀÏ¿¡
-    À¯È¿ÇÑ ÁÂÇ¥¸¦ ÁÖÁö ¾ÊÀº °æ¿ì ÃëÇÒ Çàµ¿À» °áÁ¤ÇÑ´Ù.</p>
+    <p><code class="directive">ImapMenu</code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½
+    ï¿½ï¿½È¿ï¿½ï¿½ ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½àµ¿ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
     <dl>
       <dt><code>none</code></dt>
-      <dd>ImapMenu°¡ <code>none</code>ÀÌ¸é, ¸Þ´º¸¦ ¸¸µéÁö¾Ê°í
-      <code>default</code> Çàµ¿À» ÃëÇÑ´Ù.</dd>
+      <dd>ImapMenuï¿½ï¿½ <code>none</code>ï¿½Ì¸ï¿½, ï¿½Þ´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê°ï¿½
+      <code>default</code> ï¿½àµ¿ï¿½ï¿½ ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
       <dt><code>formatted</code></dt>
-      <dd><code>formatted</code> ¸Þ´º´Â °¡Àå °£´ÜÇÑ ¸Þ´º´Ù.
-      ÀÌ¹ÌÁö¸Ê ÆÄÀÏÀÇ ÁÖ¼®Àº ¹«½ÃÇÑ´Ù. °¡Àå Å« Ç¥Á¦¿Í ¼öÁ÷¼±À»
-      Ãâ·ÂÇÏ°í, ¸µÅ©¸¦ ÇÑÁÙ¾¿ Ãâ·ÂÇÑ´Ù. ¸Þ´º´Â ÀÏ°üµÇ°í ÆòÀÌÇÏ¸ç,
-      µð·ºÅä¸® ¸ñ·Ï°ú Èí»çÇÏ´Ù.</dd>
+      <dd><code>formatted</code> ï¿½Þ´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Þ´ï¿½ï¿½ï¿½.
+      ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ Å« Ç¥ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½Ï°ï¿½, ï¿½ï¿½Å©ï¿½ï¿½ ï¿½ï¿½ï¿½Ù¾ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½Þ´ï¿½ï¿½ï¿½ ï¿½Ï°ï¿½ï¿½Ç°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½,
+      ï¿½ï¿½ï¿½ä¸® ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.</dd>
 
       <dt><code>semiformatted</code></dt>
-      <dd><code>semiformatted</code> ¸Þ´º´Â ÀÌ¹ÌÁö¸Ê ÆÄÀÏ¿¡
-      ³ª¿À´Â ÁÖ¼®À» Ãâ·ÂÇÑ´Ù. ºóÁÙÀº HTML Çà¹Ù²ÞÀ¸·Î º¯È¯ÇÑ´Ù.
-      Ç¥Á¦³ª ¼öÁ÷¼±À» ±×¸®Áö ¾ÊÁö¸¸, ³ª¸ÓÁö´Â <code>formatted</code>
-      ¸Þ´º¿Í °°´Ù.</dd>
+      <dd><code>semiformatted</code> ï¿½Þ´ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ HTML ï¿½ï¿½Ù²ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½Ñ´ï¿½.
+      Ç¥ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>formatted</code>
+      ï¿½Þ´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</dd>
 
       <dt><code>unformatted</code></dt>
-      <dd>ÁÖ¼®Àº Ãâ·ÂÇÏ°í, ºóÁÙÀº ¹«½ÃÇÑ´Ù. ÀÌ¹ÌÁö¸Ê ÆÄÀÏ¿¡
-      ÀÖ´Â ³»¿ë¸¸ Ãâ·ÂÇÑ´Ù. ÀÌ¹ÌÁö¸Ê ÆÄÀÏÀÇ ÁÖ¼®¿¡ ÇÊ¿äÇÑ ¸ðµç
-      Çà¹Ù²Þ°ú Ç¥Á¦¸¦ Àû¾î¾ß ÇÑ´Ù. ¸Þ´ºÀÇ ¿Ü°üÀ» °¡Àå ÀÚÀ¯ÀÚÁ¦·Î
-      ²Ù¹Ð ¼ö ÀÖÁö¸¸, ÀÌ¹ÌÁö¸Ê ÆÄÀÏÀ» »ç½Ç»ó ÀÏ¹Ý ¹®ÀÚÆÄÀÏÀÌ
-      ¾Æ´Ñ HTML·Î ºÁ¾ß ÇÑ´Ù.</dd>
+      <dd>ï¿½Ö¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½
+      ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ë¸¸ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+      ï¿½ï¿½Ù²Þ°ï¿½ Ç¥ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½. ï¿½Þ´ï¿½ï¿½ï¿½ ï¿½Ü°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½Ù¹ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ç»ï¿½ ï¿½Ï¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½Æ´ï¿½ HTMLï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½.</dd>
     </dl>
 
 </div>
 </div>
 <div class="bottomlang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/mod/mod_imagemap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/mod/mod_imagemap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_imagemap.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/mod/mod_imagemap.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_imagemap.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/mod/mod_imagemap.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -384,8 +384,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_imagemap.h
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

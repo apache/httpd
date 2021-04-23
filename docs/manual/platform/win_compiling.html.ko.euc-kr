@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
 <meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Microsoft Windows¿ë ¾ÆÆÄÄ¡ ÄÄÆÄÀÏ - Apache HTTP Server Version 2.5</title>
+<title>Microsoft Windowsï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ - Apache HTTP Server Version 2.5</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -16,55 +16,55 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Platform Specific Notes</a></div><div id="page-content"><div id="preamble"><h1>Microsoft Windows¿ë ¾ÆÆÄÄ¡ ÄÄÆÄÀÏ</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Platform Specific Notes</a></div><div id="page-content"><div id="preamble"><h1>Microsoft Windowsï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</h1>
 <div class="toplang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/platform/win_compiling.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/platform/win_compiling.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/platform/win_compiling.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/platform/win_compiling.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">ÀÌ ¹®¼­´Â ÃÖ½ÅÆÇ ¹ø¿ªÀÌ ¾Æ´Õ´Ï´Ù.
-            ÃÖ±Ù¿¡ º¯°æµÈ ³»¿ëÀº ¿µ¾î ¹®¼­¸¦ Âü°íÇÏ¼¼¿ä.</div>
+<div class="outofdate">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Õ´Ï´ï¿½.
+            ï¿½Ö±Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.</div>
 
 
-    <p>¾ÆÆÄÄ¡¸¦ ÄÄÆÄÀÏÇÏ±â Àü¿¡ ÁÖÀÇÇÒ Á¡ÀÌ ¸¹´Ù. ¹Ì¸® <a href="windows.html">Microsoft Windows¿¡¼­ ¾ÆÆÄÄ¡ »ç¿ë¹ý</a>À»
-    Âü°íÇÏ¶ó.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½. ï¿½Ì¸ï¿½ <a href="windows.html">Microsoft Windowsï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½</a>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.</p>
 
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#requirements">¿ä±¸»çÇ×</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#commandbuild">¸í·ÉÇà¿¡¼­ ÄÄÆÄÀÏÇÏ±â</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#workspacebuild">Developer Studio Workspace IDE¿¡¼­ ÄÄÆÄÀÏÇÏ±â</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#projectcomponents">ÇÁ·ÎÁ§Æ® ±¸¼º¿ä¼Ò</a></li>
-</ul><h3>Âü°í</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#requirements">ï¿½ä±¸ï¿½ï¿½ï¿½ï¿½</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#commandbuild">ï¿½ï¿½ï¿½ï¿½ï¿½à¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#workspacebuild">Developer Studio Workspace IDEï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#projectcomponents">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</a></li>
+</ul><h3>ï¿½ï¿½ï¿½ï¿½</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="requirements" id="requirements">¿ä±¸»çÇ×</a> <a title="Permanent link" href="#requirements" class="permalink">&para;</a></h2>
+<h2><a name="requirements" id="requirements">ï¿½ä±¸ï¿½ï¿½ï¿½ï¿½</a> <a title="Permanent link" href="#requirements" class="permalink">&para;</a></h2>
 
     
 
-    <p>¾ÆÆÄÄ¡¸¦ ÄÄÆÄÀÏÇÏ·Á¸é ´ÙÀ½ÀÌ Á¤»óÀûÀ¸·Î ¼³Ä¡µÇ¾ß ÇÑ´Ù:</p>
+    <p>ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½Ç¾ï¿½ ï¿½Ñ´ï¿½:</p>
 
     <ul>
       <li>
-        <p>µð½ºÅ© °ø°£</p>
-        <p>³²Àº µð½ºÅ© °ø°£ÀÌ ÃÖ¼ÒÇÑ 50 MB´Â µÇ¾ß ÇÑ´Ù. ¾ÆÆÄÄ¡
-        ¼³Ä¡ÈÄ¿¡´Â »¡¸® Áõ°¡ÇÏ´Â ·Î±×¿Í Ä³½¬ÆÄÀÏÀ» Á¦¿ÜÇÏ°í
-        ¾à 10 MB Á¤µµ°¡ ÇÊ¿äÇÏ´Ù. ½ÇÁ¦ µð½ºÅ© »ç¿ë·®Àº ¼±ÅÃÇÑ
-        ±¸¼º°ú Á¦»ïÀÚ°¡ ¸¸µç ¸ðµâ È¤Àº ¶óÀÌºê·¯¸®¿¡ µû¶ó Å©°Ô
-        ´Ù¸£´Ù.</p>
+        <p>ï¿½ï¿½Å© ï¿½ï¿½ï¿½ï¿½</p>
+        <p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å© ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½ï¿½ï¿½ 50 MBï¿½ï¿½ ï¿½Ç¾ï¿½ ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½Ä¡
+        ï¿½ï¿½Ä¡ï¿½Ä¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Î±×¿ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½
+        ï¿½ï¿½ 10 MB ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Ï´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å© ï¿½ï¿½ë·®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ È¤ï¿½ï¿½ ï¿½ï¿½ï¿½Ìºê·¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Å©ï¿½ï¿½
+        ï¿½Ù¸ï¿½ï¿½ï¿½.</p>
       </li>
 
       <li>
-        <p>Microsoft Visual C++ 5.0 ÀÌ»ó.</p>
-        <p>¾ÆÆÄÄ¡´Â ¸í·ÉÇà µµ±¸¸¦ »ç¿ëÇÏ°Å³ª Visual Studio IDE
-        Workbench ¾È¿¡¼­ ÄÄÆÄÀÏÇÒ ¼ö ÀÖ´Ù. ¸í·ÉÇà¿¡¼­ ÄÄÆÄÀÏÇÑ´Ù¸é
-        <code>vcvars32</code> ¹èÄ¡ÆÄÀÏÀÌ ¼³Á¤ÇÏ´Â <code>PATH</code>,
-        <code>INCLUDE</code>, <code>LIB</code> µî È¯°æº¯¼ö°¡
-        ÇÊ¿äÇÏ´Ù:</p>
+        <p>Microsoft Visual C++ 5.0 ï¿½Ì»ï¿½.</p>
+        <p>ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°Å³ï¿½ Visual Studio IDE
+        Workbench ï¿½È¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½à¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½
+        <code>vcvars32</code> ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ <code>PATH</code>,
+        <code>INCLUDE</code>, <code>LIB</code> ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½
+        ï¿½Ê¿ï¿½ï¿½Ï´ï¿½:</p>
 
         <div class="example"><p><code>
           "c:\Program Files\DevStudio\VC\Bin\vcvars32.bat"
@@ -73,74 +73,74 @@
 
       <li>
         <p>Windows Platform SDK.</p>
-        <p>¾î¶² ¾ÆÆÄÄ¡ ±â´ÉÀ» »ç¿ëÇÏ·Á¸é Visual C++ 5.0¿¡ Ãß°¡·Î
-        ÃÖ½Å Microsoft Windows Platform SDK°¡ ÇÊ¿äÇÏ´Ù. ¸í·ÉÇà¿¡¼­
-        ÄÄÆÄÀÏÇÑ´Ù¸é <code>setenv</code> ¹èÄ¡ÆÄÀÏÀÌ Platform
-        SDK È¯°æÀ» ¸¸µç´Ù:</p>
+        <p>ï¿½î¶² ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ Visual C++ 5.0ï¿½ï¿½ ï¿½ß°ï¿½ï¿½ï¿½
+        ï¿½Ö½ï¿½ Microsoft Windows Platform SDKï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Ï´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½à¿¡ï¿½ï¿½
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½ <code>setenv</code> ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Platform
+        SDK È¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½:</p>
 
         <div class="example"><p><code>
           "c:\Program Files\Platform SDK\setenv.bat"
         </code></p></div>
 
-        <p>Visual C++ 6.0 ÀÌ»ó¿¡ Æ÷ÇÔµÈ Platform SDK ÆÄÀÏÀº
-        ÃæºÐÇÏ´Ù. ÀÌ ¹öÀüÀ» »ç¿ëÇÏ´Â »ç¿ëÀÚ´Â ÀÌ °úÁ¤À» »ý·«ÇØµµ
-        µÈ´Ù.</p>
+        <p>Visual C++ 6.0 ï¿½Ì»ï¿½ ï¿½ï¿½ï¿½Ôµï¿½ Platform SDK ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        ï¿½ï¿½ï¿½ï¿½Ï´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Øµï¿½
+        ï¿½È´ï¿½.</p>
 
-        <div class="note">¸ðµç <code class="module"><a href="../mod/mod_isapi.html">mod_isapi</a></code> ±â´ÉÀ» »ç¿ëÇÏ·Á¸é
-        ÃÖ½Å Windows Platform SDK°¡ ÇÊ¿äÇÏ´Ù. ÃÖ½Å ¹öÀüÀÌ ¾Æ´Ï¸é
-        MSVC++ 5.0Àº <code class="module"><a href="../mod/mod_isapi.html">mod_isapi</a></code> ±â´ÉÀÇ ÀÏºÎ¸¦
-        »ç¿ëÇÒ ¼ö ¾ø´Ù°í °æ°íÇÑ´Ù. <a href="http://msdn.microsoft.com/downloads/sdks/platform/platform.asp">http://msdn.microsoft.com/downloads/sdks/platform/platform.asp</a>¿¡
-        ÃÖ½Å ¹öÀüÀÌ ÀÖ´Ù.</div>
+        <div class="note">ï¿½ï¿½ï¿½ <code class="module"><a href="../mod/mod_isapi.html">mod_isapi</a></code> ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½
+        ï¿½Ö½ï¿½ Windows Platform SDKï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Ï´ï¿½. ï¿½Ö½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Ï¸ï¿½
+        MSVC++ 5.0ï¿½ï¿½ <code class="module"><a href="../mod/mod_isapi.html">mod_isapi</a></code> ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ÏºÎ¸ï¿½
+        ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ù°ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <a href="https://msdn.microsoft.com/downloads/sdks/platform/platform.asp">https://msdn.microsoft.com/downloads/sdks/platform/platform.asp</a>ï¿½ï¿½
+        ï¿½Ö½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½.</div>
       </li>
 
       <li>
-        <p>awk µµ±¸ (awk, gawk µî).</p>
-        <p>ÄÄÆÄÀÏÇÑ ½Ã½ºÅÛ¿¡ ¾ÆÆÄÄ¡¸¦ ¼³Ä¡ÇÏ·Á¸é
-        <code>awk.exe</code> µµ±¸¸¦ »ç¿ëÇÏ¿© ¿©·¯ ÆÄÀÏÀ» ¼öÁ¤ÇØ¾ß
-        ÇÑ´Ù. (PerlÀÌ³ª WSH/VB°ú ºñ±³ÇÏ¿©) ´Ù¿î¹Þ±â¿¡ ¸Å¿ì ÀÛ°í
-        ÆÄÀÏ »ý¼º ÀÛ¾÷ÀÌ °¡´ÉÇÏ¿© awk¸¦ ¼±ÅÃÇß´Ù. Brian KernighanÀÇ
-        <a href="http://cm.bell-labs.com/cm/cs/who/bwk/">http://cm.bell-labs.com/cm/cs/who/bwk/</a> »çÀÌÆ®¿¡
-        ÄÄÆÄÀÏµÈ Win32 ½ÇÇàÆÄÀÏ <a href="http://cm.bell-labs.com/cm/cs/who/bwk/awk95.exe">http://cm.bell-labs.com/cm/cs/who/bwk/awk95.exe</a>ÀÌ
-        ÀÖ´Ù. ÀÌ¸§À» <code>awk95.exe</code> ´ë½Å
-        <code>awk.exe</code>·Î º¯°æÇØ¾ß ÇÑ´Ù.</p>
+        <p>awk ï¿½ï¿½ï¿½ï¿½ (awk, gawk ï¿½ï¿½).</p>
+        <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã½ï¿½ï¿½Û¿ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½Ï·ï¿½ï¿½ï¿½
+        <code>awk.exe</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½
+        ï¿½Ñ´ï¿½. (Perlï¿½Ì³ï¿½ WSH/VBï¿½ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½) ï¿½Ù¿ï¿½Þ±â¿¡ ï¿½Å¿ï¿½ ï¿½Û°ï¿½
+        ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Û¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ awkï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ß´ï¿½. Brian Kernighanï¿½ï¿½
+        <a href="https://cm.bell-labs.com/cm/cs/who/bwk/">https://cm.bell-labs.com/cm/cs/who/bwk/</a> ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½
+        ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ Win32 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <a href="https://cm.bell-labs.com/cm/cs/who/bwk/awk95.exe">https://cm.bell-labs.com/cm/cs/who/bwk/awk95.exe</a>ï¿½ï¿½
+        ï¿½Ö´ï¿½. ï¿½Ì¸ï¿½ï¿½ï¿½ <code>awk95.exe</code> ï¿½ï¿½ï¿½
+        <code>awk.exe</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½.</p>
 
-        <div class="note">Developer Studio IDE´Â Tools ¸Þ´º Options...
-        Directories ÅÇÀÇ (Developer Studio 7.0ÀÌ¶ó¸é Projects
-        - VC++ Directories pane) Executable files °æ·Î ¸ñ·Ï¿¡¼­¸¸
-        <code>awk.exe</code>¸¦ Ã£´Â´Ù. ÀÌ ¸ñ·Ï¿¡ <code>awk.exe</code>
-        °æ·Î¸¦ Ãß°¡ÇÏ°í, ÇÊ¿äÇÏ´Ù¸é <code>PATH</code> È¯°æº¯¼ö¿¡µµ
-        Ãß°¡ÇÑ´Ù.</div>
+        <div class="note">Developer Studio IDEï¿½ï¿½ Tools ï¿½Þ´ï¿½ Options...
+        Directories ï¿½ï¿½ï¿½ï¿½ (Developer Studio 7.0ï¿½Ì¶ï¿½ï¿½ Projects
+        - VC++ Directories pane) Executable files ï¿½ï¿½ï¿½ ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ï¿½ï¿½
+        <code>awk.exe</code>ï¿½ï¿½ Ã£ï¿½Â´ï¿½. ï¿½ï¿½ ï¿½ï¿½Ï¿ï¿½ <code>awk.exe</code>
+        ï¿½ï¿½Î¸ï¿½ ï¿½ß°ï¿½ï¿½Ï°ï¿½, ï¿½Ê¿ï¿½ï¿½Ï´Ù¸ï¿½ <code>PATH</code> È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        ï¿½ß°ï¿½ï¿½Ñ´ï¿½.</div>
 
-        <div class="note">CygwinÀ» (<a href="http://www.cygwin.com/">http://www.cygwin.com/</a>) »ç¿ëÇÑ´Ù¸é
-        <code>gawk.exe</code>¶ó´Â ÀÌ¸§À¸·Î awk µµ±¸°¡ ÀÖÀ¸¸ç,
-        <code>awk.exe</code> ÆÄÀÏÀº <code>gawk.exe</code> ÆÄÀÏÀÇ
-        ½Éº¼¸µÅ©ÀÓÀ» ÁÖÀÇÇÏ¶ó. Windows ¸í·É ÇÁ·ÒÇÁÆ®°¡ ½Éº¼¸µÅ©¸¦
-        ÀÎ½ÄÇÏÁö ¸øÇÏ±â¶§¹®¿¡ InstallBinÀ» ÄÄÆÄÀÏÇÒ¶§ ½ÇÆÐÇÑ´Ù.
-        ÇØ°áÃ¥Àº cygwin¿¡¼­ <code>awk.exe</code>¸¦ »èÁ¦ÇÏ°í
-        <code>gawk.exe</code> ÀÌ¸§À» <code>awk.exe</code>·Î
-        ¹Ù²Û´Ù.</div>
+        <div class="note">Cygwinï¿½ï¿½ (<a href="https://www.cygwin.com/">https://www.cygwin.com/</a>) ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½
+        <code>gawk.exe</code>ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½ï¿½ awk ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,
+        <code>awk.exe</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>gawk.exe</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        ï¿½Éºï¿½ï¿½ï¿½Å©ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½. Windows ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Éºï¿½ï¿½ï¿½Å©ï¿½ï¿½
+        ï¿½Î½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï±â¶§ï¿½ï¿½ï¿½ï¿½ InstallBinï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+        ï¿½Ø°ï¿½Ã¥ï¿½ï¿½ cygwinï¿½ï¿½ï¿½ï¿½ <code>awk.exe</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½
+        <code>gawk.exe</code> ï¿½Ì¸ï¿½ï¿½ï¿½ <code>awk.exe</code>ï¿½ï¿½
+        ï¿½Ù²Û´ï¿½.</div>
       </li>
 
       <li>
-        <p>[¼±ÅÃÀûÀÎ] OpenSSL ¶óÀÌºê·¯¸® (<code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>°ú
-        <code>ab.exe</code>ÀÇ ssl Áö¿ø¿¡ »ç¿ë)</p>
-        <p><strong>ÁÖÀÇ: °­·ÂÇÑ ¾ÏÈ£È­¿Í Æ¯Çã°¡ °É¸° ÁöÀûÀç»ê±ÇÀ»
-        Àü¼¼°è¿¡ ¹èÆ÷ÇÏ´Âµ¥´Â »ó´çÇÑ Á¦¾àÀÌ ÀÖ´Ù.</strong>
-        OpenSSLÀº ¹Ì±¹ ¼öÃâ±ÔÁ¦¹ýÀÌ ±ÔÁ¦ÇÏ¸ç ¹Ì±¹°ú ±âÅ¸ Áö¿ª¿¡¼­
-        Æ¯Çã·Î º¸È£µÇ´Â ÁöÀûÀç»ê±ÇÀÎ °­·ÂÇÑ ¾ÏÈ£È­¸¦ Æ÷ÇÔÇÑ´Ù.
-        Apache Software Foundation°ú OpenSSL ÇÁ·ÎÁ§Æ®´Â OpenSSL
-        ÇÁ·ÎÁ§Æ®°¡ Á¦°øÇÏ´Â ÄÚµå¸¦ ¼ÒÀ¯, »ç¿ë, ¹èÆ÷ÇÏ´Âµ¥ µû¸¥
-        ¹ýÀû ÀÚ¹®À» Á¦°øÇÏÁö ¾Ê´Â´Ù. <strong>Á÷Á¢ ¹ý·ü »ó´ãÀ»
-        ¹Þ±æ ¹Ù¶õ´Ù. ´ç½Å Çàµ¿ÀÇ Ã¥ÀÓÀº ´ç½Å¿¡°Ô ÀÖ´Ù.</strong></p>
+        <p>[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½] OpenSSL ï¿½ï¿½ï¿½Ìºê·¯ï¿½ï¿½ (<code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>ï¿½ï¿½
+        <code>ab.exe</code>ï¿½ï¿½ ssl ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½)</p>
+        <p><strong>ï¿½ï¿½ï¿½ï¿½: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È£È­ï¿½ï¿½ Æ¯ï¿½ã°¡ ï¿½É¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        ï¿½ï¿½ï¿½ï¿½ï¿½è¿¡ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´Âµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½.</strong>
+        OpenSSLï¿½ï¿½ ï¿½Ì±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½Ì±ï¿½ï¿½ï¿½ ï¿½ï¿½Å¸ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        Æ¯ï¿½ï¿½ï¿½ ï¿½ï¿½È£ï¿½Ç´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È£È­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+        Apache Software Foundationï¿½ï¿½ OpenSSL ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ OpenSSL
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Úµå¸¦ ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½Ï´Âµï¿½ ï¿½ï¿½ï¿½ï¿½
+        ï¿½ï¿½ï¿½ï¿½ ï¿½Ú¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½. <strong>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+        ï¿½Þ±ï¿½ ï¿½Ù¶ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ ï¿½àµ¿ï¿½ï¿½ Ã¥ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¿ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½.</strong></p>
 
-        <p><code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>ÀÌ³ª (SSLÀ» Áö¿øÇÏ´Â
-        <code>ab.exe</code>) abs ÇÁ·ÎÁ§Æ®¸¦ ÄÄÆÄÀÏÇÏ·Á¸é, OpenSSLÀ»
-        <a href="http://www.openssl.org/source/">http://www.openssl.org/source/</a>¿¡¼­ ´Ù¿î¹Þ¾Æ¼­
-        <code>srclib</code>ÀÇ <code>openssl</code>ÀÌ¶ó´Â
-        ÇÏÀ§µð·ºÅä¸®¿¡ ¼³Ä¡ÇØ¾ß ÇÑ´Ù. <code>release</code>¿Í
-        <code>debug</code>·Î ¾ÆÆÄÄ¡¸¦ ÄÄÆÄÀÏÇÒ¶§ »ç¿ëÇÏ¸ç 0.9.7
-        ¹öÀü¿¡ ÀÖ´Â Æ¯Çã°¡ °É¸° ±â´ÉÀ» »ç¿ëÇÏÁö ¾Ê´Â´Ù¸é, ¾Æ·¡
-        ÄÄÆÄÀÏ ¸í·É¾î¸¦ »ç¿ëÇÑ´Ù:</p>
+        <p><code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>ï¿½Ì³ï¿½ (SSLï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½
+        <code>ab.exe</code>) abs ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½, OpenSSLï¿½ï¿½
+        <a href="https://www.openssl.org/source/">https://www.openssl.org/source/</a>ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¿ï¿½Þ¾Æ¼ï¿½
+        <code>srclib</code>ï¿½ï¿½ <code>openssl</code>ï¿½Ì¶ï¿½ï¿½
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½. <code>release</code>ï¿½ï¿½
+        <code>debug</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ 0.9.7
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ Æ¯ï¿½ã°¡ ï¿½É¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´Ù¸ï¿½, ï¿½Æ·ï¿½
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½É¾î¸¦ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½:</p>
 
         <div class="example"><p><code>
           perl Configure VC-WIN32<br />
@@ -156,116 +156,116 @@
       </li>
 
       <li>
-        <p>[¼±ÅÃÀûÀÎ] zlib ¼Ò½º (<code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code>¿¡
-        »ç¿ë)</p>
-        <p>ZlibÀ» <code>srclib</code>ÀÇ <code>zlib</code>¶ó´Â
-        ÇÏÀ§µð·ºÅä¸®¿¡ ¼³Ä¡ÇØ¾ß ÇÏÁö¸¸, ¼Ò½º¸¦ ¹Ì¸® ÄÄÆÄÀÏÇÒ
-        ÇÊ¿ä´Â ¾ø´Ù. ÄÄÆÄÀÏ ½Ã½ºÅÛÀº ÀÌ ¾ÐÃà¼Ò½º¸¦
-        <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> ¸ðµâ°ú °°ÀÌ ÄÄÆÄÀÏÇÑ´Ù.
-        ZlibÀº <a href="http://www.gzip.org/zlib/">http://www.gzip.org/zlib/</a>¿¡¼­ ±¸ÇÒ ¼ö ÀÖ´Ù --
-        <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code>´Â 1.1.4 ¹öÀü°ú Á¤»óÀûÀ¸·Î
-        ÄÄÆÄÀÏµÇ¾ú´Ù.</p>
+        <p>[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½] zlib ï¿½Ò½ï¿½ (<code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code>ï¿½ï¿½
+        ï¿½ï¿½ï¿½)</p>
+        <p>Zlibï¿½ï¿½ <code>srclib</code>ï¿½ï¿½ <code>zlib</code>ï¿½ï¿½ï¿½
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½Ø¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½Ò½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        ï¿½Ê¿ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ò½ï¿½ï¿½ï¿½
+        <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+        Zlibï¿½ï¿½ <a href="https://www.gzip.org/zlib/">https://www.gzip.org/zlib/</a>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ --
+        <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code>ï¿½ï¿½ 1.1.4 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        ï¿½ï¿½ï¿½ï¿½ï¿½ÏµÇ¾ï¿½ï¿½ï¿½.</p>
       </li>
 
     </ul>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="commandbuild" id="commandbuild">¸í·ÉÇà¿¡¼­ ÄÄÆÄÀÏÇÏ±â</a> <a title="Permanent link" href="#commandbuild" class="permalink">&para;</a></h2>
+<h2><a name="commandbuild" id="commandbuild">ï¿½ï¿½ï¿½ï¿½ï¿½à¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½</a> <a title="Permanent link" href="#commandbuild" class="permalink">&para;</a></h2>
 
     
 
-    <p>¸ÕÀú Àû´çÇÑ µð·ºÅä¸®¿¡ ¾ÆÆÄÄ¡ ¹èÆ÷º» ¾ÐÃàÀ» Ç¬´Ù. ¸í·ÉÇà
-    ÇÁ·ÒÇÁÆ®¸¦ ¿­°í ±× µð·ºÅä¸®·Î <code>cd</code>ÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ç¬ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ <code>cd</code>ï¿½Ñ´ï¿½.</p>
 
-    <p><code>Makefile.win</code> ÆÄÀÏ¿¡ ¾ÆÆÄÄ¡ makefile ¸í·ÉÀÌ
-    ÀÖ´Ù. Windows NT¿¡¼­ <code>release</code>¿Í <code>debug</code>
-    ÄÄÆÄÀÏÇÏ´Â ¸í·É¾î´Â °¢°¢ ´ÙÀ½°ú °°´Ù:</p>
+    <p><code>Makefile.win</code> ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ makefile ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ö´ï¿½. Windows NTï¿½ï¿½ï¿½ï¿½ <code>release</code>ï¿½ï¿½ <code>debug</code>
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½É¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½:</p>
 
     <div class="example"><pre>nmake /f Makefile.win _apacher
 
 nmake /f Makefile.win _apached</pre></div>
 
-    <p>µÎ ¸í·É¾î ¸ðµÎ ¾ÆÆÄÄ¡¸¦ ÄÄÆÄÀÏÇÑ´Ù. ÈÄÀÚ´Â °á°úÆÄÀÏ¿¡
-    µð¹ö±ë Á¤º¸¸¦ Æ÷ÇÔÇÏ¿© ¹ö±×¸¦ Ã£°í ¹®Á¦¸¦ ÃßÀûÇÏ±â ½±°Ô
-    ÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½É¾ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½Ú´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½×¸ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ñ´ï¿½.</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="workspacebuild" id="workspacebuild">Developer Studio Workspace IDE¿¡¼­ ÄÄÆÄÀÏÇÏ±â</a> <a title="Permanent link" href="#workspacebuild" class="permalink">&para;</a></h2>
+<h2><a name="workspacebuild" id="workspacebuild">Developer Studio Workspace IDEï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½</a> <a title="Permanent link" href="#workspacebuild" class="permalink">&para;</a></h2>
 
     
 
-    <p>VC++ÀÇ Visual Studio °³¹ß È¯°æÀ» »ç¿ëÇÏ¿© ¾ÆÆÄÄ¡¸¦ ÄÄÆÄÀÏÇÒ
-    ¼öµµ ÀÖ´Ù. °úÁ¤À» ½±°Ô ÇÏ·Á°í Visual Studio workspace
-    <code>Apache.dsw</code>¸¦ Á¦°øÇÑ´Ù. ÀÌ workspace´Â ¿ÏÀüÇÑ
-    ¾ÆÆÄÄ¡ ¹ÙÀÌ³Ê¸® ¹èÆ÷º»¿¡ ÇÊ¿äÇÑ <code>.dsp</code> ÇÁ·ÎÁ§Æ®
-    ¸ñ·ÏÀ» ´ã°íÀÖ´Ù. ¶Ç, ¾Ë¸ÂÀº ¼ø¼­·Î ÄÄÆÄÀÏÇÏ±âÀ§ÇÑ ÇÁ·ÎÁ§Æ®°£
-    ÀÇÁ¸¼º Á¤º¸µµ Æ÷ÇÔÇÑ´Ù.</p>
+    <p>VC++ï¿½ï¿½ Visual Studio ï¿½ï¿½ï¿½ï¿½ È¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ï·ï¿½ï¿½ï¿½ Visual Studio workspace
+    <code>Apache.dsw</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ workspaceï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½Ì³Ê¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ <code>.dsp</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ö´ï¿½. ï¿½ï¿½, ï¿½Ë¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <p><code>Apache.dsw</code> workspace¸¦ ¿­°í
-    <code>InstallBin</code>À» (<code>Release</code>³ª
-    <code>Debug</code> Áß ¿øÇÏ´Â °ÍÀ») Active Project·Î ¼±ÅÃÇÑ´Ù.
-    <code>InstallBin</code>Àº °ü·ÃµÈ ¸ðµç ÇÁ·ÎÁ§Æ®¸¦ ÄÄÆÄÀÏÇÏ°í,
-    ÄÄÆÄÀÏµÈ ½ÇÇàÆÄÀÏ°ú dllÀ» ¿Å±â´Â <code>Makefile.win</code>À»
-    È£ÃâÇÑ´Ù. <code>InstallBin</code>ÀÇ Settings, General ÅÇ,
-    Build command line Ç×¸ñÀ» ¼öÁ¤ÇÏ¿© <code>INSTDIR=</code>À»
-    º¯°æÇÒ ¼ö ÀÖ´Ù. <code>INSTDIR=</code> ±âº»°ªÀº
-    <code>/Apache2</code> µð·ºÅä¸®ÀÌ´Ù. (¼³Ä¡ÇÏÁö¾Ê°í) Å×½ºÆ®·Î
-    ÄÄÆÄÀÏ¸¸ ÇØº¸·Á¸é ´ë½Å <code>BuildBin</code> ÇÁ·ÎÁ§Æ®¸¦
-    »ç¿ëÇÑ´Ù.</p>
+    <p><code>Apache.dsw</code> workspaceï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    <code>InstallBin</code>ï¿½ï¿½ (<code>Release</code>ï¿½ï¿½
+    <code>Debug</code> ï¿½ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½) Active Projectï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+    <code>InstallBin</code>ï¿½ï¿½ ï¿½ï¿½ï¿½Ãµï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½,
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ dllï¿½ï¿½ ï¿½Å±ï¿½ï¿½ <code>Makefile.win</code>ï¿½ï¿½
+    È£ï¿½ï¿½ï¿½Ñ´ï¿½. <code>InstallBin</code>ï¿½ï¿½ Settings, General ï¿½ï¿½,
+    Build command line ï¿½×¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ <code>INSTDIR=</code>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. <code>INSTDIR=</code> ï¿½âº»ï¿½ï¿½ï¿½ï¿½
+    <code>/Apache2</code> ï¿½ï¿½ï¿½ä¸®ï¿½Ì´ï¿½. (ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ï¿½Ê°ï¿½) ï¿½×½ï¿½Æ®ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½Øºï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ <code>BuildBin</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <p><code>.dsp</code> ÇÁ·ÎÁ§Æ® ÆÄÀÏÀº Visual C++ 6.0 Çü½ÄÀÌ´Ù.
-    Visual C++ 5.0 (97)¿¡¼­µµ ÀÌ ÆÄÀÏÀ» »ç¿ëÇÒ ¼ö ÀÖ´Ù. Visual
-    C++ 7.0 (.net)Àº <code>Apache.dsw</code>¿Í <code>.dsp</code>
-    ÆÄÀÏµéÀ» <code>Apache.sln</code>°ú <code>.msproj</code>
-    ÆÄÀÏµé·Î º¯È¯ÇÑ´Ù. <code>.dsp</code> ¼Ò½ºÆÄÀÏÀ» ¼öÁ¤ÇÏ¸é
-    ¹Ýµå½Ã <code>.msproj</code> ÆÄÀÏ·Î ´Ù½Ã º¯È¯ÇÏ¶ó! ±×³É VC++
-    7.0 IDE¿¡¼­ <code>Apache.dsw</code>¸¦ ´Ù½Ã ¿­±â¸¸ ÇÏ¸é µÈ´Ù.</p>
+    <p><code>.dsp</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Visual C++ 6.0 ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½.
+    Visual C++ 5.0 (97)ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. Visual
+    C++ 7.0 (.net)ï¿½ï¿½ <code>Apache.dsw</code>ï¿½ï¿½ <code>.dsp</code>
+    ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ <code>Apache.sln</code>ï¿½ï¿½ <code>.msproj</code>
+    ï¿½ï¿½ï¿½Ïµï¿½ï¿½ ï¿½ï¿½È¯ï¿½Ñ´ï¿½. <code>.dsp</code> ï¿½Ò½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½
+    ï¿½Ýµï¿½ï¿½ <code>.msproj</code> ï¿½ï¿½ï¿½Ï·ï¿½ ï¿½Ù½ï¿½ ï¿½ï¿½È¯ï¿½Ï¶ï¿½! ï¿½×³ï¿½ VC++
+    7.0 IDEï¿½ï¿½ï¿½ï¿½ <code>Apache.dsw</code>ï¿½ï¿½ ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½â¸¸ ï¿½Ï¸ï¿½ ï¿½È´ï¿½.</p>
 
-    <p>¶Ç, Visual C++ 7.0 (.net) »ç¿ëÀÚ´Â Build ¸Þ´º, Configuration
-    Manager ´ëÈ­Ã¢¿¡¼­ <code>Debug</code>¿Í <code>Release</code>ÀÇ
+    <p>ï¿½ï¿½, Visual C++ 7.0 (.net) ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ Build ï¿½Þ´ï¿½, Configuration
+    Manager ï¿½ï¿½È­Ã¢ï¿½ï¿½ï¿½ï¿½ <code>Debug</code>ï¿½ï¿½ <code>Release</code>ï¿½ï¿½
     abs, <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>, <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code>
-    Solution modules ¼±ÅÃÀ» ÇØÁ¦ÇØ¾ß ÇÑ´Ù. <code>srclib</code>¿¡
-    <code>openssl</code>ÀÌ³ª <code>zlib</code> µð·ºÅä¸®°¡ ÀÖ´Â
-    °æ¿ì¿¡¸¸ <code>nmake</code>¸¦ ½ÇÇàÇÏ°Å³ª (ÀÌ ¸ðµâÀ» ¸í½ÃÀûÀ¸·Î
-    ÄÄÆÄÀÏÇÏ´Â) IDE <code>BinBuild</code> ´ë»óÀ» »ç¿ëÇÏ¿© ¸ðµâÀ»
-    ÄÄÆÄÀÏ ÇÒ ¼ö ÀÖ´Ù.</p>
+    Solution modules ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½. <code>srclib</code>ï¿½ï¿½
+    <code>openssl</code>ï¿½Ì³ï¿½ <code>zlib</code> ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½Ö´ï¿½
+    ï¿½ï¿½ì¿¡ï¿½ï¿½ <code>nmake</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°Å³ï¿½ (ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½) IDE <code>BinBuild</code> ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <p>ExportÇÑ <code>.mak</code> ÆÄÀÏµéÀÌ È¥¶õ½º·´Áö¸¸, Visual
-    C++ 5.0 »ç¿ëÀÚ°¡ <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>, abs (SSLÀ» Áö¿øÇÏ´Â
-    ab), <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code>¸¦ ÄÄÆÄÀÏÇÒ¶§ ÇÊ¿äÇÏ´Ù.
-    VC++ 7.0 (.net) »ç¿ëÀÚ¿¡°Ôµµ <code>binenv</code> º¸´Ù
-    <code>nmake</code>¸¦ »ç¿ëÇÏ¸é ÄÄÆÄÀÏÀÌ ´õ ºü¸£´Ù. VC++ 5.0ÀÌ³ª
-    6.0 IDE¿¡¼­ ÀüÃ¼ ÇÁ·ÎÁ§Æ®¸¦ ÄÄÆÄÀÏÇÏ°í, Project ¸Þ´ºÀÇ Export
-    for all makefiles¸¦ »ç¿ëÇÏ¶ó. µ¿ÀûÀ¸·Î ÀÚµ¿ »ý¼ºÇÏ´Â ´ë»óÀ»
-    ¸ðµÎ ÄÄÆÄÀÏÇÏ°í ¿Ã¹Ù¸¥ ÀÇÁ¸¼º Á¤º¸¸¦ ¾ò±âÀ§ÇØ¼­´Â ¸ÕÀú
-    ÇÁ·ÎÁ§Æ®¸¦ ÄÄÆÄÀÏÇØ¾ß ÇÑ´Ù. ´ÙÀ½ ¸í·É¾î¸¦ »ç¿ëÇÏ¿© °æ·Î¸¦
-    ¼öÁ¤ÇÏ¸é ¾î¶² °æ·Î¿¡¼­µµ ÄÄÆÄÀÏÇÒ ¼ö ÀÖ´Ù:</p>
+    <p>Exportï¿½ï¿½ <code>.mak</code> ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ È¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, Visual
+    C++ 5.0 ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>, abs (SSLï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½
+    ab), <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ ï¿½Ê¿ï¿½ï¿½Ï´ï¿½.
+    VC++ 7.0 (.net) ï¿½ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½Ôµï¿½ <code>binenv</code> ï¿½ï¿½ï¿½ï¿½
+    <code>nmake</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½. VC++ 5.0ï¿½Ì³ï¿½
+    6.0 IDEï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½, Project ï¿½Þ´ï¿½ï¿½ï¿½ Export
+    for all makefilesï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½Ã¹Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½É¾î¸¦ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½Î¸ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½î¶² ï¿½ï¿½Î¿ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½:</p>
 
     <div class="example"><p><code>
       perl srclib\apr\build\fixwin32mak.pl
     </code></p></div>
 
-    <p><code>httpd</code> ¼Ò½º <em>ÃÖ»óÀ§</em> µð·ºÅä¸®¿¡¼­
-    ¸í·É¾î¸¦ ½ÇÇàÇØ¾ß ÇÑ´Ù. ÇöÀç µð·ºÅä¸®¿Í ÇÏÀ§µð·ºÅä¸®¿¡ ÀÖ´Â
-    ¸ðµç <code>.mak</code>¿Í <code>.dep</code> ÇÁ·ÎÁ§Æ®ÆÄÀÏÀ»
-    ¼öÁ¤ÇÏ°í, <code>.dsp</code>¸¦ °í·ÁÇÏ¿© ÆÄÀÏ½Ã°£À» ¼öÁ¤ÇÑ´Ù.</p>
+    <p><code>httpd</code> ï¿½Ò½ï¿½ <em>ï¿½Ö»ï¿½ï¿½ï¿½</em> ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½É¾î¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½Ö´ï¿½
+    ï¿½ï¿½ï¿½ <code>.mak</code>ï¿½ï¿½ <code>.dep</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½, <code>.dsp</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½Ï½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <p>ÇÁ·ÎÁ§Æ®ÆÄÀÏÀ» ´Ùµë¾î¼­ ÆÐÄ¡¸¦ º¸³½´Ù¸é, ÇÁ·ÎÁ§Æ®ÆÄÀÏÀ»
-    Visual Studio 6.0 Çü½ÄÀ¸·Î ¸¸µé¾î¾ß ÇÑ´Ù. º¯°æÀº °£´ÜÇÏ°í,
-    VC++ 5.0¿¡¼­ 7.0±îÁö ¸ðµç È¯°æ¿¡¼­ ÀÎ½ÄÇÏ´Â ÃÖ¼ÒÇÑÀÇ ÄÄÆÄÀÏ
-    ¿É¼Ç°ú ¸µÄ¿ ¿É¼ÇÀ» »ç¿ëÇØ¾ß ÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ùµï¿½î¼­ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ù¸ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    Visual Studio 6.0 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½,
+    VC++ 5.0ï¿½ï¿½ï¿½ï¿½ 7.0ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ È¯ï¿½æ¿¡ï¿½ï¿½ ï¿½Î½ï¿½ï¿½Ï´ï¿½ ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½É¼Ç°ï¿½ ï¿½ï¿½Ä¿ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½.</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="projectcomponents" id="projectcomponents">ÇÁ·ÎÁ§Æ® ±¸¼º¿ä¼Ò</a> <a title="Permanent link" href="#projectcomponents" class="permalink">&para;</a></h2>
+<h2><a name="projectcomponents" id="projectcomponents">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</a> <a title="Permanent link" href="#projectcomponents" class="permalink">&para;</a></h2>
 
     
 
-    <p><code>Apache.dsw</code> workspace¿Í <code>makefile.win</code>
-    <code>nmake</code> ½ºÅ©¸³Æ®´Â ´ÙÀ½ ¼ø¼­´ë·Î ¾ÆÆÄÄ¡ ¼­¹ö
-    <code>.dsp</code> ÇÁ·ÎÁ§Æ®¸¦ ÄÄÆÄÀÏÇÑ´Ù:</p>
+    <p><code>Apache.dsw</code> workspaceï¿½ï¿½ <code>makefile.win</code>
+    <code>nmake</code> ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½
+    <code>.dsp</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½:</p>
 
     <ol>
       <li><code>srclib\apr\apr.dsp</code></li>
@@ -293,14 +293,14 @@ nmake /f Makefile.win _apached</pre></div>
       <li><code>Apache.dsp</code></li>
     </ol>
 
-    <p>¶Ç, <code>modules\</code> ÇÏÀ§µð·ºÅä¸® ¾Æ·¡ ´ëºÎºÐÀÇ
-    ¸ðµâ¿¡´Â ÇÁ·ÎÁ§Æ®ÆÄÀÏÀÌ ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½, <code>modules\</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸® ï¿½Æ·ï¿½ ï¿½ï¿½Îºï¿½ï¿½ï¿½
+    ï¿½ï¿½â¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <p><code>support\</code> µð·ºÅä¸®¿¡´Â ¾ÆÆÄÄ¡¸¦ ½ÇÇàÇÏ´Âµ¥
-    ÇÊ¿äÇÏÁö´Â ¾ÊÁö¸¸, °ü¸®ÀÚ°¡ ¾ÆÆÄÄ¡¸¦ °Ë»çÇÏ°Å³ª ¾ÏÈ£ÆÄÀÏ°ú
-    ·Î±×ÆÄÀÏÀ» °ü¸®ÇÏ´Âµ¥ »ç¿ëÇÒ Ãß°¡ ÇÁ·Î±×·¥µéÀÇ ÇÁ·ÎÁ§Æ®ÆÄÀÏÀÌ
-    ÀÖ´Ù. Windows Àü¿ë Áö¿ø ÇÁ·Î±×·¥Àº <code>support\win32\</code>
-    µð·ºÅä¸®¿¡ µû·Î ÀÖ´Ù.</p>
+    <p><code>support\</code> ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´Âµï¿½
+    ï¿½Ê¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Ë»ï¿½ï¿½Ï°Å³ï¿½ ï¿½ï¿½È£ï¿½ï¿½ï¿½Ï°ï¿½
+    ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´Âµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ö´ï¿½. Windows ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ <code>support\win32\</code>
+    ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
     <ol>
       <li><code>support\ab.dsp</code></li>
@@ -318,113 +318,113 @@ nmake /f Makefile.win _apached</pre></div>
       <li><code>support\win32\wintty.dsp</code></li>
     </ol>
 
-    <p>¾ÆÆÄÄ¡¸¦ ÄÄÆÄÀÏÇÏ¸é server root µð·ºÅä¸®¿¡ ¼³Ä¡ÇØ¾ß ÇÑ´Ù.
-    ±âº»°ªÀº °°Àº µð½ºÅ©ÀÇ <code>\Apache2</code> µð·ºÅä¸®ÀÌ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ server root ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½.
+    ï¿½âº»ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½ <code>\Apache2</code> ï¿½ï¿½ï¿½ä¸®ï¿½Ì´ï¿½.</p>
 
-    <p>ÄÄÆÄÀÏÇÏ°í ¸ðµç ÆÄÀÏÀ» ¿øÇÏ´Â Æú´õ <em>dir</em>¿¡ ÀÚµ¿À¸·Î
-    ¼³Ä¡ÇÏ·Á¸é ´ÙÀ½ <code>nmake</code> ¸í·É¾îÁß ÇÏ³ª¸¦ »ç¿ëÇÑ´Ù:</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ <em>dir</em>ï¿½ï¿½ ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½Ä¡ï¿½Ï·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ <code>nmake</code> ï¿½ï¿½ï¿½É¾ï¿½ï¿½ï¿½ ï¿½Ï³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½:</p>
 
     <div class="example"><pre>nmake /f Makefile.win installr INSTDIR=<em>dir</em>
 
 nmake /f Makefile.win installd INSTDIR=<em>dir</em>
     </pre></div>
 
-    <p><code>INSTDIR</code>ÀÇ <em>dir</em> ¾Æ±Ô¸ÕÆ®´Â ¼³Ä¡µð·ºÅä¸®¸¦
-    ¶æÇÑ´Ù. »ý¶ôÇÏ¸é <code>\Apache2</code>¿¡ ¾ÆÆÄÄ¡¸¦ ¼³Ä¡ÇÑ´Ù.</p>
+    <p><code>INSTDIR</code>ï¿½ï¿½ <em>dir</em> ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½
+    ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ <code>\Apache2</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½Ñ´ï¿½.</p>
 
-    <p>´ÙÀ½°ú °°ÀÌ ¼³Ä¡ÇÑ´Ù:</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½Ñ´ï¿½:</p>
 
     <ul>
-      <li><code><em>dir</em>\bin\Apache.exe</code> - ¾ÆÆÄÄ¡
-      ½ÇÇàÆÄÀÏ</li>
+      <li><code><em>dir</em>\bin\Apache.exe</code> - ï¿½ï¿½ï¿½ï¿½Ä¡
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</li>
 
       <li><code><em>dir</em>\bin\ApacheMonitor.exe</code> -
-      ¼­ºñ½º °¨½Ã¿ë ÀÛ¾÷Ç¥½ÃÁÙ ¾ÆÀÌÄÜ µµ±¸</li>
+      ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¿ï¿½ ï¿½Û¾ï¿½Ç¥ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</li>
 
       <li><code><em>dir</em>\bin\htdigest.exe</code> - Digest
-      auth ¾ÏÈ£ÆÄÀÏ µµ±¸</li>
+      auth ï¿½ï¿½È£ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</li>
 
       <li><code><em>dir</em>\bin\htdbm.exe</code> - SDBM auth
-      µ¥ÀÌÅÍº£ÀÌ½º ¾ÏÈ£ÆÄÀÏ µµ±¸</li>
+      ï¿½ï¿½ï¿½ï¿½ï¿½Íºï¿½ï¿½Ì½ï¿½ ï¿½ï¿½È£ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</li>
 
       <li><code><em>dir</em>\bin\htpasswd.exe</code> - Basic
-      auth ¾ÏÈ£ÆÄÀÏ µµ±¸</li>
+      auth ï¿½ï¿½È£ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</li>
 
-      <li><code><em>dir</em>\bin\logresolve.exe</code> - ·Î±×ÆÄÀÏ¿¡¼­
-      dns ÀÌ¸§À» Ã£´Â µµ±¸</li>
+      <li><code><em>dir</em>\bin\logresolve.exe</code> - ï¿½Î±ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½
+      dns ï¿½Ì¸ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</li>
 
-      <li><code><em>dir</em>\bin\rotatelogs.exe</code> - ·Î±×ÆÄÀÏ
-      ¼øÈ¯ µµ±¸</li>
+      <li><code><em>dir</em>\bin\rotatelogs.exe</code> - ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½È¯ ï¿½ï¿½ï¿½ï¿½</li>
 
-      <li><code><em>dir</em>\bin\wintty.exe</code> - ÄÜ¼ÖÃ¢
-      µµ±¸</li>
+      <li><code><em>dir</em>\bin\wintty.exe</code> - ï¿½Ü¼ï¿½Ã¢
+      ï¿½ï¿½ï¿½ï¿½</li>
 
       <li><code><em>dir</em>\bin\libapr.dll</code> - Apache
-      Portable Runtime °øÀ¯ ¶óÀÌºê·¯¸®</li>
+      Portable Runtime ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìºê·¯ï¿½ï¿½</li>
 
       <li><code><em>dir</em>\bin\libaprutil.dll</code> - Apache
-      Utility Runtime °øÀ¯ ¶óÀÌºê·¯¸®</li>
+      Utility Runtime ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìºê·¯ï¿½ï¿½</li>
 
       <li><code><em>dir</em>\bin\libhttpd.dll</code> - Apache
-      Core ¶óÀÌºê·¯¸®</li>
+      Core ï¿½ï¿½ï¿½Ìºê·¯ï¿½ï¿½</li>
 
-      <li><code><em>dir</em>\modules\mod_*.so</code> - ÀÐ¾îµéÀÏ
-      ¼ö ÀÖ´Â ¾ÆÆÄÄ¡ ¸ðµâ</li>
+      <li><code><em>dir</em>\modules\mod_*.so</code> - ï¿½Ð¾ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½</li>
 
-      <li><code><em>dir</em>\conf</code> - ¼³Á¤ µð·ºÅä¸®</li>
+      <li><code><em>dir</em>\conf</code> - ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®</li>
 
-      <li><code><em>dir</em>\logs</code> - ºñ¾îÀÖ´Â ·Î±×
-      µð·ºÅä¸®</li>
+      <li><code><em>dir</em>\logs</code> - ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ ï¿½Î±ï¿½
+      ï¿½ï¿½ï¿½ä¸®</li>
 
-      <li><code><em>dir</em>\include</code> - C ¾ð¾î Çì´õÆÄÀÏ</li>
+      <li><code><em>dir</em>\include</code> - C ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</li>
 
-      <li><code><em>dir</em>\lib</code> - ¸µÅ© ¶óÀÌºê·¯¸®ÆÄÀÏ</li>
+      <li><code><em>dir</em>\lib</code> - ï¿½ï¿½Å© ï¿½ï¿½ï¿½Ìºê·¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</li>
     </ul>
 
-    <h3><a name="projectcomponents-warn" id="projectcomponents-warn">°³¹ßÁßÀÎ ¾ÆÆÄÄ¡ ¹öÀüÀ» ÄÄÆÄÀÏÇÒ¶§ °æ°í</a></h3>
+    <h3><a name="projectcomponents-warn" id="projectcomponents-warn">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ ï¿½ï¿½ï¿½</a></h3>
 
       
 
-      <div class="note"><code>.dsp</code> ÆÄÀÏÀº <code>release</code>¸¶´Ù
-      »õ·Î ¸¸µé¾îÁø´Ù. °³¹ßÀÚÀÇ ½Ã°£³¶ºñ¸¦ ¸·±âÀ§ÇØ
-      <code>.mak</code> ÆÄÀÏÀº »õ·Î ¸¸µéÁö ¾Ê´Â´Ù. ±×·¯¹Ç·Î
-      <code>NMAKE</code> ¸í·É¾î¸¦ »ç¿ëÇÏ¿© »õ·Î¿î <code>.dsp</code>
-      ÇÁ·ÎÁ§Æ®ÆÄÀÏÀ» ÄÄÆÄÀÏÇÒ ¼ö ¾ø´Ù. ÇÁ·ÎÁ§Æ®¿¡¼­ Á÷Á¢ ¸ðµç
-      <code>.mak</code> ÆÄÀÏÀ» exportÇØ¾ß ÇÑ´Ù. Microsoft Developer
-      Studio È¯°æ¿¡¼­ ÄÄÆÄÀÏÇÑ´Ù¸é ÀÌ ÀÛ¾÷ÀÌ ÇÊ¿ä¾ø´Ù.</div>
+      <div class="note"><code>.dsp</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>release</code>ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      <code>.mak</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½. ï¿½×·ï¿½ï¿½Ç·ï¿½
+      <code>NMAKE</code> ï¿½ï¿½ï¿½É¾î¸¦ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½Î¿ï¿½ <code>.dsp</code>
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+      <code>.mak</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ exportï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½. Microsoft Developer
+      Studio È¯ï¿½æ¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½ ï¿½ï¿½ ï¿½Û¾ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ï¿½.</div>
 
-      <div class="note">¶Ç, makefileÀ» exportÇÏ±â Àü¿¡ <code>BuildBin</code>
-      ÇÁ·ÎÁ§Æ®¸¦ (È¤Àº <code>_apacher</code>³ª <code>_apached</code>
-      ¸í·ÉÇà ´ë»ó) ÄÄÆÄÀÏÇÏ¸é ¸Å¿ì µµ¿òÀÌ µÈ´Ù. ÄÄÆÄÀÏÁß¿¡ ¸¹Àº
-      ÆÄÀÏÀÌ ÀÚµ¿À¸·Î ¸¸µé¾îÁø´Ù. ÀüÃ¼¸¦ ÄÄÆÄÀÏÇØ¾ß¸¸ Á¤»óÀûÀ¸·Î
-      ÄÄÆÄÀÏÇÒ¶§ ÇÊ¿äÇÑ ÀÇÁ¸ÆÄÀÏÀ» ¸ðµÎ ¸¸µç´Ù.</div>
+      <div class="note">ï¿½ï¿½, makefileï¿½ï¿½ exportï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ <code>BuildBin</code>
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ (È¤ï¿½ï¿½ <code>_apacher</code>ï¿½ï¿½ <code>_apached</code>
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½Å¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½È´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß¿ï¿½ ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ß¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½.</div>
 
-      <p>¹èÆ÷¿ë <code>.mak</code> ÆÄÀÏÀ» ¸¸µå·Á¸é Ç×»ó
-      <code>.mak</code> (È¤Àº <code>.dep</code>)¿¡¼­ Platform
-      SDK µîÀÇ ÀÇÁ¸¼ºÀ» Á¡°ËÇÏ¶ó.
-      <code>DevStudio\SharedIDE\bin\</code> (VC5)³ª
-      <code>DevStudio\Common\MSDev98\bin\</code> (VC6) µð·ºÅä¸®¿¡´Â
-      ¸ðµç ¿¹¿Ü ¸ñ·ÏÀÌ ´ã±ä <code>sysincl.dat</code> ÆÄÀÏÀÌ
-      ÀÖ´Ù. ÀÌ ÆÄÀÏ¿¡ ÀÇÁ¸¼º Á¤º¸¸¦ Ãß°¡ÇÑ´Ù
-      (<code>sys/time.h</code>¿Í <code>sys\time.h</code>¿Í °°ÀÌ,
-      °æ·Î´Â ½½·¡½¬¸¦ »ç¿ëÇÑ °Í°ú ¹é½½·¡½¬¸¦ »ç¿ëÇÑ °Í ¸ðµÎ¸¦
-      Ãß°¡ÇÑ´Ù). ¹èÆ÷ÇÒ <code>.mak</code> ÆÄÀÏ¿¡ ÇöÀç ÄÄÇ»ÅÍ¿¡¸¸
-      ÇØ´çÇÏ´Â ¼³Ä¡°æ·Î°¡ ÀÖ´Ù¸é ÄÄÆÄÀÏÀÌ ¿ÏÀüÈ÷ ½ÇÆÐÇÑ´Ù.
-      ±×·¯¹Ç·Î <code>srclib/apr/build/fixwin32mak.pl</code>À»
-      ½ÇÇàÇØÇÏ¿© <code>.mak</code> ÆÄÀÏ¿¡ ÀÖ´Â Àý´ë°æ·Î¸¦ ¾ø¾Ö¾ß
-      ÇÑ´Ù.</p>
+      <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>.mak</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×»ï¿½
+      <code>.mak</code> (È¤ï¿½ï¿½ <code>.dep</code>)ï¿½ï¿½ï¿½ï¿½ Platform
+      SDK ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.
+      <code>DevStudio\SharedIDE\bin\</code> (VC5)ï¿½ï¿½
+      <code>DevStudio\Common\MSDev98\bin\</code> (VC6) ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ <code>sysincl.dat</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½Ö´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ñ´ï¿½
+      (<code>sys/time.h</code>ï¿½ï¿½ <code>sys\time.h</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½,
+      ï¿½ï¿½Î´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Í°ï¿½ ï¿½é½½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Î¸ï¿½
+      ï¿½ß°ï¿½ï¿½Ñ´ï¿½). ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>.mak</code> ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ç»ï¿½Í¿ï¿½ï¿½ï¿½
+      ï¿½Ø´ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½Î°ï¿½ ï¿½Ö´Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+      ï¿½×·ï¿½ï¿½Ç·ï¿½ <code>srclib/apr/build/fixwin32mak.pl</code>ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ <code>.mak</code> ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Î¸ï¿½ ï¿½ï¿½ï¿½Ö¾ï¿½
+      ï¿½Ñ´ï¿½.</p>
 
     
 
   </div></div>
 <div class="bottomlang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/platform/win_compiling.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/platform/win_compiling.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/platform/win_compiling.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/platform/win_compiling.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/platform/win_compiling.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/platform/win_compiling.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -439,8 +439,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/platform/win_compi
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="de" xml:lang="de"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="de" xml:lang="de"><head>
 <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -16,29 +16,29 @@
 
 <link href="./images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page" class="no-sidebar"><div id="page-header">
-<p class="menu"><a href="./mod/">Module</a> | <a href="./mod/quickreference.html">Direktiven</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossar</a> | <a href="./sitemap.html">Seitenindex</a></p>
+<p class="menu"><a href="./mod/">Module</a> | <a href="./mod/quickreference.html">Direktiven</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossar</a> | <a href="./sitemap.html">Seitenindex</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="./images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP-Server</a> &gt; <a href="http://httpd.apache.org/docs/">Dokumentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>Glossar</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP-Server</a> &gt; <a href="https://httpd.apache.org/docs/">Dokumentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>Glossar</h1>
 <div class="toplang">
-<p><span>Verfügbare Sprachen: </span><a href="./de/glossary.html" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>Verfï¿½gbare Sprachen: </span><a href="./de/glossary.html" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/glossary.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/glossary.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/glossary.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./es/glossary.html" hreflang="es" rel="alternate" title="Espaï¿½ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/glossary.html" hreflang="fr" rel="alternate" title="Franï¿½ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/glossary.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/glossary.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/glossary.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/glossary.html" hreflang="tr" rel="alternate" title="Tï¿½rkï¿½e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Diese Übersetzung ist möglicherweise
-            nicht mehr aktuell. Bitte prüfen Sie die englische Version auf
-            die neuesten Änderungen.</div>
+<div class="outofdate">Diese ï¿½bersetzung ist mï¿½glicherweise
+            nicht mehr aktuell. Bitte prï¿½fen Sie die englische Version auf
+            die neuesten ï¿½nderungen.</div>
 
-    <p>Dieses Glossar erläutert einige gebräuchliche Fachbegriffe im
+    <p>Dieses Glossar erlï¿½utert einige gebrï¿½uchliche Fachbegriffe im
       Zusammenhang mit dem Apache im Speziellen und Web-Diensten im
       Allgemeinen. Weitere Informationen zum jeweiligen Begriff erreichen Sie
-      über die Links.</p>
+      ï¿½ber die Links.</p>
   </div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -46,9 +46,9 @@
     
   <dl>
     <dt><a name="algorithm" id="algorithm">Algorithmus</a></dt>
-    <dd>Eine eindeutige Formel oder ein Satz von Regeln zur Lösung eines
+    <dd>Eine eindeutige Formel oder ein Satz von Regeln zur Lï¿½sung eines
       Problems in einer endlichen Anzahl von Schritten. Algorithmen zur
-      Verschlüsselung werden üblicherweise <a class="glossarylink" href="./glossary.html#cipher" title="siehe Glossar"><dfn>Chiffre</dfn></a> genannt.
+      Verschlï¿½sselung werden ï¿½blicherweise <a class="glossarylink" href="./glossary.html#cipher" title="siehe Glossar"><dfn>Chiffre</dfn></a> genannt.
     </dd>
 
     <dt><a name="apacheextensiontool" id="apacheextensiontool">APache
@@ -62,9 +62,9 @@
     <dt><a name="apacheportableruntime" id="apacheportableruntime">Apache Portable Runtime</a> <a name="apr" id="apr">(APR)</a></dt>
     <dd>Eine Menge von Bibliotheken, die viele grundlegende Schnittstellen
       zwischen dem Server und dem Betriebssystem anbietet. Die APR
-      wird parallel zum Apache HTTP Server in einem eigenständigen Projekt
+      wird parallel zum Apache HTTP Server in einem eigenstï¿½ndigen Projekt
       entwickelt.<br />
-      Siehe auch: <a href="http://apr.apache.org/">Apache Portable Runtime
+      Siehe auch: <a href="https://apr.apache.org/">Apache Portable Runtime
       Project</a>
     </dd>
 
@@ -79,39 +79,39 @@
       <span class="phonetic">[s&#601;&#712;tifi&#712;kei&#643;&#601;n
       &#596;&#720;&#952;&#596;riti]</span>
       <a name="ca" id="ca">(CA)</a></dt>
-    <dd><span class="transnote">(<em>Anm.d.Ü.:</em> die Zertifizierungsstelle)</span> Eine
-      vertrauenswürdige dritte Partei, deren Zweck es ist,
-      Zertifikate für Netzwerkeinheiten zu signieren. Andere
-      Netzwerkeinheiten können die Signatur prüfen, um
+    <dd><span class="transnote">(<em>Anm.d.ï¿½.:</em> die Zertifizierungsstelle)</span> Eine
+      vertrauenswï¿½rdige dritte Partei, deren Zweck es ist,
+      Zertifikate fï¿½r Netzwerkeinheiten zu signieren. Andere
+      Netzwerkeinheiten kï¿½nnen die Signatur prï¿½fen, um
       sicherzustellen, dass eine CA den Inhaber eines Zertifikats
       authentifiziert hat.<br />
-      Siehe: <a href="ssl/">SSL/TLS-Verschlüsselung</a>
+      Siehe: <a href="ssl/">SSL/TLS-Verschlï¿½sselung</a>
     </dd>
 
     <dt><a name="certificatsigningrequest" id="certificatsigningrequest">Certificate Signing Request</a>
       <span class="phonetic">[s&#601;&#712;tifikit saini&#331;
       ri&#712;kwest]</span>  <a name="csr" id="csr">(CSR)</a></dt> 
-    <dd><span class="transnote">(<em>Anm.d.Ü.:</em> Zertifikats-Signierungsanfrage)</span> Ein unsigniertes
+    <dd><span class="transnote">(<em>Anm.d.ï¿½.:</em> Zertifikats-Signierungsanfrage)</span> Ein unsigniertes
       <a class="glossarylink" href="./glossary.html#certificate" title="siehe Glossar">Zertifikat</a> zur Einreichung bei
       einer <a class="glossarylink" href="./glossary.html#certificationauthority" title="siehe Glossar">Zertifizierungsstelle</a>, welche
-      es mit dem <a class="glossarylink" href="./glossary.html#privatekey" title="siehe Glossar">privaten Schlüssel</a>
+      es mit dem <a class="glossarylink" href="./glossary.html#privatekey" title="siehe Glossar">privaten Schlï¿½ssel</a>
       ihres CA-<em>Zertifikats</em> signiert. Durch die Signatur wird ein CSR
       zum echten Zertifikat.<br />
-      Siehe: <a href="ssl/">SSL/TLS-Verschlüsselung</a>
+      Siehe: <a href="ssl/">SSL/TLS-Verschlï¿½sselung</a>
     </dd>
 
     <dt><a name="cipher" id="cipher">Chiffre</a></dt> 
     <dd>Die <dfn>Chiffre</dfn> ist ein Algorithmus oder System zur
-      Datenverschlüsselung. Beispiele sind DES, IDEA, RC4 usw. Im
+      Datenverschlï¿½sselung. Beispiele sind DES, IDEA, RC4 usw. Im
       Englischen spricht man von
       <dfn>Cipher</dfn>&nbsp;<span class="phonetic">[&#712;saif&#601;]</span><br />
-      Siehe: <a href="ssl/">SSL/TLS-Verschlüsselung</a>
+      Siehe: <a href="ssl/">SSL/TLS-Verschlï¿½sselung</a>
     </dd>
 
     <dt><a name="ciphertext" id="ciphertext">Chiffretext</a></dt>
     <dd>Das Ergebnis, nachdem ein <a class="glossarylink" href="./glossary.html#plaintext" title="siehe Glossar">Klartext</a>
       eine <a class="glossarylink" href="./glossary.html#cipher" title="siehe Glossar">Chiffre</a> durchlaufen hat.<br />
-      Siehe: <a href="ssl/">SSL/TLS-Verschlüsselung</a>
+      Siehe: <a href="ssl/">SSL/TLS-Verschlï¿½sselung</a>
     </dd>
     
     <dt><a name="commongatewayinterface" id="commongatewayinterface">Common
@@ -120,31 +120,31 @@
       <a name="cgi" id="cgi">(CGI)</a></dt>
     <dd>Eine einheitliche Definition einer Schnittstelle zwischen einem
       Webserver und einem externen Programm, welcher dem externen Programm die
-      Behandlung von Anfragen ermöglicht. Die Schnittstelle ist
-      ursprünglich von der <a href="http://hoohoo.ncsa.uiuc.edu/cgi/overview.html">NCSA</a>
-      definiert worden. Es exisitert jedoch auch ein <a href="http://cgi-spec.golux.com/">RFC-Projekt</a>.<br />
+      Behandlung von Anfragen ermï¿½glicht. Die Schnittstelle ist
+      ursprï¿½nglich von der <a href="https://hoohoo.ncsa.uiuc.edu/cgi/overview.html">NCSA</a>
+      definiert worden. Es exisitert jedoch auch ein <a href="https://cgi-spec.golux.com/">RFC-Projekt</a>.<br />
       Siehe: <a href="howto/cgi.html">Dynamische Inhalte mit CGI</a>
     </dd>
 
     <dt><a name="connect" id="connect">CONNECT</a>
       <span class="phonetic">[k&#601;nekt]</span></dt> 
     <dd>Eine <a class="glossarylink" href="./glossary.html#method" title="siehe Glossar">HTTP-Methode</a> zur Weiterleitung
-      von Rohdaten über HTTP. Sie kann dazu verwendet werden, andere
+      von Rohdaten ï¿½ber HTTP. Sie kann dazu verwendet werden, andere
       Protokolle wie zum Beispiel das SSL-Protokoll zu kapseln.
     </dd>
 
     <dt><a name="digitalsignature" id="digitalsignature">Digitale
       Signatur</a></dt>
-    <dd>Ein chiffrierter Textblock, der die Gültigkeit eines Zertifikats
-      oder einer anderen Datei bestätigt. Eine <a class="glossarylink" href="./glossary.html#certificationauthority" title="siehe Glossar">Zertifizierungsstelle</a> erstellt 
+    <dd>Ein chiffrierter Textblock, der die Gï¿½ltigkeit eines Zertifikats
+      oder einer anderen Datei bestï¿½tigt. Eine <a class="glossarylink" href="./glossary.html#certificationauthority" title="siehe Glossar">Zertifizierungsstelle</a> erstellt 
       eine digitale Signatur durch Generierung eines <a class="glossarylink" href="./glossary.html#hash" title="siehe Glossar">Hashs</a> aus dem in einem <em>Zertifikat</em>
-      enthaltenen <em>öffentlichen Schlüssel</em> und
-      anschließender Codierung des Hashs mit dem <em>privaten
-      Schlüssel</em> des Zertifikats. Nur der öffentliche
-      Schlüssel der CA kann die Signatur decodieren. So wird
+      enthaltenen <em>ï¿½ffentlichen Schlï¿½ssel</em> und
+      anschlieï¿½ender Codierung des Hashs mit dem <em>privaten
+      Schlï¿½ssel</em> des Zertifikats. Nur der ï¿½ffentliche
+      Schlï¿½ssel der CA kann die Signatur decodieren. So wird
       sichergestellt, dass die CA die Netwerkeinheit, welche das
       <em>Zertifikat</em> besitzt, authentifiziert hat.<br />
-      Siehe: <a href="ssl/">SSL/TLS-Verschlüsselung</a>
+      Siehe: <a href="ssl/">SSL/TLS-Verschlï¿½sselung</a>
     </dd>
 
     <dt><a name="directive" id="directive">Direktive</a></dt> 
@@ -155,62 +155,62 @@
 
     <dt><a name="dynamicsharedobject" id="dynamicsharedobject">Dynamic
       Shared Object</a> 
-      <span class="phonetic">[dai&#712;næmik &#643;&#603;&#601;d
+      <span class="phonetic">[dai&#712;nï¿½mik &#643;&#603;&#601;d
       &#712;&#596;bd&#658;ikt]</span> <a name="dso" id="dso">(DSO)</a></dt>
-    <dd>Separat von der Apache-Binärdatei <code class="program"><a href="./programs/httpd.html">httpd</a></code>
+    <dd>Separat von der Apache-Binï¿½rdatei <code class="program"><a href="./programs/httpd.html">httpd</a></code>
       kompilierte <a class="glossarylink" href="./glossary.html#module" title="siehe Glossar">Module</a>, die bei Bedarf
-      geladen werden können.<br />
-      Siehe: <a href="dso.html">Unterstützung für
+      geladen werden kï¿½nnen.<br />
+      Siehe: <a href="dso.html">Unterstï¿½tzung fï¿½r
       Dynamic-Shared-Objects</a>
     </dd>
 
-    <dt><a name="export-crippled" id="export-crippled">exportbeschränkt</a></dt>
-    <dd>Verminderte kryptografische Stärke (und Sicherheit), um den
-      Exportbesimmungen der Vereinigten Staaten <span class="transnote">(<em>Anm.d.Ü.:</em> konkret: United
+    <dt><a name="export-crippled" id="export-crippled">exportbeschrï¿½nkt</a></dt>
+    <dd>Verminderte kryptografische Stï¿½rke (und Sicherheit), um den
+      Exportbesimmungen der Vereinigten Staaten <span class="transnote">(<em>Anm.d.ï¿½.:</em> konkret: United
       States' Export Administration Regulations (EAR))</span> zu
-      entsprechen. Exportbeschränkte Verschlüsselungssoftware ist
-      auf eine kurze Schlüssellänge begrenzt, was zu
-      <em>Chiffretexten</em> führt, die gewöhnlich mittels
-      Brute-Force dekodiert werden können.<br />
-      Siehe: <a href="ssl/">SSL/TLS-Verschlüsselung</a>
+      entsprechen. Exportbeschrï¿½nkte Verschlï¿½sselungssoftware ist
+      auf eine kurze Schlï¿½ssellï¿½nge begrenzt, was zu
+      <em>Chiffretexten</em> fï¿½hrt, die gewï¿½hnlich mittels
+      Brute-Force dekodiert werden kï¿½nnen.<br />
+      Siehe: <a href="ssl/">SSL/TLS-Verschlï¿½sselung</a>
     </dd>
 
     <dt><a name="filter" id="filter">Filter</a></dt>
     <dd>Ein Verfahren, dass auf vom Server empfangene oder zu sendende Daten
       angewendet wird. Eingabefilter verarbeiten vom Client an den Server
-      gesendetet Daten, während Ausgabefilter vom Server an den Client zu
+      gesendetet Daten, wï¿½hrend Ausgabefilter vom Server an den Client zu
       sendende Daten verarbeiten. Der Ausgabefilter <code>INCLUDES</code>
-      beispielsweise untersucht Dokumente nach <a class="glossarylink" href="./glossary.html#ssi" title="siehe Glossar">Server-Side-Includes</a> und führt sie aus.<br />
+      beispielsweise untersucht Dokumente nach <a class="glossarylink" href="./glossary.html#ssi" title="siehe Glossar">Server-Side-Includes</a> und fï¿½hrt sie aus.<br />
       Siehe: <a href="filter.html">Filter</a>
     </dd>
 
     <dt><a name="handler" id="handler">Handler</a>
-      <span class="phonetic">[&#712;hændl&#601;]</span></dt>
+      <span class="phonetic">[&#712;hï¿½ndl&#601;]</span></dt>
     <dd>Eine Apache-interne Darstellung der Aktion, die beim Aufruf einer
-      Datei auszuführen ist. Im Allgemeinen besitzen Dateien implizite,
-      auf dem Dateityp basierende Handler. Gewöhnlich werden alle Dateien
+      Datei auszufï¿½hren ist. Im Allgemeinen besitzen Dateien implizite,
+      auf dem Dateityp basierende Handler. Gewï¿½hnlich werden alle Dateien
       vom Server bedient, einige Dateitypen werden jedoch separat "behandelt"
-      <span class="transnote">(<em>Anm.d.Ü.:</em> besitzen einen separaten Handler)</span>. Der
+      <span class="transnote">(<em>Anm.d.ï¿½.:</em> besitzen einen separaten Handler)</span>. Der
       <code>cgi-script</code>-Handler beispielsweise kennzeichnet Dateien, die
-      als <a class="glossarylink" href="./glossary.html#cgi" title="siehe Glossar">CGI-Programme</a> ausgeführt werden
+      als <a class="glossarylink" href="./glossary.html#cgi" title="siehe Glossar">CGI-Programme</a> ausgefï¿½hrt werden
       sollen.<br />
       Siehe: <a href="handler.html">Verwendung von Apache-Handlern</a>
     </dd>
 
     <dt><a name="hash" id="hash">Hash</a>
-      <span class="phonetic">[hæ&#643;]</span></dt>
+      <span class="phonetic">[hï¿½&#643;]</span></dt>
     <dd>Ein mathematischer, unumkehrbarer Einweg-Algorithmus zur Generierung
-      einer Zeichenfolge fester Länge aus einer anderen Zeichenfolge
-      beliebiger Länge. Unterschiedliche Zeichenfolgen bei der Eingabe
-      ergeben üblischerweise unterschiedliche Hashes (abhängig von
+      einer Zeichenfolge fester Lï¿½nge aus einer anderen Zeichenfolge
+      beliebiger Lï¿½nge. Unterschiedliche Zeichenfolgen bei der Eingabe
+      ergeben ï¿½blischerweise unterschiedliche Hashes (abhï¿½ngig von
       der Hash-Funktion).
     </dd>
 
     <dt><a name="header" id="header">Header</a>
       <span class="phonetic">[hed&#601;]</span></dt>
     <dd>Der Teil der <a class="glossarylink" href="./glossary.html#http" title="siehe Glossar">HTTP</a>-Anfrage und -Antwort,
-      der vor den eigentlichen Daten übermittelt wird und den Inhalt
-      beschreibende Meta-Informationen enthält.
+      der vor den eigentlichen Daten ï¿½bermittelt wird und den Inhalt
+      beschreibende Meta-Informationen enthï¿½lt.
     </dd>
 
     <dt><a name="htaccess" id="htaccess">.htaccess</a></dt>
@@ -218,7 +218,7 @@
       die innerhalb des Web-Verzeichnisbaums abgelegt wird und zu dem
       Verzeichnis, in dem sie abgelegt ist, sowie allen Unterverzeichnissen
       <a class="glossarylink" href="./glossary.html#directive" title="siehe Glossar">Konfigurationsdirektiven</a>
-      enthält. Trotz ihres Namens kann diese Datei nahezu alle Arten von
+      enthï¿½lt. Trotz ihres Namens kann diese Datei nahezu alle Arten von
       Direktiven enthalten, nicht nur Direktiven zur Zugriffskontrolle.<br />
       Siehe: <a href="configuring.html">Konfigurationsdateien</a>
     </dd>
@@ -232,20 +232,20 @@
 
     <dt><a name="https" id="https">HTTPS</a></dt>
     <dd>Das HyperText-Transfer-Protokoll (Secure), der
-      Standard-Verschlüsselungsmechanismus im World Wide Web.
-      Tatsächlich handelt es sich hierbei um HTTP über <a class="glossarylink" href="./glossary.html#ssl" title="siehe Glossar">SSL</a>.<br />
-      Siehe: <a href="ssl/">SSL/TLS-Verschlüsselung</a>
+      Standard-Verschlï¿½sselungsmechanismus im World Wide Web.
+      Tatsï¿½chlich handelt es sich hierbei um HTTP ï¿½ber <a class="glossarylink" href="./glossary.html#ssl" title="siehe Glossar">SSL</a>.<br />
+      Siehe: <a href="ssl/">SSL/TLS-Verschlï¿½sselung</a>
     </dd>
     
     <dt><a name="hypertexttransferprotocol" id="hypertexttransferprotocol">HyperText-Transfer-Protokoll</a>
       <a name="http" id="http">(HTTP)</a></dt>
-    <dd>Das Standard-Übertragungsprotokoll im World Wide Web. Der Apache
+    <dd>Das Standard-ï¿½bertragungsprotokoll im World Wide Web. Der Apache
       implementiert die Protokollversion 1.1, bezeichnet als HTTP/1.1 und
-      definiert in <a href="http://ietf.org/rfc/rfc2616.txt">RFC 2616</a>.
+      definiert in <a href="https://ietf.org/rfc/rfc2616.txt">RFC 2616</a>.
     </dd>
 
     <dt><a name="plaintext" id="plaintext">Klartext</a></dt>
-    <dd>Der unverschlüsselte Text.</dd>
+    <dd>Der unverschlï¿½sselte Text.</dd>
 
     <dt><a name="configurationdirective" id="configurationdirective">Konfigurationsanweisung</a></dt>
     <dd>Siehe: <a class="glossarylink" href="./glossary.html#directive" title="siehe Glossar">Direktive</a></dd>
@@ -260,110 +260,110 @@
     <dd>Ein Bereich in den <a class="glossarylink" href="./glossary.html#configurationfile" title="siehe Glossar">Konfigurationsdateien</a>, in dem
       verschiedene Typen von <a class="glossarylink" href="./glossary.html#directive" title="siehe Glossar">Direktiven</a>
       erlaubt sind.<br />
-      Siehe: <a href="mod/directive-dict.html#Context">Erklärung der
+      Siehe: <a href="mod/directive-dict.html#Context">Erklï¿½rung der
       Fachbegriffe zu Apache-Direktiven</a>
     </dd>
 
     <dt><a name="messagedigest" id="messagedigest">Message-Digest</a>
       <span class="phonetic">[&#712;mesid&#658;]</span></dt>
-    <dd>Ein Hash einer Nachricht, mit dem sich sicherstellen läßt,
-      dass der Inhalt der Nachricht während der Übertragung nicht
-      verändert wurde. <span class="transnote">(<em>Anm.d.Ü.:</em> ein so genannter Extrakt der
+    <dd>Ein Hash einer Nachricht, mit dem sich sicherstellen lï¿½ï¿½t,
+      dass der Inhalt der Nachricht wï¿½hrend der ï¿½bertragung nicht
+      verï¿½ndert wurde. <span class="transnote">(<em>Anm.d.ï¿½.:</em> ein so genannter Extrakt der
       Nachricht)</span><br />
-      Siehe: <a href="ssl/">SSL/TLS-Verschlüsselung</a>
+      Siehe: <a href="ssl/">SSL/TLS-Verschlï¿½sselung</a>
     </dd>
 
     <dt><a name="method" id="method">Methode</a></dt>
     <dd>Im <a class="glossarylink" href="./glossary.html#http" title="siehe Glossar">HTTP</a>-Kontext eine in der
       Anfrage(zeile) des Clients angegeben Aktion, die auf eine Ressource
       angewendet wird. <code>GET</code>, <code>POST</code> und <code>PUT</code>
-      sind einige der verfügbaren HTTP-Methoden.
+      sind einige der verfï¿½gbaren HTTP-Methoden.
     </dd>
 
     <dt><a name="mime-type" id="mime-type">MIME-Typ</a>
       <span class="phonetic">[maim ty&#720;p]</span></dt>
-    <dd>Eine Art und Weise, den Typ des übermittelten Dokuments zu
+    <dd>Eine Art und Weise, den Typ des ï¿½bermittelten Dokuments zu
       beschreiben. Sein Name leitet sich davon ab, dass sein Format den
       Multipurpose Internet Mail Extensions entlehnt wurde. Er besteht aus
       einem Haupttyp und einem Untertyp, getrennt durch einen 
-      Schrägstrich. Einige Beispiele sind <code>text/html</code>,
+      Schrï¿½gstrich. Einige Beispiele sind <code>text/html</code>,
       <code>image/gif</code> und <code>application/octet-stream</code>.
       Bei HTTP wird der MIME-Typ mit dem <a class="glossarylink" href="./glossary.html#header" title="siehe Glossar">Header</a> <code>Content-Type</code>
-      übermittelt.<br />
+      ï¿½bermittelt.<br />
       Siehe: <a href="mod/mod_mime.html">mod_mime</a>
     </dd>
 
     <dt><a name="module" id="module">Modul</a></dt>
-    <dd>Ein selbstständiger Teil eines Programms. Ein Großteil der
-      Funktionalität des Apache ist in Modulen enthalten, die Sie einbinden
-      oder entfernen können. In die Apache-Binärdatei <code class="program"><a href="./programs/httpd.html">httpd</a></code> einkompilierte Module werden <em>statische Module</em>
-      genannt, während Module, die separat gespeichert sind und optional
-      zur Laufzeit geladen werden können, <em>dynamische Module</em> oder
+    <dd>Ein selbststï¿½ndiger Teil eines Programms. Ein Groï¿½teil der
+      Funktionalitï¿½t des Apache ist in Modulen enthalten, die Sie einbinden
+      oder entfernen kï¿½nnen. In die Apache-Binï¿½rdatei <code class="program"><a href="./programs/httpd.html">httpd</a></code> einkompilierte Module werden <em>statische Module</em>
+      genannt, wï¿½hrend Module, die separat gespeichert sind und optional
+      zur Laufzeit geladen werden kï¿½nnen, <em>dynamische Module</em> oder
       <a class="glossarylink" href="./glossary.html#dso" title="siehe Glossar">DSOs</a> genannt werden.
-      Standardmäßig eingebundene Module werden <em>Basismodule</em>
-      genannt. Für den Apache sind viele Module verfügbar, die nicht
+      Standardmï¿½ï¿½ig eingebundene Module werden <em>Basismodule</em>
+      genannt. Fï¿½r den Apache sind viele Module verfï¿½gbar, die nicht
       als Bestandteil des <a class="glossarylink" href="./glossary.html#tarball" title="siehe Glossar">Apache-HTTP-Server-Tarballs</a> ausgeliefert
       werden. Diese werden als <em>Drittmodule</em> bezeichnet.<br />
       Siehe: <a href="mod/">Modulverzeichnis</a>
     </dd>
 
     <dt><a name="modulemagicnumber" id="modulemagicnumber">Module-Magic-Number</a>
-      <span class="phonetic">[&#712;m&#596;ju&#720;l mæd&#658;ik
+      <span class="phonetic">[&#712;m&#596;ju&#720;l mï¿½d&#658;ik
       &#712;n&#652;mb&#601;]</span>
       (<a name="mmn" id="mmn">MMN</a>)</dt>
     <dd>Die Module-Magic-Number ist eine Konstante, die im Apache-Quelltext
-      definiert ist und im Zusammenhang mit der Binärkompatibilität
-      von Modulen steht. Sie wird geändert, wenn sich interne
+      definiert ist und im Zusammenhang mit der Binï¿½rkompatibilitï¿½t
+      von Modulen steht. Sie wird geï¿½ndert, wenn sich interne
       Apache-Strukturen, -Funktionen oder andere signifikante Teile der API
-      derart ändern, dass eine Binärkompatibilität nicht mehr
-      gewährleistet werden kann. Bei einer MMN-Änderung müssen
+      derart ï¿½ndern, dass eine Binï¿½rkompatibilitï¿½t nicht mehr
+      gewï¿½hrleistet werden kann. Bei einer MMN-ï¿½nderung mï¿½ssen
       alle Module von Drittanbietern zumindest neu kompiliert und zuweilen auch
-      geringfügig angepaßt werden, um mit der neuen Apache-Version zu
+      geringfï¿½gig angepaï¿½t werden, um mit der neuen Apache-Version zu
       funktionieren.
     </dd>
 
-    <dt><a name="publickey" id="publickey">Öffentlicher
-      Schlüssel</a></dt>
-    <dd>Der öffentlich verfügbare Schlüssel in einem <a class="glossarylink" href="./glossary.html#publickeycryptography" title="siehe Glossar">Public-Key-Kryptographie</a>-System,
-      mit dem für seinen Eigentümer bestimmte Nachrichten
-      verschlüsselt und Signaturen von seinem Eigentümer
-      entschlüsselt werden.<br />
-      Siehe: <a href="ssl/">SSL/TLS-Verschlüsselung</a>
+    <dt><a name="publickey" id="publickey">ï¿½ffentlicher
+      Schlï¿½ssel</a></dt>
+    <dd>Der ï¿½ffentlich verfï¿½gbare Schlï¿½ssel in einem <a class="glossarylink" href="./glossary.html#publickeycryptography" title="siehe Glossar">Public-Key-Kryptographie</a>-System,
+      mit dem fï¿½r seinen Eigentï¿½mer bestimmte Nachrichten
+      verschlï¿½sselt und Signaturen von seinem Eigentï¿½mer
+      entschlï¿½sselt werden.<br />
+      Siehe: <a href="ssl/">SSL/TLS-Verschlï¿½sselung</a>
     </dd>
     
     <dt><a name="openssl" id="openssl">OpenSSL</a>
       <span class="phonetic">[&#712;&#601;up&#601;n&#603;s&#603;s&#712;&#603;l]</span>
     </dt>
-    <dd>Das Open-Source-Toolkit für SSL/TLS<br />
-      Siehe: <a href="http://www.openssl.org/">http://www.openssl.org/</a>
+    <dd>Das Open-Source-Toolkit fï¿½r SSL/TLS<br />
+      Siehe: <a href="https://www.openssl.org/">https://www.openssl.org/</a>
     </dd>
 
     <dt><a name="passphrase" id="passphrase">Passphrase</a>
       <span class="phonetic">[pa&#720;freiz]</span></dt>
-    <dd>Das Wort oder die Phrase, welches private Schlüssel-Dateien
-      schützt. Sie verhindert die Entschlüsselung durch nicht
+    <dd>Das Wort oder die Phrase, welches private Schlï¿½ssel-Dateien
+      schï¿½tzt. Sie verhindert die Entschlï¿½sselung durch nicht
       authorisierte Benutzer. Normalerweise ist dies einfach der geheimen
-      (De-)Codierungsschlüssel, der für <a class="glossarylink" href="./glossary.html#cipher" title="siehe Glossar">Chiffren</a> verwendet wird.<br />
-      Siehe: <a href="ssl/">SSL/TLS-Verschlüsselung</a>
+      (De-)Codierungsschlï¿½ssel, der fï¿½r <a class="glossarylink" href="./glossary.html#cipher" title="siehe Glossar">Chiffren</a> verwendet wird.<br />
+      Siehe: <a href="ssl/">SSL/TLS-Verschlï¿½sselung</a>
     </dd>
 
-    <dt><a name="privatekey" id="privatekey">Privater Schlüssel</a></dt>
-    <dd>Der geheime Schlüssel in einem <a class="glossarylink" href="./glossary.html#publickeycryptography" title="siehe Glossar">Public-Key-Kryptographie</a>-System,
+    <dt><a name="privatekey" id="privatekey">Privater Schlï¿½ssel</a></dt>
+    <dd>Der geheime Schlï¿½ssel in einem <a class="glossarylink" href="./glossary.html#publickeycryptography" title="siehe Glossar">Public-Key-Kryptographie</a>-System,
       mit dem hereinkommende Nachrichten decodiert und ausgehende signiert
       werden.<br />
-      Siehe: <a href="ssl/">SSL/TLS-Verschlüsselung</a>
+      Siehe: <a href="ssl/">SSL/TLS-Verschlï¿½sselung</a>
     </dd>
 
     <dt><a name="proxy" id="proxy">Proxy</a></dt>
-    <dd>Ein zwischen dem Client und dem <em>ursprünglichen Server</em>
-      <span class="transnote">(<em>Anm.d.Ü.:</em> der Server, den der Client tatsächlich erreichen
-      möchte)</span> liegender Server. Er nimmt Anfragen von
-      Clients entgegen, übermittelt diese Anfragen dem
-      ursprünglichen Server und liefert die Antwort des
-      ursprünglichen Servers an den Client zurück. Wenn mehrere
+    <dd>Ein zwischen dem Client und dem <em>ursprï¿½nglichen Server</em>
+      <span class="transnote">(<em>Anm.d.ï¿½.:</em> der Server, den der Client tatsï¿½chlich erreichen
+      mï¿½chte)</span> liegender Server. Er nimmt Anfragen von
+      Clients entgegen, ï¿½bermittelt diese Anfragen dem
+      ursprï¿½nglichen Server und liefert die Antwort des
+      ursprï¿½nglichen Servers an den Client zurï¿½ck. Wenn mehrere
       Clients den gleichen Inhalt abfragen, dann kann der Proxy diesen Inhalt
       aus seinem Zwischenspeicher ausliefern, anstatt ihn jedesmal vom
-      ursprünglichen Server anzufordern, und dadurch die Antwortzeit
+      ursprï¿½nglichen Server anzufordern, und dadurch die Antwortzeit
       verringern.<br />
       Siehe: <a href="mod/mod_proxy.html">mod_proxy</a>
     </dd>
@@ -371,35 +371,35 @@
     <dt><a name="publickeycryptography" id="publickeycryptography">Public-Key-Kryptographie</a>
       <span class="phonetic">[&#712;p&#652;blik ki&#720;
       &#712;kyptogra&#712;fi&#720;]</span></dt>
-    <dd>Theorie und Anwendung asymmetrischer Verschlüsselungssysteme,
-      die einen Schlüssel zur Verschlüsselung und einen anderen zur
-      Entschlüsselung verwenden. Zwei derart zusammengehörende
-      Schlüssel bilden Schüsselpaar. Man spricht auch von
+    <dd>Theorie und Anwendung asymmetrischer Verschlï¿½sselungssysteme,
+      die einen Schlï¿½ssel zur Verschlï¿½sselung und einen anderen zur
+      Entschlï¿½sselung verwenden. Zwei derart zusammengehï¿½rende
+      Schlï¿½ssel bilden Schï¿½sselpaar. Man spricht auch von
       "Asymetrischer Kryptographie".<br />
-      Siehe: <a href="ssl/">SSL/TLS-Verschlüsselung</a>
+      Siehe: <a href="ssl/">SSL/TLS-Verschlï¿½sselung</a>
     </dd>
     
-    <dt><a name="regularexpresion" id="regularexpresion">Regulärer
+    <dt><a name="regularexpresion" id="regularexpresion">Regulï¿½rer
       Ausdruck</a> <a name="regex" id="regex">(Regex)</a></dt>
     <dd>Eine Form, ein Muster im Text zu beschreiben - zum Beispiel: "alle
-      Wörter, die mit dem Buchstaben A beginnen" oder "Jeder Satz mit
-      zwei Kommata und ohne großes Q". Beim Apache sind reguläre
-      Ausdrücke hilfreich, da sie auf sehr flexible Art und Weise die
+      Wï¿½rter, die mit dem Buchstaben A beginnen" oder "Jeder Satz mit
+      zwei Kommata und ohne groï¿½es Q". Beim Apache sind regulï¿½re
+      Ausdrï¿½cke hilfreich, da sie auf sehr flexible Art und Weise die
       Anwendung bestimmter Eigenschaften auf eine Auswahl von Dateien oder
-      Ressourcen ermöglichen. - Zum Beispiel können alle .gif- und
+      Ressourcen ermï¿½glichen. - Zum Beispiel kï¿½nnen alle .gif- und
       .jpg-Dateien eines Verzeichnis "images" mit
       "<code>/images/.*(jpg|gif)$</code>" beschrieben werden. Der Apache
-      verwendet Perl-kompatible reguläre Ausdrücke, wie sie die
-      <a href="http://www.pcre.org/">PCRE</a>-Bibliothek bereitstellt.
+      verwendet Perl-kompatible regulï¿½re Ausdrï¿½cke, wie sie die
+      <a href="https://www.pcre.org/">PCRE</a>-Bibliothek bereitstellt.
     </dd>
 
     <dt><a name="reverseproxy" id="reverseproxy">Reverse Proxy</a>
       <span class="phonetic">[ri&#720;v&#601;&#720;s
       &#712;pr&#596;ksi]</span></dt>
     <dd>Ein <a class="glossarylink" href="./glossary.html#proxy" title="siehe Glossar">Proxy</a>-Server, der dem Client
-      gegenüber als <em>ursprünglicher Server</em> erscheint. Dies
-      ist nützlich, um den tatsächlichen Server aus
-      Sicherheitsgründen oder zur Lastverteilung vor dem Client zu
+      gegenï¿½ber als <em>ursprï¿½nglicher Server</em> erscheint. Dies
+      ist nï¿½tzlich, um den tatsï¿½chlichen Server aus
+      Sicherheitsgrï¿½nden oder zur Lastverteilung vor dem Client zu
       verstecken.
     </dd>
 
@@ -407,11 +407,11 @@
       Layer</a> <span class="phonetic">[si&#712;kju&#601; &#712;s&#596;kits
       &#712;lei&#601;]</span> <a name="ssl" id="ssl">(SSL)</a></dt>
     <dd>Ein von der Firma Netscape Communications Corporation entwickeltes
-      Protokoll zur allgemeinen Authentisierung und Verschlüsselung der
-      Kommunikation über TCP/IP-Netzwerke. Die meistverbreitete Nutzung
-      ist <em>HTTPS</em>, d.h. HyperText Transfer Protocol (HTTP) über
+      Protokoll zur allgemeinen Authentisierung und Verschlï¿½sselung der
+      Kommunikation ï¿½ber TCP/IP-Netzwerke. Die meistverbreitete Nutzung
+      ist <em>HTTPS</em>, d.h. HyperText Transfer Protocol (HTTP) ï¿½ber
       SSL.<br />
-      Siehe: <a href="ssl/">SSL/TLS-Verschlüsselung</a>
+      Siehe: <a href="ssl/">SSL/TLS-Verschlï¿½sselung</a>
     </dd>
 
     <dt><a name="serversideincludes" id="serversideincludes">Server Side
@@ -419,7 +419,7 @@
       in&#712;klu&#720;ds]</span> <a name="ssi" id="ssi">(SSI)</a></dt>
     <dd>Eine Technik zum Einbetten von weiterverarbeitenden Anweisungen in
       HMTL-Dateien.<br />
-      Siehe: <a href="howto/ssi.html">Einführung in Server Side
+      Siehe: <a href="howto/ssi.html">Einfï¿½hrung in Server Side
       Includes</a>
     </dd>
 
@@ -433,9 +433,9 @@
 
     <dt><a name="symmetriccryptophraphy" id="symmetriccryptophraphy">Symmetrische Kryptographie</a></dt>
     <dd>Die Theorie und Anwendung von <em>Chiffren</em>, die einen einzigen
-      geheimen Schlüssel sowohl zur Verschlüsswelung als auch zur
-      Entschlüsselung benutzen.<br />
-      Siehe: <a href="ssl/">SSL/TLS-Verschlüsselung</a>
+      geheimen Schlï¿½ssel sowohl zur Verschlï¿½sswelung als auch zur
+      Entschlï¿½sselung benutzen.<br />
+      Siehe: <a href="ssl/">SSL/TLS-Verschlï¿½sselung</a>
     </dd>
 
     <dt><a name="tarball" id="tarball">Tarball</a>
@@ -446,14 +446,14 @@
     </dd>
 
     <dt><a name="transportlayersecurity" id="transportlayersecurity">Transport
-      Layer Security</a> <span class="phonetic">[træns&#712;p&#596;&#720;t
+      Layer Security</a> <span class="phonetic">[trï¿½ns&#712;p&#596;&#720;t
       &#712;ei&#601; si&#712;kju&#601;riti]</span>
       <a name="tls" id="tls">(TLS)</a></dt>
     <dd>Das SSL-Nachfolgeprotokoll, das von der Internet Engineering Task
-      Force (IETF) zur allgemeinen Authentisierung und Verschlüsselung
-      einer Kommunikation über TCP/IP-Netzwerke entwickelt worden ist.
+      Force (IETF) zur allgemeinen Authentisierung und Verschlï¿½sselung
+      einer Kommunikation ï¿½ber TCP/IP-Netzwerke entwickelt worden ist.
       TLS Version 1 ist nahezu identisch mit SSL Version 3.<br />
-      Siehe: <a href="ssl/">SSL/TLS-Verschlüsseliung</a>
+      Siehe: <a href="ssl/">SSL/TLS-Verschlï¿½sseliung</a>
     </dd>
 
     <dt><a name="environmentvariable" id="environmentvariable">Umgebungsvariable</a> <a name="env-variable" id="env-variable">(env-Variable)</a></dt>
@@ -470,12 +470,12 @@
       ri&#712;s&#596;&#720;s l&#601;u&#712;keit&#601;]</span>
       <a name="url" id="url">(URL)</a></dt>
     <dd>Der Name bzw. die Adresse einer Ressource im Internet. Dies ist der
-      allgemein gebräuchliche Audruck für die formale Bezeichnung
+      allgemein gebrï¿½uchliche Audruck fï¿½r die formale Bezeichnung
       <a class="glossarylink" href="./glossary.html#uniformresourceidentifier" title="siehe Glossar">Uniform Resource
-      Identifier</a>. URLs bestehen üblicherweise aus einem
+      Identifier</a>. URLs bestehen ï¿½blicherweise aus einem
       Schema wie <code>http</code> oder <code>https</code>, einem Hostnamen
-      und einem Pfad. Die URL für diese Seite ist
-      <code>http://httpd.apache.org/docs/trunk/glossary.html</code>.
+      und einem Pfad. Die URL fï¿½r diese Seite ist
+      <code>https://httpd.apache.org/docs/trunk/glossary.html</code>.
     </dd>
 
     <dt><a name="uniformresourceidentifier" id="uniformresourceidentifier">Uniform Resource Identifier</a>
@@ -483,8 +483,8 @@
       ri&#712;s&#596;&#720;s ai&#712;dentifai&#601;]</span> 
       <a name="URI" id="URI">(URI)</a></dt>
     <dd>Eine kompakte Zeichenfolge zur Identifizierung einer abstrakten oder
-      physischen Ressource. Er wird in dem <a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a> formell
-      definiert. Im World Wide Web verwendete URIs werden üblicherweise
+      physischen Ressource. Er wird in dem <a href="https://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a> formell
+      definiert. Im World Wide Web verwendete URIs werden ï¿½blicherweise
       als <a class="glossarylink" href="./glossary.html#url" title="siehe Glossar">URLs</a> bezeichnet.
     </dd>
 
@@ -493,10 +493,10 @@
       h&#601;usti&#331;]</span></dt>
     <dd>Die Bedienung mehrere Websites mit einer einzigen Apache-Instanz.
       <em>IP-basierte virtuelle Hosts</em> unterscheiden zwischen
-      verschiedenen Websites aufgrund ihrer IP-Adressen, während
+      verschiedenen Websites aufgrund ihrer IP-Adressen, wï¿½hrend
       <em>namensbasierte virtuelle Hosts</em> nur den Namen des Hosts
       verwenden und daher mehrere Angebote unter der gleichen IP-Adresse
-      hosten können.<br />
+      hosten kï¿½nnen.<br />
       Siehe: <a href="vhosts/">Apache-Dokumentation zu virtuellen
       Hosts</a>
     </dd>
@@ -505,7 +505,7 @@
       <a name="fqdn" id="fqdn">(FQDN)</a></dt>
     <dd>Der eindeutige Name einer Netzwerkeinheit, bestehend aus einem
       Hostnamen und dem Domainnamen, welcher zu einer IP-Adresse
-      aufgelöst werden kann. Zum Beispiel ist <code>www</code> ein
+      aufgelï¿½st werden kann. Zum Beispiel ist <code>www</code> ein
       Hostname, <code>example.com</code> ein Domainname und
       <code>www.example.com</code> ein voll-qualifizierter Domainname.
     </dd>
@@ -520,28 +520,28 @@
 
     <dt><a name="x.509" id="x.509">X.509</a></dt>
     <dd>Ein von der International Telecommunication Union (ITU-T) empfohlenes
-      Schema für Authentifizierungszertifikate. Es wird für
+      Schema fï¿½r Authentifizierungszertifikate. Es wird fï¿½r
       SSL/TLS-Authentifizierungen verwendet.<br />
-      Siehe: <a href="ssl/">SSL/TLS-Verschlüsselung</a>
+      Siehe: <a href="ssl/">SSL/TLS-Verschlï¿½sselung</a>
     </dd>
 
     <dt><a name="certificate" id="certificate">Zertifikat</a></dt>
     <dd>Ein Datensatz zur <a class="glossarylink" href="./glossary.html#authentication" title="siehe Glossar">Authentisierung</a> einer 
       Nertzwerkeinheit wie Server oder Client. Ein Zertifikat
-      enthält <a class="glossarylink" href="./glossary.html#x.509" title="siehe Glossar">X.509</a>-Informationen
-      über seinen Eigentümer (das sogenannte Betreff
-      <span class="transnote">(<em>Anm.d.Ü.:</em> engl.: subject)</span>) und die
+      enthï¿½lt <a class="glossarylink" href="./glossary.html#x.509" title="siehe Glossar">X.509</a>-Informationen
+      ï¿½ber seinen Eigentï¿½mer (das sogenannte Betreff
+      <span class="transnote">(<em>Anm.d.ï¿½.:</em> engl.: subject)</span>) und die
       signierende <a class="glossarylink" href="./glossary.html#certificationauthority" title="siehe Glossar">Certification
-      Authority</a> (der sogenannte Aussteller <span class="transnote">(<em>Anm.d.Ü.:</em> engl.:
-      issuer)</span>) sowie den <a class="glossarylink" href="./glossary.html#publickey" title="siehe Glossar">öffentlichen Schlüssel</a> des
-      Eigentümers und die Signatur der CA. Netzwerkeinheiten
-      überprüfen diese Signatur mit Hilfe von CA-Zertifikaten.<br />
-      Siehe: <a href="ssl/">SSL/TLS-Verschlüsselung</a>
+      Authority</a> (der sogenannte Aussteller <span class="transnote">(<em>Anm.d.ï¿½.:</em> engl.:
+      issuer)</span>) sowie den <a class="glossarylink" href="./glossary.html#publickey" title="siehe Glossar">ï¿½ffentlichen Schlï¿½ssel</a> des
+      Eigentï¿½mers und die Signatur der CA. Netzwerkeinheiten
+      ï¿½berprï¿½fen diese Signatur mit Hilfe von CA-Zertifikaten.<br />
+      Siehe: <a href="ssl/">SSL/TLS-Verschlï¿½sselung</a>
     </dd>
 
     <dt><a name="accesscontrol" id="accesscontrol">Zugriffskontrolle</a></dt>
-    <dd>Die Beschränkung des Zugriffs auf Netzwerkbereiche. Im
-      Apache-Kontext in der Regel die Zugriffsbeschränkung auf bestimmte
+    <dd>Die Beschrï¿½nkung des Zugriffs auf Netzwerkbereiche. Im
+      Apache-Kontext in der Regel die Zugriffsbeschrï¿½nkung auf bestimmte
       <em>URLs</em>.<br />
       Siehe: <a href="howto/auth.html">Authentisierung, Autorisierung und
       Zugriffskontrolle</a>
@@ -549,17 +549,17 @@
   </dl>    
 </div></div>
 <div class="bottomlang">
-<p><span>Verfügbare Sprachen: </span><a href="./de/glossary.html" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>Verfï¿½gbare Sprachen: </span><a href="./de/glossary.html" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/glossary.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/glossary.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/glossary.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./es/glossary.html" hreflang="es" rel="alternate" title="Espaï¿½ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/glossary.html" hreflang="fr" rel="alternate" title="Franï¿½ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/glossary.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/glossary.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/glossary.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/glossary.html" hreflang="tr" rel="alternate" title="Tï¿½rkï¿½e">&nbsp;tr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Kommentare</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/glossary.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/glossary.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -574,8 +574,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/glossary.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Lizenziert unter der <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Module</a> | <a href="./mod/quickreference.html">Direktiven</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossar</a> | <a href="./sitemap.html">Seitenindex</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Lizenziert unter der <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">Module</a> | <a href="./mod/quickreference.html">Direktiven</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossar</a> | <a href="./sitemap.html">Seitenindex</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

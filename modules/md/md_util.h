@@ -5,7 +5,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -46,7 +46,7 @@ struct md_data_t {
 md_data_t *md_data_make(apr_pool_t *p, apr_size_t len);
 md_data_t *md_data_create(apr_pool_t *p, const char *data, apr_size_t len);
 
-void md_data_assign_pcopy(md_data_t *dest, const char *src, apr_size_t src_len, apr_pool_t *p);
+void md_data_assign_pcopy(md_data_t *dest, const md_data_t *src, apr_pool_t *p);
 
 apr_status_t md_data_to_hex(const char **phex, char separator,
                             apr_pool_t *p, const md_data_t *data);

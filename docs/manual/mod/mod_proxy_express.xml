@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -122,9 +122,9 @@
         ##express-map.txt:<br />
         ##<br />
         <br />
-        www1.example.com   http://192.168.211.2:8080<br />
-        www2.example.com   http://192.168.211.12:8088<br />
-        www3.example.com   http://192.168.212.10<br />
+        www1.example.com   https://192.168.211.2:8080<br />
+        www2.example.com   https://192.168.211.12:8088<br />
+        www3.example.com   https://192.168.212.10<br />
       </example>
 
       <example><title>Create DBM file</title>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -16,12 +16,12 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p>
+<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p>
 <p class="apache">Versión 2.5 del Servidor HTTP Apache</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentación</a> &gt; <a href="../">Versión 2.5</a> &gt; <a href="./">How-To / Tutoriales</a></div><div id="page-content"><div id="preamble"><h1>Guía de Proxy Inverso</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentación</a> &gt; <a href="../">Versión 2.5</a> &gt; <a href="./">How-To / Tutoriales</a></div><div id="page-content"><div id="preamble"><h1>Guía de Proxy Inverso</h1>
 <div class="toplang">
 <p><span>Idiomas disponibles: </span><a href="../en/howto/reverse_proxy.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/howto/reverse_proxy.html" title="Español">&nbsp;es&nbsp;</a> |
@@ -85,7 +85,7 @@
       más sencillo hace proxy de todas las solicitudes (<code>"/"</code>) a un solo backend:
     </p>
 
-    <pre class="prettyprint lang-config">ProxyPass "/"  "http://www.example.com/"</pre>
+    <pre class="prettyprint lang-config">ProxyPass "/"  "https://www.example.com/"</pre>
 
 
     <p>
@@ -95,14 +95,14 @@
       ProxyPassReverse</a></code> suele ser necesaria a menudo:
     </p>
 
-    <pre class="prettyprint lang-config">ProxyPass "/"  "http://www.example.com/"
-ProxyPassReverse "/"  "http://www.example.com/"</pre>
+    <pre class="prettyprint lang-config">ProxyPass "/"  "https://www.example.com/"
+ProxyPassReverse "/"  "https://www.example.com/"</pre>
 
 
     <p>Sólo se hará proxy de ciertas URIs, como se muestra en este ejemplo:</p>
 
-    <pre class="prettyprint lang-config">ProxyPass "/images/"  "http://www.example.com/"
-ProxyPassReverse "/images/"  "http://www.example.com/"</pre>
+    <pre class="prettyprint lang-config">ProxyPass "/images/"  "https://www.example.com/"
+ProxyPassReverse "/images/"  "https://www.example.com/"</pre>
 
 
     <p>En este ejemplo, se hará proxy al backend especificado,
@@ -128,8 +128,8 @@ ProxyPassReverse "/images/"  "http://www.example.com/"</pre>
     </p>
 
     <pre class="prettyprint lang-config">&lt;Proxy balancer://myset&gt;
-    BalancerMember http://www2.example.com:8080
-    BalancerMember http://www3.example.com:8080
+    BalancerMember https://www2.example.com:8080
+    BalancerMember https://www3.example.com:8080
     ProxySet lbmethod=bytraffic
 &lt;/Proxy&gt;
 
@@ -164,13 +164,13 @@ ProxyPassReverse "/images/"  "balancer://myset/"</pre>
       Puede ajustar numerosos parámetros de los <em>balanceadores</em>
       y los <em>workers</em> definiéndolos a través de la directiva
       <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>. Por ejemplo,
-      asumiendo que quisiéramos que <code>http://www3.example.com:8080</code> gestionara 
+      asumiendo que quisiéramos que <code>https://www3.example.com:8080</code> gestionara 
       3 veces más tráfico con un "timeout" de 1 segundo, ajustaríamos la configuración como sigue:
     </p>
 
     <pre class="prettyprint lang-config">&lt;Proxy balancer://myset&gt;
-    BalancerMember http://www2.example.com:8080
-    BalancerMember http://www3.example.com:8080 loadfactor=3 timeout=1
+    BalancerMember https://www2.example.com:8080
+    BalancerMember https://www3.example.com:8080 loadfactor=3 timeout=1
     ProxySet lbmethod=bytraffic
 &lt;/Proxy&gt;
 
@@ -188,18 +188,18 @@ ProxyPassReverse "/images/"  "balancer://myset/"</pre>
       qué workers, e incluso balanceadores, deberían usarse en tales casos. 
       Por ejemplo, la siguiente configuración implementa dos casos de tolerancia 
       a fallos: En el primero, sólo se envía tráfico a 
-      <code>http://hstandby.example.com:8080</code> si todos los demás workers en 
+      <code>https://hstandby.example.com:8080</code> si todos los demás workers en 
       el balanceador <em>myset</em> no están disponibles. Si ese worker tampoco está 
-      disponible, sólo entonces los workers de <code>http://bkup1.example.com:8080</code> 
-      y <code>http://bkup2.example.com:8080</code> serán incluidos en la rotación:
+      disponible, sólo entonces los workers de <code>https://bkup1.example.com:8080</code> 
+      y <code>https://bkup2.example.com:8080</code> serán incluidos en la rotación:
     </p>
 
     <pre class="prettyprint lang-config">&lt;Proxy balancer://myset&gt;
-    BalancerMember http://www2.example.com:8080
-    BalancerMember http://www3.example.com:8080 loadfactor=3 timeout=1
-    BalancerMember http://hstandby.example.com:8080 status=+H
-    BalancerMember http://bkup1.example.com:8080 lbset=1
-    BalancerMember http://bkup2.example.com:8080 lbset=1
+    BalancerMember https://www2.example.com:8080
+    BalancerMember https://www3.example.com:8080 loadfactor=3 timeout=1
+    BalancerMember https://hstandby.example.com:8080 status=+H
+    BalancerMember https://bkup1.example.com:8080 lbset=1
+    BalancerMember https://bkup2.example.com:8080 lbset=1
     ProxySet lbmethod=byrequests
 &lt;/Proxy&gt;
 
@@ -209,7 +209,7 @@ ProxyPassReverse "/images/"  "balancer://myset/"</pre>
 
     <p>
       La "magia" de ésta configuración de tolerancia a fallos es configurar 
-      <code>http://hstandby.example.com:8080</code> con la marca de estado 
+      <code>https://hstandby.example.com:8080</code> con la marca de estado 
       <code>+H</code>, que lo pone en modo <em>hot standby</em> (en reserva), 
       y hacen que los 2 servidores <code>bkup#</code> sean parte del set nº 1 del balanceo de carga (el valor por defecto es 0); para tolerancia a fallos, los "hot standby" (si existen) se usan primero cuando todos los workers estándar no están disponibles; los set de balanceo con el número inferior se intentan usar siempre primero.
     </p>
@@ -244,7 +244,7 @@ ProxyPassReverse "/images/"  "balancer://myset/"</pre>
 
     <p>
       Cuando se accede al proxy inverso en la url
-      (p.e: <code>http://rproxy.example.com/balancer-manager/</code>, verá una 
+      (p.e: <code>https://rproxy.example.com/balancer-manager/</code>, verá una 
       página similar a la siguiente:
     </p>
     <p class="centered"><img src="../images/bal-man.png" alt="balancer-manager page" /></p>
@@ -315,7 +315,7 @@ ProxyPassReverse "/images/"  "balancer://myset/"</pre>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comentarios</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/howto/reverse_proxy.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/howto/reverse_proxy.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -330,8 +330,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/howto/reverse_prox
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

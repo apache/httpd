@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -16,12 +16,12 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="http://wiki.apache.org/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p>
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://wiki.apache.org/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p>
 <p class="apache">Apache HTTP Sunucusu Sürüm 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.5</a> &gt; <a href="./">Çeşitli Belgeler</a></div><div id="page-content"><div id="preamble"><h1>Güvenlik İpuçları</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.5</a> &gt; <a href="./">Çeşitli Belgeler</a></div><div id="page-content"><div id="preamble"><h1>Güvenlik İpuçları</h1>
 <div class="toplang">
 <p><span>Mevcut Diller: </span><a href="../en/misc/security_tips.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/misc/security_tips.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
@@ -58,7 +58,7 @@
       keşfedilmesi kaçınılmazdır. Bu sebeple, yazılım güncellemelerinden
       haberdar olmak oldukça önem kazanır. HTTP sunucunuzu doğrudan
       Apache’den temin ediyorsanız yeni sürümler ve güvenlik güncellemeleri
-      ile ilgili bilgileri tam zamanında alabilmek için <a href="http://httpd.apache.org/lists.html#http-announce">Apache
+      ile ilgili bilgileri tam zamanında alabilmek için <a href="https://httpd.apache.org/lists.html#http-announce">Apache
       HTTP Sunucusu Duyuru Listesi</a>ne mutlaka üye olmanızı öneririz.
       Apache yazılımının üçüncü parti dağıtımlarını yapanların da buna benzer
       hizmetleri vardır.</p>
@@ -134,7 +134,7 @@
         süzgeçleri ile henüz uyumlu değildir. Bu durumlarda,
         <code class="module"><a href="../mod/worker.html">worker</a></code> MPM'inin davranışına geri döner.</li>
 
-      <li><a href="http://modules.apache.org/">http://modules.apache.org/</a>
+      <li><a href="https://modules.apache.org/">https://modules.apache.org/</a>
         adresinde, belli istemci davranışlarını sınırlayacak ve HRS ile
         ilgili sorunları azaltmaya yardımcı olacak üçüncü parti modüller
         bulunabilir.</li>
@@ -252,7 +252,7 @@
       bir betik yazıp B’nin CGI veritabanını silebilir. Bu gibi durumların
       ortaya çıkmaması için betiklerin farklı kullanıcıların aidiyetlerinde
       çalışmasını sağlayan ve 1.2 sürümünden beri Apache ile dağıtılan <a href="../suexec.html">suEXEC</a> diye bir program vardır. Başka bir yol
-      da <a href="http://cgiwrap.sourceforge.net/">CGIWrap</a> kullanmaktır.</p>
+      da <a href="https://cgiwrap.sourceforge.net/">CGIWrap</a> kullanmaktır.</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -310,14 +310,14 @@
       güvenlikle ilgili değerlendirmelerin çoğu <code>httpd</code>'nin
       kapsamından çıkar ve bu modüllerin belgelerini incelemek ihtiyacı
       duyarsınız. Örneğin, PHP çoğu zaman kapalı tutulan
-      <a href="http://www.php.net/manual/en/ini.sect.safe-mode.php">Güvenli
+      <a href="https://www.php.net/manual/en/ini.sect.safe-mode.php">Güvenli
       Kip</a> ayarını etkin kılmanızı önerir. Daha fazla güvenlik için bir
       diğer örnek bir PHP eklentisi olan
-      <a href="http://www.hardened-php.net/suhosin/">Suhosin</a>'dir. Bunlar
+      <a href="https://www.hardened-php.net/suhosin/">Suhosin</a>'dir. Bunlar
       hakkında daha ayrıntılı bilgi için her projenin kendi belgelerine
       başvurun.</p>
 
-    <p>Apache seviyesinde, <a href="http://modsecurity.org/">mod_security</a>
+    <p>Apache seviyesinde, <a href="https://modsecurity.org/">mod_security</a>
       adı verilen modülü bir HTTP güvenlik duvarı gibi ele alabilir, devingen
       içeriğin güvenliğini arttırmanıza yardımcı olmak üzere inceden inceye
       yapılandırabilirsiniz.</p>
@@ -362,7 +362,7 @@
       # cd /; ln -s / public_html
     </code></p></div>
 
-    <p>Ve, tarayıcınıza <code>http://localhost/~root/</code> yazın.</p>
+    <p>Ve, tarayıcınıza <code>https://localhost/~root/</code> yazın.</p>
 
     <p>Böylece, istemcilerin tüm dosya sisteminizi gezmelerine izin vermiş
       olursunuz. Bu işlemin sonuçlarının önünü almak için sunucu yapılandırma
@@ -428,7 +428,7 @@
       grep "client denied" error_log | tail -n 10
     </code></p></div>
 
-    <p>İlk örnek, <a href="http://online.securityfocus.com/bid/4876/info/">Apache Tomcat Source.JSP Bozuk İstek Bilgilerini İfşa Açığı</a>nı
+    <p>İlk örnek, <a href="https://online.securityfocus.com/bid/4876/info/">Apache Tomcat Source.JSP Bozuk İstek Bilgilerini İfşa Açığı</a>nı
       istismar etmeyi deneyen saldırıların sayısını verirken ikinci örnek,
       reddedilen son on istemciyi listeler; örnek:</p>
 
@@ -482,7 +482,7 @@
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Yorum</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/misc/security_tips.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/misc/security_tips.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -497,8 +497,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/misc/security_tips
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="http://wiki.apache.org/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://wiki.apache.org/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,42 +23,42 @@
 <modulesynopsis metafile="mod_cache.xml.meta">
 
 <name>mod_cache</name>
-<description>URI¸¦ Å°·Î »ç¿ëÇÏ¿© ³»¿ëÀ» Ä³½¬ÇÑ´Ù.</description>
+<description>URIï¿½ï¿½ Å°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½Ñ´ï¿½.</description>
 <status>Experimental</status>
 <sourcefile>mod_cache.c</sourcefile>
 <identifier>cache_module</identifier>
 
 <summary>
     <note type="warning">
-      ÀÌ ¸ðµâÀº ½ÇÇèÀûÀÎ »óÅÂÀÌ´Ù. ¹®¼­´Â ¾ÆÁ÷ ÀÛ¾÷ÁßÀÌ´Ù...
+      ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Û¾ï¿½ï¿½ï¿½ï¿½Ì´ï¿½...
     </note>
 
-    <p><module>mod_cache</module>´Â °°Àº ÄÄÇ»ÅÍ¿¡ ÀÖ´Â ³»¿ëÀÌ³ª
-    ÇÁ·Ï½ÃµÈ ³»¿ëÀ» Ä³½¬ÇÒ ¼ö ÀÖ´Â <a
-    href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a>
-    È£È¯ HTTP ³»¿ëÄ³½¬¸¦ ±¸ÇöÇÑ´Ù. <module>mod_cache</module>¸¦
-    »ç¿ëÇÏ·Á¸é ÀúÀå°ü¸®¸ðµâ(storage management module)ÀÌ ÇÊ¿äÇÏ´Ù.
-    ±âº» ¾ÆÆÄÄ¡ ¹èÆ÷º»¿¡´Â µÎ°¡Áö ÀúÀå°ü¸®¸ðµâÀÌ ÀÖ´Ù:</p>
+    <p><module>mod_cache</module>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ç»ï¿½Í¿ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì³ï¿½
+    ï¿½ï¿½ï¿½Ï½Ãµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ <a
+    href="https://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a>
+    È£È¯ HTTP ï¿½ï¿½ï¿½ï¿½Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <module>mod_cache</module>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(storage management module)ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Ï´ï¿½.
+    ï¿½âº» ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½:</p>
     <dl>
     <dt><module>mod_cache_disk</module></dt>
-    <dd>´Â µð½ºÅ©±â¹Ý ÀúÀå°ü¸®ÀÚ¸¦ ±¸ÇöÇÑ´Ù.</dd>
+    <dd>ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
     <dt><module>mod_mem_cache</module></dt>
-    <dd>´Â ¸Þ¸ð¸®±â¹Ý ÀúÀå°ü¸®ÀÚ¸¦ ±¸ÇöÇÑ´Ù.
-    <module>mod_mem_cache</module>´Â ÆÄÀÏ±â¼úÀÚ¸¦ Ä³½¬ÇÏ°Å³ª
-    Èü(heap) °ø°£¿¡ °´Ã¼¸¦ Ä³½¬ÇÏ´Â µÎ°¡Áö ¹æ½ÄÁß ÇÑ°¡Áö ¹æ¹ýÀ¸·Î
-    µ¿ÀÛÇÏµµ·Ï ¼³Á¤ÇÒ ¼ö ÀÖ´Ù. <module>mod_mem_cache</module>´Â
-    ÀÚ½ÅÀÌ »ý¼ºÇÑ ³»¿ëÀ» Ä³½¬ÇÏ°Å³ª, (<dfn>¿ªÇÁ·Ï½Ã(reverse proxy)</dfn>·Î
-    ¾Ë·ÁÁø) <directive module="mod_proxy">ProxyPass</directive>¸¦
-    »ç¿ëÇÏ¿© <module>mod_proxy</module>¸¦ À§ÇØ µÞ´Ü ¼­¹ö³»¿ëÀ»
-    Ä³½¬ÇÒ ¼ö ÀÖ´Ù.</dd>
+    <dd>ï¿½ï¿½ ï¿½Þ¸ð¸®±ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+    <module>mod_mem_cache</module>ï¿½ï¿½ ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½Ú¸ï¿½ Ä³ï¿½ï¿½ï¿½Ï°Å³ï¿½
+    ï¿½ï¿½(heap) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Î°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. <module>mod_mem_cache</module>ï¿½ï¿½
+    ï¿½Ú½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½Ï°Å³ï¿½, (<dfn>ï¿½ï¿½ï¿½ï¿½ï¿½Ï½ï¿½(reverse proxy)</dfn>ï¿½ï¿½
+    ï¿½Ë·ï¿½ï¿½ï¿½) <directive module="mod_proxy">ProxyPass</directive>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ <module>mod_proxy</module>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Þ´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</dd>
     </dl>
 
-    <p>³»¿ëÀ» URI¸¦ Åä´ë·Î ¸¸µç Å°·Î Ä³½¬¿¡ ÀúÀåÇÏ°í °¡Á®¿Â´Ù.
-    Á¢±Ùº¸È£°¡ µÈ ³»¿ëÀº Ä³½¬ÇÏÁö¾Ê´Â´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ URIï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Å°ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Â´ï¿½.
+    ï¿½ï¿½ï¿½Ùºï¿½È£ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê´Â´ï¿½.</p>
 </summary>
 
-<section id="related"><title>°ü·ÃµÈ ¸ðµâ°ú Áö½Ã¾î</title>
+<section id="related"><title>ï¿½ï¿½ï¿½Ãµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½</title>
     <related>
       <modulelist>
         <module>mod_cache_disk</module>
@@ -88,10 +88,10 @@
     </related>
 </section>
 
-<section id="sampleconf"><title>¼³Á¤¿¹</title>
+<section id="sampleconf"><title>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</title>
     <example><title>Sample httpd.conf</title>
       #<br />
-      # ¿¹Á¦ Ä³½¬ ¼³Á¤<br />
+      # ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½<br />
       #<br />
       LoadModule cache_module modules/mod_cache.so<br />
       <br />
@@ -125,27 +125,27 @@
 
 <directivesynopsis>
 <name>CacheEnable</name>
-<description>ÁöÁ¤ÇÑ ÀúÀå°ü¸®ÀÚ¸¦ »ç¿ëÇÏ¿© ÁöÁ¤ÇÑ URLÀ» Ä³½¬ÇÑ´Ù</description>
+<description>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ URLï¿½ï¿½ Ä³ï¿½ï¿½ï¿½Ñ´ï¿½</description>
 <syntax>CacheEnable <var>cache_type</var> <var>url-string</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p><directive>CacheEnable</directive> Áö½Ã¾î¸¦ »ç¿ëÇÏ¸é
-    <module>mod_cache</module>°¡ <var>url-string</var> ÀÌÇÏ
-    urlµéÀ» Ä³½¬ÇÑ´Ù. Ä³½¬ ÀúÀå°ü¸®ÀÚ´Â <var>cache_type</var>
-    ¾Æ±Ô¸ÕÆ®·Î ÁöÁ¤ÇÑ´Ù. <var>cache_type</var> <code>mem</code>Àº
-    <module>mod_mem_cache</module>°¡ ±¸ÇöÇÏ´Â ¸Þ¸ð¸®±â¹Ý
-    ÀúÀå°ü¸®ÀÚ¸¦ »ç¿ëÇÑ´Ù. <var>cache_type</var> <code>disk</code>´Â
-    <module>mod_cache_disk</module>°¡ ±¸ÇöÇÏ´Â µð½ºÅ©±â¹Ý
-    ÀúÀå°ü¸®ÀÚ¸¦ »ç¿ëÇÑ´Ù. <var>cache_type</var> <code>fd</code>´Â
-    <module>mod_mem_cache</module>°¡ ±¸ÇöÇÏ´Â ÆÄÀÏ±â¼úÀÚ Ä³½¬¸¦
-    »ç¿ëÇÑ´Ù.</p>
-    <p>(¾Æ·¡ ¿¹¿Í °°ÀÌ) URL °ø°£ÀÌ ´Ù¸¥
-    <directive>CacheEnable</directive> Áö½Ã¾î¿Í °ãÄ¡¸é ½ÇÁ¦·Î
-    ÇÑ ÀúÀå°ü¸®ÀÚ°¡ ¿äÃ»À» Ã³¸®ÇÒ¶§±îÁö µÎ ÀúÀå°ü¸®ÀÚ¸¦ ¸ðµÎ
-    ½ÇÇàÇÑ´Ù. ¼³Á¤ÆÄÀÏ¿¡¼­ <directive>CacheEnable</directive>
-    Áö½Ã¾îÀÇ ¼ø¼­´ë·Î ÀúÀå°ü¸®ÀÚ°¡ ½ÇÇàµÈ´Ù.</p>
+    <p><directive>CacheEnable</directive> ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½
+    <module>mod_cache</module>ï¿½ï¿½ <var>url-string</var> ï¿½ï¿½ï¿½ï¿½
+    urlï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½Ñ´ï¿½. Ä³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ <var>cache_type</var>
+    ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <var>cache_type</var> <code>mem</code>ï¿½ï¿½
+    <module>mod_mem_cache</module>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Þ¸ð¸®±ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <var>cache_type</var> <code>disk</code>ï¿½ï¿½
+    <module>mod_cache_disk</module>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½Å©ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <var>cache_type</var> <code>fd</code>ï¿½ï¿½
+    <module>mod_mem_cache</module>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
+    <p>(ï¿½Æ·ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½) URL ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½
+    <directive>CacheEnable</directive> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ò¶ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ <directive>CacheEnable</directive>
+    ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½ï¿½ï¿½ï¿½È´ï¿½.</p>
 
     <example>
       CacheEnable  mem   /manual<br />
@@ -164,17 +164,17 @@
 
 <directivesynopsis>
 <name>CacheDisable</name>
-<description>Æ¯Á¤ URLÀ» Ä³½¬ÇÏÁö ¾Ê´Â´Ù</description>
+<description>Æ¯ï¿½ï¿½ URLï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½</description>
 <syntax>CacheDisable <var> url-string</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p><directive>CacheDisable</directive> Áö½Ã¾î¸¦ »ç¿ëÇÏ¸é
-    <module>mod_cache</module>°¡ <var>url-string</var> ÀÌÇÏÀÇ
-    urlµéÀ» Ä³½¬ÇÏÁö <em>¾Ê´Â´Ù</em>.</p>
+    <p><directive>CacheDisable</directive> ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½
+    <module>mod_cache</module>ï¿½ï¿½ <var>url-string</var> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    urlï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <em>ï¿½Ê´Â´ï¿½</em>.</p>
 
-    <example><title>¿¹Á¦</title>
+    <example><title>ï¿½ï¿½ï¿½ï¿½</title>
       CacheDisable /local_files
     </example>
 </usage>
@@ -182,17 +182,17 @@
 </directivesynopsis>
 <directivesynopsis>
 <name>CacheMaxExpire</name>
-<description>¹®¼­¸¦ Ä³½¬ÇÏ´Â ÃÊ´ÜÀ§ ÃÖ´ë½Ã°£</description>
+<description>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Ê´ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½Ã°ï¿½</description>
 <syntax>CacheMaxExpire <var>seconds</var></syntax>
-<default>CacheMaxExpire 86400 (ÇÏ·ç)</default>
+<default>CacheMaxExpire 86400 (ï¿½Ï·ï¿½)</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p><directive>CacheMaxExpire</directive> Áö½Ã¾î´Â ½ÇÁ¦ ¼­¹ö¸¦
-    °Ë»çÇÏÁö¾Ê°í Ä³½¬°¡´ÉÇÑ HTTP ¹®¼­¸¦ À¯ÁöÇÒ ¼ö ÀÖ´Â ÃÊ´ÜÀ§
-    ÃÖ´ë½Ã°£À» ÁöÁ¤ÇÑ´Ù. Áï, ¹®¼­´Â ÃÖ´ëÇÑ ÀÌ ¼³Á¤°ª¸¸Å­ ¿À·¡µÇ¾ú´Ù.
-    ¹®¼­°¡ ¸¸±â½Ã°£À» ÁöÁ¤ÇÏ¿©µµ ÀÌ ÃÖ´ë°ªÀ» ÁöÅ²´Ù.</p>
+    <p><directive>CacheMaxExpire</directive> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ë»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê°ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ HTTP ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½Ê´ï¿½ï¿½ï¿½
+    ï¿½Ö´ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å­ ï¿½ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½.
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ë°ªï¿½ï¿½ ï¿½ï¿½Å²ï¿½ï¿½.</p>
 
     <example>
       CacheMaxExpire 604800
@@ -209,17 +209,17 @@
 
 <directivesynopsis>
 <name>CacheDefaultExpire</name>
-<description>¸¸±â½Ã°£À» ÁöÁ¤ÇÏÁö¾ÊÀº ¹®¼­¸¦ Ä³½¬ÇÒ ±âº» ±â°£.</description>
+<description>ï¿½ï¿½ï¿½ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½âº» ï¿½â°£.</description>
 <syntax>CacheDefaultExpire <var>seconds</var></syntax>
 <default>CacheDefaultExpire 3600 (one hour)</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p><directive>CacheDefaultExpire</directive> Áö½Ã¾î´Â ¹®¼­ÀÇ
-    ¸¸±â½Ã°£°ú ÃÖ±Ù¼öÁ¤½Ã°£ÀÌ ¾ø´Â °æ¿ì ¹®¼­¸¦ Ä³½¬ÇÒ ÃÊ´ÜÀ§
-    ±âº» ½Ã°£À» ÁöÁ¤ÇÑ´Ù. <directive>CacheMaxExpire</directive>·Î
-    ÁöÁ¤ÇÑ °ªÀÌ ÀÌ ¼³Á¤À» ¹«½ÃÇÏÁö <em>¾Ê´Â´Ù</em>.</p>
+    <p><directive>CacheDefaultExpire</directive> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½Ö±Ù¼ï¿½ï¿½ï¿½ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´ï¿½ï¿½ï¿½
+    ï¿½âº» ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <directive>CacheMaxExpire</directive>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <em>ï¿½Ê´Â´ï¿½</em>.</p>
 
     <example>
       CacheDefaultExpire 86400
@@ -271,20 +271,20 @@
 
 <directivesynopsis>
 <name>CacheIgnoreNoLastMod</name>
-<description>ÀÀ´ä¿¡ Last Modified Çì´õ°¡ ¾ø´Ù´Â »ç½ÇÀ» ¹«½ÃÇÑ´Ù.</description>
+<description>ï¿½ï¿½ï¿½ä¿¡ Last Modified ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ù´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</description>
 <syntax>CacheIgnoreNoLastMod On|Off</syntax>
 <default>CacheIgnoreNoLastMod Off</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p>º¸Åë ÃÖ±Ù¼öÁ¤ÀÏÀÌ ¾ø´Â ¹®¼­´Â Ä³½¬ÇÏÁö ¾Ê´Â´Ù. ¾î¶² °æ¿ì
-    ÃÖ±Ù¼öÁ¤ÀÏÀ» (¿¹¸¦ µé¾î <module>mod_include</module> Ã³¸®Áß¿¡)
-    »©°Å³ª Ã³À½ºÎÅÍ ¾ø¾úÀ» ¼ö°¡ ÀÖ´Ù.
-    <directive>CacheIgnoreNoLastMod</directive> Áö½Ã¾î´Â ÃÖ±Ù¼öÁ¤ÀÏÀÌ
-    ¾ø´Â ¹®¼­µµ ¹Ýµå½Ã Ä³½¬ÇÏµµ·Ï ¸¸µç´Ù. ¹®¼­¿¡ ÃÖ±Ù¼öÁ¤ÀÏ°ú
-    ¸¸±â½Ã°£ÀÌ ¾ø´Â °æ¿ì <directive>CacheDefaultExpire</directive>
-    Áö½Ã¾î·Î ÁöÁ¤ÇÑ °ªÀ» ¸¸±â½Ã°£À¸·Î »ç¿ëÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ ï¿½Ö±Ù¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½. ï¿½î¶² ï¿½ï¿½ï¿½
+    ï¿½Ö±Ù¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ <module>mod_include</module> Ã³ï¿½ï¿½ï¿½ß¿ï¿½)
+    ï¿½ï¿½ï¿½Å³ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½.
+    <directive>CacheIgnoreNoLastMod</directive> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½Ö±Ù¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ýµï¿½ï¿½ Ä³ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö±Ù¼ï¿½ï¿½ï¿½ï¿½Ï°ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ <directive>CacheDefaultExpire</directive>
+    ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ã°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
     <example>
       CacheIgnoreNoLastMod On
@@ -309,20 +309,20 @@
 
 <directivesynopsis>
 <name>CacheIgnoreCacheControl</name>
-<description>Å¬¶óÀÌ¾ðÆ®°¡ Ä³½¬ÇÏÁö¾Ê´Â ³»¿ëÀ» ¿äÃ»ÇÔÀ» ¹«½ÃÇÑ´Ù.</description>
+<description>Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</description>
 <syntax>CacheIgnoreCacheControl On|Off</syntax>
 <default>CacheIgnoreCacheControl Off</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p>º¸Åë no-cache³ª no-store Çì´õ°ªÀ» °¡Áø ¹®¼­´Â Ä³½¬¿¡
-    ÀúÀåÇÏÁö¾Ê´Â´Ù. <directive>CacheIgnoreCacheControl</directive>
-    Áö½Ã¾î´Â ÀÌ·± Çàµ¿À» º¯°æÇÑ´Ù.
-    <directive>CacheIgnoreCacheControl</directive> OnÀ» »ç¿ëÇÏ¸é
-    ¼­¹ö´Â ¹®¼­¿¡ no-cache³ª no-store Çì´õ°ªÀÌ ÀÖ¾îµµ ¹®¼­¸¦
-    Ä³½¬ÇÑ´Ù. ÀÎÁõÀÌ ÇÊ¿äÇÑ ¹®¼­´Â <em>Àý´ë·Î</em> Ä³½¬ÇÏÁö
-    ¾Ê´Â´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ no-cacheï¿½ï¿½ no-store ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê´Â´ï¿½. <directive>CacheIgnoreCacheControl</directive>
+    ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½Ì·ï¿½ ï¿½àµ¿ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+    <directive>CacheIgnoreCacheControl</directive> Onï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ no-cacheï¿½ï¿½ no-store ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¾îµµ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    Ä³ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <em>ï¿½ï¿½ï¿½ï¿½ï¿½</em> Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ê´Â´ï¿½.</p>
 
     <example>
       CacheIgnoreCacheControl On
@@ -339,29 +339,29 @@
 
 <directivesynopsis>
 <name>CacheLastModifiedFactor</name>
-<description>LastModified ½Ã°£À¸·Î ¸¸±â½Ã°£À» °è»êÇÏ´Âµ¥ »ç¿ëÇÏ´Â
-°è¼ö.</description>
+<description>LastModified ï¿½Ã°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´Âµï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½
+ï¿½ï¿½ï¿½.</description>
 <syntax>CacheLastModifiedFactor <var>float</var></syntax>
 <default>CacheLastModifiedFactor 0.1</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p>¹®¼­¿¡ ¸¸±â½Ã°£Àº ¾øÁö¸¸ ÃÖ±Ù¼öÁ¤ÀÏÀÌ ÀÖ´Â °æ¿ì ÃÖ±Ù¼öÁ¤ÀÏ
-    ÀÌÈÄ Áö³­ ½Ã°£À¸·Î ¸¸±â½Ã°£À» °è»êÇÑ´Ù.
-    <directive>CacheLastModifiedFactor</directive> Áö½Ã¾î´Â
-    ¸¸±â½Ã°£À» °è»êÇÏ´Â ´ÙÀ½ °ø½Ä¿¡¼­ »ç¿ëÇÒ <var>factor</var>¸¦
-    ÁöÁ¤ÇÑ´Ù:
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö±Ù¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ ï¿½Ö±Ù¼ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+    <directive>CacheLastModifiedFactor</directive> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ <var>factor</var>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½:
 
     <code>expiry-period = time-since-last-modified-date * <var>factor</var>
     expiry-date = current-date + expiry-period</code>
 
-    ¿¹¸¦ µé¾î, ¹®¼­°¡ 10 ½Ã°£ Àü¿¡ ¸¶Áö¸·À¸·Î ¼öÁ¤µÇ¾ú°í <var>factor</var>°¡
-    0.1ÀÌ¶ó¸é ¸¸±â±â°£Àº 10*01 = 1 ½Ã°£ÀÌ µÈ´Ù. ÇöÀç ½Ã°£ÀÌ
-    3:00pmÀÌ¶ó¸é ¸¸±â½Ã°£Àº 3:00pm + 1½Ã°£ = 4:00pmÀÌ´Ù.
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 10 ï¿½Ã°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½ <var>factor</var>ï¿½ï¿½
+    0.1ï¿½Ì¶ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½â°£ï¿½ï¿½ 10*01 = 1 ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½È´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½
+    3:00pmï¿½Ì¶ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ã°ï¿½ï¿½ï¿½ 3:00pm + 1ï¿½Ã°ï¿½ = 4:00pmï¿½Ì´ï¿½.
 
-    ¸¸±â±â°£ÀÌ <directive>CacheMaxExpire</directive> º¸´Ù ±æ´Ù¸é
-    <directive>CacheMaxExpire</directive>¸¦ »ç¿ëÇÑ´Ù.</p>
+    ï¿½ï¿½ï¿½ï¿½â°£ï¿½ï¿½ <directive>CacheMaxExpire</directive> ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ù¸ï¿½
+    <directive>CacheMaxExpire</directive>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
     <example>
       CacheLastModifiedFactor 0.5
@@ -392,7 +392,7 @@
 
 <directivesynopsis>
 <name>CacheIgnoreHeaders</name>
-<description>Ä³½¬¿¡ ÁöÁ¤ÇÑ HTTP Çì´õ(µé)¸¦ ÀúÀåÇÏÁö ¾Ê´Â´Ù
+<description>Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ HTTP ï¿½ï¿½ï¿½(ï¿½ï¿½)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½
 </description>
 <syntax>CacheIgnoreHeaders <var>header-string</var> [<var>header-string</var>] ...</syntax>
 <default>CacheIgnoreHeaders None</default>
@@ -400,10 +400,10 @@
 </contextlist>
 
 <usage>
-    <p>RFC 2616¿¡ µû¸£¸é È©°£(hop-by-hop) HTTP Çì´õ´Â Ä³½¬¿¡
-    ÀúÀåÇÏÁö ¾Ê´Â´Ù. È©°£ HTTP Çì´õ¿¡´Â ´ÙÀ½°ú °°Àº °ÍÀÌ ÀÖÀ¸¸ç,
-    <directive>CacheIgnoreHeaders</directive> ¼³Á¤°ú °ü°è¾øÀÌ
-    <em>¾î¶²</em> °æ¿ì¿¡µµ Ä³½¬¿¡ ÀúÀåµÇÁö ¾Ê´Â´Ù.</p>
+    <p>RFC 2616ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È©ï¿½ï¿½(hop-by-hop) HTTP ï¿½ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½. È©ï¿½ï¿½ HTTP ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,
+    <directive>CacheIgnoreHeaders</directive> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    <em>ï¿½î¶²</em> ï¿½ï¿½ì¿¡ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.</p>
 
     <ul>
       <li><code>Connection</code></li>
@@ -416,28 +416,28 @@
       <li><code>Upgrade</code></li>
     </ul>
 
-    <p><directive>CacheIgnoreHeaders</directive>´Â Ä³½¬¿¡ ÀúÀåÇÏ¸é
-    ¾ÈµÇ´Â HTTP Çì´õ¸¦ Ãß°¡·Î ÁöÁ¤ÇÑ´Ù. ¿¹¸¦ µé¾î, ÄíÅ°(cookie)¸¦
-    Ä³½¬¿¡ ÀúÀåÇÏ¸é ¾ÈµÇ´Â °æ¿ì°¡ ÀÖ´Ù.</p>
+    <p><directive>CacheIgnoreHeaders</directive>ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½
+    ï¿½ÈµÇ´ï¿½ HTTP ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, ï¿½ï¿½Å°(cookie)ï¿½ï¿½
+    Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ÈµÇ´ï¿½ ï¿½ï¿½ì°¡ ï¿½Ö´ï¿½.</p>
 
-    <p><directive>CacheIgnoreHeaders</directive>´Â Ä³½¬¿¡ ÀúÀåÇÏÁö
-    ¾ÊÀ» HTTP Çì´õµéÀ» °ø¹éÀ¸·Î ±¸ºÐÇÑ ¸ñ·ÏÀ» ¹Þ´Â´Ù. (RFC 2616¿¡
-    µû¶ó) Ä³½¬¿¡ È©°£ Çì´õ¸¸ ÀúÀåÇÏÁö ¾ÊÀ¸·Á¸é,
-    <directive>CacheIgnoreHeaders</directive>¸¦
-    <code>None</code>À¸·Î ¼³Á¤ÇÑ´Ù.</p>
+    <p><directive>CacheIgnoreHeaders</directive>ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ HTTP ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Þ´Â´ï¿½. (RFC 2616ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½) Ä³ï¿½ï¿½ï¿½ï¿½ È©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,
+    <directive>CacheIgnoreHeaders</directive>ï¿½ï¿½
+    <code>None</code>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <example><title>¿¹Á¦ 1</title>
+    <example><title>ï¿½ï¿½ï¿½ï¿½ 1</title>
       CacheIgnoreHeaders Set-Cookie
     </example>
 
-    <example><title>¿¹Á¦ 2</title>
+    <example><title>ï¿½ï¿½ï¿½ï¿½ 2</title>
       CacheIgnoreHeaders None
     </example>
 
-    <note type="warning"><title>°æ°í:</title>
-      <directive>CacheIgnoreHeaders</directive> ¼³Á¤À» »ç¿ëÇÏ¿©
-      <code>Expires</code> °°ÀÌ Ä³½¬ °ü¸®¿¡ ÇÊ¿äÇÑ Çì´õ¸¦ ÀúÀåÇÏÁö
-      ¾ÊÀ¸¸é, mod_cache´Â ºñÁ¤»óÀûÀ¸·Î µ¿ÀÛÇÑ´Ù.
+    <note type="warning"><title>ï¿½ï¿½ï¿½:</title>
+      <directive>CacheIgnoreHeaders</directive> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½
+      <code>Expires</code> ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, mod_cacheï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
     </note>
 </usage>
 </directivesynopsis>

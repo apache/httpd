@@ -5,7 +5,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -1488,7 +1488,7 @@ static void look_for_server_certs(server_rec *s, SSL_CTX *ctx, const char *sct_d
             /* Not this: SSL_CTX_get0_chain_certs(ctx, &chain);
              *
              * See this thread:
-             *   http://mail-archives.apache.org/mod_mbox/httpd-dev/
+             *   https://mail-archives.apache.org/mod_mbox/httpd-dev/
              *   201402.mbox/%3CCAKUrXK5-2_Sg8FokxBP8nW7tmSuTZZWL-%3
              *   DBDhNnwyK-Z4dmQiQ%40mail.gmail.com%3E
              */

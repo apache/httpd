@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -17,12 +17,12 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Module Apache mod_dir</h1>
 <div class="toplang">
@@ -57,10 +57,10 @@ de répertoire</td></tr>
 
     <p>Une redirection "slash de fin" est effectuée lorsque le serveur
     reçoit une requête pour une URL du style
-    <code>http://nom-serveur/foo/nom-rep</code> où <code>nom-rep</code>
+    <code>https://nom-serveur/foo/nom-rep</code> où <code>nom-rep</code>
     est le nom d'un répertoire. Comme les répertoires nécessitent un slash de
     fin, <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> effectue une redirection vers
-    <code>http://nom-serveur/foo/nom-rep/</code>.</p>
+    <code>https://nom-serveur/foo/nom-rep/</code>.</p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
@@ -135,8 +135,8 @@ client envoie une requête pour un répertoire</td></tr>
 </div>
 
     <p>Avec cette configuration, une requête pour l'URL
-    <code>http://example.com/docs/</code> renverrait au client la
-    ressource <code>http://example.com/docs/index.html</code> si elle
+    <code>https://example.com/docs/</code> renverrait au client la
+    ressource <code>https://example.com/docs/index.html</code> si elle
     existe, ou provoquerait la génération du listing du répertoire si la
     ressource n'existe pas.</p>
 
@@ -222,9 +222,9 @@ répertoires.
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">DirectoryIndexRedirect on</pre>
 </div>
 
-    <p>Une requête pour <code>http://example.com/docs/</code> se
+    <p>Une requête pour <code>https://example.com/docs/</code> se
     solderait par une redirection temporaire vers
-    <code>http://example.com/docs/index.html</code> si cette ressource
+    <code>https://example.com/docs/index.html</code> si cette ressource
     existe.</p>
 
 
@@ -335,7 +335,7 @@ version 2.4.4 du serveur HTTP Apache</td></tr>
     fonctionnalité si l'héritage d'un répertoire parent n'est pas
     souhaité.</p>
     <p>Pour un URI intermédiaire tel que
-    <em>http://example.com/blog/</em>, cet URI intermédiaire doit être
+    <em>https://example.com/blog/</em>, cet URI intermédiaire doit être
     spécifié en tant que <var>url-locale</var> :</p>
     <pre class="prettyprint lang-config">&lt;Directory "/web/example.com/htdocs/blog"&gt;
     FallbackResource /blog/index.php
@@ -360,7 +360,7 @@ version 2.4.4 du serveur HTTP Apache</td></tr>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_dir.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/mod/mod_dir.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -375,8 +375,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_dir.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

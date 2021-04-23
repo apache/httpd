@@ -8,7 +8,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -25,8 +25,8 @@
     %HTTPD-VERSION;
 ]>
 <xsl:stylesheet version="1.0"
-              xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                  xmlns="http://www.w3.org/1999/xhtml">
+              xmlns:xsl="https://www.w3.org/1999/XSL/Transform"
+                  xmlns="https://www.w3.org/1999/xhtml">
 
 <!--                                                                      -->
 <!-- Please, don't hard-code output strings! Use the language             -->
@@ -182,11 +182,11 @@
             <xsl:choose>
             <xsl:when test="$upgrade">
                 <xsl:if test="not(/*/@upgrade = '')">
-                    <link rel="canonical" href="http://httpd.apache.org/docs/current{concat($metafile/path, /*/@upgrade, '.html')}"/>
+                    <link rel="canonical" href="https://httpd.apache.org/docs/current{concat($metafile/path, /*/@upgrade, '.html')}"/>
                 </xsl:if>
             </xsl:when>
             <xsl:otherwise>
-                <link rel="canonical" href="http://httpd.apache.org/docs/current{concat($metafile/path, $metafile/basename, '.html')}"/>
+                <link rel="canonical" href="https://httpd.apache.org/docs/current{concat($metafile/path, $metafile/basename, '.html')}"/>
             </xsl:otherwise>
             </xsl:choose>
         </xsl:if>
@@ -228,7 +228,7 @@
 </div>&lf;
 
 <div id="path">&lf;
-    <a href="http://www.apache.org/">
+    <a href="https://www.apache.org/">
         <xsl:if test="$ext-target">
             <xsl:attribute name="target">_blank</xsl:attribute>
         </xsl:if>
@@ -237,7 +237,7 @@
 
     <xsl:text> &gt; </xsl:text>
 
-    <a href="http://httpd.apache.org/">
+    <a href="https://httpd.apache.org/">
         <xsl:if test="$ext-target">
             <xsl:attribute name="target">_blank</xsl:attribute>
         </xsl:if>
@@ -246,7 +246,7 @@
 
     <xsl:text> &gt; </xsl:text>
 
-    <a href="http://httpd.apache.org/docs/">
+    <a href="https://httpd.apache.org/docs/">
         <xsl:if test="$ext-target">
             <xsl:attribute name="target">_blank</xsl:attribute>
         </xsl:if>
@@ -320,7 +320,7 @@
         <h4><xsl:value-of select="$message[@id='retired.headline']" /></h4>
         <xsl:apply-templates select="$message[@id='retired.description']" />
         <ul>
-            <li><a href="http://httpd.apache.org/docs/current/">
+            <li><a href="https://httpd.apache.org/docs/current/">
                 <xsl:value-of select="$message[@id='retired.current']" /></a>
             </li>
         </ul>
@@ -364,7 +364,7 @@
     </xsl:choose>
 </xsl:variable>
 
-<a href="http://httpd.apache.org/docs/current{$future}">
+<a href="https://httpd.apache.org/docs/current{$future}">
     <xsl:apply-templates />
 </a>
 </xsl:template>
@@ -399,7 +399,7 @@
 <script type="text/javascript">
 <xsl:text disable-output-escaping="yes"><![CDATA[<!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/]]></xsl:text>&httpd.comments;<xsl:value-of select="concat($metafile/path, $metafile/basename, '.html')" disable-output-escaping="yes" /><xsl:text disable-output-escaping="yes"><![CDATA[';
+var comments_identifier = 'https://httpd.apache.org/docs/]]></xsl:text>&httpd.comments;<xsl:value-of select="concat($metafile/path, $metafile/basename, '.html')" disable-output-escaping="yes" /><xsl:text disable-output-escaping="yes"><![CDATA[';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -425,7 +425,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/]]></xsl:text>&httpd.com
             <xsl:text> </xsl:text>
         </xsl:if>
 
-        <a href="http://www.apache.org/licenses/LICENSE-2.0">
+        <a href="https://www.apache.org/licenses/LICENSE-2.0">
             <xsl:if test="$ext-target">
                 <xsl:attribute name="target">_blank</xsl:attribute>
             </xsl:if>
@@ -740,7 +740,7 @@ if (typeof(prettyPrint) !== 'undefined') {
 
     <xsl:text> | </xsl:text>
 
-    <a href="http://wiki.apache.org/httpd/FAQ">
+    <a href="https://wiki.apache.org/httpd/FAQ">
         <xsl:value-of select="$message[@id='faq']" />
     </a>
 

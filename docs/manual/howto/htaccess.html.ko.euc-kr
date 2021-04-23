@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
 <meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>¾ÆÆÄÄ¡ ÅõÅä¸®¾ó: .htaccess ÆÄÀÏ - Apache HTTP Server Version 2.5</title>
+<title>ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½: .htaccess ï¿½ï¿½ï¿½ï¿½ - Apache HTTP Server Version 2.5</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -16,82 +16,82 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">How-To / Tutorials</a></div><div id="page-content"><div id="preamble"><h1>¾ÆÆÄÄ¡ ÅõÅä¸®¾ó: .htaccess ÆÄÀÏ</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">How-To / Tutorials</a></div><div id="page-content"><div id="preamble"><h1>ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½: .htaccess ï¿½ï¿½ï¿½ï¿½</h1>
 <div class="toplang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/howto/htaccess.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/howto/htaccess.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/howto/htaccess.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
 <a href="../fr/howto/htaccess.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/howto/htaccess.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/htaccess.html" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../pt-br/howto/htaccess.html" hreflang="pt-br" rel="alternate" title="Portugu&#234;s (Brasil)">&nbsp;pt-br&nbsp;</a></p>
 </div>
-<div class="outofdate">ÀÌ ¹®¼­´Â ÃÖ½ÅÆÇ ¹ø¿ªÀÌ ¾Æ´Õ´Ï´Ù.
-            ÃÖ±Ù¿¡ º¯°æµÈ ³»¿ëÀº ¿µ¾î ¹®¼­¸¦ Âü°íÇÏ¼¼¿ä.</div>
+<div class="outofdate">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Õ´Ï´ï¿½.
+            ï¿½Ö±Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.</div>
 
-<p><code>.htaccess</code> ÆÄÀÏÀ» »ç¿ëÇÏ¿© µð·ºÅä¸®º°·Î ¼³Á¤À»
-º¯°æÇÒ ¼ö ÀÖ´Ù.</p>
+<p><code>.htaccess</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">.htaccess ÆÄÀÏ</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#what">¹«¾ùÀÌ¸ç/¾î¶»°Ô »ç¿ëÇÏ´Â°¡</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#when">¾ðÁ¦ .htaccess ÆÄÀÏÀ» »ç¿ëÇÏ³ª
-    (È¤Àº »ç¿ëÇÏÁö ¾Ê³ª)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#how">¾î¶»°Ô Áö½Ã¾î¸¦ Àû¿ëÇÏ³ª</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#auth">ÀÎÁõ ¿¹Á¦</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ssi">Server Side Includes ¿¹Á¦</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#cgi">CGI ¿¹Á¦</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#troubleshoot">¹®Á¦ÇØ°á</a></li>
-</ul><h3>Âü°í</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">.htaccess ï¿½ï¿½ï¿½ï¿½</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#what">ï¿½ï¿½ï¿½ï¿½ï¿½Ì¸ï¿½/ï¿½î¶»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´Â°ï¿½</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#when">ï¿½ï¿½ï¿½ï¿½ .htaccess ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï³ï¿½
+    (È¤ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê³ï¿½)</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#how">ï¿½î¶»ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½Ï³ï¿½</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#auth">ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ssi">Server Side Includes ï¿½ï¿½ï¿½ï¿½</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cgi">CGI ï¿½ï¿½ï¿½ï¿½</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#troubleshoot">ï¿½ï¿½ï¿½ï¿½ï¿½Ø°ï¿½</a></li>
+</ul><h3>ï¿½ï¿½ï¿½ï¿½</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="related" id="related">.htaccess ÆÄÀÏ</a> <a title="Permanent link" href="#related" class="permalink">&para;</a></h2>
-    <table class="related"><tr><th>°ü·ÃµÈ ¸ðµâ</th><th>°ü·ÃµÈ Áö½Ã¾î</th></tr><tr><td><ul><li><code class="module"><a href="../mod/core.html">core</a></code></li><li><code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code></li><li><code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code></li><li><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="../mod/mod_include.html">mod_include</a></code></li><li><code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#accessfilename">AccessFileName</a></code></li><li><code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code></li><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li><li><code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code></li><li><code class="directive"><a href="../mod/core.html#authtype">AuthType</a></code></li><li><code class="directive"><a href="../mod/core.html#authname">AuthName</a></code></li><li><code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code></li><li><code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code></li><li><code class="directive"><a href="../mod/core.html#require">Require</a></code></li></ul></td></tr></table>
+<h2><a name="related" id="related">.htaccess ï¿½ï¿½ï¿½ï¿½</a> <a title="Permanent link" href="#related" class="permalink">&para;</a></h2>
+    <table class="related"><tr><th>ï¿½ï¿½ï¿½Ãµï¿½ ï¿½ï¿½ï¿½</th><th>ï¿½ï¿½ï¿½Ãµï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½</th></tr><tr><td><ul><li><code class="module"><a href="../mod/core.html">core</a></code></li><li><code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code></li><li><code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code></li><li><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="../mod/mod_include.html">mod_include</a></code></li><li><code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#accessfilename">AccessFileName</a></code></li><li><code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code></li><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li><li><code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code></li><li><code class="directive"><a href="../mod/core.html#authtype">AuthType</a></code></li><li><code class="directive"><a href="../mod/core.html#authname">AuthName</a></code></li><li><code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code></li><li><code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code></li><li><code class="directive"><a href="../mod/core.html#require">Require</a></code></li></ul></td></tr></table>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="what" id="what">¹«¾ùÀÌ¸ç/¾î¶»°Ô »ç¿ëÇÏ´Â°¡</a> <a title="Permanent link" href="#what" class="permalink">&para;</a></h2>
+<h2><a name="what" id="what">ï¿½ï¿½ï¿½ï¿½ï¿½Ì¸ï¿½/ï¿½î¶»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´Â°ï¿½</a> <a title="Permanent link" href="#what" class="permalink">&para;</a></h2>
 
 
-    <p><code>.htaccess</code> ÆÄÀÏ(È¤Àº "ºÐ»ê ¼³Á¤ÆÄÀÏ")À»
-    »ç¿ëÇÏ¸é µð·ºÅä¸®º°·Î ¼³Á¤À» º¯°æÇÒ ¼ö ÀÖ´Ù. ¿©·¯ ¼³Á¤ Áö½Ã¾î°¡
-    ÀÖ´Â ÆÄÀÏÀ» Æ¯Á¤ ¹®¼­ µð·ºÅä¸®¿¡ µÎ¸é, ±× µð·ºÅä¸®¿Í ¸ðµç
-    ÇÏÀ§µð·ºÅä¸®¿¡ Áö½Ã¾î¸¦ Àû¿ëÇÑ´Ù.</p>
+    <p><code>.htaccess</code> ï¿½ï¿½ï¿½ï¿½(È¤ï¿½ï¿½ "ï¿½Ð»ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½")ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î°¡
+    ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Æ¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½Î¸ï¿½, ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <div class="note"><h3>ÁÖÀÇ:</h3>
-      <p><code>.htaccess</code> ÆÄÀÏ¸íÀ» ´Ù¸£°Ô »ç¿ëÇÏ°í ½Í´Ù¸é,
-      <code class="directive"><a href="../mod/core.html#accessfilename">AccessFileName</a></code> Áö½Ã¾î¸¦
-      »ç¿ëÇÏ¿© º¯°æÇÒ ¼ö ÀÖ´Ù. ¿¹¸¦ µé¾î, <code>.config</code>
-      ÆÄÀÏ¸íÀ» »ç¿ëÇÏ·Á¸é ¼­¹ö ¼³Á¤ÆÄÀÏ¿¡ ´ÙÀ½°ú °°ÀÌ Ãß°¡ÇÑ´Ù.</p>
+    <div class="note"><h3>ï¿½ï¿½ï¿½ï¿½:</h3>
+      <p><code>.htaccess</code> ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½Í´Ù¸ï¿½,
+      <code class="directive"><a href="../mod/core.html#accessfilename">AccessFileName</a></code> ï¿½ï¿½ï¿½Ã¾î¸¦
+      ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, <code>.config</code>
+      ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ñ´ï¿½.</p>
 
       <div class="example"><p><code>
         AccessFileName .config
       </code></p></div>
     </div>
 
-    <p>ÀÏ¹ÝÀûÀ¸·Î <code>.htaccess</code> ÆÄÀÏÀº <a href="../configuring.html#syntax">ÁÖ¼³Á¤ÆÄÀÏ</a>°ú ¹®¹ýÀÌ
-    °°´Ù. <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code>
-    Áö½Ã¾î°¡ ÀÌ ÆÄÀÏ¿¡ ³ª¿Ã ¼ö ÀÖ´Â ³»¿ëÀ» °áÁ¤ÇÑ´Ù. ÀÌ Áö½Ã¾î´Â
-    <code>.htaccess</code> ÆÄÀÏ¿¡¼­ Çã¿ëÇÏ´Â Áö½Ã¾î ºÐ·ù¸¦ ÁöÁ¤ÇÑ´Ù.
-    Áö½Ã¾î¸¦ <code>.htaccess</code> ÆÄÀÏ¿¡¼­ »ç¿ëÇÒ ¼ö ÀÖ´Ù¸é,
-    ÇØ´ç Áö½Ã¾î ¹®¼­ÀÇ Override Ç×¸ñÀº Áö½Ã¾î¸¦ Çã¿ëÇÏ±âÀ§ÇØ
-    <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code>¿¡ »ç¿ëÇÒ
-    °ªÀ» ¾Ë·ÁÁØ´Ù.</p>
+    <p>ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>.htaccess</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <a href="../configuring.html#syntax">ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</a>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½. <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code>
+    ï¿½ï¿½ï¿½Ã¾î°¡ ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½
+    <code>.htaccess</code> ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ ï¿½Ð·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+    ï¿½ï¿½ï¿½Ã¾î¸¦ <code>.htaccess</code> ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´Ù¸ï¿½,
+    ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Override ï¿½×¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½
+    <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½Ë·ï¿½ï¿½Ø´ï¿½.</p>
 
-    <p>¿¹¸¦ µé¾î, <code class="directive"><a href="../mod/core.html#adddefaultcharset">AddDefaultCharset</a></code>
-    Áö½Ã¾î ¹®¼­¸¦ º¸¸é ÀÌ Áö½Ã¾î¸¦ <code>.htaccess</code> ÆÄÀÏ¿¡¼­
-    »ç¿ëÇÒ ¼ö ÀÖ´Ù. (Áö½Ã¾î ¿ä¾à¿¡¼­ »ç¿ëÀå¼Ò Ç×¸ñÀ» º¸¶ó.)
+    <p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, <code class="directive"><a href="../mod/core.html#adddefaultcharset">AddDefaultCharset</a></code>
+    ï¿½ï¿½ï¿½Ã¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦ <code>.htaccess</code> ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. (ï¿½ï¿½ï¿½Ã¾ï¿½ ï¿½ï¿½à¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.)
     <a href="../mod/directive-dict.html#Context">Override</a>
-    ÁÙ¿¡ <code>FileInfo</code>°¡ ÀÖ´Ù. ±×·¡¼­ ÀÌ Áö½Ã¾î¸¦
-    <code>.htaccess</code> ÆÄÀÏ¿¡¼­ »ç¿ëÇÏ±âÀ§ÇØ¼­´Â ÃÖ¼ÒÇÑ
-    <code>AllowOverride FileInfo</code>°¡ ÇÊ¿äÇÏ´Ù.</p>
+    ï¿½Ù¿ï¿½ <code>FileInfo</code>ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦
+    <code>.htaccess</code> ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½ï¿½ï¿½
+    <code>AllowOverride FileInfo</code>ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Ï´ï¿½.</p>
 
-    <div class="example"><h3>¿¹Á¦:</h3><table>
+    <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½:</h3><table>
         <tr>
-          <td><a href="../mod/directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></td>
-          <td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®, directory, .htaccess</td>
+          <td><a href="../mod/directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></td>
+          <td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®, directory, .htaccess</td>
         </tr>
 
         <tr>
@@ -100,48 +100,48 @@
         </tr>
       </table></div>
 
-    <p>Æ¯Á¤ Áö½Ã¾î¸¦ <code>.htaccess</code> ÆÄÀÏ¿¡¼­ »ç¿ëÇÒ
-    ¼ö ÀÖ´ÂÁö ±Ã±ÝÇÏ¸é Áö½Ã¾î ¹®¼­ÀÇ »ç¿ëÀå¼Ò Ç×¸ñ¿¡ ".htaccess"°¡
-    ÀÖ´ÂÁö È®ÀÎÇÑ´Ù.</p>
+    <p>Æ¯ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦ <code>.htaccess</code> ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ ï¿½Ã±ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×¸ï¿½ ".htaccess"ï¿½ï¿½
+    ï¿½Ö´ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="when" id="when">¾ðÁ¦ .htaccess ÆÄÀÏÀ» »ç¿ëÇÏ³ª
-    (È¤Àº »ç¿ëÇÏÁö ¾Ê³ª)</a> <a title="Permanent link" href="#when" class="permalink">&para;</a></h2>
+<h2><a name="when" id="when">ï¿½ï¿½ï¿½ï¿½ .htaccess ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï³ï¿½
+    (È¤ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê³ï¿½)</a> <a title="Permanent link" href="#when" class="permalink">&para;</a></h2>
 
-    <p>ÀÏ¹ÝÀûÀ¸·Î ÁÖ¼­¹öÆÄÀÏ¿¡ Á¢±ÙÇÒ ¼ö ¾ø´Â °æ¿ì°¡ ¾Æ´Ï¶ó¸é
-    <code>.htaccess</code> ÆÄÀÏÀ» »ç¿ëÇÏ¸é ¾ÈµÈ´Ù. ¿¹¸¦ µé¾î,
-    »ç¿ëÀÚ ÀÎÁõÀÌ Ç×»ó <code>.htaccess</code> ÆÄÀÏ¿¡ ÀÖ¾î¾ß
-    ÇÑ´Ù´Â °ÍÀº Àß¸ø ¾Ë·ÁÁø ¿ÀÇØ´Ù. ÀÌ´Â »ç½ÇÀÌ ¾Æ´Ï´Ù. ÁÖ¼­¹ö¼³Á¤¿¡
-    »ç¿ëÀÚ ÀÎÁõ ¼³Á¤À» ÀûÀ» ¼ö ÀÖ°í, »ç½Ç ÀÌ·¯±æ ±ÇÇÑ´Ù.</p>
+    <p>ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ì°¡ ï¿½Æ´Ï¶ï¿½ï¿½
+    <code>.htaccess</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ÈµÈ´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½,
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×»ï¿½ <code>.htaccess</code> ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½Ö¾ï¿½ï¿½
+    ï¿½Ñ´Ù´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß¸ï¿½ ï¿½Ë·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ø´ï¿½. ï¿½Ì´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Ï´ï¿½. ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö°ï¿½, ï¿½ï¿½ï¿½ ï¿½Ì·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <p><code>.htaccess</code> ÆÄÀÏÀº ÄÁÅÙÃ÷ Á¦°øÀÚ°¡ µð·ºÅä¸®º°·Î
-    ¼­¹ö ¼³Á¤À» ´Ù¸£°ÔÇÏ°í ½ÍÁö¸¸ ¼­¹ö ½Ã½ºÅÛ¿¡ root ±ÇÇÑÀÌ
-    ¾ø´Â °æ¿ì¿¡ »ç¿ëÇÑ´Ù. ¼­¹ö °ü¸®ÀÚ°¡ ¼³Á¤À» ÀÚÁÖ º¯°æÇÏ°í
-    ½ÍÁö ¾ÊÀº °æ¿ì ÀÏ¹Ý »ç¿ëÀÚ°¡ Á÷Á¢ <code>.htaccess</code>
-    ÆÄÀÏÀ» ¼öÁ¤ÇÏµµ·Ï Çã¿ëÇÏ´Â °ÍÀÌ ¹Ù¶÷Á÷ÇÏ´Ù. ¿¹¸¦ µé¾î, ÇÑ
-    ÄÄÇ»ÅÍ¿¡ ¿©·¯ »ç¿ëÀÚ »çÀÌÆ®¸¦ ¼­ºñ½ºÇÏ´Â ISP¿¡¼­ »ç¿ëÀÚ°¡
-    ÀÚ½ÅÀÇ ¼³Á¤À» º¯°æÇÏ°í ½ÍÀº °æ¿ì°¡ ±×·¯ÇÏ´Ù.</p>
+    <p><code>.htaccess</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã½ï¿½ï¿½Û¿ï¿½ root ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ì¿¡ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ï¹ï¿½ ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½ï¿½ï¿½ï¿½ <code>.htaccess</code>
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¶ï¿½ï¿½ï¿½ï¿½Ï´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, ï¿½ï¿½
+    ï¿½ï¿½Ç»ï¿½Í¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ISPï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú°ï¿½
+    ï¿½Ú½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ì°¡ ï¿½×·ï¿½ï¿½Ï´ï¿½.</p>
 
-    <p>±×·¯³ª ÀÏ¹ÝÀûÀ¸·Î <code>.htaccess</code> ÆÄÀÏÀº °¡±ÞÀû
-    ÇÇÇØ¾ß ÇÑ´Ù. <code>.htaccess</code> ÆÄÀÏ¿¡¼­ Çã¿ëÇÏ´Â Áö½Ã¾î´Â
-    ÁÖ¼³Á¤ÆÄÀÏÀÇ <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> ¼½¼Ç°ú °°Àº È¿°ú°¡
-    ÀÖ´Ù.</p>
+    <p>ï¿½×·ï¿½ï¿½ï¿½ ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>.htaccess</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½. <code>.htaccess</code> ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½
+    ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> ï¿½ï¿½ï¿½Ç°ï¿½ ï¿½ï¿½ï¿½ï¿½ È¿ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ö´ï¿½.</p>
 
-    <p>´ÙÀ½ µÎ°¡Áö Å« ÀÌÀ¯¶§¹®¿¡ <code>.htaccess</code> ÆÄÀÏ
-    »ç¿ëÀ» ÇÇÇØ¾ß ÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ ï¿½Î°ï¿½ï¿½ï¿½ Å« ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>.htaccess</code> ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½.</p>
 
-    <p>Ã¹¹øÂ°´Â ¼º´ÉÀÌ´Ù. <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code>°¡ <code>.htaccess</code>
-    ÆÄÀÏÀ» »ç¿ëÇÏµµ·Ï Çã¿ëÇÏ¸é, ¾ÆÆÄÄ¡´Â µð·ºÅä¸®¸¶´Ù
-    <code>.htaccess</code> ÆÄÀÏÀ» Ã£´Â´Ù. ±×·¡¼­
-    <code>.htaccess</code> ÆÄÀÏÀ» Çã¿ëÇÏ¸é ½ÇÁ¦·Î ÆÄÀÏÀ» »ç¿ëÇÏÁö
-    ¾Ê´Â °æ¿ì¿¡µµ ¼º´ÉÀÌ ¶³¾îÁø´Ù! ¶Ç, <code>.htaccess</code>
-    ÆÄÀÏÀº ¹®¼­¸¦ ¿äÃ»ÇÒ¶§¸¶´Ù ÀÐ¾îµéÀÎ´Ù.</p>
+    <p>Ã¹ï¿½ï¿½Â°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½. <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code>ï¿½ï¿½ <code>.htaccess</code>
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½, ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ï¿½ï¿½
+    <code>.htaccess</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½Â´ï¿½. ï¿½×·ï¿½ï¿½ï¿½
+    <code>.htaccess</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ê´ï¿½ ï¿½ï¿½ì¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½! ï¿½ï¿½, <code>.htaccess</code>
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½Ò¶ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ð¾ï¿½ï¿½ï¿½Î´ï¿½.</p>
 
-    <p>°Ô´Ù°¡ Àû¿ëÇØ¾ß ÇÏ´Â ÀüÃ¼ Áö½Ã¾î¸¦ ¸ðÀ¸±âÀ§ÇØ ¾ÆÆÄÄ¡´Â
-    ¸ðµç »óÀ§ µð·ºÅä¸®¿¡¼­ <code>.htaccess</code> ÆÄÀÏÀ» Ã£´Â´Ù.
-    (<a href="#how">¾î¶»°Ô Áö½Ã¾î¸¦ Àû¿ëÇÏ³ª</a> ÀýÀ» Âü°í.)
-    ±×·¡¼­ <code>/www/htdocs/example</code> µð·ºÅä¸®¿¡ ÀÖ´Â
-    ÆÄÀÏÀ» ¿äÃ»ÇÏ¸é, ¾ÆÆÄÄ¡´Â ´ÙÀ½ ÆÄÀÏµéÀ» Ã£¾Æ¾ß ÇÑ´Ù.</p>
+    <p>ï¿½Ô´Ù°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ï´ï¿½ ï¿½ï¿½Ã¼ ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½
+    ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ï¿½ï¿½ <code>.htaccess</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½Â´ï¿½.
+    (<a href="#how">ï¿½î¶»ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½Ï³ï¿½</a> ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.)
+    ï¿½×·ï¿½ï¿½ï¿½ <code>/www/htdocs/example</code> ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½Ö´ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½Ï¸ï¿½, ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ Ã£ï¿½Æ¾ï¿½ ï¿½Ñ´ï¿½.</p>
 
     <div class="example"><p><code>
       /.htaccess<br />
@@ -150,33 +150,33 @@
       /www/htdocs/example/.htaccess
     </code></p></div>
 
-    <p>±×·¡¼­ ±× µð·ºÅä¸®¿¡ ÀÖ´Â ÆÄÀÏÀ» Á¢±ÙÇÒ ¶§¸¶´Ù ¼³Á¤ÆÄÀÏÀÌ
-    ÀüÇô ¾ø¾îµµ ÆÄÀÏ½Ã½ºÅÛÀ» 4¹ø ´õ Á¢±ÙÇØ¾ß ÇÑ´Ù.
-    (<code>/</code>¿¡¼­µµ <code>.htaccess</code> ÆÄÀÏÀ» Çã¿ëÇÑ
-    °æ¿ì¸¦ ¸»ÇÑ´Ù. º¸ÅëÀº Çã¿ëÇÏÁö ¾Ê´Â´Ù.)</p>
+    <p>ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½îµµ ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ 4ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½.
+    (<code>/</code>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>.htaccess</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ì¸¦ ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.)</p>
 
-    <p>µÎ¹øÂ° ÀÌÀ¯´Â º¸¾ÈÀÌ´Ù. »ç¿ëÀÚ¿¡°Ô ¼­¹ö¼³Á¤ º¯°æ ±ÇÇÑÀ»
-    ÁÖ¸é ´ç½ÅÀÌ °¨´çÇÒ ¼ö ¾ø´Â º¯È­°¡ ÀÏ¾î³¯ ¼ö ÀÖ´Ù. »ç¿ëÀÚ¿¡°Ô
-    ÀÌ·± ±ÇÇÑÀ» ÁÙÁö °õ°õÀÌ »ý°¢ÇÏ¶ó. ¶Ç, »ç¿ëÀÚ°¡ ¿øÇÏ´Â °Íº¸´Ù
-    ÀûÀº ±ÇÇÑÀ» ÁÖ¸é ±â¼úÁö¿ø¿äÃ»ÀÌ µé¾î¿Â´Ù. »ç¿ëÀÚ¿¡°Ô °¡´ÉÇÑ
-    ±ÇÇÑ ¼öÁØÀ» ¸íÈ®È÷ ¾Ë·Á¶ó. »ç¿ëÀÚ¿¡°Ô <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code>¸¦ ¾î¶»°Ô ¼³Á¤ÇÏ¿´´ÂÁö
-    Á¤È®È÷ ¾Ë¸®°í °ü·Ã ¹®¼­¸¦ Á¦°øÇÏ¸é ¾ÕÀ¸·Î È¥¶õÀ» ÇÇÇÒ ¼ö
-    ÀÖ´Ù.</p>
+    <p>ï¿½Î¹ï¿½Â° ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½. ï¿½ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ö¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È­ï¿½ï¿½ ï¿½Ï¾î³¯ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½
+    ï¿½Ì·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½. ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Íºï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½Â´ï¿½. ï¿½ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È®ï¿½ï¿½ ï¿½Ë·ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code>ï¿½ï¿½ ï¿½î¶»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½È®ï¿½ï¿½ ï¿½Ë¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¥ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+    ï¿½Ö´ï¿½.</p>
 
-    <p>Áö½Ã¾î¸¦ <code>/www/htdocs/example</code> µð·ºÅä¸®ÀÇ
-    <code>.htaccess</code> ÆÄÀÏÀ» µÎ´Â °Í°ú ÁÖ¼­¹ö¼³Á¤ÀÇ
+    <p>ï¿½ï¿½ï¿½Ã¾î¸¦ <code>/www/htdocs/example</code> ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½
+    <code>.htaccess</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î´ï¿½ ï¿½Í°ï¿½ ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     <code>&lt;Directory /www/htdocs/example&gt;</code> Directory
-    ¼³Á¤¿¡ µÎ´Â °ÍÀº ¿ÏÀüÈ÷ °°´Ù.</p>
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</p>
 
-    <p><code>/www/htdocs/example</code>¿¡ ÀÖ´Â
-    <code>.htaccess</code> ¼½¼Ç:</p>
+    <p><code>/www/htdocs/example</code>ï¿½ï¿½ ï¿½Ö´ï¿½
+    <code>.htaccess</code> ï¿½ï¿½ï¿½ï¿½:</p>
 
-    <div class="example"><h3><code>/www/htdocs/example</code>¿¡ ÀÖ´Â
-    .htaccess ÆÄÀÏ ³»¿ë</h3><p><code>
+    <div class="example"><h3><code>/www/htdocs/example</code>ï¿½ï¿½ ï¿½Ö´ï¿½
+    .htaccess ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</h3><p><code>
         AddType text/example .exm
     </code></p></div>
 
-    <div class="example"><h3><code>httpd.conf</code> ÆÄÀÏ¿¡ ÀÖ´Â ¼½¼Ç</h3><p><code>
+    <div class="example"><h3><code>httpd.conf</code> ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½</h3><p><code>
       &lt;Directory /www/htdocs/example&gt;<br />
       <span class="indent">
         AddType text/example .exm<br />
@@ -184,71 +184,71 @@
       &lt;/Directory&gt;
     </code></p></div>
 
-    <p>±×·¯³ª ÆÄÀÏÀ» ¿äÃ»ÇÒ ¶§¸¶´Ù ¼³Á¤À» ÀÐÁö¾Ê°í ¾ÆÆÄÄ¡°¡
-    ½ÃÀÛÇÒ¶§ ÇÑ¹ø¸¸ ¼³Á¤À» ÀÐ±â¶§¹®¿¡ °°Àº ¼³Á¤À» ¼­¹ö¼³Á¤ÆÄÀÏ¿¡
-    »ç¿ëÇÏ¸é ¼º´ÉÀÌ ´õ ºü¸£´Ù.</p>
+    <p>ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ê°ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ ï¿½Ñ¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ð±â¶§ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.</p>
 
-    <p><code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> Áö½Ã¾î¸¦
-    <code>none</code>À¸·Î ¼³Á¤ÇÏ¸é <code>.htaccess</code> ÆÄÀÏÀ»
-    ¿ÏÀüÈ÷ »ç¿ëÇÒ ¼ö ¾ø´Ù.</p>
+    <p><code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> ï¿½ï¿½ï¿½Ã¾î¸¦
+    <code>none</code>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ <code>.htaccess</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</p>
 
     <div class="example"><p><code>
       AllowOverride None
     </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="how" id="how">¾î¶»°Ô Áö½Ã¾î¸¦ Àû¿ëÇÏ³ª</a> <a title="Permanent link" href="#how" class="permalink">&para;</a></h2>
+<h2><a name="how" id="how">ï¿½î¶»ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½Ï³ï¿½</a> <a title="Permanent link" href="#how" class="permalink">&para;</a></h2>
 
-    <p><code>.htaccess</code> ÆÄÀÏÀ» ¹ß°ßÇÑ µð·ºÅä¸®¿Í ±× µð·ºÅä¸®ÀÇ
-    ¸ðµç ÇÏÀ§µð·ºÅä¸®¿¡ <code>.htaccess</code> ÆÄÀÏ¿¡ ÀÖ´Â ¼³Á¤
-    Áö½Ã¾î¸¦ Àû¿ëÇÑ´Ù. ±×·¡¼­ »óÀ§µð·ºÅä¸®ÀÇ <code>.htaccess</code>
-    ÆÄÀÏÀ» ÁÖÀÇÇØ¾ß ÇÑ´Ù. ¹ß°ßÇÑ ¼ø¼­·Î Áö½Ã¾î¸¦ Àû¿ëÇÑ´Ù. Æ¯Á¤
-    µð·ºÅä¸®¿¡ ÀÖ´Â <code>.htaccess</code> ÆÄÀÏÀº »óÀ§µð·ºÅä¸®¿¡
-    ÀÖ´Â <code>.htaccess</code> ÆÄÀÏÀÇ Áö½Ã¾î¸¦ ¹«È¿·Î ¸¸µé
-    ¼ö ÀÖ°í, »óÀ§µð·ºÅä¸®¿¡ ÀÖ´Â Áö½Ã¾î´Â ´õ »óÀ§µð·ºÅä¸® È¤Àº
-    ÁÖ¼³Á¤ÆÄÀÏ¿¡ ÀÖ´Â Áö½Ã¾î¸¦ ¹«È¿·Î ¸¸µé ¼ö ÀÖ´Ù.</p>
+    <p><code>.htaccess</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½
+    ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ <code>.htaccess</code> ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ <code>.htaccess</code>
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½. ï¿½ß°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. Æ¯ï¿½ï¿½
+    ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½Ö´ï¿½ <code>.htaccess</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½
+    ï¿½Ö´ï¿½ <code>.htaccess</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½È¿ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ ï¿½Ö°ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸® È¤ï¿½ï¿½
+    ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½È¿ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <p>¿¹Á¦:</p>
+    <p>ï¿½ï¿½ï¿½ï¿½:</p>
 
-    <p><code>/www/htdocs/example1</code> µð·ºÅä¸®¿¡ ´ÙÀ½°ú °°Àº
-    <code>.htaccess</code> ÆÄÀÏÀÌ ÀÖ´Ù.</p>
+    <p><code>/www/htdocs/example1</code> ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    <code>.htaccess</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
     <div class="example"><p><code>
        Options +ExecCGI
     </code></p></div>
 
-    <p>(ÁÖÀÇ: <code>.htaccess</code> ÆÄÀÏ¿¡ "<code class="directive"><a href="../mod/core.html#options">Options</a></code>" Áö½Ã¾î¸¦ »ç¿ëÇÏ·Á¸é
-    "<code>AllowOverride Options</code>"°¡ ÇÊ¿äÇÏ´Ù.)</p>
+    <p>(ï¿½ï¿½ï¿½ï¿½: <code>.htaccess</code> ï¿½ï¿½ï¿½Ï¿ï¿½ "<code class="directive"><a href="../mod/core.html#options">Options</a></code>" ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½
+    "<code>AllowOverride Options</code>"ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Ï´ï¿½.)</p>
 
-    <p><code>/www/htdocs/example1/example2</code> µð·ºÅä¸®¿¡´Â
-    ´ÙÀ½°ú °°Àº <code>.htaccess</code> ÆÄÀÏÀÌ ÀÖ´Ù.</p>
+    <p><code>/www/htdocs/example1/example2</code> ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ <code>.htaccess</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
     <div class="example"><p><code>
        Options Includes
     </code></p></div>
 
-    <p>ÀÌ µÎ¹øÂ° <code>.htaccess</code> ÆÄÀÏÀÇ
-    <code>Options Includes</code>°¡ ÀÌÀü ¼³Á¤À» ¿ÏÀüÈ÷ ¹«È¿·Î
-    ¸¸µé±â¶§¹®¿¡ <code>/www/htdocs/example1/example2</code>
-    µð·ºÅä¸®´Â CGI ½ÇÇàÀ» Çã¿ëÇÏÁö ¾Ê´Â´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½Î¹ï¿½Â° <code>.htaccess</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    <code>Options Includes</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¿ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½â¶§ï¿½ï¿½ï¿½ï¿½ <code>/www/htdocs/example1/example2</code>
+    ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ CGI ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="auth" id="auth">ÀÎÁõ ¿¹Á¦</a> <a title="Permanent link" href="#auth" class="permalink">&para;</a></h2>
+<h2><a name="auth" id="auth">ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a> <a title="Permanent link" href="#auth" class="permalink">&para;</a></h2>
 
-    <p>ÀÎÁõ ¹æ¹ýÀ» ¾Ë±âÀ§ÇØ ¹Ù·Î ÀÌ°÷ºÎÅÍ ÀÐ´Â´Ù¸é ÁÖÀÇÇÒ °ÍÀÌ
-    ÀÖ´Ù. ¾ÏÈ£ ÀÎÁõÀ» ÇÏ·Á¸é <code>.htaccess</code> ÆÄÀÏÀÌ
-    ÇÊ¿äÇÏ´Ù´Â ¿ÀÇØ°¡ ³Î¸® ÆÛÁ®ÀÖ´Ù. ÀÌ´Â »ç½ÇÀÌ ¾Æ´Ï´Ù.
-    ÁÖ¼³Á¤ÆÄÀÏÀÇ <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> ¼½¼Ç¿¡ ÀÎÁõ Áö½Ã¾î¸¦
-    µÎ´Â °ÍÀÌ ´õ ±ÇÀåÇÏ´Â ¹æ¹ýÀÌ°í, ¼­¹öÀÇ ÁÖ¼³Á¤ÆÄÀÏÀ» ¼öÁ¤ÇÒ
-    ¼ö ¾ø´Â °æ¿ì¿¡¸¸ <code>.htaccess</code> ÆÄÀÏÀ» »ç¿ëÇØ¾ß
-    ÇÑ´Ù. ¾ðÁ¦ <code>.htaccess</code> ÆÄÀÏÀ» »ç¿ëÇØ¾ß ÇÏ´ÂÁö¿Í
-    »ç¿ëÇÏÁö ¸»¾Æ¾ß ÇÏ´ÂÁö´Â <a href="#when">À§¿¡¼­</a>
-    ¼³¸íÇÏ¿´´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ë±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù·ï¿½ ï¿½Ì°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ð´Â´Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ö´ï¿½. ï¿½ï¿½È£ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï·ï¿½ï¿½ï¿½ <code>.htaccess</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ê¿ï¿½ï¿½Ï´Ù´ï¿½ ï¿½ï¿½ï¿½Ø°ï¿½ ï¿½Î¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½. ï¿½Ì´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Ï´ï¿½.
+    ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> ï¿½ï¿½ï¿½Ç¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦
+    ï¿½Î´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½Ì°ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ì¿¡ï¿½ï¿½ <code>.htaccess</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½
+    ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ <code>.htaccess</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ï´ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Æ¾ï¿½ ï¿½Ï´ï¿½ï¿½ï¿½ï¿½ï¿½ <a href="#when">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</a>
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½.</p>
 
-    <p>¾Õ¿¡¼­ ¸»ÇßÁö¸¸ ¾ÆÁ÷µµ <code>.htaccess</code> ÆÄÀÏÀÌ
-    ÇÊ¿äÇÏ´Ù°í »ý°¢µÇ¸é ¾Æ·¡ ¼³Á¤ÀÌ µµ¿òÀÌ µÉ °ÍÀÌ´Ù.</p>
+    <p>ï¿½Õ¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>.htaccess</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ê¿ï¿½ï¿½Ï´Ù°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç¸ï¿½ ï¿½Æ·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½.</p>
 
-    <p><code>.htaccess</code> ÆÄÀÏ ³»¿ë.</p>
+    <p><code>.htaccess</code> ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</p>
 
     <div class="example"><p><code>
       AuthType Basic<br />
@@ -258,20 +258,20 @@
       Require Group admins
     </code></p></div>
 
-    <p>ÀÌ Áö½Ã¾î°¡ µ¿ÀÛÇÏ±âÀ§ÇØ¼­´Â
-    <code>AllowOverride AuthConfig</code> Áö½Ã¾î°¡ ÇÊ¿äÇÔÀ»
-    ¸í½ÉÇÏ¶ó.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î°¡ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½ï¿½ï¿½
+    <code>AllowOverride AuthConfig</code> ï¿½ï¿½ï¿½Ã¾î°¡ ï¿½Ê¿ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.</p>
 
-    <p>ÀÎÁõ°ú ±ÇÇÑºÎ¿©¿¡ ´ëÇÑ ÀÚ¼¼ÇÑ ¼³¸íÀº <a href="auth.html">ÀÎÁõ
-    ÅõÅä¸®¾ó</a>À» º¸±æ ¹Ù¶õ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ÑºÎ¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ú¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <a href="auth.html">ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½</a>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¶ï¿½ï¿½ï¿½.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="ssi" id="ssi">Server Side Includes ¿¹Á¦</a> <a title="Permanent link" href="#ssi" class="permalink">&para;</a></h2>
+<h2><a name="ssi" id="ssi">Server Side Includes ï¿½ï¿½ï¿½ï¿½</a> <a title="Permanent link" href="#ssi" class="permalink">&para;</a></h2>
 
-    <p>¶Ç´Ù¸¥ ÀÏ¹ÝÀûÀÎ <code>.htaccess</code> ÆÄÀÏÀÇ ¿ëµµ´Â
-    Æ¯Á¤ µð·ºÅä¸®¿¡¼­ Server Side Includes¸¦ °¡´ÉÇÏ°Ô ¸¸µå´Â
-    °ÍÀÌ´Ù. ¿øÇÏ´Â µð·ºÅä¸®ÀÇ <code>.htaccess</code> ÆÄÀÏ¿¡
-    ´ÙÀ½°ú °°Àº ¼³Á¤ Áö½Ã¾î¸¦ »ç¿ëÇÏ¸é µÈ´Ù.</p>
+    <p>ï¿½Ç´Ù¸ï¿½ ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½ <code>.htaccess</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ëµµï¿½ï¿½
+    Æ¯ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ï¿½ï¿½ Server Side Includesï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½Ì´ï¿½. ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ <code>.htaccess</code> ï¿½ï¿½ï¿½Ï¿ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½È´ï¿½.</p>
 
     <div class="example"><p><code>
        Options +Includes<br />
@@ -279,58 +279,58 @@
        AddHandler server-parsed shtml
     </code></p></div>
 
-    <p>ÀÌ Áö½Ã¾î°¡ µ¿ÀÛÇÏ·Á¸é <code>AllowOverride Options</code>¿Í
-    <code>AllowOverride FileInfo</code>°¡ ¸ðµÎ ÇÊ¿äÇÔÀ» ¸í½ÉÇÏ¶ó.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î°¡ ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ <code>AllowOverride Options</code>ï¿½ï¿½
+    <code>AllowOverride FileInfo</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.</p>
 
-    <p>server-side includes¿¡ ´ëÇÑ ÀÚ¼¼ÇÑ ¼³¸íÀº <a href="ssi.html">SSI ÅõÅä¸®¾ó</a>À» º¸±æ ¹Ù¶õ´Ù.</p>
+    <p>server-side includesï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ú¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <a href="ssi.html">SSI ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½</a>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¶ï¿½ï¿½ï¿½.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="cgi" id="cgi">CGI ¿¹Á¦</a> <a title="Permanent link" href="#cgi" class="permalink">&para;</a></h2>
+<h2><a name="cgi" id="cgi">CGI ï¿½ï¿½ï¿½ï¿½</a> <a title="Permanent link" href="#cgi" class="permalink">&para;</a></h2>
 
-    <p>¸¶Áö¸·À¸·Î <code>.htaccess</code> ÆÄÀÏÀ» »ç¿ëÇÏ¿© Æ¯Á¤
-    µð·ºÅä¸®¿¡¼­ CGI ÇÁ·Î±×·¥ ½ÇÇàÀ» Çã¿ëÇÏ°í ½Í´Ù¸é, ´ÙÀ½°ú
-    °°Àº ¼³Á¤À» »ç¿ëÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>.htaccess</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ Æ¯ï¿½ï¿½
+    ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ï¿½ï¿½ CGI ï¿½ï¿½ï¿½Î±×·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½Í´Ù¸ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
     <div class="example"><p><code>
        Options +ExecCGI<br />
        AddHandler cgi-script cgi pl
     </code></p></div>
 
-    <p>È¤Àº ÀÌ µð·ºÅä¸®¿¡ ÀÖ´Â ¸ðµç ÆÄÀÏÀ» CGI ÇÁ·Î±×·¥À¸·Î
-    Ã³¸®ÇÏ°í ½Í´Ù¸é ´ÙÀ½°ú °°Àº ¼³Á¤µµ °¡´ÉÇÏ´Ù.</p>
+    <p>È¤ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ CGI ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ï¿½ï¿½
+    Ã³ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½Í´Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.</p>
 
     <div class="example"><p><code>
        Options +ExecCGI<br />
        SetHandler cgi-script
     </code></p></div>
 
-    <p>ÀÌ Áö½Ã¾î°¡ µ¿ÀÛÇÏ·Á¸é <code>AllowOverride Options</code>¿Í
-    <code>AllowOverride FileInfo</code>°¡ ¸ðµÎ ÇÊ¿äÇÔÀ» ¸í½ÉÇÏ¶ó.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î°¡ ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ <code>AllowOverride Options</code>ï¿½ï¿½
+    <code>AllowOverride FileInfo</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.</p>
 
-    <p>CGI ÇÁ·Î±×·¡¹Ö°ú ¼³Á¤¿¡ ´ëÇÑ ÀÚ¼¼ÇÑ ¼³¸íÀº <a href="cgi.html">CGI ÅõÅä¸®¾ó</a>À» º¸±æ ¹Ù¶õ´Ù.</p>
+    <p>CGI ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½Ö°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ú¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <a href="cgi.html">CGI ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½</a>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¶ï¿½ï¿½ï¿½.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="troubleshoot" id="troubleshoot">¹®Á¦ÇØ°á</a> <a title="Permanent link" href="#troubleshoot" class="permalink">&para;</a></h2>
+<h2><a name="troubleshoot" id="troubleshoot">ï¿½ï¿½ï¿½ï¿½ï¿½Ø°ï¿½</a> <a title="Permanent link" href="#troubleshoot" class="permalink">&para;</a></h2>
 
-    <p><code>.htaccess</code> ÆÄÀÏ¿¡ µÐ ¼³Á¤ Áö½Ã¾î°¡ ¿øÇÏ´Â
-    ±â´ÉÀ» ÇÏÁö ¾Ê´Â °æ¿ì ¿©·¯°¡Áö ÀÌÀ¯°¡ ÀÖÀ» ¼ö ÀÖ´Ù.</p>
+    <p><code>.htaccess</code> ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î°¡ ï¿½ï¿½ï¿½Ï´ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <p>°¡Àå ÀÏ¹ÝÀûÀÎ ¹®Á¦´Â ¼³Á¤ Áö½Ã¾î¸¦ °¡´ÉÇÏ°Ô ¸¸µå´Â <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code>¸¦ ¼³Á¤ÇÏÁö ¾ÊÀº
-    °æ¿ì´Ù. ¹®Á¦°¡ µÇ´Â ÆÄÀÏ ¿µ¿ª¿¡ <code>AllowOverride None</code>ÀÌ
-    ¾ø´ÂÁö È®ÀÎÇÑ´Ù. <code>.htaccess</code> ÆÄÀÏÀ» ¾Æ¹«·¸°Ô³ª 
-    ÀûÀº ´ÙÀ½ ÆäÀÌÁö¸¦ ´Ù½Ã Á¢±ÙÇÏ¿© ½±°Ô °Ë»çÇØº¼ ¼ö ÀÖ´Ù.
-    ¼­¹ö ¿À·ù°¡ ³ª¿ÀÁö ¾ÊÀ¸¸é °ÅÀÇ È®½ÇÈ÷
-    <code>AllowOverride None</code>À» »ç¿ëÇÑ °æ¿ì´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ç´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>AllowOverride None</code>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ñ´ï¿½. <code>.htaccess</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ¹ï¿½ï¿½ï¿½ï¿½Ô³ï¿½ 
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½ï¿½Øºï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½ï¿½
+    <code>AllowOverride None</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</p>
 
-    <p>¹Ý´ë·Î ¹®¼­¿¡ Á¢±ÙÇÒ¶§ ¼­¹ö ¿À·ù°¡ ¹ß»ýÇÏ¸é ¾ÆÆÄÄ¡ ¿À·ù·Î±×¸¦
-    »ìÆìºÁ¶ó. ¾Æ¸¶µµ <code>.htaccess</code> ÆÄÀÏ¿¡ ÀÖ´Â Áö½Ã¾î¸¦
-    Çã¿ëÇÏÁö ¾Ê´Â´Ù°í ÇÒ °ÍÀÌ´Ù. ¾Æ´Ï°í ¹®¹ý ¿À·ù°¡ ÀÖ´Ù¸é ¿À·ù¸¦
-    °íÄ£´Ù.</p>
+    <p>ï¿½Ý´ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß»ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½Î±×¸ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½. ï¿½Æ¸ï¿½ï¿½ï¿½ <code>.htaccess</code> ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´Ù°ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½. ï¿½Æ´Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½Ä£ï¿½ï¿½.</p>
 
 </div></div>
 <div class="bottomlang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/howto/htaccess.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/howto/htaccess.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/howto/htaccess.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
 <a href="../fr/howto/htaccess.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/howto/htaccess.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
@@ -339,7 +339,7 @@
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/howto/htaccess.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/howto/htaccess.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -354,8 +354,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/howto/htaccess.htm
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

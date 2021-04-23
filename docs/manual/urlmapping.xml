@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -82,7 +82,7 @@
 
     <p>For example, if <directive module="core">DocumentRoot</directive>
     were set to <code>/var/www/html</code> then a request for
-    <code>http://www.example.com/fish/guppies.html</code> would result
+    <code>https://www.example.com/fish/guppies.html</code> would result
     in the file <code>/var/www/html/fish/guppies.html</code> being
     served to the requesting client.</p>
 
@@ -94,7 +94,7 @@
 
     <example>DirectoryIndex index.html index.php</example>
 
-    <p>Then a request for <code>http://www.example.com/fish/</code> will
+    <p>Then a request for <code>https://www.example.com/fish/</code> will
     cause httpd to attempt to serve the file
     <code>/var/www/html/fish/index.html</code>. In the event that
     that file does not exist, it will next attempt to serve the file
@@ -143,7 +143,7 @@
 Alias "/docs" "/var/web"
     </highlight>
 
-    <p>the URL <code>http://www.example.com/docs/dir/file.html</code>
+    <p>the URL <code>https://www.example.com/docs/dir/file.html</code>
     will be served from <code>/var/web/dir/file.html</code>. The
     <directive module="mod_alias">ScriptAlias</directive> directive
     works the same way, with the additional effect that all content
@@ -162,7 +162,7 @@ ScriptAliasMatch "^/~([a-zA-Z0-9]+)/cgi-bin/(.+)"   "/home/$1/cgi-bin/$2"
     </highlight>
 
     <p>will map a request to
-    <code>http://example.com/~user/cgi-bin/script.cgi</code> to the
+    <code>https://example.com/~user/cgi-bin/script.cgi</code> to the
     path <code>/home/user/cgi-bin/script.cgi</code> and will treat
     the resulting file as a CGI script.</p>
 </section>
@@ -176,7 +176,7 @@ ScriptAliasMatch "^/~([a-zA-Z0-9]+)/cgi-bin/(.+)"   "/home/$1/cgi-bin/$2"
     home directory to be accessed using URLs such as the
     following.</p>
 
-<example>http://www.example.com/~user/file.html</example>
+<example>https://www.example.com/~user/file.html</example>
 
     <p>For security reasons, it is inappropriate to give direct
     access to a user's home directory from the web. Therefore, the
@@ -201,7 +201,7 @@ ScriptAliasMatch "^/~([a-zA-Z0-9]+)/cgi-bin/(.+)"   "/home/$1/cgi-bin/$2"
     directories are structured in a regular way, then it is possible
     to use the <directive module="mod_alias">AliasMatch</directive>
     directive to achieve the desired effect. For example, to make
-    <code>http://www.example.com/upages/user/file.html</code> map to
+    <code>https://www.example.com/upages/user/file.html</code> map to
     <code>/home/user/public_html/file.html</code>, use the following
     <code>AliasMatch</code> directive:</p>
 
@@ -226,7 +226,7 @@ AliasMatch "^/upages/([a-zA-Z0-9]+)(/(.*))?$"   "/home/$1/public_html/$3"
     to request the content at the new location as follows:</p>
 
     <highlight language="config">
-Redirect permanent "/foo/"   "http://www.example.com/bar/"
+Redirect permanent "/foo/"   "https://www.example.com/bar/"
     </highlight>
 
     <p>This will redirect any URL-Path starting in
@@ -242,14 +242,14 @@ Redirect permanent "/foo/"   "http://www.example.com/bar/"
     requests alone, use the following configuration:</p>
 
     <highlight language="config">
-RedirectMatch permanent "^/$"    "http://www.example.com/startpage.html"
+RedirectMatch permanent "^/$"    "https://www.example.com/startpage.html"
     </highlight>
 
     <p>Alternatively, to temporarily redirect all pages on one site
     to a particular page on another site, use the following:</p>
 
     <highlight language="config">
-RedirectMatch temp ".*"  "http://othersite.example.com/startpage.html"
+RedirectMatch temp ".*"  "https://othersite.example.com/startpage.html"
     </highlight>
 </section>
 
@@ -269,8 +269,8 @@ and returns them to the client as if they were from the local
 server.</p>
 
 <highlight language="config">
-ProxyPass        "/foo/" "http://internal.example.com/bar/"
-ProxyPassReverse "/foo/" "http://internal.example.com/bar/"
+ProxyPass        "/foo/" "https://internal.example.com/bar/"
+ProxyPassReverse "/foo/" "https://internal.example.com/bar/"
 ProxyPassReverseCookieDomain internal.example.com public.example.com
 ProxyPassReverseCookiePath "/foo/" "/bar/"
 </highlight>

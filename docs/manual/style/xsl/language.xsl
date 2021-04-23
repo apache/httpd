@@ -8,7 +8,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,11 +19,11 @@
 
 <!DOCTYPE xsl:stylesheet [
     <!ENTITY lf SYSTEM "util/lf.xml">
-    <!ENTITY xsl "http://www.w3.org/1999/XSL/Transform">
+    <!ENTITY xsl "https://www.w3.org/1999/XSL/Transform">
 ]>
 
 <xsl:stylesheet version="1.0"
-              xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+              xmlns:xsl="https://www.w3.org/1999/XSL/Transform"
                   xmlns="">
 
 <xsl:output 
@@ -367,7 +367,7 @@ Some targets have additional requirements:
   - the HTML Help compiler in PATH (or modify this build file). The
     compiler (hhc.exe) is part of the HTML Help Workshop which is freely
     available and can be downloaded from
-    http://msdn.microsoft.com/en-us/library/windows/desktop/ms669985%28v=vs.85%29.aspx
+    https://msdn.microsoft.com/en-us/library/windows/desktop/ms669985%28v=vs.85%29.aspx
   - The appropriate locale (e.g. Japanese) before invoking hhc.exe. Otherwise
     the compiler is not able to build the fulltext search index correctly and
     the TOC may be garbled, too. In particular:
@@ -452,7 +452,7 @@ Some targets have additional requirements:
         </xsl:if>
         <xsl:if test="$type = 'manual'">
             <xsl:attribute name="doctype-system">
-                <xsl:text>http://www.w3.org/TR/xhtml1/DTD/</xsl:text>
+                <xsl:text>https://www.w3.org/TR/xhtml1/DTD/</xsl:text>
                 <xsl:text>xhtml1-strict.dtd</xsl:text>
             </xsl:attribute>
         </xsl:if>
@@ -640,7 +640,7 @@ Some targets have additional requirements:
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,

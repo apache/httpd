@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -57,14 +57,14 @@
     d'APR installée supporte de multiples implémentations de DBM.</dd>
     <dt>"dc" (<module>mod_socache_dc</module>)</dt>
     <dd>Celui-ci utilise les bibliothèques de mise en cache de sessions
-    distribuées <a href="http://distcache.sourceforge.net/">distcache</a>.</dd>
+    distribuées <a href="https://distcache.sourceforge.net/">distcache</a>.</dd>
     <dt>"memcache" (<module>mod_socache_memcache</module>)</dt>
     <dd>Celui-ci utilise le système à hautes performances de mise en
     cache d'objets de mémoire distribuée <a
-    href="http://memcached.org/">memcached</a>.</dd>
+    href="https://memcached.org/">memcached</a>.</dd>
     <dt>"redis" (<module>mod_socache_redis</module>)</dt>
     <dd>Celui-ci utilise le système de mise en cache d'objets de mémoire
-    distribuée à hautes performances <a href="http://redis.io/">Redis</a>.</dd>
+    distribuée à hautes performances <a href="https://redis.io/">Redis</a>.</dd>
     <dt>"shmcb" (<module>mod_socache_shmcb</module>)</dt>
     <dd>Celui-ci utilise un tampon cyclique à hautes performances au
     sein d'un segment de mémoire partagée.</dd>

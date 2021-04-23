@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -16,12 +16,12 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Redirecting and Remapping with mod_rewrite</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Redirecting and Remapping with mod_rewrite</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/rewrite/remapping.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/remapping.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
@@ -149,15 +149,15 @@ RewriteRule    "^<strong>/foo</strong>\.html$"  "<strong>bar</strong>.html"  [<s
 
 <pre class="prettyprint lang-config">#With mod_rewrite
 RewriteEngine on
-RewriteRule   "^/docs/(.+)"  "http://new.example.com/docs/$1"  [R,L]</pre>
+RewriteRule   "^/docs/(.+)"  "https://new.example.com/docs/$1"  [R,L]</pre>
 
 
 <pre class="prettyprint lang-config">#With RedirectMatch
-RedirectMatch "^/docs/(.*)" "http://new.example.com/docs/$1"</pre>
+RedirectMatch "^/docs/(.*)" "https://new.example.com/docs/$1"</pre>
 
 
 <pre class="prettyprint lang-config">#With Redirect
-Redirect "/docs/" "http://new.example.com/docs/"</pre>
+Redirect "/docs/" "https://new.example.com/docs/"</pre>
 
     </dd>
   </dl>
@@ -280,7 +280,7 @@ hostname(s).</p>
   ServerName undesired.example.com
   ServerAlias example.com notthis.example.com
 
-  Redirect "/" "http://www.example.com/"
+  Redirect "/" "https://www.example.com/"
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost *:80&gt;
@@ -293,7 +293,7 @@ hostname(s).</p>
 directive: (<strong>2.4 and later</strong>)</p>
 
 <pre class="prettyprint lang-config">&lt;If "%{HTTP_HOST} != 'www.example.com'"&gt;
-    Redirect "/" "http://www.example.com/"
+    Redirect "/" "https://www.example.com/"
 &lt;/If&gt;</pre>
 
 
@@ -313,13 +313,13 @@ you might use one of the recipes below.</p>
 <pre class="prettyprint lang-config">RewriteCond "%{HTTP_HOST}"   "!^www\.example\.com" [NC]
 RewriteCond "%{HTTP_HOST}"   "!^$"
 RewriteCond "%{SERVER_PORT}" "!^80$"
-RewriteRule "^/?(.*)"        "http://www.example.com:%{SERVER_PORT}/$1" [L,R,NE]</pre>
+RewriteRule "^/?(.*)"        "https://www.example.com:%{SERVER_PORT}/$1" [L,R,NE]</pre>
 
 
 <p>And for a site running on port 80</p>
 <pre class="prettyprint lang-config">RewriteCond "%{HTTP_HOST}"   "!^www\.example\.com"       [NC]
 RewriteCond "%{HTTP_HOST}"   "!^$"
-RewriteRule "^/?(.*)"        "http://www.example.com/$1" [L,R,NE]</pre>
+RewriteRule "^/?(.*)"        "https://www.example.com/$1" [L,R,NE]</pre>
 
 
         <p>
@@ -331,7 +331,7 @@ RewriteRule "^/?(.*)"        "http://www.example.com/$1" [L,R,NE]</pre>
 
 <pre class="prettyprint lang-config">RewriteCond "%{HTTP_HOST}" "!^www\."                    [NC]
 RewriteCond "%{HTTP_HOST}" "!^$"
-RewriteRule "^/?(.*)"      "http://www.%{HTTP_HOST}/$1" [L,R,NE]</pre>
+RewriteRule "^/?(.*)"      "https://www.%{HTTP_HOST}/$1" [L,R,NE]</pre>
 
 
     <p>These rulesets will work either in your main server configuration
@@ -409,15 +409,15 @@ RewriteRule "^"     "-"                                          [PT]</pre>
 RewriteEngine on
 RewriteMap    multiplex         "txt:/path/to/map.mirrors"
 RewriteCond  "%{REMOTE_HOST}"   "([a-z]+)$"                [NC]
-RewriteRule  "^/(.*)$"          "${multiplex:<strong>%1</strong>|http://www.example.com/}$1"  [R,L]</pre>
+RewriteRule  "^/(.*)$"          "${multiplex:<strong>%1</strong>|https://www.example.com/}$1"  [R,L]</pre>
 
 
 <div class="example"><p><code>
 ##  map.mirrors -- Multiplexing Map<br />
 <br />
-de        http://www.example.de/<br />
-uk        http://www.example.uk/<br />
-com       http://www.example.com/<br />
+de        https://www.example.de/<br />
+uk        https://www.example.uk/<br />
+com       https://www.example.com/<br />
 ##EOF##
 </code></p></div>
     </dd>
@@ -509,12 +509,12 @@ RewriteRule   "^/$"  "/about/"  [<strong>R</strong>]</pre>
 
 <p>Note that this can also be handled using the <code class="directive"><a href="../mod/mod_alias.html#redirectmatch">RedirectMatch</a></code> directive:</p>
 
-<pre class="prettyprint lang-config">RedirectMatch "^/$" "http://example.com/about/"</pre>
+<pre class="prettyprint lang-config">RedirectMatch "^/$" "https://example.com/about/"</pre>
 
 
 <p>Note also that the example rewrites only the root URL. That is, it
-rewrites a request for <code>http://example.com/</code>, but not a
-request for <code>http://example.com/page.html</code>. If you have in
+rewrites a request for <code>https://example.com/</code>, but not a
+request for <code>https://example.com/page.html</code>. If you have in
 fact changed your document root - that is, if <strong>all</strong> of
 your content is in fact in that subdirectory, it is greatly preferable
 to simply change your <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>
@@ -633,7 +633,7 @@ RewriteRule "^/?path/([^/]+)/([^/]+)" "/path?$1=$2" [PT]</pre>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/rewrite/remapping.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/rewrite/remapping.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -648,8 +648,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/rewrite/remapping.
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

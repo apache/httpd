@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -66,7 +66,7 @@ la requête a été traitée avec succès, ou dans la négative quel type
 d'erreur a été rencontré. Le client est alors censé savoir quoi faire de
 la réponse. Vous pouvez vous familiariser avec les différents codes
 d'état en consultant le <a
-href="http://wiki.apache.org/httpd/CommonHTTPStatusCodes">Wiki du
+href="https://wiki.apache.org/httpd/CommonHTTPStatusCodes">Wiki du
 serveur HTTP Apache</a>.</p>
 
 <p>Les détails de la transaction, ainsi que les erreurs rencontrées,
@@ -109,9 +109,9 @@ dernier : </p>
 <code>C:\Windows\system32\drivers\etc</code> sous Windows.</p>
 
 <p>Vous trouverez plus de détails à propos du fichier hosts à <a
-href="http://en.wikipedia.org/wiki/Hosts_(file)">Wikipedia.org/wiki/Hosts_(file)</a>,
+href="https://en.wikipedia.org/wiki/Hosts_(file)">Wikipedia.org/wiki/Hosts_(file)</a>,
 et à propos du DNS à <a
-href="http://en.wikipedia.org/wiki/Domain_Name_System">Wikipedia.org/wiki/Domain_Name_System</a>.</p>
+href="https://en.wikipedia.org/wiki/Domain_Name_System">Wikipedia.org/wiki/Domain_Name_System</a>.</p>
 </section>
 
 <section id="configuration">
@@ -121,7 +121,7 @@ href="http://en.wikipedia.org/wiki/Domain_Name_System">Wikipedia.org/wiki/Domain
 fichiers textes. Ces fichiers peuvent se trouver dans de nombreux
 endroits différents en fonction du mode d'installation du serveur. Vous
 trouverez les positions courantes de ces fichiers dans le <a
-href="http://wiki.apache.org/httpd/DistrosDefaultLayout">wiki httpd</a>.
+href="https://wiki.apache.org/httpd/DistrosDefaultLayout">wiki httpd</a>.
 Si vous installez httpd depuis le code source, le répertoire par défaut
 des fichiers de configuration est <code>/usr/local/apache2/conf</code>.
 Le nom du fichier de configuration par défaut est en général
@@ -187,7 +187,7 @@ serveur.</p>
 requête, c'est une page de nom <code>index.html</code> qui sera
 renvoyée. Par exemple, si la directive <code>DocumentRoot</code> est
 définie à <code>/var/www/html</code>, et si une requête est effectuée
-pour l'adresse <code>http://www.example.com/work/</code>, c'est le
+pour l'adresse <code>https://www.example.com/work/</code>, c'est le
 fichier <code>/var/www/html/work/index.html</code> qui sera envoyé au
 client par le serveur.</p>
 
@@ -245,11 +245,11 @@ vous permettra de mettre le pied à l'étrier, mais il y a encore de
 nombreuses choses que vous devez savoir.</p>
 
 <ul>
-<li><a href="http://httpd.apache.org/download.cgi">Téléchargement</a></li>
+<li><a href="https://httpd.apache.org/download.cgi">Téléchargement</a></li>
 <li><a href="install.html">Installation</a></li>
 <li><a href="configuring.html">Configuration</a></li>
 <li><a href="invoking.html">Démarrage du serveur</a></li>
-<li><a href="http://wiki.apache.org/httpd/FAQ">Foire aux questions</a></li>
+<li><a href="https://wiki.apache.org/httpd/FAQ">Foire aux questions</a></li>
 </ul>
 
 </section>

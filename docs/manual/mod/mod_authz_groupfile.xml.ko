@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,16 +23,16 @@
 <modulesynopsis metafile="mod_authz_groupfile.xml.meta">
 
 <name>mod_authz_groupfile</name>
-<description>ÀÏ¹Ý ¹®ÀÚÆÄÀÏÀ» ÀÌ¿ëÇÑ ±×·ì ±ÇÇÑºÎ¿©</description>
+<description>ï¿½Ï¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¿ï¿½ï¿½ï¿½ ï¿½×·ï¿½ ï¿½ï¿½ï¿½ÑºÎ¿ï¿½</description>
 <status>Base</status>
 <sourcefile>mod_authz_groupfile.c</sourcefile>
 <identifier>authz_groupfile_module</identifier>
-<compatibility>¾ÆÆÄÄ¡ 2.1 ÀÌÈÄºÎÅÍ</compatibility>
+<compatibility>ï¿½ï¿½ï¿½ï¿½Ä¡ 2.1 ï¿½ï¿½ï¿½Äºï¿½ï¿½ï¿½</compatibility>
 
 <summary>
-    <p>ÀÌ ¸ðµâÀº ÀÎÁõÇÑ »ç¿ëÀÚÀÇ ±×·ì±ÇÇÑÀ¸·Î À¥»çÀÌÆ®ÀÇ ÀÏºÎ¸¦
-    Á¢±ÙÇÒ ¼ö ÀÖ´ÂÁö °áÁ¤ÇÏ¿© ±ÇÇÑºÎ¿©¸¦ ÇÑ´Ù.
-    <module>mod_authz_dbm</module>°ú ±â´ÉÀÌ ºñ½ÁÇÏ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ÏºÎ¸ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ÑºÎ¿ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½.
+    <module>mod_authz_dbm</module>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.</p>
 </summary>
 
 <seealso><directive module="core">Require</directive></seealso>
@@ -40,43 +40,43 @@
 
 <directivesynopsis>
 <name>AuthGroupFile</name>
-<description>ÀÎÁõ¿¡ »ç¿ëÇÒ »ç¿ëÀÚ ±×·ì ¸ñ·ÏÀ» ÀúÀåÇÏ´Â ¹®ÀÚÆÄÀÏ¸íÀ»
-ÁöÁ¤ÇÑ´Ù</description>
+<description>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</description>
 <syntax>AuthGroupFile <var>file-path</var></syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
 
 <usage>
-    <p><directive>AuthGroupFile</directive> Áö½Ã¾î´Â »ç¿ëÀÚ
-    ÀÎÁõ¿¡ »ç¿ëÇÒ »ç¿ëÀÚ ±×·ì ¸ñ·ÏÀ» ÀúÀåÇÏ´Â ¹®ÀÚÆÄÀÏ¸íÀ»
-    ÁöÁ¤ÇÑ´Ù. <var>File-path</var>´Â ±×·ìÆÄÀÏ °æ·ÎÀÌ´Ù. Àý´ë°æ·Î¸¦
-    »ç¿ëÇÏÁö ¾ÊÀ¸¸é <directive
-    module="core">ServerRoot</directive>ÀÇ »ó´ë°æ·Î·Î ¹Þ¾ÆµéÀÎ´Ù.</p>
+    <p><directive>AuthGroupFile</directive> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <var>File-path</var>ï¿½ï¿½ ï¿½×·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ì´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½Î¸ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <directive
+    module="core">ServerRoot</directive>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Î·ï¿½ ï¿½Þ¾Æµï¿½ï¿½Î´ï¿½.</p>
 
-    <p>±×·ìÆÄÀÏÀÇ °¢ ÁÙ¿¡´Â ±×·ì¸í, ÄÝ·Ð, °ø¹éÀ¸·Î ±¸ºÐÇÑ
-    »ç¿ëÀÚ¸íµéÀÌ ¼ø¼­´ë·Î ³ª¿Â´Ù.</p>
+    <p>ï¿½×·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ù¿ï¿½ï¿½ï¿½ ï¿½×·ï¿½ï¿½, ï¿½Ý·ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â´ï¿½.</p>
 
-    <example><title>¿¹Á¦:</title>
+    <example><title>ï¿½ï¿½ï¿½ï¿½:</title>
       mygroup: bob joe anne
     </example> 
 
-    <p>¸¹Àº ±×·ìÀ» ÀúÀåÇÑ Å« ¹®ÀÚÆÄÀÏÀ» °Ë»öÇÏ´Â °ÍÀº <em>¸Å¿ì</em>
-    ºñÈ¿À²ÀûÀÓÀ» ÁÖÀÇÇÏ¶ó. <directive module="mod_authz_dbm"
-    >AuthDBMGroupFile</directive>ÀÌ ´õ ¼º´ÉÀÌ ÁÁ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å« ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ <em>ï¿½Å¿ï¿½</em>
+    ï¿½ï¿½È¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½. <directive module="mod_authz_dbm"
+    >AuthDBMGroupFile</directive>ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</p>
 
-    <note type="warning"><title>º¸¾È</title>
-      <p><directive>AuthGroupFile</directive>ÀÌ À¥¼­¹öÀÇ ¹®¼­µé
-      ¹Û¿¡ À§Ä¡ÇÔÀ» È®ÀÎÇÏ¶ó. ÀÌ ÆÄÀÏÀ» º¸È£ÇÒ µð·ºÅä¸® ¾È¿¡
-      °°ÀÌ µÎÁö <em>¸¶¶ó</em>. ±×·¸Áö ¾ÊÀ¸¸é, Å¬¶óÀÌ¾ðÆ®°¡
-      <directive>AuthGroupFile</directive>À» ´Ù¿î·ÎµåÇÒ ¼ö ÀÖ´Ù.</p>
+    <note type="warning"><title>ï¿½ï¿½ï¿½ï¿½</title>
+      <p><directive>AuthGroupFile</directive>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½Û¿ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ï¶ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È£ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸® ï¿½È¿ï¿½
+      ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ <em>ï¿½ï¿½ï¿½ï¿½</em>. ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½
+      <directive>AuthGroupFile</directive>ï¿½ï¿½ ï¿½Ù¿ï¿½Îµï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
     </note>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>AuthzGroupFileAuthoritative</name>
-<description>±ÇÇÑºÎ¿©¸¦ Àú¼öÁØ ¸ðµâ·Î ³Ñ°ÜÁÙÁö ¿©ºÎ</description>
+<description>ï¿½ï¿½ï¿½ÑºÎ¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</description>
 <syntax>AuthzGroupFileAuthoritative On|Off</syntax>
 <default>AuthzGroupFileAuthoritative On</default>
 <contextlist><context>directory</context><context>.htaccess</context>
@@ -84,21 +84,21 @@
 <override>AuthConfig</override>
 
 <usage>
-    <p><directive>AuthzGroupFileAuthoritative</directive> Áö½Ã¾î¸¦
-    Á÷Á¢ <code>Off</code>·Î ¼³Á¤ÇÏ¸é ÇØ´ç »ç¿ëÀÚ ¾ÆÀÌµð¿¡ ´ëÇÑ
-    <strong>±×·ìÀÌ ¾ø´Â</strong> °æ¿ì ±×·ì ±ÇÇÑºÎ¿©¸¦
-    (<code>modules.c</code> ÆÄÀÏ¿¡¼­ Á¤ÀÇÇÑ) Àú¼öÁØ ¸ðµâ·Î
-    ³Ñ°ÜÁØ´Ù.</p>
+    <p><directive>AuthzGroupFileAuthoritative</directive> ï¿½ï¿½ï¿½Ã¾î¸¦
+    ï¿½ï¿½ï¿½ï¿½ <code>Off</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½
+    <strong>ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</strong> ï¿½ï¿½ï¿½ ï¿½×·ï¿½ ï¿½ï¿½ï¿½ÑºÎ¿ï¿½ï¿½ï¿½
+    (<code>modules.c</code> ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ñ°ï¿½ï¿½Ø´ï¿½.</p>
 
-    <p>±âº»ÀûÀ¸·Î Á¦¾î¸¦ ³Ñ±âÁö¾Ê°í, ¸ð¸£´Â ±×·ìÀÇ °æ¿ì ÀÎÁõ
-    ÇÊ¿ä ÀÀ´äÀ» ÇÑ´Ù. ÀÌ Áö½Ã¾î¸¦ ¼³Á¤ÇÏÁö¾ÊÀ¸¸é ½Ã½ºÅÛÀÌ ¾ÈÀüÇÏ°Ô
-    À¯ÁöµÇ¸ç, NCSA À¥¼­¹ö¿Í °°ÀÌ µ¿ÀÛÇÑ´Ù.</p>
+    <p>ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½î¸¦ ï¿½Ñ±ï¿½ï¿½ï¿½ï¿½Ê°ï¿½, ï¿½ð¸£´ï¿½ ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ê¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ç¸ï¿½, NCSA ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <note type="warning"><title>º¸¾È</title>
-      <p>»ç¿ëÀÚ°¡ ÀÚ½ÅÀÇ .htaccess ÆÄÀÏÀ» »ç¿ëÇÏ°Ô µÇ´ÂÁö »ìÆìº¸°í,
-      ÀÌ·± Çàµ¿À» Çã¿ëÇÒÁö °áÁ¤ÇÏ¶ó. ÀÏ¹ÝÀûÀ¸·Î ¿©·¯°¡Áö ¹æ¹ýÀ¸·Î
-      Á¢±ÙÇÒ ¼ö ÀÖ´Â µ¥ÀÌÅÍº£ÀÌ½º¸¦ º¸È£ÇÏ´Â °Íº¸´Ù ÇÏ³ªÀÇ
-      <code>.htpasswd</code> ÆÄÀÏÀ» º¸È£ÇÏ´Â °ÍÀÌ ´õ ½±´Ù.</p>
+    <note type="warning"><title>ï¿½ï¿½ï¿½ï¿½</title>
+      <p>ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½Ú½ï¿½ï¿½ï¿½ .htaccess ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½Ç´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ìº¸ï¿½ï¿½,
+      ï¿½Ì·ï¿½ ï¿½àµ¿ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½. ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Íºï¿½ï¿½Ì½ï¿½ï¿½ï¿½ ï¿½ï¿½È£ï¿½Ï´ï¿½ ï¿½Íºï¿½ï¿½ï¿½ ï¿½Ï³ï¿½ï¿½ï¿½
+      <code>.htpasswd</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È£ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</p>
     </note>
 </usage>
 </directivesynopsis>

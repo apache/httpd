@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,23 +23,23 @@
 <modulesynopsis metafile="mod_authn_dbm.xml.meta">
 
 <name>mod_authn_dbm</name>
-<description>DBM фдюою╩ ╩Г©Кгя ╩Г©Кюз юнаУ</description>
+<description>DBM О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫</description>
 <status>Extension</status>
 <sourcefile>mod_authn_dbm.c</sourcefile>
 <identifier>authn_dbm_module</identifier>
-<compatibility>╬ффдд║ 2.1 юлхд╨нем</compatibility>
+<compatibility>О©╫О©╫О©╫О©╫д║ 2.1 О©╫О©╫О©╫д╨О©╫О©╫О©╫</compatibility>
 
 <summary>
-    <p>юл ╦П╣Бю╨ <module>mod_auth_digest</module>Ё╙
-    <module>mod_auth_basic</module> юнаУ╬у╢э╦П╣Бю╩ ю╖гь
-    <dfn>dbm</dfn> ╬охёфдюо©║╪╜ ╩Г©Кюз╦╕ цё╬ф╪╜ юнаУгя╢ы.
-    <module>mod_authn_file</module>╟З ╠Б╢июл ╨Я╫агя╢ы.</p>
+    <p>О©╫О©╫ О©╫О©╫О©╫О©╫О©╫ <module>mod_auth_digest</module>О©╫О©╫
+    <module>mod_auth_basic</module> О©╫О©╫О©╫О©╫О©╫у╢э╦О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫
+    <dfn>dbm</dfn> О©╫О©╫хёО©╫О©╫О©╫о©О©╫О©╫О©╫ О©╫О©╫О©╫О©╫з╦О©╫ цёО©╫ф╪О©╫ О©╫О©╫О©╫О©╫О©╫я╢О©╫.
+    <module>mod_authn_file</module>О©╫О©╫ О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫я╢О©╫.</p>
 
-    <p><module>mod_auth_basic</module>юлЁ╙
-    <module>mod_auth_digest</module>╦╕ ╩Г©Кгр╤╖ <directive
-    module="mod_auth_basic">AuthBasicProvider</directive>Ё╙
-    <directive module="mod_auth_digest">AuthDigestProvider</directive>юг
-    ╟╙ю╦╥н <code>dbm</code>ю╩ ╪Ёа╓го╦И юл ╦П╣Бю╩ ╩Г©Кгя╢ы.</p>
+    <p><module>mod_auth_basic</module>О©╫лЁО©╫
+    <module>mod_auth_digest</module>О©╫О©╫ О©╫О©╫О©╫О©╫р╤О©╫ <directive
+    module="mod_auth_basic">AuthBasicProvider</directive>О©╫О©╫
+    <directive module="mod_auth_digest">AuthDigestProvider</directive>О©╫О©╫
+    О©╫О©╫О©╫О©╫О©╫О©╫ <code>dbm</code>О©╫О©╫ О©╫О©╫О©╫О©╫О©╫о╦О©╫ О©╫О©╫ О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫я╢О©╫.</p>
 </summary>
 
 <seealso><directive module="core">AuthName</directive></seealso>
@@ -53,46 +53,46 @@
 
 <directivesynopsis>
 <name>AuthDBMUserFile</name>
-<description>юнаУгр ╩Г©Кюз©м ╬охё ╦Я╥ою╩ юЗюЕго╢б ╣╔юлем╨ёюл╫╨
-фдюо╦Мю╩ аЖа╓гя╢ы</description>
+<description>О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫з©О©╫ О©╫О©╫хё О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫о╢О©╫ О©╫О©╫О©╫О©╫О©╫м╨О©╫О©╫л╫О©╫
+О©╫О©╫О©╫о╦О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫я╢О©╫</description>
 <syntax>AuthDBMUserFile <var>file-path</var></syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
 
 <usage>
-    <p><directive>AuthDBMUserFile</directive> аЖ╫ц╬Н╢б ╩Г©Кюз
-    юнаУ©║ ╩Г©Кгр ╩Г©Кюз©м ╬охё ╦Я╥ою╩ юЗюЕго╢б DBM фдюо╦Мю╩
-    аЖа╓гя╢ы. <var>File-path</var>╢б фдюоюг юЩ╢К╟Ф╥нюл╢ы.</p>
+    <p><directive>AuthDBMUserFile</directive> О©╫О©╫О©╫ц╬О©╫О©╫ О©╫О©╫О©╫О©╫О©╫
+    О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫з©О©╫ О©╫О©╫хё О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫о╢О©╫ DBM О©╫О©╫О©╫о╦О©╫О©╫О©╫
+    О©╫О©╫О©╫О©╫О©╫я╢О©╫. <var>File-path</var>О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫л╢О©╫.</p>
 
-    <p>фдюою╨ ╩Г©Кюз╦Мю╩ е╟╥н ╩Г©Кгя╢ы. ╩Г©Кюз©║ ╢Кгя ╟╙ю╨
-    юндз╣Ы╣х ╬охёюл╢ы. ╬охё ╣з©║ дщ╥п╟З юсюгюг а╓╨╦╟║ Ё╙©ц ╪Ж
-    юж╢ы. ╪╜╧Ж╢б дщ╥п╟З ╣з©║ Ё╙©ю╢б а╓╨╦╦╕ ╧╚╫цгя╢ы.</p>
+    <p>О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫з╦О©╫О©╫О©╫ е╟О©╫О©╫ О©╫О©╫О©╫О©╫я╢О©╫. О©╫О©╫О©╫О©╫з©О©╫ О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫
+    О©╫О©╫О©╫з╣О©╫О©╫О©╫ О©╫О©╫хёО©╫л╢О©╫. О©╫О©╫хё О©╫з©О©╫ О©╫щ╥п╟О©╫ О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫ О©╫О©╫
+    О©╫ж╢О©╫. О©╫О©╫О©╫О©╫О©╫О©╫ О©╫щ╥п╟О©╫ О©╫з©О©╫ О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫я╢О©╫.</p>
 
-    <note type="warning"><title>╨╦╬х:</title>
-      <p><directive>AuthDBMUserFile</directive>юл ю╔╪╜╧Жюг ╧╝╪╜╣И
-      ╧ш©║ южю╫ю╩ х╝юнго╤С. юл фдюою╩ ╨╦хёгр ╣П╥╨еД╦╝ ╬х©║ ╟╟юл
-      ╣наЖ <em>╦╤╤С</em>. ╠в╥╦аЖ ╬йю╦╦И, е╛╤Сюл╬Пф╝╟║
-      <directive>AuthDBMUserFile</directive>ю╩ ╢ы©Н╥н╣Егр ╪Ж
-      юж╢ы.</p>
+    <note type="warning"><title>О©╫О©╫О©╫О©╫:</title>
+      <p><directive>AuthDBMUserFile</directive>О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫
+      О©╫ш©О©╫ О©╫О©╫О©╫О©╫О©╫О©╫ х╝О©╫О©╫О©╫о╤О©╫. О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫хёО©╫О©╫ О©╫О©╫О©╫Д╦╝ О©╫х©О©╫ О©╫О©╫О©╫О©╫
+      О©╫О©╫О©╫О©╫ <em>О©╫О©╫О©╫О©╫</em>. О©╫в╥О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫, е╛О©╫О©╫О©╫л╬О©╫ф╝О©╫О©╫
+      <directive>AuthDBMUserFile</directive>О©╫О©╫ О©╫ы©О©╫н╣О©╫О©╫О©╫ О©╫О©╫
+      О©╫ж╢О©╫.</p>
     </note>
 
-    <p>аъ©Дгя хёх╞╪╨ ажюг: ╬ффдд║ ╦П╣Бюг <code>dbmopen</code>
-    ╠╦гЖю╨ ╧╝юз©╜ Ё║юг NULL©║ юга╦гоаЖ╬й╟М DBM юз╥А╠╦а╤©║╪╜
-    гь╫л╟╙юг ╧╝юз©╜ ╠Фюл╦╕ юп╢б╢ы. Netscape ю╔╪╜╧Ж ╣Н ╬Н╤╡
-    га╥н╠в╥╔ю╨ ╧╝юз©╜юл NULL╥н Ё║Ё╜╢ы╟М ╟║а╓го╠Б╤╖╧╝©║ ©╘╥╞
-    га╥н╠в╥╔юл DBM фдюою╩ ╩Г©Кго╦И ╧╝а╕╟║ ╣и ╪Ж юж╢ы.</p>
+    <p>О©╫ъ©О©╫О©╫О©╫ хёх╞О©╫О©╫ О©╫О©╫О©╫О©╫: О©╫О©╫О©╫О©╫д║ О©╫О©╫О©╫О©╫О©╫ <code>dbmopen</code>
+    О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫з©О©╫ О©╫О©╫О©╫О©╫ NULLО©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫й╟О©╫ DBM О©╫з╥А╠╦О©╫О©╫О©╫О©╫О©╫О©╫
+    О©╫ь╫л╟О©╫О©╫О©╫ О©╫О©╫О©╫з©О©╫ О©╫О©╫О©╫л╦О©╫ О©╫п╢б╢О©╫. Netscape О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫ О©╫Н╤╡
+    О©╫О©╫О©╫н╠в╥О©╫О©╫О©╫ О©╫О©╫О©╫з©О©╫О©╫О©╫ NULLО©╫О©╫ О©╫О©╫О©╫О©╫О©╫ы╟О©╫ О©╫О©╫О©╫О©╫О©╫о╠Б╤╖О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫
+    О©╫О©╫О©╫н╠в╥О©╫О©╫О©╫ DBM О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫о╦О©╫ О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫ О©╫О©╫ О©╫ж╢О©╫.</p>
 
-    <p>╬ффдд║╢б <a href="../programs/dbmmanage.html">dbmmanage</a>╤С╢б
-    Perl ╫╨е╘╦Ёф╝╦╕ фВгтгя╢ы. юл га╥н╠в╥╔ю╨ юл ╦П╣Бюл ╩Г©Кгр
-    DBMгЭ╫д ╬охёфдюою╩ ╦╦╣И╟М ╪Жа╓гя╢ы.</p>
+    <p>О©╫О©╫О©╫О©╫д║О©╫О©╫ <a href="../programs/dbmmanage.html">dbmmanage</a>О©╫О©╫О©╫
+    Perl О©╫О©╫е╘О©╫О©╫ф╝О©╫О©╫ О©╫О©╫О©╫О©╫О©╫я╢О©╫. О©╫О©╫ О©╫О©╫О©╫н╠в╥О©╫О©╫О©╫ О©╫О©╫ О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫
+    DBMО©╫О©╫О©╫О©╫ О©╫О©╫хёО©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫я╢О©╫.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>AuthDBMType</name>
-<description>╬охё╦╕ юЗюЕго╢б ╣╔юлем╨ёюл╫╨ фдюо а╬╥Ы╦╕
-аЖа╓гя╢ы</description>
+<description>О©╫О©╫хёО©╫О©╫ О©╫О©╫О©╫О©╫О©╫о╢О©╫ О©╫О©╫О©╫О©╫О©╫м╨О©╫О©╫л╫О©╫ О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫
+О©╫О©╫О©╫О©╫О©╫я╢О©╫</description>
 <syntax>AuthDBMType default|SDBM|GDBM|NDBM|DB</syntax>
 <default>AuthDBMType default</default>
 <contextlist><context>directory</context><context>.htaccess</context>
@@ -100,13 +100,13 @@
 <override>AuthConfig</override>
 
 <usage>
-    <p>╬охё╦╕ юЗюЕго╢б ╣╔юлем╨ёюл╫╨ фдюо а╬╥Ы╦╕ аЖа╓гя╢ы. ╠Б╨╩
-    ╣╔юлем╨ёюл╫╨ а╬╥Ы╢б ддфдюо╤╖ фг╢эгя╢ы. ╩Г©Кгр ╪Ж юж╢б ╢ы╦╔
-    ╣╔юлем╨ёюл╫╨ фдюо а╬╥Ы╣╣ <a href="../install.html#dbm">ддфдюо
-    ╪Ёа╓</a>©║ ╢ч╥х╢ы.</p>
+    <p>О©╫О©╫хёО©╫О©╫ О©╫О©╫О©╫О©╫О©╫о╢О©╫ О©╫О©╫О©╫О©╫О©╫м╨О©╫О©╫л╫О©╫ О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫я╢О©╫. О©╫Б╨╩
+    О©╫О©╫О©╫О©╫О©╫м╨О©╫О©╫л╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫о╤О©╫ О©╫г╢О©╫О©╫я╢О©╫. О©╫О©╫О©╫О©╫О©╫ О©╫О©╫ О©╫ж╢О©╫ О©╫ы╦О©╫
+    О©╫О©╫О©╫О©╫О©╫м╨О©╫О©╫л╫О©╫ О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫ <a href="../install.html#dbm">О©╫О©╫О©╫О©╫О©╫О©╫
+    О©╫О©╫О©╫О©╫</a>О©╫О©╫ О©╫ч╥х╢О©╫.</p>
 
-    <p>╬охёфдюою╩ ╦╦╣Е╢б га╥н╠в╥╔юл ╟╟ю╨ а╬╥Ыюг ╣╔юлем╨ёюл╫╨╦╕
-    ╩Г©Кго╣╣╥о ╪Ёа╓гь╬ъ гя╢ы.</p>
+    <p>О©╫О©╫хёО©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫н╠в╥О©╫О©╫О©╫ О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫м╨О©╫О©╫л╫О©╫О©╫О©╫
+    О©╫О©╫О©╫О©╫о╣О©╫О©╫О©╫ О©╫О©╫О©╫О©╫О©╫ь╬О©╫ О©╫я╢О©╫.</p>
 </usage>
 </directivesynopsis>
 

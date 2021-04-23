@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -16,12 +16,12 @@
 
 <link href="./images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/quickreference.html">ディレクティブ</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p>
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/quickreference.html">ディレクティブ</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p>
 <p class="apache">Apache HTTP サーバ バージョン 2.5</p>
 <img alt="" src="./images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.5</a></div><div id="page-content"><div id="preamble"><h1>コンパイルとインストール</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="https://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.5</a></div><div id="page-content"><div id="preamble"><h1>コンパイルとインストール</h1>
 <div class="toplang">
 <p><span>翻訳済み言語: </span><a href="./de/install.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/install.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
@@ -72,7 +72,7 @@
       <tr>
         <td><a href="#download">ダウンロード</a></td>
 
-        <td><code>$ lynx http://httpd.apache.org/download.cgi</code>
+        <td><code>$ lynx https://httpd.apache.org/download.cgi</code>
         </td>
       </tr>
 
@@ -139,8 +139,8 @@
       大きく変わるでしょう。</dd>
 
       <dt>ANSI-C コンパイラとビルドシステム</dt>
-      <dd>ANSI-C コンパイラをインストールしておいて下さい。お薦めは <a href="http://www.gnu.org/">Free Software Foundation (FSF)</a>
-      による <a href="http://www.gnu.org/software/gcc/gcc.html">GNU C
+      <dd>ANSI-C コンパイラをインストールしておいて下さい。お薦めは <a href="https://www.gnu.org/">Free Software Foundation (FSF)</a>
+      による <a href="https://www.gnu.org/software/gcc/gcc.html">GNU C
       compiler (GCC)</a> です。GCC がない場合は、
       少なくとも提供されているコンパイラが ANSI 準拠であることを確認しておいて下さい。
       それから、変数 <code>PATH</code> には <code>make</code>
@@ -151,9 +151,9 @@
       正確な時刻にシンクロさせる機能をシステムに設定することを吟味してみて下さい。
       Network Time Protocol (NTP) をベースとした ntpdate や xntpd プログラムが
       この目的によく用いられます。NTP ソフトウェアや公開 NTP 
-      サーバに関する詳細は、<a href="http://www.ntp.org">NTP ホームページ</a> をご覧下さい。</dd>
+      サーバに関する詳細は、<a href="https://www.ntp.org">NTP ホームページ</a> をご覧下さい。</dd>
 
-      <dt><a href="http://www.perl.org/">Perl 5</a>
+      <dt><a href="https://www.perl.org/">Perl 5</a>
       [オプション]</dt>
       <dd>提供されているスクリプト幾つか、例えば <code class="program"><a href="./programs/apxs.html">apxs</a></code> や
       <code class="program"><a href="./programs/dbmmanage.html">dbmmanage</a></code> は
@@ -172,7 +172,7 @@
 <div class="section">
 <h2><a name="download" id="download">ダウンロード</a> <a title="Permanent link" href="#download" class="permalink">&para;</a></h2>
 
-    <p>Apache HTTP サーバは <a href="http://httpd.apache.org/download.cgi">Apache HTTP
+    <p>Apache HTTP サーバは <a href="https://httpd.apache.org/download.cgi">Apache HTTP
     サーバダウンロードサイト</a>からダウンロードできますし、
     同じ場所に幾つかのミラーサイトもリストしています。
     UNIX に類似するシステムで Apache を使うユーザは、ソースを
@@ -189,8 +189,8 @@
     サーバの完全で改竄されていないバージョンであることを
     検証することが重要です。これはダウンロードした tarball の PGP 署名を
     テストすることによって検証します。
-    この手順の詳細は <a href="http://httpd.apache.org/download.cgi#verify">ダウンロード
-    ページ</a> にあり、さらに詳しい例は <a href="http://httpd.apache.org/dev/verification.html">PGP の使用
+    この手順の詳細は <a href="https://httpd.apache.org/download.cgi#verify">ダウンロード
+    ページ</a> にあり、さらに詳しい例は <a href="https://httpd.apache.org/dev/verification.html">PGP の使用
     </a> に記載されています。</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -326,7 +326,7 @@ $ tar xvf httpd-<em>NN</em>.tar
 
     <p><code><em>PREFIX</em>/docs/manual/</code> や
     <a href="./">docs/manual/</a> にある Apache マニュアルをざっと見てください。
-    または、<a href="http://httpd.apache.org/docs/trunk/">http://httpd.apache.org/docs/trunk/</a>
+    または、<a href="https://httpd.apache.org/docs/trunk/">https://httpd.apache.org/docs/trunk/</a>
     にあるマニュアル最新版、<a href="mod/directives.html">設定ディレクティブ</a>に当たってみてください。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -336,7 +336,7 @@ $ tar xvf httpd-<em>NN</em>.tar
 
 <div class="example"><p><code>$ <em>PREFIX</em>/bin/apachectl -k start</code></p></div>
 
-    <p>URL <code>http://localhost/</code> を通して最初のドキュメントに対する
+    <p>URL <code>https://localhost/</code> を通して最初のドキュメントに対する
     リクエストを発行する事ができるはずです。これで見える
     ウェブページは <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code>
     以下に置かれたもので、通常は
@@ -410,7 +410,7 @@ $ tar xvf httpd-<em>NN</em>.tar
 </div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">コメント</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/install.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/install.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -425,8 +425,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/install.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />この文書は <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
-<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/quickreference.html">ディレクティブ</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/quickreference.html">ディレクティブ</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

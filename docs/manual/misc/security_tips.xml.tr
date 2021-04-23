@@ -15,7 +15,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -43,7 +43,7 @@
       haberdar olmak oldukça önem kazanır. HTTP sunucunuzu doğrudan
       Apache’den temin ediyorsanız yeni sürümler ve güvenlik güncellemeleri
       ile ilgili bilgileri tam zamanında alabilmek için <a
-      href="http://httpd.apache.org/lists.html#http-announce">Apache
+      href="https://httpd.apache.org/lists.html#http-announce">Apache
       HTTP Sunucusu Duyuru Listesi</a>ne mutlaka üye olmanızı öneririz.
       Apache yazılımının üçüncü parti dağıtımlarını yapanların da buna benzer
       hizmetleri vardır.</p>
@@ -125,7 +125,7 @@
         süzgeçleri ile henüz uyumlu değildir. Bu durumlarda,
         <module>worker</module> MPM'inin davranışına geri döner.</li>
 
-      <li><a href="http://modules.apache.org/">http://modules.apache.org/</a>
+      <li><a href="https://modules.apache.org/">https://modules.apache.org/</a>
         adresinde, belli istemci davranışlarını sınırlayacak ve HRS ile
         ilgili sorunları azaltmaya yardımcı olacak üçüncü parti modüller
         bulunabilir.</li>
@@ -245,7 +245,7 @@
       ortaya çıkmaması için betiklerin farklı kullanıcıların aidiyetlerinde
       çalışmasını sağlayan ve 1.2 sürümünden beri Apache ile dağıtılan <a
       href="../suexec.html">suEXEC</a> diye bir program vardır. Başka bir yol
-      da <a href="http://cgiwrap.sourceforge.net/">CGIWrap</a> kullanmaktır.</p>
+      da <a href="https://cgiwrap.sourceforge.net/">CGIWrap</a> kullanmaktır.</p>
 
   </section>
 
@@ -305,14 +305,14 @@
       güvenlikle ilgili değerlendirmelerin çoğu <code>httpd</code>'nin
       kapsamından çıkar ve bu modüllerin belgelerini incelemek ihtiyacı
       duyarsınız. Örneğin, PHP çoğu zaman kapalı tutulan
-      <a href="http://www.php.net/manual/en/ini.sect.safe-mode.php">Güvenli
+      <a href="https://www.php.net/manual/en/ini.sect.safe-mode.php">Güvenli
       Kip</a> ayarını etkin kılmanızı önerir. Daha fazla güvenlik için bir
       diğer örnek bir PHP eklentisi olan
-      <a href="http://www.hardened-php.net/suhosin/">Suhosin</a>'dir. Bunlar
+      <a href="https://www.hardened-php.net/suhosin/">Suhosin</a>'dir. Bunlar
       hakkında daha ayrıntılı bilgi için her projenin kendi belgelerine
       başvurun.</p>
 
-    <p>Apache seviyesinde, <a href="http://modsecurity.org/">mod_security</a>
+    <p>Apache seviyesinde, <a href="https://modsecurity.org/">mod_security</a>
       adı verilen modülü bir HTTP güvenlik duvarı gibi ele alabilir, devingen
       içeriğin güvenliğini arttırmanıza yardımcı olmak üzere inceden inceye
       yapılandırabilirsiniz.</p>
@@ -357,7 +357,7 @@
       # cd /; ln -s / public_html
     </example>
 
-    <p>Ve, tarayıcınıza <code>http://localhost/~root/</code> yazın.</p>
+    <p>Ve, tarayıcınıza <code>https://localhost/~root/</code> yazın.</p>
 
     <p>Böylece, istemcilerin tüm dosya sisteminizi gezmelerine izin vermiş
       olursunuz. Bu işlemin sonuçlarının önünü almak için sunucu yapılandırma
@@ -426,7 +426,7 @@
       grep "client denied" error_log | tail -n 10
     </example>
 
-    <p>İlk örnek, <a href="http://online.securityfocus.com/bid/4876/info/"
+    <p>İlk örnek, <a href="https://online.securityfocus.com/bid/4876/info/"
       >Apache Tomcat Source.JSP Bozuk İstek Bilgilerini İfşa Açığı</a>nı
       istismar etmeyi deneyen saldırıların sayısını verirken ikinci örnek,
       reddedilen son on istemciyi listeler; örnek:</p>

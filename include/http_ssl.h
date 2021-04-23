@@ -5,7 +5,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -200,8 +200,7 @@ AP_DECLARE(void) ap_setup_ssl_optional_fns(apr_pool_t *pool);
  * @return OK iff stapling is being provided
  */
 AP_DECLARE_HOOK(int, ssl_ocsp_prime_hook, (server_rec *s, apr_pool_t *p,
-                                           const char *id, apr_size_t id_len,
-                                           const char *pem))
+                                           const ap_bytes_t *id, const char *pem))
 
 /**
  * Registering a certificate for Provisioning of OCSP responses. It is the caller's
@@ -219,7 +218,7 @@ AP_DECLARE_HOOK(int, ssl_ocsp_prime_hook, (server_rec *s, apr_pool_t *p,
  *         APR_ENOENT when no provided was found or took responsibility.
  */
 AP_DECLARE(apr_status_t) ap_ssl_ocsp_prime(server_rec *s, apr_pool_t *p,
-                                           const char *id, apr_size_t id_len,
+                                           const ap_bytes_t *id,
                                            const char *pem);
 
 /**
@@ -243,7 +242,7 @@ typedef void ap_ssl_ocsp_copy_resp(const unsigned char *der, apr_size_t der_len,
  * @return OK iff response data has been provided, DECLINED otherwise
  */
 AP_DECLARE_HOOK(int, ssl_ocsp_get_resp_hook,
-                (server_rec *s, conn_rec *c, const char *id, apr_size_t id_len,
+                (server_rec *s, conn_rec *c, const ap_bytes_t *id,
                  ap_ssl_ocsp_copy_resp *cb, void *userdata))
 
 /**
@@ -269,7 +268,7 @@ AP_DECLARE_HOOK(int, ssl_ocsp_get_resp_hook,
  * @return APR_SUCCESS iff data has been provided
  */
 AP_DECLARE(apr_status_t) ap_ssl_ocsp_get_resp(server_rec *s, conn_rec *c,
-                                              const char *id, apr_size_t id_len,
+                                              const ap_bytes_t *id,
                                               ap_ssl_ocsp_copy_resp *cb, void *userdata);
 
 #ifdef __cplusplus

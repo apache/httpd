@@ -5,7 +5,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -74,7 +74,7 @@ static int mpm_warned;
 /* The module initialization. Called once as apache hook, before any multi
  * processing (threaded or not) happens. It is typically at least called twice, 
  * see
- * http://wiki.apache.org/httpd/ModuleLife
+ * https://wiki.apache.org/httpd/ModuleLife
  * Since the first run is just a "practise" run, we want to initialize for real
  * only on the second try. This defeats the purpose of the first dry run a bit, 
  * since apache wants to verify that a new configuration actually will work. 

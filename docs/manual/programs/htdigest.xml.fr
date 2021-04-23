@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -42,7 +42,7 @@ l'authentification à base de condensés</title>
     la configuration de l'authentification à base de condensés dans
     <program>httpd</program>, voir le manuel Apache qui est fourni avec
     la distribution et peut être consulté à <a
-    href="http://httpd.apache.org/">http://httpd.apache.org/</a>.</p>
+    href="https://httpd.apache.org/">https://httpd.apache.org/</a>.</p>
 </summary>
 <seealso><program>httpd</program></seealso>
 <seealso><module>mod_auth_digest</module></seealso>
@@ -69,7 +69,7 @@ l'authentification à base de condensés</title>
     <dt><code><var>realm</var></code></dt>
     <dd>Le nom du domaine de protection auquel le nom d'utilisateur
     appartient. Voir <a
-    href="http://tools.ietf.org/html/rfc2617#section-3.2.1">http://tools.ietf.org/html/rfc2617#section-3.2.1</a>
+    href="https://tools.ietf.org/html/rfc2617#section-3.2.1">https://tools.ietf.org/html/rfc2617#section-3.2.1</a>
     pour plus de détails.</dd>
 
     <dt><code><var>nom-utilisateur</var></code></dt>

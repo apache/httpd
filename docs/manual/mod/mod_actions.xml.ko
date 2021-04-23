@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -24,79 +24,79 @@
 
 <name>mod_actions</name> 
 
-<description>ÀÌ ¸ðµâÀº ¹Ìµð¾îÁ¾·ù³ª ¿äÃ»¸Þ¼­µå¿¡ µû¶ó CGI
-½ºÅ©¸³Æ®¸¦ ½ÇÇàÇÑ´Ù.</description>
+<description>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½Þ¼ï¿½ï¿½å¿¡ ï¿½ï¿½ï¿½ï¿½ CGI
+ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</description>
 
 <status>Base</status>
 <sourcefile>mod_actions.c</sourcefile>
 <identifier>actions_module</identifier>
 
 <summary>
-    <p>ÀÌ ¸ðµâ¿¡´Â µÎ°¡Áö Áö½Ã¾î°¡ ÀÖ´Ù. <directive
-    module="mod_actions">Action</directive> Áö½Ã¾î´Â ¿äÃ»ÇÏ´Â
-    ÆÄÀÏÀÇ MIME content type¿¡ µû¶ó CGI ½ºÅ©¸³Æ®¸¦ ½ÇÇàÇÑ´Ù.
-    <directive module="mod_actions">Script</directive> Áö½Ã¾î´Â
-    ¿äÃ»ÀÌ Æ¯Á¤ ¸Þ¼­µå¸¦ »ç¿ëÇÒ °æ¿ì CGI ½ºÅ©¸³Æ®¸¦ ½ÇÇàÇÑ´Ù.
-    ±×·¡¼­ ÆÄÀÏÀ» Ã³¸®ÇÏ´Â ½ºÅ©¸³Æ®¸¦ ¸Å¿ì ½±°Ô ½ÇÇàÇÒ ¼ö ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½â¿¡ï¿½ï¿½ ï¿½Î°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î°¡ ï¿½Ö´ï¿½. <directive
+    module="mod_actions">Action</directive> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½Ï´ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ MIME content typeï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ CGI ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+    <directive module="mod_actions">Script</directive> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½
+    ï¿½ï¿½Ã»ï¿½ï¿½ Æ¯ï¿½ï¿½ ï¿½Þ¼ï¿½ï¿½å¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ CGI ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+    ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Å¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 </summary>
 
 <seealso><module>mod_cgi</module></seealso>
-<seealso><a href="../howto/cgi.html">CGI·Î µ¿Àû ÆäÀÌÁö »ý¼º</a></seealso>
-<seealso><a href="../handler.html">¾ÆÆÄÄ¡¿¡¼­ ÇÚµé·¯ »ç¿ë</a></seealso>
+<seealso><a href="../howto/cgi.html">CGIï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a></seealso>
+<seealso><a href="../handler.html">ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ ï¿½Úµé·¯ ï¿½ï¿½ï¿½</a></seealso>
 
 <directivesynopsis>
 <name>Action</name>
-<description>Æ¯Á¤ ÇÚµé·¯³ª content-type¿¡ ´ëÇØ CGI ½ºÅ©¸³Æ®¸¦
-»ç¿ëÇÑ´Ù</description>
+<description>Æ¯ï¿½ï¿½ ï¿½Úµé·¯ï¿½ï¿½ content-typeï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ CGI ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</description>
 <syntax>Action <var>action-type</var> <var>cgi-script</var> [virtual]</syntax>
 <contextlist>
 <context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
-<compatibility><code>virtual</code> ¼öÁ¤ÀÚ¿Í ÇÚµé·¯´Â ¾ÆÆÄÄ¡
-2.1¶§ Ãß°¡µÇ¾ú´Ù</compatibility>
+<compatibility><code>virtual</code> ï¿½ï¿½ï¿½ï¿½ï¿½Ú¿ï¿½ ï¿½Úµé·¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡
+2.1ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½</compatibility>
 
 <usage>
-    <p>ÀÌ Áö½Ã¾î´Â ¿äÃ»ÀÌ <var>action-type</var>ÀÌ¸é
-    <var>cgi-script</var>¸¦ ½ÇÇàÇÏ´Â Çàµ¿À» ¼­¹ö¿¡ Ãß°¡ÇÑ´Ù.
-    <var>cgi-script</var>´Â <directive
-    module="mod_alias">ScriptAlias</directive>³ª <directive
-    module="mod_mime">AddHandler</directive>¸¦ »ç¿ëÇÏ¿© CGI
-    ½ºÅ©¸³Æ®·Î ÁöÁ¤ÇÑ ¸®¼Ò½ºÀÇ URL°æ·ÎÀÌ´Ù.
-    <var>action-type</var>¿¡´Â <a
-    href="../handler.html">ÇÚµé·¯</a>³ª MIME content typeÀ»
-    »ç¿ëÇÒ ¼ö ÀÖ´Ù. ÀÌ Áö½Ã¾î´Â <code>PATH_INFO</code>¿Í
-    <code>PATH_TRANSLATED</code> CGI Ç¥ÁØ È¯°æº¯¼ö·Î ¿äÃ»ÇÑ
-    ¹®¼­ÀÇ URL°ú ÆÄÀÏ°æ·Î¸¦ Àü´ÞÇÑ´Ù. <code>REDIRECT_HANDLER</code>
-    º¯¼ö·Î Æ¯Á¤ ¿äÃ»¿¡ »ç¿ëÇÒ ÇÚµé·¯¸¦ Àü´ÞÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ <var>action-type</var>ï¿½Ì¸ï¿½
+    <var>cgi-script</var>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½àµ¿ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ñ´ï¿½.
+    <var>cgi-script</var>ï¿½ï¿½ <directive
+    module="mod_alias">ScriptAlias</directive>ï¿½ï¿½ <directive
+    module="mod_mime">AddHandler</directive>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ CGI
+    ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ò½ï¿½ï¿½ï¿½ URLï¿½ï¿½ï¿½ï¿½Ì´ï¿½.
+    <var>action-type</var>ï¿½ï¿½ï¿½ï¿½ <a
+    href="../handler.html">ï¿½Úµé·¯</a>ï¿½ï¿½ MIME content typeï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ <code>PATH_INFO</code>ï¿½ï¿½
+    <code>PATH_TRANSLATED</code> CGI Ç¥ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ URLï¿½ï¿½ ï¿½ï¿½ï¿½Ï°ï¿½Î¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <code>REDIRECT_HANDLER</code>
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Æ¯ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Úµé·¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <example><title>¿¹Á¦</title>
-      # Æ¯Á¤ MIME content typeÀÇ ÆÄÀÏ ¿äÃ»:<br />
+    <example><title>ï¿½ï¿½ï¿½ï¿½</title>
+      # Æ¯ï¿½ï¿½ MIME content typeï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»:<br />
       Action image/gif /cgi-bin/images.cgi<br />
       <br />
-      # Æ¯Á¤ÇÑ È®ÀåÀÚ¸¦ °¡Áø ÆÄÀÏ<br />
+      # Æ¯ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½<br />
       AddHandler my-file-type .xyz<br />
       Action my-file-type /cgi-bin/program.cgi<br />
     </example>
 
-    <p>Ã¹¹øÂ° ¿¹¿¡¼­ MIME content typeÀÌ <code>image/gif</code>ÀÎ
-    ÆÄÀÏÀ» ¿äÃ»ÇÏ¸é ÁöÁ¤ÇÑ cgi ½ºÅ©¸³Æ® <code>/cgi-bin/images.cgi</code>°¡
-    Ã³¸®ÇÑ´Ù.</p>
+    <p>Ã¹ï¿½ï¿½Â° ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ MIME content typeï¿½ï¿½ <code>image/gif</code>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ cgi ï¿½ï¿½Å©ï¿½ï¿½Æ® <code>/cgi-bin/images.cgi</code>ï¿½ï¿½
+    Ã³ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <p>µÎ¹øÂ° ¿¹¿¡¼­ È®ÀåÀÚ°¡ <code>.xyz</code>ÀÎ ÆÄÀÏÀ» ¿äÃ»ÇÏ¸é
-    ÁöÁ¤ÇÑ cgi ½ºÅ©¸³Æ® <code>/cgi-bin/program.cgi</code>°¡
-    Ã³¸®ÇÑ´Ù.</p>
+    <p>ï¿½Î¹ï¿½Â° ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ú°ï¿½ <code>.xyz</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½Ï¸ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ cgi ï¿½ï¿½Å©ï¿½ï¿½Æ® <code>/cgi-bin/program.cgi</code>ï¿½ï¿½
+    Ã³ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
     <p>In the second example, requests for files with a file extension of
     <code>.xyz</code> are handled instead by the specified cgi script
     <code>/cgi-bin/program.cgi</code>.</p>
 
-    <p>¼±ÅÃÀûÀÎ <code>virtual</code> ¼öÁ¤ÀÚ´Â ¿äÃ»ÇÑ ÆÄÀÏÀÌ
-    ½ÇÁ¦·Î Á¸ÀçÇÏ´ÂÁö °Ë»çÇÏÁö ¾Êµµ·Ï ÇÑ´Ù. ¿¹¸¦ µé¾î, °¡»óÀÇ
-    À§Ä¡¿¡ <directive>Action</directive> Áö½Ã¾î¸¦ »ç¿ëÇÏ·Á´Â
-    °æ¿ì À¯¿ëÇÏ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>virtual</code> ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Êµï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½Ä¡ï¿½ï¿½ <directive>Action</directive> ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.</p>
 
-    <example><title>¿¹Á¦</title>
+    <example><title>ï¿½ï¿½ï¿½ï¿½</title>
       &lt;Location /news&gt;<br />
       <indent>
         SetHandler news-handler<br />
@@ -111,40 +111,40 @@
 
 <directivesynopsis>
 <name>Script</name>
-<description>Æ¯Á¤ ¿äÃ»¸Þ¼­µå¿¡ ´ëÇØ CGI ½ºÅ©¸³Æ®¸¦
-»ç¿ëÇÑ´Ù.</description>
+<description>Æ¯ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½Þ¼ï¿½ï¿½å¿¡ ï¿½ï¿½ï¿½ï¿½ CGI ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</description>
 <syntax>Script <var>method</var> <var>cgi-script</var></syntax>
 <contextlist>
 <context>server config</context><context>virtual host</context>
 <context>directory</context></contextlist>
 <usage>
-    <p>ÀÌ Áö½Ã¾î´Â ÆÄÀÏÀ» <var>method</var> ¸Þ¼­µå¸¦ »ç¿ëÇÏ¿©
-    ¿äÃ»ÇÏ¸é <var>cgi-script</var>¸¦ ½ÇÇàÇÏ´Â Çàµ¿À» ¼­¹ö¿¡
-    Ãß°¡ÇÑ´Ù. <var>cgi-script</var>´Â <directive
-    module="mod_alias">ScriptAlias</directive>³ª <directive
-    module="mod_mime">AddHandler</directive>¸¦ »ç¿ëÇÏ¿© CGI
-    ½ºÅ©¸³Æ®·Î ÁöÁ¤ÇÑ ¸®¼Ò½ºÀÇ URL°æ·ÎÀÌ´Ù. ÀÌ Áö½Ã¾î´Â
-    <code>PATH_INFO</code>¿Í <code>PATH_TRANSLATED</code> CGI
-    Ç¥ÁØ È¯°æº¯¼ö·Î ¿äÃ»ÇÑ ¹®¼­ÀÇ URL°ú ÆÄÀÏ°æ·Î¸¦ Àü´ÞÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <var>method</var> ï¿½Þ¼ï¿½ï¿½å¸¦ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½
+    ï¿½ï¿½Ã»ï¿½Ï¸ï¿½ <var>cgi-script</var>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½àµ¿ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ß°ï¿½ï¿½Ñ´ï¿½. <var>cgi-script</var>ï¿½ï¿½ <directive
+    module="mod_alias">ScriptAlias</directive>ï¿½ï¿½ <directive
+    module="mod_mime">AddHandler</directive>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ CGI
+    ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ò½ï¿½ï¿½ï¿½ URLï¿½ï¿½ï¿½ï¿½Ì´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½
+    <code>PATH_INFO</code>ï¿½ï¿½ <code>PATH_TRANSLATED</code> CGI
+    Ç¥ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ URLï¿½ï¿½ ï¿½ï¿½ï¿½Ï°ï¿½Î¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
     <note>
-      ¾î¶² ¸Þ¼­µå ÀÌ¸§ÀÌ¶óµµ »ç¿ëÇÒ ¼ö ÀÖ´Ù. <strong>¸Þ¼­µå ÀÌ¸§Àº
-      ´ë¼Ò¹®ÀÚ¸¦ ±¸º°ÇÑ´Ù.</strong> ±×·¡¼­ <code>Script PUT</code>°ú
-      <code>Script put</code>Àº ¿ÏÀüÈ÷ ´Ù¸£´Ù.
+      ï¿½î¶² ï¿½Þ¼ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½Ì¶ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. <strong>ï¿½Þ¼ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½
+      ï¿½ï¿½Ò¹ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</strong> ï¿½×·ï¿½ï¿½ï¿½ <code>Script PUT</code>ï¿½ï¿½
+      <code>Script put</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ï¿½ï¿½.
     </note>
 
-    <p><directive>Script</directive> ¸í·É¾î´Â ±âº»ÀûÀÎ Çàµ¿¸¸À»
-    Ã³¸®ÇÔÀ» ÁÖÀÇÇÏ¶ó. CGI ½ºÅ©¸³Æ®°¡ ºÒ¸®°Å³ª, ¿äÃ»ÇÑ ¸Þ¼­µå¸¦
-    ¾Ë¾Æ¼­ Ã³¸®ÇÒ ¼ö ÀÖ´Â ¸®¼Ò½ºÀÇ °æ¿ì ±×´ë·Î Ã³¸®ÇÑ´Ù.
-    <code>GET</code> ¸Þ¼­µåÀÇ <directive>Script</directive>´Â
-    ÁúÀÇ¾Æ±Ô¸ÕÆ®°¡ ÀÖÀ»¶§¸¸ (<em>¿¹</em>, foo.html?hi) »ç¿ëÇÔÀ»
-    ÁÖÀÇÇÏ¶ó. ÁúÀÇ¾Æ±Ô¸ÕÆ®°¡ ¾ø´Ù¸é Á¤»óÀûÀ¸·Î ¿äÃ»À» Ã³¸®ÇÑ´Ù.</p>
+    <p><directive>Script</directive> ï¿½ï¿½ï¿½É¾ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½ ï¿½àµ¿ï¿½ï¿½ï¿½ï¿½
+    Ã³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½. CGI ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ò¸ï¿½ï¿½Å³ï¿½, ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½Þ¼ï¿½ï¿½å¸¦
+    ï¿½Ë¾Æ¼ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½Ò½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½×´ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ñ´ï¿½.
+    <code>GET</code> ï¿½Þ¼ï¿½ï¿½ï¿½ï¿½ï¿½ <directive>Script</directive>ï¿½ï¿½
+    ï¿½ï¿½ï¿½Ç¾Æ±Ô¸ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (<em>ï¿½ï¿½</em>, foo.html?hi) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½. ï¿½ï¿½ï¿½Ç¾Æ±Ô¸ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <example><title>¿¹Á¦</title>
-      # &lt;ISINDEX&gt;½Ä °Ë»öÀ» À§ÇØ<br />
+    <example><title>ï¿½ï¿½ï¿½ï¿½</title>
+      # &lt;ISINDEX&gt;ï¿½ï¿½ ï¿½Ë»ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½<br />
       Script GET /cgi-bin/search<br />
       <br />
-      # CGI PUT ÇÚµé·¯<br />
+      # CGI PUT ï¿½Úµé·¯<br />
       Script PUT /~bob/put.cgi<br />
     </example>
 </usage>

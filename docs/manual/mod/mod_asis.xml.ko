@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,47 +23,47 @@
 <modulesynopsis metafile="mod_asis.xml.meta">
 
 <name>mod_asis</name>
-<description>HTTP Çì´õ¸¦ Æ÷ÇÔÇÑ ÆÄÀÏÀ» º¸³½´Ù</description>
+<description>HTTP ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</description>
 <status>Base</status>
 <sourcefile>mod_asis.c</sourcefile>
 <identifier>asis_module</identifier>
 
 <summary>
-    <p>ÀÌ ¸ðµâÀº ¾ÆÆÄÄ¡°¡ ÀÏ¹ÝÀûÀÎ HTTP Çì´õÀÇ ´ëºÎºÐÀ» Ãß°¡ÇÏÁö¾Ê°í
-    ¹®¼­¸¦ º¸³»µµ·Ï ¸¸µå´Â <code>send-as-is</code> ÇÚµé·¯¸¦
-    Á¦°øÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½ HTTP ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Îºï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê°ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ <code>send-as-is</code> ï¿½Úµé·¯ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <p>±×·¡¼­ ¼­¹ö´Â cgi ½ºÅ©¸³Æ®³ª nph ½ºÅ©¸³Æ®¸¦ »ç¿ëÇÏÁö¾Ê°íµµ
-    ¸®´ÙÀÌ·º¼Ç°ú ´Ù¸¥ Æ¯º°ÇÑ HTTP ÀÀ´ä µî ¾î¶² ÀÚ·áµµ º¸³¾ ¼ö
-    ÀÖ´Ù.</p>
+    <p>ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ cgi ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ nph ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê°ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½Ç°ï¿½ ï¿½Ù¸ï¿½ Æ¯ï¿½ï¿½ï¿½ï¿½ HTTP ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½î¶² ï¿½Ú·áµµ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+    ï¿½Ö´ï¿½.</p>
 
-    <p>°ú°Å¿¡ ÀÌ ¸ðµâÀº mime typeÀÌ <code>httpd/send-as-is</code>ÀÎ
-    ÆÄÀÏµµ Ã³¸®Çß´Ù.</p>
+    <p>ï¿½ï¿½ï¿½Å¿ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ mime typeï¿½ï¿½ <code>httpd/send-as-is</code>ï¿½ï¿½
+    ï¿½ï¿½ï¿½Ïµï¿½ Ã³ï¿½ï¿½ï¿½ß´ï¿½.</p>
 </summary>
 
 <seealso><module>mod_headers</module></seealso>
 <seealso><module>mod_cern_meta</module></seealso>
-<seealso><a href="../handler.html">¾ÆÆÄÄ¡¿¡¼­ ÇÚµé·¯ »ç¿ë</a></seealso>
+<seealso><a href="../handler.html">ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ ï¿½Úµé·¯ ï¿½ï¿½ï¿½</a></seealso>
 
-<section id="usage"><title>»ç¿ë¹ý</title>
+<section id="usage"><title>ï¿½ï¿½ï¿½ï¿½</title>
 
-    <p>¼­¹ö ¼³Á¤ÆÄÀÏ¿¡¼­ ÆÄÀÏ°ú <code>send-as-is</code> ÇÚµé·¯¸¦
-    <em>¿¹¸¦ µé¾î</em> ´ÙÀ½°ú °°ÀÌ ¿¬°áÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï°ï¿½ <code>send-as-is</code> ï¿½Úµé·¯ï¿½ï¿½
+    <em>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½</em> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
     <example>AddHandler send-as-is asis</example>
 
-    <p>¾ÆÆÄÄ¡´Â <code>.asis</code> È®ÀåÀÚ¸¦ °¡Áø ÆÄÀÏÀÇ ³»¿ëÀ»
-    °ÅÀÇ ¼öÁ¤ÇÏÁö¾Ê°í Å¬¶óÀÌ¾ðÆ®¿¡°Ô º¸³½´Ù. Å¬¶óÀÌ¾ðÆ®´Â HTTP
-    Çì´õ°¡ ÇÊ¿äÇÏ¹Ç·Î »©¸ÔÁö¸¶¶ó. Status: Çì´õµµ ÇÊ¿äÇÏ´Ù. ÀÌ
-    Çì´õÀÇ ³»¿ëÀº ¼¼ÀÚ¸® ¼ýÀÚÀÎ HTTP ÀÀ´äÄÚµå¿Í ±× µÚÀÇ ¹®±¸ÀÌ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ <code>.asis</code> È®ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê°ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½. Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ HTTP
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Ï¹Ç·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½. Status: ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Ï´ï¿½. ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ HTTP ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½.</p>
 
-    <p>´ÙÀ½Àº ³»¿ë <em>±×´ë·Î</em> Å¬¶óÀÌ¾ðÆ®¿¡°Ô ÆÄÀÏÀÌ
-    ¸®´ÙÀÌ·Â¼ÇµÇ¾ú´Ù°í ¾Ë¸®´Â ÆÄÀÏÀÇ ¿¹ÀÌ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ <em>ï¿½×´ï¿½ï¿½</em> Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ì·Â¼ÇµÇ¾ï¿½ï¿½Ù°ï¿½ ï¿½Ë¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½.</p>
 
 
     <example>
       Status: 301 Now where did I leave that URL<br />
-      Location: http://xyz.abc.com/foo/bar.html<br />
+      Location: https://xyz.abc.com/foo/bar.html<br />
       Content-type: text/html<br />
       <br />
       &lt;html&gt;<br />
@@ -72,19 +72,19 @@
       &lt;/head&gt;<br />
       &lt;body&gt;<br />
       &lt;h1&gt;Fred's exceptionally wonderful page has moved to<br />
-      &lt;a href="http://xyz.abc.com/foo/bar.html"&gt;Joe's&lt;/a&gt;
+      &lt;a href="https://xyz.abc.com/foo/bar.html"&gt;Joe's&lt;/a&gt;
       site.<br />
       &lt;/h1&gt;<br />
       &lt;/body&gt;<br />
       &lt;/html&gt;
     </example>
 
-    <note><title>ÁÖÀÇ:</title>
-    <p>¼­¹ö´Â ÀÚ·á¸¦ Å¬¶óÀÌ¾ðÆ®¿¡°Ô º¸³¾¶§ Ç×»ó <code>Date:</code>¿Í
-    <code>Server:</code> Çì´õ¸¦ Ãß°¡ÇÏ¹Ç·Î, ÆÄÀÏ¿¡ ÀÌ Çì´õ°¡
-    ÀÖÀ¸¸é ¾ÈµÈ´Ù. ¼­¹ö´Â <code>Last-Modified</code> Çì´õ¸¦
-    Ãß°¡ÇÏÁö <em>¾Ê´Â´Ù</em>. ±×·¡¼­ ¾Æ¸¶µµ ÀÌ Çì´õ´Â Æ÷ÇÔÇØ¾ß
-    ÇÑ´Ù.</p>
+    <note><title>ï¿½ï¿½ï¿½ï¿½:</title>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ú·á¸¦ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×»ï¿½ <code>Date:</code>ï¿½ï¿½
+    <code>Server:</code> ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ï¹Ç·ï¿½, ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ÈµÈ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>Last-Modified</code> ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ß°ï¿½ï¿½ï¿½ï¿½ï¿½ <em>ï¿½Ê´Â´ï¿½</em>. ï¿½×·ï¿½ï¿½ï¿½ ï¿½Æ¸ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½
+    ï¿½Ñ´ï¿½.</p>
     </note>
 </section>
 

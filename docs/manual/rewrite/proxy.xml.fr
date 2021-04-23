@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -73,8 +73,8 @@ correspondance</a></seealso>
 <highlight language="config">
 RewriteEngine  on
 RewriteBase    "/produits/"
-RewriteRule    "^widget/(.*)$"  "http://produits.example.com/widget/$1"  [P]
-ProxyPassReverse "/produits/objet/" "http://produits.example.com/objet/"
+RewriteRule    "^widget/(.*)$"  "https://produits.example.com/widget/$1"  [P]
+ProxyPassReverse "/produits/objet/" "https://produits.example.com/objet/"
 </highlight>
 
    <p>Dans le deuxième exemple, nous ne mandatons la requête que si nous
@@ -86,8 +86,8 @@ ProxyPassReverse "/produits/objet/" "http://produits.example.com/objet/"
 <highlight language="config">
 RewriteCond "%{REQUEST_FILENAME}"       !-f
 RewriteCond "%{REQUEST_FILENAME}"       !-d
-RewriteRule "^/(.*)" "http://ancien.exemple.com/$1" [P]
-ProxyPassReverse "/" "http://ancien.exemple.com/"
+RewriteRule "^/(.*)" "https://ancien.exemple.com/$1" [P]
+ProxyPassReverse "/" "https://ancien.exemple.com/"
 </highlight>
     </dd>
 

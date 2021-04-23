@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,115 +23,115 @@
 <modulesynopsis metafile="mod_example_hooks.xml.meta">
 
 <name>mod_example_hooks</name>
-<description>¾ÆÆÄÄ¡ ¸ðµâ API¸¦ ¼³¸íÇÑ´Ù</description>
+<description>ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ APIï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</description>
 <status>Experimental</status>
 <sourcefile>mod_example_hooks.c</sourcefile>
 <identifier>example_hooks_module</identifier>
 
 <summary>
-    <p>¾ÆÆÄÄ¡ ¹èÆ÷º» <code>modules/examples</code> µð·ºÅä¸®¿¡
-    ÀÖ´Â ÆÄÀÏµéÀº ¾ÆÆÄÄ¡ API¸¦ »ç¿ëÇÏ¿© ¸ðµâÀ» ÀÛ¼ºÇÏ·Á´Â »ç¶÷µéÀ»
-    µ½±âÀ§ÇÑ ¿¹Á¦´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>modules/examples</code> ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½
+    ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ APIï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Û¼ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.</p>
 
-    <p><code>mod_example_hooks.c</code>´Â ¸ðµç ÄÝ¹é(callback) ±¸Á¶¿Í
-    È£Ãâ ¹®¹ýÀ» ¼³¸íÇÏ´Â ÆÄÀÏÀÌ´Ù. ´ç½ÅÀº ¸ðµâ¿¡ ÀÌ ¸ðµç ÄÝ¹éÀ»
-    ±¸ÇöÇÒ ÇÊ¿ä°¡ ¾ø´Ù. »ç½Ç Á¤¹Ý´ë´Ù!</p>
+    <p><code>mod_example_hooks.c</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ý¹ï¿½(callback) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    È£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½â¿¡ ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ý¹ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ä°¡ ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ý´ï¿½ï¿½!</p>
 
-    <p>example ¸ðµâÀº ½ÇÁ¦·Î µ¿ÀÛÇÏ´Â ¸ðµâÀÌ´Ù. ÀÌ ¸ðµâÀ» ¼­¹ö¿¡
-    ¿¬°áÇÏ°í Æ¯Á¤ À§Ä¡¿¡ "example-hooks-handler" ÇÚµé·¯¸¦ ÇÒ´çÇÏ¿©
-    ±×°÷À» ºê¶ó¿ìÂ¡ÇÏ¸é example ¸ðµâÀÇ ¿©·¯ ÄÝ¹éÀ» È®ÀÎÇÒ ¼ö
-    ÀÖ´Ù.</p>
+    <p>example ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½Ì´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ Æ¯ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ "example-hooks-handler" ï¿½Úµé·¯ï¿½ï¿½ ï¿½Ò´ï¿½ï¿½Ï¿ï¿½
+    ï¿½×°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Â¡ï¿½Ï¸ï¿½ example ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ý¹ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+    ï¿½Ö´ï¿½.</p>
 </summary>
 
-<section id="compiling"><title>example ¸ðµâ ÄÄÆÄÀÏÇÏ±â</title>
+<section id="compiling"><title>example ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½</title>
 
-    <p>¼­¹ö¿¡ example ¸ðµâÀ» Æ÷ÇÔÇÏ·Á¸é ´ÙÀ½ °úÁ¤À» °ÅÄ£´Ù:</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ example ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä£ï¿½ï¿½:</p>
 
     <ol>
       <li>
-        <code>--enable-example-hooks</code> ¿É¼Ç°ú ÇÔ²²
-        <code>configure</code>¸¦ ½ÇÇàÇÑ´Ù.</li>
+        <code>--enable-example-hooks</code> ï¿½É¼Ç°ï¿½ ï¿½Ô²ï¿½
+        <code>configure</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</li>
 
-      <li>¼­¹ö¸¦ ÄÄÆÄÀÏÇÑ´Ù ("<code>make</code>"¸¦ ½ÇÇàÇÑ´Ù).</li>
+      <li>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½ ("<code>make</code>"ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½).</li>
     </ol>
 
-    <p>ÀÚ½ÅÀÌ ¸¸µç ¸ðµâÀ» Ãß°¡ÇÏ·Á¸é:</p>
+    <p>ï¿½Ú½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ï·ï¿½ï¿½ï¿½:</p>
 
     <ol type="A">
       <li><code>cp modules/examples/mod_example_hooks.c
       modules/new_module/<em>mod_myexample.c</em></code></li>
 
-      <li>ÆÄÀÏÀ» ¼öÁ¤ÇÑ´Ù.</li>
+      <li>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</li>
 
-      <li><code>modules/new_module/config.m4</code> ÆÄÀÏÀ» ¸¸µç´Ù.
+      <li><code>modules/new_module/config.m4</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½.
         <ol>
-          <li><code>APACHE_MODPATH_INIT(new_module)</code>À»
-            Ãß°¡ÇÑ´Ù.</li>
-          <li><code>modules/examples/config.m4</code> ÆÄÀÏ¿¡¼­
-            "example_hooks"ÀÌ ÀÖ´Â APACHE_MODULE ÁÙÀ» º¹»çÇØ¿Â´Ù.</li>
-          <li>Ã¹¹øÂ° ¾Æ±Ô¸ÕÆ® "example_hooks"À» <em>myexample</em>·Î
-            º¯°æÇÑ´Ù.</li>
-          <li>µÎ¹øÂ° ¾Æ±Ô¸ÕÆ® ÀÚ¸®¿¡ ÀÚ½ÅÀÌ ¸¸µç ¸ðµâ¿¡ ´ëÇÑ
-            °£´ÜÇÑ ¼³¸íÀ» Àû´Â´Ù. <code>configure --help</code>¸¦
-            ½ÇÇàÇÏ¸é ¿©±â¿¡ ±â·ÏÇÑ ¼³¸íÀ» º¸¿©ÁØ´Ù.</li>
-          <li>¸ðµâÀ» ÄÄÆÄÀÏÇÒ¶§ Æ¯º°ÇÑ C ÄÄÆÄÀÏ·¯ ¿É¼Ç, ¸µÄ¿
-            ¿É¼Ç, ¶óÀÌºê·¯¸®°¡ ÇÊ¿äÇÏ¸é °¢°¢ CFLAGS, LDFLAGS,
-            LIBS¿¡ Ãß°¡ÇÑ´Ù. modules µð·ºÅä¸®¿¡ ÀÖ´Â ´Ù¸¥
-            <code>config.m4</code> ÆÄÀÏµéÀ» Âü°íÇÏ¶ó.</li>
-          <li><code>APACHE_MODPATH_FINISH</code>¸¦ Ãß°¡ÇÑ´Ù.</li>
+          <li><code>APACHE_MODPATH_INIT(new_module)</code>ï¿½ï¿½
+            ï¿½ß°ï¿½ï¿½Ñ´ï¿½.</li>
+          <li><code>modules/examples/config.m4</code> ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½
+            "example_hooks"ï¿½ï¿½ ï¿½Ö´ï¿½ APACHE_MODULE ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¿Â´ï¿½.</li>
+          <li>Ã¹ï¿½ï¿½Â° ï¿½Æ±Ô¸ï¿½Æ® "example_hooks"ï¿½ï¿½ <em>myexample</em>ï¿½ï¿½
+            ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</li>
+          <li>ï¿½Î¹ï¿½Â° ï¿½Æ±Ô¸ï¿½Æ® ï¿½Ú¸ï¿½ï¿½ï¿½ ï¿½Ú½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½â¿¡ ï¿½ï¿½ï¿½ï¿½
+            ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â´ï¿½. <code>configure --help</code>ï¿½ï¿½
+            ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½â¿¡ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½.</li>
+          <li>ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ Æ¯ï¿½ï¿½ï¿½ï¿½ C ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ ï¿½É¼ï¿½, ï¿½ï¿½Ä¿
+            ï¿½É¼ï¿½, ï¿½ï¿½ï¿½Ìºê·¯ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ CFLAGS, LDFLAGS,
+            LIBSï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ñ´ï¿½. modules ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½Ù¸ï¿½
+            <code>config.m4</code> ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.</li>
+          <li><code>APACHE_MODPATH_FINISH</code>ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ñ´ï¿½.</li>
         </ol>
       </li>
 
-      <li><code>module/new_module/Makefile.in</code> ÆÄÀÏÀ»
-      ¸¸µç´Ù. ¸ðµâÀ» ÄÄÆÄÀÏÇÏ´Âµ¥ Æ¯º°ÇÑ ¸í·É¾î°¡ ÇÊ¿ä¾ø´Ù¸é,
-      ÆÄÀÏ¿¡ <code>include $(top_srcdir)/build/special.mk</code>¸¸
-      ÀÖ¾îµµ µÈ´Ù.</li>
+      <li><code>module/new_module/Makefile.in</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´Âµï¿½ Æ¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½É¾î°¡ ï¿½Ê¿ï¿½ï¿½ï¿½Ù¸ï¿½,
+      ï¿½ï¿½ï¿½Ï¿ï¿½ <code>include $(top_srcdir)/build/special.mk</code>ï¿½ï¿½
+      ï¿½Ö¾îµµ ï¿½È´ï¿½.</li>
 
-      <li>ÃÖ»óÀ§ µð·ºÅä¸®¿¡¼­ ./buildconf ¸¦ ½ÇÇàÇÑ´Ù.</li>
+      <li>ï¿½Ö»ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ï¿½ï¿½ ./buildconf ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</li>
 
-      <li>--enable-myexample ¿É¼ÇÀ» »ç¿ëÇÏ¿© ¼­¹ö¸¦ ÄÄÆÄÀÏÇÑ´Ù</li>
+      <li>--enable-myexample ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</li>
 
     </ol>
 </section>
 
-<section id="using"><title><code>mod_example_hooks</code> ¸ðµâ »ç¿ëÇÏ±â</title>
+<section id="using"><title><code>mod_example_hooks</code> ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï±ï¿½</title>
 
-    <p>example ¸ðµâÀ» »ç¿ëÇÏ·Á¸é <code>httpd.conf</code> ÆÄÀÏ¿¡
-    ´ÙÀ½°ú °°Àº ¼³Á¤À» Ãß°¡ÇÏ¶ó:</p>
+    <p>example ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ <code>httpd.conf</code> ï¿½ï¿½ï¿½Ï¿ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ï¶ï¿½:</p>
 <example>
    &lt;Location /example-hooks-info&gt;<br />
        SetHandler example-hooks-handler<br />
    &lt;/Location&gt;
 </example>
 
-    <p>¾Æ´Ï¸é <a
+    <p>ï¿½Æ´Ï¸ï¿½ <a
     href="core.html#accessfilename"><code>.htaccess</code></a>
-    ÆÄÀÏ¿¡ ´ÙÀ½°ú °°Àº ³»¿ëÀ» Ãß°¡ÇÏ°í, ±× À§Ä¡¿¡¼­ "test.example"
-    °°Àº ÆÄÀÏÀ» ¿äÃ»ÇÏ¶ó:</p>
+    ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ï°ï¿½, ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ "test.example"
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½Ï¶ï¿½:</p>
 <example>
    AddHandler example-hooks-handler .example
 </example>
 
-    <p>¼­¹ö¸¦ Àç½ÃÀÛÇÑ ÈÄ ÀÌ À§Ä¡¸¦ ºê¶ó¿ìÂ¡ÇÏ¸é ¾Õ¿¡¼­ ¸»ÇÑ
-    ³»¿ëÀ» º¸°ÔµÉ °ÍÀÌ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Â¡ï¿½Ï¸ï¿½ ï¿½Õ¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ôµï¿½ ï¿½ï¿½ï¿½Ì´ï¿½.</p>
 </section>
 
 <directivesynopsis>
 <name>Example</name>
-<description>¾ÆÆÄÄ¡ ¸ðµâ API¸¦ ¼³¸íÇÏ±âÀ§ÇÑ ¿¹Á¦ Áö½Ã¾î</description>
+<description>ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ APIï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½</description>
 <syntax>Example</syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
 
 <usage>
-    <p><directive>Example</directive> Áö½Ã¾î´Â example ¸ðµâÀÇ
-    ³»¿ëÇÚµé·¯°¡ °£´ÜÇÑ ¹®±¸¸¦ º¸ÀÏÁö ¿©ºÎ¸¦ ¼³Á¤ÇÑ´Ù. ÀÌ Áö½Ã¾î´Â
-    ¾Æ±Ô¸ÕÆ®¸¦ ¹ÞÁö¾Ê´Â´Ù. example ³»¿ëÇÚµé·¯¸¦ Àû¿ëÇÑ URL¿¡
-    Á¢¼ÓÇÏ¸é ¹®¼­ ¿äÃ»À» ¼­ºñ½ºÇÏ±âÀ§ÇØ ¸ðµâ¾È¿¡ ÇÔ¼öµéÀÌ ¾î¶»°Ô
-    ±×¸®°í ¾î¶² ¼ø¼­·Î ºÒ¸®´ÂÁö ¾Ë ¼ö ÀÖ´Ù. ÀÌ Áö½Ã¾îÀÇ È¿°ú´Â
-    "<code>Example directive declared here: YES/NO</code>"·Î
-    È®ÀÎÇÒ ¼ö ÀÖ´Ù.</p>
+    <p><directive>Example</directive> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ example ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Úµé·¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½
+    ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ê´Â´ï¿½. example ï¿½ï¿½ï¿½ï¿½ï¿½Úµé·¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ URLï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½È¿ï¿½ ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½î¶»ï¿½ï¿½
+    ï¿½×¸ï¿½ï¿½ï¿½ ï¿½î¶² ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ò¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ï¿½ È¿ï¿½ï¿½ï¿½ï¿½
+    "<code>Example directive declared here: YES/NO</code>"ï¿½ï¿½
+    È®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 </usage>
 </directivesynopsis>
 

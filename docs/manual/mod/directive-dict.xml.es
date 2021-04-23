@@ -14,7 +14,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -61,11 +61,11 @@
       <dt><em>URL</em></dt>
       <dd>Un Localizador de Recursos Uniforme, incluye un esquema,
 		  nombre de host, y un path opcional como en
-      <code>http://www.example.com/path/to/file.html</code></dd>
+      <code>https://www.example.com/path/to/file.html</code></dd>
 
       <dt><em>Ruta de URL</em></dt>
       <dd>La parte de una <em>url</em> que sigue al esquema y el
-		  nombre de host como en <code>http://www.example.com/path/to/file.html</code>.
+		  nombre de host como en <code>https://www.example.com/path/to/file.html</code>.
       El <em>url-path</em> representa una vista-web de un recurso, en
       contraposición a una vista de sistema-de-ficheros.</dd>
 

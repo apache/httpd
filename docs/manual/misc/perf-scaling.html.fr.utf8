@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -16,12 +16,12 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Documentations diverses</a></div><div id="page-content"><div id="preamble"><h1>Amélioration des performances</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Documentations diverses</a></div><div id="page-content"><div id="preamble"><h1>Amélioration des performances</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/misc/perf-scaling.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/misc/perf-scaling.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
@@ -300,7 +300,7 @@ Swap:       3903784      12540  3891244</pre></div>
 		ont servies, ainsi que la charge CPU induite par httpd
 		et le reste du système. L'Apache Software Foundation
 		utilise elle-même <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> pour son
-		propre <a href="http://apache.org/server-status">site
+		propre <a href="https://apache.org/server-status">site
 		web</a>. Si vous ajoutez une directive
 		<code>ExtendedStatus On</code> à votre fichier
 		<code>httpd.conf</code>, la page de
@@ -388,7 +388,7 @@ Swap:       3903784      12540  3891244</pre></div>
 		effectivement en cours d'exécution ou du type
 		des applications installées. Vous pouvez bloquer ces
 		tentatives d'attaque en utilisant un pare-feu ou le
-		module <a href="http://www.modsecurity.org/">mod_security</a>,
+		module <a href="https://www.modsecurity.org/">mod_security</a>,
 		mais ceci dépasse la portée de cette discussion. 
                 </p>
                 <p>
@@ -768,7 +768,7 @@ Swap:       3903784      12540  3891244</pre></div>
             <p>Il est interessant de mettre en oeuvre une charge de test
 	    afin d'évaluer les performances du système en conditions
 	    réelles de fonctionnement. A cet effet, il existe des
-	    paquets commerciaux comme <a href="http://learnloadrunner.com/">LoadRunner</a>, mais
+	    paquets commerciaux comme <a href="https://learnloadrunner.com/">LoadRunner</a>, mais
 	    aussi de nombreux outils libres permettant de générer une
 	    charge de test pour votre serveur web. 
             </p>
@@ -798,7 +798,7 @@ Swap:       3903784      12540  3891244</pre></div>
                 </li>
                 <li>
                     <p>Des projets externes à l'ASF et réputés
-		    relativement corrects : grinder, httperf, tsung, <a href="http://funkload.nuxeo.org/">FunkLoad</a>.
+		    relativement corrects : grinder, httperf, tsung, <a href="https://funkload.nuxeo.org/">FunkLoad</a>.
                     </p>
                 </li>
             </ul>
@@ -1612,7 +1612,7 @@ CacheMaxExpire 21600</pre>
         <p>Armés du savoir-faire pour personnaliser un système afin
 	qu'il affiche les performances désirées, nous découvrirons vite
 	qu'<em>1</em> sytème à lui seul peut constituer un goulot
-	d'étranglement. A ce sujet, la page du Wiki <a href="http://wiki.apache.org/httpd/PerformanceScalingOut">PerformanceScalingOut</a>
+	d'étranglement. A ce sujet, la page du Wiki <a href="https://wiki.apache.org/httpd/PerformanceScalingOut">PerformanceScalingOut</a>
 	décrit comment adapter un système à mesure qu'il prend de
 	l'ampleur, ou comment personnaliser plusieurs systèmes dans leur
 	ensemble.
@@ -1625,7 +1625,7 @@ CacheMaxExpire 21600</pre>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/misc/perf-scaling.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/misc/perf-scaling.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -1640,8 +1640,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/misc/perf-scaling.
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }
