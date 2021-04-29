@@ -277,6 +277,9 @@ PATCHES/ISSUES THAT ARE BEING WORKED
      jorton: Adding ap_pregexec/_len which pass a pool would also work
              for internal users of this api; not sure if performance
              impact is significant from using malloc here.
+     jailletc36: maybe the mechanism used in r1887244+r1887245 could be a way
+                 to have this "userdata allocation on the appropriate pool, which
+                 would be thread-safe".
 
 PATCHES/ISSUES THAT ARE STALLED
 
