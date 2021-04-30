@@ -73,7 +73,6 @@ static apr_status_t keep_body_filter(ap_filter_t *f, apr_bucket_brigade *b,
     apr_bucket *bucket;
     apr_off_t len = 0;
 
-
     if (!ctx) {
         const char *lenp;
         request_dir_conf *dconf = ap_get_module_config(f->r->per_dir_config,
@@ -119,7 +118,6 @@ static apr_status_t keep_body_filter(ap_filter_t *f, apr_bucket_brigade *b,
 
         f->r->kept_body = apr_brigade_create(f->r->pool, f->r->connection->bucket_alloc);
         ctx->remaining = dconf->keep_body;
-
     }
 
     /* get the brigade from upstream, and read it in to get its length */
@@ -262,8 +260,8 @@ static apr_status_t kept_body_filter(ap_filter_t *f, apr_bucket_brigade *b,
 
     ctx->remaining -= readbytes;
     ctx->offset += readbytes;
-    return APR_SUCCESS;
 
+    return APR_SUCCESS;
 }
 
 /**
@@ -309,18 +307,18 @@ static void ap_request_insert_filter(request_rec * r)
                                        NULL, r, r->connection);
         }
     }
-
 }
 
-/**
- * Remove the kept_body and keep body filters from this specific request.
+/*
+ * Remove the kept_body and keep_body filters from this specific request.
  */
-static void ap_request_remove_filter(request_rec * r)
+static void ap_request_remove_filter(request_rec *r)
 {
-    ap_filter_t * f = r->input_filters;
+    ap_filter_t *f = r->input_filters;
+
     while (f) {
         if (f->frec->filter_func.in_func == kept_body_filter ||
-                f->frec->filter_func.in_func == keep_body_filter) {
+            f->frec->filter_func.in_func == keep_body_filter) {
             ap_remove_input_filter(f);
         }
         f = f->next;
