@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -47,7 +47,7 @@
     <p>Beaucoup a déjà été écrit à propos de HTTP/2 et de son fonctionnement. La
     documentation la plus officielle est bien entendu sa <a
     href="https://tools.ietf.org/html/rfc7540">RFC 7540</a> (ou <a
-    href="http://httpwg.org/specs/rfc7540.html">cette version au format plus
+    href="https://httpwg.org/specs/rfc7540.html">cette version au format plus
     lisible</a>). Vous trouverez ici une description des rouages de HTTP/2 dans
     leurs moindres détails.</p>
     <p>Le premier document à lire lorsqu'on ne connaît pas un mécanisme n'est
@@ -76,13 +76,13 @@
 	communication au sein d'une connexion HTTP/2 et comporte une en-tête et
 	une séquence d'octets de longueur variable dont la structure correspond
 	au type de trame. Voir la <a
-	href="http://httpwg.org/specs/rfc7540.html#FramingLayer">section
+	href="https://httpwg.org/specs/rfc7540.html#FramingLayer">section
 	correspondante</a> de la documentation officielle pour plus de
 	détails.</li>
         <li>Un <strong>stream</strong> est un flux bidirectionnel de frames au
 	sein d'une connexion HTTP/2. La notion correspondante dans HTTP/1 est un
 	échange de messages de type requête et réponse. Voir la <a
-	href="http://httpwg.org/specs/rfc7540.html#StreamsLayer">section
+	href="https://httpwg.org/specs/rfc7540.html#StreamsLayer">section
 	correspondante</a> de la documentation officielle pour plus de détails.</li>
         <li>HTTP/2 peut gérer <strong>plusieurs streams</strong> de données sur
 	la même connexion TCP, ce qui permet d'éviter le point de blocage
@@ -181,7 +181,7 @@ Protocols http/1.1
     à l'esprit si vous voulez éviter de longues sessions de débogage ! Si vous
     voulez être sûr de définir une chaîne d'algorithmes de chiffrement
     appropriée, évitez ceux qui sont listés dans la <a
-    href="http://httpwg.org/specs/rfc7540.html#BadCipherSuites">liste des
+    href="https://httpwg.org/specs/rfc7540.html#BadCipherSuites">liste des
     algorithmes de chiffrement TLS HTTP/2 à proscrire</a>.</p>
     </note>
     <p>L'ordre des protocoles indiqués est aussi important. Par défaut, le
@@ -257,7 +257,7 @@ ProtocolsHonorOrder Off
     des connexions SSL : Firefox v43, Chrome v45, Safari v9, iOS Safari v9,
     Opera v35, Chrome pour Android v49 et
     Internet Explorer v11 sous Windows10 (selon cette <a
-    href="http://caniuse.com/#search=http2">source</a>).</p>
+    href="https://caniuse.com/#search=http2">source</a>).</p>
     <p>D'autres clients et serveurs sont listés dans le <a
     href="https://github.com/http2/http2-spec/wiki/Implementations">wiki des
     implémentations</a> ; entre autres des implémentations pour c, c++, common

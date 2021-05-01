@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,69 +23,69 @@
 <modulesynopsis metafile="mod_charset_lite.xml.meta">
 
 <name>mod_charset_lite</name>
-<description>¹®ÀÚÁýÇÕ º¯È¯À» ÁöÁ¤</description>
+<description>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</description>
 <status>Experimental</status>
 <sourcefile>mod_charset_lite.c</sourcefile>
 <identifier>charset_lite_module</identifier>
 
 <summary>
-    <p>ÀÌ ¸ðµâÀº <strong>½ÇÇèÀûÀÎ</strong> ¸ðµâÀÌ°í, ÁÖÀÇÀÖ°Ô
-    »ç¿ëÇØ¾ß ÇÑ´Ù. ¿øÇÏ´Â µ¿ÀÛÀ» ÇÏ´ÂÁö
-    <module>mod_charset_lite</module> ¼³Á¤À» ½ÃÇèÇØºÁ¶ó.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ <strong>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</strong> ï¿½ï¿½ï¿½ï¿½Ì°ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½Ö°ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï´ï¿½ï¿½ï¿½
+    <module>mod_charset_lite</module> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Øºï¿½ï¿½ï¿½.</p>
 
-    <p><module>mod_charset_lite</module>¸¦ »ç¿ëÇÏ¿© ¹®¼­ ¿øº»ÀÇ
-    ¹®ÀÚÁýÇÕ°ú ¹®¼­¸¦ Å¬¶óÀÌ¾ðÆ®·Î º¸³»±â Àü¿¡ º¯È¯ÇÒ ¹®ÀÚÁýÇÕÀ»
-    ÁöÁ¤ÇÒ ¼ö ÀÖ´Ù. <module>mod_charset_lite</module>´Â Á÷Á¢
-    ÀÚ·á¸¦ º¯È¯ÇÏÁö¾Ê°í ´ë½Å ¾ÆÆÄÄ¡¿¡°Ô º¯È¯ÇÏ¶ó°í ¿äÃ»ÇÑ´Ù.
-    <module>mod_charset_lite</module>´Â EBCDIC°ú ASCII È¯°æ¿¡¼­
-    »ç¿ëÇÒ ¼ö ÀÖ´Ù. EBCDIC È¯°æ¿¡¼­ ¾ÆÆÄÄ¡´Â º¸Åë ¾ÆÆÄÄ¡ ÇÁ·Î¼¼½ºÀÇ
-    ÄÚµåÆäÀÌÁö¿¡¼­ ISO-8859-1 ¹®ÀÚÁýÇÕÀ¸·Î ¹®¼­¸¦ º¯È¯ÇÑ´Ù.
-    <module>mod_charset_lite</module>¸¦ »ç¿ëÇÏ¿© ´Ù¸¥ º¯È¯À»
-    Áö½ÃÇÒ ¼ö ÀÖ´Ù. ASCII È¯°æ¿¡¼­ ¾ÆÆÄÄ¡´Â ±âº»ÀûÀ¸·Î º¯È¯À»
-    ÇÏÁö ¾Ê±â¶§¹®¿¡, ¾î¶² º¯È¯À» À§ÇØ¼­´Â
-    <module>mod_charset_lite</module>°¡ ÇÊ¿äÇÏ´Ù.</p>
+    <p><module>mod_charset_lite</module>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. <module>mod_charset_lite</module>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ú·á¸¦ ï¿½ï¿½È¯ï¿½ï¿½ï¿½ï¿½ï¿½Ê°ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½Ï¶ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½Ñ´ï¿½.
+    <module>mod_charset_lite</module>ï¿½ï¿½ EBCDICï¿½ï¿½ ASCII È¯ï¿½æ¿¡ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. EBCDIC È¯ï¿½æ¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½Î¼ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ISO-8859-1 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½Ñ´ï¿½.
+    <module>mod_charset_lite</module>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½È¯ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ASCII È¯ï¿½æ¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±â¶§ï¿½ï¿½ï¿½ï¿½, ï¿½î¶² ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½ï¿½Ø¼ï¿½ï¿½ï¿½
+    <module>mod_charset_lite</module>ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Ï´ï¿½.</p>
 
-    <p>ÀÌ ¸ðµâÀº ·¯½Ã¾ÆÆÇ ¾ÆÆÄÄ¡ÀÇ <code>mod_charset</code>ÀÌ
-    Á¦°øÇÏ´Â ¼³Á¤ÀÇ ÀÏºÎ¸¦ Á¦°øÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ <code>mod_charset</code>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ÏºÎ¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 </summary>
 
-<section id="problems"><title>ÀÏ¹ÝÀûÀÎ ¹®Á¦Á¡</title>
+<section id="problems"><title>ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</title>
 
-    <section><title>Àß¸øµÈ ¹®ÀÚÁýÇÕ ÀÌ¸§</title>
+    <section><title>ï¿½ß¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½</title>
 
-      <p><module>mod_charset_lite</module>¸¦ »ç¿ëÇÏ´Â ½Ã½ºÅÛÀÇ
-      ARP ¹ø¿ª±â´ÉÀÌ <directive
-      module="mod_charset_lite">CharsetSourceEnc</directive>¿Í
-      <directive module="mod_charset_lite">CharsetDefault</directive>ÀÇ
-      ÆÄ¶ó¹ÌÅÍÀÎ ¹®ÀÚÁýÇÕ ÀÌ¸§À» Ã³¸®ÇÒ ¼ö ÀÖ¾î¾ß ÇÑ´Ù. ¹®ÀÚÁýÇÕ
-      ÀÌ¸§Àº Ç¥ÁØÈ­µÇÁö ¾Ê¾Ò°í, http Çì´õ¿¡ »ç¿ëÇÏ´Â °ª°ú Ç×»ó
-      °°Áö´Â ¾Ê´Ù. ÇöÀç APRÀº iconv(3)¸¸À» »ç¿ëÇÏ±â¶§¹®¿¡,
-      ´ÙÀ½°ú °°ÀÌ iconv(1) ÇÁ·Î±×·¥À» »ç¿ëÇÏ¿© Æ¯Á¤ ¹®ÀÚÁýÇÕ
-      ÀÌ¸§À» »ç¿ëÇÒ ¼ö ÀÖ´ÂÁö ½±°Ô ¾Ë ¼ö ÀÖ´Ù:</p>
+      <p><module>mod_charset_lite</module>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ARP ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <directive
+      module="mod_charset_lite">CharsetSourceEnc</directive>ï¿½ï¿½
+      <directive module="mod_charset_lite">CharsetDefault</directive>ï¿½ï¿½
+      ï¿½Ä¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö¾ï¿½ï¿½ ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½Ì¸ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½È­ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¾Ò°ï¿½, http ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½×»ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´ï¿½. ï¿½ï¿½ï¿½ï¿½ APRï¿½ï¿½ iconv(3)ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï±â¶§ï¿½ï¿½ï¿½ï¿½,
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ iconv(1) ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ Æ¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½:</p>
 
       <example>
         iconv -f charsetsourceenc-value -t charsetdefault-value
       </example>
     </section>
 
-    <section><title>³»¿ë°ú º¯È¯±ÔÄ¢ÀÇ ¹®ÀÚÁýÇÕÀÌ ¼­·Î ´Ù¸§</title>
+    <section><title>ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½Ä¢ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½</title>
 
-      <p>º¯È¯±ÔÄ¢ÀÌ »óÈ²¿¡ ¸ÂÁö¾ÊÀ¸¸é ´ÙÀ½°ú °°Àº ¿©·¯ ¹æ½ÄÀ¸·Î
-      º¯È¯ÀÌ ½ÇÆÐÇÒ ¼ö ÀÖ´Ù:</p>
+      <p>ï¿½ï¿½È¯ï¿½ï¿½Ä¢ï¿½ï¿½ ï¿½ï¿½È²ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½:</p>
 
       <ul>
-      <li>º¯È¯±â´ÉÀÌ ½ÇÆÐ ¹ÝÈ¯ÄÚµå¸¦ ¹ÝÈ¯ÇÏ°í ¿¬°áÀÌ ²÷¾îÁú
-      ¼ö ÀÖ´Ù.</li>
+      <li>ï¿½ï¿½È¯ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½Úµå¸¦ ï¿½ï¿½È¯ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ ï¿½Ö´ï¿½.</li>
 
-      <li>ÀÔ·Â¹öÆÛ¸¦ º¯È¯ÇÏÁö ¸øÇÒ¶§ Ãâ·Â¹öÆÛ¿¡ ´ë½Å Æ¯º°ÇÑ
-      ¹®ÀÚ¸¦ (¿¹, ¹°À½Ç¥) ÀûÀ» ¼ö ÀÖ´Ù.</li>
+      <li>ï¿½Ô·Â¹ï¿½ï¿½Û¸ï¿½ ï¿½ï¿½È¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ò¶ï¿½ ï¿½ï¿½Â¹ï¿½ï¿½Û¿ï¿½ ï¿½ï¿½ï¿½ Æ¯ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½Ú¸ï¿½ (ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½Ç¥) ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</li>
       </ul>
     </section>
 </section>
 
 <directivesynopsis>
 <name>CharsetSourceEnc</name>
-<description>ÆÄÀÏ ¿øº»ÀÇ ¹®ÀÚÁýÇÕ</description>
+<description>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</description>
 <syntax>CharsetSourceEnc <var>charset</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
@@ -94,14 +94,14 @@
 <override>FileInfo</override>
 
 <usage>
-    <p><directive>CharsetSourceEnc</directive> Áö½Ã¾î´Â Áö½Ã¾î¸¦
-    »ç¿ëÇÑ À§Ä¡¿¡ ÀÖ´Â ÆÄÀÏµé ¿øº»ÀÇ ¹®ÀÚÁýÇÕÀ» ÁöÁ¤ÇÑ´Ù.</p>
+    <p><directive>CharsetSourceEnc</directive> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½Ïµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <p><var>charset</var> ¾Æ±Ô¸ÕÆ®¿¡´Â APRÀÌ Áö¿øÇÏ´Â ¹®ÀÚÁýÇÕ
-    ÀÌ¸§À» »ç¿ëÇØ¾ß ÇÑ´Ù. ÀÏ¹ÝÀûÀ¸·Î iconv°¡ Áö¿øÇÏ´Â ¹®ÀÚÁýÇÕÀ»
-    ÀÇ¹ÌÇÑ´Ù.</p>
+    <p><var>charset</var> ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ APRï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½. ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ iconvï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ç¹ï¿½ï¿½Ñ´ï¿½.</p>
     
-    <example><title>¿¹Á¦</title>
+    <example><title>ï¿½ï¿½ï¿½ï¿½</title>
       &lt;Directory /export/home/trawick/apacheinst/htdocs/convert&gt;<br />
       <indent>
         CharsetSourceEnc  UTF-16BE<br />
@@ -110,13 +110,13 @@
       &lt;/Directory&gt;
     </example>
 
-    <p>Solaris 8ÀÇ iconv°¡ ÀÌ ¿¹Á¦ÀÇ ¹®ÀÚÁýÇÕÀ» Áö¿øÇÑ´Ù.</p>
+    <p>Solaris 8ï¿½ï¿½ iconvï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>CharsetDefault</name>
-<description>º¯È¯ÇÒ ¹®ÀÚÁýÇÕ</description>
+<description>ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</description>
 <syntax>CharsetDefault <var>charset</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
@@ -125,14 +125,14 @@
 <override>FileInfo</override>
 
 <usage>
-    <p><directive>CharsetDefault</directive> Áö½Ã¾î´Â Áö½Ã¾î¸¦
-    »ç¿ëÇÑ À§Ä¡¿¡ ÀÖ´Â ¿øº»À» º¯È¯ÇÒ ¹®ÀÚÁýÇÕÀ» ÁöÁ¤ÇÑ´Ù.</p>
+    <p><directive>CharsetDefault</directive> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <p><var>charset</var> ¾Æ±Ô¸ÕÆ®¿¡´Â APRÀÌ Áö¿øÇÏ´Â ¹®ÀÚÁýÇÕ
-    ÀÌ¸§À» »ç¿ëÇØ¾ß ÇÑ´Ù. ÀÏ¹ÝÀûÀ¸·Î iconv°¡ Áö¿øÇÏ´Â ¹®ÀÚÁýÇÕÀ»
-    ÀÇ¹ÌÇÑ´Ù.</p>
+    <p><var>charset</var> ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ APRï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½. ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ iconvï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ç¹ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <example><title>¿¹Á¦</title>
+    <example><title>ï¿½ï¿½ï¿½ï¿½</title>
       &lt;Directory /export/home/trawick/apacheinst/htdocs/convert&gt;<br />
       <indent>
         CharsetSourceEnc  UTF-16BE<br />
@@ -145,7 +145,7 @@
 
 <directivesynopsis>
 <name>CharsetOptions</name>
-<description>¹®ÀÚÁýÇÕ º¯È¯ ±â´ÉÀ» ¼³Á¤</description>
+<description>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</description>
 <syntax>CharsetOptions <var>option</var> [<var>option</var>] ...</syntax>
 <default>CharsetOptions DebugLevel=0 NoImplicitAdd</default>
 <contextlist><context>server config</context>
@@ -155,30 +155,30 @@
 <override>FileInfo</override>
 
 <usage>
-    <p><directive>CharsetOptions</directive> Áö½Ã¾î´Â
-    <module>mod_charset_lite</module>ÀÇ ±â´ÉÀ» ¼³Á¤ÇÑ´Ù.
-    <var>Option</var>¿¡´Â ¾Æ·¡ Ç×¸ñµéÀ» »ç¿ëÇÒ ¼ö ÀÖ´Ù</p>
+    <p><directive>CharsetOptions</directive> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½
+    <module>mod_charset_lite</module>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+    <var>Option</var>ï¿½ï¿½ï¿½ï¿½ ï¿½Æ·ï¿½ ï¿½×¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½</p>
 
     <dl>
       <dt><code>DebugLevel=<var>n</var></code></dt>
 
-      <dd><code>DebugLevel</code> Å°¿öµå´Â
-      <module>mod_charset_lite</module>°¡ ±â·ÏÇÏ´Â µð¹ö±×¹®±¸ÀÇ
-      ¼öÁØÀ» ¼³Á¤ÇÑ´Ù. ±âº»ÀûÀ¸·Î ¾î¶² °Íµµ ±â·ÏÇÏÁö ¾Ê´Â´Ù.
-      ÀÌ´Â <code>DebugLevel=0</code>°ú °°´Ù. ³ôÀº ¼ýÀÚ¸¦ »ç¿ëÇÒ¼ö·Ï
-      ´õ ¸¹Àº µð¹ö±×¹®±¸¸¦ ±â·ÏÇÏ°ÔµÇ¾î ¼­¹ö ¼º´ÉÀÌ ¶³¾îÁø´Ù.
-      ¼ýÀÚ°ªÀÇ ½ÇÁ¦ ÀÇ¹Ì´Â <code>mod_charset_lite.c</code> ¾ÕºÎºÐÀÇ
-      DBGLVL_ »ó¼ö Á¤ÀÇ¸¦ Âü°íÇÏ¶ó.</dd>
+      <dd><code>DebugLevel</code> Å°ï¿½ï¿½ï¿½ï¿½ï¿½
+      <module>mod_charset_lite</module>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½×¹ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½î¶² ï¿½Íµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.
+      ï¿½Ì´ï¿½ <code>DebugLevel=0</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ò¼ï¿½ï¿½ï¿½
+      ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½×¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ÔµÇ¾ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
+      ï¿½ï¿½ï¿½Ú°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ç¹Ì´ï¿½ <code>mod_charset_lite.c</code> ï¿½ÕºÎºï¿½ï¿½ï¿½
+      DBGLVL_ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ç¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.</dd>
 
       <dt><code>ImplicitAdd | NoImplicitAdd</code></dt>
 
-      <dd><code>ImplicitAdd</code> Å°¿öµå´Â ³»¿ëÀ» º¯È¯ÇÒ
-      ¹®ÀÚÁýÇÕÀ» ÁöÁ¤ÇÏ¸é ÀÚµ¿À¸·Î <module>mod_charset_lite</module>¸¦
-      ÇÊÅÍ¿¡ Ãß°¡ÇÑ´Ù. <directive module="mod_mime"
-      >AddOutputFilter</directive> Áö½Ã¾î·Î ÇÊÅÍ¼ø¼­¸¦ Á÷Á¢
-      ÁöÁ¤ÇÑ´Ù¸é, <code>NoImplicitAdd</code>¸¦ »ç¿ëÇÏ¿©
-      <module>mod_charset_lite</module>°¡ ÀÚµ¿À¸·Î ÇÊÅÍ¿¡
-      Ãß°¡µÇÁö¾Êµµ·Ï ÇØ¾ß ÇÑ´Ù.</dd>
+      <dd><code>ImplicitAdd</code> Å°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ <module>mod_charset_lite</module>ï¿½ï¿½
+      ï¿½ï¿½ï¿½Í¿ï¿½ ï¿½ß°ï¿½ï¿½Ñ´ï¿½. <directive module="mod_mime"
+      >AddOutputFilter</directive> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½, <code>NoImplicitAdd</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½
+      <module>mod_charset_lite</module>ï¿½ï¿½ ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Í¿ï¿½
+      ï¿½ß°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½ï¿½ ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½.</dd>
     </dl>
 </usage>
 </directivesynopsis>

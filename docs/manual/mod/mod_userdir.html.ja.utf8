@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -17,12 +17,12 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
 <p class="apache">Apache HTTP サーバ バージョン 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.5</a> &gt; <a href="./">モジュール</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="https://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.5</a> &gt; <a href="./">モジュール</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache モジュール mod_userdir</h1>
 <div class="toplang">
@@ -44,7 +44,7 @@
 <h3>概要</h3>
 
 <p>このモジュールは、
-<code>http://example.com/~user/</code>
+<code>https://example.com/~user/</code>
 構文を使ってユーザ専用ディレクトリにアクセスできるようにします。</p>
 </div>
 <div id="quickview"><h3 class="directives">ディレクティブ</h3>
@@ -100,7 +100,7 @@
     キーワードも <code>UserDir</code> に現われていなければ、
     引数はファイル名パターンとして扱われ、
     名前からディレクトリへの変換の指定を行なう時に使われます。
-    <code>http://www.example.com/~bob/one/two.html</code>
+    <code>https://www.example.com/~bob/one/two.html</code>
     へのリクエストは次のように変換されます:</p>
 
 <table>
@@ -117,11 +117,11 @@
 <table>
 <tr><th>UserDir ディレクティブ</th>
 <th>変換後のパス</th></tr>
-<tr><td>UserDir http://www.example.com/users</td><td>http://www.example.com/users/bob/one/two.html</td></tr>
+<tr><td>UserDir https://www.example.com/users</td><td>https://www.example.com/users/bob/one/two.html</td></tr>
 <tr><td>UserDir
-http://www.example.com/*/usr</td><td>http://www.example.com/bob/usr/one/two.html</td></tr>
+https://www.example.com/*/usr</td><td>https://www.example.com/bob/usr/one/two.html</td></tr>
 <tr><td>UserDir
-http://www.example.com/~*/</td><td>http://www.example.com/~bob/one/two.html</td></tr>
+https://www.example.com/~*/</td><td>https://www.example.com/~bob/one/two.html</td></tr>
 </table> 
 
 <div class="note">
@@ -160,12 +160,12 @@ UserDir disabled user4 user5 user6
 次のようなコマンドを使うと:</p>
 
 <div class="example"><p><code>
-Userdir public_html /usr/web http://www.example.com/
+Userdir public_html /usr/web https://www.example.com/
 </code></p></div>
 
-<p>http://www.example.com/~bob/one/two.html へのリクエストはまず
+<p>https://www.example.com/~bob/one/two.html へのリクエストはまず
 ~bob/public_html/one/two.html のページを調べ、その次に
-/usr/web/bob/one/two.html を調べ、最後に http://www.example.com/bob/one/two.html
+/usr/web/bob/one/two.html を調べ、最後に https://www.example.com/bob/one/two.html
 へのリダイレクトを送ります。</p>
 
 <p>リダイレクトを加える場合は、リストの最後の選択肢でなければなりません。
@@ -195,7 +195,7 @@ Apache はリダイレクトが成功するかどうかを決めることはで�
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">コメント</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_userdir.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/mod/mod_userdir.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -210,8 +210,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_userdir.ht
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />この文書は <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
-<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

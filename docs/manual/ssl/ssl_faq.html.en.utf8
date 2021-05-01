@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -16,12 +16,12 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">SSL/TLS</a></div><div id="page-content"><div id="preamble"><h1>SSL/TLS Strong Encryption: FAQ</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">SSL/TLS</a></div><div id="page-content"><div id="preamble"><h1>SSL/TLS Strong Encryption: FAQ</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/ssl/ssl_faq.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/ssl/ssl_faq.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
@@ -136,11 +136,11 @@ relative hyperlinks?</a></li>
     line client which directly understands both HTTP and HTTPS, can
     perform GET and POST operations, can use a proxy, supports byte
     ranges, etc. you should have a look at the nifty
-    <a href="http://curl.haxx.se/">cURL</a> tool. Using this, you can
+    <a href="https://curl.haxx.se/">cURL</a> tool. Using this, you can
     check that Apache is responding correctly to requests via HTTP and
     HTTPS as follows:</p>
 
-    <div class="example"><p><code>$ curl http://localhost/<br />
+    <div class="example"><p><code>$ curl https://localhost/<br />
     $ curl https://localhost/</code></p></div>
 
 
@@ -148,7 +148,7 @@ relative hyperlinks?</a></li>
     to my SSL-aware Apache server?</a></h3>
 
 <p>This can happen when you try to connect to a HTTPS server (or virtual
-    server) via HTTP (eg, using <code>http://example.com/</code> instead of
+    server) via HTTP (eg, using <code>https://example.com/</code> instead of
     <code>https://example.com</code>). It can also happen when trying to
     connect via HTTPS to a HTTP server (eg, using
     <code>https://example.com/</code> on a server which doesn't support HTTPS,
@@ -180,7 +180,7 @@ relative hyperlinks?</a></li>
     manipulate relative hyperlinks, to achieve the same effect.</p>
     <pre class="prettyprint lang-config">RewriteEngine on
 RewriteRule   "^/(.*)_SSL$"   "https://%{SERVER_NAME}/$1" [R,L]
-RewriteRule   "^/(.*)_NOSSL$" "http://%{SERVER_NAME}/$1"  [R,L]</pre>
+RewriteRule   "^/(.*)_NOSSL$" "https://%{SERVER_NAME}/$1"  [R,L]</pre>
 
 
     <p>This rewrite ruleset lets you use hyperlinks of the form
@@ -760,7 +760,7 @@ Explorer (MSIE)?</a></h3>
 
     <p>To generate custom DH parameters, use the <code>openssl dhparam 1024</code>
     command. Alternatively, you can use the following standard 1024-bit DH
-    parameters from <a href="http://www.ietf.org/rfc/rfc2409.txt">RFC 2409</a>,
+    parameters from <a href="https://www.ietf.org/rfc/rfc2409.txt">RFC 2409</a>,
     section 6.2:</p>
     <div class="example"><pre>-----BEGIN DH PARAMETERS-----
 MIGHAoGBAP//////////yQ/aoiFowjTExmKLgNwc0SkCTgiKZ8x0Agu+pjsTmyJR
@@ -794,8 +794,8 @@ for my core dump?</a></li>
 
     <dl>
     <dt>Answers in the User Manual's F.A.Q. List (this)</dt>
-    <dd><a href="http://httpd.apache.org/docs/trunk/ssl/ssl_faq.html">
-        http://httpd.apache.org/docs/trunk/ssl/ssl_faq.html</a><br />
+    <dd><a href="https://httpd.apache.org/docs/trunk/ssl/ssl_faq.html">
+        https://httpd.apache.org/docs/trunk/ssl/ssl_faq.html</a><br />
         First check the F.A.Q. (this text). If your problem is a common
         one, it may have been answered several times before, and been included
         in this doc.
@@ -819,8 +819,8 @@ of mod_ssl problems?</a></h3>
     </li>
 
     <li><em>Write a Problem Report in the Bug Database</em><br />
-        <a href="http://httpd.apache.org/bug_report.html">
-        http://httpd.apache.org/bug_report.html</a><br />
+        <a href="https://httpd.apache.org/bug_report.html">
+        https://httpd.apache.org/bug_report.html</a><br />
         This is the last way of submitting your problem report. You should only
         do this if you've already posted to the mailing lists, and had no success.
         Please follow the instructions on the above page <em>carefully</em>.
@@ -838,7 +838,7 @@ provide when writing a bug report?</a></h3>
         by running <code>httpd -v</code>. The OpenSSL version can be
         determined by running <code>openssl version</code>. Alternatively, if
         you have Lynx installed, you can run the command <code>lynx -mime_header
-        http://localhost/ | grep Server</code> to gather this information in a
+        https://localhost/ | grep Server</code> to gather this information in a
         single step.
     </dd>
 
@@ -910,7 +910,7 @@ the reason for my core dump?</a></h3>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/ssl/ssl_faq.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/ssl/ssl_faq.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -925,8 +925,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/ssl/ssl_faq.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

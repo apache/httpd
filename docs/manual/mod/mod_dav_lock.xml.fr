@@ -14,7 +14,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -38,7 +38,7 @@
     activation n&eacute;cessite l'utilisation de <module>mod_dav</module>. Mais
     sans fournisseur support pour l'utiliser, il n'est d'aucun service
     et ne doit pas &ecirc;tre charg&eacute; dans le serveur. <a
-    href="http://subversion.apache.org/">mod_dav_svn</a>, le module qui
+    href="https://subversion.apache.org/">mod_dav_svn</a>, le module qui
     impl&eacute;mente le fournisseur subversion, est un exemple
     de module de support qui utilise effectivement
     <module>mod_dav_lock</module>.</p>

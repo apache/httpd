@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
 <meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -17,85 +17,85 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">¸ðµâ</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">ï¿½ï¿½ï¿½</a></div>
 <div id="page-content">
-<div id="preamble"><h1>¾ÆÆÄÄ¡ ¸ðµâ mod_dav</h1>
+<div id="preamble"><h1>ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ mod_dav</h1>
 <div class="toplang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/mod/mod_dav.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/mod/mod_dav.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_dav.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_dav.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_dav.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">ÀÌ ¹®¼­´Â ÃÖ½ÅÆÇ ¹ø¿ªÀÌ ¾Æ´Õ´Ï´Ù.
-            ÃÖ±Ù¿¡ º¯°æµÈ ³»¿ëÀº ¿µ¾î ¹®¼­¸¦ Âü°íÇÏ¼¼¿ä.</div>
-<table class="module"><tr><th><a href="module-dict.html#Description">¼³¸í:</a></th><td>Distributed Authoring and Versioning
-(<a href="http://www.webdav.org/">WebDAV</a>) ±â´É</td></tr>
-<tr><th><a href="module-dict.html#Status">»óÅÂ:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">¸ðµâ¸í:</a></th><td>dav_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">¼Ò½ºÆÄÀÏ:</a></th><td>mod_dav.c</td></tr></table>
-<h3>¿ä¾à</h3>
+<div class="outofdate">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Õ´Ï´ï¿½.
+            ï¿½Ö±Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Distributed Authoring and Versioning
+(<a href="https://www.webdav.org/">WebDAV</a>) ï¿½ï¿½ï¿½</td></tr>
+<tr><th><a href="module-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">ï¿½ï¿½ï¿½ï¿½:</a></th><td>dav_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">ï¿½Ò½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>mod_dav.c</td></tr></table>
+<h3>ï¿½ï¿½ï¿½</h3>
 
-    <p>ÀÌ ¸ðµâÀº ¾ÆÆÄÄ¡¿¡ <a href="http://www.webdav.org">WebDAV</a>
-    ('Web-based Distributed Authoring and Versioning') class 1°ú
-    class 2 ±â´ÉÀ» Ãß°¡ÇÑ´Ù. WebDAV´Â ¿ø°Ý À¥¼­¹öÀÇ ÀÚ¿ø°ú
-    ÄÝ·º¼Ç(collection)À» <span class="transnote">(<em>¿ªÁÖ;</em> ÄÝ·º¼ÇÀº ÆÄÀÏ½Ã½ºÅÛÀÇ µð·ºÅä¸®¿Í
-    °°Àº °³³äÀÌ´Ù)</span> ¸¸µé°í, ¿Å±â°í, º¹»çÇÏ°í, Áö¿ï
-    ¼ö ÀÖµµ·Ï HTTP ÇÁ·ÎÅäÄÝÀ» È®ÀåÇÑ °ÍÀÌ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ <a href="https://www.webdav.org">WebDAV</a>
+    ('Web-based Distributed Authoring and Versioning') class 1ï¿½ï¿½
+    class 2 ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ñ´ï¿½. WebDAVï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ú¿ï¿½ï¿½ï¿½
+    ï¿½Ý·ï¿½ï¿½ï¿½(collection)ï¿½ï¿½ <span class="transnote">(<em>ï¿½ï¿½ï¿½ï¿½;</em> ï¿½Ý·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½)</span> ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½Å±ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½, ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ ï¿½Öµï¿½ï¿½ï¿½ HTTP ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½.</p>
 </div>
-<div id="quickview"><h3>ÁÖÁ¦</h3>
+<div id="quickview"><h3>ï¿½ï¿½ï¿½ï¿½</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#example">WebDAV »ç¿ëÇÏ±â</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#security">º¸¾È ¹®Á¦</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#complex">º¹ÀâÇÑ ¼³Á¤</a></li>
-</ul><h3 class="directives">Áö½Ã¾îµé</h3>
+<li><img alt="" src="../images/down.gif" /> <a href="#example">WebDAV ï¿½ï¿½ï¿½ï¿½Ï±ï¿½</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#security">ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#complex">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a></li>
+</ul><h3 class="directives">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#dav">Dav</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#davdepthinfinity">DavDepthInfinity</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#davmintimeout">DavMinTimeout</a></li>
 </ul>
-<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_dav">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_dav">Report a bug</a></li></ul><h3>Âü°í</h3>
+<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_dav">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_dav">Report a bug</a></li></ul><h3>ï¿½ï¿½ï¿½ï¿½</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/mod_dav_fs.html#davlockdb">DavLockDB</a></code></li>
 <li><code class="directive"><a href="../mod/core.html#limitxmlrequestbody">LimitXMLRequestBody</a></code></li>
-<li><a href="http://www.webdav.org">WebDAV Á¤º¸</a></li>
+<li><a href="https://www.webdav.org">WebDAV ï¿½ï¿½ï¿½ï¿½</a></li>
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="example" id="example">WebDAV »ç¿ëÇÏ±â</a> <a title="Permanent link" href="#example" class="permalink">&para;</a></h2>
-    <p><code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>¸¦ »ç¿ëÇÏ·Á¸é <code>httpd.conf</code>
-    ÆÄÀÏ¿¡ ¾Æ·¡°ú °°ÀÌ Ãß°¡ÇÑ´Ù:</p>
+<h2><a name="example" id="example">WebDAV ï¿½ï¿½ï¿½ï¿½Ï±ï¿½</a> <a title="Permanent link" href="#example" class="permalink">&para;</a></h2>
+    <p><code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ <code>httpd.conf</code>
+    ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½Æ·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ñ´ï¿½:</p>
 
     <div class="example"><p><code>Dav On</code></p></div>
 
-    <p>±×·¯¸é <code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code> ¸ðµâÀÌ ±¸ÇöÇÏ´Â DAV
-    ÆÄÀÏ½Ã½ºÅÛ Á¦°øÀÚ(provider)¸¦ »ç¿ëÇÑ´Ù. ±×·¯¹Ç·Î ÀÌ ¸ðµâµµ
-    ¼­¹ö¿¡ °°ÀÌ ÄÄÆÄÀÏµÇÀÖ°Å³ª <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code> Áö½Ã¾î·Î ½ÇÇàÁß¿¡
-    ÀÐ¾îµé¿©¾ß ÇÑ´Ù.</p>
+    <p>ï¿½×·ï¿½ï¿½ï¿½ <code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code> ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ DAV
+    ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(provider)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½×·ï¿½ï¿½Ç·ï¿½ ï¿½ï¿½ ï¿½ï¿½âµµ
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½Ö°Å³ï¿½ <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ß¿ï¿½
+    ï¿½Ð¾ï¿½é¿©ï¿½ï¿½ ï¿½Ñ´ï¿½.</p>
     
-    <p>¶Ç, DAV Àá±Ý(lock) µ¥ÀÌÅÍº£ÀÌ½ºÀÇ À§Ä¡¸¦ <code>httpd.conf</code>
-    ÆÄÀÏÀÇ Àü¿ª ºÎºÐ¿¡ <code class="directive"><a href="../mod/mod_dav_fs.html#davlockdb">DavLockDB</a></code> Áö½Ã¾î¸¦ »ç¿ëÇÏ¿©
-    ÁöÁ¤ÇØ¾ß ÇÑ´Ù:</p>
+    <p>ï¿½ï¿½, DAV ï¿½ï¿½ï¿½(lock) ï¿½ï¿½ï¿½ï¿½ï¿½Íºï¿½ï¿½Ì½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ <code>httpd.conf</code>
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ÎºÐ¿ï¿½ <code class="directive"><a href="../mod/mod_dav_fs.html#davlockdb">DavLockDB</a></code> ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½:</p>
 
     <div class="example"><p><code>
       DavLockDB /usr/local/apache2/var/DavLock
     </code></p></div>
 
-    <p>¾ÆÆÄÄ¡¸¦ ½ÇÇàÇÏ´Â <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code>¿Í <code class="directive"><a href="../mod/mpm_common.html#group">Group</a></code>Àº Àá±Ý µ¥ÀÌÅÍº£ÀÌ½º°¡
-    ÀÖ´Â µð·ºÅä¸®¿¡ ¾²±â ±ÇÇÑÀ» °¡Á®¾ß ÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code>ï¿½ï¿½ <code class="directive"><a href="../mod/mpm_common.html#group">Group</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Íºï¿½ï¿½Ì½ï¿½ï¿½ï¿½
+    ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½.</p>
 
-    <p>DAV¸¦ »ç¿ëÇÏ´Â À§Ä¡¿¡ Á¢±ÙÀ» Á¦ÇÑÇÏ±âÀ§ÇØ <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> Áö½Ã¾î
-    ¾È¿¡ <code class="directive"><a href="../mod/core.html#limit">&lt;Limit&gt;</a></code>
-    Áö½Ã¾î¸¦ »ç¿ëÇÒ ¼ö ÀÖ´Ù. DAV Å¬¶óÀÌ¾ðÆ®°¡ ÇÑ¹øÀÇ ¿äÃ»¿¡
-    º¸³¾ ¼ö ÀÖ´Â ÃÖ´ë ¹ÙÀÌÆ®¼ö¸¦ Á¦ÇÑÇÏ·Á¸é <code class="directive"><a href="../mod/core.html#limitxmlrequestbody">LimitXMLRequestBody</a></code> Áö½Ã¾î¸¦ »ç¿ëÇÑ´Ù.
-    "ÀÏ¹ÝÀûÀÎ" <code class="directive"><a href="../mod/core.html#limitrequestbody">LimitRequestBody</a></code>
-    Áö½Ã¾î´Â DAV ¿äÃ»°ú °ü°è¾ø´Ù.</p>
+    <p>DAVï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> ï¿½ï¿½ï¿½Ã¾ï¿½
+    ï¿½È¿ï¿½ <code class="directive"><a href="../mod/core.html#limit">&lt;Limit&gt;</a></code>
+    ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. DAV Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½Ñ¹ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ <code class="directive"><a href="../mod/core.html#limitxmlrequestbody">LimitXMLRequestBody</a></code> ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+    "ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½" <code class="directive"><a href="../mod/core.html#limitrequestbody">LimitRequestBody</a></code>
+    ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ DAV ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.</p>
 
-    <div class="example"><h3>ÀüÃ¼ ¿¹Á¦</h3><p><code>
+    <div class="example"><h3>ï¿½ï¿½Ã¼ ï¿½ï¿½ï¿½ï¿½</h3><p><code>
       DavLockDB /usr/local/apache2/var/DavLock<br />
       <br />
        &lt;Location /foo&gt;<br />
@@ -117,50 +117,50 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="security" id="security">º¸¾È ¹®Á¦</a> <a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
+<h2><a name="security" id="security">ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a> <a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
 
-    <p>DAV¸¦ »ç¿ëÇÏ¸é ¿ø°Ý Å¬¶óÀÌ¾ðÆ®°¡ ¼­¹öÀÇ ÆÄÀÏÀ» Á¶ÀÛÇÒ
-    ¼ö ÀÖ±â¶§¹®¿¡, <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>¸¦ »ç¿ëÇÏ±â Àü¿¡
-    ¼­¹ö°¡ ¾ÈÀüÇÑÁö Æ¯º°È÷ °ü½ÉÀ» °¡Á®¾ß ÇÑ´Ù.</p>
+    <p>DAVï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ ï¿½Ö±â¶§ï¿½ï¿½ï¿½ï¿½, <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Æ¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½.</p>
 
-    <p>¼­¹ö¿¡¼­ DAV°¡ °¡´ÉÇÑ À§Ä¡´Â ÀÎÁõÀ¸·Î º¸È£ÇØ¾ß ÇÑ´Ù.
-    HTTP Basic Authentication´Â ÃßÃµÇÏÁö ¾Ê´Â´Ù. ÃÖ¼ÒÇÑ
-    <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code> ¸ðµâÀÌ Á¦°øÇÏ´Â HTTP Digest
-    AuthenticationÀ» »ç¿ëÇØ¾ß ÇÑ´Ù. °ÅÀÇ ¸ðµç WebDAV Å¬¶óÀÌ¾ðÆ®´Â
-    ÀÌ ÀÎÁõ ¹æ½ÄÀ» Áö¿øÇÑ´Ù. ¾Æ´Ï¸é <a href="../ssl/">SSL</a>
-    ¿¬°á¿¡¼­ Basic AuthenticationÀ» »ç¿ëÇÒ ¼öµµ ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ DAVï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È£ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½.
+    HTTP Basic Authenticationï¿½ï¿½ ï¿½ï¿½Ãµï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½. ï¿½Ö¼ï¿½ï¿½ï¿½
+    <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code> ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ HTTP Digest
+    Authenticationï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ WebDAV Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½
+    ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½Æ´Ï¸ï¿½ <a href="../ssl/">SSL</a>
+    ï¿½ï¿½ï¿½á¿¡ï¿½ï¿½ Basic Authenticationï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <p><code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>°¡ ÆÄÀÏÀ» Á¶ÀÛÇÏ·Á¸é, ¾ÆÆÄÄ¡¸¦
-    ½ÇÇàÇÏ´Â <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code>¿Í
-    <code class="directive"><a href="../mod/mpm_common.html#group">Group</a></code>Àº ÇØ´ç
-    µð·ºÅä¸®¿Í ÆÄÀÏ¿¡ ¾²±â ±ÇÇÑÀ» °¡Á®¾ß ÇÑ´Ù. ¶Ç, »õ·Î »ý¼ºÇÑ
-    ÆÄÀÏÀº <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code>¿Í
-    <code class="directive"><a href="../mod/mpm_common.html#group">Group</a></code>ÀÌ ¼ÒÀ¯ÇÏ°Ô
-    µÈ´Ù. ±×·¡¼­ ¾Æ¹«³ª ÀÌ °èÁ¤¿¡ Á¢±ÙÇÒ ¼ö ¾øµµ·Ï ÇÏ¶ó. DAV
-    ÀúÀå¼Ò´Â ¾ÆÆÄÄ¡¸¸ Á¢±ÙÇÒ ¼ö ÀÖ´Ù°í °¡Á¤ÇÑ´Ù. ¾ÆÆÄÄ¡¸¦ ÅëÇÏÁö¾Ê°í
-    (¿¹¸¦ µé¾î FTP³ª ÆÄÀÏ½Ã½ºÅÛ µµ±¸¸¦ »ç¿ëÇÏ¿©) ÆÄÀÏÀ» ¼öÁ¤ÇÔÀ»
-    Çã¿ëÇÏ¸é ¾ÈµÈ´Ù.</p>
+    <p><code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code>ï¿½ï¿½
+    <code class="directive"><a href="../mod/mpm_common.html#group">Group</a></code>ï¿½ï¿½ ï¿½Ø´ï¿½
+    ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½. ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code>ï¿½ï¿½
+    <code class="directive"><a href="../mod/mpm_common.html#group">Group</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½
+    ï¿½È´ï¿½. ï¿½×·ï¿½ï¿½ï¿½ ï¿½Æ¹ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï¶ï¿½. DAV
+    ï¿½ï¿½ï¿½ï¿½Ò´ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´Ù°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê°ï¿½
+    (ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ FTPï¿½ï¿½ ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ÈµÈ´ï¿½.</p>
 
-    <p><code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>´Â ¿©·¯ ¼­ºñ½º°ÅºÎ °ø°ÝÀÇ ´ë»óÀÌ
-    µÉ ¼ö ÀÖ´Ù. <code class="directive"><a href="../mod/core.html#limitxmlrequestbody">LimitXMLRequestBody</a></code> Áö½Ã¾î¸¦
-    »ç¿ëÇÏ¿© Å« DAV ¿äÃ»À» ÀÐÀ»¶§ ¸Þ¸ð¸®·®À» Á¦ÇÑÇÒ ¼ö ÀÖ´Ù.
+    <p><code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ñ½º°Åºï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. <code class="directive"><a href="../mod/core.html#limitxmlrequestbody">LimitXMLRequestBody</a></code> ï¿½ï¿½ï¿½Ã¾î¸¦
+    ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ Å« DAV ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Þ¸ð¸®·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.
     <code class="directive"><a href="#davdepthinfinity">DavDepthInfinity</a></code>
-    Áö½Ã¾î¸¦ »ç¿ëÇÏ¿© ¸¹Àº ¸Þ¸ð¸®¸¦ ¼Ò¸ðÇÏ±âÀ§ÇÑ ¸Å¿ì Å« ÀúÀå¼ÒÀÇ
-    <code>PROPFIND</code> ¿äÃ»À» ¸·À» ¼ö ÀÖ´Ù. ´Ü¼øÈ÷ Å¬¶óÀÌ¾ðÆ®°¡
-    ¿©·¯ Å« ÆÄÀÏµé·Î µð½ºÅ©°ø°£À» Ã¤¿ì´Â ¼­ºñ½º°ÅºÎ °ø°Ýµµ °¡´ÉÇÏ´Ù.
-    ¾ÆÆÄÄ¡¿¡¼­ ÀÌ¸¦ ¸·À» Á÷Á¢ÀûÀÎ ¹æ¹ýÀº ¾ø´Ù. ±×·¯¹Ç·Î ½Å·ÚÇÏÁö¾Ê´Â
-    »ç¿ëÀÚ¿¡°Ô DAV Á¢±ÙÀ» Çã¿ëÇÏÁö ¾Êµµ·ÏÇÏ¶ó.</p>
+    ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Þ¸ð¸®¸ï¿½ ï¿½Ò¸ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Å¿ï¿½ Å« ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    <code>PROPFIND</code> ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½Ü¼ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ Å« ï¿½ï¿½ï¿½Ïµï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã¤ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ñ½º°Åºï¿½ ï¿½ï¿½ï¿½Ýµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.
+    ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½. ï¿½×·ï¿½ï¿½Ç·ï¿½ ï¿½Å·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê´ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ DAV ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Êµï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="complex" id="complex">º¹ÀâÇÑ ¼³Á¤</a> <a title="Permanent link" href="#complex" class="permalink">&para;</a></h2>
+<h2><a name="complex" id="complex">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a> <a title="Permanent link" href="#complex" class="permalink">&para;</a></h2>
 
-    <p>ÀÏ¹ÝÀûÀÎ Áú¹®Áß ÇÏ³ª´Â (PHP ½ºÅ©¸³Æ®, CGI ½ºÅ©¸³Æ® µî)
-    µ¿ÀûÆÄÀÏ ÀÛ¾÷À» À§ÇØ <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>¸¦ »ç¿ëÇÏ´Â
-    ¹æ¹ýÀÌ´Ù. ÀÌ´Â <code>GET</code> ¿äÃ»ÀÌ ÆÄÀÏ ³»¿ëÀ» ´Ù¿î·ÎµåÇÏÁö
-    ¾Ê°í Ç×»ó ½ºÅ©¸³Æ®¸¦ ½ÇÇàÇÏ¹Ç·Î ¾î·Æ´Ù. ÇØ°á¹æ¹ýÁß ÇÏ³ª´Â
-    ³»¿ë¿¡ µÎ°³ÀÇ URLÀ» ´ëÀÀÇÏ´Â °ÍÀÌ´Ù. ÇÑ URLÀº ½ºÅ©¸³Æ®¸¦
-    ½ÇÇàÇÏ°í, ´Ù¸¥ URL·Î´Â ÆÄÀÏÀ» ´Ù¿î·ÎµåÇÏ¿© DAV·Î ÀÛ¾÷ÇÒ
-    ¼ö ÀÖ´Ù.</p>
+    <p>ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï³ï¿½ï¿½ï¿½ (PHP ï¿½ï¿½Å©ï¿½ï¿½Æ®, CGI ï¿½ï¿½Å©ï¿½ï¿½Æ® ï¿½ï¿½)
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Û¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ì´ï¿½. ï¿½Ì´ï¿½ <code>GET</code> ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¿ï¿½Îµï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ê°ï¿½ ï¿½×»ï¿½ ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¹Ç·ï¿½ ï¿½ï¿½Æ´ï¿½. ï¿½Ø°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï³ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ë¿¡ ï¿½Î°ï¿½ï¿½ï¿½ URLï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½. ï¿½ï¿½ URLï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½, ï¿½Ù¸ï¿½ URLï¿½Î´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¿ï¿½Îµï¿½ï¿½Ï¿ï¿½ DAVï¿½ï¿½ ï¿½Û¾ï¿½ï¿½ï¿½
+    ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
 <div class="example"><p><code>
 Alias /phparea /home/gstein/php_files<br />
@@ -173,23 +173,23 @@ Alias /php-source /home/gstein/php_files<br />
 &lt;/Location&gt;
 </code></p></div>
 
-    <p>ÀÌ ¼³Á¤¿¡¼­ <code>http://example.com/phparea</code>´Â
-    PHP ½ºÅ©¸³Æ®ÀÇ °á°ú¸¦ º¸¿©ÁÖ°í,
-    <code>http://example.com/php-source</code>·Î´Â DAV Å¬¶óÀÌ¾ðÆ®¿¡¼­
-    ½ºÅ©¸³Æ®¸¦ ¼öÁ¤ÇÒ ¼ö ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>https://example.com/phparea</code>ï¿½ï¿½
+    PHP ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ö°ï¿½,
+    <code>https://example.com/php-source</code>ï¿½Î´ï¿½ DAV Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Dav" id="Dav">Dav</a> <a name="dav" id="dav">Áö½Ã¾î</a> <a title="Permanent link" href="#dav" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="Dav" id="Dav">Dav</a> <a name="dav" id="dav">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#dav" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>WebDAV HTTP ¸Þ½áµå¸¦ ½ÃÀÛÇÑ´Ù</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>Dav On|Off|<var>provider-name</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">±âº»°ª:</a></th><td><code>Dav Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>directory</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_dav</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>WebDAV HTTP ï¿½Þ½ï¿½å¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>Dav On|Off|<var>provider-name</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">ï¿½âº»ï¿½ï¿½:</a></th><td><code>Dav Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_dav</td></tr>
 </table>
-    <p>ÁöÁ¤ÇÑ À§Ä¡¿¡¼­ WebDAV HTTP ¸Þ½áµå¸¦ »ç¿ëÇÏ·Á¸é
-    <code class="directive">Dav</code> Áö½Ã¾î¸¦ »ç¿ëÇÑ´Ù:</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ WebDAV HTTP ï¿½Þ½ï¿½å¸¦ ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½
+    <code class="directive">Dav</code> ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½:</p>
 
     <div class="example"><p><code>
       &lt;Location /foo&gt;<br />
@@ -199,56 +199,56 @@ Alias /php-source /home/gstein/php_files<br />
       &lt;/Location&gt;
     </code></p></div>
 
-    <p><code>On</code> °ªÀº ½ÇÁ¦·Î <code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code>
-    ¸ðµâÀÌ Á¦°øÇÏ´Â ±âº» Á¦°øÀÚÀÎ <code>filesystem</code>ÀÇ
-    º°ÄªÀÌ´Ù. ¾î¶² À§Ä¡¿¡¼­ DAV¸¦ ½ÃÀÛÇÏ¸é ÇÏÀ§°ø°£¿¡¼­ DAV¸¦
-    »ç¿ë¾ÈÇÏµµ·Ï ¼³Á¤ÇÒ ¼ö <em>¾øÀ½À»</em> ÁÖÀÇÇÏ¶ó. ¿ÏÀüÇÑ
-    ¼³Á¤¿¹´Â <a href="#example">À§ÀÇ Àý</a>À» Âü°íÇÏ¶ó.</p>
+    <p><code>On</code> ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code>
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½âº» ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>filesystem</code>ï¿½ï¿½
+    ï¿½ï¿½Äªï¿½Ì´ï¿½. ï¿½î¶² ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ DAVï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ DAVï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ <em>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</em> ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <a href="#example">ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½</a>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.</p>
 
     <div class="warning">
-      ¼­¹ö¸¦ ¾ÈÀüÇÏ°Ô ±¸¼ºÇÒ¶§±îÁö WebDAVÀ» »ç¿ëÇÏÁö ¸¶¶ó. ±×·¸Áö
-      ¾ÊÀ¸¸é ´©±¸¶óµµ ¼­¹ö¸¦ ÅëÇØ ÆÄÀÏÀ» ºÐ¹èÇÒ ¼ö ÀÖ°Ô µÈ´Ù.
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ï¿½ï¿½ï¿½ï¿½ WebDAVï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½. ï¿½×·ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ð¹ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö°ï¿½ ï¿½È´ï¿½.
     </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DavDepthInfinity" id="DavDepthInfinity">DavDepthInfinity</a> <a name="davdepthinfinity" id="davdepthinfinity">Áö½Ã¾î</a> <a title="Permanent link" href="#davdepthinfinity" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="DavDepthInfinity" id="DavDepthInfinity">DavDepthInfinity</a> <a name="davdepthinfinity" id="davdepthinfinity">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#davdepthinfinity" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>PROPFINDÀÇ Depth: Infinity ¿äÃ»À» Çã°¡ÇÑ´Ù</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>DavDepthInfinity on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">±âº»°ª:</a></th><td><code>DavDepthInfinity off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®, directory</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_dav</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>PROPFINDï¿½ï¿½ Depth: Infinity ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ã°¡ï¿½Ñ´ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>DavDepthInfinity on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">ï¿½âº»ï¿½ï¿½:</a></th><td><code>DavDepthInfinity off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_dav</td></tr>
 </table>
-    <p><code class="directive">DavDepthInfinity</code> Áö½Ã¾î¸¦ »ç¿ëÇÏ¸é
-    'Depth: Infinity' Çì´õ¸¦ °¡Áø <code>PROPFIND</code> ¿äÃ»À»
-    Çã°¡ÇÑ´Ù. ÀÌ·± ¿äÃ»À» »ç¿ëÇÏ¿© ¼­ºñ½º°ÅºÎ °ø°ÝÀÌ °¡´ÉÇÏ±â
-    ¶§¹®¿¡ ±âº»ÀûÀ¸·Î Çã¿ëÇÏÁö ¾Ê´Â´Ù.</p>
+    <p><code class="directive">DavDepthInfinity</code> ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½
+    'Depth: Infinity' ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ <code>PROPFIND</code> ï¿½ï¿½Ã»ï¿½ï¿½
+    ï¿½ã°¡ï¿½Ñ´ï¿½. ï¿½Ì·ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ñ½º°Åºï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DavMinTimeout" id="DavMinTimeout">DavMinTimeout</a> <a name="davmintimeout" id="davmintimeout">Áö½Ã¾î</a> <a title="Permanent link" href="#davmintimeout" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="DavMinTimeout" id="DavMinTimeout">DavMinTimeout</a> <a name="davmintimeout" id="davmintimeout">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#davmintimeout" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>¼­¹ö°¡ DAV ÀÚ¿ø¿¡ ´ëÇØ À¯ÁöÇÒ Àá±ÝÀÇ ÃÖ¼Ò½Ã°£</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>DavMinTimeout <var>seconds</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">±âº»°ª:</a></th><td><code>DavMinTimeout 0</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®, directory</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_dav</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ DAV ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼Ò½Ã°ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>DavMinTimeout <var>seconds</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">ï¿½âº»ï¿½ï¿½:</a></th><td><code>DavMinTimeout 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_dav</td></tr>
 </table>
-    <p>Å¬¶óÀÌ¾ðÆ®°¡ DAV ÀÚ¿ø¿¡ Àá±Ý(lock)À» ¿äÃ»ÇÒ¶§ ¼­¹ö°¡
-    ¾Ë¾Æ¼­ Àá±ÝÀ» Á¦°ÅÇÒ ¼ö ÀÖ´Â ½Ã°£À» °°ÀÌ ¾Ë·ÁÁÙ ¼ö ÀÖ´Ù. ÀÌ °ªÀº
-    ´ÜÁö ¿äÃ»ÀÏ»ÓÀÌ¸ç, ¼­¹ö´Â Å¬¶óÀÌ¾ðÆ®°¡ ¿äÃ»ÇÑ °ªÀ» ¹«½ÃÇÏ°í
-    Å¬¶óÀÌ¾ðÆ®¿¡°Ô ÀÓÀÇÀÇ ½Ã°£À» ¾Ë·ÁÁÙ ¼ö ÀÖ´Ù.</p>
+    <p>Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ DAV ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½(lock)ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½Ò¶ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ë¾Æ¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ë·ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½Ï»ï¿½ï¿½Ì¸ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½
+    Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½Ë·ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <p><code class="directive">DavMinTimeout</code> Áö½Ã¾î´Â Å¬¶óÀÌ¾ðÆ®¿¡°Ô
-    º¸³¾ ÃÖ¼Ò Àá±Ý ½Ã°£À» (ÃÊ´ÜÀ§) ÁöÁ¤ÇÑ´Ù. Microsoft Web Folders´Â
-    ±âº»°ªÀ¸·Î 120 ÃÊ¸¦ »ç¿ëÇÑ´Ù. <code class="directive">DavMinTimeout</code>¿¡
-    (600 ÃÊ¿Í °°ÀÌ) ´õ ³ôÀº °ªÀ» »ç¿ëÇÏ¸é Å¬¶óÀÌ¾ðÆ®°¡ ³×Æ®¿÷
-    Áö¿¬¶§¹®¿¡ Àá±ÝÀ» ÀÒ°ÔµÇ´Â °æ¿ì¸¦ ÁÙÀÏ ¼ö ÀÖ´Ù.</p>
+    <p><code class="directive">DavMinTimeout</code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½ ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ (ï¿½Ê´ï¿½ï¿½ï¿½) ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. Microsoft Web Foldersï¿½ï¿½
+    ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 120 ï¿½Ê¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <code class="directive">DavMinTimeout</code>ï¿½ï¿½
+    (600 ï¿½Ê¿ï¿½ ï¿½ï¿½ï¿½ï¿½) ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ò°ÔµÇ´ï¿½ ï¿½ï¿½ì¸¦ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <div class="example"><h3>¿¹Á¦</h3><p><code>
+    <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½</h3><p><code>
       &lt;Location /MSWord&gt;<br />
       <span class="indent">
         DavMinTimeout 600<br />
@@ -259,14 +259,14 @@ Alias /php-source /home/gstein/php_files<br />
 </div>
 </div>
 <div class="bottomlang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/mod/mod_dav.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/mod/mod_dav.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_dav.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_dav.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_dav.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_dav.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/mod/mod_dav.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -281,8 +281,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_dav.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

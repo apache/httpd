@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -38,9 +38,9 @@
     de conférer aux bases de données une efficacité et une
     évolutivité optimales pour les MPMs threadés ou non threadés. Pour
     plus de détails, voir le site web <a
-    href="http://apr.apache.org/">APR</a>,
+    href="https://apr.apache.org/">APR</a>,
     ainsi que cette vue d'ensemble de l'<a
-    href="http://people.apache.org/~niq/dbd.html">environnement de
+    href="https://people.apache.org/~niq/dbd.html">environnement de
     développement d'Apache DBD</a> par son développeur initial.
 </p>
 </summary>
@@ -55,7 +55,7 @@ passe</a></seealso>
     LAMP classique (Linux, Apache, Mysql, Perl/PHP/Python). Sur les
     plates-formes threadées, il maintient un <em>groupe de
     connexions</em> à la fois plus évolutif et plus efficace, comme
-    décrit dans <a href="http://www.apachetutor.org/dev/reslist">cet
+    décrit dans <a href="https://www.apachetutor.org/dev/reslist">cet
     article d'ApacheTutor</a>. Notez que <module>mod_dbd</module>
     remplace les modules présentés dans cet article.</p>
 </section>

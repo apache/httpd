@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -48,12 +48,12 @@
     <p>自動的なインデックス生成機能を削除 (もしくは交換)
     できるように、この二つの機能は分離されています。</p>
 
-    <p>なお <code>http://servername/foo/dirname</code> という URL
+    <p>なお <code>https://servername/foo/dirname</code> という URL
     へのリクエストがあった際に、<code>dirname</code>
     というディレクトリがあれば、「最後にスラッシュをつけた形」の URL
     へのリダイレクトを送出します。
     ディレクトリへのアクセスはスラッシュで終わっている必要があり、
-    <code>mod_dir</code> は、<code>http://servername/foo/dirname/</code>
+    <code>mod_dir</code> は、<code>https://servername/foo/dirname/</code>
     へのリダイレクトを送出することになります。</p>
 </summary>
 
@@ -85,8 +85,8 @@
       DirectoryIndex index.html
     </example>
 
-    <p><code>http://myserver/docs/</code> へのアクセスがあり、
-    <code>http://myserver/docs/index.html</code>
+    <p><code>https://myserver/docs/</code> へのアクセスがあり、
+    <code>https://myserver/docs/index.html</code>
     が存在すれば、この URL が返されます。
     もし存在しなければ、ディレクトリのリストが返されます。</p>
 

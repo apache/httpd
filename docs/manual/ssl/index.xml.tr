@@ -15,7 +15,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -33,7 +33,7 @@
   <p>Apache HTTP Sunucusunun <module>mod_ssl</module> modülü, Güvenli Soketler
     Katmanı (SSL) ve Aktarım Katmanı Güvenliği (TLS) protokollerinin
     kullanıldığı Sağlam Şifreleme desteğini sağlayan <a
-    href="http://www.openssl.org/" >OpenSSL</a> kütüphanesine bir arayüz
+    href="https://www.openssl.org/" >OpenSSL</a> kütüphanesine bir arayüz
     içerir. Bu modül ve belgeler Ralf S. Engelschall’ın mod_ssl projesine
     dayanmaktadır.</p>
 </summary>

@@ -10,7 +10,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -142,7 +142,7 @@
         <!-- footer line -->
         <message id="before-license">Lizenziert unter der</message>
         <message id="after-license"></message>
-        <message id="langavail">Verfügbare Sprachen</message>
+        <message id="langavail">Verfï¿½gbare Sprachen</message>
 
         <!-- not up to date -->
         <message id="outofdate">Diese &#220;bersetzung ist m&#246;glicherweise
@@ -159,7 +159,7 @@
             <p>Dieses Dokument bezieht sich auf Version <strong>2.0</strong> des Apache httpd, die <strong>nicht mehr gepflegt wird</strong>. Bitte aktualisieren Sie die Software und verwenden Sie stattdessen eine aktuelle Version des httpd, die an folgender Stelle dokumentiert ist:</p>
         </message>
         <message id="retired.current">Dokumentation des Apache HTTP Server f&#252;r die zuletzt erschienene Version</message>
-        <message id="retired.document">Sie können <link>diesem Link</link> folgen, um zur aktuellen Version dieses Dokuments zu gelangen.</message>
+        <message id="retired.document">Sie kï¿½nnen <link>diesem Link</link> folgen, um zur aktuellen Version dieses Dokuments zu gelangen.</message>
 
     </messages>
 </language>

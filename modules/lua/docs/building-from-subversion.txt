@@ -1,5 +1,5 @@
 Install Lua 5.1
-    http://www.lua.org/download.html
+    https://www.lua.org/download.html
     
     Lua does not use autoconf for compiling. This means that you do not use
     ./configure. It has good build instructions, though, so hopefully things
@@ -12,7 +12,7 @@ Install Lua 5.1
     
     
 Install Apache HTTPD 2.2
-    http://httpd.apache.org/download.cgi
+    https://httpd.apache.org/download.cgi
     
     You can build apache pretty much any way you like, as long as you enable
     dynamic module loading (--enable-so) so that mod_wombat can be loaded.
@@ -28,7 +28,7 @@ Install Apache HTTPD 2.2
     
     
 Install libapreq2
-    http://httpd.apache.org/apreq/download.cgi
+    https://httpd.apache.org/apreq/download.cgi
         The download link is in the page body, NOT under the "Download!" link
         in the left hand column.
     
@@ -43,7 +43,7 @@ Install libapreq2
     
     
 Install mod_wombat from subversion
-    http://svn.apache.org/repos/asf/httpd/mod_wombat/trunk
+    https://svn.apache.org/repos/asf/httpd/mod_wombat/trunk
     
     The first step, when building from subversion, is to bootstrap autoconf. 
     To do this run the bootstrap script:

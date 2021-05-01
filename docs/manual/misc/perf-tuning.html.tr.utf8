@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -16,12 +16,12 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="http://wiki.apache.org/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p>
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://wiki.apache.org/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p>
 <p class="apache">Apache HTTP Sunucusu Sürüm 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.5</a> &gt; <a href="./">Çeşitli Belgeler</a></div><div id="page-content"><div id="preamble"><h1>Apache’de Başarımın Arttırılması</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.5</a> &gt; <a href="./">Çeşitli Belgeler</a></div><div id="page-content"><div id="preamble"><h1>Apache’de Başarımın Arttırılması</h1>
 <div class="toplang">
 <p><span>Mevcut Diller: </span><a href="../en/misc/perf-tuning.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/misc/perf-tuning.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
@@ -411,7 +411,7 @@
         değeri <code>5</code> saniye olup bu etkiyi en aza indirmeye yönelik
         süredir. Burada ağ band genişliği ile sunucu kaynaklarının kullanımı
         arasında bir seçim yapmak söz konusudur. Hiçbir şey umurunuzda
-        değilse <a href="http://www.hpl.hp.com/techreports/Compaq-DEC/WRL-95-4.html">
+        değilse <a href="https://www.hpl.hp.com/techreports/Compaq-DEC/WRL-95-4.html">
         çoğu ayrıcalığın yitirilmesi pahasına</a> bu değeri rahatça
         <code>60</code> saniyenin üzerine çıkarabilirsiniz.</p>
 
@@ -629,7 +629,7 @@
       engellenir. Bu durum, bu çocukları istekleri başka başka soketlerden
       değil mecburen tek bir soketten kabul etmeye kilitler ve bu soket
       üzerinde yeni bir istek belirip uyandırılana kadar bu durumda
-      kalırlar. Bu açlık sorunu ilk olarak <a href="http://bugs.apache.org/index/full/467">PR#467</a> sayılı raporla
+      kalırlar. Bu açlık sorunu ilk olarak <a href="https://bugs.apache.org/index/full/467">PR#467</a> sayılı raporla
       belgelenmiştir. Bu sorunun en az iki çözümü vardır.</p>
 
       <p>Çözümün biri engellenmeyen soket kullanımıdır. Bu durumda
@@ -756,7 +756,7 @@
 
       
 
-      <p><a href="http://www.ics.uci.edu/pub/ietf/http/draft-ietf-http-connection-00.txt">draft-ietf-http-connection-00.txt</a> taslağının 8. bölümünde
+      <p><a href="https://www.ics.uci.edu/pub/ietf/http/draft-ietf-http-connection-00.txt">draft-ietf-http-connection-00.txt</a> taslağının 8. bölümünde
       bahsedildiği gibi, bir HTTP sunucusunun protokolü <strong>güvenilir
       şekilde</strong> gerçeklemesi için her iki yöndeki iletişimi
       birbirinden bağımsız olarak (iki yönlü bir TCP bağlantısının her
@@ -829,7 +829,7 @@
       isterseniz <code>NO_LINGCLOSE</code>'u tanımlayabilirsiniz, fakat bu
       asla önerilmez. Özellikle, HTTP/1.1'den itibaren boruhatlı kalıcı
       bağlantıların <code>lingering_close</code> kullanmaya başlaması mutlak
-      bir gerekliliktir (ve <a href="http://www.w3.org/Protocols/HTTP/Performance/Pipeline.html">
+      bir gerekliliktir (ve <a href="https://www.w3.org/Protocols/HTTP/Performance/Pipeline.html">
       boruhatlı bağlantıların daha hızlı</a> olması nedeniyle bu
       bağlantıları desteklemek isteyebilirsiniz).</p>
 
@@ -1042,7 +1042,7 @@
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Yorum</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/misc/perf-tuning.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/misc/perf-tuning.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -1057,8 +1057,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/misc/perf-tuning.h
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="http://wiki.apache.org/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://wiki.apache.org/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

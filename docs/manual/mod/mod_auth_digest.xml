@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -31,7 +31,7 @@
 
 <summary>
     <p>This module implements HTTP Digest Authentication
-    (<a href="http://www.faqs.org/rfcs/rfc2617.html">RFC2617</a>), and
+    (<a href="https://www.faqs.org/rfcs/rfc2617.html">RFC2617</a>), and
     provides an alternative to <module>mod_auth_basic</module> where the
     password is not transmitted as cleartext. However, this does
     <strong>not</strong> lead to a significant security advantage over
@@ -57,7 +57,7 @@
 &lt;Location "/private/"&gt;
     AuthType Digest
     AuthName "private area"
-    AuthDigestDomain "/private/" "http://mirror.my.dom/private2/"
+    AuthDigestDomain "/private/" "https://mirror.my.dom/private2/"
 
     AuthDigestProvider file
     AuthUserFile "/web/auth/.digest_pw"

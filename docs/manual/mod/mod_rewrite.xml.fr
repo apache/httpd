@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -258,9 +258,9 @@ pour le moteur de réécriture</description>
       d'éviter certains problèmes de sécurité où des règles
       particulières pourraient permettre  des développements de modèles
       inattendus (voir <a
-      href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-3368">CVE-2011-3368</a>
+      href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-3368">CVE-2011-3368</a>
       et <a
-      href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-4317">CVE-2011-4317</a>).
+      href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-4317">CVE-2011-4317</a>).
       Pour s'affranchir de la restriction relative à la syntaxe des chemins URL, on peut
       utiliser l'option <code>AllowAnyURI</code>, afin de permettre à
       <module>mod_rewrite</module> d'appliquer le jeu de règles à toute
@@ -318,10 +318,10 @@ pour le moteur de réécriture</description>
       être réduite en chemin local, le chemin doit être préfixé par la
       valeur de la directive DocumentRoot, ce qui permet d'interdire l'accès à
       un fichier tel que /tmp/myfile suite à une requête pour
-      http://host/file/myfile avec la <directive
+      https://host/file/myfile avec la <directive
       module="mod_rewrite">RewriteRule</directive> suivante :</p>
       <highlight language="config">
-          RewriteRule /file/(.*) http://localhost/tmp/$1
+          RewriteRule /file/(.*) https://localhost/tmp/$1
       </highlight>
       <p>Cette option permet de restaurer l'ancien comportement lorsqu'un chemin
       local obtenu à partir de la réduction d'une URL n'est pas préfixé par la
@@ -488,7 +488,7 @@ répertoire</description>
 
 <p>Dans l'exemple ci-dessous, la directive
 <directive>RewriteBase</directive> est nécessaire afin d'éviter une
-réécriture en http://example.com/opt/myapp-1.2.3/welcome.html car la
+réécriture en https://example.com/opt/myapp-1.2.3/welcome.html car la
 ressource n'était pas relative à la racine des documents. Cette erreur
 de configuration aurait conduit le serveur à rechercher un répertoire
 "opt" à la racine des documents.</p>
@@ -1286,10 +1286,10 @@ dernière.</li>
   # Sans RewriteOptions Inherit, cette règle est écrasée par celle de la section
   # suivante et aucune redirection ne sera effectuée pour les URIs contenant
   # 'foo'
-  RewriteRule foo http://example.com/foo [R]
+  RewriteRule foo https://example.com/foo [R]
 &lt;/If&gt;
 &lt;If "true"&gt;
-  RewriteRule bar http://example.com/bar [R]
+  RewriteRule bar https://example.com/bar [R]
 &lt;/If&gt;
 </highlight>
 </example>
@@ -1661,7 +1661,7 @@ utilisé dans la directive <directive module="mod_rewrite">RewriteRule</directiv
 
 <tr>
 <td>^/un_chemin(.*) /autre_chemin$1 [R]</td>
-<td>http://cet_hote/autre_chemin/info_chemin via une redirection externe</td>
+<td>https://cet_hote/autre_chemin/info_chemin via une redirection externe</td>
 </tr>
 
 <tr>
@@ -1670,34 +1670,34 @@ utilisé dans la directive <directive module="mod_rewrite">RewriteRule</directiv
 </tr>
 
 <tr>
-<td>^/un_chemin(.*) http://cet_hote/autre_chemin$1</td>
+<td>^/un_chemin(.*) https://cet_hote/autre_chemin$1</td>
 <td>/autre_chemin/info_chemin</td>
 </tr>
 
 <tr>
-<td>^/un_chemin(.*) http://cet_hote/autre_chemin$1 [R]</td>
-<td>http://cet_hote/autre_chemin/info_chemin via une redirection externe</td>
+<td>^/un_chemin(.*) https://cet_hote/autre_chemin$1 [R]</td>
+<td>https://cet_hote/autre_chemin/info_chemin via une redirection externe</td>
 </tr>
 
 <tr>
-<td>^/un_chemin(.*) http://cet_hote/autre_chemin$1 [P]</td>
+<td>^/un_chemin(.*) https://cet_hote/autre_chemin$1 [P]</td>
 <td>sans objet, non supporté</td>
 </tr>
 
 <tr>
-<td>^/un_chemin(.*) http://autre_hote/autre_chemin$1</td>
-<td>http://autre_hote/autre_chemin/info_chemin via une redirection externe</td>
+<td>^/un_chemin(.*) https://autre_hote/autre_chemin$1</td>
+<td>https://autre_hote/autre_chemin/info_chemin via une redirection externe</td>
 </tr>
 
 <tr>
-<td>^/un_chemin(.*) http://autre_hote/autre_chemin$1 [R]</td>
-<td>http://autre_hote/autre_chemin/info_chemin (le drapeau [R] est
+<td>^/un_chemin(.*) https://autre_hote/autre_chemin$1 [R]</td>
+<td>https://autre_hote/autre_chemin/info_chemin (le drapeau [R] est
 redondant)</td>
 </tr>
 
 <tr>
-<td>^/somepath(.*) http://otherhost/otherpath$1 [P]</td>
-<td>http://otherhost/otherpath/pathinfo via internal proxy</td>
+<td>^/somepath(.*) https://otherhost/otherpath$1 [P]</td>
+<td>https://otherhost/otherpath/pathinfo via internal proxy</td>
 </tr>
 </table>
 
@@ -1723,7 +1723,7 @@ redondant)</td>
 
 <tr>
 <td>^chemin-local(.*) autre-chemin$1  [R]</td>
-<td>http://cet-hôte/chemin/autre-chemin/infochemin via redirection
+<td>https://cet-hôte/chemin/autre-chemin/infochemin via redirection
 externe</td>
 </tr>
 
@@ -1739,7 +1739,7 @@ externe</td>
 
 <tr>
 <td>^chemin-local(.*) /autre-chemin$1 [R]</td>
-<td>http://cet-hôte/autre-chemin/infochemin via redirection externe</td>
+<td>https://cet-hôte/autre-chemin/infochemin via redirection externe</td>
 </tr>
 
 <tr>
@@ -1748,34 +1748,34 @@ externe</td>
 </tr>
 
 <tr>
-<td>^chemin-local(.*) http://cet-hôte/autre-chemin$1</td>
+<td>^chemin-local(.*) https://cet-hôte/autre-chemin$1</td>
 <td>/autre-chemin/infochemin</td>
 </tr>
 
 <tr>
-<td>^chemin-local(.*) http://cet-hôte/autre-chemin$1 [R]</td>
-<td>http://cet-hôte/autre-chemin/infochemin via redirection externe</td>
+<td>^chemin-local(.*) https://cet-hôte/autre-chemin$1 [R]</td>
+<td>https://cet-hôte/autre-chemin/infochemin via redirection externe</td>
 </tr>
 
 <tr>
-<td>^chemin-local(.*) http://cet-hôte/autre-chemin$1 [P]</td>
+<td>^chemin-local(.*) https://cet-hôte/autre-chemin$1 [P]</td>
 <td>n'a pas lieu d'être, non supporté</td>
 </tr>
 
 <tr>
-<td>^chemin-local(.*) http://autre hôte/autre-chemin$1</td>
-<td>http://autre hôte/autre-chemin/infochemin via redirection externe</td>
+<td>^chemin-local(.*) https://autre hôte/autre-chemin$1</td>
+<td>https://autre hôte/autre-chemin/infochemin via redirection externe</td>
 </tr>
 
 <tr>
-<td>^chemin-local(.*) http://autre hôte/autre-chemin$1 [R]</td>
-<td>http://autre hôte/autre-chemin/infochemin via redirection externe
+<td>^chemin-local(.*) https://autre hôte/autre-chemin$1 [R]</td>
+<td>https://autre hôte/autre-chemin/infochemin via redirection externe
 (le drapeau [R] est redondant)</td>
 </tr>
 
 <tr>
-<td>^chemin-local(.*) http://autre hôte/autre-chemin$1 [P]</td>
-<td>http://autre hôte/autre-chemin/infochemin via un mandataire interne</td>
+<td>^chemin-local(.*) https://autre hôte/autre-chemin$1 [P]</td>
+<td>https://autre hôte/autre-chemin/infochemin via un mandataire interne</td>
 </tr>
 
 </table>

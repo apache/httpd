@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
 <meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -17,141 +17,141 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">¸ðµâ</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">ï¿½ï¿½ï¿½</a></div>
 <div id="page-content">
-<div id="preamble"><h1>¾ÆÆÄÄ¡ ¸ðµâ mod_speling</h1>
+<div id="preamble"><h1>ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ mod_speling</h1>
 <div class="toplang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/mod/mod_speling.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/mod/mod_speling.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_speling.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_speling.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_speling.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">ÀÌ ¹®¼­´Â ÃÖ½ÅÆÇ ¹ø¿ªÀÌ ¾Æ´Õ´Ï´Ù.
-            ÃÖ±Ù¿¡ º¯°æµÈ ³»¿ëÀº ¿µ¾î ¹®¼­¸¦ Âü°íÇÏ¼¼¿ä.</div>
-<table class="module"><tr><th><a href="module-dict.html#Description">¼³¸í:</a></th><td>»ç¿ëÀÚ°¡ ´ë¼Ò¹®ÀÚ¸¦ Àß¸ø »ç¿ëÇÏ°Å³ª ¸ÂÃã¹ýÀÌ Æ²¸®´Â
-°ÍÀ» ÇÑ¹ø±îÁö Çã¿ëÇÏ¿© Àß¸øµÈ URLÀ» °íÄ¡·Á°í ½ÃµµÇÑ´Ù</td></tr>
-<tr><th><a href="module-dict.html#Status">»óÅÂ:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">¸ðµâ¸í:</a></th><td>speling_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">¼Ò½ºÆÄÀÏ:</a></th><td>mod_speling.c</td></tr></table>
-<h3>¿ä¾à</h3>
+<div class="outofdate">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Õ´Ï´ï¿½.
+            ï¿½Ö±Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½ï¿½Ò¹ï¿½ï¿½Ú¸ï¿½ ï¿½ß¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°Å³ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Æ²ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ß¸ï¿½ï¿½ï¿½ URLï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ ï¿½Ãµï¿½ï¿½Ñ´ï¿½</td></tr>
+<tr><th><a href="module-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">ï¿½ï¿½ï¿½ï¿½:</a></th><td>speling_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">ï¿½Ò½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>mod_speling.c</td></tr></table>
+<h3>ï¿½ï¿½ï¿½</h3>
 
 
-    <p>Á¾Á¾ ¸ÂÃã¹ýÀÌ Æ²¸®°Å³ª ´ë¼Ò¹®ÀÚ¸¦ Àß¸ø »ç¿ëÇÏ¿© ¾ÆÆÄÄ¡°¡
-    ¹®¼­ ¿äÃ»À» ¼­ºñ½ºÇÒ ¼ö ¾ø´Â °æ¿ì°¡ ÀÖ´Ù. ÀÌ ¸ðµâÀº ´Ù¸¥
-    ¸ðµç ¸ðµâµéÀÌ Æ÷±âÇÑ ¿äÃ»¿¡ ÇØ´çÇÏ´Â ¹®¼­¸¦ Ã£´Â´Ù. ¸ðµâÀº
-    ¿äÃ»ÇÑ µð·ºÅä¸® ¾È¿¡ ÀÖ´Â ¸ðµç ¹®¼­¸¦ ¿äÃ»ÇÑ ¹®¼­ÀÌ¸§°ú
-    <strong>´ë¼Ò¹®ÀÚ ±¸º°¾øÀÌ</strong> (¹®ÀÚ Ã·°¡ / »ý·« / ±³Ã¼
-    È¤Àº Àß¸øµÈ ¹®ÀÚ ) <strong>¸ÂÃã¹ýÀÌ ÇÑ¹ø±îÁö Æ²·Áµµ
-    ºÁÁÖ¸ç</strong> ºñ±³ÇÑ´Ù. ÀÌ·± ¹æ¹ýÀ¸·Î ¹®¼­¸ñ·ÏÀ» ¸¸µç´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Æ²ï¿½ï¿½ï¿½Å³ï¿½ ï¿½ï¿½Ò¹ï¿½ï¿½Ú¸ï¿½ ï¿½ß¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ì°¡ ï¿½Ö´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½
+    ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½Ø´ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½Â´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸® ï¿½È¿ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì¸ï¿½ï¿½ï¿½
+    <strong>ï¿½ï¿½Ò¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</strong> (ï¿½ï¿½ï¿½ï¿½ Ã·ï¿½ï¿½ / ï¿½ï¿½ï¿½ï¿½ / ï¿½ï¿½Ã¼
+    È¤ï¿½ï¿½ ï¿½ß¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ) <strong>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ¹ï¿½ï¿½ï¿½ï¿½ï¿½ Æ²ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½Ö¸ï¿½</strong> ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½Ì·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½.</p>
 
-    <p>µð·ºÅä¸®¸¦ »ìÆìº» ÈÄ¿¡,</p>
+    <p>ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ìº» ï¿½Ä¿ï¿½,</p>
 
     <ul>
-      <li>¹®¼­¸¦ Ã£Áö¸øÇÏ¸é, ¾ÆÆÄÄ¡´Â ÀÏ¹ÝÀûÀÎ "document not
-      found (¹®¼­¸¦ Ã£À» ¼ö ¾øÀ½)" ¿À·ù¸¦ ¹ÝÈ¯ÇÑ´Ù.</li>
+      <li>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½, ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½ "document not
+      found (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)" ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½Ñ´ï¿½.</li>
 
-      <li>¿äÃ»¿¡ "°ÅÀÇ" ÀÏÄ¡ÇÏ´Â ¹®¼­¸¦ ÇÏ³ª¸¸ Ã£Àº °æ¿ì, ±×
-      ¹®¼­·Î ¸®´ÙÀÌ·º¼Ç ÀÀ´äÀ» ÇÑ´Ù.</li>
+      <li>ï¿½ï¿½Ã»ï¿½ï¿½ "ï¿½ï¿½ï¿½ï¿½" ï¿½ï¿½Ä¡ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï³ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ï¿½, ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½.</li>
 
-      <li>±ÙÁ¢ÇÑ ¹®¼­¸¦ ¿©·¯°³ Ã£Àº °æ¿ì, Å¬¶óÀÌ¾ðÆ®°¡ ¿Ã¹Ù¸¥
-      ¹®¼­¸¦ ¼±ÅÃÇÒ ¼ö ÀÖµµ·Ï ¹®¼­¸ñ·ÏÀ» º¸³½´Ù.</li>
+      <li>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ï¿½, Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½Ã¹Ù¸ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Öµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.</li>
     </ul>
 
 </div>
-<div id="quickview"><h3 class="directives">Áö½Ã¾îµé</h3>
+<div id="quickview"><h3 class="directives">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#checkbasenamematch">CheckBasenameMatch</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#checkcaseonly">CheckCaseOnly</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#checkspelling">CheckSpelling</a></li>
 </ul>
-<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_speling">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_speling">Report a bug</a></li></ul><h3>Âü°í</h3>
+<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_speling">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_speling">Report a bug</a></li></ul><h3>ï¿½ï¿½ï¿½ï¿½</h3>
 <ul class="seealso">
 <li><a href="#comments_section">Comments</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CheckBasenameMatch" id="CheckBasenameMatch">CheckBasenameMatch</a> <a name="checkbasenamematch" id="checkbasenamematch">Áö½Ã¾î</a> <a title="Permanent link" href="#checkbasenamematch" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="CheckBasenameMatch" id="CheckBasenameMatch">CheckBasenameMatch</a> <a name="checkbasenamematch" id="checkbasenamematch">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#checkbasenamematch" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>Also match files with differing file name extensions.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>CheckBasenameMatch on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">±âº»°ª:</a></th><td><code>CheckBasenameMatch On</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override ¿É¼Ç:</a></th><td>Options</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_speling</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Also match files with differing file name extensions.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>CheckBasenameMatch on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">ï¿½âº»ï¿½ï¿½:</a></th><td><code>CheckBasenameMatch On</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override ï¿½É¼ï¿½:</a></th><td>Options</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_speling</td></tr>
 </table><p>The documentation for this directive has
             not been translated yet. Please have a look at the English
             version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CheckCaseOnly" id="CheckCaseOnly">CheckCaseOnly</a> <a name="checkcaseonly" id="checkcaseonly">Áö½Ã¾î</a> <a title="Permanent link" href="#checkcaseonly" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="CheckCaseOnly" id="CheckCaseOnly">CheckCaseOnly</a> <a name="checkcaseonly" id="checkcaseonly">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#checkcaseonly" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>Limits the action of the speling module to case corrections</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code /></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_speling</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Limits the action of the speling module to case corrections</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code /></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_speling</td></tr>
 </table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CheckSpelling" id="CheckSpelling">CheckSpelling</a> <a name="checkspelling" id="checkspelling">Áö½Ã¾î</a> <a title="Permanent link" href="#checkspelling" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="CheckSpelling" id="CheckSpelling">CheckSpelling</a> <a name="checkspelling" id="checkspelling">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#checkspelling" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>¸ÂÃã¹ý ¸ðµâÀ» »ç¿ëÇÑ´Ù</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>CheckSpelling on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">±âº»°ª:</a></th><td><code>CheckSpelling Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override ¿É¼Ç:</a></th><td>Options</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_speling</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Áö¿ø:</a></th><td>¾ÆÆÄÄ¡ 1.1Àº CheckSpellingÀ» º°µµ·Î Á¦°øÇÏ¿´Áö¸¸,
-´ë¼Ò¹®ÀÚ°¡ ´Ù¸¥ °æ¿ì¸¸À» Ã³¸®ÇÒ ¼ö ÀÖ¾ú´Ù. ¾ÆÆÄÄ¡ 1.3¿¡¼­ ¾ÆÆÄÄ¡
-¹èÆ÷º»ÀÇ ÀÏºÎ°¡ µÇ¾ú´Ù. ¾ÆÆÄÄ¡ 1.3.2 ÀÌÀü¿¡´Â
-<code>CheckSpelling</code> Áö½Ã¾î¸¦ "ÁÖ¼­¹ö"¿Í "°¡»óÈ£½ºÆ®"
-»ç¿ëÀå¼Ò¿¡¼­¸¸ »ç¿ëÇÒ ¼ö ÀÖ¾ú´Ù.</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>CheckSpelling on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">ï¿½âº»ï¿½ï¿½:</a></th><td><code>CheckSpelling Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override ï¿½É¼ï¿½:</a></th><td>Options</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_speling</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½ï¿½ï¿½Ä¡ 1.1ï¿½ï¿½ CheckSpellingï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ï¿½ï¿½,
+ï¿½ï¿½Ò¹ï¿½ï¿½Ú°ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½ì¸¸ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö¾ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½Ä¡ 1.3ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ÏºÎ°ï¿½ ï¿½Ç¾ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½Ä¡ 1.3.2 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+<code>CheckSpelling</code> ï¿½ï¿½ï¿½Ã¾î¸¦ "ï¿½Ö¼ï¿½ï¿½ï¿½"ï¿½ï¿½ "ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®"
+ï¿½ï¿½ï¿½ï¿½ï¿½Ò¿ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö¾ï¿½ï¿½ï¿½.</td></tr>
 </table>
-    <p>ÀÌ Áö½Ã¾î´Â ¸ÂÃã¹ý ¸ðµâÀÇ »ç¿ë¿©ºÎ¸¦ °áÁ¤ÇÑ´Ù. »ç¿ëÇÑ´Ù¸é
-    ´ÙÀ½À» ÁÖÀÇÇÏ¶ó</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ë¿©ï¿½Î¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½</p>
 
     <ul>
-      <li>¸ÂÃã¹ý ±³Á¤À» À§ÇØ µð·ºÅä¸®¸¦ »ìÆìº¸´Â ÀÛ¾÷À» µ¿½Ã¿¡
-      ¿©·¯¹ø ÇÒ °æ¿ì ¼­¹ö ¼º´É¿¡ ¿µÇâÀ» ÁØ´Ù.</li>
+      <li>ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ìº¸ï¿½ï¿½ ï¿½Û¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¿ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½É¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ø´ï¿½.</li>
 
-      <li>¹®¼­Áß¿¡ ¸ÂÃã¹ý "±³Á¤"À¸·Î ¿ì¿¬È÷ º¸¿©Áú ¼ö ÀÖ´Â
-      ±â¹Ð¹®¼­°¡ ¾ø¾î¾ß ÇÑ´Ù.</li>
+      <li>ï¿½ï¿½ï¿½ï¿½ï¿½ß¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ "ï¿½ï¿½ï¿½ï¿½"ï¿½ï¿½ï¿½ï¿½ ï¿½ì¿¬ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½
+      ï¿½ï¿½Ð¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½.</li>
 
-      <li>¸ðµâÀº ÆÄÀÏ¸í°ú µð·ºÅä¸®¸í¸¸À» ±³Á¤ÇÒ ¼ö ÀÖÀ¸¸ç,
-      (<code>http://my.host/~apahce/</code>¿Í °°ÀÌ) ¸ÂÃã¹ýÀÌ
-      Æ²¸° »ç¿ëÀÚ¸íÀ» ±³Á¤ÇÏÁö ¸øÇÑ´Ù.</li>
+      <li>ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,
+      (<code>https://my.host/~apahce/</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      Æ²ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ñ´ï¿½.</li>
 
-      <li>¸ÂÃã¹ý ±³Á¤Àº Á¸ÀçÇÏ´Â ÆÄÀÏ¿¡¸¸ Àû¿ëµÈ´Ù. ±×·¡¼­
-      <code>&lt;Location /status&gt;</code>¿¡ ´ëÇÑ ¿äÃ»À»
-      ³»¿ëÇù»óÀ» °ÅÄ£ "<code>/stats.html</code>" ÆÄÀÏ·Î ¿ÀÀÎÇÒ
-      ¼ö ÀÖ´Ù.</li>
+      <li>ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È´ï¿½. ï¿½×·ï¿½ï¿½ï¿½
+      <code>&lt;Location /status&gt;</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä£ "<code>/stats.html</code>" ï¿½ï¿½ï¿½Ï·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ ï¿½Ö´ï¿½.</li>
     </ul>
 
     
-    <p><a href="mod_dav.html">DAV</a>¸¦ »ç¿ëÇÏ´Â µð·ºÅä¸®¿¡
-    mod_spelingÀ» »ç¿ëÇÏ¸é ¾ÈµÈ´Ù. ÀÌÀ¯´Â »õ·Î ¾÷·ÎµåÇÏ·Á´Â
-    <code>doc43.html</code> ¹®¼­¸¦ ¾û¶×ÇÏ°Ô ±âÁ¸ÀÇ
-    <code>doc34.html</code> ÆÄÀÏ·Î ¸®´ÙÀÌ·ºÆ®ÇÏ´Â µî, DAV°¡
-    »õ·Î ¸¸µå´Â ¸®¼Ò½º¸íÀ» ±âÁ¸ÀÇ ÆÄÀÏ¸íÀ¸·Î "¸ÂÃã¹ý ±³Á¤"À»
-    ½ÃµµÇÏ±â ¶§¹®ÀÌ´Ù.
+    <p><a href="mod_dav.html">DAV</a>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½
+    mod_spelingï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ÈµÈ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Îµï¿½ï¿½Ï·ï¿½ï¿½ï¿½
+    <code>doc43.html</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    <code>doc34.html</code> ï¿½ï¿½ï¿½Ï·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½Æ®ï¿½Ï´ï¿½ ï¿½ï¿½, DAVï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ò½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ï¿½ï¿½ "ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½"ï¿½ï¿½
+    ï¿½Ãµï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½.
     </p>
 
 </div>
 </div>
 <div class="bottomlang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/mod/mod_speling.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/mod/mod_speling.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_speling.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_speling.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_speling.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_speling.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/mod/mod_speling.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -166,8 +166,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_speling.ht
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

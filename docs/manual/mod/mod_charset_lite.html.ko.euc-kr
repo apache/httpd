@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
 <meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -17,110 +17,110 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">¸ðµâ</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">ï¿½ï¿½ï¿½</a></div>
 <div id="page-content">
-<div id="preamble"><h1>¾ÆÆÄÄ¡ ¸ðµâ mod_charset_lite</h1>
+<div id="preamble"><h1>ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ mod_charset_lite</h1>
 <div class="toplang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/mod/mod_charset_lite.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/mod/mod_charset_lite.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_charset_lite.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/mod/mod_charset_lite.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">ÀÌ ¹®¼­´Â ÃÖ½ÅÆÇ ¹ø¿ªÀÌ ¾Æ´Õ´Ï´Ù.
-            ÃÖ±Ù¿¡ º¯°æµÈ ³»¿ëÀº ¿µ¾î ¹®¼­¸¦ Âü°íÇÏ¼¼¿ä.</div>
-<table class="module"><tr><th><a href="module-dict.html#Description">¼³¸í:</a></th><td>¹®ÀÚÁýÇÕ º¯È¯À» ÁöÁ¤</td></tr>
-<tr><th><a href="module-dict.html#Status">»óÅÂ:</a></th><td>Experimental</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">¸ðµâ¸í:</a></th><td>charset_lite_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">¼Ò½ºÆÄÀÏ:</a></th><td>mod_charset_lite.c</td></tr></table>
-<h3>¿ä¾à</h3>
+<div class="outofdate">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Õ´Ï´ï¿½.
+            ï¿½Ö±Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</td></tr>
+<tr><th><a href="module-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Experimental</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">ï¿½ï¿½ï¿½ï¿½:</a></th><td>charset_lite_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">ï¿½Ò½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>mod_charset_lite.c</td></tr></table>
+<h3>ï¿½ï¿½ï¿½</h3>
 
-    <p>ÀÌ ¸ðµâÀº <strong>½ÇÇèÀûÀÎ</strong> ¸ðµâÀÌ°í, ÁÖÀÇÀÖ°Ô
-    »ç¿ëÇØ¾ß ÇÑ´Ù. ¿øÇÏ´Â µ¿ÀÛÀ» ÇÏ´ÂÁö
-    <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code> ¼³Á¤À» ½ÃÇèÇØºÁ¶ó.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ <strong>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</strong> ï¿½ï¿½ï¿½ï¿½Ì°ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½Ö°ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï´ï¿½ï¿½ï¿½
+    <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Øºï¿½ï¿½ï¿½.</p>
 
-    <p><code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code>¸¦ »ç¿ëÇÏ¿© ¹®¼­ ¿øº»ÀÇ
-    ¹®ÀÚÁýÇÕ°ú ¹®¼­¸¦ Å¬¶óÀÌ¾ðÆ®·Î º¸³»±â Àü¿¡ º¯È¯ÇÒ ¹®ÀÚÁýÇÕÀ»
-    ÁöÁ¤ÇÒ ¼ö ÀÖ´Ù. <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code>´Â Á÷Á¢
-    ÀÚ·á¸¦ º¯È¯ÇÏÁö¾Ê°í ´ë½Å ¾ÆÆÄÄ¡¿¡°Ô º¯È¯ÇÏ¶ó°í ¿äÃ»ÇÑ´Ù.
-    <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code>´Â EBCDIC°ú ASCII È¯°æ¿¡¼­
-    »ç¿ëÇÒ ¼ö ÀÖ´Ù. EBCDIC È¯°æ¿¡¼­ ¾ÆÆÄÄ¡´Â º¸Åë ¾ÆÆÄÄ¡ ÇÁ·Î¼¼½ºÀÇ
-    ÄÚµåÆäÀÌÁö¿¡¼­ ISO-8859-1 ¹®ÀÚÁýÇÕÀ¸·Î ¹®¼­¸¦ º¯È¯ÇÑ´Ù.
-    <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code>¸¦ »ç¿ëÇÏ¿© ´Ù¸¥ º¯È¯À»
-    Áö½ÃÇÒ ¼ö ÀÖ´Ù. ASCII È¯°æ¿¡¼­ ¾ÆÆÄÄ¡´Â ±âº»ÀûÀ¸·Î º¯È¯À»
-    ÇÏÁö ¾Ê±â¶§¹®¿¡, ¾î¶² º¯È¯À» À§ÇØ¼­´Â
-    <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code>°¡ ÇÊ¿äÇÏ´Ù.</p>
+    <p><code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ú·á¸¦ ï¿½ï¿½È¯ï¿½ï¿½ï¿½ï¿½ï¿½Ê°ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½Ï¶ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½Ñ´ï¿½.
+    <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code>ï¿½ï¿½ EBCDICï¿½ï¿½ ASCII È¯ï¿½æ¿¡ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. EBCDIC È¯ï¿½æ¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½Î¼ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ISO-8859-1 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½Ñ´ï¿½.
+    <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½È¯ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ASCII È¯ï¿½æ¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±â¶§ï¿½ï¿½ï¿½ï¿½, ï¿½î¶² ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½ï¿½Ø¼ï¿½ï¿½ï¿½
+    <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code>ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Ï´ï¿½.</p>
 
-    <p>ÀÌ ¸ðµâÀº ·¯½Ã¾ÆÆÇ ¾ÆÆÄÄ¡ÀÇ <code>mod_charset</code>ÀÌ
-    Á¦°øÇÏ´Â ¼³Á¤ÀÇ ÀÏºÎ¸¦ Á¦°øÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ <code>mod_charset</code>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ÏºÎ¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 </div>
-<div id="quickview"><h3>ÁÖÁ¦</h3>
+<div id="quickview"><h3>ï¿½ï¿½ï¿½ï¿½</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#problems">ÀÏ¹ÝÀûÀÎ ¹®Á¦Á¡</a></li>
-</ul><h3 class="directives">Áö½Ã¾îµé</h3>
+<li><img alt="" src="../images/down.gif" /> <a href="#problems">ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</a></li>
+</ul><h3 class="directives">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#charsetdefault">CharsetDefault</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#charsetoptions">CharsetOptions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#charsetsourceenc">CharsetSourceEnc</a></li>
 </ul>
-<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_charset_lite">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_charset_lite">Report a bug</a></li></ul><h3>Âü°í</h3>
+<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_charset_lite">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_charset_lite">Report a bug</a></li></ul><h3>ï¿½ï¿½ï¿½ï¿½</h3>
 <ul class="seealso">
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="problems" id="problems">ÀÏ¹ÝÀûÀÎ ¹®Á¦Á¡</a> <a title="Permanent link" href="#problems" class="permalink">&para;</a></h2>
+<h2><a name="problems" id="problems">ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</a> <a title="Permanent link" href="#problems" class="permalink">&para;</a></h2>
 
-    <h3>Àß¸øµÈ ¹®ÀÚÁýÇÕ ÀÌ¸§</h3>
+    <h3>ï¿½ß¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½</h3>
 
-      <p><code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code>¸¦ »ç¿ëÇÏ´Â ½Ã½ºÅÛÀÇ
-      ARP ¹ø¿ª±â´ÉÀÌ <code class="directive"><a href="#charsetsourceenc">CharsetSourceEnc</a></code>¿Í
-      <code class="directive"><a href="#charsetdefault">CharsetDefault</a></code>ÀÇ
-      ÆÄ¶ó¹ÌÅÍÀÎ ¹®ÀÚÁýÇÕ ÀÌ¸§À» Ã³¸®ÇÒ ¼ö ÀÖ¾î¾ß ÇÑ´Ù. ¹®ÀÚÁýÇÕ
-      ÀÌ¸§Àº Ç¥ÁØÈ­µÇÁö ¾Ê¾Ò°í, http Çì´õ¿¡ »ç¿ëÇÏ´Â °ª°ú Ç×»ó
-      °°Áö´Â ¾Ê´Ù. ÇöÀç APRÀº iconv(3)¸¸À» »ç¿ëÇÏ±â¶§¹®¿¡,
-      ´ÙÀ½°ú °°ÀÌ iconv(1) ÇÁ·Î±×·¥À» »ç¿ëÇÏ¿© Æ¯Á¤ ¹®ÀÚÁýÇÕ
-      ÀÌ¸§À» »ç¿ëÇÒ ¼ö ÀÖ´ÂÁö ½±°Ô ¾Ë ¼ö ÀÖ´Ù:</p>
+      <p><code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ARP ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code class="directive"><a href="#charsetsourceenc">CharsetSourceEnc</a></code>ï¿½ï¿½
+      <code class="directive"><a href="#charsetdefault">CharsetDefault</a></code>ï¿½ï¿½
+      ï¿½Ä¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö¾ï¿½ï¿½ ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½Ì¸ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½È­ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¾Ò°ï¿½, http ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½×»ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´ï¿½. ï¿½ï¿½ï¿½ï¿½ APRï¿½ï¿½ iconv(3)ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï±â¶§ï¿½ï¿½ï¿½ï¿½,
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ iconv(1) ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ Æ¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½:</p>
 
       <div class="example"><p><code>
         iconv -f charsetsourceenc-value -t charsetdefault-value
       </code></p></div>
     
 
-    <h3>³»¿ë°ú º¯È¯±ÔÄ¢ÀÇ ¹®ÀÚÁýÇÕÀÌ ¼­·Î ´Ù¸§</h3>
+    <h3>ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½Ä¢ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½</h3>
 
-      <p>º¯È¯±ÔÄ¢ÀÌ »óÈ²¿¡ ¸ÂÁö¾ÊÀ¸¸é ´ÙÀ½°ú °°Àº ¿©·¯ ¹æ½ÄÀ¸·Î
-      º¯È¯ÀÌ ½ÇÆÐÇÒ ¼ö ÀÖ´Ù:</p>
+      <p>ï¿½ï¿½È¯ï¿½ï¿½Ä¢ï¿½ï¿½ ï¿½ï¿½È²ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½:</p>
 
       <ul>
-      <li>º¯È¯±â´ÉÀÌ ½ÇÆÐ ¹ÝÈ¯ÄÚµå¸¦ ¹ÝÈ¯ÇÏ°í ¿¬°áÀÌ ²÷¾îÁú
-      ¼ö ÀÖ´Ù.</li>
+      <li>ï¿½ï¿½È¯ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½Úµå¸¦ ï¿½ï¿½È¯ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ ï¿½Ö´ï¿½.</li>
 
-      <li>ÀÔ·Â¹öÆÛ¸¦ º¯È¯ÇÏÁö ¸øÇÒ¶§ Ãâ·Â¹öÆÛ¿¡ ´ë½Å Æ¯º°ÇÑ
-      ¹®ÀÚ¸¦ (¿¹, ¹°À½Ç¥) ÀûÀ» ¼ö ÀÖ´Ù.</li>
+      <li>ï¿½Ô·Â¹ï¿½ï¿½Û¸ï¿½ ï¿½ï¿½È¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ò¶ï¿½ ï¿½ï¿½Â¹ï¿½ï¿½Û¿ï¿½ ï¿½ï¿½ï¿½ Æ¯ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½Ú¸ï¿½ (ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½Ç¥) ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</li>
       </ul>
     
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CharsetDefault" id="CharsetDefault">CharsetDefault</a> <a name="charsetdefault" id="charsetdefault">Áö½Ã¾î</a> <a title="Permanent link" href="#charsetdefault" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="CharsetDefault" id="CharsetDefault">CharsetDefault</a> <a name="charsetdefault" id="charsetdefault">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#charsetdefault" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>º¯È¯ÇÒ ¹®ÀÚÁýÇÕ</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>CharsetDefault <var>charset</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override ¿É¼Ç:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Experimental</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_charset_lite</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>CharsetDefault <var>charset</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override ï¿½É¼ï¿½:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_charset_lite</td></tr>
 </table>
-    <p><code class="directive">CharsetDefault</code> Áö½Ã¾î´Â Áö½Ã¾î¸¦
-    »ç¿ëÇÑ À§Ä¡¿¡ ÀÖ´Â ¿øº»À» º¯È¯ÇÒ ¹®ÀÚÁýÇÕÀ» ÁöÁ¤ÇÑ´Ù.</p>
+    <p><code class="directive">CharsetDefault</code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <p><var>charset</var> ¾Æ±Ô¸ÕÆ®¿¡´Â APRÀÌ Áö¿øÇÏ´Â ¹®ÀÚÁýÇÕ
-    ÀÌ¸§À» »ç¿ëÇØ¾ß ÇÑ´Ù. ÀÏ¹ÝÀûÀ¸·Î iconv°¡ Áö¿øÇÏ´Â ¹®ÀÚÁýÇÕÀ»
-    ÀÇ¹ÌÇÑ´Ù.</p>
+    <p><var>charset</var> ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ APRï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½. ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ iconvï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ç¹ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <div class="example"><h3>¿¹Á¦</h3><p><code>
+    <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½</h3><p><code>
       &lt;Directory /export/home/trawick/apacheinst/htdocs/convert&gt;<br />
       <span class="indent">
         CharsetSourceEnc  UTF-16BE<br />
@@ -131,60 +131,60 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CharsetOptions" id="CharsetOptions">CharsetOptions</a> <a name="charsetoptions" id="charsetoptions">Áö½Ã¾î</a> <a title="Permanent link" href="#charsetoptions" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="CharsetOptions" id="CharsetOptions">CharsetOptions</a> <a name="charsetoptions" id="charsetoptions">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#charsetoptions" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>¹®ÀÚÁýÇÕ º¯È¯ ±â´ÉÀ» ¼³Á¤</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>CharsetOptions <var>option</var> [<var>option</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">±âº»°ª:</a></th><td><code>CharsetOptions DebugLevel=0 NoImplicitAdd</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override ¿É¼Ç:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Experimental</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_charset_lite</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>CharsetOptions <var>option</var> [<var>option</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">ï¿½âº»ï¿½ï¿½:</a></th><td><code>CharsetOptions DebugLevel=0 NoImplicitAdd</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override ï¿½É¼ï¿½:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_charset_lite</td></tr>
 </table>
-    <p><code class="directive">CharsetOptions</code> Áö½Ã¾î´Â
-    <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code>ÀÇ ±â´ÉÀ» ¼³Á¤ÇÑ´Ù.
-    <var>Option</var>¿¡´Â ¾Æ·¡ Ç×¸ñµéÀ» »ç¿ëÇÒ ¼ö ÀÖ´Ù</p>
+    <p><code class="directive">CharsetOptions</code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½
+    <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+    <var>Option</var>ï¿½ï¿½ï¿½ï¿½ ï¿½Æ·ï¿½ ï¿½×¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½</p>
 
     <dl>
       <dt><code>DebugLevel=<var>n</var></code></dt>
 
-      <dd><code>DebugLevel</code> Å°¿öµå´Â
-      <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code>°¡ ±â·ÏÇÏ´Â µð¹ö±×¹®±¸ÀÇ
-      ¼öÁØÀ» ¼³Á¤ÇÑ´Ù. ±âº»ÀûÀ¸·Î ¾î¶² °Íµµ ±â·ÏÇÏÁö ¾Ê´Â´Ù.
-      ÀÌ´Â <code>DebugLevel=0</code>°ú °°´Ù. ³ôÀº ¼ýÀÚ¸¦ »ç¿ëÇÒ¼ö·Ï
-      ´õ ¸¹Àº µð¹ö±×¹®±¸¸¦ ±â·ÏÇÏ°ÔµÇ¾î ¼­¹ö ¼º´ÉÀÌ ¶³¾îÁø´Ù.
-      ¼ýÀÚ°ªÀÇ ½ÇÁ¦ ÀÇ¹Ì´Â <code>mod_charset_lite.c</code> ¾ÕºÎºÐÀÇ
-      DBGLVL_ »ó¼ö Á¤ÀÇ¸¦ Âü°íÇÏ¶ó.</dd>
+      <dd><code>DebugLevel</code> Å°ï¿½ï¿½ï¿½ï¿½ï¿½
+      <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½×¹ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½î¶² ï¿½Íµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.
+      ï¿½Ì´ï¿½ <code>DebugLevel=0</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ò¼ï¿½ï¿½ï¿½
+      ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½×¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ÔµÇ¾ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
+      ï¿½ï¿½ï¿½Ú°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ç¹Ì´ï¿½ <code>mod_charset_lite.c</code> ï¿½ÕºÎºï¿½ï¿½ï¿½
+      DBGLVL_ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ç¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.</dd>
 
       <dt><code>ImplicitAdd | NoImplicitAdd</code></dt>
 
-      <dd><code>ImplicitAdd</code> Å°¿öµå´Â ³»¿ëÀ» º¯È¯ÇÒ
-      ¹®ÀÚÁýÇÕÀ» ÁöÁ¤ÇÏ¸é ÀÚµ¿À¸·Î <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code>¸¦
-      ÇÊÅÍ¿¡ Ãß°¡ÇÑ´Ù. <code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code> Áö½Ã¾î·Î ÇÊÅÍ¼ø¼­¸¦ Á÷Á¢
-      ÁöÁ¤ÇÑ´Ù¸é, <code>NoImplicitAdd</code>¸¦ »ç¿ëÇÏ¿©
-      <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code>°¡ ÀÚµ¿À¸·Î ÇÊÅÍ¿¡
-      Ãß°¡µÇÁö¾Êµµ·Ï ÇØ¾ß ÇÑ´Ù.</dd>
+      <dd><code>ImplicitAdd</code> Å°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code>ï¿½ï¿½
+      ï¿½ï¿½ï¿½Í¿ï¿½ ï¿½ß°ï¿½ï¿½Ñ´ï¿½. <code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½, <code>NoImplicitAdd</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½
+      <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code>ï¿½ï¿½ ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Í¿ï¿½
+      ï¿½ß°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½ï¿½ ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½.</dd>
     </dl>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CharsetSourceEnc" id="CharsetSourceEnc">CharsetSourceEnc</a> <a name="charsetsourceenc" id="charsetsourceenc">Áö½Ã¾î</a> <a title="Permanent link" href="#charsetsourceenc" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="CharsetSourceEnc" id="CharsetSourceEnc">CharsetSourceEnc</a> <a name="charsetsourceenc" id="charsetsourceenc">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#charsetsourceenc" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>ÆÄÀÏ ¿øº»ÀÇ ¹®ÀÚÁýÇÕ</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>CharsetSourceEnc <var>charset</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override ¿É¼Ç:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Experimental</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_charset_lite</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>CharsetSourceEnc <var>charset</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override ï¿½É¼ï¿½:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_charset_lite</td></tr>
 </table>
-    <p><code class="directive">CharsetSourceEnc</code> Áö½Ã¾î´Â Áö½Ã¾î¸¦
-    »ç¿ëÇÑ À§Ä¡¿¡ ÀÖ´Â ÆÄÀÏµé ¿øº»ÀÇ ¹®ÀÚÁýÇÕÀ» ÁöÁ¤ÇÑ´Ù.</p>
+    <p><code class="directive">CharsetSourceEnc</code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½Ïµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <p><var>charset</var> ¾Æ±Ô¸ÕÆ®¿¡´Â APRÀÌ Áö¿øÇÏ´Â ¹®ÀÚÁýÇÕ
-    ÀÌ¸§À» »ç¿ëÇØ¾ß ÇÑ´Ù. ÀÏ¹ÝÀûÀ¸·Î iconv°¡ Áö¿øÇÏ´Â ¹®ÀÚÁýÇÕÀ»
-    ÀÇ¹ÌÇÑ´Ù.</p>
+    <p><var>charset</var> ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ APRï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½. ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ iconvï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ç¹ï¿½ï¿½Ñ´ï¿½.</p>
     
-    <div class="example"><h3>¿¹Á¦</h3><p><code>
+    <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½</h3><p><code>
       &lt;Directory /export/home/trawick/apacheinst/htdocs/convert&gt;<br />
       <span class="indent">
         CharsetSourceEnc  UTF-16BE<br />
@@ -193,18 +193,18 @@
       &lt;/Directory&gt;
     </code></p></div>
 
-    <p>Solaris 8ÀÇ iconv°¡ ÀÌ ¿¹Á¦ÀÇ ¹®ÀÚÁýÇÕÀ» Áö¿øÇÑ´Ù.</p>
+    <p>Solaris 8ï¿½ï¿½ iconvï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
 </div>
 </div>
 <div class="bottomlang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/mod/mod_charset_lite.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/mod/mod_charset_lite.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_charset_lite.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/mod/mod_charset_lite.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_charset_lite.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/mod/mod_charset_lite.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -219,8 +219,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_charset_li
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

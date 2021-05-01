@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -58,7 +58,7 @@ Locator (унифицированный указатель ресурса), ко
 обработан, а если нет, то какая ошибка произошла.
 Это говорит клиенту, что он должен делать с ответом.
 Вы можете прочитать о возможных кодах ответа на 
-<a href="http://wiki.apache.org/httpd/CommonHTTPStatusCodes">
+<a href="https://wiki.apache.org/httpd/CommonHTTPStatusCodes">
 Вики HTTP-сервера Apache</a>.</p>
 
 <p>Детали транзакции и условия возникновения ошибки записываются
@@ -98,8 +98,8 @@ Locator (унифицированный указатель ресурса), ко
 <code>C:\Windows\system32\drivers\etc\hosts</code>.</p>
 
 <p>Вы можете узнать больше о файле 
-<a href="http://en.wikipedia.org/wiki/Hosts_(file)">hosts</a> и больше о
-<a href="http://en.wikipedia.org/wiki/Domain_Name_System">DNS</a>.</p>
+<a href="https://en.wikipedia.org/wiki/Hosts_(file)">hosts</a> и больше о
+<a href="https://en.wikipedia.org/wiki/Domain_Name_System">DNS</a>.</p>
 </section>
 
 <section id="configuration">
@@ -108,7 +108,7 @@ Locator (унифицированный указатель ресурса), ко
 <p>HTTP-сервер Apache настроен с помощью простых текстовых файлов.
 Эти файлы могут располагаться в разных местах, в зависимости от того как вы 
 установили сервер. Общие места расположения файлов можно найти в 
-<a href="http://wiki.apache.org/httpd/DistrosDefaultLayout">Вики
+<a href="https://wiki.apache.org/httpd/DistrosDefaultLayout">Вики
 HTTP-сервера Apache</a>. Если вы установили httpd из исходного кода,
 то расположение файлов конфигурации по умолчанию следующее:
 <code>/usr/local/apache2/conf</code>.
@@ -169,7 +169,7 @@ CSS-файлы и другие файлы, которые просто лежа�
 отдан документ с именем <code>index.html</code>. Например, если для директивы
 <code>DocumentRoot</code> установлено значение <code>/var/www/html</code> 
 и приходит запрос на адрес
-<code>http://www.example.com/work/</code>,
+<code>https://www.example.com/work/</code>,
 то файл расположенный по пути
 <code>/var/www/html/work/index.html</code>
 будет отдан клиенту.</p>
@@ -223,11 +223,11 @@ CSS-файлы и другие файлы, которые просто лежа�
 но есть множество других вещей, о которых вам, возможно, нужно узнать.</p>
 
 <ul>
-<li><a href="http://httpd.apache.org/download.cgi">Загрузки</a></li>
+<li><a href="https://httpd.apache.org/download.cgi">Загрузки</a></li>
 <li><a href="install.html">Установка</a></li>
 <li><a href="configuring.html">Настройка</a></li>
 <li><a href="invoking.html">Старт</a></li>
-<li><a href="http://wiki.apache.org/httpd/FAQ">Часто задаваемые вопросы</a></li>
+<li><a href="https://wiki.apache.org/httpd/FAQ">Часто задаваемые вопросы</a></li>
 </ul>
 
 </section>

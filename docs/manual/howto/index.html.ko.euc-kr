@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
 <meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>How-To / ÅõÅä¸®¾ó - Apache HTTP Server Version 2.5</title>
+<title>How-To / ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ - Apache HTTP Server Version 2.5</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -16,107 +16,107 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page" class="no-sidebar"><div id="page-header">
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="../"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>How-To / ÅõÅä¸®¾ó</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>How-To / ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½</h1>
 <div class="toplang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/howto/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/howto/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/howto/" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
 <a href="../fr/howto/" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/howto/" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../zh-cn/howto/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">ÀÌ ¹®¼­´Â ÃÖ½ÅÆÇ ¹ø¿ªÀÌ ¾Æ´Õ´Ï´Ù.
-            ÃÖ±Ù¿¡ º¯°æµÈ ³»¿ëÀº ¿µ¾î ¹®¼­¸¦ Âü°íÇÏ¼¼¿ä.</div>
+<div class="outofdate">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Õ´Ï´ï¿½.
+            ï¿½Ö±Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.</div>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="howto" id="howto">How-To / ÅõÅä¸®¾ó</a> <a title="Permanent link" href="#howto" class="permalink">&para;</a></h2>
+<h2><a name="howto" id="howto">How-To / ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½</a> <a title="Permanent link" href="#howto" class="permalink">&para;</a></h2>
 
     
 
     <dl>
-      <dt>ÀÎÁõ</dt>
+      <dt>ï¿½ï¿½ï¿½ï¿½</dt>
       <dd>
-        <p>ÀÎÁõ(authentication)Àº ÀÚ½ÅÀÌ ´©±¸¶ó°í ÁÖÀåÇÏ´Â »ç¶÷À»
-        È®ÀÎÇÏ´Â ÀýÂ÷ÀÌ´Ù. ±ÇÇÑºÎ¿©(authorization)´Â °¡°í ½ÍÀº
-        °÷À¸·Î °¡µµ·Ï È¤Àº ¿øÇÏ´Â Á¤º¸¸¦ ¾òµµ·Ï Çã¿ëÇÏ´Â °úÁ¤ÀÌ´Ù.</p>
+        <p>ï¿½ï¿½ï¿½ï¿½(authentication)ï¿½ï¿½ ï¿½Ú½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+        È®ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½. ï¿½ï¿½ï¿½ÑºÎ¿ï¿½(authorization)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¤ï¿½ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½òµµ·ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½.</p>
 
-        <p>Âü°í: <a href="auth.html">ÀÎÁõ, ±ÇÇÑºÎ¿©, Á¢±ÙÁ¦¾î</a></p>
+        <p>ï¿½ï¿½ï¿½ï¿½: <a href="auth.html">ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ÑºÎ¿ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</a></p>
       </dd>
     </dl>
 
     <dl>
-      <dt>CGI¸¦ »ç¿ëÇÑ µ¿Àû ÆäÀÌÁö »ý¼º</dt>
+      <dt>CGIï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</dt>
       <dd>
-        <p>CGI (Common Gateway Interface)´Â À¥¼­¹ö°¡ º¸Åë CGI
-        ÇÁ·Î±×·¥ È¤Àº CGI ½ºÅ©¸³Æ®ÇÏ°í ºÎ¸£´Â, (À¥ÆäÀÌÁö ³»¿ëÀ»
-        ¸¸µå´Â) ¿ÜºÎ ÇÁ·Î±×·¥°ú »óÈ£ÀÛ¿ëÇÏ´Â ¹æ¹ýÀ» Á¤ÀÇÇÑ´Ù.
-        À¥»çÀÌÆ®¿¡¼­ µ¿ÀûÀÎ ÆäÀÌÁö¸¦ ¸¸µå´Â °¡Àå ÈçÇÏ°í °£´ÜÇÑ
-        ¹æ¹ýÀÌ´Ù. ÀÌ ¹®¼­´Â ¾ÆÆÄÄ¡ À¥¼­¹ö¿¡ CGI¸¦ ±¸¼ºÇÏ´Â ¹æ¹ýÀ»
-        ¼Ò°³ÇÏ°í, CGI ÇÁ·Î±×·¥À» ÀÛ¼ºÇØº»´Ù.</p>
+        <p>CGI (Common Gateway Interface)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ CGI
+        ï¿½ï¿½ï¿½Î±×·ï¿½ È¤ï¿½ï¿½ CGI ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½Ï°ï¿½ ï¿½Î¸ï¿½ï¿½ï¿½, (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        ï¿½ï¿½ï¿½ï¿½ï¿½) ï¿½Üºï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ ï¿½ï¿½È£ï¿½Û¿ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        ï¿½ï¿½ï¿½ï¿½Ì´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ CGIï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+        ï¿½Ò°ï¿½ï¿½Ï°ï¿½, CGI ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ ï¿½Û¼ï¿½ï¿½Øºï¿½ï¿½ï¿½.</p>
 
-        <p>Âü°í: <a href="cgi.html">CGI: µ¿Àû ÆäÀÌÁö »ý¼º</a></p>
+        <p>ï¿½ï¿½ï¿½ï¿½: <a href="cgi.html">CGI: ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a></p>
       </dd>
     </dl>
 
     <dl>
-      <dt><code>.htaccess</code> ÆÄÀÏ</dt>
+      <dt><code>.htaccess</code> ï¿½ï¿½ï¿½ï¿½</dt>
       <dd>
-        <p><code>.htaccess</code> ÆÄÀÏÀ» »ç¿ëÇÏ¿© µð·ºÅä¸®º°·Î
-        ¼³Á¤À» º¯°æÇÒ ¼ö ÀÖ´Ù. ¿©·¯ ¼³Á¤ Áö½Ã¾î°¡ ÀÖ´Â ÆÄÀÏÀ»
-        Æ¯Á¤ ¹®¼­ µð·ºÅä¸®¿¡ µÎ¸é, ±× µð·ºÅä¸®¿Í ¸ðµç ÇÏÀ§µð·ºÅä¸®¿¡
-        Áö½Ã¾î¸¦ Àû¿ëÇÑ´Ù.</p>
+        <p><code>.htaccess</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ï¿½ï¿½
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î°¡ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        Æ¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½Î¸ï¿½, ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½
+        ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-        <p>Âü°í: <a href="htaccess.html"><code>.htaccess</code>
-        ÆÄÀÏ</a></p>
+        <p>ï¿½ï¿½ï¿½ï¿½: <a href="htaccess.html"><code>.htaccess</code>
+        ï¿½ï¿½ï¿½ï¿½</a></p>
       </dd>
     </dl>
 
     <dl>
-      <dt>Server Side Includes ¼Ò°³</dt>
+      <dt>Server Side Includes ï¿½Ò°ï¿½</dt>
       <dd>
-        <p>SSI (Server Side Includes)´Â HTML ÆäÀÌÁö¿¡ »ç¿ëÇÏ´Â
-        Áö½Ã¾î·Î, ÆäÀÌÁö¸¦ ¼­ºñ½ºÇÒ¶§ ¼­¹ö°¡ Ã³¸®ÇÑ´Ù. SSI¸¦
-        »ç¿ëÇÏ¸é CGI ÇÁ·Î±×·¥ÀÌ³ª ´Ù¸¥ µ¿ÀûÀÎ ±â¼ú·Î ÆäÀÌÁö
-        ÀüÃ¼¸¦ ¸¸µé¾î¼­ ¼­ºñ½ºÇÏÁö ¾Ê°íµµ HTML ÆäÀÌÁö¿¡ µ¿ÀûÀ¸·Î
-        »ý¼ºÇÑ ³»¿ëÀ» Ãß°¡ÇÒ ¼ö ÀÖ´Ù.</p>
+        <p>SSI (Server Side Includes)ï¿½ï¿½ HTML ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½
+        ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ñ´ï¿½. SSIï¿½ï¿½
+        ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ CGI ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½Ì³ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½î¼­ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê°ï¿½ï¿½ï¿½ HTML ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-        <p>Âü°í: <a href="ssi.html">Server Side Includes (SSI)</a></p>
+        <p>ï¿½ï¿½ï¿½ï¿½: <a href="ssi.html">Server Side Includes (SSI)</a></p>
       </dd>
     </dl>
 
     <dl>
-      <dt>»ç¿ëÀÚº° À¥µð·ºÅä¸®</dt>
+      <dt>ï¿½ï¿½ï¿½ï¿½Úºï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ä¸®</dt>
       <dd>
-        <p>¿©·¯ »ç¿ëÀÚ°¡ ÀÖ´Â ½Ã½ºÅÛ¿¡¼­ <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> Áö½Ã¾î¸¦ »ç¿ëÇÏ¸é
-        °¢ »ç¿ëÀÚ´Â ÀÚ½ÅÀÇ È¨µð·ºÅä¸® ¾È¿¡ À¥»çÀÌÆ®¸¦ ¸¸µé ¼ö
-        ÀÖ´Ù. URL <code>http://example.com/~username/</code>¿¡
-        Á¢±ÙÇÏ¸é »ç¿ëÀÚ "<code>username</code>"ÀÇ È¨µð·ºÅä¸®¿¡¼­
+        <p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½Ö´ï¿½ ï¿½Ã½ï¿½ï¿½Û¿ï¿½ï¿½ï¿½ <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½
+        ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ ï¿½Ú½ï¿½ï¿½ï¿½ È¨ï¿½ï¿½ï¿½ä¸® ï¿½È¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+        ï¿½Ö´ï¿½. URL <code>https://example.com/~username/</code>ï¿½ï¿½
+        ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ "<code>username</code>"ï¿½ï¿½ È¨ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ï¿½ï¿½
         <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code>
-        Áö½Ã¾î·Î ÁöÁ¤ÇÑ ÇÏÀ§µð·ºÅä¸®¿¡ ÀÖ´Â ÆäÀÌÁö¸¦ °¡Á®¿À°Ô
-        µÈ´Ù.</p>
+        ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        ï¿½È´ï¿½.</p>
 
-        <p>Âü°í: <a href="public_html.html">»ç¿ëÀÚ À¥µð·ºÅä¸®
+        <p>ï¿½ï¿½ï¿½ï¿½: <a href="public_html.html">ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ä¸®
         (<code>public_html</code>)</a></p>
       </dd>
     </dl>
 
   </div></div>
 <div class="bottomlang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/howto/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/howto/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/howto/" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
 <a href="../fr/howto/" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/howto/" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../zh-cn/howto/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

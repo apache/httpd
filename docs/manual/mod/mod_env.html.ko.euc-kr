@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
 <meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -17,102 +17,102 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">¸ðµâ</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">ï¿½ï¿½ï¿½</a></div>
 <div id="page-content">
-<div id="preamble"><h1>¾ÆÆÄÄ¡ ¸ðµâ mod_env</h1>
+<div id="preamble"><h1>ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ mod_env</h1>
 <div class="toplang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/mod/mod_env.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/mod/mod_env.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_env.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_env.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_env.html" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_env.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">ÀÌ ¹®¼­´Â ÃÖ½ÅÆÇ ¹ø¿ªÀÌ ¾Æ´Õ´Ï´Ù.
-            ÃÖ±Ù¿¡ º¯°æµÈ ³»¿ëÀº ¿µ¾î ¹®¼­¸¦ Âü°íÇÏ¼¼¿ä.</div>
-<table class="module"><tr><th><a href="module-dict.html#Description">¼³¸í:</a></th><td>CGI ½ºÅ©¸³Æ®³ª SSI ÆäÀÌÁö¿¡ Àü´ÞÇÒ È¯°æº¯¼ö¸¦
-¼öÁ¤ÇÑ´Ù</td></tr>
-<tr><th><a href="module-dict.html#Status">»óÅÂ:</a></th><td>Base</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">¸ðµâ¸í:</a></th><td>env_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">¼Ò½ºÆÄÀÏ:</a></th><td>mod_env.c</td></tr></table>
-<h3>¿ä¾à</h3>
+<div class="outofdate">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Õ´Ï´ï¿½.
+            ï¿½Ö±Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>CGI ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ SSI ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</td></tr>
+<tr><th><a href="module-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Base</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">ï¿½ï¿½ï¿½ï¿½:</a></th><td>env_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">ï¿½Ò½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>mod_env.c</td></tr></table>
+<h3>ï¿½ï¿½ï¿½</h3>
 
-    <p>ÀÌ ¸ðµâÀº CGI ½ºÅ©¸³Æ®³ª SSI ÆäÀÌÁö¿¡ Àü´ÞÇÒ È¯°æº¯¼ö¸¦
-    Á¶ÀýÇÑ´Ù. À¥¼­¹ö¸¦ ½ÃÀÛÇÑ ½©¿¡¼­ È¯°æº¯¼ö¸¦ °¡Á®¿Ã ¼ö ÀÖ´Ù.
-    ¾Æ´Ï¸é ¼³Á¤°úÁ¤Áß¿¡ È¯°æº¯¼ö¸¦ ¼³Á¤ÇÏ°í Á¦°ÅÇÒ ¼ö ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ CGI ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ SSI ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.
+    ï¿½Æ´Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß¿ï¿½ È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 </div>
-<div id="quickview"><h3 class="directives">Áö½Ã¾îµé</h3>
+<div id="quickview"><h3 class="directives">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#passenv">PassEnv</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#setenv">SetEnv</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#unsetenv">UnsetEnv</a></li>
 </ul>
-<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_env">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_env">Report a bug</a></li></ul><h3>Âü°í</h3>
+<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_env">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_env">Report a bug</a></li></ul><h3>ï¿½ï¿½ï¿½ï¿½</h3>
 <ul class="seealso">
-<li><a href="../env.html">È¯°æº¯¼ö</a></li>
+<li><a href="../env.html">È¯ï¿½æº¯ï¿½ï¿½</a></li>
 <li><a href="#comments_section">Comments</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="PassEnv" id="PassEnv">PassEnv</a> <a name="passenv" id="passenv">Áö½Ã¾î</a> <a title="Permanent link" href="#passenv" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="PassEnv" id="PassEnv">PassEnv</a> <a name="passenv" id="passenv">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#passenv" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>½©¿¡¼­ È¯°æº¯¼ö¸¦ °¡Á®¿Â´Ù</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>PassEnv <var>env-variable</var> [<var>env-variable</var>]
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Â´ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>PassEnv <var>env-variable</var> [<var>env-variable</var>]
 ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override ¿É¼Ç:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_env</td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override ï¿½É¼ï¿½:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_env</td></tr>
 </table>
-    <p>À¥¼­¹ö¸¦ ½ÇÇàÇÑ ½©ÀÇ Æ¯Á¤ È¯°æº¯¼ö¸¦ CGI ½ºÅ©¸³Æ®³ª
-    SSI ÆäÀÌÁö·Î Àü´ÞÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Æ¯ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ CGI ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½
+    SSI ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <div class="example"><h3>¿¹Á¦</h3><p><code>
+    <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½</h3><p><code>
       PassEnv LD_LIBRARY_PATH
     </code></p></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SetEnv" id="SetEnv">SetEnv</a> <a name="setenv" id="setenv">Áö½Ã¾î</a> <a title="Permanent link" href="#setenv" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="SetEnv" id="SetEnv">SetEnv</a> <a name="setenv" id="setenv">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#setenv" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>È¯°æº¯¼ö¸¦ ¼³Á¤ÇÑ´Ù</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>SetEnv <var>env-variable</var> <var>value</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override ¿É¼Ç:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_env</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>SetEnv <var>env-variable</var> <var>value</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override ï¿½É¼ï¿½:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_env</td></tr>
 </table>
-    <p>CGI ½ºÅ©¸³Æ®³ª SSI ÆäÀÌÁö¿¡ Àü´ÞÇÒ È¯°æº¯¼ö¸¦ ¼³Á¤ÇÑ´Ù.</p>
+    <p>CGI ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ SSI ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <div class="example"><h3>¿¹Á¦</h3><p><code>
+    <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½</h3><p><code>
       SetEnv SPECIAL_PATH /foo/bin
     </code></p></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="UnsetEnv" id="UnsetEnv">UnsetEnv</a> <a name="unsetenv" id="unsetenv">Áö½Ã¾î</a> <a title="Permanent link" href="#unsetenv" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="UnsetEnv" id="UnsetEnv">UnsetEnv</a> <a name="unsetenv" id="unsetenv">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#unsetenv" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>È¯°æº¯¼ö¸¦ Á¦°ÅÇÑ´Ù</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>UnsetEnv <var>env-variable</var> [<var>env-variable</var>]
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>UnsetEnv <var>env-variable</var> [<var>env-variable</var>]
 ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override ¿É¼Ç:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_env</td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override ï¿½É¼ï¿½:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_env</td></tr>
 </table>
-    <p>CGI ½ºÅ©¸³Æ®³ª SSI ÆäÀÌÁö¿¡ È¯°æº¯¼ö¸¦ Àü´ÞÇÏÁö ¾Ê´Â´Ù.</p>
+    <p>CGI ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ SSI ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.</p>
 
-    <div class="example"><h3>¿¹Á¦</h3><p><code>
+    <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½</h3><p><code>
       UnsetEnv LD_LIBRARY_PATH
     </code></p></div>
 
 </div>
 </div>
 <div class="bottomlang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/mod/mod_env.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/mod/mod_env.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_env.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_env.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_env.html" title="Korean">&nbsp;ko&nbsp;</a> |
@@ -120,7 +120,7 @@
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_env.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/mod/mod_env.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -135,8 +135,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_env.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

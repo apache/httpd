@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,7 +23,7 @@
 -->
 
 <indexpage metafile="index.xml.meta">
-<parentdocument href="http://httpd.apache.org/docs-project/" />
+<parentdocument href="https://httpd.apache.org/docs-project/" />
 
 <title>Apache HTTP Server версия &httpd.major;.&httpd.minor;
 Документация</title>
@@ -92,12 +92,12 @@
 </category>
 
 <category id="other"><title>Другие темы</title>
-    <page href="http://wiki.apache.org/httpd/FAQ">Часто задаваемые вопросы</page>
+    <page href="https://wiki.apache.org/httpd/FAQ">Часто задаваемые вопросы</page>
     <page href="sitemap.html">Карта сайта</page>
     <page href="developer/">Документация для разработчиков</page>
-    <page href="http://httpd.apache.org/docs-project/">Помощь с документацией</page>
+    <page href="https://httpd.apache.org/docs-project/">Помощь с документацией</page>
     <page href="misc/">Прочие примечания</page>
-    <page href="http://wiki.apache.org/httpd/">Вики</page>
+    <page href="https://wiki.apache.org/httpd/">Вики</page>
 </category>
 
 </indexpage>

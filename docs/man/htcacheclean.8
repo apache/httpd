@@ -97,7 +97,7 @@ List the URLs currently stored in the cache, along with their attributes in the 
 If \fBhtcacheclean\fR is passed one or more URLs, each URL will be deleted from the cache\&. If multiple variants of an URL exists, all variants would be deleted\&.
  
 .PP
-When a reverse proxied URL is to be deleted, the effective URL is constructed from the \fBHost\fR header, the \fBport\fR, the \fBpath\fR and the \fBquery\fR\&. Note the '?' in the URL must always be specified explicitly, whether a query string is present or not\&. For example, an attempt to delete the path \fB/\fR from the server \fBlocalhost\fR, the URL to delete would be \fBhttp://localhost:80/?\fR\&.
+When a reverse proxied URL is to be deleted, the effective URL is constructed from the \fBHost\fR header, the \fBport\fR, the \fBpath\fR and the \fBquery\fR\&. Note the '?' in the URL must always be specified explicitly, whether a query string is present or not\&. For example, an attempt to delete the path \fB/\fR from the server \fBlocalhost\fR, the URL to delete would be \fBhttps://localhost:80/?\fR\&.
  
 .SH "LISTING URLS IN THE CACHE"
  

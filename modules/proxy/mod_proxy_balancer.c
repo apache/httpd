@@ -5,7 +5,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -1434,7 +1434,7 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
         char date[APR_RFC822_DATE_LEN];
         ap_set_content_type(r, "text/xml");
         ap_rputs("<?xml version='1.0' encoding='UTF-8' ?>\n", r);
-        ap_rputs("<httpd:manager xmlns:httpd='http://httpd.apache.org'>\n", r);
+        ap_rputs("<httpd:manager xmlns:httpd='https://httpd.apache.org'>\n", r);
         ap_rputs("  <httpd:balancers>\n", r);
         balancer = (proxy_balancer *)conf->balancers->elts;
         for (i = 0; i < conf->balancers->nelts; i++) {

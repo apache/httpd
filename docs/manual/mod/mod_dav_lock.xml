@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -34,7 +34,7 @@
     the service of <module>mod_dav</module>. But without a backend provider
     which makes use of it, it's useless and should not be loaded into the
     server. A sample backend module which actually utilizes
-    <module>mod_dav_lock</module> is <a href="http://subversion.apache.org/"
+    <module>mod_dav_lock</module> is <a href="https://subversion.apache.org/"
     >mod_dav_svn</a>, the subversion provider module.</p>
 
     <p>Note that <module>mod_dav_fs</module> does <em>not</em> need this

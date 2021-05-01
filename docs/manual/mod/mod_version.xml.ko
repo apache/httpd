@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,39 +22,39 @@
 
 <modulesynopsis metafile="mod_version.xml.meta">
 <name>mod_version</name>
-<description>¹öÀüº° ¼³Á¤</description>
+<description>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</description>
 <status>Extension</status>
 <sourcefile>mod_version.c</sourcefile>
 <identifier>version_module</identifier>
-<compatibility>¾ÆÆÄÄ¡ 2.1 ÀÌÈÄºÎÅÍ</compatibility>
+<compatibility>ï¿½ï¿½ï¿½ï¿½Ä¡ 2.1 ï¿½ï¿½ï¿½Äºï¿½ï¿½ï¿½</compatibility>
 
 <summary>
-    <p>¿©·¯ ´Ù¸¥ À¥¼­¹ö ¹öÀü°ú ±¸¼ºÀ» ´Ù·ç¾î¾ß ÇÒ Å« ³×Æ®¿÷°ú
-    Å×½ºÆ®¿ëÀ¸·Î »ç¿ëÇÏ±âÀ§ÇØ ÀÌ ¸ðµâÀ» ¸¸µé¾ú´Ù. ÀÌ ¸ðµâÀº
-    ¼ýÀÚ ºñ±³³ª Á¤±ÔÇ¥Çö½ÄÀ» »ç¿ëÇÏ¿© ÀÚÀ¯·Î¿î ¹öÀü °Ë»ç°¡ °¡´ÉÇÑ
-    <directive type="section" module="mod_version">IfVersion</directive>À»
-    Á¦°øÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù·ï¿½ï¿½ï¿½ ï¿½ï¿½ Å« ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½
+    ï¿½×½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ñ±³³ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ë»ç°¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    <directive type="section" module="mod_version">IfVersion</directive>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <example><title>¿¹Á¦</title>
+    <example><title>ï¿½ï¿½ï¿½ï¿½</title>
       &lt;IfVersion 2.1.0&gt;<br />
       <indent>
-        # ÇöÀç À¥¼­¹ö ¹öÀüÀº Á¤È®È÷ 2.1.0ÀÌ´Ù<br />
+        # ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È®ï¿½ï¿½ 2.1.0ï¿½Ì´ï¿½<br />
       </indent>
       &lt;/IfVersion&gt;<br />
       <br />
       &lt;IfVersion >= 2.2&gt;<br />
       <indent>
-        # ÁøÂ¥ »õ·Î¿î ±â´ÉÀ» »ç¿ëÇÑ´Ù :-)<br />
+        # ï¿½ï¿½Â¥ ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½ :-)<br />
       </indent>
       &lt;/IfVersion&gt;
     </example>
 
-    <p>´Ù¸¥ »ç¿ë¹ýÀº ¾Æ·¡¸¦ Âü°íÇÑ´Ù.</p>
+    <p>ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 </summary>
 
 <directivesynopsis type="section">
 <name>IfVersion</name>
-<description>¹öÀüº° ¼³Á¤À» ¹­´Â´Ù</description>
+<description>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â´ï¿½</description>
 <syntax>&lt;IfVersion [[!]<var>operator</var>] <var>version</var>&gt; ...
 &lt;/IfVersion&gt;</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -62,72 +62,72 @@
 <override>All</override>
 
 <usage>
-    <p><directive type="section">IfVersion</directive> ¼½¼ÇÀº
-    À¥¼­¹ö ¹öÀüÀÌ ¿øÇÏ´Â Á¶°ÇÀ» ¸¸Á·ÇÒ¶§¸¸ ½ÇÇàÇÒ ¼³Á¤ Áö½Ã¾î¸¦
-    ¹­´Â´Ù. ÀÏ¹ÝÀûÀÎ (¼ýÀÚ) ºñ±³ÀÇ °æ¿ì <var>version</var> ¾Æ±Ô¸ÕÆ®´Â
-    <code>2.1.0</code>ÀÌ³ª <code>2.2</code>¿Í °°ÀÌ
+    <p><directive type="section">IfVersion</directive> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦
+    ï¿½ï¿½ï¿½Â´ï¿½. ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½) ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ <var>version</var> ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½
+    <code>2.1.0</code>ï¿½Ì³ï¿½ <code>2.2</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     <code><var>major</var>[.<var>minor</var>[.<var>patch</var>]]</code>
-    Çü½ÄÀÌ´Ù. <var>minor</var>¿Í <var>patch</var>´Â ¾ø¾îµµ µÈ´Ù.
-    ÀÌµé ¼ýÀÚ°¡ ¾ø´Ù¸é 0ÀÌ¶ó°í °¡Á¤ÇÑ´Ù. ´ÙÀ½°ú °°Àº ¼ýÀÚ
-    <var>operator</var>°¡ °¡´ÉÇÏ´Ù.</p>
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½. <var>minor</var>ï¿½ï¿½ <var>patch</var>ï¿½ï¿½ ï¿½ï¿½ï¿½îµµ ï¿½È´ï¿½.
+    ï¿½Ìµï¿½ ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½ï¿½ï¿½Ù¸ï¿½ 0ï¿½Ì¶ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    <var>operator</var>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.</p>
 
     <table style="zebra" border="1">
-    <tr><th><var>operator</var></th><th>¼³¸í</th></tr>
-    <tr><td><code>=</code> È¤Àº <code>==</code></td>
-        <td>µ¿ÀÏÇÑ À¥¼­¹ö ¹öÀü</td></tr>
+    <tr><th><var>operator</var></th><th>ï¿½ï¿½ï¿½ï¿½</th></tr>
+    <tr><td><code>=</code> È¤ï¿½ï¿½ <code>==</code></td>
+        <td>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</td></tr>
     <tr><td><code>&gt;</code></td>
-        <td>º¸´Ù Å« À¥¼­¹ö ¹öÀü</td></tr>
+        <td>ï¿½ï¿½ï¿½ï¿½ Å« ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</td></tr>
     <tr><td><code>&gt;=</code></td>
-        <td>Å©°Å³ª °°Àº À¥¼­¹ö ¹öÀü</td></tr>
+        <td>Å©ï¿½Å³ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</td></tr>
     <tr><td><code>&lt;</code></td>
-        <td>º¸´Ù ÀÛÀº À¥¼­¹ö ¹öÀü</td></tr>
+        <td>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</td></tr>
     <tr><td><code>&lt;=</code></td>
-        <td>ÀÛ°Å³ª °°Àº À¥¼­¹ö ¹öÀü</td></tr>
+        <td>ï¿½Û°Å³ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</td></tr>
     </table>
 
-    <example><title>¿¹Á¦</title>
+    <example><title>ï¿½ï¿½ï¿½ï¿½</title>
       &lt;IfVersion >= 2.1&gt;<br />
       <indent>
-        # ¹öÀüÀÌ 2.1.0 º¸´Ù Å©°Å³ª °°À»¶§¸¸<br />
-        # ½ÇÇàÇÑ´Ù.<br />
+        # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 2.1.0 ï¿½ï¿½ï¿½ï¿½ Å©ï¿½Å³ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½<br />
+        # ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.<br />
       </indent>
       &lt;/IfVersion&gt;
     </example>
 
-    <p>¼ýÀÚ ºñ±³¿Ü¿¡µµ Á¤±ÔÇ¥Çö½ÄÀ» »ç¿ëÇÏ¿© À¥¼­¹ö ¹öÀüÀ» ÁöÁ¤ÇÒ
-    ¼ö ÀÖ´Ù. ¿©±â¿¡´Â µÎ°¡Áö ¹æ¹ýÀÌ ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ ï¿½ñ±³¿Ü¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½â¿¡ï¿½ï¿½ ï¿½Î°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
     <table style="zebra" border="1">
-    <tr><th><var>operator</var></th><th>¼³¸í</th></tr>
-    <tr><td><code>=</code> È¤Àº <code>==</code></td>
-        <td><var>version</var>Àº
-            <code>/<var>regex</var>/</code> Çü½ÄÀÌ´Ù</td></tr>
+    <tr><th><var>operator</var></th><th>ï¿½ï¿½ï¿½ï¿½</th></tr>
+    <tr><td><code>=</code> È¤ï¿½ï¿½ <code>==</code></td>
+        <td><var>version</var>ï¿½ï¿½
+            <code>/<var>regex</var>/</code> ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½</td></tr>
     <tr><td><code>~</code></td>
-        <td><var>version</var>Àº
-            <code><var>regex</var></code> Çü½ÄÀÌ´Ù</td></tr>
+        <td><var>version</var>ï¿½ï¿½
+            <code><var>regex</var></code> ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½</td></tr>
     </table>
 
-    <example><title>¿¹Á¦</title>
+    <example><title>ï¿½ï¿½ï¿½ï¿½</title>
       &lt;IfVersion = /^2.1.[01234]$/&gt;<br />
       <indent>
-        # ¿¹¸¦ µé¾î, ¿©±â¿¡ ¹ö±×°¡ ÀÖ´Â Æ¯Á¤ ¹öÀü¿¡ ´ëÇÑ ÇØ°áÃ¥ÀÌ ³ª¿Â´Ù
+        # ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½â¿¡ ï¿½ï¿½ï¿½×°ï¿½ ï¿½Ö´ï¿½ Æ¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ø°ï¿½Ã¥ï¿½ï¿½ ï¿½ï¿½ï¿½Â´ï¿½
       </indent>
       &lt;/IfVersion&gt;
     </example>
 
-    <p>¿¬»êÀÚ ¾Õ¿¡ ´À³¦Ç¥(<code>!</code>)¸¦ ¾²¸é ÀÇ¹Ì¸¦ ¹Ý´ë·Î
-    ÇØ¼®ÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Õ¿ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¥(<code>!</code>)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ç¹Ì¸ï¿½ ï¿½Ý´ï¿½ï¿½
+    ï¿½Ø¼ï¿½ï¿½Ñ´ï¿½.</p>
 
     <example>
       &lt;IfVersion !~ ^2.1.[01234]$&gt;<br />
       <indent>
-        # ÀÌ ¹öÀüÀÌ ¾Æ´Ï¸é<br />
+        # ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Ï¸ï¿½<br />
       </indent>
       &lt;/IfVersion&gt;
     </example>
 
-    <p><var>operator</var>¸¦ »ý·«ÇÏ¸é <code>=</code>ÀÌ¶ó°í
-    »ý°¢ÇÑ´Ù.</p>
+    <p><var>operator</var>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ <code>=</code>ï¿½Ì¶ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 </usage>
 </directivesynopsis>
 

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
 <meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>´ÙÁßÃ³¸® ¸ðµâ (MPM) - Apache HTTP Server Version 2.5</title>
+<title>ï¿½ï¿½ï¿½ï¿½Ã³ï¿½ï¿½ ï¿½ï¿½ï¿½ (MPM) - Apache HTTP Server Version 2.5</title>
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
@@ -16,14 +16,14 @@
 
 <link href="./images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">¸ðµâ</a> | <a href="./mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">¿ë¾î</a> | <a href="./sitemap.html">»çÀÌÆ®¸Ê</a></p>
+<p class="menu"><a href="./mod/">ï¿½ï¿½ï¿½</a> | <a href="./mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">ï¿½ï¿½ï¿½</a> | <a href="./sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="./images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>´ÙÁßÃ³¸® ¸ðµâ (MPM)</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>ï¿½ï¿½ï¿½ï¿½Ã³ï¿½ï¿½ ï¿½ï¿½ï¿½ (MPM)</h1>
 <div class="toplang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="./de/mpm.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="./de/mpm.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/mpm.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/mpm.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
 <a href="./fr/mpm.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
@@ -32,94 +32,94 @@
 <a href="./tr/mpm.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/mpm.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">ÀÌ ¹®¼­´Â ÃÖ½ÅÆÇ ¹ø¿ªÀÌ ¾Æ´Õ´Ï´Ù.
-            ÃÖ±Ù¿¡ º¯°æµÈ ³»¿ëÀº ¿µ¾î ¹®¼­¸¦ Âü°íÇÏ¼¼¿ä.</div>
+<div class="outofdate">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Õ´Ï´ï¿½.
+            ï¿½Ö±Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.</div>
 
-<p>ÀÌ ¹®¼­´Â ´ÙÁßÃ³¸® ¸ðµâ (Multi-Processing Module)ÀÌ ¹«¾ùÀÌ¸ç,
-¾ÆÆÄÄ¡ À¥¼­¹ö°¡ ÀÌ¸¦ ¾î¶»°Ô »ç¿ëÇÏ´ÂÁö ¼³¸íÇÑ´Ù.</p>
+<p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ã³ï¿½ï¿½ ï¿½ï¿½ï¿½ (Multi-Processing Module)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì¸ï¿½,
+ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ ï¿½î¶»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">¼Ò°³</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#choosing">MPM ¼±ÅÃÇÏ±â</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#defaults">MPM ±âº»°ª</a></li>
-</ul><h3>Âü°í</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">ï¿½Ò°ï¿½</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#choosing">MPM ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#defaults">MPM ï¿½âº»ï¿½ï¿½</a></li>
+</ul><h3>ï¿½ï¿½ï¿½ï¿½</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">¼Ò°³</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
+<h2><a name="introduction" id="introduction">ï¿½Ò°ï¿½</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
 
-    <p>¾ÆÆÄÄ¡ À¥¼­¹ö´Â ´Ù¾çÇÑ È¯°æÀÇ ´Ù¾çÇÑ ÇÃ·¡Æû¿¡¼­ µ¿ÀÛÇÒ
-    ¼ö ÀÖµµ·Ï °­·ÂÇÏ°í À¯¿¬ÇÏ°Ô ¼³°èµÇ¾ú´Ù. ´Ù¸¥ ÇÃ·¡Æû°ú ´Ù¸¥
-    È¯°æÀº º¸Åë ´Ù¸¥ ±â´ÉÀ» ¿ä±¸ÇÏ¸ç, ¾î¶² ±â´ÉÀ» °¡Àå È¿À²ÀûÀ¸·Î
-    ±¸ÇöÇÏ´Â ¹æ¹ýÀÌ ´Ù¸¦ ¼ö ÀÖ´Ù. ¾ÆÆÄÄ¡´Â ¸ðµâÈ­µÈ ¼³°è·Î ÀÌ·±
-    ´Ù¾çÇÑ È¯°æ¿¡ Ç×»ó ÀûÀÀÇØ¿Ô´Ù. ±×·¡¼­ À¥¸¶½ºÅÍ´Â ÄÄÆÄÀÏ½Ã
-    È¤Àº ½ÇÇà½Ã ¾î¶² ¸ðµâÀ» ÀÐ¾îµéÀÏÁö ¼±ÅÃÇÏ¿© ¼­¹ö¿¡ Æ÷ÇÔÇÒ
-    ±â´ÉÀ» °áÁ¤ÇÒ ¼ö ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¾ï¿½ï¿½ï¿½ È¯ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¾ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ ï¿½Öµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½. ï¿½Ù¸ï¿½ ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½
+    È¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ä±¸ï¿½Ï¸ï¿½, ï¿½î¶² ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½È­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì·ï¿½
+    ï¿½Ù¾ï¿½ï¿½ï¿½ È¯ï¿½æ¿¡ ï¿½×»ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¿Ô´ï¿½. ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï½ï¿½
+    È¤ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½î¶² ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ð¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <p>Apache 2.0Àº ÀÌ·± ¸ðµâÈ­µÈ ¼³°è¸¦ À¥¼­¹öÀÇ °¡Àå ±âº»ÀûÀÎ
-    ºÎºÐ¿¡±îÁö È®ÀåÇß´Ù. ¼­¹ö´Â ½Ã½ºÅÛÀÇ ³×Æ®¿÷ Æ÷Æ®¿¡ ¿¬°áÇÏ°í,
-    ¿äÃ»À» ¹Þ¾ÆµéÀÌ¸ç, ¹Þ¾ÆµéÀÎ ¿äÃ»À» Ã³¸®ÇÏ±âÀ§ÇØ ÀÚ½Äµé¿¡°Ô
-    ºÐ¹èÇÏ´Â ´ÙÁßÃ³¸® ¸ðµâ (Multi-Processing Modules, MPMs)À»
-    ¼±ÅÃÇÒ ¼ö ÀÖ´Ù.</p>
+    <p>Apache 2.0ï¿½ï¿½ ï¿½Ì·ï¿½ ï¿½ï¿½ï¿½È­ï¿½ï¿½ ï¿½ï¿½ï¿½è¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½
+    ï¿½ÎºÐ¿ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½ß´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½,
+    ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½Þ¾Æµï¿½ï¿½Ì¸ï¿½, ï¿½Þ¾Æµï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ú½Äµé¿¡ï¿½ï¿½
+    ï¿½Ð¹ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½Ã³ï¿½ï¿½ ï¿½ï¿½ï¿½ (Multi-Processing Modules, MPMs)ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <p>¼­¹ö¸¦ ÀÌ Á¤µµ·Î ¸ðµâÈ­ÇÏ¸é µÎ°¡Áö Áß¿äÇÑ ÀåÁ¡ÀÌ
-    ÀÖ´Ù:</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½È­ï¿½Ï¸ï¿½ ï¿½Î°ï¿½ï¿½ï¿½ ï¿½ß¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ö´ï¿½:</p>
 
     <ul>
-      <li><code class="module"><a href="./mod/mpm_winnt.html">mpm_winnt</a></code>°¡ Apache 1.3¿¡¼­ »ç¿ëÇÑ
-      POSIXÃþ ´ë½Å ÀÚÃ¼ ³×Æ®¿÷ ±â´ÉÀ» »ç¿ëÇÒ ¼ö ÀÖ´Â µî,
-      ¾ÆÆÄÄ¡´Â ¿©·¯ ´Ù¾çÇÑ ¿î¿µÃ¼Á¦¸¦ ´õ ±ò²ûÇÏ°í È¿À²ÀûÀ¸·Î
-      Áö¿øÇÒ ¼ö ÀÖ´Ù. ÀÌ ÀåÁ¡Àº Æ¯È­µÈ MPMÀ» ±¸ÇöÇÑ ´Ù¸¥
-      ¿î¿µÃ¼Á¦¿¡µµ Àû¿ëµÈ´Ù.</li>
+      <li><code class="module"><a href="./mod/mpm_winnt.html">mpm_winnt</a></code>ï¿½ï¿½ Apache 1.3ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+      POSIXï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½,
+      ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¾ï¿½ï¿½ï¿½ ï¿½î¿µÃ¼ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ È¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Æ¯È­ï¿½ï¿½ MPMï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½
+      ï¿½î¿µÃ¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È´ï¿½.</li>
 
-      <li>¼­¹ö´Â Æ¯Á¤ »çÀÌÆ®ÀÇ ¿ä±¸Á¶°Ç¿¡ ´õ Æ¯È­µÉ ¼ö ÀÖ´Ù.
-      ¿¹¸¦ µé¾î ³ôÀº È®Àå°¡´É¼º(scalability)ÀÌ ÇÊ¿äÇÑ »çÀÌÆ®´Â
-      <code class="module"><a href="./mod/worker.html">worker</a></code>¿Í °°Àº ¾²·¹µå MPMÀ» »ç¿ëÇÏ°í,
-      ¾ÈÁ¤¼º°ú ¿À·¡µÈ ¼ÒÇÁÆ®¿þ¾î¿ÍÀÇ È£È¯¼ºÀÌ ÇÊ¿äÇÑ »çÀÌÆ®´Â
-      <code class="module"><a href="./mod/prefork.html">prefork</a></code>ing MPM À» »ç¿ëÇÒ ¼ö ÀÖ´Ù.
-      Ãß°¡·Î ´Ù¸¥ »ç¿ëÀÚ¾ÆÀÌµð·Î ¿©·¯ È£½ºÆ®¸¦ ¼­ºñ½ºÇÏ´Â
-      °Í°ú °°Àº Æ¯º°ÇÑ ±â´Éµµ
-      Á¦°øµÈ´Ù.</li>
+      <li>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Æ¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ä±¸ï¿½ï¿½ï¿½Ç¿ï¿½ ï¿½ï¿½ Æ¯È­ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.
+      ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È®ï¿½å°¡ï¿½É¼ï¿½(scalability)ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½
+      <code class="module"><a href="./mod/worker.html">worker</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ MPMï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½,
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È£È¯ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½
+      <code class="module"><a href="./mod/prefork.html">prefork</a></code>ing MPM ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.
+      ï¿½ß°ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¾ï¿½ï¿½Ìµï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½
+      ï¿½Í°ï¿½ ï¿½ï¿½ï¿½ï¿½ Æ¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Éµï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½È´ï¿½.</li>
     </ul>
 
-    <p>»ç¿ëÀÚ°¡ º¸±â¿¡ MPMÀº ´Ù¸¥ ¾ÆÆÄÄ¡ ¸ðµâ°ú °ÅÀÇ ºñ½ÁÇØ
-    º¸ÀÎ´Ù. ÁÖµÈ Â÷ÀÌ´Â ¼­¹ö´Â ÇÑ¹ø¿¡ ¿ÀÁ÷ ÇÑ MPM¸¸À» »ç¿ëÇØ¾ß
-    ÇÑ´Ù´Â Á¡ÀÌ´Ù. »ç¿ë°¡´ÉÇÑ MPM ¸ñ·ÏÀº <a href="mod/">¸ðµâ
-    ¸ñ·Ï ÆäÀÌÁö</a>¿¡ ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½ï¿½ï¿½â¿¡ MPMï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½Î´ï¿½. ï¿½Öµï¿½ ï¿½ï¿½ï¿½Ì´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ MPMï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½
+    ï¿½Ñ´Ù´ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½. ï¿½ï¿½ë°¡ï¿½ï¿½ï¿½ï¿½ MPM ï¿½ï¿½ï¿½ï¿½ï¿½ <a href="mod/">ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</a>ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="choosing" id="choosing">MPM ¼±ÅÃÇÏ±â</a> <a title="Permanent link" href="#choosing" class="permalink">&para;</a></h2>
+<h2><a name="choosing" id="choosing">MPM ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½</a> <a title="Permanent link" href="#choosing" class="permalink">&para;</a></h2>
 
-    <p>MPMs´Â ±¸¼ºÁß¿¡ ¼±ÅÃÇÏ¿© ¼­¹ö¿¡ ÄÄÆÄÀÏµÇ¾ß ÇÑ´Ù.
-    ¾²·¹µå¸¦ »ç¿ëÇÏ´Â °ÍÀ» ÄÄÆÄÀÏ·¯°¡ ¾Ë¸é ¸¹Àº ÇÔ¼ö¸¦
-    ÃÖÀûÈ­ÇÒ ¼ö ÀÖ´Ù. À¯´Ð½º¿¡¼­ ¸î¸î MPMÀº ¾²·¹µå¸¦ ¾²°í
-    ³ª¸ÓÁö´Â ¾Æ´Ï¹Ç·Î, MPMÀÌ ±¸¼ºÁß¿¡ ¼±ÅÃµÇ¾î ¾ÆÆÄÄ¡¿¡
-    ÄÄÆÄÀÏµÉ¶§ ¾ÆÆÄÄ¡´Â ´õ ºü¸¥ ¼Óµµ¸¦ ³½´Ù.</p>
+    <p>MPMsï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ß¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ÏµÇ¾ï¿½ ï¿½Ñ´ï¿½.
+    ï¿½ï¿½ï¿½ï¿½ï¿½å¸¦ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ ï¿½Ë¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½È­ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½Ð½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ MPMï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½å¸¦ ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Ï¹Ç·ï¿½, MPMï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ß¿ï¿½ ï¿½ï¿½ï¿½ÃµÇ¾ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ÏµÉ¶ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Óµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</p>
 
-    <p>¿øÇÏ´Â MPMÀ» ¼±ÅÃÇÏ·Á¸é ./configure ½ºÅ©¸³Æ®¿¡
-    with-mpm= <em>NAME</em> ¾Æ±Ô¸ÕÆ®¸¦ »ç¿ëÇÏ¶ó. <em>NAME</em>Àº
-    ¿øÇÏ´Â MPM ÀÌ¸§ÀÌ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½Ï´ï¿½ MPMï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ ./configure ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½
+    with-mpm= <em>NAME</em> ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½. <em>NAME</em>ï¿½ï¿½
+    ï¿½ï¿½ï¿½Ï´ï¿½ MPM ï¿½Ì¸ï¿½ï¿½Ì´ï¿½.</p>
 
-    <p>¼­¹ö¸¦ ÄÄÆÄÀÏÇÑÈÄ <code>./httpd -l</code> ¸í·É¾î·Î ¼±ÅÃÇÑ
-    MPMÀ» ¾Ë ¼ö ÀÖ´Ù.  ÀÌ ¸í·É¾î´Â MPMÀ» Æ÷ÇÔÇÏ¿© ¼­¹ö¿¡ ÄÄÆÄÀÏµÈ
-    ¸ðµç ¸ðµâÀ» ¾Ë·ÁÁØ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>./httpd -l</code> ï¿½ï¿½ï¿½É¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    MPMï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.  ï¿½ï¿½ ï¿½ï¿½ï¿½É¾ï¿½ï¿½ MPMï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½
+    ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ë·ï¿½ï¿½Ø´ï¿½.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="defaults" id="defaults">MPM ±âº»°ª</a> <a title="Permanent link" href="#defaults" class="permalink">&para;</a></h2>
+<h2><a name="defaults" id="defaults">MPM ï¿½âº»ï¿½ï¿½</a> <a title="Permanent link" href="#defaults" class="permalink">&para;</a></h2>
 
-<p>´ÙÀ½ Ç¥´Â ¿©·¯ ¿î¿µÃ¼Á¦ÀÇ ±âº» MPMÀ» º¸¿©ÁØ´Ù. ÄÄÆÄÀÏ½Ã
-´Ù¸£°Ô ¼±ÅÃÇÏÁö ¾ÊÀ¸¸é ÀÌ MPMÀÌ ¼±ÅÃµÈ´Ù.</p>
+<p>ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½î¿µÃ¼ï¿½ï¿½ï¿½ï¿½ ï¿½âº» MPMï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½Ï½ï¿½
+ï¿½Ù¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ MPMï¿½ï¿½ ï¿½ï¿½ï¿½ÃµÈ´ï¿½.</p>
 
 <table>
 
 <tr><td>BeOS</td><td><code class="module"><a href="./mod/beos.html">beos</a></code></td></tr>
 <tr><td>Netware</td><td><code class="module"><a href="./mod/mpm_netware.html">mpm_netware</a></code></td></tr>
 <tr><td>OS/2</td><td><code class="module"><a href="./mod/mpmt_os2.html">mpmt_os2</a></code></td></tr>
-<tr><td>À¯´Ð½º</td><td><code class="module"><a href="./mod/prefork.html">prefork</a></code></td></tr>
-<tr><td>À©µµ¿ìÁî</td><td><code class="module"><a href="./mod/mpm_winnt.html">mpm_winnt</a></code></td></tr>
+<tr><td>ï¿½ï¿½ï¿½Ð½ï¿½</td><td><code class="module"><a href="./mod/prefork.html">prefork</a></code></td></tr>
+<tr><td>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</td><td><code class="module"><a href="./mod/mpm_winnt.html">mpm_winnt</a></code></td></tr>
 </table>
 </div></div>
 <div class="bottomlang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="./de/mpm.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="./de/mpm.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/mpm.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/mpm.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
 <a href="./fr/mpm.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
@@ -130,7 +130,7 @@
 </div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mpm.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/mpm.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -145,8 +145,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mpm.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">¸ðµâ</a> | <a href="./mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">¿ë¾î</a> | <a href="./sitemap.html">»çÀÌÆ®¸Ê</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">ï¿½ï¿½ï¿½</a> | <a href="./mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">ï¿½ï¿½ï¿½</a> | <a href="./sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

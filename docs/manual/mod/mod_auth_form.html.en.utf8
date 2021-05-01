@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -17,12 +17,12 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache Module mod_auth_form</h1>
 <div class="toplang">
@@ -114,7 +114,7 @@
     AuthUserFile "conf/passwd"
     AuthType form
     AuthName "/admin"
-    AuthFormLoginRequiredLocation "http://example.com/login.html"
+    AuthFormLoginRequiredLocation "https://example.com/login.html"
 
     Session On
     SessionCookieName session path=/
@@ -171,8 +171,8 @@
 
       <div class="example"><h3>Form login handler example</h3><pre class="prettyprint lang-config">&lt;Location "/dologin.html"&gt;
     SetHandler form-login-handler
-    AuthFormLoginRequiredLocation "http://example.com/login.html"
-    AuthFormLoginSuccessLocation "http://example.com/admin/index.html"
+    AuthFormLoginRequiredLocation "https://example.com/login.html"
+    AuthFormLoginSuccessLocation "https://example.com/admin/index.html"
     AuthFormProvider file
     AuthUserFile "conf/passwd"
     AuthType form
@@ -196,7 +196,7 @@
   Username: &lt;input type="text" name="httpd_username" value="" /&gt;
   Password: &lt;input type="password" name="httpd_password" value="" /&gt;
   &lt;input type="submit" name="login" value="Login" /&gt;
-  &lt;input type="hidden" name="httpd_location" value="http://example.com/success.html" /&gt;
+  &lt;input type="hidden" name="httpd_location" value="https://example.com/success.html" /&gt;
 &lt;/form&gt;</pre>
 </div>
 
@@ -234,7 +234,7 @@ ErrorDocument 401 "/login.shtml"
 AuthUserFile "conf/passwd"
 AuthType form
 AuthName /admin
-AuthFormLoginRequiredLocation "http://example.com/login.html"
+AuthFormLoginRequiredLocation "https://example.com/login.html"
 Session On
 SessionCookieName session path=/</pre>
 </div>
@@ -320,7 +320,7 @@ ErrorDocument 401 "/cgi-bin/login.cgi"
 
       <div class="example"><h3>Basic logout example</h3><pre class="prettyprint lang-config">SetHandler form-logout-handler
 AuthName realm
-AuthFormLogoutLocation "http://example.com/loggedout.html"
+AuthFormLogoutLocation "https://example.com/loggedout.html"
 Session On
 SessionCookieName session path=/</pre>
 </div>
@@ -334,7 +334,7 @@ SessionCookieName session path=/</pre>
       </p>
 
       <div class="example"><h3>Basic session expiry example</h3><pre class="prettyprint lang-config">SetHandler form-logout-handler
-AuthFormLogoutLocation "http://example.com/loggedout.html"
+AuthFormLogoutLocation "https://example.com/loggedout.html"
 Session On
 SessionMaxAge 1
 SessionCookieName session path=/</pre>
@@ -528,7 +528,7 @@ parser has been added in 2.4.4.</td></tr>
 
     <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">&lt;Location "/logout"&gt;
     SetHandler form-logout-handler
-    AuthFormLogoutLocation "http://example.com/loggedout.html"
+    AuthFormLogoutLocation "https://example.com/loggedout.html"
     Session on
     #...
 &lt;/Location&gt;</pre>
@@ -723,7 +723,7 @@ parser has been added in 2.4.4.</td></tr>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_auth_form.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/mod/mod_auth_form.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -738,8 +738,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_auth_form.
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

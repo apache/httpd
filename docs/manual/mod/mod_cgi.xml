@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -58,11 +58,11 @@
 <seealso><directive module="mod_mime">AddHandler</directive></seealso>
 <seealso><a href="../suexec.html">Running CGI programs under different
     user IDs</a></seealso>
-<seealso><a href="http://www.ietf.org/rfc/rfc3875">CGI Specification</a></seealso>
+<seealso><a href="https://www.ietf.org/rfc/rfc3875">CGI Specification</a></seealso>
 
 <section id="env"><title>CGI Environment variables</title>
     <p>The server will set the CGI environment variables as described
-    in the <a href="http://www.ietf.org/rfc/rfc3875">CGI specification</a>,
+    in the <a href="https://www.ietf.org/rfc/rfc3875">CGI specification</a>,
     with the following provisions:</p>
 
     <dl>

@@ -12,7 +12,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -78,11 +78,11 @@
       servicio de balanceo de carga para el módulo <module>mod_proxy</module>.
       El nuevo módulo <module>mod_proxy_ajp</module> añade soporte para el
       <code>Protocolo  JServ versión 1.3 de Apache </code> usado por
-          <a href="http://tomcat.apache.org/">Apache Tomcat</a>.</dd>
+          <a href="https://tomcat.apache.org/">Apache Tomcat</a>.</dd>
 
       <dt>Actualización de la Librería de Expresiones Regulares</dt>
       <dd>Se ha incluido la versión 5.0 de 
-          <a href="http://www.pcre.org/">Librería de Expresiones Regulares 
+          <a href="https://www.pcre.org/">Librería de Expresiones Regulares 
           Compatibles Perl </a> (PCRE). El programa <program>httpd</program> 
           puede ser configurado para que use una instalación en el sistema 
           de PCRE pasandole como parámetro <code>--with-pcre</code> 
@@ -161,7 +161,7 @@
       <dt><module>mod_ssl</module></dt>
       <!-- Need Info on SSLEngine Support? -->
       <dd>Se ha añadido soporte para el 
-         <a href="http://www.ietf.org/rfc/rfc2817.txt">RFC 2817</a>, que permite
+         <a href="https://www.ietf.org/rfc/rfc2817.txt">RFC 2817</a>, que permite
          conexiones para que se actualicen de texto plano al cifrado TLS.</dd>
 
       <dt><module>mod_imagemap</module></dt>
@@ -199,7 +199,7 @@
       se han eliminado de <code>APR</code> y
           <code>APR-Util</code>. Para mas detalles sobre dichos cambios
           vaya a la 
-          <a href="http://apr.apache.org/">página de APR</a>.</dd>
+          <a href="https://apr.apache.org/">página de APR</a>.</dd>
 
       <dt>Autenticación y Autorización</dt>
       <dd>El paquete de módulos de autenticación y autorización se han renombrado 

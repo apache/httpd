@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -585,7 +585,7 @@ DirectoryIndex index.cgi index.pl index.shtml index.html
       sockets, and they'll be stuck there until enough new requests
       appear on that socket to wake them all up. This starvation
       problem was first documented in <a
-      href="http://bugs.apache.org/index/full/467">PR#467</a>. There
+      href="https://bugs.apache.org/index/full/467">PR#467</a>. There
       are at least two solutions.</p>
 
       <p>One solution is to make the sockets non-blocking. In this
@@ -708,7 +708,7 @@ DirectoryIndex index.cgi index.pl index.shtml index.html
       <title>Lingering Close</title>
 
       <p>As discussed in <a
-      href="http://www.ics.uci.edu/pub/ietf/http/draft-ietf-http-connection-00.txt">
+      href="https://www.ics.uci.edu/pub/ietf/http/draft-ietf-http-connection-00.txt">
       draft-ietf-http-connection-00.txt</a> section 8, in order for
       an HTTP server to <strong>reliably</strong> implement the
       protocol, it needs to shut down each direction of the
@@ -774,7 +774,7 @@ DirectoryIndex index.cgi index.pl index.shtml index.html
       In particular, as HTTP/1.1 pipelined persistent connections
       come into use, <code>lingering_close</code> is an absolute
       necessity (and <a
-      href="http://www.w3.org/Protocols/HTTP/Performance/Pipeline.html">
+      href="https://www.w3.org/Protocols/HTTP/Performance/Pipeline.html">
       pipelined connections are faster</a>, so you want to support
       them).</p>
 

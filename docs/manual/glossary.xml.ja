@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -59,7 +59,7 @@
       間の基本的なインターフェースの多くを提供する<transnote>
       OS の差を吸収する</transnote>ライブラリのセット。 APR は 独立した
       プロジェクトとして Apache HTTP Server と平行して開発が行われています。<br />
-      参照: <a href="http://apr.apache.org/">Apache Portable Runtime
+      参照: <a href="https://apr.apache.org/">Apache Portable Runtime
       プロジェクト</a>
     </dd>
 
@@ -120,9 +120,9 @@
     <dd>外部プログラムがリクエストを扱うことができるようにするための
     ウェブサーバと外部プログラム間のインタフェースの標準仕様。
     インタフェースは元々 <a
-      href="http://hoohoo.ncsa.uiuc.edu/cgi/overview.html">NCSA</a> により定義
+      href="https://hoohoo.ncsa.uiuc.edu/cgi/overview.html">NCSA</a> により定義
     されていましたが
-    <a href="http://cgi-spec.golux.com/">RFC プロジェクト</a> も存在します。<br />
+    <a href="https://cgi-spec.golux.com/">RFC プロジェクト</a> も存在します。<br />
       参照: <a href="howto/cgi.html">CGI による動的コンテンツ</a>
     </dd>
 
@@ -256,7 +256,7 @@
       id="hypertexttransferprotocol">HyperText Transfer Protocol</a>
       <a name="http" id="hhtp">(HTTP)</a></dt>
     <dd>World Wide Web で使われる標準の転送プロトコル。Apache
-    は HTTP/1.1 と呼ばれ、<a href="http://ietf.org/rfc/rfc2616.txt">RFC 2616</a>
+    は HTTP/1.1 と呼ばれ、<a href="https://ietf.org/rfc/rfc2616.txt">RFC 2616</a>
     で定義されているプロトコルのバージョン 1.1 を実装しています。</dd>
 
     <dt><a name="https" id="https">HTTPS</a></dt>
@@ -313,7 +313,7 @@
 
     <dt><a name="openssl" id="openssl">OpenSSL</a></dt>
     <dd>SSL/TLS 用のオープンソースツールキット<br />
-      参照 <a href="http://www.openssl.org/">http://www.openssl.org/</a>#
+      参照 <a href="https://www.openssl.org/">https://www.openssl.org/</a>#
     </dd>
 
     <dt><a name="passphrase" id="passphrase">パスフレーズ</a></dt>
@@ -367,7 +367,7 @@
     何らかの属性を適用することがとても柔軟にできます。例えば、
     すべての "images" ディレクトリの下の、すべての .gif と .jpg ファイル
     は <code>/images/.*(jpg|gif)$</code> と書くことができます。
-    Apache では <a href="http://www.pcre.org/">PCRE</a> ライブラリが提供する
+    Apache では <a href="https://www.pcre.org/">PCRE</a> ライブラリが提供する
     Perl 互換正規表現 <transnote>Perl Compatible Regular Expressions</transnote>
     を使います。</dd> 
 
@@ -423,7 +423,7 @@
       と呼ばれるもののよく使われる非公式な名前です。URL は普通は、
       <code>http</code> や <code>https</code> といったスキームとホスト名、
       パスからなります。このページの URL はおそらく
-      <code>http://httpd.apache.org/docs/&httpd.docs;/glossary.html</code>
+      <code>https://httpd.apache.org/docs/&httpd.docs;/glossary.html</code>
       と思われます。
     </dd> 
 
@@ -431,7 +431,7 @@
       id="uniformresourceidentifier">Uniform Resource Identifier</a>
       <a name="URI" id="URI">(URI)</a></dt>
     <dd>抽象的なリソースや物理リソースを同定するためのコンパクトな文字列。
-      正式には <a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a> で
+      正式には <a href="https://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a> で
       定義されています。WWW で使われている URI  は通常
       <glossary ref="url">URL</glossary> と呼ばれます。
     </dd> 

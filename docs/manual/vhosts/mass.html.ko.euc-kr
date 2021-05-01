@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
 <meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>´ë·®ÀÇ °¡»óÈ£½ºÆ®¸¦ µ¿ÀûÀ¸·Î ¼³Á¤ÇÏ±â - Apache HTTP Server Version 2.5</title>
+<title>ï¿½ë·®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ - Apache HTTP Server Version 2.5</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -16,49 +16,49 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">°¡»óÈ£½ºÆ®</a></div><div id="page-content"><div id="preamble"><h1>´ë·®ÀÇ °¡»óÈ£½ºÆ®¸¦ µ¿ÀûÀ¸·Î ¼³Á¤ÇÏ±â</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®</a></div><div id="page-content"><div id="preamble"><h1>ï¿½ë·®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½</h1>
 <div class="toplang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/vhosts/mass.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/vhosts/mass.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/vhosts/mass.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/vhosts/mass.html" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/mass.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">ÀÌ ¹®¼­´Â ÃÖ½ÅÆÇ ¹ø¿ªÀÌ ¾Æ´Õ´Ï´Ù.
-            ÃÖ±Ù¿¡ º¯°æµÈ ³»¿ëÀº ¿µ¾î ¹®¼­¸¦ Âü°íÇÏ¼¼¿ä.</div>
+<div class="outofdate">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Õ´Ï´ï¿½.
+            ï¿½Ö±Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.</div>
 
 
-    <p>ÀÌ ¹®¼­´Â ¾ÆÆÄÄ¡ 1.3¿¡¼­ ´ë·®ÀÇ °¡»óÈ£½ºÆ®¸¦ È¿À²ÀûÀ¸·Î
-    ¼­ºñ½ºÇÏ´Â ¹æ¹ýÀ» ¼³¸íÇÑ´Ù. 
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ 1.3ï¿½ï¿½ï¿½ï¿½ ï¿½ë·®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ È¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. 
     </p>
 
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#motivation">µ¿±â</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#overview">°³¿ä</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#simple">°£´ÜÇÑ µ¿Àû °¡»óÈ£½ºÆ®</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#homepages">°¡»óÀ¸·Î È£½ºÆ®ÇÏ´Â È¨ÆäÀÌÁö ½Ã½ºÅÛ</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#combinations">ÇÑ ¼­¹ö¿¡ ¿©·¯ °¡»óÈ£½ºÆ®
-    ½Ã½ºÅÛ »ç¿ëÇÏ±â</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ipbased">´õ È¿À²ÀûÀÎ IP±â¹Ý °¡»óÈ£½ºÆ®</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#oldversion">¾ÆÆÄÄ¡ ÀÌÀü ¹öÀü »ç¿ëÇÏ±â</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#simple.rewrite"><code>mod_rewrite</code>¸¦
-    »ç¿ëÇÑ °£´ÜÇÑ µ¿Àû °¡»óÈ£½ºÆ®</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#homepages.rewrite"><code>mod_rewrite</code>¸¦
-    »ç¿ëÇÑ È¨ÆäÀÌÁö ½Ã½ºÅÛ</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#xtra-conf">º°µµÀÇ °¡»óÈ£½ºÆ® ¼³Á¤ÆÄÀÏ
-    »ç¿ëÇÏ±â</a></li>
-</ul><h3>Âü°í</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#motivation">ï¿½ï¿½ï¿½ï¿½</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#overview">ï¿½ï¿½ï¿½ï¿½</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#simple">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#homepages">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È£ï¿½ï¿½Æ®ï¿½Ï´ï¿½ È¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã½ï¿½ï¿½ï¿½</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#combinations">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®
+    ï¿½Ã½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï±ï¿½</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ipbased">ï¿½ï¿½ È¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ IPï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#oldversion">ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï±ï¿½</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#simple.rewrite"><code>mod_rewrite</code>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#homepages.rewrite"><code>mod_rewrite</code>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ È¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã½ï¿½ï¿½ï¿½</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#xtra-conf">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ï±ï¿½</a></li>
+</ul><h3>ï¿½ï¿½ï¿½ï¿½</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="motivation" id="motivation">µ¿±â</a> <a title="Permanent link" href="#motivation" class="permalink">&para;</a></h2>
+<h2><a name="motivation" id="motivation">ï¿½ï¿½ï¿½ï¿½</a> <a title="Permanent link" href="#motivation" class="permalink">&para;</a></h2>
 
-    <p>´ç½ÅÀÇ <code>httpd.conf</code>¿¡ ´ÙÀ½°ú °°ÀÌ ¼­·Î ºñ½ÁÇÑ
-    <code>&lt;VirtualHost&gt;</code> ¼½¼ÇµéÀ» ¸¹ÀÌ ÀÖ´Ù¸é ¿©±â¼­
-    ¼³¸íÇÏ´Â ¹æ¹ýÀÌ µµ¿òÀÌ µÉ °ÍÀÌ´Ù:</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ <code>httpd.conf</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+    <code>&lt;VirtualHost&gt;</code> ï¿½ï¿½ï¿½Çµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ù¸ï¿½ ï¿½ï¿½ï¿½â¼­
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½:</p>
 
 <div class="example"><p><code>
 NameVirtualHost 111.22.33.44<br />
@@ -76,7 +76,7 @@ NameVirtualHost 111.22.33.44<br />
     ScriptAlias  /cgi-bin/  /www/hosts/www.customer-2.com/cgi-bin<br />
 </span>
 &lt;/VirtualHost&gt;<br />
-# ¹Ùº¸ ¹Ùº¸ ¹Ùº¸<br />
+# ï¿½Ùºï¿½ ï¿½Ùºï¿½ ï¿½Ùºï¿½<br />
 &lt;VirtualHost 111.22.33.44&gt;<br />
 <span class="indent">
     ServerName                 www.customer-N.com<br />
@@ -86,124 +86,124 @@ NameVirtualHost 111.22.33.44<br />
 &lt;/VirtualHost&gt;
 </code></p></div>
 
-    <p>±âº» °³³äÀº Á¤ÀûÀÎ <code>&lt;VirtualHost&gt;</code>
-    ¼³Á¤ ¸ðµÎ¸¦ µ¿ÀûÀ¸·Î Ã³¸®ÇÏµµ·Ï ´ëÃ¼ÇÏ´Â °ÍÀÌ´Ù.
-    ±×·¯¸é ¸¹Àº ÀåÁ¡ÀÌ ÀÖ´Ù:</p>
+    <p>ï¿½âº» ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>&lt;VirtualHost&gt;</code>
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Î¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½.
+    ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½:</p>
 
     <ol>
-      <li>¼³Á¤ÆÄÀÏÀÌ ÀÛ¾ÆÁ®¼­ ¾ÆÆÄÄ¡°¡ »¡¸® ½ÃÀÛÇÏ°í ¸Þ¸ð¸®¸¦
-      Àû°Ô »ç¿ëÇÑ´Ù.</li>
+      <li>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Û¾ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½Þ¸ð¸®¸ï¿½
+      ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</li>
 
-      <li>°¡»óÈ£½ºÆ®¸¦ Ãß°¡ÇÏ±âÀ§ÇØ ÆÄÀÏ½Ã½ºÅÛ¿¡ Àû´çÇÑ
-      µð·ºÅä¸®¸¦ ¸¸µé°í DNS¿¡ Ç×¸ñÀ» Ãß°¡ÇÏ±â¸¸ ÇÏ¸éµÈ´Ù. Áï,
-      ¾ÆÆÄÄ¡¸¦ Àç¼³Á¤ÇÏ°í Àç½ÃÀÛÇÒ ÇÊ¿ä°¡ ¾ø´Ù.</li>
+      <li>ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½Û¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ DNSï¿½ï¿½ ï¿½×¸ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ï±â¸¸ ï¿½Ï¸ï¿½È´ï¿½. ï¿½ï¿½,
+      ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ç¼³ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ä°¡ ï¿½ï¿½ï¿½ï¿½.</li>
     </ol>
 
-    <p>´ÜÁ¡Àº °¢ °¡»óÈ£½ºÆ®º°·Î ´Ù¸¥ ·Î±×ÆÄÀÏÀ» »ç¿ëÇÒ ¼ö ¾ø´Ù´Â
-    Á¡ÀÌ´Ù. ±×·¯³ª ¸Å¿ì ¸¹Àº °¡»óÈ£½ºÆ®¸¦ »ç¿ëÇÑ´Ù¸é ÆÄÀÏ±â¼úÀÚ¸¦
-    ´Ù ½á¹ö¸®±â¶§¹®¿¡ ¼­·Î ´Ù¸¥ ·Î±×ÆÄÀÏÀ» »ç¿ëÇÒ ¼ö ¾ø´Ù. ÆÄÀÌÇÁ³ª
-    fifo·Î ·Î±×¸¦ º¸³»°í, ¹Þ´Â Æí¿¡¼­ ·Î±×¸¦ Ã³¸®ÇÏ¿© ³ª´©´Â
-    ¹æ¹ýÀÌ (Åë°è µîÀ» ¸ðÀ» ¼öµµ ÀÖ´Ù) ´õ ³´´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ù´ï¿½
+    ï¿½ï¿½ï¿½Ì´ï¿½. ï¿½×·ï¿½ï¿½ï¿½ ï¿½Å¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½ ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½Ú¸ï¿½
+    ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½â¶§ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    fifoï¿½ï¿½ ï¿½Î±×¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½Þ´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î±×¸ï¿½ Ã³ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½) ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="overview" id="overview">°³¿ä</a> <a title="Permanent link" href="#overview" class="permalink">&para;</a></h2>
+<h2><a name="overview" id="overview">ï¿½ï¿½ï¿½ï¿½</a> <a title="Permanent link" href="#overview" class="permalink">&para;</a></h2>
 
-    <p>°¡»óÈ£½ºÆ®´Â IP ÁÖ¼Ò¿Í HTTP ¿äÃ»ÀÇ <code>Host:</code>
-    Çì´õ Á¤º¸·Î Á¤ÀÇÇÑ´Ù. ±âº»ÀûÀ¸·Î ´ë·®ÀÇ
-    µ¿Àû °¡»óÈ£½ºÆ® ±â¼úÀº ÀÚµ¿À¸·Î °¡»óÈ£½ºÆ® Á¤º¸¸¦ ¿äÃ»ÀÇ
-    ÆÄÀÏ°æ·Î¿¡ Æ÷ÇÔÇÑ´Ù. ÀÌ´Â ´ëºÎºÐ <code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code>¸¦
-    »ç¿ëÇÏ¿© ½±°Ô ÇØ°áÇÒ ¼ö ÀÖÁö¸¸, ¾ÆÆÄÄ¡ 1.3.6 ÀÌÇÏ¸¦ »ç¿ëÇÑ´Ù¸é
-    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>¸¦ »ç¿ëÇØ¾ß ÇÑ´Ù. ÀÌ µÎ ¸ðµâ
-    ¸ðµÎ ±âº»ÀûÀ¸·Î ¼­¹ö¿¡ Æ÷ÇÔµÇÁö ¾Ê´Â´Ù. ÀÌ ¹æ¹ýÀ» »ç¿ëÇÏ·Á¸é
-    ¾ÆÆÄÄ¡¸¦ ±¸¼ºÇÏ°í ÄÄÆÄÀÏÇÒ¶§ Æ÷ÇÔÇØ¾ß ÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ IP ï¿½Ö¼Ò¿ï¿½ HTTP ï¿½ï¿½Ã»ï¿½ï¿½ <code>Host:</code>
+    ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ë·®ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½
+    ï¿½ï¿½ï¿½Ï°ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½Ì´ï¿½ ï¿½ï¿½Îºï¿½ <code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ø°ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½Ä¡ 1.3.6 ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½
+    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½. ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ôµï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½.</p>
 
-    <p>µ¿Àû °¡»óÈ£½ºÆ®¸¦ ÀÏ¹ÝÀûÀÎ °¡»óÈ£½ºÆ®Ã³·³ º¸ÀÌ°ÔÇÏ·Á¸é
-    ¿©·¯°¡Áö¸¦ `¼Ó¿©¾ß' ÇÑ´Ù. °¡Àå Áß¿äÇÑ °ÍÀº ¾ÆÆÄÄ¡°¡ ÀÚ±âÂüÁ¶
-    URL µîÀ» ¸¸µé¶§ »ç¿ëÇÒ ¼­¹ö¸íÀÌ´Ù. ¼­¹ö¸íÀº
-    <code>ServerName</code> Áö½Ã¾î·Î ¼³Á¤ÇÏ¸ç, CGI¿¡´Â
-    <code>SERVER_NAME</code> È¯°æº¯¼ö·Î ÁÖ¾îÁø´Ù.  ½ÇÇàÁß ½ÇÁ¦
-    ¼­¹ö¸íÀº <code class="directive"><a href="../mod/core.html#usecanonicalname">UseCanonicalName</a></code> ¼³Á¤¿¡ ´Þ·È´Ù.
-    <code>UseCanonicalName Off</code>ÀÌ¸é ¿äÃ»ÀÇ <code>Host:</code>
-    Çì´õ ³»¿ëÀÌ ¼­¹ö¸íÀÌ µÈ´Ù. <code>UseCanonicalName DNS</code>ÀÌ¸é
-    °¡»óÈ£½ºÆ®ÀÇ IP ÁÖ¼Ò¸¦ ¿ªDNS °Ë»öÇÏ¿© ¼­¹ö¸íÀ» ¾Ë¾Æ³½´Ù.
-    ÀüÀÚ´Â ÀÌ¸§±â¹Ý µ¿Àû °¡»óÈ£½ºÆ®¿¡¼­ »ç¿ëÇÏ°í, ÈÄÀÚ´Â IP±â¹Ý
-    °¡»óÈ£½ºÆ®¿¡¼­ »ç¿ëÇÑ´Ù. <code>Host:</code> Çì´õ°¡ ¾ø°Å³ª
-    DNS °Ë»öÀÌ ½ÇÆÐÇÏ¿© ¾ÆÆÄÄ¡°¡ ¼­¹ö¸íÀ» ¾Ë¾Æ³»Áö ¸øÇÏ¸é
-    <code>ServerName</code>À¸·Î ¼³Á¤ÇÑ °ªÀ» ´ë½Å »ç¿ëÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®Ã³ï¿½ï¿½ ï¿½ï¿½ï¿½Ì°ï¿½ï¿½Ï·ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ `ï¿½Ó¿ï¿½ï¿½ï¿½' ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ß¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Ú±ï¿½ï¿½ï¿½ï¿½ï¿½
+    URL ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½é¶§ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    <code>ServerName</code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½, CGIï¿½ï¿½ï¿½ï¿½
+    <code>SERVER_NAME</code> È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¾ï¿½ï¿½ï¿½ï¿½ï¿½.  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code class="directive"><a href="../mod/core.html#usecanonicalname">UseCanonicalName</a></code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Þ·È´ï¿½.
+    <code>UseCanonicalName Off</code>ï¿½Ì¸ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ <code>Host:</code>
+    ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½È´ï¿½. <code>UseCanonicalName DNS</code>ï¿½Ì¸ï¿½
+    ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ IP ï¿½Ö¼Ò¸ï¿½ ï¿½ï¿½DNS ï¿½Ë»ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ë¾Æ³ï¿½ï¿½ï¿½.
+    ï¿½ï¿½ï¿½Ú´ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½, ï¿½ï¿½ï¿½Ú´ï¿½ IPï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <code>Host:</code> ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Å³ï¿½
+    DNS ï¿½Ë»ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ë¾Æ³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¸ï¿½
+    <code>ServerName</code>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <p>´Ù¸¥ `¼ÓÀÏ' °ÍÀº (<code>DocumentRoot</code>·Î ¼³Á¤ÇÏ¸ç,
-    CGI¿¡´Â <code>DOCUMENT_ROOT</code> È¯°æº¯¼ö·Î ÁÖ¾îÁö´Â)
-    ¹®¼­·çÆ®ÀÌ´Ù. ÀÏ¹ÝÀûÀÎ °æ¿ì core ¸ðµâÀÌ ÀÌ ¼³Á¤À» »ç¿ëÇÏ¿©
-    URI¿¡ ÇØ´çÇÏ´Â ÆÄÀÏ¸íÀ» Ã£Áö¸¸, ¼­¹ö¸¦ µ¿Àû °¡»óÈ£½ºÆÃÀ» ÇÒ¶§´Â ´Ù¸¥
-    ¸ðµâÀÌ (<code>mod_vhost_alias</code>³ª <code>mod_rewrite</code>)
-    ´Ù¸¥ ¹æ¹ýÀ¸·Î ÀÌ·± ÀÛ¾÷À» ÇÑ´Ù. µÎ ¸ðµâ ¸ðµÎ
-    <code>DOCUMENT_ROOT</code> È¯°æº¯¼ö¸¦ »ç¿ëÇÏÁö ¾ÊÀ¸¹Ç·Î
-    CGI³ª SSI ¹®¼­°¡ ÀÌ °ªÀ» »ç¿ëÇÑ´Ù¸é Àß¸øµÈ °á°ú¸¦ ¾òÀ» ¼ö
-    ÀÖ´Ù.</p>
+    <p>ï¿½Ù¸ï¿½ `ï¿½ï¿½ï¿½ï¿½' ï¿½ï¿½ï¿½ï¿½ (<code>DocumentRoot</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½,
+    CGIï¿½ï¿½ï¿½ï¿½ <code>DOCUMENT_ROOT</code> È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¾ï¿½ï¿½ï¿½ï¿½ï¿½)
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½Ì´ï¿½. ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ core ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½
+    URIï¿½ï¿½ ï¿½Ø´ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ò¶ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ (<code>mod_vhost_alias</code>ï¿½ï¿½ <code>mod_rewrite</code>)
+    ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì·ï¿½ ï¿½Û¾ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+    <code>DOCUMENT_ROOT</code> È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½
+    CGIï¿½ï¿½ SSI ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½ ï¿½ß¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+    ï¿½Ö´ï¿½.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="simple" id="simple">°£´ÜÇÑ µ¿Àû °¡»óÈ£½ºÆ®</a> <a title="Permanent link" href="#simple" class="permalink">&para;</a></h2>
+<h2><a name="simple" id="simple">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®</a> <a title="Permanent link" href="#simple" class="permalink">&para;</a></h2>
 
-    <p>À§ <a href="#motivation">µ¿±â</a> ÀýÀÇ °¡»óÈ£½ºÆ®
-    ¼³Á¤À» <code>mod_vhost_alias</code>¸¦ »ç¿ëÇÏ¿© ´õ ÀÏ¹ÝÀûÀ¸·Î
-    ±¸ÇöÇß´Ù.</p>
+    <p>ï¿½ï¿½ <a href="#motivation">ï¿½ï¿½ï¿½ï¿½</a> ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>mod_vhost_alias</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ß´ï¿½.</p>
 
 <div class="example"><p><code>
-# Host: Çì´õ¿¡¼­ ¼­¹ö¸íÀ» ¾Ë¾Æ³½´Ù<br />
+# Host: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ë¾Æ³ï¿½ï¿½ï¿½<br />
 UseCanonicalName Off<br />
 <br />
-# Ã¹¹øÂ° ÇÊµå¸¦ »ç¿ëÇÏ¿© ÀÌ ·Î±×¸¦ °¡»óÈ£½ºÆ®º°·Î ³ª´­ ¼ö ÀÖ´Ù<br />
+# Ã¹ï¿½ï¿½Â° ï¿½Êµå¸¦ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ ï¿½Î±×¸ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½<br />
 LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon<br />
 CustomLog logs/access_log vcommon<br />
 <br />
-# ¿äÃ»À» Ã³¸®ÇÏ±âÀ§ÇØ ÆÄÀÏ¸í¿¡ ¼­¹ö¸íÀ» Æ÷ÇÔÇÑ´Ù<br />
+# ï¿½ï¿½Ã»ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½<br />
 VirtualDocumentRoot /www/hosts/%0/docs<br />
 VirtualScriptAlias  /www/hosts/%0/cgi-bin
 </code></p></div>
 
-    <p>ÀÌ ¼³Á¤¿¡¼­ <code>UseCanonicalName Off</code>¸¦
-    <code>UseCanonicalName DNS</code>·Î º¯°æÇÏ±â¸¸ ÇÏ¸é IP±â¹Ý
-    °¡»óÈ£½ºÆ®°¡ µÈ´Ù. °¡»óÈ£½ºÆ®ÀÇ IP ÁÖ¼Ò¸¦ °¡Áö°í
-    ÆÄÀÏ¸í¿¡ Ãß°¡ÇÒ ¼­¹ö¸íÀ» ¾Ë ¼ö ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>UseCanonicalName Off</code>ï¿½ï¿½
+    <code>UseCanonicalName DNS</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±â¸¸ ï¿½Ï¸ï¿½ IPï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½È´ï¿½. ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ IP ï¿½Ö¼Ò¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="homepages" id="homepages">°¡»óÀ¸·Î È£½ºÆ®ÇÏ´Â È¨ÆäÀÌÁö ½Ã½ºÅÛ</a> <a title="Permanent link" href="#homepages" class="permalink">&para;</a></h2>
+<h2><a name="homepages" id="homepages">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È£ï¿½ï¿½Æ®ï¿½Ï´ï¿½ È¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã½ï¿½ï¿½ï¿½</a> <a title="Permanent link" href="#homepages" class="permalink">&para;</a></h2>
 
-    <p>ISP È¨ÆäÀÌÁö ¼­¹ö¸¦ À§ÇØ À§ÀÇ ¼³Á¤À» ¼öÁ¤Çß´Ù. Á¶±Ý ´õ
-    º¹ÀâÇÑ ¼³Á¤À» »ç¿ëÇÏ¸é <code>www.user.isp.com</code>ÀÇ ¹®¼­¸¦
-    <code>/home/user/</code>¿¡ µÎ´Â ½ÄÀ¸·Î ¼­¹ö¸íÀÇ ÀÏºÎ¸¦ °¡Áö°í
-    ÆÄÀÏ¸íÀ» ¸¸µé ¼ö ÀÖ´Ù. ÀÌ ¼³Á¤Àº
-    <code>cgi-bin</code>À» °¢ °¡»óÈ£½ºÆ®°¡ µû·Î °¡ÁöÁö¾Ê°í
-    ¸ðµç °¡»óÈ£½ºÆ®°¡ °°ÀÌ »ç¿ëÇÑ´Ù.</p>
+    <p>ISP È¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ß´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ <code>www.user.isp.com</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    <code>/home/user/</code>ï¿½ï¿½ ï¿½Î´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ÏºÎ¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    <code>cgi-bin</code>ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê°ï¿½
+    ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
 <div class="example"><p><code>
-# ±âº»ÀûÀÎ ³»¿ëÀº À§¿Í °°´Ù. ±×¸®°í<br />
+# ï¿½âº»ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½. ï¿½×¸ï¿½ï¿½ï¿½<br />
 <br />
-# ÆÄÀÏ¸í¿¡ ¼­¹ö¸íÀÇ ÀÏºÎ¸¦ Æ÷ÇÔÇÑ´Ù<br />
+# ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ÏºÎ¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½<br />
 VirtualDocumentRoot /www/hosts/%2/docs<br />
 <br />
-# ÇÏ³ªÀÇ cgi-bin µð·ºÅä¸®<br />
+# ï¿½Ï³ï¿½ï¿½ï¿½ cgi-bin ï¿½ï¿½ï¿½ä¸®<br />
 ScriptAlias  /cgi-bin/  /www/std-cgi/<br />
 </code></p></div>
 
-    <p><code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code> ¹®¼­¿¡´Â ´õ º¹ÀâÇÑ
-    <code>VirtualDocumentRoot</code> ¼³Á¤ÀÇ ¿¹°¡ ÀÖ´Ù.</p>
+    <p><code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    <code>VirtualDocumentRoot</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="combinations" id="combinations">ÇÑ ¼­¹ö¿¡ ¿©·¯ °¡»óÈ£½ºÆ®
-    ½Ã½ºÅÛ »ç¿ëÇÏ±â</a> <a title="Permanent link" href="#combinations" class="permalink">&para;</a></h2>
+<h2><a name="combinations" id="combinations">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®
+    ï¿½Ã½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï±ï¿½</a> <a title="Permanent link" href="#combinations" class="permalink">&para;</a></h2>
 
-    <p>´õ º¹ÀâÇÑ ¼³Á¤ÀÇ ¿¹·Î ¾ÆÆÄÄ¡ÀÇ ÀÏ¹ÝÀûÀÎ
-    <code>&lt;VirtualHost&gt;</code> Áö½Ã¾î¸¦ »ç¿ëÇÏ¿© ¿©·¯
-    °¡»óÈ£½ºÆ® ¼³Á¤ÀÇ ¹üÀ§¸¦ Á¶ÀýÇÒ ¼ö ÀÖ´Ù. ¿¹¸¦ µé¾î, ´ÙÀ½°ú
-    °°Àº ¼³Á¤Àº È¨ÆäÀÌÁö °í°´¿¡ IP ÁÖ¼Ò ÇÑ°³, »ó¾÷ÀûÀÎ
-    °í°´¿¡°Ô ´Ù¸¥ IP ÁÖ¼Ò ÇÑ°³¸¦ ºÎ¿©ÇÑ´Ù. ¹°·Ð ÀÌÀüÃ³·³
-    <code>&lt;VirtualHost&gt;</code> ¼³Á¤ ¼½¼Ç¿¡ ¸ðµÎ ¹­À» ¼öµµ
-    ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½
+    <code>&lt;VirtualHost&gt;</code> ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ IP ï¿½Ö¼ï¿½ ï¿½Ñ°ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ IP ï¿½Ö¼ï¿½ ï¿½Ñ°ï¿½ï¿½ï¿½ ï¿½Î¿ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ã³ï¿½ï¿½
+    <code>&lt;VirtualHost&gt;</code> ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ç¿ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ö´ï¿½.</p>
 
 <div class="example"><p><code>
 UseCanonicalName Off<br />
@@ -249,69 +249,69 @@ LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon<br />
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="ipbased" id="ipbased">´õ È¿À²ÀûÀÎ IP±â¹Ý °¡»óÈ£½ºÆ®</a> <a title="Permanent link" href="#ipbased" class="permalink">&para;</a></h2>
+<h2><a name="ipbased" id="ipbased">ï¿½ï¿½ È¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ IPï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®</a> <a title="Permanent link" href="#ipbased" class="permalink">&para;</a></h2>
 
-    <p><a href="#simple">Ã¹¹øÂ° ¿¹</a>¿¡¼­ ³ª´Â ¼³Á¤À» °£´ÜÈ÷
-    IP±â¹Ý °¡»óÈ£½ºÆ®·Î ¹Ù²Ü ¼ö ÀÖ´Ù°í ¸»Çß´Ù. ºÒÇàÈ÷µµ
-    ±×·± ¼³Á¤Àº ¸Å ¿äÃ»¸¶´Ù DNS¸¦ Ã£¾Æ¾ßÇÏ¹Ç·Î ¸Å¿ì ºñÈ¿À²ÀûÀÌ´Ù.
-    ÀÌ¸§´ë½Å IP ÁÖ¼Ò·Î ÆÄÀÏ½Ã½ºÅÛÀ» ±¸¼ºÇÏ°í °°Àº ¹æ½ÄÀ¸·Î
-    ·Î±×¸¦ ¼öÁ¤ÇÏ¸é ¹®Á¦¸¦ ÇØ°áÇÒ ¼ö ÀÖ´Ù. ¾ÆÆÄÄ¡´Â ¼­¹ö¸íÀ»
-    ´Ù·ê ÇÊ¿ä°¡ ¾ø¾îÁö°í, DNS °Ë»öµµ ÇÏÁö ¾Ê°Ô µÈ´Ù.</p>
+    <p><a href="#simple">Ã¹ï¿½ï¿½Â° ï¿½ï¿½</a>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    IPï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ù²ï¿½ ï¿½ï¿½ ï¿½Ö´Ù°ï¿½ ï¿½ï¿½ï¿½ß´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½×·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ DNSï¿½ï¿½ Ã£ï¿½Æ¾ï¿½ï¿½Ï¹Ç·ï¿½ ï¿½Å¿ï¿½ ï¿½ï¿½È¿ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½.
+    ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½ IP ï¿½Ö¼Ò·ï¿½ ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Î±×¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ø°ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ù·ï¿½ ï¿½Ê¿ä°¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, DNS ï¿½Ë»ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê°ï¿½ ï¿½È´ï¿½.</p>
 
 <div class="example"><p><code>
-# IP ÁÖ¼Ò¸¦ ¿ªDNS °Ë»öÇÏ¿© ¼­¹ö¸íÀ» ¾Ë¾Æ³½´Ù<br />
+# IP ï¿½Ö¼Ò¸ï¿½ ï¿½ï¿½DNS ï¿½Ë»ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ë¾Æ³ï¿½ï¿½ï¿½<br />
 UseCanonicalName DNS<br />
 <br />
-# ·Î±×¸¦ ³ª´­ ¼ö ÀÖµµ·Ï IP ÁÖ¼Ò¸¦ Æ÷ÇÔÇÑ´Ù<br />
+# ï¿½Î±×¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Öµï¿½ï¿½ï¿½ IP ï¿½Ö¼Ò¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½<br />
 LogFormat "%A %h %l %u %t \"%r\" %s %b" vcommon<br />
 CustomLog logs/access_log vcommon<br />
 <br />
-# ÆÄÀÏ¸í¿¡ IP ÁÖ¼Ò¸¦ Æ÷ÇÔÇÑ´Ù<br />
+# ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ IP ï¿½Ö¼Ò¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½<br />
 VirtualDocumentRootIP /www/hosts/%0/docs<br />
 VirtualScriptAliasIP  /www/hosts/%0/cgi-bin<br />
 </code></p></div>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="oldversion" id="oldversion">¾ÆÆÄÄ¡ ÀÌÀü ¹öÀü »ç¿ëÇÏ±â</a> <a title="Permanent link" href="#oldversion" class="permalink">&para;</a></h2>
+<h2><a name="oldversion" id="oldversion">ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï±ï¿½</a> <a title="Permanent link" href="#oldversion" class="permalink">&para;</a></h2>
 
-    <p>À§ ¿¹µéÀº ¾ÆÆÄÄ¡ ¹öÀü 1.3.6 ÀÌÈÄ¿¡ Æ÷ÇÔµÈ
-    <code>mod_vhost_alias</code>À» »ç¿ëÇÑ´Ù.
-    <code>mod_vhost_alias</code>°¡ ¾ø´Â ¾ÆÆÄÄ¡ ¹öÀüÀ» »ç¿ëÇÑ´Ù¸é
-    ÀÌ¹Ì ¸»ÇßµíÀÌ <code>mod_rewrite</code>¸¦ »ç¿ëÇÏ¿©, ´Ü
-    Host:-Çì´õ±â¹Ý °¡»óÈ£½ºÆ®¸¸À», ±¸ÇöÇÒ ¼ö ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ 1.3.6 ï¿½ï¿½ï¿½Ä¿ï¿½ ï¿½ï¿½ï¿½Ôµï¿½
+    <code>mod_vhost_alias</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+    <code>mod_vhost_alias</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½
+    ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ßµï¿½ï¿½ï¿½ <code>mod_rewrite</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½, ï¿½ï¿½
+    Host:-ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <p>¶Ç ·Î±×¿¡ °üÇÏ¿© ÁÖÀÇÇÒ Á¡ÀÌ ÀÖ´Ù. ¾ÆÆÄÄ¡ 1.3.6¿¡¼­
-    ·Î±×Çü½Ä Áö½Ã¾î <code>%V</code>°¡ Æ÷ÇÔµÇ¾ú°í, ¹öÀü 1.3.0
-    - 1.3.3¿¡¼­ ÀÌ ±â´ÉÀ» <code>%v</code> ¿É¼ÇÀÌ ´ë½Å Çß´Ù. ±×·¯³ª
-    ¹öÀü 1.3.4¿¡´Â ÀÌ·± ±â´ÉÀÌ ¾ø´Ù. ¾î¶² ¾ÆÆÄÄ¡ ¹öÀü¿¡¼­µµ
-    <code>.htaccess</code> ÆÄÀÏ¿¡¼­ <code>UseCanonicalName</code>
-    Áö½Ã¾î¸¦ »ç¿ëÇÒ ¼ö ÀÖÀ¸¹Ç·Î ·Î±×¿¡ ÀÌ»óÇÑ ³»¿ëÀÌ ±â·ÏµÉ ¼ö ÀÖ´Ù.
-    ±×·¯¹Ç·Î °¡Àå ÁÁÀº ¹æ¹ýÀº <code>%{Host}i</code> Áö½Ã¾î¸¦
-    »ç¿ëÇÏ¿© <code>Host:</code> Çì´õ¸¦ Á÷Á¢ ·Î±×¿¡ ³²±â´Â °ÍÀÌ´Ù.
-    ¶Ç, ÀÌ ¹æ¹ýÀº <code>%V</code>´Â Æ÷ÇÔÇÏÁö¾Ê´Â <code>:port</code>¸¦
-    µÚ¿¡ Ãß°¡ÇÒ ¼ö ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½Î±×¿ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½ï¿½Ä¡ 1.3.6ï¿½ï¿½ï¿½ï¿½
+    ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ <code>%V</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ÔµÇ¾ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ 1.3.0
+    - 1.3.3ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ <code>%v</code> ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ß´ï¿½. ï¿½×·ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ 1.3.4ï¿½ï¿½ï¿½ï¿½ ï¿½Ì·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½. ï¿½î¶² ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    <code>.htaccess</code> ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ <code>UseCanonicalName</code>
+    ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ ï¿½Î±×¿ï¿½ ï¿½Ì»ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ïµï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.
+    ï¿½×·ï¿½ï¿½Ç·ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ <code>%{Host}i</code> ï¿½ï¿½ï¿½Ã¾î¸¦
+    ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ <code>Host:</code> ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Î±×¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½.
+    ï¿½ï¿½, ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ <code>%V</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê´ï¿½ <code>:port</code>ï¿½ï¿½
+    ï¿½Ú¿ï¿½ ï¿½ß°ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="simple.rewrite" id="simple.rewrite"><code>mod_rewrite</code>¸¦
-    »ç¿ëÇÑ °£´ÜÇÑ µ¿Àû °¡»óÈ£½ºÆ®</a> <a title="Permanent link" href="#simple.rewrite" class="permalink">&para;</a></h2>
+<h2><a name="simple.rewrite" id="simple.rewrite"><code>mod_rewrite</code>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®</a> <a title="Permanent link" href="#simple.rewrite" class="permalink">&para;</a></h2>
 
-    <p>´ÙÀ½Àº <a href="#simple">Ã¹¹øÂ° ¿¹</a>¿Í °°Àº ÀÏÀ» ÇÏ´Â
-    <code>httpd.conf</code> ¿¹ÀÌ´Ù. Ã³À½ Àý¹ÝÀº Ã¹¹øÂ° ¿¹¿Í
-    °ÅÀÇ ºñ½ÁÇÏÁö¸¸, ÀÌÀü ¹öÀü°úÀÇ È£È¯¼º°ú <code>mod_rewrite</code>ÀÇ
-    ÀûÀýÇÑ µ¿ÀÛÀ» À§ÇØ ¼öÁ¤µÇ¾ú´Ù. ³ª¸ÓÁö Àý¹ÝÀº ½ÇÁ¦ ÀÛ¾÷À»
-    ÇÏ´Â <code>mod_rewrite</code>¸¦ ¼³Á¤ÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <a href="#simple">Ã¹ï¿½ï¿½Â° ï¿½ï¿½</a>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ï´ï¿½
+    <code>httpd.conf</code> ï¿½ï¿½ï¿½Ì´ï¿½. Ã³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã¹ï¿½ï¿½Â° ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È£È¯ï¿½ï¿½ï¿½ï¿½ <code>mod_rewrite</code>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Û¾ï¿½ï¿½ï¿½
+    ï¿½Ï´ï¿½ <code>mod_rewrite</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <p>Æ¯º°È÷ ÁÖÀÇÇØ¾ß ÇÒ »çÇ×ÀÌ ÀÖ´Ù. ±âº»ÀûÀ¸·Î
-    <code>mod_rewrite</code>´Â (<code>mod_alias</code> µî) ´Ù¸¥
-    URI ¹ø¿ª ¸ðµâ ÀÌÀü¿¡ ½ÇÇàµÈ´Ù. ±×·¡¼­ ´Ù¸¥ URI ¹ø¿ª ¸ðµâµé°ú
-    °°ÀÌ µ¿ÀÛÇÒ °ÍÀ» °í·ÁÇÏ¿© <code>mod_rewrite</code>¸¦ ¼³Á¤ÇØ¾ß ÇÑ´Ù.
-    ¶Ç, µ¿Àû °¡»óÈ£½ºÆ®¿¡¼­ <code>ScriptAlias</code>°ú °°Àº
-    ±â´ÉÀ» À§ÇØ¼­´Â Æ¯º°ÇÑ ÀÛ¾÷ÀÌ ÇÊ¿äÇÏ´Ù.</p>
+    <p>Æ¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    <code>mod_rewrite</code>ï¿½ï¿½ (<code>mod_alias</code> ï¿½ï¿½) ï¿½Ù¸ï¿½
+    URI ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È´ï¿½. ï¿½×·ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ URI ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ <code>mod_rewrite</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½.
+    ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ <code>ScriptAlias</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ø¼ï¿½ï¿½ï¿½ Æ¯ï¿½ï¿½ï¿½ï¿½ ï¿½Û¾ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Ï´ï¿½.</p>
 
 <div class="example"><p><code>
-# Host: Çì´õ¿¡¼­ ¼­¹ö¸íÀ» ¾ò´Â´Ù<br />
+# Host: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Â´ï¿½<br />
 UseCanonicalName Off<br />
 <br />
 # splittable logs<br />
@@ -320,74 +320,74 @@ CustomLog logs/access_log vcommon<br />
 <br />
 &lt;Directory /www/hosts&gt;<br />
 <span class="indent">
-    # ScriptAlias ½ÄÀ¸·Î CGI ½ÇÇàÀ» °­Á¦ÇÒ ¼ö ¾ø±â¶§¹®¿¡<br />
-    # ¿©±â¿¡ ExecCGI¸¦ »ç¿ëÇÑ´Ù<br />
+    # ScriptAlias ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ CGI ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½â¶§ï¿½ï¿½ï¿½ï¿½<br />
+    # ï¿½ï¿½ï¿½â¿¡ ExecCGIï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½<br />
     Options FollowSymLinks ExecCGI<br />
 </span>
 &lt;/Directory&gt;<br />
 <br />
-# ÀÌÁ¦ ¾î·Á¿î ºÎºÐÀÌ´Ù<br />
+# ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Îºï¿½ï¿½Ì´ï¿½<br />
 <br />
 RewriteEngine On<br />
 <br />
-# Host: Çì´õ¿¡¼­ °¡Á®¿Â ¼­¹ö¸í¿¡´Â ´ë¼Ò¹®ÀÚ°¡ µÚ¼¯¿©ÀÖÀ» ¼ö ÀÖ´Ù<br />
+# Host: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ò¹ï¿½ï¿½Ú°ï¿½ ï¿½Ú¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½<br />
 RewriteMap  lowercase  int:tolower<br />
 <br />
-## ÀÏ¹Ý ¹®¼­¸¦ ¸ÕÀú Ã³¸®ÇÑ´Ù:<br />
-# Alias /icons/ °¡ µ¿ÀÛÇÏµµ·Ï - ´Ù¸¥ alias¿¡ ´ëÇØ¼­µµ ¹Ýº¹<br />
+## ï¿½Ï¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ñ´ï¿½:<br />
+# Alias /icons/ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ - ï¿½Ù¸ï¿½ aliasï¿½ï¿½ ï¿½ï¿½ï¿½Ø¼ï¿½ï¿½ï¿½ ï¿½Ýºï¿½<br />
 RewriteCond  %{REQUEST_URI}  !^/icons/<br />
-# CGI°¡ µ¿ÀÛÇÏµµ·Ï<br />
+# CGIï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½<br />
 RewriteCond  %{REQUEST_URI}  !^/cgi-bin/<br />
-# Æ¯º°ÇÑ ÀÛ¾÷<br />
+# Æ¯ï¿½ï¿½ï¿½ï¿½ ï¿½Û¾ï¿½<br />
 RewriteRule  ^/(.*)$  /www/hosts/${lowercase:%{SERVER_NAME}}/docs/$1<br />
 <br />
-## ÀÌÁ¦ CGI¸¦ Ã³¸®ÇÑ´Ù - MIME typeÀ» °­Á¦ÇØ¾ß ÇÑ´Ù<br />
+## ï¿½ï¿½ï¿½ï¿½ CGIï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ñ´ï¿½ - MIME typeï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½<br />
 RewriteCond  %{REQUEST_URI}  ^/cgi-bin/<br />
 RewriteRule  ^/(.*)$  /www/hosts/${lowercase:%{SERVER_NAME}}/cgi-bin/$1  [T=application/x-httpd-cgi]<br />
 <br />
-# ³¡!
+# ï¿½ï¿½!
 </code></p></div>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="homepages.rewrite" id="homepages.rewrite"><code>mod_rewrite</code>¸¦
-    »ç¿ëÇÑ È¨ÆäÀÌÁö ½Ã½ºÅÛ</a> <a title="Permanent link" href="#homepages.rewrite" class="permalink">&para;</a></h2>
+<h2><a name="homepages.rewrite" id="homepages.rewrite"><code>mod_rewrite</code>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ È¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã½ï¿½ï¿½ï¿½</a> <a title="Permanent link" href="#homepages.rewrite" class="permalink">&para;</a></h2>
 
-    <p>´ÙÀ½Àº <a href="#homepages">µÎ¹øÂ° ¿¹</a>¿Í °°Àº ÀÏÀ»
-    ÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <a href="#homepages">ï¿½Î¹ï¿½Â° ï¿½ï¿½</a>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ñ´ï¿½.</p>
 
 <div class="example"><p><code>
 RewriteEngine on<br />
 <br />
 RewriteMap   lowercase  int:tolower<br />
 <br />
-# CGI°¡ µ¿ÀÛÇÏµµ·Ï<br />
+# CGIï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½<br />
 RewriteCond  %{REQUEST_URI}  !^/cgi-bin/<br />
 <br />
-# RewriteRuleÀÌ µ¿ÀÛÇÏµµ·Ï È£½ºÆ®¸íÀÌ ¿Ã¹Ù¸¥Áö °Ë»çÇÑ´Ù<br />
+# RewriteRuleï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ È£ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½Ã¹Ù¸ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½ï¿½Ñ´ï¿½<br />
 RewriteCond  ${lowercase:%{SERVER_NAME}}  ^www\.[a-z-]+\.isp\.com$<br />
 <br />
-# °¡»óÈ£½ºÆ®¸íÀ» URI ¾Õ¿¡ ºÙÀÎ´Ù<br />
-# [C]´Â ÀÌ °á°ú¸¦ °¡Áö°í ´ÙÀ½ ÀçÀÛ¼ºÀ» ¼öÇàÇÔÀ» ¶æÇÑ´Ù<br />
+# ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ URI ï¿½Õ¿ï¿½ ï¿½ï¿½ï¿½Î´ï¿½<br />
+# [C]ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Û¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ñ´ï¿½<br />
 RewriteRule  ^(.+)  ${lowercase:%{SERVER_NAME}}$1  [C]<br />
 <br />
-# ÀÌÁ¦ ½ÇÁ¦ ÆÄÀÏ¸íÀ» ¸¸µç´Ù<br />
+# ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½<br />
 RewriteRule  ^www\.([a-z-]+)\.isp\.com/(.*) /home/$1/$2<br />
 <br />
-# ÀüÃ¼ CGI µð·ºÅä¸®¸¦ Á¤ÀÇÇÑ´Ù<br />
+# ï¿½ï¿½Ã¼ CGI ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½<br />
 ScriptAlias  /cgi-bin/  /www/std-cgi/
 </code></p></div>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="xtra-conf" id="xtra-conf">º°µµÀÇ °¡»óÈ£½ºÆ® ¼³Á¤ÆÄÀÏ
-    »ç¿ëÇÏ±â</a> <a title="Permanent link" href="#xtra-conf" class="permalink">&para;</a></h2>
+<h2><a name="xtra-conf" id="xtra-conf">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ï±ï¿½</a> <a title="Permanent link" href="#xtra-conf" class="permalink">&para;</a></h2>
 
-    <p>´ÙÀ½Àº <code>mod_rewrite</code>ÀÇ °í±Þ ±â´ÉÀ» »ç¿ëÇÏ¿©
-    º°µµÀÇ ¼³Á¤ÆÄÀÏÀ» °¡Áö°í °¡»óÈ£½ºÆ®ÀÇ ¹®¼­·çÆ®¸¦ ¾Ë¾Æ³½´Ù.
-    ´õ À¯¿¬ÇÏÁö¸¸ ´õ º¹ÀâÇÑ ¼³Á¤ÀÌ ÇÊ¿äÇÏ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>mod_rewrite</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ë¾Æ³ï¿½ï¿½ï¿½.
+    ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Ï´ï¿½.</p>
 
-    <p><code>vhost.map</code> ÆÄÀÏÀº ´ÙÀ½°ú °°´Ù:</p>
+    <p><code>vhost.map</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½:</p>
 
 <div class="example"><p><code>
 www.customer-1.com  /www/customers/1<br />
@@ -396,21 +396,21 @@ www.customer-2.com  /www/customers/2<br />
 www.customer-N.com  /www/customers/N<br />
 </code></p></div>
 
-    <p><code>http.conf</code>´Â ´ÙÀ½°ú °°´Ù:</p>
+    <p><code>http.conf</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½:</p>
 
 <div class="example"><p><code>
 RewriteEngine on<br />
 <br />
 RewriteMap   lowercase  int:tolower<br />
 <br />
-# ´ëÀÀÆÄÀÏÀ» Á¤ÀÇÇÑ´Ù<br />
+# ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½<br />
 RewriteMap   vhost      txt:/www/conf/vhost.map<br />
 <br />
-# À§¿Í °°ÀÌ aliasµéÀ» Ã³¸®ÇÑ´Ù<br />
+# ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ aliasï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ñ´ï¿½<br />
 RewriteCond  %{REQUEST_URI}               !^/icons/<br />
 RewriteCond  %{REQUEST_URI}               !^/cgi-bin/<br />
 RewriteCond  ${lowercase:%{SERVER_NAME}}  ^(.+)$<br />
-# ÆÄÀÏ ³»¿ëÀ» °¡Áö°í Ã£´Â´Ù<br />
+# ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½Â´ï¿½<br />
 RewriteCond  ${vhost:%1}                  ^(/.*)$<br />
 RewriteRule  ^/(.*)$                      %1/docs/$1<br />
 <br />
@@ -422,14 +422,14 @@ RewriteRule  ^/(.*)$                      %1/cgi-bin/$1
 
 </div></div>
 <div class="bottomlang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/vhosts/mass.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/vhosts/mass.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/vhosts/mass.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/vhosts/mass.html" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/mass.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/vhosts/mass.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/vhosts/mass.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -444,8 +444,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/vhosts/mass.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

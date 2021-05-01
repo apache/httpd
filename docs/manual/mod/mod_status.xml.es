@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -94,7 +94,7 @@
 
     <p>Ahora puede acceder a estadísticas del servidor usando un navegador web
     para acceder a la página
-    <code>http://your.server.name/server-status</code></p>
+    <code>https://your.server.name/server-status</code></p>
 </section>
 
 <section id="autoupdate">
@@ -102,7 +102,7 @@
     <title>Actualizaciones Automáticas</title>
     <p>Puede hacer que la página de estado se actualice automáticamente si tiene
     un navegador que soporte "refresh". Acceda a la página
-    <code>http://your.server.name/server-status?refresh=N</code> para refrescar
+    <code>https://your.server.name/server-status?refresh=N</code> para refrescar
     la página cada N segundos.</p>
 
 </section>
@@ -112,7 +112,7 @@
     <title>Fichero de Estado legible por máquina</title>
     <p>Una versión legible por máquina del fichero de estado está disponible
     accediendo a la página 
-    <code>http://your.server.name/server-status?auto</code>. Esto es útil cuando
+    <code>https://your.server.name/server-status?auto</code>. Esto es útil cuando
     la solicitud de estado se lanza automáticamente, vea el programa Perl 
     <code>log_server_status</code>, que encontrará en el directorio 
     <code>/support</code> de su instalación del Servidor Apache HTTP.</p>

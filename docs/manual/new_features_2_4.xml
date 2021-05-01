@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -142,7 +142,7 @@
       authentication or authorization.</dd>
 
       <dt><module>mod_lua</module></dt>
-      <dd>Embeds the <a href="http://www.lua.org/">Lua</a> language into httpd,
+      <dd>Embeds the <a href="https://www.lua.org/">Lua</a> language into httpd,
       for configuration and small business logic functions. (Experimental)</dd>
 
       <dt><module>mod_log_debug</module></dt>
@@ -200,7 +200,7 @@
       <dd>UWSGI gateway module for <module>mod_proxy</module>.</dd>
 
       <dt><module>mod_socache_redis</module> (available since 2.4.39)</dt>
-      <dd>Support <a href="http://redis.io/">Redis</a> based shared object cache provider.</dd>
+      <dd>Support <a href="https://redis.io/">Redis</a> based shared object cache provider.</dd>
 
       <dt><module>mod_systemd</module> (available since 2.4.42)</dt>
       <dd>systemd integration. It allows httpd to be used in a service with the systemd

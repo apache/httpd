@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -16,12 +16,12 @@
 
 <link href="./images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
 <img alt="" src="./images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1> Mise en correspondance des URLs avec le système de fichiers</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1> Mise en correspondance des URLs avec le système de fichiers</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="./en/urlmapping.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/urlmapping.html" title="Français">&nbsp;fr&nbsp;</a> |
@@ -69,7 +69,7 @@ URLs</a></li>
     <p>Par exemple, si la directive
     <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code> contient
     <code>/var/www/html</code>, une requête pour
-    <code>http://www.example.com/fish/guppies.html</code> retournera le
+    <code>https://www.example.com/fish/guppies.html</code> retournera le
     fichier <code>/var/www/html/fish/guppies.html</code> au client.</p>
 
     <p>Si la requête concerne un répertoire (autrement dit un chemin se
@@ -83,7 +83,7 @@ URLs</a></li>
     <div class="example"><p><code>DirectoryIndex index.html index.php</code></p></div>
 
     <p>Si httpd reçoit alors une requête pour
-    <code>http://www.example.com/fish/</code>, il tentera de servir le
+    <code>https://www.example.com/fish/</code>, il tentera de servir le
     fichier <code>/var/www/html/fish/index.html</code>. Si ce fichier
     n'existe pas, il tentera de servir le fichier
     <code>/var/www/html/fish/index.php</code>.</p>
@@ -127,7 +127,7 @@ l'arborescence DocumentRoot</a> <a title="Lien permanent" href="#outside" class=
 <pre class="prettyprint lang-config">Alias "/docs" "/var/web"</pre>
 
 
-    <p>l'URL <code>http://www.example.com/docs/dir/file.html</code>
+    <p>l'URL <code>https://www.example.com/docs/dir/file.html</code>
     correspondra au fichier <code>/var/web/dir/file.html</code>. La
     directive
     <code class="directive"><a href="./mod/mod_alias.html#scriptalias">ScriptAlias</a></code>
@@ -145,7 +145,7 @@ l'arborescence DocumentRoot</a> <a title="Lien permanent" href="#outside" class=
 
 
     <p>fera correspondre une requête du style
-    <code>http://example.com/~user/cgi-bin/script.cgi</code> au chemin
+    <code>https://example.com/~user/cgi-bin/script.cgi</code> au chemin
     <code>/home/user/cgi-bin/script.cgi</code>, et traitera le fichier résultant
     comme un script CGI.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -160,7 +160,7 @@ l'arborescence DocumentRoot</a> <a title="Lien permanent" href="#outside" class=
     répertoires home des utilisateurs à l'aide d'URLs
     comme dans ce qui suit :</p>
 
-<div class="example"><p><code>http://www.example.com/~user/file.html</code></p></div>
+<div class="example"><p><code>https://www.example.com/~user/file.html</code></p></div>
 
     <p>Pour des raisons de sécurité, il est déconseillé de permettre un accès
     direct à un répertoire home d'utilisateur depuis le web. A cet effet, la
@@ -186,7 +186,7 @@ l'arborescence DocumentRoot</a> <a title="Lien permanent" href="#outside" class=
     il est possible d'utiliser la directive
     <code class="directive"><a href="./mod/mod_alias.html#aliasmatch">AliasMatch</a></code>
     pour obtenir l'effet désiré. Par exemple, pour faire correspondre
-    <code>http://www.example.com/upages/user/file.html</code> à
+    <code>https://www.example.com/upages/user/file.html</code> à
     <code>/home/user/public_html/file.html</code>, utilisez la directive
     <code>AliasMatch</code> suivante :</p>
 
@@ -210,7 +210,7 @@ l'arborescence DocumentRoot</a> <a title="Lien permanent" href="#outside" class=
     nouveau répertoire <code>/bar/</code>, vous pouvez demander aux clients
     de le requérir à sa nouvelle localisation comme suit :</p>
 
-<pre class="prettyprint lang-config">Redirect permanent "/foo/"   "http://www.example.com/bar/"</pre>
+<pre class="prettyprint lang-config">Redirect permanent "/foo/"   "https://www.example.com/bar/"</pre>
 
 
     <p>Ceci aura pour effet de rediriger tout chemin d'URL commençant par
@@ -225,13 +225,13 @@ l'arborescence DocumentRoot</a> <a title="Lien permanent" href="#outside" class=
     laisser toutes les autres requêtes inchangées, utilisez la
     configuration suivante :</p>
 
-<pre class="prettyprint lang-config">RedirectMatch permanent "^/$" "http://www.example.com/startpage.html"</pre>
+<pre class="prettyprint lang-config">RedirectMatch permanent "^/$" "https://www.example.com/startpage.html"</pre>
 
 
     <p>De même, pour rediriger temporairement toutes les pages d'un site
     vers une page particulière d'un autre site, utilisez ce qui suit :</p>
 
-<pre class="prettyprint lang-config">RedirectMatch temp ".*" "http://othersite.example.com/startpage.html"</pre>
+<pre class="prettyprint lang-config">RedirectMatch temp ".*" "https://othersite.example.com/startpage.html"</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -251,8 +251,8 @@ dans le répertoire
 <code>/bar/</code> sur <code>internal.example.com</code>
 et les renvoie au client comme s'ils appartenaient au serveur local.</p>
 
-<pre class="prettyprint lang-config">ProxyPass        "/foo/" "http://internal.example.com/bar/"
-ProxyPassReverse "/foo/" "http://internal.example.com/bar/"
+<pre class="prettyprint lang-config">ProxyPass        "/foo/" "https://internal.example.com/bar/"
+ProxyPassReverse "/foo/" "https://internal.example.com/bar/"
 ProxyPassReverseCookieDomain internal.example.com public.example.com
 ProxyPassReverseCookiePath "/foo/" "/bar/"</pre>
 
@@ -378,7 +378,7 @@ URLs</a> <a title="Lien permanent" href="#other" class="permalink">&para;</a></h
 </div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/urlmapping.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/urlmapping.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -393,8 +393,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/urlmapping.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
 <meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>±âÅ¸ ¾ÆÆÄÄ¡ ¹®¼­ - Apache HTTP Server Version 2.5</title>
+<title>ï¿½ï¿½Å¸ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ - Apache HTTP Server Version 2.5</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -16,78 +16,78 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page" class="no-sidebar"><div id="page-header">
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="../"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>±âÅ¸ ¾ÆÆÄÄ¡ ¹®¼­</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>ï¿½ï¿½Å¸ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½</h1>
 <div class="toplang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/misc/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/misc/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/misc/" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
 <a href="../fr/misc/" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/misc/" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/misc/" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/misc/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">ÀÌ ¹®¼­´Â ÃÖ½ÅÆÇ ¹ø¿ªÀÌ ¾Æ´Õ´Ï´Ù.
-            ÃÖ±Ù¿¡ º¯°æµÈ ³»¿ëÀº ¿µ¾î ¹®¼­¸¦ Âü°íÇÏ¼¼¿ä.</div>
+<div class="outofdate">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Õ´Ï´ï¿½.
+            ï¿½Ö±Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.</div>
 
 
-    <p>¾Æ·¡´Â ¾ÆÆÄÄ¡ À¥¼­¹ö °³¹ß ÇÁ·ÎÁ§Æ®¿¡ ´ëÇÑ Ãß°¡ ¹®¼­
-    ¸ñ·ÏÀÌ´Ù.</p>
+    <p>ï¿½Æ·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ì´ï¿½.</p>
 
-    <div class="warning"><h3>ÁÖÀÇ</h3>
-    <p> ¾Æ·¡ ¹®¼­´Â ¾ÆÆÄÄ¡ À¥¼­¹ö 2.1 ¹öÀü¿¡¼­ º¯°æµÈ ³»¿ëÀ»
-    ´ã°í ÀÖÁö ¾Ê´Ù. ¾ÆÁ÷µµ À¯È¿ÇÑ Á¤º¸°¡ ÀÖÁö¸¸, ÁÖÀÇÇØ¼­
-    »ç¿ëÇÏ±æ ¹Ù¶õ´Ù.</p>
+    <div class="warning"><h3>ï¿½ï¿½ï¿½ï¿½</h3>
+    <p> ï¿½Æ·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 2.1 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¿ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½Ù¶ï¿½ï¿½ï¿½.</p>
     </div>
 
     <dl>
-      <dt><a href="perf-tuning.html">¾ÆÆÄÄ¡ ¼º´ÉÇâ»ó</a></dt>
+      <dt><a href="perf-tuning.html">ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</a></dt>
 
       <dd>
-        <p>ÃÖ°íÀÇ ¼º´ÉÀ» ³»±âÀ§ÇØ ¾ÆÆÄÄ¡¸¦ (½ÇÇà½Ã, ÄÄÆÄÀÏ½Ã)
-        ¼³Á¤ÇÏ´Â ¹æ¹ýÀ» ´Ù·é´Ù. ¾ÆÆÄÄ¡°¡ ¿Ö ¾î¶² ÀÛ¾÷À» ÇÏ°í
-        (¾ÆÆÄÄ¡¸¦ ´À¸®°Å³ª ºü¸£°Ô ¸¸µå´Â) ¾î¶² ÀÛ¾÷À» ÇÏÁö ¾Ê´ÂÁö
-        ¼³¸íÇÑ´Ù.</p>
+        <p>ï¿½Ö°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½Ï½ï¿½)
+        ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù·ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ ï¿½î¶² ï¿½Û¾ï¿½ï¿½ï¿½ ï¿½Ï°ï¿½
+        (ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Å³ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½) ï¿½î¶² ï¿½Û¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´ï¿½ï¿½ï¿½
+        ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
       </dd>
 
-      <dt><a href="security_tips.html">º¸¾È ÆÁ</a></dt>
+      <dt><a href="security_tips.html">ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½</a></dt>
 
       <dd>
-        <p>¾ÆÆÄÄ¡ À¥¼­¹ö¸¦ ¾ÈÀüÇÏ°Ô À¯ÁöÇÏ±âÀ§ÇØ "ÇÒ ÀÏ"°ú "ÇÏÁö
-        ¸»¾Æ¾ß ÇÒ ÀÏ".</p>
+        <p>ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ "ï¿½ï¿½ ï¿½ï¿½"ï¿½ï¿½ "ï¿½ï¿½ï¿½ï¿½
+        ï¿½ï¿½ï¿½Æ¾ï¿½ ï¿½ï¿½ ï¿½ï¿½".</p>
       </dd>
 
-      <dt><a href="rewrite/">URL ÀçÀÛ¼º ÁöÄ§¼­</a></dt>
+      <dt><a href="rewrite/">URL ï¿½ï¿½ï¿½Û¼ï¿½ ï¿½ï¿½Ä§ï¿½ï¿½</a></dt>
 
       <dd>
-        <p>ÀÌ ¹®¼­´Â <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> <a href="../mod/mod_rewrite.html">ÂüÁ¶ ¹®¼­</a>¸¦ º¸ÃæÇÑ´Ù.
-        ÀÌ ¹®¼­´Â À¥°ü¸®ÀÚ°¡ ½ÇÁ¦ ÀÛ¾÷¿¡¼­ ºÎµúÄ¡°ÔµÇ´Â ÀüÇüÀûÀÎ
-        URL°ü·Ã ¹®Á¦¸¦ ÇØ°áÇÏ±âÀ§ÇØ¼­ ¾î¶»°Ô ¾ÆÆÄÄ¡
-        <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>¸¦ »ç¿ëÇÏ´ÂÁö ¼³¸íÇÑ´Ù.</p>
+        <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> <a href="../mod/mod_rewrite.html">ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+        ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Û¾ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Îµï¿½Ä¡ï¿½ÔµÇ´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        URLï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ø°ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½î¶»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡
+        <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
       </dd>
 
-      <dt><a href="relevant_standards.html">°ü·Ã Ç¥ÁØ</a></dt>
+      <dt><a href="relevant_standards.html">ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½</a></dt>
 
       <dd>
-        <p>ÀÌ ¹®¼­´Â ¾ÆÆÄÄ¡°¡ µû¸£´Â °ü·Ã Ç¥ÁØµéÀ» ¿­°ÅÇÑ´Ù.</p>
+        <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½Øµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
       </dd>
     </dl>
 
   </div>
 </div>
 <div class="bottomlang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/misc/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/misc/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/misc/" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
 <a href="../fr/misc/" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/misc/" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/misc/" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/misc/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

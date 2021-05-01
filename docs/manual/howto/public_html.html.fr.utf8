@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -16,12 +16,12 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Recettes et tutoriels</a></div><div id="page-content"><div id="preamble"><h1>Répertoires web utilisateurs</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Recettes et tutoriels</a></div><div id="page-content"><div id="preamble"><h1>Répertoires web utilisateurs</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/howto/public_html.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/howto/public_html.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
@@ -34,7 +34,7 @@
 <p>Sur les systèmes multi-utilisateurs, on peut permettre à chaque
 utilisateur d'avoir un site web dans son répertoire home à l'aide de la
 directive <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code>. Les
-visiteurs de l'URL <code>http://example.com/~nom_utilisateur/</code>
+visiteurs de l'URL <code>https://example.com/~nom_utilisateur/</code>
 recevront un contenu situé dans le répertoire home de l'utilisateur
 "<code>nom_utilisateur</code>", et dans le sous-répertoire spécifié par
 la directive <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code>.</p>
@@ -83,7 +83,7 @@ avec le système de fichiers</a></li><li><a href="#comments_section">Commentaire
     <pre class="prettyprint lang-config">UserDir public_html</pre>
 
 
-    <p>l'URL <code>http://example.com/~rbowen/fichier.html</code>
+    <p>l'URL <code>https://example.com/~rbowen/fichier.html</code>
     correspondra au chemin fichier
     <code>/home/rbowen/public_html/fichier.html</code></p>
 
@@ -94,7 +94,7 @@ avec le système de fichiers</a></li><li><a href="#comments_section">Commentaire
     <pre class="prettyprint lang-config">UserDir /var/html</pre>
 
 
-    <p>l'URL <code>http://example.com/~rbowen/fichier.html</code>
+    <p>l'URL <code>https://example.com/~rbowen/fichier.html</code>
     correspondra au chemin fichier
     <code>/var/html/rbowen/fichier.html</code></p>
 
@@ -105,7 +105,7 @@ avec le système de fichiers</a></li><li><a href="#comments_section">Commentaire
     <pre class="prettyprint lang-config">UserDir /var/www/*/docs</pre>
 
 
-    <p>l'URL <code>http://example.com/~rbowen/fichier.html</code>
+    <p>l'URL <code>https://example.com/~rbowen/fichier.html</code>
     correspondra au chemin fichier
     <code>/var/www/rbowen/docs/fichier.html</code></p>
 
@@ -115,7 +115,7 @@ avec le système de fichiers</a></li><li><a href="#comments_section">Commentaire
     <pre class="prettyprint lang-config">UserDir public_html /var/html</pre>
 
 
-    <p>Avec l'URL <code>http://example.com/~rbowen/fichier.html</code>,
+    <p>Avec l'URL <code>https://example.com/~rbowen/fichier.html</code>,
     Apache va rechercher <code>~rbowen</code>. S'il ne le trouve pas,
     Apache va rechercher <code>rbowen</code> dans
     <code>/var/html</code>. S'il le trouve, l'URL ci-dessus correspondra
@@ -128,12 +128,12 @@ avec le système de fichiers</a></li><li><a href="#comments_section">Commentaire
     <p>On peut utiliser la directive <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> pour rediriger les requêtes
     relatives aux répertoires utilisateurs vers des URLs externes.</p>
 
-    <pre class="prettyprint lang-config">UserDir http://example.org/users/*/</pre>
+    <pre class="prettyprint lang-config">UserDir https://example.org/users/*/</pre>
 
 
     <p>L'exemple ci-dessus va rediriger une requête pour
-    <code>http://example.com/~bob/abc.html</code> vers
-    <code>http://exemple.org/users/bob/abc.html</code>.</p>
+    <code>https://example.com/~bob/abc.html</code> vers
+    <code>https://exemple.org/users/bob/abc.html</code>.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="enable" id="enable">Définition de la liste des utilisateurs autorisés à utiliser
@@ -182,7 +182,7 @@ UserDir enabled rbowen krietz</pre>
     répertoire en passant par l'URL :</p>
 
     <div class="example"><p><code>
-    http://example.com/~rbowen/cgi-bin/exemple.cgi
+    https://example.com/~rbowen/cgi-bin/exemple.cgi
     </code></p></div>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -211,7 +211,7 @@ UserDir enabled rbowen krietz</pre>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/howto/public_html.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/howto/public_html.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -226,8 +226,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/howto/public_html.
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

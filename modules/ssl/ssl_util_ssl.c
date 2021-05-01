@@ -5,7 +5,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -546,26 +546,22 @@ apr_status_t modssl_read_cert(apr_pool_t *p,
 
     in = BIO_new_mem_buf(cert_pem, -1);
     if (in == NULL) {
-        rv = APR_ENOMEM;
-        goto cleanup;
+        rv = APR_ENOMEM; goto cleanup;
     }
     
     x = PEM_read_bio_X509(in, NULL, cb, ud);
     if (x == NULL) {
-        rv = APR_ENOENT;
-        goto cleanup;
+        rv = APR_ENOENT; goto cleanup;
     }
     
     BIO_free(in);
     in = BIO_new_mem_buf(key_pem? key_pem : cert_pem, -1);
     if (in == NULL) {
-        rv = APR_ENOMEM;
-        goto cleanup;
+        rv = APR_ENOMEM; goto cleanup;
     }
     key = PEM_read_bio_PrivateKey(in, NULL, cb, ud);
     if (key == NULL) {
-        rv = APR_ENOENT;
-        goto cleanup;
+        rv = APR_ENOENT; goto cleanup;
     }
     
 cleanup:

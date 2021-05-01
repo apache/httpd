@@ -15,7 +15,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -58,7 +58,7 @@
       <tr>
         <td><a href="#download">İndirme</a></td>
 
-        <td><code>$ lynx http://httpd.apache.org/download.cgi</code>
+        <td><code>$ lynx https://httpd.apache.org/download.cgi</code>
         </td>
       </tr>
 
@@ -122,7 +122,7 @@
       <dd>APR ve APR-Util'in sisteminizde kurulu olduğundan emin olun. Kurulu
         değilse veya sisteminizce sağlanmış sürümlerini kullanmak
         istemiyorsanız APR ve APR-Util'in ikisini birden <a
-        href="http://apr.apache.org/">Apache APR</a>'den indirin ve onları
+        href="https://apr.apache.org/">Apache APR</a>'den indirin ve onları
         Apache httpd dağıtımını açtığınız dizinin altında
         <code>./srclib/apr</code> ve <code>./srclib/apr-util</code> dizinlerine
         açın (Dizin isimlerinin sürüm numarası içermemesine dikkat edin,
@@ -134,8 +134,8 @@
 
       <dt>Perl-Uyumlu Düzenli İfade Kütüphanesi (PCRE)</dt>
       <dd>Bu kütüphane gereklidir, ancak artık httpd ile birlikte
-        dağıtılmamaktadır. Kaynak kodunu <a href="http://www.pcre.org/"
-        >http://www.pcre.org</a> sitesinden indirin ve bir port veya paket
+        dağıtılmamaktadır. Kaynak kodunu <a href="https://www.pcre.org/"
+        >https://www.pcre.org</a> sitesinden indirin ve bir port veya paket
         olarak kurun. Eğer derleme sisteminiz PCRE kurulumunuz tarafından
         kurulan <code>pcre-config</code> betiğini bulamazsa
         <code>--with-pcre</code> seçeneğini kullanarak yerini belirtin. Bazı
@@ -153,9 +153,9 @@
 
       <dt>ANSI-C Derleyici ve Derleme Sistemi</dt>
       <dd>Bir ANSI-C derleyicinin kurulu olduğundan emin olunuz. <a
-        href="http://www.gnu.org/">Free Software Foundation (FSF)</a>
+        href="https://www.gnu.org/">Free Software Foundation (FSF)</a>
         tarafından dağıtılan <a
-        href="http://gcc.gnu.org/">GNU C derleyicisini
+        href="https://gcc.gnu.org/">GNU C derleyicisini
         (GCC)</a> kullanmanız önerilir. GCC yoksa en azından satıcınızın
         derleyicisinin ANSI uyumlu olduğundan emin olunuz. Ayrıca,
         <code>PATH</code> ortam değişkeninizin içerdiği yollarda
@@ -168,9 +168,9 @@
         Protokolüne (NTP) göre çalışan <code>ntpdate</code> veya
         <code>xntpd</code> programları kullanılır. NTP yazılımları ve halka
         açık zaman sunucuları hakkında daha ayrıntılı bilgi için <a
-        href="http://www.ntp.org">NTP sitesine bakınız</a>.</dd>
+        href="https://www.ntp.org">NTP sitesine bakınız</a>.</dd>
 
-      <dt><a href="http://www.perl.org/">Perl 5</a> [SEÇİMLİK]</dt>
+      <dt><a href="https://www.perl.org/">Perl 5</a> [SEÇİMLİK]</dt>
       <dd>Perl ile yazılmış <program>apxs</program> veya
         <program>dbmmanage</program> gibi bazı betikleri desteklemek için
         Perl 5 yorumlayıcısı gerekir (5.003 veya daha yeni sürümleri
@@ -188,7 +188,7 @@
 <section id="download"><title>İndirme</title>
 
     <p>Apache HTTP Sunucusunu, çeşitli yansıların da listelendiği <a
-      href="http://httpd.apache.org/download.cgi">Apache HTTP Sunucusu
+      href="https://httpd.apache.org/download.cgi">Apache HTTP Sunucusu
       indirme sayfasından</a> indirebilirsiniz. Unix benzeri sistemler
       kullanan Apache HTTPd kullanıcılarının kaynak paketlerinden birini
       indirip derlemeleri daha iyi olacaktır. Derleme işlemi (aşağıda
@@ -202,9 +202,9 @@
       değişikliğe uğramamış olduğunun doğrulanması önemlidir. Bu indirilen
       tar paketinin PGP imzasına göre sınanması ile sağlanabilir. Bunun nasıl
       yapılacağı <a
-      href="http://httpd.apache.org/download.cgi#verify">indirme
+      href="https://httpd.apache.org/download.cgi#verify">indirme
       sayfasında</a> anlatıldığı gibi <a
-      href="http://httpd.apache.org/dev/verification.html">PGP
+      href="https://httpd.apache.org/dev/verification.html">PGP
       kullanımının</a> anlatıldığı daha geniş bir örnek de vardır.</p>
 
 </section>
@@ -336,8 +336,8 @@
       href="mod/directives.html">yapılandırma yönergelerinin</a> kılavuzlarını
       <code><em>ÖNEK</em>/<a href="./">docs/manual/</a></code> altında
       bulabileceğiniz gibi en son sürümünü daima <a
-      href="http://httpd.apache.org/docs/&httpd.docs;/"
-      >http://httpd.apache.org/docs/&httpd.docs;/</a> adresinde
+      href="https://httpd.apache.org/docs/&httpd.docs;/"
+      >https://httpd.apache.org/docs/&httpd.docs;/</a> adresinde
       bulabilirsiniz.</p>
 </section>
 
@@ -348,7 +348,7 @@
 
     <example>$ <em>ÖNEK</em>/bin/apachectl -k start</example>
 
-    <p><code>http://localhost/</code> üzerinden ilk belgeniz için bir istek
+    <p><code>https://localhost/</code> üzerinden ilk belgeniz için bir istek
       yapmalısınız. Genellikle <directive
       module="core">DocumentRoot</directive> olarak bilinen
       <code><em>ÖNEK</em>/htdocs/</code> altındaki sayfayı görürsünüz.
@@ -424,7 +424,7 @@
       görünmüyor.</p>
 
     <p>Bu <a
-      href="http://wiki.apache.org/httpd/DistrosDefaultLayout">üçüncü parti
+      href="https://wiki.apache.org/httpd/DistrosDefaultLayout">üçüncü parti
       dağıtımlarla ilgili bir açıklamaya</a> HTTP
       Sunucu wikisinde yer verilmiş olup bunların şu anki durumunu
       yansıtmaktadır. Ancak, yine de, dağıtımınızın belli platformlarla ilgili

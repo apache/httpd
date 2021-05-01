@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -17,12 +17,12 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
 <p class="apache">Apache HTTP サーバ バージョン 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.5</a> &gt; <a href="./">モジュール</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="https://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.5</a> &gt; <a href="./">モジュール</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache モジュール mod_dav</h1>
 <div class="toplang">
@@ -36,14 +36,14 @@
             最近更新された内容を見るには英語版をご覧下さい。
         </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>分散オーサリングとバージョン管理
-(<a href="http://www.webdav.org/">WebDAV</a>) 機能</td></tr>
+(<a href="https://www.webdav.org/">WebDAV</a>) 機能</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>dav_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_dav.c</td></tr></table>
 <h3>概要</h3>
 
     <p>このモジュールはクラス 1 とクラス 2 の
-    <a href="http://www.webdav.org">WebDAV</a>
+    <a href="https://www.webdav.org">WebDAV</a>
     ('ウェブベースの分散オーサリングとバージョン管理')
     機能を Apache に提供します。
     この HTTP プロトコルの拡張により、リモートのウェブサーバ上にある
@@ -65,7 +65,7 @@
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/mod_dav_fs.html#davlockdb">DavLockDB</a></code></li>
 <li><code class="directive"><a href="../mod/core.html#limitxmlrequestbody">LimitXMLRequestBody</a></code></li>
-<li><a href="http://www.webdav.org">WebDAV Resources</a></li>
+<li><a href="https://www.webdav.org">WebDAV Resources</a></li>
 <li><a href="#comments_section">コメント</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -173,9 +173,9 @@ Alias /php-source /home/gstein/php_files
 &lt;/Location&gt;</pre>
 
 
-    <p>この設定により、<code>http://example.com/phparea</code> を PHP スクリプトの
+    <p>この設定により、<code>https://example.com/phparea</code> を PHP スクリプトの
     出力をアクセスするために使うことができ、
-    <code>http://example.com/php-source</code> を DAV クライアントによる
+    <code>https://example.com/php-source</code> を DAV クライアントによる
     が操作のために使うことができます。</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -267,7 +267,7 @@ Alias /php-source /home/gstein/php_files
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">コメント</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_dav.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/mod/mod_dav.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -282,8 +282,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_dav.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />この文書は <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
-<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

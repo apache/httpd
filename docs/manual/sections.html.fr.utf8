@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -16,12 +16,12 @@
 
 <link href="./images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
 <img alt="" src="./images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>Sections de configuration</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>Sections de configuration</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="./en/sections.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/sections.html" title="Français">&nbsp;fr&nbsp;</a> |
@@ -71,7 +71,7 @@ si le serveur est démarré en utilisant la ligne de commande : <code>httpd
 -DClosedForNow</code>:</p>
 
 <pre class="prettyprint lang-config">&lt;IfDefine ClosedForNow&gt;
-    Redirect "/" "http://otherserver.example.com/"
+    Redirect "/" "https://otherserver.example.com/"
 &lt;/IfDefine&gt;</pre>
 
 
@@ -201,9 +201,9 @@ configuration de parties de l'arborescence du site web.  Par exemple, la
 configuration suivante interdit l'accès à toute URL dont la partie chemin
 commence par /private.
 En particulier, l'interdiction s'appliquera aux requêtes pour :
-<code>http://yoursite.example.com/private</code>,
-<code>http://yoursite.example.com/private123</code>, et
-<code>http://yoursite.example.com/private/dir/file.html</code> ainsi qu'à
+<code>https://yoursite.example.com/private</code>,
+<code>https://yoursite.example.com/private123</code>, et
+<code>https://yoursite.example.com/private/dir/file.html</code> ainsi qu'à
 toute requête commençant par la chaîne de caractères <code>/private</code>.</p>
 
 <pre class="prettyprint lang-config">&lt;LocationMatch "^/private"&gt;
@@ -240,7 +240,7 @@ avoir :</p>
 Alias "/foo" "/srv/www/common/foo"</pre>
 
 <p>Ceci est aussi vrai pour les directives <code class="directive"><a href="./mod/mod_proxy.html#proxypass">ProxyPass</a></code> :</p>
-<pre class="prettyprint lang-config">ProxyPass "/special-area" "http://special.example.com" smax=5 max=10
+<pre class="prettyprint lang-config">ProxyPass "/special-area" "https://special.example.com" smax=5 max=10
 ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofailover=On</pre>
 
 
@@ -308,8 +308,8 @@ chemins de fichiers et d'URLs depuis une <a href="expr.html">expression</a> et a
 permet de modifier la configuration en fonction d'une condition qui peut
 être définie sous la forme d'une expression booléenne. Dans l'exemple
 suivant, l'accès est interdit si l'en-tête HTTP Referer ne commence pas
-par "http://www.example.com/".</p>
-<pre class="prettyprint lang-config">&lt;If "!(%{HTTP_REFERER} -strmatch 'http://www.example.com/*')"&gt;
+par "https://www.example.com/".</p>
+<pre class="prettyprint lang-config">&lt;If "!(%{HTTP_REFERER} -strmatch 'https://www.example.com/*')"&gt;
     Require all denied
 &lt;/If&gt;</pre>
 
@@ -337,11 +337,11 @@ Par exemple, imaginez la configuration suivante :</p>
 
 
 <p>Elle fonctionne correctement si la requête appelle
-<code>http://yoursite.example.com/dir/</code>.  Mais que va-t-il se passer si
+<code>https://yoursite.example.com/dir/</code>.  Mais que va-t-il se passer si
 votre système de fichiers est insensible à la casse ?
 Votre restriction va pouvoir être tout simplement contournée en envoyant une
 requête sur
-<code>http://yoursite.example.com/DIR/</code>.  Le conteneur <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, quant à lui, s'appliquera
+<code>https://yoursite.example.com/DIR/</code>.  Le conteneur <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, quant à lui, s'appliquera
 à tout contenu servi à partir de cette localisation,
 sans tenir compte de la manière dont il est appelé.
 (Les liens du système de fichiers constituent une exception.
@@ -405,7 +405,7 @@ Par exemple, la configuration suivante n'autorisera qu'un sous-ensemble de
 clients à accéder au site <code>www.example.com</code> en passant par le serveur
 mandataire :.</p>
 
-<pre class="prettyprint lang-config">&lt;Proxy "http://www.example.com/*"&gt;
+<pre class="prettyprint lang-config">&lt;Proxy "https://www.example.com/*"&gt;
     Require host yournetwork.example.com
 &lt;/Proxy&gt;</pre>
 
@@ -651,7 +651,7 @@ soyez donc prudent !</p>
 </div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/sections.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/sections.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -666,8 +666,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/sections.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

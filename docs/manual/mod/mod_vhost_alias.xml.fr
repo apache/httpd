@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -140,7 +140,7 @@ VirtualDocumentRoot "/usr/local/apache/vhosts/%0"
     </highlight>
 
     <p>Une requête pour
-    <code>http://www.example.com/repertoire/fichier.html</code>
+    <code>https://www.example.com/repertoire/fichier.html</code>
     concernera alors la ressource
     <code>/usr/local/apache/vhosts/www.example.com/repertoire/fichier.html</code>.
     </p>
@@ -156,7 +156,7 @@ VirtualDocumentRoot "/usr/local/apache/vhosts/%3+/%2.1/%2.2/%2.3/%2"
     </highlight>
 
     <p>Une requête pour
-    <code>http://www.domaine.example.com/repertoire/fichier.html</code>
+    <code>https://www.domaine.example.com/repertoire/fichier.html</code>
     concernera alors la ressource
     <code>/usr/local/apache/vhosts/example.com/d/o/m/domaine/repertoire/fichier.html</code>.</p>
 
@@ -221,11 +221,11 @@ VirtualScriptAliasIP  "/usr/local/apache/vhosts/%1/%2/%3/%4/cgi-bin"
 
     <p>Si l'adresse IP de <code>www.domaine.example.com</code> est
     10.20.30.40, une requête pour
-    <code>http://www.domaine.example.com/repertoire/fichier.html</code>
+    <code>https://www.domaine.example.com/repertoire/fichier.html</code>
     concernera la ressource
     <code>/usr/local/apache/vhosts/10/20/30/40/docs/repertoire/fichier.html</code>.
     Une requête pour
-    <code>http://www.domaine.example.com/cgi-bin/script.pl</code>
+    <code>https://www.domaine.example.com/cgi-bin/script.pl</code>
     concernera la ressource
     <code>/usr/local/apache/vhosts/10/20/30/40/cgi-bin/script.pl</code>.</p>
 
@@ -239,7 +239,7 @@ VirtualScriptAliasIP  "/usr/local/apache/vhosts/%1/%2/%3/%4/cgi-bin"
 </highlight>
 
     <p>Une requête pour
-    <code>http://www.domaine.example.com/repertoire/fichier.html</code>
+    <code>https://www.domaine.example.com/repertoire/fichier.html</code>
     concernera alors la ressource
     <code>/usr/local/apache/vhosts/domaine.exemple/repertoire/fichier.html</code>.</p>
 

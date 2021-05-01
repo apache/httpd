@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -38,7 +38,7 @@
 
     <p><module>mod_cache</module> はローカルのコンテンツやプロキシされた
     コンテンツをキャッシュするために使われる <a
-    href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a> 準拠の
+    href="https://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a> 準拠の
     HTTP コンテンツキャッシュを実装しています。<module>mod_cache</module>
     の動作にはストレージを管理するモジュールが必要です。標準
     Apache 配布には二つストレージ管理モジュールが含まれています:</p>
@@ -121,7 +121,7 @@
         &lt;/IfModule&gt;<br />
         <br />
         # When acting as a proxy, don't cache the list of security updates<br />
-        CacheDisable http://security.update.server/update-list/<br />
+        CacheDisable https://security.update.server/update-list/<br />
       </indent>
       &lt;/IfModule&gt;
     </example>
@@ -170,7 +170,7 @@
       # Cache FTP-proxied url's<br />
       CacheEnable  disk  ftp://<br /><br />
       # Cache content from www.apache.org<br />
-      CacheEnable  disk  http://www.apache.org/<br />
+      CacheEnable  disk  https://www.apache.org/<br />
     </example>
 
 </usage>

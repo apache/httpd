@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -17,12 +17,12 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
 <p class="apache">Apache HTTP サーバ バージョン 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.5</a> &gt; <a href="./">モジュール</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="https://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.5</a> &gt; <a href="./">モジュール</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache モジュール mod_proxy</h1>
 <div class="toplang">
@@ -203,8 +203,8 @@
     </span>
     &lt;/Proxy&gt;<br />
     <br />
-    ProxyPass /foo http://foo.example.com/bar<br />
-    ProxyPassReverse /foo http://foo.example.com/bar
+    ProxyPass /foo https://foo.example.com/bar<br />
+    ProxyPassReverse /foo https://foo.example.com/bar
     </code></p></div>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -258,8 +258,8 @@
       役に立ちます。</p>
 
       <p>イントラネット内のユーザは WWW のリクエストでローカルドメインを
-      省略することがよくあります。<code>http://somehost.example.com/</code> 
-      というリクエストの代わりに "http://somehost/" をリクエストしたりします。
+      省略することがよくあります。<code>https://somehost.example.com/</code> 
+      というリクエストの代わりに "https://somehost/" をリクエストしたりします。
       このようなリクエストを受け付け、サーバに設定されているローカルドメインが
       暗黙のうちに使われていると解釈して、単純にリクエストを処理するものも
       商用プロキシサーバの中にはあります。
@@ -284,7 +284,7 @@
       <div class="example"><p><code>
         &lt;Location /buggyappserver/&gt;<br />
         <span class="indent">
-          ProxyPass http://buggyappserver:7001/foo/<br />
+          ProxyPass https://buggyappserver:7001/foo/<br />
           SetEnv force-proxy-request-1.0 1<br />
           SetEnv proxy-nokeepalive 1<br />
         </span>
@@ -378,7 +378,7 @@
     フォワードされず、直接処理されます。</p>
 
     <div class="example"><h3>例</h3><p><code>
-      ProxyRemote  *  http://firewall.mycompany.com:81<br />
+      ProxyRemote  *  https://firewall.mycompany.com:81<br />
       NoProxy         .mycompany.com 192.168.112.0/21
     </code></p></div>
 
@@ -522,7 +522,7 @@
     <code>INCLUDES</code> フィルタを通して送るように設定します:</p>
 
     <div class="example"><p><code>
-      &lt;Proxy http://example.com/foo/*&gt;<br />
+      &lt;Proxy https://example.com/foo/*&gt;<br />
       <span class="indent">
         SetOutputFilter INCLUDES<br />
       </span>
@@ -640,7 +640,7 @@
     が追加された同じホストへのリダイレクト応答が返されます。</p>
 
     <div class="example"><h3>例</h3><p><code>
-      ProxyRemote  *  http://firewall.mycompany.com:81<br />
+      ProxyRemote  *  https://firewall.mycompany.com:81<br />
       NoProxy         .mycompany.com 192.168.112.0/21<br />
       ProxyDomain     .mycompany.com
     </code></p></div>
@@ -737,15 +737,15 @@
     使っているときは <code class="directive"><a href="#proxyrequests">ProxyRequests</a></code> ディレクティブは通常は
     <strong>off</strong> に設定されているべきです。</div>
 
-    <p>ローカルサーバのアドレスが <code>http://example.com/</code> であると
+    <p>ローカルサーバのアドレスが <code>https://example.com/</code> であると
     します。すると、</p>
 
     <div class="example"><p><code>
-      ProxyPass /mirror/foo/ http://backend.example.com/
+      ProxyPass /mirror/foo/ https://backend.example.com/
     </code></p></div>
 
-    <p>と設定すると <code>http://example.com/mirror/foo/bar</code> への
-    リクエストが内部的に <code>http://backend.example.com/bar</code> への
+    <p>と設定すると <code>https://example.com/mirror/foo/bar</code> への
+    リクエストが内部的に <code>https://backend.example.com/bar</code> への
     プロキシリクエストに変換されることになります。</p>
 
     <p>サブディレクトリをリバースプロキシしたくないときに <code>!</code> は
@@ -753,7 +753,7 @@
 
     <div class="example"><p><code>
       ProxyPass /mirror/foo/i !<br />
-      ProxyPass /mirror/foo http://backend.example.com
+      ProxyPass /mirror/foo https://backend.example.com
     </code></p></div>
 
     <p>は <code>/mirror/foo/i</code> を<em>除く</em>
@@ -781,7 +781,7 @@
     生成することはありません。</p>
 
     <div class="example"><p><code>
-        ProxyPass /example http://backend.example.com smax=5 max=20 ttl=120 retry=300
+        ProxyPass /example https://backend.example.com smax=5 max=20 ttl=120 retry=300
     </code></p></div>
 
     <table>
@@ -909,14 +909,14 @@
     
     </table>
     <div class="example"><p><code>
-      ProxyPass /special-area http://special.example.com/ smax=5 max=10<br />
+      ProxyPass /special-area https://special.example.com/ smax=5 max=10<br />
       ProxyPass / balancer://mycluster stickysession=jsessionid nofailover=On<br />
       &lt;Proxy balancer://mycluster&gt;<br />
       <span class="indent">
-        BalancerMember http://1.2.3.4:8009<br />
-        BalancerMember http://1.2.3.5:8009 smax=10<br />
+        BalancerMember https://1.2.3.4:8009<br />
+        BalancerMember https://1.2.3.5:8009 smax=10<br />
         # Less powerful server, don't send as many requests there<br />
-        BalancerMember http://1.2.3.6:8009 smax=1 loadfactor=20<br />
+        BalancerMember https://1.2.3.6:8009 smax=1 loadfactor=20<br />
       </span>
       &lt;/Proxy&gt;
     </code></p></div>
@@ -983,29 +983,29 @@ URL を調整する</td></tr>
     <p>ディレクティブで明示されている HTTP 応答ヘッダのみが書き換えられます。
     Apache は他の応答ヘッダを書き換えたり、HTML ページの中の URL 参照を
     書き換えたりすることはありません。HTML の中を見て、URL 参照を書き換える
-    モジュールに Nick Kew さんの <a href="http://apache.webthing.com/mod_proxy_html/">mod_proxy_html</a> があります。</p>
+    モジュールに Nick Kew さんの <a href="https://apache.webthing.com/mod_proxy_html/">mod_proxy_html</a> があります。</p>
 
     <p><var>path</var> はローカル仮想パスの名前です。<var>url</var> は
     リモートサーバの部分 URL です。これらは <code class="directive"><a href="#proxypass">ProxyPass</a></code> ディレクティブと同様です。</p>
 
-    <p>例えば、ローカルサーバのアドレスが <code>http://example.com/</code>
+    <p>例えば、ローカルサーバのアドレスが <code>https://example.com/</code>
     だとします。すると</p>
 
     <div class="example"><p><code>
-      ProxyPass         /mirror/foo/ http://backend.example.com/<br />
-      ProxyPassReverse  /mirror/foo/ http://backend.example.com/<br />
+      ProxyPass         /mirror/foo/ https://backend.example.com/<br />
+      ProxyPassReverse  /mirror/foo/ https://backend.example.com/<br />
       ProxyPassReverseCookieDomain  backend.example.com  public.example.com<br />
       ProxyPassReverseCookiePath  /  /mirror/foo/
     </code></p></div>
 
-    <p>という設定をすると、<code>http://example.com/mirror/foo/bar</code>
-    へのローカルリクエストが <code>http://backend.example.com/bar</code>
+    <p>という設定をすると、<code>https://example.com/mirror/foo/bar</code>
+    へのローカルリクエストが <code>https://backend.example.com/bar</code>
     へのプロキシリクエストに内部でリダイレクトされるだけではありません
     (これは <code>ProxyPass</code> の機能です)。<code>backend.example.com</code>
-    が送るリダイレクトの面倒もみます。<code>http://backend.example.com/bar</code>
-    が <code>http://backend.example.com/quux</code> にリダイレクトされたとき、
+    が送るリダイレクトの面倒もみます。<code>https://backend.example.com/bar</code>
+    が <code>https://backend.example.com/quux</code> にリダイレクトされたとき、
     Apache は HTTP リダイレクト応答をクライアントに送る前に、
-    <code>http://example.com/mirror/foo/quux</code> に変更します。
+    <code>https://example.com/mirror/foo/quux</code> に変更します。
     URL を構成するのに使われるホスト名は <code class="directive"><a href="../mod/core.html#usecanonicalname">UseCanonicalName</a></code> の設定に応じて選択されることに
     注意してください。</p>
 
@@ -1116,9 +1116,9 @@ URL を調整する</td></tr>
     います。</p>
 
     <div class="example"><h3>例</h3><p><code>
-      ProxyRemote http://goodguys.com/ http://mirrorguys.com:8000<br />
-      ProxyRemote * http://cleversite.com<br />
-      ProxyRemote ftp http://ftpproxy.mydomain.com:8080
+      ProxyRemote https://goodguys.com/ https://mirrorguys.com:8000<br />
+      ProxyRemote * https://cleversite.com<br />
+      ProxyRemote ftp https://ftpproxy.mydomain.com:8080
     </code></p></div>
 
     <p>この例では、プロキシは FTP リクエストを別の HTTP リクエストで包んで
@@ -1236,7 +1236,7 @@ URL を調整する</td></tr>
     <p>このディレクティブはプロキシの <code>Via:</code> HTTP ヘッダの使用を
     制御します。想定されている使い方は、プロキシサーバがいくつも繋がっているときに
     プロキシリクエストの流れを制御することです。<code>Via:</code> ヘッダ行の
-    説明は <a href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a> (HTTP/1.1)
+    説明は <a href="https://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a> (HTTP/1.1)
     の 14.45 節を読んでください。</p>
 
     <ul>
@@ -1264,7 +1264,7 @@ URL を調整する</td></tr>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">コメント</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_proxy.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/mod/mod_proxy.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -1279,8 +1279,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_proxy.html
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />この文書は <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
-<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

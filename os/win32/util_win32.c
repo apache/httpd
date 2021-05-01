@@ -5,7 +5,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -100,4 +100,49 @@ FARPROC ap_load_dll_func(ap_dlltoken_e fnLib, char* fnName, int ordinal)
         return GetProcAddress(lateDllHandle[fnLib], (char *) ordinal);
     else
         return GetProcAddress(lateDllHandle[fnLib], fnName);
+}
+
+
+/* To share the semaphores with other processes, we need a NULL ACL
+ * Code from MS KB Q106387
+ */
+PSECURITY_ATTRIBUTES GetNullACL(void)
+{
+    PSECURITY_DESCRIPTOR pSD;
+    PSECURITY_ATTRIBUTES sa;
+
+    sa  = (PSECURITY_ATTRIBUTES) LocalAlloc(LPTR, sizeof(SECURITY_ATTRIBUTES));
+    sa->nLength = sizeof(SECURITY_ATTRIBUTES);
+
+    pSD = (PSECURITY_DESCRIPTOR) LocalAlloc(LPTR, SECURITY_DESCRIPTOR_MIN_LENGTH);
+    sa->lpSecurityDescriptor = pSD;
+
+    if (pSD == NULL || sa == NULL) {
+        return NULL;
+    }
+    apr_set_os_error(0);
+    if (!InitializeSecurityDescriptor(pSD, SECURITY_DESCRIPTOR_REVISION)
+        || apr_get_os_error()) {
+        LocalFree( pSD );
+        LocalFree( sa );
+        return NULL;
+    }
+    if (!SetSecurityDescriptorDacl(pSD, TRUE, (PACL) NULL, FALSE)
+        || apr_get_os_error()) {
+        LocalFree( pSD );
+        LocalFree( sa );
+        return NULL;
+    }
+
+    sa->bInheritHandle = FALSE;
+    return sa;
+}
+
+
+void CleanNullACL(void *sa)
+{
+    if (sa) {
+        LocalFree(((PSECURITY_ATTRIBUTES)sa)->lpSecurityDescriptor);
+        LocalFree(sa);
+    }
 }

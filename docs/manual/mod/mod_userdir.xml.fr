@@ -12,7 +12,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -41,7 +41,7 @@ oeuvre du contenu dynamique et de l'authentification et lorsque les utilisateurs
 ne se voient pas tous forcément d'un bon oeil.</note>
 
 <p>Ce module permet l'accès aux répertoires propres à un utilisateur en
-utilisant la syntaxe <code>http://example.com/~utilisateur/</code>.</p>
+utilisant la syntaxe <code>https://example.com/~utilisateur/</code>.</p>
 </summary>
 
 <seealso><a href="../urlmapping.html">Mise en correspondance des URLs
@@ -94,7 +94,7 @@ utilisateur</description>
     n'apparait dans la directive <directive>Userdir</directive>, l'argument est
     traité en tant que modèle de fichier, et utilisé pour traduire le
     nom d'utilisateur en une spécification de répertoire. Une requête
-    pour <code>http://www.example.com/~bob/un/deux.html</code> sera
+    pour <code>https://www.example.com/~bob/un/deux.html</code> sera
     traduite en :</p>
 
     <table>
@@ -114,12 +114,12 @@ utilisateur</description>
     <table>
       <tr><th>Directive Userdir utilisée</th>
           <th>Chemin traduit</th></tr>
-      <tr><td>UserDir http://www.example.com/utilisateurs</td>
-          <td>http://www.example.com/utilisateurs/bob/un/deux.html</td></tr>
-      <tr><td>UserDir http://www.example.com/*/usr</td>
-          <td>http://www.example.com/bob/usr/un/deux.html</td></tr>
-      <tr><td>UserDir http://www.example.com/~*/</td>
-          <td>http://www.example.com/~bob/un/deux.html</td></tr>
+      <tr><td>UserDir https://www.example.com/utilisateurs</td>
+          <td>https://www.example.com/utilisateurs/bob/un/deux.html</td></tr>
+      <tr><td>UserDir https://www.example.com/*/usr</td>
+          <td>https://www.example.com/bob/usr/un/deux.html</td></tr>
+      <tr><td>UserDir https://www.example.com/~*/</td>
+          <td>https://www.example.com/~bob/un/deux.html</td></tr>
     </table>
 
     <note>
@@ -157,16 +157,16 @@ UserDir enabled user1 user2 user3
     alternatifs. Si vous utilisez une commande comme :</p>
 
     <highlight language="config">
-      UserDir "public_html" "/usr/web" "http://www.example.com/"
+      UserDir "public_html" "/usr/web" "https://www.example.com/"
     </highlight>
 
     <p>Avec une requête pour
-    <code>http://www.example.com/~bob/un/deux.html</code>, le serveur
+    <code>https://www.example.com/~bob/un/deux.html</code>, le serveur
     tentera tout d'abord de trouver la page à
     <code>~bob/public_html/un/deux.html</code>, puis à
     <code>/usr/web/bob/un/deux.html</code>, et enfin il enverra une
     redirection vers
-    <code>http://www.example.com/bob/un/deux.html</code>.</p>
+    <code>https://www.example.com/bob/un/deux.html</code>.</p>
 
     <p>Si vous spécifiez une redirection, elle doit être la dernière
     alternative de la liste. Apache httpd ne pouvant pas déterminer si la

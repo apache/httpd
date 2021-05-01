@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -34,8 +34,8 @@
     to modules requiring SQL database functions, and takes care of
     managing databases with optimal efficiency and scalability
     for both threaded and non-threaded MPMs.  For details, see the
-    <a href="http://apr.apache.org/">APR</a> website and this overview of the
-    <a href="http://people.apache.org/~niq/dbd.html">Apache DBD Framework</a>
+    <a href="https://apr.apache.org/">APR</a> website and this overview of the
+    <a href="https://people.apache.org/~niq/dbd.html">Apache DBD Framework</a>
     by its original developer.
 </p>
 </summary>
@@ -49,7 +49,7 @@
     classic LAMP (Linux, Apache, Mysql, Perl/PHP/Python).
     On threaded platform, it provides an altogether more
     scalable and efficient <em>connection pool</em>, as
-    described in <a href="http://www.apachetutor.org/dev/reslist">this
+    described in <a href="https://www.apachetutor.org/dev/reslist">this
     article at ApacheTutor</a>.  Note that <module>mod_dbd</module>
     supersedes the modules presented in that article.</p>
 </section>

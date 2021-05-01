@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -16,12 +16,12 @@
 
 <link href="./images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page" class="no-sidebar"><div id="page-header">
-<p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa del sitio web</a></p>
+<p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/quickreference.html">Directivas</a> | <a href="https://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa del sitio web</a></p>
 <p class="apache">Versión 2.5 del Servidor HTTP Apache</p>
 <img alt="" src="./images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentación</a> &gt; <a href="./">Versión 2.5</a></div><div id="page-content"><div id="preamble"><h1>Glosario</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentación</a> &gt; <a href="./">Versión 2.5</a></div><div id="page-content"><div id="preamble"><h1>Glosario</h1>
 <div class="toplang">
 <p><span>Idiomas disponibles: </span><a href="./de/glossary.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/glossary.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
@@ -148,7 +148,7 @@
 		entre el servidor y el sistema operativo. El desarrollo de APR es 
 		paralelo al del Servidor HTTP Apache, como un proyecto independiente. 
 		Puedes visitar el proyecto en:<br />
-		<a href="http://apr.apache.org/">Apache Portable Runtime
+		<a href="https://apr.apache.org/">Apache Portable Runtime
 		Project</a>
 		</dd>
 
@@ -181,10 +181,10 @@
 		se podía usar como un alias a $0 en algunos sitios. 
 		Esto ya no esta soportado desde la versión 2.3.6.
 		Apache usa Expresiones Regulares compatibles con Perl gracias a la
-		librería <a href="http://www.pcre.org/">PCRE</a>.
+		librería <a href="https://www.pcre.org/">PCRE</a>.
 		Puedes encontrar más documentación sobre las expresiones regulares 
 		de PCRE y su sintaxis en esa página o en la
-		<a href="http://en.wikipedia.org/wiki/PCRE">Wikipedia</a>.</dd>
+		<a href="https://en.wikipedia.org/wiki/PCRE">Wikipedia</a>.</dd>
 
 
 
@@ -276,7 +276,7 @@
 		<dt><a name="uniformresourceidentifier">Identificador de Recursos
 		Uniforme</a> <a name="URI">(URI)</a></dt> <dd>Una cadena de caracteres
 		compacta para identificar un recurso físico o abstracto.  Se
-		define formalmente en la <a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>.  Los URIs que
+		define formalmente en la <a href="https://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>.  Los URIs que
 		se usan en world-wide web se refieren normalmente como <a href="#url">URLs</a>.</dd>
 
 
@@ -290,7 +290,7 @@
 		procesamiento del protocolo de enlace SSL. Se añadió a SSL 
 		con las extensiones TLS en el RFC 3546.  <br />
 		See: <a href="ssl/ssl_faq.html">the SSL FAQ</a>
-		and <a href="http://www.ietf.org/rfc/rfc3546.txt">RFC 3546</a>
+		and <a href="https://www.ietf.org/rfc/rfc3546.txt">RFC 3546</a>
 		</dd>
 
 
@@ -300,7 +300,7 @@
 		<dd>Una definición estándar para
 		un interfaz entre un servidor web y un programa externo que permite
 		hacer peticiones de servicio a los programas externos.  Este interfaz
-		esta definido en el  <a href="http://www.ietf.org/rfc/rfc3875">RFC-3875</a>.<br />
+		esta definido en el  <a href="https://www.ietf.org/rfc/rfc3875">RFC-3875</a>.<br />
 		Consulte: <a href="howto/cgi.html">Contenido Dinámico con CGI</a>
 		</dd>
 
@@ -312,7 +312,7 @@
 		Recursos Uniforme</a>.  Las URLs están compuestas normalmente por
 		un esquema, tal como <code>http</code> o <code>https</code>, un nombre
 		de host, y una ruta.  Una URL para esta página es
-		<code>http://httpd.apache.org/docs/trunk/glossary.html</code>.</dd>
+		<code>https://httpd.apache.org/docs/trunk/glossary.html</code>.</dd>
 
 
 		<dt><a name="module" id="module">Módulo</a></dt>
@@ -386,7 +386,7 @@
 
 		<dt><a name="openssl" id="openssl">OpenSSL</a></dt>
 		<dd>El toolkit Open Source para SSL/TLS<br />
-		Ver: <a href="http://www.openssl.org/">http://www.openssl.org/</a></dd>
+		Ver: <a href="https://www.openssl.org/">https://www.openssl.org/</a></dd>
 
 
 		<dt><a name="passphrase">Pass Phrase o frase de contraseña</a></dt> 
@@ -415,7 +415,7 @@
 		<dd>Es el protocolo de
 		transmisión estádar usado en la World Wide Web.  Apache
 		implementa la versión 1.1 de este protocolo, al que se hace
-		referencia como HTTP/1.1 y definido por el <a href="http://ietf.org/rfc/rfc2616.txt">RFC 2616</a>.</dd>
+		referencia como HTTP/1.1 y definido por el <a href="https://ietf.org/rfc/rfc2616.txt">RFC 2616</a>.</dd>
 
 		<dt><a name="https" id="https">HTTPS</a></dt>
 		<dd>Protocolo de transferencia de
@@ -532,7 +532,7 @@
 </div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comentarios</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/glossary.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/glossary.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -547,8 +547,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/glossary.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/quickreference.html">Directivas</a> | <a href="https://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

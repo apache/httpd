@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
 <meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -17,98 +17,98 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">¸ðµâ</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">ï¿½ï¿½ï¿½</a></div>
 <div id="page-content">
-<div id="preamble"><h1>¾ÆÆÄÄ¡ ¸ðµâ mod_actions</h1>
+<div id="preamble"><h1>ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ mod_actions</h1>
 <div class="toplang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../de/mod/mod_actions.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../de/mod/mod_actions.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/mod_actions.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/mod/mod_actions.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
 <a href="../fr/mod/mod_actions.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_actions.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_actions.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">ÀÌ ¹®¼­´Â ÃÖ½ÅÆÇ ¹ø¿ªÀÌ ¾Æ´Õ´Ï´Ù.
-            ÃÖ±Ù¿¡ º¯°æµÈ ³»¿ëÀº ¿µ¾î ¹®¼­¸¦ Âü°íÇÏ¼¼¿ä.</div>
-<table class="module"><tr><th><a href="module-dict.html#Description">¼³¸í:</a></th><td>ÀÌ ¸ðµâÀº ¹Ìµð¾îÁ¾·ù³ª ¿äÃ»¸Þ¼­µå¿¡ µû¶ó CGI
-½ºÅ©¸³Æ®¸¦ ½ÇÇàÇÑ´Ù.</td></tr>
-<tr><th><a href="module-dict.html#Status">»óÅÂ:</a></th><td>Base</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">¸ðµâ¸í:</a></th><td>actions_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">¼Ò½ºÆÄÀÏ:</a></th><td>mod_actions.c</td></tr></table>
-<h3>¿ä¾à</h3>
+<div class="outofdate">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Õ´Ï´ï¿½.
+            ï¿½Ö±Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½Þ¼ï¿½ï¿½å¿¡ ï¿½ï¿½ï¿½ï¿½ CGI
+ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</td></tr>
+<tr><th><a href="module-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Base</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">ï¿½ï¿½ï¿½ï¿½:</a></th><td>actions_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">ï¿½Ò½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>mod_actions.c</td></tr></table>
+<h3>ï¿½ï¿½ï¿½</h3>
 
-    <p>ÀÌ ¸ðµâ¿¡´Â µÎ°¡Áö Áö½Ã¾î°¡ ÀÖ´Ù. <code class="directive"><a href="#action">Action</a></code> Áö½Ã¾î´Â ¿äÃ»ÇÏ´Â
-    ÆÄÀÏÀÇ MIME content type¿¡ µû¶ó CGI ½ºÅ©¸³Æ®¸¦ ½ÇÇàÇÑ´Ù.
-    <code class="directive"><a href="#script">Script</a></code> Áö½Ã¾î´Â
-    ¿äÃ»ÀÌ Æ¯Á¤ ¸Þ¼­µå¸¦ »ç¿ëÇÒ °æ¿ì CGI ½ºÅ©¸³Æ®¸¦ ½ÇÇàÇÑ´Ù.
-    ±×·¡¼­ ÆÄÀÏÀ» Ã³¸®ÇÏ´Â ½ºÅ©¸³Æ®¸¦ ¸Å¿ì ½±°Ô ½ÇÇàÇÒ ¼ö ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½â¿¡ï¿½ï¿½ ï¿½Î°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î°¡ ï¿½Ö´ï¿½. <code class="directive"><a href="#action">Action</a></code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½Ï´ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ MIME content typeï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ CGI ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+    <code class="directive"><a href="#script">Script</a></code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½
+    ï¿½ï¿½Ã»ï¿½ï¿½ Æ¯ï¿½ï¿½ ï¿½Þ¼ï¿½ï¿½å¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ CGI ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+    ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Å¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 </div>
-<div id="quickview"><h3 class="directives">Áö½Ã¾îµé</h3>
+<div id="quickview"><h3 class="directives">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#action">Action</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#script">Script</a></li>
 </ul>
-<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_actions">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_actions">Report a bug</a></li></ul><h3>Âü°í</h3>
+<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_actions">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_actions">Report a bug</a></li></ul><h3>ï¿½ï¿½ï¿½ï¿½</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code></li>
-<li><a href="../howto/cgi.html">CGI·Î µ¿Àû ÆäÀÌÁö »ý¼º</a></li>
-<li><a href="../handler.html">¾ÆÆÄÄ¡¿¡¼­ ÇÚµé·¯ »ç¿ë</a></li>
+<li><a href="../howto/cgi.html">CGIï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a></li>
+<li><a href="../handler.html">ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ ï¿½Úµé·¯ ï¿½ï¿½ï¿½</a></li>
 <li><a href="#comments_section">Comments</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Action" id="Action">Action</a> <a name="action" id="action">Áö½Ã¾î</a> <a title="Permanent link" href="#action" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="Action" id="Action">Action</a> <a name="action" id="action">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#action" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>Æ¯Á¤ ÇÚµé·¯³ª content-type¿¡ ´ëÇØ CGI ½ºÅ©¸³Æ®¸¦
-»ç¿ëÇÑ´Ù</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>Action <var>action-type</var> <var>cgi-script</var> [virtual]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override ¿É¼Ç:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_actions</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Áö¿ø:</a></th><td><code>virtual</code> ¼öÁ¤ÀÚ¿Í ÇÚµé·¯´Â ¾ÆÆÄÄ¡
-2.1¶§ Ãß°¡µÇ¾ú´Ù</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Æ¯ï¿½ï¿½ ï¿½Úµé·¯ï¿½ï¿½ content-typeï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ CGI ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>Action <var>action-type</var> <var>cgi-script</var> [virtual]</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override ï¿½É¼ï¿½:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_actions</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>virtual</code> ï¿½ï¿½ï¿½ï¿½ï¿½Ú¿ï¿½ ï¿½Úµé·¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡
+2.1ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½</td></tr>
 </table>
-    <p>ÀÌ Áö½Ã¾î´Â ¿äÃ»ÀÌ <var>action-type</var>ÀÌ¸é
-    <var>cgi-script</var>¸¦ ½ÇÇàÇÏ´Â Çàµ¿À» ¼­¹ö¿¡ Ãß°¡ÇÑ´Ù.
-    <var>cgi-script</var>´Â <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>³ª <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code>¸¦ »ç¿ëÇÏ¿© CGI
-    ½ºÅ©¸³Æ®·Î ÁöÁ¤ÇÑ ¸®¼Ò½ºÀÇ URL°æ·ÎÀÌ´Ù.
-    <var>action-type</var>¿¡´Â <a href="../handler.html">ÇÚµé·¯</a>³ª MIME content typeÀ»
-    »ç¿ëÇÒ ¼ö ÀÖ´Ù. ÀÌ Áö½Ã¾î´Â <code>PATH_INFO</code>¿Í
-    <code>PATH_TRANSLATED</code> CGI Ç¥ÁØ È¯°æº¯¼ö·Î ¿äÃ»ÇÑ
-    ¹®¼­ÀÇ URL°ú ÆÄÀÏ°æ·Î¸¦ Àü´ÞÇÑ´Ù. <code>REDIRECT_HANDLER</code>
-    º¯¼ö·Î Æ¯Á¤ ¿äÃ»¿¡ »ç¿ëÇÒ ÇÚµé·¯¸¦ Àü´ÞÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ <var>action-type</var>ï¿½Ì¸ï¿½
+    <var>cgi-script</var>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½àµ¿ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ñ´ï¿½.
+    <var>cgi-script</var>ï¿½ï¿½ <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>ï¿½ï¿½ <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ CGI
+    ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ò½ï¿½ï¿½ï¿½ URLï¿½ï¿½ï¿½ï¿½Ì´ï¿½.
+    <var>action-type</var>ï¿½ï¿½ï¿½ï¿½ <a href="../handler.html">ï¿½Úµé·¯</a>ï¿½ï¿½ MIME content typeï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ <code>PATH_INFO</code>ï¿½ï¿½
+    <code>PATH_TRANSLATED</code> CGI Ç¥ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ URLï¿½ï¿½ ï¿½ï¿½ï¿½Ï°ï¿½Î¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <code>REDIRECT_HANDLER</code>
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Æ¯ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Úµé·¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <div class="example"><h3>¿¹Á¦</h3><p><code>
-      # Æ¯Á¤ MIME content typeÀÇ ÆÄÀÏ ¿äÃ»:<br />
+    <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½</h3><p><code>
+      # Æ¯ï¿½ï¿½ MIME content typeï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»:<br />
       Action image/gif /cgi-bin/images.cgi<br />
       <br />
-      # Æ¯Á¤ÇÑ È®ÀåÀÚ¸¦ °¡Áø ÆÄÀÏ<br />
+      # Æ¯ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½<br />
       AddHandler my-file-type .xyz<br />
       Action my-file-type /cgi-bin/program.cgi<br />
     </code></p></div>
 
-    <p>Ã¹¹øÂ° ¿¹¿¡¼­ MIME content typeÀÌ <code>image/gif</code>ÀÎ
-    ÆÄÀÏÀ» ¿äÃ»ÇÏ¸é ÁöÁ¤ÇÑ cgi ½ºÅ©¸³Æ® <code>/cgi-bin/images.cgi</code>°¡
-    Ã³¸®ÇÑ´Ù.</p>
+    <p>Ã¹ï¿½ï¿½Â° ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ MIME content typeï¿½ï¿½ <code>image/gif</code>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ cgi ï¿½ï¿½Å©ï¿½ï¿½Æ® <code>/cgi-bin/images.cgi</code>ï¿½ï¿½
+    Ã³ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <p>µÎ¹øÂ° ¿¹¿¡¼­ È®ÀåÀÚ°¡ <code>.xyz</code>ÀÎ ÆÄÀÏÀ» ¿äÃ»ÇÏ¸é
-    ÁöÁ¤ÇÑ cgi ½ºÅ©¸³Æ® <code>/cgi-bin/program.cgi</code>°¡
-    Ã³¸®ÇÑ´Ù.</p>
+    <p>ï¿½Î¹ï¿½Â° ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ú°ï¿½ <code>.xyz</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½Ï¸ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ cgi ï¿½ï¿½Å©ï¿½ï¿½Æ® <code>/cgi-bin/program.cgi</code>ï¿½ï¿½
+    Ã³ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
     <p>In the second example, requests for files with a file extension of
     <code>.xyz</code> are handled instead by the specified cgi script
     <code>/cgi-bin/program.cgi</code>.</p>
 
-    <p>¼±ÅÃÀûÀÎ <code>virtual</code> ¼öÁ¤ÀÚ´Â ¿äÃ»ÇÑ ÆÄÀÏÀÌ
-    ½ÇÁ¦·Î Á¸ÀçÇÏ´ÂÁö °Ë»çÇÏÁö ¾Êµµ·Ï ÇÑ´Ù. ¿¹¸¦ µé¾î, °¡»óÀÇ
-    À§Ä¡¿¡ <code class="directive">Action</code> Áö½Ã¾î¸¦ »ç¿ëÇÏ·Á´Â
-    °æ¿ì À¯¿ëÇÏ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>virtual</code> ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Êµï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½Ä¡ï¿½ï¿½ <code class="directive">Action</code> ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.</p>
 
-    <div class="example"><h3>¿¹Á¦</h3><p><code>
+    <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½</h3><p><code>
       &lt;Location /news&gt;<br />
       <span class="indent">
         SetHandler news-handler<br />
@@ -117,53 +117,53 @@
       &lt;/Location&gt;
     </code></p></div>
 
-<h3>Âü°í</h3>
+<h3>ï¿½ï¿½ï¿½ï¿½</h3>
 <ul>
 <li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Script" id="Script">Script</a> <a name="script" id="script">Áö½Ã¾î</a> <a title="Permanent link" href="#script" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="Script" id="Script">Script</a> <a name="script" id="script">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#script" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>Æ¯Á¤ ¿äÃ»¸Þ¼­µå¿¡ ´ëÇØ CGI ½ºÅ©¸³Æ®¸¦
-»ç¿ëÇÑ´Ù.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>Script <var>method</var> <var>cgi-script</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®, directory</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_actions</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Æ¯ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½Þ¼ï¿½ï¿½å¿¡ ï¿½ï¿½ï¿½ï¿½ CGI ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>Script <var>method</var> <var>cgi-script</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_actions</td></tr>
 </table>
-    <p>ÀÌ Áö½Ã¾î´Â ÆÄÀÏÀ» <var>method</var> ¸Þ¼­µå¸¦ »ç¿ëÇÏ¿©
-    ¿äÃ»ÇÏ¸é <var>cgi-script</var>¸¦ ½ÇÇàÇÏ´Â Çàµ¿À» ¼­¹ö¿¡
-    Ãß°¡ÇÑ´Ù. <var>cgi-script</var>´Â <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>³ª <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code>¸¦ »ç¿ëÇÏ¿© CGI
-    ½ºÅ©¸³Æ®·Î ÁöÁ¤ÇÑ ¸®¼Ò½ºÀÇ URL°æ·ÎÀÌ´Ù. ÀÌ Áö½Ã¾î´Â
-    <code>PATH_INFO</code>¿Í <code>PATH_TRANSLATED</code> CGI
-    Ç¥ÁØ È¯°æº¯¼ö·Î ¿äÃ»ÇÑ ¹®¼­ÀÇ URL°ú ÆÄÀÏ°æ·Î¸¦ Àü´ÞÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <var>method</var> ï¿½Þ¼ï¿½ï¿½å¸¦ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½
+    ï¿½ï¿½Ã»ï¿½Ï¸ï¿½ <var>cgi-script</var>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½àµ¿ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ß°ï¿½ï¿½Ñ´ï¿½. <var>cgi-script</var>ï¿½ï¿½ <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>ï¿½ï¿½ <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ CGI
+    ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ò½ï¿½ï¿½ï¿½ URLï¿½ï¿½ï¿½ï¿½Ì´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½
+    <code>PATH_INFO</code>ï¿½ï¿½ <code>PATH_TRANSLATED</code> CGI
+    Ç¥ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ URLï¿½ï¿½ ï¿½ï¿½ï¿½Ï°ï¿½Î¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
     <div class="note">
-      ¾î¶² ¸Þ¼­µå ÀÌ¸§ÀÌ¶óµµ »ç¿ëÇÒ ¼ö ÀÖ´Ù. <strong>¸Þ¼­µå ÀÌ¸§Àº
-      ´ë¼Ò¹®ÀÚ¸¦ ±¸º°ÇÑ´Ù.</strong> ±×·¡¼­ <code>Script PUT</code>°ú
-      <code>Script put</code>Àº ¿ÏÀüÈ÷ ´Ù¸£´Ù.
+      ï¿½î¶² ï¿½Þ¼ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½Ì¶ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. <strong>ï¿½Þ¼ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½
+      ï¿½ï¿½Ò¹ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</strong> ï¿½×·ï¿½ï¿½ï¿½ <code>Script PUT</code>ï¿½ï¿½
+      <code>Script put</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ï¿½ï¿½.
     </div>
 
-    <p><code class="directive">Script</code> ¸í·É¾î´Â ±âº»ÀûÀÎ Çàµ¿¸¸À»
-    Ã³¸®ÇÔÀ» ÁÖÀÇÇÏ¶ó. CGI ½ºÅ©¸³Æ®°¡ ºÒ¸®°Å³ª, ¿äÃ»ÇÑ ¸Þ¼­µå¸¦
-    ¾Ë¾Æ¼­ Ã³¸®ÇÒ ¼ö ÀÖ´Â ¸®¼Ò½ºÀÇ °æ¿ì ±×´ë·Î Ã³¸®ÇÑ´Ù.
-    <code>GET</code> ¸Þ¼­µåÀÇ <code class="directive">Script</code>´Â
-    ÁúÀÇ¾Æ±Ô¸ÕÆ®°¡ ÀÖÀ»¶§¸¸ (<em>¿¹</em>, foo.html?hi) »ç¿ëÇÔÀ»
-    ÁÖÀÇÇÏ¶ó. ÁúÀÇ¾Æ±Ô¸ÕÆ®°¡ ¾ø´Ù¸é Á¤»óÀûÀ¸·Î ¿äÃ»À» Ã³¸®ÇÑ´Ù.</p>
+    <p><code class="directive">Script</code> ï¿½ï¿½ï¿½É¾ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½ ï¿½àµ¿ï¿½ï¿½ï¿½ï¿½
+    Ã³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½. CGI ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ò¸ï¿½ï¿½Å³ï¿½, ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½Þ¼ï¿½ï¿½å¸¦
+    ï¿½Ë¾Æ¼ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½Ò½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½×´ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ñ´ï¿½.
+    <code>GET</code> ï¿½Þ¼ï¿½ï¿½ï¿½ï¿½ï¿½ <code class="directive">Script</code>ï¿½ï¿½
+    ï¿½ï¿½ï¿½Ç¾Æ±Ô¸ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (<em>ï¿½ï¿½</em>, foo.html?hi) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½. ï¿½ï¿½ï¿½Ç¾Æ±Ô¸ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <div class="example"><h3>¿¹Á¦</h3><p><code>
-      # &lt;ISINDEX&gt;½Ä °Ë»öÀ» À§ÇØ<br />
+    <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½</h3><p><code>
+      # &lt;ISINDEX&gt;ï¿½ï¿½ ï¿½Ë»ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½<br />
       Script GET /cgi-bin/search<br />
       <br />
-      # CGI PUT ÇÚµé·¯<br />
+      # CGI PUT ï¿½Úµé·¯<br />
       Script PUT /~bob/put.cgi<br />
     </code></p></div>
 
 </div>
 </div>
 <div class="bottomlang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../de/mod/mod_actions.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../de/mod/mod_actions.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/mod_actions.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/mod/mod_actions.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
 <a href="../fr/mod/mod_actions.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
@@ -172,7 +172,7 @@
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_actions.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/mod/mod_actions.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -187,8 +187,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_actions.ht
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

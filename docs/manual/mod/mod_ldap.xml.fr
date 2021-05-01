@@ -14,7 +14,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -47,13 +47,13 @@ cache du résultat à destination des autres modules LDAP</description>
     <p>Le support SSL/TLS est conditionné par le kit de développement
     LDAP qui a été lié à <glossary>APR</glossary>. Au moment où ces
     lignes sont écrites, APR-util supporte <a
-    href="http://www.openldap.org/">OpenLDAP SDK</a> (version 2.x ou
+    href="https://www.openldap.org/">OpenLDAP SDK</a> (version 2.x ou
     supérieure), <a
-    href="http://developer.novell.com/ndk/cldap.htm">Novell LDAP
+    href="https://developer.novell.com/ndk/cldap.htm">Novell LDAP
     SDK</a>, <a href="https://wiki.mozilla.org/LDAP_C_SDK">
     Mozilla LDAP SDK</a>, le SDK LDAP Solaris natif (basé sur Mozilla)
     ou le SDK LDAP Microsoft natif. Voir le site web <a
-    href="http://apr.apache.org">APR</a> pour plus de détails.</p>
+    href="https://apr.apache.org">APR</a> pour plus de détails.</p>
 
 </summary>
 
@@ -204,7 +204,7 @@ LDAPOpCacheTTL 600
       </highlight>
 
       <p>En se connectant à l'URL
-      <code>http://nom-serveur/infos-cache</code>, l'administrateur peut
+      <code>https://nom-serveur/infos-cache</code>, l'administrateur peut
       obtenir un rapport sur le statut de chaque cache qu'utilise
       <module>mod_ldap</module>. Notez que si Apache ne supporte pas la
       mémoire partagée, chaque instance de <program>httpd</program>

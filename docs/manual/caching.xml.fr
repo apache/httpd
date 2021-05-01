@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -52,7 +52,7 @@
 	stocké dans le cache, et mod_cache vise à respecter tous les
 	en-têtes HTTP, ainsi que les options qui contrôlent la mise en
 	cache du contenu comme décrit dans la <a
-	href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html">Section
+	href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html">Section
 	13 de la RFC2616</a>. <module>mod_cache</module> peut gérer des
 	configurations de mise en cache simples, mais aussi complexes
 	comme dans les cas où vous avez à faire à des contenus mandatés,
@@ -115,7 +115,7 @@
     <p>Le module <module>mod_cache</module> permet de tirer avantage du
     mécanisme de mise en cache en ligne faisant partie
     intégrante du protocole HTTP, et décrit dans la <a
-    href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html">section
+    href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html">section
     13 de la RFC2616</a>.</p>
 
     <p>A la différence d'un cache simple clé/valeur à deux états où le
@@ -172,7 +172,7 @@
     </dl>
 
     <p>Le fonctionnement détaillé d'un cache HTTP est décrit dans la <a
-    href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html">Section
+    href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html">Section
     13 de la RFC2616</a>.</p>
 
     <section>
@@ -356,7 +356,7 @@
       <p>La liste complète des conditions nécessaires pour qu'une
       réponse puisse être enregistrée dans un cache HTTP est fournie
       dans la <a
-      href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html#sec13.4">section
+      href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html#sec13.4">section
       13.4 Response Cacheability de la RFC2616</a>, et peut se résumer
       ainsi :</p>
 
@@ -630,7 +630,7 @@ CacheDirLength 1
       <module>mod_cache</module> peut mettre en cache des données à partir de
       diverses implémentations aussi nommées "fournisseurs". Par exemple, en
       utilisant le module <module>mod_socache_memcache</module>, on peut
-      spécifier que c'est <a href="http://memcached.org">memcached</a> qui doit
+      spécifier que c'est <a href="https://memcached.org">memcached</a> qui doit
       être utilisé comme mécanisme de stockage sous-jacent.</p>
 
       <p>Typiquement, le module sera configuré comme suit :</p>

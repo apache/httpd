@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -16,12 +16,12 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Miscellaneous Documentation</a></div><div id="page-content"><div id="preamble"><h1>Relevant Standards</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Miscellaneous Documentation</a></div><div id="page-content"><div id="preamble"><h1>Relevant Standards</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/misc/relevant_standards.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/misc/relevant_standards.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
@@ -36,16 +36,16 @@
 
     <ul>
       <li>
-        <a href="http://purl.org/NET/http-errata">
-        http://purl.org/NET/http-errata</a> - HTTP/1.1 Specification Errata
+        <a href="https://purl.org/NET/http-errata">
+        https://purl.org/NET/http-errata</a> - HTTP/1.1 Specification Errata
       </li>
       <li>
-        <a href="http://www.rfc-editor.org/errata.php">
-        http://www.rfc-editor.org/errata.php</a> - RFC Errata
+        <a href="https://www.rfc-editor.org/errata.php">
+        https://www.rfc-editor.org/errata.php</a> - RFC Errata
       </li>
       <li>
-        <a href="http://ftp.ics.uci.edu/pub/ietf/http/#RFC">
-        http://ftp.ics.uci.edu/pub/ietf/http/#RFC</a> - A pre-compiled list
+        <a href="https://ftp.ics.uci.edu/pub/ietf/http/#RFC">
+        https://ftp.ics.uci.edu/pub/ietf/http/#RFC</a> - A pre-compiled list
         of HTTP related RFCs
       </li>
     </ul>
@@ -68,7 +68,7 @@
     basic web server complies with the following IETF recommendations:</p>
 
     <dl>
-      <dt><a href="http://www.rfc-editor.org/rfc/rfc1945.txt">RFC 1945</a>
+      <dt><a href="https://www.rfc-editor.org/rfc/rfc1945.txt">RFC 1945</a>
       (Informational)</dt>
 
       <dd>The Hypertext Transfer Protocol (HTTP) is an application-level
@@ -76,20 +76,20 @@
       collaborative, hypermedia information systems.  This documents
       HTTP/1.0.</dd>
 
-      <dt><a href="http://www.rfc-editor.org/rfc/rfc2616.txt">RFC 2616</a>
+      <dt><a href="https://www.rfc-editor.org/rfc/rfc2616.txt">RFC 2616</a>
       (Standards Track)</dt>
 
       <dd>The Hypertext Transfer Protocol (HTTP) is an
       application-level protocol for distributed, collaborative,
       hypermedia information systems.  This documents HTTP/1.1.</dd>
 
-      <dt><a href="http://www.rfc-editor.org/rfc/rfc2396.txt">RFC 2396</a>
+      <dt><a href="https://www.rfc-editor.org/rfc/rfc2396.txt">RFC 2396</a>
       (Standards Track)</dt>
 
       <dd>A Uniform Resource Identifier (URI) is a compact string of
       characters for identifying an abstract or physical resource.</dd>
 
-      <dt><a href="http://www.rfc-editor.org/rfc/rfc4346.txt">RFC 4346</a>
+      <dt><a href="https://www.rfc-editor.org/rfc/rfc4346.txt">RFC 4346</a>
       (Standards Track)</dt>
 
       <dd>The TLS protocol provides communications security over the
@@ -105,40 +105,40 @@
     the following IETF and W3C recommendations:</p>
 
     <dl>
-      <dt><a href="http://www.rfc-editor.org/rfc/rfc2854.txt">RFC 2854</a>
+      <dt><a href="https://www.rfc-editor.org/rfc/rfc2854.txt">RFC 2854</a>
       (Informational)</dt>
 
       <dd>This document summarizes the history of HTML development,
       and defines the "text/html" MIME type by pointing to the relevant
       W3C recommendations.</dd>
 
-      <dt><a href="http://www.w3.org/TR/html401">HTML 4.01 Specification</a>
-      (<a href="http://www.w3.org/MarkUp/html4-updates/errata">Errata</a>)
+      <dt><a href="https://www.w3.org/TR/html401">HTML 4.01 Specification</a>
+      (<a href="https://www.w3.org/MarkUp/html4-updates/errata">Errata</a>)
       </dt>
 
       <dd>This specification defines the HyperText Markup Language (HTML),
       the publishing language of the World Wide Web. This specification
       defines HTML 4.01, which is a subversion of HTML 4.</dd>
 
-      <dt><a href="http://www.w3.org/TR/REC-html32">HTML 3.2 Reference
+      <dt><a href="https://www.w3.org/TR/REC-html32">HTML 3.2 Reference
       Specification</a></dt>
 
       <dd>The HyperText Markup Language (HTML) is a simple markup language
       used to create hypertext documents that are portable from one
       platform to another. HTML documents are SGML documents.</dd>
 
-      <dt><a href="http://www.w3.org/TR/xhtml11/">XHTML 1.1 -
+      <dt><a href="https://www.w3.org/TR/xhtml11/">XHTML 1.1 -
       Module-based XHTML</a>
-      (<a href="http://www.w3.org/MarkUp/2009/xhtml11-2nd-edition-errata.html">Errata</a>)
+      (<a href="https://www.w3.org/MarkUp/2009/xhtml11-2nd-edition-errata.html">Errata</a>)
       </dt>
 
       <dd>This Recommendation defines a new XHTML document type
       that is based upon the module framework and modules defined in
       Modularization of XHTML.</dd>
 
-      <dt><a href="http://www.w3.org/TR/xhtml1">XHTML 1.0 The
+      <dt><a href="https://www.w3.org/TR/xhtml1">XHTML 1.0 The
       Extensible HyperText Markup Language (Second Edition)</a>
-      (<a href="http://www.w3.org/2002/08/REC-xhtml1-20020801-errata/">Errata</a>)
+      (<a href="https://www.w3.org/2002/08/REC-xhtml1-20020801-errata/">Errata</a>)
       </dt>
 
       <dd>This specification defines the Second Edition of XHTML 1.0,
@@ -154,7 +154,7 @@
     follows the following IETF recommendations:</p>
 
     <dl>
-      <dt><a href="http://www.rfc-editor.org/rfc/rfc2617.txt">RFC 2617</a>
+      <dt><a href="https://www.rfc-editor.org/rfc/rfc2617.txt">RFC 2617</a>
       (Standards Track)</dt>
 
       <dd>"HTTP/1.0", includes the specification for a Basic
@@ -170,29 +170,29 @@
     code information:</p>
 
     <dl>
-      <dt><a href="http://www.loc.gov/standards/iso639-2/">ISO 639-2</a></dt>
+      <dt><a href="https://www.loc.gov/standards/iso639-2/">ISO 639-2</a></dt>
 
       <dd>ISO 639 provides two sets of language codes, one as a two-letter
       code set (639-1) and another as a three-letter code set (this part
       of ISO 639) for the representation of names of languages.</dd>
 
-      <dt><a href="http://www.iso.org/iso/country_codes">
+      <dt><a href="https://www.iso.org/iso/country_codes">
       ISO 3166-1</a></dt>
 
       <dd>These pages document the country names (official short names
       in English) in alphabetical order as given in ISO 3166-1 and the
       corresponding ISO 3166-1-alpha-2 code elements.</dd>
 
-      <dt><a href="http://www.rfc-editor.org/rfc/bcp/bcp47.txt">BCP 47</a>
+      <dt><a href="https://www.rfc-editor.org/rfc/bcp/bcp47.txt">BCP 47</a>
       (Best Current Practice),
-      <a href="http://www.rfc-editor.org/rfc/rfc3066.txt">RFC 3066</a></dt>
+      <a href="https://www.rfc-editor.org/rfc/rfc3066.txt">RFC 3066</a></dt>
 
       <dd>This document describes a language tag for use in cases where
       it is desired to indicate the language used in an information
       object, how to register values for use in this language tag,
       and a construct for matching such language tags.</dd>
 
-      <dt><a href="http://www.rfc-editor.org/rfc/rfc3282.txt">RFC 3282</a>
+      <dt><a href="https://www.rfc-editor.org/rfc/rfc3282.txt">RFC 3282</a>
       (Standards Track)</dt>
 
       <dd>This document defines a "Content-language:" header, for use in
@@ -210,7 +210,7 @@
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/misc/relevant_standards.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/misc/relevant_standards.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -225,8 +225,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/misc/relevant_stan
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

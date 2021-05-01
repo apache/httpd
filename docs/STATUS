@@ -1,15 +1,15 @@
 Apache HTTP Server Trunk Documentation Status File.  Last modified: $Date$
 
 For more information on how to contribute to the Apache Documentation
-Project, please see http://httpd.apache.org/docs-project/ and
-http://httpd.apache.org/docs-project/docsformat.html
+Project, please see https://httpd.apache.org/docs-project/ and
+https://httpd.apache.org/docs-project/docsformat.html
 
               ------------------------------
 
 To Do List
 =======================
 
-- Update the http://httpd.apache.org/docs-project/docsformat.html
+- Update the https://httpd.apache.org/docs-project/docsformat.html
   document to be useful. In particular:
     - Document the translation process.
     - Generally update it to make it reflect the current reality of how
@@ -18,7 +18,7 @@ To Do List
        itself (requirements, procedures)
 
 - Continue to enhance the FAQ, which is in the wiki:
-  http://wiki.apache.org/httpd/FAQ
+  https://wiki.apache.org/httpd/FAQ
 
 - Security docs are unhelpful, and assume that the reader knows nothing.
   Need something a little more advanced, which either discusses
@@ -31,7 +31,7 @@ To Do List
     presentation.
 
 - Performance doc "drop-in replace" misc/perf-scaling.xml
-  as well as: http://wiki.apache.org/httpd/PerformanceScalingOut
+  as well as: https://wiki.apache.org/httpd/PerformanceScalingOut
   They both need review and updates to reflect the current state
   of the art.
 
@@ -61,7 +61,7 @@ To Do List
     - mod_suexec: very little documentation
 
 - mod_substitute and reverse proxies: Add example using mod_filter
-  (see: http://marc.info/?l=apache-httpd-users&m=128830729603423&w=2)
+  (see: https://marc.info/?l=apache-httpd-users&m=128830729603423&w=2)
 
 -Mod auth spanish doc add the following that a community member has created.
 https://github.com/valenbg1/auth-example-mod-apache
@@ -79,9 +79,9 @@ https://github.com/valenbg1/auth-example-mod-apache
      - SSL docs need serious update and enhancement
         - compat docs are wrong
         - A basic how to has been started here:
-            http://wiki.apache.org/httpd/SettingUpModSSL
+            https://wiki.apache.org/httpd/SettingUpModSSL
             but it needs some work...
-        - http://blag.esotericsystems.at/2011/01/answering-trivial-and-interesting-questions-with-openssl/
+        - https://blag.esotericsystems.at/2011/01/answering-trivial-and-interesting-questions-with-openssl/
           looks like a good starting point for overhauling the FAQ, and
           has been placed at our disposal by the author.
 
@@ -114,13 +114,13 @@ https://github.com/valenbg1/auth-example-mod-apache
     - Logging, log rotation, and log reporting
     - Secure mod_dav configuration
 
-- http://httpd.apache.org/docs/trunk/developer/ is a graveyard, and a
+- https://httpd.apache.org/docs/trunk/developer/ is a graveyard, and a
   profound embarrassment.
     - Purge all the dead links
     - Verify links to external resources at least every year
 
 - Update the list of translations at
-  http://httpd.apache.org/docs-project/translations.html  Some of those
+  https://httpd.apache.org/docs-project/translations.html  Some of those
   are accurate, and others are way outdated.
 
 - I'd like to expand the discussion of conditional logging, and add a
@@ -163,7 +163,7 @@ https://github.com/valenbg1/auth-example-mod-apache
 
 - Add example of using -p flag to rotatelogs to do something useful.
 
-- Log rotation doc - http://httpd.apache.org/docs/2.4/logs.html#rotation
+- Log rotation doc - https://httpd.apache.org/docs/2.4/logs.html#rotation
   needs to mention rotatelogs as well as fairly standard log rotation
   stuff, rather than encouraging people to do this by hand.
 

@@ -39,15 +39,15 @@
   PolicyVersion ignore HTTP/1.1
 
   # define documentation links
-  PolicyConditionalURL http://httpd.apache.org/docs/trunk/compliance.html#policyconditional
-  PolicyLengthURL http://httpd.apache.org/docs/trunk/compliance.html#policylength
-  PolicyTypeURL http://httpd.apache.org/docs/trunk/compliance.html#policytype
-  PolicyKeepaliveURL http://httpd.apache.org/docs/trunk/compliance.html#policykeepalive
-  PolicyMaxageURL http://httpd.apache.org/docs/trunk/compliance.html#policymaxage
-  PolicyNocacheURL http://httpd.apache.org/docs/trunk/compliance.html#policynocache
-  PolicyValidationURL http://httpd.apache.org/docs/trunk/compliance.html#policyvalidation
-  PolicyVaryURL http://httpd.apache.org/docs/trunk/compliance.html#policyvary
-  PolicyVersionURL http://httpd.apache.org/docs/trunk/compliance.html#policyversion
+  PolicyConditionalURL https://httpd.apache.org/docs/trunk/compliance.html#policyconditional
+  PolicyLengthURL https://httpd.apache.org/docs/trunk/compliance.html#policylength
+  PolicyTypeURL https://httpd.apache.org/docs/trunk/compliance.html#policytype
+  PolicyKeepaliveURL https://httpd.apache.org/docs/trunk/compliance.html#policykeepalive
+  PolicyMaxageURL https://httpd.apache.org/docs/trunk/compliance.html#policymaxage
+  PolicyNocacheURL https://httpd.apache.org/docs/trunk/compliance.html#policynocache
+  PolicyValidationURL https://httpd.apache.org/docs/trunk/compliance.html#policyvalidation
+  PolicyVaryURL https://httpd.apache.org/docs/trunk/compliance.html#policyvary
+  PolicyVersionURL https://httpd.apache.org/docs/trunk/compliance.html#policyversion
 
 </Location>
 

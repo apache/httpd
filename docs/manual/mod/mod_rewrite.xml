@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -226,9 +226,9 @@ LogLevel alert rewrite:trace3
       href="directive-dict.html#Syntax">URL-path</a>.  This avoids
       some security issues where particular rules could allow
       "surprising" pattern expansions (see <a
-      href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-3368">CVE-2011-3368</a>
+      href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-3368">CVE-2011-3368</a>
       and <a
-      href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-4317">CVE-2011-4317</a>).
+      href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-4317">CVE-2011-4317</a>).
       To lift the restriction on matching a URL-path, the
       <code>AllowAnyURI</code> option can be enabled, and
       <module>mod_rewrite</module> will apply the rule set to any
@@ -281,10 +281,10 @@ LogLevel alert rewrite:trace3
          and then later reduced to a local path. Since the URL can be reduced 
          to a local path, the path should be prefixed with the document root. 
          This prevents a file such as /tmp/myfile from being accessed when a 
-         request is made to http://host/file/myfile with the following 
+         request is made to https://host/file/myfile with the following 
          <directive module="mod_rewrite">RewriteRule</directive>.</p>
       <highlight language="config">
-          RewriteRule /file/(.*) http://localhost/tmp/$1
+          RewriteRule /file/(.*) https://localhost/tmp/$1
       </highlight>
       <p>This option allows the old behavior to be used where the document
          root is not prefixed to a local path that was reduced from a 
@@ -434,7 +434,7 @@ RewriteRule "^/ex/(.*)" "${examplemap:$1}"
       </ul>
 
 <p> In the example below, <directive>RewriteBase</directive> is necessary
-    to avoid rewriting to http://example.com/opt/myapp-1.2.3/welcome.html
+    to avoid rewriting to https://example.com/opt/myapp-1.2.3/welcome.html
     since the resource was not relative to the document root.  This
     misconfiguration would normally cause the server to look for an "opt"
     directory under the document root.</p>
@@ -1172,10 +1172,10 @@ sections and consider both set of statements, rather than only the last one.</li
 &lt;If "true"&gt;
   # Without RewriteOptions Inherit, this rule is overridden by the next
   # section and no redirect will happen for URIs containing 'foo'
-  RewriteRule foo http://example.com/foo [R]
+  RewriteRule foo https://example.com/foo [R]
 &lt;/If&gt;
 &lt;If "true"&gt;
-  RewriteRule bar http://example.com/bar [R]
+  RewriteRule bar https://example.com/bar [R]
 &lt;/If&gt;
 </highlight>
 </example>
@@ -1518,7 +1518,7 @@ directive.</p>
 
 <tr>
 <td>^/somepath(.*) /otherpath$1 [R]</td>
-<td>http://thishost/otherpath/pathinfo via external redirection</td>
+<td>https://thishost/otherpath/pathinfo via external redirection</td>
 </tr>
 
 <tr>
@@ -1527,33 +1527,33 @@ directive.</p>
 </tr>
 
 <tr>
-<td>^/somepath(.*) http://thishost/otherpath$1</td>
+<td>^/somepath(.*) https://thishost/otherpath$1</td>
 <td>/otherpath/pathinfo</td>
 </tr>
 
 <tr>
-<td>^/somepath(.*) http://thishost/otherpath$1 [R]</td>
-<td>http://thishost/otherpath/pathinfo via external redirection</td>
+<td>^/somepath(.*) https://thishost/otherpath$1 [R]</td>
+<td>https://thishost/otherpath/pathinfo via external redirection</td>
 </tr>
 
 <tr>
-<td>^/somepath(.*) http://thishost/otherpath$1 [P]</td>
+<td>^/somepath(.*) https://thishost/otherpath$1 [P]</td>
 <td>doesn't make sense, not supported</td>
 </tr>
 
 <tr>
-<td>^/somepath(.*) http://otherhost/otherpath$1</td>
-<td>http://otherhost/otherpath/pathinfo via external redirection</td>
+<td>^/somepath(.*) https://otherhost/otherpath$1</td>
+<td>https://otherhost/otherpath/pathinfo via external redirection</td>
 </tr>
 
 <tr>
-<td>^/somepath(.*) http://otherhost/otherpath$1 [R]</td>
-<td>http://otherhost/otherpath/pathinfo via external redirection (the [R] flag is redundant)</td>
+<td>^/somepath(.*) https://otherhost/otherpath$1 [R]</td>
+<td>https://otherhost/otherpath/pathinfo via external redirection (the [R] flag is redundant)</td>
 </tr>
 
 <tr>
-<td>^/somepath(.*) http://otherhost/otherpath$1 [P]</td>
-<td>http://otherhost/otherpath/pathinfo via internal proxy</td>
+<td>^/somepath(.*) https://otherhost/otherpath$1 [P]</td>
+<td>https://otherhost/otherpath/pathinfo via internal proxy</td>
 </tr>
 </table>
 
@@ -1579,7 +1579,7 @@ directive.</p>
 
 <tr>
 <td>^localpath(.*) otherpath$1  [R]</td>
-<td>http://thishost/somepath/otherpath/pathinfo via external
+<td>https://thishost/somepath/otherpath/pathinfo via external
 redirection</td>
 </tr>
 
@@ -1595,7 +1595,7 @@ redirection</td>
 
 <tr>
 <td>^localpath(.*) /otherpath$1 [R]</td>
-<td>http://thishost/otherpath/pathinfo via external redirection</td>
+<td>https://thishost/otherpath/pathinfo via external redirection</td>
 </tr>
 
 <tr>
@@ -1604,33 +1604,33 @@ redirection</td>
 </tr>
 
 <tr>
-<td>^localpath(.*) http://thishost/otherpath$1</td>
+<td>^localpath(.*) https://thishost/otherpath$1</td>
 <td>/otherpath/pathinfo</td>
 </tr>
 
 <tr>
-<td>^localpath(.*) http://thishost/otherpath$1 [R]</td>
-<td>http://thishost/otherpath/pathinfo via external redirection</td>
+<td>^localpath(.*) https://thishost/otherpath$1 [R]</td>
+<td>https://thishost/otherpath/pathinfo via external redirection</td>
 </tr>
 
 <tr>
-<td>^localpath(.*) http://thishost/otherpath$1 [P]</td>
+<td>^localpath(.*) https://thishost/otherpath$1 [P]</td>
 <td>doesn't make sense, not supported</td>
 </tr>
 
 <tr>
-<td>^localpath(.*) http://otherhost/otherpath$1</td>
-<td>http://otherhost/otherpath/pathinfo via external redirection</td>
+<td>^localpath(.*) https://otherhost/otherpath$1</td>
+<td>https://otherhost/otherpath/pathinfo via external redirection</td>
 </tr>
 
 <tr>
-<td>^localpath(.*) http://otherhost/otherpath$1 [R]</td>
-<td>http://otherhost/otherpath/pathinfo via external redirection (the [R] flag is redundant)</td>
+<td>^localpath(.*) https://otherhost/otherpath$1 [R]</td>
+<td>https://otherhost/otherpath/pathinfo via external redirection (the [R] flag is redundant)</td>
 </tr>
 
 <tr>
-<td>^localpath(.*) http://otherhost/otherpath$1 [P]</td>
-<td>http://otherhost/otherpath/pathinfo via internal proxy</td>
+<td>^localpath(.*) https://otherhost/otherpath$1 [P]</td>
+<td>https://otherhost/otherpath/pathinfo via internal proxy</td>
 </tr>
 
 </table>

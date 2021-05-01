@@ -5,7 +5,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,7 +18,7 @@
  * mod_auth_digest: MD5 digest authentication
  *
  * Originally by Alexei Kosut <akosut@nueva.pvt.k12.ca.us>
- * Updated to RFC-2617 by Ronald Tschalär <ronald@innovation.ch>
+ * Updated to RFC-2617 by Ronald Tschalï¿½r <ronald@innovation.ch>
  * based on mod_auth, by Rob McCool and Robert S. Thau
  *
  * This module an updated version of modules/standard/mod_digest.c

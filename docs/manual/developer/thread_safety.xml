@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -56,7 +56,7 @@
     to modify the value has to first check the mutex and block until it is
     cleared.</p>
 
-    <p>If you are using <a href="http://apr.apache.org/">APR</a>, have a look
+    <p>If you are using <a href="https://apr.apache.org/">APR</a>, have a look
     at the <code>apr_atomic_<var>*</var></code> functions and the
     <code>apr_thread_mutex_<var>*</var></code> functions.</p>
     <!-- [would probably be a good idea to add an example here] -->
@@ -96,7 +96,7 @@
     of the function called <code>strtok_r()</code> where you pass in an
     extra argument which contains an allocated <code>char *</code> which the
     function will use instead of its own static storage for maintaining
-    the tokenizing state. If you are using <a href="http://apr.apache.org/"
+    the tokenizing state. If you are using <a href="https://apr.apache.org/"
     >APR</a> you can use <code>apr_strtok()</code>.</p>
 
     <p><code>crypt()</code> is another function that tends to not be reentrant,
@@ -111,7 +111,7 @@
     <p>The following is a list of common libraries that are used by 3rd party
     Apache modules.  You can check to see if your module is using a potentially
     unsafe library by using tools such as <code>ldd(1)</code> and
-    <code>nm(1)</code>. For <a href="http://www.php.net/">PHP</a>, for example,
+    <code>nm(1)</code>. For <a href="https://www.php.net/">PHP</a>, for example,
     try this:</p>
 
     <example>
@@ -144,29 +144,29 @@
 
 <section id="liblist"><title>Library List</title>
     <p>Please drop a note to <a
-    href="http://httpd.apache.org/lists.html#http-dev">dev@httpd.apache.org</a>
+    href="https://httpd.apache.org/lists.html#http-dev">dev@httpd.apache.org</a>
     if you have additions or corrections to this list.</p>
 
     <table style="zebra" border="1">
     <tr><th>Library</th><th>Version</th><th>Thread Safe?</th><th>Notes</th></tr>
-    <tr><td><a href="http://aspell.sourceforge.net/">ASpell/PSpell</a></td>
+    <tr><td><a href="https://aspell.sourceforge.net/">ASpell/PSpell</a></td>
         <td> </td>
         <td>?</td>
         <td> </td></tr>
-    <tr><td><a href="http://www.sleepycat.com/">Berkeley DB</a></td>
+    <tr><td><a href="https://www.sleepycat.com/">Berkeley DB</a></td>
         <td>3.x, 4.x</td>
         <td>Yes</td>
         <td>Be careful about sharing a connection across threads.</td></tr>
-    <tr><td><a href="http://sources.redhat.com/bzip2/index.html">bzip2</a></td>
+    <tr><td><a href="https://sources.redhat.com/bzip2/index.html">bzip2</a></td>
         <td> </td>
         <td>Yes</td>
         <td>Both low-level and high-level APIs are thread-safe. However,
         high-level API requires thread-safe access to errno.</td></tr>
-    <tr><td><a href="http://cr.yp.to/cdb.html">cdb</a></td>
+    <tr><td><a href="https://cr.yp.to/cdb.html">cdb</a></td>
         <td> </td>
         <td>?</td>
         <td> </td></tr>
-    <tr><td><a href="http://www.washington.edu/imap/">C-Client</a></td>
+    <tr><td><a href="https://www.washington.edu/imap/">C-Client</a></td>
         <td> </td>
         <td>Perhaps</td>
         <td>c-client uses <code>strtok()</code> and
@@ -175,109 +175,109 @@
         across threads. If <code>strtok()</code> and
         <code>gethostbyname()</code> are thread-safe on your OS, c-client
         <em>may</em> be thread-safe.</td></tr>
-    <tr><td><a href="http://www.ijg.org/files/">libcrypt</a></td>
+    <tr><td><a href="https://www.ijg.org/files/">libcrypt</a></td>
         <td> </td>
         <td>?</td>
         <td> </td></tr>
-    <tr><td><a href="http://expat.sourceforge.net/">Expat</a></td>
+    <tr><td><a href="https://expat.sourceforge.net/">Expat</a></td>
         <td> </td>
         <td>Yes</td>
         <td>Need a separate parser instance per thread</td></tr>
-    <tr><td><a href="http://www.freetds.org/">FreeTDS</a></td>
+    <tr><td><a href="https://www.freetds.org/">FreeTDS</a></td>
         <td> </td>
         <td>?</td>
         <td> </td></tr>
-    <tr><td><a href="http://www.freetype.org/">FreeType</a></td>
+    <tr><td><a href="https://www.freetype.org/">FreeType</a></td>
         <td> </td>
         <td>?</td>
         <td> </td></tr>
-    <tr><td><a href="http://www.boutell.com/gd/">GD 1.8.x</a></td>
+    <tr><td><a href="https://www.boutell.com/gd/">GD 1.8.x</a></td>
         <td> </td>
         <td>?</td>
         <td> </td></tr>
-    <tr><td><a href="http://www.boutell.com/gd/">GD 2.0.x</a></td>
+    <tr><td><a href="https://www.boutell.com/gd/">GD 2.0.x</a></td>
         <td> </td>
         <td>?</td>
         <td> </td></tr>
-    <tr><td><a href="http://www.gnu.org/software/gdbm/gdbm.html">gdbm</a></td>
+    <tr><td><a href="https://www.gnu.org/software/gdbm/gdbm.html">gdbm</a></td>
         <td> </td>
         <td>No</td>
         <td>Errors returned via a static <code>gdbm_error</code>
         variable</td></tr>
-    <tr><td><a href="http://www.imagemagick.org/">ImageMagick</a></td>
+    <tr><td><a href="https://www.imagemagick.org/">ImageMagick</a></td>
         <td>5.2.2</td>
         <td>Yes</td>
         <td>ImageMagick docs claim it is thread safe since version 5.2.2 (see <a
-        href="http://www.imagemagick.com/www/changelog.html"
+        href="https://www.imagemagick.com/www/changelog.html"
         >Change log</a>).
         </td></tr>
-    <tr><td><a href="http://www.enlightenment.org/p.php?p=about/efl&amp;l=en"
+    <tr><td><a href="https://www.enlightenment.org/p.php?p=about/efl&amp;l=en"
         >Imlib2</a></td>
         <td> </td>
         <td>?</td>
         <td> </td></tr>
-    <tr><td><a href="http://www.ijg.org/files/">libjpeg</a></td>
+    <tr><td><a href="https://www.ijg.org/files/">libjpeg</a></td>
         <td>v6b</td>
         <td>?</td>
         <td> </td></tr>
-    <tr><td><a href="http://mysql.com">libmysqlclient</a></td>
+    <tr><td><a href="https://mysql.com">libmysqlclient</a></td>
         <td> </td>
         <td>Yes</td>
         <td>Use mysqlclient_r library variant to ensure thread-safety.  For
             more information, please read <a
-            href="http://dev.mysql.com/doc/mysql/en/Threaded_clients.html"
-            >http://dev.mysql.com/doc/mysql/en/Threaded_clients.html</a>.</td></tr>
-    <tr><td><a href="http://www.opaque.net/ming/">Ming</a></td>
+            href="https://dev.mysql.com/doc/mysql/en/Threaded_clients.html"
+            >https://dev.mysql.com/doc/mysql/en/Threaded_clients.html</a>.</td></tr>
+    <tr><td><a href="https://www.opaque.net/ming/">Ming</a></td>
         <td>0.2a</td>
         <td>?</td>
         <td> </td></tr>
-    <tr><td><a href="http://net-snmp.sourceforge.net/">Net-SNMP</a></td>
+    <tr><td><a href="https://net-snmp.sourceforge.net/">Net-SNMP</a></td>
         <td>5.0.x</td>
         <td>?</td>
         <td> </td></tr>
-    <tr><td><a href="http://www.openldap.org/">OpenLDAP</a></td>
+    <tr><td><a href="https://www.openldap.org/">OpenLDAP</a></td>
         <td>2.1.x</td>
         <td>Yes</td>
         <td>Use <code>ldap_r</code> library variant to ensure
         thread-safety.</td></tr>
-    <tr><td><a href="http://www.openssl.org/">OpenSSL</a></td>
+    <tr><td><a href="https://www.openssl.org/">OpenSSL</a></td>
         <td>0.9.6g</td>
         <td>Yes</td>
         <td>Requires proper usage of <code>CRYPTO_num_locks</code>,
         <code>CRYPTO_set_locking_callback</code>,
         <code>CRYPTO_set_id_callback</code></td></tr>
-    <tr><td><a href="http://www.oracle.com/">liboci8 (Oracle 8+)</a></td>
+    <tr><td><a href="https://www.oracle.com/">liboci8 (Oracle 8+)</a></td>
         <td>8.x,9.x</td>
         <td>?</td>
         <td> </td></tr>
-    <tr><td><a href="http://pdflib.com/">pdflib</a></td>
+    <tr><td><a href="https://pdflib.com/">pdflib</a></td>
         <td>5.0.x</td>
         <td>Yes</td>
         <td>PDFLib docs claim it is thread safe; changes.txt indicates it
             has been partially thread-safe since V1.91: <a
-            href="http://www.pdflib.com/products/pdflib-family/pdflib/"
-            >http://www.pdflib.com/products/pdflib-family/pdflib/</a>.</td></tr>
-    <tr><td><a href="http://www.libpng.org/pub/png/libpng.html">libpng</a></td>
+            href="https://www.pdflib.com/products/pdflib-family/pdflib/"
+            >https://www.pdflib.com/products/pdflib-family/pdflib/</a>.</td></tr>
+    <tr><td><a href="https://www.libpng.org/pub/png/libpng.html">libpng</a></td>
         <td>1.0.x</td>
         <td>?</td>
         <td> </td></tr>
-    <tr><td><a href="http://www.libpng.org/pub/png/libpng.html">libpng</a></td>
+    <tr><td><a href="https://www.libpng.org/pub/png/libpng.html">libpng</a></td>
         <td>1.2.x</td>
         <td>?</td>
         <td> </td></tr>
     <tr><td><a
-        href="http://www.postgresql.org/docs/8.4/static/libpq-threading.html"
+        href="https://www.postgresql.org/docs/8.4/static/libpq-threading.html"
         >libpq (PostgreSQL)</a></td>
         <td>8.x</td>
         <td>Yes</td>
         <td>Don't share connections across threads and watch out for
         <code>crypt()</code> calls</td></tr>
-    <tr><td><a href="http://www.gingerall.com/charlie/ga/xml/p_sab.xml"
+    <tr><td><a href="https://www.gingerall.com/charlie/ga/xml/p_sab.xml"
         >Sablotron</a></td>
         <td>0.95</td>
         <td>?</td>
         <td></td></tr>
-    <tr><td><a href="http://www.gzip.org/zlib/">zlib</a></td>
+    <tr><td><a href="https://www.gzip.org/zlib/">zlib</a></td>
         <td>1.1.4</td>
         <td>Yes</td>
         <td>Relies upon thread-safe zalloc and zfree functions  Default is to

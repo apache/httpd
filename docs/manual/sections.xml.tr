@@ -15,7 +15,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -85,7 +85,7 @@
     <example>
       &lt;IfDefine ClosedForNow&gt;<br />
       <indent>
-        Redirect / http://otherserver.example.com/<br />
+        Redirect / https://otherserver.example.com/<br />
       </indent>
       &lt;/IfDefine&gt;
     </example>
@@ -228,9 +228,9 @@
       ve yönergenin <glossary ref="regex">düzenli ifade</glossary> karşılığı
       site alanındaki içerik için yapılandırmayı değiştirir.  Örneğin aşağıdaki
       yapılandırma, <code>/gizli</code> ile başlayan URL yollarına erişimi
-      engeller. Özellikle, <code>http://siteniz.mesela.dom/gizli</code>,
-      <code>http://siteniz.mesela.dom/gizli123</code> ve
-      <code>http://siteniz.mesela.dom/gizli/dir/dosya.html</code>
+      engeller. Özellikle, <code>https://siteniz.mesela.dom/gizli</code>,
+      <code>https://siteniz.mesela.dom/gizli123</code> ve
+      <code>https://siteniz.mesela.dom/gizli/dir/dosya.html</code>
       istekleri yanında <code>/gizli</code> ile başlayan diğer isteklere de
       uygulanır.</p>
 
@@ -284,7 +284,7 @@
       yönergeleri için de geçerlidir:</p>
 
     <example>
-      ProxyPass /special-area http://special.example.com smax=5 max=10<br />
+      ProxyPass /special-area https://special.example.com smax=5 max=10<br />
       ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover=On
     </example>
   </section>
@@ -341,11 +341,11 @@
     <p><directive type="section" module="core">If</directive> yönergesi bir
       mantıksal ifade olarak belirtilebilen bir kurala bağlı olarak
       yapılandırmayı değiştirebilir. Örneğin, aşağıdaki yapılandırmada,
-      <code>HTTP Referer</code> başlığı "http://www.example.com/" ile
+      <code>HTTP Referer</code> başlığı "https://www.example.com/" ile
       başlamıyorsa erişimi yasaklar.</p>
 
     <example>
-    &lt;If "!(%{HTTP_REFERER} -strmatch 'http://www.example.com/*')"&gt;<br />
+    &lt;If "!(%{HTTP_REFERER} -strmatch 'https://www.example.com/*')"&gt;<br />
     <indent>
       Require all denied<br />
     </indent>
@@ -379,10 +379,10 @@
       &lt;/Location&gt;
     </example>
 
-    <p><code>http://siteniz.mesela.dom/dir/</code> için bir istek yapılmışsa
+    <p><code>https://siteniz.mesela.dom/dir/</code> için bir istek yapılmışsa
       bu doğru çalışacaktır. Fakat dosya sistemi harf büyüklüğüne duyarsızsa
       ne olacak? Kısıtlamanız, istek
-      <code>http://siteniz.mesela.dom/DIR/</code>
+      <code>https://siteniz.mesela.dom/DIR/</code>
       şeklinde yapılarak kolayca geçersiz kılınabilir. Halbuki <directive
       type="section" module="core">Directory</directive> yönergesi isteğin
       nasıl yapıldığına bakılmaksızın bu konumdan sunulan her türlü içeriğe
@@ -441,7 +441,7 @@
       kullanılmasını engelleyecektir.</p>
 
     <example>
-      &lt;Proxy http://example.com/*&gt;<br />
+      &lt;Proxy https://example.com/*&gt;<br />
       <indent>
         Order allow,deny<br />
         Deny from all<br />

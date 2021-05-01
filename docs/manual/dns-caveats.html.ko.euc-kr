@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
 <meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>DNS¿Í ¾ÆÆÄÄ¡¿Í °ü·ÃµÈ »çÇ× - Apache HTTP Server Version 2.5</title>
+<title>DNSï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½Ãµï¿½ ï¿½ï¿½ï¿½ï¿½ - Apache HTTP Server Version 2.5</title>
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
@@ -16,38 +16,38 @@
 
 <link href="./images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">¸ðµâ</a> | <a href="./mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">¿ë¾î</a> | <a href="./sitemap.html">»çÀÌÆ®¸Ê</a></p>
+<p class="menu"><a href="./mod/">ï¿½ï¿½ï¿½</a> | <a href="./mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">ï¿½ï¿½ï¿½</a> | <a href="./sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="./images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>DNS¿Í ¾ÆÆÄÄ¡¿Í °ü·ÃµÈ »çÇ×</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>DNSï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½Ãµï¿½ ï¿½ï¿½ï¿½ï¿½</h1>
 <div class="toplang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="./en/dns-caveats.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="./en/dns-caveats.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/dns-caveats.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/dns-caveats.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/dns-caveats.html" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/dns-caveats.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">ÀÌ ¹®¼­´Â ÃÖ½ÅÆÇ ¹ø¿ªÀÌ ¾Æ´Õ´Ï´Ù.
-            ÃÖ±Ù¿¡ º¯°æµÈ ³»¿ëÀº ¿µ¾î ¹®¼­¸¦ Âü°íÇÏ¼¼¿ä.</div>
+<div class="outofdate">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Õ´Ï´ï¿½.
+            ï¿½Ö±Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.</div>
 
-    <p>ÀÌ ¹®¼­¸¦ ÇÑ ¹®ÀåÀ¸·Î ¿ä¾àÇÒ ¼ö ÀÖ´Ù. ¾ÆÆÄÄ¡°¡ ¼³Á¤ÆÄÀÏÀ»
-    ÀÐÀ»¶§ DNS¸¦ ÀÇÁ¸ÇÏÁö¾Êµµ·Ï ÇÏ¶ó. ¾ÆÆÄÄ¡°¡ ¼³Á¤ÆÄÀÏÀ» ÀÐ´Âµ¥
-    DNS°¡ ÇÊ¿äÇÏ´Ù¸é ¼­¹ö´Â ½Å·Ú¼º ¹®Á¦ (½ÃÀÛÀÌ ¾ÈµÉ ¼öµµ ÀÖ´Ù)
-    È¤Àº ¼­ºñ½º°ÅºÎ °ø°Ý°ú (»ç¿ëÀÚ°¡ ´Ù¸¥ »ç¿ëÀÚ¿¡ ´ëÇÑ Á¢±ÙÀ»
-    °¡·ÎÃ¤´Â °ÍÀ» Æ÷ÇÔÇÏ¿©) ¼­ºñ½ºµµµÏ(theft of service) °ø°Ý¿¡
-    ½Ã´Þ¸± ¼ö ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ DNSï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½ï¿½ ï¿½Ï¶ï¿½. ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ð´Âµï¿½
+    DNSï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Ï´Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Å·Ú¼ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Èµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½)
+    È¤ï¿½ï¿½ ï¿½ï¿½ï¿½ñ½º°Åºï¿½ ï¿½ï¿½ï¿½Ý°ï¿½ (ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ã¤ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½) ï¿½ï¿½ï¿½ñ½ºµï¿½ï¿½ï¿½(theft of service) ï¿½ï¿½ï¿½Ý¿ï¿½
+    ï¿½Ã´Þ¸ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#example">°£´ÜÇÑ ¿¹Á¦</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#denial">¼­ºñ½º°ÅºÎ (Denial of Service)</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#main">"ÁÖ¼­¹ö" ÁÖ¼Ò</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#tips">ÀÌ ¹®Á¦¸¦ ÇÇÇÏ±âÀ§ÇÑ ÆÁ</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#appendix">ºÎ·Ï: ¾ÕÀ¸·Î´Â</a></li>
-</ul><h3>Âü°í</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#example">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#denial">ï¿½ï¿½ï¿½ñ½º°Åºï¿½ (Denial of Service)</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#main">"ï¿½Ö¼ï¿½ï¿½ï¿½" ï¿½Ö¼ï¿½</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#tips">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#appendix">ï¿½Î·ï¿½: ï¿½ï¿½ï¿½ï¿½ï¿½Î´ï¿½</a></li>
+</ul><h3>ï¿½ï¿½ï¿½ï¿½</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="example" id="example">°£´ÜÇÑ ¿¹Á¦</a> <a title="Permanent link" href="#example" class="permalink">&para;</a></h2>
+<h2><a name="example" id="example">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a> <a title="Permanent link" href="#example" class="permalink">&para;</a></h2>
     
 
     <div class="example"><p><code>
@@ -57,18 +57,18 @@
       &lt;/VirtualHost&gt;
     </code></p></div>
 
-    <p>¾ÆÆÄÄ¡°¡ Á¤»óÀûÀ¸·Î µ¿ÀÛÇÏ±âÀ§ÇØ¼­´Â °¢ °¡»óÈ£½ºÆ®¿¡
-    ´ëÇØ µÎ°¡Áö Á¤º¸°¡ Àý´ëÀûÀ¸·Î ÇÊ¿äÇÏ´Ù. ÀÌ Á¤º¸´Â
-    <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code>°ú ¼­¹ö°¡
-    ±â´Ù¸®°í ÀÀ´äÇÒ ÃÖ¼Ò ÇÑ°³ÀÇ IP ÁÖ¼ÒÀÌ´Ù. ÀÌ ¿¹´Â IP ÁÖ¼Ò°¡
-    ¾ø±â¶§¹®¿¡, ¾ÆÆÄÄ¡´Â DNS¸¦ »ç¿ëÇÏ¿© <code>www.abc.dom</code>ÀÇ
-    ÁÖ¼Ò¸¦ Ã£¾Æ¾ß ÇÑ´Ù. ¼­¹ö°¡ ¼³Á¤ÆÄÀÏÀ» ÀÐÀ»¶§ ¾î¶² ÀÌÀ¯¿¡¼­°Ç
-    DNS¸¦ »ç¿ëÇÒ ¼ö ¾ø´Ù¸é °¡»óÈ£½ºÆ®¸¦ <strong>¸¸µé ¼ö ¾ø´Ù</strong>.
-    ÀÌ °¡»óÈ£½ºÆ®´Â ¿äÃ»¿¡ ÀÀ´äÇÒ ¼ö ¾ø´Ù. (¾ÆÆÄÄ¡ 1.2 ÀÌÀü
-    ¹öÀü¿¡¼­´Â ½ÉÁö¾î ¼­¹ö°¡ ºÎÆÃµµ ¾ÈÇÑ´Ù.)</p>
+    <p>ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½Î°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Ï´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½Ù¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½ ï¿½Ñ°ï¿½ï¿½ï¿½ IP ï¿½Ö¼ï¿½ï¿½Ì´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ IP ï¿½Ö¼Ò°ï¿½
+    ï¿½ï¿½ï¿½â¶§ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ DNSï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ <code>www.abc.dom</code>ï¿½ï¿½
+    ï¿½Ö¼Ò¸ï¿½ Ã£ï¿½Æ¾ï¿½ ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½î¶² ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    DNSï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ <strong>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</strong>.
+    ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½. (ï¿½ï¿½ï¿½ï¿½Ä¡ 1.2 ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ãµï¿½ ï¿½ï¿½ï¿½Ñ´ï¿½.)</p>
 
-    <p><code>www.abc.dom</code>ÀÇ ÁÖ¼Ò°¡ 192.0.2.1ÀÌ¶ó°í °¡Á¤ÇÏÀÚ.
-    ±×¸®°í ´ÙÀ½ ¼³Á¤À» º¸¶ó:</p>
+    <p><code>www.abc.dom</code>ï¿½ï¿½ ï¿½Ö¼Ò°ï¿½ 192.0.2.1ï¿½Ì¶ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
+    ï¿½×¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½:</p>
 
     <div class="example"><p><code>
       &lt;VirtualHost 192.0.2.1&gt; <br />
@@ -77,15 +77,15 @@
       &lt;/VirtualHost&gt;
     </code></p></div>
 
-    <p>ÀÌÁ¦ ¾ÆÆÄÄ¡´Â ÀÌ °¡»óÈ£½ºÆ®ÀÇ <code>ServerName</code>À»
-    Ã£±âÀ§ÇØ ¿ªDNS¸¦ »ç¿ëÇØ¾ß ÇÑ´Ù. ¿ªÃ£±â°¡ ½ÇÆÐÇÏ¸é ¾ÆÆÄÄ¡´Â
-    °¡»óÈ£½ºÆ®¸¦ ºÎºÐÀûÀ¸·Î ²ö´Ù. (¾ÆÆÄÄ¡ 1.2 ÀÌÀü ¹öÀü¿¡¼­´Â
-    ½ÉÁö¾î ¼­¹ö°¡ ºÎÆÃµµ ¾ÈÇÑ´Ù.) Áï, ÀÌ °æ¿ì ÀÌ¸§±â¹Ý
-    °¡»óÈ£½ºÆ®¶ó¸é °¡»óÈ£½ºÆ®´Â ¿ÏÀüÈ÷ µ¿ÀÛÇÏÁö¾Ê°í, ip±â¹ÝÀÌ¶ó¸é
-    ´ëºÎºÐ µ¿ÀÛÇÑ´Ù. ±×·¯³ª ¾ÆÆÄÄ¡°¡ ¼­¹ö¸íÀ» Æ÷ÇÔÇÏ¿© ¼­¹öÀÇ
-    ÀüÃ¼ URLÀ» ¸¸µé¾î¾ß ÇÑ´Ù¸é Á¤»óÀûÀÎ URLÀ» ¸¸µéÁö ¸øÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ <code>ServerName</code>ï¿½ï¿½
+    Ã£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½DNSï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½. ï¿½ï¿½Ã£ï¿½â°¡ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Îºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½. (ï¿½ï¿½ï¿½ï¿½Ä¡ 1.2 ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ãµï¿½ ï¿½ï¿½ï¿½Ñ´ï¿½.) ï¿½ï¿½, ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê°ï¿½, ipï¿½ï¿½ï¿½ï¿½Ì¶ï¿½ï¿½
+    ï¿½ï¿½Îºï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½Ã¼ URLï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ URLï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <p>¾Æ·¡ °æ¿ì ÀÌ µÎ°¡Áö ¹®Á¦°¡ ¾ø´Ù.</p>
+    <p>ï¿½Æ·ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Î°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</p>
 
     <div class="example"><p><code>
       &lt;VirtualHost 192.0.2.1&gt; <br />
@@ -96,18 +96,18 @@
     </code></p></div>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="denial" id="denial">¼­ºñ½º°ÅºÎ (Denial of Service)</a> <a title="Permanent link" href="#denial" class="permalink">&para;</a></h2>
+<h2><a name="denial" id="denial">ï¿½ï¿½ï¿½ñ½º°Åºï¿½ (Denial of Service)</a> <a title="Permanent link" href="#denial" class="permalink">&para;</a></h2>
     
 
-    <p>(ÃÖ¼ÒÇÑ) µÎ°¡Áö Á¾·ùÀÇ ¼­ºñ½º°ÅºÎ°¡ ¹ß»ýÇÒ ¼ö ÀÖ´Ù.
-    ¾ÆÆÄÄ¡ 1.2 ÀÌÀü ¹öÀüÀÇ °æ¿ì ¾î¶² °¡»óÈ£½ºÆ®¿¡¼­¶óµµ
-    À§¿¡¼­ ¸»ÇÑ µÎ DNS °Ë»öÀÌ ½ÇÆÐÇÏ¸é ¼­¹ö°¡ ÄÑÁöÁöµµ ¾Ê´Â´Ù.
-    DNS°¡ ´ç½ÅÀÇ ±ÇÇÑ ¹ÛÀÇ ¹®Á¦ÀÏ ¼öµµ ÀÖ´Ù. ¿¹¸¦ µé¾î,
-    <code>abc.dom</code>ÀÌ °í°´ »çÀÌÆ®ÀÌ°í °í°´ÀÌ ÀÚ½ÅÀÇ DNS¸¦
-    °ü¸®ÇÑ´Ù¸é, <code>www.abc.dom</code> ·¹ÄÚµå¸¦ Áö¿ì±â¸¸ ÇØµµ
-    (1.2 ÀÌÀü) ¼­¹ö´Â ½ÃÀÛÇÏÁö ¸øÇÑ´Ù.</p>
+    <p>(ï¿½Ö¼ï¿½ï¿½ï¿½) ï¿½Î°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ñ½º°ÅºÎ°ï¿½ ï¿½ß»ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.
+    ï¿½ï¿½ï¿½ï¿½Ä¡ 1.2 ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½î¶² ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ DNS ï¿½Ë»ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.
+    DNSï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½,
+    <code>abc.dom</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½Ì°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ú½ï¿½ï¿½ï¿½ DNSï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½, <code>www.abc.dom</code> ï¿½ï¿½ï¿½Úµå¸¦ ï¿½ï¿½ï¿½ï¿½â¸¸ ï¿½Øµï¿½
+    (1.2 ï¿½ï¿½ï¿½ï¿½) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <p>ÈÎ¾À ´õ ±³È°ÇÑ ¹æ¹ýµµ ÀÖ´Ù. ´ÙÀ½ ¼³Á¤À» »ìÆìº¸ÀÚ:</p>
+    <p>ï¿½Î¾ï¿½ ï¿½ï¿½ ï¿½ï¿½È°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ìº¸ï¿½ï¿½:</p>
 
     <div class="example"><p><code>
       &lt;VirtualHost www.abc.dom&gt; <br />
@@ -121,107 +121,107 @@
       &lt;/VirtualHost&gt;
     </code></p></div>
 
-    <p>´ç½ÅÀÌ <code>www.abc.dom</code>¿¡ 192.0.2.1,
-    <code>www.def.dom</code>¿¡ 192.0.2.2¸¦ ÇÒ´çÇß´Ù°í ÇÏÀÚ.
-    ¶Ç, <code>def.dom</code>Àº ÀÚÃ¼ DNS¸¦ »ç¿ëÇÑ´Ù°í °¡Á¤ÇÏÀÚ.
-    ÀÌ ¼³Á¤°ú ÇÔ²² <code>def.dom</code>À» <code>abc.dom</code>À¸·Î
-    °¡´Â ¸ðµç Åë½ÅÀ» °¡·ÎÃ§ ¼ö ÀÖ´Â Àå¼Ò¿¡ µÎ¾ú´Ù. ±×·¸´Ù¸é ±×µéÀº
-    <code>www.def.dom</code>À» 192.0.2.1·Î ¼³Á¤ÇÏ±â¸¸ ÇÏ¸é µÈ´Ù.
-    ±×µéÀÌ ÀÚÃ¼ DNS¸¦ »ç¿ëÇÏ±â¶§¹®¿¡ ´ç½ÅÀº ±×µéÀÌ ¿øÇÏ´Âµ¥·Î
-    <code>www.def.dom</code> ·¹ÄÚµå¸¦ ¼³Á¤ÇÏ´Â °ÍÀ» ¸·À» ¼ö
-    ¾ø´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ <code>www.abc.dom</code>ï¿½ï¿½ 192.0.2.1,
+    <code>www.def.dom</code>ï¿½ï¿½ 192.0.2.2ï¿½ï¿½ ï¿½Ò´ï¿½ï¿½ß´Ù°ï¿½ ï¿½ï¿½ï¿½ï¿½.
+    ï¿½ï¿½, <code>def.dom</code>ï¿½ï¿½ ï¿½ï¿½Ã¼ DNSï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´Ù°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
+    ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô²ï¿½ <code>def.dom</code>ï¿½ï¿½ <code>abc.dom</code>ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ã§ ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½Ò¿ï¿½ ï¿½Î¾ï¿½ï¿½ï¿½. ï¿½×·ï¿½ï¿½Ù¸ï¿½ ï¿½×µï¿½ï¿½ï¿½
+    <code>www.def.dom</code>ï¿½ï¿½ 192.0.2.1ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±â¸¸ ï¿½Ï¸ï¿½ ï¿½È´ï¿½.
+    ï¿½×µï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ DNSï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï±â¶§ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×µï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï´Âµï¿½ï¿½ï¿½
+    <code>www.def.dom</code> ï¿½ï¿½ï¿½Úµå¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½.</p>
 
-    <p>(»ç¿ëÀÚ°¡ <code>http://www.abc.dom/whatever</code> Çü½ÄÀÇ
-    URLÀ» ÀÔ·ÂÇÏ´Â °æ¿ì¸¦ Æ÷ÇÔÇÏ¿©) 192.0.2.1·Î ¿À´Â ¸ðµç ¿äÃ»À»
-    <code>def.dom</code> °¡»óÈ£½ºÆ®°¡ ¼­ºñ½ºÇÏ°Ô µÈ´Ù. ¿Ö ÀÌ·±
-    ÀÏÀÌ ÀÏ¾î³ª´ÂÁö ÀÌÇØÇÏ·Á¸é ¾ÆÆÄÄ¡°¡ ¾î¶»°Ô °¡»óÈ£½ºÆ®·Î
-    ¿À´Â ¿äÃ»À» Ã³¸®ÇÏ´ÂÁö¿¡ ´ëÇÑ ¼³¸íÀÌ ÇÊ¿äÇÏ´Ù.
-    <a href="vhosts/details.html">¿©±â</a>¿¡ ´ë°­ ¼³¸íµÇÀÖ´Ù.</p>
+    <p>(ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ <code>https://www.abc.dom/whatever</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    URLï¿½ï¿½ ï¿½Ô·ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ì¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½) 192.0.2.1ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½
+    <code>def.dom</code> ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½È´ï¿½. ï¿½ï¿½ ï¿½Ì·ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½Ï¾î³ªï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½î¶»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ï´ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Ï´ï¿½.
+    <a href="vhosts/details.html">ï¿½ï¿½ï¿½ï¿½</a>ï¿½ï¿½ ï¿½ë°­ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="main" id="main">"ÁÖ¼­¹ö" ÁÖ¼Ò</a> <a title="Permanent link" href="#main" class="permalink">&para;</a></h2>
+<h2><a name="main" id="main">"ï¿½Ö¼ï¿½ï¿½ï¿½" ï¿½Ö¼ï¿½</a> <a title="Permanent link" href="#main" class="permalink">&para;</a></h2>
     
 
-    <p>¾ÆÆÄÄ¡ 1.1¿¡¼­ <a href="vhosts/name-based.html">ÀÌ¸§±â¹Ý
-    °¡»óÈ£½ºÆ® Áö¿ø</a>ÀÌ Æ÷ÇÔµÇ¾ú±â¶§¹®¿¡ ¾ÆÆÄÄ¡´Â À¥¼­¹ö¸¦
-    ½ÇÇàÇÏ´Â È£½ºÆ®ÀÇ IP ÁÖ¼Ò(µé)¸¦ ¾Ë ÇÊ¿ä°¡ »ý°å´Ù. ÀÌ ÁÖ¼Ò´Â
-    (ÀÖ´Ù¸é) Àü¿ª <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code>
-    È¤Àº C ÇÔ¼ö <code>gethostname</code>À¸·Î (¸í·ÉÇÁ·ÒÇÁÆ®¿¡
-    "hostname"À» ÀÔ·ÂÇßÀ»¶§¿Í °°Àº °á°ú) ¾ò´Â´Ù. ±×·¯¸é ÀÌ ÁÖ¼Ò·Î
-    DNS °Ë»öÀ» ÇÑ´Ù. ÇöÀç ÀÌ °Ë»öÀº ÇÇÇÒ ¼ö ¾ø´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½Ä¡ 1.1ï¿½ï¿½ï¿½ï¿½ <a href="vhosts/name-based.html">ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½</a>ï¿½ï¿½ ï¿½ï¿½ï¿½ÔµÇ¾ï¿½ï¿½â¶§ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ È£ï¿½ï¿½Æ®ï¿½ï¿½ IP ï¿½Ö¼ï¿½(ï¿½ï¿½)ï¿½ï¿½ ï¿½ï¿½ ï¿½Ê¿ä°¡ ï¿½ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ ï¿½Ö¼Ò´ï¿½
+    (ï¿½Ö´Ù¸ï¿½) ï¿½ï¿½ï¿½ï¿½ <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code>
+    È¤ï¿½ï¿½ C ï¿½Ô¼ï¿½ <code>gethostname</code>ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½
+    "hostname"ï¿½ï¿½ ï¿½Ô·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½) ï¿½ï¿½Â´ï¿½. ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö¼Ò·ï¿½
+    DNS ï¿½Ë»ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ë»ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</p>
 
-    <p>DNS ¼­¹ö°¡ Á×¾î¼­ ÀÌ °Ë»öÀÌ ½ÇÆÐÇÒ °Í °°´Ù¸é
-    <code>/etc/hosts</code>¿¡ È£½ºÆ®¸íÀ» Áý¾î³ÖÀ» ¼ö ÀÖ´Ù.
-    (ÄÄÇ»ÅÍ°¡ Á¤»óÀûÀ¸·Î ºÎÆÃµÇ¾ú´Ù¸é ¾Æ¸¶ ÀÌ¹Ì µé¾îÀÖÀ» °ÍÀÌ´Ù.)
-    ±×¸®°í DNS°¡ ½ÇÆÐÇÏ¸é ¼­¹ö°¡ <code>/etc/hosts</code>¸¦
-    »ç¿ëÇÏ´ÂÁö È®ÀÎÇÏ¶ó. »ç¿ëÇÏ´Â ¿î¿µÃ¼Á¦¿¡ µû¶ó
-    <code>/etc/resolv.conf</code> È¤Àº <code>/etc/nsswitch.conf</code>¸¦
-    ¼öÁ¤ÇÏ¸é µÉ °ÍÀÌ´Ù.</p>
+    <p>DNS ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×¾î¼­ ï¿½ï¿½ ï¿½Ë»ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ù¸ï¿½
+    <code>/etc/hosts</code>ï¿½ï¿½ È£ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.
+    (ï¿½ï¿½Ç»ï¿½Í°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ÃµÇ¾ï¿½ï¿½Ù¸ï¿½ ï¿½Æ¸ï¿½ ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½.)
+    ï¿½×¸ï¿½ï¿½ï¿½ DNSï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>/etc/hosts</code>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ï¶ï¿½. ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½î¿µÃ¼ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    <code>/etc/resolv.conf</code> È¤ï¿½ï¿½ <code>/etc/nsswitch.conf</code>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½.</p>
 
-    <p>¼­¹ö°¡ ¾î¶² ÀÌÀ¯¿¡¼­°Ç DNS¸¦ °Ë»öÇÏ¸é ¾ÈµÈ´Ù¸é
-    <code>HOSTRESORDER</code> È¯°æº¯¼ö¸¦ "local"·Î ¼³Á¤ÇÏ°í
-    ¾ÆÆÄÄ¡¸¦ ½ÇÇàÇÒ ¼ö ÀÖ´Ù. <code class="module"><a href="./mod/mod_env.html">mod_env</a></code>¸¦
-    »ç¿ëÇÏ¿© È¯°æÀ» º¯°æÇÏÁö ¾Ê´Â´Ù¸é ÀÌ È¯°æº¯¼ö´Â
-    CGI¿¡µµ ¿µÇâÀ» ÁØ´Ù. ¿î¿µÃ¼Á¦ÀÇ manpage³ª FAQ¸¦ Âü°íÇÏ´Â
-    °ÍÀÌ ÁÁ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½î¶² ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ DNSï¿½ï¿½ ï¿½Ë»ï¿½ï¿½Ï¸ï¿½ ï¿½ÈµÈ´Ù¸ï¿½
+    <code>HOSTRESORDER</code> È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ "local"ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. <code class="module"><a href="./mod/mod_env.html">mod_env</a></code>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ È¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´Ù¸ï¿½ ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½
+    CGIï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ø´ï¿½. ï¿½î¿µÃ¼ï¿½ï¿½ï¿½ï¿½ manpageï¿½ï¿½ FAQï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="tips" id="tips">ÀÌ ¹®Á¦¸¦ ÇÇÇÏ±âÀ§ÇÑ ÆÁ</a> <a title="Permanent link" href="#tips" class="permalink">&para;</a></h2>
+<h2><a name="tips" id="tips">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½</a> <a title="Permanent link" href="#tips" class="permalink">&para;</a></h2>
     
 
     <ul>
       <li>
-        <code class="directive"><a href="./mod/core.html#virtualhost">VirtualHost</a></code>¿¡ IP
-        ÁÖ¼Ò¸¦ »ç¿ëÇÏ¶ó
+        <code class="directive"><a href="./mod/core.html#virtualhost">VirtualHost</a></code>ï¿½ï¿½ IP
+        ï¿½Ö¼Ò¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½
       </li>
 
       <li>
-        <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>¿¡
-        IP ÁÖ¼Ò¸¦ »ç¿ëÇÏ¶ó
+        <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>ï¿½ï¿½
+        IP ï¿½Ö¼Ò¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½
       </li>
 
       <li>
-        ¸ðµç °¡»óÈ£½ºÆ®´Â ¸í½ÃÀûÀ¸·Î
-        <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code>À»
-        °¡Áö°Ô ÇÏ¶ó
+        ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code>ï¿½ï¿½
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï¶ï¿½
       </li>
 
-      <li>¾î¶² ÆäÀÌÁöµµ ¼­ºñ½ºÇÏÁö¾Ê´Â
-      <code>&lt;VirtualHost _default_:*&gt;</code> ¼­¹ö¸¦
-      ¸¸µé¾î¶ó</li>
+      <li>ï¿½î¶² ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê´ï¿½
+      <code>&lt;VirtualHost _default_:*&gt;</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</li>
     </ul>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="appendix" id="appendix">ºÎ·Ï: ¾ÕÀ¸·Î´Â</a> <a title="Permanent link" href="#appendix" class="permalink">&para;</a></h2>
+<h2><a name="appendix" id="appendix">ï¿½Î·ï¿½: ï¿½ï¿½ï¿½ï¿½ï¿½Î´ï¿½</a> <a title="Permanent link" href="#appendix" class="permalink">&para;</a></h2>
     
 
-    <p>DNS¿Í °ü·ÃµÈ »óÈ²Àº ¸Å¿ì ¹Ù¶÷Á÷ÇÏÁö ¸øÇÏ´Ù. ¾ÆÆÄÄ¡ 1.2¿¡¼­
-    ¿ì¸®´Â DNS°¡ ½ÇÆÐÇÑ °æ¿ì¿¡µµ ÃÖ¼ÒÇÑ ¼­¹ö°¡ ÄÑÁöµµ·Ï ³ë·ÂÇßÁö¸¸
-    °á°ú´Â ³ª»¦´Ù. ¾îÂ·µç ¼³Á¤ÆÄÀÏ¿¡ Á÷Á¢ IP ÁÖ¼Ò¸¦ ¿ä±¸ÇÏ´Â
-    °ÍÀº ¹øÈ£¸¦ ´Ù½Ã ¼³Á¤ÇØ¾ßÇÒ ¿äÁò ÀÎÅÍ³Ý¿¡ ¸Å¿ì ¹Ù¶÷Á÷ÇÏÁö
-    ¸øÇÏ´Ù.</p>
+    <p>DNSï¿½ï¿½ ï¿½ï¿½ï¿½Ãµï¿½ ï¿½ï¿½È²ï¿½ï¿½ ï¿½Å¿ï¿½ ï¿½Ù¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½. ï¿½ï¿½ï¿½ï¿½Ä¡ 1.2ï¿½ï¿½ï¿½ï¿½
+    ï¿½ì¸®ï¿½ï¿½ DNSï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ì¿¡ï¿½ï¿½ ï¿½Ö¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½Â·ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ IP ï¿½Ö¼Ò¸ï¿½ ï¿½ä±¸ï¿½Ï´ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È£ï¿½ï¿½ ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Í³Ý¿ï¿½ ï¿½Å¿ï¿½ ï¿½Ù¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½Ï´ï¿½.</p>
 
-    <p>À§¿¡¼­ ¼³¸íÇÑ ¼­ºñ½ºµµµÏ °ø°ÝÀ» ¸·´Â ÇÑ°¡Áö ¹æ¹ýÀº °Ë»öÇÑ
-    IP ÁÖ¼Ò¿¡ ´Ù½Ã ¿ªDNS °Ë»öÀ» ÇÏ¿© µÎ ÀÌ¸§À» ºñ±³ÇÏ´Â °ÍÀÌ´Ù.
-    ¼­·Î ´Ù¸¥ °æ¿ì °¡»óÈ£½ºÆ®¸¦ °¡µ¿ÇÏÁö ¾ÊÀ» ¼ö ÀÖ´Ù. ÀÌ ¹æ¹ýÀº
-    ¿ªDNS°¡ ¿Ã¹Ù·Î ¼³Á¤µÇ¾ß ÇÑ´Ù. (FTP ¼­¹ö³ª TCP wrapper°¡
-    "Áßº¹-¿ª" DNS °Ë»öÀ» ÀÚÁÖ »ç¿ëÇÏ±â¶§¹®¿¡ ´ëºÎºÐÀÇ °ü¸®ÀÚ¿¡°Ô
-    ÀÍ¼÷ÇÒ °ÍÀÌ´Ù.)</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ñ½ºµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½ï¿½ï¿½
+    IP ï¿½Ö¼Ò¿ï¿½ ï¿½Ù½ï¿½ ï¿½ï¿½DNS ï¿½Ë»ï¿½ï¿½ï¿½ ï¿½Ï¿ï¿½ ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½.
+    ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½DNSï¿½ï¿½ ï¿½Ã¹Ù·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ ï¿½Ñ´ï¿½. (FTP ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ TCP wrapperï¿½ï¿½
+    "ï¿½ßºï¿½-ï¿½ï¿½" DNS ï¿½Ë»ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï±â¶§ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Îºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½
+    ï¿½Í¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½.)</p>
 
-    <p>¾îÂ·µç IP ÁÖ¼Ò¸¦ »ç¿ëÇÏÁö¾ÊÀ¸¸é DNS°¡ ½ÇÆÐÇÑ °æ¿ì °¡»óÈ£½ºÆ®
-    À¥¼­¹ö¸¦ ¹ÏÀ» ¼ö ÀÖ°Ô ½ÃÀÛÇÒ ¼ö ¾ø´Ù. ¼³Á¤ÀÇ ÀÏºÎ¸¦ ¹«½ÃÇÏ´Â
-    °Í°ú °°Àº ºÎºÐÀûÀÎ ÇØ°áÃ¥Àº À¥¼­¹ö ÀüÃ¼¸¦ ½ÃÀÛÇÏÁö¾Ê´Â °Íº¸´Ù
-    ´õ ³ª»Ü ¼öµµ ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½Â·ï¿½ï¿½ IP ï¿½Ö¼Ò¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ DNSï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ÏºÎ¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½
+    ï¿½Í°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Îºï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ø°ï¿½Ã¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê´ï¿½ ï¿½Íºï¿½ï¿½ï¿½
+    ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <p>HTTP/1.1ÀÌ ³ª¿Ô°í ºê¶ó¿ìÀú¿Í ÇÁ·Ï½Ã°¡ <code>Host</code>
-    Çì´õ¸¦ º¸³»±â ½ÃÀÛÇßÀ¸¹Ç·Î IP±â¹Ý °¡»óÈ£½ºÆ®¸¦ ¿ÏÀüÈ÷
-    »ç¿ëÇÏÁö¾Ê´Â °ÍÀÌ °¡´ÉÇØÁú °ÍÀÌ´Ù. ±×·¯¸é À¥¼­¹ö´Â ¼³Á¤Áß¿¡¼­
-    DNS °Ë»öÀ» ÇÒ ÇÊ¿ä°¡ ¾ø¾îÁø´Ù. ±×·¯³ª 1997³â 3¿ù¿¡´Â Áß¿äÇÑ
-    À¥¼­¹ö¿¡ Æ÷ÇÔÇÒ Á¤µµ·Î ÀÌ¸§±â¹Ý °¡»óÈ£½ºÆ®°¡ ³Î¸® »ç¿ëµÇÁö
-    ¾Ê¾Ò´Ù.</p>
+    <p>HTTP/1.1ï¿½ï¿½ ï¿½ï¿½ï¿½Ô°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï½Ã°ï¿½ <code>Host</code>
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ IPï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½. ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ß¿ï¿½ï¿½ï¿½
+    DNS ï¿½Ë»ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ê¿ä°¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½. ï¿½×·ï¿½ï¿½ï¿½ 1997ï¿½ï¿½ 3ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß¿ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Î¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ê¾Ò´ï¿½.</p>
   </div></div>
 <div class="bottomlang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="./en/dns-caveats.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="./en/dns-caveats.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/dns-caveats.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/dns-caveats.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/dns-caveats.html" title="Korean">&nbsp;ko&nbsp;</a> |
@@ -229,7 +229,7 @@
 </div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/dns-caveats.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/dns-caveats.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -244,8 +244,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/dns-caveats.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">¸ðµâ</a> | <a href="./mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">¿ë¾î</a> | <a href="./sitemap.html">»çÀÌÆ®¸Ê</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">ï¿½ï¿½ï¿½</a> | <a href="./mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">ï¿½ï¿½ï¿½</a> | <a href="./sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -16,12 +16,12 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Notes spécifiques à certaines
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Notes spécifiques à certaines
   plates-formes</a></div><div id="page-content"><div id="preamble"><h1>Compiler Apache pour Microsoft Windows</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/platform/win_compiling.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
@@ -85,7 +85,7 @@ l'arborescence de développement</a></li>
         <p>Le binaire httpd est compilé à l'aide de nombreux correctifs
 	appliqués aux paquets tiers, ce qui permet de s'assurer que le
 	code fourni est bien compilable et déboguable. Ces correctifs
-	sont disponibles à <a href="http://www.apache.org/dist/httpd/binaries/win32/patches_applied/">http://www.apache.org/dist/httpd/binaries/win32/patches_applied/</a>,
+	sont disponibles à <a href="https://www.apache.org/dist/httpd/binaries/win32/patches_applied/">https://www.apache.org/dist/httpd/binaries/win32/patches_applied/</a>,
 	et il est recommandé de les appliquer afin d'obtenir un
 	résultat identique aux binaires "officiels" distribués par
 	l'ASF.</p>
@@ -156,8 +156,8 @@ l'arborescence de développement</a></li>
 	<code>awk.exe</code>. awk effectue la modification des fichiers
 	au moment de l'installation ; il a été choisi car il nécessite
 	un téléchargement de petite taille (par rapport à Perl ou
-	WSH/VB). Le site de Brian Kernighan <a href="http://www.cs.princeton.edu/~bwk/btl.mirror/">http://www.cs.princeton.edu/~bwk/btl.mirror/</a> propose un
-	binaire précompilé pour Win32, <a href="http://www.cs.princeton.edu/~bwk/btl.mirror/awk95.exe">http://www.cs.princeton.edu/~bwk/btl.mirror/awk95.exe</a>, que
+	WSH/VB). Le site de Brian Kernighan <a href="https://www.cs.princeton.edu/~bwk/btl.mirror/">https://www.cs.princeton.edu/~bwk/btl.mirror/</a> propose un
+	binaire précompilé pour Win32, <a href="https://www.cs.princeton.edu/~bwk/btl.mirror/awk95.exe">https://www.cs.princeton.edu/~bwk/btl.mirror/awk95.exe</a>, que
 	vous devez enregistrer sous le nom <code>awk.exe</code> (plutôt
 	que <code>awk95.exe</code>).</p>
 
@@ -174,7 +174,7 @@ l'arborescence de développement</a></li>
 	Options -&gt; (Projects -&gt;) Directories. Assurez-vous
 	qu'awk.exe est bien dans votre chemin système.</div>
 
-        <div class="note">Notez aussi, si vous utilisez les outils Cygwin (<a href="http://www.cygwin.com/">http://www.cygwin.com/</a>), que
+        <div class="note">Notez aussi, si vous utilisez les outils Cygwin (<a href="https://www.cygwin.com/">https://www.cygwin.com/</a>), que
 	l'utilitaire awk de nomme <code>gawk.exe</code> et que le
 	fichier <code>awk.exe</code> est en fait un lien symbolique vers
 	le fichier <code>gawk.exe</code>. Le shell de commandes Windows
@@ -195,7 +195,7 @@ l'arborescence de développement</a></li>
         <p>Zlib doit être installée dans un sous-répertoire du
 	répertoire <code>srclib</code> et nommé <code>zlib</code>. Elle
 	doit être compilée directement à cette place. Zlib est
-	disponible à l'adresse <a href="http://www.zlib.net/">http://www.zlib.net/</a> -- le
+	disponible à l'adresse <a href="https://www.zlib.net/">https://www.zlib.net/</a> -- le
 	fonctionnement correct du module <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> a
 	été vérifié avec la version 1.2.3.</p>
 
@@ -218,7 +218,7 @@ l'arborescence de développement</a></li>
 	consulter la législation de votre pays, les règles et politiques
 	d'importation, de possession, ou d'utilisation, et de
 	réexportation des logiciels de chiffrement, afin de déterminer
-	si vous en avez le droit. Voir <a href="http://www.wassenaar.org/">http://www.wassenaar.org/</a>
+	si vous en avez le droit. Voir <a href="https://www.wassenaar.org/">https://www.wassenaar.org/</a>
 	pour plus de détails.</div>
 
         <p>La configuration et la compilation d'OpenSSL nécessite
@@ -227,7 +227,7 @@ l'arborescence de développement</a></li>
         <p>Pour pouvoir compiler <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> ou le projet
 	<code>abs.exe</code>, qui devient ab.c avec le support SSL
 	activé, vous devez
-	télécharger OpenSSL à l'adresse <a href="http://www.openssl.org/source/">http://www.openssl.org/source/</a>,
+	télécharger OpenSSL à l'adresse <a href="https://www.openssl.org/source/">https://www.openssl.org/source/</a>,
 	et l'installer dans un sous-répertoire du répertoire
 	<code>srclib</code> que vous nommerez <code>openssl</code>. Afin
 	de préparer OpenSSL à la liaison avec le module Apache mod_ssl
@@ -570,7 +570,7 @@ l'arborescence de développement</a> <a title="Lien permanent" href="#projectcom
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/platform/win_compiling.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/platform/win_compiling.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -585,8 +585,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/platform/win_compi
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

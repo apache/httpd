@@ -5,7 +5,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -100,7 +100,7 @@ AP_DECLARE(const char *) ap_ssl_var_lookup(apr_pool_t *p, server_rec *s,
                                            const char *name)
 {
     const char *val = ap_run_ssl_var_lookup(p, s, c, r, name);
-    if (val == NULL && module_ssl_var_lookup) {
+    if (val == NULL && module_ssl_is_https) {
         val = module_ssl_var_lookup(p, s, c, r, name);
     }
     return val;
@@ -148,18 +148,18 @@ AP_DECLARE(int) ap_ssl_answer_challenge(conn_rec *c, const char *server_name,
 }
 
 AP_DECLARE(apr_status_t) ap_ssl_ocsp_prime(server_rec *s, apr_pool_t *p,
-                                           const char *id, apr_size_t id_len,
+                                           const ap_bytes_t *id,
                                            const char *pem)
 {
-    int rv = ap_run_ssl_ocsp_prime_hook(s, p, id, id_len, pem);
+    int rv = ap_run_ssl_ocsp_prime_hook(s, p, id, pem);
     return rv == OK? APR_SUCCESS : (rv == DECLINED? APR_ENOENT : APR_EGENERAL);
 }
 
 AP_DECLARE(apr_status_t) ap_ssl_ocsp_get_resp(server_rec *s, conn_rec *c,
-                                              const char *id, apr_size_t id_len,
+                                              const ap_bytes_t *id,
                                               ap_ssl_ocsp_copy_resp *cb, void *userdata)
 {
-    int rv = ap_run_ssl_ocsp_get_resp_hook(s, c, id, id_len, cb, userdata);
+    int rv = ap_run_ssl_ocsp_get_resp_hook(s, c, id, cb, userdata);
     return rv == OK? APR_SUCCESS : (rv == DECLINED? APR_ENOENT : APR_EGENERAL);
 }
 
@@ -180,9 +180,8 @@ AP_IMPLEMENT_HOOK_RUN_FIRST(int, ssl_answer_challenge,
         (conn_rec *c, const char *server_name, const char **pcert_pem, const char **pkey_pem),
         (c, server_name, pcert_pem, pkey_pem), DECLINED)
 AP_IMPLEMENT_HOOK_RUN_FIRST(int, ssl_ocsp_prime_hook,
-        (server_rec *s, apr_pool_t *p, const char *id, apr_size_t id_len, const char *pem),
-        (s, p, id, id_len, pem), DECLINED)
+        (server_rec *s, apr_pool_t *p, const ap_bytes_t *id, const char *pem),
+        (s, p, id, pem), DECLINED)
 AP_IMPLEMENT_HOOK_RUN_FIRST(int, ssl_ocsp_get_resp_hook,
-         (server_rec *s, conn_rec *c, const char *id, apr_size_t id_len,
-          ap_ssl_ocsp_copy_resp *cb, void *userdata),
-         (s, c, id, id_len, cb, userdata), DECLINED)
+         (server_rec *s, conn_rec *c, const ap_bytes_t *id, ap_ssl_ocsp_copy_resp *cb, void *userdata),
+         (s, c, id, cb, userdata), DECLINED)

@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -80,7 +80,7 @@
     AuthUserFile "conf/passwd"
     AuthType form
     AuthName "/admin"
-    AuthFormLoginRequiredLocation "http://example.com/login.html"
+    AuthFormLoginRequiredLocation "https://example.com/login.html"
 
     Session On
     SessionCookieName session path=/
@@ -143,8 +143,8 @@
       <highlight language="config">
 &lt;Location "/dologin.html"&gt;
     SetHandler form-login-handler
-    AuthFormLoginRequiredLocation "http://example.com/login.html"
-    AuthFormLoginSuccessLocation "http://example.com/admin/index.html"
+    AuthFormLoginRequiredLocation "https://example.com/login.html"
+    AuthFormLoginSuccessLocation "https://example.com/admin/index.html"
     AuthFormProvider file
     AuthUserFile "conf/passwd"
     AuthType form
@@ -171,7 +171,7 @@
   Username: &lt;input type="text" name="httpd_username" value="" /&gt;
   Password: &lt;input type="password" name="httpd_password" value="" /&gt;
   &lt;input type="submit" name="login" value="Login" /&gt;
-  &lt;input type="hidden" name="httpd_location" value="http://example.com/success.html" /&gt;
+  &lt;input type="hidden" name="httpd_location" value="https://example.com/success.html" /&gt;
 &lt;/form&gt;
         </highlight>
       </example>
@@ -212,7 +212,7 @@ ErrorDocument 401 "/login.shtml"
 AuthUserFile "conf/passwd"
 AuthType form
 AuthName /admin
-AuthFormLoginRequiredLocation "http://example.com/login.html"
+AuthFormLoginRequiredLocation "https://example.com/login.html"
 Session On
 SessionCookieName session path=/
         </highlight>
@@ -310,7 +310,7 @@ ErrorDocument 401 "/cgi-bin/login.cgi"
       <highlight language="config">
 SetHandler form-logout-handler
 AuthName realm
-AuthFormLogoutLocation "http://example.com/loggedout.html"
+AuthFormLogoutLocation "https://example.com/loggedout.html"
 Session On
 SessionCookieName session path=/
         </highlight>
@@ -327,7 +327,7 @@ SessionCookieName session path=/
       <example><title>Basic session expiry example</title>
       <highlight language="config">
 SetHandler form-logout-handler
-AuthFormLogoutLocation "http://example.com/loggedout.html"
+AuthFormLogoutLocation "https://example.com/loggedout.html"
 Session On
 SessionMaxAge 1
 SessionCookieName session path=/
@@ -650,7 +650,7 @@ parser has been added in 2.4.4.</compatibility>
     <highlight language="config">
 &lt;Location "/logout"&gt;
     SetHandler form-logout-handler
-    AuthFormLogoutLocation "http://example.com/loggedout.html"
+    AuthFormLogoutLocation "https://example.com/loggedout.html"
     Session on
     #...
 &lt;/Location&gt;

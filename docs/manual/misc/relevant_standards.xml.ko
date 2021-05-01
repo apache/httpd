@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,160 +23,160 @@
 <manualpage metafile="relevant_standards.xml.meta">
   <parentdocument href="./">Miscellaneous Documentation</parentdocument>
 
-  <title>°ü·Ã Ç¥ÁØ</title>
+  <title>ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½</title>
   
   <summary>
-    <p>ÀÌ ¹®¼­¿¡´Â °£´ÜÇÑ ¼³¸í°ú ÇÔ²² ¾ÆÆÄÄ¡ À¥¼­¹ö°¡ µû¸£´Â
-    ¸ðµç °ü·Ã Ç¥ÁØÀ» ¿­°ÅÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô²ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <p>¾Æ·¡ Á¤º¸¿¡ ´õÇÏ¿© ´ÙÀ½ ÀÚ·áµµ »ìÆìºÁ¾ß ÇÑ´Ù:</p>
+    <p>ï¿½Æ·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ú·áµµ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½:</p>
 
     <ul>
       <li>
-        <a href="http://purl.org/NET/http-errata">
-        http://purl.org/NET/http-errata</a> - HTTP/1.1 ±Ô¾à
-        Á¤¿ÀÇ¥
+        <a href="https://purl.org/NET/http-errata">
+        https://purl.org/NET/http-errata</a> - HTTP/1.1 ï¿½Ô¾ï¿½
+        ï¿½ï¿½ï¿½ï¿½Ç¥
       </li>
       <li>
-        <a href="http://www.rfc-editor.org/errata.html">
-        http://www.rfc-editor.org/errata.html</a> - RFC Á¤¿ÀÇ¥
+        <a href="https://www.rfc-editor.org/errata.html">
+        https://www.rfc-editor.org/errata.html</a> - RFC ï¿½ï¿½ï¿½ï¿½Ç¥
       </li>
       <li>
-        <a href="http://ftp.ics.uci.edu/pub/ietf/http/#RFC">
-        http://ftp.ics.uci.edu/pub/ietf/http/#RFC</a> - HTTP
-        °ü·Ã RFC ¸ñ·Ï
+        <a href="https://ftp.ics.uci.edu/pub/ietf/http/#RFC">
+        https://ftp.ics.uci.edu/pub/ietf/http/#RFC</a> - HTTP
+        ï¿½ï¿½ï¿½ï¿½ RFC ï¿½ï¿½ï¿½
       </li>
     </ul>
 
-    <note type="warning"><title>ÁÖÀÇ</title>
-    <p>ÀÌ ¹®¼­´Â ¾ÆÁ÷ ¿ÏÀüÇÏÁö ¾Ê´Ù.</p>
+    <note type="warning"><title>ï¿½ï¿½ï¿½ï¿½</title>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´ï¿½.</p>
     </note>
 
   </summary>
   
-  <section id="http_recommendations"><title>HTTP ±Ç°í</title>
+  <section id="http_recommendations"><title>HTTP ï¿½Ç°ï¿½</title>
 
-    <p>¾î¶² ¸ðµâÀ» ÄÄÆÄÀÏÇÏ°í »ç¿ëÇÏ´ÂÁö¿Í °ü°è¾øÀÌ ±âº»ÀûÀ¸·Î
-    À¥¼­¹öÀÎ ¾ÆÆÄÄ¡´Â ´ÙÀ½ IETF ±Ç°í(recommendation)¸¦ µû¸¥´Ù:</p>
+    <p>ï¿½î¶² ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ IETF ï¿½Ç°ï¿½(recommendation)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</p>
 
     <dl>
-      <dt><a href="http://www.rfc-editor.org/rfc/rfc1945.txt">RFC 1945</a>
+      <dt><a href="https://www.rfc-editor.org/rfc/rfc1945.txt">RFC 1945</a>
       (Informational)</dt>
 
-      <dd>ÇÏÀÌÆÛÅØ½ºÆ® Àü¼Û ÇÁ·ÎÅäÄÝ (Hypertext Transfer Protocol,
-      HTTP)Àº ºÐ»ê, Çùµ¿, ÇÏÀÌÆÛ¸ÅÃ¼ Á¤º¸ ½Ã½ºÅÛ¿¡ ÇÊ¿äÇÑ ºü¸£°í
-      °¡º­¿î ¾îÇÃ¸®ÄÉÀÌ¼Ç ¼öÁØ(application-level) ÇÁ·ÎÅäÄÝÀÌ´Ù.
-      ÀÌ ¹®¼­´Â HTTP/1.0À» ¼³¸íÇÑ´Ù.</dd>
+      <dd>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (Hypertext Transfer Protocol,
+      HTTP)ï¿½ï¿½ ï¿½Ð»ï¿½, ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½Û¸ï¿½Ã¼ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã½ï¿½ï¿½Û¿ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¸ï¿½ï¿½ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½(application-level) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½.
+      ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ HTTP/1.0ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
-      <dt><a href="http://www.rfc-editor.org/rfc/rfc2616.txt">RFC 2616</a>
+      <dt><a href="https://www.rfc-editor.org/rfc/rfc2616.txt">RFC 2616</a>
       (Standards Track)</dt>
 
-      <dd>ÇÏÀÌÆÛÅØ½ºÆ® Àü¼Û ÇÁ·ÎÅäÄÝ (Hypertext Transfer Protocol,
-      HTTP)Àº ºÐ»ê, Çùµ¿, ÇÏÀÌÆÛ¸ÅÃ¼ Á¤º¸ ½Ã½ºÅÛÀ» À§ÇÑ ¾îÇÃ¸®ÄÉÀÌ¼Ç
-      ¼öÁØ ÇÁ·ÎÅäÄÝÀÌ´Ù. ÀÌ ¹®¼­´Â HTTP/1.1À» ¼³¸íÇÑ´Ù.</dd>
+      <dd>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (Hypertext Transfer Protocol,
+      HTTP)ï¿½ï¿½ ï¿½Ð»ï¿½, ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½Û¸ï¿½Ã¼ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¸ï¿½ï¿½ï¿½ï¿½Ì¼ï¿½
+      ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ HTTP/1.1ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
-      <dt><a href="http://www.rfc-editor.org/rfc/rfc2396.txt">RFC 2396</a>
+      <dt><a href="https://www.rfc-editor.org/rfc/rfc2396.txt">RFC 2396</a>
       (Standards Track)</dt>
 
-      <dd>Ç¥ÁØ ÀÚ¿ø ½Äº°ÀÚ (Uniform Resource Identifier, URI)´Â
-      Ãß»óÀû È¤Àº ¹°¸®Àû ÀÚ¿øÀ» ½Äº°ÇÏ±âÀ§ÇÑ ÂªÀº ¹®ÀÚ¿­ÀÌ´Ù.</dd>
+      <dd>Ç¥ï¿½ï¿½ ï¿½Ú¿ï¿½ ï¿½Äºï¿½ï¿½ï¿½ (Uniform Resource Identifier, URI)ï¿½ï¿½
+      ï¿½ß»ï¿½ï¿½ï¿½ È¤ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½Äºï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ Âªï¿½ï¿½ ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½Ì´ï¿½.</dd>
     </dl>
 
   </section>
 
-  <section id="html_recommendations"><title>HTML ±Ç°í</title>
+  <section id="html_recommendations"><title>HTML ï¿½Ç°ï¿½</title>
 
-    <p>ÇÏÀÌÆÛÅØ½ºÆ® ¸¶Å©¾÷ ¾ð¾î (Hypertext Markup Language,
-    HTML)¿Í °ü·ÃÇÏ¿© ¾ÆÆÄÄ¡´Â ´ÙÀ½ IETF ±Ç°í¿Í W3C ±Ç°í¸¦ µû¸¥´Ù:</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø½ï¿½Æ® ï¿½ï¿½Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ (Hypertext Markup Language,
+    HTML)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ IETF ï¿½Ç°ï¿½ï¿½ï¿½ W3C ï¿½Ç°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</p>
 
     <dl>
-      <dt><a href="http://www.rfc-editor.org/rfc/rfc2854.txt">RFC 2854</a>
+      <dt><a href="https://www.rfc-editor.org/rfc/rfc2854.txt">RFC 2854</a>
       (Informational)</dt>
 
-      <dd>ÀÌ ¹®¼­´Â HTML °³¹ß°úÁ¤À» ¿ä¾àÇÏ°í, °ü·Ã W3C ±Ç°í¸¦
-      ±â¹ÝÀ¸·Î "text/html" MIME typeÀ» Á¤ÀÇÇÑ´Ù.</dd>
+      <dd>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ HTML ï¿½ï¿½ï¿½ß°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½, ï¿½ï¿½ï¿½ï¿½ W3C ï¿½Ç°ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ "text/html" MIME typeï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
-      <dt><a href="http://www.w3.org/TR/html401">HTML 4.01 ±Ô¾à</a>
-      (<a href="http://www.w3.org/MarkUp/html4-updates/errata">Errata</a>)
+      <dt><a href="https://www.w3.org/TR/html401">HTML 4.01 ï¿½Ô¾ï¿½</a>
+      (<a href="https://www.w3.org/MarkUp/html4-updates/errata">Errata</a>)
       </dt>
 
-      <dd>ÀÌ ±Ô¾àÀº ¿ùµå¿ÍÀÌµåÀ¥ÀÇ ÃâÆÇ¾ð¾îÀÎ ÇÏÀÌÆÛÅØ½ºÆ® ¸¶Å©¾÷
-      ¾ð¾î (Hypertext Markup Language, HTML)¸¦ Á¤ÀÇÇÑ´Ù. ÀÌ
-      ±Ô¾àÀº HTML 4ÀÇ ÇÏÀ§¹öÀüÀÎ HTML 4.01À» Á¤ÀÇÇÑ´Ù.</dd>
+      <dd>ï¿½ï¿½ ï¿½Ô¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ìµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø½ï¿½Æ® ï¿½ï¿½Å©ï¿½ï¿½
+      ï¿½ï¿½ï¿½ (Hypertext Markup Language, HTML)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½
+      ï¿½Ô¾ï¿½ï¿½ï¿½ HTML 4ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ HTML 4.01ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
-      <dt><a href="http://www.w3.org/TR/REC-html32">HTML 3.2 Âü°í ±Ô¾à</a></dt>
+      <dt><a href="https://www.w3.org/TR/REC-html32">HTML 3.2 ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¾ï¿½</a></dt>
 
-      <dd>ÇÏÀÌÆÛÅØ½ºÆ® ¸¶Å©¾÷ ¾ð¾î (Hypertext Markup Language,
-      HTML)´Â ÇÃ·¡Æû°ú ¹«°üÇÑ ÇÏÀÌÆÛÅØ½ºÆ® ¹®¼­¸¦ À§ÇÑ °£´ÜÇÑ
-      ¸¶Å©¾÷ ¾ð¾îÀÌ´Ù. HTML ¹®¼­´Â SGML ¹®¼­ÀÌ±âµµ ÇÏ´Ù.</dd>
+      <dd>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø½ï¿½Æ® ï¿½ï¿½Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ (Hypertext Markup Language,
+      HTML)ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ì´ï¿½. HTML ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ SGML ï¿½ï¿½ï¿½ï¿½ï¿½Ì±âµµ ï¿½Ï´ï¿½.</dd>
 
-      <dt><a href="http://www.w3.org/TR/xhtml11/">XHTML 1.1 -
-      ¸ðµâ±â¹Ý XHTML</a>
-      (<a href="http://www.w3.org/2001/04/REC-xhtml-modularization-20060410-errata">Á¤¿ÀÇ¥</a>)
+      <dt><a href="https://www.w3.org/TR/xhtml11/">XHTML 1.1 -
+      ï¿½ï¿½ï¿½ï¿½ï¿½ XHTML</a>
+      (<a href="https://www.w3.org/2001/04/REC-xhtml-modularization-20060410-errata">ï¿½ï¿½ï¿½ï¿½Ç¥</a>)
       </dt>
 
-      <dd>ÀÌ ±Ç°í´Â Modularization of XHTML¿¡¼­ Á¤ÀÇÇÑ ¸ðµâ
-      ÇÃ·¹ÀÓ¿öÅ©¿Í ¸ðµâµéÀ» ±â¹ÝÀ¸·Î »õ·Î¿î XHTML document typeÀ»
-      Á¤ÀÇÇÑ´Ù.</dd>
+      <dd>ï¿½ï¿½ ï¿½Ç°ï¿½ï¿½ï¿½ Modularization of XHTMLï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+      ï¿½Ã·ï¿½ï¿½Ó¿ï¿½Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î¿ï¿½ XHTML document typeï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
-      <dt><a href="http://www.w3.org/TR/xhtml1">XHTML 1.0
-      È®Àå ÇÏÀÌÆÛÅØ½ºÆ® ¸¶Å©¾÷ ¾ð¾î (Extensible HyperText Markup
+      <dt><a href="https://www.w3.org/TR/xhtml1">XHTML 1.0
+      È®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø½ï¿½Æ® ï¿½ï¿½Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ (Extensible HyperText Markup
       Language) (Second Edition)</a>
-      (<a href="http://www.w3.org/2002/08/REC-xhtml1-20060801-errata">Á¤¿ÀÇ¥</a>)
+      (<a href="https://www.w3.org/2002/08/REC-xhtml1-20060801-errata">ï¿½ï¿½ï¿½ï¿½Ç¥</a>)
       </dt>
 
-      <dd>ÀÌ ¹®¼­´Â HTML 4¸¦ XML 1.0À¸·Î Àç±¸¼ºÇÑ XHTML 1.0ÀÇ
-      µÎ¹øÂ° ¹öÀü°ú HTML 4¿¡ ÇØ´çÇÏ´Â ¼¼°¡Áö DTD¸¦ Á¤ÀÇÇÑ´Ù.</dd>
+      <dd>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ HTML 4ï¿½ï¿½ XML 1.0ï¿½ï¿½ï¿½ï¿½ ï¿½ç±¸ï¿½ï¿½ï¿½ï¿½ XHTML 1.0ï¿½ï¿½
+      ï¿½Î¹ï¿½Â° ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ HTML 4ï¿½ï¿½ ï¿½Ø´ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ DTDï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
     </dl>
 
   </section>
 
-  <section id="authentication"><title>ÀÎÁõ</title>
+  <section id="authentication"><title>ï¿½ï¿½ï¿½ï¿½</title>
 
-    <p>ÀÎÁõ¹æ¹ý¿¡ ´ëÇØ ¾ÆÆÄÄ¡´Â ´ÙÀ½ IETF ±Ç°í¸¦ µû¸¥´Ù:</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ IETF ï¿½Ç°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</p>
 
     <dl>
-      <dt><a href="http://www.rfc-editor.org/rfc/rfc2617.txt">RFC 2617</a>
+      <dt><a href="https://www.rfc-editor.org/rfc/rfc2617.txt">RFC 2617</a>
       (Draft standard)</dt>
 
-      <dd>Basic Access Authentication ±Ô¾àÀ» Æ÷ÇÔÇÑ "HTTP/1.0".</dd>
+      <dd>Basic Access Authentication ï¿½Ô¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ "HTTP/1.0".</dd>
 
     </dl>
 
   </section>
 
-  <section id="language_country_codes"><title>¾ð¾î/±¹°¡ ÄÚµå</title>
+  <section id="language_country_codes"><title>ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½</title>
 
-    <p>¾Æ·¡ ¸µÅ©¿¡ ISO¿Í ´Ù¸¥ ¾ð¾î/±¹°¡ ÄÚµå Á¤º¸°¡ ÀÖ´Ù:</p>
+    <p>ï¿½Æ·ï¿½ ï¿½ï¿½Å©ï¿½ï¿½ ISOï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½:</p>
 
     <dl>
-      <dt><a href="http://www.loc.gov/standards/iso639-2/">ISO 639-2</a></dt>
+      <dt><a href="https://www.loc.gov/standards/iso639-2/">ISO 639-2</a></dt>
 
-      <dd>ISO 639´Â ¾ð¾îÀÇ ÀÌ¸§À» ³ªÅ¸³»´Â µÎ°¡Áö ¾ð¾î ÄÚµå¸¦
-      Á¦°øÇÑ´Ù. ÇÏ³ª´Â (639-1) µÎ ±ÛÀÚ ÄÚµåÀÌ°í ´Ù¸¥ ÇÏ³ª´Â
-      (ÀÌ ¹®¼­) ¼¼ ±ÛÀÚ ÄÚµåÀÌ´Ù.</dd>
+      <dd>ISO 639ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½Î°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Úµå¸¦
+      ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½Ï³ï¿½ï¿½ï¿½ (639-1) ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ï¿½Ì°ï¿½ ï¿½Ù¸ï¿½ ï¿½Ï³ï¿½ï¿½ï¿½
+      (ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½) ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ï¿½Ì´ï¿½.</dd>
 
-      <dt><a href="http://www.iso.ch/iso/en/prods-services/iso3166ma/02iso-3166-code-lists/index.html">
+      <dt><a href="https://www.iso.ch/iso/en/prods-services/iso3166ma/02iso-3166-code-lists/index.html">
       ISO 3166-1</a></dt>
 
-      <dd>ÀÌ ¹®¼­´Â ISO 3166-1°ú ISO 3166-1-alpha-2 ÄÚµå¿¡ µû¶ó
-      ¾ËÆÄºª ¼ø¼­·Î (¿µ¾î·Î ÂªÀº °ø½ÄÀÌ¸§) ±¹°¡¸íÀ» ¿­°ÅÇÑ´Ù.</dd>
+      <dd>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ISO 3166-1ï¿½ï¿½ ISO 3166-1-alpha-2 ï¿½Úµå¿¡ ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½Äºï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½ Âªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì¸ï¿½) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
-      <dt><a href="http://www.rfc-editor.org/rfc/bcp/bcp47.txt">BCP 47</a>
+      <dt><a href="https://www.rfc-editor.org/rfc/bcp/bcp47.txt">BCP 47</a>
       (Best Current Practice),
-      <a href="http://www.rfc-editor.org/rfc/rfc3066.txt">RFC 3066</a></dt>
+      <a href="https://www.rfc-editor.org/rfc/rfc3066.txt">RFC 3066</a></dt>
 
-      <dd>ÀÌ ¹®¼­´Â Á¤º¸ °´Ã¼¿¡ »ç¿ëÇÑ ¾ð¾î¸¦ ¾Ë¸®±âÀ§ÇØ »ç¿ëÇÒ
-      ¾ð¾î ÅÂ±×¿Í ¾ð¾î ÅÂ±×¿¡ »ç¿ëÇÒ °ªÀ» µî·ÏÇÏ´Â ¹æ¹ý, ¾ð¾î
-      ÅÂ±×¸¦ Ã£´Â ¹æ½ÄÀ» ¼³¸íÇÑ´Ù.</dd>
+      <dd>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½î¸¦ ï¿½Ë¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ ï¿½Â±×¿ï¿½ ï¿½ï¿½ï¿½ ï¿½Â±×¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½
+      ï¿½Â±×¸ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
-      <dt><a href="http://www.rfc-editor.org/rfc/rfc3282.txt">RFC 3282</a>
+      <dt><a href="https://www.rfc-editor.org/rfc/rfc3282.txt">RFC 3282</a>
       (Standards Track)</dt>
 
-      <dd>ÀÌ ¹®¼­´Â MIME ³»¿ë ºÎºÐ°ú À¥ ¹®¼­¿Í °°Àº RFC 822½Ä
-      Çì´õ°¡ ÀÖ´Â Á¤º¸ÀÇ ¾ð¾î¸¦ ¾Ë¸®±âÀ§ÇÑ "Content-language:"
-      Çì´õ¿Í, ¼±È£ÇÏ´Â ¾ð¾î¸¦ ³ªÅ¸³»´Â "Accept-Language:" Çì´õ¸¦
-      Á¤ÀÇÇÑ´Ù.</dd>
+      <dd>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ MIME ï¿½ï¿½ï¿½ï¿½ ï¿½ÎºÐ°ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ RFC 822ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½î¸¦ ï¿½Ë¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ "Content-language:"
+      ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½È£ï¿½Ï´ï¿½ ï¿½ï¿½î¸¦ ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ "Accept-Language:" ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
     </dl>
 
   </section>

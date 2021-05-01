@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -16,12 +16,12 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
 <p class="apache">Apache HTTP サーバ バージョン 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.5</a> &gt; <a href="./">SSL/TLS</a></div><div id="page-content"><div id="preamble"><h1>SSL/TLS 暗号化: はじめに</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="https://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.5</a> &gt; <a href="./">SSL/TLS</a></div><div id="page-content"><div id="preamble"><h1>SSL/TLS 暗号化: はじめに</h1>
 <div class="toplang">
 <p><span>翻訳済み言語: </span><a href="../en/ssl/ssl_intro.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/ssl/ssl_intro.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
@@ -51,10 +51,10 @@ SSL プロトコルの決定的な手引きであるつもりはありません�
 <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> のユーザに基礎知識を提供する事を目的としています。</p>
 
 <p>ここに示された内容は主に、原著者の許可の下
-The Open Group Research Institute の <a href="http://home.earthlink.net/~fjhirsch/">Frederick J. Hirsch</a>
- 氏の記事 <a href="http://home.earthlink.net/~fjhirsch/Papers/wwwj/">
+The Open Group Research Institute の <a href="https://home.earthlink.net/~fjhirsch/">Frederick J. Hirsch</a>
+ 氏の記事 <a href="https://home.earthlink.net/~fjhirsch/Papers/wwwj/">
 Introducing SSL and Certificates using SSLeay</a> を基にしています。
-氏の記事は <a href="http://www.ora.com/catalog/wjsum97/">Web Security: A Matter of
+氏の記事は <a href="https://www.ora.com/catalog/wjsum97/">Web Security: A Matter of
 Trust</a>, World Wide Web Journal, Volume 2, Issue 3, Summer 1997
 に掲載されました。
 肯定的な意見は <a href="mailto:hirsch@fjhirsch.com">Frederick Hirsch</a> 氏
@@ -356,8 +356,8 @@ dUHzICxBVC1lnHyYGjDuAMhe396lYAn8bCld1/L4NMGBCQ==
         もし、他人がその認証局になりすました時に、それが露見しや
         すいからです。</p>
 
-        <p><a href="http://www.thawte.com/">Thawte</a> 
-        や <a href="http://www.verisign.com/">VeriSign</a> 
+        <p><a href="https://www.thawte.com/">Thawte</a> 
+        や <a href="https://www.verisign.com/">VeriSign</a> 
         のような多くの会社が認証局として開設しました。
         このような会社は以下のサービスを提供します:</p>
 
@@ -665,38 +665,38 @@ SSL 3.0 は現在 Internet Engineering Task Force (IETF)
 <dl>
 <dt><a id="AC96" name="AC96">[AC96]</a></dt>
 <dd>Bruce Schneier, <q>Applied Cryptography</q>, 2nd Edition, Wiley,
-1996. See <a href="http://www.counterpane.com/">http://www.counterpane.com/</a> for various other materials by Bruce
+1996. See <a href="https://www.counterpane.com/">https://www.counterpane.com/</a> for various other materials by Bruce
 Schneier.</dd>
 
 <dt><a id="X208" name="X208">[X208]</a></dt>
 <dd>ITU-T Recommendation X.208, <q>Specification of Abstract Syntax Notation
-One (ASN.1)</q>, 1988. See for instance <a href="http://www.itu.int/rec/recommendation.asp?type=items&amp;lang=e&amp;parent=T-REC-X.208-198811-I">http://www.itu.int/rec/recommendation.asp?type=items&amp;lang=e&amp;parent=T-REC-X.208-198811-I</a>.
+One (ASN.1)</q>, 1988. See for instance <a href="https://www.itu.int/rec/recommendation.asp?type=items&amp;lang=e&amp;parent=T-REC-X.208-198811-I">https://www.itu.int/rec/recommendation.asp?type=items&amp;lang=e&amp;parent=T-REC-X.208-198811-I</a>.
 </dd>
 
 <dt><a id="X509" name="X509">[X509]</a></dt>
 <dd>ITU-T Recommendation X.509, <q>The Directory - Authentication
-Framework</q>. See for instance <a href="http://www.itu.int/rec/recommendation.asp?type=folders&amp;lang=e&amp;parent=T-REC-X.509">http://www.itu.int/rec/recommendation.asp?type=folders&amp;lang=e&amp;parent=T-REC-X.509</a>.
+Framework</q>. See for instance <a href="https://www.itu.int/rec/recommendation.asp?type=folders&amp;lang=e&amp;parent=T-REC-X.509">https://www.itu.int/rec/recommendation.asp?type=folders&amp;lang=e&amp;parent=T-REC-X.509</a>.
 </dd>
 
 <dt><a id="PKCS" name="PKCS">[PKCS]</a></dt>
 <dd><q>Public Key Cryptography Standards (PKCS)</q>, 
-RSA Laboratories Technical Notes, See <a href="http://www.rsasecurity.com/rsalabs/pkcs/">http://www.rsasecurity.com/rsalabs/pkcs/</a>.</dd>
+RSA Laboratories Technical Notes, See <a href="https://www.rsasecurity.com/rsalabs/pkcs/">https://www.rsasecurity.com/rsalabs/pkcs/</a>.</dd>
 
 <dt><a id="MIME" name="MIME">[MIME]</a></dt>
 <dd>N. Freed, N. Borenstein, <q>Multipurpose Internet Mail Extensions
 (MIME) Part One: Format of Internet Message Bodies</q>, RFC2045.
-See for instance <a href="http://ietf.org/rfc/rfc2045.txt">http://ietf.org/rfc/rfc2045.txt</a>.</dd>
+See for instance <a href="https://ietf.org/rfc/rfc2045.txt">https://ietf.org/rfc/rfc2045.txt</a>.</dd>
 
 <dt><a id="SSL2" name="SSL2">[SSL2]</a></dt>
-<dd>Kipp E.B. Hickman, <q>The SSL Protocol</q>, 1995. See <a href="http://www.netscape.com/eng/security/SSL_2.html">http://www.netscape.com/eng/security/SSL_2.html</a>.</dd>
+<dd>Kipp E.B. Hickman, <q>The SSL Protocol</q>, 1995. See <a href="https://www.netscape.com/eng/security/SSL_2.html">https://www.netscape.com/eng/security/SSL_2.html</a>.</dd>
 
 <dt><a id="SSL3" name="SSL3">[SSL3]</a></dt>
 <dd>Alan O. Freier, Philip Karlton, Paul C. Kocher, <q>The SSL Protocol
-Version 3.0</q>, 1996. See <a href="http://www.netscape.com/eng/ssl3/draft302.txt">http://www.netscape.com/eng/ssl3/draft302.txt</a>.</dd>
+Version 3.0</q>, 1996. See <a href="https://www.netscape.com/eng/ssl3/draft302.txt">https://www.netscape.com/eng/ssl3/draft302.txt</a>.</dd>
 
 <dt><a id="TLS1" name="TLS1">[TLS1]</a></dt>
 <dd>Tim Dierks, Christopher Allen, <q>The TLS Protocol Version 1.0</q>,
-1999. See <a href="http://ietf.org/rfc/rfc2246.txt">http://ietf.org/rfc/rfc2246.txt</a>.</dd>
+1999. See <a href="https://ietf.org/rfc/rfc2246.txt">https://ietf.org/rfc/rfc2246.txt</a>.</dd>
 </dl>
 </div></div>
 <div class="bottomlang">
@@ -706,7 +706,7 @@ Version 3.0</q>, 1996. See <a href="http://www.netscape.com/eng/ssl3/draft302.tx
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">コメント</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/ssl/ssl_intro.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/ssl/ssl_intro.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -721,8 +721,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/ssl/ssl_intro.html
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />この文書は <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
-<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

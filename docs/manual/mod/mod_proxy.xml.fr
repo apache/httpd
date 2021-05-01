@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -171,8 +171,8 @@
 
     <example><title>Mandataire inverse</title>
     <highlight language="config">
-ProxyPass "/foo" "http://foo.example.com/bar"
-ProxyPassReverse "/foo" "http://foo.example.com/bar"
+ProxyPass "/foo" "https://foo.example.com/bar"
+ProxyPassReverse "/foo" "https://foo.example.com/bar"
     </highlight>
     </example>
 
@@ -233,13 +233,13 @@ ProxyVia On
 
       <example>
       <highlight language="config">
-          ProxyPass "/example" "http://backend.example.com" connectiontimeout=5 timeout=30
+          ProxyPass "/example" "https://backend.example.com" connectiontimeout=5 timeout=30
 	  </highlight>
       </example>
       
 
       <p>Cette directive va créer un worker associé à l'URL du serveur original
-      <code>http://backend.example.com</code>, qui utilisera les valeurs de
+      <code>https://backend.example.com</code>, qui utilisera les valeurs de
       timeout données. Toutes les spécifications de timeouts utilisent la
       syntaxe <a href="directive-dict.html#Syntax">time-interval</a>. Lorsqu'ils
       sont utilisés dans le cadre d'un mandataire direct, les workers sont en
@@ -248,7 +248,7 @@ ProxyVia On
 
       <example>
       <highlight language="config">
-          ProxySet http://backend.example.com connectiontimeout=5 timeout=30
+          ProxySet https://backend.example.com connectiontimeout=5 timeout=30
 	  </highlight>
       </example>
       
@@ -258,7 +258,7 @@ ProxyVia On
       module="mod_proxy">ProxySet</directive> :</p>
 
       <highlight language="config">
-&lt;Proxy http://backend.example.com&gt;
+&lt;Proxy https://backend.example.com&gt;
   ProxySet connectiontimeout=5 timeout=30
 &lt;/Proxy&gt;
       </highlight>
@@ -281,8 +281,8 @@ ProxyVia On
       original, y compris un éventuel chemin donné :</p>
 
       <highlight language="config">
-ProxyPass "/examples" "http://backend.example.com/examples"
-ProxyPass "/docs" "http://backend.example.com/docs"
+ProxyPass "/examples" "https://backend.example.com/examples"
+ProxyPass "/docs" "https://backend.example.com/docs"
       </highlight>
 
       <p>Dans cet exemple, deux workers différents sont définis, chacun
@@ -296,8 +296,8 @@ ProxyPass "/docs" "http://backend.example.com/docs"
 	dans le fichier de configuration. Dans l'exemple suivant,</p>
 
         <highlight language="config">
-ProxyPass "/apps" "http://backend.example.com/" timeout=60
-ProxyPass "/examples" "http://backend.example.com/examples" timeout=10
+ProxyPass "/apps" "https://backend.example.com/" timeout=60
+ProxyPass "/examples" "https://backend.example.com/examples" timeout=10
         </highlight>
 
         <p>le second worker n'est pas vraiment créé. C'est le premier
@@ -322,7 +322,7 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10
       <note type="warning"><title>Nom d'hôte dans l'URL</title>
         <p>Le nom d'hôte doit commencer par une lettre [a-z]. Par exemple :</p>
         <highlight language="config">
-ProxyPass "/apps"     "http://127"
+ProxyPass "/apps"     "https://127"
         </highlight>
         <p>n'est pas valide et provoquera une erreur si une requête correspond
 	au chemin.</p>
@@ -430,8 +430,8 @@ ProxyPass "/apps"     "http://127"
 
       <p>Les utilisateurs d'un Intranet ont tendance à oublier le nom du
       domaine local dans leurs requêtes WWW, et demandent par exemple
-      "http://un-serveur/" au lieu de
-      <code>http://un-serveur.example.com/</code>. Certains serveurs
+      "https://un-serveur/" au lieu de
+      <code>https://un-serveur.example.com/</code>. Certains serveurs
       mandataires commerciaux acceptent ce genre de requête et les
       traitent simplement en utilisant un nom de domaine local
       implicite. Lorsque la directive <directive
@@ -459,7 +459,7 @@ ProxyPass "/apps"     "http://127"
 
       <highlight language="config">
 &lt;Location "/buggyappserver/"&gt;
-  ProxyPass "http://buggyappserver:7001/foo/"
+  ProxyPass "https://buggyappserver:7001/foo/"
   SetEnv force-proxy-request-1.0 1
   SetEnv proxy-nokeepalive 1
 &lt;/Location&gt;
@@ -581,7 +581,7 @@ mandatées</description>
     l'intermédiaire du serveur mandataire :</p>
 
     <highlight language="config">    
-&lt;Proxy http://example.com/foo/*&gt;
+&lt;Proxy https://example.com/foo/*&gt;
   SetOutputFilter INCLUDES
 &lt;/Proxy&gt;
     </highlight>
@@ -604,9 +604,9 @@ mandatées</description>
       elle commence par la <var>url-avec-jokers</var>, même si le
       dernier segment de chemin de la directive ne correspond qu'à un
       préfixe de segment dee chemin de l'URL d'arrière-plan. Par exemple, &lt;Proxy
-      http://example.com/foo&gt; correspondra entre autres aux URLs
-      http://example.com/foo, http://example.com/foo/bar, et
-      http://example.com/foobar. La correspondance de l'URL finale
+      https://example.com/foo&gt; correspondra entre autres aux URLs
+      https://example.com/foo, https://example.com/foo/bar, et
+      https://example.com/foobar. La correspondance de l'URL finale
       diffère du comportement de la section <directive type="section"
       module="core">Location</directive> qui, pour le cas de cette note,
       traitera le segment de chemin final comme s'il se terminait par un
@@ -679,7 +679,7 @@ mandatées correspondant à une expression rationnelle</description>
     nommés.</p>
 
 <highlight language="config">
-&lt;ProxyMatch ^http://(?&lt;sitename&gt;[^/]+)&gt;
+&lt;ProxyMatch ^https://(?&lt;sitename&gt;[^/]+)&gt;
     require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/ProxyMatch&gt;
 </highlight>
@@ -783,9 +783,9 @@ version 2.5.1 du serveur HTTP Apache.</compatibility>
 
     <example><title>Exemple</title>
       <highlight language="config">
-ProxyRemote http://goodguys.example.com/ http://mirrorguys.example.com:8000
-ProxyRemote * http://cleverproxy.localdomain
-ProxyRemote ftp http://ftpproxy.mydomain:8080
+ProxyRemote https://goodguys.example.com/ https://mirrorguys.example.com:8000
+ProxyRemote * https://cleverproxy.localdomain
+ProxyRemote ftp https://ftpproxy.mydomain:8080
     </highlight>
     </example>
 
@@ -966,15 +966,15 @@ charge</description>
     <example>
       <highlight language="config">
 &lt;Proxy balancer://hotcluster&gt;
-    BalancerMember http://www2.example.com:8080 loadfactor=1
-    BalancerMember http://www3.example.com:8080 loadfactor=2
+    BalancerMember https://www2.example.com:8080 loadfactor=1
+    BalancerMember https://www3.example.com:8080 loadfactor=2
     ProxySet lbmethod=bytraffic
 &lt;/Proxy&gt;
       </highlight>
     </example>
 
     <highlight language="config">
-&lt;Proxy http://backend&gt;
+&lt;Proxy https://backend&gt;
     ProxySet keepalive=On
 &lt;/Proxy&gt;
     </highlight>
@@ -1037,7 +1037,7 @@ de la version 2.4.7 du serveur HTTP Apache</compatibility>
     il suffit d'utiliser une URL cible préfixée par
     <code>unix:/path/lis.sock|</code>. Par exemple, pour mandater HTTP
     et cibler l'UDS /home/www.socket, vous devez utiliser
-    <code>unix:/home/www.socket|http://localhost/whatever/</code>. Comme
+    <code>unix:/home/www.socket|https://localhost/whatever/</code>. Comme
     le socket est local, le nom d'hôte utilisé (ici
     <code>localhost</code>) peut être sujet à discussion, mais il est
     transmis dans l'en-tête Host: de la requête.</p>
@@ -1063,17 +1063,17 @@ de la version 2.4.7 du serveur HTTP Apache</compatibility>
     <directive>ProxyPassMatch</directive> à la place.</p>
     
     <p>Supposons que le serveur local a pour adresse
-    <code>http://example.com/</code> ; alors la ligne</p>
+    <code>https://example.com/</code> ; alors la ligne</p>
 
     <highlight language="config">
 &lt;Location "/mirror/foo/"&gt;
-    ProxyPass "http://backend.example.com/"
+    ProxyPass "https://backend.example.com/"
 &lt;/Location&gt;
     </highlight>
 
     <p>va convertir en interne toute requête pour
-    <code>http://example.com/mirror/foo/bar</code> en une requête
-    mandatée pour <code>http://backend.example.com/bar</code>.</p>
+    <code>https://example.com/mirror/foo/bar</code> en une requête
+    mandatée pour <code>https://backend.example.com/bar</code>.</p>
 
     <p>Si vous avez besoin d'un configuration de mandataire inverse plus
     souple, reportez-vous à la documentation de la directive <directive
@@ -1087,7 +1087,7 @@ de la version 2.4.7 du serveur HTTP Apache</compatibility>
     href="mod_proxy_balancer.html#balancer_manager">Balancer Manager</a> :</p>
 
     <highlight language="config">
-        ProxyPass "/mirror/foo/" "http://backend.example.com/"
+        ProxyPass "/mirror/foo/" "https://backend.example.com/"
     </highlight>
 
     <note type="warning">
@@ -1104,7 +1104,7 @@ de la version 2.4.7 du serveur HTTP Apache</compatibility>
 
     <highlight language="config">
 &lt;Location "/mirror/foo/"&gt;
-    ProxyPass "http://backend.example.com/"
+    ProxyPass "https://backend.example.com/"
 &lt;/Location&gt;
 &lt;Location "/mirror/foo/i"&gt;
     ProxyPass "!"
@@ -1113,7 +1113,7 @@ de la version 2.4.7 du serveur HTTP Apache</compatibility>
 
     <highlight language="config">
 ProxyPass "/mirror/foo/i" "!"
-ProxyPass "/mirror/foo" "http://backend.example.com"
+ProxyPass "/mirror/foo" "https://backend.example.com"
     </highlight>
 
     <p>va mandater toutes les requêtes pour <code>/mirror/foo</code>
@@ -1125,7 +1125,7 @@ ProxyPass "/mirror/foo" "http://backend.example.com"
     <highlight language="config">
 ProxyPass "/mirror/foo/i" "!"
 &lt;Location "/mirror/foo/"&gt;
-    ProxyPass "http://backend.example.com/"
+    ProxyPass "https://backend.example.com/"
 &lt;/Location&gt;
     </highlight>
     <p>Dans ce cas, une requête pour <code>/mirror/foo/i</code> sera tout de
@@ -1203,7 +1203,7 @@ ProxyPass "/mirror/foo/i" "!"
 
     <example><title>Exemple</title>
     <highlight language="config">
-        ProxyPass "/example" "http://backend.example.com" max=20 ttl=120 retry=300
+        ProxyPass "/example" "https://backend.example.com" max=20 ttl=120 retry=300
 	</highlight>
     </example>
 
@@ -1597,7 +1597,7 @@ ProxyPass "/mirror/foo/i" "!"
     </table>
     <p>Exemple de configuration d'un répartiteur de charge</p>
     <highlight language="config">
-ProxyPass "/special-area" "http://special.example.com" smax=5 max=10
+ProxyPass "/special-area" "https://special.example.com" smax=5 max=10
 ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofailover=On
 &lt;Proxy balancer://mycluster&gt;
     BalancerMember ajp://1.2.3.4:8009
@@ -1687,7 +1687,7 @@ RewriteCond %{HTTPS} =on
 RewriteRule . - [E=protocol:https]
 
 RewriteRule ^/mirror/foo/(.*) %{ENV:protocol}://backend.example.com/$1 [P]
-ProxyPassReverse  "/mirror/foo/" "http://backend.example.com/"
+ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"
 ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"
     </highlight>
 
@@ -1718,15 +1718,15 @@ du serveur local en utilisant des expressions rationnelles</description>
     utilisée dans un contexte de niveau répertoire.</note>
 
     <p>Supposons que le serveur local a pour adresse
-    <code>http://example.com/</code> ; alors</p>
+    <code>https://example.com/</code> ; alors</p>
 
     <highlight language="config">
-      ProxyPassMatch "^(/.*\.gif)$" "http://backend.example.com/$1"
+      ProxyPassMatch "^(/.*\.gif)$" "https://backend.example.com/$1"
     </highlight>
 
     <p>va provoquer la conversion interne de la requête locale
-    <code>http://example.com/foo/bar.gif</code> en une requête mandatée
-    pour <code>http://backend.example.com/foo/bar.gif</code>.</p>
+    <code>https://example.com/foo/bar.gif</code> en une requête mandatée
+    pour <code>https://backend.example.com/foo/bar.gif</code>.</p>
 
     <note><title>Note</title>
       <p>L'argument URL doit pouvoir être interprété en tant qu'URL
@@ -1735,14 +1735,14 @@ du serveur local en utilisant des expressions rationnelles</description>
       pouvez utiliser. Par exemple, si l'on avait utilisé</p>
       <highlight language="config">
         ProxyPassMatch "^(/.*\.gif)$"
-	"http://backend.example.com:8000$1"
+	"https://backend.example.com:8000$1"
       </highlight>
       <p>dans l'exemple précédent, nous aurions provoqué une erreur de
       syntaxe au démarrage du serveur. C'est une bogue (PR 46665 dans
       ASF bugzilla), et il est possible de la contourner en reformulant
       la correspondance :</p>
       <highlight language="config">
-        ProxyPassMatch "^/(.*\.gif)$" "http://backend.example.com:8000/$1"
+        ProxyPassMatch "^/(.*\.gif)$" "https://backend.example.com:8000/$1"
       </highlight>
     </note>
 
@@ -1831,24 +1831,24 @@ par un serveur mandaté en inverse</description>
     </p>
     
     <p>Supposons par exemple que le serveur local a pour adresse
-    <code>http://example.com/</code> ; alors</p>
+    <code>https://example.com/</code> ; alors</p>
 
     <highlight language="config">
-ProxyPass         "/mirror/foo/" "http://backend.example.com/"
-ProxyPassReverse  "/mirror/foo/" "http://backend.example.com/"
+ProxyPass         "/mirror/foo/" "https://backend.example.com/"
+ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"
 ProxyPassReverseCookieDomain  backend.example.com  public.example.com
 ProxyPassReverseCookiePath  "/"  "/mirror/foo/"
     </highlight>
 
     <p>ne va pas seulement provoquer la conversion interne d'une requête
-    locale pour <code>http://example.com/mirror/foo/bar</code> en une
-    requête mandatée pour <code>http://backend.example.com/bar</code>
+    locale pour <code>https://example.com/mirror/foo/bar</code> en une
+    requête mandatée pour <code>https://backend.example.com/bar</code>
     (la fonctionnalité fournie par <code>ProxyPass</code>). Il va
     aussi s'occuper des redirections que le serveur
     <code>backend.example.com</code> envoie lorsque
-    <code>http://backend.example.com/bar</code> est redirigé par
-    celui-ci vers <code>http://backend.example.com/quux</code>, Apache
-    httpd corrige ceci en <code>http://example.com/mirror/foo/quux</code>
+    <code>https://backend.example.com/bar</code> est redirigé par
+    celui-ci vers <code>https://backend.example.com/quux</code>, Apache
+    httpd corrige ceci en <code>https://example.com/mirror/foo/quux</code>
     avant de faire suivre la redirection HTTP au client. Notez que le
     nom d'hôte utilisé pour construire l'URL est choisi en respectant la
     définition de la directive <directive
@@ -2118,7 +2118,7 @@ directement</description>
 
     <example><title>Exemple</title>
       <highlight language="config">
-ProxyRemote  *  http://firewall.example.com:81
+ProxyRemote  *  https://firewall.example.com:81
 NoProxy         .example.com 192.168.112.0/21
     </highlight>
     </example>
@@ -2283,7 +2283,7 @@ mandatées</description>
 
     <example><title>Exemple</title>
     <highlight language="config">
-ProxyRemote  "*"  "http://firewall.example.com:81"
+ProxyRemote  "*"  "https://firewall.example.com:81"
 NoProxy           ".example.com" "192.168.112.0/21"
 ProxyDomain       ".example.com"      
       </highlight>
@@ -2305,7 +2305,7 @@ ProxyDomain       ".example.com"
     HTTP <code>Via:</code> par le mandataire. Le but recherché est de
     contrôler le flux des requêtes mandatées tout au long d'une chaîne
     de serveurs mandataires. Voir <a
-    href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a> (HTTP/1.1),
+    href="https://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a> (HTTP/1.1),
     section 14.45 pour une description des lignes d'en-tête
     <code>Via:</code>.</p>
 

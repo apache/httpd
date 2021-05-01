@@ -12,7 +12,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -298,7 +298,7 @@ Swap:       3903784      12540  3891244
 		ont servies, ainsi que la charge CPU induite par httpd
 		et le reste du syst&egrave;me. L'Apache Software Foundation
 		utilise elle-m&ecirc;me <module>mod_status</module> pour son
-		propre <a href="http://apache.org/server-status">site
+		propre <a href="https://apache.org/server-status">site
 		web</a>. Si vous ajoutez une directive
 		<code>ExtendedStatus On</code> &agrave; votre fichier
 		<code>httpd.conf</code>, la page de
@@ -390,7 +390,7 @@ Swap:       3903784      12540  3891244
 		des applications install&eacute;es. Vous pouvez bloquer ces
 		tentatives d'attaque en utilisant un pare-feu ou le
 		module <a
-		href="http://www.modsecurity.org/">mod_security</a>,
+		href="https://www.modsecurity.org/">mod_security</a>,
 		mais ceci d&eacute;passe la port&eacute;e de cette discussion. 
                 </p>
                 <p>
@@ -784,7 +784,7 @@ Swap:       3903784      12540  3891244
 	    afin d'&eacute;valuer les performances du syst&egrave;me en conditions
 	    r&eacute;elles de fonctionnement. A cet effet, il existe des
 	    paquets commerciaux comme <a
-	    href="http://learnloadrunner.com/">LoadRunner</a>, mais
+	    href="https://learnloadrunner.com/">LoadRunner</a>, mais
 	    aussi de nombreux outils libres permettant de g&eacute;n&eacute;rer une
 	    charge de test pour votre serveur web. 
             </p>
@@ -815,7 +815,7 @@ Swap:       3903784      12540  3891244
                 <li>
                     <p>Des projets externes &agrave; l'ASF et r&eacute;put&eacute;s
 		    relativement corrects : grinder, httperf, tsung, <a
-		    href="http://funkload.nuxeo.org/">FunkLoad</a>.
+		    href="https://funkload.nuxeo.org/">FunkLoad</a>.
                     </p>
                 </li>
             </ul>
@@ -1635,7 +1635,7 @@ CacheMaxExpire 21600
 	qu'il affiche les performances d&eacute;sir&eacute;es, nous d&eacute;couvrirons vite
 	qu'<em>1</em> syt&egrave;me &agrave; lui seul peut constituer un goulot
 	d'&eacute;tranglement. A ce sujet, la page du Wiki <a
-	href="http://wiki.apache.org/httpd/PerformanceScalingOut">PerformanceScalingOut</a>
+	href="https://wiki.apache.org/httpd/PerformanceScalingOut">PerformanceScalingOut</a>
 	d&eacute;crit comment adapter un syst&egrave;me &agrave; mesure qu'il prend de
 	l'ampleur, ou comment personnaliser plusieurs syst&egrave;mes dans leur
 	ensemble.

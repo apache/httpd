@@ -6,7 +6,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -1704,7 +1704,7 @@ static const char *register_lua_root(cmd_parms *cmd, void *_cfg,
 const char *ap_lua_ssl_val(apr_pool_t *p, server_rec *s, conn_rec *c,
                            request_rec *r, const char *var)
 {
-    return ap_ssl_var_lookup(p, s, c, r, var);
+    return ap_ssl_var_lookup(p, s, c, r, (char *)var);
 }
 
 int ap_lua_ssl_is_https(conn_rec *c)

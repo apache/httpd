@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -17,12 +17,12 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Module Apache mod_rewrite</h1>
 <div class="toplang">
@@ -158,7 +158,7 @@ répertoire</td></tr>
 
 <p>Dans l'exemple ci-dessous, la directive
 <code class="directive">RewriteBase</code> est nécessaire afin d'éviter une
-réécriture en http://example.com/opt/myapp-1.2.3/welcome.html car la
+réécriture en https://example.com/opt/myapp-1.2.3/welcome.html car la
 ressource n'était pas relative à la racine des documents. Cette erreur
 de configuration aurait conduit le serveur à rechercher un répertoire
 "opt" à la racine des documents.</p>
@@ -1055,8 +1055,8 @@ pour le moteur de réécriture</td></tr>
       que si l'URI de la requête respecte la syntaxe d'un <a href="directive-dict.html#Syntax">chemin URL</a>. Ceci permet
       d'éviter certains problèmes de sécurité où des règles
       particulières pourraient permettre  des développements de modèles
-      inattendus (voir <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-3368">CVE-2011-3368</a>
-      et <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-4317">CVE-2011-4317</a>).
+      inattendus (voir <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-3368">CVE-2011-3368</a>
+      et <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-4317">CVE-2011-4317</a>).
       Pour s'affranchir de la restriction relative à la syntaxe des chemins URL, on peut
       utiliser l'option <code>AllowAnyURI</code>, afin de permettre à
       <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> d'appliquer le jeu de règles à toute
@@ -1111,8 +1111,8 @@ pour le moteur de réécriture</td></tr>
       être réduite en chemin local, le chemin doit être préfixé par la
       valeur de la directive DocumentRoot, ce qui permet d'interdire l'accès à
       un fichier tel que /tmp/myfile suite à une requête pour
-      http://host/file/myfile avec la <code class="directive"><a href="#rewriterule">RewriteRule</a></code> suivante :</p>
-      <pre class="prettyprint lang-config">RewriteRule /file/(.*) http://localhost/tmp/$1</pre>
+      https://host/file/myfile avec la <code class="directive"><a href="#rewriterule">RewriteRule</a></code> suivante :</p>
+      <pre class="prettyprint lang-config">RewriteRule /file/(.*) https://localhost/tmp/$1</pre>
 
       <p>Cette option permet de restaurer l'ancien comportement lorsqu'un chemin
       local obtenu à partir de la réduction d'une URL n'est pas préfixé par la
@@ -1249,10 +1249,10 @@ dernière.</li>
   # Sans RewriteOptions Inherit, cette règle est écrasée par celle de la section
   # suivante et aucune redirection ne sera effectuée pour les URIs contenant
   # 'foo'
-  RewriteRule foo http://example.com/foo [R]
+  RewriteRule foo https://example.com/foo [R]
 &lt;/If&gt;
 &lt;If "true"&gt;
-  RewriteRule bar http://example.com/bar [R]
+  RewriteRule bar https://example.com/bar [R]
 &lt;/If&gt;</pre>
 </div>
 </div>
@@ -1586,36 +1586,36 @@ utilisé dans la directive <code class="directive">RewriteRule</code></p>
 </tr>
 <tr>
 <td>^/un_chemin(.*) /autre_chemin$1 [R]</td>
-<td>http://cet_hote/autre_chemin/info_chemin via une redirection externe</td>
+<td>https://cet_hote/autre_chemin/info_chemin via une redirection externe</td>
 </tr>
 <tr class="odd">
 <td>^/un_chemin(.*) /autre_chemin$1 [P]</td>
 <td>sans objet, non supporté</td>
 </tr>
 <tr>
-<td>^/un_chemin(.*) http://cet_hote/autre_chemin$1</td>
+<td>^/un_chemin(.*) https://cet_hote/autre_chemin$1</td>
 <td>/autre_chemin/info_chemin</td>
 </tr>
 <tr class="odd">
-<td>^/un_chemin(.*) http://cet_hote/autre_chemin$1 [R]</td>
-<td>http://cet_hote/autre_chemin/info_chemin via une redirection externe</td>
+<td>^/un_chemin(.*) https://cet_hote/autre_chemin$1 [R]</td>
+<td>https://cet_hote/autre_chemin/info_chemin via une redirection externe</td>
 </tr>
 <tr>
-<td>^/un_chemin(.*) http://cet_hote/autre_chemin$1 [P]</td>
+<td>^/un_chemin(.*) https://cet_hote/autre_chemin$1 [P]</td>
 <td>sans objet, non supporté</td>
 </tr>
 <tr class="odd">
-<td>^/un_chemin(.*) http://autre_hote/autre_chemin$1</td>
-<td>http://autre_hote/autre_chemin/info_chemin via une redirection externe</td>
+<td>^/un_chemin(.*) https://autre_hote/autre_chemin$1</td>
+<td>https://autre_hote/autre_chemin/info_chemin via une redirection externe</td>
 </tr>
 <tr>
-<td>^/un_chemin(.*) http://autre_hote/autre_chemin$1 [R]</td>
-<td>http://autre_hote/autre_chemin/info_chemin (le drapeau [R] est
+<td>^/un_chemin(.*) https://autre_hote/autre_chemin$1 [R]</td>
+<td>https://autre_hote/autre_chemin/info_chemin (le drapeau [R] est
 redondant)</td>
 </tr>
 <tr class="odd">
-<td>^/somepath(.*) http://otherhost/otherpath$1 [P]</td>
-<td>http://otherhost/otherpath/pathinfo via internal proxy</td>
+<td>^/somepath(.*) https://otherhost/otherpath$1 [P]</td>
+<td>https://otherhost/otherpath/pathinfo via internal proxy</td>
 </tr>
 </table>
 
@@ -1637,7 +1637,7 @@ redondant)</td>
 </tr>
 <tr class="odd">
 <td>^chemin-local(.*) autre-chemin$1  [R]</td>
-<td>http://cet-hôte/chemin/autre-chemin/infochemin via redirection
+<td>https://cet-hôte/chemin/autre-chemin/infochemin via redirection
 externe</td>
 </tr>
 <tr>
@@ -1650,36 +1650,36 @@ externe</td>
 </tr>
 <tr>
 <td>^chemin-local(.*) /autre-chemin$1 [R]</td>
-<td>http://cet-hôte/autre-chemin/infochemin via redirection externe</td>
+<td>https://cet-hôte/autre-chemin/infochemin via redirection externe</td>
 </tr>
 <tr class="odd">
 <td>^chemin-local(.*) /autre-chemin$1 [P]</td>
 <td>n'a pas lieu d'être, non supporté</td>
 </tr>
 <tr>
-<td>^chemin-local(.*) http://cet-hôte/autre-chemin$1</td>
+<td>^chemin-local(.*) https://cet-hôte/autre-chemin$1</td>
 <td>/autre-chemin/infochemin</td>
 </tr>
 <tr class="odd">
-<td>^chemin-local(.*) http://cet-hôte/autre-chemin$1 [R]</td>
-<td>http://cet-hôte/autre-chemin/infochemin via redirection externe</td>
+<td>^chemin-local(.*) https://cet-hôte/autre-chemin$1 [R]</td>
+<td>https://cet-hôte/autre-chemin/infochemin via redirection externe</td>
 </tr>
 <tr>
-<td>^chemin-local(.*) http://cet-hôte/autre-chemin$1 [P]</td>
+<td>^chemin-local(.*) https://cet-hôte/autre-chemin$1 [P]</td>
 <td>n'a pas lieu d'être, non supporté</td>
 </tr>
 <tr class="odd">
-<td>^chemin-local(.*) http://autre hôte/autre-chemin$1</td>
-<td>http://autre hôte/autre-chemin/infochemin via redirection externe</td>
+<td>^chemin-local(.*) https://autre hôte/autre-chemin$1</td>
+<td>https://autre hôte/autre-chemin/infochemin via redirection externe</td>
 </tr>
 <tr>
-<td>^chemin-local(.*) http://autre hôte/autre-chemin$1 [R]</td>
-<td>http://autre hôte/autre-chemin/infochemin via redirection externe
+<td>^chemin-local(.*) https://autre hôte/autre-chemin$1 [R]</td>
+<td>https://autre hôte/autre-chemin/infochemin via redirection externe
 (le drapeau [R] est redondant)</td>
 </tr>
 <tr class="odd">
-<td>^chemin-local(.*) http://autre hôte/autre-chemin$1 [P]</td>
-<td>http://autre hôte/autre-chemin/infochemin via un mandataire interne</td>
+<td>^chemin-local(.*) https://autre hôte/autre-chemin$1 [P]</td>
+<td>https://autre hôte/autre-chemin/infochemin via un mandataire interne</td>
 </tr>
 </table>
 
@@ -1692,7 +1692,7 @@ externe</td>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_rewrite.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/mod/mod_rewrite.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -1707,8 +1707,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_rewrite.ht
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

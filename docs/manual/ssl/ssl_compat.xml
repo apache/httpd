@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -30,12 +30,12 @@
 This page covers backwards compatibility between mod_ssl and other
 SSL solutions.  mod_ssl is not the only SSL solution for Apache; four
 additional products are (or were) also available: Ben Laurie's freely
-available <a href="http://www.apache-ssl.org/">Apache-SSL</a> (from
+available <a href="https://www.apache-ssl.org/">Apache-SSL</a> (from
 where mod_ssl were originally derived in 1998), Red Hat's commercial
 Secure Web Server (which was based on mod_ssl), Covalent's commercial
 Raven SSL Module (also based on
 mod_ssl) and finally C2Net's (now Red Hat's) commercial product <a
-href="http://www.redhat.com/explore/stronghold/">Stronghold</a> (based
+href="https://www.redhat.com/explore/stronghold/">Stronghold</a> (based
 on a different evolution branch, named Sioux up to Stronghold 2.x, and
 based on mod_ssl since Stronghold 3.x).</p>
 

@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -348,8 +348,8 @@ Listen 80
     <highlight language="config">
 &lt;VirtualHost *:*&gt;
     ProxyPreserveHost On
-    ProxyPass        "/" "http://192.168.111.2/"
-    ProxyPassReverse "/" "http://192.168.111.2/"
+    ProxyPass        "/" "https://192.168.111.2/"
+    ProxyPassReverse "/" "https://192.168.111.2/"
     ServerName hostname.example.com
 &lt;/VirtualHost&gt;
     </highlight>
@@ -516,15 +516,15 @@ DocumentRoot "/www/example1"
 
     <p>Due to the <directive module="core">ServerPath</directive>
     directive a request to the URL
-    <code>http://www.sub1.domain.tld/sub1/</code> is <em>always</em> served
+    <code>https://www.sub1.domain.tld/sub1/</code> is <em>always</em> served
     from the sub1-vhost.<br /> A request to the URL
-    <code>http://www.sub1.domain.tld/</code> is only
+    <code>https://www.sub1.domain.tld/</code> is only
     served from the sub1-vhost if the client sent a correct
     <code>Host:</code> header. If no <code>Host:</code> header is sent the
     client gets the information page from the primary host.</p>
 
     <p>Please note that there is one oddity: A request to
-    <code>http://www.sub2.domain.tld/sub1/</code> is also served from the
+    <code>https://www.sub2.domain.tld/sub1/</code> is also served from the
     sub1-vhost if the client sent no <code>Host:</code> header.</p>
 
     <p>The <directive module="mod_rewrite">RewriteRule</directive> directives

@@ -5,7 +5,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -110,7 +110,7 @@ AP_DECLARE(int) ap_prep_lingering_close(conn_rec *c)
  * MAX_SECS_TO_LINGER has passed.  The reasons for doing this are
  * documented in a draft:
  *
- * http://tools.ietf.org/html/draft-ietf-http-connection-00.txt
+ * https://tools.ietf.org/html/draft-ietf-http-connection-00.txt
  *
  * in a nutshell -- if we don't make this effort we risk causing
  * TCP RST packets to be sent which can tear down a connection before

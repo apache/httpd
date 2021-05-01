@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -111,7 +111,7 @@ module="mod_alias">Alias</directive> より先にマッチしますので、後�
       Alias /image /ftp/pub/image
     </example>
 
-    <p>http://myserver/image/foo.gif へのリクエストに対して、サーバは
+    <p>https://myserver/image/foo.gif へのリクエストに対して、サーバは
     ファイル /ftp/pub/image/foo.gif を返します。</p>
 
     <p>もし <var>url-path</var> の最後に /
@@ -196,11 +196,11 @@ module="mod_alias">Alias</directive> より先にマッチしますので、後�
     (% が符号化された) URL へのリダイレクトエラーが返されます。</p>
 
     <example><title>例</title>
-      Redirect /service http://foo2.bar.com/service
+      Redirect /service https://foo2.bar.com/service
     </example>
 
-    <p>クライアントは http://myserver/service/foo.txt
-    へのリクエストを行なうと、代わりに http://foo2.bar.com/service/foo.txt
+    <p>クライアントは https://myserver/service/foo.txt
+    へのリクエストを行なうと、代わりに https://foo2.bar.com/service/foo.txt
     をアクセスするように告げられます。</p>
 
 <note><title>注意</title><p>設定ファイル中の順番に関わらず、
@@ -249,8 +249,8 @@ type="section" module="core">Directory</directive>
     <p>例:</p>
 
     <example><title>例</title>
-      Redirect permanent /one http://example.com/two<br />
-      Redirect 303 /three http://example.com/other
+      Redirect permanent /one https://example.com/two<br />
+      Redirect 303 /three https://example.com/other
     </example>
 
 </usage>
@@ -278,7 +278,7 @@ type="section" module="core">Directory</directive>
     </p>
 
     <example>
-      RedirectMatch (.*)\.gif$ http://www.anotherserver.com$1.jpg
+      RedirectMatch (.*)\.gif$ https://www.anotherserver.com$1.jpg
     </example>
 </usage>
 </directivesynopsis>
@@ -342,7 +342,7 @@ CGI スクリプトに指定</description>
       ScriptAlias /cgi-bin/ /web/cgi-bin/
     </example>
 
-    <p><code>http://myserver/cgi-bin/foo</code>
+    <p><code>https://myserver/cgi-bin/foo</code>
     へのリクエストに対してサーバはスクリプト
     <code>/web/cgi-bin/foo</code> を実行します。</p>
 </usage>

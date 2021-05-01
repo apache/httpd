@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
 <meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>°ü·Ã Ç¥ÁØ - Apache HTTP Server Version 2.5</title>
+<title>ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½ - Apache HTTP Server Version 2.5</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -16,188 +16,188 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Miscellaneous Documentation</a></div><div id="page-content"><div id="preamble"><h1>°ü·Ã Ç¥ÁØ</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Miscellaneous Documentation</a></div><div id="page-content"><div id="preamble"><h1>ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½</h1>
 <div class="toplang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/misc/relevant_standards.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/misc/relevant_standards.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/misc/relevant_standards.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/misc/relevant_standards.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">ÀÌ ¹®¼­´Â ÃÖ½ÅÆÇ ¹ø¿ªÀÌ ¾Æ´Õ´Ï´Ù.
-            ÃÖ±Ù¿¡ º¯°æµÈ ³»¿ëÀº ¿µ¾î ¹®¼­¸¦ Âü°íÇÏ¼¼¿ä.</div>
+<div class="outofdate">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Õ´Ï´ï¿½.
+            ï¿½Ö±Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.</div>
 
-    <p>ÀÌ ¹®¼­¿¡´Â °£´ÜÇÑ ¼³¸í°ú ÇÔ²² ¾ÆÆÄÄ¡ À¥¼­¹ö°¡ µû¸£´Â
-    ¸ðµç °ü·Ã Ç¥ÁØÀ» ¿­°ÅÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô²ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <p>¾Æ·¡ Á¤º¸¿¡ ´õÇÏ¿© ´ÙÀ½ ÀÚ·áµµ »ìÆìºÁ¾ß ÇÑ´Ù:</p>
+    <p>ï¿½Æ·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ú·áµµ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½:</p>
 
     <ul>
       <li>
-        <a href="http://purl.org/NET/http-errata">
-        http://purl.org/NET/http-errata</a> - HTTP/1.1 ±Ô¾à
-        Á¤¿ÀÇ¥
+        <a href="https://purl.org/NET/http-errata">
+        https://purl.org/NET/http-errata</a> - HTTP/1.1 ï¿½Ô¾ï¿½
+        ï¿½ï¿½ï¿½ï¿½Ç¥
       </li>
       <li>
-        <a href="http://www.rfc-editor.org/errata.html">
-        http://www.rfc-editor.org/errata.html</a> - RFC Á¤¿ÀÇ¥
+        <a href="https://www.rfc-editor.org/errata.html">
+        https://www.rfc-editor.org/errata.html</a> - RFC ï¿½ï¿½ï¿½ï¿½Ç¥
       </li>
       <li>
-        <a href="http://ftp.ics.uci.edu/pub/ietf/http/#RFC">
-        http://ftp.ics.uci.edu/pub/ietf/http/#RFC</a> - HTTP
-        °ü·Ã RFC ¸ñ·Ï
+        <a href="https://ftp.ics.uci.edu/pub/ietf/http/#RFC">
+        https://ftp.ics.uci.edu/pub/ietf/http/#RFC</a> - HTTP
+        ï¿½ï¿½ï¿½ï¿½ RFC ï¿½ï¿½ï¿½
       </li>
     </ul>
 
-    <div class="warning"><h3>ÁÖÀÇ</h3>
-    <p>ÀÌ ¹®¼­´Â ¾ÆÁ÷ ¿ÏÀüÇÏÁö ¾Ê´Ù.</p>
+    <div class="warning"><h3>ï¿½ï¿½ï¿½ï¿½</h3>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´ï¿½.</p>
     </div>
 
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#http_recommendations">HTTP ±Ç°í</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#html_recommendations">HTML ±Ç°í</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#authentication">ÀÎÁõ</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#language_country_codes">¾ð¾î/±¹°¡ ÄÚµå</a></li>
-</ul><h3>Âü°í</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#http_recommendations">HTTP ï¿½Ç°ï¿½</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#html_recommendations">HTML ï¿½Ç°ï¿½</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authentication">ï¿½ï¿½ï¿½ï¿½</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#language_country_codes">ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½</a></li>
+</ul><h3>ï¿½ï¿½ï¿½ï¿½</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="http_recommendations" id="http_recommendations">HTTP ±Ç°í</a> <a title="Permanent link" href="#http_recommendations" class="permalink">&para;</a></h2>
+<h2><a name="http_recommendations" id="http_recommendations">HTTP ï¿½Ç°ï¿½</a> <a title="Permanent link" href="#http_recommendations" class="permalink">&para;</a></h2>
 
-    <p>¾î¶² ¸ðµâÀ» ÄÄÆÄÀÏÇÏ°í »ç¿ëÇÏ´ÂÁö¿Í °ü°è¾øÀÌ ±âº»ÀûÀ¸·Î
-    À¥¼­¹öÀÎ ¾ÆÆÄÄ¡´Â ´ÙÀ½ IETF ±Ç°í(recommendation)¸¦ µû¸¥´Ù:</p>
+    <p>ï¿½î¶² ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ IETF ï¿½Ç°ï¿½(recommendation)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</p>
 
     <dl>
-      <dt><a href="http://www.rfc-editor.org/rfc/rfc1945.txt">RFC 1945</a>
+      <dt><a href="https://www.rfc-editor.org/rfc/rfc1945.txt">RFC 1945</a>
       (Informational)</dt>
 
-      <dd>ÇÏÀÌÆÛÅØ½ºÆ® Àü¼Û ÇÁ·ÎÅäÄÝ (Hypertext Transfer Protocol,
-      HTTP)Àº ºÐ»ê, Çùµ¿, ÇÏÀÌÆÛ¸ÅÃ¼ Á¤º¸ ½Ã½ºÅÛ¿¡ ÇÊ¿äÇÑ ºü¸£°í
-      °¡º­¿î ¾îÇÃ¸®ÄÉÀÌ¼Ç ¼öÁØ(application-level) ÇÁ·ÎÅäÄÝÀÌ´Ù.
-      ÀÌ ¹®¼­´Â HTTP/1.0À» ¼³¸íÇÑ´Ù.</dd>
+      <dd>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (Hypertext Transfer Protocol,
+      HTTP)ï¿½ï¿½ ï¿½Ð»ï¿½, ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½Û¸ï¿½Ã¼ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã½ï¿½ï¿½Û¿ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¸ï¿½ï¿½ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½(application-level) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½.
+      ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ HTTP/1.0ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
-      <dt><a href="http://www.rfc-editor.org/rfc/rfc2616.txt">RFC 2616</a>
+      <dt><a href="https://www.rfc-editor.org/rfc/rfc2616.txt">RFC 2616</a>
       (Standards Track)</dt>
 
-      <dd>ÇÏÀÌÆÛÅØ½ºÆ® Àü¼Û ÇÁ·ÎÅäÄÝ (Hypertext Transfer Protocol,
-      HTTP)Àº ºÐ»ê, Çùµ¿, ÇÏÀÌÆÛ¸ÅÃ¼ Á¤º¸ ½Ã½ºÅÛÀ» À§ÇÑ ¾îÇÃ¸®ÄÉÀÌ¼Ç
-      ¼öÁØ ÇÁ·ÎÅäÄÝÀÌ´Ù. ÀÌ ¹®¼­´Â HTTP/1.1À» ¼³¸íÇÑ´Ù.</dd>
+      <dd>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (Hypertext Transfer Protocol,
+      HTTP)ï¿½ï¿½ ï¿½Ð»ï¿½, ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½Û¸ï¿½Ã¼ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¸ï¿½ï¿½ï¿½ï¿½Ì¼ï¿½
+      ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ HTTP/1.1ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
-      <dt><a href="http://www.rfc-editor.org/rfc/rfc2396.txt">RFC 2396</a>
+      <dt><a href="https://www.rfc-editor.org/rfc/rfc2396.txt">RFC 2396</a>
       (Standards Track)</dt>
 
-      <dd>Ç¥ÁØ ÀÚ¿ø ½Äº°ÀÚ (Uniform Resource Identifier, URI)´Â
-      Ãß»óÀû È¤Àº ¹°¸®Àû ÀÚ¿øÀ» ½Äº°ÇÏ±âÀ§ÇÑ ÂªÀº ¹®ÀÚ¿­ÀÌ´Ù.</dd>
+      <dd>Ç¥ï¿½ï¿½ ï¿½Ú¿ï¿½ ï¿½Äºï¿½ï¿½ï¿½ (Uniform Resource Identifier, URI)ï¿½ï¿½
+      ï¿½ß»ï¿½ï¿½ï¿½ È¤ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½Äºï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ Âªï¿½ï¿½ ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½Ì´ï¿½.</dd>
     </dl>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="html_recommendations" id="html_recommendations">HTML ±Ç°í</a> <a title="Permanent link" href="#html_recommendations" class="permalink">&para;</a></h2>
+<h2><a name="html_recommendations" id="html_recommendations">HTML ï¿½Ç°ï¿½</a> <a title="Permanent link" href="#html_recommendations" class="permalink">&para;</a></h2>
 
-    <p>ÇÏÀÌÆÛÅØ½ºÆ® ¸¶Å©¾÷ ¾ð¾î (Hypertext Markup Language,
-    HTML)¿Í °ü·ÃÇÏ¿© ¾ÆÆÄÄ¡´Â ´ÙÀ½ IETF ±Ç°í¿Í W3C ±Ç°í¸¦ µû¸¥´Ù:</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø½ï¿½Æ® ï¿½ï¿½Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ (Hypertext Markup Language,
+    HTML)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ IETF ï¿½Ç°ï¿½ï¿½ï¿½ W3C ï¿½Ç°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</p>
 
     <dl>
-      <dt><a href="http://www.rfc-editor.org/rfc/rfc2854.txt">RFC 2854</a>
+      <dt><a href="https://www.rfc-editor.org/rfc/rfc2854.txt">RFC 2854</a>
       (Informational)</dt>
 
-      <dd>ÀÌ ¹®¼­´Â HTML °³¹ß°úÁ¤À» ¿ä¾àÇÏ°í, °ü·Ã W3C ±Ç°í¸¦
-      ±â¹ÝÀ¸·Î "text/html" MIME typeÀ» Á¤ÀÇÇÑ´Ù.</dd>
+      <dd>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ HTML ï¿½ï¿½ï¿½ß°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½, ï¿½ï¿½ï¿½ï¿½ W3C ï¿½Ç°ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ "text/html" MIME typeï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
-      <dt><a href="http://www.w3.org/TR/html401">HTML 4.01 ±Ô¾à</a>
-      (<a href="http://www.w3.org/MarkUp/html4-updates/errata">Errata</a>)
+      <dt><a href="https://www.w3.org/TR/html401">HTML 4.01 ï¿½Ô¾ï¿½</a>
+      (<a href="https://www.w3.org/MarkUp/html4-updates/errata">Errata</a>)
       </dt>
 
-      <dd>ÀÌ ±Ô¾àÀº ¿ùµå¿ÍÀÌµåÀ¥ÀÇ ÃâÆÇ¾ð¾îÀÎ ÇÏÀÌÆÛÅØ½ºÆ® ¸¶Å©¾÷
-      ¾ð¾î (Hypertext Markup Language, HTML)¸¦ Á¤ÀÇÇÑ´Ù. ÀÌ
-      ±Ô¾àÀº HTML 4ÀÇ ÇÏÀ§¹öÀüÀÎ HTML 4.01À» Á¤ÀÇÇÑ´Ù.</dd>
+      <dd>ï¿½ï¿½ ï¿½Ô¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ìµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø½ï¿½Æ® ï¿½ï¿½Å©ï¿½ï¿½
+      ï¿½ï¿½ï¿½ (Hypertext Markup Language, HTML)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½
+      ï¿½Ô¾ï¿½ï¿½ï¿½ HTML 4ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ HTML 4.01ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
-      <dt><a href="http://www.w3.org/TR/REC-html32">HTML 3.2 Âü°í ±Ô¾à</a></dt>
+      <dt><a href="https://www.w3.org/TR/REC-html32">HTML 3.2 ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¾ï¿½</a></dt>
 
-      <dd>ÇÏÀÌÆÛÅØ½ºÆ® ¸¶Å©¾÷ ¾ð¾î (Hypertext Markup Language,
-      HTML)´Â ÇÃ·¡Æû°ú ¹«°üÇÑ ÇÏÀÌÆÛÅØ½ºÆ® ¹®¼­¸¦ À§ÇÑ °£´ÜÇÑ
-      ¸¶Å©¾÷ ¾ð¾îÀÌ´Ù. HTML ¹®¼­´Â SGML ¹®¼­ÀÌ±âµµ ÇÏ´Ù.</dd>
+      <dd>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø½ï¿½Æ® ï¿½ï¿½Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ (Hypertext Markup Language,
+      HTML)ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ì´ï¿½. HTML ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ SGML ï¿½ï¿½ï¿½ï¿½ï¿½Ì±âµµ ï¿½Ï´ï¿½.</dd>
 
-      <dt><a href="http://www.w3.org/TR/xhtml11/">XHTML 1.1 -
-      ¸ðµâ±â¹Ý XHTML</a>
-      (<a href="http://www.w3.org/2001/04/REC-xhtml-modularization-20060410-errata">Á¤¿ÀÇ¥</a>)
+      <dt><a href="https://www.w3.org/TR/xhtml11/">XHTML 1.1 -
+      ï¿½ï¿½ï¿½ï¿½ï¿½ XHTML</a>
+      (<a href="https://www.w3.org/2001/04/REC-xhtml-modularization-20060410-errata">ï¿½ï¿½ï¿½ï¿½Ç¥</a>)
       </dt>
 
-      <dd>ÀÌ ±Ç°í´Â Modularization of XHTML¿¡¼­ Á¤ÀÇÇÑ ¸ðµâ
-      ÇÃ·¹ÀÓ¿öÅ©¿Í ¸ðµâµéÀ» ±â¹ÝÀ¸·Î »õ·Î¿î XHTML document typeÀ»
-      Á¤ÀÇÇÑ´Ù.</dd>
+      <dd>ï¿½ï¿½ ï¿½Ç°ï¿½ï¿½ï¿½ Modularization of XHTMLï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+      ï¿½Ã·ï¿½ï¿½Ó¿ï¿½Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î¿ï¿½ XHTML document typeï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
-      <dt><a href="http://www.w3.org/TR/xhtml1">XHTML 1.0
-      È®Àå ÇÏÀÌÆÛÅØ½ºÆ® ¸¶Å©¾÷ ¾ð¾î (Extensible HyperText Markup
+      <dt><a href="https://www.w3.org/TR/xhtml1">XHTML 1.0
+      È®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø½ï¿½Æ® ï¿½ï¿½Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ (Extensible HyperText Markup
       Language) (Second Edition)</a>
-      (<a href="http://www.w3.org/2002/08/REC-xhtml1-20060801-errata">Á¤¿ÀÇ¥</a>)
+      (<a href="https://www.w3.org/2002/08/REC-xhtml1-20060801-errata">ï¿½ï¿½ï¿½ï¿½Ç¥</a>)
       </dt>
 
-      <dd>ÀÌ ¹®¼­´Â HTML 4¸¦ XML 1.0À¸·Î Àç±¸¼ºÇÑ XHTML 1.0ÀÇ
-      µÎ¹øÂ° ¹öÀü°ú HTML 4¿¡ ÇØ´çÇÏ´Â ¼¼°¡Áö DTD¸¦ Á¤ÀÇÇÑ´Ù.</dd>
+      <dd>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ HTML 4ï¿½ï¿½ XML 1.0ï¿½ï¿½ï¿½ï¿½ ï¿½ç±¸ï¿½ï¿½ï¿½ï¿½ XHTML 1.0ï¿½ï¿½
+      ï¿½Î¹ï¿½Â° ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ HTML 4ï¿½ï¿½ ï¿½Ø´ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ DTDï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
     </dl>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="authentication" id="authentication">ÀÎÁõ</a> <a title="Permanent link" href="#authentication" class="permalink">&para;</a></h2>
+<h2><a name="authentication" id="authentication">ï¿½ï¿½ï¿½ï¿½</a> <a title="Permanent link" href="#authentication" class="permalink">&para;</a></h2>
 
-    <p>ÀÎÁõ¹æ¹ý¿¡ ´ëÇØ ¾ÆÆÄÄ¡´Â ´ÙÀ½ IETF ±Ç°í¸¦ µû¸¥´Ù:</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ IETF ï¿½Ç°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</p>
 
     <dl>
-      <dt><a href="http://www.rfc-editor.org/rfc/rfc2617.txt">RFC 2617</a>
+      <dt><a href="https://www.rfc-editor.org/rfc/rfc2617.txt">RFC 2617</a>
       (Draft standard)</dt>
 
-      <dd>Basic Access Authentication ±Ô¾àÀ» Æ÷ÇÔÇÑ "HTTP/1.0".</dd>
+      <dd>Basic Access Authentication ï¿½Ô¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ "HTTP/1.0".</dd>
 
     </dl>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="language_country_codes" id="language_country_codes">¾ð¾î/±¹°¡ ÄÚµå</a> <a title="Permanent link" href="#language_country_codes" class="permalink">&para;</a></h2>
+<h2><a name="language_country_codes" id="language_country_codes">ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½</a> <a title="Permanent link" href="#language_country_codes" class="permalink">&para;</a></h2>
 
-    <p>¾Æ·¡ ¸µÅ©¿¡ ISO¿Í ´Ù¸¥ ¾ð¾î/±¹°¡ ÄÚµå Á¤º¸°¡ ÀÖ´Ù:</p>
+    <p>ï¿½Æ·ï¿½ ï¿½ï¿½Å©ï¿½ï¿½ ISOï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½:</p>
 
     <dl>
-      <dt><a href="http://www.loc.gov/standards/iso639-2/">ISO 639-2</a></dt>
+      <dt><a href="https://www.loc.gov/standards/iso639-2/">ISO 639-2</a></dt>
 
-      <dd>ISO 639´Â ¾ð¾îÀÇ ÀÌ¸§À» ³ªÅ¸³»´Â µÎ°¡Áö ¾ð¾î ÄÚµå¸¦
-      Á¦°øÇÑ´Ù. ÇÏ³ª´Â (639-1) µÎ ±ÛÀÚ ÄÚµåÀÌ°í ´Ù¸¥ ÇÏ³ª´Â
-      (ÀÌ ¹®¼­) ¼¼ ±ÛÀÚ ÄÚµåÀÌ´Ù.</dd>
+      <dd>ISO 639ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½Î°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Úµå¸¦
+      ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½Ï³ï¿½ï¿½ï¿½ (639-1) ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ï¿½Ì°ï¿½ ï¿½Ù¸ï¿½ ï¿½Ï³ï¿½ï¿½ï¿½
+      (ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½) ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ï¿½Ì´ï¿½.</dd>
 
-      <dt><a href="http://www.iso.ch/iso/en/prods-services/iso3166ma/02iso-3166-code-lists/index.html">
+      <dt><a href="https://www.iso.ch/iso/en/prods-services/iso3166ma/02iso-3166-code-lists/index.html">
       ISO 3166-1</a></dt>
 
-      <dd>ÀÌ ¹®¼­´Â ISO 3166-1°ú ISO 3166-1-alpha-2 ÄÚµå¿¡ µû¶ó
-      ¾ËÆÄºª ¼ø¼­·Î (¿µ¾î·Î ÂªÀº °ø½ÄÀÌ¸§) ±¹°¡¸íÀ» ¿­°ÅÇÑ´Ù.</dd>
+      <dd>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ISO 3166-1ï¿½ï¿½ ISO 3166-1-alpha-2 ï¿½Úµå¿¡ ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½Äºï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½ Âªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì¸ï¿½) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
-      <dt><a href="http://www.rfc-editor.org/rfc/bcp/bcp47.txt">BCP 47</a>
+      <dt><a href="https://www.rfc-editor.org/rfc/bcp/bcp47.txt">BCP 47</a>
       (Best Current Practice),
-      <a href="http://www.rfc-editor.org/rfc/rfc3066.txt">RFC 3066</a></dt>
+      <a href="https://www.rfc-editor.org/rfc/rfc3066.txt">RFC 3066</a></dt>
 
-      <dd>ÀÌ ¹®¼­´Â Á¤º¸ °´Ã¼¿¡ »ç¿ëÇÑ ¾ð¾î¸¦ ¾Ë¸®±âÀ§ÇØ »ç¿ëÇÒ
-      ¾ð¾î ÅÂ±×¿Í ¾ð¾î ÅÂ±×¿¡ »ç¿ëÇÒ °ªÀ» µî·ÏÇÏ´Â ¹æ¹ý, ¾ð¾î
-      ÅÂ±×¸¦ Ã£´Â ¹æ½ÄÀ» ¼³¸íÇÑ´Ù.</dd>
+      <dd>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½î¸¦ ï¿½Ë¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ ï¿½Â±×¿ï¿½ ï¿½ï¿½ï¿½ ï¿½Â±×¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½
+      ï¿½Â±×¸ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
-      <dt><a href="http://www.rfc-editor.org/rfc/rfc3282.txt">RFC 3282</a>
+      <dt><a href="https://www.rfc-editor.org/rfc/rfc3282.txt">RFC 3282</a>
       (Standards Track)</dt>
 
-      <dd>ÀÌ ¹®¼­´Â MIME ³»¿ë ºÎºÐ°ú À¥ ¹®¼­¿Í °°Àº RFC 822½Ä
-      Çì´õ°¡ ÀÖ´Â Á¤º¸ÀÇ ¾ð¾î¸¦ ¾Ë¸®±âÀ§ÇÑ "Content-language:"
-      Çì´õ¿Í, ¼±È£ÇÏ´Â ¾ð¾î¸¦ ³ªÅ¸³»´Â "Accept-Language:" Çì´õ¸¦
-      Á¤ÀÇÇÑ´Ù.</dd>
+      <dd>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ MIME ï¿½ï¿½ï¿½ï¿½ ï¿½ÎºÐ°ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ RFC 822ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½î¸¦ ï¿½Ë¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ "Content-language:"
+      ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½È£ï¿½Ï´ï¿½ ï¿½ï¿½î¸¦ ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ "Accept-Language:" ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
     </dl>
 
   </div></div>
 <div class="bottomlang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/misc/relevant_standards.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/misc/relevant_standards.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/misc/relevant_standards.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/misc/relevant_standards.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/misc/relevant_standards.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/misc/relevant_standards.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -212,8 +212,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/misc/relevant_stan
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

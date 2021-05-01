@@ -1,6 +1,6 @@
 #
 # The MOD_DEFLATE module requires the ZLib source which
-# can be downloaded from http://www.gzip.org/zlib/
+# can be downloaded from https://www.gzip.org/zlib/
 #
 # Declare the sub-directories to be built here
 #

@@ -5,7 +5,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -787,7 +787,7 @@ static int display_info(request_rec * r)
     ap_set_content_type(r, "text/html; charset=ISO-8859-1");
 
     ap_rputs(DOCTYPE_XHTML_1_0T
-             "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
+             "<html xmlns=\"https://www.w3.org/1999/xhtml\">\n"
              "<head>\n"
              "  <title>Server Information</title>\n" "</head>\n", r);
     ap_rputs("<body><h1 style=\"text-align: center\">"

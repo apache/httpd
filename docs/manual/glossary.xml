@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -61,7 +61,7 @@
     <dd>A set of libraries providing many of the basic interfaces
       between the server and the operating system.  APR is developed
       parallel to the Apache HTTP Server as an independent project.<br />
-      See: <a href="http://apr.apache.org/">Apache Portable Runtime
+      See: <a href="https://apr.apache.org/">Apache Portable Runtime
       Project</a>
     </dd>
 
@@ -122,7 +122,7 @@
         Gateway Interface</a> <a name="cgi" id="cgi">(CGI)</a></dt>
     <dd>A standard definition for an interface between a web server and an
       external program that allows the external program to service requests.
-      There is an <a href="http://www.ietf.org/rfc/rfc3875">Informational
+      There is an <a href="https://www.ietf.org/rfc/rfc3875">Informational
       RFC</a> which covers the specifics.<br />
       See: <a href="howto/cgi.html">Dynamic Content with CGI</a>
     </dd>
@@ -261,7 +261,7 @@
       <a name="http" id="hhtp">(HTTP)</a></dt>
     <dd>The standard transmission protocol used on the World Wide Web.  Apache
       implements version 1.1 of the protocol, referred to as HTTP/1.1 and
-      defined by <a href="http://ietf.org/rfc/rfc2616.txt">RFC 2616</a>.
+      defined by <a href="https://ietf.org/rfc/rfc2616.txt">RFC 2616</a>.
     </dd>
 
     <dt><a name="https" id="https">HTTPS</a></dt>
@@ -323,7 +323,7 @@
 
     <dt><a name="openssl" id="openssl">OpenSSL</a></dt>
     <dd>The Open Source toolkit for SSL/TLS<br />
-      See <a href="http://www.openssl.org/">http://www.openssl.org/</a>#
+      See <a href="https://www.openssl.org/">https://www.openssl.org/</a>#
     </dd>
 
     <dt><a name="passphrase" id="passphrase">Pass Phrase</a></dt>
@@ -387,10 +387,10 @@
       replacement string, it can be escaped with a backslash. Historically, the
       variable &amp; could be used as alias for $0 in some places. This is no
       longer possible since version 2.3.6.  Apache uses Perl Compatible Regular
-      Expressions provided by the <a href="http://www.pcre.org/">PCRE</a>
+      Expressions provided by the <a href="https://www.pcre.org/">PCRE</a>
       library.  You can find more documentation about PCRE's regular expression
       syntax at that site, or at
-      <a href="http://en.wikipedia.org/wiki/PCRE">Wikipedia</a>.
+      <a href="https://en.wikipedia.org/wiki/PCRE">Wikipedia</a>.
     </dd>
 
     <dt><a name="reverseproxy" id="reverseproxy">Reverse Proxy</a></dt>
@@ -416,7 +416,7 @@
       in processing the SSL handshake.  It was added to SSL starting
       with the TLS extensions, RFC 3546.  <br />
       See: <a href="ssl/ssl_faq.html">the SSL FAQ</a>
-      and <a href="http://www.ietf.org/rfc/rfc3546.txt">RFC 3546</a>
+      and <a href="https://www.ietf.org/rfc/rfc3546.txt">RFC 3546</a>
     </dd>
 
     <dt><a name="serversideincludes" id="serversideincludes">Server Side
@@ -469,7 +469,7 @@
         ref="uniformresourceidentifier">Uniform Resource Identifier</glossary>.
       URLs are usually made up of a scheme, like <code>http</code> or
       <code>https</code>, a hostname, and a path.  A URL for this page might
-      be <code>http://httpd.apache.org/docs/&httpd.docs;/glossary.html</code>.
+      be <code>https://httpd.apache.org/docs/&httpd.docs;/glossary.html</code>.
     </dd>
 
     <dt><a name="uniformresourceidentifier"
@@ -477,7 +477,7 @@
       <a name="URI" id="URI">(URI)</a></dt>
     <dd>A compact string of characters for identifying an abstract or physical
       resource.  It is formally defined by <a
-        href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>.  URIs used on the
+        href="https://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>.  URIs used on the
       world-wide web are commonly referred to as <glossary
         ref="url">URLs</glossary>.
     </dd>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="de" xml:lang="de"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="de" xml:lang="de"><head>
 <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -17,37 +17,37 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Module</a> | <a href="../mod/quickreference.html">Direktiven</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossar</a> | <a href="../sitemap.html">Seitenindex</a></p>
+<p class="menu"><a href="../mod/">Module</a> | <a href="../mod/quickreference.html">Direktiven</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossar</a> | <a href="../sitemap.html">Seitenindex</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP-Server</a> &gt; <a href="http://httpd.apache.org/docs/">Dokumentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Module</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP-Server</a> &gt; <a href="https://httpd.apache.org/docs/">Dokumentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Module</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache-MPM prefork</h1>
 <div class="toplang">
-<p><span>Verfügbare Sprachen: </span><a href="../de/mod/prefork.html" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>Verfï¿½gbare Sprachen: </span><a href="../de/mod/prefork.html" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/prefork.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/prefork.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/prefork.html" hreflang="fr" rel="alternate" title="Franï¿½ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/prefork.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="../tr/mod/prefork.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/prefork.html" hreflang="tr" rel="alternate" title="Tï¿½rkï¿½e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Diese Übersetzung ist möglicherweise
-            nicht mehr aktuell. Bitte prüfen Sie die englische Version auf
-            die neuesten Änderungen.</div>
+<div class="outofdate">Diese ï¿½bersetzung ist mï¿½glicherweise
+            nicht mehr aktuell. Bitte prï¿½fen Sie die englische Version auf
+            die neuesten ï¿½nderungen.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Beschreibung:</a></th><td>Implementiert einen im Voraus forkenden Webserver ohne
-  Thread-Unterstützung</td></tr>
+  Thread-Unterstï¿½tzung</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>MPM</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Modulbezeichner:</a></th><td>mpm_prefork_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Quelltext-Datei:</a></th><td>prefork.c</td></tr></table>
 <h3>Zusammenfassung</h3>
 
     <p>Dieses Multi-Processing-Modul (MPM) implementiert einen
-    im Voraus forkenden Webserver ohne Thread-Unterstützung, der Anfragen
-    auf ähnliche Weise behandelt wie der Apache 1.3. Es ist für
-    Angebote geeignet, die aus Kompatibilitätsgründen mit
-    nicht-Thread-sicheren Bibliotheken Threading vermeiden müssen.
-    Es ist außerdem das geeignetste MPM, um jede Anfrage isoliert
+    im Voraus forkenden Webserver ohne Thread-Unterstï¿½tzung, der Anfragen
+    auf ï¿½hnliche Weise behandelt wie der Apache 1.3. Es ist fï¿½r
+    Angebote geeignet, die aus Kompatibilitï¿½tsgrï¿½nden mit
+    nicht-Thread-sicheren Bibliotheken Threading vermeiden mï¿½ssen.
+    Es ist auï¿½erdem das geeignetste MPM, um jede Anfrage isoliert
     zu bearbeiten, so dass Probleme mit einem einzelnen Prozess keinen
     anderen beeinflussen.</p>
 
@@ -56,7 +56,7 @@
     Wichtigste ist, dass <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code>
     gross genug ist, so viele gleichzeitige Anfragen zu bedienen, wie Sie
     erwarten, aber klein genug, um sicherzustellen, dass genug physischer
-    Arbeitsspeicher für alle Prozesse vorhanden ist.</p>
+    Arbeitsspeicher fï¿½r alle Prozesse vorhanden ist.</p>
 </div>
 <div id="quickview"><h3>Themen</h3>
 <ul id="topics">
@@ -89,12 +89,12 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="how-it-works" id="how-it-works">Arbeitsweise</a> <a title="Permanent link" href="#how-it-works" class="permalink">&para;</a></h2>
-    <p>Ein einzelner Steuerprozess ist für den Start von
+    <p>Ein einzelner Steuerprozess ist fï¿½r den Start von
     Kindprozessen verantwortlich, die auf Verbindungen warten und diese
     bedienen, sobald sie eintreffen. Der Apache versucht immer, mehrere
-    <dfn>freie</dfn> oder unbeschäftigte Serverprozesse vorzuhalten,
+    <dfn>freie</dfn> oder unbeschï¿½ftigte Serverprozesse vorzuhalten,
     die zur Bedienung eingehender Anfragen bereit stehen. Auf diese Weise
-    müssen Clients nicht darauf warten, dass neue Kindprozesse
+    mï¿½ssen Clients nicht darauf warten, dass neue Kindprozesse
     geforkt werden, bevor ihre Anfrage bearbeitet werden kann.</p>
 
     <p><code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code>,
@@ -103,35 +103,35 @@
     <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code> regulieren,
     wie der Elternprozess Kindprozesse zur Bedienung von Anfragen erstellt.
     Im Allgemeinen ist der Apache sehr selbstregulierend, so dass die meisten
-    Angebote die Voreinstellung dieser Direktiven nicht verändern
-    müssen. Systeme, die mehr als 256 gleichzeitige Anfragen bedienen
-    müssen, können <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code> erhöhen, während
-    Systeme mit begrenztem Arbeitsspeicher möglicherweise
+    Angebote die Voreinstellung dieser Direktiven nicht verï¿½ndern
+    mï¿½ssen. Systeme, die mehr als 256 gleichzeitige Anfragen bedienen
+    mï¿½ssen, kï¿½nnen <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code> erhï¿½hen, wï¿½hrend
+    Systeme mit begrenztem Arbeitsspeicher mï¿½glicherweise
     <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code> heruntersetzen
-    müssen, um den Server vor Flatterverhalten (Arbeitsspeicherinhalte auf
-    Platte auslagern - und zurück) zu schützen. Weitere
+    mï¿½ssen, um den Server vor Flatterverhalten (Arbeitsspeicherinhalte auf
+    Platte auslagern - und zurï¿½ck) zu schï¿½tzen. Weitere
     Informationen zur Feinabstimmung der Prozesserstellung sind in den
     <a href="../misc/perf-tuning.html">Performance-Hinweisen</a> zu
     finden.</p>
 
-    <p>Währen der Elternprozess unter Unix normalerweise als
-    <code>root</code> gestartet wird, um sich an Port 80 binden zu können,
+    <p>Wï¿½hren der Elternprozess unter Unix normalerweise als
+    <code>root</code> gestartet wird, um sich an Port 80 binden zu kï¿½nnen,
     werden die Kindprozesse unter einem weniger privilegierten Benutzer
     gestartet. Die Direktiven <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code>
     und <code class="directive"><a href="../mod/mpm_common.html#group">Group</a></code> werden dazu
     verwendet, die Privilegien der Apache-Kindprozesse festzulegen. Die
-    Kindprozesse müssen in der Lage sein, alle Inhalte zu lesen, die
-    sie ausliefern sollen, sollten darüber hinaus jedoch so wenig wie
-    möglich Rechte besitzen.</p>
+    Kindprozesse mï¿½ssen in der Lage sein, alle Inhalte zu lesen, die
+    sie ausliefern sollen, sollten darï¿½ber hinaus jedoch so wenig wie
+    mï¿½glich Rechte besitzen.</p>
 
     <p><code class="directive"><a href="../mod/mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></code>
-    bestimmt, wie häufig der Server Prozesse erneuert, indem er alte
+    bestimmt, wie hï¿½ufig der Server Prozesse erneuert, indem er alte
     beendet und neue startet.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MaxSpareServers" id="MaxSpareServers">MaxSpareServers</a>-<a name="maxspareservers" id="maxspareservers">Direktive</a> <a title="Permanent link" href="#maxspareservers" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Maximale Anzahl der unbeschäftigten Kindprozesse des
+<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Maximale Anzahl der unbeschï¿½ftigten Kindprozesse des
   Servers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MaxSpareServers <var>Anzahl</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Voreinstellung:</a></th><td><code>MaxSpareServers 10</code></td></tr>
@@ -140,14 +140,14 @@
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>prefork</td></tr>
 </table>
     <p>Die Direktive <code class="directive">MaxSpareServers</code> bestimmt das
-    gewünschte Maximum an <em>unbeschäftigten</em>
-    Kindprozessen des Servers. Ein unbeschäftiger Prozess ist einer, der
+    gewï¿½nschte Maximum an <em>unbeschï¿½ftigten</em>
+    Kindprozessen des Servers. Ein unbeschï¿½ftiger Prozess ist einer, der
     keine Anfrage bedient. Wenn mehr als <code class="directive">MaxSpareServers</code>
-    Prozesse unbeschäftigt sind, wird der Elternprozess die
-    überschüssigen Prozesse beenden.</p>
+    Prozesse unbeschï¿½ftigt sind, wird der Elternprozess die
+    ï¿½berschï¿½ssigen Prozesse beenden.</p>
 
     <p>Eine Feineinstellung dieses Parameters sollte nur bei sehr
-    beschäftigten Angeboten notwendig sein. Es ist nahezu immer eine
+    beschï¿½ftigten Angeboten notwendig sein. Es ist nahezu immer eine
     schlechte Idee, den Parameter auf einen hohen Wert zu setzen. Wenn Sie
     versuchen, den Wert kleiner oder gleich <code class="directive"><a href="#minspareservers">MinSpareServers</a></code> zu setzen, wird der Apache
     ihn automatisch auf <code class="directive"><a href="#minspareservers">MinSpareServers</a></code> <code>+ 1</code>
@@ -162,7 +162,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MinSpareServers" id="MinSpareServers">MinSpareServers</a>-<a name="minspareservers" id="minspareservers">Direktive</a> <a title="Permanent link" href="#minspareservers" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Minimale Anzahl der unbeschäftigten Kindprozesse des
+<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Minimale Anzahl der unbeschï¿½ftigten Kindprozesse des
   Servers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MinSpareServers <var>Anzahl</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Voreinstellung:</a></th><td><code>MinSpareServers 5</code></td></tr>
@@ -171,15 +171,15 @@
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>prefork</td></tr>
 </table>
     <p>Die Direktive <code class="directive">MinSpareServers</code> bestimmt das
-    gewünschte Minimum der <em>unbeschäftigten</em>
-    Kindprozesse des Servers. Ein unbeschäftigter Prozess ist einer, der
+    gewï¿½nschte Minimum der <em>unbeschï¿½ftigten</em>
+    Kindprozesse des Servers. Ein unbeschï¿½ftigter Prozess ist einer, der
     keine Anfrage bedient. Wenn weniger als
-    <code class="directive">MinSpareServers</code> Prozesse unbeschäftigt sind,
+    <code class="directive">MinSpareServers</code> Prozesse unbeschï¿½ftigt sind,
     dann erstellt der Elternprozess neue mit einer maximalen Rate von 1
     pro Sekunde.</p>
 
     <p>Die Feineinstellung des Parameters sollte nur bei sehr
-    beschäftigten Angeboten notwendig sein. Es ist nahezu immer eine
+    beschï¿½ftigten Angeboten notwendig sein. Es ist nahezu immer eine
     schlechte ide, den Parameter auf einen hohen Wert zu setzen.</p>
 
 <h3>Siehe auch</h3>
@@ -190,15 +190,15 @@
 </div>
 </div>
 <div class="bottomlang">
-<p><span>Verfügbare Sprachen: </span><a href="../de/mod/prefork.html" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>Verfï¿½gbare Sprachen: </span><a href="../de/mod/prefork.html" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/prefork.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/prefork.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/prefork.html" hreflang="fr" rel="alternate" title="Franï¿½ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/prefork.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="../tr/mod/prefork.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/prefork.html" hreflang="tr" rel="alternate" title="Tï¿½rkï¿½e">&nbsp;tr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Kommentare</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/prefork.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/mod/prefork.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -213,8 +213,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/prefork.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Lizenziert unter der <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Module</a> | <a href="../mod/quickreference.html">Direktiven</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossar</a> | <a href="../sitemap.html">Seitenindex</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Lizenziert unter der <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Module</a> | <a href="../mod/quickreference.html">Direktiven</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossar</a> | <a href="../sitemap.html">Seitenindex</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

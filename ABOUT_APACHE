@@ -1,7 +1,7 @@
 
                      The Apache HTTP Server Project
 
-                        http://httpd.apache.org/
+                        https://httpd.apache.org/
 
 The Apache HTTP Server Project is a collaborative software development effort
 aimed at creating a robust, commercial-grade, featureful, and freely-available
@@ -64,7 +64,7 @@ December 1, 1995.
 Less than a year after the group was formed, the Apache server passed
 NCSA's httpd as the #1 server on the Internet.
 
-The survey by Netcraft (http://www.netcraft.com/survey/) shows that Apache
+The survey by Netcraft (https://www.netcraft.com/survey/) shows that Apache
 is today more widely used than all other web servers combined.
 
  ============================================================================
@@ -105,7 +105,7 @@ Other major contributors
 
 Many 3rd-party modules, frequently used and recommended, are also
 freely-available and linked from the related projects page:
-<http://modules.apache.org/>, and their authors frequently
+<https://modules.apache.org/>, and their authors frequently
 contribute ideas, patches, and testing.
 
 Hundreds of people have made individual contributions to the Apache
@@ -117,11 +117,11 @@ How to become involved in the Apache project
 
 There are several levels of contributing. If you just want to send
 in an occasional suggestion/fix, then you can just use the bug reporting
-form at <http://httpd.apache.org/bug_report.html>. You can also subscribe
+form at <https://httpd.apache.org/bug_report.html>. You can also subscribe
 to the announcements mailing list (announce-subscribe@httpd.apache.org) which
 we use to broadcast information about new releases, bugfixes, and upcoming
 events. There's a lot of information about the development process (much of
-it in serious need of updating) to be found at <http://httpd.apache.org/dev/>.
+it in serious need of updating) to be found at <https://httpd.apache.org/dev/>.
 
 If you'd like to become an active contributor to the Apache project (the
 group of volunteers who vote on changes to the distributed server), then
@@ -135,7 +135,7 @@ development.
    a user support forum; it is for people actively working on development
    of the server code and documentation, and for planning future
    directions. If you have user/configuration questions, send them
-   to users list <http://httpd.apache.org/userslist> or to the USENET
+   to users list <https://httpd.apache.org/userslist> or to the USENET
    newsgroup "comp.infosystems.www.servers.unix".or for windows users,
    the newsgroup "comp.infosystems.www.servers.ms-windows".
 

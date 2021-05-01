@@ -15,7 +15,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -121,11 +121,11 @@ eşlenmesini sağlar ve URL yönlendirmesi yapar.</description>
       Alias /image /ftp/pub/image
     </example>
 
-    <p><code>http://example.com/image/foo.gif</code> şeklinde bir istek,
+    <p><code>https://example.com/image/foo.gif</code> şeklinde bir istek,
       sunucunun <code>/ftp/pub/image/foo.gif</code> dosyasıyla yanıt vermesine
       sebep olurdu. Sadece tam yol parçaları eşleştirilir; bu bakımdan
       yukarıdaki <directive>Alias</directive> yapılandırması
-      <code>http://example.com/imagefoo.gif</code> ile eşleşmez. Düzenli
+      <code>https://example.com/imagefoo.gif</code> ile eşleşmez. Düzenli
       ifadelerin kullanıldığı daha karmaşık eşleşmeler için <directive
       module="mod_alias" >AliasMatch</directive> yönergesine bakınız.</p>
 
@@ -276,21 +276,21 @@ yönlendirir.</description>
 
     <example><title>Örnek:</title>
       # Farklı bir konaktaki bir URL'ye yönlendirme<br />
-      Redirect /hizmet http://iki.example.com/hizmet<br />
+      Redirect /hizmet https://iki.example.com/hizmet<br />
       <br />
       # Aynı konak üzerinde yönlendirme<br />
       Redirect /bir /iki
     </example>
 
-    <p>İstemcinin yaptığı <code>http://example.com/hizmet/fesmekan.txt</code>
+    <p>İstemcinin yaptığı <code>https://example.com/hizmet/fesmekan.txt</code>
       isteğine karşılık istemciye isteği
-      <code>http://iki.example.com/hizmet/fesmekan.txt</code> olarak yapması
+      <code>https://iki.example.com/hizmet/fesmekan.txt</code> olarak yapması
       söylenecektir. Bu <code>GET</code> isteklerinde de geçerlidir. Örneğin,
-      <code>http://example.com/hizmet/foo.pl?q=23&amp;a=42</code> isteği
-      <code>http://iki.example.com/hizmet/foo.pl?q=23&amp;a=42</code> adresine
+      <code>https://example.com/hizmet/foo.pl?q=23&amp;a=42</code> isteği
+      <code>https://iki.example.com/hizmet/foo.pl?q=23&amp;a=42</code> adresine
       yönlendirilir. <code>POST</code>'ların iptal edileceğini unutmayın.<br />
       Sadece tam yol parçaları eşleştirilir, bu nedenle
-      <code>http://example.com/hizmetfesmekan.txt</code> isteği yukarıdaki
+      <code>https://example.com/hizmetfesmekan.txt</code> isteği yukarıdaki
       yönlendirme ile eşleşmeyecektir. Düzenli ifadelerin kullanıldığı daha
       karmaşık eşleşmeler için <directive module="mod_alias"
       >RedirectMatch</directive> yönergesine bakınız.</p>
@@ -336,8 +336,8 @@ yönlendirir.</description>
       <code>send_error_response</code> işlevine bakınız).</p>
 
     <example><title>Örnek:</title>
-      Redirect permanent /bir http://example.com/iki<br />
-      Redirect 303 /yedi http://example.com/baskabisey
+      Redirect permanent /bir https://example.com/iki<br />
+      Redirect 303 /yedi https://example.com/baskabisey
     </example>
   </usage>
 </directivesynopsis>
@@ -363,7 +363,7 @@ yönlendirme gönderir.</description>
       yazılabilir:</p>
 
     <example>
-      RedirectMatch (.*)\.gif$ http://baska.example.com$1.jpg
+      RedirectMatch (.*)\.gif$ https://baska.example.com$1.jpg
     </example>
 
     <p><directive module="mod_alias">Alias</directive> ve
@@ -427,7 +427,7 @@ URL’ye yönlendirir.</description>
       ScriptAlias /cgi-bin/ /siteler/cgi-bin/
     </example>
 
-    <p><code>http://example.com/cgi-bin/foo</code> şeklindeki bir istek
+    <p><code>https://example.com/cgi-bin/foo</code> şeklindeki bir istek
       sunucunun <code>/siteler/cgi-bin/foo</code> betiğini çalıştırmasına sebep
       olur. Bu yapılandırma aslında şuna eşdeğerdir:</p>
 

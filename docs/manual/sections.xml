@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -79,7 +79,7 @@ to another site only if the server is started using
 
 <highlight language="config">
 &lt;IfDefine ClosedForNow&gt;
-    Redirect "/" "http://otherserver.example.com/"
+    Redirect "/" "https://otherserver.example.com/"
 &lt;/IfDefine&gt;
 </highlight>
 
@@ -209,9 +209,9 @@ the other hand, change the
 configuration for content in the webspace.  For example, the following
 configuration prevents access to any URL-path that begins in /private.
 In particular, it will apply to requests for
-<code>http://yoursite.example.com/private</code>,
-<code>http://yoursite.example.com/private123</code>, and
-<code>http://yoursite.example.com/private/dir/file.html</code> as well
+<code>https://yoursite.example.com/private</code>,
+<code>https://yoursite.example.com/private123</code>, and
+<code>https://yoursite.example.com/private/dir/file.html</code> as well
 as any other requests starting with the <code>/private</code> string.</p>
 
 <highlight language="config">
@@ -253,7 +253,7 @@ Alias "/foo"     "/srv/www/common/foo"
 <p>The same is true for the <directive module="mod_proxy">ProxyPass</directive>
 directives:</p>
 <highlight language="config">
-ProxyPass "/special-area" "http://special.example.com" smax=5 max=10
+ProxyPass "/special-area" "https://special.example.com" smax=5 max=10
 ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofailover=On
 </highlight>
 </section>
@@ -317,9 +317,9 @@ and modules like <module>mod_rewrite</module>.</p>
 directive change the configuration depending on a condition which can be
 expressed by a boolean expression. For example, the following configuration
 denies access if the HTTP Referer header does not start with
-"http://www.example.com/".</p>
+"https://www.example.com/".</p>
 <highlight language="config">
-&lt;If "!(%{HTTP_REFERER} -strmatch 'http://www.example.com/*')"&gt;
+&lt;If "!(%{HTTP_REFERER} -strmatch 'https://www.example.com/*')"&gt;
     Require all denied
 &lt;/If&gt;
 </highlight>
@@ -351,10 +351,10 @@ For example, consider the following configuration:</p>
 </highlight>
 
 <p>This works fine if the request is for
-<code>http://yoursite.example.com/dir/</code>.  But what if you are on
+<code>https://yoursite.example.com/dir/</code>.  But what if you are on
 a case-insensitive filesystem?  Then your restriction could be easily
 circumvented by requesting
-<code>http://yoursite.example.com/DIR/</code>.  The <directive
+<code>https://yoursite.example.com/DIR/</code>.  The <directive
 type="section" module="core">Directory</directive> directive, in
 contrast, will apply to any content served from that location,
 regardless of how it is called.  (An exception is filesystem links.
@@ -413,7 +413,7 @@ will allow only a subset of clients to access the
 <code>www.example.com</code> website using the proxy server:</p>
 
 <highlight language="config">
-&lt;Proxy "http://www.example.com/*"&gt;
+&lt;Proxy "https://www.example.com/*"&gt;
     Require host yournetwork.example.com
 &lt;/Proxy&gt;
 </highlight>

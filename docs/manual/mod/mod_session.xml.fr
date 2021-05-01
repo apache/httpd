@@ -12,7 +12,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -76,7 +76,7 @@
       <p>Une "session" est une chaîne
       <strong>application/x-www-form-urlencoded</strong> qui contient la
       paire clé/valeur définie par la <a
-      href="http://www.w3.org/TR/html4/">specification HTML</a>.</p>
+      href="https://www.w3.org/TR/html4/">specification HTML</a>.</p>
 
       <p>Selon les souhaits de l'administrateur, la session peut être
       chiffrée et codée en base64 avant d'être soumise au dispositif de
@@ -348,7 +348,7 @@ AuthName "realm"
       doit être codée sous la forme d'une chaîne
       <strong>application/x-www-form-urlencoded</strong> selon les
       préconisations de la <a
-      href="http://www.w3.org/TR/html4/">specification HTML</a>. Cette
+      href="https://www.w3.org/TR/html4/">specification HTML</a>. Cette
       variable d'environnement est définie via la directive <directive
       module="mod_session">SessionEnv</directive>. Un script peut écrire
       dans la session en renvoyant un en-tête de réponse

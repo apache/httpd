@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -50,7 +50,7 @@ l'utilisateur</description>
 
     <p>Pour modifier les directives de contr&ocirc;le du cache autres
     que <code>max-age</code> (voir la <a
-    href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9">RFC
+    href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9">RFC
     2616 section 14.9</a>), vous pouvez utiliser la directive <directive
     module="mod_headers">Header</directive>.</p>
 

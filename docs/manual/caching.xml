@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -49,7 +49,7 @@
             in the cache, and mod_cache aims to honor all of the various HTTP
             headers and options that control the cacheability of content
             as described in
-            <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html">Section
+            <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html">Section
             13 of RFC2616</a>.
             <module>mod_cache</module>
             is aimed at both simple and complex caching configurations, where
@@ -105,7 +105,7 @@
 
     <p>The HTTP protocol contains built in support for an in-line caching
     mechanism
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html">
+    <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html">
     described by section 13 of RFC2616</a>, and the
     <module>mod_cache</module> module can be used to take advantage of
     this.</p>
@@ -159,7 +159,7 @@
     </dl>
 
     <p>Full details of how HTTP caching works can be found in
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html">
+    <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html">
     Section 13 of RFC2616</a>.</p>
 
     <section>
@@ -324,7 +324,7 @@
 
       <p>The full definition of which responses can be cached by an HTTP
       cache is defined in
-      <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html#sec13.4">
+      <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html#sec13.4">
       RFC2616 Section 13.4 Response Cacheability</a>, and can be summed up as
       follows:</p>
 
@@ -573,7 +573,7 @@ CacheDirLength 1
       <p>Using the <module>mod_cache_socache</module> module, <module>mod_cache</module>
       can cache data from a variety of implementations (aka: "providers"). Using the
       <module>mod_socache_memcache</module> module, for example, one can specify that
-      <a href="http://memcached.org">memcached</a> is to be used as the
+      <a href="https://memcached.org">memcached</a> is to be used as the
       the backend storage mechanism.</p>
 
       <p>Typically the module will be configured as so:</p>

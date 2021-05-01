@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,22 +23,22 @@
 <modulesynopsis metafile="mod_cern_meta.xml.meta">
 
 <name>mod_cern_meta</name>
-<description>CERN À¥¼­¹ö ¸ÞÅ¸ÆÄÀÏ Áö¿ø</description>
+<description>CERN ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</description>
 <status>Extension</status>
 <sourcefile>mod_cern_meta.c</sourcefile>
 <identifier>cern_meta_module</identifier>
 
 <summary>
-    <p>CERN À¥¼­¹ö ¸ÞÅ¸ÆÄÀÏÀ» Èä³»³½´Ù. ¸ÞÅ¸ÆÄÀÏÀº Á¢±ÙÇÏ´Â
-    ÆÄÀÏ¿¡ ´ëÇØ ÀÏ¹ÝÀûÀÎ Çì´õ¿Ü¿¡ Ãß°¡·Î Ãâ·ÂÇÒ HTTP Çì´õ¸¦
-    ´ã°íÀÖ´Ù. ¾ÆÆÄÄ¡ .asis ÆÄÀÏ°ú ºñ½ÁÇÏ°í, Expires: Çì´õ¸¦
-    ¼öÁ¤ÇÏ°Å³ª ´Ù¸¥ ½Å±âÇÑ ÀÏµéÀ» ÇÒ ¼ö ÀÖ´Ù. ¸ÞÅ¸ Á¤º¸¸¦ ´Ù·ç´Â
-    ¹æ¹ýÀº ´Ù¾çÇÏÁö¸¸, ÀÌ¹Ì ÀÌ ¸ðµâÀ» »ç¿ëÇÏ´Â ¸¹Àº CERN »ç¿ëÀÚµéÀ»
-    À§ÇØ ÀÌ ¹æ¹ýÀ» ¼±ÅÃÇß´Ù.</p>
+    <p>CERN ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ä³»ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½
+    ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ü¿ï¿½ ï¿½ß°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ HTTP ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½ï¿½Ä¡ .asis ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½, Expires: ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï°Å³ï¿½ ï¿½Ù¸ï¿½ ï¿½Å±ï¿½ï¿½ï¿½ ï¿½Ïµï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½Å¸ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù·ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½Ì¹ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ CERN ï¿½ï¿½ï¿½ï¿½Úµï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ß´ï¿½.</p>
 
-    <p>´õ ÀÚ¼¼ÇÑ Á¤º¸´Â <a
-    href="http://www.w3.org/pub/WWW/Daemon/User/Config/General.html#MetaDir"
-    >CERN metafile semantics</a>¸¦ Âü°íÇÏ¶ó.</p>
+    <p>ï¿½ï¿½ ï¿½Ú¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <a
+    href="https://www.w3.org/pub/WWW/Daemon/User/Config/General.html#MetaDir"
+    >CERN metafile semantics</a>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.</p>
 </summary>
 
 <seealso><module>mod_headers</module></seealso>
@@ -46,7 +46,7 @@
 
 <directivesynopsis>
 <name>MetaFiles</name>
-<description>CERN ¸ÞÅ¸ÆÄÀÏÀ» Ã³¸®ÇÑ´Ù</description>
+<description>CERN ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ñ´ï¿½</description>
 <syntax>MetaFiles on|off</syntax>
 <default>MetaFiles off</default>
 <contextlist><context>server config</context>
@@ -56,13 +56,13 @@
 <override>Indexes</override>
 
 <usage>
-    <p>µð·ºÅä¸®º°·Î ¸ÞÅ¸ÆÄÀÏ Ã³¸®¿©ºÎ¸¦ °áÁ¤ÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ï¿½Î¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>MetaDir</name>
-<description>CERN ¸ÞÅ¸Á¤º¸¸¦ Ã£À» µð·ºÅä¸® ÀÌ¸§</description>
+<description>CERN ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸® ï¿½Ì¸ï¿½</description>
 <syntax>MetaDir <var>directory</var></syntax>
 <default>MetaDir .web</default>
 <contextlist><context>server config</context>
@@ -72,14 +72,14 @@
 <override>Indexes</override>
 
 <usage>
-    <p>¾ÆÆÄÄ¡°¡ ¸ÞÅ¸Á¤º¸ ÆÄÀÏÀ» Ã£À» µð·ºÅä¸®¸íÀ» ÁöÁ¤ÇÑ´Ù.
-    µð·ºÅä¸®´Â º¸Åë Á¢±ÙÇÒ ÆÄÀÏÀÌ ÀÖ´Â µð·ºÅä¸®ÀÇ '°¨ÃçÁø'
-    ÇÏÀ§µð·ºÅä¸®´Ù. "<code>.</code>"À¸·Î ÁöÁ¤ÇÏ¸é °°Àº µð·ºÅä¸®¿¡¼­
-    ÆÄÀÏÀ» Ã£´Â´Ù:</p>
+    <p>ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+    ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½'
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½. "<code>.</code>"ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½Â´ï¿½:</p>
 
     <example>MetaDir .</example>
 
-    <p>¾Æ´Ï¸é ÆÄÀÏÀÌ ÀÖ´Â ÇÏÀ§µð·ºÅä¸®¸¦ ÁöÁ¤ÇÑ´Ù:</p>
+    <p>ï¿½Æ´Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½:</p>
 
     <example>MetaDir .meta</example>
 </usage>
@@ -87,7 +87,7 @@
 
 <directivesynopsis>
 <name>MetaSuffix</name>
-<description>CERN ¸ÞÅ¸Á¤º¸¸¦ ÀúÀåÇÏ´Â ÆÄÀÏÀÇ Á¢¹Ì»ç</description>
+<description>CERN ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì»ï¿½</description>
 <syntax>MetaSuffix <var>suffix</var></syntax>
 <default>MetaSuffix .meta</default>
 <contextlist><context>server config</context>
@@ -97,13 +97,13 @@
 <override>Indexes</override>
 
 <usage>
-    <p>¸ÞÅ¸Á¤º¸¸¦ ÀúÀåÇÏ´Â ÆÄÀÏÀÇ Á¢¹Ì»ç¸¦ ÁöÁ¤ÇÑ´Ù. ¿¹¸¦ µé¾î,
-    µÎ Áö½Ã¾îÀÇ ±âº»°ªÀ» »ç¿ëÇÒ °æ¿ì
-    <code>DOCUMENT_ROOT/somedir/index.html</code>À» ¿äÃ»ÇÏ¸é
-    <code>DOCUMENT_ROOT/somedir/.web/index.html.meta</code>ÀÇ
-    ³»¿ëÀ» Âü°íÇÏ¿© MIME Çì´õ Á¤º¸¸¦ Ãß°¡ÇÑ´Ù.</p>
+    <p>ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì»ç¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½,
+    ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+    <code>DOCUMENT_ROOT/somedir/index.html</code>ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½Ï¸ï¿½
+    <code>DOCUMENT_ROOT/somedir/.web/index.html.meta</code>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ MIME ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <example><title>¿¹Á¦:</title>
+    <example><title>ï¿½ï¿½ï¿½ï¿½:</title>
       MetaSuffix .meta
     </example>
 </usage>

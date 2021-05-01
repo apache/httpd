@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -778,9 +778,9 @@ AddOutputFilter INCLUDES .shtml
       <var>chaîne2</var> est de la forme
       <code>/<var>chaîne2</var>/</code>, elle est traitée comme une
       expression rationnelle. Les expressions rationnelles sont
-      implémentées par le moteur <a href="http://www.pcre.org">PCRE</a>
+      implémentées par le moteur <a href="https://www.pcre.org">PCRE</a>
       et possèdent la même syntaxe que celles de <a
-      href="http://www.perl.com">perl 5</a>. Notez que <code>==</code>
+      href="https://www.perl.com">perl 5</a>. Notez que <code>==</code>
       n'est qu'un alias pour <code>=</code> et se comporte exactement de
       la même manière que ce dernier.</p>
 

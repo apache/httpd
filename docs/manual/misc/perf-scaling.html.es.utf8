@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -16,12 +16,12 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p>
+<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p>
 <p class="apache">Versión 2.5 del Servidor HTTP Apache</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentación</a> &gt; <a href="../">Versión 2.5</a> &gt; <a href="./">Documentación diversa</a></div><div id="page-content"><div id="preamble"><h1>Escalado de Rendimiento</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentación</a> &gt; <a href="../">Versión 2.5</a> &gt; <a href="./">Documentación diversa</a></div><div id="page-content"><div id="preamble"><h1>Escalado de Rendimiento</h1>
 <div class="toplang">
 <p><span>Idiomas disponibles: </span><a href="../en/misc/perf-scaling.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/misc/perf-scaling.html" title="Español">&nbsp;es&nbsp;</a> |
@@ -163,7 +163,7 @@ Swap:       3903784      12540  3891244</pre></div>
                 
 
                 <p>El módulo mod_status da una vista general del rendimiento del servidor en un momento dado. Genera una página HTML con, entre otros, el número de procesos Apache que está funcionando y cuantos bytes ha servido cada uno, y la carga de CPU utilizada por httpd y el resto del sistema. La Apache Software
-                Foundation usa <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> en su <a href="http://apache.org/server-status">web site</a>. Si configura la directiva <code>ExtendedStatus On</code> en su <code>httpd.conf</code>, la página <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> le dará más información a costa de un poco más de carga por cada petición. Hay una nueva página de status en la página de Apache, basada en lua que pronto se incorporará al código fuente de Apache, puede encontrar el código en <a href="https://github.com/Humbedooh/server-status">Humbedoo's server-status page at github</a>.</p>
+                Foundation usa <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> en su <a href="https://apache.org/server-status">web site</a>. Si configura la directiva <code>ExtendedStatus On</code> en su <code>httpd.conf</code>, la página <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> le dará más información a costa de un poco más de carga por cada petición. Hay una nueva página de status en la página de Apache, basada en lua que pronto se incorporará al código fuente de Apache, puede encontrar el código en <a href="https://github.com/Humbedooh/server-status">Humbedoo's server-status page at github</a>.</p>
             
         
 
@@ -181,7 +181,7 @@ Swap:       3903784      12540  3891244</pre></div>
 
                 <p>El Log de errores se configura con las directivas <code class="directive"><a href="../mod/core.html#errorlog">ErrorLog</a></code> y <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code>. El log de errores de la configuración principal de httpd recibe los mensajes de log relacionados con las funcionalidades principales del servidor: arranque, parada, fallos, generación excesiva de procesos, etc. La directiva <code class="directive"><a href="../mod/core.html#errorlog">ErrorLog</a></code> puede usarse también en contenedores de host virtual. El log de errores de un host virtual recibe solo mensajes específicos de ese virtualhost, tales como errores de autenticación y errores de ficheros no encontrado.</p>
 
-                <p>En un servidor que está visible desde Internet, espere recibir multiples sondeos de vulnerabilidad y ataques de gusano en el log de errores. Muchos de estos son el objetivo de otro tipo de plataformas de servidor en lugar de Apache, pero con el estado actual de las cosas, los scripts de ataque sencillamente mandan todo lo que tienen contra cualquier puerto abierto, independientemente del servidor que se esté ejecutando o las aplicaciones que pueda haber instaladas en el servidor. Puede bloquear estos intentos usando un cortafuegos o con <a href="http://www.modsecurity.org/">mod_security</a>, pero ésto se sale del ámbito de este manual.</p>
+                <p>En un servidor que está visible desde Internet, espere recibir multiples sondeos de vulnerabilidad y ataques de gusano en el log de errores. Muchos de estos son el objetivo de otro tipo de plataformas de servidor en lugar de Apache, pero con el estado actual de las cosas, los scripts de ataque sencillamente mandan todo lo que tienen contra cualquier puerto abierto, independientemente del servidor que se esté ejecutando o las aplicaciones que pueda haber instaladas en el servidor. Puede bloquear estos intentos usando un cortafuegos o con <a href="https://www.modsecurity.org/">mod_security</a>, pero ésto se sale del ámbito de este manual.</p>
 
                 <p>La directiva <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code> determina qué nivel de detalle se incluye en los logs. Hay ocho niveles de log como se describe aquí:
                 </p>
@@ -425,7 +425,7 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
         <h3><a name="generating-a-test-load" id="generating-a-test-load">Generando una Carga de Prueba</a></h3>
             
             
-            <p>Es útil generar una carga de prueba para comprobar el rendimiento del sistema en situaciones de operación realistas. Además de paquetes de software comercial como <a href="http://learnloadrunner.com/">LoadRunner</a>, hay un gran número de herramientas libres para generar carga contra su servidor.</p>
+            <p>Es útil generar una carga de prueba para comprobar el rendimiento del sistema en situaciones de operación realistas. Además de paquetes de software comercial como <a href="https://learnloadrunner.com/">LoadRunner</a>, hay un gran número de herramientas libres para generar carga contra su servidor.</p>
 
             <ul>
                 <li>Apache tiene un programa de pruebas llamado ab, siglas de Apache Bench. Puede generar carga para un servidor web solicitando una sucesión rápida de peticiones del mismo fichero. Puedes especificar el número de conexiones concurrentes y hacer que el programa se ejecute durante un tiempo determinado o un número especificado de peticiones.
@@ -441,7 +441,7 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
                 </li>
 
                 <li>
-                    <p>Proyectos externos a la ASF que han demostrado ser muy buenos: grinder, httperf, tsung, <a href="http://funkload.nuxeo.org/">FunkLoad</a></p>
+                    <p>Proyectos externos a la ASF que han demostrado ser muy buenos: grinder, httperf, tsung, <a href="https://funkload.nuxeo.org/">FunkLoad</a></p>
                 </li>
             </ul>
             
@@ -705,7 +705,7 @@ CacheMaxExpire 21600</pre>
 <h2><a name="further-considerations" id="further-considerations">Otras Consideraciones</a> <a title="Enlace permanente" href="#further-considerations" class="permalink">&para;</a></h2>
         
 
-        <p>Armado con el conocimiento de cómo afinar el sistema para entregar el rendimiento deseado, pronto descubrirá que <em>un</em> solo sistema puede provocar un cuello de botella. Cómo hacer que un sistema sea apto para crecimiento, o como afinar un número de sistemas como uno solo será comentado en la página<a href="http://wiki.apache.org/httpd/PerformanceScalingOut">PerformanceScalingOut</a>.
+        <p>Armado con el conocimiento de cómo afinar el sistema para entregar el rendimiento deseado, pronto descubrirá que <em>un</em> solo sistema puede provocar un cuello de botella. Cómo hacer que un sistema sea apto para crecimiento, o como afinar un número de sistemas como uno solo será comentado en la página<a href="https://wiki.apache.org/httpd/PerformanceScalingOut">PerformanceScalingOut</a>.
         </p>
     </div></div>
 <div class="bottomlang">
@@ -715,7 +715,7 @@ CacheMaxExpire 21600</pre>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comentarios</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/misc/perf-scaling.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/misc/perf-scaling.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -730,8 +730,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/misc/perf-scaling.
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

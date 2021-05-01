@@ -5,7 +5,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -1341,9 +1341,9 @@ static void usage(const char *error)
                                                                              NL
     "Should an URL be provided on the command line, the URL will be"         NL
     "deleted from the cache. A reverse proxied URL is made up as follows:"   NL
-    "http://<hostname>:<port><path>?[query]. So, for the path \"/\" on the"  NL
+    "https://<hostname>:<port><path>?[query]. So, for the path \"/\" on the"  NL
     "host \"localhost\" and port 80, the URL to delete becomes"              NL
-    "\"http://localhost:80/?\". Note the '?' in the URL must always be"      NL
+    "\"https://localhost:80/?\". Note the '?' in the URL must always be"      NL
     "specified explicitly, whether a query string is present or not."        NL,
     shortname,
     shortname,

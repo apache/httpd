@@ -7,7 +7,7 @@ to you under the Apache License, Version 2.0 (the
 "License"); you may not use this file except in compliance
 with the License.  You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+    https://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing,
 software distributed under the License is distributed on an
@@ -18,7 +18,7 @@ under the License.
 ]]
 
 --[[ mod_lua implementation of the server-status page ]]
-local ssversion = "0.11" -- version of this script
+local ssversion = "0.11" -- verion of this script
 local redact_ips = true -- whether to replace the last two bits of every IP with 'x.x'
 local warning_banner = [[
     <div style="float: left; color: #222; margin-bottom: 8px; margin-top: 24px; text-align: center; width: 200px; font-size: 0.7rem; border: 1px dashed #333; background: #F8C940;">
@@ -679,7 +679,7 @@ function refreshThreads(json, state) {
             }
             phtml += "</table>";
         } else {
-            phtml += "<p>No thread information available</p>";
+            phtml += "<p>No thread information avaialable</p>";
         }
         phtml += "</div>";
         box.innerHTML += phtml;
@@ -857,7 +857,7 @@ quokka_js = [==[
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * 
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,

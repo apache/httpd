@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -39,7 +39,7 @@ Disponible en tant que module tiers dans les versions 2.2.x</compatibility>
     comme <module>mod_proxy_html</module>. Il est capable de détecter
     automatiquement l'encodage des données en entrée et de s'assurer
     qu'elle sont traitées correctement par l'interpréteur <a
-    href="http://xmlsoft.org/">libxml2</a>, y compris la conversion en
+    href="https://xmlsoft.org/">libxml2</a>, y compris la conversion en
     Unicode (UTF-8) si nécessaire. Il peut aussi convertir les données
     dans l'encodage de votre choix après le traitement des balises, et
     s'assurera que le <var>jeu de caractères</var> approprié sera défini
@@ -114,7 +114,7 @@ Disponible en tant que module tiers dans les versions 2.2.x</compatibility>
 </section>
 
 <section id="output"><title>Codage en sortie</title>
-<p><a href="http://xmlsoft.org/">libxml2</a> utilise toujours UTF-8
+<p><a href="https://xmlsoft.org/">libxml2</a> utilise toujours UTF-8
 (Unicode) en interne, et les modules de filtrage basés sur libxml2
 utiliseront cet encodage en sortie par défaut. mod_xml2enc peut modifier
 l'encodage en sortie via l'API, mais il n'y a actuellement aucun moyen de le
@@ -187,7 +187,7 @@ commencer son traitement.</description>
     commencer son traitement. Ccei permet de contourner le problème des
     serveurs d'arrière-plan qui insèrent des éléments non conformes en
     début de données, ce qui a pour effet de perturber l'interpréteur (<a
-    href="http://bahumbug.wordpress.com/2006/10/12/mod_proxy_html-revisited/"
+    href="https://bahumbug.wordpress.com/2006/10/12/mod_proxy_html-revisited/"
     >voir un exemple ici</a>).</p>
     <p>Elle ne doit être utilisée ni pour les documents XML, ni pour les
     documents HTML correctement formatés.</p>

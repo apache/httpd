@@ -252,7 +252,7 @@ if test "x$PCRE_CONFIG" != "x"; then
   APR_ADDTO(PCRE_LIBS, [`$PCRE_CONFIG --libs8 2>/dev/null || $PCRE_CONFIG --libs`])
   APR_ADDTO(HTTPD_LIBS, [\$(PCRE_LIBS)])
 else
-  AC_MSG_ERROR([pcre(2)-config for libpcre not found. PCRE is required and available from http://pcre.org/])
+  AC_MSG_ERROR([pcre(2)-config for libpcre not found. PCRE is required and available from https://pcre.org/])
 fi
 APACHE_SUBST(PCRE_LIBS)
 

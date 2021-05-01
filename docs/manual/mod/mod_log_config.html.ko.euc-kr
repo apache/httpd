@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
 <meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -17,46 +17,46 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">¸ðµâ</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">ï¿½ï¿½ï¿½</a></div>
 <div id="page-content">
-<div id="preamble"><h1>¾ÆÆÄÄ¡ ¸ðµâ mod_log_config</h1>
+<div id="preamble"><h1>ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ mod_log_config</h1>
 <div class="toplang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/mod/mod_log_config.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/mod/mod_log_config.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_log_config.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_log_config.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_log_config.html" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_log_config.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">ÀÌ ¹®¼­´Â ÃÖ½ÅÆÇ ¹ø¿ªÀÌ ¾Æ´Õ´Ï´Ù.
-            ÃÖ±Ù¿¡ º¯°æµÈ ³»¿ëÀº ¿µ¾î ¹®¼­¸¦ Âü°íÇÏ¼¼¿ä.</div>
-<table class="module"><tr><th><a href="module-dict.html#Description">¼³¸í:</a></th><td>¼­¹ö·ÎÀÇ ¿äÃ»À» ·Î±×¿¡ ±â·ÏÇÑ´Ù</td></tr>
-<tr><th><a href="module-dict.html#Status">»óÅÂ:</a></th><td>Base</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">¸ðµâ¸í:</a></th><td>log_config_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">¼Ò½ºÆÄÀÏ:</a></th><td>mod_log_config.c</td></tr></table>
-<h3>¿ä¾à</h3>
+<div class="outofdate">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Õ´Ï´ï¿½.
+            ï¿½Ö±Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½Î±×¿ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</td></tr>
+<tr><th><a href="module-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Base</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">ï¿½ï¿½ï¿½ï¿½:</a></th><td>log_config_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">ï¿½Ò½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>mod_log_config.c</td></tr></table>
+<h3>ï¿½ï¿½ï¿½</h3>
 
-    <p>ÀÌ ¸ðµâÀº Å¬¶óÀÌ¾ðÆ®ÀÇ ¿äÃ»À» ·Î±×¿¡ ÀÚÀ¯·Ó°Ô ±â·ÏÇÑ´Ù.
-    ÀÚ½ÅÀÌ ¿øÇÏ´Â Çü½ÄÀ¸·Î ·Î±×¸¦ ±â·ÏÇÒ ¼ö ÀÖ°í, ÆÄÀÏÀÌ³ª ¿ÜºÎ
-    ÇÁ·Î±×·¥¿¡ Á÷Á¢ ·Î±×¸¦ º¸³¾ ¼öµµ ÀÖ´Ù. Á¶°ÇÀû ·Î±×¸¦ »ç¿ëÇÏ¸é
-    ¿äÃ»ÀÇ ¼º°Ý¿¡ µû¶ó ¿äÃ»À» ·Î±×¿¡ Ãß°¡ÇÏ°Å³ª Á¦¿ÜÇÒ ¼ö ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½Î±×¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ó°ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+    ï¿½Ú½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î±×¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö°ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½Ì³ï¿½ ï¿½Üºï¿½
+    ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Î±×¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î±×¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½
+    ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½Ý¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½Î±×¿ï¿½ ï¿½ß°ï¿½ï¿½Ï°Å³ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <p>ÀÌ ¸ðµâÀº ¼¼°¡Áö Áö½Ã¾î¸¦ Á¦°øÇÑ´Ù. <code class="directive"><a href="#transferlog">TransferLog</a></code>´Â ·Î±×ÆÄÀÏÀ»
-    ¸¸µé°í, <code class="directive"><a href="#logformat">LogFormat</a></code>Àº
-    ¿øÇÏ´Â Çü½ÄÀ» Á¤ÇÏ°í, <code class="directive"><a href="#customlog">CustomLog</a></code>´Â ÇÑ¹ø¿¡ ·Î±×ÆÄÀÏ°ú
-    Çü½ÄÀ» ¸ðµÎ ÁöÁ¤ÇÑ´Ù. <code class="directive">TransferLog</code>¿Í
-    <code class="directive">CustomLog</code> Áö½Ã¾î¸¦ ¿©·¯¹ø »ç¿ëÇÏ¸é
-    ¿äÃ»À» ¿©·¯ ÆÄÀÏ¿¡ ±â·ÏÇÒ ¼ö ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <code class="directive"><a href="#transferlog">TransferLog</a></code>ï¿½ï¿½ ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½, <code class="directive"><a href="#logformat">LogFormat</a></code>ï¿½ï¿½
+    ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï°ï¿½, <code class="directive"><a href="#customlog">CustomLog</a></code>ï¿½ï¿½ ï¿½Ñ¹ï¿½ï¿½ï¿½ ï¿½Î±ï¿½ï¿½ï¿½ï¿½Ï°ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <code class="directive">TransferLog</code>ï¿½ï¿½
+    <code class="directive">CustomLog</code> ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½
+    ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 </div>
-<div id="quickview"><h3>ÁÖÁ¦</h3>
+<div id="quickview"><h3>ï¿½ï¿½ï¿½ï¿½</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#formats">·Î±× Çü½Ä ÁöÁ¤ÇÏ±â</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#security">º¸¾È»ó °í·ÁÇÒ Á¡</a></li>
-</ul><h3 class="directives">Áö½Ã¾îµé</h3>
+<li><img alt="" src="../images/down.gif" /> <a href="#formats">ï¿½Î±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#security">ï¿½ï¿½ï¿½È»ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½</a></li>
+</ul><h3 class="directives">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#bufferedlogs">BufferedLogs</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#customlog">CustomLog</a></li>
@@ -64,263 +64,263 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#logformat">LogFormat</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#transferlog">TransferLog</a></li>
 </ul>
-<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_log_config">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_log_config">Report a bug</a></li></ul><h3>Âü°í</h3>
+<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_log_config">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_log_config">Report a bug</a></li></ul><h3>ï¿½ï¿½ï¿½ï¿½</h3>
 <ul class="seealso">
-<li><a href="../logs.html">¾ÆÆÄÄ¡ ·Î±×ÆÄÀÏ</a></li>
+<li><a href="../logs.html">ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½</a></li>
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="formats" id="formats">·Î±× Çü½Ä ÁöÁ¤ÇÏ±â</a> <a title="Permanent link" href="#formats" class="permalink">&para;</a></h2>
+<h2><a name="formats" id="formats">ï¿½Î±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½</a> <a title="Permanent link" href="#formats" class="permalink">&para;</a></h2>
 
-    <p><code class="directive"><a href="#logformat">LogFormat</a></code>°ú
+    <p><code class="directive"><a href="#logformat">LogFormat</a></code>ï¿½ï¿½
     <code class="directive"><a href="#customlog">CustomLog</a></code>
-    Áö½Ã¾îÀÇ Çü½Ä ¾Æ±Ô¸ÕÆ®´Â ¹®ÀÚ¿­ÀÌ´Ù. ÀÌ ¹®ÀÚ¿­¿¡ µû¶ó ¿äÃ»À»
-    ·Î±×ÆÄÀÏ¿¡ ±â·ÏÇÑ´Ù. ¹®ÀÚ¿­¿¡´Â ·Î±×ÆÄÀÏ¿¡ ±×´ë·Î º¹»çµÇ´Â
-    ¹®ÀÚ¿Í Çà¹Ù²Þ°ú ÅÇÀ» ³ªÅ¸³»´Â CÀÇ "\n"°ú "\t" Á¦¾î¹®ÀÚ¸¦
-    »ç¿ëÇÒ ¼ö ÀÖ´Ù. ·Î±×ÆÄÀÏ¿¡ µû¿ÈÇ¥³ª ¹é½½·¡½¬¸¦ ¾²·Á¸é ¾Õ¿¡
-    ¹Ýµå½Ã ¹é½½·¡½¬¸¦ Àû¾îÁà¾ß ÇÑ´Ù.</p>
+    ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½Ì´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½
+    ï¿½Î±ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î±ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½×´ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç´ï¿½
+    ï¿½ï¿½ï¿½Ú¿ï¿½ ï¿½ï¿½Ù²Þ°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ Cï¿½ï¿½ "\n"ï¿½ï¿½ "\t" ï¿½ï¿½ï¿½î¹®ï¿½Ú¸ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½Î±ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½é½½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Õ¿ï¿½
+    ï¿½Ýµï¿½ï¿½ ï¿½é½½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½.</p>
 
-    <p>¿äÃ»ÀÇ Æ¯Â¡Àº Çü½Ä ¹®ÀÚ¿­¿¡ "<code>%</code>" Áö½Ã¾î¸¦
-    »ç¿ëÇÏ¿© ±â·ÏÇÑ´Ù. ÀÌ Áö½Ã¾î´Â ·Î±×ÆÄÀÏ¿¡¼­ ´ÙÀ½°ú °°ÀÌ
-    º¯°æµÈ´Ù.</p>
+    <p>ï¿½ï¿½Ã»ï¿½ï¿½ Æ¯Â¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ "<code>%</code>" ï¿½ï¿½ï¿½Ã¾î¸¦
+    ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½Î±ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½È´ï¿½.</p>
 
-    <table class="bordered"><tr class="header"><th>Çü½Ä&nbsp;¹®ÀÚ¿­</th>
-        <th>¼³¸í</th></tr>
+    <table class="bordered"><tr class="header"><th>ï¿½ï¿½ï¿½ï¿½&nbsp;ï¿½ï¿½ï¿½Ú¿ï¿½</th>
+        <th>ï¿½ï¿½ï¿½ï¿½</th></tr>
 <tr><td><code>%%</code></td>
-        <td>ÆÛ¼¾Æ® ±âÈ£</td></tr>
+        <td>ï¿½Û¼ï¿½Æ® ï¿½ï¿½È£</td></tr>
 <tr class="odd"><td><code>%...a</code></td>
-        <td>¿ø°Ý IP-ÁÖ¼Ò</td></tr>
+        <td>ï¿½ï¿½ï¿½ï¿½ IP-ï¿½Ö¼ï¿½</td></tr>
 <tr><td><code>%...A</code></td>
-        <td>(¼­¹ö) IP-ÁÖ¼Ò</td></tr>
+        <td>(ï¿½ï¿½ï¿½ï¿½) IP-ï¿½Ö¼ï¿½</td></tr>
 <tr class="odd"><td><code>%...B</code></td>
-        <td>HTTP Çì´õ¸¦ Á¦¿ÜÇÑ Àü¼Û ¹ÙÀÌÆ®¼ö.</td></tr>
+        <td>HTTP ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½.</td></tr>
 <tr><td><code>%...b</code></td>
-        <td>HTTP Çì´õ¸¦ Á¦¿ÜÇÑ Àü¼Û ¹ÙÀÌÆ®¼ö. CLF Çü½Ä°ú °°ÀÌ
-        Àü¼ÛÇÑ ³»¿ëÀÌ ¾ø´Â °æ¿ì 0 ´ë½Å '<code>-</code>'°¡ ³ª¿Â´Ù.</td></tr>
+        <td>HTTP ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½. CLF ï¿½ï¿½ï¿½Ä°ï¿½ ï¿½ï¿½ï¿½ï¿½
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ 0 ï¿½ï¿½ï¿½ '<code>-</code>'ï¿½ï¿½ ï¿½ï¿½ï¿½Â´ï¿½.</td></tr>
 <tr class="odd"><td><code>%...{<var>Foobar</var>}C</code></td>
-        <td>¼­¹ö°¡ ¼ö½ÅÇÑ ¿äÃ»¿¡¼­ <var>Foobar</var> ÄíÅ°ÀÇ
-        ³»¿ë.</td></tr>
+        <td>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ <var>Foobar</var> ï¿½ï¿½Å°ï¿½ï¿½
+        ï¿½ï¿½ï¿½ï¿½.</td></tr>
 <tr><td><code>%...D</code></td>
-        <td>¿äÃ»À» Ã³¸®ÇÏ´Âµ¥ °É¸° ½Ã°£ (¸¶ÀÌÅ©·ÎÃÊ ´ÜÀ§).</td></tr>
+        <td>ï¿½ï¿½Ã»ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ï´Âµï¿½ ï¿½É¸ï¿½ ï¿½Ã°ï¿½ (ï¿½ï¿½ï¿½ï¿½Å©ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½).</td></tr>
 <tr class="odd"><td><code>%...{<var>FOOBAR</var>}e</code></td>
-        <td>È¯°æº¯¼ö <var>FOOBAR</var>ÀÇ ³»¿ë</td></tr>
+        <td>È¯ï¿½æº¯ï¿½ï¿½ <var>FOOBAR</var>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</td></tr>
 <tr><td><code>%...f</code></td>
-        <td>ÆÄÀÏ¸í</td></tr>
+        <td>ï¿½ï¿½ï¿½Ï¸ï¿½</td></tr>
 <tr class="odd"><td><code>%...h</code></td>
-        <td>¿ø°Ý È£½ºÆ®</td></tr>
+        <td>ï¿½ï¿½ï¿½ï¿½ È£ï¿½ï¿½Æ®</td></tr>
 <tr><td><code>%...H</code></td>
-        <td>¿äÃ» ÇÁ·ÎÅäÄÝ</td></tr>
+        <td>ï¿½ï¿½Ã» ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</td></tr>
 <tr class="odd"><td><code>%...{<var>Foobar</var>}i</code></td>
-        <td>¼­¹ö°¡ ¼ö½ÅÇÑ ¿äÃ»¿¡¼­ <code><var>Foobar</var>:</code>
-        Çì´õÀÇ ³»¿ë.</td></tr>
+        <td>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ <code><var>Foobar</var>:</code>
+        ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</td></tr>
 <tr><td><code>%...l</code></td>
-        <td>(ÀÖ´Ù¸é identd°¡ Á¦°øÇÑ) ¿ø°Ý ·Î±×ÀÎ¸í.
-        <code class="module"><a href="../mod/mod_ident.html">mod_ident</a></code>°¡ ÀÖ°í <code class="directive"><a href="../mod/mod_ident.html#identitycheck">IdentityCheck</a></code>°¡
-        <code>On</code>ÀÌ ¾Æ´Ï¸é »©±â±âÈ£¸¦ ±â·ÏÇÑ´Ù.</td></tr>
+        <td>(ï¿½Ö´Ù¸ï¿½ identdï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½) ï¿½ï¿½ï¿½ï¿½ ï¿½Î±ï¿½ï¿½Î¸ï¿½.
+        <code class="module"><a href="../mod/mod_ident.html">mod_ident</a></code>ï¿½ï¿½ ï¿½Ö°ï¿½ <code class="directive"><a href="../mod/mod_ident.html#identitycheck">IdentityCheck</a></code>ï¿½ï¿½
+        <code>On</code>ï¿½ï¿½ ï¿½Æ´Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</td></tr>
 <tr class="odd"><td><code>%...m</code></td>
-        <td>¿äÃ» ¸Þ½áµå</td></tr>
+        <td>ï¿½ï¿½Ã» ï¿½Þ½ï¿½ï¿½</td></tr>
 <tr><td><code>%...{<var>Foobar</var>}n</code></td>
-        <td>´Ù¸¥ ¸ðµâÀÌ ±â·ÏÇÑ <var>Foobar</var> ³ëÆ®(note)
-        ³»¿ë.</td></tr>
+        <td>ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ <var>Foobar</var> ï¿½ï¿½Æ®(note)
+        ï¿½ï¿½ï¿½ï¿½.</td></tr>
 <tr class="odd"><td><code>%...{<var>Foobar</var>}o</code></td>
-        <td>ÀÀ´äÀÇ <code><var>Foobar</var>:</code> Çì´õ ³»¿ë.</td></tr>
+        <td>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code><var>Foobar</var>:</code> ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</td></tr>
 <tr><td><code>%...p</code></td>
-        <td>¿äÃ»À» ¼­ºñ½ºÇÏ´Â ¼­¹öÀÇ Á¤±Ô Æ÷Æ®</td></tr>
+        <td>ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®</td></tr>
 <tr class="odd"><td><code>%...P</code></td>
-        <td>¿äÃ»À» ¼­ºñ½ºÇÏ´Â ÀÚ½ÄÀÇ ÇÁ·Î¼¼½º ID.</td></tr>
+        <td>ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Ú½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î¼ï¿½ï¿½ï¿½ ID.</td></tr>
 <tr><td><code>%...{<var>format</var>}P</code></td>
-        <td>¿äÃ»À» ¼­ºñ½ºÇÏ´Â ÀÚ½ÄÀÇ ÇÁ·Î¼¼½º ID È¤Àº ¾²·¹µå
-        ID. format¿¡´Â <code>pid</code>¿Í <code>tid</code>°¡
-        °¡´ÉÇÏ´Ù.
+        <td>ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Ú½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î¼ï¿½ï¿½ï¿½ ID È¤ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        ID. formatï¿½ï¿½ï¿½ï¿½ <code>pid</code>ï¿½ï¿½ <code>tid</code>ï¿½ï¿½
+        ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.
         </td></tr>
 <tr class="odd"><td><code>%...q</code></td>
-        <td>ÁúÀÇ¹®ÀÚ¿­ (ÁúÀÇ¹®ÀÚ¿­ÀÌ ÀÖ´Ù¸é ¾Õ¿¡ <code>?</code>¸¦
-        ºÙÀÌ°í, ¾ø´Ù¸é ºó ¹®ÀÚ¿­)</td></tr>
+        <td>ï¿½ï¿½ï¿½Ç¹ï¿½ï¿½Ú¿ï¿½ (ï¿½ï¿½ï¿½Ç¹ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½Ö´Ù¸ï¿½ ï¿½Õ¿ï¿½ <code>?</code>ï¿½ï¿½
+        ï¿½ï¿½ï¿½Ì°ï¿½, ï¿½ï¿½ï¿½Ù¸ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ú¿ï¿½)</td></tr>
 <tr><td><code>%...r</code></td>
-        <td>¿äÃ»ÀÇ Ã¹¹øÂ° ÁÙ</td></tr>
+        <td>ï¿½ï¿½Ã»ï¿½ï¿½ Ã¹ï¿½ï¿½Â° ï¿½ï¿½</td></tr>
 <tr class="odd"><td><code>%...s</code></td>
-        <td>»óÅÂ(status). ³»ºÎ ¸®´ÙÀÌ·º¼ÇµÈ ¿äÃ»ÀÇ °æ¿ì *¿ø·¡*
-        ¿äÃ»ÀÇ »óÅÂÀÌ´Ù. ÃÖÁ¾ ¿äÃ»ÀÇ »óÅÂ´Â <code>%...&gt;s</code>.</td></tr>
+        <td>ï¿½ï¿½ï¿½ï¿½(status). ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½Çµï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ *ï¿½ï¿½ï¿½ï¿½*
+        ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½Â´ï¿½ <code>%...&gt;s</code>.</td></tr>
 <tr><td><code>%...t</code></td>
-        <td>common log format ½Ã°£ Çü½Ä(Ç¥ÁØ ¿µ¾î Çü½Ä)ÀÇ ½Ã°£</td></tr>
+        <td>common log format ï¿½Ã°ï¿½ ï¿½ï¿½ï¿½ï¿½(Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)ï¿½ï¿½ ï¿½Ã°ï¿½</td></tr>
 <tr class="odd"><td><code>%...{<var>format</var>}t</code></td>
-        <td><code>strftime(3)</code> Çü½Ä formatÀÇ ½Ã°£. (Áö¿ª½Ã°£ÀÏ
-        ¼ö ÀÖÀ½)</td></tr>
+        <td><code>strftime(3)</code> ï¿½ï¿½ï¿½ï¿½ formatï¿½ï¿½ ï¿½Ã°ï¿½. (ï¿½ï¿½ï¿½ï¿½ï¿½Ã°ï¿½ï¿½ï¿½
+        ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)</td></tr>
 <tr><td><code>%...T</code></td>
-        <td>¿äÃ»À» Ã³¸®ÇÏ´Âµ¥ °É¸° ½Ã°£ (ÃÊ ´ÜÀ§).</td></tr>
+        <td>ï¿½ï¿½Ã»ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ï´Âµï¿½ ï¿½É¸ï¿½ ï¿½Ã°ï¿½ (ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½).</td></tr>
 <tr class="odd"><td><code>%...u</code></td>
-        <td>¿ø°Ý »ç¿ëÀÚ (auth°¡ Á¦°øÇÏ¸ç, »óÅÂ(<code>%s</code>)°¡
-        401ÀÎ °æ¿ì ÀÌ»óÇÑ °ªÀ» ³ª¿Ã ¼ö ÀÖÀ½)</td></tr>
+        <td>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ (authï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½, ï¿½ï¿½ï¿½ï¿½(<code>%s</code>)ï¿½ï¿½
+        401ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ì»ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)</td></tr>
 <tr><td><code>%...U</code></td>
-        <td>ÁúÀÇ¹®ÀÚ¿­À» Á¦¿ÜÇÑ ¿äÃ» URL °æ·Î.</td></tr>
+        <td>ï¿½ï¿½ï¿½Ç¹ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã» URL ï¿½ï¿½ï¿½.</td></tr>
 <tr class="odd"><td><code>%...v</code></td>
-        <td>¿äÃ»À» ¼­ºñ½ºÇÑ ¼­¹öÀÇ Á¤±Ô <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>.</td></tr>
+        <td>ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>.</td></tr>
 <tr><td><code>%...V</code></td>
         <td><code class="directive"><a href="../mod/core.html#usecanonicalname">UseCanonicalName</a></code>
-        ¼³Á¤¿¡ µû¸¥ ¼­¹ö¸í.</td></tr>
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.</td></tr>
 <tr class="odd"><td><code>%...X</code></td>
-        <td>ÀÀ´äÀ» ¸¶ÃÆÀ»¶§ ¿¬°á »óÅÂ.
+        <td>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 
         <table>
         
         <tr><td><code>X</code> =</td>
-            <td>ÀÀ´äÀ» ¸¶Ä¡±â Àü¿¡ ¿¬°áÀÌ ²÷¾îÁ³´Ù.</td></tr>
+            <td>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.</td></tr>
         <tr><td><code>+</code> =</td>
-            <td>ÀÀ´äÀ» º¸³½ÈÄ¿¡µµ ¿¬°áÀÌ »ì¾ÆÀÖ´Ù(keep alive).</td></tr>
+            <td>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ö´ï¿½(keep alive).</td></tr>
         <tr><td><code>-</code> = </td>
-            <td>ÀÀ´äÀ» º¸³½ÈÄ ¿¬°áÀÌ ²÷¾îÁ³´Ù.</td></tr>
+            <td>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.</td></tr>
         </table>
 
-        <p>(¾ÆÆÄÄ¡ 1.3 ÈÄ¹Ý ¹öÀü¿¡¼­ ÀÌ Áö½Ã¾î´Â
-        <code>%...c</code>¿´Áö¸¸, ÀüÅëÀûÀÎ ssl
-        <code>%...{<var>var</var>}c</code> ¹®¹ý°ú °ãÃÄ¼­
-        º¯°æÇß´Ù.)</p></td></tr>
+        <p>(ï¿½ï¿½ï¿½ï¿½Ä¡ 1.3 ï¿½Ä¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½
+        <code>%...c</code>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ssl
+        <code>%...{<var>var</var>}c</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ä¼ï¿½
+        ï¿½ï¿½ï¿½ï¿½ï¿½ß´ï¿½.)</p></td></tr>
 <tr><td><code>%...I</code></td>
-        <td>¿äÃ»°ú Çì´õ¸¦ Æ÷ÇÔÇÑ ¼ö½Å ¹ÙÀÌÆ®¼ö·Î 0ÀÏ ¼ö ¾ø´Ù.
-        ÀÌ¸¦ »ç¿ëÇÏ·Á¸é <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code>°¡ ÇÊ¿äÇÏ´Ù.</td></tr>
+        <td>ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ 0ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
+        ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code>ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Ï´ï¿½.</td></tr>
 <tr class="odd"><td><code>%...O</code></td>
-        <td>Çì´õ¸¦ Æ÷ÇÔÇÑ ¼Û½Å ¹ÙÀÌÆ®¼ö·Î 0ÀÏ ¼ö ¾ø´Ù. ÀÌ¸¦
-        »ç¿ëÇÏ·Á¸é <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code>°¡ ÇÊ¿äÇÏ´Ù.</td></tr>
+        <td>ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Û½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ 0ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½. ï¿½Ì¸ï¿½
+        ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code>ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Ï´ï¿½.</td></tr>
 </table>
 
-    <p>"<var>...</var>"¿¡´Â (<em>¿¹¸¦ µé¾î</em>,
-    <code>"%h %u %r %s %b"</code>) ¾Æ¹«°Íµµ ¾ø°Å³ª, Ç×¸ñÀ» Æ÷ÇÔÇÒ
-    Á¶°ÇÀÌ ³ª¿Â´Ù (Á¶°ÇÀ» ¸¸Á·ÇÏÁö ¾ÊÀ¸¸é ÀÚ¸®¿¡ "-"¸¦ ±â·ÏÇÑ´Ù).
-    Á¶°ÇÀº ¾Õ¿¡ "!"¸¦ ºÙÀÌ°Å³ª ¾ÈºÙÀÎ HTTP »óÅÂÄÚµå ¸ñ·ÏÀ¸·Î
-    ÀÛ¼ºÇÑ´Ù. ¿¹¸¦ µé¾î, "%400,501{User-agent}i"´Â 400 (Bad
-    Request) ¿À·ù¿Í 501 (Not Implemented) ¿À·ùÀÏ¶§¸¸
-    <code>User-agent:</code>¸¦ ·Î±×¿¡ ³²±â°í,
-    "%!200,304,302{Referer}i"´Â Á¤»óÀûÀÎ »óÅÂ°¡ <em>¾Æ´Ñ</em>
-    ¸ðµç ¿äÃ»¿¡ ´ëÇØ <code>Referer:</code>¸¦ ·Î±×¿¡ ³²±ä´Ù.</p>
+    <p>"<var>...</var>"ï¿½ï¿½ï¿½ï¿½ (<em>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½</em>,
+    <code>"%h %u %r %s %b"</code>) ï¿½Æ¹ï¿½ï¿½Íµï¿½ ï¿½ï¿½ï¿½Å³ï¿½, ï¿½×¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â´ï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ú¸ï¿½ï¿½ï¿½ "-"ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½).
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Õ¿ï¿½ "!"ï¿½ï¿½ ï¿½ï¿½ï¿½Ì°Å³ï¿½ ï¿½Èºï¿½ï¿½ï¿½ HTTP ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Û¼ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, "%400,501{User-agent}i"ï¿½ï¿½ 400 (Bad
+    Request) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 501 (Not Implemented) ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½ï¿½ï¿½
+    <code>User-agent:</code>ï¿½ï¿½ ï¿½Î±×¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½,
+    "%!200,304,302{Referer}i"ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â°ï¿½ <em>ï¿½Æ´ï¿½</em>
+    ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ <code>Referer:</code>ï¿½ï¿½ ï¿½Î±×¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½.</p>
 
-    <p>¼öÁ¤ÀÚ "&lt;"¿Í "&gt;"´Â ³»ºÎ ¸®´ÙÀÌ·º¼ÇµÈ ¿äÃ»¿¡¼­ °¢°¢
-    Ã³À½ ¿äÃ»À» ¸»ÇÒÁö ¸¶Áö¸· ¿äÃ»À» ¸»ÇÒÁö ¼±ÅÃÇÑ´Ù. ±âº»ÀûÀ¸·Î
-    <code>%s, %U, %T, %D, %r</code>Àº Ã³À½ ¿äÃ»À» º¸°í, ³ª¸ÓÁö
-    <code>%</code> Áö½Ã¾î´Â ¸¶Áö¸· ¿äÃ»À» º»´Ù. ±×·¡¼­
-    <code>%&gt;s</code>´Â ¿äÃ»ÀÇ ¸¶Áö¸· »óÅÂ(status)¸¦ ±â·ÏÇÏ°í,
-    <code>%&lt;u</code>´Â ÀÎÁõÀ¸·Î º¸È£ÇÏÁö ¾Ê´Â ÀÚ¿øÀ¸·Î ³»ºÎ
-    ¶ó´ÙÀÌ·º¼ÇµÈ °æ¿ì¿¡µµ Ã³À½¿¡ ÀÎÁõÇÑ »ç¿ëÀÚ¸¦ ±â·ÏÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ "&lt;"ï¿½ï¿½ "&gt;"ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½Çµï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    Ã³ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    <code>%s, %U, %T, %D, %r</code>ï¿½ï¿½ Ã³ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    <code>%</code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½. ï¿½×·ï¿½ï¿½ï¿½
+    <code>%&gt;s</code>ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(status)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½,
+    <code>%&lt;u</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È£ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´ï¿½ ï¿½Ú¿ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½Çµï¿½ ï¿½ï¿½ì¿¡ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <p>2.0.46 ÀÌÀüÀÇ httpd 2.0 ¹öÀüÀº <code>%...r</code>,
-    <code>%...i</code>, <code>%...o</code>ÀÇ °á°ú ¹®ÀÚ¿­À» ±×´ë·Î
-    µÎ¾ú´Ù. ÀÌÀ¯´Â Common Log FormatÀÇ ¿ä±¸»çÇ×À» µû¸£±âÀ§ÇØ¼­¿´´Ù.
-    Áï, Å¬¶óÀÌ¾ðÆ®°¡ Á¦¾î¹®ÀÚ¸¦ ·Î±×¿¡ Áý¾î³ÖÀ» ¼ö ÀÖ±â¶§¹®¿¡
-    ·Î±×ÆÄÀÏÀ» ±×´ë·Î ´Ù·ê ¶§´Â Á¶½ÉÇØ¾ß ÇÑ´Ù.</p>
+    <p>2.0.46 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ httpd 2.0 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>%...r</code>,
+    <code>%...i</code>, <code>%...o</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½×´ï¿½ï¿½
+    ï¿½Î¾ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Common Log Formatï¿½ï¿½ ï¿½ä±¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½ï¿½ï¿½ï¿½ï¿½.
+    ï¿½ï¿½, Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½î¹®ï¿½Ú¸ï¿½ ï¿½Î±×¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö±â¶§ï¿½ï¿½ï¿½ï¿½
+    ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×´ï¿½ï¿½ ï¿½Ù·ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½.</p>
 
-    <p>º¸¾È»ó ÀÌÀ¯·Î 2.0.46ºÎÅÍ Ãâ·ÂÇÒ ¼ö ¾ø´Â ¹®ÀÚ³ª ´Ù¸¥ Æ¯¼ö¹®ÀÚ¸¦
-    <code>\x<var>hh</var></code>·Î Ç¥ÇöÇÑ´Ù. ¿©±â¼­ <var>hh</var>´Â
-    ÇØ´ç ¹ÙÀÌÆ®ÀÇ 16Áø¼ö Ç¥ÇöÀ» ³ªÅ¸³½´Ù. ÀÌ ±ÔÄ¢ÀÇ ¿¹¿Ü´Â ¹é½½·¡½¬¸¦
-    ¾Õ¿¡ ºÙÀÌ´Â <code>"</code>¿Í <code>\</code>, ±×¸®°í C¾ð¾î
-    Çü½ÄÀÇ °ø¹é¹®ÀÚµé(<code>\n</code>, <code>\t</code> µî)ÀÌ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½È»ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 2.0.46ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ú³ï¿½ ï¿½Ù¸ï¿½ Æ¯ï¿½ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½
+    <code>\x<var>hh</var></code>ï¿½ï¿½ Ç¥ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½â¼­ <var>hh</var>ï¿½ï¿½
+    ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ 16ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ ï¿½ï¿½Ä¢ï¿½ï¿½ ï¿½ï¿½ï¿½Ü´ï¿½ ï¿½é½½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Õ¿ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½ <code>"</code>ï¿½ï¿½ <code>\</code>, ï¿½×¸ï¿½ï¿½ï¿½ Cï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½é¹®ï¿½Úµï¿½(<code>\n</code>, <code>\t</code> ï¿½ï¿½)ï¿½Ì´ï¿½.</p>
 
-    <p>ÀÏ¹ÝÀûÀ¸·Î ¸¹ÀÌ »ç¿ëÇÏ´Â ·Î±× Çü½ÄÀº ´ÙÀ½°ú °°´Ù.</p>
+    <p>ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Î±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</p>
 
     <dl>
       <dt>Common Log Format (CLF)</dt>
       <dd><code>"%h %l %u %t \"%r\" %&gt;s %b"</code></dd>
 
-      <dt>°¡»óÈ£½ºÆ® Á¤º¸¸¦ Æ÷ÇÔÇÑ Common Log Format</dt>
+      <dt>ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Common Log Format</dt>
       <dd><code>"%v %h %l %u %t \"%r\" %&gt;s %b"</code></dd>
 
-      <dt>NCSA extended/combined ·Î±× Çü½Ä</dt>
+      <dt>NCSA extended/combined ï¿½Î±ï¿½ ï¿½ï¿½ï¿½ï¿½</dt>
       <dd><code>"%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\"
       \"%{User-agent}i\""</code></dd>
 
-      <dt>Referer ·Î±× Çü½Ä</dt>
+      <dt>Referer ï¿½Î±ï¿½ ï¿½ï¿½ï¿½ï¿½</dt>
       <dd><code>"%{Referer}i -&gt; %U"</code></dd>
 
-      <dt>Agent (ºê¶ó¿ìÀú) ·Î±× Çü½Ä</dt>
+      <dt>Agent (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½) ï¿½Î±ï¿½ ï¿½ï¿½ï¿½ï¿½</dt>
       <dd><code>"%{User-agent}i"</code></dd>
     </dl>
 
-    <p>¿äÃ»À» ¼­ºñ½ºÇÏ´Â ¼­¹öÀÇ Á¤±Ô <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>°ú <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code>Àº °¢°¢ <code>%v</code>¿Í
-    <code>%p</code>¸¦ »ç¿ëÇÑ´Ù. ·Î±×ºÐ¼® ÇÁ·Î±×·¥ÀÌ ½ÇÁ¦·Î ¿äÃ»À»
-    ¼­ºñ½ºÇÏ´Â È£½ºÆ®¸¦ ¾Ë±âÀ§ÇØ °¡»óÈ£½ºÆ® Ã£±â ¾Ë°í¸®ÁòÀ»
-    °¡Áú ÇÊ¿ä¾øµµ·Ï ÀÌµé °ªÀº <code class="directive"><a href="../mod/core.html#usecanonicalname">UseCanonicalName</a></code> ¼³Á¤°ú ¹«°üÇÏ´Ù.</p>
+    <p>ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>ï¿½ï¿½ <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ <code>%v</code>ï¿½ï¿½
+    <code>%p</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½Î±×ºÐ¼ï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ë±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ® Ã£ï¿½ï¿½ ï¿½Ë°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½ <code class="directive"><a href="../mod/core.html#usecanonicalname">UseCanonicalName</a></code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="security" id="security">º¸¾È»ó °í·ÁÇÒ Á¡</a> <a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
-    <p>¼­¹ö¸¦ ½ÃÀÛÇÏ´Â »ç¿ëÀÚ¿Ü¿¡ ´Ù¸¥ »ç¿ëÀÚ°¡ ·Î±×ÆÄÀÏÀ» ÀúÀåÇÏ´Â
-    µð·ºÅä¸®¿¡ ¾²±â ±ÇÇÑÀ» °¡Áú¶§ ¿Ö º¸¾È¿¡ ¹®Á¦°¡ »ý±â´ÂÁö
-    <a href="../misc/security_tips.html#serverroot">º¸¾È ÆÁ</a>
-    ¹®¼­¸¦ Âü°íÇÏ¶ó.</p>
+<h2><a name="security" id="security">ï¿½ï¿½ï¿½È»ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½</a> <a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¿Ü¿ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½
+    ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½È¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    <a href="../misc/security_tips.html#serverroot">ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½</a>
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="BufferedLogs" id="BufferedLogs">BufferedLogs</a> <a name="bufferedlogs" id="bufferedlogs">Áö½Ã¾î</a> <a title="Permanent link" href="#bufferedlogs" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="BufferedLogs" id="BufferedLogs">BufferedLogs</a> <a name="bufferedlogs" id="bufferedlogs">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#bufferedlogs" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>Buffer log entries in memory before writing to disk</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code /></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_log_config</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Buffer log entries in memory before writing to disk</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code /></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_log_config</td></tr>
 </table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CustomLog" id="CustomLog">CustomLog</a> <a name="customlog" id="customlog">Áö½Ã¾î</a> <a title="Permanent link" href="#customlog" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="CustomLog" id="CustomLog">CustomLog</a> <a name="customlog" id="customlog">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#customlog" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>·Î±×ÆÄÀÏ ÀÌ¸§°ú Çü½ÄÀ» ÁöÁ¤ÇÑ´Ù</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>CustomLog  <var>file</var>|<var>pipe</var>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>CustomLog  <var>file</var>|<var>pipe</var>
 <var>format</var>|<var>nickname</var>
 [env=[!]<var>environment-variable</var>]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_log_config</td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_log_config</td></tr>
 </table>
-    <p>¼­¹ö°¡ ¿äÃ»À» ·Î±×¿¡ ³²±æ¶§ <code class="directive">CustomLog</code>
-    Áö½Ã¾î¸¦ »ç¿ëÇÑ´Ù. ·Î±× Çü½ÄÀ» ÁöÁ¤ÇÏ°í, È¯°æº¯¼ö¸¦ »ç¿ëÇÏ¿©
-    ¿äÃ»ÀÇ Æ¯Â¡¿¡ µû¶ó ¼±ÅÃÀûÀ¸·Î ·Î±×¸¦ ³²±æ ¼öµµ ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½Î±×¿ï¿½ ï¿½ï¿½ï¿½æ¶§ <code class="directive">CustomLog</code>
+    ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½Î±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½, È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½
+    ï¿½ï¿½Ã»ï¿½ï¿½ Æ¯Â¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î±×¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <p>·Î±×¸¦ ±â·ÏÇÒ Àå¼Ò¸¦ ÁöÁ¤ÇÏ´Â Ã¹¹øÂ° ¾Æ±Ô¸ÕÆ®¿¡´Â ´ÙÀ½
-    µÑÁß ÇÏ³ª¸¦ »ç¿ëÇÑ´Ù.</p>
+    <p>ï¿½Î±×¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ò¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ Ã¹ï¿½ï¿½Â° ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½Ï³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
     <dl>
       <dt><var>file</var></dt>
-      <dd><code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>¿¡
-      »ó´ëÀûÀÎ ÆÄÀÏ¸í.</dd>
+      <dd><code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¸ï¿½.</dd>
 
       <dt><var>pipe</var></dt>
-      <dd>ÆÄÀÌÇÁ¹®ÀÚ "<code>|</code>"µÚ¿¡ ·Î±× Á¤º¸¸¦ Ç¥ÁØÀÔ·ÂÀ¸·Î
-      ¹ÞÀ» ÇÁ·Î±×·¥ °æ·Î¸¦ Àû´Â´Ù.
+      <dd>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ "<code>|</code>"ï¿½Ú¿ï¿½ ï¿½Î±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½ï¿½Ô·ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½ ï¿½ï¿½Î¸ï¿½ ï¿½ï¿½ï¿½Â´ï¿½.
 
-      <div class="warning"><h3>º¸¾È:</h3>
-      <p>ÇÁ·Î±×·¥À» »ç¿ëÇÑ´Ù¸é ÇÁ·Î±×·¥Àº À¥¼­¹ö¸¦ ½ÃÀÛÇÑ »ç¿ëÀÚ
-      ±ÇÇÑÀ¸·Î ½ÇÇàµÈ´Ù. ¼­¹ö¸¦ root·Î ½ÃÀÛÇÑ´Ù¸é ÇÁ·Î±×·¥µµ
-      root·Î ½ÇÇàÇÏ¹Ç·Î ÇÁ·Î±×·¥ÀÌ ¾ÈÀüÇÑÁö È®ÀÎÇÏ¶ó.</p>
+      <div class="warning"><h3>ï¿½ï¿½ï¿½ï¿½:</h3>
+      <p>ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ rootï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½
+      rootï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¹Ç·ï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ï¶ï¿½.</p>
       </div>
-      <div class="warning"><h3>ÁÖÀÇ</h3>
-        <p>À¯´Ð½º°¡ ¾Æ´Ñ ÇÃ·¡Æû¿¡¼­ ÆÄÀÏ°æ·Î¸¦ ÀÔ·ÂÇÒ¶§ ÇÃ·¡ÆûÀÌ
-        ¹é½½·¡½¬¸¦ »ç¿ëÇÏ´õ¶óµµ ¹Ýµå½Ã ½½·¡½¬¸¦ »ç¿ëÇØ¾ß ÇÑ´Ù.
-        ÀÏ¹ÝÀûÀ¸·Î ¼³Á¤ÆÄÀÏ¿¡¼­´Â Ç×»ó ½½·¡½¬¸¦ »ç¿ëÇÏ´Â °ÍÀÌ
-        ÁÁ´Ù.</p>
+      <div class="warning"><h3>ï¿½ï¿½ï¿½ï¿½</h3>
+        <p>ï¿½ï¿½ï¿½Ð½ï¿½ï¿½ï¿½ ï¿½Æ´ï¿½ ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï°ï¿½Î¸ï¿½ ï¿½Ô·ï¿½ï¿½Ò¶ï¿½ ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½
+        ï¿½é½½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ï¿½ï¿½ ï¿½Ýµï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½.
+        ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×»ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½
+        ï¿½ï¿½ï¿½ï¿½.</p>
       </div></dd>
     </dl>
 
-    <p>µÎ¹øÂ° ¾Æ±Ô¸ÕÆ®´Â ·Î±×ÆÄÀÏ¿¡ ±â·ÏÇÒ ³»¿ëÀ» ÁöÁ¤ÇÑ´Ù.
-    Àü¿¡ <code class="directive"><a href="#logformat">LogFormat</a></code>À¸·Î
-    Á¤ÀÇÇÑ <var>nickname</var>À» »ç¿ëÇÏ°Å³ª Á÷Á¢ <a href="#formats">·Î±× Çü½Ä</a> Àý¿¡¼­ ¼³¸íÇÑ <var>format</var>
-    ¹®ÀÚ¿­À» »ç¿ëÇÒ ¼ö ÀÖ´Ù.</p>
+    <p>ï¿½Î¹ï¿½Â° ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ ï¿½Î±ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+    ï¿½ï¿½ï¿½ï¿½ <code class="directive"><a href="#logformat">LogFormat</a></code>ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <var>nickname</var>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°Å³ï¿½ ï¿½ï¿½ï¿½ï¿½ <a href="#formats">ï¿½Î±ï¿½ ï¿½ï¿½ï¿½ï¿½</a> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <var>format</var>
+    ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <p>¿¹¸¦ µé¾î, ´ÙÀ½ µÎ Áö½Ã¾î´Â ¶È°°Àº ÀÏÀ» ÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½È°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½.</p>
 
     <div class="example"><p><code>
-      # Çü½Ä º°ÄªÀ» »ç¿ëÇÑ CustomLog<br />
+      # ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Äªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ CustomLog<br />
       LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common<br />
       CustomLog logs/access_log common<br />
       <br />
-      # Á÷Á¢ Çü½Ä ¹®ÀÚ¿­À» »ç¿ëÇÑ CustomLog<br />
+      # ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ CustomLog<br />
       CustomLog logs/access_log "%h %l %u %t \"%r\" %&gt;s %b"
     </code></p></div>
 
-    <p>¼¼¹øÂ° ¾Æ±Ô¸ÕÆ®´Â ¾ø¾îµµ µÇ¸ç, Æ¯Á¤ ¼­¹ö È¯°æº¯¼ö À¯¹«¿¡
-    µû¶ó ¿äÃ»À» ·Î±×¿¡ ±â·ÏÇÒÁö ¿©ºÎ¸¦ °áÁ¤ÇÑ´Ù. ¿äÃ»¿¡ ÁöÁ¤ÇÑ
-    <a href="../env.html">È¯°æº¯¼ö</a>°¡ Á¤ÀÇµÇÀÖ´Ù¸é (È¤Àº
-    '<code>env=!<var>name</var></code>'¸¦ »ç¿ëÇÑ °æ¿ì ¾ø´Ù¸é)
-    ¿äÃ»À» ·Î±×¿¡ ±â·ÏÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½Â° ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½îµµ ï¿½Ç¸ï¿½, Æ¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½Î±×¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    <a href="../env.html">È¯ï¿½æº¯ï¿½ï¿½</a>ï¿½ï¿½ ï¿½ï¿½ï¿½Çµï¿½ï¿½Ö´Ù¸ï¿½ (È¤ï¿½ï¿½
+    '<code>env=!<var>name</var></code>'ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ù¸ï¿½)
+    ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½Î±×¿ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <p><code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code>³ª <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
-    ¸ðµâÀ» »ç¿ëÇÏ¿© ¿äÃ»º°·Î È¯°æº¯¼ö¸¦ ¼³Á¤ÇÒ ¼ö ÀÖ´Ù. ¿¹¸¦
-    µé¾î, ¼­¹ö°¡ GIF ±×¸²¿¡ ´ëÇÑ ¸ðµç ¿äÃ»À» ÁÖ¼­¹ö ·Î±×°¡ ¾Æ´Ñ
-    ´Ù¸¥ ·Î±×ÆÄÀÏ¿¡ ±â·ÏÇÏ·Á¸é,</p>
+    <p><code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code>ï¿½ï¿½ <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ GIF ï¿½×¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½Ö¼ï¿½ï¿½ï¿½ ï¿½Î±×°ï¿½ ï¿½Æ´ï¿½
+    ï¿½Ù¸ï¿½ ï¿½Î±ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½,</p>
     
     <div class="example"><p><code>
       SetEnvIf Request_URI \.gif$ gif-image<br />
@@ -330,78 +330,78 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="GlobalLog" id="GlobalLog">GlobalLog</a> <a name="globallog" id="globallog">Áö½Ã¾î</a> <a title="Permanent link" href="#globallog" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="GlobalLog" id="GlobalLog">GlobalLog</a> <a name="globallog" id="globallog">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#globallog" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>Sets filename and format of log file</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>GlobalLog  <var>file</var>|<var>pipe</var>|<var>provider</var>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Sets filename and format of log file</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>GlobalLog  <var>file</var>|<var>pipe</var>|<var>provider</var>
 <var>format</var>|<var>nickname</var>
 [env=[!]<var>environment-variable</var>|
 expr=<var>expression</var>]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_log_config</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Áö¿ø:</a></th><td>Available in Apache HTTP Server 2.4.19 and later</td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_log_config</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Available in Apache HTTP Server 2.4.19 and later</td></tr>
 </table><p>The documentation for this directive has
             not been translated yet. Please have a look at the English
             version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LogFormat" id="LogFormat">LogFormat</a> <a name="logformat" id="logformat">Áö½Ã¾î</a> <a title="Permanent link" href="#logformat" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="LogFormat" id="LogFormat">LogFormat</a> <a name="logformat" id="logformat">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#logformat" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>·Î±×ÆÄÀÏ¿¡ »ç¿ëÇÒ Çü½ÄÀ» ±â¼úÇÑ´Ù</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>LogFormat <var>format</var>|<var>nickname</var>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Î±ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>LogFormat <var>format</var>|<var>nickname</var>
 [<var>nickname</var>]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">±âº»°ª:</a></th><td><code>LogFormat "%h %l %u %t \"%r\" %&gt;s %b"</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_log_config</td></tr>
+<tr><th><a href="directive-dict.html#Default">ï¿½âº»ï¿½ï¿½:</a></th><td><code>LogFormat "%h %l %u %t \"%r\" %&gt;s %b"</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_log_config</td></tr>
 </table>
-    <p>ÀÌ Áö½Ã¾î´Â Á¢±Ù ·Î±×ÆÄÀÏÀÇ Çü½ÄÀ» ÁöÁ¤ÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <p><code class="directive">LogFormat</code> Áö½Ã¾î´Â µÎ°¡Áö Çü½ÄÀ¸·Î
-    »ç¿ëÇÑ´Ù. Ã¹¹øÂ° Çü½ÄÀº ¾Æ±Ô¸ÕÆ®¸¦ ÇÑ°³¸¸ »ç¿ëÇÏ¿© ´ÙÀ½
-    <code class="directive">TransferLog</code> Áö½Ã¾îµéÀÌ »ç¿ëÇÒ ·Î±×
-    Çü½ÄÀ» ÁöÁ¤ÇÑ´Ù. ÀÌ ¾Æ±Ô¸ÕÆ®¿¡ À§ÀÇ <a href="#formats">·Î±×
-    Çü½Ä ÁöÁ¤ÇÏ±â</a> Àý¿¡¼­ ¼³¸íÇÑ <var>format</var>À» Á÷Á¢
-    »ç¿ëÇÏ°Å³ª, ´ÙÀ½¿¡ ¼³¸íÇÒ <code class="directive">LogFormat</code>
-    Áö½Ã¾î·Î ¹Ì¸® Á¤ÀÇÇÑ (·Î±× Çü½ÄÀ» ÁöÄªÇÏ´Â) <var>nickname</var>À»
-    »ç¿ëÇÒ ¼ö ÀÖ´Ù.</p>
+    <p><code class="directive">LogFormat</code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½Î°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. Ã¹ï¿½ï¿½Â° ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ ï¿½Ñ°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½
+    <code class="directive">TransferLog</code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î±ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ <a href="#formats">ï¿½Î±ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½</a> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <var>format</var>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ï°Å³ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code class="directive">LogFormat</code>
+    ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (ï¿½Î±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Äªï¿½Ï´ï¿½) <var>nickname</var>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <p><code class="directive">LogFormat</code> Áö½Ã¾îÀÇ µÎ¹øÂ° Çü½ÄÀº
-    <var>format</var>°ú <var>nickname</var>À» ¿¬°áÇÑ´Ù. ±×·¯¸é
-    µÚ¿¡¼­ »ç¿ëÇÏ´Â <code class="directive">LogFormat</code>ÀÌ³ª <code class="directive"><a href="#customlog">CustomLog</a></code> Áö½Ã¾î¿¡ ¹Ýº¹ÇØ¼­
-    Çü½Ä ¹®ÀÚ¿­À» ¸ðµÎ ÀÔ·ÂÇÏ´Â ´ë½Å <var>nickname</var>À» »ç¿ëÇÒ
-    ¼ö ÀÖ´Ù. º°ÄªÀ» Á¤ÀÇÇÏ´Â <code class="directive">LogFormat</code>
-    Áö½Ã¾î´Â <strong>ÀÌ ¿Ü¿¡´Â ¾Æ¹« ±â´ÉÀ» ÇÏÁö ¾Ê´Â´Ù</strong>.
-    Áï, º°Äª<em>¸¸</em>À» Á¤ÀÇÇÏ¸ç, ½ÇÁ¦·Î Çü½ÄÀ» Àû¿ëÇÏ°Å³ª
-    Çü½ÄÀ» ±âº»°ªÀ¸·Î ¸¸µéÁö ¾Ê´Â´Ù. ±×·¯¹Ç·Î ´ÙÀ½¿¡ ³ª¿À´Â
+    <p><code class="directive">LogFormat</code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ï¿½ ï¿½Î¹ï¿½Â° ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    <var>format</var>ï¿½ï¿½ <var>nickname</var>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½×·ï¿½ï¿½ï¿½
+    ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ <code class="directive">LogFormat</code>ï¿½Ì³ï¿½ <code class="directive"><a href="#customlog">CustomLog</a></code> ï¿½ï¿½ï¿½Ã¾î¿¡ ï¿½Ýºï¿½ï¿½Ø¼ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ô·ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ <var>nickname</var>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½Äªï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ <code class="directive">LogFormat</code>
+    ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ <strong>ï¿½ï¿½ ï¿½Ü¿ï¿½ï¿½ï¿½ ï¿½Æ¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½</strong>.
+    ï¿½ï¿½, ï¿½ï¿½Äª<em>ï¿½ï¿½</em>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°Å³ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½. ï¿½×·ï¿½ï¿½Ç·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     <code class="directive"><a href="#transferlog">TransferLog</a></code>
-    Áö½Ã¾î¿¡ ¿µÇâÀ» ÁÖÁö ¾Ê´Â´Ù. ¶Ç,
-    <code class="directive">LogFormat</code>Àº º°ÄªÀ¸·Î ´Ù¸¥ º°ÄªÀ»
-    Á¤ÀÇÇÒ ¼ö ÀÖ´Ù. º°Äª ÀÌ¸§¿¡´Â ÆÛ¼¾Æ® ±âÈ£(<code>%</code>)¸¦
-    »ç¿ëÇÒ ¼ö ¾øÀ½À» ÁÖÀÇÇÏ¶ó.</p>
+    ï¿½ï¿½ï¿½Ã¾î¿¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½. ï¿½ï¿½,
+    <code class="directive">LogFormat</code>ï¿½ï¿½ ï¿½ï¿½Äªï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½Äªï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½Äª ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Û¼ï¿½Æ® ï¿½ï¿½È£(<code>%</code>)ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.</p>
 
-    <div class="example"><h3>¿¹Á¦</h3><p><code>
+    <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½</h3><p><code>
       LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost_common
     </code></p></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="TransferLog" id="TransferLog">TransferLog</a> <a name="transferlog" id="transferlog">Áö½Ã¾î</a> <a title="Permanent link" href="#transferlog" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="TransferLog" id="TransferLog">TransferLog</a> <a name="transferlog" id="transferlog">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#transferlog" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>·Î±×ÆÄÀÏ À§Ä¡¸¦ ¼³Á¤ÇÑ´Ù</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>TransferLog <var>file</var>|<var>pipe</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_log_config</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>TransferLog <var>file</var>|<var>pipe</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_log_config</td></tr>
 </table>
-    <p>ÀÌ Áö½Ã¾î´Â <code class="directive"><a href="#customlog">CustomLog</a></code> Áö½Ã¾î¿Í ¾Æ±Ô¸ÕÆ®¿Í
-    ±â´ÉÀÌ ºñ½ÁÇÏÁö¸¸, ·Î±× Çü½ÄÀ» Á÷Á¢ ÁöÁ¤ÇÏ°Å³ª ¿äÃ»À» Á¶°Ç¿¡
-    µû¶ó ·Î±×¿¡ ³²±æ ¼ö ¾ø´Ù. ´ë½Å °¡Àå ÃÖ±Ù »ç¿ëÇÑ (º°ÄªÀ»
-    Á¤ÀÇÇÏÁö ¾ÊÀº) <code class="directive"><a href="#logformat">LogFormat</a></code> Áö½Ã¾î°¡ ÁöÁ¤ÇÑ
-    ·Î±× Çü½ÄÀ» »ç¿ëÇÑ´Ù. ¹Ì¸® Çü½ÄÀ» ÁöÁ¤ÇÏÁö ¾Ê¾Ò´Ù¸é Common
-    Log FormatÀ» »ç¿ëÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ <code class="directive"><a href="#customlog">CustomLog</a></code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½Î±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°Å³ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½Ç¿ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½Î±×¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½Äªï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½) <code class="directive"><a href="#logformat">LogFormat</a></code> ï¿½ï¿½ï¿½Ã¾î°¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Î±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¾Ò´Ù¸ï¿½ Common
+    Log Formatï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <div class="example"><h3>¿¹Á¦</h3><p><code>
+    <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½</h3><p><code>
       LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\""<br />
       TransferLog logs/access_log
     </code></p></div>
@@ -409,7 +409,7 @@ expr=<var>expression</var>]</code></td></tr>
 </div>
 </div>
 <div class="bottomlang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/mod/mod_log_config.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/mod/mod_log_config.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_log_config.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_log_config.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_log_config.html" title="Korean">&nbsp;ko&nbsp;</a> |
@@ -417,7 +417,7 @@ expr=<var>expression</var>]</code></td></tr>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_log_config.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/mod/mod_log_config.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -432,8 +432,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_log_config
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

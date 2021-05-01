@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
 <meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -17,38 +17,38 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">¸ðµâ</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">ï¿½ï¿½ï¿½</a></div>
 <div id="page-content">
-<div id="preamble"><h1>¾ÆÆÄÄ¡ ¸ðµâ mod_deflate</h1>
+<div id="preamble"><h1>ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ mod_deflate</h1>
 <div class="toplang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/mod/mod_deflate.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/mod/mod_deflate.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_deflate.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_deflate.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_deflate.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">ÀÌ ¹®¼­´Â ÃÖ½ÅÆÇ ¹ø¿ªÀÌ ¾Æ´Õ´Ï´Ù.
-            ÃÖ±Ù¿¡ º¯°æµÈ ³»¿ëÀº ¿µ¾î ¹®¼­¸¦ Âü°íÇÏ¼¼¿ä.</div>
-<table class="module"><tr><th><a href="module-dict.html#Description">¼³¸í:</a></th><td>³»¿ëÀ» Å¬¶óÀÌ¾ðÆ®·Î º¸³»±â Àü¿¡ ¾ÐÃàÇÑ´Ù</td></tr>
-<tr><th><a href="module-dict.html#Status">»óÅÂ:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">¸ðµâ¸í:</a></th><td>deflate_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">¼Ò½ºÆÄÀÏ:</a></th><td>mod_deflate.c</td></tr></table>
-<h3>¿ä¾à</h3>
+<div class="outofdate">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Õ´Ï´ï¿½.
+            ï¿½Ö±Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</td></tr>
+<tr><th><a href="module-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">ï¿½ï¿½ï¿½ï¿½:</a></th><td>deflate_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">ï¿½Ò½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>mod_deflate.c</td></tr></table>
+<h3>ï¿½ï¿½ï¿½</h3>
 
-    <p><code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> ¸ðµâÀº ¼­¹öÀÇ Ãâ·ÂÀ» ³×Æ®¿÷À¸·Î
-    Å¬¶óÀÌ¾ðÆ®¿¡ º¸³»±â Àü¿¡ ¾ÐÃàÇÏ´Â <code>DEFLATE</code> Ãâ·ÂÇÊÅÍ¸¦
-    Á¦°øÇÑ´Ù.</p>
+    <p><code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ <code>DEFLATE</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 </div>
-<div id="quickview"><h3>ÁÖÁ¦</h3>
+<div id="quickview"><h3>ï¿½ï¿½ï¿½ï¿½</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#recommended">°ßº» ¼³Á¤</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#enable">¾ÐÃàÇÏ±â</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#proxies">ÇÁ·Ï½Ã ¼­¹ö ´Ù·ç±â</a></li>
-</ul><h3 class="directives">Áö½Ã¾îµé</h3>
+<li><img alt="" src="../images/down.gif" /> <a href="#recommended">ï¿½ßºï¿½ ï¿½ï¿½ï¿½ï¿½</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#enable">ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#proxies">ï¿½ï¿½ï¿½Ï½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù·ï¿½ï¿½</a></li>
+</ul><h3 class="directives">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#deflatealteretag">DeflateAlterETag</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#deflatebuffersize">DeflateBufferSize</a></li>
@@ -60,49 +60,49 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#deflatememlevel">DeflateMemLevel</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#deflatewindowsize">DeflateWindowSize</a></li>
 </ul>
-<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_deflate">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_deflate">Report a bug</a></li></ul><h3>Âü°í</h3>
+<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_deflate">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_deflate">Report a bug</a></li></ul><h3>ï¿½ï¿½ï¿½ï¿½</h3>
 <ul class="seealso">
-<li><a href="../filter.html">ÇÊÅÍ</a></li>
+<li><a href="../filter.html">ï¿½ï¿½ï¿½ï¿½</a></li>
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="recommended" id="recommended">°ßº» ¼³Á¤</a> <a title="Permanent link" href="#recommended" class="permalink">&para;</a></h2>
-    <p>±ÞÇÑ »ç¶÷À» À§ÇÑ °ßº» ¼³Á¤ÀÌ´Ù.</p>
+<h2><a name="recommended" id="recommended">ï¿½ßºï¿½ ï¿½ï¿½ï¿½ï¿½</a> <a title="Permanent link" href="#recommended" class="permalink">&para;</a></h2>
+    <p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ßºï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½.</p>
 
-    <div class="example"><h3>ÀÏºÎ type¸¸ ¾ÐÃà</h3><p><code>
+    <div class="example"><h3>ï¿½Ïºï¿½ typeï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</h3><p><code>
       AddOutputFilterByType DEFLATE text/html text/plain text/xml
     </code></p></div>
 
-    <p>¾Æ·¡ ¼³Á¤Àº ¿ä¾àÇÏ¿´Áö¸¸ ±×·¡µµ º¹ÀâÇÏ´Ù. ¼³Á¤À» ¿ÏÀüÈ÷
-    ÀÌÇØÇÑ ÈÄ »ç¿ëÇÏ¶ó.</p>
+    <p>ï¿½Æ·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.</p>
 
-    <div class="example"><h3>ÀÌ¹ÌÁö¸¦ Á¦¿ÜÇÑ ¸ðµç °ÍÀ» ¾ÐÃà</h3><p><code>
+    <div class="example"><h3>ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</h3><p><code>
       &lt;Location /&gt;<br />
       <span class="indent">
-        # ÇÊÅÍ¸¦ Ãß°¡ÇÑ´Ù<br />
+        # ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ß°ï¿½ï¿½Ñ´ï¿½<br />
         SetOutputFilter DEFLATE<br />
         <br />
-        # Netscape 4.x¿¡ ¹®Á¦°¡ ÀÖ´Ù...<br />
+        # Netscape 4.xï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½...<br />
         BrowserMatch ^Mozilla/4         gzip-only-text/html<br />
         <br />
-        # Netscape 4.06-4.08¿¡ ´õ ¹®Á¦°¡ ÀÖ´Ù<br />
+        # Netscape 4.06-4.08ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½<br />
         BrowserMatch ^Mozilla/4\.0[678] no-gzip<br />
         <br />
-        # MSIEÀº Netscape¶ó°í ÀÚ½ÅÀ» ¾Ë¸®Áö¸¸, ¹®Á¦°¡ ¾ø´Ù<br />
+        # MSIEï¿½ï¿½ Netscapeï¿½ï¿½ï¿½ ï¿½Ú½ï¿½ï¿½ï¿½ ï¿½Ë¸ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½<br />
         # BrowserMatch \bMSIE             !no-gzip !gzip-only-text/html<br />
         <br />
-        # ÁÖÀÇ: ¾ÆÆÄÄ¡ 2.0.48±îÁö mod_setenvifÀÇ ¹ö±×¶§¹®¿¡<br />
-        # À§ÀÇ Á¤±ÔÇ¥Çö½ÄÀº µ¿ÀÛÇÏÁö ¾Ê´Â´Ù. ¿øÇÏ´Â È¿°ú¸¦<br />
-        # ¾ò±âÀ§ÇØ ´ÙÀ½°ú °°ÀÌ ¼öÁ¤ÇÏ¿© »ç¿ëÇÑ´Ù:<br />
+        # ï¿½ï¿½ï¿½ï¿½: ï¿½ï¿½ï¿½ï¿½Ä¡ 2.0.48ï¿½ï¿½ï¿½ï¿½ mod_setenvifï¿½ï¿½ ï¿½ï¿½ï¿½×¶ï¿½ï¿½ï¿½ï¿½ï¿½<br />
+        # ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½. ï¿½ï¿½ï¿½Ï´ï¿½ È¿ï¿½ï¿½ï¿½ï¿½<br />
+        # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½:<br />
         BrowserMatch \bMSI[E]           !no-gzip !gzip-only-text/html<br />
         <br />
-        # ÀÌ¹ÌÁö¸¦ ¾ÐÃàÇÏÁö ¾Ê´Â´Ù<br />
+        # ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½<br />
         SetEnvIfNoCase Request_URI \<br />
         <span class="indent">
           \.(?:gif|jpe?g|png)$ no-gzip dont-vary<br />
         </span>
         <br />
-        # ÇÁ·Ï½Ã°¡ Àß¸øµÈ ³»¿ëÀ» Àü´ÞÇÏÁö¾Êµµ·Ï ÇÑ´Ù<br />
+        # ï¿½ï¿½ï¿½Ï½Ã°ï¿½ ï¿½ß¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½<br />
         Header append Vary User-Agent env=!dont-vary<br />
       </span>
       &lt;/Location&gt;
@@ -110,25 +110,25 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="enable" id="enable">¾ÐÃàÇÏ±â</a> <a title="Permanent link" href="#enable" class="permalink">&para;</a></h2>
+<h2><a name="enable" id="enable">ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½</a> <a title="Permanent link" href="#enable" class="permalink">&para;</a></h2>
 
-    <h3><a name="output" id="output">Ãâ·Â ¾ÐÃà</a></h3>
-      <p><code>DEFLATE</code> <a href="../filter.html">ÇÊÅÍ</a>°¡
-      ¾ÐÃàÀ» ÇÑ´Ù. ´ÙÀ½ Áö½Ã¾î´Â Áö½Ã¾î°¡ ÀÖ´Â À§Ä¡ÀÇ ¹®¼­¸¦
-      ¾ÐÃàÇÑ´Ù:</p>
+    <h3><a name="output" id="output">ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a></h3>
+      <p><code>DEFLATE</code> <a href="../filter.html">ï¿½ï¿½ï¿½ï¿½</a>ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î°¡ ï¿½Ö´ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½:</p>
 
       <div class="example"><p><code>
         SetOutputFilter DEFLATE
       </code></p></div>
 
-      <p>¸ðµç ³»¿ëÀ» ¾ÐÃàÇÏ¸é Ã³¸®ÇÏÁö ¸øÇÏ´Â ºê¶ó¿ìÀú°¡ ÀÖ±â¶§¹®¿¡
-      html ÆÄÀÏ¸¸À» ¾ÐÃàÇÏ±âÀ§ÇØ (¾Æ·¡ Âü°í)
-      <code>gzip-only-text/html</code>À» <code>1</code>·Î ¼³Á¤ÇÒÁöµµ
-      ¸ð¸¥´Ù. ÀÌ¸¦ <em><code>1</code>ÀÌ ¾Æ´Ñ °ªÀ¸·Î</em> ¼³Á¤ÇÏ¸é
-      ¹«½ÃÇÑ´Ù.</p>
+      <p>ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö±â¶§ï¿½ï¿½ï¿½ï¿½
+      html ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ (ï¿½Æ·ï¿½ ï¿½ï¿½ï¿½ï¿½)
+      <code>gzip-only-text/html</code>ï¿½ï¿½ <code>1</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ð¸¥´ï¿½. ï¿½Ì¸ï¿½ <em><code>1</code>ï¿½ï¿½ ï¿½Æ´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</em> ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
       
-      <p>º¸Åë Æ¯º°ÇÑ MIME type¸¸ ¾ÐÃàÇÏ·Á¸é <code class="directive"><a href="../mod/core.html#addoutputfilterbytype">AddOutputFilterByType</a></code> Áö½Ã¾î¸¦ »ç¿ëÇÑ´Ù.
-      ´ÙÀ½ ¼³Á¤Àº html ÆÄÀÏ¸¸À» ¾ÐÃàÇÑ´Ù:</p>
+      <p>ï¿½ï¿½ï¿½ï¿½ Æ¯ï¿½ï¿½ï¿½ï¿½ MIME typeï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ <code class="directive"><a href="../mod/core.html#addoutputfilterbytype">AddOutputFilterByType</a></code> ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+      ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ html ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½:</p>
 
       <div class="example"><p><code>
         &lt;Directory "/your-server-root/manual"&gt;<br />
@@ -138,11 +138,11 @@
         &lt;/Directory&gt;
       </code></p></div>
 
-      <p>¾ÐÃàÇÑ ÆÄÀÏÀ» Ã³¸®ÇÏÁö ¸øÇÏ´Â ºê¶ó¿ìÀú¿¡°Ô´Â ¾ÐÃàÇÏÁö¾Ê°í
-      º¸³»±æÀ§ÇØ <code class="directive"><a href="../mod/mod_setenvif.html#browsermatch">BrowserMatch</a></code> Áö½Ã¾î¿¡ <code>no-gzip</code>À»
-      ¼³Á¤ÇÑ´Ù. ÃÖÀûÀÇ °á°ú¸¦ ¾ò±âÀ§ÇØ <code>no-gzip</code>°ú
-      <code>gzip-only-text/html</code>À» °°ÀÌ »ç¿ëÇÒ ¼ö ÀÖ´Ù.
-      ÀÌ °æ¿ì ÀüÀÚ°¡ ÈÄÀÚ¸¦ ¹«½ÃÇÑ´Ù. À§ ÀýÀÇ <a href="#recommended">¼³Á¤ ¿¹Á¦</a> ÀÏºÎ¸¦ »ìÆìº¸ÀÚ:</p>
+      <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê°ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code class="directive"><a href="../mod/mod_setenvif.html#browsermatch">BrowserMatch</a></code> ï¿½ï¿½ï¿½Ã¾î¿¡ <code>no-gzip</code>ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>no-gzip</code>ï¿½ï¿½
+      <code>gzip-only-text/html</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.
+      ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ <a href="#recommended">ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a> ï¿½ÏºÎ¸ï¿½ ï¿½ï¿½ï¿½ìº¸ï¿½ï¿½:</p>
 
       <div class="example"><p><code>
         BrowserMatch ^Mozilla/4         gzip-only-text/html<br />
@@ -150,58 +150,58 @@
         BrowserMatch \bMSIE             !no-gzip !gzip-only-text/html
       </code></p></div>
 
-      <p>¸ÕÀú <code>User-Agent</code> ¹®ÀÚ¿­À» º¸°í Netscape
-      Navigator ¹öÀü 4.xÀÎÁö °Ë»çÇÑ´Ù. ÀÌ ¹öÀüÀº <code>text/html</code>ÀÌ
-      ¾Æ´Ñ typeÀÇ ¾ÐÃàÀ» Ã³¸®ÇÏÁö ¸øÇÑ´Ù. ¹öÀü 4.06, 4.07, 4.08Àº
-      html ÆÄÀÏ ¾ÐÃàÀ» Ã³¸®ÇÏ´Â´ëµµ ¹®Á¦°¡ ÀÖ´Ù. ±×·¡¼­ ¿ì¸®´Â
-      ÀÌ °æ¿ì deflate ÇÊÅÍ¸¦ ¿ÏÀüÈ÷ »ç¿ëÇÏÁö¾Ê´Â´Ù.</p>
+      <p>ï¿½ï¿½ï¿½ï¿½ <code>User-Agent</code> ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Netscape
+      Navigator ï¿½ï¿½ï¿½ï¿½ 4.xï¿½ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>text/html</code>ï¿½ï¿½
+      ï¿½Æ´ï¿½ typeï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ 4.06, 4.07, 4.08ï¿½ï¿½
+      html ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ï´Â´ëµµ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½×·ï¿½ï¿½ï¿½ ï¿½ì¸®ï¿½ï¿½
+      ï¿½ï¿½ ï¿½ï¿½ï¿½ deflate ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê´Â´ï¿½.</p>
 
-      <p>¼¼¹øÂ° <code class="directive"><a href="../mod/mod_setenvif.html#browsermatch">BrowserMatch</a></code>
-      Áö½Ã¾î´Â Microsoft Internet Explorer°¡ ÀÚ½ÅÀ» "Mozilla/4"·Î
-      ¾Ë¸®Áö¸¸ ¾ÐÃàµÈ ¿äÃ»À» Ã³¸®ÇÒ ¼ö ÀÖ±â¶§¹®¿¡ user agent
-      ÃßÃøÀ» ¼öÁ¤ÇÑ´Ù. <code>User-Agent</code> Çì´õ¿¡¼­ "MSIE"
-      (<code>\b</code>´Â "´Ü¾î °æ°è"¸¦ ¶æÇÑ´Ù) ¹®ÀÚ¿­À» ¹ß°ßÇÏ¸é
-      ¾Õ¿¡¼­ ¼³Á¤ÇÑ Á¦¾àÀ» Ç¬´Ù.</p>
+      <p>ï¿½ï¿½ï¿½ï¿½Â° <code class="directive"><a href="../mod/mod_setenvif.html#browsermatch">BrowserMatch</a></code>
+      ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ Microsoft Internet Explorerï¿½ï¿½ ï¿½Ú½ï¿½ï¿½ï¿½ "Mozilla/4"ï¿½ï¿½
+      ï¿½Ë¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö±â¶§ï¿½ï¿½ï¿½ï¿½ user agent
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <code>User-Agent</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ "MSIE"
+      (<code>\b</code>ï¿½ï¿½ "ï¿½Ü¾ï¿½ ï¿½ï¿½ï¿½"ï¿½ï¿½ ï¿½ï¿½ï¿½Ñ´ï¿½) ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ï¸ï¿½
+      ï¿½Õ¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ç¬ï¿½ï¿½.</p>
 
-      <div class="note"><h3>ÁÖÀÇ</h3>
-        <code>DEFLATE</code> ÇÊÅÍ´Â Ç×»ó PHP³ª SSI¿Í °°Àº RESOURCE
-        ÇÊÅÍ µÚ¿¡ µé¾î°£´Ù. ¶Ç, ³»ºÎ ÇÏÀ§¿äÃ»(subrequest)¿¡ ¿µÇâÀ»
-        ÁÖÁö ¾Ê´Â´Ù.
+      <div class="note"><h3>ï¿½ï¿½ï¿½ï¿½</h3>
+        <code>DEFLATE</code> ï¿½ï¿½ï¿½Í´ï¿½ ï¿½×»ï¿½ PHPï¿½ï¿½ SSIï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ RESOURCE
+        ï¿½ï¿½ï¿½ï¿½ ï¿½Ú¿ï¿½ ï¿½ï¿½î°£ï¿½ï¿½. ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã»(subrequest)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.
       </div>
-      <div class="note"><h3>ÁÖÀÇ</h3>
-        <code class="directive"><a href="../mod/core.html#setenv">SetEnv</a></code>·Î
-        <code>force-gzip</code> È¯°æº¯¼ö¸¦ ¼³Á¤ÇÏ¸é ºê¶ó¿ìÀúÀÇ
-        accept-encoding ¼³Á¤À» ¹«½ÃÇÏ°í ¾ÐÃàµÈ °á°ú¸¦ º¸³½´Ù.
+      <div class="note"><h3>ï¿½ï¿½ï¿½ï¿½</h3>
+        <code class="directive"><a href="../mod/core.html#setenv">SetEnv</a></code>ï¿½ï¿½
+        <code>force-gzip</code> È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        accept-encoding ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
       </div>
 
     
-    <h3><a name="inflate" id="inflate">Ãâ·Â ¾ÐÃàÇ®±â</a></h3>
-      <p><code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> ¸ðµâÀº gzipÀ¸·Î ¾ÐÃàµÈ
-      ÀÀ´ä ³»¿ëÀ» Çª´Â ÇÊÅÍµµ Á¦°øÇÑ´Ù. ÀÌ ±â´ÉÀ» »ç¿ëÇÏ·Á¸é
-      ´ÙÀ½°ú °°ÀÌ <code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code>³ª <code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code>¸¦ »ç¿ëÇÏ¿©
-      Ãâ·ÂÇÊÅÍ¼ø¼­¿¡ <code>INFLATE</code> ÇÊÅÍ¸¦ Ãß°¡ÇÑ´Ù.</p>
+    <h3><a name="inflate" id="inflate">ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç®ï¿½ï¿½</a></h3>
+      <p><code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> ï¿½ï¿½ï¿½ï¿½ï¿½ gzipï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Çªï¿½ï¿½ ï¿½ï¿½ï¿½Íµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ <code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code>ï¿½ï¿½ <code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ <code>INFLATE</code> ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ß°ï¿½ï¿½Ñ´ï¿½.</p>
 
       <div class="example"><p><code>
         &lt;Location /dav-area&gt;<br />
         <span class="indent">
-          ProxyPass http://example.com/<br />
+          ProxyPass https://example.com/<br />
           SetOutputFilter INFLATE<br />
         </span>
         &lt;/Location&gt;
       </code></p></div>
 
-      <p>ÀÌ ¿¹Á¦´Â example.comÀÌ º¸³½ gzipÀ¸·Î ¾ÐÃàµÈ °á°úÀÇ
-      ¾ÐÃàÀ» Ç®¾î¼­, ´Ù¸¥ ÇÊÅÍ°¡ ´õ Ã³¸®ÇÒ ¼ö ÀÖµµ·Ï ÇÑ´Ù.
+      <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ example.comï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ gzipï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ç®ï¿½î¼­, ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½Í°ï¿½ ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Öµï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½.
       </p>
 
     
-    <h3><a name="input" id="input">ÀÔ·Â ¾ÐÃàÇ®±â</a></h3>
-      <p><code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> ¸ðµâÀº gzipÀ¸·Î ¾ÐÃàµÈ ¿äÃ»
-      ³»¿ëÀ» Çª´Â ÇÊÅÍµµ Á¦°øÇÑ´Ù. ÀÌ ±â´ÉÀ» »ç¿ëÇÏ·Á¸é ´ÙÀ½°ú
-      °°ÀÌ <code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code>³ª
-      <code class="directive"><a href="../mod/mod_mime.html#addinputfilter">AddInputFilter</a></code>¸¦
-      »ç¿ëÇÏ¿© ÀÔ·ÂÇÊÅÍ¼ø¼­¿¡ <code>DEFLATE</code> ÇÊÅÍ¸¦
-      Ãß°¡ÇÑ´Ù.</p>
+    <h3><a name="input" id="input">ï¿½Ô·ï¿½ ï¿½ï¿½ï¿½ï¿½Ç®ï¿½ï¿½</a></h3>
+      <p><code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> ï¿½ï¿½ï¿½ï¿½ï¿½ gzipï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Çªï¿½ï¿½ ï¿½ï¿½ï¿½Íµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ <code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code>ï¿½ï¿½
+      <code class="directive"><a href="../mod/mod_mime.html#addinputfilter">AddInputFilter</a></code>ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½Ô·ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ <code>DEFLATE</code> ï¿½ï¿½ï¿½Í¸ï¿½
+      ï¿½ß°ï¿½ï¿½Ñ´ï¿½.</p>
 
       <div class="example"><p><code>
         &lt;Location /dav-area&gt;<br />
@@ -211,132 +211,132 @@
         &lt;/Location&gt;
       </code></p></div>
       
-      <p>¿äÃ»¿¡ <code>Content-Encoding: gzip</code> Çì´õ°¡ ÀÖ´Ù¸é
-      ÀÚµ¿À¸·Î ¾ÐÃàµÈ ³»¿ëÀ» Ç¬´Ù. gzip ¿äÃ»À» ÇÒ ¼ö ÀÖ´Â
-      ºê¶ó¿ìÀú´Â µå¹°´Ù. ±×·¯³ª ¾î¶² <a href="http://www.webdav.org">WebDAV</a> Å¬¶óÀÌ¾ðÆ®¿Í °°Àº
-      Æ¯º°ÇÑ ÇÁ·Î±×·¥Àº ¿äÃ» ¾ÐÃàÀ» Áö¿øÇÑ´Ù.</p>
+      <p>ï¿½ï¿½Ã»ï¿½ï¿½ <code>Content-Encoding: gzip</code> ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ù¸ï¿½
+      ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ç¬ï¿½ï¿½. gzip ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½å¹°ï¿½ï¿½. ï¿½×·ï¿½ï¿½ï¿½ ï¿½î¶² <a href="https://www.webdav.org">WebDAV</a> Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+      Æ¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ ï¿½ï¿½Ã» ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-      <div class="warning"><h3>Content-Length¿¡ ´ëÇÑ ÁÖÀÇ</h3>
-        <p>¿äÃ» ³»¿ëÀ» Á÷Á¢ »ìÆìº»´Ù¸é, <em><code>Content-Length</code>
-        Çì´õ¸¦ ¹ÏÁö¸¶¶ó!</em> Content-Length Çì´õ´Â Å¬¶óÀÌ¾ðÆ®°¡
-        º¸³½ ³»¿ëÀÇ ±æÀÌÀÌÁö, ¾ÐÃàÀ» Ç¬ °á°úÀÇ ¹ÙÀÌÆ®¼ö°¡
-        <em>¾Æ´Ï´Ù</em>.</p>
+      <div class="warning"><h3>Content-Lengthï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</h3>
+        <p>ï¿½ï¿½Ã» ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ìº»ï¿½Ù¸ï¿½, <em><code>Content-Length</code>
+        ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½!</em> Content-Length ï¿½ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½
+        ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ç¬ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½
+        <em>ï¿½Æ´Ï´ï¿½</em>.</p>
       </div>
     
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="proxies" id="proxies">ÇÁ·Ï½Ã ¼­¹ö ´Ù·ç±â</a> <a title="Permanent link" href="#proxies" class="permalink">&para;</a></h2>
+<h2><a name="proxies" id="proxies">ï¿½ï¿½ï¿½Ï½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù·ï¿½ï¿½</a> <a title="Permanent link" href="#proxies" class="permalink">&para;</a></h2>
 
-    <p><code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> ¸ðµâÀº ÇÁ·Ï½Ã°¡ ÀÚ½ÅÀÌ Ä³½¬ÇÑ
-    ÀÀ´äÀ» ÀûÀýÇÑ <code>Accept-Encoding</code> ¿äÃ» Çì´õ¸¦ º¸³½
-    Å¬¶óÀÌ¾ðÆ®¿¡°Ô¸¸ º¸³»µµ·Ï <code>Vary:
-    Accept-Encoding</code> HTTP ÀÀ´ä Çì´õ¸¦ Ãß°¡ÇÑ´Ù. ±×·¡¼­
-    ¾ÐÃàµÈ ³»¿ëÀ» ÀÌÇØÇÒ ¼ö ¾ø´Â Å¬¶óÀÌ¾ðÆ®¿¡ ¾ÐÃàµÈ ³»¿ëÀ»
-    º¸³»Áö¾Êµµ·Ï ÇÑ´Ù.</p>
+    <p><code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï½Ã°ï¿½ ï¿½Ú½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>Accept-Encoding</code> ï¿½ï¿½Ã» ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ï¿½Ô¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>Vary:
+    Accept-Encoding</code> HTTP ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ñ´ï¿½. ï¿½×·ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½.</p>
 
-    <p>¿¹¸¦ µé¾î, <code>User-Agent</code> Çì´õ µî¿¡ µû¶ó Æ¯º°È÷
-    ÇÊÅÍ Àû¿ëÀ» Ãë¼ÒÇÑ´Ù¸é, ÇÁ·Ï½Ã¿¡°Ô ÀÌ·¯ÇÑ Á¦ÇÑÀ» ¾Ë·ÁÁÖ±âÀ§ÇØ
-    Á÷Á¢ <code>Vary</code> Çì´õ¿¡ Ãß°¡ÇØ¾ß ÇÑ´Ù. ¿¹¸¦ µé¾î,
-    ¼³Á¤ÀÌ <code>User-Agent</code>¿¡ µû¶ó <code>DEFLATE</code>
-    ÇÊÅÍ¸¦ Ãß°¡ÇÑ´Ù¸é ´ÙÀ½À» »ç¿ëÇÑ´Ù:</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, <code>User-Agent</code> ï¿½ï¿½ï¿½ ï¿½î¿¡ ï¿½ï¿½ï¿½ï¿½ Æ¯ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½, ï¿½ï¿½ï¿½Ï½Ã¿ï¿½ï¿½ï¿½ ï¿½Ì·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ë·ï¿½ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ <code>Vary</code> ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½,
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>User-Agent</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ <code>DEFLATE</code>
+    ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ß°ï¿½ï¿½Ñ´Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½:</p>
 
     <div class="example"><p><code>
       Header append Vary User-Agent
     </code></p></div>
     
-    <p>¿äÃ» Çì´õ¿ÜÀÇ ´Ù¸¥ Á¤º¸¿¡ (<em>¿¹¸¦ µé¾î</em>, HTTP ¹öÀü)
-    µû¶ó ¾ÐÃà ¿©ºÎ°¡ °áÁ¤µÈ´Ù¸é, <code>Vary</code> Çì´õ°ªÀ»
-    <code>*</code>·Î ¼³Á¤ÇØ¾ß ÇÑ´Ù. ±×·¯¸é Ç¥ÁØÀ» µû¸£´Â ÇÁ·Ï½Ã´Â
-    Ä³½¬¸¦ ÇÏÁö ¾Ê°Ô µÈ´Ù.</p>
+    <p>ï¿½ï¿½Ã» ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (<em>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½</em>, HTTP ï¿½ï¿½ï¿½ï¿½)
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½È´Ù¸ï¿½, <code>Vary</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    <code>*</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½. ï¿½×·ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï½Ã´ï¿½
+    Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê°ï¿½ ï¿½È´ï¿½.</p>
 
-    <div class="example"><h3>¿¹Á¦</h3><p><code>
+    <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½</h3><p><code>
       Header set Vary *
     </code></p></div>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DeflateAlterETag" id="DeflateAlterETag">DeflateAlterETag</a> <a name="deflatealteretag" id="deflatealteretag">Áö½Ã¾î</a> <a title="Permanent link" href="#deflatealteretag" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="DeflateAlterETag" id="DeflateAlterETag">DeflateAlterETag</a> <a name="deflatealteretag" id="deflatealteretag">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#deflatealteretag" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>How the outgoing ETag header should be modified during compression</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>DeflateAlterETag AddSuffix|NoChange|Remove</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">±âº»°ª:</a></th><td><code>DeflateAlterETag AddSuffix</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_deflate</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Áö¿ø:</a></th><td>Available in Apache 2.4.42 and later</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>How the outgoing ETag header should be modified during compression</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>DeflateAlterETag AddSuffix|NoChange|Remove</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">ï¿½âº»ï¿½ï¿½:</a></th><td><code>DeflateAlterETag AddSuffix</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_deflate</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Available in Apache 2.4.42 and later</td></tr>
 </table><p>The documentation for this directive has
             not been translated yet. Please have a look at the English
             version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DeflateBufferSize" id="DeflateBufferSize">DeflateBufferSize</a> <a name="deflatebuffersize" id="deflatebuffersize">Áö½Ã¾î</a> <a title="Permanent link" href="#deflatebuffersize" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="DeflateBufferSize" id="DeflateBufferSize">DeflateBufferSize</a> <a name="deflatebuffersize" id="deflatebuffersize">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#deflatebuffersize" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>zlibÀÌ ÇÑ¹ø¿¡ ¾ÐÃàÇÒ Å©±â</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>DeflateBufferSize <var>value</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">±âº»°ª:</a></th><td><code>DeflateBufferSize 8096</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_deflate</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>zlibï¿½ï¿½ ï¿½Ñ¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å©ï¿½ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>DeflateBufferSize <var>value</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">ï¿½âº»ï¿½ï¿½:</a></th><td><code>DeflateBufferSize 8096</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_deflate</td></tr>
 </table>
-    <p><code class="directive">DeflateBufferSize</code> Áö½Ã¾î´Â zlibÀÌ
-    ÇÑ¹ø¿¡ ¾ÐÃàÇÒ ¹ÙÀÌÆ®¼ö¸¦ ÁöÁ¤ÇÑ´Ù.</p>
+    <p><code class="directive">DeflateBufferSize</code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ zlibï¿½ï¿½
+    ï¿½Ñ¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DeflateCompressionLevel" id="DeflateCompressionLevel">DeflateCompressionLevel</a> <a name="deflatecompressionlevel" id="deflatecompressionlevel">Áö½Ã¾î</a> <a title="Permanent link" href="#deflatecompressionlevel" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="DeflateCompressionLevel" id="DeflateCompressionLevel">DeflateCompressionLevel</a> <a name="deflatecompressionlevel" id="deflatecompressionlevel">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#deflatecompressionlevel" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>Ãâ·ÂÀ» ¾î´ÀÁ¤µµ ¾ÐÃàÇÏ´Â°¡</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>DeflateCompressionLevel <var>value</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">±âº»°ª:</a></th><td><code>Zlib's default</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_deflate</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Áö¿ø:</a></th><td>¾ÆÆÄÄ¡ 2.0.45 ºÎÅÍ</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´Â°ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>DeflateCompressionLevel <var>value</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">ï¿½âº»ï¿½ï¿½:</a></th><td><code>Zlib's default</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_deflate</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½ï¿½ï¿½Ä¡ 2.0.45 ï¿½ï¿½ï¿½ï¿½</td></tr>
 </table>
-    <p><code class="directive">DeflateCompressionLevel</code> Áö½Ã¾î´Â
-        »ç¿ëÇÒ ¾ÐÃà¼öÁØÀ» ¼±ÅÃÇÑ´Ù. °ªÀÌ Å¬¼ö·Ï ¾ÐÃà·üÀÌ Áõ°¡ÇÏÁö¸¸,
-        CPU¸¦ ´õ ¸¹ÀÌ »ç¿ëÇÑ´Ù.</p>
-    <p>(°¡Àå ´ú ¾ÐÃà) 1°ú (°¡Àå ¸¹ÀÌ ¾ÐÃà) 9 »çÀÌÀÇ °ªÀ» ÁöÁ¤ÇÑ´Ù.</p>
+    <p><code class="directive">DeflateCompressionLevel</code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½
+        ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,
+        CPUï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
+    <p>(ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½) 1ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½) 9 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DeflateFilterNote" id="DeflateFilterNote">DeflateFilterNote</a> <a name="deflatefilternote" id="deflatefilternote">Áö½Ã¾î</a> <a title="Permanent link" href="#deflatefilternote" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="DeflateFilterNote" id="DeflateFilterNote">DeflateFilterNote</a> <a name="deflatefilternote" id="deflatefilternote">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#deflatefilternote" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>¾ÐÃà·üÀ» ·Î±×¿¡ ±â·ÏÇÑ´Ù</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>DeflateFilterNote [<var>type</var>] <var>notename</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_deflate</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Áö¿ø:</a></th><td><var>type</var>Àº ¾ÆÆÄÄ¡ 2.0.4 ºÎÅÍ</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î±×¿ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>DeflateFilterNote [<var>type</var>] <var>notename</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_deflate</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">ï¿½ï¿½ï¿½ï¿½:</a></th><td><var>type</var>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ 2.0.4 ï¿½ï¿½ï¿½ï¿½</td></tr>
 </table>
-    <p><code class="directive">DeflateFilterNote</code> Áö½Ã¾î´Â ¿äÃ»ÀÇ
-    ¾ÐÃà·üÀ» ·Î±×¿¡ ±â·ÏÇÏ´Â ±âÈ£¸¦ ÁöÁ¤ÇÑ´Ù. ±âÈ£ ÀÌ¸§Àº Áö½Ã¾î·Î
-    ÁöÁ¤ÇÑ °ªÀÌ´Ù. Åë°è¸¦ À§ÇØ <a href="../logs.html#accesslog">Á¢±Ù
-    ·Î±×</a>¿¡¼­ ±âÈ£¸¦ »ç¿ëÇÒ ¼ö ÀÖ´Ù.</p>
+    <p><code class="directive">DeflateFilterNote</code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î±×¿ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½È£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½È£ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½. ï¿½ï¿½è¸¦ ï¿½ï¿½ï¿½ï¿½ <a href="../logs.html#accesslog">ï¿½ï¿½ï¿½ï¿½
+    ï¿½Î±ï¿½</a>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <div class="example"><h3>¿¹Á¦</h3><p><code>
+    <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½</h3><p><code>
       DeflateFilterNote ratio<br />
       <br />
       LogFormat '"%r" %b (%{ratio}n) "%{User-agent}i"' deflate<br />
       CustomLog logs/deflate_log deflate
     </code></p></div>
 
-    <p>·Î±×¿¡¼­ ´õ Á¤È®ÇÑ °ªÀ» ÃßÃâÇÏ·Á¸é <var>type</var> ¾Æ±Ô¸ÕÆ®·Î
-    ±â·ÏÇÒ ÀÚ·á¸¦ ¼±ÅÃÇÑ´Ù. <var>type</var>´Â ´ÙÀ½Áß ÇÏ³ªÀÌ´Ù:</p>
+    <p>ï¿½Î±×¿ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½È®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ <var>type</var> ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ú·á¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <var>type</var>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï³ï¿½ï¿½Ì´ï¿½:</p>
 
     <dl>
       <dt><code>Input</code></dt>
-      <dd>ÇÊÅÍ ÀÔ·Â½ºÆ®¸²ÀÇ ¹ÙÀÌÆ®¼ö¸¦ ÀúÀåÇÑ´Ù.</dd>
+      <dd>ï¿½ï¿½ï¿½ï¿½ ï¿½Ô·Â½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
       <dt><code>Output</code></dt>
-      <dd>ÇÊÅÍ Ãâ·Â½ºÆ®¸²ÀÇ ¹ÙÀÌÆ®¼ö¸¦ ÀúÀåÇÑ´Ù..</dd>
+      <dd>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Â½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½..</dd>
 
       <dt><code>Ratio</code></dt>
-      <dd>¾ÐÃà·üÀ» (<code>output/input * 100</code>) ÀúÀåÇÑ´Ù.
-       <var>type</var> ¾Æ±Ô¸ÕÆ®¸¦ »ý·«ÇÏ¸é »ç¿ëÇÏ´Â ±âº»°ªÀÌ´Ù.</dd>
+      <dd>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (<code>output/input * 100</code>) ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+       <var>type</var> ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½âº»ï¿½ï¿½ï¿½Ì´ï¿½.</dd>
     </dl>
 
-    <p>±×·¡¼­ ÀÌ·¸°Ô ·Î±×¿¡ ±â·ÏÇÒ ¼ö ÀÖ´Ù:</p>
+    <p>ï¿½×·ï¿½ï¿½ï¿½ ï¿½Ì·ï¿½ï¿½ï¿½ ï¿½Î±×¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½:</p>
 
-    <div class="example"><h3>Á¤¹ÐÇÑ ·Î±×</h3><p><code>
+    <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î±ï¿½</h3><p><code>
       DeflateFilterNote Input instream<br />
       DeflateFilterNote Output outstream<br />
       DeflateFilterNote Ratio ratio<br />
@@ -345,94 +345,94 @@
       CustomLog logs/deflate_log deflate
     </code></p></div>
 
-<h3>Âü°í</h3>
+<h3>ï¿½ï¿½ï¿½ï¿½</h3>
 <ul>
 <li><code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DeflateInflateLimitRequestBody" id="DeflateInflateLimitRequestBody">DeflateInflateLimitRequestBody</a> <a name="deflateinflatelimitrequestbody" id="deflateinflatelimitrequestbody">Áö½Ã¾î</a> <a title="Permanent link" href="#deflateinflatelimitrequestbody" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="DeflateInflateLimitRequestBody" id="DeflateInflateLimitRequestBody">DeflateInflateLimitRequestBody</a> <a name="deflateinflatelimitrequestbody" id="deflateinflatelimitrequestbody">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#deflateinflatelimitrequestbody" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>Maximum size of inflated request bodies</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>DeflateInflateLimitRequestBody <var>value</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">±âº»°ª:</a></th><td><code>None, but LimitRequestBody applies after deflation</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override ¿É¼Ç:</a></th><td>All</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_deflate</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Áö¿ø:</a></th><td>2.4.10 and later</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Maximum size of inflated request bodies</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>DeflateInflateLimitRequestBody <var>value</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">ï¿½âº»ï¿½ï¿½:</a></th><td><code>None, but LimitRequestBody applies after deflation</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override ï¿½É¼ï¿½:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_deflate</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">ï¿½ï¿½ï¿½ï¿½:</a></th><td>2.4.10 and later</td></tr>
 </table><p>The documentation for this directive has
             not been translated yet. Please have a look at the English
             version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DeflateInflateRatioBurst" id="DeflateInflateRatioBurst">DeflateInflateRatioBurst</a> <a name="deflateinflateratioburst" id="deflateinflateratioburst">Áö½Ã¾î</a> <a title="Permanent link" href="#deflateinflateratioburst" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="DeflateInflateRatioBurst" id="DeflateInflateRatioBurst">DeflateInflateRatioBurst</a> <a name="deflateinflateratioburst" id="deflateinflateratioburst">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#deflateinflateratioburst" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>Maximum number of times the inflation ratio for request bodies
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Maximum number of times the inflation ratio for request bodies
              can be crossed</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>DeflateInflateRatioBurst <var>value</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">±âº»°ª:</a></th><td><code>DeflateInflateRatioBurst 3</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override ¿É¼Ç:</a></th><td>All</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_deflate</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Áö¿ø:</a></th><td>2.4.10 and later</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>DeflateInflateRatioBurst <var>value</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">ï¿½âº»ï¿½ï¿½:</a></th><td><code>DeflateInflateRatioBurst 3</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override ï¿½É¼ï¿½:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_deflate</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">ï¿½ï¿½ï¿½ï¿½:</a></th><td>2.4.10 and later</td></tr>
 </table><p>The documentation for this directive has
             not been translated yet. Please have a look at the English
             version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DeflateInflateRatioLimit" id="DeflateInflateRatioLimit">DeflateInflateRatioLimit</a> <a name="deflateinflateratiolimit" id="deflateinflateratiolimit">Áö½Ã¾î</a> <a title="Permanent link" href="#deflateinflateratiolimit" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="DeflateInflateRatioLimit" id="DeflateInflateRatioLimit">DeflateInflateRatioLimit</a> <a name="deflateinflateratiolimit" id="deflateinflateratiolimit">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#deflateinflateratiolimit" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>Maximum inflation ratio for request bodies</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>DeflateInflateRatioLimit <var>value</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">±âº»°ª:</a></th><td><code>DeflateInflateRatioLimit 200</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override ¿É¼Ç:</a></th><td>All</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_deflate</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Áö¿ø:</a></th><td>2.4.10 and later</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Maximum inflation ratio for request bodies</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>DeflateInflateRatioLimit <var>value</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">ï¿½âº»ï¿½ï¿½:</a></th><td><code>DeflateInflateRatioLimit 200</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override ï¿½É¼ï¿½:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_deflate</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">ï¿½ï¿½ï¿½ï¿½:</a></th><td>2.4.10 and later</td></tr>
 </table><p>The documentation for this directive has
             not been translated yet. Please have a look at the English
             version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DeflateMemLevel" id="DeflateMemLevel">DeflateMemLevel</a> <a name="deflatememlevel" id="deflatememlevel">Áö½Ã¾î</a> <a title="Permanent link" href="#deflatememlevel" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="DeflateMemLevel" id="DeflateMemLevel">DeflateMemLevel</a> <a name="deflatememlevel" id="deflatememlevel">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#deflatememlevel" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>zlibÀÌ ¾ÐÃàÇÒ¶§ »ç¿ëÇÏ´Â ¸Þ¸ð¸®·®</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>DeflateMemLevel <var>value</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">±âº»°ª:</a></th><td><code>DeflateMemLevel 9</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_deflate</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>zlibï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Þ¸ð¸®·ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>DeflateMemLevel <var>value</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">ï¿½âº»ï¿½ï¿½:</a></th><td><code>DeflateMemLevel 9</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_deflate</td></tr>
 </table>
-    <p><code class="directive">DeflateMemLevel</code> Áö½Ã¾î´Â zlibÀÌ
-    ¾ÐÃàÇÒ¶§ ¾ó¸¶¸¸Å­ ¸Þ¸ð¸®¸¦ »ç¿ëÇÒÁö °áÁ¤ÇÑ´Ù. (1°ú 9 »çÀÌÀÇ
-    °ª)</p>
+    <p><code class="directive">DeflateMemLevel</code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ zlibï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ ï¿½ó¸¶¸ï¿½Å­ ï¿½Þ¸ð¸®¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. (1ï¿½ï¿½ 9 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½)</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DeflateWindowSize" id="DeflateWindowSize">DeflateWindowSize</a> <a name="deflatewindowsize" id="deflatewindowsize">Áö½Ã¾î</a> <a title="Permanent link" href="#deflatewindowsize" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="DeflateWindowSize" id="DeflateWindowSize">DeflateWindowSize</a> <a name="deflatewindowsize" id="deflatewindowsize">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#deflatewindowsize" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>Zlib ¾ÐÃà window size</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>DeflateWindowSize <var>value</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">±âº»°ª:</a></th><td><code>DeflateWindowSize 15</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_deflate</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Zlib ï¿½ï¿½ï¿½ï¿½ window size</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>DeflateWindowSize <var>value</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">ï¿½âº»ï¿½ï¿½:</a></th><td><code>DeflateWindowSize 15</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_deflate</td></tr>
 </table>
-    <p><code class="directive">DeflateWindowSize</code> Áö½Ã¾î´Â zlib
-    ¾ÐÃà window size¸¦ (1°ú 15 »çÀÌÀÇ °ª) ÁöÁ¤ÇÑ´Ù. ÀÏ¹ÝÀûÀ¸·Î
-    window size°¡ Å¬¼ö·Ï ¾ÐÃà·üÀÌ Áõ°¡ÇÑ´Ù.</p>
+    <p><code class="directive">DeflateWindowSize</code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ zlib
+    ï¿½ï¿½ï¿½ï¿½ window sizeï¿½ï¿½ (1ï¿½ï¿½ 15 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½) ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    window sizeï¿½ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
 </div>
 </div>
 <div class="bottomlang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/mod/mod_deflate.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/mod/mod_deflate.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_deflate.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_deflate.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_deflate.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_deflate.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/mod/mod_deflate.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -447,8 +447,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_deflate.ht
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

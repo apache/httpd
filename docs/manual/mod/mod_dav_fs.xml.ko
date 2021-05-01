@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,58 +23,58 @@
 <modulesynopsis metafile="mod_dav_fs.xml.meta">
 
 <name>mod_dav_fs</name> 
-<description><module>mod_dav</module>À» À§ÇÑ ÆÄÀÏ½Ã½ºÅÛ Á¦°øÀÚ</description>
+<description><module>mod_dav</module>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</description>
 <status>Extension</status>
 <sourcefile>mod_dav_fs.c</sourcefile>
 <identifier>dav_fs_module</identifier>
 
 <summary>
-    <p>ÀÌ ¸ðµâÀº <module>mod_dav</module> ¼­ºñ½º¿¡ <em>ÇÊ¿äÇÏ´Ù</em>.
-    <module>mod_dav</module>¸¦ Áö¿øÇÏ´Â ¸ðµâ·Î ¼­¹öÀÇ ÆÄÀÏ½Ã½ºÅÛ¿¡
-    ÀÖ´Â ÀÚ¿øÀ» Á¢±ÙÇÒ ¼ö ÀÖµµ·Ï ÇÑ´Ù. ÀÌ Á¦°øÀÚ(provider)ÀÇ
-    Á¤½Ä¸íÄªÀº <code>filesystem</code>ÀÌ´Ù. <directive
-    module="mod_dav">Dav</directive> Áö½Ã¾î¸¦ ÁöÁ¤ÇÏ¿©
-    <module>mod_dav</module> µÞ´Ü Á¦°øÀÚ¸¦ »ç¿ëÇÑ´Ù:</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ <module>mod_dav</module> ï¿½ï¿½ï¿½ñ½º¿ï¿½ <em>ï¿½Ê¿ï¿½ï¿½Ï´ï¿½</em>.
+    <module>mod_dav</module>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½Û¿ï¿½
+    ï¿½Ö´ï¿½ ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Öµï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(provider)ï¿½ï¿½
+    ï¿½ï¿½ï¿½Ä¸ï¿½Äªï¿½ï¿½ <code>filesystem</code>ï¿½Ì´ï¿½. <directive
+    module="mod_dav">Dav</directive> ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½
+    <module>mod_dav</module> ï¿½Þ´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½:</p>
 
-    <example><title>¿¹Á¦</title>
+    <example><title>ï¿½ï¿½ï¿½ï¿½</title>
       Dav filesystem
     </example>
 
-    <p><code>filesystem</code>ÀÌ <module>mod_dav</module>ÀÇ
-    ±âº» Á¦°øÀÚÀÌ¹Ç·Î ´ë½Å <code>On</code>À» »ç¿ëÇÒ ¼ö ÀÖ´Ù.</p>
+    <p><code>filesystem</code>ï¿½ï¿½ <module>mod_dav</module>ï¿½ï¿½
+    ï¿½âº» ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì¹Ç·ï¿½ ï¿½ï¿½ï¿½ <code>On</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 </summary>
 <seealso><module>mod_dav</module></seealso>
 
 <directivesynopsis>
 <name>DavLockDB</name>
-<description>DAV Àá±Ý µ¥ÀÌÅÍº£ÀÌ½º À§Ä¡</description>
+<description>DAV ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Íºï¿½ï¿½Ì½ï¿½ ï¿½ï¿½Ä¡</description>
 <syntax>DavLockDB <var>file-path</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p><directive>DavLockDB</directive> Áö½Ã¾î´Â Àá±Ý µ¥ÀÌÅÍº£ÀÌ½ºÀÇ
-    ÀüÃ¼ °æ·Î¸¦ È®ÀåÀÚ¸¦ Á¦¿ÜÇÏ°í ÁöÁ¤ÇÑ´Ù. Àý´ë°æ·Î°¡ ¾Æ´Ï¸é
-    <directive module="core">ServerRoot</directive>¿¡ »ó´ë°æ·Î·Î
-    Ã³¸®ÇÑ´Ù. <module>mod_dav_fs</module>´Â Àá±ÝÀ» SDBM µ¥ÀÌÅÍº£ÀÌ½º¿¡
-    ±â·ÏÇÑ´Ù.</p>
+    <p><directive>DavLockDB</directive> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Íºï¿½ï¿½Ì½ï¿½ï¿½ï¿½
+    ï¿½ï¿½Ã¼ ï¿½ï¿½Î¸ï¿½ È®ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½Î°ï¿½ ï¿½Æ´Ï¸ï¿½
+    <directive module="core">ServerRoot</directive>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Î·ï¿½
+    Ã³ï¿½ï¿½ï¿½Ñ´ï¿½. <module>mod_dav_fs</module>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ SDBM ï¿½ï¿½ï¿½ï¿½ï¿½Íºï¿½ï¿½Ì½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
     <!-- XXX: someone should add that tool to the support directory...
     The utility <code>modules/dav/util/lockview</code> can be used from
     the server to display all locks in a lock database.</p> -->
 
-    <example><title>¿¹Á¦</title>
+    <example><title>ï¿½ï¿½ï¿½ï¿½</title>
       DavLockDB var/DavLock
     </example>
 
-    <p>¾ÆÆÄÄ¡¸¦ ½ÇÇàÇÏ´Â <directive module="mpm_common">User</directive>¿Í
-    <directive module="mpm_common" >Group</directive>Àº Àá±Ý
-    µ¥ÀÌÅÍº£ÀÌ½º°¡ ÀÖ´Â µð·ºÅä¸®¿¡ ¾²±â ±ÇÇÑÀ» °¡Á®¾ß ÇÑ´Ù.
-    º¸¾È»ó ÀÌÀ¯·Î ±âÁ¸ µð·ºÅä¸®ÀÇ ±ÇÇÑÀ» ¹Ù²Ù±âº¸´Ù´Â Àá±Ý
-    µ¥ÀÌÅÍº£ÀÌ½º¿ë µð·ºÅä¸®¸¦ ¸¸µé¾î¾ß ÇÑ´Ù. À§ÀÇ °æ¿ì ¾ÆÆÄÄ¡´Â
-    <directive module="core">ServerRoot</directive> ¾Æ·¡
-    <code>var/</code> µð·ºÅä¸®¿¡ ¼­¹ö°¡ ¼±ÅÃÇÑ È®Àå¸íÀ» °¡Áø
-    <code>DavLock</code> ÆÄÀÏÀ» ¸¸µç´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ <directive module="mpm_common">User</directive>ï¿½ï¿½
+    <directive module="mpm_common" >Group</directive>ï¿½ï¿½ ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Íºï¿½ï¿½Ì½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½.
+    ï¿½ï¿½ï¿½È»ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù²Ù±âº¸ï¿½Ù´ï¿½ ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Íºï¿½ï¿½Ì½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½
+    <directive module="core">ServerRoot</directive> ï¿½Æ·ï¿½
+    <code>var/</code> ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    <code>DavLock</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½.</p>
 
 </usage>
 </directivesynopsis>

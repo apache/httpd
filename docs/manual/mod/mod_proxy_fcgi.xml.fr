@@ -12,7 +12,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -34,15 +34,15 @@
 <summary>
     <p>Pour fonctionner, ce module <em>nécessite</em> le chargement de
     <module>mod_proxy</module>. Il fournit le support du protocole <a
-    href="http://www.fastcgi.com/">FastCGI</a>.</p>
+    href="https://www.fastcgi.com/">FastCGI</a>.</p>
 
     <p>Ainsi, pour pouvoir traiter le protocole <code>FastCGI</code>,
     <module>mod_proxy</module> et <module>mod_proxy_fcgi</module>
     doivent être chargés dans le serveur.</p>
 
     <p>A la différence de <a
-    href="http://httpd.apache.org/mod_fcgid/">mod_fcgid</a> et <a
-    href="http://www.fastcgi.com/">mod_fastcgi</a>,
+    href="https://httpd.apache.org/mod_fcgid/">mod_fcgid</a> et <a
+    href="https://www.fastcgi.com/">mod_fastcgi</a>,
     <module>mod_proxy_fcgi</module> n'est pas en mesure de démarrer le
     processus de l'application ; <program>fcgistarter</program> est
     fourni à cet effet sur certaines plateformes. Le framework

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -17,12 +17,12 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache Module mod_imagemap</h1>
 <div class="toplang">
@@ -130,7 +130,7 @@
       <code>.htaccess</code> file or in the server configuration files.
       In the absence of an <code class="directive">ImapBase</code> configuration
       directive, <code>base</code> defaults to
-      <code>http://server_name/</code>.</p>
+      <code>https://server_name/</code>.</p>
       <p><code>base_uri</code> is synonymous with <code>base</code>.
       Note that a trailing slash on the URL is significant.</p></dd>
 
@@ -200,7 +200,7 @@
       <dt><code>referer</code></dt>
 
       <dd>Equivalent to the URL of the referring document. Defaults
-      to <code>http://servername/</code> if no <code>Referer:</code>
+      to <code>https://servername/</code> if no <code>Referer:</code>
       header was present.</dd>
 
       <dt><code>nocontent</code></dt>
@@ -243,14 +243,14 @@
       generated:</p>
 
       <div class="example"><p><code>
-        &lt;a href="http://example.com/"&gt;<var>Menu text</var>&lt;/a&gt;
+        &lt;a href="https://example.com/"&gt;<var>Menu text</var>&lt;/a&gt;
       </code></p></div>
 
       <p>If no quoted text is present, the name of the link will be
       used as the text:</p>
 
       <div class="example"><p><code>
-        &lt;a href="http://example.com/"&gt;http://example.com&lt;/a&gt;
+        &lt;a href="https://example.com/"&gt;https://example.com&lt;/a&gt;
       </code></p></div>
 
       <p>If you want to use double quotes within this text, you have to
@@ -268,10 +268,10 @@
       base referer<br />
       poly map "Could I have a menu, please?" 0,0 0,10 10,10 10,0<br />
       rect .. 0,0 77,27 "the directory of the referer"<br />
-      circle http://www.inetnebr.example.com/lincoln/feedback/ 195,0 305,27<br />
+      circle https://www.inetnebr.example.com/lincoln/feedback/ 195,0 305,27<br />
       rect another_file "in same directory as referer" 306,0 419,27<br />
-      point http://www.zyzzyva.example.com/ 100,100<br />
-      point http://www.tripod.example.com/ 200,200<br />
+      point https://www.zyzzyva.example.com/ 100,100<br />
+      point https://www.tripod.example.com/ 200,200<br />
       rect mailto:nate@tripod.example.com 100,150 200,0 "Bugs?"<br />
     </code></p></div>
 
@@ -301,7 +301,7 @@
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Default <code>base</code> for imagemap files</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ImapBase map|referer|<var>URL</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ImapBase http://servername/</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ImapBase https://servername/</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
@@ -311,7 +311,7 @@
     <code>base</code> used in the imagemap files. Its value is
     overridden by a <code>base</code> directive within the imagemap
     file. If not present, the <code>base</code> defaults to
-    <code>http://<var>servername</var>/</code>.</p>
+    <code>https://<var>servername</var>/</code>.</p>
 
 <h3>See also</h3>
 <ul>
@@ -392,7 +392,7 @@ an imagemap</td></tr>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_imagemap.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/mod/mod_imagemap.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -407,8 +407,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_imagemap.h
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

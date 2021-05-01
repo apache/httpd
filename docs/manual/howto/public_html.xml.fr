@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -31,7 +31,7 @@
 <p>Sur les systèmes multi-utilisateurs, on peut permettre à chaque
 utilisateur d'avoir un site web dans son répertoire home à l'aide de la
 directive <directive module="mod_userdir">UserDir</directive>. Les
-visiteurs de l'URL <code>http://example.com/~nom_utilisateur/</code>
+visiteurs de l'URL <code>https://example.com/~nom_utilisateur/</code>
 recevront un contenu situé dans le répertoire home de l'utilisateur
 "<code>nom_utilisateur</code>", et dans le sous-répertoire spécifié par
 la directive <directive module="mod_userdir">UserDir</directive>.</p>
@@ -81,7 +81,7 @@ avec le système de fichiers</a></seealso>
 
     <highlight language="config">UserDir public_html</highlight>
 
-    <p>l'URL <code>http://example.com/~rbowen/fichier.html</code>
+    <p>l'URL <code>https://example.com/~rbowen/fichier.html</code>
     correspondra au chemin fichier
     <code>/home/rbowen/public_html/fichier.html</code></p>
 
@@ -91,7 +91,7 @@ avec le système de fichiers</a></seealso>
 
     <highlight language="config">UserDir /var/html</highlight>
 
-    <p>l'URL <code>http://example.com/~rbowen/fichier.html</code>
+    <p>l'URL <code>https://example.com/~rbowen/fichier.html</code>
     correspondra au chemin fichier
     <code>/var/html/rbowen/fichier.html</code></p>
 
@@ -101,7 +101,7 @@ avec le système de fichiers</a></seealso>
 
     <highlight language="config">UserDir /var/www/*/docs</highlight>
 
-    <p>l'URL <code>http://example.com/~rbowen/fichier.html</code>
+    <p>l'URL <code>https://example.com/~rbowen/fichier.html</code>
     correspondra au chemin fichier
     <code>/var/www/rbowen/docs/fichier.html</code></p>
 
@@ -110,7 +110,7 @@ avec le système de fichiers</a></seealso>
 
     <highlight language="config">UserDir public_html /var/html</highlight>
 
-    <p>Avec l'URL <code>http://example.com/~rbowen/fichier.html</code>,
+    <p>Avec l'URL <code>https://example.com/~rbowen/fichier.html</code>,
     Apache va rechercher <code>~rbowen</code>. S'il ne le trouve pas,
     Apache va rechercher <code>rbowen</code> dans
     <code>/var/html</code>. S'il le trouve, l'URL ci-dessus correspondra
@@ -124,11 +124,11 @@ avec le système de fichiers</a></seealso>
     module="mod_userdir">UserDir</directive> pour rediriger les requêtes
     relatives aux répertoires utilisateurs vers des URLs externes.</p>
 
-    <highlight language="config">UserDir http://example.org/users/*/</highlight>
+    <highlight language="config">UserDir https://example.org/users/*/</highlight>
 
     <p>L'exemple ci-dessus va rediriger une requête pour
-    <code>http://example.com/~bob/abc.html</code> vers
-    <code>http://exemple.org/users/bob/abc.html</code>.</p>
+    <code>https://example.com/~bob/abc.html</code> vers
+    <code>https://exemple.org/users/bob/abc.html</code>.</p>
   </section>
 
   <section id="enable">
@@ -179,7 +179,7 @@ UserDir enabled rbowen krietz
     répertoire en passant par l'URL :</p>
 
     <example>
-    http://example.com/~rbowen/cgi-bin/exemple.cgi
+    https://example.com/~rbowen/cgi-bin/exemple.cgi
     </example>
 
     </section>

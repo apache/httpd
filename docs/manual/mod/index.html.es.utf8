@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -16,12 +16,12 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="module-index"><div id="page-header">
-<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p>
+<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p>
 <p class="apache">Versión 2.5 del Servidor HTTP Apache</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentación</a> &gt; <a href="../">Versión 2.5</a></div><div id="page-content"><div id="preamble"><h1>Índice de Módulos</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentación</a> &gt; <a href="../">Versión 2.5</a></div><div id="page-content"><div id="preamble"><h1>Índice de Módulos</h1>
 <div class="toplang">
 <p><span>Idiomas disponibles: </span><a href="../de/mod/" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
@@ -122,7 +122,7 @@ HTTP caching filter.</dd>
 <dt><a href="mod_crypto.html">mod_crypto</a></dt><dd>Support for symmetrical encryption and decryption</dd>
 <dt><a href="mod_data.html" id="D" name="D">mod_data</a></dt><dd>Convert response body into an RFC2397 data URL</dd>
 <dt><a href="mod_dav.html">mod_dav</a></dt><dd>Distributed Authoring and Versioning
-(<a href="http://www.webdav.org/">WebDAV</a>) functionality</dd>
+(<a href="https://www.webdav.org/">WebDAV</a>) functionality</dd>
 <dt><a href="mod_dav_fs.html">mod_dav_fs</a></dt><dd>Filesystem provider for <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code></dd>
 <dt><a href="mod_dav_lock.html">mod_dav_lock</a></dt><dd>Generic locking module for <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code></dd>
 <dt><a href="mod_dbd.html">mod_dbd</a></dt><dd>Manages SQL database connections</dd>
@@ -277,8 +277,8 @@ filter modules</dd>
 <a href="../tr/mod/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/mod/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

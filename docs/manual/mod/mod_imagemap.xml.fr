@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -115,7 +115,7 @@
       configuration du serveur. En l'absence de directive de
       configuration <directive>ImapBase</directive>, la valeur par
       défaut de <code>base</code> est
-      <code>http://nom_serveur/</code>.</p>
+      <code>https://nom_serveur/</code>.</p>
       <p><code>base_uri</code> est un synonyme de <code>base</code>.
       Notez que la présence ou l'absence d'un slash de fin dans l'URL
       est importante.</p></dd>
@@ -192,7 +192,7 @@
       <dt><code>referer</code></dt>
 
       <dd>Équivalent à l'URL du document référant. La valeur par défaut
-      est <code>http://nom_serveur/</code> si aucun en-tête
+      est <code>https://nom_serveur/</code> si aucun en-tête
       <code>Referer:</code> n'est présent.</dd>
 
       <dt><code>nocontent</code></dt>
@@ -236,7 +236,7 @@
       constitue le texte du lien si un menu est généré :</p>
 
       <example>
-        &lt;a href="http://example.com/"&gt;<var>Texte de
+        &lt;a href="https://example.com/"&gt;<var>Texte de
 	menu</var>&lt;/a&gt;
       </example>
 
@@ -244,7 +244,7 @@
       constitué du nom du lien :</p>
 
       <example>
-        &lt;a href="http://example.com/"&gt;http://example.com&lt;/a&gt;
+        &lt;a href="https://example.com/"&gt;https://example.com&lt;/a&gt;
       </example>
 
       <p>Si vous voulez insérer des guillemets dans le texte, vous devez
@@ -263,10 +263,10 @@
       base referer<br />
       poly map "Puis-je avoir un menu, s'il vous plait ?" 0,0 0,10 10,10 10,0<br />
       rect .. 0,0 77,27 "le répertoire du référant"<br />
-      circle http://www.inetnebr.example.com/lincoln/feedback/ 195,0 305,27<br />
+      circle https://www.inetnebr.example.com/lincoln/feedback/ 195,0 305,27<br />
       rect autre_fichier "dans le même répertoire que le référant" 306,0 419,27<br />
-      point http://www.zyzzyva.example.com/ 100,100<br />
-      point http://www.tripod.example.com/ 200,200<br />
+      point https://www.zyzzyva.example.com/ 100,100<br />
+      point https://www.tripod.example.com/ 200,200<br />
       rect mailto:nate@tripod.example.com 100,150 200,0 "Bogues?"<br />
     </example>
 
@@ -368,7 +368,7 @@ cible</description>
 <description>Valeur par défaut de la directive <code>base</code> des
 fichiers imagemap</description>
 <syntax>ImapBase map|referer|<var>URL</var></syntax>
-<default>ImapBase http://nom_serveur/</default>
+<default>ImapBase https://nom_serveur/</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>Indexes</override>
@@ -380,7 +380,7 @@ fichiers imagemap</description>
     directive <code>base</code> dans le fichier imagemap. Si cette
     directive est absente, la valeur par défaut de la directive
     <code>base</code> est
-    <code>http://<var>nom_serveur</var>/</code>.</p>
+    <code>https://<var>nom_serveur</var>/</code>.</p>
 </usage>
 <seealso><directive module="core">UseCanonicalName</directive></seealso>
 </directivesynopsis>

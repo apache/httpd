@@ -5,7 +5,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -585,7 +585,7 @@ static unsigned is_absolute_uri(char *uri, int *supportsqs)
 
     case 'h':
     case 'H':
-        if (!ap_cstr_casecmpn(uri, "ttp://", 6)) {       /* http://   */
+        if (!ap_cstr_casecmpn(uri, "ttp://", 6)) {       /* https://   */
             *sqs = 1;
             return 7;
         }
@@ -4981,7 +4981,7 @@ static int hook_fixup(request_rec *r)
 
     /*
      *  .htaccess file is called before really entering the directory, i.e.:
-     *  URL: http://localhost/foo  and .htaccess is located in foo directory
+     *  URL: https://localhost/foo  and .htaccess is located in foo directory
      *  Ignore such attempts, allowing mod_dir to direct the client to the
      *  canonical URL. This can be controlled with the AllowNoSlash option.
      */

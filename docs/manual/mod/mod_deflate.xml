@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -113,7 +113,7 @@ SetEnvIfNoCase Request_URI "\.(?:gif|jpe?g|png)$" no-gzip
 
       <highlight language="config">
 &lt;Location "/dav-area"&gt;
-    ProxyPass "http://example.com/"
+    ProxyPass "https://example.com/"
     SetOutputFilter INFLATE
 &lt;/Location&gt;
       </highlight>
@@ -142,7 +142,7 @@ SetEnvIfNoCase Request_URI "\.(?:gif|jpe?g|png)$" no-gzip
       Few browsers have the ability to gzip request bodies. However,
       some special applications actually do support request
       compression, for instance some <a
-      href="http://www.webdav.org">WebDAV</a> clients.</p>
+      href="https://www.webdav.org">WebDAV</a> clients.</p>
 
       <note type="warning"><title>Note on Content-Length</title>
         <p>If you evaluate the request body yourself, <em>don't trust

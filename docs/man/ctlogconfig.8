@@ -109,25 +109,25 @@ First we'll configure the URLs for logs where server certificates are logged:
  
 .nf
 
-    $ ctlogconfig /path/to/conf/log-config configure-url http://log1\&.example\&.com/
-    $ ctlogconfig /path/to/conf/log-config configure-url http://log2\&.example\&.com/
+    $ ctlogconfig /path/to/conf/log-config configure-url https://log1\&.example\&.com/
+    $ ctlogconfig /path/to/conf/log-config configure-url https://log2\&.example\&.com/
     $ ctlogconfig /path/to/conf/log-config dump
     Log entry:
       Record 1
       Log id         : (not configured)
       Public key file: (not configured)
-      URL            : http://log1\&.example\&.com/
+      URL            : https://log1\&.example\&.com/
       Time range     : -INF to +INF 
     Log entry:
       Record 2
       Log id         : (not configured)
       Public key file: (not configured)
-      URL            : http://log2\&.example\&.com/
+      URL            : https://log2\&.example\&.com/
       Time range     : -INF to +INF 
 .fi
  
 .PP
-Next we'll set the public key of a log where the certificate of our only backend server is published\&. In this case it is the log with URL http://log2\&.example\&.com/ which has already been configured\&.
+Next we'll set the public key of a log where the certificate of our only backend server is published\&. In this case it is the log with URL https://log2\&.example\&.com/ which has already been configured\&.
  
 .nf
 
@@ -137,13 +137,13 @@ Next we'll set the public key of a log where the certificate of our only backend
       Record 1
       Log id         : (not configured)
       Public key file: (not configured)
-      URL            : http://log1\&.example\&.com/
+      URL            : https://log1\&.example\&.com/
       Time range     : -INF to +INF 
     Log entry:
       Record 2
       Log id         : (not configured)
       Public key file: /path/to/conf/log2-pub\&.pem
-      URL            : http://log2\&.example\&.com/
+      URL            : https://log2\&.example\&.com/
       Time range     : -INF to +INF 
 .fi
  

@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,8 +21,8 @@
 -->
 
 <xsl:stylesheet version="1.0"
-              xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                  xmlns="http://www.w3.org/1999/xhtml">
+              xmlns:xsl="https://www.w3.org/1999/XSL/Transform"
+                  xmlns="https://www.w3.org/1999/xhtml">
 
 
 <!-- load utility snippets -->
@@ -266,7 +266,7 @@ interpreted in pre -->
    This is a horrible hack, but it seems to mostly work.  It does a
    few things:
 
-   1. Transforms references starting in http:// to footnotes with the
+   1. Transforms references starting in https:// to footnotes with the
       appropriate hyperref macro to make them clickable.  (This needs
       to be expanded to deal with news: and needs to be adjusted to
       deal with "#", which is creating bad links at the moment.)

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -16,12 +16,12 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Advanced Techniques with mod_rewrite</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Advanced Techniques with mod_rewrite</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/advanced.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/advanced.html" title="Français">&nbsp;fr&nbsp;</a></p>
@@ -94,7 +94,7 @@ utilisateur2  serveur_physique_utilisateur2<br />
   <p>avec</p>
 
 <div class="example"><p><code>
-http://serveur_physique_utilisateur1/u/utilisateur/chemin
+https://serveur_physique_utilisateur1/u/utilisateur/chemin
 </code></p></div>
 
       <p>il n'est ainsi pas nécessaire que tous les chemins URL soient
@@ -106,7 +106,7 @@ http://serveur_physique_utilisateur1/u/utilisateur/chemin
 
 <pre class="prettyprint lang-config">RewriteEngine on
 RewriteMap      users-to-hosts   "txt:/path/to/map.users-to-hosts"
-RewriteRule   "^/u/([^/]+)/?(.*)"   "http://${users-to-hosts:$1|server0}/u/$1/$2"</pre>
+RewriteRule   "^/u/([^/]+)/?(.*)"   "https://${users-to-hosts:$1|server0}/u/$1/$2"</pre>
 
     </dd>
   </dl>
@@ -182,7 +182,7 @@ RewriteRule "^(.+)\.html$"          "/regenerate_page.cgi"   [PT,L]</pre>
 
 <pre class="prettyprint lang-config">RewriteEngine on
 RewriteMap lb "rnd:/path/to/serverlist.txt"
-RewriteRule "^/(.*)" "http://${lb:serveurs}/$1" [P,L]</pre>
+RewriteRule "^/(.*)" "https://${lb:serveurs}/$1" [P,L]</pre>
 
 
 <p><code>liste-serveurs.txt</code> contiendra la liste des serveurs :</p>
@@ -368,7 +368,7 @@ RewriteRule   "^/cheval/(.*)"   "/poney/$1" [E=<strong>rewritten:1</strong>]</pr
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/rewrite/advanced.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/rewrite/advanced.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -383,8 +383,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/rewrite/advanced.h
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

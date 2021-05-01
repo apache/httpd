@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -105,7 +105,7 @@
       <code>/usr/local/apache2/cgi-bin/</code> から提供し、それらを
       CGI プログラムとして扱うよう Apache に示します。</p>
 
-      <p>例えば、URL <code>http://www.example.com/cgi-bin/test.pl</code>
+      <p>例えば、URL <code>https://www.example.com/cgi-bin/test.pl</code>
       が要求された場合、Apache は ファイル
       <code>/usr/local/apache2/cgi-bin/test.pl</code>
       を実行し、その出力を返すことを試みます。
@@ -255,7 +255,7 @@ print "Hello, World.";
       <p>好みのブラウザを開き、アドレス</p>
 
       <example>
-        http://www.example.com/cgi-bin/first.pl
+        https://www.example.com/cgi-bin/first.pl
       </example>
 
       <p>あるいはファイルを置いたロケーションを指定すると、
@@ -450,8 +450,8 @@ print "Hello, World.";
       <p>これらの変数は CGI プログラマが使用できます。
       そして、それはクライアントとサーバの通信の話の半分です。
       必要な変数の完全なリストは <a
-      href="http://hoohoo.ncsa.uiuc.edu/cgi/env.html"
-      >http://hoohoo.ncsa.uiuc.edu/cgi/env.html</a> にあります。</p>
+      href="https://hoohoo.ncsa.uiuc.edu/cgi/env.html"
+      >https://hoohoo.ncsa.uiuc.edu/cgi/env.html</a> にあります。</p>
 
       <p>以下の単純な Perl CGI
       プログラムは、渡される全ての環境変数を表示します。同様のプログラムは、
@@ -520,14 +520,14 @@ foreach $key (keys %ENV) {
     これはエラーを減らし、早い開発につながります。</p>
 
     <p>Perl で CGI プログラムを書いているなら、モジュールは <a
-    href="http://www.cpan.org/">CPAN</a> で提供されています。
+    href="https://www.cpan.org/">CPAN</a> で提供されています。
     この目的のための最も普及しているモジュールは <code>CGI.pm</code> です。
     <code>CGI::Lite</code> も検討しましょう。これは、ほとんどのプログラム
     において必要とするすべての機能の最小セットの実装です。</p>
 
     <p>C で CGI プログラムを書いているなら、いろいろな
     オプションがあります。これらの内の一つは <a
-    href="http://www.boutell.com/cgic/">http://www.boutell.com/cgic/</a>
+    href="https://www.boutell.com/cgic/">https://www.boutell.com/cgic/</a>
     で提供されている <code>CGIC</code> ライブラリです。</p>
   </section>
 
@@ -539,16 +539,16 @@ foreach $key (keys %ENV) {
     >comp.infosystems.www.authoring.cgi</a> で、
     他のユーザと論議することができます。HTML Writers Guide の
     -servers メーリングリストは、あなたの質問に回答してくれる偉大なリソースです。
-    <a href="http://www.hwg.org/lists/hwg-servers/"
-    >http://www.hwg.org/lists/hwg-servers/</a>
+    <a href="https://www.hwg.org/lists/hwg-servers/"
+    >https://www.hwg.org/lists/hwg-servers/</a>
     で更に多くを探し出すことができます。</p>
 
     <p>そしてもちろん、おそらく CGI
     プログラムの動作に関する詳細の全てが記述されている
     CGI の仕様を読むべきです。オリジナルバージョンを
-    <a href="http://hoohoo.ncsa.uiuc.edu/cgi/interface.html">NCSA</a>
+    <a href="https://hoohoo.ncsa.uiuc.edu/cgi/interface.html">NCSA</a>
     で、アップデートされたドラフトを
-    <a href="http://www.ietf.org/rfc/rfc3875">Common Gateway Interface RFC
+    <a href="https://www.ietf.org/rfc/rfc3875">Common Gateway Interface RFC
     プロジェクト</a>で参照することができます。</p>
 
     <p>CGI の問題について、加わっているメーリングリストまたはニュース

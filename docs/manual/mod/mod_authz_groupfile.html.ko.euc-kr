@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
 <meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -17,87 +17,87 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">¸ðµâ</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">ï¿½ï¿½ï¿½</a></div>
 <div id="page-content">
-<div id="preamble"><h1>¾ÆÆÄÄ¡ ¸ðµâ mod_authz_groupfile</h1>
+<div id="preamble"><h1>ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ mod_authz_groupfile</h1>
 <div class="toplang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/mod/mod_authz_groupfile.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/mod/mod_authz_groupfile.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_authz_groupfile.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_authz_groupfile.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_authz_groupfile.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">ÀÌ ¹®¼­´Â ÃÖ½ÅÆÇ ¹ø¿ªÀÌ ¾Æ´Õ´Ï´Ù.
-            ÃÖ±Ù¿¡ º¯°æµÈ ³»¿ëÀº ¿µ¾î ¹®¼­¸¦ Âü°íÇÏ¼¼¿ä.</div>
-<table class="module"><tr><th><a href="module-dict.html#Description">¼³¸í:</a></th><td>ÀÏ¹Ý ¹®ÀÚÆÄÀÏÀ» ÀÌ¿ëÇÑ ±×·ì ±ÇÇÑºÎ¿©</td></tr>
-<tr><th><a href="module-dict.html#Status">»óÅÂ:</a></th><td>Base</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">¸ðµâ¸í:</a></th><td>authz_groupfile_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">¼Ò½ºÆÄÀÏ:</a></th><td>mod_authz_groupfile.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Áö¿ø:</a></th><td>¾ÆÆÄÄ¡ 2.1 ÀÌÈÄºÎÅÍ</td></tr></table>
-<h3>¿ä¾à</h3>
+<div class="outofdate">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Õ´Ï´ï¿½.
+            ï¿½Ö±Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ï¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¿ï¿½ï¿½ï¿½ ï¿½×·ï¿½ ï¿½ï¿½ï¿½ÑºÎ¿ï¿½</td></tr>
+<tr><th><a href="module-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Base</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">ï¿½ï¿½ï¿½ï¿½:</a></th><td>authz_groupfile_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">ï¿½Ò½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>mod_authz_groupfile.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½ï¿½ï¿½Ä¡ 2.1 ï¿½ï¿½ï¿½Äºï¿½ï¿½ï¿½</td></tr></table>
+<h3>ï¿½ï¿½ï¿½</h3>
 
-    <p>ÀÌ ¸ðµâÀº ÀÎÁõÇÑ »ç¿ëÀÚÀÇ ±×·ì±ÇÇÑÀ¸·Î À¥»çÀÌÆ®ÀÇ ÀÏºÎ¸¦
-    Á¢±ÙÇÒ ¼ö ÀÖ´ÂÁö °áÁ¤ÇÏ¿© ±ÇÇÑºÎ¿©¸¦ ÇÑ´Ù.
-    <code class="module"><a href="../mod/mod_authz_dbm.html">mod_authz_dbm</a></code>°ú ±â´ÉÀÌ ºñ½ÁÇÏ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ÏºÎ¸ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ÑºÎ¿ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½.
+    <code class="module"><a href="../mod/mod_authz_dbm.html">mod_authz_dbm</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.</p>
 </div>
-<div id="quickview"><h3 class="directives">Áö½Ã¾îµé</h3>
+<div id="quickview"><h3 class="directives">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#authgroupfile">AuthGroupFile</a></li>
 </ul>
-<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_authz_groupfile">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_authz_groupfile">Report a bug</a></li></ul><h3>Âü°í</h3>
+<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_authz_groupfile">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_authz_groupfile">Report a bug</a></li></ul><h3>ï¿½ï¿½ï¿½ï¿½</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/core.html#require">Require</a></code></li>
 <li><code class="directive"><a href="../mod/core.html#satisfy">Satisfy</a></code></li>
 <li><a href="#comments_section">Comments</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthGroupFile" id="AuthGroupFile">AuthGroupFile</a> <a name="authgroupfile" id="authgroupfile">Áö½Ã¾î</a> <a title="Permanent link" href="#authgroupfile" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="AuthGroupFile" id="AuthGroupFile">AuthGroupFile</a> <a name="authgroupfile" id="authgroupfile">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#authgroupfile" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>ÀÎÁõ¿¡ »ç¿ëÇÒ »ç¿ëÀÚ ±×·ì ¸ñ·ÏÀ» ÀúÀåÇÏ´Â ¹®ÀÚÆÄÀÏ¸íÀ»
-ÁöÁ¤ÇÑ´Ù</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>AuthGroupFile <var>file-path</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override ¿É¼Ç:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_authz_groupfile</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>AuthGroupFile <var>file-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override ï¿½É¼ï¿½:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_authz_groupfile</td></tr>
 </table>
-    <p><code class="directive">AuthGroupFile</code> Áö½Ã¾î´Â »ç¿ëÀÚ
-    ÀÎÁõ¿¡ »ç¿ëÇÒ »ç¿ëÀÚ ±×·ì ¸ñ·ÏÀ» ÀúÀåÇÏ´Â ¹®ÀÚÆÄÀÏ¸íÀ»
-    ÁöÁ¤ÇÑ´Ù. <var>File-path</var>´Â ±×·ìÆÄÀÏ °æ·ÎÀÌ´Ù. Àý´ë°æ·Î¸¦
-    »ç¿ëÇÏÁö ¾ÊÀ¸¸é <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>ÀÇ »ó´ë°æ·Î·Î ¹Þ¾ÆµéÀÎ´Ù.</p>
+    <p><code class="directive">AuthGroupFile</code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <var>File-path</var>ï¿½ï¿½ ï¿½×·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ì´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½Î¸ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Î·ï¿½ ï¿½Þ¾Æµï¿½ï¿½Î´ï¿½.</p>
 
-    <p>±×·ìÆÄÀÏÀÇ °¢ ÁÙ¿¡´Â ±×·ì¸í, ÄÝ·Ð, °ø¹éÀ¸·Î ±¸ºÐÇÑ
-    »ç¿ëÀÚ¸íµéÀÌ ¼ø¼­´ë·Î ³ª¿Â´Ù.</p>
+    <p>ï¿½×·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ù¿ï¿½ï¿½ï¿½ ï¿½×·ï¿½ï¿½, ï¿½Ý·ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â´ï¿½.</p>
 
-    <div class="example"><h3>¿¹Á¦:</h3><p><code>
+    <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½:</h3><p><code>
       mygroup: bob joe anne
     </code></p></div> 
 
-    <p>¸¹Àº ±×·ìÀ» ÀúÀåÇÑ Å« ¹®ÀÚÆÄÀÏÀ» °Ë»öÇÏ´Â °ÍÀº <em>¸Å¿ì</em>
-    ºñÈ¿À²ÀûÀÓÀ» ÁÖÀÇÇÏ¶ó. <code class="directive"><a href="../mod/mod_authz_dbm.html#authdbmgroupfile">AuthDBMGroupFile</a></code>ÀÌ ´õ ¼º´ÉÀÌ ÁÁ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å« ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ <em>ï¿½Å¿ï¿½</em>
+    ï¿½ï¿½È¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½. <code class="directive"><a href="../mod/mod_authz_dbm.html#authdbmgroupfile">AuthDBMGroupFile</a></code>ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</p>
 
-    <div class="warning"><h3>º¸¾È</h3>
-      <p><code class="directive">AuthGroupFile</code>ÀÌ À¥¼­¹öÀÇ ¹®¼­µé
-      ¹Û¿¡ À§Ä¡ÇÔÀ» È®ÀÎÇÏ¶ó. ÀÌ ÆÄÀÏÀ» º¸È£ÇÒ µð·ºÅä¸® ¾È¿¡
-      °°ÀÌ µÎÁö <em>¸¶¶ó</em>. ±×·¸Áö ¾ÊÀ¸¸é, Å¬¶óÀÌ¾ðÆ®°¡
-      <code class="directive">AuthGroupFile</code>À» ´Ù¿î·ÎµåÇÒ ¼ö ÀÖ´Ù.</p>
+    <div class="warning"><h3>ï¿½ï¿½ï¿½ï¿½</h3>
+      <p><code class="directive">AuthGroupFile</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½Û¿ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ï¶ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È£ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸® ï¿½È¿ï¿½
+      ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ <em>ï¿½ï¿½ï¿½ï¿½</em>. ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½
+      <code class="directive">AuthGroupFile</code>ï¿½ï¿½ ï¿½Ù¿ï¿½Îµï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
     </div>
 
 </div>
 </div>
 <div class="bottomlang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/mod/mod_authz_groupfile.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/mod/mod_authz_groupfile.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_authz_groupfile.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_authz_groupfile.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_authz_groupfile.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_authz_groupfile.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/mod/mod_authz_groupfile.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -112,8 +112,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_authz_grou
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

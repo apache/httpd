@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -155,7 +155,7 @@ Note: I have sorted alphabetically the file so it will be easy to use this page.
 		entre el servidor y el sistema operativo. El desarrollo de APR es 
 		paralelo al del Servidor HTTP Apache, como un proyecto independiente. 
 		Puedes visitar el proyecto en:<br />
-		<a href="http://apr.apache.org/">Apache Portable Runtime
+		<a href="https://apr.apache.org/">Apache Portable Runtime
 		Project</a>
 		</dd>
 
@@ -189,10 +189,10 @@ Note: I have sorted alphabetically the file so it will be easy to use this page.
 		se podía usar como un alias a $0 en algunos sitios. 
 		Esto ya no esta soportado desde la versión 2.3.6.
 		Apache usa Expresiones Regulares compatibles con Perl gracias a la
-		librería <a href="http://www.pcre.org/">PCRE</a>.
+		librería <a href="https://www.pcre.org/">PCRE</a>.
 		Puedes encontrar más documentación sobre las expresiones regulares 
 		de PCRE y su sintaxis en esa página o en la
-		<a href="http://en.wikipedia.org/wiki/PCRE">Wikipedia</a>.</dd>
+		<a href="https://en.wikipedia.org/wiki/PCRE">Wikipedia</a>.</dd>
 
 
 
@@ -292,7 +292,7 @@ Note: I have sorted alphabetically the file so it will be easy to use this page.
 		Uniforme</a> <a name="URI">(URI)</a></dt> <dd>Una cadena de caracteres
 		compacta para identificar un recurso físico o abstracto.  Se
 		define formalmente en la <a
-		href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>.  Los URIs que
+		href="https://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>.  Los URIs que
 		se usan en world-wide web se refieren normalmente como <a
 		href="#url">URLs</a>.</dd>
 
@@ -308,7 +308,7 @@ Note: I have sorted alphabetically the file so it will be easy to use this page.
 		procesamiento del protocolo de enlace SSL. Se añadió a SSL 
 		con las extensiones TLS en el RFC 3546.  <br />
 		See: <a href="ssl/ssl_faq.html">the SSL FAQ</a>
-		and <a href="http://www.ietf.org/rfc/rfc3546.txt">RFC 3546</a>
+		and <a href="https://www.ietf.org/rfc/rfc3546.txt">RFC 3546</a>
 		</dd>
 
 
@@ -321,7 +321,7 @@ Note: I have sorted alphabetically the file so it will be easy to use this page.
 		un interfaz entre un servidor web y un programa externo que permite
 		hacer peticiones de servicio a los programas externos.  Este interfaz
 		esta definido en el  <a
-		href="http://www.ietf.org/rfc/rfc3875">RFC-3875</a>.<br />
+		href="https://www.ietf.org/rfc/rfc3875">RFC-3875</a>.<br />
 		Consulte: <a href="howto/cgi.html">Contenido Dinámico con CGI</a>
 		</dd>
 
@@ -333,7 +333,7 @@ Note: I have sorted alphabetically the file so it will be easy to use this page.
 		Recursos Uniforme</a>.  Las URLs están compuestas normalmente por
 		un esquema, tal como <code>http</code> o <code>https</code>, un nombre
 		de host, y una ruta.  Una URL para esta página es
-		<code>http://httpd.apache.org/docs/&httpd.docs;/glossary.html</code>.</dd>
+		<code>https://httpd.apache.org/docs/&httpd.docs;/glossary.html</code>.</dd>
 
 
 		<dt><a name="module" id="module">Módulo</a></dt>
@@ -413,7 +413,7 @@ Note: I have sorted alphabetically the file so it will be easy to use this page.
 
 		<dt><a name="openssl" id="openssl">OpenSSL</a></dt>
 		<dd>El toolkit Open Source para SSL/TLS<br />
-		Ver: <a href="http://www.openssl.org/">http://www.openssl.org/</a></dd>
+		Ver: <a href="https://www.openssl.org/">https://www.openssl.org/</a></dd>
 
 
 		<dt><a name="passphrase">Pass Phrase o frase de contraseña</a></dt> 
@@ -444,7 +444,7 @@ Note: I have sorted alphabetically the file so it will be easy to use this page.
 		transmisión estádar usado en la World Wide Web.  Apache
 		implementa la versión 1.1 de este protocolo, al que se hace
 		referencia como HTTP/1.1 y definido por el <a
-		href="http://ietf.org/rfc/rfc2616.txt">RFC 2616</a>.</dd>
+		href="https://ietf.org/rfc/rfc2616.txt">RFC 2616</a>.</dd>
 
 		<dt><a name="https" id="https">HTTPS</a></dt>
 		<dd>Protocolo de transferencia de

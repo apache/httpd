@@ -11,7 +11,7 @@ Example Configuration:
 Dependencies:
   Due to a bug in APR's apr_socket_recvfrom, version 1.2.12 or newer must be
   used:
-    <http://svn.apache.org/viewvc?view=rev&revision=467600>
+    <https://svn.apache.org/viewvc?view=rev&revision=467600>
 
 Consuming:
   This module atomically writes to the configured path, a list of servers, 

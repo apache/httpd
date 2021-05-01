@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="de" xml:lang="de"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="de" xml:lang="de"><head>
 <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -16,12 +16,12 @@
 
 <link href="./images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">Module</a> | <a href="./mod/quickreference.html">Direktiven</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossar</a> | <a href="./sitemap.html">Seitenindex</a></p>
+<p class="menu"><a href="./mod/">Module</a> | <a href="./mod/quickreference.html">Direktiven</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossar</a> | <a href="./sitemap.html">Seitenindex</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="./images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP-Server</a> &gt; <a href="http://httpd.apache.org/docs/">Dokumentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>&#220;bersicht der neuen Funktionen im Apache HTTP Server 2.0</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP-Server</a> &gt; <a href="https://httpd.apache.org/docs/">Dokumentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>&#220;bersicht der neuen Funktionen im Apache HTTP Server 2.0</h1>
 <div class="toplang">
 <p><span>Verf&#252;gbare Sprachen: </span><a href="./de/new_features_2_0.html" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/new_features_2_0.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
@@ -143,7 +143,7 @@
 
       <dt>Bibliothek f&#252;r regul&#228;re Ausdr&#252;cke aktualisiert</dt>
 
-      <dd>Der Apache httpd 2.0 enth&#228;lt die <a href="http://www.pcre.org/">"Perl Compatible
+      <dd>Der Apache httpd 2.0 enth&#228;lt die <a href="https://www.pcre.org/">"Perl Compatible
       Regular Expression Library"</a> (PCRE).
       Bei der Auswertung aller regul&#228;ren Ausdr&#252;cke wird nun
       die leistungsf&#228;higere Syntax von Perl 5 verwendet.</dd>
@@ -273,7 +273,7 @@
 </div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Kommentare</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/new_features_2_0.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/new_features_2_0.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -288,8 +288,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/new_features_2_0.h
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Lizenziert unter der <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Module</a> | <a href="./mod/quickreference.html">Direktiven</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossar</a> | <a href="./sitemap.html">Seitenindex</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Lizenziert unter der <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">Module</a> | <a href="./mod/quickreference.html">Direktiven</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossar</a> | <a href="./sitemap.html">Seitenindex</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,69 +23,69 @@
 <modulesynopsis metafile="mod_alias.xml.meta">
 
 <name>mod_alias</name>
-<description>ÆÄÀÏ½Ã½ºÅÛÀÇ ´Ù¸¥ ºÎºÐµéÀ» ¹®¼­ °èÃþ±¸Á¶¿¡ Æ÷ÇÔÇÏ°í,
-    URL ¸®´ÙÀÌ·º¼ÇÀ» Á¦°øÇÑ´Ù</description>
+<description>ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½ÎºÐµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½,
+    URL ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</description>
 <status>Base</status>
 <sourcefile>mod_alias.c</sourcefile>
 <identifier>alias_module</identifier>
 
 <summary>
-    <p>ÀÌ ¸ðµâÀÌ Á¦°øÇÏ´Â Áö½Ã¾îµéÀ» »ç¿ëÇÏ¿© ¼­¹ö°¡ ¿äÃ»À»
-    ¹ÞÀ»¶§ URLÀ» ¼öÁ¤ÇÏ°Å³ª Á¶ÀÛÇÒ ¼ö ÀÖ´Ù. <directive
-    module="mod_alias">Alias</directive>¿Í <directive
-    module="mod_alias">ScriptAlias</directive> Áö½Ã¾î´Â URLÀ»
-    ÆÄÀÏ½Ã½ºÅÛ °æ·Î·Î ´ëÀÀÇÑ´Ù. ±×·¡¼­ <directive
-    module="core">DocumentRoot</directive> ¾Æ·¡¿¡ ¾ø´Â ³»¿ëÀ»
-    À¥À¸·Î ¼­ºñ½ºÇÒ ¼ö ÀÖ´Ù. ¶Ç, <directive
-    module="mod_alias">ScriptAlias</directive> Áö½Ã¾î´Â ÁöÁ¤ÇÑ
-    µð·ºÅä¸®¿¡ CGI ½ºÅ©¸³Æ®¹Û¿¡ ¾ø´Ù°í ¾Ë¸°´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ URLï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°Å³ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. <directive
+    module="mod_alias">Alias</directive>ï¿½ï¿½ <directive
+    module="mod_alias">ScriptAlias</directive> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ URLï¿½ï¿½
+    ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½ï¿½ ï¿½ï¿½Î·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½×·ï¿½ï¿½ï¿½ <directive
+    module="core">DocumentRoot</directive> ï¿½Æ·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½, <directive
+    module="mod_alias">ScriptAlias</directive> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ CGI ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½Û¿ï¿½ ï¿½ï¿½ï¿½Ù°ï¿½ ï¿½Ë¸ï¿½ï¿½ï¿½.</p>
 
-    <p><directive module="mod_alias">Redirect</directive> Áö½Ã¾î´Â
-    Å¬¶óÀÌ¾ðÆ®¿¡°Ô ´Ù¸¥ URL·Î »õ·Î¿î ¿äÃ»À» ÇÏµµ·Ï Áö½ÃÇÑ´Ù.
-    ÀÚ¿øÀ» »õ·Î¿î Àå¼Ò·Î ¿Å±ä °æ¿ì ÀÚÁÖ »ç¿ëÇÑ´Ù.</p>
+    <p><directive module="mod_alias">Redirect</directive> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½
+    Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ URLï¿½ï¿½ ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½Ïµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+    ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½Ò·ï¿½ ï¿½Å±ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <p><module>mod_alias</module>´Â °£´ÜÇÑ URL Á¶ÀÛÀ» À§ÇØ
-    ¼³°èµÇ¾ú´Ù. ÁúÀÇ¹®ÀÚ¿­ Á¶ÀÛ°ú °°Àº º¹ÀâÇÑ ÀÛ¾÷Àº
-    <module>mod_rewrite</module>°¡ Á¦°øÇÏ´Â ±â´ÉÀ» ÀÌ¿ëÇÏ¶ó.</p>
+    <p><module>mod_alias</module>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ URL ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½Ç¹ï¿½ï¿½Ú¿ï¿½ ï¿½ï¿½ï¿½Û°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Û¾ï¿½ï¿½ï¿½
+    <module>mod_rewrite</module>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¿ï¿½ï¿½Ï¶ï¿½.</p>
 
 </summary>
 
 <seealso><module>mod_rewrite</module></seealso> <seealso><a
-href="../urlmapping.html">URLÀ» ÆÄÀÏ½Ã½ºÅÛ¿¡ ´ëÀÀ</a></seealso>
+href="../urlmapping.html">URLï¿½ï¿½ ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½Û¿ï¿½ ï¿½ï¿½ï¿½ï¿½</a></seealso>
 
-<section id="order"><title>Ã³¸® ¼ø¼­</title>
+<section id="order"><title>Ã³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</title>
 
-<p>¼­·Î ´Ù¸¥ »ç¿ëÀå¼Ò¿¡¼­ Alias¿Í Redirect¸¦ »ç¿ëÇÏ¸é ´Ù¸¥ Áö½Ã¾î¿Í
-°°ÀÌ Ç¥ÁØ <a href="../sections.html#mergin">°áÇÕ ¹æ¹ý</a>¿¡
-µû¶ó Ã³¸®ÇÑ´Ù. ±×·¯³ª °°Àº »ç¿ëÀå¼Ò¿¡ (¿¹¸¦ µé¾î, °°Àº <directive
-type="section" module="core">VirtualHost</directive> ¼½¼Ç¿¡)
-Alias¿Í Redirect¸¦ »ç¿ëÇÏ¸é ¾Æ·¡ ¼ø¼­´ë·Î Ã³¸®ÇÑ´Ù.</p>
+<p>ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ò¿ï¿½ï¿½ï¿½ Aliasï¿½ï¿½ Redirectï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½ <a href="../sections.html#mergin">ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½</a>ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ò¿ï¿½ (ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ <directive
+type="section" module="core">VirtualHost</directive> ï¿½ï¿½ï¿½Ç¿ï¿½)
+Aliasï¿½ï¿½ Redirectï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½Æ·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-<p>¸ÕÀú ¸ðµç Redirect¸¦ Ã³¸®ÇÑ ÈÄ Alias¸¦ Ã³¸®ÇÑ´Ù. ±×·¡¼­
-<directive module="mod_alias">Redirect</directive>³ª <directive
-module="mod_alias">RedirectMatch</directive>¿¡ ÇØ´çÇÏ´Â ¿äÃ»Àº
-Àý´ë·Î AliasÇÏÁö ¾Ê´Â´Ù. ±×¸®°í Alias¿Í Redirect´Â ¼³Á¤ÆÄÀÏ¿¡¼­
-Ã¹¹øÂ°·Î ³ª¿À´Â °ÍÀ» »ç¿ëÇÑ´Ù.</p>
+<p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ Redirectï¿½ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Aliasï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½×·ï¿½ï¿½ï¿½
+<directive module="mod_alias">Redirect</directive>ï¿½ï¿½ <directive
+module="mod_alias">RedirectMatch</directive>ï¿½ï¿½ ï¿½Ø´ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ Aliasï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½. ï¿½×¸ï¿½ï¿½ï¿½ Aliasï¿½ï¿½ Redirectï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½
+Ã¹ï¿½ï¿½Â°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-<p>±×·¡¼­ ¿©·¯ Áö½Ã¾î°¡ µ¿ÀÏÇÑ ÇÏÀ§°æ·Î¿¡ ÇØ´çÇÏ´Â °æ¿ì ¸ðµç
-Áö½Ã¾î¸¦ Àû¿ëÇÏ±âÀ§ÇØ¼­´Â °¡Àå »ó¼¼ÇÑ °æ·Î¸¦ ¸ÕÀú »ç¿ëÇØ¾ß ÇÑ´Ù.
-¿¹¸¦ µé¾î, ´ÙÀ½ ¼³Á¤Àº ÀÇµµÇÑ´ë·Î µ¿ÀÛÇÑ´Ù:</p>
+<p>ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î°¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½Ø´ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Î¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½.
+ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Çµï¿½ï¿½Ñ´ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½:</p>
 
 <example>
 Alias /foo/bar /baz<br />
 Alias /foo /gaq
 </example>
 
-<p>±×·¯³ª À§ÀÇ µÎ Áö½Ã¾î ¼ø¼­¸¦ ¹Ù²Ù¸é <code>/foo/bar</code>
-<directive module="mod_alias">Alias</directive> ÀÌÀü¿¡
-<code>/foo</code> <directive module="mod_alias">Alias</directive>¸¦
-Àû¿ëÇÏ¹Ç·Î Ç×»ó µÎ¹øÂ° Áö½Ã¾î¸¦ ¹«½ÃÇÑ´Ù.</p>
+<p>ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù²Ù¸ï¿½ <code>/foo/bar</code>
+<directive module="mod_alias">Alias</directive> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+<code>/foo</code> <directive module="mod_alias">Alias</directive>ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½Ï¹Ç·ï¿½ ï¿½×»ï¿½ ï¿½Î¹ï¿½Â° ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
 </section>
 
 <directivesynopsis>
 <name>Alias</name>
-<description>URLÀ» Æ¯Á¤ ÆÄÀÏ½Ã½ºÅÛ Àå¼Ò·Î ´ëÀÀÇÑ´Ù</description>
+<description>URLï¿½ï¿½ Æ¯ï¿½ï¿½ ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½ï¿½ ï¿½ï¿½Ò·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</description>
 <syntax>Alias <var>URL-path</var>
 <var>file-path</var>|<var>directory-path</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -93,38 +93,38 @@ Alias /foo /gaq
 
 <usage>
 
-    <p><directive>Alias</directive> Áö½Ã¾î¸¦ »ç¿ëÇÏ¸é ÆÄÀÏ½Ã½ºÅÛ¿¡¼­
-    <directive module="core">DocumentRoot</directive> ¹Û¿¡ ÀÖ´Â
-    ¹®¼­µµ ¼­ºñ½ºÇÒ ¼ö ÀÖ´Ù. <var>url-path</var>·Î ½ÃÀÛÇÏ´Â
-    (%·Î ÀÎÄÚµùµÈ) URLÀ» <var>directory-path</var>·Î ½ÃÀÛÇÏ´Â
-    ÆÄÀÏ¿¡ ´ëÀÀÇÑ´Ù.</p>
+    <p><directive>Alias</directive> ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½Û¿ï¿½ï¿½ï¿½
+    <directive module="core">DocumentRoot</directive> ï¿½Û¿ï¿½ ï¿½Ö´ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. <var>url-path</var>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½
+    (%ï¿½ï¿½ ï¿½ï¿½ï¿½Úµï¿½ï¿½ï¿½) URLï¿½ï¿½ <var>directory-path</var>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½
+    ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <example><title>¿¹Á¦:</title>
+    <example><title>ï¿½ï¿½ï¿½ï¿½:</title>
       Alias /image /ftp/pub/image
     </example>
 
-    <p>http://myserver/image/foo.gif¸¦ ¿äÃ»ÇÏ¸é ¼­¹ö´Â
-    /ftp/pub/image/foo.gif ÆÄÀÏÀ» ³Ñ°ÜÁØ´Ù.</p>
+    <p>https://myserver/image/foo.gifï¿½ï¿½ ï¿½ï¿½Ã»ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    /ftp/pub/image/foo.gif ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ°ï¿½ï¿½Ø´ï¿½.</p>
 
-    <p><var>url-path</var> ³¡¿¡ /¸¦ Æ÷ÇÔÇÏ¸é, URL ³¡¿¡ /¸¦
-    »ç¿ëÇØ¾ß¸¸ ¿µÇâÀÌ ÀÖÀ½À» ÁÖÀÇÇÏ¶ó. Áï, <code>Alias /icons/
-    /usr/local/apache/icons/</code> ¼³Á¤Àº url <code>/icons</code>¿Í
-    °ü°è°¡ ¾ø´Ù.</p>
+    <p><var>url-path</var> ï¿½ï¿½ï¿½ï¿½ /ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½, URL ï¿½ï¿½ï¿½ï¿½ /ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ø¾ß¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½. ï¿½ï¿½, <code>Alias /icons/
+    /usr/local/apache/icons/</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ url <code>/icons</code>ï¿½ï¿½
+    ï¿½ï¿½ï¿½è°¡ ï¿½ï¿½ï¿½ï¿½.</p>
 
-    <p>´ëÀÀÀÇ <em>´ë»ó</em>À» Æ÷ÇÔÇÏ´Â ¿©·¯ <directive
-    type="section" module="core">Directory</directive> ¼½¼ÇÀÌ
-    ÇÊ¿äÇÒÁöµµ ¸ð¸¥´Ù. ÀÌ Áö½Ã¾î´Â <directive type="section"
-    module="core">Directory</directive> ¼½¼ÇÀ» °Ë»çÇÏ±â Àü¿¡
-    Ã³¸®ÇÏ¹Ç·Î, ´ëÀÀÀÇ ´ë»ó¸¸ ¼½¼ÇÀÇ ¿µÇâÀ» ¹Þ´Â´Ù. (±×·¯³ª
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <em>ï¿½ï¿½ï¿½</em>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ <directive
+    type="section" module="core">Directory</directive> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ê¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ð¸¥´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ <directive type="section"
+    module="core">Directory</directive> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½
+    Ã³ï¿½ï¿½ï¿½Ï¹Ç·ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Þ´Â´ï¿½. (ï¿½×·ï¿½ï¿½ï¿½
     <directive type="section" module="core">Location</directive>
-    ¼½¼ÇÀº ÀÌ Áö½Ã¾î¸¦ Ã³¸®ÇÏ±â Àü¿¡ ÇÑ¹ø¸¸ °Ë»çÇÏ¹Ç·Î ÁöÁ¤ÇÑ
-    URL ÀÌÇÏ ÀüÃ¼¿¡ ¿µÇâÀ» ÁØ´Ù.)</p>
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦ Ã³ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ¹ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½ï¿½Ï¹Ç·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    URL ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ø´ï¿½.)</p>
 
-    <p>Æ¯È÷ <directive module="core">DocumentRoot</directive>
-    ¹Û¿¡ ÀÖ´Â µð·ºÅä¸®·Î <code>Alias</code>¸¦ ¸¸µé¾ú´Ù¸é, Á÷Á¢
-    ´ë»ó µð·ºÅä¸®ÀÇ Á¢±ÙÀ» Çã¿ëÇØÁà¾ß ÇÑ´Ù.</p>
+    <p>Æ¯ï¿½ï¿½ <directive module="core">DocumentRoot</directive>
+    ï¿½Û¿ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ <code>Alias</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ù¸ï¿½, ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½.</p>
 
-    <example><title>¿¹Á¦:</title>
+    <example><title>ï¿½ï¿½ï¿½ï¿½:</title>
         Alias /image /ftp/pub/image<br />
         &lt;Directory /ftp/pub/image&gt;<br />
         <indent>
@@ -139,20 +139,20 @@ Alias /foo /gaq
 
 <directivesynopsis>
 <name>AliasMatch</name>
-<description>Á¤±ÔÇ¥Çö½ÄÀ» »ç¿ëÇÏ¿© URLÀ» ÆÄÀÏ½Ã½ºÅÛ Àå¼Ò·Î
-´ëÀÀÇÑ´Ù</description>
+<description>ï¿½ï¿½ï¿½ï¿½Ç¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ URLï¿½ï¿½ ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½ï¿½ ï¿½ï¿½Ò·ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</description>
 <syntax>AliasMatch <var>regex</var>
 <var>file-path</var>|<var>directory-path</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p>ÀÌ Áö½Ã¾î´Â <directive module="mod_alias">Alias</directive>¿Í
-    °°Áö¸¸, °£´ÜÈ÷ URLÀÇ ¾ÕºÎºÐ¸¸ ºñ±³ÇÏ´Â ´ë½Å Ç¥ÁØ Á¤±ÔÇ¥Çö½ÄÀ»
-    »ç¿ëÇÑ´Ù. ÁöÁ¤ÇÑ Á¤±ÔÇ¥Çö½ÄÀ» URL °æ·Î¿Í ºñ±³ÇÏ¿© ¸Â´Ù¸é,
-    ¼­¹ö´Â °ýÈ£·Î ¹­Àº ºÎºÐÀ» ´ëÃ¼ÇÏ¿© ÆÄÀÏ¸íÀ¸·Î »ç¿ëÇÑ´Ù.
-    ¿¹¸¦ µé¾î, ´ÙÀ½°ú °°ÀÌ <code>/icons</code> µð·ºÅä¸®¸¦ »ç¿ëÇÒ
-    ¼ö ÀÖ´Ù:</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ <directive module="mod_alias">Alias</directive>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ URLï¿½ï¿½ ï¿½ÕºÎºÐ¸ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ URL ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½Â´Ù¸ï¿½,
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Îºï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ <code>/icons</code> ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ ï¿½Ö´ï¿½:</p>
 
     <example>
       AliasMatch ^/icons(.*) /usr/local/apache/icons$1
@@ -162,8 +162,8 @@ Alias /foo /gaq
 
 <directivesynopsis>
 <name>Redirect</name>
-<description>Å¬¶óÀÌ¾ðÆ®°¡ ´Ù¸¥ URL¿¡ Á¢¼ÓÇÏµµ·Ï ¿äÃ»ÇÏ´Â ¿ÜºÎ
-¸®´ÙÀÌ·º¼ÇÀ» º¸³½´Ù</description>
+<description>Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½Ù¸ï¿½ URLï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½Ï´ï¿½ ï¿½Üºï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</description>
 <syntax>Redirect [<var>status</var>] <var>URL-path</var>
 <var>URL</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -171,63 +171,63 @@ Alias /foo /gaq
 <override>FileInfo</override>
 
 <usage>
-    <p>Redirect Áö½Ã¾î´Â ÀÌÀü URLÀ» »õ·Î¿î URL·Î ´ëÀÀÇÑ´Ù.
-    Å¬¶óÀÌ¾ðÆ®¿¡°Ô »õ·Î¿î URLÀ» º¸³»°í, Å¬¶óÀÌ¾ðÆ®´Â »õ·Î¿î
-    ÁÖ¼Ò·Î ´Ù½Ã ÇÑ¹ø Á¢¼ÓÇÑ´Ù. (%·Î ÀÎÄÚµùµÈ) <var>URL-path</var>·Î
-    ½ÃÀÛÇÏ´Â ¿äÃ»À» ¹ÞÀ¸¸é (%·Î ÀÎÄÚµùµÈ) <var>URL</var>·Î ½ÃÀÛÇÏ´Â
-    »õ·Î¿î URL·Î ¸®´ÙÀÌ·º¼Ç ¿À·ù¸¦ º¸³½´Ù.</p>
+    <p>Redirect ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ URLï¿½ï¿½ ï¿½ï¿½ï¿½Î¿ï¿½ URLï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+    Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î¿ï¿½ URLï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½Î¿ï¿½
+    ï¿½Ö¼Ò·ï¿½ ï¿½Ù½ï¿½ ï¿½Ñ¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. (%ï¿½ï¿½ ï¿½ï¿½ï¿½Úµï¿½ï¿½ï¿½) <var>URL-path</var>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (%ï¿½ï¿½ ï¿½ï¿½ï¿½Úµï¿½ï¿½ï¿½) <var>URL</var>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½
+    ï¿½ï¿½ï¿½Î¿ï¿½ URLï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.</p>
 
-    <example><title>¿¹Á¦:</title>
-      Redirect /service http://foo2.bar.com/service
+    <example><title>ï¿½ï¿½ï¿½ï¿½:</title>
+      Redirect /service https://foo2.bar.com/service
     </example>
 
-    <p>Å¬¶óÀÌ¾ðÆ®°¡ http://myserver/service/foo.txt¸¦ ¿äÃ»ÇÏ¸é
-    ´ë½Å http://foo2.bar.com/service/foo.txt¿¡ Á¢±ÙÇÏ¶ó´Â ÀÀ´äÀ»
-    ¹Þ´Â´Ù.</p>
+    <p>Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ https://myserver/service/foo.txtï¿½ï¿½ ï¿½ï¿½Ã»ï¿½Ï¸ï¿½
+    ï¿½ï¿½ï¿½ https://foo2.bar.com/service/foo.txtï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Þ´Â´ï¿½.</p>
 
-<note><title>ÁÖÀÇ</title> <p>Redirect Áö½Ã¾î´Â ¼³Á¤ÆÄÀÏ¿¡¼­
-³ª¿À´Â ¼ø¼­¿Í °ü°è¾øÀÌ Alias¿Í ScriptAlias Áö½Ã¾îº¸´Ù ¿ì¼±¼øÀ§°¡
-³ô´Ù. ¶Ç, .htaccess ÆÄÀÏÀÌ³ª <directive type="section"
-module="core">Directory</directive> ¼½¼Ç¿¡¼­ »ç¿ëÇÏ´õ¶óµµ
-<var>URL-path</var>¿¡´Â »ó´ë°æ·Î°¡ ¾Æ´Ï¶ó ¹Ýµå½Ã ¿ÏÀüÇÑ URLÀ»
-»ç¿ëÇØ¾ß ÇÑ´Ù.</p></note>
+<note><title>ï¿½ï¿½ï¿½ï¿½</title> <p>Redirect ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Aliasï¿½ï¿½ ScriptAlias ï¿½ï¿½ï¿½Ã¾îº¸ï¿½ï¿½ ï¿½ì¼±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½, .htaccess ï¿½ï¿½ï¿½ï¿½ï¿½Ì³ï¿½ <directive type="section"
+module="core">Directory</directive> ï¿½ï¿½ï¿½Ç¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ï¿½ï¿½
+<var>URL-path</var>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Î°ï¿½ ï¿½Æ´Ï¶ï¿½ ï¿½Ýµï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ URLï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½.</p></note>
 
-    <p><var>status</var> ¾Æ±Ô¸ÕÆ®¸¦ ÁöÁ¤ÇÏÁö¾ÊÀ¸¸é, "ÀÓ½Ã
-    (temporary)" (HTTP »óÅÂ 302) ¸®´ÙÀÌ·º¼ÇÀ» º¸³½´Ù. Áï,
-    Å¬¶óÀÌ¾ðÆ®¿¡°Ô ÀÚ¿øÀ» ÀÓ½Ã·Î ¿Å°å´Ù°í ¾Ë¸°´Ù. <var>status</var>
-    ¾Æ±Ô¸ÕÆ®¸¦ »ç¿ëÇÏ¿© ´Ù¸¥ HTTP »óÅÂÄÚµå¸¦ ¹ÝÈ¯ÇÒ ¼ö ÀÖ´Ù:</p>
+    <p><var>status</var> ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, "ï¿½Ó½ï¿½
+    (temporary)" (HTTP ï¿½ï¿½ï¿½ï¿½ 302) ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½,
+    Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½Ó½Ã·ï¿½ ï¿½Å°ï¿½Ù°ï¿½ ï¿½Ë¸ï¿½ï¿½ï¿½. <var>status</var>
+    ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½Ù¸ï¿½ HTTP ï¿½ï¿½ï¿½ï¿½ï¿½Úµå¸¦ ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½:</p>
 
     <dl>
       <dt>permanent</dt>
 
-      <dd>ÀÚ¿øÀ» ¿ÏÀüÈ÷ ¿Å°åÀ½À» ¶æÇÏ´Â ¿µ±¸ ¸®´ÙÀÌ·º¼Ç »óÅÂ¸¦
-      (301) ¹ÝÈ¯ÇÑ´Ù.</dd>
+      <dd>ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Å°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â¸ï¿½
+      (301) ï¿½ï¿½È¯ï¿½Ñ´ï¿½.</dd>
 
       <dt>temp</dt>
 
-      <dd>ÀÓ½Ã ¸®´ÙÀÌ·º¼Ç »óÅÂ¸¦ (302) ¹ÝÈ¯ÇÑ´Ù. ±âº»°ªÀÌ´Ù.</dd>
+      <dd>ï¿½Ó½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â¸ï¿½ (302) ï¿½ï¿½È¯ï¿½Ñ´ï¿½. ï¿½âº»ï¿½ï¿½ï¿½Ì´ï¿½.</dd>
 
       <dt>seeother</dt>
 
-      <dd>ÀÚ¿øÀÌ ±³Ã¼µÇ¾úÀ½À» ¶æÇÏ´Â "ÂüÁ¶ (See Other)" »óÅÂ¸¦
-      (303) ¹ÝÈ¯ÇÑ´Ù.</dd>
+      <dd>ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½ "ï¿½ï¿½ï¿½ï¿½ (See Other)" ï¿½ï¿½ï¿½Â¸ï¿½
+      (303) ï¿½ï¿½È¯ï¿½Ñ´ï¿½.</dd>
 
       <dt>gone</dt>
 
-      <dd>ÀÚ¿øÀÌ ¿µ±¸È÷ »èÁ¦µÇ¾úÀ½À» ¶æÇÏ´Â "¼Ò¸ê (Gone)" »óÅÂ¸¦
-      (410) ¹ÝÈ¯ÇÑ´Ù. ÀÌ »óÅÂ¸¦ »ç¿ëÇÏ¸é <var>URL</var> ¾Æ±Ô¸ÕÆ®¸¦
-      »ç¿ëÇÒ ¼ö ¾ø´Ù.</dd>
+      <dd>ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½ "ï¿½Ò¸ï¿½ (Gone)" ï¿½ï¿½ï¿½Â¸ï¿½
+      (410) ï¿½ï¿½È¯ï¿½Ñ´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½Â¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ <var>URL</var> ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</dd>
     </dl>
 
-    <p><var>status</var>¿¡ ¼ýÀÚ »óÅÂÄÚµå¸¦ »ç¿ëÇÏ¿© ´Ù¸¥ »óÅÂÄÚµåµµ
-    ¹ÝÈ¯ÇÒ ¼ö ÀÖ´Ù. »óÅÂ°¡ 300°ú 399 »çÀÌ¶ó¸é <var>URL</var>
-    ¾Æ±Ô¸ÕÆ®¸¦ »ç¿ëÇØ¾ß ÇÏ°í, ¾Æ´Ï¶ó¸é »ý·«ÇØ¾ß ÇÑ´Ù. ´Ü, ¾ÆÆÄÄ¡
-    ÄÚµå¿¡ »óÅÂ°¡ Á¤ÀÇµÇÀÖ¾î¾ß ÇÑ´Ù (http_protocol.cÀÇ
-    <code>send_error_response</code> ÇÔ¼ö Âü°í).</p>
+    <p><var>status</var>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Úµå¸¦ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Úµåµµ
+    ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½Â°ï¿½ 300ï¿½ï¿½ 399 ï¿½ï¿½ï¿½Ì¶ï¿½ï¿½ <var>URL</var>
+    ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ï°ï¿½, ï¿½Æ´Ï¶ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½. ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½Ä¡
+    ï¿½Úµå¿¡ ï¿½ï¿½ï¿½Â°ï¿½ ï¿½ï¿½ï¿½Çµï¿½ï¿½Ö¾ï¿½ï¿½ ï¿½Ñ´ï¿½ (http_protocol.cï¿½ï¿½
+    <code>send_error_response</code> ï¿½Ô¼ï¿½ ï¿½ï¿½ï¿½ï¿½).</p>
 
-    <example><title>¿¹Á¦:</title>
-      Redirect permanent /one http://example.com/two<br />
-      Redirect 303 /three http://example.com/other
+    <example><title>ï¿½ï¿½ï¿½ï¿½:</title>
+      Redirect permanent /one https://example.com/two<br />
+      Redirect 303 /three https://example.com/other
     </example>
 
 </usage>
@@ -235,8 +235,8 @@ module="core">Directory</directive> ¼½¼Ç¿¡¼­ »ç¿ëÇÏ´õ¶óµµ
 
 <directivesynopsis>
 <name>RedirectMatch</name>
-<description>ÇöÀç URLÀÌ Á¤±ÔÇ¥Çö½Ä¿¡ ÇØ´çÇÏ¸é ¿ÜºÎ ¸®´ÙÀÌ·º¼ÇÀ»
-º¸³½´Ù</description>
+<description>ï¿½ï¿½ï¿½ï¿½ URLï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¥ï¿½ï¿½ï¿½Ä¿ï¿½ ï¿½Ø´ï¿½ï¿½Ï¸ï¿½ ï¿½Üºï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</description>
 <syntax>RedirectMatch [<var>status</var>] <var>regex</var>
 <var>URL</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -244,92 +244,92 @@ module="core">Directory</directive> ¼½¼Ç¿¡¼­ »ç¿ëÇÏ´õ¶óµµ
 <override>FileInfo</override>
 
 <usage>
-    <p>ÀÌ Áö½Ã¾î´Â <directive
-    module="mod_alias">Redirect</directive>¿Í °°Áö¸¸, °£´ÜÈ÷
-    URLÀÇ ¾ÕºÎºÐ¸¸ ºñ±³ÇÏ´Â ´ë½Å Ç¥ÁØ Á¤±ÔÇ¥Çö½ÄÀ» »ç¿ëÇÑ´Ù.
-    ÁöÁ¤ÇÑ Á¤±ÔÇ¥Çö½ÄÀ» URL °æ·Î¿Í ºñ±³ÇÏ¿© ¸Â´Ù¸é, ¼­¹ö´Â °ýÈ£·Î
-    ¹­Àº ºÎºÐÀ» ´ëÃ¼ÇÏ¿© ÆÄÀÏ¸íÀ¸·Î »ç¿ëÇÑ´Ù. ¿¹¸¦ µé¾î, ´ÙÀ½Àº
-    ¸ðµç GIF ÆÄÀÏ ¿äÃ»¿¡ ´ëÇØ ´Ù¸¥ ¼­¹öÀÇ ºñ½ÁÇÑ ÀÌ¸§À» °¡Áø
-    JPEG ÆÄÀÏ·Î ¸®´ÙÀÌ·º¼ÇÀ» º¸³½´Ù:</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ <directive
+    module="mod_alias">Redirect</directive>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    URLï¿½ï¿½ ï¿½ÕºÎºÐ¸ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ URL ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½Â´Ù¸ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È£ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½Îºï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ GIF ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    JPEG ï¿½ï¿½ï¿½Ï·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</p>
 
     <example>
-      RedirectMatch (.*)\.gif$ http://www.anotherserver.com$1.jpg
+      RedirectMatch (.*)\.gif$ https://www.anotherserver.com$1.jpg
     </example>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>RedirectTemp</name>
-<description>Å¬¶óÀÌ¾ðÆ®°¡ ´Ù¸¥ URL¿¡ Á¢¼ÓÇÏµµ·Ï ¿äÃ»ÇÏ´Â ¿ÜºÎ
-ÀÓ½Ã ¸®´ÙÀÌ·º¼ÇÀ» º¸³½´Ù</description>
+<description>Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½Ù¸ï¿½ URLï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½Ï´ï¿½ ï¿½Üºï¿½
+ï¿½Ó½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</description>
 <syntax>RedirectTemp <var>URL-path</var> <var>URL</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
 
 <usage>
-    <p>ÀÌ Áö½Ã¾î´Â Å¬¶óÀÌ¾ðÆ®¿¡°Ô ¸®´ÙÀÌ·º¼ÇÀÌ ÀÓ½ÃÀûÀÓÀ» (»óÅÂ
-    302) ¾Ë¸°´Ù. <code>Redirect temp</code>¿Í Á¤È®È÷ °°´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ó½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½
+    302) ï¿½Ë¸ï¿½ï¿½ï¿½. <code>Redirect temp</code>ï¿½ï¿½ ï¿½ï¿½È®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>RedirectPermanent</name>
-<description>Å¬¶óÀÌ¾ðÆ®°¡ ´Ù¸¥ URL¿¡ Á¢¼ÓÇÏµµ·Ï ¿äÃ»ÇÏ´Â ¿ÜºÎ
-¿µ±¸ ¸®´ÙÀÌ·º¼ÇÀ» º¸³½´Ù</description>
+<description>Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½Ù¸ï¿½ URLï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½Ï´ï¿½ ï¿½Üºï¿½
+ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</description>
 <syntax>RedirectPermanent <var>URL-path</var> <var>URL</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
 
 <usage>
-    <p>ÀÌ Áö½Ã¾î´Â Å¬¶óÀÌ¾ðÆ®¿¡°Ô ¸®´ÙÀÌ·º¼ÇÀÌ ¿µ±¸ÀûÀÓÀ» (»óÅÂ
-    301) ¾Ë¸°´Ù. <code>Redirect permanent</code>¿Í Á¤È®È÷ °°´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½
+    301) ï¿½Ë¸ï¿½ï¿½ï¿½. <code>Redirect permanent</code>ï¿½ï¿½ ï¿½ï¿½È®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ScriptAlias</name>
-<description>URLÀ» Æ¯Á¤ ÆÄÀÏ½Ã½ºÅÛ Àå¼Ò·Î ´ëÀÀÇÏ°í ´ë»óÀÌ CGI
-½ºÅ©¸³Æ®¶ó°í ¾Ë¸°´Ù</description>
+<description>URLï¿½ï¿½ Æ¯ï¿½ï¿½ ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½ï¿½ ï¿½ï¿½Ò·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ CGI
+ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ ï¿½Ë¸ï¿½ï¿½ï¿½</description>
 <syntax>ScriptAlias <var>URL-path</var>
 <var>file-path</var>|<var>directory-path</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p><directive>ScriptAlias</directive> Áö½Ã¾î´Â <directive
-    module="mod_alias">Alias</directive> Áö½Ã¾î¿Í ºñ½ÁÇÏÁö¸¸,
-    Ãß°¡·Î ´ë»ó µð·ºÅä¸®¿¡ <module >mod_cgi</module>ÀÇ cgi-script
-    ÇÚµé·¯°¡ Ã³¸®ÇÒ CGI ½ºÅ©¸³Æ®°¡ ÀÖ´Ù°í ¾Ë¸°´Ù.
-    <var>URL-path</var>·Î ½ÃÀÛÇÏ´Â (%·Î ÀÎÄÚµùµÈ) URLÀ» ÆÄÀÏ½Ã½ºÅÛÀÇ
-    Àý´ë°æ·ÎÀÎ µÎ¹øÂ° ¾Æ±Ô¸ÕÆ®·Î ½ÃÀÛÇÏ´Â ½ºÅ©¸³Æ®¿¡ ´ëÀÀÇÑ´Ù.</p>
+    <p><directive>ScriptAlias</directive> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ <directive
+    module="mod_alias">Alias</directive> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,
+    ï¿½ß°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ <module >mod_cgi</module>ï¿½ï¿½ cgi-script
+    ï¿½Úµé·¯ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ CGI ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ö´Ù°ï¿½ ï¿½Ë¸ï¿½ï¿½ï¿½.
+    <var>URL-path</var>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ (%ï¿½ï¿½ ï¿½ï¿½ï¿½Úµï¿½ï¿½ï¿½) URLï¿½ï¿½ ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î¹ï¿½Â° ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <example><title>¿¹Á¦:</title>
+    <example><title>ï¿½ï¿½ï¿½ï¿½:</title>
       ScriptAlias /cgi-bin/ /web/cgi-bin/
     </example>
 
-    <p><code>http://myserver/cgi-bin/foo</code>¸¦ ¿äÃ»ÇÏ¸é ¼­¹ö´Â
-    <code>/web/cgi-bin/foo</code> ½ºÅ©¸³Æ®¸¦ ½ÇÇàÇÑ´Ù.</p>
+    <p><code>https://myserver/cgi-bin/foo</code>ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    <code>/web/cgi-bin/foo</code> ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ScriptAliasMatch</name>
-<description>Á¤±ÔÇ¥Çö½ÄÀ» »ç¿ëÇÏ¿© URLÀ» Æ¯Á¤ ÆÄÀÏ½Ã½ºÅÛ Àå¼Ò·Î
-´ëÀÀÇÏ°í ´ë»óÀÌ CGI ½ºÅ©¸³Æ®¶ó°í ¾Ë¸°´Ù</description>
+<description>ï¿½ï¿½ï¿½ï¿½Ç¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ URLï¿½ï¿½ Æ¯ï¿½ï¿½ ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½ï¿½ ï¿½ï¿½Ò·ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ CGI ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ ï¿½Ë¸ï¿½ï¿½ï¿½</description>
 <syntax>ScriptAliasMatch <var>regex</var>
 <var>file-path</var>|<var>directory-path</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p>ÀÌ Áö½Ã¾î´Â <directive
-    module="mod_alias">ScriptAlias</directive>¿Í °°Áö¸¸, °£´ÜÈ÷
-    URLÀÇ ¾ÕºÎºÐ¸¸ ºñ±³ÇÏ´Â ´ë½Å Ç¥ÁØ Á¤±ÔÇ¥Çö½ÄÀ» »ç¿ëÇÑ´Ù.
-    ÁöÁ¤ÇÑ Á¤±ÔÇ¥Çö½ÄÀ» URL °æ·Î¿Í ºñ±³ÇÏ¿© ¸Â´Ù¸é, ¼­¹ö´Â °ýÈ£·Î
-    ¹­Àº ºÎºÐÀ» ´ëÃ¼ÇÏ¿© ÆÄÀÏ¸íÀ¸·Î »ç¿ëÇÑ´Ù. ¿¹¸¦ µé¾î, ´ÙÀ½°ú
-    °°ÀÌ Ç¥ÁØÀûÀÎ <code>/cgi-bin</code>À» »ç¿ëÇÒ ¼ö ÀÖ´Ù:</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ <directive
+    module="mod_alias">ScriptAlias</directive>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    URLï¿½ï¿½ ï¿½ÕºÎºÐ¸ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ URL ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½Â´Ù¸ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È£ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½Îºï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>/cgi-bin</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½:</p>
 
     <example>
       ScriptAliasMatch ^/cgi-bin(.*) /usr/local/apache/cgi-bin$1

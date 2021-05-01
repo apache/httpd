@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
 <meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>¾ÆÆÄÄ¡ ½ÃÀÛ - Apache HTTP Server Version 2.5</title>
+<title>ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ - Apache HTTP Server Version 2.5</title>
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
@@ -16,14 +16,14 @@
 
 <link href="./images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">¸ðµâ</a> | <a href="./mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">¿ë¾î</a> | <a href="./sitemap.html">»çÀÌÆ®¸Ê</a></p>
+<p class="menu"><a href="./mod/">ï¿½ï¿½ï¿½</a> | <a href="./mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">ï¿½ï¿½ï¿½</a> | <a href="./sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="./images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>¾ÆÆÄÄ¡ ½ÃÀÛ</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½</h1>
 <div class="toplang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="./de/invoking.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="./de/invoking.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/invoking.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/invoking.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
 <a href="./fr/invoking.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
@@ -31,110 +31,110 @@
 <a href="./ko/invoking.html" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/invoking.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">ÀÌ ¹®¼­´Â ÃÖ½ÅÆÇ ¹ø¿ªÀÌ ¾Æ´Õ´Ï´Ù.
-            ÃÖ±Ù¿¡ º¯°æµÈ ³»¿ëÀº ¿µ¾î ¹®¼­¸¦ Âü°íÇÏ¼¼¿ä.</div>
+<div class="outofdate">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Õ´Ï´ï¿½.
+            ï¿½Ö±Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.</div>
 
-    <p>º¸Åë ¾ÆÆÄÄ¡´Â Windows NT, 2000, XP¿¡¼­´Â ¼­ºñ½º·Î,
-    Windows 95°ú ME¿¡¼­´Â ÄÜ¼Ö ÇÁ·Î±×·¥À¸·Î ½ÇÇàµÈ´Ù. ÀÚ¼¼ÇÑ
-    ³»¿ëÀº <a href="platform/windows.html#winsvc">¼­ºñ½º·Î
-    ¾ÆÆÄÄ¡¸¦ ½ÇÇàÇÏ±â</a>¿Í <a href="platform/windows.html#wincons">ÄÜ¼Ö ÇÁ·Î±×·¥À¸·Î
-    ¾ÆÆÄÄ¡¸¦ ½ÇÇàÇÏ±â</a>.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ Windows NT, 2000, XPï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ñ½º·ï¿½,
+    Windows 95ï¿½ï¿½ MEï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ü¼ï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È´ï¿½. ï¿½Ú¼ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <a href="platform/windows.html#winsvc">ï¿½ï¿½ï¿½ñ½º·ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½</a>ï¿½ï¿½ <a href="platform/windows.html#wincons">ï¿½Ü¼ï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½</a>.</p>
 
-    <p>À¯´Ð½º¿¡¼­ <a href="programs/httpd.html">httpd</a>
-    ÇÁ·Î±×·¥Àº ¹é±×¶ó¿îµå¿¡¼­ °è¼Ó ¿äÃ»À» Ã³¸®ÇÏ´Â µ¥¸óÀ¸·Î
-    ½ÇÇàµÈ´Ù. ÀÌ ¹®¼­´Â <code>httpd</code>¸¦ ½ÃÀÛÇÏ´Â ¹æ¹ýÀ»
-    ¼³¸íÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½Ð½ï¿½ï¿½ï¿½ï¿½ï¿½ <a href="programs/httpd.html">httpd</a>
+    ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ ï¿½ï¿½×¶ï¿½ï¿½å¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½È´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>httpd</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#startup">¾î¶»°Ô ¾ÆÆÄÄ¡°¡ ½ÃÀÛÇÏ³ª</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#errors">½ÃÀÛÁß ¿À·ù</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#boot">ºÎÆÃÇÒ¶§ ½ÃÀÛÇÏ±â</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#info">Ãß°¡ Á¤º¸</a></li>
-</ul><h3>Âü°í</h3><ul class="seealso"><li><a href="stopping.html">¾ÆÆÄÄ¡ Áß´Ü°ú Àç½ÃÀÛ</a></li><li><a href="programs/httpd.html">httpd</a></li><li><a href="programs/apachectl.html">apachectl</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#startup">ï¿½î¶»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï³ï¿½</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#errors">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#boot">ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#info">ï¿½ß°ï¿½ ï¿½ï¿½ï¿½ï¿½</a></li>
+</ul><h3>ï¿½ï¿½ï¿½ï¿½</h3><ul class="seealso"><li><a href="stopping.html">ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ß´Ü°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½</a></li><li><a href="programs/httpd.html">httpd</a></li><li><a href="programs/apachectl.html">apachectl</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="startup" id="startup">¾î¶»°Ô ¾ÆÆÄÄ¡°¡ ½ÃÀÛÇÏ³ª</a> <a title="Permanent link" href="#startup" class="permalink">&para;</a></h2>
+<h2><a name="startup" id="startup">ï¿½î¶»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï³ï¿½</a> <a title="Permanent link" href="#startup" class="permalink">&para;</a></h2>
 
-    <p>¼³Á¤ÆÄÀÏ¿¡¼­ <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>ÀÌ ±âº»°ªÀÎ 80(È¤Àº
-    1024ÀÌÇÏÀÇ ´Ù¸¥ Æ÷Æ®)ÀÌ¶ó¸é ÀÌ Æ¯±Ç Æ÷Æ®¿¡ ¿¬°áÇÏ±âÀ§ÇØ
-    root ±ÇÇÑÀÌ ÇÊ¿äÇÏ´Ù. ¼­¹ö´Â ½ÃÀÛÇÏ¿© ·Î±×ÆÄÀÏÀ» ¿©´Â µîÀÇ
-    ¸î¸î ±âÃÊÀûÀÎ ÀÛ¾÷À» ¸¶Ä£ÈÄ, Å¬¶óÀÌ¾ðÆ®ÀÇ ¿äÃ»À» ±â´Ù¸®°í
-    ÀÀ´äÇÏ´Â <em>ÀÚ½Ä(child)</em> ÇÁ·Î¼¼½º¸¦ ¿©·¯°³ ¶ç¿î´Ù.
-    ÁÖ <code>httpd</code> ÇÁ·Î¼¼½º´Â °è¼Ó root »ç¿ëÀÚ·Î ½ÇÇàµÇÁö¸¸,
-    ÀÚ½Ä ÇÁ·Î¼¼½ºµéÀº ´õ ±ÇÇÑÀÌ ÀÛÀº »ç¿ëÀÚ·Î ½ÇÇàµÈ´Ù. ÀÌ´Â
-    ¼±ÅÃÇÑ <a href="mpm.html">´ÙÁßÃ³¸® ¸ðµâ</a>·Î Á¶Á¤ÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½ 80(È¤ï¿½ï¿½
+    1024ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½Æ®)ï¿½Ì¶ï¿½ï¿½ ï¿½ï¿½ Æ¯ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½
+    root ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Ï´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Û¾ï¿½ï¿½ï¿½ ï¿½ï¿½Ä£ï¿½ï¿½, Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½Ù¸ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ <em>ï¿½Ú½ï¿½(child)</em> ï¿½ï¿½ï¿½Î¼ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
+    ï¿½ï¿½ <code>httpd</code> ï¿½ï¿½ï¿½Î¼ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ root ï¿½ï¿½ï¿½ï¿½Ú·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,
+    ï¿½Ú½ï¿½ ï¿½ï¿½ï¿½Î¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú·ï¿½ ï¿½ï¿½ï¿½ï¿½È´ï¿½. ï¿½Ì´ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <a href="mpm.html">ï¿½ï¿½ï¿½ï¿½Ã³ï¿½ï¿½ ï¿½ï¿½ï¿½</a>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
     <p><a href="programs/apachectl.html">apachectl</a>
-    ½ºÅ©¸³Æ®¸¦ »ç¿ëÇÏ¿© <code>httpd</code> ½ÇÇàÆÄÀÏÀ» ½ÃÀÛÇÏ±æ
-    ±ÇÀåÇÑ´Ù. ÀÌ ½ºÅ©¸³Æ®´Â <code>httpd</code>°¡ ¸î¸î
-    ¿î¿µÃ¼Á¦¿¡¼­ Á¤»óÀûÀ¸·Î µ¿ÀÛÇÏ±âÀ§ÇØ ÇÊ¿äÇÑ È¯°æº¯¼öµéÀ»
-    ¼³Á¤ÇÏ°í <code>httpd</code> ½ÇÇàÆÄÀÏÀ» ½ÃÀÛÇÑ´Ù.
-    <code>apachectl</code>Àº ¸í·ÉÇà ¾Æ±Ô¸ÕÆ®¸¦ ±×´ë·Î ³Ñ±â±â¶§¹®¿¡,
-    <code>httpd</code>ÀÇ ¾î¶² ¿É¼ÇÀÌ¶óµµ <code>apachectl</code>¿¡
-    »ç¿ë°¡´ÉÇÏ´Ù. ¶Ç, <code>apachectl</code> ½ºÅ©¸³Æ®ÀÇ ¾ÕºÎºÐ¿¡
-    ³ª¿À´Â <code>HTTPD</code> º¯¼ö¸¦ <code>httpd</code> ½ÇÇàÆÄÀÏÀÌ
-    ÀÖ´Â À§Ä¡¿Í <em>Ç×»ó</em> »ç¿ëÇÒ ¸í·ÉÇà ¾Æ±Ô¸ÕÆ®·Î Á÷Á¢
-    ¼öÁ¤ÇÒ ¼ö ÀÖ´Ù.</p>
+    ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ <code>httpd</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ <code>httpd</code>ï¿½ï¿½ ï¿½ï¿½ï¿½
+    ï¿½î¿µÃ¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ <code>httpd</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+    <code>apachectl</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ ï¿½×´ï¿½ï¿½ ï¿½Ñ±ï¿½â¶§ï¿½ï¿½ï¿½ï¿½,
+    <code>httpd</code>ï¿½ï¿½ ï¿½î¶² ï¿½É¼ï¿½ï¿½Ì¶ï¿½ <code>apachectl</code>ï¿½ï¿½
+    ï¿½ï¿½ë°¡ï¿½ï¿½ï¿½Ï´ï¿½. ï¿½ï¿½, <code>apachectl</code> ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ÕºÎºÐ¿ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>HTTPD</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>httpd</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ö´ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ <em>ï¿½×»ï¿½</em> ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <p><code>httpd</code>¸¦ ½ÇÇàÇÏ¸é ¸ÕÀú <a href="configuring.html">¼³Á¤ÆÄÀÏ</a> <code>httpd.conf</code>¸¦
-    Ã£¾Æ¼­ ÀÐ´Â´Ù. ÀÌ ÆÄÀÏÀÇ À§Ä¡´Â ÄÄÆÄÀÏ Áß¿¡ ÁöÁ¤ÇÏ³ª, ½ÇÇà½Ã
-    ´ÙÀ½°ú °°ÀÌ <code>-f</code> ¸í·ÉÇà ¿É¼ÇÀ¸·Î ÁöÁ¤ÇÒ ¼öµµ ÀÖ´Ù.</p>
+    <p><code>httpd</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ <a href="configuring.html">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</a> <code>httpd.conf</code>ï¿½ï¿½
+    Ã£ï¿½Æ¼ï¿½ ï¿½Ð´Â´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï³ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ <code>-f</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
 <div class="example"><p><code>/usr/local/apache2/bin/apachectl -f
       /usr/local/apache2/conf/httpd.conf</code></p></div>
 
-    <p>½ÃÀÛÇÏ´Â °úÁ¤¿¡¼­ ¹®Á¦°¡ ¾ø´Ù¸é, ¼­¹ö´Â ÅÍ¹Ì³Î¿¡¼­
-    ¶³¾îÁö°í ¸í·É ÇÁ·ÒÇÁÆ®°¡ °ÅÀÇ Áï½Ã ³ª¿À°ÔµÈ´Ù. ÀÌ´Â ¼­¹ö°¡
-    ½ÇÇàµÊÀ» ÀÇ¹ÌÇÑ´Ù. ºê¶ó¿ìÀú·Î ¼­¹ö¿¡ ¿¬°áÇÏ¿© <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code> µð·ºÅä¸®¿¡ ÀÖ´Â
-    Å×½ºÆ® ÆäÀÌÁö¿Í ±× ÆäÀÌÁö¿¡ ¸µÅ©µÈ (·ÎÄÃÄ«ÇÇ) ¼³¸í¼­¸¦ º¼
-    ¼ö ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ù¸ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Í¹Ì³Î¿ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ÔµÈ´ï¿½. ï¿½Ì´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ç¹ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code> ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½Ö´ï¿½
+    ï¿½×½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½Ä«ï¿½ï¿½) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+    ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="errors" id="errors">½ÃÀÛÁß ¿À·ù</a> <a title="Permanent link" href="#errors" class="permalink">&para;</a></h2>
+<h2><a name="errors" id="errors">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a> <a title="Permanent link" href="#errors" class="permalink">&para;</a></h2>
 
-    <p>¾ÆÆÄÄ¡°¡ ½ÃÀÛÇÏ´Â °úÁ¤Áß¿¡ ½É°¢ÇÑ ¹®Á¦°¡ ¹ß»ýÇÏ¸é,
-    Á¾·áÇÏ±â Àü¿¡ ¹®Á¦¸¦ ¾Ë¸®´Â ¹®±¸¸¦ ÄÜ¼ÖÀÌ³ª <code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code>¿¡ ¾´´Ù. °¡Àå ÈçÇÑ ¿À·ù¹® Áß
-    ÇÏ³ª´Â "<code>Unable to bind to Port ...</code>"ÀÌ´Ù.
-    ÀÌ ¸Þ¼¼Áö´Â º¸Åë ´ÙÀ½ µÎ °æ¿ì¿¡ ¹ß»ýÇÑ´Ù:</p>
+    <p>ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ß¿ï¿½ ï¿½É°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß»ï¿½ï¿½Ï¸ï¿½,
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ë¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ü¼ï¿½ï¿½Ì³ï¿½ <code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+    ï¿½Ï³ï¿½ï¿½ï¿½ "<code>Unable to bind to Port ...</code>"ï¿½Ì´ï¿½.
+    ï¿½ï¿½ ï¿½Þ¼ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ì¿¡ ï¿½ß»ï¿½ï¿½Ñ´ï¿½:</p>
 
     <ul>
-      <li>root »ç¿ëÀÚ·Î ·Î±×ÀÎÇÏÁö ¾Ê°í Æ¯±Ç Æ÷Æ®¿¡ ¼­¹ö¸¦
-      ½ÃÀÛÇÏ·Á ÇÑ °æ¿ì. È¤Àº</li>
+      <li>root ï¿½ï¿½ï¿½ï¿½Ú·ï¿½ ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê°ï¿½ Æ¯ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½. È¤ï¿½ï¿½</li>
 
-      <li>ÀÌ¹Ì ¾ÆÆÄÄ¡³ª ´Ù¸¥ À¥¼­¹ö°¡ »ç¿ëÁßÀÎ Æ÷Æ®¿¡
-      ¼­¹ö¸¦ ½ÃÀÛÇÏ·Á ÇÑ °æ¿ì.</li>
+      <li>ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½.</li>
     </ul>
 
-	<p>±âÅ¸ ¹®Á¦ÇØ°á ¹æ¹ýÀº ¾ÆÆÄÄ¡ <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a>¸¦
-    Âü°íÇÏ¶ó.</p>
+	<p>ï¿½ï¿½Å¸ ï¿½ï¿½ï¿½ï¿½ï¿½Ø°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="boot" id="boot">ºÎÆÃÇÒ¶§ ½ÃÀÛÇÏ±â</a> <a title="Permanent link" href="#boot" class="permalink">&para;</a></h2>
+<h2><a name="boot" id="boot">ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½</a> <a title="Permanent link" href="#boot" class="permalink">&para;</a></h2>
 
-    <p>½Ã½ºÅÛÀÌ Àç½ÃÀÛÇÑ ÈÄ¿¡µµ ¼­¹ö°¡ °è¼Ó ½ÇÇàµÇ±æ ¹Ù¶õ´Ù¸é,
-    ½Ã½ºÅÛ ½ÃÀÛÆÄÀÏ(º¸Åë <code>rc.local</code>ÀÌ³ª <code>rc.N</code>
-    µð·ºÅä¸®¿¡ ÀÖ´Â ÆÄÀÏ)¿¡ <code>apachectl</code>À» Ãß°¡ÇØ¾ß
-    ÇÑ´Ù. ÀÌ °æ¿ì ¾ÆÆÄÄ¡´Â root·Î ½ÃÀÛµÈ´Ù. ÀÌÀü¿¡ ¼­¹öÀÇ º¸¾ÈÀÌ³ª
-    Á¢±Ù Á¦ÇÑ(ÆÄÀÏ±ÇÇÑ)ÀÌ ¿Ã¹Ù·Î ¼³Á¤µÇ¾ú´ÂÁö È®ÀÎÇÏ¶ó.</p>
+    <p>ï¿½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ä¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç±ï¿½ ï¿½Ù¶ï¿½ï¿½Ù¸ï¿½,
+    ï¿½Ã½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ <code>rc.local</code>ï¿½Ì³ï¿½ <code>rc.N</code>
+    ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½)ï¿½ï¿½ <code>apachectl</code>ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ø¾ï¿½
+    ï¿½Ñ´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ rootï¿½ï¿½ ï¿½ï¿½ï¿½ÛµÈ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì³ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½)ï¿½ï¿½ ï¿½Ã¹Ù·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ï¶ï¿½.</p>
 
-    <p><code>apachectl</code>Àº Ç¥ÁØ SysV init ½ºÅ©¸³Æ®¿Í ºñ½ÁÇÏ°Ô
-    µ¿ÀÛÇÏµµ·Ï ¸¸µé¾îÁ³´Ù. ½ºÅ©¸³Æ®´Â ¾Æ±Ô¸ÕÆ®·Î <code>start</code>,
-    <code>restart</code>, <code>stop</code>À» ¹ÞÀ¸¸é °¢°¢ ÀûÀýÇÑ
-    ½Ã±×³ÎÀ» <code>httpd</code>¿¡ º¸³½´Ù. ±×·¡¼­ º¸ÅëÀº
-    <code>apachectl</code>À» ÀûÀýÇÑ init µð·ºÅä¸®·Î ¸µÅ©¸¦ °É¸éµÈ´Ù.
-    ±×·¯³ª »ç¿ëÇÏ´Â ½Ã½ºÅÛÀÇ Á¤È®ÇÑ ¿ä±¸»çÇ×À» È®ÀÎÇÏ¶ó.</p>
+    <p><code>apachectl</code>ï¿½ï¿½ Ç¥ï¿½ï¿½ SysV init ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ <code>start</code>,
+    <code>restart</code>, <code>stop</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ã±×³ï¿½ï¿½ï¿½ <code>httpd</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½. ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    <code>apachectl</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ init ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½ ï¿½É¸ï¿½È´ï¿½.
+    ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È®ï¿½ï¿½ ï¿½ä±¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ï¶ï¿½.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="info" id="info">Ãß°¡ Á¤º¸</a> <a title="Permanent link" href="#info" class="permalink">&para;</a></h2>
+<h2><a name="info" id="info">ï¿½ß°ï¿½ ï¿½ï¿½ï¿½ï¿½</a> <a title="Permanent link" href="#info" class="permalink">&para;</a></h2>
 
-    <p><a href="programs/httpd.html">httpd</a>¿Í <a href="programs/apachectl.html">apachectl</a>, ±âÅ¸ ¼­¹ö¿¡
-    Æ÷ÇÔµÈ Áö¿ø ÇÁ·Î±×·¥µéÀÇ ¸í·ÉÇà ¿É¼ÇÀº
-    <a href="programs/">¼­¹ö¿Í Áö¿ø ÇÁ·Î±×·¥</a> ÆäÀÌÁö¸¦
-    Âü°íÇÏ¶ó. ¶Ç ¾ÆÆÄÄ¡ ¹èÆ÷º»¿¡´Â ¸ðµç <a href="mod/">¸ðµâ</a>°ú
-    ±×µéÀÌ Á¦°øÇÏ´Â <a href="mod/directives.html">Áö½Ã¾î</a>¿¡
-    ´ëÇÑ ¹®¼­°¡ ÀÖ´Ù.</p>
+    <p><a href="programs/httpd.html">httpd</a>ï¿½ï¿½ <a href="programs/apachectl.html">apachectl</a>, ï¿½ï¿½Å¸ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½Ôµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½É¼ï¿½ï¿½ï¿½
+    <a href="programs/">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½</a> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ <a href="mod/">ï¿½ï¿½ï¿½</a>ï¿½ï¿½
+    ï¿½×µï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ <a href="mod/directives.html">ï¿½ï¿½ï¿½Ã¾ï¿½</a>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 </div></div>
 <div class="bottomlang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="./de/invoking.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="./de/invoking.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/invoking.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/invoking.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
 <a href="./fr/invoking.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
@@ -144,7 +144,7 @@
 </div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/invoking.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/invoking.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -159,8 +159,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/invoking.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">¸ðµâ</a> | <a href="./mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">¿ë¾î</a> | <a href="./sitemap.html">»çÀÌÆ®¸Ê</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">ï¿½ï¿½ï¿½</a> | <a href="./mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">ï¿½ï¿½ï¿½</a> | <a href="./sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

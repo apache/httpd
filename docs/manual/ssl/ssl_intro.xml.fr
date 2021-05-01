@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -334,8 +334,8 @@ dUHzICxBVC1lnHyYGjDuAMhe396lYAn8bCld1/L4NMGBCQ==
 	si quelqu'un publiait une clé en se faisant passer pour l'autorité, il
 	serait vite démasqué.</p>
 
-        <p>Quelques compagnies, comme <a href="http://www.thawte.com/"
-        >Thawte</a> et <a href="http://www.verisign.com/">VeriSign</a>,
+        <p>Quelques compagnies, comme <a href="https://www.thawte.com/"
+        >Thawte</a> et <a href="https://www.verisign.com/">VeriSign</a>,
 	se sont proclamées elles-mêmes Autorités de Certification. Ces
 	compagnies proposent les services suivant :</p>
 
@@ -668,54 +668,54 @@ l'Internet Engineering Task Force (IETF).</p>
 <dl>
 <dt><a id="AC96" name="AC96">[AC96]</a></dt>
 <dd>Bruce Schneier, <q>Applied Cryptography</q>, 2nd Edition, Wiley,
-1996. Voir <a href="http://www.counterpane.com/"
->http://www.counterpane.com/</a> pour diverses autres productions de Bruce
+1996. Voir <a href="https://www.counterpane.com/"
+>https://www.counterpane.com/</a> pour diverses autres productions de Bruce
 Schneier.</dd>
 
 <dt><a id="ASN1" name="ASN1">[ASN1]</a></dt>
 <dd>ITU-T Recommendation X.208, <q>Specification of Abstract Syntax Notation
 One (ASN.1)</q>, dernière mise à jour en 2008. Voir <a
-href="http://www.itu.int/ITU-T/asn1/">http://www.itu.int/ITU-T/asn1/</a>.
+href="https://www.itu.int/ITU-T/asn1/">https://www.itu.int/ITU-T/asn1/</a>.
 </dd>
 
 <dt><a id="X509" name="X509">[X509]</a></dt>
 <dd>ITU-T Recommendation X.509, <q>The Directory - Authentication
 Framework</q>. A titre de référence, voir <a
-href="http://en.wikipedia.org/wiki/X.509">http://en.wikipedia.org/wiki/X.509</a>.
+href="https://en.wikipedia.org/wiki/X.509">https://en.wikipedia.org/wiki/X.509</a>.
 </dd>
 
 <dt><a id="PKCS" name="PKCS">[PKCS]</a></dt>
 <dd><q>Public Key Cryptography Standards (PKCS)</q>,
 RSA Laboratories Technical Notes, Voir <a
-href="http://www.rsasecurity.com/rsalabs/pkcs/"
->http://www.rsasecurity.com/rsalabs/pkcs/</a>.</dd>
+href="https://www.rsasecurity.com/rsalabs/pkcs/"
+>https://www.rsasecurity.com/rsalabs/pkcs/</a>.</dd>
 
 <dt><a id="MIME" name="MIME">[MIME]</a></dt>
 <dd>N. Freed, N. Borenstein, <q>Multipurpose Internet Mail Extensions
 (MIME) Part One: Format of Internet Message Bodies</q>, RFC2045.
 Voir par exemple <a
-href="http://tools.ietf.org/html/rfc2045">http://tools.ietf.org/html/rfc2045</a>.</dd>
+href="https://tools.ietf.org/html/rfc2045">https://tools.ietf.org/html/rfc2045</a>.</dd>
 
 <dt><a id="SSL3" name="SSL3">[SSL3]</a></dt>
 <dd>Alan O. Freier, Philip Karlton, Paul C. Kocher, <q>The SSL Protocol
 Version 3.0</q>, 1996. Voir <a
-href="http://www.netscape.com/eng/ssl3/draft302.txt"
->http://www.netscape.com/eng/ssl3/draft302.txt</a>.</dd>
+href="https://www.netscape.com/eng/ssl3/draft302.txt"
+>https://www.netscape.com/eng/ssl3/draft302.txt</a>.</dd>
 
 <dt><a id="TLS1" name="TLS1">[TLS1]</a></dt>
 <dd>Tim Dierks, Christopher Allen, <q>The TLS Protocol Version 1.0</q>,
-1999. Voir <a href="http://ietf.org/rfc/rfc2246.txt"
->http://ietf.org/rfc/rfc2246.txt</a>.</dd>
+1999. Voir <a href="https://ietf.org/rfc/rfc2246.txt"
+>https://ietf.org/rfc/rfc2246.txt</a>.</dd>
 
 <dt><a id="TLS11" name="TLS11">[TLS11]</a></dt>
 <dd><q>Le protocole TLS Version 1.1</q>,
-2006. Voir <a href="http://tools.ietf.org/html/rfc4346"
->http://tools.ietf.org/html/rfc4346</a>.</dd>
+2006. Voir <a href="https://tools.ietf.org/html/rfc4346"
+>https://tools.ietf.org/html/rfc4346</a>.</dd>
 
 <dt><a id="TLS12" name="TLS12">[TLS12]</a></dt>
 <dd><q>Le protocole TLS Version 1.2</q>,
-2008. Voir <a href="http://tools.ietf.org/html/rfc5246"
->http://tools.ietf.org/html/rfc5246</a>.</dd>
+2008. Voir <a href="https://tools.ietf.org/html/rfc5246"
+>https://tools.ietf.org/html/rfc5246</a>.</dd>
 </dl>
 </section>
 <!-- /references -->

@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -39,7 +39,7 @@
     CERN users who can exploit this module.</p>
 
     <p>More information on the <a
-    href="http://www.w3.org/pub/WWW/Daemon/User/Config/General.html#MetaDir"
+    href="https://www.w3.org/pub/WWW/Daemon/User/Config/General.html#MetaDir"
     >CERN metafile semantics</a> is available.</p>
 </summary>
 

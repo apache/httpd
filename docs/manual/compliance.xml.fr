@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -61,7 +61,7 @@
 
     <p>Le protocole HTTP applique le <strong>principe de
     robustesse</strong> décrit dans la <a
-    href="http://tools.ietf.org/html/rfc1122">RFC1122</a>, et stipulant
+    href="https://tools.ietf.org/html/rfc1122">RFC1122</a>, et stipulant
     <strong>"Soyez libéral pour ce que vous acceptez, conservateur pour
     ce que vous envoyez"</strong>. Selon ce principe, les clients HTTP
     vont compenser en corrigeant les réponses incorrectes ou mal
@@ -154,7 +154,7 @@
     code d'erreur <code>412 Precondition Failed</code>. Vous trouverez
     tous les détails du traitement d'un en-tête <code>If-Match</code>
     dans la <a
-    href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.24">RFC2616
+    href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.24">RFC2616
     section 14.24</a>.</dd>
 
     <dt><code>If-None-Match</code></dt>
@@ -164,7 +164,7 @@
     <code>412 Precondition Failed</code> pour les autres méthodes. Vous trouverez
     tous les détails du traitement d'un en-tête
     <code>If-None-Match</code> dans la <a
-    href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.26">RFC2616
+    href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.26">RFC2616
     section 14.26</a>.</dd>
 
     <dt><code>If-Modified-Since</code></dt>
@@ -173,7 +173,7 @@
     de la réponse, le serveur doit renvoyer <code>304 Not Modified</code>. Vous trouverez
     tous les détails du traitement d'un en-tête
     <code>If-Modified-Since</code> dans la <a
-    href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.25">RFC2616
+    href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.25">RFC2616
     section 14.25</a>.</dd>
 
     <dt><code>If-Unmodified-Since</code></dt>
@@ -183,7 +183,7 @@
     renvoyer <code>412 Precondition Failed</code>. Vous trouverez
     tous les détails du traitement d'un en-tête
     <code>If-Unmodified-Since</code> dans la <a
-    href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.28">RFC2616
+    href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.28">RFC2616
     section 14.28</a>.</dd>
 
     <dt><code>If-Range</code></dt>
@@ -193,7 +193,7 @@
     renvoyer <code>206 Partial Response</code>. Vous trouverez
     tous les détails du traitement d'un en-tête <code>If-Range</code>
     dans la <a
-    href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.27">RFC2616
+    href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.27">RFC2616
     section 14.27</a>.</dd>
 
     </dl>
@@ -225,7 +225,7 @@
 
     <p>De nombreuses méthodes pour déterminer la taille d'un
     corps de réponse sont décrites dans la <a
-    href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.4">RFC2616
+    href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.4">RFC2616
     section 4.4 Message Length</a>.</p>
 
     <p>Lorsque l'en-tête <code>Content-Length</code> est présent, la
@@ -283,7 +283,7 @@
 
     <p>Le type de media du corps est placé dans un en-tête
     <code>Content-Type</code> dont le format est décrit en détail dans
-    la <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.7">
+    la <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.7">
     RFC2616 section 3.7 Media Types</a>.</p>
 
     <p>Un en-tête <code>Content-Type</code> dont la syntaxe est valide
@@ -328,7 +328,7 @@
 
     <p>De nombreuses manières pour déterminer la taille d'un
     corps de réponse sont décrites dans la <a
-    href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.4">RFC2616
+    href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.4">RFC2616
     section 4.4 Message Length</a>.</p>
 
     <p>Pour indiquer la fin de la réponse au client sans que ce dernier
@@ -403,7 +403,7 @@
 
     <p>Vous trouverez tous les détails à propos du calcul d'une durée de
     fraîcheur dans la <a
-    href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html#sec13.2">RFC2616
+    href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html#sec13.2">RFC2616
     section 13.2 Expiration Model</a>.</p>
 
     <p>Pendant la durée de fraîcheur, un cache n'a pas besoin de
@@ -445,10 +445,10 @@
 
     <p>Vous trouverez tous les détails à propos de la manière dont un
     contenu peut être déclaré comme non cachable dans la <a
-    href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.1">RFC2616
+    href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.1">RFC2616
     section 14.9.1 What is Cacheable</a>, et au sein de la définition de
     l'en-tête <code>Pragma</code> dans la <a
-    href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.32">RFC2616
+    href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.32">RFC2616
     section 14.32 Pragma</a>.</p>
 
     <p>Plus précisément, si une combinaison des en-têtes suivants existe
@@ -488,10 +488,10 @@
 
     <p>Vous trouverez une description complète de l'en-tête
     <code>ETag</code> dans la <a
-    href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.19">RFC2616
+    href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.19">RFC2616
     section 14.19 Etag</a>, et de l'en-tête <code>Last-Modified</code>
     dans la <a
-    href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.29">RFC2616
+    href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.29">RFC2616
     section 14.29 Last-Modified</a>.</p>
 
     <p>La vérification est effectuée non seulement en ce qui concerne la
@@ -525,7 +525,7 @@
     l'administrateur.</p>
 
     <p>L'en-tête <code>Vary</code> est décrit en détails dans la <a
-    href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.44">RFC2616
+    href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.44">RFC2616
     section 14.44 Vary</a>.</p>
 
     <p>Certaines en-têtes définis par les clients, comme

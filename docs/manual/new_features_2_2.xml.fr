@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -86,11 +86,11 @@
           Le nouveau module <module>mod_proxy_ajp</module> ajoute le
 	  support pour le
           <code>Protocole JServ de Apache version 1.3</code> qu'utilise
-          <a href="http://tomcat.apache.org/">Apache Tomcat</a>.</dd>
+          <a href="https://tomcat.apache.org/">Apache Tomcat</a>.</dd>
 
       <dt>Mise &agrave; jour de la biblioth&egrave;que des expressions rationnelles</dt>
       <dd>La version 5.0 de la
-          <a href="http://www.pcre.org/">Perl Compatible Regular Expression
+          <a href="https://www.pcre.org/">Perl Compatible Regular Expression
           Library</a> (PCRE) est maintenant disponible.
 	  <program>httpd</program> peut &ecirc;tre configur&eacute; pour utiliser une
 	  PCRE choisie en passant l'option <code>--with-pcre</code> au
@@ -169,7 +169,7 @@
 
       <dt><module>mod_ssl</module></dt>
       <!-- Need Info on SSLEngine Support? -->
-      <dd>Le support de la <a href="http://www.ietf.org/rfc/rfc2817.txt"
+      <dd>Le support de la <a href="https://www.ietf.org/rfc/rfc2817.txt"
       	>RFC 2817</a> a &eacute;t&eacute; ajout&eacute;, ce qui permet de passer d'une
 	connexion en clair au chiffrement TLS.</dd>
 
@@ -206,7 +206,7 @@
       <dd>Apache 2.2 utilise l'API APR 1.0.  Toutes les fonctions et
       symboles obsol&egrave;tes ont &eacute;t&eacute; supprim&eacute;s du code de <code>APR</code> et
           <code>APR-Util</code>. Pour plus de d&eacute;tails, consultez le
-          <a href="http://apr.apache.org/">site web d'APR</a>.</dd>
+          <a href="https://apr.apache.org/">site web d'APR</a>.</dd>
 
       <dt>Authn/Authz</dt>
       <dd>Les modules d'authentification et d'autorisation int&eacute;gr&eacute;s ont

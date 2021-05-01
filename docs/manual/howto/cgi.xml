@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -116,7 +116,7 @@ ScriptAlias "/cgi-bin/" "/usr/local/apache2/cgi-bin/"
       treated as a CGI program.</p>
 
       <p>For example, if the URL
-      <code>http://www.example.com/cgi-bin/test.pl</code>
+      <code>https://www.example.com/cgi-bin/test.pl</code>
       is requested, Apache will attempt to execute the file
       <code>/usr/local/apache2/cgi-bin/test.pl</code>
       and return the output. Of course, the file will have to
@@ -265,7 +265,7 @@ print "Hello, World.";
       address</p>
 
       <example>
-        http://www.example.com/cgi-bin/first.pl
+        https://www.example.com/cgi-bin/first.pl
       </example>
 
       <p>or wherever you put your file, you will see the one line
@@ -376,7 +376,7 @@ print "Hello, World.";
 
       <p>When you miss HTTP headers from the environment, make
       sure they are formatted according to
-      <a href="http://tools.ietf.org/html/rfc2616">RFC 2616</a>,
+      <a href="https://tools.ietf.org/html/rfc2616">RFC 2616</a>,
       section 4.2: Header names must start with a letter,
       followed only by letters, numbers or hyphen. Any header
       violating this rule will be dropped silently.</p>
@@ -479,7 +479,7 @@ print "Hello, World.";
       <p>These variables are available to the CGI programmer, and
       are half of the story of the client-server communication. The
       complete list of required variables is at
-      <a href="http://www.ietf.org/rfc/rfc3875">Common Gateway
+      <a href="https://www.ietf.org/rfc/rfc3875">Common Gateway
       Interface RFC</a>.</p>
 
       <p>This simple Perl CGI program will display all of the
@@ -557,7 +557,7 @@ foreach my $key (keys %ENV) {
     This leads to fewer errors, and faster development.</p>
 
     <p>If you're writing CGI programs in Perl, modules are
-    available on <a href="http://www.cpan.org/">CPAN</a>. The most
+    available on <a href="https://www.cpan.org/">CPAN</a>. The most
     popular module for this purpose is <code>CGI.pm</code>. You might
     also consider <code>CGI::Lite</code>, which implements a minimal
     set of functionality, which is all you need in most programs.</p>
@@ -572,7 +572,7 @@ foreach my $key (keys %ENV) {
     <title>For more information</title>
 
     <p>The current CGI specification is available in the
-    <a href="http://www.ietf.org/rfc/rfc3875">Common Gateway
+    <a href="https://www.ietf.org/rfc/rfc3875">Common Gateway
     Interface RFC</a>.</p>
 
     <p>When you post a question about a CGI problem that you're

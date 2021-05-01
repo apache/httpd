@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -16,12 +16,12 @@
 
 <link href="./images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/quickreference.html">ディレクティブ</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p>
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/quickreference.html">ディレクティブ</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p>
 <p class="apache">Apache HTTP サーバ バージョン 2.5</p>
 <img alt="" src="./images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.5</a></div><div id="page-content"><div id="preamble"><h1>ログファイル</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="https://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.5</a></div><div id="page-content"><div id="preamble"><h1>ログファイル</h1>
 <div class="toplang">
 <p><span>翻訳済み言語: </span><a href="./en/logs.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/logs.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
@@ -143,7 +143,7 @@
     始まりに過ぎません。次の段階は有用な統計を取るためにこの情報を
     解析することです。一般的なログ解析はこの文書の範囲外で、
     ウェブサーバ自身の仕事というわけでもありません。この話や、
-    ログ解析を行なうアプリケーションの情報を得るには、<a href="http://dmoz.org/Computers/Software/Internet/Site_Management/Log_Analysis/">
+    ログ解析を行なうアプリケーションの情報を得るには、<a href="https://dmoz.org/Computers/Software/Internet/Site_Management/Log_Analysis/">
     Open Directory</a>
     を調べてください。</p>
 
@@ -277,7 +277,7 @@
 	リダイレクション (3 で始まるコード) であったか、クライアントによる
 	エラー (4 で始まるコード) であったか、サーバのエラー (5 で始まるコード)
 	であったか、を表すので、非常に大切です。ステータスコードの
-	完全なリストは <a href="http://www.w3.org/Protocols/rfc2616/rfc2616.txt">HTTP
+	完全なリストは <a href="https://www.w3.org/Protocols/rfc2616/rfc2616.txt">HTTP
 	規格</a> (RFC2616 第 10 節) にあります。</dd>
 
 	<dt><code>2326</code> (<code>%b</code>)</dt>
@@ -312,14 +312,14 @@
       <div class="example"><p><code>
         127.0.0.1 - frank [10/Oct/2000:13:55:36 -0700] "GET
         /apache_pb.gif HTTP/1.0" 200 2326
-        "http://www.example.com/start.html" "Mozilla/4.08 [en]
+        "https://www.example.com/start.html" "Mozilla/4.08 [en]
         (Win98; I ;Nav)"
       </code></p></div>
 
       <p>追加のエントリは:</p>
 
       <dl>
-	<dt><code>"http://www.example.com/start.html"</code>
+	<dt><code>"https://www.example.com/start.html"</code>
 	(<code>\"%{Referer}i\"</code>)</dt>
 
 	<dd>"Referer" (意図的な綴り間違い) HTTP リクエストヘッダです。
@@ -462,7 +462,7 @@
     使うことができます。</p>
 
     <p>似ているけれど、よりずっと柔軟な
-    <a href="http://www.cronolog.org/">cronolog</a> というログ交替用の
+    <a href="https://www.cronolog.org/">cronolog</a> というログ交替用の
     プログラムが外部のサイトにあります。</p>
 
     <p>条件付きロギングと同様、パイプ経由のログは非常に強力な
@@ -581,7 +581,7 @@
 </div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">コメント</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/logs.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/logs.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -596,8 +596,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/logs.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />この文書は <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
-<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/quickreference.html">ディレクティブ</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/quickreference.html">ディレクティブ</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,20 +23,20 @@
 <manualpage metafile="logresolve.xml.meta">
 <parentdocument href="./">Programs</parentdocument>
 
-  <title>logresolve - ¾ÆÆÄÄ¡ ·Î±×ÆÄÀÏÀÇ IP-ÁÖ¼Ò¸¦ È£½ºÆ®¸íÀ¸·Î
-  º¯È¯ÇÑ´Ù</title>
+  <title>logresolve - ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ IP-ï¿½Ö¼Ò¸ï¿½ È£ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  ï¿½ï¿½È¯ï¿½Ñ´ï¿½</title>
 
 <summary>
-     <p><code>logresolve</code>´Â ¾ÆÆÄÄ¡ Á¢±Ù·Î±×ÆÄÀÏ¿¡ ÀÖ´Â
-     IP-ÁÖ¼Ò¸¦ Ã£´Â ÈÄÃ³¸® ÇÁ·Î±×·¥ÀÌ´Ù. ³×ÀÓ¼­¹öÀÇ ºÎÇÏ¸¦
-     ÃÖ¼ÒÈ­ÇÏ±âÀ§ÇØ logresolve´Â ³»ºÎÀûÀ¸·Î ÇØ½¬Å×ÀÌºí Ä³½¬¸¦
-     »ç¿ëÇÑ´Ù. Áï, IP ÁÖ¼Ò°¡ ·Î±×ÆÄÀÏ¿¡ Ã³À½ ³ª¿Ã¶§¸¸ Ã£´Â´Ù.</p>
+     <p><code>logresolve</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½Ù·Î±ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½Ö´ï¿½
+     IP-ï¿½Ö¼Ò¸ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½Ã³ï¿½ï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½Ì´ï¿½. ï¿½ï¿½ï¿½Ó¼ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¸ï¿½
+     ï¿½Ö¼ï¿½È­ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ logresolveï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ø½ï¿½ï¿½ï¿½ï¿½Ìºï¿½ Ä³ï¿½ï¿½ï¿½ï¿½
+     ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½, IP ï¿½Ö¼Ò°ï¿½ ï¿½Î±ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ Ã³ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¶ï¿½ï¿½ï¿½ Ã£ï¿½Â´ï¿½.</p>
 
-     <p>Ç¥ÁØÀÔ·ÂÀ¸·Î ¾ÆÆÄÄ¡ ·Î±×ÆÄÀÏÀ» ÀÐ´Â´Ù. °¢ ÁÙÀÇ Ã¹¹øÂ°
-     Ç×¸ñÀÌ IP ÁÖ¼ÒÀÌ°í, ³ª¸ÓÁö ºÎºÐ°ú °ø¹éÀ¸·Î ±¸ºÐµÇ¾ß ÇÑ´Ù.</p>
+     <p>Ç¥ï¿½ï¿½ï¿½Ô·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ð´Â´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã¹ï¿½ï¿½Â°
+     ï¿½×¸ï¿½ï¿½ï¿½ IP ï¿½Ö¼ï¿½ï¿½Ì°ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ÎºÐ°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ÐµÇ¾ï¿½ ï¿½Ñ´ï¿½.</p>
 </summary>
 
-<section id="synopsis"><title>°³¿ä</title>
+<section id="synopsis"><title>ï¿½ï¿½ï¿½ï¿½</title>
 
      <p><code><strong>logresolve</strong> [ -<strong>s</strong>
      <var>filename</var> ] [ -<strong>c</strong> ] &lt;
@@ -44,19 +44,19 @@
 </section>
 
 
-<section id="options"><title>¿É¼Ç</title>
+<section id="options"><title>ï¿½É¼ï¿½</title>
 
 <dl>
 
 <dt><code>-s <var>filename</var></code></dt>
 
-<dd>Åë°è¸¦ ±â·ÏÇÒ ÆÄÀÏ¸íÀ» ÁöÁ¤ÇÑ´Ù.</dd>
+<dd>ï¿½ï¿½è¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
 <dt><code>-c</code></dt>
 
-<dd><code>logresolve</code>°¡ ¸î°¡Áö DNS °Ë»ç¸¦ ÇÏµµ·Ï ÇÑ´Ù:
-IP ÁÖ¼Ò·Î È£½ºÆ®¸íÀ» Ã£ÀºÈÄ ±× È£½ºÆ®¸íÀ¸·Î ´Ù½Ã IP ÁÖ¼ÒµéÀ»
-Ã£¾Æ¼­ ±×Áß ÇÏ³ª°¡ ¿ø·¡ ÁÖ¼Ò¿Í ÀÏÄ¡ÇÏ´ÂÁö °Ë»çÇÑ´Ù.</dd>
+<dd><code>logresolve</code>ï¿½ï¿½ ï¿½î°¡ï¿½ï¿½ DNS ï¿½Ë»ç¸¦ ï¿½Ïµï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½:
+IP ï¿½Ö¼Ò·ï¿½ È£ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ È£ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù½ï¿½ IP ï¿½Ö¼Òµï¿½ï¿½ï¿½
+Ã£ï¿½Æ¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ï³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼Ò¿ï¿½ ï¿½ï¿½Ä¡ï¿½Ï´ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½ï¿½Ñ´ï¿½.</dd>
 
 </dl>
 </section>

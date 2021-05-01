@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -130,7 +130,7 @@
 
             <dt>Mise &#224; jour de la Biblioth&#232;que d'Expressions Rationnelles</dt>
 
-            <dd>Apache httpd 2.0 contient la <a href="http://www.pcre.org/">biblioth&#232;que 
+            <dd>Apache httpd 2.0 contient la <a href="https://www.pcre.org/">biblioth&#232;que 
             d'expressions rationnelles compatible Perl </a>(Perl Compatible Regular 
             Expression Library - PCRE). Toutes les expressions rationnelles sont dont
             g&#233;r&#233;es avec la syntaxe de Perl 5, plus puissante.</dd>

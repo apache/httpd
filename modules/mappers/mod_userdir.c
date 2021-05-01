@@ -5,7 +5,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -31,14 +31,14 @@
  * UserDir /usr/web         -> /usr/web/bar/one/two.html
  * UserDir /home/ * /www     -> /home/bar/www/one/two.html
  *  NOTE: theses ^ ^ space only added allow it to work in a comment, ignore
- * UserDir http://x/users   -> (302) http://x/users/bar/one/two.html
- * UserDir http://x/ * /y     -> (302) http://x/bar/y/one/two.html
+ * UserDir https://x/users   -> (302) https://x/users/bar/one/two.html
+ * UserDir https://x/ * /y     -> (302) https://x/bar/y/one/two.html
  *  NOTE: here also ^ ^
  *
  * In addition, you can use multiple entries, to specify alternate
  * user directories (a la Directory Index). For example:
  *
- * UserDir public_html /usr/web http://www.xyz.com/users
+ * UserDir public_html /usr/web https://www.xyz.com/users
  *
  * Modified by Ken Coar to provide for the following:
  *

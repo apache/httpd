@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -17,12 +17,12 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache Module mod_userdir</h1>
 <div class="toplang">
@@ -47,7 +47,7 @@ with web pages involving dynamic content and authentication and when
 your users don't necessarily trust each other.</div>
 
 <p>This module allows user-specific directories to be accessed using the
-<code>http://example.com/~user/</code> syntax.</p>
+<code>https://example.com/~user/</code> syntax.</p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
@@ -104,7 +104,7 @@ tutorial</a></li>
     <code class="directive">Userdir</code> directive, the argument is treated as a
     filename pattern, and is used to turn the name into a directory
     specification. A request for
-    <code>http://www.example.com/~bob/one/two.html</code> will be
+    <code>https://www.example.com/~bob/one/two.html</code> will be
     translated to:</p>
 
     <table>
@@ -123,12 +123,12 @@ tutorial</a></li>
     <table>
       <tr><th>UserDir directive used</th>
           <th>Translated path</th></tr>
-      <tr><td>UserDir http://www.example.com/users</td>
-          <td>http://www.example.com/users/bob/one/two.html</td></tr>
-      <tr><td>UserDir http://www.example.com/*/usr</td>
-          <td>http://www.example.com/bob/usr/one/two.html</td></tr>
-      <tr><td>UserDir http://www.example.com/~*/</td>
-          <td>http://www.example.com/~bob/one/two.html</td></tr>
+      <tr><td>UserDir https://www.example.com/users</td>
+          <td>https://www.example.com/users/bob/one/two.html</td></tr>
+      <tr><td>UserDir https://www.example.com/*/usr</td>
+          <td>https://www.example.com/bob/usr/one/two.html</td></tr>
+      <tr><td>UserDir https://www.example.com/~*/</td>
+          <td>https://www.example.com/~bob/one/two.html</td></tr>
     </table>
 
     <div class="note">
@@ -158,14 +158,14 @@ UserDir enabled user1 user2 user3</pre>
     <p>It is also possible to specify alternative user directories.
     If you use a command like:</p>
 
-    <pre class="prettyprint lang-config">UserDir "public_html" "/usr/web" "http://www.example.com/"</pre>
+    <pre class="prettyprint lang-config">UserDir "public_html" "/usr/web" "https://www.example.com/"</pre>
 
 
     <p>With a request for
-    <code>http://www.example.com/~bob/one/two.html</code>, will try to
+    <code>https://www.example.com/~bob/one/two.html</code>, will try to
     find the page at <code>~bob/public_html/one/two.html</code> first, then
     <code>/usr/web/bob/one/two.html</code>, and finally it will send a
-    redirect to <code>http://www.example.com/bob/one/two.html</code>.</p>
+    redirect to <code>https://www.example.com/bob/one/two.html</code>.</p>
 
     <p>If you add a redirect, it must be the last alternative in the list.
     Apache httpd cannot determine if the redirect succeeded or not, so if you have
@@ -199,7 +199,7 @@ UserDir enabled user1 user2 user3</pre>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_userdir.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/mod/mod_userdir.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -214,8 +214,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_userdir.ht
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

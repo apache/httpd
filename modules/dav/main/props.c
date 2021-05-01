@@ -5,7 +5,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -62,7 +62,7 @@
 **   that are in use by the properties in the given propdb. Each entry
 **   in the array is a simple URI.
 **
-**   For example: http://www.foo.bar/standards/props/
+**   For example: https://www.foo.bar/standards/props/
 **
 **   The prefix used for the property is stripped and the URI for it
 **   is entered into the namespace table. Also, any namespaces used
@@ -1196,7 +1196,7 @@ DAV_DECLARE_NONSTD(void) dav_prop_exec(dav_prop_ctx *ctx)
             ** Delete the property. Ignore errors -- the property is there, or
             ** we are deleting it for a second time.
             **
-            ** http://tools.ietf.org/html/rfc4918#section-14.23 says
+            ** https://tools.ietf.org/html/rfc4918#section-14.23 says
             ** "Specifying the removal of a property that does not exist is
             ** not an error"
             */

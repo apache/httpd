@@ -5,7 +5,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -37,7 +37,7 @@
  * usernames in as well; this can be is convenient as a single return
  * in broken GUIs like W95 is often given by the user. The Default is off.
  *
- * Dirk.vanGulik@jrc.it; http://ewse.ceo.org; http://me-www.jrc.it/~dirkx
+ * Dirk.vanGulik@jrc.it; https://ewse.ceo.org; https://me-www.jrc.it/~dirkx
  *
  */
 

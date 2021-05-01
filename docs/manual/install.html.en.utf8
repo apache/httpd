@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -16,12 +16,12 @@
 
 <link href="./images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="./images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>Compiling and Installing</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>Compiling and Installing</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="./de/install.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/install.html" title="English">&nbsp;en&nbsp;</a> |
@@ -94,7 +94,7 @@ sudo service apache2 start</pre>
       <tr>
         <td><a href="#download">Download</a></td>
 
-        <td>Download the latest release from <a href="http://httpd.apache.org/download.cgi#apache24">http://httpd.apache.org/download.cgi</a>
+        <td>Download the latest release from <a href="https://httpd.apache.org/download.cgi#apache24">https://httpd.apache.org/download.cgi</a>
         </td>
       </tr>
 
@@ -152,7 +152,7 @@ sudo service apache2 start</pre>
     </dl>
 
     <div class="warning">Don't see your favorite platform mentioned
-    here? <a href="http://httpd.apache.org/docs-project/">Come help us
+    here? <a href="https://httpd.apache.org/docs-project/">Come help us
     improve this doc.</a></div>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -166,7 +166,7 @@ sudo service apache2 start</pre>
       <dd>Make sure you have APR and APR-Util already installed on
       your system. If you don't, or prefer to not use the system-provided
       versions, download the latest versions of both APR and APR-Util
-      from <a href="http://apr.apache.org/">Apache APR</a>, unpack
+      from <a href="https://apr.apache.org/">Apache APR</a>, unpack
       them into <code>/httpd_source_tree_root/srclib/apr</code> and <code>/httpd_source_tree_root/srclib/apr-util</code>
       (be sure the directory names do not have version numbers; for example,
       the APR distribution must be under /httpd_source_tree_root/srclib/apr/) and use
@@ -177,7 +177,7 @@ sudo service apache2 start</pre>
 
       <dt>Perl-Compatible Regular Expressions Library (PCRE)</dt>
       <dd>This library is required but not longer bundled with httpd.
-      Download the source code from <a href="http://www.pcre.org/">http://www.pcre.org</a>,
+      Download the source code from <a href="https://www.pcre.org/">https://www.pcre.org</a>,
       or install a Port or Package.  If your build system can't find
       the pcre-config script installed by the PCRE build, point to it
       using the <code>--with-pcre</code> parameter.  On some platforms,
@@ -194,8 +194,8 @@ sudo service apache2 start</pre>
       the size of the web site or sites that you have on the server.</dd>
 
       <dt>ANSI-C Compiler and Build System</dt>
-      <dd>Make sure you have an ANSI-C compiler installed. The <a href="http://gcc.gnu.org/">GNU C
-      compiler (GCC)</a> from the <a href="http://www.gnu.org/">Free Software Foundation (FSF)</a>
+      <dd>Make sure you have an ANSI-C compiler installed. The <a href="https://gcc.gnu.org/">GNU C
+      compiler (GCC)</a> from the <a href="https://www.gnu.org/">Free Software Foundation (FSF)</a>
       is recommended. If you don't have GCC
       then at least make sure your vendor's compiler is ANSI
       compliant. In addition, your <code>PATH</code> must contain
@@ -207,11 +207,11 @@ sudo service apache2 start</pre>
       synchronization facility on your system. Usually the
       <code>ntpdate</code> or <code>xntpd</code> programs are used for
       this purpose which are based on the Network Time Protocol (NTP).
-      See the <a href="http://www.ntp.org">NTP
+      See the <a href="https://www.ntp.org">NTP
       homepage</a> for more details about NTP software and public
       time servers.</dd>
 
-      <dt><a href="http://www.perl.org/">Perl 5</a>
+      <dt><a href="https://www.perl.org/">Perl 5</a>
       [OPTIONAL]</dt>
       <dd>For some of the support scripts like <code class="program"><a href="./programs/apxs.html">apxs</a></code> or <code class="program"><a href="./programs/dbmmanage.html">dbmmanage</a></code> (which are
       written in Perl) the Perl 5 interpreter is required (versions
@@ -224,7 +224,7 @@ sudo service apache2 start</pre>
 <div class="section">
 <h2><a name="download" id="download">Download</a> <a title="Permanent link" href="#download" class="permalink">&para;</a></h2>
 
-    <p>The Apache HTTP Server can be downloaded from the <a href="http://httpd.apache.org/download.cgi">Apache HTTP Server
+    <p>The Apache HTTP Server can be downloaded from the <a href="https://httpd.apache.org/download.cgi">Apache HTTP Server
     download site</a>, which lists several mirrors.  Most users of
     Apache on unix-like systems will be better off downloading and
     compiling a source version.  The build process (described below) is
@@ -236,8 +236,8 @@ sudo service apache2 start</pre>
     <p>After downloading, it is important to verify that you have a
     complete and unmodified version of the Apache HTTP Server. This
     can be accomplished by testing the downloaded tarball against the
-    PGP signature.  Details on how to do this are available on the <a href="http://httpd.apache.org/download.cgi#verify">download
-    page</a> and an extended example is available describing the <a href="http://httpd.apache.org/dev/verification.html">use of
+    PGP signature.  Details on how to do this are available on the <a href="https://httpd.apache.org/download.cgi#verify">download
+    page</a> and an extended example is available describing the <a href="https://httpd.apache.org/dev/verification.html">use of
     PGP</a>.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -365,7 +365,7 @@ $ tar xvf httpd-<em>NN</em>.tar
 <div class="example"><p><code>$ vi <em>PREFIX</em>/conf/httpd.conf</code></p></div>
 
     <p>Have a look at the Apache manual under
-    <code><em>PREFIX</em>/docs/manual/</code> or consult <a href="http://httpd.apache.org/docs/trunk/">http://httpd.apache.org/docs/trunk/</a> for the most recent
+    <code><em>PREFIX</em>/docs/manual/</code> or consult <a href="https://httpd.apache.org/docs/trunk/">https://httpd.apache.org/docs/trunk/</a> for the most recent
     version of this manual and a complete reference of available <a href="mod/directives.html">configuration directives</a>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -377,7 +377,7 @@ $ tar xvf httpd-<em>NN</em>.tar
 <div class="example"><p><code>$ <em>PREFIX</em>/bin/apachectl -k start</code></p></div>
 
     <p>You should then be able to request your first document
-    via the URL <code>http://localhost/</code>. The web page you see is located
+    via the URL <code>https://localhost/</code>. The web page you see is located
     under the <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code>,
     which will usually be <code><em>PREFIX</em>/htdocs/</code>.
     Then <a href="stopping.html">stop</a> the server again by
@@ -457,7 +457,7 @@ $ tar xvf httpd-<em>NN</em>.tar
     unfortunate, this situation is not likely to change any time
     soon.</p>
 
-    <p>A <a href="http://wiki.apache.org/httpd/DistrosDefaultLayout">description
+    <p>A <a href="https://wiki.apache.org/httpd/DistrosDefaultLayout">description
     of these third-party distributions</a> is maintained in the HTTP
     Server wiki, and should reflect the current state of these
     third-party distributions. However, you will need to familiarize
@@ -476,7 +476,7 @@ $ tar xvf httpd-<em>NN</em>.tar
 </div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/install.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/install.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -491,8 +491,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/install.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

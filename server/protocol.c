@@ -5,7 +5,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -612,8 +612,8 @@ AP_CORE_DECLARE(void) ap_parse_uri(request_rec *r, const char *uri)
 
     r->unparsed_uri = apr_pstrdup(r->pool, uri);
 
-    /* http://issues.apache.org/bugzilla/show_bug.cgi?id=31875
-     * http://issues.apache.org/bugzilla/show_bug.cgi?id=28450
+    /* https://issues.apache.org/bugzilla/show_bug.cgi?id=31875
+     * https://issues.apache.org/bugzilla/show_bug.cgi?id=28450
      *
      * This is not in fact a URI, it's a path.  That matters in the
      * case of a leading double-slash.  We need to resolve the issue
@@ -652,7 +652,7 @@ AP_CORE_DECLARE(void) ap_parse_uri(request_rec *r, const char *uri)
 
 #if defined(OS2) || defined(WIN32)
         /* Handle path translations for OS/2 and plug security hole.
-         * This will prevent "http://www.wherever.com/..\..\/" from
+         * This will prevent "https://www.wherever.com/..\..\/" from
          * returning a directory for the root drive.
          */
         {

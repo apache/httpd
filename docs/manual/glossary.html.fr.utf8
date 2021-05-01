@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -16,12 +16,12 @@
 
 <link href="./images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page" class="no-sidebar"><div id="page-header">
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
 <img alt="" src="./images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>Glossaire</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>Glossaire</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="./de/glossary.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/glossary.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
@@ -88,7 +88,7 @@
     <dd>Un jeu de bibliothèques qui fournit la plupart des interfaces de base
       entre le serveur et le système d'exploitation.  APR est développé
       parallèlement au serveur HTTP Apache comme projet indépendant.<br />
-      Voir : <a href="http://apr.apache.org/">Apache Portable Runtime
+      Voir : <a href="https://apr.apache.org/">Apache Portable Runtime
       Project</a>
     </dd>
 
@@ -248,9 +248,9 @@
       raisons historiques, la variable &amp; peut être utilisée en tant
       qu'alias de $0 dans certains cas, mais ceci n'est plus possible
       depuis la version 2.3.6. Apache utilise les Expressions
-      Rationnelles Compatibles avec Perl fournies par la librairie <a href="http://www.pcre.org/">PCRE</a>. Vous trouverez plus
+      Rationnelles Compatibles avec Perl fournies par la librairie <a href="https://www.pcre.org/">PCRE</a>. Vous trouverez plus
       d'information à propos de la syntaxe des expressions rationnelles
-      PCRE sur ce site, ou dans le <a href="http://en.wikipedia.org/wiki/PCRE">Wikipedia de la PCRE</a>.
+      PCRE sur ce site, ou dans le <a href="https://en.wikipedia.org/wiki/PCRE">Wikipedia de la PCRE</a>.
   </dd>
 
     <dt><a name="configurationfile" id="configurationfile">
@@ -335,7 +335,7 @@
     (Uniform Resource Identifier)</a>
     <a name="URI" id="URI">(URI)</a></dt>
   <dd>Une chaîne de caractères compacte servant à identifier une ressource
-  abstraite ou physique.  Elle est formellement définie par la <a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>.  Les URIs
+  abstraite ou physique.  Elle est formellement définie par la <a href="https://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>.  Les URIs
       utilisées sur le world-wide web sont souvent appelées <a class="glossarylink" href="./glossary.html#url" title="voir glossaire">URLs</a>.
   </dd>
 
@@ -357,7 +357,7 @@
     Cette fonctionnalité a été ajoutée
     à SSL lorsque sont apparues les extensions TLS, RFC 3546.<br />
       Voir <a href="ssl/ssl_faq.html">la FAQ SSL</a>
-      et <a href="http://www.ietf.org/rfc/rfc3546.txt">la RFC 3546</a>
+      et <a href="https://www.ietf.org/rfc/rfc3546.txt">la RFC 3546</a>
     </dd>
 
 
@@ -368,7 +368,7 @@ Interface commune avec les programmes externes
 	 <a name="cgi" id="cgi">(CGI)</a></dt>
     <dd>La définition standard d'une interface entre un serveur web et un
     programme externe pour permettre à ce dernier de traiter des requêtes.
-     Il existe une <a href="http://www.ietf.org/rfc/rfc3875">RFC
+     Il existe une <a href="https://www.ietf.org/rfc/rfc3875">RFC
      informationnelle</a> qui en couvre les spécificités.<br />
       Voir : <a href="howto/cgi.html">Contenu dynamique avec CGI</a>
     </dd>
@@ -386,7 +386,7 @@ Localisation de Ressource Uniformisée
     <code>http</code> ou
     <code>https</code>, un nom d'hôte, et un chemin.  Une URL pour cette page
     pourrait être
-    <code>http://httpd.apache.org/docs/trunk/glossary.html</code>.
+    <code>https://httpd.apache.org/docs/trunk/glossary.html</code>.
   </dd>
 
 
@@ -476,7 +476,7 @@ Localisation de Ressource Uniformisée
 
 <dt><a name="openssl" id="openssl">OpenSSL</a></dt>
     <dd>L'ensemble d'outils Open Source pour SSL/TLS<br />
-      Voir <a href="http://www.openssl.org/">http://www.openssl.org/</a>#
+      Voir <a href="https://www.openssl.org/">https://www.openssl.org/</a>#
     </dd>
 
 <dt><a name="apacheextensiontool" id="apacheextensiontool">
@@ -501,7 +501,7 @@ Localisation de Ressource Uniformisée
     <dd>Le protocole de transmission standard utilisé sur le World Wide Web.
     Apache implémente la version 1.1 du protocole, référencée comme HTTP/1.1 et
       définie par la
-      <a href="http://ietf.org/rfc/rfc2616.txt">RFC 2616</a>.
+      <a href="https://ietf.org/rfc/rfc2616.txt">RFC 2616</a>.
     </dd>
 
     <dt><a name="messagedigest" id="messagedigest">Résumé de message
@@ -595,7 +595,7 @@ Localisation de Ressource Uniformisée
 </div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/glossary.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/glossary.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -610,8 +610,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/glossary.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

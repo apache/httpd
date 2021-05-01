@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -71,7 +71,7 @@ AddHandler send-as-is asis
 
     <example>
       Status: 301 Now where did I leave that URL<br />
-      Location: http://xyz.example.com/foo/bar.html<br />
+      Location: https://xyz.example.com/foo/bar.html<br />
       Content-type: text/html<br />
       <br />
       &lt;html&gt;<br />
@@ -80,7 +80,7 @@ AddHandler send-as-is asis
       &lt;/head&gt;<br />
       &lt;body&gt;<br />
       &lt;h1&gt;Fred's exceptionally wonderful page has moved to<br />
-      &lt;a href="http://xyz.example.com/foo/bar.html"&gt;Joe's&lt;/a&gt;
+      &lt;a href="https://xyz.example.com/foo/bar.html"&gt;Joe's&lt;/a&gt;
       site.<br />
       &lt;/h1&gt;<br />
       &lt;/body&gt;<br />

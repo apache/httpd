@@ -12,7 +12,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -32,7 +32,7 @@
 
   <section id="uptodate"><title>Mantenerse al Día</title>
 
-    <p>El Servidor Apache HTTP tiene un buen historial de seguridad y comunidad de desarrolladores con una alta preocupación por los problemas de seguridad. Pero será inevitable que algunos problemas -- pequeños o grandes -- sean descubiertos en el software después de que éste ha sido publicado. Por esta razón, es crucial estar al tanto de las actualizaciones de software.  Si ha obtenido su versión del Servidor HTTP directamente de Apache, le recomendamos encarecidamente que se suscriba a la <a href="http://httpd.apache.org/lists.html#http-announce">Lista de Anuncios del Servidor Apache HTTP</a> donde puede estar informado de nuevas versiones y actualizaciones de seguridad. Hay servicios similares disponibles desde la mayoría de distribuidores de terceros del Software Apache.</p>
+    <p>El Servidor Apache HTTP tiene un buen historial de seguridad y comunidad de desarrolladores con una alta preocupación por los problemas de seguridad. Pero será inevitable que algunos problemas -- pequeños o grandes -- sean descubiertos en el software después de que éste ha sido publicado. Por esta razón, es crucial estar al tanto de las actualizaciones de software.  Si ha obtenido su versión del Servidor HTTP directamente de Apache, le recomendamos encarecidamente que se suscriba a la <a href="https://httpd.apache.org/lists.html#http-announce">Lista de Anuncios del Servidor Apache HTTP</a> donde puede estar informado de nuevas versiones y actualizaciones de seguridad. Hay servicios similares disponibles desde la mayoría de distribuidores de terceros del Software Apache.</p>
 
     <p>Desde luego, la mayor parte de las veces que el servidor web se ve comprometido, no es por problemas en el código del Servidor HTTP. Si no, más bien ocurre por problemas en código externo, scripts CGI, o el sistema operativo sobre el que se opera. Debe entonces estar al tanto de los problemas y actualizaciones de todo el software en su sistema.</p>
 
@@ -137,7 +137,7 @@
 
     <p>Primero, siempre tiene que recordar que debe confiar en los desarrolladores de scripts/programas CGI o su habilidad para localizar agujeros potenciales de seguridad en CGI, sean deliberados o accidentales. Los scripts CGI pueden ejecutar comandos de manera arbitraria en su sistema con los permisos del usuario del servidor web y pueden por tanto ser extremadamente peligrosos si no se revisan cuidadosamente.</p>
 
-    <p>Todos los scripts CGI se ejecutarán con el mismo usuario, así que tienen potencial para el conflicto (accidental o deliberado) con otros scripts p. ej. Usuario A odia a Usuario B, así que escribe un script para borrar la base de datos CGI del usuario B. Un programa que puede usarse para permitir que scripts se ejecuten como distintos usuarios es <a href="../suexec.html">suEXEC</a> que está incluido con Apache desde la versión 1.2 y es llamado desde hooks especiales en el código del servidor Apache. Otra forma popular de hacer esto es con <a href="http://cgiwrap.sourceforge.net/">CGIWrap</a>.</p>
+    <p>Todos los scripts CGI se ejecutarán con el mismo usuario, así que tienen potencial para el conflicto (accidental o deliberado) con otros scripts p. ej. Usuario A odia a Usuario B, así que escribe un script para borrar la base de datos CGI del usuario B. Un programa que puede usarse para permitir que scripts se ejecuten como distintos usuarios es <a href="../suexec.html">suEXEC</a> que está incluido con Apache desde la versión 1.2 y es llamado desde hooks especiales en el código del servidor Apache. Otra forma popular de hacer esto es con <a href="https://cgiwrap.sourceforge.net/">CGIWrap</a>.</p>
 
   </section>
 
@@ -178,10 +178,10 @@
   <title>Seguridad de Contenido Dinámico</title>
 
   <p>Cuando se configura contenido dinámico, como por ejemplo <code>mod_php</code>, <code>mod_perl</code> o <code>mod_python</code>, muchas consideraciones de seguridad escapan al ámbito del mismo <code>httpd</code>, y necesita consultar la documnetación de estos módulos. Por ejemplo, PHP le permite configurar un <a
-  href="http://www.php.net/manual/en/ini.sect.safe-mode.php">Modo Seguro</a>, que generalmente está deshabilitado por defecto. Otro ejemplo es <a
-  href="http://www.hardened-php.net/suhosin/">Suhosin</a>, un addon PHP para más seguridad. Para más información sobre estos, consulte la documnetación de cada projecto.</p>
+  href="https://www.php.net/manual/en/ini.sect.safe-mode.php">Modo Seguro</a>, que generalmente está deshabilitado por defecto. Otro ejemplo es <a
+  href="https://www.hardened-php.net/suhosin/">Suhosin</a>, un addon PHP para más seguridad. Para más información sobre estos, consulte la documnetación de cada projecto.</p>
 
-  <p>A nivel de Apache, un módulo que se llama <a href="http://modsecurity.org/">mod_security</a> puede ser considerado como un firewall HTTP y, asumiento que lo configura correctamente, puede ayudarle a mejorar la seguridad de su contenido dinámico.</p>
+  <p>A nivel de Apache, un módulo que se llama <a href="https://modsecurity.org/">mod_security</a> puede ser considerado como un firewall HTTP y, asumiento que lo configura correctamente, puede ayudarle a mejorar la seguridad de su contenido dinámico.</p>
 
   </section>
 
@@ -215,7 +215,7 @@
 
     <example>
       # cd /; ln -s / public_html <br />
-      Accessing <code>http://localhost/~root/</code>
+      Accessing <code>https://localhost/~root/</code>
     </example>
 
     <p>Esto permitiría clientes navegar por el sistema de ficheros al completo. Para corregir esto, añada el siguiente bloque a la configuración del servidor:</p>
@@ -261,7 +261,7 @@ UserDir disabled root
     </example>
 
     <p>El primer ejemplo le enseñará una lista de ataques intentando explotar la
-    <a href="http://online.securityfocus.com/bid/4876/info/">Vulnerabilidad de Revelado de Información de Apache Tomcat con Peticiones Malformadas Source.JSP</a>, el segundo ejemplo listará los últimos 10 clientes a los que se les ha denegado el acceso, por ejemplo:</p>
+    <a href="https://online.securityfocus.com/bid/4876/info/">Vulnerabilidad de Revelado de Información de Apache Tomcat con Peticiones Malformadas Source.JSP</a>, el segundo ejemplo listará los últimos 10 clientes a los que se les ha denegado el acceso, por ejemplo:</p>
 
     <example>
       [Thu Jul 11 17:18:39 2002] [error] [client foo.example.com] client denied

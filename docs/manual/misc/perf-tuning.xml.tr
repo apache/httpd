@@ -15,7 +15,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -435,7 +435,7 @@
         süredir. Burada ağ band genişliği ile sunucu kaynaklarının kullanımı
         arasında bir seçim yapmak söz konusudur. Hiçbir şey umurunuzda
         değilse <a
-        href="http://www.hpl.hp.com/techreports/Compaq-DEC/WRL-95-4.html">
+        href="https://www.hpl.hp.com/techreports/Compaq-DEC/WRL-95-4.html">
         çoğu ayrıcalığın yitirilmesi pahasına</a> bu değeri rahatça
         <code>60</code> saniyenin üzerine çıkarabilirsiniz.</p>
 
@@ -657,7 +657,7 @@
       değil mecburen tek bir soketten kabul etmeye kilitler ve bu soket
       üzerinde yeni bir istek belirip uyandırılana kadar bu durumda
       kalırlar. Bu açlık sorunu ilk olarak <a
-      href="http://bugs.apache.org/index/full/467">PR#467</a> sayılı raporla
+      href="https://bugs.apache.org/index/full/467">PR#467</a> sayılı raporla
       belgelenmiştir. Bu sorunun en az iki çözümü vardır.</p>
 
       <p>Çözümün biri engellenmeyen soket kullanımıdır. Bu durumda
@@ -787,7 +787,7 @@
 
       <title>Kapatmayı zamana yaymak</title>
 
-      <p><a href="http://www.ics.uci.edu/pub/ietf/http/draft-ietf-http-connection-00.txt"
+      <p><a href="https://www.ics.uci.edu/pub/ietf/http/draft-ietf-http-connection-00.txt"
       >draft-ietf-http-connection-00.txt</a> taslağının 8. bölümünde
       bahsedildiği gibi, bir HTTP sunucusunun protokolü <strong>güvenilir
       şekilde</strong> gerçeklemesi için her iki yöndeki iletişimi
@@ -862,7 +862,7 @@
       asla önerilmez. Özellikle, HTTP/1.1'den itibaren boruhatlı kalıcı
       bağlantıların <code>lingering_close</code> kullanmaya başlaması mutlak
       bir gerekliliktir (ve <a
-      href="http://www.w3.org/Protocols/HTTP/Performance/Pipeline.html">
+      href="https://www.w3.org/Protocols/HTTP/Performance/Pipeline.html">
       boruhatlı bağlantıların daha hızlı</a> olması nedeniyle bu
       bağlantıları desteklemek isteyebilirsiniz).</p>
 

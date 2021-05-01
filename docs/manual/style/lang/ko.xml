@@ -10,7 +10,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -45,29 +45,29 @@
         <message id="nativename">Korean</message>
 
         <!-- Used for the moduleindex -->
-        <message id="corefeatures">ÇÙ½É ±â´É°ú ´ÙÁßÃ³¸® ¸ðµâ</message>
-        <message id="othermodules">´Ù¸¥ ¸ðµâ</message>
-        <message id="obsoletemodules">ÀÌÀü ¸ðµâ</message>
+        <message id="corefeatures">ï¿½Ù½ï¿½ ï¿½ï¿½É°ï¿½ ï¿½ï¿½ï¿½ï¿½Ã³ï¿½ï¿½ ï¿½ï¿½ï¿½</message>
+        <message id="othermodules">ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½</message>
+        <message id="obsoletemodules">ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½</message>
 
         <!-- Used for the modulesynopsis and sitemap -->
-        <message id="obsoleteapachemodule">ÀÌÀü ¾ÆÆÄÄ¡ ¸ðµâ</message>
-        <message id="apachemodule">¾ÆÆÄÄ¡ ¸ðµâ</message>
-        <message id="apachecore">¾ÆÆÄÄ¡ ÇÙ½É ±â´É</message>
-        <message id="apachempmcommon">¾ÆÆÄÄ¡ MPM °øÅë Áö½Ã¾î</message>
-        <message id="apachempm">¾ÆÆÄÄ¡ MPM</message>
+        <message id="obsoleteapachemodule">ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½</message>
+        <message id="apachemodule">ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½</message>
+        <message id="apachecore">ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½</message>
+        <message id="apachempmcommon">ï¿½ï¿½ï¿½ï¿½Ä¡ MPM ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½</message>
+        <message id="apachempm">ï¿½ï¿½ï¿½ï¿½Ä¡ MPM</message>
 
         <!-- Used in description box for modulesynopsis -->
-        <message id="description">¼³¸í</message>
-        <message id="seealso">Âü°í</message>
-        <message id="topics">ÁÖÁ¦</message>
-        <message id="status">»óÅÂ</message>
-        <message id="moduleidentifier">¸ðµâ¸í</message>
-        <message id="sourcefile">¼Ò½ºÆÄÀÏ</message>
-        <message id="compatibility">Áö¿ø</message>
+        <message id="description">ï¿½ï¿½ï¿½ï¿½</message>
+        <message id="seealso">ï¿½ï¿½ï¿½ï¿½</message>
+        <message id="topics">ï¿½ï¿½ï¿½ï¿½</message>
+        <message id="status">ï¿½ï¿½ï¿½ï¿½</message>
+        <message id="moduleidentifier">ï¿½ï¿½ï¿½ï¿½</message>
+        <message id="sourcefile">ï¿½Ò½ï¿½ï¿½ï¿½ï¿½ï¿½</message>
+        <message id="compatibility">ï¿½ï¿½ï¿½ï¿½</message>
 
         <!-- Used in manualpage -->
-        <message id="relatedmodules">°ü·ÃµÈ ¸ðµâ</message>
-        <message id="relateddirectives">°ü·ÃµÈ Áö½Ã¾î</message>
+        <message id="relatedmodules">ï¿½ï¿½ï¿½Ãµï¿½ ï¿½ï¿½ï¿½</message>
+        <message id="relateddirectives">ï¿½ï¿½ï¿½Ãµï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½</message>
         <message id="lowercase">abcdefghijklmnopqrstuvwxyz</message>
         <message id="uppercase">ABCDEFGHIJKLMNOPQRSTUVWXYZ</message>
         <message id="name-section">NAME</message>
@@ -79,12 +79,12 @@
         <message id="permalink">Permanent link</message>
 
         <!-- Used in description box for directives -->
-        <message id="syntax">¹®¹ý</message>
-        <message id="default">±âº»°ª</message>
-        <message id="context">»ç¿ëÀå¼Ò</message>
-        <message id="override">Override ¿É¼Ç</message>
-        <message id="status">»óÅÂ</message>
-        <message id="module">¸ðµâ</message>
+        <message id="syntax">ï¿½ï¿½ï¿½ï¿½</message>
+        <message id="default">ï¿½âº»ï¿½ï¿½</message>
+        <message id="context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</message>
+        <message id="override">Override ï¿½É¼ï¿½</message>
+        <message id="status">ï¿½ï¿½ï¿½ï¿½</message>
+        <message id="module">ï¿½ï¿½ï¿½</message>
 
         <!-- Status descriptions -->
         <message id="base" letter="B">Base</message>
@@ -95,13 +95,13 @@
         <message id="external" letter="T">External</message>
 
         <!-- Used in directive context lists -->
-        <message id="serverconfig" letter="s">ÁÖ¼­¹ö¼³Á¤</message>
-        <message id="virtualhost" letter="v">°¡»óÈ£½ºÆ®</message>
+        <message id="serverconfig" letter="s">ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</message>
+        <message id="virtualhost" letter="v">ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®</message>
         <message id="directory" letter="d">directory</message>
         <message id="htaccess" letter="h">.htaccess</message>
 
         <!-- Used for directive lists -->
-        <message id="directives">Áö½Ã¾îµé</message>
+        <message id="directives">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</message>
         <!-- the optional attribute replace-space-with takes a string.
              if present, the space between <directive name> and 'Directive'
              in directivesynopsis headings will be replaced by the given string.
@@ -109,24 +109,24 @@
         <!-- the optional attribute before-name takes a string.
              if "yes", the 'Directive' word is place before the name instead of
              being placed behind. See fr.xml for an example. -->
-        <message id="directive">Áö½Ã¾î</message>
-        <message id="nodirectives">ÀÌ ¸ðµâ¿¡´Â Áö½Ã¾î°¡ ¾ø½À´Ï´Ù.</message>
+        <message id="directive">ï¿½ï¿½ï¿½Ã¾ï¿½</message>
+        <message id="nodirectives">ï¿½ï¿½ ï¿½ï¿½â¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î°¡ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.</message>
 
         <!-- Used in summaries -->
-        <message id="summary">¿ä¾à</message>
+        <message id="summary">ï¿½ï¿½ï¿½</message>
 
         <!-- Used for glossary link titles -->
         <message id="glossarylink">see glossary</message>
 
         <!-- Used for translation notes -->
-        <message id="transnote">¿ªÁÖ;</message>
+        <message id="transnote">ï¿½ï¿½ï¿½ï¿½;</message>
 
         <!-- Used in headers and footers -->
         <message id="apachetitle">- Apache HTTP Server</message>
         <message id="apachehttpserver">Apache HTTP Server Version
             &httpd.major;.&httpd.minor;</message>
         <message id="apachedocalt">[APACHE DOCUMENTATION]</message>
-        <message id="search">Google °Ë»ö</message> <!-- search button -->
+        <message id="search">Google ï¿½Ë»ï¿½</message> <!-- search button -->
         <message id="index">Index</message> <!-- deprecated -->
         <message id="home">Home</message> <!-- deprecated -->
         <message id="comments">Comments</message>
@@ -138,19 +138,19 @@
         <message id="version">Version &httpd.major;.&httpd.minor;</message>
 
         <!-- super menu -->
-        <message id="modules">¸ðµâ</message>
+        <message id="modules">ï¿½ï¿½ï¿½</message>
         <message id="faq">FAQ</message>
-        <message id="glossary">¿ë¾î</message>
-        <message id="sitemap">»çÀÌÆ®¸Ê</message>
+        <message id="glossary">ï¿½ï¿½ï¿½</message>
+        <message id="sitemap">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</message>
 
         <!-- footer line -->
         <message id="before-license">Licensed under the</message>
         <message id="after-license"></message>
-        <message id="langavail">°¡´ÉÇÑ ¾ð¾î</message>
+        <message id="langavail">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½</message>
 
         <!-- not up to date -->
-        <message id="outofdate">ÀÌ ¹®¼­´Â ÃÖ½ÅÆÇ ¹ø¿ªÀÌ ¾Æ´Õ´Ï´Ù.
-            ÃÖ±Ù¿¡ º¯°æµÈ ³»¿ëÀº ¿µ¾î ¹®¼­¸¦ Âü°íÇÏ¼¼¿ä.</message>
+        <message id="outofdate">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Õ´Ï´ï¿½.
+            ï¿½Ö±Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.</message>
         <!-- directive not translated yet -->
         <message id="nottranslated">The documentation for this directive has
             not been translated yet. Please have a look at the English

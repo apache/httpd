@@ -15,7 +15,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -80,12 +80,12 @@
       <dd>Yeni <module>mod_proxy_balancer</module> modülü ile
         <module>mod_proxy</module> için yük dengeleme hizmetleri sağlanmış,
         yeni <module>mod_proxy_ajp</module> modülü ile <a
-        href="http://tomcat.apache.org/">Apache Tomcat</a> tarafından
+        href="https://tomcat.apache.org/">Apache Tomcat</a> tarafından
         kullanılan <em>Apache JServ Protokolünün 1.3 sürümü</em> için destek
         eklenmiştir.</dd>
 
       <dt>Düzenli İfade Kütüphanesi Güncellemesi</dt>
-      <dd>Apache, <a href="http://www.pcre.org/">Perl uyumlu düzenli ifade
+      <dd>Apache, <a href="https://www.pcre.org/">Perl uyumlu düzenli ifade
         kütüphanesinin 5.0 sürümünü</a> (PCRE) içermektedir.
         <program>configure</program> betiğinin <code>--with-pcre</code>
         seçeneği sayesinde <program>httpd</program> programı PCRE destekli
@@ -161,7 +161,7 @@
       <dt><module>mod_ssl</module></dt>
       <!-- Need Info on SSLEngine Support? -->
       <dd>TLS şifrelemesini HTTP/1.1 için güncelleyen <a
-        href="http://www.ietf.org/rfc/rfc2817.txt">RFC 2817</a> için destek
+        href="https://www.ietf.org/rfc/rfc2817.txt">RFC 2817</a> için destek
         sağlar.</dd>
 
       <dt><module>mod_imagemap</module></dt>
@@ -194,7 +194,7 @@
       <dd>Apache 2.2’de APR 1.0 API kullanılmıştır.  Kullanımı önerilmeyen
         tüm işlevler ve simgeler <code>APR</code> ve
         <code>APR-Util</code>’den kaldırılmıştır. Ayrıntılar için <a
-        href="http://apr.apache.org/">APR Sitesine bakınız</a>.</dd>
+        href="https://apr.apache.org/">APR Sitesine bakınız</a>.</dd>
 
       <dt>Authn/Authz</dt>
       <dd>Dağıtımla gelen kimlik doğrulama ve yetkilendirme modüllerinin

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
 <meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -17,89 +17,89 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">¸ðµâ</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">ï¿½ï¿½ï¿½</a></div>
 <div id="page-content">
-<div id="preamble"><h1>¾ÆÆÄÄ¡ ¸ðµâ mod_authz_owner</h1>
+<div id="preamble"><h1>ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ mod_authz_owner</h1>
 <div class="toplang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/mod/mod_authz_owner.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/mod/mod_authz_owner.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_authz_owner.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_authz_owner.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_authz_owner.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">ÀÌ ¹®¼­´Â ÃÖ½ÅÆÇ ¹ø¿ªÀÌ ¾Æ´Õ´Ï´Ù.
-            ÃÖ±Ù¿¡ º¯°æµÈ ³»¿ëÀº ¿µ¾î ¹®¼­¸¦ Âü°íÇÏ¼¼¿ä.</div>
-<table class="module"><tr><th><a href="module-dict.html#Description">¼³¸í:</a></th><td>ÆÄÀÏ ¼ÒÀ¯ÀÚ¸¦ ÀÌ¿ëÇÑ ±ÇÇÑºÎ¿©</td></tr>
-<tr><th><a href="module-dict.html#Status">»óÅÂ:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">¸ðµâ¸í:</a></th><td>authz_owner_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">¼Ò½ºÆÄÀÏ:</a></th><td>mod_authz_owner.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Áö¿ø:</a></th><td>¾ÆÆÄÄ¡ 2.1 ÀÌÈÄºÎÅÍ</td></tr></table>
-<h3>¿ä¾à</h3>
+<div class="outofdate">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Õ´Ï´ï¿½.
+            ï¿½Ö±Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½Ì¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ÑºÎ¿ï¿½</td></tr>
+<tr><th><a href="module-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">ï¿½ï¿½ï¿½ï¿½:</a></th><td>authz_owner_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">ï¿½Ò½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>mod_authz_owner.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½ï¿½ï¿½Ä¡ 2.1 ï¿½ï¿½ï¿½Äºï¿½ï¿½ï¿½</td></tr></table>
+<h3>ï¿½ï¿½ï¿½</h3>
 
-    <p>ÀÌ ¸ðµâÀº HTTP ÀÎÁõ¿¡ »ç¿ëÇÑ »ç¿ëÀÚ ¾ÆÀÌµð(À¥ »ç¿ëÀÚ
-    ¾ÆÀÌµð)¸¦ ¿äÃ»ÇÑ ÆÄÀÏÀÇ ÆÄÀÏ½Ã½ºÅÛ ¼ÒÀ¯ÀÚ/±×·ì°ú ºñ±³ÇÏ¿©
-    ÆÄÀÏÀÇ Á¢±Ù±ÇÇÑÀ» ºÎ¿©ÇÑ´Ù. ¿©±â¼­ »ç¿ëÀÚ¸í°ú ¾ÏÈ£´Â ÀÌ¹Ì
-    <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code>ÀÌ³ª
-    <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code> °°Àº ÀÎÁõ¸ðµâÀÇ È®ÀÎÀ»
-    °ÅÃÆ´Ù. <code class="module"><a href="../mod/mod_authz_owner.html">mod_authz_owner</a></code>´Â <code class="directive"><a href="../mod/core.html#require">Require</a></code> Áö½Ã¾îÀÇ ´ÙÀ½ µÎ ¾Æ±Ô¸ÕÆ®,
-    <code>file-owner</code>¿Í <code>file-group</code>À» Ã³¸®ÇÑ´Ù:</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ HTTP ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½(ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½Ìµï¿½)ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½/ï¿½×·ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ù±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î¿ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½â¼­ ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ï¿½ï¿½ ï¿½ï¿½È£ï¿½ï¿½ ï¿½Ì¹ï¿½
+    <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code>ï¿½Ì³ï¿½
+    <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code> ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½Æ´ï¿½. <code class="module"><a href="../mod/mod_authz_owner.html">mod_authz_owner</a></code>ï¿½ï¿½ <code class="directive"><a href="../mod/core.html#require">Require</a></code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Æ±Ô¸ï¿½Æ®,
+    <code>file-owner</code>ï¿½ï¿½ <code>file-group</code>ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ñ´ï¿½:</p>
 
     <dl>
       <dt><code>file-owner</code></dt>
-      <dd>À¥ »ç¿ëÀÚ¸íÀÌ ¿äÃ»ÇÑ ÆÄÀÏ ¼ÒÀ¯ÀÚÀÇ ½Ã½ºÅÛ ÀÌ¸§°ú °°¾Æ¾ß
-      ÇÑ´Ù. Áï, ¿î¿µÃ¼Á¦°¡ ¿äÃ»ÇÑ ÆÄÀÏÀÇ ¼ÒÀ¯ÀÚ°¡
-      <code>jones</code>¶ó¸é, À¥À» ÅëÇØ ÆÄÀÏ¿¡ Á¢±ÙÇÏ´Â »ç¿ëÀÚµµ
-      ¸¶Âù°¡Áö·Î <code>jones</code>ÀÌ¾î¾ß ÇÑ´Ù.</dd>
+      <dd>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Æ¾ï¿½
+      ï¿½Ñ´ï¿½. ï¿½ï¿½, ï¿½î¿µÃ¼ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ú°ï¿½
+      <code>jones</code>ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½Úµï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>jones</code>ï¿½Ì¾ï¿½ï¿½ ï¿½Ñ´ï¿½.</dd>
 
       <dt><code>file-group</code></dt>
-      <dd>ÆÄÀÏÀ» ¼ÒÀ¯ÇÑ ½Ã½ºÅÛ ±×·ì¸íÀÌ
-      <code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code>ÀÌ³ª
-      <code class="module"><a href="../mod/mod_authz_dbm.html">mod_authz_dbm</a></code>°ú °°Àº ±×·ì µ¥ÀÌÅÍº£ÀÌ½º¿¡
-      ÀÖ°í, À¥ »ç¿ëÀÚ¸íÀÌ ÇØ´ç ±×·ì¿¡ ¼ÓÇØ¾ß ÇÑ´Ù. ¿¹¸¦ µé¾î,
-      ¿î¿µÃ¼Á¦°¡ ¿äÃ»ÇÑ ÆÄÀÏÀ» <code>accounts</code> (½Ã½ºÅÛ)
-      ±×·ìÀÌ ¼ÒÀ¯ÇÏ°í ÀÖ´Ù¸é, ±×·ì µ¥ÀÌÅÍº£ÀÌ½º¿¡
-      <code>accounts</code>¶ó´Â ±×·ìÀÌ ÀÖ°í ¿äÃ»¿¡ »ç¿ëÇÑ À¥
-      »ç¿ëÀÚ¸íÀÌ ±× ±×·ì¿¡ ¼ÓÇØ¾ß ÇÑ´Ù.</dd>
+      <dd>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã½ï¿½ï¿½ï¿½ ï¿½×·ï¿½ï¿½ï¿½ï¿½
+      <code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code>ï¿½Ì³ï¿½
+      <code class="module"><a href="../mod/mod_authz_dbm.html">mod_authz_dbm</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½×·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Íºï¿½ï¿½Ì½ï¿½ï¿½ï¿½
+      ï¿½Ö°ï¿½, ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ï¿½ï¿½ ï¿½Ø´ï¿½ ï¿½×·ì¿¡ ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½,
+      ï¿½î¿µÃ¼ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>accounts</code> (ï¿½Ã½ï¿½ï¿½ï¿½)
+      ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½Ö´Ù¸ï¿½, ï¿½×·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Íºï¿½ï¿½Ì½ï¿½ï¿½ï¿½
+      <code>accounts</code>ï¿½ï¿½ï¿½ ï¿½×·ï¿½ï¿½ï¿½ ï¿½Ö°ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½×·ì¿¡ ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½.</dd>
     </dl>
 
-    <div class="note"><h3>ÁÖÀÇ</h3>
-      <p><code class="module"><a href="../mod/mod_authz_owner.html">mod_authz_owner</a></code>°¡ ½ÇÁ¦·Î ÆÄÀÏ½Ã½ºÅÛ¿¡
-      ÀÖÁö ¾Ê´Â ÀÚ¿øÀ» (<em>Áï,</em> °¡»ó ÀÚ¿ø) ±ÇÇÑºÎ¿©ÇÑ´Ù¸é,
-      Á¢±ÙÀ» °ÅºÎÇÑ´Ù.</p>
+    <div class="note"><h3>ï¿½ï¿½ï¿½ï¿½</h3>
+      <p><code class="module"><a href="../mod/mod_authz_owner.html">mod_authz_owner</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½Û¿ï¿½
+      ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´ï¿½ ï¿½Ú¿ï¿½ï¿½ï¿½ (<em>ï¿½ï¿½,</em> ï¿½ï¿½ï¿½ï¿½ ï¿½Ú¿ï¿½) ï¿½ï¿½ï¿½ÑºÎ¿ï¿½ï¿½Ñ´Ù¸ï¿½,
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Åºï¿½ï¿½Ñ´ï¿½.</p>
 
-      <p>Æ¯È÷ <a href="../content-negotiation.html#multiviews">³»¿ëÇù»óÇÑ
-      "MultiViews"</a> ÀÚ¿øÀ» ±ÇÇÑºÎ¿©ÇÏÁö ¾Ê´Â´Ù.</p>
+      <p>Æ¯ï¿½ï¿½ <a href="../content-negotiation.html#multiviews">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      "MultiViews"</a> ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ÑºÎ¿ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.</p>
     </div>
 </div>
-<div id="quickview"><h3>ÁÖÁ¦</h3>
+<div id="quickview"><h3>ï¿½ï¿½ï¿½ï¿½</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#examples">¼³Á¤ ¿¹Á¦</a></li>
-</ul><h3 class="directives">Áö½Ã¾îµé</h3>
-<p>ÀÌ ¸ðµâ¿¡´Â Áö½Ã¾î°¡ ¾ø½À´Ï´Ù.</p>
-<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_authz_owner">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_authz_owner">Report a bug</a></li></ul><h3>Âü°í</h3>
+<li><img alt="" src="../images/down.gif" /> <a href="#examples">ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a></li>
+</ul><h3 class="directives">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</h3>
+<p>ï¿½ï¿½ ï¿½ï¿½â¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î°¡ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.</p>
+<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_authz_owner">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_authz_owner">Report a bug</a></li></ul><h3>ï¿½ï¿½ï¿½ï¿½</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/core.html#require">Require</a></code></li>
 <li><code class="directive"><a href="../mod/core.html#satisfy">Satisfy</a></code></li>
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">¼³Á¤ ¿¹Á¦</a> <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
+<h2><a name="examples" id="examples">ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a> <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
 
     <h3><a name="examples.file-owner" id="examples.file-owner">Require file-owner</a></h3>
-      <p>¾ÆÆÄÄ¡ À¥¼­¹ö¸¦ ¿î¿µÇÏ´Â ´ÙÁß»ç¿ëÀÚ ½Ã½ºÅÛ¿¡¼­ °¢ »ç¿ëÀÚ°¡
-      <code>~/public_html/private</code>¿¡ ÀÚ½ÅÀÇ ÆÄÀÏÀ» ÀúÀåÇÑ´Ù°í
-      °¡Á¤ÇÏÀÚ. ¸ðµç À¥ »ç¿ëÀÚ¸íÀ» ÀúÀåÇÏ´Â <code class="directive"><a href="../mod/mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile</a></code>
-      µ¥ÀÌÅÍº£ÀÌ½º°¡ ÀÖ°í, ¿©±â¿¡ ÀúÀåµÈ »ç¿ëÀÚ¸íÀº ¼­¹ö¿¡¼­
-      ½ÇÁ¦ ÆÄÀÏÀ» ¼ÒÀ¯ÇÏ´Â ½Ã½ºÅÛ »ç¿ëÀÚ¸í°ú µ¿ÀÏÇÏ´Ù. ÀÌ °æ¿ì
-      ¾Æ·¡ ¼³Á¤Àº ÆÄÀÏ ¼ÒÀ¯ÀÚ¿¡°Ô¸¸ Á¢±ÙÀ» Çã¿ëÇÑ´Ù. »ç¿ëÀÚ
-      <code>jones</code>´Â ÆÄÀÏÀ» <code>jones</code>°¡ ¾Æ´Ñ
-      <code>smith</code>°¡ ¼ÒÀ¯ÇÏ°í ÀÖ´Â ÇÑ
-      <code>/home/smith/public_html/private</code>¿¡ ÀÖ´Â ÆÄÀÏ¿¡
-      Á¢±ÙÇÒ ¼ö ¾ø´Ù.</p>
+      <p>ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½î¿µï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ß»ï¿½ï¿½ï¿½ï¿½ ï¿½Ã½ï¿½ï¿½Û¿ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú°ï¿½
+      <code>~/public_html/private</code>ï¿½ï¿½ ï¿½Ú½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´Ù°ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ <code class="directive"><a href="../mod/mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile</a></code>
+      ï¿½ï¿½ï¿½ï¿½ï¿½Íºï¿½ï¿½Ì½ï¿½ï¿½ï¿½ ï¿½Ö°ï¿½, ï¿½ï¿½ï¿½â¿¡ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Ã½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½
+      ï¿½Æ·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½Ô¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½
+      <code>jones</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>jones</code>ï¿½ï¿½ ï¿½Æ´ï¿½
+      <code>smith</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½
+      <code>/home/smith/public_html/private</code>ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</p>
 
       <div class="example"><p><code>
         &lt;Directory /home/*/public_html/private&gt;<br />
@@ -116,15 +116,15 @@
     
 
     <h3><a name="examples.file-group" id="examples.file-group">Require file-group</a></h3>
-      <p>À§¿Í »óÈ²ÀÌ ºñ½ÁÇÏÁö¸¸ ¿©·¯¸íÀÌ
-      <code>~/public_html/project-foo</code>¿¡ ÇÁ·ÎÁ§Æ® ÆÄÀÏÀ»
-      °øÀ¯ÇÑ´Ù°í °¡Á¤ÇÏÀÚ. ÆÄÀÏµéÀº ½Ã½ºÅÛ ±×·ì <code>foo</code>°¡
-      ¼ÒÀ¯ÇÏ¸ç, ¸ðµç À¥ »ç¿ëÀÚ¸í°ú »ç¿ëÀÚ ±×·ìÀ» ±â·ÏÇÏ´Â <code class="directive"><a href="../mod/mod_authz_dbm.html#authdbmgroupfile">AuthDBMGroupFile</a></code>
-      µ¥ÀÌÅÍº£ÀÌ½º°¡ ÀÖ´Ù. <em>Áï,</em> ÃÖ¼ÒÇÑ <code>foo</code>¶ó´Â
-      ±×·ì¿¡ ±¸¼º¿øÀÌ ÀÖ´Ù. <code>jones</code>¿Í
-      <code>smith</code>°¡ ¸ðµÎ ±×·ì <code>foo</code>ÀÇ
-      ±¸¼º¿øÀÌ¶ó¸é, µÑ ¸ðµÎ <code>project-foo</code> µð·ºÅä¸®¿¡
-      Á¢±ÙÇÒ ¼ö ÀÖ´Ù.</p>
+      <p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È²ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      <code>~/public_html/project-foo</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´Ù°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ ï¿½Ã½ï¿½ï¿½ï¿½ ï¿½×·ï¿½ <code>foo</code>ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½, ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ <code class="directive"><a href="../mod/mod_authz_dbm.html#authdbmgroupfile">AuthDBMGroupFile</a></code>
+      ï¿½ï¿½ï¿½ï¿½ï¿½Íºï¿½ï¿½Ì½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½. <em>ï¿½ï¿½,</em> ï¿½Ö¼ï¿½ï¿½ï¿½ <code>foo</code>ï¿½ï¿½ï¿½
+      ï¿½×·ì¿¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½. <code>jones</code>ï¿½ï¿½
+      <code>smith</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½×·ï¿½ <code>foo</code>ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì¶ï¿½ï¿½, ï¿½ï¿½ ï¿½ï¿½ï¿½ <code>project-foo</code> ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
       <div class="example"><p><code>
         &lt;Directory /home/*/public_html/project-foo&gt;<br />
@@ -146,14 +146,14 @@
 </div>
 </div>
 <div class="bottomlang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/mod/mod_authz_owner.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/mod/mod_authz_owner.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_authz_owner.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_authz_owner.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_authz_owner.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_authz_owner.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/mod/mod_authz_owner.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -168,8 +168,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_authz_owne
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

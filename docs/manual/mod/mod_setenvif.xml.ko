@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,7 +23,7 @@
 <modulesynopsis metafile="mod_setenvif.xml.meta">
 
 <name>mod_setenvif</name>
-<description>¿äÃ»ÀÇ ¼º°Ý¿¡ µû¶ó È¯°æº¯¼ö ¼³Á¤À» º¯°æÇÑ´Ù</description>
+<description>ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½Ý¿ï¿½ ï¿½ï¿½ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</description>
 <status>Base</status>
 <sourcefile>mod_setenvif.c</sourcefile>
 <identifier>setenvif_module</identifier>
@@ -31,13 +31,13 @@
 
 <summary>
 
-    <p><module>mod_setenvif</module> ¸ðµâÀº ¿äÃ»ÀÇ ¼º°ÝÀÌ
-    Á¤±ÔÇ¥Çö½Ä¿¡ ÇØ´çÇÏ´ÂÁö ¿©ºÎ·Î È¯°æº¯¼ö¸¦ ¼³Á¤ÇÑ´Ù. ¼­¹öÀÇ
-    ´Ù¸¥ ºÎºÐÀÌ Çàµ¿À» °áÁ¤ÇÒ¶§ ÀÌ È¯°æº¯¼ö¸¦ »ç¿ëÇÒ ¼ö ÀÖ´Ù.</p>
+    <p><module>mod_setenvif</module> ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ç¥ï¿½ï¿½ï¿½Ä¿ï¿½ ï¿½Ø´ï¿½ï¿½Ï´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î·ï¿½ È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ù¸ï¿½ ï¿½Îºï¿½ï¿½ï¿½ ï¿½àµ¿ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <p>¼³Á¤ÆÄÀÏ¿¡ ³ª¿À´Â ¼ø¼­´ë·Î Áö½Ã¾î¸¦ Ã³¸®ÇÑ´Ù. ±×·¡¼­
-    ºê¶ó¿ìÀú°¡ MSIE°¡ ¾Æ´Ï¶ó mozillaÀÎ °æ¿ì <code>netscape</code>¸¦
-    ¼³Á¤ÇÏ´Â ¾Æ·¡ ¿¹¿Í °°ÀÌ ¿©·¯ Áö½Ã¾î¸¦ ÇÔ²² »ç¿ëÇÒ ¼ö ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦ Ã³ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½×·ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ MSIEï¿½ï¿½ ï¿½Æ´Ï¶ï¿½ mozillaï¿½ï¿½ ï¿½ï¿½ï¿½ <code>netscape</code>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Æ·ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½Ô²ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
 <example>
   BrowserMatch ^Mozilla netscape<br />
@@ -45,11 +45,11 @@
 </example>
 </summary>
 
-<seealso><a href="../env.html">¾ÆÆÄÄ¡ÀÇ È¯°æº¯¼ö</a></seealso>
+<seealso><a href="../env.html">ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½</a></seealso>
 
 <directivesynopsis>
 <name>BrowserMatch</name>
-<description>HTTP User-Agent¿¡ µû¶ó È¯°æº¯¼ö¸¦ ¼³Á¤ÇÑ´Ù</description>
+<description>HTTP User-Agentï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</description>
 <syntax>BrowserMatch <em>regex [!]env-variable</em>[=<em>value</em>]
 [[!]<em>env-variable</em>[=<em>value</em>]] ...</syntax>
 <contextlist><context>server config</context>
@@ -58,16 +58,16 @@
 <override>FileInfo</override>
 
 <usage>
-  <p><directive>BrowserMatch</directive>´Â <directive
-  module="mod_setenvif">SetEnvIf</directive> Áö½Ã¾îÀÇ Æ¯º°ÇÑ
-  °æ¿ì·Î, HTTP ¿äÃ» Çì´õ <code>User-Agent</code>¿¡ µû¶ó È¯°æº¯¼ö¸¦
-  ¼³Á¤ÇÑ´Ù. ´ÙÀ½ µÎ ÁÙÀº °°´Ù:</p>
+  <p><directive>BrowserMatch</directive>ï¿½ï¿½ <directive
+  module="mod_setenvif">SetEnvIf</directive> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ï¿½ Æ¯ï¿½ï¿½ï¿½ï¿½
+  ï¿½ï¿½ï¿½ï¿½, HTTP ï¿½ï¿½Ã» ï¿½ï¿½ï¿½ <code>User-Agent</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½
+  ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½:</p>
 <example>
    BrowserMatchNoCase Robot is_a_robot<br /> 
    SetEnvIfNoCase User-Agent Robot is_a_robot<br /> 
 </example>
 
-    <p>Ãß°¡ ¿¹Á¦:</p>
+    <p>ï¿½ß°ï¿½ ï¿½ï¿½ï¿½ï¿½:</p>
 <example>
     BrowserMatch ^Mozilla forms jpeg=yes browser=netscape<br />
     BrowserMatch "^Mozilla/[2-3]" tables agif frames javascript<br />
@@ -78,8 +78,8 @@
 
 <directivesynopsis>
 <name>BrowserMatchNoCase</name>
-<description>´ë¼Ò¹®ÀÚ¸¦ ±¸º°ÇÏÁö¾Ê°í User-Agent¿¡ µû¶ó È¯°æº¯¼ö¸¦
-¼³Á¤ÇÑ´Ù</description>
+<description>ï¿½ï¿½Ò¹ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê°ï¿½ User-Agentï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</description>
 <syntax>BrowserMatchNoCase  <em>regex [!]env-variable</em>[=<em>value</em>]
     [[!]<em>env-variable</em>[=<em>value</em>]] ...</syntax>
 <contextlist><context>server config</context>
@@ -89,20 +89,20 @@
 
 <usage>
 
-    <p><directive>BrowserMatchNoCase</directive> Áö½Ã¾î´Â <directive
-    module="mod_setenvif">BrowserMatch</directive> Áö½Ã¾î¿Í
-    ÀÇ¹Ì»ó °°´Ù. ±×·¯³ª ÀÌ Áö½Ã¾î´Â ´ë¼Ò¹®ÀÚ¸¦ ±¸º°ÇÏÁö¾Ê´Â´Ù.
-    ¿¹¸¦ µé¾î:</p>
+    <p><directive>BrowserMatchNoCase</directive> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ <directive
+    module="mod_setenvif">BrowserMatch</directive> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½
+    ï¿½Ç¹Ì»ï¿½ ï¿½ï¿½ï¿½ï¿½. ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½Ò¹ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê´Â´ï¿½.
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½:</p>
 <example>
     BrowserMatchNoCase mac platform=macintosh<br />
     BrowserMatchNoCase win platform=windows<br />
 </example>
 
-    <p><directive>BrowserMatch</directive>¿Í
-    <directive>BrowserMatchNoCase</directive> Áö½Ã¾î´Â
-    <directive module="mod_setenvif">SetEnvIf</directive>¿Í
+    <p><directive>BrowserMatch</directive>ï¿½ï¿½
+    <directive>BrowserMatchNoCase</directive> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½
+    <directive module="mod_setenvif">SetEnvIf</directive>ï¿½ï¿½
     <directive module="mod_setenvif">SetEnvIfNoCase</directive>
-    Áö½Ã¾îÀÇ Æ¯º°ÇÑ °æ¿ì´Ù. ´ÙÀ½ ÁÖ ÁÙÀº °°´Ù:</p>
+    ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ï¿½ Æ¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½:</p>
 <example>
    BrowserMatchNoCase Robot is_a_robot<br />
    SetEnvIfNoCase User-Agent Robot is_a_robot<br />
@@ -112,7 +112,7 @@
 
 <directivesynopsis>
 <name>SetEnvIf</name>
-<description>¿äÃ»ÀÇ ¼ºÁú¿¡ µû¶ó È¯°æº¯¼ö¸¦ ¼³Á¤ÇÑ´Ù</description>
+<description>ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</description>
 <syntax>SetEnvIf <em>attribute
     regex [!]env-variable</em>[=<em>value</em>]
     [[!]<em>env-variable</em>[=<em>value</em>]] ...</syntax>
@@ -122,71 +122,71 @@
 <override>FileInfo</override>
 
 <usage>
-    <p><directive>SetEnvIf</directive> Áö½Ã¾î´Â ¿äÃ»ÀÇ ¼ºÁú¿¡
-    µû¶ó È¯°æº¯¼ö¸¦ Á¤ÀÇÇÑ´Ù. Ã¹¹øÂ° ¾Æ±Ô¸ÕÆ® <em>attribute</em>´Â
-    ´ÙÀ½ ¼¼°¡ÁöÁß ÇÏ³ª´Ù:</p>
+    <p><directive>SetEnvIf</directive> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. Ã¹ï¿½ï¿½Â° ï¿½Æ±Ô¸ï¿½Æ® <em>attribute</em>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï³ï¿½ï¿½ï¿½:</p>
 
 <ol>
-<li>HTTP ¿äÃ» Çì´õ (´õ ÀÚ¼¼ÇÑ Á¤º¸´Â <a
-    href="http://www.rfc-editor.org/rfc/rfc2616.txt">RFC2616</a>
-    Âü°í); ¿¹¸¦ µé¾î: <code>Host</code>, <code>User-Agent</code>,
-    <code>Referer</code>, <code>Accept-Language</code>. Á¤±ÔÇ¥Çö½ÄÀ»
-    »ç¿ëÇÏ¿© ¿©·¯ ¿äÃ» Çì´õ¸¦ ÁöÄªÇÒ ¼ö ÀÖ´Ù.</li>
+<li>HTTP ï¿½ï¿½Ã» ï¿½ï¿½ï¿½ (ï¿½ï¿½ ï¿½Ú¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <a
+    href="https://www.rfc-editor.org/rfc/rfc2616.txt">RFC2616</a>
+    ï¿½ï¿½ï¿½ï¿½); ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: <code>Host</code>, <code>User-Agent</code>,
+    <code>Referer</code>, <code>Accept-Language</code>. ï¿½ï¿½ï¿½ï¿½Ç¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã» ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Äªï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</li>
 
-<li>¿äÃ»ÀÇ ´ÙÀ½ ¼ºÁúÁß ÇÏ³ª:
+<li>ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï³ï¿½:
     <ul>
-      <li><code>Remote_Host</code> - (ÀÖ´Ù¸é) ¿äÃ»ÇÏ´Â Å¬¶óÀÌ¾ðÆ®ÀÇ
-      È£½ºÆ®¸í</li>
+      <li><code>Remote_Host</code> - (ï¿½Ö´Ù¸ï¿½) ï¿½ï¿½Ã»ï¿½Ï´ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½
+      È£ï¿½ï¿½Æ®ï¿½ï¿½</li>
 
-      <li><code>Remote_Addr</code> - ¿äÃ»ÇÏ´Â Å¬¶óÀÌ¾ðÆ®ÀÇ IP ÁÖ¼Ò</li>
+      <li><code>Remote_Addr</code> - ï¿½ï¿½Ã»ï¿½Ï´ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ IP ï¿½Ö¼ï¿½</li>
 
-      <li><code>Server_Addr</code> - ¿äÃ»À» ¹Þ´Â ¼­¹öÀÇ IP ÁÖ¼Ò
-      (2.0.43 ¹öÀü ÀÌÈÄ¿¡¸¸)</li>
+      <li><code>Server_Addr</code> - ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½Þ´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ IP ï¿½Ö¼ï¿½
+      (2.0.43 ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½)</li>
 
-      <li><code>Request_Method</code> - »ç¿ëÇÑ ¸Þ½áµå ÀÌ¸§
-      (<code>GET</code>, <code>POST</code>, <em>µîµî</em>)</li>
+      <li><code>Request_Method</code> - ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Þ½ï¿½ï¿½ ï¿½Ì¸ï¿½
+      (<code>GET</code>, <code>POST</code>, <em>ï¿½ï¿½ï¿½</em>)</li>
 
-      <li><code>Request_Protocol</code> - ¿äÃ»ÀÇ ÇÁ·ÎÅäÄÝ ÀÌ¸§°ú
-      ¹öÀü (<em>¿¹¸¦ µé¾î</em>, "HTTP/0.9", "HTTP/1.1", <em>µî.</em>)</li>
+      <li><code>Request_Protocol</code> - ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ (<em>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½</em>, "HTTP/0.9", "HTTP/1.1", <em>ï¿½ï¿½.</em>)</li>
 
-      <li><code>Request_URI</code> - HTTP ¿äÃ»¿¡¼­ ¿äÃ»ÇÑ ÀÚ¿ø
-      -- ÀÏ¹ÝÀûÀ¸·Î URL¿¡¼­ ÁúÀÇ¹®ÀÚ¿­À» Á¦¿ÜÇÑ ½ºÅ´(scheme)°ú
-      È£½ºÆ® ÀÌÈÄ ºÎºÐ</li>
+      <li><code>Request_URI</code> - HTTP ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½Ú¿ï¿½
+      -- ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ URLï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ç¹ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å´(scheme)ï¿½ï¿½
+      È£ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ ï¿½Îºï¿½</li>
     </ul>
 </li>
 
-<li>¿äÃ»°ú ¿¬°üµÈ È¯°æº¯¼ö ÀÌ¸§. ±×·¡¼­ <directive>SetEnvIf</directive>
-Áö½Ã¾î´Â ÀÌÀü Áö½Ã¾îÀÇ °á°ú¸¦ °Ë»çÇÒ ¼ö ÀÖ´Ù. ÀÌÀü¿¡
-<code>SetEnvIf[NoCase]</code> Áö½Ã¾î·Î Á¤ÀÇÇÑ È¯°æº¯¼ö¸¸À»
-°Ë»çÇÒ ¼ö ÀÖ´Ù. 'ÀÌÀü'ÀÌ¶õ (¼­¹öÀü¿ª°ú °°ÀÌ) ´õ ³ÐÀº ¿µ¿ª È¤Àº
-Áö½Ã¾îÀÇ ÇöÀç ¿µ¿ª ÀÌÀüÀ» ¶æÇÑ´Ù. ¿äÃ» ¼ºÁúÀÌ ¾Æ´Ï°í Á¤±ÔÇ¥Çö½ÄÀÌ
-¾Æ´Ñ <em>attribute</em>´Â È¯°æº¯¼ö·Î Ãë±ÞÇÑ´Ù.</li>
+<li>ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ ï¿½Ì¸ï¿½. ï¿½×·ï¿½ï¿½ï¿½ <directive>SetEnvIf</directive>
+ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+<code>SetEnvIf[NoCase]</code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½Ë»ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. 'ï¿½ï¿½ï¿½ï¿½'ï¿½Ì¶ï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½) ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È¤ï¿½ï¿½
+ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½Ã» ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½Æ´ï¿½ <em>attribute</em>ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</li>
 </ol>
 
-<p>µÎ¹øÂ° ¾Æ±Ô¸ÕÆ®´Â (<em>regex</em>) <a
-href="http://www.pcre.org/">Perl È£È¯ Á¤±ÔÇ¥Çö½Ä</a>ÀÌ´Ù.
-ÀÌ´Â POSIX.2 egrepÀÇ Á¤±ÔÇ¥Çö½Ä°ú ºñ½ÁÇÏ´Ù. <em>regex</em>°¡
-<em>attribute</em>¿¡ ´ëÀÀÇÏ¸é ³ª¸ÓÁö ¾Æ±Ô¸ÕÆ®¸¦ Ã³¸®ÇÑ´Ù.</p>
+<p>ï¿½Î¹ï¿½Â° ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ (<em>regex</em>) <a
+href="https://www.pcre.org/">Perl È£È¯ ï¿½ï¿½ï¿½ï¿½Ç¥ï¿½ï¿½ï¿½ï¿½</a>ï¿½Ì´ï¿½.
+ï¿½Ì´ï¿½ POSIX.2 egrepï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¥ï¿½ï¿½ï¿½Ä°ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½. <em>regex</em>ï¿½ï¿½
+<em>attribute</em>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-<p>³ª¸ÓÁö ¾Æ±Ô¸ÕÆ®´Â ¼³Á¤ÇÒ º¯¼ö¸í°ú (¼±ÅÃÀûÀÎ) ¼³Á¤°ªµéÀÌ´Ù.
-´ÙÀ½°ú °°Àº Çü½ÄÀÌ´Ù</p>
+<p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½.
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½</p>
 
     <ol>
-      <li><code><em>varname</em></code>, È¤Àº</li>
+      <li><code><em>varname</em></code>, È¤ï¿½ï¿½</li>
 
-      <li><code>!<em>varname</em></code>, È¤Àº</li>
+      <li><code>!<em>varname</em></code>, È¤ï¿½ï¿½</li>
 
       <li><code><em>varname</em>=<em>value</em></code></li>
     </ol>
 
-    <p>Ã¹¹øÂ° ÇüÅÂ´Â °ªÀ¸·Î "1"À» »ç¿ëÇÑ´Ù. µÎ¹øÂ° ÇüÅÂ´Â º¯¼ö°¡
-    ÀÌ¹Ì Á¤ÀÇµÈ °æ¿ì º¯¼ö¸¦ Á¦°ÅÇÏ°í, ¼¼¹øÂ°´Â º¯¼öÀÇ °ªÀ¸·Î
-    <code><em>value</em></code>¸¦ ¼³Á¤ÇÑ´Ù. ¾ÆÆÄÄ¡ 2.0.51ºÎÅÍ
-    <var>value</var>¿¡ ÀÖ´Â <code>$1</code>..<code>$9</code>¸¦
-    <var>regex</var>ÀÇ °ýÈ£Ä£ ÇÏÀ§Ç¥Çö½ÄÀ¸·Î ´ëÃ¼ÇÑ´Ù.</p>
+    <p>Ã¹ï¿½ï¿½Â° ï¿½ï¿½ï¿½Â´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ "1"ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½Î¹ï¿½Â° ï¿½ï¿½ï¿½Â´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½Çµï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½, ï¿½ï¿½ï¿½ï¿½Â°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    <code><em>value</em></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½Ä¡ 2.0.51ï¿½ï¿½ï¿½ï¿½
+    <var>value</var>ï¿½ï¿½ ï¿½Ö´ï¿½ <code>$1</code>..<code>$9</code>ï¿½ï¿½
+    <var>regex</var>ï¿½ï¿½ ï¿½ï¿½È£Ä£ ï¿½ï¿½ï¿½ï¿½Ç¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ï¿½Ñ´ï¿½.</p>
 
 <example>
-<title>¿¹Á¦:</title>
+<title>ï¿½ï¿½ï¿½ï¿½:</title>
    SetEnvIf Request_URI "\.gif$" object_is_image=gif<br />
    SetEnvIf Request_URI "\.jpg$" object_is_image=jpg<br />
    SetEnvIf Request_URI "\.xbm$" object_is_image=xbm<br />
@@ -198,18 +198,18 @@ href="http://www.pcre.org/">Perl È£È¯ Á¤±ÔÇ¥Çö½Ä</a>ÀÌ´Ù.
    SetEnvIf ^TS*  ^[a-z].*  HAVE_TS<br />
 </example>
 
-    <p>Ã³À½ ¼¼ ÁÙÀº ÀÌ¹ÌÁö ÆÄÀÏÀ» ¿äÃ»ÇÑ °æ¿ì È¯°æº¯¼ö
-    <code>object_is_image</code>¸¦ ¼³Á¤ÇÑ´Ù. ³×¹øÂ° ÁÙÀº ÆäÀÌÁö¸¦
-    <code>www.mydomain.com</code> À¥»çÀÌÆ®¿¡¼­ ÂüÁ¶ÇÑ °æ¿ì
-    <code>intra_site_referral</code>À» ¼³Á¤ÇÑ´Ù.</p>
+    <p>Ã³ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½
+    <code>object_is_image</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½×¹ï¿½Â° ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    <code>www.mydomain.com</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+    <code>intra_site_referral</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <p>¸¶Áö¸· ¿¹´Â ¿äÃ»¿¡ ÀÌ¸§¿¡ "TS"·Î ½ÃÀÛÇÏ°í °ªÀÌ [a-z]
-    Áß ÇÏ³ª·Î ½ÃÀÛÇÏ´Â Çì´õ°¡ ÀÖ´Â °æ¿ì È¯°æº¯¼ö
-    <code>HAVE_TS</code>¸¦ ¼³Á¤ÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ "TS"ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ [a-z]
+    ï¿½ï¿½ ï¿½Ï³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½
+    <code>HAVE_TS</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 </usage>
 
-<seealso><a href="../env.html">¾ÆÆÄÄ¡ÀÇ È¯°æº¯¼ö</a>¿¡ ´õ ¸¹Àº
-¿¹Á¦°¡ ÀÖ´Ù.
+<seealso><a href="../env.html">ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½</a>ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½.
 </seealso>
 </directivesynopsis>
 
@@ -222,8 +222,8 @@ href="http://www.pcre.org/">Perl È£È¯ Á¤±ÔÇ¥Çö½Ä</a>ÀÌ´Ù.
 
 <directivesynopsis>
 <name>SetEnvIfNoCase</name>
-<description>´ë¼Ò¹®ÀÚ¸¦ ±¸º°ÇÏÁö¾Ê°í ¿äÃ»ÀÇ ¼ºÁú¿¡ µû¶ó È¯°æº¯¼ö¸¦
-¼³Á¤ÇÑ´Ù</description>
+<description>ï¿½ï¿½Ò¹ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê°ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</description>
 <syntax>SetEnvIfNoCase <em>attribute regex 
         [!]env-variable</em>[=<em>value</em>]
     [[!]<em>env-variable</em>[=<em>value</em>]] ...</syntax>
@@ -234,16 +234,16 @@ href="http://www.pcre.org/">Perl È£È¯ Á¤±ÔÇ¥Çö½Ä</a>ÀÌ´Ù.
 
 <usage>
 
-    <p><directive>SetEnvIfNoCase</directive>´Â ÀÇ¹Ì»ó <directive
-    module="mod_setenvif">SetEnvIf</directive> Áö½Ã¾î¿Í °°Áö¸¸,
-    ´ë¼Ò¹®ÀÚ¸¦ ±¸º°ÇÏÁö¾Ê°í Á¤±ÔÇ¥Çö½ÄÀ» Ã£´Â´Ù. ¿¹¸¦ µé¾î:</p>
+    <p><directive>SetEnvIfNoCase</directive>ï¿½ï¿½ ï¿½Ç¹Ì»ï¿½ <directive
+    module="mod_setenvif">SetEnvIf</directive> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,
+    ï¿½ï¿½Ò¹ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê°ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½Â´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½:</p>
 <example>
    SetEnvIfNoCase Host Apache\.Org site=apache
 </example>
 
-    <p>ÀÌ °æ¿ì HTTP ¿äÃ» Çì´õ <code>Host:</code>°¡
-    <code>Apache.Org</code>, <code>apache.org</code> µîÀ» Æ÷ÇÔÇÏ¸é
-    <code>site</code> È¯°æº¯¼ö¸¦ "<code>apache</code>"·Î ¼³Á¤ÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ HTTP ï¿½ï¿½Ã» ï¿½ï¿½ï¿½ <code>Host:</code>ï¿½ï¿½
+    <code>Apache.Org</code>, <code>apache.org</code> ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½
+    <code>site</code> È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ "<code>apache</code>"ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 </usage>
 </directivesynopsis>
 </modulesynopsis>

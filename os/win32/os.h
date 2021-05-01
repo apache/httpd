@@ -5,7 +5,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -93,6 +93,9 @@ typedef enum {
 } ap_dlltoken_e;
 
 FARPROC ap_load_dll_func(ap_dlltoken_e fnLib, char* fnName, int ordinal);
+
+PSECURITY_ATTRIBUTES GetNullACL(void);
+void CleanNullACL(void *sa);
 
 #define AP_DECLARE_LATE_DLL_FUNC(lib, rettype, calltype, fn, ord, args, names) \
     typedef rettype (calltype *ap_winapi_fpt_##fn) args; \

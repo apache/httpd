@@ -15,7 +15,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -203,7 +203,7 @@
       değildir ve aslında bu işlem sunucunun yaptığı işlerden biri değildir.
       Bu konu ve günlük incelemesi yapan uygulamalar hakkında daha ayrıntılı
       bilgi edinmek için <a
-      href="http://dmoz.org/Computers/Software/Internet/Site_Management/Log_analysis/"
+      href="https://dmoz.org/Computers/Software/Internet/Site_Management/Log_analysis/"
       >dmoz.org</a>
       bakınız.</p>
 
@@ -345,7 +345,7 @@
           getirilmiştir, 3 ile başlıyorsa yönlendirilmiştir, 4 ile başlıyorsa
           istemci tarafında bir hata oluşmuştur, 5 ile başlıyorsa sunucuda bir
           hata oluşmuştur. Olası hata kodlarının tam listesi <a
-          href="http://www.w3.org/Protocols/rfc2616/rfc2616.txt">RFC2616 Hiper
+          href="https://www.w3.org/Protocols/rfc2616/rfc2616.txt">RFC2616 Hiper
           Metin Aktarım Protokolü</a>nün 10. bölümünde bulunabilir.</dd>
 
         <dt><code>2326</code> (<code>%b</code>)</dt>
@@ -378,14 +378,14 @@
       <example>
         127.0.0.1 - frank [10/Oct/2000:13:55:36 -0700] "GET
         /apache_pb.gif HTTP/1.0" 200 2326
-        "http://www.example.com/start.html" "Mozilla/4.08 [en]
+        "https://www.example.com/start.html" "Mozilla/4.08 [en]
         (Win98; I ;Nav)"
       </example>
 
       <p>Ek alanlar:</p>
 
       <dl>
-        <dt><code>"http://www.example.com/start.html"</code>
+        <dt><code>"https://www.example.com/start.html"</code>
         (<code>\"%{Referer}i\"</code>)</dt>
 
         <dd>HTTP istek başlığı "Referer". İstemcinin raporladığı isteğin
@@ -570,7 +570,7 @@
       aynı teknik hata günlüğü için de kullanılabilir.</p>
 
     <p>Hariçten bir uygulama olarak <a
-      href="http://www.cronolog.org/">cronolog</a> isminde buna benzer ancak
+      href="https://www.cronolog.org/">cronolog</a> isminde buna benzer ancak
       çok daha esnek bir program daha vardır.</p>
 
     <p>Borulu günlükler de şarta bağlı günlükleme kadar güçlü olmakla beraber

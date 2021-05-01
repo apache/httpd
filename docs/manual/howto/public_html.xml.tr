@@ -15,7 +15,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -33,7 +33,7 @@
   <p>Çok kullanıcılı sistemlerde, <directive module="mod_userdir"
     >UserDir</directive> yönergesi ile her kullanıcının kendi ev dizininde
     bir sitesi olması sağlanabilir.
-    <code>http://example.com/~kullanıcı/</code> adresinin ziyaretçileri
+    <code>https://example.com/~kullanıcı/</code> adresinin ziyaretçileri
     "kullanıcı" isimli kullanıcının ev dizininin içeriğini değil, <directive
     module="mod_userdir">UserDir</directive> yönergesinde belirtilen alt
     dizinin içeriğini görürler.</p>
@@ -84,7 +84,7 @@
       UserDir public_html
     </example>
 
-    <p><code>http://example.com/~orhan/dosya.html</code> adresine karşılık
+    <p><code>https://example.com/~orhan/dosya.html</code> adresine karşılık
       gelen dosya yolu <code>/home/orhan/public_html/dosya.html</code> olarak
       çözümlenir.</p>
 
@@ -97,7 +97,7 @@
       UserDir /var/html
     </example>
 
-    <p><code>http://example.com/~orhan/dosya.html</code> adresine karşılık
+    <p><code>https://example.com/~orhan/dosya.html</code> adresine karşılık
       gelen dosya yolu <code>/var/html/orhan/dosya.html</code> olarak
       çözümlenir.</p>
 
@@ -109,7 +109,7 @@
       UserDir /var/siteler/*/sayfam
     </example>
 
-    <p><code>http://example.com/~orhan/dosya.html</code> adresine karşılık
+    <p><code>https://example.com/~orhan/dosya.html</code> adresine karşılık
       gelen dosya yolu <code>/var/siteler/orhan/sayfam/dosya.html</code>
       olarak çözümlenir.</p>
 
@@ -119,7 +119,7 @@
       UserDir public_html /var/siteler
     </example>
 
-    <p><code>http://example.com/~orhan/dosya.html</code> adresini Apache önce
+    <p><code>https://example.com/~orhan/dosya.html</code> adresini Apache önce
       <code>/home/orhan/public_html/dosya.html</code> olarak arayacak,
       bulamazsa <code>/var/siteler/orhan/sayfam/dosya.html</code> olarak
       arayacak, bulduğunda istenen dosyayı sunacaktır.</p>
@@ -133,11 +133,11 @@
       kullanılabilir.</p>
 
     <example>
-      UserDir http://example.org/users/*/
+      UserDir https://example.org/users/*/
     </example>
 
-    <p>Bu yapılandırmaya göre <code>http://example.com/~bob/abc.html</code>
-    için yapılan bir istek <code>http://example.org/users/bob/abc.html</code>
+    <p>Bu yapılandırmaya göre <code>https://example.com/~bob/abc.html</code>
+    için yapılan bir istek <code>https://example.org/users/bob/abc.html</code>
     adresine yönlendirilecektir.</p>
   </section>
 
@@ -189,7 +189,7 @@
       yüklenebilir:</p>
 
     <example>
-      http://example.com/~orhan/cgi-bin/mesela.cgi
+      https://example.com/~orhan/cgi-bin/mesela.cgi
     </example>
 
     </section>

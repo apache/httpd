@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,14 +23,14 @@
 <modulesynopsis metafile="mod_auth_digest.xml.meta">
 
 <name>mod_auth_digest</name>
-<description>MD5 Digest AuthenticationÀ» »ç¿ëÇÑ »ç¿ëÀÚÀÎÁõ.</description>
+<description>MD5 Digest Authenticationï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.</description>
 <status>Experimental</status>
 <sourcefile>mod_auth_digest.c</sourcefile>
 <identifier>auth_digest_module</identifier>
 
 <summary>
-    <p>ÀÌ ¸ðµâÀº HTTP Digest AuthenticationÀ» ±¸ÇöÇÑ´Ù.
-    ±×·¯³ª ¸¹Àº Å×½ºÆ®¸¦ °ÅÄ¡Áö ¾ÊÀº ½ÇÇèÀûÀÎ ¸ðµâÀÌ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ HTTP Digest Authenticationï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+    ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½×½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ì´ï¿½.</p>
 </summary>
 
 <seealso><directive module="core">AuthName</directive></seealso>
@@ -38,26 +38,26 @@
 <seealso><directive module="core">Require</directive></seealso>
 <seealso><directive module="core">Satisfy</directive></seealso>
 
-<section id="using"><title>Digest Authentication »ç¿ëÇÏ±â</title>
+<section id="using"><title>Digest Authentication ï¿½ï¿½ï¿½ï¿½Ï±ï¿½</title>
 
-    <p>MD5 Digest authenticationÀº ¸Å¿ì ½±°Ô »ç¿ëÇÒ ¼ö ÀÖ´Ù.
-    <code>AuthType Basic</code>°ú <directive
-    module="mod_auth_basic">AuthBasicProvider</directive> ´ë½Å
-    <code>AuthType Digest</code>¿Í <directive
-    module="mod_auth_digest">AuthDigestProvider</directive>¸¦
-    »ç¿ëÇÏ¿© °£´ÜÈ÷ ÀÎÁõÀ» ¼³Á¤ÇÒ ¼ö ÀÖ´Ù. ±×¸®°í ÃÖ¼ÒÇÑ º¸È£ÇÏ·Á´Â
-    ¿µ¿ªÀÇ ±âº» URIÀ» <directive module="mod_auth_digest"
-    >AuthDigestDomain</directive> Áö½Ã¾î¿¡ »ç¿ëÇÑ´Ù.</p>
+    <p>MD5 Digest authenticationï¿½ï¿½ ï¿½Å¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.
+    <code>AuthType Basic</code>ï¿½ï¿½ <directive
+    module="mod_auth_basic">AuthBasicProvider</directive> ï¿½ï¿½ï¿½
+    <code>AuthType Digest</code>ï¿½ï¿½ <directive
+    module="mod_auth_digest">AuthDigestProvider</directive>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½×¸ï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½ï¿½ï¿½ ï¿½ï¿½È£ï¿½Ï·ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½âº» URIï¿½ï¿½ <directive module="mod_auth_digest"
+    >AuthDigestDomain</directive> ï¿½ï¿½ï¿½Ã¾î¿¡ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <p><a href="../programs/htdigest.html">htdigest</a> µµ±¸¸¦
-    »ç¿ëÇÏ¿© »ç¿ëÀÚ (¹®ÀÚ)ÆÄÀÏÀ» ¸¸µé ¼ö ÀÖ´Ù.</p>
+    <p><a href="../programs/htdigest.html">htdigest</a> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½)ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <example><title>¿¹Á¦:</title>
+    <example><title>ï¿½ï¿½ï¿½ï¿½:</title>
       &lt;Location /private/&gt;<br />
       <indent>
         AuthType Digest<br />
         AuthName "private area"<br />
-        AuthDigestDomain /private/ http://mirror.my.dom/private2/<br />
+        AuthDigestDomain /private/ https://mirror.my.dom/private2/<br />
 	<br />
 	AuthDigestProvider file<br />
         AuthUserFile /web/auth/.digest_pw<br />
@@ -66,59 +66,59 @@
       &lt;/Location&gt;
     </example>
 
-    <note><title>ÁÖÀÇ</title> 
-    <p>Digest authenticationÀº Basic authenticationº¸´Ù ´õ
-    ¾ÈÀüÇÏÁö¸¸, ºê¶ó¿ìÀú°¡ Áö¿øÇØ¾ß ÇÑ´Ù. 2002³â 11¿ù ÇöÀç digest
-    authenticationÀ» Áö¿øÇÏ´Â ºê¶ó¿ìÀú¿¡´Â <a
-    href="http://www.w3.org/Amaya/">Amaya</a>, <a
-    href="http://konqueror.kde.org/">Konqueror</a>, (Windows¿ëÀº
-    ÁúÀÇ¹®ÀÚ¿­°ú ÇÔ²² »ç¿ëÇÏ¸é ¾ÈµÇÁö¸¸ - ÇØ°á¹æ¹ýÀº ¾Æ·¡ "<a
-    href="#msie">MS Internet Explorer ¹®Á¦ ÇØ°áÇÏ±â</a>"¸¦ Âü°í)
-    Mac OS X¿Í Windows¿ë <a
-    href="http://www.microsoft.com/windows/ie/">MS Internet
-    Explorer</a>, <a href="http://www.mozilla.org">Mozilla</a>,
-    <a href="http://channels.netscape.com/ns/browsers/download.jsp"
-    >Netscape</a> ¹öÀü 7, <a href="http://www.opera.com/">Opera</a>,
-    <a href="http://www.apple.com/safari/">Safari</a> µîÀÌ ÀÖ´Ù.
-    <a href="http://lynx.isc.org/">lynx</a>´Â digest authenticationÀ»
-    Áö¿øÇÏÁö <strong>¾Ê´Â´Ù</strong>. digest authenticationÀÌ
-    basic authentication ¸¸Å­ ³Î¸® ±¸ÇöµÇÁö ¾Ê¾Ò±â¶§¹®¿¡ ¸ðµç
-    »ç¿ëÀÚ°¡ Áö¿øÇÏ´Â ºê¶ó¿ìÀú¸¦ »ç¿ëÇÏ´Â °æ¿ì¿¡¸¸ »ç¿ëÇØ¾ß
-    ÇÑ´Ù.</p>
+    <note><title>ï¿½ï¿½ï¿½ï¿½</title> 
+    <p>Digest authenticationï¿½ï¿½ Basic authenticationï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½. 2002ï¿½ï¿½ 11ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ digest
+    authenticationï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <a
+    href="https://www.w3.org/Amaya/">Amaya</a>, <a
+    href="https://konqueror.kde.org/">Konqueror</a>, (Windowsï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½Ç¹ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½Ô²ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½Èµï¿½ï¿½ï¿½ï¿½ï¿½ - ï¿½Ø°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ·ï¿½ "<a
+    href="#msie">MS Internet Explorer ï¿½ï¿½ï¿½ï¿½ ï¿½Ø°ï¿½ï¿½Ï±ï¿½</a>"ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
+    Mac OS Xï¿½ï¿½ Windowsï¿½ï¿½ <a
+    href="https://www.microsoft.com/windows/ie/">MS Internet
+    Explorer</a>, <a href="https://www.mozilla.org">Mozilla</a>,
+    <a href="https://channels.netscape.com/ns/browsers/download.jsp"
+    >Netscape</a> ï¿½ï¿½ï¿½ï¿½ 7, <a href="https://www.opera.com/">Opera</a>,
+    <a href="https://www.apple.com/safari/">Safari</a> ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½.
+    <a href="https://lynx.isc.org/">lynx</a>ï¿½ï¿½ digest authenticationï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <strong>ï¿½Ê´Â´ï¿½</strong>. digest authenticationï¿½ï¿½
+    basic authentication ï¿½ï¿½Å­ ï¿½Î¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¾Ò±â¶§ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ì¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½
+    ï¿½Ñ´ï¿½.</p>
     </note>
 </section>
 
-<section id="msie"><title>MS Internet Explorer ¹®Á¦ ÇØ°áÇÏ±â</title>
-    <p>ÇöÀç Windows¿ë Internet Explorer´Â Digest authentication
-    »ç¿ë½Ã ÁúÀÇ¹®ÀÚ¿­ÀÌ ÀÖ´Â <code>GET</code> ¿äÃ»À» RFC¿Í ´Ù¸£°Ô
-    Ã³¸®ÇÏ´Â ¹®Á¦°¡ ÀÖ´Ù. ¸î°¡Áö ¹æ¹ýÀ¸·Î ÀÌ ¹®Á¦¸¦ ÇØ°áÇÒ ¼ö
-    ÀÖ´Ù.</p>
+<section id="msie"><title>MS Internet Explorer ï¿½ï¿½ï¿½ï¿½ ï¿½Ø°ï¿½ï¿½Ï±ï¿½</title>
+    <p>ï¿½ï¿½ï¿½ï¿½ Windowsï¿½ï¿½ Internet Explorerï¿½ï¿½ Digest authentication
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ç¹ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ <code>GET</code> ï¿½ï¿½Ã»ï¿½ï¿½ RFCï¿½ï¿½ ï¿½Ù¸ï¿½ï¿½ï¿½
+    Ã³ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½î°¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ø°ï¿½ï¿½ï¿½ ï¿½ï¿½
+    ï¿½Ö´ï¿½.</p>
 
     <p>
-    Ã¹¹øÂ°´Â ÇÁ·Î±×·¥¿¡ ÀÚ·á¸¦ ³Ñ°ÜÁÖ±âÀ§ÇØ <code>GET</code>
-    ´ë½Å <code>POST</code> ¿äÃ»À» »ç¿ëÇÏ´Â ¹æ¹ýÀÌ´Ù. ÀÌ ¹æ¹ýÀÌ
-    °¡´ÉÇÏ´Ù¸é °¡Àå °£´ÜÇÑ ÇØ°áÃ¥ÀÌ´Ù.
+    Ã¹ï¿½ï¿½Â°ï¿½ï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ ï¿½Ú·á¸¦ ï¿½Ñ°ï¿½ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ <code>GET</code>
+    ï¿½ï¿½ï¿½ <code>POST</code> ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½Ì´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï´Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ø°ï¿½Ã¥ï¿½Ì´ï¿½.
     </p>
 
-    <p>¶Ç, ¾ÆÆÄÄ¡ 2.0.51ºÎÅÍ <code>AuthDigestEnableQueryStringHack</code>
-    È¯°æº¯¼ö¸¦ Á¦°øÇÏ¿© ¹®Á¦¸¦ ÇØ°áÇÑ´Ù. ¿äÃ»¿¡
-    <code>AuthDigestEnableQueryStringHack</code>À» ¼³Á¤ÇÏ¸é
-    ¾ÆÆÄÄ¡´Â MSIE ¹ö±×¸¦ ÇÇÇØ°¥ Á¶Ä¡¸¦ ÃëÇÏ°í ¿äÃ» URI¸¦ digest
-    ºñ±³¿¡¼­ Á¦¿ÜÇÑ´Ù. ÀÌ ¹æ¹ýÀº ´ÙÀ½°ú °°ÀÌ »ç¿ëÇÑ´Ù.</p>
+    <p>ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½Ä¡ 2.0.51ï¿½ï¿½ï¿½ï¿½ <code>AuthDigestEnableQueryStringHack</code>
+    È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ø°ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½Ã»ï¿½ï¿½
+    <code>AuthDigestEnableQueryStringHack</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ MSIE ï¿½ï¿½ï¿½×¸ï¿½ ï¿½ï¿½ï¿½Ø°ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½Ã» URIï¿½ï¿½ digest
+    ï¿½ñ±³¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <example><title>MSIE¿¡¼­ Digest Authentication »ç¿ëÇÏ±â:</title>
+    <example><title>MSIEï¿½ï¿½ï¿½ï¿½ Digest Authentication ï¿½ï¿½ï¿½ï¿½Ï±ï¿½:</title>
     BrowserMatch "MSIE" AuthDigestEnableQueryStringHack=On
     </example>
 
-    <p>¼±ÅÃÀûÀÎ È¯°æº¯¼ö ¼³Á¤¿¡ ´ëÇÑ ÀÚ¼¼ÇÑ ³»¿ëÀº <directive
-    module="mod_setenvif">BrowserMatch</directive> Áö½Ã¾î¸¦
-    Âü°íÇÏ¶ó.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ú¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <directive
+    module="mod_setenvif">BrowserMatch</directive> ï¿½ï¿½ï¿½Ã¾î¸¦
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.</p>
 </section>
 
 
 <directivesynopsis>
 <name>AuthDigestProvider</name>
-<description>ÀÌ À§Ä¡¿¡ ´ëÇÑ ÀÎÁõÁ¦°øÀÚ¸¦ ÁöÁ¤ÇÑ´Ù</description>
+<description>ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</description>
 <syntax>AuthDigestProvider On|Off|<var>provider-name</var>
 [<var>provider-name</var>] ...</syntax>
 <default>AuthDigestProvider On</default>
@@ -127,25 +127,25 @@
 <override>AuthConfig</override>
 
 <usage>
-    <p><directive>AuthDigestProvider</directive> Áö½Ã¾î´Â ÀÌ
-    À§Ä¡¿¡¼­ »ç¿ëÀÚ¸¦ ÀÎÁõÇÒ Á¦°øÀÚ¸¦ ÁöÁ¤ÇÑ´Ù. °ªÀÌ
-    <code>On</code>ÀÌ¸é ±âº»Á¦°øÀÚ(<code>file</code>)¸¦ »ç¿ëÇÑ´Ù.
-    <module>mod_authn_file</module> ¸ðµâÀÌ <code>file</code>
-    Á¦°øÀÚ¸¦ ±¸ÇöÇÏ±â¶§¹®¿¡ ¼­¹ö¿¡ ÀÌ ¸ðµâÀÌ ÀÖ´ÂÁö È®ÀÎÇØ¾ß
-    ÇÑ´Ù.</p>
+    <p><directive>AuthDigestProvider</directive> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½
+    ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½
+    <code>On</code>ï¿½Ì¸ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(<code>file</code>)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+    <module>mod_authn_file</module> ï¿½ï¿½ï¿½ï¿½ï¿½ <code>file</code>
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±â¶§ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ø¾ï¿½
+    ï¿½Ñ´ï¿½.</p>
 
-    <p>Á¦°øÀÚ´Â <module>mod_authn_dbm</module>°ú
-    <module>mod_authn_file</module>À» Âü°íÇÏ¶ó.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ <module>mod_authn_dbm</module>ï¿½ï¿½
+    <module>mod_authn_file</module>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.</p>
 
-    <p>°ªÀÌ <code>Off</code>ÀÌ¸é Á¦°øÀÚ ¸ñ·ÏÀ» Áö¿ì°í ±âº»»óÅÂ·Î
-    µ¹¾Æ°£´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ <code>Off</code>ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½Â·ï¿½
+    ï¿½ï¿½ï¿½Æ°ï¿½ï¿½ï¿½.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>AuthDigestQop</name>
-<description>digest authentication°¡ »ç¿ëÇÒ
-º¸È£¼öÁØ(quality-of-protection)À» ÁöÁ¤ÇÑ´Ù.</description>
+<description>digest authenticationï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½È£ï¿½ï¿½ï¿½ï¿½(quality-of-protection)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</description>
 <syntax>AuthDigestQop none|auth|auth-int [auth|auth-int]</syntax>
 <default>AuthDigestQop auth</default>
 <contextlist><context>directory</context><context>.htaccess</context>
@@ -153,26 +153,26 @@
 <override>AuthConfig</override>
 
 <usage>
-    <p><directive>AuthDigestQop</directive> Áö½Ã¾î´Â
-    <dfn>º¸È£¼öÁØ(quality-of-protection)</dfn>À» ÁöÁ¤ÇÑ´Ù.
-    <code>auth</code>´Â (»ç¿ëÀÚ¸í/¾ÏÈ£) ÀÎÁõ¸¸ ÇÏ°í,
-    <code>auth-int</code>´Â ÀÎÁõ°ú ¿Ï°á¼º °Ë»ç¸¦ (MD5 ÇØ½¬µµ
-    °è»êÇÏ¿© °Ë»çÇÑ´Ù) ÇÑ´Ù. <code>none</code>Àº (¿Ï°á¼º °Ë»ç¸¦
-    ÇÏÁö¾Ê´Â) ¿À·¡µÈ RFC-2069 digest ¾Ë°í¸®ÁòÀ» »ç¿ëÇÑ´Ù.
-    <code>auth</code>¿Í <code>auth-int</code>¸¦ ¸ðµÎ ÁöÁ¤ÇÒ
-    ¼ö ÀÖ´Ù. ÀÌ °æ¿ì ºê¶ó¿ìÀú´Â ¾î¶² °ÍÀ» »ç¿ëÇÒÁö ¼±ÅÃÇÑ´Ù.
-    ºê¶ó¿ìÀú°¡ ¾î´ø ÀÌÀ¯¿¡¼­°Ç challenge¸¦ ÁÁ¾ÆÇÏÁö ¾Ê´Â´Ù¸é
-    <code>none</code>À» »ç¿ëÇØ¾ß ÇÑ´Ù.</p>
+    <p><directive>AuthDigestQop</directive> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½
+    <dfn>ï¿½ï¿½È£ï¿½ï¿½ï¿½ï¿½(quality-of-protection)</dfn>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+    <code>auth</code>ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½/ï¿½ï¿½È£) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï°ï¿½,
+    <code>auth-int</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï°á¼º ï¿½Ë»ç¸¦ (MD5 ï¿½Ø½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½Ë»ï¿½ï¿½Ñ´ï¿½) ï¿½Ñ´ï¿½. <code>none</code>ï¿½ï¿½ (ï¿½Ï°á¼º ï¿½Ë»ç¸¦
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ê´ï¿½) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ RFC-2069 digest ï¿½Ë°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+    <code>auth</code>ï¿½ï¿½ <code>auth-int</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½î¶² ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ challengeï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´Ù¸ï¿½
+    <code>none</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½.</p>
 
     <note>
-      <code>auth-int</code>´Â ¾ÆÁ÷ ±¸ÇöµÇÁö ¾Ê¾Ò´Ù.
+      <code>auth-int</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¾Ò´ï¿½.
     </note>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>AuthDigestNonceLifetime</name>
-<description>¼­¹ö nonce°¡ À¯È¿ÇÑ ±â°£</description>
+<description>ï¿½ï¿½ï¿½ï¿½ nonceï¿½ï¿½ ï¿½ï¿½È¿ï¿½ï¿½ ï¿½â°£</description>
 <syntax>AuthDigestNonceLifetime <var>seconds</var></syntax>
 <default>AuthDigestNonceLifetime 300</default>
 <contextlist><context>directory</context><context>.htaccess</context>
@@ -180,72 +180,72 @@
 <override>AuthConfig</override>
 
 <usage>
-    <p><directive>AuthDigestNonceLifetime</directive> Áö½Ã¾î´Â
-    ¼­¹ö nonce°¡ À¯È¿ÇÑ ±â°£À» Á¶ÀýÇÑ´Ù. Å¬¶óÀÌ¾ðÆ®°¡ ¸¸±âµÈ
-    nonce¸¦ °¡Áö°í ¼­¹ö¿¡ Á¢±ÙÇÏ¸é ¼­¹ö´Â <code>stale=true</code>¿Í
-    ÇÔ²² 401À» ¹ÝÈ¯ÇÑ´Ù. <var>seconds</var>°¡ 0º¸´Ù Å©¸é nonce°¡
-    À¯È¿ÇÑ ±â°£À» ÁöÁ¤ÇÑ´Ù. ¾Æ¸¶µµ 10 ÃÊº¸´Ù ÀÛ°Ô ¼³Á¤ÇÏ¸é ¾ÈµÈ´Ù.
-    <var>seconds</var>°¡ 0º¸´Ù ÀÛÀ¸¸é nonce´Â ¿µ¿øÈ÷ ¸¸±âµÇÁö
-    ¾Ê´Â´Ù. <!-- ¾ÆÁ÷ ±¸ÇöµÇÁö ¾Ê¾ÒÀ½: <var>seconds</var>°¡
-    0ÀÌ¸é Å¬¶óÀÌ¾ðÆ®´Â Á¤È®È÷ ÇÑ¹ø¸¸ nonce¸¦ »ç¿ëÇÒ ¼ö ÀÖ´Ù.
-    ÇÑ¹ø¸¸ »ç¿ëÇÒ ¼ö ÀÖ´Â nonce´Â Àç»ý°ø°Ý(replay attack)¿¡
-    ´ëÇØ ´õ ¾ÈÀüÇÑ º¸¾ÈÀ» Á¦°øÇÏÁö¸¸, ºê¶ó¿ìÀú°¡ ¿äÃ»µéÀ» ¿¬¼ÓÇØ¼­
-    º¸³»°Å³ª ¿©·¯ ¿¬°áÀ» µ¿½Ã¿¡ ÇÒ ¼ö°¡ ¾ø¾î¼­ ¼º´ÉÀÌ »ó´çÈ÷
-    ¶³¾îÁú ¼ö ÀÖÀ½À» ÁÖÀÇÇÏ¶ó. ºê¶ó¿ìÀú´Â nonce¸¦ ÀÌ¹Ì »ç¿ëÇÏ¿´´ÂÁö
-    ½±°Ô ¾Ë¾Æ³¾ ¼ö ¾ø±â¶§¹®¿¡ ¿äÃ»À» ¿¬¼ÓÇØ¼­ º¸³½ÈÄ, Ã¹¹øÂ°
-    ¿äÃ»À» Á¦¿ÜÇÏ°í 401 ÀÀ´äÀ» ¹ÞÀº ´ÙÀ½ ¿äÃ»À» ´Ù½Ã º¸³»°Ô
-    µÈ´Ù. ¶Ç Àç»ý°ø°Ý¿¡ ´ëÇÑ º¸È£´Â POST ¿äÃ»°ú °°ÀÌ µ¿ÀûÀ¸·Î
-    ³»¿ëÀ» »ý¼ºÇÏ´Â °æ¿ì¿¡¸¸ ÀÇ¹Ì°¡ ÀÖÀ½À» ÁÖÀÇÇÏ¶ó. Á¤ÀûÀÎ
-    ³»¿ëÀÇ °æ¿ì °ø°ÝÀÚ´Â ÀÌ¹Ì ¿ÏÀüÇÑ ³»¿ëÀ» °¡Áö°í ÀÖÀ¸¹Ç·Î,
-    ÇÑ¹ø¸¸ »ç¿ëÇÒ ¼ö ÀÖ´Â nonce´Â ÀÇ¹Ì°¡ ¾ø´Ù. -->
+    <p><directive>AuthDigestNonceLifetime</directive> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ nonceï¿½ï¿½ ï¿½ï¿½È¿ï¿½ï¿½ ï¿½â°£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+    nonceï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>stale=true</code>ï¿½ï¿½
+    ï¿½Ô²ï¿½ 401ï¿½ï¿½ ï¿½ï¿½È¯ï¿½Ñ´ï¿½. <var>seconds</var>ï¿½ï¿½ 0ï¿½ï¿½ï¿½ï¿½ Å©ï¿½ï¿½ nonceï¿½ï¿½
+    ï¿½ï¿½È¿ï¿½ï¿½ ï¿½â°£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½Æ¸ï¿½ï¿½ï¿½ 10 ï¿½Êºï¿½ï¿½ï¿½ ï¿½Û°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ÈµÈ´ï¿½.
+    <var>seconds</var>ï¿½ï¿½ 0ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ nonceï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ê´Â´ï¿½. <!-- ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¾ï¿½ï¿½ï¿½: <var>seconds</var>ï¿½ï¿½
+    0ï¿½Ì¸ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½È®ï¿½ï¿½ ï¿½Ñ¹ï¿½ï¿½ï¿½ nonceï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.
+    ï¿½Ñ¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ nonceï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(replay attack)ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Å³ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¿ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½î¼­ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ nonceï¿½ï¿½ ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½Ë¾Æ³ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½â¶§ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, Ã¹ï¿½ï¿½Â°
+    ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ 401 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½È´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È£ï¿½ï¿½ POST ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ì¿¡ï¿½ï¿½ ï¿½Ç¹Ì°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½,
+    ï¿½Ñ¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ nonceï¿½ï¿½ ï¿½Ç¹Ì°ï¿½ ï¿½ï¿½ï¿½ï¿½. -->
     </p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>AuthDigestNonceFormat</name>
-<description>nonce¸¦ ¸¸µå´Â ¹æ¹ýÀ» °áÁ¤ÇÑ´Ù</description>
+<description>nonceï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</description>
 <syntax>AuthDigestNonceFormat <var>format</var></syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
 
 <usage>
-    <note>¾ÆÁ÷ ±¸ÇöµÇÁö ¾Ê¾Ò´Ù.</note>
-    <!-- AuthDigestNonceFormat Áö½Ã¾î´Â nonce¸¦ ¸¸µå´Â ¹æ¹ýÀ»
-    °áÁ¤ÇÑ´Ù. -->
+    <note>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¾Ò´ï¿½.</note>
+    <!-- AuthDigestNonceFormat ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ nonceï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. -->
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>AuthDigestNcCheck</name>
-<description>¼­¹ö°¡ º¸³»´Â nonce-count¸¦ °Ë»çÇÒÁö ¿©ºÎ</description>
+<description>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ nonce-countï¿½ï¿½ ï¿½Ë»ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</description>
 <syntax>AuthDigestNcCheck On|Off</syntax>
 <default>AuthDigestNcCheck Off</default>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
     <note>
-      ¾ÆÁ÷ ±¸ÇöµÇÁö ¾Ê¾Ò´Ù.
+      ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¾Ò´ï¿½.
     </note>
     <!--
-    <p>AuthDigestNcCheck Áö½Ã¾î´Â ¼­¹ö°¡ º¸³»´Â nonce-count¸¦
-    °Ë»çÇÒÁö °áÁ¤ÇÑ´Ù.</p>
+    <p>AuthDigestNcCheck ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ nonce-countï¿½ï¿½
+    ï¿½Ë»ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <p>º¸¾È»ó ±ÇÀåÇÏÁö¸¸ ÀÌ Áö½Ã¾î¸¦ OnÀ¸·Î ¼³Á¤ÇÏ¸é ¼º´ÉÀÌ
-    Å©°Ô ¶³¾îÁø´Ù. nonce-count¸¦ °Ë»çÇÏ·Á¸é (digest authentication
-    ¿©ºÎ¿Í °ü°è¾øÀÌ Authorization Çì´õ¸¦ º¸³»´Â) *¸ðµç* ¿äÃ»À»
-    ÀÓ°è¿µ¿ª(critical section)À» ÅëÇØ Ã³¸®ÇØ¾ß ÇÑ´Ù. ¼­¹ö°¡
-    Authorization Çì´õ¸¦ Æ÷ÇÔÇÑ ¸Å¿ì ¸¹Àº ¿äÃ»À» Ã³¸®ÇÑ´Ù¸é
-    ¼º´ÉÀÌ ÇöÀúÈ÷ ¶³¾îÁú ¼ö ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½È»ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦ Onï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½. nonce-countï¿½ï¿½ ï¿½Ë»ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ (digest authentication
+    ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Authorization ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½) *ï¿½ï¿½ï¿½* ï¿½ï¿½Ã»ï¿½ï¿½
+    ï¿½Ó°è¿µï¿½ï¿½(critical section)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    Authorization ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Å¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
      -->
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>AuthDigestAlgorithm</name>
-<description>digest authentication¿¡¼­ challenge¿Í response
-hash¸¦ °è»êÇÏ´Â ¾Ë°í¸®ÁòÀ» ¼±ÅÃÇÑ´Ù</description>
+<description>digest authenticationï¿½ï¿½ï¿½ï¿½ challengeï¿½ï¿½ response
+hashï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Ë°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</description>
 <syntax>AuthDigestAlgorithm MD5|MD5-sess</syntax>
 <default>AuthDigestAlgorithm MD5</default>
 <contextlist><context>directory</context><context>.htaccess</context>
@@ -253,70 +253,70 @@ hash¸¦ °è»êÇÏ´Â ¾Ë°í¸®ÁòÀ» ¼±ÅÃÇÑ´Ù</description>
 <override>AuthConfig</override>
 
 <usage>
-    <p><directive>AuthDigestAlgorithm</directive> Áö½Ã¾î´Â
-    challenge¿Í response hash¸¦ °è»êÇÏ´Â ¾Ë°í¸®ÁòÀ» ¼±ÅÃÇÑ´Ù.</p>
+    <p><directive>AuthDigestAlgorithm</directive> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½
+    challengeï¿½ï¿½ response hashï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Ë°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
     <note>
-      <code>MD5-sess</code>´Â ¾ÆÁ÷ ¿ÏÀüÈ÷ ±¸ÇöµÇÁö ¾Ê¾Ò´Ù.
+      <code>MD5-sess</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¾Ò´ï¿½.
     </note>
     <!--
-    <p><code>MD5-sess</code>¸¦ »ç¿ëÇÏ·Á¸é
-    <code>mod_auth_digest.c</code>ÀÇ <code>get_userpw_hash()</code>
-    ÇÔ¼ö¸¦ ¸ÕÀú ÀÛ¼ºÇØ¾ß ÇÑ´Ù.</p>
+    <p><code>MD5-sess</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½
+    <code>mod_auth_digest.c</code>ï¿½ï¿½ <code>get_userpw_hash()</code>
+    ï¿½Ô¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Û¼ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½.</p>
     -->
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>AuthDigestDomain</name>
-<description>digest authentication¿¡¼­ °°Àº º¸È£¿µ¿ª¿¡ ¼ÓÇÏ´Â
-URIµé</description>
+<description>digest authenticationï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½
+URIï¿½ï¿½</description>
 <syntax>AuthDigestDomain <var>URI</var> [<var>URI</var>] ...</syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
 
 <usage>
-    <p><directive>AuthDigestDomain</directive> Áö½Ã¾î´Â °°Àº
-    º¸È£¿µ¿ª¿¡ ÀÖ´Â (<em>¿¹¸¦ µé¾î</em> °°Àº ¿µ¿ª°ú »ç¿ëÀÚ¸í/¾ÏÈ£
-    Á¤º¸¸¦ »ç¿ëÇÏ´Â) URIµéÀ» ÁöÁ¤ÇÑ´Ù. ÁöÁ¤ÇÑ URI´Â Á¢µÎ»ç·Î
-    »ç¿ëÇÑ´Ù. Å¬¶óÀÌ¾ðÆ®´Â URI "¾Æ·¡" ¸ðµÎ¸¦
-    °°Àº »ç¿ëÀÚ¸í/¾ÏÈ£·Î º¸È£ÇÑ´Ù°í °¡Á¤ÇÑ´Ù. URI´Â
-    (<em>Áï</em>, ½ºÅ´(scheme), È£½ºÆ®, Æ÷Æ® µîÀ» Æ÷ÇÔÇÏ´Â)
-    Àý´ë URLÀÌ°Å³ª »ó´ë URIÀÌ´Ù.</p>
+    <p><directive>AuthDigestDomain</directive> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½È£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ (<em>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½</em> ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½/ï¿½ï¿½È£
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½) URIï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ URIï¿½ï¿½ ï¿½ï¿½ï¿½Î»ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ URI "ï¿½Æ·ï¿½" ï¿½ï¿½Î¸ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½/ï¿½ï¿½È£ï¿½ï¿½ ï¿½ï¿½È£ï¿½Ñ´Ù°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. URIï¿½ï¿½
+    (<em>ï¿½ï¿½</em>, ï¿½ï¿½Å´(scheme), È£ï¿½ï¿½Æ®, ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½)
+    ï¿½ï¿½ï¿½ï¿½ URLï¿½Ì°Å³ï¿½ ï¿½ï¿½ï¿½ URIï¿½Ì´ï¿½.</p>
 
-    <p>ÀÌ Áö½Ã¾î´Â Ç×»ó <em>ÁöÁ¤ÇØ¾ß</em> ÇÏ¸ç, ÃÖ¼ÒÇÑ ¿µ¿ªµéÀÇ
-    ±âº» URI(µé)¸¦ Æ÷ÇÔ<em>ÇØ¾ß</em> ÇÑ´Ù. »ý·«ÇÏ¸é Å¬¶óÀÌ¾ðÆ®´Â
-    ÀÌ ¼­¹ö·Î º¸³»´Â <em>¸ðµç ¿äÃ»</em>¿¡ Authorization Çì´õ¸¦
-    Æ÷ÇÔÇÑ´Ù. ±×·¯¸é ¿äÃ»ÀÇ Å©±â°¡ Ä¿Áö¸ç, <directive
-    module="mod_auth_digest">AuthDigestNcCheck</directive>¸¦
-    »ç¿ëÇÑ´Ù¸é ¼º´É¿¡ ³ª»Û ¿µÇâÀ» ÁÙ ¼ö ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½×»ï¿½ <em>ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½</em> ï¿½Ï¸ï¿½, ï¿½Ö¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½âº» URI(ï¿½ï¿½)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½<em>ï¿½Ø¾ï¿½</em> ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½
+    ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <em>ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»</em>ï¿½ï¿½ Authorization ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ Å©ï¿½â°¡ Ä¿ï¿½ï¿½ï¿½ï¿½, <directive
+    module="mod_auth_digest">AuthDigestNcCheck</directive>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½ ï¿½ï¿½ï¿½É¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <p>´Ù¸¥ ¼­¹öÀÇ URI¸¦ ÁöÁ¤ÇÏ¸é, (ÀÌ¸¦ ÀÌÇØÇÏ´Â) Å¬¶óÀÌ¾ðÆ®´Â
-    ¿©·¯ ¼­¹ö¸¶´Ù ¸Å¹ø »ç¿ëÀÚ¿¡°Ô ¹¯Áö¾Ê°í °°Àº »ç¿ëÀÚ¸í/¾ÏÈ£¸¦
-    »ç¿ëÇÒ ¼ö ÀÖ´Ù.</p>
+    <p>ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ URIï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½, (ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½) Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Å¹ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ê°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½/ï¿½ï¿½È£ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>AuthDigestShmemSize</name>
-<description>Å¬¶óÀÌ¾ðÆ®¸¦ ÃßÀûÇÏ±âÀ§ÇØ ÇÒ´çÇÏ´Â °øÀ¯¸Þ¸ð¸®·®</description>
+<description>Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ò´ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Þ¸ð¸®·ï¿½</description>
 <syntax>AuthDigestShmemSize <var>size</var></syntax>
 <default>AuthDigestShmemSize 1000</default>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p><directive>AuthDigestShmemSize</directive> Áö½Ã¾î´Â
-    Å¬¶óÀÌ¾ðÆ®¸¦ ÃßÀûÇÏ±âÀ§ÇØ ¼­¹ö°¡ ½ÃÀÛÇÒ¶§ ÇÒ´çÇÏ´Â
-    °øÀ¯¸Þ¸ð¸®·®À» Á¤ÀÇÇÑ´Ù. °øÀ¯¸Þ¸ð¸®´Â ÃÖ¼ÒÇÑ <em>ÇÏ³ªÀÇ</em>
-    Å¬¶óÀÌ¾ðÆ®¸¦ ÃßÀûÇÏ±âÀ§ÇØ ÇÊ¿äÇÑ °ø°£º¸´Ù ÀÛÀ» ¼ö ¾øÀ½À»
-    ÁÖÀÇÇÏ¶ó. ÀÌ °ªÀº ½Ã½ºÅÛ¿¡ µû¶ó ´Ù¸£´Ù. Á¤È®ÇÑ °ªÀ» ¾Ë·Á¸é
-    <directive>AuthDigestShmemSize</directive>¸¦ <code>0</code>À¸·Î
-    ¼³Á¤ÇÏ°í ¼­¹ö¸¦ ½ÃÀÛÇÑÈÄ ¿À·ù¹®À» Âü°íÇÏ¶ó.</p>
+    <p><directive>AuthDigestShmemSize</directive> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½
+    Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ ï¿½Ò´ï¿½ï¿½Ï´ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Þ¸ð¸®·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½Þ¸ð¸®´ï¿½ ï¿½Ö¼ï¿½ï¿½ï¿½ <em>ï¿½Ï³ï¿½ï¿½ï¿½</em>
+    Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã½ï¿½ï¿½Û¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ï¿½ï¿½. ï¿½ï¿½È®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ë·ï¿½ï¿½ï¿½
+    <directive>AuthDigestShmemSize</directive>ï¿½ï¿½ <code>0</code>ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.</p>
 
-    <p><var>size</var>´Â º¸Åë ¹ÙÀÌÆ® ´ÜÀ§ÀÌÁö¸¸, µÚ¿¡
-    <code>K</code>³ª <code>M</code>À» »ç¿ëÇÏ¿© KBytes³ª MBytes¸¦
-    ³ªÅ¸³¾ ¼ö ÀÖ´Ù. ¿¹¸¦ µé¾î, ´ÙÀ½ Áö½Ã¾îµéÀº ¸ðµÎ °°´Ù:</p>
+    <p><var>size</var>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½Ú¿ï¿½
+    <code>K</code>ï¿½ï¿½ <code>M</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ KBytesï¿½ï¿½ MBytesï¿½ï¿½
+    ï¿½ï¿½Å¸ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½:</p>
 
     <example>
       AuthDigestShmemSize 1048576<br />

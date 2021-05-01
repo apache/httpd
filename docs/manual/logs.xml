@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -210,7 +210,7 @@
     part of the job of the web server itself. For more information
     about this topic, and for applications which perform log
     analysis, check the <a
-    href="http://dmoz.org/Computers/Software/Internet/Site_Management/Log_Analysis/">
+    href="https://dmoz.org/Computers/Software/Internet/Site_Management/Log_Analysis/">
     Open Directory</a>.
     </p>
 
@@ -361,7 +361,7 @@ CustomLog "logs/access_log" common
         error caused by the client (codes beginning in 4), or an
         error in the server (codes beginning in 5). The full list of
         possible status codes can be found in the <a
-        href="http://www.w3.org/Protocols/rfc2616/rfc2616.txt">HTTP
+        href="https://www.w3.org/Protocols/rfc2616/rfc2616.txt">HTTP
         specification</a> (RFC2616 section 10).</dd>
 
         <dt><code>2326</code> (<code>%b</code>)</dt>
@@ -395,14 +395,14 @@ CustomLog "log/access_log" combined
       <example>
         127.0.0.1 - frank [10/Oct/2000:13:55:36 -0700] "GET
         /apache_pb.gif HTTP/1.0" 200 2326
-        "http://www.example.com/start.html" "Mozilla/4.08 [en]
+        "https://www.example.com/start.html" "Mozilla/4.08 [en]
         (Win98; I ;Nav)"
       </example>
 
       <p>The additional fields are:</p>
 
       <dl>
-        <dt><code>"http://www.example.com/start.html"</code>
+        <dt><code>"https://www.example.com/start.html"</code>
         (<code>\"%{Referer}i\"</code>)</dt>
 
         <dd>The "Referer" (sic) HTTP request header. This gives the

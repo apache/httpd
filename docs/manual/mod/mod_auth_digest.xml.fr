@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -34,7 +34,7 @@ MD5</description>
 <summary>
     <p>Ce module implémente l'authentification HTTP basée sur les
     condensés MD5 (<a
-    href="http://www.faqs.org/rfcs/rfc2617.html">RFC2617</a>), et
+    href="https://www.faqs.org/rfcs/rfc2617.html">RFC2617</a>), et
     fournit une alternative à <module>mod_auth_basic</module> en
     ne transmettant plus le mot de passe en clair. Cependant, cela ne
     suffit pas pour améliorer la sécurité de manière significative par
@@ -64,7 +64,7 @@ condensés</title>
 &lt;Location "/private/"&gt;
     AuthType Digest
     AuthName "private area"
-    AuthDigestDomain "/private/" "http://mirror.my.dom/private2/"
+    AuthDigestDomain "/private/" "https://mirror.my.dom/private2/"
     
     AuthDigestProvider file
     AuthUserFile "/web/auth/.digest_pw"

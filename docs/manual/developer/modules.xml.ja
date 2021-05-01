@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -61,7 +61,7 @@
 
     <section id="datatypes"><title>データ型</title>
       <p>データ型のほとんどは <a
-      href="http://apr.apache.org/">APR</a> に移されました。つまり、
+      href="https://apr.apache.org/">APR</a> に移されました。つまり、
       いくつかの名前が前述のように変更されています。
       施すべき変更点の簡単な一覧を以下に示します。</p>
 

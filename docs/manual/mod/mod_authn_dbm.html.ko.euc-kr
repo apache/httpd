@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
 <meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -17,45 +17,45 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">¸ðµâ</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">ï¿½ï¿½ï¿½</a></div>
 <div id="page-content">
-<div id="preamble"><h1>¾ÆÆÄÄ¡ ¸ðµâ mod_authn_dbm</h1>
+<div id="preamble"><h1>ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ mod_authn_dbm</h1>
 <div class="toplang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/mod/mod_authn_dbm.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/mod/mod_authn_dbm.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_authn_dbm.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_authn_dbm.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_authn_dbm.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">ÀÌ ¹®¼­´Â ÃÖ½ÅÆÇ ¹ø¿ªÀÌ ¾Æ´Õ´Ï´Ù.
-            ÃÖ±Ù¿¡ º¯°æµÈ ³»¿ëÀº ¿µ¾î ¹®¼­¸¦ Âü°íÇÏ¼¼¿ä.</div>
-<table class="module"><tr><th><a href="module-dict.html#Description">¼³¸í:</a></th><td>DBM ÆÄÀÏÀ» »ç¿ëÇÑ »ç¿ëÀÚ ÀÎÁõ</td></tr>
-<tr><th><a href="module-dict.html#Status">»óÅÂ:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">¸ðµâ¸í:</a></th><td>authn_dbm_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">¼Ò½ºÆÄÀÏ:</a></th><td>mod_authn_dbm.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Áö¿ø:</a></th><td>¾ÆÆÄÄ¡ 2.1 ÀÌÈÄºÎÅÍ</td></tr></table>
-<h3>¿ä¾à</h3>
+<div class="outofdate">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Õ´Ï´ï¿½.
+            ï¿½Ö±Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>DBM ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</td></tr>
+<tr><th><a href="module-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">ï¿½ï¿½ï¿½ï¿½:</a></th><td>authn_dbm_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">ï¿½Ò½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>mod_authn_dbm.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½ï¿½ï¿½Ä¡ 2.1 ï¿½ï¿½ï¿½Äºï¿½ï¿½ï¿½</td></tr></table>
+<h3>ï¿½ï¿½ï¿½</h3>
 
-    <p>ÀÌ ¸ðµâÀº <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>³ª
-    <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> ÀÎÁõ¾Õ´Ü¸ðµâÀ» À§ÇØ
-    <dfn>dbm</dfn> ¾ÏÈ£ÆÄÀÏ¿¡¼­ »ç¿ëÀÚ¸¦ Ã£¾Æ¼­ ÀÎÁõÇÑ´Ù.
-    <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code>°ú ±â´ÉÀÌ ºñ½ÁÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>ï¿½ï¿½
+    <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ü¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    <dfn>dbm</dfn> ï¿½ï¿½È£ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ Ã£ï¿½Æ¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+    <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <p><code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code>ÀÌ³ª
-    <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>¸¦ »ç¿ëÇÒ¶§ <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code>³ª
-    <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></code>ÀÇ
-    °ªÀ¸·Î <code>dbm</code>À» ¼³Á¤ÇÏ¸é ÀÌ ¸ðµâÀ» »ç¿ëÇÑ´Ù.</p>
+    <p><code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code>ï¿½Ì³ï¿½
+    <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code>ï¿½ï¿½
+    <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></code>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>dbm</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 </div>
-<div id="quickview"><h3 class="directives">Áö½Ã¾îµé</h3>
+<div id="quickview"><h3 class="directives">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#authdbmtype">AuthDBMType</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authdbmuserfile">AuthDBMUserFile</a></li>
 </ul>
-<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_authn_dbm">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_authn_dbm">Report a bug</a></li></ul><h3>Âü°í</h3>
+<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_authn_dbm">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_authn_dbm">Report a bug</a></li></ul><h3>ï¿½ï¿½ï¿½ï¿½</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/core.html#authname">AuthName</a></code></li>
 <li><code class="directive"><a href="../mod/core.html#authtype">AuthType</a></code></li>
@@ -68,74 +68,74 @@
 <li><a href="#comments_section">Comments</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthDBMType" id="AuthDBMType">AuthDBMType</a> <a name="authdbmtype" id="authdbmtype">Áö½Ã¾î</a> <a title="Permanent link" href="#authdbmtype" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="AuthDBMType" id="AuthDBMType">AuthDBMType</a> <a name="authdbmtype" id="authdbmtype">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#authdbmtype" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>¾ÏÈ£¸¦ ÀúÀåÇÏ´Â µ¥ÀÌÅÍº£ÀÌ½º ÆÄÀÏ Á¾·ù¸¦
-ÁöÁ¤ÇÑ´Ù</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>AuthDBMType default|SDBM|GDBM|NDBM|DB</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">±âº»°ª:</a></th><td><code>AuthDBMType default</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override ¿É¼Ç:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_authn_dbm</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½È£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Íºï¿½ï¿½Ì½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>AuthDBMType default|SDBM|GDBM|NDBM|DB</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">ï¿½âº»ï¿½ï¿½:</a></th><td><code>AuthDBMType default</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override ï¿½É¼ï¿½:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_authn_dbm</td></tr>
 </table>
-    <p>¾ÏÈ£¸¦ ÀúÀåÇÏ´Â µ¥ÀÌÅÍº£ÀÌ½º ÆÄÀÏ Á¾·ù¸¦ ÁöÁ¤ÇÑ´Ù. ±âº»
-    µ¥ÀÌÅÍº£ÀÌ½º Á¾·ù´Â ÄÄÆÄÀÏ¶§ ÆÇ´ÜÇÑ´Ù. »ç¿ëÇÒ ¼ö ÀÖ´Â ´Ù¸¥
-    µ¥ÀÌÅÍº£ÀÌ½º ÆÄÀÏ Á¾·ùµµ <a href="../install.html#dbm">ÄÄÆÄÀÏ
-    ¼³Á¤</a>¿¡ ´Þ·È´Ù.</p>
+    <p>ï¿½ï¿½È£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Íºï¿½ï¿½Ì½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½âº»
+    ï¿½ï¿½ï¿½ï¿½ï¿½Íºï¿½ï¿½Ì½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½ ï¿½Ç´ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½Ù¸ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Íºï¿½ï¿½Ì½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <a href="../install.html#dbm">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½</a>ï¿½ï¿½ ï¿½Þ·È´ï¿½.</p>
 
-    <p>¾ÏÈ£ÆÄÀÏÀ» ¸¸µå´Â ÇÁ·Î±×·¥ÀÌ °°Àº Á¾·ùÀÇ µ¥ÀÌÅÍº£ÀÌ½º¸¦
-    »ç¿ëÇÏµµ·Ï ¼³Á¤ÇØ¾ß ÇÑ´Ù.</p>
+    <p>ï¿½ï¿½È£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Íºï¿½ï¿½Ì½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthDBMUserFile" id="AuthDBMUserFile">AuthDBMUserFile</a> <a name="authdbmuserfile" id="authdbmuserfile">Áö½Ã¾î</a> <a title="Permanent link" href="#authdbmuserfile" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="AuthDBMUserFile" id="AuthDBMUserFile">AuthDBMUserFile</a> <a name="authdbmuserfile" id="authdbmuserfile">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#authdbmuserfile" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>ÀÎÁõÇÒ »ç¿ëÀÚ¿Í ¾ÏÈ£ ¸ñ·ÏÀ» ÀúÀåÇÏ´Â µ¥ÀÌÅÍº£ÀÌ½º
-ÆÄÀÏ¸íÀ» ÁöÁ¤ÇÑ´Ù</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>AuthDBMUserFile <var>file-path</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override ¿É¼Ç:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_authn_dbm</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¿ï¿½ ï¿½ï¿½È£ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Íºï¿½ï¿½Ì½ï¿½
+ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>AuthDBMUserFile <var>file-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override ï¿½É¼ï¿½:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_authn_dbm</td></tr>
 </table>
-    <p><code class="directive">AuthDBMUserFile</code> Áö½Ã¾î´Â »ç¿ëÀÚ
-    ÀÎÁõ¿¡ »ç¿ëÇÒ »ç¿ëÀÚ¿Í ¾ÏÈ£ ¸ñ·ÏÀ» ÀúÀåÇÏ´Â DBM ÆÄÀÏ¸íÀ»
-    ÁöÁ¤ÇÑ´Ù. <var>File-path</var>´Â ÆÄÀÏÀÇ Àý´ë°æ·ÎÀÌ´Ù.</p>
+    <p><code class="directive">AuthDBMUserFile</code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¿ï¿½ ï¿½ï¿½È£ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ DBM ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <var>File-path</var>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½.</p>
 
-    <p>ÆÄÀÏÀº »ç¿ëÀÚ¸íÀ» Å°·Î »ç¿ëÇÑ´Ù. »ç¿ëÀÚ¿¡ ´ëÇÑ °ªÀº
-    ÀÎÄÚµùµÈ ¾ÏÈ£ÀÌ´Ù. ¾ÏÈ£ µÚ¿¡ ÄÝ·Ð°ú ÀÓÀÇÀÇ Á¤º¸°¡ ³ª¿Ã ¼ö
-    ÀÖ´Ù. ¼­¹ö´Â ÄÝ·Ð°ú µÚ¿¡ ³ª¿À´Â Á¤º¸¸¦ ¹«½ÃÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ï¿½ï¿½ Å°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½Ú¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½Úµï¿½ï¿½ï¿½ ï¿½ï¿½È£ï¿½Ì´ï¿½. ï¿½ï¿½È£ ï¿½Ú¿ï¿½ ï¿½Ý·Ð°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+    ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ý·Ð°ï¿½ ï¿½Ú¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
-    <div class="warning"><h3>º¸¾È:</h3>
-      <p><code class="directive">AuthDBMUserFile</code>ÀÌ À¥¼­¹öÀÇ ¹®¼­µé
-      ¹Û¿¡ ÀÖÀ½À» È®ÀÎÇÏ¶ó. ÀÌ ÆÄÀÏÀ» º¸È£ÇÒ µð·ºÅä¸® ¾È¿¡ °°ÀÌ
-      µÎÁö <em>¸¶¶ó</em>. ±×·¸Áö ¾ÊÀ¸¸é, Å¬¶óÀÌ¾ðÆ®°¡
-      <code class="directive">AuthDBMUserFile</code>À» ´Ù¿î·ÎµåÇÒ ¼ö
-      ÀÖ´Ù.</p>
+    <div class="warning"><h3>ï¿½ï¿½ï¿½ï¿½:</h3>
+      <p><code class="directive">AuthDBMUserFile</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½Û¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ï¶ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È£ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸® ï¿½È¿ï¿½ ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ <em>ï¿½ï¿½ï¿½ï¿½</em>. ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½
+      <code class="directive">AuthDBMUserFile</code>ï¿½ï¿½ ï¿½Ù¿ï¿½Îµï¿½ï¿½ï¿½ ï¿½ï¿½
+      ï¿½Ö´ï¿½.</p>
     </div>
 
-    <p>Áß¿äÇÑ È£È¯¼º ÁÖÀÇ: ¾ÆÆÄÄ¡ ¸ðµâÀÇ <code>dbmopen</code>
-    ±¸ÇöÀº ¹®ÀÚ¿­ ³¡ÀÇ NULL¿¡ ÀÇÁ¸ÇÏÁö¾Ê°í DBM ÀÚ·á±¸Á¶¿¡¼­
-    ÇØ½Ì°ªÀÇ ¹®ÀÚ¿­ ±æÀÌ¸¦ ÀÐ´Â´Ù. Netscape À¥¼­¹ö µî ¾î¶²
-    ÇÁ·Î±×·¥Àº ¹®ÀÚ¿­ÀÌ NULL·Î ³¡³­´Ù°í °¡Á¤ÇÏ±â¶§¹®¿¡ ¿©·¯
-    ÇÁ·Î±×·¥ÀÌ DBM ÆÄÀÏÀ» »ç¿ëÇÏ¸é ¹®Á¦°¡ µÉ ¼ö ÀÖ´Ù.</p>
+    <p>ï¿½ß¿ï¿½ï¿½ï¿½ È£È¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½: ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ <code>dbmopen</code>
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ú¿ï¿½ ï¿½ï¿½ï¿½ï¿½ NULLï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê°ï¿½ DBM ï¿½Ú·á±¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ø½Ì°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ú¿ï¿½ ï¿½ï¿½ï¿½Ì¸ï¿½ ï¿½Ð´Â´ï¿½. Netscape ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½î¶²
+    ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ NULLï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ù°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±â¶§ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ DBM ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <p>¾ÆÆÄÄ¡´Â <a href="../programs/dbmmanage.html">dbmmanage</a>¶ó´Â
-    Perl ½ºÅ©¸³Æ®¸¦ Æ÷ÇÔÇÑ´Ù. ÀÌ ÇÁ·Î±×·¥Àº ÀÌ ¸ðµâÀÌ »ç¿ëÇÒ
-    DBMÇü½Ä ¾ÏÈ£ÆÄÀÏÀ» ¸¸µé°í ¼öÁ¤ÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ <a href="../programs/dbmmanage.html">dbmmanage</a>ï¿½ï¿½ï¿½
+    Perl ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+    DBMï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
 </div>
 </div>
 <div class="bottomlang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/mod/mod_authn_dbm.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/mod/mod_authn_dbm.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_authn_dbm.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_authn_dbm.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_authn_dbm.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_authn_dbm.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/mod/mod_authn_dbm.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -150,8 +150,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_authn_dbm.
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

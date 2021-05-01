@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
 <meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>¾ÆÆÄÄ¡¿¡¼­ ÇÚµé·¯ »ç¿ë - Apache HTTP Server Version 2.5</title>
+<title>ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ ï¿½Úµé·¯ ï¿½ï¿½ï¿½ - Apache HTTP Server Version 2.5</title>
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
@@ -16,14 +16,14 @@
 
 <link href="./images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">¸ðµâ</a> | <a href="./mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">¿ë¾î</a> | <a href="./sitemap.html">»çÀÌÆ®¸Ê</a></p>
+<p class="menu"><a href="./mod/">ï¿½ï¿½ï¿½</a> | <a href="./mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">ï¿½ï¿½ï¿½</a> | <a href="./sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="./images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>¾ÆÆÄÄ¡¿¡¼­ ÇÚµé·¯ »ç¿ë</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ ï¿½Úµé·¯ ï¿½ï¿½ï¿½</h1>
 <div class="toplang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="./en/handler.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="./en/handler.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/handler.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
 <a href="./fr/handler.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/handler.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
@@ -31,90 +31,90 @@
 <a href="./tr/handler.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/handler.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">ÀÌ ¹®¼­´Â ÃÖ½ÅÆÇ ¹ø¿ªÀÌ ¾Æ´Õ´Ï´Ù.
-            ÃÖ±Ù¿¡ º¯°æµÈ ³»¿ëÀº ¿µ¾î ¹®¼­¸¦ Âü°íÇÏ¼¼¿ä.</div>
+<div class="outofdate">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Õ´Ï´ï¿½.
+            ï¿½Ö±Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.</div>
 
-    <p>ÀÌ ¹®¼­´Â ¾ÆÆÄÄ¡¿¡¼­ ÇÚµé·¯¸¦ »ç¿ëÇÏ´Â ¹æ¹ýÀ» ¼³¸íÇÑ´Ù.</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ ï¿½Úµé·¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#definition">ÇÚµé·¯°¡ ¹«¾ùÀÎ°¡</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#examples">¿¹Á¦</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#programmer">ÇÁ·Î±×·¡¸Ó¸¦ À§ÇÑ Á¤º¸</a></li>
-</ul><h3>Âü°í</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#definition">ï¿½Úµé·¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Î°ï¿½</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#examples">ï¿½ï¿½ï¿½ï¿½</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#programmer">ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½Ó¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a></li>
+</ul><h3>ï¿½ï¿½ï¿½ï¿½</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="definition" id="definition">ÇÚµé·¯°¡ ¹«¾ùÀÎ°¡</a> <a title="Permanent link" href="#definition" class="permalink">&para;</a></h2>
+<h2><a name="definition" id="definition">ï¿½Úµé·¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Î°ï¿½</a> <a title="Permanent link" href="#definition" class="permalink">&para;</a></h2>
     
-    <table class="related"><tr><th>°ü·ÃµÈ ¸ðµâ</th><th>°ü·ÃµÈ Áö½Ã¾î</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_actions.html">mod_actions</a></code></li><li><code class="module"><a href="./mod/mod_asis.html">mod_asis</a></code></li><li><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="./mod/mod_imagemap.html">mod_imagemap</a></code></li><li><code class="module"><a href="./mod/mod_info.html">mod_info</a></code></li><li><code class="module"><a href="./mod/mod_mime.html">mod_mime</a></code></li><li><code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code></li><li><code class="module"><a href="./mod/mod_status.html">mod_status</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_actions.html#action">Action</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#addhandler">AddHandler</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#removehandler">RemoveHandler</a></code></li><li><code class="directive"><a href="./mod/core.html#sethandler">SetHandler</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>ï¿½ï¿½ï¿½Ãµï¿½ ï¿½ï¿½ï¿½</th><th>ï¿½ï¿½ï¿½Ãµï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_actions.html">mod_actions</a></code></li><li><code class="module"><a href="./mod/mod_asis.html">mod_asis</a></code></li><li><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="./mod/mod_imagemap.html">mod_imagemap</a></code></li><li><code class="module"><a href="./mod/mod_info.html">mod_info</a></code></li><li><code class="module"><a href="./mod/mod_mime.html">mod_mime</a></code></li><li><code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code></li><li><code class="module"><a href="./mod/mod_status.html">mod_status</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_actions.html#action">Action</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#addhandler">AddHandler</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#removehandler">RemoveHandler</a></code></li><li><code class="directive"><a href="./mod/core.html#sethandler">SetHandler</a></code></li></ul></td></tr></table>
 
 
-    <p>ÆÄÀÏÀ» ¿äÃ»ÇÒ¶§ ¾ÆÆÄÄ¡°¡ ³»ºÎÀûÀ¸·Î ¼öÇàÇÒ ÀÛ¾÷À»
-    "ÇÚµé·¯(handler)"¶ó°í ÇÑ´Ù. ÀÏ¹ÝÀûÀ¸·Î ÆÄÀÏÀº ÆÄÀÏ Á¾·ù¿¡
-    µû¶ó ¾Ï¹¬ÀûÀÎ ÇÚµé·¯¸¦ °¡Áö°í ÀÖ´Ù. ¸ðµç ÆÄÀÏÀº º¸Åë °£´ÜÈ÷
-    ¼­¹ö°¡ ¼­ºñ½ºÇÏÁö¸¸, ¾î¶² ÆÄÀÏ Á¾·ù´Â µû·Î "Ã³¸®µÈ´Ù(handled)".</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½Ò¶ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Û¾ï¿½ï¿½ï¿½
+    "ï¿½Úµé·¯(handler)"ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½. ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Úµé·¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½î¶² ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ "Ã³ï¿½ï¿½ï¿½È´ï¿½(handled)".</p>
 
-    <p>Apache 1.1ºÎÅÍ ÇÚµé·¯¸¦ ¸í½ÃÀûÀ¸·Î »ç¿ëÇÒ ¼ö ÀÖ°Ô µÇ¾ú´Ù.
-    ÆÄÀÏ Á¾·ù¿Í °ü°è¾øÀÌ ÇÚµé·¯¸¦ ÆÄÀÏÀÇ È®ÀåÀÚ³ª À§Ä¡¿¡ µû¶ó
-    ÁöÁ¤ÇÒ ¼ö ÀÖ´Ù. ÀÌ´Â ´õ ÈÇ¸¢ÇÑ ¹æ¹ýÀÌ°í ÆÄÀÏÀ» Á¾·ù¿Í ÇÚµé·¯
-    µÑ ¸ðµÎ¿Í ¿¬°èÇÒ ¼ö ÀÖ±â¶§¹®¿¡ ÁÁ´Ù. (<a href="mod/mod_mime.html#multipleext">¿©·¯ È®ÀåÀÚ¸¦ °¡Áø ÆÄÀÏ</a>µµ
-    Âü°í)</p>
+    <p>Apache 1.1ï¿½ï¿½ï¿½ï¿½ ï¿½Úµé·¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö°ï¿½ ï¿½Ç¾ï¿½ï¿½ï¿½.
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Úµé·¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ú³ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½Ì´ï¿½ ï¿½ï¿½ ï¿½Ç¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ì°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Úµé·¯
+    ï¿½ï¿½ ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö±â¶§ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½. (<a href="mod/mod_mime.html#multipleext">ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½)</p>
 
-    <p>ÇÚµé·¯´Â ¼­¹ö³ª ¸ðµâ·Î ±¸ÇöÇÏ¿©, <code class="directive"><a href="./mod/mod_actions.html#action">Action</a></code> Áö½Ã¾î·Î Ãß°¡ÇÒ
-    ¼ö ÀÖ´Ù. Ç¥ÁØ ¹èÆ÷º»¿¡ ÀÖ´Â ±âº» ÇÚµé·¯´Â ´ÙÀ½°ú °°´Ù:</p>
+    <p>ï¿½Úµé·¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½, <code class="directive"><a href="./mod/mod_actions.html#action">Action</a></code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ß°ï¿½ï¿½ï¿½
+    ï¿½ï¿½ ï¿½Ö´ï¿½. Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½âº» ï¿½Úµé·¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½:</p>
 
     <ul>
-      <li><strong>default-handler</strong>: Á¤ÀûÀÎ ³»¿ëÀ»
-      Ã³¸®ÇÏ±âÀ§ÇØ ±âº»ÀûÀ¸·Î »ç¿ëÇÏ´Â ÇÚµé·¯
-      <code>default_handler()</code>¸¦ »ç¿ëÇÏ¿© ÆÄÀÏÀ» º¸³½´Ù.
+      <li><strong>default-handler</strong>: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      Ã³ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Úµé·¯
+      <code>default_handler()</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
       (core)</li>
 
-      <li><strong>send-as-is</strong>: HTTP Çì´õ°¡ ÀÖ´Â ÆÄÀÏÀ»
-      ±×´ë·Î º¸³½´Ù. (<code class="module"><a href="./mod/mod_asis.html">mod_asis</a></code>)</li>
+      <li><strong>send-as-is</strong>: HTTP ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½×´ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½. (<code class="module"><a href="./mod/mod_asis.html">mod_asis</a></code>)</li>
 
-      <li><strong>cgi-script</strong>: ÆÄÀÏÀ» CGI·Î Ã³¸®ÇÑ´Ù.
+      <li><strong>cgi-script</strong>: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ CGIï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ñ´ï¿½.
       (<code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code>)</li>
 
-      <li><strong>imap-file</strong>: imagemap ±ÔÄ¢ ÆÄÀÏ·Î
-      Ã³¸®ÇÑ´Ù. (<code class="module"><a href="./mod/mod_imagemap.html">mod_imagemap</a></code>)</li>
+      <li><strong>imap-file</strong>: imagemap ï¿½ï¿½Ä¢ ï¿½ï¿½ï¿½Ï·ï¿½
+      Ã³ï¿½ï¿½ï¿½Ñ´ï¿½. (<code class="module"><a href="./mod/mod_imagemap.html">mod_imagemap</a></code>)</li>
 
-      <li><strong>server-info</strong>: ¼­¹öÀÇ ¼³Á¤ Á¤º¸¸¦
-      ¾Ë·ÁÁØ´Ù. (<code class="module"><a href="./mod/mod_info.html">mod_info</a></code>)</li>
+      <li><strong>server-info</strong>: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½Ë·ï¿½ï¿½Ø´ï¿½. (<code class="module"><a href="./mod/mod_info.html">mod_info</a></code>)</li>
 
-      <li><strong>server-status</strong>: ¼­¹öÀÇ »óÅÂ¸¦ º¸°íÇÑ´Ù.
+      <li><strong>server-status</strong>: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
       (<code class="module"><a href="./mod/mod_status.html">mod_status</a></code>)</li>
 
-      <li><strong>type-map</strong>: ³»¿ëÇù»ó¿¡ »ç¿ëÇÒ
-      type mapÀ¸·Î Ã³¸®ÇÑ´Ù.
+      <li><strong>type-map</strong>: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+      type mapï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ñ´ï¿½.
       (<code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code>)</li>
     </ul>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">¿¹Á¦</a> <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
+<h2><a name="examples" id="examples">ï¿½ï¿½ï¿½ï¿½</a> <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
     
 
-    <h3><a name="example1" id="example1">CGI ½ºÅ©¸³Æ®¸¦ »ç¿ëÇÏ¿© Á¤ÀûÀÎ ³»¿ë ¼öÁ¤ÇÏ±â</a></h3>
+    <h3><a name="example1" id="example1">CGI ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½</a></h3>
       
 
-      <p>´ÙÀ½ Áö½Ã¾î´Â È®ÀåÀÚ°¡ <code>html</code>ÀÎ ÆÄÀÏÀ»
-      ¿äÃ»ÇÒ °æ¿ì <code>footer.pl</code> CGI ½ºÅ©¸³Æ®¸¦ ¶ç¿î´Ù.</p>
+      <p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ú°ï¿½ <code>html</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ <code>footer.pl</code> CGI ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</p>
 
       <div class="example"><p><code>
         Action add-footer /cgi-bin/footer.pl<br />
         AddHandler add-footer .html
       </code></p></div>
 
-      <p>CGI ½ºÅ©¸³Æ®´Â
-      (<code>PATH_TRANSLATED</code> È¯°æº¯¼ö°¡ ÁöÄªÇÏ´Â) ¿ø·¡
-      ¿äÃ»ÇÑ ¹®¼­¸¦ ÀûÀýÈ÷ ¼öÁ¤ÇÑ ÈÄ º¸³½´Ù.</p>
+      <p>CGI ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½
+      (<code>PATH_TRANSLATED</code> È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Äªï¿½Ï´ï¿½) ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.</p>
  
     
-    <h3><a name="example2" id="example2">HTTP Çì´õ¸¦ Æ÷ÇÔÇÏ´Â ÆÄÀÏ</a></h3>
+    <h3><a name="example2" id="example2">HTTP ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½</a></h3>
       
 
-      <p>´ÙÀ½ Áö½Ã¾î´Â HTTP Çì´õ¸¦ Æ÷ÇÔÇÏ´Â ÆÄÀÏ¿¡
-      <code>send-as-is</code> ÇÚµé·¯¸¦ Áö½ÃÇÑ´Ù.
-      <code>/web/htdocs/asis/</code> µð·ºÅä¸® ¾È¿¡ ÀÖ´Â ¸ðµç
-      ÆÄÀÏÀº È®ÀåÀÚ¿Í °ü°è¾øÀÌ <code>send-as-is</code> ÇÚµé·¯°¡
-      Ã³¸®ÇÑ´Ù.</p>
+      <p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ HTTP ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½
+      <code>send-as-is</code> ï¿½Úµé·¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+      <code>/web/htdocs/asis/</code> ï¿½ï¿½ï¿½ä¸® ï¿½È¿ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ú¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>send-as-is</code> ï¿½Úµé·¯ï¿½ï¿½
+      Ã³ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
       <div class="example"><p><code>
         &lt;Directory /web/htdocs/asis&gt;<br />
@@ -125,29 +125,29 @@
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="programmer" id="programmer">ÇÁ·Î±×·¡¸Ó¸¦ À§ÇÑ Á¤º¸</a> <a title="Permanent link" href="#programmer" class="permalink">&para;</a></h2>
+<h2><a name="programmer" id="programmer">ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½Ó¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a> <a title="Permanent link" href="#programmer" class="permalink">&para;</a></h2>
     
 
-    <p>ÇÚµé·¯ ±â´ÉÀ» ±¸ÇöÇÏ±âÀ§ÇØ »ç¿ëÇÔÁ÷ÇÑ
-    <a href="developer/API.html">Apache API</a>°¡ Ãß°¡µÇ¾ú´Ù.
-    Æ¯È÷ <code>request_rec</code> ±¸Á¶Ã¼¿¡ »õ·Î¿î ÇÊµå°¡
-    Ãß°¡µÇ¾ú´Ù:</p>
+    <p>ï¿½Úµé·¯ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    <a href="developer/API.html">Apache API</a>ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½.
+    Æ¯ï¿½ï¿½ <code>request_rec</code> ï¿½ï¿½ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½Êµå°¡
+    ï¿½ß°ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½:</p>
 
     <div class="example"><p><code>
       char *handler
     </code></p></div>
 
-    <p>¸ðµâÀÌ ÇÚµé·¯¸¦ »ç¿ëÇÏ·Á¸é, ¿äÃ»ÀÇ
-    <code>invoke_handler</code> ´Ü°è ÀÌÀü¿¡
-    <code>r-&gt;handler</code>¿¡ ÇÚµé·¯ ÀÌ¸§À» ÁöÁ¤ÇØÁÖ±â¸¸
-    ÇÏ¸é µÈ´Ù. ÇÚµé·¯´Â content type ´ë½Å ÇÚµé·¯ ÀÌ¸§À» »ç¿ëÇÑ
-    °ÍÀ» Á¦¿ÜÇÏ°í´Â Àü°ú °°ÀÌ ±¸ÇöµÇ¾ú´Ù. ²À ÁöÅ³ ÇÊ¿ä´Â ¾øÁö¸¸
-    ÇÚµé·¯ ÀÌ¸§¿¡ ½½·¡½¬¸¦ »ç¿ëÇÏÁö ¾Ê°í, ´Ü¾îµé »çÀÌ¿¡ »©±â
-    ±âÈ£¸¦ »ç¿ëÇÏ´Â °ÍÀÌ ÀÏ¹ÝÀûÀÌ´Ù. ±×·¡¼­ ÇÚµé·¯ ÀÌ¸§ÀÌ
-    media type°ú °ãÄ¡Áö ¾Ê´Â´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Úµé·¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½, ï¿½ï¿½Ã»ï¿½ï¿½
+    <code>invoke_handler</code> ï¿½Ü°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    <code>r-&gt;handler</code>ï¿½ï¿½ ï¿½Úµé·¯ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö±â¸¸
+    ï¿½Ï¸ï¿½ ï¿½È´ï¿½. ï¿½Úµé·¯ï¿½ï¿½ content type ï¿½ï¿½ï¿½ ï¿½Úµé·¯ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½. ï¿½ï¿½ ï¿½ï¿½Å³ ï¿½Ê¿ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Úµé·¯ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê°ï¿½, ï¿½Ü¾ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¿ï¿½ ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½È£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½Ì´ï¿½. ï¿½×·ï¿½ï¿½ï¿½ ï¿½Úµé·¯ ï¿½Ì¸ï¿½ï¿½ï¿½
+    media typeï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Ê´Â´ï¿½.</p>
   </div></div>
 <div class="bottomlang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="./en/handler.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="./en/handler.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/handler.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
 <a href="./fr/handler.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/handler.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
@@ -157,7 +157,7 @@
 </div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/handler.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/handler.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -172,8 +172,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/handler.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">¸ðµâ</a> | <a href="./mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">¿ë¾î</a> | <a href="./sitemap.html">»çÀÌÆ®¸Ê</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">ï¿½ï¿½ï¿½</a> | <a href="./mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">ï¿½ï¿½ï¿½</a> | <a href="./sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

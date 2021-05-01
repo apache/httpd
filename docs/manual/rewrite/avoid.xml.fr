@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -85,7 +85,7 @@ bénéficier de nombreux avantages de la directive
 <p>Une utilisation courante de la directive <code>RewriteRule</code> est
 la redirection de toute une classe d'URLs. Par exemple, toutes les URLs
 faisant référence au répertoire <code>/un</code> doivent être
-redirigées vers <code>http://un.example.com/</code>, ou toutes les
+redirigées vers <code>https://un.example.com/</code>, ou toutes les
 requêtes <code>http</code> doivent être redirigées vers
 <code>https</code>.</p>
 
@@ -97,10 +97,10 @@ rediriger toutes les URLs de niveaux inférieurs comme
 <code>/un/deux.html</code> et <code>/un/trois/quatre.html</code>.</p>
 
 <p>Pour rediriger les URLs sous <code>/un</code> vers
-<code>http://un.example.com/</code>, utilisez cette définition :</p>
+<code>https://un.example.com/</code>, utilisez cette définition :</p>
 
 <highlight language="config">
-Redirect /one/ http://one.example.com/
+Redirect /one/ https://one.example.com/
 </highlight>
 
 <p>Pour rediriger un nom d'hôte vers un autre nom d'hôte, par exemple
@@ -199,7 +199,7 @@ href="flags.html#flag_p">[P]</a> qui permet de faire passer les URIs
 réécrits par <module>mod_proxy</module>.</p>
 
 <highlight language="config">
-RewriteRule "^/?images(.*)" "http://serveur-images.local/images$1" [P]
+RewriteRule "^/?images(.*)" "https://serveur-images.local/images$1" [P]
 </highlight>
 
 <p>Cependant, dans les nombreux cas où aucune correspondance au modèle
@@ -209,7 +209,7 @@ module="mod_proxy">ProxyPass</directive>. L'exemple précédent pourrait
 être remplacé par :</p>
 
 <highlight language="config">
-ProxyPass "/images/" "http://serveur-images.local/images/"
+ProxyPass "/images/" "https://serveur-images.local/images/"
 </highlight>
 
 <p>Que vous utilisiez <directive
@@ -220,7 +220,7 @@ module="mod_proxy">ProxyPassReverse</directive> pour intercepter les
 redirections en provenance du serveur d'arrière-plan :</p>
 
 <highlight language="config">
-ProxyPassReverse "/images/" "http://serveur-images.local/images/"
+ProxyPassReverse "/images/" "https://serveur-images.local/images/"
 </highlight>
 
 <p>Vous devrez cependant tout de même utiliser <code>RewriteRule</code>
@@ -247,7 +247,7 @@ suit :</p>
 
 <highlight language="config">
 &lt;If "req('Host') != 'www.example.com'"&gt;
-    Redirect "/" "http://www.example.com"
+    Redirect "/" "https://www.example.com"
 &lt;/If&gt;
 </highlight>
 

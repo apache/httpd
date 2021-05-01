@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
 <meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -17,149 +17,149 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">¸ðµâ</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">ï¿½ï¿½ï¿½</a></div>
 <div id="page-content">
-<div id="preamble"><h1>¾ÆÆÄÄ¡ ¸ðµâ mod_userdir</h1>
+<div id="preamble"><h1>ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ mod_userdir</h1>
 <div class="toplang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/mod/mod_userdir.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/mod/mod_userdir.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_userdir.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_userdir.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_userdir.html" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_userdir.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">ÀÌ ¹®¼­´Â ÃÖ½ÅÆÇ ¹ø¿ªÀÌ ¾Æ´Õ´Ï´Ù.
-            ÃÖ±Ù¿¡ º¯°æµÈ ³»¿ëÀº ¿µ¾î ¹®¼­¸¦ Âü°íÇÏ¼¼¿ä.</div>
-<table class="module"><tr><th><a href="module-dict.html#Description">¼³¸í:</a></th><td>»ç¿ëÀÚº° µð·ºÅä¸®</td></tr>
-<tr><th><a href="module-dict.html#Status">»óÅÂ:</a></th><td>Base</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">¸ðµâ¸í:</a></th><td>userdir_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">¼Ò½ºÆÄÀÏ:</a></th><td>mod_userdir.c</td></tr></table>
-<h3>¿ä¾à</h3>
+<div class="outofdate">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Õ´Ï´ï¿½.
+            ï¿½Ö±Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½ï¿½ï¿½Úºï¿½ ï¿½ï¿½ï¿½ä¸®</td></tr>
+<tr><th><a href="module-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Base</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">ï¿½ï¿½ï¿½ï¿½:</a></th><td>userdir_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">ï¿½Ò½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>mod_userdir.c</td></tr></table>
+<h3>ï¿½ï¿½ï¿½</h3>
 
-<p>ÀÌ ¸ðµâÀ» »ç¿ëÇÏ¸é <code>http://example.com/~user/</code> ½ÄÀ¸·Î
-»ç¿ëÀÚº° µð·ºÅä¸®¿¡ Á¢±ÙÇÒ ¼ö ÀÖ´Ù.</p>
+<p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ <code>https://example.com/~user/</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½Úºï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 </div>
-<div id="quickview"><h3 class="directives">Áö½Ã¾îµé</h3>
+<div id="quickview"><h3 class="directives">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#userdir">UserDir</a></li>
 </ul>
-<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_userdir">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_userdir">Report a bug</a></li></ul><h3>Âü°í</h3>
+<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_userdir">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_userdir">Report a bug</a></li></ul><h3>ï¿½ï¿½ï¿½ï¿½</h3>
 <ul class="seealso">
-<li><a href="../urlmapping.html">URLÀ» ÆÄÀÏ½Ã½ºÅÛ¿¡ ´ëÀÀ</a></li>
+<li><a href="../urlmapping.html">URLï¿½ï¿½ ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½Û¿ï¿½ ï¿½ï¿½ï¿½ï¿½</a></li>
 <li><a href="../howto/public_html.html">public_html
-ÅõÅä¸®¾ó</a></li>
+ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½</a></li>
 <li><a href="#comments_section">Comments</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="UserDir" id="UserDir">UserDir</a> <a name="userdir" id="userdir">Áö½Ã¾î</a> <a title="Permanent link" href="#userdir" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="UserDir" id="UserDir">UserDir</a> <a name="userdir" id="userdir">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#userdir" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>»ç¿ëÀÚº° µð·ºÅä¸® À§Ä¡</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>UserDir <em>directory-filename</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">±âº»°ª:</a></th><td><code>UserDir public_html</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_userdir</td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½ï¿½ï¿½Úºï¿½ ï¿½ï¿½ï¿½ä¸® ï¿½ï¿½Ä¡</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>UserDir <em>directory-filename</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">ï¿½âº»ï¿½ï¿½:</a></th><td><code>UserDir public_html</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_userdir</td></tr>
 </table>
 
-    <p><code class="directive">UserDir</code> Áö½Ã¾î´Â »ç¿ëÀÚÀÇ ¹®¼­¿¡ ´ëÇÑ
-¿äÃ»À» ¹ÞÀ»¶§ »ç¿ëÀÚ È¨µð·ºÅä¸® ¾È¿¡¼­ »ç¿ëÇÒ ½ÇÁ¦ µð·ºÅä¸®¸¦
-ÁöÁ¤ÇÑ´Ù. <em>Directory-filename</em>Àº ´ÙÀ½ Áß ÇÏ³ªÀÌ´Ù:</p>
+    <p><code class="directive">UserDir</code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ È¨ï¿½ï¿½ï¿½ä¸® ï¿½È¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <em>Directory-filename</em>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ï³ï¿½ï¿½Ì´ï¿½:</p>
 
     <ul>
-      <li>¾Æ·¡¿Í °°Àº µð·ºÅä¸®¸í È¤Àº ÆÐÅÏ.</li>
+      <li>ï¿½Æ·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ È¤ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</li>
 
-      <li><code>disabled</code> Å°¿öµå. 
-<code>enabled</code> Å°¿öµå·Î (¾Æ·¡ Âü°í) Á÷Á¢ ÀÌ¸§À» ÁöÁ¤ÇÏÁö ¾Ê¾Ò´Ù¸é
-<em>¸ðµç</em> »ç¿ëÀÚ¸í-µð·ºÅä¸® º¯È¯À» ÇÏÁö ¾Ê´Â´Ù.</li>
+      <li><code>disabled</code> Å°ï¿½ï¿½ï¿½ï¿½. 
+<code>enabled</code> Å°ï¿½ï¿½ï¿½ï¿½ï¿½ (ï¿½Æ·ï¿½ ï¿½ï¿½ï¿½ï¿½) ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¾Ò´Ù¸ï¿½
+<em>ï¿½ï¿½ï¿½</em> ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½-ï¿½ï¿½ï¿½ä¸® ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.</li>
 
-      <li><code>disabled</code> Å°¿öµå µÚ¿¡ °ø¹éÀ¸·Î ±¸ºÐÇÑ »ç¿ëÀÚ¸í ¸ñ·Ï.
-»ç¿ëÀÚ¸íÀÌ <code>enabled</code> ±¸¹®¿¡ ÀÖ´Ù°í ÇÏ´õ¶óµµ, ÀÌ ¸ñ·Ï¿¡
-ÀÖ´Â »ç¿ëÀÚ¸íÀº µð·ºÅä¸® º¯È¯À» ÇÏÁö <em>¾Ê´Â´Ù</em>.</li>
+      <li><code>disabled</code> Å°ï¿½ï¿½ï¿½ï¿½ ï¿½Ú¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½.
+ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ï¿½ï¿½ <code>enabled</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ù°ï¿½ ï¿½Ï´ï¿½ï¿½ï¿½, ï¿½ï¿½ ï¿½ï¿½Ï¿ï¿½
+ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸® ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ <em>ï¿½Ê´Â´ï¿½</em>.</li>
 
-      <li><code>enabled</code> Å°¿öµå µÚ¿¡ °ø¹éÀ¸·Î ±¸ºÐÇÑ »ç¿ëÀÚ¸í ¸ñ·Ï.
-ÀüÃ¼ disableÀ» »ç¿ëÇÏ°í »ç¿ëÀÚ¸íÀÌ <code>disabled</code> ±¸¹®¿¡
-¾ø´õ¶óµµ, »ç¿ëÀÚ¸íÀ» µð·ºÅä¸® º¯È¯ÇÑ´Ù.</li>
+      <li><code>enabled</code> Å°ï¿½ï¿½ï¿½ï¿½ ï¿½Ú¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½.
+ï¿½ï¿½Ã¼ disableï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ï¿½ï¿½ <code>disabled</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸® ï¿½ï¿½È¯ï¿½Ñ´ï¿½.</li>
     </ul>
 
-    <p><code>Userdir</code> Áö½Ã¾î¿¡ <code>enabled</code>³ª
-<code>disabled</code> Å°¿öµå¸¦ »ç¿ëÇÏÁö ¾ÊÀ¸¸é, ¾Æ±Ô¸ÕÆ®¸¦
-ÆÄÀÏ¸í ÆÐÅÏÀ¸·Î Ã³¸®ÇÏ¿© µð·ºÅä¸®·Î º¯È¯ÇÑ´Ù.
-<code>http://www.foo.com/~bob/one/two.html</code>¿¡ ´ëÇÑ ¿äÃ»Àº
-´ÙÀ½°ú °°ÀÌ º¯È¯µÈ´Ù:</p>
+    <p><code>Userdir</code> ï¿½ï¿½ï¿½Ã¾î¿¡ <code>enabled</code>ï¿½ï¿½
+<code>disabled</code> Å°ï¿½ï¿½ï¿½å¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½
+ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½È¯ï¿½Ñ´ï¿½.
+<code>https://www.foo.com/~bob/one/two.html</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½È´ï¿½:</p>
 
 <table>
-<tr><th>»ç¿ëÇÑ UserDir Áö½Ã¾î</th>
-<th>º¯È¯ÇÑ °æ·Î</th></tr>
+<tr><th>ï¿½ï¿½ï¿½ï¿½ï¿½ UserDir ï¿½ï¿½ï¿½Ã¾ï¿½</th>
+<th>ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½ï¿½</th></tr>
 <tr><td>UserDir public_html</td><td>~bob/public_html/one/two.html</td></tr>
 <tr><td>UserDir /usr/web</td><td>/usr/web/bob/one/two.html</td></tr>
 <tr><td>UserDir /home/*/www</td><td>/home/bob/www/one/two.html</td></tr>
 </table>
 
-    <p>´ÙÀ½ Áö½Ã¾î´Â Å¬¶óÀÌ¾ðÆ®¿¡°Ô ¸®´ÙÀÌ·º¼ÇÀ» º¸³½´Ù:</p> 
+    <p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</p> 
 
 <table>
-<tr><th>»ç¿ëÇÑ UserDir Áö½Ã¾î</th>
-<th>º¯È¯ÇÑ °æ·Î</th></tr>
-<tr><td>UserDir http://www.foo.com/users</td><td>http://www.foo.com/users/bob/one/two.html</td></tr>
+<tr><th>ï¿½ï¿½ï¿½ï¿½ï¿½ UserDir ï¿½ï¿½ï¿½Ã¾ï¿½</th>
+<th>ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½ï¿½</th></tr>
+<tr><td>UserDir https://www.foo.com/users</td><td>https://www.foo.com/users/bob/one/two.html</td></tr>
 <tr><td>UserDir
-http://www.foo.com/*/usr</td><td>http://www.foo.com/bob/usr/one/two.html</td></tr>
+https://www.foo.com/*/usr</td><td>https://www.foo.com/bob/usr/one/two.html</td></tr>
 <tr><td>UserDir
-http://www.foo.com/~*/</td><td>http://www.foo.com/~bob/one/two.html</td></tr>
+https://www.foo.com/~*/</td><td>https://www.foo.com/~bob/one/two.html</td></tr>
 </table> 
 
 <div class="note">
-      <strong>ÀÌ Áö½Ã¾î¸¦ »ç¿ëÇÒ¶§ ÁÖÀÇÇÏ¶ó; ¿¹¸¦ µé¾î,
-<code>"UserDir ./"</code>´Â <code>"/~root"</code>¸¦ ¾Æ¸¶µµ ¹Ù¶÷Á÷ÇÏÁö ¾Ê°Ô
-<code>"/"</code>·Î º¯È¯ÇÑ´Ù. ¼³Á¤¿¡ "<code>UserDir
-      disabled root</code>"¸¦ Æ÷ÇÔÇÏ±æ °­·ÂÈ÷ ±ÇÇÑ´Ù. ÀÚ¼¼ÇÑ Á¤º¸¸¦ ¾Ë·Á¸é
-<code class="directive"><a href="../mod/core.html#directory">Directory</a></code> Áö½Ã¾î¿Í <a href="../misc/security_tips.html">º¸¾È ÆÁ</a>µµ Âü°íÇÏ¶ó.</strong>
+      <strong>ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½; ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½,
+<code>"UserDir ./"</code>ï¿½ï¿½ <code>"/~root"</code>ï¿½ï¿½ ï¿½Æ¸ï¿½ï¿½ï¿½ ï¿½Ù¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê°ï¿½
+<code>"/"</code>ï¿½ï¿½ ï¿½ï¿½È¯ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ "<code>UserDir
+      disabled root</code>"ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½Ú¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ë·ï¿½ï¿½ï¿½
+<code class="directive"><a href="../mod/core.html#directory">Directory</a></code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ <a href="../misc/security_tips.html">ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½</a>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.</strong>
 </div>
 
-<p>Ãß°¡ ¿¹Á¦:</p>
+<p>ï¿½ß°ï¿½ ï¿½ï¿½ï¿½ï¿½:</p>
 
-<p>¸î¸î »ç¿ëÀÚ¿¡°Ô¸¸ <code>UserDir</code> µð·ºÅä¸®¸¦ Çã¿ëÇÑ´Ù¸é,
-´ÙÀ½°ú °°´Ù:</p>
+<p>ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½Ô¸ï¿½ <code>UserDir</code> ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½,
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½:</p>
 
 <div class="example"><p><code>
 UserDir disabled<br />
 UserDir enabled user1 user2 user3
 </code></p></div>
 
-<p>´ëºÎºÐÀÇ »ç¿ëÀÚ¿¡°Ô <code>UserDir</code> µð·ºÅä¸®¸¦ Çã¿ëÇÏ°í
-ÀÏºÎ¸¸ °ÅºÎÇÑ´Ù¸é, ´ÙÀ½°ú °°´Ù:</p>
+<p>ï¿½ï¿½Îºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ <code>UserDir</code> ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½
+ï¿½ÏºÎ¸ï¿½ ï¿½Åºï¿½ï¿½Ñ´Ù¸ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½:</p>
 
 <div class="example"><p><code>
 UserDir enabled<br />
 UserDir disabled user4 user5 user6
 </code></p></div>
 
-<p>´Ù¸¥ »ç¿ëÀÚ µð·ºÅä¸®¸¦ ÁöÁ¤ÇÒ ¼öµµ ÀÖ´Ù.
-´ÙÀ½°ú °°Àº ¸í·É¾î¸¦ »ç¿ëÇÑ´Ù¸é:</p>
+<p>ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½.
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½É¾î¸¦ ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½:</p>
 <div class="example"><p><code>
-Userdir public_html /usr/web http://www.foo.com/
+Userdir public_html /usr/web https://www.foo.com/
 </code></p></div>
-<p>http://www.foo.com/~bob/one/two.html ¿äÃ»À» ÇÏ¸é,
-¸ÕÀú ~bob/public_html/one/two.html ÆäÀÌÁö¸¦ Ã£°í,
-/usr/web/bob/one/two.htmlÀ» Ã£Àº ÈÄ, ¸¶Áö¸·À¸·Î
-http://www.foo.com/bob/one/two.htmlÀ¸·Î ¸®´ÙÀÌ·º¼ÇÀ» º¸³½´Ù.</p>
-<p>¸®´ÙÀÌ·º¼ÇÀ» »ç¿ëÇÑ´Ù¸é ¸ñ·ÏÀÇ ¸¶Áö¸·¿¡ µÎ¾î¾ß ÇÑ´Ù.
-¾ÆÆÄÄ¡´Â ¸®´ÙÀÌ·º¼ÇÀÌ ¼º°øÇß´ÂÁö ¾Ë ¼ö ¾ø±â¶§¹®¿¡, ¸®´ÙÀÌ·º¼ÇÀ»
-¸ñ·Ï ¾Õ¿¡ µÎ¸é Ç×»ó ¸®´ÙÀÌ·º¼ÇÀ» »ç¿ëÇÏ°Ô µÈ´Ù.</p>
+<p>https://www.foo.com/~bob/one/two.html ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½Ï¸ï¿½,
+ï¿½ï¿½ï¿½ï¿½ ~bob/public_html/one/two.html ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½,
+/usr/web/bob/one/two.htmlï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+https://www.foo.com/bob/one/two.htmlï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.</p>
+<p>ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î¾ï¿½ï¿½ ï¿½Ñ´ï¿½.
+ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ß´ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½â¶§ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ ï¿½Õ¿ï¿½ ï¿½Î¸ï¿½ ï¿½×»ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½È´ï¿½.</p>
 
 
-<h3>Âü°í</h3>
+<h3>ï¿½ï¿½ï¿½ï¿½</h3>
 <ul>
 <li><a href="../howto/public_html.html">public_html
-ÅõÅä¸®¾ó</a></li>
+ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½</a></li>
 </ul>
 </div>
 </div>
 <div class="bottomlang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/mod/mod_userdir.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/mod/mod_userdir.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_userdir.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_userdir.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_userdir.html" title="Korean">&nbsp;ko&nbsp;</a> |
@@ -167,7 +167,7 @@ http://www.foo.com/bob/one/two.htmlÀ¸·Î ¸®´ÙÀÌ·º¼ÇÀ» º¸³½´Ù.</p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_userdir.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/mod/mod_userdir.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -182,8 +182,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_userdir.ht
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

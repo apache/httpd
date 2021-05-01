@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -127,32 +127,32 @@ ProxyHCExpr gdown {%{REQUEST_STATUS} =~ /^[5]/}
 ProxyHCExpr in_maint {hc('body') !~ /Under maintenance/}
 
 &lt;Proxy balancer://foo&gt;
-  BalancerMember http://www.example.com/  hcmethod=GET hcexpr=in_maint hcuri=/status.php
-  BalancerMember http://www2.example.com/ hcmethod=HEAD hcexpr=ok234 hcinterval=10
-  BalancerMember http://www3.example.com/ hcmethod=TCP hcinterval=5 hcpasses=2 hcfails=3
-  BalancerMember http://www4.example.com/
+  BalancerMember https://www.example.com/  hcmethod=GET hcexpr=in_maint hcuri=/status.php
+  BalancerMember https://www2.example.com/ hcmethod=HEAD hcexpr=ok234 hcinterval=10
+  BalancerMember https://www3.example.com/ hcmethod=TCP hcinterval=5 hcpasses=2 hcfails=3
+  BalancerMember https://www4.example.com/
 &lt;/Proxy&gt;
 
 ProxyPass "/" "balancer://foo"
 ProxyPassReverse "/" "balancer://foo"
 </highlight>
 
-<p>Dans ce scénario, on teste l'équipier <code>http://www.example.com/</code> en lui
+<p>Dans ce scénario, on teste l'équipier <code>https://www.example.com/</code> en lui
 envoyant une requête <code>GET /status.php</code> et en regardant si la réponse
 contient la chaîne <em>Under maintenance</em>. Si c'est le cas, le check up est
 considéré comme ayant échoué et l'équipier est mis hors service. Ce check up
 dynamique est effectué toutes les 30 secondes, ce qui correspond à la valeur par
 défaut.</p>
 
-<p>On teste l'équipier <code>http://www2.example.com/</code> en lui envoyant
+<p>On teste l'équipier <code>https://www2.example.com/</code> en lui envoyant
 simplement une requête <code>HEAD</code> toutes les 10 secondes et en vérifiant
 que la réponse HTTP est bien un code d'état de 2xx, 3xx ou 4xx. On teste
-l'équipier <code>http://www3.example.com/</code>  en vérifiant simplement toutes
+l'équipier <code>https://www3.example.com/</code>  en vérifiant simplement toutes
 les 5 secondes que le socket vers ce serveur est bien opérationnel. Si ce
 serveur est marqué "hors service", il lui faudra 2 check up réussis pour être
 réactivé et participer à nouveau à la répartition de charge. Si à ce moment-là
 il échoue à 3 check up successifs, il sera à nouveau mis hors service. Enfin,
-l'équipier <code>http://www4.example.com/</code> ne fait l'objet d'aucun check
+l'équipier <code>https://www4.example.com/</code> ne fait l'objet d'aucun check
 up.</p>
 
 </section>
@@ -180,7 +180,7 @@ ProxyHCExpr ok234 {%{REQUEST_STATUS} =~ /^[234]/}
 ProxyPass "/apps"     "balancer://foo"
 
 &lt;Proxy balancer://foo&gt;
-  BalancerMember http://www2.example.com/  hcmethod=HEAD hcexpr=ok234 hcinterval=10
+  BalancerMember https://www2.example.com/  hcmethod=HEAD hcexpr=ok234 hcinterval=10
 &lt;/Proxy&gt;
     </highlight>
     </example>
@@ -205,7 +205,7 @@ ProxyHCExpr in_maint {hc('body') !~ /Under maintenance/}
 ProxyPass "/apps"     "balancer://foo"
 
 &lt;Proxy balancer://foo&gt;
-  BalancerMember http://www.example.com/ hcexpr=in_maint hcmethod=get hcuri=/status.php
+  BalancerMember https://www.example.com/ hcexpr=in_maint hcmethod=get hcuri=/status.php
 &lt;/Proxy&gt;
     </highlight>
     </example>
@@ -236,7 +236,7 @@ ProxyHCTemplate tcp5 hcmethod=tcp hcinterval=5
 ProxyPass "/apps"     "balancer://foo"
 
 &lt;Proxy balancer://foo&gt;
-  BalancerMember http://www2.example.com/ hctemplate=tcp5
+  BalancerMember https://www2.example.com/ hctemplate=tcp5
 &lt;/Proxy&gt;
     </highlight>
     </example>

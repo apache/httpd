@@ -15,7 +15,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -83,7 +83,7 @@
 
     <p>Örneğin, <directive module="core">DocumentRoot</directive> yönergesine
       <code>/var/http/html</code> atanmış olsun.
-      <code>http://mesela.dom/balıklar/zargana.html</code> şeklindeki bir
+      <code>https://mesela.dom/balıklar/zargana.html</code> şeklindeki bir
       istek için istemciye <code>/var/http/html/balıklar/zargana.html</code>
       dosyası sunulur.</p>
 
@@ -121,7 +121,7 @@
     <example>Alias /belgeler /var/http</example>
 
     <p>yapılandırması ile
-      <code>http://mesela.dom/belgeler/dizin/dosya.html</code> URL’si için
+      <code>https://mesela.dom/belgeler/dizin/dosya.html</code> URL’si için
       dosya sistemindeki <code>/var/http/dizin/dosya.html</code> dosyası
       sunulacaktır. Hedef dizindeki dosyaları birer <glossary ref="cgi"
       >CGI</glossary> betiği olarak imlemesi dışında <directive
@@ -137,7 +137,7 @@
     <example>ScriptAliasMatch ^/~([a-zA-Z0-9]+)/cgi-bin/(.+)
       /home/$1/cgi-bin/$2</example>
 
-    <p>satırı sayesinde <code>http://mesela.dom/~user/cgi-bin/betik.cgi</code>
+    <p>satırı sayesinde <code>https://mesela.dom/~user/cgi-bin/betik.cgi</code>
       URL’si <code>/home/user/cgi-bin/betik.cgi</code> dosyası ile
       eşleştirilir ve dosya bir CGI betiği olarak çalıştırılırdı.</p>
 </section>
@@ -150,7 +150,7 @@
       üzerinden kullanıcıların ev dizinlerindeki dosyaları kişisel sayfalar
       olarak sunmalarını sağlamak üzere kullanır. Örnek:</p>
 
-    <example>http://mesela.dom/~birisi/dosya.html</example>
+    <example>https://mesela.dom/~birisi/dosya.html</example>
 
     <p>Güvenlik sebebiyle kullanıcıların ev dizinlerine doğrudan HTTP erişimi
       vermek uygun olmaz. Bu bakımdan, kullanıcının ev dizini altında HTTP
@@ -173,7 +173,7 @@
       desteklenmemektedir. Ancak, kullanıcı dizinleri düzgün şekilde
       yapılandırılmışsa istenen etki <directive
       module="mod_alias">AliasMatch</directive> yönergesi ile sağlanabilir.
-      Örneğin, <code>http://mesela.dom/sayfalar/birisi/dosya.html</code>
+      Örneğin, <code>https://mesela.dom/sayfalar/birisi/dosya.html</code>
       URL’si ile <code>/home/birisi/public_html/dosya.html</code> dosyasını
       eşlemek için <code>AliasMatch</code> yönergesi şöyle
       kullanılabilirdi:</p>
@@ -196,7 +196,7 @@
       bildirilmesi şöyle sağlanabilirdi:</p>
 
     <example>Redirect permanent /foo/
-      http://mesela.dom/bar/</example>
+      https://mesela.dom/bar/</example>
 
     <p>Bu atama sayesinde <code>/foo/</code> ile başlayan URL yolları
       <code>mesela.dom</code> sunucundaki <code>/bar/</code> dizini altındaki
@@ -211,13 +211,13 @@
       kullanabilirsiniz:</p>
 
     <example>RedirectMatch permanent ^/$
-      http://misal.dom/ilksayfa.html</example>
+      https://misal.dom/ilksayfa.html</example>
 
     <p>Bundan başka, bir sitedeki tüm sayfalara yapılan istekleri başka bir
       siteye geçici olarak yönlendirmek için şöyle bir şey yapabilirsiniz:</p>
 
     <example>RedirectMatch temp .*
-      http://mesela.misal.dom/ilksayfa.html</example>
+      https://mesela.misal.dom/ilksayfa.html</example>
 </section>
 
 <section id="proxy"><title>Karşı Vekil</title>
@@ -236,8 +236,8 @@
       geliyormuş gibi sunmaktadır:</p>
 
     <example>
-      ProxyPass /foo/ http://dahili.mesela.dom/bar/<br />
-      ProxyPassReverse /foo/ http://dahili.mesela.dom/bar/<br />
+      ProxyPass /foo/ https://dahili.mesela.dom/bar/<br />
+      ProxyPassReverse /foo/ https://dahili.mesela.dom/bar/<br />
       ProxyPassReverseCookieDomain dahili.mesela.dom harici.mesela.dom<br />
       ProxyPassReverseCookiePath /foo/ /bar/
     </example>

@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -96,7 +96,7 @@ performance</description>
 
     <p>You can now access server statistics by using a Web browser
     to access the page
-    <code>http://your.server.name/server-status</code></p>
+    <code>https://your.server.name/server-status</code></p>
 </section>
 
 <section id="autoupdate">
@@ -104,7 +104,7 @@ performance</description>
     <title>Automatic Updates</title>
     <p>You can get the status page to update itself automatically if
     you have a browser that supports "refresh". Access the page
-    <code>http://your.server.name/server-status?refresh=N</code> to
+    <code>https://your.server.name/server-status?refresh=N</code> to
     refresh the page every N seconds.</p>
 
 </section>
@@ -114,7 +114,7 @@ performance</description>
     <title>Machine Readable Status File</title>
     <p>A machine-readable version of the status file is available by
     accessing the page
-    <code>http://your.server.name/server-status?auto</code>. This
+    <code>https://your.server.name/server-status?auto</code>. This
     is useful when automatically run, see the Perl program
     <code>log_server_status</code>, which you will find in the
     <code>/support</code> directory of your Apache HTTP Server installation.</p>

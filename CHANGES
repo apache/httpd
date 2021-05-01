@@ -1,8 +1,7 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
-  *) mod_lua: Add support to Lua 5.4 [Joe Orton, Giovanni Bechis, Ruediger Pluem]
-
+ 
   *) mod_md: Tolerate a missing "revokeCert" or "keyChange" resource.
      [Fraser Tweedale <ftweedal redhat.com>]
 
@@ -290,7 +289,7 @@ Changes with Apache 2.5.1
      [Takashi Sato, Jan Kaluza, Eric Covener, Yann Ylavic, Jean-Frederic Clere]
 
   *) mod_proxy_http: remove proxy-sendchunked and proxy-sendchunks
-     handling, the default behaviour being now to stream the request body
+     handling, the defaut behaviour being now to stream the request body
      using Content-Length when the length is known and fall back to chunked
      Transfer-Encoding otherwise (unless proxy-sendcl is set thus requiring
      that the request body be spooled to memory or filesystem). [Yann Ylavic]
@@ -771,7 +770,7 @@ Changes with Apache 2.5.1
      [Stefan Eissing]
 
   *) mod_md: reverses most of v1.0.5 optimization of post_config init, so that
-     mod_ssl can ask for certificates without crashing. [Stefan Eissing]
+     mod_ssl can ask for certiticates without crashing. [Stefan Eissing]
 
   *) mod_proxy: allow SSLProxyCheckPeer* usage for all proxy modules.
      PR 61857.  [Yann Ylavic]
@@ -1264,12 +1263,12 @@ Changes with Apache 2.5.0-alpha
 
 Changes with Apache 2.4.x and later:
 
-  *) http://svn.apache.org/viewvc/httpd/httpd/branches/2.4.x/CHANGES?view=markup
+  *) https://svn.apache.org/viewvc/httpd/httpd/branches/2.4.x/CHANGES?view=markup
 
 Changes with Apache 2.2.x and later:
 
-  *) http://svn.apache.org/viewvc/httpd/httpd/branches/2.2.x/CHANGES?view=markup
+  *) https://svn.apache.org/viewvc/httpd/httpd/branches/2.2.x/CHANGES?view=markup
 
 Changes with Apache 2.0.x and later:
 
-  *) http://svn.apache.org/viewvc/httpd/httpd/branches/2.0.x/CHANGES?view=markup
+  *) https://svn.apache.org/viewvc/httpd/httpd/branches/2.0.x/CHANGES?view=markup

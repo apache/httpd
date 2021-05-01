@@ -8,7 +8,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,7 +22,7 @@
 ]>
 
 <xsl:stylesheet version="1.0"
-              xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+              xmlns:xsl="https://www.w3.org/1999/XSL/Transform">
 
 <xsl:output
   method="xml"
@@ -38,9 +38,9 @@
 <!-- build rdf description                                                -->
 <!-- ==================================================================== -->
 <xsl:template match="/indexpage">
-<RDF:RDF xmlns:MAF="http://maf.mozdev.org/metadata/rdf#"
-             xmlns:NC="http://home.netscape.com/NC-rdf#"
-             xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#">&lf;
+<RDF:RDF xmlns:MAF="https://maf.mozdev.org/metadata/rdf#"
+             xmlns:NC="https://home.netscape.com/NC-rdf#"
+             xmlns:RDF="https://www.w3.org/1999/02/22-rdf-syntax-ns#">&lf;
   <RDF:Description RDF:about="urn:root">&lf;
     <MAF:originalurl RDF:resource="" />&lf;
     <MAF:title RDF:resource="{title}" />&lf;

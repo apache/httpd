@@ -5,7 +5,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -343,7 +343,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                 ctx->state = BODY_CHUNK;
             }
             else if (f->r->proxyreq == PROXYREQ_RESPONSE) {
-                /* http://tools.ietf.org/html/draft-ietf-httpbis-p1-messaging-23
+                /* https://tools.ietf.org/html/draft-ietf-httpbis-p1-messaging-23
                  * Section 3.3.3.3: "If a Transfer-Encoding header field is
                  * present in a response and the chunked transfer coding is not
                  * the final encoding, the message body length is determined by

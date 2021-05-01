@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
 <meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>ÆÄÀÏ±â¼úÀÚ(file descriptor) ÇÑ°è - Apache HTTP Server Version 2.5</title>
+<title>ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½(file descriptor) ï¿½Ñ°ï¿½ - Apache HTTP Server Version 2.5</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -16,61 +16,61 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page" class="no-sidebar"><div id="page-header">
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">°¡»óÈ£½ºÆ®</a></div><div id="page-content"><div id="preamble"><h1>ÆÄÀÏ±â¼úÀÚ(file descriptor) ÇÑ°è</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®</a></div><div id="page-content"><div id="preamble"><h1>ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½(file descriptor) ï¿½Ñ°ï¿½</h1>
 <div class="toplang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/vhosts/fd-limits.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/vhosts/fd-limits.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/vhosts/fd-limits.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/vhosts/fd-limits.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/vhosts/fd-limits.html" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/fd-limits.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">ÀÌ ¹®¼­´Â ÃÖ½ÅÆÇ ¹ø¿ªÀÌ ¾Æ´Õ´Ï´Ù.
-            ÃÖ±Ù¿¡ º¯°æµÈ ³»¿ëÀº ¿µ¾î ¹®¼­¸¦ Âü°íÇÏ¼¼¿ä.</div>
+<div class="outofdate">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Õ´Ï´ï¿½.
+            ï¿½Ö±Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.</div>
 
 
-    <p>°¡»óÈ£½ºÆ®¸¦ ¸¹ÀÌ »ç¿ëÇÏ°í °¢ °¡»óÈ£½ºÆ®¿¡ ¼­·Î ´Ù¸¥
-    ·Î±×ÆÄÀÏÀ» ÁöÁ¤ÇÏ¸é, ¾ÆÆÄÄ¡°¡ »ç¿ë°¡´ÉÇÑ ÆÄÀÏ±â¼úÀÚ(file
-    descriptor, ÈçÈ÷ <cite>ÆÄÀÏÇÚµé(file handle)</cite>ÀÌ¶ó°í
-    ºÎ¸§)¸¦ ´Ù ½á¹ö¸± ¼ö ÀÖ´Ù. ¾ÆÆÄÄ¡°¡ »ç¿ëÇÏ´Â ÆÄÀÏ±â¼úÀÚÀÇ
-    ÃÑ °³¼ö´Â ¿À·ù ·Î±×ÆÄÀÏ´ç ÇÑ°³, ´Ù¸¥ ·Î±×ÆÄÀÏ Áö½Ã¾î´ç
-    ÇÑ°³, Ãß°¡·Î ³»ºÎ¿ëµµ·Î 10-20°³¸¦ ´õÇÑ ¼ö´Ù. À¯´Ð½º ¿î¿µÃ¼Á¦´Â
-    ÇÁ·Î¼¼½º°¡ »ç¿ëÇÒ ¼ö ÀÖ´Â ÆÄÀÏ±â¼úÀÚ °³¼ö¸¦ Á¦ÇÑÇÑ´Ù. ÀÌ ÇÑ°è´Â
-    º¸Åë 64°³·Î, º¸Åë ÀÌº¸´Ù Å« hard-limit±îÁö ´Ã¸± ¼ö ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½
+    ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½, ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ë°¡ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½(file
+    descriptor, ï¿½ï¿½ï¿½ï¿½ <cite>ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½(file handle)</cite>ï¿½Ì¶ï¿½ï¿½
+    ï¿½Î¸ï¿½)ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Î±ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Ñ°ï¿½, ï¿½Ù¸ï¿½ ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½
+    ï¿½Ñ°ï¿½, ï¿½ß°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î¿ëµµï¿½ï¿½ 10-20ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½Ð½ï¿½ ï¿½î¿µÃ¼ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½Î¼ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ ï¿½Ñ°ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ 64ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½Ìºï¿½ï¿½ï¿½ Å« hard-limitï¿½ï¿½ï¿½ï¿½ ï¿½Ã¸ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <p>¾ÆÆÄÄ¡´Â ÀÌ ÇÑ°è¸¦ ÇÊ¿äÇÑ¸¸Å­ ´Ã¸®·Á°í ÇÏÁö¸¸, ½ÇÆÐÇÏ´Â
-    °æ¿ì°¡ ÀÖ´Ù:</p>
+    <p>ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ ï¿½Ñ°è¸¦ ï¿½Ê¿ï¿½ï¿½Ñ¸ï¿½Å­ ï¿½Ã¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½
+    ï¿½ï¿½ì°¡ ï¿½Ö´ï¿½:</p>
 
     <ol>
-      <li>½Ã½ºÅÛÀÌ <code>setrlimit()</code> ½Ã½ºÅÛÈ£ÃâÀ»
-      Á¦°øÇÏÁö ¾Ê´Â´Ù.</li>
+      <li>ï¿½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>setrlimit()</code> ï¿½Ã½ï¿½ï¿½ï¿½È£ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.</li>
 
-      <li>(Solaris 2.3°ú °°ÀÌ) ½Ã½ºÅÛ¿¡¼­
-      <code>setrlimit(RLIMIT_NOFILE)</code> ÇÔ¼ö°¡ µ¿ÀÛÇÏÁö
-      ¾Ê´Â´Ù.</li>
+      <li>(Solaris 2.3ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½) ï¿½Ã½ï¿½ï¿½Û¿ï¿½ï¿½ï¿½
+      <code>setrlimit(RLIMIT_NOFILE)</code> ï¿½Ô¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½Ê´Â´ï¿½.</li>
 
-      <li>ÇÊ¿äÇÑ ÆÄÀÏ±â¼úÀÚ °³¼ö°¡ hard limit º¸´Ù ¸¹´Ù.</li>
+      <li>ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ hard limit ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</li>
       
-      <li>(Solaris 2) ½Ã½ºÅÛÀÌ stdio ½ºÆ®¸²À» 256ÀÌÇÏÀÇ
-      ÆÄÀÏ±â¼úÀÚ¸¸À» »ç¿ëÇÏµµ·Ï Á¦ÇÑÇÏ´Â µî ÆÄÀÏ±â¼úÀÚ¿¡
-      Á¦¾àÀ» °¡ÇÑ´Ù.</li>
+      <li>(Solaris 2) ï¿½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ stdio ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ 256ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½Ú¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½Ú¿ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ñ´ï¿½.</li>
     </ol>
 
-    <p>ÀÌ °æ¿ì ÇØ°áÃ¥Àº:</p>
+    <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ø°ï¿½Ã¥ï¿½ï¿½:</p>
 
     <ul>
-      <li>·Î±×ÆÄÀÏ °³¼ö¸¦ ÁÙÀÎ´Ù. <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> ¼½¼Ç¿¡¼­ ·Î±×ÆÄÀÏÀ»
-      ÁöÁ¤ÇÏÁö ¾Ê°í ÁÖ ·Î±×ÆÄÀÏÀ» »ç¿ëÇÑ´Ù. (´õ ÀÚ¼¼ÇÑ ¹æ¹ýÀº
-      ¾Æ·¡ <a href="#splitlogs">·Î±×ÆÄÀÏ ³ª´©±â</a>¸¦ Âü°íÇÏ¶ó.)</li>
+      <li>ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î´ï¿½. <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> ï¿½ï¿½ï¿½Ç¿ï¿½ï¿½ï¿½ ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê°ï¿½ ï¿½ï¿½ ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. (ï¿½ï¿½ ï¿½Ú¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½Æ·ï¿½ <a href="#splitlogs">ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</a>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.)</li>
 
       <li>
-        »ç¿ëÇÏ´Â ½Ã½ºÅÛÀÌ (À§ÀÇ) 1¹øÂ°³ª 2¹øÂ° °æ¿ì¿¡ ÇØ´çÇÑ´Ù¸é,
-        ´ÙÀ½°ú °°Àº ½ºÅ©¸³Æ®·Î ¾ÆÆÄÄ¡¸¦ ½ÃÀÛÇÏ±â Àü¿¡ ÆÄÀÏ±â¼úÀÚ
-        ÇÑ°è¸¦ ´Ã¸°´Ù.
+        ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½) 1ï¿½ï¿½Â°ï¿½ï¿½ 2ï¿½ï¿½Â° ï¿½ï¿½ì¿¡ ï¿½Ø´ï¿½ï¿½Ñ´Ù¸ï¿½,
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½
+        ï¿½Ñ°è¸¦ ï¿½Ã¸ï¿½ï¿½ï¿½.
 
         <div class="example"><p><code>
           <code>#!/bin/sh<br />
@@ -83,44 +83,44 @@
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="splitlogs" id="splitlogs">·Î±×ÆÄÀÏ ³ª´©±â</a> <a title="Permanent link" href="#splitlogs" class="permalink">&para;</a></h2>
+<h2><a name="splitlogs" id="splitlogs">ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</a> <a title="Permanent link" href="#splitlogs" class="permalink">&para;</a></h2>
 
-<p>¿©·¯ °¡»óÈ£½ºÆ®°¡ °°Àº ·Î±×ÆÄÀÏÀ» »ç¿ëÇÑ´Ù¸é ³ªÁß¿¡ °¢
-°¡»óÈ£½ºÆ®ÀÇ Åë°èºÐ¼®À» À§ÇØ ·Î±×ÆÄÀÏÀ» ³ª´©°í ½ÍÀ» °ÍÀÌ´Ù.
-ÀÌ ÀÛ¾÷Àº ´ÙÀ½°ú °°ÀÌ ÇÒ ¼ö ÀÖ´Ù.</p>
+<p>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½ ï¿½ï¿½ï¿½ß¿ï¿½ ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½Ð¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½.
+ï¿½ï¿½ ï¿½Û¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-<p>¸ÕÀú ·Î±× Ç×¸ñ¿¡ °¡»óÈ£½ºÆ® Á¤º¸¸¦ Ãß°¡ÇÑ´Ù. ÀÌ¸¦ À§ÇØ
+<p>ï¿½ï¿½ï¿½ï¿½ ï¿½Î±ï¿½ ï¿½×¸ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ñ´ï¿½. ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½
 <code class="directive"><a href="../mod/mod_log_config.html#logformat">LogFormat</a></code>
-Áö½Ã¾î¿Í <code>%v</code> º¯¼ö¸¦ »ç¿ëÇÑ´Ù. ÀÌ º¯¼ö¸¦ ·Î±×
-Çü½Ä¹®ÀÚ¿­ ¾Õ¿¡ Ãß°¡ÇÑ´Ù:</p>
+ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ <code>%v</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î±ï¿½
+ï¿½ï¿½ï¿½Ä¹ï¿½ï¿½Ú¿ï¿½ ï¿½Õ¿ï¿½ ï¿½ß°ï¿½ï¿½Ñ´ï¿½:</p>
 
 <div class="example"><p><code>
 LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost<br />
 CustomLog logs/multiple_vhost_log vhost
 </code></p></div>
 
-<p>±×·¯¸é common ·Î±×Çü½Ä ¾Õ¿¡ (<code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> Áö½Ã¾î¿¡ ³ª¿À´Â) Á¤±Ô
-°¡»óÈ£½ºÆ®¸¦ Æ÷ÇÔÇÏ¿© ·Î±×ÆÄÀÏÀ» ±â·ÏÇÑ´Ù. (·Î±×ÆÄÀÏ
-»ç¿ëÀÚÁ¤ÀÇ¿¡ °üÇÑ ³»¿ëÀº <code class="directive"><a href="../mod/mod_log_config.html#»ç¿ëÀÚÁ¤ÀÇ ·Î±×Çü½Ä">»ç¿ëÀÚÁ¤ÀÇ ·Î±×Çü½Ä</a></code>À»
-Âü°íÇÏ¶ó.)</p>
+<p>ï¿½×·ï¿½ï¿½ï¿½ common ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Õ¿ï¿½ (<code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> ï¿½ï¿½ï¿½Ã¾î¿¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½) ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. (ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code class="directive"><a href="../mod/mod_log_config.html#ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½</a></code>ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.)</p>
 
-<p>·Î±×ÆÄÀÏÀ» (°¡»óÈ£½ºÆ®´ç ÇÑ ÆÄÀÏ¾¿) ³ª´©°í ½Í´Ù¸é <code><a href="../programs/other.html">split-logfile</a></code> ÇÁ·Î±×·¥À»
-»ç¿ëÇÑ´Ù. ÀÌ ÇÁ·Î±×·¥Àº ¾ÆÆÄÄ¡ ¹èÆ÷º»ÀÇ <code>support</code>
-µð·ºÅä¸®¿¡ ÀÖ´Ù.</p>
+<p>ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¾ï¿½) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Í´Ù¸ï¿½ <code><a href="../programs/other.html">split-logfile</a></code> ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>support</code>
+ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-<p>´ÙÀ½°ú °°ÀÌ ÇÁ·Î±×·¥À» ½ÇÇàÇÑ´Ù:</p>
+<p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½:</p>
 
 <div class="example"><p><code>
 split-logfile &lt; /logs/multiple_vhost_log
 </code></p></div>
 
-<p>°¡»óÈ£½ºÆ® ·Î±×ÆÄÀÏÀ» °¡Áö°í ÀÌ ÇÁ·Î±×·¥À» ½ÇÇàÇÏ¸é ·Î±×ÆÄÀÏ¿¡
-³ª¿À´Â °¢ °¡»óÈ£½ºÆ®´ç ÆÄÀÏÀ» ÇÏ³ª¾¿ ¸¸µç´Ù. °¢°¢ÀÇ ÆÄÀÏ¸íÀº
-<code>hostname.log</code>ÀÌ´Ù.</p>
+<p>ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ® ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½Î±ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½
+<code>hostname.log</code>ï¿½Ì´ï¿½.</p>
 
 </div></div>
 <div class="bottomlang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/vhosts/fd-limits.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/vhosts/fd-limits.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/vhosts/fd-limits.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/vhosts/fd-limits.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/vhosts/fd-limits.html" title="Korean">&nbsp;ko&nbsp;</a> |
@@ -128,7 +128,7 @@ split-logfile &lt; /logs/multiple_vhost_log
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/vhosts/fd-limits.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/vhosts/fd-limits.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -143,8 +143,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/vhosts/fd-limits.h
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

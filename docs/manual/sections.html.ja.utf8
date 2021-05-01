@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -16,12 +16,12 @@
 
 <link href="./images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/quickreference.html">ディレクティブ</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p>
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/quickreference.html">ディレクティブ</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p>
 <p class="apache">Apache HTTP サーバ バージョン 2.5</p>
 <img alt="" src="./images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.5</a></div><div id="page-content"><div id="preamble"><h1>セクションの設定</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="https://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.5</a></div><div id="page-content"><div id="preamble"><h1>セクションの設定</h1>
 <div class="toplang">
 <p><span>翻訳済み言語: </span><a href="./en/sections.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/sections.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
@@ -71,7 +71,7 @@
 
 <div class="example"><p><code>
 &lt;IfDefine ClosedForNow&gt;<br />
-Redirect / http://otherserver.example.com/<br />
+Redirect / https://otherserver.example.com/<br />
 &lt;/IfDefine&gt;
 </code></p></div>
 
@@ -196,9 +196,9 @@ Deny from all<br />
 ウェブ空間上の内容に対して設定を変更します。
 たとえば、次の設定では /private で始まる URL パスへのアクセスを制限します。
 具体的には、
-<code>http://yoursite.example.com/private</code>,
-<code>http://yoursite.example.com/private123</code>, 
-<code>http://yoursite.example.com/private/dir/file.html</code> 
+<code>https://yoursite.example.com/private</code>,
+<code>https://yoursite.example.com/private123</code>, 
+<code>https://yoursite.example.com/private/dir/file.html</code> 
 へのリクエストや、
 他の同様に <code>/private</code> 文字列で始まるリクエストに
 適用されます。</p>
@@ -292,10 +292,10 @@ Deny from all<br />
 &lt;/Location&gt;
 </code></p></div>
 
-<p><code>http://yoursite.example.com/dir/</code>
+<p><code>https://yoursite.example.com/dir/</code>
 へのリクエストでは上手く動作します。しかし大文字小文字を区別しない
 ファイルシステムを使っていたらどうなるでしょう?
-<code>http://yoursite.example.com/DIR/</code> 
+<code>https://yoursite.example.com/DIR/</code> 
 へのリクエストで簡単にアクセス制限を迂回されてしまいます。これに対して
 <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>
 ディレクティブを使用すると、どのように呼び出されたかに関わらず
@@ -340,7 +340,7 @@ Deny from all<br />
 制限します。</p>
 
 <div class="example"><p><code>
-&lt;Proxy http://cnn.com/*&gt;<br />
+&lt;Proxy https://cnn.com/*&gt;<br />
 Order allow,deny<br />
 Deny from all<br />
 &lt;/Proxy&gt;
@@ -499,7 +499,7 @@ Deny from badguy.example.com<br />
 </div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">コメント</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/sections.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/sections.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -514,8 +514,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/sections.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />この文書は <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
-<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/quickreference.html">ディレクティブ</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/quickreference.html">ディレクティブ</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

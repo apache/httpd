@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -17,12 +17,12 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Module Apache mod_proxy</h1>
 <div class="toplang">
@@ -226,8 +226,8 @@
     <p>Si en outre, vous désirez activer la mise en cache, consultez la
     documentation de <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>.</p>
 
-    <div class="example"><h3>Mandataire inverse</h3><pre class="prettyprint lang-config">ProxyPass "/foo" "http://foo.example.com/bar"
-ProxyPassReverse "/foo" "http://foo.example.com/bar"</pre>
+    <div class="example"><h3>Mandataire inverse</h3><pre class="prettyprint lang-config">ProxyPass "/foo" "https://foo.example.com/bar"
+ProxyPassReverse "/foo" "https://foo.example.com/bar"</pre>
 </div>
 
     <div class="example"><h3>Mandataire direct</h3><pre class="prettyprint lang-config">ProxyRequests On
@@ -277,24 +277,24 @@ ProxyVia On
       Ils sont en général définis via les directives <code class="directive"><a href="#proxypass">ProxyPass</a></code> ou <code class="directive"><a href="#proxypassmatch">ProxyPassMatch</a></code> lorsqu'on les
       utilise dans le cadre d'un mandataire inverse :</p>
 
-      <div class="example"><pre class="prettyprint lang-config">ProxyPass "/example" "http://backend.example.com" connectiontimeout=5 timeout=30</pre>
+      <div class="example"><pre class="prettyprint lang-config">ProxyPass "/example" "https://backend.example.com" connectiontimeout=5 timeout=30</pre>
 </div>
       
 
       <p>Cette directive va créer un worker associé à l'URL du serveur original
-      <code>http://backend.example.com</code>, qui utilisera les valeurs de
+      <code>https://backend.example.com</code>, qui utilisera les valeurs de
       timeout données. Toutes les spécifications de timeouts utilisent la
       syntaxe <a href="directive-dict.html#Syntax">time-interval</a>. Lorsqu'ils
       sont utilisés dans le cadre d'un mandataire direct, les workers sont en
       général définis via la directive <code class="directive"><a href="#proxyset">ProxySet</a></code> :</p>
 
-      <div class="example"><pre class="prettyprint lang-config">ProxySet http://backend.example.com connectiontimeout=5 timeout=30</pre>
+      <div class="example"><pre class="prettyprint lang-config">ProxySet https://backend.example.com connectiontimeout=5 timeout=30</pre>
 </div>
       
 
       <p>ou encore via les directives <code class="directive"><a href="#proxy">Proxy</a></code> et <code class="directive"><a href="#proxyset">ProxySet</a></code> :</p>
 
-      <pre class="prettyprint lang-config">&lt;Proxy http://backend.example.com&gt;
+      <pre class="prettyprint lang-config">&lt;Proxy https://backend.example.com&gt;
   ProxySet connectiontimeout=5 timeout=30
 &lt;/Proxy&gt;</pre>
 
@@ -315,8 +315,8 @@ ProxyVia On
       <p>L'URL qui identifie un worker correspond à l'URL de son serveur
       original, y compris un éventuel chemin donné :</p>
 
-      <pre class="prettyprint lang-config">ProxyPass "/examples" "http://backend.example.com/examples"
-ProxyPass "/docs" "http://backend.example.com/docs"</pre>
+      <pre class="prettyprint lang-config">ProxyPass "/examples" "https://backend.example.com/examples"
+ProxyPass "/docs" "https://backend.example.com/docs"</pre>
 
 
       <p>Dans cet exemple, deux workers différents sont définis, chacun
@@ -329,8 +329,8 @@ ProxyPass "/docs" "http://backend.example.com/docs"</pre>
 	correspond au début de l'URL d'un autre worker défini plus loin
 	dans le fichier de configuration. Dans l'exemple suivant,</p>
 
-        <pre class="prettyprint lang-config">ProxyPass "/apps" "http://backend.example.com/" timeout=60
-ProxyPass "/examples" "http://backend.example.com/examples" timeout=10</pre>
+        <pre class="prettyprint lang-config">ProxyPass "/apps" "https://backend.example.com/" timeout=60
+ProxyPass "/examples" "https://backend.example.com/examples" timeout=10</pre>
 
 
         <p>le second worker n'est pas vraiment créé. C'est le premier
@@ -354,7 +354,7 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10</pre>
 
       <div class="warning"><h3>Nom d'hôte dans l'URL</h3>
         <p>Le nom d'hôte doit commencer par une lettre [a-z]. Par exemple :</p>
-        <pre class="prettyprint lang-config">ProxyPass "/apps"     "http://127"</pre>
+        <pre class="prettyprint lang-config">ProxyPass "/apps"     "https://127"</pre>
 
         <p>n'est pas valide et provoquera une erreur si une requête correspond
 	au chemin.</p>
@@ -454,8 +454,8 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10</pre>
 
       <p>Les utilisateurs d'un Intranet ont tendance à oublier le nom du
       domaine local dans leurs requêtes WWW, et demandent par exemple
-      "http://un-serveur/" au lieu de
-      <code>http://un-serveur.example.com/</code>. Certains serveurs
+      "https://un-serveur/" au lieu de
+      <code>https://un-serveur.example.com/</code>. Certains serveurs
       mandataires commerciaux acceptent ce genre de requête et les
       traitent simplement en utilisant un nom de domaine local
       implicite. Lorsque la directive <code class="directive"><a href="#proxydomain">ProxyDomain</a></code> est utilisée et si le
@@ -480,7 +480,7 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10</pre>
       <code>proxy-nokeepalive</code>.</p>
 
       <pre class="prettyprint lang-config">&lt;Location "/buggyappserver/"&gt;
-  ProxyPass "http://buggyappserver:7001/foo/"
+  ProxyPass "https://buggyappserver:7001/foo/"
   SetEnv force-proxy-request-1.0 1
   SetEnv proxy-nokeepalive 1
 &lt;/Location&gt;</pre>
@@ -680,7 +680,7 @@ directement</td></tr>
     sans être redirigée vers le(s) serveur(s) mandataire(s) défini(s) par
     la directive <code class="directive"><a href="#proxyremote">ProxyRemote</a></code>.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">ProxyRemote  *  http://firewall.example.com:81
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">ProxyRemote  *  https://firewall.example.com:81
 NoProxy         .example.com 192.168.112.0/21</pre>
 </div>
 
@@ -831,7 +831,7 @@ mandatées</td></tr>
     filtre <code>INCLUDES</code> lorsqu'ils seront envoyés par
     l'intermédiaire du serveur mandataire :</p>
 
-    <pre class="prettyprint lang-config">&lt;Proxy http://example.com/foo/*&gt;
+    <pre class="prettyprint lang-config">&lt;Proxy https://example.com/foo/*&gt;
   SetOutputFilter INCLUDES
 &lt;/Proxy&gt;</pre>
 
@@ -853,9 +853,9 @@ mandatées</td></tr>
       elle commence par la <var>url-avec-jokers</var>, même si le
       dernier segment de chemin de la directive ne correspond qu'à un
       préfixe de segment dee chemin de l'URL d'arrière-plan. Par exemple, &lt;Proxy
-      http://example.com/foo&gt; correspondra entre autres aux URLs
-      http://example.com/foo, http://example.com/foo/bar, et
-      http://example.com/foobar. La correspondance de l'URL finale
+      https://example.com/foo&gt; correspondra entre autres aux URLs
+      https://example.com/foo, https://example.com/foo/bar, et
+      https://example.com/foobar. La correspondance de l'URL finale
       diffère du comportement de la section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> qui, pour le cas de cette note,
       traitera le segment de chemin final comme s'il se terminait par un
       slash.</p>
@@ -1023,7 +1023,7 @@ mandatées</td></tr>
     générer une réponse de redirection vers le même hôte suffixé par le
     <var>Domaine</var> spécifié.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">ProxyRemote  "*"  "http://firewall.example.com:81"
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">ProxyRemote  "*"  "https://firewall.example.com:81"
 NoProxy           ".example.com" "192.168.112.0/21"
 ProxyDomain       ".example.com"</pre>
 </div>
@@ -1128,7 +1128,7 @@ mandatées correspondant à une expression rationnelle</td></tr>
     nommées) sont ignorées. Vous devez utiliser à la place des groupes
     nommés.</p>
 
-<pre class="prettyprint lang-config">&lt;ProxyMatch ^http://(?&lt;sitename&gt;[^/]+)&gt;
+<pre class="prettyprint lang-config">&lt;ProxyMatch ^https://(?&lt;sitename&gt;[^/]+)&gt;
     require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/ProxyMatch&gt;</pre>
 
@@ -1205,7 +1205,7 @@ de la version 2.4.7 du serveur HTTP Apache</td></tr>
     il suffit d'utiliser une URL cible préfixée par
     <code>unix:/path/lis.sock|</code>. Par exemple, pour mandater HTTP
     et cibler l'UDS /home/www.socket, vous devez utiliser
-    <code>unix:/home/www.socket|http://localhost/whatever/</code>. Comme
+    <code>unix:/home/www.socket|https://localhost/whatever/</code>. Comme
     le socket est local, le nom d'hôte utilisé (ici
     <code>localhost</code>) peut être sujet à discussion, mais il est
     transmis dans l'en-tête Host: de la requête.</p>
@@ -1228,16 +1228,16 @@ de la version 2.4.7 du serveur HTTP Apache</td></tr>
     <code class="directive">ProxyPassMatch</code> à la place.</p>
     
     <p>Supposons que le serveur local a pour adresse
-    <code>http://example.com/</code> ; alors la ligne</p>
+    <code>https://example.com/</code> ; alors la ligne</p>
 
     <pre class="prettyprint lang-config">&lt;Location "/mirror/foo/"&gt;
-    ProxyPass "http://backend.example.com/"
+    ProxyPass "https://backend.example.com/"
 &lt;/Location&gt;</pre>
 
 
     <p>va convertir en interne toute requête pour
-    <code>http://example.com/mirror/foo/bar</code> en une requête
-    mandatée pour <code>http://backend.example.com/bar</code>.</p>
+    <code>https://example.com/mirror/foo/bar</code> en une requête
+    mandatée pour <code>https://backend.example.com/bar</code>.</p>
 
     <p>Si vous avez besoin d'un configuration de mandataire inverse plus
     souple, reportez-vous à la documentation de la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> et son drapeau
@@ -1248,7 +1248,7 @@ de la version 2.4.7 du serveur HTTP Apache</td></tr>
     présente en très grand nombre. Elle possède l'avantage de
     permettre un contrôle dynamique via l'interface <a href="mod_proxy_balancer.html#balancer_manager">Balancer Manager</a> :</p>
 
-    <pre class="prettyprint lang-config">ProxyPass "/mirror/foo/" "http://backend.example.com/"</pre>
+    <pre class="prettyprint lang-config">ProxyPass "/mirror/foo/" "https://backend.example.com/"</pre>
 
 
     <div class="warning">
@@ -1264,7 +1264,7 @@ de la version 2.4.7 du serveur HTTP Apache</td></tr>
     du mandat inverse, comme dans l'exemple suivant :</p>
 
     <pre class="prettyprint lang-config">&lt;Location "/mirror/foo/"&gt;
-    ProxyPass "http://backend.example.com/"
+    ProxyPass "https://backend.example.com/"
 &lt;/Location&gt;
 &lt;Location "/mirror/foo/i"&gt;
     ProxyPass "!"
@@ -1272,7 +1272,7 @@ de la version 2.4.7 du serveur HTTP Apache</td></tr>
 
 
     <pre class="prettyprint lang-config">ProxyPass "/mirror/foo/i" "!"
-ProxyPass "/mirror/foo" "http://backend.example.com"</pre>
+ProxyPass "/mirror/foo" "https://backend.example.com"</pre>
 
 
     <p>va mandater toutes les requêtes pour <code>/mirror/foo</code>
@@ -1283,7 +1283,7 @@ ProxyPass "/mirror/foo" "http://backend.example.com"</pre>
     fonctionne pas :</p>
     <pre class="prettyprint lang-config">ProxyPass "/mirror/foo/i" "!"
 &lt;Location "/mirror/foo/"&gt;
-    ProxyPass "http://backend.example.com/"
+    ProxyPass "https://backend.example.com/"
 &lt;/Location&gt;</pre>
 
     <p>Dans ce cas, une requête pour <code>/mirror/foo/i</code> sera tout de
@@ -1354,7 +1354,7 @@ ProxyPass "/mirror/foo" "http://backend.example.com"</pre>
     suite à une fin de vie de connexion persistante sur le serveur
     d'arrière-plan.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">ProxyPass "/example" "http://backend.example.com" max=20 ttl=120 retry=300</pre>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">ProxyPass "/example" "https://backend.example.com" max=20 ttl=120 retry=300</pre>
 </div>
 
     <table class="bordered"><tr><th>Paramètres du worker (directive BalancerMember)</th></tr></table>
@@ -1739,7 +1739,7 @@ ProxyPass "/mirror/foo" "http://backend.example.com"</pre>
 
     </table>
     <p>Exemple de configuration d'un répartiteur de charge</p>
-    <pre class="prettyprint lang-config">ProxyPass "/special-area" "http://special.example.com" smax=5 max=10
+    <pre class="prettyprint lang-config">ProxyPass "/special-area" "https://special.example.com" smax=5 max=10
 ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofailover=On
 &lt;Proxy balancer://mycluster&gt;
     BalancerMember ajp://1.2.3.4:8009
@@ -1826,7 +1826,7 @@ RewriteCond %{HTTPS} =on
 RewriteRule . - [E=protocol:https]
 
 RewriteRule ^/mirror/foo/(.*) %{ENV:protocol}://backend.example.com/$1 [P]
-ProxyPassReverse  "/mirror/foo/" "http://backend.example.com/"
+ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"
 ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"</pre>
 
 
@@ -1921,14 +1921,14 @@ du serveur local en utilisant des expressions rationnelles</td></tr>
     utilisée dans un contexte de niveau répertoire.</div>
 
     <p>Supposons que le serveur local a pour adresse
-    <code>http://example.com/</code> ; alors</p>
+    <code>https://example.com/</code> ; alors</p>
 
-    <pre class="prettyprint lang-config">ProxyPassMatch "^(/.*\.gif)$" "http://backend.example.com/$1"</pre>
+    <pre class="prettyprint lang-config">ProxyPassMatch "^(/.*\.gif)$" "https://backend.example.com/$1"</pre>
 
 
     <p>va provoquer la conversion interne de la requête locale
-    <code>http://example.com/foo/bar.gif</code> en une requête mandatée
-    pour <code>http://backend.example.com/foo/bar.gif</code>.</p>
+    <code>https://example.com/foo/bar.gif</code> en une requête mandatée
+    pour <code>https://backend.example.com/foo/bar.gif</code>.</p>
 
     <div class="note"><h3>Note</h3>
       <p>L'argument URL doit pouvoir être interprété en tant qu'URL
@@ -1936,13 +1936,13 @@ du serveur local en utilisant des expressions rationnelles</td></tr>
       doit aussi l'être après). Ceci limite les correspondances que vous
       pouvez utiliser. Par exemple, si l'on avait utilisé</p>
       <pre class="prettyprint lang-config">        ProxyPassMatch "^(/.*\.gif)$"
-	"http://backend.example.com:8000$1"</pre>
+	"https://backend.example.com:8000$1"</pre>
 
       <p>dans l'exemple précédent, nous aurions provoqué une erreur de
       syntaxe au démarrage du serveur. C'est une bogue (PR 46665 dans
       ASF bugzilla), et il est possible de la contourner en reformulant
       la correspondance :</p>
-      <pre class="prettyprint lang-config">ProxyPassMatch "^/(.*\.gif)$" "http://backend.example.com:8000/$1"</pre>
+      <pre class="prettyprint lang-config">ProxyPassMatch "^/(.*\.gif)$" "https://backend.example.com:8000/$1"</pre>
 
     </div>
 
@@ -2025,23 +2025,23 @@ par un serveur mandaté en inverse</td></tr>
     </p>
     
     <p>Supposons par exemple que le serveur local a pour adresse
-    <code>http://example.com/</code> ; alors</p>
+    <code>https://example.com/</code> ; alors</p>
 
-    <pre class="prettyprint lang-config">ProxyPass         "/mirror/foo/" "http://backend.example.com/"
-ProxyPassReverse  "/mirror/foo/" "http://backend.example.com/"
+    <pre class="prettyprint lang-config">ProxyPass         "/mirror/foo/" "https://backend.example.com/"
+ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"
 ProxyPassReverseCookieDomain  backend.example.com  public.example.com
 ProxyPassReverseCookiePath  "/"  "/mirror/foo/"</pre>
 
 
     <p>ne va pas seulement provoquer la conversion interne d'une requête
-    locale pour <code>http://example.com/mirror/foo/bar</code> en une
-    requête mandatée pour <code>http://backend.example.com/bar</code>
+    locale pour <code>https://example.com/mirror/foo/bar</code> en une
+    requête mandatée pour <code>https://backend.example.com/bar</code>
     (la fonctionnalité fournie par <code>ProxyPass</code>). Il va
     aussi s'occuper des redirections que le serveur
     <code>backend.example.com</code> envoie lorsque
-    <code>http://backend.example.com/bar</code> est redirigé par
-    celui-ci vers <code>http://backend.example.com/quux</code>, Apache
-    httpd corrige ceci en <code>http://example.com/mirror/foo/quux</code>
+    <code>https://backend.example.com/bar</code> est redirigé par
+    celui-ci vers <code>https://backend.example.com/quux</code>, Apache
+    httpd corrige ceci en <code>https://example.com/mirror/foo/quux</code>
     avant de faire suivre la redirection HTTP au client. Notez que le
     nom d'hôte utilisé pour construire l'URL est choisi en respectant la
     définition de la directive <code class="directive"><a href="../mod/core.html#usecanonicalname">UseCanonicalName</a></code>.</p>
@@ -2203,9 +2203,9 @@ version 2.5.1 du serveur HTTP Apache.</td></tr>
     <code>https</code>, les requêtes sont redirigées par le mandataire
     distant en utilisant la méthode HTTP CONNECT.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">ProxyRemote http://goodguys.example.com/ http://mirrorguys.example.com:8000
-ProxyRemote * http://cleverproxy.localdomain
-ProxyRemote ftp http://ftpproxy.mydomain:8080</pre>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">ProxyRemote https://goodguys.example.com/ https://mirrorguys.example.com:8000
+ProxyRemote * https://cleverproxy.localdomain
+ProxyRemote ftp https://ftpproxy.mydomain:8080</pre>
 </div>
 
     <p>Dans la dernière ligne de l'exemple, le mandataire va faire
@@ -2305,13 +2305,13 @@ charge</td></tr>
     mandataire inverse via une directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> au lieu de <code class="directive"><a href="#proxypass">ProxyPass</a></code>.</p>
 
     <div class="example"><pre class="prettyprint lang-config">&lt;Proxy balancer://hotcluster&gt;
-    BalancerMember http://www2.example.com:8080 loadfactor=1
-    BalancerMember http://www3.example.com:8080 loadfactor=2
+    BalancerMember https://www2.example.com:8080 loadfactor=1
+    BalancerMember https://www3.example.com:8080 loadfactor=2
     ProxySet lbmethod=bytraffic
 &lt;/Proxy&gt;</pre>
 </div>
 
-    <pre class="prettyprint lang-config">&lt;Proxy http://backend&gt;
+    <pre class="prettyprint lang-config">&lt;Proxy https://backend&gt;
     ProxySet keepalive=On
 &lt;/Proxy&gt;</pre>
 
@@ -2402,7 +2402,7 @@ mandatées</td></tr>
     <p>Cette directive permet de contrôler l'utilisation de l'en-tête
     HTTP <code>Via:</code> par le mandataire. Le but recherché est de
     contrôler le flux des requêtes mandatées tout au long d'une chaîne
-    de serveurs mandataires. Voir <a href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a> (HTTP/1.1),
+    de serveurs mandataires. Voir <a href="https://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a> (HTTP/1.1),
     section 14.45 pour une description des lignes d'en-tête
     <code>Via:</code>.</p>
 
@@ -2434,7 +2434,7 @@ mandatées</td></tr>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_proxy.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/mod/mod_proxy.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -2449,8 +2449,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_proxy.html
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

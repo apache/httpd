@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -29,7 +29,7 @@
 <p>On systems with multiple users, each user can be permitted to have a
     web site in their home directory using the <directive
     module="mod_userdir">UserDir</directive> directive. Visitors
-    to a URL <code>http://example.com/~username/</code> will get content
+    to a URL <code>https://example.com/~username/</code> will get content
     out of the home directory of the user "<code>username</code>", out of
     the subdirectory specified by the <directive
     module="mod_userdir">UserDir</directive> directive.</p>
@@ -77,7 +77,7 @@
 UserDir public_html
     </highlight>
 
-    <p>the URL <code>http://example.com/~rbowen/file.html</code> will be
+    <p>the URL <code>https://example.com/~rbowen/file.html</code> will be
     translated to the file path
     <code>/home/rbowen/public_html/file.html</code></p>
 
@@ -89,7 +89,7 @@ UserDir public_html
 UserDir /var/html
     </highlight>
 
-    <p>the URL <code>http://example.com/~rbowen/file.html</code> will be
+    <p>the URL <code>https://example.com/~rbowen/file.html</code> will be
     translated to the file path <code>/var/html/rbowen/file.html</code></p>
 
     <p>If a path is provided which contains an asterisk (*), a path is used
@@ -100,7 +100,7 @@ UserDir /var/html
 UserDir /var/www/*/docs
     </highlight>
 
-    <p>the URL <code>http://example.com/~rbowen/file.html</code> will be
+    <p>the URL <code>https://example.com/~rbowen/file.html</code> will be
     translated to the file path
     <code>/var/www/rbowen/docs/file.html</code></p>
 
@@ -110,7 +110,7 @@ UserDir /var/www/*/docs
 UserDir public_html /var/html
     </highlight>
 
-    <p>For the URL <code>http://example.com/~rbowen/file.html</code>,
+    <p>For the URL <code>https://example.com/~rbowen/file.html</code>,
     Apache will search for <code>~rbowen</code>. If it isn't found,
     Apache will search for <code>rbowen</code> in <code>/var/html</code>. If
     found, the above URL will then be translated to the file path
@@ -124,12 +124,12 @@ UserDir public_html /var/html
       used to redirect user directory requests to external URLs.</p>
 
     <highlight language="config">
-UserDir http://example.org/users/*/
+UserDir https://example.org/users/*/
     </highlight>
 
     <p>The above example will redirect a request for
-    <code>http://example.com/~bob/abc.html</code> to
-    <code>http://example.org/users/bob/abc.html</code>.</p>
+    <code>https://example.com/~bob/abc.html</code> to
+    <code>https://example.org/users/bob/abc.html</code>.</p>
   </section>
 
   <section id="enable">
@@ -178,7 +178,7 @@ UserDir enabled rbowen krietz
     could be loaded from that directory as:</p>
 
     <example>
-    http://example.com/~rbowen/cgi-bin/example.cgi
+    https://example.com/~rbowen/cgi-bin/example.cgi
     </example>
 
     </section>

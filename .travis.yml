@@ -12,7 +12,7 @@ addons:
   apt:
     update: false
     sources:
-      - sourceline: 'deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) universe'
+      - sourceline: 'deb https://archive.ubuntu.com/ubuntu $(lsb_release -sc) universe'
     packages:
       - cpanminus
       - libtool-bin
@@ -70,7 +70,7 @@ jobs:
       addons:
         apt:
           sources:
-            - sourceline: 'deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) universe'
+            - sourceline: 'deb https://archive.ubuntu.com/ubuntu $(lsb_release -sc) universe'
           packages:
             - cpanminus
             - libc6-dev-i386
@@ -283,7 +283,7 @@ jobs:
         apt:
           update: false
           sources:
-            - sourceline: 'deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) universe'
+            - sourceline: 'deb https://archive.ubuntu.com/ubuntu $(lsb_release -sc) universe'
           packages:
             - cpanminus
             - libtool-bin

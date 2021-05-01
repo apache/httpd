@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -18,12 +18,12 @@ Documentación - Servidor HTTP Apache Versión 2.5</title>
 <link href="./images/favicon.ico" rel="shortcut icon" /></head>
 <body id="index-page">
 <div id="page-header">
-<p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa del sitio web</a></p>
+<p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/quickreference.html">Directivas</a> | <a href="https://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa del sitio web</a></p>
 <p class="apache">Versión 2.5 del Servidor HTTP Apache</p>
 <img alt="" src="./images/feather.png" /></div>
-<div class="up"><a href="http://httpd.apache.org/docs-project/"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div class="up"><a href="https://httpd.apache.org/docs-project/"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentación</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentación</a></div>
 <div id="page-content"><h1>Apache HTTP Server Versión 2.5
 Documentación</h1>
 <div class="toplang">
@@ -100,12 +100,12 @@ Documentación</h1>
 <li><a href="platform/netware.html">Novell NetWare</a></li>
 </ul>
 </div><div class="category"><h2><a name="other" id="other">Otros Temas</a></h2>
-<ul><li><a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a></li>
+<ul><li><a href="https://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a></li>
 <li><a href="sitemap.html">Mapa del Sitio</a></li>
 <li><a href="developer/">Documentación para Desarrolladores</a></li>
-<li><a href="http://httpd.apache.org/docs-project/">Contribuir en la Documentación</a></li>
+<li><a href="https://httpd.apache.org/docs-project/">Contribuir en la Documentación</a></li>
 <li><a href="misc/">Otras Notas</a></li>
-<li><a href="http://wiki.apache.org/httpd/">Wiki</a></li>
+<li><a href="https://wiki.apache.org/httpd/">Wiki</a></li>
 </ul>
 </div></td></tr></table></div>
 <div class="bottomlang">
@@ -121,8 +121,8 @@ Documentación</h1>
 <a href="./tr/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/quickreference.html">Directivas</a> | <a href="https://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

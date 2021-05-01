@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -148,17 +148,17 @@ Redirect "/foo.html" "/bar.html"
 <highlight language="config">
 #With mod_rewrite
 RewriteEngine on
-RewriteRule   "^/docs/(.+)"  "http://new.example.com/docs/$1"  [R,L]
+RewriteRule   "^/docs/(.+)"  "https://new.example.com/docs/$1"  [R,L]
 </highlight>
 
 <highlight language="config">
 #With RedirectMatch
-RedirectMatch "^/docs/(.*)" "http://new.example.com/docs/$1"
+RedirectMatch "^/docs/(.*)" "https://new.example.com/docs/$1"
 </highlight>
 
 <highlight language="config">
 #With Redirect
-Redirect "/docs/" "http://new.example.com/docs/"
+Redirect "/docs/" "https://new.example.com/docs/"
 </highlight>
     </dd>
   </dl>
@@ -285,7 +285,7 @@ hostname(s).</p>
   ServerName undesired.example.com
   ServerAlias example.com notthis.example.com
 
-  Redirect "/" "http://www.example.com/"
+  Redirect "/" "https://www.example.com/"
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost *:80&gt;
@@ -299,7 +299,7 @@ directive: (<strong>2.4 and later</strong>)</p>
 
 <highlight language="config">
 &lt;If "%{HTTP_HOST} != 'www.example.com'"&gt;
-    Redirect "/" "http://www.example.com/"
+    Redirect "/" "https://www.example.com/"
 &lt;/If&gt;
 </highlight>
 
@@ -321,14 +321,14 @@ you might use one of the recipes below.</p>
 RewriteCond "%{HTTP_HOST}"   "!^www\.example\.com" [NC]
 RewriteCond "%{HTTP_HOST}"   "!^$"
 RewriteCond "%{SERVER_PORT}" "!^80$"
-RewriteRule "^/?(.*)"        "http://www.example.com:%{SERVER_PORT}/$1" [L,R,NE]
+RewriteRule "^/?(.*)"        "https://www.example.com:%{SERVER_PORT}/$1" [L,R,NE]
 </highlight>
 
 <p>And for a site running on port 80</p>
 <highlight language="config">
 RewriteCond "%{HTTP_HOST}"   "!^www\.example\.com"       [NC]
 RewriteCond "%{HTTP_HOST}"   "!^$"
-RewriteRule "^/?(.*)"        "http://www.example.com/$1" [L,R,NE]
+RewriteRule "^/?(.*)"        "https://www.example.com/$1" [L,R,NE]
 </highlight>
 
         <p>
@@ -341,7 +341,7 @@ RewriteRule "^/?(.*)"        "http://www.example.com/$1" [L,R,NE]
 <highlight language="config">
 RewriteCond "%{HTTP_HOST}" "!^www\."                    [NC]
 RewriteCond "%{HTTP_HOST}" "!^$"
-RewriteRule "^/?(.*)"      "http://www.%{HTTP_HOST}/$1" [L,R,NE]
+RewriteRule "^/?(.*)"      "https://www.%{HTTP_HOST}/$1" [L,R,NE]
 </highlight>
 
     <p>These rulesets will work either in your main server configuration
@@ -422,15 +422,15 @@ HostnameLookups on
 RewriteEngine on
 RewriteMap    multiplex         "txt:/path/to/map.mirrors"
 RewriteCond  "%{REMOTE_HOST}"   "([a-z]+)$"                [NC]
-RewriteRule  "^/(.*)$"          "${multiplex:<strong>%1</strong>|http://www.example.com/}$1"  [R,L]
+RewriteRule  "^/(.*)$"          "${multiplex:<strong>%1</strong>|https://www.example.com/}$1"  [R,L]
 </highlight>
 
 <example>
 ##  map.mirrors -- Multiplexing Map<br />
 <br />
-de        http://www.example.de/<br />
-uk        http://www.example.uk/<br />
-com       http://www.example.com/<br />
+de        https://www.example.de/<br />
+uk        https://www.example.uk/<br />
+com       https://www.example.com/<br />
 ##EOF##
 </example>
     </dd>
@@ -527,12 +527,12 @@ RewriteRule   "^/$"  "/about/"  [<strong>R</strong>]
 module="mod_alias">RedirectMatch</directive> directive:</p>
 
 <highlight language="config">
-RedirectMatch "^/$" "http://example.com/about/"
+RedirectMatch "^/$" "https://example.com/about/"
 </highlight>
 
 <p>Note also that the example rewrites only the root URL. That is, it
-rewrites a request for <code>http://example.com/</code>, but not a
-request for <code>http://example.com/page.html</code>. If you have in
+rewrites a request for <code>https://example.com/</code>, but not a
+request for <code>https://example.com/page.html</code>. If you have in
 fact changed your document root - that is, if <strong>all</strong> of
 your content is in fact in that subdirectory, it is greatly preferable
 to simply change your <directive module="core">DocumentRoot</directive>

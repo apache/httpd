@@ -12,7 +12,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -115,7 +115,7 @@
         <p>En sistemas con múltiples usuarios, cada usuario puede tener
 		su directorio "home" compartido usando la directiva
 		<directive module="mod_userdir">UserDir</directive>. Aquellos
-		que visiten la URL <code>http://example.com/~username/</code>
+		que visiten la URL <code>https://example.com/~username/</code>
 		obtendrán contenido del directorio del usuario "<code>username</code>"
 		que se encuentra en el directorio "home" del sistema.</p>
 

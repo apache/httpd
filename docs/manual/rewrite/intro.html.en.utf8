@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -16,12 +16,12 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Apache mod_rewrite Introduction</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Apache mod_rewrite Introduction</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/rewrite/intro.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/intro.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
@@ -73,12 +73,12 @@ it will tell you exactly how each rule is processed.</p>
 <div class="section">
 <h2><a name="regex" id="regex">Regular Expressions</a> <a title="Permanent link" href="#regex" class="permalink">&para;</a></h2>
 
-<p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> uses the <a href="http://pcre.org/">Perl Compatible
+<p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> uses the <a href="https://pcre.org/">Perl Compatible
 Regular Expression</a> vocabulary. In this document, we do not attempt
 to provide a detailed reference to regular expressions. For that, we
-recommend the <a href="http://pcre.org/pcre.txt">PCRE man pages</a>, the
-<a href="http://perldoc.perl.org/perlre.html">Perl regular
-expression man page</a>, and <a href="http://shop.oreilly.com/product/9780596528126.do">Mastering
+recommend the <a href="https://pcre.org/pcre.txt">PCRE man pages</a>, the
+<a href="https://perldoc.perl.org/perlre.html">Perl regular
+expression man page</a>, and <a href="https://shop.oreilly.com/product/9780596528126.do">Mastering
 Regular Expressions, by Jeffrey Friedl</a>.</p>
 
 <p>In this document, we attempt to provide enough of a regex vocabulary
@@ -245,13 +245,13 @@ like the <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a>
 
 <p>If <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> is set
 to <code>/usr/local/apache2/htdocs</code>, then this directive would
-map requests for <code>http://example.com/foo</code> to the
+map requests for <code>https://example.com/foo</code> to the
 path <code>/usr/local/apache2/htdocs/bar</code>.</p>
 </dd>
 
 <dt>An absolute URL</dt>
 <dd>
-<pre class="prettyprint lang-config">RewriteRule "^/product/view$" "http://site2.example.com/seeproduct.html" [R]</pre>
+<pre class="prettyprint lang-config">RewriteRule "^/product/view$" "https://site2.example.com/seeproduct.html" [R]</pre>
 
 <p>This tells the client to make a new request for the specified URL.</p>
 </dd>
@@ -265,7 +265,7 @@ matched by the <var>Pattern</var>. Consider the following:</p>
 <p>The variable <code>$1</code> will be replaced with whatever text
 was matched by the expression inside the parenthesis in
 the <var>Pattern</var>. For example, a request
-for <code>http://example.com/product/r14df/view</code> will be mapped
+for <code>https://example.com/product/r14df/view</code> will be mapped
 to the path <code>/var/web/productdb/r14df</code>.</p>
 
 <p>If there is more than one expression in parenthesis, they are
@@ -308,7 +308,7 @@ argument is a list of flags that modify how the match is evaluated.</p>
 <p>For example, to send all requests from a particular IP range to a
 different server, you could use:</p>
 <pre class="prettyprint lang-config">RewriteCond "%{REMOTE_ADDR}" "^10\.2\."
-RewriteRule "(.*)"           "http://intranet.example.com$1"</pre>
+RewriteRule "(.*)"           "https://intranet.example.com$1"</pre>
 
 
 <p>When more than
@@ -334,7 +334,7 @@ hostname used to access the site:</p>
 <pre class="prettyprint lang-config">RewriteCond "%{HTTP_HOST}" "(.*)"
 RewriteRule "^/(.*)"       "/sites/%1/$1"</pre>
 
-<p>If the request was for <code>http://example.com/foo/bar</code>,
+<p>If the request was for <code>https://example.com/foo/bar</code>,
 then <code>%1</code> would contain <code>example.com</code>
 and <code>$1</code> would contain <code>foo/bar</code>.</p>
 
@@ -373,7 +373,7 @@ the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">Rewrit
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/rewrite/intro.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/rewrite/intro.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -388,8 +388,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/rewrite/intro.html
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

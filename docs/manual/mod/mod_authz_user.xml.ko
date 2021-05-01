@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,26 +23,26 @@
 <modulesynopsis metafile="mod_authz_user.xml.meta">
 
 <name>mod_authz_user</name> 
-<description>╗ч┐ы└┌ ▒╟╟╤║╬┐й</description>
+<description>я┐╜я┐╜я┐╜я┐╜я┐╜ я┐╜я┐╜я┐╜╤║╬┐я┐╜</description>
 <status>Base</status>
 <sourcefile>mod_authz_user.c</sourcefile>
 <identifier>authz_user_module</identifier>
-<compatibility>╛╞╞──б 2.1 └╠╚─║╬┼═</compatibility>
+<compatibility>я┐╜я┐╜я┐╜я┐╜─б 2.1 я┐╜я┐╜я┐╜─║я┐╜я┐╜я┐╜</compatibility>
 
 <summary>
-    <p>└╠ ╕Ё╡т└║ ▒╟╟╤└╗ ║╬┐й╟╧┐й, └╬┴ї╟╤ ╗ч┐ы└┌░б └е╗ч└╠╞о└╟
-    └╧║╬┐б ┴в▒┘╟╥ ╝Ў └╓┤┬┴Ў ░с┴д╟╤┤┘.
-    <module>mod_authz_user</module>┤┬ <code>Require user</code>
-    ┴Ў╜├╛ю ╕ё╖╧┐б └╬┴ї╟╤ ╗ч┐ы└┌░б ╡щ╛ю└╓└╕╕щ ┴в▒┘└╗ ╟у┐ы╟╤┤┘.
-    ╢╟, <code>require valid-user</code>┤┬ ╝║░°└√└╕╖╬ └╬┴ї╟╤
-    ╗ч┐ы└┌ ╕Ё╡╬┐б░╘ ┴в▒┘└╗ ╟у┐ы╟╤┤┘.</p>
+    <p>я┐╜я┐╜ я┐╜я┐╜я┐╜я┐╜я┐╜ я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜ я┐╜╬┐я┐╜я┐╜╧┐я┐╜, я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜ я┐╜я┐╜я┐╜я┐╜┌░я┐╜ я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜╞оя┐╜я┐╜
+    я┐╜╧║╬┐я┐╜ я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜ я┐╜я┐╜ я┐╜╓┤я┐╜я┐╜я┐╜ я┐╜я┐╜я┐╜я┐╜я┐╜╤┤я┐╜.
+    <module>mod_authz_user</module>я┐╜я┐╜ <code>Require user</code>
+    я┐╜я┐╜я┐╜├╛я┐╜ я┐╜я┐╜╧┐я┐╜ я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜ я┐╜я┐╜я┐╜я┐╜┌░я┐╜ я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜ я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜ я┐╜я┐╜я┐╜я┐╜╤┤я┐╜.
+    я┐╜я┐╜, <code>require valid-user</code>я┐╜я┐╜ я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜ я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜
+    я┐╜я┐╜я┐╜я┐╜я┐╜ я┐╜я┐╜╬┐я┐╜я┐╜я┐╜ я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜ я┐╜я┐╜я┐╜я┐╜╤┤я┐╜.</p>
 </summary>
 <seealso><directive module="core">Require</directive></seealso>
 <seealso><directive module="core">Satisfy</directive></seealso>
 
 <directivesynopsis>
 <name>AuthzUserAuthoritative</name>
-<description>▒╟╟╤║╬┐й╕ж └·╝Ў┴╪ ╕Ё╡т╖╬ │╤░▄┴┘┴Ў ┐й║╬</description>
+<description>я┐╜я┐╜я┐╜╤║╬┐я┐╜я┐╜я┐╜ я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜ я┐╜я┐╜я┐╜я┐╜ я┐╜╤░я┐╜я┐╜я┐╜я┐╜я┐╜ я┐╜я┐╜я┐╜я┐╜</description>
 <syntax>AuthzUserAuthoritative On|Off</syntax>
 <default>AuthzUserAuthoritative On</default>
 <contextlist><context>directory</context><context>.htaccess</context>
@@ -50,14 +50,14 @@
 <override>AuthConfig</override>
 
 <usage>
-    <p><directive>AuthzUserAuthoritative</directive> ┴Ў╜├╛ю╕ж
-    ┴ў┴в <code>Off</code>╖╬ ╝│┴д╟╧╕щ ╟╪┤ч <strong>╗ч┐ы└┌░б
-    ╛°┤┬</strong> ░ц┐ь ╗ч┐ы└┌ ▒╟╟╤║╬┐й╕ж (<code>modules.c</code>
-    ╞─└╧┐б╝н ┴д└╟╟╤) └·╝Ў┴╪ ╕Ё╡т╖╬ │╤░▄┴╪┤┘.</p>
+    <p><directive>AuthzUserAuthoritative</directive> я┐╜я┐╜я┐╜├╛ю╕ж
+    я┐╜я┐╜я┐╜я┐╜ <code>Off</code>я┐╜я┐╜ я┐╜я┐╜я┐╜я┐╜я┐╜╧╕я┐╜ я┐╜╪┤я┐╜ <strong>я┐╜я┐╜я┐╜я┐╜┌░я┐╜
+    я┐╜я┐╜я┐╜я┐╜</strong> я┐╜я┐╜я┐╜ я┐╜я┐╜я┐╜я┐╜я┐╜ я┐╜я┐╜я┐╜╤║╬┐я┐╜я┐╜я┐╜ (<code>modules.c</code>
+    я┐╜я┐╜я┐╜╧┐я┐╜я┐╜я┐╜ я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜) я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜ я┐╜я┐╜я┐╜я┐╜ я┐╜╤░я┐╜я┐╜╪┤я┐╜.</p>
 
-    <p>▒т║╗└√└╕╖╬ ┴ж╛ю╕ж │╤▒т┴Ў╛╩░э, ╕Ё╕г┤┬ ╗ч┐ы└┌└╟ ░ц┐ь └╬┴ї
-    ╟╩┐ф └└┤ф└╗ ╟╤┤┘. └╠ ┴Ў╜├╛ю╕ж <code>Off</code>╖╬ ╝│┴д╟╧┴Ў╛╩└╕╕щ
-    ╜├╜║┼█└╠ ╛╚└№╟╧░╘ └п┴Ў╡╟╕ч, NCSA └е╝н╣Ў┐═ ░░└╠ ╡┐└█╟╤┤┘.</p>
+    <p>я┐╜т║╗я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜ я┐╜я┐╜я┐╜ю╕ж я┐╜╤▒я┐╜я┐╜я┐╜я┐╜╩░я┐╜, я┐╜Ё╕г┤я┐╜ я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜ я┐╜я┐╜я┐╜ я┐╜я┐╜я┐╜я┐╜
+    я┐╜╩┐я┐╜ я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜ я┐╜╤┤я┐╜. я┐╜я┐╜ я┐╜я┐╜я┐╜├╛ю╕ж <code>Off</code>я┐╜я┐╜ я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜
+    я┐╜├╜я┐╜я┐╜я┐╜я┐╜я┐╜ я┐╜я┐╜я┐╜я┐╜я┐╜╧░я┐╜ я┐╜я┐╜я┐╜я┐╜я┐╜╟╕я┐╜, NCSA я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜ я┐╜я┐╜я┐╜я┐╜ я┐╜я┐╜я┐╜я┐╜я┐╜╤┤я┐╜.</p>
 </usage>
 </directivesynopsis>
 

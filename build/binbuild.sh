@@ -7,7 +7,7 @@
 # (the "License"); you may not use this file except in compliance with
 # the License.  You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -107,11 +107,11 @@ echo "Creating supplementary files..."
   echo "NOTE: Please do not send support-related mails to the address mentioned" && \
   echo "      above or to any member of the Apache Group! Support questions" && \
   echo "      should be directed to the forums mentioned at" && \
-  echo "      http://httpd.apache.org/lists.html#http-users" && \
+  echo "      https://httpd.apache.org/lists.html#http-users" && \
   echo "      where some of the Apache team lurk, in the company of many other" && \
   echo "      Apache gurus who should be able to help." && \
   echo "      If you think you found a bug in Apache or have a suggestion please" && \
-  echo "      visit the bug report page at http://httpd.apache.org/bug_report.html" && \
+  echo "      visit the bug report page at https://httpd.apache.org/bug_report.html" && \
   echo " " && \
   echo "----------------------------------------------------------------------" && \
   ./bindist/bin/httpd -V && \

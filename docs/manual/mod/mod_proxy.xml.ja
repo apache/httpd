@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -150,8 +150,8 @@
     </indent>
     &lt;/Proxy&gt;<br />
     <br />
-    ProxyPass /foo http://foo.example.com/bar<br />
-    ProxyPassReverse /foo http://foo.example.com/bar
+    ProxyPass /foo https://foo.example.com/bar<br />
+    ProxyPassReverse /foo https://foo.example.com/bar
     </example>
     </section> <!-- /examples -->
 
@@ -210,8 +210,8 @@
       役に立ちます。</p>
 
       <p>イントラネット内のユーザは WWW のリクエストでローカルドメインを
-      省略することがよくあります。<code>http://somehost.example.com/</code> 
-      というリクエストの代わりに "http://somehost/" をリクエストしたりします。
+      省略することがよくあります。<code>https://somehost.example.com/</code> 
+      というリクエストの代わりに "https://somehost/" をリクエストしたりします。
       このようなリクエストを受け付け、サーバに設定されているローカルドメインが
       暗黙のうちに使われていると解釈して、単純にリクエストを処理するものも
       商用プロキシサーバの中にはあります。
@@ -238,7 +238,7 @@
       <example>
         &lt;Location /buggyappserver/&gt;<br />
         <indent>
-          ProxyPass http://buggyappserver:7001/foo/<br />
+          ProxyPass https://buggyappserver:7001/foo/<br />
           SetEnv force-proxy-request-1.0 1<br />
           SetEnv proxy-nokeepalive 1<br />
         </indent>
@@ -304,7 +304,7 @@
     <code>INCLUDES</code> フィルタを通して送るように設定します:</p>
 
     <example>
-      &lt;Proxy http://example.com/foo/*&gt;<br />
+      &lt;Proxy https://example.com/foo/*&gt;<br />
       <indent>
         SetOutputFilter INCLUDES<br />
       </indent>
@@ -437,9 +437,9 @@
     います。</p>
 
     <example><title>例</title>
-      ProxyRemote http://goodguys.com/ http://mirrorguys.com:8000<br />
-      ProxyRemote * http://cleversite.com<br />
-      ProxyRemote ftp http://ftpproxy.mydomain.com:8080
+      ProxyRemote https://goodguys.com/ https://mirrorguys.com:8000<br />
+      ProxyRemote * https://cleversite.com<br />
+      ProxyRemote ftp https://ftpproxy.mydomain.com:8080
     </example>
 
     <p>この例では、プロキシは FTP リクエストを別の HTTP リクエストで包んで
@@ -500,15 +500,15 @@
     module="mod_proxy">ProxyRequests</directive> ディレクティブは通常は
     <strong>off</strong> に設定されているべきです。</note>
 
-    <p>ローカルサーバのアドレスが <code>http://example.com/</code> であると
+    <p>ローカルサーバのアドレスが <code>https://example.com/</code> であると
     します。すると、</p>
 
     <example>
-      ProxyPass /mirror/foo/ http://backend.example.com/
+      ProxyPass /mirror/foo/ https://backend.example.com/
     </example>
 
-    <p>と設定すると <code>http://example.com/mirror/foo/bar</code> への
-    リクエストが内部的に <code>http://backend.example.com/bar</code> への
+    <p>と設定すると <code>https://example.com/mirror/foo/bar</code> への
+    リクエストが内部的に <code>https://backend.example.com/bar</code> への
     プロキシリクエストに変換されることになります。</p>
 
     <p>サブディレクトリをリバースプロキシしたくないときに <code>!</code> は
@@ -516,7 +516,7 @@
 
     <example>
       ProxyPass /mirror/foo/i !<br />
-      ProxyPass /mirror/foo http://backend.example.com
+      ProxyPass /mirror/foo https://backend.example.com
     </example>
 
     <p>は <code>/mirror/foo/i</code> を<em>除く</em>
@@ -544,7 +544,7 @@
     生成することはありません。</p>
 
     <example>
-        ProxyPass /example http://backend.example.com smax=5 max=20 ttl=120 retry=300
+        ProxyPass /example https://backend.example.com smax=5 max=20 ttl=120 retry=300
     </example>
 
     <table>
@@ -672,14 +672,14 @@
     
     </table>
     <example>
-      ProxyPass /special-area http://special.example.com/ smax=5 max=10<br />
+      ProxyPass /special-area https://special.example.com/ smax=5 max=10<br />
       ProxyPass / balancer://mycluster stickysession=jsessionid nofailover=On<br />
       &lt;Proxy balancer://mycluster&gt;<br />
       <indent>
-        BalancerMember http://1.2.3.4:8009<br />
-        BalancerMember http://1.2.3.5:8009 smax=10<br />
+        BalancerMember https://1.2.3.4:8009<br />
+        BalancerMember https://1.2.3.5:8009 smax=10<br />
         # Less powerful server, don't send as many requests there<br />
-        BalancerMember http://1.2.3.6:8009 smax=1 loadfactor=20<br />
+        BalancerMember https://1.2.3.6:8009 smax=1 loadfactor=20<br />
       </indent>
       &lt;/Proxy&gt;
     </example>
@@ -730,31 +730,31 @@ URL を調整する</description>
     Apache は他の応答ヘッダを書き換えたり、HTML ページの中の URL 参照を
     書き換えたりすることはありません。HTML の中を見て、URL 参照を書き換える
     モジュールに Nick Kew さんの <a
-    href="http://apache.webthing.com/mod_proxy_html/"
+    href="https://apache.webthing.com/mod_proxy_html/"
     >mod_proxy_html</a> があります。</p>
 
     <p><var>path</var> はローカル仮想パスの名前です。<var>url</var> は
     リモートサーバの部分 URL です。これらは <directive module="mod_proxy"
     >ProxyPass</directive> ディレクティブと同様です。</p>
 
-    <p>例えば、ローカルサーバのアドレスが <code>http://example.com/</code>
+    <p>例えば、ローカルサーバのアドレスが <code>https://example.com/</code>
     だとします。すると</p>
 
     <example>
-      ProxyPass         /mirror/foo/ http://backend.example.com/<br />
-      ProxyPassReverse  /mirror/foo/ http://backend.example.com/<br />
+      ProxyPass         /mirror/foo/ https://backend.example.com/<br />
+      ProxyPassReverse  /mirror/foo/ https://backend.example.com/<br />
       ProxyPassReverseCookieDomain  backend.example.com  public.example.com<br />
       ProxyPassReverseCookiePath  /  /mirror/foo/
     </example>
 
-    <p>という設定をすると、<code>http://example.com/mirror/foo/bar</code>
-    へのローカルリクエストが <code>http://backend.example.com/bar</code>
+    <p>という設定をすると、<code>https://example.com/mirror/foo/bar</code>
+    へのローカルリクエストが <code>https://backend.example.com/bar</code>
     へのプロキシリクエストに内部でリダイレクトされるだけではありません
     (これは <code>ProxyPass</code> の機能です)。<code>backend.example.com</code>
-    が送るリダイレクトの面倒もみます。<code>http://backend.example.com/bar</code>
-    が <code>http://backend.example.com/quux</code> にリダイレクトされたとき、
+    が送るリダイレクトの面倒もみます。<code>https://backend.example.com/bar</code>
+    が <code>https://backend.example.com/quux</code> にリダイレクトされたとき、
     Apache は HTTP リダイレクト応答をクライアントに送る前に、
-    <code>http://example.com/mirror/foo/quux</code> に変更します。
+    <code>https://example.com/mirror/foo/quux</code> に変更します。
     URL を構成するのに使われるホスト名は <directive
     module="core">UseCanonicalName</directive> の設定に応じて選択されることに
     注意してください。</p>
@@ -939,7 +939,7 @@ URL を調整する</description>
     フォワードされず、直接処理されます。</p>
 
     <example><title>例</title>
-      ProxyRemote  *  http://firewall.mycompany.com:81<br />
+      ProxyRemote  *  https://firewall.mycompany.com:81<br />
       NoProxy         .mycompany.com 192.168.112.0/21
     </example>
 
@@ -1085,7 +1085,7 @@ URL を調整する</description>
     が追加された同じホストへのリダイレクト応答が返されます。</p>
 
     <example><title>例</title>
-      ProxyRemote  *  http://firewall.mycompany.com:81<br />
+      ProxyRemote  *  https://firewall.mycompany.com:81<br />
       NoProxy         .mycompany.com 192.168.112.0/21<br />
       ProxyDomain     .mycompany.com
     </example>
@@ -1106,7 +1106,7 @@ URL を調整する</description>
     制御します。想定されている使い方は、プロキシサーバがいくつも繋がっているときに
     プロキシリクエストの流れを制御することです。<code>Via:</code> ヘッダ行の
     説明は <a
-    href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a> (HTTP/1.1)
+    href="https://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a> (HTTP/1.1)
     の 14.45 節を読んでください。</p>
 
     <ul>

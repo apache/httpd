@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -29,7 +29,7 @@
 <identifier>ident_module</identifier>
 
 <summary>
-    <p>This module queries an <a href="http://www.ietf.org/rfc/rfc1413.txt"
+    <p>This module queries an <a href="https://www.ietf.org/rfc/rfc1413.txt"
     >RFC 1413</a> compatible daemon on a remote host to look up the owner of
     a connection.</p>
 </summary>
@@ -45,7 +45,7 @@ user</description>
 <context>directory</context></contextlist>
 
 <usage>
-    <p>This directive enables <a href="http://www.ietf.org/rfc/rfc1413.txt"
+    <p>This directive enables <a href="https://www.ietf.org/rfc/rfc1413.txt"
     >RFC 1413</a>-compliant logging of the remote user name for each
     connection, where the client machine runs identd or something similar.
     This information is logged in the access log using the <code>%...l</code>
@@ -77,7 +77,7 @@ user</description>
 <usage>
     <p>This directive specifies the timeout duration of an ident
     request. The default value of 30 seconds is recommended by <a
-    href="http://www.ietf.org/rfc/rfc1413.txt">RFC 1413</a>, mainly because
+    href="https://www.ietf.org/rfc/rfc1413.txt">RFC 1413</a>, mainly because
     of possible network latency. However, you may want to adjust the
     timeout value according to your local network speed.</p>
 </usage>

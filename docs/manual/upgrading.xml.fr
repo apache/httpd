@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -48,7 +48,7 @@
   <p>Ce document ne décrit que les modifications intervenues entre les versions
   2.2 et 2.4. Si vous effectuez une mise à jour depuis la version 2.0, vous
   devez aussi consulter le
-  <a href="http://httpd.apache.org/docs/2.2/upgrading.html">document de mise
+  <a href="https://httpd.apache.org/docs/2.2/upgrading.html">document de mise
   à jour de 2.0 vers 2.2.</a></p>
 
 </summary>

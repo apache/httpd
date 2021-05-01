@@ -163,7 +163,7 @@ docs:
 	    cd $(top_srcdir)/docs/manual/build && ./build.sh all; \
 	else \
 	    echo 'For details on generating the docs, please read:'; \
-	    echo '  http://httpd.apache.org/docs-project/docsformat.html'; \
+	    echo '  https://httpd.apache.org/docs-project/docsformat.html'; \
 	fi
 
 update-changes:
@@ -191,7 +191,7 @@ validate-xml:
 	    cd $(top_srcdir)/docs/manual/build && ./build.sh validate-xml; \
 	else \
 	    echo 'For details on generating the docs, please read:'; \
-	    echo '  http://httpd.apache.org/docs-project/docsformat.html'; \
+	    echo '  https://httpd.apache.org/docs-project/docsformat.html'; \
 	fi
 
 dox:

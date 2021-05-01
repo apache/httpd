@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -76,7 +76,7 @@ Negotiation</a></seealso>
 
       <dt><code>Content-Language:</code></dt>
       <dd>The language(s) of the variant, as an Internet standard
-      language tag (<a href="http://www.ietf.org/rfc/rfc1766.txt"
+      language tag (<a href="https://www.ietf.org/rfc/rfc1766.txt"
       >RFC 1766</a>). An example is <code>en</code>,
       meaning English. If the variant contains more than one
       language, they are separated by a comma.</dd>

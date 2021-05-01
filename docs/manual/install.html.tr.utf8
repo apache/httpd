@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -16,12 +16,12 @@
 
 <link href="./images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">Modüller</a> | <a href="./mod/quickreference.html">Yönergeler</a> | <a href="http://wiki.apache.org/httpd/FAQ">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a></p>
+<p class="menu"><a href="./mod/">Modüller</a> | <a href="./mod/quickreference.html">Yönergeler</a> | <a href="https://wiki.apache.org/httpd/FAQ">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a></p>
 <p class="apache">Apache HTTP Sunucusu Sürüm 2.5</p>
 <img alt="" src="./images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="./">Sürüm 2.5</a></div><div id="page-content"><div id="preamble"><h1>Derleme ve Kurulum</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="./">Sürüm 2.5</a></div><div id="page-content"><div id="preamble"><h1>Derleme ve Kurulum</h1>
 <div class="toplang">
 <p><span>Mevcut Diller: </span><a href="./de/install.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/install.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
@@ -71,7 +71,7 @@
       <tr>
         <td><a href="#download">İndirme</a></td>
 
-        <td><code>$ lynx http://httpd.apache.org/download.cgi</code>
+        <td><code>$ lynx https://httpd.apache.org/download.cgi</code>
         </td>
       </tr>
 
@@ -134,7 +134,7 @@
       <dt>APR ve APR-Util</dt>
       <dd>APR ve APR-Util'in sisteminizde kurulu olduğundan emin olun. Kurulu
         değilse veya sisteminizce sağlanmış sürümlerini kullanmak
-        istemiyorsanız APR ve APR-Util'in ikisini birden <a href="http://apr.apache.org/">Apache APR</a>'den indirin ve onları
+        istemiyorsanız APR ve APR-Util'in ikisini birden <a href="https://apr.apache.org/">Apache APR</a>'den indirin ve onları
         Apache httpd dağıtımını açtığınız dizinin altında
         <code>./srclib/apr</code> ve <code>./srclib/apr-util</code> dizinlerine
         açın (Dizin isimlerinin sürüm numarası içermemesine dikkat edin,
@@ -146,7 +146,7 @@
 
       <dt>Perl-Uyumlu Düzenli İfade Kütüphanesi (PCRE)</dt>
       <dd>Bu kütüphane gereklidir, ancak artık httpd ile birlikte
-        dağıtılmamaktadır. Kaynak kodunu <a href="http://www.pcre.org/">http://www.pcre.org</a> sitesinden indirin ve bir port veya paket
+        dağıtılmamaktadır. Kaynak kodunu <a href="https://www.pcre.org/">https://www.pcre.org</a> sitesinden indirin ve bir port veya paket
         olarak kurun. Eğer derleme sisteminiz PCRE kurulumunuz tarafından
         kurulan <code>pcre-config</code> betiğini bulamazsa
         <code>--with-pcre</code> seçeneğini kullanarak yerini belirtin. Bazı
@@ -163,8 +163,8 @@
         gösterecektir.</dd>
 
       <dt>ANSI-C Derleyici ve Derleme Sistemi</dt>
-      <dd>Bir ANSI-C derleyicinin kurulu olduğundan emin olunuz. <a href="http://www.gnu.org/">Free Software Foundation (FSF)</a>
-        tarafından dağıtılan <a href="http://gcc.gnu.org/">GNU C derleyicisini
+      <dd>Bir ANSI-C derleyicinin kurulu olduğundan emin olunuz. <a href="https://www.gnu.org/">Free Software Foundation (FSF)</a>
+        tarafından dağıtılan <a href="https://gcc.gnu.org/">GNU C derleyicisini
         (GCC)</a> kullanmanız önerilir. GCC yoksa en azından satıcınızın
         derleyicisinin ANSI uyumlu olduğundan emin olunuz. Ayrıca,
         <code>PATH</code> ortam değişkeninizin içerdiği yollarda
@@ -176,9 +176,9 @@
         ayarlarını gözden geçirmenizin tam sırasıdır. Bu amaçla, Ağ Zaman
         Protokolüne (NTP) göre çalışan <code>ntpdate</code> veya
         <code>xntpd</code> programları kullanılır. NTP yazılımları ve halka
-        açık zaman sunucuları hakkında daha ayrıntılı bilgi için <a href="http://www.ntp.org">NTP sitesine bakınız</a>.</dd>
+        açık zaman sunucuları hakkında daha ayrıntılı bilgi için <a href="https://www.ntp.org">NTP sitesine bakınız</a>.</dd>
 
-      <dt><a href="http://www.perl.org/">Perl 5</a> [SEÇİMLİK]</dt>
+      <dt><a href="https://www.perl.org/">Perl 5</a> [SEÇİMLİK]</dt>
       <dd>Perl ile yazılmış <code class="program"><a href="./programs/apxs.html">apxs</a></code> veya
         <code class="program"><a href="./programs/dbmmanage.html">dbmmanage</a></code> gibi bazı betikleri desteklemek için
         Perl 5 yorumlayıcısı gerekir (5.003 veya daha yeni sürümleri
@@ -195,7 +195,7 @@
 <div class="section">
 <h2><a name="download" id="download">İndirme</a> <a title="Permanent link" href="#download" class="permalink">&para;</a></h2>
 
-    <p>Apache HTTP Sunucusunu, çeşitli yansıların da listelendiği <a href="http://httpd.apache.org/download.cgi">Apache HTTP Sunucusu
+    <p>Apache HTTP Sunucusunu, çeşitli yansıların da listelendiği <a href="https://httpd.apache.org/download.cgi">Apache HTTP Sunucusu
       indirme sayfasından</a> indirebilirsiniz. Unix benzeri sistemler
       kullanan Apache HTTPd kullanıcılarının kaynak paketlerinden birini
       indirip derlemeleri daha iyi olacaktır. Derleme işlemi (aşağıda
@@ -208,8 +208,8 @@
     <p>İndirme işleminin ardından Apache HTTP Sunucusunun eksiksiz ve
       değişikliğe uğramamış olduğunun doğrulanması önemlidir. Bu indirilen
       tar paketinin PGP imzasına göre sınanması ile sağlanabilir. Bunun nasıl
-      yapılacağı <a href="http://httpd.apache.org/download.cgi#verify">indirme
-      sayfasında</a> anlatıldığı gibi <a href="http://httpd.apache.org/dev/verification.html">PGP
+      yapılacağı <a href="https://httpd.apache.org/download.cgi#verify">indirme
+      sayfasında</a> anlatıldığı gibi <a href="https://httpd.apache.org/dev/verification.html">PGP
       kullanımının</a> anlatıldığı daha geniş bir örnek de vardır.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -337,7 +337,7 @@
 
     <p>Bu kılavuz ve kullanılabilecek <a href="mod/directives.html">yapılandırma yönergelerinin</a> kılavuzlarını
       <code><em>ÖNEK</em>/<a href="./">docs/manual/</a></code> altında
-      bulabileceğiniz gibi en son sürümünü daima <a href="http://httpd.apache.org/docs/trunk/">http://httpd.apache.org/docs/trunk/</a> adresinde
+      bulabileceğiniz gibi en son sürümünü daima <a href="https://httpd.apache.org/docs/trunk/">https://httpd.apache.org/docs/trunk/</a> adresinde
       bulabilirsiniz.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -348,7 +348,7 @@
 
     <div class="example"><p><code>$ <em>ÖNEK</em>/bin/apachectl -k start</code></p></div>
 
-    <p><code>http://localhost/</code> üzerinden ilk belgeniz için bir istek
+    <p><code>https://localhost/</code> üzerinden ilk belgeniz için bir istek
       yapmalısınız. Genellikle <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code> olarak bilinen
       <code><em>ÖNEK</em>/htdocs/</code> altındaki sayfayı görürsünüz.
       Çalışmakta olan sunucuyu <a href="stopping.html">durdurmak</a> için şu
@@ -423,7 +423,7 @@
       çıkabilir. Ne yazık ki, bu durum yakın zamanda değişecekmiş gibi
       görünmüyor.</p>
 
-    <p>Bu <a href="http://wiki.apache.org/httpd/DistrosDefaultLayout">üçüncü parti
+    <p>Bu <a href="https://wiki.apache.org/httpd/DistrosDefaultLayout">üçüncü parti
       dağıtımlarla ilgili bir açıklamaya</a> HTTP
       Sunucu wikisinde yer verilmiş olup bunların şu anki durumunu
       yansıtmaktadır. Ancak, yine de, dağıtımınızın belli platformlarla ilgili
@@ -441,7 +441,7 @@
 </div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Yorum</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/install.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/install.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -456,8 +456,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/install.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
-<p class="menu"><a href="./mod/">Modüller</a> | <a href="./mod/quickreference.html">Yönergeler</a> | <a href="http://wiki.apache.org/httpd/FAQ">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="menu"><a href="./mod/">Modüller</a> | <a href="./mod/quickreference.html">Yönergeler</a> | <a href="https://wiki.apache.org/httpd/FAQ">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

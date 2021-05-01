@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
 <meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>»ç¿ëÀÚÁ¤ÀÇ ¿À·ù ÀÀ´ä - Apache HTTP Server Version 2.5</title>
+<title>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ - Apache HTTP Server Version 2.5</title>
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
@@ -16,68 +16,68 @@
 
 <link href="./images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">¸ðµâ</a> | <a href="./mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">¿ë¾î</a> | <a href="./sitemap.html">»çÀÌÆ®¸Ê</a></p>
+<p class="menu"><a href="./mod/">ï¿½ï¿½ï¿½</a> | <a href="./mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">ï¿½ï¿½ï¿½</a> | <a href="./sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="./images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>»ç¿ëÀÚÁ¤ÀÇ ¿À·ù ÀÀ´ä</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</h1>
 <div class="toplang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="./en/custom-error.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="./en/custom-error.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/custom-error.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
 <a href="./fr/custom-error.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/custom-error.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/custom-error.html" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/custom-error.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">ÀÌ ¹®¼­´Â ÃÖ½ÅÆÇ ¹ø¿ªÀÌ ¾Æ´Õ´Ï´Ù.
-            ÃÖ±Ù¿¡ º¯°æµÈ ³»¿ëÀº ¿µ¾î ¹®¼­¸¦ Âü°íÇÏ¼¼¿ä.</div>
+<div class="outofdate">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Õ´Ï´ï¿½.
+            ï¿½Ö±Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.</div>
 
-    <p>À¥¸¶½ºÅÍ´Â ¿À·ù³ª ¹®Á¦°¡ ¹ß»ýÇßÀ»¶§ ¾ÆÆÄÄ¡ÀÇ ÀÀ´äÀ»
-    ¼³Á¤ÇÒ ¼ö ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <p>¼­¹ö°¡ ¿À·ù³ª ¹®Á¦¸¦ ¹ß°ßÇßÀ»¶§ º¸³¾ »ç¿ëÀÚÁ¤ÀÇ ÀÀ´äÀ»
-    Á¤ÀÇÇÒ ¼ö ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <p>½ºÅ©¸³Æ®°¡ Á×Àº °æ¿ì "500 Server Error" ÀÀ´ä ´ë½Å »ç¿ëÀÚ¿¡°Ô
-    ´õ Ä£±ÙÇÑ ¹®±¸¸¦ »ç¿ëÇÏ°Å³ª ´Ù¸¥ (°°Àº »çÀÌÆ®³ª ¿ÜºÎ »çÀÌÆ®ÀÇ)
-    URL·Î ¸®´ÙÀÌ·º¼ÇÀ» ÇÒ ¼ö ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ "500 Server Error" ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½
+    ï¿½ï¿½ Ä£ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°Å³ï¿½ ï¿½Ù¸ï¿½ (ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Üºï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½)
+    URLï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#behavior">Çàµ¿</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#configuration">¼³Á¤</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#custom">»ç¿ëÀÚÁ¤ÀÇ ¿À·ù ÀÀ´ä°ú ¸®´ÙÀÌ·º¼Ç</a></li>
-</ul><h3>Âü°í</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#behavior">ï¿½àµ¿</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#configuration">ï¿½ï¿½ï¿½ï¿½</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#custom">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½</a></li>
+</ul><h3>ï¿½ï¿½ï¿½ï¿½</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="behavior" id="behavior">Çàµ¿</a> <a title="Permanent link" href="#behavior" class="permalink">&para;</a></h2>
+<h2><a name="behavior" id="behavior">ï¿½àµ¿</a> <a title="Permanent link" href="#behavior" class="permalink">&para;</a></h2>
     
 
-    <h3>ÀÌÀü Çàµ¿</h3>
+    <h3>ï¿½ï¿½ï¿½ï¿½ ï¿½àµ¿</h3>
       
 
-      <p>NCSA httpd 1.3Àº »ç¿ëÀÚ¿¡°Ô ¹«ÀÇ¹ÌÇÏ°í Áö·çÇÑ ¿À·ù¹®À»
-      º¸³Â´Ù. ¹®Á¦°¡ ¹ß»ýÇÑ ÀÌÀ¯¸¦ ·Î±×¿¡ ³²±æ ¼öµµ ¾ø¾ú´Ù.</p>
+      <p>NCSA httpd 1.3ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ç¹ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½Â´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß»ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î±×¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.</p>
     
 
-    <h3>»õ·Î¿î Çàµ¿</h3>
+    <h3>ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½àµ¿</h3>
       
 
-      <p>¼­¹ö´Â ´ÙÀ½°ú °°Àº ÀÏÀ» ÇÒ ¼ö ÀÖ´Ù:</p>
+      <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½:</p>
 
       <ol>
-        <li>NCSAÀÇ °íÁ¤µÈ ¹®±¸ ´ë½Å ´Ù¸¥ ¹®±¸¸¦ º¸¿©ÁÖ°Å³ª</li>
+        <li>NCSAï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ö°Å³ï¿½</li>
 
-        <li>°°Àº »çÀÌÆ®ÀÇ URL·Î ¸®´ÙÀÌ·º¼ÇÇÏ°Å³ª</li>
+        <li>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ URLï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ï¿½Ï°Å³ï¿½</li>
 
-        <li>¿ÜºÎ »çÀÌÆ®ÀÇ URL·Î ¸®´ÙÀÌ·º¼ÇÇÑ´Ù.</li>
+        <li>ï¿½Üºï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ URLï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</li>
       </ol>
 
-      <p>´Ù¸¥ »çÀÌÆ®ÀÇ URL·Î ¸®´ÙÀÌ·º¼ÇÇÏ´Â °ÍÀÌ À¯¿ëÇÒ ¼ö ÀÖÁö¸¸,
-      ÀÌ °æ¿ì ¹®Á¦¸¦ ¼³¸íÇÏ°Å³ª ·Î±×ÇÏ´Âµ¥ ÇÊ¿äÇÑ Á¤º¸Áß ÀÏºÎ¸¸
-      Àü´ÞµÈ´Ù.</p>
+      <p>ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ URLï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,
+      ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°Å³ï¿½ ï¿½Î±ï¿½ï¿½Ï´Âµï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ÏºÎ¸ï¿½
+      ï¿½ï¿½ï¿½ÞµÈ´ï¿½.</p>
 
-      <p>¿À·ù¿¡ ´ëÇÑ Á¤º¸¸¦ Àü´ÞÇÏ±âÀ§ÇØ ¾ÆÆÄÄ¡´Â CGI½ÄÀÇ »õ·Î¿î
-      È¯°æº¯¼ö¸¦ Á¤ÀÇÇÑ´Ù:</p>
+      <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ CGIï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î¿ï¿½
+      È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½:</p>
 
       <div class="example"><p><code>
         REDIRECT_HTTP_ACCEPT=*/*, image/gif, image/x-xbitmap, 
@@ -94,89 +94,89 @@
         REDIRECT_URL=/cgi-bin/buggy.pl
       </code></p></div>
 
-      <p><code>REDIRECT_</code> Á¢µÎ»ç¿¡ ÁÖ¸ñÇÏ¶ó.</p>
+      <p><code>REDIRECT_</code> ï¿½ï¿½ï¿½Î»ç¿¡ ï¿½Ö¸ï¿½ï¿½Ï¶ï¿½.</p>
 
-      <p>ÃÖ¼ÒÇÑ <code>REDIRECT_URL</code>°ú
-      <code>REDIRECT_QUERY_STRING</code>Àº (cgi-script³ª
-      cgi-includeÀÏ) »õ URL·Î ³Ñ°ÜÁø´Ù. ´Ù¸¥ º¯¼ö´Â ¿À·ù°¡
-      ¹ß»ýÇÏ±â ÀÌÀü¿¡ <span class="transnote">(<em>¿ªÁÖ;</em> ÀÌ¸§¿¡¼­ <code>REDIRECT_</code>¸¦
-      »« È¯°æº¯¼ö°¡)</span> Á¸ÀçÇÑ °æ¿ì¿¡¸¸ ÀÖ´Ù.
-      <code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code>°¡
-      <em>¿ÜºÎ·Î</em> (°°Àº ¼­¹ö¶óµµ <code>http:</code>¿Í
-      °°Àº ½ºÅ´(scheme)À¸·Î ½ÃÀÛÇÑ´Ù¸é) ¸®´ÙÀÌ·º¼ÇÇÑ´Ù¸é
-      ÀÌÁß ¾î¶² °Íµµ ¼³Á¤µÇÁö <strong>¾Ê´Â´Ù</strong>.</p>
+      <p>ï¿½Ö¼ï¿½ï¿½ï¿½ <code>REDIRECT_URL</code>ï¿½ï¿½
+      <code>REDIRECT_QUERY_STRING</code>ï¿½ï¿½ (cgi-scriptï¿½ï¿½
+      cgi-includeï¿½ï¿½) ï¿½ï¿½ URLï¿½ï¿½ ï¿½Ñ°ï¿½ï¿½ï¿½ï¿½ï¿½. ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ß»ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <span class="transnote">(<em>ï¿½ï¿½ï¿½ï¿½;</em> ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½ï¿½ <code>REDIRECT_</code>ï¿½ï¿½
+      ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½)</span> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ì¿¡ï¿½ï¿½ ï¿½Ö´ï¿½.
+      <code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code>ï¿½ï¿½
+      <em>ï¿½ÜºÎ·ï¿½</em> (ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>http:</code>ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å´(scheme)ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½) ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½
+      ï¿½ï¿½ï¿½ï¿½ ï¿½î¶² ï¿½Íµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <strong>ï¿½Ê´Â´ï¿½</strong>.</p>
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="configuration" id="configuration">¼³Á¤</a> <a title="Permanent link" href="#configuration" class="permalink">&para;</a></h2>
+<h2><a name="configuration" id="configuration">ï¿½ï¿½ï¿½ï¿½</a> <a title="Permanent link" href="#configuration" class="permalink">&para;</a></h2>
     
 
-    <p><code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code>°¡
-    ÀûÀýÈ÷ ¼³Á¤µÇ¾ú´Ù¸é .htaccess ÆÄÀÏ¿¡¼­
-    <code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code>¸¦ »ç¿ëÇÒ
-    ¼ö ÀÖ´Ù.</p>
+    <p><code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½Ù¸ï¿½ .htaccess ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½
+    <code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <p>´ÙÀ½Àº ¿¹ÀÌ´Ù...</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½...</p>
 
     <div class="example"><p><code>
       ErrorDocument 500 /cgi-bin/crash-recover <br />
       ErrorDocument 500 "Sorry, our script crashed. Oh dear" <br />
-      ErrorDocument 500 http://xxx/ <br />
+      ErrorDocument 500 https://xxx/ <br />
       ErrorDocument 404 /Lame_excuses/not_found.html <br />
       ErrorDocument 401 /Subscription/how_to_subscribe.html
     </code></p></div>
 
-    <p>¹®¹ýÀº,</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,</p>
 
     <div class="example"><p><code>
       ErrorDocument &lt;3-digit-code&gt; &lt;action&gt;
     </code></p></div>
 
-    <p>°¡´ÉÇÑ actionÀº,</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ actionï¿½ï¿½,</p>
 
     <ol>
-      <li>Ãâ·ÂÇÒ ¹®±¸. µû¿ÈÇ¥ (")¸¦ ¹®±¸ ¾Õ¿¡ ºÙÀÎ´Ù. µÚ¿¡ ³ª¿À´Â
-      µû¿ÈÇ¥´Â Ãâ·ÂµÈ´Ù. <em>ÁÖÀÇ: ¾Õ¿¡ ºÙÀº µû¿ÈÇ¥ (")´Â Ãâ·ÂµÇÁö
-      ¾Ê´Â´Ù.</em></li>
+      <li>ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½Ç¥ (")ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Õ¿ï¿½ ï¿½ï¿½ï¿½Î´ï¿½. ï¿½Ú¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½ÂµÈ´ï¿½. <em>ï¿½ï¿½ï¿½ï¿½: ï¿½Õ¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¥ (")ï¿½ï¿½ ï¿½ï¿½Âµï¿½ï¿½ï¿½
+      ï¿½Ê´Â´ï¿½.</em></li>
 
-      <li>¸®´ÙÀÌ·º¼ÇÇÒ ¿ÜºÎ URL.</li>
+      <li>ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Üºï¿½ URL.</li>
 
-      <li>¸®´ÙÀÌ·º¼ÇÇÒ ³»ºÎ URL.</li>
+      <li>ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ URL.</li>
     </ol>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="custom" id="custom">»ç¿ëÀÚÁ¤ÀÇ ¿À·ù ÀÀ´ä°ú ¸®´ÙÀÌ·º¼Ç</a> <a title="Permanent link" href="#custom" class="permalink">&para;</a></h2>
+<h2><a name="custom" id="custom">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½</a> <a title="Permanent link" href="#custom" class="permalink">&para;</a></h2>
     
 
-    <p>URL·Î ¸®´ÙÀÌ·º¼ÇÇÏ´Â ¾ÆÆÄÄ¡ Çàµ¿Àº
-    ½ºÅ©¸³Æ®/server-include¿¡ È¯°æº¯¼ö¸¦ ´õ ³Ñ°ÜÁÖµµ·Ï º¯°æµÇ¾ú´Ù.</p>
+    <p>URLï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½àµ¿ï¿½ï¿½
+    ï¿½ï¿½Å©ï¿½ï¿½Æ®/server-includeï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ñ°ï¿½ï¿½Öµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½.</p>
 
-    <h3>ÀÌÀü Çàµ¿</h3>
+    <h3>ï¿½ï¿½ï¿½ï¿½ ï¿½àµ¿</h3>
       
 
-      <p>¸®´ÙÀÌ·º¼ÇµÇ´Â ½ºÅ©¸³Æ®¿¡ Ç¥ÁØ CGI º¯¼öµéÀÌ ³Ñ¾î°£´Ù.
-      ¾îµð¿¡¼­ ¸®´ÙÀÌ·º¼ÇÀÌ ÀÏ¾î³µ´ÂÁö ¾Ë ¼ö ¾ø´Ù.</p>
+      <p>ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ÇµÇ´ï¿½ ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ Ç¥ï¿½ï¿½ CGI ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ¾î°£ï¿½ï¿½.
+      ï¿½ï¿½ð¿¡¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï¾î³µï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</p>
     
 
-    <h3>»õ·Î¿î Çàµ¿</h3>
+    <h3>ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½àµ¿</h3>
       
 
-      <p>¸®´ÙÀÌ·º¼ÇµÈ ½ºÅ©¸³Æ®´Â »õ·Î¿î È¯°æº¯¼öµéÀ» »ç¿ëÇÒ
-      ¼ö ÀÖ´Ù. ¸ðµÎ ¾Õ¿¡ <code>REDIRECT_</code>°¡ ºÙ¾îÀÖ´Ù.
-      <code>REDIRECT_</code> È¯°æº¯¼ö´Â ¿ø·¡ CGI È¯°æº¯¼ö¸í
-      ¾Õ¿¡ <code>REDIRECT_</code>¸¦ ºÙ¿©¼­ ¸¸µç´Ù. <em>¿¹¸¦
-      µé¾î</em>, <code>HTTP_USER_AGENT</code>´Â
-      <code>REDIRECT_HTTP_USER_AGENT</code>°¡ µÇ¾ú´Ù. ÀÌ·± º¯¼ö¿¡
-      Ãß°¡·Î ½ºÅ©¸³Æ®°¡ ¿ø·¡ URLÀ» ¾Ëµµ·Ï ¾ÆÆÄÄ¡´Â
-      <code>REDIRECT_URL</code>°ú <code>REDIRECT_STATUS</code>¸¦
-      Á¤ÀÇÇÑ´Ù. ¿ø·¡ URL°ú ¸®´ÙÀÌ·º¼ÇµÈ URL ¸ðµÎ Á¢±Ù ·Î±×¿¡
-      ±â·ÏÇÒ ¼ö ÀÖ´Ù.</p>
+      <p>ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½Çµï¿½ ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½Î¿ï¿½ È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½ ï¿½Õ¿ï¿½ <code>REDIRECT_</code>ï¿½ï¿½ ï¿½Ù¾ï¿½ï¿½Ö´ï¿½.
+      <code>REDIRECT_</code> È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ CGI È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½
+      ï¿½Õ¿ï¿½ <code>REDIRECT_</code>ï¿½ï¿½ ï¿½Ù¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½. <em>ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½</em>, <code>HTTP_USER_AGENT</code>ï¿½ï¿½
+      <code>REDIRECT_HTTP_USER_AGENT</code>ï¿½ï¿½ ï¿½Ç¾ï¿½ï¿½ï¿½. ï¿½Ì·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ß°ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ URLï¿½ï¿½ ï¿½Ëµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½
+      <code>REDIRECT_URL</code>ï¿½ï¿½ <code>REDIRECT_STATUS</code>ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ URLï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½Çµï¿½ URL ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Î±×¿ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-      <p>ErrorDocument°¡ °°Àº ¼­¹ö¿¡ ÀÖ´Â CGI ½ºÅ©¸³Æ®·Î
-      ¸®´ÙÀÌ·º¼ÇÇÑ´Ù¸é, ½ºÅ©¸³Æ®´Â Å¬¶óÀÌ¾ðÆ®¿¡°Ô ¿À·ù »óÈ²À»
-      È®½ÇÈ÷ Àü´ÞÇÏ±âÀ§ÇØ Ãâ·Â¿¡ "<code>Status:</code>" Çì´õ
-      ÇÊµå¸¦ Æ÷ÇÔÇØ¾ß ÇÑ´Ù. ¿¹¸¦ µé¾î, Perl·Î ÀÛ¼ºÇÑ ErrorDocument
-      ½ºÅ©¸³Æ®´Â ´ÙÀ½°ú °°´Ù:</p>
+      <p>ErrorDocumentï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ CGI ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½, ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È²ï¿½ï¿½
+      È®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Â¿ï¿½ "<code>Status:</code>" ï¿½ï¿½ï¿½
+      ï¿½Êµå¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, Perlï¿½ï¿½ ï¿½Û¼ï¿½ï¿½ï¿½ ErrorDocument
+      ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½:</p>
 
       <div class="example"><p><code>
         ... <br />
@@ -185,19 +185,19 @@
         ...
       </code></p></div>
 
-      <p><code>404&nbsp;Not&nbsp;Found</code>¿Í °°Àº Æ¯Á¤ ¿À·ù
-      »óÈ²¿¡ ´ëÇÑ ½ºÅ©¸³Æ®¶ó¸é, ´ë½Å <span class="transnote">(<em>¿ªÁÖ;</em> °íÁ¤µÈ)</span>
-      Æ¯Á¤ »óÅÂÄÚµå¿Í ¿À·ù¹®À» »ç¿ëÇÒ ¼ö ÀÖ´Ù.</p>
+      <p><code>404&nbsp;Not&nbsp;Found</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Æ¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½È²ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ <span class="transnote">(<em>ï¿½ï¿½ï¿½ï¿½;</em> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)</span>
+      Æ¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-      <p>(Å¬¶óÀÌ¾ðÆ®¿¡°Ô ¸®´ÙÀÌ·º¼ÇÀ» ¿äÃ»ÇÏ±âÀ§ÇØ) ÀÀ´ä¿¡
-      <code>Location:</code> Çì´õ¸¦ Æ÷ÇÔÇÑ´Ù¸é, ½ºÅ©¸³Æ®´Â
-      <em>¹Ýµå½Ã</em> (<code>302&nbsp;Found</code> °°Àº) ÀûÀýÇÑ
-      <code>Status:</code> Çì´õ¸¦ Ãâ·ÂÇØ¾ß ÇÔÀ» ÁÖÀÇÇÏ¶ó. ±×·¸Áö¾ÊÀ¸¸é
-      <code>Location:</code> Çì´õ°¡ ¾Æ¹« ¼Ò¿ë¾ø°Ô µÉ ¼ö ÀÖ´Ù.</p>
+      <p>(Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½) ï¿½ï¿½ï¿½ä¿¡
+      <code>Location:</code> ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½, ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½
+      <em>ï¿½Ýµï¿½ï¿½</em> (<code>302&nbsp;Found</code> ï¿½ï¿½ï¿½ï¿½) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      <code>Status:</code> ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½. ï¿½×·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      <code>Location:</code> ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ¹ï¿½ ï¿½Ò¿ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
     
   </div></div>
 <div class="bottomlang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="./en/custom-error.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="./en/custom-error.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/custom-error.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
 <a href="./fr/custom-error.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/custom-error.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
@@ -206,7 +206,7 @@
 </div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/custom-error.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/custom-error.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -221,8 +221,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/custom-error.html'
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">¸ðµâ</a> | <a href="./mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">¿ë¾î</a> | <a href="./sitemap.html">»çÀÌÆ®¸Ê</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">ï¿½ï¿½ï¿½</a> | <a href="./mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">ï¿½ï¿½ï¿½</a> | <a href="./sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -42,11 +42,11 @@ for HTTP headers, and is an essential component of a reverse proxy.</p>
 <code>appserver.example.com</code> that is only visible from within
 the company's internal network, and a public webserver
 <code>www.example.com</code>, they may wish to provide a gateway to the
-application server at <code>http://www.example.com/appserver/</code>.
+application server at <code>https://www.example.com/appserver/</code>.
 When the application server links to itself, those links need to be
 rewritten to work through the gateway. <module>mod_proxy_html</module> serves to rewrite
-<code>&lt;a href="http://appserver.example.com/foo/bar.html"&gt;foobar&lt;/a&gt;</code> to
-<code>&lt;a href="http://www.example.com/appserver/foo/bar.html"&gt;foobar&lt;/a&gt;</code>
+<code>&lt;a href="https://appserver.example.com/foo/bar.html"&gt;foobar&lt;/a&gt;</code> to
+<code>&lt;a href="https://www.example.com/appserver/foo/bar.html"&gt;foobar&lt;/a&gt;</code>
 making it accessible from outside.</p>
 </summary>
 
@@ -58,7 +58,7 @@ and is a standard module in HTTPD 2.4 and development versions.</p>
 </section>
 <section id="custom"><title>Customised HTML Parsing</title>
 <p>Internally, mod_proxy_html uses the HTMLParser module from the
-third-party <a href="http://xmlsoft.org/">libxml2</a> library.
+third-party <a href="https://xmlsoft.org/">libxml2</a> library.
 Unlike other libxml2 parsers, HTMLParser deals with HTML without
 requiring it to be well-formed XML. In particular, it understands
 about implied tags - like a closing &lt;/p&gt; - and inserts them
@@ -86,7 +86,7 @@ This can be changed by uncommenting the relevant line in
 </section>
 <section id="i18n"><title>Internationalisation</title>
 <p>Internally, mod_proxy_html uses a smart HTML parser from the
-third-party <a href="http://xmlsoft.org/">libxml2</a> library.
+third-party <a href="https://xmlsoft.org/">libxml2</a> library.
 The parser uses Unicode (utf-8) internally.  This makes it a
 somewhat-complex task to handle other encodings required to process
 many non-English-language websites.  If this is not handled correctly,

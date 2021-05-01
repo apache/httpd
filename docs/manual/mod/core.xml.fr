@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -44,7 +44,7 @@ d'acceptation</var></syntax>
     n'envoie pas de socket au processus du serveur jusqu'à ce que
     des données soient reçues, ou qu'une requête HTTP complète soit mise
     en tampon. Seuls les <a
-    href="http://www.freebsd.org/cgi/man.cgi?query=accept_filter&amp;
+    href="https://www.freebsd.org/cgi/man.cgi?query=accept_filter&amp;
     sektion=9">Filtres d'acceptation de FreeBSD</a>, le filtre plus
     primitif <code>TCP_DEFER_ACCEPT</code> sous Linux, et la version
     optimisée d'AcceptEx() de Windows sont actuellement supportés.</p>
@@ -73,10 +73,10 @@ AcceptFilter https dataready
     requêtes HTTP entières au niveau du noyau. Quand une requête
     entière a été reçue, le noyau l'envoie au serveur. Voir la page de
     manuel de <a
-    href="http://www.freebsd.org/cgi/man.cgi?query=accf_http&amp;
+    href="https://www.freebsd.org/cgi/man.cgi?query=accf_http&amp;
     sektion=9">accf_http(9)</a> pour plus de détails. Comme les requêtes
     HTTPS sont chiffrées, celles-ci n'autorisent que le filtre <a
-    href="http://www.freebsd.org/cgi/man.cgi?query=accf_data&amp;
+    href="https://www.freebsd.org/cgi/man.cgi?query=accf_data&amp;
     sektion=9">accf_data(9)</a>.</p>
 
     <p>Sous Linux, les valeurs par défaut sont :</p>
@@ -90,7 +90,7 @@ AcceptFilter https data
     <code>none</code> active le filtre <code>TCP_DEFER_ACCEPT</code>
     pour ce protocole. Pour plus de détails, voir la page de
     manuel Linux de <a
-    href="http://man7.org/linux/man-pages/man7/tcp.7.html">tcp(7)</a>.</p>
+    href="https://man7.org/linux/man-pages/man7/tcp.7.html">tcp(7)</a>.</p>
 
     <p>Sous Windows, les valeurs par défaut sont :</p>
     <highlight language="config">
@@ -271,7 +271,7 @@ type de contenu d'une réponse est <code>text/plain</code> ou
     caractères par défaut de <code>iso-8859-1</code>. Toute autre valeur
     peut être définie via le paramètre <var>jeu de caractères</var>, qui
     doit appartenir à la liste des <a
-    href="http://www.iana.org/assignments/character-sets">valeurs de
+    href="https://www.iana.org/assignments/character-sets">valeurs de
     jeux de caractères enregistrés par l'IANA</a> à utiliser dans les
     types de média Internet (types MIME).
     Par exemple :</p>
@@ -1125,7 +1125,7 @@ host</context>
 
     <highlight language="config">DocumentRoot "/usr/web"</highlight>
 
-    <p>un accès à <code>http://my.example.com/index.html</code> se
+    <p>un accès à <code>https://my.example.com/index.html</code> se
     réfère alors à <code>/usr/web/index.html</code>. Si <var>chemin
     répertoire</var> n'est pas un chemin absolu, il est considéré comme
     relatif au chemin défini par la directive <directive
@@ -1594,7 +1594,7 @@ host</context>
     l'interprétation de toute expression. Exemples :</p>
 
     <highlight language="config">
-ErrorDocument 500 http://example.com/cgi-bin/server-error.cgi
+ErrorDocument 500 https://example.com/cgi-bin/server-error.cgi
 ErrorDocument 404 /errors/bad_urls.php
 ErrorDocument 401 /subscription_info.html
 ErrorDocument 403 "Désolé, nous ne pouvons pas vous accorder l'accès aujourd'hui"
@@ -1644,7 +1644,7 @@ ErrorDocument 404 /cgi-bin/bad_urls.pl
     peu de chances pour que MSIE l'occulte, et il sera affiché par ce
     dernier. Vous trouverez d'avantage d'informations dans l'article de
     la base de connaissances Microsoft <a
-    href="http://support.microsoft.com/default.aspx?scid=kb;en-us;Q294807"
+    href="https://support.microsoft.com/default.aspx?scid=kb;en-us;Q294807"
     >Q294807</a>.</p>
 
     <p>Bien que la plupart des messages d'erreur internes originaux
@@ -5198,7 +5198,7 @@ host</context>
     <highlight language="config">SetHandler imap-file</highlight>
 
     <p>Autre exemple : si vous voulez que le serveur affiche un
-    compte-rendu d'état chaque fois qu'une URL du type <code>http://nom
+    compte-rendu d'état chaque fois qu'une URL du type <code>https://nom
     serveur/status</code> est appelée, vous pouvez ajouter ceci dans
     <code>httpd.conf</code> :</p>
 
@@ -5453,17 +5453,17 @@ host</context>
     intranet auquel les utilisateurs se connectent en utilisant des noms
     courts tels que <code>www</code>. Si les utilisateurs tapent un nom
     court suivi d'une URL qui fait référence à un répertoire, comme
-    <code>http://www/splat</code>, <em>sans le slash terminal</em>, vous
+    <code>https://www/splat</code>, <em>sans le slash terminal</em>, vous
     remarquerez qu'Apache httpd va les rediriger vers
-    <code>http://www.example.com/splat/</code>. Si vous avez activé
+    <code>https://www.example.com/splat/</code>. Si vous avez activé
     l'authentification, ceci va obliger l'utilisateur à s'authentifier
     deux fois (une première fois pour <code>www</code> et une seconde
     fois pour <code>www.example.com</code> -- voir <a
-    href="http://wiki.apache.org/httpd/FAQ#Why_does_Apache_ask_for_my_password_twice_before_serving_a_file.3F">la
+    href="https://wiki.apache.org/httpd/FAQ#Why_does_Apache_ask_for_my_password_twice_before_serving_a_file.3F">la
     foire aux questions sur ce sujet pour plus d'informations</a>).
     Par contre, si <directive>UseCanonicalName</directive> est définie à
     <code>Off</code>, Apache httpd redirigera l'utilisateur vers
-    <code>http://www/splat/</code>.</p>
+    <code>https://www/splat/</code>.</p>
 
     <p>Pour l'hébergement virtuel en masse à base d'adresse IP, on
     utilise une troisième option, <code>UseCanonicalName
@@ -5768,7 +5768,7 @@ comme si la directive QualifyRedirectURL était définie à On.</compatibility>
     demandée par le client, par exemple "/index.html". Avec
     <directive>QualifyRedirectURL On</directive>, la même requête
     affectera à la variable REDIRECT_URL une valeur du style
-    "http://www.example.com/index.html".</p>
+    "https://www.example.com/index.html".</p>
     <p>Même si cette directive n'est pas définie, lorsqu'une requête est
     soumise avec une URL pleinement qualifiée, la variable REDIRECT_URL
     contiendra quand-même une URL pleinement qualifiée.

@@ -5,7 +5,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -393,7 +393,7 @@ static apr_status_t policy_vary_out_filter(ap_filter_t *f,
  * Policy for Validation.
  *
  * Validation is possible through either the ETag or Last-Modified header, as described
- * in http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html#sec13.3.
+ * in https://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html#sec13.3.
  *
  * - Either must be present
  * - Last-Modified, if present, must parse to a valid date
@@ -468,7 +468,7 @@ static apr_status_t policy_validation_out_filter(ap_filter_t *f,
  * Policy for Revalidation through Conditional Requests.
  *
  * The If-None-Match header is described in
- * http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.26. Over and above the
+ * https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.26. Over and above the
  * checks done in the validation filter, the conditional filter detects when an
  * If-None-Match header is present in the request, an ETag is present in the response,
  * and the response code is unexpected given the match. A result code is unexpected

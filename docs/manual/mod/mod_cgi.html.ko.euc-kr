@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
 <meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -17,243 +17,243 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">¸ðµâ</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">ï¿½ï¿½ï¿½</a></div>
 <div id="page-content">
-<div id="preamble"><h1>¾ÆÆÄÄ¡ ¸ðµâ mod_cgi</h1>
+<div id="preamble"><h1>ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ mod_cgi</h1>
 <div class="toplang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/mod/mod_cgi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/mod/mod_cgi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_cgi.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_cgi.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_cgi.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">ÀÌ ¹®¼­´Â ÃÖ½ÅÆÇ ¹ø¿ªÀÌ ¾Æ´Õ´Ï´Ù.
-            ÃÖ±Ù¿¡ º¯°æµÈ ³»¿ëÀº ¿µ¾î ¹®¼­¸¦ Âü°íÇÏ¼¼¿ä.</div>
-<table class="module"><tr><th><a href="module-dict.html#Description">¼³¸í:</a></th><td>CGI ½ºÅ©¸³Æ® ½ÇÇà</td></tr>
-<tr><th><a href="module-dict.html#Status">»óÅÂ:</a></th><td>Base</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">¸ðµâ¸í:</a></th><td>cgi_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">¼Ò½ºÆÄÀÏ:</a></th><td>mod_cgi.c</td></tr></table>
-<h3>¿ä¾à</h3>
+<div class="outofdate">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Õ´Ï´ï¿½.
+            ï¿½Ö±Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>CGI ï¿½ï¿½Å©ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½</td></tr>
+<tr><th><a href="module-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Base</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">ï¿½ï¿½ï¿½ï¿½:</a></th><td>cgi_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">ï¿½Ò½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>mod_cgi.c</td></tr></table>
+<h3>ï¿½ï¿½ï¿½</h3>
 
     
 
-    <p>¼­¹ö´Â mime typeÀÌ <code>application/x-httpd-cgi</code>ÀÌ°Å³ª
-    (¾ÆÆÄÄ¡ 1.1 ÀÌÈÄ) ÇÚµé·¯°¡ <code>cgi-script</code>ÀÎ ¸ðµç
-    ÆÄÀÏÀ» CGI ½ºÅ©¸³Æ®·Î ÀÎ½ÄÇÏ¿©, ½ÇÇàÇÏ°í, ±× °á°ú¸¦ Å¬¶óÀÌ¾ðÆ®¿¡°Ô
-    º¸³½´Ù. ÆÄÀÏÀÌ <code class="directive"><a href="../mod/mod_mime.html#addtype">AddType</a></code>
-    Áö½Ã¾î·Î ÁöÁ¤ÇÑ È®ÀåÀÚ¸¦ °¡Áö°Å³ª, <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code> µð·ºÅä¸® ¾È¿¡
-    ÀÖÀ¸¸é CGI·Î Ã³¸®µÈ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ mime typeï¿½ï¿½ <code>application/x-httpd-cgi</code>ï¿½Ì°Å³ï¿½
+    (ï¿½ï¿½ï¿½ï¿½Ä¡ 1.1 ï¿½ï¿½ï¿½ï¿½) ï¿½Úµé·¯ï¿½ï¿½ <code>cgi-script</code>ï¿½ï¿½ ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ CGI ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Î½ï¿½ï¿½Ï¿ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½, ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code class="directive"><a href="../mod/mod_mime.html#addtype">AddType</a></code>
+    ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Å³ï¿½, <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code> ï¿½ï¿½ï¿½ä¸® ï¿½È¿ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ CGIï¿½ï¿½ Ã³ï¿½ï¿½ï¿½È´ï¿½.</p>
 
-    <p>¼­¹ö´Â CGI ½ºÅ©¸³Æ®¸¦ ºÎ¸¦¶§ <code>DOCUMENT_ROOT</code>¶ó´Â
-    È¯°æº¯¼ö¸¦ Ãß°¡ÇÑ´Ù. ÀÌ º¯¼ö´Â <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> ¼³Á¤°ªÀ» °¡Áø´Ù.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ CGI ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Î¸ï¿½ï¿½ï¿½ <code>DOCUMENT_ROOT</code>ï¿½ï¿½ï¿½
+    È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.</p>
 
-    <p>¾ÆÆÄÄ¡¿¡¼­ CGI ½ºÅ©¸³Æ®¸¦ »ç¿ëÇÏ´Â ¹æ¹ý¿¡ ´ëÇÑ ¼Ò°³´Â
-    <a href="../howto/cgi.html">CGI·Î µ¿Àû ÆäÀÌÁö »ý¼º</a> ÅõÅä¸®¾óÀ»
-    Âü°íÇÏ¶ó.</p>
+    <p>ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ CGI ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ò°ï¿½ï¿½ï¿½
+    <a href="../howto/cgi.html">CGIï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a> ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.</p>
 
-    <p>À¯´Ð½º¿¡¼­ ´ÙÁß¾²·¹µå MPMÀ» »ç¿ëÇÑ´Ù¸é ÀÌ ¸ðµâ´ë½Å
-    <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code> ¸ðµâÀ» »ç¿ëÇØ¾ß ÇÑ´Ù. »ç¿ëÀÚ
-    ÀÔÀå¿¡¼­ ÀÌ µÎ ¸ðµâÀº ±âº»ÀûÀ¸·Î µ¿ÀÏÇÏ´Ù.</p>
+    <p>ï¿½ï¿½ï¿½Ð½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ß¾ï¿½ï¿½ï¿½ï¿½ï¿½ MPMï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+    <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code> ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½å¿¡ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.</p>
 </div>
-<div id="quickview"><h3>ÁÖÁ¦</h3>
+<div id="quickview"><h3>ï¿½ï¿½ï¿½ï¿½</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#env">CGI È¯°æº¯¼ö</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#cgi-debug">CGI µð¹ö±ë</a></li>
-</ul><h3 class="directives">Áö½Ã¾îµé</h3>
+<li><img alt="" src="../images/down.gif" /> <a href="#env">CGI È¯ï¿½æº¯ï¿½ï¿½</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cgi-debug">CGI ï¿½ï¿½ï¿½ï¿½ï¿½</a></li>
+</ul><h3 class="directives">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#cgiscripttimeout">CGIScriptTimeout</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#scriptlog">ScriptLog</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#scriptlogbuffer">ScriptLogBuffer</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#scriptloglength">ScriptLogLength</a></li>
 </ul>
-<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_cgi">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_cgi">Report a bug</a></li></ul><h3>Âü°í</h3>
+<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_cgi">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_cgi">Report a bug</a></li></ul><h3>ï¿½ï¿½ï¿½ï¿½</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/core.html#acceptpathinfo">AcceptPathInfo</a></code></li>
 <li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li>
 <li><code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code></li>
 <li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li>
-<li><a href="../suexec.html">´Ù¸¥ »ç¿ëÀÚ ID·Î CGI ÇÁ·Î±×·¥
-½ÇÇàÇÏ±â</a></li>
-<li><a href="http://hoohoo.ncsa.uiuc.edu/cgi/">CGI Ç¥ÁØ</a></li>
+<li><a href="../suexec.html">ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ IDï¿½ï¿½ CGI ï¿½ï¿½ï¿½Î±×·ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½</a></li>
+<li><a href="https://hoohoo.ncsa.uiuc.edu/cgi/">CGI Ç¥ï¿½ï¿½</a></li>
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="env" id="env">CGI È¯°æº¯¼ö</a> <a title="Permanent link" href="#env" class="permalink">&para;</a></h2>
-    <p>¼­¹ö´Â ´ÙÀ½°ú °°Àº ¹æ¹ýÀ¸·Î <a href="http://hoohoo.ncsa.uiuc.edu/cgi/">CGI Ç¥ÁØ</a>ÀÌ ¼³¸íÇÏ´Â
-    CGI È¯°æº¯¼ö¸¦ ¼³Á¤ÇÑ´Ù:</p>
+<h2><a name="env" id="env">CGI È¯ï¿½æº¯ï¿½ï¿½</a> <a title="Permanent link" href="#env" class="permalink">&para;</a></h2>
+    <p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <a href="https://hoohoo.ncsa.uiuc.edu/cgi/">CGI Ç¥ï¿½ï¿½</a>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½
+    CGI È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½:</p>
 
     <dl>
       <dt>PATH_INFO</dt>
 
-      <dd>ÀÌ º¯¼ö´Â <code class="directive"><a href="../mod/core.html#acceptpathinfo">AcceptPathInfo</a></code> Áö½Ã¾î¸¦ Á÷Á¢ <code>off</code>·Î
-      ÁöÁ¤ÇÑ °æ¿ì¿¡¸¸ ¼³Á¤ÇÑ´Ù. <code class="directive">AcceptPathInfo</code>°¡ ¾ø´Â °æ¿ì ¼­¹ö´Â ±âº»ÀûÀ¸·Î
-      °æ·Î Á¤º¸°¡ ÀÖ´Â ¿äÃ»¿¡ ´ëÇØ 404 NOT FOUND ¿À·ù¸¦ ³»Áö¸¸,
-      <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>´Â °æ·Î Á¤º¸¸¦ (URI¿¡¼­ ½ºÅ©¸³Æ®
-      ÆÄÀÏ¸í µÚ¿¡ ³ª¿À´Â <code>/more/path/info</code>) ¹Þ´Â´Ù.
-      <code class="directive">AcceptPathInfo</code> Áö½Ã¾î¸¦ »ý·«ÇÏ¸é
-      <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> ¿äÃ»¿¡ ´ëÇØ¼­ <code class="directive"><a href="../mod/core.html#acceptpathinfo">AcceptPathInfo</a></code>¸¦ <code>On</code>À¸·Î
-      ¼³Á¤ÇÑ °Í°ú °°´Ù.</dd>
+      <dd>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code class="directive"><a href="../mod/core.html#acceptpathinfo">AcceptPathInfo</a></code> ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½ <code>off</code>ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ì¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <code class="directive">AcceptPathInfo</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 404 NOT FOUND ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,
+      <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (URIï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½Æ®
+      ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½Ú¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>/more/path/info</code>) ï¿½Þ´Â´ï¿½.
+      <code class="directive">AcceptPathInfo</code> ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½
+      <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½Ø¼ï¿½ <code class="directive"><a href="../mod/core.html#acceptpathinfo">AcceptPathInfo</a></code>ï¿½ï¿½ <code>On</code>ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Í°ï¿½ ï¿½ï¿½ï¿½ï¿½.</dd>
 
       <dt>REMOTE_HOST</dt>
 
-      <dd>ÀÌ º¯¼ö´Â <code class="directive"><a href="../mod/core.html#hostnamelookups">HostnameLookups</a></code>°¡ <code>on</code>ÀÌ°í (±âº»°ªÀº
-      off), Á¢¼ÓÇÑ È£½ºÆ® ÁÖ¼Ò¸¦ ¿ªDNS °Ë»öÇÏ¿© ½ÇÁ¦ È£½ºÆ®¸íÀ»
-      Ã£Àº °æ¿ì¿¡¸¸ ¼³Á¤ÇÑ´Ù.</dd>
+      <dd>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code class="directive"><a href="../mod/core.html#hostnamelookups">HostnameLookups</a></code>ï¿½ï¿½ <code>on</code>ï¿½Ì°ï¿½ (ï¿½âº»ï¿½ï¿½ï¿½ï¿½
+      off), ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È£ï¿½ï¿½Æ® ï¿½Ö¼Ò¸ï¿½ ï¿½ï¿½DNS ï¿½Ë»ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ È£ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½
+      Ã£ï¿½ï¿½ ï¿½ï¿½ì¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
       <dt>REMOTE_IDENT</dt>
 
-      <dd>ÀÌ º¯¼ö´Â <code class="directive"><a href="../mod/core.html#identitycheck">IdentityCheck</a></code>°¡ <code>on</code>ÀÌ°í, Á¢¼ÓÇÑ
-      È£½ºÆ®°¡ ident ÇÁ·ÎÅäÄÝÀ» Áö¿øÇÏ´Â °æ¿ì¿¡¸¸ ¼³Á¤ÇÑ´Ù.
-      ½±°Ô ÀÌ °ªÀ» ¼ÓÀÏ ¼ö ÀÖ±â¶§¹®¿¡ ÀÌ º¯¼öÀÇ ³»¿ëÀ» ¹ÏÀ¸¸é
-      ¾ÈµÇ°í, Å¬¶óÀÌ¾ðÆ®¿Í ¼­¹ö »çÀÌ¿¡ ÇÁ·Ï½Ã°¡ ÀÖ´Ù¸é º¯¼ö
-      ³»¿ëÀÌ ¿ÏÀüÈ÷ ¹«ÀÇ¹ÌÇÔÀ» ÁÖÀÇÇÏ¶ó.</dd>
+      <dd>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code class="directive"><a href="../mod/core.html#identitycheck">IdentityCheck</a></code>ï¿½ï¿½ <code>on</code>ï¿½Ì°ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      È£ï¿½ï¿½Æ®ï¿½ï¿½ ident ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ì¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+      ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö±â¶§ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ÈµÇ°ï¿½, Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¿ï¿½ ï¿½ï¿½ï¿½Ï½Ã°ï¿½ ï¿½Ö´Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ç¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.</dd>
 
       <dt>REMOTE_USER</dt>
 
-      <dd>CGI ½ºÅ©¸³Æ®°¡ ÀÎÁõÀ» °ÅÃÄ¾ßÇÏ´Â °æ¿ì¿¡¸¸ ¼³Á¤ÇÑ´Ù.</dd>
+      <dd>CGI ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ä¾ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ì¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="cgi-debug" id="cgi-debug">CGI µð¹ö±ë</a> <a title="Permanent link" href="#cgi-debug" class="permalink">&para;</a></h2>
-    <p>¾îµð¿¡¼­ Àß¸ø ½ÇÇàµÇ´ÂÁö ½ºÅ©¸³Æ®ÀÇ Ãâ·ÂÀ» (Ç¥ÁØÃâ·Â°ú
-    Ç¥ÁØ¿À·ù) º¼ ¼ö ¾ø±â¶§¹®¿¡ CGI ½ºÅ©¸³Æ®´Â ÀüÅëÀûÀ¸·Î µð¹ö±ëÇÏ±â
-    ¾î·Á¿ü´Ù. ¾ÆÆÄÄ¡ 1.2 ÀÌÈÄ¿¡ Ãß°¡µÈ Áö½Ã¾î¸¦ »ç¿ëÇÏ¸é ¹ß»ýÇÑ
-    ¿À·ù¸¦ ÀÚ¼¼È÷ ·Î±×¿¡ ³²±æ ¼ö ÀÖ´Ù.</p>
+<h2><a name="cgi-debug" id="cgi-debug">CGI ï¿½ï¿½ï¿½ï¿½ï¿½</a> <a title="Permanent link" href="#cgi-debug" class="permalink">&para;</a></h2>
+    <p>ï¿½ï¿½ð¿¡¼ï¿½ ï¿½ß¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ç´ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ (Ç¥ï¿½ï¿½ï¿½ï¿½Â°ï¿½
+    Ç¥ï¿½Ø¿ï¿½ï¿½ï¿½) ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½â¶§ï¿½ï¿½ï¿½ï¿½ CGI ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½Ä¡ 1.2 ï¿½ï¿½ï¿½Ä¿ï¿½ ï¿½ß°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ß»ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ú¼ï¿½ï¿½ï¿½ ï¿½Î±×¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
-    <h3>CGI ·Î±×ÆÄÀÏ Çü½Ä</h3>
-      <p>CGI ¿À·ù·Î±×´Â Á¤»óÀûÀ¸·Î ½ÇÇàÇÏÁö ¸øÇÑ CGI¸¦ ±â·ÏÇÑ´Ù.
-      ¿À·ù°¡ ¹ß»ýÇÑ CGI ½ºÅ©¸³Æ®´Â ·Î±×¿¡ ¿©·¯ ÁÙÀÇ Á¤º¸¸¦ ³²±ä´Ù.
-      Ã¹¹øÂ° µÎ ÁÙÀº Ç×»ó ¾Æ·¡¿Í °°Àº Çü½ÄÀÌ´Ù:</p>
+    <h3>CGI ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</h3>
+      <p>CGI ï¿½ï¿½ï¿½ï¿½ï¿½Î±×´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ CGIï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß»ï¿½ï¿½ï¿½ CGI ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Î±×¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½.
+      Ã¹ï¿½ï¿½Â° ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½×»ï¿½ ï¿½Æ·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½:</p>
 
       <div class="example"><p><code>
-        %% [<var>½Ã°£</var>] <var>¿äÃ»ÁÙ</var><br />
-        %% <var>HTTP-»óÅÂ</var> <var>CGI-½ºÅ©¸³Æ®-ÆÄÀÏ¸í</var>
+        %% [<var>ï¿½Ã°ï¿½</var>] <var>ï¿½ï¿½Ã»ï¿½ï¿½</var><br />
+        %% <var>HTTP-ï¿½ï¿½ï¿½ï¿½</var> <var>CGI-ï¿½ï¿½Å©ï¿½ï¿½Æ®-ï¿½ï¿½ï¿½Ï¸ï¿½</var>
       </code></p></div>
 
-      <p>CGI ½ºÅ©¸³Æ®¸¦ ½ÇÇàÇÒ ¼ö ¾ø´Â ¿À·ùÀÎ °æ¿ì ·Î±×ÆÄÀÏ¿¡
-      Ãß°¡·Î µÎ ÁÙÀ» ´õ ±â·ÏÇÑ´Ù:</p>
+      <p>CGI ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Î±ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½
+      ï¿½ß°ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½:</p>
 
       <div class="example"><p><code>
         %%error<br />
-        <var>¿À·ù¹®</var>
+        <var>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</var>
       </code></p></div>
 
-      <p>½ºÅ©¸³Æ®°¡ (º¸Åë ½ºÅ©¸³Æ®ÀÇ ¹ö±×¶§¹®¿¡) Àß¸øµÈ Çì´õ
-      Á¤º¸¸¦ ¹ÝÈ¯ÇÏ´Â °æ¿ì, ´ÙÀ½ ³»¿ëÀ» ·Î±×¿¡ ±â·ÏÇÑ´Ù:</p>
+      <p>ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½×¶ï¿½ï¿½ï¿½ï¿½ï¿½) ï¿½ß¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î±×¿ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½:</p>
 
       <div class="example"><p><code>
         %request<br />
-        <var>¹ÞÀº ¸ðµç HTTP Çì´õ</var><br />
-        <var>(ÀÖ´Ù¸é) POST³ª PUT ³»¿ë</var><br />
+        <var>ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ HTTP ï¿½ï¿½ï¿½</var><br />
+        <var>(ï¿½Ö´Ù¸ï¿½) POSTï¿½ï¿½ PUT ï¿½ï¿½ï¿½ï¿½</var><br />
         %response<br />
-        <var>CGI ½ºÅ©¸³Æ® Ãâ·ÂÀÇ ¸ðµç Çì´õ</var><br />
+        <var>CGI ï¿½ï¿½Å©ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½</var><br />
         %stdout<br />
-        <var>CGI Ç¥ÁØÃâ·Â</var><br />
+        <var>CGI Ç¥ï¿½ï¿½ï¿½ï¿½ï¿½</var><br />
         %stderr<br />
-        <var>CGI Ç¥ÁØ¿À·ù</var><br />
+        <var>CGI Ç¥ï¿½Ø¿ï¿½ï¿½ï¿½</var><br />
       </code></p></div>
 
-      <p>(½ºÅ©¸³Æ®°¡ Ç¥ÁØÃâ·ÂÀÌ³ª Ç¥ÁØ¿À·ù¿¡ ¾Æ¹« ³»¿ëµµ Ãâ·ÂÇÏÁö
-      ¾Ê¾Ò´Ù¸é %stdout°ú %stderr ºÎºÐÀº »ý·«µÉ ¼ö ÀÖ´Ù).</p>
+      <p>(ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ Ç¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì³ï¿½ Ç¥ï¿½Ø¿ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ¹ï¿½ ï¿½ï¿½ï¿½ëµµ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½Ê¾Ò´Ù¸ï¿½ %stdoutï¿½ï¿½ %stderr ï¿½Îºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½).</p>
     
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CGIScriptTimeout" id="CGIScriptTimeout">CGIScriptTimeout</a> <a name="cgiscripttimeout" id="cgiscripttimeout">Áö½Ã¾î</a> <a title="Permanent link" href="#cgiscripttimeout" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="CGIScriptTimeout" id="CGIScriptTimeout">CGIScriptTimeout</a> <a name="cgiscripttimeout" id="cgiscripttimeout">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#cgiscripttimeout" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>The length of time to wait for more output from the
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>The length of time to wait for more output from the
 CGI program</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>CGIScriptTimeout <var>time</var>[s|ms]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">±âº»°ª:</a></th><td><code>value of <code class="directive"><a href="../mod/core.html#timeout">Timeout</a></code> directive when
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>CGIScriptTimeout <var>time</var>[s|ms]</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">ï¿½âº»ï¿½ï¿½:</a></th><td><code>value of <code class="directive"><a href="../mod/core.html#timeout">Timeout</a></code> directive when
 unset</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td>mod_cgi</td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td>mod_cgi</td></tr>
 </table><p>The documentation for this directive has
             not been translated yet. Please have a look at the English
             version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ScriptLog" id="ScriptLog">ScriptLog</a> <a name="scriptlog" id="scriptlog">Áö½Ã¾î</a> <a title="Permanent link" href="#scriptlog" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ScriptLog" id="ScriptLog">ScriptLog</a> <a name="scriptlog" id="scriptlog">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#scriptlog" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>CGI ½ºÅ©¸³Æ® ¿À·ù·Î±×ÆÄÀÏÀÇ À§Ä¡</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>ScriptLog <var>file-path</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>CGI ï¿½ï¿½Å©ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>ScriptLog <var>file-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code></td></tr>
 </table>
-    <p><code class="directive">ScriptLog</code> Áö½Ã¾î´Â CGI ½ºÅ©¸³Æ®
-    ¿À·ù·Î±×ÆÄÀÏÀ» ÁöÁ¤ÇÑ´Ù. <code class="directive">ScriptLog</code>¸¦
-    »ç¿ëÇÏÁö¾ÊÀ¸¸é ¿À·ù·Î±×¸¦ ¸¸µéÁö ¾Ê´Â´Ù. »ç¿ëÇÏ¸é ¾Æ±Ô¸ÕÆ®·Î
-    ÁöÁ¤ÇÑ ÆÄÀÏ¿¡ CGI ¿À·ù¸¦ ±â·ÏÇÑ´Ù. »ó´ë°æ·Î¸¦ ÁöÁ¤ÇÏ¸é
-    <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>¿¡ »ó´ë°æ·Î·Î
-    ¹Þ¾ÆµéÀÎ´Ù.
+    <p><code class="directive">ScriptLog</code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ CGI ï¿½ï¿½Å©ï¿½ï¿½Æ®
+    ï¿½ï¿½ï¿½ï¿½ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <code class="directive">ScriptLog</code>ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Î±×¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½. ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½ CGI ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½Î¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½
+    <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Î·ï¿½
+    ï¿½Þ¾Æµï¿½ï¿½Î´ï¿½.
     </p>
 
-    <div class="example"><h3>¿¹Á¦</h3><p><code>
+    <div class="example"><h3>ï¿½ï¿½ï¿½ï¿½</h3><p><code>
       ScriptLog logs/cgi_log
     </code></p></div>
 
-    <p>ÀÚ½Ä ÇÁ·Î¼¼½º¸¦ ½ÇÇàÇÏ´Â »ç¿ëÀÚ, <em>Áï</em> <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code> Áö½Ã¾î·Î ÁöÁ¤ÇÑ »ç¿ëÀÚ
-    ±ÇÇÑÀ¸·Î ·Î±×¸¦ ¿¬´Ù. ±×·¡¼­ ±× »ç¿ëÀÚ°¡ ½ºÅ©¸³Æ® ·Î±×°¡
-    ÀÖ´Â µð·ºÅä¸®¿¡ ¾²±â±ÇÇÑÀÌ ÀÖ´øÁö, Á÷Á¢ ¹Ì¸® ÆÄÀÏÀ» ¸¸µé¾î¼­
-    ±× »ç¿ëÀÚ¿¡°Ô ¾²±â±ÇÇÑÀ» Áà¾ß ÇÑ´Ù. ½ºÅ©¸³Æ® ·Î±×¸¦ ÁÖ ·Î±×
-    µð·ºÅä¸®¿¡ µÐ´Ù¸é ÀÚ½Ä ÇÁ·Î¼¼½º¸¦ ½ÇÇàÇÏ´Â »ç¿ëÀÚ¿¡°Ô ¾²±â±ÇÇÑÀ»
-    ÁÖ±âÀ§ÇØ µð·ºÅä¸® ±ÇÇÑÀ» º¯°æÇÏÁö <strong>¸¶¶ó</strong>.</p>
+    <p>ï¿½Ú½ï¿½ ï¿½ï¿½ï¿½Î¼ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½, <em>ï¿½ï¿½</em> <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code> ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î±×¸ï¿½ ï¿½ï¿½ï¿½ï¿½. ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½ï¿½Å©ï¿½ï¿½Æ® ï¿½Î±×°ï¿½
+    ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½î¼­
+    ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½. ï¿½ï¿½Å©ï¿½ï¿½Æ® ï¿½Î±×¸ï¿½ ï¿½ï¿½ ï¿½Î±ï¿½
+    ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½Ð´Ù¸ï¿½ ï¿½Ú½ï¿½ ï¿½ï¿½ï¿½Î¼ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <strong>ï¿½ï¿½ï¿½ï¿½</strong>.</p>
 
-    <p>½ºÅ©¸³Æ® ·Î±×´Â CGI ½ºÅ©¸³Æ®¸¦ ÀÛ¼ºÇÒ¶§ µð¹ö±ëÀ» À§ÇÑ
-    ¿ëµµÀÌÁö ¼­¹ö¸¦ ½ÇÇàÇÏ´Â µ¿¾È °è¼Ó »ç¿ëÇÏ±âÀ§ÇÔÀÌ ¾Æ´ÔÀ»
-    ÁÖÀÇÇÏ¶ó. ¼Óµµ¿Í È¿À²¼º¸é¿¡¼­ ÃÖÀûÈ­°¡ ¾ÈµÇÀÖ°í, ¼³°èÇÑ
-    ¸ñÀûÀÌ¿ÜÀÇ ¹æ¹ýÀ¸·Î »ç¿ëÇÏ¸é º¸¾È»ó ¹®Á¦°¡ µÉ ¼ö ÀÖ´Ù.</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ScriptLogBuffer" id="ScriptLogBuffer">ScriptLogBuffer</a> <a name="scriptlogbuffer" id="scriptlogbuffer">Áö½Ã¾î</a> <a title="Permanent link" href="#scriptlogbuffer" class="permalink">&para;</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>½ºÅ©¸³Æ® ·Î±×¿¡ ±â·ÏÇÒ PUT È¤Àº POST ¿äÃ»ÀÇ ÃÖ´ë·®</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>ScriptLogBuffer <var>bytes</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">±âº»°ª:</a></th><td><code>ScriptLogBuffer 1024</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code></td></tr>
-</table>
-    <p>Å« ³»¿ëÀ» ¹Þ¾Æ¼­ ·Î±×ÆÄÀÏÀÌ ³Ê¹« »¡¸® Ä¿Áö´Â Çö»óÀ» ¸·±âÀ§ÇØ
-    ÆÄÀÏ¿¡ ±â·ÏÇÒ PUT È¤Àº POST ³»¿ëÀÇ Å©±â¸¦ Á¦ÇÑÇÑ´Ù. ±âº»ÀûÀ¸·Î
-    1024 ¹ÙÀÌÆ®±îÁö ·Î±×¿¡ ±â·ÏÇÏÁö¸¸, ÀÌ Áö½Ã¾î¸¦ »ç¿ëÇÏ¿©
-    ¼öÁ¤ÇÒ ¼ö ÀÖ´Ù.</p>
+    <p>ï¿½ï¿½Å©ï¿½ï¿½Æ® ï¿½Î±×´ï¿½ CGI ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Û¼ï¿½ï¿½Ò¶ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    ï¿½ëµµï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½. ï¿½Óµï¿½ï¿½ï¿½ È¿ï¿½ï¿½ï¿½ï¿½ï¿½é¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È­ï¿½ï¿½ ï¿½Èµï¿½ï¿½Ö°ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½Ì¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½È»ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ScriptLogLength" id="ScriptLogLength">ScriptLogLength</a> <a name="scriptloglength" id="scriptloglength">Áö½Ã¾î</a> <a title="Permanent link" href="#scriptloglength" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ScriptLogBuffer" id="ScriptLogBuffer">ScriptLogBuffer</a> <a name="scriptlogbuffer" id="scriptlogbuffer">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#scriptlogbuffer" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">¼³¸í:</a></th><td>CGI ½ºÅ©¸³Æ® ·Î±×ÆÄÀÏÀÇ Å©±â Á¦ÇÑ</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">¹®¹ý:</a></th><td><code>ScriptLogLength <var>bytes</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">±âº»°ª:</a></th><td><code>ScriptLogLength 10385760</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">»ç¿ëÀå¼Ò:</a></th><td>ÁÖ¼­¹ö¼³Á¤, °¡»óÈ£½ºÆ®</td></tr>
-<tr><th><a href="directive-dict.html#Status">»óÅÂ:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">¸ðµâ:</a></th><td><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½ï¿½Å©ï¿½ï¿½Æ® ï¿½Î±×¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ PUT È¤ï¿½ï¿½ POST ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½Ö´ë·®</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>ScriptLogBuffer <var>bytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">ï¿½âº»ï¿½ï¿½:</a></th><td><code>ScriptLogBuffer 1024</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code></td></tr>
 </table>
-    <p><code class="directive">ScriptLogLength</code>´Â CGI ½ºÅ©¸³Æ®
-    ·Î±×ÆÄÀÏÀÇ Å©±â¸¦ Á¦ÇÑÇÑ´Ù. CGI ¿À·ù°¡ ¹ß»ýÇÒ¶§¸¶´Ù (¸ðµç
-    ¿äÃ» Çì´õ, ¸ðµç ½ºÅ©¸³Æ® Ãâ·Â µî) ¸¹Àº Á¤º¸°¡ ·Î±×¿¡
-    ±â·ÏµÇ±â¶§¹®¿¡ ÆÄÀÏÀÌ ¸Å¿ì Ä¿Áú ¼ö ÀÖ´Ù. ÆÄÀÏÀÌ ¹«ÇÑÈ÷ Ä¿Áö´Â
-    ¹®Á¦¸¦ ¸·±âÀ§ÇØ ÀÌ Áö½Ã¾î¸¦ »ç¿ëÇÏ¿© CGI ·Î±×ÆÄÀÏÀÇ ÃÖ´ë
-    ÆÄÀÏÅ©±â¸¦ ¼³Á¤ÇÑ´Ù. ÆÄÀÏÀÇ Å©±â°¡ ¼³Á¤ÇÑ °ªÀ» ³ÑÀ¸¸é ´õ
-    ÀÌ»ó Á¤º¸¸¦ ±â·ÏÇÏÁö¾Ê´Â´Ù.</p>
+    <p>Å« ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Þ¾Æ¼ï¿½ ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¹ï¿½ ï¿½ï¿½ï¿½ï¿½ Ä¿ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ PUT È¤ï¿½ï¿½ POST ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å©ï¿½â¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    1024 ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½Î±×¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ScriptLogLength" id="ScriptLogLength">ScriptLogLength</a> <a name="scriptloglength" id="scriptloglength">ï¿½ï¿½ï¿½Ã¾ï¿½</a> <a title="Permanent link" href="#scriptloglength" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">ï¿½ï¿½ï¿½ï¿½:</a></th><td>CGI ï¿½ï¿½Å©ï¿½ï¿½Æ® ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">ï¿½ï¿½ï¿½ï¿½:</a></th><td><code>ScriptLogLength <var>bytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">ï¿½âº»ï¿½ï¿½:</a></th><td><code>ScriptLogLength 10385760</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:</a></th><td>ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®</td></tr>
+<tr><th><a href="directive-dict.html#Status">ï¿½ï¿½ï¿½ï¿½:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">ï¿½ï¿½ï¿½:</a></th><td><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code></td></tr>
+</table>
+    <p><code class="directive">ScriptLogLength</code>ï¿½ï¿½ CGI ï¿½ï¿½Å©ï¿½ï¿½Æ®
+    ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å©ï¿½â¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. CGI ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß»ï¿½ï¿½Ò¶ï¿½ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½
+    ï¿½ï¿½Ã» ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ ï¿½ï¿½) ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î±×¿ï¿½
+    ï¿½ï¿½ÏµÇ±â¶§ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Å¿ï¿½ Ä¿ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä¿ï¿½ï¿½ï¿½ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ CGI ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½
+    ï¿½ï¿½ï¿½ï¿½Å©ï¿½â¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å©ï¿½â°¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+    ï¿½Ì»ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê´Â´ï¿½.</p>
 
 </div>
 </div>
 <div class="bottomlang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/mod/mod_cgi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/mod/mod_cgi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_cgi.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_cgi.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_cgi.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_cgi.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/mod/mod_cgi.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -268,8 +268,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_cgi.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

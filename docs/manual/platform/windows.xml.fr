@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -34,7 +34,7 @@
     l'exécution d'Apache 2.&httpd.minor; sous Microsoft Windows. Si vous avez des
     questions après avoir lu la documentation, ou si vous avez rencontré
     des évènements particuliers ou des rapports d'erreur, vous pouvez
-    consultez la <a href="http://httpd.apache.org/userslist.html">liste
+    consultez la <a href="https://httpd.apache.org/userslist.html">liste
     de diffusion de la communauté des utilisateurs</a>.</p>
 
     <p>Dans ce document, nous supposons que vous installez une
@@ -77,11 +77,11 @@
     <p>Quelques solutions populaires pour déployer Apache httpd, et
     éventuellement PHP et MySQL sous Microsoft Windows :</p>
     <ul>
-    <li><a href="http://www.apachehaus.com/cgi-bin/download.plx">ApacheHaus</a></li>
-    <li><a href="http://www.apachelounge.com/download/">Apache Lounge</a></li>
-    <li><a href="http://bitnami.com/stack/wamp">Bitnami WAMP Stack</a></li>
-    <li><a href="http://www.wampserver.com/">WampServer</a></li>
-    <li><a href="http://www.apachefriends.org/en/xampp.html">XAMPP</a></li>
+    <li><a href="https://www.apachehaus.com/cgi-bin/download.plx">ApacheHaus</a></li>
+    <li><a href="https://www.apachelounge.com/download/">Apache Lounge</a></li>
+    <li><a href="https://bitnami.com/stack/wamp">Bitnami WAMP Stack</a></li>
+    <li><a href="https://www.wampserver.com/">WampServer</a></li>
+    <li><a href="https://www.apachefriends.org/en/xampp.html">XAMPP</a></li>
     </ul>
   </section>
 
@@ -598,7 +598,7 @@ RewriteRule "(.*)" "${lowercase:$1}" [R,L]
     page par défaut, lancez un navigateur et entrez cette URL :</p>
 
     <example>
-      http://localhost/
+      https://localhost/
     </example>
 
     <p>Apache devrait renvoyer une page de bienvenue et vous devriez
@@ -610,14 +610,14 @@ RewriteRule "(.*)" "${lowercase:$1}" [R,L]
     utiliser cette URL :</p>
 
     <example>
-      http://127.0.0.1/
+      https://127.0.0.1/
     </example>
 
     <p>Si Apache écoute un port non standard, vous devez le préciser
     explicitement dans l'URL :</p>
 
     <example>
-      http://127.0.0.1:8080/
+      https://127.0.0.1:8080/
     </example>
 
     <p>Après que votre installation de base fonctionne, vous devez la

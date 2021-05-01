@@ -12,7 +12,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -158,7 +158,7 @@ Swap:       3903784      12540  3891244
                 <title>mod_status</title>
 
                 <p>El módulo mod_status da una vista general del rendimiento del servidor en un momento dado. Genera una página HTML con, entre otros, el número de procesos Apache que está funcionando y cuantos bytes ha servido cada uno, y la carga de CPU utilizada por httpd y el resto del sistema. La Apache Software
-                Foundation usa <module>mod_status</module> en su <a href="http://apache.org/server-status">web site</a>. Si configura la directiva <code>ExtendedStatus On</code> en su <code>httpd.conf</code>, la página <module>mod_status</module> le dará más información a costa de un poco más de carga por cada petición. Hay una nueva página de status en la página de Apache, basada en lua que pronto se incorporará al código fuente de Apache, puede encontrar el código en <a href="https://github.com/Humbedooh/server-status">Humbedoo's server-status page at github</a>.</p>
+                Foundation usa <module>mod_status</module> en su <a href="https://apache.org/server-status">web site</a>. Si configura la directiva <code>ExtendedStatus On</code> en su <code>httpd.conf</code>, la página <module>mod_status</module> le dará más información a costa de un poco más de carga por cada petición. Hay una nueva página de status en la página de Apache, basada en lua que pronto se incorporará al código fuente de Apache, puede encontrar el código en <a href="https://github.com/Humbedooh/server-status">Humbedoo's server-status page at github</a>.</p>
             </section>
         </section>
 
@@ -176,7 +176,7 @@ Swap:       3903784      12540  3891244
 
                 <p>El Log de errores se configura con las directivas <directive module="core">ErrorLog</directive> y <directive module="core">LogLevel</directive>. El log de errores de la configuración principal de httpd recibe los mensajes de log relacionados con las funcionalidades principales del servidor: arranque, parada, fallos, generación excesiva de procesos, etc. La directiva <directive module="core">ErrorLog</directive> puede usarse también en contenedores de host virtual. El log de errores de un host virtual recibe solo mensajes específicos de ese virtualhost, tales como errores de autenticación y errores de ficheros no encontrado.</p>
 
-                <p>En un servidor que está visible desde Internet, espere recibir multiples sondeos de vulnerabilidad y ataques de gusano en el log de errores. Muchos de estos son el objetivo de otro tipo de plataformas de servidor en lugar de Apache, pero con el estado actual de las cosas, los scripts de ataque sencillamente mandan todo lo que tienen contra cualquier puerto abierto, independientemente del servidor que se esté ejecutando o las aplicaciones que pueda haber instaladas en el servidor. Puede bloquear estos intentos usando un cortafuegos o con <a href="http://www.modsecurity.org/">mod_security</a>, pero ésto se sale del ámbito de este manual.</p>
+                <p>En un servidor que está visible desde Internet, espere recibir multiples sondeos de vulnerabilidad y ataques de gusano en el log de errores. Muchos de estos son el objetivo de otro tipo de plataformas de servidor en lugar de Apache, pero con el estado actual de las cosas, los scripts de ataque sencillamente mandan todo lo que tienen contra cualquier puerto abierto, independientemente del servidor que se esté ejecutando o las aplicaciones que pueda haber instaladas en el servidor. Puede bloquear estos intentos usando un cortafuegos o con <a href="https://www.modsecurity.org/">mod_security</a>, pero ésto se sale del ámbito de este manual.</p>
 
                 <p>La directiva <directive module="core">LogLevel</directive> determina qué nivel de detalle se incluye en los logs. Hay ocho niveles de log como se describe aquí:
                 </p>
@@ -423,7 +423,7 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
         <section id="generating-a-test-load">
             <title>Generando una Carga de Prueba</title>
             
-            <p>Es útil generar una carga de prueba para comprobar el rendimiento del sistema en situaciones de operación realistas. Además de paquetes de software comercial como <a href="http://learnloadrunner.com/">LoadRunner</a>, hay un gran número de herramientas libres para generar carga contra su servidor.</p>
+            <p>Es útil generar una carga de prueba para comprobar el rendimiento del sistema en situaciones de operación realistas. Además de paquetes de software comercial como <a href="https://learnloadrunner.com/">LoadRunner</a>, hay un gran número de herramientas libres para generar carga contra su servidor.</p>
 
             <ul>
                 <li>Apache tiene un programa de pruebas llamado ab, siglas de Apache Bench. Puede generar carga para un servidor web solicitando una sucesión rápida de peticiones del mismo fichero. Puedes especificar el número de conexiones concurrentes y hacer que el programa se ejecute durante un tiempo determinado o un número especificado de peticiones.
@@ -439,7 +439,7 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
                 </li>
 
                 <li>
-                    <p>Proyectos externos a la ASF que han demostrado ser muy buenos: grinder, httperf, tsung, <a href="http://funkload.nuxeo.org/">FunkLoad</a></p>
+                    <p>Proyectos externos a la ASF que han demostrado ser muy buenos: grinder, httperf, tsung, <a href="https://funkload.nuxeo.org/">FunkLoad</a></p>
                 </li>
             </ul>
             
@@ -708,7 +708,7 @@ CacheMaxExpire 21600
     <section id="further-considerations">
         <title>Otras Consideraciones</title>
 
-        <p>Armado con el conocimiento de cómo afinar el sistema para entregar el rendimiento deseado, pronto descubrirá que <em>un</em> solo sistema puede provocar un cuello de botella. Cómo hacer que un sistema sea apto para crecimiento, o como afinar un número de sistemas como uno solo será comentado en la página<a href="http://wiki.apache.org/httpd/PerformanceScalingOut">PerformanceScalingOut</a>.
+        <p>Armado con el conocimiento de cómo afinar el sistema para entregar el rendimiento deseado, pronto descubrirá que <em>un</em> solo sistema puede provocar un cuello de botella. Cómo hacer que un sistema sea apto para crecimiento, o como afinar un número de sistemas como uno solo será comentado en la página<a href="https://wiki.apache.org/httpd/PerformanceScalingOut">PerformanceScalingOut</a>.
         </p>
     </section>
 </manualpage>

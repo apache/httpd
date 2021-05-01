@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -38,7 +38,7 @@ plates-formes Solaris 10 et OpenSolaris</compatibility>
 <p>Ce module permet l'exécution de différents serveurs virtuels sous
 différents identifiants Unix <var>User</var> et <var>Group</var>,
 et avec différents <a
-href="http://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp">Privilèges
+href="https://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp">Privilèges
 Solaris</a>. En particulier, il apporte au problème de
 séparation des privilèges entre les différents serveurs virtuels la
 solution que devait apporter le module MPM abandonné perchild. Il
@@ -204,7 +204,7 @@ personnalisé).</compatibility>
     requêtes par l'intermédiaire d'un serveur virtuel. L'identifiant
     utilisateur est défini avant le traitement de la requête, puis
     restauré à sa valeur de départ via les <a
-    href="http://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp">Privilèges
+    href="https://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp">Privilèges
     Solaris</a>. Comme la définition
     s'applique au <em>processus</em>, cette directive est incompatible
     avec les modules MPM threadés.</p>
@@ -245,7 +245,7 @@ personnalisé).</compatibility>
     requêtes par l'intermédiaire d'un serveur virtuel. L'identifiant
     du groupe est défini avant le traitement de la requête, puis
     restauré à sa valeur de départ via les <a
-    href="http://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp">Privilèges
+    href="https://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp">Privilèges
     Solaris</a>. Comme la définition
     s'applique au <em>processus</em>, cette directive est incompatible
     avec les modules MPM threadés.</p>
@@ -282,7 +282,7 @@ personnalisé).</compatibility>
 <usage>
     <p>Détermine si les serveurs virtuels traitent les requêtes avec une
     sécurité avancée en supprimant les <a
-    href="http://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp"
+    href="https://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp"
     >Privilèges</a> rarement requis par un serveur web, mais disponibles
     par défaut pour un utilisateur Unix standard, et donc susceptibles
     d'être demandés par des modules et des applications. Il est
@@ -313,7 +313,7 @@ personnalisé).</compatibility>
 <usage>
     <p>Détermine si le serveur virtuel est autorisé à exécuter fork et
     exec, et définit les <a
-    href="http://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp"
+    href="https://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp"
     >privilèges</a> requis pour exécuter des sous-processus. Si cette
     directive est définie à <var>Off</var> le serveur virtuel ne
     disposera d'aucun privilège et ne pourra exécuter ni des programmes
@@ -350,9 +350,9 @@ personnalisé).</compatibility>
 <usage>
     <p>Cette directive qui s'applique à l'ensemble du serveur permet de
     déterminer si Apache s'exécutera avec les <a
-    href="http://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp"
+    href="https://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp"
     >privilèges</a> requis pour exécuter <a
-    href="http://sosc-dr.sun.com/bigadmin/content/dtrace/">dtrace</a>.
+    href="https://sosc-dr.sun.com/bigadmin/content/dtrace/">dtrace</a>.
     Notez que la définition <var>DTracePrivileges On</var> n'activera
     pas à elle-seule DTrace, mais que <var>DTracePrivileges Off</var>
     l'empêchera de fonctionner.</p>
@@ -374,7 +374,7 @@ avec l'option de compilation
 <usage>
     <p>La directive <directive>VHostPrivs</directive> permet d'assigner
     des <a
-    href="http://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp"
+    href="https://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp"
     >privilèges</a> au choix à un serveur virtuel. Chaque
     <var>nom-privilège</var> correspond à un privilège Solaris tel que
     <var>file_setid</var> ou <var>sys_nfs</var>.</p>
@@ -410,7 +410,7 @@ avec l'option de compilation
 <usage>
     <p>La directive <directive>VHostCGIPrivs</directive> permet
     d'assigner des <a
-    href="http://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp"
+    href="https://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp"
     >privilèges</a> au choix aux sous-processus créés par un serveur
     virtuel, comme décrit dans la directive
     <directive>VHostCGIMode</directive>. Chaque

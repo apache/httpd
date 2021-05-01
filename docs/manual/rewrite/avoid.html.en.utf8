@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -16,12 +16,12 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>When not to use mod_rewrite</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>When not to use mod_rewrite</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/rewrite/avoid.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/avoid.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
@@ -73,7 +73,7 @@ providing many of the benefits of using <code>RewriteRule</code>.</p>
 
 <p>A common use for <code>RewriteRule</code> is to redirect an entire
 class of URLs. For example, all URLs in the <code>/one</code> directory
-must be redirected to <code>http://one.example.com/</code>, or perhaps
+must be redirected to <code>https://one.example.com/</code>, or perhaps
 all <code>http</code> requests must be redirected to
 <code>https</code>.</p>
 
@@ -84,9 +84,9 @@ also redirect all URLs under that, such as <code>/one/two.html</code>
 and <code>/one/three/four.html</code>.</p>
 
 <p>To redirect URLs under <code>/one</code> to
-<code>http://one.example.com</code>, do the following:</p>
+<code>https://one.example.com</code>, do the following:</p>
 
-<pre class="prettyprint lang-config">Redirect "/one/" "http://one.example.com/"</pre>
+<pre class="prettyprint lang-config">Redirect "/one/" "https://one.example.com/"</pre>
 
 
 <p>To redirect one hostname to another, for example
@@ -172,21 +172,21 @@ seems like the right approach.</p>
 <p><code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> provides the <a href="flags.html#flag_p">[P]</a> flag to pass rewritten URIs through
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>.</p>
 
-<pre class="prettyprint lang-config">RewriteRule "^/?images(.*)" "http://imageserver.local/images$1" [P]</pre>
+<pre class="prettyprint lang-config">RewriteRule "^/?images(.*)" "https://imageserver.local/images$1" [P]</pre>
 
 
 <p>However, in many cases, when there is no actual pattern matching
 needed, as in the example shown above, the <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> directive is a better choice.
 The example here could be rendered as:</p>
 
-<pre class="prettyprint lang-config">ProxyPass "/images/" "http://imageserver.local/images/"</pre>
+<pre class="prettyprint lang-config">ProxyPass "/images/" "https://imageserver.local/images/"</pre>
 
 
 <p>Note that whether you use <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> or <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>, you'll still need to use the
 <code class="directive"><a href="../mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code> directive to
 catch redirects issued from the back-end server:</p>
 
-<pre class="prettyprint lang-config">ProxyPassReverse "/images/" "http://imageserver.local/images/"</pre>
+<pre class="prettyprint lang-config">ProxyPassReverse "/images/" "https://imageserver.local/images/"</pre>
 
 
 <p>You may need to use <code>RewriteRule</code> instead when there are
@@ -210,7 +210,7 @@ hostname, such as <code>www.example.com</code> instead of
 <code>example.com</code>. This can be done using the <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> directive, as shown here:</p>
 
 <pre class="prettyprint lang-config">&lt;If "req('Host') != 'www.example.com'"&gt;
-    Redirect "/" "http://www.example.com/"
+    Redirect "/" "https://www.example.com/"
 &lt;/If&gt;</pre>
 
 
@@ -230,7 +230,7 @@ and in certain other directives.</p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/rewrite/avoid.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/rewrite/avoid.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -245,8 +245,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/rewrite/avoid.html
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

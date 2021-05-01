@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -31,7 +31,7 @@
 	<p>En sistemas con múltiples usuarios, cada usuario puede tener un website 
     en su directorio home usando la directiva <directive
     module="mod_userdir">UserDir</directive>. Los visitantes de una URL 
-    <code>http://example.com/~username/</code> recibirán el contenido del 
+    <code>https://example.com/~username/</code> recibirán el contenido del 
     directorio home del usuario "<code>username</code>", en el subdirectorio 
     especificado por la directiva <directive module="mod_userdir">UserDir</directive>.</p>
 
@@ -82,7 +82,7 @@
 UserDir public_html
     </highlight>
 
-    <p>La URL <code>http://example.com/~rbowen/file.html</code> se traducirá en 
+    <p>La URL <code>https://example.com/~rbowen/file.html</code> se traducirá en 
     la ruta del fichero <code>/home/rbowen/public_html/file.html</code></p>
 
     <p>Si la ruta que se especifica comienza con una barra ("/"), la ruta del 
@@ -93,7 +93,7 @@ UserDir public_html
 UserDir /var/html
     </highlight>
 
-    <p>La URL <code>http://example.com/~rbowen/file.html</code> se traducirá en 
+    <p>La URL <code>https://example.com/~rbowen/file.html</code> se traducirá en 
     la ruta del fichero <code>/var/html/rbowen/file.html</code></p>
 
     <p>Si se especifica una ruta que contiene un asterisco (*), se usará una ruta 
@@ -103,7 +103,7 @@ UserDir /var/html
 UserDir /var/www/*/docs
     </highlight>
 
-    <p>La URL <code>http://example.com/~rbowen/file.html</code> se traducirá en 
+    <p>La URL <code>https://example.com/~rbowen/file.html</code> se traducirá en 
     la ruta del fichero <code>/var/www/rbowen/docs/file.html</code></p>
 
     <p>También se pueden configurar múltiples directorios o rutas de directorios.</p>
@@ -112,7 +112,7 @@ UserDir /var/www/*/docs
 UserDir public_html /var/html
     </highlight>
 
-    <p>Para la URL <code>http://example.com/~rbowen/file.html</code>,
+    <p>Para la URL <code>https://example.com/~rbowen/file.html</code>,
     Apache buscará <code>~rbowen</code>. Si no lo encuentra, Apache buscará
     <code>rbowen</code> en <code>/var/html</code>. Si lo encuentra, la URL de más 
     arriba se traducirá en la ruta del fichero 
@@ -126,12 +126,12 @@ UserDir public_html /var/html
     usarse para redirigir solcitudes de directorios de usuario a URLs externas.</p>
 
     <highlight language="config">
-UserDir http://example.org/users/*/
+UserDir https://example.org/users/*/
     </highlight>
 
     <p>El ejemplo de aquí arriba redirigirá una solicitud para
-    <code>http://example.com/~bob/abc.html</code> hacia
-    <code>http://example.org/users/bob/abc.html</code>.</p>
+    <code>https://example.com/~bob/abc.html</code> hacia
+    <code>https://example.org/users/bob/abc.html</code>.</p>
   </section>
 
   <section id="enable">
@@ -178,7 +178,7 @@ UserDir enabled rbowen krietz
     podría cargarse de ese directorio así:</p>
 
     <example>
-    http://example.com/~rbowen/cgi-bin/example.cgi
+    https://example.com/~rbowen/cgi-bin/example.cgi
     </example>
 
     </section>

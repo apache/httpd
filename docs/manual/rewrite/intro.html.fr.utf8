@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -16,12 +16,12 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Introduction au module Apache mod_rewrite</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Introduction au module Apache mod_rewrite</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/intro.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/intro.html" title="Français">&nbsp;fr&nbsp;</a></p>
@@ -78,10 +78,10 @@ exactement comment chaque règle est traitée.</p>
 <div class="section">
 <h2><a name="regex" id="regex">Expressions rationnelles</a> <a title="Lien permanent" href="#regex" class="permalink">&para;</a></h2>
 
-<p>mod_rewrite utilise le vocabulaire des <a href="http://pcre.org/">Expressions rationnelles compatibles Perl</a>.
+<p>mod_rewrite utilise le vocabulaire des <a href="https://pcre.org/">Expressions rationnelles compatibles Perl</a>.
 Ce document n'a pas pour prétention d'être une référence détaillée des
-expressions rationnelles. A cet effet, nous recommandons les <a href="http://pcre.org/pcre.txt">pages de manuel de PCRE</a>, la <a href="http://perldoc.perl.org/perlre.html">page de manuel des
-expressions rationnelles Perl</a>, et l'ouvrage <a href="http://shop.oreilly.com/product/9780596528126.do">Mastering
+expressions rationnelles. A cet effet, nous recommandons les <a href="https://pcre.org/pcre.txt">pages de manuel de PCRE</a>, la <a href="https://perldoc.perl.org/perlre.html">page de manuel des
+expressions rationnelles Perl</a>, et l'ouvrage <a href="https://shop.oreilly.com/product/9780596528126.do">Mastering
 Regular Expressions, by Jeffrey Friedl</a>.</p>
 
 <p>Dans ce document, nous avons pour but de vous fournir suffisamment de
@@ -234,13 +234,13 @@ votre système de fichiers, un peu comme la directive <code class="directive"><a
 
 <p>Si la directive <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> a
 pour valeur <code>/usr/local/apache2/htdocs</code>, cette règle va faire
-correspondre les requêtes pour <code>http://example.com/foo</code> au
+correspondre les requêtes pour <code>https://example.com/foo</code> au
 chemin <code>/usr/local/apache2/htdocs/bar</code>.</p>
 </dd>
 
 <dt>Une URL absolue</dt>
 <dd>
-<pre class="prettyprint lang-config">RewriteRule "^/produits/vues$" "http://site2.example.com/voirproduits.html" [R]</pre>
+<pre class="prettyprint lang-config">RewriteRule "^/produits/vues$" "https://site2.example.com/voirproduits.html" [R]</pre>
 
 <p>Ceci informe le client qu'il doit effectuer une nouvelle requête vers
 l'URL spécifiée.</p>
@@ -255,7 +255,7 @@ correspondant au <var>Modèle</var>. Considérons ce qui suit :</p>
 <p>La variable <code>$1</code> sera remplacée par tout texte
 correspondant à l'expression située entre les parenthèses dans le
 <var>Modèle</var>. Par exemple, une requête pour
-<code>http://example.com/produits/r14df/vue</code> correspondra au
+<code>https://example.com/produits/r14df/vue</code> correspondra au
 chemin <code>/var/web/produitsdb/r14df</code>.</p>
 
 <p>S'il y a plus d'une expression entre parenthèses, elle seront
@@ -299,7 +299,7 @@ correspondance est évaluée.</p>
 certaine tranche d'adresses IP vers un autre serveur, vous pouvez
 utiliser :</p>
 <pre class="prettyprint lang-config">RewriteCond "%{REMOTE_ADDR}" "^10\.2\."
-RewriteRule "(.*)" "http://intranet.example.com$1"</pre>
+RewriteRule "(.*)" "https://intranet.example.com$1"</pre>
 
 
 <p>Si vous spécifiez plus d'une directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>, ces directives
@@ -324,7 +324,7 @@ en fonction du nom d'hôte utilisé pour accéder au site :</p>
 <pre class="prettyprint lang-config">RewriteCond "%{HTTP_HOST}" "(.*)"
 RewriteRule "^/(.*)" "/sites/%1/$1"</pre>
 
-<p>Si la requête concernait <code>http://example.com/foo/bar</code>,
+<p>Si la requête concernait <code>https://example.com/foo/bar</code>,
 alors <code>%1</code> contiendrait <code>example.com</code> et
 <code>$1</code> contiendrait <code>foo/bar</code>.</p>
 
@@ -365,7 +365,7 @@ requête est correctement mise en correspondance.</p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/rewrite/intro.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/rewrite/intro.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -380,8 +380,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/rewrite/intro.html
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

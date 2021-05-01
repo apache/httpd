@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -17,12 +17,12 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
 <p class="apache">Apache HTTP サーバ バージョン 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.5</a> &gt; <a href="./">モジュール</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="https://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.5</a> &gt; <a href="./">モジュール</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache コア機能</h1>
 <div class="toplang">
@@ -155,7 +155,7 @@
        有効にするディレクティブです。大前提となる条件は、データが受信されるか
        HTTP リクエスト全体がバッファされるかするまで、カーネルがサーバプロセスに
        ソケットを送らないようになっている、ということです。現在サポートされているのは、
-       <a href="http://www.freebsd.org/cgi/man.cgi?query=accept_filter&amp;sektion=9">
+       <a href="https://www.freebsd.org/cgi/man.cgi?query=accept_filter&amp;sektion=9">
        FreeBSD の Accept Filter</a> と Linux のプリミティブな
        <code>TCP_DEFER_ACCEPT</code> のみです。</p>
 
@@ -167,8 +167,8 @@
     
     <p><code>httpready</code> Accept Filter は HTTP リクエスト全体を、
        カーネルレベルでバッファリングします。リクエスト全体を受信し終わると、
-       その後サーバプロセスにそれを送ります。詳細については <a href="http://www.freebsd.org/cgi/man.cgi?query=accf_http&amp;sektion=9">accf_http(9)</a> 
-       を参照してください。HTTPS のリクエストは暗号化されているので <a href="http://www.freebsd.org/cgi/man.cgi?query=accf_data&amp;sektion=9">accf_data(9)</a>
+       その後サーバプロセスにそれを送ります。詳細については <a href="https://www.freebsd.org/cgi/man.cgi?query=accf_http&amp;sektion=9">accf_http(9)</a> 
+       を参照してください。HTTPS のリクエストは暗号化されているので <a href="https://www.freebsd.org/cgi/man.cgi?query=accf_data&amp;sektion=9">accf_data(9)</a>
        フィルタのみが使用されます。</p>
 
     <p>Linux でのデフォルト値は :</p>
@@ -180,7 +180,7 @@
     <p>Linux の <code>TCP_DEFER_ACCEPT</code> は HTTP リクエストのバッファリングを
        サポートしていません。<code>none</code> 以外の値で
        <code>TCP_DEFER_ACCEPT</code> が有効になります。詳細については Linux 
-       man ページ <a href="http://homepages.cwi.nl/~aeb/linux/man2html/man7/tcp.7.html">tcp(7)</a>
+       man ページ <a href="https://homepages.cwi.nl/~aeb/linux/man2html/man7/tcp.7.html">tcp(7)</a>
        を参照してください。</p>
 
     <p>引数に <code>none</code> を指定すると、プロトコルに対する全ての Accept 
@@ -318,7 +318,7 @@
     Apache 内部のデフォルト文字セット <code>iso-8859-1</code> に設定されます。
     その他 <var>charset</var> に指定できる値であれば、どんな値でも使えます。
     指定する値は、MIME メディアタイプとして使われる
-    <a href="http://www.iana.org/assignments/character-sets">IANA 
+    <a href="https://www.iana.org/assignments/character-sets">IANA 
     に登録されている文字セット名</a>のうちの一つにすべきです。
     例えば:</p>
 
@@ -852,7 +852,7 @@ variables</td></tr>
     </code></p></div>
 
     <p>この場合、
-    <code>http://www.my.host.com/index.html</code> へのアクセスがあれば
+    <code>https://www.my.host.com/index.html</code> へのアクセスがあれば
     <code>/usr/web/index.html</code> が返されます。
     <var>directory-path</var> が絶対パスでない場合は、
     <code class="directive"><a href="#serverroot">ServerRoot</a></code> 
@@ -1086,7 +1086,7 @@ for a complete reference and more examples.</li>
     例:</p>
 
     <div class="example"><p><code>
-      ErrorDocument 500 http://foo.example.com/cgi-bin/tester<br />
+      ErrorDocument 500 https://foo.example.com/cgi-bin/tester<br />
       ErrorDocument 404 /cgi-bin/bad_urls.pl<br />
       ErrorDocument 401 /subscription_info.html<br />
       ErrorDocument 403 "Sorry can't allow you access today"
@@ -1128,7 +1128,7 @@ for a complete reference and more examples.</li>
     置換します。サイズのしきい値はエラーの種類によって異なりますが、
     一般的にはエラーの文書を 512 バイトよりも大きくすると、MSIE は
     サーバが生成したエラーを隠さずに表示します。詳しい情報は Microsoft
-    Knowledge Base の記事 <a href="http://support.microsoft.com/default.aspx?scid=kb;en-us;Q294807">Q294807</a>
+    Knowledge Base の記事 <a href="https://support.microsoft.com/default.aspx?scid=kb;en-us;Q294807">Q294807</a>
     にあります。</p>
 
     <p>ほとんどのエラーメッセージを上書きすることができますが、特定の状況下では
@@ -2196,7 +2196,7 @@ the server configuration files</td></tr>
 
     <p>全ての (プロキシ以外の) リクエストに対し、
     URL は <code>/path/</code> という、
-    接頭辞 <code>http://servername</code> を含まない形でマッチします。
+    接頭辞 <code>https://servername</code> を含まない形でマッチします。
     プロキシリクエストの場合には、<code>scheme://servername/path</code>
     という接頭辞を含む形でマッチし、接頭辞を含めて指定する必要があります。</p>
 
@@ -3344,7 +3344,7 @@ of a request or the last 63, assuming the request itself is greater than
       SetHandler imap-file
     </code></p></div>
 
-    <p>別の例: URL <code>http://servername/status</code>
+    <p>別の例: URL <code>https://servername/status</code>
     が指定されたときにサーバが状態報告をするようにしたいときは、以下を
     <code>httpd.conf</code> に記述します:</p>
 
@@ -3560,16 +3560,16 @@ of a request or the last 63, assuming the request itself is greater than
     <p>このような挙動が便利な例は、イントラネットのサーバで <code>www</code>
     のような短い名前でユーザがマシンに接続するときです。
     ユーザの入力で短いホスト名が使われていて、URL が<em>最後のスラッシュ無しの</em>
-    ディレクトリになっている <code>http://www/splat</code> のようなとき、
-    Apache はリクエストを <code>http://www.domain.com/splat/</code> 
+    ディレクトリになっている <code>https://www/splat</code> のようなとき、
+    Apache はリクエストを <code>https://www.domain.com/splat/</code> 
     へリダイレクトします。
     認証をするように設定していると、この場合
     ユーザは 2 回認証をしなければならなくなります (<code>www</code> に
     対して 1 回、<code>www.domain.com</code> に対してもう 1 回 -- 
-    詳細は <a href="http://httpd.apache.org/docs/misc/FAQ.html#prompted-twice">この話題の
+    詳細は <a href="https://httpd.apache.org/docs/misc/FAQ.html#prompted-twice">この話題の
     FAQ</a> を参照してください)。
     しかし <code class="directive">UseCanonicalName</code> が <code>Off</code> になっていると、
-    Apache は <code>http://www/splat/</code> にリダイレクトします。</p>
+    Apache は <code>https://www/splat/</code> にリダイレクトします。</p>
 
     <p>三つ目のオプション <code>UseCanonicalName DNS</code> は、
     大規模な IP ベースのバーチャルホスティングで、
@@ -3782,7 +3782,7 @@ of a request or the last 63, assuming the request itself is greater than
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">コメント</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/core.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/mod/core.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -3797,8 +3797,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/core.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />この文書は <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
-<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

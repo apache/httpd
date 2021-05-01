@@ -88,7 +88,7 @@ ForceLanguagePriority Prefer Fallback
 # Commonly used filename extensions to character sets. You probably
 # want to avoid clashes with the language extensions, unless you
 # are good at carefully testing your setup after each change.
-# See http://www.iana.org/assignments/character-sets for the
+# See https://www.iana.org/assignments/character-sets for the
 # official list of charset names and their respective RFCs.
 #
 AddCharset us-ascii.ascii .us-ascii

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -17,12 +17,12 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache Module mod_cache</h1>
 <div class="toplang">
@@ -44,7 +44,7 @@
     wish to limit access by client host name, address or environment
     variable.</div>
 
-    <p><code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> implements an <a href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a> compliant
+    <p><code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> implements an <a href="https://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a> compliant
     <strong>HTTP content caching filter</strong>, with support for the caching
     of content negotiated responses containing the Vary header.</p>
 
@@ -52,7 +52,7 @@
     stale or expired content is still fresh, and can represent a significant
     performance boost when the origin server supports <strong>conditional
     requests</strong> by honouring the
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.26">If-None-Match</a>
+    <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.26">If-None-Match</a>
     HTTP request header. Content is only regenerated from scratch when the content
     has changed, and not when the cached entry expires.</p>
 
@@ -81,9 +81,9 @@
 
     <p>Under normal operation, <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> will respond to
     and can be controlled by the
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9">Cache-Control</a>
+    <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9">Cache-Control</a>
     and
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.32">Pragma</a>
+    <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.32">Pragma</a>
     headers sent from a client in a request, or from a
     server within a response. Under exceptional circumstances,
     <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> can be configured to override these headers
@@ -97,12 +97,12 @@
     by <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> when the
     <code class="directive"><a href="#cachelock">CacheLock</a></code> directive is suitably
     configured. Such responses will contain a
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.46">Warning</a>
+    <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.46">Warning</a>
     HTTP header with a 110 response code. RFC 2616 also allows a cache to return
     stale data when the attempt made to refresh the stale data returns an
     error 500 or above, and this behaviour is supported by default by
     <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>. Such responses will contain a
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.46">Warning</a>
+    <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.46">Warning</a>
     HTTP header with a 111 response code.</p>
 
     <p><code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> requires the services of one or more
@@ -185,7 +185,7 @@ LoadModule cache_module modules/mod_cache.so
     &lt;/IfModule&gt;
 
     # When acting as a proxy, don't cache the list of security updates
-    CacheDisable http://security.update.server/update-list/
+    CacheDisable https://security.update.server/update-list/
 &lt;/IfModule&gt;</pre>
 </div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -497,7 +497,7 @@ CacheEnable  disk  /
 CacheEnable  disk  ftp://
 
 # Cache forward proxy content from www.example.org (normal or quick handler)
-CacheEnable  disk  http://www.example.org/</pre>
+CacheEnable  disk  https://www.example.org/</pre>
 
 
     <p>A hostname starting with a <strong>"*"</strong> matches all hostnames with
@@ -505,9 +505,9 @@ CacheEnable  disk  http://www.example.org/</pre>
     hostnames containing the domain components that follow.</p>
 
     <pre class="prettyprint lang-config"># Match www.example.org, and fooexample.org
-CacheEnable  disk  http://*example.org/
+CacheEnable  disk  https://*example.org/
 # Match www.example.org, but not fooexample.org
-CacheEnable  disk  http://.example.org/</pre>
+CacheEnable  disk  https://.example.org/</pre>
 
 
     <p> The <code>no-cache</code> environment variable can be set to
@@ -744,7 +744,7 @@ header.</td></tr>
   with this directive.</p>
 
   <pre class="prettyprint lang-config"># Override the base URL of the cache key.
-CacheKeyBaseURL http://www.example.com/</pre>
+CacheKeyBaseURL https://www.example.com/</pre>
 
 
   <div class="warning">Take care when setting this directive. If two separate virtual
@@ -1050,7 +1050,7 @@ CacheStaleOnError on</pre>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_cache.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/mod/mod_cache.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -1065,8 +1065,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_cache.html
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

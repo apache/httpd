@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -47,10 +47,10 @@
 
     <p>A "trailing slash" redirect is issued when the server
     receives a request for a URL
-    <code>http://servername/foo/dirname</code> where
+    <code>https://servername/foo/dirname</code> where
     <code>dirname</code> is a directory. Directories require a
     trailing slash, so <module>mod_dir</module> issues a redirect to
-    <code>http://servername/foo/dirname/</code>.</p>
+    <code>https://servername/foo/dirname/</code>.</p>
 </summary>
 
 <directivesynopsis>
@@ -82,8 +82,8 @@ a directory</description>
       </highlight>
     </example>
 
-    <p>then a request for <code>http://example.com/docs/</code> would
-    return <code>http://example.com/docs/index.html</code> if it
+    <p>then a request for <code>https://example.com/docs/</code> would
+    return <code>https://example.com/docs/index.html</code> if it
     exists, or would list the directory if it did not.</p>
 
     <p>Note that the documents do not need to be relative to the
@@ -166,9 +166,9 @@ a directory</description>
       </highlight>
     </example>
 
-    <p>A request for <code>http://example.com/docs/</code> would
+    <p>A request for <code>https://example.com/docs/</code> would
     return a temporary redirect to <code
-    >http://example.com/docs/index.html</code>
+    >https://example.com/docs/index.html</code>
     if it exists.</p>
 
 </usage>
@@ -264,7 +264,7 @@ later</compatibility>
     served normally.</p>
     <p>Use the <code>disabled</code> argument to disable that feature
     if inheritance from a parent directory is not desired.</p>
-    <p>In a sub-URI, such as <em>http://example.com/blog/</em> this
+    <p>In a sub-URI, such as <em>https://example.com/blog/</em> this
     <em>sub-URI</em> has to be supplied as <var>local-url</var>:</p>
     <highlight language="config">
 &lt;Directory "/web/example.com/htdocs/blog"&gt;

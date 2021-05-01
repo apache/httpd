@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -268,7 +268,7 @@ Swap:       3903784      12540  3891244
                     and how many bytes each has served, and the CPU load caused
                     by httpd and the rest of the system. The Apache Software
                     Foundation uses <module>mod_status</module> on its own
-                    <a href="http://apache.org/server-status">web site</a>.
+                    <a href="https://apache.org/server-status">web site</a>.
                     If you put the <code>ExtendedStatus On</code>
                     directive in your <code>httpd.conf</code>,
                     the <module>mod_status</module>
@@ -340,7 +340,7 @@ Swap:       3903784      12540  3891244
                     attack scripts just throw everything they have at any open
                     port, regardless of which server is actually running or
                     what applications might be installed. You could block these
-                    attempts using a firewall or <a href="http://www.modsecurity.org/">mod_security</a>,
+                    attempts using a firewall or <a href="https://www.modsecurity.org/">mod_security</a>,
                     but this falls outside the scope of this discussion.
                 </p>
                 <p>
@@ -686,7 +686,7 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
             </title>
             <p>It is useful to generate a test load to monitor system
                 performance under realistic operating circumstances. Besides
-                commercial packages such as <a href="http://learnloadrunner.com/">LoadRunner</a>
+                commercial packages such as <a href="https://learnloadrunner.com/">LoadRunner</a>
                 ,there are a number of freely available tools to generate a
                 test load against your web server.
             </p>
@@ -713,7 +713,7 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
                 </li>
                 <li>
                     <p>ASF external projects, that have proven to be quite
-                        good: grinder, httperf, tsung, <a href="http://funkload.nuxeo.org/">FunkLoad</a>
+                        good: grinder, httperf, tsung, <a href="https://funkload.nuxeo.org/">FunkLoad</a>
                     </p>
                 </li>
             </ul>
@@ -1441,7 +1441,7 @@ CacheMaxExpire 21600
             desired the performance, we will soon discover that <em>one</em>
             system might prove a bottleneck. How to make a system fit for
             growth, or how to put a number of systems into tune will be
-            discussed in <a href="http://wiki.apache.org/httpd/PerformanceScalingOut">PerformanceScalingOut</a>.
+            discussed in <a href="https://wiki.apache.org/httpd/PerformanceScalingOut">PerformanceScalingOut</a>.
         </p>
     </section>
 </manualpage>

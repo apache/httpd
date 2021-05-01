@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -36,7 +36,7 @@
     そのような場合はサーバに読み込むべきではありません。
     <module>mod_dav_lock</module>
     を実際に利用するバックエンドモジュールの例としては subversion
-    プロバイダモジュールの <a href="http://subversion.apache.org/"
+    プロバイダモジュールの <a href="https://subversion.apache.org/"
     >mod_dav_svn</a> があります。</p>
 
     <p><module>mod_dav_fs</module> は特化された専用のバージョンを

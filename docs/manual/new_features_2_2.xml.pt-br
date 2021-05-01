@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -48,7 +48,7 @@
           >mod_proxy</module>. O novo m&#243;dulo <module>mod_proxy_ajp</module
           > oferece suporte para o <code>Protocolo Apache JServ
           vers&#227;o 1.3</code>, usado pelo <a
-          href="http://tomcat.apache.org/">Apache Tomcat</a>.</dd>
+          href="https://tomcat.apache.org/">Apache Tomcat</a>.</dd>
 
       <dt>Filtragem Inteligente (Smart Filtering)</dt>
       <dd>O <module>mod_filter</module> introduz configura&#231;&#227;o din&#226;mica para
@@ -89,7 +89,7 @@
       <dd>O Apache 2.2 utiliza a API do APR 1.0. Todas as fun&#231;&#245;es e
           s&#237;mbolos antigos foram removidos do <code>APR</code> e
 	  <code>APR-Util</code>. Para mais detalhes, visite o
-          <a href="http://apr.apache.org/">Website do APR</a>.</dd>
+          <a href="https://apr.apache.org/">Website do APR</a>.</dd>
 
       <dt>Registros de Erros de Conex&#227;o (logs)</dt>
 

@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -141,11 +141,11 @@ de test ?</title>
     directement HTTP et HTTPS, qui peut effectuer des op&eacute;rations GET et POST,
     peut utiliser un mandataire, supporte les requ&ecirc;tes portant sur une partie
     d'un fichier (byte-range), etc..., vous devriez vous tourner vers
-    l'excellent outil <a href="http://curl.haxx.se/">cURL</a>. Gr&acirc;ce &agrave; lui,
+    l'excellent outil <a href="https://curl.haxx.se/">cURL</a>. Gr&acirc;ce &agrave; lui,
     vous pouvez v&eacute;rifier si Apache r&eacute;pond correctement aux requ&ecirc;tes via
     HTTP et HTTPS comme suit :</p>
 
-    <example>$ curl http://localhost/<br />
+    <example>$ curl https://localhost/<br />
     $ curl https://localhost/</example>
 </section>
 
@@ -153,7 +153,7 @@ de test ?</title>
 me connecte &agrave; mon serveur Apache configur&eacute; pour SSL ?</title>
 <p>Ceci peut arriver si vous vous connectez &agrave; un serveur HTTPS (ou &agrave;
 un serveur virtuel) via HTTP (par exemple, en utilisant
-<code>http://example.com/</code> au lieu de <code>https://example.com</code>).
+<code>https://example.com/</code> au lieu de <code>https://example.com</code>).
 Cela peut aussi arriver en essayant de vous connecter via HTTPS &agrave; un
 serveur HTTP (par exemple, en utilisant <code>https://example.com/</code>
 avec un serveur qui ne supporte pas HTTPS, ou le supporte, mais sur un
@@ -188,7 +188,7 @@ manipuler des hyperliens relatifs, pour obtenir le m&ecirc;me effet.</p>
     <highlight language="config">
 RewriteEngine on
 RewriteRule   "^/(.*)_SSL$"   "https://%{SERVER_NAME}/$1" [R,L]
-RewriteRule   "^/(.*)_NOSSL$" "http://%{SERVER_NAME}/$1"  [R,L]
+RewriteRule   "^/(.*)_NOSSL$" "https://%{SERVER_NAME}/$1"  [R,L]
     </highlight>
 
     <p>Ce jeu de r&egrave;gles rewrite vous permet d'utiliser des hyperliens de la
@@ -841,7 +841,7 @@ de 1024 bits ?</title>
     <p>Pour g&eacute;n&eacute;rer des param&egrave;tres DH personnalis&eacute;s, utilisez la
     commande <code>openssl dhparam 1024</code>. Vous pouvez aussi
     utiliser les param&egrave;tres DH standards issus de la <a
-    href="http://www.ietf.org/rfc/rfc2409.txt">RFC 2409</a>, section 6.2 :</p>
+    href="https://www.ietf.org/rfc/rfc2409.txt">RFC 2409</a>, section 6.2 :</p>
     <example><pre>-----BEGIN DH PARAMETERS-----
 MIGHAoGBAP//////////yQ/aoiFowjTExmKLgNwc0SkCTgiKZ8x0Agu+pjsTmyJR
 Sgh5jjQE3e+VGbPNOkMbMCsKbfJfFDdP4TVtbVHCReSFtXZiXn7G9ExC6aY37WsL
@@ -880,8 +880,8 @@ ici en cas de probl&egrave;me.</p>
     <dl>
     <dt>Vous trouverez des r&eacute;ponses dans la Foire Aux Questions du
     manuel utilisateur (ce document)</dt>
-    <dd><a href="http://httpd.apache.org/docs/&httpd.docs;/ssl/ssl_faq.html">
-    	http://httpd.apache.org/docs/&httpd.docs;/ssl/ssl_faq.html</a><br />
+    <dd><a href="https://httpd.apache.org/docs/&httpd.docs;/ssl/ssl_faq.html">
+    	https://httpd.apache.org/docs/&httpd.docs;/ssl/ssl_faq.html</a><br />
 	Cherchez tout d'abord dans la foire aux questions
 	(ce document). Si votre question est courante, on a d&eacute;j&agrave; d&ucirc; y
 	r&eacute;pondre de nombreuses fois, et elle fait probablement partie
@@ -910,8 +910,8 @@ probl&egrave;me avec mod_ssl ?</title>
 
     <li><em>Ecrire un rapport de probl&egrave;me dans la base de donn&eacute;es des
     bogues</em><br />
-	<a href="http://httpd.apache.org/bug_report.html">
-	http://httpd.apache.org/bug_report.html</a><br />
+	<a href="https://httpd.apache.org/bug_report.html">
+	https://httpd.apache.org/bug_report.html</a><br />
         C'est la derni&egrave;re mani&egrave;re de soumettre votre rapport de
 	probl&egrave;me. Vous ne devez utiliser cette solution que si vous
 	avez d&eacute;j&agrave; &eacute;crit aux listes de diffusion, et n'avez pas trouv&eacute;
@@ -932,7 +932,7 @@ suivantes :</p>
     <code>httpd -v</code>. La version d'OpenSSL peut &ecirc;tre d&eacute;termin&eacute;e
     en ex&eacute;cutant <code>openssl version</code>. Si Lynx est install&eacute;,
     vous pouvez aussi ex&eacute;cuter la commande<code>lynx -mime_header
-    http://localhost/ | grep Server</code> et ainsi obtenir ces
+    https://localhost/ | grep Server</code> et ainsi obtenir ces
     informations en une seule fois.
     </dd>
 

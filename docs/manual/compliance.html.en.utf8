@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -16,12 +16,12 @@
 
 <link href="./images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="./images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>HTTP Protocol Compliance</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>HTTP Protocol Compliance</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="./en/compliance.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/compliance.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
@@ -53,7 +53,7 @@
     <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_policy.html">mod_policy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_policy.html#policyconditional">PolicyConditional</a></code></li><li><code class="directive"><a href="./mod/mod_policy.html#policylength">PolicyLength</a></code></li><li><code class="directive"><a href="./mod/mod_policy.html#policykeepalive">PolicyKeepalive</a></code></li><li><code class="directive"><a href="./mod/mod_policy.html#policytype">PolicyType</a></code></li><li><code class="directive"><a href="./mod/mod_policy.html#policyvary">PolicyVary</a></code></li><li><code class="directive"><a href="./mod/mod_policy.html#policyvalidation">PolicyValidation</a></code></li><li><code class="directive"><a href="./mod/mod_policy.html#policynocache">PolicyNocache</a></code></li><li><code class="directive"><a href="./mod/mod_policy.html#policymaxage">PolicyMaxage</a></code></li><li><code class="directive"><a href="./mod/mod_policy.html#policyversion">PolicyVersion</a></code></li></ul></td></tr></table>
 
     <p>The HTTP protocol follows the <strong>robustness principle</strong>
-    as described in <a href="http://tools.ietf.org/html/rfc1122">RFC1122</a>,
+    as described in <a href="https://tools.ietf.org/html/rfc1122">RFC1122</a>,
     which states <strong>"Be liberal in what you accept, and conservative in
     what you send"</strong>. As a result of this principle, HTTP clients will
     compensate for and recover from incorrect or misconfigured responses, or
@@ -126,7 +126,7 @@
     the ETag of the response, the server should return
     <code>412 Precondition Failed</code>. Full details of how to handle an
     <code>If-Match</code> header can be found in
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.24">
+    <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.24">
     RFC2616 section 14.24</a>.</dd>
 
     <dt><code>If-None-Match</code></dt>
@@ -135,7 +135,7 @@
     <code>304 Not Modified</code> for GET/HEAD requests, or
     <code>412 Precondition Failed</code> for other methods. Full details of how
     to handle an <code>If-None-Match</code> header can be found in
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.26">
+    <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.26">
     RFC2616 section 14.26</a>.</dd>
 
     <dt><code>If-Modified-Since</code></dt>
@@ -143,7 +143,7 @@
     older than the <code>Last-Modified</code> header of the response, the server
     should return <code>304 Not Modified</code>. Full details of how to handle an
     <code>If-Modified-Since</code> header can be found in
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.25">
+    <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.25">
     RFC2616 section 14.25</a>.</dd>
 
     <dt><code>If-Unmodified-Since</code></dt>
@@ -151,7 +151,7 @@
     newer than the <code>Last-Modified</code> header of the response, the server
     should return <code>412 Precondition Failed</code>. Full details of how to
     handle an <code>If-Unmodified-Since</code> header can be found in
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.28">
+    <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.28">
     RFC2616 section 14.28</a>.</dd>
 
     <dt><code>If-Range</code></dt>
@@ -160,7 +160,7 @@
     is present, the server should return
     <code>206 Partial Response</code>. Full details of how to handle an
     <code>If-Range</code> header can be found in
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.27">
+    <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.27">
     RFC2616 section 14.27</a>.</dd>
 
     </dl>
@@ -184,7 +184,7 @@
 
     <p>There are a number of ways of determining the length of a response
     body, described in full in
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.4">
+    <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.4">
     RFC2616 section 4.4 Message Length</a>.</p>
 
     <p>When the <code>Content-Length</code> header is present, the size of
@@ -231,7 +231,7 @@
 
     <p>The media type of the body is placed in the <code>Content-Type</code>
     header, and the format of the header is described in full in
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.7">
+    <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.7">
     RFC2616 section 3.7 Media Types</a>.</p>
 
     <p>A syntactically valid content type might look as follows:</p>
@@ -268,7 +268,7 @@
 
     <p>There are a number of ways of determining the length of a response
     body, described in full in
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.4">
+    <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.4">
     RFC2616 section 4.4 Message Length</a>.</p>
 
     <p>When the <code>Content-Length</code> header is present, the size of
@@ -332,7 +332,7 @@
 
     <p>Full details of how a freshness lifetime is calculated is described in
     full in
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html#sec13.2">
+    <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html#sec13.2">
     RFC2616 section 13.2 Expiration Model</a>.</p>
 
     <p>During the freshness lifetime, a cache does not need to contact the
@@ -364,10 +364,10 @@
 
     <p>Full details of how content may be declared uncacheable is described in
     full in
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.1">
+    <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.1">
     RFC2616 section 14.9.1 What is Cacheable</a>, and within the definition
     for the <code>Pragma</code> header in
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.32">
+    <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.32">
     RFC2616 section 14.32 Pragma</a>.</p>
 
     <p>Most specifically, should any of the following header combinations
@@ -398,10 +398,10 @@
     <code>Last-Modified</code> header.</p>
 
     <p>The <code>ETag</code> header is described in full in
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.19">
+    <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.19">
     RFC2616 section 14.19 Etag</a>, and the <code>Last-Modified</code> header
     is described in full in
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.29">
+    <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.29">
     RFC2616 section 14.29 Last-Modified</a>.</p>
 
     <p>In addition to being checked present, the headers are checked for
@@ -426,7 +426,7 @@
     forbidden by the administrator.</p>
 
     <p>The <code>Vary</code> header is described in full in
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.44">
+    <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.44">
     RFC2616 section 14.44 Vary</a>.</p>
 
     <p>Some client provided headers, such as <code>User-Agent</code>,
@@ -470,7 +470,7 @@
 </div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/compliance.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/compliance.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -485,8 +485,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/compliance.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -145,11 +145,11 @@ de fichiers</description>
       Alias "/image" "/ftp/pub/image"
     </highlight>
 
-    <p>Une requête pour <code>http://example.com/image/foo.gif</code> fera
+    <p>Une requête pour <code>https://example.com/image/foo.gif</code> fera
     renvoyer par le serveur le fichier
     <code>/ftp/pub/image/foo.gif</code>. Seuls les éléments de chemin
     complets sont testés ; ainsi l'alias précédent ne conviendra pas
-    pour une requête du style <code>http://example.com/imagefoo.gif</code>.
+    pour une requête du style <code>https://example.com/imagefoo.gif</code>.
     Pour des mises en correspondance plus complexes faisant intervenir
     les expressions rationnelles, veuillez vous reporter à la directive
     <directive module="mod_alias">AliasMatch</directive>.</p>
@@ -344,25 +344,25 @@ d'effectuer une autre requête avec une URL différente</description>
 
     <highlight language="config">
 # Redirige vers une URL sur un serveur différent
-Redirect "/service" "http://foo2.example.com/service"
+Redirect "/service" "https://foo2.example.com/service"
 
 # Redirige vers une URL sur le même serveur
 Redirect "/one" "/two"
     </highlight>
 
     <p>Si le client effectue une requête pour l'URL
-    <code>http://example.com/service/foo.txt</code>, il lui sera demandé
+    <code>https://example.com/service/foo.txt</code>, il lui sera demandé
     d'en effectuer une autre pour l'URL
-    <code>http://foo2.example.com/service/foo.txt</code>. Ceci concerne
+    <code>https://foo2.example.com/service/foo.txt</code>. Ceci concerne
     les requêtes avec paramètres <code>GET</code>, comme
-    <code>http://example.com/service/foo.pl?q=23&amp;a=42</code>, qui
+    <code>https://example.com/service/foo.pl?q=23&amp;a=42</code>, qui
     seront redirigées vers
-    <code>http://foo2.example.com/service/foo.pl?q=23&amp;a=42</code>.
+    <code>https://foo2.example.com/service/foo.pl?q=23&amp;a=42</code>.
     Notez que les <code>POST</code>s seront ignorés.<br />
     Seuls les
     éléments de chemin complets sont testés, si bien que l'exemple
     précédent ne s'appliquera pas à l'URL
-    <code>http://example.com/servicefoo.txt</code>. Pour des mises en
+    <code>https://example.com/servicefoo.txt</code>. Pour des mises en
     correspondance plus complexes utilisant la <a
     href="../expr.html">syntaxe des expressions</a>, ne spécifiez pas
     d'argument <var>URL-path</var> comme décrit ci-dessous. En outre,
@@ -421,8 +421,8 @@ Redirect "/one" "/two"
     http_protocol.c).</p>
 
     <highlight language="config">
-Redirect permanent "/one" "http://example.com/two"
-Redirect 303 "/three" "http://example.com/other"
+Redirect permanent "/one" "https://example.com/two"
+Redirect 303 "/three" "https://example.com/other"
     </highlight>
 
     <p>Si une directive <directive>Redirect</directive> est définie au
@@ -435,13 +435,13 @@ Redirect 303 "/three" "http://example.com/other"
 
     <highlight language="config">
 &lt;Location "/one"&gt;
-    Redirect permanent "http://example.com/two"
+    Redirect permanent "https://example.com/two"
 &lt;/Location&gt;
 &lt;Location "/three"&gt;
-    Redirect 303 "http://example.com/other"
+    Redirect 303 "https://example.com/other"
 &lt;/Location&gt;
 &lt;LocationMatch "/error/(?&lt;NUMBER&gt;[0-9]+)"&gt;
-    Redirect permanent "http://example.com/errors/%{env:MATCH_NUMBER}.html"
+    Redirect permanent "https://example.com/errors/%{env:MATCH_NUMBER}.html"
 &lt;/LocationMatch&gt;
     </highlight>
 
@@ -472,7 +472,7 @@ courante</description>
     serveur, on peut utiliser :</p>
 
     <highlight language="config">
-      RedirectMatch "(.*)\.gif$" "http://autre.example.com$1.jpg"
+      RedirectMatch "(.*)\.gif$" "https://autre.example.com$1.jpg"
     </highlight>
 
     <p>Les remarques à propos de la différence entre <directive
@@ -547,7 +547,7 @@ et désigne la cible comme script CGI</description>
       ScriptAlias "/cgi-bin/" "/web/cgi-bin/"
     </highlight>
 
-    <p>Une requête pour <code>http://example.com/cgi-bin/foo</code>
+    <p>Une requête pour <code>https://example.com/cgi-bin/foo</code>
     ferait exécuter par le serveur le script
     <code>/web/cgi-bin/foo</code>. Cette configuration est sensiblement
     équivalente à :</p>

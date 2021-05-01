@@ -15,7 +15,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -110,7 +110,7 @@
     <p>Bu kancayı kullanan iki modül (<code>mod_whatkilledus</code> ve
     <code>mod_backtrace</code>) zaten vardır. bunlar hakkında daha fazla bilgi
       edinmek için Jeff Trawick'in <a
-      href="http://www.apache.org/~trawick/exception_hook.html"
+      href="https://www.apache.org/~trawick/exception_hook.html"
       >EnableExceptionHook site</a>sine bakabilirsiniz.</p>
 </usage>
 </directivesynopsis>
@@ -260,7 +260,7 @@
 <seealso><a href="../dns-caveats.html">DNS ve Apache ile ilgili Konular</a> </seealso>
 <seealso><a href="../bind.html">Apache HTTP Sunucusunun Kullandığı Adreslerin
     ve Portların Ayarlanması</a></seealso>
-<seealso><a href="http://wiki.apache.org/httpd/CouldNotBindToAddress"
+<seealso><a href="https://wiki.apache.org/httpd/CouldNotBindToAddress"
 ><code>Address already in use</code> hata iletisinin ve diğer sebeplerin
 açıklaması</a></seealso>
 </directivesynopsis>

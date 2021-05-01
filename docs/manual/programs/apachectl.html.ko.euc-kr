@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
 <meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>apachectl - ¾ÆÆÄÄ¡ À¥¼­¹ö Á¶Àý ÀÎÅÍÆäÀÌ½º - Apache HTTP Server Version 2.5</title>
+<title>apachectl - ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì½ï¿½ - Apache HTTP Server Version 2.5</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -16,141 +16,141 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Programs</a></div><div id="page-content"><div id="preamble"><h1>apachectl - ¾ÆÆÄÄ¡ À¥¼­¹ö Á¶Àý ÀÎÅÍÆäÀÌ½º</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Programs</a></div><div id="page-content"><div id="preamble"><h1>apachectl - ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì½ï¿½</h1>
 <div class="toplang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/programs/apachectl.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/programs/apachectl.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/programs/apachectl.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/programs/apachectl.html" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/apachectl.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">ÀÌ ¹®¼­´Â ÃÖ½ÅÆÇ ¹ø¿ªÀÌ ¾Æ´Õ´Ï´Ù.
-            ÃÖ±Ù¿¡ º¯°æµÈ ³»¿ëÀº ¿µ¾î ¹®¼­¸¦ Âü°íÇÏ¼¼¿ä.</div>
+<div class="outofdate">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Õ´Ï´ï¿½.
+            ï¿½Ö±Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.</div>
 
-     <p><code>apachectl</code>Àº ¾ÆÆÄÄ¡ ÇÏÀÌÆÛÅØ½ºÆ® Àü¼Û
-     ÇÁ·ÎÅäÄÝ (HTTP) ¼­¹öÀÇ ¾Õ´ÜÀÌ´Ù. ÀÌ ÇÁ·Î±×·¥Àº °ü¸®ÀÚ°¡
-     ¾ÆÆÄÄ¡ <a href="httpd.html">httpd</a> µ¥¸óÀ» Á¶Á¤ÇÏµµ·Ï
-     µ½´Â´Ù.</p>
+     <p><code>apachectl</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
+     ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (HTTP) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Õ´ï¿½ï¿½Ì´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ú°ï¿½
+     ï¿½ï¿½ï¿½ï¿½Ä¡ <a href="httpd.html">httpd</a> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½
+     ï¿½ï¿½ï¿½Â´ï¿½.</p>
 
-     <p><code>apachectl</code> ½ºÅ©¸³Æ®´Â µÎ°¡Áö ¹æ¹ýÀ¸·Î ½ÇÇàÇÑ´Ù.
-     Ã¹¹øÂ° ¹æ¹ýÀº <code>httpd</code>À» ºÎ¸£´Â °£´ÜÇÑ ½ºÅ©¸³Æ®
-     ¿ªÇÒÀ» ÇÏ¿©, ÇÊ¿äÇÑ È¯°æº¯¼ö¸¦ ¼³Á¤ÇÏ°í ¹ÞÀº ¸í·ÉÇà ¾Æ±Ô¸ÕÆ®¸¦
-     °¡Áö°í <code>httpd</code>¸¦ ½ÇÇàÇÑ´Ù. µÎ¹øÂ° ¹æ¹ýÀº
-     <code>apachectl</code>¸¦ SysV init ½ºÅ©¸³Æ®·Î »ç¿ëÇÏ¿©,
+     <p><code>apachectl</code> ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Î°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+     Ã¹ï¿½ï¿½Â° ï¿½ï¿½ï¿½ï¿½ï¿½ <code>httpd</code>ï¿½ï¿½ ï¿½Î¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½Æ®
+     ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï¿ï¿½, ï¿½Ê¿ï¿½ï¿½ï¿½ È¯ï¿½æº¯ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½
+     ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code>httpd</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½Î¹ï¿½Â° ï¿½ï¿½ï¿½ï¿½ï¿½
+     <code>apachectl</code>ï¿½ï¿½ SysV init ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½,
      <code>start</code>, <code>restart</code>, <code>stop</code>
-     °°Àº ÇÑ´Ü¾î ¾Æ±Ô¸ÕÆ®¸¦ ¹Þ¾Æ¼­ <code>httpd</code>¿¡°Ô
-     ÀûÀýÇÑ ½ÅÈ£¸¦ º¸³½´Ù.</p>
+     ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´Ü¾ï¿½ ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ ï¿½Þ¾Æ¼ï¿½ <code>httpd</code>ï¿½ï¿½ï¿½ï¿½
+     ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.</p>
 
-     <p>¾ÆÆÄÄ¡¸¦ ÀÏ¹ÝÀûÀÎ °æ·Î¿¡ ¼³Ä¡ÇÏÁö ¾Ê¾Ò´Ù¸é, ÀûÀýÇÑ
-     <code>httpd</code> °æ·Î·Î <code>apachectl</code> ½ºÅ©¸³Æ®¸¦
-     ¼öÁ¤ÇØ¾ß ÇÑ´Ù. ¶Ç, <code>httpd</code> ¸í·ÉÇà ¾Æ±Ô¸ÕÆ®¸¦
-     Ãß°¡·Î ÁöÁ¤ÇÒ ¼ö ÀÖ´Ù. ÀÚ¼¼ÇÑ ³»¿ëÀº ½ºÅ©¸³Æ®ÀÇ ÁÖ¼®À»
-     Âü°íÇÏ¶ó.</p>
+     <p>ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¾Ò´Ù¸ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+     <code>httpd</code> ï¿½ï¿½Î·ï¿½ <code>apachectl</code> ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½
+     ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½. ï¿½ï¿½, <code>httpd</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½
+     ï¿½ß°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½. ï¿½Ú¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ö¼ï¿½ï¿½ï¿½
+     ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.</p>
 
-     <p><code>apachectl</code> ½ºÅ©¸³Æ®´Â ¼º°ø½Ã Á¾·áÄÚµå 0À»,
-     ¿À·ù½Ã &gt;0À» ¹ÝÈ¯ÇÑ´Ù. ÀÚ¼¼ÇÑ ³»¿ëÀº ½ºÅ©¸³Æ®ÀÇ ÁÖ¼®À»
-     Âü°íÇÏ¶ó.</p>
+     <p><code>apachectl</code> ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½ 0ï¿½ï¿½,
+     ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ &gt;0ï¿½ï¿½ ï¿½ï¿½È¯ï¿½Ñ´ï¿½. ï¿½Ú¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ö¼ï¿½ï¿½ï¿½
+     ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">°³¿ä</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#options">¿É¼Ç</a></li>
-</ul><h3>Âü°í</h3><ul class="seealso"><li><a href="../invoking.html">¾ÆÆÄÄ¡ ½ÃÀÛ</a></li><li><a href="../stopping.html">¾ÆÆÄÄ¡ Áß´Ü</a></li><li><a href="../configuring.html">¼³Á¤ÆÄÀÏ</a></li><li><a href="../platform/">ÇÃ·¡Æû ¹®¼­</a></li><li><a href="httpd.html">httpd</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">ï¿½ï¿½ï¿½ï¿½</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#options">ï¿½É¼ï¿½</a></li>
+</ul><h3>ï¿½ï¿½ï¿½ï¿½</h3><ul class="seealso"><li><a href="../invoking.html">ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½</a></li><li><a href="../stopping.html">ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ß´ï¿½</a></li><li><a href="../configuring.html">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</a></li><li><a href="../platform/">ï¿½Ã·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a></li><li><a href="httpd.html">httpd</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="synopsis" id="synopsis">°³¿ä</a> <a title="Permanent link" href="#synopsis" class="permalink">&para;</a></h2>
+<h2><a name="synopsis" id="synopsis">ï¿½ï¿½ï¿½ï¿½</a> <a title="Permanent link" href="#synopsis" class="permalink">&para;</a></h2>
 
-<p>°£´ÜÇÑ ½ÇÇà ½ºÅ©¸³Æ®·Î µ¿ÀÛÇÏ¸é, <code>apachectl</code>Àº
-<a href="httpd.html">httpd</a> ½ÇÇàÆÄÀÏÀÇ ¸ðµç ¾Æ±Ô¸ÕÆ®¸¦ ¹Þ´Â´Ù.</p>
+<p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½, <code>apachectl</code>ï¿½ï¿½
+<a href="httpd.html">httpd</a> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ ï¿½Þ´Â´ï¿½.</p>
 
 <p><code><strong>apachectl</strong> [ <var>httpd-argument</var> ]</code></p>
 
-<p>SysV init ¹æ½ÄÀ¸·Î µ¿ÀÛÇÏ¸é, <code>apachectl</code>Àº ¾Æ·¡¼­
-¼³¸íÇÒ °£´ÜÇÑ ÇÑ´Ü¾î ¸í·É¾î¸¦ ¹Þ´Â´Ù.</p>
+<p>SysV init ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½, <code>apachectl</code>ï¿½ï¿½ ï¿½Æ·ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ´Ü¾ï¿½ ï¿½ï¿½ï¿½É¾î¸¦ ï¿½Þ´Â´ï¿½.</p>
 
 <p><code><strong>apachectl</strong> <var>command</var></code></p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="options" id="options">¿É¼Ç</a> <a title="Permanent link" href="#options" class="permalink">&para;</a></h2>
+<h2><a name="options" id="options">ï¿½É¼ï¿½</a> <a title="Permanent link" href="#options" class="permalink">&para;</a></h2>
 
-<p>¿©±â¼­´Â SysV init-½Ä ¿É¼Ç¸¸ ¼³¸íÇÑ´Ù. ´Ù¸¥ ¿É¼ÇÀº <a href="httpd.html">httpd</a> manpage¿¡¼­ ¼³¸íÇÑ´Ù.</p>
+<p>ï¿½ï¿½ï¿½â¼­ï¿½ï¿½ SysV init-ï¿½ï¿½ ï¿½É¼Ç¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½Ù¸ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ <a href="httpd.html">httpd</a> manpageï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
 <dl>
 
 <dt><code>start</code></dt>
 
-<dd>¾ÆÆÄÄ¡ <code>httpd</code> µ¥¸óÀ» ½ÃÀÛÇÑ´Ù. ÀÌ¹Ì ½ÇÇàÁßÀÌ¶ó¸é
-¿À·ù¸¦ ³½´Ù. <code>apachectl -k start</code>¿Í °°´Ù.</dd>
+<dd>ï¿½ï¿½ï¿½ï¿½Ä¡ <code>httpd</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì¶ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½. <code>apachectl -k start</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</dd>
 
 <dt><code>stop</code></dt>
 
-<dd>¾ÆÆÄÄ¡ <code>httpd</code> µ¥¸óÀ» Áß´ÜÇÑ´Ù. <code>apachectl
--k stop</code>°ú °°´Ù.</dd>
+<dd>ï¿½ï¿½ï¿½ï¿½Ä¡ <code>httpd</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß´ï¿½ï¿½Ñ´ï¿½. <code>apachectl
+-k stop</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</dd>
 
 <dt><code>restart</code></dt>
 
-<dd>¾ÆÆÄÄ¡ <code>httpd</code> µ¥¸óÀ» Àç½ÃÀÛÇÑ´Ù. µ¥¸óÀÌ ½ÇÇàÁßÀÌ
-¾Æ´Ï¶ó¸é, ½ÃÀÛÇÑ´Ù. µ¥¸óÀÌ Àç½ÃÀÛ½Ã ½ÇÆÐÇÏÁö ¾ÊÀ½À» È®ÀÎÇÏ±âÀ§ÇØ
-Àç½ÃÀÛ Àü¿¡ ÀÚµ¿À¸·Î <code>configtest</code> ¸í·É°ú °°ÀÌ ¼³Á¤ÆÄÀÏÀ»
-°Ë»çÇÑ´Ù. <code>apachectl -k restart</code>¿Í °°´Ù.</dd>
+<dd>ï¿½ï¿½ï¿½ï¿½Ä¡ <code>httpd</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½Æ´Ï¶ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Û½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ <code>configtest</code> ï¿½ï¿½ï¿½É°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½Ë»ï¿½ï¿½Ñ´ï¿½. <code>apachectl -k restart</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</dd>
 
 <dt><code>fullstatus</code></dt>
 
-<dd><code class="module"><a href="../mod/mod_status.html">mod_status</a></code>ÀÇ ¸ðµç »óÅÂ Á¤º¸¸¦ Ãâ·ÂÇÑ´Ù.
-ÀÌ ¸í·ÉÀ» »ç¿ëÇÏ±âÀ§ÇØ¼­´Â ¼­¹ö°¡ <code class="module"><a href="../mod/mod_status.html">mod_status</a></code>¸¦
-»ç¿ëÇÏ°í, ½Ã½ºÅÛ¿¡ <code>lynx</code> °°Àº ¹®ÀÚ±â¹Ý ºê¶ó¿ìÀú°¡
-ÇÊ¿äÇÏ´Ù. »óÅÂ Á¤º¸¿¡ Á¢±ÙÇÏ´Â URLÀº ½ºÅ©¸³Æ®ÀÇ
-<code>STATUSURL</code> º¯¼ö¸¦ ¼öÁ¤ÇÏ¿© ¼³Á¤ÇÒ ¼ö ÀÖ´Ù.</dd>
+<dd><code class="module"><a href="../mod/mod_status.html">mod_status</a></code>ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ <code class="module"><a href="../mod/mod_status.html">mod_status</a></code>ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½Ï°ï¿½, ï¿½Ã½ï¿½ï¿½Û¿ï¿½ <code>lynx</code> ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ú±ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½Ê¿ï¿½ï¿½Ï´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ URLï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½
+<code>STATUSURL</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.</dd>
 
 <dt><code>status</code></dt>
 
-<dd>°£´ÜÇÑ »óÅÂ Á¤º¸¸¦ Ãâ·ÂÇÑ´Ù. <code>fullstatus</code> ¿É¼Ç°ú
-ºñ½ÁÇÏÁö¸¸, ÇöÀç ¼­ºñ½ºÁßÀÎ ¿äÃ» ¸ñ·ÏÀ» Ãâ·ÂÇÏÁö ¾Ê´Â´Ù.</dd>
+<dd>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. <code>fullstatus</code> ï¿½É¼Ç°ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã» ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.</dd>
 
 <dt><code>graceful</code></dt>
 
-<dd>¾ÆÆÄÄ¡ <code>httpd</code> µ¥¸óÀ» Á¡ÀÝ°Ô(gracefully) Àç½ÃÀÛÇÑ´Ù.
-µ¥¸óÀÌ ½ÇÇàÁßÀÌ ¾Æ´Ï¶ó¸é, ½ÃÀÛÇÑ´Ù. ÀÏ¹ÝÀûÀÎ Àç½ÃÀÛ°ú ´Þ¸® ÇöÀç
-¿­·ÁÀÖ´Â ¿¬°áÀ» ²÷Áö¾Ê´Â´Ù. ¶Ç, ÀÌÀü ·Î±×ÆÄÀÏÀ» Áï½Ã ´ÝÁö ¾Ê´Â´Ù.
-Áï, ·Î±×¼øÈ¯ ½ºÅ©¸³Æ®¿¡¼­ ÀÌ ¸í·ÉÀ» »ç¿ëÇÑ´Ù¸é, ÀÌÀü ·Î±×ÆÄÀÏÀ»
-Ã³¸®ÇÏ±âÀü¿¡ ·Î±×ÆÄÀÏÀ» ´ÝÇûÀ½À» º¸ÀåÇÏ±âÀ§ÇØ »ó´çÈ÷ ±â´Ù·Á¾ß
-ÇÑ´Ù. ¾ÆÆÄÄ¡°¡ Àç½ÃÀÛ½Ã ½ÇÆÐÇÏÁö ¾ÊÀ½À» È®ÀÎÇÏ±âÀ§ÇØ Àç½ÃÀÛ
-Àü¿¡ ÀÚµ¿À¸·Î <code>configtest</code> ¸í·É°ú °°ÀÌ ¼³Á¤ÆÄÀÏÀ»
-°Ë»çÇÑ´Ù. <code>apachectl -k graceful</code>°ú °°´Ù.</dd>
+<dd>ï¿½ï¿½ï¿½ï¿½Ä¡ <code>httpd</code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ý°ï¿½(gracefully) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Ï¶ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Û°ï¿½ ï¿½Þ¸ï¿½ ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ê´Â´ï¿½. ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.
+ï¿½ï¿½, ï¿½Î±×¼ï¿½È¯ ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+Ã³ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ù·ï¿½ï¿½ï¿½
+ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Û½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ <code>configtest</code> ï¿½ï¿½ï¿½É°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½Ë»ï¿½ï¿½Ñ´ï¿½. <code>apachectl -k graceful</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</dd>
 
 <dt><code>configtest</code></dt>
 
-<dd>¼³Á¤ÆÄÀÏÀÇ ¹®¹ýÀ» °Ë»çÇÑ´Ù. ¼³Á¤ÆÄÀÏÀ» ÀÐ°í <code>Syntax
-Ok</code> È¤Àº Æ¯Á¤ ¼³Á¤¿À·ù¿¡ ´ëÇÑ ÀÚ¼¼ÇÑ Á¤º¸¸¦ ¾Ë·ÁÁØ´Ù.
-<code>apachectl -t</code>¿Í °°´Ù.</dd>
+<dd>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ð°ï¿½ <code>Syntax
+Ok</code> È¤ï¿½ï¿½ Æ¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ú¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ë·ï¿½ï¿½Ø´ï¿½.
+<code>apachectl -t</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.</dd>
 
 </dl>
 
-<p>¾Æ·¡ ¿É¼ÇÀ» »ç¿ëÇÒ ¼ö ÀÖÁö¸¸, ¾ÕÀ¸·Î »ç¶óÁú °ÍÀÌ´Ù.</p>
+<p>ï¿½Æ·ï¿½ ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½.</p>
 
 <dl>
 
 <dt><code>startssl</code></dt>
 
-<dd><code>apachectl -k start -DSSL</code>°ú °°´Ù. ¿ì¸®´Â Á÷Á¢
-¾ÕÀÇ ¸í·É¾î¸¦ »ç¿ëÇÏ°Å³ª Ç×»ó SSLÀ» »ç¿ëÇÏµµ·Ï
-<code>httpd.conf</code>¿¡¼­ <code class="directive"><a href="../mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code> ¼½¼ÇÀ» Á¦°ÅÇÏ±æ ±ÇÇÑ´Ù.</dd>
+<dd><code>apachectl -k start -DSSL</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½. ï¿½ì¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½É¾î¸¦ ï¿½ï¿½ï¿½ï¿½Ï°Å³ï¿½ ï¿½×»ï¿½ SSLï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½
+<code>httpd.conf</code>ï¿½ï¿½ï¿½ï¿½ <code class="directive"><a href="../mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
 </dl>
 
 </div></div>
 <div class="bottomlang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/programs/apachectl.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/programs/apachectl.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/programs/apachectl.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/programs/apachectl.html" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/apachectl.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/programs/apachectl.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/programs/apachectl.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -165,8 +165,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/programs/apachectl
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

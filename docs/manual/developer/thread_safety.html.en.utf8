@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -16,12 +16,12 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Developer Documentation</a></div><div id="page-content"><div id="preamble"><h1>Apache HTTP Server 2.x Thread Safety Issues</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Developer Documentation</a></div><div id="page-content"><div id="preamble"><h1>Apache HTTP Server 2.x Thread Safety Issues</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/developer/thread_safety.html" title="English">&nbsp;en&nbsp;</a></p>
 </div>
@@ -63,7 +63,7 @@
     to modify the value has to first check the mutex and block until it is
     cleared.</p>
 
-    <p>If you are using <a href="http://apr.apache.org/">APR</a>, have a look
+    <p>If you are using <a href="https://apr.apache.org/">APR</a>, have a look
     at the <code>apr_atomic_<var>*</var></code> functions and the
     <code>apr_thread_mutex_<var>*</var></code> functions.</p>
     
@@ -103,7 +103,7 @@
     of the function called <code>strtok_r()</code> where you pass in an
     extra argument which contains an allocated <code>char *</code> which the
     function will use instead of its own static storage for maintaining
-    the tokenizing state. If you are using <a href="http://apr.apache.org/">APR</a> you can use <code>apr_strtok()</code>.</p>
+    the tokenizing state. If you are using <a href="https://apr.apache.org/">APR</a> you can use <code>apr_strtok()</code>.</p>
 
     <p><code>crypt()</code> is another function that tends to not be reentrant,
     so if you run across calls to that function in a library, watch out. On
@@ -117,7 +117,7 @@
     <p>The following is a list of common libraries that are used by 3rd party
     Apache modules.  You can check to see if your module is using a potentially
     unsafe library by using tools such as <code>ldd(1)</code> and
-    <code>nm(1)</code>. For <a href="http://www.php.net/">PHP</a>, for example,
+    <code>nm(1)</code>. For <a href="https://www.php.net/">PHP</a>, for example,
     try this:</p>
 
     <div class="example"><p><code>
@@ -149,28 +149,28 @@
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="liblist" id="liblist">Library List</a> <a title="Permanent link" href="#liblist" class="permalink">&para;</a></h2>
-    <p>Please drop a note to <a href="http://httpd.apache.org/lists.html#http-dev">dev@httpd.apache.org</a>
+    <p>Please drop a note to <a href="https://httpd.apache.org/lists.html#http-dev">dev@httpd.apache.org</a>
     if you have additions or corrections to this list.</p>
 
     <table class="bordered"><tr class="header"><th>Library</th><th>Version</th><th>Thread Safe?</th><th>Notes</th></tr>
-<tr><td><a href="http://aspell.sourceforge.net/">ASpell/PSpell</a></td>
+<tr><td><a href="https://aspell.sourceforge.net/">ASpell/PSpell</a></td>
         <td> </td>
         <td>?</td>
         <td> </td></tr>
-<tr class="odd"><td><a href="http://www.sleepycat.com/">Berkeley DB</a></td>
+<tr class="odd"><td><a href="https://www.sleepycat.com/">Berkeley DB</a></td>
         <td>3.x, 4.x</td>
         <td>Yes</td>
         <td>Be careful about sharing a connection across threads.</td></tr>
-<tr><td><a href="http://sources.redhat.com/bzip2/index.html">bzip2</a></td>
+<tr><td><a href="https://sources.redhat.com/bzip2/index.html">bzip2</a></td>
         <td> </td>
         <td>Yes</td>
         <td>Both low-level and high-level APIs are thread-safe. However,
         high-level API requires thread-safe access to errno.</td></tr>
-<tr class="odd"><td><a href="http://cr.yp.to/cdb.html">cdb</a></td>
+<tr class="odd"><td><a href="https://cr.yp.to/cdb.html">cdb</a></td>
         <td> </td>
         <td>?</td>
         <td> </td></tr>
-<tr><td><a href="http://www.washington.edu/imap/">C-Client</a></td>
+<tr><td><a href="https://www.washington.edu/imap/">C-Client</a></td>
         <td> </td>
         <td>Perhaps</td>
         <td>c-client uses <code>strtok()</code> and
@@ -179,99 +179,99 @@
         across threads. If <code>strtok()</code> and
         <code>gethostbyname()</code> are thread-safe on your OS, c-client
         <em>may</em> be thread-safe.</td></tr>
-<tr class="odd"><td><a href="http://www.ijg.org/files/">libcrypt</a></td>
+<tr class="odd"><td><a href="https://www.ijg.org/files/">libcrypt</a></td>
         <td> </td>
         <td>?</td>
         <td> </td></tr>
-<tr><td><a href="http://expat.sourceforge.net/">Expat</a></td>
+<tr><td><a href="https://expat.sourceforge.net/">Expat</a></td>
         <td> </td>
         <td>Yes</td>
         <td>Need a separate parser instance per thread</td></tr>
-<tr class="odd"><td><a href="http://www.freetds.org/">FreeTDS</a></td>
+<tr class="odd"><td><a href="https://www.freetds.org/">FreeTDS</a></td>
         <td> </td>
         <td>?</td>
         <td> </td></tr>
-<tr><td><a href="http://www.freetype.org/">FreeType</a></td>
+<tr><td><a href="https://www.freetype.org/">FreeType</a></td>
         <td> </td>
         <td>?</td>
         <td> </td></tr>
-<tr class="odd"><td><a href="http://www.boutell.com/gd/">GD 1.8.x</a></td>
+<tr class="odd"><td><a href="https://www.boutell.com/gd/">GD 1.8.x</a></td>
         <td> </td>
         <td>?</td>
         <td> </td></tr>
-<tr><td><a href="http://www.boutell.com/gd/">GD 2.0.x</a></td>
+<tr><td><a href="https://www.boutell.com/gd/">GD 2.0.x</a></td>
         <td> </td>
         <td>?</td>
         <td> </td></tr>
-<tr class="odd"><td><a href="http://www.gnu.org/software/gdbm/gdbm.html">gdbm</a></td>
+<tr class="odd"><td><a href="https://www.gnu.org/software/gdbm/gdbm.html">gdbm</a></td>
         <td> </td>
         <td>No</td>
         <td>Errors returned via a static <code>gdbm_error</code>
         variable</td></tr>
-<tr><td><a href="http://www.imagemagick.org/">ImageMagick</a></td>
+<tr><td><a href="https://www.imagemagick.org/">ImageMagick</a></td>
         <td>5.2.2</td>
         <td>Yes</td>
-        <td>ImageMagick docs claim it is thread safe since version 5.2.2 (see <a href="http://www.imagemagick.com/www/changelog.html">Change log</a>).
+        <td>ImageMagick docs claim it is thread safe since version 5.2.2 (see <a href="https://www.imagemagick.com/www/changelog.html">Change log</a>).
         </td></tr>
-<tr class="odd"><td><a href="http://www.enlightenment.org/p.php?p=about/efl&amp;l=en">Imlib2</a></td>
+<tr class="odd"><td><a href="https://www.enlightenment.org/p.php?p=about/efl&amp;l=en">Imlib2</a></td>
         <td> </td>
         <td>?</td>
         <td> </td></tr>
-<tr><td><a href="http://www.ijg.org/files/">libjpeg</a></td>
+<tr><td><a href="https://www.ijg.org/files/">libjpeg</a></td>
         <td>v6b</td>
         <td>?</td>
         <td> </td></tr>
-<tr class="odd"><td><a href="http://mysql.com">libmysqlclient</a></td>
+<tr class="odd"><td><a href="https://mysql.com">libmysqlclient</a></td>
         <td> </td>
         <td>Yes</td>
         <td>Use mysqlclient_r library variant to ensure thread-safety.  For
-            more information, please read <a href="http://dev.mysql.com/doc/mysql/en/Threaded_clients.html">http://dev.mysql.com/doc/mysql/en/Threaded_clients.html</a>.</td></tr>
-<tr><td><a href="http://www.opaque.net/ming/">Ming</a></td>
+            more information, please read <a href="https://dev.mysql.com/doc/mysql/en/Threaded_clients.html">https://dev.mysql.com/doc/mysql/en/Threaded_clients.html</a>.</td></tr>
+<tr><td><a href="https://www.opaque.net/ming/">Ming</a></td>
         <td>0.2a</td>
         <td>?</td>
         <td> </td></tr>
-<tr class="odd"><td><a href="http://net-snmp.sourceforge.net/">Net-SNMP</a></td>
+<tr class="odd"><td><a href="https://net-snmp.sourceforge.net/">Net-SNMP</a></td>
         <td>5.0.x</td>
         <td>?</td>
         <td> </td></tr>
-<tr><td><a href="http://www.openldap.org/">OpenLDAP</a></td>
+<tr><td><a href="https://www.openldap.org/">OpenLDAP</a></td>
         <td>2.1.x</td>
         <td>Yes</td>
         <td>Use <code>ldap_r</code> library variant to ensure
         thread-safety.</td></tr>
-<tr class="odd"><td><a href="http://www.openssl.org/">OpenSSL</a></td>
+<tr class="odd"><td><a href="https://www.openssl.org/">OpenSSL</a></td>
         <td>0.9.6g</td>
         <td>Yes</td>
         <td>Requires proper usage of <code>CRYPTO_num_locks</code>,
         <code>CRYPTO_set_locking_callback</code>,
         <code>CRYPTO_set_id_callback</code></td></tr>
-<tr><td><a href="http://www.oracle.com/">liboci8 (Oracle 8+)</a></td>
+<tr><td><a href="https://www.oracle.com/">liboci8 (Oracle 8+)</a></td>
         <td>8.x,9.x</td>
         <td>?</td>
         <td> </td></tr>
-<tr class="odd"><td><a href="http://pdflib.com/">pdflib</a></td>
+<tr class="odd"><td><a href="https://pdflib.com/">pdflib</a></td>
         <td>5.0.x</td>
         <td>Yes</td>
         <td>PDFLib docs claim it is thread safe; changes.txt indicates it
-            has been partially thread-safe since V1.91: <a href="http://www.pdflib.com/products/pdflib-family/pdflib/">http://www.pdflib.com/products/pdflib-family/pdflib/</a>.</td></tr>
-<tr><td><a href="http://www.libpng.org/pub/png/libpng.html">libpng</a></td>
+            has been partially thread-safe since V1.91: <a href="https://www.pdflib.com/products/pdflib-family/pdflib/">https://www.pdflib.com/products/pdflib-family/pdflib/</a>.</td></tr>
+<tr><td><a href="https://www.libpng.org/pub/png/libpng.html">libpng</a></td>
         <td>1.0.x</td>
         <td>?</td>
         <td> </td></tr>
-<tr class="odd"><td><a href="http://www.libpng.org/pub/png/libpng.html">libpng</a></td>
+<tr class="odd"><td><a href="https://www.libpng.org/pub/png/libpng.html">libpng</a></td>
         <td>1.2.x</td>
         <td>?</td>
         <td> </td></tr>
-<tr><td><a href="http://www.postgresql.org/docs/8.4/static/libpq-threading.html">libpq (PostgreSQL)</a></td>
+<tr><td><a href="https://www.postgresql.org/docs/8.4/static/libpq-threading.html">libpq (PostgreSQL)</a></td>
         <td>8.x</td>
         <td>Yes</td>
         <td>Don't share connections across threads and watch out for
         <code>crypt()</code> calls</td></tr>
-<tr class="odd"><td><a href="http://www.gingerall.com/charlie/ga/xml/p_sab.xml">Sablotron</a></td>
+<tr class="odd"><td><a href="https://www.gingerall.com/charlie/ga/xml/p_sab.xml">Sablotron</a></td>
         <td>0.95</td>
         <td>?</td>
         <td /></tr>
-<tr><td><a href="http://www.gzip.org/zlib/">zlib</a></td>
+<tr><td><a href="https://www.gzip.org/zlib/">zlib</a></td>
         <td>1.1.4</td>
         <td>Yes</td>
         <td>Relies upon thread-safe zalloc and zfree functions  Default is to
@@ -283,7 +283,7 @@
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/developer/thread_safety.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/developer/thread_safety.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -298,8 +298,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/developer/thread_s
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

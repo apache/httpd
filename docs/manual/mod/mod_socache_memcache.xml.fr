@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -35,7 +35,7 @@
     d'objets partagés qui permet la création et l'accès à un cache
     maintenu par le système de mise en cache d'objets en mémoire
     distribuée à hautes performances <a
-    href="http://memcached.org/">memcached</a>.
+    href="https://memcached.org/">memcached</a>.
     </p>
 
     <p>Cette méthode "create" du fournisseur de cache d'objets partagés

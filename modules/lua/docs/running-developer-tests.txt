@@ -4,7 +4,7 @@
   building-from-subversion.txt.
 
 * Build and install LuaSocket
-    http://www.cs.princeton.edu/~diego/professional/luasocket/
+    https://www.cs.princeton.edu/~diego/professional/luasocket/
     FreeBSD: /usr/ports/net/luasocket
 
 * Running Tests

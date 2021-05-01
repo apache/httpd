@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
 <meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>rotatelogs - ¾ÆÆÄÄ¡ ·Î±×¸¦ ¼øÈ¯ÇÏ±âÀ§ÇØ ÆÄÀÌÇÁ·Î ¿¬°áÇÒ
-  ·Î±× ÇÁ·Î±×·¥ - Apache HTTP Server Version 2.5</title>
+<title>rotatelogs - ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½Î±×¸ï¿½ ï¿½ï¿½È¯ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  ï¿½Î±ï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½ - Apache HTTP Server Version 2.5</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -17,56 +17,56 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Programs</a></div><div id="page-content"><div id="preamble"><h1>rotatelogs - ¾ÆÆÄÄ¡ ·Î±×¸¦ ¼øÈ¯ÇÏ±âÀ§ÇØ ÆÄÀÌÇÁ·Î ¿¬°áÇÒ
-  ·Î±× ÇÁ·Î±×·¥</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Programs</a></div><div id="page-content"><div id="preamble"><h1>rotatelogs - ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½Î±×¸ï¿½ ï¿½ï¿½È¯ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  ï¿½Î±ï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½</h1>
 <div class="toplang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/programs/rotatelogs.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/programs/rotatelogs.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/programs/rotatelogs.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/programs/rotatelogs.html" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/rotatelogs.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">ÀÌ ¹®¼­´Â ÃÖ½ÅÆÇ ¹ø¿ªÀÌ ¾Æ´Õ´Ï´Ù.
-            ÃÖ±Ù¿¡ º¯°æµÈ ³»¿ëÀº ¿µ¾î ¹®¼­¸¦ Âü°íÇÏ¼¼¿ä.</div>
+<div class="outofdate">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Õ´Ï´ï¿½.
+            ï¿½Ö±Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.</div>
 
-     <p><code>rotatelogs</code>´Â ¾ÆÆÄÄ¡ÀÇ ÆÄÀÌÇÁ ·Î±×ÆÄÀÏ ±â´ÉÀ»
-     À§ÇÑ °£´ÜÇÑ ÇÁ·Î±×·¥ÀÌ´Ù. ¿¹¸¦ µé¾î:</p>
+     <p><code>rotatelogs</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+     ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½ï¿½Ì´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½:</p>
 
 <div class="example"><p><code>
      CustomLog "|bin/rotatelogs /var/logs/logfile 86400" common
 </code></p></div>
 	 
-     <p>±×·¯¸é /var/logs/logfile.nnnn ÆÄÀÏÀ» ¸¸µç´Ù. nnnnÀº
-     ·Î±×¸¦ ½ÃÀÛÇÑ ½Ã½ºÅÛ½Ã°£ÀÌ´Ù (ÀÌ ½Ã°£Àº Ç×»ó ¼øÈ¯±â°£ÀÇ
-     ¹è¼öÀÌ´Ù. ±×·¡¼­ cron ½ºÅ©¸³Æ®·Î Ã³¸®ÇÏ±â ½±´Ù). ¼øÈ¯±â°£
-     (¿©±â¼­´Â 24 ½Ã°£) ¸¶´Ù »õ·Î¿î ·Î±×¸¦ ½ÃÀÛÇÑ´Ù.</p>
+     <p>ï¿½×·ï¿½ï¿½ï¿½ /var/logs/logfile.nnnn ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½. nnnnï¿½ï¿½
+     ï¿½Î±×¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã½ï¿½ï¿½Û½Ã°ï¿½ï¿½Ì´ï¿½ (ï¿½ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½×»ï¿½ ï¿½ï¿½È¯ï¿½â°£ï¿½ï¿½
+     ï¿½ï¿½ï¿½ï¿½Ì´ï¿½. ï¿½×·ï¿½ï¿½ï¿½ cron ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½). ï¿½ï¿½È¯ï¿½â°£
+     (ï¿½ï¿½ï¿½â¼­ï¿½ï¿½ 24 ï¿½Ã°ï¿½) ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½Î±×¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</p>
 
 <div class="example"><p><code>
      CustomLog "|bin/rotatelogs /var/logs/logfile 5M" common
 </code></p></div>
 
-     <p>ÀÌ ¼³Á¤Àº ·Î±×ÆÄÀÏ Å©±â°¡ 5 ¸Þ°¡¹ÙÀÌÆ®°¡ µÉ¶§¸¶´Ù
-     ¼øÈ¯ÇÑ´Ù.</p>
+     <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ Å©ï¿½â°¡ 5 ï¿½Þ°ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½É¶ï¿½ï¿½ï¿½ï¿½ï¿½
+     ï¿½ï¿½È¯ï¿½Ñ´ï¿½.</p>
 	 
 <div class="example"><p><code>
      ErrorLog "|bin/rotatelogs /var/logs/errorlog.%Y-%m-%d-%H_%M_%S 5M"
 </code></p></div>
-     <p>ÀÌ ¼³Á¤Àº ¿À·ù·Î±× ÆÄÀÏ Å©±â°¡ 5 ¸Þ°¡¹ÙÀÌÆ®°¡ µÉ¶§¸¶´Ù
-     <code>errorlog.YYYY-mm-dd-HH_MM_SS</code>¿Í °°Àº ÆÄÀÏÀ»
-     ¸¸µé¾î¼­ ¿À·ù·Î±× ÆÄÀÏÀ» ¼øÈ¯ÇÑ´Ù.</p>
+     <p>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Î±ï¿½ ï¿½ï¿½ï¿½ï¿½ Å©ï¿½â°¡ 5 ï¿½Þ°ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½É¶ï¿½ï¿½ï¿½ï¿½ï¿½
+     <code>errorlog.YYYY-mm-dd-HH_MM_SS</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+     ï¿½ï¿½ï¿½ï¿½î¼­ ï¿½ï¿½ï¿½ï¿½ï¿½Î±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½Ñ´ï¿½.</p>
 
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">°³¿ä</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#options">¿É¼Ç</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#portability">Æ÷ÆÃ°¡´É¼º</a></li>
-</ul><h3>Âü°í</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">ï¿½ï¿½ï¿½ï¿½</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#options">ï¿½É¼ï¿½</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#portability">ï¿½ï¿½ï¿½Ã°ï¿½ï¿½É¼ï¿½</a></li>
+</ul><h3>ï¿½ï¿½ï¿½ï¿½</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="synopsis" id="synopsis">°³¿ä</a> <a title="Permanent link" href="#synopsis" class="permalink">&para;</a></h2>
+<h2><a name="synopsis" id="synopsis">ï¿½ï¿½ï¿½ï¿½</a> <a title="Permanent link" href="#synopsis" class="permalink">&para;</a></h2>
 
      <p><code><strong>rotatelogs</strong>
      [ -<strong>l</strong> ]
@@ -75,83 +75,83 @@
      [ <var>filesize</var>M ]</code></p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="options" id="options">¿É¼Ç</a> <a title="Permanent link" href="#options" class="permalink">&para;</a></h2>
+<h2><a name="options" id="options">ï¿½É¼ï¿½</a> <a title="Permanent link" href="#options" class="permalink">&para;</a></h2>
 
 <dl>
 
 <dt><code>-l</code></dt>
-<dd>¼øÈ¯ÁÖ±â·Î GMT ´ë½Å Áö¿ª½Ã°£À» »ç¿ëÇÑ´Ù. (BST³ª DST¿Í °°ÀÌ)
-GMT ½Ã°£Â÷°¡ º¯ÇÏ´Â È¯°æ¿¡¼­ <code>-l</code>À» »ç¿ëÇÏ¸é ¿¹±âÄ¡
-¾ÊÀº °á°ú°¡ ¹ß»ýÇÒ ¼ö ÀÖ´Ù!</dd>
+<dd>ï¿½ï¿½È¯ï¿½Ö±ï¿½ï¿½ GMT ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. (BSTï¿½ï¿½ DSTï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
+GMT ï¿½Ã°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½ È¯ï¿½æ¿¡ï¿½ï¿½ <code>-l</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡
+ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß»ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½!</dd>
 
 <dt><code><var>logfile</var></code></dt>
 
-<dd>·Î±×ÆÄÀÏÀÇ °æ·Î¿Í ÀÌ¸§. <var>logfile</var>¿¡ '%' ¹®ÀÚ°¡
-ÀÖ´Ù¸é <code>strftime(3)</code>ÀÇ Çü½Ä¹®ÀÚ¿­°ú °°ÀÌ Ã³¸®ÇÑ´Ù.
-'%' ¹®ÀÚ°¡ ¾ø´Ù¸é µÚ¿¡ ÃÊ´ÜÀ§ ½Ã°£ <var>.nnnnnnnnnn</var>À»
-ÀÚµ¿À¸·Î ºÙÀÎ´Ù. µÎ Çü½Ä ¸ðµÎ ÇöÀç ±â°£ºÎÅÍ ½ÃÀÛ½Ã°£À» °è»êÇÑ´Ù.</dd>
+<dd>ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Î¿ï¿½ ï¿½Ì¸ï¿½. <var>logfile</var>ï¿½ï¿½ '%' ï¿½ï¿½ï¿½Ú°ï¿½
+ï¿½Ö´Ù¸ï¿½ <code>strftime(3)</code>ï¿½ï¿½ ï¿½ï¿½ï¿½Ä¹ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ñ´ï¿½.
+'%' ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½ï¿½ï¿½Ù¸ï¿½ ï¿½Ú¿ï¿½ ï¿½Ê´ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ <var>.nnnnnnnnnn</var>ï¿½ï¿½
+ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î´ï¿½. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½â°£ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Û½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
 <dt><code><var>rotationtime</var></code></dt>
 
-<dd>·Î±×ÆÄÀÏÀ» ¼øÈ¯ÇÒ ÃÊ´ÜÀ§ ½Ã°£.</dd>
+<dd>ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½ ï¿½Ê´ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½.</dd>
 
 <dt><code><var>offset</var></code></dt>
 
-<dd>UTC¿¡¼­ ºÐ´ÜÀ§ ½Ã°£Â÷ÀÌ. »ý·«ÇÏ¸é 0À¸·Î °¡Á¤ÇÏ¿© UTC¸¦
-»ç¿ëÇÑ´Ù. ¿¹¸¦ µé¾î, UTC -5 ½Ã°£´ëÀÇ Áö¿ª½Ã°£À» »ç¿ëÇÑ´Ù¸é
-¾Æ±Ô¸ÕÆ®·Î <code>-300</code>À» ÁöÁ¤ÇÑ´Ù.</dd>
+<dd>UTCï¿½ï¿½ï¿½ï¿½ ï¿½Ð´ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ 0ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ UTCï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, UTC -5 ï¿½Ã°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½
+ï¿½Æ±Ô¸ï¿½Æ®ï¿½ï¿½ <code>-300</code>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 
 <dt><code><var>filesize</var>M</code></dt>
 
-<dd>½Ã°£ÀÌ ¾Æ´Ñ Å©±â¸¦ ÁöÁ¤ÇÒ¶§ ¸Þ°¡¹ÙÀÌÆ®´ÜÀ§ ÃÖ´ë ÆÄÀÏÅ©±â
-µÚ¿¡ <code>M</code>À» ºÙÀÎ´Ù. rotationtime°ú offset ´ë½Å ÀÌ
-ÆÄ¶ó¹ÌÅÍ¸¦ »ç¿ëÇÑ´Ù.</dd>
+<dd>ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½Æ´ï¿½ Å©ï¿½â¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ ï¿½Þ°ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½Å©ï¿½ï¿½
+ï¿½Ú¿ï¿½ <code>M</code>ï¿½ï¿½ ï¿½ï¿½ï¿½Î´ï¿½. rotationtimeï¿½ï¿½ offset ï¿½ï¿½ï¿½ ï¿½ï¿½
+ï¿½Ä¶ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.</dd>
 </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="portability" id="portability">Æ÷ÆÃ°¡´É¼º</a> <a title="Permanent link" href="#portability" class="permalink">&para;</a></h2>
+<h2><a name="portability" id="portability">ï¿½ï¿½ï¿½Ã°ï¿½ï¿½É¼ï¿½</a> <a title="Permanent link" href="#portability" class="permalink">&para;</a></h2>
 
-<p>´ÙÀ½ ·Î±×ÆÄÀÏ Çü½Ä¹®ÀÚ¿­ Ç¥ÇöÀº ¸ðµç <code>strftime(3)</code>
-±¸ÇöÀÌ Áö¿øÇØ¾ß ÇÑ´Ù. ¶óÀÌºê·¯¸® Æ¯À¯ÀÇ È®ÀåÀº
-<code>strftime(3)</code> manpage¸¦ Âü°íÇÏ¶ó.</p>
+<p>ï¿½ï¿½ï¿½ï¿½ ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ä¹ï¿½ï¿½Ú¿ï¿½ Ç¥ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ <code>strftime(3)</code>
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½Ìºê·¯ï¿½ï¿½ Æ¯ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½ï¿½
+<code>strftime(3)</code> manpageï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½.</p>
 
-<table class="bordered"><tr><td><code>%A</code></td><td>(Áö¿ªÈ­µÈ) ¿ÏÀüÇÑ ¿äÀÏ ÀÌ¸§</td></tr>
-<tr class="odd"><td><code>%a</code></td><td>(Áö¿ªÈ­µÈ) 3-¹®ÀÚ ¿äÀÏ ÀÌ¸§</td></tr>
-<tr><td><code>%B</code></td><td>(Áö¿ªÈ­µÈ) ¿ÏÀüÇÑ ´Þ ÀÌ¸§</td></tr>
-<tr class="odd"><td><code>%b</code></td><td>(Áö¿ªÈ­µÈ) 3-¹®ÀÚ ´Þ ÀÌ¸§</td></tr>
-<tr><td><code>%c</code></td><td>(Áö¿ªÈ­µÈ) ³¯Â¥¿Í ½Ã°£</td></tr>
-<tr class="odd"><td><code>%d</code></td><td>2-ÀÚ¸® ÀÏ</td></tr>
-<tr><td><code>%H</code></td><td>2-ÀÚ¸® ½Ã°£ (24 ½Ã°£ ½Ã°è)</td></tr>
-<tr class="odd"><td><code>%I</code></td><td>2-ÀÚ¸® ½Ã°£ (12 ½Ã°£ ½Ã°è)</td></tr>
-<tr><td><code>%j</code></td><td>3-ÀÚ¸® ³¯Â¥¼ö</td></tr>
-<tr class="odd"><td><code>%M</code></td><td>2-ÀÚ¸® ºÐ</td></tr>
-<tr><td><code>%m</code></td><td>2-ÀÚ¸® ´Þ</td></tr>
-<tr class="odd"><td><code>%p</code></td><td>(Áö¿ªÈ­µÈ) 12 ½Ã°£ ½Ã°èÀÇ am/pm</td></tr>
-<tr><td><code>%S</code></td><td>2-ÀÚ¸® ÃÊ</td></tr>
-<tr class="odd"><td><code>%U</code></td><td>2-ÀÚ¸® ÁÖÀÏ¼ö (ÁÖÀÇ Ã¹¹øÀç ³¯Àº
-ÀÏ¿äÀÏ)</td></tr>
-<tr><td><code>%W</code></td><td>2-ÀÚ¸® ÁÖÀÏ¼ö (ÁÖÀÇ Ã¹¹øÀç ³¯Àº
-¿ù¿äÀÏ)</td></tr>
-<tr class="odd"><td><code>%w</code></td><td>1-ÀÚ¸® ¿äÀÏ¼ö (ÁÖÀÇ Ã¹¹øÂ° ³¯Àº
-ÀÏ¿äÀÏ)</td></tr>
-<tr><td><code>%X</code></td><td>(Áö¿ªÈ­µÈ) ½Ã°£</td></tr>
-<tr class="odd"><td><code>%x</code></td><td>(Áö¿ªÈ­µÈ) ³¯Â¥</td></tr>
-<tr><td><code>%Y</code></td><td>4-ÀÚ¸® ¿¬µµ</td></tr>
-<tr class="odd"><td><code>%y</code></td><td>2-ÀÚ¸® ¿¬µµ</td></tr>
-<tr><td><code>%Z</code></td><td>½Ã°£´ë ÀÌ¸§</td></tr>
-<tr class="odd"><td><code>%%</code></td><td>¹®ÀÚ±×´ë·Î `%'</td></tr>
+<table class="bordered"><tr><td><code>%A</code></td><td>(ï¿½ï¿½ï¿½ï¿½È­ï¿½ï¿½) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½</td></tr>
+<tr class="odd"><td><code>%a</code></td><td>(ï¿½ï¿½ï¿½ï¿½È­ï¿½ï¿½) 3-ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½</td></tr>
+<tr><td><code>%B</code></td><td>(ï¿½ï¿½ï¿½ï¿½È­ï¿½ï¿½) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ì¸ï¿½</td></tr>
+<tr class="odd"><td><code>%b</code></td><td>(ï¿½ï¿½ï¿½ï¿½È­ï¿½ï¿½) 3-ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ì¸ï¿½</td></tr>
+<tr><td><code>%c</code></td><td>(ï¿½ï¿½ï¿½ï¿½È­ï¿½ï¿½) ï¿½ï¿½Â¥ï¿½ï¿½ ï¿½Ã°ï¿½</td></tr>
+<tr class="odd"><td><code>%d</code></td><td>2-ï¿½Ú¸ï¿½ ï¿½ï¿½</td></tr>
+<tr><td><code>%H</code></td><td>2-ï¿½Ú¸ï¿½ ï¿½Ã°ï¿½ (24 ï¿½Ã°ï¿½ ï¿½Ã°ï¿½)</td></tr>
+<tr class="odd"><td><code>%I</code></td><td>2-ï¿½Ú¸ï¿½ ï¿½Ã°ï¿½ (12 ï¿½Ã°ï¿½ ï¿½Ã°ï¿½)</td></tr>
+<tr><td><code>%j</code></td><td>3-ï¿½Ú¸ï¿½ ï¿½ï¿½Â¥ï¿½ï¿½</td></tr>
+<tr class="odd"><td><code>%M</code></td><td>2-ï¿½Ú¸ï¿½ ï¿½ï¿½</td></tr>
+<tr><td><code>%m</code></td><td>2-ï¿½Ú¸ï¿½ ï¿½ï¿½</td></tr>
+<tr class="odd"><td><code>%p</code></td><td>(ï¿½ï¿½ï¿½ï¿½È­ï¿½ï¿½) 12 ï¿½Ã°ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ am/pm</td></tr>
+<tr><td><code>%S</code></td><td>2-ï¿½Ú¸ï¿½ ï¿½ï¿½</td></tr>
+<tr class="odd"><td><code>%U</code></td><td>2-ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½Ï¼ï¿½ (ï¿½ï¿½ï¿½ï¿½ Ã¹ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+ï¿½Ï¿ï¿½ï¿½ï¿½)</td></tr>
+<tr><td><code>%W</code></td><td>2-ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½Ï¼ï¿½ (ï¿½ï¿½ï¿½ï¿½ Ã¹ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)</td></tr>
+<tr class="odd"><td><code>%w</code></td><td>1-ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½Ï¼ï¿½ (ï¿½ï¿½ï¿½ï¿½ Ã¹ï¿½ï¿½Â° ï¿½ï¿½ï¿½ï¿½
+ï¿½Ï¿ï¿½ï¿½ï¿½)</td></tr>
+<tr><td><code>%X</code></td><td>(ï¿½ï¿½ï¿½ï¿½È­ï¿½ï¿½) ï¿½Ã°ï¿½</td></tr>
+<tr class="odd"><td><code>%x</code></td><td>(ï¿½ï¿½ï¿½ï¿½È­ï¿½ï¿½) ï¿½ï¿½Â¥</td></tr>
+<tr><td><code>%Y</code></td><td>4-ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½</td></tr>
+<tr class="odd"><td><code>%y</code></td><td>2-ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½</td></tr>
+<tr><td><code>%Z</code></td><td>ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½</td></tr>
+<tr class="odd"><td><code>%%</code></td><td>ï¿½ï¿½ï¿½Ú±×´ï¿½ï¿½ `%'</td></tr>
 </table>
 
 </div></div>
 <div class="bottomlang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../en/programs/rotatelogs.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="../en/programs/rotatelogs.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/programs/rotatelogs.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/programs/rotatelogs.html" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/rotatelogs.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/programs/rotatelogs.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/programs/rotatelogs.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -166,8 +166,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/programs/rotatelog
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">ï¿½ï¿½ï¿½</a> | <a href="../mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">ï¿½ï¿½ï¿½</a> | <a href="../sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

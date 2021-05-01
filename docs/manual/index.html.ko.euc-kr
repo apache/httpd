@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
 <meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Apache HTTP Server Version 2.5 ¹®¼­ - Apache HTTP Server Version 2.5</title>
+<title>Apache HTTP Server Version 2.5 ï¿½ï¿½ï¿½ï¿½ - Apache HTTP Server Version 2.5</title>
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
@@ -17,15 +17,15 @@
 <link href="./images/favicon.ico" rel="shortcut icon" /></head>
 <body id="index-page">
 <div id="page-header">
-<p class="menu"><a href="./mod/">¸ðµâ</a> | <a href="./mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">¿ë¾î</a> | <a href="./sitemap.html">»çÀÌÆ®¸Ê</a></p>
+<p class="menu"><a href="./mod/">ï¿½ï¿½ï¿½</a> | <a href="./mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">ï¿½ï¿½ï¿½</a> | <a href="./sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="./images/feather.png" /></div>
-<div class="up"><a href="http://httpd.apache.org/docs-project/"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div class="up"><a href="https://httpd.apache.org/docs-project/"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a></div>
-<div id="page-content"><h1>Apache HTTP Server Version 2.5 ¹®¼­</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a></div>
+<div id="page-content"><h1>Apache HTTP Server Version 2.5 ï¿½ï¿½ï¿½ï¿½</h1>
 <div class="toplang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="./da/" hreflang="da" rel="alternate" title="Dansk">&nbsp;da&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="./da/" hreflang="da" rel="alternate" title="Dansk">&nbsp;da&nbsp;</a> |
 <a href="./de/" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
@@ -37,66 +37,66 @@
 <a href="./tr/" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">ÀÌ ¹®¼­´Â ÃÖ½ÅÆÇ ¹ø¿ªÀÌ ¾Æ´Õ´Ï´Ù.
-            ÃÖ±Ù¿¡ º¯°æµÈ ³»¿ëÀº ¿µ¾î ¹®¼­¸¦ Âü°íÇÏ¼¼¿ä.</div>
-<form method="get" action="https://www.google.com/search"><p><input name="as_q" value="" type="text" /> <input value="Google °Ë»ö" type="submit" /><input value="10" name="num" type="hidden" /><input value="ko" name="hl" type="hidden" /><input value="EUC-KR" name="ie" type="hidden" /><input value="Google Search" name="btnG" type="hidden" /><input name="as_epq" value="Version 2.5" type="hidden" /><input name="as_oq" value="" type="hidden" /><input name="as_eq" value="&quot;List-Post&quot;" type="hidden" /><input value="" name="lr" type="hidden" /><input value="i" name="as_ft" type="hidden" /><input value="" name="as_filetype" type="hidden" /><input value="all" name="as_qdr" type="hidden" /><input value="any" name="as_occt" type="hidden" /><input value="i" name="as_dt" type="hidden" /><input value="httpd.apache.org" name="as_sitesearch" type="hidden" /><input value="off" name="safe" type="hidden" /></p></form>
-<table id="indextable"><tr><td class="col1"><div class="category"><h2><a name="release" id="release">¹ßÇ¥¹®</a></h2>
-<ul><li><a href="new_features_2_0.html">¹öÀü 2.0ÀÇ »õ·Î¿î ±â´É</a></li>
-<li><a href="upgrading.html">1.3¿¡¼­ 2.0 ¹öÀüÀ¸·Î ¾÷±×·¹ÀÌµå</a></li>
-<li><a href="license.html">¾ÆÆÄÄ¡ ¶óÀÌ¼±½º</a></li>
+<div class="outofdate">ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Õ´Ï´ï¿½.
+            ï¿½Ö±Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.</div>
+<form method="get" action="https://www.google.com/search"><p><input name="as_q" value="" type="text" /> <input value="Google ï¿½Ë»ï¿½" type="submit" /><input value="10" name="num" type="hidden" /><input value="ko" name="hl" type="hidden" /><input value="EUC-KR" name="ie" type="hidden" /><input value="Google Search" name="btnG" type="hidden" /><input name="as_epq" value="Version 2.5" type="hidden" /><input name="as_oq" value="" type="hidden" /><input name="as_eq" value="&quot;List-Post&quot;" type="hidden" /><input value="" name="lr" type="hidden" /><input value="i" name="as_ft" type="hidden" /><input value="" name="as_filetype" type="hidden" /><input value="all" name="as_qdr" type="hidden" /><input value="any" name="as_occt" type="hidden" /><input value="i" name="as_dt" type="hidden" /><input value="httpd.apache.org" name="as_sitesearch" type="hidden" /><input value="off" name="safe" type="hidden" /></p></form>
+<table id="indextable"><tr><td class="col1"><div class="category"><h2><a name="release" id="release">ï¿½ï¿½Ç¥ï¿½ï¿½</a></h2>
+<ul><li><a href="new_features_2_0.html">ï¿½ï¿½ï¿½ï¿½ 2.0ï¿½ï¿½ ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½</a></li>
+<li><a href="upgrading.html">1.3ï¿½ï¿½ï¿½ï¿½ 2.0 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½×·ï¿½ï¿½Ìµï¿½</a></li>
+<li><a href="license.html">ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½Ì¼ï¿½ï¿½ï¿½</a></li>
 </ul>
-</div><div class="category"><h2><a name="manual" id="manual">ÂüÁ¶ ¼³¸í¼­</a></h2>
-<ul><li><a href="install.html">ÄÄÆÄÀÏ°ú ¼³Ä¡</a></li>
-<li><a href="invoking.html">½ÃÀÛ</a></li>
-<li><a href="stopping.html">Áß´Ü°ú Àç½ÃÀÛ</a></li>
-<li><a href="mod/directives.html">¼³Á¤ Áö½Ã¾î</a></li>
-<li><a href="mod/quickreference.html">Áö½Ã¾î ºü¸¥ÂüÁ¶</a></li>
-<li><a href="mod/">¸ðµâ</a></li>
-<li><a href="mpm.html">´ÙÁßÃ³¸®¸ðµâ (MPM)</a></li>
-<li><a href="filter.html">ÇÊÅÍ</a></li>
-<li><a href="handler.html">ÇÚµé·¯</a></li>
-<li><a href="programs/">¼­¹ö¿Í Áö¿ø ÇÁ·Î±×·¥</a></li>
-<li><a href="glossary.html">¿ë¾î</a></li>
+</div><div class="category"><h2><a name="manual" id="manual">ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</a></h2>
+<ul><li><a href="install.html">ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½Ä¡</a></li>
+<li><a href="invoking.html">ï¿½ï¿½ï¿½ï¿½</a></li>
+<li><a href="stopping.html">ï¿½ß´Ü°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½</a></li>
+<li><a href="mod/directives.html">ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¾ï¿½</a></li>
+<li><a href="mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</a></li>
+<li><a href="mod/">ï¿½ï¿½ï¿½</a></li>
+<li><a href="mpm.html">ï¿½ï¿½ï¿½ï¿½Ã³ï¿½ï¿½ï¿½ï¿½ï¿½ (MPM)</a></li>
+<li><a href="filter.html">ï¿½ï¿½ï¿½ï¿½</a></li>
+<li><a href="handler.html">ï¿½Úµé·¯</a></li>
+<li><a href="programs/">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½</a></li>
+<li><a href="glossary.html">ï¿½ï¿½ï¿½</a></li>
 </ul>
-</div></td><td><div class="category"><h2><a name="usersguide" id="usersguide">»ç¿ëÀÚ ÁöÄ§¼­</a></h2>
-<ul><li><a href="bind.html">ÁÖ¼Ò¿Í Æ÷Æ® ÁöÁ¤</a></li>
-<li><a href="configuring.html">¼³Á¤ÆÄÀÏ</a></li>
-<li><a href="sections.html">¼½¼Ç ¼³Á¤</a></li>
-<li><a href="content-negotiation.html">³»¿ëÇù»ó (content negotiation)</a></li>
-<li><a href="dso.html">µ¿Àû°øÀ¯°´Ã¼ (DSO)</a></li>
-<li><a href="env.html">È¯°æº¯¼ö</a></li>
-<li><a href="logs.html">·Î±×ÆÄÀÏ</a></li>
-<li><a href="urlmapping.html">URLÀ» ÆÄÀÏ½Ã½ºÅÛ¿¡ ´ëÀÀ</a></li>
-<li><a href="misc/perf-tuning.html">¼º´ÉÇâ»ó</a></li>
-<li><a href="misc/security_tips.html">º¸¾È ÆÁ</a></li>
-<li><a href="server-wide.html">¼­¹ö Àü¿ª ¼³Á¤</a></li>
-<li><a href="ssl/">SSL/TLS ¾ÏÈ£È­</a></li>
-<li><a href="suexec.html">CGIÀÇ Suexec ½ÇÇà</a></li>
-<li><a href="rewrite/">URL ÀçÀÛ¼º(rewriting) ÁöÄ§¼­</a></li>
-<li><a href="vhosts/">°¡»óÈ£½ºÆ®</a></li>
+</div></td><td><div class="category"><h2><a name="usersguide" id="usersguide">ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä§ï¿½ï¿½</a></h2>
+<ul><li><a href="bind.html">ï¿½Ö¼Ò¿ï¿½ ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½</a></li>
+<li><a href="configuring.html">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</a></li>
+<li><a href="sections.html">ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a></li>
+<li><a href="content-negotiation.html">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (content negotiation)</a></li>
+<li><a href="dso.html">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã¼ (DSO)</a></li>
+<li><a href="env.html">È¯ï¿½æº¯ï¿½ï¿½</a></li>
+<li><a href="logs.html">ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½</a></li>
+<li><a href="urlmapping.html">URLï¿½ï¿½ ï¿½ï¿½ï¿½Ï½Ã½ï¿½ï¿½Û¿ï¿½ ï¿½ï¿½ï¿½ï¿½</a></li>
+<li><a href="misc/perf-tuning.html">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</a></li>
+<li><a href="misc/security_tips.html">ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½</a></li>
+<li><a href="server-wide.html">ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a></li>
+<li><a href="ssl/">SSL/TLS ï¿½ï¿½È£È­</a></li>
+<li><a href="suexec.html">CGIï¿½ï¿½ Suexec ï¿½ï¿½ï¿½ï¿½</a></li>
+<li><a href="rewrite/">URL ï¿½ï¿½ï¿½Û¼ï¿½(rewriting) ï¿½ï¿½Ä§ï¿½ï¿½</a></li>
+<li><a href="vhosts/">ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½Æ®</a></li>
 </ul>
-</div></td><td class="col3"><div class="category"><h2><a name="howto" id="howto">How-To / ÅõÅä¸®¾ó</a></h2>
-<ul><li><a href="howto/auth.html">ÀÎÁõ, ±ÇÇÑºÎ¿©,
-    Á¢±ÙÁ¦¾î</a></li>
-<li><a href="howto/cgi.html">CGI: µ¿Àû ÆäÀÌÁö »ý¼º</a></li>
-<li><a href="howto/htaccess.html">.htaccess ÆÄÀÏ</a></li>
+</div></td><td class="col3"><div class="category"><h2><a name="howto" id="howto">How-To / ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½</a></h2>
+<ul><li><a href="howto/auth.html">ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ÑºÎ¿ï¿½,
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</a></li>
+<li><a href="howto/cgi.html">CGI: ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a></li>
+<li><a href="howto/htaccess.html">.htaccess ï¿½ï¿½ï¿½ï¿½</a></li>
 <li><a href="howto/ssi.html">Server Side Includes (SSI)</a></li>
-<li><a href="howto/public_html.html">»ç¿ëÀÚº° À¥µð·ºÅä¸®
+<li><a href="howto/public_html.html">ï¿½ï¿½ï¿½ï¿½Úºï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ä¸®
     (public_html)</a></li>
 </ul>
-</div><div class="category"><h2><a name="platform" id="platform">ÇÃ·¡Æûº° ¼³¸í</a></h2>
+</div><div class="category"><h2><a name="platform" id="platform">ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a></h2>
 <ul><li><a href="platform/windows.html">Microsoft Windows</a></li>
 <li><a href="platform/netware.html">Novell NetWare</a></li>
 </ul>
-</div><div class="category"><h2><a name="other" id="other">´Ù¸¥ ÁÖÁ¦</a></h2>
-<ul><li><a href="faq/">ÀÚÁÖ ¹°¾îº¸´Â Áú¹® (FAQ)</a></li>
-<li><a href="sitemap.html">»çÀÌÆ®¸Ê</a></li>
-<li><a href="developer/">°³¹ßÀÚ¸¦ À§ÇÑ ¹®¼­</a></li>
-<li><a href="misc/">±âÅ¸</a></li>
+</div><div class="category"><h2><a name="other" id="other">ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½</a></h2>
+<ul><li><a href="faq/">ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½îº¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (FAQ)</a></li>
+<li><a href="sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></li>
+<li><a href="developer/">ï¿½ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½</a></li>
+<li><a href="misc/">ï¿½ï¿½Å¸</a></li>
 </ul>
 </div></td></tr></table></div>
 <div class="bottomlang">
-<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="./da/" hreflang="da" rel="alternate" title="Dansk">&nbsp;da&nbsp;</a> |
+<p><span>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: </span><a href="./da/" hreflang="da" rel="alternate" title="Dansk">&nbsp;da&nbsp;</a> |
 <a href="./de/" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
@@ -108,8 +108,8 @@
 <a href="./tr/" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">¸ðµâ</a> | <a href="./mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">¿ë¾î</a> | <a href="./sitemap.html">»çÀÌÆ®¸Ê</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">ï¿½ï¿½ï¿½</a> | <a href="./mod/quickreference.html">ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">ï¿½ï¿½ï¿½</a> | <a href="./sitemap.html">ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

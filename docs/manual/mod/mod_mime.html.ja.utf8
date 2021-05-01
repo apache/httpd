@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -17,12 +17,12 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
 <p class="apache">Apache HTTP サーバ バージョン 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.5</a> &gt; <a href="./">モジュール</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="https://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.5</a> &gt; <a href="./">モジュール</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache モジュール mod_mime</h1>
 <div class="toplang">
@@ -184,10 +184,10 @@
     バイナリファイルを ASCII (テキスト) 形式で送るために考案された
     UUencoding のことを指すこともあります。</p>
 
-    <p><a href="http://www.ietf.org/rfc/rfc2616.txt">HTTP/1.1 RFC</a> 
+    <p><a href="https://www.ietf.org/rfc/rfc2616.txt">HTTP/1.1 RFC</a> 
     14.11 節では次のように記述されています。</p>
 
-    <blockquote cite="http://www.ietf.org/rfc/rfc2616.txt">
+    <blockquote cite="https://www.ietf.org/rfc/rfc2616.txt">
       <p>Content-Encoding エンティティヘッダフィールドはメディアタイプの
       修飾子として使われます。それが存在していれば、値はエンティティボディに
       どの追加の符号化が適用されたかを示し、Content-Type ヘッダフィールドに
@@ -268,7 +268,7 @@
     <p><code class="directive">AddCharset</code> ディレクティブは、
     与えられた拡張子を指定された charset にマップします。<var>charset</var> 
     は、拡張子 <var>extension</var> を含んでいるファイル名の 
-    <a href="http://www.iana.org/assignments/character-sets">MIME charset
+    <a href="https://www.iana.org/assignments/character-sets">MIME charset
     パラメータ</a>です。新しいマッピングは既にある他のマッピングに追加され、同じ拡張子
     <var>extension</var> のためのマッピングを上書きします。</p>
 
@@ -959,7 +959,7 @@
     ほとんどの管理者は、よく使われるファイル名の拡張子を
     IANA に登録されたコンテントタイプに関連付けている、
     Apache の <code>mime.types</code> ファイルを使います。
-    現在の一覧は <a href="http://www.iana.org/assignments/media-types/index.html">http://www.iana.org/assignments/media-types/index.html</a>
+    現在の一覧は <a href="https://www.iana.org/assignments/media-types/index.html">https://www.iana.org/assignments/media-types/index.html</a>
     で管理されています。これは、主要なメディアタイプの定義を提供して、
     必要ところを <code class="directive"><a href="#addtype">AddType</a></code> で
     上書きする、という方法で <code>httpd.conf</code> を簡略にします。
@@ -1001,7 +1001,7 @@
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">コメント</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_mime.html';
+var comments_identifier = 'https://httpd.apache.org/docs/trunk/mod/mod_mime.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -1016,8 +1016,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_mime.html'
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />この文書は <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
-<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2020 The Apache Software Foundation.<br />この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

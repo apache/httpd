@@ -8,7 +8,7 @@
 # IP addresses. This is indicated by the asterisks in the directives below.
 #
 # Please see the documentation at 
-# <URL:http://httpd.apache.org/docs/trunk/vhosts/>
+# <URL:https://httpd.apache.org/docs/trunk/vhosts/>
 # for further details before you try to setup virtual hosts.
 #
 # You may use the command line option '-S' to verify your virtual host

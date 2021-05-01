@@ -15,7 +15,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -47,7 +47,7 @@ httpd 2.1.5 ve sonrasında mevcuttur.</compatibility>
       için temel önerme veri alınıncaya kadar veya HTTP isteğinin tamamı
       tamponlanana kadar sunucu sürecine bir soket tahsis etmemektir.
       Şimdilik sadece <a
-  href="http://www.freebsd.org/cgi/man.cgi?query=accept_filter&amp;sektion=9"
+  href="https://www.freebsd.org/cgi/man.cgi?query=accept_filter&amp;sektion=9"
       >FreeBSD’nin Kabul Süzgeçleri</a> ve Linux’un soket seçeneklerinden
       <code>TCP_DEFER_ACCEPT</code> ve Windows'un en iyilenmiş
       <code>AcceptEx()</code> işlevi desteklenmektedir.</p>
@@ -74,10 +74,10 @@ httpd 2.1.5 ve sonrasında mevcuttur.</compatibility>
     <p><code>httpready</code> kabul süzgeci HTTP isteklerinin tamamını
       işletim sistemi çekirdeği seviyesinde tamponlar. Çekirdek isteğin
       tamamını alır almaz sunucuya gönderir. Ayrıntılar için <a
-      href="http://www.freebsd.org/cgi/man.cgi?query=accf_http&amp;sektion=9"
+      href="https://www.freebsd.org/cgi/man.cgi?query=accf_http&amp;sektion=9"
       >accf_http(9)</a> kılavuz sayfasına bakınız. HTTPS istekleri
       şifrelenmiş olduğundan sadece <a
-      href="http://www.freebsd.org/cgi/man.cgi?query=accf_data&amp;sektion=9"
+      href="https://www.freebsd.org/cgi/man.cgi?query=accf_data&amp;sektion=9"
       >accf_data(9)</a> süzgeci kullanılır.</p>
 
     <p>Linux’taki öntanımlı değerler:</p>
@@ -90,7 +90,7 @@ httpd 2.1.5 ve sonrasında mevcuttur.</compatibility>
       tamponlanmasını desteklemez.  <code>none</code> dahil her değer
       dinleyici üzerinde <code>TCP_DEFER_ACCEPT</code> seçeneğini etkin kılar.
       Daha ayrıntılı bilgi edinmek için Linux
-      <a href="http://homepages.cwi.nl/~aeb/linux/man2html/man7/tcp.7.html"
+      <a href="https://homepages.cwi.nl/~aeb/linux/man2html/man7/tcp.7.html"
       >tcp(7)</a> kılavuz sayfasına bakınız.</p>
 
     <p>Windows’taki öntanımlı değerler::</p>
@@ -257,7 +257,7 @@ httpd 2.1.5 ve sonrasında mevcuttur.</compatibility>
       başka <code>iso-8859-1</code> karakter kümesini öntanımlı olarak yanıta
       eklenir. Yönergede <var>karküm</var> olarak belirtilecek değerler,
       Genel Ağ ortam türlerinde (MIME türlerinde) kullanmak üzere <a
-      href="http://www.iana.org/assignments/character-sets">IANA’da kayıtlı
+      href="https://www.iana.org/assignments/character-sets">IANA’da kayıtlı
       karakter kümesi değerleri</a>nden biri olmalıdır. Örnek:</p>
 
     <example>
@@ -929,7 +929,7 @@ için iptal edilmiştir.</compatibility>
       DocumentRoot /usr/web
     </example>
 
-    <p>yapılandırması ile <code>http://my.example.com/index.html</code>
+    <p>yapılandırması ile <code>https://my.example.com/index.html</code>
       isteği <code>/usr/web/index.html</code> ile eşleştirilir.
       <var>dizin-yolu</var> ile göreli dosya yolu belirtildiği takdirde belge
       kök dizininin <directive  module="core">ServerRoot</directive> ile
@@ -1225,7 +1225,7 @@ için iptal edilmiştir.</compatibility>
       bir ileti de belirtilebilir. Örnekler:</p>
 
     <example>
-      ErrorDocument 500 http://hata.example.com/cgi-bin/dnmci<br />
+      ErrorDocument 500 https://hata.example.com/cgi-bin/dnmci<br />
       ErrorDocument 404 /cgi-bin/bad_urls.pl<br />
       ErrorDocument 401 /subscription_info.html<br />
       ErrorDocument 403 "Kusura bakmayın, bugün hizmet veremiyoruz."
@@ -1269,7 +1269,7 @@ için iptal edilmiştir.</compatibility>
       hata iletileriniz 512 bayttan büyük olduğu takdirde MSIE kendi hata
       iletileri yerine sunucunun ürettiği hata iletilerini gösterecektir. Bu
       konuda daha fazla bilgiyi <a
-      href="http://support.microsoft.com/default.aspx?scid=kb;tr-tr;Q294807"
+      href="https://support.microsoft.com/default.aspx?scid=kb;tr-tr;Q294807"
       >Q294807</a> kodlu Microsoft Knowledge Base makalesinde
       bulabilirsiniz.</p>
 
@@ -3999,7 +3999,7 @@ sebep olur.</description>
       SetHandler imap-file
     </example>
 
-    <p>Başka bir örnek: <code>http://localhost/status</code> gibi bir istek
+    <p>Başka bir örnek: <code>https://localhost/status</code> gibi bir istek
       yapıldığında sunucunun bir durum bilgisi göstermesi için
       <code>httpd.conf</code> dosyasına şöyle bir satır koyabilirsiniz:</p>
 
@@ -4202,15 +4202,15 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</description>
     <p>Bir örnek olarak, iç ağdaki istemcilerin sunucuya <code>www</code> gibi
       bir kısa isim kullanarak bağlandığı durumu ele alırsak daha yararlı
       olur. Kullanıcılar bir kısa isim ve bir dizin isminden oluşan ve <em>bir
-      / ile sonlandırılmamış</em> <code>http://www/splat</code> şeklinde bir
+      / ile sonlandırılmamış</em> <code>https://www/splat</code> şeklinde bir
       istek yaparlarsa, Apache httpd onları
-      <code>http://www.example.com/splat/</code> adresine yönlendirecektir.
+      <code>https://www.example.com/splat/</code> adresine yönlendirecektir.
       Eğer kimlik doğrulama da etkinse bu kullanıcının iki defa kimlik
       doğrulamasına sokulmasına sebep olacaktır (bir kere <code>www</code>
       için bir kere de <code>www.example.com</code> için; daha fazla bilgi için
-      <a href="http://httpd.apache.org/docs/misc/FAQ.html#prompted-twice"
+      <a href="https://httpd.apache.org/docs/misc/FAQ.html#prompted-twice"
       >SSS</a>’ye bakınız). Fakat <directive>UseCanonicalName Off</directive>
-      olsaydı Apache httpd isteği <code>http://www/splat/</code> adresine
+      olsaydı Apache httpd isteği <code>https://www/splat/</code> adresine
       yönlendirecekti.</p>
 
     <p><code>UseCanonicalName DNS</code> diye üçüncü bir seçenek daha vardır ve

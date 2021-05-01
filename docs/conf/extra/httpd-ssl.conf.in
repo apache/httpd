@@ -2,7 +2,7 @@
 # This is the Apache server configuration file providing SSL support.
 # It contains the configuration directives to instruct the server how to
 # serve pages over an https connection. For detailed information about these 
-# directives see <URL:http://httpd.apache.org/docs/trunk/mod/mod_ssl.html>
+# directives see <URL:https://httpd.apache.org/docs/trunk/mod/mod_ssl.html>
 # 
 # Do NOT simply read the instructions in here without understanding
 # what they do.  They're here only as hints or reminders.  If you are unsure
@@ -166,7 +166,7 @@ SSLEngine on
 #   in mind that if you have both an RSA and a DSA certificate you
 #   can configure both in parallel (to also allow the use of DSA
 #   ciphers, etc.)
-#   Some ECC cipher suites (http://www.ietf.org/rfc/rfc4492.txt)
+#   Some ECC cipher suites (https://www.ietf.org/rfc/rfc4492.txt)
 #   require an ECC certificate which can also be configured in
 #   parallel.
 SSLCertificateFile "@rel_sysconfdir@/server.crt"

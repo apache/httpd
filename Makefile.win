@@ -136,7 +136,7 @@ _tryssl:
 	@echo in srclib\openssl.  They must be precompiled using the 
 	@echo ms/ntdll.mak file, see srclib\openssl\INSTALL.W32.  The most
 	@echo recent version confirmed to build with mod_ssl and ab is 0.9.8d.
-	@echo Available from http://www.openssl.org/
+	@echo Available from https://www.openssl.org/
 !ENDIF
 #     NOT EXIST("srclib\openssl")
 
@@ -161,7 +161,7 @@ _tryserf:
 	@echo -----
 	@echo mod_serf will not build unless libserf.dll is built in srclib\serf
 	@echo For purposes of alpha, libserf release 0.3.0 works, but only with
-	@echo http://people.apache.org/~wrowe/fixserf-win32-0.3.0.patch
+	@echo https://people.apache.org/~wrowe/fixserf-win32-0.3.0.patch
 
 !ENDIF
 #     NOT EXIST("srclib\serf")
@@ -213,7 +213,7 @@ _tryzlib:
 _tryzlib:
 	@echo -----
 	@echo mod_deflate will not build unless zlib is built in srclib\zlib.  
-	@echo Version 1.2.1 and later available from http://www.gzip.org/zlib/
+	@echo Version 1.2.1 and later available from https://www.gzip.org/zlib/
 	@echo built w/ nmake -f win32/Makefile.msc will satisfy this requirement.
 
 !ENDIF
@@ -243,7 +243,7 @@ _tryxml:
 	@echo -----
 	@echo mod_proxy_html and mod_xml2enc will not build unless libxml2 is 
 	@echo built in srclib\libxml2. Version 2.7.7 and later available from
-	@echo http://xmlsoft.org/ will satisfy this requirement.
+	@echo https://xmlsoft.org/ will satisfy this requirement.
 
 !ENDIF
 

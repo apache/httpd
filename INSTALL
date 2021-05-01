@@ -5,7 +5,7 @@
   ------------------
 
   For complete installation documentation, see [ht]docs/manual/install.html or
-  http://httpd.apache.org/docs/trunk/install.html
+  https://httpd.apache.org/docs/trunk/install.html
 
      $ ./configure --prefix=PREFIX
      $ make
@@ -80,7 +80,7 @@
 
     Check out APR trunk in srclib/apr with the following command:
 
-    svn co http://svn.apache.org/repos/asf/apr/apr/trunk srclib/apr
+    svn co https://svn.apache.org/repos/asf/apr/apr/trunk srclib/apr
 
     buildconf will find it automatically.  Use the --with-included-apr
     argument to httpd configure.
@@ -90,8 +90,8 @@
     Check out the current branches as srclib/apr and srclib/apr-util with
     the following commands:
 
-    svn co http://svn.apache.org/repos/asf/apr/apr/branches/1.7.x srclib/apr
-    svn co http://svn.apache.org/repos/asf/apr/apr-util/branches/1.6.x srclib/apr-util
+    svn co https://svn.apache.org/repos/asf/apr/apr/branches/1.7.x srclib/apr
+    svn co https://svn.apache.org/repos/asf/apr/apr-util/branches/1.6.x srclib/apr-util
 
     buildconf will find them automatically.  Use the --with-included-apr
     argument to httpd configure.
@@ -117,16 +117,16 @@
   ---------------------
 
   For complete documentation, see manual/platform/windows.html.en or
-  <http://httpd.apache.org/docs/trunk/platform/windows.html>
+  <https://httpd.apache.org/docs/trunk/platform/windows.html>
 
 
   Postscript
   ----------
 
   To obtain help with installation problems, please see the resources at
-  <http://httpd.apache.org/support.html>
+  <https://httpd.apache.org/support.html>
 
   Thanks for using the Apache HTTP Server, version 2.5.
 
                                      The Apache Software Foundation
-                                     http://www.apache.org/
+                                     https://www.apache.org/

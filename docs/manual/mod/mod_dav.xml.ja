@@ -11,7 +11,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -24,14 +24,14 @@
 
 <name>mod_dav</name> 
 <description>分散オーサリングとバージョン管理
-(<a href="http://www.webdav.org/">WebDAV</a>) 機能</description>
+(<a href="https://www.webdav.org/">WebDAV</a>) 機能</description>
 <status>Extension</status>
 <sourcefile>mod_dav.c</sourcefile>
 <identifier>dav_module</identifier>
 
 <summary>
     <p>このモジュールはクラス 1 とクラス 2 の
-    <a href="http://www.webdav.org">WebDAV</a>
+    <a href="https://www.webdav.org">WebDAV</a>
     ('ウェブベースの分散オーサリングとバージョン管理')
     機能を Apache に提供します。
     この HTTP プロトコルの拡張により、リモートのウェブサーバ上にある
@@ -40,7 +40,7 @@
 </summary>
 <seealso><directive module="mod_dav_fs">DavLockDB</directive></seealso>
 <seealso><directive module="core">LimitXMLRequestBody</directive></seealso>
-<seealso><a href="http://www.webdav.org">WebDAV Resources</a></seealso>
+<seealso><a href="https://www.webdav.org">WebDAV Resources</a></seealso>
 
 <section id="example"><title>Enabling WebDAV</title>
     <p>mod_dav を有効にするには、<code>httpd.conf</code>
@@ -155,9 +155,9 @@ Alias /php-source /home/gstein/php_files
 &lt;/Location&gt;
 </highlight>
 
-    <p>この設定により、<code>http://example.com/phparea</code> を PHP スクリプトの
+    <p>この設定により、<code>https://example.com/phparea</code> を PHP スクリプトの
     出力をアクセスするために使うことができ、
-    <code>http://example.com/php-source</code> を DAV クライアントによる
+    <code>https://example.com/php-source</code> を DAV クライアントによる
     が操作のために使うことができます。</p>
 </section>
 

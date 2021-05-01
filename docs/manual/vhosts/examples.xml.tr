@@ -15,7 +15,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+     https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -395,8 +395,8 @@
     &lt;VirtualHost *:*&gt;<br />
     <indent>
         ProxyPreserveHost On<br />
-        ProxyPass / http://192.168.111.2/<br />
-        ProxyPassReverse / http://192.168.111.2/<br />
+        ProxyPass / https://192.168.111.2/<br />
+        ProxyPassReverse / https://192.168.111.2/<br />
         ServerName konak.mesela.dom<br />
     </indent>
     &lt;/VirtualHost&gt;
@@ -588,10 +588,10 @@
     </example>
 
     <p><directive module="core">ServerPath</directive> yönergesinden dolayı
-      <code>http://bir.baska.tld/bir/</code> şeklinde yapılan isteklere
+      <code>https://bir.baska.tld/bir/</code> şeklinde yapılan isteklere
       <em>daima</em> “bir” sanal konağı hizmet sunacaktır.</p>
 
-    <p><code>http://bir.baska.tld/</code> şeklinde yapılan isteklere ise
+    <p><code>https://bir.baska.tld/</code> şeklinde yapılan isteklere ise
       istemcinin doğru <code>Host:</code> başlığı göndermesi şartıyla
       “bir” sanal konağı hizmet sunacaktır. İstemci, bir
       <code>Host:</code> başlığı göndermediği takdirde ilk konaktan bir
@@ -599,7 +599,7 @@
 
     <p>Yalnız buradaki bir tuhaflığa dikkat edin: Eğer istemci bir
       <code>Host:</code> başlığı göndermeden
-      <code>http://iki.baska.tld/bir/</code> şeklinde bir istek yaparsa bu
+      <code>https://iki.baska.tld/bir/</code> şeklinde bir istek yaparsa bu
       isteğe de “bir” sanal konağı hizmet sunacaktır.</p>
 
     <p><directive module="mod_rewrite">RewriteRule</directive> yönergesi, bir
