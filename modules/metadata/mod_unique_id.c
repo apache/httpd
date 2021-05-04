@@ -177,7 +177,7 @@ static const char *create_unique_id_string(const request_rec *r)
     ret[wpos++] = '\0';
 #endif
 
-//    /* Debug
+    /* Debug
 	ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
 			"Unique ID generated: %s pid %" APR_UINT64_T_FMT " tid %" APR_UINT64_T_FMT " time %" APR_UINT64_T_FMT " rand %" APR_UINT64_T_FMT " count %" APR_UINT64_T_FMT "",
 			ret,
@@ -187,7 +187,7 @@ static const char *create_unique_id_string(const request_rec *r)
 			(apr_uint64_t) unique_id.random,
 			(apr_uint64_t) unique_id.counter
 	);
-//	*/
+    */
 
     out:
     return ret;
