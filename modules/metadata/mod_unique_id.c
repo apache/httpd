@@ -54,19 +54,19 @@ struct unique_id_rec {
     apr_uint16_t random;
     unique_counter counter;
 } __attribute__ ((packed));
+typedef struct unique_id_rec unique_id_rec;
 
 #ifndef WITH_APR_ENCODE
 struct unique_id_rec_padded {
     struct unique_id_rec unique_id;
     apr_uint16_t pad;
 } __attribute__ ((packed));
+typedef struct unique_id_rec_padded unique_id_rec_padded;
 #endif
-
-typedef struct unique_id_rec unique_id_rec;
 
 #if APR_HAS_THREADS
 struct unique_thread_data {
-	unique_counter counter;
+    unique_counter counter;
 };
 #else
 static unique_counter global_counter = 0;
@@ -101,7 +101,8 @@ static unique_counter global_counter = 0;
 /* TODO : Endian conversion could be provided for tidyness but having this left out
  *        probably won't cause collisions. */
 
-static void populate_unique_id (unique_id_rec *unique_id, apr_uintptr_t thread_id, apr_uint32_t counter) {
+static void populate_unique_id (unique_id_rec *unique_id, apr_uintptr_t thread_id, apr_uint32_t counter)
+{
     unique_id->process_id = ((apr_uint64_t) getpid()) & 0x00000000ffffffff;
     unique_id->thread_id = ((apr_uint64_t) thread_id) & 0x00000000ffffffff;
     unique_id->timestamp = apr_time_now();
@@ -117,80 +118,80 @@ static const char *create_unique_id_string(const request_rec *r)
 
 #if APR_HAS_THREADS
     {
-		struct unique_thread_data *thread_data = NULL;
-		apr_thread_t *thread = r->connection->current_thread;
+        struct unique_thread_data *thread_data = NULL;
+        apr_thread_t *thread = r->connection->current_thread;
 
-		if (apr_thread_data_get((void **) &thread_data, THREADED_COUNTER, thread) != APR_SUCCESS || thread_data == NULL) {
-			thread_data = apr_pcalloc(apr_thread_pool_get(thread), sizeof(*thread_data));
-			if (thread_data == NULL) {
-				goto out;
-			}
-			thread_data->counter = 0;
-		    if (apr_thread_data_set(thread_data, THREADED_COUNTER, NULL, thread) != APR_SUCCESS) {
-		    	goto out;
-		    }
-		}
+        if (apr_thread_data_get((void **) &thread_data, THREADED_COUNTER, thread) != APR_SUCCESS || thread_data == NULL) {
+            thread_data = apr_pcalloc(apr_thread_pool_get(thread), sizeof(*thread_data));
+            if (thread_data == NULL) {
+                goto out;
+            }
+            thread_data->counter = 0;
+            if (apr_thread_data_set(thread_data, THREADED_COUNTER, NULL, thread) != APR_SUCCESS) {
+                goto out;
+            }
+        }
 
-	    populate_unique_id(&unique_id, (apr_uintptr_t) thread, ++(thread_data->counter));
+        populate_unique_id(&unique_id, (apr_uintptr_t) thread, ++(thread_data->counter));
     }
 #else
     populate_unique_id(&unique_id, 0, ++global_counter);
 #endif
 
     if ((ret = (char *)apr_pcalloc(r->pool, ret_size)) == NULL) {
-    	goto out;
+        goto out;
     }
 
 #ifdef WITH_APR_ENCODE    
     /* Use Base64 without the / per RFC 4648 */
     if (apr_encode_base64(ret, (const char *) &unique_id, sizeof(unique_id), APR_ENCODE_URL|APR_ENCODE_NOPADDING, &ret_size) != APR_SUCCESS) {
-    	ret = NULL;
-    	goto out;
+        ret = NULL;
+        goto out;
     }
 #else
     {
-	    /* Use the base64url encoding per RFC 4648, avoiding characters which
-	     *  * are not safe in URLs.  ### TODO: can switch to apr_encode_*. */
-	    static const char uuencoder[64] = {
-		'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-		'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-		'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-		'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-		'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '_',
-	    };
+        /* Use the base64url encoding per RFC 4648, avoiding characters which
+         * are not safe in URLs. */
+        static const char uuencoder[64] = {
+           'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+           'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+           'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+           'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+           '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '_',
+        };
 
-	    struct unique_id_rec_padded unique_id_padded = {
-		    unique_id, 0
-	    };
+        unique_id_rec_padded unique_id_padded = {
+            unique_id, 0
+        };
 
-	    const unsigned char *src = (const unsigned char *) &unique_id_padded;
-	    const unsigned char *max = src + sizeof(unique_id);
-	    int wpos = 0;
-	    const unsigned char *pos;
+        const unsigned char *src = (const unsigned char *) &unique_id_padded;
+        const unsigned char *max = src + sizeof(unique_id);
+        int wpos = 0;
+        const unsigned char *pos;
 
-	    for (pos = src; pos < max; pos += 3) {    
-		ret[wpos++] = uuencoder[pos[0] >> 2];
-		ret[wpos++] = uuencoder[((pos[0] & 0x03) << 4) | ((pos[1] & 0xf0) >> 4)];
-		if (pos + 1 == max) break;
-		ret[wpos++] = uuencoder[((pos[1] & 0x0f) << 2) | ((pos[2] & 0xc0) >> 6)];
-		if (pos + 2 == max) break;
-		ret[wpos++] = uuencoder[pos[2] & 0x3f];
-	    }
+        for (pos = src; pos < max; pos += 3) {    
+            ret[wpos++] = uuencoder[pos[0] >> 2];
+            ret[wpos++] = uuencoder[((pos[0] & 0x03) << 4) | ((pos[1] & 0xf0) >> 4)];
+            if (pos + 1 == max) break;
+            ret[wpos++] = uuencoder[((pos[1] & 0x0f) << 2) | ((pos[2] & 0xc0) >> 6)];
+            if (pos + 2 == max) break;
+            ret[wpos++] = uuencoder[pos[2] & 0x3f];
+        }
 
-	    ret[wpos++] = '\0';
+        ret[wpos++] = '\0';
     }
 #endif
 
     /* Debug
-	ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-			"Unique ID generated: %s pid %" APR_UINT64_T_FMT " tid %" APR_UINT64_T_FMT " time %" APR_UINT64_T_FMT " rand %" APR_UINT64_T_FMT " count %" APR_UINT64_T_FMT "",
-			ret,
-			(apr_uint64_t) unique_id.process_id,
-			(apr_uint64_t) unique_id.thread_id,
-			(apr_uint64_t) unique_id.timestamp,
-			(apr_uint64_t) unique_id.random,
-			(apr_uint64_t) unique_id.counter
-	);
+    ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+            "Unique ID generated: %s pid %" APR_UINT64_T_FMT " tid %" APR_UINT64_T_FMT " time %" APR_UINT64_T_FMT " rand %" APR_UINT64_T_FMT " count %" APR_UINT64_T_FMT "",
+            ret,
+            (apr_uint64_t) unique_id.process_id,
+            (apr_uint64_t) unique_id.thread_id,
+            (apr_uint64_t) unique_id.timestamp,
+            (apr_uint64_t) unique_id.random,
+            (apr_uint64_t) unique_id.counter
+    );
     */
 
     out:
@@ -212,11 +213,11 @@ static int get_request_unique_id(const char **result_id, const request_rec *r)
 
     /* Return any previously set ID or make a new one */
     if ( (id = apr_table_get(r->subprocess_env, "UNIQUE_ID")) == NULL &&
-    	 (id = r->log_id) == NULL &&
-		 (id = create_unique_id_string(r)) == NULL
+         (id = r->log_id) == NULL &&
+         (id = create_unique_id_string(r)) == NULL
     ) {
-    	ap_log_error(APLOG_MARK, APLOG_ERR, HTTP_INTERNAL_SERVER_ERROR, r->server, "Unique ID generation failed");
-		return HTTP_INTERNAL_SERVER_ERROR;
+        ap_log_error(APLOG_MARK, APLOG_ERR, HTTP_INTERNAL_SERVER_ERROR, r->server, "Unique ID generation failed");
+        return HTTP_INTERNAL_SERVER_ERROR;
     }
 
     *result_id = id;
@@ -226,7 +227,7 @@ static int get_request_unique_id(const char **result_id, const request_rec *r)
 
 static int generate_log_id_hook(const conn_rec *c, const request_rec *r, const char **id)
 {
-	(void)(c);
+    (void)(c);
 
     /* we do not care about connection ids */
     if (r == NULL)
@@ -239,13 +240,13 @@ static int post_read_request_hook(request_rec *r)
 {
     const char *id = NULL;
 
-	int ret = get_request_unique_id(&id, r);
+    int ret = get_request_unique_id(&id, r);
 
-	if (id != NULL) {
-		apr_table_setn(r->subprocess_env, "UNIQUE_ID", id);
-	}
+    if (id != NULL) {
+        apr_table_setn(r->subprocess_env, "UNIQUE_ID", id);
+    }
 
-	return (ret == OK ? DECLINED : ret);
+    return (ret == OK ? DECLINED : ret);
 }
 
 static void register_hooks(apr_pool_t *p)
