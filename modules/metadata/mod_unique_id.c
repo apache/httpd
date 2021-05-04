@@ -29,8 +29,9 @@
 #include <unistd.h>
 #endif
 
-// Enable when ready to use new library encoder
-//#define WITH_APR_ENCODE
+/* Enable when ready to use new library encoder
+ * #define WITH_APR_ENCODE
+ */
 #define THREADED_COUNTER "unique_id_counter"
 
 #include "apr.h"
@@ -110,8 +111,9 @@ static void populate_unique_id (unique_id_rec *unique_id, apr_uintptr_t thread_i
 
 static const char *create_unique_id_string(const request_rec *r)
 {
-	char *ret = NULL;
+    char *ret = NULL;
     unique_id_rec unique_id;
+    const apr_size_t ret_size = sizeof(unique_id) * 2;
 
 #if APR_HAS_THREADS
     {
@@ -135,8 +137,6 @@ static const char *create_unique_id_string(const request_rec *r)
     populate_unique_id(&unique_id, 0, ++global_counter);
 #endif
 
-    apr_size_t ret_size = sizeof(unique_id) * 2;
-
     if ((ret = (char *)apr_pcalloc(r->pool, ret_size)) == NULL) {
     	goto out;
     }
@@ -148,33 +148,37 @@ static const char *create_unique_id_string(const request_rec *r)
     	goto out;
     }
 #else
-    /* Use the base64url encoding per RFC 4648, avoiding characters which
-     *  * are not safe in URLs.  ### TODO: can switch to apr_encode_*. */
-    static const char uuencoder[64] = {
-        'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-        'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-        'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-        'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '_',
-    };
+    {
+	    /* Use the base64url encoding per RFC 4648, avoiding characters which
+	     *  * are not safe in URLs.  ### TODO: can switch to apr_encode_*. */
+	    static const char uuencoder[64] = {
+		'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+		'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+		'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+		'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+		'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '_',
+	    };
 
-    struct unique_id_rec_padded unique_id_padded;
+	    struct unique_id_rec_padded unique_id_padded = {
+		    unique_id, 0
+	    };
 
-    unique_id_padded.unique_id = unique_id;
-    unique_id_padded.pad = 0;
+	    const unsigned char *src = (const unsigned char *) &unique_id_padded;
+	    const unsigned char *max = src + sizeof(unique_id);
+	    int wpos = 0;
+	    const unsigned char *pos;
 
-    const unsigned char *src = (const unsigned char *) &unique_id_padded;
-    const unsigned char *max = src + sizeof(unique_id);
-    int wpos = 0;
-    for (const unsigned char *pos = src; pos < max; pos += 3) {    
-        ret[wpos++] = uuencoder[pos[0] >> 2];
-        ret[wpos++] = uuencoder[((pos[0] & 0x03) << 4) | ((pos[1] & 0xf0) >> 4)];
-        if (pos + 1 == max) break;
-        ret[wpos++] = uuencoder[((pos[1] & 0x0f) << 2) | ((pos[2] & 0xc0) >> 6)];
-        if (pos + 2 == max) break;
-        ret[wpos++] = uuencoder[pos[2] & 0x3f];
+	    for (pos = src; pos < max; pos += 3) {    
+		ret[wpos++] = uuencoder[pos[0] >> 2];
+		ret[wpos++] = uuencoder[((pos[0] & 0x03) << 4) | ((pos[1] & 0xf0) >> 4)];
+		if (pos + 1 == max) break;
+		ret[wpos++] = uuencoder[((pos[1] & 0x0f) << 2) | ((pos[2] & 0xc0) >> 6)];
+		if (pos + 2 == max) break;
+		ret[wpos++] = uuencoder[pos[2] & 0x3f];
+	    }
+
+	    ret[wpos++] = '\0';
     }
-    ret[wpos++] = '\0';
 #endif
 
     /* Debug
