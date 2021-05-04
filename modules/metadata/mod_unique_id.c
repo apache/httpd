@@ -29,10 +29,14 @@
 #include <unistd.h>
 #endif
 
+// Enable when ready to use new library encoder
+//#define WITH_APR_ENCODE
 #define THREADED_COUNTER "unique_id_counter"
 
 #include "apr.h"
-#include "apr_encode.h"
+#ifdef WITH_APR_ENCODE    
+#    include "apr_encode.h"
+#endif
 #include "apr_thread_proc.h"
 
 #include "httpd.h"
@@ -49,6 +53,13 @@ struct unique_id_rec {
     apr_uint16_t random;
     unique_counter counter;
 } __attribute__ ((packed));
+
+#ifndef WITH_APR_ENCODE
+struct unique_id_rec_padded {
+    struct unique_id_rec unique_id;
+    apr_uint16_t pad;
+} __attribute__ ((packed));
+#endif
 
 typedef struct unique_id_rec unique_id_rec;
 
@@ -129,14 +140,44 @@ static const char *create_unique_id_string(const request_rec *r)
     if ((ret = (char *)apr_pcalloc(r->pool, ret_size)) == NULL) {
     	goto out;
     }
-    
+
+#ifdef WITH_APR_ENCODE    
     /* Use Base64 without the / per RFC 4648 */
     if (apr_encode_base64(ret, (const char *) &unique_id, sizeof(unique_id), APR_ENCODE_URL|APR_ENCODE_NOPADDING, &ret_size) != APR_SUCCESS) {
     	ret = NULL;
     	goto out;
     }
+#else
+    /* Use the base64url encoding per RFC 4648, avoiding characters which
+     *  * are not safe in URLs.  ### TODO: can switch to apr_encode_*. */
+    static const char uuencoder[64] = {
+        'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+        'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+        'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+        'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '_',
+    };
 
-    /* Debug
+    struct unique_id_rec_padded unique_id_padded;
+
+    unique_id_padded.unique_id = unique_id;
+    unique_id_padded.pad = 0;
+
+    const unsigned char *src = (const unsigned char *) &unique_id_padded;
+    const unsigned char *max = src + sizeof(unique_id);
+    int wpos = 0;
+    for (const unsigned char *pos = src; pos < max; pos += 3) {    
+        ret[wpos++] = uuencoder[pos[0] >> 2];
+        ret[wpos++] = uuencoder[((pos[0] & 0x03) << 4) | ((pos[1] & 0xf0) >> 4)];
+        if (pos + 1 == max) break;
+        ret[wpos++] = uuencoder[((pos[1] & 0x0f) << 2) | ((pos[2] & 0xc0) >> 6)];
+        if (pos + 2 == max) break;
+        ret[wpos++] = uuencoder[pos[2] & 0x3f];
+    }
+    ret[wpos++] = '\0';
+#endif
+
+//    /* Debug
 	ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
 			"Unique ID generated: %s pid %" APR_UINT64_T_FMT " tid %" APR_UINT64_T_FMT " time %" APR_UINT64_T_FMT " rand %" APR_UINT64_T_FMT " count %" APR_UINT64_T_FMT "",
 			ret,
@@ -146,7 +187,7 @@ static const char *create_unique_id_string(const request_rec *r)
 			(apr_uint64_t) unique_id.random,
 			(apr_uint64_t) unique_id.counter
 	);
-	*/
+//	*/
 
     out:
     return ret;
