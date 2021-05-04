@@ -202,7 +202,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
       Trunk version of patch works
       svn merge -c 1889341 ^/httpd/httpd/trunk .
-     +1: rpluem,
+     +1: rpluem, covener
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
