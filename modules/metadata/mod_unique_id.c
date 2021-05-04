@@ -47,22 +47,27 @@
 
 typedef apr_uint16_t unique_counter;
 
-struct unique_id_rec {
+/* Unique ID structure members must be aligned on 1-byte boundaries */
+
+#pragma pack(push)
+#pragma pack(1)
+
+typedef struct unique_id_rec {
     apr_uint32_t process_id;
     apr_uint32_t thread_id;
     apr_uint64_t timestamp;
     apr_uint16_t random;
     unique_counter counter;
-} __attribute__ ((packed));
-typedef struct unique_id_rec unique_id_rec;
+} unique_id_rec;
 
 #ifndef WITH_APR_ENCODE
-struct unique_id_rec_padded {
+typedef struct unique_id_rec_padded {
     struct unique_id_rec unique_id;
     apr_uint16_t pad;
-} __attribute__ ((packed));
-typedef struct unique_id_rec_padded unique_id_rec_padded;
+} unique_id_rec_padded;
 #endif
+
+#pragma pack(pop)
 
 #if APR_HAS_THREADS
 struct unique_thread_data {
