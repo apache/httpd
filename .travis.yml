@@ -125,35 +125,13 @@ jobs:
       os: linux
       env: CONFIG="--enable-mods-shared=reallyall --with-pcre=/usr/bin/pcre-config --enable-maintainer-mode NOTEST_CFLAGS=-Werror CC=gcc-7"
     # -------------------------------------------------------------------------
-    - name: Linux Ubuntu, GCC 8 maintainer-mode w/-Werror
-      env: CONFIG="--enable-mods-shared=reallyall --enable-maintainer-mode" NOTEST_CFLAGS='-Werror -O2' CC=gcc-8
+    - name: Linux Ubuntu, GCC 11 maintainer-mode w/-Werror
+      env: CONFIG="--enable-mods-shared=reallyall --enable-maintainer-mode" NOTEST_CFLAGS='-Werror -O2' CC=gcc-11
            SKIP_TESTING=1
       addons:
         apt:
           packages:
-            - gcc-8
-            - libtool-bin
-            - libapr1-dev
-            - libaprutil1-dev
-            - perl-doc
-            - liblua5.3-dev
-            - libbrotli-dev
-            - libcurl4-openssl-dev
-            - libsystemd-dev
-            - libnghttp2-dev
-            - libjansson-dev
-            - libpcre2-dev
-            - libldap2-dev
-    # -------------------------------------------------------------------------
-    - name: Linux Ubuntu, GCC 9 maintainer-mode w/-Werror
-      env: CONFIG="--enable-mods-shared=reallyall --enable-maintainer-mode" NOTEST_CFLAGS='-Werror -O2' CC=gcc-9
-           SKIP_TESTING=1
-      addons:
-        apt:
-          sources:
-            - sourceline: 'ppa:ubuntu-toolchain-r/test'
-          packages:
-            - gcc-9
+            - gcc-11
             - libtool-bin
             - libapr1-dev
             - libaprutil1-dev
