@@ -4404,16 +4404,14 @@ PROXY_DECLARE(apr_status_t) ap_proxy_transfer_between_connections(
                                                        apr_bucket_brigade *bb_i,
                                                        apr_bucket_brigade *bb_o,
                                                        const char *name,
-                                                       int *sent,
+                                                       apr_off_t *sent,
                                                        apr_off_t bsize,
                                                        int flags)
 {
     apr_status_t rv;
     int flush_each = 0;
     unsigned int num_reads = 0;
-#ifdef DEBUGGING
     apr_off_t len;
-#endif
 
     /*
      * Compat: since FLUSH_EACH is default (and zero) for legacy reasons, we
@@ -4456,16 +4454,14 @@ PROXY_DECLARE(apr_status_t) ap_proxy_transfer_between_connections(
         if (APR_BRIGADE_EMPTY(bb_i)) {
             break;
         }
-#ifdef DEBUGGING
         len = -1;
         apr_brigade_length(bb_i, 0, &len);
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03306)
                       "ap_proxy_transfer_between_connections: "
                       "read %" APR_OFF_T_FMT
                       " bytes from %s", len, name);
-#endif
-        if (sent) {
-            *sent = 1;
+        if (sent && len > 0) {
+            *sent = *sent + len;
         }
         ap_proxy_buckets_lifetime_transform(r, bb_i, bb_o);
         if (flush_each) {
@@ -4559,7 +4555,17 @@ struct proxy_tunnel_conn {
 
     unsigned int down_in:1,
                  down_out:1;
+    apr_off_t exchanged;
 };
+
+PROXY_DECLARE(apr_off_t) ap_proxy_tunnel_conn_get_read(proxy_tunnel_rec *ptunnel)
+{
+    return ptunnel->origin->exchanged;
+}
+PROXY_DECLARE(apr_off_t) ap_proxy_tunnel_conn_get_transferred(proxy_tunnel_rec *ptunnel)
+{
+    return ptunnel->client->exchanged;
+}
 
 PROXY_DECLARE(apr_status_t) ap_proxy_tunnel_create(proxy_tunnel_rec **ptunnel,
                                                    request_rec *r, conn_rec *c_o,
@@ -4693,7 +4699,7 @@ static int proxy_tunnel_forward(proxy_tunnel_rec *tunnel,
 {
     struct proxy_tunnel_conn *out = in->other;
     apr_status_t rv;
-    int sent = 0;
+    apr_off_t sent = 0;
 
     ap_log_rerror(APLOG_MARK, APLOG_TRACE8, 0, tunnel->r,
                   "proxy: %s: %s input ready",
@@ -4709,6 +4715,9 @@ static int proxy_tunnel_forward(proxy_tunnel_rec *tunnel,
     if (sent && out == tunnel->client) {
         tunnel->replied = 1;
     }
+
+    in->exchanged = in->exchanged + sent;
+
     if (rv != APR_SUCCESS) {
         if (APR_STATUS_IS_INCOMPLETE(rv)) {
             /* Pause POLLIN while waiting for POLLOUT on the other

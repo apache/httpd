@@ -669,12 +669,15 @@
  * 20201214.3 (2.5.1-dev)  Move ap_ssl_* into new http_ssl.h header file
  * 20201214.4 (2.5.1-dev)  Add ap_ssl_ocsp* hooks and functions to http_ssl.h.
  * 20210420.0 (2.5.1-dev)  Removed `ap_bytes_t` again from httpd.h and usage in ap_ssl_ocsp*()
+ * 20210506.0 (2.5.1-dev)  Add ap_proxy_tunnel_conn_get_read() and
+ *                         ap_proxy_tunnel_conn_get_transferred() change
+ *                         ap_proxy_transfer_between_connections() sent to apr_off_t *.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20210420
+#define MODULE_MAGIC_NUMBER_MAJOR 20210506
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0             /* 0...n */
 

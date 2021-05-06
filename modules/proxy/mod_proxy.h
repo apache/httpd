@@ -1470,9 +1470,24 @@ PROXY_DECLARE(apr_status_t) ap_proxy_transfer_between_connections(
                                                        apr_bucket_brigade *bb_i,
                                                        apr_bucket_brigade *bb_o,
                                                        const char *name,
-                                                       int *sent,
+                                                       apr_off_t *sent,
                                                        apr_off_t bsize,
                                                        int flags);
+
+/* 
+ * returns number of bytes read from the back end tunnel
+ * @param ptunnel     proxy_tunnel_rec use during the tunnelling.
+ * @return      apr_off_t number of bytes read.
+ */
+PROXY_DECLARE (apr_off_t) ap_proxy_tunnel_conn_get_read(
+                                                       proxy_tunnel_rec *ptunnel);
+/*
+ * returns number of bytes sent to the back end tunnel
+ * @param ptunnel     proxy_tunnel_rec use during the tunnelling.
+ * @return      apr_off_t number of bytes sent.
+ */
+PROXY_DECLARE (apr_off_t) ap_proxy_tunnel_conn_get_transferred(
+                                                       proxy_tunnel_rec *ptunnel);
 
 extern module PROXY_DECLARE_DATA proxy_module;
 

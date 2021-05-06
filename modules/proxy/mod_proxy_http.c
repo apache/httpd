@@ -1542,6 +1542,8 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
                 r->status = status;
             }
 
+            backend->worker->s->read = backend->worker->s->read + ap_proxy_tunnel_conn_get_read(req->tunnel);
+            backend->worker->s->transferred = backend->worker->s->transferred + ap_proxy_tunnel_conn_get_transferred(req->tunnel);
             /* We are done with both connections */
             r->connection->keepalive = AP_CONN_CLOSE;
             backend->close = 1;
