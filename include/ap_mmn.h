@@ -412,7 +412,6 @@
  *                         ap_condition_if_none_match(),
  *                         ap_condition_if_modified_since(),
  *                         ap_condition_if_range()
-<<<<<<< HEAD
  * 20120211.19 (2.4.5-dev) Add post_perdir_config hook.
  * 20120211.20 (2.4.5-dev) Add dirwalk_stat hook.
  * 20120211.21 (2.4.5-dev) Add in ap_proxy_create_hdrbrgd() and
