@@ -192,7 +192,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: icing, ylavic
      ylavic: some "<<<<<<< HEAD" hunk in ap_mmn.h should be remove on
              backport..
-    jailletc36: pull/179 has been updated with r1889009
+     jailletc36: pull/179 has been updated with r1889009
+     icing: fixed the merge garbage in ap_mmn.h. thanks Yann.
 
   *) mod_xml2enc: Correctly handle Microsoft OOXML documents.  PR 64339
      trunk patch: http://svn.apache.org/r1884505
