@@ -511,6 +511,8 @@ static void *create_core_server_config(apr_pool_t *a, server_rec *s)
     conf->protocols_honor_order = -1;
     conf->merge_slashes = AP_CORE_CONFIG_UNSET; 
     
+    conf->strict_host_check= AP_CORE_CONFIG_UNSET; 
+
     return (void *)conf;
 }
 
@@ -584,6 +586,12 @@ static void *merge_core_server_configs(apr_pool_t *p, void *basev, void *virtv)
     conf->flush_max_pipelined = (virt->flush_max_pipelined >= 0)
                                   ? virt->flush_max_pipelined
                                   : base->flush_max_pipelined;
+
+    conf->strict_host_check = (virt->strict_host_check != AP_CORE_CONFIG_UNSET)
+                              ? virt->strict_host_check 
+                              : base->strict_host_check;
+
+    AP_CORE_MERGE_FLAG(strict_host_check, conf, base, virt);
 
     return conf;
 }
@@ -4623,7 +4631,10 @@ AP_INIT_TAKE2("CGIVar", set_cgi_var, NULL, OR_FILEINFO,
 AP_INIT_FLAG("QualifyRedirectURL", set_qualify_redirect_url, NULL, OR_FILEINFO,
              "Controls whether the REDIRECT_URL environment variable is fully "
              "qualified"),
-
+AP_INIT_FLAG("StrictHostCheck", set_core_server_flag, 
+             (void *)APR_OFFSETOF(core_server_config, strict_host_check),  
+             RSRC_CONF,
+             "Controls whether a hostname match is required"),
 AP_INIT_TAKE1("ForceType", ap_set_string_slot_lower,
        (void *)APR_OFFSETOF(core_dir_config, mime_type), OR_FILEINFO,
      "a mime type that overrides other configured type"),
@@ -5623,4 +5634,3 @@ AP_DECLARE_MODULE(core) = {
     core_cmds,                    /* command apr_table_t */
     register_hooks                /* register hooks */
 };
-

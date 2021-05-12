@@ -5207,6 +5207,42 @@ recognized methods to modules.</p>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>StrictHostCheck</name>
+<description>Controls whether the server requires the requested hostname be
+             listed enumerated in the virtual host handling the request
+             </description>
+<syntax>StrictHostCheck ON|OFF</syntax>
+<default>StrictHostCheck OFF</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+<compatibility>Added in 2.5.1</compatibility>
+
+<usage>
+    <p>By default, the server will respond to requests for any hostname,
+    including requests addressed to unexpected or unconfigured hostnames. 
+    While this is convenient, it is sometimes desirable to limit what hostnames
+    a backend application handles since it will often generate self-referential
+    responses.</p>
+
+    <p>By setting <directive>StrictHostCheck</directive> to <em>ON</em>,
+    the server will return an HTTP 400 error if the requested hostname
+    hasn't been explicitly listed by either <directive module="core"
+    >ServerName</directive> or <directive module="core"
+    >ServerAlias</directive> in the virtual host that best matches the
+    details of the incoming connection.</p>
+
+   <p>This directive also allows matching of the requested hostname to hostnames
+   specified within the opening <directive module="core">VirtualHost</directive>
+   tag, which is a relatively obscure configuration mechanism that acts like
+   additional <directive module="core">ServerAlias</directive> entries.</p>
+
+   <p>This directive has no affect in non-default virtual hosts. The value
+   inherited from the global server configuration, or the default virtualhost 
+   for the ip:port the underlying connection, determine the effective value.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>MergeSlashes</name>
 <description>Controls whether the server merges consecutive slashes in URLs.
 </description>

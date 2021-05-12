@@ -85,11 +85,6 @@ struct core_output_filter_ctx {
     apr_size_t nvec;
 };
 
-struct core_filter_ctx {
-    apr_bucket_brigade *b;
-    apr_bucket_brigade *tmpbb;
-};
-
 
 apr_status_t ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
                                   ap_input_mode_t mode, apr_read_type_e block,

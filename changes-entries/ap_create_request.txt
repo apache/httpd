@@ -1,0 +1,1 @@
+  *) core: Split ap_create_request() from ap_read_request(). [Graham Leggett]

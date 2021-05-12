@@ -1,0 +1,2 @@
+  *) core, h2: common ap_parse_request_line() and ap_check_request_header()
+     code. [Yann Ylavic]

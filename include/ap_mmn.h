@@ -559,6 +559,9 @@
  *                           and ap_ssl_answer_challenge and hooks.
  * 20120211.104 (2.4.47-dev) Move ap_ssl_* into new http_ssl.h header file
  * 20120211.105 (2.4.47-dev) Add ap_ssl_ocsp* hooks and functions to http_ssl.h.
+ * 20120211.106 (2.4.47-dev) Add ap_create_request().
+ * 20120211.107 (2.4.47-dev) Add ap_parse_request_line() and
+ *                           ap_check_request_header()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -566,7 +569,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 105                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 107                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

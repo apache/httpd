@@ -1,0 +1,2 @@
+  *) core: Add StrictHostCheck to allow unconfigured hostnames to be
+     rejected. [Eric Covener]
