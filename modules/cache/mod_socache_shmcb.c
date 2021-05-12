@@ -105,6 +105,7 @@ typedef struct {
 } SHMCBIndex;
 
 struct ap_socache_instance_t {
+    apr_pool_t *pool;
     const char *data_file;
     apr_size_t shm_size;
     apr_shm_t *shm;
@@ -295,6 +296,7 @@ static const char *socache_shmcb_create(ap_socache_instance_t **context,
 
     /* Allocate the context. */
     *context = ctx = apr_pcalloc(p, sizeof *ctx);
+    ctx->pool = p;
 
     ctx->shm_size  = 1024*512; /* 512KB */
 
@@ -340,6 +342,16 @@ static const char *socache_shmcb_create(ap_socache_instance_t **context,
     return NULL;
 }
 
+static apr_status_t socache_shmcb_cleanup(void *arg)
+{
+    ap_socache_instance_t *ctx = arg;
+    if (ctx->shm) {
+        apr_shm_destroy(ctx->shm);
+        ctx->shm = NULL;
+    }
+    return APR_SUCCESS;
+}
+
 static apr_status_t socache_shmcb_init(ap_socache_instance_t *ctx,
                                        const char *namespace,
                                        const struct ap_socache_hints *hints,
@@ -370,6 +382,7 @@ static apr_status_t socache_shmcb_init(ap_socache_instance_t *ctx,
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(00818)
                          "Could not use anonymous shm for '%s' cache",
                          namespace);
+            ctx->shm = NULL;
             return APR_EINVAL;
         }
 
@@ -384,8 +397,11 @@ static apr_status_t socache_shmcb_init(ap_socache_instance_t *ctx,
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(00819)
                      "Could not allocate shared memory segment for shmcb "
                      "socache");
+        ctx->shm = NULL;
         return rv;
     }
+    apr_pool_cleanup_register(ctx->pool, ctx, socache_shmcb_cleanup,
+                              apr_pool_cleanup_null); 
 
     shm_segment = apr_shm_baseaddr_get(ctx->shm);
     shm_segsize = apr_shm_size_get(ctx->shm);
@@ -473,9 +489,8 @@ static apr_status_t socache_shmcb_init(ap_socache_instance_t *ctx,
 
 static void socache_shmcb_destroy(ap_socache_instance_t *ctx, server_rec *s)
 {
-    if (ctx && ctx->shm) {
-        apr_shm_destroy(ctx->shm);
-        ctx->shm = NULL;
+    if (ctx) {
+        apr_pool_cleanup_run(ctx->pool, ctx, socache_shmcb_cleanup); 
     }
 }
 
