@@ -46,7 +46,7 @@ struct md_data_t {
 md_data_t *md_data_make(apr_pool_t *p, apr_size_t len);
 md_data_t *md_data_create(apr_pool_t *p, const char *data, apr_size_t len);
 
-void md_data_assign_pcopy(md_data_t *dest, const md_data_t *src, apr_pool_t *p);
+void md_data_assign_pcopy(md_data_t *dest, const char *src, apr_size_t src_len, apr_pool_t *p);
 
 apr_status_t md_data_to_hex(const char **phex, char separator,
                             apr_pool_t *p, const md_data_t *data);
@@ -100,8 +100,9 @@ int md_array_str_add_missing(struct apr_array_header_t *dest,
 
 /**************************************************************************************************/
 /* process execution */
+
 apr_status_t md_util_exec(apr_pool_t *p, const char *cmd, const char * const *argv,
-                          int *exit_code);
+                          struct apr_array_header_t *env, int *exit_code);
 
 /**************************************************************************************************/
 /* dns name check */
@@ -207,6 +208,7 @@ apr_status_t md_util_abs_http_uri_check(apr_pool_t *p, const char *uri, const ch
 const char *md_link_find_relation(const struct apr_table_t *headers, 
                                   apr_pool_t *pool, const char *relation);
 
+const char *md_util_parse_ct(apr_pool_t *pool, const char *cth);
 /**************************************************************************************************/
 /* retry logic */
 

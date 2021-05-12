@@ -25,7 +25,9 @@
 
 #include "md_json.h"
 #include "md.h"
+#include "md_acme.h"
 #include "md_crypt.h"
+#include "md_event.h"
 #include "md_log.h"
 #include "md_ocsp.h"
 #include "md_store.h"
@@ -89,29 +91,6 @@ leave:
 /**************************************************************************************************/
 /* md status information */
 
-static apr_status_t get_staging_cert_json(md_json_t **pjson, apr_pool_t *p, 
-                                          md_reg_t *reg, const md_t *md)
-{ 
-    md_json_t *json = NULL;
-    apr_array_header_t *certs;
-    md_cert_t *cert;
-    apr_status_t rv = APR_SUCCESS;
-    
-    rv = md_pubcert_load(md_reg_store_get(reg), MD_SG_STAGING, md->name, &certs, p);
-    if (APR_STATUS_IS_ENOENT(rv)) {
-        rv = APR_SUCCESS;
-        goto leave;
-    }
-    else if (APR_SUCCESS != rv || certs->nelts == 0) {
-        goto leave;
-    }
-    cert = APR_ARRAY_IDX(certs, 0, md_cert_t *);
-    rv = status_get_cert_json(&json, cert, p);
-leave:
-    *pjson = (APR_SUCCESS == rv)? json : NULL;
-    return rv;
-}
-
 static apr_status_t job_loadj(md_json_t **pjson, md_store_group_t group, const char *name, 
                               struct md_reg_t *reg, int with_log, apr_pool_t *p)
 {
@@ -123,22 +102,25 @@ static apr_status_t job_loadj(md_json_t **pjson, md_store_group_t group, const c
     return rv;
 }
 
-static apr_status_t status_get_md_json(md_json_t **pjson, const md_t *md, 
-                                       md_reg_t *reg, md_ocsp_reg_t *ocsp, 
-                                       int with_logs, apr_pool_t *p)
+static apr_status_t status_get_certs_json(md_json_t **pjson, apr_array_header_t *certs,
+                                          const md_t *md, md_reg_t *reg,  
+                                          md_ocsp_reg_t *ocsp, int with_logs, 
+                                          apr_pool_t *p)
 {
-    md_json_t *mdj, *jobj, *certj;
-    int renew;
-    const md_pubcert_t *pubcert;
-    const md_cert_t *cert = NULL;
+    md_json_t *json, *certj, *jobj;
+    md_timeperiod_t certs_valid = {0, 0}, valid, ocsp_valid;
+    md_pkey_spec_t *spec;
+    md_cert_t *cert;
     md_ocsp_cert_stat_t cert_stat;
-    md_timeperiod_t ocsp_valid; 
-    apr_status_t rv = APR_SUCCESS;
-    apr_time_t renew_at;
-
-    mdj = md_to_json(md, p);
-    if (APR_SUCCESS == md_reg_get_pubcert(&pubcert, reg, md, p)) {
-        cert = APR_ARRAY_IDX(pubcert->certs, 0, const md_cert_t*);
+    int i;
+    apr_status_t rv = APR_SUCCESS;   
+    
+    json = md_json_create(p);
+    for (i = 0; i < md_cert_count(md); ++i) {
+        spec = md_pkeys_spec_get(md->pks, i);
+        cert = APR_ARRAY_IDX(certs, i, md_cert_t*);
+        if (!cert) continue;
+        
         if (APR_SUCCESS != (rv = status_get_cert_json(&certj, cert, p))) goto leave;
         if (md->stapling && ocsp) {
             rv = md_ocsp_get_meta(&cert_stat, &ocsp_valid, ocsp, cert, p, md);
@@ -152,12 +134,71 @@ static apr_status_t status_get_md_json(md_json_t **pjson, const md_t *md,
                 md_json_setj(jobj, certj, MD_KEY_OCSP, MD_KEY_RENEWAL, NULL);
             }
         }
-        md_json_setj(certj, mdj, MD_KEY_CERT, NULL);
+        valid = md_cert_get_valid(cert);
+        certs_valid = i? md_timeperiod_common(&certs_valid, &valid) : valid;
+        md_json_setj(certj, json, md_pkey_spec_name(spec), NULL);
+    }
+    
+    if (certs_valid.start) {
+        md_json_set_timeperiod(&certs_valid, json, MD_KEY_VALID, NULL);
+    }
+leave:
+    *pjson = (APR_SUCCESS == rv)? json : NULL;
+    return rv;
+}
 
-        renew_at = md_reg_renew_at(reg, md, p);
-        if (renew_at) {
-            md_json_set_time(renew_at, mdj, MD_KEY_RENEW_AT, NULL);
+static apr_status_t get_staging_certs_json(md_json_t **pjson, const md_t *md, 
+                                           md_reg_t *reg, apr_pool_t *p)
+{ 
+    md_pkey_spec_t *spec;
+    int i;
+    apr_array_header_t *chain, *certs;
+    const md_cert_t *cert;
+    apr_status_t rv;
+    
+    certs = apr_array_make(p, 5, sizeof(md_cert_t*));
+    for (i = 0; i < md_cert_count(md); ++i) {
+        spec = md_pkeys_spec_get(md->pks, i);
+        cert = NULL;
+        rv = md_pubcert_load(md_reg_store_get(reg), MD_SG_STAGING, md->name, spec, &chain, p);
+        if (APR_SUCCESS == rv) {
+            cert = APR_ARRAY_IDX(chain, 0, const md_cert_t*);
         }
+        APR_ARRAY_PUSH(certs, const md_cert_t*) = cert;
+    }
+    return status_get_certs_json(pjson, certs, md, reg, NULL, 0, p);
+}
+
+static apr_status_t status_get_md_json(md_json_t **pjson, const md_t *md, 
+                                       md_reg_t *reg, md_ocsp_reg_t *ocsp, 
+                                       int with_logs, apr_pool_t *p)
+{
+    md_json_t *mdj, *certsj, *jobj;
+    int renew;
+    const md_pubcert_t *pubcert;
+    const md_cert_t *cert = NULL;
+    apr_array_header_t *certs;
+    apr_status_t rv = APR_SUCCESS;
+    apr_time_t renew_at;
+    int i;
+
+    mdj = md_to_json(md, p);
+    certs = apr_array_make(p, 5, sizeof(md_cert_t*));
+    for (i = 0; i < md_cert_count(md); ++i) {
+        cert = NULL;
+        if (APR_SUCCESS == md_reg_get_pubcert(&pubcert, reg, md, i, p)) {
+            cert = APR_ARRAY_IDX(pubcert->certs, 0, const md_cert_t*);
+        }
+        APR_ARRAY_PUSH(certs, const md_cert_t*) = cert;
+    }
+    
+    rv = status_get_certs_json(&certsj, certs, md, reg, ocsp, with_logs, p);
+    if (APR_SUCCESS != rv) goto leave;
+    md_json_setj(certsj, mdj, MD_KEY_CERT, NULL);
+    
+    renew_at = md_reg_renew_at(reg, md, p);
+    if (renew_at > 0) {
+        md_json_set_time(renew_at, mdj, MD_KEY_RENEW_AT, NULL);
     }
     
     md_json_setb(md->stapling, mdj, MD_KEY_STAPLING, NULL);
@@ -167,8 +208,8 @@ static apr_status_t status_get_md_json(md_json_t **pjson, const md_t *md,
         md_json_setb(renew, mdj, MD_KEY_RENEW, NULL);
         rv = job_loadj(&jobj, MD_SG_STAGING, md->name, reg, with_logs, p);
         if (APR_SUCCESS == rv) {
-            if (APR_SUCCESS == get_staging_cert_json(&certj, p, reg, md)) {
-                md_json_setj(certj, jobj, MD_KEY_CERT, NULL);
+            if (APR_SUCCESS == get_staging_certs_json(&certsj, md, reg, p)) {
+                md_json_setj(certsj, jobj, MD_KEY_CERT, NULL);
             }
             md_json_setj(jobj, mdj, MD_KEY_RENEWAL, NULL);
         }
@@ -236,6 +277,7 @@ static void md_job_from_json(md_job_t *job, md_json_t *json, apr_pool_t *p)
     /*job->mdomain = md_json_gets(json, MD_KEY_NAME, NULL);*/
     job->finished = md_json_getb(json, MD_KEY_FINISHED, NULL);
     job->notified = md_json_getb(json, MD_KEY_NOTIFIED, NULL);
+    job->notified_renewed = md_json_getb(json, MD_KEY_NOTIFIED_RENEWED, NULL);
     s = md_json_dups(p, json, MD_KEY_NEXT_RUN, NULL);
     if (s && *s) job->next_run = apr_date_parse_rfc(s);
     s = md_json_dups(p, json, MD_KEY_LAST_RUN, NULL);
@@ -257,6 +299,7 @@ static void job_to_json(md_json_t *json, const md_job_t *job,
     md_json_sets(job->mdomain, json, MD_KEY_NAME, NULL);
     md_json_setb(job->finished, json, MD_KEY_FINISHED, NULL);
     md_json_setb(job->notified, json, MD_KEY_NOTIFIED, NULL);
+    md_json_setb(job->notified_renewed, json, MD_KEY_NOTIFIED_RENEWED, NULL);
     if (job->next_run > 0) {
         apr_rfc822_date(ts, job->next_run);
         md_json_sets(ts, json, MD_KEY_NEXT_RUN, NULL);
@@ -447,6 +490,24 @@ static void job_result_update(md_result_t *result, void *data)
     }
 }
 
+static apr_status_t job_result_raise(md_result_t *result, void *data, const char *event, apr_pool_t *p)
+{
+    md_job_result_ctx *ctx = data;
+    (void)p;
+    if (result == ctx->job->observing) {
+        return md_job_notify(ctx->job, event, result);
+    }
+    return APR_SUCCESS;
+}
+
+static void job_result_holler(md_result_t *result, void *data, const char *event, apr_pool_t *p)
+{
+    md_job_result_ctx *ctx = data;
+    if (result == ctx->job->observing) {
+        md_event_holler(event, ctx->job->mdomain, ctx->job, result, p);
+    }
+}
+
 static void job_observation_start(md_job_t *job, md_result_t *result, md_store_t *store)
 {
     md_job_result_ctx *ctx;
@@ -461,6 +522,8 @@ static void job_observation_start(md_job_t *job, md_result_t *result, md_store_t
     ctx->last = md_result_md_make(result->p, APR_SUCCESS);
     md_result_assign(ctx->last, result);
     md_result_on_change(result, job_result_update, ctx);
+    md_result_on_raise(result, job_result_raise, ctx);
+    md_result_on_holler(result, job_result_holler, ctx);
 }
 
 static void job_observation_end(md_job_t *job)
@@ -477,16 +540,35 @@ void md_job_start_run(md_job_t *job, md_result_t *result, md_store_t *store)
     md_job_log_append(job, "starting", NULL, NULL);
 }
 
-apr_time_t md_job_delay_on_errors(int err_count)
+apr_time_t md_job_delay_on_errors(md_job_t *job, int err_count, const char *last_problem)
 {
-    apr_time_t delay = 0;
-    
-    if (err_count > 0) {
+    apr_time_t delay = 0, max_delay = apr_time_from_sec(24*60*60); /* daily */
+    unsigned char c;
+
+    if (last_problem && md_acme_problem_is_input_related(last_problem)) {
+        /* If ACME server reported a problem and that problem indicates that our
+         * input values, e.g. our configuration, has something wrong, we always
+         * go to max delay as frequent retries are unlikely to resolve the situation.
+         * However, we should nevertheless retry daily, bc. it might be that there
+         * is a bug in the server. Unlikely, but... */
+        delay = max_delay;
+    }
+    else if (err_count > 0) {
         /* back off duration, depending on the errors we encounter in a row */
         delay = apr_time_from_sec(5 << (err_count - 1));
-        if (delay > apr_time_from_sec(60*60)) {
-            delay = apr_time_from_sec(60*60);
+        if (delay > max_delay) {
+            delay = max_delay;
         }
+    }
+    if (delay > 0) {
+        /* jitter the delay by +/- 0-50%.
+         * Background: we see retries of jobs being too regular (e.g. all at midnight),
+         * possibly cumulating from many installations that restart their Apache at a
+         * fixed hour. This can contribute to an overload at the CA and a continuation
+         * of failure.
+         */
+        md_rand_bytes(&c, sizeof(c), job->p);
+        delay += apr_time_from_sec((apr_time_sec(delay) * (c - 128)) / 256);
     }
     return delay;
 }
@@ -503,7 +585,7 @@ void md_job_end_run(md_job_t *job, md_result_t *result)
     else {
         ++job->error_runs;
         job->dirty = 1;
-        job->next_run = apr_time_now() + md_job_delay_on_errors(job->error_runs);
+        job->next_run = apr_time_now() + md_job_delay_on_errors(job, job->error_runs, result->problem);
     }
     job_observation_end(job);
 }
@@ -516,31 +598,20 @@ void md_job_retry_at(md_job_t *job, apr_time_t later)
 
 apr_status_t md_job_notify(md_job_t *job, const char *reason, md_result_t *result)
 {
-    if (job->notify) return job->notify(job, reason, result, job->p, job->notify_ctx);
+    apr_status_t rv;
+    
+    md_result_set(result, APR_SUCCESS, NULL);
+    rv = md_event_raise(reason, job->mdomain, job, result, job->p);
     job->dirty = 1;
-    if (APR_SUCCESS == result->status) {
+    if (APR_SUCCESS == rv && APR_SUCCESS == result->status) {
         job->notified = 1;
+        if (!strcmp("renewed", reason)) job->notified_renewed = 1;
         job->error_runs = 0;
     }
     else {
         ++job->error_runs;
-        job->next_run = apr_time_now() + md_job_delay_on_errors(job->error_runs);
+        job->next_run = apr_time_now() + md_job_delay_on_errors(job, job->error_runs, result->problem);
     }
     return result->status;
 }
 
-void md_job_holler(md_job_t *job, const char *reason)
-{
-    md_result_t *result;
-    
-    if (job->notify) {
-        result = md_result_make(job->p, APR_SUCCESS);
-        job->notify(job, reason, result, job->p, job->notify_ctx);
-    }
-}
-
-void md_job_set_notify_cb(md_job_t *job, md_job_notify_cb *cb, void *baton)
-{
-    job->notify = cb;
-    job->notify_ctx = baton;
-}

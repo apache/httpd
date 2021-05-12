@@ -1,0 +1,367 @@
+# global
+.deps
+.libs
+*.swp
+*.o
+*.a
+*.lo
+*.la
+*.slo
+*.so
+*.vcproj
+*.vcproj.*
+*.x
+*.aps
+*.plg
+*.dep
+*.rc
+*.stc
+*.stt
+*.sto
+*.mak
+Makefile
+modules.mk
+BuildLog.htm
+Debug
+Release
+
+# /
+/config.nice
+/configure
+/missing
+/install-sh
+/mkinstalldirs
+/aclocal.m4
+/generated_lists
+/buildmk.stamp
+/config.log
+/libtool
+/shlibtool
+/config.status
+/modules.c
+/config.cache
+/httpd
+/httpd.exe
+/LibD
+/LibR
+/Apache.suo
+/Apache.ncb
+/Apache.opt
+/apachecore.dll
+/Apache.sln
+/autom4te.cache
+/httpd.spec
+/tags
+/TAGS
+/*.kdev4
+/.kdev_include_paths
+/.cproject
+/.project
+
+# /built/
+/built/
+
+# /cmake-build-debug/
+/cmake-build-debug/
+
+# /build/
+/build/rules.mk
+/build/config_vars.mk
+/build/apr_common.m4
+/build/find_apr.m4
+/build/find_apu.m4
+/build/ltconfig
+/build/ltmain.sh
+/build/PrintPath
+/build/config.sub
+/build/config.guess
+/build/config_vars.sh
+
+# /build/pkg/
+/build/pkg/pkginfo
+
+# /build/win32/
+!/build/win32/httpd.rc
+
+# /docs/
+/docs/dox
+
+# /docs/conf/
+/docs/conf/httpd-std.conf
+/docs/conf/ssl-std.conf
+/docs/conf/httpd.conf
+
+# /docs/conf/extra/
+/docs/conf/extra/*.conf
+
+# /docs/log-message-tags/
+/docs/log-message-tags/list
+
+# /docs/manual/
+/docs/manual/_chm
+/docs/manual/_off
+/docs/manual/_tools
+/docs/manual/_dist
+/docs/manual/build
+/docs/manual/*.tex
+/docs/manual/*.aux
+/docs/manual/*.out
+/docs/manual/*.log
+/docs/manual/*.pdf
+/docs/manual/*.toc
+/docs/manual/.outdated*
+
+# /docs/manual/developer/
+/docs/manual/developer/*.tex
+/docs/manual/developer/*.aux
+
+# /docs/manual/faq/
+/docs/manual/faq/*.tex
+/docs/manual/faq/*.aux
+
+# /docs/manual/howto/
+/docs/manual/howto/*.aux
+/docs/manual/howto/*.tex
+/docs/manual/howto/Working-Copy.txt
+
+# /docs/manual/misc/
+/docs/manual/misc/*.tex
+/docs/manual/misc/*.aux
+
+# /docs/manual/mod/
+/docs/manual/mod/*.tex
+/docs/manual/mod/*.aux
+/docs/manual/mod/.translated.*
+
+# /docs/manual/platform/
+/docs/manual/platform/*.tex
+/docs/manual/platform/*.aux
+
+# /docs/manual/programs/
+/docs/manual/programs/*.tex
+/docs/manual/programs/*.aux
+
+# /docs/manual/rewrite/
+/docs/manual/rewrite/_chm
+/docs/manual/rewrite/_off
+/docs/manual/rewrite/_tools
+/docs/manual/rewrite/_dist
+/docs/manual/rewrite/build
+/docs/manual/rewrite/*.tex
+/docs/manual/rewrite/*.aux
+/docs/manual/rewrite/*.out
+/docs/manual/rewrite/*.log
+/docs/manual/rewrite/*.pdf
+/docs/manual/rewrite/*.toc
+/docs/manual/rewrite/.outdated*
+
+# /docs/manual/ssl/
+/docs/manual/ssl/*.tex
+/docs/manual/ssl/*.aux
+
+# /docs/manual/style/
+/docs/manual/style/_generated
+
+# /docs/manual/vhosts/
+/docs/manual/vhosts/*.tex
+/docs/manual/vhosts/*.aux
+
+# /include/
+/include/ap_config_auto.h
+/include/ap_config_auto.h.in
+/include/ap_config_layout.h
+/include/ap_ldap.h
+/include/mod_cgi.h
+/include/mod_dav.h
+/include/mod_include.h
+/include/mod_proxy.h
+/include/mod_so.h
+/include/mpm.h
+/include/mpm_default.h
+/include/os.h
+
+# /modules/aaa/
+
+# /modules/apreq/
+
+# /modules/arch/
+
+# /modules/arch/unix/
+
+# /modules/arch/win32/
+
+# /modules/cache/
+
+# /modules/cluster/
+
+# /modules/core/
+
+# /modules/core/test/
+/modules/core/test/out
+
+# /modules/database/
+
+# /modules/dav/
+
+# /modules/dav/fs/
+
+# /modules/dav/lock/
+
+# /modules/dav/main/
+
+# /modules/debugging/
+
+# /modules/echo/
+
+# /modules/examples/
+
+# /modules/experimental/
+
+# /modules/filters/
+
+# /modules/generators/
+
+# /modules/http/
+
+# /modules/http2/
+
+# /modules/ldap/
+
+# /modules/loggers/
+
+# /modules/lua/
+
+# /modules/lua/test/
+/modules/lua/test/cycle
+/modules/lua/test/httpd.conf
+
+# /modules/mappers/
+
+# /modules/md/
+/modules/md/a2md
+
+# /modules/metadata/
+
+# /modules/proxy/
+
+# /modules/proxy/balancers/
+
+# /modules/proxy/examples/
+
+# /modules/session/
+
+# /modules/slotmem/
+
+# /modules/ssl/
+
+# /modules/test/
+
+# /os/
+
+# /os/bs2000/
+
+# /os/os2/
+
+# /os/unix/
+
+# /os/win32/
+/os/win32/*.mdp
+/os/win32/*.ncb
+/os/win32/*.opt
+/os/win32/*.dsw
+/os/win32/mod_*D
+/os/win32/mod_*R
+
+# /server/
+/server/test_char.h
+/server/gen_test_char
+/server/gen_test_char.exe
+/server/gen_test_char.exe.manifest
+/server/export_files
+/server/exports.c
+/server/export_vars.h
+/server/ApacheCoreOS2.def
+/server/httpd.exp
+/server/buildmarked.c
+
+# /server/mpm/
+
+# /server/mpm/event/
+
+# /server/mpm/motorz/
+
+# /server/mpm/mpmt_os2/
+
+# /server/mpm/prefork/
+
+# /server/mpm/simple/
+
+# /server/mpm/winnt/
+
+# /server/mpm/worker/
+
+# /srclib/
+/srclib/pth
+/srclib/apr
+/srclib/apr-util
+/srclib/apr-iconv
+/srclib/distcache
+/srclib/lua
+/srclib/pcre
+/srclib/openssl
+/srclib/zlib
+
+# /support/
+/support/rotatelogs
+/support/htpasswd
+/support/htdbm
+/support/htdigest
+/support/htcacheclean
+/support/unescape
+/support/inc2shtml
+/support/httpd_monitor
+/support/suexec
+/support/logresolve
+/support/ab
+/support/apxs
+/support/apachectl
+/support/checkgid
+/support/dbmmanage
+/support/envvars-std
+/support/log_server_status
+/support/logresolve.pl
+/support/split-logfile
+/support/phf_abuse_log.cgi
+/support/httxt2dbm
+/support/fcgistarter
+/support/firehose
+/support/*.exe
+
+# /support/win32/
+!/support/win32/ApacheMonitor.rc
+/support/win32/ApacheMonitorVer.rc
+
+# /test/
+/test/a.out
+/test/time-FCNTL
+/test/time-FLOCK
+/test/time-SYSVSEM
+/test/time-SYSVSEM2
+/test/time-PTHREAD
+/test/time-USLOCK
+/test/zb
+/test/test-writev
+/test/test_date
+/test/test_select
+/test/dbu
+/test/sni
+/test/httpdunit
+/test/httpdunit.cases
+
+# /test/unit/
+/test/unit/*.tests
+
+# Intellij
+/.idea/
+
+

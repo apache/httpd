@@ -19,6 +19,7 @@
 #include <http_core.h>
 #include <http_connection.h>
 #include <http_protocol.h>
+#include <http_ssl.h>
 #include <http_log.h>
 
 #include "h2_private.h"
@@ -98,7 +99,7 @@ static int h2_alt_svc_handler(request_rec *r)
              */
             const char *alt_svc = "";
             const char *svc_ma = "";
-            int secure = h2_h2_is_tls(r->connection);
+            int secure = ap_ssl_conn_is_ssl(r->connection);
             int ma = h2_config_rgeti(r, H2_CONF_ALT_SVC_MAX_AGE);
             if (ma >= 0) {
                 svc_ma = apr_psprintf(r->pool, "; ma=%d", ma);

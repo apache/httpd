@@ -22,6 +22,7 @@ struct apr_array_header_t;
 struct md_pkey_t;
 struct md_cert_t;
 struct md_result_t;
+struct md_pkey_spec_t;
 
 #include "md_store.h"
 
@@ -35,7 +36,7 @@ typedef struct md_reg_t md_reg_t;
  * Create the MD registry, using the pool and store.
  */
 apr_status_t md_reg_create(md_reg_t **preg, apr_pool_t *pm, md_store_t *store,
-                           const char *proxy_url);
+                           const char *proxy_url, const char *ca_file);
 
 md_store_t *md_reg_store_get(md_reg_t *reg);
 
@@ -112,7 +113,7 @@ apr_status_t md_reg_update(md_reg_t *reg, apr_pool_t *p,
  * of the domain and going up the issuers. Returns APR_ENOENT when not available. 
  */
 apr_status_t md_reg_get_pubcert(const md_pubcert_t **ppubcert, md_reg_t *reg, 
-                                const md_t *md, apr_pool_t *p);
+                                const md_t *md, int i, apr_pool_t *p);
 
 /**
  * Get the filenames of private key and pubcert of the MD - if they exist.
@@ -120,10 +121,10 @@ apr_status_t md_reg_get_pubcert(const md_pubcert_t **ppubcert, md_reg_t *reg,
  */
 apr_status_t md_reg_get_cred_files(const char **pkeyfile, const char **pcertfile,
                                    md_reg_t *reg, md_store_group_t group, 
-                                   const md_t *md, apr_pool_t *p);
+                                   const md_t *md, struct md_pkey_spec_t *spec, apr_pool_t *p);
 
 /**
- * Synchronise the give master mds with the store.
+ * Synchronize the given master mds with the store.
  */
 apr_status_t md_reg_sync_start(md_reg_t *reg, apr_array_header_t *master_mds, apr_pool_t *p);
 
@@ -173,6 +174,12 @@ int md_reg_should_renew(md_reg_t *reg, const md_t *md, apr_pool_t *p);
 apr_time_t md_reg_renew_at(md_reg_t *reg, const md_t *md, apr_pool_t *p);
 
 /**
+ * Return the timestamp up to which *all* certificates for the MD can be used.
+ * A value of 0 indicates that there is no certificate.
+ */
+apr_time_t md_reg_valid_until(md_reg_t *reg, const md_t *md, apr_pool_t *p);
+
+/**
  * Return if a warning should be issued about the certificate expiration. 
  * This applies the configured warn window to the remaining lifetime of the 
  * current certiciate. If no certificate is present, this returns 0.
@@ -199,6 +206,7 @@ struct md_proto_driver_t {
     md_reg_t *reg;
     md_store_t *store;
     const char *proxy_url;
+    const char *ca_file;
     const md_t *md;
 
     int can_http;
@@ -254,7 +262,6 @@ apr_status_t md_reg_load_staging(md_reg_t *reg, const md_t *md, struct apr_table
 void md_reg_set_renew_window_default(md_reg_t *reg, md_timeslice_t *renew_window);
 void md_reg_set_warn_window_default(md_reg_t *reg, md_timeslice_t *warn_window);
 
-void md_reg_set_notify_cb(md_reg_t *reg, md_job_notify_cb *cb, void *baton);
 struct md_job_t *md_reg_job_make(md_reg_t *reg, const char *mdomain, apr_pool_t *p);
 
 #endif /* mod_md_md_reg_h */

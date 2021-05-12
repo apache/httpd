@@ -23,6 +23,7 @@
 #include "http_core.h"
 #include "http_protocol.h"
 #include "http_request.h"
+#include "http_ssl.h"
 #include "ap_provider.h"
 #include "util_expr_private.h"
 #include "util_md5.h"
@@ -1256,9 +1257,6 @@ static int op_file_subr(ap_expr_eval_ctx_t *ctx, const void *data, const char *a
 }
 
 
-APR_DECLARE_OPTIONAL_FN(int, ssl_is_https, (conn_rec *));
-static APR_OPTIONAL_FN_TYPE(ssl_is_https) *is_https = NULL;
-
 APR_DECLARE_OPTIONAL_FN(int, http2_is_h2, (conn_rec *));
 static APR_OPTIONAL_FN_TYPE(http2_is_h2) *is_http2 = NULL;
 
@@ -1280,7 +1278,7 @@ static const char *conn_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
 
     switch (index) {
     case 0:
-        if (is_https && is_https(c))
+        if (ap_ssl_conn_is_ssl(c))
             return "on";
         else
             return "off";
@@ -1806,10 +1804,7 @@ static int expr_lookup_not_found(ap_expr_lookup_parms *parms)
 static int ap_expr_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                                apr_pool_t *ptemp, server_rec *s)
 {
-    is_https = APR_RETRIEVE_OPTIONAL_FN(ssl_is_https);
     is_http2 = APR_RETRIEVE_OPTIONAL_FN(http2_is_h2);
-    apr_pool_cleanup_register(pconf, &is_https, ap_pool_cleanup_set_null,
-                              apr_pool_cleanup_null);
     return OK;
 }
 

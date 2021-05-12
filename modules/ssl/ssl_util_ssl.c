@@ -511,3 +511,81 @@ char *modssl_SSL_SESSION_id2sz(IDCONST unsigned char *id, int idlen,
 
     return str;
 }
+
+/*  _________________________________________________________________
+**
+**  Certificate/Key Stuff
+**  _________________________________________________________________
+*/
+
+apr_status_t modssl_read_cert(apr_pool_t *p, 
+                              const char *cert_pem, const char *key_pem,
+                              pem_password_cb *cb, void *ud,
+                              X509 **pcert, EVP_PKEY **pkey)
+{
+    BIO *in;
+    X509 *x = NULL;
+    EVP_PKEY *key = NULL;
+    apr_status_t rv = APR_SUCCESS;
+
+    in = BIO_new_mem_buf(cert_pem, -1);
+    if (in == NULL) {
+        rv = APR_ENOMEM;
+        goto cleanup;
+    }
+    
+    x = PEM_read_bio_X509(in, NULL, cb, ud);
+    if (x == NULL) {
+        rv = APR_ENOENT;
+        goto cleanup;
+    }
+    
+    BIO_free(in);
+    in = BIO_new_mem_buf(key_pem? key_pem : cert_pem, -1);
+    if (in == NULL) {
+        rv = APR_ENOMEM;
+        goto cleanup;
+    }
+    key = PEM_read_bio_PrivateKey(in, NULL, cb, ud);
+    if (key == NULL) {
+        rv = APR_ENOENT;
+        goto cleanup;
+    }
+    
+cleanup:
+    if (rv == APR_SUCCESS) {
+        *pcert = x;
+        *pkey = key;
+    }
+    else {
+        *pcert = NULL;
+        *pkey = NULL;
+        if (x) X509_free(x);
+        if (key) EVP_PKEY_free(key);
+    }
+    if (in != NULL) BIO_free(in);
+    return rv;
+}
+
+apr_status_t modssl_cert_get_pem(apr_pool_t *p,
+                                 X509 *cert1, X509 *cert2,
+                                 const char **ppem)
+{
+    apr_status_t rv = APR_ENOMEM;
+    BIO *bio;
+
+    if ((bio = BIO_new(BIO_s_mem())) == NULL) goto cleanup;
+    if (PEM_write_bio_X509(bio, cert1) != 1) goto cleanup;
+    if (cert2 && PEM_write_bio_X509(bio, cert2) != 1) goto cleanup;
+    rv = APR_SUCCESS;
+
+cleanup:
+    if (rv != APR_SUCCESS) {
+        *ppem = NULL;
+        if (bio) BIO_free(bio);
+    }
+    else {
+        *ppem = modssl_bio_free_read(p, bio);
+    }
+    return rv;
+}

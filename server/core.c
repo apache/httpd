@@ -38,6 +38,7 @@
 #include "http_core.h"
 #include "http_protocol.h" /* For index_of_response().  Grump. */
 #include "http_request.h"
+#include "http_ssl.h"
 #include "http_vhost.h"
 #include "http_main.h"     /* For the default_handler below... */
 #include "http_log.h"
@@ -5076,6 +5077,7 @@ static int core_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pte
     set_banner(pconf);
     ap_setup_make_content_type(pconf);
     ap_setup_auth_internal(ptemp);
+    ap_setup_ssl_optional_fns(pconf);
     if (!sys_privileges) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, 0, NULL, APLOGNO(00136)
                      "Server MUST relinquish startup privileges before "

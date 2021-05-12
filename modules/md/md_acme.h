@@ -97,6 +97,7 @@ struct md_acme_t {
     apr_pool_t *p;
     const char *user_agent;
     const char *proxy_url;
+    const char *ca_file;
     
     const char *acct_id;            /* local storage id account was loaded from or NULL */
     struct md_acme_acct_t *acct;    /* account at ACME server to use for requests */
@@ -104,7 +105,7 @@ struct md_acme_t {
     
     int version;                    /* as detected from the server */
     union {
-        struct {
+        struct { /* obsolete */
             const char *new_authz;
             const char *new_cert;
             const char *new_reg;
@@ -149,7 +150,7 @@ apr_status_t md_acme_init(apr_pool_t *pool, const char *base_version, int init_s
  * @param proxy_url optional url of a HTTP(S) proxy to use
  */
 apr_status_t md_acme_create(md_acme_t **pacme, apr_pool_t *p, const char *url,
-                            const char *proxy_url);
+                            const char *proxy_url, const char *ca_file);
 
 /**
  * Contact the ACME server and retrieve its directory information.
@@ -287,5 +288,12 @@ apr_status_t md_acme_get_json(struct md_json_t **pjson, md_acme_t *acme,
 apr_status_t md_acme_req_body_init(md_acme_req_t *req, struct md_json_t *jpayload);
 
 apr_status_t md_acme_protos_add(struct apr_hash_t *protos, apr_pool_t *p);
+
+/**
+ * Return != 0 iff the given problem identifier is an ACME error string
+ * indicating something is wrong with the input values, e.g. from our
+ * configuration.
+ */
+int md_acme_problem_is_input_related(const char *problem);
 
 #endif /* md_acme_h */

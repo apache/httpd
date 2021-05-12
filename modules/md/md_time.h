@@ -36,6 +36,11 @@ int md_timeperiod_has_started(const md_timeperiod_t *period, apr_time_t time);
 int md_timeperiod_has_ended(const md_timeperiod_t *period, apr_time_t time);
 apr_interval_time_t md_timeperiod_remaining(const md_timeperiod_t *period, apr_time_t time);
 
+/**
+ * Return the timeperiod common between a and b. If both do not overlap, return {0,0}.
+ */
+md_timeperiod_t md_timeperiod_common(const md_timeperiod_t *a, const md_timeperiod_t *b);
+
 char *md_timeperiod_print(apr_pool_t *p, const md_timeperiod_t *period);
 
 /**

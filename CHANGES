@@ -4,6 +4,119 @@ Changes with Apache 2.4.48
   *) core: Fix a regression that stripped the ETag header from 304 responses.
      PR 61820 [Ruediger Pluem, Roy T. Fielding]
 
+  *) core: Adding SSL related inquiry functions to the server API.
+     These function are always available, even when no module providing
+     SSL is loaded. They provide their own "shadowing" implementation for
+     the optional functions of similar name that mod_ssl and impersonators
+     of mod_ssl provide.
+     This enables loading of several SSL providing modules when all but
+     one of them registers itself into the new hooks. Two old-style SSL
+     modules will not work, as they replace the others optional functions
+     with their own.
+     Modules using the old-style optional functions will continue to work
+     as core supplies its own versions of those.
+     The following has been added so far:
+     - ap_ssl_conn_is_ssl() to query if a connection is using SSL.
+     - ap_ssl_var_lookup() to query SSL related variables for a
+       server/connection/request.
+     - Hooks for 'ssl_conn_is_ssl' and 'ssl_var_lookup' where modules
+       providing SSL can install their own value supplying functions.
+     - ap_ssl_add_cert_files() to enable other modules like mod_md to provide
+       certificate and keys for an SSL module like mod_ssl.
+     - ap_ssl_add_fallback_cert_files() to enable other modules like mod_md to
+       provide a fallback certificate in case no 'proper' certificate is
+       available for an SSL module like mod_ssl.
+     - ap_ssl_answer_challenge() to enable other modules like mod_md to
+       provide a certificate as used in the RFC 8555 'tls-alpn-01' challenge
+       for the ACME protocol for an SSL module like mod_ssl. The function
+       and its hook provide PEM encoded data instead of file names.
+     - Hooks for 'ssl_add_cert_files', 'ssl_add_fallback_cert_files' and
+       'ssl_answer_challenge' where modules like mod_md can provide providers
+       to the above mentioned functions.
+     - These functions reside in the new 'http_ssl.h' header file.
+     [Stefan Eissing]
+
+  *) core/mod_ssl/mod_md: adding OCSP response provisioning as core feature. This
+     allows modules to access and provide OCSP response data without being tied
+     of each other. The data is exchanged in standard, portable formats (PEM encoded
+     certificates and DER encoded responses), so that the actual SSL/crypto
+     implementations used by the modules are independant of each other.
+     Registration and retrieval happen in the context of a server (server_rec)
+     which modules may use to decide if they are configured for this or not.
+     The area of changes:
+     1. core: defines 2 functions in include/http_ssl.h, so that modules may
+        register a certificate, together with its issuer certificate for OCSP
+        response provisioning and ask for current response data (DER bytes) later.
+        Also, 2 hooks are defined that allow modules to implement this OCSP
+        provisioning.
+     2. mod_ssl uses the new functions, in addition to what it did already, to
+        register its certificates this way. If no one is interested in providing
+        OCSP, it falls back to its own (if configured) stapling implementation.
+     3. mod_md registers itself at the core hooks for OCSP provisioning. Depending
+        on configuration, it will accept registrations of its own certificates only,
+        all certificates or none.
+     [Stefan Eissing]
+
+ *) mod_md: v2.4.0 with improvements and bugfixes
+     - MDPrivateKeys allows the specification of several types. Beside "RSA" plus
+     optional key lengths elliptic curves can be configured. This means you can
+     have multiple certificates for a Managed Domain with different key types.
+     With ```MDPrivateKeys secp384r1 rsa2048``` you get one ECDSA  and one RSA
+     certificate and all modern client will use the shorter ECDSA, while older
+     client will get the RSA certificate.
+     Many thanks to @tlhackque who pushed and helped on this.
+     - Support added for MDomains consisting of a wildcard. Configuring
+     ```MDomain *.host.net``` will match all virtual hosts matching that pattern
+     and obtain one certificate for it (assuming you have 'dns-01' challenge
+     support configured). Addresses #239.
+     - Removed support for ACMEv1 servers. The only known installation used to
+     be Let's Encrypt which has disabled that version more than a year ago for
+     new accounts.
+     - Andreas Ulm (<https://github.com/root360-AndreasUlm>) implemented the
+     ```renewing``` call to ```MDMessageCmd``` that can deny a certificate
+     renewal attempt. This is useful in clustered installations, as
+     discussed in #233).
+     - New event ```challenge-setup:<type>:<domain>```, triggered when the
+     challenge data for a domain has been created. This is invoked before the
+     ACME server is told to check for it. The type is one of the ACME challenge
+     types. This is invoked for every DNS name in a MDomain.
+     - The max delay for retries has been raised to daily (this is like all
+     retries jittered somewhat to avoid repeats at fixed time of day).
+     - Certain error codes reported by the ACME server that indicate a problem
+     with the configured data now immediately switch to daily retries. For
+     example: if the ACME server rejects a contact email or a domain name,
+     frequent retries will most likely not solve the problem. But daily retries
+     still make sense as there might be an error at the server and un-supervised
+     certificate renewal is the goal. Refs #222.
+     - Test case and work around for domain names > 64 octets. Fixes #227.
+     When the first DNS name of an MD is longer than 63 octets, the certificate
+     request will not contain a CN field, but leave it up to the CA to choose one.
+     Currently, Lets Encrypt looks for a shorter name in the SAN list given and
+     fails the request if none is found. But it is really up to the CA (and what
+     browsers/libs accept here) and may change over the years. That is why
+     the decision is best made at the CA.
+     - Retry delays now have a random +/-[0-50]% modification applied to let
+     retries from several servers spread out more, should they have been
+     restarted at the same time of day.
+     - Fixed several places where the 'badNonce' return code from an ACME server
+     was not handled correctly. The test server 'pebble' simulates this behaviour
+     by default and helps nicely in verifying this behaviour. Thanks, pebble!
+     - Set the default `MDActivationDelay` to 0. This was confusing to users that
+     new certificates were deemed not usably before a day of delay. When clocks are
+     correct, using a new certificate right away should not pose a problem.
+     - When handling ACME authorization resources, the module no longer requires
+     the server to return a "Location" header, as was necessary in ACMEv1.
+     Fixes #216.
+     - Fixed a theoretical uninitialized read when testing for JSON error responses
+     from the ACME CA. Reported at <https://bz.apache.org/bugzilla/show_bug.cgi?id=64297>.
+     - ACME problem reports from CAs that include parameters in the Content-Type
+     header are handled correctly. (Previously, the problem text would not be
+     reported and retries could exceed CA limits.)
+     - Account Update transactions to V2 CAs now use the correct POST-AS-GET method.
+     Previously, an empty JSON object was sent - which apparently LE accepted,
+     but others reject.
+     [Stefan Eissing, @tlhackque, Andreas Ulm]
+
 Changes with Apache 2.4.47
 
   *) mod_dav_fs: Improve logging output when failing to open files for

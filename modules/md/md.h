@@ -17,6 +17,8 @@
 #ifndef mod_md_md_h
 #define mod_md_md_h
 
+#include <apr_time.h>
+
 #include "md_time.h"
 #include "md_version.h"
 
@@ -80,18 +82,18 @@ struct md_t {
     md_require_t require_https;     /* Iff https: is required for this MD */
     
     int renew_mode;                 /* mode of obtaining credentials */
-    struct md_pkey_spec_t *pkey_spec;/* specification for generating new private keys */
+    struct md_pkeys_spec_t *pks;    /* specification for generating private keys */
     int must_staple;                /* certificates should set the OCSP Must Staple extension */
-    md_timeslice_t *renew_window;  /* time before expiration that starts renewal */
-    md_timeslice_t *warn_window;   /* time before expiration that warnings are sent out */
+    md_timeslice_t *renew_window;   /* time before expiration that starts renewal */
+    md_timeslice_t *warn_window;    /* time before expiration that warnings are sent out */
     
     const char *ca_url;             /* url of CA certificate service */
     const char *ca_proto;           /* protocol used vs CA (e.g. ACME) */
     const char *ca_account;         /* account used at CA */
     const char *ca_agreement;       /* accepted agreement uri between CA and user */ 
     struct apr_array_header_t *ca_challenges; /* challenge types configured for this MD */
-    const char *cert_file;          /* != NULL iff pubcert file explicitly configured */
-    const char *pkey_file;          /* != NULL iff privkey file explicitly configured */
+    struct apr_array_header_t *cert_files; /* != NULL iff pubcerts explicitly configured */
+    struct apr_array_header_t *pkey_files; /* != NULL iff privkeys explicitly configured */
     
     md_state_t state;               /* state of this MD */
     
@@ -116,7 +118,7 @@ struct md_t {
 #define MD_KEY_CA               "ca"
 #define MD_KEY_CA_URL           "ca-url"
 #define MD_KEY_CERT             "cert"
-#define MD_KEY_CERT_FILE        "cert-file"
+#define MD_KEY_CERT_FILES       "cert-files"
 #define MD_KEY_CERTIFICATE      "certificate"
 #define MD_KEY_CHALLENGE        "challenge"
 #define MD_KEY_CHALLENGES       "challenges"
@@ -125,6 +127,7 @@ struct md_t {
 #define MD_KEY_CONTACT          "contact"
 #define MD_KEY_CONTACTS         "contacts"
 #define MD_KEY_CSR              "csr"
+#define MD_KEY_CURVE            "curve"
 #define MD_KEY_DETAIL           "detail"
 #define MD_KEY_DISABLED         "disabled"
 #define MD_KEY_DIR              "dir"
@@ -155,12 +158,13 @@ struct md_t {
 #define MD_KEY_NAME             "name"
 #define MD_KEY_NEXT_RUN         "next-run"
 #define MD_KEY_NOTIFIED         "notified"
+#define MD_KEY_NOTIFIED_RENEWED "notified-renewed"
 #define MD_KEY_OCSP             "ocsp"
 #define MD_KEY_OCSPS            "ocsps"
 #define MD_KEY_ORDERS           "orders"
 #define MD_KEY_PERMANENT        "permanent"
 #define MD_KEY_PKEY             "privkey"
-#define MD_KEY_PKEY_FILE        "pkey-file"
+#define MD_KEY_PKEY_FILES       "pkey-files"
 #define MD_KEY_PROBLEM          "problem"
 #define MD_KEY_PROTO            "proto"
 #define MD_KEY_READY            "ready"
@@ -280,6 +284,9 @@ struct md_json_t *md_to_json (const md_t *md, apr_pool_t *p);
 md_t *md_from_json(struct md_json_t *json, apr_pool_t *p);
 
 int md_is_covered_by_alt_names(const md_t *md, const struct apr_array_header_t* alt_names);
+
+/* how many certificates this domain has/will eventually have. */
+int md_cert_count(const md_t *md);
 
 #define LE_ACMEv1_PROD      "https://acme-v01.api.letsencrypt.org/directory"
 #define LE_ACMEv1_STAGING   "https://acme-staging.api.letsencrypt.org/directory"

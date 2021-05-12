@@ -93,10 +93,9 @@
 #include "http_core.h"
 #include "http_log.h"
 #include "http_protocol.h"
+#include "http_ssl.h"
 #include "http_vhost.h"
 #include "util_mutex.h"
-
-#include "mod_ssl.h"
 
 #include "mod_rewrite.h"
 #include "ap_expr.h"
@@ -421,8 +420,6 @@ static apr_global_mutex_t *rewrite_mapr_lock_acquire = NULL;
 static const char *rewritemap_mutex_type = "rewrite-map";
 
 /* Optional functions imported from mod_ssl when loaded: */
-static APR_OPTIONAL_FN_TYPE(ssl_var_lookup) *rewrite_ssl_lookup = NULL;
-static APR_OPTIONAL_FN_TYPE(ssl_is_https) *rewrite_is_https = NULL;
 static char *escape_backref(apr_pool_t *p, const char *path, const char *escapeme, int noplus);
 
 /*
@@ -1866,8 +1863,8 @@ static char *lookup_variable(char *var, rewrite_ctx *ctx)
                 result = getenv(var);
             }
         }
-        else if (var[4] && !strncasecmp(var, "SSL", 3) && rewrite_ssl_lookup) {
-            result = rewrite_ssl_lookup(r->pool, r->server, r->connection, r,
+        else if (var[4] && !strncasecmp(var, "SSL", 3)) {
+            result = ap_ssl_var_lookup(r->pool, r->server, r->connection, r,
                                         var + 4);
         }
     }
@@ -1965,7 +1962,7 @@ static char *lookup_variable(char *var, rewrite_ctx *ctx)
 
         case  5:
             if (!strcmp(var, "HTTPS")) {
-                int flag = rewrite_is_https && rewrite_is_https(r->connection);
+                int flag = ap_ssl_conn_is_ssl(r->connection);
                 return apr_pstrdup(r->pool, flag ? "on" : "off");
             }
             break;
@@ -4524,9 +4521,6 @@ static int post_config(apr_pool_t *p,
             }
         }
     }
-
-    rewrite_ssl_lookup = APR_RETRIEVE_OPTIONAL_FN(ssl_var_lookup);
-    rewrite_is_https = APR_RETRIEVE_OPTIONAL_FN(ssl_is_https);
 
     return OK;
 }

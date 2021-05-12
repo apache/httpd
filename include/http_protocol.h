@@ -1062,6 +1062,7 @@ AP_DECLARE(void) ap_finalize_sub_req_protocol(request_rec *sub_r);
 AP_DECLARE(void) ap_send_interim_response(request_rec *r, int send_headers);
 
 
+
 #ifdef __cplusplus
 }
 #endif

@@ -193,6 +193,10 @@ SOURCE=.\include\http_request.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\include\http_ssl.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\include\http_vhost.h
 # End Source File
 # Begin Source File
@@ -507,6 +511,10 @@ SOURCE=.\server\protocol.c
 # Begin Source File
 
 SOURCE=.\server\request.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\ssl.c
 # End Source File
 # Begin Source File
 

@@ -59,6 +59,7 @@ struct md_job_t {
     struct md_result_t *last_result; /* Result from last run */
     int finished;          /* true iff the job finished successfully */
     int notified;          /* true iff notifications were handled successfully */
+    int notified_renewed;  /* true iff a 'renewed' notification was handled successfully */
     apr_time_t valid_from; /* at which time the finished job results become valid, 0 if immediate */
     int error_runs;        /* Number of errored runs of an unfinished job */
     int fatal_error;       /* a fatal error is remedied by retrying */
@@ -67,9 +68,6 @@ struct md_job_t {
     apr_size_t max_log;    /* max number of log entries, new ones replace oldest */
     int dirty;
     struct md_result_t *observing;
-    
-    md_job_notify_cb *notify;
-    void *notify_ctx;
 };
 
 /**
@@ -115,12 +113,12 @@ void md_job_start_run(md_job_t *job, struct md_result_t *result, md_store_t *sto
 void md_job_end_run(md_job_t *job, struct md_result_t *result);
 void md_job_retry_at(md_job_t *job, apr_time_t later);
 
-/* Given the number of errors encountered, recommend a delay for the next attempt */
-apr_time_t md_job_delay_on_errors(int err_count);
+/**
+ * Given the number of errors and the last problem encountered,
+ * recommend a delay for the next attempt of job
+ */
+apr_time_t md_job_delay_on_errors(md_job_t *job, int err_count, const char *last_problem);
 
-void md_job_set_notify_cb(md_job_t *job, md_job_notify_cb *cb, void *baton);
 apr_status_t md_job_notify(md_job_t *job, const char *reason, struct md_result_t *result);
-/* Same as notify but without checks on success and no change to job */
-void md_job_holler(md_job_t *job, const char *reason);
 
 #endif /* md_status_h */

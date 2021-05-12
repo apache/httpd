@@ -42,6 +42,7 @@
 #include "http_main.h"
 #include "http_protocol.h"
 #include "http_request.h"
+#include "http_ssl.h"
 #include "http_vhost.h"
 #include "mpm_common.h"
 #include "ap_regex.h"

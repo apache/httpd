@@ -406,18 +406,8 @@ typedef struct {
 
 static apr_status_t on_init_acct_upd(md_acme_req_t *req, void *baton)
 {
-    md_json_t *jpayload;
-
     (void)baton;
-    jpayload = md_json_create(req->p);
-    switch (MD_ACME_VERSION_MAJOR(req->acme->version)) {
-        case 1:
-            md_json_sets("reg", jpayload, MD_KEY_RESOURCE, NULL);
-            break;
-        default:
-            break;
-    }
-    return md_acme_req_body_init(req, jpayload);
+    return md_acme_req_body_init(req, NULL);
 } 
 
 static apr_status_t acct_upd(md_acme_t *acme, apr_pool_t *p, 
@@ -495,23 +485,10 @@ static apr_status_t on_init_acct_new(md_acme_req_t *req, void *baton)
     md_json_t *jpayload;
 
     jpayload = md_json_create(req->p);
-    
-    switch (MD_ACME_VERSION_MAJOR(req->acme->version)) {
-        case 1:
-            md_json_sets("new-reg", jpayload, MD_KEY_RESOURCE, NULL);
-            md_json_setsa(ctx->acme->acct->contacts, jpayload, MD_KEY_CONTACT, NULL);
-            if (ctx->agreement) {
-                md_json_sets(ctx->agreement, jpayload, MD_KEY_AGREEMENT, NULL);
-            }
-            break;
-        default:
-            md_json_setsa(ctx->acme->acct->contacts, jpayload, MD_KEY_CONTACT, NULL);
-            if (ctx->agreement) {
-                md_json_setb(1, jpayload, "termsOfServiceAgreed", NULL);
-            }
-        break;
+    md_json_setsa(ctx->acme->acct->contacts, jpayload, MD_KEY_CONTACT, NULL);
+    if (ctx->agreement) {
+        md_json_setb(1, jpayload, "termsOfServiceAgreed", NULL);
     }
-    
     return md_acme_req_body_init(req, jpayload);
 } 
 
@@ -616,15 +593,7 @@ static apr_status_t on_init_acct_del(md_acme_req_t *req, void *baton)
 
     (void)baton;
     jpayload = md_json_create(req->p);
-    switch (MD_ACME_VERSION_MAJOR(req->acme->version)) {
-        case 1:
-            md_json_sets("reg", jpayload, MD_KEY_RESOURCE, NULL);
-            md_json_setb(1, jpayload, "delete", NULL);
-            break;
-        default:
-            md_json_sets("deactivated", jpayload, MD_KEY_STATUS, NULL);
-            break;
-    }
+    md_json_sets("deactivated", jpayload, MD_KEY_STATUS, NULL);
     return md_acme_req_body_init(req, jpayload);
 } 
 
@@ -653,16 +622,8 @@ static apr_status_t on_init_agree_tos(md_acme_req_t *req, void *baton)
     md_json_t *jpayload;
 
     jpayload = md_json_create(req->p);
-    switch (MD_ACME_VERSION_MAJOR(req->acme->version)) {
-        case 1:
-            md_json_sets("reg", jpayload, MD_KEY_RESOURCE, NULL);
-            md_json_sets(ctx->acme->acct->agreement, jpayload, MD_KEY_AGREEMENT, NULL);
-            break;
-        default:
-            if (ctx->acme->acct->agreement) {
-                md_json_setb(1, jpayload, "termsOfServiceAgreed", NULL);
-            }
-            break;
+    if (ctx->acme->acct->agreement) {
+        md_json_setb(1, jpayload, "termsOfServiceAgreed", NULL);
     }
     return md_acme_req_body_init(req, jpayload);
 } 

@@ -2316,16 +2316,34 @@ void ssl_callback_Info(const SSL *ssl, int where, int rc)
 #ifdef HAVE_TLSEXT
 
 static apr_status_t set_challenge_creds(conn_rec *c, const char *servername,
-                                        SSL *ssl, X509 *cert, EVP_PKEY *key)
+                                        SSL *ssl, X509 *cert, EVP_PKEY *key,
+                                        const char *cert_pem, const char *key_pem)
 {
     SSLConnRec *sslcon = myConnConfig(c);
+    apr_status_t rv = APR_SUCCESS;
+    int our_data = 0;
     
     sslcon->service_unavailable = 1;
+    if (cert_pem) {
+        cert = NULL;
+        key = NULL;
+        our_data = 1;
+        
+        rv = modssl_read_cert(c->pool, cert_pem, key_pem, NULL, NULL, &cert, &key);
+        if (rv != APR_SUCCESS) {
+            ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c, APLOGNO(10266)
+                          "Failed to parse PEM of challenge certificate %s",
+                          servername);
+            goto cleanup;
+        }
+    }
+    
     if ((SSL_use_certificate(ssl, cert) < 1)) {
         ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c, APLOGNO(10086)
                       "Failed to configure challenge certificate %s",
                       servername);
-        return APR_EGENERAL;
+        rv = APR_EGENERAL;
+        goto cleanup;
     }
     
     if (!SSL_use_PrivateKey(ssl, key)) {
@@ -2333,15 +2351,21 @@ static apr_status_t set_challenge_creds(conn_rec *c, const char *servername,
                       "error '%s' using Challenge key: %s",
                       ERR_error_string(ERR_peek_last_error(), NULL), 
                       servername);
-        return APR_EGENERAL;
+        rv = APR_EGENERAL;
+        goto cleanup;
     }
     
     if (SSL_check_private_key(ssl) < 1) {
         ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c, APLOGNO(10088)
                       "Challenge certificate and private key %s "
                       "do not match", servername);
-        return APR_EGENERAL;
+        rv = APR_EGENERAL;
+        goto cleanup;
     }
+    
+cleanup:
+    if (our_data && cert) X509_free(cert);
+    if (our_data && key) EVP_PKEY_free(key);
     return APR_SUCCESS;
 }
   
@@ -2351,9 +2375,6 @@ static apr_status_t set_challenge_creds(conn_rec *c, const char *servername,
  */
 static apr_status_t init_vhost(conn_rec *c, SSL *ssl, const char *servername)
 {
-    X509 *cert;
-    EVP_PKEY *key;
-    
     if (c) {
         SSLConnRec *sslcon = myConnConfig(c);
 
@@ -2375,15 +2396,6 @@ static apr_status_t init_vhost(conn_rec *c, SSL *ssl, const char *servername)
 
                 sslcon->vhost_found = +1;
                 return APR_SUCCESS;
-            }
-            else if (ssl_is_challenge(c, servername, &cert, &key)) {
-                /* With ACMEv1 we can have challenge connections to a unknown domains
-                 * that need to be answered with a special certificate and will
-                 * otherwise not answer any requests. */
-                if (set_challenge_creds(c, servername, ssl, cert, key) != APR_SUCCESS) {
-                    return APR_EGENERAL;
-                }
-                SSL_set_verify(ssl, SSL_VERIFY_NONE, ssl_callback_SSLVerify);
             }
             else {
                 ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(02044)
@@ -2759,9 +2771,11 @@ int ssl_callback_alpn_select(SSL *ssl,
             const char *servername = SSL_get_servername(ssl, TLSEXT_NAMETYPE_host_name);
             X509 *cert;
             EVP_PKEY *key;
-            
-            if (ssl_is_challenge(c, servername, &cert, &key)) {
-                if (set_challenge_creds(c, servername, ssl, cert, key) != APR_SUCCESS) {
+            const char *cert_pem, *key_pem;
+
+            if (ssl_is_challenge(c, servername, &cert, &key, &cert_pem, &key_pem)) {
+                if (set_challenge_creds(c, servername, ssl, cert, key, 
+                                        cert_pem, key_pem) != APR_SUCCESS) {
                     return SSL_TLSEXT_ERR_ALERT_FATAL;
                 }
                 SSL_set_verify(ssl, SSL_VERIFY_NONE, ssl_callback_SSLVerify);

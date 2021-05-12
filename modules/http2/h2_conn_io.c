@@ -22,7 +22,9 @@
 #include <http_core.h>
 #include <http_log.h>
 #include <http_connection.h>
+#include <http_protocol.h>
 #include <http_request.h>
+#include <http_ssl.h>
 
 #include "h2_private.h"
 #include "h2_bucket_eos.h"
@@ -132,7 +134,7 @@ apr_status_t h2_conn_io_init(h2_conn_io *io, conn_rec *c, server_rec *s)
 {
     io->c              = c;
     io->output         = apr_brigade_create(c->pool, c->bucket_alloc);
-    io->is_tls         = h2_h2_is_tls(c);
+    io->is_tls         = ap_ssl_conn_is_ssl(c);
     io->buffer_output  = io->is_tls;
     io->flush_threshold = (apr_size_t)h2_config_sgeti64(s, H2_CONF_STREAM_MAX_MEM);
 

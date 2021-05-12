@@ -145,10 +145,6 @@ SOURCE=./md_acme_order.c
 # End Source File
 # Begin Source File
 
-SOURCE=./md_acmev1_drive.c
-# End Source File
-# Begin Source File
-
 SOURCE=./md_acmev2_drive.c
 # End Source File
 # Begin Source File
@@ -166,6 +162,10 @@ SOURCE=./md_curl.c
 # Begin Source File
 
 SOURCE=./md_http.c
+# End Source File
+# Begin Source File
+
+SOURCE=./md_event.c
 # End Source File
 # Begin Source File
 

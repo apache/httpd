@@ -113,6 +113,10 @@ apr_status_t md_json_seta(apr_array_header_t *a, md_json_to_cb *cb,
 typedef int md_json_itera_cb(void *baton, size_t index, md_json_t *json);
 int md_json_itera(md_json_itera_cb *cb, void *baton, md_json_t *json, ...);
 
+/* Called on each object key, aborts iteration when returning 0 */
+typedef int md_json_iterkey_cb(void *baton, const char* key, md_json_t *json);
+int md_json_iterkey(md_json_iterkey_cb *cb, void *baton, md_json_t *json, ...);
+
 /* Manipulating Object String values */
 apr_status_t md_json_gets_dict(apr_table_t *dict, const md_json_t *json, ...);
 apr_status_t md_json_sets_dict(apr_table_t *dict, md_json_t *json, ...);

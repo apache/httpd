@@ -244,22 +244,29 @@ static apr_status_t internals_setup(md_http_request_t *req)
     md_curl_internals_t *internals;
     CURL *curl;
     apr_status_t rv = APR_SUCCESS;
-    
-    curl = curl_easy_init();
+
+    curl = md_http_get_impl_data(req->http);
     if (!curl) {
-        rv = APR_EGENERAL;
-        goto leave;
+        md_log_perror(MD_LOG_MARK, MD_LOG_TRACE3, 0, req->pool, "creating curl instance");
+        curl = curl_easy_init();
+        if (!curl) {
+            rv = APR_EGENERAL;
+            goto leave;
+        }
+        curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, header_cb);
+        curl_easy_setopt(curl, CURLOPT_HEADERDATA, NULL);
+        curl_easy_setopt(curl, CURLOPT_READFUNCTION, req_data_cb);
+        curl_easy_setopt(curl, CURLOPT_READDATA, NULL);
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, resp_data_cb);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, NULL);
     }
+    else {
+        md_log_perror(MD_LOG_MARK, MD_LOG_TRACE3, 0, req->pool, "reusing curl instance from http");
+    }
+
     internals = apr_pcalloc(req->pool, sizeof(*internals));
     internals->curl = curl;
         
-    curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, header_cb);
-    curl_easy_setopt(curl, CURLOPT_HEADERDATA, NULL);
-    curl_easy_setopt(curl, CURLOPT_READFUNCTION, req_data_cb);
-    curl_easy_setopt(curl, CURLOPT_READDATA, NULL);
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, resp_data_cb);
-    curl_easy_setopt(curl, CURLOPT_WRITEDATA, NULL);
-
     internals->response = apr_pcalloc(req->pool, sizeof(md_http_response_t));
     internals->response->req = req;
     internals->response->status = 400;
@@ -293,7 +300,10 @@ static apr_status_t internals_setup(md_http_request_t *req)
         curl_easy_setopt(curl, CURLOPT_LOW_SPEED_LIMIT, req->timeout.stall_bytes_per_sec);
         curl_easy_setopt(curl, CURLOPT_LOW_SPEED_TIME, timeout_sec(req->timeout.stalled));
     }
-    
+    if (req->ca_file) {
+        curl_easy_setopt(curl, CURLOPT_CAINFO, req->ca_file);
+    }
+
     if (req->body_len >= 0) {
         /* set the Content-Length */
         curl_easy_setopt(curl, CURLOPT_INFILESIZE_LARGE, (curl_off_t)req->body_len);
@@ -568,9 +578,35 @@ static void md_curl_req_cleanup(md_http_request_t *req)
 {
     md_curl_internals_t *internals = req->internals;
     if (internals) {
-        if (internals->curl) curl_easy_cleanup(internals->curl);
+        if (internals->curl) {
+            CURL *curl = md_http_get_impl_data(req->http);
+            if (curl == internals->curl) {
+                /* NOP: we have this curl at the md_http_t already */
+            }
+            else if (!curl) {
+                /* no curl at the md_http_t yet, install this one */
+                md_log_perror(MD_LOG_MARK, MD_LOG_TRACE3, 0, req->pool, "register curl instance at http");
+                md_http_set_impl_data(req->http, internals->curl);
+            }
+            else {
+                /* There already is a curl at the md_http_t and it's not this one. */
+                curl_easy_cleanup(internals->curl);
+            }
+        }
         if (internals->req_hdrs) curl_slist_free_all(internals->req_hdrs);
         req->internals = NULL;
+    }
+}
+
+static void md_curl_cleanup(md_http_t *http, apr_pool_t *pool)
+{
+    CURL *curl;
+
+    curl = md_http_get_impl_data(http);
+    if (curl) {
+        md_log_perror(MD_LOG_MARK, MD_LOG_TRACE3, 0, pool, "cleanup curl instance");
+        md_http_set_impl_data(http, NULL);
+        curl_easy_cleanup(curl);
     }
 }
 
@@ -579,6 +615,7 @@ static md_http_impl_t impl = {
     md_curl_req_cleanup,
     md_curl_perform,
     md_curl_multi_perform,
+    md_curl_cleanup,
 };
 
 md_http_impl_t * md_curl_get_impl(apr_pool_t *p)
