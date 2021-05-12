@@ -146,30 +146,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1888266 ^/httpd/httpd/trunk .
      +1: ylavic, icing, rpluem
 
-   *) core/mod_ssl/mod_md:
-     - adding new ap_ssl_*() functions for a backward
-       compatible replacement of the major optional mod_ssl functions. This
-       allows other ssl modules to work without impersonating mod_ssl and
-       also allows different ssl modules being active on separate ports.
-     - latest mod_md with support for multiple certificates per domain
-       and ECDSA certificates. Removed ACMEv1 support.
-     - Interworking mod_md and ssl modules changed to exchange PEM strings
-       instead of file paths for ACME challenges.
-     - core/mod_ssl/mod_md: adding OCSP response provisioning as core feature.
-     Sorry, large patch, but it all hangs together. Trunk changed integrated
-     into the PR: 
-       r1886840, r1887085, r1887087, r1887134, r1887151, r1887152, 
-       r1887337, r1887340, r1887342, r1887343, r1887360, r1887364, 
-       r1887923, r1887965, r1887993, r1888006, r1888083, r1888084,
-       r1888723, r1888724, r1888726, r1888729
-     PR: https://github.com/apache/httpd/pull/179
-     patch: https://github.com/apache/httpd/pull/179.diff
-     +1: icing, ylavic, rpluem
-     ylavic: some "<<<<<<< HEAD" hunk in ap_mmn.h should be remove on
-             backport..
-     jailletc36: pull/179 has been updated with r1889009
-     icing: fixed the merge garbage in ap_mmn.h. thanks Yann.
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
