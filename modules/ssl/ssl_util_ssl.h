@@ -83,7 +83,7 @@ char       *modssl_SSL_SESSION_id2sz(IDCONST unsigned char *, int, char *, int);
  * called for both cases. */
 char *modssl_bio_free_read(apr_pool_t *p, BIO *bio);
 
-/* Read a single certificate and its private key from the give string in PEM format.
+/* Read a single certificate and its private key from the given string in PEM format.
  * If `key_pem` is NULL, it will expect the key in `cert_pem`.
  */
 apr_status_t modssl_read_cert(apr_pool_t *p, 

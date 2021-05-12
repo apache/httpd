@@ -71,8 +71,8 @@ static APR_OPTIONAL_FN_TYPE(ssl_is_https) *module_ssl_is_https;
 
 static int ssl_is_https(conn_rec *c)
 {
-    /* Someone retrieved the optional function., not knowning about the
-     * new API. We redirect them to what they should have inoked. */
+    /* Someone retrieved the optional function., not knowing about the
+     * new API. We redirect them to what they should have invoked. */
     return ap_ssl_conn_is_ssl(c);
 }
 
@@ -95,8 +95,8 @@ static const char *ssl_var_lookup(apr_pool_t *p, server_rec *s,
                                   conn_rec *c, request_rec *r,
                                   const char *name)
 {
-    /* Someone retrieved the optional function., not knowning about the
-     * new API. We redirect them to what they should have inoked. */
+    /* Someone retrieved the optional function., not knowing about the
+     * new API. We redirect them to what they should have invoked. */
     return ap_ssl_var_lookup(p, s, c, r, name);
 }
 

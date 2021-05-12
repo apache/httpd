@@ -514,7 +514,7 @@ char *modssl_SSL_SESSION_id2sz(IDCONST unsigned char *id, int idlen,
 
 /*  _________________________________________________________________
 **
-**  Certficate/Key Stuff
+**  Certificate/Key Stuff
 **  _________________________________________________________________
 */
 
