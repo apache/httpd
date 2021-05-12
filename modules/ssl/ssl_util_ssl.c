@@ -530,7 +530,7 @@ void modssl_set_reneg_state(SSLConnRec *sslconn, modssl_reneg_state state)
 
 /*  _________________________________________________________________
 **
-**  Certficate/Key Stuff
+**  Certificate/Key Stuff
 **  _________________________________________________________________
 */
 
