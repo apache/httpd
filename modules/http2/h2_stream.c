@@ -638,7 +638,7 @@ void h2_stream_set_request(h2_stream *stream, const h2_request *r)
 
 static void set_error_response(h2_stream *stream, int http_status)
 {
-    if (!h2_stream_is_ready(stream)) {
+    if (!h2_stream_is_ready(stream) && stream->rtmp) {
         stream->rtmp->http_status = http_status;
     }
 }

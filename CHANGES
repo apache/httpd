@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.48
 
+  *) core: Fix a regression that stripped the ETag header from 304 responses.
+     PR 61820 [Ruediger Pluem, Roy T. Fielding]
+
 Changes with Apache 2.4.47
 
   *) mod_dav_fs: Improve logging output when failing to open files for
