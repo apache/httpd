@@ -167,6 +167,28 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      is not the right fix, then it should be removed from trunk.
      Putting it here is a way to revive the discussion
 
+  *) mod_proxy: Fix flushing of THRESHOLD_MIN_WRITE data while tunneling.
+                BZ 65294
+     trunk patch: n/a
+     2.4.x patch: http://people.apache.org/~ylavic/patches/pr_65294-v3.patch
+     +1: ylavic,
+     ylavic: 2.4.x only patch because ap_filter_should_yield() and 
+             ap_filter_output_pending() are wrappers for mod_proxy (only)
+             there. trunk needs fixing too but differently (I'm on it), nothing
+             that will be backported anyway.
+             See https://lists.apache.org/thread.html/r5453925c5caf4d5d64747ada6e05f828106d548d0b8462525699f145%40%3Cdev.httpd.apache.org%3E
+             for the discussion on this, how Rüdiger had foreseen me, and how
+             I did not listen :/
+             (rule of thumb: always listen to him carefully!).
+
+  *) mod_proxy_wstunnel: Add ProxyWebsocketFallbackToProxyHttp to opt-out the
+     fallback to mod_proxy_http for WebSocket upgrade and tunneling.
+     trunk patch: http://svn.apache.org/r1889792
+                  http://svn.apache.org/r1889795
+     2.4.x patch: http://people.apache.org/~ylavic/patches/ProxyWebsocketFallbackToProxyHttp.patch
+                  svn add changes-entries/ProxyWebsocketFallbackToProxyHttp.txt
+     +1: ylavic,
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
