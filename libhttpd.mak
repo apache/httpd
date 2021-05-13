@@ -82,6 +82,7 @@ CLEAN :
 	-@erase "$(INTDIR)\request.obj"
 	-@erase "$(INTDIR)\scoreboard.obj"
 	-@erase "$(INTDIR)\service.obj"
+	-@erase "$(INTDIR)\ssl.obj"
 	-@erase "$(INTDIR)\util.obj"
 	-@erase "$(INTDIR)\util_cfgtree.obj"
 	-@erase "$(INTDIR)\util_cookies.obj"
@@ -200,6 +201,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\provider.obj" \
 	"$(INTDIR)\scoreboard.obj" \
 	"$(INTDIR)\service.obj" \
+	"$(INTDIR)\ssl.obj" \
 	"$(INTDIR)\libhttpd.res" \
 	".\srclib\apr\Release\libapr-1.lib" \
 	".\srclib\apr-iconv\Release\libapriconv-1.lib" \
@@ -280,6 +282,7 @@ CLEAN :
 	-@erase "$(INTDIR)\request.obj"
 	-@erase "$(INTDIR)\scoreboard.obj"
 	-@erase "$(INTDIR)\service.obj"
+	-@erase "$(INTDIR)\ssl.obj"
 	-@erase "$(INTDIR)\util.obj"
 	-@erase "$(INTDIR)\util_cfgtree.obj"
 	-@erase "$(INTDIR)\util_cookies.obj"
@@ -405,6 +408,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\provider.obj" \
 	"$(INTDIR)\scoreboard.obj" \
 	"$(INTDIR)\service.obj" \
+	"$(INTDIR)\ssl.obj" \
 	"$(INTDIR)\libhttpd.res" \
 	".\srclib\apr\Debug\libapr-1.lib" \
 	".\srclib\apr-iconv\Debug\libapriconv-1.lib" \
@@ -485,6 +489,7 @@ CLEAN :
 	-@erase "$(INTDIR)\request.obj"
 	-@erase "$(INTDIR)\scoreboard.obj"
 	-@erase "$(INTDIR)\service.obj"
+	-@erase "$(INTDIR)\ssl.obj"
 	-@erase "$(INTDIR)\util.obj"
 	-@erase "$(INTDIR)\util_cfgtree.obj"
 	-@erase "$(INTDIR)\util_cookies.obj"
@@ -605,6 +610,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\provider.obj" \
 	"$(INTDIR)\scoreboard.obj" \
 	"$(INTDIR)\service.obj" \
+	"$(INTDIR)\ssl.obj" \
 	"$(INTDIR)\libhttpd.res"
 
 "$(OUTDIR)\libhttpd.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -1143,6 +1149,12 @@ SOURCE=.\server\scoreboard.c
 SOURCE=.\server\mpm\winnt\service.c
 
 "$(INTDIR)\service.obj" : $(SOURCE) "$(INTDIR)" ".\include\os.h" ".\include\ap_config_layout.h"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\server\ssl.c
+
+"$(INTDIR)\ssl.obj" : $(SOURCE) "$(INTDIR)" ".\include\os.h" ".\include\ap_config_layout.h"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

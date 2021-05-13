@@ -65,11 +65,11 @@ CLEAN :
 	-@erase "$(INTDIR)\md_acme_authz.obj"
 	-@erase "$(INTDIR)\md_acme_drive.obj"
 	-@erase "$(INTDIR)\md_acme_order.obj"
-	-@erase "$(INTDIR)\md_acmev1_drive.obj"
 	-@erase "$(INTDIR)\md_acmev2_drive.obj"
 	-@erase "$(INTDIR)\md_core.obj"
 	-@erase "$(INTDIR)\md_crypt.obj"
 	-@erase "$(INTDIR)\md_curl.obj"
+	-@erase "$(INTDIR)\md_event.obj"
 	-@erase "$(INTDIR)\md_http.obj"
 	-@erase "$(INTDIR)\md_json.obj"
 	-@erase "$(INTDIR)\md_jws.obj"
@@ -152,6 +152,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\md_core.obj" \
 	"$(INTDIR)\md_crypt.obj" \
 	"$(INTDIR)\md_curl.obj" \
+	"$(INTDIR)\md_event.obj" \
 	"$(INTDIR)\md_http.obj" \
 	"$(INTDIR)\md_json.obj" \
 	"$(INTDIR)\md_jws.obj" \
@@ -169,7 +170,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\md_acme_authz.obj" \
 	"$(INTDIR)\md_acme_drive.obj" \
 	"$(INTDIR)\md_acme_order.obj" \
-	"$(INTDIR)\md_acmev1_drive.obj" \
 	"$(INTDIR)\md_acmev2_drive.obj" \
 	"$(INTDIR)\mod_md.res" \
 	"..\..\srclib\apr\Release\libapr-1.lib" \
@@ -224,11 +224,11 @@ CLEAN :
 	-@erase "$(INTDIR)\md_acme_authz.obj"
 	-@erase "$(INTDIR)\md_acme_drive.obj"
 	-@erase "$(INTDIR)\md_acme_order.obj"
-	-@erase "$(INTDIR)\md_acmev1_drive.obj"
 	-@erase "$(INTDIR)\md_acmev2_drive.obj"
 	-@erase "$(INTDIR)\md_core.obj"
 	-@erase "$(INTDIR)\md_crypt.obj"
 	-@erase "$(INTDIR)\md_curl.obj"
+	-@erase "$(INTDIR)\md_event.obj"
 	-@erase "$(INTDIR)\md_http.obj"
 	-@erase "$(INTDIR)\md_json.obj"
 	-@erase "$(INTDIR)\md_jws.obj"
@@ -311,6 +311,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\md_core.obj" \
 	"$(INTDIR)\md_crypt.obj" \
 	"$(INTDIR)\md_curl.obj" \
+	"$(INTDIR)\md_event.obj" \
 	"$(INTDIR)\md_http.obj" \
 	"$(INTDIR)\md_json.obj" \
 	"$(INTDIR)\md_jws.obj" \
@@ -328,7 +329,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\md_acme_authz.obj" \
 	"$(INTDIR)\md_acme_drive.obj" \
 	"$(INTDIR)\md_acme_order.obj" \
-	"$(INTDIR)\md_acmev1_drive.obj" \
 	"$(INTDIR)\md_acmev2_drive.obj" \
 	"$(INTDIR)\mod_md.res" \
 	"..\..\srclib\apr\Debug\libapr-1.lib" \
@@ -490,11 +490,6 @@ SOURCE=./md_acme_order.c
 "$(INTDIR)\md_acme_order.obj" : $(SOURCE) "$(INTDIR)"
 
 
-SOURCE=./md_acmev1_drive.c
-
-"$(INTDIR)\md_acmev1_drive.obj" : $(SOURCE) "$(INTDIR)"
-
-
 SOURCE=./md_acmev2_drive.c
 
 "$(INTDIR)\md_acmev2_drive.obj" : $(SOURCE) "$(INTDIR)"
@@ -513,6 +508,11 @@ SOURCE=./md_crypt.c
 SOURCE=./md_curl.c
 
 "$(INTDIR)\md_curl.obj" : $(SOURCE) "$(INTDIR)"
+
+
+SOURCE=./md_event.c
+
+"$(INTDIR)\md_event.obj" : $(SOURCE) "$(INTDIR)"
 
 
 SOURCE=./md_http.c
