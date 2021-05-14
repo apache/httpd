@@ -19,11 +19,19 @@
 
 module AP_MODULE_DECLARE_DATA proxy_wstunnel_module;
 
-static int fallback_to_mod_proxy_http;
+typedef struct {
+    unsigned int fallback_to_proxy_http     :1,
+                 fallback_to_proxy_http_set :1;
+} proxyws_dir_conf;
+
+static int can_fallback_to_proxy_http;
 
 static int proxy_wstunnel_check_trans(request_rec *r, const char *url)
 {
-    if (fallback_to_mod_proxy_http) {
+    proxyws_dir_conf *dconf = ap_get_module_config(r->per_dir_config,
+                                                   &proxy_wstunnel_module);
+
+    if (can_fallback_to_proxy_http && dconf->fallback_to_proxy_http) {
         ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r, "check_trans fallback");
         return DECLINED;
     }
@@ -52,13 +60,15 @@ static int proxy_wstunnel_check_trans(request_rec *r, const char *url)
  */
 static int proxy_wstunnel_canon(request_rec *r, char *url)
 {
+    proxyws_dir_conf *dconf = ap_get_module_config(r->per_dir_config,
+                                                   &proxy_wstunnel_module);
     char *host, *path, sport[7];
     char *search = NULL;
     const char *err;
     char *scheme;
     apr_port_t port, def_port;
 
-    if (fallback_to_mod_proxy_http) {
+    if (can_fallback_to_proxy_http && dconf->fallback_to_proxy_http) {
         ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r, "canon fallback");
         return DECLINED;
     }
@@ -314,6 +324,8 @@ static int proxy_wstunnel_handler(request_rec *r, proxy_worker *worker,
                              char *url, const char *proxyname,
                              apr_port_t proxyport)
 {
+    proxyws_dir_conf *dconf = ap_get_module_config(r->per_dir_config,
+                                                   &proxy_wstunnel_module);
     int status;
     char server_portstr[32];
     proxy_conn_rec *backend = NULL;
@@ -324,7 +336,7 @@ static int proxy_wstunnel_handler(request_rec *r, proxy_worker *worker,
     apr_uri_t *uri;
     int is_ssl = 0;
 
-    if (fallback_to_mod_proxy_http) {
+    if (can_fallback_to_proxy_http && dconf->fallback_to_proxy_http) {
         ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r, "handler fallback");
         return DECLINED;
     }
@@ -406,14 +418,56 @@ cleanup:
     return status;
 }
 
+static void *create_proxyws_dir_config(apr_pool_t *p, char *dummy)
+{
+    proxyws_dir_conf *new =
+        (proxyws_dir_conf *) apr_pcalloc(p, sizeof(proxyws_dir_conf));
+
+    new->fallback_to_proxy_http = 1;
+
+    return (void *) new;
+}
+
+static void *merge_proxyws_dir_config(apr_pool_t *p, void *vbase, void *vadd)
+{
+    proxyws_dir_conf *new = apr_pcalloc(p, sizeof(proxyws_dir_conf)),
+                     *add = vadd, *base = vbase;
+
+    new->fallback_to_proxy_http = (add->fallback_to_proxy_http_set)
+                                  ? add->fallback_to_proxy_http
+                                  : base->fallback_to_proxy_http;
+    new->fallback_to_proxy_http_set = (add->fallback_to_proxy_http_set
+                                       || base->fallback_to_proxy_http_set);
+
+    return new;
+}
+
+static const char * proxyws_fallback_to_proxy_http(cmd_parms *cmd, void *conf, int arg)
+{
+    proxyws_dir_conf *dconf = conf;
+    dconf->fallback_to_proxy_http = !!arg;
+    dconf->fallback_to_proxy_http_set = 1;
+    return NULL;
+}
+
 static int proxy_wstunnel_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                                       apr_pool_t *ptemp, server_rec *s)
 {
-    fallback_to_mod_proxy_http =
+    can_fallback_to_proxy_http =
         (ap_find_linked_module("mod_proxy_http.c") != NULL);
 
     return OK;
 }
+
+static const command_rec ws_proxy_cmds[] =
+{
+    AP_INIT_FLAG("ProxyWebsocketFallbackToProxyHttp",
+                 proxyws_fallback_to_proxy_http, NULL, RSRC_CONF|ACCESS_CONF,
+                 "whether to let mod_proxy_http handle the upgrade and tunneling, "
+                 "On by default"),
+
+    {NULL}
+};
 
 static void ws_proxy_hooks(apr_pool_t *p)
 {
@@ -426,10 +480,10 @@ static void ws_proxy_hooks(apr_pool_t *p)
 
 AP_DECLARE_MODULE(proxy_wstunnel) = {
     STANDARD20_MODULE_STUFF,
-    NULL,                       /* create per-directory config structure */
-    NULL,                       /* merge per-directory config structures */
+    create_proxyws_dir_config,  /* create per-directory config structure */
+    merge_proxyws_dir_config,   /* merge per-directory config structures */
     NULL,                       /* create per-server config structure */
     NULL,                       /* merge per-server config structures */
-    NULL,                       /* command apr_table_t */
+    ws_proxy_cmds,              /* command apr_table_t */
     ws_proxy_hooks              /* register hooks */
 };

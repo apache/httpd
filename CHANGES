@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.48
 
+  *) mod_proxy_wstunnel: Add ProxyWebsocketFallbackToProxyHttp to opt-out the
+     fallback to mod_proxy_http for WebSocket upgrade and tunneling.
+     [Yann Ylavic]
+
   *) mod_proxy: Fix flushing of THRESHOLD_MIN_WRITE data while tunneling.
      BZ 65294.  [Yann Ylavic]
 

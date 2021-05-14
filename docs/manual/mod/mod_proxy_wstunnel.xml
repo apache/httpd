@@ -83,4 +83,25 @@ in the response <code>Upgrade</code></p>
 </summary>
 
 <seealso><module>mod_proxy</module></seealso>
+
+<directivesynopsis>
+<name>ProxyWebsocketFallbackToProxyHttp</name>
+<description>Instructs this module to let <module>mod_proxy_http</module> handle the request</description>
+<syntax>ProxyWebsocketFallbackToProxyHttp On|Off</syntax>
+<default>ProxyWebsocketFallbackToProxyHttp On</default>
+<compatibility>Available in httpd 2.4.48 and later</compatibility>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>Since httpd 2.4.47, <module>mod_proxy_http</module> can handle WebSocket
+    upgrading and tunneling in accordance to RFC 7230, this directive controls
+    whether <module>mod_proxy_wstunnel</module> should hand over to
+    <module>mod_proxy_http</module> to this, which is the case by default.</p>
+    <p>Setting to <em>Off</em> lets <module>mod_proxy_wstunnel</module> handle
+    WebSocket requests as in httpd 2.4.46 and earlier.</p>
+</usage>
+</directivesynopsis>
+
 </modulesynopsis>
