@@ -39,6 +39,7 @@
 #    include "apr_encode.h"
 #endif
 #include "apr_thread_proc.h"
+#include "apr_cstr.h"
 
 #include "httpd.h"
 #include "http_config.h"
@@ -56,7 +57,7 @@ typedef struct unique_id_rec {
     apr_uint32_t process_id;
     apr_uint32_t thread_id;
     apr_uint64_t timestamp;
-    apr_uint16_t random;
+    apr_uint16_t server_id;
     unique_counter counter;
 } unique_id_rec;
 
@@ -69,6 +70,11 @@ typedef struct unique_id_rec_padded {
 
 #pragma pack(pop)
 
+typedef struct unique_id_server_config_rec { 
+    /* A value of -1 means not initialized, and 0 will be used. Max value is 65535. */
+    int server_id;
+} unique_id_server_config_rec;
+
 #if APR_HAS_THREADS
 struct unique_thread_data {
     unique_counter counter;
@@ -76,6 +82,8 @@ struct unique_thread_data {
 #else
 static unique_counter global_counter = 0;
 #endif
+
+module AP_MODULE_DECLARE_DATA unique_id_module;
 
 /*
  * This module generates (almost) unique IDs for each request to a particular server.
@@ -89,7 +97,7 @@ static unique_counter global_counter = 0;
  * - Thread ID of the running thread
  * - Timestamp in microseconds
  * - 16 bit incrementing counter for each unique Thread ID
- * - 16 pseudo-random bits
+ * - 16 bit server ID manually set (defaults to 0)
  *
  * The resulting ID string will be a base64 encoded string (RFC4648) 27 characaters long. The
  * length may change, applications storing the value should fit longer strings and not depend
@@ -100,19 +108,34 @@ static unique_counter global_counter = 0;
  *
  */
 
-/* TODO : Provide a configuration parameter to set a server ID to ensure complete
- *        uniqueness across servers */
-
 /* TODO : Endian conversion could be provided for tidyness but having this left out
  *        probably won't cause collisions. */
 
-static void populate_unique_id (unique_id_rec *unique_id, apr_uintptr_t thread_id, apr_uint32_t counter)
+static void populate_unique_id (unique_id_rec *unique_id, apr_uintptr_t thread_id, apr_uint32_t counter, apr_uint16_t server_id)
 {
     unique_id->process_id = ((apr_uint64_t) getpid()) & 0x00000000ffffffff;
     unique_id->thread_id = ((apr_uint64_t) thread_id) & 0x00000000ffffffff;
     unique_id->timestamp = apr_time_now();
-    ap_random_insecure_bytes(&unique_id->random, sizeof(unique_id->random));
+    unique_id->server_id = server_id;
     unique_id->counter = counter;
+}
+
+static int get_server_id(apr_uint16_t *server_id, const request_rec *r)
+{
+    const unique_id_server_config_rec *conf;
+
+    /* Note : Cast away const */
+    if ((conf = ap_get_module_config((void *) r->server->module_config, &unique_id_module)) == NULL ||
+         conf->server_id < -1 ||
+	 conf->server_id > 65535
+    ) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, HTTP_INTERNAL_SERVER_ERROR, r->server, "Server ID of Unique ID module not initialized correctly");
+    	return HTTP_INTERNAL_SERVER_ERROR;
+    }
+
+    *server_id = conf->server_id < 0 ? 0 : conf->server_id;
+
+    return OK;
 }
 
 static const char *create_unique_id_string(const request_rec *r)
@@ -120,6 +143,11 @@ static const char *create_unique_id_string(const request_rec *r)
     char *ret = NULL;
     unique_id_rec unique_id;
     const apr_size_t ret_size = sizeof(unique_id) * 2;
+    apr_uint16_t server_id;
+
+    if (get_server_id(&server_id, r) != OK) {
+        goto out;
+    }
 
 #if APR_HAS_THREADS
     {
@@ -137,10 +165,10 @@ static const char *create_unique_id_string(const request_rec *r)
             }
         }
 
-        populate_unique_id(&unique_id, (apr_uintptr_t) thread, ++(thread_data->counter));
+        populate_unique_id(&unique_id, (apr_uintptr_t) thread, ++(thread_data->counter), server_id);
     }
 #else
-    populate_unique_id(&unique_id, 0, ++global_counter);
+    populate_unique_id(&unique_id, 0, ++global_counter, server_id);
 #endif
 
     if ((ret = (char *)apr_pcalloc(r->pool, ret_size)) == NULL) {
@@ -187,17 +215,17 @@ static const char *create_unique_id_string(const request_rec *r)
     }
 #endif
 
-    /* Debug
+////    /* Debug
     ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-            "Unique ID generated: %s pid %" APR_UINT64_T_FMT " tid %" APR_UINT64_T_FMT " time %" APR_UINT64_T_FMT " rand %" APR_UINT64_T_FMT " count %" APR_UINT64_T_FMT "",
+            "Unique ID generated: %s pid %" APR_UINT64_T_FMT " tid %" APR_UINT64_T_FMT " time %" APR_UINT64_T_FMT " server %" APR_UINT64_T_FMT " count %" APR_UINT64_T_FMT "",
             ret,
             (apr_uint64_t) unique_id.process_id,
             (apr_uint64_t) unique_id.thread_id,
             (apr_uint64_t) unique_id.timestamp,
-            (apr_uint64_t) unique_id.random,
+            (apr_uint64_t) unique_id.server_id,
             (apr_uint64_t) unique_id.counter
     );
-    */
+//    */
 
     out:
     return ret;
@@ -260,12 +288,69 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_post_read_request(post_read_request_hook, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
+static void *create_unique_id_server_config (apr_pool_t *p, server_rec *d)
+{
+    unique_id_server_config_rec *ret;
+    if ((ret = apr_pcalloc(p, sizeof(unique_id_server_config_rec))) != NULL) {
+        ret->server_id = -1;
+    }
+    return ret;
+}
+
+static void *merge_unique_id_server_config(apr_pool_t *p, void *basev, void *addv)
+{
+    unique_id_server_config_rec *base = (unique_id_server_config_rec *) basev;
+    unique_id_server_config_rec *add = (unique_id_server_config_rec *) addv;
+    unique_id_server_config_rec *new;
+
+    if ((new = apr_pcalloc (p, sizeof(*new))) != NULL) {
+        /* Default value is -1 which means not initialized */
+        new->server_id = add->server_id >= 0 ? add->server_id : base->server_id;
+    }
+
+    return new;
+}
+
+static const char *set_server_id (cmd_parms *cmd, void *dummy, const char *arg)
+{
+    int tmp = -1;
+    const char *err;
+    unique_id_server_config_rec *conf;
+
+    if ((err = ap_check_cmd_context (cmd, GLOBAL_ONLY)) != NULL) {
+    	return err;
+    }
+
+    conf = (unique_id_server_config_rec *) ap_get_module_config (
+            cmd->server->module_config,
+	    &unique_id_module
+    );
+
+    if (conf == NULL) {
+    	return "Unique ID: data not previously allocated";
+    }
+
+    if (apr_cstr_atoi(&tmp, arg) != APR_SUCCESS || tmp < 0 || tmp > 65535) {
+    	return "Unique ID: Invalid syntax in UniqueIdServerId parameter. Must be a number between 0 and 65535 inclusive.";
+    }
+
+    conf->server_id = tmp;
+
+    return NULL;
+}
+
+static const command_rec unique_id_cmds[] =
+{
+    AP_INIT_TAKE1("UniqueIdServerId", set_server_id, NULL, RSRC_CONF, "Set a unique ID of server in the range 0 to 65535"),
+    {NULL}
+};
+
 AP_DECLARE_MODULE(unique_id) = {
     STANDARD20_MODULE_STUFF,
-    NULL,                       /* dir config creater */
-    NULL,                       /* dir merger --- default is to override */
-    NULL,                       /* server config */
-    NULL,                       /* merge server configs */
-    NULL,                       /* command apr_table_t */
-    register_hooks              /* register hooks */
+    NULL,                           /* dir config creater */
+    NULL,                           /* dir merger --- default is to override */
+    create_unique_id_server_config, /* server config */
+    merge_unique_id_server_config,  /* merge server configs */
+    unique_id_cmds,                 /* command apr_table_t */
+    register_hooks                  /* register hooks */
 };
