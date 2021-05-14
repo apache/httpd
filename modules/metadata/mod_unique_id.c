@@ -22,13 +22,6 @@
  * Complete rewrite by: Atle Solbakken <atle@goliathdns.no>, April 2021
  */
 
-#ifdef _WIN32
-#include <process.h>
-#define getpid _getpid
-#else
-#include <unistd.h>
-#endif
-
 /* Enable when ready to use new library encoder
  * #define WITH_APR_ENCODE
  */
@@ -41,10 +34,23 @@
 #include "apr_thread_proc.h"
 #include "apr_cstr.h"
 
+#include "ap_mpm.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_log.h"
 #include "http_protocol.h"
+
+#ifdef HAVE_SYS_GETTID
+#    include <sys/syscall.h>
+#    include <sys/types.h>
+#endif
+
+#if APR_HAVE_UNISTD_H
+#    include <unistd.h>
+#endif
+#if APR_HAVE_PROCESS_H
+#    include <process.h>
+#endif
 
 typedef apr_uint16_t unique_counter;
 
@@ -55,7 +61,7 @@ typedef apr_uint16_t unique_counter;
 
 typedef struct unique_id_rec {
     apr_uint32_t process_id;
-    apr_uint32_t thread_id;
+    apr_uint64_t thread_id;
     apr_uint64_t timestamp;
     apr_uint16_t server_id;
     unique_counter counter;
@@ -99,7 +105,7 @@ module AP_MODULE_DECLARE_DATA unique_id_module;
  * - 16 bit incrementing counter for each unique Thread ID
  * - 16 bit server ID manually set (defaults to 0)
  *
- * The resulting ID string will be a base64 encoded string (RFC4648) 27 characaters long. The
+ * The resulting ID string will be a base64 encoded string (RFC4648) 32 characaters long. The
  * length may change, applications storing the value should fit longer strings and not depend
  * on the size.
  *
@@ -111,10 +117,10 @@ module AP_MODULE_DECLARE_DATA unique_id_module;
 /* TODO : Endian conversion could be provided for tidyness but having this left out
  *        probably won't cause collisions. */
 
-static void populate_unique_id (unique_id_rec *unique_id, apr_uintptr_t thread_id, apr_uint32_t counter, apr_uint16_t server_id)
+static void populate_unique_id (unique_id_rec *unique_id, apr_uint64_t thread_id, apr_uint32_t counter, apr_uint16_t server_id)
 {
     unique_id->process_id = ((apr_uint64_t) getpid()) & 0x00000000ffffffff;
-    unique_id->thread_id = ((apr_uint64_t) thread_id) & 0x00000000ffffffff;
+    unique_id->thread_id = thread_id;
     unique_id->timestamp = apr_time_now();
     unique_id->server_id = server_id;
     unique_id->counter = counter;
@@ -138,12 +144,34 @@ static int get_server_id(apr_uint16_t *server_id, const request_rec *r)
     return OK;
 }
 
+#if APR_HAS_THREADS
+/* from server/log.c */
+static apr_uint64_t get_thread_id(const request_rec *r) {
+    pid_t tid = 0;
+    int result;
+    if (ap_mpm_query(AP_MPMQ_IS_THREADED, &result) == APR_SUCCESS
+        && result != AP_MPMQ_NOT_SUPPORTED)
+    {
+        return (apr_uint64_t) apr_os_thread_current();
+    }
+
+#if defined(HAVE_GETTID) || defined(HAVE_SYS_GETTID)
+#ifdef HAVE_GETTID
+    tid = gettid();
+#else
+    tid = syscall(SYS_gettid);
+#endif
+    return (apr_uint64_t) (tid == -1 ? 0 : tid);
+#endif /* HAVE_GETTID || HAVE_SYS_GETTID */
+}
+#endif /* APR_HAS_THREADS */
+
 static const char *create_unique_id_string(const request_rec *r)
 {
     char *ret = NULL;
     unique_id_rec unique_id;
     const apr_size_t ret_size = sizeof(unique_id) * 2;
-    apr_uint16_t server_id;
+    apr_uint16_t server_id = 0;
 
     if (get_server_id(&server_id, r) != OK) {
         goto out;
@@ -165,7 +193,7 @@ static const char *create_unique_id_string(const request_rec *r)
             }
         }
 
-        populate_unique_id(&unique_id, (apr_uintptr_t) thread, ++(thread_data->counter), server_id);
+        populate_unique_id(&unique_id, get_thread_id(r), ++(thread_data->counter), server_id);
     }
 #else
     populate_unique_id(&unique_id, 0, ++global_counter, server_id);
