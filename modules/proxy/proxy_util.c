@@ -4526,12 +4526,9 @@ PROXY_DECLARE(apr_status_t) ap_proxy_transfer_between_connections(
         /* Yield if the output filters stack is full? This is to avoid
          * blocking and give the caller a chance to POLLOUT async.
          */
-        if (flags & AP_PROXY_TRANSFER_YIELD_PENDING) {
-            int rc = OK;
-
-            if (!ap_filter_should_yield(c_o->output_filters)) {
-                rc = ap_filter_output_pending(c_o);
-            }
+        if ((flags & AP_PROXY_TRANSFER_YIELD_PENDING)
+                && ap_filter_should_yield(c_o->output_filters)) {
+            int rc = ap_filter_output_pending(c_o);
             if (rc == OK) {
                 ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
                               "ap_proxy_transfer_between_connections: "

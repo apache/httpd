@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.48
 
+  *) mod_proxy: Fix flushing of THRESHOLD_MIN_WRITE data while tunneling.
+     BZ 65294.  [Yann Ylavic]
+
   *) core: Fix a regression that stripped the ETag header from 304 responses.
      PR 61820 [Ruediger Pluem, Roy T. Fielding]
 
