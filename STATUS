@@ -137,11 +137,15 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+
+PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
+  [ start all new proposals below, under PATCHES PROPOSED. ]
+
  *) mod_proxy: Fix flushing of THRESHOLD_MIN_WRITE data while tunneling.
                 BZ 65294
      trunk patch: n/a
      2.4.x patch: http://people.apache.org/~ylavic/patches/pr_65294-v3.patch
-     +1: ylavic, covener
+     +1: ylavic, covener, rpluem
      ylavic: 2.4.x only patch because ap_filter_should_yield() and 
              ap_filter_output_pending() are wrappers for mod_proxy (only)
              there. trunk needs fixing too but differently (I'm on it), nothing
@@ -157,10 +161,7 @@ RELEASE SHOWSTOPPERS:
                   http://svn.apache.org/r1889795
      2.4.x patch: http://people.apache.org/~ylavic/patches/ProxyWebsocketFallbackToProxyHttp.patch
                   svn add changes-entries/ProxyWebsocketFallbackToProxyHttp.txt
-     +1: ylavic, covener
-
-PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
-  [ start all new proposals below, under PATCHES PROPOSED. ]
+     +1: ylavic, covener, rpluem
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
