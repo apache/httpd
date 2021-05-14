@@ -16,5 +16,5 @@
         OCSP, it falls back to its own (if configured) stapling implementation.
      3. mod_md registers itself at the core hooks for OCSP provisioning. Depending
         on configuration, it will accept registrations of its own certificates only,
-        all certficates or none.
+        all certificates or none.
      [Stefan Eissing]
