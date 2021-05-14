@@ -25,10 +25,16 @@
 /* Enable when ready to use new library encoder
  * #define WITH_APR_ENCODE
  */
+
+/* Enable debug to error log
+ * #define UNIQUE_ID_DEBUG
+ */
+
 #define THREADED_COUNTER "unique_id_counter"
 
 #include "apr.h"
-#ifdef WITH_APR_ENCODE    
+
+#ifdef WITH_APR_ENCODE
 #    include "apr_encode.h"
 #endif
 #include "apr_thread_proc.h"
@@ -94,8 +100,10 @@ module AP_MODULE_DECLARE_DATA unique_id_module;
 /*
  * This module generates (almost) unique IDs for each request to a particular server.
  *
- * IDs /might/ be unique across servers if and only if two requests happen simultaneously
- * and the servers clocks are synchronized.
+ * IDs are guaranteed to be unique across different servers for which the parameter
+ * UniqueIdServerId is set to a different value.
+ *
+ * IDs are always unique on a particular server regardless of the UniqueIdServerId value.
  *
  * A combination of different parameters however ensure a low chance for ID collisions:
  *
@@ -114,12 +122,39 @@ module AP_MODULE_DECLARE_DATA unique_id_module;
  *
  */
 
-/* TODO : Endian conversion could be provided for tidyness but having this left out
- *        probably won't cause collisions. */
+#if APR_IS_BIGENDIAN
+#    define swap16(a) a
+#    define swap32(a) a
+#    define swap64(a) a
+#else
+#    define swap16(a) ( ((a>>8)  & 0xff) |              \
+                        ((a<<8)  & 0xff00))
+#    define swap32(a) ( ((a>>24) & 0xff) |              \
+                        ((a>>8)  & 0xff00) |            \
+			((a<<8)  & 0xff0000) |          \
+			((a<<24) & 0xff000000))
+#    define swap64(a) ( ((a>>56) & 0xff) |              \
+                        ((a>>40) & 0xff00) |            \
+			((a>>24) & 0xff0000) |          \
+			((a>>8)  & 0xff000000) |        \
+			((a<<8)  & 0xff00000000) |      \
+			((a<<24) & 0xff0000000000) |    \
+			((a<<40) & 0xff000000000000) |  \
+			((a<<56) & 0xff00000000000000))
+#endif /* APR_IS_BIGENDIAN */
+
+static void byteswap_unique_id (unique_id_rec *unique_id)
+{
+    unique_id->process_id = swap32(unique_id->process_id);
+    unique_id->thread_id = swap64(unique_id->thread_id);
+    unique_id->timestamp = swap64(unique_id->timestamp);
+    unique_id->server_id = swap16(unique_id->server_id);
+    unique_id->counter = swap16(unique_id->counter);
+}
 
 static void populate_unique_id (unique_id_rec *unique_id, apr_uint64_t thread_id, apr_uint32_t counter, apr_uint16_t server_id)
 {
-    unique_id->process_id = ((apr_uint64_t) getpid()) & 0x00000000ffffffff;
+    unique_id->process_id = ((apr_uint32_t) getpid()) & 0x00000000ffffffff;
     unique_id->thread_id = thread_id;
     unique_id->timestamp = apr_time_now();
     unique_id->server_id = server_id;
@@ -170,7 +205,10 @@ static const char *create_unique_id_string(const request_rec *r)
 {
     char *ret = NULL;
     unique_id_rec unique_id;
-    const apr_size_t ret_size = sizeof(unique_id) * 2;
+#ifndef WITH_APR_ENCODE    
+    const
+#endif
+    apr_size_t ret_size = sizeof(unique_id) * 2;
     apr_uint16_t server_id = 0;
 
     if (get_server_id(&server_id, r) != OK) {
@@ -198,6 +236,8 @@ static const char *create_unique_id_string(const request_rec *r)
 #else
     populate_unique_id(&unique_id, 0, ++global_counter, server_id);
 #endif
+
+    byteswap_unique_id(&unique_id);
 
     if ((ret = (char *)apr_pcalloc(r->pool, ret_size)) == NULL) {
         goto out;
@@ -243,7 +283,8 @@ static const char *create_unique_id_string(const request_rec *r)
     }
 #endif
 
-////    /* Debug
+ #ifdef UNIQUE_ID_DEBUG
+    byteswap_unique_id(&unique_id); // Swap back for debug purposes
     ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
             "Unique ID generated: %s pid %" APR_UINT64_T_FMT " tid %" APR_UINT64_T_FMT " time %" APR_UINT64_T_FMT " server %" APR_UINT64_T_FMT " count %" APR_UINT64_T_FMT "",
             ret,
@@ -253,7 +294,7 @@ static const char *create_unique_id_string(const request_rec *r)
             (apr_uint64_t) unique_id.server_id,
             (apr_uint64_t) unique_id.counter
     );
-//    */
+#endif /* UNIQUE_ID_DEBUG */
 
     out:
     return ret;
