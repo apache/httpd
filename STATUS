@@ -169,11 +169,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1734281
                   http://svn.apache.org/r1838055
                   http://svn.apache.org/r1838079
+                  http://svn.apache.org/r1840229
                   http://svn.apache.org/r1876664
                   http://svn.apache.org/r1876674
                   http://svn.apache.org/r1876784
                   http://svn.apache.org/r1879078
                   http://svn.apache.org/r1881620
+                  http://svn.apache.org/r1887311
                   http://svn.apache.org/r1888871
      2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/187.diff
                   (see https://github.com/apache/httpd/pull/187)
