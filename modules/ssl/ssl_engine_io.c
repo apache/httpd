@@ -1691,19 +1691,17 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
  *
  * ### This buffering could be probably be done more comprehensively
  * ### in ssl_io_filter_output itself. 
- * 
- * ### Another possible performance optimisation in particular for the
- * ### [HEAP] [FILE] HTTP response case is using a brigade rather than
- * ### a char array to buffer; using apr_brigade_write() to append
- * ### will use already-allocated memory from the HEAP, reducing # of
- * ### copies.
  */
 
-#define COALESCE_BYTES (AP_IOBUFSIZE)
+/* apr_brigade_write() allocates buckets of APR_BUCKET_BUFF_SIZE bytes,
+ * capping our buffer to that avoids creating a second bucket partially
+ * filled (which would defeat the purpose of coalescing).
+ */
+#define COALESCE_BYTES ((apr_size_t)APR_BUCKET_BUFF_SIZE)
 
 struct coalesce_ctx {
-    char buffer[COALESCE_BYTES];
-    apr_size_t bytes; /* number of bytes of buffer used. */
+    apr_bucket_brigade *buffer;
+    apr_size_t bytes; /* number of bytes in buffer. */
 };
 
 static apr_status_t ssl_io_filter_coalesce(ap_filter_t *f,
@@ -1712,21 +1710,14 @@ static apr_status_t ssl_io_filter_coalesce(ap_filter_t *f,
     apr_bucket *e, *upto;
     apr_size_t bytes = 0;
     struct coalesce_ctx *ctx = f->ctx;
-    apr_size_t buffered = ctx ? ctx->bytes : 0; /* space used on entry */
     unsigned count = 0;
 
-    /* Pass down everything if called from ap_filter_output_pending() */
-    if (APR_BRIGADE_EMPTY(bb)) {
-        if (!ctx || !ctx->bytes) {
-            return APR_SUCCESS;
-        }
-
-        e = apr_bucket_transient_create(ctx->buffer, ctx->bytes,
-                                        bb->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(bb, e);
-        ctx->bytes = 0; /* buffer now emptied. */
-
-        return ap_pass_brigade(f->next, bb);
+    if (ctx) {
+        ap_filter_reinstate_brigade(f, ctx->buffer, NULL);
+    }
+    else {
+        ctx = f->ctx = apr_pcalloc(f->c->pool, sizeof(*ctx));
+        ctx->buffer = apr_brigade_create(f->c->pool, f->c->bucket_alloc);
     }
 
     /* The brigade consists of zero-or-more small data buckets which
@@ -1747,7 +1738,7 @@ static apr_status_t ssl_io_filter_coalesce(ap_filter_t *f,
              && !APR_BUCKET_IS_METADATA(e)
              && e->length != (apr_size_t)-1
              && e->length <= COALESCE_BYTES
-             && (buffered + bytes + e->length) <= COALESCE_BYTES;
+             && (ctx->bytes + bytes + e->length) <= COALESCE_BYTES;
          e = APR_BUCKET_NEXT(e)) {
         /* don't count zero-length buckets */
         if (e->length) {
@@ -1761,8 +1752,8 @@ static apr_status_t ssl_io_filter_coalesce(ap_filter_t *f,
      * typical [HEAP] [FILE] HTTP response brigade, this handles
      * merging the headers and the start of the body into a single TLS
      * record. */
-    if (bytes + buffered > 0
-        && bytes + buffered < COALESCE_BYTES
+    if (bytes + ctx->bytes > 0
+        && bytes + ctx->bytes < COALESCE_BYTES
         && e != APR_BRIGADE_SENTINEL(bb)
         && !APR_BUCKET_IS_METADATA(e)) {
         apr_status_t rv = APR_SUCCESS;
@@ -1789,8 +1780,8 @@ static apr_status_t ssl_io_filter_coalesce(ap_filter_t *f,
              * entirely within the buffer.  Otherwise, split it so it does
              * fit. */
             if (e->length > COALESCE_BYTES
-                || e->length + buffered + bytes > COALESCE_BYTES) {
-                rv = apr_bucket_split(e, COALESCE_BYTES - (buffered + bytes));
+                || e->length + ctx->bytes + bytes > COALESCE_BYTES) {
+                rv = apr_bucket_split(e, COALESCE_BYTES - ctx->bytes - bytes);
             }
 
             if (rv == APR_SUCCESS && e->length == 0) {
@@ -1801,7 +1792,7 @@ static apr_status_t ssl_io_filter_coalesce(ap_filter_t *f,
                 ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, f->c,
                               "coalesce: adding %" APR_SIZE_T_FMT " bytes "
                               "from split %s bucket, total %" APR_SIZE_T_FMT,
-                              e->length, e->type->name, bytes + buffered);
+                              e->length, e->type->name, bytes + ctx->bytes);
 
                 count++;
                 bytes += e->length;
@@ -1838,16 +1829,8 @@ static apr_status_t ssl_io_filter_coalesce(ap_filter_t *f,
      */
     if (bytes > 0
         && (count > 1
-            || (upto == APR_BRIGADE_SENTINEL(bb)
-                && bytes < COALESCE_BYTES)
-            || (ctx && ctx->bytes > 0))) {
-        /* If coalescing some bytes, ensure a context has been
-         * created. */
-        if (!ctx) {
-            f->ctx = ctx = apr_palloc(f->c->pool, sizeof *ctx);
-            ctx->bytes = 0;
-        }
-
+            || (upto == APR_BRIGADE_SENTINEL(bb) && bytes < COALESCE_BYTES)
+            || (ctx->bytes > 0))) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, f->c,
                       "coalesce: have %" APR_SIZE_T_FMT " bytes, "
                       "adding %" APR_SIZE_T_FMT " more (buckets=%u)",
@@ -1885,14 +1868,19 @@ static apr_status_t ssl_io_filter_coalesce(ap_filter_t *f,
                 }
 
                 /* Be paranoid. */
-                if (len > sizeof ctx->buffer
-                    || (len + ctx->bytes > sizeof ctx->buffer)) {
+                if (len > COALESCE_BYTES
+                    || (len + ctx->bytes > COALESCE_BYTES)) {
                     ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, f->c, APLOGNO(02014)
                                   "unexpected coalesced bucket data length");
                     break; /* non-fatal error; break out */
                 }
 
-                memcpy(ctx->buffer + ctx->bytes, data, len);
+                rv = apr_brigade_write(ctx->buffer, NULL, NULL, data, len);
+                if (rv) {
+                    ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, f->c, APLOGNO()
+                                  "coalesce failed to write buffered data");
+                    return AP_FILTER_ERROR;
+                }
                 ctx->bytes += len;
             }
 
@@ -1903,19 +1891,19 @@ static apr_status_t ssl_io_filter_coalesce(ap_filter_t *f,
     }
 
     if (APR_BRIGADE_EMPTY(bb)) {
-        /* If the brigade is now empty, our work here is done. */
-        return APR_SUCCESS;
+        /* If the brigade is now empty, setaside the buffer for the next
+         * call or write completion */
+        return ap_filter_setaside_brigade(f, ctx->buffer);
     }
 
     /* If anything remains in the brigade, it must now be passed down
      * the filter stack, first prepending anything that has been
      * coalesced. */
-    if (ctx && ctx->bytes) {
+    if (!APR_BRIGADE_EMPTY(ctx->buffer)) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, f->c,
-                      "coalesce: passing on %" APR_SIZE_T_FMT " bytes", ctx->bytes);
-
-        e = apr_bucket_transient_create(ctx->buffer, ctx->bytes, bb->bucket_alloc);
-        APR_BRIGADE_INSERT_HEAD(bb, e);
+                      "coalesce: passing on %" APR_SIZE_T_FMT " bytes",
+                      ctx->bytes);
+        APR_BRIGADE_PREPEND(bb, ctx->buffer);
         ctx->bytes = 0; /* buffer now emptied. */
     }
 
