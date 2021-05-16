@@ -491,10 +491,12 @@ static proxy_worker *hc_get_hcworker(sctx_t *ctx, proxy_worker *worker,
         hc->hash.def = hc->s->hash.def = ap_proxy_hashfunc(hc->s->name, PROXY_HASHFUNC_DEFAULT);
         hc->hash.fnv = hc->s->hash.fnv = ap_proxy_hashfunc(hc->s->name, PROXY_HASHFUNC_FNV);
         hc->s->port = port;
-        if (worker->s->conn_timeout_set) {
-            hc->s->conn_timeout_set = worker->s->conn_timeout_set;
-            hc->s->conn_timeout = worker->s->conn_timeout;
-        }
+        hc->s->conn_timeout_set = worker->s->conn_timeout_set;
+        hc->s->conn_timeout = worker->s->conn_timeout;
+        hc->s->ping_timeout_set = worker->s->ping_timeout_set;
+        hc->s->ping_timeout = worker->s->ping_timeout;
+        hc->s->timeout_set = worker->s->timeout_set;
+        hc->s->timeout = worker->s->timeout;
         /* Do not disable worker in case of errors */
         hc->s->status |= PROXY_WORKER_IGNORE_ERRORS;
         /* Mark as the "generic" worker */
