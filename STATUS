@@ -162,6 +162,22 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      is not the right fix, then it should be removed from trunk.
      Putting it here is a way to revive the discussion
 
+  *) Common HTTP/1 parsing and early failure code between core and h2,
+     including/adding StrictHostCheck.
+     trunk patch: http://svn.apache.org/r1734009
+                  http://svn.apache.org/r1734231
+                  http://svn.apache.org/r1734281
+                  http://svn.apache.org/r1838055
+                  http://svn.apache.org/r1838079
+                  http://svn.apache.org/r1876664
+                  http://svn.apache.org/r1876674
+                  http://svn.apache.org/r1876784
+                  http://svn.apache.org/r1879078
+                  http://svn.apache.org/r1881620
+     2.4.x patch: https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/187.diff
+                  (see https://github.com/apache/httpd/pull/187)
+    +1: ylavic,
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
