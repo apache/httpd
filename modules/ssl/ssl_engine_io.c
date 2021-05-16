@@ -1877,7 +1877,7 @@ static apr_status_t ssl_io_filter_coalesce(ap_filter_t *f,
 
                 rv = apr_brigade_write(ctx->buffer, NULL, NULL, data, len);
                 if (rv) {
-                    ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, f->c, APLOGNO()
+                    ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, f->c, APLOGNO(10270)
                                   "coalesce failed to write buffered data");
                     return AP_FILTER_ERROR;
                 }
