@@ -1469,7 +1469,7 @@ static void get_worker(int *have_idle_worker_p, int blocking, int *all_busy)
 }
 
 /* Structures to reuse */
-static APR_RING_HEAD(timer_free_ring_t, timer_event_t) timer_free_ring;
+static timer_event_t timer_free_ring;
 
 static apr_skiplist *timer_skiplist;
 static volatile apr_time_t timers_next_expiry;
@@ -1516,8 +1516,8 @@ static timer_event_t * event_get_timer_event(apr_time_t t,
 
     apr_thread_mutex_lock(g_timer_skiplist_mtx);
 
-    if (!APR_RING_EMPTY(&timer_free_ring, timer_event_t, link)) {
-        te = APR_RING_FIRST(&timer_free_ring);
+    if (!APR_RING_EMPTY(&timer_free_ring.link, timer_event_t, link)) {
+        te = APR_RING_FIRST(&timer_free_ring.link);
         APR_RING_REMOVE(te, link);
     }
     else {
@@ -1715,7 +1715,7 @@ static void process_timeout_queue(struct timeout_queue *q,
 {
     apr_uint32_t total = 0, count;
     event_conn_state_t *first, *cs, *last;
-    struct timeout_head_t trash;
+    struct event_conn_state_t trash;
     struct timeout_queue *qp;
     apr_status_t rv;
 
@@ -1723,7 +1723,7 @@ static void process_timeout_queue(struct timeout_queue *q,
         return;
     }
 
-    APR_RING_INIT(&trash, event_conn_state_t, timeout_list);
+    APR_RING_INIT(&trash.timeout_list, event_conn_state_t, timeout_list);
     for (qp = q; qp; qp = qp->next) {
         count = 0;
         cs = first = last = APR_RING_FIRST(&qp->head);
@@ -1769,7 +1769,7 @@ static void process_timeout_queue(struct timeout_queue *q,
             continue;
 
         APR_RING_UNSPLICE(first, last, timeout_list);
-        APR_RING_SPLICE_TAIL(&trash, first, last, event_conn_state_t,
+        APR_RING_SPLICE_TAIL(&trash.timeout_list, first, last, event_conn_state_t,
                              timeout_list);
         AP_DEBUG_ASSERT(*q->total >= count && qp->count >= count);
         *q->total -= count;
@@ -1780,7 +1780,7 @@ static void process_timeout_queue(struct timeout_queue *q,
         return;
 
     apr_thread_mutex_unlock(timeout_mutex);
-    first = APR_RING_FIRST(&trash);
+    first = APR_RING_FIRST(&trash.timeout_list);
     do {
         cs = APR_RING_NEXT(first, timeout_list);
         TO_QUEUE_ELEM_INIT(first);
@@ -1910,7 +1910,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                     push_timer2worker(te);
                 }
                 else {
-                    APR_RING_INSERT_TAIL(&timer_free_ring, te,
+                    APR_RING_INSERT_TAIL(&timer_free_ring.link, te,
                                          timer_event_t, link);
                 }
             }
@@ -2372,7 +2372,7 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
             te->cbfunc(te->baton);
             {
                 apr_thread_mutex_lock(g_timer_skiplist_mtx);
-                APR_RING_INSERT_TAIL(&timer_free_ring, te, timer_event_t, link);
+                APR_RING_INSERT_TAIL(&timer_free_ring.link, te, timer_event_t, link);
                 apr_thread_mutex_unlock(g_timer_skiplist_mtx);
             }
         }
@@ -2477,7 +2477,7 @@ static void setup_threads_runtime(void)
     apr_pool_create(&pskip, pconf);
     apr_pool_tag(pskip, "mpm_skiplist");
     apr_thread_mutex_create(&g_timer_skiplist_mtx, APR_THREAD_MUTEX_DEFAULT, pskip);
-    APR_RING_INIT(&timer_free_ring, timer_event_t, link);
+    APR_RING_INIT(&timer_free_ring.link, timer_event_t, link);
     apr_skiplist_init(&timer_skiplist, pskip);
     apr_skiplist_set_compare(timer_skiplist, timer_comp, timer_comp);
 

@@ -151,7 +151,7 @@ static int simple_run_loop(simple_core_t * sc)
         apr_time_t tnow = apr_time_now();
         simple_timer_t *head;
         apr_interval_time_t timeout = apr_time_from_msec(500);
-        APR_RING_HEAD(simple_temp_timer_ring_t, simple_timer_t) tmp_ring;
+        simple_timer_t tmp_ring;
 
         apr_thread_mutex_lock(sc->mtx);
         head = APR_RING_FIRST(&sc->timer_ring);
@@ -183,7 +183,7 @@ static int simple_run_loop(simple_core_t * sc)
             }
         }
 
-        APR_RING_INIT(&tmp_ring, simple_timer_t, link);
+        APR_RING_INIT(&tmp_ring.link, simple_timer_t, link);
 
         apr_thread_mutex_lock(sc->mtx);
 
@@ -201,7 +201,7 @@ static int simple_run_loop(simple_core_t * sc)
                     APR_RING_REMOVE(ep, link);
                     APR_RING_CHECK_CONSISTENCY(&sc->timer_ring,
                                                simple_timer_t, link);
-                    APR_RING_INSERT_TAIL(&tmp_ring, ep, simple_timer_t, link);
+                    APR_RING_INSERT_TAIL(&tmp_ring.link, ep, simple_timer_t, link);
                     ep = next;
                 }
                 else {
@@ -214,9 +214,9 @@ static int simple_run_loop(simple_core_t * sc)
 
         apr_thread_mutex_unlock(sc->mtx);
 
-        if (!APR_RING_EMPTY(&tmp_ring, simple_timer_t, link)) {
-            for (ep = APR_RING_FIRST(&tmp_ring);
-                 ep != APR_RING_SENTINEL(&tmp_ring,
+        if (!APR_RING_EMPTY(&tmp_ring.link, simple_timer_t, link)) {
+            for (ep = APR_RING_FIRST(&tmp_ring.link);
+                 ep != APR_RING_SENTINEL(&tmp_ring.link,
                                          simple_timer_t, link);
                  ep = APR_RING_NEXT(ep, link)) {
                 apr_thread_pool_push(sc->workers,
