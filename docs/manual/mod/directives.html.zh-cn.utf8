@@ -532,6 +532,7 @@
 <li><a href="mod_proxy.html#proxystatus">ProxyStatus</a></li>
 <li><a href="mod_proxy.html#proxytimeout">ProxyTimeout</a></li>
 <li><a href="mod_proxy.html#proxyvia">ProxyVia</a></li>
+<li><a href="mod_proxy_wstunnel.html#proxywebsocketfallbacktoproxyhttp">ProxyWebsocketFallbackToProxyHttp</a></li>
 <li><a href="core.html#qualifyredirecturl" id="Q" name="Q">QualifyRedirectURL</a></li>
 <li><a href="core.html#readbuffersize" id="R" name="R">ReadBufferSize</a></li>
 <li><a href="mod_autoindex.html#readmename">ReadmeName</a></li>

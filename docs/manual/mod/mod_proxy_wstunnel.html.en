@@ -81,13 +81,33 @@ ANY means that <code>Upgrade</code> will read in the request headers and use
 in the response <code>Upgrade</code></p>
 </div>
 <div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><h3 class="directives">Directives</h3>
-<p>This module provides no
-            directives.</p>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#proxywebsocketfallbacktoproxyhttp">ProxyWebsocketFallbackToProxyHttp</a></li>
+</ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_proxy_wstunnel">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_proxy_wstunnel">Report a bug</a></li></ul><h3>See also</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></li>
 <li><a href="#comments_section">Comments</a></li></ul></div>
 
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ProxyWebsocketFallbackToProxyHttp" id="ProxyWebsocketFallbackToProxyHttp">ProxyWebsocketFallbackToProxyHttp</a> <a name="proxywebsocketfallbacktoproxyhttp" id="proxywebsocketfallbacktoproxyhttp">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Instructs this module to let <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> handle the request</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyWebsocketFallbackToProxyHttp On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ProxyWebsocketFallbackToProxyHttp On</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_wstunnel</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.4.48 and later</td></tr>
+</table>
+    <p>Since httpd 2.4.47, <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> can handle WebSocket
+    upgrading and tunneling in accordance to RFC 7230, this directive controls
+    whether <code class="module"><a href="../mod/mod_proxy_wstunnel.html">mod_proxy_wstunnel</a></code> should hand over to
+    <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> to this, which is the case by default.</p>
+    <p>Setting to <em>Off</em> lets <code class="module"><a href="../mod/mod_proxy_wstunnel.html">mod_proxy_wstunnel</a></code> handle
+    WebSocket requests as in httpd 2.4.46 and earlier.</p>
+
+</div>
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_proxy_wstunnel.html" title="English">&nbsp;en&nbsp;</a> |
