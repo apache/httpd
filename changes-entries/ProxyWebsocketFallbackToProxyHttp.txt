@@ -1,3 +1,0 @@
-  *) mod_proxy_wstunnel: Add ProxyWebsocketFallbackToProxyHttp to opt-out the
-     fallback to mod_proxy_http for WebSocket upgrade and tunneling.
-     [Yann Ylavic]
