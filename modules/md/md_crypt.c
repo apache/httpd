@@ -71,11 +71,6 @@
 #include <openssl/ct.h>
 #endif
 
-#if defined(LIBRESSL_VERSION_NUMBER)
-#define EVP_PKEY_X25519 NID_X25519
-#define EVP_PKEY_X448 NID_X448
-#endif
-
 static int initialized;
 
 struct md_pkey_t {
@@ -802,7 +797,7 @@ static apr_status_t gen_ec(md_pkey_t **ppkey, apr_pool_t *p, const char *curve)
         curve_nid = NID_X9_62_prime192v1;
     }
 #endif
-#ifdef NID_X25519
+#if defined(NID_X25519) && !defined(LIBRESSL_VERSION_NUMBER)
     if (NID_undef == curve_nid && !apr_strnatcasecmp("X25519", curve)) {
         curve_nid = NID_X25519;
     }
@@ -819,7 +814,7 @@ static apr_status_t gen_ec(md_pkey_t **ppkey, apr_pool_t *p, const char *curve)
     *ppkey = make_pkey(p);
     switch (curve_nid) {
 
-#ifdef NID_X25519
+#if defined(NID_X25519) && !defined(LIBRESSL_VERSION_NUMBER)
     case NID_X25519:
         /* no parameters */
         if (NULL == (ctx = EVP_PKEY_CTX_new_id(EVP_PKEY_X25519, NULL))
@@ -833,7 +828,7 @@ static apr_status_t gen_ec(md_pkey_t **ppkey, apr_pool_t *p, const char *curve)
         break;
 #endif
 
-#ifdef NID_X448
+#if defined(NID_X448) && !defined(LIBRESSL_VERSION_NUMBER)
     case NID_X448:
         /* no parameters */
         if (NULL == (ctx = EVP_PKEY_CTX_new_id(EVP_PKEY_X448, NULL))
