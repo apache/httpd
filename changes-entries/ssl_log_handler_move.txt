@@ -1,0 +1,7 @@
+  * mod_log_config/mod_ssl: moved the log_handlers registered by mod_ssl
+    into mod_log_config itself. These now use the global `ap_ssl_var_lookup()`
+    functions and work for all running SSL modules.
+    The dependency from mod_ssl to mod_log_config and its header is removed.
+    mod_ssl now provides the content of "{errstr}c" as variable "SSL_CLIENT_VERIFY_ERRSTR".
+    This change should be fully compatible to all deployed configurations.
+    [Stefan Eissing]

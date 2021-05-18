@@ -1121,8 +1121,6 @@ const char  *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_r
     AP_FN_ATTR_NONNULL((1, 2, 5)) AP_FN_ATTR_WARN_UNUSED_RESULT;
 apr_array_header_t *ssl_ext_list(apr_pool_t *p, conn_rec *c, int peer, const char *extension);
 
-void         ssl_var_log_config_register(apr_pool_t *p);
-
 /* Extract SSL_*_DN_* variables into table 't' from SSL object 'ssl',
  * allocating from 'p': */
 void modssl_var_extract_dns(apr_table_t *t, SSL *ssl, apr_pool_t *p);

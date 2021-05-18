@@ -452,9 +452,6 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
                                            apr_pool_cleanup_null);
 #endif
 
-    /* Register us to handle mod_log_config %c/%x variables */
-    ssl_var_log_config_register(pconf);
-
     /* Register to handle mod_status status page generation */
     ssl_scache_status_register(pconf);
 
