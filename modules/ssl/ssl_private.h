@@ -137,13 +137,12 @@
         SSL_CTX_ctrl(ctx, SSL_CTRL_SET_MIN_PROTO_VERSION, version, NULL)
 #define SSL_CTX_set_max_proto_version(ctx, version) \
         SSL_CTX_ctrl(ctx, SSL_CTRL_SET_MAX_PROTO_VERSION, version, NULL)
-#elif LIBRESSL_VERSION_NUMBER < 0x2070000f
+#endif /* LIBRESSL_VERSION_NUMBER < 0x2060000f */
 /* LibreSSL before 2.7 declares OPENSSL_VERSION_NUMBER == 2.0 but does not
  * include most changes from OpenSSL >= 1.1 (new functions, macros, 
  * deprecations, ...), so we have to work around this...
  */
-#define MODSSL_USE_OPENSSL_PRE_1_1_API (1)
-#endif /* LIBRESSL_VERSION_NUMBER < 0x2060000f */
+#define MODSSL_USE_OPENSSL_PRE_1_1_API (LIBRESSL_VERSION_NUMBER < 0x2070000f)
 #else /* defined(LIBRESSL_VERSION_NUMBER) */
 #define MODSSL_USE_OPENSSL_PRE_1_1_API (OPENSSL_VERSION_NUMBER < 0x10100000L)
 #endif
