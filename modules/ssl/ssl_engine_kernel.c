@@ -1704,6 +1704,7 @@ const authz_provider ssl_authz_provider_verify_client =
 **  _________________________________________________________________
 */
 
+#if MODSSL_USE_OPENSSL_PRE_1_1_API
 /*
  * Hand out standard DH parameters, based on the authentication strength
  */
@@ -1749,6 +1750,7 @@ DH *ssl_callback_TmpDH(SSL *ssl, int export, int keylen)
 
     return modssl_get_dh_params(keylen);
 }
+#endif
 
 /*
  * This OpenSSL callback function is called when OpenSSL
