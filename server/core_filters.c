@@ -148,6 +148,20 @@ apr_status_t ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
         if (APR_STATUS_IS_EAGAIN(rv) && block == APR_NONBLOCK_READ) {
             rv = APR_SUCCESS;
         }
+        else if (rv == APR_SUCCESS
+                 && APR_BRIGADE_EMPTY(b)
+                 && block == APR_BLOCK_READ) {
+            /* When the socket is immediatly EOF, apr_brigade_split_line
+             * returns APR_SUCCESS with an empty brigade (socket_bucket_read
+             * morphes the socket bucket into an empty buffer which is then
+             * stripped by apr_brigade_split_line).  Return APR_EOF now and on
+             * the next calls (ctx->bb is empty too).  Same here, ideally we
+             * should return SUCCESS with an EOS bucket, but ap_fgetline_core()
+             * and friends work better with APR_EOF.
+             */
+            AP_DEBUG_ASSERT(APR_BRIGADE_EMPTY(ctx->bb));
+            rv = APR_EOF;
+        }
         goto cleanup;
     }
 
@@ -243,18 +257,15 @@ apr_status_t ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
             }
             goto cleanup;
         }
-        else if (block == APR_BLOCK_READ && len == 0) {
-            /* We wanted to read some bytes in blocking mode.  We read
-             * 0 bytes.  Hence, we now assume we are EOS.
-             *
-             * When we are in normal mode, return an EOS bucket to the
-             * caller.
-             * When we are in speculative mode, leave ctx->bb empty, so
-             * that the next call returns an EOS bucket.
+        if (len == 0) {
+            /* When we are in READBYTES+blocking mode, return an EOS bucket
+             * to the caller.
+             * When we are in nonblocking or SPECULATIVE mode, return an empty
+             * brigade and leave ctx->bb empty, the next call will APR_EOF.
              */
             apr_bucket_delete(e);
 
-            if (mode == AP_MODE_READBYTES) {
+            if (block == APR_BLOCK_READ && mode == AP_MODE_READBYTES) {
                 e = apr_bucket_eos_create(c->bucket_alloc);
                 APR_BRIGADE_INSERT_TAIL(b, e);
             }
@@ -284,7 +295,18 @@ apr_status_t ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
                     rv = apr_bucket_read(e, &str, &bucket_len,
                                          APR_NONBLOCK_READ);
                     if (rv == APR_SUCCESS) {
-                        len += bucket_len;
+                        if (bucket_len) {
+                            len += bucket_len;
+                        }
+                        else if (block == APR_BLOCK_READ
+                                 && mode == AP_MODE_READBYTES
+                                 && APR_BUCKET_NEXT(e) ==
+                                    APR_BRIGADE_SENTINEL(ctx->bb)) {
+                            /* The socket morphed to an empty/immortal bucket,
+                             * turn it to an EOS in READBYTES+blocking mode.
+                             */
+                            apr_bucket_eos_make(e);
+                        }
                         e = APR_BUCKET_NEXT(e);
                     }
                 }
@@ -302,7 +324,7 @@ apr_status_t ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
         }
 
         /* Must do move before CONCAT */
-        ctx->tmpbb = apr_brigade_split_ex(ctx->bb, e, ctx->tmpbb);
+        apr_brigade_split_ex(ctx->bb, e, ctx->tmpbb);
 
         if (mode == AP_MODE_READBYTES) {
             APR_BRIGADE_CONCAT(b, ctx->bb);
@@ -316,6 +338,7 @@ apr_status_t ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
             {
                 rv = apr_bucket_copy(e, &copy_bucket);
                 if (rv != APR_SUCCESS) {
+                    APR_BRIGADE_CONCAT(ctx->bb, ctx->tmpbb);
                     goto cleanup;
                 }
                 APR_BRIGADE_INSERT_TAIL(b, copy_bucket);
