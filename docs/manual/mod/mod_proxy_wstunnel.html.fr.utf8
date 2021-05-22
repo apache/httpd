@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_proxy_wstunnel.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_proxy_wstunnel.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Module pour <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> supportant les
 websockets</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -95,16 +93,25 @@ va lire les en-têtes de la requête et les utilisera dans l'en-tête
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="proxywebsocketfallbacktoproxyhttp" id="proxywebsocketfallbacktoproxyhttp">Directive</a> <a name="ProxyWebsocketFallbackToProxyHttp" id="ProxyWebsocketFallbackToProxyHttp">ProxyWebsocketFallbackToProxyHttp</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Instructs this module to let <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> handle the request</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Demande à ce module de laisser <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>
+gérer la requête</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyWebsocketFallbackToProxyHttp On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProxyWebsocketFallbackToProxyHttp On</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_wstunnel</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Available in httpd 2.4.48 and later</td></tr>
-</table><p>La documentation de cette directive
-	n'a pas encore t traduite. Veuillez vous reporter  la version
-	en langue anglaise.</p></div>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.48 du serveur HTTP Apache</td></tr>
+</table>
+    <p>Depuis la version 2.4.47 de httpd, <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> peut
+    gérer le tunneling et la mise à jour via les WebSockets en accord avec la
+    RFC 7230 ; cette directive permet de définir si, pour ces actions,
+    <code class="module"><a href="../mod/mod_proxy_wstunnel.html">mod_proxy_wstunnel</a></code> doit passer la main à
+    <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>, ce qui est le cas par défaut.</p>
+    <p>Définir cette directive à <em>Off</em> revient à laisser
+    <code class="module"><a href="../mod/mod_proxy_wstunnel.html">mod_proxy_wstunnel</a></code> gérer les requêtes WebSocket, comme avec
+    les versions 2.4.46 et antérieures de httpd.</p>
+
+</div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_proxy_wstunnel.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
