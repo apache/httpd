@@ -89,10 +89,10 @@ in the response <code>Upgrade</code></p>
 <description>Instructs this module to let <module>mod_proxy_http</module> handle the request</description>
 <syntax>ProxyWebsocketFallbackToProxyHttp On|Off</syntax>
 <default>ProxyWebsocketFallbackToProxyHttp On</default>
-<compatibility>Available in httpd 2.4.48 and later</compatibility>
 <contextlist><context>server config</context>
 <context>virtual host</context>
 </contextlist>
+<compatibility>Available in httpd 2.4.48 and later</compatibility>
 
 <usage>
     <p>Since httpd 2.4.47, <module>mod_proxy_http</module> can handle WebSocket
