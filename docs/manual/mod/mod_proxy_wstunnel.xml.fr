@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1880724 -->
+<!-- English Revision : 1890110 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -75,6 +75,29 @@ va lire les en-têtes de la requête et les utilisera dans l'en-tête
 </summary>
 
 <seealso><module>mod_proxy</module></seealso>
+
+<directivesynopsis>
+<name>ProxyWebsocketFallbackToProxyHttp</name>
+<description>Demande à ce module de laisser <module>mod_proxy_http</module>
+gérer la requête</description>
+<syntax>ProxyWebsocketFallbackToProxyHttp On|Off</syntax>
+<default>ProxyWebsocketFallbackToProxyHttp On</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+</contextlist>
+<compatibility>Disponible à partir de la version 2.4.48 du serveur HTTP Apache</compatibility>
+
+<usage>
+    <p>Depuis la version 2.4.47 de httpd, <module>mod_proxy_http</module> peut
+    gérer le tunneling et la mise à jour via les WebSockets en accord avec la
+    RFC 7230 ; cette directive permet de définir si, pour ces actions,
+    <module>mod_proxy_wstunnel</module> doit passer la main à
+    <module>mod_proxy_http</module>, ce qui est le cas par défaut.</p>
+    <p>Définir cette directive à <em>Off</em> revient à laisser
+    <module>mod_proxy_wstunnel</module> gérer les requêtes WebSocket, comme avec
+    les versions 2.4.46 et antérieures de httpd.</p>
+</usage>
+</directivesynopsis>
 
 <directivesynopsis>
 <name>ProxyWebsocketAsync</name>

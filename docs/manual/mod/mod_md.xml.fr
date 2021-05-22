@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
-<!-- English Revision: 1875857 -->
+<!-- English Revision: 1889958 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -783,10 +783,9 @@ MDPortMap http:- https:8433
         <usage>
             <p>
                 Cette directive permet de définir les paramètres de construction
-		des clés privées pour les domaines gérés. Seule la valeur 'RSA'
-		est à l'heure actuelle supportée pour le paramètre
-		<var>type</var>, et le paramètre <var>params</var> spécifie la
-		nombre de bits utilisés pour la clé.
+		des clés privées pour les domaines gérés. Vous pouvez configurer
+		plusieurs types de clés privées et le module obtiendra un
+		certificat pour chaque clé.
             </p><p>
                 La recommandation actuelle (en 2017) est de 2048 bits au minimum,
 		et une valeur inférieure ne sera pas acceptée. Des valeurs
@@ -795,14 +794,37 @@ MDPortMap http:- https:8433
 		votre serveur, ce qui pourra (ou non) être gênant pour vous.
             </p><p>
                 D'autres types de clés seront supportés dans le futur.
+		Vous pouvez par exemple configurer une clé RSA et une clé
+		Elliptic Curve (EC) de façon à ce que deux certificats soient
+		créés pour le domaine concerné. Lors d'une connexion avec un
+		client, c'est la première clé supportée par ce dernier qui sera
+		utilisée.
+            </p><p>
+                Comme les clés et certificats EC sont plus petits, vous pouvez
+		les proposer en premier pour tous les clients modernes
+		compatibles, ce qui peut accélérer la phase de négociation.
+		Ajoutez tout de même une clé RSA pour supporter les clients plus
+		anciens.		
             </p>
             <example><title>Exemple</title>
                 <highlight language="config">
-MDPrivateKeys RSA 3072
+MDPrivateKeys secp256r1 rsa3072
                 </highlight>
             </example>
             <p>
-                Notez que cette directive n'aura d'effet que sur les nouvelles
+                Les types EC supportés dépendent du CA que vous utilisez. Par
+		exemple, Let's encrypt supporte les courbes elliptiques
+		'secp256r1' et 'secp384r1'.
+            </p><p>
+                Chaque type de clé et certificat est stocké dans son fichier
+		propre au sein de l'espace de stockage MD. Le type de clé
+		constitue une partie du nom de fichier avec une convention de
+		nommage présentant une compatibilité ascendante avec les
+		certificats RSA. Vous pouvez ainsi continuer à partager ces
+		fichiers avec les autres applications.
+            </p><p>
+		
+		Notez que cette directive n'aura d'effet que sur les nouvelles
 		clés. Toute clé préexistante ne sera pas affectée. En outre,
 		seules les clés privées générées pour les certificats sont
 		concernées, les clés de comptes ACME n'étant pas affectées.
@@ -1216,7 +1238,28 @@ MDMessageCmd /etc/apache/md-message
 		permissions de root (sur les systèmes *nix) et a donc accès aux
 		fichiers de certificats (et aux clés). Les certificats
 		nécessaires à d'autres applications ou possédant des formats
-		différents peuvent être traités suite à cet évènement.		
+		différents peuvent être traités suite à cet évènement.
+            </p><p>
+                Un évènement de type 'renewing' est déclenché avant le démarrage
+		du processus de renouvellement pour le domaine géré. Si dans ce
+		cas la commande renvoie une valeur non nulle, le renouvellement
+		sera interrompu et tenté à nouveau au cycle suivant. Certaines
+		configurations de clusters l'utilisent pour n'effectuer le
+		renouvellement que sur un seul noeud.
+            </p><p>
+                Un évènement de type 'challenge-setup:type:domain' est déclenché
+		lorsque les données de vérification pour un domaine ont été
+		créées. Il est invoqué avant qu'il soit demandé au serveur ACME
+		de les vérifier. type contient une des méthodes de vérification
+		ACME. Il est invoqué pour chaque nom DNS d'un MDomain. Les
+		configurations de clusters peuvent utiliser cet évènement pour
+		distribuer les fichiers de vérification à tous les noeuds.
+            </p><p>
+                Un évènement de type ocsp-errored est déclenché lorsque le
+		MDStapling est activé pour un domaine, et indique qu'une erreur
+		s'est produite en essayant d'obtenir la réponse OCSP  de
+		l'autorité de certification. mod_md essaiera à nouveau d'obtenir
+		cette réponse.		
             </p>
         </usage>
     </directivesynopsis>
