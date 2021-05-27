@@ -754,6 +754,7 @@ typedef struct {
  
     apr_size_t   flush_max_threshold;
     apr_int32_t  flush_max_pipelined;
+    unsigned int strict_host_check;
 } core_server_config;
 
 /* for AddOutputFiltersByType in core.c */
@@ -781,6 +782,11 @@ AP_DECLARE(void) ap_set_server_protocol(server_rec* s, const char* proto);
 
 typedef struct core_output_filter_ctx core_output_filter_ctx_t;
 typedef struct core_filter_ctx        core_ctx_t;
+
+struct core_filter_ctx {
+    apr_bucket_brigade *b;
+    apr_bucket_brigade *tmpbb;
+};
 
 typedef struct core_net_rec {
     /** Connection to the client */

@@ -54,11 +54,32 @@ AP_DECLARE_DATA extern ap_filter_rec_t *ap_old_write_func;
  */
 
 /**
+ * Read an empty request and set reasonable defaults.
+ * @param c The current connection
+ * @return The new request_rec
+ */
+AP_DECLARE(request_rec *) ap_create_request(conn_rec *c);
+
+/**
  * Read a request and fill in the fields.
  * @param c The current connection
  * @return The new request_rec
  */
 request_rec *ap_read_request(conn_rec *c);
+
+/**
+ * Parse and validate the request line.
+ * @param r The current request
+ * @return 1 on success, 0 on failure
+ */
+AP_DECLARE(int) ap_parse_request_line(request_rec *r);
+
+/**
+ * Validate the request header and select vhost.
+ * @param r The current request
+ * @return 1 on success, 0 on failure
+ */
+AP_DECLARE(int) ap_check_request_header(request_rec *r);
 
 /**
  * Read the mime-encoded headers.

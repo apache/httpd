@@ -1,6 +1,14 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.49
 
+  *) core: Split ap_create_request() from ap_read_request(). [Graham Leggett]
+
+  *) core, h2: common ap_parse_request_line() and ap_check_request_header()
+     code. [Yann Ylavic]
+
+  *) core: Add StrictHostCheck to allow unconfigured hostnames to be
+     rejected. [Eric Covener]
+
 Changes with Apache 2.4.48
 
   *) mod_proxy_wstunnel: Add ProxyWebsocketFallbackToProxyHttp to opt-out the

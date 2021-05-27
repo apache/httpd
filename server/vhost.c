@@ -34,6 +34,7 @@
 #include "http_vhost.h"
 #include "http_protocol.h"
 #include "http_core.h"
+#include "http_main.h"
 
 #if APR_HAVE_ARPA_INET_H
 #include <arpa/inet.h>
@@ -973,7 +974,13 @@ AP_DECLARE(int) ap_matches_request_vhost(request_rec *r, const char *host,
 }
 
 
-static void check_hostalias(request_rec *r)
+/*
+ * Updates r->server from ServerName/ServerAlias. Per the interaction
+ * of ip and name-based vhosts, it only looks in the best match from the
+ * connection-level ip-based matching.
+ * Returns HTTP_BAD_REQUEST if there was no match.
+ */
+static int update_server_from_aliases(request_rec *r)
 {
     /*
      * Even if the request has a Host: header containing a port we ignore
@@ -1051,11 +1058,18 @@ static void check_hostalias(request_rec *r)
         goto found;
     }
 
-    return;
+    if (!r->connection->vhost_lookup_data) { 
+        if (matches_aliases(r->server, host)) {
+            s = r->server;
+            goto found;
+        }
+    }
+    return HTTP_BAD_REQUEST;
 
 found:
     /* s is the first matching server, we're done */
     r->server = s;
+    return HTTP_OK;
 }
 
 
@@ -1072,7 +1086,7 @@ static void check_serverpath(request_rec *r)
      * This is in conjunction with the ServerPath code in http_core, so we
      * get the right host attached to a non- Host-sending request.
      *
-     * See the comment in check_hostalias about how each vhost can be
+     * See the comment in update_server_from_aliases about how each vhost can be
      * listed multiple times.
      */
 
@@ -1136,10 +1150,16 @@ static APR_INLINE const char *construct_host_header(request_rec *r,
 
 AP_DECLARE(void) ap_update_vhost_from_headers(request_rec *r)
 {
+    ap_update_vhost_from_headers_ex(r, 0);
+}
+
+AP_DECLARE(int) ap_update_vhost_from_headers_ex(request_rec *r, int require_match)
+{
     core_server_config *conf = ap_get_core_module_config(r->server->module_config);
     const char *host_header = apr_table_get(r->headers_in, "Host");
     int is_v6literal = 0;
     int have_hostname_from_url = 0;
+    int rc = HTTP_OK;
 
     if (r->hostname) {
         /*
@@ -1152,8 +1172,8 @@ AP_DECLARE(void) ap_update_vhost_from_headers(request_rec *r)
     else if (host_header != NULL) {
         is_v6literal = fix_hostname(r, host_header, conf->http_conformance);
     }
-    if (r->status != HTTP_OK)
-        return;
+    if (!require_match && r->status != HTTP_OK)
+        return HTTP_OK;
 
     if (conf->http_conformance != AP_HTTP_CONFORMANCE_UNSAFE) {
         /*
@@ -1174,10 +1194,16 @@ AP_DECLARE(void) ap_update_vhost_from_headers(request_rec *r)
     /* check if we tucked away a name_chain */
     if (r->connection->vhost_lookup_data) {
         if (r->hostname)
-            check_hostalias(r);
+            rc = update_server_from_aliases(r);
         else
             check_serverpath(r);
     }
+    else if (require_match && r->hostname) { 
+        /* check the base server config */
+        rc = update_server_from_aliases(r);
+    }
+    
+    return rc;
 }
 
 /**
