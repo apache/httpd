@@ -559,8 +559,8 @@
  *                           and ap_ssl_answer_challenge and hooks.
  * 20120211.104 (2.4.47-dev) Move ap_ssl_* into new http_ssl.h header file
  * 20120211.105 (2.4.47-dev) Add ap_ssl_ocsp* hooks and functions to http_ssl.h.
- * 20120211.106 (2.4.47-dev) Add ap_create_request().
- * 20120211.107 (2.4.47-dev) Add ap_parse_request_line() and
+ * 20120211.106 (2.4.49-dev) Add ap_create_request().
+ * 20120211.107 (2.4.49-dev) Add ap_parse_request_line() and
  *                           ap_check_request_header()
  */
 

@@ -5215,7 +5215,7 @@ recognized methods to modules.</p>
 <default>StrictHostCheck OFF</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Added in 2.5.1</compatibility>
+<compatibility>Added in 2.4.49</compatibility>
 
 <usage>
     <p>By default, the server will respond to requests for any hostname,
