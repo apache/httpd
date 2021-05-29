@@ -1448,72 +1448,76 @@ vérification des certificats clients</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#startservers">StartServers <var>nombre</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Nombre de processus enfants du serveur créés au
 démarrage</td></tr>
 <tr><td><a href="mpm_common.html#startthreads">StartThreads <var>nombre</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Nombre de threads créés au démarrage</td></tr>
-<tr class="odd"><td><a href="mod_substitute.html#substitute">Substitute <var>s/modèle/substitution/[infq]</var></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Modèle de substition dans le contenu de la
+<tr class="odd"><td><a href="core.html#stricthostcheck">StrictHostCheck ON|OFF</a></td><td> OFF </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Détermine si le nom d'hôte contenu dans une requête doit être
+explicitement spécifié au niveau du serveur virtuel qui a pris en compte cette
+dernière.
+             </td></tr>
+<tr><td><a href="mod_substitute.html#substitute">Substitute <var>s/modèle/substitution/[infq]</var></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Modèle de substition dans le contenu de la
 réponse</td></tr>
-<tr><td><a href="mod_substitute.html#substituteinheritbefore">SubstituteInheritBefore on|off</a></td><td> on </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Modifie l'ordre de fusion des modèles hérités</td></tr>
-<tr class="odd"><td><a href="mod_substitute.html#substitutemaxlinelength">SubstituteMaxLineLength <var>octets</var>(b|B|k|K|m|M|g|G)</a></td><td> 1m </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit la longueur de ligne maximale</td></tr>
-<tr><td><a href="mod_unixd.html#suexec">Suexec On|Off</a></td><td></td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Active ou désactive la fonctionnalité suEXEC</td></tr>
-<tr class="odd"><td><a href="mod_suexec.html#suexecusergroup">SuexecUserGroup <em>Utilisateur Groupe</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">L'utilisateur et le groupe sous lesquels les programmes CGI
+<tr class="odd"><td><a href="mod_substitute.html#substituteinheritbefore">SubstituteInheritBefore on|off</a></td><td> on </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Modifie l'ordre de fusion des modèles hérités</td></tr>
+<tr><td><a href="mod_substitute.html#substitutemaxlinelength">SubstituteMaxLineLength <var>octets</var>(b|B|k|K|m|M|g|G)</a></td><td> 1m </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit la longueur de ligne maximale</td></tr>
+<tr class="odd"><td><a href="mod_unixd.html#suexec">Suexec On|Off</a></td><td></td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Active ou désactive la fonctionnalité suEXEC</td></tr>
+<tr><td><a href="mod_suexec.html#suexecusergroup">SuexecUserGroup <em>Utilisateur Groupe</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">L'utilisateur et le groupe sous lesquels les programmes CGI
 doivent s'exécuter</td></tr>
-<tr><td><a href="mpm_common.html#threadlimit" id="T" name="T">ThreadLimit <var>nombre</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Le nombre de threads maximum que l'on peut définir par
+<tr class="odd"><td><a href="mpm_common.html#threadlimit" id="T" name="T">ThreadLimit <var>nombre</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Le nombre de threads maximum que l'on peut définir par
 processus enfant</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#threadsperchild">ThreadsPerChild <var>nombre</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Nombre de threads créés par chaque processus
+<tr><td><a href="mpm_common.html#threadsperchild">ThreadsPerChild <var>nombre</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Nombre de threads créés par chaque processus
 enfant</td></tr>
-<tr><td><a href="mpm_common.html#threadstacksize">ThreadStackSize <var>taille</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">La taille en octets de la pile qu'utilisent les threads qui
+<tr class="odd"><td><a href="mpm_common.html#threadstacksize">ThreadStackSize <var>taille</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">La taille en octets de la pile qu'utilisent les threads qui
 traitent les connexions clients</td></tr>
-<tr class="odd"><td><a href="core.html#timeout">TimeOut <var>secondes</var></a></td><td> 60 </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Temps pendant lequel le serveur va attendre certains
+<tr><td><a href="core.html#timeout">TimeOut <var>secondes</var></a></td><td> 60 </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Temps pendant lequel le serveur va attendre certains
 évènements avant de considérer qu'une requête a échoué</td></tr>
-<tr><td><a href="core.html#traceenable">TraceEnable <var>[on|off|extended]</var></a></td><td> on </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Détermine le comportement des requêtes
+<tr class="odd"><td><a href="core.html#traceenable">TraceEnable <var>[on|off|extended]</var></a></td><td> on </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Détermine le comportement des requêtes
 <code>TRACE</code></td></tr>
-<tr class="odd"><td><a href="mod_log_config.html#transferlog">TransferLog <var>fichier</var>|<var>pipe</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Spécifie l'emplacement d'un fichier journal</td></tr>
-<tr><td><a href="mod_mime.html#typesconfig">TypesConfig <var>chemin-fichier</var></a></td><td> conf/mime.types </td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Le chemin du fichier <code>mime.types</code></td></tr>
-<tr class="odd"><td><a href="core.html#undefine" id="U" name="U">UnDefine <var>nom-variable</var></a></td><td></td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Invalide la définition d'une variable</td></tr>
-<tr><td><a href="mod_macro.html#undefmacro">UndefMacro <var>nom</var></a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Supprime une macro</td></tr>
-<tr class="odd"><td><a href="mod_env.html#unsetenv">UnsetEnv <var>var-env</var> [<var>var-env</var>]
-...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Supprime des variables de l'environnement</td></tr>
-<tr><td><a href="mod_macro.html#use">Use <var>nom</var> [<var>valeur1</var> ... <var>valeurN</var>]
-</a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Utilisation d'une macro</td></tr>
-<tr class="odd"><td><a href="core.html#usecanonicalname">UseCanonicalName On|Off|DNS</a></td><td> Off </td><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Définit la manière dont le serveur détermine son propre nom
+<tr><td><a href="mod_log_config.html#transferlog">TransferLog <var>fichier</var>|<var>pipe</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Spécifie l'emplacement d'un fichier journal</td></tr>
+<tr class="odd"><td><a href="mod_mime.html#typesconfig">TypesConfig <var>chemin-fichier</var></a></td><td> conf/mime.types </td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Le chemin du fichier <code>mime.types</code></td></tr>
+<tr><td><a href="core.html#undefine" id="U" name="U">UnDefine <var>nom-variable</var></a></td><td></td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Invalide la définition d'une variable</td></tr>
+<tr class="odd"><td><a href="mod_macro.html#undefmacro">UndefMacro <var>nom</var></a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Supprime une macro</td></tr>
+<tr><td><a href="mod_env.html#unsetenv">UnsetEnv <var>var-env</var> [<var>var-env</var>]
+...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Supprime des variables de l'environnement</td></tr>
+<tr class="odd"><td><a href="mod_macro.html#use">Use <var>nom</var> [<var>valeur1</var> ... <var>valeurN</var>]
+</a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Utilisation d'une macro</td></tr>
+<tr><td><a href="core.html#usecanonicalname">UseCanonicalName On|Off|DNS</a></td><td> Off </td><td>svd</td><td>C</td></tr><tr><td class="descr" colspan="4">Définit la manière dont le serveur détermine son propre nom
 et son port</td></tr>
-<tr><td><a href="core.html#usecanonicalphysicalport">UseCanonicalPhysicalPort On|Off</a></td><td> Off </td><td>svd</td><td>C</td></tr><tr><td class="descr" colspan="4">Définit la manière dont le serveur
+<tr class="odd"><td><a href="core.html#usecanonicalphysicalport">UseCanonicalPhysicalPort On|Off</a></td><td> Off </td><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Définit la manière dont le serveur
 détermine son propre port</td></tr>
-<tr class="odd"><td><a href="mod_unixd.html#user">User <var>utilisateur unix</var></a></td><td> #-1 </td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">L'utilisateur sous lequel le serveur va traiter les
+<tr><td><a href="mod_unixd.html#user">User <var>utilisateur unix</var></a></td><td> #-1 </td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">L'utilisateur sous lequel le serveur va traiter les
 requêtes</td></tr>
-<tr><td><a href="mod_userdir.html#userdir">UserDir <em>nom-répertoire</em> [<em>nom-répertoire</em>] ...
-</a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Chemin des répertoires propres à un
+<tr class="odd"><td><a href="mod_userdir.html#userdir">UserDir <em>nom-répertoire</em> [<em>nom-répertoire</em>] ...
+</a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Chemin des répertoires propres à un
 utilisateur</td></tr>
-<tr class="odd"><td><a href="mod_privileges.html#vhostcgimode" id="V" name="V">VHostCGIMode On|Off|Secure</a></td><td> On </td><td>v</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Détermine si le serveur virtuel peut exécuter des
+<tr><td><a href="mod_privileges.html#vhostcgimode" id="V" name="V">VHostCGIMode On|Off|Secure</a></td><td> On </td><td>v</td><td>X</td></tr><tr><td class="descr" colspan="4">Détermine si le serveur virtuel peut exécuter des
 sous-processus, et définit les privilèges disponibles pour ces
 dernier.</td></tr>
-<tr><td><a href="mod_privileges.html#vhostcgiprivs">VHostCGIPrivs [+-]?<var>privilege-name</var> [[+-]?privilege-name] ...</a></td><td></td><td>v</td><td>X</td></tr><tr><td class="descr" colspan="4">Assigne des privilèges au choix aux sous-processus créés
+<tr class="odd"><td><a href="mod_privileges.html#vhostcgiprivs">VHostCGIPrivs [+-]?<var>privilege-name</var> [[+-]?privilege-name] ...</a></td><td></td><td>v</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Assigne des privilèges au choix aux sous-processus créés
 par un serveur virtuel.</td></tr>
-<tr class="odd"><td><a href="mod_privileges.html#vhostgroup">VHostGroup <var>identifiant-groupe-unix</var></a></td><td></td><td>v</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Définit l'identifiant du groupe sous lequel s'exécute un
+<tr><td><a href="mod_privileges.html#vhostgroup">VHostGroup <var>identifiant-groupe-unix</var></a></td><td></td><td>v</td><td>X</td></tr><tr><td class="descr" colspan="4">Définit l'identifiant du groupe sous lequel s'exécute un
 serveur virtuel.</td></tr>
-<tr><td><a href="mod_privileges.html#vhostprivs">VHostPrivs [+-]?<var>nom-privilège</var> [[+-]?nom-privilège] ...</a></td><td></td><td>v</td><td>X</td></tr><tr><td class="descr" colspan="4">Assigne des privilèges à un serveur virtuel.</td></tr>
-<tr class="odd"><td><a href="mod_privileges.html#vhostsecure">VHostSecure On|Off</a></td><td> On </td><td>v</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Détermine si le serveur s'exécute avec une sécurité avancée
+<tr class="odd"><td><a href="mod_privileges.html#vhostprivs">VHostPrivs [+-]?<var>nom-privilège</var> [[+-]?nom-privilège] ...</a></td><td></td><td>v</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Assigne des privilèges à un serveur virtuel.</td></tr>
+<tr><td><a href="mod_privileges.html#vhostsecure">VHostSecure On|Off</a></td><td> On </td><td>v</td><td>X</td></tr><tr><td class="descr" colspan="4">Détermine si le serveur s'exécute avec une sécurité avancée
 pour les serveurs virtuels.</td></tr>
-<tr><td><a href="mod_privileges.html#vhostuser">VHostUser <var>identifiant-utilisateur-unix</var></a></td><td></td><td>v</td><td>X</td></tr><tr><td class="descr" colspan="4">Définit l'identifiant utilisateur sous lequel s'exécute un
+<tr class="odd"><td><a href="mod_privileges.html#vhostuser">VHostUser <var>identifiant-utilisateur-unix</var></a></td><td></td><td>v</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Définit l'identifiant utilisateur sous lequel s'exécute un
 serveur virtuel.</td></tr>
-<tr class="odd"><td><a href="mod_vhost_alias.html#virtualdocumentroot">VirtualDocumentRoot <em>répertoire-interpolé</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Permet une configuration dynamique de la racine des
+<tr><td><a href="mod_vhost_alias.html#virtualdocumentroot">VirtualDocumentRoot <em>répertoire-interpolé</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Permet une configuration dynamique de la racine des
 documents d'un serveur virtuel donné</td></tr>
-<tr><td><a href="mod_vhost_alias.html#virtualdocumentrootip">VirtualDocumentRootIP <em>répertoire-interpolé</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Configuration dynamique de la racine des documents pour un
+<tr class="odd"><td><a href="mod_vhost_alias.html#virtualdocumentrootip">VirtualDocumentRootIP <em>répertoire-interpolé</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configuration dynamique de la racine des documents pour un
 serveur virtuel donné</td></tr>
-<tr class="odd"><td><a href="core.html#virtualhost">&lt;VirtualHost
+<tr><td><a href="core.html#virtualhost">&lt;VirtualHost
     <var>adresse IP</var>[:<var>port</var>] [<var>adresse
     IP</var>[:<var>port</var>]] ...&gt; ...
-    &lt;/VirtualHost&gt;</a></td><td></td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Contient des directives qui ne s'appliquent qu'à un nom
+    &lt;/VirtualHost&gt;</a></td><td></td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Contient des directives qui ne s'appliquent qu'à un nom
 d'hôte spécifique ou à une adresse IP</td></tr>
-<tr><td><a href="mod_vhost_alias.html#virtualscriptalias">VirtualScriptAlias <em>répertoire-interpolé</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Configuration dynamique du répertoire des scripts CGI pour
+<tr class="odd"><td><a href="mod_vhost_alias.html#virtualscriptalias">VirtualScriptAlias <em>répertoire-interpolé</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configuration dynamique du répertoire des scripts CGI pour
 un serveur virtuel donné</td></tr>
-<tr class="odd"><td><a href="mod_vhost_alias.html#virtualscriptaliasip">VirtualScriptAliasIP <em>répertoire-interpolé</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configuration dynamique du répertoire des scripts CGI pour
+<tr><td><a href="mod_vhost_alias.html#virtualscriptaliasip">VirtualScriptAliasIP <em>répertoire-interpolé</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Configuration dynamique du répertoire des scripts CGI pour
 un serveur virtuel donné</td></tr>
-<tr><td><a href="mod_watchdog.html#watchdoginterval" id="W" name="W">WatchdogInterval <var>time-interval</var>[s]</a></td><td> 1 </td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Intervalle Watchdog en secondes</td></tr>
-<tr class="odd"><td><a href="mod_include.html#xbithack" id="X" name="X">XBitHack on|off|full</a></td><td> off </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Interprète les directives SSI dans les fichiers dont le bit
+<tr class="odd"><td><a href="mod_watchdog.html#watchdoginterval" id="W" name="W">WatchdogInterval <var>time-interval</var>[s]</a></td><td> 1 </td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Intervalle Watchdog en secondes</td></tr>
+<tr><td><a href="mod_include.html#xbithack" id="X" name="X">XBitHack on|off|full</a></td><td> off </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Interprète les directives SSI dans les fichiers dont le bit
 d'exécution est positionné</td></tr>
-<tr><td><a href="mod_xml2enc.html#xml2encalias">xml2EncAlias <var>jeu-de-caractères alias [alias ...]</var></a></td><td></td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Définit des alias pour les valeurs d'encodage</td></tr>
-<tr class="odd"><td><a href="mod_xml2enc.html#xml2encdefault">xml2EncDefault <var>nom</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Définit un encodage par défaut à utiliser lorsqu'aucune
+<tr class="odd"><td><a href="mod_xml2enc.html#xml2encalias">xml2EncAlias <var>jeu-de-caractères alias [alias ...]</var></a></td><td></td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Définit des alias pour les valeurs d'encodage</td></tr>
+<tr><td><a href="mod_xml2enc.html#xml2encdefault">xml2EncDefault <var>nom</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Définit un encodage par défaut à utiliser lorsqu'aucune
 information ne peut être <a href="#sniffing">automatiquement détectée</a></td></tr>
-<tr><td><a href="mod_xml2enc.html#xml2startparse">xml2StartParse <var>élément [élément ...]</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Indique à l'interpréteur à partir de quelle balise il doit
+<tr class="odd"><td><a href="mod_xml2enc.html#xml2startparse">xml2StartParse <var>élément [élément ...]</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Indique à l'interpréteur à partir de quelle balise il doit
 commencer son traitement.</td></tr>
 </table></div>
 <div class="bottomlang">

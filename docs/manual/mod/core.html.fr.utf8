@@ -126,6 +126,7 @@ disponibles</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#sethandler">SetHandler</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#setinputfilter">SetInputFilter</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#setoutputfilter">SetOutputFilter</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#stricthostcheck">StrictHostCheck</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#timeout">TimeOut</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#traceenable">TraceEnable</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#undefine">UnDefine</a></li>
@@ -5200,6 +5201,45 @@ du serveur</td></tr>
 <ul>
 <li><a href="../filter.html">Filters</a> documentation</li>
 </ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="stricthostcheck" id="stricthostcheck">Directive</a> <a name="StrictHostCheck" id="StrictHostCheck">StrictHostCheck</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine si le nom d'hôte contenu dans une requête doit être
+explicitement spécifié au niveau du serveur virtuel qui a pris en compte cette
+dernière.
+             </td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>StrictHostCheck ON|OFF</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>StrictHostCheck OFF</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Noyau httpd</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.49 du serveur HTTP Apache.</td></tr>
+</table>
+    <p>Par défaut, le serveur répond aux requêtes quel que soit le nom d'hôte
+    qu'elles contiennent, y compris un nom d'hôte non prévu dans la
+    configuration. Bien que cela soit pratique, il peut s'avérer souhaitable de
+    restreindre les noms d'hôte qu'une application sous-jacente devra prendre en
+    compte car elle va souvent générer des réponses en se référençant elle-même.</p>
+
+    <p>Si la directive <code class="directive">StrictHostCheck</code> est définie à
+    <em>ON</em>, le serveur générera une erreur HTTP 400 si le nom d'hôte que
+    contient la requête n'a pas été explicitement spécifié par une directive
+    <code class="directive"><a href="#servername">ServerName</a></code> ou <code class="directive"><a href="#serveralias">ServerAlias</a></code> au niveau du serveur virtuel qui
+    correspond le mieux aux caractéristiques de la connexion entrante.</p>
+
+   <p>Cette directive permet aussi de rechercher une correspondance entre le nom
+   d'hôte de la requête et les noms d'hôte spécifiés au sein de la balise
+   ouvrante <code class="directive"><a href="#virtualhost">VirtualHost</a></code>. Il s'agit
+   cependant d'un mécanisme de configuration relativement obscur qui agit comme
+   une directive <code class="directive"><a href="#serveralias">ServerAlias</a></code>
+   supplémentaire.</p>
+
+   <p>Cette directive n'a aucun effet dans les serveurs virtuels qui ne sont pas
+   des serveurs par défaut. La valeur héritée de la configuration globale du
+   serveur ou le serveur virtuel par défaut pour l'adresse IP/port de la
+   connexion sous-jacente déterminent la valeur effective.</p>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="timeout" id="timeout">Directive</a> <a name="TimeOut" id="TimeOut">TimeOut</a></h2>
