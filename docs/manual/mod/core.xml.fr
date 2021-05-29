@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1887384 -->
+<!-- English Revision: 188738 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -5629,6 +5629,46 @@ configuré pour ne transmettre que des méthodes reconnues aux modules.</p>
 </usage>
 <seealso><directive module="core">HTTPProtocolOptions</directive></seealso>
 <seealso><directive module="mod_allowmethods">AllowMethods</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>StrictHostCheck</name>
+<description>Détermine si le nom d'hôte contenu dans une requête doit être
+explicitement spécifié au niveau du serveur virtuel qui a pris en compte cette
+dernière.
+             </description>
+<syntax>StrictHostCheck ON|OFF</syntax>
+<default>StrictHostCheck OFF</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+<compatibility>Disponible à partir de la version 2.4.49 du serveur HTTP Apache.</compatibility>
+
+<usage>
+    <p>Par défaut, le serveur répond aux requêtes quel que soit le nom d'hôte
+    qu'elles contiennent, y compris un nom d'hôte non prévu dans la
+    configuration. Bien que cela soit pratique, il peut s'avérer souhaitable de
+    restreindre les noms d'hôte qu'une application sous-jacente devra prendre en
+    compte car elle va souvent générer des réponses en se référençant elle-même.</p>
+
+    <p>Si la directive <directive>StrictHostCheck</directive> est définie à
+    <em>ON</em>, le serveur générera une erreur HTTP 400 si le nom d'hôte que
+    contient la requête n'a pas été explicitement spécifié par une directive
+    <directive module="core">ServerName</directive> ou <directive
+    module="core">ServerAlias</directive> au niveau du serveur virtuel qui
+    correspond le mieux aux caractéristiques de la connexion entrante.</p>
+
+   <p>Cette directive permet aussi de rechercher une correspondance entre le nom
+   d'hôte de la requête et les noms d'hôte spécifiés au sein de la balise
+   ouvrante <directive module="core">VirtualHost</directive>. Il s'agit
+   cependant d'un mécanisme de configuration relativement obscur qui agit comme
+   une directive <directive module="core">ServerAlias</directive>
+   supplémentaire.</p>
+
+   <p>Cette directive n'a aucun effet dans les serveurs virtuels qui ne sont pas
+   des serveurs par défaut. La valeur héritée de la configuration globale du
+   serveur ou le serveur virtuel par défaut pour l'adresse IP/port de la
+   connexion sous-jacente déterminent la valeur effective.</p>
+</usage>
 </directivesynopsis>
 
 <directivesynopsis>
