@@ -3335,6 +3335,7 @@ static int proxy_connection_create(const char *proxy_function,
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
+    conn->connection->outgoing = 1;
     /* For ssl connection to backend */
     if (conn->is_ssl) {
         if (!ap_proxy_ssl_engine(conn->connection, per_dir_config, 1)) {

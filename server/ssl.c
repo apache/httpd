@@ -32,6 +32,7 @@
 #include "ap_config.h"
 #include "httpd.h"
 #include "http_core.h"
+#include "http_connection.h"
 #include "http_protocol.h"
 #include "http_request.h"
 #include "http_ssl.h"
@@ -58,10 +59,20 @@ APR_HOOK_STRUCT(
     APR_HOOK_LINK(ssl_answer_challenge)
     APR_HOOK_LINK(ssl_ocsp_prime_hook)
     APR_HOOK_LINK(ssl_ocsp_get_resp_hook)
+    APR_HOOK_LINK(ssl_outgoing)
 )
 
 APR_DECLARE_OPTIONAL_FN(int, ssl_is_https, (conn_rec *));
 static APR_OPTIONAL_FN_TYPE(ssl_is_https) *module_ssl_is_https;
+APR_DECLARE_OPTIONAL_FN(int, ssl_proxy_enable, (conn_rec *));
+static APR_OPTIONAL_FN_TYPE(ssl_proxy_enable) *module_ssl_proxy_enable;
+APR_DECLARE_OPTIONAL_FN(int, ssl_engine_disable, (conn_rec *));
+static APR_OPTIONAL_FN_TYPE(ssl_engine_disable) *module_ssl_engine_disable;
+APR_DECLARE_OPTIONAL_FN(int, ssl_engine_set, (conn_rec *,
+                                              ap_conf_vector_t *,
+                                              int proxy, int enable));
+static APR_OPTIONAL_FN_TYPE(ssl_engine_set) *module_ssl_engine_set;
+
 
 static int ssl_is_https(conn_rec *c)
 {
@@ -77,6 +88,57 @@ AP_DECLARE(int) ap_ssl_conn_is_ssl(conn_rec *c)
         r = module_ssl_is_https(c);
     }
     return r;
+}
+
+static int ssl_engine_set(conn_rec *c,
+                          ap_conf_vector_t *per_dir_config,
+                          int proxy, int enable)
+{
+    return proxy? ap_ssl_bind_outgoing(c, per_dir_config, enable) : DECLINED;
+}
+
+static int ssl_proxy_enable(conn_rec *c)
+{
+    return ap_ssl_bind_outgoing(c, NULL, 1);
+}
+
+static int ssl_engine_disable(conn_rec *c)
+{
+    return ap_ssl_bind_outgoing(c, NULL, 0);
+}
+
+AP_DECLARE(int) ap_ssl_bind_outgoing(conn_rec *c, struct ap_conf_vector_t *dir_conf,
+                                     int enable_ssl)
+{
+    int rv;
+
+    c->outgoing = 1;
+    rv = ap_run_ssl_outgoing(c, dir_conf, enable_ssl);
+    if (rv != OK && rv != DECLINED) goto cleanup;
+
+    if (module_ssl_engine_set) {
+        rv = module_ssl_engine_set(c, dir_conf, 1, enable_ssl);
+    }
+    else if (enable_ssl && module_ssl_proxy_enable) {
+        rv = module_ssl_proxy_enable(c);
+    }
+    else if (!enable_ssl && module_ssl_engine_disable) {
+        rv = module_ssl_engine_disable(c);
+    }
+cleanup:
+    if (enable_ssl && rv == DECLINED) {
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0,
+                      c, APLOGNO() " failed to enable ssl support "
+                      "[Hint: if using mod_ssl, see SSLProxyEngine]");
+        return HTTP_INTERNAL_SERVER_ERROR;
+    }
+    return rv;
+}
+
+AP_DECLARE(int) ap_ssl_has_outgoing_handlers(void)
+{
+    return (_hooks.link_ssl_outgoing && _hooks.link_ssl_outgoing->nelts > 0)
+        || module_ssl_engine_set || module_ssl_proxy_enable;
 }
 
 APR_DECLARE_OPTIONAL_FN(const char *, ssl_var_lookup,
@@ -123,6 +185,13 @@ AP_DECLARE(void) ap_setup_ssl_optional_fns(apr_pool_t *pool)
     module_ssl_var_lookup = (fn_ssl_var_lookup
         && fn_ssl_var_lookup != ssl_var_lookup)? fn_ssl_var_lookup : NULL;
     APR_REGISTER_OPTIONAL_FN(ssl_var_lookup);
+
+    module_ssl_proxy_enable = APR_RETRIEVE_OPTIONAL_FN(ssl_proxy_enable);
+    APR_REGISTER_OPTIONAL_FN(ssl_proxy_enable);
+    module_ssl_engine_disable = APR_RETRIEVE_OPTIONAL_FN(ssl_engine_disable);
+    APR_REGISTER_OPTIONAL_FN(ssl_engine_disable);
+    module_ssl_engine_set = APR_RETRIEVE_OPTIONAL_FN(ssl_engine_set);
+    APR_REGISTER_OPTIONAL_FN(ssl_engine_set);
 }
 
 AP_DECLARE(apr_status_t) ap_ssl_add_cert_files(server_rec *s, apr_pool_t *p,
@@ -186,3 +255,5 @@ AP_IMPLEMENT_HOOK_RUN_FIRST(int, ssl_ocsp_get_resp_hook,
          (server_rec *s, conn_rec *c, const char *id, apr_size_t id_len,
           ap_ssl_ocsp_copy_resp *cb, void *userdata),
          (s, c, id, id_len, cb, userdata), DECLINED)
+AP_IMPLEMENT_HOOK_RUN_ALL(int,ssl_outgoing,(conn_rec *c, ap_conf_vector_t *dir_conf, int require_ssl),
+                            (c, dir_conf, require_ssl),OK,DECLINED)

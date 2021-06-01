@@ -271,6 +271,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
         apr_socket_close(sock);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
+    backconn->outgoing = 1;
     ap_proxy_ssl_engine(backconn, r->per_dir_config, 0);
     rc = ap_run_pre_connection(backconn, sock);
     if (rc != OK && rc != DONE) {

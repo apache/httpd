@@ -3136,20 +3136,15 @@ PROXY_DECLARE(int) ap_proxy_ssl_enable(conn_rec *c)
      * if c == NULL just check if the optional function was imported
      * else run the optional function so ssl filters are inserted
      */
-    if (proxy_ssl_enable) {
-        return c ? proxy_ssl_enable(c) : 1;
+    if (c == NULL) {
+        return ap_ssl_has_outgoing_handlers();
     }
-
-    return 0;
+    return ap_ssl_bind_outgoing(c, NULL, 1) == OK;
 }
 
 PROXY_DECLARE(int) ap_proxy_ssl_disable(conn_rec *c)
 {
-    if (proxy_ssl_disable) {
-        return proxy_ssl_disable(c);
-    }
-
-    return 0;
+    return ap_ssl_bind_outgoing(c, NULL, 0) == OK;
 }
 
 PROXY_DECLARE(int) ap_proxy_ssl_engine(conn_rec *c,
@@ -3160,20 +3155,10 @@ PROXY_DECLARE(int) ap_proxy_ssl_engine(conn_rec *c,
      * if c == NULL just check if the optional function was imported
      * else run the optional function so ssl filters are inserted
      */
-    if (proxy_ssl_engine) {
-        return c ? proxy_ssl_engine(c, per_dir_config, 1, enable) : 1;
+    if (c == NULL) {
+        return ap_ssl_has_outgoing_handlers();
     }
-
-    if (!per_dir_config) {
-        if (enable) {
-            return ap_proxy_ssl_enable(c);
-        }
-        else {
-            return ap_proxy_ssl_disable(c);
-        }
-    }
-
-    return 0;
+    return ap_ssl_bind_outgoing(c, per_dir_config, enable);
 }
 
 PROXY_DECLARE(int) ap_proxy_conn_is_https(conn_rec *c)

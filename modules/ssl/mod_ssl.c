@@ -469,7 +469,7 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
 
 static SSLConnRec *ssl_init_connection_ctx(conn_rec *c,
                                            ap_conf_vector_t *per_dir_config,
-                                           int new_proxy)
+                                           int reinit)
 {
     SSLConnRec *sslconn = myConnConfig(c);
     int need_setup = 0;
@@ -481,11 +481,15 @@ static SSLConnRec *ssl_init_connection_ctx(conn_rec *c,
      * includes mod_proxy's later run_pre_connection call), sslconn->dc should
      * be preserved if it's already set.
      */
+    /* icing: this method primarily initializes "sslconn" for a connection
+     * if it is not already there. But calling it with "new_proxy" re-inits
+     * the sslconn's dirconf parts. So "reinit" would be a more apt name.
+     */
     if (!sslconn) {
         sslconn = apr_pcalloc(c->pool, sizeof(*sslconn));
         need_setup = 1;
     }
-    else if (!new_proxy) {
+    else if (!reinit) {
         return sslconn;
     }
 
@@ -493,6 +497,7 @@ static SSLConnRec *ssl_init_connection_ctx(conn_rec *c,
      * and thus a caller like mod_proxy needs to update it per request.
      */
     if (per_dir_config) {
+        ap_assert(c->outgoing);
         sslconn->dc = ap_get_module_config(per_dir_config, &ssl_module);
     }
     else {
@@ -503,8 +508,7 @@ static SSLConnRec *ssl_init_connection_ctx(conn_rec *c,
     if (need_setup) {
         sslconn->server = c->base_server;
         sslconn->verify_depth = UNSET;
-        if (new_proxy) {
-            sslconn->is_proxy = 1;
+        if (c->outgoing) {
             sslconn->cipher_suite = sslconn->dc->proxy->auth.cipher_suite;
         }
         else {
@@ -527,7 +531,7 @@ static int ssl_engine_status(conn_rec *c, SSLConnRec *sslconn)
         if (sslconn->disabled) {
             return SUSPENDED;
         }
-        if (sslconn->is_proxy) {
+        if (c->outgoing) {
             if (!sslconn->dc->proxy_enabled) {
                 return DECLINED;
             }
@@ -546,46 +550,33 @@ static int ssl_engine_status(conn_rec *c, SSLConnRec *sslconn)
     return OK;
 }
 
-static int ssl_engine_set(conn_rec *c,
-                          ap_conf_vector_t *per_dir_config,
-                          int proxy, int enable)
+static int ssl_hook_ssl_outgoing(conn_rec *c,
+                                 ap_conf_vector_t *per_dir_config,
+                                 int enable_ssl)
 {
     SSLConnRec *sslconn;
     int status;
-    
-    if (proxy) {
-        sslconn = ssl_init_connection_ctx(c, per_dir_config, 1);
+
+    sslconn = ssl_init_connection_ctx(c, per_dir_config, 1);
+    status = ssl_engine_status(c, sslconn);
+    if (enable_ssl) {
+        if (status == DECLINED) {
+            SSLSrvConfigRec *sc = mySrvConfig(sslconn->server);
+            sslconn->disabled = 1;
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(01961)
+                          "SSL Proxy requested for %s but not enabled for us.",
+                          sc->vhost_id);
+        }
+        else {
+            sslconn->disabled = 0;
+            return DONE;
+        }
     }
     else {
-        sslconn = myConnConfig(c);
-    }
-
-    status = ssl_engine_status(c, sslconn);
-
-    if (proxy && status == DECLINED) {
-        if (enable) {
-            SSLSrvConfigRec *sc = mySrvConfig(sslconn->server);
-            ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(01961)
-                          "SSL Proxy requested for %s but not enabled "
-                          "[Hint: SSLProxyEngine]", sc->vhost_id);
-        }
         sslconn->disabled = 1;
+        return OK;
     }
-    else if (sslconn) {
-        sslconn->disabled = !enable;
-    }
-
-    return status != DECLINED;
-}
-
-static int ssl_proxy_enable(conn_rec *c)
-{
-    return ssl_engine_set(c, NULL, 1, 1);
-}
-
-static int ssl_engine_disable(conn_rec *c)
-{
-    return ssl_engine_set(c, NULL, 0, 0);
+    return DECLINED;
 }
 
 #if defined(SSL_MAX_SID_CTX_LENGTH) && (APR_MD5_DIGESTSIZE * 2) > SSL_MAX_SID_CTX_LENGTH
@@ -612,9 +603,9 @@ int ssl_init_ssl_connection(conn_rec *c, request_rec *r)
      * Seed the Pseudo Random Number Generator (PRNG)
      */
     ssl_rand_seed(server, c->pool, SSL_RSCTX_CONNECT,
-                  sslconn->is_proxy ? "Proxy: " : "Server: ");
+                  c->outgoing ? "Proxy: " : "Server: ");
 
-    mctx = myCtxConfig(sslconn, sc);
+    mctx = myConnCtxConfig(c, sc);
 
     /*
      * Create a new SSL connection with the configured server SSL context and
@@ -632,7 +623,7 @@ int ssl_init_ssl_connection(conn_rec *c, request_rec *r)
         return DECLINED; /* XXX */
     }
 
-    rc = ssl_run_pre_handshake(c, ssl, sslconn->is_proxy ? 1 : 0);
+    rc = ssl_run_pre_handshake(c, ssl, c->outgoing ? 1 : 0);
     if (rc != OK && rc != DECLINED) {
         return rc;
     }
@@ -760,10 +751,7 @@ static void ssl_register_hooks(apr_pool_t *p)
                       APR_HOOK_MIDDLE);
 
     ssl_var_register(p);
-
-    APR_REGISTER_OPTIONAL_FN(ssl_proxy_enable);
-    APR_REGISTER_OPTIONAL_FN(ssl_engine_disable);
-    APR_REGISTER_OPTIONAL_FN(ssl_engine_set);
+    ap_hook_ssl_outgoing  (ssl_hook_ssl_outgoing, NULL, NULL, APR_HOOK_MIDDLE);
 
     ap_register_auth_provider(p, AUTHZ_PROVIDER_GROUP, "ssl",
                               AUTHZ_PROVIDER_VERSION,
