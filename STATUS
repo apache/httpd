@@ -142,6 +142,15 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) Buildsystem: Correctly record changes for the latest release in case
+     there have been no changes at all for this release so far.
+     Trunk version of patch:
+        https://svn.apache.org/r1889806
+     Backport version for 2.4.x of patch:
+      Trunk version of patch works
+      svn merge -c 1889806 ^/httpd/httpd/trunk .
+     +1: rpluem, jorton, ylavic
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -155,22 +164,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      is not the right fix, then it should be removed from trunk.
      Putting it here is a way to revive the discussion
 
-  *) Buildsystem: Correctly record changes for the latest release in case
-     there have been no changes at all for this release so far.
-     Trunk version of patch:
-        https://svn.apache.org/r1889806
-     Backport version for 2.4.x of patch:
-      Trunk version of patch works
-      svn merge -c 1889806 ^/httpd/httpd/trunk .
-     +1: rpluem, jorton,
-
   *) htcacheclean: Fix help output and error message.
      Trunk version of patch:
         https://svn.apache.org/r1864784
      Backport version for 2.4.x of patch:
       Trunk version of patch works
       svn merge -c 1864784 ^/httpd/httpd/trunk .
-     +1: jorton, 
+     +1: jorton, ylavic,
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
