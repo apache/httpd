@@ -880,7 +880,7 @@ static apr_port_t remoteip_hook_default_port(const request_rec *r)
     return 0;
 }
 
-int remoteip_hook_fixups(request_rec *r)
+static int remoteip_hook_fixups(request_rec *r)
 {
     if (apr_table_get(r->connection->notes, "remoteip_https"))
         apr_table_setn(r->subprocess_env, "HTTPS", "on");
