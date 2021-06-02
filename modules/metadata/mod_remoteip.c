@@ -25,6 +25,9 @@
 #include "http_connection.h"
 #include "http_protocol.h"
 #include "http_log.h"
+#include "http_request.h"
+#include "http_ssl.h"
+#include "http_vhost.h"
 #include "http_main.h"
 #include "apr_strings.h"
 #include "apr_lib.h"
@@ -60,6 +63,12 @@ typedef struct {
      *  with the most commonly encountered listed first
      */
     apr_array_header_t *proxymatch_ip;
+
+    const char *host_header_name;
+    const char *port_header_name;
+    const char *proto_header_name;
+    const char *proto_https_enable;
+    int forbid_direct;
 
     remoteip_addr_info *proxy_protocol_enabled;
     remoteip_addr_info *proxy_protocol_disabled;
@@ -179,6 +188,21 @@ static void *merge_remoteip_server_config(apr_pool_t *p, void *globalv,
     config->proxymatch_ip = server->proxymatch_ip
                           ? server->proxymatch_ip
                           : global->proxymatch_ip;
+    config->host_header_name = server->host_header_name
+                          ? server->host_header_name
+                          : global->host_header_name;
+    config->port_header_name = server->port_header_name
+                          ? server->port_header_name
+                          : global->port_header_name;
+    config->proto_header_name = server->proto_header_name
+                          ? server->proto_header_name
+                          : global->proto_header_name;
+    config->proto_https_enable = server->proto_https_enable
+                          ? server->proto_https_enable
+                          : global->proto_https_enable;
+    config->forbid_direct = server->forbid_direct
+                          ? server->forbid_direct
+                          : global->forbid_direct;
     return config;
 }
 
@@ -540,14 +564,15 @@ static int remoteip_modify_request(request_rec *r)
      */
     void *internal = NULL;
 
-    /* No header defined or results from our input filter */
-    if (!config->header_name && !conn_config) {
+    /* No headers defined or results from our input filter */
+    if (!conn_config && !config->header_name
+        && !config->host_header_name && !config->port_header_name
+        && !config->proto_header_name && !config->forbid_direct) {
         return DECLINED;
     }
- 
-    /* Easy parsing case - just position the data we already have from PROXY
-       protocol handling allowing it to take precedence and return
-    */
+
+    /* Position the remote IP data we may already have from PROXY protocol handling
+     */
     if (conn_config) {
         if (!conn_config->client_addr) {
             ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(03496)
@@ -560,7 +585,8 @@ static int remoteip_modify_request(request_rec *r)
 
         ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
                       "Using %s as client's IP from PROXY protocol", r->useragent_ip);
-        return OK;
+        /* We do not return here as we may still have specific remote parameters headers set by proxy
+         */
     }
 
     if (config->proxymatch_ip) {
@@ -571,13 +597,93 @@ static int remoteip_modify_request(request_rec *r)
         internal = (void *) 1;
     }
 
+    temp_sa = r->useragent_addr ? r->useragent_addr : c->client_addr;
+
+    if (internal && (config->host_header_name || config->port_header_name || config->proto_header_name || config->forbid_direct)) {
+        /* The trusted proxy (or list of) is configured, honor the option to forbid direct connections (allowing only trusted internal proxies)
+           Also, if the connecting host is trusted internal proxy and some request modification headers are set, we honor these headers there
+         */
+        int i;
+        void *first_internal = NULL;
+        remoteip_proxymatch_t *match;
+        match = (remoteip_proxymatch_t *)config->proxymatch_ip->elts;
+        for (i = 0; i < config->proxymatch_ip->nelts; ++i) {
+            if (apr_ipsubnet_test(match[i].ip, temp_sa)) {
+                first_internal = match[i].internal;
+                break;
+            }
+        }
+        if ((i && i >= config->proxymatch_ip->nelts) || !first_internal) {
+            if (config->forbid_direct) {
+                /* Whoops, trusted internal proxy was not detected and direct requests are forbidden, deny the request
+                 */
+                return HTTP_FORBIDDEN;
+            }
+        } else {
+            /* Internal trusted proxy is connecting, perform request modification if any options for it are set
+             */
+            char *val;
+
+            /* Remote host option, applied directly to the request host header
+             */
+            if (config->host_header_name) {
+                const char *host;
+                if ( (host = apr_table_get(r->headers_in, config->host_header_name)) ) {
+                    /* Propagate host header value from the header set by proxy and update virtual host chosen (the primary purpose of it)
+                     */
+                    apr_array_header_t *hdrs = apr_array_make(r->pool, 0, sizeof(char*));
+                    while (*host && (val = ap_get_token(r->pool, &host, 1))) {
+                        *(char **)apr_array_push(hdrs) = apr_pstrdup(r->pool, val);
+                        if (*host != '\0')
+                            ++host;
+                    }
+                    apr_table_setn(r->headers_in, "Host", apr_pstrdup(r->pool, ((char **)hdrs->elts)[((hdrs->nelts)-1)]));
+                    r->hostname = apr_pstrdup(r->pool, ((char **)hdrs->elts)[((hdrs->nelts)-1)]);
+                    ap_update_vhost_from_headers(r);
+                }
+            }
+
+            /* Remote port option, due to the transient nature of subrequests we have to annotate the connection itself for ap_default_port() hook
+             */
+            if (config->port_header_name) {
+                const char *port;
+                if ( (port = apr_table_get(r->headers_in, config->port_header_name) )) {
+                    r->parsed_uri.port = r->server->port;
+                    apr_table_setn(r->connection->notes, "remoteip_port", apr_pstrdup(r->connection->pool, port));
+                } else {
+                    /* Subsequent requests inside a single connection need to have the annotation reset if they do not have the header set
+                     */
+                    apr_table_unset(r->connection->notes, "remoteip_port");
+                }
+            }
+
+            /* Remote HTTPS protocol option, due to transient nature of subrequests we have to annotate the connection itself for ap_conn_is_ssl() hook
+             */
+            if (config->proto_header_name) {
+                const char *proto;
+                if ( (proto = apr_table_get(r->headers_in, config->proto_header_name)) ) {
+                    /* Exact HTTPS protocol ID option not set means just the header presence is enough, otherwise check for a match
+                     */
+                    if (!config->proto_https_enable || !strcmp(proto, config->proto_https_enable))
+                        apr_table_setn(r->connection->notes, "remoteip_https", "on");
+                } else {
+                    /* Subsequent requests inside a single connection need to have the annotation reset if they do not have the header set
+                     */
+                    apr_table_unset(r->connection->notes, "remoteip_https");
+                }
+            }
+        }
+    }
+
+    /* No need to proceed further if we have no remote IP header set
+     */
+    if (!config->header_name) return OK;
+
     remote = (char *) apr_table_get(r->headers_in, config->header_name);
     if (!remote) {
         return OK;
     }
     remote = apr_pstrdup(r->pool, remote);
-
-    temp_sa = r->useragent_addr ? r->useragent_addr : c->client_addr;
 
     while (remote) {
 
@@ -747,6 +853,74 @@ static int remoteip_modify_request(request_rec *r)
                   req->useragent_ip,
                   (req->proxy_ips ? req->proxy_ips : ""));
     return OK;
+}
+
+static int remoteip_hook_ssl_conn_is_ssl(conn_rec *c)
+{
+    if (apr_table_get(c->notes, "remoteip_https"))
+        return OK;
+
+    return DECLINED;
+}
+
+static const char *remoteip_hook_http_scheme(const request_rec *r)
+{
+    if (apr_table_get(r->connection->notes, "remoteip_https"))
+        return "https";
+
+    return NULL;
+}
+
+static apr_port_t remoteip_hook_default_port(const request_rec *r)
+{
+    const char *port;
+    if ( (port = apr_table_get(r->connection->notes, "remoteip_port")) )
+        return atoi(port);
+
+    return 0;
+}
+
+int remoteip_hook_fixups(request_rec *r)
+{
+    if (apr_table_get(r->connection->notes, "remoteip_https"))
+        apr_table_setn(r->subprocess_env, "HTTPS", "on");
+
+    return DECLINED;
+}
+
+static const char *host_header_name_set(cmd_parms *cmd, void *dummy, const char *arg)
+{
+    remoteip_config_t *config = ap_get_module_config(cmd->server->module_config, &remoteip_module);
+    config->host_header_name = arg;
+    return NULL;
+}
+
+static const char *port_header_name_set(cmd_parms *cmd, void *dummy, const char *arg)
+{
+    remoteip_config_t *config = ap_get_module_config(cmd->server->module_config, &remoteip_module);
+    config->port_header_name = arg;
+    return NULL;
+}
+
+static const char *proto_header_name_set(cmd_parms *cmd, void *dummy, const char *arg)
+{
+    remoteip_config_t *config = ap_get_module_config(cmd->server->module_config, &remoteip_module);
+    config->proto_header_name = arg;
+    return NULL;
+}
+
+static const char *proto_https_enable_set(cmd_parms *cmd, void *dummy, const char *arg)
+{
+    remoteip_config_t *config = ap_get_module_config(cmd->server->module_config, &remoteip_module);
+    config->proto_https_enable = arg;
+    return NULL;
+}
+
+static const char *forbid_direct_set(cmd_parms *cmd, void *dummy, int flag)
+{
+    remoteip_config_t *config = ap_get_module_config(cmd->server->module_config, &remoteip_module);
+    config->forbid_direct = flag;
+    return NULL;
 }
 
 static int remoteip_is_server_port(apr_port_t port)
@@ -1226,7 +1400,7 @@ static const command_rec remoteip_cmds[] =
                   "e.g. X-Forwarded-By; if not given then do not record"),
     AP_INIT_ITERATE("RemoteIPTrustedProxy", proxies_set, 0, RSRC_CONF,
                     "Specifies one or more proxies which are trusted "
-                    "to present IP headers"),
+                    "to present IP and request modification headers"),
     AP_INIT_ITERATE("RemoteIPInternalProxy", proxies_set, (void*)1, RSRC_CONF,
                     "Specifies one or more internal (transparent) proxies "
                     "which are trusted to present IP headers"),
@@ -1243,6 +1417,21 @@ static const command_rec remoteip_cmds[] =
     AP_INIT_TAKE_ARGV("RemoteIPProxyProtocolExceptions",
                   remoteip_disable_networks, NULL, RSRC_CONF, "Disable PROXY "
                   "protocol handling for this list of networks in CIDR format"),
+    AP_INIT_TAKE1("RemoteHostHeader", host_header_name_set, NULL, RSRC_CONF,
+                  "Specifies a request header to trust as the original Host header, "
+                  "e.g. X-Forwarded-Host, valid only if direct client is internal proxy"),
+    AP_INIT_TAKE1("RemotePortHeader", port_header_name_set, NULL, RSRC_CONF,
+                  "Specifies a request header to trust as the original Port header, "
+                  "e.g. X-Forwarded-Port, valid only if direct client is internal proxy"),
+    AP_INIT_TAKE1("RemoteProtoHeader", proto_header_name_set, NULL, RSRC_CONF,
+                  "Specifies a request header to trust as the original protocol header, "
+                  "e.g. X-Forwarded-Proto, valid only if direct client is internal proxy"),
+    AP_INIT_TAKE1("RemoteHTTPSEnableProto", proto_https_enable_set, NULL, RSRC_CONF,
+                  "Specifies a value in the header specified by RemoteProtoHeaderrequest "
+                  "that will set HTTPS flag enabled, just the presence of RemoteProtoHeader "
+                  "header will enable HTTPS flag if RemoteHTTPSEnableProto is not set"),
+    AP_INIT_FLAG("RemoteAllowOnlyInternalProxies", forbid_direct_set, NULL, RSRC_CONF,
+                  "Deny access from any hosts besides trusted internal proxies"),
     { NULL }
 };
 
@@ -1250,13 +1439,17 @@ static void register_hooks(apr_pool_t *p)
 {
     /* mod_ssl is CONNECTION + 5, so we want something higher (earlier);
      * mod_reqtimeout is CONNECTION + 8, so we want something lower (later) */
-    remoteip_filter = 
+    remoteip_filter =
         ap_register_input_filter("REMOTEIP_INPUT", remoteip_input_filter, NULL,
                                  AP_FTYPE_CONNECTION + 7);
 
     ap_hook_post_config(remoteip_hook_post_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_pre_connection(remoteip_hook_pre_connection, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_read_request(remoteip_modify_request, NULL, NULL, APR_HOOK_FIRST);
+    ap_hook_ssl_conn_is_ssl(remoteip_hook_ssl_conn_is_ssl, NULL, NULL, APR_HOOK_LAST);
+    ap_hook_http_scheme(remoteip_hook_http_scheme, NULL, NULL, APR_HOOK_LAST);
+    ap_hook_fixups(remoteip_hook_fixups, NULL, NULL, APR_HOOK_LAST);
+    ap_hook_default_port(remoteip_hook_default_port, NULL, NULL, APR_HOOK_FIRST);
 }
 
 AP_DECLARE_MODULE(remoteip) = {
