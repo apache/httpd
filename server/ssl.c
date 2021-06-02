@@ -110,29 +110,37 @@ static int ssl_engine_disable(conn_rec *c)
 AP_DECLARE(int) ap_ssl_bind_outgoing(conn_rec *c, struct ap_conf_vector_t *dir_conf,
                                      int enable_ssl)
 {
-    int rv;
+    int rv, enabled = 0;
 
     c->outgoing = 1;
     rv = ap_run_ssl_outgoing(c, dir_conf, enable_ssl);
-    if (rv != OK && rv != DECLINED) goto cleanup;
-
-    if (module_ssl_engine_set) {
-        rv = module_ssl_engine_set(c, dir_conf, 1, enable_ssl);
+    enabled = (rv == OK);
+    if (enable_ssl && !enabled) {
+        /* the hooks did not take over. Is there an old skool optional that will? */
+        if (module_ssl_engine_set) {
+            enabled = module_ssl_engine_set(c, dir_conf, 1, 1);
+        }
+        else if (module_ssl_proxy_enable) {
+            enabled = module_ssl_proxy_enable(c);
+        }
     }
-    else if (enable_ssl && module_ssl_proxy_enable) {
-        rv = module_ssl_proxy_enable(c);
+    else {
+        /* !enable_ssl || enabled
+         * any existing optional funcs need to not enable here */
+        if (module_ssl_engine_set) {
+            module_ssl_engine_set(c, dir_conf, 1, 0);
+        }
+        else if (module_ssl_engine_disable) {
+            module_ssl_engine_disable(c);
+        }
     }
-    else if (!enable_ssl && module_ssl_engine_disable) {
-        rv = module_ssl_engine_disable(c);
-    }
-cleanup:
-    if (enable_ssl && rv == DECLINED) {
+    if (enable_ssl && !enabled) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0,
                       c, APLOGNO() " failed to enable ssl support "
                       "[Hint: if using mod_ssl, see SSLProxyEngine]");
-        return HTTP_INTERNAL_SERVER_ERROR;
+        return DECLINED;
     }
-    return rv;
+    return OK;
 }
 
 AP_DECLARE(int) ap_ssl_has_outgoing_handlers(void)
@@ -255,5 +263,5 @@ AP_IMPLEMENT_HOOK_RUN_FIRST(int, ssl_ocsp_get_resp_hook,
          (server_rec *s, conn_rec *c, const char *id, apr_size_t id_len,
           ap_ssl_ocsp_copy_resp *cb, void *userdata),
          (s, c, id, id_len, cb, userdata), DECLINED)
-AP_IMPLEMENT_HOOK_RUN_ALL(int,ssl_outgoing,(conn_rec *c, ap_conf_vector_t *dir_conf, int require_ssl),
-                            (c, dir_conf, require_ssl),OK,DECLINED)
+AP_IMPLEMENT_HOOK_RUN_FIRST(int,ssl_outgoing,(conn_rec *c, ap_conf_vector_t *dir_conf, int require_ssl),
+                            (c, dir_conf, require_ssl), DECLINED)

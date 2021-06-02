@@ -3158,7 +3158,7 @@ PROXY_DECLARE(int) ap_proxy_ssl_engine(conn_rec *c,
     if (c == NULL) {
         return ap_ssl_has_outgoing_handlers();
     }
-    return ap_ssl_bind_outgoing(c, per_dir_config, enable);
+    return ap_ssl_bind_outgoing(c, per_dir_config, enable) == OK;
 }
 
 PROXY_DECLARE(int) ap_proxy_conn_is_https(conn_rec *c)

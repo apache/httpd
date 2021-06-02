@@ -75,7 +75,7 @@ AP_DECLARE_HOOK(int, ssl_outgoing,
  * @param c The connection on which requests/data are to be sent.
  * @param dir_conf The directory configuration in which this connection is being used.
  * @param require_ssl != 0 iff this connection needs to be secured by SSL/TLS protocol.
- * @return OK or HTTP_XXX error
+ * @return OK iff ssl was required and is enabled, DECLINED otherwise
  */
 AP_DECLARE(int) ap_ssl_bind_outgoing(conn_rec *c, struct ap_conf_vector_t *dir_conf,
                                      int require_ssl);

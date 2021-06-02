@@ -528,6 +528,7 @@ static int ssl_engine_status(conn_rec *c, SSLConnRec *sslconn)
         return DECLINED;
     }
     if (sslconn) {
+        /* This connection has already been configured. Check what applies. */
         if (sslconn->disabled) {
             return SUSPENDED;
         }
@@ -543,7 +544,9 @@ static int ssl_engine_status(conn_rec *c, SSLConnRec *sslconn)
         }
     }
     else {
-        if (mySrvConfig(c->base_server)->enabled != SSL_ENABLED_TRUE) {
+        /* we decline by default for outgoing connections and for incoming
+         * where the base_server is not enabled. */
+        if (c->outgoing || mySrvConfig(c->base_server)->enabled != SSL_ENABLED_TRUE) {
             return DECLINED;
         }
     }
@@ -569,12 +572,11 @@ static int ssl_hook_ssl_outgoing(conn_rec *c,
         }
         else {
             sslconn->disabled = 0;
-            return DONE;
+            return OK;
         }
     }
     else {
         sslconn->disabled = 1;
-        return OK;
     }
     return DECLINED;
 }
