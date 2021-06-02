@@ -948,8 +948,7 @@ int ssl_engine_disable(conn_rec *c)
 static int ssl_is_https(conn_rec *c)
 {
     secsocket_data *csd_data = (secsocket_data*)ap_get_module_config(c->conn_config, &nwssl_module);
-
-    return isSecureConn (c->base_server, c) || (csd_data && csd_data->is_secure);
+    return isSecureConn (c->base_server, c) || (csd_data && csd_data->is_secure) || (apr_table_get(c->notes, "remoteip_https") != NULL);
 }
 
 /* This function must remain safe to use for a non-SSL connection. */

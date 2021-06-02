@@ -67,7 +67,7 @@ static const SSLConnRec *ssl_get_effective_config(conn_rec *c)
 static int ssl_is_https(conn_rec *c)
 {
     const SSLConnRec *sslconn = ssl_get_effective_config(c);
-    return sslconn && sslconn->ssl;
+    return (sslconn && sslconn->ssl) || (apr_table_get(c->notes, "remoteip_https") != NULL);
 }
 
 /* Returns certificate data, either PEM encoded if 'pem' is non-zero,
