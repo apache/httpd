@@ -158,9 +158,9 @@ docs:
 update-changes:
 	@for i in `find changes-entries -type f`; do \
 	    cp CHANGES CHANGES.tmp ; \
-	    awk -v fname=$$i 'BEGIN{done = 0} \
-	                    done == 0 && /^Changes with Apache /{ active = 1; print; next}; \
-	                    /^ *\*/ && active == 1 && done == 0{rec=$$0; while(getline<fname){if (! ($$0 ~ /^ *$$/)){print}}printf "\n";print rec; active = 0; done = 1; next} //;' \
+	    awk -v fname=$$i 'BEGIN{done = 0; active = 0} \
+	                    done == 0 && active == 0 && /^Changes with Apache /{ active = 1; print; next}; \
+	                    /^( *\*|Changes with Apache )/ && active == 1 && done == 0{rec=$$0; while(getline<fname){if (! ($$0 ~ /^ *$$/)){print}}printf "\n";print rec; active = 0; done = 1; next} //;' \
 	    CHANGES.tmp > CHANGES ; \
 	    rm CHANGES.tmp ; \
 	    if [ -n "$(SVN)" ] ; then \
