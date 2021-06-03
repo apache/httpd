@@ -226,6 +226,11 @@ static void clean_child_exit(int code)
 
     if (pchild) {
         apr_pool_destroy(pchild);
+        /*
+         * Be safe in case someone still uses afterwards or we get here again.
+         * Should not happen.
+         */
+        pchild = NULL;
     }
 
     if (one_process) {
