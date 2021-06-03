@@ -3141,10 +3141,12 @@ URLs</td></tr>
       URL it appears. People may be used to its behavior in the filesystem
       where multiple adjacent slashes are frequently collapsed to a single
       slash (<em>i.e.</em>, <code>/home///foo</code> is the same as
-      <code>/home/foo</code>). In URL-space this is not necessarily true.
+      <code>/home/foo</code>). In URL-space this is not necessarily true if
+      directive <code class="directive"><a href="#mergeslashes">MergeSlashes</a></code>  has been set
+      to "OFF".
       The <code class="directive"><a href="#locationmatch">&lt;LocationMatch&gt;</a></code>
       directive and the regex version of <code class="directive">&lt;Location&gt;</code> require you to explicitly specify multiple
-      slashes if that is your intention.</p>
+      slashes if the slashes are not being merged.</p>
 
       <p>For example, <code>&lt;LocationMatch "^/abc"&gt;</code> would match
       the request URL <code>/abc</code> but not the request URL <code>
@@ -3209,15 +3211,17 @@ matching URLs</td></tr>
 &lt;/LocationMatch&gt;</pre>
 
 
-    <div class="note"><h3>Note about / (slash)</h3>
+     <div class="note"><h3>Note about / (slash)</h3>
       <p>The slash character has special meaning depending on where in a
       URL it appears. People may be used to its behavior in the filesystem
       where multiple adjacent slashes are frequently collapsed to a single
       slash (<em>i.e.</em>, <code>/home///foo</code> is the same as
-      <code>/home/foo</code>). In URL-space this is not necessarily true.
+      <code>/home/foo</code>). In URL-space this is not necessarily true if
+      directive <code class="directive"><a href="#mergeslashes">MergeSlashes</a></code>  has been set
+      to "OFF".
       The <code class="directive">&lt;LocationMatch&gt;</code>
       directive and the regex version of <code class="directive">&lt;Location&gt;</code> require you to explicitly specify multiple
-      slashes if that is your intention.</p>
+      slashes if the slashes are not being merged.</p>
 
       <p>For example, <code>&lt;LocationMatch "^/abc"&gt;</code> would match
       the request URL <code>/abc</code> but not the request URL <code>
@@ -3643,11 +3647,13 @@ resource </td></tr>
     significant.  However, URL's handled other ways, such as by CGI or proxy,
     might prefer to retain the significance of multiple consecutive slashes. 
     In these cases <code class="directive">MergeSlashes</code> can be set to 
-    <em>OFF</em> to retain the multiple consecutive slashes.  In these
-    configurations, regular expressions used in the configuration file that match
+    <em>OFF</em> to retain the multiple consecutive slashes, which is the legacy behavior.</p>
+    <p>
+    When set to "OFF", regular expressions used in the configuration file that match
     the path component of the URL (<code class="directive">LocationMatch</code>,
     <code class="directive">RewriteRule</code>, ...) need to take into account multiple 
-    consecutive slashes.</p>
+    consecutive slashes. Non regular expression based <code class="directive">Location</code> always
+    operate against a URL with merged slashes and cannot differentiate between multiple slashes.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -4089,10 +4095,13 @@ directory</td></tr>
        The protocol is used to determine which module should handle a request and
        to apply protocol specific optimizations with the <code class="directive">AcceptFilter</code>
        directive.</p>
-
-    <p>You only need to set the protocol if you are running on non-standard ports;
-       otherwise, <code>http</code> is assumed for port 80 and <code>https</code>
-       for port 443.</p>
+ 
+    <p>This directive not required for most
+       configurations. If not specified, <code>https</code> is the default for
+       port 443 and <code>http</code> the default for all other ports.  The
+       protocol is used to determine which module should handle a request, and
+       to apply protocol specific optimizations with the
+       <code class="directive"><a href="#acceptfilter">AcceptFilter</a></code> directive.</p>
 
     <p>For example, if you are running <code>https</code> on a non-standard port,
        specify the protocol explicitly:</p>
@@ -4490,16 +4499,16 @@ of a request or the last 63, assuming the request itself is greater than
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
-    <p>mod_status with <code>ExtendedStatus On</code>
+    <p><code class="module"><a href="../mod/mod_status.html">mod_status</a></code> with <code>ExtendedStatus On</code>
     displays the actual request being handled.
     For historical purposes, only 63 characters of the request
     are actually stored for display purposes. This directive
-    controls whether the 1st 63 characters are stored (the previous
+    controls whether the first 63 characters are stored (the previous
     behavior and the default) or if the last 63 characters are. This
     is only applicable, of course, if the length of the request is
     64 characters or greater.</p>
 
-    <p>If Apache httpd is handling <code>GET&nbsp;/disk1/storage/apache/htdocs/images/imagestore1/food/apples.jpg&nbsp;HTTP/1.1</code> mod_status displays as follows:
+    <p>If Apache httpd is handling <code>GET&nbsp;/disk1/storage/apache/htdocs/images/imagestore1/food/apples.jpg&nbsp;HTTP/1.1</code> <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> displays as follows:
     </p>
 
     <table class="bordered">
@@ -5383,7 +5392,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/core.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
