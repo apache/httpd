@@ -146,12 +146,12 @@ Changes with Apache 2.4.47
      mod_auth_digest: possible stack overflow by one nul byte while validating
      the Digest nonce.  [Yann Ylavic]
 
-  *) SECURITY: CVE-2020-26691 (cve.mitre.org)
+  *) SECURITY: CVE-2021-26691 (cve.mitre.org)
      mod_session: Fix possible crash due to NULL pointer dereference, which
      could be used to cause a Denial of Service with a malicious backend
      server and SessionHeader.  [Yann Ylavic]
 
-  *) SECURITY: CVE-2020-26690 (cve.mitre.org)
+  *) SECURITY: CVE-2021-26690 (cve.mitre.org)
      mod_session: Fix possible crash due to NULL pointer dereference, which
      could be used to cause a Denial of Service.  [Yann Ylavic]
 
