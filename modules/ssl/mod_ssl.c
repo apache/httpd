@@ -481,10 +481,6 @@ static SSLConnRec *ssl_init_connection_ctx(conn_rec *c,
      * includes mod_proxy's later run_pre_connection call), sslconn->dc should
      * be preserved if it's already set.
      */
-    /* icing: this method primarily initializes "sslconn" for a connection
-     * if it is not already there. But calling it with "new_proxy" re-inits
-     * the sslconn's dirconf parts. So "reinit" would be a more apt name.
-     */
     if (!sslconn) {
         sslconn = apr_pcalloc(c->pool, sizeof(*sslconn));
         need_setup = 1;
