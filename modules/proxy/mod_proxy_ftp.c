@@ -1980,6 +1980,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
         proxy_ftp_cleanup(r, backend);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
+
     /*
      * We do not do SSL over the data connection, even if the virtual host we
      * are in might have SSL enabled

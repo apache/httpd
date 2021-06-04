@@ -2300,7 +2300,7 @@ void ssl_callback_Info(const SSL *ssl, int where, int rc)
         /* If the reneg state is to reject renegotiations, check the SSL
          * state machine and move to ABORT if a Client Hello is being
          * read. */
-        if (!conn->outgoing &&
+        if (!c->outgoing &&
                 (where & SSL_CB_HANDSHAKE_START) &&
                 sslconn->reneg_state == RENEG_REJECT) {
             sslconn->reneg_state = RENEG_ABORT;

@@ -566,7 +566,7 @@ static int ssl_hook_ssl_outgoing(conn_rec *c,
         if (status == DECLINED) {
             SSLSrvConfigRec *sc = mySrvConfig(sslconn->server);
             sslconn->disabled = 1;
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(01961)
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO()
                           "SSL Proxy requested for %s but not enabled for us.",
                           sc->vhost_id);
         }

@@ -94,7 +94,19 @@ static int ssl_engine_set(conn_rec *c,
                           ap_conf_vector_t *per_dir_config,
                           int proxy, int enable)
 {
-    return proxy? ap_ssl_bind_outgoing(c, per_dir_config, enable) : DECLINED;
+    if (proxy) {
+        return ap_ssl_bind_outgoing(c, per_dir_config, enable) == OK;
+    }
+    else if (module_ssl_engine_set) {
+        return module_ssl_engine_set(c, per_dir_config, 0, enable);
+    }
+    else if (enable && module_ssl_proxy_enable) {
+        return module_ssl_proxy_enable(c);
+    }
+    else if (!enable && module_ssl_engine_disable) {
+        return module_ssl_engine_disable(c);
+    }
+    return 0;
 }
 
 static int ssl_proxy_enable(conn_rec *c)
@@ -136,7 +148,7 @@ AP_DECLARE(int) ap_ssl_bind_outgoing(conn_rec *c, struct ap_conf_vector_t *dir_c
     }
     if (enable_ssl && !enabled) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0,
-                      c, APLOGNO() " failed to enable ssl support "
+                      c, APLOGNO(01961) " failed to enable ssl support "
                       "[Hint: if using mod_ssl, see SSLProxyEngine]");
         return DECLINED;
     }

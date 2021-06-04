@@ -19,7 +19,6 @@
 
 #include "ap_config.h"
 #include "httpd.h"
-#include "http_config.h"
 #include "http_connection.h"
 #include "http_request.h"
 #include "http_protocol.h"
