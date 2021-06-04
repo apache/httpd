@@ -1283,6 +1283,12 @@ ProxyPass "/example" "http://backend.example.com" max=20 ttl=120 retry=300
         <td><p>Protocol accepted in the Upgrade header by <module>mod_proxy_wstunnel</module>.
         See the documentation of this module for more details.</p>
     </td></tr>
+    <tr><td>mapping</td>
+        <td>-</td>
+        <td><p>Mapping to process the <var>url</var> before choosing a Worker/Balancer.
+        'servlet' maps like a servlet container (like jk_servlet_normalize), use with Apache Tomcat for example.
+        'encoded' maps it encoded.</p>
+    </td></tr>
 
     </table>
 
