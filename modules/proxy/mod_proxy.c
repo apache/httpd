@@ -17,6 +17,7 @@
 #include "mod_proxy.h"
 #include "mod_core.h"
 #include "apr_optional.h"
+#include "apr_strings.h"
 #include "scoreboard.h"
 #include "mod_status.h"
 #include "proxy_util.h"
@@ -560,6 +561,201 @@ static int alias_match(const char *uri, const char *alias_fakename)
     return urip - uri;
 }
 
+/*
+ * Inspired by mod_jk's jk_servlet_normalize().
+ */
+static int alias_match_servlet(apr_pool_t *p,
+                               const char **urip,
+                               const char *alias)
+{
+    char *map;
+    const char *uri = *urip;
+    apr_array_header_t *stack;
+    int map_pos, uri_pos, alias_pos, first_pos;
+    int alias_depth = 0, depth;
+
+    /* Both uri and alias should start with '/' */
+    if (uri[0] != '/' || alias[0] != '/') {
+        return 0;
+    }
+
+    stack = apr_array_make(p, 5, sizeof(int));
+    map = apr_palloc(p, strlen(uri) + 1);
+    map[0] = '/';
+    map[1] = '\0';
+
+    map_pos = uri_pos = alias_pos = first_pos = 1;
+    while (uri[uri_pos] != '\0') {
+        /* Remove path parameters ;foo=bar/ from any path segment */
+        if (uri[uri_pos] == ';') {
+            do {
+                uri_pos++;
+            } while (uri[uri_pos] != '/' && uri[uri_pos] != '\0');
+            continue;
+        }
+
+        if (map[map_pos - 1] == '/') {
+            /* Collapse ///// sequences to / */
+            if (uri[uri_pos] == '/') {
+                do {
+                    uri_pos++;
+                } while (uri[uri_pos] == '/');
+                continue;
+            }
+
+            if (uri[uri_pos] == '.') {
+                /* Remove /./ segments */
+                if (uri[uri_pos + 1] == '/'
+                        || uri[uri_pos + 1] == ';'
+                        || uri[uri_pos + 1] == '\0') {
+                    uri_pos++;
+                    if (uri[uri_pos] == '/') {
+                        uri_pos++;
+                    }
+                    continue;
+                }
+
+                /* Remove /xx/../ segments */
+                if (uri[uri_pos + 1] == '.'
+                    && (uri[uri_pos + 2] == '/'
+                        || uri[uri_pos + 2] == ';'
+                        || uri[uri_pos + 2] == '\0')) {
+                    /* Wind map segment back the previous one */
+                    if (map_pos == 1) {
+                        /* Above root */
+                        return 0;
+                    }
+                    do {
+                        map_pos--;
+                    } while (map[map_pos - 1] != '/');
+                    map[map_pos] = '\0';
+
+                    /* Wind alias segment back, unless in deeper segment */
+                    if (alias_depth == stack->nelts) {
+                        if (alias[alias_pos] == '\0') {
+                            alias_pos--;
+                        }
+                        while (alias_pos > 0 && alias[alias_pos] == '/') {
+                            alias_pos--;
+                        }
+                        while (alias_pos > 0 && alias[alias_pos - 1] != '/') {
+                            alias_pos--;
+                        }
+                        AP_DEBUG_ASSERT(alias_pos > 0);
+                        alias_depth--;
+                    }
+                    apr_array_pop(stack);
+
+                    /* Move uri forward to the next segment */
+                    uri_pos += 2;
+                    if (uri[uri_pos] == '/') {
+                        uri_pos++;
+                    }
+                    first_pos = 0;
+                    continue;
+                }
+            }
+            if (first_pos) {
+                while (uri[first_pos] == '/') {
+                    first_pos++;
+                }
+            }
+
+            /* New segment */
+            APR_ARRAY_PUSH(stack, int) = first_pos ? first_pos : uri_pos;
+            if (alias[alias_pos] != '\0') {
+                if (alias[alias_pos - 1] != '/') {
+                    /* Remain in pair with uri segments */
+                    do {
+                        alias_pos++;
+                    } while (alias[alias_pos - 1] != '/' && alias[alias_pos]);
+                }
+                while (alias[alias_pos] == '/') {
+                    alias_pos++;
+                }
+                if (alias[alias_pos] != '\0') {
+                    alias_depth++;
+                }
+            }
+        }
+
+        if (alias[alias_pos] != '\0') {
+            int *match = &APR_ARRAY_IDX(stack, alias_depth - 1, int);
+            if (*match) {
+                if (alias[alias_pos] != uri[uri_pos]) {
+                    /* Current segment does not match */
+                    *match = 0;
+                }
+                else if (alias[alias_pos + 1] == '\0'
+                         && alias[alias_pos] != '/') {
+                    if (uri[uri_pos + 1] == ';') {
+                        /* We'll preserve the parameters of the last
+                         * segment if it does not end with '/', so mark
+                         * the match as negative for below handling.
+                         */
+                        *match = -(uri_pos + 1);
+                    }
+                    else if (uri[uri_pos + 1] != '/'
+                             && uri[uri_pos + 1] != '\0') {
+                        /* Last segment does not match all the way */
+                        *match = 0;
+                    }
+                }
+            }
+            /* Don't go past the segment if the uri isn't there yet */
+            if (alias[alias_pos] != '/' || uri[uri_pos] == '/') {
+                alias_pos++;
+            }
+        }
+
+        if (uri[uri_pos] == '/') {
+            first_pos = uri_pos + 1;
+        }
+        map[map_pos++] = uri[uri_pos++];
+        map[map_pos] = '\0';
+    }
+
+    /* Can't reach the end of uri before the end of the alias,
+     * for example if uri is "/" and alias is "/examples"
+     */
+    if (alias[alias_pos] != '\0') {
+        return 0;
+    }
+
+    /* Check whether each alias segment matched */
+    for (depth = 0; depth < alias_depth; ++depth) {
+        if (!APR_ARRAY_IDX(stack, depth, int)) {
+            return 0;
+        }
+    }
+
+    /* If alias_depth == stack->nelts we have a full match, i.e.
+     * uri == alias so we can return uri_pos as is (the end of uri)
+     */
+    if (alias_depth < stack->nelts) {
+        /* Return the segment following the alias */
+        uri_pos = APR_ARRAY_IDX(stack, alias_depth, int);
+        if (alias_depth) {
+            /* But if the last segment of the alias does not end with '/'
+             * and the corresponding segment of the uri has parameters,
+             * we want to forward those parameters (see above for the
+             * negative pos trick/mark).
+             */
+            int pos = APR_ARRAY_IDX(stack, alias_depth - 1, int);
+            if (pos < 0) {
+                uri_pos = -pos;
+            }
+        }
+    }
+    /* If the alias lacks a trailing slash, take it from the uri (if any) */
+    if (alias[alias_pos - 1] != '/' && uri[uri_pos - 1] == '/') {
+        uri_pos--;
+    }
+
+    *urip = map;
+    return uri_pos;
+}
+
 /* Detect if an absoluteURI should be proxied or not.  Note that we
  * have to do this during this phase because later phases are
  * "short-circuiting"... i.e. translate_names will end when the first
@@ -670,6 +866,7 @@ PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r, struct proxy_alias *ent,
     int mismatch = 0;
     unsigned int nocanon = ent->flags & PROXYPASS_NOCANON;
     const char *use_uri = nocanon ? r->unparsed_uri : r->uri;
+    const char *servlet_uri = NULL;
 
     if (dconf && (dconf->interpolate_env == 1) && (ent->flags & PROXYPASS_INTERPOLATE)) {
         fake = proxy_interpolate(r, ent->fake);
@@ -730,7 +927,14 @@ PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r, struct proxy_alias *ent,
         }
     }
     else {
-        len = alias_match(r->uri, fake);
+        if ((ent->flags & PROXYPASS_MAP_SERVLET) == PROXYPASS_MAP_SERVLET) {
+            servlet_uri = r->uri;
+            len = alias_match_servlet(r->pool, &servlet_uri, fake);
+            nocanon = 0; /* ignored since servlet's normalization applies */
+        }
+        else {
+            len = alias_match(r->uri, fake);
+        }
 
         if (len != 0) {
             if ((real[0] == '!') && (real[1] == '\0')) {
@@ -761,7 +965,7 @@ PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r, struct proxy_alias *ent,
          */
         int rc = proxy_run_check_trans(r, found + 6);
         if (rc != OK && rc != DECLINED) {
-            return DONE;
+            return HTTP_CONTINUE;
         }
 
         r->filename = found;
@@ -775,19 +979,33 @@ PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r, struct proxy_alias *ent,
             apr_table_setn(r->notes, "proxy-noquery", "1");
         }
 
+        if (servlet_uri) {
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO()
+                          "Servlet path '%s' (%s) matches proxy handler '%s'",
+                          r->uri, servlet_uri, found);
+            /* Apply servlet normalization to r->uri so that <Location> or any
+             * directory context match does not have to handle path parameters.
+             * We change r->uri in-place so that r->parsed_uri.path is updated
+             * too. Since normalized servlet_uri is necessarily shorter than
+             * the original r->uri, strcpy() is fine.
+             */
+            AP_DEBUG_ASSERT(strlen(r->uri) >= strlen(servlet_uri));
+            strcpy(r->uri, servlet_uri);
+            return DONE;
+        }
+
         ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(03464)
                       "URI path '%s' matches proxy handler '%s'", r->uri,
                       found);
-
         return OK;
     }
 
-    return DONE;
+    return HTTP_CONTINUE;
 }
 
-static int proxy_trans(request_rec *r)
+static int proxy_trans(request_rec *r, int pre_trans)
 {
-    int i;
+    int i, enc;
     struct proxy_alias *ent;
     proxy_dir_conf *dconf;
     proxy_server_conf *conf;
@@ -799,6 +1017,26 @@ static int proxy_trans(request_rec *r)
         return OK;
     }
 
+    /* In early pre_trans hook, r->uri was not manipulated yet so we are
+     * compliant with RFC1945 at this point. Otherwise, it probably isn't
+     * an issue because this is a hybrid proxy/origin server.
+     */
+
+    dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
+    conf = (proxy_server_conf *) ap_get_module_config(r->server->module_config,
+                                                      &proxy_module);
+
+    /* Always and only do PROXY_MAP_ENCODED mapping in pre_trans, when
+     * r->uri is still encoded, or we might consider for instance that
+     * a decoded sub-delim is now a delimiter (e.g. "%3B" => ';' for
+     * path parameters), which it's not.
+     */
+    if ((pre_trans && !conf->map_encoded_one)
+            || (!pre_trans && conf->map_encoded_all)) {
+        /* Fast path, nothing at this stage */
+        return DECLINED;
+    }
+
     if ((r->unparsed_uri[0] == '*' && r->unparsed_uri[1] == '\0')
         || !r->uri || r->uri[0] != '/') {
         return DECLINED;
@@ -808,35 +1046,40 @@ static int proxy_trans(request_rec *r)
         return DECLINED;
     }
 
-    /* XXX: since r->uri has been manipulated already we're not really
-     * compliant with RFC1945 at this point.  But this probably isn't
-     * an issue because this is a hybrid proxy/origin server.
-     */
-
-    dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
-
     /* short way - this location is reverse proxied? */
     if (dconf->alias) {
-        int rv = ap_proxy_trans_match(r, dconf->alias, dconf);
-        if (DONE != rv) {
-            return rv;
-        }
-    }
-
-    conf = (proxy_server_conf *) ap_get_module_config(r->server->module_config,
-                                                      &proxy_module);
-
-    /* long way - walk the list of aliases, find a match */
-    if (conf->aliases->nelts) {
-        ent = (struct proxy_alias *) conf->aliases->elts;
-        for (i = 0; i < conf->aliases->nelts; i++) {
-            int rv = ap_proxy_trans_match(r, &ent[i], dconf);
-            if (DONE != rv) {
+        enc = (dconf->alias->flags & PROXYPASS_MAP_ENCODED) != 0;
+        if (!(pre_trans ^ enc)) {
+            int rv = ap_proxy_trans_match(r, dconf->alias, dconf);
+            if (rv != HTTP_CONTINUE) {
                 return rv;
             }
         }
     }
+
+    /* long way - walk the list of aliases, find a match */
+    for (i = 0; i < conf->aliases->nelts; i++) {
+        ent = &((struct proxy_alias *)conf->aliases->elts)[i];
+        enc = (ent->flags & PROXYPASS_MAP_ENCODED) != 0;
+        if (!(pre_trans ^ enc)) {
+            int rv = ap_proxy_trans_match(r, ent, dconf);
+            if (rv != HTTP_CONTINUE) {
+                return rv;
+            }
+        }
+    }
+
     return DECLINED;
+}
+
+static int proxy_pre_translate_name(request_rec *r)
+{
+    return proxy_trans(r, 1);
+}
+
+static int proxy_translate_name(request_rec *r)
+{
+    return proxy_trans(r, 0);
 }
 
 static int proxy_walk(request_rec *r)
@@ -1359,6 +1602,8 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->forward = NULL;
     ps->reverse = NULL;
     ps->domain = NULL;
+    ps->map_encoded_one = 0;
+    ps->map_encoded_all = 1;
     ps->id = apr_psprintf(p, "p%x", 1); /* simply for storage size */
     ps->viaopt = via_off; /* initially backward compatible with 1.3.1 */
     ps->viaopt_set = 0; /* 0 means default */
@@ -1516,6 +1761,9 @@ static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
     ps->forward = overrides->forward ? overrides->forward : base->forward;
     ps->reverse = overrides->reverse ? overrides->reverse : base->reverse;
 
+    ps->map_encoded_one = overrides->map_encoded_one || base->map_encoded_one;
+    ps->map_encoded_all = overrides->map_encoded_all && base->map_encoded_all;
+
     ps->domain = (overrides->domain == NULL) ? base->domain : overrides->domain;
     ps->id = (overrides->id == NULL) ? base->id : overrides->id;
     ps->viaopt = (overrides->viaopt_set == 0) ? base->viaopt : overrides->viaopt;
@@ -1640,7 +1888,7 @@ static void *merge_proxy_dir_config(apr_pool_t *p, void *basev, void *addv)
                                              : add->forward_100_continue;
     new->forward_100_continue_set = add->forward_100_continue_set
                                     || base->forward_100_continue_set;
-    
+
     return new;
 }
 
@@ -1814,11 +2062,31 @@ static const char *
                            "in the form 'key=value'.";
                 }
             }
-            else
+            else {
                 *val++ = '\0';
-            apr_table_setn(params, word, val);
+            }
+            if (!strcasecmp(word, "mapping")) {
+                if (!strcasecmp(val, "encoded")) {
+                    flags |= PROXYPASS_MAP_ENCODED;
+                }
+                else if (!strcasecmp(val, "servlet")) {
+                    flags |= PROXYPASS_MAP_SERVLET;
+                }
+                else {
+                    return "unknown mapping";
+                }
+            }
+            else {
+                apr_table_setn(params, word, val);
+            }
         }
-    };
+    }
+    if (flags & PROXYPASS_MAP_ENCODED) {
+        conf->map_encoded_one = 1;
+    }
+    else {
+        conf->map_encoded_all = 0;
+    }
 
     if (r == NULL) {
         return "ProxyPass|ProxyPassMatch needs a path when not defined in a location";
@@ -3142,7 +3410,10 @@ static void register_hooks(apr_pool_t *p)
     /* handler */
     ap_hook_handler(proxy_handler, NULL, NULL, APR_HOOK_FIRST);
     /* filename-to-URI translation */
-    ap_hook_translate_name(proxy_trans, aszSucc, NULL, APR_HOOK_FIRST);
+    ap_hook_pre_translate_name(proxy_pre_translate_name, NULL, NULL,
+                               APR_HOOK_MIDDLE);
+    ap_hook_translate_name(proxy_translate_name, aszSucc, NULL,
+                           APR_HOOK_FIRST);
     /* walk <Proxy > entries and suppress default TRACE behavior */
     ap_hook_map_to_storage(proxy_map_location, NULL,NULL, APR_HOOK_FIRST);
     /* fixups */

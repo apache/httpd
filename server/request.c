@@ -59,6 +59,7 @@
 #define APLOG_MODULE_INDEX AP_CORE_MODULE_INDEX
 
 APR_HOOK_STRUCT(
+    APR_HOOK_LINK(pre_translate_name)
     APR_HOOK_LINK(translate_name)
     APR_HOOK_LINK(map_to_storage)
     APR_HOOK_LINK(check_user_id)
@@ -74,6 +75,8 @@ APR_HOOK_STRUCT(
     APR_HOOK_LINK(force_authn)
 )
 
+AP_IMPLEMENT_HOOK_RUN_FIRST(int,pre_translate_name,
+                            (request_rec *r), (r), DECLINED)
 AP_IMPLEMENT_HOOK_RUN_FIRST(int,translate_name,
                             (request_rec *r), (r), DECLINED)
 AP_IMPLEMENT_HOOK_RUN_FIRST(int,map_to_storage,
