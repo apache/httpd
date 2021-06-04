@@ -3177,11 +3177,13 @@ URLs</description>
       URL it appears. People may be used to its behavior in the filesystem
       where multiple adjacent slashes are frequently collapsed to a single
       slash (<em>i.e.</em>, <code>/home///foo</code> is the same as
-      <code>/home/foo</code>). In URL-space this is not necessarily true.
+      <code>/home/foo</code>). In URL-space this is not necessarily true if
+      directive <directive module="core">MergeSlashes</directive>  has been set
+      to "OFF".
       The <directive type="section" module="core">LocationMatch</directive>
       directive and the regex version of <directive type="section"
       >Location</directive> require you to explicitly specify multiple
-      slashes if that is your intention.</p>
+      slashes if the slashes are not being merged.</p>
 
       <p>For example, <code>&lt;LocationMatch "^/abc"&gt;</code> would match
       the request URL <code>/abc</code> but not the request URL <code>
@@ -3248,16 +3250,18 @@ matching URLs</description>
 &lt;/LocationMatch&gt;
     </highlight>
 
-    <note><title>Note about / (slash)</title>
+     <note><title>Note about / (slash)</title>
       <p>The slash character has special meaning depending on where in a
       URL it appears. People may be used to its behavior in the filesystem
       where multiple adjacent slashes are frequently collapsed to a single
       slash (<em>i.e.</em>, <code>/home///foo</code> is the same as
-      <code>/home/foo</code>). In URL-space this is not necessarily true.
+      <code>/home/foo</code>). In URL-space this is not necessarily true if
+      directive <directive module="core">MergeSlashes</directive>  has been set
+      to "OFF".
       The <directive type="section" module="core">LocationMatch</directive>
       directive and the regex version of <directive type="section"
       >Location</directive> require you to explicitly specify multiple
-      slashes if that is your intention.</p>
+      slashes if the slashes are not being merged.</p>
 
       <p>For example, <code>&lt;LocationMatch "^/abc"&gt;</code> would match
       the request URL <code>/abc</code> but not the request URL <code>
@@ -5388,11 +5392,13 @@ as if 'QualifyRedirectURL On' was configured.</compatibility>
     significant.  However, URL's handled other ways, such as by CGI or proxy,
     might prefer to retain the significance of multiple consecutive slashes. 
     In these cases <directive>MergeSlashes</directive> can be set to 
-    <em>OFF</em> to retain the multiple consecutive slashes.  In these
-    configurations, regular expressions used in the configuration file that match
+    <em>OFF</em> to retain the multiple consecutive slashes, which is the legacy behavior.</p>
+    <p>
+    When set to "OFF", regular expressions used in the configuration file that match
     the path component of the URL (<directive>LocationMatch</directive>,
     <directive>RewriteRule</directive>, ...) need to take into account multiple 
-    consecutive slashes.</p>
+    consecutive slashes. Non regular expression based <directive>Location</directive> always
+    operate against a URL with merged slashes and cannot differentiate between multiple slashes.</p>
 </usage>
 </directivesynopsis>
 
