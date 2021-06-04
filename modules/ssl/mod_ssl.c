@@ -493,7 +493,6 @@ static SSLConnRec *ssl_init_connection_ctx(conn_rec *c,
      * and thus a caller like mod_proxy needs to update it per request.
      */
     if (per_dir_config) {
-        ap_assert(c->outgoing);
         sslconn->dc = ap_get_module_config(per_dir_config, &ssl_module);
     }
     else {
