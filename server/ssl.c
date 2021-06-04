@@ -59,7 +59,7 @@ APR_HOOK_STRUCT(
     APR_HOOK_LINK(ssl_answer_challenge)
     APR_HOOK_LINK(ssl_ocsp_prime_hook)
     APR_HOOK_LINK(ssl_ocsp_get_resp_hook)
-    APR_HOOK_LINK(ssl_outgoing)
+    APR_HOOK_LINK(ssl_bind_outgoing)
 )
 
 APR_DECLARE_OPTIONAL_FN(int, ssl_is_https, (conn_rec *));
@@ -125,7 +125,7 @@ AP_DECLARE(int) ap_ssl_bind_outgoing(conn_rec *c, struct ap_conf_vector_t *dir_c
     int rv, enabled = 0;
 
     c->outgoing = 1;
-    rv = ap_run_ssl_outgoing(c, dir_conf, enable_ssl);
+    rv = ap_run_ssl_bind_outgoing(c, dir_conf, enable_ssl);
     enabled = (rv == OK);
     if (enable_ssl && !enabled) {
         /* the hooks did not take over. Is there an old skool optional that will? */
@@ -157,7 +157,7 @@ AP_DECLARE(int) ap_ssl_bind_outgoing(conn_rec *c, struct ap_conf_vector_t *dir_c
 
 AP_DECLARE(int) ap_ssl_has_outgoing_handlers(void)
 {
-    return (_hooks.link_ssl_outgoing && _hooks.link_ssl_outgoing->nelts > 0)
+    return (_hooks.link_ssl_bind_outgoing && _hooks.link_ssl_bind_outgoing->nelts > 0)
         || module_ssl_engine_set || module_ssl_proxy_enable;
 }
 
@@ -275,5 +275,5 @@ AP_IMPLEMENT_HOOK_RUN_FIRST(int, ssl_ocsp_get_resp_hook,
          (server_rec *s, conn_rec *c, const char *id, apr_size_t id_len,
           ap_ssl_ocsp_copy_resp *cb, void *userdata),
          (s, c, id, id_len, cb, userdata), DECLINED)
-AP_IMPLEMENT_HOOK_RUN_FIRST(int,ssl_outgoing,(conn_rec *c, ap_conf_vector_t *dir_conf, int require_ssl),
+AP_IMPLEMENT_HOOK_RUN_FIRST(int,ssl_bind_outgoing,(conn_rec *c, ap_conf_vector_t *dir_conf, int require_ssl),
                             (c, dir_conf, require_ssl), DECLINED)

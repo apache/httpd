@@ -64,11 +64,11 @@ AP_DECLARE(int) ap_ssl_conn_is_ssl(conn_rec *c);
  * @param enable_ssl If != 0, the SSL protocol should be enabled for this connection.
  * @return OK or DECLINED, DONE when ssl was enabled
  */
-AP_DECLARE_HOOK(int, ssl_outgoing,
+AP_DECLARE_HOOK(int, ssl_bind_outgoing,
                (conn_rec *c, struct ap_conf_vector_t *dir_conf, int enable_ssl))
 
 /**
- * Assures the connection is marked as outgoing and invokes the ssl_outgoing hook.
+ * Assures the connection is marked as outgoing and invokes the ssl_bind_outgoing hook.
  * This may be called several times on an outgoing connection with varying dir_conf
  * values. require_ssl is not allowed to change on the same connection.
  *

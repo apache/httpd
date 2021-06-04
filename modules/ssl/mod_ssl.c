@@ -548,7 +548,7 @@ static int ssl_engine_status(conn_rec *c, SSLConnRec *sslconn)
     return OK;
 }
 
-static int ssl_hook_ssl_outgoing(conn_rec *c,
+static int ssl_hook_ssl_bind_outgoing(conn_rec *c,
                                  ap_conf_vector_t *per_dir_config,
                                  int enable_ssl)
 {
@@ -558,7 +558,7 @@ static int ssl_hook_ssl_outgoing(conn_rec *c,
     sslconn = ssl_init_connection_ctx(c, per_dir_config, 1);
     status = ssl_engine_status(c, sslconn);
     if (enable_ssl) {
-        if (status == DECLINED) {
+        if (status != OK) {
             SSLSrvConfigRec *sc = mySrvConfig(sslconn->server);
             sslconn->disabled = 1;
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO()
@@ -748,7 +748,7 @@ static void ssl_register_hooks(apr_pool_t *p)
                       APR_HOOK_MIDDLE);
 
     ssl_var_register(p);
-    ap_hook_ssl_outgoing  (ssl_hook_ssl_outgoing, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_ssl_bind_outgoing  (ssl_hook_ssl_bind_outgoing, NULL, NULL, APR_HOOK_MIDDLE);
 
     ap_register_auth_provider(p, AUTHZ_PROVIDER_GROUP, "ssl",
                               AUTHZ_PROVIDER_VERSION,
