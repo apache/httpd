@@ -1,16 +1,16 @@
-  * core/mod_proxy/mod_ssl:
-    Adding `outgoing` flag to conn_rec, indicating a connection is
-    initiated by the server to somewhere, in contrast to incoming
-    connections from clients.
-    Adding 'ap_ssl_bind_outgoing()` function that marks a connection
-    as outgoing and is used by mod_proxy instead of the previous
-    optional function `ssl_engine_set`. This enables other SSL
-    module to secure proxy connections.
-    The optional functions `ssl_engine_set`, `ssl_engine_disable` and
-    `ssl_proxy_enable` are now provided by the core to have backward
-    compatibility with non-httpd modules that might use them. mod_ssl
-    itself no longer registers these functions, but keeps them in its
-    header for backward compatibility.
-    The core provided optional function wrap any registered function
-    like it was done for `ssl_is_ssl`.
-    [Stefan Eissing]
+  *) core/mod_proxy/mod_ssl:
+     Adding `outgoing` flag to conn_rec, indicating a connection is
+     initiated by the server to somewhere, in contrast to incoming
+     connections from clients.
+     Adding 'ap_ssl_bind_outgoing()` function that marks a connection
+     as outgoing and is used by mod_proxy instead of the previous
+     optional function `ssl_engine_set`. This enables other SSL
+     module to secure proxy connections.
+     The optional functions `ssl_engine_set`, `ssl_engine_disable` and
+     `ssl_proxy_enable` are now provided by the core to have backward
+     compatibility with non-httpd modules that might use them. mod_ssl
+     itself no longer registers these functions, but keeps them in its
+     header for backward compatibility.
+     The core provided optional function wrap any registered function
+     like it was done for `ssl_is_ssl`.
+     [Stefan Eissing]
