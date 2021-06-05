@@ -3301,17 +3301,16 @@ spécifiées</td></tr>
 &lt;/Location&gt;</pre>
 
 
-    <div class="note"><h3>Note à propos du slash (/)</h3>
-      <p>La signification du caractère slash dépend de l'endroit où il
-      se trouve dans l'URL. Les utilisateurs peuvent être habitués à
-      son comportement dans le système de fichiers où plusieurs slashes
-      successifs sont souvent réduits à un slash unique (en d'autres
-      termes, <code>/home///foo</code> est identique à
-      <code>/home/foo</code>). Dans l'espace de nommage des URLs, ce
-      n'est cependant pas toujours le cas. Pour la directive <code class="directive"><a href="#locationmatch">&lt;LocationMatch&gt;</a></code> et la
-      version avec expressions rationnelles de la directive <code class="directive">&lt;Location&gt;</code>, vous devez spécifier
-      explicitement les slashes multiples si telle est votre
-      intention.</p>
+      <div class="note"><h3>Note à propos du slash (/)</h3> <p>La signification du
+    caractère slash dépend de l'endroit où il se trouve dans l'URL. Les
+    utilisateurs peuvent être habitués à son comportement dans le système de
+    fichiers où plusieurs slashes successifs sont souvent réduits à un slash
+    unique (en d'autres termes, <code>/home///foo</code> est identique à
+    <code>/home/foo</code>). Dans l'espace de nommage des URLs, ce n'est
+    cependant pas toujours vrai si la directive <code class="directive"><a href="#mergeslashes">MergeSlashes</a></code> a été définie à "OFF". Pour la
+    directive <code class="directive"><a href="#locationmatch">&lt;LocationMatch&gt;</a></code>
+    et la version avec expressions rationnelles de la directive <code class="directive">&lt;Location&gt;</code>, vous devez spécifier explicitement les
+    slashes multiples si les slashes ne sont pas fusionnés.</p>
 
       <p>Par exemple, <code>&lt;LocationMatch "^/abc"&gt;</code> va
       correspondre à l'URL <code>/abc</code> mais pas à l'URL <code>
@@ -3381,15 +3380,17 @@ correspondant à une expression rationnelle</td></tr>
 &lt;/LocationMatch&gt;</pre>
 
 
-    <div class="note"><h3>Note à propos du slash '/'</h3>
-      <p>La signification du caractère slash '/' dépend de l'endroit où il
-      apparaît dans une URL. Les utilisateurs sont habitués à voir de multiples
-      slashes adjacents réduits à un seul au sein du système de fichiers (par
-      exemple, <code>/home///foo</code> est équivalent à
-      <code>/home/foo</code>). Ce n'est n'est cependant pas toujours le cas au
-      sein des URLs. En effet, si vous souhaitez spécifier plusieurs slashes,
-      vous devez le faire explicitement au sein de la directive <code class="directive"><a href="#locationmatch">&lt;LocationMatch&gt;</a></code> et de la version
-      regex de la directive <code class="directive">&lt;Location&gt;</code>.</p>
+    <div class="note"><h3>Note à propos du slash '/'</h3> <p>La signification du
+    caractère slash '/' dépend de l'endroit où il apparaît dans une URL. Les
+    utilisateurs sont habitués à voir de multiples slashes adjacents réduits à
+    un seul au sein du système de fichiers (par exemple,
+    <code>/home///foo</code> est équivalent à <code>/home/foo</code>). Ce n'est
+    n'est cependant pas toujours vrai au sein des URLs si la directive
+    <code class="directive"><a href="#mergeslashes">MergeSlashes</a></code> a été définie à "OFF". En
+    effet, si vous souhaitez spécifier plusieurs slashes, vous devez le faire
+    explicitement au sein de la directive <code class="directive"><a href="#locationmatch">&lt;LocationMatch&gt;</a></code> et de la version regex de la
+    directive <code class="directive">&lt;Location&gt;</code>, si les slashes ne
+    sont pas fusionnés.</p>
 
       <p>Par exemple, <code>&lt;LocationMatch "^/abc"&gt;</code> correspondra à
       l'URL <code>/abc</code>, mais pas à l'URL <code>//abc</code>. La directive
@@ -3780,12 +3781,18 @@ Apache</td></tr>
     préférable de conserver ces slashes multiples et consécutifs car ils peuvent
     avoir une signification dans le cas des URLs gérées différemment, par
     exemple par CGI ou par un serveur mandataire. Il convient alors de définir
-    <code class="directive">MergeSlashes</code> à <em>OFF</em>. Dans ces types de
-    configuration, les expressions rationnelles utilisées dans le
+    <code class="directive">MergeSlashes</code> à <em>OFF</em> pour conserver les
+    slashes multiples consécutifs, ce qui correspond au comportement
+    traditionnel.</p>
+    <p>
+    Lorsque cette directive est définie à "OFF", les expressions rationnelles utilisées dans le
     fichier de configuration pour effectuer une comparaison de la partie chemin
     de l'URL ((<code class="directive">LocationMatch</code>,
     <code class="directive">RewriteRule</code>, ...) doivent en effet tenir compte de la
-    présence éventuelle de slashes multiples et consécutifs.</p>
+    présence éventuelle de slashes multiples et consécutifs. Les sections
+    <code class="directive">Location</code> à base d'expressions non rationnelles
+    correspondent toujours à des URLs avec slashes fusionnés et ne peuvent pas
+    tenir compte des slashes multiples.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
