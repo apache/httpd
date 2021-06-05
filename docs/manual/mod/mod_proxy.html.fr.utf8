@@ -1606,6 +1606,13 @@ ProxyPass "/mirror/foo" "http://backend.example.com"</pre>
 	l'en-tête Upgrade. Voir	la documentation de ce module pour plus de
 	détails.</p>
     </td></tr>
+    <tr><td>mapping</td>
+        <td>-</td>
+        <td><p>Mappage pour traiter l'<var>url</var> avant de choisir un
+	Worker/Balancer. 'servlet' mappe comme un conteneur de servlet
+	(comme jk_servlet_normalize), à utiliser avec Apache Tomcat par exemple.
+	'encoded' mappe en mode chiffré.</p>
+    </td></tr>
 
     </table>
 
