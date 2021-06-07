@@ -77,10 +77,18 @@
     <div class="example"><h3>Simple Reverse Proxy</h3><pre class="prettyprint lang-config">ProxyPass "/app" "ajp://backend.example.com:8009/app"</pre>
 </div>
 
+    <p>Options such as the <code>secret</code> option of Tomcat (required by
+    default since Tomcat 8.5.51 and 9.0.31) can just be added as a separate
+    parameter at the end of <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>
+    or <code class="directive"><a href="../mod/mod_proxy.html#balancermember">BalancerMember</a></code>. This parameter
+    is available in Apache HTTP Server 2.4.42 and later:</p>
+    <div class="example"><h3>Simple Reverse Proxy with <code>secret</code> option</h3><pre class="prettyprint lang-config">ProxyPass "/app" "ajp://backend.example.com:8009/app" secret=YOUR_AJP_SECRET</pre>
+</div>
+
     <p>Balancers may also be used:</p>
-    <div class="example"><h3>Balancer Reverse Proxy</h3><pre class="prettyprint lang-config">&lt;Proxy balancer://cluster&gt;
-    BalancerMember ajp://app1.example.com:8009 loadfactor=1
-    BalancerMember ajp://app2.example.com:8009 loadfactor=2
+    <div class="example"><h3>Balancer Reverse Proxy</h3><pre class="prettyprint lang-config">&lt;Proxy "balancer://cluster"&gt;
+    BalancerMember "ajp://app1.example.com:8009" loadfactor=1
+    BalancerMember "ajp://app2.example.com:8009" loadfactor=2
     ProxySet lbmethod=bytraffic
 &lt;/Proxy&gt;
 ProxyPass "/app" "balancer://cluster/app"</pre>
@@ -109,7 +117,7 @@ ProxyPassReverse "/apps/foo" "http://www.example.com/foo"</pre>
 <h2><a name="env" id="env">Environment Variables</a> <a title="Permanent link" href="#env" class="permalink">&para;</a></h2>
     <p>Environment variables whose names have the prefix <code>AJP_</code>
     are forwarded to the origin server as AJP request attributes
-    (with the AJP_ prefix removed from the name of the key).</p>
+    (with the <code>AJP_</code> prefix removed from the name of the key).</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="overviewprotocol" id="overviewprotocol">Overview of the protocol</a> <a title="Permanent link" href="#overviewprotocol" class="permalink">&para;</a></h2>
@@ -481,7 +489,7 @@ attribute_value := (string)</pre></div>
       <tr><td>?req_attribute</td><td>0x0A</td><td>String</td><td>Name (the name of the
       attribute follows)</td></tr>
       <tr><td>?ssl_key_size</td><td>0x0B</td><td>Integer</td><td /></tr>
-      <tr><td>?secret</td><td>0x0C</td><td>String</td><td>Sent if secret is configured</td></tr>
+      <tr><td>?secret</td><td>0x0C</td><td>String</td><td>Supported since 2.4.42</td></tr>
       <tr><td>are_done</td><td>0xFF</td><td>-</td><td>request_terminator</td></tr>
     </table>
     <p>The <code>context</code> and <code>servlet_path</code> are not
@@ -501,18 +509,18 @@ attribute_value := (string)</pre></div>
     <p>The <code>jvm_route</code>, is used to support sticky
     sessions -- associating a user's sesson with a particular Tomcat instance
     in the presence of multiple, load-balancing servers.</p>
-    <p>Beyond this list of basic attributes, any number of other attributes
-    can be sent via the <code>req_attribute</code> code <code>0x0A</code>.
-    A pair of strings to represent the attribute name and value are sent
-    immediately after each instance of that code.  Environment values are passed
-    in via this method.</p>
-    <p>The <code>secret</code> is sent when the <code>secret=secret_keyword</code> parameter is
-    used in
+    <p>The <code>secret</code> is sent when the <code>secret=secret_keyword</code>
+    parameter is used in
     <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> or
     <code class="directive"><a href="../mod/mod_proxy.html#balancermember">BalancerMember</a></code> directives.
     The backend needs to support secret and the values must match.
     <code>request.secret</code> or <code>requiredSecret</code> are documented in the AJP
     configuration of the Apache Tomcat.</p>
+    <p>Beyond this list of basic attributes, any number of other attributes
+    can be sent via the <code>req_attribute</code> code <code>0x0A</code>.
+    A pair of strings to represent the attribute name and value are sent
+    immediately after each instance of that code.  Environment values are passed
+    in via this method.</p>
     <p>Finally, after all the attributes have been sent, the attribute
     terminator, <code>0xFF</code>, is sent.  This signals both the end of the
     list of attributes and also then end of the Request Packet.</p>
@@ -621,7 +629,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_proxy_ajp.
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

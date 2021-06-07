@@ -543,7 +543,7 @@ chunk_size = (speed / (1000 / RATE_INTERVAL_MS));</pre>
         blocks, store the remaining bytes (located in the tail of the bucket brigade) 
         in a temporary holding area (namely another bucket brigade) and then use
         <code>ap_save_brigade</code> to set them aside.
-        These bytes will be preprended to the next bucket brigade that will be handled
+        These bytes will be prepended to the next bucket brigade that will be handled
         in the subsequent invocation.</li>
         <li>Avoid the previous logic if the bucket brigade that is currently being
         processed contains the end of stream bucket (EOS). There is no need to sleep
@@ -576,7 +576,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/developer/output-f
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
