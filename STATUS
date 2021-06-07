@@ -172,6 +172,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
           https://people.apache.org/~jfclere/patches/patch.210607.txt
      +1: jfclere, 
+
+   *) back port: Add CPING to health check logic.
+     Trunk version of patch:
+        https://svn.apache.org/r1887415
+     Backport version for 2.4.x of patch:
+      Trunk version of patch works
+      svn merge -c 1887415 ^/httpd/httpd/trunk .
+     +1: jfclere, 
       
 
 PATCHES/ISSUES THAT ARE BEING WORKED
