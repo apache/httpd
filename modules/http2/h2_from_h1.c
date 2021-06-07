@@ -280,25 +280,8 @@ static h2_headers *create_response(h2_task *task, request_rec *r)
     }
     
     headers = apr_table_make(r->pool, 10);
-    
     set_basic_http_header(headers, r, r->pool);
-    if (r->status == HTTP_NOT_MODIFIED) {
-        apr_table_do(copy_header, headers, r->headers_out,
-                     "ETag",
-                     "Content-Location",
-                     "Expires",
-                     "Cache-Control",
-                     "Vary",
-                     "Warning",
-                     "WWW-Authenticate",
-                     "Proxy-Authenticate",
-                     "Set-Cookie",
-                     "Set-Cookie2",
-                     NULL);
-    }
-    else {
-        apr_table_do(copy_header, headers, r->headers_out, NULL);
-    }
+    apr_table_do(copy_header, headers, r->headers_out, NULL);
     
     return h2_headers_rcreate(r, r->status, headers, r->pool);
 }
