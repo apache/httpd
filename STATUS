@@ -164,6 +164,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       svn merge -c 1864784 ^/httpd/httpd/trunk .
      +1: jorton, ylavic, jfclere
 
+  *) back port the add of balancer_manage in mod_proxy_balancer.
+     trunk patch: http://svn.apache.org/r1859235
+                  http://svn.apache.org/r1887138
+                  http://svn.apache.org/r1887176
+                  http://svn.apache.org/r1887359
+     Backport version for 2.4.x of patch:
+          https://people.apache.org/~jfclere/patches/patch.210607.txt
+     +1: jfclere, 
+      
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
