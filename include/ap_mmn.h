@@ -562,7 +562,8 @@
  * 20120211.106 (2.4.49-dev) Add ap_create_request().
  * 20120211.107 (2.4.49-dev) Add ap_parse_request_line() and
  *                           ap_check_request_header()
- * 20120211.108 (2.4.49-dev) Add ap_normalize_path()
+ * 20120211.108 (2.4.49-dev) Add ap_normalize_path() and
+ *                           pre_translate_name hook.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
