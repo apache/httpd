@@ -172,12 +172,41 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
     core_dir_config *d;
     core_server_config *sconf =
         ap_get_core_module_config(r->server->module_config);
+    unsigned int normalize_flags = 0;
 
-    /* Ignore embedded %2F's in path for proxy requests */
-    if (!r->proxyreq && r->parsed_uri.path) {
+    if (r->main) {
+        /* Lookup subrequests can have a relative path. */
+        normalize_flags = AP_NORMALIZE_ALLOW_RELATIVE;
+    }
+
+    if (r->parsed_uri.path) {
+        /* Normalize: remove /./ and shrink /../ segments, plus
+         * decode unreserved chars (first time only to avoid
+         * double decoding after ap_unescape_url() below).
+         */
+        if (!ap_normalize_path(r->parsed_uri.path,
+                               normalize_flags |
+                               AP_NORMALIZE_DECODE_UNRESERVED)) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO()
+                          "invalid URI path (%s)", r->uri);
+            return HTTP_BAD_REQUEST;
+        }
+    }
+
+    /* Let pre_translate_name hooks work with non-decoded URIs,
+     * and eventually apply their own transformations (return OK).
+     */
+    access_status = ap_run_pre_translate_name(r);
+    if (access_status != OK && access_status != DECLINED) {
+        return access_status;
+    }
+
+    /* Ignore URL unescaping for translated URIs already */
+    if (access_status == DECLINED && r->parsed_uri.path) {
         d = ap_get_core_module_config(r->per_dir_config);
         if (d->allow_encoded_slashes) {
-            access_status = ap_unescape_url_keep2f(r->parsed_uri.path, d->decode_encoded_slashes);
+            access_status = ap_unescape_url_keep2f(r->parsed_uri.path,
+                                                   d->decode_encoded_slashes);
         }
         else {
             access_status = ap_unescape_url(r->parsed_uri.path);
@@ -188,20 +217,27 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
                     ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00026)
                                   "found %%2f (encoded '/') in URI "
                                   "(decoded='%s'), returning 404",
-                                  r->parsed_uri.path);
+                                  r->uri);
                 }
             }
             return access_status;
         }
-    }
 
-    ap_getparents(r->uri);     /* OK --- shrinking transformations... */
-    if (sconf->merge_slashes != AP_CORE_CONFIG_OFF) { 
-        ap_no2slash(r->uri);
-        if (r->parsed_uri.path) {
+        if (d->allow_encoded_slashes && d->decode_encoded_slashes) {
+            /* Decoding slashes might have created new /./ and /../
+             * segments (e.g. "/.%2F/"), so re-normalize. If asked to,
+             * merge slashes while at it.
+             */
+            if (sconf->merge_slashes != AP_CORE_CONFIG_OFF) { 
+                normalize_flags |= AP_NORMALIZE_MERGE_SLASHES;
+            }
+            ap_normalize_path(r->parsed_uri.path, normalize_flags);
+        }
+        else if (sconf->merge_slashes != AP_CORE_CONFIG_OFF) { 
+            /* We still didn't merged slashes yet, do it now. */
             ap_no2slash(r->parsed_uri.path);
         }
-     }
+    }
 
     /* All file subrequests are a huge pain... they cannot bubble through the
      * next several steps.  Only file subrequests are allowed an empty uri,
@@ -1373,7 +1409,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
     r->canonical_filename = r->filename;
 
     if (r->finfo.filetype == APR_DIR) {
-        cache->cached = r->filename;
+        cache->cached = apr_pstrdup(r->pool, r->filename);
     }
     else {
         cache->cached = ap_make_dirstr_parent(r->pool, r->filename);
@@ -1470,7 +1506,7 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
         apr_pool_t *rxpool = NULL;
 
         cached &= auth_internal_per_conf;
-        cache->cached = entry_uri;
+        cache->cached = apr_pstrdup(r->pool, entry_uri);
 
         /* Go through the location entries, and check for matches.
          * We apply the directive sections in given order, we should

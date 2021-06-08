@@ -365,7 +365,6 @@ AP_DECLARE_HOOK(int,create_request,(request_rec *r))
 /**
  * This hook allow modules an opportunity to translate the URI into an
  * actual filename, before URL decoding happens.
- * rules will be followed.
  * @param r The current request
  * @return OK, DECLINED, or HTTP_...
  * @ingroup hooks
