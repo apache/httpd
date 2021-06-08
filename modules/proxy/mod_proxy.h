@@ -124,7 +124,8 @@ struct proxy_remote {
 #define PROXYPASS_NOCANON 0x01
 #define PROXYPASS_INTERPOLATE 0x02
 #define PROXYPASS_NOQUERY 0x04
-#define PROXYPASS_MAPPING_SERVLET 0x08
+#define PROXYPASS_MAP_ENCODED 0x08
+#define PROXYPASS_MAP_SERVLET 0x18 /* + MAP_ENCODED */
 struct proxy_alias {
     const char  *real;
     const char  *fake;
@@ -201,6 +202,8 @@ typedef struct {
     unsigned int inherit_set:1;
     unsigned int ppinherit:1;
     unsigned int ppinherit_set:1;
+    unsigned int map_encoded_one:1;
+    unsigned int map_encoded_all:1;
 } proxy_server_conf;
 
 typedef struct {
@@ -245,9 +248,6 @@ typedef struct {
     unsigned int forward_100_continue_set:1;
 
     apr_array_header_t *error_override_codes;
-
-    /** Whether to use original/encoded URI-path or not (default) */
-    signed char use_original_uri;
 } proxy_dir_conf;
 
 /* if we interpolate env vars per-request, we'll need a per-request
