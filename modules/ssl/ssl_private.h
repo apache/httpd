@@ -315,8 +315,8 @@ APLOG_USE_MODULE(ssl);
     ((SSLSrvConfigRec *)ap_get_module_config(srv->module_config,  &ssl_module))
 #define myDirConfig(req) \
     ((SSLDirConfigRec *)ap_get_module_config(req->per_dir_config, &ssl_module))
-#define myCtxConfig(sslconn, sc) \
-    (sslconn->is_proxy ? sslconn->dc->proxy : sc->server)
+#define myConnCtxConfig(c, sc) \
+    (c->outgoing ? myConnConfig(c)->dc->proxy : sc->server)
 #define myModConfig(srv) mySrvConfig((srv))->mc
 #define mySrvFromConn(c) myConnConfig(c)->server
 #define myDirConfigFromConn(c) myConnConfig(c)->dc
@@ -538,7 +538,6 @@ typedef struct {
     const char *verify_info;
     const char *verify_error;
     int verify_depth;
-    int is_proxy;
     int disabled;
     enum {
         NON_SSL_OK = 0,        /* is SSL request, or error handling completed */

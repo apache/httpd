@@ -1289,6 +1289,8 @@ struct conn_rec {
 
     /** The minimum level of filter type to allow setaside buckets */
     int async_filter;
+
+    int outgoing;
 };
 
 struct conn_slave_rec {

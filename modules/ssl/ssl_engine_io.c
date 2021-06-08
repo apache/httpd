@@ -1245,7 +1245,7 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
     }
 
     server = sslconn->server;
-    if (sslconn->is_proxy) {
+    if (c->outgoing) {
 #ifdef HAVE_TLSEXT
         apr_ipsubnet_t *ip;
 #endif
