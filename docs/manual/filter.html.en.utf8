@@ -65,8 +65,7 @@ independent of the traditional request processing phases.</p>
 functions like chunking and byte-range handling.</p>
 
 <p>A wider range of applications are implemented by third-party filter
-modules available from <a href="http://modules.apache.org/">modules.apache.org</a> and
-elsewhere.  A few of these are:</p>
+modules.  A few of these are:</p>
 
 <ul>
 <li>HTML and XML processing and rewriting</li>
@@ -175,7 +174,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/filter.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

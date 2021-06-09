@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1885464 -->
+<!-- English Revision: 1890424 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -3429,19 +3429,18 @@ host</context>
 &lt;/Location&gt;
     </highlight>
 
-    <note><title>Note à propos du slash (/)</title>
-      <p>La signification du caractère slash dépend de l'endroit où il
-      se trouve dans l'URL. Les utilisateurs peuvent être habitués à
-      son comportement dans le système de fichiers où plusieurs slashes
-      successifs sont souvent réduits à un slash unique (en d'autres
-      termes, <code>/home///foo</code> est identique à
-      <code>/home/foo</code>). Dans l'espace de nommage des URLs, ce
-      n'est cependant pas toujours le cas. Pour la directive <directive
-      type="section" module="core">LocationMatch</directive> et la
-      version avec expressions rationnelles de la directive <directive
-      type="section">Location</directive>, vous devez spécifier
-      explicitement les slashes multiples si telle est votre
-      intention.</p>
+    <note><title>Note à propos du slash (/)</title> <p>La signification du
+    caractère slash dépend de l'endroit où il se trouve dans l'URL. Les
+    utilisateurs peuvent être habitués à son comportement dans le système de
+    fichiers où plusieurs slashes successifs sont souvent réduits à un slash
+    unique (en d'autres termes, <code>/home///foo</code> est identique à
+    <code>/home/foo</code>). Dans l'espace de nommage des URLs, ce n'est
+    cependant pas toujours vrai si la directive <directive
+    module="core">MergeSlashes</directive> a été définie à "OFF". Pour la
+    directive <directive type="section" module="core">LocationMatch</directive>
+    et la version avec expressions rationnelles de la directive <directive
+    type="section">Location</directive>, vous devez spécifier explicitement les
+    slashes multiples si les slashes ne sont pas fusionnés.</p>
 
       <p>Par exemple, <code>&lt;LocationMatch "^/abc"&gt;</code> va
       correspondre à l'URL <code>/abc</code> mais pas à l'URL <code>
@@ -3516,16 +3515,18 @@ host</context>
 &lt;/LocationMatch&gt;
 </highlight>
 
-    <note><title>Note à propos du slash '/'</title>
-      <p>La signification du caractère slash '/' dépend de l'endroit où il
-      apparaît dans une URL. Les utilisateurs sont habitués à voir de multiples
-      slashes adjacents réduits à un seul au sein du système de fichiers (par
-      exemple, <code>/home///foo</code> est équivalent à
-      <code>/home/foo</code>). Ce n'est n'est cependant pas toujours le cas au
-      sein des URLs. En effet, si vous souhaitez spécifier plusieurs slashes,
-      vous devez le faire explicitement au sein de la directive <directive
-      type="section" module="core">LocationMatch</directive> et de la version
-      regex de la directive <directive type="section">Location</directive>.</p>
+    <note><title>Note à propos du slash '/'</title> <p>La signification du
+    caractère slash '/' dépend de l'endroit où il apparaît dans une URL. Les
+    utilisateurs sont habitués à voir de multiples slashes adjacents réduits à
+    un seul au sein du système de fichiers (par exemple,
+    <code>/home///foo</code> est équivalent à <code>/home/foo</code>). Ce n'est
+    n'est cependant pas toujours vrai au sein des URLs si la directive
+    <directive module="core">MergeSlashes</directive> a été définie à "OFF". En
+    effet, si vous souhaitez spécifier plusieurs slashes, vous devez le faire
+    explicitement au sein de la directive <directive type="section"
+    module="core">LocationMatch</directive> et de la version regex de la
+    directive <directive type="section">Location</directive>, si les slashes ne
+    sont pas fusionnés.</p>
 
       <p>Par exemple, <code>&lt;LocationMatch "^/abc"&gt;</code> correspondra à
       l'URL <code>/abc</code>, mais pas à l'URL <code>//abc</code>. La directive
@@ -5835,12 +5836,18 @@ dernière.
     préférable de conserver ces slashes multiples et consécutifs car ils peuvent
     avoir une signification dans le cas des URLs gérées différemment, par
     exemple par CGI ou par un serveur mandataire. Il convient alors de définir
-    <directive>MergeSlashes</directive> à <em>OFF</em>. Dans ces types de
-    configuration, les expressions rationnelles utilisées dans le
+    <directive>MergeSlashes</directive> à <em>OFF</em> pour conserver les
+    slashes multiples consécutifs, ce qui correspond au comportement
+    traditionnel.</p>
+    <p>
+    Lorsque cette directive est définie à "OFF", les expressions rationnelles utilisées dans le
     fichier de configuration pour effectuer une comparaison de la partie chemin
     de l'URL ((<directive>LocationMatch</directive>,
     <directive>RewriteRule</directive>, ...) doivent en effet tenir compte de la
-    présence éventuelle de slashes multiples et consécutifs.</p>
+    présence éventuelle de slashes multiples et consécutifs. Les sections
+    <directive>Location</directive> à base d'expressions non rationnelles
+    correspondent toujours à des URLs avec slashes fusionnés et ne peuvent pas
+    tenir compte des slashes multiples.</p>
 </usage>
 </directivesynopsis>
 

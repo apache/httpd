@@ -1435,6 +1435,12 @@ ProxyPass "/mirror/foo"   "http://backend.example.com"</pre>
         <td><p>Protocol accepted in the Upgrade header by <code class="module"><a href="../mod/mod_proxy_wstunnel.html">mod_proxy_wstunnel</a></code>.
         See the documentation of this module for more details.</p>
     </td></tr>
+    <tr><td>mapping</td>
+        <td>-</td>
+        <td><p>Mapping to process the <var>url</var> before choosing a Worker/Balancer.
+        'servlet' maps like a servlet container (like jk_servlet_normalize), use with Apache Tomcat for example.
+        'encoded' maps it encoded.</p>
+    </td></tr>
 
     </table>
 
@@ -2174,7 +2180,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_proxy.html
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

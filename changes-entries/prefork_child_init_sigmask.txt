@@ -1,0 +1,3 @@
+  *) mpm_prefork: Block signals for child_init hooks to prevent potential
+     threads created from there to catch MPM's signals.
+     [Ruediger Pluem, Yann Ylavic]

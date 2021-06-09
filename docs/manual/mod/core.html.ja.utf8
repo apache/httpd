@@ -72,6 +72,8 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#fileetag">FileETag</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#files">&lt;Files&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#filesmatch">&lt;FilesMatch&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flushmaxpipelined">FlushMaxPipelined</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flushmaxthreshold">FlushMaxThreshold</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#forcetype">ForceType</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#gprofdir">GprofDir</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#hostnamelookups">HostnameLookups</a></li>
@@ -111,6 +113,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#protocols">Protocols</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#protocolshonororder">ProtocolsHonorOrder</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#qualifyredirecturl">QualifyRedirectURL</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#readbuffersize">ReadBufferSize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#regexdefaultoptions">RegexDefaultOptions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#registerhttpmethod">RegisterHttpMethod</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rlimitcpu">RLimitCPU</a></li>
@@ -1382,6 +1385,34 @@ request</td></tr>
     &lt;Directory&gt;, &lt;Location&gt;, &lt;Files&gt; セクションの動作法</a></li>
 </ul>
 </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="FlushMaxPipelined" id="FlushMaxPipelined">FlushMaxPipelined</a> <a name="flushmaxpipelined" id="flushmaxpipelined">ディレクティブ</a> <a title="Permanent link" href="#flushmaxpipelined" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Maximum number of pipelined responses above which they are flushed
+to the network</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>FlushMaxPipelined <var>number</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>FlushMaxPipelined 5</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.5 and later</td></tr>
+</table><p>このディレクティブの解説文書は
+            まだ翻訳されていません。英語版をご覧ください。
+            </p></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="FlushMaxThreshold" id="FlushMaxThreshold">FlushMaxThreshold</a> <a name="flushmaxthreshold" id="flushmaxthreshold">ディレクティブ</a> <a title="Permanent link" href="#flushmaxthreshold" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Threshold above which pending data are flushed to the
+network</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>FlushMaxThreshold<var>number-of-bytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>FlushMaxThreshold 65536</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.5 and later</td></tr>
+</table><p>このディレクティブの解説文書は
+            まだ翻訳されていません。英語版をご覧ください。
+            </p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ForceType" id="ForceType">ForceType</a> <a name="forcetype" id="forcetype">ディレクティブ</a> <a title="Permanent link" href="#forcetype" class="permalink">&para;</a></h2>
 <table class="directive">
@@ -2842,6 +2873,19 @@ as if 'QualifyRedirectURL On' was configured.</td></tr>
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ReadBufferSize" id="ReadBufferSize">ReadBufferSize</a> <a name="readbuffersize" id="readbuffersize">ディレクティブ</a> <a title="Permanent link" href="#readbuffersize" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Size of the buffers used to read data</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ReadBufferSize <var>bytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>ReadBufferSize 8192</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.5 and later</td></tr>
+</table><p>このディレクティブの解説文書は
+            まだ翻訳されていません。英語版をご覧ください。
+            </p></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="RegexDefaultOptions" id="RegexDefaultOptions">RegexDefaultOptions</a> <a name="regexdefaultoptions" id="regexdefaultoptions">ディレクティブ</a> <a title="Permanent link" href="#regexdefaultoptions" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Allow to configure global/default options for regexes</td></tr>
@@ -3797,7 +3841,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/core.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />この文書は <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="apache">Copyright 2021 The Apache Software Foundation.<br />この文書は <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

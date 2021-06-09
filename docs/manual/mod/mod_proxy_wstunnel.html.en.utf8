@@ -72,6 +72,7 @@ in the response <code>Upgrade</code></p>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#proxywebsocketasync">ProxyWebsocketAsync</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxywebsocketasyncdelay">ProxyWebsocketAsyncDelay</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#proxywebsocketfallbacktoproxyhttp">ProxyWebsocketFallbackToProxyHttp</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxywebsocketidletimeout">ProxyWebsocketIdleTimeout</a></li>
 </ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_proxy_wstunnel">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_proxy_wstunnel">Report a bug</a></li></ul><h3>See also</h3>
@@ -116,6 +117,25 @@ in the response <code>Upgrade</code></p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ProxyWebsocketFallbackToProxyHttp" id="ProxyWebsocketFallbackToProxyHttp">ProxyWebsocketFallbackToProxyHttp</a> <a name="proxywebsocketfallbacktoproxyhttp" id="proxywebsocketfallbacktoproxyhttp">Directive</a> <a title="Permanent link" href="#proxywebsocketfallbacktoproxyhttp" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Instructs this module to let <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> handle the request</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyWebsocketFallbackToProxyHttp On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ProxyWebsocketFallbackToProxyHttp On</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_wstunnel</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.4.48 and later</td></tr>
+</table>
+    <p>Since httpd 2.4.47, <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> can handle WebSocket
+    upgrading and tunneling in accordance to RFC 7230, this directive controls
+    whether <code class="module"><a href="../mod/mod_proxy_wstunnel.html">mod_proxy_wstunnel</a></code> should hand over to
+    <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> to this, which is the case by default.</p>
+    <p>Setting to <em>Off</em> lets <code class="module"><a href="../mod/mod_proxy_wstunnel.html">mod_proxy_wstunnel</a></code> handle
+    WebSocket requests as in httpd 2.4.46 and earlier.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ProxyWebsocketIdleTimeout" id="ProxyWebsocketIdleTimeout">ProxyWebsocketIdleTimeout</a> <a name="proxywebsocketidletimeout" id="proxywebsocketidletimeout">Directive</a> <a title="Permanent link" href="#proxywebsocketidletimeout" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the maximum amount of time to wait for data on the websockets tunnel</td></tr>
@@ -153,7 +173,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_proxy_wstu
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
