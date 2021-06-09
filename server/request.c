@@ -163,6 +163,7 @@ AP_DECLARE(int) ap_some_authn_required(request_rec *r)
 static int walk_location_and_if(request_rec *r)
 {
     int access_status;
+    core_dir_config *d;
 
     if ((access_status = ap_location_walk(r))) {
         return access_status;
@@ -171,12 +172,9 @@ static int walk_location_and_if(request_rec *r)
         return access_status;
     }
 
-    /* Don't set per-dir loglevel if LogLevelOverride is set */
-    if (!r->connection->log) {
-        core_dir_config *d = ap_get_core_module_config(r->per_dir_config);
-        if (d->log)
-            r->log = d->log;
-    }
+    d = ap_get_core_module_config(r->per_dir_config);
+    if (d->log)
+        r->log = d->log;
 
     return OK;
 }
