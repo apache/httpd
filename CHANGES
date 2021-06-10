@@ -9,6 +9,8 @@ Changes with Apache 2.4.49
   *) core: Add StrictHostCheck to allow unconfigured hostnames to be
      rejected. [Eric Covener]
 
+  *) htcacheclean: Improve help messages.  [Christophe Jaillet]
+
 Changes with Apache 2.4.48
 
   *) SECURITY: CVE-2021-31618 (cve.mitre.org)

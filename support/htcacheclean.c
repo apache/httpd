@@ -253,7 +253,8 @@ static void printstats(char *path, struct stats *s)
 /**
  * Round the value up to the given threshold.
  */
-static apr_size_t round_up(apr_size_t val, apr_off_t round) {
+static apr_size_t round_up(apr_size_t val, apr_off_t round)
+{
     if (round > 1) {
         return (apr_size_t)(((val + round - 1) / round) * round);
     }
@@ -1031,7 +1032,7 @@ static void purge(char *path, apr_pool_t *pool, apr_off_t max,
         return;
     }
 
-    /* process all entries with are expired */
+    /* process all entries which are expired */
     for (e = APR_RING_FIRST(&root);
          e != APR_RING_SENTINEL(&root, _entry, link) && !interrupted;) {
         n = APR_RING_NEXT(e, link);
@@ -1284,8 +1285,8 @@ static void usage(const char *error)
     }
     apr_file_printf(errfile,
     "%s -- program for cleaning the disk cache."                             NL
-    "Usage: %s [-Dvtrn] -pPATH [-lLIMIT|-LLIMIT] [-PPIDFILE]"                NL
-    "       %s [-nti] -dINTERVAL -pPATH [-lLIMIT|-LLIMIT] [-PPIDFILE]"       NL
+    "Usage: %s [-Dvtrn] -pPATH [-lLIMIT] [-LLIMIT] [-PPIDFILE]"              NL
+    "       %s [-nti] -dINTERVAL -pPATH [-lLIMIT] [-LLIMIT] [-PPIDFILE]"     NL
     "       %s [-Dvt] -pPATH URL ..."                                        NL
                                                                              NL
     "Options:"                                                               NL
@@ -1319,10 +1320,12 @@ static void usage(const char *error)
                                                                              NL
     "  -R   Specify amount to round sizes up to."                            NL
                                                                              NL
-    "  -l   Specify LIMIT as the total disk cache size limit. Attach 'K'"    NL
-    "       or 'M' to the number for specifying KBytes or MBytes."           NL
+    "  -l   Specify LIMIT as the total disk cache size limit. Attach 'K',"   NL
+    "       'M' or 'G' to the number for specifying KBytes, MBytes or"       NL
+    "        GBytes."                                                        NL
                                                                              NL
-    "  -L   Specify LIMIT as the total disk cache inode limit."              NL
+    "  -L   Specify LIMIT as the total disk cache inode limit. 'K', 'M' or"  NL
+    "       'G' suffix can also be used."                                    NL
                                                                              NL
     "  -i   Be intelligent and run only when there was a modification of"    NL
     "       the disk cache. This option is only possible together with the"  NL
@@ -1352,7 +1355,8 @@ static void usage(const char *error)
 }
 #undef NL
 
-static void usage_repeated_arg(apr_pool_t *pool, char option) {
+static void usage_repeated_arg(apr_pool_t *pool, char option)
+{
     usage(apr_psprintf(pool,
                        "The option '%c' cannot be specified more than once",
                        option));
@@ -1526,7 +1530,7 @@ int main(int argc, const char * const argv[])
                         usage(apr_psprintf(pool, "Invalid limit: %s"
                                                  APR_EOL_STR APR_EOL_STR, arg));
                     }
-                } while(0);
+                } while (0);
                 break;
 
             case 'L':
@@ -1556,7 +1560,7 @@ int main(int argc, const char * const argv[])
                         usage(apr_psprintf(pool, "Invalid limit: %s"
                                                  APR_EOL_STR APR_EOL_STR, arg));
                     }
-                } while(0);
+                } while (0);
                 break;
 
             case 'a':
@@ -1635,7 +1639,7 @@ int main(int argc, const char * const argv[])
             usage("Option -i cannot be used with URL arguments, aborting");
         }
         if (limit_found) {
-            usage("Option -l cannot be used with URL arguments, aborting");
+            usage("Option -l and -L cannot be used with URL arguments, aborting");
         }
         while (o->ind < argc) {
             status = delete_url(pool, proxypath, argv[o->ind]);
