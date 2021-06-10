@@ -322,6 +322,7 @@ static const hook_lookup_t request_hooks[] = {
     {"HTTP Scheme", ap_hook_get_http_scheme},
     {"Default Port", ap_hook_get_default_port},
     {"Quick Handler", ap_hook_get_quick_handler},
+    {"Pre-Translate Name", ap_hook_get_pre_translate_name},
     {"Translate Name", ap_hook_get_translate_name},
     {"Map to Storage", ap_hook_get_map_to_storage},
     {"Check Access", ap_hook_get_access_checker_ex},

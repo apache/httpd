@@ -1175,6 +1175,22 @@ static int x_post_read_request(request_rec *r)
 
 /*
  * This routine gives our module an opportunity to translate the URI into an
+ * actual filename, before URL decoding happens.
+ *
+ * This is a RUN_FIRST hook.
+ */
+static int x_pre_translate_name(request_rec *r)
+{
+    /*
+     * We don't actually *do* anything here, except note the fact that we were
+     * called.
+     */
+    trace_request(r, "x_pre_translate_name()");
+    return DECLINED;
+}
+
+/*
+ * This routine gives our module an opportunity to translate the URI into an
  * actual filename.  If we don't do anything special, the server's default
  * rules (Alias directives and the like) will continue to be followed.
  *
@@ -1467,6 +1483,7 @@ static void x_register_hooks(apr_pool_t *p)
     ap_hook_log_transaction(x_log_transaction, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_http_scheme(x_http_scheme, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_default_port(x_default_port, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_pre_translate_name(x_pre_translate_name, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_translate_name(x_translate_name, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_map_to_storage(x_map_to_storage, NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_header_parser(x_header_parser, NULL, NULL, APR_HOOK_MIDDLE);

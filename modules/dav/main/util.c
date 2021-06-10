@@ -664,7 +664,13 @@ static dav_error * dav_process_if_header(request_rec *r, dav_if_header **p_ih)
             /* note that parsed_uri.path is allocated; we can trash it */
 
             /* clean up the URI a bit */
-            ap_getparents(parsed_uri.path);
+            if (!ap_normalize_path(parsed_uri.path,
+                                   AP_NORMALIZE_NOT_ABOVE_ROOT |
+                                   AP_NORMALIZE_DECODE_UNRESERVED)) {
+                return dav_new_error(r->pool, HTTP_BAD_REQUEST,
+                                     DAV_ERR_IF_TAGGED, rv,
+                                     "Invalid URI path tagged If-header.");
+            }
 
             /* the resources we will compare to have unencoded paths */
             if (ap_unescape_url(parsed_uri.path) != OK) {

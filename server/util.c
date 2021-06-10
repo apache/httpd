@@ -76,7 +76,7 @@
 #include "test_char.h"
 
 /* Win32/NetWare/OS2 need to check for both forward and back slashes
- * in ap_getparents() and ap_escape_url.
+ * in ap_normalize_path() and ap_escape_url().
  */
 #ifdef CASE_BLIND_FILESYSTEM
 #define IS_SLASH(s) ((s == '/') || (s == '\\'))
@@ -491,75 +491,127 @@ AP_DECLARE(apr_status_t) ap_pregsub_ex(apr_pool_t *p, char **result,
     return rc;
 }
 
+/* Forward declare */
+static char x2c(const char *what);
+
+#define IS_SLASH_OR_NUL(s) (s == '\0' || IS_SLASH(s))
+
+/*
+ * Inspired by mod_jk's jk_servlet_normalize().
+ */
+AP_DECLARE(int) ap_normalize_path(char *path, unsigned int flags)
+{
+    int ret = 1;
+    apr_size_t l = 1, w = 1;
+
+    if (!IS_SLASH(path[0])) {
+        /* Besides "OPTIONS *", a request-target should start with '/'
+         * per RFC 7230 section 5.3, so anything else is invalid.
+         */
+        if (path[0] == '*' && path[1] == '\0') {
+            return 1;
+        }
+        /* However, AP_NORMALIZE_ALLOW_RELATIVE can be used to bypass
+         * this restriction (e.g. for subrequest file lookups).
+         */
+        if (!(flags & AP_NORMALIZE_ALLOW_RELATIVE) || path[0] == '\0') {
+            return 0;
+        }
+
+        l = w = 0;
+    }
+
+    while (path[l] != '\0') {
+        /* RFC-3986 section 2.3:
+         *  For consistency, percent-encoded octets in the ranges of
+         *  ALPHA (%41-%5A and %61-%7A), DIGIT (%30-%39), hyphen (%2D),
+         *  period (%2E), underscore (%5F), or tilde (%7E) should [...]
+         *  be decoded to their corresponding unreserved characters by
+         *  URI normalizers.
+         */
+        if ((flags & AP_NORMALIZE_DECODE_UNRESERVED)
+                && path[l] == '%' && apr_isxdigit(path[l + 1])
+                                  && apr_isxdigit(path[l + 2])) {
+            const char c = x2c(&path[l + 1]);
+            if (apr_isalnum(c) || (c && strchr("-._~", c))) {
+                /* Replace last char and fall through as the current
+                 * read position */
+                l += 2;
+                path[l] = c;
+            }
+        }
+
+        if ((flags & AP_NORMALIZE_DROP_PARAMETERS) && path[l] == ';') {
+            do {
+                l++;
+            } while (!IS_SLASH_OR_NUL(path[l]));
+            continue;
+        }
+
+        if (w == 0 || IS_SLASH(path[w - 1])) {
+            /* Collapse ///// sequences to / */
+            if ((flags & AP_NORMALIZE_MERGE_SLASHES) && IS_SLASH(path[l])) {
+                do {
+                    l++;
+                } while (IS_SLASH(path[l]));
+                continue;
+            }
+
+            if (path[l] == '.') {
+                /* Remove /./ segments */
+                if (IS_SLASH_OR_NUL(path[l + 1])) {
+                    l++;
+                    if (path[l]) {
+                        l++;
+                    }
+                    continue;
+                }
+
+                /* Remove /xx/../ segments */
+                if (path[l + 1] == '.' && IS_SLASH_OR_NUL(path[l + 2])) {
+                    /* Wind w back to remove the previous segment */
+                    if (w > 1) {
+                        do {
+                            w--;
+                        } while (w && !IS_SLASH(path[w - 1]));
+                    }
+                    else {
+                        /* Already at root, ignore and return a failure
+                         * if asked to.
+                         */
+                        if (flags & AP_NORMALIZE_NOT_ABOVE_ROOT) {
+                            ret = 0;
+                        }
+                    }
+
+                    /* Move l forward to the next segment */
+                    l += 2;
+                    if (path[l]) {
+                        l++;
+                    }
+                    continue;
+                }
+            }
+        }
+
+        path[w++] = path[l++];
+    }
+    path[w] = '\0';
+
+    return ret;
+}
+
 /*
  * Parse .. so we don't compromise security
  */
 AP_DECLARE(void) ap_getparents(char *name)
 {
-    char *next;
-    int l, w, first_dot;
-
-    /* Four paseses, as per RFC 1808 */
-    /* a) remove ./ path segments */
-    for (next = name; *next && (*next != '.'); next++) {
-    }
-
-    l = w = first_dot = next - name;
-    while (name[l] != '\0') {
-        if (name[l] == '.' && IS_SLASH(name[l + 1])
-            && (l == 0 || IS_SLASH(name[l - 1])))
-            l += 2;
-        else
-            name[w++] = name[l++];
-    }
-
-    /* b) remove trailing . path, segment */
-    if (w == 1 && name[0] == '.')
-        w--;
-    else if (w > 1 && name[w - 1] == '.' && IS_SLASH(name[w - 2]))
-        w--;
-    name[w] = '\0';
-
-    /* c) remove all xx/../ segments. (including leading ../ and /../) */
-    l = first_dot;
-
-    while (name[l] != '\0') {
-        if (name[l] == '.' && name[l + 1] == '.' && IS_SLASH(name[l + 2])
-            && (l == 0 || IS_SLASH(name[l - 1]))) {
-            int m = l + 3, n;
-
-            l = l - 2;
-            if (l >= 0) {
-                while (l >= 0 && !IS_SLASH(name[l]))
-                    l--;
-                l++;
-            }
-            else
-                l = 0;
-            n = l;
-            while ((name[n] = name[m]))
-                (++n, ++m);
-        }
-        else
-            ++l;
-    }
-
-    /* d) remove trailing xx/.. segment. */
-    if (l == 2 && name[0] == '.' && name[1] == '.')
+    if (!ap_normalize_path(name, AP_NORMALIZE_NOT_ABOVE_ROOT |
+                                 AP_NORMALIZE_ALLOW_RELATIVE)) {
         name[0] = '\0';
-    else if (l > 2 && name[l - 1] == '.' && name[l - 2] == '.'
-             && IS_SLASH(name[l - 3])) {
-        l = l - 4;
-        if (l >= 0) {
-            while (l >= 0 && !IS_SLASH(name[l]))
-                l--;
-            l++;
-        }
-        else
-            l = 0;
-        name[l] = '\0';
     }
 }
+
 AP_DECLARE(void) ap_no2slash_ex(char *name, int is_fs_path)
 {
 

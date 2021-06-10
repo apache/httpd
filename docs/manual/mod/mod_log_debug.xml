@@ -103,6 +103,7 @@
     <table border="1" style="zebra">
     <columnspec><column width="1"/></columnspec>
     <tr><th>Name</th></tr>
+    <tr><td><code>pre_translate_name</code></td></tr>
     <tr><td><code>translate_name</code></td></tr>
     <tr><td><code>type_checker</code></td></tr>
     <tr><td><code>quick_handler</code></td></tr>

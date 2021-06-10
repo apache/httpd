@@ -1266,8 +1266,9 @@ static struct ent *make_parent_entry(apr_int32_t autoindex_opts,
     if (!(p->name = ap_make_full_path(r->pool, r->uri, "../"))) {
         return (NULL);
     }
-    ap_getparents(p->name);
-    if (!*p->name) {
+    if (!ap_normalize_path(p->name, AP_NORMALIZE_ALLOW_RELATIVE |
+                                    AP_NORMALIZE_NOT_ABOVE_ROOT)
+            || p->name[0] == '\0') {
         return (NULL);
     }
 

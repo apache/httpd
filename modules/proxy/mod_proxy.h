@@ -124,6 +124,8 @@ struct proxy_remote {
 #define PROXYPASS_NOCANON 0x01
 #define PROXYPASS_INTERPOLATE 0x02
 #define PROXYPASS_NOQUERY 0x04
+#define PROXYPASS_MAP_ENCODED 0x08
+#define PROXYPASS_MAP_SERVLET 0x18 /* + MAP_ENCODED */
 struct proxy_alias {
     const char  *real;
     const char  *fake;
@@ -200,6 +202,8 @@ typedef struct {
     unsigned int inherit_set:1;
     unsigned int ppinherit:1;
     unsigned int ppinherit_set:1;
+    unsigned int map_encoded_one:1;
+    unsigned int map_encoded_all:1;
 } proxy_server_conf;
 
 typedef struct {
@@ -1171,7 +1175,11 @@ PROXY_DECLARE(apr_status_t) ap_proxy_sync_balancer(proxy_balancer *b,
  * @param r     request
  * @param ent   proxy_alias record
  * @param dconf per-dir config or NULL
- * @return      DECLINED, DONE or OK if matched
+ * @return      OK if the alias matched,
+ *              DONE if the alias matched and r->uri was normalized so
+ *                   no further transformation should happen on it,
+ *              DECLINED if proxying is disabled for this alias,
+ *              HTTP_CONTINUE if the alias did not match
  */
 PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r,
                                         struct proxy_alias *ent,

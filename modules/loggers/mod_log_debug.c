@@ -49,6 +49,7 @@ static const char * const hooks[] = {
     "check_authn",          /*  9 */
     "check_authz",          /* 10 */
     "insert_filter",        /* 11 */
+    "pre_translate_name",   /* 12 */
     NULL
 };
 
@@ -106,6 +107,12 @@ static int log_debug_quick_handler(request_rec *r, int lookup_uri)
 static int log_debug_handler(request_rec *r)
 {
     do_debug_log(r, hooks[2]);
+    return DECLINED;
+}
+
+static int log_debug_pre_translate_name(request_rec *r)
+{
+    do_debug_log(r, hooks[12]);
     return DECLINED;
 }
 
@@ -263,6 +270,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_log_transaction(log_debug_log_transaction, NULL, NULL, APR_HOOK_FIRST);
     ap_hook_quick_handler(log_debug_quick_handler, NULL, NULL, APR_HOOK_FIRST);
     ap_hook_handler(log_debug_handler, NULL, NULL, APR_HOOK_FIRST);
+    ap_hook_pre_translate_name(log_debug_pre_translate_name, NULL, NULL, APR_HOOK_FIRST);
     ap_hook_translate_name(log_debug_translate_name, NULL, NULL, APR_HOOK_FIRST);
     ap_hook_map_to_storage(log_debug_map_to_storage, NULL, NULL, APR_HOOK_FIRST);
     ap_hook_fixups(log_debug_fixups, NULL, NULL, APR_HOOK_FIRST);
