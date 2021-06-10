@@ -1417,7 +1417,7 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
             if (!selected || !slen) {
                 /* No ALPN selection reported by the remote server. This could mean
                  * it does not support ALPN (old server) or that it does not support
-                 * and of our proposals (Apache itself up to 2.4.48 at least did that). */
+                 * any of our proposals (Apache itself up to 2.4.48 at least did that). */
                if (!alpn_empty_ok) {
                     ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c, APLOGNO()
                                   "SSL Proxy: Peer did not select any of our ALPN protocols [%s].",
