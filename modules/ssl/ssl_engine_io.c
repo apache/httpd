@@ -1419,7 +1419,7 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
                  * it does not support ALPN (old server) or that it does not support
                  * any of our proposals (Apache itself up to 2.4.48 at least did that). */
                if (!alpn_empty_ok) {
-                    ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c, APLOGNO()
+                    ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c, APLOGNO(10273)
                                   "SSL Proxy: Peer did not select any of our ALPN protocols [%s].",
                                   alpn_note);
                     proxy_ssl_check_peer_ok = FALSE;
@@ -1436,7 +1436,7 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
                     /* From a conforming peer, this should never happen,
                      * but life always finds a way... */
                     proto = apr_pstrndup(c->pool, selected, slen);
-                    ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c, APLOGNO()
+                    ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c, APLOGNO(10274)
                                   "SSL Proxy: Peer proposed ALPN protocol %s which is none "
                                   "of our proposals [%s].", proto, alpn_note);
                     proxy_ssl_check_peer_ok = FALSE;
