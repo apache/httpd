@@ -1270,7 +1270,7 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
             char *protos, *s, *p, *last, *proto;
             apr_size_t len;
 
-            /* Transforma the note into a protocol formatted byte array:
+            /* Transform the note into a protocol formatted byte array:
              * (len-byte proto-char+)*
              * We need the remote server to agree on one of these, unless 'http/1.1'
              * is also among our proposals. Because pre-ALPN remotes will speak this.
