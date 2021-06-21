@@ -164,6 +164,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
           https://people.apache.org/~jfclere/patches/patch.210607.txt
      +1: jfclere, jim
+     minfrin: tiny cleanup needed: warning: unused function 'safe_referer'
 
    *) back port: Add CPING to health check logic.
      Trunk version of patch:
