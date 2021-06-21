@@ -142,6 +142,14 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   *) back port: Add CPING to health check logic.
+     Trunk version of patch:
+        https://svn.apache.org/r1887415
+     Backport version for 2.4.x of patch:
+      Trunk version of patch works
+      svn merge -c 1887415 ^/httpd/httpd/trunk .
+     +1: jfclere, jim, minfrin
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -165,14 +173,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           https://people.apache.org/~jfclere/patches/patch.210607.txt
      +1: jfclere, jim
      minfrin: tiny cleanup needed: warning: unused function 'safe_referer'
-
-   *) back port: Add CPING to health check logic.
-     Trunk version of patch:
-        https://svn.apache.org/r1887415
-     Backport version for 2.4.x of patch:
-      Trunk version of patch works
-      svn merge -c 1887415 ^/httpd/httpd/trunk .
-     +1: jfclere, jim
 
   *) Add dav_get_provider(), dav_open_lockdb(), dav_close_lockdb() and
      dav_get_resource() to mod_dav.h.
