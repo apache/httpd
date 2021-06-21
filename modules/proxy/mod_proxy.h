@@ -1311,6 +1311,15 @@ APR_DECLARE_OPTIONAL_FN(int, ap_proxy_clear_connection,
         (request_rec *r, apr_table_t *headers));
 
 /**
+ * Do a AJP CPING and wait for CPONG on the socket
+ *
+ */
+APR_DECLARE_OPTIONAL_FN(apr_status_t, ajp_handle_cping_cpong,
+        (apr_socket_t *sock, request_rec *r,
+         apr_interval_time_t timeout));
+
+
+/**
  * @param socket        socket to test
  * @return              TRUE if socket is connected/active
  */
