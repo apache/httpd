@@ -180,7 +180,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
       Trunk version of patch works
       svn merge -c 1887439 ^/httpd/httpd/trunk .
-     +1: minfrin
+     +1: minfrin, rpluem
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
