@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) dbm: Split the loading of a dbm driver from the opening of a dbm file. When
+     an attempt to load a dbm driver fails, log clearly which driver triggered
+     the error (not "default"), and what the error was. [Graham Leggett]
+
   *) core: Fix a regression that stripped the ETag header from 304 responses.
      PR 61820 [Ruediger Pluem, Roy T. Fielding]
 

@@ -20,6 +20,11 @@
 #include "apr_dbm.h"
 #include "apr_md5.h"
 
+#include "apr_version.h"
+#if !APR_VERSION_AT_LEAST(2,0,0)
+#include "apu_version.h"
+#endif
+
 #include "httpd.h"
 #include "http_config.h"
 #include "ap_provider.h"
@@ -96,14 +101,35 @@ static apr_status_t get_dbm_grp(request_rec *r, char *key1, char *key2,
                                 const char *dbmgrpfile, const char *dbtype,
                                 const char ** out)
 {
+#if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 7)
+    const apr_dbm_driver_t *driver;
+    const apu_err_t *err;
+#endif
     char *grp_colon, *val;
     apr_status_t retval;
     apr_dbm_t *f;
 
-    retval = apr_dbm_open_ex(&f, dbtype, dbmgrpfile, APR_DBM_READONLY,
-                             APR_OS_DEFAULT, r->pool);
+#if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 7)
+    retval = apr_dbm_get_driver(&driver, dbtype, &err, r->pool);
 
     if (retval != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, retval, r, APLOGNO()
+                "could not load '%s' dbm library: %s",
+                     err->reason, err->msg);
+        return retval;
+    }
+
+    retval = apr_dbm_open2(&f, driver, dbmgrpfile, APR_DBM_READONLY,
+                             APR_OS_DEFAULT, r->pool);
+#else
+    retval = apr_dbm_open_ex(&f, dbtype, dbmgrpfile, APR_DBM_READONLY,
+                             APR_OS_DEFAULT, r->pool);
+#endif
+
+    if (retval != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, retval, r, APLOGNO(01799)
+                      "could not open dbm (type %s) group access "
+                      "file: %s", dbtype, dbmgrpfile);
         return retval;
     }
 
@@ -166,9 +192,6 @@ static authz_status dbmgroup_check_authorization(request_rec *r,
                              user, conf->grpfile, conf->dbmtype, &groups);
 
         if (status != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(01799)
-                          "could not open dbm (type %s) group access "
-                          "file: %s", conf->dbmtype, conf->grpfile);
             return AUTHZ_GENERAL_ERROR;
         }
 
@@ -241,9 +264,6 @@ static authz_status dbmfilegroup_check_authorization(request_rec *r,
                          user, conf->grpfile, conf->dbmtype, &groups);
 
     if (status != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(01803)
-                      "could not open dbm (type %s) group access "
-                      "file: %s", conf->dbmtype, conf->grpfile);
         return AUTHZ_DENIED;
     }
 
