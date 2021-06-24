@@ -149,7 +149,7 @@ static apr_status_t socache_dbm_init(ap_socache_instance_t *ctx,
 #if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 7)
     if ((rv = apr_dbm_get_driver(&driver, NULL, &err,
             ctx->pool) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10277)
                 "Cannot load socache DBM library '%s': %s",
                      err->reason, err->msg);
         return rv;
@@ -256,7 +256,7 @@ static apr_status_t socache_dbm_store(ap_socache_instance_t *ctx,
 #if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 7)
     if ((rv = apr_dbm_get_driver(&driver, NULL, &err,
             ctx->pool) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10278)
                 "Cannot load socache DBM library '%s' (store): %s",
                      err->reason, err->msg);
         free(dbmval.dptr);
@@ -333,7 +333,7 @@ static apr_status_t socache_dbm_retrieve(ap_socache_instance_t *ctx, server_rec 
 #if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 7)
     if ((rv = apr_dbm_get_driver(&driver, NULL, &err,
             ctx->pool) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10279)
                 "Cannot load socache DBM library '%s' (fetch): %s",
                      err->reason, err->msg);
         return rc;
@@ -411,7 +411,7 @@ static apr_status_t socache_dbm_remove(ap_socache_instance_t *ctx,
 #if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 7)
     if ((rv = apr_dbm_get_driver(&driver, NULL, &err,
             ctx->pool) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10280)
                 "Cannot load socache DBM library '%s' (delete): %s",
                      err->reason, err->msg);
         return rv;
@@ -474,7 +474,7 @@ static void socache_dbm_expire(ap_socache_instance_t *ctx, server_rec *s)
 #if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 7)
     if ((rv = apr_dbm_get_driver(&driver, NULL, &err,
             ctx->pool) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10281)
                 "Cannot load socache DBM library '%s' (expire): %s",
                      err->reason, err->msg);
         return rv;
@@ -605,7 +605,7 @@ static void socache_dbm_status(ap_socache_instance_t *ctx, request_rec *r,
 #if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 7)
     if ((rv = apr_dbm_get_driver(&driver, NULL, &err,
             ctx->pool) != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO()
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(10282)
                 "Cannot load socache DBM library '%s' (status retrieval): %s",
                      err->reason, err->msg);
         return;
@@ -682,7 +682,7 @@ static apr_status_t socache_dbm_iterate(ap_socache_instance_t *ctx,
 #if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 7)
     if ((rv = apr_dbm_get_driver(&driver, NULL, &err,
             ctx->pool) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10283)
                 "Cannot load socache DBM library '%s' (iterating): %s",
                      err->reason, err->msg);
         return rv;

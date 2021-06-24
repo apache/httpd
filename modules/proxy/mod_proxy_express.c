@@ -146,7 +146,7 @@ static int xlate_name(request_rec *r)
     rv = apr_dbm_get_driver(&driver, sconf->dbmtype, &err, r->pool);
     if (rv != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                     APLOGNO() "The dbm library '%s' could not be loaded: %s (%s: %d)",
+                     APLOGNO(10275) "The dbm library '%s' could not be loaded: %s (%s: %d)",
                      sconf->dbmtype, err->msg, err->reason, err->rc);
         return DECLINED;
     }
@@ -155,7 +155,7 @@ static int xlate_name(request_rec *r)
                          APR_OS_DEFAULT, r->pool);
     if (rv != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                     APLOGNO() "The '%s' file '%s' could not be loaded",
+                     APLOGNO(10276) "The '%s' file '%s' could not be loaded",
                      sconf->dbmtype, sconf->dbmfile);
         return DECLINED;
     }

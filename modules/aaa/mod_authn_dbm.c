@@ -92,7 +92,7 @@ static apr_status_t fetch_dbm_value(request_rec *r, const char *dbmtype,
     rv = apr_dbm_get_driver(&driver, dbmtype, &err, r->pool);
 
     if (rv != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO()
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(10284)
                 "could not load '%s' dbm library: %s",
                      err->reason, err->msg);
         return rv;
@@ -106,7 +106,7 @@ static apr_status_t fetch_dbm_value(request_rec *r, const char *dbmtype,
 #endif
 
     if (rv != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO()
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(10285)
                       "could not open dbm (type %s) file: %s",
                       dbmtype, dbmfile);
         return rv;

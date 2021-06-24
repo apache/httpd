@@ -143,7 +143,7 @@ dav_error * dav_dbm_open_direct(apr_pool_t *p, const char *pathname, int ro,
 
 #if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 7)
     if ((status = apr_dbm_get_driver(&driver, NULL, &err, p)) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, status, ap_server_conf, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_ERR, status, ap_server_conf, APLOGNO(10289)
                      "mod_dav_fs: The DBM library '%s' could not be loaded: %s",
                              err->reason, err->msg);
         return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 1, status,

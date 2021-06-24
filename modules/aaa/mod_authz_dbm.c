@@ -113,7 +113,7 @@ static apr_status_t get_dbm_grp(request_rec *r, char *key1, char *key2,
     retval = apr_dbm_get_driver(&driver, dbtype, &err, r->pool);
 
     if (retval != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, retval, r, APLOGNO()
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, retval, r, APLOGNO(10286)
                 "could not load '%s' dbm library: %s",
                      err->reason, err->msg);
         return retval;

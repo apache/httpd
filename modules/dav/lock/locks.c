@@ -332,7 +332,7 @@ static dav_error * dav_generic_really_open_lockdb(dav_lockdb *lockdb)
     status = apr_dbm_get_driver(&driver, NULL, &er, lockdb->info->pool);
 
     if (status) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, status, ap_server_conf, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_ERR, status, ap_server_conf, APLOGNO(10288)
                      "mod_dav_lock: The DBM library '%s' could not be loaded: %s",
                              er->reason, er->msg);
         return dav_new_error(lockdb->info->pool, HTTP_INTERNAL_SERVER_ERROR, 1,

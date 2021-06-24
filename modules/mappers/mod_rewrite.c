@@ -1399,7 +1399,7 @@ static char *lookup_map_dbmfile(request_rec *r, const char *file,
 #if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 7)
     if ((rv = apr_dbm_get_driver(&driver, dbmtype, &err,
             r->pool)) != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO()
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(10287)
                 "mod_rewrite: can't load DBM library '%s': %s",
                      err->reason, err->msg);
         return NULL;
