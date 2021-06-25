@@ -113,7 +113,14 @@ if ! test -v SKIP_TESTING; then
     
     if test -v TEST_SSL -a $RV -eq 0; then
         pushd test/perl-framework
+            # Test loading encrypted private keys
+            ./t/TEST -defines "TEST_SSL_DES3_KEY TEST_SSL_PASSPHRASE_EXEC" t/ssl
+            RV=$?
+
+            # Test various session cache backends
             for cache in shmcb redis:localhost:6379 memcache:localhost:11211; do
+                test $RV -eq 0 || break
+
                 SSL_SESSCACHE=$cache ./t/TEST -sslproto TLSv1.2 -defines TEST_SSL_SESSCACHE -start
                 ./t/TEST t/ssl
                 RV=$?
@@ -129,7 +136,6 @@ if ! test -v SKIP_TESTING; then
                 if test $RV -eq 0 -a $SRV -ne 0; then
                     RV=$SRV
                 fi
-                test $RV -eq 0 || break
             done
         popd
     fi
