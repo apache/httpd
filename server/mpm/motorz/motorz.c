@@ -1476,15 +1476,12 @@ static int motorz_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
     if (!g_motorz_core) {
         mz = g_motorz_core = ap_retained_data_create(userdata_key, sizeof(*g_motorz_core));
         mz->mpm = ap_unixd_mpm_get_retained_data();
+        mz->mpm->baton = mz;
         mz->max_daemons_limit = -1;
         mz->timeout_ring = motorz_timer_ring;
         mz->pollset = motorz_pollset;
     }
     mz->mpm->mpm_state = AP_MPMQ_STARTING;
-    if (mz->mpm->baton != mz) {
-        mz->mpm->was_graceful = 0;
-        mz->mpm->baton = mz;
-    }
     ++mz->mpm->module_loads;
 
     /* sigh, want this only the second time around */
