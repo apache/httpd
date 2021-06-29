@@ -763,6 +763,30 @@ AP_DECLARE(void) ap_filter_protocol(ap_filter_t* f, unsigned int proto_flags);
 /** Filter is incompatible with "Cache-Control: no-transform" */
 #define AP_FILTER_PROTO_TRANSFORM 0x20
 
+/** Write Completion (WC) bucket */
+AP_DECLARE_DATA extern const apr_bucket_type_t ap_bucket_type_wc;
+
+/**
+ * Determine if a bucket is a Write Completion (WC) bucket
+ * @param e The bucket to inspect
+ * @return true or false
+ */
+#define AP_BUCKET_IS_WC(e) ((e)->type == &ap_bucket_type_wc)
+
+/**
+ * Make the bucket passed in a Write Completion (WC) bucket
+ * @param b The bucket to make into a WC bucket
+ * @return The new bucket, or NULL if allocation failed
+ */
+AP_DECLARE(apr_bucket *) ap_bucket_wc_make(apr_bucket *b);
+
+/**
+ * Create a bucket referring to a Write Completion (WC).
+ * @param list The freelist from which this bucket should be allocated
+ * @return The new bucket, or NULL if allocation failed
+ */
+AP_DECLARE(apr_bucket *) ap_bucket_wc_create(apr_bucket_alloc_t *list);
+
 /**
  * @}
  */

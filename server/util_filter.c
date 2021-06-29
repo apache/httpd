@@ -976,6 +976,12 @@ AP_DECLARE(apr_status_t) ap_filter_setaside_brigade(ap_filter_t *f,
              e = next) {
             next = APR_BUCKET_NEXT(e);
 
+            /* Strip WC buckets added by ap_filter_output_pending(). */
+            if (AP_BUCKET_IS_WC(e)) {
+                apr_bucket_delete(e);
+                continue;
+            }
+
             /* Opaque buckets (length == -1) are moved, so assumed to have
              * next EOR's lifetime or at least the lifetime of the connection.
              */
@@ -1268,7 +1274,10 @@ AP_DECLARE_NONSTD(int) ap_filter_output_pending(conn_rec *c)
         if (!APR_BRIGADE_EMPTY(fp->bb)) {
             ap_filter_t *f = fp->f;
             apr_status_t rv;
+            apr_bucket *b;
 
+            b = ap_bucket_wc_create(bb->bucket_alloc);
+            APR_BRIGADE_INSERT_TAIL(bb, b);
             rv = ap_pass_brigade(f, bb);
             apr_brigade_cleanup(bb);
 
@@ -1279,8 +1288,7 @@ AP_DECLARE_NONSTD(int) ap_filter_output_pending(conn_rec *c)
                 break;
             }
 
-            if ((fp->bb && !APR_BRIGADE_EMPTY(fp->bb))
-                    || (f->next && ap_filter_should_yield(f->next))) {
+            if (ap_filter_should_yield(f)) {
                 rc = OK;
                 break;
             }
@@ -1391,3 +1399,41 @@ AP_DECLARE(void) ap_filter_protocol(ap_filter_t *f, unsigned int flags)
 {
     f->frec->proto_flags = flags ;
 }
+
+
+static apr_status_t wc_bucket_read(apr_bucket *b, const char **str,
+                                   apr_size_t *len, apr_read_type_e block)
+{
+    *str = NULL;
+    *len = 0;
+    return APR_SUCCESS;
+}
+
+AP_DECLARE(apr_bucket *) ap_bucket_wc_make(apr_bucket *b)
+{
+    b->length = 0;
+    b->start  = 0;
+    b->data   = NULL;
+    b->type   = &ap_bucket_type_wc;
+
+    return b;
+}
+
+AP_DECLARE(apr_bucket *) ap_bucket_wc_create(apr_bucket_alloc_t *list)
+{
+    apr_bucket *b = apr_bucket_alloc(sizeof(*b), list);
+
+    APR_BUCKET_INIT(b);
+    b->free = apr_bucket_free;
+    b->list = list;
+    return ap_bucket_wc_make(b);
+}
+
+AP_DECLARE_DATA const apr_bucket_type_t ap_bucket_type_wc = {
+    "WC", 5, APR_BUCKET_METADATA,
+    apr_bucket_destroy_noop,
+    wc_bucket_read,
+    apr_bucket_setaside_noop,
+    apr_bucket_split_notimpl,
+    apr_bucket_simple_copy
+};
