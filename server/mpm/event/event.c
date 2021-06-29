@@ -3334,19 +3334,6 @@ static int event_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
 
     ap_log_pid(pconf, ap_pid_fname);
 
-    if (!retained->mpm->was_graceful) {
-        if (ap_run_pre_mpm(s->process->pool, SB_SHARED) != OK) {
-            retained->mpm->mpm_state = AP_MPMQ_STOPPING;
-            return !OK;
-        }
-        /* fix the generation number in the global score; we just got a new,
-         * cleared scoreboard
-         */
-        ap_scoreboard_image->global->running_generation = retained->mpm->my_generation;
-    }
-
-    ap_unixd_mpm_set_signals(pconf, one_process);
-
     /* On the first startup create gen_pool which satisfies the lifetime of
      * the parent's PODs and listeners, on restart stop the children from the
      * previous generation and clear gen_pool for the next one.
@@ -3382,15 +3369,26 @@ static int event_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
          * use by any of the previous children.
          */
         ++retained->mpm->my_generation;
-        ap_scoreboard_image->global->running_generation = retained->mpm->my_generation;
     }
 
-    /* Preserve the number of buckets on graceful restarts, otherwise set
-     * num_buckets to zero and let ap_duplicate_listeners() determine that.
+    /* On graceful restart, preserve the scoreboard and the listeners buckets.
+     * When ungraceful, clear the scoreboard and set num_buckets to zero to let
+     * ap_duplicate_listeners() below determine how many are needed/configured.
      */
     if (!retained->mpm->was_graceful) {
+        if (ap_run_pre_mpm(s->process->pool, SB_SHARED) != OK) {
+            retained->mpm->mpm_state = AP_MPMQ_STOPPING;
+            return !OK;
+        }
         num_buckets = (one_process) ? 1 : 0; /* one_process => one bucket */
+        retained->mpm->num_buckets = 0; /* reset idle_spawn_rate below */
     }
+
+    /* Now on for the new generation. */
+    ap_scoreboard_image->global->running_generation = retained->mpm->my_generation;
+
+    ap_unixd_mpm_set_signals(pconf, one_process);
+
     if ((rv = ap_duplicate_listeners(retained->gen_pool, ap_server_conf,
                                      &listen_buckets, &num_buckets))) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv,
@@ -3423,7 +3421,7 @@ static int event_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
             new_max = num_buckets;
         }
         new_ptr = (int *)apr_palloc(ap_pglobal, new_max * sizeof(int));
-        if (retained->idle_spawn_rate) /* NULL at startup */
+        if (retained->mpm->num_buckets) /* idle_spawn_rate NULL at startup */
             memcpy(new_ptr, retained->idle_spawn_rate,
                    retained->mpm->num_buckets * sizeof(int));
         retained->idle_spawn_rate = new_ptr;
