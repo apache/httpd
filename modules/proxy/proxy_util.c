@@ -4412,6 +4412,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_transfer_between_connections(
     int flush_each = 0;
     unsigned int num_reads = 0;
     apr_off_t len;
+    apr_bucket *b;
 
     /*
      * Compat: since FLUSH_EACH is default (and zero) for legacy reasons, we
@@ -4465,7 +4466,6 @@ PROXY_DECLARE(apr_status_t) ap_proxy_transfer_between_connections(
         }
         ap_proxy_buckets_lifetime_transform(r, bb_i, bb_o);
         if (flush_each) {
-            apr_bucket *b;
             /*
              * Do not use ap_fflush here since this would cause the flush
              * bucket to be sent in a separate brigade afterwards which
@@ -4477,6 +4477,10 @@ PROXY_DECLARE(apr_status_t) ap_proxy_transfer_between_connections(
              * buckets without setting them aside.
              */
             b = apr_bucket_flush_create(bb_o->bucket_alloc);
+            APR_BRIGADE_INSERT_TAIL(bb_o, b);
+        }
+        else {
+            b = ap_bucket_wc_create(bb_o->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(bb_o, b);
         }
         rv = ap_pass_brigade(c_o->output_filters, bb_o);
@@ -4493,23 +4497,13 @@ PROXY_DECLARE(apr_status_t) ap_proxy_transfer_between_connections(
         /* Yield if the output filters stack is full? This is to avoid
          * blocking and give the caller a chance to POLLOUT async.
          */
-        if (flags & AP_PROXY_TRANSFER_YIELD_PENDING) {
-            int rc = OK;
-
-            if (!ap_filter_should_yield(c_o->output_filters)) {
-                rc = ap_filter_output_pending(c_o);
-            }
-            if (rc == OK) {
-                ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
-                              "ap_proxy_transfer_between_connections: "
-                              "yield (output pending)");
-                rv = APR_INCOMPLETE;
-                break;
-            }
-            if (rc != DECLINED) {
-                rv = AP_FILTER_ERROR;
-                break;
-            }
+        if ((flags & AP_PROXY_TRANSFER_YIELD_PENDING)
+                && ap_filter_should_yield(c_o->output_filters)) {
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
+                          "ap_proxy_transfer_between_connections: "
+                          "yield (output pending)");
+            rv = APR_INCOMPLETE;
+            break;
         }
 
         /* Yield if we keep hold of the thread for too long? This gives
