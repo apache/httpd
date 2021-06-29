@@ -1,0 +1,4 @@
+  * core/mpm: add hook 'child_stopping` that gets called when the MPM is
+    stopping a child process. The additional `graceful` parameter allows
+    registered hooks to free resources early during a graceful shutdown.
+    [Yann Ylavic, Stefan Eissing]

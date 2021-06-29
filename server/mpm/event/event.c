@@ -654,6 +654,8 @@ static void signal_threads(int mode)
         ap_queue_interrupt_all(worker_queue);
         close_worker_sockets(); /* forcefully kill all current connections */
     }
+
+    ap_run_child_stopping(pchild, mode == ST_GRACEFUL);
 }
 
 static int event_query(int query_code, int *result, apr_status_t *rv)
@@ -753,6 +755,10 @@ static void clean_child_exit(int code) __attribute__ ((noreturn));
 static void clean_child_exit(int code)
 {
     retained->mpm->mpm_state = AP_MPMQ_STOPPING;
+    if (terminate_mode == ST_INIT) {
+        ap_run_child_stopping(pchild, 0);
+    }
+
     if (pchild) {
         apr_pool_destroy(pchild);
     }

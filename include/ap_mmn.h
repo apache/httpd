@@ -673,12 +673,13 @@
  *                         ap_proxy_tunnel_conn_get_transferred() change
  *                         ap_proxy_transfer_between_connections() sent to apr_off_t *.
  * 20210531.0 (2.5.1-dev)  add conn_rec->outgoing and ap_ssl_bind_outgoing()
+ * 20210629.0 (2.5.1-dev)  new hook "child_stopping" in mpm_common.c/ap_mpm.h.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20210531
+#define MODULE_MAGIC_NUMBER_MAJOR 20210629
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0             /* 0...n */
 
