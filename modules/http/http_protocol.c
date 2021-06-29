@@ -1288,7 +1288,7 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
          * it hasn't happened yet; we may never know if it fails.
          */
         if (custom_response[0] == '\"') {
-            ap_rputs(custom_response + 1, r);
+            ap_rvputs_proto_in_ascii(r, custom_response + 1, NULL);
             ap_finalize_request_protocol(r);
             return;
         }
