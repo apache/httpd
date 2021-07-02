@@ -1013,7 +1013,7 @@ static const char *get_canned_error_string(int status,
     case HTTP_NOT_IMPLEMENTED:
         s1 = apr_pstrcat(p,
                          "<p>",
-                         ap_escape_html(r->pool, r->method), " ",
+                         ap_escape_html(r->pool, r->method),
                          " not supported for current URL.<br />\n",
                          NULL);
         return(add_optional_notes(r, s1, "error-notes", "</p>\n"));
