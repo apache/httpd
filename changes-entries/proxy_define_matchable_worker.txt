@@ -1,3 +1,0 @@
-  *) mpm_proxy: Fix possible reuse/merging of Proxy(Pass)Match worker instances
-     with others when their URLs contain a '$' substitution.  PR 65419.
-     [Yann Ylavic]

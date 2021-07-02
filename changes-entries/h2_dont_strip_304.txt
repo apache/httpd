@@ -1,2 +1,0 @@
-  *) mod_h2: Don't strip headers from 304 responses.  [Yann Ylavic]
-

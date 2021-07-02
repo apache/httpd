@@ -1,6 +1,51 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) core/mod_proxy/mod_ssl:
+     Adding `outgoing` flag to conn_rec, indicating a connection is
+     initiated by the server to somewhere, in contrast to incoming
+     connections from clients.
+     Adding 'ap_ssl_bind_outgoing()` function that marks a connection
+     as outgoing and is used by mod_proxy instead of the previous
+     optional function `ssl_engine_set`. This enables other SSL
+     module to secure proxy connections.
+     The optional functions `ssl_engine_set`, `ssl_engine_disable` and
+     `ssl_proxy_enable` are now provided by the core to have backward
+     compatibility with non-httpd modules that might use them. mod_ssl
+     itself no longer registers these functions, but keeps them in its
+     header for backward compatibility.
+     The core provided optional function wrap any registered function
+     like it was done for `ssl_is_ssl`.
+     [Stefan Eissing]
+
+  *) mod_h2: Don't strip headers from 304 responses.  [Yann Ylavic]
+
+  *) mpm_proxy: Fix possible reuse/merging of Proxy(Pass)Match worker instances
+     with others when their URLs contain a '$' substitution.  PR 65419.
+     [Yann Ylavic]
+
+  *) mpm_prefork: Block signals for child_init hooks to prevent potential
+     threads created from there to catch MPM's signals.
+     [Ruediger Pluem, Yann Ylavic]
+
+  *) mod_ssl: tighten the handling of ALPN for outgoing (proxy)
+     connections. If ALPN protocols are provided and sent to the
+     remote server, the received protocol selected is inspected
+     and checked for a match. Without match, the peer handshake
+     fails.
+     An exception is the proposal of "http/1.1" where it is
+     accepted if the remote server did not answer ALPN with
+     a selected protocol. This accomodates for hosts that do
+     not observe/support ALPN and speak http/1.x be default.
+
+  * mod_log_config/mod_ssl: moved the log_handlers registered by mod_ssl
+    into mod_log_config itself. These now use the global `ap_ssl_var_lookup()`
+    functions and work for all running SSL modules.
+    The dependency from mod_ssl to mod_log_config and its header is removed.
+    mod_ssl now provides the content of "{errstr}c" as variable "SSL_CLIENT_VERIFY_ERRSTR".
+    This change should be fully compatible to all deployed configurations.
+    [Stefan Eissing]
+
   *) dbm: Split the loading of a dbm driver from the opening of a dbm file. When
      an attempt to load a dbm driver fails, log clearly which driver triggered
      the error (not "default"), and what the error was. [Graham Leggett]
