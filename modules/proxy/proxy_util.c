@@ -19,6 +19,7 @@
 #include "ap_mpm.h"
 #include "scoreboard.h"
 #include "apr_version.h"
+#include "apr_strings.h"
 #include "apr_hash.h"
 #include "proxy_util.h"
 #include "ajp.h"
@@ -1813,46 +1814,85 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
  * shared. This allows for dynamic addition during
  * config and runtime.
  */
-PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
-                                             proxy_worker **worker,
-                                             proxy_balancer *balancer,
-                                             proxy_server_conf *conf,
-                                             const char *url,
-                                             int do_malloc)
+static char *proxy_define_worker(apr_pool_t *p,
+                                 proxy_worker **worker,
+                                 proxy_balancer *balancer,
+                                 proxy_server_conf *conf, const char *url,
+                                 int do_malloc, int matchable)
 {
-    int rv;
-    apr_uri_t uri, urisock;
+    apr_status_t rv;
     proxy_worker_shared *wshared;
-    char *ptr, *sockpath = NULL;
+    const char *ptr = NULL, *sockpath = NULL, *pdollars = NULL;
+    apr_port_t port_of_scheme;
+    apr_uri_t uri;
 
     /*
      * Look to see if we are using UDS:
      * require format: unix:/path/foo/bar.sock|http://ignored/path2/
      * This results in talking http to the socket at /path/foo/bar.sock
      */
-    ptr = ap_strchr((char *)url, '|');
-    if (ptr) {
-        *ptr = '\0';
-        rv = apr_uri_parse(p, url, &urisock);
-        if (rv == APR_SUCCESS && !ap_cstr_casecmp(urisock.scheme, "unix")) {
-            sockpath = ap_runtime_dir_relative(p, urisock.path);;
-            url = ptr+1;    /* so we get the scheme for the uds */
+    if (!ap_cstr_casecmp(url, "unix:") && (ptr = ap_strchr_c(url + 5, '|'))) {
+        rv = apr_uri_parse(p, apr_pstrmemdup(p, url, ptr - url), &uri);
+        if (rv == APR_SUCCESS) {
+            sockpath = ap_runtime_dir_relative(p, uri.path);;
+            ptr++;    /* so we get the scheme for the uds */
         }
         else {
-            *ptr = '|';
+            ptr = url;
         }
     }
-    rv = apr_uri_parse(p, url, &uri);
+    else {
+        ptr = url;
+    }
 
+    if (matchable) {
+        /* apr_uri_parse() will accept the '$' sign anywhere in the URL but
+         * in the :port part, and we don't want scheme://host:port$1$2/path
+         * to fail (e.g. "ProxyPassMatch ^/(a|b)(/.*)? http://host:port$2").
+         * So we trim all the $n from the :port and prepend them in uri.path
+         * afterward for apr_uri_unparse() to restore the original URL below.
+         */
+#define IS_REF(x) (x[0] == '$' && apr_isdigit(x[1]))
+        const char *pos = ap_strstr_c(ptr, "://");
+        if (pos) {
+            pos += 3;
+            while (*pos && *pos != ':' && *pos != '/') {
+                pos++;
+            }
+            if (*pos == ':') {
+                pos++;
+                while (*pos && !IS_REF(pos) && *pos != '/') {
+                    pos++;
+                }
+                if (IS_REF(pos)) {
+                    struct iovec vec[2];
+                    const char *path = pos + 2;
+                    while (*path && *path != '/') {
+                        path++;
+                    }
+                    pdollars = apr_pstrmemdup(p, pos, path - pos);
+                    vec[0].iov_base = (void *)ptr;
+                    vec[0].iov_len = pos - ptr;
+                    vec[1].iov_base = (void *)path;
+                    vec[1].iov_len = strlen(path);
+                    ptr = apr_pstrcatv(p, vec, 2, NULL);
+                }
+            }
+        }
+#undef IS_REF
+    }
+
+    /* Normalize the url (worker name) */
+    rv = apr_uri_parse(p, ptr, &uri);
     if (rv != APR_SUCCESS) {
         return apr_pstrcat(p, "Unable to parse URL: ", url, NULL);
     }
     if (!uri.scheme) {
         return apr_pstrcat(p, "URL must be absolute!: ", url, NULL);
     }
-    /* allow for unix:/path|http: */
     if (!uri.hostname) {
         if (sockpath) {
+            /* allow for unix:/path|http: */
             uri.hostname = "localhost";
         }
         else {
@@ -1863,6 +1903,16 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
         ap_str_tolower(uri.hostname);
     }
     ap_str_tolower(uri.scheme);
+    port_of_scheme = ap_proxy_port_of_scheme(uri.scheme);
+    if (uri.port && uri.port == port_of_scheme) {
+        uri.port = 0;
+    }
+    if (pdollars) {
+        /* Restore/prepend pdollars into the path. */
+        uri.path = apr_pstrcat(p, pdollars, uri.path, NULL);
+    }
+    ptr = apr_uri_unparse(p, &uri, APR_URI_UNP_REVEALPASSWORD);
+
     /*
      * Workers can be associated w/ balancers or on their
      * own; ie: the generic reverse-proxy or a worker
@@ -1886,8 +1936,8 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
         /* we need to allocate space here */
         *worker = apr_palloc(p, sizeof(proxy_worker));
     }
-
     memset(*worker, 0, sizeof(proxy_worker));
+    
     /* right here we just want to tuck away the worker info.
      * if called during config, we don't have shm setup yet,
      * so just note the info for later. */
@@ -1895,14 +1945,8 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
         wshared = ap_malloc(sizeof(proxy_worker_shared));  /* will be freed ap_proxy_share_worker */
     else
         wshared = apr_palloc(p, sizeof(proxy_worker_shared));
-
     memset(wshared, 0, sizeof(proxy_worker_shared));
 
-    wshared->port = (uri.port ? uri.port : ap_proxy_port_of_scheme(uri.scheme));
-    if (uri.port && uri.port == ap_proxy_port_of_scheme(uri.scheme)) {
-        uri.port = 0;
-    }
-    ptr = apr_uri_unparse(p, &uri, APR_URI_UNP_REVEALPASSWORD);
     if (PROXY_STRNCPY(wshared->name, ptr) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf, APLOGNO(02808)
         "Alert! worker name (%s) too long; truncated to: %s", ptr, wshared->name);
@@ -1919,6 +1963,7 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
         "worker hostname (%s) too long; truncated for legacy modules that do not use "
         "proxy_worker_shared->hostname_ex: %s", uri.hostname, wshared->hostname);
     }
+    wshared->port = (uri.port) ? uri.port : port_of_scheme;
     wshared->flush_packets = flush_off;
     wshared->flush_wait = PROXY_FLUSH_WAIT;
     wshared->is_address_reusable = 1;
@@ -1953,6 +1998,16 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
     return NULL;
 }
 
+PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
+                                             proxy_worker **worker,
+                                             proxy_balancer *balancer,
+                                             proxy_server_conf *conf,
+                                             const char *url,
+                                             int do_malloc)
+{
+    return proxy_define_worker(p, worker, balancer, conf, url, do_malloc, 0);
+}
+
 PROXY_DECLARE(char *) ap_proxy_define_match_worker(apr_pool_t *p,
                                              proxy_worker **worker,
                                              proxy_balancer *balancer,
@@ -1961,18 +2016,14 @@ PROXY_DECLARE(char *) ap_proxy_define_match_worker(apr_pool_t *p,
                                              int do_malloc)
 {
     char *err;
-    const char *pdollar = ap_strchr_c(url, '$');
 
-    if (pdollar != NULL) {
-        url = apr_pstrmemdup(p, url, pdollar - url);
-    }
-    err = ap_proxy_define_worker(p, worker, balancer, conf, url, do_malloc);
+    err = proxy_define_worker(p, worker, balancer, conf, url, do_malloc, 1);
     if (err) {
         return err;
     }
 
     (*worker)->s->is_name_matchable = 1;
-    if (pdollar) {
+    if (ap_strchr_c((*worker)->s->name, '$')) {
         /* Before ap_proxy_define_match_worker() existed, a regex worker
          * with dollar substitution was never matched against the actual
          * URL thus the request fell through the generic worker. To avoid
