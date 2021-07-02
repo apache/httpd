@@ -1831,7 +1831,8 @@ static char *proxy_define_worker(apr_pool_t *p,
      * require format: unix:/path/foo/bar.sock|http://ignored/path2/
      * This results in talking http to the socket at /path/foo/bar.sock
      */
-    if (!ap_cstr_casecmp(url, "unix:") && (ptr = ap_strchr_c(url + 5, '|'))) {
+    if (!ap_cstr_casecmpn(url, "unix:", 5)
+            && (ptr = ap_strchr_c(url + 5, '|'))) {
         rv = apr_uri_parse(p, apr_pstrmemdup(p, url, ptr - url), &uri);
         if (rv == APR_SUCCESS) {
             sockpath = ap_runtime_dir_relative(p, uri.path);;
