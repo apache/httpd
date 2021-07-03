@@ -1106,6 +1106,10 @@ static const char *get_canned_error_string(int status,
     case HTTP_GATEWAY_TIME_OUT:
         return("<p>The gateway did not receive a timely response\n"
                "from the upstream server or application.</p>\n");
+    case HTTP_VERSION_NOT_SUPPORTED:
+        return(apr_pstrcat(p,
+                           "<p>", r->protocol, " is not supported by this server.</p>\n",
+                           NULL));    
     case HTTP_LOOP_DETECTED:
         return("<p>The server terminated an operation because\n"
                "it encountered an infinite loop.</p>\n");
