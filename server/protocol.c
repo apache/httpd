@@ -887,16 +887,44 @@ rrl_done:
                  && r->protocol[5] != '0') {
         r->assbackwards = 0;
         r->proto_num = HTTP_VERSION(r->protocol[5] - '0', r->protocol[7] - '0');
-        if (strict && deferred_error == rrl_none)
+        if (strict && deferred_error == rrl_none) {
             deferred_error = rrl_badprotocol;
-        else
+            apr_table_setn(r->notes, "error-notes",
+                           apr_pstrcat(r->pool,
+                                       "Reason: Your browser/client sent the HTTP protocol version in lowercase letters: '",
+                                       r->protocol,
+                                       "'.",
+                                       NULL));
+        }
+        else {
             memcpy((char*)r->protocol, "HTTP", 4);
+        }
+    }
+    else if (len == 8
+                 && apr_toupper(r->protocol[0]) == 'H' && apr_toupper(r->protocol[1]) == 'T'
+                 && apr_toupper(r->protocol[2]) == 'T' && apr_toupper(r->protocol[3]) == 'P'
+                 && r->protocol[4] == '/' && apr_isdigit(r->protocol[5])
+                 && r->protocol[6] == '.' && apr_isdigit(r->protocol[6])) {
+        r->assbackwards = 0;
+        r->proto_num = HTTP_VERSION(0, 9);
+        if (deferred_error == rrl_none) {
+            deferred_error = rrl_badprotocol;
+            apr_table_setn(r->notes, "error-notes",
+                           apr_pstrcat(r->pool,
+                                       "Reason: Your browser/client sent the HTTP protocol version with a mix of uppercase and lowercase letters: '",
+                                       r->protocol,
+                                       "'.",
+                                       NULL));
+        }
     }
     else if (r->protocol[0]) {
         r->proto_num = HTTP_VERSION(0, 9);
         /* Defer setting the r->protocol string till error msg is composed */
-        if (deferred_error == rrl_none)
+        if (deferred_error == rrl_none) {
             deferred_error = rrl_badprotocol;
+            apr_table_setn(r->notes, "error-notes",
+                           "Reason: Your browser/client sent a invalid/malformed HTTP protocol version.");
+        }
     }
     else {
         r->assbackwards = 1;
