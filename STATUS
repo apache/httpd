@@ -168,7 +168,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1889957
      2.4.x patch: https://github.com/apache/httpd/commit/9740cd60fa56246952854b0113b4978188d16531.patch
      CI output: https://travis-ci.com/github/apache/httpd/builds/231634323
-     +1: jorton, 
+     +1: jorton, minfrin
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
