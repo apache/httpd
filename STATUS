@@ -142,13 +142,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) back port: Add CPING to health check logic - remove hardcoded timeout.
-     Trunk version of patch:
-        https://svn.apache.org/r1887439
-     Backport version for 2.4.x of patch:
-      Trunk version of patch works
-      svn merge -c 1887439 ^/httpd/httpd/trunk .
-     +1: minfrin, rpluem, covener
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
