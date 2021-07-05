@@ -746,8 +746,29 @@ PROXY_DECLARE(int) ap_proxy_worker_can_upgrade(apr_pool_t *p,
                                                const char *upgrade,
                                                const char *dflt);
 
+/* Bitmask for ap_proxy_{define,get}_worker_ex(). */
+#define AP_PROXY_WORKER_IS_PREFIX   (1u << 0)
+#define AP_PROXY_WORKER_IS_MATCH    (1u << 1)
+#define AP_PROXY_WORKER_IS_MALLOCED (1u << 2)
+
 /**
- * Get the worker from proxy configuration
+ * Get the worker from proxy configuration, looking for either PREFIXED or
+ * MATCHED or both types of workers according to given mask
+ * @param p        memory pool used for finding worker
+ * @param balancer the balancer that the worker belongs to
+ * @param conf     current proxy server configuration
+ * @param url      url to find the worker from
+ * @param mask     bitmask of AP_PROXY_WORKER_IS_*
+ * @return         proxy_worker or NULL if not found
+ */
+PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker_ex(apr_pool_t *p,
+                                                     proxy_balancer *balancer,
+                                                     proxy_server_conf *conf,
+                                                     const char *url,
+                                                     unsigned int mask);
+
+/**
+ * Get the worker from proxy configuration, both types
  * @param p        memory pool used for finding worker
  * @param balancer the balancer that the worker belongs to
  * @param conf     current proxy server configuration
@@ -758,7 +779,26 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
                                                   proxy_balancer *balancer,
                                                   proxy_server_conf *conf,
                                                   const char *url);
+
 /**
+ * Define and Allocate space for the worker to proxy configuration, of either
+ * PREFIXED or MATCHED type according to given mask
+ * @param p         memory pool to allocate worker from
+ * @param worker    the new worker
+ * @param balancer  the balancer that the worker belongs to
+ * @param conf      current proxy server configuration
+ * @param url       url containing worker name
+ * @param mask      bitmask of AP_PROXY_WORKER_IS_*
+ * @return          error message or NULL if successful (*worker is new worker)
+ */
+PROXY_DECLARE(char *) ap_proxy_define_worker_ex(apr_pool_t *p,
+                                             proxy_worker **worker,
+                                             proxy_balancer *balancer,
+                                             proxy_server_conf *conf,
+                                             const char *url,
+                                             unsigned int mask);
+
+ /**
  * Define and Allocate space for the worker to proxy configuration
  * @param p         memory pool to allocate worker from
  * @param worker    the new worker
@@ -785,6 +825,7 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
  * @param url       url containing worker name (produces match pattern)
  * @param do_malloc true if shared struct should be malloced
  * @return          error message or NULL if successful (*worker is new worker)
+ * @deprecated Replaced by ap_proxy_define_worker_ex()
  */
 PROXY_DECLARE(char *) ap_proxy_define_match_worker(apr_pool_t *p,
                                              proxy_worker **worker,
