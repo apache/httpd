@@ -675,6 +675,8 @@
  * 20210531.0 (2.5.1-dev)  add conn_rec->outgoing and ap_ssl_bind_outgoing()
  * 20210531.1 (2.5.1-dev)  Add ap_bucket_type_wc, ap_bucket_wc_make() and
  *                         ap_bucket_wc_create() to util_filter.h
+ * 20210531.2 (2.5.1-dev)  Add ap_proxy_get_worker_ex() and
+ *                         ap_proxy_define_worker_ex() to mod_proxy.h
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -682,7 +684,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20210531
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 1             /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 2             /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

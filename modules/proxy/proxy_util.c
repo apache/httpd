@@ -1714,10 +1714,11 @@ static int ap_proxy_strcmp_ematch(const char *str, const char *expected)
     return 0;
 }
 
-PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
-                                                  proxy_balancer *balancer,
-                                                  proxy_server_conf *conf,
-                                                  const char *url)
+PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker_ex(apr_pool_t *p,
+                                                     proxy_balancer *balancer,
+                                                     proxy_server_conf *conf,
+                                                     const char *url,
+                                                     unsigned int mask)
 {
     proxy_worker *worker;
     proxy_worker *max_worker = NULL;
@@ -1742,6 +1743,11 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
 
     url_length = strlen(url);
     url_copy = apr_pstrmemdup(p, url, url_length);
+
+    /* Default to lookup for both _PREFIX and _MATCH workers */
+    if (!(mask & (AP_PROXY_WORKER_IS_PREFIX | AP_PROXY_WORKER_IS_MATCH))) {
+        mask |= AP_PROXY_WORKER_IS_PREFIX | AP_PROXY_WORKER_IS_MATCH;
+    }
 
     /*
      * We need to find the start of the path and
@@ -1777,11 +1783,13 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
                 && (worker_name_length >= min_match)
                 && (worker_name_length > max_match)
                 && (worker->s->is_name_matchable
-                    || strncmp(url_copy, worker->s->name,
-                               worker_name_length) == 0)
+                    || ((mask & AP_PROXY_WORKER_IS_PREFIX)
+                        && strncmp(url_copy, worker->s->name,
+                                   worker_name_length) == 0))
                 && (!worker->s->is_name_matchable
-                    || ap_proxy_strcmp_ematch(url_copy,
-                                              worker->s->name) == 0) ) {
+                    || ((mask & AP_PROXY_WORKER_IS_MATCH)
+                        && ap_proxy_strcmp_ematch(url_copy,
+                                                  worker->s->name) == 0)) ) {
                 max_worker = worker;
                 max_match = worker_name_length;
             }
@@ -1793,11 +1801,13 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
                 && (worker_name_length >= min_match)
                 && (worker_name_length > max_match)
                 && (worker->s->is_name_matchable
-                    || strncmp(url_copy, worker->s->name,
-                               worker_name_length) == 0)
+                    || ((mask & AP_PROXY_WORKER_IS_PREFIX)
+                        && strncmp(url_copy, worker->s->name,
+                                   worker_name_length) == 0))
                 && (!worker->s->is_name_matchable
-                    || ap_proxy_strcmp_ematch(url_copy,
-                                              worker->s->name) == 0) ) {
+                    || ((mask & AP_PROXY_WORKER_IS_MATCH)
+                        && ap_proxy_strcmp_ematch(url_copy,
+                                                  worker->s->name) == 0)) ) {
                 max_worker = worker;
                 max_match = worker_name_length;
             }
@@ -1807,6 +1817,14 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
     return max_worker;
 }
 
+PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
+                                                  proxy_balancer *balancer,
+                                                  proxy_server_conf *conf,
+                                                  const char *url)
+{
+    return ap_proxy_get_worker_ex(p, balancer, conf, url, 0);
+}
+
 /*
  * To create a worker from scratch first we define the
  * specifics of the worker; this is all local data.
@@ -1814,11 +1832,12 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
  * shared. This allows for dynamic addition during
  * config and runtime.
  */
-static char *proxy_define_worker(apr_pool_t *p,
-                                 proxy_worker **worker,
-                                 proxy_balancer *balancer,
-                                 proxy_server_conf *conf, const char *url,
-                                 int do_malloc, int matchable)
+PROXY_DECLARE(char *) ap_proxy_define_worker_ex(apr_pool_t *p,
+                                             proxy_worker **worker,
+                                             proxy_balancer *balancer,
+                                             proxy_server_conf *conf,
+                                             const char *url,
+                                             unsigned int mask)
 {
     apr_status_t rv;
     proxy_worker_shared *wshared;
@@ -1846,7 +1865,7 @@ static char *proxy_define_worker(apr_pool_t *p,
         ptr = url;
     }
 
-    if (matchable) {
+    if (mask & AP_PROXY_WORKER_IS_MATCH) {
         /* apr_uri_parse() will accept the '$' sign anywhere in the URL but
          * in the :port part, and we don't want scheme://host:port$1$2/path
          * to fail (e.g. "ProxyPassMatch ^/(a|b)(/.*)? http://host:port$2").
@@ -1942,7 +1961,7 @@ static char *proxy_define_worker(apr_pool_t *p,
     /* right here we just want to tuck away the worker info.
      * if called during config, we don't have shm setup yet,
      * so just note the info for later. */
-    if (do_malloc)
+    if (mask & AP_PROXY_WORKER_IS_MALLOCED)
         wshared = ap_malloc(sizeof(proxy_worker_shared));  /* will be freed ap_proxy_share_worker */
     else
         wshared = apr_palloc(p, sizeof(proxy_worker_shared));
@@ -1975,7 +1994,7 @@ static char *proxy_define_worker(apr_pool_t *p,
     wshared->smax = -1;
     wshared->hash.def = ap_proxy_hashfunc(wshared->name, PROXY_HASHFUNC_DEFAULT);
     wshared->hash.fnv = ap_proxy_hashfunc(wshared->name, PROXY_HASHFUNC_FNV);
-    wshared->was_malloced = (do_malloc != 0);
+    wshared->was_malloced = (mask & AP_PROXY_WORKER_IS_MALLOCED) != 0;
     wshared->is_name_matchable = 0;
     if (sockpath) {
         if (PROXY_STRNCPY(wshared->uds_path, sockpath) != APR_SUCCESS) {
@@ -1996,6 +2015,20 @@ static char *proxy_define_worker(apr_pool_t *p,
     (*worker)->balancer = balancer;
     (*worker)->s = wshared;
 
+    if (mask & AP_PROXY_WORKER_IS_MATCH) {
+        (*worker)->s->is_name_matchable = 1;
+        if (ap_strchr_c((*worker)->s->name, '$')) {
+            /* Before AP_PROXY_WORKER_IS_MATCH (< 2.4.47), a regex worker
+             * with dollar substitution was never matched against the actual
+             * URL thus the request fell through the generic worker. To avoid
+             * dns and connection reuse compat issues, let's disable connection
+             * reuse by default, it can still be overwritten by an explicit
+             * enablereuse=on.
+             */
+            (*worker)->s->disablereuse = 1;
+        }
+    }
+
     return NULL;
 }
 
@@ -2006,9 +2039,13 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
                                              const char *url,
                                              int do_malloc)
 {
-    return proxy_define_worker(p, worker, balancer, conf, url, do_malloc, 0);
+    return ap_proxy_define_worker_ex(p, worker, balancer, conf, url,
+                                     AP_PROXY_WORKER_IS_PREFIX |
+                                     (do_malloc ? AP_PROXY_WORKER_IS_MALLOCED
+                                                : 0));
 }
 
+/* DEPRECATED */
 PROXY_DECLARE(char *) ap_proxy_define_match_worker(apr_pool_t *p,
                                              proxy_worker **worker,
                                              proxy_balancer *balancer,
@@ -2016,25 +2053,10 @@ PROXY_DECLARE(char *) ap_proxy_define_match_worker(apr_pool_t *p,
                                              const char *url,
                                              int do_malloc)
 {
-    char *err;
-
-    err = proxy_define_worker(p, worker, balancer, conf, url, do_malloc, 1);
-    if (err) {
-        return err;
-    }
-
-    (*worker)->s->is_name_matchable = 1;
-    if (ap_strchr_c((*worker)->s->name, '$')) {
-        /* Before ap_proxy_define_match_worker() existed, a regex worker
-         * with dollar substitution was never matched against the actual
-         * URL thus the request fell through the generic worker. To avoid
-         * dns and connection reuse compat issues, let's disable connection
-         * reuse by default, it can still be overwritten by an explicit
-         * enablereuse=on.
-         */
-        (*worker)->s->disablereuse = 1;
-    }
-    return NULL;
+    return ap_proxy_define_worker_ex(p, worker, balancer, conf, url,
+                                     AP_PROXY_WORKER_IS_MATCH |
+                                     (do_malloc ? AP_PROXY_WORKER_IS_MALLOCED
+                                                : 0));
 }
 
 /*
