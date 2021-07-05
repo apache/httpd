@@ -161,7 +161,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      dav_get_resource() to mod_dav.h.
      trunk patch: http://svn.apache.org/r1879305
                   http://svn.apache.org/r1879466
-     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-dav-functions4.patch
+     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-dav-functions5.patch
      +1: minfrin
 
   *) Fix GCC 11 warnings from use of APR_RING macros.
@@ -169,6 +169,22 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://github.com/apache/httpd/commit/9740cd60fa56246952854b0113b4978188d16531.patch
      CI output: https://travis-ci.com/github/apache/httpd/builds/231634323
      +1: jorton, minfrin
+
+  *) Add hooks deliver_report and gather_reports to mod_dav.h. Allows other
+     modules apart from versioning implementations to handle the REPORT method.
+     trunk patch: http://svn.apache.org/r1879339
+                  http://svn.apache.org/r1879307
+     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-dav-hooks1.patch
+     +1: minfrin
+
+  *) mod_dav: Add method_precondition hook. WebDAV extensions define
+     conditions that must exist before a WebDAV method can be executed.
+     This hook allows a WebDAV extension to verify these preconditions.
+     trunk patch: http://svn.apache.org/r1879339
+                  http://svn.apache.org/r1879340
+     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-dav-preconditions1.patch
+     +1: minfrin
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
