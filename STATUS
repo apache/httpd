@@ -224,13 +224,11 @@ PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) back port the add of balancer_manage in mod_proxy_balancer.
      trunk patch: http://svn.apache.org/r1859235
-                  http://svn.apache.org/r1887138
                   http://svn.apache.org/r1887176
                   http://svn.apache.org/r1887359
      Backport version for 2.4.x of patch:
-          https://people.apache.org/~jfclere/patches/patch.210607.txt
-     +1: jfclere, jim
-     minfrin: tiny cleanup needed: warning: unused function 'safe_referer'
+          https://people.apache.org/~jfclere/patches/patch.210706.txt
+     +1: jfclere
 
   *) mod_dav: Allow other modules to become providers and add ACLs
      to the DAV response.
