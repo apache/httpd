@@ -201,7 +201,22 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1890605
      2.4.x patch: https://github.com/apache/httpd/pull/203.diff
            PR: https://github.com/apache/httpd/pull/203
-    +1: icing
+     +1: icing
+
+  *) mod_ssl: tighten the handling of ALPN for outgoing (proxy)
+     connections. If ALPN protocols are provided and sent to the
+     remote server, the received protocol selected is inspected
+     and checked for a match. Without match, the peer handshake
+     fails.
+     An exception is the proposal of "http/1.1" where it is
+     accepted if the remote server did not answer ALPN with
+     a selected protocol. This accomodates for hosts that do
+     not observe/support ALPN and speak http/1.x be default.
+     trunk patch: http://svn.apache.org/r1890693
+                  http://svn.apache.org/r1890696
+     2.4.x patch: https://github.com/apache/httpd/pull/204.diff
+           PR: https://github.com/apache/httpd/pull/204
+     +1: icing
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
