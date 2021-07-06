@@ -185,6 +185,24 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-dav-preconditions1.patch
      +1: minfrin
 
+  *) back port: new ap_ssl_bind_outgoing for multi ssl support in proxy connections
+     core/mod_proxy/mod_ssl:
+       Adding outgoing flag to conn_rec, indicating a connection is
+       initiated by the server to somewhere, in contrast to incoming
+       connections from clients.
+       Adding 'ap_ssl_bind_outgoing()function that marks a connection as outgoing
+       and is used by mod_proxy instead of the previous optional functionssl_engine_set.
+       This enables other SSL module to secure proxy connections. The optional
+       functions ssl_engine_set, ssl_engine_disableandssl_proxy_enableare now provided
+       by the core to have backward compatibility with non-httpd modules that might
+       use them. mod_ssl itself no longer registers these functions, but keeps them
+       in its header for backward compatibility. The core provided optional function
+       wrap any registered function like it was done forssl_is_ssl`.
+     trunk patch: http://svn.apache.org/r1890605
+     2.4.x patch: https://github.com/apache/httpd/pull/203.diff
+           PR: https://github.com/apache/httpd/pull/203
+    +1: icing
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
