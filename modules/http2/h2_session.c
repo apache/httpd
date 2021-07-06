@@ -1908,6 +1908,7 @@ static void h2_session_ev_mpm_stopping(h2_session *session, int arg, const char 
             break;
         default:
             h2_session_shutdown_notice(session);
+            h2_workers_graceful_shutdown(session->workers);
             break;
     }
 }
