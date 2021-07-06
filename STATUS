@@ -143,7 +143,7 @@ THINGS THAT SHOULD BE CONSIDERED EARLY IN THE 2.6/3.0 DEVELOPMENT CYCLE:
 
   * Support YAML based configuration files (JSON does not support comments)
 
-  * Opaque data structures w/ getters/setters 
+  * Opaque data structures w/ getters/setters
 
   * Generic interface to enable runtime changes (adjusting log level, modifying
     balancer information, toggling flags on/off). Perhaps modules can register
