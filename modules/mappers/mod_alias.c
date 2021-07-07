@@ -712,8 +712,7 @@ static const command_rec alias_cmds[] =
     AP_INIT_TAKE2("RedirectPermanent", add_redirect2,
                   (void *) HTTP_MOVED_PERMANENTLY, OR_FILEINFO,
                   "a document to be redirected, then the destination URL"),
-    AP_INIT_FLAG("RedirectRelative", ap_set_flag_slot,
-                  (void*)APR_OFFSETOF(alias_dir_conf, allow_relative), OR_FILEINFO,
+    AP_INIT_FLAG_SLOT("RedirectRelative", alias_dir_conf, allow_relative, OR_FILEINFO,
                   "Set to ON to allow relative redirect targets to be issued as-is"),
 
     {NULL}
