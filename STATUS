@@ -218,17 +218,44 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
            PR: https://github.com/apache/httpd/pull/204
      +1: icing
 
-
-PATCHES/ISSUES THAT ARE BEING WORKED
-  [ New entries should be added at the START of the list ]
-
   *) back port the add of balancer_manage in mod_proxy_balancer.
      trunk patch: http://svn.apache.org/r1859235
                   http://svn.apache.org/r1887176
                   http://svn.apache.org/r1887359
      Backport version for 2.4.x of patch:
           https://people.apache.org/~jfclere/patches/patch.210706.txt
-     +1: jfclere
+     +1: jfclere: The previous proposal was removing the Referer check.
+
+  *) back port the mapping=servlet proxy logic.
+     trunk patch: http://svn.apache.org/r1879074
+                  http://svn.apache.org/r1879075
+                  http://svn.apache.org/r1879076
+                  http://svn.apache.org/r1879077
+                  http://svn.apache.org/r1879078
+                  http://svn.apache.org/r1879079
+                  http://svn.apache.org/r1879080
+                  http://svn.apache.org/r1879094
+                  http://svn.apache.org/r1879095
+                  http://svn.apache.org/r1879110
+                  http://svn.apache.org/r1879111
+                  http://svn.apache.org/r1879112
+                  http://svn.apache.org/r1879114
+                  http://svn.apache.org/r1879116
+                  http://svn.apache.org/r1879117
+                  http://svn.apache.org/r1879137
+                  http://svn.apache.org/r1879144
+                  http://svn.apache.org/r1879145
+                  http://svn.apache.org/r1879147
+                  http://svn.apache.org/r1879149
+                  http://svn.apache.org/r1879235
+                  http://svn.apache.org/r1879360
+     Backport version for 2.4.x of patch:
+          https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/194.patch
+     +1: jfclere:
+
+
+PATCHES/ISSUES THAT ARE BEING WORKED
+  [ New entries should be added at the START of the list ]
 
   *) mod_dav: Allow other modules to become providers and add ACLs
      to the DAV response.
