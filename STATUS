@@ -164,12 +164,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-dav-functions5.patch
      +1: minfrin
 
-  *) Fix GCC 11 warnings from use of APR_RING macros.
-     trunk patch: http://svn.apache.org/r1889957
-     2.4.x patch: https://github.com/apache/httpd/commit/9740cd60fa56246952854b0113b4978188d16531.patch
-     CI output: https://travis-ci.com/github/apache/httpd/builds/231634323
-     +1: jorton, minfrin, jfclere
-
   *) Add hooks deliver_report and gather_reports to mod_dav.h. Allows other
      modules apart from versioning implementations to handle the REPORT method.
      trunk patch: http://svn.apache.org/r1879339
