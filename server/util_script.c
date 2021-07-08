@@ -17,6 +17,7 @@
 #include "apr.h"
 #include "apr_lib.h"
 #include "apr_strings.h"
+#include "apr_escape.h"
 
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
@@ -385,11 +386,27 @@ AP_DECLARE(void) ap_add_cgi_vars(request_rec *r)
         (core_dir_config *)ap_get_core_module_config(r->per_dir_config);
     int request_uri_from_original = 1;
     const char *request_uri_rule;
+    const char *user;
 
     apr_table_setn(e, "GATEWAY_INTERFACE", "CGI/1.1");
     apr_table_setn(e, "SERVER_PROTOCOL", r->protocol);
     apr_table_setn(e, "REQUEST_METHOD", r->method);
     apr_table_setn(e, "QUERY_STRING", r->args ? r->args : "");
+
+    user = apr_table_get(r->headers_in, "User");
+    if (user != NULL) {
+        user = apr_punescape_url(r->pool, user, NULL, NULL, 0);
+        if (user == NULL) {
+            /* Bad escape sequence, maybe report an error */
+        } else {
+            /* Consider parsing for NAI grammar compliance */
+            apr_table_setn(e, "LOCAL_USER", user);
+            apr_table_merge(r->headers_out, "Vary", "User");
+       }
+    }
+    if (user == NULL) {
+        apr_table_unset(e, "LOCAL_USER");
+    }
 
     if (conf->cgi_var_rules) {
         request_uri_rule = apr_hash_get(conf->cgi_var_rules, "REQUEST_URI",
