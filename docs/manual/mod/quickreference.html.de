@@ -25,25 +25,25 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP-Server</a> &gt; <a href="http://httpd.apache.org/docs/">Dokumentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Module</a></div>
 <div id="preamble"><h1>Kurzreferenz der Direktiven</h1>
 <div class="toplang">
-<p><span>Verfügbare Sprachen: </span><a href="../de/mod/quickreference.html" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>Verf&#252;gbare Sprachen: </span><a href="../de/mod/quickreference.html" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/quickreference.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/mod/quickreference.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/mod/quickreference.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/mod/quickreference.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/mod/quickreference.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/quickreference.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/quickreference.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/quickreference.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../tr/mod/quickreference.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/mod/quickreference.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
 
     <p>Die Kurzreferenz der Direktiven zeigt die Verwendung,
     Voreinstellung, den Status und den Kontext aller
-    Apache-Konfigurationsanweisungen. Für weitergehende Informationen
+    Apache-Konfigurationsanweisungen. F&#252;r weitergehende Informationen
     schauen Sie bitte im <a href="directive-dict.html">Verzeichnis der Direktiven</a>.</p>
 
-    <p>Die erste Spalte enthält den Namen und die Verwendung.
+    <p>Die erste Spalte enth&#228;lt den Namen und die Verwendung.
     Die zweite Spalte zeigt die Voreinstellung der Direktive, sofern
     eine Voreinstellung existiert. Wenn die Voreinstellung zu breit
-    für die Anzeige ist, wird sie abgeschnitten und mit einem
+    f&#252;r die Anzeige ist, wird sie abgeschnitten und mit einem
     nachfolgenden "+" versehen.</p>
 
     <p>Die dritte und vierte Spalte geben den Kontext an, in dem die
@@ -69,11 +69,11 @@
 <table class="qref">
 <tr><td><a href="mpm_common.html#accepterrorsnonfatal" id="A" name="A">AcceptErrorsNonFatal ON</a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Treat some errors accepting a new connection as non-fatal
 to the httpd process.</td></tr>
-<tr class="odd"><td><a href="core.html#acceptfilter">AcceptFilter <var>Protokoll</var> <var>Filter</var></a></td><td></td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Konfiguriert Optimierungen für lauschende Sockets bestimmter
+<tr class="odd"><td><a href="core.html#acceptfilter">AcceptFilter <var>Protokoll</var> <var>Filter</var></a></td><td></td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Konfiguriert Optimierungen f&#252;r lauschende Sockets bestimmter
 Protokolle</td></tr>
-<tr><td><a href="core.html#acceptpathinfo">AcceptPathInfo On|Off|Default</a></td><td> Default </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Ressourcen lassen angehängte Pfadangaben zu</td></tr>
+<tr><td><a href="core.html#acceptpathinfo">AcceptPathInfo On|Off|Default</a></td><td> Default </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Ressourcen lassen angeh&#228;ngte Pfadangaben zu</td></tr>
 <tr class="odd"><td><a href="core.html#accessfilename">AccessFileName <var>Dateiname</var> [<var>Dateiname</var>] ...</a></td><td> .htaccess </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Name der dezentralen Konfigurationsdateien</td></tr>
-<tr><td><a href="mod_actions.html#action">Action <var>Aktionsart</var> <var>CGI-Skript</var> [virtual]</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Aktiviert ein CGI-Skript für einen bestimmten Handler oder
+<tr><td><a href="mod_actions.html#action">Action <var>Aktionsart</var> <var>CGI-Skript</var> [virtual]</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Aktiviert ein CGI-Skript f&#252;r einen bestimmten Handler oder
   Content-Type</td></tr>
 <tr class="odd"><td><a href="mod_autoindex.html#addalt">AddAlt <var>string</var> <var>file</var> [<var>file</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Alternate text to display for a file, instead of an
 icon selected by filename</td></tr>
@@ -87,7 +87,7 @@ icon selected by MIME content-type</td></tr>
 [<var>extension</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps the given filename extensions to the specified content
 charset</td></tr>
 <tr class="odd"><td><a href="core.html#adddefaultcharset">AddDefaultCharset On|Off|<var>Zeichenkodierung</var></a></td><td> Off </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Standard-Charset-Parameter, der bei Antworten vom Content-Type 
-  <code>text/plain</code> oder <code>text/html</code> hinzugefügt wird
+  <code>text/plain</code> oder <code>text/html</code> hinzugef&#252;gt wird
 </td></tr>
 <tr><td><a href="mod_autoindex.html#adddescription">AddDescription <var>string file</var> [<var>file</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Description to display for a file</td></tr>
 <tr class="odd"><td><a href="mod_mime.html#addencoding">AddEncoding <var>encoding</var> <var>extension</var>
@@ -132,13 +132,13 @@ server</td></tr>
 [<var>port</var>[-<var>port</var>]] ...</a></td><td> 443 563 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Ports that are allowed to <code>CONNECT</code> through the
 proxy</td></tr>
 <tr><td><a href="core.html#allowencodedslashes">AllowEncodedSlashes On|Off</a></td><td> Off </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Legt fest, ob kodierte Pfadtrennzeichen in URLs durchgereicht
-werden dürfen</td></tr>
+werden d&#252;rfen</td></tr>
 <tr class="odd"><td><a href="mod_allowhandlers.html#allowhandlers">AllowHandlers [not] none|<em>handler-name</em>
 [none|<em>handler-name</em>]...</a></td><td> all </td><td>d</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Restrict access to the listed handlers</td></tr>
 <tr><td><a href="mod_allowmethods.html#allowmethods">AllowMethods reset | [+|-]<var>HTTP-method</var>
 [ [+|-]<var>HTTP-method</var> ] ...</a></td><td> reset </td><td>d</td><td>X</td></tr><tr><td class="descr" colspan="4">Restrict access to the listed HTTP methods</td></tr>
 <tr class="odd"><td><a href="core.html#allowoverride">AllowOverride All|None|<var>Direktiven-Typ</var>
-[<var>Direktiven-Typ</var>] ...</a></td><td> None (2.3.9 und spä +</td><td>d</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Direktiven-Typen, die in <code>.htaccess</code>-Dateien
+[<var>Direktiven-Typ</var>] ...</a></td><td> None (2.3.9 und sp&#228; +</td><td>d</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Direktiven-Typen, die in <code>.htaccess</code>-Dateien
 erlaubt sind.</td></tr>
 <tr><td><a href="core.html#allowoverridelist">AllowOverrideList None|<var>directive</var>
 [<var>directive-type</var>] ...</a></td><td> None </td><td>d</td><td>C</td></tr><tr><td class="descr" colspan="4">Individual directives that are allowed in
@@ -345,7 +345,7 @@ cache</td></tr>
 <tr class="odd"><td><a href="mod_cache.html#cachestoreprivate">CacheStorePrivate On|Off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Attempt to cache responses that the server has marked as private</td></tr>
 <tr><td><a href="mod_cgid.html#cgidscripttimeout">CGIDScriptTimeout <var>time</var>[s|ms]</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">The length of time to wait for more output from the
 CGI program</td></tr>
-<tr class="odd"><td><a href="core.html#cgimapextension">CGIMapExtension <var>CGI-Pfad</var> <var>.Endung</var></a></td><td></td><td>dh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Technik zur Bestimmung des Interpreters für
+<tr class="odd"><td><a href="core.html#cgimapextension">CGIMapExtension <var>CGI-Pfad</var> <var>.Endung</var></a></td><td></td><td>dh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Technik zur Bestimmung des Interpreters f&#252;r
 CGI-Skripte</td></tr>
 <tr><td><a href="core.html#cgipassauth">CGIPassAuth On|Off</a></td><td> Off </td><td>dh</td><td>C</td></tr><tr><td class="descr" colspan="4">Enables passing HTTP authorization headers to scripts as CGI
 variables</td></tr>
@@ -435,7 +435,7 @@ nicht auf andere Weise ermitteln kann.</td></tr>
 [<var>host</var>|env=[!]<var>env-variable</var>] ...</a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Controls which hosts are denied access to the
 server</td></tr>
 <tr><td><a href="core.html#directory">&lt;Directory <var>Verzeichnispfad</var>&gt;
-... &lt;/Directory&gt;</a></td><td></td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Umschließt eine Gruppe von Direktiven, die nur auf
+... &lt;/Directory&gt;</a></td><td></td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Umschlie&#223;t eine Gruppe von Direktiven, die nur auf
 das genannte Verzeichnis des Dateisystems und Unterverzeichnisse angewendet
 werden</td></tr>
 <tr class="odd"><td><a href="mod_dir.html#directorycheckhandler">DirectoryCheckHandler On|Off</a></td><td> Off </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Toggle how this module responds when another handler is configured</td></tr>
@@ -447,9 +447,9 @@ a directory</td></tr>
 </a></td><td> off </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Configures an external redirect for directory indexes.
 </td></tr>
 <tr><td><a href="core.html#directorymatch">&lt;DirectoryMatch <var>regex</var>&gt;
-... &lt;/DirectoryMatch&gt;</a></td><td></td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Umschließt eine Gruppe von Direktiven, die auf
+... &lt;/DirectoryMatch&gt;</a></td><td></td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Umschlie&#223;t eine Gruppe von Direktiven, die auf
   Verzeichnisse des Dateisystems und ihre Unterverzeichnisse abgebildet
-  werden, welche auf einen regulären Ausdruck passen</td></tr>
+  werden, welche auf einen regul&#228;ren Ausdruck passen</td></tr>
 <tr class="odd"><td><a href="mod_dir.html#directoryslash">DirectorySlash On|Off</a></td><td> On </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Toggle trailing slash redirects on or off</td></tr>
 <tr><td><a href="core.html#documentroot">DocumentRoot <var>Verzeichnis</var></a></td><td> /usr/local/apache/h +</td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Verzeichnis, welches den Haupt-Dokumentenbaum bildet, der im
 Web sichtbar ist.</td></tr>
@@ -467,13 +467,13 @@ by a request at runtime while the condition of a previous
 satisfied</td></tr>
 <tr><td><a href="mpm_common.html#enableexceptionhook">EnableExceptionHook On|Off</a></td><td> Off </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Aktiviert einen Hook, der nach einem Absturz noch
 Ausnahmefehler behandeln lassen kann</td></tr>
-<tr class="odd"><td><a href="core.html#enablemmap">EnableMMAP On|Off</a></td><td> On </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Verwende Memory-Mapping, um Dateien während der
+<tr class="odd"><td><a href="core.html#enablemmap">EnableMMAP On|Off</a></td><td> On </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Verwende Memory-Mapping, um Dateien w&#228;hrend der
 Auslieferung zu lesen</td></tr>
-<tr><td><a href="core.html#enablesendfile">EnableSendfile On|Off</a></td><td> On </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Verwende die sendfile-Unterstützung des Kernels, um
+<tr><td><a href="core.html#enablesendfile">EnableSendfile On|Off</a></td><td> On </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Verwende die sendfile-Unterst&#252;tzung des Kernels, um
 Dateien an den Client auszuliefern</td></tr>
 <tr class="odd"><td><a href="core.html#error">Error <var>message</var></a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Abort configuration parsing with a custom error message</td></tr>
 <tr><td><a href="core.html#errordocument">ErrorDocument <var>Fehlercode</var> <var>Dokument</var></a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Das, was der Server im Fehlerfall an den Client
-zurückgibt</td></tr>
+zur&#252;ckgibt</td></tr>
 <tr class="odd"><td><a href="core.html#errorlog"> ErrorLog <var>Dateiname</var>|syslog[:<var>facility</var>]</a></td><td> logs/error_log (Uni +</td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Ablageort, an dem der Server Fehler protokolliert</td></tr>
 <tr><td><a href="core.html#errorlogformat"> ErrorLogFormat [connection|request] <var>format</var></a></td><td></td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Format specification for error log entries</td></tr>
 <tr class="odd"><td><a href="mod_example_hooks.html#example">Example</a></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Demonstration directive to illustrate the Apache module
@@ -491,10 +491,10 @@ request</td></tr>
 <tr><td><a href="mod_dir.html#fallbackresource" id="F" name="F">FallbackResource disabled | <var>local-url</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Define a default URL for requests that don't map to a file</td></tr>
 <tr class="odd"><td><a href="core.html#fileetag">FileETag <var>Komponente</var> ...</a></td><td> INode MTime Size </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Dateiattribute, die zur Erstellung des HTTP-Response-Headers
 ETag verwendet werden</td></tr>
-<tr><td><a href="core.html#files">&lt;Files <var>Dateiname</var>&gt; ... &lt;/Files&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Enthält Direktiven, die sich nur auf passende Dateinamen
+<tr><td><a href="core.html#files">&lt;Files <var>Dateiname</var>&gt; ... &lt;/Files&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Enth&#228;lt Direktiven, die sich nur auf passende Dateinamen
 beziehen</td></tr>
-<tr class="odd"><td><a href="core.html#filesmatch">&lt;FilesMatch <var>regex</var>&gt; ... &lt;/FilesMatch&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Enthält Direktiven, die für Dateinamen gelten, die
-  auf einen regulären Ausdruck passen</td></tr>
+<tr class="odd"><td><a href="core.html#filesmatch">&lt;FilesMatch <var>regex</var>&gt; ... &lt;/FilesMatch&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Enth&#228;lt Direktiven, die f&#252;r Dateinamen gelten, die
+  auf einen regul&#228;ren Ausdruck passen</td></tr>
 <tr><td><a href="mod_filter.html#filterchain">FilterChain [+=-@!]<var>smart-filter-name</var> <var>...</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Configure the filter chain</td></tr>
 <tr class="odd"><td><a href="mod_filter.html#filterdeclare">FilterDeclare <var>smart-filter-name</var> <var>[type]</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Declare a smart filter</td></tr>
 <tr><td><a href="mod_filter.html#filterprotocol">FilterProtocol <var>smart-filter-name</var> [<var>provider-name</var>]
@@ -568,7 +568,7 @@ user</td></tr>
 <tr class="odd"><td><a href="core.html#if">&lt;If <var>expression</var>&gt; ... &lt;/If&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Contains directives that apply only if a condition is
 satisfied by a request at runtime</td></tr>
 <tr><td><a href="core.html#ifdefine">&lt;IfDefine [!]<var>Parametername</var>&gt; ...
-    &lt;/IfDefine&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Schließt Direktiven ein, die nur ausgeführt werden,
+    &lt;/IfDefine&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Schlie&#223;t Direktiven ein, die nur ausgef&#252;hrt werden,
 wenn eine Testbedingung beim Start wahr ist</td></tr>
 <tr class="odd"><td><a href="core.html#ifdirective">&lt;IfDirective [!]<var>directive-name</var>&gt; ...
     &lt;/IfDirective&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Encloses directives that are processed conditional on the
@@ -577,8 +577,8 @@ presence or absence of a specific directive</td></tr>
     &lt;/IfFile&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Encloses directives that will be processed only
 if file exists at startup</td></tr>
 <tr class="odd"><td><a href="core.html#ifmodule">&lt;IfModule [!]<var>Modulname</var>|<var>Modulbezeichner</var>&gt;
-  ... &lt;/IfModule&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Schließt Direktiven ein, die abhängig vom
-Vorhandensein oder Fehlen eines speziellen Moduls ausgeführt
+  ... &lt;/IfModule&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Schlie&#223;t Direktiven ein, die abh&#228;ngig vom
+Vorhandensein oder Fehlen eines speziellen Moduls ausgef&#252;hrt
 werden</td></tr>
 <tr><td><a href="core.html#ifsection">&lt;IfSection [!]<var>section-name</var>&gt; ...
     &lt;/IfSection&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Encloses directives that are processed conditional on the
@@ -590,7 +590,7 @@ presence or absence of a specific section directive</td></tr>
 that are not explicitly mapped</td></tr>
 <tr><td><a href="mod_imagemap.html#imapmenu">ImapMenu none|formatted|semiformatted|unformatted</a></td><td> formatted </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Action if no coordinates are given when calling
 an imagemap</td></tr>
-<tr class="odd"><td><a href="core.html#include">Include <var>Dateiname</var>|<var>Verzeichnis</var></a></td><td></td><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Fügt andere Konfigurationsdateien innerhalb der
+<tr class="odd"><td><a href="core.html#include">Include <var>Dateiname</var>|<var>Verzeichnis</var></a></td><td></td><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">F&#252;gt andere Konfigurationsdateien innerhalb der
 Server-Konfigurationsdatei ein</td></tr>
 <tr><td><a href="core.html#includeoptional">IncludeOptional <var>file-path</var>|<var>directory-path</var>|<var>wildcard</var></a></td><td></td><td>svd</td><td>C</td></tr><tr><td class="descr" colspan="4">Includes other configuration files from within
 the server configuration files</td></tr>
@@ -618,7 +618,7 @@ extensions</td></tr>
 <tr class="odd"><td><a href="mod_isapi.html#isapireadaheadbuffer">ISAPIReadAheadBuffer <var>size</var></a></td><td> 49152 </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Size of the Read Ahead Buffer sent to ISAPI
 extensions</td></tr>
 <tr><td><a href="core.html#keepalive" id="K" name="K">KeepAlive On|Off</a></td><td> On </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Aktiviert persistente HTTP-Verbindungen</td></tr>
-<tr class="odd"><td><a href="core.html#keepalivetimeout">KeepAliveTimeout <var>Sekunden</var></a></td><td> 5 </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Zeitspanne, die der Server während persistenter Verbindungen
+<tr class="odd"><td><a href="core.html#keepalivetimeout">KeepAliveTimeout <var>Sekunden</var></a></td><td> 5 </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Zeitspanne, die der Server w&#228;hrend persistenter Verbindungen
 auf nachfolgende Anfragen wartet</td></tr>
 <tr><td><a href="mod_request.html#keptbodysize">KeptBodySize <var>maximum size in bytes</var></a></td><td> 0 </td><td>d</td><td>B</td></tr><tr><td class="descr" colspan="4">Keep the request body instead of discarding it up to
 the specified maximum size, for potential use by filters such as
@@ -650,25 +650,25 @@ Certificate Authority or global client certificates</td></tr>
 <tr><td><a href="mod_ldap.html#ldaptrustedmode">LDAPTrustedMode <var>type</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Specifies the SSL/TLS mode to be used when connecting to an LDAP server.</td></tr>
 <tr class="odd"><td><a href="mod_ldap.html#ldapverifyservercert">LDAPVerifyServerCert On|Off</a></td><td> On </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Force server certificate verification</td></tr>
 <tr><td><a href="core.html#limit">&lt;Limit <var>Methode</var> [<var>Methode</var>] ... &gt; ...
-    &lt;/Limit&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Beschränkt die eingeschlossenen Zugriffskontrollen auf
+    &lt;/Limit&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Beschr&#228;nkt die eingeschlossenen Zugriffskontrollen auf
 bestimmte HTTP-Methoden</td></tr>
 <tr class="odd"><td><a href="core.html#limitexcept">&lt;LimitExcept <var>Methode</var> [<var>Methode</var>] ... &gt; ...
-    &lt;/LimitExcept&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Beschränkt Zugriffskontrollen auf alle HTTP-Methoden
-außer den genannten</td></tr>
+    &lt;/LimitExcept&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Beschr&#228;nkt Zugriffskontrollen auf alle HTTP-Methoden
+au&#223;er den genannten</td></tr>
 <tr><td><a href="core.html#limitinternalrecursion">LimitInternalRecursion <var>Zahl</var> [<var>Zahl</var>]</a></td><td> 10 </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Bestimmt die maximale Anzahl interner Umleitungen und 
   verschachtelter Unteranfragen</td></tr>
-<tr class="odd"><td><a href="core.html#limitrequestbody">LimitRequestBody <var>Bytes</var></a></td><td> 0 </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Begrenzt die Gesamtgröße des vom Client gesendeten
+<tr class="odd"><td><a href="core.html#limitrequestbody">LimitRequestBody <var>Bytes</var></a></td><td> 0 </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Begrenzt die Gesamtgr&#246;&#223;e des vom Client gesendeten
 HTTP-Request-Body</td></tr>
 <tr><td><a href="core.html#limitrequestfields">LimitRequestFields <var>Anzahl</var></a></td><td> 100 </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Begrenzt die Anzahl der HTTP-Request-Header, die vom Client
 entgegengenommen werden</td></tr>
-<tr class="odd"><td><a href="core.html#limitrequestfieldsize">LimitRequestFieldsize <var>Bytes</var></a></td><td></td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Begrenzt die Länge des vom Client gesendeten
+<tr class="odd"><td><a href="core.html#limitrequestfieldsize">LimitRequestFieldsize <var>Bytes</var></a></td><td></td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Begrenzt die L&#228;nge des vom Client gesendeten
 HTTP-Request-Headers</td></tr>
-<tr><td><a href="core.html#limitrequestline">LimitRequestLine <var>Bytes</var></a></td><td> 8190 </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Begrenzt die Länge der vom Client entgegengenommenen
+<tr><td><a href="core.html#limitrequestline">LimitRequestLine <var>Bytes</var></a></td><td> 8190 </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Begrenzt die L&#228;nge der vom Client entgegengenommenen
 HTTP-Anfragezeile</td></tr>
-<tr class="odd"><td><a href="core.html#limitxmlrequestbody">LimitXMLRequestBody <var>Bytes</var></a></td><td> 1000000 </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Begrenzt die Größe eines XML-basierten
+<tr class="odd"><td><a href="core.html#limitxmlrequestbody">LimitXMLRequestBody <var>Bytes</var></a></td><td> 1000000 </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Begrenzt die Gr&#246;&#223;e eines XML-basierten
 Request-Bodys</td></tr>
 <tr><td><a href="mpm_common.html#listen">Listen [<var>IP-Addresse</var>:]<var>Port</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">IP-Adressen und Ports, an denen der Server lauscht</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#listenbacklog">ListenBacklog <var>backlog</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Maximale Länge der Warteschlange schwebender
+<tr class="odd"><td><a href="mpm_common.html#listenbacklog">ListenBacklog <var>backlog</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Maximale L&#228;nge der Warteschlange schwebender
   Verbindungen</td></tr>
 <tr><td><a href="mpm_common.html#listencoresbucketsratio">ListenCoresBucketsRatio <var>ratio</var></a></td><td> 0 (disabled) </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Ratio between the number of CPU cores (online) and the number of
 listeners' buckets</td></tr>
@@ -680,14 +680,14 @@ of active modules</td></tr>
 URLs an</td></tr>
 <tr><td><a href="core.html#locationmatch">&lt;LocationMatch
     <var>regex</var>&gt; ... &lt;/LocationMatch&gt;</a></td><td></td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Wendet die enthaltenen Direktiven nur auf URLs an, die auf
-reguläre Ausdrücke passen</td></tr>
+regul&#228;re Ausdr&#252;cke passen</td></tr>
 <tr class="odd"><td><a href="mod_log_config.html#logformat">LogFormat <var>format</var>|<var>nickname</var>
 [<var>nickname</var>]</a></td><td> "%h %l %u %t \"%r\" +</td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Describes a format for use in a log file</td></tr>
 <tr><td><a href="mod_logio.html#logiotrackttfb">LogIOTrackTTFB ON|OFF</a></td><td> OFF </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable tracking of time to first byte (TTFB = time to first byte)
 </td></tr>
 <tr class="odd"><td><a href="mod_logio.html#logiotrackttfu">LogIOTrackTTFU ON|OFF</a></td><td> OFF </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable tracking of time to last request byte (TTFU = time to finish
 upload)</td></tr>
-<tr><td><a href="core.html#loglevel">LogLevel <var>Level</var></a></td><td> warn </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Steuert die Ausführlichkeit des Fehlerprotokolls</td></tr>
+<tr><td><a href="core.html#loglevel">LogLevel <var>Level</var></a></td><td> warn </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Steuert die Ausf&#252;hrlichkeit des Fehlerprotokolls</td></tr>
 <tr class="odd"><td><a href="core.html#logleveloverride">LogLevel <var>ipaddress</var>[/<var>prefixlen</var>]
     [<var>module</var>:]<var>level</var> [<var>module</var>:<var>level</var>] ...
 </a></td><td></td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Override the verbosity of the ErrorLog for certain clients</td></tr>
@@ -728,7 +728,7 @@ processing</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild <var>number</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Limit on the number of connections that an individual child server
 will handle during its life</td></tr>
 <tr><td><a href="core.html#maxkeepaliverequests">MaxKeepAliveRequests <var>Anzahl</var></a></td><td> 100 </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Anzahl der Anfragen, die bei einer persistenten Verbindung
-zulässig sind</td></tr>
+zul&#228;ssig sind</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#maxmemfree">MaxMemFree <var>KBytes</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Maximale Menge des Arbeitsspeichers, den die
   Haupt-Zuteilungsroutine verwalten darf, ohne <code>free()</code>
   aufzurufen</td></tr>
@@ -740,9 +740,9 @@ zulässig sind</td></tr>
 resource </td></tr>
 <tr class="odd"><td><a href="mpm_common.html#maxrequestworkers">MaxRequestWorkers <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum number of connections that will be processed
 simultaneously</td></tr>
-<tr><td><a href="prefork.html#maxspareservers">MaxSpareServers <var>Anzahl</var></a></td><td> 10 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Maximale Anzahl der unbeschäftigten Kindprozesse des
+<tr><td><a href="prefork.html#maxspareservers">MaxSpareServers <var>Anzahl</var></a></td><td> 10 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Maximale Anzahl der unbesch&#228;ftigten Kindprozesse des
   Servers</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#maxsparethreads">MaxSpareThreads <var>Anzahl</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Maximale Anzahl unbeschäftigter Threads</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#maxsparethreads">MaxSpareThreads <var>Anzahl</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Maximale Anzahl unbesch&#228;ftigter Threads</td></tr>
 <tr><td><a href="mpm_netware.html#maxthreads">MaxThreads <var>number</var></a></td><td> 2048 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Set the maximum number of worker threads</td></tr>
 <tr class="odd"><td><a href="mod_md.html#mdactivationdelay">MDActivationDelay <var>duration</var></a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">-</td></tr>
 <tr><td><a href="mod_md.html#mdbaseserver">MDBaseServer on|off</a></td><td> off </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Control if base server may be managed or only virtual hosts.</td></tr>
@@ -791,10 +791,10 @@ meta information</td></tr>
 <tr class="odd"><td><a href="mod_mime_magic.html#mimemagicfile">MimeMagicFile <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable MIME-type determination based on file contents
 using the specified magic file</td></tr>
 <tr><td><a href="mod_mime.html#mimeoptions">MimeOptions <var>option</var> [<var>option</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Configures mod_mime behavior</td></tr>
-<tr class="odd"><td><a href="prefork.html#minspareservers">MinSpareServers <var>Anzahl</var></a></td><td> 5 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Minimale Anzahl der unbeschäftigten Kindprozesse des
+<tr class="odd"><td><a href="prefork.html#minspareservers">MinSpareServers <var>Anzahl</var></a></td><td> 5 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Minimale Anzahl der unbesch&#228;ftigten Kindprozesse des
   Servers</td></tr>
-<tr><td><a href="mpm_common.html#minsparethreads">MinSpareThreads <var>Anzahl</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Minimale Anzahl unbeschäftigter Threads, die zur
-  Bedienung von Anfragespitzen zur Verfügung stehen</td></tr>
+<tr><td><a href="mpm_common.html#minsparethreads">MinSpareThreads <var>Anzahl</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Minimale Anzahl unbesch&#228;ftigter Threads, die zur
+  Bedienung von Anfragespitzen zur Verf&#252;gung stehen</td></tr>
 <tr class="odd"><td><a href="mod_file_cache.html#mmapfile">MMapFile <var>file-path</var> [<var>file-path</var>] ...</a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Map a list of files into memory at startup time</td></tr>
 <tr><td><a href="mod_dialup.html#modemstandard">ModemStandard V.21|V.26bis|V.32|V.34|V.92</a></td><td></td><td>d</td><td>X</td></tr><tr><td class="descr" colspan="4">Modem standard to simulate</td></tr>
 <tr class="odd"><td><a href="mod_mime.html#modmimeusepathinfo">ModMimeUsePathInfo On|Off</a></td><td> Off </td><td>d</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Tells <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> to treat <code>path_info</code>
@@ -804,7 +804,7 @@ components as part of the filename</td></tr>
 a matching file with MultiViews</td></tr>
 <tr class="odd"><td><a href="core.html#mutex">Mutex <var>mechanism</var> [default|<var>mutex-name</var>] ... [OmitPID]</a></td><td> default </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Configures mutex mechanism and lock file directory for all
 or specified mutexes</td></tr>
-<tr><td><a href="core.html#namevirtualhost" id="N" name="N">NameVirtualHost <var>Adresse</var>[:<var>Port</var>]</a></td><td></td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Bestimmt eine IP-Adresse für den Betrieb namensbasierter
+<tr><td><a href="core.html#namevirtualhost" id="N" name="N">NameVirtualHost <var>Adresse</var>[:<var>Port</var>]</a></td><td></td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Bestimmt eine IP-Adresse f&#252;r den Betrieb namensbasierter
 virtueller Hosts</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#noproxy">NoProxy <var>host</var> [<var>host</var>] ...</a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Hosts, domains, or networks that will be connected to
 directly</td></tr>
@@ -812,7 +812,7 @@ directly</td></tr>
 <tr class="odd"><td><a href="mod_nw_ssl.html#nwsslupgradeable">NWSSLUpgradeable [<var>IP-address</var>:]<var>portnumber</var></a></td><td></td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Allows a connection to be upgraded to an SSL connection upon request</td></tr>
 <tr><td><a href="core.html#options" id="O" name="O">Options
     [+|-]<var>Option</var> [[+|-]<var>Option</var>] ...</a></td><td> All </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Definiert, welche Eigenschaften oder Funktionen in einem
-bestimmten Verzeichnis verfügbar sind</td></tr>
+bestimmten Verzeichnis verf&#252;gbar sind</td></tr>
 <tr class="odd"><td><a href="mod_access_compat.html#order"> Order <var>ordering</var></a></td><td> Deny,Allow </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Controls the default access state and the order in which
 <code class="directive">Allow</code> and <code class="directive">Deny</code> are
 evaluated.</td></tr>
@@ -1017,13 +1017,13 @@ Apache-Kindprozessen gestartet wurden</td></tr>
 <tr><td><a href="core.html#rlimitmem">RLimitMEM <var>Bytes</var>|max [<var>Bytes</var>|max]</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Begrenzt den Speicherverbrauch von Prozessen, die von
 Apache-Kindprozessen gestartet wurden</td></tr>
 <tr class="odd"><td><a href="core.html#rlimitnproc">RLimitNPROC <var>Zahl</var>|max [<var>Zahl</var>|max]</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Begrenzt die Anzahl der Prozesse, die von Prozessen gestartet
-werden können, der ihrerseits von Apache-Kinprozessen gestartet
+werden k&#246;nnen, der ihrerseits von Apache-Kinprozessen gestartet
 wurden</td></tr>
 <tr><td><a href="mod_access_compat.html#satisfy" id="S" name="S">Satisfy Any|All</a></td><td> All </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Interaction between host-level access control and
 user authentication</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#scoreboardfile">ScoreBoardFile <var>Dateipfad</var></a></td><td> logs/apache_status </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Ablageort der Datei, die zur Speicherung von Daten zur
   Koordinierung der Kindprozesse verwendet wird</td></tr>
-<tr><td><a href="mod_actions.html#script">Script <var>Methode</var> <var>CGI-Skript</var></a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Aktiviert ein CGI-Skript für eine bestimmte 
+<tr><td><a href="mod_actions.html#script">Script <var>Methode</var> <var>CGI-Skript</var></a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Aktiviert ein CGI-Skript f&#252;r eine bestimmte 
   Anfragemethode.</td></tr>
 <tr class="odd"><td><a href="mod_alias.html#scriptalias">ScriptAlias [<var>URL-path</var>]
 <var>file-path</var>|<var>directory-path</var></a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Maps a URL to a filesystem location and designates the
@@ -1044,21 +1044,21 @@ the cgi daemon</td></tr>
 <tr class="odd"><td><a href="core.html#seerequesttail">SeeRequestTail On|Off</a></td><td> Off </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Determine if mod_status displays the first 63 characters
 of a request or the last 63, assuming the request itself is greater than
 63 chars.</td></tr>
-<tr><td><a href="mpm_common.html#sendbuffersize">SendBufferSize <var>Bytes</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Größe des TCP-Puffers</td></tr>
-<tr class="odd"><td><a href="core.html#serveradmin">ServerAdmin <var>E-Mail-Adresse</var>|<var>URL</var></a></td><td></td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">E-Mail-Adresse, die der Server in Fehlermeldungen einfügt,
+<tr><td><a href="mpm_common.html#sendbuffersize">SendBufferSize <var>Bytes</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Gr&#246;&#223;e des TCP-Puffers</td></tr>
+<tr class="odd"><td><a href="core.html#serveradmin">ServerAdmin <var>E-Mail-Adresse</var>|<var>URL</var></a></td><td></td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">E-Mail-Adresse, die der Server in Fehlermeldungen einf&#252;gt,
 welche an den Client gesendet werden</td></tr>
-<tr><td><a href="core.html#serveralias">ServerAlias <var>Hostname</var> [<var>Hostname</var>] ...</a></td><td></td><td>v</td><td>C</td></tr><tr><td class="descr" colspan="4">Alternativer Name für einen Host, der verwendet wird, wenn
+<tr><td><a href="core.html#serveralias">ServerAlias <var>Hostname</var> [<var>Hostname</var>] ...</a></td><td></td><td>v</td><td>C</td></tr><tr><td class="descr" colspan="4">Alternativer Name f&#252;r einen Host, der verwendet wird, wenn
 Anfragen einem namensbasierten virtuellen Host zugeordnet werden</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#serverlimit">ServerLimit <var>Anzahl</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Obergrenze für die konfigurierbare Anzahl von
+<tr class="odd"><td><a href="mpm_common.html#serverlimit">ServerLimit <var>Anzahl</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Obergrenze f&#252;r die konfigurierbare Anzahl von
   Prozessen</td></tr>
 <tr><td><a href="core.html#servername">ServerName
 <var>voll-qualifizierter-Domainname</var>[:<var>port</var>]</a></td><td></td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Rechnername und Port, die der Server dazu verwendet, sich
 selbst zu identifizieren</td></tr>
-<tr class="odd"><td><a href="core.html#serverpath">ServerPath <var>URL-Pfad</var></a></td><td></td><td>v</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Veralteter URL-Pfad für einen namensbasierten
+<tr class="odd"><td><a href="core.html#serverpath">ServerPath <var>URL-Pfad</var></a></td><td></td><td>v</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Veralteter URL-Pfad f&#252;r einen namensbasierten
 virtuellen Host, auf den von einem inkompatiblen Browser zugegriffen
 wird</td></tr>
 <tr><td><a href="core.html#serverroot">ServerRoot <var>Verzeichnis</var></a></td><td> /usr/local/apache </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Basisverzeichnis der Serverinstallation</td></tr>
-<tr class="odd"><td><a href="core.html#serversignature">ServerSignature On|Off|EMail</a></td><td> Off </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Konfiguriert die Fußzeile von servergenerierten
+<tr class="odd"><td><a href="core.html#serversignature">ServerSignature On|Off|EMail</a></td><td> Off </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Konfiguriert die Fu&#223;zeile von servergenerierten
 Dokumenten</td></tr>
 <tr><td><a href="core.html#servertokens">ServerTokens Major|Minor|Min[imal]|Prod[uctOnly]|OS|Full</a></td><td> Full </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Konfiguriert den HTTP-Response-Header
 <code>Server</code></td></tr>
@@ -1228,7 +1228,7 @@ Certificate verification</td></tr>
   pro Kindprozess</td></tr>
 <tr><td><a href="mpm_common.html#threadsperchild">ThreadsPerChild <var>Anzahl</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Anzahl der Threads, die mit jedem Kindprozess gestartet
   werden</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#threadstacksize">ThreadStackSize <var>size</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Die Größe des Stacks in Bytes, der von Threads
+<tr class="odd"><td><a href="mpm_common.html#threadstacksize">ThreadStackSize <var>size</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Die Gr&#246;&#223;e des Stacks in Bytes, der von Threads
 verwendet wird, die Client-Verbindungen bearbeiten.</td></tr>
 <tr><td><a href="core.html#timeout">TimeOut <var>Sekunden</var></a></td><td> 60 </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Zeitspanne, die der Server auf verschiedene Ereignisse wartet,
 bevor er die Anfrage abbricht</td></tr>
@@ -1264,7 +1264,7 @@ for a given virtual host</td></tr>
 for a given virtual host</td></tr>
 <tr><td><a href="core.html#virtualhost">&lt;VirtualHost
     <var>Adresse</var>[:<var>Port</var>] [<var>Adresse</var>[:<var>Port</var>]]
-    ...&gt; ... &lt;/VirtualHost&gt;</a></td><td></td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Enthält Direktiven, die nur auf bestimmte Hostnamen oder
+    ...&gt; ... &lt;/VirtualHost&gt;</a></td><td></td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Enth&#228;lt Direktiven, die nur auf bestimmte Hostnamen oder
 IP-Adressen angewendet werden</td></tr>
 <tr class="odd"><td><a href="mod_vhost_alias.html#virtualscriptalias">VirtualScriptAlias <em>interpolated-directory</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Dynamically configure the location of the CGI directory for
 a given virtual host</td></tr>
@@ -1280,15 +1280,15 @@ can be <a href="#sniffing">automatically detected</a></td></tr>
 <tr><td><a href="mod_xml2enc.html#xml2startparse">xml2StartParse <var>element [element ...]</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Advise the parser to skip leading junk.</td></tr>
 </table></div>
 <div class="bottomlang">
-<p><span>Verfügbare Sprachen: </span><a href="../de/mod/quickreference.html" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>Verf&#252;gbare Sprachen: </span><a href="../de/mod/quickreference.html" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/quickreference.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/mod/quickreference.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/mod/quickreference.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/mod/quickreference.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/mod/quickreference.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/quickreference.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/quickreference.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/quickreference.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../tr/mod/quickreference.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/mod/quickreference.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Kommentare</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Kommentare</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
 var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/quickreference.html';

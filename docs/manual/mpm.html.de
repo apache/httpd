@@ -23,97 +23,97 @@
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP-Server</a> &gt; <a href="http://httpd.apache.org/docs/">Dokumentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>Multi-Processing-Module (MPMs)</h1>
 <div class="toplang">
-<p><span>Verfügbare Sprachen: </span><a href="./de/mpm.html" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>Verf&#252;gbare Sprachen: </span><a href="./de/mpm.html" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/mpm.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/mpm.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/mpm.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./es/mpm.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/mpm.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/mpm.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/mpm.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/mpm.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="./tr/mpm.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/mpm.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Diese Übersetzung ist möglicherweise
-            nicht mehr aktuell. Bitte prüfen Sie die englische Version auf
-            die neuesten Änderungen.</div>
+<div class="outofdate">Diese &#220;bersetzung ist m&#246;glicherweise
+            nicht mehr aktuell. Bitte pr&#252;fen Sie die englische Version auf
+            die neuesten &#196;nderungen.</div>
 
   <p>Das Dokument beschreibt, was ein Multi-Processing-Modul ist und wie solche
     Module beim Apache HTTP Server verwendet werden.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">Einführung</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">Einf&#252;hrung</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#choosing">Auswahl eines MPMs</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#defaults">MPM-Voreinstellungen</a></li>
 </ul><h3>Siehe auch</h3><ul class="seealso"><li><a href="#comments_section">Kommentare</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">Einführung</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
+<h2><a name="introduction" id="introduction">Einf&#252;hrung</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
 
-  <p>Der Apache HTTP Server wurde als leistungsfähiger und flexibler Webserver
+  <p>Der Apache HTTP Server wurde als leistungsf&#228;higer und flexibler Webserver
     konzipiert, der auf einer Vielzahl von Plattformen in einer
     Reihe unterschiedlicher Umgebungen arbeiten kann. Unterschiedliche
     Plattformen und unterschiedliche Umgebungen verlangen oftmals verschiedene
-    Fähigkeiten oder kennen verschiedene Wege, die gleiche
-    Funktionaltät sehr effizient zu implementieren. Der Apache hat durch
+    F&#228;higkeiten oder kennen verschiedene Wege, die gleiche
+    Funktionalt&#228;t sehr effizient zu implementieren. Der Apache hat durch
     seinen modularen Aufbau schon immer eine breite Auswahl von Umgebungen
-    unterstützt. Dieses Design erlaubt es dem Webmaster, durch Auswahl der
+    unterst&#252;tzt. Dieses Design erlaubt es dem Webmaster, durch Auswahl der
     Module, die zur Kompilierungszeit oder zur Laufzeit geladen werden, die
-    Features auszuwählen, die in den Server intregiert werden.</p>
+    Features auszuw&#228;hlen, die in den Server intregiert werden.</p>
 
   <p>Der Apache 2.0 erweitert dieses modulare Design auf die grundlegenden
     Funktionen eines Webservers. Der Server wird mit einer Auswahl von
-    Multi-Processing-Modulen (MPMs) ausgeliefert, die für die Bindung an
+    Multi-Processing-Modulen (MPMs) ausgeliefert, die f&#252;r die Bindung an
     Netzwerkports der Maschine, die Annahme von Anfragen und die Abfertigung von
-    Kindprozessen zur Behandlung der Anfragen zuständig sind.</p>
+    Kindprozessen zur Behandlung der Anfragen zust&#228;ndig sind.</p>
 
   <p>Die Erweiterung des modularen Aufbaus auf diese Ebene des Servers
     bringt zwei wesentliche Vorteile:</p>
 
   <ul>
     <li>Der Apache kann nun eine Vielfalt von Betriebssystemen sauberer und
-      effizienter unterstützen. Insbesondere die Windows-Version des Apache
+      effizienter unterst&#252;tzen. Insbesondere die Windows-Version des Apache
       ist jetzt deutlich effizienter, da <code class="module"><a href="./mod/mpm_winnt.html">mpm_winnt</a></code> native
-      Netzwerkfähigkeiten anstelle der im Apache 1.3 verwendeten
-      POSIX-Schicht benutzen kann. Dieser Vorteil gilt auch für andere
-      Betriebssysteme, für die spezielle MPMs implementiert sind.</li>
+      Netzwerkf&#228;higkeiten anstelle der im Apache 1.3 verwendeten
+      POSIX-Schicht benutzen kann. Dieser Vorteil gilt auch f&#252;r andere
+      Betriebssysteme, f&#252;r die spezielle MPMs implementiert sind.</li>
     
-    <li>Der Server läßt sich besser auf die Bedürfnisse der
+    <li>Der Server l&#228;&#223;t sich besser auf die Bed&#252;rfnisse der
       jeweiligen Website anpassen. Sites beispielsweise, die eine hohe
-      Skalierbarkeit benötigen, können ein Threaded-MPM wie
-      <code class="module"><a href="./mod/worker.html">worker</a></code> oder <code class="module"><a href="./mod/event.html">event</a></code> wählen,
-      während Sites, die Stabilität oder Kompatibilität mit
-      älterer Software erfordern, <code class="module"><a href="./mod/prefork.html">prefork</a></code> wählen
-      können.</li>
+      Skalierbarkeit ben&#246;tigen, k&#246;nnen ein Threaded-MPM wie
+      <code class="module"><a href="./mod/worker.html">worker</a></code> oder <code class="module"><a href="./mod/event.html">event</a></code> w&#228;hlen,
+      w&#228;hrend Sites, die Stabilit&#228;t oder Kompatibilit&#228;t mit
+      &#228;lterer Software erfordern, <code class="module"><a href="./mod/prefork.html">prefork</a></code> w&#228;hlen
+      k&#246;nnen.</li>
   </ul>
 
   <p>Auf Anwenderebene erscheinen MPMs fast wie andere Apache-Module. Der
     Hauptunterschied ist, dass jeweils nur ein einziges MPM in den Server
-    geladen werden kann. Die Liste der verfügbaren MPMs finden Sie im <a href="mod/">Modul-Index</a>.</p>
+    geladen werden kann. Die Liste der verf&#252;gbaren MPMs finden Sie im <a href="mod/">Modul-Index</a>.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="choosing" id="choosing">Auswahl eines MPMs</a> <a title="Permanent link" href="#choosing" class="permalink">&para;</a></h2>
 
-  <p>MPMs müssen während der
-    <span class="transnote">(<em>Anm.d.Ü.:</em> Quelltext-)</span>Konfiguration ausgewählt und in den
+  <p>MPMs m&#252;ssen w&#228;hrend der
+    <span class="transnote">(<em>Anm.d.&#220;.:</em> Quelltext-)</span>Konfiguration ausgew&#228;hlt und in den
     Server einkompiliert werden. Compiler sind in der Lage eine Reihe von
-    Funktionen zu optimieren, wenn Threads verwendet werden. Sie können
+    Funktionen zu optimieren, wenn Threads verwendet werden. Sie k&#246;nnen
     dies allerdings nur, wenn sie wissen, dass Threads benutzt werden.</p>
 
-  <p>Um das gewünschte MPM tatsächlich auszuwählen, verwenden Sie
+  <p>Um das gew&#252;nschte MPM tats&#228;chlich auszuw&#228;hlen, verwenden Sie
     beim <code class="program"><a href="./programs/configure.html">configure</a></code>-Skript das Argument
     <code>--with-mpm=<em>NAME</em></code>. <em>NAME</em> ist der Name des
-    gewünschten MPMs.</p>
+    gew&#252;nschten MPMs.</p>
 
   <p>Ist der Server kompiliert, so ist es mittels <code>./httpd -l</code>
-    möglich, das ausgewählte MPM zu ermitteln. Dieser Befehl listet
-    alle in den Server einkompilierten Module auf, einschließlich des
+    m&#246;glich, das ausgew&#228;hlte MPM zu ermitteln. Dieser Befehl listet
+    alle in den Server einkompilierten Module auf, einschlie&#223;lich des
     MPM.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="defaults" id="defaults">MPM-Voreinstellungen</a> <a title="Permanent link" href="#defaults" class="permalink">&para;</a></h2>
 
-  <p>Die folgende Tabelle gibt die voreingestellten MPMs für verschiedene
-    Betriebssysteme an. Wenn Sie während der Kompilierung keine andere
-    Auswahl treffen, wird dieses MPM gewählt.</p>
+  <p>Die folgende Tabelle gibt die voreingestellten MPMs f&#252;r verschiedene
+    Betriebssysteme an. Wenn Sie w&#228;hrend der Kompilierung keine andere
+    Auswahl treffen, wird dieses MPM gew&#228;hlt.</p>
 
 <table>
 
@@ -125,15 +125,15 @@
 </table>
 </div></div>
 <div class="bottomlang">
-<p><span>Verfügbare Sprachen: </span><a href="./de/mpm.html" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>Verf&#252;gbare Sprachen: </span><a href="./de/mpm.html" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/mpm.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/mpm.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/mpm.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./es/mpm.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/mpm.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/mpm.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/mpm.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/mpm.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="./tr/mpm.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/mpm.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Kommentare</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
+</div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Kommentare</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
 var comments_identifier = 'http://httpd.apache.org/docs/trunk/mpm.html';
