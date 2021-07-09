@@ -708,8 +708,8 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
     }
     else if (protocol == SSL_PROTOCOL_TLSV1_2) {
         method = mctx->pkp ?
-            TLSv1_2_client_method() : /* proxy */
-            TLSv1_2_server_method();  /* server */
+            SSLv23_client_method() : /* proxy */
+            SSLv23_server_method();  /* server */
     }
 #if SSL_HAVE_PROTOCOL_TLSV1_3
     else if (protocol == SSL_PROTOCOL_TLSV1_3) {
