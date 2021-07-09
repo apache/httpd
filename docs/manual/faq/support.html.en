@@ -25,7 +25,7 @@
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/faq/support.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ko/faq/support.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/faq/support.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/faq/support.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -78,8 +78,8 @@
       <p><a href="http://httpd.apache.org/userslist.html">Users
       mailing list</a></p>
 
-      <p><a href="irc://irc.freenode.net/#httpd">#httpd</a> on 
-      <a href="http://freenode.net">Freenode IRC</a> is available for 
+      <p><a href="irc://irc.libera.chat/#httpd">#httpd</a> on 
+      <a href="http://libera.chat">Libera.chat IRC</a> is available for 
       user support issues.</p>
 
       <p>USENET newsgroups:</p>
@@ -133,7 +133,7 @@
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/faq/support.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ko/faq/support.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/faq/support.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/faq/support.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2013 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>

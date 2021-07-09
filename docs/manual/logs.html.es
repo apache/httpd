@@ -14,39 +14,39 @@
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
 <link href="./images/favicon.ico" rel="shortcut icon" /><link href="http://httpd.apache.org/docs/current/logs.html" rel="canonical" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/directives.html">Directivas</a> | <a href="./faq/">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa de este sitio web</a></p>
-<p class="apache">Versión 2.0 del Servidor HTTP Apache</p>
+<p class="menu"><a href="./mod/">M&#243;dulos</a> | <a href="./mod/directives.html">Directivas</a> | <a href="./faq/">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa de este sitio web</a></p>
+<p class="apache">Versi&#243;n 2.0 del Servidor HTTP Apache</p>
 <img alt="" src="./images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentación</a> &gt; <a href="./">Versión 2.0</a></div><div id="page-content"><div class="retired"><h4>Please note</h4>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentaci&#243;n</a> &gt; <a href="./">Versi&#243;n 2.0</a></div><div id="page-content"><div class="retired"><h4>Please note</h4>
             <p>This document refers to the <strong>2.0</strong> version of Apache httpd, which <strong>is no longer maintained</strong>. Upgrade, and refer to the current version of httpd instead, documented at:</p>
         <ul><li><a href="http://httpd.apache.org/docs/current/">Current release version of Apache HTTP Server documentation</a></li></ul><p>You may follow <a href="http://httpd.apache.org/docs/current/logs.html">this link</a> to go to the current version of this document.</p></div><div id="preamble"><h1>Archivos de Registro (Log Files)</h1>
 <div class="toplang">
 <p><span>Idiomas disponibles: </span><a href="./en/logs.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/logs.html" title="Español">&nbsp;es&nbsp;</a> |
+<a href="./es/logs.html" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
 <a href="./ja/logs.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/logs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/logs.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/logs.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Esta traducción podría estar
-            obsoleta. Consulte la versión en inglés de la
-            documentación para comprobar si se han producido cambios
+<div class="outofdate">Esta traducci&#243;n podr&#237;a estar
+            obsoleta. Consulte la versi&#243;n en ingl&#233;s de la
+            documentaci&#243;n para comprobar si se han producido cambios
             recientemente.</div>
 
     <p>Para administrar de manera efectiva un servidor web, es
     necesario tener registros de la actividad y el rendimiento del
-    servidor así como de cualquier problema que haya podido
-    ocurrir durante su operación. El servidor HTTP Apache ofrece
+    servidor as&#237; como de cualquier problema que haya podido
+    ocurrir durante su operaci&#243;n. El servidor HTTP Apache ofrece
     capacidades muy amplias de registro de este tipo de
-    información. Este documento explica cómo configurar esas
-    capacidades de registro, y cómo comprender qué
-    información contienen los ficheros de registro.</p>
+    informaci&#243;n. Este documento explica c&#243;mo configurar esas
+    capacidades de registro, y c&#243;mo comprender qu&#233;
+    informaci&#243;n contienen los ficheros de registro.</p>
   </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#security">Advertencia de seguridad</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#errorlog">Registro de Errores (Error Log)</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#accesslog">Registro de Acceso (Access Log)</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#rotation">Rotación de los ficheros de registro</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#rotation">Rotaci&#243;n de los ficheros de registro</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#piped">Ficheros de registro redireccionados (Piped Logs)</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#virtualhost">Hosts Virtuales</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#other">Otros ficheros de registro</a></li>
@@ -57,16 +57,16 @@
     
 
     <p>Cualquiera que tenga permisos de escritura sobre el directorio
-    en el que Apache esté escribiendo un archivo de registro
+    en el que Apache est&#233; escribiendo un archivo de registro
     puede con casi toda seguridad tener acceso al identificador de
-    usuario con el que se inició el servidor, normalmente
+    usuario con el que se inici&#243; el servidor, normalmente
     root. <em>NO</em> le de a nadie permisos de escritura sobre el
     directorio en que se almacenan los ficheros de registro sin tener
     en cuenta las consecuencias; consulte los <a href="misc/security_tips.html">consejos de seguridad</a> para
-    obtener más información.</p>
+    obtener m&#225;s informaci&#243;n.</p>
 
-    <p>Además, los ficheros de registro pueden contener
-    información suministrada directamente por el cliente, sin
+    <p>Adem&#225;s, los ficheros de registro pueden contener
+    informaci&#243;n suministrada directamente por el cliente, sin
     sustituir. Es posible por tanto que clientes con malas intenciones
     inserten caracteres de control en los ficheros de registro. Por
     ello es necesario tener cuidado cuando se procesan los ficheros de
@@ -76,29 +76,29 @@
 <h2><a name="errorlog" id="errorlog">Registro de Errores (Error Log)</a></h2>
     
 
-    <table class="related"><tr><th>Módulos Relacionados</th><th>Directivas Relacionadas</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code></li><li><code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>M&#243;dulos Relacionados</th><th>Directivas Relacionadas</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code></li><li><code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code></li></ul></td></tr></table>
 
     <p>El registro de errores del servidor, cuyo nombre y
-    ubicación se especifica en la directiva <code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code>, es el más importante de
-    todos los registros. Apache enviará cualquier
-    información de diagnóstico y registrará cualquier
+    ubicaci&#243;n se especifica en la directiva <code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code>, es el m&#225;s importante de
+    todos los registros. Apache enviar&#225; cualquier
+    informaci&#243;n de diagn&#243;stico y registrar&#225; cualquier
     error que encuentre al procesar peticiones al archivo de registro
     seleccionado. Es el primer lugar donde tiene que mirar cuando
     surja un problema al iniciar el servidor o durante su
-    operación normal, porque con frecuencia encontrará en
-    él información detallada de qué ha ido mal y
-    cómo solucionar el problema.</p>
+    operaci&#243;n normal, porque con frecuencia encontrar&#225; en
+    &#233;l informaci&#243;n detallada de qu&#233; ha ido mal y
+    c&#243;mo solucionar el problema.</p>
 
     <p>El registro de errores se escribe normalmente en un fichero
     (cuyo nombre suele ser <code>error_log</code> en sistemas Unix y
     <code>error.log</code> en Windows y OS/2). En sistemas Unix
-    también es posible hacer que el servidor envíe los
+    tambi&#233;n es posible hacer que el servidor env&#237;e los
     mensajes de error al <code>syslog</code> o <a href="#piped">pasarlos a un programa</a>.</p>
 
     <p>El formato del registro de errores es relativamente libre y
-    descriptivo. No obstante, hay cierta información que se
+    descriptivo. No obstante, hay cierta informaci&#243;n que se
     incluye en casi todas las entradas de un registro de errores. Por
-    ejemplo, este es un mensaje típico.</p>
+    ejemplo, este es un mensaje t&#237;pico.</p>
 
     <div class="example"><p><code>
       [Wed Oct 11 14:32:52 2000] [error] [client 127.0.0.1]
@@ -109,35 +109,35 @@
     <p>El primer elemento de la entrada es la fecha y la hora del
     mensaje. El segundo elemento indica la gravedad del error que se
     ha producido. La directiva <code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code> se usa para controlar los tipos
-    de errores que se envían al registro de errores según su
-    gravedad. La tercera parte contiene la dirección IP del
-    cliente que generó el error. Después de la dirección
-    IP está el mensaje de error propiamente dicho, que en este
+    de errores que se env&#237;an al registro de errores seg&#250;n su
+    gravedad. La tercera parte contiene la direcci&#243;n IP del
+    cliente que gener&#243; el error. Despu&#233;s de la direcci&#243;n
+    IP est&#225; el mensaje de error propiamente dicho, que en este
     caso indica que el servidor ha sido configurado para denegar el
-    acceso a ese cliente. El servidor reporta también la ruta en
+    acceso a ese cliente. El servidor reporta tambi&#233;n la ruta en
     el sistema de ficheros (en vez de la ruta en el servidor
     web) del documento solicitado.</p>
 
     <p>En el registro de errores puede aparecer una amplia variedad de
-    mensajes diferentes. La mayoría tienen un aspecto similar al
-    del ejemplo de arriba. El registro de errores también
-    contiene mensaje de depuración de scripts CGI. Cualquier
-    información escrita en el <code>stderr</code> por un script
-    CGI se copiará directamente en el registro de errores.</p>
+    mensajes diferentes. La mayor&#237;a tienen un aspecto similar al
+    del ejemplo de arriba. El registro de errores tambi&#233;n
+    contiene mensaje de depuraci&#243;n de scripts CGI. Cualquier
+    informaci&#243;n escrita en el <code>stderr</code> por un script
+    CGI se copiar&#225; directamente en el registro de errores.</p>
 
-    <p>El registro de errores no se puede personalizar añadiendo
-    o quitando información. Sin embargo, las entradas del
+    <p>El registro de errores no se puede personalizar a&#241;adiendo
+    o quitando informaci&#243;n. Sin embargo, las entradas del
     registro de errores que se refieren a determinadas peticiones
     tienen sus correspondientes entradas en el <a href="#accesslog">registro de acceso</a>. El ejemplo de arriba se
     corresponde con una entrada en el registro de acceso que
-    tendrá un código de estado 403. Como es posible
-    personalizar el registro de acceso, puede obtener más
-    información sobre los errores que se producen usando ese
-    registro también.</p>
+    tendr&#225; un c&#243;digo de estado 403. Como es posible
+    personalizar el registro de acceso, puede obtener m&#225;s
+    informaci&#243;n sobre los errores que se producen usando ese
+    registro tambi&#233;n.</p>
 
     <p>Si hace pruebas, suele ser de utilidad monitorizar de forma
     continua el registro de errores para comprobar si ocurre
-    algún problema. En sistemas Unix, puede hacer esto
+    alg&#250;n problema. En sistemas Unix, puede hacer esto
     usando:</p>
 
     <div class="example"><p><code>
@@ -148,33 +148,33 @@
 <h2><a name="accesslog" id="accesslog">Registro de Acceso (Access Log)</a></h2>
     
 
-    <table class="related"><tr><th>Módulos Relacionados</th><th>Directivas Relacionadas</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code></li><li><code class="module"><a href="./mod/mod_setenvif.html">mod_setenvif</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code></li><li><code class="directive"><a href="./mod/mod_log_config.html#logformat">LogFormat</a></code></li><li><code class="directive"><a href="./mod/mod_setenvif.html#setenvif">SetEnvIf</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>M&#243;dulos Relacionados</th><th>Directivas Relacionadas</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code></li><li><code class="module"><a href="./mod/mod_setenvif.html">mod_setenvif</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code></li><li><code class="directive"><a href="./mod/mod_log_config.html#logformat">LogFormat</a></code></li><li><code class="directive"><a href="./mod/mod_setenvif.html#setenvif">SetEnvIf</a></code></li></ul></td></tr></table>
 
-    <p>El servidor almacena en el registro de acceso información
-    sobre todas las peticiones que procesa. La ubicación del
+    <p>El servidor almacena en el registro de acceso informaci&#243;n
+    sobre todas las peticiones que procesa. La ubicaci&#243;n del
     fichero de registro y el contenido que se registra se pueden
     modificar con la directiva <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code>. Puede usar la
     directiva <code class="directive"><a href="./mod/mod_log_config.html#logformat">LogFormat</a></code>
-    para simplificar la selección de los contenidos que quiere
-    que se incluyan en los registros. Esta sección explica como
-    configurar el servidor para que registre la información que
+    para simplificar la selecci&#243;n de los contenidos que quiere
+    que se incluyan en los registros. Esta secci&#243;n explica como
+    configurar el servidor para que registre la informaci&#243;n que
     usted considere oportuno en el registro de acceso.</p>
 
-    <p>Por supuesto, almacenar información en el registro de
-    acceso es solamente el principio en la gestión de los
-    registros. El siguiente paso es analizar la información que
-    contienen para producir estadísticas que le resulten de
-    utilidad. Explicar el análisis de los registros en general
-    está fuera de los propósitos de este documento, y no es
-    propiamente una parte del trabajo del servidor web. Para más
-    información sobre este tema, y para aplicaciones que analizan
+    <p>Por supuesto, almacenar informaci&#243;n en el registro de
+    acceso es solamente el principio en la gesti&#243;n de los
+    registros. El siguiente paso es analizar la informaci&#243;n que
+    contienen para producir estad&#237;sticas que le resulten de
+    utilidad. Explicar el an&#225;lisis de los registros en general
+    est&#225; fuera de los prop&#243;sitos de este documento, y no es
+    propiamente una parte del trabajo del servidor web. Para m&#225;s
+    informaci&#243;n sobre este tema, y para aplicaciones que analizan
     los registros, puede visitar
     <a href="http://dmoz.org/Computers/Software/Internet/Site_Management/Log_analysis/">
     Open Directory</a> o <a href="http://dir.yahoo.com/Computers_and_Internet/Software/Internet/World_Wide_Web/Servers/Log_Analysis_Tools/">
     Yahoo</a>.</p>
 
     <p>Diferentes versiones de Apache httpd han usado otros
-    módulos y directivas para controlar la información que
+    m&#243;dulos y directivas para controlar la informaci&#243;n que
     se almacena en el registro de acceso, incluyendo mod_log_referer,
     mod_log_agent, y la directiva <code>TransferLog</code>. Ahora la
     directiva <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code>
@@ -185,15 +185,15 @@
     similar a las de printf(1) en lenguaje C. Hay algunos ejemplos en
     las siguientes secciones. Si quiere una lista completa de los
     posibles contenidos que se pueden incluir, consulte la
-    documentació sobre <a href="mod/mod_log_config.html#formats">las cadenas de caracteres
+    documentaci&#243; sobre <a href="mod/mod_log_config.html#formats">las cadenas de caracteres
     de formato</a> del <code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code>.</p>
 
-    <h3><a name="common" id="common">Formato Común de Registro (Common Log
+    <h3><a name="common" id="common">Formato Com&#250;n de Registro (Common Log
       Format)</a></h3>
       
 
-      <p>Una configuración típica del registro de acceso
-      podría tener un aspecto similar a este.</p>
+      <p>Una configuraci&#243;n t&#237;pica del registro de acceso
+      podr&#237;a tener un aspecto similar a este.</p>
 
       <div class="example"><p><code>
         LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common<br />
@@ -204,14 +204,14 @@
       le lo asocia con un determinado formato. El formato consiste en
       una serie de directivas con tantos por ciento, cada una de las
       cuales le dice al servidor que registre una determinada
-      información en particular. El formato también puede
-      incluir caracteres literales, que se copiarán directamente
+      informaci&#243;n en particular. El formato tambi&#233;n puede
+      incluir caracteres literales, que se copiar&#225;n directamente
       en el registro. Si usa el caracter comillas (<code>"</code>)
       debe anteponerle una barra invertida para evitar que sea
       interpretado como el final la cadena de caracteres a
-      registrar. El formato que especifique también puede
+      registrar. El formato que especifique tambi&#233;n puede
       contener los caracteres de control especiales "<code>\n</code>"
-      para salto de línea y "<code>\t</code>" para tabulador.</p>
+      para salto de l&#237;nea y "<code>\t</code>" para tabulador.</p>
 
       <p>La directiva <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code> crea un nuevo
 	  fichero de registro usando el <em>apodo</em> definido. El
@@ -219,12 +219,12 @@
 	  relativo al valor especificado en <code class="directive"><a href="./mod/core.html#serverroot">ServerRoot</a></code> a no ser que empiece
 	  por una barra (/).</p>
 
-      <p>La configuración de arriba escribirá las entradas
-      en el registro con el formato conocido como Formato Común
-      de Registro (CLF). Este formato estándar lo pueden generar
+      <p>La configuraci&#243;n de arriba escribir&#225; las entradas
+      en el registro con el formato conocido como Formato Com&#250;n
+      de Registro (CLF). Este formato est&#225;ndar lo pueden generar
       muchos servidores web diferentes y lo pueden leer muchos de los
       progrmas que analizan registros. Las entradas de un fichero de
-      registro que respetan ese formato común tienen una
+      registro que respetan ese formato com&#250;n tienen una
       aparariencia parecida es esta:</p>
 
       <div class="example"><p><code>
@@ -238,54 +238,54 @@
       <dl>
         <dt><code>127.0.0.1</code> (<code>%h</code>)</dt>
 
-        <dd>Es la dirección IP del cliente (host remoto) que hizo
-        la petición al servidor. Si la directiva <code class="directive"><a href="./mod/core.html#hostnamelookups">HostnameLookups</a></code> tiene valor
-        <code>On</code>, el servidor intentará determinar el
+        <dd>Es la direcci&#243;n IP del cliente (host remoto) que hizo
+        la petici&#243;n al servidor. Si la directiva <code class="directive"><a href="./mod/core.html#hostnamelookups">HostnameLookups</a></code> tiene valor
+        <code>On</code>, el servidor intentar&#225; determinar el
         nombre del host y registrar ese nombre en lugar de la
-        dirección IP. Sin embargo, no se recomienda que use esta
-        configuración porque puede ralentizar significativamente
+        direcci&#243;n IP. Sin embargo, no se recomienda que use esta
+        configuraci&#243;n porque puede ralentizar significativamente
         las operaciones del servidor. En su lugar, es mejor usar un
         programa que realice esta tarea posteriormente sobre el
         registro, por ejemplo <code class="program"><a href="./programs/logresolve.html">logresolve</a></code>. Las
         direcciones IP que se registren no son necesariamente las
-        direcciones de las máquinas de los usuarios finales. Si
+        direcciones de las m&#225;quinas de los usuarios finales. Si
         existe un servidor proxy entre el usuario final y el servidor,
-        la dirección que se registra es la del proxy.</dd>
+        la direcci&#243;n que se registra es la del proxy.</dd>
 
         <dt><code>-</code> (<code>%l</code>)</dt>
 
-        <dd>Un "guión" siginifica que la información que
-        debería ir en ese lugar no está disponible. En este
-        caso, esa información es la identidad RFC 1413 del
-        cliente determinada por <code>identd</code> en la máquina
-        del cliente. Esta información es muy poco fiable y no
-        debería ser usada nunca excepto con clientes que
-        estén sometidos a controles muy estrictos en redes
+        <dd>Un "gui&#243;n" siginifica que la informaci&#243;n que
+        deber&#237;a ir en ese lugar no est&#225; disponible. En este
+        caso, esa informaci&#243;n es la identidad RFC 1413 del
+        cliente determinada por <code>identd</code> en la m&#225;quina
+        del cliente. Esta informaci&#243;n es muy poco fiable y no
+        deber&#237;a ser usada nunca excepto con clientes que
+        est&#233;n sometidos a controles muy estrictos en redes
         internas. Apache httpd ni siquiera intenta recoger esa
-        información a menos que la directiva <code class="directive"><a href="./mod/core.html#identitycheck">IdentityCheck</a></code> tenga valor
+        informaci&#243;n a menos que la directiva <code class="directive"><a href="./mod/core.html#identitycheck">IdentityCheck</a></code> tenga valor
         <code>On</code>.</dd>
 
         <dt><code>frank</code> (<code>%u</code>)</dt>
 
         <dd>Este es el identificador de usuario de la persona que
-        solicita el documento determinado por la autentificación
+        solicita el documento determinado por la autentificaci&#243;n
         HTTP. Normalmente ese mismo valor se pasa a los scripts CGI
         con la variable de entorno <code>REMOTE_USER</code>. Si el
-        código de estado de la petición (ver abajo) es 401,
+        c&#243;digo de estado de la petici&#243;n (ver abajo) es 401,
         entonces no debe confiar en la veracidad de ese dato porque el
-        usuario no ha sido aún autentificado. Si el documento no
-        está protegido por contraseña, se mostrará un
-        guión "<code>-</code>" en esta entrada.</dd>
+        usuario no ha sido a&#250;n autentificado. Si el documento no
+        est&#225; protegido por contrase&#241;a, se mostrar&#225; un
+        gui&#243;n "<code>-</code>" en esta entrada.</dd>
 
         <dt><code>[10/Oct/2000:13:55:36 -0700]</code>
         (<code>%t</code>)</dt>
 
         <dd>
-          La hora a la que el servidor recibió la
-          petición. El formato es:
+          La hora a la que el servidor recibi&#243; la
+          petici&#243;n. El formato es:
 
           <p class="indent">
-            <code>[día/mes/año:hora:minuto:segundo zona_horaria]<br />
+            <code>[d&#237;a/mes/a&#241;o:hora:minuto:segundo zona_horaria]<br />
              day = 2*digit<br />
              month = 3*letter<br />
              year = 4*digit<br />
@@ -296,47 +296,47 @@
           </p>
           Es posible mostrar la hora de otra manera especificando
           <code>%{format}</code> en el formato a usar en el registro,
-          donde <code>format</code> se sustituye como se haría al
-          usar <code>strftime(3)</code> de la librería
-          estándar de C.
+          donde <code>format</code> se sustituye como se har&#237;a al
+          usar <code>strftime(3)</code> de la librer&#237;a
+          est&#225;ndar de C.
         </dd>
 
         <dt><code>"GET /apache_pb.gif HTTP/1.0"</code>
         (<code>\"%r\"</code>)</dt>
 
-        <dd>La línea de la petición del cliente se muestra
-        entre dobles comillas. La línea de petición contiene
-        mucha información de utilidad. Primero, el método
+        <dd>La l&#237;nea de la petici&#243;n del cliente se muestra
+        entre dobles comillas. La l&#237;nea de petici&#243;n contiene
+        mucha informaci&#243;n de utilidad. Primero, el m&#233;todo
         usado por el cliente es <code>GET</code>. Segundo, el cliente
-        ha hecho una petición al recurso
+        ha hecho una petici&#243;n al recurso
         <code>/apache_pb.gif</code>, y tercero, el cliente uso el
-        protocolo <code>HTTP/1.0</code>. También es posible
-        registrar una o más partes de la línea de
-        petición independientemente. Por ejemplo, el formato
-        "<code>%m %U%q %H</code>" registrará el método, ruta,
+        protocolo <code>HTTP/1.0</code>. Tambi&#233;n es posible
+        registrar una o m&#225;s partes de la l&#237;nea de
+        petici&#243;n independientemente. Por ejemplo, el formato
+        "<code>%m %U%q %H</code>" registrar&#225; el m&#233;todo, ruta,
         cadena de consulta y protocolo, teniendo exactamente el mismo
         resultado que "<code>%r</code>".</dd>
 
         <dt><code>200</code> (<code>%&gt;s</code>)</dt>
 
-        <dd>Es el código de estado que el servidor envía de
-        vuelta al cliente. Esta información es muy valiosa,
-        porque revela si la petición fue respondida con
-        éxito por el servidor (los códigos que empiezan por
-        2), una redirección (los códigos que empiezan por
-        3), un error provocado por el cliente (los códigos que
-        empiezan por 4), o un error en el servidor (los códigos
-        que empiezan por 5). La lista completa de códigos de
+        <dd>Es el c&#243;digo de estado que el servidor env&#237;a de
+        vuelta al cliente. Esta informaci&#243;n es muy valiosa,
+        porque revela si la petici&#243;n fue respondida con
+        &#233;xito por el servidor (los c&#243;digos que empiezan por
+        2), una redirecci&#243;n (los c&#243;digos que empiezan por
+        3), un error provocado por el cliente (los c&#243;digos que
+        empiezan por 4), o un error en el servidor (los c&#243;digos
+        que empiezan por 5). La lista completa de c&#243;digos de
         estado posibles puede consultarle en <a href="http://www.w3.org/Protocols/rfc2616/rfc2616.txt">la
-        especificación de HTTP</a> (RFC2616 sección
+        especificaci&#243;n de HTTP</a> (RFC2616 secci&#243;n
         10).</dd>
 
         <dt><code>2326</code> (<code>%b</code>)</dt>
 
-        <dd>La última entrada indica el tamaño del objeto
-        retornado por el cliente, no incluídas las cabeceras de
-        respuesta. Si no se respondió con ningún contenido
-        al cliente, este valor mostrará valor
+        <dd>La &#250;ltima entrada indica el tama&#241;o del objeto
+        retornado por el cliente, no inclu&#237;das las cabeceras de
+        respuesta. Si no se respondi&#243; con ning&#250;n contenido
+        al cliente, este valor mostrar&#225; valor
         "<code>-</code>". Para registrar "<code>0</code>" en ese caso,
         use <code>%B</code> en su lugar.</dd>
       </dl>
@@ -354,11 +354,11 @@
          CustomLog log/access_log combined
       </code></p></div>
 
-      <p>Es exactamente igual que Formato Común de Registro, pero
-      añade dos campos. Cada campo adicional usa la directiva
+      <p>Es exactamente igual que Formato Com&#250;n de Registro, pero
+      a&#241;ade dos campos. Cada campo adicional usa la directiva
       <code>%{<em>header</em>}i</code>, donde <em>header</em> puede
-      ser cualquier cabecera de petición HTTP. El registro de
-      acceso cuando se usa este formato tendrá este aspecto:</p>
+      ser cualquier cabecera de petici&#243;n HTTP. El registro de
+      acceso cuando se usa este formato tendr&#225; este aspecto:</p>
 
       <div class="example"><p><code>
         127.0.0.1 - frank [10/Oct/2000:13:55:36 -0700] "GET
@@ -373,31 +373,31 @@
         <dt><code>"http://www.example.com/start.html"</code>
         (<code>\"%{Referer}i\"</code>)</dt>
 
-        <dd>La cabecera de petición de HTTP "Referer"
+        <dd>La cabecera de petici&#243;n de HTTP "Referer"
         (sic). Muestra el servidor del que proviene el cliente. (Esta
-        debería ser la página que contiene un enlace o
+        deber&#237;a ser la p&#225;gina que contiene un enlace o
         que contiene a <code>/apache_pb.gif</code>).</dd>
 
         <dt><code>"Mozilla/4.08 [en] (Win98; I ;Nav)"</code>
         (<code>\"%{User-agent}i\"</code>)</dt>
 
-        <dd>La cabecera de petición HTTP "User-Agent". Es la
-        información de identificación que el navegador del
-        cliente incluye sobre sí mismo.</dd>
+        <dd>La cabecera de petici&#243;n HTTP "User-Agent". Es la
+        informaci&#243;n de identificaci&#243;n que el navegador del
+        cliente incluye sobre s&#237; mismo.</dd>
       </dl>
     
 
-    <h3><a name="multiple" id="multiple">Cómo usar varios registros de acceso</a></h3>
+    <h3><a name="multiple" id="multiple">C&#243;mo usar varios registros de acceso</a></h3>
       
 
       <p>Para crear varios registros de acceso solamente tiene que
       especificar varias directivas <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code> en el fichero de
-      configuración. Por ejemplo, las siguientes directivas
-      crearán tres registros de acceso. El primero contendrá
-      la información básica en Formato Común de
-      Registro, mientras que el segundo y el tercero contendrán
-      contendrán la información de los "referer" y de los
-      navegadores usados. Las dos últimas líneas <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code> muestran cómo
+      configuraci&#243;n. Por ejemplo, las siguientes directivas
+      crear&#225;n tres registros de acceso. El primero contendr&#225;
+      la informaci&#243;n b&#225;sica en Formato Com&#250;n de
+      Registro, mientras que el segundo y el tercero contendr&#225;n
+      contendr&#225;n la informaci&#243;n de los "referer" y de los
+      navegadores usados. Las dos &#250;ltimas l&#237;neas <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code> muestran c&#243;mo
       reproducir el comportamiento de las directivas
       <code>ReferLog</code> y <code>AgentLog</code>.</p>
 
@@ -408,7 +408,7 @@
         CustomLog logs/agent_log "%{User-agent}i"
       </code></p></div>
 
-      <p>Este ejemplo también muestra que no es necesario definir un
+      <p>Este ejemplo tambi&#233;n muestra que no es necesario definir un
       "apodo" con la directiva <code class="directive"><a href="./mod/mod_log_config.html#logformat">LogFormat</a></code>. En lugar de esto,
       el formato de registro puede especificarse directamente en la
       directiva <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code>.</p>
@@ -417,15 +417,15 @@
     <h3><a name="conditional" id="conditional">Registro Condicional</a></h3>
       
 
-      <p>Algunas veces es más conveniente excluir determinadas
-      entradas del registro de acceso en función de las
-      características de la petición del cliente. Puede
-      hacer esto fácilmente con la ayuda de <a href="env.html">variables de entorno</a>. Primero, debe
+      <p>Algunas veces es m&#225;s conveniente excluir determinadas
+      entradas del registro de acceso en funci&#243;n de las
+      caracter&#237;sticas de la petici&#243;n del cliente. Puede
+      hacer esto f&#225;cilmente con la ayuda de <a href="env.html">variables de entorno</a>. Primero, debe
       especificar una variable de entorno que indique que la
-      petición cumple determinadas condiciones. Esto se hace
+      petici&#243;n cumple determinadas condiciones. Esto se hace
       normalmente con <code class="directive"><a href="./mod/mod_setenvif.html#setenvif">SetEnvIf</a></code>. Entonces puede usar
-      la claúsula <code>env=</code> de la directiva <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code> para incluir o
-      excluir peticiones en las que esté presente la variable de
+      la cla&#250;sula <code>env=</code> de la directiva <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code> para incluir o
+      excluir peticiones en las que est&#233; presente la variable de
       entorno. Algunos ejemplos:</p>
 
       <div class="example"><p><code>
@@ -448,40 +448,40 @@
       </code></p></div>
 
       <p>Aunque acabamos de mostar que el registro condicional es muy
-      potente y flexible, no es la única manera de controlar los
+      potente y flexible, no es la &#250;nica manera de controlar los
       contenidos de los ficheros de registro. Los ficheros de registro
-      son más útiles cuanta más información sobre
-      la actividad del servidor contengan. A menudo es más
-      fácil eliminar las peticiones que no le interesen
+      son m&#225;s &#250;tiles cuanta m&#225;s informaci&#243;n sobre
+      la actividad del servidor contengan. A menudo es m&#225;s
+      f&#225;cil eliminar las peticiones que no le interesen
       procesando posteriormente los ficheros de registro
       originales.</p>
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="rotation" id="rotation">Rotación de los ficheros de registro</a></h2>
+<h2><a name="rotation" id="rotation">Rotaci&#243;n de los ficheros de registro</a></h2>
     
 
     <p>Incluso en un servidor con una actividad moderada, la cantidad
-    de información almacenada en los ficheros de registro es muy
+    de informaci&#243;n almacenada en los ficheros de registro es muy
     grande. El registro de acceso crece normalmente en 1MB por cada
     10.000 peticiones. Por lo tanto, es necesario rotar
-    periódicamente los registros moviendo o borrando su
+    peri&#243;dicamente los registros moviendo o borrando su
     contenido. Esto no se puede hacer con el servidor funcionando,
-    porque Apache continuará escribiendo en el antiguo registro
-    mientras que el archivo esté abierto. En lugar de esto, el
+    porque Apache continuar&#225; escribiendo en el antiguo registro
+    mientras que el archivo est&#233; abierto. En lugar de esto, el
     servidor debe ser <a href="stopping.html">reiniciado</a>
-    después de mover o borrar los ficheros de registro para que
+    despu&#233;s de mover o borrar los ficheros de registro para que
     se abran nuevos ficheros de registro.</p>
 
     <p>Usando un reinicio <em>graceful</em>, se le puede indicar al
     servidor que abra nuevos ficheros de registro sin perder ninguna
-    petición siendo servida o en espera de algún cliente. Sin
+    petici&#243;n siendo servida o en espera de alg&#250;n cliente. Sin
     embargo, para hacer esto, el servidor debe continuar escribiendo
     en los ficheros de registro antiguos mientras termina de servir
-    esas peticiones. Por lo tanto, es preciso esperar algún
-    tiempo después del reinicio antes de realizar ninguna
-    operación sobre los antiguos ficheros de registro. Una
-    situación típica que simplemente rota los registros y
+    esas peticiones. Por lo tanto, es preciso esperar alg&#250;n
+    tiempo despu&#233;s del reinicio antes de realizar ninguna
+    operaci&#243;n sobre los antiguos ficheros de registro. Una
+    situaci&#243;n t&#237;pica que simplemente rota los registros y
     comprime los registros antiguos para ahorrar espacio es:</p>
 
     <div class="example"><p><code>
@@ -492,28 +492,28 @@
       gzip access_log.old error_log.old
     </code></p></div>
 
-    <p>Otra manera de realizar la rotación de los registros es
+    <p>Otra manera de realizar la rotaci&#243;n de los registros es
     usando <a href="#piped">ficheros de registro redireccionados
     (piped logs)</a> de la forma en que se explica en la siguiente
-    sección.</p>
+    secci&#243;n.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="piped" id="piped">Ficheros de registro redireccionados (Piped Logs)</a></h2>
     
 
-    <p>Apache httpd es capaz de escribir la información del
-    registro de acceso y errores mediante una redirección a otro
+    <p>Apache httpd es capaz de escribir la informaci&#243;n del
+    registro de acceso y errores mediante una redirecci&#243;n a otro
     proceso, en lugar de directamente a un fichero. Esta capacidad
     incrementa de forma muy importante la flexibilidad de registro,
-    sin añadir código al servidor principal. Para escribir
-    registros a una redirección, simplemente reemplace el nombre
-    de fichero por el carácter "<code>|</code>", seguido por el
-    nombre del ejecutable que debería aceptar las entradas de
-    registro por su canal de entrada estándar. Apache
-    iniciará el proceso de registro redireccionado cuando se
-    inicie el servidor, y lo reiniciará si se produce algún
-    error irrecuperable durante su ejecución. (Esta última
-    funcionalidad es la que hace que se llame a esta técnica
+    sin a&#241;adir c&#243;digo al servidor principal. Para escribir
+    registros a una redirecci&#243;n, simplemente reemplace el nombre
+    de fichero por el car&#225;cter "<code>|</code>", seguido por el
+    nombre del ejecutable que deber&#237;a aceptar las entradas de
+    registro por su canal de entrada est&#225;ndar. Apache
+    iniciar&#225; el proceso de registro redireccionado cuando se
+    inicie el servidor, y lo reiniciar&#225; si se produce alg&#250;n
+    error irrecuperable durante su ejecuci&#243;n. (Esta &#250;ltima
+    funcionalidad es la que hace que se llame a esta t&#233;cnica
     "registro redireccionado fiable".)</p>
 
     <p>Los procesos de registros son engendrados por el proceso padre
@@ -524,9 +524,9 @@
     seguros.</p>
 
     <p>Un uso importante de los registros redireccionados es permitir
-    la rotación de los registros sin tener que reiniciar el
+    la rotaci&#243;n de los registros sin tener que reiniciar el
     servidor. El servidor Apache HTTP incluye un programa simple
-    llamado <code class="program"><a href="./programs/rotatelogs.html">rotatelogs</a></code> con este propósito. Por
+    llamado <code class="program"><a href="./programs/rotatelogs.html">rotatelogs</a></code> con este prop&#243;sito. Por
     ejemplo para rotar los registros cada 24 horas, puede usar:</p>
 
     <div class="example"><p><code>
@@ -535,51 +535,51 @@
     </code></p></div>
 
     <p>Tenga en cuenta que las comillas se usan para abarcar el
-    comando entero que será invocado por la
-    redirección. Aunque estos ejemplos son para el registro de
-    acceso, la misma técnica se puede usar para el registro de
+    comando entero que ser&#225; invocado por la
+    redirecci&#243;n. Aunque estos ejemplos son para el registro de
+    acceso, la misma t&#233;cnica se puede usar para el registro de
     errores.</p>
 
-    <p>Otro programa para la rotación de los registros mucho
-    más flexible llamado <a href="http://www.cronolog.org/">cronolog</a> está disponible
+    <p>Otro programa para la rotaci&#243;n de los registros mucho
+    m&#225;s flexible llamado <a href="http://www.cronolog.org/">cronolog</a> est&#225; disponible
     en un sitio web externo.</p>
 
-    <p>Como ocurre con el registro condicional, la redirección de
+    <p>Como ocurre con el registro condicional, la redirecci&#243;n de
     registros es una herramienta muy potente, pero no deben ser usados
-    si hay disponible una solución más simple de procesado
-    posterior de los registros fuera de línea.</p>
+    si hay disponible una soluci&#243;n m&#225;s simple de procesado
+    posterior de los registros fuera de l&#237;nea.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="virtualhost" id="virtualhost">Hosts Virtuales</a></h2>
     
 
-    <p>Cuando se está ejecutando un servidor con muchos <a href="vhosts/">hosts virtuales</a>, hay varias formas de abordar
+    <p>Cuando se est&#225; ejecutando un servidor con muchos <a href="vhosts/">hosts virtuales</a>, hay varias formas de abordar
     el asunto de los registros. Primero, es posible usar los registros
-    de la misma manera que se usarían si hubiera solamente un
+    de la misma manera que se usar&#237;an si hubiera solamente un
     host en el servidor. Simplemente poniendo las directivas que
     tienen que ver con los registros fuera de las secciones <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> en el
     contexto del servidor principal, puede almacenar toda la
-    información de todas las peticiones en los mismos registros
-    de acceso y errores. Esta técnica no permite una
-    recolección fácil de las estadísticas individuales
+    informaci&#243;n de todas las peticiones en los mismos registros
+    de acceso y errores. Esta t&#233;cnica no permite una
+    recolecci&#243;n f&#225;cil de las estad&#237;sticas individuales
     de cada uno de los hosts virtuales.</p>
 
-    <p>Si una directiva <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code> o <code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code> se pone dentro una sección
+    <p>Si una directiva <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code> o <code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code> se pone dentro una secci&#243;n
     <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>,
-    todas las peticiones de ese host virtual se registrarán
+    todas las peticiones de ese host virtual se registrar&#225;n
     solamente en el fichero especificado. Las peticiones de cualquier
-    host virtual que no tenga directivas de registro específicas
-    para él se registrarán en los registros del servidor
-    principal. Esta técnica es muy útil si usa un
-    pequeño número de hosts virtuales, pero si usa un gran
-    número de ellos, puede ser complicado de
-    gestionar. Además, puede a menudo provocar problemas con <a href="vhosts/fd-limits.html"> descriptores de fichero
+    host virtual que no tenga directivas de registro espec&#237;ficas
+    para &#233;l se registrar&#225;n en los registros del servidor
+    principal. Esta t&#233;cnica es muy &#250;til si usa un
+    peque&#241;o n&#250;mero de hosts virtuales, pero si usa un gran
+    n&#250;mero de ellos, puede ser complicado de
+    gestionar. Adem&#225;s, puede a menudo provocar problemas con <a href="vhosts/fd-limits.html"> descriptores de fichero
     insuficientes</a>.</p>
 
     <p>Para el registro de acceso, se puede llegar a un buen
-    equilibrio. Añadiendo información del host virtual al
+    equilibrio. A&#241;adiendo informaci&#243;n del host virtual al
     formato de registro, es posible registrar las operaciones de todos
-    los hosts en un único registro, y posteriormente dividir el
+    los hosts en un &#250;nico registro, y posteriormente dividir el
     fichero con todos los registros en ficheros individualizados. Por
     ejemplo, considere las siguientes directivas.</p>
 
@@ -590,7 +590,7 @@
     </code></p></div>
 
     <p>El <code>%v</code> se usa para registrar el nombre del host
-    virtual que está sirviendo la petición. Puede usar un
+    virtual que est&#225; sirviendo la petici&#243;n. Puede usar un
     programa como <a href="programs/other.html">split-logfile</a> para
     procesar posteriormente el registro de acceso y dividirlo en
     ficheros independientes para cada host virtual.</p>
@@ -599,7 +599,7 @@
 <h2><a name="other" id="other">Otros ficheros de registro</a></h2>
     
 
-    <table class="related"><tr><th>Módulos Relacionados</th><th>Directivas Relacionadas</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewritelog">RewriteLog</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewriteloglevel">RewriteLogLevel</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptlog">ScriptLog</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptlogbuffer">ScriptLogBuffer</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptloglength">ScriptLogLength</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>M&#243;dulos Relacionados</th><th>Directivas Relacionadas</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewritelog">RewriteLog</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewriteloglevel">RewriteLogLevel</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptlog">ScriptLog</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptlogbuffer">ScriptLogBuffer</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptloglength">ScriptLogLength</a></code></li></ul></td></tr></table>
 
     <h3><a name="pidfile" id="pidfile">Fichero PID (PID File)</a></h3>
       
@@ -609,41 +609,41 @@
       <code>logs/httpd.pid</code>. Puede modificar el nombre de este
       fichero con la directiva <code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code>. El identificador del
       proceso puede usarlo el administrador para reiniciar y finalizar
-      el demonio (daemon) mediante el envío de señales al
-      proceso padre; en Windows, use la opción de línea de
-      comandos -k en su lugar.  Para más información al
-      respecto, consulte la documentación sobre <a href="stopping.html">parar y reiniciar Apache</a>.</p>
+      el demonio (daemon) mediante el env&#237;o de se&#241;ales al
+      proceso padre; en Windows, use la opci&#243;n de l&#237;nea de
+      comandos -k en su lugar.  Para m&#225;s informaci&#243;n al
+      respecto, consulte la documentaci&#243;n sobre <a href="stopping.html">parar y reiniciar Apache</a>.</p>
     
 
     <h3><a name="scriptlog" id="scriptlog">Registro de actividad de scripts (Script Log)</a></h3>
       
 
-      <p>Para ayudar a la detección de errores, la directiva
+      <p>Para ayudar a la detecci&#243;n de errores, la directiva
       <code class="directive"><a href="./mod/mod_cgi.html#scriptlog">ScriptLog</a></code> permite
       guardar la entrada y la salida de los scripts CGI. Esta
-      directiva solamente debería usarla para hacer pruebas - no
-      en servidores en producción.  Puede encontrar más
-      información al respecto en la documentación de <a href="mod/mod_cgi.html">mod_cgi</a>.</p>
+      directiva solamente deber&#237;a usarla para hacer pruebas - no
+      en servidores en producci&#243;n.  Puede encontrar m&#225;s
+      informaci&#243;n al respecto en la documentaci&#243;n de <a href="mod/mod_cgi.html">mod_cgi</a>.</p>
     
 
     <h3><a name="rewritelog" id="rewritelog">Registro de actividad de Rewrite (Rewrite Log)</a></h3>
       
 
-      <p>Cuando use las potentes y complejas funcionalidades de <a href="mod/mod_rewrite.html">mod_rewrite</a>, será casi
+      <p>Cuando use las potentes y complejas funcionalidades de <a href="mod/mod_rewrite.html">mod_rewrite</a>, ser&#225; casi
       siempre necesario usar la direcitiva <code class="directive"><a href="./mod/mod_rewrite.html#rewritelog">RewriteLog</a></code> para ayudar a la
-      detección de errores. Este fichero de registro produce un
-      análisis detallado de cómo actúa este
-      módulo sobre las peticiones. El nivel de detalle del
+      detecci&#243;n de errores. Este fichero de registro produce un
+      an&#225;lisis detallado de c&#243;mo act&#250;a este
+      m&#243;dulo sobre las peticiones. El nivel de detalle del
       registro se controla con la directiva <code class="directive"><a href="./mod/mod_rewrite.html#rewriteloglevel">RewriteLogLevel</a></code>.</p>
     
   </div></div>
 <div class="bottomlang">
 <p><span>Idiomas disponibles: </span><a href="./en/logs.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/logs.html" title="Español">&nbsp;es&nbsp;</a> |
+<a href="./es/logs.html" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
 <a href="./ja/logs.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/logs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/logs.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/logs.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2013 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/directives.html">Directivas</a> | <a href="./faq/">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa de este sitio web</a></p></div>
+<p class="apache">Copyright 2013 The Apache Software Foundation.<br />Licencia bajo los t&#233;rminos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">M&#243;dulos</a> | <a href="./mod/directives.html">Directivas</a> | <a href="./faq/">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa de este sitio web</a></p></div>
 </body></html>

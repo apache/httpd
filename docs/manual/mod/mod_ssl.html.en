@@ -31,8 +31,8 @@
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Strong cryptography using the Secure Sockets
 Layer (SSL) and Transport Layer Security (TLS) protocols</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>ssl_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_ssl.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module&#160;Identifier:</a></th><td>ssl_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source&#160;File:</a></th><td>mod_ssl.c</td></tr></table>
 <h3>Summary</h3>
 
 <p>This module provides SSL v2/v3 and TLS v1 support for the Apache

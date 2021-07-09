@@ -27,13 +27,13 @@
         <ul><li><a href="http://httpd.apache.org/docs/current/">Current release version of Apache HTTP Server documentation</a></li></ul><p>You may follow <a href="http://httpd.apache.org/docs/current/mod/mod_vhost_alias.html">this link</a> to go to the current version of this document.</p></div><div id="preamble"><h1>Apache Module mod_vhost_alias</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_vhost_alias.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../tr/mod/mod_vhost_alias.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_vhost_alias.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Provides for dynamically configured mass virtual
 hosting</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>vhost_alias_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_vhost_alias.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module&#160;Identifier:</a></th><td>vhost_alias_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source&#160;File:</a></th><td>mod_vhost_alias.c</td></tr></table>
 <h3>Summary</h3>
 
     <p>This module creates dynamically configured virtual hosts, by
@@ -312,7 +312,7 @@ a given virtual host</td></tr>
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_vhost_alias.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../tr/mod/mod_vhost_alias.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_vhost_alias.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2013 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>

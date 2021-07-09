@@ -34,8 +34,8 @@
 <code>Cache-Control</code> HTTP headers according to user-specified
 criteria</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>expires_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_expires.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module&#160;Identifier:</a></th><td>expires_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source&#160;File:</a></th><td>mod_expires.c</td></tr></table>
 <h3>Summary</h3>
 
     <p>This module controls the setting of the <code>Expires</code>

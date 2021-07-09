@@ -21,76 +21,76 @@
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP-Server</a> &gt; <a href="http://httpd.apache.org/docs/">Dokumentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div class="retired"><h4>Bitte beachten!</h4>
             <p>Dieses Dokument bezieht sich auf Version <strong>2.0</strong> des Apache httpd, die <strong>nicht mehr gepflegt wird</strong>. Bitte aktualisieren Sie die Software und verwenden Sie stattdessen eine aktuelle Version des httpd, die an folgender Stelle dokumentiert ist:</p>
-        <ul><li><a href="http://httpd.apache.org/docs/current/">Dokumentation des Apache HTTP Server für die zuletzt erschienene Version</a></li></ul><p>Sie können <a href="http://httpd.apache.org/docs/current/upgrading.html">diesem Link</a> folgen, um zur aktuellen Version dieses Dokuments zu gelangen.</p></div><div id="preamble"><h1>Upgrade von 1.3 auf 2.0</h1>
+        <ul><li><a href="http://httpd.apache.org/docs/current/">Dokumentation des Apache HTTP Server f&#252;r die zuletzt erschienene Version</a></li></ul><p>Sie k&#246;nnen <a href="http://httpd.apache.org/docs/current/upgrading.html">diesem Link</a> folgen, um zur aktuellen Version dieses Dokuments zu gelangen.</p></div><div id="preamble"><h1>Upgrade von 1.3 auf 2.0</h1>
 <div class="toplang">
-<p><span>Verfügbare Sprachen: </span><a href="./de/upgrading.html" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>Verf&#252;gbare Sprachen: </span><a href="./de/upgrading.html" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/upgrading.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/upgrading.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/upgrading.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./es/upgrading.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/upgrading.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/upgrading.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/upgrading.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./ru/upgrading.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div>
 
-    <p>Dieses Dokument dient der Unterstützung beim Upgrade. Es
-    enthält die entscheidenden Informationen für bisherige
+    <p>Dieses Dokument dient der Unterst&#252;tzung beim Upgrade. Es
+    enth&#228;lt die entscheidenden Informationen f&#252;r bisherige
     Apache-Nutzer. Diese sind als kurze Anmerkungen
     gedacht. Weitere Informationen finden Sie entweder unter
     <a href="new_features_2_0.html">Neue Funktionen</a> oder in
     den <code>src/CHANGES</code>-Dateien.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#compile-time">Änderungen der Konfiguration bei der Kompilierung</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#run-time">Änderungen der Laufzeit-Konfiguration</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#misc">Sonstige Änderungen</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#compile-time">&#196;nderungen der Konfiguration bei der Kompilierung</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#run-time">&#196;nderungen der Laufzeit-Konfiguration</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#misc">Sonstige &#196;nderungen</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#third-party">Module von Drittanbietern</a></li>
-</ul><h3>Siehe auch</h3><ul class="seealso"><li><a href="new_features_2_0.html">Übersicht der neuen Funktionen
+</ul><h3>Siehe auch</h3><ul class="seealso"><li><a href="new_features_2_0.html">&#220;bersicht der neuen Funktionen
 in Apache 2.0</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="compile-time" id="compile-time">Änderungen der Konfiguration bei der Kompilierung</a></h2>
+<h2><a name="compile-time" id="compile-time">&#196;nderungen der Konfiguration bei der Kompilierung</a></h2>
     
 
     <ul>
       <li>Der Apache benutzt jetzt ein <code>autoconf</code>- und
       <code>libtool</code>-System zur <a href="install.html">Konfiguration des
       Erstellungsverfahrens</a>. Die Verwendung dieses Systems ist
-      ähnlich, aber nicht identisch mit dem APACI-System des
+      &#228;hnlich, aber nicht identisch mit dem APACI-System des
 	  Apache 1.3.</li>
 
-      <li>Zusätzlich zu der üblichen Auswahl von Modulen, die
+      <li>Zus&#228;tzlich zu der &#252;blichen Auswahl von Modulen, die
       kompiliert werden sollen, wurde der Hauptteil der
       Request-Verarbeitung im Apache 2.0 in die <a href="mpm.html">
       Multi-Processing-Module</a> (MPMs) verschoben.</li>
     </ul>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="run-time" id="run-time">Änderungen der Laufzeit-Konfiguration</a></h2>
+<h2><a name="run-time" id="run-time">&#196;nderungen der Laufzeit-Konfiguration</a></h2>
     
 
     <ul>
       <li>Viele Anweisungen aus dem Serverkern des Apache 1.3 sind
       jetzt in den MPMs enthalten. Wenn Sie ein Serververhalten
-      wünschen, das demjenigen des Apache 1.3 möglichst
-      ähnlich ist, sollten Sie das <code class="module"><a href="./mod/prefork.html">prefork</a></code>-MPM
-      auswählen. Andere MPMs verwenden abweichende Anweisungen
-      für die Prozess-Erstellung und Request-Verarbeitung.</li>
+      w&#252;nschen, das demjenigen des Apache 1.3 m&#246;glichst
+      &#228;hnlich ist, sollten Sie das <code class="module"><a href="./mod/prefork.html">prefork</a></code>-MPM
+      ausw&#228;hlen. Andere MPMs verwenden abweichende Anweisungen
+      f&#252;r die Prozess-Erstellung und Request-Verarbeitung.</li>
 
       <li>Das <a href="mod/mod_proxy.html">Proxy-Modul</a> wurde
       umgearbeitet, um es auf den Stand von HTTP/1.1 zu bringen. Eine
-      der bedeutendsten Änderungen ist die Platzierung der
+      der bedeutendsten &#196;nderungen ist die Platzierung der
       Proxy-Zugriffskontrolle innerhalb eines <code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code>-Blocks, statt innerhalb eines
       <code>&lt;Directory proxy:&gt;</code>-Blocks.</li>
 
       <li>Die Behandlung von <code>PATH_INFO</code> (hinter dem
-      tatsächlichen Dateinamen angefügte Pfadangaben) wurde
-      für einige Module geändert. Module, die bisher als Handler
+      tats&#228;chlichen Dateinamen angef&#252;gte Pfadangaben) wurde
+      f&#252;r einige Module ge&#228;ndert. Module, die bisher als Handler
       implementiert waren, jetzt aber als Filter implementiert sind,
-      akzeptieren möglicherweise keine Requests mit
+      akzeptieren m&#246;glicherweise keine Requests mit
       <code>PATH_INFO</code> mehr. Filter wie <a href="mod/mod_include.html">INCLUDES</a> oder <a href="http://www.php.net/">PHP</a> sind gleich oben im
       Core-Handler implementiert und weisen deshalb Requests mit
-      <code>PATH_INFO</code> ab. Sie können die <code class="directive"><a href="./mod/core.html#acceptpathinfo">AcceptPathInfo</a></code>-Direktive
+      <code>PATH_INFO</code> ab. Sie k&#246;nnen die <code class="directive"><a href="./mod/core.html#acceptpathinfo">AcceptPathInfo</a></code>-Direktive
       verwenden, um den Core-Handler zu zwingen, Requests mit
-      <code>PATH_INFO</code> zu akzeptieren, und dadurch die Fähigkeit
+      <code>PATH_INFO</code> zu akzeptieren, und dadurch die F&#228;higkeit
       wiederherstellen, <code>PATH_INFO</code> in Server Side Includes zu
       benutzen.</li>
 
@@ -101,10 +101,10 @@ in Apache 2.0</a></li></ul></div>
 
       <li>
         Die <code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code>-Direktive
-        verwendet kein Anführungszeichen mehr am Anfang des
+        verwendet kein Anf&#252;hrungszeichen mehr am Anfang des
         Arguments, um eine
         Textnachricht anzuzeigen. Stattdessen sollten Sie die
-        Nachricht in doppelte Anführungszeichen einschließen.
+        Nachricht in doppelte Anf&#252;hrungszeichen einschlie&#223;en.
         Zum Beispiel sollten existierende Angaben wie
 
         <div class="example"><p><code>
@@ -117,71 +117,71 @@ in Apache 2.0</a></li></ul></div>
         </code></p></div>
 
         ersetzt werden.
-        Solange das zweite Argument kein gültiger URL oder
+        Solange das zweite Argument kein g&#252;ltiger URL oder
         Pfadname ist, wird es als Textnachricht behandelt.
       </li>
 
       <li>Die Direktiven <code>AccessConfig</code> und
       <code>ResourceConfig</code> sind entfallen.
-      Diese Direktiven können durch die <code class="directive"><a href="./mod/core.html#include">Include</a></code>-Direktive
-      ersetzt werden, die eine äquivalente Funktionalität besitzt.
+      Diese Direktiven k&#246;nnen durch die <code class="directive"><a href="./mod/core.html#include">Include</a></code>-Direktive
+      ersetzt werden, die eine &#228;quivalente Funktionalit&#228;t besitzt.
       Wenn Sie die Defaultwerte dieser Direktiven verwendet haben,
-      ohne sie in die Konfigurationsdateien einzufügen, müssen Sie
-      möglicherweise <code>Include conf/access.conf</code> und
+      ohne sie in die Konfigurationsdateien einzuf&#252;gen, m&#252;ssen Sie
+      m&#246;glicherweise <code>Include conf/access.conf</code> und
       <code>Include conf/srm.conf</code> zu Ihrer <code>httpd.conf</code>
-      hinzufügen. Um sicherzustellen, daß der Apache die
+      hinzuf&#252;gen. Um sicherzustellen, da&#223; der Apache die
       Konfigurationsdateien in der gleichen Reihenfolge liest, wie sie von
-      den älteren Direktiven impliziert wurde, sollten die <code class="directive"><a href="./mod/core.html#include">Include</a></code>-Direktiven ans Ende der
-      <code>httpd.conf</code> gestellt werden, wobei die Direktive für
-      <code>srm.conf</code> derjenigen für <code>access.conf</code>
+      den &#228;lteren Direktiven impliziert wurde, sollten die <code class="directive"><a href="./mod/core.html#include">Include</a></code>-Direktiven ans Ende der
+      <code>httpd.conf</code> gestellt werden, wobei die Direktive f&#252;r
+      <code>srm.conf</code> derjenigen f&#252;r <code>access.conf</code>
       vorangeht.</li>
 
       <li>Die Direktiven <code>BindAddress</code> und <code>Port</code>
-      sind entfallen. Eine äquivalente Funktionalität wird von der
+      sind entfallen. Eine &#228;quivalente Funktionalit&#228;t wird von der
       flexibleren Direktive  <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> bereitgestellt.</li>
 
-      <li>Im Apache 1.3 wurde die <code>Port</code>-Direktive außerdem
-      dazu verwendet, die Portnummer für
+      <li>Im Apache 1.3 wurde die <code>Port</code>-Direktive au&#223;erdem
+      dazu verwendet, die Portnummer f&#252;r
       selbstreferenzierende URLs festzulegen.
       Die neue <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code>-Syntax
-      stellt das Apache-2.0-Äquivalent dar:
-      sie wurde dahingehend verändert, sowohl den Hostnamen
-      <em>als auch</em> die Portnummer für selbstreferenzierende URLs
-      in einer Direktive angeben zu können.</li>
+      stellt das Apache-2.0-&#196;quivalent dar:
+      sie wurde dahingehend ver&#228;ndert, sowohl den Hostnamen
+      <em>als auch</em> die Portnummer f&#252;r selbstreferenzierende URLs
+      in einer Direktive angeben zu k&#246;nnen.</li>
 
-      <li>Die <code>ServerType</code>-Direktive entfällt.
+      <li>Die <code>ServerType</code>-Direktive entf&#228;llt.
       Die Methode zum Bedienen der Requests wird nun durch die Auswahl
-      des MPM ermittelt. Derzeit ist kein MPM dafür bestimmt, von inetd
+      des MPM ermittelt. Derzeit ist kein MPM daf&#252;r bestimmt, von inetd
       gestartet zu werden.</li>
 
       <li>Die Module <code>mod_log_agent</code> und <code>
       mod_log_referer</code>, welche die Direktiven <code>AgentLog</code>,
       <code>RefererLog</code> und <code>RefererIgnore</code> bereitgestellt
       hatten, wurden entfernt. Durch Verwendung der Direktive <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code> aus mod_log_config
-      sind die Agent- und Refererlogs auch weiterhin verfügbar.</li>
+      sind die Agent- und Refererlogs auch weiterhin verf&#252;gbar.</li>
 
       <li>Die Direktiven <code>AddModule</code> und
       <code>ClearModuleList</code> sind entfallen.
-      Diese Direktiven wurden benutzt, um sicherzustellen, daß die
-      Module in der richtigen Reihenfolge aktiviert werden können.
+      Diese Direktiven wurden benutzt, um sicherzustellen, da&#223; die
+      Module in der richtigen Reihenfolge aktiviert werden k&#246;nnen.
       Die neue Apache 2.0 API erlaubt es Modulen, ihre Reihenfolge
       explizit anzugeben, und macht diese Direktiven damit
-      überflüssig.</li>
+      &#252;berfl&#252;ssig.</li>
 
       <li>Die Direktive <code>FancyIndexing</code> wurde entfernt.
-      Die gleiche Funktionalität ist nun mit der Option
-      <code>FancyIndexing</code> der Direktive <code class="directive"><a href="./mod/mod_autoindex.html#indexoptions">IndexOptions</a></code> verfügbar.</li>
+      Die gleiche Funktionalit&#228;t ist nun mit der Option
+      <code>FancyIndexing</code> der Direktive <code class="directive"><a href="./mod/mod_autoindex.html#indexoptions">IndexOptions</a></code> verf&#252;gbar.</li>
 
       <li>Die von <code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code> bereitgestellte
-      Content-Negotiation-Technik MultiViews führt nun eine strengere
-      Dateierkennung durch. Es wird ausschließlich unter den
-      <em>aushandelbaren</em> Dateien gewählt. Das bisherige Verhalten
+      Content-Negotiation-Technik MultiViews f&#252;hrt nun eine strengere
+      Dateierkennung durch. Es wird ausschlie&#223;lich unter den
+      <em>aushandelbaren</em> Dateien gew&#228;hlt. Das bisherige Verhalten
       kann jedoch mit der Direktive <code class="directive"><a href="./mod/mod_mime.html#multiviewsmatch">MultiviewsMatch</a></code> wiederhergestellt
       werden.</li>
 
       <li>(<em>Ab Version 2.0.51</em>)
         <p><code>ErrorHeader</code> war eine Fehlbenennung, weshalb die
-          Funktionalität dieser Direktive mit der
+          Funktionalit&#228;t dieser Direktive mit der
           <code class="directive"><a href="./mod/mod_headers.html#header">Header</a></code>-Anweisung
           zusammengelegt wurde. Verwenden Sie stattdessen</p>
 
@@ -193,7 +193,7 @@ in Apache 2.0</a></li></ul></div>
      </ul>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="misc" id="misc">Sonstige Änderungen</a></h2>
+<h2><a name="misc" id="misc">Sonstige &#196;nderungen</a></h2>
     
 
     <ul>
@@ -203,8 +203,8 @@ in Apache 2.0</a></li></ul></div>
       <li>Das Modul <code>mod_mmap_static</code>, das im Apache 1.3
       experimentellen Status hatte, wurde durch das Modul <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code> ersetzt.</li>
 
-      <li>Die Distribution wurde komplett reorganisiert und enthält kein
-      unabhängiges <code>src</code>-Verzeichnis mehr. Stattdessen wurden
+      <li>Die Distribution wurde komplett reorganisiert und enth&#228;lt kein
+      unabh&#228;ngiges <code>src</code>-Verzeichnis mehr. Stattdessen wurden
       die Quellcodes logisch unterhalb des Hauptverzeichnisses der
       Distribution angeordnet. Installationen des kompilierten Servers
       sollten in ein separates Verzeichnis erfolgen.</li>
@@ -214,16 +214,16 @@ in Apache 2.0</a></li></ul></div>
 <h2><a name="third-party" id="third-party">Module von Drittanbietern</a></h2>
     
 
-    <p>An der API des Apache 2.0 wurden umfassende Änderungen
-    vorgenommen. Bestehende Module, die für die Apache 1.3 API
+    <p>An der API des Apache 2.0 wurden umfassende &#196;nderungen
+    vorgenommen. Bestehende Module, die f&#252;r die Apache 1.3 API
     entwickelt wurden, werden <strong>nicht</strong> ohne Modifikationen mit
-    der Version 2.0 des Apache zusammenarbeiten. Details sind in der <a href="developer/">Dokumentation für Entwickler</a> beschrieben.</p>
+    der Version 2.0 des Apache zusammenarbeiten. Details sind in der <a href="developer/">Dokumentation f&#252;r Entwickler</a> beschrieben.</p>
   </div></div>
 <div class="bottomlang">
-<p><span>Verfügbare Sprachen: </span><a href="./de/upgrading.html" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>Verf&#252;gbare Sprachen: </span><a href="./de/upgrading.html" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/upgrading.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/upgrading.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/upgrading.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./es/upgrading.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/upgrading.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/upgrading.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/upgrading.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./ru/upgrading.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>

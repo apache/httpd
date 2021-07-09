@@ -33,8 +33,8 @@
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Sends files that contain their own
 HTTP headers</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Base</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>asis_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_asis.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module&#160;Identifier:</a></th><td>asis_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source&#160;File:</a></th><td>mod_asis.c</td></tr></table>
 <h3>Summary</h3>
 
     <p>This module provides the handler <code>send-as-is</code>

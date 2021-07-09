@@ -33,8 +33,8 @@
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Distributed Authoring and Versioning
 (<a href="http://www.webdav.org/">WebDAV</a>) functionality</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>dav_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_dav.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module&#160;Identifier:</a></th><td>dav_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source&#160;File:</a></th><td>mod_dav.c</td></tr></table>
 <h3>Summary</h3>
 
     <p>This module provides class 1 and class 2 <a href="http://www.webdav.org">WebDAV</a> ('Web-based Distributed

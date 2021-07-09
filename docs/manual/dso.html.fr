@@ -8,7 +8,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Support des objets partagés dynamiques (DSO) - Serveur Apache HTTP</title>
+<title>Support des objets partag&#233;s dynamiques (DSO) - Serveur Apache HTTP</title>
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
@@ -21,80 +21,80 @@
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div class="retired"><h4>Please note</h4>
             <p>This document refers to the <strong>2.0</strong> version of Apache httpd, which <strong>is no longer maintained</strong>. Upgrade, and refer to the current version of httpd instead, documented at:</p>
-        <ul><li><a href="http://httpd.apache.org/docs/current/">Current release version of Apache HTTP Server documentation</a></li></ul><p>You may follow <a href="http://httpd.apache.org/docs/current/dso.html">this link</a> to go to the current version of this document.</p></div><div id="preamble"><h1>Support des objets partagés dynamiques (DSO)</h1>
+        <ul><li><a href="http://httpd.apache.org/docs/current/">Current release version of Apache HTTP Server documentation</a></li></ul><p>You may follow <a href="http://httpd.apache.org/docs/current/dso.html">this link</a> to go to the current version of this document.</p></div><div id="preamble"><h1>Support des objets partag&#233;s dynamiques (DSO)</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="./en/dso.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/dso.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/dso.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./es/dso.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/dso.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/dso.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/dso.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/dso.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/dso.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Consultez la version
-            Anglaise pour les changements récents.</div>
+<div class="outofdate">Cette traduction peut &#234;tre p&#233;rim&#233;e. Consultez la version
+            Anglaise pour les changements r&#233;cents.</div>
 
-    <p>Le serveur HTTP Apache est un programme modulaire permettant à
-    l'administrateur de choisir les fonctionnalités qu'il souhaite 
-    activer, au moyen de modules. Les modules peuvent être intégrés
+    <p>Le serveur HTTP Apache est un programme modulaire permettant &#224;
+    l'administrateur de choisir les fonctionnalit&#233;s qu'il souhaite 
+    activer, au moyen de modules. Les modules peuvent &#234;tre int&#233;gr&#233;s
     dans le programme binaire <code>httpd</code> au moment de la 
-    compilation. Il est également possible de compiler à part des 
-    modules en tant qu'objets dynamiques partagés (Dynamic Shared 
-    Objects&nbsp;: DSOs) existant séparément du fichier binaire principal 
-    <code>httpd</code>. Les modules DSO peuvent être compilés en même 
-    temps que le serveur, ou après, au moyen de l'outil Apache pour 
+    compilation. Il est &#233;galement possible de compiler &#224; part des 
+    modules en tant qu'objets dynamiques partag&#233;s (Dynamic Shared 
+    Objects&nbsp;: DSOs) existant s&#233;par&#233;ment du fichier binaire principal 
+    <code>httpd</code>. Les modules DSO peuvent &#234;tre compil&#233;s en m&#234;me 
+    temps que le serveur, ou apr&#232;s, au moyen de l'outil Apache pour 
     les extensions (<code class="program"><a href="./programs/apxs.html">apxs</a></code>).</p>
 
-    <p>Ce document décrit les principes de fonctionnement des modules DSO, et
+    <p>Ce document d&#233;crit les principes de fonctionnement des modules DSO, et
     montre comment les utiliser.</p>
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#implementation">Implémentation</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#usage">Résumé sur l'utilisation des DSO</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#implementation">Impl&#233;mentation</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#usage">R&#233;sum&#233; sur l'utilisation des DSO</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#background">Contexte</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#advantages">Avantages et Inconvénients</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#advantages">Avantages et Inconv&#233;nients</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="implementation" id="implementation">Implémentation</a></h2>
+<h2><a name="implementation" id="implementation">Impl&#233;mentation</a></h2>
 
-<table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_so.html">mod_so</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code></li></ul></td></tr></table>
+<table class="related"><tr><th>Modules Apparent&#233;s</th><th>Directives Apparent&#233;es</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_so.html">mod_so</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code></li></ul></td></tr></table>
 
-    <p>Le support DSO servant à charger des modules Apache, est lui-même 
-    codé dans un module, nommé <code class="module"><a href="./mod/mod_so.html">mod_so</a></code>, qui doit être 
-    compilé dans le noyau d'Apache. Ce module, ainsi que le module 
+    <p>Le support DSO servant &#224; charger des modules Apache, est lui-m&#234;me 
+    cod&#233; dans un module, nomm&#233; <code class="module"><a href="./mod/mod_so.html">mod_so</a></code>, qui doit &#234;tre 
+    compil&#233; dans le noyau d'Apache. Ce module, ainsi que le module 
     <code class="module"><a href="./mod/core.html">core</a></code>, sont les deux seuls modules qui ne peuvent 
-    être compilés séparément d'Apache. En pratique, tous les autres 
-    modules d'Apache peuvent être compilés en tant que modules DSO, 
+    &#234;tre compil&#233;s s&#233;par&#233;ment d'Apache. En pratique, tous les autres 
+    modules d'Apache peuvent &#234;tre compil&#233;s en tant que modules DSO, 
     en passant au script <code>configure</code> l'option 
-    <code>--enable-<em>module</em>=shared</code>, comme précisé dans 
-    la <a href="install.html">documentation d'installation</a>. Après 
-    qu'un module ait été compilé en DSO (nommé 
+    <code>--enable-<em>module</em>=shared</code>, comme pr&#233;cis&#233; dans 
+    la <a href="install.html">documentation d'installation</a>. Apr&#232;s 
+    qu'un module ait &#233;t&#233; compil&#233; en DSO (nomm&#233; 
     <code>mod_monmodule.so</code>), il est possible d'utiliser la 
     directive de <code class="module"><a href="./mod/mod_so.html">mod_so</a></code>&nbsp;: <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> dans le fichier <code>httpd.conf</code>, 
-    afin qu'Apache charge ledit module au démarrage ou redémarrage du 
+    afin qu'Apache charge ledit module au d&#233;marrage ou red&#233;marrage du 
     serveur.</p>
 
-    <p>Afin de simplifier la création de fichiers DSO pour les 
+    <p>Afin de simplifier la cr&#233;ation de fichiers DSO pour les 
     modules Apache (et en particulier les modules tiers), un nouveau 
-    programme de support a été ajouté&nbsp;: <a href="programs/apxs.html">apxs</a> (<em>APache eXtenSion</em>). Ce programme peut être 
-    utilisé pour créer des modules DSO <em>en se passant de</em> 
-    l'arborescence source d'Apache. L'idée en est simple&nbsp;: lors de 
+    programme de support a &#233;t&#233; ajout&#233;&nbsp;: <a href="programs/apxs.html">apxs</a> (<em>APache eXtenSion</em>). Ce programme peut &#234;tre 
+    utilis&#233; pour cr&#233;er des modules DSO <em>en se passant de</em> 
+    l'arborescence source d'Apache. L'id&#233;e en est simple&nbsp;: lors de 
     l'installation d'Apache, la commande <code>make install</code> 
-    positionne les fichiers d'en-têtes C d'Apache, ainsi que les 
-    options du compilateur et les options propres à la plate-forme 
-    dans le programme <code>apxs</code>. Ceci permet à l'utilisateur 
+    positionne les fichiers d'en-t&#234;tes C d'Apache, ainsi que les 
+    options du compilateur et les options propres &#224; la plate-forme 
+    dans le programme <code>apxs</code>. Ceci permet &#224; l'utilisateur 
     de compiler ses modules Apache, au moyen de <code>apxs</code>, 
     sans disposer de l'arborescence source d'Apache et sans devoir 
-    manipuler les options de compilation ou les options propres à 
+    manipuler les options de compilation ou les options propres &#224; 
     sa plate-forme.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="usage" id="usage">Résumé sur l'utilisation des DSO</a></h2>
+<h2><a name="usage" id="usage">R&#233;sum&#233; sur l'utilisation des DSO</a></h2>
 
-    <p>Voici un résumé bref des fonctionnalités DSO d'Apache 2.0&nbsp;:</p>
+    <p>Voici un r&#233;sum&#233; bref des fonctionnalit&#233;s DSO d'Apache 2.0&nbsp;:</p>
 
     <ol>
       <li>
-        Pour compiler et installer un module Apache <em>distribué 
+        Pour compiler et installer un module Apache <em>distribu&#233; 
         avec Apache</em>, par exemple <code>mod_foo.c</code>, en tant 
         que DSO, sous le nom <code>mod_foo.so</code>&nbsp;:
 
@@ -138,7 +138,7 @@ $ apxs -i -a -n foo mod_foo.la
       </li>
     </ol>
 
-    <p>Dans tous les cas, une fois qu'un module a été compilé en tant 
+    <p>Dans tous les cas, une fois qu'un module a &#233;t&#233; compil&#233; en tant 
     que DSO, vous devrez utiliser la directive 
     <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> dans le 
     fichier <code>httpd.conf</code> afin qu'Apache active le module.</p>
@@ -146,182 +146,182 @@ $ apxs -i -a -n foo mod_foo.la
 <div class="section">
 <h2><a name="background" id="background">Contexte</a></h2>
 
-    <p>Sur les systèmes récents, dérivés d'Unix, il existe un procédé 
-    élégant, habituellement appelé chargement dynamique d'objets 
-    partagés DSO,  permettant de compiler un morceau de code sous un 
-    format spécial, et de pouvoir le charger en temps réel dans 
-    l'espace d'adressage d'un programme exécutable.</p>
+    <p>Sur les syst&#232;mes r&#233;cents, d&#233;riv&#233;s d'Unix, il existe un proc&#233;d&#233; 
+    &#233;l&#233;gant, habituellement appel&#233; chargement dynamique d'objets 
+    partag&#233;s DSO,  permettant de compiler un morceau de code sous un 
+    format sp&#233;cial, et de pouvoir le charger en temps r&#233;el dans 
+    l'espace d'adressage d'un programme ex&#233;cutable.</p>
     
-    <p>Ce chargement peut être réalisé de deux manières&nbsp;: 
-    automatiquement, grâce à un programme système nommé <code>ld.so</code> 
-    lors du démarrage d'un exécutable, ou manuellement depuis un programme 
-    en exécution via une interface programmée au moyen des appels 
-    systèmes <code>dlopen()/dlsym()</code> du "chargeur" Unix</p>
+    <p>Ce chargement peut &#234;tre r&#233;alis&#233; de deux mani&#232;res&nbsp;: 
+    automatiquement, gr&#226;ce &#224; un programme syst&#232;me nomm&#233; <code>ld.so</code> 
+    lors du d&#233;marrage d'un ex&#233;cutable, ou manuellement depuis un programme 
+    en ex&#233;cution via une interface programm&#233;e au moyen des appels 
+    syst&#232;mes <code>dlopen()/dlsym()</code> du "chargeur" Unix</p>
     
     <p>Dans le premier cas, il est courant d'appeler les DSO des 
-    <em>bibliothèques partagées</em> ou des <em>bibliothèques DSO</em>&nbsp;; 
+    <em>biblioth&#232;ques partag&#233;es</em> ou des <em>biblioth&#232;ques DSO</em>&nbsp;; 
     on les nomme <code>libfoo.so</code> ou <code>libfoo.so.1.2</code>. 
-    Elles sont toutes placées dans un répertoire système (souvent 
-    <code>/usr/lib</code>) et sont liées par les programmes exécutables 
-    lors de la compilation de ces derniers, en précisant au moment de 
-    la compilation l'option <code>-lfoo</code> à la commande de link 
-    (linker command). Cette manière de procéder insère les références 
-    des bibliothèques dans le coeur des programmes, afin qu'au moment 
-    du démarrage du programme, le "chargeur" Unix puisse trouver 
+    Elles sont toutes plac&#233;es dans un r&#233;pertoire syst&#232;me (souvent 
+    <code>/usr/lib</code>) et sont li&#233;es par les programmes ex&#233;cutables 
+    lors de la compilation de ces derniers, en pr&#233;cisant au moment de 
+    la compilation l'option <code>-lfoo</code> &#224; la commande de link 
+    (linker command). Cette mani&#232;re de proc&#233;der ins&#232;re les r&#233;f&#233;rences 
+    des biblioth&#232;ques dans le coeur des programmes, afin qu'au moment 
+    du d&#233;marrage du programme, le "chargeur" Unix puisse trouver 
     <code>libfoo.so</code> dans <code>/usr/lib</code>, ou bien dans 
-    les chemins codés en dur au moyen de l'option de link <code>-R</code>, 
-    ou dans un chemin configuré au moyen de la variable d'environnement 
-    <code>LD_LIBRARY_PATH</code>. Tous les symboles non résolus présents 
-    dans le programme sont alors résolus au moyen de DSO.</p>
+    les chemins cod&#233;s en dur au moyen de l'option de link <code>-R</code>, 
+    ou dans un chemin configur&#233; au moyen de la variable d'environnement 
+    <code>LD_LIBRARY_PATH</code>. Tous les symboles non r&#233;solus pr&#233;sents 
+    dans le programme sont alors r&#233;solus au moyen de DSO.</p>
 
-    <p>Les symboles propres au programme exécutable ne sont généralement 
-    pas référencés par le DSO (puisque c'est une bibliothèque de code 
-    générique), et donc aucune résolution ne doit être suivie au delà 
-    de ce point. Le programme exécutable n'a pas de travail particulier 
-    à faire pour résoudre les symboles des DSO, puisque c'est le 
-    "chargeur" Unix qui s'occupe de cette tâche. (En réalité, le code 
-    utilisé pour invoquer <code>ld.so</code> fait partie du code de 
-    démarrage run-time, qui est lié à chaque programme exécutable 
-    non statique). L'avantage du chargement dynamique des bibliothèques 
-    de code générique est évident&nbsp;: le code n'est conservé qu'à un seul 
-    endroit du disque, dans une bibliothèque système comme 
+    <p>Les symboles propres au programme ex&#233;cutable ne sont g&#233;n&#233;ralement 
+    pas r&#233;f&#233;renc&#233;s par le DSO (puisque c'est une biblioth&#232;que de code 
+    g&#233;n&#233;rique), et donc aucune r&#233;solution ne doit &#234;tre suivie au del&#224; 
+    de ce point. Le programme ex&#233;cutable n'a pas de travail particulier 
+    &#224; faire pour r&#233;soudre les symboles des DSO, puisque c'est le 
+    "chargeur" Unix qui s'occupe de cette t&#226;che. (En r&#233;alit&#233;, le code 
+    utilis&#233; pour invoquer <code>ld.so</code> fait partie du code de 
+    d&#233;marrage run-time, qui est li&#233; &#224; chaque programme ex&#233;cutable 
+    non statique). L'avantage du chargement dynamique des biblioth&#232;ques 
+    de code g&#233;n&#233;rique est &#233;vident&nbsp;: le code n'est conserv&#233; qu'&#224; un seul 
+    endroit du disque, dans une biblioth&#232;que syst&#232;me comme 
     <code>libc.so</code>, ce qui permet de gagner de l'espace disque 
     pour chaque programme.</p>
 
-    <p>Dans le second cas, les DSO sont appelés <em>objets partagés</em> 
+    <p>Dans le second cas, les DSO sont appel&#233;s <em>objets partag&#233;s</em> 
     ou <em>fichiers DSO</em> et on peut leur attribuer une extension au 
     choix (bien que leur nom soit habituellement <code>foo.so</code>). 
-    Ces fichiers résident normalement dans un répertoire propre au 
-    programme qui les utilise, et ils ne sont pas liés de manière 
+    Ces fichiers r&#233;sident normalement dans un r&#233;pertoire propre au 
+    programme qui les utilise, et ils ne sont pas li&#233;s de mani&#232;re 
     automatique au programme qui les appelle. Celui-ci les charge en 
-    temps réel lors de son exécution, au moyen de <code>dlopen()</code>. 
-    À cet instant, aucune résolution des symboles du DSO n'est réalisée. 
-    C'est le "chargeur" Unix qui réalise la tâche de résoudre les 
-    symboles non résolus du DSO, à partir du jeu de symboles exportés 
-    par le programme et ses bibliothèques DSO (en particulier, tous 
-    les symboles de l'omniprésente <code>libc.so</code>). Ainsi, le DSO 
-    gagne la connaissance des symboles du programme exécutable, comme 
-    s'il lui avait été lié statiquement au départ.</p>
+    temps r&#233;el lors de son ex&#233;cution, au moyen de <code>dlopen()</code>. 
+    &#192; cet instant, aucune r&#233;solution des symboles du DSO n'est r&#233;alis&#233;e. 
+    C'est le "chargeur" Unix qui r&#233;alise la t&#226;che de r&#233;soudre les 
+    symboles non r&#233;solus du DSO, &#224; partir du jeu de symboles export&#233;s 
+    par le programme et ses biblioth&#232;ques DSO (en particulier, tous 
+    les symboles de l'omnipr&#233;sente <code>libc.so</code>). Ainsi, le DSO 
+    gagne la connaissance des symboles du programme ex&#233;cutable, comme 
+    s'il lui avait &#233;t&#233; li&#233; statiquement au d&#233;part.</p>
     
-    <p>Enfin, pour tirer parti de l'API DSO, l'exécutable doit résoudre 
+    <p>Enfin, pour tirer parti de l'API DSO, l'ex&#233;cutable doit r&#233;soudre 
     les symboles propres au DSO via <code>dlsym()</code>, pour les 
-    utiliser plus tard dans les tables de répartition (NdT&nbsp;: "dispatch 
-    tables"), <em>etc.</em> En d'autres termes, le programme exécutable 
-    doit résoudre lui-même chaque symbole pour utiliser chacun d'entre 
-    eux. L'avantage de ce mécanisme est que les parties optionnelles 
-    d'un programme ne sont pas chargées (et donc, n'encombrent pas la 
-    mémoire) avant que le programme n'en ait effectivement besoin. 
-    Quand elles deviennent nécessaires, ces parties du programme peuvent 
-    être chargées dynamiquement pour étendre les fonctionnalités du 
+    utiliser plus tard dans les tables de r&#233;partition (NdT&nbsp;: "dispatch 
+    tables"), <em>etc.</em> En d'autres termes, le programme ex&#233;cutable 
+    doit r&#233;soudre lui-m&#234;me chaque symbole pour utiliser chacun d'entre 
+    eux. L'avantage de ce m&#233;canisme est que les parties optionnelles 
+    d'un programme ne sont pas charg&#233;es (et donc, n'encombrent pas la 
+    m&#233;moire) avant que le programme n'en ait effectivement besoin. 
+    Quand elles deviennent n&#233;cessaires, ces parties du programme peuvent 
+    &#234;tre charg&#233;es dynamiquement pour &#233;tendre les fonctionnalit&#233;s du 
     programme.</p>
 
-    <p>Bien que ce fonctionnement de DSO puisse paraître simple à 
-    comprendre, il existe au moins une difficulté d'implémentation&nbsp;: 
-    permettre au DSO de résoudre les symboles du programme quand un DSO 
-    est utilisé pour étendre un programme. Pourquoi cela&nbsp;? Parce que la 
-    "résolution à l'envers" des symboles DSO à partir des symboles du 
-    programme exécutable est contraire au principe de conception des 
-    bibliothèques (où, rappelons-le, la bibliothèque ne sait rien du 
-    programme qui l'utilise)&nbsp;; cette "résolution à l'envers" n'est pas 
-    standardisée, et n'existe pas sur toutes les plates-formes. En 
-    pratique, les symboles globaux d'un programme exécutable ne sont 
-    que rarement réexportés vers un DSO, et donc ne sont pas accessibles. 
-    Celui qui veut pouvoir étendre les fonctionnalités d'un programme 
-    dynamiquement, lors de l'exécution, doit trouver un moyen de forcer 
-    le programme de liaison à exporter tous les symboles globaux de ce 
+    <p>Bien que ce fonctionnement de DSO puisse para&#238;tre simple &#224; 
+    comprendre, il existe au moins une difficult&#233; d'impl&#233;mentation&nbsp;: 
+    permettre au DSO de r&#233;soudre les symboles du programme quand un DSO 
+    est utilis&#233; pour &#233;tendre un programme. Pourquoi cela&nbsp;? Parce que la 
+    "r&#233;solution &#224; l'envers" des symboles DSO &#224; partir des symboles du 
+    programme ex&#233;cutable est contraire au principe de conception des 
+    biblioth&#232;ques (o&#249;, rappelons-le, la biblioth&#232;que ne sait rien du 
+    programme qui l'utilise)&nbsp;; cette "r&#233;solution &#224; l'envers" n'est pas 
+    standardis&#233;e, et n'existe pas sur toutes les plates-formes. En 
+    pratique, les symboles globaux d'un programme ex&#233;cutable ne sont 
+    que rarement r&#233;export&#233;s vers un DSO, et donc ne sont pas accessibles. 
+    Celui qui veut pouvoir &#233;tendre les fonctionnalit&#233;s d'un programme 
+    dynamiquement, lors de l'ex&#233;cution, doit trouver un moyen de forcer 
+    le programme de liaison &#224; exporter tous les symboles globaux de ce 
     programme.</p>
 
-    <p>L'approche par bibliothèques partagées est de loin la plus courante
-    parce que c'est celle pour laquelle les mécanismes DSO ont été conçus&nbsp;; 
-    elle est donc utilisée par presque toutes les bibliothèques du système
-    d'exploitation. De l'autre coté, l'utilisation des objets partagés reste 
+    <p>L'approche par biblioth&#232;ques partag&#233;es est de loin la plus courante
+    parce que c'est celle pour laquelle les m&#233;canismes DSO ont &#233;t&#233; con&#231;us&nbsp;; 
+    elle est donc utilis&#233;e par presque toutes les biblioth&#232;ques du syst&#232;me
+    d'exploitation. De l'autre cot&#233;, l'utilisation des objets partag&#233;s reste 
     une approche marginale.</p>
     
     <p>Depuis 1998, seules quelques solutions logiciels existantes 
-    utilisent le mécanisme des DSO pour étendre leurs fonctionnalités 
-    en cours exécution&nbsp;: Perl 5 (via son "XS mechanism" et le module 
+    utilisent le m&#233;canisme des DSO pour &#233;tendre leurs fonctionnalit&#233;s 
+    en cours ex&#233;cution&nbsp;: Perl 5 (via son "XS mechanism" et le module 
     DynaLoader), Netscape Server, <em>etc.</em> Depuis la version 1.3, 
     Apache a rejoint ce groupe, car Apache utilise une approche 
-    modulaire pour étendre ses fonctionnalités, et utilise de manière 
-    interne des mécanismes de répartition par liste pour lier des 
-    modules externes à son noyau. Apache était vraiment prédestiné, 
-    par concept, à utiliser les DSO pour charger ses modules en temps 
-    réel.</p>
+    modulaire pour &#233;tendre ses fonctionnalit&#233;s, et utilise de mani&#232;re 
+    interne des m&#233;canismes de r&#233;partition par liste pour lier des 
+    modules externes &#224; son noyau. Apache &#233;tait vraiment pr&#233;destin&#233;, 
+    par concept, &#224; utiliser les DSO pour charger ses modules en temps 
+    r&#233;el.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="advantages" id="advantages">Avantages et Inconvénients</a></h2>
+<h2><a name="advantages" id="advantages">Avantages et Inconv&#233;nients</a></h2>
 
-    <p>Les possibilités des DSO décrites ci-avant présentent les
+    <p>Les possibilit&#233;s des DSO d&#233;crites ci-avant pr&#233;sentent les
     avantages suivants&nbsp;:</p>
 
     <ul>
-      <li>Le paquetage du serveur est plus flexible lors de son exécution, 
-      car les processus du serveur central peuvent être étendus pendant 
-      son exécution, au moyen de la directive 
+      <li>Le paquetage du serveur est plus flexible lors de son ex&#233;cution, 
+      car les processus du serveur central peuvent &#234;tre &#233;tendus pendant 
+      son ex&#233;cution, au moyen de la directive 
       <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code>, dans 
-      <code>httpd.conf</code>, plutôt que forcer les utilisateurs à 
-      recompiler le serveur pour modifier ses fonctionnalités. Par 
+      <code>httpd.conf</code>, plut&#244;t que forcer les utilisateurs &#224; 
+      recompiler le serveur pour modifier ses fonctionnalit&#233;s. Par 
       exemple, ce mode de fonctionnement permet de faire tourner 
       plusieurs instances du serveur (version standard &amp; SSL 
-      version, version minimaliste &amp; étendue [mod_perl, PHP3], 
+      version, version minimaliste &amp; &#233;tendue [mod_perl, PHP3], 
       <em>etc.</em>) au moyen d'une seule installation d'Apache.</li>
 
-      <li>Il est très facile d'étendre les fonctionnalités du serveur 
-      de base, même après son installation. Ceci est d'un grand secours 
-      aux mainteneurs des paquets qui peuvent facilement créer des 
+      <li>Il est tr&#232;s facile d'&#233;tendre les fonctionnalit&#233;s du serveur 
+      de base, m&#234;me apr&#232;s son installation. Ceci est d'un grand secours 
+      aux mainteneurs des paquets qui peuvent facilement cr&#233;er des 
       paquets pour l'installation de base d'Apache et d'autres paquets 
-      différents pour les extensions, comme PHP3, mod_perl, 
+      diff&#233;rents pour les extensions, comme PHP3, mod_perl, 
       mod_fastcgi, <em>etc.</em></li>
 
-      <li>Facilité de développement des modules Apache&nbsp;; grâce aux outils
+      <li>Facilit&#233; de d&#233;veloppement des modules Apache&nbsp;; gr&#226;ce aux outils
       DSO/<code>apxs</code>, ce travail est faisable sans l'arborescence 
-      source d'Apache, et ne nécessite qu'une commande <code>apxs -i</code> 
+      source d'Apache, et ne n&#233;cessite qu'une commande <code>apxs -i</code> 
       suivi d'un <code>apachectl restart</code> pour ajouter au serveur 
-      déjà en marche les fonctionnalités du module développé.</li>
+      d&#233;j&#224; en marche les fonctionnalit&#233;s du module d&#233;velopp&#233;.</li>
     </ul>
 
-    <p>Les inconvénients liés à l'utilisation des DSO&nbsp;:</p>
+    <p>Les inconv&#233;nients li&#233;s &#224; l'utilisation des DSO&nbsp;:</p>
 
     <ul>
-      <li>Les mécanismes de DSO ne sont pas portables sur toutes les
-      plates-formes, car tous les systèmes d'exploitation ne supportent 
+      <li>Les m&#233;canismes de DSO ne sont pas portables sur toutes les
+      plates-formes, car tous les syst&#232;mes d'exploitation ne supportent 
       pas le chargement dynamique de code dans l'espace d'adressage d'un 
       programme en marche.</li>
 
-      <li>Le serveur est à peu près 20% plus lent au démarrage, à cause de la
-      charge prise par le "chargeur" Unix de la résolution des symboles.</li>
+      <li>Le serveur est &#224; peu pr&#232;s 20% plus lent au d&#233;marrage, &#224; cause de la
+      charge prise par le "chargeur" Unix de la r&#233;solution des symboles.</li>
 
-      <li>Le serveur est à peu près 5% plus lent en fonctionnement sur 
-      certaines plates-formes parce que le code indépendant de la 
+      <li>Le serveur est &#224; peu pr&#232;s 5% plus lent en fonctionnement sur 
+      certaines plates-formes parce que le code ind&#233;pendant de la 
       position ("position independent code" - PIC) requiert parfois des 
       tours de passe-passe en assembleur pour l'adressage relatif, ce qui 
       n'est pas toujours aussi rapide que l'adressage absolu.</li>
 
-      <li>Les modules DSO ne pouvant pas être liés à d'autres bibliothèques 
+      <li>Les modules DSO ne pouvant pas &#234;tre li&#233;s &#224; d'autres biblioth&#232;ques 
       DSO (<code>ld -lfoo</code>) sur toutes les plates-formes (par 
-      exemple, les plates-formes basées sur a.out ne le permettent pas, 
-      alors que celles basées sur ELF le permettent), il n'est pas possible
-      d'utiliser les mécanismes de DSO pour tous les modules. En d'autres
-      termes, les modules compilés en tant que fichiers DSO sont limités 
-      à l'utilisation des symboles exportés par le noyau d'Apache, par 
-      la bibliothèque C (<code>libc</code>) et toute autre bibliothèque 
-      dynamique ou statique utilisée par le noyau d'Apache, ou par des 
-      archives de bibliothèques statiques (<code>libfoo.a</code>) qui 
-      contiennent du code indépendant de la position. Les seuls moyens 
-      d'utiliser du code à l'extérieur d'un fichier DSO sont, soit de 
-      s'assurer que le noyau d'Apache contienne une référence vers ce 
+      exemple, les plates-formes bas&#233;es sur a.out ne le permettent pas, 
+      alors que celles bas&#233;es sur ELF le permettent), il n'est pas possible
+      d'utiliser les m&#233;canismes de DSO pour tous les modules. En d'autres
+      termes, les modules compil&#233;s en tant que fichiers DSO sont limit&#233;s 
+      &#224; l'utilisation des symboles export&#233;s par le noyau d'Apache, par 
+      la biblioth&#232;que C (<code>libc</code>) et toute autre biblioth&#232;que 
+      dynamique ou statique utilis&#233;e par le noyau d'Apache, ou par des 
+      archives de biblioth&#232;ques statiques (<code>libfoo.a</code>) qui 
+      contiennent du code ind&#233;pendant de la position. Les seuls moyens 
+      d'utiliser du code &#224; l'ext&#233;rieur d'un fichier DSO sont, soit de 
+      s'assurer que le noyau d'Apache contienne une r&#233;f&#233;rence vers ce 
       code, soit de charger ce code au moyen de <code>dlopen()</code>.</li>
     </ul>
 
 </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="./en/dso.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/dso.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/dso.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./es/dso.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/dso.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/dso.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/dso.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/dso.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/dso.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2013 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2013 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p></div>
 </body></html>

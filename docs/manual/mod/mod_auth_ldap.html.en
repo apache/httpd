@@ -31,8 +31,8 @@
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Allows an LDAP directory to be used to store the database
 for HTTP Basic authentication.</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>auth_ldap_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_auth_ldap.c</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module&#160;Identifier:</a></th><td>auth_ldap_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source&#160;File:</a></th><td>mod_auth_ldap.c</td></tr>
 <tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.0.41 and later</td></tr></table>
 <h3>Summary</h3>
 

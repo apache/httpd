@@ -30,8 +30,8 @@
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Hybrid multi-process, multi-threaded MPM for OS/2</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>MPM</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>mpm_mpmt_os2_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mpmt_os2.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module&#160;Identifier:</a></th><td>mpm_mpmt_os2_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source&#160;File:</a></th><td>mpmt_os2.c</td></tr></table>
 <h3>Summary</h3>
 
     <p>The Server consists of a main, parent process and a small, static

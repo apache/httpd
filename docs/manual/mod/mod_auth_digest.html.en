@@ -32,8 +32,8 @@
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>User authentication using MD5
     Digest Authentication.</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>auth_digest_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_auth_digest.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module&#160;Identifier:</a></th><td>auth_digest_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source&#160;File:</a></th><td>mod_auth_digest.c</td></tr></table>
 <h3>Summary</h3>
 
     <p>This module implements HTTP Digest Authentication. However, it

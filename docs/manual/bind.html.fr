@@ -24,55 +24,55 @@
         <ul><li><a href="http://httpd.apache.org/docs/current/">Current release version of Apache HTTP Server documentation</a></li></ul><p>You may follow <a href="http://httpd.apache.org/docs/current/bind.html">this link</a> to go to the current version of this document.</p></div><div id="preamble"><h1>Liaison</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="./en/bind.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/bind.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/bind.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./es/bind.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/bind.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/bind.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/bind.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/bind.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/bind.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
 
-    <p>Configuration des adresses et ports sur lesquels Apache écoute.</p>
+    <p>Configuration des adresses et ports sur lesquels Apache &#233;coute.</p>
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">Informations générales</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#ipv6">Précisions au sujet d'IPv6</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">Informations g&#233;n&#233;rales</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#ipv6">Pr&#233;cisions au sujet d'IPv6</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#virtualhost">Faire fonctionner tout ceci avec les Serveurs Virtuels</a></li>
-</ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="vhosts/">Serveurs Virtuels</a></li><li><a href="dns-caveats.html">Problèmes DNS</a></li></ul></div>
+</ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="vhosts/">Serveurs Virtuels</a></li><li><a href="dns-caveats.html">Probl&#232;mes DNS</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="overview" id="overview">Informations générales</a></h2>
+<h2><a name="overview" id="overview">Informations g&#233;n&#233;rales</a></h2>
     
 
-    <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li><li><code class="module"><a href="./mod/mpm_common.html">mpm_common</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>Modules Apparent&#233;s</th><th>Directives Apparent&#233;es</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li><li><code class="module"><a href="./mod/mpm_common.html">mpm_common</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code></li></ul></td></tr></table>
 
 
-    <p>Au moment de son démarrage, Apache se lie à un port et à une 
-    adresse sur la machine et se met en attente de requêtes entrantes.
-    Par défaut, toutes les adresses de la machine se retrouvent
-    à l'écoute. Dans tous les cas, Apache accepte d'écouter sur un
-    ou plusieurs ports spécifiques, ou sur une seule ou plusieurs 
+    <p>Au moment de son d&#233;marrage, Apache se lie &#224; un port et &#224; une 
+    adresse sur la machine et se met en attente de requ&#234;tes entrantes.
+    Par d&#233;faut, toutes les adresses de la machine se retrouvent
+    &#224; l'&#233;coute. Dans tous les cas, Apache accepte d'&#233;couter sur un
+    ou plusieurs ports sp&#233;cifiques, ou sur une seule ou plusieurs 
     adresses, ou encore une combinaison des deux.
-    Il est fréquent d'utiliser ces possibilités avec les fonctionnalités
-    de Serveurs Virtuels, qui permettent de faire répondre Apache de
-    manière différente en fonction de l'adresse IP, du nom ou du port.</p>
+    Il est fr&#233;quent d'utiliser ces possibilit&#233;s avec les fonctionnalit&#233;s
+    de Serveurs Virtuels, qui permettent de faire r&#233;pondre Apache de
+    mani&#232;re diff&#233;rente en fonction de l'adresse IP, du nom ou du port.</p>
 
     <p>Le serveur utilise la directive 
     <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
-    pour n'accepter que des requêtes provenant de ports spécifiques ou 
-    d'une combinaison adresse IP + port passés en argument. 
-    Dans le cas où seul un port est spécifié avec la directive 
+    pour n'accepter que des requ&#234;tes provenant de ports sp&#233;cifiques ou 
+    d'une combinaison adresse IP + port pass&#233;s en argument. 
+    Dans le cas o&#249; seul un port est sp&#233;cifi&#233; avec la directive 
     <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>,
-    le serveur se met à l'écoute sur le port spécifié, sur toutes
+    le serveur se met &#224; l'&#233;coute sur le port sp&#233;cifi&#233;, sur toutes
     les interfaces et adresses de la machine. Si une adresse IP est 
-    précisée en plus du port, le serveur n'écoute que sur l'adresse 
-    et le port spécifiés. Il est possible de configurer plusieurs 
+    pr&#233;cis&#233;e en plus du port, le serveur n'&#233;coute que sur l'adresse 
+    et le port sp&#233;cifi&#233;s. Il est possible de configurer plusieurs 
     directives <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>, 
-    afin qu'Apache écoute sur plusieurs adresses 
-    et ports. Dans ce cas, le serveur répondra aux requêtes faites 
-    sur tous les adresses et ports énumérés.</p>
+    afin qu'Apache &#233;coute sur plusieurs adresses 
+    et ports. Dans ce cas, le serveur r&#233;pondra aux requ&#234;tes faites 
+    sur tous les adresses et ports &#233;num&#233;r&#233;s.</p>
     
 
-    <p>Par exemple, pour que le serveur accepte les connexions à la fois sur
-    les ports 80 et 8000, spécifiez&nbsp;:</p>
+    <p>Par exemple, pour que le serveur accepte les connexions &#224; la fois sur
+    les ports 80 et 8000, sp&#233;cifiez&nbsp;:</p>
 
     <div class="example"><p><code>
       Listen 80<br />
@@ -80,60 +80,60 @@
     </code></p></div>
 
     <p>Pour qu'Apache accepte les connexions sur deux combinaisons
-    adresses + ports, spécifiez&nbsp;:</p>
+    adresses + ports, sp&#233;cifiez&nbsp;:</p>
 
     <div class="example"><p><code>
       Listen 192.170.2.1:80<br />
       Listen 192.170.2.5:8000
     </code></p></div>
 
-    <p>Les adresses IPv6 sont acceptées, pourvu qu'elles soient entourées 
-    entre crochets de la façon suivante&nbsp;:</p>
+    <p>Les adresses IPv6 sont accept&#233;es, pourvu qu'elles soient entour&#233;es 
+    entre crochets de la fa&#231;on suivante&nbsp;:</p>
 
     <div class="example"><p><code>
       Listen [2001:db8::a00:20ff:fea7:ccea]:80
     </code></p></div>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="ipv6" id="ipv6">Précisions au sujet d'IPv6</a></h2>
+<h2><a name="ipv6" id="ipv6">Pr&#233;cisions au sujet d'IPv6</a></h2>
     
 
-    <p>De plus en plus de plates-formes implémentent IPv6, et APR
+    <p>De plus en plus de plates-formes impl&#233;mentent IPv6, et APR
     supporte IPv6 sur la plupart d'entre elles, si bien qu'Apache
-    peut utiliser des sockets IPv6 et répondre aux requêtes envoyées
+    peut utiliser des sockets IPv6 et r&#233;pondre aux requ&#234;tes envoy&#233;es
     en IPv6.</p>
 
     <p>Une complication possible pour les administrateurs Apache est de
-    savoir si un socket IPv6 est capable de gérer les connexions IPv4
-    aussi bien qu'IPv6. Gérer les connexions IPv4 sur une socket IPv6
-    suppose l'utilisation d'adresses IPv6 mappées en IPv4, ce qui est
+    savoir si un socket IPv6 est capable de g&#233;rer les connexions IPv4
+    aussi bien qu'IPv6. G&#233;rer les connexions IPv4 sur une socket IPv6
+    suppose l'utilisation d'adresses IPv6 mapp&#233;es en IPv4, ce qui est
     le cas sur la plupart des plates-formes, mais pas sur FreeBSD, NetBSD
-    et OpenBSD, en raison des politiques systèmes de ces plates-formes.
-    Même sur des systèmes où cette fonctionnalité n'est pas activée par
-    défaut, un paramètre de compilation pour <code class="program"><a href="./programs/configure.html">configure</a></code> 
+    et OpenBSD, en raison des politiques syst&#232;mes de ces plates-formes.
+    M&#234;me sur des syst&#232;mes o&#249; cette fonctionnalit&#233; n'est pas activ&#233;e par
+    d&#233;faut, un param&#232;tre de compilation pour <code class="program"><a href="./programs/configure.html">configure</a></code> 
     permet de changer ce comportement pour Apache.</p>
     
-    <p>Pour qu'Apache puisse gérer à la fois les connexions IPv4 et IPv6
+    <p>Pour qu'Apache puisse g&#233;rer &#224; la fois les connexions IPv4 et IPv6
     avec un minimum de sockets, il faut permettre l'utilisation des adresses 
-    IPv6 mappées en IPv4, ce qui est faisable en spécifiant l'option
+    IPv6 mapp&#233;es en IPv4, ce qui est faisable en sp&#233;cifiant l'option
     de compilation <code>--enable-v4-mapped</code> et en utilisant la
-    directive générique <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> 
+    directive g&#233;n&#233;rique <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> 
     comme suit&nbsp;:</p>
 
     <div class="example"><p><code>
       Listen 80
     </code></p></div>
 
-    <p>Si <code>--enable-v4-mapped</code> a été spécifié à la compilation,
-    les directives Listen de la configuration par défaut sont de la forme
+    <p>Si <code>--enable-v4-mapped</code> a &#233;t&#233; sp&#233;cifi&#233; &#224; la compilation,
+    les directives Listen de la configuration par d&#233;faut sont de la forme
     ci-dessus. <code>--enable-v4-mapped</code> est l'option de compilation
-    par défaut sur toutes les plates-formes, sauf pour FreeBSD, NetBSD, et 
-    OpenBSD, donc il est probable que votre Apache ait été compilé avec
+    par d&#233;faut sur toutes les plates-formes, sauf pour FreeBSD, NetBSD, et 
+    OpenBSD, donc il est probable que votre Apache ait &#233;t&#233; compil&#233; avec
     cette option.</p>
 
-    <p>Pour qu'Apache ne gère que les connexions IPv4, en ignorant l'éventuel
-    support IPv6 de la plate-forme ou d'APR, une adresse IPv4 peut être
-    donnée dans toutes les directives 
+    <p>Pour qu'Apache ne g&#232;re que les connexions IPv4, en ignorant l'&#233;ventuel
+    support IPv6 de la plate-forme ou d'APR, une adresse IPv4 peut &#234;tre
+    donn&#233;e dans toutes les directives 
     <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>, comme dans les 
     exemples suivants&nbsp;:</p>
 
@@ -142,22 +142,22 @@
       Listen 192.170.2.1:80
     </code></p></div>
 
-    <p>Pour qu'Apache gère les connexions IPv4 et IPv6 sur des sockets
-    différents (i.e., pour ne pas accepter les adresses IPv6 mappées
-    en IPv4), spécifiez l'option de compilation 
+    <p>Pour qu'Apache g&#232;re les connexions IPv4 et IPv6 sur des sockets
+    diff&#233;rents (i.e., pour ne pas accepter les adresses IPv6 mapp&#233;es
+    en IPv4), sp&#233;cifiez l'option de compilation 
     <code>--disable-v4-mapped</code> et utilisez des directives 
-    Listen spécifiques telles que&nbsp;:</p>
+    Listen sp&#233;cifiques telles que&nbsp;:</p>
 
     <div class="example"><p><code>
       Listen [::]:80<br />
       Listen 0.0.0.0:80
     </code></p></div>
 
-    <p>Si le paramètre <code>--disable-v4-mapped</code> a été défini 
+    <p>Si le param&#232;tre <code>--disable-v4-mapped</code> a &#233;t&#233; d&#233;fini 
     au moment de la compilation, les directives Listen de la 
-    configuration par défaut sont de la forme ci-dessus.
+    configuration par d&#233;faut sont de la forme ci-dessus.
     <code>--disable-v4-mapped</code> est l'option de 
-    compilation par défaut sous FreeBSD, NetBSD, et OpenBSD.</p>
+    compilation par d&#233;faut sous FreeBSD, NetBSD, et OpenBSD.</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -165,35 +165,35 @@
     
 
     <p>La directive <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> 
-    n'implémente aucun Serveur Virtuel. Elle sert simplement à 
-    indiquer au serveur principal sur quels adresses et ports écouter.
-    Dans le cas où aucune section 
+    n'impl&#233;mente aucun Serveur Virtuel. Elle sert simplement &#224; 
+    indiquer au serveur principal sur quels adresses et ports &#233;couter.
+    Dans le cas o&#249; aucune section 
     <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
-    n'est utilisée, le serveur répondra de la même manière pour toutes
-    les requêtes qu'il recevra.
+    n'est utilis&#233;e, le serveur r&#233;pondra de la m&#234;me mani&#232;re pour toutes
+    les requ&#234;tes qu'il recevra.
     Des sections 
     <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
-    peuvent être utilisées pour qu'Apache réagisse différemment selon que la
-    requête est destinée à telle adresse ou à tel port. Avant d'implémenter
+    peuvent &#234;tre utilis&#233;es pour qu'Apache r&#233;agisse diff&#233;remment selon que la
+    requ&#234;te est destin&#233;e &#224; telle adresse ou &#224; tel port. Avant d'impl&#233;menter
     un Serveur Virtuel au moyen de la directive VirtualHost, la directive
-    Listen doit être configurée pour que le serveur écoute sur l'adresse
-    ou le port utilisé. Ensuite, une section 
+    Listen doit &#234;tre configur&#233;e pour que le serveur &#233;coute sur l'adresse
+    ou le port utilis&#233;. Ensuite, une section 
     <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
-    devrait être utilisée pour qu'Apache réagisse différemment selon
+    devrait &#234;tre utilis&#233;e pour qu'Apache r&#233;agisse diff&#233;remment selon
     l'adresse ou le port.
-    À noter que si un Serveur Virtuel 
+    &#192; noter que si un Serveur Virtuel 
     <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> 
-    est configuré sur une adresse et un port sur lesquels le serveur 
-    n'est pas à l'écoute, le Serveur Virtuel ne sera pas accessible.</p>
+    est configur&#233; sur une adresse et un port sur lesquels le serveur 
+    n'est pas &#224; l'&#233;coute, le Serveur Virtuel ne sera pas accessible.</p>
   </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="./en/bind.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/bind.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/bind.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./es/bind.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/bind.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/bind.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/bind.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/bind.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/bind.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2013 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2013 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p></div>
 </body></html>

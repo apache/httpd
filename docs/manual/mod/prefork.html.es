@@ -15,12 +15,12 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /><link href="http://httpd.apache.org/docs/current/mod/prefork.html" rel="canonical" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="../faq/">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa de este sitio web</a></p>
-<p class="apache">Versión 2.0 del Servidor HTTP Apache</p>
+<p class="menu"><a href="../mod/">M&#243;dulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="../faq/">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa de este sitio web</a></p>
+<p class="apache">Versi&#243;n 2.0 del Servidor HTTP Apache</p>
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentación</a> &gt; <a href="../">Versión 2.0</a> &gt; <a href="./">Módulos</a></div>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentaci&#243;n</a> &gt; <a href="../">Versi&#243;n 2.0</a> &gt; <a href="./">M&#243;dulos</a></div>
 <div id="page-content">
 <div class="retired"><h4>Please note</h4>
             <p>This document refers to the <strong>2.0</strong> version of Apache httpd, which <strong>is no longer maintained</strong>. Upgrade, and refer to the current version of httpd instead, documented at:</p>
@@ -28,37 +28,37 @@
 <div class="toplang">
 <p><span>Idiomas disponibles: </span><a href="../de/mod/prefork.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/prefork.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/mod/prefork.html" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../es/mod/prefork.html" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
 <a href="../ja/mod/prefork.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="../tr/mod/prefork.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/prefork.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Esta traducción podría estar
-            obsoleta. Consulte la versión en inglés de la
-            documentación para comprobar si se han producido cambios
+<div class="outofdate">Esta traducci&#243;n podr&#237;a estar
+            obsoleta. Consulte la versi&#243;n en ingl&#233;s de la
+            documentaci&#243;n para comprobar si se han producido cambios
             recientemente.</div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Descripción:</a></th><td>Implementa un servidor web pre-forking y no
+<table class="module"><tr><th><a href="module-dict.html#Description">Descripci&#243;n:</a></th><td>Implementa un servidor web pre-forking y no
 hebrado</td></tr>
 <tr><th><a href="module-dict.html#Status">Estado:</a></th><td>MPM</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificador de Módulos:</a></th><td>mpm_prefork_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichero de Código Fuente:</a></th><td>prefork.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificador de M&#243;dulos:</a></th><td>mpm_prefork_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichero de C&#243;digo Fuente:</a></th><td>prefork.c</td></tr></table>
 <h3>Resumen de contenidos</h3>
 
-    <p>Este Módulo de MultiProcesamiento (MPM) implementa un
+    <p>Este M&#243;dulo de MultiProcesamiento (MPM) implementa un
     servidor web pre-forking y no hebrado que trata las peticiones de
-    una manera similar a como lo hacía Apache 1.3.  Esto es
+    una manera similar a como lo hac&#237;a Apache 1.3.  Esto es
     apropiado para sitios web que necesitan evitar el hebrado para ser
-    compatibles con librerías que no son seguras cuado se usan
-    hebras.  Es también el mejor MPM para aislar cada
-    petición, de manera que si suge un problema con una
-    petición, esto no afecte al resto.</p>
+    compatibles con librer&#237;as que no son seguras cuado se usan
+    hebras.  Es tambi&#233;n el mejor MPM para aislar cada
+    petici&#243;n, de manera que si suge un problema con una
+    petici&#243;n, esto no afecte al resto.</p>
 
-    <p>Este MPM está muy autorregulado, de manera que muy pocas
+    <p>Este MPM est&#225; muy autorregulado, de manera que muy pocas
     veces es necesario ajustar los valores de sus directivas de
-    configuración. El valor que se fije en la directiva
+    configuraci&#243;n. El valor que se fije en la directiva
     <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code> debe ser lo
     suficientemente grande para tratar tantas peticiones
-    simultáneas como espere recibir su sitio web, pero lo
-    suficientemente pequeño para asegurarse de que hay memoria
+    simult&#225;neas como espere recibir su sitio web, pero lo
+    suficientemente peque&#241;o para asegurarse de que hay memoria
     RAM suficiente para todos los procesos.</p>
 </div>
 <div id="quickview"><h3 class="directives">Directivas</h3>
@@ -86,20 +86,20 @@ hebrado</td></tr>
 </ul>
 <h3>Temas</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#how-it-works">Cómo funciona</a></li>
-</ul><h3>Consulte también</h3>
+<li><img alt="" src="../images/down.gif" /> <a href="#how-it-works">C&#243;mo funciona</a></li>
+</ul><h3>Consulte tambi&#233;n</h3>
 <ul class="seealso">
 <li><a href="../bind.html">Especificar las direcciones y los puertos
 que usa Apache</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="how-it-works" id="how-it-works">Cómo funciona</a></h2> <p>Un
+<h2><a name="how-it-works" id="how-it-works">C&#243;mo funciona</a></h2> <p>Un
     solo proceso de control es el responsable de lanzar los procesos
     hijo que escuchan las peticiones que se puedan producir y las
     sirven cuando llegan. Apache siempre intenta mantener varios
-    procesos <dfn>de sobra</dfn> o en espera, que estén
-    disponibles para servir peticiones cuando lleguen. Así, los
+    procesos <dfn>de sobra</dfn> o en espera, que est&#233;n
+    disponibles para servir peticiones cuando lleguen. As&#237;, los
     clientes no tienen que esperar a que un nuevo proceso hijo sea
     creado para ser atendidos.</p>
 
@@ -108,16 +108,16 @@ que usa Apache</a></li>
     Apache funciona bien sin hacer muchas modificaciones en los
     valores por defecto de estas directivas, de manera que la mayor
     parte de los sitios web no necesitan ajustar esas directivas a
-    valores diferentes. Los sitios web que necesiten servir más
-    de 256 peticiones simultáneas pueden necesitar incrementar el
+    valores diferentes. Los sitios web que necesiten servir m&#225;s
+    de 256 peticiones simult&#225;neas pueden necesitar incrementar el
     valor de <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code>,
     mientras que los sitios web con memoria limitada pueden necesitar
     decrementar <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code>
     para evitar que el rendimiento del servidor se degrade (pasando
     los contenidos de memoria al disco y de vuelta a memoria). Puede
-    obtener más información sobre como mejorar el
-    rendimiento del proceso de creación de procesos en la
-    documentación sobre <a href="../misc/perf-tuning.html">mejora
+    obtener m&#225;s informaci&#243;n sobre como mejorar el
+    rendimiento del proceso de creaci&#243;n de procesos en la
+    documentaci&#243;n sobre <a href="../misc/perf-tuning.html">mejora
     del rendimiento</a>.</p>
 
     <p>El proceso padre de Apache se inicia normalmente como usuario
@@ -129,34 +129,34 @@ que usa Apache</a></li>
     pero deben tener los menores privilegios posibles.</p>
 
     <p>La directiva <code class="directive"><a href="../mod/mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></code> controla
-    cómo el servidor recicla frecuentemente los procesos
+    c&#243;mo el servidor recicla frecuentemente los procesos
     eliminando los antiguos y creando nuevos.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MaxSpareServers" id="MaxSpareServers">MaxSpareServers</a> <a name="maxspareservers" id="maxspareservers">Directiva</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Número máximo de procesos hijo en espera que
+<tr><th><a href="directive-dict.html#Description">Descripci&#243;n:</a></th><td>N&#250;mero m&#225;ximo de procesos hijo en espera que
 puede tener el servdor</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>MaxSpareServers <var>number</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>MaxSpareServers 10</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>prefork</td></tr>
+<tr><th><a href="directive-dict.html#Module">M&#243;dulo:</a></th><td>prefork</td></tr>
 </table>
     <p>La directiva <code class="directive">MaxSpareServers</code> determina
-    el número máximo de procesos hijo <em>en espera</em>
-    deseado. Un proceso en espera es aquel que no está atendiendo
-    ninguna petición. Si hay más de
+    el n&#250;mero m&#225;ximo de procesos hijo <em>en espera</em>
+    deseado. Un proceso en espera es aquel que no est&#225; atendiendo
+    ninguna petici&#243;n. Si hay m&#225;s de
     <code class="directive">MaxSpareServers</code> procesos hijo en espera,
     entonces el proceso padre elimina el exceso.</p>
 
-    <p>Ajustar este parámetro debe ser necesario solo en sitios
+    <p>Ajustar este par&#225;metro debe ser necesario solo en sitios
     web con muchas visitas. Fijar un valor alto para este
-    parámetro es una mala idea casi siempre. Si fija un valor por
+    par&#225;metro es una mala idea casi siempre. Si fija un valor por
     debajo de <code class="directive"><a href="#minspareservers">MinSpareServers</a></code>,
-    Apache ajustará automáticamente el valor a <code class="directive">MinSpareServers</code><code> + 1</code>.</p>
+    Apache ajustar&#225; autom&#225;ticamente el valor a <code class="directive">MinSpareServers</code><code> + 1</code>.</p>
 
-<h3>Consulte también</h3>
+<h3>Consulte tambi&#233;n</h3>
 <ul>
 <li><code class="directive"><a href="#minspareservers">MinSpareServers</a></code></li>
 <li><code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code></li>
@@ -165,26 +165,26 @@ puede tener el servdor</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MinSpareServers" id="MinSpareServers">MinSpareServers</a> <a name="minspareservers" id="minspareservers">Directiva</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Número mínimo de procesos hijo en espera</td></tr>
+<tr><th><a href="directive-dict.html#Description">Descripci&#243;n:</a></th><td>N&#250;mero m&#237;nimo de procesos hijo en espera</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>MinSpareServers <var>number</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>MinSpareServers 5</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>prefork</td></tr>
+<tr><th><a href="directive-dict.html#Module">M&#243;dulo:</a></th><td>prefork</td></tr>
 </table>
     <p>La directiva <code class="directive">MinSpareServers</code> fija el
-    número mínimo de procesos hijo <em>en espera</em>. Un
-    proceso en espera es aquel que no está atendiendo ninguna
-    petición. Si hay menos procesos hijo en espera que
+    n&#250;mero m&#237;nimo de procesos hijo <em>en espera</em>. Un
+    proceso en espera es aquel que no est&#225; atendiendo ninguna
+    petici&#243;n. Si hay menos procesos hijo en espera que
     <code class="directive">MinSpareServers</code>, entonces el proceso padre
-    crea nuevos procesos hijo a un ritmo máximo de uno por
+    crea nuevos procesos hijo a un ritmo m&#225;ximo de uno por
     segundo.</p>
 
-    <p>Ajustar este parámetro debe ser necesario solo en sitios
+    <p>Ajustar este par&#225;metro debe ser necesario solo en sitios
     web con muchas visitas. Fijar un valor alto para este
-    parámetro es una mala idea casi siempre.</p>
+    par&#225;metro es una mala idea casi siempre.</p>
 
-<h3>Consulte también</h3>
+<h3>Consulte tambi&#233;n</h3>
 <ul>
 <li><code class="directive"><a href="#maxspareservers">MaxSpareServers</a></code></li>
 <li><code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code></li>
@@ -194,10 +194,10 @@ puede tener el servdor</td></tr>
 <div class="bottomlang">
 <p><span>Idiomas disponibles: </span><a href="../de/mod/prefork.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/prefork.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/mod/prefork.html" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../es/mod/prefork.html" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
 <a href="../ja/mod/prefork.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="../tr/mod/prefork.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/prefork.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2013 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="../faq/">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa de este sitio web</a></p></div>
+<p class="apache">Copyright 2013 The Apache Software Foundation.<br />Licencia bajo los t&#233;rminos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">M&#243;dulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="../faq/">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa de este sitio web</a></p></div>
 </body></html>

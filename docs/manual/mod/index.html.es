@@ -8,58 +8,58 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Índice de Módulos - Servidor HTTP Apache</title>
+<title>&#205;ndice de M&#243;dulos - Servidor HTTP Apache</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
 <link href="../images/favicon.ico" rel="shortcut icon" /><link href="http://httpd.apache.org/docs/current/mod/index.html" rel="canonical" /></head>
 <body id="module-index"><div id="page-header">
-<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="../faq/">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa de este sitio web</a></p>
-<p class="apache">Versión 2.0 del Servidor HTTP Apache</p>
+<p class="menu"><a href="../mod/">M&#243;dulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="../faq/">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa de este sitio web</a></p>
+<p class="apache">Versi&#243;n 2.0 del Servidor HTTP Apache</p>
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentación</a> &gt; <a href="../">Versión 2.0</a></div><div id="page-content"><div class="retired"><h4>Please note</h4>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentaci&#243;n</a> &gt; <a href="../">Versi&#243;n 2.0</a></div><div id="page-content"><div class="retired"><h4>Please note</h4>
             <p>This document refers to the <strong>2.0</strong> version of Apache httpd, which <strong>is no longer maintained</strong>. Upgrade, and refer to the current version of httpd instead, documented at:</p>
-        <ul><li><a href="http://httpd.apache.org/docs/current/">Current release version of Apache HTTP Server documentation</a></li></ul><p>You may follow <a href="http://httpd.apache.org/docs/current/mod/">this link</a> to go to the current version of this document.</p></div><div id="preamble"><h1>Índice de Módulos</h1>
+        <ul><li><a href="http://httpd.apache.org/docs/current/">Current release version of Apache HTTP Server documentation</a></li></ul><p>You may follow <a href="http://httpd.apache.org/docs/current/mod/">this link</a> to go to the current version of this document.</p></div><div id="preamble"><h1>&#205;ndice de M&#243;dulos</h1>
 <div class="toplang">
 <p><span>Idiomas disponibles: </span><a href="../de/mod/" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/mod/" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../es/mod/" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
 <a href="../ja/mod/" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
 
     <p>
-      Abajo se muestra una lista con todos los módulos que forman
-      parte de la distribución de Apache.  Consulte también la lista
-      alfabética completa de <a href="directives.html">las
+      Abajo se muestra una lista con todos los m&#243;dulos que forman
+      parte de la distribuci&#243;n de Apache.  Consulte tambi&#233;n la lista
+      alfab&#233;tica completa de <a href="directives.html">las
       directivas de Apache</a>.
     </p>
   </div>
 <div id="quickview"><ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#core">Funcionalidad Básica y Módulos
-            de MultiProcesamiento</a></li><li><img alt="" src="../images/down.gif" /> <a href="#other">Otros Módulos</a></li></ul><h3>Consulte también</h3>
+<li><img alt="" src="../images/down.gif" /> <a href="#core">Funcionalidad B&#225;sica y M&#243;dulos
+            de MultiProcesamiento</a></li><li><img alt="" src="../images/down.gif" /> <a href="#other">Otros M&#243;dulos</a></li></ul><h3>Consulte tambi&#233;n</h3>
 <ul class="seealso">
-<li><a href="../mpm.html">Módulos de MultiProcesamiento
+<li><a href="../mpm.html">M&#243;dulos de MultiProcesamiento
   (MPMs)</a>
   </li>
-<li><a href="quickreference.html">Guía Rápida de Referencia de
+<li><a href="quickreference.html">Gu&#237;a R&#225;pida de Referencia de
   Directivas</a>
   </li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section"><h2><a id="core" name="core">Funcionalidad Básica y Módulos
+<div class="section"><h2><a id="core" name="core">Funcionalidad B&#225;sica y M&#243;dulos
             de MultiProcesamiento</a></h2>
 <dl>
-<dt><a href="core.html">core</a></dt><dd>Funcionalidades básicas del servidor HTTP Apache que
-están siempre presentes</dd>
-<dt><a href="mpm_common.html">mpm_common</a></dt><dd class="separate">Es una colección de directivas que están implementadas
-en más de un módulo de multiprocesamiento (MPM)</dd>
-<dt><a href="beos.html">beos</a></dt><dd>Este módulo de muiltiprocesamiento está
+<dt><a href="core.html">core</a></dt><dd>Funcionalidades b&#225;sicas del servidor HTTP Apache que
+est&#225;n siempre presentes</dd>
+<dt><a href="mpm_common.html">mpm_common</a></dt><dd class="separate">Es una colecci&#243;n de directivas que est&#225;n implementadas
+en m&#225;s de un m&#243;dulo de multiprocesamiento (MPM)</dd>
+<dt><a href="beos.html">beos</a></dt><dd>Este m&#243;dulo de muiltiprocesamiento est&#225;
 optimizado para BeOS.</dd>
-<dt><a href="leader.html">leader</a></dt><dd>Variante experimental del MPM estándar
+<dt><a href="leader.html">leader</a></dt><dd>Variante experimental del MPM est&#225;ndar
 <code class="module"><a href="../mod/worker.html">worker</a></code></dd>
 <dt><a href="mpm_netware.html">mpm_netware</a></dt><dd>Multi-Processing Module implementing an exclusively threaded web
     server optimized for Novell NetWare</dd>
@@ -70,13 +70,13 @@ requests to be assigned a variety of different userids</dd>
 hebrado</dd>
 <dt><a href="threadpool.html">threadpool</a></dt><dd>Yet another experimental variant of the standard
 <code class="module"><a href="../mod/worker.html">worker</a></code> MPM</dd>
-<dt><a href="mpm_winnt.html">mpm_winnt</a></dt><dd>Módulo de multiprocesamiento optimizado para Windows
+<dt><a href="mpm_winnt.html">mpm_winnt</a></dt><dd>M&#243;dulo de multiprocesamiento optimizado para Windows
 NT.</dd>
-<dt><a href="worker.html">worker</a></dt><dd>Módulo de MultiProcesamiento que implementa un
-servidor web híbrido multihebra-multiproceso</dd>
+<dt><a href="worker.html">worker</a></dt><dd>M&#243;dulo de MultiProcesamiento que implementa un
+servidor web h&#237;brido multihebra-multiproceso</dd>
 </dl></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section"><h2><a id="other" name="other">Otros Módulos</a></h2>
+<div class="section"><h2><a id="other" name="other">Otros M&#243;dulos</a></h2>
 <p class="letters"><a href="#A">&nbsp;A&nbsp;</a> | <a href="#C">&nbsp;C&nbsp;</a> | <a href="#D">&nbsp;D&nbsp;</a> | <a href="#E">&nbsp;E&nbsp;</a> | <a href="#F">&nbsp;F&nbsp;</a> | <a href="#H">&nbsp;H&nbsp;</a> | <a href="#I">&nbsp;I&nbsp;</a> | <a href="#L">&nbsp;L&nbsp;</a> | <a href="#M">&nbsp;M&nbsp;</a> | <a href="#N">&nbsp;N&nbsp;</a> | <a href="#P">&nbsp;P&nbsp;</a> | <a href="#R">&nbsp;R&nbsp;</a> | <a href="#S">&nbsp;S&nbsp;</a> | <a href="#U">&nbsp;U&nbsp;</a> | <a href="#V">&nbsp;V&nbsp;</a></p>
 <dl><dt><a href="mod_access.html" id="A" name="A">mod_access</a></dt><dd>Provides access control based on client hostname, IP
 address, or other characteristics of the client request.</dd>
@@ -180,11 +180,11 @@ hosting</dd>
 <div class="bottomlang">
 <p><span>Idiomas disponibles: </span><a href="../de/mod/" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/mod/" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../es/mod/" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
 <a href="../ja/mod/" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2013 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="../faq/">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa de este sitio web</a></p></div>
+<p class="apache">Copyright 2013 The Apache Software Foundation.<br />Licencia bajo los t&#233;rminos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">M&#243;dulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="../faq/">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa de este sitio web</a></p></div>
 </body></html>

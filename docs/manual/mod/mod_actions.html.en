@@ -33,8 +33,8 @@
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>This module provides for executing CGI scripts based on
 media type or request method.</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Base</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>actions_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_actions.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module&#160;Identifier:</a></th><td>actions_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source&#160;File:</a></th><td>mod_actions.c</td></tr></table>
 <h3>Summary</h3>
 
     <p>This module has two directives. The <code class="directive"><a href="#action">Action</a></code> directive lets you run CGI

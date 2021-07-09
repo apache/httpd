@@ -33,8 +33,8 @@
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Provides a comprehensive overview of the server
 configuration</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>info_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_info.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module&#160;Identifier:</a></th><td>info_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source&#160;File:</a></th><td>mod_info.c</td></tr></table>
 <h3>Summary</h3>
 
     <p>To configure <code class="module"><a href="../mod/mod_info.html">mod_info</a></code>, add the following to your

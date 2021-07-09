@@ -23,17 +23,17 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP-Server</a> &gt; <a href="http://httpd.apache.org/docs/">Dokumentation</a> &gt; <a href="./">Version 2.0</a></div>
 <div id="page-content"><div class="retired"><h4>Bitte beachten!</h4>
             <p>Dieses Dokument bezieht sich auf Version <strong>2.0</strong> des Apache httpd, die <strong>nicht mehr gepflegt wird</strong>. Bitte aktualisieren Sie die Software und verwenden Sie stattdessen eine aktuelle Version des httpd, die an folgender Stelle dokumentiert ist:</p>
-        <ul><li><a href="http://httpd.apache.org/docs/current/">Dokumentation des Apache HTTP Server für die zuletzt erschienene Version</a></li></ul><p>Sie können <a href="http://httpd.apache.org/docs/current/sitemap.html">diesem Link</a> folgen, um zur aktuellen Version dieses Dokuments zu gelangen.</p></div><div id="preamble"><h1>Seitenindex</h1>
+        <ul><li><a href="http://httpd.apache.org/docs/current/">Dokumentation des Apache HTTP Server f&#252;r die zuletzt erschienene Version</a></li></ul><p>Sie k&#246;nnen <a href="http://httpd.apache.org/docs/current/sitemap.html">diesem Link</a> folgen, um zur aktuellen Version dieses Dokuments zu gelangen.</p></div><div id="preamble"><h1>Seitenindex</h1>
 <div class="toplang">
-<p><span>Verfügbare Sprachen: </span><a href="./de/sitemap.html" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>Verf&#252;gbare Sprachen: </span><a href="./de/sitemap.html" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/sitemap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/sitemap.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="./es/sitemap.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
 <a href="./ja/sitemap.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/sitemap.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/sitemap.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/sitemap.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
 
-<p>Diese Seite verzeichnet die zur Zeit verfügbaren Dokumente der
+<p>Diese Seite verzeichnet die zur Zeit verf&#252;gbaren Dokumente der
 <a href="./">Dokumentation zum Apache HTTP Server Version
 2.0</a>.</p>
 </div>
@@ -41,14 +41,14 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#release">Hinweise zur Version</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#using">Bedienung des Apache HTTP Servers</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#vhosts">Apache-Dokumentation zu virtuellen Hosts</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#faq">Häufig gestellte Fragen (FAQ)</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#ssl">SSL/TLS-Verschlüsselung des Apache</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#faq">H&#228;ufig gestellte Fragen (FAQ)</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#ssl">SSL/TLS-Verschl&#252;sselung des Apache</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#howto">Praxis / Anleitungen</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#platform">Plattform-spezifische Anmerkungen</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#programs">Apache HTTP Server und Hilfsprogramme</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#misc">Weitere Apache-Dokumentationen</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#modules">Apache-Module</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#developer">Dokumentation für Entwickler</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#developer">Dokumentation f&#252;r Entwickler</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#index">Glossar und Index</a></li>
 </ul>
 </div>
@@ -77,53 +77,53 @@
 <li><a href="env.html">Umgebungsvariablen</a></li>
 <li><a href="handler.html">Handler</a></li>
 <li><a href="filter.html">Filter</a></li>
-<li><a href="suexec.html">suEXEC Unterstützung</a></li>
+<li><a href="suexec.html">suEXEC Unterst&#252;tzung</a></li>
 <li><a href="misc/perf-tuning.html">Performance-Hinweise</a></li>
-<li><a href="misc/rewriteguide.html">Einführung in die URL-Manipulation</a></li>
+<li><a href="misc/rewriteguide.html">Einf&#252;hrung in die URL-Manipulation</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="vhosts" id="vhosts">Apache-Dokumentation zu virtuellen Hosts</a></h2>
-<ul><li class="separate"><a href="vhosts/">Übersicht</a></li>
+<ul><li class="separate"><a href="vhosts/">&#220;bersicht</a></li>
 <li><a href="vhosts/name-based.html">Namensbasierte virtuelle Hosts</a></li>
 <li><a href="vhosts/ip-based.html">IP-basierte virtuelle Hosts</a></li>
 <li><a href="vhosts/mass.html">Dynamisch konfiguriertes Massen-Virtual-Hosting</a></li>
-<li><a href="vhosts/examples.html">Beispiele für virtuelles Hosts in
+<li><a href="vhosts/examples.html">Beispiele f&#252;r virtuelles Hosts in
   typischen Installationen</a></li>
-<li><a href="vhosts/details.html">Tiefergehende Erörterung der Zuweisung
+<li><a href="vhosts/details.html">Tiefergehende Er&#246;rterung der Zuweisung
         virtueller Hosts</a></li>
 <li><a href="vhosts/fd-limits.html">Datei-Deskriptor-Begrenzungen</a></li>
-<li><a href="dns-caveats.html">Probleme bezüglich DNS und Apache</a></li>
+<li><a href="dns-caveats.html">Probleme bez&#252;glich DNS und Apache</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
-<div class="section"><h2><a name="faq" id="faq">Häufig gestellte Fragen (FAQ)</a></h2>
-<ul><li><a href="faq/">Übersicht</a></li>
+<div class="section"><h2><a name="faq" id="faq">H&#228;ufig gestellte Fragen (FAQ)</a></h2>
+<ul><li><a href="faq/">&#220;bersicht</a></li>
 <li><a href="faq/support.html">Support</a></li>
 <li><a href="faq/error.html">Fehlermeldungen</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
-<div class="section"><h2><a name="ssl" id="ssl">SSL/TLS-Verschlüsselung des Apache</a></h2>
-<ul><li class="separate"><a href="ssl/">Übersicht</a></li>
-<li><a href="ssl/ssl_intro.html">SSL/TLS-Verschlüsselung: Einführung</a></li>
-<li><a href="ssl/ssl_compat.html">SSL/TLS-Verschlüsselung: Kompatibilität</a></li>
-<li><a href="ssl/ssl_howto.html">SSL/TLS-Verschlüsselung: Praxis</a></li>
-<li><a href="ssl/ssl_faq.html">SSL/TLS-Verschlüsselung: FAQ</a></li>
+<div class="section"><h2><a name="ssl" id="ssl">SSL/TLS-Verschl&#252;sselung des Apache</a></h2>
+<ul><li class="separate"><a href="ssl/">&#220;bersicht</a></li>
+<li><a href="ssl/ssl_intro.html">SSL/TLS-Verschl&#252;sselung: Einf&#252;hrung</a></li>
+<li><a href="ssl/ssl_compat.html">SSL/TLS-Verschl&#252;sselung: Kompatibilit&#228;t</a></li>
+<li><a href="ssl/ssl_howto.html">SSL/TLS-Verschl&#252;sselung: Praxis</a></li>
+<li><a href="ssl/ssl_faq.html">SSL/TLS-Verschl&#252;sselung: FAQ</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="howto" id="howto">Praxis / Anleitungen</a></h2>
-<ul><li class="separate"><a href="howto/">Übersicht</a></li>
+<ul><li class="separate"><a href="howto/">&#220;bersicht</a></li>
 <li><a href="howto/auth.html">Authentisierung, Autorisierung und Zugriffskontrolle</a></li>
 <li><a href="howto/cgi.html">Dynamische Inhalte mit CGI</a></li>
-<li><a href="howto/ssi.html">Einführung in Server Side Includes</a></li>
+<li><a href="howto/ssi.html">Einf&#252;hrung in Server Side Includes</a></li>
 <li><a href="howto/htaccess.html">.htaccess-Dateien</a></li>
-<li><a href="howto/public_html.html">Web-Verzeichnisse für Benutzer</a></li>
+<li><a href="howto/public_html.html">Web-Verzeichnisse f&#252;r Benutzer</a></li>
 <li><a href="misc/tutorials.html">Apache-Tutorials</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="platform" id="platform">Plattform-spezifische Anmerkungen</a></h2>
-<ul><li class="separate"><a href="platform/">Übersicht</a></li>
+<ul><li class="separate"><a href="platform/">&#220;bersicht</a></li>
 <li><a href="platform/windows.html">Apache unter Microsoft
 Windows einsetzen</a></li>
-<li><a href="platform/win_compiling.html">Kompilieren des Apache für
+<li><a href="platform/win_compiling.html">Kompilieren des Apache f&#252;r
 Microsoft Windows</a></li>
 <li><a href="platform/netware.html">Apache unter Novell NetWare einsetzen</a></li>
 <li><a href="platform/perf-hp.html">Einen Hochleistungs-Web-Server auf
@@ -132,7 +132,7 @@ HPUX betreiben</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="programs" id="programs">Apache HTTP Server und Hilfsprogramme</a></h2>
-<ul><li class="separate"><a href="programs/">Übersicht</a></li>
+<ul><li class="separate"><a href="programs/">&#220;bersicht</a></li>
 <li><a href="programs/httpd.html">httpd</a></li>
 <li><a href="programs/ab.html">ab</a></li>
 <li><a href="programs/apachectl.html">apachectl</a></li>
@@ -149,8 +149,8 @@ HPUX betreiben</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="misc" id="misc">Weitere Apache-Dokumentationen</a></h2>
-<ul><li class="separate"><a href="misc/">Übersicht</a></li>
-<li><a href="misc/custom_errordocs.html">International angepaßte Server-Fehlermeldungen</a></li>
+<ul><li class="separate"><a href="misc/">&#220;bersicht</a></li>
+<li><a href="misc/custom_errordocs.html">International angepa&#223;te Server-Fehlermeldungen</a></li>
 <li><a href="misc/fin_wait_2.html">Verbindungen im FIN_WAIT_2 und Apache</a></li>
 <li><a href="misc/known_client_problems.html">Bekannte Client-Probleme</a></li>
 <li><a href="misc/descriptors.html">Deskriptoren und Apache</a></li>
@@ -158,8 +158,8 @@ HPUX betreiben</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="modules" id="modules">Apache-Module</a></h2>
-<ul><li><a href="mod/module-dict.html">Erklärung der Fachbegriffe zu Apache-Modulen</a></li>
-<li><a href="mod/directive-dict.html">Erklärung der Fachbegriffe zu Apache-Direktiven</a></li>
+<ul><li><a href="mod/module-dict.html">Erkl&#228;rung der Fachbegriffe zu Apache-Modulen</a></li>
+<li><a href="mod/directive-dict.html">Erkl&#228;rung der Fachbegriffe zu Apache-Direktiven</a></li>
 </ul><ul><li><a href="mod/core.html">Apache-Kernfunktionen</a></li>
 <li><a href="mod/mpm_common.html">Allgemeine Direktiven der Apache-MPMs</a></li>
 <li><a href="mod/beos.html">Apache-MPM beos</a></li>
@@ -230,8 +230,8 @@ HPUX betreiben</a></li>
 <li><a href="mod/mod_vhost_alias.html">Apache-Modul mod_vhost_alias</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
-<div class="section"><h2><a name="developer" id="developer">Dokumentation für Entwickler</a></h2>
-<ul><li class="separate"><a href="developer/">Übersicht</a></li>
+<div class="section"><h2><a name="developer" id="developer">Dokumentation f&#252;r Entwickler</a></h2>
+<ul><li class="separate"><a href="developer/">&#220;bersicht</a></li>
 <li><a href="developer/API.html">Anmerkungen zur Apache-API</a></li>
 <li><a href="developer/debugging.html">Debuggen der Speicher-Belegung in der APR</a></li>
 <li><a href="developer/documenting.html">Apache 2.0 dokumentieren</a></li>
@@ -249,12 +249,12 @@ HPUX betreiben</a></li>
 </ul>
 </div></div>
 <div class="bottomlang">
-<p><span>Verfügbare Sprachen: </span><a href="./de/sitemap.html" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>Verf&#252;gbare Sprachen: </span><a href="./de/sitemap.html" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/sitemap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/sitemap.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="./es/sitemap.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
 <a href="./ja/sitemap.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/sitemap.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/sitemap.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/sitemap.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2013 The Apache Software Foundation.<br />Lizenziert unter der <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Module</a> | <a href="./mod/directives.html">Direktiven</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossar</a> | <a href="./sitemap.html">Seitenindex</a></p></div>

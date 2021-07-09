@@ -31,8 +31,8 @@
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Yet another experimental variant of the standard
 <code class="module"><a href="../mod/worker.html">worker</a></code> MPM</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>MPM</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>mpm_threadpool_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>threadpool.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module&#160;Identifier:</a></th><td>mpm_threadpool_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source&#160;File:</a></th><td>threadpool.c</td></tr></table>
 <h3>Summary</h3>
 
     <div class="warning"><h3>Warning</h3>

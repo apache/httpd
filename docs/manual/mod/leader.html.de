@@ -24,11 +24,11 @@
 <div id="page-content">
 <div class="retired"><h4>Bitte beachten!</h4>
             <p>Dieses Dokument bezieht sich auf Version <strong>2.0</strong> des Apache httpd, die <strong>nicht mehr gepflegt wird</strong>. Bitte aktualisieren Sie die Software und verwenden Sie stattdessen eine aktuelle Version des httpd, die an folgender Stelle dokumentiert ist:</p>
-        <ul><li><a href="http://httpd.apache.org/docs/current/">Dokumentation des Apache HTTP Server für die zuletzt erschienene Version</a></li></ul><p>Sie können <a href="http://httpd.apache.org/docs/current/mod/leader.html">diesem Link</a> folgen, um zur aktuellen Version dieses Dokuments zu gelangen.</p></div><div id="preamble"><h1>Apache-MPM leader</h1>
+        <ul><li><a href="http://httpd.apache.org/docs/current/">Dokumentation des Apache HTTP Server f&#252;r die zuletzt erschienene Version</a></li></ul><p>Sie k&#246;nnen <a href="http://httpd.apache.org/docs/current/mod/leader.html">diesem Link</a> folgen, um zur aktuellen Version dieses Dokuments zu gelangen.</p></div><div id="preamble"><h1>Apache-MPM leader</h1>
 <div class="toplang">
-<p><span>Verfügbare Sprachen: </span><a href="../de/mod/leader.html" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>Verf&#252;gbare Sprachen: </span><a href="../de/mod/leader.html" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/leader.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/mod/leader.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../es/mod/leader.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
 <a href="../ko/mod/leader.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Beschreibung:</a></th><td>Eine experimentelle Variante des Standard-MPMs
@@ -39,7 +39,7 @@
 <h3>Zusammenfassung</h3>
 
     <div class="warning"><h3>Warnung</h3>
-      <p>Dieses MPM ist noch experimentell und funktioniert möglicherweise
+      <p>Dieses MPM ist noch experimentell und funktioniert m&#246;glicherweise
         nicht wie erwartet.</p>
     </div>
     
@@ -49,19 +49,19 @@
       koordinieren. Weitere Informationen finden Sie unter <a href="http://deuce.doc.wustl.edu/doc/pspdfs/lf.pdf">http://deuce.doc.wustl.edu/doc/pspdfs/lf.pdf</a>.</p>
 
     <p>Um bei der Erstellung  des <code class="program"><a href="../programs/httpd.html">httpd</a></code> das MPM
-      <code class="module"><a href="../mod/leader.html">leader</a></code> zu verwenden, fügen Sie den Argumenten
+      <code class="module"><a href="../mod/leader.html">leader</a></code> zu verwenden, f&#252;gen Sie den Argumenten
       des <code class="program"><a href="../programs/configure.html">configure</a></code>-Skripts <code>--with-mpm=leader</code>
       hinzu.</p>
   
     <p>Dieses MPM baut auf den atomaren APR-Vergleichs- und -Tauschoperationen
-      für die Thread-Synchronisation auf. Wenn Sie für einen
-      x86-Rechner kompilieren, ohne dass 386-Unterstützung benötigt
-      wird, oder wenn Sie für einen SPARC-Rechner kompilieren und keine
-      pre-UltraSPARC-Chips betreiben müssen, fügen Sie den Argumenten
+      f&#252;r die Thread-Synchronisation auf. Wenn Sie f&#252;r einen
+      x86-Rechner kompilieren, ohne dass 386-Unterst&#252;tzung ben&#246;tigt
+      wird, oder wenn Sie f&#252;r einen SPARC-Rechner kompilieren und keine
+      pre-UltraSPARC-Chips betreiben m&#252;ssen, f&#252;gen Sie den Argumenten
       des <code class="program"><a href="../programs/configure.html">configure</a></code>-Skripts
       <code>--enable-nonportable-atomics=yes</code> hinzu. Dies veranlasst die
       APR veranlasst dazu, atomare Operationen einzusetzen, welche effizienten
-      Befehlscode verwenden, der älteren CPUs nicht zur Verfügung
+      Befehlscode verwenden, der &#228;lteren CPUs nicht zur Verf&#252;gung
       stehen.</p>
 </div>
 <div id="quickview"><h3 class="directives">Direktiven</h3>
@@ -92,9 +92,9 @@
 
 </div>
 <div class="bottomlang">
-<p><span>Verfügbare Sprachen: </span><a href="../de/mod/leader.html" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>Verf&#252;gbare Sprachen: </span><a href="../de/mod/leader.html" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/leader.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/mod/leader.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../es/mod/leader.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
 <a href="../ko/mod/leader.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2013 The Apache Software Foundation.<br />Lizenziert unter der <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>

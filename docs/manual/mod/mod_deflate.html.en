@@ -33,8 +33,8 @@
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Compress content before it is delivered to the
 client</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>deflate_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_deflate.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module&#160;Identifier:</a></th><td>deflate_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source&#160;File:</a></th><td>mod_deflate.c</td></tr></table>
 <h3>Summary</h3>
 
     <p>The <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> module provides
