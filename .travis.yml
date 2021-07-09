@@ -364,7 +364,7 @@ notifications:
   irc:
     if: fork = false
     channels:
-      - "chat.freenode.net#httpd-dev"
+      - "irc.libera.chat#httpd-dev"
   email:
     if: fork = false
     recipients:
