@@ -32,6 +32,7 @@ addons:
 env:
   global:
     - MFLAGS=-j2
+    - CFLAGS=-g
 
 # This defines two condition anchors which can be used in job
 # definitions to either:
