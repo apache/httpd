@@ -126,6 +126,7 @@ available</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#sethandler">SetHandler</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#setinputfilter">SetInputFilter</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#setoutputfilter">SetOutputFilter</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#stricthostcheck">StrictHostCheck</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#timeout">TimeOut</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#traceenable">TraceEnable</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#undefine">UnDefine</a></li>
@@ -3096,10 +3097,12 @@ URLs</td></tr>
       URL it appears. People may be used to its behavior in the filesystem
       where multiple adjacent slashes are frequently collapsed to a single
       slash (<em>i.e.</em>, <code>/home///foo</code> is the same as
-      <code>/home/foo</code>). In URL-space this is not necessarily true.
+      <code>/home/foo</code>). In URL-space this is not necessarily true if
+      directive <code class="directive"><a href="#mergeslashes">MergeSlashes</a></code>  has been set
+      to "OFF".
       The <code class="directive"><a href="#locationmatch">&lt;LocationMatch&gt;</a></code>
       directive and the regex version of <code class="directive">&lt;Location&gt;</code> require you to explicitly specify multiple
-      slashes if that is your intention.</p>
+      slashes if the slashes are not being merged.</p>
 
       <p>For example, <code>&lt;LocationMatch "^/abc"&gt;</code> would match
       the request URL <code>/abc</code> but not the request URL <code>
@@ -3164,15 +3167,17 @@ matching URLs</td></tr>
 &lt;/LocationMatch&gt;</pre>
 
 
-    <div class="note"><h3>Note about / (slash)</h3>
+     <div class="note"><h3>Note about / (slash)</h3>
       <p>The slash character has special meaning depending on where in a
       URL it appears. People may be used to its behavior in the filesystem
       where multiple adjacent slashes are frequently collapsed to a single
       slash (<em>i.e.</em>, <code>/home///foo</code> is the same as
-      <code>/home/foo</code>). In URL-space this is not necessarily true.
+      <code>/home/foo</code>). In URL-space this is not necessarily true if
+      directive <code class="directive"><a href="#mergeslashes">MergeSlashes</a></code>  has been set
+      to "OFF".
       The <code class="directive"><a href="#locationmatch">&lt;LocationMatch&gt;</a></code>
       directive and the regex version of <code class="directive">&lt;Location&gt;</code> require you to explicitly specify multiple
-      slashes if that is your intention.</p>
+      slashes if the slashes are not being merged.</p>
 
       <p>For example, <code>&lt;LocationMatch "^/abc"&gt;</code> would match
       the request URL <code>/abc</code> but not the request URL <code>
@@ -3544,11 +3549,13 @@ resource </td></tr>
     significant.  However, URL's handled other ways, such as by CGI or proxy,
     might prefer to retain the significance of multiple consecutive slashes. 
     In these cases <code class="directive">MergeSlashes</code> can be set to 
-    <em>OFF</em> to retain the multiple consecutive slashes.  In these
-    configurations, regular expressions used in the configuration file that match
+    <em>OFF</em> to retain the multiple consecutive slashes, which is the legacy behavior.</p>
+    <p>
+    When set to "OFF", regular expressions used in the configuration file that match
     the path component of the URL (<code class="directive">LocationMatch</code>,
     <code class="directive">RewriteRule</code>, ...) need to take into account multiple 
-    consecutive slashes.</p>
+    consecutive slashes. Non regular expression based <code class="directive">Location</code> always
+    operate against a URL with merged slashes and cannot differentiate between multiple slashes.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -4855,6 +4862,40 @@ server</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="StrictHostCheck" id="StrictHostCheck">StrictHostCheck</a> <a name="stricthostcheck" id="stricthostcheck">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Controls whether the server requires the requested hostname be
+             listed enumerated in the virtual host handling the request
+             </td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>StrictHostCheck ON|OFF</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>StrictHostCheck OFF</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Added in 2.4.49</td></tr>
+</table>
+    <p>By default, the server will respond to requests for any hostname,
+    including requests addressed to unexpected or unconfigured hostnames. 
+    While this is convenient, it is sometimes desirable to limit what hostnames
+    a backend application handles since it will often generate self-referential
+    responses.</p>
+
+    <p>By setting <code class="directive">StrictHostCheck</code> to <em>ON</em>,
+    the server will return an HTTP 400 error if the requested hostname
+    hasn't been explicitly listed by either <code class="directive"><a href="#servername">ServerName</a></code> or <code class="directive"><a href="#serveralias">ServerAlias</a></code> in the virtual host that best matches the
+    details of the incoming connection.</p>
+
+   <p>This directive also allows matching of the requested hostname to hostnames
+   specified within the opening <code class="directive"><a href="#virtualhost">VirtualHost</a></code>
+   tag, which is a relatively obscure configuration mechanism that acts like
+   additional <code class="directive"><a href="#serveralias">ServerAlias</a></code> entries.</p>
+
+   <p>This directive has no affect in non-default virtual hosts. The value
+   inherited from the global server configuration, or the default virtualhost 
+   for the ip:port the underlying connection, determine the effective value.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="TimeOut" id="TimeOut">TimeOut</a> <a name="timeout" id="timeout">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Amount of time the server will wait for
@@ -5198,7 +5239,7 @@ hostname or IP address</td></tr>
 <a href="../fr/mod/core.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
 var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/core.html';

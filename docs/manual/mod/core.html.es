@@ -129,6 +129,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#sethandler">SetHandler</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#setinputfilter">SetInputFilter</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#setoutputfilter">SetOutputFilter</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#stricthostcheck">StrictHostCheck</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#timeout">TimeOut</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#traceenable">TraceEnable</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#undefine">UnDefine</a></li>
@@ -4238,6 +4239,21 @@ server</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="stricthostcheck" id="stricthostcheck">Directiva</a> <a name="StrictHostCheck" id="StrictHostCheck">StrictHostCheck</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Descripci&#243;n:</a></th><td>Controls whether the server requires the requested hostname be
+             listed enumerated in the virtual host handling the request
+             </td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>StrictHostCheck ON|OFF</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>StrictHostCheck OFF</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">M&#243;dulo:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>Added in 2.4.49</td></tr>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="timeout" id="timeout">Directiva</a> <a name="TimeOut" id="TimeOut">TimeOut</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripci&#243;n:</a></th><td>Amount of time the server will wait for
@@ -4559,7 +4575,7 @@ hostname or IP address</td></tr>
 <a href="../fr/mod/core.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comentarios</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comentarios</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
 var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/core.html';
