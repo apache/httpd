@@ -27,31 +27,31 @@
 <div class="retired"><h4>A savoir</h4>
             <p>Ce document concerne une version ancienne (<strong>2.2</strong>)
 	    du serveur HTTP Apache. La version actuelle est
-	    documentée <a href="http://httpd.apache.org/docs/current">ici</a>. Si vous n'avez
-	    pas encore effectué la mise è jour, veuillez suivre <a href="http://httpd.apache.org/docs/current/upgrading.html">ce
+	    document&#233;e <a href="http://httpd.apache.org/docs/current">ici</a>. Si vous n'avez
+	    pas encore effectu&#233; la mise &#232; jour, veuillez suivre <a href="http://httpd.apache.org/docs/current/upgrading.html">ce
 	    lien</a> pour plus d'informations.</p>
         <p>Pour consulter la version actuelle de ce
 	document, vous pouvez suivre <a href="http://httpd.apache.org/docs/current/mod/mod_authn_alias.html">ce lien</a>.</p></div><div id="preamble"><h1>Module Apache mod_authn_alias</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authn_alias.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_authn_alias.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_authn_alias.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Permet de créer des fournisseurs d'authentification étendus
-à partir des fournisseurs réels</td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Permet de cr&#233;er des fournisseurs d'authentification &#233;tendus
+&#224; partir des fournisseurs r&#233;els</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>authn_alias_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_authn_alias.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.1 d'Apache</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&#160;de&#160;Module:</a></th><td>authn_alias_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier&#160;Source:</a></th><td>mod_authn_alias.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible depuis la version 2.1 d'Apache</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>Ce module permet de créer des fournisseurs d'authentification
-    étendus dans le fichier de configuration et de leur assigner un
-    alias. Les fournisseurs aliasés peuvent ensuite être référencés via
-    les directives <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> ou <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></code> de la même
-    manière que les fournisseurs d'authentification de base. Outre la
-    possibilité de créer et assigner un alias à un fournisseur
-    d'authentification étendu, ce module permet aussi de référencer le
-    même fournisseur d'authentification étendu au sein de différents
+    <p>Ce module permet de cr&#233;er des fournisseurs d'authentification
+    &#233;tendus dans le fichier de configuration et de leur assigner un
+    alias. Les fournisseurs alias&#233;s peuvent ensuite &#234;tre r&#233;f&#233;renc&#233;s via
+    les directives <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> ou <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></code> de la m&#234;me
+    mani&#232;re que les fournisseurs d'authentification de base. Outre la
+    possibilit&#233; de cr&#233;er et assigner un alias &#224; un fournisseur
+    d'authentification &#233;tendu, ce module permet aussi de r&#233;f&#233;rencer le
+    m&#234;me fournisseur d'authentification &#233;tendu au sein de diff&#233;rents
     contextes.</p>
 
 </div>
@@ -67,20 +67,20 @@
 <div class="section">
 <h2><a name="example" id="example">Exemples</a></h2>
 
-        <p>Dans cet exemple, des mots de passe sont vérifiés dans deux
-	fichiers textes différents.</p>
+        <p>Dans cet exemple, des mots de passe sont v&#233;rifi&#233;s dans deux
+	fichiers textes diff&#233;rents.</p>
 
-        <div class="example"><h3>Vérification à partir de plusieurs fichiers de
+        <div class="example"><h3>V&#233;rification &#224; partir de plusieurs fichiers de
 	mots de passe au format texte</h3><p><code>
 
-        # Première vérification<br />
+        # Premi&#232;re v&#233;rification<br />
         &lt;AuthnProviderAlias file fichier1&gt;<br />
         <span class="indent">
             AuthUserFile /www/conf/mots-de-passe1<br />
         </span>
         &lt;/AuthnProviderAlias&gt;<br />
         <br />
-        # vérification suivante<br />
+        # v&#233;rification suivante<br />
         &lt;AuthnProviderAlias file fichier2&gt;   <br />
         <span class="indent">
             AuthUserFile /www/conf/mots-de-passe2<br />
@@ -92,19 +92,19 @@
             AuthBasicProvider fichier1 fichier2<br />
             <br />
             AuthType Basic<br />
-            AuthName "Zone protégée"<br />
+            AuthName "Zone prot&#233;g&#233;e"<br />
             Require valid-user<br />
         </span>
         &lt;/Directory&gt;<br />
         </code></p></div>
 
          <p>Dans l'exemple suivant, deux aliases de fournisseur
-	 d'authentification ldap différents sont créés à partir du
-	 fournisseur ldap. Ceci permet, pour un contexte donné, de
-	 mettre en oeuvre une authentification ldap à partir de
+	 d'authentification ldap diff&#233;rents sont cr&#233;&#233;s &#224; partir du
+	 fournisseur ldap. Ceci permet, pour un contexte donn&#233;, de
+	 mettre en oeuvre une authentification ldap &#224; partir de
 	 plusieurs serveurs ldap :</p>
 
-      <div class="example"><h3>Vérification auprès de plusieurs serveurs LDAP</h3><p><code>
+      <div class="example"><h3>V&#233;rification aupr&#232;s de plusieurs serveurs LDAP</h3><p><code>
       LoadModule authn_alias_module modules/mod_authn_alias.so<br /><br />
       &lt;AuthnProviderAlias ldap ldap-alias1&gt;<br />
       <span class="indent">
@@ -130,7 +130,7 @@
          AuthBasicProvider ldap-autre-alias  ldap-alias1<br /><br />
 
          AuthType Basic<br />
-         AuthName Zone-protégée-par-LDAP<br />
+         AuthName Zone-prot&#233;g&#233;e-par-LDAP<br />
          AuthzLDAPAuthoritative off<br />
          Require valid-user<br />
       </span>
@@ -140,9 +140,9 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="authnprovideralias" id="authnprovideralias">Directive</a> <a name="AuthnProviderAlias" id="AuthnProviderAlias">&lt;AuthnProviderAlias&gt;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Regroupe un ensemble de directives qui représentent une
-extension d'un fournisseur d'authentification de base référencé par
-l'alias spécifié</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Regroupe un ensemble de directives qui repr&#233;sentent une
+extension d'un fournisseur d'authentification de base r&#233;f&#233;renc&#233; par
+l'alias sp&#233;cifi&#233;</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>&lt;AuthnProviderAlias <var>fournisseur-de-base Alias</var>&gt;
 ... &lt;/AuthnProviderAlias&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
@@ -151,14 +151,14 @@ l'alias spécifié</td></tr>
 </table>
     <p>Les balises <code class="directive">&lt;AuthnProviderAlias&gt;</code> et
     <code>&lt;/AuthnProviderAlias&gt;</code> permettent de regrouper des
-    directives qui représentent une extension d'un fournisseur
-    d'authentification de base pouvant être référencée par l'alias
-    spécifié dans les directives <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">
+    directives qui repr&#233;sentent une extension d'un fournisseur
+    d'authentification de base pouvant &#234;tre r&#233;f&#233;renc&#233;e par l'alias
+    sp&#233;cifi&#233; dans les directives <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">
     AuthBasicProvider</a></code> ou <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">
     AuthDigestProvider</a></code>.</p>
 
     <div class="note">Cette directive n'a aucun influence sur le processus
-    d'autorisation, même pour les modules qui fournissent à la fois
+    d'autorisation, m&#234;me pour les modules qui fournissent &#224; la fois
     l'authentification et l'autorisation.</div>
 
 
@@ -166,8 +166,8 @@ l'alias spécifié</td></tr>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authn_alias.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_authn_alias.html" title="Français">&nbsp;fr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
+<a href="../fr/mod/mod_authn_alias.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
 var comments_identifier = 'http://httpd.apache.org/docs/2.2/mod/mod_authn_alias.html';
@@ -185,7 +185,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.2/mod/mod_authn_alias.
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

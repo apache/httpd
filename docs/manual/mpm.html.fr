@@ -24,102 +24,102 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.2</a></div><div id="page-content"><div class="retired"><h4>A savoir</h4>
             <p>Ce document concerne une version ancienne (<strong>2.2</strong>)
 	    du serveur HTTP Apache. La version actuelle est
-	    documentée <a href="http://httpd.apache.org/docs/current">ici</a>. Si vous n'avez
-	    pas encore effectué la mise è jour, veuillez suivre <a href="http://httpd.apache.org/docs/current/upgrading.html">ce
+	    document&#233;e <a href="http://httpd.apache.org/docs/current">ici</a>. Si vous n'avez
+	    pas encore effectu&#233; la mise &#232; jour, veuillez suivre <a href="http://httpd.apache.org/docs/current/upgrading.html">ce
 	    lien</a> pour plus d'informations.</p>
         <p>Pour consulter la version actuelle de ce
 	document, vous pouvez suivre <a href="http://httpd.apache.org/docs/current/mpm.html">ce lien</a>.</p></div><div id="preamble"><h1>Modules multi-processus (MPMs)</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="./de/mpm.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/mpm.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/mpm.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/mpm.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./es/mpm.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/mpm.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/mpm.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/mpm.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/mpm.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="./tr/mpm.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/mpm.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
 
-<p>Ce document décrit ce qu'est un Module Multi-Processus, ainsi
-que la manière dont ces modules sont utilisés par le serveur HTTP Apache.</p>
+<p>Ce document d&#233;crit ce qu'est un Module Multi-Processus, ainsi
+que la mani&#232;re dont ces modules sont utilis&#233;s par le serveur HTTP Apache.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">Introduction</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#choosing">Choisir un MPM</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#defaults">MPM par défaut</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#defaults">MPM par d&#233;faut</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="introduction" id="introduction">Introduction</a></h2>
 
-    <p>Le serveur HTTP Apache a été conçu comme un serveur web puissant et
-    flexible pouvant fonctionner sur une très grande variété de
-    plateformes et toute une gamme d'environnements différents. Plateformes
-    différentes et environnements différents signifient souvent fonctionnalités
-    différentes, ou utilisation de différentes méthodes pour
-    implémenter la même fonctionnalité le plus efficacement possible.
-    Apache s'est toujours accomodé d'une grande variété d'environnements
-    grâce à sa conception modulaire. Cette conception autorise le webmaster
-    à choisir quelles fonctionnalités seront incluses
-    dans le serveur en sélectionnant les modules à charger soit à la
-    compilation, soit à l'exécution.</p>
+    <p>Le serveur HTTP Apache a &#233;t&#233; con&#231;u comme un serveur web puissant et
+    flexible pouvant fonctionner sur une tr&#232;s grande vari&#233;t&#233; de
+    plateformes et toute une gamme d'environnements diff&#233;rents. Plateformes
+    diff&#233;rentes et environnements diff&#233;rents signifient souvent fonctionnalit&#233;s
+    diff&#233;rentes, ou utilisation de diff&#233;rentes m&#233;thodes pour
+    impl&#233;menter la m&#234;me fonctionnalit&#233; le plus efficacement possible.
+    Apache s'est toujours accomod&#233; d'une grande vari&#233;t&#233; d'environnements
+    gr&#226;ce &#224; sa conception modulaire. Cette conception autorise le webmaster
+    &#224; choisir quelles fonctionnalit&#233;s seront incluses
+    dans le serveur en s&#233;lectionnant les modules &#224; charger soit &#224; la
+    compilation, soit &#224; l'ex&#233;cution.</p>
 
-    <p>Apache 2.0 étend cette conception modulaire aux fonctions les plus
-    élémentaires d'un serveur web. Certains Modules Multi-Processus (MPMs)
-    sont responsables de l'association aux ports réseau de la machine,
-    acceptent les requêtes, et se chargent de répartir ces dernières
-    entre les différents processus enfants.</p>
+    <p>Apache 2.0 &#233;tend cette conception modulaire aux fonctions les plus
+    &#233;l&#233;mentaires d'un serveur web. Certains Modules Multi-Processus (MPMs)
+    sont responsables de l'association aux ports r&#233;seau de la machine,
+    acceptent les requ&#234;tes, et se chargent de r&#233;partir ces derni&#232;res
+    entre les diff&#233;rents processus enfants.</p>
 
-    <p>L'extension de la conception modulaire à ce niveau du serveur
+    <p>L'extension de la conception modulaire &#224; ce niveau du serveur
     comporte deux avantages importants:</p>
 
     <ul>
       <li>Apache peut supporter plus proprement et efficacement une grande
-      variété de systèmes d'exploitation. En particulier, la version Windows
+      vari&#233;t&#233; de syst&#232;mes d'exploitation. En particulier, la version Windows
       d'Apache est maintenant beaucoup plus efficace, depuis que
-      <code class="module"><a href="./mod/mpm_winnt.html">mpm_winnt</a></code> peut utiliser les fonctionnalités réseau
-      natives à la place de la couche POSIX utilisée par
-      Apache 1.3. Cet avantage s'étend aussi aux systèmes d'exploitation
-      qui implémentent des MPMs spécialisés.</li>
+      <code class="module"><a href="./mod/mpm_winnt.html">mpm_winnt</a></code> peut utiliser les fonctionnalit&#233;s r&#233;seau
+      natives &#224; la place de la couche POSIX utilis&#233;e par
+      Apache 1.3. Cet avantage s'&#233;tend aussi aux syst&#232;mes d'exploitation
+      qui impl&#233;mentent des MPMs sp&#233;cialis&#233;s.</li>
 
-      <li>le serveur est plus à même de répondre aux besoins d'un site
-      particulier. Par exemple, les sites qui sont très sollicités peuvent
-      utiliser un MPM threadé comme
+      <li>le serveur est plus &#224; m&#234;me de r&#233;pondre aux besoins d'un site
+      particulier. Par exemple, les sites qui sont tr&#232;s sollicit&#233;s peuvent
+      utiliser un MPM thread&#233; comme
       <code class="module"><a href="./mod/worker.html">worker</a></code> ou <code class="module"><a href="./mod/event.html">event</a></code>, tandis que les sites
-      qui privilégient la stabilité ou la compatibilité avec des logiciels
+      qui privil&#233;gient la stabilit&#233; ou la compatibilit&#233; avec des logiciels
       plus anciens peuvent utiliser un module comme
       <code class="module"><a href="./mod/prefork.html">prefork</a></code>.</li>
     </ul>
 
-    <p>Du point de vue de l'utilisateur, les MPMs ne sont pas différents des
-    autres modules Apache. La principale différence réside dans le fait qu'un
-    et un seul MPM à la fois doit être chargé dans le serveur. La liste des
+    <p>Du point de vue de l'utilisateur, les MPMs ne sont pas diff&#233;rents des
+    autres modules Apache. La principale diff&#233;rence r&#233;side dans le fait qu'un
+    et un seul MPM &#224; la fois doit &#234;tre charg&#233; dans le serveur. La liste des
     MPMs disponibles est fournie dans <a href="mod/">module index page</a>.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="choosing" id="choosing">Choisir un MPM</a></h2>
 
-    <p>Les MPMs doivent être choisis à la configuration, et compilés avec
+    <p>Les MPMs doivent &#234;tre choisis &#224; la configuration, et compil&#233;s avec
     le serveur. Les compilateurs peuvent optimiser de nombreuses fonctions
-    si les threads sont utilisés, mais seulement s'ils savent que les threads
-    sont utilisés.</p>
+    si les threads sont utilis&#233;s, mais seulement s'ils savent que les threads
+    sont utilis&#233;s.</p>
 
-    <p>Pour le choix proprement dit du MPM désiré, utiliser l'argument
+    <p>Pour le choix proprement dit du MPM d&#233;sir&#233;, utiliser l'argument
       <code>--with-mpm=<em>NOM</em></code> du script
       <code class="program"><a href="./programs/configure.html">configure</a></code>. <em>NOM</em> est le nom
-      du MPM désiré.</p>
+      du MPM d&#233;sir&#233;.</p>
 
-    <p>Une fois le serveur compilé, il est possible de savoir quel MPM
-    a été choisi à l'aide de la commande <code>./httpd -l</code>.
-    Cette commande fournit la liste de tous les modules compilés
+    <p>Une fois le serveur compil&#233;, il est possible de savoir quel MPM
+    a &#233;t&#233; choisi &#224; l'aide de la commande <code>./httpd -l</code>.
+    Cette commande fournit la liste de tous les modules compil&#233;s
     avec le serveur, y compris le MPM.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="defaults" id="defaults">MPM par défaut</a></h2>
+<h2><a name="defaults" id="defaults">MPM par d&#233;faut</a></h2>
 
-<p>La table suivante fournit la liste des MPMs par défaut pour divers
-systèmes d'exploitation.  Il s'agit du MPM sélectionné si vous ne précisez
-pas un choix différent à la compilation.</p>
+<p>La table suivante fournit la liste des MPMs par d&#233;faut pour divers
+syst&#232;mes d'exploitation.  Il s'agit du MPM s&#233;lectionn&#233; si vous ne pr&#233;cisez
+pas un choix diff&#233;rent &#224; la compilation.</p>
 
 <table>
 
@@ -133,13 +133,13 @@ pas un choix différent à la compilation.</p>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="./de/mpm.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/mpm.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/mpm.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/mpm.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./es/mpm.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/mpm.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/mpm.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/mpm.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/mpm.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="./tr/mpm.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/mpm.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
+</div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
 var comments_identifier = 'http://httpd.apache.org/docs/2.2/mpm.html';
@@ -157,7 +157,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.2/mpm.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

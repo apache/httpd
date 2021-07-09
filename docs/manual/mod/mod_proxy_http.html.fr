@@ -27,40 +27,40 @@
 <div class="retired"><h4>A savoir</h4>
             <p>Ce document concerne une version ancienne (<strong>2.2</strong>)
 	    du serveur HTTP Apache. La version actuelle est
-	    documentée <a href="http://httpd.apache.org/docs/current">ici</a>. Si vous n'avez
-	    pas encore effectué la mise è jour, veuillez suivre <a href="http://httpd.apache.org/docs/current/upgrading.html">ce
+	    document&#233;e <a href="http://httpd.apache.org/docs/current">ici</a>. Si vous n'avez
+	    pas encore effectu&#233; la mise &#232; jour, veuillez suivre <a href="http://httpd.apache.org/docs/current/upgrading.html">ce
 	    lien</a> pour plus d'informations.</p>
         <p>Pour consulter la version actuelle de ce
 	document, vous pouvez suivre <a href="http://httpd.apache.org/docs/current/mod/mod_proxy_http.html">ce lien</a>.</p></div><div id="preamble"><h1>Module Apache mod_proxy_http</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_proxy_http.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_proxy_http.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_proxy_http.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy_http.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Module fournissant le support HTTP à
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Module fournissant le support HTTP &#224;
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>proxy_http_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_proxy_http.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&#160;de&#160;Module:</a></th><td>proxy_http_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier&#160;Source:</a></th><td>mod_proxy_http.c</td></tr></table>
 <h3>Sommaire</h3>
 
     <p>Pour pouvoir fonctionner, ce module <em>requiert</em> le
     chargement de <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>. Il fournit le support du
-    mandatement des requêtes HTTP et HTTPS. <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>
+    mandatement des requ&#234;tes HTTP et HTTPS. <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>
     supporte HTTP/0.9, HTTP/1.0 et HTTP/1.1. Il ne fournit
-    <em>aucune</em> fonctionnalité de mise en cache. Si vous souhaitez
+    <em>aucune</em> fonctionnalit&#233; de mise en cache. Si vous souhaitez
     mettre en oeuvre un mandataire qui assure aussi les fonctions de
     mise en cache, vous devez utiliser les services du module
     <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>.</p>
 
-    <p>Ainsi, pour pouvoir traiter les requêtes HTTP mandatées,
+    <p>Ainsi, pour pouvoir traiter les requ&#234;tes HTTP mandat&#233;es,
     <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, et <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>
-    doivent être chargés dans le serveur.</p>
+    doivent &#234;tre charg&#233;s dans le serveur.</p>
 
     <div class="warning"><h3>Avertissement</h3>
-      <p>N'activez pas la fonctionnalité de mandataire avant d'avoir <a href="mod_proxy.html#access">sécurisé votre serveur</a>. Les
+      <p>N'activez pas la fonctionnalit&#233; de mandataire avant d'avoir <a href="mod_proxy.html#access">s&#233;curis&#233; votre serveur</a>. Les
       serveurs mandataires ouverts sont dangereux non seulement pour
-      votre réseau, mais aussi pour l'Internet au sens large.</p>
+      votre r&#233;seau, mais aussi pour l'Internet au sens large.</p>
     </div>
 </div>
 <div id="quickview"><h3>Sujets</h3>
@@ -76,78 +76,78 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="env" id="env">Variables d'environnement</a></h2>
-    <p>Outre les directives de configuration qui contrôlent le
+    <p>Outre les directives de configuration qui contr&#244;lent le
     comportement de <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, plusieurs <dfn>variables
-    d'environnement</dfn> permettent de contrôler le fournisseur du
+    d'environnement</dfn> permettent de contr&#244;ler le fournisseur du
     protocole HTTP. Parmi les variables suivantes, celle qui ne
-    nécessitent pas de valeur particulière sont définies quelle que soit
+    n&#233;cessitent pas de valeur particuli&#232;re sont d&#233;finies quelle que soit
     la valeur qu'on leur affecte.</p>
     <dl>
         <dt>proxy-sendextracrlf</dt>
         <dd>Provoque l'envoi par le mandataire d'une nouvelle ligne
-	CR-LF supplémentaire à la fin de la requête. Cei constitue un
+	CR-LF suppl&#233;mentaire &#224; la fin de la requ&#234;te. Cei constitue un
 	moyen de contournement d'une bogue de certains
 	navigateurs.</dd>
         <dt>force-proxy-request-1.0</dt>
-        <dd>Force le mandataire à envoyer des requêtes vers le serveur
-	cible selon le protocole HTTP/1.0 et désactive les
-	fonctionnalités propres à HTTP/1.1.</dd>
+        <dd>Force le mandataire &#224; envoyer des requ&#234;tes vers le serveur
+	cible selon le protocole HTTP/1.0 et d&#233;sactive les
+	fonctionnalit&#233;s propres &#224; HTTP/1.1.</dd>
         <dt>proxy-nokeepalive</dt>
-        <dd>Force le mandataire à fermer la connexion avec le serveur
-	cible après chaque requête.</dd>
+        <dd>Force le mandataire &#224; fermer la connexion avec le serveur
+	cible apr&#232;s chaque requ&#234;te.</dd>
         <dt>proxy-chain-auth</dt>
         <dd>Si le mandataire requiert une authentification, il va lire
-	et exploiter les données d'authentification pour mandataire
-	envoyées par le client. Si <var>proxy-chain-auth</var> est
-	définie, il va <em>aussi</em> faire suivre ces données vers le
-	mandataire suivant dans la chaîne. Ceci peut s'avérer nécessaire
-	si une chaîne de mandataires partagent les informations
+	et exploiter les donn&#233;es d'authentification pour mandataire
+	envoy&#233;es par le client. Si <var>proxy-chain-auth</var> est
+	d&#233;finie, il va <em>aussi</em> faire suivre ces donn&#233;es vers le
+	mandataire suivant dans la cha&#238;ne. Ceci peut s'av&#233;rer n&#233;cessaire
+	si une cha&#238;ne de mandataires partagent les informations
 	d'authentification.
-	<strong>Avertissement concernant la sécurité :</strong>
-	Ne définissez cette variable que si vous êtes sûr d'en avoir
+	<strong>Avertissement concernant la s&#233;curit&#233; :</strong>
+	Ne d&#233;finissez cette variable que si vous &#234;tes s&#251;r d'en avoir
 	besoin, car elle peut provoquer la divulgation d'informations
 	sensibles !</dd>
         <dt>proxy-sendcl</dt>
-        <dd>Avec HTTP/1.0, toutes les requêtes qui possèdent un corps
-	(par exemple les requêtes POST) doivent comporter un en-tête
+        <dd>Avec HTTP/1.0, toutes les requ&#234;tes qui poss&#232;dent un corps
+	(par exemple les requ&#234;tes POST) doivent comporter un en-t&#234;te
 	<var>Content-Length</var>. Cette variable d'environnement force
-	le mandataire Apache à envoyer cet en-tête au serveur cible,
-	sans tenir compte de ce que lui a envoyé le client. Ceci permet
-	d'assurer la compatibilité lorsqu'on mandate un serveur cible
+	le mandataire Apache &#224; envoyer cet en-t&#234;te au serveur cible,
+	sans tenir compte de ce que lui a envoy&#233; le client. Ceci permet
+	d'assurer la compatibilit&#233; lorsqu'on mandate un serveur cible
 	mettant en oeuvre un protocole de type HTTP/1.0 ou inconnu. Elle
-	peut cependant nécessiter la mise en tampon de l'intégralité de
-	la requête par le mandataire, ce qui s'avère très inefficace
-	pour les requêtes de grande taille.</dd>
+	peut cependant n&#233;cessiter la mise en tampon de l'int&#233;gralit&#233; de
+	la requ&#234;te par le mandataire, ce qui s'av&#232;re tr&#232;s inefficace
+	pour les requ&#234;tes de grande taille.</dd>
         <dt>proxy-sendchunks ou proxy-sendchunked</dt>
-        <dd>Cette variable constitue l'opposé de
+        <dd>Cette variable constitue l'oppos&#233; de
 	<var>proxy-sendcl</var>. Elle permet la transmission des corps
-	de requêtes vers le serveur cible en utilisant un codage de
-	transfert fractionné. Ceci permet une transmission des requêtes
-	plus efficace, mais nécessite que le serveur cible supporte le
+	de requ&#234;tes vers le serveur cible en utilisant un codage de
+	transfert fractionn&#233;. Ceci permet une transmission des requ&#234;tes
+	plus efficace, mais n&#233;cessite que le serveur cible supporte le
 	protocole HTTP/1.1.</dd>
         <dt>proxy-interim-response</dt>
         <dd>Cette variable peut prendre les valeurs <code>RFC</code> ou
-	<code>Suppress</code>. Les versions précédentes de httpd
-	supprimaient les réponses intermédiaires HTTP (1xx) envoyées par
+	<code>Suppress</code>. Les versions pr&#233;c&#233;dentes de httpd
+	supprimaient les r&#233;ponses interm&#233;diaires HTTP (1xx) envoy&#233;es par
 	le serveur cible. En pratique, si un serveur cible envoie une
-	réponse intermédiaire, il se peut qu'il étende lui-même le
-	protocole d'une manière dont nous n'avons pas connaissance, ou
+	r&#233;ponse interm&#233;diaire, il se peut qu'il &#233;tende lui-m&#234;me le
+	protocole d'une mani&#232;re dont nous n'avons pas connaissance, ou
 	tout simplement non conforme. Le comportement du mandataire est
-	donc maintenant configurable : définissez
-	<code>proxy-interim-response RFC</code> pour être totalement
+	donc maintenant configurable : d&#233;finissez
+	<code>proxy-interim-response RFC</code> pour &#234;tre totalement
 	compatible avec le protocole, ou <code>proxy-interim-response
-	Suppress</code> pour supprimer les réponses intermédiaires.</dd>
+	Suppress</code> pour supprimer les r&#233;ponses interm&#233;diaires.</dd>
         <dt>proxy-initial-not-pooled</dt>
-        <dd>Si cette variable est définie, aucune connexion faisant
-	partie d'un jeu ne sera réutilisée si la connexion client est
-	une connexion initiale. Ceci permet d'éviter le message d'erreur
-	"proxy: error reading status line from remote server" causé par
-	la situation de compétition au cours de laquelle le serveur
-	cible ferme la connexion du jeu après la vérification de la
-	connexion par le mandataire,  et avant que les données envoyées
+        <dd>Si cette variable est d&#233;finie, aucune connexion faisant
+	partie d'un jeu ne sera r&#233;utilis&#233;e si la connexion client est
+	une connexion initiale. Ceci permet d'&#233;viter le message d'erreur
+	"proxy: error reading status line from remote server" caus&#233; par
+	la situation de comp&#233;tition au cours de laquelle le serveur
+	cible ferme la connexion du jeu apr&#232;s la v&#233;rification de la
+	connexion par le mandataire,  et avant que les donn&#233;es envoy&#233;es
 	par le mandataire n'atteignent le serveur cible. Il faut
-	cependant garder à l'esprit que la définition de cette variable
-	dégrade les performances, particulièrement avec les clients
+	cependant garder &#224; l'esprit que la d&#233;finition de cette variable
+	d&#233;grade les performances, particuli&#232;rement avec les clients
 	HTTP/1.0.
         </dd>
     </dl>
@@ -155,9 +155,9 @@
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_proxy_http.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_proxy_http.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_proxy_http.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy_http.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
 var comments_identifier = 'http://httpd.apache.org/docs/2.2/mod/mod_proxy_http.html';
@@ -175,7 +175,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.2/mod/mod_proxy_http.h
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

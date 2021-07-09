@@ -27,23 +27,23 @@
 <div class="retired"><h4>A savoir</h4>
             <p>Ce document concerne une version ancienne (<strong>2.2</strong>)
 	    du serveur HTTP Apache. La version actuelle est
-	    documentée <a href="http://httpd.apache.org/docs/current">ici</a>. Si vous n'avez
-	    pas encore effectué la mise è jour, veuillez suivre <a href="http://httpd.apache.org/docs/current/upgrading.html">ce
+	    document&#233;e <a href="http://httpd.apache.org/docs/current">ici</a>. Si vous n'avez
+	    pas encore effectu&#233; la mise &#232; jour, veuillez suivre <a href="http://httpd.apache.org/docs/current/upgrading.html">ce
 	    lien</a> pour plus d'informations.</p>
         <p>Pour consulter la version actuelle de ce
 	document, vous pouvez suivre <a href="http://httpd.apache.org/docs/current/mod/mod_authn_file.html">ce lien</a>.</p></div><div id="preamble"><h1>Module Apache mod_authn_file</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authn_file.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_authn_file.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_authn_file.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_authn_file.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_authn_file.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Authentification utilisateur à l'aide de fichiers
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Authentification utilisateur &#224; l'aide de fichiers
 texte</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>authn_file_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_authn_file.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis les versions 2.1 et supérieures
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&#160;de&#160;Module:</a></th><td>authn_file_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier&#160;Source:</a></th><td>mod_authn_file.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibilit&#233;:</a></th><td>Disponible depuis les versions 2.1 et sup&#233;rieures
 d'Apache</td></tr></table>
 <h3>Sommaire</h3>
 
@@ -51,11 +51,11 @@ d'Apache</td></tr></table>
     <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code> et <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code>
     d'authentifier les utilisateurs en les recherchant dans des fichiers
     de mots de passe au format texte. <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code>
-    fournit une fonctionnalité similaire.</p>
+    fournit une fonctionnalit&#233; similaire.</p>
 
     <p>Lorsqu'on utilise <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> ou
-    <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>, ce module peut être invoqué en
-    affectant la valeur <code>file</code> à la directive <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> ou <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></code>.</p>
+    <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>, ce module peut &#234;tre invoqu&#233; en
+    affectant la valeur <code>file</code> &#224; la directive <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> ou <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></code>.</p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
@@ -76,37 +76,37 @@ d'Apache</td></tr></table>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="authuserfile" id="authuserfile">Directive</a> <a name="AuthUserFile" id="AuthUserFile">AuthUserFile</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le nom d'un fichier texte pour l'authentification
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&#233;finit le nom d'un fichier texte pour l'authentification
 contenant la liste des utilisateurs et de leurs mots de
 passe</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthUserFile <var>chemin-fichier</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>r&#233;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authn_file</td></tr>
 </table>
     <p>La directive <code class="directive">AuthUserFile</code> permet de
-    définir le nom d'un fichier texte pour l'authentification contenant
+    d&#233;finir le nom d'un fichier texte pour l'authentification contenant
     la liste des utilisateurs et de leurs mots de passe.
     <var>chemin-fichier</var> est le chemin vers le fichier
-    des utilisateurs. S'il n'est pas absolu, il est considéré comme
-    relatif au répertoire défini par la directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>.</p>
+    des utilisateurs. S'il n'est pas absolu, il est consid&#233;r&#233; comme
+    relatif au r&#233;pertoire d&#233;fini par la directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>.</p>
 
     <p>Chaque ligne du fichier des utilisateurs se compose du nom de
-    l'utilisateur, du caractère ':' et du mot de passe chiffré. Si le
-    même identifiant utilisateur est référencé plusieurs fois,
-    <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code> utilisera la première occurrence pour
-    vérifier le mot de passe.</p>
+    l'utilisateur, du caract&#232;re ':' et du mot de passe chiffr&#233;. Si le
+    m&#234;me identifiant utilisateur est r&#233;f&#233;renc&#233; plusieurs fois,
+    <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code> utilisera la premi&#232;re occurrence pour
+    v&#233;rifier le mot de passe.</p>
 
     <p>Pour l'<em>Authentification de base HTTP</em>, on utilise
-    l'utilitaire <code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code>, installé avec la
+    l'utilitaire <code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code>, install&#233; avec la
     distribution binaire ou se trouvant dans <code>src/support</code>,
     pour maintenir le fichier des mots de passe. Voir sa <a href="../programs/htpasswd.html">page de manuel</a> pour plus de
-    détails. En bref :</p>
+    d&#233;tails. En bref :</p>
 
-    <p>On crée un fichier de mots de passe <code>nom-fichier</code> avec
+    <p>On cr&#233;e un fichier de mots de passe <code>nom-fichier</code> avec
     <code>nom-utilisateur</code> comme identifiant initial. Le mot de
-    passe correspondant sera alors demandé :</p>
+    passe correspondant sera alors demand&#233; :</p>
 
     <div class="example"><p><code>
       htpasswd -c nom-fichier nom-utilisateur
@@ -119,33 +119,33 @@ passe</td></tr>
       htpasswd nom-fichier nom-utilisateur2
     </code></p></div>
 
-    <p>Noter qu'une recherche dans de grands fichiers texte peut être
-    très longue ; dans ce cas, il vaut mieux utiliser les fichiers DBM
+    <p>Noter qu'une recherche dans de grands fichiers texte peut &#234;tre
+    tr&#232;s longue ; dans ce cas, il vaut mieux utiliser les fichiers DBM
     avec la directive <code class="directive"><a href="../mod/mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile</a></code>.</p>
 
-    <p>Si vous utilisez l'<em>Authentification HTTP à base de
-    condensé</em>, l'utilitaire <code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code> ne convient
-    pas. Vous devez utiliser <code class="program"><a href="../programs/htdigest.html">htdigest</a></code> à la place.
-    Notez que vous ne pouvez pas mélanger des données utilisateur pour
-    l'Authentification HTTP à base de condensé et des données pour
-    l'Authentification de Base dans le même fichier.</p>
+    <p>Si vous utilisez l'<em>Authentification HTTP &#224; base de
+    condens&#233;</em>, l'utilitaire <code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code> ne convient
+    pas. Vous devez utiliser <code class="program"><a href="../programs/htdigest.html">htdigest</a></code> &#224; la place.
+    Notez que vous ne pouvez pas m&#233;langer des donn&#233;es utilisateur pour
+    l'Authentification HTTP &#224; base de condens&#233; et des donn&#233;es pour
+    l'Authentification de Base dans le m&#234;me fichier.</p>
 
-    <div class="warning"><h3>Sécurité</h3>
+    <div class="warning"><h3>S&#233;curit&#233;</h3>
       <p>Assurez-vous que le fichier <code class="directive">AuthUserFile</code>
-      soit bien stocké en dehors de l'arborescence des documents du
+      soit bien stock&#233; en dehors de l'arborescence des documents du
       serveur web. Ne placez <strong>pas</strong> ce fichier dans le
-      répertoire qu'il protège. Dans le cas contraire, les clients
-      seraient en mesure de télécharger le fichier des mots de passe.</p>
+      r&#233;pertoire qu'il prot&#232;ge. Dans le cas contraire, les clients
+      seraient en mesure de t&#233;l&#233;charger le fichier des mots de passe.</p>
     </div>
 
 </div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authn_file.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_authn_file.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_authn_file.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_authn_file.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_authn_file.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
 var comments_identifier = 'http://httpd.apache.org/docs/2.2/mod/mod_authn_file.html';
@@ -163,7 +163,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.2/mod/mod_authn_file.h
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

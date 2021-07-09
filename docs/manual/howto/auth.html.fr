@@ -24,45 +24,45 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.2</a> &gt; <a href="./">Recettes / Tutoriels</a></div><div id="page-content"><div class="retired"><h4>A savoir</h4>
             <p>Ce document concerne une version ancienne (<strong>2.2</strong>)
 	    du serveur HTTP Apache. La version actuelle est
-	    documentée <a href="http://httpd.apache.org/docs/current">ici</a>. Si vous n'avez
-	    pas encore effectué la mise è jour, veuillez suivre <a href="http://httpd.apache.org/docs/current/upgrading.html">ce
+	    document&#233;e <a href="http://httpd.apache.org/docs/current">ici</a>. Si vous n'avez
+	    pas encore effectu&#233; la mise &#232; jour, veuillez suivre <a href="http://httpd.apache.org/docs/current/upgrading.html">ce
 	    lien</a> pour plus d'informations.</p>
         <p>Pour consulter la version actuelle de ce
 	document, vous pouvez suivre <a href="http://httpd.apache.org/docs/current/howto/auth.html">ce lien</a>.</p></div><div id="preamble"><h1>Authentification et autorisation</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/howto/auth.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/howto/auth.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/howto/auth.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/howto/auth.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/auth.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/howto/auth.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/howto/auth.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
 
-    <p>L'authentification est un processus qui vous permet de vérifier
-    qu'une personne est bien celle qu'elle prétend être. L'autorisation
-    est un processus qui permet à une personne d'aller là où elle veut
-    aller, ou d'obtenir les informations qu'elle désire.</p>
+    <p>L'authentification est un processus qui vous permet de v&#233;rifier
+    qu'une personne est bien celle qu'elle pr&#233;tend &#234;tre. L'autorisation
+    est un processus qui permet &#224; une personne d'aller l&#224; o&#249; elle veut
+    aller, ou d'obtenir les informations qu'elle d&#233;sire.</p>
 
-    <p>Pour le contrôle d'accès en général, voir le document <a href="access.html">Tutoriel du contrôle d'accès</a>.</p>
+    <p>Pour le contr&#244;le d'acc&#232;s en g&#233;n&#233;ral, voir le document <a href="access.html">Tutoriel du contr&#244;le d'acc&#232;s</a>.</p>
 
 
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">Modules et directives concernés</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">Modules et directives concern&#233;s</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#introduction">Introduction</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#theprerequisites">Les prérequis</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#theprerequisites">Les pr&#233;requis</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#gettingitworking">Mise en oeuvre</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#satisfy">Satisfy</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#lettingmorethanonepersonin">Autorisation d'accès à
+<li><img alt="" src="../images/down.gif" /> <a href="#lettingmorethanonepersonin">Autorisation d'acc&#232;s &#224;
 plusieurs personnes</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#possibleproblems">Problèmes possibles</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#dbmdbd">Autre méthode de stockage des mots de
+<li><img alt="" src="../images/down.gif" /> <a href="#possibleproblems">Probl&#232;mes possibles</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#dbmdbd">Autre m&#233;thode de stockage des mots de
 passe</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#moreinformation">Pour aller plus loin . . .</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="related" id="related">Modules et directives concernés</a></h2>
+<h2><a name="related" id="related">Modules et directives concern&#233;s</a></h2>
 
-<p>Trois groupes de modules sont concernés par le processus
+<p>Trois groupes de modules sont concern&#233;s par le processus
 d'authentification et d'autorisation. Vous devrez utiliser au moins un
 module de chaque groupe.</p>
 
@@ -97,49 +97,49 @@ module de chaque groupe.</p>
     <p>Le module <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> est un fournisseur
   d'authentification et d'autorisation. Le module
   <code class="module"><a href="../mod/mod_authn_alias.html">mod_authn_alias</a></code> n'est pas un fournisseur
-  d'authentification lui-même, mais permet une configuration plus souple
+  d'authentification lui-m&#234;me, mais permet une configuration plus souple
   des autres fournisseurs d'authentification.</p>
 
   <p>Le module <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> fournit une autorisation
-  et un contrôle d'accès basés sur le nom du serveur,  l'adresse IP ou
-  certaines caractéristiques de la requête, mais ne fait pas partie du
-  système fournisseur d'authentification.</p>
+  et un contr&#244;le d'acc&#232;s bas&#233;s sur le nom du serveur,  l'adresse IP ou
+  certaines caract&#233;ristiques de la requ&#234;te, mais ne fait pas partie du
+  syst&#232;me fournisseur d'authentification.</p>
 
-  <p>Vous devriez aussi jeter un coup d'oeil au manuel de recettes <a href="access.html">Contrôle d'accès</a>, qui décrit les différentes
-  méthodes de contrôle d'accès à votre serveur.</p>
+  <p>Vous devriez aussi jeter un coup d'oeil au manuel de recettes <a href="access.html">Contr&#244;le d'acc&#232;s</a>, qui d&#233;crit les diff&#233;rentes
+  m&#233;thodes de contr&#244;le d'acc&#232;s &#224; votre serveur.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="introduction" id="introduction">Introduction</a></h2>
     <p>Si votre site web contient des informations sensibles ou
-    destinées seulement à un groupe de personnes restreint, les
-    techniques exposées dans cet article vont vous aider à vous assurer
-    que les personnes qui ont accès à ces pages sont bien celles
-    auxquelles vous avez donné l'autorisation d'accès.</p>
+    destin&#233;es seulement &#224; un groupe de personnes restreint, les
+    techniques expos&#233;es dans cet article vont vous aider &#224; vous assurer
+    que les personnes qui ont acc&#232;s &#224; ces pages sont bien celles
+    auxquelles vous avez donn&#233; l'autorisation d'acc&#232;s.</p>
 
-    <p>Cet article décrit les méthodes "standards" de protection de
-    parties de votre site web que la plupart d'entre vous sont appelés à
+    <p>Cet article d&#233;crit les m&#233;thodes "standards" de protection de
+    parties de votre site web que la plupart d'entre vous sont appel&#233;s &#224;
     utiliser.</p>
 
     <div class="note"><h3>Note :</h3>
-    <p>Si vos données ont un réel besoin de sécurisation, prévoyez
-    l'utilisation de <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> en plus de toute méthode
+    <p>Si vos donn&#233;es ont un r&#233;el besoin de s&#233;curisation, pr&#233;voyez
+    l'utilisation de <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> en plus de toute m&#233;thode
     d'authentification.</p>
     </div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="theprerequisites" id="theprerequisites">Les prérequis</a></h2>
-    <p>Les directives décrites dans cet article devront être insérées
+<h2><a name="theprerequisites" id="theprerequisites">Les pr&#233;requis</a></h2>
+    <p>Les directives d&#233;crites dans cet article devront &#234;tre ins&#233;r&#233;es
     soit au niveau de la configuration de votre serveur principal (en
-    général dans une section <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>), soit au niveau de la
-    configuration des répertoires (fichiers <code>.htaccess</code>)</p>
+    g&#233;n&#233;ral dans une section <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>), soit au niveau de la
+    configuration des r&#233;pertoires (fichiers <code>.htaccess</code>)</p>
 
     <p>Si vous envisagez l'utilisation de fichiers
     <code>.htaccess</code>, la configuration de votre serveur devra
     permettre l'ajout de directives d'authentification dans ces
-    fichiers. Pour ce faire, on utilise la directive <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code>, qui spécifie quelles
-    directives pourront éventuellement contenir les fichiers de
-    configuration de niveau répertoire.</p>
+    fichiers. Pour ce faire, on utilise la directive <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code>, qui sp&#233;cifie quelles
+    directives pourront &#233;ventuellement contenir les fichiers de
+    configuration de niveau r&#233;pertoire.</p>
 
     <p>Comme il est ici question d'authentification, vous aurez besoin
     d'une directive <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code>
@@ -151,40 +151,40 @@ module de chaque groupe.</p>
 
     <p>Or, si vous avez l'intention d'ajouter les directives directement
     dans le fichier de configuration principal, vous devrez bien entendu
-    posséder les droits en écriture sur ce fichier.</p>
+    poss&#233;der les droits en &#233;criture sur ce fichier.</p>
 
-    <p>Vous devrez aussi connaître un tant soit peu la structure des
-    répertoires de votre serveur, ne serait-ce que pour savoir où se
-    trouvent certains fichiers. Cela ne devrait pas présenter de grandes
-    difficultés, et j'essaierai de clarifier tout ça lorsque le besoin
+    <p>Vous devrez aussi conna&#238;tre un tant soit peu la structure des
+    r&#233;pertoires de votre serveur, ne serait-ce que pour savoir o&#249; se
+    trouvent certains fichiers. Cela ne devrait pas pr&#233;senter de grandes
+    difficult&#233;s, et j'essaierai de clarifier tout &#231;a lorsque le besoin
     s'en fera sentir.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="gettingitworking" id="gettingitworking">Mise en oeuvre</a></h2>
-    <p>Nous décrivons ici les bases de la protection par mot de passe
-    d'un répertoire de votre serveur.</p>
+    <p>Nous d&#233;crivons ici les bases de la protection par mot de passe
+    d'un r&#233;pertoire de votre serveur.</p>
 
-    <p>Vous devez en premier lieu créer un fichier de mots de passe. La
-    méthode exacte selon laquelle vous allez créer ce fichier va varier
+    <p>Vous devez en premier lieu cr&#233;er un fichier de mots de passe. La
+    m&#233;thode exacte selon laquelle vous allez cr&#233;er ce fichier va varier
     en fonction du fournisseur d'authentification choisi. Mais nous
-    entrerons dans les détails plus loin, et pour le moment, nous nous
+    entrerons dans les d&#233;tails plus loin, et pour le moment, nous nous
     contenterons d'un fichier de mots de passe en mode texte.</p>
 
-    <p>Ce fichier doit être enregistré à un endroit non accessible
-    depuis le web, de façon à ce que les clients ne puissent pas le
-    télécharger. Par exemple, si vos documents sont servis à partir de
+    <p>Ce fichier doit &#234;tre enregistr&#233; &#224; un endroit non accessible
+    depuis le web, de fa&#231;on &#224; ce que les clients ne puissent pas le
+    t&#233;l&#233;charger. Par exemple, si vos documents sont servis &#224; partir de
     <code>/usr/local/apache/htdocs</code>, vous pouvez enregistrer le
     fichier des mots de passe dans
     <code>/usr/local/apache/passwd</code>.</p>
 
     <p>L'utilitaire <code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code> fourni avec Apache
-    permet de créer ce fichier. Vous le trouverez dans le répertoire
+    permet de cr&#233;er ce fichier. Vous le trouverez dans le r&#233;pertoire
     <code>bin</code> de votre installation d'Apache. Si vous avez
-    installé Apache à partir d'un paquetage tiers, il sera probablement
-    dans le chemin par défaut de vos exécutables.</p>
+    install&#233; Apache &#224; partir d'un paquetage tiers, il sera probablement
+    dans le chemin par d&#233;faut de vos ex&#233;cutables.</p>
 
-    <p>Pour créer le fichier, tapez :</p>
+    <p>Pour cr&#233;er le fichier, tapez :</p>
 
     <div class="example"><p><code>
       htpasswd -c /usr/local/apache/passwd/passwords rbowen
@@ -201,106 +201,106 @@ module de chaque groupe.</p>
     </code></p></div>
 
     <p>Si <code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code> n'est pas dans le chemin par
-    défaut de vos exécutables, vous devrez bien entendu entrer le chemin
-    complet du fichier. Dans le cas d'une installation par défaut, il se
-    trouve à <code>/usr/local/apache2/bin/htpasswd</code>.</p>
+    d&#233;faut de vos ex&#233;cutables, vous devrez bien entendu entrer le chemin
+    complet du fichier. Dans le cas d'une installation par d&#233;faut, il se
+    trouve &#224; <code>/usr/local/apache2/bin/htpasswd</code>.</p>
 
-    <p>Ensuite, vous allez devoir configurer le serveur de façon à ce
-    qu'il demande un mot de passe et lui préciser quels utilisateurs disposent
-    de droits d'accès. Pour ce faire, vous pouvez soit éditer le
+    <p>Ensuite, vous allez devoir configurer le serveur de fa&#231;on &#224; ce
+    qu'il demande un mot de passe et lui pr&#233;ciser quels utilisateurs disposent
+    de droits d'acc&#232;s. Pour ce faire, vous pouvez soit &#233;diter le
     fichier <code>httpd.conf</code>, soit utiliser un fichier
-    <code>.htaccess</code>. Par exemple, si vous voulez protéger le
-    répertoire <code>/usr/local/apache/htdocs/secret</code>, vous pouvez
+    <code>.htaccess</code>. Par exemple, si vous voulez prot&#233;ger le
+    r&#233;pertoire <code>/usr/local/apache/htdocs/secret</code>, vous pouvez
     utiliser les directives suivantes, soit dans le fichier
     <code>/usr/local/apache/htdocs/secret/.htaccess</code>, soit dans le
-    fichier <code>httpd.conf</code> à l'intérieur d'une section &lt;Directory
+    fichier <code>httpd.conf</code> &#224; l'int&#233;rieur d'une section &lt;Directory
     /usr/local/apache/apache/htdocs/secret&gt; :</p>
 
     <div class="example"><p><code>
       AuthType Basic<br />
-      AuthName "Fichiers réservés"<br />
+      AuthName "Fichiers r&#233;serv&#233;s"<br />
       # (La ligne suivante est facultative)<br />
       AuthBasicProvider file<br />
       AuthUserFile /usr/local/apache/passwd/passwords<br />
       Require user rbowen
     </code></p></div>
 
-    <p>Examinons ces directives une à une. La directive <code class="directive"><a href="../mod/core.html#authtype">AuthType</a></code> définit la méthode
-    utilisée pour authentifier l'utilisateur. La méthode la plus
-    courante est <code>Basic</code>, et elle est implémentée par
-    <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code>. Il faut cependant garder à l'esprit
+    <p>Examinons ces directives une &#224; une. La directive <code class="directive"><a href="../mod/core.html#authtype">AuthType</a></code> d&#233;finit la m&#233;thode
+    utilis&#233;e pour authentifier l'utilisateur. La m&#233;thode la plus
+    courante est <code>Basic</code>, et elle est impl&#233;ment&#233;e par
+    <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code>. Il faut cependant garder &#224; l'esprit
     que l'authentification Basic transmet le mot de passe en clair depuis le
-    client vers le serveur. Cette méthode ne devra donc pas
-    être utilisée pour la transmission de données hautement sensibles si
-    elle n'est pas associée au module <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>. Apache
-    supporte une autre méthode d'authentification : <code>AuthType
-    Digest</code>. Cette méthode est implémentée par le module <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code> et a été conçue pour
-    améliorer la sécurité. Ce but n'a cependant pas été atteint et il est préférable
+    client vers le serveur. Cette m&#233;thode ne devra donc pas
+    &#234;tre utilis&#233;e pour la transmission de donn&#233;es hautement sensibles si
+    elle n'est pas associ&#233;e au module <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>. Apache
+    supporte une autre m&#233;thode d'authentification : <code>AuthType
+    Digest</code>. Cette m&#233;thode est impl&#233;ment&#233;e par le module <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code> et a &#233;t&#233; con&#231;ue pour
+    am&#233;liorer la s&#233;curit&#233;. Ce but n'a cependant pas &#233;t&#233; atteint et il est pr&#233;f&#233;rable
     de chiffrer la connexion avec <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>.</p>
 
-    <p>La directive <code class="directive"><a href="../mod/core.html#authname">AuthName</a></code> définit
-    l'<dfn>Identificateur</dfn> (Realm) à utiliser avec
-    l'authentification. L'identificateur possède deux fonctions. Tout
-    d'abord, le client présente en général cette information à
-    l'utilisateur dans le cadre de la boîte de dialogue de mot de passe.
-    Ensuite, le client l'utilise pour déterminer quel mot de passe
-    envoyer pour une zone authentifiée donnée.</p>
+    <p>La directive <code class="directive"><a href="../mod/core.html#authname">AuthName</a></code> d&#233;finit
+    l'<dfn>Identificateur</dfn> (Realm) &#224; utiliser avec
+    l'authentification. L'identificateur poss&#232;de deux fonctions. Tout
+    d'abord, le client pr&#233;sente en g&#233;n&#233;ral cette information &#224;
+    l'utilisateur dans le cadre de la bo&#238;te de dialogue de mot de passe.
+    Ensuite, le client l'utilise pour d&#233;terminer quel mot de passe
+    envoyer pour une zone authentifi&#233;e donn&#233;e.</p>
 
-    <p>Ainsi par exemple, une fois un client authentifié dans la zone
-    <code>"Fichiers réservés"</code>, il soumettra à nouveau
-    automatiquement le même mot de passe pour toute zone du même serveur
-    marquée de l'identificateur <code>"Fichiers réservés"</code>. De
-    cette façon, vous pouvez éviter à un utilisateur d'avoir à saisir
-    plusieurs fois le même mot de passe en faisant partager le même
-    identificateur entre plusieurs zones réservées. Bien entendu et pour
-    des raisons de sécurité, le client devra redemander le mot
-    de passe chaque fois que le nom d'hôte du serveur sera modifié.</p>
+    <p>Ainsi par exemple, une fois un client authentifi&#233; dans la zone
+    <code>"Fichiers r&#233;serv&#233;s"</code>, il soumettra &#224; nouveau
+    automatiquement le m&#234;me mot de passe pour toute zone du m&#234;me serveur
+    marqu&#233;e de l'identificateur <code>"Fichiers r&#233;serv&#233;s"</code>. De
+    cette fa&#231;on, vous pouvez &#233;viter &#224; un utilisateur d'avoir &#224; saisir
+    plusieurs fois le m&#234;me mot de passe en faisant partager le m&#234;me
+    identificateur entre plusieurs zones r&#233;serv&#233;es. Bien entendu et pour
+    des raisons de s&#233;curit&#233;, le client devra redemander le mot
+    de passe chaque fois que le nom d'h&#244;te du serveur sera modifi&#233;.</p>
 
     <p>La directive <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> est, dans ce
-    cas, facultative, car <code>file</code> est la valeur par défaut
+    cas, facultative, car <code>file</code> est la valeur par d&#233;faut
     pour cette directive. Par contre, cette directive sera obligatoire
     si vous utilisez une autre source d'authentification comme
     <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> ou
     <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code>.</p>
 
-    <p>La directive <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code> définit le chemin
-    du fichier de mots de passe que nous venons de créer avec
-    <code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code>. Si vous possédez un grand nombre
-    d'utilisateurs, la durée de la recherche dans un fichier texte pour
-    authentifier un utilisateur à chaque requête va augmenter
-    rapidement, et pour pallier cet inconvénient, Apache peut aussi
-    stocker les données relatives aux
-    utilisateurs dans des bases de données rapides. Le module
-    <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> fournit la directive <code class="directive"><a href="../mod/mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile</a></code>. Le programme <code class="program"><a href="../programs/dbmmanage.html">dbmmanage</a></code> permet de créer et manipuler ces fichiers. Vous
+    <p>La directive <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code> d&#233;finit le chemin
+    du fichier de mots de passe que nous venons de cr&#233;er avec
+    <code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code>. Si vous poss&#233;dez un grand nombre
+    d'utilisateurs, la dur&#233;e de la recherche dans un fichier texte pour
+    authentifier un utilisateur &#224; chaque requ&#234;te va augmenter
+    rapidement, et pour pallier cet inconv&#233;nient, Apache peut aussi
+    stocker les donn&#233;es relatives aux
+    utilisateurs dans des bases de donn&#233;es rapides. Le module
+    <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> fournit la directive <code class="directive"><a href="../mod/mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile</a></code>. Le programme <code class="program"><a href="../programs/dbmmanage.html">dbmmanage</a></code> permet de cr&#233;er et manipuler ces fichiers. Vous
     trouverez de nombreuses options d'autres types d'authentification
-    fournies par des modules tiers dans la <a href="http://modules.apache.org/">Base de données des modules
+    fournies par des modules tiers dans la <a href="http://modules.apache.org/">Base de donn&#233;es des modules
     d'Apache</a>.</p>
 
     <p>Enfin, la directive <code class="directive"><a href="../mod/core.html#require">Require</a></code>
-    implémente la partie
-    autorisation du processus en définissant l'utilisateur autorisé à
-    accéder à cette zone du serveur. Dans la section suivante, nous
-    décrirons les différentes méthodes d'utilisation de la directive
+    impl&#233;mente la partie
+    autorisation du processus en d&#233;finissant l'utilisateur autoris&#233; &#224;
+    acc&#233;der &#224; cette zone du serveur. Dans la section suivante, nous
+    d&#233;crirons les diff&#233;rentes m&#233;thodes d'utilisation de la directive
     <code class="directive"><a href="../mod/core.html#require">Require</a></code> directive.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="satisfy" id="satisfy">Satisfy</a></h2>
 
 <p>La directive <code class="directive"><a href="../mod/core.html#satisfy">Satisfy</a></code> permet de
-spécifier que plusieurs critères peuvent être considérés pour décider si
-l'on peut accorder l'accès à un utilisateur particulier. Satisfy accepte
+sp&#233;cifier que plusieurs crit&#232;res peuvent &#234;tre consid&#233;r&#233;s pour d&#233;cider si
+l'on peut accorder l'acc&#232;s &#224; un utilisateur particulier. Satisfy accepte
 comme argument une des deux options - <code>all</code> ou
-<code>any</code>. La valeur par défaut est <code>all</code>, ce qui
-signifie que dans le cas où plusieurs critères sont spécifiés,
-l'ensemble de ces derniers doit être satisfait pour que l'accès soit
-accordé. Par contre, si la valeur est <code>any</code>, si plusieurs
-critères sont spécifiés et si l'utilisateur satisfait à au moins un
-d'entre eux, l'accès lui sera accordé.</p>
+<code>any</code>. La valeur par d&#233;faut est <code>all</code>, ce qui
+signifie que dans le cas o&#249; plusieurs crit&#232;res sont sp&#233;cifi&#233;s,
+l'ensemble de ces derniers doit &#234;tre satisfait pour que l'acc&#232;s soit
+accord&#233;. Par contre, si la valeur est <code>any</code>, si plusieurs
+crit&#232;res sont sp&#233;cifi&#233;s et si l'utilisateur satisfait &#224; au moins un
+d'entre eux, l'acc&#232;s lui sera accord&#233;.</p>
 
-<p>Un exemple d'utilisation de cette directive est un contrôle d'accès
-afin de s'assurer que, bien qu'une ressource soit protégée par mot de
-passe depuis l'extérieur de votre réseau, tous les hôtes de votre réseau
-pourront y accéder sans authentification. Voici comment y parvenir en
+<p>Un exemple d'utilisation de cette directive est un contr&#244;le d'acc&#232;s
+afin de s'assurer que, bien qu'une ressource soit prot&#233;g&#233;e par mot de
+passe depuis l'ext&#233;rieur de votre r&#233;seau, tous les h&#244;tes de votre r&#233;seau
+pourront y acc&#233;der sans authentification. Voici comment y parvenir en
 utilisant la directive Satisfy :</p>
 
 <div class="example"><p><code>
@@ -320,37 +320,37 @@ utilisant la directive Satisfy :</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="lettingmorethanonepersonin" id="lettingmorethanonepersonin">Autorisation d'accès à
+<h2><a name="lettingmorethanonepersonin" id="lettingmorethanonepersonin">Autorisation d'acc&#232;s &#224;
 plusieurs personnes</a></h2>
     <p>Les directives ci-dessus n'autorisent qu'une personne (quelqu'un
-    possédant le nom d'utilisateur <code>rbowen</code>) à accéder au
-    répertoire. Dans la plupart des cas, vous devrez autoriser
-    l'accès à plusieurs personnes. C'est ici
+    poss&#233;dant le nom d'utilisateur <code>rbowen</code>) &#224; acc&#233;der au
+    r&#233;pertoire. Dans la plupart des cas, vous devrez autoriser
+    l'acc&#232;s &#224; plusieurs personnes. C'est ici
     qu'intervient la directive <code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code>.</p>
 
-    <p>Si vous voulez autoriser l'accès à plusieurs personnes, vous
-    devez créer un fichier de groupes qui associe des noms de groupes
+    <p>Si vous voulez autoriser l'acc&#232;s &#224; plusieurs personnes, vous
+    devez cr&#233;er un fichier de groupes qui associe des noms de groupes
     avec une liste d'utilisateurs de ce groupe. Le format de ce fichier
-    est très simple, et vous pouvez le créer avec votre éditeur de texte favori.
-    Son contenu se présente comme suit :</p>
+    est tr&#232;s simple, et vous pouvez le cr&#233;er avec votre &#233;diteur de texte favori.
+    Son contenu se pr&#233;sente comme suit :</p>
 
    <div class="example"><p><code>
      Nom-de-groupe: rbowen dpitts sungo rshersey
    </code></p></div>
 
     <p>Il s'agit simplement d'une liste des membres du groupe sous la
-    forme d'une ligne séparée par des espaces.</p>
+    forme d'une ligne s&#233;par&#233;e par des espaces.</p>
 
-    <p>Pour ajouter un utilisateur à votre fichier de mots de passe
-    préexistant, entrez :</p>
+    <p>Pour ajouter un utilisateur &#224; votre fichier de mots de passe
+    pr&#233;existant, entrez :</p>
 
     <div class="example"><p><code>
       htpasswd /usr/local/apache/passwd/passwords dpitts
     </code></p></div>
 
-    <p>Vous obtiendrez le même effet qu'auparavant, mais le mot de passe
-    sera ajouté au fichier, plutôt que d'en créer un nouveau (C'est le
-    drapeau <code>-c</code> qui permet de créer un nouveau fichier de
+    <p>Vous obtiendrez le m&#234;me effet qu'auparavant, mais le mot de passe
+    sera ajout&#233; au fichier, plut&#244;t que d'en cr&#233;er un nouveau (C'est le
+    drapeau <code>-c</code> qui permet de cr&#233;er un nouveau fichier de
     mots de passe)..</p>
 
     <p>Maintenant, vous devez modifier votre fichier
@@ -367,12 +367,12 @@ plusieurs personnes</a></h2>
     </code></p></div>
 
     <p>Maintenant, quiconque appartient au groupe
-    <code>Nom-de-groupe</code>, et possède une entrée dans le fichier
-    <code>password</code> pourra accéder au répertoire s'il tape le bon
+    <code>Nom-de-groupe</code>, et poss&#232;de une entr&#233;e dans le fichier
+    <code>password</code> pourra acc&#233;der au r&#233;pertoire s'il tape le bon
     mot de passe.</p>
 
-    <p>Il existe une autre méthode moins contraignante pour autoriser
-    l'accès à plusieurs personnes. Plutôt que de créer un fichier de
+    <p>Il existe une autre m&#233;thode moins contraignante pour autoriser
+    l'acc&#232;s &#224; plusieurs personnes. Plut&#244;t que de cr&#233;er un fichier de
     groupes, il vous suffit d'ajouter la directive suivante :</p>
 
     <div class="example"><p><code>
@@ -380,47 +380,47 @@ plusieurs personnes</a></h2>
     </code></p></div>
 
     <p>Le remplacement de la ligne <code>Require user rbowen</code> par
-    la ligne <code>Require valid-user</code> autorisera l'accès à
-    quiconque possédant une entrée dans le fichier password, et ayant
-    tapé le bon mot de passe.</p>
+    la ligne <code>Require valid-user</code> autorisera l'acc&#232;s &#224;
+    quiconque poss&#233;dant une entr&#233;e dans le fichier password, et ayant
+    tap&#233; le bon mot de passe.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="possibleproblems" id="possibleproblems">Problèmes possibles</a></h2>
-    <p>L'authentification Basic est spécifiée d'une telle manière que
-    vos nom d'utilisateur et mot de passe doivent être vérifiés chaque
-    fois que vous demandez un document au serveur, et ceci même si vous
-    rechargez la même page, et pour chaque image contenue dans la page
-    (si elles sont situées dans un répertoire protégé). Comme vous
+<h2><a name="possibleproblems" id="possibleproblems">Probl&#232;mes possibles</a></h2>
+    <p>L'authentification Basic est sp&#233;cifi&#233;e d'une telle mani&#232;re que
+    vos nom d'utilisateur et mot de passe doivent &#234;tre v&#233;rifi&#233;s chaque
+    fois que vous demandez un document au serveur, et ceci m&#234;me si vous
+    rechargez la m&#234;me page, et pour chaque image contenue dans la page
+    (si elles sont situ&#233;es dans un r&#233;pertoire prot&#233;g&#233;). Comme vous
     pouvez l'imaginer, ceci ralentit un peu le fonctionnement. La mesure
-    dans laquelle le fonctionnement est ralenti est proportionnelle à la
-    taille du fichier des mots de passe, car ce dernier doit être ouvert
-    et la liste des utilisateurs parcourue jusqu'à ce que votre nom soit
-    trouvé, et ceci chaque fois qu'une page est chargée.</p>
+    dans laquelle le fonctionnement est ralenti est proportionnelle &#224; la
+    taille du fichier des mots de passe, car ce dernier doit &#234;tre ouvert
+    et la liste des utilisateurs parcourue jusqu'&#224; ce que votre nom soit
+    trouv&#233;, et ceci chaque fois qu'une page est charg&#233;e.</p>
 
-    <p>En conséquence, ce ralentissement impose une limite pratique au
+    <p>En cons&#233;quence, ce ralentissement impose une limite pratique au
     nombre d'utilisateurs que vous pouvez enregistrer dans un fichier de
     mots de passe. Cette limite va varier en fonction des performances
-    de votre serveur, mais vous commencerez à remarquer un
+    de votre serveur, mais vous commencerez &#224; remarquer un
     ralentissement lorsque vous atteindrez quelques centaines
-    d'utilisateurs, et serez alors appelé à utiliser une méthode
-    d'authentification différente.</p>
+    d'utilisateurs, et serez alors appel&#233; &#224; utiliser une m&#233;thode
+    d'authentification diff&#233;rente.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="dbmdbd" id="dbmdbd">Autre méthode de stockage des mots de
+<h2><a name="dbmdbd" id="dbmdbd">Autre m&#233;thode de stockage des mots de
 passe</a></h2>
 
-    <p>Suite au problème évoqué précédemment et induit par le stockage
-    des mots de passe dans un fichier texte, vous pouvez être appelé à
-    stocker vos mots de passe d'une autre manière, par exemple dans une
-    base de données.</p>
+    <p>Suite au probl&#232;me &#233;voqu&#233; pr&#233;c&#233;demment et induit par le stockage
+    des mots de passe dans un fichier texte, vous pouvez &#234;tre appel&#233; &#224;
+    stocker vos mots de passe d'une autre mani&#232;re, par exemple dans une
+    base de donn&#233;es.</p>
 
     <p>Pour y parvenir, on peut utiliser les modules
     <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> ou <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code>.
     Vous pouvez choisir comme format de stockage <code>dbm</code> ou
-    <code>dbd</code> à la place de <code>file</code> pour la directive
+    <code>dbd</code> &#224; la place de <code>file</code> pour la directive
     <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code>.</p>
 
-    <p>Par exemple, pour sélectionner un fichier dbm à la place d'un
+    <p>Par exemple, pour s&#233;lectionner un fichier dbm &#224; la place d'un
     fichier texte :</p>
 
     <div class="example"><p><code>
@@ -436,33 +436,33 @@ passe</a></h2>
     </code></p></div>
 
     <p>D'autres options sont disponibles. Consultez la documentation de
-    <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> pour plus de détails.</p>
+    <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> pour plus de d&#233;tails.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="moreinformation" id="moreinformation">Pour aller plus loin . . .</a></h2>
     <p>Vous pouvez aussi lire la documentation de
     <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> et <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>
-    qui contient des informations supplémentaires à propos du
+    qui contient des informations suppl&#233;mentaires &#224; propos du
     fonctionnement de tout ceci.
-    Certaines configurations d'authentification peuvent aussi être
-    simplifiées à l'aide du module <code class="module"><a href="../mod/mod_authn_alias.html">mod_authn_alias</a></code>.</p>
+    Certaines configurations d'authentification peuvent aussi &#234;tre
+    simplifi&#233;es &#224; l'aide du module <code class="module"><a href="../mod/mod_authn_alias.html">mod_authn_alias</a></code>.</p>
 
-    <p>Les différents algorithmes de chiffrement supportés par Apache
-    pour authentifier les données sont expliqués dans <a href="../misc/password_encryptions.html">PasswordEncryptions</a>.</p>
+    <p>Les diff&#233;rents algorithmes de chiffrement support&#233;s par Apache
+    pour authentifier les donn&#233;es sont expliqu&#233;s dans <a href="../misc/password_encryptions.html">PasswordEncryptions</a>.</p>
 
     <p>Enfin vous pouvez consulter la recette <a href="access.html">Access
-    Control</a>, qui décrit un certain nombre de situations en relation
+    Control</a>, qui d&#233;crit un certain nombre de situations en relation
     avec le sujet.</p>
 
 </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/howto/auth.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/howto/auth.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/howto/auth.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/howto/auth.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/auth.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/howto/auth.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
+<a href="../tr/howto/auth.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
 var comments_identifier = 'http://httpd.apache.org/docs/2.2/howto/auth.html';
@@ -480,7 +480,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.2/howto/auth.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

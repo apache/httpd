@@ -25,19 +25,19 @@
             <p>This document refers to the <strong>2.2</strong> version of Apache httpd, which is no longer maintained. The active release is documented <a href="http://httpd.apache.org/docs/current">here</a>. If you have not already upgraded, please follow <a href="http://httpd.apache.org/docs/current/upgrading.html">this link</a> for more information.</p>
         <p>You may follow <a href="http://httpd.apache.org/docs/current/mod/">this link</a> to go to the current version of this document.</p></div><div id="preamble"><h1>Modul-Index</h1>
 <div class="toplang">
-<p><span>Verfügbare Sprachen: </span><a href="../de/mod/" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>Verf&#252;gbare Sprachen: </span><a href="../de/mod/" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/mod/" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../es/mod/" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
 <a href="../ja/mod/" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../tr/mod/" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/mod/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
 
     <p>
       Unten ist eine Liste aller Module angegeben, die als Bestandteil der
       Apache-Distribution mitgeliefert werden. Bitte beachten Sie auch die
-      vollständige alphabetische Liste <a href="directives.html">aller
+      vollst&#228;ndige alphabetische Liste <a href="directives.html">aller
       Apache-Direktiven</a>.
     </p>
   </div>
@@ -54,11 +54,11 @@
 <div class="section"><h2><a id="core" name="core">Kernfunktionen und
             Multi-Processing-Module</a></h2>
 <dl>
-<dt><a href="core.html">core</a></dt><dd>Ständig verfügbare Kernfunktionen des Apache HTTP
+<dt><a href="core.html">core</a></dt><dd>St&#228;ndig verf&#252;gbare Kernfunktionen des Apache HTTP
 Servers</dd>
 <dt><a href="mpm_common.html">mpm_common</a></dt><dd class="separate">Eine Sammlung von Direktiven, die in mehr als einem
   Multi-Processing-Modul (MPM) implementiert sind.</dd>
-<dt><a href="beos.html">beos</a></dt><dd>Dieses Multi-Processing-Modul ist für BeOS
+<dt><a href="beos.html">beos</a></dt><dd>Dieses Multi-Processing-Modul ist f&#252;r BeOS
   optimiert.</dd>
 <dt><a href="event.html">event</a></dt><dd>An experimental variant of the standard <code class="module"><a href="../mod/worker.html">worker</a></code>
 MPM</dd>
@@ -66,17 +66,17 @@ MPM</dd>
     server optimized for Novell NetWare</dd>
 <dt><a href="mpmt_os2.html">mpmt_os2</a></dt><dd>Hybrid multi-process, multi-threaded MPM for OS/2</dd>
 <dt><a href="prefork.html">prefork</a></dt><dd>Implementiert einen im Voraus forkenden Webserver ohne
-  Thread-Unterstützung</dd>
-<dt><a href="mpm_winnt.html">mpm_winnt</a></dt><dd> Das Multi-Processing-Modul ist optimiert für
+  Thread-Unterst&#252;tzung</dd>
+<dt><a href="mpm_winnt.html">mpm_winnt</a></dt><dd> Das Multi-Processing-Modul ist optimiert f&#252;r
   Windows NT.</dd>
 <dt><a href="worker.html">worker</a></dt><dd>Multi-Processing-Modul, das einen Hybrid-Webserver mit
-  Multi-Thread und Multi-Prozess-Unterstützung implementiert</dd>
+  Multi-Thread und Multi-Prozess-Unterst&#252;tzung implementiert</dd>
 </dl></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section"><h2><a id="other" name="other">Andere Module</a></h2>
 <p class="letters"><a href="#A">&nbsp;A&nbsp;</a> | <a href="#C">&nbsp;C&nbsp;</a> | <a href="#D">&nbsp;D&nbsp;</a> | <a href="#E">&nbsp;E&nbsp;</a> | <a href="#F">&nbsp;F&nbsp;</a> | <a href="#H">&nbsp;H&nbsp;</a> | <a href="#I">&nbsp;I&nbsp;</a> | <a href="#L">&nbsp;L&nbsp;</a> | <a href="#M">&nbsp;M&nbsp;</a> | <a href="#N">&nbsp;N&nbsp;</a> | <a href="#P">&nbsp;P&nbsp;</a> | <a href="#R">&nbsp;R&nbsp;</a> | <a href="#S">&nbsp;S&nbsp;</a> | <a href="#U">&nbsp;U&nbsp;</a> | <a href="#V">&nbsp;V&nbsp;</a></p>
-<dl><dt><a href="mod_actions.html" id="A" name="A">mod_actions</a></dt><dd>Dieses Modul ermöglicht die Ausführung von CGI-Skripten
-  in Abhängigkeit von Medientypen und Anfragemethoden.</dd>
+<dl><dt><a href="mod_actions.html" id="A" name="A">mod_actions</a></dt><dd>Dieses Modul erm&#246;glicht die Ausf&#252;hrung von CGI-Skripten
+  in Abh&#228;ngigkeit von Medientypen und Anfragemethoden.</dd>
 <dt><a href="mod_alias.html">mod_alias</a></dt><dd>Provides for mapping different parts of the host
     filesystem in the document tree and for URL redirection</dd>
 <dt><a href="mod_asis.html">mod_asis</a></dt><dd>Sends files that contain their own
@@ -195,12 +195,12 @@ identifier for each request</dd>
 hosting</dd>
 </dl></div></div>
 <div class="bottomlang">
-<p><span>Verfügbare Sprachen: </span><a href="../de/mod/" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>Verf&#252;gbare Sprachen: </span><a href="../de/mod/" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/mod/" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../es/mod/" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
 <a href="../ja/mod/" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../tr/mod/" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/mod/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2018 The Apache Software Foundation.<br />Lizenziert unter der <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>

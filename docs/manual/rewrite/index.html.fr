@@ -24,91 +24,91 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.2</a></div><div id="page-content"><div class="retired"><h4>A savoir</h4>
             <p>Ce document concerne une version ancienne (<strong>2.2</strong>)
 	    du serveur HTTP Apache. La version actuelle est
-	    documentée <a href="http://httpd.apache.org/docs/current">ici</a>. Si vous n'avez
-	    pas encore effectué la mise è jour, veuillez suivre <a href="http://httpd.apache.org/docs/current/upgrading.html">ce
+	    document&#233;e <a href="http://httpd.apache.org/docs/current">ici</a>. Si vous n'avez
+	    pas encore effectu&#233; la mise &#232; jour, veuillez suivre <a href="http://httpd.apache.org/docs/current/upgrading.html">ce
 	    lien</a> pour plus d'informations.</p>
         <p>Pour consulter la version actuelle de ce
 	document, vous pouvez suivre <a href="http://httpd.apache.org/docs/current/rewrite/">ce lien</a>.</p></div><div id="preamble"><h1>Le module Apache mod_rewrite</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/rewrite/" title="Français">&nbsp;fr&nbsp;</a> |
-<a href="../tr/rewrite/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../fr/rewrite/" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../tr/rewrite/" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
 
       
-       <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> permet de modifier les requêtes
-       entrantes dynamiquement, en fonction de règles manipulant des <a href="intro.html#regex">expressions rationnelles</a>. Vous pouvez
-       ainsi relier des URLs arbitraires à votre propre structure d'URLs
+       <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> permet de modifier les requ&#234;tes
+       entrantes dynamiquement, en fonction de r&#232;gles manipulant des <a href="intro.html#regex">expressions rationnelles</a>. Vous pouvez
+       ainsi relier des URLs arbitraires &#224; votre propre structure d'URLs
        interne comme vous le souhaitez.</p>
       
       <p>Il fournit un
-      mécanisme de manipulation d'URL particulièrement souple et
-      puissant en supportant un nombre illimité de règles et de
-      conditions attachées à chaque règle. Les manipulations d'URLs
-      peuvent dépendre de tests variés : les URLs peuvent
-      être finement caractérisées en fonction de variables du serveur,
-      de variables d'environnement, d'en-têtes HTTP, de repères
-      temporels, de recherches dans des bases de données
-      externes, ou même de requêtes vers des bases de données externes
-      et de différents gestionnaires ou programmes externes.</p>
+      m&#233;canisme de manipulation d'URL particuli&#232;rement souple et
+      puissant en supportant un nombre illimit&#233; de r&#232;gles et de
+      conditions attach&#233;es &#224; chaque r&#232;gle. Les manipulations d'URLs
+      peuvent d&#233;pendre de tests vari&#233;s : les URLs peuvent
+      &#234;tre finement caract&#233;ris&#233;es en fonction de variables du serveur,
+      de variables d'environnement, d'en-t&#234;tes HTTP, de rep&#232;res
+      temporels, de recherches dans des bases de donn&#233;es
+      externes, ou m&#234;me de requ&#234;tes vers des bases de donn&#233;es externes
+      et de diff&#233;rents gestionnaires ou programmes externes.</p>
 
-      <p>Les règles de réécriture peuvent agir sur l'ensemble des URLs (la partie chemin
-      et la chaîne de paramètres) et peuvent être utilisées dans le contexte du serveur principal
+      <p>Les r&#232;gles de r&#233;&#233;criture peuvent agir sur l'ensemble des URLs (la partie chemin
+      et la cha&#238;ne de param&#232;tres) et peuvent &#234;tre utilis&#233;es dans le contexte du serveur principal
       (<code>httpd.conf</code>), mais aussi dans le contexte des
       serveurs virtuels (sections <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>), ou dans le
       contexte des
-      répertoires (fichiers <code>.htaccess</code> et blocs
-      <code>&lt;Directory&gt;</code>. Le résultat
-      réécrit peut conduire vers d'autres règles à un
-      traitement secondaire interne, une redirection vers une requête
-      externe ou même l'envoi vers un serveur mandataire, en fonction
+      r&#233;pertoires (fichiers <code>.htaccess</code> et blocs
+      <code>&lt;Directory&gt;</code>. Le r&#233;sultat
+      r&#233;&#233;crit peut conduire vers d'autres r&#232;gles &#224; un
+      traitement secondaire interne, une redirection vers une requ&#234;te
+      externe ou m&#234;me l'envoi vers un serveur mandataire, en fonction
       des  <a href="flags.html">drapeaux</a> que vous attachez aux
-      règles</p>
+      r&#232;gles</p>
 
-	<p>mod_rewrite étant très puissant, il peut par
-	conséquent être très complexe. Ce document
-	complè la <a href="../mod/mod_rewrite.html">documentation de
-      référence</a>, et est sensé alléger un
-      peu cette complexité, et présenter des exemples largement
-      commentés, ainsi que des situations courantes que vous
+	<p>mod_rewrite &#233;tant tr&#232;s puissant, il peut par
+	cons&#233;quent &#234;tre tr&#232;s complexe. Ce document
+	compl&#232; la <a href="../mod/mod_rewrite.html">documentation de
+      r&#233;f&#233;rence</a>, et est sens&#233; all&#233;ger un
+      peu cette complexit&#233;, et pr&#233;senter des exemples largement
+      comment&#233;s, ainsi que des situations courantes que vous
       pourrez traiter avec mod_rewrite. Mais nous voulons aussi vous
-      montrer des situations où vous ne devrez pas utiliser
-      mod_rewrite, et lui préférer d'autres
-      fonctionnalités standard d'Apache, évitant ainsi
-      d'entrer dans une complexité inutile.</p>
+      montrer des situations o&#249; vous ne devrez pas utiliser
+      mod_rewrite, et lui pr&#233;f&#233;rer d'autres
+      fonctionnalit&#233;s standard d'Apache, &#233;vitant ainsi
+      d'entrer dans une complexit&#233; inutile.</p>
 
 <ul>
 <li><a href="../mod/mod_rewrite.html">documentation de
-référence de mod_rewrite</a></li>
-<li><a href="intro.html">Introduction aux expressions rationnelles et à
+r&#233;f&#233;rence de mod_rewrite</a></li>
+<li><a href="intro.html">Introduction aux expressions rationnelles et &#224;
 mod_rewrite</a></li>
 <li><a href="remapping.html">Utilisation de mod_rewrite pour la
-redirection et la remise en corespondance avec le système de
+redirection et la remise en corespondance avec le syst&#232;me de
 fichiers des URLs</a></li>
 <li><a href="access.html">Utilisation de mod_rewrite pour le
-contrôle d'accès</a></li>
+contr&#244;le d'acc&#232;s</a></li>
 <li><a href="vhosts.html">Les serveurs virtuels dynamiques avec mod_rewrite</a></li>
 <li><a href="proxy.html">Les serveurs mandataires dynamiques avec mod_rewrite</a></li>
 <li><a href="rewritemap.html">Utilisation de  RewriteMap</a></li>
-<li><a href="advanced.html">Techniques avancées et conseils</a></li>
+<li><a href="advanced.html">Techniques avanc&#233;es et conseils</a></li>
 <li><a href="avoid.html">Quand <strong>NE PAS</strong> utiliser mod_rewrite</a></li>
-<li><a href="flags.html">Drapeaux de réécriture</a></li>
-<li><a href="tech.html">Détails techniques</a></li>
+<li><a href="flags.html">Drapeaux de r&#233;&#233;criture</a></li>
+<li><a href="tech.html">D&#233;tails techniques</a></li>
 </ul>
 </div>
 <div id="quickview"><h3>Voir aussi</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Documentation de
-référence de mod_rewrite</a></li><li><a href="../urlmapping.html">Mise en correspondance des URLs
-avec le système de fichiers</a></li><li><a href="http://wiki.apache.org/httpd/Rewrite">wiki mod_rewrite
+r&#233;f&#233;rence de mod_rewrite</a></li><li><a href="../urlmapping.html">Mise en correspondance des URLs
+avec le syst&#232;me de fichiers</a></li><li><a href="http://wiki.apache.org/httpd/Rewrite">wiki mod_rewrite
 </a></li><li><a href="../glossary.html">Glossaire</a></li></ul></div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/rewrite/" title="Français">&nbsp;fr&nbsp;</a> |
-<a href="../tr/rewrite/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../fr/rewrite/" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../tr/rewrite/" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

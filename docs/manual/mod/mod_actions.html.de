@@ -28,23 +28,23 @@
             <p>This document refers to the <strong>2.2</strong> version of Apache httpd, which is no longer maintained. The active release is documented <a href="http://httpd.apache.org/docs/current">here</a>. If you have not already upgraded, please follow <a href="http://httpd.apache.org/docs/current/upgrading.html">this link</a> for more information.</p>
         <p>You may follow <a href="http://httpd.apache.org/docs/current/mod/mod_actions.html">this link</a> to go to the current version of this document.</p></div><div id="preamble"><h1>Apache-Modul mod_actions</h1>
 <div class="toplang">
-<p><span>Verfügbare Sprachen: </span><a href="../de/mod/mod_actions.html" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>Verf&#252;gbare Sprachen: </span><a href="../de/mod/mod_actions.html" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/mod_actions.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_actions.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_actions.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Beschreibung:</a></th><td>Dieses Modul ermöglicht die Ausführung von CGI-Skripten
-  in Abhängigkeit von Medientypen und Anfragemethoden.</td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">Beschreibung:</a></th><td>Dieses Modul erm&#246;glicht die Ausf&#252;hrung von CGI-Skripten
+  in Abh&#228;ngigkeit von Medientypen und Anfragemethoden.</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Basis</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Modulbezeichner:</a></th><td>actions_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Quelltext-Datei:</a></th><td>mod_actions.c</td></tr></table>
 <h3>Zusammenfassung</h3>
 
-    <p>Das Modul besitzt zwei Direktiven. Die Direktive <code class="directive"><a href="#action">Action</a></code> erlaubt die Ausführung von 
-      CGI-Skripten immer dann, wenn eine Anfrage zu einem bestimmten <a class="glossarylink" href="../glossary.html#mime-type" title="siehe Glossar">MIME-Type</a> erfolgt. Die Direktive <code class="directive"><a href="#script">Script</a></code> erlaubt die Ausführung
-      von CGI-Skripten abhängig von einer
+    <p>Das Modul besitzt zwei Direktiven. Die Direktive <code class="directive"><a href="#action">Action</a></code> erlaubt die Ausf&#252;hrung von 
+      CGI-Skripten immer dann, wenn eine Anfrage zu einem bestimmten <a class="glossarylink" href="../glossary.html#mime-type" title="siehe Glossar">MIME-Type</a> erfolgt. Die Direktive <code class="directive"><a href="#script">Script</a></code> erlaubt die Ausf&#252;hrung
+      von CGI-Skripten abh&#228;ngig von einer
       bestimmten Methode, die in der Anfrage verwendet wird. Dies macht es
-      deutlich einfacher, Skripte auszuführen, die Dateien
+      deutlich einfacher, Skripte auszuf&#252;hren, die Dateien
       verarbeiten.</p>
 </div>
 <div id="quickview"><h3 class="directives">Direktiven</h3>
@@ -62,28 +62,28 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Action" id="Action">Action</a>-<a name="action" id="action">Direktive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Aktiviert ein CGI-Skript für einen bestimmten Handler oder
+<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Aktiviert ein CGI-Skript f&#252;r einen bestimmten Handler oder
   Content-Type</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Action <var>Aktionsart</var> <var>CGI-Skript</var> [virtual]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host, Verzeichnis, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Basis</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>mod_actions</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Kompatibilität:</a></th><td>Der Schalter <code>virtual</code> und die Übergabe des 
-  Handlers wurden in Apache 2.1 eingeführt.</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Kompatibilit&#228;t:</a></th><td>Der Schalter <code>virtual</code> und die &#220;bergabe des 
+  Handlers wurden in Apache 2.1 eingef&#252;hrt.</td></tr>
 </table>
-    <p>Die Direktive fügt eine Aktion hinzu, welche das
+    <p>Die Direktive f&#252;gt eine Aktion hinzu, welche das
       <var>CGI-Skript</var> aktiviert, sobald die <var>Aktionsart</var> durch
-      eine Anfrage ausgelöst wird. <var>CGI-Skript</var> ist der URL-Pfad
+      eine Anfrage ausgel&#246;st wird. <var>CGI-Skript</var> ist der URL-Pfad
       zu einer Ressource, die unter Verwendung von <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code> oder <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code> als CGI-Skript gekennzeichnet
       wurde. Die <var>Aktionsart</var> kann entweder ein <a href="../handler.html">Handler</a> oder ein <a class="glossarylink" href="../glossary.html#mime-type" title="siehe Glossar">MIME-Type</a> sein. Die URL und den Dateipfad des
       angeforderten Dokuments in den Standard-CGI-Umgebungsvariablen
-      <code>PATH_INFO</code> und <code>PATH_TRANSLATED</code> übergeben.
-      Der für die jeweilige Anfrage verwendete Handler wird in der
-      Umgebungsvariablen <code>REDIRECT_HANDLER</code> übergeben.</p>
+      <code>PATH_INFO</code> und <code>PATH_TRANSLATED</code> &#252;bergeben.
+      Der f&#252;r die jeweilige Anfrage verwendete Handler wird in der
+      Umgebungsvariablen <code>REDIRECT_HANDLER</code> &#252;bergeben.</p>
 
     <div class="example"><h3>Beispiele</h3><p><code>
-      # Anfragen für Dateien eines bestimmten MIME-Types:<br />
+      # Anfragen f&#252;r Dateien eines bestimmten MIME-Types:<br />
       Action image/gif /cgi-bin/images.cgi<br />
       <br />
       # Dateien einer bestimmten Dateiendung<br />
@@ -91,18 +91,18 @@
       Action my-file-type /cgi-bin/program.cgi<br />
     </code></p></div>
 
-    <p>Im ersten Beispiel werden Anfragen für Dateien mit dem MIME-Type
+    <p>Im ersten Beispiel werden Anfragen f&#252;r Dateien mit dem MIME-Type
       <code>image/gif</code> von dem angegebenen CGI-Skript
       <code>/cgi-bin/images.cgi</code> bearbeitet.</p>
 
-    <p>Im zweiten Beispiel werden Anfragen für Dateien mit der Dateiendung
+    <p>Im zweiten Beispiel werden Anfragen f&#252;r Dateien mit der Dateiendung
       <code>.xyz</code> von dem angegebenen CGI-Skript 
       <code>/cgi-bin/program.cgi</code> bearbeitet.</p>
 
-    <p>Der optionale Schalter <code>virtual</code> deaktiviert die Prüfung
+    <p>Der optionale Schalter <code>virtual</code> deaktiviert die Pr&#252;fung
       auf Existenz der angeforderten Datei. Dies ist beispielsweise 
-      nützlich, wenn Sie die Direktive <code class="directive">Action</code> in 
-      Verbindung mit virtuellen Adressräumen verwenden möchten.</p> 
+      n&#252;tzlich, wenn Sie die Direktive <code class="directive">Action</code> in 
+      Verbindung mit virtuellen Adressr&#228;umen verwenden m&#246;chten.</p> 
 
     <div class="example"><h3>Beispiel</h3><p><code>
       &lt;Location /news&gt;<br />
@@ -121,30 +121,30 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Script" id="Script">Script</a>-<a name="script" id="script">Direktive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Aktiviert ein CGI-Skript für eine bestimmte 
+<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Aktiviert ein CGI-Skript f&#252;r eine bestimmte 
   Anfragemethode.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Script <var>Methode</var> <var>CGI-Skript</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host, Verzeichnis</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Basis</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>mod_actions</td></tr>
 </table>
-  <p>Die Direktive fügt eine Aktion hinzu, welche das
+  <p>Die Direktive f&#252;gt eine Aktion hinzu, welche das
     <var>CGI-Skript</var> aktiviert, wenn eine Datei unter der Verwendung der
     Methode <var>Methode</var> angefordert wird. <var>CGI-Skript</var> ist der 
     URL-Pfad zu einer Ressource, die unter Verwendung von <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code> oder <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code> als CGI-Skript gekennzeichnet
     wurde. Die URL und der Dateipfad des angeforderten Dokuments werden in den
     Standard-CGI-Umgebungsvariablen <code>PATH_INFO</code> und
-    <code>PATH_TRANSLATED</code> übergeben.</p>
+    <code>PATH_TRANSLATED</code> &#252;bergeben.</p>
 
     <div class="note">
-      Der Methodenname kann frei gewählt werden. Bei <strong>Methodennamen
-      wird zwischen Groß- und Kleinschreibung</strong> unterschieden, so
+      Der Methodenname kann frei gew&#228;hlt werden. Bei <strong>Methodennamen
+      wird zwischen Gro&#223;- und Kleinschreibung</strong> unterschieden, so
       dass <code>Script PUT</code> und <code>Script put</code> zu vollkommen
-      unterschiedlichen Ergebnissen führen.
+      unterschiedlichen Ergebnissen f&#252;hren.
     </div>
 
     <p>Beachten Sie, dass der <code class="directive">Script</code>-Befehl nur
-      Voreinstellungen für Aktionen definiert. Wird ein CGI-Skript
+      Voreinstellungen f&#252;r Aktionen definiert. Wird ein CGI-Skript
       - oder eine andere Ressource, die in der Lage ist, die angeforderte 
       Methode intern zu bearbeiten - aufgerufen, so wird diese(s) verwendet.
       Beachten Sie auch, dass <code class="directive">Script</code> mit der Methode
@@ -153,7 +153,7 @@
       bearbeitet.</p>
 
     <div class="example"><h3>Beispiele</h3><p><code>
-      # Für &lt;ISINDEX&gt;-ähnliches Suchen<br />
+      # F&#252;r &lt;ISINDEX&gt;-&#228;hnliches Suchen<br />
       Script GET /cgi-bin/search<br />
       <br />
       # Ein CGI-PUT-Handler<br />
@@ -163,11 +163,11 @@
 </div>
 </div>
 <div class="bottomlang">
-<p><span>Verfügbare Sprachen: </span><a href="../de/mod/mod_actions.html" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>Verf&#252;gbare Sprachen: </span><a href="../de/mod/mod_actions.html" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/mod_actions.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_actions.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_actions.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Kommentare</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Kommentare</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
 var comments_identifier = 'http://httpd.apache.org/docs/2.2/mod/mod_actions.html';

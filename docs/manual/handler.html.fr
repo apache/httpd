@@ -24,23 +24,23 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.2</a></div><div id="page-content"><div class="retired"><h4>A savoir</h4>
             <p>Ce document concerne une version ancienne (<strong>2.2</strong>)
 	    du serveur HTTP Apache. La version actuelle est
-	    documentée <a href="http://httpd.apache.org/docs/current">ici</a>. Si vous n'avez
-	    pas encore effectué la mise è jour, veuillez suivre <a href="http://httpd.apache.org/docs/current/upgrading.html">ce
+	    document&#233;e <a href="http://httpd.apache.org/docs/current">ici</a>. Si vous n'avez
+	    pas encore effectu&#233; la mise &#232; jour, veuillez suivre <a href="http://httpd.apache.org/docs/current/upgrading.html">ce
 	    lien</a> pour plus d'informations.</p>
         <p>Pour consulter la version actuelle de ce
 	document, vous pouvez suivre <a href="http://httpd.apache.org/docs/current/handler.html">ce lien</a>.</p></div><div id="preamble"><h1>Utilisation des gestionnaires d'Apache (handlers)</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="./en/handler.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/handler.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/handler.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./es/handler.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/handler.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/handler.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/handler.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./ru/handler.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a> |
-<a href="./tr/handler.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="./tr/handler.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/handler.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
 
-    <p>Ce document décrit l'utilisation des gestionnaires d'Apache (handlers).</p>
+    <p>Ce document d&#233;crit l'utilisation des gestionnaires d'Apache (handlers).</p>
   </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#definition">Qu'est-ce qu'un gestionnaire ?</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#examples">Exemples</a></li>
@@ -50,51 +50,51 @@
 <div class="section">
 <h2><a name="definition" id="definition">Qu'est-ce qu'un gestionnaire ?</a></h2>
     
-    <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_actions.html">mod_actions</a></code></li><li><code class="module"><a href="./mod/mod_asis.html">mod_asis</a></code></li><li><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="./mod/mod_imagemap.html">mod_imagemap</a></code></li><li><code class="module"><a href="./mod/mod_info.html">mod_info</a></code></li><li><code class="module"><a href="./mod/mod_mime.html">mod_mime</a></code></li><li><code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code></li><li><code class="module"><a href="./mod/mod_status.html">mod_status</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_actions.html#action">Action</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#addhandler">AddHandler</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#removehandler">RemoveHandler</a></code></li><li><code class="directive"><a href="./mod/core.html#sethandler">SetHandler</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>Modules Apparent&#233;s</th><th>Directives Apparent&#233;es</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_actions.html">mod_actions</a></code></li><li><code class="module"><a href="./mod/mod_asis.html">mod_asis</a></code></li><li><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="./mod/mod_imagemap.html">mod_imagemap</a></code></li><li><code class="module"><a href="./mod/mod_info.html">mod_info</a></code></li><li><code class="module"><a href="./mod/mod_mime.html">mod_mime</a></code></li><li><code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code></li><li><code class="module"><a href="./mod/mod_status.html">mod_status</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_actions.html#action">Action</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#addhandler">AddHandler</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#removehandler">RemoveHandler</a></code></li><li><code class="directive"><a href="./mod/core.html#sethandler">SetHandler</a></code></li></ul></td></tr></table>
 
 
-    <p>Un "gestionnaire" est une représentation interne à Apache de l'action
-    qui doit être entreprise quand un fichier est appelé. En général, les
-    fichiers ont des gestionnaires implicites, basés sur le type du fichier.
-    Normalement, tous les fichiers sont traités simplement par le serveur,
-    mais certains types de fichiers sont "gérés" séparément.</p>
+    <p>Un "gestionnaire" est une repr&#233;sentation interne &#224; Apache de l'action
+    qui doit &#234;tre entreprise quand un fichier est appel&#233;. En g&#233;n&#233;ral, les
+    fichiers ont des gestionnaires implicites, bas&#233;s sur le type du fichier.
+    Normalement, tous les fichiers sont trait&#233;s simplement par le serveur,
+    mais certains types de fichiers sont "g&#233;r&#233;s" s&#233;par&#233;ment.</p>
 
-    <p>Les gestionnaires peuvent aussi être configurés explicitement,
+    <p>Les gestionnaires peuvent aussi &#234;tre configur&#233;s explicitement,
     soit en fonction des extensions des noms de fichier, soit en fonction
     du chemin du fichier,
-    sans faire référence au type de fichier. Ceci a le double avantage d'être
-    une solution plus élégante, et aussi d'autoriser à associer à la fois
+    sans faire r&#233;f&#233;rence au type de fichier. Ceci a le double avantage d'&#234;tre
+    une solution plus &#233;l&#233;gante, et aussi d'autoriser &#224; associer &#224; la fois
     un type <strong>et</strong> un gestionnaire avec un fichier. (Voir aussi <a href="mod/mod_mime.html#multipleext">Fichiers avec extensions
     multiples</a>.)</p>
 
-    <p>Les gestionnaires peuvent être soit partie intégrante
-    du serveur ou inclus dans un module, soit ajoutés à l'aide de la directive
+    <p>Les gestionnaires peuvent &#234;tre soit partie int&#233;grante
+    du serveur ou inclus dans un module, soit ajout&#233;s &#224; l'aide de la directive
     <code class="directive"><a href="./mod/mod_actions.html#action">Action</a></code>. Les gestionnaires
-    intégrés dans la distribution standard se présentent comme suit :</p>
+    int&#233;gr&#233;s dans la distribution standard se pr&#233;sentent comme suit :</p>
 
     <ul>
       <li><strong>default-handler</strong>: envoie le fichier en utilisant
-      le <code>default_handler()</code>, qui est le gestionnaire utilisé par
-      défaut pour traiter les contenus statiques. (core)</li>
+      le <code>default_handler()</code>, qui est le gestionnaire utilis&#233; par
+      d&#233;faut pour traiter les contenus statiques. (core)</li>
 
-      <li><strong>send-as-is</strong>: envoie les fichiers avec en-têtes HTTP
+      <li><strong>send-as-is</strong>: envoie les fichiers avec en-t&#234;tes HTTP
       tels quels. (<code class="module"><a href="./mod/mod_asis.html">mod_asis</a></code>)</li>
 
       <li><strong>cgi-script</strong>: traite le fichier comme un
       script CGI. (<code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code>)</li>
 
       <li><strong>imap-file</strong>: Traite le fichier comme un ensemble
-      de règles de descriptions d'images (imagemap).
+      de r&#232;gles de descriptions d'images (imagemap).
       (<code class="module"><a href="./mod/mod_imagemap.html">mod_imagemap</a></code>)</li>
 
       <li><strong>server-info</strong>: Extrait des informations sur la
       configuration du serveur. (<code class="module"><a href="./mod/mod_info.html">mod_info</a></code>)</li>
 
-      <li><strong>server-status</strong>: Rédige un rapport sur le statut
+      <li><strong>server-status</strong>: R&#233;dige un rapport sur le statut
       du serveur. (<code class="module"><a href="./mod/mod_status.html">mod_status</a></code>)</li>
 
       <li><strong>type-map</strong>: Traite le fichier comme une description
-      de type pour la négociation du contenu.
+      de type pour la n&#233;gociation du contenu.
       (<code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code>)</li>
     </ul>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -102,31 +102,31 @@
 <h2><a name="examples" id="examples">Exemples</a></h2>
     
 
-    <h3><a name="example1" id="example1">Modification d'un contenu statique à l'aide d'un script CGI</a></h3>
+    <h3><a name="example1" id="example1">Modification d'un contenu statique &#224; l'aide d'un script CGI</a></h3>
       
 
-      <p>Les directives suivantes vont faire en sorte que les requêtes pour
-      des fichiers possédant une extension <code>html</code> déclenchent
-      l'exécution du script CGI <code>footer.pl</code>.</p>
+      <p>Les directives suivantes vont faire en sorte que les requ&#234;tes pour
+      des fichiers poss&#233;dant une extension <code>html</code> d&#233;clenchent
+      l'ex&#233;cution du script CGI <code>footer.pl</code>.</p>
 
       <div class="example"><p><code>
         Action add-footer /cgi-bin/footer.pl<br />
         AddHandler add-footer .html
       </code></p></div>
 
-      <p>À ce moment-là, le script CGI se charge d'envoyer le document
-      initialement demandé (référencé par la variable d'environnement
+      <p>&#192; ce moment-l&#224;, le script CGI se charge d'envoyer le document
+      initialement demand&#233; (r&#233;f&#233;renc&#233; par la variable d'environnement
       <code>PATH_TRANSLATED</code>) et d'effectuer tous ajout ou modification
       voulus.</p>
 
     
-    <h3><a name="example2" id="example2">Fichiers avec en-têtes HTTP</a></h3>
+    <h3><a name="example2" id="example2">Fichiers avec en-t&#234;tes HTTP</a></h3>
       
 
       <p>Les directives suivantes vont activer le gestionnaire
-      <code>send-as-is</code>, qui est utilisé pour les fichiers qui possèdent
-      leurs propres en-têtes HTTP. Tous les fichiers situés dans le répertoire
-      <code>/web/htdocs/asis/</code> seront traités par le gestionnaire
+      <code>send-as-is</code>, qui est utilis&#233; pour les fichiers qui poss&#232;dent
+      leurs propres en-t&#234;tes HTTP. Tous les fichiers situ&#233;s dans le r&#233;pertoire
+      <code>/web/htdocs/asis/</code> seront trait&#233;s par le gestionnaire
       <code>send-as-is</code>, sans tenir compte de l'extension
       de leur nom de fichier.</p>
 
@@ -142,38 +142,38 @@
 <h2><a name="programmer" id="programmer">Note du programmeur</a></h2>
     
 
-    <p>Pour implémenter la fonctionnalité des gestionnaires, l'
+    <p>Pour impl&#233;menter la fonctionnalit&#233; des gestionnaires, l'
     <a href="developer/API.html">API Apache</a> a fait l'objet d'un ajout
-    que vous pourriez être amené à utiliser.
+    que vous pourriez &#234;tre amen&#233; &#224; utiliser.
 
-    Plus précisément, un nouvel enregistrement a été ajouté à la structure
+    Plus pr&#233;cis&#233;ment, un nouvel enregistrement a &#233;t&#233; ajout&#233; &#224; la structure
     <code>request_rec</code> :</p>
 
     <div class="example"><p><code>
       char *handler
     </code></p></div>
 
-    <p>Si vous voulez que votre module déclenche l'utilisation d'un
-    gestionnaire, il vous suffit de définir <code>r-&gt;handler</code> avec
-    le nom du gestionnaire à n'importe quel moment avant l'étape
+    <p>Si vous voulez que votre module d&#233;clenche l'utilisation d'un
+    gestionnaire, il vous suffit de d&#233;finir <code>r-&gt;handler</code> avec
+    le nom du gestionnaire &#224; n'importe quel moment avant l'&#233;tape
     <code>invoke_handler</code>
-    de la requête. Les gestionnaires sont implémentés comme auparavant,
-    quoique l'on utilise le nom du gestionnaire à la place d'un type
+    de la requ&#234;te. Les gestionnaires sont impl&#233;ment&#233;s comme auparavant,
+    quoique l'on utilise le nom du gestionnaire &#224; la place d'un type
     de contenu. Bien que ce ne soit pas obligatoire, la convention de nommage
-    des gestionnaires stipule l'utilisation d'un mot composé séparé par des
-    tirets, sans slashes, afin de ne pas interférer avec l'espace de nommage
-    des types de média.</p>
+    des gestionnaires stipule l'utilisation d'un mot compos&#233; s&#233;par&#233; par des
+    tirets, sans slashes, afin de ne pas interf&#233;rer avec l'espace de nommage
+    des types de m&#233;dia.</p>
   </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="./en/handler.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/handler.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/handler.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./es/handler.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/handler.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/handler.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/handler.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./ru/handler.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a> |
-<a href="./tr/handler.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="./tr/handler.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/handler.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
+</div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
 var comments_identifier = 'http://httpd.apache.org/docs/2.2/handler.html';
@@ -191,7 +191,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.2/handler.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

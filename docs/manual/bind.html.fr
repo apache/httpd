@@ -7,7 +7,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Adresse IP et port d'écoute - Serveur Apache HTTP Version 2.2</title>
+<title>Adresse IP et port d'&#233;coute - Serveur Apache HTTP Version 2.2</title>
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
@@ -24,55 +24,55 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.2</a></div><div id="page-content"><div class="retired"><h4>A savoir</h4>
             <p>Ce document concerne une version ancienne (<strong>2.2</strong>)
 	    du serveur HTTP Apache. La version actuelle est
-	    documentée <a href="http://httpd.apache.org/docs/current">ici</a>. Si vous n'avez
-	    pas encore effectué la mise è jour, veuillez suivre <a href="http://httpd.apache.org/docs/current/upgrading.html">ce
+	    document&#233;e <a href="http://httpd.apache.org/docs/current">ici</a>. Si vous n'avez
+	    pas encore effectu&#233; la mise &#232; jour, veuillez suivre <a href="http://httpd.apache.org/docs/current/upgrading.html">ce
 	    lien</a> pour plus d'informations.</p>
         <p>Pour consulter la version actuelle de ce
-	document, vous pouvez suivre <a href="http://httpd.apache.org/docs/current/bind.html">ce lien</a>.</p></div><div id="preamble"><h1>Adresse IP et port d'écoute</h1>
+	document, vous pouvez suivre <a href="http://httpd.apache.org/docs/current/bind.html">ce lien</a>.</p></div><div id="preamble"><h1>Adresse IP et port d'&#233;coute</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="./de/bind.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/bind.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/bind.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./fr/bind.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/bind.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/bind.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/bind.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/bind.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
 
-    <p>Configuration d'Apache pour l'écoute sur un port et une adresse IP spécifiques.</p>
+    <p>Configuration d'Apache pour l'&#233;coute sur un port et une adresse IP sp&#233;cifiques.</p>
   </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">Vue d'ensemble</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#ipv6">Remarques spécifiques à IPv6</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#virtualhost">Comment tout ceci fonctionne-t-il avec les hôtes virtuels</a></li>
-</ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="vhosts/">Hôtes virtuels</a></li><li><a href="dns-caveats.html">Problèmes liés à DNS</a></li></ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
+<li><img alt="" src="./images/down.gif" /> <a href="#ipv6">Remarques sp&#233;cifiques &#224; IPv6</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#virtualhost">Comment tout ceci fonctionne-t-il avec les h&#244;tes virtuels</a></li>
+</ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="vhosts/">H&#244;tes virtuels</a></li><li><a href="dns-caveats.html">Probl&#232;mes li&#233;s &#224; DNS</a></li></ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="overview" id="overview">Vue d'ensemble</a></h2>
     
 
-    <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li><li><code class="module"><a href="./mod/mpm_common.html">mpm_common</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>Modules Apparent&#233;s</th><th>Directives Apparent&#233;es</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li><li><code class="module"><a href="./mod/mpm_common.html">mpm_common</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code></li></ul></td></tr></table>
 
 
-    <p>Au démarrage d'Apache, un port et une adresse lui sont associés sur
-    l'hôte local et le serveur se met en attente de l'arrivée d'une requête.
-    Par défaut, le serveur écoute toutes les adresses de l'hôte local.
-    Cependant, on peut lui préciser des ports spécifiques à écouter,
-    ou lui dire de n'écouter que sur certaines adresses,
+    <p>Au d&#233;marrage d'Apache, un port et une adresse lui sont associ&#233;s sur
+    l'h&#244;te local et le serveur se met en attente de l'arriv&#233;e d'une requ&#234;te.
+    Par d&#233;faut, le serveur &#233;coute toutes les adresses de l'h&#244;te local.
+    Cependant, on peut lui pr&#233;ciser des ports sp&#233;cifiques &#224; &#233;couter,
+    ou lui dire de n'&#233;couter que sur certaines adresses,
     ou une combinaison des deux.
-    Tout ceci est souvent associé avec la fonctionnalité des hôtes virtuels
-    qui détermine la manière dont Apache répond aux différents ports,
-    noms d'hôtes et adresses IP.</p>
+    Tout ceci est souvent associ&#233; avec la fonctionnalit&#233; des h&#244;tes virtuels
+    qui d&#233;termine la mani&#232;re dont Apache r&#233;pond aux diff&#233;rents ports,
+    noms d'h&#244;tes et adresses IP.</p>
 
     <p>La directive <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
-    enjoint le serveur de n'accepter des requêtes que sur les ports spécifiés ou
-    une combinaison adresse/port. Si seul un numéro de port est spécifié
+    enjoint le serveur de n'accepter des requ&#234;tes que sur les ports sp&#233;cifi&#233;s ou
+    une combinaison adresse/port. Si seul un num&#233;ro de port est sp&#233;cifi&#233;
     dans la directive <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>,
-    le serveur écoute ce port sur toutes les interfaces réseau.
-    Si une adresse IP est spécifiée en plus du port, le serveur va écouter
-    ce port sur l'interface réseau correspondante. On peut utiliser
+    le serveur &#233;coute ce port sur toutes les interfaces r&#233;seau.
+    Si une adresse IP est sp&#233;cifi&#233;e en plus du port, le serveur va &#233;couter
+    ce port sur l'interface r&#233;seau correspondante. On peut utiliser
     de multiples directives
     <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> pour
-    spécifier plusieurs adresses et ports à écouter. Le serveur répondra alors
-    aux requêtes sur ces ports et adresses spécifiés.</p>
+    sp&#233;cifier plusieurs adresses et ports &#224; &#233;couter. Le serveur r&#233;pondra alors
+    aux requ&#234;tes sur ces ports et adresses sp&#233;cifi&#233;s.</p>
 
     <p>Par exemple, pour faire en sorte que le serveur accepte des connexions
     sur les ports 80 et 8000 sur toutes ses interfaces, utilisez :</p>
@@ -91,7 +91,7 @@
       Listen 192.0.2.5:8000
     </code></p></div>
 
-    <p>Les adresses IPv6 doivent être entourêes de crochets, comme dans
+    <p>Les adresses IPv6 doivent &#234;tre entour&#234;es de crochets, comme dans
     l'exemple suivant :</p>
 
     <div class="example"><p><code>
@@ -99,38 +99,38 @@
     </code></p></div>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="ipv6" id="ipv6">Remarques spécifiques à IPv6</a></h2>
+<h2><a name="ipv6" id="ipv6">Remarques sp&#233;cifiques &#224; IPv6</a></h2>
     
 
-    <p>Un nombre croissant de plateformes implémentent IPv6, et
+    <p>Un nombre croissant de plateformes impl&#233;mentent IPv6, et
     <a class="glossarylink" href="./glossary.html#apr" title="voir glossaire">APR</a> supporte IPv6 sur la plupart d'entre elles,
-    ce qui permet à Apache d'allouer des points de connexion (sockets) IPv6
-    et de traiter des requêtes envoyées sur IPv6.</p>
+    ce qui permet &#224; Apache d'allouer des points de connexion (sockets) IPv6
+    et de traiter des requ&#234;tes envoy&#233;es sur IPv6.</p>
 
-    <p>Les administrateurs d'Apache doivent se préoccuper de la possibilité
-    pour un point de connexion IPv6 de traiter à la fois des connexions IPv4
+    <p>Les administrateurs d'Apache doivent se pr&#233;occuper de la possibilit&#233;
+    pour un point de connexion IPv6 de traiter &#224; la fois des connexions IPv4
     et des connexions IPv6.
     Le traitement de connexions IPv4 avec un point de connexion IPv6 utilise
-    des adresses IPv6 traduites en IPv4, qui sont autorisées par défaut sur la
-    plupart des plateformes, mais sont interdites par défaut sous FreeBSD, NetBSD,
-    et OpenBSD, afin de respecter la politique de sécurité du système sur ces plateformes.
-    Mais même sur les systèmes où ces adresses sont interdites par défaut, un
-    paramètre spécial du script <code class="program"><a href="./programs/configure.html">configure</a></code> permet de modifier
+    des adresses IPv6 traduites en IPv4, qui sont autoris&#233;es par d&#233;faut sur la
+    plupart des plateformes, mais sont interdites par d&#233;faut sous FreeBSD, NetBSD,
+    et OpenBSD, afin de respecter la politique de s&#233;curit&#233; du syst&#232;me sur ces plateformes.
+    Mais m&#234;me sur les syst&#232;mes o&#249; ces adresses sont interdites par d&#233;faut, un
+    param&#232;tre sp&#233;cial du script <code class="program"><a href="./programs/configure.html">configure</a></code> permet de modifier
     ce comportement pour Apache.</p>
 
     <p>En revanche, sur certaines plateformes comme Linux et Tru64, la
-    <strong>seule</strong> manière de gérer à la fois IPv6 et IPv4 passe
-    par l'utilisation d'adresses traduites. Si vous voulez qu'Apache gère
+    <strong>seule</strong> mani&#232;re de g&#233;rer &#224; la fois IPv6 et IPv4 passe
+    par l'utilisation d'adresses traduites. Si vous voulez qu'Apache g&#232;re
     des connexions IPv4 et IPv6 avec un minimum de points de connexion,
-    ce qui nécessite l'utilisation d'adresses IPv6 traduites en IPv4,
+    ce qui n&#233;cessite l'utilisation d'adresses IPv6 traduites en IPv4,
     utilisez l'option <code>--enable-v4-mapped</code> du script <code class="program"><a href="./programs/configure.html">configure</a></code>.</p>
 
-    <p>L'option <code>--enable-v4-mapped</code> est utilisée par défaut sur
+    <p>L'option <code>--enable-v4-mapped</code> est utilis&#233;e par d&#233;faut sur
     toutes les plateformes sauf FreeBSD, NetBSD, et OpenBSD;
-    votre Apache a donc probablement été construit avec cette option.</p>
+    votre Apache a donc probablement &#233;t&#233; construit avec cette option.</p>
 
-    <p>Si vous souhaitez qu'Apache ne gère que des connexions IPv4, sans se
-    soucier de ce que vos plateforme et APR supportent, spécifiez une adresse
+    <p>Si vous souhaitez qu'Apache ne g&#232;re que des connexions IPv4, sans se
+    soucier de ce que vos plateforme et APR supportent, sp&#233;cifiez une adresse
     IPv4 dans toutes les directives
     <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>, comme dans l'exemple
     suivant :</p>
@@ -140,43 +140,43 @@
       Listen 192.0.2.1:80
     </code></p></div>
 
-    <p>Si votre plateforme le supporte et si vous souhaitez qu'Apache gère
-    des connexions IPv4 et IPv6 sur des points de connexion séparés
-    (c'est à dire désactiver la traduction des adresses IPv6 au format IPv4),
+    <p>Si votre plateforme le supporte et si vous souhaitez qu'Apache g&#232;re
+    des connexions IPv4 et IPv6 sur des points de connexion s&#233;par&#233;s
+    (c'est &#224; dire d&#233;sactiver la traduction des adresses IPv6 au format IPv4),
     utilisez l'option <code>--disable-v4-mapped</code> du script
     <code class="program"><a href="./programs/configure.html">configure</a></code>. <code>--disable-v4-mapped</code> est
-    utilisé par défaut sur FreeBSD, NetBSD, et OpenBSD.</p>
+    utilis&#233; par d&#233;faut sur FreeBSD, NetBSD, et OpenBSD.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="virtualhost" id="virtualhost">Comment tout ceci fonctionne-t-il avec les hôtes virtuels</a></h2>
+<h2><a name="virtualhost" id="virtualhost">Comment tout ceci fonctionne-t-il avec les h&#244;tes virtuels</a></h2>
     
 
-    <p> La directive <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> n'implémente pas les hôtes virtuels.
+    <p> La directive <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> n'impl&#233;mente pas les h&#244;tes virtuels.
     Elle indique simplement au serveur principal sur quels adresses et ports
-    il doit écouter. Si aucune directive
+    il doit &#233;couter. Si aucune directive
     <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
-    n'est présente, le serveur se comportera de la même façon pour toutes
-    les requêtes acceptées. En revanche, la directive
+    n'est pr&#233;sente, le serveur se comportera de la m&#234;me fa&#231;on pour toutes
+    les requ&#234;tes accept&#233;es. En revanche, la directive
     <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
-    peut être utilisée pour provoquer une réaction différente du serveur
-    pour un ou plusieurs adresses/ports. Pour implémenter un hôte virtuel,
-    on doit d'abord indiquer au serveur sur quels adresses et ports il doit écouter.
+    peut &#234;tre utilis&#233;e pour provoquer une r&#233;action diff&#233;rente du serveur
+    pour un ou plusieurs adresses/ports. Pour impl&#233;menter un h&#244;te virtuel,
+    on doit d'abord indiquer au serveur sur quels adresses et ports il doit &#233;couter.
     Ensuite, une section
     <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
-    doit être créée pour chaque couple adresse+port spécifié afin de définir le
-    comportement de cet hôte virtuel. Notez que si la directive
+    doit &#234;tre cr&#233;&#233;e pour chaque couple adresse+port sp&#233;cifi&#233; afin de d&#233;finir le
+    comportement de cet h&#244;te virtuel. Notez que si la directive
     <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
-    est définie pour une adresse et un port sur lesquels le serveur n'est pas censé
-    écouter, cet hôte virtuel ne sera pas accessible.</p>
+    est d&#233;finie pour une adresse et un port sur lesquels le serveur n'est pas cens&#233;
+    &#233;couter, cet h&#244;te virtuel ne sera pas accessible.</p>
   </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="./de/bind.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/bind.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/bind.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./fr/bind.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/bind.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/bind.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/bind.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
+<a href="./tr/bind.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
+</div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
 var comments_identifier = 'http://httpd.apache.org/docs/2.2/bind.html';
@@ -194,7 +194,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.2/bind.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

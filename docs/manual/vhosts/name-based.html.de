@@ -7,7 +7,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Unterstützung namensbasierter virtueller Hosts - Apache HTTP Server Version 2.2</title>
+<title>Unterst&#252;tzung namensbasierter virtueller Hosts - Apache HTTP Server Version 2.2</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -23,52 +23,52 @@
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP-Server</a> &gt; <a href="http://httpd.apache.org/docs/">Dokumentation</a> &gt; <a href="../">Version 2.2</a> &gt; <a href="./">Virtual Hosts</a></div><div id="page-content"><div class="retired"><h4>Please note</h4>
             <p>This document refers to the <strong>2.2</strong> version of Apache httpd, which is no longer maintained. The active release is documented <a href="http://httpd.apache.org/docs/current">here</a>. If you have not already upgraded, please follow <a href="http://httpd.apache.org/docs/current/upgrading.html">this link</a> for more information.</p>
-        <p>You may follow <a href="http://httpd.apache.org/docs/current/vhosts/name-based.html">this link</a> to go to the current version of this document.</p></div><div id="preamble"><h1>Unterstützung namensbasierter virtueller Hosts</h1>
+        <p>You may follow <a href="http://httpd.apache.org/docs/current/vhosts/name-based.html">this link</a> to go to the current version of this document.</p></div><div id="preamble"><h1>Unterst&#252;tzung namensbasierter virtueller Hosts</h1>
 <div class="toplang">
-<p><span>Verfügbare Sprachen: </span><a href="../de/vhosts/name-based.html" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>Verf&#252;gbare Sprachen: </span><a href="../de/vhosts/name-based.html" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/vhosts/name-based.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/vhosts/name-based.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/vhosts/name-based.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/vhosts/name-based.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/vhosts/name-based.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/vhosts/name-based.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/vhosts/name-based.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Diese Übersetzung ist möglicherweise
-            nicht mehr aktuell. Bitte prüfen Sie die englische Version auf
-            die neuesten Änderungen.</div>
+<div class="outofdate">Diese &#220;bersetzung ist m&#246;glicherweise
+            nicht mehr aktuell. Bitte pr&#252;fen Sie die englische Version auf
+            die neuesten &#196;nderungen.</div>
 
   <p>Das Dokument beschreibt, wann und wie namensbasierte virtuelle Hosts zu
     verwenden sind.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#namevip">Namensbasierte gegenüber IP-basierten
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#namevip">Namensbasierte gegen&#252;ber IP-basierten
     virtuellen Hosts</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#using">Die Verwendung von namensbasierten virtuellen Hosts</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#compat">Kompatibilität mit älteren Browsern</a></li>
-</ul><h3>Siehe auch</h3><ul class="seealso"><li><a href="ip-based.html">Unterstützung IP-basierter virtueller
-    Hosts</a></li><li><a href="details.html">Tiefergehende Erörterung der Zuweisung
+<li><img alt="" src="../images/down.gif" /> <a href="#compat">Kompatibilit&#228;t mit &#228;lteren Browsern</a></li>
+</ul><h3>Siehe auch</h3><ul class="seealso"><li><a href="ip-based.html">Unterst&#252;tzung IP-basierter virtueller
+    Hosts</a></li><li><a href="details.html">Tiefergehende Er&#246;rterung der Zuweisung
     virtueller Hosts</a></li><li><a href="mass.html">Dynamisch konfiguriertes
-    Massen-Virtual-Hosting</a></li><li><a href="examples.html">Beispiele für virtuelle Hosts in typischen
+    Massen-Virtual-Hosting</a></li><li><a href="examples.html">Beispiele f&#252;r virtuelle Hosts in typischen
     Installationen</a></li><li><a href="examples.html#serverpath">ServerPath-Beispielkonfiguration</a></li></ul><ul class="seealso"><li><a href="#comments_section">Kommentare</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="namevip" id="namevip">Namensbasierte gegenüber IP-basierten
+<h2><a name="namevip" id="namevip">Namensbasierte gegen&#252;ber IP-basierten
     virtuellen Hosts</a></h2>
 
   <p>IP-basierte virtuelle Hosts verwenden die IP-Adresse der Verbindung, um den
     korrekten virtuellen Host zur Bedienung einer Anfrage zu ermitteln. Folglich 
-    benötigen Sie eine IP-Adresse für jeden virtuellen Host. Bei der 
-    Verwendung von namensbasierten virtuellen Hosts verläßt sich der 
+    ben&#246;tigen Sie eine IP-Adresse f&#252;r jeden virtuellen Host. Bei der 
+    Verwendung von namensbasierten virtuellen Hosts verl&#228;&#223;t sich der 
     Server darauf, dass der Client den Hostnamen als Bestandteil der HTTP-Header 
-    angibt. Durch Anwendung dieser Technik können sich mehrere verschiedene 
+    angibt. Durch Anwendung dieser Technik k&#246;nnen sich mehrere verschiedene 
     Hosts die gleiche IP-Adresse teilen.</p>
 
-  <p>Die Verwendung von namensbasierten virtuellen Hosts ist gewöhnlich 
-    einfacher. Sie müssen lediglich Ihren DNS-Server darauf einstellen, 
+  <p>Die Verwendung von namensbasierten virtuellen Hosts ist gew&#246;hnlich 
+    einfacher. Sie m&#252;ssen lediglich Ihren DNS-Server darauf einstellen, 
     jeden Hostnamen auf die richtige IP-Adresse abzubilden, und dann den Apache 
     HTTP Server so konfigurieren, dass er die verschiedenen Hostnamen erkennt.
-    Namensbasierte virtuelle Hosts entschärfen auch den Bedarf an 
+    Namensbasierte virtuelle Hosts entsch&#228;rfen auch den Bedarf an 
     knappen IP-Adressen. Daher sollten Sie namensbasierte virtuelle Hosts 
-    verwenden, sofern kein besonderer Grund dafür existiert, IP-basierte 
-    virtuelle Hosts zu wählen. Mögliche Gründe für die 
+    verwenden, sofern kein besonderer Grund daf&#252;r existiert, IP-basierte 
+    virtuelle Hosts zu w&#228;hlen. M&#246;gliche Gr&#252;nde f&#252;r die 
     Verwendung IP-basierter virtueller Hosts sind:</p>
 
   <ul>
@@ -76,17 +76,17 @@
       virtuellen Hosts. Damit namensbasierte virtuelle Hosts funktionieren,
       muss der Client den HTTP-Host-Header senden. Dies ist bei HTTP/1.1
       vorgeschrieben und in allen modernen HTTP/1.0-Browsern als Erweiterung
-      implementiert. Wenn Sie Unterstützung für veraltete Clients
-      benötigen und dennoch namensbasierte virtuelle Hosts verwenden,
-      dann finden Sie eine mögliche Lösung dafür am Ende des
+      implementiert. Wenn Sie Unterst&#252;tzung f&#252;r veraltete Clients
+      ben&#246;tigen und dennoch namensbasierte virtuelle Hosts verwenden,
+      dann finden Sie eine m&#246;gliche L&#246;sung daf&#252;r am Ende des
       Dokuments.</li>
 
-    <li>Namensbasierte virtuelle Hosts können aufgrund der Natur des
+    <li>Namensbasierte virtuelle Hosts k&#246;nnen aufgrund der Natur des
       SSL-Protokolls nicht mit SSL-gesicherten Servern verwendet werden.</li>
 
     <li>Einige Betriebssysteme und Netzwerkanlagen setzen Techniken zum 
       Bandbreiten-Management ein, die nicht zwischen Hosts unterscheiden
-      können, wenn diese nicht auf verschiedenen IP-Adressen liegen.</li>
+      k&#246;nnen, wenn diese nicht auf verschiedenen IP-Adressen liegen.</li>
     </ul>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -95,44 +95,44 @@
 
   <table class="related"><tr><th>Referenzierte Module</th><th>Referenzierte Direktiven</th></tr><tr><td><ul><li><code class="module"><a href="../mod/core.html">core</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code></li><li><code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code></li><li><code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code></li><li><code class="directive"><a href="../mod/core.html#servername">ServerName</a></code></li><li><code class="directive"><a href="../mod/core.html#serverpath">ServerPath</a></code></li><li><code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li></ul></td></tr></table>
 
-  <p>Um namensbasierte virtuelle Hosts zu verwenden, müssen Sie die
-    IP-Adresse (und möglicherweise den Port) des Servers benennen, an
-    der Anfragen für die Hosts entgegengenommen werden. Dies wird mit
+  <p>Um namensbasierte virtuelle Hosts zu verwenden, m&#252;ssen Sie die
+    IP-Adresse (und m&#246;glicherweise den Port) des Servers benennen, an
+    der Anfragen f&#252;r die Hosts entgegengenommen werden. Dies wird mit
     der Direktive <code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code>
     eingestellt. Im Normalfall, wenn alle IP-Adressen des Server verwendet
-    werden sollen, können Sie <code>*</code> als Argument für
+    werden sollen, k&#246;nnen Sie <code>*</code> als Argument f&#252;r
     <code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code> verwenden. Wenn Sie
-    vorhaben, mehrere Ports zu nutzen (etwa wenn SSL läuft), sollten
-    Sie dem Argument einen Port hinzufügen, wie zum Beispiel
+    vorhaben, mehrere Ports zu nutzen (etwa wenn SSL l&#228;uft), sollten
+    Sie dem Argument einen Port hinzuf&#252;gen, wie zum Beispiel
     <code>*:80</code>. Beachten Sie,
     dass die Angabe einer IP-Adresse in einer <code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code>-Anweisung den Server nicht
-    automatisch an dieser Adresse lauschen läßt. Lesen Sie bitte "<a href="../bind.html">Bestimmen der vom Apache verwendeten Adressen und
-    Ports</a>" für weitere Details. Zusätzlich muss jede hier
+    automatisch an dieser Adresse lauschen l&#228;&#223;t. Lesen Sie bitte "<a href="../bind.html">Bestimmen der vom Apache verwendeten Adressen und
+    Ports</a>" f&#252;r weitere Details. Zus&#228;tzlich muss jede hier
     angegebene IP-Adresse einer Netzwerkkarte des Servers zugeordnet sein.</p>
  
-  <p>Der nächste Schritt ist die Erstellung eines <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>-Blocks für jeden einzelnen
+  <p>Der n&#228;chste Schritt ist die Erstellung eines <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>-Blocks f&#252;r jeden einzelnen
     Host, den Sie bedienen wollen. Das Argument der Direktive <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> sollte das gleiche
     sein wie das Argument der <code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code>-Anweisung (d.h. eine IP-Adresse
-    oder <code>*</code> für alle Adressen). Innerhalb jedes <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>-Blocks benötigen
+    oder <code>*</code> f&#252;r alle Adressen). Innerhalb jedes <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>-Blocks ben&#246;tigen
     Sie zumindestens eine <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>-Anweisung, um zu bestimmen, welcher
     Host bedient wird, und eine <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>-Anweisung, um anzugeben, wo im
     Dateisystem der Inhalt des Hosts abgelegt ist.</p>
 
   <div class="note"><h3>Der Hauptserver verschwindet</h3>
-    Wenn Sie virtuelle Hosts zu einem bestehenden Webserver hinzufügen,
-    müssen Sie auch einen <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>-Block für den bestehenden Host
-    <span class="transnote">(<em>Anm.d.Ü.:</em> und bisherigen Hauptserver)</span> erstellen. 
+    Wenn Sie virtuelle Hosts zu einem bestehenden Webserver hinzuf&#252;gen,
+    m&#252;ssen Sie auch einen <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>-Block f&#252;r den bestehenden Host
+    <span class="transnote">(<em>Anm.d.&#220;.:</em> und bisherigen Hauptserver)</span> erstellen. 
     Die <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>- und
     <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>-Anweisungen zu diesem
-    virtuellen Host sollten die gleichen sein wie die globalen <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>- und <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>-Anweisungen. Führen Sie diesen
+    virtuellen Host sollten die gleichen sein wie die globalen <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>- und <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>-Anweisungen. F&#252;hren Sie diesen
     virtuellen Host als erstes in der Konfigurationsdatei auf, so dass er als
     Standard-Host fungiert.
   </div>
 
   <p>Vorausgesetzt, Sie bedienen z.B. die Domain
-    <code>www.domain.tld</code> und möchten den virtuellen Host
-    <code>www.otherdomain.tld</code> hinzufügen, welcher auf
-    die gleiche IP-Adresse zeigt. Dann fügen Sie einfach Folgendes der
+    <code>www.domain.tld</code> und m&#246;chten den virtuellen Host
+    <code>www.otherdomain.tld</code> hinzuf&#252;gen, welcher auf
+    die gleiche IP-Adresse zeigt. Dann f&#252;gen Sie einfach Folgendes der
     <code>httpd.conf</code> hinzu:</p>
 
     <div class="example"><p><code>
@@ -153,7 +153,7 @@
     &lt;/VirtualHost&gt;<br />
     </code></p></div>
 
-  <p>Sie können anstelle des <code>*</code> bei den beiden Anweisungen 
+  <p>Sie k&#246;nnen anstelle des <code>*</code> bei den beiden Anweisungen 
     <code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code> und <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> alternativ eine 
     eindeutige IP-Adresse angeben. Das kann man beispielsweise machen, um 
     einige namensbasierte virtuelle Hosts auf einer IP-Adresse zu betreiben und 
@@ -163,71 +163,71 @@
   <p>Viele Server wollen unter mehr als einem Namen erreichbar sein. Die 
     Direktive <code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code>, die innerhalb 
     des <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>-Abschnittes angegeben wird,
-    ermöglicht dies. Zum Beispiel zeigt die <code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code>-Anweisung in dem ersten <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>-Block oben an, dass die
-    aufgeführten Namen alternative Namen sind, die man verwenden kann, um
+    erm&#246;glicht dies. Zum Beispiel zeigt die <code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code>-Anweisung in dem ersten <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>-Block oben an, dass die
+    aufgef&#252;hrten Namen alternative Namen sind, die man verwenden kann, um
     das gleiche Webangebot zu erreichen:</p>
 
     <div class="example"><p><code>
     ServerAlias domain.tld *.domain.tld
     </code></p></div>
 
-  <p>Anfragen für alle Hosts der Domain <code>domain.tld</code> werden
+  <p>Anfragen f&#252;r alle Hosts der Domain <code>domain.tld</code> werden
     von dem virtuellen Host <code>www.domain.tld</code> bedient. Die
-    Platzhalter <code>*</code> und <code>?</code> können anstelle
-    entsprechender Namen verwendet werden. Natürlich können Sie nicht
+    Platzhalter <code>*</code> und <code>?</code> k&#246;nnen anstelle
+    entsprechender Namen verwendet werden. Nat&#252;rlich k&#246;nnen Sie nicht
     einfach Namen erfinden und diese bei <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> oder <code>ServerAlias</code>
-    angeben, Sie müssen zunächst Ihren DNS Server entsprechend
-    konfigurieren, dass er diese Namen auf die mit Ihrem Server verknüpfte
+    angeben, Sie m&#252;ssen zun&#228;chst Ihren DNS Server entsprechend
+    konfigurieren, dass er diese Namen auf die mit Ihrem Server verkn&#252;pfte
     IP-Adresse abbildet.</p>
 
-  <p>Und schlußendlich können Sie die Konfiguration der virtuellen
+  <p>Und schlu&#223;endlich k&#246;nnen Sie die Konfiguration der virtuellen
     Hosts mittels Angabe weiterer Direktiven innherhalb der <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>-Container
-    feineinstellen. Die meisten Direktiven können in diesen Containern
-    angegeben werden und verändern dann ausschließlich die
-    Konfiguration des entsprechenden virtuellen Hosts. Prüfen Sie den <a href="../mod/directive-dict.html#Context">Kontext</a> einer Direktive, um
-    herauszufinden, ob eine bestimmte Direktive zulässig ist.
-    Im <em>Hauptserver-Kontext</em> (außerhalb der <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>-Container) definierte
+    feineinstellen. Die meisten Direktiven k&#246;nnen in diesen Containern
+    angegeben werden und ver&#228;ndern dann ausschlie&#223;lich die
+    Konfiguration des entsprechenden virtuellen Hosts. Pr&#252;fen Sie den <a href="../mod/directive-dict.html#Context">Kontext</a> einer Direktive, um
+    herauszufinden, ob eine bestimmte Direktive zul&#228;ssig ist.
+    Im <em>Hauptserver-Kontext</em> (au&#223;erhalb der <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>-Container) definierte
     Konfigurationsanweisungen werden nur dann angewendet, wenn sie nicht durch
-    Einstellungen des virtuellen Hosts außer Kraft gesetzt wurden.</p>
+    Einstellungen des virtuellen Hosts au&#223;er Kraft gesetzt wurden.</p>
 
-  <p>Wenn nun eine Anfrage eintrifft, prüft der Server zuerst, ob sie eine
+  <p>Wenn nun eine Anfrage eintrifft, pr&#252;ft der Server zuerst, ob sie eine
     IP-Adresse verwendet, die der <code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code>-Anweisung entspricht. Ist dies der
     Fall, dann sieht er sich jeden <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>-Abschnitt mit einer passenden
-    IP-Adresse an und versucht den einen zu finden, dessen <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>- oder <code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code>-Anweisung mit dem gewünschten
-    Hostnamen übereinstimmt. Findet er einen, dann verwendet er die
+    IP-Adresse an und versucht den einen zu finden, dessen <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>- oder <code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code>-Anweisung mit dem gew&#252;nschten
+    Hostnamen &#252;bereinstimmt. Findet er einen, dann verwendet er die
     Konfiguration dieses Servers. Wird kein passender virtueller Host gefunden,
     dann wird <strong>der erste angegeben virtuelle Host</strong> verwendet,
-    dessen IP-Adresse paßt.</p>
+    dessen IP-Adresse pa&#223;t.</p>
 
-  <p>Die Folge davon ist, dass der erste aufgeführte virtuelle Host der
+  <p>Die Folge davon ist, dass der erste aufgef&#252;hrte virtuelle Host der
     <em>Standard</em>-Virtual-Host ist. Die <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>-Anweisung des <em>Hauptservers</em>
     wird <strong>niemals</strong> verwendet, wenn eine IP-Adresse mit einer 
     <code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code>-Anweisung
-    übereinstimmt. Wenn Sie eine spezielle Konfiguration für Anfragen
-    angeben möchten, die keinem bestimmten virtuellen Host entsprechen,
-    packen Sie diese Konfiguration einfach in einen <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>-Container und führen diesen als
+    &#252;bereinstimmt. Wenn Sie eine spezielle Konfiguration f&#252;r Anfragen
+    angeben m&#246;chten, die keinem bestimmten virtuellen Host entsprechen,
+    packen Sie diese Konfiguration einfach in einen <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>-Container und f&#252;hren diesen als
     erstes in der Konfigurationsdatei auf.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="compat" id="compat">Kompatibilität mit älteren Browsern</a></h2>
+<h2><a name="compat" id="compat">Kompatibilit&#228;t mit &#228;lteren Browsern</a></h2>
   
-  <p>Wie zuvor erwähnt gibt es einige Clients, die nicht die notwendigen
+  <p>Wie zuvor erw&#228;hnt gibt es einige Clients, die nicht die notwendigen
     Daten senden, mit denen namensbasierte virtuelle Hosts korrekt
-    funktionieren. Diesen Clients werden stets die Seiten des ersten, für
-    diese IP-Adresse aufgeführten virtuellen Hosts gesendet werden (des
-    <cite>primären</cite> namensbasierten virtuellen Hosts).</p>
+    funktionieren. Diesen Clients werden stets die Seiten des ersten, f&#252;r
+    diese IP-Adresse aufgef&#252;hrten virtuellen Hosts gesendet werden (des
+    <cite>prim&#228;ren</cite> namensbasierten virtuellen Hosts).</p>
 
-  <div class="note"><h3>Was bedeutet älter?</h3>
-    <p>Beachten Sie bitte, wenn wir von älter sprechen, meinen wir auch
-    älter. Es ist sehr unwahrscheinlich, dass sie einen dieser Browser
+  <div class="note"><h3>Was bedeutet &#228;lter?</h3>
+    <p>Beachten Sie bitte, wenn wir von &#228;lter sprechen, meinen wir auch
+    &#228;lter. Es ist sehr unwahrscheinlich, dass sie einen dieser Browser
     heutzutage in Verwendung finden werden. Alle aktuellen Browser-Versionen
-    senden den <code>Host</code>-Header, so wie er für namensbasierte
-    virtuelle Hosts benäötigt wird.</p>
+    senden den <code>Host</code>-Header, so wie er f&#252;r namensbasierte
+    virtuelle Hosts ben&#228;&#246;tigt wird.</p>
   </div>
 
   <p>Mit der Direktive <code class="directive"><a href="../mod/core.html#serverpath">ServerPath</a></code> existiert  
-    eine mögliche Behelfskonstruktion, obgleich sie etwas schwerfällig
+    eine m&#246;gliche Behelfskonstruktion, obgleich sie etwas schwerf&#228;llig
     ist:</p>
 
   <p>Beispielkonfiguration:</p>
@@ -244,18 +244,18 @@
     &lt;/VirtualHost&gt;<br />
   </code></p></div>
 
-  <p>Was bedeutet das? Es bedeutet, dass eine Anfrage für eine mit
+  <p>Was bedeutet das? Es bedeutet, dass eine Anfrage f&#252;r eine mit
     "<code>/domain</code>" beginnende URI von dem virtuellen Host
-    <code>www.domain.tld</code> bedient wird. Dies heißt, dass die Seiten
-    für alle Clients unter <code>http://www.domain.tld/domain/</code>
+    <code>www.domain.tld</code> bedient wird. Dies hei&#223;t, dass die Seiten
+    f&#252;r alle Clients unter <code>http://www.domain.tld/domain/</code>
     abrufbar sind, wenngleich Clients, die den Header <code>Host:</code>
-    senden, auch über <code>http://www.domain.tld/</code> auf sie zugreifen
-    können.</p>
+    senden, auch &#252;ber <code>http://www.domain.tld/</code> auf sie zugreifen
+    k&#246;nnen.</p>
 
-  <p>Legen Sie einen Link auf der Seite Ihres primären virtuellen Hosts zu 
-    <code>http://www.domain.tld/domain/</code>, um die Behelfslösung
-    verfügbar zu machen. Bei den Seiten der virtuellen Hosts müssen
-    Sie dann sicherstellen, entweder außschließlich relative Links
+  <p>Legen Sie einen Link auf der Seite Ihres prim&#228;ren virtuellen Hosts zu 
+    <code>http://www.domain.tld/domain/</code>, um die Behelfsl&#246;sung
+    verf&#252;gbar zu machen. Bei den Seiten der virtuellen Hosts m&#252;ssen
+    Sie dann sicherstellen, entweder au&#223;schlie&#223;lich relative Links
     (<em>z.B.</em> "<code>file.html</code>" oder
     "<code>../icons/image.gif</code>") zu verwenden oder Links, die das
     einleitende <code>/domain/</code> enthalten (<em>z.B.</em>,
@@ -263,18 +263,18 @@
     "<code>/domain/misc/file.html</code>").</p>
 
   <p>Dies erfordert etwas Disziplin, die Befolgung dieser Richtlinien stellt
-    jedoch größtenteils sicher, dass Ihre Seiten mit allen Browsern
+    jedoch gr&#246;&#223;tenteils sicher, dass Ihre Seiten mit allen Browsern
     funktionieren, alten wie neuen.</p>
 
 </div></div>
 <div class="bottomlang">
-<p><span>Verfügbare Sprachen: </span><a href="../de/vhosts/name-based.html" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>Verf&#252;gbare Sprachen: </span><a href="../de/vhosts/name-based.html" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/vhosts/name-based.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/vhosts/name-based.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/vhosts/name-based.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/vhosts/name-based.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/vhosts/name-based.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/vhosts/name-based.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Kommentare</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
+<a href="../tr/vhosts/name-based.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Kommentare</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
 var comments_identifier = 'http://httpd.apache.org/docs/2.2/vhosts/name-based.html';

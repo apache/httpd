@@ -7,7 +7,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Mise à jour vers 2.2 depuis 2.0 - Serveur Apache HTTP Version 2.2</title>
+<title>Mise &#224; jour vers 2.2 depuis 2.0 - Serveur Apache HTTP Version 2.2</title>
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
@@ -24,121 +24,121 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.2</a></div><div id="page-content"><div class="retired"><h4>A savoir</h4>
             <p>Ce document concerne une version ancienne (<strong>2.2</strong>)
 	    du serveur HTTP Apache. La version actuelle est
-	    documentée <a href="http://httpd.apache.org/docs/current">ici</a>. Si vous n'avez
-	    pas encore effectué la mise è jour, veuillez suivre <a href="http://httpd.apache.org/docs/current/upgrading.html">ce
+	    document&#233;e <a href="http://httpd.apache.org/docs/current">ici</a>. Si vous n'avez
+	    pas encore effectu&#233; la mise &#232; jour, veuillez suivre <a href="http://httpd.apache.org/docs/current/upgrading.html">ce
 	    lien</a> pour plus d'informations.</p>
         <p>Pour consulter la version actuelle de ce
-	document, vous pouvez suivre <a href="http://httpd.apache.org/docs/current/upgrading.html">ce lien</a>.</p></div><div id="preamble"><h1>Mise à jour vers 2.2 depuis 2.0</h1>
+	document, vous pouvez suivre <a href="http://httpd.apache.org/docs/current/upgrading.html">ce lien</a>.</p></div><div id="preamble"><h1>Mise &#224; jour vers 2.2 depuis 2.0</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="./de/upgrading.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/upgrading.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/upgrading.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./fr/upgrading.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/upgrading.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
 
-  <p>Afin d'assister les utilisateurs lors de leurs opérations de mise à
+  <p>Afin d'assister les utilisateurs lors de leurs op&#233;rations de mise &#224;
   jour, nous maintenons un document
-  qui comporte des informations critiques à l'attention des personnes qui
-  utilisent déjà Apache. Ces informations ne sont que de brèves notes, et vous
-  devriez trouver plus d'informations dans le document <a href="new_features_2_2.html">Nouvelles fonctionnalités</a>, ou dans
+  qui comporte des informations critiques &#224; l'attention des personnes qui
+  utilisent d&#233;j&#224; Apache. Ces informations ne sont que de br&#232;ves notes, et vous
+  devriez trouver plus d'informations dans le document <a href="new_features_2_2.html">Nouvelles fonctionnalit&#233;s</a>, ou dans
   le fichier <code>src/CHANGES</code>.</p>
 
-  <p>Ce document ne décrit que les modifications intervenues entre les versions
-  2.0 et 2.2. Si vous effectuez une mise à jour depuis la version 1.3, vous
+  <p>Ce document ne d&#233;crit que les modifications intervenues entre les versions
+  2.0 et 2.2. Si vous effectuez une mise &#224; jour depuis la version 1.3, vous
   devez aussi consulter le
   <a href="http://httpd.apache.org/docs/2.0/upgrading.html">document de mise
-  à jour de 1.3 vers 2.0.</a></p>
+  &#224; jour de 1.3 vers 2.0.</a></p>
 
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#compile-time">Modifications de la configuration au moment de la compilation</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#run-time">Modifications de la configuration à l'exécution</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#run-time">Modifications de la configuration &#224; l'ex&#233;cution</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#misc">Changements divers</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#third-party">Modules tiers</a></li>
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="new_features_2_2.html">Vue d'ensemble des nouvelles
-fonctionnalités de Apache 2.2</a></li></ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
+fonctionnalit&#233;s de Apache 2.2</a></li></ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="compile-time" id="compile-time">Modifications de la configuration au moment de la compilation</a></h2>
     
 
-    <p>Le processus de compilation est très similaire à celui de la
-    version 2.0. Dans certains cas, vous pourrez même utiliser
+    <p>Le processus de compilation est tr&#232;s similaire &#224; celui de la
+    version 2.0. Dans certains cas, vous pourrez m&#234;me utiliser
     votre ancienne ligne de commande
     <code>configure</code> (que vous trouverez dans le fichier
-    <code>build/config.nice</code> à la racine du répertoire des sources de
-    votre serveur). Les changements qui devront être le plus souvent effectués
-    concerneront des noms de modules, et en particulier les modules gérant
+    <code>build/config.nice</code> &#224; la racine du r&#233;pertoire des sources de
+    votre serveur). Les changements qui devront &#234;tre le plus souvent effectu&#233;s
+    concerneront des noms de modules, et en particulier les modules g&#233;rant
     l'authentification et les autorisations.
     Quelques exemples de modifications :</p>
 
     <ul>
-      <li>mod_imap a été renommé en <code class="module"><a href="./mod/mod_imagemap.html">mod_imagemap</a></code></li>
-      <li>mod_auth a été scindé en quatre modules :
+      <li>mod_imap a &#233;t&#233; renomm&#233; en <code class="module"><a href="./mod/mod_imagemap.html">mod_imagemap</a></code></li>
+      <li>mod_auth a &#233;t&#233; scind&#233; en quatre modules :
       <code class="module"><a href="./mod/mod_auth_basic.html">mod_auth_basic</a></code>,
           <code class="module"><a href="./mod/mod_authn_file.html">mod_authn_file</a></code>, <code class="module"><a href="./mod/mod_authz_user.html">mod_authz_user</a></code>, et
           <code class="module"><a href="./mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code></li>
-      <li>mod_access a été renommé en <code class="module"><a href="./mod/mod_authz_host.html">mod_authz_host</a></code></li>
-      <li>mod_auth_ldap a été renommé en <code class="module"><a href="./mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code></li>
+      <li>mod_access a &#233;t&#233; renomm&#233; en <code class="module"><a href="./mod/mod_authz_host.html">mod_authz_host</a></code></li>
+      <li>mod_auth_ldap a &#233;t&#233; renomm&#233; en <code class="module"><a href="./mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code></li>
       <li>La version requise pour l'API APR est la 1.0.</li>
-      <li>La version de la bibliothèque PCRE intégrée est la 5.0</li>
+      <li>La version de la biblioth&#232;que PCRE int&#233;gr&#233;e est la 5.0</li>
     </ul>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="run-time" id="run-time">Modifications de la configuration à l'exécution</a></h2>
+<h2><a name="run-time" id="run-time">Modifications de la configuration &#224; l'ex&#233;cution</a></h2>
     
 
-    <p>Vos fichiers de configuration et scripts de démarrage de la version 2.0
-    existante peuvent en général être utilisés sans modification avec la
-    version 2.2. Quelques petits ajustements peuvent cependant être nécessaires
-    dans le cas de configurations particulières comme décrit plus bas.
-    En outre, si des modules standards sont chargés dynamiquement à l'aide de
+    <p>Vos fichiers de configuration et scripts de d&#233;marrage de la version 2.0
+    existante peuvent en g&#233;n&#233;ral &#234;tre utilis&#233;s sans modification avec la
+    version 2.2. Quelques petits ajustements peuvent cependant &#234;tre n&#233;cessaires
+    dans le cas de configurations particuli&#232;res comme d&#233;crit plus bas.
+    En outre, si des modules standards sont charg&#233;s dynamiquement &#224; l'aide de
     la directive <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code>,
-    vous devez vérifier les changements de noms de modules mentionnés
+    vous devez v&#233;rifier les changements de noms de modules mentionn&#233;s
     plus haut.</p>
 
     <p>Si vous choisissez d'utiliser le nouveau fichier de configuration par
-    défaut de la
-    version 2.2, vous vous apercevrez qu'il a été considérablement simplifié
+    d&#233;faut de la
+    version 2.2, vous vous apercevrez qu'il a &#233;t&#233; consid&#233;rablement simplifi&#233;
     et ne conserve que les points les plus essentiels de la configuration.
-    Plusieurs exemples de configurations utilisant des fonctionnalités plus
-    avancées sont disponibles dans le répertoire
+    Plusieurs exemples de configurations utilisant des fonctionnalit&#233;s plus
+    avanc&#233;es sont disponibles dans le r&#233;pertoire
       <code>conf/extra/</code> de l'installation du serveur. Les fichiers de
-      configuration par défaut se trouvent dans le répertoire
+      configuration par d&#233;faut se trouvent dans le r&#233;pertoire
       <code>conf/original</code>.</p>
 
-    <p>Quelques changements dans la configuration à l'exécution que vous
+    <p>Quelques changements dans la configuration &#224; l'ex&#233;cution que vous
     pouvez noter :</p>
 
     <ul>
       <li>L'option <code>startssl</code> du programme
       <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> n'est plus disponible. Pour activer le
-      support SSL, vous devez éditer <code>httpd.conf</code> de façon à
+      support SSL, vous devez &#233;diter <code>httpd.conf</code> de fa&#231;on &#224;
       inclure les directives du module <code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code>
       correspondantes, puis utiliser la commande <code>apachectl start</code>
-      pour démarrer le serveur. Vous trouverez un exemple de configuration
+      pour d&#233;marrer le serveur. Vous trouverez un exemple de configuration
       permettant d'activer le module <code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code> dans le fichier
       <code>conf/extra/httpd-ssl.conf</code>.</li>
 
-      <li>La directive <code class="directive"><a href="./mod/core.html#usecanonicalname">UseCanonicalName</a></code> est maintenant définie par
-      défaut à <code>Off</code>. Si cette directive
-      n'était pas présente dans votre
+      <li>La directive <code class="directive"><a href="./mod/core.html#usecanonicalname">UseCanonicalName</a></code> est maintenant d&#233;finie par
+      d&#233;faut &#224; <code>Off</code>. Si cette directive
+      n'&#233;tait pas pr&#233;sente dans votre
       ancien fichier de configuration, vous pouvez ajouter
-      <code>UseCanonicalName On</code> dans le nouveau pour garder inchangé
+      <code>UseCanonicalName On</code> dans le nouveau pour garder inchang&#233;
       l'ancien comportement.</li>
 
-      <li>Le module <code class="module"><a href="./mod/mod_userdir.html">mod_userdir</a></code> ne sera appliqué sur les
-      requêtes que si une directive <code class="directive"><a href="./mod/mod_userdir.html#userdir">UserDir</a></code> spécifiant un nom de répertoire
+      <li>Le module <code class="module"><a href="./mod/mod_userdir.html">mod_userdir</a></code> ne sera appliqu&#233; sur les
+      requ&#234;tes que si une directive <code class="directive"><a href="./mod/mod_userdir.html#userdir">UserDir</a></code> sp&#233;cifiant un nom de r&#233;pertoire
       se trouve dans le fichier de configuration. Pour garder l'ancien
-      comportement par défaut inchangé, placer la directive <code>UserDir
+      comportement par d&#233;faut inchang&#233;, placer la directive <code>UserDir
       public_html</code> dans votre fichier de configuration.</li>
 
       <li>La directive <code class="directive">AuthDigestFile</code>
-      du module <code class="module"><a href="./mod/mod_auth_digest.html">mod_auth_digest</a></code> a été fusionnée avec la
+      du module <code class="module"><a href="./mod/mod_auth_digest.html">mod_auth_digest</a></code> a &#233;t&#233; fusionn&#233;e avec la
       directive <code class="directive"><a href="./mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code>
       et appartient maintenant au module <code class="module"><a href="./mod/mod_authn_file.html">mod_authn_file</a></code>.</li>
 
-      <li>Les directives <code class="directive"><a href="./mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>sont évaluées avant les
+      <li>Les directives <code class="directive"><a href="./mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>sont &#233;valu&#233;es avant les
       directives <code class="directive"><a href="./mod/mod_proxy.html#proxypass">ProxyPass</a></code>.</li>
     </ul>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -147,20 +147,20 @@ fonctionnalités de Apache 2.2</a></li></ul><ul class="seealso"><li><a href="#com
     
 
     <ul>
-      <li>Le module <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>, qui était
-      expérimental dans Apache 2.0, est désormais un module standard.</li>
+      <li>Le module <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>, qui &#233;tait
+      exp&#233;rimental dans Apache 2.0, est d&#233;sormais un module standard.</li>
 
-      <li>Le module <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code>, qui était
-      expérimental dans Apache 2.0, est désormais un module standard.</li>
+      <li>Le module <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code>, qui &#233;tait
+      exp&#233;rimental dans Apache 2.0, est d&#233;sormais un module standard.</li>
 
-      <li>Le module <code class="module"><a href="./mod/mod_mem_cache.html">mod_mem_cache</a></code>, qui était
-      expérimental dans Apache 2.0, est désormais un module standard.</li>
+      <li>Le module <code class="module"><a href="./mod/mod_mem_cache.html">mod_mem_cache</a></code>, qui &#233;tait
+      exp&#233;rimental dans Apache 2.0, est d&#233;sormais un module standard.</li>
 
-      <li>Le module <code class="module"><a href="./mod/mod_charset_lite.html">mod_charset_lite</a></code>, qui était
-      expérimental dans Apache 2.0, est désormais un module standard.</li>
+      <li>Le module <code class="module"><a href="./mod/mod_charset_lite.html">mod_charset_lite</a></code>, qui &#233;tait
+      exp&#233;rimental dans Apache 2.0, est d&#233;sormais un module standard.</li>
 
-      <li>Le module <code class="module"><a href="./mod/mod_dumpio.html">mod_dumpio</a></code>, qui était
-      expérimental dans Apache 2.0, est désormais un module standard.</li>
+      <li>Le module <code class="module"><a href="./mod/mod_dumpio.html">mod_dumpio</a></code>, qui &#233;tait
+      exp&#233;rimental dans Apache 2.0, est d&#233;sormais un module standard.</li>
 
     </ul>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -168,17 +168,17 @@ fonctionnalités de Apache 2.2</a></li></ul><ul class="seealso"><li><a href="#com
 <h2><a name="third-party" id="third-party">Modules tiers</a></h2>
     
 
-   <p>De nombreux modules tiers conçus pour la version 2.0 fonctionneront sans
+   <p>De nombreux modules tiers con&#231;us pour la version 2.0 fonctionneront sans
    changement avec le serveur HTTP Apache version 2.2. Mais tous ces modules
-   doivent être recompilés avant de pouvoir être chargés.</p>
+   doivent &#234;tre recompil&#233;s avant de pouvoir &#234;tre charg&#233;s.</p>
 
   </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="./de/upgrading.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/upgrading.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/upgrading.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./fr/upgrading.html" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/upgrading.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
+</div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
 var comments_identifier = 'http://httpd.apache.org/docs/2.2/upgrading.html';
@@ -196,7 +196,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.2/upgrading.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2018 The Apache Software Foundation.<br />Autoris&#233; sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
