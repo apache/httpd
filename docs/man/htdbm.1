@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "HTDBM" 1 "2020-10-09" "Apache HTTP Server" "htdbm"
+.TH "HTDBM" 1 "2021-07-09" "Apache HTTP Server" "htdbm"
 
 .SH NAME
 htdbm \- Manipulate DBM password databases
@@ -183,7 +183,7 @@ The use of the \fB-b\fR option is discouraged, since when it is used the plainte
 When using the \fBcrypt()\fR algorithm, note that only the first 8 characters of the password are used to form the password\&. If the supplied password is longer, the extra characters will be silently discarded\&.
  
 .PP
-The SHA hashing format does not use salting: for a given password, there is only one hashed representation\&. The \fBcrypt()\fR and MD5 formats permute the representation by prepending a random salt string, to make dictionary attacks against the passwords more difficult\&.
+The SHA hashing option does not use salting: for a given password, there is only one hashed representation\&. The \fBcrypt()\fR and MD5 formats permute the representation by prepending a random salt string, to make dictionary attacks against the passwords more difficult\&.
  
 .PP
 The SHA and \fBcrypt()\fR formats are insecure by today's standards\&.
