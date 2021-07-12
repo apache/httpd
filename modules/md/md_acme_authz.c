@@ -321,7 +321,7 @@ static apr_status_t cha_tls_alpn_01_setup(md_acme_authz_cha_t *cha, md_acme_auth
      * The server will need to answer a TLS connection with SNI == authz->domain
      * and ALPN procotol "acme-tls/1" with this certificate.
      */
-    MD_DATA_SET_STR(&data, cha->key_authz);
+    md_data_init_str(&data, cha->key_authz);
     rv = md_crypt_sha256_digest_hex(&token, p, &data);
     if (APR_SUCCESS != rv) {
         md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, p, "%s: create tls-alpn-01 validation token",
@@ -420,7 +420,7 @@ static apr_status_t cha_dns_01_setup(md_acme_authz_cha_t *cha, md_acme_authz_t *
         goto out;
     }
     
-    MD_DATA_SET_STR(&data, cha->key_authz);
+    md_data_init_str(&data, cha->key_authz);
     rv = md_crypt_sha256_digest64(&token, p, &data);
     if (APR_SUCCESS != rv) {
         md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, p, "%s: create dns-01 token for %s",

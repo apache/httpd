@@ -76,28 +76,73 @@ apr_status_t md_util_pool_vdo(md_util_vaction *cb, void *baton, apr_pool_t *p, .
 /**************************************************************************************************/
 /* data chunks */
 
-md_data_t *md_data_create(apr_pool_t *p, const char *data, apr_size_t len)
+void md_data_pinit(md_data_t *d, apr_size_t len, apr_pool_t *p)
+{
+    md_data_null(d);
+    d->data = apr_pcalloc(p, len);
+    d->len = len;
+}
+
+md_data_t *md_data_pmake(apr_size_t len, apr_pool_t *p)
 {
     md_data_t *d;
     
     d = apr_palloc(p, sizeof(*d));
-    d->len = len;
-    d->data = len? apr_pstrndup(p, data, len) : NULL;
+    md_data_pinit(d, len, p);
     return d;
 }
 
-md_data_t *md_data_make(apr_pool_t *p, apr_size_t len)
+void md_data_init(md_data_t *d, const char *data, apr_size_t len)
+{
+    md_data_null(d);
+    d->len = len;
+    d->data = data;
+}
+
+void md_data_init_str(md_data_t *d, const char *str)
+{
+    md_data_init(d, str, strlen(str));
+}
+
+void md_data_null(md_data_t *d)
+{
+    memset(d, 0, sizeof(*d));
+}
+
+void md_data_clear(md_data_t *d)
+{
+    if (d) {
+        if (d->data && d->free_data) d->free_data((void*)d->data);
+        memset(d, 0, sizeof(*d));
+    }
+}
+
+md_data_t *md_data_make_pcopy(apr_pool_t *p, const char *data, apr_size_t len)
 {
     md_data_t *d;
-    
+
     d = apr_palloc(p, sizeof(*d));
     d->len = len;
-    d->data = apr_pcalloc(p, len);
+    d->data = len? apr_pmemdup(p, data, len) : NULL;
     return d;
+}
+
+apr_status_t md_data_assign_copy(md_data_t *dest, const char *src, apr_size_t src_len)
+{
+    md_data_clear(dest);
+    if (src && src_len) {
+        dest->data = malloc(src_len);
+        if (!dest->data) return APR_ENOMEM;
+        memcpy((void*)dest->data, src, src_len);
+        dest->len = src_len;
+        dest->free_data = free;
+    }
+    return APR_SUCCESS;
 }
 
 void md_data_assign_pcopy(md_data_t *dest, const char *src, apr_size_t src_len, apr_pool_t *p)
 {
+    md_data_clear(dest);
     dest->data = (src && src_len)? apr_pmemdup(p, src, src_len) : NULL;
     dest->len = dest->data? src_len : 0;
 }

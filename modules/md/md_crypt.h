@@ -41,8 +41,6 @@ apr_status_t md_crypt_sha256_digest64(const char **pdigest64, apr_pool_t *p,
 apr_status_t md_crypt_sha256_digest_hex(const char **pdigesthex, apr_pool_t *p, 
                                         const struct md_data_t *data);
 
-#define MD_DATA_SET_STR(d, s)       do { (d)->data = (s); (d)->len = strlen(s); } while(0)
-
 /**************************************************************************************************/
 /* private keys */
 
@@ -217,6 +215,8 @@ apr_status_t md_cert_make_tls_alpn_01(md_cert_t **pcert, const char *domain,
                                       apr_interval_time_t valid_for, apr_pool_t *p);
 
 apr_status_t md_cert_get_ct_scts(apr_array_header_t *scts, apr_pool_t *p, const md_cert_t *cert);
+
+apr_status_t md_cert_get_ocsp_responder_url(const char **purl, apr_pool_t *p, const md_cert_t *cert);
 
 /**************************************************************************************************/
 /* X509 certificate transparency */

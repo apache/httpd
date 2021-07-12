@@ -38,7 +38,6 @@ apr_status_t md_jws_sign(md_json_t **pmsg, apr_pool_t *p,
     md_json_t *msg, *jprotected;
     const char *prot64, *pay64, *sign64, *sign, *prot;
     apr_status_t rv = APR_SUCCESS;
-    md_data_t data;
 
     *pmsg = NULL;
     
@@ -64,8 +63,9 @@ apr_status_t md_jws_sign(md_json_t **pmsg, apr_pool_t *p,
     }
     
     if (rv == APR_SUCCESS) {
-        data.data = prot;
-        data.len = strlen(prot);
+        md_data_t data;
+
+        md_data_init(&data, prot, strlen(prot));
         prot64 = md_util_base64url_encode(&data, p);
         md_json_sets(prot64, msg, "protected", NULL);
         pay64 = md_util_base64url_encode(payload, p);
@@ -104,7 +104,7 @@ apr_status_t md_jws_pkey_thumb(const char **pthumb, apr_pool_t *p, struct md_pke
 
     /* whitespace and order is relevant, since we hand out a digest of this */
     s = apr_psprintf(p, "{\"e\":\"%s\",\"kty\":\"RSA\",\"n\":\"%s\"}", e64, n64);
-    MD_DATA_SET_STR(&data, s);
+    md_data_init_str(&data, s);
     rv = md_crypt_sha256_digest64(pthumb, p, &data);
     return rv;
 }
