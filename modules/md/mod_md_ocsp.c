@@ -53,29 +53,6 @@ static int staple_here(md_srv_conf_t *sc)
             && md_config_geti(sc, MD_CONFIG_STAPLE_OTHERS));
 }
 
-int md_ocsp_init_stapling_status(server_rec *s, apr_pool_t *p, 
-                                 X509 *cert, X509 *issuer)
-{
-    md_srv_conf_t *sc;
-    const md_t *md;
-    apr_status_t rv;
-
-    sc = md_config_get(s);
-    if (!staple_here(sc)) goto declined;
-    md = ((sc->assigned && sc->assigned->nelts == 1)?
-          APR_ARRAY_IDX(sc->assigned, 0, const md_t*) : NULL);
-
-    rv = md_ocsp_prime(sc->mc->ocsp, NULL, 0, md_cert_wrap(p, cert),
-                       md_cert_wrap(p, issuer), md);
-    ap_log_error(APLOG_MARK, APLOG_TRACE1, rv, s, "init stapling for: %s", 
-                 md? md->name : s->server_hostname);
-    if (APR_SUCCESS == rv) {
-        return OK;
-    }
-declined:
-    return DECLINED;
-}
-
 int md_ocsp_prime_status(server_rec *s, apr_pool_t *p,
                          const char *id, apr_size_t id_len, const char *pem)
 {
@@ -117,51 +94,6 @@ typedef struct {
     unsigned char *der;
     apr_size_t der_len;
 } ocsp_copy_ctx_t;
-
-static void ocsp_copy_der(const unsigned char *der, apr_size_t der_len, void *userdata)
-{
-    ocsp_copy_ctx_t *ctx = userdata;
-
-    memset(ctx, 0, sizeof(*ctx));
-    if (der && der_len > 0) {
-        ctx->der = OPENSSL_malloc(der_len);
-        if (ctx->der != NULL) {
-            ctx->der_len = der_len;
-            memcpy(ctx->der, der, der_len);
-        }
-    }
-}
-
-int md_ocsp_get_stapling_status(unsigned char **pder, int *pderlen,
-                                         conn_rec *c, server_rec *s, X509 *x)
-{
-    md_srv_conf_t *sc;
-    const md_t *md;
-    md_cert_t *cert;
-    md_data_t id;
-    apr_status_t rv;
-    ocsp_copy_ctx_t ctx;
-
-    sc = md_config_get(s);
-    if (!staple_here(sc)) goto declined;
-    
-    md = ((sc->assigned && sc->assigned->nelts == 1)?
-          APR_ARRAY_IDX(sc->assigned, 0, const md_t*) : NULL);
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c, "get stapling for: %s", 
-                  md? md->name : s->server_hostname);
-    cert = md_cert_wrap(c->pool, x);
-    rv = md_ocsp_init_id(&id, c->pool, cert);
-    if (APR_SUCCESS != rv) goto declined;
-
-    rv = md_ocsp_get_status(ocsp_copy_der, &ctx, sc->mc->ocsp, id.data, id.len, c->pool, md);
-    if (APR_STATUS_IS_ENOENT(rv)) goto declined;
-    *pder = ctx.der;
-    *pderlen = (int)ctx.der_len;
-    return OK;
-    
-declined:
-    return DECLINED;
-}
 
 int md_ocsp_provide_status(server_rec *s, conn_rec *c,
                            const char *id, apr_size_t id_len,

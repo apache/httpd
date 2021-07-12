@@ -1505,12 +1505,7 @@ static void md_hooks(apr_pool_t *pool)
     ap_hook_ssl_ocsp_prime_hook(md_ocsp_prime_status, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_ssl_ocsp_get_resp_hook(md_ocsp_provide_status, NULL, NULL, APR_HOOK_MIDDLE);
 #else
-
-#ifndef SSL_CERT_HOOKS
-#error "This version of mod_md requires Apache httpd 2.4.41 or newer."
-#endif
-    APR_OPTIONAL_HOOK(ssl, init_stapling_status, md_ocsp_init_stapling_status, NULL, NULL, APR_HOOK_MIDDLE);
-    APR_OPTIONAL_HOOK(ssl, get_stapling_status, md_ocsp_get_stapling_status, NULL, NULL, APR_HOOK_MIDDLE);
+#error "This version of mod_md requires Apache httpd 2.4.48 or newer."
 #endif /* AP_MODULE_MAGIC_AT_LEAST() */
 }
 

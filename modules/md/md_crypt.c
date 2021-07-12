@@ -677,6 +677,7 @@ static apr_status_t pkey_to_buffer(md_data_t *buf, md_pkey_t *pkey, apr_pool_t *
         return APR_EINVAL;
     }
 
+    md_data_null(buf);
     i = BIO_pending(bio);
     if (i > 0) {
         buf->data = apr_palloc(p, (apr_size_t)i);
@@ -904,8 +905,7 @@ static const char *bn64(const BIGNUM *b, apr_pool_t *p)
     if (b) {
         md_data_t buffer;
 
-        buffer.len = (apr_size_t)BN_num_bytes(b);
-        buffer.data = apr_pcalloc(p, buffer.len);
+        md_data_pinit(&buffer, (apr_size_t)BN_num_bytes(b), p);
         if (buffer.data) {
             BN_bn2bin(b, (unsigned char *)buffer.data);
             return md_util_base64url_encode(&buffer, p);
@@ -946,9 +946,8 @@ apr_status_t md_crypt_sign64(const char **psign64, md_pkey_t *pkey, apr_pool_t *
     unsigned int blen;
     const char *sign64 = NULL;
     apr_status_t rv = APR_ENOMEM;
-    
-    buffer.len = (apr_size_t)EVP_PKEY_size(pkey->pkey);
-    buffer.data = apr_pcalloc(p, buffer.len);
+
+    md_data_pinit(&buffer, (apr_size_t)EVP_PKEY_size(pkey->pkey), p);
     if (buffer.data) {
         ctx = EVP_MD_CTX_create();
         if (ctx) {
@@ -987,11 +986,9 @@ static apr_status_t sha256_digest(md_data_t **pdigest, apr_pool_t *p, const md_d
     apr_status_t rv = APR_ENOMEM;
     unsigned int dlen;
 
-    digest = apr_palloc(p, sizeof(*digest));
+    digest = md_data_pmake(EVP_MAX_MD_SIZE, p);
     if (!digest) goto leave;
-    digest->data = apr_pcalloc(p, EVP_MAX_MD_SIZE);
-    if (!digest->data) goto leave;
-    
+
     ctx = EVP_MD_CTX_create();
     if (ctx) {
         rv = APR_ENOTIMPL;
@@ -1303,7 +1300,8 @@ apr_status_t md_cert_fsave(md_cert_t *cert, apr_pool_t *p,
 {
     md_data_t buffer;
     apr_status_t rv;
-    
+
+    md_data_null(&buffer);
     if (APR_SUCCESS == (rv = cert_to_buffer(&buffer, cert, p))) {
         return md_util_freplace(fname, perms, p, fwrite_buffer, &buffer); 
     }
@@ -1314,7 +1312,8 @@ apr_status_t md_cert_to_base64url(const char **ps64, const md_cert_t *cert, apr_
 {
     md_data_t buffer;
     apr_status_t rv;
-    
+
+    md_data_null(&buffer);
     if (APR_SUCCESS == (rv = cert_to_buffer(&buffer, cert, p))) {
         *ps64 = md_util_base64url_encode(&buffer, p);
         return APR_SUCCESS;
@@ -1328,11 +1327,9 @@ apr_status_t md_cert_to_sha256_digest(md_data_t **pdigest, const md_cert_t *cert
     md_data_t *digest;
     unsigned int dlen;
     apr_status_t rv = APR_ENOMEM;
-    
-    digest = apr_palloc(p, sizeof(*digest));
+
+    digest = md_data_pmake(EVP_MAX_MD_SIZE, p);
     if (!digest) goto leave;
-    digest->data = apr_pcalloc(p, EVP_MAX_MD_SIZE);
-    if (!digest->data) goto leave;
 
     X509_digest(cert->x509, EVP_sha256(), (unsigned char*)digest->data, &dlen);
     digest->len = dlen;
@@ -1346,7 +1343,7 @@ apr_status_t md_cert_to_sha256_fingerprint(const char **pfinger, const md_cert_t
 {
     md_data_t *digest;
     apr_status_t rv;
-    
+
     rv = md_cert_to_sha256_digest(&digest, cert, p);
     if (APR_SUCCESS == rv) {
         return md_data_to_hex(pfinger, 0, p, digest);
@@ -1679,7 +1676,8 @@ apr_status_t md_cert_req_create(const char **pcsr_der_64, const char *name,
     int csr_der_len;
     
     assert(domains->nelts > 0);
-    
+    md_data_null(&csr_der);
+
     if (NULL == (csr = X509_REQ_new()) 
         || NULL == (exts = sk_X509_EXTENSION_new_null())
         || NULL == (n = X509_NAME_new())) {
@@ -1975,10 +1973,10 @@ apr_status_t md_cert_get_ct_scts(apr_array_header_t *scts, apr_pool_t *p, const 
                     sct->version = SCT_get_version(sct_handle);
                     sct->timestamp = apr_time_from_msec(SCT_get_timestamp(sct_handle));
                     len = SCT_get0_log_id(sct_handle, (unsigned char**)&data);
-                    sct->logid = md_data_create(p, data, len);
+                    sct->logid = md_data_make_pcopy(p, data, len);
                     sct->signature_type_nid = SCT_get_signature_nid(sct_handle);
                     len = SCT_get0_signature(sct_handle,  (unsigned char**)&data);
-                    sct->signature = md_data_create(p, data, len);
+                    sct->signature = md_data_make_pcopy(p, data, len);
                     
                     APR_ARRAY_PUSH(scts, md_sct*) = sct;
                 }
@@ -1995,3 +1993,24 @@ apr_status_t md_cert_get_ct_scts(apr_array_header_t *scts, apr_pool_t *p, const 
     return APR_ENOTIMPL;
 #endif
 }
+
+apr_status_t md_cert_get_ocsp_responder_url(const char **purl, apr_pool_t *p, const md_cert_t *cert)
+{
+    STACK_OF(OPENSSL_STRING) *ssk;
+    apr_status_t rv = APR_SUCCESS;
+    const char *url = NULL;
+
+    ssk = X509_get1_ocsp(md_cert_get_X509(cert));
+    if (!ssk) {
+        rv = APR_ENOENT;
+        goto cleanup;
+    }
+    url = apr_pstrdup(p, sk_OPENSSL_STRING_value(ssk, 0));
+    md_log_perror(MD_LOG_MARK, MD_LOG_TRACE2, 0, p, "ocsp responder found '%s'", url);
+
+cleanup:
+    if (ssk) X509_email_free(ssk);
+    *purl = url;
+    return rv;
+}
+
