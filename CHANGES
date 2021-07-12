@@ -20,7 +20,7 @@ Changes with Apache 2.5.1
 
   *) mod_h2: Don't strip headers from 304 responses.  [Yann Ylavic]
 
-  *) mpm_proxy: Fix possible reuse/merging of Proxy(Pass)Match worker instances
+  *) mod_proxy: Fix possible reuse/merging of Proxy(Pass)Match worker instances
      with others when their URLs contain a '$' substitution.  PR 65419.
      [Yann Ylavic]
 
