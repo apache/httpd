@@ -3681,9 +3681,8 @@ PROXY_DECLARE(apr_status_t) ap_proxy_sync_balancer(proxy_balancer *b, server_rec
             runtime = apr_array_push(b->workers);
             *runtime = apr_palloc(conf->pool, sizeof(proxy_worker));
             apr_global_mutex_unlock(proxy_mutex);
+            memset(*runtime, 0, sizeof(proxy_worker));
             (*runtime)->hash = shm->hash;
-            (*runtime)->context = NULL;
-            (*runtime)->cp = NULL;
             (*runtime)->balancer = b;
             (*runtime)->s = shm;
 #if APR_HAS_THREADS
