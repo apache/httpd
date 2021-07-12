@@ -1238,6 +1238,8 @@ struct conn_rec {
 
     /** The "real" master connection. NULL if I am the master. */
     conn_rec *master;
+
+    int outgoing;
 };
 
 /**

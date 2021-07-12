@@ -65,10 +65,10 @@ static SSLConnRec *ssl_get_effective_config(conn_rec *c)
     return sslconn;
 }
 
-static int ssl_is_https(conn_rec *c)
+static int ssl_conn_is_ssl(conn_rec *c)
 {
-    SSLConnRec *sslconn = ssl_get_effective_config(c);
-    return sslconn && sslconn->ssl;
+    const SSLConnRec *sslconn = ssl_get_effective_config(c);
+    return (sslconn && sslconn->ssl)? OK : DECLINED;
 }
 
 static const char var_interface[] = "mod_ssl/" AP_SERVER_BASEREVISION;
@@ -137,7 +137,7 @@ void ssl_var_register(apr_pool_t *p)
 {
     char *cp, *cp2;
 
-    APR_REGISTER_OPTIONAL_FN(ssl_is_https);
+    ap_hook_ssl_conn_is_ssl(ssl_conn_is_ssl, NULL, NULL, APR_HOOK_MIDDLE);
     APR_REGISTER_OPTIONAL_FN(ssl_var_lookup);
     APR_REGISTER_OPTIONAL_FN(ssl_ext_list);
 
