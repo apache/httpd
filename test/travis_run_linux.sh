@@ -186,7 +186,7 @@ if ! test -v SKIP_TESTING; then
 
     shopt -s nullglob 
     for core in test/perl-framework/t/core* ; do
-        gdb -ex 'thread apply all backtrace' -batch ./httpd "$core"
+        gdb -ex 'thread apply all backtrace full' -batch ./httpd "$core"
         RV=5
     done
 
