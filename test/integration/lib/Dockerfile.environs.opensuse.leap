@@ -1,0 +1,16 @@
+FROM opensuse/leap
+ENV container docker
+
+ENV LANG en_US.UTF-8
+
+# files needed for test
+RUN zypper -n install git-core wget tar m4 curl sudo tidy python3-demjson
+# httpd build dependencies
+RUN zypper -n install libtool libapr1 libapr-util1 apr-devel apr-util-devel which glibc-devel gcc pcre-devel libserf-1-1 libserf-devel libnghttp2-14 libnghttp2-devel libcurl4 libcurl-devel make
+
+WORKDIR /opt
+RUN git clone https://github.com/andrii-suse/environs
+WORKDIR /opt/environs
+RUN git clone --depth=1 https://github.com/apache/apr
+
+ENTRYPOINT ["/usr/bin/tail", "-f", "/dev/null"]
