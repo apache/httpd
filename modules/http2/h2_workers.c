@@ -340,7 +340,7 @@ static apr_status_t workers_pool_cleanup(void *data)
         rv = apr_thread_cond_timedwait(workers->all_done, workers->lock, timout);
         if (APR_TIMEUP == rv) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, workers->s,
-                         APLOGNO() "h2_workers: waiting for idle workers to close, "
+                         APLOGNO(10290) "h2_workers: waiting for idle workers to close, "
                          "still seeing %d workers living",
                          apr_atomic_read32(&workers->worker_count));
             continue;
@@ -348,7 +348,7 @@ static apr_status_t workers_pool_cleanup(void *data)
     }
     if (i >= n) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, 0, workers->s,
-                     APLOGNO() "h2_workers: cleanup, %d idle workers "
+                     APLOGNO(10291) "h2_workers: cleanup, %d idle workers "
                      "did not exit after %d seconds.",
                      apr_atomic_read32(&workers->worker_count), i);
     }
