@@ -94,7 +94,7 @@ static apr_status_t activate_slot(h2_workers *workers, h2_slot *slot)
         if (rv != APR_SUCCESS) goto cleanup;
     }
     
-    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, workers->s,
+    ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, workers->s,
                  "h2_workers: new thread for slot %d", slot->id); 
 
     /* thread will either immediately start work or add itself
@@ -319,16 +319,45 @@ static void workers_abort_idle(h2_workers *workers)
 static apr_status_t workers_pool_cleanup(void *data)
 {
     h2_workers *workers = data;
+    apr_time_t timout = apr_time_from_sec(1);
+    apr_status_t rv;
+    int i, n = 5;
 
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, workers->s,
+                 "h2_workers: cleanup %d workers idling",
+                 (int)apr_atomic_read32(&workers->worker_count));
     workers_abort_idle(workers);
 
-    /* wait for all the workers to become zombies and join them */
+    /* wait for all the workers to become zombies and join them.
+     * this gets called after the mpm shuts down and all connections
+     * have either been handled (graceful) or we are forced exiting
+     * (ungrateful). Either way, we show limited patience. */
     apr_thread_mutex_lock(workers->lock);
-    if (apr_atomic_read32(&workers->worker_count)) {
-        apr_thread_cond_wait(workers->all_done, workers->lock);
+    for (i = 0; i < n; ++i) {
+        if (!apr_atomic_read32(&workers->worker_count)) {
+            break;
+        }
+        rv = apr_thread_cond_timedwait(workers->all_done, workers->lock, timout);
+        if (APR_TIMEUP == rv) {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, workers->s,
+                         APLOGNO() "h2_workers: waiting for idle workers to close, "
+                         "still seeing %d workers living",
+                         apr_atomic_read32(&workers->worker_count));
+            continue;
+        }
+    }
+    if (i >= n) {
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, workers->s,
+                     APLOGNO() "h2_workers: cleanup, %d idle workers "
+                     "did not exit after %d seconds.",
+                     apr_atomic_read32(&workers->worker_count), i);
     }
     apr_thread_mutex_unlock(workers->lock);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, workers->s,
+                 "h2_workers: cleanup all workers terminated");
     join_zombies(workers);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, workers->s,
+                 "h2_workers: cleanup zombie workers joined");
 
     return APR_SUCCESS;
 }
@@ -363,6 +392,10 @@ h2_workers *h2_workers_create(server_rec *s, apr_pool_t *pchild,
     workers->max_workers = max_workers;
     workers->max_idle_duration = apr_time_from_sec((idle_secs > 0)? idle_secs : 10);
 
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, workers->s,
+                 "h2_workers: created with min=%d max=%d idle_timeout=%d sec",
+                 workers->min_workers, workers->max_workers,
+                 (int)apr_time_sec(workers->max_idle_duration));
     /* FIXME: the fifo set we use here has limited capacity. Once the
      * set is full, connections with new requests do a wait. Unfortunately,
      * we have optimizations in place there that makes such waiting "unfair"

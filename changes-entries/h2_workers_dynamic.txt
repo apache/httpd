@@ -6,6 +6,9 @@
      create H2MinWorkers threads and add up to H2MaxWorkers when needed. These
      additional workers time out when idle after H2MaxWorkerIdleSeconds and
      disappear again.
+   - Added a timeout to h2 worker cleanup to exit latest after 5 seconds of
+     waiting on idle workers to terminate. This happens after all connections
+     have been processed. a WARNING is logged in case workers lagged behind.
    - When the shutdown of a child is detected (e.g. graceful shutdown), the
      module will terminate all idle workers above H2MinWorkers right away.
      This detection currently only happens when a HTTP/2 connection is active.

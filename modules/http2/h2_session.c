@@ -774,7 +774,7 @@ static apr_status_t session_cleanup(h2_session *session, const char *trigger)
          * connection when sending the next request, this has the effect
          * that at least this one request will fail.
          */
-        ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c,
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
                       H2_SSSN_LOG(APLOGNO(03199), session, 
                       "connection disappeared without proper "
                       "goodbye, clients will be confused, should not happen"));
@@ -799,13 +799,17 @@ static apr_status_t session_pool_cleanup(void *data)
     h2_session *session;
     
     if ((session = h2_ctx_get_session(c))) {
+        int mpm_state = 0;
+        int level;
+
+        ap_mpm_query(AP_MPMQ_MPM_STATE, &mpm_state);
+        level = (AP_MPMQ_STOPPING == mpm_state)? APLOG_DEBUG : APLOG_WARNING;
         /* if the session is still there, now is the last chance
          * to perform cleanup. Normally, cleanup should have happened
-         * earlier in the connection pre_close. Main reason is that
-         * any ongoing requests on secondary connections might still access
-         * data which has, at this time, already been freed. An example
-         * is mod_ssl that uses request hooks. */
-        ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c,
+         * earlier in the connection pre_close.
+         * However, when the server is stopping, it may shutdown connections
+         * without running the pre_close hooks. Do not want about that. */
+        ap_log_cerror(APLOG_MARK, level, 0, c,
                       H2_SSSN_LOG(APLOGNO(10020), session, 
                       "session cleanup triggered by pool cleanup. "
                       "this should have happened earlier already."));
