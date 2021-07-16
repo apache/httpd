@@ -1351,11 +1351,12 @@ static int log_script(request_rec *r, cgid_server_conf * conf, int ret,
     return ret;
 }
 
-#ifdef HAVE_CGID_FDPASSING
 /* Pull in CGI bucket implementation. */
 #define cgi_server_conf cgid_server_conf
-#include "cgi_common.h"
+#ifdef HAVE_CGID_FDPASSING
+#define WANT_CGI_BUCKET
 #endif
+#include "cgi_common.h"
 
 static int connect_to_daemon(int *sdptr, request_rec *r,
                              cgid_server_conf *conf)
