@@ -342,15 +342,19 @@ static apr_status_t close_unix_socket(void *thefd)
     return close(fd);
 }
 
-/* deal with incomplete reads and signals
- * assume you really have to read buf_size bytes
- */
-static apr_status_t sock_read(int fd, void *vbuf, size_t buf_size)
+/* Read from the socket dealing with incomplete messages and signals.
+ * Returns 0 on success or errno on failure.  Stderr fd passed as
+ * auxiliary data from other end is written to *errfd, or else stderr
+ * fileno if not present. */
+static apr_status_t sock_readhdr(int fd, int *errfd, void *vbuf, size_t buf_size)
 {
-    char *buf = vbuf;
     int rc;
+#ifndef HAVE_CGID_FDPASSING
+    char *buf = vbuf;
     size_t bytes_read = 0;
 
+    if (errfd) *errfd = 0;
+    
     do {
         do {
             rc = read(fd, buf + bytes_read, buf_size - bytes_read);
@@ -365,7 +369,50 @@ static apr_status_t sock_read(int fd, void *vbuf, size_t buf_size)
         }
     } while (bytes_read < buf_size);
 
+   
+#else /* with FD passing */
+    struct msghdr msg = {0};
+    struct iovec vec = {vbuf, buf_size};
+    struct cmsghdr *cmsg;
+    union {  /* union to ensure alignment */
+        struct cmsghdr cm;
+        char buf[CMSG_SPACE(sizeof(int))];
+    } u;
+    
+    msg.msg_iov = &vec;
+    msg.msg_iovlen = 1;
+    
+    msg.msg_control = u.buf;
+    msg.msg_controllen = sizeof(u.buf);
+
+    if (errfd) *errfd = 0;
+    
+    /* use MSG_WAITALL to skip loop on truncated reads */
+    do {
+        rc = recvmsg(fd, &msg, MSG_WAITALL);
+    } while (rc < 0 && errno == EINTR);
+
+    if (rc == 0) {
+        return ECONNRESET;
+    }
+    
+    cmsg = CMSG_FIRSTHDR(&msg);
+    if (errfd
+        && cmsg
+        && cmsg->cmsg_len == CMSG_LEN(sizeof(*errfd))
+        && cmsg->cmsg_level == SOL_SOCKET
+        && cmsg->cmsg_type == SCM_RIGHTS) {
+        *errfd = *((int *) CMSG_DATA(cmsg));
+    }
+#endif
+    
     return APR_SUCCESS;
+}
+
+/* As sock_readhdr but without auxiliary fd passing. */
+static apr_status_t sock_read(int fd, void *vbuf, size_t buf_size)
+{
+    return sock_readhdr(fd, NULL, vbuf, buf_size);
 }
 
 /* deal with signals
@@ -384,7 +431,7 @@ static apr_status_t sock_write(int fd, const void *buf, size_t buf_size)
     return APR_SUCCESS;
 }
 
-static apr_status_t sock_writev(int fd, request_rec *r, int count, ...)
+static apr_status_t sock_writev(int fd, int auxfd, request_rec *r, int count, ...)
 {
     va_list ap;
     int rc;
@@ -399,9 +446,39 @@ static apr_status_t sock_writev(int fd, request_rec *r, int count, ...)
     }
     va_end(ap);
 
+#ifndef HAVE_CGID_FDPASSING
     do {
         rc = writev(fd, vec, count);
     } while (rc < 0 && errno == EINTR);
+#else
+    {
+        struct msghdr msg = { 0 };
+        struct cmsghdr *cmsg;
+        union { /* union for alignment */
+            char buf[CMSG_SPACE(sizeof(int))];
+            struct cmsghdr align;
+        } u;
+
+        msg.msg_iov = vec;
+        msg.msg_iovlen = count;
+
+        if (auxfd) {
+            msg.msg_control = u.buf;
+            msg.msg_controllen = sizeof(u.buf);
+
+            cmsg = CMSG_FIRSTHDR(&msg);
+            cmsg->cmsg_level = SOL_SOCKET;
+            cmsg->cmsg_type = SCM_RIGHTS;
+            cmsg->cmsg_len = CMSG_LEN(sizeof(int));
+            *((int *) CMSG_DATA(cmsg)) = auxfd;
+        }
+
+        do {
+            rc = sendmsg(fd, &msg, 0);
+        } while (rc < 0 && errno == EINTR);
+    }
+#endif
+    
     if (rc < 0) {
         return errno;
     }
@@ -410,7 +487,7 @@ static apr_status_t sock_writev(int fd, request_rec *r, int count, ...)
 }
 
 static apr_status_t get_req(int fd, request_rec *r, char **argv0, char ***env,
-                            cgid_req_t *req)
+                            int *errfd, cgid_req_t *req)
 {
     int i;
     char **environ;
@@ -421,7 +498,7 @@ static apr_status_t get_req(int fd, request_rec *r, char **argv0, char ***env,
     r->server = apr_pcalloc(r->pool, sizeof(server_rec));
 
     /* read the request header */
-    stat = sock_read(fd, req, sizeof(*req));
+    stat = sock_readhdr(fd, errfd, req, sizeof(*req));
     if (stat != APR_SUCCESS) {
         return stat;
     }
@@ -487,6 +564,7 @@ static apr_status_t send_req(int fd, request_rec *r, char *argv0, char **env,
     apr_status_t stat;
     ap_unix_identity_t * ugid = ap_run_get_suexec_identity(r);
     core_dir_config *core_conf = ap_get_core_module_config(r->per_dir_config);
+    int errfd;
 
 
     if (ugid == NULL) {
@@ -507,16 +585,21 @@ static apr_status_t send_req(int fd, request_rec *r, char *argv0, char **env,
     req.args_len = r->args ? strlen(r->args) : 0;
     req.loglevel = r->server->log.level;
 
+    if (r->server->error_log)
+        apr_os_file_get(&errfd, r->server->error_log);
+    else
+        errfd = 0;
+    
     /* Write the request header */
     if (req.args_len) {
-        stat = sock_writev(fd, r, 5,
+        stat = sock_writev(fd, errfd, r, 5,
                            &req, sizeof(req),
                            r->filename, req.filename_len,
                            argv0, req.argv0_len,
                            r->uri, req.uri_len,
                            r->args, req.args_len);
     } else {
-        stat = sock_writev(fd, r, 4,
+        stat = sock_writev(fd, errfd, r, 4,
                            &req, sizeof(req),
                            r->filename, req.filename_len,
                            argv0, req.argv0_len,
@@ -531,7 +614,7 @@ static apr_status_t send_req(int fd, request_rec *r, char *argv0, char **env,
     for (i = 0; i < req.env_count; i++) {
         apr_size_t curlen = strlen(env[i]);
 
-        if ((stat = sock_writev(fd, r, 2, &curlen, sizeof(curlen),
+        if ((stat = sock_writev(fd, 0, r, 2, &curlen, sizeof(curlen),
                                 env[i], curlen)) != APR_SUCCESS) {
             return stat;
         }
@@ -670,7 +753,7 @@ static int cgid_server(void *data)
     }
 
     while (!daemon_should_exit) {
-        int errfileno = STDERR_FILENO;
+        int errfileno;
         char *argv0 = NULL;
         char **env = NULL;
         const char * const *argv;
@@ -710,7 +793,7 @@ static int cgid_server(void *data)
         r = apr_pcalloc(ptrans, sizeof(request_rec));
         procnew = apr_pcalloc(ptrans, sizeof(*procnew));
         r->pool = ptrans;
-        stat = get_req(sd2, r, &argv0, &env, &cgid_req);
+        stat = get_req(sd2, r, &argv0, &env, &errfileno, &cgid_req);
         if (stat != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, stat,
                          main_server, APLOGNO(01248)
@@ -742,6 +825,16 @@ static int cgid_server(void *data)
             continue;
         }
 
+        if (errfileno == 0) {
+            errfileno = STDERR_FILENO;
+        }
+        else {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, main_server,
+                          "using passed fd %d as stderr", errfileno);
+            /* Limit the received fd lifetime to pool lifetime */
+            apr_pool_cleanup_register(ptrans, (void *)((long)errfileno),
+                                      close_unix_socket, close_unix_socket);
+        }
         apr_os_file_put(&r->server->error_log, &errfileno, 0, r->pool);
         apr_os_file_put(&inout, &sd2, 0, r->pool);
 
