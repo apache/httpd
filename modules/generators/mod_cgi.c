@@ -564,8 +564,9 @@ static apr_status_t default_build_command(const char **cmd, const char ***argv,
 }
 
 #if APR_FILES_AS_SOCKETS
-#include "cgi_common.h"
+#define WANT_CGI_BUCKET
 #endif
+#include "cgi_common.h"
 
 static int cgi_handler(request_rec *r)
 {
