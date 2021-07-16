@@ -516,6 +516,14 @@ static apr_status_t get_req(int fd, request_rec *r, char **argv0, char ***env,
         return APR_SUCCESS;
     }
 
+    /* Sanity check the structure received. */
+    if (req->env_count < 0 || req->uri_len == 0
+        || req->filename_len > APR_PATH_MAX || req->filename_len == 0
+        || req->argv0_len > APR_PATH_MAX || req->argv0_len == 0
+        || req->loglevel > APLOG_TRACE8) {
+        return APR_EINVAL;
+    }
+    
     /* handle module indexes and such */
     rconf = (void **)ap_create_request_config(r->pool);
 
