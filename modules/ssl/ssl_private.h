@@ -415,6 +415,7 @@ typedef enum {
     || (errnum == X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN) \
     || (errnum == X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT_LOCALLY) \
     || (errnum == X509_V_ERR_CERT_UNTRUSTED) \
+    || (errnum == X509_V_ERR_INVALID_PURPOSE) \
     || (errnum == X509_V_ERR_UNABLE_TO_VERIFY_LEAF_SIGNATURE))
 
 /**
