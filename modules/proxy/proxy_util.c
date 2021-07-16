@@ -3677,17 +3677,15 @@ PROXY_DECLARE(apr_status_t) ap_proxy_sync_balancer(proxy_balancer *b, server_rec
         }
         if (!found) {
             proxy_worker **runtime;
+            /* XXX: a thread mutex is maybe enough here */
             apr_global_mutex_lock(proxy_mutex);
             runtime = apr_array_push(b->workers);
-            *runtime = apr_palloc(conf->pool, sizeof(proxy_worker));
+            *runtime = apr_pcalloc(conf->pool, sizeof(proxy_worker));
             apr_global_mutex_unlock(proxy_mutex);
-            memset(*runtime, 0, sizeof(proxy_worker));
             (*runtime)->hash = shm->hash;
             (*runtime)->balancer = b;
             (*runtime)->s = shm;
-#if APR_HAS_THREADS
-            (*runtime)->tmutex = NULL;
-#endif
+
             rv = ap_proxy_initialize_worker(*runtime, s, conf->pool);
             if (rv != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(00966) "Cannot init worker");
