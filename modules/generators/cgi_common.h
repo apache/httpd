@@ -27,6 +27,10 @@
 #include "httpd.h"
 #include "util_filter.h"
 
+/* Read and discard all output from the brigade.  Note that with the
+ * CGI bucket, the brigade will become empty once the script's stdout
+ * is closed (or on error/timeout), but the stderr output may not have
+ * been entirely captured at this point. */
 static void discard_script_output(apr_bucket_brigade *bb)
 {
     apr_bucket *e;
