@@ -381,11 +381,12 @@ static apr_status_t sock_readhdr(int fd, int *errfd, void *vbuf, size_t buf_size
     
     msg.msg_iov = &vec;
     msg.msg_iovlen = 1;
-    
-    msg.msg_control = u.buf;
-    msg.msg_controllen = sizeof(u.buf);
 
-    if (errfd) *errfd = 0;
+    if (errfd) {
+        msg.msg_control = u.buf;
+        msg.msg_controllen = sizeof(u.buf);
+        *errfd = 0;
+    }
     
     /* use MSG_WAITALL to skip loop on truncated reads */
     do {
@@ -395,10 +396,17 @@ static apr_status_t sock_readhdr(int fd, int *errfd, void *vbuf, size_t buf_size
     if (rc == 0) {
         return ECONNRESET;
     }
-    
-    cmsg = CMSG_FIRSTHDR(&msg);
+    else if (rc < 0) {
+        return errno;
+    }
+    else if (rc != buf_size) {
+        /* MSG_WAITALL should ensure the recvmsg blocks until the
+         * entire length is read, but let's be paranoid. */
+        return APR_INCOMPLETE;
+    }
+
     if (errfd
-        && cmsg
+        && (cmsg = CMSG_FIRSTHDR(&msg)) != NULL
         && cmsg->cmsg_len == CMSG_LEN(sizeof(*errfd))
         && cmsg->cmsg_level == SOL_SOCKET
         && cmsg->cmsg_type == SCM_RIGHTS) {
