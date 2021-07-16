@@ -407,10 +407,10 @@ static int stapling_check_response(server_rec *s, modssl_ctx_t *mctx,
 
     bs = OCSP_response_get1_basic(rsp);
     if (bs == NULL) {
-        /* If we can't parse response just pass it to client */
+        /* If we can't parse response as OCSP basic, then don't pass it to client */
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01934)
                      "stapling_check_response: Error Parsing Response!");
-        return SSL_TLSEXT_ERR_OK;
+        return SSL_TLSEXT_ERR_NOACK;
     }
 
     if (!OCSP_resp_find_status(bs, cinf->cid, &status, &reason, &rev,
@@ -445,7 +445,7 @@ static int stapling_check_response(server_rec *s, modssl_ctx_t *mctx,
             rv = SSL_TLSEXT_ERR_NOACK;
         }
 
-        if (status != V_OCSP_CERTSTATUS_GOOD) {
+        if (status != V_OCSP_CERTSTATUS_GOOD && pok) {
             char snum[MAX_STRING_LEN] = { '\0' };
             BIO *bio = BIO_new(BIO_s_mem());
 
@@ -466,12 +466,6 @@ static int stapling_check_response(server_rec *s, modssl_ctx_t *mctx,
                          (reason != OCSP_REVOKED_STATUS_NOSTATUS) ?
                          OCSP_crl_reason_str(reason) : "n/a",
                          snum[0] ? snum : "[n/a]");
-
-            if (mctx->stapling_return_errors == FALSE) {
-                if (pok)
-                    *pok = FALSE;
-                rv = SSL_TLSEXT_ERR_NOACK;
-            }
         }
     }
 
@@ -560,6 +554,7 @@ static BOOL stapling_renew_response(server_rec *s, modssl_ctx_t *mctx, SSL *ssl,
                      "stapling_renew_response: responder error");
         if (mctx->stapling_fake_trylater) {
             *prsp = OCSP_response_create(OCSP_RESPONSE_STATUS_TRYLATER, NULL);
+            *pok = FALSE;
         }
         else {
             goto done;
