@@ -48,6 +48,7 @@ static void discard_script_output(apr_bucket_brigade *bb)
     }
 }
 
+#ifdef WANT_CGI_BUCKET
 /* A CGI bucket type is needed to catch any output to stderr from the
  * script; see PR 22030. */
 static const apr_bucket_type_t bucket_type_cgi;
@@ -238,6 +239,8 @@ static const apr_bucket_type_t bucket_type_cgi = {
     apr_bucket_split_notimpl,
     apr_bucket_copy_notimpl
 };
+
+#endif /* WANT_CGI_BUCKET */
 
 /* Handle the CGI response output, having set up the brigade with the
  * CGI or PIPE bucket as appropriate. */
