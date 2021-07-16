@@ -49,6 +49,10 @@ static apr_bucket *cgi_bucket_create(request_rec *r,
     apr_pollfd_t fd;
     struct cgi_bucket_data *data = apr_palloc(r->pool, sizeof *data);
 
+    /* Disable APR timeout handling since we'll use poll() entirely. */
+    apr_file_pipe_timeout_set(out, 0);
+    apr_file_pipe_timeout_set(err, 0);
+    
     APR_BUCKET_INIT(b);
     b->free = apr_bucket_free;
     b->list = list;
