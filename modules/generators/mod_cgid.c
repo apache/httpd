@@ -556,8 +556,8 @@ static apr_status_t get_req(int fd, request_rec *r, char **argv0, char ***env,
     return APR_SUCCESS;
 }
 
-static apr_status_t send_req(int fd, request_rec *r, char *argv0, char **env,
-                             int req_type)
+static apr_status_t send_req(int fd, apr_file_t *errpipe, request_rec *r,
+                             char *argv0, char **env, int req_type)
 {
     int i;
     cgid_req_t req = {0};
@@ -585,8 +585,8 @@ static apr_status_t send_req(int fd, request_rec *r, char *argv0, char **env,
     req.args_len = r->args ? strlen(r->args) : 0;
     req.loglevel = r->server->log.level;
 
-    if (r->server->error_log)
-        apr_os_file_get(&errfd, r->server->error_log);
+    if (errpipe)
+        apr_os_file_get(&errfd, errpipe);
     else
         errfd = 0;
     
@@ -665,20 +665,34 @@ static void daemon_signal_handler(int sig)
     }
 }
 
+/* Callback executed in the forked child process if exec of the CGI
+ * script fails.  For the fd-passing case, output to stderr goes to
+ * the client (request handling thread) and is logged via
+ * ap_log_rerror there.  For the non-fd-passing case, the "fake"
+ * request_rec passed via userdata is used to log. */
 static void cgid_child_errfn(apr_pool_t *pool, apr_status_t err,
                              const char *description)
 {
-    request_rec *r;
     void *vr;
 
     apr_pool_userdata_get(&vr, ERRFN_USERDATA_KEY, pool);
-    r = vr;
-
-    /* sure we got r, but don't call ap_log_rerror() because we don't
-     * have r->headers_in and possibly other storage referenced by
-     * ap_log_rerror()
-     */
-    ap_log_error(APLOG_MARK, APLOG_ERR, err, r->server, APLOGNO(01241) "%s", description);
+    if (vr) {
+        request_rec *r = vr;
+        
+        /* sure we got r, but don't call ap_log_rerror() because we don't
+         * have r->headers_in and possibly other storage referenced by
+         * ap_log_rerror()
+         */
+        ap_log_error(APLOG_MARK, APLOG_ERR, err, r->server, APLOGNO(01241) "%s", description);
+    }
+    else {
+        const char *logstr;
+        
+        logstr = apr_psprintf(pool, APLOGNO(01241) "error spawning CGI child: %s (%pm)\n",
+                              description, &err);
+        fputs(logstr, stderr);
+        fflush(stderr);
+    }
 }
 
 static int cgid_server(void *data)
@@ -894,7 +908,10 @@ static int cgid_server(void *data)
             close(sd2);
         }
         else {
-            apr_pool_userdata_set(r, ERRFN_USERDATA_KEY, apr_pool_cleanup_null, ptrans);
+            if (errfileno == STDERR_FILENO) {
+                /* Used by cgid_child_errfn without fd-passing. */
+                apr_pool_userdata_set(r, ERRFN_USERDATA_KEY, apr_pool_cleanup_null, ptrans);
+            }
 
             argv = (const char * const *)create_argv(r->pool, NULL, NULL, NULL, argv0, r->args);
 
@@ -1194,6 +1211,33 @@ static int log_scripterror(request_rec *r, cgid_server_conf * conf, int ret,
     return ret;
 }
 
+/* Soak up stderr from a script and redirect it to the error log.
+ * TODO: log_scripterror() and this could move to cgi_common.h. */
+static apr_status_t log_script_err(request_rec *r, apr_file_t *script_err)
+{
+    char argsbuffer[HUGE_STRING_LEN];
+    char *newline;
+    apr_status_t rv;
+    cgid_server_conf *conf = ap_get_module_config(r->server->module_config, &cgid_module);
+
+    while ((rv = apr_file_gets(argsbuffer, HUGE_STRING_LEN,
+                               script_err)) == APR_SUCCESS) {
+
+        newline = strchr(argsbuffer, '\n');
+        if (newline) {
+            char *prev = newline - 1;
+            if (prev >= argsbuffer && *prev == '\r') {
+                newline = prev;
+            }
+
+            *newline = '\0';
+        }
+        log_scripterror(r, conf, r->status, 0, argsbuffer);
+    }
+
+    return rv;
+}
+
 static int log_script(request_rec *r, cgid_server_conf * conf, int ret,
                       char *dbuf, const char *sbuf, apr_bucket_brigade *bb,
                       apr_file_t *script_err)
@@ -1298,6 +1342,11 @@ static int log_script(request_rec *r, cgid_server_conf * conf, int ret,
     apr_file_close(f);
     return ret;
 }
+
+#ifdef HAVE_CGID_FDPASSING
+/* Pull in CGI bucket implementation. */
+#include "cgi_common.h"
+#endif
 
 static int connect_to_daemon(int *sdptr, request_rec *r,
                              cgid_server_conf *conf)
@@ -1486,6 +1535,7 @@ static apr_status_t cleanup_script(void *vptr)
 
 static int cgid_handler(request_rec *r)
 {
+    conn_rec *c = r->connection;
     int retval, nph, dbpos;
     char *argv0, *dbuf;
     apr_bucket_brigade *bb;
@@ -1495,10 +1545,11 @@ static int cgid_handler(request_rec *r)
     int seen_eos, child_stopped_reading;
     int sd;
     char **env;
-    apr_file_t *tempsock;
+    apr_file_t *tempsock, *script_err, *errpipe_out;
     struct cleanup_script_info *info;
     apr_status_t rv;
     cgid_dirconf *dc;
+    apr_interval_time_t timeout;
 
     if (strcmp(r->handler, CGI_MAGIC_TYPE) && strcmp(r->handler, "cgi-script")) {
         return DECLINED;
@@ -1507,7 +1558,7 @@ static int cgid_handler(request_rec *r)
     conf = ap_get_module_config(r->server->module_config, &cgid_module);
     dc = ap_get_module_config(r->per_dir_config, &cgid_module);
 
-    
+    timeout = dc->timeout > 0 ? dc->timeout : r->server->timeout;
     is_included = !strcmp(r->protocol, "INCLUDED");
 
     if ((argv0 = strrchr(r->filename, '/')) != NULL) {
@@ -1560,6 +1611,17 @@ static int cgid_handler(request_rec *r)
     }
     */
 
+#ifdef HAVE_CGID_FDPASSING
+    rv = apr_file_pipe_create(&script_err, &errpipe_out, r->pool);
+    if (rv) {
+        return log_scripterror(r, conf, HTTP_SERVICE_UNAVAILABLE, rv, APLOGNO(10176)
+                               "could not create pipe for stderr");
+    }
+#else
+    script_err = NULL;
+    errpipe_out = NULL;
+#endif
+    
     /*
      * httpd core function used to add common environment variables like
      * DOCUMENT_ROOT. 
@@ -1572,12 +1634,16 @@ static int cgid_handler(request_rec *r)
         return retval;
     }
 
-    rv = send_req(sd, r, argv0, env, CGI_REQ);
+    rv = send_req(sd, errpipe_out, r, argv0, env, CGI_REQ);
     if (rv != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01268)
                      "write to cgi daemon process");
     }
 
+    /* The write-end of the pipe is only used by the server, so close
+     * it here. */
+    if (errpipe_out) apr_file_close(errpipe_out);
+    
     info = apr_palloc(r->pool, sizeof(struct cleanup_script_info));
     info->conf = conf;
     info->r = r;
@@ -1599,12 +1665,7 @@ static int cgid_handler(request_rec *r)
      */
 
     apr_os_pipe_put_ex(&tempsock, &sd, 1, r->pool);
-    if (dc->timeout > 0) { 
-        apr_file_pipe_timeout_set(tempsock, dc->timeout);
-    }
-    else { 
-        apr_file_pipe_timeout_set(tempsock, r->server->timeout);
-    }
+    apr_file_pipe_timeout_set(tempsock, timeout);
     apr_pool_cleanup_kill(r->pool, (void *)((long)sd), close_unix_socket);
 
     /* Transfer any put/post args, CERN style...
@@ -1696,18 +1757,23 @@ static int cgid_handler(request_rec *r)
      */
     shutdown(sd, 1);
 
+    bb = apr_brigade_create(r->pool, c->bucket_alloc);
+#ifdef HAVE_CGID_FDPASSING
+    b = cgi_bucket_create(r, dc->timeout, tempsock, script_err, c->bucket_alloc);
+    if (b == NULL)
+        return HTTP_INTERNAL_SERVER_ERROR; /* should call log_scripterror() w/ _UNAVAILABLE? */
+#else
+    b = apr_bucket_pipe_create(tempsock, c->bucket_alloc);
+#endif
+    APR_BRIGADE_INSERT_TAIL(bb, b);
+    b = apr_bucket_eos_create(c->bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(bb, b);
+
     /* Handle script return... */
     if (!nph) {
-        conn_rec *c = r->connection;
         const char *location;
         char sbuf[MAX_STRING_LEN];
         int ret;
-
-        bb = apr_brigade_create(r->pool, c->bucket_alloc);
-        b = apr_bucket_pipe_create(tempsock, c->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(bb, b);
-        b = apr_bucket_eos_create(c->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(bb, b);
 
         ret = ap_scan_script_header_err_brigade_ex(r, bb, sbuf,
                                                    APLOG_MODULE_INDEX);
@@ -1721,7 +1787,7 @@ static int cgid_handler(request_rec *r)
         apr_table_unset(r->headers_out, "Transfer-Encoding");
 
         if (ret != OK) {
-            ret = log_script(r, conf, ret, dbuf, sbuf, bb, NULL);
+            ret = log_script(r, conf, ret, dbuf, sbuf, bb, script_err);
 
             /*
              * ret could be HTTP_NOT_MODIFIED in the case that the CGI script
@@ -1758,6 +1824,11 @@ static int cgid_handler(request_rec *r)
             /* Soak up all the script output */
             discard_script_output(bb);
             apr_brigade_destroy(bb);
+            if (script_err) {
+                apr_file_pipe_timeout_set(script_err, timeout);
+                log_script_err(r, script_err);
+            }
+            
             /* This redirect needs to be a GET no matter what the original
              * method was.
              */
@@ -1790,7 +1861,6 @@ static int cgid_handler(request_rec *r)
     }
 
     if (nph) {
-        conn_rec *c = r->connection;
         struct ap_filter_t *cur;
 
         /* get rid of all filters up through protocol...  since we
@@ -1804,13 +1874,19 @@ static int cgid_handler(request_rec *r)
         }
         r->output_filters = r->proto_output_filters = cur;
 
-        bb = apr_brigade_create(r->pool, c->bucket_alloc);
-        b = apr_bucket_pipe_create(tempsock, c->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(bb, b);
-        b = apr_bucket_eos_create(c->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(bb, b);
-        ap_pass_brigade(r->output_filters, bb);
+        rv = ap_pass_brigade(r->output_filters, bb);
     }
+
+    /* don't soak up script output if errors occurred writing it
+     * out...  otherwise, we prolong the life of the script when the
+     * connection drops or we stopped sending output for some other
+     * reason */
+    if (script_err && rv == APR_SUCCESS && !r->connection->aborted) {
+        apr_file_pipe_timeout_set(script_err, timeout);
+        log_script_err(r, script_err);
+    }
+
+    if (script_err) apr_file_close(script_err);
 
     return OK; /* NOT r->status, even if it has changed. */
 }
@@ -1929,7 +2005,7 @@ static int include_cmd(include_ctx_t *ctx, ap_filter_t *f,
         return retval;
     }
 
-    send_req(sd, r, command, env, SSI_REQ);
+    send_req(sd, NULL, r, command, env, SSI_REQ);
 
     info = apr_palloc(r->pool, sizeof(struct cleanup_script_info));
     info->conf = conf;
