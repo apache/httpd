@@ -83,7 +83,7 @@ struct fd_queue_t
     unsigned int out;
     apr_thread_mutex_t *one_big_mutex;
     apr_thread_cond_t *not_empty;
-    int terminated;
+    volatile int terminated;
 };
 typedef struct fd_queue_t fd_queue_t;
 

@@ -493,6 +493,10 @@ static apr_status_t queue_interrupt(fd_queue_t *queue, int all, int term)
 {
     apr_status_t rv;
 
+    if (queue->terminated) {
+        return APR_EOF;
+    }
+
     if ((rv = apr_thread_mutex_lock(queue->one_big_mutex)) != APR_SUCCESS) {
         return rv;
     }
