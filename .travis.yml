@@ -97,8 +97,8 @@ jobs:
       env: CONFIG="--enable-mods-shared=reallyall"
            TEST_ARGS="-order=random"
     # -------------------------------------------------------------------------
-    - name: Linux Ubuntu, Prefork MPM, all-modules
-      env: CONFIG="--enable-mods-shared=reallyall --with-mpm=prefork"
+    - name: Linux Ubuntu, Prefork MPM, all-modules (except cgid)
+      env: CONFIG="--enable-mods-shared=reallyall --with-mpm=prefork --disable-cgid"
     # -------------------------------------------------------------------------
     - name: Linux Ubuntu, Worker MPM, all-modules
       env: CONFIG="--enable-mods-shared=reallyall --with-mpm=worker"
