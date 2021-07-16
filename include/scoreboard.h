@@ -130,6 +130,11 @@ typedef struct {
 #ifdef HAVE_TIMES
     struct tms times;
 #endif
+    apr_uint32_t volatile snap_index;
+    ap_sload_t sload0;
+    ap_sload_t sload1;
+    ap_mon_snap_t snap0;
+    ap_mon_snap_t snap1;
 } global_score;
 
 /* stuff which the parent generally writes and the children rarely read */
