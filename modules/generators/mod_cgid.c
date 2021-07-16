@@ -1629,8 +1629,8 @@ static int cgid_handler(request_rec *r)
 
     rv = send_req(sd, errpipe_out, r, argv0, env, CGI_REQ);
     if (rv != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01268)
-                     "write to cgi daemon process");
+        return log_scripterror(r, conf, HTTP_SERVICE_UNAVAILABLE, rv, APLOGNO(10245)
+                               "could not send request to cgi daemon");
     }
 
     /* The write-end of the pipe is only used by the server, so close
@@ -1642,13 +1642,15 @@ static int cgid_handler(request_rec *r)
     info->r = r;
     rv = get_cgi_pid(r, conf, &(info->pid));
 
-    if (APR_SUCCESS == rv){  
+    /* Don't accept zero as a pid here, calling kill(0, SIGTERM) etc
+     * later is unpleasant. */
+    if (rv == APR_SUCCESS && info->pid) {
         apr_pool_cleanup_register(r->pool, info,
-                              cleanup_script,
-                              apr_pool_cleanup_null);
+                                  cleanup_script, apr_pool_cleanup_null);
     }
     else { 
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, "error determining cgi PID");
+        return log_scripterror(r, conf, HTTP_SERVICE_UNAVAILABLE, rv, APLOGNO(10246)
+                               "failed reading PID from cgi daemon");
     }
 
     /* We are putting the socket discriptor into an apr_file_t so that we can
