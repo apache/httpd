@@ -763,9 +763,6 @@ static int cgi_handler(request_rec *r)
     AP_DEBUG_ASSERT(script_in != NULL);
 
 #if APR_FILES_AS_SOCKETS
-    apr_file_pipe_timeout_set(script_in, 0);
-    apr_file_pipe_timeout_set(script_err, 0);
-
     b = cgi_bucket_create(r, dc->timeout, script_in, script_err, c->bucket_alloc);
     if (b == NULL)
         return HTTP_INTERNAL_SERVER_ERROR;
