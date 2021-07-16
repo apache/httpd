@@ -563,23 +563,6 @@ static apr_status_t default_build_command(const char **cmd, const char ***argv,
     return APR_SUCCESS;
 }
 
-static void discard_script_output(apr_bucket_brigade *bb)
-{
-    apr_bucket *e;
-    const char *buf;
-    apr_size_t len;
-
-    for (e = APR_BRIGADE_FIRST(bb);
-         e != APR_BRIGADE_SENTINEL(bb) && !APR_BUCKET_IS_EOS(e);
-         e = APR_BRIGADE_FIRST(bb))
-    {
-        if (apr_bucket_read(e, &buf, &len, APR_BLOCK_READ)) {
-            break;
-        }
-        apr_bucket_delete(e);
-    }
-}
-
 #if APR_FILES_AS_SOCKETS
 #include "cgi_common.h"
 #endif
@@ -773,120 +756,7 @@ static int cgi_handler(request_rec *r)
     b = apr_bucket_eos_create(c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(bb, b);
 
-    /* Handle script return... */
-    if (!nph) {
-        const char *location;
-        char sbuf[MAX_STRING_LEN];
-        int ret;
-
-        ret = ap_scan_script_header_err_brigade_ex(r, bb, sbuf,
-                                                   APLOG_MODULE_INDEX);
-
-        /* xCGI has its own body framing mechanism which we don't
-         * match against any provided Content-Length, so let the
-         * core determine C-L vs T-E based on what's actually sent.
-         */
-        if (!apr_table_get(r->subprocess_env, AP_TRUST_CGILIKE_CL_ENVVAR))
-            apr_table_unset(r->headers_out, "Content-Length");
-        apr_table_unset(r->headers_out, "Transfer-Encoding");
-
-        if (ret != OK) {
-            ret = log_script(r, conf, ret, dbuf, sbuf, bb, script_err);
-
-            /*
-             * ret could be HTTP_NOT_MODIFIED in the case that the CGI script
-             * does not set an explicit status and ap_meets_conditions, which
-             * is called by ap_scan_script_header_err_brigade, detects that
-             * the conditions of the requests are met and the response is
-             * not modified.
-             * In this case set r->status and return OK in order to prevent
-             * running through the error processing stack as this would
-             * break with mod_cache, if the conditions had been set by
-             * mod_cache itself to validate a stale entity.
-             * BTW: We circumvent the error processing stack anyway if the
-             * CGI script set an explicit status code (whatever it is) and
-             * the only possible values for ret here are:
-             *
-             * HTTP_NOT_MODIFIED          (set by ap_meets_conditions)
-             * HTTP_PRECONDITION_FAILED   (set by ap_meets_conditions)
-             * HTTP_INTERNAL_SERVER_ERROR (if something went wrong during the
-             * processing of the response of the CGI script, e.g broken headers
-             * or a crashed CGI process).
-             */
-            if (ret == HTTP_NOT_MODIFIED) {
-                r->status = ret;
-                return OK;
-            }
-
-            return ret;
-        }
-
-        location = apr_table_get(r->headers_out, "Location");
-
-        if (location && r->status == 200) {
-            /* For a redirect whether internal or not, discard any
-             * remaining stdout from the script, and log any remaining
-             * stderr output, as normal. */
-            discard_script_output(bb);
-            apr_brigade_destroy(bb);
-            apr_file_pipe_timeout_set(script_err, timeout);
-            log_script_err(r, script_err);
-        }
-
-        if (location && location[0] == '/' && r->status == 200) {
-            /* This redirect needs to be a GET no matter what the original
-             * method was.
-             */
-            r->method = "GET";
-            r->method_number = M_GET;
-
-            /* We already read the message body (if any), so don't allow
-             * the redirected request to think it has one.  We can ignore
-             * Transfer-Encoding, since we used REQUEST_CHUNKED_ERROR.
-             */
-            apr_table_unset(r->headers_in, "Content-Length");
-
-            ap_internal_redirect_handler(location, r);
-            return OK;
-        }
-        else if (location && r->status == 200) {
-            /* XXX: Note that if a script wants to produce its own Redirect
-             * body, it now has to explicitly *say* "Status: 302"
-             */
-            return HTTP_MOVED_TEMPORARILY;
-        }
-
-        rv = ap_pass_brigade(r->output_filters, bb);
-    }
-    else /* nph */ {
-        struct ap_filter_t *cur;
-
-        /* get rid of all filters up through protocol...  since we
-         * haven't parsed off the headers, there is no way they can
-         * work
-         */
-
-        cur = r->proto_output_filters;
-        while (cur && cur->frec->ftype < AP_FTYPE_CONNECTION) {
-            cur = cur->next;
-        }
-        r->output_filters = r->proto_output_filters = cur;
-
-        rv = ap_pass_brigade(r->output_filters, bb);
-    }
-
-    /* don't soak up script output if errors occurred writing it
-     * out...  otherwise, we prolong the life of the script when the
-     * connection drops or we stopped sending output for some other
-     * reason */
-    if (rv == APR_SUCCESS && !r->connection->aborted) {
-        apr_file_pipe_timeout_set(script_err, timeout);
-        log_script_err(r, script_err);
-    }
-
-    apr_file_close(script_err);
-
-    return OK;                      /* NOT r->status, even if it has changed. */
+    return cgi_handle_response(r, nph, bb, timeout, conf, dbuf, script_err);
 }
 
 /*============================================================================
