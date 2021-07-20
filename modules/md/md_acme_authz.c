@@ -308,10 +308,19 @@ static apr_status_t cha_tls_alpn_01_setup(md_acme_authz_cha_t *cha, md_acme_auth
     (void)mdomain;
     if (md_array_str_index(acme_tls_1_domains, authz->domain, 0, 0) < 0) {
         rv = APR_ENOTIMPL;
-        md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, p, 
-                      "%s: protocol 'acme-tls/1' not enabled for this domain.", 
-                      authz->domain);
-        goto out;
+        if (acme_tls_1_domains->nelts) {
+            md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, p,
+                          "%s: protocol 'acme-tls/1' seems not enabled for this domain, "
+                          "but is enabled for other associated domains. "
+                          "Continuing with fingers crossed.", authz->domain);
+        }
+        else {
+            md_log_perror(MD_LOG_MARK, MD_LOG_INFO, 0, p,
+                          "%s: protocol 'acme-tls/1' seems not enabled for this or "
+                          "any other associated domain. Not attempting challenge "
+                          "type tls-alpn-01.", authz->domain);
+            goto out;
+        }
     }
     if (APR_SUCCESS != (rv = setup_key_authz(cha, authz, acme, p, &notify_server))) {
         goto out;
@@ -557,7 +566,7 @@ apr_status_t md_acme_authz_respond(md_acme_authz_t *authz, md_acme_t *acme, md_s
                                    md_result_t *result)
 {
     apr_status_t rv;
-    int i;
+    int i, j;
     cha_find_ctx fctx;
     const char *challenge_setup;
     
@@ -578,18 +587,26 @@ apr_status_t md_acme_authz_respond(md_acme_authz_t *authz, md_acme_t *acme, md_s
      * - if there was an overlap, but no setup was successful, report that. We
      *   will retry this, maybe the failure is temporary (e.g. command to setup DNS
      */
+     md_result_printf(result, 0, "%s: selecting suitable authorization challenge "
+                      "type, this domain supports %s",
+                      authz->domain, apr_array_pstrcat(p, challenges, ' '));
     rv = APR_ENOTIMPL;
     challenge_setup = NULL;
-    for (i = 0; i < challenges->nelts && !fctx.accepted; ++i) {
+    for (i = 0; i < challenges->nelts; ++i) {
         fctx.type = APR_ARRAY_IDX(challenges, i, const char *);
+        fctx.accepted = NULL;
         md_json_itera(find_type, &fctx, authz->resource, MD_KEY_CHALLENGES, NULL);
+        md_log_perror(MD_LOG_MARK, MD_LOG_TRACE1, 0, p,
+                      "%s: challenge type '%s' for %s: %s",
+                      authz->domain, fctx.type, mdomain,
+                      fctx.accepted? "maybe acceptable" : "not applicable");
 
         if (fctx.accepted) {
-            for (i = 0; i < (int)CHA_TYPES_LEN; ++i) {
-                if (!apr_strnatcasecmp(CHA_TYPES[i].name, fctx.accepted->type)) {
+            for (j = 0; j < (int)CHA_TYPES_LEN; ++j) {
+                if (!apr_strnatcasecmp(CHA_TYPES[j].name, fctx.accepted->type)) {
                     md_result_activity_printf(result, "Setting up challenge '%s' for domain %s", 
                                               fctx.accepted->type, authz->domain);
-                    rv = CHA_TYPES[i].setup(fctx.accepted, authz, acme, store, key_specs,
+                    rv = CHA_TYPES[j].setup(fctx.accepted, authz, acme, store, key_specs,
                                             acme_tls_1_domains, mdomain, env, result, p);
                     if (APR_SUCCESS == rv) {
                         md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, p, 

@@ -591,7 +591,10 @@ static apr_status_t acme_driver_init(md_proto_driver_t *d, md_result_t *result)
             goto leave;
         }
     }
-    
+
+    md_result_printf(result, 0, "MDomain %s initialized with support for ACME challenges %s",
+              d->md->name, apr_array_pstrcat(d->p, ad->ca_challenges, ' '));
+
 leave:    
     md_log_perror(MD_LOG_MARK, MD_LOG_TRACE1, result->status, d->p, "%s: init driver", d->md->name);
     return result->status;
