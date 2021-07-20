@@ -1276,7 +1276,7 @@ static int md_answer_challenge(conn_rec *c, const char *servername,
     sc = md_config_get(c->base_server);
     if (!sc || !sc->mc->reg) goto cleanup;
 
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, c,
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
                   "Answer challenge[tls-alpn-01] for %s", servername);
     store = md_reg_store_get(sc->mc->reg);
 
