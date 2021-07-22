@@ -1694,10 +1694,10 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
          * the maximum time to poll() below, if any.
          */
         expiry = timers_next_expiry;
-        if (expiry && expiry < now + EVENT_FUDGE_FACTOR) {
+        if (expiry && expiry < now) {
             apr_thread_mutex_lock(g_timer_skiplist_mtx);
             while ((te = apr_skiplist_peek(timer_skiplist))) {
-                if (te->when > now + EVENT_FUDGE_FACTOR) {
+                if (te->when > now) {
                     timers_next_expiry = te->when;
                     timeout = te->when - now;
                     break;
