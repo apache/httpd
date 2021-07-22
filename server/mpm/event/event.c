@@ -1662,8 +1662,8 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                              "keep-alive: %d lingering: %d suspended: %u)",
                              apr_atomic_read32(&connection_count),
                              apr_atomic_read32(&clogged_count),
-                             *(volatile apr_uint32_t*)write_completion_q->total,
-                             *(volatile apr_uint32_t*)keepalive_q->total,
+                             apr_atomic_read32(write_completion_q->total),
+                             apr_atomic_read32(keepalive_q->total),
                              apr_atomic_read32(&lingering_count),
                              apr_atomic_read32(&suspended_count));
                 if (dying) {
@@ -1958,14 +1958,14 @@ do_maintenance:
                          queues_next_expiry > now ? queues_next_expiry - now
                                                   : -1);
 
-            ps->keep_alive = *(volatile apr_uint32_t*)keepalive_q->total;
-            ps->write_completion = *(volatile apr_uint32_t*)write_completion_q->total;
+            ps->keep_alive = apr_atomic_read32(keepalive_q->total);
+            ps->write_completion = apr_atomic_read32(write_completion_q->total);
             ps->connections = apr_atomic_read32(&connection_count);
             ps->suspended = apr_atomic_read32(&suspended_count);
             ps->lingering_close = apr_atomic_read32(&lingering_count);
         }
         else if ((workers_were_busy || dying)
-                 && *(volatile apr_uint32_t*)keepalive_q->total) {
+                 && apr_atomic_read32(keepalive_q->total)) {
             apr_thread_mutex_lock(timeout_mutex);
             process_keepalive_queue(0); /* kill'em all \m/ */
             apr_thread_mutex_unlock(timeout_mutex);
