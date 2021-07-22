@@ -829,48 +829,6 @@ static void notify_resume(event_conn_state_t *cs, int cleanup)
     ap_run_resume_connection(cs->c, cs->r);
 }
 
-static void close_connection(event_conn_state_t *cs);
-
-/*
- * Close our side of the connection, flushing data to the client first.
- * Pre-condition: cs is not in any timeout queue and not in the pollset,
- *                timeout_mutex is not locked
- * return: 0 if connection is fully closed,
- *         1 if connection is lingering
- * May only be called by worker thread.
- */
-static int start_lingering_close_blocking(event_conn_state_t *cs)
-{
-    apr_socket_t *csd = cs->pfd.desc.s;
-
-    /* defer_lingering_close() may have bumped lingering_count already */
-    if (!cs->deferred_linger) {
-        apr_atomic_inc32(&lingering_count);
-    }
-
-    apr_socket_timeout_set(csd, apr_time_from_sec(SECONDS_TO_LINGER));
-    if (ap_start_lingering_close(cs->c)) {
-        notify_suspend(cs);
-        close_connection(cs);
-        return DONE;
-    }
-
-    cs->queue_timestamp = apr_time_now();
-    /*
-     * If some module requested a shortened waiting period, only wait for
-     * 2s (SECONDS_TO_LINGER). This is useful for mitigating certain
-     * DoS attacks.
-     */
-    if (apr_table_get(cs->c->notes, "short-lingering-close")) {
-        cs->pub.state = CONN_STATE_LINGER_SHORT;
-    }
-    else {
-        cs->pub.state = CONN_STATE_LINGER_NORMAL;
-    }
-    notify_suspend(cs);
-    return OK;
-}
-
 /*
  * Defer flush and close of the connection by adding it to defer_linger_chain,
  * for a worker to grab it and do the job (should that be blocking).
@@ -1279,12 +1237,10 @@ read_request:
         return;
     }
 
-    if (cs->pub.state == CONN_STATE_LINGER) {
-        rc = start_lingering_close_blocking(cs);
-    }
-    if (rc == OK && (cs->pub.state == CONN_STATE_LINGER_NORMAL ||
-                     cs->pub.state == CONN_STATE_LINGER_SHORT)) {
+    /* CONN_STATE_LINGER[_*] fall through process_lingering_close() */
+    if (cs->pub.state >= CONN_STATE_LINGER) {
         process_lingering_close(cs);
+        return;
     }
 }
 
@@ -1304,14 +1260,7 @@ static apr_status_t event_resume_suspended (conn_rec *c)
     apr_atomic_dec32(&suspended_count);
     c->suspended_baton = NULL;
 
-    if (cs->pub.state == CONN_STATE_LINGER) {
-        int rc = start_lingering_close_blocking(cs);
-        if (rc == OK && (cs->pub.state == CONN_STATE_LINGER_NORMAL ||
-                         cs->pub.state == CONN_STATE_LINGER_SHORT)) {
-            process_lingering_close(cs);
-        }
-    }
-    else {
+    if (cs->pub.state < CONN_STATE_LINGER) {
         cs->queue_timestamp = apr_time_now();
         cs->pub.state = CONN_STATE_WRITE_COMPLETION;
         notify_suspend(cs);
@@ -1321,6 +1270,10 @@ static apr_status_t event_resume_suspended (conn_rec *c)
         TO_QUEUE_APPEND(cs->sc->wc_q, cs);
         apr_pollset_add(event_pollset, &cs->pfd);
         apr_thread_mutex_unlock(timeout_mutex);
+    }
+    else {
+        cs->pub.state = CONN_STATE_LINGER;
+        process_lingering_close(cs);
     }
 
     return OK;
@@ -1722,6 +1675,34 @@ static void process_lingering_close(event_conn_state_t *cs)
     ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, cs->c,
                   "lingering close from state %i", (int)cs->pub.state);
     AP_DEBUG_ASSERT(cs->pub.state >= CONN_STATE_LINGER);
+
+    if (cs->pub.state == CONN_STATE_LINGER) {
+        /* defer_lingering_close() may have bumped lingering_count already */
+        if (!cs->deferred_linger) {
+            apr_atomic_inc32(&lingering_count);
+        }
+
+        apr_socket_timeout_set(csd, apr_time_from_sec(SECONDS_TO_LINGER));
+        if (ap_start_lingering_close(cs->c)) {
+            notify_suspend(cs);
+            close_connection(cs);
+            return;
+        }
+
+        cs->queue_timestamp = apr_time_now();
+        /*
+         * If some module requested a shortened waiting period, only wait for
+         * 2s (SECONDS_TO_LINGER). This is useful for mitigating certain
+         * DoS attacks.
+         */
+        if (apr_table_get(cs->c->notes, "short-lingering-close")) {
+            cs->pub.state = CONN_STATE_LINGER_SHORT;
+        }
+        else {
+            cs->pub.state = CONN_STATE_LINGER_NORMAL;
+        }
+        notify_suspend(cs);
+    }
 
     apr_socket_timeout_set(csd, 0);
     do {
