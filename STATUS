@@ -218,7 +218,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1887359
      Backport version for 2.4.x of patch:
           https://people.apache.org/~jfclere/patches/patch.210706.txt
-     +1: jfclere: The previous proposal was removing the Referer check.
+     +1: jfclere,
+     jfclere: The previous proposal was removing the Referer check.
 
   *) back port the mapping=servlet proxy logic.
      trunk patch: http://svn.apache.org/r1879074
@@ -245,7 +246,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1879360
      Backport version for 2.4.x of patch:
           https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/194.patch
-     +1: jfclere:
+     +1: jfclere, ylavic,
 
   *) mod_proxy: Fix icomplete initialization of BalancerMember(s) from the
                 balancer-manager, which can lead to a crash.
