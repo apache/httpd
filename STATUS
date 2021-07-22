@@ -272,6 +272,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              + make update-changes
      +1: ylavic,
 
+  *) mod_proxy: Fix possible reuse/merging of Proxy(Pass)Match worker instances
+     with others when their URLs contain a '$' substitution.  PR 65419 + 65429.
+     trunk patch: http://svn.apache.org/r1891206
+                  http://svn.apache.org/r1891284
+     backport: wget http://people.apache.org/~ylavic/patches/2.4.x-bz_65419+65429.patch
+             + patch -p0 < 2.4.x-bz_65419+65429.patch
+             + svn merge --record-only -c 1891206,1891284 ^/httpd/httpd/trunk .
+             + sed -i -e 's/mpm_proxy/mod_proxy/' -e 's/PR 65419/PR 65419 + 65429/' changes-entries/proxy_define_matchable_worker.txt
+             + make update-changes
+     +1: ylavic,
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
