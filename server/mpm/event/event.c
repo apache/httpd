@@ -1693,6 +1693,10 @@ static void process_lingering_close(event_conn_state_t *cs)
         }
 
         cs->queue_timestamp = apr_time_now();
+        /* Clear APR_INCOMPLETE_READ if it was ever set, we'll do the poll()
+         * at the listener only from now, if needed.
+         */
+        apr_socket_opt_set(csd, APR_INCOMPLETE_READ, 0);
         /*
          * If some module requested a shortened waiting period, only wait for
          * 2s (SECONDS_TO_LINGER). This is useful for mitigating certain
