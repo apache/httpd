@@ -278,7 +278,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1891216
                   http://svn.apache.org/r1891284
      backport: wget http://people.apache.org/~ylavic/patches/2.4.x-bz_65419+65429-v2.patch
-             + patch -p0 < 2.4.x-bz_65419+65429.patch
+             + patch -p0 < 2.4.x-bz_65419+65429-v2.patch
              + svn merge --record-only -c 1891206,1891216,1891284 ^/httpd/httpd/trunk .
              + make update-changes
      +1: ylavic,
