@@ -247,6 +247,31 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/194.patch
      +1: jfclere:
 
+  *) mod_proxy: Fix icomplete initialization of BalancerMember(s) from the
+                balancer-manager, which can lead to a crash.
+     trunk patch: http://svn.apache.org/r1891477
+                  http://svn.apache.org/r1891591
+     2.4.x patch: svn merge -c 1891477,1891591 ^/httpd/httpd/trunk .
+     +1: ylavic,
+
+  *) mpm_event: Fix graceful stop/restart of children processes if connections
+                are in lingering close for too long.
+     trunk patch: http://svn.apache.org/r1891716
+                  http://svn.apache.org/r1891717
+                  http://svn.apache.org/r1891718
+                  http://svn.apache.org/r1891719
+                  http://svn.apache.org/r1891721
+                  http://svn.apache.org/r1891724
+                  http://svn.apache.org/r1891726
+                  http://svn.apache.org/r1891727
+                  http://svn.apache.org/r1891728
+     backport: wget http://people.apache.org/~ylavic/patches/2.4.x-mpm_event_graceful_linger.patch
+             + patch -p0 < 2.4.x-mpm_event_graceful_linger.patch
+             + svn merge --record-only -c 1891716-1891719,1891721,1891724,1891726-1891727 ^/httpd/httpd/trunk .
+             + svn merge -c 1891728 ^/httpd/httpd/trunk .
+             + make update-changes
+     +1: ylavic,
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
