@@ -1,5 +1,0 @@
-APACHE_MPMPATH_INIT(prefork)
-
-APACHE_MPM_MODULE(prefork, $enable_mpm_prefork)
-
-APACHE_MPMPATH_FINISH

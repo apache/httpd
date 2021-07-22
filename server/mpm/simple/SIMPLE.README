@@ -1,6 +1,0 @@
-The Simple MPM aims to create a single MPM, that runs on all modern
-Unix and Win32 platforms, by using APR as much as possible.
-
-The Simple MPM core run loop revovles around a Poll CB event system, with 
-timers being built in.  When an event, either an IO or Timer is ready to run, 
-it is dispatched to any available threads in the current process.
