@@ -194,6 +194,10 @@ static int bio_filter_destroy(BIO *bio)
 static int bio_filter_out_read(BIO *bio, char *out, int outl)
 {
     /* this is never called */
+    bio_filter_out_ctx_t *outctx = (bio_filter_out_ctx_t *)(bio->ptr);
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, outctx->c,
+                  "BUG: %s() should not be called", "bio_filter_out_read");
+    AP_DEBUG_ASSERT(0);
     return -1;
 }
 
@@ -293,12 +297,20 @@ static long bio_filter_out_ctrl(BIO *bio, int cmd, long num, void *ptr)
 static int bio_filter_out_gets(BIO *bio, char *buf, int size)
 {
     /* this is never called */
+    bio_filter_out_ctx_t *outctx = (bio_filter_out_ctx_t *)(bio->ptr);
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, outctx->c,
+                  "BUG: %s() should not be called", "bio_filter_out_gets");
+    AP_DEBUG_ASSERT(0);
     return -1;
 }
 
 static int bio_filter_out_puts(BIO *bio, const char *str)
 {
     /* this is never called */
+    bio_filter_out_ctx_t *outctx = (bio_filter_out_ctx_t *)(bio->ptr);
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, outctx->c,
+                  "BUG: %s() should not be called", "bio_filter_out_puts");
+    AP_DEBUG_ASSERT(0);
     return -1;
 }
 
@@ -533,21 +545,37 @@ static int bio_filter_in_read(BIO *bio, char *in, int inlen)
 
 static int bio_filter_in_write(BIO *bio, const char *in, int inl)
 {
+    bio_filter_in_ctx_t *inctx = (bio_filter_in_ctx_t *)(bio->ptr);
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, inctx->f->c,
+                  "BUG: %s() should not be called", "bio_filter_in_write");
+    AP_DEBUG_ASSERT(0);
     return -1;
 }
 
 static int bio_filter_in_puts(BIO *bio, const char *str)
 {
+    bio_filter_in_ctx_t *inctx = (bio_filter_in_ctx_t *)(bio->ptr);
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, inctx->f->c,
+                  "BUG: %s() should not be called", "bio_filter_in_puts");
+    AP_DEBUG_ASSERT(0);
     return -1;
 }
 
 static int bio_filter_in_gets(BIO *bio, char *buf, int size)
 {
+    bio_filter_in_ctx_t *inctx = (bio_filter_in_ctx_t *)(bio->ptr);
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, inctx->f->c,
+                  "BUG: %s() should not be called", "bio_filter_in_gets");
+    AP_DEBUG_ASSERT(0);
     return -1;
 }
 
 static long bio_filter_in_ctrl(BIO *bio, int cmd, long num, void *ptr)
 {
+    bio_filter_in_ctx_t *inctx = (bio_filter_in_ctx_t *)(bio->ptr);
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, inctx->f->c,
+                  "BUG: %s() should not be called", "bio_filter_in_ctrl");
+    AP_DEBUG_ASSERT(0);
     return -1;
 }
 
