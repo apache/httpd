@@ -220,6 +220,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           https://people.apache.org/~jfclere/patches/patch.210706.txt
      +1: jfclere,
      jfclere: The previous proposal was removing the Referer check.
+     jorton: r1859235 has an "ok2change" param in the newly added
+             balancer_process_balancer_worker() but this is missing in the
+             backport patch, maybe include r1887144 for completeness?
 
   *) back port the mapping=servlet proxy logic.
      trunk patch: http://svn.apache.org/r1879074
