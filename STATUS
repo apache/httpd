@@ -216,6 +216,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1859235
                   http://svn.apache.org/r1887176
                   http://svn.apache.org/r1887359
+                  http://svn.apache.org/r1887144
      Backport version for 2.4.x of patch:
           https://people.apache.org/~jfclere/patches/patch.210706.txt
      +1: jfclere,
@@ -223,6 +224,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      jorton: r1859235 has an "ok2change" param in the newly added
              balancer_process_balancer_worker() but this is missing in the
              backport patch, maybe include r1887144 for completeness?
+     jfclere: Yes: http://svn.apache.org/r1887144i was missing in trunk patch list.
 
   *) back port the mapping=servlet proxy logic.
      trunk patch: http://svn.apache.org/r1879074
@@ -256,7 +258,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1891477
                   http://svn.apache.org/r1891591
      2.4.x patch: svn merge -c 1891477,1891591 ^/httpd/httpd/trunk .
-     +1: ylavic,
+     +1: ylavic, jfclere
 
   *) mpm_event: Fix graceful stop/restart of children processes if connections
                 are in lingering close for too long.
