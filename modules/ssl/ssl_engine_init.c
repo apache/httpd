@@ -871,6 +871,23 @@ static void ssl_init_ctx_callbacks(server_rec *s,
 #endif
 }
 
+static APR_INLINE
+int modssl_CTX_load_verify_locations(SSL_CTX *ctx,
+                                     const char *file,
+                                     const char *path)
+{
+#if OPENSSL_VERSION_NUMBER < 0x30000000L
+    if (!SSL_CTX_load_verify_locations(ctx, file, path))
+        return 0;
+#else
+    if (file && !SSL_CTX_load_verify_file(ctx, file))
+        return 0;
+    if (path && !SSL_CTX_load_verify_dir(ctx, path))
+        return 0;
+#endif
+    return 1;
+}
+
 static apr_status_t ssl_init_ctx_verify(server_rec *s,
                                         apr_pool_t *p,
                                         apr_pool_t *ptemp,
@@ -911,10 +928,8 @@ static apr_status_t ssl_init_ctx_verify(server_rec *s,
         ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, s,
                      "Configuring client authentication");
 
-        if (!SSL_CTX_load_verify_locations(ctx,
-                                           mctx->auth.ca_cert_file,
-                                           mctx->auth.ca_cert_path))
-        {
+        if (!modssl_CTX_load_verify_locations(ctx, mctx->auth.ca_cert_file,
+                                                   mctx->auth.ca_cert_path)) {
             ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(01895)
                     "Unable to configure verify locations "
                     "for client authentication");
@@ -999,6 +1014,23 @@ static apr_status_t ssl_init_ctx_cipher_suite(server_rec *s,
     return APR_SUCCESS;
 }
 
+static APR_INLINE
+int modssl_X509_STORE_load_locations(X509_STORE *store,
+                                     const char *file,
+                                     const char *path)
+{
+#if OPENSSL_VERSION_NUMBER < 0x30000000L
+    if (!X509_STORE_load_locations(store, file, path))
+        return 0;
+#else
+    if (file && !X509_STORE_load_file(store, file))
+        return 0;
+    if (path && !X509_STORE_load_path(store, path))
+        return 0;
+#endif
+    return 1;
+}
+
 static apr_status_t ssl_init_ctx_crl(server_rec *s,
                                      apr_pool_t *p,
                                      apr_pool_t *ptemp,
@@ -1037,8 +1069,8 @@ static apr_status_t ssl_init_ctx_crl(server_rec *s,
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01900)
                  "Configuring certificate revocation facility");
 
-    if (!store || !X509_STORE_load_locations(store, mctx->crl_file,
-                                             mctx->crl_path)) {
+    if (!store || modssl_X509_STORE_load_locations(store, mctx->crl_file,
+                                                          mctx->crl_path)) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(01901)
                      "Host %s: unable to configure X.509 CRL storage "
                      "for certificate revocation", mctx->sc->vhost_id);
@@ -1277,7 +1309,7 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
     const char *vhost_id = mctx->sc->vhost_id, *key_id, *certfile, *keyfile;
     int i;
     X509 *cert;
-    DH *dhparams;
+    DH *dh;
 #ifdef HAVE_ECC
     EC_GROUP *ecparams = NULL;
     int nid;
@@ -1462,12 +1494,12 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
      */
     certfile = APR_ARRAY_IDX(mctx->pks->cert_files, 0, const char *);
     if (certfile && !modssl_is_engine_id(certfile)
-        && (dhparams = ssl_dh_GetParamFromFile(certfile))) {
-        SSL_CTX_set_tmp_dh(mctx->ssl_ctx, dhparams);
+        && (dh = ssl_dh_GetParamFromFile(certfile))) {
+        SSL_CTX_set_tmp_dh(mctx->ssl_ctx, dh);
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02540)
                      "Custom DH parameters (%d bits) for %s loaded from %s",
-                     DH_bits(dhparams), vhost_id, certfile);
-        DH_free(dhparams);
+                     BN_num_bits(DH_get0_p(dh)), vhost_id, certfile);
+        DH_free(dh);
     }
 
 #ifdef HAVE_ECC
@@ -1518,6 +1550,7 @@ static apr_status_t ssl_init_ticket_key(server_rec *s,
     char buf[TLSEXT_TICKET_KEY_LEN];
     char *path;
     modssl_ticket_key_t *ticket_key = mctx->ticket_key;
+    int res;
 
     if (!ticket_key->file_path) {
         return APR_SUCCESS;
@@ -1545,11 +1578,22 @@ static apr_status_t ssl_init_ticket_key(server_rec *s,
     }
 
     memcpy(ticket_key->key_name, buf, 16);
-    memcpy(ticket_key->hmac_secret, buf + 16, 16);
     memcpy(ticket_key->aes_key, buf + 32, 16);
-
-    if (!SSL_CTX_set_tlsext_ticket_key_cb(mctx->ssl_ctx,
-                                          ssl_callback_SessionTicket)) {
+#if OPENSSL_VERSION_NUMBER < 0x30000000L
+    memcpy(ticket_key->hmac_secret, buf + 16, 16);
+    res = SSL_CTX_set_tlsext_ticket_key_cb(mctx->ssl_ctx,
+                                           ssl_callback_SessionTicket);
+#else
+    ticket_key->mac_params[0] =
+        OSSL_PARAM_construct_octet_string(OSSL_MAC_PARAM_KEY, buf + 16, 16);
+    ticket_key->mac_params[1] =
+        OSSL_PARAM_construct_utf8_string(OSSL_MAC_PARAM_DIGEST, "sha256", 0);
+    ticket_key->mac_params[2] =
+        OSSL_PARAM_construct_end();
+    res = SSL_CTX_set_tlsext_ticket_key_evp_cb(mctx->ssl_ctx,
+                                               ssl_callback_SessionTicket);
+#endif
+    if (!res) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(01913)
                      "Unable to initialize TLS session ticket key callback "
                      "(incompatible OpenSSL version?)");
@@ -1680,7 +1724,7 @@ static apr_status_t ssl_init_proxy_certs(server_rec *s,
         return ssl_die(s);
     }
 
-    X509_STORE_load_locations(store, pkp->ca_cert_file, NULL);
+    modssl_X509_STORE_load_locations(store, pkp->ca_cert_file, NULL);
 
     for (n = 0; n < ncerts; n++) {
         int i;

@@ -89,6 +89,9 @@
 /* must be defined before including ssl.h */
 #define OPENSSL_NO_SSL_INTERN
 #endif
+#if OPENSSL_VERSION_NUMBER >= 0x30000000
+#include <openssl/core_names.h>
+#endif
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 #include <openssl/x509.h>
@@ -681,7 +684,11 @@ typedef struct {
 typedef struct {
     const char *file_path;
     unsigned char key_name[16];
+#if OPENSSL_VERSION_NUMBER < 0x30000000L
     unsigned char hmac_secret[16];
+#else
+    OSSL_PARAM mac_params[3];
+#endif
     unsigned char aes_key[16];
 } modssl_ticket_key_t;
 #endif
@@ -945,8 +952,16 @@ int          ssl_callback_ServerNameIndication(SSL *, int *, modssl_ctx_t *);
 int          ssl_callback_ClientHello(SSL *, int *, void *);
 #endif
 #ifdef HAVE_TLS_SESSION_TICKETS
-int         ssl_callback_SessionTicket(SSL *, unsigned char *, unsigned char *,
-                                       EVP_CIPHER_CTX *, HMAC_CTX *, int);
+int ssl_callback_SessionTicket(SSL *ssl,
+                               unsigned char *keyname,
+                               unsigned char *iv,
+                               EVP_CIPHER_CTX *cipher_ctx,
+#if OPENSSL_VERSION_NUMBER < 0x30000000L
+                               HMAC_CTX *hmac_ctx,
+#else
+                               EVP_MAC_CTX *mac_ctx,
+#endif
+                               int mode);
 #endif
 
 #ifdef HAVE_TLS_ALPN
