@@ -91,7 +91,6 @@ static int DH_set0_pqg(DH *dh, BIGNUM *p, BIGNUM *q, BIGNUM *g)
 
     return 1;
 }
-#endif
 
 /*
  * Grab well-defined DH parameters from OpenSSL, see the BN_get_rfc*
@@ -171,6 +170,7 @@ DH *modssl_get_dh_params(unsigned keylen)
         
     return NULL; /* impossible to reach. */
 }
+#endif
 
 static void ssl_add_version_components(apr_pool_t *ptemp, apr_pool_t *pconf,
                                        server_rec *s)
@@ -440,8 +440,9 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
 
     modssl_init_app_data2_idx(); /* for modssl_get_app_data2() at request time */
 
+#if MODSSL_USE_OPENSSL_PRE_1_1_API
     init_dh_params();
-#if !MODSSL_USE_OPENSSL_PRE_1_1_API
+#else
     init_bio_methods();
 #endif
 
@@ -862,7 +863,11 @@ static void ssl_init_ctx_callbacks(server_rec *s,
 {
     SSL_CTX *ctx = mctx->ssl_ctx;
 
+#if MODSSL_USE_OPENSSL_PRE_1_1_API
     SSL_CTX_set_tmp_dh_callback(ctx,  ssl_callback_TmpDH);
+#else
+    SSL_CTX_set_dh_auto(ctx, 1);
+#endif
 
     SSL_CTX_set_info_callback(ctx, ssl_callback_Info);
 
@@ -2345,10 +2350,11 @@ apr_status_t ssl_init_ModuleKill(void *data)
 
     }
 
-#if !MODSSL_USE_OPENSSL_PRE_1_1_API
+#if MODSSL_USE_OPENSSL_PRE_1_1_API
+    free_dh_params();
+#else
     free_bio_methods();
 #endif
-    free_dh_params();
 
     return APR_SUCCESS;
 }

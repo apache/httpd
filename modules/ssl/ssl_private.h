@@ -1139,10 +1139,12 @@ void ssl_init_ocsp_certificates(server_rec *s, modssl_ctx_t *mctx);
 
 #endif
 
+#if MODSSL_USE_OPENSSL_PRE_1_1_API
 /* Retrieve DH parameters for given key length.  Return value should
  * be treated as unmutable, since it is stored in process-global
  * memory. */
 DH *modssl_get_dh_params(unsigned keylen);
+#endif
 
 /* Returns non-zero if the request was made over SSL/TLS.  If sslconn
  * is non-NULL and the request is using SSL/TLS, sets *sslconn to the
