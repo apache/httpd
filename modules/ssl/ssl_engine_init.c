@@ -1299,6 +1299,15 @@ static int ssl_no_passwd_prompt_cb(char *buf, int size, int rwflag,
    return 0;
 }
 
+static APR_INLINE int modssl_DH_bits(DH *dh)
+{
+#if OPENSSL_VERSION_NUMBER < 0x30000000L
+    return DH_bits(dh);
+#else
+    return BN_num_bits(DH_get0_p(dh));
+#endif
+}
+
 static apr_status_t ssl_init_server_certs(server_rec *s,
                                           apr_pool_t *p,
                                           apr_pool_t *ptemp,
@@ -1498,7 +1507,7 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
         SSL_CTX_set_tmp_dh(mctx->ssl_ctx, dh);
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02540)
                      "Custom DH parameters (%d bits) for %s loaded from %s",
-                     BN_num_bits(DH_get0_p(dh)), vhost_id, certfile);
+                     modssl_DH_bits(dh), vhost_id, certfile);
         DH_free(dh);
     }
 
