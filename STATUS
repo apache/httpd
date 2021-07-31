@@ -275,7 +275,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              + patch -p0 < 2.4.x-mpm_event_graceful_linger.patch
              + svn merge --record-only -c 1891716-1891719,1891721,1891724,1891726-1891728 ^/httpd/httpd/trunk .
              + make update-changes
-     +1: ylavic,
+     +1: ylavic, icing
 
   *) mod_proxy: Fix possible reuse/merging of Proxy(Pass)Match worker instances
      with others when their URLs contain a '$' substitution.  PR 65419 + 65429.
