@@ -315,6 +315,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1817063,1831165,1831171,1831172,1849590,1849630,1856491,1883421,1889327,1891200 ^/httpd/httpd/trunk .
      +1: jailletc36
 
+  *) core: add hook 'child_stoppingthat gets called when the MPM is stopping a
+     child process. The additionalgraceful` parameter allows registered hooks
+     to free resources early during a graceful shutdown.
+     trunk patch:
+          https://svn.apache.org/r1891919
+     2.4.x patch: https://github.com/apache/httpd/pull/259.diff
+     +1: icing
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
