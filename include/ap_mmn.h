@@ -677,6 +677,8 @@
  *                         ap_bucket_wc_create() to util_filter.h
  * 20210531.2 (2.5.1-dev)  Add ap_proxy_get_worker_ex() and
  *                         ap_proxy_define_worker_ex() to mod_proxy.h
+ * 20210531.3 (2.5.1-dev)  Add hook child_stopping to get informed that a child
+ *                         is being shut down.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
