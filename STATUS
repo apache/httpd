@@ -324,6 +324,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://github.com/apache/httpd/pull/259.diff
      +1: icing
 
+  *) core: fix ap_escape_quotes for pre-escaped quotes
+     trunk patch: https://svn.apache.org/r1892012
+     2.4.x patch: svn merge -c 1892012 ^/httpd/httpd/trunk .
+     +1: covener
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
