@@ -175,7 +175,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1879339
                   http://svn.apache.org/r1879307
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-dav-hooks1.patch
-     +1: minfrin
+     +1: minfrin, jim
 
   *) mod_dav: Add method_precondition hook. WebDAV extensions define
      conditions that must exist before a WebDAV method can be executed.
@@ -183,7 +183,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1879339
                   http://svn.apache.org/r1879340
      2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-dav-preconditions1.patch
-     +1: minfrin
+     +1: minfrin, jim
 
   *) back port: new ap_ssl_bind_outgoing for multi ssl support in proxy connections
      core/mod_proxy/mod_ssl:
@@ -257,7 +257,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1879360
      Backport version for 2.4.x of patch:
           https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/194.patch
-     +1: jfclere, ylavic,
+     +1: jfclere, ylavic, jim
 
   *) mpm_event: Fix graceful stop/restart of children processes if connections
                 are in lingering close for too long.
@@ -274,7 +274,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              + patch -p0 < 2.4.x-mpm_event_graceful_linger.patch
              + svn merge --record-only -c 1891716-1891719,1891721,1891724,1891726-1891728 ^/httpd/httpd/trunk .
              + make update-changes
-     +1: ylavic, icing
+     +1: ylavic, icing, jim
 
   *) mod_proxy: Fix possible reuse/merging of Proxy(Pass)Match worker instances
      with others when their URLs contain a '$' substitution.  PR 65419 + 65429.
@@ -312,7 +312,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           https://svn.apache.org/r1889327
           https://svn.apache.org/r1891200
      2.4.x patch: svn merge -c 1817063,1831165,1831171,1831172,1849590,1849630,1856491,1883421,1889327,1891200 ^/httpd/httpd/trunk .
-     +1: jailletc36, covener
+     +1: jailletc36, covener, jim
      icing: I have trouble running the svn merge due to conflicts in CHANGES and
             the infamous log tags. Do you have a patch or a PR to use for checking?
      covener: on faith
@@ -323,18 +323,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch:
           https://svn.apache.org/r1891919
      2.4.x patch: https://github.com/apache/httpd/pull/259.diff
-     +1: icing, covener
+     +1: icing, covener, jim
 
   *) core: fix ap_escape_quotes for pre-escaped quotes
      trunk patch: https://svn.apache.org/r1892012
      2.4.x patch: svn merge -c 1892012 ^/httpd/httpd/trunk .
-     +1: covener
+     +1: covener, jim
 
   *) core: avoid signed integer overflow under fuzzing in
      ap_timeout_parameter_parse
      trunk patch: https://svn.apache.org/r1892038
      2.4.x patch: svn merge -c 1892038 ^/httpd/httpd/trunk .
-     +1: covener
+     +1: covener, jim
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
