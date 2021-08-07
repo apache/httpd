@@ -2724,7 +2724,7 @@ AP_DECLARE(apr_status_t) ap_timeout_parameter_parse(
     default:
         return APR_EGENERAL;
     }
-    if (check > APR_INT64_MAX || check < 0) { 
+    if (check > APR_INT64_MAX || check < tout) { 
         return APR_ERANGE;
     }
     *timeout = (apr_interval_time_t) check;
