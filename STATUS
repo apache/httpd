@@ -247,13 +247,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1887359
                   http://svn.apache.org/r1887144
      Backport version for 2.4.x of patch:
-          https://people.apache.org/~jfclere/patches/patch.210706.txt
+          https://people.apache.org/~jfclere/patches/patch.210810..txt
      +1: jfclere,
      jfclere: The previous proposal was removing the Referer check.
      jorton: r1859235 has an "ok2change" param in the newly added
              balancer_process_balancer_worker() but this is missing in the
              backport patch, maybe include r1887144 for completeness?
-     jfclere: Yes: http://svn.apache.org/r1887144i was missing in trunk patch list.
+     jfclere: Fixed: Added in the patch.210810.txt
 
   *) mod_proxy: Fix possible reuse/merging of Proxy(Pass)Match worker instances
      with others when their URLs contain a '$' substitution.  PR 65419 + 65429.
