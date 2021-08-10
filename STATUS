@@ -269,7 +269,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) core: fix ap_escape_quotes for pre-escaped quotes
      trunk patch: https://svn.apache.org/r1892012
      2.4.x patch: svn merge -c 1892012 ^/httpd/httpd/trunk .
-     +1: covener, jim
+     +1: covener, jim, icing
 
   *) core: avoid signed integer overflow under fuzzing in
      ap_timeout_parameter_parse
