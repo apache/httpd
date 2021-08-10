@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.49
 
+  *) mod_proxy: Fix icomplete initialization of BalancerMember(s) from the
+     balancer-manager, which can lead to a crash.  [Yann Ylavic]
+
   *) mpm_event: Fix graceful stop/restart of children processes if connections
      are in lingering close for too long.  [Yann Ylavic]
 
