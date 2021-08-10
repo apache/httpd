@@ -567,6 +567,8 @@
  *                           pre_translate_name hook and
  *                           Add map_encoded_one and map_encoded_all bits to
  *                           proxy_server_conf.
+ * 20120211.110 (2.4.49-dev) Add hook child_stopping to get informed that a child
+ *                           is being shut down.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -574,7 +576,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 109                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 110                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

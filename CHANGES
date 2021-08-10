@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.49
 
+  * core/mpm: add hook 'child_stopping` that gets called when the MPM is
+    stopping a child process. The additional `graceful` parameter allows
+    registered hooks to free resources early during a graceful shutdown.
+    [Yann Ylavic, Stefan Eissing]
+
   *) mod_proxy: Fix icomplete initialization of BalancerMember(s) from the
      balancer-manager, which can lead to a crash.  [Yann Ylavic]
 
