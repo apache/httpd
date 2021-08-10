@@ -259,23 +259,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/194.patch
      +1: jfclere, ylavic, jim
 
-  *) mpm_event: Fix graceful stop/restart of children processes if connections
-                are in lingering close for too long.
-     trunk patch: http://svn.apache.org/r1891716
-                  http://svn.apache.org/r1891717
-                  http://svn.apache.org/r1891718
-                  http://svn.apache.org/r1891719
-                  http://svn.apache.org/r1891721
-                  http://svn.apache.org/r1891724
-                  http://svn.apache.org/r1891726
-                  http://svn.apache.org/r1891727
-                  http://svn.apache.org/r1891728
-     backport: wget http://people.apache.org/~ylavic/patches/2.4.x-mpm_event_graceful_linger.patch
-             + patch -p0 < 2.4.x-mpm_event_graceful_linger.patch
-             + svn merge --record-only -c 1891716-1891719,1891721,1891724,1891726-1891728 ^/httpd/httpd/trunk .
-             + make update-changes
-     +1: ylavic, icing, jim
-
   *) mod_proxy: Fix possible reuse/merging of Proxy(Pass)Match worker instances
      with others when their URLs contain a '$' substitution.  PR 65419 + 65429.
      trunk patch: http://svn.apache.org/r1891206
