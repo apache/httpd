@@ -142,6 +142,36 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) Easy patches: synch 2.4.x and trunk
+         - mod_auth_basic: Use ap_cstr_casecmp instead of strcasecmp.
+         - mod_ldap: log and abort locking errors.
+         - mod_ldap: style fix for r1831165
+         - mod_ldap: build break fix for r1831165
+      --> These 3 commits are preparation work for backporting r1856735
+         - mod_deflate: Avoid hard-coded "%ld" format strings in mod_deflate's logging statements
+         - mod_deflate: Use apr_uint64_t instead of uint64_t (follow up to r1849590)
+         - mod_forensic: Follow up to r1856490: missing one mod_log_forensic test_char_table case.
+                         (r1856490 has been backported in r1870261)
+         - mod_rewrite: Save a few cycles.
+         - mod_request: Fix a comment (missing '_' in 'keep_body') and some style issues
+         - core: remove extra whitespace in HTTP_NOT_IMPLEMENTED
+     trunk patch:
+          https://svn.apache.org/r1817063
+          https://svn.apache.org/r1831165
+          https://svn.apache.org/r1831171
+          https://svn.apache.org/r1831172
+          https://svn.apache.org/r1849590
+          https://svn.apache.org/r1849630
+          https://svn.apache.org/r1856491
+          https://svn.apache.org/r1883421
+          https://svn.apache.org/r1889327
+          https://svn.apache.org/r1891200
+     2.4.x patch: svn merge -c 1817063,1831165,1831171,1831172,1849590,1849630,1856491,1883421,1889327,1891200 ^/httpd/httpd/trunk .
+     +1: jailletc36, covener, jim
+     icing: I have trouble running the svn merge due to conflicts in CHANGES and
+            the infamous log tags. Do you have a patch or a PR to use for checking?
+     covener: on faith
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -235,36 +265,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              + svn merge --record-only -c 1891206,1891216,1891284 ^/httpd/httpd/trunk .
              + make update-changes
      +1: ylavic,
-
-  *) Easy patches: synch 2.4.x and trunk
-         - mod_auth_basic: Use ap_cstr_casecmp instead of strcasecmp.
-         - mod_ldap: log and abort locking errors.
-         - mod_ldap: style fix for r1831165
-         - mod_ldap: build break fix for r1831165
-      --> These 3 commits are preparation work for backporting r1856735
-         - mod_deflate: Avoid hard-coded "%ld" format strings in mod_deflate's logging statements
-         - mod_deflate: Use apr_uint64_t instead of uint64_t (follow up to r1849590)
-         - mod_forensic: Follow up to r1856490: missing one mod_log_forensic test_char_table case.
-                         (r1856490 has been backported in r1870261)
-         - mod_rewrite: Save a few cycles.
-         - mod_request: Fix a comment (missing '_' in 'keep_body') and some style issues
-         - core: remove extra whitespace in HTTP_NOT_IMPLEMENTED 
-     trunk patch:
-          https://svn.apache.org/r1817063
-          https://svn.apache.org/r1831165
-          https://svn.apache.org/r1831171
-          https://svn.apache.org/r1831172
-          https://svn.apache.org/r1849590
-          https://svn.apache.org/r1849630
-          https://svn.apache.org/r1856491
-          https://svn.apache.org/r1883421
-          https://svn.apache.org/r1889327
-          https://svn.apache.org/r1891200
-     2.4.x patch: svn merge -c 1817063,1831165,1831171,1831172,1849590,1849630,1856491,1883421,1889327,1891200 ^/httpd/httpd/trunk .
-     +1: jailletc36, covener, jim
-     icing: I have trouble running the svn merge due to conflicts in CHANGES and
-            the infamous log tags. Do you have a patch or a PR to use for checking?
-     covener: on faith
 
   *) core: fix ap_escape_quotes for pre-escaped quotes
      trunk patch: https://svn.apache.org/r1892012
