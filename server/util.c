@@ -2597,6 +2597,7 @@ AP_DECLARE(apr_status_t) ap_timeout_parameter_parse(
     char *endp;
     const char *time_str;
     apr_int64_t tout;
+    apr_uint64_t check;
 
     tout = apr_strtoi64(timeout_parameter, &endp, 10);
     if (errno) {
@@ -2609,24 +2610,28 @@ AP_DECLARE(apr_status_t) ap_timeout_parameter_parse(
         time_str = endp;
     }
 
+    if (tout < 0) { 
+        return APR_ERANGE;
+    }
+
     switch (*time_str) {
         /* Time is in seconds */
     case 's':
-        *timeout = (apr_interval_time_t) apr_time_from_sec(tout);
+        check = apr_time_from_sec(tout);
         break;
     case 'h':
         /* Time is in hours */
-        *timeout = (apr_interval_time_t) apr_time_from_sec(tout * 3600);
+        check = apr_time_from_sec(tout * 3600);
         break;
     case 'm':
         switch (*(++time_str)) {
         /* Time is in milliseconds */
         case 's':
-            *timeout = (apr_interval_time_t) tout * 1000;
+            check = tout * 1000;
             break;
         /* Time is in minutes */
         case 'i':
-            *timeout = (apr_interval_time_t) apr_time_from_sec(tout * 60);
+            check = apr_time_from_sec(tout * 60);
             break;
         default:
             return APR_EGENERAL;
@@ -2635,6 +2640,10 @@ AP_DECLARE(apr_status_t) ap_timeout_parameter_parse(
     default:
         return APR_EGENERAL;
     }
+    if (check > APR_INT64_MAX || check < tout) { 
+        return APR_ERANGE;
+    }
+    *timeout = (apr_interval_time_t) check;
     return APR_SUCCESS;
 }
 
