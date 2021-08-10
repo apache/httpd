@@ -563,6 +563,10 @@
  * 20120211.107 (2.4.49-dev) Add ap_parse_request_line() and
  *                           ap_check_request_header()
  * 20120211.108 (2.4.49-dev) Add ajp_handle_cping_cpong
+ * 20120211.109 (2.4.49-dev) Add ap_normalize_path(),
+ *                           pre_translate_name hook and
+ *                           Add map_encoded_one and map_encoded_all bits to
+ *                           proxy_server_conf.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -570,7 +574,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 108                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 109                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

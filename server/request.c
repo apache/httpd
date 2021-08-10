@@ -59,6 +59,7 @@
 #define APLOG_MODULE_INDEX AP_CORE_MODULE_INDEX
 
 APR_HOOK_STRUCT(
+    APR_HOOK_LINK(pre_translate_name)
     APR_HOOK_LINK(translate_name)
     APR_HOOK_LINK(map_to_storage)
     APR_HOOK_LINK(check_user_id)
@@ -74,6 +75,8 @@ APR_HOOK_STRUCT(
     APR_HOOK_LINK(force_authn)
 )
 
+AP_IMPLEMENT_HOOK_RUN_FIRST(int,pre_translate_name,
+                            (request_rec *r), (r), DECLINED)
 AP_IMPLEMENT_HOOK_RUN_FIRST(int,translate_name,
                             (request_rec *r), (r), DECLINED)
 AP_IMPLEMENT_HOOK_RUN_FIRST(int,map_to_storage,
@@ -157,6 +160,25 @@ AP_DECLARE(int) ap_some_authn_required(request_rec *r)
     return rv;
 }
 
+static int walk_location_and_if(request_rec *r)
+{
+    int access_status;
+    core_dir_config *d;
+
+    if ((access_status = ap_location_walk(r))) {
+        return access_status;
+    }
+    if ((access_status = ap_if_walk(r))) {
+        return access_status;
+    }
+
+    d = ap_get_core_module_config(r->per_dir_config);
+    if (d->log)
+        r->log = d->log;
+
+    return OK;
+}
+
 /* This is the master logic for processing requests.  Do NOT duplicate
  * this logic elsewhere, or the security model will be broken by future
  * API changes.  Each phase must be individually optimized to pick up
@@ -164,17 +186,65 @@ AP_DECLARE(int) ap_some_authn_required(request_rec *r)
  */
 AP_DECLARE(int) ap_process_request_internal(request_rec *r)
 {
+    int access_status = DECLINED;
     int file_req = (r->main && r->filename);
-    int access_status;
-    core_dir_config *d;
     core_server_config *sconf =
         ap_get_core_module_config(r->server->module_config);
+    unsigned int normalize_flags;
 
-    /* Ignore embedded %2F's in path for proxy requests */
-    if (!r->proxyreq && r->parsed_uri.path) {
-        d = ap_get_core_module_config(r->per_dir_config);
+    normalize_flags = AP_NORMALIZE_NOT_ABOVE_ROOT;
+    if (sconf->merge_slashes != AP_CORE_CONFIG_OFF) { 
+        normalize_flags |= AP_NORMALIZE_MERGE_SLASHES;
+    }
+    if (file_req) {
+        /* File subrequests can have a relative path. */
+        normalize_flags |= AP_NORMALIZE_ALLOW_RELATIVE;
+    }
+
+    if (r->parsed_uri.path) {
+        /* Normalize: remove /./ and shrink /../ segments, plus
+         * decode unreserved chars (first time only to avoid
+         * double decoding after ap_unescape_url() below).
+         */
+        if (!ap_normalize_path(r->parsed_uri.path,
+                               normalize_flags |
+                               AP_NORMALIZE_DECODE_UNRESERVED)) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10244)
+                          "invalid URI path (%s)", r->unparsed_uri);
+            return HTTP_BAD_REQUEST;
+        }
+    }
+
+    /* All file subrequests are a huge pain... they cannot bubble through the
+     * next several steps.  Only file subrequests are allowed an empty uri,
+     * otherwise let (pre_)translate_name kill the request.
+     */
+    if (!file_req) {
+        ap_conf_vector_t *per_dir_config = r->per_dir_config;
+
+        if ((access_status = walk_location_and_if(r))) {
+            return access_status;
+        }
+
+        /* Let pre_translate_name hooks work with non-decoded URIs, and
+         * eventually prevent further URI transformations (return DONE).
+         */
+        access_status = ap_run_pre_translate_name(r);
+        if (ap_is_HTTP_ERROR(access_status)) {
+            return access_status;
+        }
+
+        /* Throw away pre_trans only merging */
+        r->per_dir_config = per_dir_config;
+    }
+
+    /* Ignore URL unescaping for translated URIs already */
+    if (access_status != DONE && r->parsed_uri.path) {
+        core_dir_config *d = ap_get_core_module_config(r->per_dir_config);
+
         if (d->allow_encoded_slashes) {
-            access_status = ap_unescape_url_keep2f(r->parsed_uri.path, d->decode_encoded_slashes);
+            access_status = ap_unescape_url_keep2f(r->parsed_uri.path,
+                                                   d->decode_encoded_slashes);
         }
         else {
             access_status = ap_unescape_url(r->parsed_uri.path);
@@ -183,38 +253,25 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
             if (access_status == HTTP_NOT_FOUND) {
                 if (! d->allow_encoded_slashes) {
                     ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00026)
-                                  "found %%2f (encoded '/') in URI "
-                                  "(decoded='%s'), returning 404",
-                                  r->parsed_uri.path);
+                                  "found %%2f (encoded '/') in URI path (%s), "
+                                  "returning 404", r->unparsed_uri);
                 }
             }
             return access_status;
         }
+
+        if (d->allow_encoded_slashes && d->decode_encoded_slashes) {
+            /* Decoding slashes might have created new // or /./ or /../
+             * segments (e.g. "/.%2F/"), so re-normalize.
+             */
+            ap_normalize_path(r->parsed_uri.path, normalize_flags);
+        }
     }
 
-    ap_getparents(r->uri);     /* OK --- shrinking transformations... */
-    if (sconf->merge_slashes != AP_CORE_CONFIG_OFF) { 
-        ap_no2slash(r->uri);
-        if (r->parsed_uri.path) {
-            ap_no2slash(r->parsed_uri.path);
-        }
-     }
-
-    /* All file subrequests are a huge pain... they cannot bubble through the
-     * next several steps.  Only file subrequests are allowed an empty uri,
-     * otherwise let translate_name kill the request.
-     */
+    /* Same, translate_name is not suited for file subrequests */
     if (!file_req) {
-        if ((access_status = ap_location_walk(r))) {
+        if ((access_status = walk_location_and_if(r))) {
             return access_status;
-        }
-        if ((access_status = ap_if_walk(r))) {
-            return access_status;
-        }
-
-        d = ap_get_core_module_config(r->per_dir_config);
-        if (d->log) {
-            r->log = d->log;
         }
 
         if ((access_status = ap_run_translate_name(r))) {
@@ -233,16 +290,8 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
 
     /* Rerun the location walk, which overrides any map_to_storage config.
      */
-    if ((access_status = ap_location_walk(r))) {
+    if ((access_status = walk_location_and_if(r))) {
         return access_status;
-    }
-    if ((access_status = ap_if_walk(r))) {
-        return access_status;
-    }
-
-    d = ap_get_core_module_config(r->per_dir_config);
-    if (d->log) {
-        r->log = d->log;
     }
 
     if ((access_status = ap_run_post_perdir_config(r))) {
@@ -1370,7 +1419,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
     r->canonical_filename = r->filename;
 
     if (r->finfo.filetype == APR_DIR) {
-        cache->cached = r->filename;
+        cache->cached = apr_pstrdup(r->pool, r->filename);
     }
     else {
         cache->cached = ap_make_dirstr_parent(r->pool, r->filename);
@@ -1467,7 +1516,7 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
         apr_pool_t *rxpool = NULL;
 
         cached &= auth_internal_per_conf;
-        cache->cached = entry_uri;
+        cache->cached = apr_pstrdup(r->pool, entry_uri);
 
         /* Go through the location entries, and check for matches.
          * We apply the directive sections in given order, we should

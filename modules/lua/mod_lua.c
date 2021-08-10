@@ -1202,6 +1202,11 @@ static int lua_check_user_id_harness_last(request_rec *r)
 }
 */
 
+static int lua_pre_trans_name_harness(request_rec *r)
+{
+    return lua_request_rec_hook_harness(r, "pre_translate_name", APR_HOOK_MIDDLE);
+}
+
 static int lua_translate_name_harness_first(request_rec *r)
 {
     return lua_request_rec_hook_harness(r, "translate_name", AP_LUA_HOOK_FIRST);
@@ -1272,6 +1277,21 @@ static int lua_quick_harness(request_rec *r, int lookup)
         return DECLINED;
     }
     return lua_request_rec_hook_harness(r, "quick", APR_HOOK_MIDDLE);
+}
+
+static const char *register_pre_trans_name_hook(cmd_parms *cmd, void *_cfg,
+                                                const char *file,
+                                                const char *function)
+{
+    return register_named_file_function_hook("pre_translate_name", cmd, _cfg, file,
+                                             function, APR_HOOK_MIDDLE);
+}
+
+static const char *register_pre_trans_name_block(cmd_parms *cmd, void *_cfg,
+                                                 const char *line)
+{
+    return register_named_block_function_hook("pre_translate_name", cmd, _cfg,
+                                              line);
 }
 
 static const char *register_translate_name_hook(cmd_parms *cmd, void *_cfg,
@@ -1842,6 +1862,14 @@ static const command_rec lua_commands[] = {
     AP_INIT_TAKE3("LuaAuthzProvider", register_authz_provider, NULL, RSRC_CONF|EXEC_ON_READ,
                   "Provide an authorization provider"),
 
+    AP_INIT_TAKE2("LuaHookPreTranslateName", register_pre_trans_name_hook, NULL,
+                  OR_ALL,
+                  "Provide a hook for the pre_translate name phase of request processing"),
+
+    AP_INIT_RAW_ARGS("<LuaHookPreTranslateName", register_pre_trans_name_block, NULL,
+                     EXEC_ON_READ | OR_ALL,
+                     "Provide a hook for the pre_translate name phase of request processing"),
+
     AP_INIT_TAKE23("LuaHookTranslateName", register_translate_name_hook, NULL,
                   OR_ALL,
                   "Provide a hook for the translate name phase of request processing"),
@@ -2092,6 +2120,9 @@ static void lua_register_hooks(apr_pool_t *p)
                            APR_HOOK_MIDDLE);
 
     /* http_request.h hooks */
+    ap_hook_pre_translate_name(lua_pre_trans_name_harness, NULL, NULL,
+                               APR_HOOK_MIDDLE);
+
     ap_hook_translate_name(lua_translate_name_harness_first, NULL, NULL,
                            AP_LUA_HOOK_FIRST);
     ap_hook_translate_name(lua_translate_name_harness, NULL, NULL,
