@@ -2542,7 +2542,7 @@ AP_DECLARE(char *) ap_escape_quotes(apr_pool_t *p, const char *instring)
      * in front of every " that doesn't already have one.
      */
     while (*inchr != '\0') {
-        if ((*inchr == '\\') && (inchr[1] != '\0')) {
+        while ((*inchr == '\\') && (inchr[1] != '\0')) {
             *outchr++ = *inchr++;
             *outchr++ = *inchr++;
         }
