@@ -142,13 +142,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_proxy: Fix icomplete initialization of BalancerMember(s) from the
-                balancer-manager, which can lead to a crash.
-     trunk patch: http://svn.apache.org/r1891477
-                  http://svn.apache.org/r1891591
-     2.4.x patch: svn merge -c 1891477,1891591 ^/httpd/httpd/trunk .
-     +1: ylavic, jfclere, icing
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
