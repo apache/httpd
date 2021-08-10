@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.49
 
+  *) mpm_event: Fix graceful stop/restart of children processes if connections
+     are in lingering close for too long.  [Yann Ylavic]
+
   *) mod_md: fixed a potential null pointer dereference if ACME/OCSP
      server returned 2xx responses without content type. Reported by chuangwen.
      [chuangwen, Stefan Eissing]
