@@ -2668,7 +2668,7 @@ AP_DECLARE(char *) ap_append_pid(apr_pool_t *p, const char *string,
  * in timeout_parameter.
  * @return Status value indicating whether the parsing was successful or not.
  */
-#define CHECK_OVERFLOW(a, b) if (a > b) return APR_ERANGE
+#define CHECK_OVERFLOW(a, b) if (a > b) return APR_EGENERAL
 AP_DECLARE(apr_status_t) ap_timeout_parameter_parse(
                                                const char *timeout_parameter,
                                                apr_interval_time_t *timeout,
@@ -2691,7 +2691,7 @@ AP_DECLARE(apr_status_t) ap_timeout_parameter_parse(
     }
 
     if (tout < 0) { 
-        return APR_ERANGE;
+        return APR_EGENERAL;
     }
 
     switch (*time_str) {
