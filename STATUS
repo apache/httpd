@@ -266,12 +266,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              + make update-changes
      +1: ylavic,
 
- *) core: ap_timeout_parameter_parse UBI fuzz fix followup
-    trunk patch: http://svn.apache.org/r1892185
-    trunk patch: http://svn.apache.org/r1892207
-    svn merge -c 1892185,1892207 ^/httpd/httpd/trunk .
-    +1: covener, icing, jorton, jim
-
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
