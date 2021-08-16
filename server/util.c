@@ -2589,6 +2589,7 @@ AP_DECLARE(char *) ap_append_pid(apr_pool_t *p, const char *string,
  * in timeout_parameter.
  * @return Status value indicating whether the parsing was successful or not.
  */
+#define CHECK_OVERFLOW(a, b) if (a > b) return APR_EGENERAL
 AP_DECLARE(apr_status_t) ap_timeout_parameter_parse(
                                                const char *timeout_parameter,
                                                apr_interval_time_t *timeout,
@@ -2611,26 +2612,30 @@ AP_DECLARE(apr_status_t) ap_timeout_parameter_parse(
     }
 
     if (tout < 0) { 
-        return APR_ERANGE;
+        return APR_EGENERAL;
     }
 
     switch (*time_str) {
         /* Time is in seconds */
     case 's':
+        CHECK_OVERFLOW(tout, apr_time_sec(APR_INT64_MAX));
         check = apr_time_from_sec(tout);
         break;
-    case 'h':
         /* Time is in hours */
+    case 'h':
+        CHECK_OVERFLOW(tout, apr_time_sec(APR_INT64_MAX / 3600));
         check = apr_time_from_sec(tout * 3600);
         break;
     case 'm':
         switch (*(++time_str)) {
         /* Time is in milliseconds */
         case 's':
-            check = tout * 1000;
+            CHECK_OVERFLOW(tout, apr_time_as_msec(APR_INT64_MAX));
+            check = apr_time_from_msec(tout);
             break;
         /* Time is in minutes */
         case 'i':
+            CHECK_OVERFLOW(tout, apr_time_sec(APR_INT64_MAX / 60));
             check = apr_time_from_sec(tout * 60);
             break;
         default:
@@ -2640,12 +2645,11 @@ AP_DECLARE(apr_status_t) ap_timeout_parameter_parse(
     default:
         return APR_EGENERAL;
     }
-    if (check > APR_INT64_MAX || check < tout) { 
-        return APR_ERANGE;
-    }
-    *timeout = (apr_interval_time_t) check;
+
+    *timeout = (apr_interval_time_t)check;
     return APR_SUCCESS;
 }
+#undef CHECK_OVERFLOW
 
 AP_DECLARE(int) ap_parse_strict_length(apr_off_t *len, const char *str)
 {
