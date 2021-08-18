@@ -754,7 +754,7 @@ DIGIT       ::= &lt;any US-ASCII digit "0".."9"&gt;
   Header set checksum-matched true
 &lt;/If&gt;
 
-Requir expr replace(%{REQUEST_METHOD},  'E', 'O') == 'GET'"
+Require expr replace(%{REQUEST_METHOD},  'E', 'O') == 'GET'"
 
 # Function example in string context
 Header set foo-checksum "expr=%{md5:foo}"
