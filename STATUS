@@ -172,6 +172,10 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
             the infamous log tags. Do you have a patch or a PR to use for checking?
      covener: on faith
 
+   *) core: fix ap_escape_quotes substitution logic
+      trunk patch: https://svn.apache.org/r1892418
+      2.4.x patch: svn merge -c 1892418 ^/httpd/httpd/trunk .
+      +1 covener
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
