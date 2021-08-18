@@ -2607,7 +2607,7 @@ AP_DECLARE(char *) ap_escape_quotes(apr_pool_t *p, const char *instring)
          * If we find a slosh, and it's not the last byte in the string,
          * it's escaping something - advance past both bytes.
          */
-        if ((*inchr == '\\') && (inchr[1] != '\0')) {
+        else if ((*inchr == '\\') && (inchr[1] != '\0')) {
             inchr++;
             newlen++;
         }
@@ -2624,12 +2624,10 @@ AP_DECLARE(char *) ap_escape_quotes(apr_pool_t *p, const char *instring)
         if (*inchr == '"') {
             *outchr++ = '\\';
         }
-        if ((*inchr == '\\') && (inchr[1] != '\0')) {
+        else if ((*inchr == '\\') && (inchr[1] != '\0')) {
             *outchr++ = *inchr++;
         }
-        if (*inchr != '\0') {
-            *outchr++ = *inchr++;
-        }
+        *outchr++ = *inchr++;
     }
     *outchr = '\0';
     return outstring;
