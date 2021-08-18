@@ -259,10 +259,12 @@ AP_DECLARE(void) ap_reclaim_child_processes(int terminate,
         while (cur_extra) {
             ap_generation_t old_gen;
             extra_process_t *next = cur_extra->next;
+            pid_t pid = cur_extra->pid;
 
-            if (reclaim_one_pid(cur_extra->pid, action_table[cur_action].action)) {
-                if (ap_unregister_extra_mpm_process(cur_extra->pid, &old_gen) == 1) {
-                    mpm_callback(-1, cur_extra->pid, old_gen);
+            if (reclaim_one_pid(pid, action_table[cur_action].action)) {
+                if (ap_unregister_extra_mpm_process(pid, &old_gen) == 1) {
+                    /* cur_extra dangling pointer from here. */
+                    mpm_callback(-1, pid, old_gen);
                 }
                 else {
                     AP_DEBUG_ASSERT(1 == 0);
@@ -307,10 +309,12 @@ AP_DECLARE(void) ap_relieve_child_processes(ap_reclaim_callback_fn_t *mpm_callba
     while (cur_extra) {
         ap_generation_t old_gen;
         extra_process_t *next = cur_extra->next;
+        pid_t pid = cur_extra->pid;
 
-        if (reclaim_one_pid(cur_extra->pid, DO_NOTHING)) {
-            if (ap_unregister_extra_mpm_process(cur_extra->pid, &old_gen) == 1) {
-                mpm_callback(-1, cur_extra->pid, old_gen);
+        if (reclaim_one_pid(pid, DO_NOTHING)) {
+            if (ap_unregister_extra_mpm_process(pid, &old_gen) == 1) {
+                /* cur_extra dangling pointer from here. */
+                mpm_callback(-1, pid, old_gen);
             }
             else {
                 AP_DEBUG_ASSERT(1 == 0);
