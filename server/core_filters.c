@@ -604,7 +604,7 @@ static apr_status_t send_brigade_nonblocking(apr_socket_t *s,
          */
         if (nbytes > sconf->flush_max_threshold
                 && next != APR_BRIGADE_SENTINEL(bb)
-                && !is_in_memory_bucket(next)) {
+                && next->length && !is_in_memory_bucket(next)) {
             (void)apr_socket_opt_set(s, APR_TCP_NOPUSH, 1);
             rv = writev_nonblocking(s, bb, ctx, nbytes, nvec, c);
             if (rv != APR_SUCCESS) {
