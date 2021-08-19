@@ -480,6 +480,19 @@ static APR_INLINE int can_sendfile_bucket(apr_bucket *b)
 }
 #endif
 
+static void delete_meta_bucket(apr_bucket *bucket)
+{
+    if (AP_BUCKET_IS_EOR(bucket)) {
+        /* Mark the request as flushed since all its
+         * buckets (preceding this EOR) have been sent.
+         */
+        request_rec *r = ap_bucket_eor_request(bucket);
+        ap_assert(r != NULL);
+        r->flushed = 1;
+    }
+    apr_bucket_delete(bucket);
+}
+
 static apr_status_t send_brigade_nonblocking(apr_socket_t *s,
                                              apr_bucket_brigade *bb,
                                              core_output_ctx_t *ctx,
@@ -551,15 +564,7 @@ static apr_status_t send_brigade_nonblocking(apr_socket_t *s,
              * brigade in order.
              */
             if (!nvec) {
-                if (AP_BUCKET_IS_EOR(bucket)) {
-                    /* Mark the request as flushed since all its
-                     * buckets (preceding this EOR) have been sent.
-                     */
-                    request_rec *r = ap_bucket_eor_request(bucket);
-                    ap_assert(r != NULL);
-                    r->flushed = 1;
-                }
-                apr_bucket_delete(bucket);
+                delete_meta_bucket(bucket);
             }
             continue;
         }
@@ -643,15 +648,7 @@ static apr_status_t writev_nonblocking(apr_socket_t *s,
         for (i = offset; i < nvec; ) {
             apr_bucket *bucket = APR_BRIGADE_FIRST(bb);
             if (!bucket->length) {
-                if (AP_BUCKET_IS_EOR(bucket)) {
-                    /* Mark the request as flushed since all its
-                     * buckets (preceding this EOR) have been sent.
-                     */
-                    request_rec *r = ap_bucket_eor_request(bucket);
-                    ap_assert(r != NULL);
-                    r->flushed = 1;
-                }
-                apr_bucket_delete(bucket);
+                delete_meta_bucket(bucket);
             }
             else if (n >= vec[i].iov_len) {
                 apr_bucket_delete(bucket);
@@ -666,6 +663,16 @@ static apr_status_t writev_nonblocking(apr_socket_t *s,
                     vec[i].iov_base = (char *) vec[i].iov_base + n;
                 }
                 break;
+            }
+        }
+        if (i == nvec) {
+            /* Cleanup empty/meta buckets following sent data */
+            while (!APR_BRIGADE_EMPTY(bb)) {
+                apr_bucket *bucket = APR_BRIGADE_FIRST(bb);
+                if (bucket->length) {
+                    break;
+                }
+                delete_meta_bucket(bucket);
             }
         }
     } while (rv == APR_SUCCESS && bytes_written < bytes_to_write);
