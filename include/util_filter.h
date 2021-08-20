@@ -763,15 +763,31 @@ AP_DECLARE(void) ap_filter_protocol(ap_filter_t* f, unsigned int proto_flags);
 /** Filter is incompatible with "Cache-Control: no-transform" */
 #define AP_FILTER_PROTO_TRANSFORM 0x20
 
-/** Write Completion (WC) bucket */
-AP_DECLARE_DATA extern const apr_bucket_type_t ap_bucket_type_wc;
+/**
+ * @brief Write Completion (WC) bucket
+ *
+ * A WC bucket is a FLUSH bucket with special ->data == &ap_bucket_wc_data,
+ * still both AP_BUCKET_IS_WC() and APR_BUCKET_IS_FLUSH() hold for them so
+ * they have the same semantics for most filters, namely:
+ *   Everything produced before shall be passed to the next filter, including
+ *   the WC/FLUSH bucket itself.
+ * The distinction between WC and FLUSH buckets is only for filters that care
+ * about write completion (calling ap_filter_reinstate_brigade() with non-NULL
+ * flush_upto), those can setaside WC buckets and the preceding data provided
+ * they have first determined that the next filter(s) have pending data
+ * already, usually by calling ap_filter_should_yield(f->next).
+ */
+
+/** Write Completion (WC) bucket data mark */
+AP_DECLARE_DATA extern const char ap_bucket_wc_data;
 
 /**
  * Determine if a bucket is a Write Completion (WC) bucket
  * @param e The bucket to inspect
  * @return true or false
  */
-#define AP_BUCKET_IS_WC(e) ((e)->type == &ap_bucket_type_wc)
+#define AP_BUCKET_IS_WC(e) (APR_BUCKET_IS_FLUSH(e) && \
+                            (e)->data == (void *)&ap_bucket_wc_data)
 
 /**
  * Make the bucket passed in a Write Completion (WC) bucket

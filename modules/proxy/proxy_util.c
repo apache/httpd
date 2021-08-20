@@ -4551,6 +4551,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_transfer_between_connections(
             APR_BRIGADE_INSERT_TAIL(bb_o, b);
         }
         else {
+            /* Prevent setaside/coalescing by intermediate filters. */
             b = ap_bucket_wc_create(bb_o->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(bb_o, b);
         }
