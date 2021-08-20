@@ -87,6 +87,8 @@ function install_apx() {
     touch ${prefix}/.revision-is-${revision}
 }
 
+# Allow to load /home/travis/build/apache/httpd/.gdbinit
+echo "add-auto-load-safe-path /home/travis/build/apache/httpd/.gdbinit" >> /home/travis/.gdbinit
 
 if ! test -v SKIP_TESTING; then
     ### Temporary: purge old svn checkout from the cache

@@ -156,7 +156,7 @@ LDAPOpCacheTTL 600
     caching strategy to minimize the number of times that the LDAP
     server must be contacted. Caching can easily double or triple
     the throughput of Apache when it is serving pages protected
-    with mod_authnz_ldap. In addition, the load on the LDAP server
+    with <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code>. In addition, the load on the LDAP server
     will be significantly decreased.</p>
 
     <p><code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> supports two types of LDAP caching during
@@ -302,7 +302,8 @@ LDAPTrustedGlobalCert CA_DER /certs/certfile.der
         installation.</p>
 
         <p>Client certificates are specified per connection using the
-        LDAPTrustedClientCert directive by referring
+        <code class="directive"><a href="#ldaptrustedclientcert">LDAPTrustedClientCert</a></code>
+        directive by referring
         to the certificate "nickname". An optional password may be
         specified to unlock the certificate's private key.</p>
 
@@ -340,13 +341,15 @@ LDAPTrustedGlobalCert CA_SECMOD /certs/secmod
         binary DER or Base64 (PEM) encoded files.</p>
 
         <p>Note: Client certificates are specified globally rather than per
-        connection, and so must be specified with the LDAPTrustedGlobalCert
+        connection, and so must be specified with the <code class="directive"><a href="#ldaptrustedglobalcert">LDAPTrustedGlobalCert</a></code>
         directive as below. Trying to set client certificates via the
-        LDAPTrustedClientCert directive will cause an error to be logged
-        when an attempt is made to connect to the LDAP server..</p>
+        <code class="directive"><a href="#ldaptrustedclientcert">LDAPTrustedClientCert</a></code>
+        directive will cause an error to be logged
+        when an attempt is made to connect to the LDAP server.</p>
 
         <p>The SDK supports both SSL and STARTTLS, set using the
-        LDAPTrustedMode parameter. If an ldaps:// URL is specified,
+        <code class="directive"><a href="#ldaptrustedmode">LDAPTrustedMode</a></code> parameter.
+        If an ldaps:// URL is specified,
         SSL mode is forced, override this directive.</p>
 
         <pre class="prettyprint lang-config"># Specify two CA certificate files
@@ -368,7 +371,8 @@ LDAPTrustedGlobalCert KEY_BASE64 /certs/key1.pem [password]
         binary DER or Base64 (PEM) encoded files.</p>
 
         <p>Both CA and client certificates may be specified globally
-        (LDAPTrustedGlobalCert) or per-connection (LDAPTrustedClientCert).
+        (<code class="directive"><a href="#ldaptrustedglobalcert">LDAPTrustedGlobalCert</a></code>) or
+        per-connection (<code class="directive"><a href="#ldaptrustedclientcert">LDAPTrustedClientCert</a></code>).
         When any settings are specified per-connection, the global
         settings are superseded.</p>
 
@@ -419,7 +423,7 @@ LDAPTrustedGlobalCert CA_BASE64 /certs/cacert2.pem
         configuration directives are required.</p>
 
         <p>Both SSL and TLS are supported by using the ldaps:// URL
-        format, or by using the LDAPTrustedMode directive accordingly.</p>
+        format, or by using the <code class="directive"><a href="#ldaptrustedmode">LDAPTrustedMode</a></code> directive accordingly.</p>
 
         <p>Note: The status of support for client certificates is not yet known
         for this toolkit.</p>
@@ -591,7 +595,7 @@ valid</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
-    <p>This directive, if enabled by the <code class="directive">LDAPReferrals</code> directive,
+    <p>This directive, if enabled by the <code class="directive"><a href="#ldapreferrals">LDAPReferrals</a></code> directive,
     limits the number of referral hops that are followed before terminating an
     LDAP query.</p>
 
@@ -604,7 +608,7 @@ valid</td></tr>
 <div class="directive-section"><h2><a name="LDAPReferrals" id="LDAPReferrals">LDAPReferrals</a> <a name="ldapreferrals" id="ldapreferrals">Directive</a> <a title="Permanent link" href="#ldapreferrals" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable referral chasing during queries to the LDAP server.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LDAPReferrals <var>On|Off|default</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LDAPReferrals On|Off|default</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>LDAPReferrals On</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
@@ -622,7 +626,7 @@ valid</td></tr>
     <dl>
      <dt>"on"</dt>
      <dd> <p> When set to "on", the underlying SDK's referral chasing state
-              is enabled, <code class="directive">LDAPReferralHopLimit</code> is used to
+              is enabled, <code class="directive"><a href="#ldapreferralhoplimit">LDAPReferralHopLimit</a></code> is used to
               override the SDK's hop limit, and an LDAP rebind callback is
               registered.</p></dd>
      <dt>"off"</dt>
@@ -630,12 +634,12 @@ valid</td></tr>
               is disabled completely.</p></dd>
      <dt>"default"</dt>
      <dd> <p> When set to "default", the underlying SDK's referral chasing state
-              is not changed, <code class="directive">LDAPReferralHopLimit</code> is not
+              is not changed, <code class="directive"><a href="#ldapreferralhoplimit">LDAPReferralHopLimit</a></code> is not
               used to override the SDK's hop limit, and no LDAP rebind callback is
               registered.</p></dd>
     </dl>
 
-    <p>The directive <code class="directive">LDAPReferralHopLimit</code> works in conjunction with
+    <p>The directive <code class="directive"><a href="#ldapreferralhoplimit">LDAPReferralHopLimit</a></code> works in conjunction with
     this directive to limit the number of referral hops to follow before terminating the LDAP query.
     When referral processing is enabled by a value of "On", client credentials will be provided,
     via a rebind callback, for any LDAP server requiring them.</p>
@@ -752,7 +756,8 @@ connection client certificates.</td></tr>
     settings. Some LDAP toolkits (notably Novell)
     do not support per connection client certificates, and will throw an
     error on LDAP server connection if you try to use this directive
-    (Use the LDAPTrustedGlobalCert directive instead for Novell client
+    (Use the <code class="directive"><a href="#ldaptrustedglobalcert">LDAPTrustedGlobalCert</a></code>
+    directive instead for Novell client
     certificates - See the SSL/TLS certificate guide above for details).
     The type specifies the kind of certificate parameter being
     set, depending on the LDAP toolkit being used. Supported types are:</p>
@@ -784,7 +789,7 @@ Certificate Authority or global client certificates</td></tr>
     is applied globally to the entire server installation. Some LDAP toolkits
     (notably Novell) require all client certificates to be set globally using
     this directive. Most other toolkits require clients certificates to be set
-    per Directory or per Location using LDAPTrustedClientCert. If you get this
+    per Directory or per Location using <code class="directive"><a href="#ldaptrustedclientcert">LDAPTrustedClientCert</a></code>. If you get this
     wrong, an error may be logged when an attempt is made to contact the LDAP
     server, or the connection may silently fail (See the SSL/TLS certificate
     guide above for details).
@@ -828,14 +833,14 @@ Certificate Authority or global client certificates</td></tr>
     </p>
 
     <p>If an ldaps:// URL is specified, the mode becomes SSL and the setting
-    of LDAPTrustedMode is ignored.</p>
+    of <code class="directive">LDAPTrustedMode</code> is ignored.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LDAPVerifyServerCert" id="LDAPVerifyServerCert">LDAPVerifyServerCert</a> <a name="ldapverifyservercert" id="ldapverifyservercert">Directive</a> <a title="Permanent link" href="#ldapverifyservercert" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Force server certificate verification</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LDAPVerifyServerCert <var>On|Off</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LDAPVerifyServerCert On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>LDAPVerifyServerCert On</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -850,7 +855,7 @@ Certificate Authority or global client certificates</td></tr>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_ldap.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_ldap.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
 var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_ldap.html';
@@ -868,7 +873,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_ldap.html'
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

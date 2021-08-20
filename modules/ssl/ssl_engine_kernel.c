@@ -1704,6 +1704,7 @@ const authz_provider ssl_authz_provider_verify_client =
 **  _________________________________________________________________
 */
 
+#if MODSSL_USE_OPENSSL_PRE_1_1_API
 /*
  * Hand out standard DH parameters, based on the authentication strength
  */
@@ -1749,6 +1750,7 @@ DH *ssl_callback_TmpDH(SSL *ssl, int export, int keylen)
 
     return modssl_get_dh_params(keylen);
 }
+#endif
 
 /*
  * This OpenSSL callback function is called when OpenSSL
@@ -1766,7 +1768,7 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
     SSLSrvConfigRec *sc = mySrvConfig(s);
     SSLConnRec *sslconn = myConnConfig(conn);
     SSLDirConfigRec *dc = r ? myDirConfig(r) : sslconn->dc;
-    modssl_ctx_t *mctx  = myCtxConfig(sslconn, sc);
+    modssl_ctx_t *mctx  = myConnCtxConfig(conn, sc);
     int crl_check_mode  = mctx->crl_check_mask & ~SSL_CRLCHECK_FLAGS;
 
     /* Get verify ingredients */
@@ -1790,7 +1792,7 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
      * Check for optionally acceptable non-verifiable issuer situation
      */
     if (dc) {
-        if (sslconn->is_proxy) {
+        if (conn->outgoing) {
             verify = dc->proxy->auth.verify_mode;
         }
         else {
@@ -1902,7 +1904,7 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
      * Finally check the depth of the certificate verification
      */
     if (dc) {
-        if (sslconn->is_proxy) {
+        if (conn->outgoing) {
             depth = dc->proxy->auth.verify_depth;
         }
         else {
@@ -2298,7 +2300,7 @@ void ssl_callback_Info(const SSL *ssl, int where, int rc)
         /* If the reneg state is to reject renegotiations, check the SSL
          * state machine and move to ABORT if a Client Hello is being
          * read. */
-        if (!sslconn->is_proxy &&
+        if (!c->outgoing &&
                 (where & SSL_CB_HANDSHAKE_START) &&
                 sslconn->reneg_state == RENEG_REJECT) {
             sslconn->reneg_state = RENEG_ABORT;
@@ -2541,7 +2543,7 @@ static int ssl_find_vhost(void *servername, conn_rec *c, server_rec *s)
          * Don't switch the protocol if none is configured for this vhost,
          * the default in this case is still the base server's SSLProtocol.
          */
-        if (myCtxConfig(sslcon, sc)->protocol_set) {
+        if (myConnCtxConfig(c, sc)->protocol_set) {
             SSL_set_min_proto_version(ssl, SSL_CTX_get_min_proto_version(ctx));
             SSL_set_max_proto_version(ssl, SSL_CTX_get_max_proto_version(ctx));
         }
@@ -2627,8 +2629,7 @@ int ssl_callback_SessionTicket(SSL *ssl,
     conn_rec *c = (conn_rec *)SSL_get_app_data(ssl);
     server_rec *s = mySrvFromConn(c);
     SSLSrvConfigRec *sc = mySrvConfig(s);
-    SSLConnRec *sslconn = myConnConfig(c);
-    modssl_ctx_t *mctx = myCtxConfig(sslconn, sc);
+    modssl_ctx_t *mctx = myConnCtxConfig(c, sc);
     modssl_ticket_key_t *ticket_key = mctx->ticket_key;
 
     if (mode == 1) {

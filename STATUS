@@ -113,7 +113,7 @@ THINGS THAT SHOULD BE CONSIDERED EARLY IN THE 2.6/3.0 DEVELOPMENT CYCLE:
   * make mod_ssl more "core"?
 
   * add high-level server configuration directives that can steer/influence
-    module defaults/warn/rejects related to security 
+    module defaults/warn/rejects related to security
 
   * Ditch HTTP/0.9? At least, make HttpProtocolOptions Require1.0 the default.
 
@@ -143,7 +143,7 @@ THINGS THAT SHOULD BE CONSIDERED EARLY IN THE 2.6/3.0 DEVELOPMENT CYCLE:
 
   * Support YAML based configuration files (JSON does not support comments)
 
-  * Opaque data structures w/ getters/setters 
+  * Opaque data structures w/ getters/setters
 
   * Generic interface to enable runtime changes (adjusting log level, modifying
     balancer information, toggling flags on/off). Perhaps modules can register

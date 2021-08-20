@@ -1276,7 +1276,7 @@ static int md_answer_challenge(conn_rec *c, const char *servername,
     sc = md_config_get(c->base_server);
     if (!sc || !sc->mc->reg) goto cleanup;
 
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, c,
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
                   "Answer challenge[tls-alpn-01] for %s", servername);
     store = md_reg_store_get(sc->mc->reg);
 
@@ -1501,16 +1501,11 @@ static void md_hooks(apr_pool_t *pool)
     ap_hook_ssl_add_cert_files(md_add_cert_files, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_ssl_add_fallback_cert_files(md_add_fallback_cert_files, NULL, NULL, APR_HOOK_MIDDLE);
 
-#if AP_MODULE_MAGIC_AT_LEAST(20210420, 0)
+#if AP_MODULE_MAGIC_AT_LEAST(20120211, 105)
     ap_hook_ssl_ocsp_prime_hook(md_ocsp_prime_status, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_ssl_ocsp_get_resp_hook(md_ocsp_provide_status, NULL, NULL, APR_HOOK_MIDDLE);
 #else
-
-#ifndef SSL_CERT_HOOKS
-#error "This version of mod_md requires Apache httpd 2.4.41 or newer."
-#endif
-    APR_OPTIONAL_HOOK(ssl, init_stapling_status, md_ocsp_init_stapling_status, NULL, NULL, APR_HOOK_MIDDLE);
-    APR_OPTIONAL_HOOK(ssl, get_stapling_status, md_ocsp_get_stapling_status, NULL, NULL, APR_HOOK_MIDDLE);
+#error "This version of mod_md requires Apache httpd 2.4.48 or newer."
 #endif /* AP_MODULE_MAGIC_AT_LEAST() */
 }
 

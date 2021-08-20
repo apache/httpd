@@ -227,7 +227,8 @@ static apr_status_t inspect_problem(md_acme_req_t *req, const md_http_response_t
 static apr_status_t acmev2_req_init(md_acme_req_t *req, md_json_t *jpayload)
 {
     md_data_t payload;
-    
+
+    md_data_null(&payload);
     if (!req->acme->acct) {
         return APR_EINVAL;
     }

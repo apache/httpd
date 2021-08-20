@@ -310,6 +310,8 @@
 <li><a href="mod_firehose.html#firehoseproxyconnectionoutput">FirehoseProxyConnectionOutput</a></li>
 <li><a href="mod_firehose.html#firehoserequestinput">FirehoseRequestInput</a></li>
 <li><a href="mod_firehose.html#firehoserequestoutput">FirehoseRequestOutput</a></li>
+<li><a href="core.html#flushmaxpipelined">FlushMaxPipelined</a></li>
+<li><a href="core.html#flushmaxthreshold">FlushMaxThreshold</a></li>
 <li><a href="mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority</a></li>
 <li><a href="core.html#forcetype">ForceType</a></li>
 <li><a href="mod_log_forensic.html#forensiclog">ForensicLog</a></li>
@@ -325,6 +327,7 @@
 <li><a href="mod_http2.html#h2maxworkers">H2MaxWorkers</a></li>
 <li><a href="mod_http2.html#h2minworkers">H2MinWorkers</a></li>
 <li><a href="mod_http2.html#h2moderntlsonly">H2ModernTLSOnly</a></li>
+<li><a href="mod_http2.html#h2outputbuffering">H2OutputBuffering</a></li>
 <li><a href="mod_http2.html#h2padding">H2Padding</a></li>
 <li><a href="mod_http2.html#h2push">H2Push</a></li>
 <li><a href="mod_http2.html#h2pushdiarysize">H2PushDiarySize</a></li>
@@ -586,9 +589,11 @@
 <li><a href="mod_proxy.html#proxyvia">ProxyVia</a></li>
 <li><a href="mod_proxy_wstunnel.html#proxywebsocketasync">ProxyWebsocketAsync</a></li>
 <li><a href="mod_proxy_wstunnel.html#proxywebsocketasyncdelay">ProxyWebsocketAsyncDelay</a></li>
+<li><a href="mod_proxy_wstunnel.html#proxywebsocketfallbacktoproxyhttp">ProxyWebsocketFallbackToProxyHttp</a></li>
 <li><a href="mod_proxy_wstunnel.html#proxywebsocketidletimeout">ProxyWebsocketIdleTimeout</a></li>
 <li><a href="core.html#qualifyredirecturl" id="Q" name="Q">QualifyRedirectURL</a></li>
-<li><a href="mod_autoindex.html#readmename" id="R" name="R">ReadmeName</a></li>
+<li><a href="core.html#readbuffersize" id="R" name="R">ReadBufferSize</a></li>
+<li><a href="mod_autoindex.html#readmename">ReadmeName</a></li>
 <li><a href="mpm_common.html#receivebuffersize">ReceiveBufferSize</a></li>
 <li><a href="mod_alias.html#redirect">Redirect</a></li>
 <li><a href="mod_alias.html#redirectmatch">RedirectMatch</a></li>
@@ -811,7 +816,7 @@
 <a href="../ko/mod/directives.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/directives.html" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/mod/directives.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Yorum</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Yorum</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
 var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/directives.html';
@@ -829,7 +834,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/directives.htm
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="apache">Copyright 2021 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
 <p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="http://wiki.apache.org/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

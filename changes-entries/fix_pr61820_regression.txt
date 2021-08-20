@@ -1,2 +1,0 @@
-  *) core: Fix a regression that stripped the ETag header from 304 responses.
-     PR 61820 [Ruediger Pluem, Roy T. Fielding]

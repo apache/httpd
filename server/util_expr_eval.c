@@ -286,7 +286,7 @@ static const char *ap_expr_eval_string_func(ap_expr_eval_ctx_t *ctx,
     if (arg->node_op == op_ListElement) {
         /* Evaluate the list elements and store them in apr_array_header. */
         ap_expr_string_list_func_t *func = (ap_expr_string_list_func_t *)info->node_arg1;
-        apr_array_header_t *args = ap_expr_list_make(ctx, arg->node_arg1);
+        apr_array_header_t *args = ap_expr_list_make(ctx, arg);
         return (*func)(ctx, data, args);
     }
     else {
@@ -735,10 +735,12 @@ static ap_expr_t *ap_expr_info_make(int type, const char *name,
                 parms.arg = arg->node_arg1;
                 break;
             case op_ListElement:
+                /* save the first literal/simple string argument */
                 do {
                     const ap_expr_t *val = arg->node_arg1;
-                    if (val->node_op == op_String) {
+                    if (val && val->node_op == op_String) {
                         parms.arg = val->node_arg1;
+                        break;
                     }
                     arg = arg->node_arg2;
                 } while (arg != NULL);
@@ -1424,10 +1426,10 @@ static int replace_func_parse_arg(ap_expr_lookup_parms *parms)
     const apr_strmatch_pattern *pattern;
 
     if (!parms->arg) {
-        *parms->err = apr_psprintf(parms->ptemp, "replace() function needs "
-                                   "exactly 3 arguments");
+        *parms->err = apr_psprintf(parms->ptemp, "replace() function needs an argument");
         return !OK;
     }
+
     pattern = apr_strmatch_precompile(parms->pool, original, 0);
     *parms->data = pattern;
     return OK;
@@ -1445,13 +1447,13 @@ static const char *replace_func(ap_expr_eval_ctx_t *ctx, const void *data,
     const apr_strmatch_pattern *pattern = data;
     if (args->nelts != 3) {
         *ctx->err = apr_psprintf(ctx->p, "replace() function needs "
-                                 "exactly 3 arguments");
+                                 "exactly 3 arguments, got %d", args->nelts);
         return "";
     }
 
-    buff = APR_ARRAY_IDX(args, 2, char *);
+    buff = APR_ARRAY_IDX(args, 0, char *);
     original = APR_ARRAY_IDX(args, 1, char *);
-    replacement = APR_ARRAY_IDX(args, 0, char *);
+    replacement = APR_ARRAY_IDX(args, 2, char *);
     repl_len = strlen(replacement);
     orig_len = strlen(original);
     bytes = strlen(buff);

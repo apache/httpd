@@ -162,6 +162,7 @@
 #include "http_core.h"          /* For REMOTE_NAME */
 #include "http_log.h"
 #include "http_protocol.h"
+#include "http_ssl.h"
 #include "util_time.h"
 #include "ap_mpm.h"
 #include "ap_provider.h"
@@ -911,6 +912,35 @@ static const char *log_requests_on_connection(request_rec *r, char *a)
 {
     int num = r->connection->keepalives ? r->connection->keepalives - 1 : 0;
     return apr_itoa(r->pool, num);
+}
+
+static const char *log_ssl_var(request_rec *r, char *a)
+{
+    const char *result;
+
+    /* Any SSL module responsible for the connection/request will provide the value */
+    result = ap_ssl_var_lookup(r->pool, r->server, r->connection, r, a);
+    return (result && result[0])? result : NULL;
+}
+
+static const char *log_ssl_var_short(request_rec *r, char *a)
+{
+    /* Several shortcut names, previously defined and installed in mod_ssl
+     * that lookup SSL variables. */
+    if (!strcasecmp(a, "version"))
+        return log_ssl_var(r, "SSL_PROTOCOL");
+    else if (!strcasecmp(a, "cipher"))
+        return log_ssl_var(r, "SSL_CIPHER");
+    else if (!strcasecmp(a, "subjectdn") || !strcasecmp(a, "clientcert"))
+        return log_ssl_var(r, "SSL_CLIENT_S_DN");
+    else if (!strcasecmp(a, "issuerdn") || !strcasecmp(a, "cacert"))
+        return log_ssl_var(r, "SSL_CLIENT_I_DN");
+    else if (!strcasecmp(a, "errcode"))
+        /* Copied from mod_ssl for backward compatibility. */
+        return "-";
+    else if (!strcasecmp(a, "errstr"))
+        return log_ssl_var(r, "SSL_CLIENT_VERIFY_ERRSTR");
+    return NULL;
 }
 
 /*****************************************************************
@@ -1869,6 +1899,13 @@ static int log_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
 
         log_pfn_register(p, "^ti", log_trailer_in, 0);
         log_pfn_register(p, "^to", log_trailer_out, 0);
+
+        /* these used to be part of mod_ssl, but with the introduction
+         * of ap_ssl_var_lookup() they are added here directly so lookups
+         * from all installed SSL modules work.
+         * We keep the old tag names to remain backward compatible. */
+        log_pfn_register(p, "c", log_ssl_var_short, 0);
+        log_pfn_register(p, "x", log_ssl_var, 0);
     }
 
     /* reset to default conditions */

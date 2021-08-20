@@ -114,65 +114,11 @@ static void fix_vary(request_rec *r)
     }
 }
 
-static void set_basic_http_header(apr_table_t *headers, request_rec *r,
-                                  apr_pool_t *pool)
-{
-    char *date = NULL;
-    const char *proxy_date = NULL;
-    const char *server = NULL;
-    const char *us = ap_get_server_banner();
-    
-    /*
-     * keep the set-by-proxy server and date headers, otherwise
-     * generate a new server header / date header
-     */
-    if (r && r->proxyreq != PROXYREQ_NONE) {
-        proxy_date = apr_table_get(r->headers_out, "Date");
-        if (!proxy_date) {
-            /*
-             * proxy_date needs to be const. So use date for the creation of
-             * our own Date header and pass it over to proxy_date later to
-             * avoid a compiler warning.
-             */
-            date = apr_palloc(pool, APR_RFC822_DATE_LEN);
-            ap_recent_rfc822_date(date, r->request_time);
-        }
-        server = apr_table_get(r->headers_out, "Server");
-    }
-    else {
-        date = apr_palloc(pool, APR_RFC822_DATE_LEN);
-        ap_recent_rfc822_date(date, r? r->request_time : apr_time_now());
-    }
-    
-    apr_table_setn(headers, "Date", proxy_date ? proxy_date : date );
-    if (r) {
-        apr_table_unset(r->headers_out, "Date");
-    }
-    
-    if (!server && *us) {
-        server = us;
-    }
-    if (server) {
-        apr_table_setn(headers, "Server", server);
-        if (r) {
-            apr_table_unset(r->headers_out, "Server");
-        }
-    }
-}
-
-static int copy_header(void *ctx, const char *name, const char *value)
-{
-    apr_table_t *headers = ctx;
-    
-    apr_table_add(headers, name, value);
-    return 1;
-}
-
 static h2_headers *create_response(h2_task *task, request_rec *r)
 {
     const char *clheader;
     const char *ctype;
-    apr_table_t *headers;
+
     /*
      * Now that we are ready to send a response, we need to combine the two
      * header field tables into a single table.  If we don't do this, our
@@ -279,28 +225,24 @@ static h2_headers *create_response(h2_task *task, request_rec *r)
         apr_table_unset(r->headers_out, "Content-Length");
     }
     
-    headers = apr_table_make(r->pool, 10);
-    
-    set_basic_http_header(headers, r, r->pool);
-    if (r->status == HTTP_NOT_MODIFIED) {
-        apr_table_do(copy_header, headers, r->headers_out,
-                     "ETag",
-                     "Content-Location",
-                     "Expires",
-                     "Cache-Control",
-                     "Vary",
-                     "Warning",
-                     "WWW-Authenticate",
-                     "Proxy-Authenticate",
-                     "Set-Cookie",
-                     "Set-Cookie2",
-                     NULL);
+    /*
+     * keep the set-by-proxy server and date headers, otherwise
+     * generate a new server header / date header
+     */
+    if (r->proxyreq != PROXYREQ_RESPONSE
+            || !apr_table_get(r->headers_out, "Date")) {
+        char *date = apr_palloc(r->pool, APR_RFC822_DATE_LEN);
+        ap_recent_rfc822_date(date, r? r->request_time : apr_time_now());
+        apr_table_setn(r->headers_out, "Date", date );
     }
-    else {
-        apr_table_do(copy_header, headers, r->headers_out, NULL);
+    if (r->proxyreq != PROXYREQ_RESPONSE) {
+        const char *us = ap_get_server_banner();
+        if (us) {
+            apr_table_setn(r->headers_out, "Server", us);
+        }
     }
     
-    return h2_headers_rcreate(r, r->status, headers, r->pool);
+    return h2_headers_rcreate(r, r->status, r->headers_out, r->pool);
 }
 
 typedef enum {

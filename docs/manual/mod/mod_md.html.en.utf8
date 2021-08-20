@@ -272,9 +272,9 @@
                 your server cannot provide the client with the data and the client browser
                 cannot get it as well, since the OCSP service is not responding. 
             </p><p>
-                The implementation in mod_md will have peristed it, load it again after
+                The implementation in mod_md will have persisted it, load it again after
                 restart and have it available for incoming connections. A day or two before
-                this information expires, it will renew it, making it able to copy with
+                this information expires, it will renew it, making it able to cope with
                 a long OCSP service downtime.
             </p><p>
                 Due to backward compatibility, the existing implementation in mod_ssl could
@@ -738,6 +738,21 @@
                 with root permissions (on *nix systems) and has access to the certificate
                 files (and keys). Certificates needed for other applications or
                 in different formats can be processed on this event.
+            </p><p>
+                'renewing' event is triggered before starting renew process for the managed
+                 domain. Should the command return != 0 for this reason, renew will be
+                 aborted and repeated on next cycle. Some cluster setups use this to
+                 allow renewals to run only on a single node.
+            </p><p>
+                'challenge-setup:type:domain' event is triggered when the challenge data for a domain has
+                been created. This is invoked before the ACME server is told to check for it.
+                The type is one of the ACME challenge types. This is invoked for every
+                DNS name in a MDomain. Cluster setups may use this event to distribute
+                challenge files to all nodes in a cluster.
+            </p><p>
+                ocsp-errored happens when MDStapling is enabled for a domain, this indicates
+                that an error was encountered retrieving the OCSP response from the
+                Certificate Authority. mod_md will continue trying.
             </p>
         
 </div>
@@ -945,19 +960,28 @@ MDomain example2.org auto
 </table>
             <p>
                 Defines what kind of private keys are generated for a managed domain and with
-                what parameters. The only supported type right now is 'RSA' and the only parameter
-                it takes is the number of bits used for the key.
+                what parameters. You can have more than one private key type configured and
+                the module will obtain a certificate for each key.
             </p><p>
-                The current (2017) recommendation is at least 2048 bits and a smaller number is
-                not accepted here. Higher numbers offer longer security, but are computationally more 
-                expensive, e.g. increase the load on your server. That might or might not be an
-                issue for you.
+                For example, you may configure an RSA and an Elliptic Curve (EC) key, so
+                that 2 certicates are created for a domain. On a client connection, the first
+                one supported by the client will then be used.
             </p><p>
-                Other key types will be defined in the future.
+                Since EC keys and certificates are smaller, you might want to offer
+                them first for all compatible (modern) clients. This can enable
+                faster handshakes. Add an RSA key type to support older clients.
             </p>
-            <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">MDPrivateKeys RSA 3072</pre>
+            <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">MDPrivateKeys secp256r1 rsa3072</pre>
 </div>
             <p>
+                The EC types supported depend on the CA you use. For Let's encrypt
+                the supported curves include 'secp256r1' and 'secp384r1'.
+            </p><p>
+                Each key and certificate type is stored in its own file in the
+                MD store. The key type is part of the file name with some backward
+                compatible naming for RSA certificates. So you may continue sharing
+                these files with other applications.
+            </p><p>
                 Please note that this setting only has an effect on new keys. Any existing
                 private key you have remains unaffected. Also, this only affects private keys
                 generated for certificates. ACME account keys are unaffected by this.
@@ -1263,7 +1287,7 @@ MDRenewWindow 10%</pre>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_md.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_md.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
 var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_md.html';
@@ -1281,7 +1305,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_md.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

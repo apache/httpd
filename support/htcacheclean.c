@@ -110,7 +110,7 @@ static apr_file_t *errfile;   /* stderr file handle */
 static apr_file_t *outfile;   /* stdout file handle */
 static apr_off_t unsolicited; /* file size summary for deleted unsolicited
                                  files */
-static APR_RING_ENTRY(_entry) root; /* ENTRY ring anchor */
+static ENTRY root; /* ENTRY ring anchor */
 
 /* short program name as called */
 static const char *shortname = "htcacheclean";
@@ -605,13 +605,12 @@ static int process_dir(char *path, apr_pool_t *pool, apr_off_t *nodes)
     apr_size_t len;
     apr_time_t current, deviation;
     char *nextpath, *base, *ext;
-    APR_RING_ENTRY(_direntry) anchor;
-    DIRENTRY *d, *t, *n;
+    DIRENTRY *d, *t, *n, anchor;
     ENTRY *e;
     int skip, retries;
     disk_cache_info_t disk_info;
 
-    APR_RING_INIT(&anchor, _direntry, link);
+    APR_RING_INIT(&anchor.link, _direntry, link);
     apr_pool_create(&p, pool);
     h = apr_hash_make(p);
     fd = NULL;
@@ -627,7 +626,7 @@ static int process_dir(char *path, apr_pool_t *pool, apr_off_t *nodes)
         }
         d = apr_pcalloc(p, sizeof(DIRENTRY));
         d->basename = apr_pstrcat(p, path, "/", info.name, NULL);
-        APR_RING_INSERT_TAIL(&anchor, d, _direntry, link);
+        APR_RING_INSERT_TAIL(&anchor.link, d, _direntry, link);
         (*nodes)++;
     }
 
@@ -639,8 +638,8 @@ static int process_dir(char *path, apr_pool_t *pool, apr_off_t *nodes)
 
     skip = baselen + 1;
 
-    for (d = APR_RING_FIRST(&anchor);
-         !interrupted && d != APR_RING_SENTINEL(&anchor, _direntry, link);
+    for (d = APR_RING_FIRST(&anchor.link);
+         !interrupted && d != APR_RING_SENTINEL(&anchor.link, _direntry, link);
          d=n) {
         n = APR_RING_NEXT(d, link);
         base = strrchr(d->basename, '/');
@@ -785,7 +784,7 @@ static int process_dir(char *path, apr_pool_t *pool, apr_off_t *nodes)
                                                &len) == APR_SUCCESS) {
                             apr_file_close(fd);
                             e = apr_palloc(pool, sizeof(ENTRY));
-                            APR_RING_INSERT_TAIL(&root, e, _entry, link);
+                            APR_RING_INSERT_TAIL(&root.link, e, _entry, link);
                             e->expire = disk_info.expire;
                             e->response_time = disk_info.response_time;
                             e->htime = d->htime;
@@ -901,7 +900,7 @@ static int process_dir(char *path, apr_pool_t *pool, apr_off_t *nodes)
                                                &len) == APR_SUCCESS) {
                             apr_file_close(fd);
                             e = apr_palloc(pool, sizeof(ENTRY));
-                            APR_RING_INSERT_TAIL(&root, e, _entry, link);
+                            APR_RING_INSERT_TAIL(&root.link, e, _entry, link);
                             e->expire = disk_info.expire;
                             e->response_time = disk_info.response_time;
                             e->htime = d->htime;
@@ -988,8 +987,8 @@ static void purge(char *path, apr_pool_t *pool, apr_off_t max,
     s.inodes = inodes;
     s.ntotal = nodes;
 
-    for (e = APR_RING_FIRST(&root);
-         e != APR_RING_SENTINEL(&root, _entry, link);
+    for (e = APR_RING_FIRST(&root.link);
+         e != APR_RING_SENTINEL(&root.link, _entry, link);
          e = APR_RING_NEXT(e, link)) {
         s.sum += round_up((apr_size_t)e->hsize, round);
         s.sum += round_up((apr_size_t)e->dsize, round);
@@ -1008,8 +1007,8 @@ static void purge(char *path, apr_pool_t *pool, apr_off_t max,
      * happen if a wrong system time is corrected
      */
 
-    for (e = APR_RING_FIRST(&root);
-         e != APR_RING_SENTINEL(&root, _entry, link) && !interrupted;) {
+    for (e = APR_RING_FIRST(&root.link);
+         e != APR_RING_SENTINEL(&root.link, _entry, link) && !interrupted;) {
         n = APR_RING_NEXT(e, link);
         if (e->response_time > now || e->htime > now || e->dtime > now) {
             delete_entry(path, e->basename, &s.nodes, pool);
@@ -1033,8 +1032,8 @@ static void purge(char *path, apr_pool_t *pool, apr_off_t max,
     }
 
     /* process all entries which are expired */
-    for (e = APR_RING_FIRST(&root);
-         e != APR_RING_SENTINEL(&root, _entry, link) && !interrupted;) {
+    for (e = APR_RING_FIRST(&root.link);
+         e != APR_RING_SENTINEL(&root.link, _entry, link) && !interrupted;) {
         n = APR_RING_NEXT(e, link);
         if (e->expire != APR_DATE_BAD && e->expire < now) {
             delete_entry(path, e->basename, &s.nodes, pool);
@@ -1063,11 +1062,11 @@ static void purge(char *path, apr_pool_t *pool, apr_off_t max,
      * than sorry
      */
     while (!((!s.max || s.sum <= s.max) && (!s.inodes || s.nodes <= s.inodes))
-            && !interrupted && !APR_RING_EMPTY(&root, _entry, link)) {
-        oldest = APR_RING_FIRST(&root);
+            && !interrupted && !APR_RING_EMPTY(&root.link, _entry, link)) {
+        oldest = APR_RING_FIRST(&root.link);
 
         for (e = APR_RING_NEXT(oldest, link);
-             e != APR_RING_SENTINEL(&root, _entry, link);
+             e != APR_RING_SENTINEL(&root.link, _entry, link);
              e = APR_RING_NEXT(e, link)) {
             if (e->dtime < oldest->dtime) {
                 oldest = e;
@@ -1718,7 +1717,7 @@ int main(int argc, const char * const argv[])
         apr_pool_create(&instance, pool);
 
         now = apr_time_now();
-        APR_RING_INIT(&root, _entry, link);
+        APR_RING_INIT(&root.link, _entry, link);
         delcount = 0;
         unsolicited = 0;
         dowork = 0;

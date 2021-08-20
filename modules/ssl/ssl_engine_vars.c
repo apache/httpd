@@ -64,10 +64,10 @@ static const SSLConnRec *ssl_get_effective_config(conn_rec *c)
     return sslconn;
 }
 
-static int ssl_is_https(conn_rec *c)
+static int ssl_conn_is_ssl(conn_rec *c)
 {
     const SSLConnRec *sslconn = ssl_get_effective_config(c);
-    return sslconn && sslconn->ssl;
+    return (sslconn && sslconn->ssl)? OK : DECLINED;
 }
 
 /* Returns certificate data, either PEM encoded if 'pem' is non-zero,
@@ -244,7 +244,7 @@ void ssl_var_register(apr_pool_t *p)
 {
     char *cp, *cp2;
 
-    APR_REGISTER_OPTIONAL_FN(ssl_is_https);
+    ap_hook_ssl_conn_is_ssl(ssl_conn_is_ssl, NULL, NULL, APR_HOOK_MIDDLE);
     APR_REGISTER_OPTIONAL_FN(ssl_get_tls_cb);
     APR_REGISTER_OPTIONAL_FN(ssl_var_lookup);
     APR_REGISTER_OPTIONAL_FN(ssl_ext_list);
@@ -485,6 +485,9 @@ static const char *ssl_var_lookup_ssl(apr_pool_t *p, const SSLConnRec *sslconn,
     }
     else if (ssl != NULL && strcEQ(var, "CLIENT_VERIFY")) {
         result = ssl_var_lookup_ssl_cert_verify(p, sslconn);
+    }
+    else if (ssl != NULL && strcEQ(var, "CLIENT_VERIFY_ERRSTR")) {
+        result = sslconn->verify_error;
     }
     else if (ssl != NULL && strlen(var) > 7 && strcEQn(var, "CLIENT_", 7)) {
         if ((xs = SSL_get_peer_certificate(ssl)) != NULL) {
@@ -1224,76 +1227,4 @@ static const char *ssl_var_lookup_ssl_compress_meth(SSL *ssl)
 #endif
     return result;
 }
-
-/*  _________________________________________________________________
-**
-**  SSL Extension to mod_log_config
-**  _________________________________________________________________
-*/
-
-#include "../../modules/loggers/mod_log_config.h"
-
-static const char *ssl_var_log_handler_c(request_rec *r, char *a);
-static const char *ssl_var_log_handler_x(request_rec *r, char *a);
-
-/*
- * register us for the mod_log_config function registering phase
- * to establish %{...}c and to be able to expand %{...}x variables.
- */
-void ssl_var_log_config_register(apr_pool_t *p)
-{
-    APR_OPTIONAL_FN_TYPE(ap_register_log_handler) *log_pfn_register;
-
-    log_pfn_register = APR_RETRIEVE_OPTIONAL_FN(ap_register_log_handler);
-
-    if (log_pfn_register) {
-        log_pfn_register(p, "c", ssl_var_log_handler_c, 0);
-        log_pfn_register(p, "x", ssl_var_log_handler_x, 0);
-    }
-    return;
-}
-
-/*
- * implement the %{..}c log function
- * (we are the only function)
- */
-static const char *ssl_var_log_handler_c(request_rec *r, char *a)
-{
-    const SSLConnRec *sslconn = ssl_get_effective_config(r->connection);
-    const char *result;
-
-    if (sslconn == NULL || sslconn->ssl == NULL)
-        return NULL;
-    result = NULL;
-    if (strEQ(a, "version"))
-        result = ssl_var_lookup(r->pool, r->server, r->connection, r, "SSL_PROTOCOL");
-    else if (strEQ(a, "cipher"))
-        result = ssl_var_lookup(r->pool, r->server, r->connection, r, "SSL_CIPHER");
-    else if (strEQ(a, "subjectdn") || strEQ(a, "clientcert"))
-        result = ssl_var_lookup(r->pool, r->server, r->connection, r, "SSL_CLIENT_S_DN");
-    else if (strEQ(a, "issuerdn") || strEQ(a, "cacert"))
-        result = ssl_var_lookup(r->pool, r->server, r->connection, r, "SSL_CLIENT_I_DN");
-    else if (strEQ(a, "errcode"))
-        result = "-";
-    else if (strEQ(a, "errstr"))
-        result = sslconn->verify_error;
-    if (result != NULL && result[0] == NUL)
-        result = NULL;
-    return result;
-}
-
-/*
- * extend the implementation of the %{..}x log function
- * (there can be more functions)
- */
-static const char *ssl_var_log_handler_x(request_rec *r, char *a)
-{
-    const char *result;
-
-    result = ssl_var_lookup(r->pool, r->server, r->connection, r, a);
-    if (result != NULL && result[0] == NUL)
-        result = NULL;
-    return result;
-}
-
 

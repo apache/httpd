@@ -137,13 +137,12 @@
         SSL_CTX_ctrl(ctx, SSL_CTRL_SET_MIN_PROTO_VERSION, version, NULL)
 #define SSL_CTX_set_max_proto_version(ctx, version) \
         SSL_CTX_ctrl(ctx, SSL_CTRL_SET_MAX_PROTO_VERSION, version, NULL)
-#elif LIBRESSL_VERSION_NUMBER < 0x2070000f
+#endif /* LIBRESSL_VERSION_NUMBER < 0x2060000f */
 /* LibreSSL before 2.7 declares OPENSSL_VERSION_NUMBER == 2.0 but does not
  * include most changes from OpenSSL >= 1.1 (new functions, macros, 
  * deprecations, ...), so we have to work around this...
  */
-#define MODSSL_USE_OPENSSL_PRE_1_1_API (1)
-#endif /* LIBRESSL_VERSION_NUMBER < 0x2060000f */
+#define MODSSL_USE_OPENSSL_PRE_1_1_API (LIBRESSL_VERSION_NUMBER < 0x2070000f)
 #else /* defined(LIBRESSL_VERSION_NUMBER) */
 #define MODSSL_USE_OPENSSL_PRE_1_1_API (OPENSSL_VERSION_NUMBER < 0x10100000L)
 #endif
@@ -316,8 +315,8 @@ APLOG_USE_MODULE(ssl);
     ((SSLSrvConfigRec *)ap_get_module_config(srv->module_config,  &ssl_module))
 #define myDirConfig(req) \
     ((SSLDirConfigRec *)ap_get_module_config(req->per_dir_config, &ssl_module))
-#define myCtxConfig(sslconn, sc) \
-    (sslconn->is_proxy ? sslconn->dc->proxy : sc->server)
+#define myConnCtxConfig(c, sc) \
+    (c->outgoing ? myConnConfig(c)->dc->proxy : sc->server)
 #define myModConfig(srv) mySrvConfig((srv))->mc
 #define mySrvFromConn(c) myConnConfig(c)->server
 #define myDirConfigFromConn(c) myConnConfig(c)->dc
@@ -539,7 +538,6 @@ typedef struct {
     const char *verify_info;
     const char *verify_error;
     int verify_depth;
-    int is_proxy;
     int disabled;
     enum {
         NON_SSL_OK = 0,        /* is SSL request, or error handling completed */
@@ -1121,8 +1119,6 @@ const char  *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_r
     AP_FN_ATTR_NONNULL((1, 2, 5)) AP_FN_ATTR_WARN_UNUSED_RESULT;
 apr_array_header_t *ssl_ext_list(apr_pool_t *p, conn_rec *c, int peer, const char *extension);
 
-void         ssl_var_log_config_register(apr_pool_t *p);
-
 /* Extract SSL_*_DN_* variables into table 't' from SSL object 'ssl',
  * allocating from 'p': */
 void modssl_var_extract_dns(apr_table_t *t, SSL *ssl, apr_pool_t *p);
@@ -1152,10 +1148,12 @@ void ssl_init_ocsp_certificates(server_rec *s, modssl_ctx_t *mctx);
 
 #endif
 
+#if MODSSL_USE_OPENSSL_PRE_1_1_API
 /* Retrieve DH parameters for given key length.  Return value should
  * be treated as unmutable, since it is stored in process-global
  * memory. */
 DH *modssl_get_dh_params(unsigned keylen);
+#endif
 
 /* Returns non-zero if the request was made over SSL/TLS.  If sslconn
  * is non-NULL and the request is using SSL/TLS, sets *sslconn to the

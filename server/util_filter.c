@@ -976,6 +976,14 @@ AP_DECLARE(apr_status_t) ap_filter_setaside_brigade(ap_filter_t *f,
              e = next) {
             next = APR_BUCKET_NEXT(e);
 
+            /* WC buckets will be added back by ap_filter_output_pending()
+             * at the tail.
+             */
+            if (AP_BUCKET_IS_WC(e)) {
+                apr_bucket_delete(e);
+                continue;
+            }
+
             /* Opaque buckets (length == -1) are moved, so assumed to have
              * next EOR's lifetime or at least the lifetime of the connection.
              */
@@ -1063,6 +1071,7 @@ AP_DECLARE(apr_status_t) ap_filter_reinstate_brigade(ap_filter_t *f,
     int eor_buckets_in_brigade, opaque_buckets_in_brigade;
     struct ap_filter_private *fp = f->priv;
     core_server_config *conf;
+    int is_flush;
  
     ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, f->c,
                   "reinstate %s brigade to %s brigade in '%s' %sput filter",
@@ -1126,7 +1135,15 @@ AP_DECLARE(apr_status_t) ap_filter_reinstate_brigade(ap_filter_t *f,
          bucket = next) {
         next = APR_BUCKET_NEXT(bucket);
 
-        if (AP_BUCKET_IS_EOR(bucket)) {
+        /* When called with flush_upto != NULL, we assume that the caller does
+         * the right thing to potentially setaside WC buckets (per semantics),
+         * so we don't treat them as FLUSH(_upto) here.
+         */
+        is_flush = (APR_BUCKET_IS_FLUSH(bucket) && !AP_BUCKET_IS_WC(bucket));
+        if (is_flush) {
+            /* handled below */
+        }
+        else if (AP_BUCKET_IS_EOR(bucket)) {
             eor_buckets_in_brigade++;
         }
         else if (bucket->length == (apr_size_t)-1) {
@@ -1139,14 +1156,14 @@ AP_DECLARE(apr_status_t) ap_filter_reinstate_brigade(ap_filter_t *f,
             }
         }
 
-        if (APR_BUCKET_IS_FLUSH(bucket)
+        if (is_flush
             || (memory_bytes_in_brigade > conf->flush_max_threshold)
             || (conf->flush_max_pipelined >= 0
                 && eor_buckets_in_brigade > conf->flush_max_pipelined)) {
             /* this segment of the brigade MUST be sent before returning. */
 
             if (APLOGctrace6(f->c)) {
-                char *reason = APR_BUCKET_IS_FLUSH(bucket) ?
+                char *reason = is_flush ?
                                "FLUSH bucket" :
                                (memory_bytes_in_brigade > conf->flush_max_threshold) ?
                                "max threshold" : "max requests in pipeline";
@@ -1268,7 +1285,10 @@ AP_DECLARE_NONSTD(int) ap_filter_output_pending(conn_rec *c)
         if (!APR_BRIGADE_EMPTY(fp->bb)) {
             ap_filter_t *f = fp->f;
             apr_status_t rv;
+            apr_bucket *b;
 
+            b = ap_bucket_wc_create(bb->bucket_alloc);
+            APR_BRIGADE_INSERT_TAIL(bb, b);
             rv = ap_pass_brigade(f, bb);
             apr_brigade_cleanup(bb);
 
@@ -1279,8 +1299,7 @@ AP_DECLARE_NONSTD(int) ap_filter_output_pending(conn_rec *c)
                 break;
             }
 
-            if ((fp->bb && !APR_BRIGADE_EMPTY(fp->bb))
-                    || (f->next && ap_filter_should_yield(f->next))) {
+            if (ap_filter_should_yield(f)) {
                 rc = OK;
                 break;
             }
@@ -1390,4 +1409,26 @@ AP_DECLARE_NONSTD(apr_status_t) ap_fprintf(ap_filter_t *f,
 AP_DECLARE(void) ap_filter_protocol(ap_filter_t *f, unsigned int flags)
 {
     f->frec->proto_flags = flags ;
+}
+
+/* Write Completion (WC) bucket implementation */
+
+AP_DECLARE_DATA const char ap_bucket_wc_data;
+
+AP_DECLARE(apr_bucket *) ap_bucket_wc_make(apr_bucket *b)
+{
+    /* FLUSH bucket with special ->data mark (instead of NULL) */
+    b = apr_bucket_flush_make(b);
+    b->data = (void *)&ap_bucket_wc_data;
+    return b;
+}
+
+AP_DECLARE(apr_bucket *) ap_bucket_wc_create(apr_bucket_alloc_t *list)
+{
+    apr_bucket *b = apr_bucket_alloc(sizeof(*b), list);
+
+    APR_BUCKET_INIT(b);
+    b->free = apr_bucket_free;
+    b->list = list;
+    return ap_bucket_wc_make(b);
 }

@@ -20,6 +20,7 @@
 #if APR_HAS_THREADS
 #include "apr_thread_pool.h"
 #endif
+#include "http_ssl.h"
 
 module AP_MODULE_DECLARE_DATA proxy_hcheck_module;
 
@@ -491,10 +492,12 @@ static proxy_worker *hc_get_hcworker(sctx_t *ctx, proxy_worker *worker,
         hc->hash.def = hc->s->hash.def = ap_proxy_hashfunc(hc->s->name, PROXY_HASHFUNC_DEFAULT);
         hc->hash.fnv = hc->s->hash.fnv = ap_proxy_hashfunc(hc->s->name, PROXY_HASHFUNC_FNV);
         hc->s->port = port;
-        if (worker->s->conn_timeout_set) {
-            hc->s->conn_timeout_set = worker->s->conn_timeout_set;
-            hc->s->conn_timeout = worker->s->conn_timeout;
-        }
+        hc->s->conn_timeout_set = worker->s->conn_timeout_set;
+        hc->s->conn_timeout = worker->s->conn_timeout;
+        hc->s->ping_timeout_set = worker->s->ping_timeout_set;
+        hc->s->ping_timeout = worker->s->ping_timeout;
+        hc->s->timeout_set = worker->s->timeout_set;
+        hc->s->timeout = worker->s->timeout;
         /* Do not disable worker in case of errors */
         hc->s->status |= PROXY_WORKER_IGNORE_ERRORS;
         /* Mark as the "generic" worker */
@@ -603,7 +606,7 @@ static int hc_get_backend(const char *proxy_function, proxy_conn_rec **backend,
         (*backend)->addr = hc->cp->addr;
         (*backend)->hostname = hc->s->hostname_ex;
         if (strcmp(hc->s->scheme, "https") == 0 || strcmp(hc->s->scheme, "wss") == 0 ) {
-            if (!ap_proxy_ssl_enable(NULL)) {
+            if (!ap_ssl_has_outgoing_handlers()) {
                 ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ctx->s, APLOGNO(03252)
                               "mod_ssl not configured?");
                 return !OK;

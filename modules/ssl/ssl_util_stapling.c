@@ -798,8 +798,7 @@ static int stapling_cb(SSL *ssl, void *arg)
     conn_rec *conn      = (conn_rec *)SSL_get_app_data(ssl);
     server_rec *s       = mySrvFromConn(conn);
     SSLSrvConfigRec *sc = mySrvConfig(s);
-    SSLConnRec *sslconn = myConnConfig(conn);
-    modssl_ctx_t *mctx  = myCtxConfig(sslconn, sc);
+    modssl_ctx_t *mctx  = myConnCtxConfig(conn, sc);
     UCHAR idx[SHA_DIGEST_LENGTH];
     ocsp_resp resp;
     certinfo *cinf = NULL;

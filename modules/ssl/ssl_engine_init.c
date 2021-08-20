@@ -92,7 +92,6 @@ static int DH_set0_pqg(DH *dh, BIGNUM *p, BIGNUM *q, BIGNUM *g)
 
     return 1;
 }
-#endif
 
 /*
  * Grab well-defined DH parameters from OpenSSL, see the BN_get_rfc*
@@ -172,6 +171,7 @@ DH *modssl_get_dh_params(unsigned keylen)
         
     return NULL; /* impossible to reach. */
 }
+#endif
 
 static void ssl_add_version_components(apr_pool_t *ptemp, apr_pool_t *pconf,
                                        server_rec *s)
@@ -456,8 +456,9 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
 
     modssl_init_app_data2_idx(); /* for modssl_get_app_data2() at request time */
 
+#if MODSSL_USE_OPENSSL_PRE_1_1_API
     init_dh_params();
-#if !MODSSL_USE_OPENSSL_PRE_1_1_API
+#else
     init_bio_methods();
 #endif
 
@@ -918,7 +919,11 @@ static void ssl_init_ctx_callbacks(server_rec *s,
 {
     SSL_CTX *ctx = mctx->ssl_ctx;
 
+#if MODSSL_USE_OPENSSL_PRE_1_1_API
     SSL_CTX_set_tmp_dh_callback(ctx,  ssl_callback_TmpDH);
+#else
+    SSL_CTX_set_dh_auto(ctx, 1);
+#endif
 
     /* The info callback is used for debug-level tracing.  For OpenSSL
      * versions where SSL_OP_NO_RENEGOTIATION is not available, the
@@ -1373,6 +1378,22 @@ static APR_INLINE int modssl_DH_bits(DH *dh)
 #endif
 }
 
+/* SSL_CTX_use_PrivateKey_file() can fail either because the private
+ * key was encrypted, or due to a mismatch between an already-loaded
+ * cert and the key - a common misconfiguration - from calling
+ * X509_check_private_key().  This macro is passed the last error code
+ * off the OpenSSL stack and evaluates to true only for the first
+ * case.  With OpenSSL < 3 the second case is identifiable by the
+ * function code, but function codes are not used from 3.0. */
+#if OPENSSL_VERSION_NUMBER < 0x30000000L
+#define CHECK_PRIVKEY_ERROR(ec) (ERR_GET_FUNC(ec) != X509_F_X509_CHECK_PRIVATE_KEY)
+#else
+#define CHECK_PRIVKEY_ERROR(ec) (ERR_GET_LIB != ERR_LIB_X509            \
+                                 || (ERR_GET_REASON(ec) != X509_R_KEY_TYPE_MISMATCH \
+                                     && ERR_GET_REASON(ec) != X509_R_KEY_VALUES_MISMATCH \
+                                     && ERR_GET_REASON(ec) != X509_R_UNKNOWN_KEY_TYPE))
+#endif
+
 static apr_status_t ssl_init_server_certs(server_rec *s,
                                           apr_pool_t *p,
                                           apr_pool_t *ptemp,
@@ -1478,8 +1499,7 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
         }
         else if ((SSL_CTX_use_PrivateKey_file(mctx->ssl_ctx, keyfile,
                                               SSL_FILETYPE_PEM) < 1)
-                 && (ERR_GET_FUNC(ERR_peek_last_error())
-                     != X509_F_X509_CHECK_PRIVATE_KEY)) {
+                 && CHECK_PRIVKEY_ERROR(ERR_peek_last_error())) {
             ssl_asn1_t *asn1;
             const unsigned char *ptr;
 
@@ -2361,10 +2381,11 @@ apr_status_t ssl_init_ModuleKill(void *data)
 
     }
 
-#if !MODSSL_USE_OPENSSL_PRE_1_1_API
+#if MODSSL_USE_OPENSSL_PRE_1_1_API
+    free_dh_params();
+#else
     free_bio_methods();
 #endif
-    free_dh_params();
 
     return APR_SUCCESS;
 }

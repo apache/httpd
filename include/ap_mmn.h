@@ -672,14 +672,21 @@
  * 20210506.0 (2.5.1-dev)  Add ap_proxy_tunnel_conn_get_read() and
  *                         ap_proxy_tunnel_conn_get_transferred() change
  *                         ap_proxy_transfer_between_connections() sent to apr_off_t *.
+ * 20210531.0 (2.5.1-dev)  add conn_rec->outgoing and ap_ssl_bind_outgoing()
+ * 20210531.1 (2.5.1-dev)  Add ap_bucket_wc_data, ap_bucket_wc_make() and
+ *                         ap_bucket_wc_create() to util_filter.h
+ * 20210531.2 (2.5.1-dev)  Add ap_proxy_get_worker_ex() and
+ *                         ap_proxy_define_worker_ex() to mod_proxy.h
+ * 20210531.3 (2.5.1-dev)  Add hook child_stopping to get informed that a child
+ *                         is being shut down.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20210506
+#define MODULE_MAGIC_NUMBER_MAJOR 20210531
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 0             /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 3             /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

@@ -17,31 +17,4 @@
 #ifndef mod_md_mod_md_h
 #define mod_md_mod_md_h
 
-#include <openssl/evp.h>
-#include <openssl/x509v3.h>
-
-struct server_rec;
-
-APR_DECLARE_OPTIONAL_FN(int, 
-                        md_is_managed, (struct server_rec *));
-
-/**
- * Get the certificate/key for the managed domain (md_is_managed != 0).
- * 
- * @return APR_EAGAIN if the real certificate is not available yet
- */
-APR_DECLARE_OPTIONAL_FN(apr_status_t, 
-                        md_get_certificate, (struct server_rec *, apr_pool_t *,
-                                             const char **pkeyfile, 
-                                             const char **pcertfile));
-
-APR_DECLARE_OPTIONAL_FN(int, 
-                        md_is_challenge, (struct conn_rec *, const char *,
-                                          X509 **pcert, EVP_PKEY **pkey));
-
-APR_DECLARE_OPTIONAL_FN(apr_status_t,
-                        md_answer_challenges, (conn_rec *c, const char *servername,
-                                               apr_array_header_t *certs,
-                                               apr_array_header_t *pkeys));
-
 #endif /* mod_md_mod_md_h */

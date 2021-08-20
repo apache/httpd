@@ -739,6 +739,12 @@ static h2_task *s_next_stream_task(h2_mplx *m)
             return stream->task;
         }
     }
+    if (m->tasks_active >= m->limit_active && !h2_iq_empty(m->q)) {
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c,
+                      "h2_session(%ld): delaying request processing. "
+                      "Current limit is %d and %d workers are in use.",
+                      m->id, m->limit_active, m->tasks_active);
+    }
     return NULL;
 }
 
@@ -1132,14 +1138,36 @@ int h2_mplx_m_awaits_data(h2_mplx *m)
     return waiting;
 }
 
+static int reset_is_acceptable(h2_stream *stream)
+{
+    /* client may terminate a stream via H2 RST_STREAM message at any time.
+     * This is annyoing when we have committed resources (e.g. worker threads)
+     * to it, so our mood (e.g. willingness to commit resources on this
+     * connection in the future) goes down.
+     *
+     * This is a DoS protection. We do not want to make it too easy for
+     * a client to eat up server resources.
+     *
+     * However: there are cases where a RST_STREAM is the only way to end
+     * a request. This includes websockets and server-side-event streams (SSEs).
+     * The responses to such requests continue forever otherwise.
+     *
+     */
+    if (!stream->task) return 1; /* have not started or already ended for us. acceptable. */
+    if (!(stream->id & 0x01)) return 1; /* stream initiated by us. acceptable. */
+    if (!stream->has_response) return 0; /* no response headers produced yet. bad. */
+    if (!stream->out_data_frames) return 0; /* no response body data sent yet. bad. */
+    return 1; /* otherwise, be forgiving */
+}
+
 apr_status_t h2_mplx_m_client_rst(h2_mplx *m, int stream_id)
 {
     h2_stream *stream;
     apr_status_t status = APR_SUCCESS;
-    
+
     H2_MPLX_ENTER_ALWAYS(m);
     stream = h2_ihash_get(m->streams, stream_id);
-    if (stream && stream->task) {
+    if (stream && !reset_is_acceptable(stream)) {
         status = m_be_annoyed(m);
     }
     H2_MPLX_LEAVE(m);

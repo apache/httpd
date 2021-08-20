@@ -44,8 +44,8 @@ apr_bucket *h2_bucket_headers_beam(struct h2_bucket_beam *beam,
  * @param raw_bytes the raw network bytes (if known) used to transmit these
  * @param pool the memory pool to use
  */
-h2_headers *h2_headers_create(int status, apr_table_t *header, 
-                              apr_table_t *notes, apr_off_t raw_bytes, 
+h2_headers *h2_headers_create(int status, const apr_table_t *header,
+                              const apr_table_t *notes, apr_off_t raw_bytes,
                               apr_pool_t *pool);
 
 /**
@@ -56,7 +56,7 @@ h2_headers *h2_headers_create(int status, apr_table_t *header,
  * @param pool the memory pool to use
  */
 h2_headers *h2_headers_rcreate(request_rec *r, int status, 
-                                 apr_table_t *header, apr_pool_t *pool);
+                               const apr_table_t *header, apr_pool_t *pool);
 
 /**
  * Copy the headers into another pool. This will not copy any
