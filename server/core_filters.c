@@ -647,6 +647,7 @@ static apr_status_t writev_nonblocking(apr_socket_t *s,
 
         for (i = offset; i < nvec; ) {
             apr_bucket *bucket = APR_BRIGADE_FIRST(bb);
+            ap_assert(bucket != APR_BRIGADE_SENTINEL(bb));
             if (!bucket->length) {
                 delete_meta_bucket(bucket);
             }
