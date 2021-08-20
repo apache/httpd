@@ -175,7 +175,30 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
    *) core: fix ap_escape_quotes substitution logic
       trunk patch: https://svn.apache.org/r1892418
       2.4.x patch: svn merge -c 1892418 ^/httpd/httpd/trunk .
-      +1: covener, rpluem
+      +1: covener, rpluem, ylavic
+
+  *) Add dav_get_provider(), dav_open_lockdb(), dav_close_lockdb() and
+     dav_get_resource() to mod_dav.h.
+     trunk patch: http://svn.apache.org/r1879305
+                  http://svn.apache.org/r1879466
+     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-dav-functions6.patch
+     +1: minfrin, jim, ylavic (by inspection)
+
+  *) Add hooks deliver_report and gather_reports to mod_dav.h. Allows other
+     modules apart from versioning implementations to handle the REPORT method.
+     trunk patch: http://svn.apache.org/r1879339
+                  http://svn.apache.org/r1879307
+     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-dav-hooks1.patch
+     +1: minfrin, jim, ylavic (by inspection)
+
+  *) mod_dav: Add method_precondition hook. WebDAV extensions define
+     conditions that must exist before a WebDAV method can be executed.
+     This hook allows a WebDAV extension to verify these preconditions.
+     trunk patch: http://svn.apache.org/r1879339
+                  http://svn.apache.org/r1879340
+     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-dav-preconditions1.patch
+     +1: minfrin, jim, ylavic (by inspection)
+     ylavic: requires above httpd-2.4-dav-hooks1.patch first.
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -189,28 +212,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      and other alternatives have been discussed in PR 64339.  If r1884505
      is not the right fix, then it should be removed from trunk.
      Putting it here is a way to revive the discussion
-
-  *) Add dav_get_provider(), dav_open_lockdb(), dav_close_lockdb() and
-     dav_get_resource() to mod_dav.h.
-     trunk patch: http://svn.apache.org/r1879305
-                  http://svn.apache.org/r1879466
-     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-dav-functions6.patch
-     +1: minfrin, jim
-
-  *) Add hooks deliver_report and gather_reports to mod_dav.h. Allows other
-     modules apart from versioning implementations to handle the REPORT method.
-     trunk patch: http://svn.apache.org/r1879339
-                  http://svn.apache.org/r1879307
-     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-dav-hooks1.patch
-     +1: minfrin, jim
-
-  *) mod_dav: Add method_precondition hook. WebDAV extensions define
-     conditions that must exist before a WebDAV method can be executed.
-     This hook allows a WebDAV extension to verify these preconditions.
-     trunk patch: http://svn.apache.org/r1879339
-                  http://svn.apache.org/r1879340
-     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-dav-preconditions1.patch
-     +1: minfrin, jim
 
   *) back port: new ap_ssl_bind_outgoing for multi ssl support in proxy connections
      core/mod_proxy/mod_ssl:
@@ -251,7 +252,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1887359
                   http://svn.apache.org/r1887144
      Backport version for 2.4.x of patch:
-          https://people.apache.org/~jfclere/patches/patch.210810..txt
+          https://people.apache.org/~jfclere/patches/patch.210810.txt
      +1: jfclere, jim
      jfclere: The previous proposal was removing the Referer check.
      jorton: r1859235 has an "ok2change" param in the newly added
