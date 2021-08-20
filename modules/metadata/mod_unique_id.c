@@ -66,9 +66,9 @@ typedef apr_uint16_t unique_counter;
 #pragma pack(1)
 
 typedef struct unique_id_rec {
-    apr_uint32_t process_id;
     apr_uint64_t thread_id;
     apr_uint64_t timestamp;
+    apr_uint32_t process_id;
     apr_uint16_t server_id;
     unique_counter counter;
 } unique_id_rec;
@@ -145,18 +145,18 @@ module AP_MODULE_DECLARE_DATA unique_id_module;
 
 static void byteswap_unique_id (unique_id_rec *unique_id)
 {
-    unique_id->process_id = swap32(unique_id->process_id);
     unique_id->thread_id = swap64(unique_id->thread_id);
     unique_id->timestamp = swap64(unique_id->timestamp);
+    unique_id->process_id = swap32(unique_id->process_id);
     unique_id->server_id = swap16(unique_id->server_id);
     unique_id->counter = swap16(unique_id->counter);
 }
 
 static void populate_unique_id (unique_id_rec *unique_id, apr_uint64_t thread_id, apr_uint32_t counter, apr_uint16_t server_id)
 {
-    unique_id->process_id = ((apr_uint32_t) getpid()) & 0x00000000ffffffff;
     unique_id->thread_id = thread_id;
     unique_id->timestamp = apr_time_now();
+    unique_id->process_id = ((apr_uint32_t) getpid()) & 0x00000000ffffffff;
     unique_id->server_id = server_id;
     unique_id->counter = counter;
 }
@@ -286,11 +286,11 @@ static const char *create_unique_id_string(const request_rec *r)
  #ifdef UNIQUE_ID_DEBUG
     byteswap_unique_id(&unique_id); // Swap back for debug purposes
     ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-            "Unique ID generated: %s pid %" APR_UINT64_T_FMT " tid %" APR_UINT64_T_FMT " time %" APR_UINT64_T_FMT " server %" APR_UINT64_T_FMT " count %" APR_UINT64_T_FMT "",
+            "Unique ID generated: %s tid %" APR_UINT64_T_FMT " time %" APR_UINT64_T_FMT " pid %" APR_UINT64_T_FMT " server %" APR_UINT64_T_FMT " count %" APR_UINT64_T_FMT "",
             ret,
-            (apr_uint64_t) unique_id.process_id,
             (apr_uint64_t) unique_id.thread_id,
             (apr_uint64_t) unique_id.timestamp,
+            (apr_uint64_t) unique_id.process_id,
             (apr_uint64_t) unique_id.server_id,
             (apr_uint64_t) unique_id.counter
     );
