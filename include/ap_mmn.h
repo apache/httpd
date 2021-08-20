@@ -673,7 +673,7 @@
  *                         ap_proxy_tunnel_conn_get_transferred() change
  *                         ap_proxy_transfer_between_connections() sent to apr_off_t *.
  * 20210531.0 (2.5.1-dev)  add conn_rec->outgoing and ap_ssl_bind_outgoing()
- * 20210531.1 (2.5.1-dev)  Add ap_bucket_type_wc, ap_bucket_wc_make() and
+ * 20210531.1 (2.5.1-dev)  Add ap_bucket_wc_data, ap_bucket_wc_make() and
  *                         ap_bucket_wc_create() to util_filter.h
  * 20210531.2 (2.5.1-dev)  Add ap_proxy_get_worker_ex() and
  *                         ap_proxy_define_worker_ex() to mod_proxy.h
