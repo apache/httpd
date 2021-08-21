@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.49
 
+  *) Add hooks deliver_report and gather_reports to mod_dav.h. Allows other
+     modules apart from versioning implementations to handle the REPORT method.
+     [Graham Leggett]
+
   *) Add dav_get_provider(), dav_open_lockdb(), dav_close_lockdb() and
      dav_get_resource() to mod_dav.h. [Graham Leggett]
 

@@ -1456,92 +1456,95 @@ static dav_error *dav_gen_supported_live_props(request_rec *r,
     return err;
 }
 
+
 /* generate DAV:supported-report-set OPTIONS response */
 static dav_error *dav_gen_supported_reports(request_rec *r,
                                             const dav_resource *resource,
                                             const apr_xml_elem *elem,
-                                            const dav_hooks_vsn *vsn_hooks,
                                             apr_text_header *body)
 {
     apr_xml_elem *child;
     apr_xml_attr *attr;
-    dav_error *err;
+    dav_error *err = NULL;
     char *s;
+    apr_array_header_t *reports;
+    const dav_report_elem *rp;
 
     apr_text_append(r->pool, body, "<D:supported-report-set>" DEBUG_CR);
 
-    if (vsn_hooks != NULL) {
-        const dav_report_elem *reports;
-        const dav_report_elem *rp;
+    reports = apr_array_make(r->pool, 5, sizeof(const char *));
+    dav_run_gather_reports(r, resource, reports, &err);
+    if (err != NULL) {
+        return dav_push_error(r->pool, err->status, 0,
+                "DAV:supported-report-set could not be "
+                "determined due to a problem fetching the "
+                "available reports for this resource.",
+                err);
+    }
 
-        if ((err = (*vsn_hooks->avail_reports)(resource, &reports)) != NULL) {
-            return dav_push_error(r->pool, err->status, 0,
-                                  "DAV:supported-report-set could not be "
-                                  "determined due to a problem fetching the "
-                                  "available reports for this resource.",
-                                  err);
+    if (elem->first_child == NULL) {
+        int i;
+
+        /* show all supported reports */
+        rp = (const dav_report_elem *)reports->elts;
+        for (i = 0; i < reports->nelts; i++, rp++) {
+            /* Note: we presume reports->namespace is
+             * properly XML/URL quoted */
+            s = apr_pstrcat(r->pool,
+                    "<D:supported-report D:name=\"",
+                    rp->name,
+                    "\" D:namespace=\"",
+                    rp->nmspace,
+                    "\"/>" DEBUG_CR, NULL);
+            apr_text_append(r->pool, body, s);
         }
+    }
+    else {
+        /* check for support of specific report */
+        for (child = elem->first_child; child != NULL; child = child->next) {
+            if (child->ns == APR_XML_NS_DAV_ID
+                    && strcmp(child->name, "supported-report") == 0) {
+                const char *name = NULL;
+                const char *nmspace = NULL;
+                int i;
 
-        if (reports != NULL) {
-            if (elem->first_child == NULL) {
-                /* show all supported reports */
-                for (rp = reports; rp->nmspace != NULL; ++rp) {
-                    /* Note: we presume reports->namespace is
-                     * properly XML/URL quoted */
-                    s = apr_pstrcat(r->pool,
-                                    "<D:supported-report D:name=\"",
-                                    rp->name,
-                                    "\" D:namespace=\"",
-                                    rp->nmspace,
-                                    "\"/>" DEBUG_CR, NULL);
-                    apr_text_append(r->pool, body, s);
+                /* go through attributes to find name and namespace */
+                for (attr = child->attr; attr != NULL; attr = attr->next) {
+                    if (attr->ns == APR_XML_NS_DAV_ID) {
+                        if (strcmp(attr->name, "name") == 0)
+                            name = attr->value;
+                        else if (strcmp(attr->name, "namespace") == 0)
+                            nmspace = attr->value;
+                    }
                 }
-            }
-            else {
-                /* check for support of specific report */
-                for (child = elem->first_child; child != NULL; child = child->next) {
-                    if (child->ns == APR_XML_NS_DAV_ID
-                        && strcmp(child->name, "supported-report") == 0) {
-                        const char *name = NULL;
-                        const char *nmspace = NULL;
 
-                        /* go through attributes to find name and namespace */
-                        for (attr = child->attr; attr != NULL; attr = attr->next) {
-                            if (attr->ns == APR_XML_NS_DAV_ID) {
-                                if (strcmp(attr->name, "name") == 0)
-                                    name = attr->value;
-                                else if (strcmp(attr->name, "namespace") == 0)
-                                    nmspace = attr->value;
-                            }
-                        }
+                if (name == NULL) {
+                    return dav_new_error(r->pool, HTTP_BAD_REQUEST, 0, 0,
+                            "A DAV:supported-report element "
+                            "does not have a \"name\" attribute");
+                }
 
-                        if (name == NULL) {
-                            return dav_new_error(r->pool, HTTP_BAD_REQUEST, 0, 0,
-                                                 "A DAV:supported-report element "
-                                                 "does not have a \"name\" attribute");
-                        }
+                /* default namespace to DAV: */
+                if (nmspace == NULL) {
+                    nmspace = "DAV:";
+                }
 
-                        /* default namespace to DAV: */
-                        if (nmspace == NULL)
-                            nmspace = "DAV:";
-
-                        for (rp = reports; rp->nmspace != NULL; ++rp) {
-                            if (strcmp(name, rp->name) == 0
-                                && strcmp(nmspace, rp->nmspace) == 0) {
-                                /* Note: we presume reports->nmspace is
-                                 * properly XML/URL quoted
-                                 */
-                                s = apr_pstrcat(r->pool,
-                                                "<D:supported-report "
-                                                "D:name=\"",
-                                                rp->name,
-                                                "\" D:namespace=\"",
-                                                rp->nmspace,
-                                                "\"/>" DEBUG_CR, NULL);
-                                apr_text_append(r->pool, body, s);
-                                break;
-                            }
-                        }
+                rp = (const dav_report_elem *)reports->elts;
+                for (i = 0; i < reports->nelts; i++, rp++) {
+                    if (strcmp(name, rp->name) == 0
+                            && strcmp(nmspace, rp->nmspace) == 0) {
+                        /* Note: we presume reports->nmspace is
+                         * properly XML/URL quoted
+                         */
+                        s = apr_pstrcat(r->pool,
+                                "<D:supported-report "
+                                "D:name=\"",
+                                rp->name,
+                                "\" D:namespace=\"",
+                                rp->nmspace,
+                                "\"/>" DEBUG_CR, NULL);
+                        apr_text_append(r->pool, body, s);
+                        break;
                     }
                 }
             }
@@ -1911,7 +1914,7 @@ static int dav_method_options(request_rec *r)
                 core_option = 1;
             }
             else if (strcmp(elem->name, "supported-report-set") == 0) {
-                err = dav_gen_supported_reports(r, resource, elem, vsn_hooks, &body);
+                err = dav_gen_supported_reports(r, resource, elem, &body);
                 core_option = 1;
             }
         }
@@ -4112,21 +4115,60 @@ static int dav_method_label(request_rec *r)
     return DONE;
 }
 
+static int dav_core_deliver_report(request_rec *r,
+                          const dav_resource *resource,
+                          const apr_xml_doc *doc,
+                          ap_filter_t *output, dav_error **err)
+{
+    const dav_hooks_vsn *vsn_hooks = DAV_GET_HOOKS_VSN(r);
+
+    if (vsn_hooks) {
+        *err = (*vsn_hooks->deliver_report)(r, resource, doc,
+                                            r->output_filters);
+        return OK;
+    }
+
+    return DECLINED;
+}
+
+static void dav_core_gather_reports(
+    request_rec *r,
+    const dav_resource *resource,
+    apr_array_header_t *reports,
+    dav_error **err)
+{
+    const dav_hooks_vsn *vsn_hooks = DAV_GET_HOOKS_VSN(r);
+
+    if (vsn_hooks) {
+        const dav_report_elem *rp;
+
+        (*err) = (*vsn_hooks->avail_reports)(resource, &rp);
+        while (rp && rp->name) {
+
+            dav_report_elem *report = apr_array_push(reports);
+
+            report->nmspace = rp->nmspace;
+            report->name = rp->name;
+
+            rp++;
+        }
+    }
+
+}
+
 static int dav_method_report(request_rec *r)
 {
     dav_resource *resource;
     const dav_hooks_vsn *vsn_hooks = DAV_GET_HOOKS_VSN(r);
+    apr_xml_doc *doc;
+    dav_error *err = NULL;
+
     int result;
     int label_allowed;
-    apr_xml_doc *doc;
-    dav_error *err;
 
-    /* If no versioning provider, decline the request */
-    if (vsn_hooks == NULL)
-        return DECLINED;
-
-    if ((result = ap_xml_parse_input(r, &doc)) != OK)
+    if ((result = ap_xml_parse_input(r, &doc)) != OK) {
         return result;
+    }
     if (doc == NULL) {
         /* This supplies additional information for the default msg. */
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00614)
@@ -4138,11 +4180,12 @@ static int dav_method_report(request_rec *r)
      * First determine whether a Target-Selector header is allowed
      * for this report.
      */
-    label_allowed = (*vsn_hooks->report_label_header_allowed)(doc);
+    label_allowed = vsn_hooks ? (*vsn_hooks->report_label_header_allowed)(doc) : 0;
     err = dav_get_resource(r, label_allowed, 0 /* use_checked_in */,
                            &resource);
-    if (err != NULL)
+    if (err != NULL) {
         return dav_handle_err(r, err, NULL);
+    }
 
     if (!resource->exists) {
         /* Apache will supply a default error for this. */
@@ -4154,24 +4197,36 @@ static int dav_method_report(request_rec *r)
     ap_set_content_type(r, DAV_XML_CONTENT_TYPE);
 
     /* run report hook */
-    if ((err = (*vsn_hooks->deliver_report)(r, resource, doc,
-                                            r->output_filters)) != NULL) {
-        if (! r->sent_bodyct)
-          /* No data has been sent to client yet;  throw normal error. */
-          return dav_handle_err(r, err, NULL);
-
-        /* If an error occurred during the report delivery, there's
-           basically nothing we can do but abort the connection and
-           log an error.  This is one of the limitations of HTTP; it
-           needs to "know" the entire status of the response before
-           generating it, which is just impossible in these streamy
-           response situations. */
-        err = dav_push_error(r->pool, err->status, 0,
-                             "Provider encountered an error while streaming"
-                             " a REPORT response.", err);
-        dav_log_err(r, err, APLOG_ERR);
-        r->connection->aborted = 1;
+    result = dav_run_deliver_report(r, resource, doc,
+            r->output_filters, &err);
+    switch (result) {
+    case OK:
         return DONE;
+    case DECLINED:
+        /* No one handled the report */
+        return HTTP_NOT_IMPLEMENTED;
+    default:
+        if ((err) != NULL) {
+
+            if (! r->sent_bodyct) {
+              /* No data has been sent to client yet;  throw normal error. */
+              return dav_handle_err(r, err, NULL);
+            }
+
+            /* If an error occurred during the report delivery, there's
+               basically nothing we can do but abort the connection and
+               log an error.  This is one of the limitations of HTTP; it
+               needs to "know" the entire status of the response before
+               generating it, which is just impossible in these streamy
+               response situations. */
+            err = dav_push_error(r->pool, err->status, 0,
+                                 "Provider encountered an error while streaming"
+                                 " a REPORT response.", err);
+            dav_log_err(r, err, APLOG_ERR);
+            r->connection->aborted = 1;
+
+            return DONE;
+        }
     }
 
     return DONE;
@@ -4889,6 +4944,11 @@ static void register_hooks(apr_pool_t *p)
     dav_hook_insert_all_liveprops(dav_core_insert_all_liveprops,
                                   NULL, NULL, APR_HOOK_MIDDLE);
 
+    dav_hook_deliver_report(dav_core_deliver_report,
+                            NULL, NULL, APR_HOOK_LAST);
+    dav_hook_gather_reports(dav_core_gather_reports,
+                            NULL, NULL, APR_HOOK_LAST);
+
     dav_core_register_uris(p);
 }
 
@@ -4931,6 +4991,8 @@ APR_HOOK_STRUCT(
     APR_HOOK_LINK(gather_propsets)
     APR_HOOK_LINK(find_liveprop)
     APR_HOOK_LINK(insert_all_liveprops)
+    APR_HOOK_LINK(deliver_report)
+    APR_HOOK_LINK(gather_reports)
     )
 
 APR_IMPLEMENT_EXTERNAL_HOOK_VOID(dav, DAV, gather_propsets,
@@ -4947,3 +5009,16 @@ APR_IMPLEMENT_EXTERNAL_HOOK_VOID(dav, DAV, insert_all_liveprops,
                                  (request_rec *r, const dav_resource *resource,
                                   dav_prop_insert what, apr_text_header *phdr),
                                  (r, resource, what, phdr))
+
+APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(dav, DAV, int, deliver_report,
+                                      (request_rec *r,
+                                       const dav_resource *resource,
+                                       const apr_xml_doc *doc,
+                                       ap_filter_t *output, dav_error **err),
+                                      (r, resource, doc, output, err), DECLINED)
+
+APR_IMPLEMENT_EXTERNAL_HOOK_VOID(dav, DAV, gather_reports,
+                                   (request_rec *r, const dav_resource *resource,
+                                    apr_array_header_t *reports, dav_error **err),
+                                   (r, resource, reports, err))
+
