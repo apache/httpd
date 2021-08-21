@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1823289 -->
+<!-- English Revision: 1892161 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -113,6 +113,7 @@ erreurs</description>
     <table border="1" style="zebra">
     <columnspec><column width="1"/></columnspec>
     <tr><th>Nom</th></tr>
+    <tr><td><code>pre_translate_name</code></td></tr>
     <tr><td><code>translate_name</code></td></tr>
     <tr><td><code>type_checker</code></td></tr>
     <tr><td><code>quick_handler</code></td></tr>
