@@ -75,15 +75,29 @@ module AP_MODULE_DECLARE_DATA ldap_module;
 static const char *ldap_cache_mutex_type = "ldap-cache";
 static apr_status_t uldap_connection_unbind(void *param);
 
-#define LDAP_CACHE_LOCK() do {                                  \
-    if (st->util_ldap_cache_lock)                               \
-        apr_global_mutex_lock(st->util_ldap_cache_lock);        \
-} while (0)
 
-#define LDAP_CACHE_UNLOCK() do {                                \
-    if (st->util_ldap_cache_lock)                               \
-        apr_global_mutex_unlock(st->util_ldap_cache_lock);      \
-} while (0)
+static APR_INLINE apr_status_t ldap_cache_lock(util_ldap_state_t *st, request_rec *r) { 
+    apr_status_t rv = APR_SUCCESS;
+    if (st->util_ldap_cache_lock) { 
+        apr_status_t rv = apr_global_mutex_lock(st->util_ldap_cache_lock);
+        if (rv != APR_SUCCESS) { 
+            ap_log_rerror(APLOG_MARK, APLOG_CRIT, rv, r, APLOGNO(10134) "LDAP cache lock failed");
+            ap_assert(0);
+        }
+    }
+    return rv; 
+}
+static APR_INLINE apr_status_t ldap_cache_unlock(util_ldap_state_t *st, request_rec *r) { 
+    apr_status_t rv = APR_SUCCESS;
+    if (st->util_ldap_cache_lock) { 
+        apr_status_t rv = apr_global_mutex_unlock(st->util_ldap_cache_lock);
+        if (rv != APR_SUCCESS) { 
+            ap_log_rerror(APLOG_MARK, APLOG_CRIT, rv, r, APLOGNO(10135) "LDAP cache lock failed");
+            ap_assert(0);
+        }
+    }
+    return rv; 
+}
 
 static void util_ldap_strdup (char **str, const char *newstr)
 {
@@ -912,14 +926,14 @@ static int uldap_cache_comparedn(request_rec *r, util_ldap_connection_t *ldc,
                                                  &ldap_module);
 
     /* get cache entry (or create one) */
-    LDAP_CACHE_LOCK();
+    ldap_cache_lock(st, r);
 
     curnode.url = url;
     curl = util_ald_cache_fetch(st->util_ldap_cache, &curnode);
     if (curl == NULL) {
         curl = util_ald_create_caches(st, url);
     }
-    LDAP_CACHE_UNLOCK();
+    ldap_cache_unlock(st, r);
 
     /* a simple compare? */
     if (!compare_dn_on_server) {
@@ -936,7 +950,7 @@ static int uldap_cache_comparedn(request_rec *r, util_ldap_connection_t *ldc,
 
     if (curl) {
         /* no - it's a server side compare */
-        LDAP_CACHE_LOCK();
+        ldap_cache_lock(st, r);
 
         /* is it in the compare cache? */
         newnode.reqdn = (char *)reqdn;
@@ -944,13 +958,13 @@ static int uldap_cache_comparedn(request_rec *r, util_ldap_connection_t *ldc,
         if (node != NULL) {
             /* If it's in the cache, it's good */
             /* unlock this read lock */
-            LDAP_CACHE_UNLOCK();
+            ldap_cache_unlock(st, r);
             ldc->reason = "DN Comparison TRUE (cached)";
             return LDAP_COMPARE_TRUE;
         }
 
         /* unlock this read lock */
-        LDAP_CACHE_UNLOCK();
+        ldap_cache_unlock(st, r);
     }
 
 start_over:
@@ -1012,7 +1026,7 @@ start_over:
     else {
         if (curl) {
             /* compare successful - add to the compare cache */
-            LDAP_CACHE_LOCK();
+            ldap_cache_lock(st, r);
             newnode.reqdn = (char *)reqdn;
             newnode.dn = (char *)dn;
 
@@ -1023,7 +1037,7 @@ start_over:
             {
                 util_ald_cache_insert(curl->dn_compare_cache, &newnode);
             }
-            LDAP_CACHE_UNLOCK();
+            ldap_cache_unlock(st, r);
         }
         ldc->reason = "DN Comparison TRUE (checked on server)";
         result = LDAP_COMPARE_TRUE;
@@ -1058,17 +1072,17 @@ static int uldap_cache_compare(request_rec *r, util_ldap_connection_t *ldc,
                                                  &ldap_module);
 
     /* get cache entry (or create one) */
-    LDAP_CACHE_LOCK();
+    ldap_cache_lock(st, r);
     curnode.url = url;
     curl = util_ald_cache_fetch(st->util_ldap_cache, &curnode);
     if (curl == NULL) {
         curl = util_ald_create_caches(st, url);
     }
-    LDAP_CACHE_UNLOCK();
+    ldap_cache_unlock(st, r);
 
     if (curl) {
         /* make a comparison to the cache */
-        LDAP_CACHE_LOCK();
+        ldap_cache_lock(st, r);
         curtime = apr_time_now();
 
         the_compare_node.dn = (char *)dn;
@@ -1107,7 +1121,7 @@ static int uldap_cache_compare(request_rec *r, util_ldap_connection_t *ldc,
                 /* record the result code to return with the reason... */
                 result = compare_nodep->result;
                 /* and unlock this read lock */
-                LDAP_CACHE_UNLOCK();
+                ldap_cache_unlock(st, r);
 
                 ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r, 
                               "ldap_compare_s(%pp, %s, %s, %s) = %s (cached)", 
@@ -1116,7 +1130,7 @@ static int uldap_cache_compare(request_rec *r, util_ldap_connection_t *ldc,
             }
         }
         /* unlock this read lock */
-        LDAP_CACHE_UNLOCK();
+        ldap_cache_unlock(st, r);
     }
 
 start_over:
@@ -1164,7 +1178,7 @@ start_over:
         (LDAP_NO_SUCH_ATTRIBUTE == result)) {
         if (curl) {
             /* compare completed; caching result */
-            LDAP_CACHE_LOCK();
+            ldap_cache_lock(st, r);
             the_compare_node.lastcompare = curtime;
             the_compare_node.result = result;
             the_compare_node.sgl_processed = 0;
@@ -1193,7 +1207,7 @@ start_over:
                 compare_nodep->lastcompare = curtime;
                 compare_nodep->result = result;
             }
-            LDAP_CACHE_UNLOCK();
+            ldap_cache_unlock(st, r);
         }
 
         if (LDAP_COMPARE_TRUE == result) {
@@ -1458,14 +1472,14 @@ static int uldap_cache_check_subgroups(request_rec *r,
      * 2. Find previously created cache entry and check if there is already a
      *    subgrouplist.
      */
-    LDAP_CACHE_LOCK();
+    ldap_cache_lock(st, r);
     curnode.url = url;
     curl = util_ald_cache_fetch(st->util_ldap_cache, &curnode);
-    LDAP_CACHE_UNLOCK();
+    ldap_cache_unlock(st, r);
 
     if (curl && curl->compare_cache) {
         /* make a comparison to the cache */
-        LDAP_CACHE_LOCK();
+        ldap_cache_lock(st, r);
 
         the_compare_node.dn = (char *)dn;
         the_compare_node.attrib = (char *)"objectClass";
@@ -1507,7 +1521,7 @@ static int uldap_cache_check_subgroups(request_rec *r,
                 }
             }
         }
-        LDAP_CACHE_UNLOCK();
+        ldap_cache_unlock(st, r);
     }
 
     if (!tmp_local_sgl && !sgl_cached_empty) {
@@ -1526,7 +1540,7 @@ static int uldap_cache_check_subgroups(request_rec *r,
         /*
          * Find the generic group cache entry and add the sgl we just retrieved.
          */
-        LDAP_CACHE_LOCK();
+        ldap_cache_lock(st, r);
 
         the_compare_node.dn = (char *)dn;
         the_compare_node.attrib = (char *)"objectClass";
@@ -1591,7 +1605,7 @@ static int uldap_cache_check_subgroups(request_rec *r,
                 }
             }
         }
-        LDAP_CACHE_UNLOCK();
+        ldap_cache_unlock(st, r);
       }
     }
 
@@ -1669,17 +1683,17 @@ static int uldap_cache_checkuserid(request_rec *r, util_ldap_connection_t *ldc,
         &ldap_module);
 
     /* Get the cache node for this url */
-    LDAP_CACHE_LOCK();
+    ldap_cache_lock(st, r);
     curnode.url = url;
     curl = (util_url_node_t *)util_ald_cache_fetch(st->util_ldap_cache,
                                                    &curnode);
     if (curl == NULL) {
         curl = util_ald_create_caches(st, url);
     }
-    LDAP_CACHE_UNLOCK();
+    ldap_cache_unlock(st, r);
 
     if (curl) {
-        LDAP_CACHE_LOCK();
+        ldap_cache_lock(st, r);
         the_search_node.username = filter;
         search_nodep = util_ald_cache_fetch(curl->search_cache,
                                             &the_search_node);
@@ -1711,13 +1725,13 @@ static int uldap_cache_checkuserid(request_rec *r, util_ldap_connection_t *ldc,
                         (*retvals)[i] = apr_pstrdup(r->pool, search_nodep->vals[i]);
                     }
                 }
-                LDAP_CACHE_UNLOCK();
+                ldap_cache_unlock(st, r);
                 ldc->reason = "Authentication successful (cached)";
                 return LDAP_SUCCESS;
             }
         }
         /* unlock this read lock */
-        LDAP_CACHE_UNLOCK();
+        ldap_cache_unlock(st, r);
     }
 
     /*
@@ -1876,7 +1890,7 @@ start_over:
      * Add the new username to the search cache.
      */
     if (curl) {
-        LDAP_CACHE_LOCK();
+        ldap_cache_lock(st, r);
         the_search_node.username = filter;
         the_search_node.dn = *binddn;
         the_search_node.bindpw = bindpw;
@@ -1907,7 +1921,7 @@ start_over:
             /* Cache entry is valid, update lastbind */
             search_nodep->lastbind = the_search_node.lastbind;
         }
-        LDAP_CACHE_UNLOCK();
+        ldap_cache_unlock(st, r);
     }
     ldap_msgfree(res);
 
@@ -1945,17 +1959,17 @@ static int uldap_cache_getuserdn(request_rec *r, util_ldap_connection_t *ldc,
         &ldap_module);
 
     /* Get the cache node for this url */
-    LDAP_CACHE_LOCK();
+    ldap_cache_lock(st, r);
     curnode.url = url;
     curl = (util_url_node_t *)util_ald_cache_fetch(st->util_ldap_cache,
                                                    &curnode);
     if (curl == NULL) {
         curl = util_ald_create_caches(st, url);
     }
-    LDAP_CACHE_UNLOCK();
+    ldap_cache_unlock(st, r);
 
     if (curl) {
-        LDAP_CACHE_LOCK();
+        ldap_cache_lock(st, r);
         the_search_node.username = filter;
         search_nodep = util_ald_cache_fetch(curl->search_cache,
                                             &the_search_node);
@@ -1981,13 +1995,13 @@ static int uldap_cache_getuserdn(request_rec *r, util_ldap_connection_t *ldc,
                         (*retvals)[i] = apr_pstrdup(r->pool, search_nodep->vals[i]);
                     }
                 }
-                LDAP_CACHE_UNLOCK();
+                ldap_cache_unlock(st, r);
                 ldc->reason = "Search successful (cached)";
                 return LDAP_SUCCESS;
             }
         }
         /* unlock this read lock */
-        LDAP_CACHE_UNLOCK();
+        ldap_cache_unlock(st, r);
     }
 
     /*
@@ -2085,7 +2099,7 @@ start_over:
      * Add the new username to the search cache.
      */
     if (curl) {
-        LDAP_CACHE_LOCK();
+        ldap_cache_lock(st, r);
         the_search_node.username = filter;
         the_search_node.dn = *binddn;
         the_search_node.bindpw = NULL;
@@ -2114,7 +2128,7 @@ start_over:
             /* Cache entry is valid, update lastbind */
             search_nodep->lastbind = the_search_node.lastbind;
         }
-        LDAP_CACHE_UNLOCK();
+        ldap_cache_unlock(st, r);
     }
 
     ldap_msgfree(res);
