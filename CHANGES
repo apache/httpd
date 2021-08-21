@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.49
 
+  *) core: fix ap_escape_quotes substitution logic. [Eric Covener]
+
   *) Easy patches: synch 2.4.x and trunk
      - mod_auth_basic: Use ap_cstr_casecmp instead of strcasecmp.
      - mod_ldap: log and abort locking errors.
@@ -14,10 +16,10 @@ Changes with Apache 2.4.49
      - core: remove extra whitespace in HTTP_NOT_IMPLEMENTED
     [Christophe Jaillet]
 
-  * core/mpm: add hook 'child_stopping` that gets called when the MPM is
-    stopping a child process. The additional `graceful` parameter allows
-    registered hooks to free resources early during a graceful shutdown.
-    [Yann Ylavic, Stefan Eissing]
+  *) core/mpm: add hook 'child_stopping` that gets called when the MPM is
+     stopping a child process. The additional `graceful` parameter allows
+     registered hooks to free resources early during a graceful shutdown.
+     [Yann Ylavic, Stefan Eissing]
 
   *) mod_proxy: Fix icomplete initialization of BalancerMember(s) from the
      balancer-manager, which can lead to a crash.  [Yann Ylavic]
