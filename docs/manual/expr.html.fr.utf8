@@ -575,8 +575,9 @@ DIGIT       ::= &lt;any US-ASCII digit "0".."9"&gt;</pre>
 	noms distinctifs LDAP - DN) et la RFC4515 (Echappement des
 	filtres LDAP).</td><td /></tr>
 <tr class="odd"><td><code>replace</code></td>
-        <td>replace(chaîne, "de", "vers") remplace dans la chaîne
-	spécifiée toutes les occurrences de "de" par "vers".</td><td /></tr>
+        <td>replace(chaîne, "from", "to") remplace dans la chaîne
+	spécifiée toutes les occurrences de "from" par "to". Le premier
+	paramètre ne doit pas être une chaîne littérale.</td><td /></tr>
 </table>
 
     <p>Les fonctions marquées comme "limité" dans la dernière colonne ne sont
@@ -730,9 +731,8 @@ DIGIT       ::= &lt;any US-ASCII digit "0".."9"&gt;</pre>
 &lt;If "md5('foo') == 'acbd18db4cc2f85cedef654fccc4a4d8'"&gt;
   Header set checksum-matched true
 &lt;/If&gt;
-&lt;If "md5('foo') == replace('md5:XXXd18db4cc2f85cedef654fccc4a4d8', 'md5:XXX', 'acb')&gt;
-  Header set checksum-matched-2 true
-&lt;/If&gt;
+
+Require expr replace(%{REQUEST_METHOD},  'E', 'O') == 'GET'"
 
 
 # Exemple de fonction dans un contexte littéral
