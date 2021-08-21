@@ -860,6 +860,12 @@ static int dav_method_get(request_rec *r)
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
 
+    /* check for any method preconditions */
+    if (dav_run_method_precondition(r, resource, NULL, NULL, &err) != DECLINED
+            && err) {
+        return dav_handle_err(r, err, NULL);
+    }
+
     if (!resource->exists) {
         /* Apache will supply a default error for this. */
         return HTTP_NOT_FOUND;
@@ -907,6 +913,12 @@ static int dav_method_post(request_rec *r)
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
 
+    /* check for any method preconditions */
+    if (dav_run_method_precondition(r, resource, NULL, NULL, &err) != DECLINED
+            && err) {
+        return dav_handle_err(r, err, NULL);
+    }
+
     /* Note: depth == 0. Implies no need for a multistatus response. */
     if ((err = dav_validate_request(r, resource, 0, NULL, NULL,
                                     DAV_VALIDATE_RESOURCE, NULL)) != NULL) {
@@ -939,6 +951,12 @@ static int dav_method_put(request_rec *r)
                            &resource);
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
+
+    /* check for any method preconditions */
+    if (dav_run_method_precondition(r, resource, NULL, NULL, &err) != DECLINED
+            && err) {
+        return dav_handle_err(r, err, NULL);
+    }
 
     /* If not a file or collection resource, PUT not allowed */
     if (resource->type != DAV_RESOURCE_TYPE_REGULAR
@@ -1210,6 +1228,13 @@ static int dav_method_delete(request_rec *r)
                            &resource);
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
+
+    /* check for any method preconditions */
+    if (dav_run_method_precondition(r, resource, NULL, NULL, &err) != DECLINED
+            && err) {
+        return dav_handle_err(r, err, NULL);
+    }
+
     if (!resource->exists) {
         /* Apache will supply a default error for this. */
         return HTTP_NOT_FOUND;
@@ -1651,6 +1676,12 @@ static int dav_method_options(request_rec *r)
     }
     /* note: doc == NULL if no request body */
 
+    /* check for any method preconditions */
+    if (dav_run_method_precondition(r, resource, NULL, doc, &err) != DECLINED
+            && err) {
+        return dav_handle_err(r, err, NULL);
+    }
+
     if (doc && !dav_validate_root(doc, "options")) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00584)
                       "The \"options\" element was not found.");
@@ -1983,6 +2014,13 @@ static dav_error * dav_propfind_walker(dav_walk_resource *wres, int calltype)
     dav_propdb *propdb;
     dav_get_props_result propstats = { 0 };
 
+    /* check for any method preconditions */
+    if (dav_run_method_precondition(ctx->r, NULL, wres->resource, ctx->doc, &err) != DECLINED
+            && err) {
+        apr_pool_clear(ctx->scratchpool);
+        return NULL;
+    }
+
     /*
     ** Note: ctx->doc can only be NULL for DAV_PROPFIND_IS_ALLPROP. Since
     ** dav_get_allprops() does not need to do namespace translation,
@@ -2054,6 +2092,17 @@ static int dav_method_propfind(request_rec *r)
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
 
+    if ((result = ap_xml_parse_input(r, &doc)) != OK) {
+        return result;
+    }
+    /* note: doc == NULL if no request body */
+
+    /* check for any method preconditions */
+    if (dav_run_method_precondition(r, resource, NULL, doc, &err) != DECLINED
+            && err) {
+        return dav_handle_err(r, err, NULL);
+    }
+
     if (dav_get_resource_state(r, resource) == DAV_RESOURCE_NULL) {
         /* Apache will supply a default error for this. */
         return HTTP_NOT_FOUND;
@@ -2080,11 +2129,6 @@ static int dav_method_propfind(request_rec *r)
                                                                   r->uri)));
         }
     }
-
-    if ((result = ap_xml_parse_input(r, &doc)) != OK) {
-        return result;
-    }
-    /* note: doc == NULL if no request body */
 
     if (doc && !dav_validate_root(doc, "propfind")) {
         /* This supplies additional information for the default message. */
@@ -2331,15 +2375,22 @@ static int dav_method_proppatch(request_rec *r)
                            &resource);
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
-    if (!resource->exists) {
-        /* Apache will supply a default error for this. */
-        return HTTP_NOT_FOUND;
-    }
 
     if ((result = ap_xml_parse_input(r, &doc)) != OK) {
         return result;
     }
     /* note: doc == NULL if no request body */
+
+    /* check for any method preconditions */
+    if (dav_run_method_precondition(r, resource, NULL, doc, &err) != DECLINED
+            && err) {
+        return dav_handle_err(r, err, NULL);
+    }
+
+    if (!resource->exists) {
+        /* Apache will supply a default error for this. */
+        return HTTP_NOT_FOUND;
+    }
 
     if (doc == NULL || !dav_validate_root(doc, "propertyupdate")) {
         /* This supplies additional information for the default message. */
@@ -2540,6 +2591,12 @@ static int dav_method_mkcol(request_rec *r)
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
 
+    /* check for any method preconditions */
+    if (dav_run_method_precondition(r, resource, NULL, NULL, &err) != DECLINED
+            && err) {
+        return dav_handle_err(r, err, NULL);
+    }
+
     if (resource->exists) {
         /* oops. something was already there! */
 
@@ -2660,6 +2717,12 @@ static int dav_method_copymove(request_rec *r, int is_move)
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
 
+    /* check for any method preconditions */
+    if (dav_run_method_precondition(r, resource, NULL, NULL, &err) != DECLINED
+            && err) {
+        return dav_handle_err(r, err, NULL);
+    }
+
     if (!resource->exists) {
         /* Apache will supply a default error for this. */
         return HTTP_NOT_FOUND;
@@ -2725,6 +2788,12 @@ static int dav_method_copymove(request_rec *r, int is_move)
                            0 /* use_checked_in */, &resnew);
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
+
+    /* check for any method preconditions */
+    if (dav_run_method_precondition(r, resource, resnew, NULL, &err) != DECLINED
+            && err) {
+        return dav_handle_err(r, err, NULL);
+    }
 
     /* are the two resources handled by the same repository? */
     if (resource->hooks != resnew->hooks) {
@@ -3077,6 +3146,12 @@ static int dav_method_lock(request_rec *r)
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
 
+    /* check for any method preconditions */
+    if (dav_run_method_precondition(r, resource, NULL, doc, &err) != DECLINED
+            && err) {
+        return dav_handle_err(r, err, NULL);
+    }
+
     /* Check if parent collection exists */
     if ((err = resource->hooks->get_parent_resource(resource, &parent)) != NULL) {
         /* ### add a higher-level description? */
@@ -3276,6 +3351,12 @@ static int dav_method_unlock(request_rec *r)
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
 
+    /* check for any method preconditions */
+    if (dav_run_method_precondition(r, resource, NULL, NULL, &err) != DECLINED
+            && err) {
+        return dav_handle_err(r, err, NULL);
+    }
+
     resource_state = dav_get_resource_state(r, resource);
 
     /*
@@ -3335,14 +3416,20 @@ static int dav_method_vsn_control(request_rec *r)
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
 
-    /* remember the pre-creation resource state */
-    resource_state = dav_get_resource_state(r, resource);
-
     /* parse the request body (may be a version-control element) */
     if ((result = ap_xml_parse_input(r, &doc)) != OK) {
         return result;
     }
     /* note: doc == NULL if no request body */
+
+    /* check for any method preconditions */
+    if (dav_run_method_precondition(r, resource, NULL, doc, &err) != DECLINED
+            && err) {
+        return dav_handle_err(r, err, NULL);
+    }
+
+    /* remember the pre-creation resource state */
+    resource_state = dav_get_resource_state(r, resource);
 
     if (doc != NULL) {
         const apr_xml_elem *child;
@@ -3588,6 +3675,12 @@ static int dav_method_checkout(request_rec *r)
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
 
+    /* check for any method preconditions */
+    if (dav_run_method_precondition(r, resource, NULL, doc, &err) != DECLINED
+            && err) {
+        return dav_handle_err(r, err, NULL);
+    }
+
     if (!resource->exists) {
         /* Apache will supply a default error for this. */
         return HTTP_NOT_FOUND;
@@ -3663,6 +3756,12 @@ static int dav_method_uncheckout(request_rec *r)
                            &resource);
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
+
+    /* check for any method preconditions */
+    if (dav_run_method_precondition(r, resource, NULL, NULL, &err) != DECLINED
+            && err) {
+        return dav_handle_err(r, err, NULL);
+    }
 
     if (!resource->exists) {
         /* Apache will supply a default error for this. */
@@ -3740,6 +3839,12 @@ static int dav_method_checkin(request_rec *r)
                            &resource);
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
+
+    /* check for any method preconditions */
+    if (dav_run_method_precondition(r, resource, NULL, doc, &err) != DECLINED
+            && err) {
+        return dav_handle_err(r, err, NULL);
+    }
 
     if (!resource->exists) {
         /* Apache will supply a default error for this. */
@@ -3862,6 +3967,12 @@ static int dav_method_update(request_rec *r)
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
 
+    /* check for any method preconditions */
+    if (dav_run_method_precondition(r, resource, NULL, doc, &err) != DECLINED
+            && err) {
+        return dav_handle_err(r, err, NULL);
+    }
+
     if (!resource->exists) {
         /* Apache will supply a default error for this. */
         return HTTP_NOT_FOUND;
@@ -3936,6 +4047,9 @@ typedef struct dav_label_walker_ctx
     /* input: */
     dav_walk_params w;
 
+    /* original request */
+    request_rec *r;
+
     /* label being manipulated */
     const char *label;
 
@@ -3955,13 +4069,19 @@ static dav_error * dav_label_walker(dav_walk_resource *wres, int calltype)
     dav_label_walker_ctx *ctx = wres->walk_ctx;
     dav_error *err = NULL;
 
+    /* check for any method preconditions */
+    if (dav_run_method_precondition(ctx->r, NULL, wres->resource, NULL, &err) != DECLINED
+            && err) {
+    	/* precondition failed, dropping through */
+    }
+
     /* Check the state of the resource: must be a version or
      * non-checkedout version selector
      */
     /* ### need a general mechanism for reporting precondition violations
      * ### (should be returning XML document for 403/409 responses)
      */
-    if (wres->resource->type != DAV_RESOURCE_TYPE_VERSION &&
+    else if (wres->resource->type != DAV_RESOURCE_TYPE_VERSION &&
         (wres->resource->type != DAV_RESOURCE_TYPE_REGULAR
          || !wres->resource->versioned)) {
         err = dav_new_error(ctx->w.pool, HTTP_CONFLICT, 0, 0,
@@ -4007,11 +4127,23 @@ static int dav_method_label(request_rec *r)
     if (vsn_hooks == NULL || vsn_hooks->add_label == NULL)
         return DECLINED;
 
+    /* parse the request body */
+    if ((result = ap_xml_parse_input(r, &doc)) != OK) {
+        return result;
+    }
+
     /* Ask repository module to resolve the resource */
     err = dav_get_resource(r, 1 /* label_allowed */, 0 /* use_checked_in */,
                            &resource);
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
+
+    /* check for any method preconditions */
+    if (dav_run_method_precondition(r, resource, NULL, doc, &err) != DECLINED
+            && err) {
+        return dav_handle_err(r, err, NULL);
+    }
+
     if (!resource->exists) {
         /* Apache will supply a default error for this. */
         return HTTP_NOT_FOUND;
@@ -4021,11 +4153,6 @@ static int dav_method_label(request_rec *r)
         /* dav_get_depth() supplies additional information for the
          * default message. */
         return HTTP_BAD_REQUEST;
-    }
-
-    /* parse the request body */
-    if ((result = ap_xml_parse_input(r, &doc)) != OK) {
-        return result;
     }
 
     if (doc == NULL || !dav_validate_root(doc, "label")) {
@@ -4076,6 +4203,7 @@ static int dav_method_label(request_rec *r)
     ctx.w.walk_ctx = &ctx;
     ctx.w.pool = r->pool;
     ctx.w.root = resource;
+    ctx.r = r;
     ctx.vsn_hooks = vsn_hooks;
 
     err = (*resource->hooks->walk)(&ctx.w, depth, &multi_status);
@@ -4187,6 +4315,12 @@ static int dav_method_report(request_rec *r)
         return dav_handle_err(r, err, NULL);
     }
 
+    /* check for any method preconditions */
+    if (dav_run_method_precondition(r, resource, NULL, doc, &err) != DECLINED
+            && err) {
+        return dav_handle_err(r, err, NULL);
+    }
+
     if (!resource->exists) {
         /* Apache will supply a default error for this. */
         return HTTP_NOT_FOUND;
@@ -4257,6 +4391,12 @@ static int dav_method_make_workspace(request_rec *r)
         return result;
     }
 
+    /* check for any method preconditions */
+    if (dav_run_method_precondition(r, resource, NULL, doc, &err) != DECLINED
+            && err) {
+        return dav_handle_err(r, err, NULL);
+    }
+
     if (doc == NULL
         || !dav_validate_root(doc, "mkworkspace")) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00615)
@@ -4315,6 +4455,12 @@ static int dav_method_make_activity(request_rec *r)
                            &resource);
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
+
+    /* check for any method preconditions */
+    if (dav_run_method_precondition(r, resource, NULL, NULL, &err) != DECLINED
+            && err) {
+        return dav_handle_err(r, err, NULL);
+    }
 
     /* MKACTIVITY does not have a defined request body. */
     if ((result = ap_discard_request_body(r)) != OK) {
@@ -4441,6 +4587,12 @@ static int dav_method_merge(request_rec *r)
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
 
+    /* check for any method preconditions */
+    if (dav_run_method_precondition(r, source_resource, NULL, doc, &err) != DECLINED
+            && err) {
+        return dav_handle_err(r, err, NULL);
+    }
+
     no_auto_merge = dav_find_child(doc->root, "no-auto-merge") != NULL;
     no_checkout = dav_find_child(doc->root, "no-checkout") != NULL;
 
@@ -4458,6 +4610,13 @@ static int dav_method_merge(request_rec *r)
                            &resource);
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
+
+    /* check for any method preconditions */
+    if (dav_run_method_precondition(r, source_resource, resource, doc, &err) != DECLINED
+            && err) {
+        return dav_handle_err(r, err, NULL);
+    }
+
     if (!resource->exists) {
         /* Apache will supply a default error for this. */
         return HTTP_NOT_FOUND;
@@ -4525,6 +4684,12 @@ static int dav_method_bind(request_rec *r)
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
 
+    /* check for any method preconditions */
+    if (dav_run_method_precondition(r, resource, NULL, NULL, &err) != DECLINED
+            && err) {
+        return dav_handle_err(r, err, NULL);
+    }
+
     if (!resource->exists) {
         /* Apache will supply a default error for this. */
         return HTTP_NOT_FOUND;
@@ -4574,6 +4739,12 @@ static int dav_method_bind(request_rec *r)
                            0 /* use_checked_in */, &binding);
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
+
+    /* check for any method preconditions */
+    if (dav_run_method_precondition(r, resource, binding, NULL, &err) != DECLINED
+            && err) {
+        return dav_handle_err(r, err, NULL);
+    }
 
     /* are the two resources handled by the same repository? */
     if (resource->hooks != binding->hooks) {
@@ -4993,6 +5164,7 @@ APR_HOOK_STRUCT(
     APR_HOOK_LINK(insert_all_liveprops)
     APR_HOOK_LINK(deliver_report)
     APR_HOOK_LINK(gather_reports)
+    APR_HOOK_LINK(method_precondition)
     )
 
 APR_IMPLEMENT_EXTERNAL_HOOK_VOID(dav, DAV, gather_propsets,
@@ -5022,3 +5194,9 @@ APR_IMPLEMENT_EXTERNAL_HOOK_VOID(dav, DAV, gather_reports,
                                     apr_array_header_t *reports, dav_error **err),
                                    (r, resource, reports, err))
 
+APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(dav, DAV, int, method_precondition,
+                                      (request_rec *r,
+                                       dav_resource *src, const dav_resource *dest,
+                                       const apr_xml_doc *doc,
+                                       dav_error **err),
+                                       (r, src, dest, doc, err), DECLINED)

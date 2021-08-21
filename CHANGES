@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.49
 
+  *) mod_dav: Add method_precondition hook. WebDAV extensions define
+     conditions that must exist before a WebDAV method can be executed.
+     This hook allows a WebDAV extension to verify these preconditions.
+     [Graham Leggett]
+
   *) Add hooks deliver_report and gather_reports to mod_dav.h. Allows other
      modules apart from versioning implementations to handle the REPORT method.
      [Graham Leggett]
