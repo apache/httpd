@@ -160,48 +160,51 @@ traitement d'une requête</td></tr>
 <tr class="odd"><td><a href="mod_lua.html#luahookmaptostorage">LuaHookMapToStorage</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
 <tr class="odd"><td colspan="2" class="descr">Fournit un point d'entrée pour la phase map_to_storage du
 traitement de la requête</td></tr>
-<tr><td><a href="mod_lua.html#luahooktranslatename">LuaHookTranslateName</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr><td colspan="2" class="descr">Fournit un point d'entrée à la phase du nom de
+<tr><td><a href="mod_lua.html#luahookpretranslate">LuaHookPreTranslate</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr><td colspan="2" class="descr">Fournit un point d'entrée pour la phase de pré-traduction du
+traitement d'une requête</td></tr>
+<tr class="odd"><td><a href="mod_lua.html#luahooktranslatename">LuaHookTranslateName</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Fournit un point d'entrée à la phase du nom de
 traduction du traitement de la requête</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luahooktypechecker">LuaHookTypeChecker</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Fournit un point d'entrée pour la phase type_checker du
+<tr><td><a href="mod_lua.html#luahooktypechecker">LuaHookTypeChecker</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr><td colspan="2" class="descr">Fournit un point d'entrée pour la phase type_checker du
 traitement de la requête</td></tr>
-<tr><td><a href="mod_lua.html#luainherit">LuaInherit</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr><td colspan="2" class="descr">Contrôle la manière dont les sections de configuration
+<tr class="odd"><td><a href="mod_lua.html#luainherit">LuaInherit</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Contrôle la manière dont les sections de configuration
 parentes sont fusionnées dans les enfants</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luamaphandler">LuaMapHandler</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Met en correspondance un chemin avec un gestionnaire lua</td></tr>
-<tr><td><a href="mod_lua.html#luapackagecpath">LuaPackageCPath</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr><td colspan="2" class="descr">Ajoute un répertoire au package.cpath de lua</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luapackagepath">LuaPackagePath</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Ajoute un répertoire au package.path de lua</td></tr>
-<tr><td><a href="mod_lua.html#luaquickhandler">LuaQuickHandler</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr><td colspan="2" class="descr">Fournit un point d'entrée pour la gestion rapide du
+<tr><td><a href="mod_lua.html#luamaphandler">LuaMapHandler</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr><td colspan="2" class="descr">Met en correspondance un chemin avec un gestionnaire lua</td></tr>
+<tr class="odd"><td><a href="mod_lua.html#luapackagecpath">LuaPackageCPath</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Ajoute un répertoire au package.cpath de lua</td></tr>
+<tr><td><a href="mod_lua.html#luapackagepath">LuaPackagePath</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr><td colspan="2" class="descr">Ajoute un répertoire au package.path de lua</td></tr>
+<tr class="odd"><td><a href="mod_lua.html#luaquickhandler">LuaQuickHandler</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Fournit un point d'entrée pour la gestion rapide du
 traitement de la requête</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luaroot">LuaRoot</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Spécifie le chemin de base pour la résolution des chemins
+<tr><td><a href="mod_lua.html#luaroot">LuaRoot</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr><td colspan="2" class="descr">Spécifie le chemin de base pour la résolution des chemins
 relatifs dans les directives de mod_lua</td></tr>
-<tr><td><a href="mod_lua.html#luascope">LuaScope</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr><td colspan="2" class="descr">Une valeur parmi once, request, conn, thread -- la valeur par défaut est once</td></tr>
-<tr class="odd"><td><a href="core.html#rlimitcpu">RLimitCPU</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Limite le temps CPU alloué aux processus initiés par les
+<tr class="odd"><td><a href="mod_lua.html#luascope">LuaScope</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Une valeur parmi once, request, conn, thread -- la valeur par défaut est once</td></tr>
+<tr><td><a href="core.html#rlimitcpu">RLimitCPU</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr><td colspan="2" class="descr">Limite le temps CPU alloué aux processus initiés par les
 processus enfants d'Apache httpd</td></tr>
-<tr><td><a href="core.html#rlimitmem">RLimitMEM</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr><td colspan="2" class="descr">Limite la mémoire allouée aux processus initiés par les
+<tr class="odd"><td><a href="core.html#rlimitmem">RLimitMEM</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Limite la mémoire allouée aux processus initiés par les
 processus enfants d'Apache httpd</td></tr>
-<tr class="odd"><td><a href="core.html#rlimitnproc">RLimitNPROC</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Limite le nombre de processus qui peuvent être initiés par
+<tr><td><a href="core.html#rlimitnproc">RLimitNPROC</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr><td colspan="2" class="descr">Limite le nombre de processus qui peuvent être initiés par
 les processus initiés par les processus enfants d'Apache httpd</td></tr>
-<tr><td><a href="core.html#serversignature">ServerSignature</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr><td colspan="2" class="descr">Définit un pied de page pour les documents générés par le
+<tr class="odd"><td><a href="core.html#serversignature">ServerSignature</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Définit un pied de page pour les documents générés par le
 serveur</td></tr>
-<tr class="odd"><td><a href="mod_include.html#ssierrormsg">SSIErrorMsg</a></td><td class="module"><a href="mod_include.html">mod_include</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Message d'erreur affiché lorsqu'une erreur SSI
+<tr><td><a href="mod_include.html#ssierrormsg">SSIErrorMsg</a></td><td class="module"><a href="mod_include.html">mod_include</a></td></tr>
+<tr><td colspan="2" class="descr">Message d'erreur affiché lorsqu'une erreur SSI
 survient</td></tr>
-<tr><td><a href="mod_include.html#ssitimeformat">SSITimeFormat</a></td><td class="module"><a href="mod_include.html">mod_include</a></td></tr>
-<tr><td colspan="2" class="descr">Configuration du format d'affichage des dates</td></tr>
-<tr class="odd"><td><a href="mod_include.html#ssiundefinedecho">SSIUndefinedEcho</a></td><td class="module"><a href="mod_include.html">mod_include</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Chaîne à afficher lorsqu'on tente d'extraire le contenu
+<tr class="odd"><td><a href="mod_include.html#ssitimeformat">SSITimeFormat</a></td><td class="module"><a href="mod_include.html">mod_include</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Configuration du format d'affichage des dates</td></tr>
+<tr><td><a href="mod_include.html#ssiundefinedecho">SSIUndefinedEcho</a></td><td class="module"><a href="mod_include.html">mod_include</a></td></tr>
+<tr><td colspan="2" class="descr">Chaîne à afficher lorsqu'on tente d'extraire le contenu
 d'une variable non définie</td></tr>
 </table></div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a name="override-authconfig">AuthConfig</a></h2>
     <p>
