@@ -207,7 +207,7 @@ DAV_DECLARE(const char *) dav_get_provider_name(request_rec *r)
     return conf ? conf->provider_name : NULL;
 }
 
-static const dav_provider *dav_get_provider(request_rec *r)
+DAV_DECLARE(const dav_provider *) dav_get_provider(request_rec *r)
 {
     dav_dir_conf *conf;
 
@@ -726,7 +726,7 @@ static int dav_get_overwrite(request_rec *r)
  * the resource identified by the DAV:checked-in property of the resource
  * identified by the Request-URI.
  */
-static dav_error *dav_get_resource(request_rec *r, int label_allowed,
+DAV_DECLARE(dav_error *) dav_get_resource(request_rec *r, int label_allowed,
                                    int use_checked_in, dav_resource **res_p)
 {
     dav_dir_conf *conf;
@@ -775,7 +775,9 @@ static dav_error *dav_get_resource(request_rec *r, int label_allowed,
     return NULL;
 }
 
-static dav_error * dav_open_lockdb(request_rec *r, int ro, dav_lockdb **lockdb)
+DAV_DECLARE(dav_error *) dav_open_lockdb(request_rec *r,
+                                         int ro,
+                                         dav_lockdb **lockdb)
 {
     const dav_hooks_locks *hooks = DAV_GET_HOOKS_LOCKS(r);
 
@@ -786,6 +788,11 @@ static dav_error * dav_open_lockdb(request_rec *r, int ro, dav_lockdb **lockdb)
 
     /* open the thing lazily */
     return (*hooks->open_lockdb)(r, ro, 0, lockdb);
+}
+
+DAV_DECLARE(void) dav_close_lockdb(dav_lockdb *lockdb)
+{
+    (lockdb->hooks->close_lockdb)(lockdb);
 }
 
 /**

@@ -569,6 +569,9 @@
  *                           proxy_server_conf.
  * 20120211.110 (2.4.49-dev) Add hook child_stopping to get informed that a child
  *                           is being shut down.
+ * 20120211.111 (2.4.49-dev) Add dav_get_provider(), dav_open_lockdb(),
+ *                           dav_close_lockdb() and dav_get_resource() to
+ *                           mod_dav.h.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -576,7 +579,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 110                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 111                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

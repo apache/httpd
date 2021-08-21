@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.49
 
+  *) Add dav_get_provider(), dav_open_lockdb(), dav_close_lockdb() and
+     dav_get_resource() to mod_dav.h. [Graham Leggett]
+
   *) core: fix ap_escape_quotes substitution logic. [Eric Covener]
 
   *) Easy patches: synch 2.4.x and trunk

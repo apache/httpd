@@ -142,13 +142,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) Add dav_get_provider(), dav_open_lockdb(), dav_close_lockdb() and
-     dav_get_resource() to mod_dav.h.
-     trunk patch: http://svn.apache.org/r1879305
-                  http://svn.apache.org/r1879466
-     2.4.x patch: https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-dav-functions6.patch
-     +1: minfrin, jim, ylavic (by inspection)
-
   *) Add hooks deliver_report and gather_reports to mod_dav.h. Allows other
      modules apart from versioning implementations to handle the REPORT method.
      trunk patch: http://svn.apache.org/r1879339
