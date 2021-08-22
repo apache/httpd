@@ -187,7 +187,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1890696
      2.4.x patch: https://github.com/apache/httpd/pull/204.diff
            PR: https://github.com/apache/httpd/pull/204
-     +1: icing
+     +1: icing, minfrin
 
   *) mod_proxy: Fix possible reuse/merging of Proxy(Pass)Match worker instances
      with others when their URLs contain a '$' substitution.  PR 65419 + 65429.
