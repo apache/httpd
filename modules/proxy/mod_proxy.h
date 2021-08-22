@@ -1169,6 +1169,16 @@ PROXY_DECLARE(apr_status_t) ap_proxy_sync_balancer(proxy_balancer *b,
                                                    server_rec *s,
                                                    proxy_server_conf *conf);
 
+/**
+ * Configure and create workers (and balancer) in mod_balancer.
+ * @param r request
+ * @param params table with the parameters like b=mycluster etc.
+ * @return 404 when the worker/balancer doesn't exist,
+ *         400 if something is invalid
+ *         200 for success.
+ */ 
+APR_DECLARE_OPTIONAL_FN(apr_status_t, balancer_manage,
+        (request_rec *, apr_table_t *params));
 
 /**
  * Find the matched alias for this request and setup for proxy handler
