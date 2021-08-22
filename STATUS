@@ -172,7 +172,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1890605
      2.4.x patch: https://github.com/apache/httpd/pull/203.diff
            PR: https://github.com/apache/httpd/pull/203
-     +1: icing
+     +1: icing, minfrin
 
   *) mod_ssl: tighten the handling of ALPN for outgoing (proxy)
      connections. If ALPN protocols are provided and sent to the
