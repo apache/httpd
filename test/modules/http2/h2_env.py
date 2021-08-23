@@ -30,6 +30,46 @@ class Dummy:
 
 class H2TestSetup:
 
+    # the modules we want to load
+    MODULES = [
+        "log_config",
+        "logio",
+        "unixd",
+        "version",
+        "watchdog",
+        "authn_core",
+        "authz_host",
+        "authz_groupfile",
+        "authz_user",
+        "authz_core",
+        "access_compat",
+        "auth_basic",
+        "cache",
+        "cache_disk",
+        "cache_socache",
+        "socache_shmcb",
+        "dumpio",
+        "reqtimeout",
+        "filter",
+        "mime",
+        "env",
+        "headers",
+        "setenvif",
+        "slotmem_shm",
+        "ssl",
+        "status",
+        "autoindex",
+        "cgid",
+        "dir",
+        "alias",
+        "rewrite",
+        "deflate",
+        "proxy",
+        "proxy_http",
+        "proxy_balancer",
+        "proxy_hcheck",
+    ]
+
     def __init__(self, env: 'H2TestEnv'):
         self.env = env
 
@@ -38,6 +78,7 @@ class H2TestSetup:
         self._make_conf()
         self._make_htdocs()
         self._make_h2test()
+        self._make_modules_conf()
 
     def _make_dirs(self):
         if os.path.exists(self.env.gen_dir):
@@ -86,6 +127,19 @@ class H2TestSetup:
                        capture_output=True, check=True,
                        cwd=os.path.join(self.env.test_dir, 'mod_h2test'))
 
+    def _make_modules_conf(self):
+        modules_conf = os.path.join(self.env.server_dir, 'conf/modules.conf')
+        with open(modules_conf, 'w') as fd:
+            # issue load directives for all modules we want that are shared
+            for m in self.MODULES:
+                mod_path = os.path.join(self.env.libexec_dir, f"mod_{m}.so")
+                if os.path.isfile(mod_path):
+                    fd.write(f"LoadModule {m}_module   \"{mod_path}\"\n")
+            for m in ["http2", "proxy_http2"]:
+                fd.write(f"LoadModule {m}_module   \"{self.env.libexec_dir}/mod_{m}.so\"\n")
+            # load our test module which is not installed
+            fd.write(f"LoadModule h2test_module   \"{self.env.test_dir}/mod_h2test/.libs/mod_h2test.so\"\n")
+
 
 class H2TestEnv:
 
@@ -110,11 +164,13 @@ class H2TestEnv:
         self._test_dir = self.config.get('test', 'test_dir')
         self._test_src_dir = self.config.get('test', 'test_src_dir')
         self._gen_dir = self.config.get('test', 'gen_dir')
-        self._server_dir = self.config.get('test', 'server_dir')
+        self._server_dir = os.path.join(self._gen_dir, 'apache')
         self._server_conf_dir = os.path.join(self._server_dir, "conf")
         self._server_docs_dir = os.path.join(self._server_dir, "htdocs")
         self._server_logs_dir = os.path.join(self.server_dir, "logs")
         self._server_error_log = os.path.join(self._server_logs_dir, "error_log")
+
+        self._dso_modules = self.config.get('global', 'dso_modules').split(' ')
         self._domains = [
             f"test1.{self._http_tld}",
             f"test2.{self._http_tld}",
@@ -227,6 +283,10 @@ class H2TestEnv:
     @property
     def libexec_dir(self) -> str:
         return self._libexec_dir
+
+    @property
+    def dso_modules(self) -> List[str]:
+        return self._dso_modules
 
     @property
     def server_conf_dir(self) -> str:
