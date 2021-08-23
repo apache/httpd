@@ -11,7 +11,7 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 
 apr_bindir = @APR_BINDIR@
-apxs = @APR_BINDIR@/apxs
+apxs = @bindir@/apxs
 apachectl = @sbindir@/apachectl
 dso_modules = @DSO_MODULES@
 
