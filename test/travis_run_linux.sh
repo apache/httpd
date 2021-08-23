@@ -140,6 +140,12 @@ if ! test -v SKIP_TESTING; then
         popd
     fi
 
+    if test -v TEST_H2 -a $RV -eq 0; then
+        # Run HTTP/2 tests.
+        py.test-3 test/modules/http2
+        RV=$?
+    fi
+
     if test -v LITMUS -a $RV -eq 0; then
         pushd test/perl-framework
            mkdir -p t/htdocs/modules/dav
