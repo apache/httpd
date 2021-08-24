@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.49
 
+  *) mod_proxy: Fix possible reuse/merging of Proxy(Pass)Match worker instances
+     with others when their URLs contain a '$' substitution.  PR 65419 + 65429.
+     [Yann Ylavic]
+
   *) mod_dav: Add method_precondition hook. WebDAV extensions define
      conditions that must exist before a WebDAV method can be executed.
      This hook allows a WebDAV extension to verify these preconditions.

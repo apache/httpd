@@ -2012,7 +2012,8 @@ static const char *
     const apr_array_header_t *arr;
     const apr_table_entry_t *elts;
     int i;
-    int use_regex = is_regex;
+    unsigned int worker_type = (is_regex) ? AP_PROXY_WORKER_IS_MATCH
+                                          : AP_PROXY_WORKER_IS_PREFIX;
     unsigned int flags = 0;
     const char *err;
 
@@ -2028,7 +2029,7 @@ static const char *
                 if (is_regex) {
                     return "ProxyPassMatch invalid syntax ('~' usage).";
                 }
-                use_regex = 1;
+                worker_type = AP_PROXY_WORKER_IS_MATCH;
                 continue;
             }
             f = word;
@@ -2099,7 +2100,7 @@ static const char *
         dconf->alias_set = 1;
         new = dconf->alias;
         if (apr_fnmatch_test(f)) {
-            use_regex = 1;
+            worker_type = AP_PROXY_WORKER_IS_MATCH;
         }
     }
     /* if per server, add to the alias array */
@@ -2110,7 +2111,7 @@ static const char *
     new->fake = apr_pstrdup(cmd->pool, f);
     new->real = apr_pstrdup(cmd->pool, ap_proxy_de_socketfy(cmd->pool, r));
     new->flags = flags;
-    if (use_regex) {
+    if (worker_type & AP_PROXY_WORKER_IS_MATCH) {
         new->regex = ap_pregcomp(cmd->pool, f, AP_REG_EXTENDED);
         if (new->regex == NULL)
             return "Regular expression could not be compiled.";
@@ -2134,7 +2135,7 @@ static const char *
          * cannot be parsed anyway with apr_uri_parse later on in
          * ap_proxy_define_balancer / ap_proxy_update_balancer
          */
-        if (use_regex) {
+        if (worker_type & AP_PROXY_WORKER_IS_MATCH) {
             fake_copy = NULL;
         }
         else {
@@ -2157,39 +2158,18 @@ static const char *
         new->balancer = balancer;
     }
     else {
-        proxy_worker *worker = ap_proxy_get_worker(cmd->temp_pool, NULL, conf, new->real);
         int reuse = 0;
+        proxy_worker *worker = ap_proxy_get_worker_ex(cmd->temp_pool, NULL,
+                                                      conf, new->real,
+                                                      worker_type);
         if (!worker) {
             const char *err;
-            if (use_regex) {
-                err = ap_proxy_define_match_worker(cmd->pool, &worker, NULL,
-                                                   conf, r, 0);
-            }
-            else {
-                err = ap_proxy_define_worker(cmd->pool, &worker, NULL,
-                                             conf, r, 0);
-            }
+            err = ap_proxy_define_worker_ex(cmd->pool, &worker, NULL,
+                                            conf, r, worker_type);
             if (err)
                 return apr_pstrcat(cmd->temp_pool, "ProxyPass ", err, NULL);
 
             PROXY_COPY_CONF_PARAMS(worker, conf);
-        }
-        else if ((use_regex != 0) ^ (worker->s->is_name_matchable != 0)) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server, APLOGNO(10249)
-                         "ProxyPass/<Proxy> and ProxyPassMatch/<ProxyMatch> "
-                         "can't be used altogether with the same worker "
-                         "name (%s); ignoring ProxyPass%s",
-                         worker->s->name, use_regex ? "Match" : "");
-            /* Rollback new alias */
-            if (cmd->path) {
-                dconf->alias = NULL;
-                dconf->alias_set = 0;
-            }
-            else {
-                memset(new, 0, sizeof(*new));
-                apr_array_pop(conf->aliases);
-            }
-            return NULL;
         }
         else {
             reuse = 1;
@@ -2707,7 +2687,8 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
     }
 
     /* Try to find existing worker */
-    worker = ap_proxy_get_worker(cmd->temp_pool, balancer, conf, ap_proxy_de_socketfy(cmd->temp_pool, name));
+    worker = ap_proxy_get_worker(cmd->temp_pool, balancer, conf,
+                                 ap_proxy_de_socketfy(cmd->temp_pool, name));
     if (!worker) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, APLOGNO(01147)
                      "Defining worker '%s' for balancer '%s'",
@@ -2756,6 +2737,7 @@ static const char *
     char *word, *val;
     proxy_balancer *balancer = NULL;
     proxy_worker *worker = NULL;
+    unsigned int worker_type = 0;
     int in_proxy_section = 0;
     /* XXX: Should this be NOT_IN_DIRECTORY|NOT_IN_FILES? */
     const char *err = ap_check_cmd_context(cmd, NOT_IN_HTACCESS);
@@ -2772,6 +2754,13 @@ static const char *
         name = ap_getword_conf(cmd->temp_pool, &pargs);
         if ((word = ap_strchr(name, '>')))
             *word = '\0';
+        if (strncasecmp(cmd->directive->parent->directive + 6,
+                        "Match", 5) == 0) {
+            worker_type = AP_PROXY_WORKER_IS_MATCH;
+        }
+        else {
+            worker_type = AP_PROXY_WORKER_IS_PREFIX;
+        }
         in_proxy_section = 1;
     }
     else {
@@ -2796,11 +2785,13 @@ static const char *
         }
     }
     else {
-        worker = ap_proxy_get_worker(cmd->temp_pool, NULL, conf, ap_proxy_de_socketfy(cmd->temp_pool, name));
+        worker = ap_proxy_get_worker_ex(cmd->temp_pool, NULL, conf,
+                                        ap_proxy_de_socketfy(cmd->temp_pool, name),
+                                        worker_type);
         if (!worker) {
             if (in_proxy_section) {
-                err = ap_proxy_define_worker(cmd->pool, &worker, NULL,
-                                             conf, name, 0);
+                err = ap_proxy_define_worker_ex(cmd->pool, &worker, NULL,
+                                                conf, name, worker_type);
                 if (err)
                     return apr_pstrcat(cmd->temp_pool, "ProxySet ",
                                        err, NULL);
@@ -2854,8 +2845,7 @@ static const char *proxysection(cmd_parms *cmd, void *mconfig, const char *arg)
     char *word, *val;
     proxy_balancer *balancer = NULL;
     proxy_worker *worker = NULL;
-    int use_regex = 0;
-
+    unsigned int worker_type = AP_PROXY_WORKER_IS_PREFIX;
     const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_CONTEXT);
     proxy_server_conf *sconf =
     (proxy_server_conf *) ap_get_module_config(cmd->server->module_config, &proxy_module);
@@ -2893,7 +2883,7 @@ static const char *proxysection(cmd_parms *cmd, void *mconfig, const char *arg)
         if (!r) {
             return "Regex could not be compiled";
         }
-        use_regex = 1;
+        worker_type = AP_PROXY_WORKER_IS_MATCH;
     }
 
     /* initialize our config and fetch it */
@@ -2940,31 +2930,15 @@ static const char *proxysection(cmd_parms *cmd, void *mconfig, const char *arg)
             }
         }
         else {
-            worker = ap_proxy_get_worker(cmd->temp_pool, NULL, sconf,
-                                         ap_proxy_de_socketfy(cmd->temp_pool, (char*)conf->p));
+            worker = ap_proxy_get_worker_ex(cmd->temp_pool, NULL, sconf,
+                                            ap_proxy_de_socketfy(cmd->temp_pool, conf->p),
+                                            worker_type);
             if (!worker) {
-                if (use_regex) {
-                    err = ap_proxy_define_match_worker(cmd->pool, &worker, NULL,
-                                                       sconf, conf->p, 0);
-                }
-                else {
-                    err = ap_proxy_define_worker(cmd->pool, &worker, NULL,
-                                                 sconf, conf->p, 0);
-                }
+                err = ap_proxy_define_worker_ex(cmd->pool, &worker, NULL, sconf,
+                                                conf->p, worker_type);
                 if (err)
                     return apr_pstrcat(cmd->temp_pool, thiscmd->name,
                                        " ", err, NULL);
-            }
-            else if ((use_regex != 0) ^ (worker->s->is_name_matchable != 0)) {
-                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server, APLOGNO(10250)
-                             "ProxyPass/<Proxy> and ProxyPassMatch/<ProxyMatch> "
-                             "can't be used altogether with the same worker "
-                             "name (%s); ignoring <Proxy%s>",
-                             worker->s->name, use_regex ? "Match" : "");
-                /* Rollback new section */
-                ((void **)sconf->sec_proxy->elts)[sconf->sec_proxy->nelts - 1] = NULL;
-                apr_array_pop(sconf->sec_proxy);
-                goto cleanup;
             }
             if (!worker->section_config) {
                 worker->section_config = new_dir_conf;
@@ -2995,7 +2969,6 @@ static const char *proxysection(cmd_parms *cmd, void *mconfig, const char *arg)
         }
     }
 
-cleanup:
     cmd->path = old_path;
     cmd->override = old_overrides;
 
