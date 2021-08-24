@@ -1279,9 +1279,14 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
                                                    save_table);
             }
 
+            /*
+             * Save a possible Transfer-Encoding header as we need it later for
+             * ap_http_filter to know where to end.
+             */
+            te = apr_table_get(r->headers_out, "Transfer-Encoding");
+
             /* can't have both Content-Length and Transfer-Encoding */
-            if (apr_table_get(r->headers_out, "Transfer-Encoding")
-                    && apr_table_get(r->headers_out, "Content-Length")) {
+            if (te && apr_table_get(r->headers_out, "Content-Length")) {
                 /*
                  * 2616 section 4.4, point 3: "if both Transfer-Encoding
                  * and Content-Length are received, the latter MUST be
@@ -1298,12 +1303,6 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
                               backend->hostname, backend->port);
                 backend->close = 1;
             }
-
-            /*
-             * Save a possible Transfer-Encoding header as we need it later for
-             * ap_http_filter to know where to end.
-             */
-            te = apr_table_get(r->headers_out, "Transfer-Encoding");
 
             upgrade = apr_table_get(r->headers_out, "Upgrade");
             if (proxy_status == HTTP_SWITCHING_PROTOCOLS) {
