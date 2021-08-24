@@ -142,6 +142,17 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_proxy: Fix possible reuse/merging of Proxy(Pass)Match worker instances
+     with others when their URLs contain a '$' substitution.  PR 65419 + 65429.
+     trunk patch: http://svn.apache.org/r1891206
+                  http://svn.apache.org/r1891216
+                  http://svn.apache.org/r1891284
+     backport: wget http://people.apache.org/~ylavic/patches/2.4.x-bz_65419+65429-v2.patch
+             + patch -p0 < 2.4.x-bz_65419+65429-v2.patch
+             + svn merge --record-only -c 1891206,1891216,1891284 ^/httpd/httpd/trunk .
+             + make update-changes
+     +1: ylavic, minfrin, icing
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -188,17 +199,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://github.com/apache/httpd/pull/204.diff
            PR: https://github.com/apache/httpd/pull/204
      +1: icing, minfrin
-
-  *) mod_proxy: Fix possible reuse/merging of Proxy(Pass)Match worker instances
-     with others when their URLs contain a '$' substitution.  PR 65419 + 65429.
-     trunk patch: http://svn.apache.org/r1891206
-                  http://svn.apache.org/r1891216
-                  http://svn.apache.org/r1891284
-     backport: wget http://people.apache.org/~ylavic/patches/2.4.x-bz_65419+65429-v2.patch
-             + patch -p0 < 2.4.x-bz_65419+65429-v2.patch
-             + svn merge --record-only -c 1891206,1891216,1891284 ^/httpd/httpd/trunk .
-             + make update-changes
-     +1: ylavic, minfrin
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
