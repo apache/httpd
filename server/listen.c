@@ -853,7 +853,7 @@ AP_DECLARE(apr_status_t) ap_duplicate_listeners(apr_pool_t *p, server_rec *s,
                 if (val > 1) {
                     *num_buckets = val;
                 }
-                ap_log_perror(APLOG_MARK, APLOG_INFO, 0, p, APLOGNO(02819)
+                ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(02819)
                               "Using %i listeners bucket(s) based on %i "
                               "online CPU cores and a ratio of %i",
                               *num_buckets, num_online_cores,
@@ -862,7 +862,7 @@ AP_DECLARE(apr_status_t) ap_duplicate_listeners(apr_pool_t *p, server_rec *s,
             else
 #endif
             if (!warn_once) {
-                ap_log_perror(APLOG_MARK, APLOG_WARNING, 0, p, APLOGNO(02820)
+                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(02820)
                               "ListenCoresBucketsRatio ignored without "
                               "SO_REUSEPORT and _SC_NPROCESSORS_ONLN "
                               "support: using a single listeners bucket");
