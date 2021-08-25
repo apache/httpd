@@ -404,7 +404,7 @@ class H2TestEnv:
         log.debug("Server still responding after %d sec", timeout)
         return False
 
-    def apachectl(self, cmd, check_live=True):
+    def _run_apachectl(self, cmd):
         args = [self._apachectl,
                 "-d", self.server_dir,
                 "-f", os.path.join(self._server_dir, 'conf/httpd.conf'),
@@ -412,25 +412,32 @@ class H2TestEnv:
         log.debug("execute: %s", " ".join(args))
         p = subprocess.run(args, capture_output=True, text=True)
         rv = p.returncode
-        if rv == 0:
-            timeout = timedelta(seconds=10)
-            if check_live:
-                rv = 0 if self.is_live(self._http_base, timeout=timeout) else -1
-            else:
-                rv = 0 if self.is_dead(self._http_base, timeout=timeout) else -1
-                log.debug("waited for a apache.is_dead, rv=%d", rv)
-        else:
+        if rv != 0:
             log.warning(f"exit {rv}, stdout: {p.stdout}, stderr: {p.stderr}")
         return rv
 
-    def apache_restart(self):
-        return self.apachectl("graceful")
-        
-    def apache_start(self):
-        return self.apachectl("start")
+    def apache_reload(self):
+        rv = self._run_apachectl("graceful")
+        if rv == 0:
+            timeout = timedelta(seconds=10)
+            rv = 0 if self.is_live(self._http_base, timeout=timeout) else -1
+        return rv
 
+    def apache_restart(self):
+        rv = self.apache_stop()
+        rv = self._run_apachectl("start")
+        if rv == 0:
+            timeout = timedelta(seconds=10)
+            rv = 0 if self.is_live(self._http_base, timeout=timeout) else -1
+        return rv
+        
     def apache_stop(self):
-        return self.apachectl("stop", check_live=False)
+        rv = self._run_apachectl("stop")
+        if rv == 0:
+            timeout = timedelta(seconds=10)
+            rv = 0 if self.is_dead(self._http_base, timeout=timeout) else -1
+            log.debug("waited for a apache.is_dead, rv=%d", rv)
+        return rv
 
     def apache_error_log_clear(self):
         if os.path.isfile(self._server_error_log):

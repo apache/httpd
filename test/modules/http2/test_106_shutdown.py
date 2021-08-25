@@ -37,7 +37,7 @@ class TestShutdown:
         t = Thread(target=long_request)
         t.start()
         time.sleep(0.5)
-        assert env.apache_restart() == 0
+        assert env.apache_reload() == 0
         t.join()
         # noinspection PyTypeChecker
         r: ExecResult = self.r
