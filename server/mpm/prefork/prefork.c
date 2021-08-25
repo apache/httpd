@@ -1318,6 +1318,11 @@ static int prefork_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp
         retained->max_daemons_limit = -1;
         retained->idle_spawn_rate = 1;
     }
+    else if (retained->mpm->baton != retained) {
+        /* If the MPM changes on restart, be ungraceful */
+        retained->mpm->baton = retained;
+        retained->mpm->was_graceful = 0;
+    }
     retained->mpm->mpm_state = AP_MPMQ_STARTING;
     ++retained->mpm->module_loads;
 

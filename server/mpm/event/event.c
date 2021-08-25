@@ -3767,6 +3767,11 @@ static int event_pre_config(apr_pool_t * pconf, apr_pool_t * plog,
             test_atomics = 1;
         }
     }
+    else if (retained->mpm->baton != retained) {
+        /* If the MPM changes on restart, be ungraceful */
+        retained->mpm->baton = retained;
+        retained->mpm->was_graceful = 0;
+    }
     retained->mpm->mpm_state = AP_MPMQ_STARTING;
     ++retained->mpm->module_loads;
 
