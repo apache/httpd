@@ -65,6 +65,7 @@ typedef struct {
     remoteip_addr_info *proxy_protocol_disabled;
 
     apr_array_header_t *disabled_subnets;
+    apr_array_header_t *only_subnets;
     apr_pool_t *pool;
 } remoteip_config_t;
 
@@ -153,6 +154,7 @@ static void *create_remoteip_server_config(apr_pool_t *p, server_rec *s)
 {
     remoteip_config_t *config = apr_pcalloc(p, sizeof(*config));
     config->disabled_subnets = apr_array_make(p, 1, sizeof(apr_ipsubnet_t *));
+    config->only_subnets = apr_array_make(p, 1, sizeof(apr_ipsubnet_t *));
     /* config->header_name = NULL;
      * config->proxies_header_name = NULL;
      * config->proxy_protocol_enabled = NULL;
@@ -453,8 +455,8 @@ static const char *remoteip_enable_proxy_protocol(cmd_parms *cmd, void *config,
     return NULL;
 }
 
-static const char *remoteip_disable_networks(cmd_parms *cmd, void *d,
-                                             int argc, char *const argv[])
+static const char *remoteip_proxyproto_networks(cmd_parms *cmd, void *d,
+                                                int argc, char *const argv[])
 {
     int i;
     apr_pool_t *ptemp = cmd->temp_pool;
@@ -486,7 +488,7 @@ static const char *remoteip_disable_networks(cmd_parms *cmd, void *d,
                                 addr, &rv);
         }
 
-        *(apr_ipsubnet_t**)apr_array_push(conf->disabled_subnets) = *ip;
+        *(apr_ipsubnet_t**)apr_array_push(cmd->info ? conf->only_subnets : conf->disabled_subnets) = *ip;
     }
 
     return NULL;
@@ -908,6 +910,20 @@ static int remoteip_hook_pre_connection(conn_rec *c, void *csd)
             return DECLINED;
     }
 
+    /* check if we're enabled for this host (all hosts by default) */
+    if (conf->only_subnets->nelts != 0) {
+        for (i = 0; i < conf->only_subnets->nelts; i++) {
+            apr_ipsubnet_t *ip = ((apr_ipsubnet_t**)conf->only_subnets->elts)[i];
+
+            if (ip && apr_ipsubnet_test(ip, c->client_addr)) {
+                break;
+            }
+        }
+        if (i == conf->only_subnets->nelts) {
+            return DECLINED;
+        }
+    }
+
     /* mod_proxy creates outgoing connections - we don't want those */
     if (!remoteip_is_server_port(c->local_addr->port)) {
         return DECLINED;
@@ -1241,7 +1257,10 @@ static const command_rec remoteip_cmds[] =
     AP_INIT_FLAG("RemoteIPProxyProtocol", remoteip_enable_proxy_protocol, NULL,
                   RSRC_CONF, "Enable PROXY protocol handling ('on', 'off')"),
     AP_INIT_TAKE_ARGV("RemoteIPProxyProtocolExceptions",
-                  remoteip_disable_networks, NULL, RSRC_CONF, "Disable PROXY "
+                  remoteip_proxyproto_networks, 0, RSRC_CONF, "Disable PROXY "
+                  "protocol handling for this list of networks in CIDR format"),
+    AP_INIT_TAKE_ARGV("RemoteIPProxyProtocolOnly",
+                  remoteip_proxyproto_networks, (void*)1, RSRC_CONF, "Only enable PROXY "
                   "protocol handling for this list of networks in CIDR format"),
     { NULL }
 };
