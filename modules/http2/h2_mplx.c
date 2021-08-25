@@ -89,7 +89,7 @@ apr_status_t h2_mplx_m_child_init(apr_pool_t *pool, server_rec *s)
 #define H2_MPLX_LEAVE_MAYBE(m, dolock)    \
     if (dolock) apr_thread_mutex_unlock(m->lock)
 
-static void mst_check_data_for(h2_mplx *m, h2_stream *stream, int mplx_is_locked);
+static void mst_check_data_for(h2_mplx *m, int stream_id, int mplx_is_locked);
 
 static void mst_stream_input_ev(void *ctx, h2_bucket_beam *beam)
 {
@@ -502,7 +502,7 @@ static void mst_output_produced(void *ctx, h2_bucket_beam *beam, apr_off_t bytes
     h2_stream *stream = ctx;
     h2_mplx *m = stream->session->mplx;
     
-    mst_check_data_for(m, stream, 0);
+    mst_check_data_for(m, stream->id, 0);
 }
 
 static apr_status_t t_out_open(h2_mplx *m, int stream_id, h2_bucket_beam *beam)
@@ -531,7 +531,7 @@ static apr_status_t t_out_open(h2_mplx *m, int stream_id, h2_bucket_beam *beam)
     
     /* we might see some file buckets in the output, see
      * if we have enough handles reserved. */
-    mst_check_data_for(m, stream, 1);
+    mst_check_data_for(m, stream->id, 1);
     return APR_SUCCESS;
 }
 
@@ -555,8 +555,7 @@ apr_status_t h2_mplx_t_out_open(h2_mplx *m, int stream_id, h2_bucket_beam *beam)
 static apr_status_t s_out_close(h2_mplx *m, h2_task *task)
 {
     apr_status_t status = APR_SUCCESS;
-    h2_stream *stream;
-    
+
     if (!task) {
         return APR_ECONNABORTED;
     }
@@ -564,8 +563,7 @@ static apr_status_t s_out_close(h2_mplx *m, h2_task *task)
         ++task->c->keepalives;
     }
     
-    stream = h2_ihash_get(m->streams, task->stream_id);
-    if (!stream) {
+    if (!h2_ihash_get(m->streams, task->stream_id)) {
         return APR_ECONNABORTED;
     }
 
@@ -574,7 +572,7 @@ static apr_status_t s_out_close(h2_mplx *m, h2_task *task)
     status = h2_beam_close(task->output.beam);
     h2_beam_log(task->output.beam, task->c, APLOG_TRACE2, "out_close");
     s_output_consumed_signal(m, task);
-    mst_check_data_for(m, stream, 1);
+    mst_check_data_for(m, task->stream_id, 1);
     return status;
 }
 
@@ -608,14 +606,14 @@ apr_status_t h2_mplx_m_out_trywait(h2_mplx *m, apr_interval_time_t timeout,
     return status;
 }
 
-static void mst_check_data_for(h2_mplx *m, h2_stream *stream, int mplx_is_locked)
+static void mst_check_data_for(h2_mplx *m, int stream_id, int mplx_is_locked)
 {
     /* If m->lock is already held, we must release during h2_ififo_push()
      * which can wait on its not_full condition, causing a deadlock because
      * no one would then be able to acquire m->lock to empty the fifo.
      */
     H2_MPLX_LEAVE_MAYBE(m, mplx_is_locked);
-    if (h2_ififo_push(m->readyq, stream->id) == APR_SUCCESS) {
+    if (h2_ififo_push(m->readyq, stream_id) == APR_SUCCESS) {
         H2_MPLX_ENTER_ALWAYS(m);
         apr_atomic_set32(&m->event_pending, 1);
         if (m->added_output) {
@@ -677,7 +675,7 @@ apr_status_t h2_mplx_m_process(h2_mplx *m, struct h2_stream *stream,
         h2_ihash_add(m->streams, stream);
         if (h2_stream_is_ready(stream)) {
             /* already have a response */
-            mst_check_data_for(m, stream, 1);
+            mst_check_data_for(m, stream->id, 1);
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c,
                           H2_STRM_MSG(stream, "process, add to readyq")); 
         }
@@ -814,7 +812,7 @@ static void s_task_done(h2_mplx *m, h2_task *task)
             }
 
             /* more data will not arrive, resume the stream */
-            mst_check_data_for(m, stream, 1);            
+            mst_check_data_for(m, stream->id, 1);
         }
     }
     else if ((stream = h2_ihash_get(m->shold, task->stream_id)) != NULL) {
@@ -1066,7 +1064,7 @@ apr_status_t h2_mplx_m_idle(h2_mplx *m)
                                   h2_beam_is_closed(stream->output),
                                   (long)h2_beam_get_buffered(stream->output));
                     h2_ihash_add(m->streams, stream);
-                    mst_check_data_for(m, stream, 1);
+                    mst_check_data_for(m, stream->id, 1);
                     stream->out_checked = 1;
                     status = APR_EAGAIN;
                 }
@@ -1117,7 +1115,7 @@ apr_status_t h2_mplx_m_dispatch_master_events(h2_mplx *m, stream_ev_callback *on
 
 apr_status_t h2_mplx_m_keep_active(h2_mplx *m, h2_stream *stream)
 {
-    mst_check_data_for(m, stream, 0);
+    mst_check_data_for(m, stream->id, 0);
     return APR_SUCCESS;
 }
 
