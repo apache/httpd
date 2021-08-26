@@ -15,9 +15,6 @@ from cryptography.x509 import ExtendedKeyUsageOID, NameOID
 
 EC_SUPPORTED = {}
 EC_SUPPORTED.update([(curve.name.upper(), curve) for curve in [
-    ec.BrainpoolP256R1,
-    ec.BrainpoolP384R1,
-    ec.BrainpoolP512R1,
     ec.SECP192R1,
     ec.SECP224R1,
     ec.SECP256R1,

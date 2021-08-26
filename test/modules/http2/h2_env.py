@@ -395,11 +395,9 @@ class H2TestEnv:
         while datetime.now() < try_until:
             try:
                 req = requests.Request('HEAD', url).prepare()
-                s.send(req, verify=self._verify_certs, timeout=timeout)
+                s.send(req, verify=self._verify_certs, timeout=int(timeout.total_seconds()))
                 time.sleep(.2)
-            except IOError:
-                return True
-            except:
+            except IOError as ex:
                 return True
         log.debug("Server still responding after %d sec", timeout)
         return False
