@@ -2607,7 +2607,7 @@ AP_DECLARE(char *) ap_escape_quotes(apr_pool_t *p, const char *instring)
          * If we find a slosh, and it's not the last byte in the string,
          * it's escaping something - advance past both bytes.
          */
-        if ((*inchr == '\\') && (inchr[1] != '\0')) {
+        else if ((*inchr == '\\') && (inchr[1] != '\0')) {
             inchr++;
             newlen++;
         }
@@ -2621,16 +2621,13 @@ AP_DECLARE(char *) ap_escape_quotes(apr_pool_t *p, const char *instring)
      * in front of every " that doesn't already have one.
      */
     while (*inchr != '\0') {
-        if ((*inchr == '\\') && (inchr[1] != '\0')) {
-            *outchr++ = *inchr++;
-            *outchr++ = *inchr++;
-        }
         if (*inchr == '"') {
             *outchr++ = '\\';
         }
-        if (*inchr != '\0') {
+        else if ((*inchr == '\\') && (inchr[1] != '\0')) {
             *outchr++ = *inchr++;
         }
+        *outchr++ = *inchr++;
     }
     *outchr = '\0';
     return outstring;
@@ -2668,6 +2665,7 @@ AP_DECLARE(char *) ap_append_pid(apr_pool_t *p, const char *string,
  * in timeout_parameter.
  * @return Status value indicating whether the parsing was successful or not.
  */
+#define CHECK_OVERFLOW(a, b) if (a > b) return APR_EGENERAL
 AP_DECLARE(apr_status_t) ap_timeout_parameter_parse(
                                                const char *timeout_parameter,
                                                apr_interval_time_t *timeout,
@@ -2676,6 +2674,7 @@ AP_DECLARE(apr_status_t) ap_timeout_parameter_parse(
     char *endp;
     const char *time_str;
     apr_int64_t tout;
+    apr_uint64_t check;
 
     tout = apr_strtoi64(timeout_parameter, &endp, 10);
     if (errno) {
@@ -2688,16 +2687,22 @@ AP_DECLARE(apr_status_t) ap_timeout_parameter_parse(
         time_str = endp;
     }
 
+    if (tout < 0) { 
+        return APR_EGENERAL;
+    }
+
     switch (*time_str) {
         /* Time is in seconds */
     case 's':
     case 'S':
-        *timeout = (apr_interval_time_t) apr_time_from_sec(tout);
+        CHECK_OVERFLOW(tout, apr_time_sec(APR_INT64_MAX));
+        check = apr_time_from_sec(tout);
         break;
+        /* Time is in hours */
     case 'h':
     case 'H':
-        /* Time is in hours */
-        *timeout = (apr_interval_time_t) apr_time_from_sec(tout * 3600);
+        CHECK_OVERFLOW(tout, apr_time_sec(APR_INT64_MAX / 3600));
+        check = apr_time_from_sec(tout * 3600);
         break;
     case 'm':
     case 'M':
@@ -2705,12 +2710,14 @@ AP_DECLARE(apr_status_t) ap_timeout_parameter_parse(
         /* Time is in milliseconds */
         case 's':
         case 'S':
-            *timeout = (apr_interval_time_t) tout * 1000;
+            CHECK_OVERFLOW(tout, apr_time_as_msec(APR_INT64_MAX));
+            check = apr_time_from_msec(tout);
             break;
         /* Time is in minutes */
         case 'i':
         case 'I':
-            *timeout = (apr_interval_time_t) apr_time_from_sec(tout * 60);
+            CHECK_OVERFLOW(tout, apr_time_sec(APR_INT64_MAX / 60));
+            check = apr_time_from_sec(tout * 60);
             break;
         default:
             return APR_EGENERAL;
@@ -2719,8 +2726,11 @@ AP_DECLARE(apr_status_t) ap_timeout_parameter_parse(
     default:
         return APR_EGENERAL;
     }
+
+    *timeout = (apr_interval_time_t)check;
     return APR_SUCCESS;
 }
+#undef CHECK_OVERFLOW
 
 AP_DECLARE(int) ap_parse_strict_length(apr_off_t *len, const char *str)
 {

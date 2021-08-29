@@ -99,6 +99,11 @@ struct md_ocsp_id_map_t {
     md_data_t external_id;
 };
 
+static void md_openssl_free(void *d)
+{
+    OPENSSL_free(d);
+}
+
 const char *md_ocsp_cert_stat_name(md_ocsp_cert_stat_t stat)
 {
     switch (stat) {
@@ -121,11 +126,11 @@ apr_status_t md_ocsp_init_id(md_data_t *id, apr_pool_t *p, const md_cert_t *cert
     X509 *x = md_cert_get_X509(cert);
     unsigned int ulen = 0;
     
+    md_data_null(id);
     if (X509_digest(x, EVP_sha1(), iddata, &ulen) != 1) {
         return APR_EGENERAL;
     }
-    id->len = ulen;
-    id->data = apr_pmemdup(p, iddata, id->len);
+    md_data_assign_pcopy(id, (const char*)iddata, ulen, p);
     return APR_SUCCESS;
 }
 
@@ -135,11 +140,7 @@ static void ostat_req_cleanup(md_ocsp_status_t *ostat)
         OCSP_REQUEST_free(ostat->ocsp_req);
         ostat->ocsp_req = NULL;
     }
-    if (ostat->req_der.data) {
-        OPENSSL_free((void*)ostat->req_der.data);
-        ostat->req_der.data = NULL;
-        ostat->req_der.len = 0;
-    }
+    md_data_clear(&ostat->req_der);
 }
 
 static int ostat_cleanup(void *ctx, const void *key, apr_ssize_t klen, const void *val)
@@ -155,11 +156,7 @@ static int ostat_cleanup(void *ctx, const void *key, apr_ssize_t klen, const voi
         OCSP_CERTID_free(ostat->certid);
         ostat->certid = NULL;
     }
-    if (ostat->resp_der.data) {
-        OPENSSL_free((void*)ostat->resp_der.data);
-        ostat->resp_der.data = NULL;
-        ostat->resp_der.len = 0;
-    }
+    md_data_clear(&ostat->resp_der);
     return 1;
 }
 
@@ -174,27 +171,12 @@ static int ostat_should_renew(md_ocsp_status_t *ostat)
 static apr_status_t ostat_set(md_ocsp_status_t *ostat, md_ocsp_cert_stat_t stat,
                               md_data_t *der, md_timeperiod_t *valid, apr_time_t mtime)
 {
-    apr_status_t rv = APR_SUCCESS;
-    char *s = (char*)der->data;
-    
-    if (der->len) {
-        s = OPENSSL_malloc(der->len);
-        if (!s) {
-            rv = APR_ENOMEM;
-            goto cleanup;
-        }
-        memcpy((char*)s, der->data, der->len);
-    }
- 
-    if (ostat->resp_der.data) {
-        OPENSSL_free((void*)ostat->resp_der.data);
-        ostat->resp_der.data = NULL;
-        ostat->resp_der.len = 0;
-    }
-    
+    apr_status_t rv;
+
+    rv = md_data_assign_copy(&ostat->resp_der, der->data, der->len);
+    if (APR_SUCCESS != rv) goto cleanup;
+
     ostat->resp_stat = stat;
-    ostat->resp_der.data = s;
-    ostat->resp_der.len = der->len;
     ostat->resp_valid = *valid;
     ostat->resp_mtime = mtime;
     
@@ -328,8 +310,7 @@ apr_status_t md_ocsp_prime(md_ocsp_reg_t *reg, const char *ext_id, apr_size_t ex
                            md_cert_t *cert, md_cert_t *issuer, const md_t *md)
 {
     md_ocsp_status_t *ostat;
-    STACK_OF(OPENSSL_STRING) *ssk = NULL;
-    const char *name, *s;
+    const char *name;
     md_data_t id;
     apr_status_t rv = APR_SUCCESS;
     
@@ -355,19 +336,13 @@ apr_status_t md_ocsp_prime(md_ocsp_reg_t *reg, const char *ext_id, apr_size_t ex
 
     md_log_perror(MD_LOG_MARK, MD_LOG_TRACE2, 0, reg->p, 
                   "md[%s]: getting ocsp responder from cert", name);
-    ssk = X509_get1_ocsp(md_cert_get_X509(cert));
-    if (!ssk) {
-        rv = APR_ENOENT;
-        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, reg->p, 
-                      "md[%s]: certificate with serial %s has not OCSP responder URL", 
+    rv = md_cert_get_ocsp_responder_url(&ostat->responder_url, reg->p, cert);
+    if (APR_SUCCESS != rv) {
+        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, reg->p,
+                      "md[%s]: certificate with serial %s has not OCSP responder URL",
                       name, md_cert_get_serial_number(cert, reg->p));
         goto cleanup;
     }
-    s = sk_OPENSSL_STRING_value(ssk, 0);
-    md_log_perror(MD_LOG_MARK, MD_LOG_TRACE2, 0, reg->p, 
-                  "md[%s]: ocsp responder found '%s'", name, s);
-    ostat->responder_url = apr_pstrdup(reg->p, s);
-    X509_email_free(ssk);
 
     ostat->certid = OCSP_cert_to_id(NULL, md_cert_get_X509(cert), md_cert_get_X509(issuer));
     if (!ostat->certid) {
@@ -529,8 +504,9 @@ static const char *certid_as_hex(const OCSP_CERTID *certid, apr_pool_t *p)
     
     memset(&der, 0, sizeof(der));
     der.len = (apr_size_t)i2d_OCSP_CERTID((OCSP_CERTID*)certid, (unsigned char**)&der.data);
+    der.free_data = md_openssl_free;
     md_data_to_hex(&hex, 0, p, &der);
-    OPENSSL_free((void*)der.data);
+    md_data_clear(&der);
     return hex;
 }
 
@@ -716,8 +692,9 @@ static apr_status_t ostat_on_resp(const md_http_response_t *resp, void *baton)
         md_result_log(update->result, MD_LOG_WARNING);
         goto cleanup;
     }
-    nstat = (bstatus == V_OCSP_CERTSTATUS_GOOD)? MD_OCSP_CERT_ST_GOOD : MD_OCSP_CERT_ST_REVOKED;
     new_der.len = (apr_size_t)n;
+    new_der.free_data = md_openssl_free;
+    nstat = (bstatus == V_OCSP_CERTSTATUS_GOOD)? MD_OCSP_CERT_ST_GOOD : MD_OCSP_CERT_ST_REVOKED;
     valid.start = bup? md_asn1_generalized_time_get(bup) : apr_time_now();
     valid.end = md_asn1_generalized_time_get(bnextup);
     
@@ -740,7 +717,7 @@ static apr_status_t ostat_on_resp(const md_http_response_t *resp, void *baton)
     md_result_log(update->result, MD_LOG_DEBUG);
 
 cleanup:
-    if (new_der.data) OPENSSL_free((void*)new_der.data);
+    md_data_clear(&new_der);
     if (basic_resp) OCSP_BASICRESP_free(basic_resp);
     if (ocsp_resp) OCSP_RESPONSE_free(ocsp_resp);
     return rv;
@@ -781,18 +758,52 @@ typedef struct {
     int max_parallel;
 } md_ocsp_todo_ctx_t;
 
+static apr_status_t ocsp_req_make(OCSP_REQUEST **pocsp_req, OCSP_CERTID *certid)
+{
+    OCSP_REQUEST *req = NULL;
+    OCSP_CERTID *id_copy = NULL;
+    apr_status_t rv = APR_ENOMEM;
+
+    req = OCSP_REQUEST_new();
+    if (!req) goto cleanup;
+    id_copy = OCSP_CERTID_dup(certid);
+    if (!id_copy) goto cleanup;
+    if (!OCSP_request_add0_id(req, id_copy)) goto cleanup;
+    id_copy = NULL;
+    OCSP_request_add1_nonce(req, 0, -1);
+    rv = APR_SUCCESS;
+cleanup:
+    if (id_copy) OCSP_CERTID_free(id_copy);
+    if (APR_SUCCESS != rv && req) {
+        OCSP_REQUEST_free(req);
+        req = NULL;
+    }
+    *pocsp_req = req;
+    return rv;
+}
+
+static apr_status_t ocsp_req_assign_der(md_data_t *d, OCSP_REQUEST *ocsp_req)
+{
+    int len;
+
+    md_data_clear(d);
+    len = i2d_OCSP_REQUEST(ocsp_req, (unsigned char**)&d->data);
+    if (len < 0) return APR_ENOMEM;
+    d->len = (apr_size_t)len;
+    d->free_data = md_openssl_free;
+    return APR_SUCCESS;
+}
+
 static apr_status_t next_todo(md_http_request_t **preq, void *baton, 
                               md_http_t *http, int in_flight)
 {
     md_ocsp_todo_ctx_t *ctx = baton;
     md_ocsp_update_t *update, **pupdate;    
     md_ocsp_status_t *ostat;
-    OCSP_CERTID *certid = NULL;
     md_http_request_t *req = NULL;
     apr_status_t rv = APR_ENOENT;
     apr_table_t *headers;
-    int len;
-    
+
     if (in_flight < ctx->max_parallel) {
         pupdate = apr_array_pop(ctx->todos);
         if (pupdate) {
@@ -804,18 +815,12 @@ static apr_status_t next_todo(md_http_request_t **preq, void *baton,
             md_job_start_run(update->job, update->result, ctx->reg->store);
              
             if (!ostat->ocsp_req) {
-                ostat->ocsp_req = OCSP_REQUEST_new();
-                if (!ostat->ocsp_req) goto cleanup;
-                certid = OCSP_CERTID_dup(ostat->certid);
-                if (!certid) goto cleanup;
-                if (!OCSP_request_add0_id(ostat->ocsp_req, certid)) goto cleanup;
-                OCSP_request_add1_nonce(ostat->ocsp_req, 0, -1);
-                certid = NULL;
+                rv = ocsp_req_make(&ostat->ocsp_req, ostat->certid);
+                if (APR_SUCCESS != rv) goto cleanup;
             }
             if (0 == ostat->req_der.len) {
-                len = i2d_OCSP_REQUEST(ostat->ocsp_req, (unsigned char**)&ostat->req_der.data);
-                if (len < 0) goto cleanup;
-                ostat->req_der.len = (apr_size_t)len;
+                rv = ocsp_req_assign_der(&ostat->req_der, ostat->ocsp_req);
+                if (APR_SUCCESS != rv) goto cleanup;
             }
             md_result_activity_printf(update->result, "status of certid %s, "
                                       "contacting %s", ostat->hexid, ostat->responder_url);
@@ -831,7 +836,6 @@ static apr_status_t next_todo(md_http_request_t **preq, void *baton,
     }
 cleanup:
     *preq = (APR_SUCCESS == rv)? req : NULL;
-    if (certid) OCSP_CERTID_free(certid);
     return rv;
 }
 

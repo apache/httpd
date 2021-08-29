@@ -274,9 +274,9 @@ MDChallengeDns01 /usr/bin/acme-setup-dns
                 your server cannot provide the client with the data and the client browser
                 cannot get it as well, since the OCSP service is not responding. 
             </p><p>
-                The implementation in mod_md will have peristed it, load it again after
+                The implementation in mod_md will have persisted it, load it again after
                 restart and have it available for incoming connections. A day or two before
-                this information expires, it will renew it, making it able to copy with
+                this information expires, it will renew it, making it able to cope with
                 a long OCSP service downtime.
             </p><p>
                 Due to backward compatibility, the existing implementation in mod_ssl could

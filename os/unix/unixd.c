@@ -469,7 +469,6 @@ static void sig_term(int sig)
         /* Main process (ap_pglobal) is dying */
         return;
     }
-    retained_data->mpm_state = AP_MPMQ_STOPPING;
     if (retained_data->shutdown_pending
             && (retained_data->is_ungraceful
                 || sig == AP_SIG_GRACEFUL_STOP)) {
@@ -477,6 +476,7 @@ static void sig_term(int sig)
         return;
     }
 
+    retained_data->mpm_state = AP_MPMQ_STOPPING;
     retained_data->shutdown_pending = 1;
     if (sig != AP_SIG_GRACEFUL_STOP) {
         retained_data->is_ungraceful = 1;
@@ -489,7 +489,6 @@ static void sig_restart(int sig)
         /* Main process (ap_pglobal) is dying */
         return;
     }
-    retained_data->mpm_state = AP_MPMQ_STOPPING;
     if (retained_data->restart_pending
             && (retained_data->is_ungraceful
                 || sig == AP_SIG_GRACEFUL)) {
@@ -497,6 +496,7 @@ static void sig_restart(int sig)
         return;
     }
 
+    retained_data->mpm_state = AP_MPMQ_STOPPING;
     retained_data->restart_pending = 1;
     if (sig != AP_SIG_GRACEFUL) {
         retained_data->is_ungraceful = 1;

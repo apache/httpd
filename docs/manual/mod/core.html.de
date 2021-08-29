@@ -72,6 +72,8 @@ Servers</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#fileetag">FileETag</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#files">&lt;Files&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#filesmatch">&lt;FilesMatch&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flushmaxpipelined">FlushMaxPipelined</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flushmaxthreshold">FlushMaxThreshold</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#forcetype">ForceType</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#gprofdir">GprofDir</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#hostnamelookups">HostnameLookups</a></li>
@@ -111,6 +113,7 @@ Servers</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#protocols">Protocols</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#protocolshonororder">ProtocolsHonorOrder</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#qualifyredirecturl">QualifyRedirectURL</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#readbuffersize">ReadBufferSize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#regexdefaultoptions">RegexDefaultOptions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#registerhttpmethod">RegisterHttpMethod</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rlimitcpu">RLimitCPU</a></li>
@@ -1431,6 +1434,34 @@ beziehen</td></tr>
     kombiniert werden, wenn eine Anfrage empfangen wird</li>
 </ul>
 </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="FlushMaxPipelined" id="FlushMaxPipelined">FlushMaxPipelined</a>-<a name="flushmaxpipelined" id="flushmaxpipelined">Direktive</a> <a title="Permanent link" href="#flushmaxpipelined" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Maximum number of pipelined responses above which they are flushed
+to the network</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FlushMaxPipelined <var>number</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Voreinstellung:</a></th><td><code>FlushMaxPipelined 5</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Kompatibilit&#228;t:</a></th><td>2.5 and later</td></tr>
+</table><p>Die Dokumentation zu dieser Direktive wurde
+            noch nicht &#252;bersetzt. Bitte schauen Sie in die englische
+            Version.</p></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="FlushMaxThreshold" id="FlushMaxThreshold">FlushMaxThreshold</a>-<a name="flushmaxthreshold" id="flushmaxthreshold">Direktive</a> <a title="Permanent link" href="#flushmaxthreshold" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Threshold above which pending data are flushed to the
+network</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FlushMaxThreshold<var>number-of-bytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Voreinstellung:</a></th><td><code>FlushMaxThreshold 65536</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Kompatibilit&#228;t:</a></th><td>2.5 and later</td></tr>
+</table><p>Die Dokumentation zu dieser Direktive wurde
+            noch nicht &#252;bersetzt. Bitte schauen Sie in die englische
+            Version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ForceType" id="ForceType">ForceType</a>-<a name="forcetype" id="forcetype">Direktive</a> <a title="Permanent link" href="#forcetype" class="permalink">&para;</a></h2>
 <table class="directive">
@@ -2898,6 +2929,19 @@ as if 'QualifyRedirectURL On' was configured.</td></tr>
             noch nicht &#252;bersetzt. Bitte schauen Sie in die englische
             Version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ReadBufferSize" id="ReadBufferSize">ReadBufferSize</a>-<a name="readbuffersize" id="readbuffersize">Direktive</a> <a title="Permanent link" href="#readbuffersize" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Size of the buffers used to read data</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ReadBufferSize <var>bytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Voreinstellung:</a></th><td><code>ReadBufferSize 8192</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host, Verzeichnis</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Kompatibilit&#228;t:</a></th><td>2.5 and later</td></tr>
+</table><p>Die Dokumentation zu dieser Direktive wurde
+            noch nicht &#252;bersetzt. Bitte schauen Sie in die englische
+            Version.</p></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="RegexDefaultOptions" id="RegexDefaultOptions">RegexDefaultOptions</a>-<a name="regexdefaultoptions" id="regexdefaultoptions">Direktive</a> <a title="Permanent link" href="#regexdefaultoptions" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Allow to configure global/default options for regexes</td></tr>
@@ -3862,7 +3906,7 @@ IP-Adressen angewendet werden</td></tr>
 <a href="../fr/mod/core.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Kommentare</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Kommentare</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
 var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/core.html';
@@ -3880,7 +3924,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/core.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2020 The Apache Software Foundation.<br />Lizenziert unter der <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2021 The Apache Software Foundation.<br />Lizenziert unter der <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Module</a> | <a href="../mod/quickreference.html">Direktiven</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossar</a> | <a href="../sitemap.html">Seitenindex</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

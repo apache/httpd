@@ -575,8 +575,9 @@ DIGIT       ::= &lt;any US-ASCII digit "0".."9"&gt;</pre>
 	noms distinctifs LDAP - DN) et la RFC4515 (Echappement des
 	filtres LDAP).</td><td /></tr>
 <tr class="odd"><td><code>replace</code></td>
-        <td>replace(chaîne, "de", "vers") remplace dans la chaîne
-	spécifiée toutes les occurrences de "de" par "vers".</td><td /></tr>
+        <td>replace(chaîne, "from", "to") remplace dans la chaîne
+	spécifiée toutes les occurrences de "from" par "to". Le premier
+	paramètre ne doit pas être une chaîne littérale.</td><td /></tr>
 </table>
 
     <p>Les fonctions marquées comme "limité" dans la dernière colonne ne sont
@@ -730,9 +731,8 @@ DIGIT       ::= &lt;any US-ASCII digit "0".."9"&gt;</pre>
 &lt;If "md5('foo') == 'acbd18db4cc2f85cedef654fccc4a4d8'"&gt;
   Header set checksum-matched true
 &lt;/If&gt;
-&lt;If "md5('foo') == replace('md5:XXXd18db4cc2f85cedef654fccc4a4d8', 'md5:XXX', 'acb')&gt;
-  Header set checksum-matched-2 true
-&lt;/If&gt;
+
+Require expr replace(%{REQUEST_METHOD},  'E', 'O') == 'GET'"
 
 
 # Exemple de fonction dans un contexte littéral
@@ -760,7 +760,7 @@ CustomLog logs/access-errors-specific.log common "expr=%{REQUEST_STATUS} -in {'4
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="./en/expr.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/expr.html" title="Français">&nbsp;fr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
+</div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
 var comments_identifier = 'http://httpd.apache.org/docs/trunk/expr.html';
