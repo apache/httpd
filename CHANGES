@@ -1,6 +1,46 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mpm_event: Fix graceful stop/restart of children processes if connections
+     are in lingering close for too long.  [Yann Ylavic]
+
+  *) mod_md: fixed a potential null pointer dereference if ACME/OCSP
+     server returned 2xx responses without content type. Reported by chuangwen.
+     [chuangwen, Stefan Eissing]
+
+  * core/mpm: add hook 'child_stopping` that gets called when the MPM is
+    stopping a child process. The additional `graceful` parameter allows
+    registered hooks to free resources early during a graceful shutdown.
+    [Yann Ylavic, Stefan Eissing]
+
+  *) mod_proxy: Fix icomplete initialization of BalancerMember(s) from the
+     balancer-manager, which can lead to a crash.  [Yann Ylavic]
+
+  *) mod_http2:
+   - Aborting requests via RST_STREAM no longer affect the available
+     resources of a connection when the first chunk of the response
+     body has been sent.
+   - H2Min/MaxWorkers behave as intended again. The module will initially
+     create H2MinWorkers threads and add up to H2MaxWorkers when needed. These
+     additional workers time out when idle after H2MaxWorkerIdleSeconds and
+     disappear again.
+   - Added a timeout to h2 worker cleanup to exit latest after 5 seconds of
+     waiting on idle workers to terminate. This happens after all connections
+     have been processed. a WARNING is logged in case workers lagged behind.
+   - When the shutdown of a child is detected (e.g. graceful shutdown), the
+     module will terminate all idle workers above H2MinWorkers right away.
+     This detection currently only happens when a HTTP/2 connection is active.
+     [Stefan Eissing]
+
+  *) mod_md:
+     - Domain names in `<MDomain ...>` can now appear in quoted form.
+     - Fixed a failure in ACME challenge selection that aborted further searches
+       when the tls-alpn-01 method did not seem to be suitable.
+     - Changed the tls-alpn-01 setup to only become unsuitable when none of the
+       dns names showed support for a configured 'Protocols ... acme-tls/1'. This
+       allows use of tls-alpn-01 for dns names that are not mapped to a VirtualHost.
+     [Stefan Eissing]
+
   *) core/mod_proxy/mod_ssl:
      Adding `outgoing` flag to conn_rec, indicating a connection is
      initiated by the server to somewhere, in contrast to incoming
