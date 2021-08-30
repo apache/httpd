@@ -623,9 +623,14 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
                     continue;
                 }
 
-                rc = apr_bucket_read(e, &data, &blen, APR_BLOCK_READ);
-                if (rc != APR_SUCCESS)
-                    return rc;
+                if (e->length == (apr_size_t)-1) {
+                    rc = apr_bucket_read(e, &data, &blen, APR_BLOCK_READ);
+                    if (rc != APR_SUCCESS)
+                        return rc;
+                }
+                else {
+                    blen = e->length;
+                }
                 len += blen;
                 /* 50 is for Content-Encoding and Vary headers and ETag suffix */
                 if (len > sizeof(gzip_header) + VALIDATION_SIZE + 50)
