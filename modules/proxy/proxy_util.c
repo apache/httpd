@@ -4890,12 +4890,16 @@ PROXY_DECLARE(int) ap_proxy_tunnel_run(proxy_tunnel_rec *tunnel)
                 return HTTP_INTERNAL_SERVER_ERROR;
             }
 
-            /* Write if we asked for POLLOUT, and got it or POLLERR
-             * alone (i.e. not with POLLIN|HUP). We want the output filters
-             * to know about the socket error if any, by failing the write.
+            /* We want to write if we asked for POLLOUT and got:
+             * - POLLOUT: the socket is ready for write;
+             * - !POLLIN: the socket is in error state (POLLERR) so we let
+             *   the user know by failing the write and log, OR the socket
+             *   is shutdown for read already (POLLHUP) so we have to
+             *   shutdown for write.
              */
             if ((tc->pfd->reqevents & APR_POLLOUT)
                     && ((pfd->rtnevents & APR_POLLOUT)
+                        || !(tc->pfd->reqevents & APR_POLLIN)
                         || !(pfd->rtnevents & (APR_POLLIN | APR_POLLHUP)))) {
                 struct proxy_tunnel_conn *out = tc, *in = tc->other;
 
@@ -4944,12 +4948,25 @@ PROXY_DECLARE(int) ap_proxy_tunnel_run(proxy_tunnel_rec *tunnel)
                             return rc;
                         }
                     }
+
+                    /* Flush any pending input data now, we don't know when
+                     * the next POLLIN will trigger and retaining data might
+                     * deadlock the underlying protocol. We don't check for
+                     * pending data first with ap_filter_input_pending() since
+                     * the read from proxy_tunnel_forward() is nonblocking
+                     * anyway and returning OK if there's no data.
+                     */
+                    rc = proxy_tunnel_forward(tunnel, in);
+                    if (rc != OK) {
+                        return rc;
+                    }
                 }
             }
 
-            /* Read if we asked for POLLIN|HUP, and got it or POLLERR
-             * alone (i.e. not with POLLOUT). We want the input filters
-             * to know about the socket error if any, by failing the read.
+            /* We want to read if we asked for POLLIN|HUP and got:
+             * - POLLIN|HUP: the socket is ready for read or EOF (POLLHUP);
+             * - !POLLOUT: the socket is in error state (POLLERR) so we let
+             *   the user know by failing the read and log.
              */
             if ((tc->pfd->reqevents & APR_POLLIN)
                     && ((pfd->rtnevents & (APR_POLLIN | APR_POLLHUP))
