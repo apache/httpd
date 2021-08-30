@@ -194,7 +194,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      types which prevents optimization further down the filter chain.
      trunk patch: http://svn.apache.org/r1892728
      2.4.x patch: svn merge -c 1892728 ^/httpd/httpd/trunk .
-     +1: icing
+     +1: icing, ylavic
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
