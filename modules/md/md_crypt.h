@@ -218,6 +218,9 @@ apr_status_t md_cert_get_ct_scts(apr_array_header_t *scts, apr_pool_t *p, const 
 
 apr_status_t md_cert_get_ocsp_responder_url(const char **purl, apr_pool_t *p, const md_cert_t *cert);
 
+apr_status_t md_check_cert_and_pkey(struct apr_array_header_t *certs, md_pkey_t *pkey);
+
+
 /**************************************************************************************************/
 /* X509 certificate transparency */
 

@@ -2014,3 +2014,19 @@ cleanup:
     return rv;
 }
 
+apr_status_t md_check_cert_and_pkey(struct apr_array_header_t *certs, md_pkey_t *pkey)
+{
+    const md_cert_t *cert;
+
+    if (certs->nelts == 0) {
+        return APR_ENOENT;
+    }
+
+    cert = APR_ARRAY_IDX(certs, 0, const md_cert_t*);
+
+    if (1 != X509_check_private_key(cert->x509, pkey->pkey)) {
+        return APR_EGENERAL;
+    }
+
+    return APR_SUCCESS;
+}
