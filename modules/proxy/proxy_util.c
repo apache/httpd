@@ -2274,8 +2274,8 @@ static void fix_uds_filename(request_rec *r, char **url)
     if (!r || !r->filename) return;
 
     if (!strncmp(r->filename, "proxy:", 6) &&
-            (ptr2 = ap_strcasestr(r->filename, "unix:")) &&
-            (ptr = ap_strchr(ptr2, '|'))) {
+            !ap_cstr_casecmpn(r->filename + 6, "unix:", 5) &&
+            (ptr2 = r->filename + 6 + 5, ptr = ap_strchr(ptr2, '|'))) {
         apr_uri_t urisock;
         apr_status_t rv;
         *ptr = '\0';
