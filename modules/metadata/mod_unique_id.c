@@ -19,238 +19,285 @@
  *
  * Original author: Dean Gaudet <dgaudet@arctic.org>
  * UUencoding modified by: Alvaro Martinez Echevarria <alvaro@lander.es>
+ * Complete rewrite by: Atle Solbakken <atle@goliathdns.no>, April 2021
  */
 
-#define APR_WANT_BYTEFUNC   /* for htons() et al */
-#include "apr_want.h"
-#include "apr_general.h"    /* for APR_OFFSETOF                */
-#include "apr_network_io.h"
+/* Enable when ready to use new library encoder
+ * #define WITH_APR_ENCODE
+ */
 
+/* Enable debug to error log
+ * #define UNIQUE_ID_DEBUG
+ */
+
+#define THREADED_COUNTER "unique_id_counter"
+
+#include "apr.h"
+
+#ifdef WITH_APR_ENCODE
+#    include "apr_encode.h"
+#endif
+#include "apr_thread_proc.h"
+#include "apr_cstr.h"
+
+#include "ap_mpm.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_log.h"
-#include "http_protocol.h"  /* for ap_hook_post_read_request */
+#include "http_protocol.h"
 
-#define ROOT_SIZE 10
+#ifdef HAVE_SYS_GETTID
+#    include <sys/syscall.h>
+#    include <sys/types.h>
+#endif
 
-typedef struct {
-    unsigned int stamp;
-    char root[ROOT_SIZE];
-    unsigned short counter;
-    unsigned int thread_index;
+#if APR_HAVE_UNISTD_H
+#    include <unistd.h>
+#endif
+#if APR_HAVE_PROCESS_H
+#    include <process.h>
+#endif
+
+typedef apr_uint16_t unique_counter;
+
+/* Unique ID structure members must be aligned on 1-byte boundaries */
+
+#pragma pack(push)
+#pragma pack(1)
+
+typedef struct unique_id_rec {
+    apr_uint64_t thread_id;
+    apr_uint64_t timestamp;
+    apr_uint32_t process_id;
+    apr_uint16_t server_id;
+    unique_counter counter;
 } unique_id_rec;
 
-/* We are using thread_index (the index into the scoreboard), because we
- * cannot guarantee the thread_id will be an integer.
- */
+#ifndef WITH_APR_ENCODE
+typedef struct unique_id_rec_padded {
+    struct unique_id_rec unique_id;
+    apr_uint16_t pad;
+} unique_id_rec_padded;
+#endif
 
-/* Comments:
- *
- * We want an identifier which is unique across all hits, everywhere.
- * "everywhere" includes multiple httpd instances on the same machine, or on
- * multiple machines.  Essentially "everywhere" should include all possible
- * httpds across all servers at a particular "site".  We make some assumptions
- * that if the site has a cluster of machines then their time is relatively
- * synchronized.  We also assume that the first address returned by a
- * gethostbyname (gethostname()) is unique across all the machines at the
- * "site".
- *
- * The root is assumed to absolutely uniquely identify this one child
- * from all other currently running children on all servers (including
- * this physical server if it is running multiple httpds) from each
- * other.
- *
- * The stamp and counter are used to distinguish all hits for a
- * particular root.  The stamp is updated using r->request_time,
- * saving cpu cycles.  The counter is never reset, and is used to
- * permit up to 64k requests in a single second by a single thread.
- *
- * The 144-bits of unique_id_rec are encoded using the alphabet
- * [A-Za-z0-9@-], resulting in 24 bytes of printable characters.  That is then
- * stuffed into the environment variable UNIQUE_ID so that it is available to
- * other modules.  The alphabet choice differs from normal base64 encoding
- * [A-Za-z0-9+/] because + and / are special characters in URLs and we want to
- * make it easy to use UNIQUE_ID in URLs.
- *
- * Note that UNIQUE_ID should be considered an opaque token by other
- * applications.  No attempt should be made to dissect its internal components.
- * It is an abstraction that may change in the future as the needs of this
- * module change.
- *
- * It is highly desirable that identifiers exist for "eternity".  But future
- * needs (such as much faster webservers, or moving to a
- * multithreaded server) may dictate a need to change the contents of
- * unique_id_rec.  Such a future implementation should ensure that the first
- * field is still a time_t stamp.  By doing that, it is possible for a site to
- * have a "flag second" in which they stop all of their old-format servers,
- * wait one entire second, and then start all of their new-servers.  This
- * procedure will ensure that the new space of identifiers is completely unique
- * from the old space.  (Since the first four unencoded bytes always differ.)
- *
- * Note: previous implementations used 32-bits of IP address plus pid
- * in place of the PRNG output in the "root" field.  This was
- * insufficient for IPv6-only hosts, required working DNS to determine
- * a unique IP address (fragile), and needed a [0, 1) second sleep
- * call at startup to avoid pid reuse.  Use of the PRNG avoids all
- * these issues.
- */
+#pragma pack(pop)
+
+typedef struct unique_id_server_config_rec { 
+    /* A value of -1 means not initialized, and 0 will be used. Max value is 65535. */
+    int server_id;
+} unique_id_server_config_rec;
+
+#if APR_HAS_THREADS
+struct unique_thread_data {
+    unique_counter counter;
+};
+#else
+static unique_counter global_counter = 0;
+#endif
+
+module AP_MODULE_DECLARE_DATA unique_id_module;
 
 /*
- * Sun Jun  7 05:43:49 CEST 1998 -- Alvaro
- * More comments:
- * 1) The UUencoding procedure is now done in a general way, avoiding the problems
- * with sizes and paddings that can arise depending on the architecture. Now the
- * offsets and sizes of the elements of the unique_id_rec structure are calculated
- * in unique_id_global_init; and then used to duplicate the structure without the
- * paddings that might exist. The multithreaded server fix should be now very easy:
- * just add a new "tid" field to the unique_id_rec structure, and increase by one
- * UNIQUE_ID_REC_MAX.
- * 2) unique_id_rec.stamp has been changed from "time_t" to "unsigned int", because
- * its size is 64bits on some platforms (linux/alpha), and this caused problems with
- * htonl/ntohl. Well, this shouldn't be a problem till year 2106.
+ * This module generates (almost) unique IDs for each request to a particular server.
+ *
+ * IDs are guaranteed to be unique across different servers for which the parameter
+ * UniqueIdServerId is set to a different value.
+ *
+ * IDs are always unique on a particular server regardless of the UniqueIdServerId value.
+ *
+ * A combination of different parameters however ensure a low chance for ID collisions:
+ *
+ * - Process ID of the running process
+ * - Thread ID of the running thread
+ * - Timestamp in microseconds
+ * - 16 bit incrementing counter for each unique Thread ID
+ * - 16 bit server ID manually set (defaults to 0)
+ *
+ * The resulting ID string will be a base64 encoded string (RFC4648) 32 characaters long. The
+ * length may change, applications storing the value should fit longer strings and not depend
+ * on the size.
+ *
+ * For non-threaded servers, the Thread ID will always be 0 and the counter is incremented
+ * for each process and wraps around after some time.
+ *
  */
 
-static unique_id_rec cur_unique_id;
+#if APR_IS_BIGENDIAN
+#    define swap16(a) a
+#    define swap32(a) a
+#    define swap64(a) a
+#else
+#    define swap16(a) ( ((a>>8)  & 0xff) |              \
+                        ((a<<8)  & 0xff00))
+#    define swap32(a) ( ((a>>24) & 0xff) |              \
+                        ((a>>8)  & 0xff00) |            \
+			((a<<8)  & 0xff0000) |          \
+			((a<<24) & 0xff000000))
+#    define swap64(a) ( ((a>>56) & 0xff) |              \
+                        ((a>>40) & 0xff00) |            \
+			((a>>24) & 0xff0000) |          \
+			((a>>8)  & 0xff000000) |        \
+			((a<<8)  & 0xff00000000) |      \
+			((a<<24) & 0xff0000000000) |    \
+			((a<<40) & 0xff000000000000) |  \
+			((a<<56) & 0xff00000000000000))
+#endif /* APR_IS_BIGENDIAN */
 
-/*
- * Number of elements in the structure unique_id_rec.
- */
-#define UNIQUE_ID_REC_MAX 4
-
-static unsigned short unique_id_rec_offset[UNIQUE_ID_REC_MAX],
-                      unique_id_rec_size[UNIQUE_ID_REC_MAX],
-                      unique_id_rec_total_size,
-                      unique_id_rec_size_uu;
-
-static int unique_id_global_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *main_server)
+static void byteswap_unique_id (unique_id_rec *unique_id)
 {
-    /*
-     * Calculate the sizes and offsets in cur_unique_id.
-     */
-    unique_id_rec_offset[0] = APR_OFFSETOF(unique_id_rec, stamp);
-    unique_id_rec_size[0] = sizeof(cur_unique_id.stamp);
-    unique_id_rec_offset[1] = APR_OFFSETOF(unique_id_rec, root);
-    unique_id_rec_size[1] = sizeof(cur_unique_id.root);
-    unique_id_rec_offset[2] = APR_OFFSETOF(unique_id_rec, counter);
-    unique_id_rec_size[2] = sizeof(cur_unique_id.counter);
-    unique_id_rec_offset[3] = APR_OFFSETOF(unique_id_rec, thread_index);
-    unique_id_rec_size[3] = sizeof(cur_unique_id.thread_index);
-    unique_id_rec_total_size = unique_id_rec_size[0] + unique_id_rec_size[1] +
-                               unique_id_rec_size[2] + unique_id_rec_size[3];
+    unique_id->thread_id = swap64(unique_id->thread_id);
+    unique_id->timestamp = swap64(unique_id->timestamp);
+    unique_id->process_id = swap32(unique_id->process_id);
+    unique_id->server_id = swap16(unique_id->server_id);
+    unique_id->counter = swap16(unique_id->counter);
+}
 
-    /*
-     * Calculate the size of the structure when encoded.
-     */
-    unique_id_rec_size_uu = (unique_id_rec_total_size*8+5)/6;
+static void populate_unique_id (unique_id_rec *unique_id, apr_uint64_t thread_id, apr_uint32_t counter, apr_uint16_t server_id)
+{
+    unique_id->thread_id = thread_id;
+    unique_id->timestamp = apr_time_now();
+    unique_id->process_id = ((apr_uint32_t) getpid()) & 0x00000000ffffffff;
+    unique_id->server_id = server_id;
+    unique_id->counter = counter;
+}
+
+static int get_server_id(apr_uint16_t *server_id, const request_rec *r)
+{
+    const unique_id_server_config_rec *conf;
+
+    /* Note : Cast away const */
+    if ((conf = ap_get_module_config((void *) r->server->module_config, &unique_id_module)) == NULL ||
+         conf->server_id < -1 ||
+	 conf->server_id > 65535
+    ) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, HTTP_INTERNAL_SERVER_ERROR, r->server, "Server ID of Unique ID module not initialized correctly");
+    	return HTTP_INTERNAL_SERVER_ERROR;
+    }
+
+    *server_id = conf->server_id < 0 ? 0 : conf->server_id;
 
     return OK;
 }
 
-static void unique_id_child_init(apr_pool_t *p, server_rec *s)
-{
-    ap_random_insecure_bytes(&cur_unique_id.root,
-                             sizeof(cur_unique_id.root));
+#if APR_HAS_THREADS
+/* from server/log.c */
+static apr_uint64_t get_thread_id(const request_rec *r) {
+    pid_t tid = 0;
+    int result;
+    if (ap_mpm_query(AP_MPMQ_IS_THREADED, &result) == APR_SUCCESS
+        && result != AP_MPMQ_NOT_SUPPORTED)
+    {
+        return (apr_uint64_t) apr_os_thread_current();
+    }
 
-    /*
-     * If we use 0 as the initial counter we have a little less protection
-     * against restart problems, and a little less protection against a clock
-     * going backwards in time.
-     */
-    ap_random_insecure_bytes(&cur_unique_id.counter,
-                             sizeof(cur_unique_id.counter));
+#if defined(HAVE_GETTID) || defined(HAVE_SYS_GETTID)
+#ifdef HAVE_GETTID
+    tid = gettid();
+#else
+    tid = syscall(SYS_gettid);
+#endif
+    return (apr_uint64_t) (tid == -1 ? 0 : tid);
+#endif /* HAVE_GETTID || HAVE_SYS_GETTID */
 }
+#endif /* APR_HAS_THREADS */
 
-/* Use the base64url encoding per RFC 4648, avoiding characters which
- * are not safe in URLs.  ### TODO: can switch to apr_encode_*. */
-static const char uuencoder[64] = {
-    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-    'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-    'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-    'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '_',
-};
-
-#define THREADED_COUNTER "unique_id_counter"
-
-static const char *gen_unique_id(const request_rec *r)
+static const char *create_unique_id_string(const request_rec *r)
 {
-    char *str;
-    /*
-     * Buffer padded with two final bytes, used to copy the unique_id_rec
-     * structure without the internal paddings that it could have.
-     */
-    unique_id_rec new_unique_id;
-    struct {
-        unique_id_rec foo;
-        unsigned char pad[2];
-    } paddedbuf;
-    unsigned char *x,*y;
-    unsigned short counter;
-    int i,j,k;
+    char *ret = NULL;
+    unique_id_rec unique_id;
+#ifndef WITH_APR_ENCODE    
+    const
+#endif
+    apr_size_t ret_size = sizeof(unique_id) * 2;
+    apr_uint16_t server_id = 0;
+
+    if (get_server_id(&server_id, r) != OK) {
+        goto out;
+    }
 
 #if APR_HAS_THREADS
-    apr_status_t rv;
-    unsigned short *pcounter;
-    apr_thread_t *thread = r->connection->current_thread;
-    
-    rv = apr_thread_data_get((void **)&pcounter, THREADED_COUNTER, thread);
-    if (rv == APR_SUCCESS && pcounter) {
-        counter = *pcounter;
-    }
-    else
-#endif
     {
-        counter = cur_unique_id.counter;
-    }
+        struct unique_thread_data *thread_data = NULL;
+        apr_thread_t *thread = r->connection->current_thread;
 
-    memcpy(&new_unique_id.root, &cur_unique_id.root, ROOT_SIZE);
-    new_unique_id.counter = htons(counter++);
-#if APR_HAS_THREADS
-    if (!pcounter) {
-        pcounter = apr_palloc(apr_thread_pool_get(thread), sizeof(*pcounter));
-    }
-    
-    *pcounter = counter;
-    rv = apr_thread_data_set(pcounter, THREADED_COUNTER, NULL, thread);
-    if (rv != APR_SUCCESS)
-#endif
-    {
-        cur_unique_id.counter = counter;
-    }
-    new_unique_id.stamp = htonl((unsigned int)apr_time_sec(r->request_time));
-    new_unique_id.thread_index = htonl((unsigned int)r->connection->id);
-
-    /* we'll use a temporal buffer to avoid uuencoding the possible internal
-     * paddings of the original structure */
-    x = (unsigned char *) &paddedbuf;
-    k = 0;
-    for (i = 0; i < UNIQUE_ID_REC_MAX; i++) {
-        y = ((unsigned char *) &new_unique_id) + unique_id_rec_offset[i];
-        for (j = 0; j < unique_id_rec_size[i]; j++, k++) {
-            x[k] = y[j];
+        if (apr_thread_data_get((void **) &thread_data, THREADED_COUNTER, thread) != APR_SUCCESS || thread_data == NULL) {
+            thread_data = apr_pcalloc(apr_thread_pool_get(thread), sizeof(*thread_data));
+            if (thread_data == NULL) {
+                goto out;
+            }
+            thread_data->counter = 0;
+            if (apr_thread_data_set(thread_data, THREADED_COUNTER, NULL, thread) != APR_SUCCESS) {
+                goto out;
+            }
         }
-    }
-    /*
-     * We reset two more bytes just in case padding is needed for the uuencoding.
-     */
-    x[k++] = '\0';
-    x[k++] = '\0';
 
-    /* alloc str and do the uuencoding */
-    str = (char *)apr_palloc(r->pool, unique_id_rec_size_uu + 1);
-    k = 0;
-    for (i = 0; i < unique_id_rec_total_size; i += 3) {
-        y = x + i;
-        str[k++] = uuencoder[y[0] >> 2];
-        str[k++] = uuencoder[((y[0] & 0x03) << 4) | ((y[1] & 0xf0) >> 4)];
-        if (k == unique_id_rec_size_uu) break;
-        str[k++] = uuencoder[((y[1] & 0x0f) << 2) | ((y[2] & 0xc0) >> 6)];
-        if (k == unique_id_rec_size_uu) break;
-        str[k++] = uuencoder[y[2] & 0x3f];
+        populate_unique_id(&unique_id, get_thread_id(r), ++(thread_data->counter), server_id);
     }
-    str[k++] = '\0';
+#else
+    populate_unique_id(&unique_id, 0, ++global_counter, server_id);
+#endif
 
-    return str;
+    byteswap_unique_id(&unique_id);
+
+    if ((ret = (char *)apr_pcalloc(r->pool, ret_size)) == NULL) {
+        goto out;
+    }
+
+#ifdef WITH_APR_ENCODE    
+    /* Use Base64 without the / per RFC 4648 */
+    if (apr_encode_base64(ret, (const char *) &unique_id, sizeof(unique_id), APR_ENCODE_URL|APR_ENCODE_NOPADDING, &ret_size) != APR_SUCCESS) {
+        ret = NULL;
+        goto out;
+    }
+#else
+    {
+        /* Use the base64url encoding per RFC 4648, avoiding characters which
+         * are not safe in URLs. */
+        static const char uuencoder[64] = {
+           'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+           'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+           'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+           'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+           '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '_',
+        };
+
+        unique_id_rec_padded unique_id_padded = {
+            unique_id, 0
+        };
+
+        const unsigned char *src = (const unsigned char *) &unique_id_padded;
+        const unsigned char *max = src + sizeof(unique_id);
+        int wpos = 0;
+        const unsigned char *pos;
+
+        for (pos = src; pos < max; pos += 3) {    
+            ret[wpos++] = uuencoder[pos[0] >> 2];
+            ret[wpos++] = uuencoder[((pos[0] & 0x03) << 4) | ((pos[1] & 0xf0) >> 4)];
+            if (pos + 1 == max) break;
+            ret[wpos++] = uuencoder[((pos[1] & 0x0f) << 2) | ((pos[2] & 0xc0) >> 6)];
+            if (pos + 2 == max) break;
+            ret[wpos++] = uuencoder[pos[2] & 0x3f];
+        }
+
+        ret[wpos++] = '\0';
+    }
+#endif
+
+ #ifdef UNIQUE_ID_DEBUG
+    byteswap_unique_id(&unique_id); // Swap back for debug purposes
+    ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+            "Unique ID generated: %s tid %" APR_UINT64_T_FMT " time %" APR_UINT64_T_FMT " pid %" APR_UINT64_T_FMT " server %" APR_UINT64_T_FMT " count %" APR_UINT64_T_FMT "",
+            ret,
+            (apr_uint64_t) unique_id.thread_id,
+            (apr_uint64_t) unique_id.timestamp,
+            (apr_uint64_t) unique_id.process_id,
+            (apr_uint64_t) unique_id.server_id,
+            (apr_uint64_t) unique_id.counter
+    );
+#endif /* UNIQUE_ID_DEBUG */
+
+    out:
+    return ret;
 }
 
 /*
@@ -262,64 +309,117 @@ static const char *gen_unique_id(const request_rec *r)
  *   has been called, or not at all.
  */
 
-static int generate_log_id(const conn_rec *c, const request_rec *r,
-                           const char **id)
+static int get_request_unique_id(const char **result_id, const request_rec *r)
 {
+    const char *id = NULL;
+
+    /* Return any previously set ID or make a new one */
+    if ( (id = apr_table_get(r->subprocess_env, "UNIQUE_ID")) == NULL &&
+         (id = r->log_id) == NULL &&
+         (id = create_unique_id_string(r)) == NULL
+    ) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, HTTP_INTERNAL_SERVER_ERROR, r->server, "Unique ID generation failed");
+        return HTTP_INTERNAL_SERVER_ERROR;
+    }
+
+    *result_id = id;
+
+    return OK;
+}
+
+static int generate_log_id_hook(const conn_rec *c, const request_rec *r, const char **id)
+{
+    (void)(c);
+
     /* we do not care about connection ids */
     if (r == NULL)
         return DECLINED;
 
-    /* XXX: do we need special handling for internal redirects? */
-
-    /* if set_unique_id() has been called for this request, use it */
-    *id = apr_table_get(r->subprocess_env, "UNIQUE_ID");
-
-    if (!*id)
-        *id = gen_unique_id(r);
-    return OK;
+    return get_request_unique_id(id, r);
 }
 
-static int set_unique_id(request_rec *r)
+static int post_read_request_hook(request_rec *r)
 {
     const char *id = NULL;
-    /* copy the unique_id if this is an internal redirect (we're never
-     * actually called for sub requests, so we don't need to test for
-     * them) */
-    if (r->prev) {
-       id = apr_table_get(r->subprocess_env, "REDIRECT_UNIQUE_ID");
+
+    int ret = get_request_unique_id(&id, r);
+
+    if (id != NULL) {
+        apr_table_setn(r->subprocess_env, "UNIQUE_ID", id);
     }
 
-    if (!id) {
-        /* if we have a log id, it was set by our generate_log_id() function
-         * and we should reuse the same id
-         */
-        id = r->log_id;
-    }
-
-    if (!id) {
-        id = gen_unique_id(r);
-    }
-
-    /* set the environment variable */
-    apr_table_setn(r->subprocess_env, "UNIQUE_ID", id);
-
-    return DECLINED;
+    return (ret == OK ? DECLINED : ret);
 }
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_hook_post_config(unique_id_global_init, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_child_init(unique_id_child_init, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_post_read_request(set_unique_id, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_generate_log_id(generate_log_id, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_generate_log_id(generate_log_id_hook, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_post_read_request(post_read_request_hook, NULL, NULL, APR_HOOK_MIDDLE);
 }
+
+static void *create_unique_id_server_config (apr_pool_t *p, server_rec *d)
+{
+    unique_id_server_config_rec *ret;
+    if ((ret = apr_pcalloc(p, sizeof(unique_id_server_config_rec))) != NULL) {
+        ret->server_id = -1;
+    }
+    return ret;
+}
+
+static void *merge_unique_id_server_config(apr_pool_t *p, void *basev, void *addv)
+{
+    unique_id_server_config_rec *base = (unique_id_server_config_rec *) basev;
+    unique_id_server_config_rec *add = (unique_id_server_config_rec *) addv;
+    unique_id_server_config_rec *new;
+
+    if ((new = apr_pcalloc (p, sizeof(*new))) != NULL) {
+        /* Default value is -1 which means not initialized */
+        new->server_id = add->server_id >= 0 ? add->server_id : base->server_id;
+    }
+
+    return new;
+}
+
+static const char *set_server_id (cmd_parms *cmd, void *dummy, const char *arg)
+{
+    int tmp = -1;
+    const char *err;
+    unique_id_server_config_rec *conf;
+
+    if ((err = ap_check_cmd_context (cmd, GLOBAL_ONLY)) != NULL) {
+    	return err;
+    }
+
+    conf = (unique_id_server_config_rec *) ap_get_module_config (
+            cmd->server->module_config,
+	    &unique_id_module
+    );
+
+    if (conf == NULL) {
+    	return "Unique ID: data not previously allocated";
+    }
+
+    if (apr_cstr_atoi(&tmp, arg) != APR_SUCCESS || tmp < 0 || tmp > 65535) {
+    	return "Unique ID: Invalid syntax in UniqueIdServerId parameter. Must be a number between 0 and 65535 inclusive.";
+    }
+
+    conf->server_id = tmp;
+
+    return NULL;
+}
+
+static const command_rec unique_id_cmds[] =
+{
+    AP_INIT_TAKE1("UniqueIdServerId", set_server_id, NULL, RSRC_CONF, "Set a unique ID of server in the range 0 to 65535"),
+    {NULL}
+};
 
 AP_DECLARE_MODULE(unique_id) = {
     STANDARD20_MODULE_STUFF,
-    NULL,                       /* dir config creater */
-    NULL,                       /* dir merger --- default is to override */
-    NULL,                       /* server config */
-    NULL,                       /* merge server configs */
-    NULL,                       /* command apr_table_t */
-    register_hooks              /* register hooks */
+    NULL,                           /* dir config creater */
+    NULL,                           /* dir merger --- default is to override */
+    create_unique_id_server_config, /* server config */
+    merge_unique_id_server_config,  /* merge server configs */
+    unique_id_cmds,                 /* command apr_table_t */
+    register_hooks                  /* register hooks */
 };
