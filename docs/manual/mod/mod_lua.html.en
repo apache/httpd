@@ -78,6 +78,7 @@ trust, as it can be abused to change the internal workings of httpd.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#luahookinsertfilter">LuaHookInsertFilter</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luahooklog">LuaHookLog</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luahookmaptostorage">LuaHookMapToStorage</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#luahookpretranslate">LuaHookPreTranslate</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luahooktranslatename">LuaHookTranslateName</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luahooktypechecker">LuaHookTypeChecker</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luainherit">LuaInherit</a></li>
@@ -255,31 +256,38 @@ performing access control, or setting mime types:</p>
             been mapped to a host or virtual host</td>
     </tr>
 <tr class="odd">
+        <td>Pre-Translate name</td>
+        <td><code class="directive"><a href="#luahookpretranslatename">LuaHookPreTranslateName</a></code></td>
+        <td>This phase translates the requested URI into a filename on the
+            system, before decoding occurs. Modules such as <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>
+            can operate in this phase.</td>
+    </tr>
+<tr>
         <td>Translate name</td>
         <td><code class="directive"><a href="#luahooktranslatename">LuaHookTranslateName</a></code></td>
         <td>This phase translates the requested URI into a filename on the 
             system. Modules such as <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> and
             <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> operate in this phase.</td>
     </tr>
-<tr>
+<tr class="odd">
         <td>Map to storage</td>
         <td><code class="directive"><a href="#luahookmaptostorage">LuaHookMapToStorage</a></code></td>
         <td>This phase maps files to their physical, cached or external/proxied storage. 
             It can be used by proxy or caching modules</td>
     </tr>
-<tr class="odd">
+<tr>
         <td>Check Access</td>
         <td><code class="directive"><a href="#luahookaccesschecker">LuaHookAccessChecker</a></code></td>
         <td>This phase checks whether a client has access to a resource. This 
             phase is run before the user is authenticated, so beware.
         </td>
     </tr>
-<tr>
+<tr class="odd">
         <td>Check User ID</td>
         <td><code class="directive"><a href="#luahookcheckuserid">LuaHookCheckUserID</a></code></td>
         <td>This phase it used to check the negotiated user ID</td>
     </tr>
-<tr class="odd">
+<tr>
         <td>Check Authorization</td>
         <td><code class="directive"><a href="#luahookauthchecker">LuaHookAuthChecker</a></code> or 
             <code class="directive"><a href="#luaauthzprovider">LuaAuthzProvider</a></code></td>
@@ -287,25 +295,25 @@ performing access control, or setting mime types:</p>
             user ID, client certificate etc.
         </td>
     </tr>
-<tr>
+<tr class="odd">
         <td>Check Type</td>
         <td><code class="directive"><a href="#luahooktypechecker">LuaHookTypeChecker</a></code></td>
         <td>This phase checks the requested file and assigns a content type and 
             a handler to it</td>
     </tr>
-<tr class="odd">
+<tr>
         <td>Fixups</td>
         <td><code class="directive"><a href="#luahookfixups">LuaHookFixups</a></code></td>
         <td>This is the final "fix anything" phase before the content handlers 
             are run. Any last-minute changes to the request should be made here.</td>
     </tr>
-<tr>
+<tr class="odd">
         <td>Content handler</td>
         <td>fx. <code>.lua</code> files or through <code class="directive"><a href="#luamaphandler">LuaMapHandler</a></code></td>
         <td>This is where the content is handled. Files are read, parsed, some are run, 
             and the result is sent to the client</td>
     </tr>
-<tr class="odd">
+<tr>
         <td>Logging</td>
         <td><code class="directive"><a href="#luahooklog">LuaHookLog</a></code></td>
         <td>Once a request has been handled, it enters several logging phases, 
@@ -474,7 +482,7 @@ end</pre>
           <td>string</td>
           <td>yes</td>
           <td>The file name that the request maps to, f.x. /www/example.com/foo.txt. This can be 
-            changed in the translate-name or map-to-storage phases of a request to allow the 
+            changed in the pre-translate-name, translate-name or map-to-storage phases of a request to allow the
             default handler (or script handlers) to serve a different file than what was requested.</td>
         </tr>
 <tr class="odd">
@@ -572,7 +580,7 @@ end</pre>
           <td>string</td>
           <td>yes</td>
           <td>Denotes whether this is a proxy request or not. This value is generally set in 
-            the post_read_request/translate_name phase of a request.</td>
+            the post_read_request/pre_translate_name/translate_name phase of a request.</td>
         </tr>
 <tr>
           <td><code>range</code></td>
@@ -1493,6 +1501,23 @@ end</pre>
 
 
     
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LuaHookPreTranslate" id="LuaHookPreTranslate">LuaHookPreTranslate</a> <a name="luahookpretranslate" id="luahookpretranslate">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a hook for the pre_translate phase of a request
+processing</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaHookPreTranslate  /path/to/lua/script.lua hook_function_name</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
+</table>
+<p>
+    Just like LuaHookTranslateName, but executed at the pre_translate phase,
+    where the URI-path is not percent decoded.
+</p>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaHookTranslateName" id="LuaHookTranslateName">LuaHookTranslateName</a> <a name="luahooktranslatename" id="luahooktranslatename">Directive</a></h2>
