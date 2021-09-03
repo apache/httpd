@@ -37,8 +37,8 @@ env:
 # definitions to either:
 #  condition_24x_only => run the job only for 2.4.x
 #  condition_not_24x  => run the job everywhere EXCEPT 2.4.x
-_cond1: &condition_24x_only (branch is present AND branch = 2.4.x) OR (tag is present AND tag ~= /^2.4/)
-_cond2: &condition_not_24x (branch is not present OR branch != 2.4.x) AND (tag is not present OR tag !~ /^2.4/)
+_cond1: &condition_24x_only (branch is present AND (branch = 2.4.x OR branch ~= /^candidate-2.4/)) OR (tag is present AND tag ~= /^2.4/)
+_cond2: &condition_not_24x (branch is not present OR (branch != 2.4.x AND branch !~ /^candidate-2.4/)) AND (tag is not present OR tag !~ /^2.4/)
 
 jobs:
   include:
