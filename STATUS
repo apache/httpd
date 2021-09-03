@@ -138,6 +138,19 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+  *) mod_proxy: Fix a potential infinite loop when tunneling Upgrade(d)
+     protocols from mod_proxy_http, and a timeout triggering falsely when
+     using mod_proxy_wstunnel, mod_proxy_connect or mod_proxy_http with
+     upgrade= setting.  PRs 65521 and 65519.
+     trunk patch: http://svn.apache.org/r1892740
+                  http://svn.apache.org/r1892851
+     2.4.x patch: svn merge -c 1892740,1892851 ^/httpd/httpd/trunk .
+                + http://home.apache.org/~ylavic/patches/2.4.x-proxy_http_tunnel_name.patch
+     +1: ylavic,
+     ylavic: 2.4.x-proxy_http_tunnel_name.patch is about logging the upgraded
+             protocol (instead of "HTTP") in the tunneling loop traces, to help
+             debugging. This is the case already in trunk since r1879419, but
+             this commit is not backportable..
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
