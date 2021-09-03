@@ -1,6 +1,21 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_proxy_uwsgi: Fix PATH_INFO setting for generic worker.  [Yann Ylavic]
+
+  *) mod_md: Certificate/keys pairs are verified as matching before a renewal is accepted
+     as successful or a staged renewal is replacing the existing certificates.
+     This avoid potential mess ups in the md store file system to render the active
+     certificates non-working. [@mkauf]
+
+  *) mod_proxy: Fix a potential infinite loop when tunneling Upgrade(d)
+     protocols from mod_proxy_http, and a timeout triggering falsely when
+     using mod_proxy_wstunnel, mod_proxy_connect or mod_proxy_http with
+     upgrade= setting.  PRs 65521 and 65519.  [Yann Ylavic]
+
+  *) mod_proxy: Faster unix socket path parsing in the "proxy:" URL.
+     [Yann Ylavic]
+
   *) mpm_event: Fix graceful stop/restart of children processes if connections
      are in lingering close for too long.  [Yann Ylavic]
 
