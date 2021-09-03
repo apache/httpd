@@ -155,33 +155,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_deflate: refrain from reading buckets of known length
-     to determine their length. Reading transforms certain bucket
-     types which prevents optimization further down the filter chain.
-     trunk patch: http://svn.apache.org/r1892728
-     2.4.x patch: svn merge -c 1892728 ^/httpd/httpd/trunk .
-     +1: icing, ylavic, jorton
-
-  *) mod_proxy: Faster unix socket path parsing in the "proxy:" URL.
-     trunk patch: http://svn.apache.org/r1892814
-                  http://svn.apache.org/r1892853
-     2.4.x patch: svn merge -c 1892814,1892853 ^/httpd/httpd/trunk .
-     +1: ylavic, covener, rpluem
-
-  *) mod_proxy_uwsgi: Fix PATH_INFO setting for generic worker.
-     trunk patch: http://svn.apache.org/r1892805
-     2.4.x patch: svn merge -c 1892805 ^/httpd/httpd/trunk .
-     +1: ylavic, covener, rpluem
-
-  *) mod_http2: fixes a use-after-read of an integer value when
-       passing a stream identifier for further IO checking. A
-       non-issue since an int value matching no active stream
-       will lead to no action.
-     trunk patch: http://svn.apache.org/r1892599
-     2.4.x patch: svn merge -c 1892599 ^/httpd/httpd/trunk .
-     +1: icing, jorton, ylavic
-
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
