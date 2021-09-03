@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1887384:1890425 (outdated) -->
+<!-- English Revision: 1890425 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -3139,12 +3139,15 @@ LimitXMLRequestBody 0
       <p>Bölü çizgisinin URL içinde bulunduğu yere bağlı olarak özel anlamları
         vardır. Dosya sistemindeki çok sayıda yanyana kullanımının tek bir bölü
         çizgisi olarak ele alındığı duruma alışkın olanlar olabilir (yani,
-        <code>/home///foo</code> ile <code>/home/foo</code> aynıdır). URL
-        uzayında bunun böyle olması gerekli değildir. Eğer çok sayıda bölü
-        çizgisini yanyana belirtmeniz gerekiyorsa <directive type="section"
-        module="core">LocationMatch</directive> yönergesinde ve  <directive
-        type="section">Location</directive> yönergesinin düzenli ifadeli
-        kullanımında bunu açıkça belirtmeniz gerekir.</p>
+        <code>/home///foo</code> ile <code>/home/foo</code> aynıdır).
+        <directive module="core">MergeSlashes</directive> yönergesine OFF
+        atanmışsa URL uzayında bunun böyle olması gerekli değildir.
+        Eğer çok sayıda bölü çizgisinin birleştirilmeden yanyana belirtilmesi
+        gerekiyorsa
+        <directive type="section" module="core">LocationMatch</directive>
+        yönergesinde ve <directive type="section">Location</directive>
+        yönergesinin düzenli ifadeli kullanımında bunun açıkça belirtilmesi
+        gerekir.</p>
 
       <p>Örneğin, <code>&lt;LocationMatch "^/abc"&gt;</code> yönergesi
         <code>/abc</code> ile eşleşecek ama <code>//abc</code> ile
@@ -3213,15 +3216,19 @@ uygulanır.</description>
     </highlight>
 
     <note><title>/ (bölü çizgisi) hakkında</title>
-      <p>Bölü çizgisi karakteri URL üzerinde göründüğü yere bağlı olarak farklı anlamlar içerir. İnsanlar, birden çok bitişik bölü çizgisinin sık sık
-      tek bir bölü çizgisine daraltıldığı dosya sistemindeki davranışına
+      <p>Bölü çizgisi karakteri URL üzerinde göründüğü yere bağlı olarak
+      farklı anlamlar içerir. İnsanlar, birden çok bitişik bölü çizgisinin sık
+      sık tek bir bölü çizgisine daraltıldığı dosya sistemindeki davranışına
       alışkın olabilir (<em>örn</em>, <code>/home///foo</code> ile
-      <code>/home/foo</code> aynıdır). URL bakımından bu her zaman doğru
-      değildir. Eğer niyetiniz buysa, <directive type="section"
-      module="core">LocationMatch</directive> yönergesi ve <directive
-      type="section">Location</directive> yönergesinin regex ile kullanımı,
-      bölü çizgisinin özel anlam ifade etmesi nedeniyle gerektiği kadarının
-      belirtilmesini gerektirir.</p>
+      <code>/home/foo</code> aynıdır).
+      <directive module="core">MergeSlashes</directive> yönergesine OFF
+      atanmışsa URL uzayında bunun böyle olması gerekli değildir.
+      Eğer çok sayıda bölü çizgisinin birleştirilmeden yanyana belirtilmesi
+      gerekiyorsa
+      <directive type="section" module="core">LocationMatch</directive>
+      yönergesinde ve <directive type="section">Location</directive>
+      yönergesinin düzenli ifadeli kullanımında bunun açıkça belirtilmesi
+      gerekir.</p>
 
       <p>Örneğin, <code>&lt;LocationMatch "^/abc"&gt;</code> ile
       <code>/abc</code> isteği eşleşirken <code>//abc</code> isteği
@@ -5154,6 +5161,42 @@ davranılır.</compatibility>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>StrictHostCheck</name>
+<description>Sunucunun, istenen konak adının, isteği işleyen sanal konakta
+listelenmesini gerektirip gerektirmediğini denetler</description>
+<syntax>StrictHostCheck ON|OFF</syntax>
+<default>StrictHostCheck OFF</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+<compatibility>2.4.49'da eklendi.</compatibility>
+
+<usage>
+    <p>Öntanımlı olarak sunucu, beklenmeyen veya yapılandırılmamış konak
+    adlarına yönelik istekler de dahil olmak üzere her konak adı isteğine
+    yanıt verir. Bu uygun olsa da, genellikle kendine dönen yanıtlar
+    üretileceğinden, arkada çalışan bir uygulamanın işlenen konak adlarını
+    bazı durumlarda sınırlaması istenebilir.</p>
+
+    <p><directive>StrictHostCheck</directive> yönergesine <em>ON</em>,
+    atanarak, gelen bağlantıyla en iyi eşleşen sanal konaktaki
+    <directive module="core">ServerName</directive> veya
+    <directive module="core">ServerAlias</directive> yönergesinde istenen
+    konak adı açıkça listelenmemişse, sunucunun HTTP 400 hatası döndürmesi
+    sağlanabilir.</p>
+
+    <p>Bu yönerge ayrıca, istenen konak adının, ek <directive
+    module="core">ServerAlias</directive> girdileri gibi davranan ve nispeten
+    belirsiz bir yapılandırma mekanizması olan, <directive
+    module="core">VirtualHost</directive> açılış etiketinde belirtilen konak
+    adlarıyla eşleşmesini de sağlar.</p>
+
+    <p>Bu yönergenin öntanımlı olmayan sanal konaklarda hiçbir etkisi yoktur.
+    Etkin değeri, genel sunucu yapılandırmasından devralınan değer veya ilgili
+    bağlantının ip:port'u için öntanımlı olan sanal konak belirler.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>MergeSlashes</name>
 <description>Sunucunun URL’lerde ardışık bölü çizgilerini birleştirip birleştirmeyeceğini denetler.
 </description>
@@ -5167,15 +5210,20 @@ davranılır.</compatibility>
     <p>Öntanımlı olarak, sunucu istek adresinin yol bileşenindeki ardışık bölü
     çizgilerini ('/') birleştirip tek bölü çizgisi olarak ele alır.</p>
 
-    <p>Bu adresleri dosya sistemi ile eşleştirirken bu ardışık bölü
-    çizgilerinin önemi yoktur. Ancak. bu adresler CGI veya vekil gibi başka
+    <p>Bu adresleri dosya sistemi ile eşleştirirken, bu ardışık bölü
+    çizgilerinin önemi yoktur. Ancak, bu adresler CGI veya vekil gibi başka
     yollardan değerlendiriliyorsa bu ardışık bölü çizgilerinin olduğu gibi
     kalması tercih edilebilir. Bu durumlarda ardışık bölü çizgilerinin
-    birleştirilmesini önlemek için <directive>MergeSlashes</directive>
-    yönergesine <em>OFF</em> atanabilir. Bu atamayla, yapılandırma dosyasında,
-    adresin yol bileşenini ile eşleşen düzenli ifadelerde
+    birleştirilmesini önlemek için, eskiden, <directive>MergeSlashes</directive>
+    yönergesine <em>OFF</em> atanabiliyordu.</p>
+
+    <p><em>OFF</em> atanması durumunda, yapılandırma dosyasında, adresin yol
+    bileşeni ile eşleşen düzenli ifadelerde
     (<directive>LocationMatch</directive>, <directive>RewriteRule</directive>,
-    ...) ardışık bölü çizgileri hesaba katılacaktır.</p>
+    ...) ardışık bölü çizgilerinin hesaba katılması gerekir. Düzenli ifade
+    içermeyen <directive>Location</directive> yönergeleri daima birleştirilmiş
+    bölü çizgileri içeren bir URL'ye karşı çalışır ve çok sayıdaki bölü
+    çizgileri arasında bir ayrım yapamaz.</p>
 </usage>
 </directivesynopsis>
 
