@@ -33,7 +33,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Apache HTTP Sunucusunda daima mevcut olan çekirdek
  özellikler</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr></table>
@@ -3117,10 +3116,15 @@ sınırlar.</td></tr>
       <p>Bölü çizgisinin URL içinde bulunduğu yere bağlı olarak özel anlamları
         vardır. Dosya sistemindeki çok sayıda yanyana kullanımının tek bir bölü
         çizgisi olarak ele alındığı duruma alışkın olanlar olabilir (yani,
-        <code>/home///foo</code> ile <code>/home/foo</code> aynıdır). URL
-        uzayında bunun böyle olması gerekli değildir. Eğer çok sayıda bölü
-        çizgisini yanyana belirtmeniz gerekiyorsa <code class="directive"><a href="#locationmatch">&lt;LocationMatch&gt;</a></code> yönergesinde ve  <code class="directive">&lt;Location&gt;</code> yönergesinin düzenli ifadeli
-        kullanımında bunu açıkça belirtmeniz gerekir.</p>
+        <code>/home///foo</code> ile <code>/home/foo</code> aynıdır).
+        <code class="directive"><a href="#mergeslashes">MergeSlashes</a></code> yönergesine OFF
+        atanmışsa URL uzayında bunun böyle olması gerekli değildir.
+        Eğer çok sayıda bölü çizgisinin birleştirilmeden yanyana belirtilmesi
+        gerekiyorsa
+        <code class="directive"><a href="#locationmatch">&lt;LocationMatch&gt;</a></code>
+        yönergesinde ve <code class="directive">&lt;Location&gt;</code>
+        yönergesinin düzenli ifadeli kullanımında bunun açıkça belirtilmesi
+        gerekir.</p>
 
       <p>Örneğin, <code>&lt;LocationMatch "^/abc"&gt;</code> yönergesi
         <code>/abc</code> ile eşleşecek ama <code>//abc</code> ile
@@ -3186,13 +3190,19 @@ uygulanır.</td></tr>
 
 
     <div class="note"><h3>/ (bölü çizgisi) hakkında</h3>
-      <p>Bölü çizgisi karakteri URL üzerinde göründüğü yere bağlı olarak farklı anlamlar içerir. İnsanlar, birden çok bitişik bölü çizgisinin sık sık
-      tek bir bölü çizgisine daraltıldığı dosya sistemindeki davranışına
+      <p>Bölü çizgisi karakteri URL üzerinde göründüğü yere bağlı olarak
+      farklı anlamlar içerir. İnsanlar, birden çok bitişik bölü çizgisinin sık
+      sık tek bir bölü çizgisine daraltıldığı dosya sistemindeki davranışına
       alışkın olabilir (<em>örn</em>, <code>/home///foo</code> ile
-      <code>/home/foo</code> aynıdır). URL bakımından bu her zaman doğru
-      değildir. Eğer niyetiniz buysa, <code class="directive"><a href="#locationmatch">&lt;LocationMatch&gt;</a></code> yönergesi ve <code class="directive">&lt;Location&gt;</code> yönergesinin regex ile kullanımı,
-      bölü çizgisinin özel anlam ifade etmesi nedeniyle gerektiği kadarının
-      belirtilmesini gerektirir.</p>
+      <code>/home/foo</code> aynıdır).
+      <code class="directive"><a href="#mergeslashes">MergeSlashes</a></code> yönergesine OFF
+      atanmışsa URL uzayında bunun böyle olması gerekli değildir.
+      Eğer çok sayıda bölü çizgisinin birleştirilmeden yanyana belirtilmesi
+      gerekiyorsa
+      <code class="directive"><a href="#locationmatch">&lt;LocationMatch&gt;</a></code>
+      yönergesinde ve <code class="directive">&lt;Location&gt;</code>
+      yönergesinin düzenli ifadeli kullanımında bunun açıkça belirtilmesi
+      gerekir.</p>
 
       <p>Örneğin, <code>&lt;LocationMatch "^/abc"&gt;</code> ile
       <code>/abc</code> isteği eşleşirken <code>//abc</code> isteği
@@ -3545,15 +3555,20 @@ LogLevel info ssl_module:warn</pre>
     <p>Öntanımlı olarak, sunucu istek adresinin yol bileşenindeki ardışık bölü
     çizgilerini ('/') birleştirip tek bölü çizgisi olarak ele alır.</p>
 
-    <p>Bu adresleri dosya sistemi ile eşleştirirken bu ardışık bölü
-    çizgilerinin önemi yoktur. Ancak. bu adresler CGI veya vekil gibi başka
+    <p>Bu adresleri dosya sistemi ile eşleştirirken, bu ardışık bölü
+    çizgilerinin önemi yoktur. Ancak, bu adresler CGI veya vekil gibi başka
     yollardan değerlendiriliyorsa bu ardışık bölü çizgilerinin olduğu gibi
     kalması tercih edilebilir. Bu durumlarda ardışık bölü çizgilerinin
-    birleştirilmesini önlemek için <code class="directive">MergeSlashes</code>
-    yönergesine <em>OFF</em> atanabilir. Bu atamayla, yapılandırma dosyasında,
-    adresin yol bileşenini ile eşleşen düzenli ifadelerde
+    birleştirilmesini önlemek için, eskiden, <code class="directive">MergeSlashes</code>
+    yönergesine <em>OFF</em> atanabiliyordu.</p>
+
+    <p><em>OFF</em> atanması durumunda, yapılandırma dosyasında, adresin yol
+    bileşeni ile eşleşen düzenli ifadelerde
     (<code class="directive">LocationMatch</code>, <code class="directive">RewriteRule</code>,
-    ...) ardışık bölü çizgileri hesaba katılacaktır.</p>
+    ...) ardışık bölü çizgilerinin hesaba katılması gerekir. Düzenli ifade
+    içermeyen <code class="directive">Location</code> yönergeleri daima birleştirilmiş
+    bölü çizgileri içeren bir URL'ye karşı çalışır ve çok sayıdaki bölü
+    çizgileri arasında bir ayrım yapamaz.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -4828,17 +4843,37 @@ belirler.</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="StrictHostCheck" id="StrictHostCheck">StrictHostCheck</a> <a name="stricthostcheck" id="stricthostcheck">Yönergesi</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Controls whether the server requires the requested hostname be
-             listed enumerated in the virtual host handling the request
-             </td></tr>
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Sunucunun, istenen konak adının, isteği işleyen sanal konakta
+listelenmesini gerektirip gerektirmediğini denetler</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>StrictHostCheck ON|OFF</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>StrictHostCheck OFF</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Added in 2.4.49</td></tr>
-</table><p>Bu yönergenin belgesi henüz Türkçeye çevrilmedi.
-            Lütfen İngilizce sürümüne bakınız.</p></div>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>2.4.49'da eklendi.</td></tr>
+</table>
+    <p>Öntanımlı olarak sunucu, beklenmeyen veya yapılandırılmamış konak
+    adlarına yönelik istekler de dahil olmak üzere her konak adı isteğine
+    yanıt verir. Bu uygun olsa da, genellikle kendine dönen yanıtlar
+    üretileceğinden, arkada çalışan bir uygulamanın işlenen konak adlarını
+    bazı durumlarda sınırlaması istenebilir.</p>
+
+    <p><code class="directive">StrictHostCheck</code> yönergesine <em>ON</em>,
+    atanarak, gelen bağlantıyla en iyi eşleşen sanal konaktaki
+    <code class="directive"><a href="#servername">ServerName</a></code> veya
+    <code class="directive"><a href="#serveralias">ServerAlias</a></code> yönergesinde istenen
+    konak adı açıkça listelenmemişse, sunucunun HTTP 400 hatası döndürmesi
+    sağlanabilir.</p>
+
+    <p>Bu yönerge ayrıca, istenen konak adının, ek <code class="directive"><a href="#serveralias">ServerAlias</a></code> girdileri gibi davranan ve nispeten
+    belirsiz bir yapılandırma mekanizması olan, <code class="directive"><a href="#virtualhost">VirtualHost</a></code> açılış etiketinde belirtilen konak
+    adlarıyla eşleşmesini de sağlar.</p>
+
+    <p>Bu yönergenin öntanımlı olmayan sanal konaklarda hiçbir etkisi yoktur.
+    Etkin değeri, genel sunucu yapılandırmasından devralınan değer veya ilgili
+    bağlantının ip:port'u için öntanımlı olan sanal konak belirler.</p>
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="TimeOut" id="TimeOut">TimeOut</a> <a name="timeout" id="timeout">Yönergesi</a></h2>
 <table class="directive">

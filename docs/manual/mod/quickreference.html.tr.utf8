@@ -1126,9 +1126,8 @@ Certificate verification</td></tr>
   sayısını belirler.</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#startthreads">StartThreads <var>sayı</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Sunucunun başlatılması sırasında oluşturulan evrelerin sayısını
   belirler.</td></tr>
-<tr><td><a href="core.html#stricthostcheck">StrictHostCheck ON|OFF</a></td><td> OFF </td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Controls whether the server requires the requested hostname be
-             listed enumerated in the virtual host handling the request
-             </td></tr>
+<tr><td><a href="core.html#stricthostcheck">StrictHostCheck ON|OFF</a></td><td> OFF </td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Sunucunun, istenen konak adının, isteği işleyen sanal konakta
+listelenmesini gerektirip gerektirmediğini denetler</td></tr>
 <tr class="odd"><td><a href="mod_substitute.html#substitute">Substitute <var>s/pattern/substitution/[infq]</var></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Pattern to filter the response content</td></tr>
 <tr><td><a href="mod_substitute.html#substituteinheritbefore">SubstituteInheritBefore on|off</a></td><td> off </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Change the merge order of inherited patterns</td></tr>
 <tr class="odd"><td><a href="mod_substitute.html#substitutemaxlinelength">SubstituteMaxLineLength <var>bytes</var>(b|B|k|K|m|M|g|G)</a></td><td> 1m </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Set the maximum line size</td></tr>
