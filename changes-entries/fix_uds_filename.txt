@@ -1,2 +1,0 @@
-  *) mod_proxy: Faster unix socket path parsing in the "proxy:" URL.
-     [Yann Ylavic]
