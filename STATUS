@@ -217,7 +217,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
   *) mod_proxy_uwsgi: Fix PATH_INFO setting for generic worker.
      trunk patch: http://svn.apache.org/r1892805
-     2.4.x patch: svn merge -c 1892814,1892853 ^/httpd/httpd/trunk .
+     2.4.x patch: svn merge -c 1892805 ^/httpd/httpd/trunk .
      +1: ylavic,
 
 PATCHES/ISSUES THAT ARE BEING WORKED
