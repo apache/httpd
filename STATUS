@@ -211,7 +211,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        will lead to no action.
      trunk patch: http://svn.apache.org/r1892599
      2.4.x patch: svn merge -c 1892599 ^/httpd/httpd/trunk .
-     +1: icing
+     +1: icing, jorton
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
