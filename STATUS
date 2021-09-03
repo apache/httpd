@@ -155,6 +155,28 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_ssl: tighten the handling of ALPN for outgoing (proxy)
+     connections. If ALPN protocols are provided and sent to the
+     remote server, the received protocol selected is inspected
+     and checked for a match. Without match, the peer handshake
+     fails.
+     An exception is the proposal of "http/1.1" where it is
+     accepted if the remote server did not answer ALPN with
+     a selected protocol. This accomodates for hosts that do
+     not observe/support ALPN and speak http/1.x be default.
+     trunk patch: http://svn.apache.org/r1890693
+                  http://svn.apache.org/r1890696
+     2.4.x patch: https://github.com/apache/httpd/pull/204.diff
+           PR: https://github.com/apache/httpd/pull/204
+     +1: icing, minfrin, jorton
+
+  *) mod_deflate: refrain from reading buckets of known length
+     to determine their length. Reading transforms certain bucket
+     types which prevents optimization further down the filter chain.
+     trunk patch: http://svn.apache.org/r1892728
+     2.4.x patch: svn merge -c 1892728 ^/httpd/httpd/trunk .
+     +1: icing, ylavic, jorton
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -186,28 +208,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://github.com/apache/httpd/pull/203.diff
            PR: https://github.com/apache/httpd/pull/203
      +1: icing, minfrin
-
-  *) mod_ssl: tighten the handling of ALPN for outgoing (proxy)
-     connections. If ALPN protocols are provided and sent to the
-     remote server, the received protocol selected is inspected
-     and checked for a match. Without match, the peer handshake
-     fails.
-     An exception is the proposal of "http/1.1" where it is
-     accepted if the remote server did not answer ALPN with
-     a selected protocol. This accomodates for hosts that do
-     not observe/support ALPN and speak http/1.x be default.
-     trunk patch: http://svn.apache.org/r1890693
-                  http://svn.apache.org/r1890696
-     2.4.x patch: https://github.com/apache/httpd/pull/204.diff
-           PR: https://github.com/apache/httpd/pull/204
-     +1: icing, minfrin, jorton
-
-  *) mod_deflate: refrain from reading buckets of known length
-     to determine their length. Reading transforms certain bucket
-     types which prevents optimization further down the filter chain.
-     trunk patch: http://svn.apache.org/r1892728
-     2.4.x patch: svn merge -c 1892728 ^/httpd/httpd/trunk .
-     +1: icing, ylavic, jorton
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
