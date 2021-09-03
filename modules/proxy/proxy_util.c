@@ -4940,17 +4940,6 @@ PROXY_DECLARE(int) ap_proxy_tunnel_run(proxy_tunnel_rec *tunnel)
 
                     /* Flush any pending input data now, we don't know when
                      * the next POLLIN will trigger and retaining data might
-                     * block the protocol.
-                     */
-                    if (ap_filter_input_pending(in->c) == OK) {
-                        rc = proxy_tunnel_forward(tunnel, in);
-                        if (rc != OK) {
-                            return rc;
-                        }
-                    }
-
-                    /* Flush any pending input data now, we don't know when
-                     * the next POLLIN will trigger and retaining data might
                      * deadlock the underlying protocol. We don't check for
                      * pending data first with ap_filter_input_pending() since
                      * the read from proxy_tunnel_forward() is nonblocking
