@@ -173,6 +173,14 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1892805 ^/httpd/httpd/trunk .
      +1: ylavic, covener, rpluem
 
+  *) mod_http2: fixes a use-after-read of an integer value when
+       passing a stream identifier for further IO checking. A
+       non-issue since an int value matching no active stream
+       will lead to no action.
+     trunk patch: http://svn.apache.org/r1892599
+     2.4.x patch: svn merge -c 1892599 ^/httpd/httpd/trunk .
+     +1: icing, jorton, ylavic
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -204,14 +212,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://github.com/apache/httpd/pull/203.diff
            PR: https://github.com/apache/httpd/pull/203
      +1: icing, minfrin
-
-  *) mod_http2: fixes a use-after-read of an integer value when
-       passing a stream identifier for further IO checking. A
-       non-issue since an int value matching no active stream
-       will lead to no action.
-     trunk patch: http://svn.apache.org/r1892599
-     2.4.x patch: svn merge -c 1892599 ^/httpd/httpd/trunk .
-     +1: icing, jorton
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
