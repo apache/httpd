@@ -143,7 +143,9 @@ Options +Includes
       <p>This syntax is available in version 2.4.21 and later.</p>
 
       <example>
-      &lt;!--#comment Blah Blah Blah --&gt;
+      &lt;!--#comment Blah Blah Blah --&gt;<br/>
+      &nbsp;&nbsp;&nbsp;or<br/>
+      &lt;!--#comment text="Blah Blah Blah" --&gt;
       </example>
     </section> <!-- /comment -->
 
