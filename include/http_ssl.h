@@ -123,8 +123,8 @@ AP_DECLARE(const char *) ap_ssl_var_lookup(apr_pool_t *p, server_rec *s,
  *
  * @param s the server certificates are collected for
  * @param p the pool to use for allocations
- * @param cert_file and array of const char* with the path to the certificate chain
- * @param key_file and array of const char* with the path to the private key file
+ * @param cert_files an array of const char* with the path to the certificate chain
+ * @param key_files an array of const char* with the path to the private key file
  * @return OK if files were added, DECLINED if not, or other for error.
  */
 
@@ -140,8 +140,8 @@ AP_DECLARE_HOOK(int, ssl_add_cert_files, (server_rec *s, apr_pool_t *p,
  *
  * @param s the server certificates are collected for
  * @param p the pool to use for allocations
- * @param cert_file and array of const char* with the path to the certificate chain
- * @param key_file and array of const char* with the path to the private key file
+ * @param cert_files an array of const char* with the path to the certificate chain
+ * @param key_files an array of const char* with the path to the private key file
  */
 AP_DECLARE(apr_status_t) ap_ssl_add_cert_files(server_rec *s, apr_pool_t *p,
                                                apr_array_header_t *cert_files,
@@ -155,8 +155,8 @@ AP_DECLARE(apr_status_t) ap_ssl_add_cert_files(server_rec *s, apr_pool_t *p,
  *
  * @param s the server certificates are collected for
  * @param p the pool to use for allocations
- * @param cert_file and array of const char* with the path to the certificate chain
- * @param key_file and array of const char* with the path to the private key file
+ * @param cert_files an array of const char* with the path to the certificate chain
+ * @param key_files an array of const char* with the path to the private key file
  * @return OK if files were added, DECLINED if not, or other for error.
  */
 AP_DECLARE_HOOK(int, ssl_add_fallback_cert_files, (server_rec *s, apr_pool_t *p,
@@ -173,8 +173,8 @@ AP_DECLARE_HOOK(int, ssl_add_fallback_cert_files, (server_rec *s, apr_pool_t *p,
  *
  * @param s the server certificates are collected for
  * @param p the pool to use for allocations
- * @param cert_file and array of const char* with the path to the certificate chain
- * @param key_file and array of const char* with the path to the private key file
+ * @param cert_files an array of const char* with the path to the certificate chain
+ * @param key_files an array of const char* with the path to the private key file
  */
 AP_DECLARE(apr_status_t) ap_ssl_add_fallback_cert_files(server_rec *s, apr_pool_t *p,
                                                         apr_array_header_t *cert_files,
