@@ -2831,7 +2831,7 @@ PROXY_DECLARE(int) ap_proxy_is_socket_connected(apr_socket_t *socket)
 
 }
 #else
-PROXY_DECLARE(int) ap_proxy_is_socket_connected(apr_socket_t *socket)
+PROXY_DECLARE(int) ap_proxy_is_socket_connected(apr_socket_t *sock)
 
 {
     apr_size_t buffer_len = 1;
