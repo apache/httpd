@@ -171,6 +171,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://github.com/apache/httpd/pull/203.diff
            PR: https://github.com/apache/httpd/pull/203
      +1: icing, minfrin
+     rpluem says: I made comments on https://github.com/apache/httpd/pull/203,
+     but I cannot find them commented. Further more the PR currently has merge
+     conflicts.
 
   *) mod_ssl: Support logging private key material for use with
      wireshark via log file given by SSLKEYLOGFILE environment
