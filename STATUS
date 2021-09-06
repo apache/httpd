@@ -161,6 +161,12 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1892914 ^/httpd/httpd/trunk .
      +1: jailletc36, icing, jorton
 
+  *) mod_unique_id: Reduce the time window where duplicates may be generated
+     PR 65159
+     trunk patch: http://svn.apache.org/r1892915
+     2.4.x patch: svn merge -c 1892915 ^/httpd/httpd/trunk .
+     +1: jailletc36, jorton, icing
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -191,12 +197,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://github.com/apache/httpd/pull/203.diff
            PR: https://github.com/apache/httpd/pull/203
      +1: icing, minfrin
-
-  *) mod_unique_id: Reduce the time window where duplicates may be generated
-     PR 65159
-     trunk patch: http://svn.apache.org/r1892915
-     2.4.x patch: svn merge -c 1892915 ^/httpd/httpd/trunk .
-     +1: jailletc36, jorton
 
   *) mpm_prefork: mask signals during ap_run_child_init()
      trunk patch: http://svn.apache.org/r1890465
