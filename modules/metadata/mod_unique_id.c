@@ -186,7 +186,7 @@ static const char *gen_unique_id(const request_rec *r)
 {
     char *str;
     /*
-     * Buffer padded with two final bytes, used to copy the unique_id_red
+     * Buffer padded with two final bytes, used to copy the unique_id_rec
      * structure without the internal paddings that it could have.
      */
     unique_id_rec new_unique_id;
@@ -199,9 +199,13 @@ static const char *gen_unique_id(const request_rec *r)
     int i,j,k;
 
     memcpy(&new_unique_id.root, &cur_unique_id.root, ROOT_SIZE);
-    new_unique_id.counter = cur_unique_id.counter;
     new_unique_id.stamp = htonl((unsigned int)apr_time_sec(r->request_time));
     new_unique_id.thread_index = htonl((unsigned int)r->connection->id);
+    new_unique_id.counter = cur_unique_id.counter;
+
+    /* Increment the identifier for the next call */
+    counter = ntohs(new_unique_id.counter) + 1;
+    cur_unique_id.counter = htons(counter);
 
     /* we'll use a temporal buffer to avoid uuencoding the possible internal
      * paddings of the original structure */
@@ -232,11 +236,6 @@ static const char *gen_unique_id(const request_rec *r)
         str[k++] = uuencoder[y[2] & 0x3f];
     }
     str[k++] = '\0';
-
-    /* and increment the identifier for the next call */
-
-    counter = ntohs(new_unique_id.counter) + 1;
-    cur_unique_id.counter = htons(counter);
 
     return str;
 }
