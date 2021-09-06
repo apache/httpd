@@ -146,7 +146,7 @@ RELEASE SHOWSTOPPERS:
                   http://svn.apache.org/r1892851
      2.4.x patch: svn merge -c 1892740,1892851 ^/httpd/httpd/trunk .
                 + http://home.apache.org/~ylavic/patches/2.4.x-proxy_http_tunnel_name.patch
-     +1: ylavic, covener
+     +1: ylavic, covener, jorton
      ylavic: 2.4.x-proxy_http_tunnel_name.patch is about logging the upgraded
              protocol (instead of "HTTP") in the tunneling loop traces, to help
              debugging. This is the case already in trunk since r1879419, but
@@ -154,6 +154,12 @@ RELEASE SHOWSTOPPERS:
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
+
+  *) mod_unique_id: Revert "mod_unique_id: Fix potential duplicated ID generation under
+     heavy load.   PR 65159" added in 2.4.47.  This causes issue on Windows.
+     trunk patch: http://svn.apache.org/r1892914
+     2.4.x patch: svn merge -c 1892914 ^/httpd/httpd/trunk .
+     +1: jailletc36, icing, jorton
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -186,22 +192,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
            PR: https://github.com/apache/httpd/pull/203
      +1: icing, minfrin
 
-  *) mod_unique_id: Revert "mod_unique_id: Fix potential duplicated ID generation under
-     heavy load.   PR 65159" added in 2.4.47.  This causes issue on Windows.
-     trunk patch: http://svn.apache.org/r1892914
-     2.4.x patch: svn merge -c 1892914 ^/httpd/httpd/trunk .
-     +1: jailletc36, icing
-
   *) mod_unique_id: Reduce the time window where duplicates may be generated
      PR 65159
      trunk patch: http://svn.apache.org/r1892915
      2.4.x patch: svn merge -c 1892915 ^/httpd/httpd/trunk .
-     +1: jailletc36, 
+     +1: jailletc36, jorton
 
   *) mpm_prefork: mask signals during ap_run_child_init()
      trunk patch: http://svn.apache.org/r1890465
      2.4.x patch: svn merge -c 1890465 ^/httpd/httpd/trunk .
-     +1: jailletc36, 
+     +1: jailletc36, jorton
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
