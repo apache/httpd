@@ -2288,7 +2288,7 @@ static int fix_uds_filename(request_rec *r, char **url)
             uds_path = ap_runtime_dir_relative(r->pool, urisock.path);
         }
         if (!uds_path) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO()
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10292)
                     "Invalid proxy UDS filename (%s)", r->filename);
             return 0;
         }
