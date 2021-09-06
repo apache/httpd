@@ -2275,33 +2275,42 @@ static int ap_proxy_retry_worker(const char *proxy_function, proxy_worker *worke
  * were passed a UDS url (eg: from mod_proxy) and adjust uds_path
  * as required.  
  */
-static void fix_uds_filename(request_rec *r, char **url) 
+static int fix_uds_filename(request_rec *r, char **url) 
 {
-    char *ptr, *ptr2;
-    if (!r || !r->filename) return;
+    char *uds_url = r->filename + 6, *origin_url;
 
     if (!strncmp(r->filename, "proxy:", 6) &&
-            !ap_cstr_casecmpn(r->filename + 6, "unix:", 5) &&
-            (ptr2 = r->filename + 6 + 5, ptr = ap_strchr(ptr2, '|'))) {
+            !ap_cstr_casecmpn(uds_url, "unix:", 5) &&
+            (origin_url = ap_strchr(uds_url + 5, '|'))) {
+        char *uds_path = NULL;
+        apr_size_t url_len;
         apr_uri_t urisock;
         apr_status_t rv;
-        *ptr = '\0';
-        rv = apr_uri_parse(r->pool, ptr2, &urisock);
-        if (rv == APR_SUCCESS) {
-            char *rurl = ptr+1;
-            char *sockpath = ap_runtime_dir_relative(r->pool, urisock.path);
-            apr_table_setn(r->notes, "uds_path", sockpath);
-            *url = apr_pstrdup(r->pool, rurl); /* so we get the scheme for the uds */
-            /* r->filename starts w/ "proxy:", so add after that */
-            memmove(r->filename+6, rurl, strlen(rurl)+1);
-            ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
-                    "*: rewrite of url due to UDS(%s): %s (%s)",
-                    sockpath, *url, r->filename);
+
+        *origin_url = '\0';
+        rv = apr_uri_parse(r->pool, uds_url, &urisock);
+        *origin_url++ = '|';
+
+        if (rv == APR_SUCCESS && urisock.path && !urisock.hostname) {
+            uds_path = ap_runtime_dir_relative(r->pool, urisock.path);
         }
-        else {
-            *ptr = '|';
+        if (!uds_path) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO()
+                    "Invalid proxy UDS filename (%s)", r->filename);
+            return 0;
         }
+        apr_table_setn(r->notes, "uds_path", uds_path);
+
+        /* Remove the UDS path from *url and r->filename */
+        url_len = strlen(origin_url);
+        *url = apr_pstrmemdup(r->pool, origin_url, url_len);
+        memcpy(uds_url, *url, url_len + 1);
+
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
+                "*: rewrite of url due to UDS(%s): %s (%s)",
+                uds_path, *url, r->filename);
     }
+    return 1;
 }
 
 PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
@@ -2319,7 +2328,9 @@ PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
                           "%s: found worker %s for %s",
                           (*worker)->s->scheme, (*worker)->s->name, *url);
             *balancer = NULL;
-            fix_uds_filename(r, url);
+            if (!fix_uds_filename(r, url)) {
+                return HTTP_INTERNAL_SERVER_ERROR;
+            }
             access_status = OK;
         }
         else if (r->proxyreq == PROXYREQ_PROXY) {
@@ -2350,7 +2361,9 @@ PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
                  * regarding the Connection header in the request.
                  */
                 apr_table_setn(r->subprocess_env, "proxy-nokeepalive", "1");
-                fix_uds_filename(r, url);
+                if (!fix_uds_filename(r, url)) {
+                    return HTTP_INTERNAL_SERVER_ERROR;
+                }
             }
         }
     }
