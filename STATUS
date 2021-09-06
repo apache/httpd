@@ -141,18 +141,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_unique_id: Revert "mod_unique_id: Fix potential duplicated ID generation under
-     heavy load.   PR 65159" added in 2.4.47.  This causes issue on Windows.
-     trunk patch: http://svn.apache.org/r1892914
-     2.4.x patch: svn merge -c 1892914 ^/httpd/httpd/trunk .
-     +1: jailletc36, icing, jorton
-
-  *) mod_unique_id: Reduce the time window where duplicates may be generated
-     PR 65159
-     trunk patch: http://svn.apache.org/r1892915
-     2.4.x patch: svn merge -c 1892915 ^/httpd/httpd/trunk .
-     +1: jailletc36, jorton, icing
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
