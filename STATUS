@@ -167,6 +167,11 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1892915 ^/httpd/httpd/trunk .
      +1: jailletc36, jorton, icing
 
+  *) mpm_prefork: mask signals during ap_run_child_init()
+     trunk patch: http://svn.apache.org/r1890465
+     2.4.x patch: svn merge -c 1890465 ^/httpd/httpd/trunk .
+     +1: jailletc36, jorton, icing
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -197,11 +202,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://github.com/apache/httpd/pull/203.diff
            PR: https://github.com/apache/httpd/pull/203
      +1: icing, minfrin
-
-  *) mpm_prefork: mask signals during ap_run_child_init()
-     trunk patch: http://svn.apache.org/r1890465
-     2.4.x patch: svn merge -c 1890465 ^/httpd/httpd/trunk .
-     +1: jailletc36, jorton
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
