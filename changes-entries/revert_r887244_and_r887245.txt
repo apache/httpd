@@ -1,0 +1,4 @@
+  *) Revert "mod_unique_id: Fix potential duplicated ID generation under heavy load.
+     PR 65159" added in 2.4.47.
+     This causes issue on Windows.
+     [Christophe Jaillet]
