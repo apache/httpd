@@ -202,6 +202,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   Reusing CHANGES entry from r1892982.
      +1: ylavic,
 
+  *) mod_proxy: Axe unused ap_filter_input_pending in 2.4.x (only) after r1892971.
+     2.4.x patch: http://people.apache.org/~ylavic/patches/ap_filter_input_pending-unused.patch
+     +1: ylavic,
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
