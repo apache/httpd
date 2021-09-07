@@ -716,6 +716,11 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
         if (rv != APR_SUCCESS) {
             r->request_time = apr_time_now();
 
+            /* Fall through with an invalid (non NULL) request */
+            r->method = "-";
+            r->method_number = M_INVALID;
+            r->uri = r->unparsed_uri = apr_pstrdup(r->pool, "-");
+
             /* ap_rgetline returns APR_ENOSPC if it fills up the
              * buffer before finding the end-of-line.  This is only going to
              * happen if it exceeds the configured limit for a request-line.
