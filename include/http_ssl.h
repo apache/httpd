@@ -56,13 +56,14 @@ AP_DECLARE(int) ap_ssl_conn_is_ssl(conn_rec *c);
  * This hook can be called several times in the lifetime of an outgoing connection, e.g.
  * when it is re-used in different request contexts. It will at least be called after the
  * connection was created and before the pre-connection hooks is invoked.
- * All outgoing-connection hooks are run until one returns something other than ok or decline.
- * if enable_ssl != 0, a hook that sets up SSL for the connection needs to return DONE.
+ * All outgoing-connection hooks are run until one returns something other than DECLINE.
+ * if enable_ssl != 0, a hook that sets up SSL for the connection needs to return OK
+ * to prevent subsequent hooks from doing the same.
  *
  * @param c The connection on which requests/data are to be sent.
  * @param dir_conf The directory configuration in which this connection is being used.
  * @param enable_ssl If != 0, the SSL protocol should be enabled for this connection.
- * @return OK or DECLINED, DONE when ssl was enabled
+ * @return DECLINED, OK when ssl was enabled
  */
 AP_DECLARE_HOOK(int, ssl_bind_outgoing,
                (conn_rec *c, struct ap_conf_vector_t *dir_conf, int enable_ssl))

@@ -320,7 +320,7 @@ static int authenticate_basic_user(request_rec *r)
     }
 
     if (conf->use_digest_algorithm
-        && !strcasecmp(conf->use_digest_algorithm, "MD5")) {
+        && !ap_cstr_casecmp(conf->use_digest_algorithm, "MD5")) {
         realm = ap_auth_name(r);
         digest = ap_md5(r->pool,
                         (unsigned char *)apr_pstrcat(r->pool, sent_user, ":",

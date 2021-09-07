@@ -1176,6 +1176,8 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
         apr_ipsubnet_t *ip;
 #ifdef HAVE_TLS_ALPN
         const char *alpn_note;
+        apr_array_header_t *alpn_proposed = NULL;
+        int alpn_empty_ok = 1;
 #endif
 #endif
         const char *hostname_note = apr_table_get(c->notes,
@@ -1191,9 +1193,16 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
 #ifdef HAVE_TLS_ALPN
         alpn_note = apr_table_get(c->notes, "proxy-request-alpn-protos");
         if (alpn_note) {
-            char *protos, *s, *p, *last;
+            char *protos, *s, *p, *last, *proto;
             apr_size_t len;
 
+            /* Transform the note into a protocol formatted byte array:
+             * (len-byte proto-char+)*
+             * We need the remote server to agree on one of these, unless 'http/1.1'
+             * is also among our proposals. Because pre-ALPN remotes will speak this.
+             */
+            alpn_proposed = apr_array_make(c->pool, 3, sizeof(const char*));
+            alpn_empty_ok = 0;
             s = protos = apr_pcalloc(c->pool, strlen(alpn_note)+1);
             p = apr_pstrdup(c->pool, alpn_note);
             while ((p = apr_strtok(p, ", ", &last))) {
@@ -1204,6 +1213,11 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
                                   p);
                     ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, server);
                     return APR_EGENERAL;
+                }
+                proto = apr_pstrndup(c->pool, p, len);
+                APR_ARRAY_PUSH(alpn_proposed, const char*) = proto;
+                if (!strcmp("http/1.1", proto)) {
+                    alpn_empty_ok = 1;
                 }
                 *s++ = (unsigned char)len;
                 while (len--) {
@@ -1220,6 +1234,8 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
                 ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c, APLOGNO(03310)
                               "error setting alpn protos from '%s'", alpn_note);
                 ssl_log_ssl_error(SSLLOG_MARK, APLOG_WARNING, server);
+                /* If ALPN was requested and we cannot do it, we must fail */
+                return MODSSL_ERROR_BAD_GATEWAY;
             }
         }
 #endif /* defined HAVE_TLS_ALPN */
@@ -1310,6 +1326,50 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
                               hostname, hostname_note);
             }
         }
+
+#ifdef HAVE_TLS_ALPN
+        /* If we proposed ALPN protocol(s), we need to check if the server
+         * agreed to one of them. While <https://www.rfc-editor.org/rfc/rfc7301.txt>
+         * chapter 3.2 says the server SHALL error the handshake in such a case,
+         * the reality is that some servers fall back to their default, e.g. http/1.1.
+         * (we also do this right now)
+         * We need to treat this as an error for security reasons.
+         */
+        if (alpn_proposed && alpn_proposed->nelts > 0) {
+            const char *selected;
+            unsigned int slen;
+
+            SSL_get0_alpn_selected(filter_ctx->pssl, (const unsigned char**)&selected, &slen);
+            if (!selected || !slen) {
+                /* No ALPN selection reported by the remote server. This could mean
+                 * it does not support ALPN (old server) or that it does not support
+                 * any of our proposals (Apache itself up to 2.4.48 at least did that). */
+               if (!alpn_empty_ok) {
+                    ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c, APLOGNO(10273)
+                                  "SSL Proxy: Peer did not select any of our ALPN protocols [%s].",
+                                  alpn_note);
+                    proxy_ssl_check_peer_ok = FALSE;
+               }
+            }
+            else {
+                const char *proto;
+                int i, found = 0;
+                for (i = 0; !found && i < alpn_proposed->nelts; ++i) {
+                    proto = APR_ARRAY_IDX(alpn_proposed, i, const char *);
+                    found = !strncmp(selected, proto, slen);
+                }
+                if (!found) {
+                    /* From a conforming peer, this should never happen,
+                     * but life always finds a way... */
+                    proto = apr_pstrndup(c->pool, selected, slen);
+                    ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c, APLOGNO(10274)
+                                  "SSL Proxy: Peer proposed ALPN protocol %s which is none "
+                                  "of our proposals [%s].", proto, alpn_note);
+                    proxy_ssl_check_peer_ok = FALSE;
+                }
+            }
+        }
+#endif
 
         if (proxy_ssl_check_peer_ok == TRUE) {
             /* another chance to fail */

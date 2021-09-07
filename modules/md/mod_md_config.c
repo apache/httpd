@@ -358,11 +358,11 @@ static const char *md_config_sec_start(cmd_parms *cmd, void *mconfig, const char
         return MD_CMD_MD_SECTION " > section must specify a unique domain name";
     }
 
-    name = ap_getword_white(cmd->pool, &arg);
+    name = ap_getword_conf(cmd->pool, &arg);
     domains = apr_array_make(cmd->pool, 5, sizeof(const char *));
     add_domain_name(domains, name, cmd->pool);
     while (*arg != '\0') {
-        name = ap_getword_white(cmd->pool, &arg);
+        name = ap_getword_conf(cmd->pool, &arg);
         if (NULL != set_transitive(&transitive, name)) {
             add_domain_name(domains, name, cmd->pool);
         }

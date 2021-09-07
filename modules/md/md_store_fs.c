@@ -110,8 +110,7 @@ static apr_status_t init_store_file(md_store_fs_t *s_fs, const char *fname,
     
     md_json_setn(MD_STORE_VERSION, json, MD_KEY_STORE, MD_KEY_VERSION, NULL);
 
-    s_fs->key.len = FS_STORE_KLEN;
-    s_fs->key.data = apr_pcalloc(p, FS_STORE_KLEN);
+    md_data_pinit(&s_fs->key, FS_STORE_KLEN, p);
     if (APR_SUCCESS != (rv = md_rand_bytes((unsigned char*)s_fs->key.data, s_fs->key.len, p))) {
         return rv;
     }
@@ -316,18 +315,29 @@ apr_status_t md_store_fs_init(md_store_t **pstore, apr_pool_t *p, const char *pa
     s_fs->group_perms[MD_SG_OCSP].file = MD_FPROT_F_UALL_WREAD;
 
     s_fs->base = apr_pstrdup(p, path);
-    
-    if (APR_STATUS_IS_ENOENT(rv = md_util_is_dir(s_fs->base, p))
-        && MD_OK(apr_dir_make_recursive(s_fs->base, s_fs->def_perms.dir, p))) {
+
+    rv = md_util_is_dir(s_fs->base, p);
+    if (APR_STATUS_IS_ENOENT(rv)) {
+        md_log_perror(MD_LOG_MARK, MD_LOG_INFO, rv, p,
+            "store directory does not exist, creating %s", s_fs->base);
+        rv = apr_dir_make_recursive(s_fs->base, s_fs->def_perms.dir, p);
+        if (APR_SUCCESS != rv) goto cleanup;
         rv = apr_file_perms_set(s_fs->base, MD_FPROT_D_UALL_WREAD);
         if (APR_STATUS_IS_ENOTIMPL(rv)) {
             rv = APR_SUCCESS;
         }
+        if (APR_SUCCESS != rv) goto cleanup;
     }
-    
-    if ((APR_SUCCESS != rv) || !MD_OK(md_util_pool_vdo(setup_store_file, s_fs, p, NULL))) {
-        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, p, "init fs store at %s", path);
+    else if (APR_SUCCESS != rv) {
+        md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, p,
+            "not a plain directory, maybe a symlink? %s", s_fs->base);
     }
+
+    rv = md_util_pool_vdo(setup_store_file, s_fs, p, NULL);
+    if (APR_SUCCESS != rv) {
+        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, p, "init fs store at %s", s_fs->base);
+    }
+cleanup:
     *pstore = (rv == APR_SUCCESS)? &(s_fs->s) : NULL;
     return rv;
 }
@@ -493,21 +503,24 @@ static apr_status_t mk_group_dir(const char **pdir, md_store_fs_t *s_fs,
     
     perms = gperms(s_fs, group);
 
-    if (MD_OK(fs_get_dname(pdir, &s_fs->s, group, name, p)) && (MD_SG_NONE != group)) {
-        if (  !MD_OK(md_util_is_dir(*pdir, p))
-            && MD_OK(apr_dir_make_recursive(*pdir, perms->dir, p))) {
-            rv = dispatch(s_fs, MD_S_FS_EV_CREATED, group, *pdir, APR_DIR, p);
-        }
-        
-        if (APR_SUCCESS == rv) {
-            rv = apr_file_perms_set(*pdir, perms->dir);
-            md_log_perror(MD_LOG_MARK, MD_LOG_TRACE3, 0, p, "mk_group_dir %s perm set", *pdir);
-            if (APR_STATUS_IS_ENOTIMPL(rv)) {
-                rv = APR_SUCCESS;
-            }
-        }
+    rv = fs_get_dname(pdir, &s_fs->s, group, name, p);
+    if ((APR_SUCCESS != rv) || (MD_SG_NONE == group)) goto cleanup;
+
+    rv = md_util_is_dir(*pdir, p);
+    if (APR_STATUS_IS_ENOENT(rv)) {
+        md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, p, "not a directory, creating %s", *pdir);
+        rv = apr_dir_make_recursive(*pdir, perms->dir, p);
+        if (APR_SUCCESS != rv) goto cleanup;
+        dispatch(s_fs, MD_S_FS_EV_CREATED, group, *pdir, APR_DIR, p);
     }
-    md_log_perror(MD_LOG_MARK, MD_LOG_TRACE3, 0, p, "mk_group_dir %d %s", group, name);
+
+    rv = apr_file_perms_set(*pdir, perms->dir);
+    md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, p, "mk_group_dir %s perm set", *pdir);
+    if (APR_STATUS_IS_ENOTIMPL(rv)) {
+        rv = APR_SUCCESS;
+    }
+cleanup:
+    md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, p, "mk_group_dir %d %s", group, name);
     return rv;
 }
 

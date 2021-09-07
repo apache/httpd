@@ -19,6 +19,7 @@
 #include "ap_mpm.h"
 #include "scoreboard.h"
 #include "apr_version.h"
+#include "apr_strings.h"
 #include "apr_hash.h"
 #include "proxy_util.h"
 #include "ajp.h"
@@ -1720,10 +1721,11 @@ static int ap_proxy_strcmp_ematch(const char *str, const char *expected)
     return 0;
 }
 
-PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
-                                                  proxy_balancer *balancer,
-                                                  proxy_server_conf *conf,
-                                                  const char *url)
+PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker_ex(apr_pool_t *p,
+                                                     proxy_balancer *balancer,
+                                                     proxy_server_conf *conf,
+                                                     const char *url,
+                                                     unsigned int mask)
 {
     proxy_worker *worker;
     proxy_worker *max_worker = NULL;
@@ -1748,6 +1750,11 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
 
     url_length = strlen(url);
     url_copy = apr_pstrmemdup(p, url, url_length);
+
+    /* Default to lookup for both _PREFIX and _MATCH workers */
+    if (!(mask & (AP_PROXY_WORKER_IS_PREFIX | AP_PROXY_WORKER_IS_MATCH))) {
+        mask |= AP_PROXY_WORKER_IS_PREFIX | AP_PROXY_WORKER_IS_MATCH;
+    }
 
     /*
      * We need to find the start of the path and
@@ -1783,11 +1790,13 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
                 && (worker_name_length >= min_match)
                 && (worker_name_length > max_match)
                 && (worker->s->is_name_matchable
-                    || strncmp(url_copy, worker->s->name,
-                               worker_name_length) == 0)
+                    || ((mask & AP_PROXY_WORKER_IS_PREFIX)
+                        && strncmp(url_copy, worker->s->name,
+                                   worker_name_length) == 0))
                 && (!worker->s->is_name_matchable
-                    || ap_proxy_strcmp_ematch(url_copy,
-                                              worker->s->name) == 0) ) {
+                    || ((mask & AP_PROXY_WORKER_IS_MATCH)
+                        && ap_proxy_strcmp_ematch(url_copy,
+                                                  worker->s->name) == 0)) ) {
                 max_worker = worker;
                 max_match = worker_name_length;
             }
@@ -1799,11 +1808,13 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
                 && (worker_name_length >= min_match)
                 && (worker_name_length > max_match)
                 && (worker->s->is_name_matchable
-                    || strncmp(url_copy, worker->s->name,
-                               worker_name_length) == 0)
+                    || ((mask & AP_PROXY_WORKER_IS_PREFIX)
+                        && strncmp(url_copy, worker->s->name,
+                                   worker_name_length) == 0))
                 && (!worker->s->is_name_matchable
-                    || ap_proxy_strcmp_ematch(url_copy,
-                                              worker->s->name) == 0) ) {
+                    || ((mask & AP_PROXY_WORKER_IS_MATCH)
+                        && ap_proxy_strcmp_ematch(url_copy,
+                                                  worker->s->name) == 0)) ) {
                 max_worker = worker;
                 max_match = worker_name_length;
             }
@@ -1813,6 +1824,14 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
     return max_worker;
 }
 
+PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
+                                                  proxy_balancer *balancer,
+                                                  proxy_server_conf *conf,
+                                                  const char *url)
+{
+    return ap_proxy_get_worker_ex(p, balancer, conf, url, 0);
+}
+
 /*
  * To create a worker from scratch first we define the
  * specifics of the worker; this is all local data.
@@ -1820,46 +1839,87 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
  * shared. This allows for dynamic addition during
  * config and runtime.
  */
-PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
+PROXY_DECLARE(char *) ap_proxy_define_worker_ex(apr_pool_t *p,
                                              proxy_worker **worker,
                                              proxy_balancer *balancer,
                                              proxy_server_conf *conf,
                                              const char *url,
-                                             int do_malloc)
+                                             unsigned int mask)
 {
-    int rv;
-    apr_uri_t uri, urisock;
+    apr_status_t rv;
     proxy_worker_shared *wshared;
-    char *ptr, *sockpath = NULL;
+    const char *ptr = NULL, *sockpath = NULL, *pdollars = NULL;
+    apr_port_t port_of_scheme;
+    apr_uri_t uri;
 
     /*
      * Look to see if we are using UDS:
      * require format: unix:/path/foo/bar.sock|http://ignored/path2/
      * This results in talking http to the socket at /path/foo/bar.sock
      */
-    ptr = ap_strchr((char *)url, '|');
-    if (ptr) {
-        *ptr = '\0';
-        rv = apr_uri_parse(p, url, &urisock);
-        if (rv == APR_SUCCESS && !ap_cstr_casecmp(urisock.scheme, "unix")) {
-            sockpath = ap_runtime_dir_relative(p, urisock.path);;
-            url = ptr+1;    /* so we get the scheme for the uds */
+    if (!ap_cstr_casecmpn(url, "unix:", 5)
+            && (ptr = ap_strchr_c(url + 5, '|'))) {
+        rv = apr_uri_parse(p, apr_pstrmemdup(p, url, ptr - url), &uri);
+        if (rv == APR_SUCCESS) {
+            sockpath = ap_runtime_dir_relative(p, uri.path);;
+            ptr++;    /* so we get the scheme for the uds */
         }
         else {
-            *ptr = '|';
+            ptr = url;
         }
     }
-    rv = apr_uri_parse(p, url, &uri);
+    else {
+        ptr = url;
+    }
 
+    if (mask & AP_PROXY_WORKER_IS_MATCH) {
+        /* apr_uri_parse() will accept the '$' sign anywhere in the URL but
+         * in the :port part, and we don't want scheme://host:port$1$2/path
+         * to fail (e.g. "ProxyPassMatch ^/(a|b)(/.*)? http://host:port$2").
+         * So we trim all the $n from the :port and prepend them in uri.path
+         * afterward for apr_uri_unparse() to restore the original URL below.
+         */
+#define IS_REF(x) (x[0] == '$' && apr_isdigit(x[1]))
+        const char *pos = ap_strstr_c(ptr, "://");
+        if (pos) {
+            pos += 3;
+            while (*pos && *pos != ':' && *pos != '/') {
+                pos++;
+            }
+            if (*pos == ':') {
+                pos++;
+                while (*pos && !IS_REF(pos) && *pos != '/') {
+                    pos++;
+                }
+                if (IS_REF(pos)) {
+                    struct iovec vec[2];
+                    const char *path = pos + 2;
+                    while (*path && *path != '/') {
+                        path++;
+                    }
+                    pdollars = apr_pstrmemdup(p, pos, path - pos);
+                    vec[0].iov_base = (void *)ptr;
+                    vec[0].iov_len = pos - ptr;
+                    vec[1].iov_base = (void *)path;
+                    vec[1].iov_len = strlen(path);
+                    ptr = apr_pstrcatv(p, vec, 2, NULL);
+                }
+            }
+        }
+#undef IS_REF
+    }
+
+    /* Normalize the url (worker name) */
+    rv = apr_uri_parse(p, ptr, &uri);
     if (rv != APR_SUCCESS) {
         return apr_pstrcat(p, "Unable to parse URL: ", url, NULL);
     }
     if (!uri.scheme) {
         return apr_pstrcat(p, "URL must be absolute!: ", url, NULL);
     }
-    /* allow for unix:/path|http: */
     if (!uri.hostname) {
         if (sockpath) {
+            /* allow for unix:/path|http: */
             uri.hostname = "localhost";
         }
         else {
@@ -1870,6 +1930,16 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
         ap_str_tolower(uri.hostname);
     }
     ap_str_tolower(uri.scheme);
+    port_of_scheme = ap_proxy_port_of_scheme(uri.scheme);
+    if (uri.port && uri.port == port_of_scheme) {
+        uri.port = 0;
+    }
+    if (pdollars) {
+        /* Restore/prepend pdollars into the path. */
+        uri.path = apr_pstrcat(p, pdollars, uri.path, NULL);
+    }
+    ptr = apr_uri_unparse(p, &uri, APR_URI_UNP_REVEALPASSWORD);
+
     /*
      * Workers can be associated w/ balancers or on their
      * own; ie: the generic reverse-proxy or a worker
@@ -1893,23 +1963,17 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
         /* we need to allocate space here */
         *worker = apr_palloc(p, sizeof(proxy_worker));
     }
-
     memset(*worker, 0, sizeof(proxy_worker));
+    
     /* right here we just want to tuck away the worker info.
      * if called during config, we don't have shm setup yet,
      * so just note the info for later. */
-    if (do_malloc)
+    if (mask & AP_PROXY_WORKER_IS_MALLOCED)
         wshared = ap_malloc(sizeof(proxy_worker_shared));  /* will be freed ap_proxy_share_worker */
     else
         wshared = apr_palloc(p, sizeof(proxy_worker_shared));
-
     memset(wshared, 0, sizeof(proxy_worker_shared));
 
-    wshared->port = (uri.port ? uri.port : ap_proxy_port_of_scheme(uri.scheme));
-    if (uri.port && uri.port == ap_proxy_port_of_scheme(uri.scheme)) {
-        uri.port = 0;
-    }
-    ptr = apr_uri_unparse(p, &uri, APR_URI_UNP_REVEALPASSWORD);
     if (PROXY_STRNCPY(wshared->name, ptr) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf, APLOGNO(02808)
         "Alert! worker name (%s) too long; truncated to: %s", ptr, wshared->name);
@@ -1926,6 +1990,7 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
         "worker hostname (%s) too long; truncated for legacy modules that do not use "
         "proxy_worker_shared->hostname_ex: %s", uri.hostname, wshared->hostname);
     }
+    wshared->port = (uri.port) ? uri.port : port_of_scheme;
     wshared->flush_packets = flush_off;
     wshared->flush_wait = PROXY_FLUSH_WAIT;
     wshared->is_address_reusable = 1;
@@ -1936,7 +2001,7 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
     wshared->smax = -1;
     wshared->hash.def = ap_proxy_hashfunc(wshared->name, PROXY_HASHFUNC_DEFAULT);
     wshared->hash.fnv = ap_proxy_hashfunc(wshared->name, PROXY_HASHFUNC_FNV);
-    wshared->was_malloced = (do_malloc != 0);
+    wshared->was_malloced = (mask & AP_PROXY_WORKER_IS_MALLOCED) != 0;
     wshared->is_name_matchable = 0;
     if (sockpath) {
         if (PROXY_STRNCPY(wshared->uds_path, sockpath) != APR_SUCCESS) {
@@ -1957,9 +2022,37 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
     (*worker)->balancer = balancer;
     (*worker)->s = wshared;
 
+    if (mask & AP_PROXY_WORKER_IS_MATCH) {
+        (*worker)->s->is_name_matchable = 1;
+        if (ap_strchr_c((*worker)->s->name, '$')) {
+            /* Before AP_PROXY_WORKER_IS_MATCH (< 2.4.47), a regex worker
+             * with dollar substitution was never matched against the actual
+             * URL thus the request fell through the generic worker. To avoid
+             * dns and connection reuse compat issues, let's disable connection
+             * reuse by default, it can still be overwritten by an explicit
+             * enablereuse=on.
+             */
+            (*worker)->s->disablereuse = 1;
+        }
+    }
+
     return NULL;
 }
 
+PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
+                                             proxy_worker **worker,
+                                             proxy_balancer *balancer,
+                                             proxy_server_conf *conf,
+                                             const char *url,
+                                             int do_malloc)
+{
+    return ap_proxy_define_worker_ex(p, worker, balancer, conf, url,
+                                     AP_PROXY_WORKER_IS_PREFIX |
+                                     (do_malloc ? AP_PROXY_WORKER_IS_MALLOCED
+                                                : 0));
+}
+
+/* DEPRECATED */
 PROXY_DECLARE(char *) ap_proxy_define_match_worker(apr_pool_t *p,
                                              proxy_worker **worker,
                                              proxy_balancer *balancer,
@@ -1967,29 +2060,10 @@ PROXY_DECLARE(char *) ap_proxy_define_match_worker(apr_pool_t *p,
                                              const char *url,
                                              int do_malloc)
 {
-    char *err;
-    const char *pdollar = ap_strchr_c(url, '$');
-
-    if (pdollar != NULL) {
-        url = apr_pstrmemdup(p, url, pdollar - url);
-    }
-    err = ap_proxy_define_worker(p, worker, balancer, conf, url, do_malloc);
-    if (err) {
-        return err;
-    }
-
-    (*worker)->s->is_name_matchable = 1;
-    if (pdollar) {
-        /* Before ap_proxy_define_match_worker() existed, a regex worker
-         * with dollar substitution was never matched against the actual
-         * URL thus the request fell through the generic worker. To avoid
-         * dns and connection reuse compat issues, let's disable connection
-         * reuse by default, it can still be overwritten by an explicit
-         * enablereuse=on.
-         */
-        (*worker)->s->disablereuse = 1;
-    }
-    return NULL;
+    return ap_proxy_define_worker_ex(p, worker, balancer, conf, url,
+                                     AP_PROXY_WORKER_IS_MATCH |
+                                     (do_malloc ? AP_PROXY_WORKER_IS_MALLOCED
+                                                : 0));
 }
 
 /*
@@ -2207,8 +2281,8 @@ static void fix_uds_filename(request_rec *r, char **url)
     if (!r || !r->filename) return;
 
     if (!strncmp(r->filename, "proxy:", 6) &&
-            (ptr2 = ap_strcasestr(r->filename, "unix:")) &&
-            (ptr = ap_strchr(ptr2, '|'))) {
+            !ap_cstr_casecmpn(r->filename + 6, "unix:", 5) &&
+            (ptr2 = r->filename + 6 + 5, ptr = ap_strchr(ptr2, '|'))) {
         apr_uri_t urisock;
         apr_status_t rv;
         *ptr = '\0';
@@ -3608,18 +3682,15 @@ PROXY_DECLARE(apr_status_t) ap_proxy_sync_balancer(proxy_balancer *b, server_rec
         }
         if (!found) {
             proxy_worker **runtime;
+            /* XXX: a thread mutex is maybe enough here */
             apr_global_mutex_lock(proxy_mutex);
             runtime = apr_array_push(b->workers);
-            *runtime = apr_palloc(conf->pool, sizeof(proxy_worker));
+            *runtime = apr_pcalloc(conf->pool, sizeof(proxy_worker));
             apr_global_mutex_unlock(proxy_mutex);
             (*runtime)->hash = shm->hash;
-            (*runtime)->context = NULL;
-            (*runtime)->cp = NULL;
             (*runtime)->balancer = b;
             (*runtime)->s = shm;
-#if APR_HAS_THREADS
-            (*runtime)->tmutex = NULL;
-#endif
+
             rv = ap_proxy_initialize_worker(*runtime, s, conf->pool);
             if (rv != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(00966) "Cannot init worker");
@@ -4847,12 +4918,16 @@ PROXY_DECLARE(int) ap_proxy_tunnel_run(proxy_tunnel_rec *tunnel)
                 return HTTP_INTERNAL_SERVER_ERROR;
             }
 
-            /* Write if we asked for POLLOUT, and got it or POLLERR
-             * alone (i.e. not with POLLIN|HUP). We want the output filters
-             * to know about the socket error if any, by failing the write.
+            /* We want to write if we asked for POLLOUT and got:
+             * - POLLOUT: the socket is ready for write;
+             * - !POLLIN: the socket is in error state (POLLERR) so we let
+             *   the user know by failing the write and log, OR the socket
+             *   is shutdown for read already (POLLHUP) so we have to
+             *   shutdown for write.
              */
             if ((tc->pfd->reqevents & APR_POLLOUT)
                     && ((pfd->rtnevents & APR_POLLOUT)
+                        || !(tc->pfd->reqevents & APR_POLLIN)
                         || !(pfd->rtnevents & (APR_POLLIN | APR_POLLHUP)))) {
                 struct proxy_tunnel_conn *out = tc, *in = tc->other;
 
@@ -4893,20 +4968,22 @@ PROXY_DECLARE(int) ap_proxy_tunnel_run(proxy_tunnel_rec *tunnel)
 
                     /* Flush any pending input data now, we don't know when
                      * the next POLLIN will trigger and retaining data might
-                     * block the protocol.
+                     * deadlock the underlying protocol. We don't check for
+                     * pending data first with ap_filter_input_pending() since
+                     * the read from proxy_tunnel_forward() is nonblocking
+                     * anyway and returning OK if there's no data.
                      */
-                    if (ap_filter_input_pending(in->c) == OK) {
-                        rc = proxy_tunnel_forward(tunnel, in);
-                        if (rc != OK) {
-                            return rc;
-                        }
+                    rc = proxy_tunnel_forward(tunnel, in);
+                    if (rc != OK) {
+                        return rc;
                     }
                 }
             }
 
-            /* Read if we asked for POLLIN|HUP, and got it or POLLERR
-             * alone (i.e. not with POLLOUT). We want the input filters
-             * to know about the socket error if any, by failing the read.
+            /* We want to read if we asked for POLLIN|HUP and got:
+             * - POLLIN|HUP: the socket is ready for read or EOF (POLLHUP);
+             * - !POLLOUT: the socket is in error state (POLLERR) so we let
+             *   the user know by failing the read and log.
              */
             if ((tc->pfd->reqevents & APR_POLLIN)
                     && ((pfd->rtnevents & (APR_POLLIN | APR_POLLHUP))

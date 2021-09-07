@@ -213,8 +213,7 @@ static int curl_debug_log(CURL *curl, curl_infotype type, char *data, size_t siz
             if (md_log_is_level(req->pool, MD_LOG_TRACE5)) {
                 md_data_t d;
                 const char *s;
-                d.data = data;
-                d.len = size;
+                md_data_init(&d, data, size);
                 md_data_to_hex(&s, 0, req->pool, &d);
                 md_log_perror(MD_LOG_MARK, MD_LOG_TRACE5, 0, req->pool, 
                               "req[%d]: data(hex) -->  %s", req->id, s);
@@ -226,8 +225,7 @@ static int curl_debug_log(CURL *curl, curl_infotype type, char *data, size_t siz
             if (md_log_is_level(req->pool, MD_LOG_TRACE5)) {
                 md_data_t d;
                 const char *s;
-                d.data = data;
-                d.len = size;
+                md_data_init(&d, data, size);
                 md_data_to_hex(&s, 0, req->pool, &d);
                 md_log_perror(MD_LOG_MARK, MD_LOG_TRACE5, 0, req->pool, 
                               "req[%d]: data(hex) <-- %s", req->id, s);

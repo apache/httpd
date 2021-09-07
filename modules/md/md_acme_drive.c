@@ -591,7 +591,10 @@ static apr_status_t acme_driver_init(md_proto_driver_t *d, md_result_t *result)
             goto leave;
         }
     }
-    
+
+    md_result_printf(result, 0, "MDomain %s initialized with support for ACME challenges %s",
+              d->md->name, apr_array_pstrcat(d->p, ad->ca_challenges, ' '));
+
 leave:    
     md_log_perror(MD_LOG_MARK, MD_LOG_TRACE1, result->status, d->p, "%s: init driver", d->md->name);
     return result->status;
@@ -764,6 +767,27 @@ static apr_status_t acme_renew(md_proto_driver_t *d, md_result_t *result)
                     }
                     
                     if (!md_array_is_empty(ad->cred->chain)) {
+
+                        if (!ad->cred->pkey) {
+                            rv = md_pkey_load(d->store, MD_SG_STAGING, d->md->name, ad->cred->spec, &ad->cred->pkey, d->p);
+                            if (APR_SUCCESS != rv) {
+                                md_result_printf(result, rv, "Loading the private key.");
+                                goto out;
+                            }
+                        }
+
+                        if (ad->cred->pkey) {
+                            rv = md_check_cert_and_pkey(ad->cred->chain, ad->cred->pkey);
+                            if (APR_SUCCESS != rv) {
+                                md_result_printf(result, rv, "Certificate and private key do not match.");
+
+                                /* Delete the order */
+                                md_acme_order_purge(d->store, d->p, MD_SG_STAGING, d->md->name, d->env);
+
+                                goto out;
+                            }
+                        }
+
                         rv = md_pubcert_save(d->store, d->p, MD_SG_STAGING, d->md->name, 
                                              ad->cred->spec, ad->cred->chain, 0);
                         if (APR_SUCCESS != rv) {
@@ -896,6 +920,10 @@ static apr_status_t acme_preload(md_proto_driver_t *d, md_store_group_t load_gro
         if (!creds->chain) {
             rv = APR_ENOENT;
             md_result_printf(result, rv, "no certificate in staged credentials #%d", i);
+            goto leave;
+        }
+        if (APR_SUCCESS != (rv = md_check_cert_and_pkey(creds->chain, creds->pkey))) {
+            md_result_printf(result, rv, "certificate and private key do not match in staged credentials #%d", i);
             goto leave;
         }
         APR_ARRAY_PUSH(all_creds, md_credentials_t*) = creds;

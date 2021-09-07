@@ -1,6 +1,99 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.49
 
+  *) mod_proxy: Fix a potential infinite loop when tunneling Upgrade(d)
+     protocols from mod_proxy_http, and a timeout triggering falsely when
+     using mod_proxy_wstunnel, mod_proxy_connect or mod_proxy_http with
+     upgrade= setting.  PRs 65521 and 65519.  [Yann Ylavic]
+
+  *) mod_unique_id: Reduce the time window where duplicates may be generated
+     PR 65159
+     [Christophe Jaillet]
+
+  *) mpm_prefork: Block signals for child_init hooks to prevent potential
+     threads created from there to catch MPM's signals.
+     [Ruediger Pluem, Yann Ylavic]
+
+  *) Revert "mod_unique_id: Fix potential duplicated ID generation under heavy load.
+     PR 65159" added in 2.4.47.
+     This causes issue on Windows.
+     [Christophe Jaillet]
+
+  *) mod_proxy_uwsgi: Fix PATH_INFO setting for generic worker.  [Yann Ylavic]
+
+  *) mod_md: Certificate/keys pairs are verified as matching before a renewal is accepted
+     as successful or a staged renewal is replacing the existing certificates.
+     This avoid potential mess ups in the md store file system to render the active
+     certificates non-working. [@mkauf]
+
+  *) mod_proxy: Faster unix socket path parsing in the "proxy:" URL.
+     [Yann Ylavic]
+
+  *) mod_ssl: tighten the handling of ALPN for outgoing (proxy)
+     connections. If ALPN protocols are provided and sent to the
+     remote server, the received protocol selected is inspected
+     and checked for a match. Without match, the peer handshake
+     fails.
+     An exception is the proposal of "http/1.1" where it is
+     accepted if the remote server did not answer ALPN with
+     a selected protocol. This accomodates for hosts that do
+     not observe/support ALPN and speak http/1.x be default.
+
+  *) mod_proxy: Fix possible reuse/merging of Proxy(Pass)Match worker instances
+     with others when their URLs contain a '$' substitution.  PR 65419 + 65429.
+     [Yann Ylavic]
+
+  *) mod_dav: Add method_precondition hook. WebDAV extensions define
+     conditions that must exist before a WebDAV method can be executed.
+     This hook allows a WebDAV extension to verify these preconditions.
+     [Graham Leggett]
+
+  *) Add hooks deliver_report and gather_reports to mod_dav.h. Allows other
+     modules apart from versioning implementations to handle the REPORT method.
+     [Graham Leggett]
+
+  *) Add dav_get_provider(), dav_open_lockdb(), dav_close_lockdb() and
+     dav_get_resource() to mod_dav.h. [Graham Leggett]
+
+  *) core: fix ap_escape_quotes substitution logic. [Eric Covener]
+
+  *) Easy patches: synch 2.4.x and trunk
+     - mod_auth_basic: Use ap_cstr_casecmp instead of strcasecmp.
+     - mod_ldap: log and abort locking errors.
+     - mod_ldap: style fix for r1831165
+     - mod_ldap: build break fix for r1831165
+     - mod_deflate: Avoid hard-coded "%ld" format strings in mod_deflate's logging statements
+     - mod_deflate: Use apr_uint64_t instead of uint64_t (follow up to r1849590)
+     - mod_forensic: Follow up to r1856490: missing one mod_log_forensic test_char_table case.
+     - mod_rewrite: Save a few cycles.
+     - mod_request: Fix a comment (missing '_' in 'keep_body') and some style issues
+     - core: remove extra whitespace in HTTP_NOT_IMPLEMENTED
+    [Christophe Jaillet]
+
+  *) core/mpm: add hook 'child_stopping` that gets called when the MPM is
+     stopping a child process. The additional `graceful` parameter allows
+     registered hooks to free resources early during a graceful shutdown.
+     [Yann Ylavic, Stefan Eissing]
+
+  *) mod_proxy: Fix icomplete initialization of BalancerMember(s) from the
+     balancer-manager, which can lead to a crash.  [Yann Ylavic]
+
+  *) mpm_event: Fix graceful stop/restart of children processes if connections
+     are in lingering close for too long.  [Yann Ylavic]
+
+  *) mod_md: fixed a potential null pointer dereference if ACME/OCSP
+     server returned 2xx responses without content type. Reported by chuangwen.
+     [chuangwen, Stefan Eissing]
+
+  *) mod_md:
+     - Domain names in `<MDomain ...>` can now appear in quoted form.
+     - Fixed a failure in ACME challenge selection that aborted further searches
+       when the tls-alpn-01 method did not seem to be suitable.
+     - Changed the tls-alpn-01 setup to only become unsuitable when none of the
+       dns names showed support for a configured 'Protocols ... acme-tls/1'. This
+       allows use of tls-alpn-01 for dns names that are not mapped to a VirtualHost.
+     [Stefan Eissing]
+
   *) Add CPING to health check logic. [Jean-Frederic Clere]
 
   *) core: Split ap_create_request() from ap_read_request(). [Graham Leggett]

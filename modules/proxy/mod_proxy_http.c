@@ -1479,7 +1479,7 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(10239)
                           "HTTP: tunneling protocol %s", upgrade);
 
-            rv = ap_proxy_tunnel_create(&tunnel, r, origin, "HTTP");
+            rv = ap_proxy_tunnel_create(&tunnel, r, origin, upgrade);
             if (rv != APR_SUCCESS) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(10240)
                               "can't create tunnel for %s", upgrade);

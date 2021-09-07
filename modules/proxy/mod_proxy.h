@@ -124,6 +124,8 @@ struct proxy_remote {
 #define PROXYPASS_NOCANON 0x01
 #define PROXYPASS_INTERPOLATE 0x02
 #define PROXYPASS_NOQUERY 0x04
+#define PROXYPASS_MAP_ENCODED 0x08
+#define PROXYPASS_MAP_SERVLET 0x18 /* + MAP_ENCODED */
 struct proxy_alias {
     const char  *real;
     const char  *fake;
@@ -200,6 +202,8 @@ typedef struct {
     unsigned int inherit_set:1;
     unsigned int ppinherit:1;
     unsigned int ppinherit_set:1;
+    unsigned int map_encoded_one:1;
+    unsigned int map_encoded_all:1;
 } proxy_server_conf;
 
 typedef struct {
@@ -742,8 +746,29 @@ PROXY_DECLARE(int) ap_proxy_worker_can_upgrade(apr_pool_t *p,
                                                const char *upgrade,
                                                const char *dflt);
 
+/* Bitmask for ap_proxy_{define,get}_worker_ex(). */
+#define AP_PROXY_WORKER_IS_PREFIX   (1u << 0)
+#define AP_PROXY_WORKER_IS_MATCH    (1u << 1)
+#define AP_PROXY_WORKER_IS_MALLOCED (1u << 2)
+
 /**
- * Get the worker from proxy configuration
+ * Get the worker from proxy configuration, looking for either PREFIXED or
+ * MATCHED or both types of workers according to given mask
+ * @param p        memory pool used for finding worker
+ * @param balancer the balancer that the worker belongs to
+ * @param conf     current proxy server configuration
+ * @param url      url to find the worker from
+ * @param mask     bitmask of AP_PROXY_WORKER_IS_*
+ * @return         proxy_worker or NULL if not found
+ */
+PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker_ex(apr_pool_t *p,
+                                                     proxy_balancer *balancer,
+                                                     proxy_server_conf *conf,
+                                                     const char *url,
+                                                     unsigned int mask);
+
+/**
+ * Get the worker from proxy configuration, both types
  * @param p        memory pool used for finding worker
  * @param balancer the balancer that the worker belongs to
  * @param conf     current proxy server configuration
@@ -754,7 +779,26 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
                                                   proxy_balancer *balancer,
                                                   proxy_server_conf *conf,
                                                   const char *url);
+
 /**
+ * Define and Allocate space for the worker to proxy configuration, of either
+ * PREFIXED or MATCHED type according to given mask
+ * @param p         memory pool to allocate worker from
+ * @param worker    the new worker
+ * @param balancer  the balancer that the worker belongs to
+ * @param conf      current proxy server configuration
+ * @param url       url containing worker name
+ * @param mask      bitmask of AP_PROXY_WORKER_IS_*
+ * @return          error message or NULL if successful (*worker is new worker)
+ */
+PROXY_DECLARE(char *) ap_proxy_define_worker_ex(apr_pool_t *p,
+                                             proxy_worker **worker,
+                                             proxy_balancer *balancer,
+                                             proxy_server_conf *conf,
+                                             const char *url,
+                                             unsigned int mask);
+
+ /**
  * Define and Allocate space for the worker to proxy configuration
  * @param p         memory pool to allocate worker from
  * @param worker    the new worker
@@ -781,6 +825,7 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
  * @param url       url containing worker name (produces match pattern)
  * @param do_malloc true if shared struct should be malloced
  * @return          error message or NULL if successful (*worker is new worker)
+ * @deprecated Replaced by ap_proxy_define_worker_ex()
  */
 PROXY_DECLARE(char *) ap_proxy_define_match_worker(apr_pool_t *p,
                                              proxy_worker **worker,
@@ -1165,13 +1210,27 @@ PROXY_DECLARE(apr_status_t) ap_proxy_sync_balancer(proxy_balancer *b,
                                                    server_rec *s,
                                                    proxy_server_conf *conf);
 
+/**
+ * Configure and create workers (and balancer) in mod_balancer.
+ * @param r request
+ * @param params table with the parameters like b=mycluster etc.
+ * @return 404 when the worker/balancer doesn't exist,
+ *         400 if something is invalid
+ *         200 for success.
+ */ 
+APR_DECLARE_OPTIONAL_FN(apr_status_t, balancer_manage,
+        (request_rec *, apr_table_t *params));
 
 /**
  * Find the matched alias for this request and setup for proxy handler
  * @param r     request
  * @param ent   proxy_alias record
  * @param dconf per-dir config or NULL
- * @return      DECLINED, DONE or OK if matched
+ * @return      OK if the alias matched,
+ *              DONE if the alias matched and r->uri was normalized so
+ *                   no further transformation should happen on it,
+ *              DECLINED if proxying is disabled for this alias,
+ *              HTTP_CONTINUE if the alias did not match
  */
 PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r,
                                         struct proxy_alias *ent,

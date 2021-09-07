@@ -23,16 +23,16 @@
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP-Server</a> &gt; <a href="http://httpd.apache.org/docs/">Dokumentation</a> &gt; <a href="./">Version 2.4</a></div><div id="page-content"><div id="preamble"><h1>Konfigurationsdateien</h1>
 <div class="toplang">
-<p><span>Verf&#252;gbare Sprachen: </span><a href="./de/configuring.html" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>Verfügbare Sprachen: </span><a href="./de/configuring.html" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/configuring.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/configuring.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="./fr/configuring.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="./ja/configuring.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/configuring.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/configuring.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/configuring.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Diese &#220;bersetzung ist m&#246;glicherweise
-            nicht mehr aktuell. Bitte pr&#252;fen Sie die englische Version auf
-            die neuesten &#196;nderungen.</div>
+<div class="outofdate">Diese Übersetzung ist möglicherweise
+            nicht mehr aktuell. Bitte prüfen Sie die englische Version auf
+            die neuesten Änderungen.</div>
 
     <p>Dieses Dokument beschreibt die Dateien, die zur Konfiguration des Apache
       HTTP Servers verwendet werden.</p>
@@ -40,7 +40,7 @@
 <div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#main">Hauptkonfigurationsdateien</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#syntax">Syntax der Konfigurationsdateien</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#modules">Module</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#scope">Der G&#252;ltigkeitsbereich von Direktiven</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#scope">Der Gültigkeitsbereich von Direktiven</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#htaccess">.htaccess-Dateien</a></li>
 </ul><h3>Siehe auch</h3><ul class="seealso"><li><a href="#comments_section">Kommentare</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -50,15 +50,15 @@
     <table class="related"><tr><th>Referenzierte Module</th><th>Referenzierte Direktiven</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_mime.html">mod_mime</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#include">Include</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#typesconfig">TypesConfig</a></code></li></ul></td></tr></table>
 
     <p>Der Apache wird konfiguriert, indem <a href="mod/directives.html">Direktiven</a> in einfache Textdateien
-      eingetragen werden. Die Hauptkonfigurationsdatei hei&#223;t
-      &#252;blicherweise <code>httpd.conf</code>. Der Ablageort dieser Datei
+      eingetragen werden. Die Hauptkonfigurationsdatei heißt
+      üblicherweise <code>httpd.conf</code>. Der Ablageort dieser Datei
       wird bei der Kompilierung festgelegt, kann jedoch mit der
-      Befehlszeilenoption <code>-f</code> &#252;berschrieben werden. Durch
+      Befehlszeilenoption <code>-f</code> überschrieben werden. Durch
       Verwendung der Direktive  <code class="directive"><a href="./mod/core.html#include">Include</a></code>
-      k&#246;nnen au&#223;erdem weitere Konfigurationsdateien hinzugef&#252;gt
-      werden. Zum Einf&#252;gen von mehreren Konfigurationsdateien k&#246;nnen
+      können außerdem weitere Konfigurationsdateien hinzugefügt
+      werden. Zum Einfügen von mehreren Konfigurationsdateien können
       Platzhalter verwendet werden. Jede Direktive darf in jeder dieser
-      Konfigurationsdateien angegeben werden. &#196;nderungen in den
+      Konfigurationsdateien angegeben werden. Änderungen in den
       Hauptkonfigurationsdateien werden vom Apache nur beim Start oder Neustart
       erkannt.</p>
 
@@ -71,23 +71,23 @@
     
 
     <p>Die Konfigurationsdateien des Apache enthalten eine Direktive pro Zeile.
-      Der Backslash "\" l&#228;&#223;t sich als letztes Zeichen in einer Zeile
-      dazu verwenden, die Fortsetzung der Direktive in der n&#228;chsten Zeile
+      Der Backslash "\" läßt sich als letztes Zeichen in einer Zeile
+      dazu verwenden, die Fortsetzung der Direktive in der nächsten Zeile
       anzuzeigen. Es darf kein weiteres Zeichen oder Whitespace zwischen dem
       Backslash und dem Zeilenende folgen.</p>
 
     <p>In den Konfigurationsdateien wird bei den Direktiven nicht zwischen
-      Gro&#223;- und Kleinschreibung unterschieden. Bei den Argumenten der
-      Direktiven wird dagegen oftmals zwischen Gro&#223;- und Kleinschreibung
+      Groß- und Kleinschreibung unterschieden. Bei den Argumenten der
+      Direktiven wird dagegen oftmals zwischen Groß- und Kleinschreibung
       differenziert. Zeilen, die mit dem Doppelkreuz "#" beginnen, werden als
-      Kommentare betrachtet und ignoriert. Kommentare d&#252;rfen
+      Kommentare betrachtet und ignoriert. Kommentare dürfen
       <strong>nicht</strong> am Ende einer Zeile nach der Direktive
-      eingef&#252;gt werden. Leerzeilen und Whitespaces vor einer Direktive
+      eingefügt werden. Leerzeilen und Whitespaces vor einer Direktive
       werden ignoriert. Dadurch lassen sich Direktiven zur besseren Lesbarbeit
-      einr&#252;cken.</p>
+      einrücken.</p>
 
-    <p>Sie k&#246;nnen die Syntax Ihrer Konfigurationsdateien auf Fehler
-      pr&#252;fen, ohne den Server zu starten, indem Sie <code>apachectl
+    <p>Sie können die Syntax Ihrer Konfigurationsdateien auf Fehler
+      prüfen, ohne den Server zu starten, indem Sie <code>apachectl
         configtest</code> oder die Befehlszeilenoption <code>-t</code>
       verwenden.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -98,59 +98,59 @@
     <table class="related"><tr><th>Referenzierte Module</th><th>Referenzierte Direktiven</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_so.html">mod_so</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code></li></ul></td></tr></table>
 
     <p>Der Apache ist ein modularer Server. Das bedeutet, dass nur die abolute
-      Grundfunktionalit&#228;t im Kernserver enthalten ist. Weitergehende
-      F&#228;higkeiten sind mittels <a href="mod/">Modulen</a> verf&#252;gbar,
-      die in den Apache geladen werden k&#246;nnen. Standardm&#228;&#223;ig
-      wird bei der Kompilierung ein Satz von Basismodulen <span class="transnote">(<em>Anm.d.&#220;.:</em> die so
+      Grundfunktionalität im Kernserver enthalten ist. Weitergehende
+      Fähigkeiten sind mittels <a href="mod/">Modulen</a> verfügbar,
+      die in den Apache geladen werden können. Standardmäßig
+      wird bei der Kompilierung ein Satz von Basismodulen <span class="transnote">(<em>Anm.d.Ü.:</em> die so
         genannten <a href="mod/module-dict.html#Status">Base</a>-Module)</span> in den Server eingebunden. Wenn der
-      Server f&#252;r die Verwendung von <a href="dso.html">dynamisch
-        ladbaren</a> Modulen kompiliert wurde, dann k&#246;nnen Module separat
-      kompiliert und jederzeit mittels der Direktive <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> hinzugef&#252;gt werden.
+      Server für die Verwendung von <a href="dso.html">dynamisch
+        ladbaren</a> Modulen kompiliert wurde, dann können Module separat
+      kompiliert und jederzeit mittels der Direktive <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> hinzugefügt werden.
       Andernfalls muss der Apache neu kompiliert werden, um Module
-      hinzuzuf&#252;gen oder zu entfernen. Konfigurationsanweisungen k&#246;nnen
-      abh&#228;ngig vom Vorhandensein eines bestimmten Moduls eingesetzt werden,
+      hinzuzufügen oder zu entfernen. Konfigurationsanweisungen können
+      abhängig vom Vorhandensein eines bestimmten Moduls eingesetzt werden,
       indem sie in einen <code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code>-Block eingeschlossen werden.</p>
 
     <p>Um zu sehen, welche Module momentan in den Server einkompiliert sind,
       kann die Befehlszeilenoption <code>-l</code> verwendet werden.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="scope" id="scope">Der G&#252;ltigkeitsbereich von Direktiven</a></h2>
+<h2><a name="scope" id="scope">Der Gültigkeitsbereich von Direktiven</a></h2>
     
 
     <table class="related"><tr><th>Referenzierte Module</th><th>Referenzierte Direktiven</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li></ul></td></tr></table>
 
-    <p>Direktiven in den Hauptkonfigurationsdateien gelten f&#252;r den
-      gesamten Server. Wenn Sie die Konfiguration nur f&#252;r einen Teil des
-      Servers ver&#228;ndern m&#246;chten, k&#246;nnen Sie den
-      G&#252;ltigkeitsbereich der Direktiven beschr&#228;nken, indem Sie diese
+    <p>Direktiven in den Hauptkonfigurationsdateien gelten für den
+      gesamten Server. Wenn Sie die Konfiguration nur für einen Teil des
+      Servers verändern möchten, können Sie den
+      Gültigkeitsbereich der Direktiven beschränken, indem Sie diese
       in <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>-,
       <code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code>-,
       <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>-,
       <code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code>-,
       <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>- oder
-      <code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>-Abschnitte eingef&#252;gen.
+      <code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>-Abschnitte eingefügen.
       Diese Abschnitte begrenzen die Anwendung der umschlossenen Direktiven
       auf bestimmte Pfade des Dateisystems oder auf
-      bestimmte URLs. Sie k&#246;nnen f&#252;r eine fein abgestimmte
+      bestimmte URLs. Sie können für eine fein abgestimmte
       Konfiguration auch ineinander verschachtelt werden.</p>
     
     
-    <p>Der Apache besitzt die F&#228;higkeit, mehrere verschiedene Websites
+    <p>Der Apache besitzt die Fähigkeit, mehrere verschiedene Websites
       gleichzeitig zu bedienen. Dies wird <a href="vhosts/">virtuelles
-        Hosten</a> genannt. Direktiven k&#246;nnen auch in ihrem
-      G&#252;ltigkeitsgereich eingeschr&#228;nkt werden, indem sie innerhalb
+        Hosten</a> genannt. Direktiven können auch in ihrem
+      Gültigkeitsgereich eingeschränkt werden, indem sie innerhalb
       eines <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>-Abschnittes angegeben werden.
-      Sie werden dann nur auf Anfragen f&#252;r eine bestimmte Website
+      Sie werden dann nur auf Anfragen für eine bestimmte Website
       angewendet.</p>
 
     <p>Obwohl die meisten Direktiven in jedem dieser Abschnitte platziert
-      werden k&#246;nnen, ergeben einige Direktiven in manchen Kontexten
+      werden können, ergeben einige Direktiven in manchen Kontexten
       keinen Sinn. Direktiven zur Prozesssteuerung beispielsweise
-      d&#252;rfen nur im Kontext des Hauptservers angegeben werden. Pr&#252;fen
+      dürfen nur im Kontext des Hauptservers angegeben werden. Prüfen
       Sie den <a href="mod/directive-dict.html#Context">Kontext</a> der
       Direktive, um herauszufinden, welche Direktiven in welche Abschnitte
-      eingef&#252;gt werden k&#246;nnen.  Weitere Informationen finden Sie unter
+      eingefügt werden können.  Weitere Informationen finden Sie unter
       "<a href="sections.html">Wie Directory-, Location- und Files-Abschnitte
         arbeiten</a>".</p>
     
@@ -161,35 +161,35 @@
 
     <table class="related"><tr><th>Referenzierte Module</th><th>Referenzierte Direktiven</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/core.html#accessfilename">AccessFileName</a></code></li><li><code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code></li></ul></td></tr></table>
 
-    <p>Der Apache erm&#246;glicht die dezentrale Verwaltung der
+    <p>Der Apache ermöglicht die dezentrale Verwaltung der
       Konfiguration mittes spezieller Dateien innerhalb des
-      Web-Verzeichnisbaums. Diese speziellen Dateien hei&#223;en
-      gew&#246;hnlich <code>.htaccess</code>, mit der Direktive <code class="directive"><a href="./mod/core.html#accessfilename">AccessFileName</a></code> kann jedoch auch ein anderer
+      Web-Verzeichnisbaums. Diese speziellen Dateien heißen
+      gewöhnlich <code>.htaccess</code>, mit der Direktive <code class="directive"><a href="./mod/core.html#accessfilename">AccessFileName</a></code> kann jedoch auch ein anderer
       Name festgelegt werden. In <code>.htaccess</code>-Dateien angegebene
       Direktiven werden auf das Verzeichnis und dessen Unterverzeichnisse
       angewendet, in dem die Datei abgelegt ist. <code>.htaccess</code>-Dateien
       folgen der gleichen Syntax wie die Hauptkonfigurationsdateien. Da
       <code>.htaccess</code>-Dateien bei jeder Anfrage eingelesen werden,
-      werden &#196;nderungen in diesen Dateien sofort wirksam.</p>
+      werden Änderungen in diesen Dateien sofort wirksam.</p>
 
-    <p>Pr&#252;fen Sie den <a href="mod/directive-dict.html#Context">Kontext</a> der Direktive, um
+    <p>Prüfen Sie den <a href="mod/directive-dict.html#Context">Kontext</a> der Direktive, um
       herauszufinden, welche Direktiven in <code>.htaccess</code>-Dateien
-      angegeben werden k&#246;nnen. Dar&#252;ber hinaus steuert der
+      angegeben werden können. Darüber hinaus steuert der
       Serveradministrator mit der Einstellung der Direktive <code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code> in den
       Hauptkonfigurationsdateien welche Direktiven in
-      <code>.htaccess</code>-Dateien verwendet werden d&#252;rfen.</p>
+      <code>.htaccess</code>-Dateien verwendet werden dürfen.</p>
 
-    <p>Weitere Informationen &#252;ber <code>.htaccess</code>-Dateien finden
-      Sie in der <a href="howto/htaccess.html">.htaccess-Einf&#252;hrung</a>.</p>
+    <p>Weitere Informationen über <code>.htaccess</code>-Dateien finden
+      Sie in der <a href="howto/htaccess.html">.htaccess-Einführung</a>.</p>
   </div></div>
 <div class="bottomlang">
-<p><span>Verf&#252;gbare Sprachen: </span><a href="./de/configuring.html" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>Verfügbare Sprachen: </span><a href="./de/configuring.html" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/configuring.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/configuring.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="./fr/configuring.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="./ja/configuring.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/configuring.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/configuring.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Kommentare</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
+<a href="./tr/configuring.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Kommentare</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
 var comments_identifier = 'http://httpd.apache.org/docs/2.4/configuring.html';

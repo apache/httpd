@@ -18,12 +18,6 @@
 #define mod_md_md_ocsp_h
 
 
-int md_ocsp_init_stapling_status(server_rec *s, apr_pool_t *p, 
-                                 X509 *cert, X509 *issuer);
-
-int md_ocsp_get_stapling_status(unsigned char **pder, int *pderlen, 
-                                conn_rec *c, server_rec *s, X509 *cert);
-                          
 int md_ocsp_prime_status(server_rec *s, apr_pool_t *p,
                          const char *id, apr_size_t id_len, const char *pem);
 

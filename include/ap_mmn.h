@@ -563,7 +563,21 @@
  * 20120211.107 (2.4.49-dev) Add ap_parse_request_line() and
  *                           ap_check_request_header()
  * 20120211.108 (2.4.49-dev) Add ajp_handle_cping_cpong
- * 20120211.109 (2.4.49-dev) add conn_rec->outgoing and ap_ssl_bind_outgoing()
+ * 20120211.109 (2.4.49-dev) Add ap_normalize_path(),
+ *                           pre_translate_name hook and
+ *                           Add map_encoded_one and map_encoded_all bits to
+ *                           proxy_server_conf.
+ * 20120211.110 (2.4.49-dev) Add hook child_stopping to get informed that a child
+ *                           is being shut down.
+ * 20120211.111 (2.4.49-dev) Add dav_get_provider(), dav_open_lockdb(),
+ *                           dav_close_lockdb() and dav_get_resource() to
+ *                           mod_dav.h.
+ * 20120211.112 (2.4.49-dev) Add deliver_report and gather_reports hooks.
+ * 20120211.113 (2.4.49-dev) Add method_precondition hook.
+ * 20120211.114 (2.4.49-dev) Add optional balancer_manage function.
+ * 20120211.115 (2.4.49-dev) Add ap_proxy_get_worker_ex() and
+ *                           ap_proxy_define_worker_ex() to mod_proxy.h
+ * 20120211.116 (2.4.49-dev) add conn_rec->outgoing and ap_ssl_bind_outgoing()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -571,7 +585,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 109                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 116                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

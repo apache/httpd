@@ -72,7 +72,8 @@
     APR_HOOK_LINK(end_generation) \
     APR_HOOK_LINK(child_status) \
     APR_HOOK_LINK(suspend_connection) \
-    APR_HOOK_LINK(resume_connection)
+    APR_HOOK_LINK(resume_connection) \
+    APR_HOOK_LINK(child_stopping)
 
 #if AP_ENABLE_EXCEPTION_HOOK
 APR_HOOK_STRUCT(
@@ -112,6 +113,9 @@ AP_IMPLEMENT_HOOK_VOID(suspend_connection,
 AP_IMPLEMENT_HOOK_VOID(resume_connection,
                        (conn_rec *c, request_rec *r),
                        (c, r))
+AP_IMPLEMENT_HOOK_VOID(child_stopping,
+                       (apr_pool_t *pchild, int graceful),
+                       (pchild, graceful))
 
 /* hooks with no args are implemented last, after disabling APR hook probes */
 #if defined(APR_HOOK_PROBES_ENABLED)
