@@ -212,6 +212,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1893014 ^/httpd/httpd/trunk .
      +1: ylavic,
 
+  *) mod_proxy: Don't canonicalize with both nocanon and ProxyPassInterpolateEnv
+     On.  PR 65549.
+     trunk patch: http://svn.apache.org/r1893016
+     2.4.x patch: svn merge -c 1893016 ^/httpd/httpd/trunk .
+     +1: ylavic,
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
