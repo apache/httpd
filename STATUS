@@ -218,6 +218,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1893016 ^/httpd/httpd/trunk .
      +1: ylavic,
 
+  *) core: scoreboard.c method check
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1878092
+     2.4.x patch: svn merge -c 1878092  ^/httpd/httpd/trunk .
+     +1 covener,
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
