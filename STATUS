@@ -155,6 +155,20 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1878092  ^/httpd/httpd/trunk .
      +1: covener, ylavic, jfclere
 
+  *) mod_proxy: Sanity checks on the configured UDS path, fail with 500 if
+     invalid since continuing through proxy processing wouldn't work as expected.
+     Trunk version of patch:
+        https://svn.apache.org/r1892986
+        https://svn.apache.org/r1892987
+     Backport version for 2.4.x of patch:
+       https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/265.diff
+     +1: rpluem, ylavic, covener
+
+  *) mod_proxy: Axe unused ap_filter_input_pending in 2.4.x (only) after r1892971.
+     2.4.x patch: http://people.apache.org/~ylavic/patches/ap_filter_input_pending-unused.patch
+     +1: ylavic, icing,  covener
+
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -189,15 +203,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      but I cannot find them commented. Further more the PR currently has merge
      conflicts.
 
-  *) mod_proxy: Sanity checks on the configured UDS path, fail with 500 if
-     invalid since continuing through proxy processing wouldn't work as expected.
-     Trunk version of patch:
-        https://svn.apache.org/r1892986
-        https://svn.apache.org/r1892987
-     Backport version for 2.4.x of patch:
-       https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/265.diff
-     +1: rpluem, ylavic
-
   *) mod_unique_id: Earlier request_time initialization in read_request_line(),
      plus use of an atomic counter to close the race condition.
      trunk patch: http://svn.apache.org/r1893001
@@ -207,21 +212,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   Reusing CHANGES entry from r1892982.
      +1: ylavic,
 
-  *) mod_proxy: Axe unused ap_filter_input_pending in 2.4.x (only) after r1892971.
-     2.4.x patch: http://people.apache.org/~ylavic/patches/ap_filter_input_pending-unused.patch
-     +1: ylavic, icing, 
-
   *) mpm_event: Fix children processes possibly not stopped on graceful
      restart.  PR 63169
      trunk patch: http://svn.apache.org/r1893014
      2.4.x patch: svn merge -c 1893014 ^/httpd/httpd/trunk .
-     +1: ylavic,
+     +1: ylavic, covener
 
   *) mod_proxy: Don't canonicalize with both nocanon and ProxyPassInterpolateEnv
      On.  PR 65549.
      trunk patch: http://svn.apache.org/r1893016
      2.4.x patch: svn merge -c 1893016 ^/httpd/httpd/trunk .
-     +1: ylavic,
+     +1: ylavic, covener
 
   *) core: Initialize the request fields on read failure to avoid NULLs.
      trunk patch: http://svn.apache.org/r1893030
