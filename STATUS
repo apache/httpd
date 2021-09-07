@@ -141,6 +141,15 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_ssl: Support logging private key material for use with
+     wireshark via log file given by SSLKEYLOGFILE environment
+     variable.  Requires OpenSSL 1.1.1.  PR 63391.
+     Trunk version of patch:
+        https://svn.apache.org/r1869842
+     Backport version for 2.4.x of patch:
+       https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/264.diff
+     +1: rpluem, ylavic, jorton
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -174,15 +183,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      rpluem says: I made comments on https://github.com/apache/httpd/pull/203,
      but I cannot find them commented. Further more the PR currently has merge
      conflicts.
-
-  *) mod_ssl: Support logging private key material for use with
-     wireshark via log file given by SSLKEYLOGFILE environment
-     variable.  Requires OpenSSL 1.1.1.  PR 63391.
-     Trunk version of patch:
-        https://svn.apache.org/r1869842
-     Backport version for 2.4.x of patch:
-       https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/264.diff
-     +1: rpluem, ylavic
 
   *) mod_proxy: Sanity checks on the configured UDS path, fail with 500 if
      invalid since continuing through proxy processing wouldn't work as expected.
