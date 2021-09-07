@@ -150,6 +150,11 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
        https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/264.diff
      +1: rpluem, ylavic, jorton
 
+  *) core: scoreboard.c method check
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1878092
+     2.4.x patch: svn merge -c 1878092  ^/httpd/httpd/trunk .
+     +1: covener, ylavic, jfclere
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -218,15 +223,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1893016 ^/httpd/httpd/trunk .
      +1: ylavic,
 
-  *) core: scoreboard.c method check
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1878092
-     2.4.x patch: svn merge -c 1878092  ^/httpd/httpd/trunk .
-     +1: covener, ylavic, jfclere
-
   *) core: Initialize the request fields on read failure to avoid NULLs.
      trunk patch: http://svn.apache.org/r1893030
-     2.4.x patch: svn merge -c 1893030  ^/httpd/httpd/trunk .
-     +1: ylavic, jfclere
+                  http://svn.apache.org/r1893044
+     2.4.x patch: svn merge -c 1893030,1893044 ^/httpd/httpd/trunk .
+     +1: ylavic,
+     ylavic: still being discussed on dev@
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
