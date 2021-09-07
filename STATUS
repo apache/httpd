@@ -215,7 +215,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mpm_event: Fix children processes possibly not stopped on graceful
      restart.  PR 63169
      trunk patch: http://svn.apache.org/r1893014
-     2.4.x patch: svn merge -c 1893014 ^/httpd/httpd/trunk .
+     trunk patch: http://svn.apache.org/r1893073
+     2.4.x patch: svn merge -c 1893014,1893073 ^/httpd/httpd/trunk .
      +1: ylavic, covener
 
   *) mod_proxy: Don't canonicalize with both nocanon and ProxyPassInterpolateEnv
