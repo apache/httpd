@@ -1,2 +1,0 @@
-  *) core: Initialize the request fields on read failure to avoid NULLs.
-     [Yann Ylavic]

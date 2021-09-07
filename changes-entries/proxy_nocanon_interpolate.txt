@@ -1,3 +1,0 @@
-  *) mod_proxy: Do not canonicalize the proxied URL when both "nocanon" and
-     "ProxyPassInterpolateEnv On" are configured.  PR 65549.
-     [Joel Self <joelself gmail.com>]

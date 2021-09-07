@@ -1,2 +1,0 @@
-  *) mpm_event: Fix children processes possibly not stopped on graceful
-     restart.  PR 63169.  [Joel Self <joelself gmail.com>]

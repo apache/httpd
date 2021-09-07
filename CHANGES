@@ -1,6 +1,25 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) core: Initialize the request fields on read failure to avoid NULLs.
+     [Yann Ylavic]
+
+  *) mod_proxy: Do not canonicalize the proxied URL when both "nocanon" and
+     "ProxyPassInterpolateEnv On" are configured.  PR 65549.
+     [Joel Self <joelself gmail.com>]
+
+  *) mpm_event: Fix children processes possibly not stopped on graceful
+     restart.  PR 63169.  [Joel Self <joelself gmail.com>]
+
+  *) mod_unique_id: Reduce the time window where duplicates may be generated
+     PR 65159
+     [Christophe Jaillet]
+
+  *) Revert "mod_unique_id: Fix potential duplicated ID generation under heavy load.
+     PR 65159" added in 2.4.47.
+     This causes issue on Windows.
+     [Christophe Jaillet]
+
   *) mod_proxy_uwsgi: Fix PATH_INFO setting for generic worker.  [Yann Ylavic]
 
   *) mod_md: Certificate/keys pairs are verified as matching before a renewal is accepted
