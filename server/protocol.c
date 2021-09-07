@@ -681,6 +681,8 @@ static int field_name_len(const char *field)
     return end - field;
 }
 
+static const char m_invalid_str[] = "-";
+
 static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
 {
     apr_size_t len;
@@ -717,7 +719,7 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
             r->request_time = apr_time_now();
 
             /* Fall through with an invalid (non NULL) request */
-            r->method = "-";
+            r->method = m_invalid_str;
             r->method_number = M_INVALID;
             r->uri = r->unparsed_uri = apr_pstrdup(r->pool, "-");
 
@@ -1488,7 +1490,7 @@ request_rec *ap_read_request(conn_rec *conn)
                               "request failed: client's request-line exceeds LimitRequestLine (longer than %d)",
                               r->server->limit_req_line);
             }
-            else if (r->method == NULL) {
+            else if (r->method == m_invalid_str) {
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00566)
                               "request failed: malformed request line");
             }
