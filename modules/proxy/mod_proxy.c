@@ -949,7 +949,7 @@ PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r, struct proxy_alias *ent,
                               "'%s'; declining", r->uri);
                 return DECLINED;
             }
-            if (nocanon && len != alias_match(r->unparsed_uri, ent->fake)) {
+            if (nocanon && len != alias_match(r->unparsed_uri, fake)) {
                 mismatch = 1;
                 use_uri = r->uri;
             }
