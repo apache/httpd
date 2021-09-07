@@ -195,17 +195,15 @@ static const char *gen_unique_id(const request_rec *r)
         unsigned char pad[2];
     } paddedbuf;
     unsigned char *x,*y;
-    unsigned short counter;
     int i,j,k;
 
     memcpy(&new_unique_id.root, &cur_unique_id.root, ROOT_SIZE);
     new_unique_id.stamp = htonl((unsigned int)apr_time_sec(r->request_time));
     new_unique_id.thread_index = htonl((unsigned int)r->connection->id);
-    new_unique_id.counter = cur_unique_id.counter;
+    new_unique_id.counter = cur_unique_id.counter++;
 
-    /* Increment the identifier for the next call */
-    counter = ntohs(new_unique_id.counter) + 1;
-    cur_unique_id.counter = htons(counter);
+    /* Set counter in network byte order for the uuencoded unique id. */
+    new_unique_id.counter = htons(new_unique_id.counter);
 
     /* we'll use a temporal buffer to avoid uuencoding the possible internal
      * paddings of the original structure */
