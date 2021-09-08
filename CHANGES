@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.49
 
+  *) mod_proxy: Do not canonicalize the proxied URL when both "nocanon" and
+     "ProxyPassInterpolateEnv On" are configured.  PR 65549.
+     [Joel Self <joelself gmail.com>]
+
   *) mpm_event: Fix children processes possibly not stopped on graceful
      restart.  PR 63169.  [Joel Self <joelself gmail.com>]
 
