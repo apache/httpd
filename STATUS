@@ -141,11 +141,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) core: scoreboard.c method check
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1878092
-     2.4.x patch: svn merge -c 1878092  ^/httpd/httpd/trunk .
-     +1: covener, ylavic, jfclere
-
   *) mod_proxy: Axe unused ap_filter_input_pending in 2.4.x (only) after r1892971.
      2.4.x patch: http://people.apache.org/~ylavic/patches/ap_filter_input_pending-unused.patch
      +1: ylavic, icing,  covener
