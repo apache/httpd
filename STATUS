@@ -163,6 +163,14 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1893016 ^/httpd/httpd/trunk .
      +1: ylavic, covener, rpluem
 
+  *) mod_unique_id: Earlier request_time initialization in read_request_line(),
+     plus use of an atomic counter to close the race condition.
+     trunk patch: http://svn.apache.org/r1893001
+                  http://svn.apache.org/r1893002
+                  http://svn.apache.org/r1893004
+     2.4.x patch: svn merge -c 1893001,1893002,1893004 ^/httpd/httpd/trunk .
+                  Reusing CHANGES entry from r1892982.
+     +1: ylavic, rpluem, gbechis
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -197,15 +205,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      rpluem says: I made comments on https://github.com/apache/httpd/pull/203,
      but I cannot find them commented. Further more the PR currently has merge
      conflicts.
-
-  *) mod_unique_id: Earlier request_time initialization in read_request_line(),
-     plus use of an atomic counter to close the race condition.
-     trunk patch: http://svn.apache.org/r1893001
-                  http://svn.apache.org/r1893002
-                  http://svn.apache.org/r1893004
-     2.4.x patch: svn merge -c 1893001,1893002,1893004 ^/httpd/httpd/trunk .
-                  Reusing CHANGES entry from r1892982.
-     +1: ylavic, rpluem, gbechis
 
   *) core: Initialize the request fields on read failure to avoid NULLs.
      trunk patch: http://svn.apache.org/r1893030
