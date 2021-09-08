@@ -205,7 +205,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1893004
      2.4.x patch: svn merge -c 1893001,1893002,1893004 ^/httpd/httpd/trunk .
                   Reusing CHANGES entry from r1892982.
-     +1: ylavic, rpluem
+     +1: ylavic, rpluem, gbechis
 
   *) core: Initialize the request fields on read failure to avoid NULLs.
      trunk patch: http://svn.apache.org/r1893030
