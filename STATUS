@@ -141,10 +141,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_proxy: Axe unused ap_filter_input_pending in 2.4.x (only) after r1892971.
-     2.4.x patch: http://people.apache.org/~ylavic/patches/ap_filter_input_pending-unused.patch
-     +1: ylavic, icing,  covener
-
   *) mpm_event: Fix children processes possibly not stopped on graceful
      restart.  PR 63169
      trunk patch: http://svn.apache.org/r1893014
