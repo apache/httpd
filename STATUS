@@ -189,6 +189,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      rpluem says: I made comments on https://github.com/apache/httpd/pull/203,
      but I cannot find them commented. Further more the PR currently has merge
      conflicts.
+     icing says: conflicts resolved, comments commented.
 
   *) core: Initialize the request fields on read failure to avoid NULLs.
      trunk patch: http://svn.apache.org/r1893030
