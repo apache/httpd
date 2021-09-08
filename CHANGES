@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.49
 
+  *) mpm_event: Fix children processes possibly not stopped on graceful
+     restart.  PR 63169.  [Joel Self <joelself gmail.com>]
+
   *) mod_proxy: Fix a potential infinite loop when tunneling Upgrade(d)
      protocols from mod_proxy_http, and a timeout triggering falsely when
      using mod_proxy_wstunnel, mod_proxy_connect or mod_proxy_http with
