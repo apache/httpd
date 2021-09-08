@@ -168,6 +168,19 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~ylavic/patches/ap_filter_input_pending-unused.patch
      +1: ylavic, icing,  covener
 
+  *) mpm_event: Fix children processes possibly not stopped on graceful
+     restart.  PR 63169
+     trunk patch: http://svn.apache.org/r1893014
+     trunk patch: http://svn.apache.org/r1893073
+     2.4.x patch: svn merge -c 1893014,1893073 ^/httpd/httpd/trunk .
+     +1: ylavic, covener, rpluem
+
+  *) mod_proxy: Don't canonicalize with both nocanon and ProxyPassInterpolateEnv
+     On.  PR 65549.
+     trunk patch: http://svn.apache.org/r1893016
+     2.4.x patch: svn merge -c 1893016 ^/httpd/httpd/trunk .
+     +1: ylavic, covener, rpluem
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -210,20 +223,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1893004
      2.4.x patch: svn merge -c 1893001,1893002,1893004 ^/httpd/httpd/trunk .
                   Reusing CHANGES entry from r1892982.
-     +1: ylavic,
-
-  *) mpm_event: Fix children processes possibly not stopped on graceful
-     restart.  PR 63169
-     trunk patch: http://svn.apache.org/r1893014
-     trunk patch: http://svn.apache.org/r1893073
-     2.4.x patch: svn merge -c 1893014,1893073 ^/httpd/httpd/trunk .
-     +1: ylavic, covener
-
-  *) mod_proxy: Don't canonicalize with both nocanon and ProxyPassInterpolateEnv
-     On.  PR 65549.
-     trunk patch: http://svn.apache.org/r1893016
-     2.4.x patch: svn merge -c 1893016 ^/httpd/httpd/trunk .
-     +1: ylavic, covener
+     +1: ylavic, rpluem
 
   *) core: Initialize the request fields on read failure to avoid NULLs.
      trunk patch: http://svn.apache.org/r1893030
