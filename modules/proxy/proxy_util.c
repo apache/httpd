@@ -4457,11 +4457,6 @@ static APR_INLINE int ap_filter_output_pending(conn_rec *c)
     return c->data_in_output_filters ? OK : DECLINED;
 }
 
-static APR_INLINE int ap_filter_input_pending(conn_rec *c)
-{
-    return c->data_in_input_filters ? OK : DECLINED;
-}
-
 PROXY_DECLARE(apr_status_t) ap_proxy_buckets_lifetime_transform(request_rec *r,
                                                       apr_bucket_brigade *from,
                                                       apr_bucket_brigade *to)
