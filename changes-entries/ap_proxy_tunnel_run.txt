@@ -1,4 +1,0 @@
-  *) mod_proxy: Fix a potential infinite loop when tunneling Upgrade(d)
-     protocols from mod_proxy_http, and a timeout triggering falsely when
-     using mod_proxy_wstunnel, mod_proxy_connect or mod_proxy_http with
-     upgrade= setting.  PRs 65521 and 65519.  [Yann Ylavic]

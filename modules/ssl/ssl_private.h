@@ -252,6 +252,10 @@ void free_bio_methods(void);
 #endif
 #endif
 
+#if OPENSSL_VERSION_NUMBER >= 0x10101000L && !defined(LIBRESSL_VERSION_NUMBER)
+#define HAVE_OPENSSL_KEYLOG
+#endif
+
 /* mod_ssl headers */
 #include "ssl_util_ssl.h"
 
@@ -620,6 +624,10 @@ typedef struct {
     apr_global_mutex_t   *stapling_cache_mutex;
     apr_global_mutex_t   *stapling_refresh_mutex;
 #endif
+#ifdef HAVE_OPENSSL_KEYLOG
+    /* Used for logging if SSLKEYLOGFILE is set at startup. */
+    apr_file_t      *keylog_file;
+#endif
 } SSLModConfigRec;
 
 /** Structure representing configured filenames for certs and keys for
@@ -977,6 +985,11 @@ int          ssl_stapling_init_cert(server_rec *, apr_pool_t *, apr_pool_t *,
 #endif
 #ifdef HAVE_SRP
 int          ssl_callback_SRPServerParams(SSL *, int *, void *);
+#endif
+
+#ifdef HAVE_OPENSSL_KEYLOG
+/* Callback used with SSL_CTX_set_keylog_callback. */
+void         modssl_callback_keylog(const SSL *ssl, const char *line);
 #endif
 
 /**  I/O  */

@@ -380,11 +380,23 @@ static void stop_listening(int sig)
 static int requests_this_child;
 static int num_listensocks = 0;
 
+#if APR_HAS_THREADS
+static void child_sigmask(sigset_t *new_mask, sigset_t *old_mask)
+{
+#if defined(SIGPROCMASK_SETS_THREAD_MASK)
+    sigprocmask(SIG_SETMASK, new_mask, old_mask);
+#else
+    pthread_sigmask(SIG_SETMASK, new_mask, old_mask);
+#endif
+}
+#endif
+
 static void child_main(int child_num_arg, int child_bucket)
 {
 #if APR_HAS_THREADS
     apr_thread_t *thd = NULL;
     apr_os_thread_t osthd;
+    sigset_t sig_mask;
 #endif
     apr_pool_t *ptrans;
     apr_allocator_t *allocator;
@@ -450,7 +462,30 @@ static void child_main(int child_num_arg, int child_bucket)
         clean_child_exit(APEXIT_CHILDFATAL);
     }
 
+#if APR_HAS_THREADS
+    /* Save the signal mask and block all the signals from being received by
+     * threads potentially created in child_init() hooks (e.g. mod_watchdog).
+     */
+    child_sigmask(NULL, &sig_mask);
+    {
+        apr_status_t rv;
+        rv = apr_setup_signal_thread();
+        if (rv != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf, APLOGNO(10271)
+                         "Couldn't initialize signal thread");
+            clean_child_exit(APEXIT_CHILDFATAL);
+        }
+    }
+#endif /* APR_HAS_THREADS */
+
     ap_run_child_init(pchild, ap_server_conf);
+
+#if APR_HAS_THREADS
+    /* Restore the original signal mask for this main thread, the only one
+     * that should possibly get interrupted by signals.
+     */
+    child_sigmask(&sig_mask, NULL);
+#endif
 
     ap_create_sb_handle(&sbh, pchild, my_child_num, 0);
 
