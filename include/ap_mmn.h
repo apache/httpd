@@ -577,6 +577,7 @@
  * 20120211.114 (2.4.49-dev) Add optional balancer_manage function.
  * 20120211.115 (2.4.49-dev) Add ap_proxy_get_worker_ex() and
  *                           ap_proxy_define_worker_ex() to mod_proxy.h
+ * 20120211.116 (2.4.49-dev) add conn_rec->outgoing and ap_ssl_bind_outgoing()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -584,7 +585,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 115                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 116                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

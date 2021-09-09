@@ -34,6 +34,8 @@
 extern "C" {
 #endif
 
+struct ap_conf_vector_t;
+
 /**
  * This hook allows modules that manage SSL connection to register their
  * inquiry function for checking if a connection is using SSL from them.
@@ -48,6 +50,41 @@ AP_DECLARE_HOOK(int,ssl_conn_is_ssl,(conn_rec *c))
  * @param c the connection
  */
 AP_DECLARE(int) ap_ssl_conn_is_ssl(conn_rec *c);
+
+/**
+ * This hook declares a connection to be outgoing and the configuration that applies to it.
+ * This hook can be called several times in the lifetime of an outgoing connection, e.g.
+ * when it is re-used in different request contexts. It will at least be called after the
+ * connection was created and before the pre-connection hooks is invoked.
+ * All outgoing-connection hooks are run until one returns something other than DECLINE.
+ * if enable_ssl != 0, a hook that sets up SSL for the connection needs to return OK
+ * to prevent subsequent hooks from doing the same.
+ *
+ * @param c The connection on which requests/data are to be sent.
+ * @param dir_conf The directory configuration in which this connection is being used.
+ * @param enable_ssl If != 0, the SSL protocol should be enabled for this connection.
+ * @return DECLINED, OK when ssl was enabled
+ */
+AP_DECLARE_HOOK(int, ssl_bind_outgoing,
+               (conn_rec *c, struct ap_conf_vector_t *dir_conf, int enable_ssl))
+
+/**
+ * Assures the connection is marked as outgoing and invokes the ssl_bind_outgoing hook.
+ * This may be called several times on an outgoing connection with varying dir_conf
+ * values. require_ssl is not allowed to change on the same connection.
+ *
+ * @param c The connection on which requests/data are to be sent.
+ * @param dir_conf The directory configuration in which this connection is being used.
+ * @param require_ssl != 0 iff this connection needs to be secured by SSL/TLS protocol.
+ * @return OK iff ssl was required and is enabled, DECLINED otherwise
+ */
+AP_DECLARE(int) ap_ssl_bind_outgoing(conn_rec *c, struct ap_conf_vector_t *dir_conf,
+                                     int require_ssl);
+
+/**
+ * Return != 0 iff handlers/hooks for outgoing connections are registered.
+ */
+AP_DECLARE(int) ap_ssl_has_outgoing_handlers(void);
 
 /**
  * This hook allows modules to look up SSL related variables for a
