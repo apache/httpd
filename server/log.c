@@ -914,14 +914,14 @@ static int do_errorlog_default(const ap_errorlog_info *info, char *buf,
      * a scoreboard handle, it is likely a client.
      */
     if (info->r) {
-        len += apr_snprintf(buf + len, buflen - len,
-                            info->r->connection->sbh ? "[client %s:%d] " : "[remote %s:%d] ",
+        len += apr_snprintf(buf + len, buflen - len, "[%s %s:%d] ",
+                            info->r->connection->outgoing ? "remote" : "client",
                             info->r->useragent_ip,
                             info->r->useragent_addr ? info->r->useragent_addr->port : 0);
     }
     else if (info->c) {
-        len += apr_snprintf(buf + len, buflen - len,
-                            info->c->sbh ? "[client %s:%d] " : "[remote %s:%d] ",
+        len += apr_snprintf(buf + len, buflen - len, "[%s %s:%d] ",
+                            info->c->outgoing ? "remote" : "client",
                             info->c->client_ip,
                             info->c->client_addr ? info->c->client_addr->port : 0);
     }

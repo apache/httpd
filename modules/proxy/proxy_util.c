@@ -3404,13 +3404,12 @@ static int proxy_connection_create(const char *proxy_function,
     /*
      * The socket is now open, create a new backend server connection
      */
-    conn->connection = ap_run_create_connection(conn->scpool, s, conn->sock,
-                                                0, NULL,
-                                                bucket_alloc);
+    conn->connection = ap_create_connection(conn->scpool, s, conn->sock,
+                                            0, NULL, bucket_alloc, 1);
 
     if (!conn->connection) {
         /*
-         * the peer reset the connection already; ap_run_create_connection()
+         * the peer reset the connection already; ap_create_connection()
          * closed the socket
          */
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0,

@@ -261,8 +261,8 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
      * Send the HTTP/1.1 CONNECT request to the remote server
      */
 
-    backconn = ap_run_create_connection(c->pool, r->server, sock,
-                                        c->id, c->sbh, c->bucket_alloc);
+    backconn = ap_create_connection(c->pool, r->server, sock, 0, NULL,
+                                    c->bucket_alloc, 1);
     if (!backconn) {
         /* peer reset */
         ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(01021)

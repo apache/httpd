@@ -1968,11 +1968,11 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
     }
 
     /* the transfer socket is now open, create a new connection */
-    data = ap_run_create_connection(p, r->server, data_sock, r->connection->id,
-                                    r->connection->sbh, c->bucket_alloc);
+    data = ap_create_connection(p, r->server, data_sock, 0, NULL,
+                                c->bucket_alloc, 1);
     if (!data) {
         /*
-         * the peer reset the connection already; ap_run_create_connection() closed
+         * the peer reset the connection already; ap_create_connection() closed
          * the socket
          */
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01054)

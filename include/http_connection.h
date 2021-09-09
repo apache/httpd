@@ -135,6 +135,28 @@ AP_DECLARE_HOOK(int,process_connection,(conn_rec *c))
  */
 AP_DECLARE_HOOK(int,pre_close_connection,(conn_rec *c))
 
+/**
+ * Create a new server/incoming or client/outgoing/proxy connection
+ * @param p The pool from which to allocate the connection record
+ * @param server The server record to create the connection too.
+ * @param csd The socket that has been accepted
+ * @param conn_id A unique identifier for this connection.  The ID only
+ *                needs to be unique at that time, not forever.
+ * @param sbh A handle to scoreboard information for this connection.
+ * @param alloc The bucket allocator to use for all bucket/brigade creations
+ * @param outgoing Whether it's an outgoing (client) connection
+ * @return An allocated connection record or NULL.
+ * @remark To allow for future flags, outgoing must be a boolean (0 or 1)
+ *         for now, otherwise NULL is returned
+ */
+AP_DECLARE(conn_rec *) ap_create_connection(apr_pool_t *p,
+                                            server_rec *server,
+                                            apr_socket_t *csd,
+                                            long conn_id, void *sbh,
+                                            apr_bucket_alloc_t *alloc,
+                                            unsigned int outgoing);
+
+
 /** End Of Connection (EOC) bucket */
 AP_DECLARE_DATA extern const apr_bucket_type_t ap_bucket_type_eoc;
 

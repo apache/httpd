@@ -43,6 +43,29 @@ AP_IMPLEMENT_HOOK_RUN_FIRST(int,process_connection,(conn_rec *c),(c),DECLINED)
 AP_IMPLEMENT_HOOK_RUN_ALL(int,pre_connection,(conn_rec *c, void *csd),(c, csd),OK,DECLINED)
 AP_IMPLEMENT_HOOK_RUN_ALL(int,pre_close_connection,(conn_rec *c),(c),OK,DECLINED)
 
+AP_DECLARE(conn_rec *) ap_create_connection(apr_pool_t *p,
+                                            server_rec *server,
+                                            apr_socket_t *csd,
+                                            long conn_id, void *sbh,
+                                            apr_bucket_alloc_t *alloc,
+                                            unsigned int outgoing)
+{
+    conn_rec *c;
+
+    /* Some day it may be flags, so deny anything but 0 or 1 for now */
+    if (outgoing > 1) {
+        return NULL;
+    }
+
+    c = ap_run_create_connection(p, server, csd, conn_id, sbh, alloc);
+
+    if (c && outgoing) {
+        c->outgoing = 1;
+    }
+
+    return c;
+}
+
 /*
  * More machine-dependent networking gooo... on some systems,
  * you've got to be *really* sure that all the packets are acknowledged
