@@ -176,15 +176,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      conflicts.
      icing says: conflicts resolved, comments commented.
 
+PATCHES/ISSUES THAT ARE BEING WORKED
+  [ New entries should be added at the START of the list ]
+
   *) core: Initialize the request fields on read failure to avoid NULLs.
      trunk patch: http://svn.apache.org/r1893030
                   http://svn.apache.org/r1893044
      2.4.x patch: svn merge -c 1893030,1893044 ^/httpd/httpd/trunk .
      +1: ylavic,
      ylavic: still being discussed on dev@
-
-PATCHES/ISSUES THAT ARE BEING WORKED
-  [ New entries should be added at the START of the list ]
 
   *) mod_dav: Allow other modules to become providers and add ACLs
      to the DAV response.
