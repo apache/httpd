@@ -163,7 +163,7 @@ AP_DECLARE(int) ap_ssl_bind_outgoing(conn_rec *c, struct ap_conf_vector_t *dir_c
 
 AP_DECLARE(int) ap_ssl_has_outgoing_handlers(void)
 {
-    return (_hooks.link_ssl_bind_outgoing && _hooks.link_ssl_bind_outgoing->nelts > 0)
+    return (ap_hook_get_ssl_bind_outgoing() && ap_hook_get_ssl_bind_outgoing()->nelts > 0)
         || module_ssl_engine_set || module_ssl_proxy_enable;
 }
 
