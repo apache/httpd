@@ -2821,3 +2821,17 @@ int ssl_callback_SRPServerParams(SSL *ssl, int *ad, void *arg)
 }
 
 #endif /* HAVE_SRP */
+
+
+#ifdef HAVE_OPENSSL_KEYLOG
+/* Callback used with SSL_CTX_set_keylog_callback. */
+void modssl_callback_keylog(const SSL *ssl, const char *line)
+{
+    conn_rec *conn = SSL_get_app_data(ssl);
+    SSLSrvConfigRec *sc = mySrvConfig(conn->base_server);
+
+    if (sc && sc->mc->keylog_file) {
+        apr_file_printf(sc->mc->keylog_file, "%s\n", line);
+    }
+}
+#endif

@@ -1,0 +1,3 @@
+  *) mod_ssl: Support logging private key material for use with
+     wireshark via log file given by SSLKEYLOGFILE environment
+     variable.  Requires OpenSSL 1.1.1.  PR 63391.  [Joe Orton]

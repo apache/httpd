@@ -2929,6 +2929,20 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
             if (free_length > retained->idle_spawn_rate[child_bucket]) {
                 free_length = retained->idle_spawn_rate[child_bucket];
             }
+            if (free_length + active_daemons > active_daemons_limit) {
+                if (active_daemons < active_daemons_limit) {
+                    free_length = active_daemons_limit - active_daemons;
+                }
+                else {
+                    ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, ap_server_conf,
+                                 "server is at active daemons limit, spawning "
+                                 "of %d children cancelled: %d/%d active, "
+                                 "rate %d", free_length,
+                                 active_daemons, active_daemons_limit,
+                                 retained->idle_spawn_rate[child_bucket]);
+                    free_length = 0;
+                }
+            }
             if (retained->idle_spawn_rate[child_bucket] >= 8) {
                 ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf, APLOGNO(00486)
                              "server seems busy, (you may need "

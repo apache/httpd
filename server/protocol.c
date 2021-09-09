@@ -704,13 +704,15 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
         }
     } while ((len <= 0) && (--num_blank_lines >= 0));
 
+    /* Set r->request_time before any logging, mod_unique_id needs it. */
+    r->request_time = apr_time_now();
+
     if (APLOGrtrace5(r)) {
         ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r,
                       "Request received from client: %s",
                       ap_escape_logitem(r->pool, r->the_request));
     }
 
-    r->request_time = apr_time_now();
     return 1;
 }
 
