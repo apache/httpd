@@ -156,9 +156,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
   *) mod_http2: when a server is restarted gracefully, any idle h2 worker
      threads are shut down immediately.
+     Also, change OpenSSL API use for deprecations in OpenSLL 3.0.
      trunk patch: http://svn.apache.org/r1893214
                   http://svn.apache.org/r1893215
-     2.4.x patch: svn merge -c 1893214, 1893215 ^/httpd/httpd/trunk .
+                  http://svn.apache.org/1893220
+     2.4.x patch: svn merge -c 1893214,1893215,1893220 ^/httpd/httpd/trunk .
      +1: icing,
 
 PATCHES/ISSUES THAT ARE BEING WORKED
