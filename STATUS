@@ -154,27 +154,25 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      is not the right fix, then it should be removed from trunk.
      Putting it here is a way to revive the discussion
 
-  *) back port: new ap_ssl_bind_outgoing for multi ssl support in proxy connections
-     core/mod_proxy/mod_ssl:
-       Adding outgoing flag to conn_rec, indicating a connection is
-       initiated by the server to somewhere, in contrast to incoming
-       connections from clients.
-       Adding 'ap_ssl_bind_outgoing()function that marks a connection as outgoing
-       and is used by mod_proxy instead of the previous optional functionssl_engine_set.
-       This enables other SSL module to secure proxy connections. The optional
-       functions ssl_engine_set, ssl_engine_disableandssl_proxy_enableare now provided
-       by the core to have backward compatibility with non-httpd modules that might
-       use them. mod_ssl itself no longer registers these functions, but keeps them
-       in its header for backward compatibility. The core provided optional function
-       wrap any registered function like it was done forssl_is_ssl`.
-     trunk patch: http://svn.apache.org/r1890605
-     2.4.x patch: https://github.com/apache/httpd/pull/203.diff
-           PR: https://github.com/apache/httpd/pull/203
-     +1: icing, minfrin
-     rpluem says: I made comments on https://github.com/apache/httpd/pull/203,
-     but I cannot find them commented. Further more the PR currently has merge
-     conflicts.
-     icing says: conflicts resolved, comments commented.
+  *) mod_http2: when a server is restarted gracefully, any idle h2 worker
+     threads are shut down immediately.
+     Also, change OpenSSL API use for deprecations in OpenSLL 3.0.
+     trunk patch: http://svn.apache.org/r1893214
+                  http://svn.apache.org/r1893215
+                  http://svn.apache.org/1893220
+     2.4.x patch: svn merge -c 1893214,1893215,1893220 ^/httpd/httpd/trunk .
+     +1: icing,
+
+   *) mod_speling: Backport CheckBasenameMatch for PR44221
+      trunk patch: http://svn.apache.org/r1557580
+                   http://svn.apache.org/r1732273
+                   http://svn.apache.org/r1844598
+      2.4.x patch: full resync of code/docs due to conflicts + changes
+                   http://people.apache.org/~covener/patches/speling-sync.diff
+      +1 covener,
+
+PATCHES/ISSUES THAT ARE BEING WORKED
+  [ New entries should be added at the START of the list ]
 
   *) core: Initialize the request fields on read failure to avoid NULLs.
      trunk patch: http://svn.apache.org/r1893030
@@ -182,9 +180,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1893030,1893044 ^/httpd/httpd/trunk .
      +1: ylavic,
      ylavic: still being discussed on dev@
-
-PATCHES/ISSUES THAT ARE BEING WORKED
-  [ New entries should be added at the START of the list ]
 
   *) mod_dav: Allow other modules to become providers and add ACLs
      to the DAV response.
