@@ -38,9 +38,9 @@ struct h2_workers {
     apr_pool_t *pool;
     
     int next_worker_id;
-    apr_uint32_t min_workers;
     apr_uint32_t max_workers;
-    apr_interval_time_t max_idle_duration;
+    volatile apr_uint32_t min_workers; /* is changed during graceful shutdown */
+    volatile apr_interval_time_t max_idle_duration; /* is changed during graceful shutdown */
     
     volatile int aborted;
     volatile int shutdown;

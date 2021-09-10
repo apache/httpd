@@ -1,0 +1,4 @@
+  * mod_http2: when a server is restarted gracefully, any idle h2 worker
+    threads are shut down immediately. [Stefan Eissing]
+
+

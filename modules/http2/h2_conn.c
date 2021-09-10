@@ -148,6 +148,13 @@ apr_status_t h2_conn_child_init(apr_pool_t *pool, server_rec *s)
     return status;
 }
 
+void h2_conn_child_stopping(apr_pool_t *pool, int graceful)
+{
+    if (workers && graceful) {
+        h2_workers_graceful_shutdown(workers);
+    }
+}
+
 h2_mpm_type_t h2_conn_mpm_type(void)
 {
     check_modules(0);
