@@ -175,7 +175,9 @@ AddOutputFilter INCLUDES .shtml</pre>
       HTTP Apache.</p>
 
       <div class="example"><p><code>
-      &lt;!--#comment Blah Blah Blah --&gt;
+      &lt;!--#comment Blah Blah Blah --&gt;<br />
+      &nbsp;&nbsp;&nbsp;or<br />
+      &lt;!--#comment text="Blah Blah Blah" --&gt;
       </code></p></div>
      
     
