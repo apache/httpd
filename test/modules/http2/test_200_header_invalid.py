@@ -60,6 +60,11 @@ class TestStore:
         assert 200 == r.response["status"]
         r = env.curl_get(url, options=["-H", "x: %sx" % (val[:8188])])
         assert 431 == r.response["status"]
+        # same with field name
+        r = env.curl_get(url, options=["-H", "y%s: 1" % (val[:8186])])
+        assert 200 == r.response["status"]
+        r = env.curl_get(url, options=["-H", "y%s: 1" % (val[:8188])])
+        assert 431 == r.response["status"]
 
     # test header field lengths check, LimitRequestFieldSize (default 8190)
     def test_200_11(self, env):
