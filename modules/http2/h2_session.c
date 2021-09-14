@@ -1717,8 +1717,8 @@ static void transit(h2_session *session, const char *action, h2_session_state ns
                     timeout = session->s->timeout;
                     update_child_status(session, SERVER_BUSY_READ, "idle");
                     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c, 
-                                  H2_SSSN_LOG("", session, "enter idle, timeout = %d sec"), 
-                                  (int)apr_time_sec(H2MAX(session->s->timeout, session->s->keep_alive_timeout)));
+                                  H2_SSSN_LOG("", session, "enter idle, timeout = %d sec"),
+                                  (int)apr_time_sec(timeout));
                 }
                 else if (session->open_streams) {
                     s = "timeout";
