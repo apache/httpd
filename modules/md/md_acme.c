@@ -388,10 +388,10 @@ static apr_status_t md_acme_req_send(md_acme_req_t *req)
     
     if (req->req_json) {
         body = apr_pcalloc(req->p, sizeof(*body));
-        body->data = md_json_writep(req->req_json, req->p, MD_JSON_FMT_INDENT);
         if (!body) {
             rv = APR_EINVAL; goto leave;
         }
+        body->data = md_json_writep(req->req_json, req->p, MD_JSON_FMT_INDENT);
         body->len = strlen(body->data);
     }
 
