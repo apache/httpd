@@ -1,0 +1,8 @@
+  *) mod_md: fixed a bug in handling multiple parallel OCSP requests. These could
+     run into an assertion which terminated (and restarted) the child process where
+     the task was running. Eventually, all OCSP responses were collected, but not
+     in the way that things are supposed to work.
+     See also <https://bz.apache.org/bugzilla/show_bug.cgi?id=65567>.
+     The bug was possibly triggered when more than one OCSP status needed updating
+     at the same time. For example for several renewed certificates after a server
+     reload.

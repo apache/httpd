@@ -549,7 +549,11 @@ static apr_status_t pubcert_load(void *baton, apr_pool_t *p, apr_pool_t *ptemp, 
         rv = md_pubcert_load(reg->store, group, md->name, spec, &certs, p);
     }
     if (APR_SUCCESS != rv) goto leave;
-            
+    if (certs->nelts == 0) {
+        rv = APR_ENOENT;
+        goto leave;
+    }
+
     pubcert = apr_pcalloc(p, sizeof(*pubcert));
     pubcert->certs = certs;
     cert = APR_ARRAY_IDX(certs, 0, const md_cert_t *);

@@ -491,7 +491,7 @@ static apr_status_t md_curl_multi_perform(md_http_t *http, apr_pool_t *p,
             else if (APR_STATUS_IS_ENOENT(rv)) {
                 md_log_perror(MD_LOG_MARK, MD_LOG_TRACE3, 0, p, 
                               "multi_perform[%d reqs]: no more requests", requests->nelts);
-                if (!running) {
+                if (!requests->nelts) {
                     goto leave;
                 }
                 break;
@@ -524,13 +524,13 @@ static apr_status_t md_curl_multi_perform(md_http_t *http, apr_pool_t *p,
         }
 
         /* process status messages, e.g. that a request is done */
-        while (1) {
+        while (running < requests->nelts) {
             curlmsg = curl_multi_info_read(curlm, &msgcount);
             if (!curlmsg) break;
             if (curlmsg->msg == CURLMSG_DONE) {
                 req = find_curl_request(requests, curlmsg->easy_handle);
                 if (req) {
-                    md_log_perror(MD_LOG_MARK, MD_LOG_TRACE3, 0, p, 
+                    md_log_perror(MD_LOG_MARK, MD_LOG_TRACE2, 0, p,
                                   "multi_perform[%d reqs]: req[%d] done", 
                                   requests->nelts, req->id);
                     update_status(req);
@@ -546,7 +546,6 @@ static apr_status_t md_curl_multi_perform(md_http_t *http, apr_pool_t *p,
                 }
             }
         }
-        assert(running == requests->nelts);
     };
 
 leave:
