@@ -339,7 +339,7 @@ apr_status_t md_ocsp_prime(md_ocsp_reg_t *reg, const char *ext_id, apr_size_t ex
     rv = md_cert_get_ocsp_responder_url(&ostat->responder_url, reg->p, cert);
     if (APR_SUCCESS != rv) {
         md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, reg->p,
-                      "md[%s]: certificate with serial %s has not OCSP responder URL",
+                      "md[%s]: certificate with serial %s has no OCSP responder URL",
                       name, md_cert_get_serial_number(cert, reg->p));
         goto cleanup;
     }
@@ -609,7 +609,11 @@ static apr_status_t ostat_on_resp(const md_http_response_t *resp, void *baton)
     if (NULL == (ocsp_resp = d2i_OCSP_RESPONSE(NULL, (const unsigned char**)&der.data, 
                                                (long)der.len))) {
         rv = APR_EINVAL;
-        md_result_set(update->result, rv, "response body does not parse as OCSP response");
+
+        md_result_set(update->result, rv,
+                      apr_psprintf(req->pool, "req[%d] response body does not parse as "
+                                   "OCSP response, status=%d, body brigade length=%ld",
+                                   resp->req->id, resp->status, (long)der.len));
         md_result_log(update->result, MD_LOG_DEBUG);
         goto cleanup;
     }
@@ -635,7 +639,7 @@ static apr_status_t ostat_on_resp(const md_http_response_t *resp, void *baton)
      * to accept it. */
     switch ((n = OCSP_check_nonce(ostat->ocsp_req, basic_resp))) {
         case 1:
-            md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, req->pool, 
+            md_log_perror(MD_LOG_MARK, MD_LOG_TRACE3, 0, req->pool,
                           "req[%d]: OCSP respoonse nonce does match", req->id);
             break;
         case 0:
@@ -645,7 +649,7 @@ static apr_status_t ostat_on_resp(const md_http_response_t *resp, void *baton)
             goto cleanup;
             
         case -1:
-            md_log_perror(MD_LOG_MARK, MD_LOG_TRACE1, 0, req->pool, 
+            md_log_perror(MD_LOG_MARK, MD_LOG_TRACE3, 0, req->pool,
                           "req[%d]: OCSP respoonse did not return the nonce", req->id);
             break;
         default:
@@ -832,6 +836,9 @@ static apr_status_t next_todo(md_http_request_t **preq, void *baton,
             md_http_set_on_status_cb(req, ostat_on_req_status, update);
             md_http_set_on_response_cb(req, ostat_on_resp, update);
             rv = APR_SUCCESS;
+            md_log_perror(MD_LOG_MARK, MD_LOG_TRACE2, 0, req->pool,
+                          "scheduling OCSP request for %s, %d request in flight",
+                          ostat->md_name, in_flight);
         }
     }
 cleanup:

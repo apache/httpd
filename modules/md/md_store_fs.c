@@ -508,19 +508,21 @@ static apr_status_t mk_group_dir(const char **pdir, md_store_fs_t *s_fs,
 
     rv = md_util_is_dir(*pdir, p);
     if (APR_STATUS_IS_ENOENT(rv)) {
-        md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, p, "not a directory, creating %s", *pdir);
+        md_log_perror(MD_LOG_MARK, MD_LOG_TRACE3, rv, p, "not a directory, creating %s", *pdir);
         rv = apr_dir_make_recursive(*pdir, perms->dir, p);
         if (APR_SUCCESS != rv) goto cleanup;
         dispatch(s_fs, MD_S_FS_EV_CREATED, group, *pdir, APR_DIR, p);
     }
 
     rv = apr_file_perms_set(*pdir, perms->dir);
-    md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, p, "mk_group_dir %s perm set", *pdir);
+    md_log_perror(MD_LOG_MARK, MD_LOG_TRACE3, rv, p, "mk_group_dir %s perm set", *pdir);
     if (APR_STATUS_IS_ENOTIMPL(rv)) {
         rv = APR_SUCCESS;
     }
 cleanup:
-    md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, p, "mk_group_dir %d %s", group, name);
+    if (APR_SUCCESS != rv) {
+        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, p, "mk_group_dir %d %s", group, name);
+    }
     return rv;
 }
 
