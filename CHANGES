@@ -1,5 +1,22 @@
                                                          -*- coding: utf-8 -*-
+Changes with Apache 2.4.50
+
 Changes with Apache 2.4.49
+
+  *) SECURITY: CVE-2021-40438 (cve.mitre.org)
+     mod_proxy: Server Side Request Forgery (SSRF) vulnerabilty [Yann Ylavic]
+
+  *) SECURITY: CVE-2021-39275 (cve.mitre.org)
+     core: ap_escape_quotes buffer overflow
+
+  *) SECURITY: CVE-2021-36160 (cve.mitre.org)
+     mod_proxy_uwsgi: Out of bound read vulnerability [Yann Ylavic]
+
+  *) SECURITY: CVE-2021-34798 (cve.mitre.org)
+     core: null pointer dereference on malformed request
+
+  *) SECURITY: CVE-2021-33193 (cve.mitre.org)
+     mod_http2: Request splitting vulnerability with mod_proxy [Stefan Eissing]
 
   *) core/mod_proxy/mod_ssl:
      Adding `outgoing` flag to conn_rec, indicating a connection is
