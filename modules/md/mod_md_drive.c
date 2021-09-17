@@ -137,6 +137,7 @@ static void process_drive_job(md_renew_ctx_t *dctx, md_job_t *job, apr_pool_t *p
             }
             
             if (!job->notified_renewed) {
+                md_job_save(job, result, ptemp);
                 md_job_notify(job, "renewed", result);
             }
         }

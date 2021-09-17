@@ -1,0 +1,10 @@
+  *) mod_md: when MDMessageCmd for a 'challenge-setup:<type>:<dnsname>'
+     fails (!= 0 exit), the renewal process is aborted and an error is
+     reported for the MDomain. This provides scripts that distribute
+     information in a cluster to abort early with bothering an ACME
+     server to validate a dns name that will not work. The common
+     retry logic will make another attempt in the future, as with
+     other failures.
+     Fixed a bug when adding private key specs to an already working
+     MDomain, see <https://github.com/icing/mod_md/issues/260>.
+     [Stefan Eissing]
