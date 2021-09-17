@@ -4596,7 +4596,7 @@ static apr_status_t proxy_transfer(request_rec *r,
             if (rc != OK && rc != DONE) {
                 if (!ap_is_HTTP_ERROR(rc)) {
                     /* SUSPENDED is not allowed for now */
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO()
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10295)
                                   "proxy: %s: invalid status %d returned by "
                                   "tunnel forward hooks", tunnel->scheme, rc);
                 }
@@ -4612,7 +4612,7 @@ static apr_status_t proxy_transfer(request_rec *r,
                  * hooks wouldn't have a chance to see the data, hence no hook
                  * would be able to retain data.
                  */
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO()
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10296)
                               "proxy: %s: invalid return value from tunnel "
                               " forward hook", tunnel->scheme);
                 rv = APR_EGENERAL;
