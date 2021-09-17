@@ -1154,6 +1154,12 @@ static apr_status_t get_certificates(server_rec *s, apr_pool_t *p, int fallback,
                 APR_ARRAY_PUSH(key_files, const char*) = keyfile;
                 APR_ARRAY_PUSH(chain_files, const char*) = chainfile;
             }
+            else if (APR_STATUS_IS_ENOENT(rv)) {
+                /* certificate for this pkey is not available, others might
+                 * if pkeys have been added for a runnign mdomain.
+                 * see issue #260 */
+                rv = APR_SUCCESS;
+            }
             else if (!APR_STATUS_IS_ENOENT(rv)) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10110)
                              "retrieving credentials for MD %s (%s)",
@@ -1201,6 +1207,9 @@ leave:
     if (!md_array_is_empty(key_files) && !md_array_is_empty(chain_files)) {
         *pkey_files = key_files;
         *pcert_files = chain_files;
+    }
+    else if (APR_SUCCESS == rv) {
+        rv = APR_ENOENT;
     }
     return rv;
 }
