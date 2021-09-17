@@ -1,0 +1,2 @@
+  *) mod_proxy: New tunnel_forward hooking mechanism allowing modules to handle
+     Upgrade(d) protocols data.  [Yann Ylavic]

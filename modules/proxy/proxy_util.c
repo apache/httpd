@@ -4531,7 +4531,8 @@ static apr_status_t proxy_transfer(request_rec *r,
                                    apr_off_t bsize,
                                    int flags,
                                    apr_off_t *bytes_in,
-                                   apr_off_t *bytes_out)
+                                   apr_off_t *bytes_out,
+                                   proxy_tunnel_rec *tunnel)
 {
     apr_status_t rv;
     int flush_each = 0;
@@ -4557,8 +4558,7 @@ static apr_status_t proxy_transfer(request_rec *r,
         if (rv != APR_SUCCESS) {
             if (!APR_STATUS_IS_EAGAIN(rv) && !APR_STATUS_IS_EOF(rv)) {
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, APLOGNO(03308)
-                              "proxy_transfer: error on %s - ap_get_brigade",
-                              name);
+                              "proxy_transfer: can't get data from %s", name);
                 if (rv == APR_INCOMPLETE) {
                     /* Don't return APR_INCOMPLETE, it'd mean "should yield"
                      * for the caller, while it means "incomplete body" here
@@ -4569,25 +4569,62 @@ static apr_status_t proxy_transfer(request_rec *r,
             }
             break;
         }
-
         if (c_o->aborted) {
-            apr_brigade_cleanup(bb_i);
-            flags &= ~AP_PROXY_TRANSFER_FLUSH_AFTER;
             rv = APR_EPIPE;
             break;
         }
         if (APR_BRIGADE_EMPTY(bb_i)) {
             break;
         }
+
         len = -1;
         apr_brigade_length(bb_i, 0, &len);
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03306)
-                      "proxy_transfer: read %" APR_OFF_T_FMT " bytes "
-                      "of %s", len, name);
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
+                      "proxy_transfer: got %" APR_OFF_T_FMT " bytes "
+                      "from %s", len, name);
         if (bytes_in && len > 0) {
             *bytes_in += len;
         }
-        ap_proxy_buckets_lifetime_transform(r, bb_i, bb_o);
+
+        rv = ap_proxy_buckets_lifetime_transform(r, bb_i, bb_o);
+        if (rv != APR_SUCCESS) {
+            break;
+        }
+
+        if (tunnel) {
+            int rc = proxy_run_tunnel_forward(tunnel, c_i, c_o, bb_o);
+            if (rc != OK && rc != DONE) {
+                if (!ap_is_HTTP_ERROR(rc)) {
+                    /* SUSPENDED is not allowed for now */
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO()
+                                  "proxy: %s: invalid status %d returned by "
+                                  "tunnel forward hooks", tunnel->scheme, rc);
+                }
+                rv = APR_EGENERAL;
+                break;
+            }
+            if (APR_BRIGADE_EMPTY(bb_o)) {
+                /* Buckets retained by the hooks, next. */
+                continue;
+            }
+            if (rc == DONE) {
+                /* DONE with data is invalid because it'd mean that the next
+                 * hooks wouldn't have a chance to see the data, hence no hook
+                 * would be able to retain data.
+                 */
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO()
+                              "proxy: %s: invalid return value from tunnel "
+                              " forward hook", tunnel->scheme);
+                rv = APR_EGENERAL;
+                break;
+            }
+
+            len = -1;
+            apr_brigade_length(bb_o, 0, &len);
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
+                          "proxy_transfer: forward %" APR_OFF_T_FMT " bytes "
+                          "from %s", len, name);
+        }
         if (bytes_out && len > 0) {
             *bytes_out += len;
         }
@@ -4612,14 +4649,14 @@ static apr_status_t proxy_transfer(request_rec *r,
             APR_BRIGADE_INSERT_TAIL(bb_o, b);
         }
         rv = ap_pass_brigade(c_o->output_filters, bb_o);
-        apr_brigade_cleanup(bb_o);
         if (rv != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(03307)
-                          "proxy_transfer: error on %s - ap_pass_brigade",
-                          name);
+                          "proxy_transfer: can't pass %" APR_OFF_T_FMT
+                          " bytes from %s", len, name);
             flags &= ~AP_PROXY_TRANSFER_FLUSH_AFTER;
             break;
         }
+        apr_brigade_cleanup(bb_o);
 
         /* Yield if the output filters stack is full? This is to avoid
          * blocking and give the caller a chance to POLLOUT async.
@@ -4644,11 +4681,14 @@ static apr_status_t proxy_transfer(request_rec *r,
         }
     }
 
-    if (flags & AP_PROXY_TRANSFER_FLUSH_AFTER) {
+    /* bb_o first to avoid protential dangling buckets (transient) */
+    apr_brigade_cleanup(bb_o);
+    apr_brigade_cleanup(bb_i);
+
+    if ((flags & AP_PROXY_TRANSFER_FLUSH_AFTER) && !c_o->aborted) {
         ap_fflush(c_o->output_filters, bb_o);
         apr_brigade_cleanup(bb_o);
     }
-    apr_brigade_cleanup(bb_i);
 
     ap_log_rerror(APLOG_MARK, APLOG_TRACE2, rv, r,
                   "proxy_transfer complete (%s %pI)",
@@ -4675,7 +4715,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_transfer_between_connections(
 {
     apr_off_t bytes_out = 0;
     apr_status_t rv = proxy_transfer(r, c_i, c_o, bb_i, bb_o, name, bsize,
-                                     flags, NULL, &bytes_out);
+                                     flags, NULL, &bytes_out, NULL);
     if (sent && bytes_out > 0) {
         *sent = 1;
     }
@@ -4853,7 +4893,8 @@ static int proxy_tunnel_transfer(proxy_tunnel_rec *tunnel,
                         in->name, tunnel->read_buf_size,
                         AP_PROXY_TRANSFER_YIELD_PENDING |
                         AP_PROXY_TRANSFER_YIELD_MAX_READS,
-                        &in->bytes_in, &out->bytes_out);
+                        &in->bytes_in, &out->bytes_out,
+                        tunnel);
     if (rv != APR_SUCCESS) {
         if (APR_STATUS_IS_INCOMPLETE(rv)) {
             /* Pause POLLIN while waiting for POLLOUT on the other

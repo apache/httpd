@@ -1400,6 +1400,24 @@ PROXY_DECLARE(apr_off_t) ap_proxy_tunnel_conn_bytes_out(
                                 const proxy_tunnel_conn_t *tc);
 
 /**
+ * Tunnel forwarding hook
+ * Called for every brigade forwarded by a tunnel from/to the client to/from
+ * the origin. Each hook receives incoming buckets in bb and produces outgoing
+ * buckets in the same bb, much like an output filter.
+ * @param tunnel   the tunnel
+ * @param c        the connection the data are going to
+ * @param bb       the incoming data
+ * @return         OK/DECLINED to pass to the next hooks, DONE to not pass to
+ *                 the next hooks, an HTTP_ error on failure.
+ * @note A hook must not return DONE unless it consumes/sets-aside *all* the
+ *       incoming buckets, and it must produce (non-meta-)data buckets only.
+ */
+PROXY_DECLARE_OPTIONAL_HOOK(proxy, PROXY, int, tunnel_forward,
+                            (proxy_tunnel_rec *tunnel,
+                             conn_rec *c_i, conn_rec *c_o,
+                             apr_bucket_brigade *bb))
+
+/**
  * Clear the headers referenced by the Connection header from the given
  * table, and remove the Connection header.
  * @param r request
