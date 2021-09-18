@@ -166,7 +166,7 @@ THINGS THAT SHOULD BE CONSIDERED EARLY IN THE 2.6/3.0 DEVELOPMENT CYCLE:
 
   * Add a "normalized" list of headers for a HTTP response, rather then relying
     on r->headers_out and r->err_headers_out, since mod_headers' behavior is
-    not really user friendly in some scenarios (example in PR 62380). 
+    not really user friendly in some scenarios (example in PR 62380).
 
 
 OLD ISSUES THAT WERE THOUGHT TO BE SHOWSTOPPERS FOR 2.4 BUT OBVIOUSLY WEREN'T:
