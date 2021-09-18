@@ -66,6 +66,7 @@ fi
 
 if ! test -v SKIP_TESTING; then
     set +e
+    RV=0
 
     if test -v TEST_MALLOC; then
         # Enable enhanced glibc malloc debugging, see mallopt(3)
