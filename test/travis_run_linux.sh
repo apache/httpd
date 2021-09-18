@@ -75,6 +75,7 @@ fi
 
 if ! test -v SKIP_TESTING; then
     set +e
+    RV=0
 
     if test -v TEST_MALLOC; then
         # Enable enhanced glibc malloc debugging, see mallopt(3)
@@ -107,10 +108,10 @@ if ! test -v SKIP_TESTING; then
 
     # Skip further testing if a core dump was created during the test
     # suite run above.
-    if test $RV -eq 0 && ls test/perl-framework/t/core test/perl-framework/t/core.* &>/dev/null; then
+    if test $RV -eq 0 && test -n `ls test/perl-framework/t/core{,.*} 2>/dev/null`; then
         RV=4
-    fi            
-    
+    fi
+
     if test -v TEST_SSL -a $RV -eq 0; then
         pushd test/perl-framework
             # Test loading encrypted private keys
@@ -140,12 +141,6 @@ if ! test -v SKIP_TESTING; then
         popd
     fi
 
-    if test -v TEST_H2 -a $RV -eq 0; then
-        # Run HTTP/2 tests.
-        py.test-3 test/modules/http2
-        RV=$?
-    fi
-
     if test -v LITMUS -a $RV -eq 0; then
         pushd test/perl-framework
            mkdir -p t/htdocs/modules/dav
@@ -156,6 +151,16 @@ if ! test -v SKIP_TESTING; then
            RV=$?
            ./t/TEST -stop
         popd
+    fi
+
+    if test $RV -ne 0 && test -f test/perl-framework/t/logs/error_log; then
+        cat test/perl-framework/t/logs/error_log
+    fi
+
+    if test -v TEST_H2 -a $RV -eq 0; then
+        # Run HTTP/2 tests.
+        py.test-3 test/modules/http2
+        RV=$?
     fi
 
     # Catch cases where abort()s get logged to stderr by libraries but
@@ -176,12 +181,12 @@ if ! test -v SKIP_TESTING; then
         fi
     done
 
-    if test -v TEST_UBSAN && ls ubsan.log.* &> /dev/null; then
+    if test -v TEST_UBSAN && test -n `ls ubsan.log.* 2>/dev/null`; then
         cat ubsan.log.*
         RV=3
     fi
 
-    if test -v TEST_ASAN && ls asan.log.* &> /dev/null; then
+    if test -v TEST_ASAN && test -n `ls asan.log.* 2>/dev/null`; then
         cat asan.log.*
 
         # ASan can report memory leaks, fail on errors only
@@ -190,8 +195,7 @@ if ! test -v SKIP_TESTING; then
         fi
     fi
 
-    shopt -s nullglob 
-    for core in test/perl-framework/t/core* ; do
+    for core in `ls test/perl-framework/t/core{,.*} 2>/dev/null`; do
         gdb -ex 'thread apply all backtrace full' -batch ./httpd "$core"
         RV=5
     done
