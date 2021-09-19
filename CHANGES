@@ -102,19 +102,6 @@ Changes with Apache 2.4.49
 
   *) core: fix ap_escape_quotes substitution logic. [Eric Covener]
 
-  *) Easy patches: synch 2.4.x and trunk
-     - mod_auth_basic: Use ap_cstr_casecmp instead of strcasecmp.
-     - mod_ldap: log and abort locking errors.
-     - mod_ldap: style fix for r1831165
-     - mod_ldap: build break fix for r1831165
-     - mod_deflate: Avoid hard-coded "%ld" format strings in mod_deflate's logging statements
-     - mod_deflate: Use apr_uint64_t instead of uint64_t (follow up to r1849590)
-     - mod_forensic: Follow up to r1856490: missing one mod_log_forensic test_char_table case.
-     - mod_rewrite: Save a few cycles.
-     - mod_request: Fix a comment (missing '_' in 'keep_body') and some style issues
-     - core: remove extra whitespace in HTTP_NOT_IMPLEMENTED
-    [Christophe Jaillet]
-
   *) core/mpm: add hook 'child_stopping` that gets called when the MPM is
      stopping a child process. The additional `graceful` parameter allows
      registered hooks to free resources early during a graceful shutdown.
