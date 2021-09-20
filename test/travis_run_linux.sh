@@ -75,7 +75,6 @@ fi
 
 if ! test -v SKIP_TESTING; then
     set +e
-    shopt -s nullglob
     RV=0
 
     if test -v TEST_MALLOC; then
