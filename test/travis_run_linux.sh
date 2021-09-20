@@ -108,7 +108,7 @@ if ! test -v SKIP_TESTING; then
 
     # Skip further testing if a core dump was created during the test
     # suite run above.
-    if test $RV -eq 0 && test -n `ls test/perl-framework/t/core{,.*} 2>/dev/null`; then
+    if test $RV -eq 0 && test -n "`ls test/perl-framework/t/core{,.*} 2>/dev/null`"; then
         RV=4
     fi
 
