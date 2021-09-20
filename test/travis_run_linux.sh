@@ -75,6 +75,7 @@ fi
 
 if ! test -v SKIP_TESTING; then
     set +e
+    shopt -s nullglob
     RV=0
 
     if test -v TEST_MALLOC; then
@@ -181,12 +182,12 @@ if ! test -v SKIP_TESTING; then
         fi
     done
 
-    if test -v TEST_UBSAN && test -n `ls ubsan.log.* 2>/dev/null`; then
+    if test -v TEST_UBSAN && test -n "`ls ubsan.log.* 2>/dev/null`"; then
         cat ubsan.log.*
         RV=3
     fi
 
-    if test -v TEST_ASAN && test -n `ls asan.log.* 2>/dev/null`; then
+    if test -v TEST_ASAN && test -n "`ls asan.log.* 2>/dev/null`"; then
         cat asan.log.*
 
         # ASan can report memory leaks, fail on errors only
