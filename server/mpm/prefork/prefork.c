@@ -879,6 +879,9 @@ static void perform_idle_server_maintenance(apr_pool_t *p)
             }
             else if (retained->idle_spawn_rate < MAX_SPAWN_RATE) {
                 retained->idle_spawn_rate *= 2;
+                if (retained->idle_spawn_rate > MAX_SPAWN_RATE) {
+                    retained->idle_spawn_rate = MAX_SPAWN_RATE;
+                }
             }
         }
     }

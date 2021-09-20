@@ -435,12 +435,14 @@ typedef struct event_retained_data {
      * reset only when a cycle goes by without the need to spawn.
      */
     int *idle_spawn_rate;
-#ifndef MAX_SPAWN_RATE
-#define MAX_SPAWN_RATE        (32)
-#endif
     int hold_off_on_exponential_spawning;
 } event_retained_data;
 static event_retained_data *retained;
+
+#ifndef MAX_SPAWN_RATE
+#define MAX_SPAWN_RATE 32
+#endif
+static int max_spawn_rate_per_bucket = MAX_SPAWN_RATE / 1;
 
 struct event_srv_cfg_s {
     struct timeout_queue *wc_q,
@@ -3277,8 +3279,12 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
                 --retained->hold_off_on_exponential_spawning;
             }
             else if (retained->idle_spawn_rate[child_bucket]
-                     < MAX_SPAWN_RATE / num_buckets) {
-                retained->idle_spawn_rate[child_bucket] *= 2;
+                     < max_spawn_rate_per_bucket) {
+                int new_rate = retained->idle_spawn_rate[child_bucket] * 2;
+                if (new_rate > max_spawn_rate_per_bucket) {
+                    new_rate = max_spawn_rate_per_bucket;
+                }
+                retained->idle_spawn_rate[child_bucket] = new_rate;
             }
         }
     }
@@ -3537,6 +3543,11 @@ static int event_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
         min_spare_threads = threads_per_child * (num_buckets - 1) + num_buckets;
     if (max_spare_threads < min_spare_threads + (threads_per_child + 1) * num_buckets)
         max_spare_threads = min_spare_threads + (threads_per_child + 1) * num_buckets;
+
+    max_spawn_rate_per_bucket = (MAX_SPAWN_RATE + num_buckets - 1) / num_buckets;
+    if (max_spawn_rate_per_bucket < 1) {
+        max_spawn_rate_per_bucket = 1;
+    }
 
     /* If we're doing a graceful_restart then we're going to see a lot
      * of children exiting immediately when we get into the main loop
