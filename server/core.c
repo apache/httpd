@@ -5300,6 +5300,31 @@ static int core_pre_connection(conn_rec *c, void *csd)
     return DONE;
 }
 
+AP_DECLARE(int) ap_pre_connection(conn_rec *c, void *csd)
+{
+    int rc = OK;
+
+    rc = ap_run_pre_connection(c, csd);
+    if (rc != OK && rc != DONE) {
+        c->aborted = 1;
+        /*
+         * In case we errored, the pre_connection hook of the core
+         * module maybe did not run (it is APR_HOOK_REALLY_LAST) and
+         * hence we missed to
+         *
+         * - Put the socket in c->conn_config
+         * - Setup core output and input filters
+         * - Set socket options and timeouts
+         *
+         * Hence call it in this case.
+         */
+        if (!ap_get_conn_socket(c)) {
+            core_pre_connection(c, csd);
+        }
+    }
+    return rc;
+}
+
 AP_DECLARE(int) ap_state_query(int query)
 {
     switch (query) {
