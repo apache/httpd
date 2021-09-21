@@ -1037,11 +1037,10 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
 
         ap_update_vhost_given_ip(c);
 
-        rc = ap_run_pre_connection(c, sock);
+        rc = ap_pre_connection(c, sock);
         if (rc != OK && rc != DONE) {
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(00469)
                           "process_socket: connection aborted");
-            c->aborted = 1;
         }
 
         /**
