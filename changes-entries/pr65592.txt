@@ -1,0 +1,3 @@
+  *) event mpm: Correctly count active child processes in parent process if
+     child process dies due to MaxConnectionsPerChild.
+     PR 65592 [Ruediger Pluem]
