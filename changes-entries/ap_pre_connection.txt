@@ -1,0 +1,3 @@
+  *) core: Add ap_pre_connection() as a wrapper to ap_run_pre_connection()
+     and use it to prevent that failures in running the pre_connection
+     hook cause crashes afterwards.
