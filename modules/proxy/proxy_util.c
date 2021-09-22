@@ -2284,7 +2284,8 @@ static int fix_uds_filename(request_rec *r, char **url)
         rv = apr_uri_parse(r->pool, uds_url, &urisock);
         *origin_url++ = '|';
 
-        if (rv == APR_SUCCESS && urisock.path && !urisock.hostname) {
+        if (rv == APR_SUCCESS && urisock.path && (!urisock.hostname
+                                                  || !urisock.hostname[0])) {
             uds_path = ap_runtime_dir_relative(r->pool, urisock.path);
         }
         if (!uds_path) {
