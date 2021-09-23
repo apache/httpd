@@ -150,13 +150,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                    http://people.apache.org/~covener/patches/speling-sync.diff
       +1 covener, rpluem, ylavic
 
-  *) mod_proxy: Handle UDS URIs with empty hostname ("unix:///...") as if they
-     had no hostname ("unix:/..."), also in mod_rewrite's is_absolulte_uri().
-     trunk patch: http://svn.apache.org/r1893519
-                  http://svn.apache.org/r1893532
-     2.4.x patch: svn merge -c 1893519,1893532 ^/httpd/httpd/trunk .
-     +1: ylavic, rpluem, icing
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
