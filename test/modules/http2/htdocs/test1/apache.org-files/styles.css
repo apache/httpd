@@ -1,0 +1,131 @@
+body {
+	padding-top:60px;
+	background-color: #fff;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	text-transform: uppercase;
+}
+
+.navbar-default .navbar-toggle {
+  border: none;  
+}
+
+.navbar-toggle {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+section {
+  padding-bottom: 25px;
+}
+
+ul.white > li > a,
+a.white {
+	color: #ddd;
+}
+
+ul.white > li > a:hover,
+a.white:hover {
+	color: #fff;
+}
+
+.white {
+  color: #fff;
+}
+
+.bg-gray {
+  background: #eee;
+}
+
+.letter-header {
+  display: block;
+  background-color: #f3f3f3;
+  color: #303284;
+  text-align: center;
+}
+
+.list-unstyled {
+	list-style: none;
+}
+
+.no-top-margin{
+  margin-top: 0px;
+}
+
+.no-btm-margin {
+  margin-bottom: 0px;
+}
+
+
+/* Custom Left Tabs */
+
+.tabs-left > .nav-tabs {
+  border-bottom: 0;
+}
+
+.tabs-left > .nav-tabs > li,
+.tabs-right > .nav-tabs > li {
+  float: none;
+}
+
+.tabs-left > .nav-tabs > li > a,
+.tabs-right > .nav-tabs > li > a {
+  min-width: 74px;
+  margin-right: 0;
+  margin-bottom: 3px;
+  border: none;
+}
+
+.tabs-left > .nav-tabs > li > a:hover:after {
+  content: ""; 
+  position: absolute; 
+  right: -24px; 
+  top: 50%; 
+  width: 0; 
+  height: 0; 
+  border-top: 25px solid transparent;
+  border-bottom: 25px solid transparent;
+  border-left: 25px solid #eee;
+  margin-top: -25px;
+}
+
+.tabs-left > .nav-tabs > .active > a:after,
+.tabs-left > .nav-tabs > .active > a:hover:after {
+  content: ""; 
+  position: absolute; 
+  right: -24px; 
+  top: 50%; 
+  width: 0; 
+  height: 0; 
+  border-top: 25px solid transparent;
+  border-bottom: 25px solid transparent;
+  border-left: 25px solid #303284;
+  margin-top: -25px;
+}
+
+
+.tabs-left > .nav-tabs > li > a {
+  margin-right: -1px;
+  width: 90%;
+}
+
+.tabs-left > .nav-tabs > li > a:hover,
+.tabs-left > .nav-tabs > li > a:focus {
+  border: none;
+}
+
+/* Media Adjustments */
+@media (max-width: 992px){
+.navbar-nav > li > a {
+  padding-left: 5px;
+  }
+}
+  
+/* Prevent anchor links from displaying under the navbar */
+:target:before {
+    content: "";
+    display: block;
+    height: 30px;
+    margin-top: -30px;
+}
