@@ -193,7 +193,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
        https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/269.diff
      Can be applied via apply_backport_pr.sh 269.
-     +1: rpluem
+     +1: rpluem, icing
 
   *) core: do not install core input/output filters on secondary
      connections.
