@@ -271,7 +271,7 @@ jobs:
       env: APR_VERSION=1.7.0
            APU_VERSION=1.6.1 APU_CONFIG="--with-crypto"
            CONFIG="--enable-mods-shared=reallyall --with-mpm=event --enable-mpms-shared=event"
-           TESTS="t/modules/http2.t" TEST_INSTALL=1 TEST_H2=1
+           NO_TEST_FRAMEWORK=1 TEST_INSTALL=1 TEST_H2=1
       addons:
         apt:
           sources:
@@ -382,7 +382,7 @@ before_install:
   - if [ "$TRAVIS_OS_NAME" = "linux" -a ! -v SKIP_TESTING ]; then
         if [ -v CLEAR_CACHE ]; then rm -rf ~/perl5; fi;
         cpanm --local-lib=~/perl5 local::lib && eval $(perl -I ~/perl5/lib/perl5/ -Mlocal::lib);
-        CC=gcc cpanm --notest Net::SSL LWP::Protocol::https ExtUtils::Embed Test::More AnyEvent DateTime HTTP::DAV Protocol::HTTP2::Client FCGI AnyEvent::WebSocket::Client Apache::Test;
+        CC=gcc cpanm --notest Net::SSL LWP::Protocol::https ExtUtils::Embed Test::More AnyEvent DateTime HTTP::DAV FCGI AnyEvent::WebSocket::Client Apache::Test;
     fi
 
 before_script:

@@ -94,22 +94,24 @@ if ! test -v SKIP_TESTING; then
     # Try to keep all potential coredumps from all processes
     sudo sysctl -w kernel.core_uses_pid=1 2>/dev/null || true
 
-    if test -v WITH_TEST_SUITE; then
-        make check TESTS="${TESTS}" TEST_CONFIG="${TEST_ARGS}"
-        RV=$?
-    else
-        test -v TEST_INSTALL || make install
-        pushd test/perl-framework
-            perl Makefile.PL -apxs $PREFIX/bin/apxs
-            make test APACHE_TEST_EXTRA_ARGS="${TEST_ARGS} ${TESTS}"
+    if ! test -v NO_TEST_FRAMEWORK; then
+        if test -v WITH_TEST_SUITE; then
+            make check TESTS="${TESTS}" TEST_CONFIG="${TEST_ARGS}"
             RV=$?
-        popd
-    fi
+        else
+            test -v TEST_INSTALL || make install
+            pushd test/perl-framework
+                perl Makefile.PL -apxs $PREFIX/bin/apxs
+                make test APACHE_TEST_EXTRA_ARGS="${TEST_ARGS} ${TESTS}"
+                RV=$?
+            popd
+        fi
 
-    # Skip further testing if a core dump was created during the test
-    # suite run above.
-    if test $RV -eq 0 && test -n "`ls test/perl-framework/t/core{,.*} 2>/dev/null`"; then
-        RV=4
+        # Skip further testing if a core dump was created during the test
+        # suite run above.
+        if test $RV -eq 0 && test -n "`ls test/perl-framework/t/core{,.*} 2>/dev/null`"; then
+            RV=4
+        fi
     fi
 
     if test -v TEST_SSL -a $RV -eq 0; then
