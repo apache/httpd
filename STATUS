@@ -198,6 +198,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       svn merge -c 1893520 ^/httpd/httpd/trunk .
      +1: rpluem,
 
+  *) core: Add ap_pre_connection() as a wrapper to ap_run_pre_connection()
+     and use it to prevent that failures in running the pre_connection
+     hook cause crashes afterwards.
+     Trunk version of patch:
+        https://svn.apache.org/r1893497
+        https://svn.apache.org/r1893507
+     Backport version for 2.4.x of patch:
+       https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/269.diff
+     Can be applied via apply_backport_pr.sh 269.
+     +1:
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
