@@ -319,9 +319,9 @@ static void workers_abort_idle(h2_workers *workers)
 static apr_status_t workers_pool_cleanup(void *data)
 {
     h2_workers *workers = data;
-    apr_time_t timout = apr_time_from_sec(1);
+    apr_time_t end, timeout = apr_time_from_sec(1);
     apr_status_t rv;
-    int i, n = 5;
+    int n, wait_sec = 5;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, workers->s,
                  "h2_workers: cleanup %d workers idling",
@@ -333,11 +333,10 @@ static apr_status_t workers_pool_cleanup(void *data)
      * have either been handled (graceful) or we are forced exiting
      * (ungrateful). Either way, we show limited patience. */
     apr_thread_mutex_lock(workers->lock);
-    for (i = 0; i < n; ++i) {
-        if (!apr_atomic_read32(&workers->worker_count)) {
-            break;
-        }
-        rv = apr_thread_cond_timedwait(workers->all_done, workers->lock, timout);
+    end = apr_time_now() + apr_time_from_sec(wait_sec);
+    while ((n = apr_atomic_read32(&workers->worker_count)) > 0
+           && apr_time_now() < end) {
+        rv = apr_thread_cond_timedwait(workers->all_done, workers->lock, timeout);
         if (APR_TIMEUP == rv) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, workers->s,
                          APLOGNO(10290) "h2_workers: waiting for idle workers to close, "
@@ -346,11 +345,11 @@ static apr_status_t workers_pool_cleanup(void *data)
             continue;
         }
     }
-    if (i >= n) {
+    if (n) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, 0, workers->s,
                      APLOGNO(10291) "h2_workers: cleanup, %d idle workers "
                      "did not exit after %d seconds.",
-                     apr_atomic_read32(&workers->worker_count), i);
+                     n, wait_sec);
     }
     apr_thread_mutex_unlock(workers->lock);
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, workers->s,
