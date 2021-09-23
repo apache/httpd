@@ -24,6 +24,7 @@
 #include <http_protocol.h>
 #include <http_request.h>
 #include <http_log.h>
+#include <mpm_common.h>
 
 #include "mod_http2.h"
 
@@ -228,7 +229,9 @@ static void h2_hooks(apr_pool_t *pool)
     /* Run once after a child process has been created.
      */
     ap_hook_child_init(h2_child_init, NULL, NULL, APR_HOOK_MIDDLE);
-
+#if AP_MODULE_MAGIC_AT_LEAST(20120211, 110)
+    ap_hook_child_stopping(h2_conn_child_stopping, NULL, NULL, APR_HOOK_MIDDLE);
+#endif
     h2_h2_register_hooks();
     h2_switch_register_hooks();
     h2_task_register_hooks();

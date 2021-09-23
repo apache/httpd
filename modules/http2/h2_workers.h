@@ -38,11 +38,12 @@ struct h2_workers {
     apr_pool_t *pool;
     
     int next_worker_id;
-    int min_workers;
-    int max_workers;
-    int max_idle_secs;
+    apr_uint32_t max_workers;
+    volatile apr_uint32_t min_workers; /* is changed during graceful shutdown */
+    volatile apr_interval_time_t max_idle_duration; /* is changed during graceful shutdown */
     
     volatile int aborted;
+    volatile int shutdown;
     int dynamic;
 
     apr_threadattr_t *thread_attr;
@@ -79,5 +80,10 @@ apr_status_t h2_workers_register(h2_workers *workers, struct h2_mplx *m);
  * Remove a h2_mplx from the worker registry.
  */
 apr_status_t h2_workers_unregister(h2_workers *workers, struct h2_mplx *m);
+
+/**
+ *  Shut down processing gracefully by terminating all idle workers.
+ */
+void h2_workers_graceful_shutdown(h2_workers *workers);
 
 #endif /* defined(__mod_h2__h2_workers__) */

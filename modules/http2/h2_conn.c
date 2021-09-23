@@ -148,6 +148,13 @@ apr_status_t h2_conn_child_init(apr_pool_t *pool, server_rec *s)
     return status;
 }
 
+void h2_conn_child_stopping(apr_pool_t *pool, int graceful)
+{
+    if (workers && graceful) {
+        h2_workers_graceful_shutdown(workers);
+    }
+}
+
 h2_mpm_type_t h2_conn_mpm_type(void)
 {
     check_modules(0);
@@ -259,11 +266,20 @@ apr_status_t h2_conn_run(conn_rec *c)
 apr_status_t h2_conn_pre_close(struct h2_ctx *ctx, conn_rec *c)
 {
     h2_session *session = h2_ctx_get_session(c);
+    
+    (void)c;
     if (session) {
         apr_status_t status = h2_session_pre_close(session, async_mpm);
         return (status == APR_SUCCESS)? DONE : status;
     }
     return DONE;
+}
+
+/* APR callback invoked if allocation fails. */
+static int abort_on_oom(int retcode)
+{
+    ap_abort_on_oom();
+    return retcode; /* unreachable, hopefully. */
 }
 
 conn_rec *h2_secondary_create(conn_rec *master, int sec_id, apr_pool_t *parent)
@@ -295,8 +311,9 @@ conn_rec *h2_secondary_create(conn_rec *master, int sec_id, apr_pool_t *parent)
         return NULL;
     }
     apr_allocator_owner_set(allocator, pool);
+    apr_pool_abort_set(abort_on_oom, pool);
     apr_pool_tag(pool, "h2_secondary_conn");
- 
+
     c = (conn_rec *) apr_palloc(pool, sizeof(conn_rec));
     if (c == NULL) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, APR_ENOMEM, master, 

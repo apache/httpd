@@ -23,7 +23,7 @@
 #include <apr_time.h>
 
 #ifdef H2_OPENSSL
-#include <openssl/sha.h>
+#include <openssl/evp.h>
 #endif
 
 #include <httpd.h>
@@ -59,7 +59,7 @@ static const char *policy_str(h2_push_policy policy)
 
 typedef struct {
     const h2_request *req;
-    int push_policy;
+    apr_uint32_t push_policy;
     apr_pool_t *pool;
     apr_array_header_t *pushes;
     const char *s;
@@ -434,7 +434,7 @@ static int head_iter(void *ctx, const char *key, const char *value)
 }
 
 apr_array_header_t *h2_push_collect(apr_pool_t *p, const h2_request *req,
-                                    int push_policy, const h2_headers *res)
+                                    apr_uint32_t push_policy, const h2_headers *res)
 {
     if (req && push_policy != H2_PUSH_NONE) {
         /* Collect push candidates from the request/response pair.
@@ -472,27 +472,32 @@ typedef struct h2_push_diary_entry {
 
 
 #ifdef H2_OPENSSL
-static void sha256_update(SHA256_CTX *ctx, const char *s)
+static void sha256_update(EVP_MD_CTX *ctx, const char *s)
 {
-    SHA256_Update(ctx, s, strlen(s));
+    EVP_DigestUpdate(ctx, s, strlen(s));
 }
 
 static void calc_sha256_hash(h2_push_diary *diary, apr_uint64_t *phash, h2_push *push) 
 {
-    SHA256_CTX sha256;
+    EVP_MD_CTX *md;
     apr_uint64_t val;
-    unsigned char hash[SHA256_DIGEST_LENGTH];
+    unsigned char hash[EVP_MAX_MD_SIZE];
+    unsigned len;
     int i;
-    
-    SHA256_Init(&sha256);
-    sha256_update(&sha256, push->req->scheme);
-    sha256_update(&sha256, "://");
-    sha256_update(&sha256, push->req->authority);
-    sha256_update(&sha256, push->req->path);
-    SHA256_Final(hash, &sha256);
+
+    md = EVP_MD_CTX_create();
+    ap_assert(md != NULL);
+
+    i = EVP_DigestInit_ex(md, EVP_sha256(), NULL);
+    ap_assert(i == 1);
+    sha256_update(md, push->req->scheme);
+    sha256_update(md, "://");
+    sha256_update(md, push->req->authority);
+    sha256_update(md, push->req->path);
+    EVP_DigestFinal(md, hash, &len);
 
     val = 0;
-    for (i = 0; i != sizeof(val); ++i)
+    for (i = 0; i != len; ++i)
         val = val * 256 + hash[i];
     *phash = val >> (64 - diary->mask_bits);
 }
@@ -501,13 +506,14 @@ static void calc_sha256_hash(h2_push_diary *diary, apr_uint64_t *phash, h2_push 
 
 static unsigned int val_apr_hash(const char *str) 
 {
-    apr_ssize_t len = strlen(str);
+    apr_ssize_t len = (apr_ssize_t)strlen(str);
     return apr_hashfunc_default(str, &len);
 }
 
 static void calc_apr_hash(h2_push_diary *diary, apr_uint64_t *phash, h2_push *push) 
 {
     apr_uint64_t val;
+    (void)diary;
 #if APR_UINT64_MAX > UINT_MAX
     val = ((apr_uint64_t)(val_apr_hash(push->req->scheme)) << 32);
     val ^= ((apr_uint64_t)(val_apr_hash(push->req->authority)) << 16);
@@ -653,7 +659,7 @@ apr_array_header_t *h2_push_diary_update(h2_session *session, apr_array_header_t
                 /* Intentional no APLOGNO */
                 ap_log_cerror(APLOG_MARK, GCSLOG_LEVEL, 0, session->c,
                               "push_diary_update: already there PUSH %s", push->req->path);
-                move_to_last(session->push_diary, idx);
+                move_to_last(session->push_diary, (apr_size_t)idx);
             }
             else {
                 /* Intentional no APLOGNO */
