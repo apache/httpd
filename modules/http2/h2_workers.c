@@ -319,7 +319,7 @@ static void workers_abort_idle(h2_workers *workers)
 static apr_status_t workers_pool_cleanup(void *data)
 {
     h2_workers *workers = data;
-    apr_time_t end, timout = apr_time_from_sec(1);
+    apr_time_t end, timeout = apr_time_from_sec(1);
     apr_status_t rv;
     int n, wait_sec = 5;
 
@@ -336,7 +336,7 @@ static apr_status_t workers_pool_cleanup(void *data)
     end = apr_time_now() + apr_time_from_sec(wait_sec);
     while ((n = apr_atomic_read32(&workers->worker_count)) > 0
            && apr_time_now() < end) {
-        rv = apr_thread_cond_timedwait(workers->all_done, workers->lock, timout);
+        rv = apr_thread_cond_timedwait(workers->all_done, workers->lock, timeout);
         if (APR_TIMEUP == rv) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, workers->s,
                          APLOGNO(10290) "h2_workers: waiting for idle workers to close, "
