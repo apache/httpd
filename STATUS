@@ -150,14 +150,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                    http://people.apache.org/~covener/patches/speling-sync.diff
       +1 covener, rpluem, ylavic
 
-   *) mod_rewrite: Fix UDS ("unix:") scheme for [P] rules.  PR 57691 + 65590.
-      Trunk version of patch:
-         https://svn.apache.org/r1893516
-      Backport version for 2.4.x of patch:
-       Trunk version of patch works
-       svn merge -c 1893516 ^/httpd/httpd/trunk .
-      +1: rpluem, ylavic, icing
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -189,7 +181,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1893532
      2.4.x patch: svn merge -c 1893519,1893532 ^/httpd/httpd/trunk .
      +1: ylavic, rpluem
-     ylavic: r1893532 applies after above r1893516 only
 
   *) mpm event: Correctly count active child processes in parent process if
      child process dies due to MaxConnectionsPerChild. PR 65592.
