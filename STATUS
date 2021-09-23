@@ -163,6 +163,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/1893220
      2.4.x patch: svn merge -c 1893214,1893215,1893220 ^/httpd/httpd/trunk .
      +1: icing,
+     rpluem says: This one has merge conflicts.
 
    *) mod_speling: Backport CheckBasenameMatch for PR44221
       trunk patch: http://svn.apache.org/r1557580
