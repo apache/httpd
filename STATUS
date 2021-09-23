@@ -173,7 +173,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1893220
                   and other never proposed code changes
      PR: https://github.com/apache/httpd/pull/270
-     +1: icing,
+     +1: icing, rpluem
 
   *) mpm event: Correctly count active child processes in parent process if
      child process dies due to MaxConnectionsPerChild. PR 65592.
