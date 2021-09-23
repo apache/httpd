@@ -171,7 +171,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    http://svn.apache.org/r1844598
       2.4.x patch: full resync of code/docs due to conflicts + changes
                    http://people.apache.org/~covener/patches/speling-sync.diff
-      +1 covener,
+      +1 covener, rpluem
 
    *) mod_rewrite: Fix UDS ("unix:") scheme for [P] rules.  PR 57691 + 65590.
       Trunk version of patch:
