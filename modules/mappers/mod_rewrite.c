@@ -617,6 +617,13 @@ static unsigned is_absolute_uri(char *uri, int *supportsqs)
             return 6;
         }
         break;
+
+    case 'u':
+    case 'U':
+        if (!ap_cstr_casecmpn(uri, "nix:", 4)) {        /* unix:     */
+            *sqs = 1;
+            return 5;
+        }
     }
 
     return 0;
