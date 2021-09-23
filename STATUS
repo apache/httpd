@@ -150,6 +150,14 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                    http://people.apache.org/~covener/patches/speling-sync.diff
       +1 covener, rpluem, ylavic
 
+   *) mod_rewrite: Fix UDS ("unix:") scheme for [P] rules.  PR 57691 + 65590.
+      Trunk version of patch:
+         https://svn.apache.org/r1893516
+      Backport version for 2.4.x of patch:
+       Trunk version of patch works
+       svn merge -c 1893516 ^/httpd/httpd/trunk .
+      +1: rpluem, ylavic, icing
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -174,14 +182,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   and other never proposed code changes
      PR: https://github.com/apache/httpd/pull/270
      +1: icing,
-
-   *) mod_rewrite: Fix UDS ("unix:") scheme for [P] rules.  PR 57691 + 65590.
-      Trunk version of patch:
-         https://svn.apache.org/r1893516
-      Backport version for 2.4.x of patch:
-       Trunk version of patch works
-       svn merge -c 1893516 ^/httpd/httpd/trunk .
-      +1: rpluem, ylavic,
 
   *) mod_proxy: Handle UDS URIs with empty hostname ("unix:///...") as if they
      had no hostname ("unix:/..."), also in mod_rewrite's is_absolulte_uri().
