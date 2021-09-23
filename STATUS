@@ -189,6 +189,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: ylavic, rpluem
      ylavic: r1893532 applies after above r1893516 only
 
+  *) mpm event: Correctly count active child processes in parent process if
+     child process dies due to MaxConnectionsPerChild. PR 65592.
+     Trunk version of patch:
+        https://svn.apache.org/r1893520
+     Backport version for 2.4.x of patch:
+      Trunk version of patch works
+      svn merge -c 1893520 ^/httpd/httpd/trunk .
+     +1: rpluem,
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
