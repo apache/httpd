@@ -142,6 +142,14 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   *) mod_speling: Backport CheckBasenameMatch for PR44221
+      trunk patch: http://svn.apache.org/r1557580
+                   http://svn.apache.org/r1732273
+                   http://svn.apache.org/r1844598
+      2.4.x patch: full resync of code/docs due to conflicts + changes
+                   http://people.apache.org/~covener/patches/speling-sync.diff
+      +1 covener, rpluem, ylavic
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -160,18 +168,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Also, change OpenSSL API use for deprecations in OpenSLL 3.0.
      trunk patch: http://svn.apache.org/r1893214
                   http://svn.apache.org/r1893215
-                  http://svn.apache.org/1893220
+                  http://svn.apache.org/r1893220
      2.4.x patch: svn merge -c 1893214,1893215,1893220 ^/httpd/httpd/trunk .
      +1: icing,
      rpluem says: This one has merge conflicts.
-
-   *) mod_speling: Backport CheckBasenameMatch for PR44221
-      trunk patch: http://svn.apache.org/r1557580
-                   http://svn.apache.org/r1732273
-                   http://svn.apache.org/r1844598
-      2.4.x patch: full resync of code/docs due to conflicts + changes
-                   http://people.apache.org/~covener/patches/speling-sync.diff
-      +1 covener, rpluem
 
    *) mod_rewrite: Fix UDS ("unix:") scheme for [P] rules.  PR 57691 + 65590.
       Trunk version of patch:
@@ -179,7 +179,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Backport version for 2.4.x of patch:
        Trunk version of patch works
        svn merge -c 1893516 ^/httpd/httpd/trunk .
-      +1: rpluem,
+      +1: rpluem, ylavic,
+
+  *) mod_proxy: Handle UDS URIs with empty hostname ("unix:///...") as if they
+     had no hostname ("unix:/..."), also in mod_rewrite's is_absolulte_uri().
+     trunk patch: http://svn.apache.org/r1893519
+                  http://svn.apache.org/r1893532
+     2.4.x patch: svn merge -c 1893519,1893532 ^/httpd/httpd/trunk .
+     +1: ylavic,
+     ylavic: r1893532 applies after above r1893516 only
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
