@@ -670,7 +670,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
          * upwards in the chain.
          */
         if (data_sent) {
-            ap_proxy_backend_broke(r, output_brigade);
+            ap_proxy_fill_error_brigade(r, HTTP_BAD_GATEWAY, output_brigade, -1);
         } else if (!send_body && (is_idempotent(r) == METHOD_IDEMPOTENT)) {
             /*
              * This is only non fatal when we have not send (parts) of a possible
@@ -706,12 +706,9 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
 
     /*
      * Ensure that we sent an EOS bucket thru the filter chain, if we already
-     * have sent some data. Maybe ap_proxy_backend_broke was called and added
-     * one to the brigade already (no longer making it empty). So we should
-     * not do this in this case.
+     * have sent some data.
      */
-    if (data_sent && !r->eos_sent && !r->connection->aborted
-            && APR_BRIGADE_EMPTY(output_brigade)) {
+    if (data_sent && !r->eos_sent && !r->connection->aborted) {
         e = apr_bucket_eos_create(r->connection->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(output_brigade, e);
     }

@@ -1177,12 +1177,27 @@ PROXY_DECLARE(int) ap_proxy_connection_create_ex(const char *proxy_function,
 PROXY_DECLARE(int) ap_proxy_connection_reusable(proxy_conn_rec *conn);
 
 /**
- * Signal the upstream chain that the connection to the backend broke in the
- * middle of the response. This is done by sending an error bucket with
- * status HTTP_BAD_GATEWAY and an EOS bucket up the filter chain.
+ * Fill a brigade that can be sent downstream to signal that the connection to
+ * the backend broke in the middle of the response. The brigade will contain
+ * an error bucket with the given status and eventually an EOC bucket if asked
+ * to or heuristically if the response header was sent already.
  * @param r       current request record of client request
- * @param brigade The brigade that is sent through the output filter chain
- * @deprecated To be removed in v2.6.
+ * @param status  the error status
+ * @param bb      the brigade to fill
+ * @param eoc     0 do not add an EOC bucket, > 0 always add one, < 0 add one
+ *                only if the response header was sent already
+ */
+PROXY_DECLARE(void) ap_proxy_fill_error_brigade(request_rec *r, int status,
+                                                apr_bucket_brigade *bb,
+                                                int eoc);
+
+/**
+ * Fill a brigade that can be sent downstream to signal that the connection to
+ * the backend broke in the middle of the response. The brigade will contain
+ * an error bucket with status HTTP_BAD_GATEWAY and an EOS bucket.
+ * @param r       current request record of client request
+ * @param brigade the brigade to fill
+ * @deprecated To be removed in v2.6 (see ap_proxy_fill_error_brigade).
  */
 PROXY_DECLARE(void) ap_proxy_backend_broke(request_rec *r,
                                            apr_bucket_brigade *brigade);

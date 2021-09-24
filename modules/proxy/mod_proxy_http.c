@@ -1177,11 +1177,7 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
                               " Number of keepalives %i", backend->hostname,
                               backend->port, c->keepalives);
 
-                e = ap_bucket_error_create(HTTP_BAD_GATEWAY, NULL,
-                        r->pool, c->bucket_alloc);
-                APR_BRIGADE_INSERT_TAIL(bb, e);
-                e = ap_bucket_eoc_create(c->bucket_alloc);
-                APR_BRIGADE_INSERT_TAIL(bb, e);
+                ap_proxy_fill_error_brigade(r, HTTP_BAD_GATEWAY, bb, 1);
                 ap_pass_brigade(r->output_filters, bb);
                 /* Mark the backend connection for closing */
                 backend->close = 1;
@@ -1710,11 +1706,12 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
                     mode = APR_BLOCK_READ;
                     continue;
                 }
-                else if (rv == APR_EOF) {
+                if (rv == APR_EOF) {
                     backend->close = 1;
                     break;
                 }
-                else if (rv != APR_SUCCESS) {
+                if (rv != APR_SUCCESS || APR_BRIGADE_EMPTY(bb)) {
+                    int error_status = HTTP_BAD_GATEWAY;
                     if (rv == APR_ENOSPC) {
                         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(02475)
                                       "Response chunk/line was too large to parse");
@@ -1723,9 +1720,14 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
                         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(02476)
                                       "Response Transfer-Encoding was not recognised");
                     }
-                    else {
+                    else if (rv != APR_SUCCESS) {
                         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01110)
                                       "Network error reading response");
+                    }
+                    else {
+                        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10293)
+                                      "Unexpected empty data reading response");
+                        error_status = HTTP_INTERNAL_SERVER_ERROR;
                     }
 
                     /* In this case, we are in real trouble because
@@ -1734,11 +1736,7 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
                      * disconnect the client too.
                      */
                     apr_brigade_cleanup(bb);
-                    e = ap_bucket_error_create(HTTP_BAD_GATEWAY, NULL,
-                            r->pool, c->bucket_alloc);
-                    APR_BRIGADE_INSERT_TAIL(bb, e);
-                    e = ap_bucket_eoc_create(c->bucket_alloc);
-                    APR_BRIGADE_INSERT_TAIL(bb, e);
+                    ap_proxy_fill_error_brigade(r, error_status, bb, 1);
                     ap_pass_brigade(r->output_filters, bb);
 
                     backend_broke = 1;
@@ -1762,13 +1760,28 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
                               "readbytes: %#x", readbytes);
                 }
 #endif
-                /* sanity check */
-                if (APR_BRIGADE_EMPTY(bb)) {
-                    break;
-                }
 
                 /* Switch the allocator lifetime of the buckets */
-                ap_proxy_buckets_lifetime_transform(r, bb, pass_bb);
+                rv = ap_proxy_buckets_lifetime_transform(r, bb, pass_bb);
+                if (rv != APR_SUCCESS) {
+                    /* Same, half way through a response, our only option is
+                     * to notice the output filters and then disconnect the
+                     * client and backend.
+                     */
+                    if (!APR_BRIGADE_EMPTY(pass_bb)) {
+                        /* Pass what we have still */
+                        ap_pass_brigade(r->output_filters, pass_bb);
+                        apr_brigade_cleanup(pass_bb);
+                    }
+                    ap_proxy_fill_error_brigade(r, HTTP_INTERNAL_SERVER_ERROR,
+                                                pass_bb, 1);
+                    ap_pass_brigade(r->output_filters, pass_bb);
+                    apr_brigade_cleanup(pass_bb);
+
+                    backend_broke = 1;
+                    backend->close = 1;
+                    break;
+                }
 
                 /* found the last brigade? */
                 if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(pass_bb))) {

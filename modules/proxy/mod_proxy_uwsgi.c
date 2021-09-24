@@ -379,14 +379,11 @@ static int uwsgi_response(request_rec *r, proxy_conn_rec * backend,
         int status = r->status;
         r->status = HTTP_OK;
         r->status_line = NULL;
-
-        apr_brigade_cleanup(bb);
-        apr_brigade_cleanup(pass_bb);
-
         return status;
     }
 
     while (!finish) {
+        apr_brigade_cleanup(bb);
         rv = ap_get_brigade(rp->input_filters, bb,
                             AP_MODE_READBYTES, mode, conf->io_buffer_size);
         if (APR_STATUS_IS_EAGAIN(rv)
@@ -396,51 +393,59 @@ static int uwsgi_response(request_rec *r, proxy_conn_rec * backend,
             if (ap_pass_brigade(r->output_filters, bb) || c->aborted) {
                 break;
             }
-            apr_brigade_cleanup(bb);
             mode = APR_BLOCK_READ;
             continue;
         }
-        else if (rv == APR_EOF) {
+        if (rv == APR_EOF) {
             break;
         }
-        else if (rv != APR_SUCCESS) {
-            ap_proxy_backend_broke(r, bb);
+        if (rv != APR_SUCCESS || APR_BRIGADE_EMPTY(bb)) {
+            int status = HTTP_BAD_GATEWAY;
+            if (rv == APR_SUCCESS) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10294)
+                              "Unexpected empty data reading uwscgi response");
+                status = HTTP_INTERNAL_SERVER_ERROR;
+            }
+            apr_brigade_cleanup(bb);
+            ap_proxy_fill_error_brigade(r, status, bb, -1);
             ap_pass_brigade(r->output_filters, bb);
             backend_broke = 1;
             break;
         }
 
-        mode = APR_NONBLOCK_READ;
-        apr_brigade_length(bb, 0, &readbytes);
-        backend->worker->s->read += readbytes;
-
-        if (APR_BRIGADE_EMPTY(bb)) {
-            apr_brigade_cleanup(bb);
-            break;
-        }
-
-        ap_proxy_buckets_lifetime_transform(r, bb, pass_bb);
-
         /* found the last brigade? */
         if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb)))
             finish = 1;
 
-        /* do not pass chunk if it is zero_sized */
-        apr_brigade_length(pass_bb, 0, &readbytes);
+        mode = APR_NONBLOCK_READ;
+        apr_brigade_length(bb, 0, &readbytes);
+        backend->worker->s->read += readbytes;
 
-        if ((readbytes > 0
-             && ap_pass_brigade(r->output_filters, pass_bb) != APR_SUCCESS)
+        rv = ap_proxy_buckets_lifetime_transform(r, bb, pass_bb);
+        if (rv != APR_SUCCESS) {
+            /* Half way through a response, our only option is
+             * to notice the output filters and then disconnect the
+             * client and backend.
+             */
+            if (!APR_BRIGADE_EMPTY(pass_bb)) {
+                /* Pass what we have still */
+                ap_pass_brigade(r->output_filters, pass_bb);
+                apr_brigade_cleanup(pass_bb);
+            }
+            ap_proxy_fill_error_brigade(r, HTTP_INTERNAL_SERVER_ERROR,
+                                        pass_bb, -1);
+            ap_pass_brigade(r->output_filters, pass_bb);
+            apr_brigade_cleanup(pass_bb);
+
+            backend_broke = 1;
+            break;
+        }
+        if (ap_pass_brigade(r->output_filters, pass_bb) != APR_SUCCESS
             || c->aborted) {
             finish = 1;
         }
-
-        apr_brigade_cleanup(bb);
         apr_brigade_cleanup(pass_bb);
     }
-
-    e = apr_bucket_eos_create(c->bucket_alloc);
-    APR_BRIGADE_INSERT_TAIL(bb, e);
-    ap_pass_brigade(r->output_filters, bb);
 
     apr_brigade_cleanup(bb);
 

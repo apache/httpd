@@ -691,6 +691,7 @@
  *                         (this MAJOR bump). Overall there is no MAJOR bumb
  *                         for 20210506.0 + 20210924.0, MINOR bump only for
  *                         adding ap_proxy_tunnel_conn_bytes_{in,out}().
+ * 20210924.1 (2.5.1-dev)  Add ap_proxy_fill_error_brigade()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -698,7 +699,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20210924
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 0             /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 1             /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

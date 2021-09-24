@@ -3542,11 +3542,54 @@ PROXY_DECLARE(int) ap_proxy_should_override(proxy_dir_conf *conf, int code)
                                  code);
 }
 
+PROXY_DECLARE(void) ap_proxy_fill_error_brigade(request_rec *r, int status,
+                                                apr_bucket_brigade *bb,
+                                                int eoc)
+{
+    apr_bucket *e, *eos;
+    conn_rec *c = r->connection;
+
+    /*
+     * Add an error and (eventually) EOC buckets to signal the http filter
+     * that it should get out of our way, BUT ensure that they are inserted
+     * BEFORE an EOS bucket in bb as some resource filters like mod_deflate
+     * pass everything up to the EOS down the chain immediately and sent the
+     * remainder of the brigade later (or even never). But in this case the
+     * ap_http_header_filter does not get out of our way soon enough.
+     */
+
+    eos = APR_BRIGADE_LAST(bb);
+    while (eos != APR_BRIGADE_SENTINEL(bb) && !APR_BUCKET_IS_EOS(eos)) {
+        eos = APR_BUCKET_PREV(eos);
+    }
+
+    e = ap_bucket_error_create(status, NULL, c->pool, c->bucket_alloc);
+    if (eos == APR_BRIGADE_SENTINEL(bb)) {
+        APR_BRIGADE_INSERT_TAIL(bb, e);
+        eos = APR_BRIGADE_SENTINEL(bb);
+    }
+    else {
+        APR_BUCKET_INSERT_BEFORE(eos, e);
+    }
+
+    /* If asked to (eoc > 0) or if heuristically (eoc < 0) the header was
+     * sent already we need to terminate the connection.
+     */
+    if (eoc > 0 || (eoc < 0 && r->sent_bodyct)) {
+        e = ap_bucket_eoc_create(c->bucket_alloc);
+        if (eos == APR_BRIGADE_SENTINEL(bb)) {
+            APR_BRIGADE_INSERT_TAIL(bb, e);
+        }
+        else {
+            APR_BUCKET_INSERT_BEFORE(eos, e);
+        }
+    }
+}
+
 /* deprecated - to be removed in v2.6 */
 PROXY_DECLARE(void) ap_proxy_backend_broke(request_rec *r,
                                            apr_bucket_brigade *brigade)
 {
-    apr_bucket *e;
     conn_rec *c = r->connection;
 
     r->no_cache = 1;
@@ -3556,11 +3599,9 @@ PROXY_DECLARE(void) ap_proxy_backend_broke(request_rec *r,
      */
     if (r->main)
         r->main->no_cache = 1;
-    e = ap_bucket_error_create(HTTP_BAD_GATEWAY, NULL, c->pool,
-                               c->bucket_alloc);
-    APR_BRIGADE_INSERT_TAIL(brigade, e);
-    e = apr_bucket_eos_create(c->bucket_alloc);
-    APR_BRIGADE_INSERT_TAIL(brigade, e);
+
+    APR_BRIGADE_INSERT_TAIL(brigade, apr_bucket_eos_create(c->bucket_alloc));
+    ap_proxy_fill_error_brigade(r, HTTP_BAD_GATEWAY, brigade, 0);
 }
 
 /*
