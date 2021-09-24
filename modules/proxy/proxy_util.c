@@ -4665,8 +4665,8 @@ PROXY_DECLARE(apr_status_t) ap_proxy_tunnel_create(proxy_tunnel_rec **ptunnel,
 
     tunnel->r = r;
     tunnel->scheme = apr_pstrdup(r->pool, scheme);
-    tunnel->client = apr_pcalloc(r->pool, sizeof(struct proxy_tunnel_conn));
-    tunnel->origin = apr_pcalloc(r->pool, sizeof(struct proxy_tunnel_conn));
+    tunnel->client = apr_pcalloc(r->pool, sizeof(proxy_tunnel_conn_t));
+    tunnel->origin = apr_pcalloc(r->pool, sizeof(proxy_tunnel_conn_t));
     tunnel->pfds = apr_array_make(r->pool, 2, sizeof(apr_pollfd_t));
     tunnel->read_buf_size = ap_get_read_buf_size(r);
     tunnel->client->other = tunnel->origin;
@@ -4774,9 +4774,9 @@ static void del_pollset(apr_pollset_t *pollset, apr_pollfd_t *pfd,
 }
 
 static int proxy_tunnel_forward(proxy_tunnel_rec *tunnel,
-                                 struct proxy_tunnel_conn *in)
+                                 proxy_tunnel_conn_t *in)
 {
-    struct proxy_tunnel_conn *out = in->other;
+    proxy_tunnel_conn_t *out = in->other;
     apr_status_t rv;
     apr_off_t sent = 0;
 
@@ -4833,8 +4833,8 @@ PROXY_DECLARE(int) ap_proxy_tunnel_run(proxy_tunnel_rec *tunnel)
     int rc = OK;
     request_rec *r = tunnel->r;
     apr_pollset_t *pollset = tunnel->pollset;
-    struct proxy_tunnel_conn *client = tunnel->client,
-                             *origin = tunnel->origin;
+    proxy_tunnel_conn_t *client = tunnel->client,
+                        *origin = tunnel->origin;
     apr_interval_time_t timeout = tunnel->timeout >= 0 ? tunnel->timeout : -1;
     const char *scheme = tunnel->scheme;
     apr_status_t rv;
@@ -4880,7 +4880,7 @@ PROXY_DECLARE(int) ap_proxy_tunnel_run(proxy_tunnel_rec *tunnel)
 
         for (i = 0; i < nresults; i++) {
             const apr_pollfd_t *pfd = &results[i];
-            struct proxy_tunnel_conn *tc = pfd->client_data;
+            proxy_tunnel_conn_t *tc = pfd->client_data;
 
             ap_log_rerror(APLOG_MARK, APLOG_TRACE8, 0, r,
                           "proxy: %s: #%i: %s: %hx/%hx", scheme, i,
@@ -4914,7 +4914,7 @@ PROXY_DECLARE(int) ap_proxy_tunnel_run(proxy_tunnel_rec *tunnel)
                     && ((pfd->rtnevents & APR_POLLOUT)
                         || !(tc->pfd->reqevents & APR_POLLIN)
                         || !(pfd->rtnevents & (APR_POLLIN | APR_POLLHUP)))) {
-                struct proxy_tunnel_conn *out = tc, *in = tc->other;
+                proxy_tunnel_conn_t *out = tc, *in = tc->other;
 
                 ap_log_rerror(APLOG_MARK, APLOG_TRACE8, 0, r,
                               "proxy: %s: %s output ready",

@@ -681,6 +681,7 @@
  *                         is being shut down.
  * 20210531.4 (2.5.1-dev)  Add ap_create_connection
  * 20210531.5 (2.5.1-dev)  Add ap_pre_connection
+ * 20210531.6 (2.5.1-dev)  Add proxy_tunnel_conn_t
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -688,7 +689,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20210531
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 5             /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 6             /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

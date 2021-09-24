@@ -1335,14 +1335,15 @@ PROXY_DECLARE(int) ap_proxy_pass_brigade(apr_bucket_alloc_t *bucket_alloc,
                                          int flush);
 
 struct proxy_tunnel_conn; /* opaque */
+typedef struct proxy_tunnel_conn proxy_tunnel_conn_t;
 typedef struct {
     request_rec *r;
     const char *scheme;
     apr_pollset_t *pollset;
     apr_array_header_t *pfds;
     apr_interval_time_t timeout;
-    struct proxy_tunnel_conn *client,
-                             *origin;
+    proxy_tunnel_conn_t *client,
+                        *origin;
     apr_size_t read_buf_size;
     int replied;
 } proxy_tunnel_rec;
