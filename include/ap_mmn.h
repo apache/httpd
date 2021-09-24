@@ -682,14 +682,23 @@
  * 20210531.4 (2.5.1-dev)  Add ap_create_connection
  * 20210531.5 (2.5.1-dev)  Add ap_pre_connection
  * 20210531.6 (2.5.1-dev)  Add proxy_tunnel_conn_t
+ * 20210924.0 (2.5.1-dev)  Restore ap_proxy_transfer_between_connections()
+ *                         interface back to before 20210506.0 (that MAJOR bump
+ *                         cancelled), axe ap_proxy_tunnel_conn_get_read()
+ *                         and ap_proxy_tunnel_conn_get_transferred() and add
+ *                         ap_proxy_tunnel_conn_bytes_in() and
+ *                         ap_proxy_tunnel_conn_bytes_out() as replacement
+ *                         (this MAJOR bump). Overall there is no MAJOR bumb
+ *                         for 20210506.0 + 20210924.0, MINOR bump only for
+ *                         adding ap_proxy_tunnel_conn_bytes_{in,out}().
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20210531
+#define MODULE_MAGIC_NUMBER_MAJOR 20210924
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 6             /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 0             /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

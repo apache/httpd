@@ -306,6 +306,12 @@ static void proxy_http_async_finish(proxy_http_req_t *req)
     ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, req->r,
                   "proxy %s: finish async", req->proto);
 
+    /* Report bytes exchanged by the backend */
+    req->backend->worker->s->read +=
+        ap_proxy_tunnel_conn_bytes_in(req->tunnel->origin);
+    req->backend->worker->s->transferred +=
+        ap_proxy_tunnel_conn_bytes_out(req->tunnel->origin);
+
     proxy_run_detach_backend(req->r, req->backend);
     ap_proxy_release_connection(req->proto, req->backend, req->r->server);
 
@@ -1541,8 +1547,12 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
                 r->status = status;
             }
 
-            backend->worker->s->read = backend->worker->s->read + ap_proxy_tunnel_conn_get_read(req->tunnel);
-            backend->worker->s->transferred = backend->worker->s->transferred + ap_proxy_tunnel_conn_get_transferred(req->tunnel);
+            /* Report bytes exchanged by the backend */
+            backend->worker->s->read +=
+                ap_proxy_tunnel_conn_bytes_in(req->tunnel->origin);
+            backend->worker->s->transferred +=
+                ap_proxy_tunnel_conn_bytes_out(req->tunnel->origin);
+
             /* We are done with both connections */
             r->connection->keepalive = AP_CONN_CLOSE;
             backend->close = 1;

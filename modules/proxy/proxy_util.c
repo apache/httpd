@@ -4481,16 +4481,16 @@ PROXY_DECLARE(apr_status_t) ap_proxy_buckets_lifetime_transform(request_rec *r,
  */
 #define PROXY_TRANSFER_MAX_READS 10000
 
-PROXY_DECLARE(apr_status_t) ap_proxy_transfer_between_connections(
-                                                       request_rec *r,
-                                                       conn_rec *c_i,
-                                                       conn_rec *c_o,
-                                                       apr_bucket_brigade *bb_i,
-                                                       apr_bucket_brigade *bb_o,
-                                                       const char *name,
-                                                       apr_off_t *sent,
-                                                       apr_off_t bsize,
-                                                       int flags)
+static apr_status_t proxy_transfer(request_rec *r,
+                                   conn_rec *c_i,
+                                   conn_rec *c_o,
+                                   apr_bucket_brigade *bb_i,
+                                   apr_bucket_brigade *bb_o,
+                                   const char *name,
+                                   apr_off_t bsize,
+                                   int flags,
+                                   apr_off_t *bytes_in,
+                                   apr_off_t *bytes_out)
 {
     apr_status_t rv;
     int flush_each = 0;
@@ -4516,8 +4516,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_transfer_between_connections(
         if (rv != APR_SUCCESS) {
             if (!APR_STATUS_IS_EAGAIN(rv) && !APR_STATUS_IS_EOF(rv)) {
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, APLOGNO(03308)
-                              "ap_proxy_transfer_between_connections: "
-                              "error on %s - ap_get_brigade",
+                              "proxy_transfer: error on %s - ap_get_brigade",
                               name);
                 if (rv == APR_INCOMPLETE) {
                     /* Don't return APR_INCOMPLETE, it'd mean "should yield"
@@ -4542,13 +4541,16 @@ PROXY_DECLARE(apr_status_t) ap_proxy_transfer_between_connections(
         len = -1;
         apr_brigade_length(bb_i, 0, &len);
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03306)
-                      "ap_proxy_transfer_between_connections: "
-                      "read %" APR_OFF_T_FMT
-                      " bytes from %s", len, name);
-        if (sent && len > 0) {
-            *sent = *sent + len;
+                      "proxy_transfer: read %" APR_OFF_T_FMT " bytes "
+                      "of %s", len, name);
+        if (bytes_in && len > 0) {
+            *bytes_in += len;
         }
         ap_proxy_buckets_lifetime_transform(r, bb_i, bb_o);
+        if (bytes_out && len > 0) {
+            *bytes_out += len;
+        }
+
         if (flush_each) {
             /*
              * Do not use ap_fflush here since this would cause the flush
@@ -4572,8 +4574,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_transfer_between_connections(
         apr_brigade_cleanup(bb_o);
         if (rv != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(03307)
-                          "ap_proxy_transfer_between_connections: "
-                          "error on %s - ap_pass_brigade",
+                          "proxy_transfer: error on %s - ap_pass_brigade",
                           name);
             flags &= ~AP_PROXY_TRANSFER_FLUSH_AFTER;
             break;
@@ -4585,8 +4586,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_transfer_between_connections(
         if ((flags & AP_PROXY_TRANSFER_YIELD_PENDING)
                 && ap_filter_should_yield(c_o->output_filters)) {
             ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
-                          "ap_proxy_transfer_between_connections: "
-                          "yield (output pending)");
+                          "proxy_transfer: yield (output pending)");
             rv = APR_INCOMPLETE;
             break;
         }
@@ -4597,8 +4597,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_transfer_between_connections(
         if ((flags & AP_PROXY_TRANSFER_YIELD_MAX_READS)
                 && ++num_reads > PROXY_TRANSFER_MAX_READS) {
             ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
-                          "ap_proxy_transfer_between_connections: "
-                          "yield (max reads)");
+                          "proxy_transfer: yield (max reads)");
             rv = APR_SUCCESS;
             break;
         }
@@ -4611,13 +4610,33 @@ PROXY_DECLARE(apr_status_t) ap_proxy_transfer_between_connections(
     apr_brigade_cleanup(bb_i);
 
     ap_log_rerror(APLOG_MARK, APLOG_TRACE2, rv, r,
-                  "ap_proxy_transfer_between_connections complete (%s %pI)",
+                  "proxy_transfer complete (%s %pI)",
                   (c_i == r->connection) ? "to" : "from",
                   (c_i == r->connection) ? c_o->client_addr
                                          : c_i->client_addr);
 
     if (APR_STATUS_IS_EAGAIN(rv)) {
         rv = APR_SUCCESS;
+    }
+    return rv;
+}
+
+PROXY_DECLARE(apr_status_t) ap_proxy_transfer_between_connections(
+                                                       request_rec *r,
+                                                       conn_rec *c_i,
+                                                       conn_rec *c_o,
+                                                       apr_bucket_brigade *bb_i,
+                                                       apr_bucket_brigade *bb_o,
+                                                       const char *name,
+                                                       int *sent,
+                                                       apr_off_t bsize,
+                                                       int flags)
+{
+    apr_off_t bytes_out = 0;
+    apr_status_t rv = proxy_transfer(r, c_i, c_o, bb_i, bb_o, name, bsize,
+                                     flags, NULL, &bytes_out);
+    if (sent && bytes_out > 0) {
+        *sent = 1;
     }
     return rv;
 }
@@ -4632,18 +4651,22 @@ struct proxy_tunnel_conn {
     apr_pollfd_t *pfd;
     apr_bucket_brigade *bb;
 
+    apr_off_t bytes_in,
+              bytes_out;
+
     unsigned int down_in:1,
                  down_out:1;
-    apr_off_t exchanged;
 };
 
-PROXY_DECLARE(apr_off_t) ap_proxy_tunnel_conn_get_read(proxy_tunnel_rec *ptunnel)
+PROXY_DECLARE(apr_off_t) ap_proxy_tunnel_conn_bytes_in(
+                                const proxy_tunnel_conn_t *tc)
 {
-    return ptunnel->origin->exchanged;
+    return tc->bytes_in;
 }
-PROXY_DECLARE(apr_off_t) ap_proxy_tunnel_conn_get_transferred(proxy_tunnel_rec *ptunnel)
+PROXY_DECLARE(apr_off_t) ap_proxy_tunnel_conn_bytes_out(
+                                const proxy_tunnel_conn_t *tc)
 {
-    return ptunnel->client->exchanged;
+    return tc->bytes_out;
 }
 
 PROXY_DECLARE(apr_status_t) ap_proxy_tunnel_create(proxy_tunnel_rec **ptunnel,
@@ -4773,30 +4796,23 @@ static void del_pollset(apr_pollset_t *pollset, apr_pollfd_t *pfd,
     }
 }
 
-static int proxy_tunnel_forward(proxy_tunnel_rec *tunnel,
+static int proxy_tunnel_transfer(proxy_tunnel_rec *tunnel,
                                  proxy_tunnel_conn_t *in)
 {
     proxy_tunnel_conn_t *out = in->other;
     apr_status_t rv;
-    apr_off_t sent = 0;
 
     ap_log_rerror(APLOG_MARK, APLOG_TRACE8, 0, tunnel->r,
                   "proxy: %s: %s input ready",
                   tunnel->scheme, in->name);
 
-    rv = ap_proxy_transfer_between_connections(tunnel->r,
-                                               in->c, out->c,
-                                               in->bb, out->bb,
-                                               in->name, &sent,
-                                               tunnel->read_buf_size,
-                                           AP_PROXY_TRANSFER_YIELD_PENDING |
-                                           AP_PROXY_TRANSFER_YIELD_MAX_READS);
-    if (sent && out == tunnel->client) {
-        tunnel->replied = 1;
-    }
-
-    in->exchanged = in->exchanged + sent;
-
+    rv = proxy_transfer(tunnel->r,
+                        in->c, out->c,
+                        in->bb, out->bb,
+                        in->name, tunnel->read_buf_size,
+                        AP_PROXY_TRANSFER_YIELD_PENDING |
+                        AP_PROXY_TRANSFER_YIELD_MAX_READS,
+                        &in->bytes_in, &out->bytes_out);
     if (rv != APR_SUCCESS) {
         if (APR_STATUS_IS_INCOMPLETE(rv)) {
             /* Pause POLLIN while waiting for POLLOUT on the other
@@ -4830,7 +4846,7 @@ static int proxy_tunnel_forward(proxy_tunnel_rec *tunnel,
 
 PROXY_DECLARE(int) ap_proxy_tunnel_run(proxy_tunnel_rec *tunnel)
 {
-    int rc = OK;
+    int status = OK, rc;
     request_rec *r = tunnel->r;
     apr_pollset_t *pollset = tunnel->pollset;
     proxy_tunnel_conn_t *client = tunnel->client,
@@ -4865,14 +4881,14 @@ PROXY_DECLARE(int) ap_proxy_tunnel_run(proxy_tunnel_rec *tunnel)
                               "(client=%hx, origin=%hx)",
                               scheme, client->pfd->reqevents,
                               origin->pfd->reqevents);
-                rc = HTTP_GATEWAY_TIME_OUT;
+                status = HTTP_GATEWAY_TIME_OUT;
             }
             else {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(10214)
                               "proxy: %s: polling failed", scheme);
-                rc = HTTP_INTERNAL_SERVER_ERROR;
+                status = HTTP_INTERNAL_SERVER_ERROR;
             }
-            return rc;
+            goto done;
         }
 
         ap_log_rerror(APLOG_MARK, APLOG_TRACE8, 0, r, APLOGNO(10215)
@@ -4891,7 +4907,8 @@ PROXY_DECLARE(int) ap_proxy_tunnel_run(proxy_tunnel_rec *tunnel)
                     && pfd->desc.s != origin->pfd->desc.s) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10222)
                               "proxy: %s: unknown socket in pollset", scheme);
-                return HTTP_INTERNAL_SERVER_ERROR;
+                status = HTTP_INTERNAL_SERVER_ERROR;
+                goto done;
             }
 
             if (!(pfd->rtnevents & (APR_POLLIN  | APR_POLLOUT |
@@ -4900,7 +4917,8 @@ PROXY_DECLARE(int) ap_proxy_tunnel_run(proxy_tunnel_rec *tunnel)
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10220)
                               "proxy: %s: polling events error (%x)",
                               scheme, pfd->rtnevents);
-                return HTTP_INTERNAL_SERVER_ERROR;
+                status = HTTP_INTERNAL_SERVER_ERROR;
+                goto done;
             }
 
             /* We want to write if we asked for POLLOUT and got:
@@ -4930,7 +4948,8 @@ PROXY_DECLARE(int) ap_proxy_tunnel_run(proxy_tunnel_rec *tunnel)
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10221)
                                   "proxy: %s: %s flushing failed (%i)",
                                   scheme, out->name, rc);
-                    return rc;
+                    status = rc;
+                    goto done;
                 }
 
                 /* No more pending data. If the other side is not readable
@@ -4955,12 +4974,13 @@ PROXY_DECLARE(int) ap_proxy_tunnel_run(proxy_tunnel_rec *tunnel)
                      * the next POLLIN will trigger and retaining data might
                      * deadlock the underlying protocol. We don't check for
                      * pending data first with ap_filter_input_pending() since
-                     * the read from proxy_tunnel_forward() is nonblocking
+                     * the read from proxy_tunnel_transfer() is nonblocking
                      * anyway and returning OK if there's no data.
                      */
-                    rc = proxy_tunnel_forward(tunnel, in);
+                    rc = proxy_tunnel_transfer(tunnel, in);
                     if (rc != OK) {
-                        return rc;
+                        status = rc;
+                        goto done;
                     }
                 }
             }
@@ -4973,17 +4993,22 @@ PROXY_DECLARE(int) ap_proxy_tunnel_run(proxy_tunnel_rec *tunnel)
             if ((tc->pfd->reqevents & APR_POLLIN)
                     && ((pfd->rtnevents & (APR_POLLIN | APR_POLLHUP))
                         || !(pfd->rtnevents & APR_POLLOUT))) {
-                rc = proxy_tunnel_forward(tunnel, tc);
+                rc = proxy_tunnel_transfer(tunnel, tc);
                 if (rc != OK) {
-                    return rc;
+                    status = rc;
+                    goto done;
                 }
             }
         }
     } while (!client->down_out || !origin->down_out);
 
+done:
+    if (client->bytes_out > 0) {
+        tunnel->replied = 1;
+    }
     ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(10223)
-                  "proxy: %s: tunnel finished", scheme);
-    return OK;
+                  "proxy: %s: tunneling returns (%i)", scheme, status);
+    return status;
 }
 
 PROXY_DECLARE (const char *) ap_proxy_show_hcmethod(hcmethod_t method)

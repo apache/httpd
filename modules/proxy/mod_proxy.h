@@ -1369,6 +1369,21 @@ PROXY_DECLARE(apr_status_t) ap_proxy_tunnel_create(proxy_tunnel_rec **tunnel,
  */
 PROXY_DECLARE(int) ap_proxy_tunnel_run(proxy_tunnel_rec *tunnel);
 
+/*
+ * Number of incoming bytes on the tunnel connection.
+ * @param tc tunnel connection
+ * @return   number of bytes.
+ */
+PROXY_DECLARE(apr_off_t) ap_proxy_tunnel_conn_bytes_in(
+                                const proxy_tunnel_conn_t *tc);
+/*
+ * Number of outgoing bytes on the tunnel connection.
+ * @param tc tunnel connection
+ * @return   number of bytes.
+ */
+PROXY_DECLARE(apr_off_t) ap_proxy_tunnel_conn_bytes_out(
+                                const proxy_tunnel_conn_t *tc);
+
 /**
  * Clear the headers referenced by the Connection header from the given
  * table, and remove the Connection header.
@@ -1512,24 +1527,9 @@ PROXY_DECLARE(apr_status_t) ap_proxy_transfer_between_connections(
                                                        apr_bucket_brigade *bb_i,
                                                        apr_bucket_brigade *bb_o,
                                                        const char *name,
-                                                       apr_off_t *sent,
+                                                       int *sent,
                                                        apr_off_t bsize,
                                                        int flags);
-
-/* 
- * returns number of bytes read from the back end tunnel
- * @param ptunnel     proxy_tunnel_rec use during the tunnelling.
- * @return      apr_off_t number of bytes read.
- */
-PROXY_DECLARE (apr_off_t) ap_proxy_tunnel_conn_get_read(
-                                                       proxy_tunnel_rec *ptunnel);
-/*
- * returns number of bytes sent to the back end tunnel
- * @param ptunnel     proxy_tunnel_rec use during the tunnelling.
- * @return      apr_off_t number of bytes sent.
- */
-PROXY_DECLARE (apr_off_t) ap_proxy_tunnel_conn_get_transferred(
-                                                       proxy_tunnel_rec *ptunnel);
 
 extern module PROXY_DECLARE_DATA proxy_module;
 
