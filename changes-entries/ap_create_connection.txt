@@ -1,2 +1,0 @@
-  *) core: Add ap_create_connection() to create either a server or client/proxy
-     connection.

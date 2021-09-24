@@ -1,2 +1,0 @@
-  *) mod_proxy: Handle UDS URIs with empty hostname ("unix:///...") as if they
-     had no hostname ("unix:/...").  [Yann Ylavic]

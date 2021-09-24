@@ -1,2 +1,0 @@
-  *) mod_dav: Correctly handle errors returned by dav providers on REPORT
-     requests. [Ruediger Pluem]
