@@ -3474,6 +3474,7 @@ APR_HOOK_STRUCT(
     APR_HOOK_LINK(post_request)
     APR_HOOK_LINK(request_status)
     APR_HOOK_LINK(check_trans)
+    APR_HOOK_LINK(tunnel_forward)
 )
 
 APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(proxy, PROXY, int, scheme_handler,
@@ -3517,3 +3518,9 @@ APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(proxy, PROXY, int, request_status,
 APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(proxy, PROXY, int, detach_backend,
                                     (request_rec *r, proxy_conn_rec *backend),
                                     (r, backend), OK, DECLINED)
+APR_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL(proxy, PROXY, int, tunnel_forward,
+                                    (proxy_tunnel_rec *tunnel,
+                                     conn_rec *c_i, conn_rec *c_o,
+                                     apr_bucket_brigade *bb),
+                                    (tunnel, c_i, c_o, bb),
+                                    OK, DECLINED)
