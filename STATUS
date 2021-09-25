@@ -212,6 +212,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       svn merge -c 1893589 ^/httpd/httpd/trunk .
      +1: rpluem, minfrin
 
+  *) mod_dav: Add utility functions dav_validate_root_ns(),
+     dav_find_child_ns(), dav_find_next_ns(), dav_find_attr_ns() and
+     dav_find_attr() so that other modules get to play too.
+     Trunk version of patch:
+        https://svn.apache.org/r1879888
+     Backport version for 2.4.x of patch:
+      https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-dav-ns.patch
+     +1: minfrin
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
