@@ -142,14 +142,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) core: do not install core input/output filters on secondary
-     connections.
-     Trunk version of patch:
-       http://svn.apache.org/viewvc?view=revision&revision=1787606
-     Backport version for 2.4.x of patch:
-       svn merge -c 1787606 ^/httpd/httpd/trunk .
-     +1: icing, rpluem, ylavic
-
   *) mod_dav: Correctly handle errors returned by dav providers on REPORT
      requests.
      Trunk version of patch:
