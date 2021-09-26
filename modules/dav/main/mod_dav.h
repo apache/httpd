@@ -917,9 +917,9 @@ struct dav_hooks_liveprop
     ** and property elements that need to be taken into account when
     ** generating a property. The document element and property element
     ** are made available in the dav_liveprop_elem structure under the
-    ** DAV_PROP_ELEMENT key in the resource pool, accessible as follows:
+    ** resource, accessible as follows:
     **
-    ** apr_pool_userdata_get(&elem, DAV_PROP_ELEMENT, resource->pool);
+    ** dav_get_liveprop_element(resource);
     **
     ** Returns one of DAV_PROP_INSERT_* based on what happened.
     **
