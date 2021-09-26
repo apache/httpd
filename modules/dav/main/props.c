@@ -167,6 +167,8 @@
 
 #define DAV_EMPTY_VALUE                "\0"    /* TWO null terms */
 
+#define DAV_PROP_ELEMENT "mod_dav-element"
+
 struct dav_propdb {
     apr_pool_t *p;                /* the pool we should use */
     request_rec *r;               /* the request record */
@@ -1055,6 +1057,15 @@ DAV_DECLARE(void) dav_get_liveprop_supported(dav_propdb *propdb,
                                   DAV_PROP_INSERT_SUPPORTED, body);
         }
     }
+}
+
+DAV_DECLARE(dav_liveprop_elem *) dav_get_liveprop_element(const dav_resource *resource)
+{
+    dav_liveprop_elem *element;
+
+    apr_pool_userdata_get((void **)&element, DAV_PROP_ELEMENT, resource->pool);
+
+    return element;
 }
 
 DAV_DECLARE_NONSTD(void) dav_prop_validate(dav_prop_ctx *ctx)
