@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.50
 
+  *) event mpm: Correctly count active child processes in parent process if
+     child process dies due to MaxConnectionsPerChild.
+     PR 65592 [Ruediger Pluem]
+
   *) mod_http2: when a server is restarted gracefully, any idle h2 worker
      threads are shut down immediately.
      Also, change OpenSSL API use for deprecations in OpenSSL 3.0.

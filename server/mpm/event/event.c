@@ -2808,6 +2808,10 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
         }
         ps = &ap_scoreboard_image->parent[i];
         if (ps->pid != 0) {
+            if (ps->quiescing == 1) {
+                ps->quiescing = 2;
+                active_daemons--;
+            }
             for (j = 0; j < threads_per_child; j++) {
                 ws = &ap_scoreboard_image->servers[i][j];
                 status = ws->status;
@@ -2887,7 +2891,6 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
             ap_mpm_podx_signal(all_buckets[child_bucket].pod,
                                AP_MPM_PODX_GRACEFUL);
             retained->idle_spawn_rate[child_bucket] = 1;
-            active_daemons--;
         } else {
             ap_log_error(APLOG_MARK, APLOG_TRACE5, 0, ap_server_conf,
                          "Not shutting down child: total daemons %d / "
