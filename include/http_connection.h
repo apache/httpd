@@ -135,6 +135,21 @@ AP_DECLARE_HOOK(int,process_connection,(conn_rec *c))
  */
 AP_DECLARE_HOOK(int,pre_close_connection,(conn_rec *c))
 
+/**
+ * This is a wrapper around ap_run_pre_connection. In case that
+ * ap_run_pre_connection returns an error it marks the connection as
+ * aborted and ensures that the basic connection setup normally done
+ * by the core module is done in case it was not done so far.
+ * @param c The connection on which the request has been received.
+ *          Same as for the pre_connection hook.
+ * @param csd The mechanism on which this connection is to be read.
+ *            Most times this will be a socket, but it is up to the module
+ *            that accepts the request to determine the exact type.
+ *            Same as for the pre_connection hook.
+ * @return The result of ap_run_pre_connection
+ */
+AP_DECLARE(int) ap_pre_connection(conn_rec *c, void *csd);
+
 /** End Of Connection (EOC) bucket */
 AP_DECLARE_DATA extern const apr_bucket_type_t ap_bucket_type_eoc;
 
