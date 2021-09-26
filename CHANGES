@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.50
 
+  *) mod_speling: Add CheckBasenameMatch PR 44221.  [Christophe Jaillet]
+
 Changes with Apache 2.4.49
 
   *) SECURITY: CVE-2021-40438 (cve.mitre.org)
