@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+ 
 #include <assert.h>
 #include <stddef.h>
 
@@ -541,6 +541,7 @@ h2_task *h2_task_create(conn_rec *secondary, int stream_id,
 void h2_task_destroy(h2_task *task)
 {
     if (task->output.beam) {
+        h2_beam_log(task->output.beam, task->c, APLOG_TRACE2, "task_destroy");
         h2_beam_destroy(task->output.beam);
         task->output.beam = NULL;
     }
@@ -592,7 +593,7 @@ apr_status_t h2_task_do(h2_task *task, apr_thread_t *thread, int worker_id)
          * configurations by mod_h2 alone. 
          */
         task->c->id = (c->master->id << 8)^worker_id;
-        task->id = apr_psprintf(task->pool, "%ld-%d", c->master->id, 
+        task->id = apr_psprintf(task->pool, "%ld-%d", task->mplx->id,
                                 task->stream_id);
     }
         

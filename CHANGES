@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.50
 
+  *) mod_http2: when a server is restarted gracefully, any idle h2 worker
+     threads are shut down immediately.
+     Also, change OpenSSL API use for deprecations in OpenSSL 3.0.
+     Adds all other, never proposed code changes to make a clean
+     sync of http2 sources. [Stefan Eissing]
+
   *) mod_dav: Correctly handle errors returned by dav providers on REPORT
      requests. [Ruediger Pluem]
 

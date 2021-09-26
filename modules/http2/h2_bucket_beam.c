@@ -216,6 +216,7 @@ static apr_status_t enter_yellow(h2_bucket_beam *beam, h2_beam_lock *pbl)
 
 static void leave_yellow(h2_bucket_beam *beam, h2_beam_lock *pbl)
 {
+    (void)beam;
     if (pbl->leave) {
         pbl->leave(pbl->mutex);
     }
@@ -228,7 +229,7 @@ static apr_off_t bucket_mem_used(apr_bucket *b)
     }
     else {
         /* should all have determinate length */
-        return b->length;
+        return (apr_off_t)b->length;
     }
 }
 
@@ -302,7 +303,7 @@ static void r_purge_sent(h2_bucket_beam *beam)
 static apr_size_t calc_space_left(h2_bucket_beam *beam)
 {
     if (beam->max_buf_size > 0) {
-        apr_off_t len = calc_buffered(beam);
+        apr_size_t len = calc_buffered(beam);
         return (beam->max_buf_size > len? (beam->max_buf_size - len) : 0);
     }
     return APR_SIZE_MAX;
@@ -777,6 +778,8 @@ static apr_status_t append_bucket(h2_bucket_beam *beam,
     apr_status_t status;
     int can_beam = 0, check_len;
     
+    (void)block;
+    (void)pbl;
     if (beam->aborted) {
         return APR_ECONNABORTED;
     }
@@ -815,8 +818,8 @@ static apr_status_t append_bucket(h2_bucket_beam *beam,
     }
     else {
         if (b->length == ((apr_size_t)-1)) {
-            const char *data;
-            status = apr_bucket_read(b, &data, &len, APR_BLOCK_READ);
+            const char *data2;
+            status = apr_bucket_read(b, &data2, &len, APR_BLOCK_READ);
             if (status != APR_SUCCESS) {
                 return status;
             }
@@ -958,7 +961,7 @@ apr_status_t h2_beam_receive(h2_bucket_beam *beam,
     /* Called from the receiver thread to take buckets from the beam */
     if (enter_yellow(beam, &bl) == APR_SUCCESS) {
         if (readbytes <= 0) {
-            readbytes = APR_SIZE_MAX;
+            readbytes = (apr_off_t)APR_SIZE_MAX;
         }
         remain = readbytes;
         
@@ -1028,7 +1031,7 @@ transfer:
                     }
                     ++beam->files_beamed;
                 }
-                ng = apr_brigade_insert_file(bb, fd, bsender->start, bsender->length, 
+                ng = apr_brigade_insert_file(bb, fd, bsender->start, (apr_off_t)bsender->length, 
                                              bb->p);
 #if APR_HAS_MMAP
                 /* disable mmap handling as this leads to segfaults when
@@ -1089,9 +1092,9 @@ transfer:
                  brecv != APR_BRIGADE_SENTINEL(bb);
                  brecv = APR_BUCKET_NEXT(brecv)) {
                 remain -= (beam->tx_mem_limits? bucket_mem_used(brecv) 
-                           : brecv->length);
+                           : (apr_off_t)brecv->length);
                 if (remain < 0) {
-                    apr_bucket_split(brecv, brecv->length+remain);
+                    apr_bucket_split(brecv, (apr_size_t)((apr_off_t)brecv->length+remain));
                     beam->recv_buffer = apr_brigade_split_ex(bb, 
                                                              APR_BUCKET_NEXT(brecv), 
                                                              beam->recv_buffer);
@@ -1258,6 +1261,7 @@ apr_size_t h2_beam_get_files_beamed(h2_bucket_beam *beam)
 
 int h2_beam_no_files(void *ctx, h2_bucket_beam *beam, apr_file_t *file)
 {
+    (void)ctx; (void)beam; (void)file;
     return 0;
 }
 

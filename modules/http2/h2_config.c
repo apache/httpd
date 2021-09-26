@@ -542,7 +542,7 @@ const struct h2_priority *h2_cconfig_get_priority(conn_rec *c, const char *conte
 {
     const h2_config *conf = h2_config_get(c);
     if (content_type && conf->priorities) {
-        size_t len = strcspn(content_type, "; \t");
+        apr_ssize_t len = (apr_ssize_t)strcspn(content_type, "; \t");
         h2_priority *prio = apr_hash_get(conf->priorities, content_type, len);
         return prio? prio : apr_hash_get(conf->priorities, "*", 1);
     }
@@ -711,7 +711,8 @@ static const char *h2_conf_add_push_priority(cmd_parms *cmd, void *_cfg,
     h2_dependency dependency;
     h2_priority *priority;
     int weight;
-    
+ 
+    (void)_cfg;
     if (!*ctype) {
         return "1st argument must be a mime-type, like 'text/css' or '*'";
     }
@@ -730,7 +731,7 @@ static const char *h2_conf_add_push_priority(cmd_parms *cmd, void *_cfg,
     else if (!strcasecmp("BEFORE", sdependency)) {
         dependency = H2_DEPENDANT_BEFORE;
         if (sweight) {
-            return "dependecy 'Before' does not allow a weight";
+            return "dependency 'Before' does not allow a weight";
         }
     } 
     else if (!strcasecmp("INTERLEAVED", sdependency)) {
@@ -754,7 +755,7 @@ static const char *h2_conf_add_push_priority(cmd_parms *cmd, void *_cfg,
     if (!cfg->priorities) {
         cfg->priorities = apr_hash_make(cmd->pool);
     }
-    apr_hash_set(cfg->priorities, ctype, strlen(ctype), priority);
+    apr_hash_set(cfg->priorities, ctype, (apr_ssize_t)strlen(ctype), priority);
     return NULL;
 }
 

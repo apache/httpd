@@ -142,18 +142,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_http2: when a server is restarted gracefully, any idle h2 worker
-     threads are shut down immediately.
-     Also, change OpenSSL API use for deprecations in OpenSLL 3.0.
-     Adds all other, never proposed code changes to make a clean
-     sync of http2 sources.
-     trunk patch: http://svn.apache.org/r1893214
-                  http://svn.apache.org/r1893215
-                  http://svn.apache.org/r1893220
-                  and other never proposed code changes
-     PR: https://github.com/apache/httpd/pull/270
-     +1: icing, rpluem, minfrin
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

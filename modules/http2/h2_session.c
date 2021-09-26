@@ -73,7 +73,7 @@ static int h2_session_status_from_apr_status(apr_status_t rv)
     return NGHTTP2_ERR_PROTO;
 }
 
-h2_stream *h2_session_stream_get(h2_session *session, int stream_id)
+static h2_stream *get_stream(h2_session *session, int stream_id)
 {
     return nghttp2_session_get_stream_user_data(session->ngh2, stream_id);
 }
@@ -232,7 +232,7 @@ static int on_data_chunk_recv_cb(nghttp2_session *ngh2, uint8_t flags,
     h2_stream * stream;
     int rv = 0;
     
-    stream = h2_session_stream_get(session, stream_id);
+    stream = get_stream(session, stream_id);
     if (stream) {
         status = h2_stream_recv_DATA(stream, flags, data, len);
         dispatch_event(session, H2_SESSION_EV_STREAM_CHANGE, 0, "stream data rcvd");
@@ -258,7 +258,7 @@ static int on_stream_close_cb(nghttp2_session *ngh2, int32_t stream_id,
     h2_stream *stream;
     
     (void)ngh2;
-    stream = h2_session_stream_get(session, stream_id);
+    stream = get_stream(session, stream_id);
     if (stream) {
         if (error_code) {
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
@@ -280,7 +280,7 @@ static int on_begin_headers_cb(nghttp2_session *ngh2,
     /* We may see HEADERs at the start of a stream or after all DATA
      * streams to carry trailers. */
     (void)ngh2;
-    s = h2_session_stream_get(session, frame->hd.stream_id);
+    s = get_stream(session, frame->hd.stream_id);
     if (s) {
         /* nop */
     }
@@ -301,7 +301,7 @@ static int on_header_cb(nghttp2_session *ngh2, const nghttp2_frame *frame,
     apr_status_t status;
     
     (void)flags;
-    stream = h2_session_stream_get(session, frame->hd.stream_id);
+    stream = get_stream(session, frame->hd.stream_id);
     if (!stream) {
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(02920) 
                       "h2_stream(%ld-%d): on_header unknown stream",
@@ -349,14 +349,14 @@ static int on_frame_recv_cb(nghttp2_session *ng2s,
             /* This can be HEADERS for a new stream, defining the request,
              * or HEADER may come after DATA at the end of a stream as in
              * trailers */
-            stream = h2_session_stream_get(session, frame->hd.stream_id);
+            stream = get_stream(session, frame->hd.stream_id);
             if (stream) {
                 rv = h2_stream_recv_frame(stream, NGHTTP2_HEADERS, frame->hd.flags, 
                     frame->hd.length + H2_FRAME_HDR_LEN);
             }
             break;
         case NGHTTP2_DATA:
-            stream = h2_session_stream_get(session, frame->hd.stream_id);
+            stream = get_stream(session, frame->hd.stream_id);
             if (stream) {
                 ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,  
                               H2_STRM_LOG(APLOGNO(02923), stream, 
@@ -390,7 +390,7 @@ static int on_frame_recv_cb(nghttp2_session *ng2s,
                           "h2_stream(%ld-%d): RST_STREAM by client, error=%d",
                           session->id, (int)frame->hd.stream_id,
                           (int)frame->rst_stream.error_code);
-            stream = h2_session_stream_get(session, frame->hd.stream_id);
+            stream = get_stream(session, frame->hd.stream_id);
             if (stream && stream->initiated_on) {
                 /* A stream reset on a request we sent it. Normal, when the
                  * client does not want it. */
@@ -505,7 +505,7 @@ static int on_send_data_cb(nghttp2_session *ngh2,
     ap_assert(frame->data.padlen <= (H2_MAX_PADLEN+1));
     padlen = (unsigned char)frame->data.padlen;
     
-    stream = h2_session_stream_get(session, stream_id);
+    stream = get_stream(session, stream_id);
     if (!stream) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, APR_NOTFOUND, session->c,
                       APLOGNO(02924) 
@@ -595,7 +595,7 @@ static int on_frame_send_cb(nghttp2_session *ngh2,
                      (long)session->frames_sent);
     }
     
-    stream = h2_session_stream_get(session, stream_id);
+    stream = get_stream(session, stream_id);
     if (stream) {
         h2_stream_send_frame(stream, frame->hd.type, frame->hd.flags, 
             frame->hd.length + H2_FRAME_HDR_LEN);
@@ -620,7 +620,7 @@ static int on_invalid_header_cb(nghttp2_session *ngh2,
                       apr_pstrndup(session->pool, (const char *)name, namelen),
                       apr_pstrndup(session->pool, (const char *)value, valuelen));
     }
-    stream = h2_session_stream_get(session, frame->hd.stream_id);
+    stream = get_stream(session, frame->hd.stream_id);
     if (stream) {
         h2_stream_rst(stream, NGHTTP2_PROTOCOL_ERROR);
     }
@@ -774,7 +774,7 @@ static apr_status_t session_cleanup(h2_session *session, const char *trigger)
          * connection when sending the next request, this has the effect
          * that at least this one request will fail.
          */
-        ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c,
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
                       H2_SSSN_LOG(APLOGNO(03199), session, 
                       "connection disappeared without proper "
                       "goodbye, clients will be confused, should not happen"));
@@ -799,13 +799,17 @@ static apr_status_t session_pool_cleanup(void *data)
     h2_session *session;
     
     if ((session = h2_ctx_get_session(c))) {
+        int mpm_state = 0;
+        int level;
+
+        ap_mpm_query(AP_MPMQ_MPM_STATE, &mpm_state);
+        level = (AP_MPMQ_STOPPING == mpm_state)? APLOG_DEBUG : APLOG_WARNING;
         /* if the session is still there, now is the last chance
          * to perform cleanup. Normally, cleanup should have happened
-         * earlier in the connection pre_close. Main reason is that
-         * any ongoing requests on secondary connections might still access
-         * data which has, at this time, already been freed. An example
-         * is mod_ssl that uses request hooks. */
-        ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c,
+         * earlier in the connection pre_close.
+         * However, when the server is stopping, it may shutdown connections
+         * without running the pre_close hooks. Do not want about that. */
+        ap_log_cerror(APLOG_MARK, level, 0, c,
                       H2_SSSN_LOG(APLOGNO(10020), session, 
                       "session cleanup triggered by pool cleanup. "
                       "this should have happened earlier already."));
@@ -1101,7 +1105,7 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
     (void)ng2s;
     (void)buf;
     (void)source;
-    stream = h2_session_stream_get(session, stream_id);
+    stream = get_stream(session, stream_id);
     if (!stream) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, session->c,
                       APLOGNO(02937) 
@@ -1550,7 +1554,7 @@ static void h2_session_in_flush(h2_session *session)
     int id;
     
     while ((id = h2_iq_shift(session->in_process)) > 0) {
-        h2_stream *stream = h2_session_stream_get(session, id);
+        h2_stream *stream = get_stream(session, id);
         if (stream) {
             ap_assert(!stream->scheduled);
             if (h2_stream_prep_processing(stream) == APR_SUCCESS) {
@@ -1563,7 +1567,7 @@ static void h2_session_in_flush(h2_session *session)
     }
 
     while ((id = h2_iq_shift(session->in_pending)) > 0) {
-        h2_stream *stream = h2_session_stream_get(session, id);
+        h2_stream *stream = get_stream(session, id);
         if (stream) {
             h2_stream_flush_input(stream);
         }
@@ -1713,8 +1717,8 @@ static void transit(h2_session *session, const char *action, h2_session_state ns
                     timeout = session->s->timeout;
                     update_child_status(session, SERVER_BUSY_READ, "idle");
                     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c, 
-                                  H2_SSSN_LOG("", session, "enter idle, timeout = %d sec"), 
-                                  (int)apr_time_sec(H2MAX(session->s->timeout, session->s->keep_alive_timeout)));
+                                  H2_SSSN_LOG("", session, "enter idle, timeout = %d sec"),
+                                  (int)apr_time_sec(timeout));
                 }
                 else if (session->open_streams) {
                     s = "timeout";
@@ -1908,6 +1912,9 @@ static void h2_session_ev_mpm_stopping(h2_session *session, int arg, const char 
             break;
         default:
             h2_session_shutdown_notice(session);
+#if !AP_MODULE_MAGIC_AT_LEAST(20120211, 110)
+            h2_workers_graceful_shutdown(session->workers);
+#endif
             break;
     }
 }
