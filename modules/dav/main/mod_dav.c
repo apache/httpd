@@ -4329,10 +4329,32 @@ static int dav_method_report(request_rec *r)
     /* set up defaults for the report response */
     r->status = HTTP_OK;
     ap_set_content_type(r, DAV_XML_CONTENT_TYPE);
+    err = NULL;
 
     /* run report hook */
     result = dav_run_deliver_report(r, resource, doc,
             r->output_filters, &err);
+    if (err != NULL) {
+
+        if (! r->sent_bodyct) {
+          /* No data has been sent to client yet;  throw normal error. */
+          return dav_handle_err(r, err, NULL);
+        }
+
+        /* If an error occurred during the report delivery, there's
+           basically nothing we can do but abort the connection and
+           log an error.  This is one of the limitations of HTTP; it
+           needs to "know" the entire status of the response before
+           generating it, which is just impossible in these streamy
+           response situations. */
+        err = dav_push_error(r->pool, err->status, 0,
+                             "Provider encountered an error while streaming"
+                             " a REPORT response.", err);
+        dav_log_err(r, err, APLOG_ERR);
+        r->connection->aborted = 1;
+
+        return DONE;
+    }
     switch (result) {
     case OK:
         return DONE;
@@ -4340,27 +4362,7 @@ static int dav_method_report(request_rec *r)
         /* No one handled the report */
         return HTTP_NOT_IMPLEMENTED;
     default:
-        if ((err) != NULL) {
-
-            if (! r->sent_bodyct) {
-              /* No data has been sent to client yet;  throw normal error. */
-              return dav_handle_err(r, err, NULL);
-            }
-
-            /* If an error occurred during the report delivery, there's
-               basically nothing we can do but abort the connection and
-               log an error.  This is one of the limitations of HTTP; it
-               needs to "know" the entire status of the response before
-               generating it, which is just impossible in these streamy
-               response situations. */
-            err = dav_push_error(r->pool, err->status, 0,
-                                 "Provider encountered an error while streaming"
-                                 " a REPORT response.", err);
-            dav_log_err(r, err, APLOG_ERR);
-            r->connection->aborted = 1;
-
-            return DONE;
-        }
+        return DONE;
     }
 
     return DONE;
