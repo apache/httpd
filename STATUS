@@ -143,7 +143,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
 
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -179,6 +178,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-dav-element.patch
      +1: minfrin
 
+  *) core: AP_NORMALIZE_DECODE_UNRESERVED should normalize the second dot in
+     the uri-path when it's preceded by a dot.
+     trunk patch: http://svn.apache.org/r1893724
+     2.4.x patch: svn merge -c 1893724 ^/httpd/httpd/trunk .
+     +1: ylavic,
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
