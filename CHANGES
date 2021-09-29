@@ -1025,6 +1025,8 @@ Changes with Apache 2.5.1
 
 Changes with Apache 2.5.0-alpha
 
+  *) mod_speling: Add CheckBasenameMatch PR 44221.  [Christophe Jaillet]
+
   *) mod_md: v1.0.1, ServerName/Alias names from pure-http: virtual hosts are no longer
      auto-added to a Managed Domain. Error counts of jobs are persisted. When the server
      restarts (gracefully) any errored staging areas are purged to reset the signup/renewal
