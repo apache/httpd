@@ -146,6 +146,7 @@ module</description>
 <context>.htaccess</context>
 </contextlist>
 <override>Options</override>
+<compatibility>Available in httpd 2.4.50 and later</compatibility>
 
 <usage>
     <p>When set, this directive extends the action of the spelling correction
