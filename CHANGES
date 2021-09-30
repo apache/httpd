@@ -1,6 +1,32 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.50
 
+  *) mod_md: when MDMessageCmd for a 'challenge-setup:<type>:<dnsname>'
+     fails (!= 0 exit), the renewal process is aborted and an error is
+     reported for the MDomain. This provides scripts that distribute
+     information in a cluster to abort early with bothering an ACME
+     server to validate a dns name that will not work. The common
+     retry logic will make another attempt in the future, as with
+     other failures.
+     Fixed a bug when adding private key specs to an already working
+     MDomain, see <https://github.com/icing/mod_md/issues/260>.
+     [Stefan Eissing]
+
+  *) mod_proxy: Handle UDS URIs with empty hostname ("unix:///...") as if they
+     had no hostname ("unix:/...").  [Yann Ylavic]
+
+  *) mod_md: fixed a bug in handling multiple parallel OCSP requests. These could
+     run into an assertion which terminated (and restarted) the child process where
+     the task was running. Eventually, all OCSP responses were collected, but not
+     in the way that things are supposed to work.
+     See also <https://bz.apache.org/bugzilla/show_bug.cgi?id=65567>.
+     The bug was possibly triggered when more than one OCSP status needed updating
+     at the same time. For example for several renewed certificates after a server
+     reload.
+
+  *) mod_rewrite: Fix UDS ("unix:") scheme for [P] rules.  PR 57691 + 65590.
+     [Janne Peltonen <janne.peltonen sange.fi>]
+
   *) event mpm: Correctly count active child processes in parent process if
      child process dies due to MaxConnectionsPerChild.
      PR 65592 [Ruediger Pluem]

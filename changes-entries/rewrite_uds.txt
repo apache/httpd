@@ -1,2 +1,0 @@
-  *) mod_rewrite: Fix UDS ("unix:") scheme for [P] rules.  PR 57691 + 65590.
-     [Janne Peltonen <janne.peltonen sange.fi>]
