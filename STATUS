@@ -182,7 +182,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      the uri-path when it's preceded by a dot.
      trunk patch: http://svn.apache.org/r1893724
      2.4.x patch: svn merge -c 1893724 ^/httpd/httpd/trunk .
-     +1: ylavic, covener
+     +1: ylavic, covener, icing
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
