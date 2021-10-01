@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.50
 
+  *) core: AP_NORMALIZE_DECODE_UNRESERVED should normalize the second dot in
+     the uri-path when it's preceded by a dot.  [Yann Ylavic]
+
   *) mod_md: when MDMessageCmd for a 'challenge-setup:<type>:<dnsname>'
      fails (!= 0 exit), the renewal process is aborted and an error is
      reported for the MDomain. This provides scripts that distribute
