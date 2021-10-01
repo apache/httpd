@@ -31,6 +31,8 @@
 <a href="../ja/mod/mod_speling.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_speling.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Tente de corriger les erreurs de casse dans les URLs ou les
 fautes de frappe mineures.</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -69,6 +71,7 @@ fautes de frappe mineures.</td></tr>
 </div>
 <div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><h3 class="directives">Directives</h3>
 <ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#checkbasenamematch">CheckBasenameMatch</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#checkcaseonly">CheckCaseOnly</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#checkspelling">CheckSpelling</a></li>
 </ul>
@@ -76,6 +79,20 @@ fautes de frappe mineures.</td></tr>
 <ul class="seealso">
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="checkbasenamematch" id="checkbasenamematch">Directive</a> <a name="CheckBasenameMatch" id="CheckBasenameMatch">CheckBasenameMatch</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Also match files with differing file name extensions.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CheckBasenameMatch on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CheckBasenameMatch On</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>Options</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_speling</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Available in httpd 2.4.50 and later</td></tr>
+</table><p>La documentation de cette directive
+	n'a pas encore t traduite. Veuillez vous reporter  la version
+	en langue anglaise.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="checkcaseonly" id="checkcaseonly">Directive</a> <a name="CheckCaseOnly" id="CheckCaseOnly">CheckCaseOnly</a></h2>
 <table class="directive">
