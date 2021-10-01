@@ -502,7 +502,8 @@ static char x2c(const char *what);
 AP_DECLARE(int) ap_normalize_path(char *path, unsigned int flags)
 {
     int ret = 1;
-    apr_size_t l = 1, w = 1;
+    apr_size_t l = 1, w = 1, n;
+    int decode_unreserved = (flags & AP_NORMALIZE_DECODE_UNRESERVED) != 0;
 
     if (!IS_SLASH(path[0])) {
         /* Besides "OPTIONS *", a request-target should start with '/'
@@ -529,7 +530,7 @@ AP_DECLARE(int) ap_normalize_path(char *path, unsigned int flags)
          *  be decoded to their corresponding unreserved characters by
          *  URI normalizers.
          */
-        if ((flags & AP_NORMALIZE_DECODE_UNRESERVED)
+        if (decode_unreserved
                 && path[l] == '%' && apr_isxdigit(path[l + 1])
                                   && apr_isxdigit(path[l + 2])) {
             const char c = x2c(&path[l + 1]);
@@ -567,8 +568,17 @@ AP_DECLARE(int) ap_normalize_path(char *path, unsigned int flags)
                     continue;
                 }
 
-                /* Remove /xx/../ segments */
-                if (path[l + 1] == '.' && IS_SLASH_OR_NUL(path[l + 2])) {
+                /* Remove /xx/../ segments (or /xx/.%2e/ when
+                 * AP_NORMALIZE_DECODE_UNRESERVED is set since we
+                 * decoded only the first dot above).
+                 */
+                n = l + 1;
+                if ((path[n] == '.' || (decode_unreserved
+                                        && path[n] == '%'
+                                        && path[++n] == '2'
+                                        && (path[++n] == 'e'
+                                            || path[n] == 'E')))
+                        && IS_SLASH_OR_NUL(path[n + 1])) {
                     /* Wind w back to remove the previous segment */
                     if (w > 1) {
                         do {
@@ -585,7 +595,7 @@ AP_DECLARE(int) ap_normalize_path(char *path, unsigned int flags)
                     }
 
                     /* Move l forward to the next segment */
-                    l += 2;
+                    l = n + 1;
                     if (path[l]) {
                         l++;
                     }
