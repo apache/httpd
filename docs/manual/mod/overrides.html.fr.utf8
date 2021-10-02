@@ -789,31 +789,34 @@ les directives <code class="directive">Allow</code> et
       <code>Options</code> et d'autres directives similaires, ainsi que les
       directives qui contrôlent la chaîne de filtrage.
     </p>
-  <table class="qref"><tr><td><a href="mod_speling.html#checkcaseonly">CheckCaseOnly</a></td><td class="module"><a href="mod_speling.html">mod_speling</a></td></tr>
-<tr><td colspan="2" class="descr">Limite l'action du module aux corrections de
+  <table class="qref"><tr><td><a href="mod_speling.html#checkbasenamematch">CheckBasenameMatch</a></td><td class="module"><a href="mod_speling.html">mod_speling</a></td></tr>
+<tr><td colspan="2" class="descr">Vérifie aussi la correspondance des fichiers, même avec des
+extensions différentes</td></tr>
+<tr class="odd"><td><a href="mod_speling.html#checkcaseonly">CheckCaseOnly</a></td><td class="module"><a href="mod_speling.html">mod_speling</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Limite l'action du module aux corrections de
 majuscules</td></tr>
-<tr class="odd"><td><a href="mod_speling.html#checkspelling">CheckSpelling</a></td><td class="module"><a href="mod_speling.html">mod_speling</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Active le module de correction</td></tr>
-<tr><td><a href="core.html#contentdigest">ContentDigest</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr><td colspan="2" class="descr">Active la génération d'un en-tête <code>Content-MD5</code>
+<tr><td><a href="mod_speling.html#checkspelling">CheckSpelling</a></td><td class="module"><a href="mod_speling.html">mod_speling</a></td></tr>
+<tr><td colspan="2" class="descr">Active le module de correction</td></tr>
+<tr class="odd"><td><a href="core.html#contentdigest">ContentDigest</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Active la génération d'un en-tête <code>Content-MD5</code>
 dans la réponse HTTP</td></tr>
-<tr class="odd"><td><a href="mod_filter.html#filterchain">FilterChain</a></td><td class="module"><a href="mod_filter.html">mod_filter</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Configure la chaîne de filtrage</td></tr>
-<tr><td><a href="mod_filter.html#filterdeclare">FilterDeclare</a></td><td class="module"><a href="mod_filter.html">mod_filter</a></td></tr>
-<tr><td colspan="2" class="descr">Déclare un filtre intelligent</td></tr>
-<tr class="odd"><td><a href="mod_filter.html#filterprotocol">FilterProtocol</a></td><td class="module"><a href="mod_filter.html">mod_filter</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Vérifie le respect du protocole HTTP</td></tr>
-<tr><td><a href="mod_filter.html#filterprovider">FilterProvider</a></td><td class="module"><a href="mod_filter.html">mod_filter</a></td></tr>
-<tr><td colspan="2" class="descr">Enregistre un filtre de contenu</td></tr>
-<tr class="odd"><td><a href="core.html#options">Options</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Définit les fonctionnalités disponibles pour un répertoire
+<tr><td><a href="mod_filter.html#filterchain">FilterChain</a></td><td class="module"><a href="mod_filter.html">mod_filter</a></td></tr>
+<tr><td colspan="2" class="descr">Configure la chaîne de filtrage</td></tr>
+<tr class="odd"><td><a href="mod_filter.html#filterdeclare">FilterDeclare</a></td><td class="module"><a href="mod_filter.html">mod_filter</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Déclare un filtre intelligent</td></tr>
+<tr><td><a href="mod_filter.html#filterprotocol">FilterProtocol</a></td><td class="module"><a href="mod_filter.html">mod_filter</a></td></tr>
+<tr><td colspan="2" class="descr">Vérifie le respect du protocole HTTP</td></tr>
+<tr class="odd"><td><a href="mod_filter.html#filterprovider">FilterProvider</a></td><td class="module"><a href="mod_filter.html">mod_filter</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Enregistre un filtre de contenu</td></tr>
+<tr><td><a href="core.html#options">Options</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr><td colspan="2" class="descr">Définit les fonctionnalités disponibles pour un répertoire
 particulier</td></tr>
-<tr><td><a href="mod_reflector.html#reflectorheader">ReflectorHeader</a></td><td class="module"><a href="mod_reflector.html">mod_reflector</a></td></tr>
-<tr><td colspan="2" class="descr">Renvoie un en-tête d'entrée dans les en-têtes de sortie</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#ssloptions">SSLOptions</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Configure différentes options d'exécution du moteur SSL</td></tr>
-<tr><td><a href="mod_include.html#xbithack">XBitHack</a></td><td class="module"><a href="mod_include.html">mod_include</a></td></tr>
-<tr><td colspan="2" class="descr">Interprète les directives SSI dans les fichiers dont le bit
+<tr class="odd"><td><a href="mod_reflector.html#reflectorheader">ReflectorHeader</a></td><td class="module"><a href="mod_reflector.html">mod_reflector</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Renvoie un en-tête d'entrée dans les en-têtes de sortie</td></tr>
+<tr><td><a href="mod_ssl.html#ssloptions">SSLOptions</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr><td colspan="2" class="descr">Configure différentes options d'exécution du moteur SSL</td></tr>
+<tr class="odd"><td><a href="mod_include.html#xbithack">XBitHack</a></td><td class="module"><a href="mod_include.html">mod_include</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Interprète les directives SSI dans les fichiers dont le bit
 d'exécution est positionné</td></tr>
 </table></div></div></div><div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/overrides.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |

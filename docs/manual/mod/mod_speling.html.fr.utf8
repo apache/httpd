@@ -49,26 +49,29 @@ fautes de frappe mineures.</td></tr>
     casse</strong>, et en acceptant <strong>jusqu'à une erreur</strong>
     (insertion, omission, inversion de caractère ou caractère
     erroné). Une liste de tous les documents qui correspondent est alors
-    élaborée en utilisant cette stratégie.</p>
+    élaborée en utilisant cette stratégie. Ce module traite aussi les
+    <strong>erreurs dans les extensions de fichiers</strong>.</p>
 
     <p>Si après le parcours du répertoire,</p>
 
     <ul>
       <li>aucun document correspondant n'a été trouvé, Apache procèdera
-      normalement et renverra une erreur "document non trouvé".</li>
+      normalement et renverra une erreur (<code>404 - document not found</code>).</li>
 
       <li>un seul document correspondant pratiquement à la requête a
       été trouvé, celui-ci est renvoyé sous la forme d'une réponse de
-      redirection.</li>
+      redirection (<code>301 - Moved Permanently</code>).</li>
 
       <li>plusieurs documents pouvant correspondre ont été trouvés, une
       liste des documents est envoyée au client afin que ce dernier
-      puisse sélectionner le document correct.</li>
+      puisse sélectionner le document correct (<code>300 - Multiple
+      Choices</code>).</li>
     </ul>
 
 </div>
 <div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><h3 class="directives">Directives</h3>
 <ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#checkbasenamematch">CheckBasenameMatch</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#checkcaseonly">CheckCaseOnly</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#checkspelling">CheckSpelling</a></li>
 </ul>
@@ -76,6 +79,28 @@ fautes de frappe mineures.</td></tr>
 <ul class="seealso">
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="checkbasenamematch" id="checkbasenamematch">Directive</a> <a name="CheckBasenameMatch" id="CheckBasenameMatch">CheckBasenameMatch</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Vérifie aussi la correspondance des fichiers, même avec des
+extensions différentes</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CheckBasenameMatch on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CheckBasenameMatch On</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>Options</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_speling</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.50 du serveur HTTP
+Apache</td></tr>
+</table>
+    <p>Lorsqu'elle est définie, cette directive étend le processus de correction
+    orthographique à l'extension des noms de fichiers. Par exemple, un fichier
+    de nom <code>foo.gif</code> sera pris en compte par une requête pour
+    <code>foo</code> ou <code>foo.jpg</code>. Ceci peut s'avérer
+    particulièrement utile en conjonction avec les <a href="../content-negotiation.html">MultiViews</a>.</p>
+
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="checkcaseonly" id="checkcaseonly">Directive</a> <a name="CheckCaseOnly" id="CheckCaseOnly">CheckCaseOnly</a></h2>
 <table class="directive">
@@ -90,7 +115,7 @@ majuscules</td></tr>
 </table>
     <p>Lorsqu'elle est définie à "on", cette directive permet de limiter
     l'action du module aux inversions majuscule/minuscule. Les autres
-    corrections ne sont pas effectuées.</p>
+    corrections éventuelles ne seront effectuées que si la directive <code class="directive"><a href="#checkbasenamematch">CheckBasenameMatch</a></code> est elle aussi définie.</p>
 
 
 </div>
@@ -124,18 +149,18 @@ majuscules</td></tr>
 
       <li>les corrections s'appliquent strictement aux fichiers
       existants, si bien qu'une requête pour <code>&lt;Location
-      "/status"&gt;</code> pour être traitée de manière incorrecte comme
+      /status&gt;</code> pour être traitée de manière incorrecte comme
       une requête pour le fichier négocié "<code>/stats.html</code>".</li>
     </ul>
 
     
-    <p>mod_speling ne doit pas être activé pour des répertoires où <a href="mod_dav.html">DAV</a> l'est aussi, car il va essayer de
-    "corriger" les noms des ressources nouvellement créées en fonction
-    des noms de fichiers existants ; par exemple, lors du chargement
-    d'un nouveau document <code>doc43.html</code>, il est possible qu'il
-    redirige vers un document existant <code>doc34.html</code>, ce qui
-    ne correspond pas à ce que l'on souhaite.
-    </p>
+    <p><code class="module"><a href="../mod/mod_speling.html">mod_speling</a></code> ne doit pas être activé pour des répertoires
+    où <a href="mod_dav.html">DAV</a> l'est aussi, car il va essayer de
+    "corriger" les noms des ressources nouvellement créées en fonction des noms
+    de fichiers existants ; par exemple, lors du chargement d'un nouveau
+    document <code>doc43.html</code>, il est possible qu'il redirige vers un
+    document existant <code>doc34.html</code>, ce qui ne correspond pas à ce que
+    l'on souhaite.  </p>
 
 </div>
 </div>
