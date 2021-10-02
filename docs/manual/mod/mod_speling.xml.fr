@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1874148 -->
+<!-- English Revision: 1893733 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -152,6 +152,8 @@ extensions différentes</description>
 <context>.htaccess</context>
 </contextlist>
 <override>Options</override>
+<compatibility>Disponible à partir de la version 2.5.0 du serveur HTTP
+Apache</compatibility>
 
 <usage>
     <p>Cette option n'a aucun effet si
