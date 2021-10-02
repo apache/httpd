@@ -91,6 +91,8 @@ extensions différentes</td></tr>
 <tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>Options</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_speling</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.0 du serveur HTTP
+Apache</td></tr>
 </table>
     <p>Cette option n'a aucun effet si
     <code class="directive">CheckCaseOnly</code> a été défini.</p>
