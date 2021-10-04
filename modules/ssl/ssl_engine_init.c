@@ -1524,7 +1524,14 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
     certfile = APR_ARRAY_IDX(mctx->pks->cert_files, 0, const char *);
     if (certfile && !modssl_is_engine_id(certfile)
         && (dh = ssl_dh_GetParamFromFile(certfile))) {
+        /* ### This should be replaced with SSL_CTX_set0_tmp_dh_pkey()
+         * for OpenSSL 3.0+. */
         SSL_CTX_set_tmp_dh(mctx->ssl_ctx, dh);
+#if !MODSSL_USE_OPENSSL_PRE_1_1_API
+        /* OpenSSL ignores manually configured DH params if automatic
+         * selection if enabled, so disable auto selection here. */
+        SSL_CTX_set_dh_auto(mctx->ssl_ctx, 0);
+#endif
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02540)
                      "Custom DH parameters (%d bits) for %s loaded from %s",
                      modssl_DH_bits(dh), vhost_id, certfile);
