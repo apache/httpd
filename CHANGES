@@ -1,5 +1,33 @@
                                                          -*- coding: utf-8 -*-
+Changes with Apache 2.4.51
+
 Changes with Apache 2.4.50
+
+  *) SECURITY: CVE-2021-41773: Path traversal and file disclosure
+     vulnerability in Apache HTTP Server 2.4.49 (cve.mitre.org)
+     A flaw was found in a change made to path normalization in
+     Apache HTTP Server 2.4.49. An attacker could use a path
+     traversal attack to map URLs to files outside the expected
+     document root.
+     If files outside of the document root are not protected by
+     "require all denied" these requests can succeed. Additionally
+     this flaw could leak the source of interpreted files like CGI
+     scripts.
+     This issue is known to be exploited in the wild.
+     This issue only affects Apache 2.4.49 and not earlier versions.
+     Credits: This issue was reported by Ash Daulton along with the
+     cPanel Security Team
+
+  *) SECURITY: CVE-2021-41524: null pointer dereference in h2 fuzzing
+     (cve.mitre.org)
+     While fuzzing the 2.4.49 httpd, a new null pointer dereference
+     was detected during HTTP/2 request processing,
+     allowing an external source to DoS the server. This requires a
+     specially crafted request.
+     The vulnerability was recently introduced in version 2.4.49. No
+     exploit is known to the project.
+     Credits: Apache httpd team would like to thank LI ZHI XIN from
+     NSFocus Security Team for reporting this issue.
 
   *) core: AP_NORMALIZE_DECODE_UNRESERVED should normalize the second dot in
      the uri-path when it's preceded by a dot.  [Yann Ylavic]

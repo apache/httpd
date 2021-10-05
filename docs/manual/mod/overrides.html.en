@@ -695,31 +695,33 @@ evaluated.</td></tr>
       users access to <code>Options</code> and similar directives, as well as
       directives that control the filter chain.
     </p>
-  <table class="qref"><tr><td><a href="mod_speling.html#checkcaseonly">CheckCaseOnly</a></td><td class="module"><a href="mod_speling.html">mod_speling</a></td></tr>
-<tr><td colspan="2" class="descr">Limits the action of the speling module to case corrections</td></tr>
-<tr class="odd"><td><a href="mod_speling.html#checkspelling">CheckSpelling</a></td><td class="module"><a href="mod_speling.html">mod_speling</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Enables the spelling
+  <table class="qref"><tr><td><a href="mod_speling.html#checkbasenamematch">CheckBasenameMatch</a></td><td class="module"><a href="mod_speling.html">mod_speling</a></td></tr>
+<tr><td colspan="2" class="descr">Also match files with differing file name extensions.</td></tr>
+<tr class="odd"><td><a href="mod_speling.html#checkcaseonly">CheckCaseOnly</a></td><td class="module"><a href="mod_speling.html">mod_speling</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Limits the action of the speling module to case corrections</td></tr>
+<tr><td><a href="mod_speling.html#checkspelling">CheckSpelling</a></td><td class="module"><a href="mod_speling.html">mod_speling</a></td></tr>
+<tr><td colspan="2" class="descr">Enables the spelling
 module</td></tr>
-<tr><td><a href="core.html#contentdigest">ContentDigest</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr><td colspan="2" class="descr">Enables the generation of <code>Content-MD5</code> HTTP Response
+<tr class="odd"><td><a href="core.html#contentdigest">ContentDigest</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Enables the generation of <code>Content-MD5</code> HTTP Response
 headers</td></tr>
-<tr class="odd"><td><a href="mod_filter.html#filterchain">FilterChain</a></td><td class="module"><a href="mod_filter.html">mod_filter</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Configure the filter chain</td></tr>
-<tr><td><a href="mod_filter.html#filterdeclare">FilterDeclare</a></td><td class="module"><a href="mod_filter.html">mod_filter</a></td></tr>
-<tr><td colspan="2" class="descr">Declare a smart filter</td></tr>
-<tr class="odd"><td><a href="mod_filter.html#filterprotocol">FilterProtocol</a></td><td class="module"><a href="mod_filter.html">mod_filter</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Deal with correct HTTP protocol handling</td></tr>
-<tr><td><a href="mod_filter.html#filterprovider">FilterProvider</a></td><td class="module"><a href="mod_filter.html">mod_filter</a></td></tr>
-<tr><td colspan="2" class="descr">Register a content filter</td></tr>
-<tr class="odd"><td><a href="core.html#options">Options</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Configures what features are available in a particular
+<tr><td><a href="mod_filter.html#filterchain">FilterChain</a></td><td class="module"><a href="mod_filter.html">mod_filter</a></td></tr>
+<tr><td colspan="2" class="descr">Configure the filter chain</td></tr>
+<tr class="odd"><td><a href="mod_filter.html#filterdeclare">FilterDeclare</a></td><td class="module"><a href="mod_filter.html">mod_filter</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Declare a smart filter</td></tr>
+<tr><td><a href="mod_filter.html#filterprotocol">FilterProtocol</a></td><td class="module"><a href="mod_filter.html">mod_filter</a></td></tr>
+<tr><td colspan="2" class="descr">Deal with correct HTTP protocol handling</td></tr>
+<tr class="odd"><td><a href="mod_filter.html#filterprovider">FilterProvider</a></td><td class="module"><a href="mod_filter.html">mod_filter</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Register a content filter</td></tr>
+<tr><td><a href="core.html#options">Options</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr><td colspan="2" class="descr">Configures what features are available in a particular
 directory</td></tr>
-<tr><td><a href="mod_reflector.html#reflectorheader">ReflectorHeader</a></td><td class="module"><a href="mod_reflector.html">mod_reflector</a></td></tr>
-<tr><td colspan="2" class="descr">Reflect an input header to the output headers</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#ssloptions">SSLOptions</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Configure various SSL engine run-time options</td></tr>
-<tr><td><a href="mod_include.html#xbithack">XBitHack</a></td><td class="module"><a href="mod_include.html">mod_include</a></td></tr>
-<tr><td colspan="2" class="descr">Parse SSI directives in files with the execute bit
+<tr class="odd"><td><a href="mod_reflector.html#reflectorheader">ReflectorHeader</a></td><td class="module"><a href="mod_reflector.html">mod_reflector</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Reflect an input header to the output headers</td></tr>
+<tr><td><a href="mod_ssl.html#ssloptions">SSLOptions</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr><td colspan="2" class="descr">Configure various SSL engine run-time options</td></tr>
+<tr class="odd"><td><a href="mod_include.html#xbithack">XBitHack</a></td><td class="module"><a href="mod_include.html">mod_include</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Parse SSI directives in files with the execute bit
 set</td></tr>
 </table></div></div></div><div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/overrides.html" title="English">&nbsp;en&nbsp;</a> |

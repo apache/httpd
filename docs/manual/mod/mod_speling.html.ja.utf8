@@ -74,6 +74,7 @@
 </div>
 <div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><h3 class="directives">ディレクティブ</h3>
 <ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#checkbasenamematch">CheckBasenameMatch</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#checkcaseonly">CheckCaseOnly</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#checkspelling">CheckSpelling</a></li>
 </ul>
@@ -81,6 +82,20 @@
 <ul class="seealso">
 <li><a href="#comments_section">コメント</a></li></ul></div>
 
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CheckBasenameMatch" id="CheckBasenameMatch">CheckBasenameMatch</a> <a name="checkbasenamematch" id="checkbasenamematch">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Also match files with differing file name extensions.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CheckBasenameMatch on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CheckBasenameMatch On</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>Options</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_speling</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Available in httpd 2.4.50 and later</td></tr>
+</table><p>このディレクティブの解説文書は
+            まだ翻訳されていません。英語版をご覧ください。
+            </p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CheckCaseOnly" id="CheckCaseOnly">CheckCaseOnly</a> <a name="checkcaseonly" id="checkcaseonly">ディレクティブ</a></h2>
 <table class="directive">
