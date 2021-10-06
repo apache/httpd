@@ -70,6 +70,7 @@ class TestEncoding:
     @pytest.mark.parametrize(["host", "path", "status"], [
         ["test1", "/006%2f006.css", 404],
         ["test2", "/006%2f006.css", 200],
+        ["test2", "/x%252f.test", 200],
     ])
     def test_203_20(self, env, host, path, status):
         url = env.mkurl("https", host, path)
