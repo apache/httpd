@@ -71,6 +71,7 @@ class TestEncoding:
         ["test1", "/006%2f006.css", 404],
         ["test2", "/006%2f006.css", 200],
         ["test2", "/x%252f.test", 200],
+        ["test2", "/10%25abnormal.txt", 200],
     ])
     def test_203_20(self, env, host, path, status):
         url = env.mkurl("https", host, path)
