@@ -7,17 +7,22 @@ from h2_certs import CertificateSpec, H2TestCA
 from h2_env import H2TestEnv
 
 
-class Dummy:
-    pass
-
-
 def pytest_report_header(config, startdir):
-    env = H2TestEnv()
-    return "mod_h2 [apache: {aversion}({prefix}), mpm: {mpm}]".format(
-        prefix=env.prefix,
-        aversion=env.get_httpd_version(),
-        mpm=env.mpm_type
-    )
+    env = H2TestEnv(setup_dirs=False)
+    return f"mod_h2 [apache: {env.get_httpd_version()}, mpm: {env.mpm_type}, {env.prefix}]"
+
+
+def pytest_addoption(parser):
+    parser.addoption("--repeat", action="store", type=int, default=1,
+                     help='Number of times to repeat each test')
+    parser.addoption("--all", action="store_true")
+
+
+def pytest_generate_tests(metafunc):
+    if "repeat" in metafunc.fixturenames:
+        count = int(metafunc.config.getoption("repeat"))
+        metafunc.fixturenames.append('tmp_ct')
+        metafunc.parametrize('repeat', range(count))
 
 
 @pytest.fixture(scope="session")
@@ -29,7 +34,6 @@ def env(pytestconfig) -> H2TestEnv:
     logging.getLogger('').addHandler(console)
     logging.getLogger('').setLevel(level=level)
     env = H2TestEnv(pytestconfig=pytestconfig)
-    env.apache_error_log_clear()
     cert_specs = [
         CertificateSpec(domains=env.domains, key_type='rsa4096'),
         CertificateSpec(domains=env.domains_noh2, key_type='rsa2048'),
@@ -38,6 +42,8 @@ def env(pytestconfig) -> H2TestEnv:
                               store_dir=os.path.join(env.server_dir, 'ca'), key_type="rsa4096")
     ca.issue_certs(cert_specs)
     env.set_ca(ca)
+    env.apache_access_log_clear()
+    env.apache_error_log_clear()
     return env
 
 

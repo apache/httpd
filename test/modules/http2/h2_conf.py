@@ -87,21 +87,29 @@ class HttpdConf(object):
         self.end_vhost()
         return self
         
-    def add_vhost_test2(self):
+    def add_vhost_test2(self, extras=None):
+        domain = f"test2.{self.env.http_tld}"
+        if extras and 'base' in extras:
+            self.add(extras['base'])
         self.start_vhost(self.env.http_port, "test2", aliases=["www2"], doc_root="htdocs/test2", with_ssl=False)
         self.add("      Protocols http/1.1 h2c")
         self.end_vhost()
         self.start_vhost(self.env.https_port, "test2", aliases=["www2"], doc_root="htdocs/test2", with_ssl=True)
-        self.add("""
+        self.add(f"""
             Protocols http/1.1 h2
             <Location /006>
                 Options +Indexes
                 HeaderName /006/header.html
-            </Location>""")
+            </Location>
+            {extras[domain] if extras and domain in extras else ""}
+            """)
         self.end_vhost()
         return self
 
-    def add_vhost_cgi(self, proxy_self=False, h2proxy_self=False):
+    def add_vhost_cgi(self, proxy_self=False, h2proxy_self=False, extras=None):
+        domain = f"cgi.{self.env.http_tld}"
+        if extras and 'base' in extras:
+            self.add(extras['base'])
         if proxy_self:
             self.add_proxy_setup()
         if h2proxy_self:
@@ -115,13 +123,21 @@ class HttpdConf(object):
             <Location \"/.well-known/h2/state\">
                 SetHandler http2-status
             </Location>""")
-        self.add_proxies("cgi", proxy_self, h2proxy_self)
+        self.add_proxies("cgi", proxy_self=proxy_self, h2proxy_self=h2proxy_self)
         self.add("      <Location \"/h2test/echo\">")
         self.add("          SetHandler h2test-echo")
         self.add("      </Location>")
+        self.add("      <Location \"/h2test/delay\">")
+        self.add("          SetHandler h2test-delay")
+        self.add("      </Location>")
+        if extras and domain in extras:
+            self.add(extras[domain])
         self.end_vhost()
         self.start_vhost(self.env.http_port, "cgi", aliases=["cgi-alias"], doc_root="htdocs/cgi", with_ssl=False)
         self.add("      AddHandler cgi-script .py")
+        self.add_proxies("cgi", proxy_self=proxy_self, h2proxy_self=h2proxy_self)
+        if extras and domain in extras:
+            self.add(extras[domain])
         self.end_vhost()
         self.add("      LogLevel proxy:info")
         self.add("      LogLevel proxy_http:info")

@@ -31,7 +31,7 @@ class TestStore:
         m = 1
         conn = 1
         fname = "data-10k"
-        args = [env.h2load, "-n", "%d" % n, "-c", "%d" % conn, "-m", "%d" % m,
+        args = [env.h2load, "-n", f"{n}", "-c", f"{conn}", "-m", f"{m}",
                 f"--base-uri={env.https_base_url}",
                 "-d", os.path.join(env.gen_dir, fname), url]
         r = env.run(args)
@@ -43,7 +43,7 @@ class TestStore:
         m = 100
         conn = 1
         fname = "data-1k"
-        args = [env.h2load, "-n", "%d" % n, "-c", "%d" % conn, "-m", "%d" % m,
+        args = [env.h2load, "-n", f"{n}", "-c", f"{conn}", "-m", f"{m}",
                 f"--base-uri={env.https_base_url}",
                 "-d", os.path.join(env.gen_dir, fname), url]
         r = env.run(args)
@@ -55,7 +55,7 @@ class TestStore:
         m = 50
         conn = 1
         fname = "data-100k"
-        args = [env.h2load, "-n", "%d" % n, "-c", "%d" % conn, "-m", "%d" % m,
+        args = [env.h2load, "-n", f"{n}", "-c", f"{conn}", "-m", f"{m}",
                 f"--base-uri={env.https_base_url}",
                 "-d", os.path.join(env.gen_dir, fname), url]
         r = env.run(args)

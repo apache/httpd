@@ -17,6 +17,7 @@
 #include <apr_optional.h>
 #include <apr_optional_hooks.h>
 #include <apr_strings.h>
+#include <apr_cstr.h>
 #include <apr_time.h>
 #include <apr_want.h>
 
@@ -143,6 +144,92 @@ cleanup:
     return DECLINED;
 }
 
+static int h2test_delay_handler(request_rec *r)
+{
+    conn_rec *c = r->connection;
+    apr_bucket_brigade *bb;
+    apr_bucket *b;
+    apr_status_t rv;
+    char buffer[8192];
+    int i, chunks = 3;
+    long l;
+    apr_time_t delay = 0;
+
+    if (strcmp(r->handler, "h2test-delay")) {
+        return DECLINED;
+    }
+    if (r->method_number != M_GET && r->method_number != M_POST) {
+        return DECLINED;
+    }
+
+    if (r->args) {
+        rv = apr_cstr_atoi(&i, r->args);
+        if (APR_SUCCESS == rv) {
+            delay = apr_time_from_sec(i);
+        }
+    }
+
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, "delay_handler: processing request, %ds delay",
+                  (int)apr_time_sec(delay));
+    r->status = 200;
+    r->clength = -1;
+    r->chunked = 1;
+    apr_table_unset(r->headers_out, "Content-Length");
+    /* Discourage content-encodings */
+    apr_table_unset(r->headers_out, "Content-Encoding");
+    apr_table_setn(r->subprocess_env, "no-brotli", "1");
+    apr_table_setn(r->subprocess_env, "no-gzip", "1");
+
+    ap_set_content_type(r, "application/octet-stream");
+
+    bb = apr_brigade_create(r->pool, c->bucket_alloc);
+    /* copy any request body into the response */
+    if ((rv = ap_setup_client_block(r, REQUEST_CHUNKED_DECHUNK))) goto cleanup;
+    if (ap_should_client_block(r)) {
+        do {
+            l = ap_get_client_block(r, &buffer[0], sizeof(buffer));
+            if (l > 0) {
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
+                              "delay_handler: reading %ld bytes from request body", l);
+            }
+        } while (l > 0);
+        if (l < 0) {
+            return AP_FILTER_ERROR;
+        }
+    }
+
+    memset(buffer, 0, sizeof(buffer));
+    l = sizeof(buffer);
+    for (i = 0; i < chunks; ++i) {
+        rv = apr_brigade_write(bb, NULL, NULL, buffer, l);
+        if (APR_SUCCESS != rv) goto cleanup;
+        rv = ap_pass_brigade(r->output_filters, bb);
+        if (APR_SUCCESS != rv) goto cleanup;
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
+                      "delay_handler: passed %ld bytes as response body", l);
+        if (delay) {
+            apr_sleep(delay);
+        }
+    }
+    /* we are done */
+    b = apr_bucket_eos_create(c->bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(bb, b);
+    rv = ap_pass_brigade(r->output_filters, bb);
+    apr_brigade_cleanup(bb);
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, rv, r, "delay_handler: response passed");
+
+cleanup:
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, rv, r,
+                  "delay_handler: request cleanup, r->status=%d, aborte=%d",
+                  r->status, c->aborted);
+    if (rv == APR_SUCCESS
+        || r->status != HTTP_OK
+        || c->aborted) {
+        return OK;
+    }
+    return AP_FILTER_ERROR;
+}
+
 /* Install this module into the apache2 infrastructure.
  */
 static void h2test_hooks(apr_pool_t *pool)
@@ -159,7 +246,8 @@ static void h2test_hooks(apr_pool_t *pool)
      */
     ap_hook_child_init(h2test_child_init, NULL, NULL, APR_HOOK_MIDDLE);
 
-    /* test h2 echo handler */
+    /* test h2 handlers */
     ap_hook_handler(h2test_echo_handler, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_handler(h2test_delay_handler, NULL, NULL, APR_HOOK_MIDDLE);
 }
 

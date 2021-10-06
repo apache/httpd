@@ -1,0 +1,21 @@
+@CHARSET "ISO-8859-1";
+body{
+	background:HoneyDew;
+}
+p{
+color:#0000FF;
+text-align:left;
+}
+
+h1{
+color:#FF0000;
+text-align:center;
+}
+
+.listTitle{
+	font-size:large;
+}
+
+.listElements{
+	color:#3366FF
+}
