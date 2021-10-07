@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.51
 
+  *) core: Add ap_unescape_url_ex() for better decoding control, and deprecate
+     unused AP_NORMALIZE_DROP_PARAMETERS flag.
+     [Yann Ylavic, Ruediger Pluem, Stefan Eissing, Joe Orton]
+
 Changes with Apache 2.4.50
 
   *) SECURITY: CVE-2021-41773: Path traversal and file disclosure
