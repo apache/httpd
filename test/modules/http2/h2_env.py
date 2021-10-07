@@ -508,7 +508,8 @@ class H2TestEnv:
             "--cacert", self.ca.cert_file,
             "-s", "-D", headerfile,
             "--resolve", ("%s:%s:%s" % (u.hostname, u.port, self._httpd_addr)),
-            "--connect-timeout", ("%d" % timeout) 
+            "--connect-timeout", ("%d" % timeout),
+            "--path-as-is"
         ]
         if options:
             args.extend(options)

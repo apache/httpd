@@ -43,6 +43,9 @@ class TestEncoding:
         "/%30%30%36/%30%30%36.css",
         "/nothing/../006/006.css",
         "/nothing/./../006/006.css",
+        "/nothing/%2e%2e/006/006.css",
+        "/nothing/%2e/%2e%2e/006/006.css",
+        "/nothing/%2e/%2e%2e/006/006%2ecss",
     ])
     def test_203_01(self, env, path):
         url = env.mkurl("https", "test1", path)
@@ -54,7 +57,10 @@ class TestEncoding:
         "/006//006.css",
         "/006//////////006.css",
         "/006////.//////006.css",
+        "/006////%2e//////006.css",
+        "/006////%2e//////006%2ecss",
         "/006/../006/006.css",
+        "/006/%2e%2e/006/006.css",
     ])
     def test_203_03(self, env, path):
         url = env.mkurl("https", "test1", path)
@@ -63,11 +69,19 @@ class TestEncoding:
 
     # check path traversals
     @pytest.mark.parametrize(["path", "status"], [
-        ["/../cgi/echo.py", 404],
-        ["/nothing/%%32%65%%32%65/echo.py", 400],
+        ["/../echo.py", 400],
+        ["/nothing/../../echo.py", 400],
+        ["/cgi-bin/../../echo.py", 400],
+        ["/nothing/%2e%2e/%2e%2e/echo.py", 400],
+        ["/cgi-bin/%2e%2e/%2e%2e/echo.py", 400],
         ["/nothing/%%32%65%%32%65/echo.py", 400],
         ["/cgi-bin/%%32%65%%32%65/echo.py", 400],
+        ["/nothing/%%32%65%%32%65/%%32%65%%32%65/h2_env.py", 400],
         ["/cgi-bin/%%32%65%%32%65/%%32%65%%32%65/h2_env.py", 400],
+        ["/nothing/%25%32%65%25%32%65/echo.py", 404],
+        ["/cgi-bin/%25%32%65%25%32%65/echo.py", 404],
+        ["/nothing/%25%32%65%25%32%65/%25%32%65%25%32%65/h2_env.py", 404],
+        ["/cgi-bin/%25%32%65%25%32%65/%25%32%65%25%32%65/h2_env.py", 404],
     ])
     def test_203_04(self, env, path, status):
         url = env.mkurl("https", "cgi", path)
