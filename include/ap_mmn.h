@@ -579,7 +579,7 @@
  *                           ap_proxy_define_worker_ex() to mod_proxy.h
  * 20120211.116 (2.4.49-dev) add conn_rec->outgoing and ap_ssl_bind_outgoing()
  * 20120211.117 (2.4.50-dev) Add ap_pre_connection
- * 20120211.118 (2.4.50-dev) Add ap_unescape_url_ex() and deprecate
+ * 20120211.118 (2.4.51-dev) Add ap_unescape_url_ex() and deprecate
  *                           AP_NORMALIZE_DROP_PARAMETERS
  * 
  */
