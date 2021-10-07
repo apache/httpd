@@ -63,19 +63,3 @@ class TestStore:
         assert 300 > r.response["status"]
         assert b"X: 4a\n" == r.response["body"]
 
-    # The h2 status handler echoes a trailer if it sees a trailer
-    def test_202_05(self, env):
-        url = env.mkurl("https", "cgi", "/.well-known/h2/state")
-        fpath = os.path.join(env.gen_dir, "data-1k")
-        r = env.nghttp().upload(url, fpath, options=["--trailer", "test: 2"])
-        assert 200 == r.response["status"]
-        assert "1" == r.response["trailer"]["h2-trailers-in"]
-
-    # Check that we can send and receive trailers throuh mod_proxy_http2
-    def test_202_06(self, env):
-        url = env.mkurl("https", "cgi", "/h2proxy/.well-known/h2/state")
-        fpath = os.path.join(env.gen_dir, "data-1k")
-        r = env.nghttp().upload(url, fpath, options=["--trailer", "test: 2"])
-        assert 200 == r.response["status"]
-        assert 'trailer' in r.response
-        assert "1" == r.response['trailer']["h2-trailers-in"]

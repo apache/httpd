@@ -10,8 +10,8 @@ class TestStore:
         env.setup_data_1k_1m()
         conf = HttpdConf(env)
         conf.add_vhost_cgi(h2proxy_self=True)
-        conf.add("LogLevel proxy_http2:trace2")
-        conf.add("LogLevel proxy:trace2")
+        if env.verbosity > 1:
+            conf.add("LogLevel proxy:trace2 proxy_http2:trace2")
         conf.install()
         assert env.apache_restart() == 0
 
