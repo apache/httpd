@@ -7,6 +7,8 @@ from h2_conf import HttpdConf
 
 class TestEncoding:
 
+    EXP_AH10244_ERRS = 0
+
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):
         extras = {
@@ -28,6 +30,12 @@ class TestEncoding:
         })
         conf.install()
         assert env.apache_restart() == 0
+        yield
+        errors, warnings = env.apache_errors_and_warnings()
+        assert (len(errors), len(warnings)) == (TestEncoding.EXP_AH10244_ERRS, 0),\
+                f"apache logged {len(errors)} errors and {len(warnings)} warnings: \n"\
+                "{0}\n{1}\n".format("\n".join(errors), "\n".join(warnings))
+        env.apache_error_log_clear()
 
     # check handling of url encodings that are accepted
     @pytest.mark.parametrize("path", [
@@ -56,15 +64,18 @@ class TestEncoding:
     # check path traversals
     @pytest.mark.parametrize(["path", "status"], [
         ["/../cgi/echo.py", 404],
-        ["/nothing/%%32%65%%32%65/echo.py", 404],
-        ["/nothing/%%32%65%%32%65/echo.py", 404],
-        ["/cgi-bin/%%32%65%%32%65/echo.py", 404],
-        ["/cgi-bin/%%32%65%%32%65/%%32%65%%32%65/h2_env.py", 404],
+        ["/nothing/%%32%65%%32%65/echo.py", 400],
+        ["/nothing/%%32%65%%32%65/echo.py", 400],
+        ["/cgi-bin/%%32%65%%32%65/echo.py", 400],
+        ["/cgi-bin/%%32%65%%32%65/%%32%65%%32%65/h2_env.py", 400],
     ])
     def test_203_04(self, env, path, status):
         url = env.mkurl("https", "cgi", path)
         r = env.curl_get(url)
         assert r.response["status"] == status
+        if status == 400:
+            TestEncoding.EXP_AH10244_ERRS += 1
+            # the log will have a core:err about invalid URI path
 
     # check handling of %2f url encodings that are not decoded by default
     @pytest.mark.parametrize(["host", "path", "status"], [
