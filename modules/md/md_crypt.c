@@ -643,6 +643,7 @@ static apr_status_t pkey_to_buffer(md_data_t *buf, md_pkey_t *pkey, apr_pool_t *
     const EVP_CIPHER *cipher = NULL;
     pem_password_cb *cb = NULL;
     void *cb_baton = NULL;
+    apr_status_t rv = APR_SUCCESS;
     passwd_ctx ctx;
     unsigned long err;
     int i;
@@ -651,7 +652,8 @@ static apr_status_t pkey_to_buffer(md_data_t *buf, md_pkey_t *pkey, apr_pool_t *
         return APR_ENOMEM;
     }
     if (pass_len > INT_MAX) {
-        return APR_EINVAL;
+        rv = APR_EINVAL;
+        goto cleanup;
     }
     if (pass && pass_len > 0) {
         ctx.pass_phrase = pass;
@@ -660,7 +662,8 @@ static apr_status_t pkey_to_buffer(md_data_t *buf, md_pkey_t *pkey, apr_pool_t *
         cb_baton = &ctx;
         cipher = EVP_aes_256_cbc();
         if (!cipher) {
-            return APR_ENOTIMPL;
+            rv = APR_ENOTIMPL;
+            goto cleanup;
         }
     }
     
@@ -670,11 +673,11 @@ static apr_status_t pkey_to_buffer(md_data_t *buf, md_pkey_t *pkey, apr_pool_t *
 #else 
     if (!PEM_write_bio_PrivateKey(bio, pkey->pkey, cipher, NULL, 0, cb, cb_baton)) {
 #endif
-        BIO_free(bio);
         err = ERR_get_error();
         md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, p, "PEM_write key: %ld %s", 
                       err, ERR_error_string(err, NULL)); 
-        return APR_EINVAL;
+        rv = APR_EINVAL;
+        goto cleanup;
     }
 
     md_data_null(buf);
@@ -684,8 +687,10 @@ static apr_status_t pkey_to_buffer(md_data_t *buf, md_pkey_t *pkey, apr_pool_t *
         i = BIO_read(bio, (char*)buf->data, i);
         buf->len = (apr_size_t)i;
     }
+
+cleanup:
     BIO_free(bio);
-    return APR_SUCCESS;
+    return rv;
 }
 
 apr_status_t md_pkey_fsave(md_pkey_t *pkey, apr_pool_t *p, 
