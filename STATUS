@@ -183,7 +183,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      unused AP_NORMALIZE_DROP_PARAMETERS flag.
      trunk patch: http://svn.apache.org/r1893971
      2.4.x patch: svn merge -c 1893971 ^/httpd/httpd/trunk .
-     +1: ylavic,
+     +1: ylavic, icing, 
  
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
