@@ -179,6 +179,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-dav-element.patch
      +1: minfrin
 
+  *) core: Add ap_unescape_url_ex() for better decoding control, and deprecate
+     unused AP_NORMALIZE_DROP_PARAMETERS flag.
+     trunk patch: http://svn.apache.org/r1893971
+     2.4.x patch: svn merge -c 1893971 ^/httpd/httpd/trunk .
+     +1: ylavic,
+ 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
