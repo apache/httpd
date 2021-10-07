@@ -693,6 +693,9 @@
  *                         adding ap_proxy_tunnel_conn_bytes_{in,out}().
  * 20210924.1 (2.5.1-dev)  Add ap_proxy_fill_error_brigade()
  * 20210926.0 (2.5.1-dev)  Add dav_get_liveprop_element(), remove DAV_PROP_ELEMENT.
+ * 20210926.1 (2.5.1-dev)  Add ap_unescape_url_ex() and deprecate
+ *                         AP_NORMALIZE_DROP_PARAMETERS
+ * 
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
