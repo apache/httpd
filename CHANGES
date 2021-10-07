@@ -1,6 +1,16 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) core: Add ap_unescape_url_ex() for better decoding control, and deprecate
+     unused AP_NORMALIZE_DROP_PARAMETERS flag.
+     [Yann Ylavic, Ruediger Pluem, Stefan Eissing, Joe Orton]
+
+  *) core: AP_NORMALIZE_DECODE_UNRESERVED should normalize the second dot in
+     the uri-path when it's preceded by a dot.  [Yann Ylavic]
+
+  *) mod_proxy: New tunnel_forward hooking mechanism allowing modules to handle
+     Upgrade(d) protocols data.  [Yann Ylavic]
+
   *) mod_dav: Correctly handle errors returned by dav providers on REPORT
      requests. [Ruediger Pluem]
 

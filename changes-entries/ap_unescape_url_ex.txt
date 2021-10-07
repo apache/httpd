@@ -1,3 +1,0 @@
-  *) core: Add ap_unescape_url_ex() for better decoding control, and deprecate
-     unused AP_NORMALIZE_DROP_PARAMETERS flag.
-     [Yann Ylavic, Ruediger Pluem, Stefan Eissing, Joe Orton]
