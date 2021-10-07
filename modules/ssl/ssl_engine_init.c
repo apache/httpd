@@ -920,9 +920,9 @@ static void ssl_init_ctx_callbacks(server_rec *s,
     SSL_CTX *ctx = mctx->ssl_ctx;
 
 #if MODSSL_USE_OPENSSL_PRE_1_1_API
+    /* Note that for OpenSSL>=1.1, auto selection is enabled via
+     * SSL_CTX_set_dh_auto(,1) if no parameter is configured. */
     SSL_CTX_set_tmp_dh_callback(ctx,  ssl_callback_TmpDH);
-#else
-    SSL_CTX_set_dh_auto(ctx, 1);
 #endif
 
     /* The info callback is used for debug-level tracing.  For OpenSSL
@@ -1592,16 +1592,18 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
         /* ### This should be replaced with SSL_CTX_set0_tmp_dh_pkey()
          * for OpenSSL 3.0+. */
         SSL_CTX_set_tmp_dh(mctx->ssl_ctx, dh);
-#if !MODSSL_USE_OPENSSL_PRE_1_1_API
-        /* OpenSSL ignores manually configured DH params if automatic
-         * selection if enabled, so disable auto selection here. */
-        SSL_CTX_set_dh_auto(mctx->ssl_ctx, 0);
-#endif
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02540)
                      "Custom DH parameters (%d bits) for %s loaded from %s",
                      modssl_DH_bits(dh), vhost_id, certfile);
         DH_free(dh);
     }
+#if !MODSSL_USE_OPENSSL_PRE_1_1_API
+    else {
+        /* If no parameter is manually configured, enable auto
+         * selection. */
+        SSL_CTX_set_dh_auto(mctx->ssl_ctx, 1);
+    }
+#endif
 
 #ifdef HAVE_ECC
     /*
