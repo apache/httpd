@@ -556,9 +556,6 @@ static char *try_alias_list(request_rec *r, apr_array_header_t *aliases,
 
                     found = apr_pstrcat(r->pool, alias->real, escurl, NULL);
                 }
-                else if (is_redir) {
-                    found = apr_pstrcat(r->pool, alias->real, r->uri + l, NULL);
-                }
                 else {
                     apr_status_t rv;
                     char *fake = r->uri + l;
