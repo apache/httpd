@@ -505,6 +505,7 @@ AP_DECLARE(int) ap_normalize_path(char *path, unsigned int flags)
     int ret = 1;
     apr_size_t l = 1, w = 1, n;
     int decode_unreserved = (flags & AP_NORMALIZE_DECODE_UNRESERVED) != 0;
+    int merge_slashes = (flags & AP_NORMALIZE_MERGE_SLASHES) != 0;
 
     if (!IS_SLASH(path[0])) {
         /* Besides "OPTIONS *", a request-target should start with '/'
@@ -549,7 +550,7 @@ AP_DECLARE(int) ap_normalize_path(char *path, unsigned int flags)
 
         if (w == 0 || IS_SLASH(path[w - 1])) {
             /* Collapse ///// sequences to / */
-            if ((flags & AP_NORMALIZE_MERGE_SLASHES) && IS_SLASH(path[l])) {
+            if (merge_slashes && IS_SLASH(path[l])) {
                 do {
                     l++;
                 } while (IS_SLASH(path[l]));
