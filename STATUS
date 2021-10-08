@@ -183,7 +183,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk version: https://svn.apache.org/r1782986            
       2.4.x version: https://github.com/apache/httpd/commit/85003a0ae000e9c19919d398a04c8fd8fff80ba9.patch
       PR: https://github.com/apache/httpd/pull/273 
-      +1: jorton, 
+      +1: jorton, rpluem
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
