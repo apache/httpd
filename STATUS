@@ -144,6 +144,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   *) ap_pass_brigade() correctness fix for empty brigades
+      trunk version: https://svn.apache.org/r1782986            
+      2.4.x version: https://github.com/apache/httpd/commit/85003a0ae000e9c19919d398a04c8fd8fff80ba9.patch
+      PR: https://github.com/apache/httpd/pull/273 
+      +1: jorton, rpluem, ylavic
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -178,12 +184,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
         https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-dav-element.patch
      +1: minfrin
-
-   *) ap_pass_brigade() correctness fix for empty brigades
-      trunk version: https://svn.apache.org/r1782986            
-      2.4.x version: https://github.com/apache/httpd/commit/85003a0ae000e9c19919d398a04c8fd8fff80ba9.patch
-      PR: https://github.com/apache/httpd/pull/273 
-      +1: jorton, rpluem
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
