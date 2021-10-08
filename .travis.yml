@@ -264,8 +264,7 @@ jobs:
            TEST_MALLOC=1 TEST_SSL=1
            CLEAR_CACHE=1
     # -------------------------------------------------------------------------
-    - if: *condition_not_24x
-      name: Linux Ubuntu, event MPM, HTTP/2 test suite
+    - name: Linux Ubuntu, event MPM, HTTP/2 test suite
       dist: focal
       env: APR_VERSION=1.7.0
            APU_VERSION=1.6.1 APU_CONFIG="--with-crypto"
