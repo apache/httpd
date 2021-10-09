@@ -185,6 +185,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         https://svn.apache.org/repos/asf/httpd/httpd/patches/2.4.x/httpd-2.4-dav-element.patch
      +1: minfrin
 
+  *) mod_proxy_uwsgi: Remove duplicate slashes at the beginning of PATH_INFO.
+     PR 65616.
+     trunk patch: http://svn.apache.org/r1894074
+     2.4.x patch: svn merge -c 1894074 ^/httpd/httpd/trunk .
+     +1: ylavic,
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
