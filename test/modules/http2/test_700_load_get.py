@@ -1,13 +1,13 @@
 import pytest
 
-from h2_conf import HttpdConf
+from .env import H2Conf
 
 
 class TestStore:
 
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):
-        HttpdConf(env).add_vhost_cgi().add_vhost_test1().install()
+        H2Conf(env).add_vhost_cgi().add_vhost_test1().install()
         assert env.apache_restart() == 0
 
     def check_h2load_ok(self, env, r, n):
@@ -26,7 +26,7 @@ class TestStore:
     @pytest.mark.parametrize("start", [
         1000, 80000
     ])
-    def test_700_10(self, env, start):
+    def test_h2_700_10(self, env, start):
         text = "X"
         chunk = 32
         for n in range(0, 5):
@@ -41,7 +41,7 @@ class TestStore:
     @pytest.mark.parametrize("conns", [
         1, 2, 16, 32
     ])
-    def test_700_11(self, env, conns):
+    def test_h2_700_11(self, env, conns):
         text = "X"
         start = 1200
         chunk = 64

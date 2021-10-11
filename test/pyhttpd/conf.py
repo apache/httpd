@@ -1,9 +1,9 @@
-import os
+from pyhttpd.env import HttpdTestEnv
 
 
 class HttpdConf(object):
 
-    def __init__(self, env, path=None):
+    def __init__(self, env: HttpdTestEnv, path=None):
         self.env = env
         self._lines = []
         self._has_ssl_vhost = False
@@ -64,6 +64,13 @@ class HttpdConf(object):
             """)
         return self
     
+    def add_proxy_setup(self):
+        self.add("ProxyStatus on")
+        self.add("ProxyTimeout 5")
+        self.add("SSLProxyEngine on")
+        self.add("SSLProxyVerify none")
+        return self
+
     def add_vhost_test1(self, proxy_self=False, h2proxy_self=False, extras=None):
         domain = f"test1.{self.env.http_tld}"
         if extras and 'base' in extras:
@@ -86,7 +93,7 @@ class HttpdConf(object):
         self.add_proxies("test1", proxy_self, h2proxy_self)
         self.end_vhost()
         return self
-        
+
     def add_vhost_test2(self, extras=None):
         domain = f"test2.{self.env.http_tld}"
         if extras and 'base' in extras:
@@ -141,23 +148,4 @@ class HttpdConf(object):
         self.end_vhost()
         self.add("      LogLevel proxy:info")
         self.add("      LogLevel proxy_http:info")
-        return self
-
-    def add_vhost_noh2(self):
-        self.start_vhost(self.env.https_port, "noh2", aliases=["noh2-alias"], doc_root="htdocs/noh2", with_ssl=True)
-        self.add(f"""
-            Protocols http/1.1
-            SSLOptions +StdEnvVars""")
-        self.end_vhost()
-        self.start_vhost(self.env.http_port, "noh2", aliases=["noh2-alias"], doc_root="htdocs/noh2", with_ssl=False)
-        self.add("      Protocols http/1.1")
-        self.add("      SSLOptions +StdEnvVars")
-        self.end_vhost()
-        return self
-
-    def add_proxy_setup(self):
-        self.add("ProxyStatus on")
-        self.add("ProxyTimeout 5")
-        self.add("SSLProxyEngine on")
-        self.add("SSLProxyVerify none")
         return self

@@ -16,9 +16,9 @@ import requests
 from configparser import ConfigParser, ExtendedInterpolation
 from urllib.parse import urlparse
 
-from h2_certs import Credentials
-from h2_nghttp import Nghttp
-from h2_result import ExecResult
+from .certs import Credentials, HttpdTestCA, CertificateSpec
+from .nghttp import Nghttp
+from .result import ExecResult
 
 
 log = logging.getLogger(__name__)
@@ -28,7 +28,7 @@ class Dummy:
     pass
 
 
-class H2TestSetup:
+class HttpdTestSetup:
 
     # the modules we want to load
     MODULES = [
@@ -70,15 +70,17 @@ class H2TestSetup:
         "proxy_hcheck",
     ]
 
-    def __init__(self, env: 'H2TestEnv'):
+    def __init__(self, env: 'HttpdTestEnv'):
         self.env = env
 
-    def make(self):
+    def make(self, modules: List[str] = None, add_modules: List[str] = None):
         self._make_dirs()
         self._make_conf()
+        mod_names = modules.copy() if modules else self.MODULES.copy()
+        if add_modules:
+            mod_names.extend(add_modules)
+        self._make_modules_conf(modules=mod_names)
         self._make_htdocs()
-        self._make_h2test()
-        self._make_modules_conf()
 
     def _make_dirs(self):
         if os.path.exists(self.env.gen_dir):
@@ -88,7 +90,8 @@ class H2TestSetup:
             os.makedirs(self.env.server_logs_dir)
 
     def _make_conf(self):
-        conf_src_dir = os.path.join(self.env.test_dir, 'conf')
+        our_dir = os.path.dirname(inspect.getfile(Dummy))
+        conf_src_dir = os.path.join(our_dir, 'conf')
         conf_dest_dir = os.path.join(self.env.server_dir, 'conf')
         if not os.path.exists(conf_dest_dir):
             os.makedirs(conf_dest_dir)
@@ -102,17 +105,27 @@ class H2TestSetup:
 
     def _make_template(self, src, dest):
         var_map = dict()
-        for name, value in self.env.__class__.__dict__.items():
+        for name, value in HttpdTestEnv.__dict__.items():
             if isinstance(value, property):
                 var_map[name] = value.fget(self.env)
         t = Template(''.join(open(src).readlines()))
         with open(dest, 'w') as fd:
             fd.write(t.substitute(var_map))
 
+    def _make_modules_conf(self, modules: List[str]):
+        modules_conf = os.path.join(self.env.server_dir, 'conf/modules.conf')
+        with open(modules_conf, 'w') as fd:
+            # issue load directives for all modules we want that are shared
+            for m in modules:
+                mod_path = os.path.join(self.env.libexec_dir, f"mod_{m}.so")
+                if os.path.isfile(mod_path):
+                    fd.write(f"LoadModule {m}_module   \"{mod_path}\"\n")
+
     def _make_htdocs(self):
+        our_dir = os.path.dirname(inspect.getfile(Dummy))
         if not os.path.exists(self.env.server_docs_dir):
             os.makedirs(self.env.server_docs_dir)
-        shutil.copytree(os.path.join(self.env.test_dir, 'htdocs'),
+        shutil.copytree(os.path.join(our_dir, 'htdocs'),
                         os.path.join(self.env.server_dir, 'htdocs'),
                         dirs_exist_ok=True)
         cgi_dir = os.path.join(self.env.server_dir, 'htdocs/cgi')
@@ -122,35 +135,16 @@ class H2TestSetup:
                 st = os.stat(cgi_file)
                 os.chmod(cgi_file, st.st_mode | stat.S_IEXEC)
 
-    def _make_h2test(self):
-        p = subprocess.run([self.env.apxs, '-c', 'mod_h2test.c'],
-                           capture_output=True,
-                           cwd=os.path.join(self.env.test_dir, 'mod_h2test'))
-        rv = p.returncode
-        if rv != 0:
-            log.error(f"compiling md_h2test failed: {p.stderr}")
-            raise Exception(f"compiling md_h2test failed: {p.stderr}")
 
-    def _make_modules_conf(self):
-        modules_conf = os.path.join(self.env.server_dir, 'conf/modules.conf')
-        with open(modules_conf, 'w') as fd:
-            # issue load directives for all modules we want that are shared
-            for m in self.MODULES:
-                mod_path = os.path.join(self.env.libexec_dir, f"mod_{m}.so")
-                if os.path.isfile(mod_path):
-                    fd.write(f"LoadModule {m}_module   \"{mod_path}\"\n")
-            for m in ["http2", "proxy_http2"]:
-                fd.write(f"LoadModule {m}_module   \"{self.env.libexec_dir}/mod_{m}.so\"\n")
-            # load our test module which is not installed
-            fd.write(f"LoadModule h2test_module   \"{self.env.test_dir}/mod_h2test/.libs/mod_h2test.so\"\n")
+class HttpdTestEnv:
 
-
-class H2TestEnv:
-
-    def __init__(self, pytestconfig=None, setup_dirs=True):
-        our_dir = os.path.dirname(inspect.getfile(Dummy))
+    def __init__(self, pytestconfig=None,
+                 local_dir=None, add_base_conf: str = None,
+                 interesting_modules: List[str] = None):
+        self._our_dir = os.path.dirname(inspect.getfile(Dummy))
+        self._local_dir = local_dir if local_dir else self._our_dir
         self.config = ConfigParser(interpolation=ExtendedInterpolation())
-        self.config.read(os.path.join(our_dir, 'config.ini'))
+        self.config.read(os.path.join(self._our_dir, 'config.ini'))
 
         self._apxs = self.config.get('global', 'apxs')
         self._prefix = self.config.get('global', 'prefix')
@@ -160,13 +154,11 @@ class H2TestEnv:
         self._curl = self.config.get('global', 'curl_bin')
         self._nghttp = self.config.get('global', 'nghttp')
         self._h2load = self.config.get('global', 'h2load')
-        self._ca = None
 
         self._http_port = int(self.config.get('test', 'http_port'))
         self._https_port = int(self.config.get('test', 'https_port'))
         self._http_tld = self.config.get('test', 'http_tld')
         self._test_dir = self.config.get('test', 'test_dir')
-        self._test_src_dir = self.config.get('test', 'test_src_dir')
         self._gen_dir = self.config.get('test', 'gen_dir')
         self._server_dir = os.path.join(self._gen_dir, 'apache')
         self._server_conf_dir = os.path.join(self._server_dir, "conf")
@@ -176,23 +168,6 @@ class H2TestEnv:
         self._server_error_log = os.path.join(self._server_logs_dir, "error_log")
 
         self._dso_modules = self.config.get('global', 'dso_modules').split(' ')
-        self._domains = [
-            f"test1.{self._http_tld}",
-            f"test2.{self._http_tld}",
-            f"test3.{self._http_tld}",
-            f"cgi.{self._http_tld}",
-            f"push.{self._http_tld}",
-            f"hints.{self._http_tld}",
-            f"ssl.{self._http_tld}",
-            f"pad0.{self._http_tld}",
-            f"pad1.{self._http_tld}",
-            f"pad2.{self._http_tld}",
-            f"pad3.{self._http_tld}",
-            f"pad8.{self._http_tld}",
-        ]
-        self._domains_noh2 = [
-            f"noh2.{self._http_tld}",
-        ]
         self._mpm_type = os.environ['MPM'] if 'MPM' in os.environ else 'event'
 
         self._httpd_addr = "127.0.0.1"
@@ -202,25 +177,38 @@ class H2TestEnv:
         self._test_conf = os.path.join(self._server_conf_dir, "test.conf")
         self._httpd_base_conf = f"""
         LoadModule mpm_{self.mpm_type}_module  \"{self.libexec_dir}/mod_mpm_{self.mpm_type}.so\"
-        H2MinWorkers 1
-        H2MaxWorkers 64
-        SSLSessionCache "shmcb:ssl_gcache_data(32000)"
+        <IfModule mod_ssl.c>
+            SSLSessionCache "shmcb:ssl_gcache_data(32000)"
+        </IfModule>
         """
+        if add_base_conf:
+            self._httpd_base_conf += f"\n{add_base_conf}"
+
         self._verbosity = pytestconfig.option.verbose if pytestconfig is not None else 0
         if self._verbosity >= 2:
+            log_level = "trace2"
             self._httpd_base_conf += f"""
-                LogLevel http2:trace2 proxy_http2:info h2test:trace2 
                 LogLevel core:trace5 mpm_{self.mpm_type}:trace5
                 """
         elif self._verbosity >= 1:
-            self._httpd_base_conf += "LogLevel http2:debug proxy_http2:debug h2test:debug"
+            log_level = "debug"
         else:
-            self._httpd_base_conf += "LogLevel http2:info proxy_http2:info"
+            log_level = "info"
+        if interesting_modules:
+            self._httpd_base_conf += "\nLogLevel"
+            for name in interesting_modules:
+                self._httpd_base_conf += f" {name}:{log_level}"
+            self._httpd_base_conf += "\n"
+
+        self._ca = None
+        self._cert_specs = [CertificateSpec(domains=[
+            f"test1.{self._http_tld}",
+            f"test2.{self._http_tld}",
+            f"test3.{self._http_tld}",
+            f"cgi.{self._http_tld}",
+        ], key_type='rsa4096')]
 
         self._verify_certs = False
-        if setup_dirs:
-            self._setup = H2TestSetup(env=self)
-            self._setup.make()
 
     @property
     def apxs(self) -> str:
@@ -251,18 +239,6 @@ class H2TestEnv:
         return self._http_tld
 
     @property
-    def domain_test1(self) -> str:
-        return self._domains[0]
-
-    @property
-    def domains(self) -> List[str]:
-        return self._domains
-
-    @property
-    def domains_noh2(self) -> List[str]:
-        return self._domains_noh2
-
-    @property
     def http_base_url(self) -> str:
         return self._http_base
 
@@ -275,12 +251,12 @@ class H2TestEnv:
         return self._gen_dir
 
     @property
-    def test_dir(self) -> str:
-        return self._test_dir
+    def local_dir(self) -> str:
+        return self._local_dir
 
     @property
-    def test_src_dir(self) -> str:
-        return self._test_src_dir
+    def test_dir(self) -> str:
+        return self._test_dir
 
     @property
     def server_dir(self) -> str:
@@ -310,6 +286,12 @@ class H2TestEnv:
     def httpd_base_conf(self) -> str:
         return self._httpd_base_conf
 
+    def local_src(self, path):
+        return os.path.join(self.local_dir, path)
+
+    def htdocs_src(self, path):
+        return os.path.join(self._our_dir, 'htdocs', path)
+
     @property
     def h2load(self) -> str:
         return self._h2load
@@ -318,13 +300,19 @@ class H2TestEnv:
     def ca(self) -> Credentials:
         return self._ca
 
-    def set_ca(self, ca: Credentials):
-        self._ca = ca
+    def add_cert_specs(self, specs: List[CertificateSpec]):
+        self._cert_specs.extend(specs)
+
+    def issue_certs(self):
+        if self._ca is None:
+            self._ca = HttpdTestCA.create_root(name=self.http_tld,
+                                               store_dir=os.path.join(self.server_dir, 'ca'), key_type="rsa4096")
+        self._ca.issue_certs(self._cert_specs)
 
     def get_credentials_for_name(self, dns_name) -> List['Credentials']:
-        for domains in [self._domains, self._domains_noh2]:
-            if dns_name in domains:
-                return self.ca.get_credentials_for_name(domains[0])
+        for spec in self._cert_specs:
+            if dns_name in spec.domains:
+                return self.ca.get_credentials_for_name(spec.domains[0])
         return []
 
     def has_h2load(self):
@@ -355,9 +343,6 @@ class H2TestEnv:
     def mkpath(self, path):
         if not os.path.exists(path):
             return os.makedirs(path)
-
-    def test_src(self, path):
-        return os.path.join(self._test_src_dir, path)
 
     def run(self, args) -> ExecResult:
         log.debug("execute: %s", " ".join(args))
@@ -615,18 +600,3 @@ class H2TestEnv:
                 }
             run.add_results({"h2load": stats})
         return run
-
-    def setup_data_1k_1m(self):
-        s100 = "012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678\n"
-        with open(os.path.join(self.gen_dir, "data-1k"), 'w') as f:
-            for i in range(10):
-                f.write(s100)
-        with open(os.path.join(self.gen_dir, "data-10k"), 'w') as f:
-            for i in range(100):
-                f.write(s100)
-        with open(os.path.join(self.gen_dir, "data-100k"), 'w') as f:
-            for i in range(1000):
-                f.write(s100)
-        with open(os.path.join(self.gen_dir, "data-1m"), 'w') as f:
-            for i in range(10000):
-                f.write(s100)

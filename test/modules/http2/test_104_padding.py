@@ -1,6 +1,6 @@
 import pytest
 
-from h2_conf import HttpdConf
+from .env import H2Conf
 
 
 def frame_padding(payload, padbits):
@@ -12,8 +12,11 @@ class TestStore:
 
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):
-        conf = HttpdConf(env)
-        conf.add_vhost_cgi()
+        conf = H2Conf(env)
+        conf.start_vhost(env.https_port, "ssl", doc_root="htdocs/cgi", with_ssl=True)
+        conf.add("Protocols h2 http/1.1")
+        conf.add("AddHandler cgi-script .py")
+        conf.end_vhost()
         conf.start_vhost(env.https_port, "pad0", doc_root="htdocs/cgi", with_ssl=True)
         conf.add("Protocols h2 http/1.1")
         conf.add("H2Padding 0")
@@ -43,8 +46,8 @@ class TestStore:
         assert env.apache_restart() == 0
 
     # default paddings settings: 0 bits
-    def test_104_01(self, env):
-        url = env.mkurl("https", "cgi", "/echo.py")
+    def test_h2_104_01(self, env):
+        url = env.mkurl("https", "ssl", "/echo.py")
         # we get 2 frames back: one with data and an empty one with EOF
         # check the number of padding bytes is as expected
         for data in ["x", "xx", "xxx", "xxxx", "xxxxx", "xxxxxx", "xxxxxxx", "xxxxxxxx"]:
@@ -56,7 +59,7 @@ class TestStore:
             ]
 
     # 0 bits of padding
-    def test_104_02(self, env):
+    def test_h2_104_02(self, env):
         url = env.mkurl("https", "pad0", "/echo.py")
         for data in ["x", "xx", "xxx", "xxxx", "xxxxx", "xxxxxx", "xxxxxxx", "xxxxxxxx"]:
             r = env.nghttp().post_data(url, data, 5)
@@ -64,7 +67,7 @@ class TestStore:
             assert r.results["paddings"] == [0, 0]
 
     # 1 bit of padding
-    def test_104_03(self, env):
+    def test_h2_104_03(self, env):
         url = env.mkurl("https", "pad1", "/echo.py")
         for data in ["x", "xx", "xxx", "xxxx", "xxxxx", "xxxxxx", "xxxxxxx", "xxxxxxxx"]:
             r = env.nghttp().post_data(url, data, 5)
@@ -73,7 +76,7 @@ class TestStore:
                 assert i in range(0, 2)
 
     # 2 bits of padding
-    def test_104_04(self, env):
+    def test_h2_104_04(self, env):
         url = env.mkurl("https", "pad2", "/echo.py")
         for data in ["x", "xx", "xxx", "xxxx", "xxxxx", "xxxxxx", "xxxxxxx", "xxxxxxxx"]:
             r = env.nghttp().post_data(url, data, 5)
@@ -82,7 +85,7 @@ class TestStore:
                 assert i in range(0, 4)
 
     # 3 bits of padding
-    def test_104_05(self, env):
+    def test_h2_104_05(self, env):
         url = env.mkurl("https", "pad3", "/echo.py")
         for data in ["x", "xx", "xxx", "xxxx", "xxxxx", "xxxxxx", "xxxxxxx", "xxxxxxxx"]:
             r = env.nghttp().post_data(url, data, 5)
@@ -91,7 +94,7 @@ class TestStore:
                 assert i in range(0, 8)
 
     # 8 bits of padding
-    def test_104_06(self, env):
+    def test_h2_104_06(self, env):
         url = env.mkurl("https", "pad8", "/echo.py")
         for data in ["x", "xx", "xxx", "xxxx", "xxxxx", "xxxxxx", "xxxxxxx", "xxxxxxxx"]:
             r = env.nghttp().post_data(url, data, 5)

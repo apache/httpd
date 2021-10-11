@@ -1,8 +1,6 @@
-import time
-
 import pytest
 
-from h2_conf import HttpdConf
+from pyhttpd.conf import HttpdConf
 
 
 class TestEncoding:
@@ -11,17 +9,15 @@ class TestEncoding:
 
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):
-        extras = {
-            'base': f"""
+        conf = HttpdConf(env)
+        conf.add(f"""
         <Directory "{env.gen_dir}">
             AllowOverride None
             Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
             Require all granted
         </Directory>
-        """,
-        }
-        conf = HttpdConf(env)
-        conf.add_vhost_test1(extras=extras)
+        """)
+        conf.add_vhost_test1()
         conf.add_vhost_test2(extras={
             f"test2.{env.http_tld}": "AllowEncodedSlashes on",
         })
@@ -32,9 +28,10 @@ class TestEncoding:
         assert env.apache_restart() == 0
         yield
         errors, warnings = env.apache_errors_and_warnings()
+        nl = "\n"
         assert (len(errors), len(warnings)) == (TestEncoding.EXP_AH10244_ERRS, 0),\
-                f"apache logged {len(errors)} errors and {len(warnings)} warnings: \n"\
-                "{0}\n{1}\n".format("\n".join(errors), "\n".join(warnings))
+            f"apache logged {len(errors)} errors and {len(warnings)} warnings: \n"\
+            f"{nl.join(errors)}\n{nl.join(warnings)}\n"
         env.apache_error_log_clear()
 
     # check handling of url encodings that are accepted
@@ -47,7 +44,7 @@ class TestEncoding:
         "/nothing/%2e/%2e%2e/006/006.css",
         "/nothing/%2e/%2e%2e/006/006%2ecss",
     ])
-    def test_203_01(self, env, path):
+    def test_core_001_01(self, env, path):
         url = env.mkurl("https", "test1", path)
         r = env.curl_get(url)
         assert r.response["status"] == 200
@@ -62,7 +59,7 @@ class TestEncoding:
         "/006/../006/006.css",
         "/006/%2e%2e/006/006.css",
     ])
-    def test_203_03(self, env, path):
+    def test_core_001_03(self, env, path):
         url = env.mkurl("https", "test1", path)
         r = env.curl_get(url)
         assert r.response["status"] == 200
@@ -83,7 +80,7 @@ class TestEncoding:
         ["/nothing/%25%32%65%25%32%65/%25%32%65%25%32%65/h2_env.py", 404],
         ["/cgi-bin/%25%32%65%25%32%65/%25%32%65%25%32%65/h2_env.py", 404],
     ])
-    def test_203_04(self, env, path, status):
+    def test_core_001_04(self, env, path, status):
         url = env.mkurl("https", "cgi", path)
         r = env.curl_get(url)
         assert r.response["status"] == status
@@ -98,8 +95,7 @@ class TestEncoding:
         ["test2", "/x%252f.test", 200],
         ["test2", "/10%25abnormal.txt", 200],
     ])
-    def test_203_20(self, env, host, path, status):
+    def test_core_001_20(self, env, host, path, status):
         url = env.mkurl("https", host, path)
         r = env.curl_get(url)
         assert r.response["status"] == status
-

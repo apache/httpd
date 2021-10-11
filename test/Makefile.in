@@ -18,3 +18,9 @@ test: $(bin_PROGRAMS)
 # dbu_OBJECTS = dbu.lo
 # dbu: $(dbu_OBJECTS)
 #	$(LINK) $(dbu_OBJECTS) $(PROGRAM_LDADD)
+
+clean:
+	rm -rf gen
+
+distclean:
+	rm -f pytest/config.ini

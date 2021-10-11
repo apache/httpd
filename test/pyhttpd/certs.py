@@ -148,8 +148,8 @@ class Credentials:
         creds = self._store.load_credentials(name=spec.name, key_type=key_type, single_file=spec.single_file) \
             if self._store else None
         if creds is None:
-            creds = H2TestCA.create_credentials(spec=spec, issuer=self, key_type=key_type,
-                                                valid_from=spec.valid_from, valid_to=spec.valid_to)
+            creds = HttpdTestCA.create_credentials(spec=spec, issuer=self, key_type=key_type,
+                                                   valid_from=spec.valid_from, valid_to=spec.valid_to)
             if self._store:
                 self._store.save(creds, single_file=spec.single_file)
 
@@ -234,14 +234,14 @@ class CertStore:
         return None
 
 
-class H2TestCA:
+class HttpdTestCA:
 
     @classmethod
     def create_root(cls, name: str, store_dir: str, key_type: str = "rsa2048") -> Credentials:
         store = CertStore(fpath=store_dir)
         creds = store.load_credentials(name="ca", key_type=key_type)
         if creds is None:
-            creds = H2TestCA._make_ca_credentials(name=name, key_type=key_type)
+            creds = HttpdTestCA._make_ca_credentials(name=name, key_type=key_type)
             store.save(creds, name="ca")
             creds.set_store(store)
         return creds
@@ -255,17 +255,17 @@ class H2TestCA:
         :returns: the certificate and private key PEM file paths
         """
         if spec.domains and len(spec.domains):
-            creds = H2TestCA._make_server_credentials(name=spec.name, domains=spec.domains,
-                                                      issuer=issuer, valid_from=valid_from,
-                                                      valid_to=valid_to, key_type=key_type)
+            creds = HttpdTestCA._make_server_credentials(name=spec.name, domains=spec.domains,
+                                                         issuer=issuer, valid_from=valid_from,
+                                                         valid_to=valid_to, key_type=key_type)
         elif spec.client:
-            creds = H2TestCA._make_client_credentials(name=spec.name, issuer=issuer,
-                                                      email=spec.email, valid_from=valid_from,
-                                                      valid_to=valid_to, key_type=key_type)
+            creds = HttpdTestCA._make_client_credentials(name=spec.name, issuer=issuer,
+                                                         email=spec.email, valid_from=valid_from,
+                                                         valid_to=valid_to, key_type=key_type)
         elif spec.name:
-            creds = H2TestCA._make_ca_credentials(name=spec.name, issuer=issuer,
-                                                  valid_from=valid_from, valid_to=valid_to,
-                                                  key_type=key_type)
+            creds = HttpdTestCA._make_ca_credentials(name=spec.name, issuer=issuer,
+                                                     valid_from=valid_from, valid_to=valid_to,
+                                                     key_type=key_type)
         else:
             raise Exception(f"unrecognized certificate specification: {spec}")
         return creds
@@ -397,11 +397,11 @@ class H2TestCA:
         else:
             issuer_subject = None
             issuer_key = pkey
-        subject = H2TestCA._make_x509_name(org_name=name, parent=issuer.subject if issuer else None)
-        csr = H2TestCA._make_csr(subject=subject,
-                                 issuer_subject=issuer_subject, pkey=pkey,
-                                 valid_from_delta=valid_from, valid_until_delta=valid_to)
-        csr = H2TestCA._add_ca_usages(csr)
+        subject = HttpdTestCA._make_x509_name(org_name=name, parent=issuer.subject if issuer else None)
+        csr = HttpdTestCA._make_csr(subject=subject,
+                                    issuer_subject=issuer_subject, pkey=pkey,
+                                    valid_from_delta=valid_from, valid_until_delta=valid_to)
+        csr = HttpdTestCA._add_ca_usages(csr)
         cert = csr.sign(private_key=issuer_key,
                         algorithm=hashes.SHA256(),
                         backend=default_backend())
@@ -415,11 +415,11 @@ class H2TestCA:
                                  ) -> Credentials:
         name = name
         pkey = _private_key(key_type=key_type)
-        subject = H2TestCA._make_x509_name(common_name=name, parent=issuer.subject)
-        csr = H2TestCA._make_csr(subject=subject,
-                                 issuer_subject=issuer.certificate.subject, pkey=pkey,
-                                 valid_from_delta=valid_from, valid_until_delta=valid_to)
-        csr = H2TestCA._add_leaf_usages(csr, domains=domains, issuer=issuer)
+        subject = HttpdTestCA._make_x509_name(common_name=name, parent=issuer.subject)
+        csr = HttpdTestCA._make_csr(subject=subject,
+                                    issuer_subject=issuer.certificate.subject, pkey=pkey,
+                                    valid_from_delta=valid_from, valid_until_delta=valid_to)
+        csr = HttpdTestCA._add_leaf_usages(csr, domains=domains, issuer=issuer)
         cert = csr.sign(private_key=issuer.private_key,
                         algorithm=hashes.SHA256(),
                         backend=default_backend())
@@ -433,11 +433,11 @@ class H2TestCA:
                                  valid_to: timedelta = timedelta(days=89),
                                  ) -> Credentials:
         pkey = _private_key(key_type=key_type)
-        subject = H2TestCA._make_x509_name(common_name=name, parent=issuer.subject)
-        csr = H2TestCA._make_csr(subject=subject,
-                                 issuer_subject=issuer.certificate.subject, pkey=pkey,
-                                 valid_from_delta=valid_from, valid_until_delta=valid_to)
-        csr = H2TestCA._add_client_usages(csr, issuer=issuer, rfc82name=email)
+        subject = HttpdTestCA._make_x509_name(common_name=name, parent=issuer.subject)
+        csr = HttpdTestCA._make_csr(subject=subject,
+                                    issuer_subject=issuer.certificate.subject, pkey=pkey,
+                                    valid_from_delta=valid_from, valid_until_delta=valid_to)
+        csr = HttpdTestCA._add_client_usages(csr, issuer=issuer, rfc82name=email)
         cert = csr.sign(private_key=issuer.private_key,
                         algorithm=hashes.SHA256(),
                         backend=default_backend())

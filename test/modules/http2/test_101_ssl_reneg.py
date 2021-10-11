@@ -1,14 +1,14 @@
 import re
 import pytest
 
-from h2_conf import HttpdConf
+from .env import H2Conf
 
 
 class TestStore:
 
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):
-        HttpdConf(env).add(
+        H2Conf(env).add(
             f"""
             SSLCipherSuite ECDHE-RSA-AES256-GCM-SHA384
             <Directory \"{env.server_dir}/htdocs/ssl-client-verify\"> 
@@ -46,7 +46,7 @@ class TestStore:
         assert env.apache_restart() == 0
 
     # access a resource with SSL renegotiation, using HTTP/1.1
-    def test_101_01(self, env):
+    def test_h2_101_01(self, env):
         url = env.mkurl("https", "ssl", "/renegotiate/cipher/")
         r = env.curl_get(url, options=["-v", "--http1.1", "--tlsv1.2", "--tls-max", "1.2"])
         assert 0 == r.exit_code
@@ -54,7 +54,7 @@ class TestStore:
         assert 403 == r.response["status"]
         
     # try to renegotiate the cipher, should fail with correct code
-    def test_101_02(self, env):
+    def test_h2_101_02(self, env):
         url = env.mkurl("https", "ssl", "/renegotiate/cipher/")
         r = env.curl_get(url, options=[
             "-vvv", "--tlsv1.2", "--tls-max", "1.2", "--ciphers", "ECDHE-RSA-AES256-GCM-SHA384"
@@ -65,7 +65,7 @@ class TestStore:
         
     # try to renegotiate a client certificate from Location 
     # needs to fail with correct code
-    def test_101_03(self, env):
+    def test_h2_101_03(self, env):
         url = env.mkurl("https", "ssl", "/renegotiate/verify/")
         r = env.curl_get(url, options=["-vvv", "--tlsv1.2", "--tls-max", "1.2"])
         assert 0 != r.exit_code
@@ -74,7 +74,7 @@ class TestStore:
         
     # try to renegotiate a client certificate from Directory 
     # needs to fail with correct code
-    def test_101_04(self, env):
+    def test_h2_101_04(self, env):
         url = env.mkurl("https", "ssl", "/ssl-client-verify/index.html")
         r = env.curl_get(url, options=["-vvv", "--tlsv1.2", "--tls-max", "1.2"])
         assert 0 != r.exit_code
@@ -83,7 +83,7 @@ class TestStore:
         
     # make 10 requests on the same connection, none should produce a status code
     # reported by erki@example.ee
-    def test_101_05(self, env):
+    def test_h2_101_05(self, env):
         r = env.run([env.h2load, "-n", "10", "-c", "1", "-m", "1", "-vvvv",
                      f"{env.https_base_url}/ssl-client-verify/index.html"])
         assert 0 == r.exit_code
@@ -99,7 +99,7 @@ class TestStore:
 
     # Check that "SSLRequireSSL" works on h2 connections
     # See <https://bz.apache.org/bugzilla/show_bug.cgi?id=62654>
-    def test_101_10a(self, env):
+    def test_h2_101_10a(self, env):
         url = env.mkurl("https", "ssl", "/sslrequire/index.html")
         r = env.curl_get(url)
         assert 0 == r.exit_code
@@ -108,7 +108,7 @@ class TestStore:
 
     # Check that "require ssl" works on h2 connections
     # See <https://bz.apache.org/bugzilla/show_bug.cgi?id=62654>
-    def test_101_10b(self, env):
+    def test_h2_101_10b(self, env):
         url = env.mkurl("https", "ssl", "/requiressl/index.html")
         r = env.curl_get(url)
         assert 0 == r.exit_code
@@ -116,7 +116,7 @@ class TestStore:
         assert 404 == r.response["status"]
         
     # Check that status works with ErrorDoc, see pull #174, fixes #172
-    def test_101_11(self, env):
+    def test_h2_101_11(self, env):
         url = env.mkurl("https", "ssl", "/renegotiate/err-doc-cipher")
         r = env.curl_get(url, options=[
             "-vvv", "--tlsv1.2", "--tls-max", "1.2", "--ciphers", "ECDHE-RSA-AES256-GCM-SHA384"

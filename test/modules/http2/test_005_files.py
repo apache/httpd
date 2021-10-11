@@ -1,7 +1,7 @@
 import os
 import pytest
 
-from h2_conf import HttpdConf
+from .env import H2Conf
 
 
 def mk_text_file(fpath: str, lines: int):
@@ -33,14 +33,14 @@ class TestFiles:
             mk_text_file(os.path.join(docs_a, fname), 8 * fsize)
             self.URI_PATHS.append(f"/files/{fname}")
 
-        HttpdConf(env).add_vhost_cgi(
+        H2Conf(env).add_vhost_cgi(
             proxy_self=True, h2proxy_self=True
         ).add_vhost_test1(
             proxy_self=True, h2proxy_self=True
         ).install()
         assert env.apache_restart() == 0
 
-    def test_005_01(self, env):
+    def test_h2_005_01(self, env):
         url = env.mkurl("https", "cgi", self.URI_PATHS[2])
         r = env.curl_get(url)
         assert r.response, r.stderr + r.stdout

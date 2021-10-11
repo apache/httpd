@@ -6,7 +6,7 @@ from typing import Dict
 
 from urllib.parse import urlparse
 
-from h2_result import ExecResult
+from .result import ExecResult
 
 
 def _get_path(x):

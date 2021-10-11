@@ -1,13 +1,13 @@
 import pytest
 
-from h2_conf import HttpdConf
+from .env import H2Conf
 
 
 class TestStore:
 
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):
-        conf = HttpdConf(env).start_vhost(env.https_port, "ssl", with_ssl=True)
+        conf = H2Conf(env).start_vhost(env.https_port, "ssl", with_ssl=True)
         conf.add("""
               Protocols h2 http/1.1
               SSLOptions +StdEnvVars
@@ -23,14 +23,14 @@ class TestStore:
         env.mkpath("%s/htdocs/ssl-client-verify" % env.server_dir)
         assert env.apache_restart() == 0
 
-    def test_102_01(self, env):
+    def test_h2_102_01(self, env):
         url = env.mkurl("https", "ssl", "/h2only.html")
         r = env.curl_get(url)
         assert 0 == r.exit_code
         assert r.response
         assert 404 == r.response["status"]
         
-    def test_102_02(self, env):
+    def test_h2_102_02(self, env):
         url = env.mkurl("https", "ssl", "/noh2.html")
         r = env.curl_get(url)
         assert 0 == r.exit_code

@@ -1,7 +1,7 @@
 import pytest
 import os
 
-from h2_conf import HttpdConf
+from .env import H2Conf
 
 
 class TestStore:
@@ -9,7 +9,7 @@ class TestStore:
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):
         env.setup_data_1k_1m()
-        HttpdConf(env).add_vhost_cgi(proxy_self=True, h2proxy_self=True).install()
+        H2Conf(env).add_vhost_cgi(proxy_self=True, h2proxy_self=True).install()
         assert env.apache_restart() == 0
 
     def check_h2load_ok(self, env, r, n):
@@ -25,7 +25,7 @@ class TestStore:
         assert 0 == r.results["h2load"]["status"]["5xx"]
     
     # test POST on cgi, where input is read
-    def test_711_10(self, env):
+    def test_h2_711_10(self, env):
         url = env.mkurl("https", "test1", "/echo.py")
         n = 100
         m = 5
@@ -40,7 +40,7 @@ class TestStore:
         self.check_h2load_ok(env, r, n)
 
     # test POST on cgi via http/1.1 proxy, where input is read
-    def test_711_11(self, env):
+    def test_h2_711_11(self, env):
         url = env.mkurl("https", "test1", "/proxy/echo.py")
         n = 100
         m = 5
@@ -55,7 +55,7 @@ class TestStore:
         self.check_h2load_ok(env, r, n)
 
     # test POST on cgi via h2proxy, where input is read
-    def test_711_12(self, env):
+    def test_h2_711_12(self, env):
         url = env.mkurl("https", "test1", "/h2proxy/echo.py")
         n = 100
         m = 5

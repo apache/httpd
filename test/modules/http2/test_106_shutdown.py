@@ -7,20 +7,20 @@ from threading import Thread
 
 import pytest
 
-from h2_conf import HttpdConf
-from h2_result import ExecResult
+from .env import H2Conf
+from pyhttpd.result import ExecResult
 
 
 class TestShutdown:
 
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):
-        conf = HttpdConf(env)
+        conf = H2Conf(env)
         conf.add_vhost_cgi()
         conf.install()
         assert env.apache_restart() == 0
 
-    def test_106_01(self, env):
+    def test_h2_106_01(self, env):
         url = env.mkurl("https", "cgi", "/necho.py")
         lines = 100000
         text = "123456789"

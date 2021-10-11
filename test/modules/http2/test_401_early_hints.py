@@ -1,6 +1,6 @@
 import pytest
 
-from h2_conf import HttpdConf
+from .env import H2Conf
 
 
 # The push tests depend on "nghttp"
@@ -8,7 +8,7 @@ class TestStore:
 
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):
-        HttpdConf(env).start_vhost(
+        H2Conf(env).start_vhost(
             env.https_port, "hints", doc_root="htdocs/test1", with_ssl=True
         ).add("""    Protocols h2 http/1.1"
         H2EarlyHints on
@@ -25,7 +25,7 @@ class TestStore:
         assert env.apache_restart() == 0
 
     # H2EarlyHints enabled in general, check that it works for H2PushResource
-    def test_401_31(self, env):
+    def test_h2_401_31(self, env):
         url = env.mkurl("https", "hints", "/006-hints.html")
         r = env.nghttp().get(url)
         assert 200 == r.response["status"]
@@ -37,7 +37,7 @@ class TestStore:
         assert early["header"]["link"]
 
     # H2EarlyHints enabled in general, but does not trigger on added response headers
-    def test_401_32(self, env):
+    def test_h2_401_32(self, env):
         url = env.mkurl("https", "hints", "/006-nohints.html")
         r = env.nghttp().get(url)
         assert 200 == r.response["status"]

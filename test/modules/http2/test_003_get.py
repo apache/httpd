@@ -1,14 +1,14 @@
 import re
 import pytest
 
-from h2_conf import HttpdConf
+from .env import H2Conf
 
 
 class TestStore:
 
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):
-        HttpdConf(env).add_vhost_cgi(
+        H2Conf(env).add_vhost_cgi(
             proxy_self=True, h2proxy_self=True
         ).add_vhost_test1(
             proxy_self=True, h2proxy_self=True
@@ -16,7 +16,7 @@ class TestStore:
         assert env.apache_restart() == 0
 
     # check SSL environment variables from CGI script
-    def test_003_01(self, env):
+    def test_h2_003_01(self, env):
         url = env.mkurl("https", "cgi", "/hello.py")
         r = env.curl_get(url, 5, ["--tlsv1.2"])
         assert 200 == r.response["status"]
@@ -37,8 +37,8 @@ class TestStore:
         assert "" == r.response["json"]["h2push"]
 
     # retrieve a html file from the server and compare it to its source
-    def test_003_02(self, env):
-        with open(env.test_src("htdocs/test1/index.html"), mode='rb') as file:
+    def test_h2_003_02(self, env):
+        with open(env.htdocs_src("test1/index.html"), mode='rb') as file:
             src = file.read()
 
         url = env.mkurl("https", "test1", "/index.html")
@@ -63,23 +63,23 @@ class TestStore:
             exp += text + "\n"
         assert exp == r.response["body"].decode('utf-8')
     
-    def test_003_10(self, env):
+    def test_h2_003_10(self, env):
         self.check_necho(env, 10, "0123456789")
 
-    def test_003_11(self, env):
+    def test_h2_003_11(self, env):
         self.check_necho(env, 100, "0123456789")
 
-    def test_003_12(self, env):
+    def test_h2_003_12(self, env):
         self.check_necho(env, 1000, "0123456789")
 
-    def test_003_13(self, env):
+    def test_h2_003_13(self, env):
         self.check_necho(env, 10000, "0123456789")
 
-    def test_003_14(self, env):
+    def test_h2_003_14(self, env):
         self.check_necho(env, 100000, "0123456789")
 
     # github issue #126
-    def test_003_20(self, env):
+    def test_h2_003_20(self, env):
         url = env.mkurl("https", "test1", "/006/")
         r = env.curl_get(url, 5)
         assert 200 == r.response["status"]
@@ -111,7 +111,7 @@ class TestStore:
         s = re.sub(r'^vary:.*\n', '', s, flags=re.MULTILINE)
         return re.sub(r'^accept-ranges:.*\n', '', s, flags=re.MULTILINE)
         
-    def test_003_21(self, env):
+    def test_h2_003_21(self, env):
         url = env.mkurl("https", "test1", "/index.html")
         r = env.curl_get(url, 5, ["-I"])
         assert 200 == r.response["status"]
@@ -141,7 +141,7 @@ content-type: text/html
     @pytest.mark.parametrize("path", [
         "/004.html", "/proxy/004.html", "/h2proxy/004.html"
     ])
-    def test_003_30(self, env, path):
+    def test_h2_003_30(self, env, path):
         url = env.mkurl("https", "test1", path)
         r = env.curl_get(url, 5)
         assert 200 == r.response["status"]
@@ -156,7 +156,7 @@ content-type: text/html
     @pytest.mark.parametrize("path", [
         "/004.html", "/proxy/004.html", "/h2proxy/004.html"
     ])
-    def test_003_31(self, env, path):
+    def test_h2_003_31(self, env, path):
         url = env.mkurl("https", "test1", path)
         r = env.curl_get(url, 5)
         assert 200 == r.response["status"]
@@ -168,7 +168,7 @@ content-type: text/html
         assert 304 == r.response["status"]
 
     # test various response body lengths to work correctly 
-    def test_003_40(self, env):
+    def test_h2_003_40(self, env):
         n = 1001
         while n <= 1025024:
             url = env.mkurl("https", "cgi", f"/mnot164.py?count={n}&text=X")
@@ -182,7 +182,7 @@ content-type: text/html
     @pytest.mark.parametrize("n", [
         0, 1, 1291, 1292, 80000, 80123, 81087, 98452
     ])
-    def test_003_41(self, env, n):
+    def test_h2_003_41(self, env, n):
         url = env.mkurl("https", "cgi", f"/mnot164.py?count={n}&text=X")
         r = env.curl_get(url, 5)
         assert 200 == r.response["status"]
@@ -193,7 +193,7 @@ content-type: text/html
     @pytest.mark.parametrize("path", [
         "/004.html", "/proxy/004.html", "/h2proxy/004.html"
     ])
-    def test_003_50(self, env, path):
+    def test_h2_003_50(self, env, path):
         # check that the resource supports ranges and we see its raw content-length
         url = env.mkurl("https", "test1", path)
         r = env.curl_get(url, 5)

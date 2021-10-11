@@ -5,12 +5,12 @@ import sys
 import time
 from threading import Thread
 
-from h2_env import H2TestEnv
+from .env import HttpdTestEnv
 
 
 class CurlPiper:
 
-    def __init__(self, env: H2TestEnv, url: str):
+    def __init__(self, env: HttpdTestEnv, url: str):
         self.env = env
         self.url = url
         self.proc = None
