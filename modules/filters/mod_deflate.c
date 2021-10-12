@@ -989,7 +989,12 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         }
 
         /* read */
-        apr_bucket_read(e, &data, &len, APR_BLOCK_READ);
+        rv = apr_bucket_read(e, &data, &len, APR_BLOCK_READ);
+        if (rv) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(10298)
+                          "failed reading from %s bucket", e->type->name);
+            return rv;
+        }
         if (!len) {
             apr_bucket_delete(e);
             continue;
