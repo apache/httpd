@@ -475,7 +475,8 @@ leave:
 apr_status_t h2_stream_flush_input(h2_stream *stream)
 {
     apr_status_t status = APR_SUCCESS;
-    
+    apr_off_t written;
+
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, stream->session->c1,
                   H2_STRM_MSG(stream, "flush input"));
     if (stream->in_buffer && !APR_BRIGADE_EMPTY(stream->in_buffer)) {
@@ -483,7 +484,7 @@ apr_status_t h2_stream_flush_input(h2_stream *stream)
             h2_stream_setup_input(stream);
         }
         status = h2_beam_send(stream->input, stream->session->c1,
-                              stream->in_buffer, APR_BLOCK_READ);
+                              stream->in_buffer, APR_BLOCK_READ, &written);
         stream->in_last_write = apr_time_now();
         if (APR_SUCCESS != status && stream->state == H2_SS_CLOSED_L) {
             ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, stream->session->c1,

@@ -416,15 +416,12 @@ receive:
 
 static apr_status_t beam_out(conn_rec *c2, h2_conn_ctx_t *conn_ctx, apr_bucket_brigade* bb)
 {
-    apr_off_t written, left;
+    apr_off_t written;
     apr_status_t rv;
 
-    apr_brigade_length(bb, 0, &written);
-    rv = h2_beam_send(conn_ctx->beam_out, c2, bb, APR_BLOCK_READ);
+    rv = h2_beam_send(conn_ctx->beam_out, c2, bb, APR_BLOCK_READ, &written);
 
     if (APR_STATUS_IS_EAGAIN(rv)) {
-        apr_brigade_length(bb, 0, &left);
-        written -= left;
         rv = APR_SUCCESS;
     }
     if (written && h2_c2_logio_add_bytes_out) {

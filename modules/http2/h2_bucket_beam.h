@@ -122,6 +122,7 @@ void h2_beam_set_copy_files(h2_bucket_beam * beam, int enabled);
  *             used to create the beam
  * @param bb the brigade to take buckets from
  * @param block if the sending should block when the buffer is full
+ * @param pwritten on return, contains the number of data bytes sent
  * @return APR_SUCCESS when buckets were added to the beam. This can be
  *                     a partial transfer and other buckets may still remain in bb
  *         APR_EAGAIN on non-blocking send when the buffer is full
@@ -130,7 +131,8 @@ void h2_beam_set_copy_files(h2_bucket_beam * beam, int enabled);
  */
 apr_status_t h2_beam_send(h2_bucket_beam *beam, conn_rec *from,
                           apr_bucket_brigade *bb, 
-                          apr_read_type_e block);
+                          apr_read_type_e block,
+                          apr_off_t *pwritten);
 
 /**
  * Receive buckets from the beam into the given brigade. The caller is

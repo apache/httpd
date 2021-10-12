@@ -603,7 +603,7 @@ apr_status_t h2_mplx_c1_process(h2_mplx *m,
                                 h2_session *session,
                                 int *pstream_count)
 {
-    apr_status_t rv;
+    apr_status_t rv = APR_SUCCESS;
     int sid;
 
     H2_MPLX_ENTER(m);
