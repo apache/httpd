@@ -1358,7 +1358,7 @@ apr_status_t h2_stream_read_output(h2_stream *stream)
          * by the client. This could be a POST with body that we negate
          * and we need to RST_STREAM to end if. */
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c1,
-                      H2_STRM_LOG(APLOGNO(10026), stream, "remote close missing"));
+                      H2_STRM_LOG(APLOGNO(10313), stream, "remote close missing"));
         nghttp2_submit_rst_stream(stream->session->ngh2, NGHTTP2_FLAG_NONE,
                                   stream->id, NGHTTP2_NO_ERROR);
         rv = APR_EOF;
