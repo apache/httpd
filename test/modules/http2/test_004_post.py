@@ -1,7 +1,10 @@
+import difflib
 import email.parser
 import json
 import os
 import re
+import sys
+
 import pytest
 
 from .env import H2Conf
@@ -72,26 +75,6 @@ class TestStore:
         assert m
         assert re.match(value, m.group(1)) 
 
-    # verify that we parse nghttp output correctly
-    def check_nghttp_body(self, env, ref_input, nghttp_output):
-        with open(env.local_src(os.path.join(env.gen_dir, ref_input)), mode='rb') as f:
-            refbody = f.read()
-        with open(env.local_src(nghttp_output), mode='rb') as f:
-            text = f.read()
-        o = env.nghttp().parse_output(text)
-        assert "response" in o
-        assert "body" in o["response"]
-        if refbody != o["response"]["body"]:
-            with open(env.local_src(os.path.join(env.gen_dir, '%s.parsed' % ref_input)), mode='bw') as f:
-                f.write(o["response"]["body"])
-        assert len(refbody) == len(o["response"]["body"])
-        assert refbody == o["response"]["body"]
-    
-    def test_h2_004_20(self, env):
-        self.check_nghttp_body(env, 'data-1k', 'data/nghttp-output-1k-1.txt')
-        self.check_nghttp_body(env, 'data-10k', 'data/nghttp-output-10k-1.txt')
-        self.check_nghttp_body(env, 'data-100k', 'data/nghttp-output-100k-1.txt')
-
     # POST some data using nghttp and see it echo'ed properly back
     def nghttp_post_and_verify(self, env, fname, options=None):
         url = env.mkurl("https", "cgi", "/echo.py")
@@ -103,7 +86,17 @@ class TestStore:
 
         with open(env.local_src(fpath), mode='rb') as file:
             src = file.read()
-        assert src == r.response["body"]
+        assert 'request-length' in r.response["header"]
+        assert int(r.response["header"]['request-length']) == len(src)
+        if len(r.response["body"]) != len(src):
+            sys.stderr.writelines(difflib.unified_diff(
+                src.decode().splitlines(True),
+                r.response["body"].decode().splitlines(True),
+                fromfile='source',
+                tofile='response'
+            ))
+            assert len(r.response["body"]) == len(src)
+        assert r.response["body"] == src, f"expected '{src}', got '{r.response['body']}'"
 
     @pytest.mark.parametrize("name", [
         "data-1k", "data-10k", "data-100k", "data-1m"
@@ -112,7 +105,7 @@ class TestStore:
         self.nghttp_post_and_verify(env, name, [])
 
     @pytest.mark.parametrize("name", [
-        "data-1k", "data-10k", "data-100k", "data-1m"
+        "data-1k", "data-10k", "data-100k", "data-1m",
     ])
     def test_h2_004_22(self, env, name, repeat):
         self.nghttp_post_and_verify(env, name, ["--no-content-length"])

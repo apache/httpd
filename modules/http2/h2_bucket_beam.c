@@ -422,7 +422,8 @@ void h2_beam_abort(h2_bucket_beam *beam, conn_rec *c)
 static apr_status_t append_bucket(h2_bucket_beam *beam,
                                   apr_bucket *b,
                                   apr_read_type_e block,
-                                  apr_size_t *pspace_left)
+                                  apr_size_t *pspace_left,
+                                  apr_off_t *pwritten)
 {
     const char *data;
     apr_size_t len;
@@ -438,6 +439,7 @@ static apr_status_t append_bucket(h2_bucket_beam *beam,
         APR_BUCKET_REMOVE(b);
         apr_bucket_setaside(b, beam->pool);
         H2_BLIST_INSERT_TAIL(&beam->buckets_to_send, b);
+        *pwritten += (apr_off_t)b->length;
         return APR_SUCCESS;
     }
     else if (APR_BUCKET_IS_FILE(b)) {
@@ -512,6 +514,7 @@ static apr_status_t append_bucket(h2_bucket_beam *beam,
     
     APR_BUCKET_REMOVE(b);
     H2_BLIST_INSERT_TAIL(&beam->buckets_to_send, b);
+    *pwritten += (apr_off_t)b->length;
 
 cleanup:
     return status;
@@ -519,7 +522,8 @@ cleanup:
 
 apr_status_t h2_beam_send(h2_bucket_beam *beam, conn_rec *from,
                           apr_bucket_brigade *sender_bb, 
-                          apr_read_type_e block)
+                          apr_read_type_e block,
+                          apr_off_t *pwritten)
 {
     apr_bucket *b;
     apr_status_t rv = APR_SUCCESS;
@@ -532,6 +536,7 @@ apr_status_t h2_beam_send(h2_bucket_beam *beam, conn_rec *from,
     ap_assert(sender_bb);
     H2_BEAM_LOG(beam, from, APLOG_TRACE2, rv, "start send", sender_bb);
     purge_consumed_buckets(beam);
+    *pwritten = 0;
     was_empty = buffer_is_empty(beam);
 
     space_left = calc_space_left(beam);
@@ -548,7 +553,7 @@ apr_status_t h2_beam_send(h2_bucket_beam *beam, conn_rec *from,
             was_empty = buffer_is_empty(beam);
         }
         b = APR_BRIGADE_FIRST(sender_bb);
-        rv = append_bucket(beam, b, block, &space_left);
+        rv = append_bucket(beam, b, block, &space_left, pwritten);
     }
 
     if (was_empty && beam->was_empty_cb && !buffer_is_empty(beam)) {

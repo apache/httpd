@@ -65,19 +65,19 @@ class H2TestEnv(HttpdTestEnv):
 
 
     def setup_data_1k_1m(self):
-        s100 = "012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678\n"
+        s90 = "01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678\n"
         with open(os.path.join(self.gen_dir, "data-1k"), 'w') as f:
             for i in range(10):
-                f.write(s100)
+                f.write(f"{i:09d}-{s90}")
         with open(os.path.join(self.gen_dir, "data-10k"), 'w') as f:
             for i in range(100):
-                f.write(s100)
+                f.write(f"{i:09d}-{s90}")
         with open(os.path.join(self.gen_dir, "data-100k"), 'w') as f:
             for i in range(1000):
-                f.write(s100)
+                f.write(f"{i:09d}-{s90}")
         with open(os.path.join(self.gen_dir, "data-1m"), 'w') as f:
             for i in range(10000):
-                f.write(s100)
+                f.write(f"{i:09d}-{s90}")
 
 
 class H2Conf(HttpdConf):
