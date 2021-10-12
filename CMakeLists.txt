@@ -436,18 +436,15 @@ SET(mod_http2_extra_defines          ssize_t=long)
 SET(mod_http2_extra_includes         ${NGHTTP2_INCLUDE_DIR})
 SET(mod_http2_extra_libs             ${NGHTTP2_LIBRARIES})
 SET(mod_http2_extra_sources
-  modules/http2/h2_alt_svc.c
-  modules/http2/h2_bucket_eos.c      modules/http2/h2_config.c
-  modules/http2/h2_conn.c            modules/http2/h2_conn_io.c
-  modules/http2/h2_ctx.c             modules/http2/h2_filter.c
-  modules/http2/h2_from_h1.c         modules/http2/h2_h2.c
-  modules/http2/h2_bucket_beam.c
-  modules/http2/h2_mplx.c            modules/http2/h2_push.c
-  modules/http2/h2_request.c         modules/http2/h2_headers.c
-  modules/http2/h2_session.c         modules/http2/h2_stream.c 
-  modules/http2/h2_switch.c
-  modules/http2/h2_task.c            modules/http2/h2_util.c
-  modules/http2/h2_workers.c
+  modules/http2/h2_bucket_beam.c     modules/http2/h2_bucket_eos.c
+  modules/http2/h2_c1.c              modules/http2/h2_c1_io.c
+  modules/http2/h2_c2.c              modules/http2/h2_c2_filter.c
+  modules/http2/h2_config.c          modules/http2/h2_conn_ctx.c
+  modules/http2/h2_headers.c         modules/http2/h2_mplx.c
+  modules/http2/h2_protocol.c        modules/http2/h2_push.c
+  modules/http2/h2_request.c         modules/http2/h2_session.c
+  modules/http2/h2_stream.c          modules/http2/h2_switch.c
+  modules/http2/h2_util.c            modules/http2/h2_workers.c
 )
 SET(mod_ldap_extra_defines           LDAP_DECLARE_EXPORT)
 SET(mod_ldap_extra_libs              wldap32)

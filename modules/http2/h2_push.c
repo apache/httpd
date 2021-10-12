@@ -31,7 +31,7 @@
 #include <http_log.h>
 
 #include "h2_private.h"
-#include "h2_h2.h"
+#include "h2_protocol.h"
 #include "h2_util.h"
 #include "h2_push.h"
 #include "h2_request.h"
@@ -348,9 +348,8 @@ static int add_push(link_ctx *ctx)
                 }
                 headers = apr_table_make(ctx->pool, 5);
                 apr_table_do(set_push_header, headers, ctx->req->headers, NULL);
-                req = h2_req_create(0, ctx->pool, method, ctx->req->scheme,
-                                    ctx->req->authority, path, headers,
-                                    ctx->req->serialize);
+                req = h2_request_create(0, ctx->pool, method, ctx->req->scheme,
+                                        ctx->req->authority, path, headers);
                 /* atm, we do not push on pushes */
                 h2_request_end_headers(req, ctx->pool, 1, 0);
                 push->req = req;
@@ -657,13 +656,13 @@ apr_array_header_t *h2_push_diary_update(h2_session *session, apr_array_header_t
             idx = h2_push_diary_find(session->push_diary, e.hash);
             if (idx >= 0) {
                 /* Intentional no APLOGNO */
-                ap_log_cerror(APLOG_MARK, GCSLOG_LEVEL, 0, session->c,
+                ap_log_cerror(APLOG_MARK, GCSLOG_LEVEL, 0, session->c1,
                               "push_diary_update: already there PUSH %s", push->req->path);
                 move_to_last(session->push_diary, (apr_size_t)idx);
             }
             else {
                 /* Intentional no APLOGNO */
-                ap_log_cerror(APLOG_MARK, GCSLOG_LEVEL, 0, session->c,
+                ap_log_cerror(APLOG_MARK, GCSLOG_LEVEL, 0, session->c1,
                               "push_diary_update: adding PUSH %s", push->req->path);
                 if (!npushes) {
                     npushes = apr_array_make(pushes->pool, 5, sizeof(h2_push_diary_entry*));

@@ -111,8 +111,7 @@ class TestStore:
         assert piper.exitcode == 0
         assert len("".join(stdout)) == 3 * 8192
 
-    @pytest.mark.skipif(True, reason="new feature in upcoming http2")
-    def test_105_11(self, env):
+    def test_h2_105_11(self, env):
         # short connection timeout, longer stream delay
         # receiving the first response chunk, then timeout
         conf = HttpdConf(env)
@@ -126,8 +125,7 @@ class TestStore:
         stdout, stderr = piper.close()
         assert len("".join(stdout)) == 8192
 
-    @pytest.mark.skipif(True, reason="new feature in upcoming http2")
-    def test_105_12(self, env):
+    def test_h2_105_12(self, env):
         # long connection timeout, short stream timeout
         # sending a slow POST
         conf = HttpdConf(env)

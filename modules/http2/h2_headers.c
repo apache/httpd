@@ -27,7 +27,7 @@
 #include <nghttp2/nghttp2.h>
 
 #include "h2_private.h"
-#include "h2_h2.h"
+#include "h2_protocol.h"
 #include "h2_config.h"
 #include "h2_util.h"
 #include "h2_request.h"

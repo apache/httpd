@@ -38,6 +38,22 @@
 #include "h2_util.h"
 
 
+h2_request *h2_request_create(int id, apr_pool_t *pool, const char *method,
+                              const char *scheme, const char *authority,
+                              const char *path, apr_table_t *header)
+{
+    h2_request *req = apr_pcalloc(pool, sizeof(h2_request));
+
+    req->method         = method;
+    req->scheme         = scheme;
+    req->authority      = authority;
+    req->path           = path;
+    req->headers        = header? header : apr_table_make(pool, 10);
+    req->request_time   = apr_time_now();
+
+    return req;
+}
+
 typedef struct {
     apr_table_t *headers;
     apr_pool_t *pool;
@@ -85,9 +101,6 @@ apr_status_t h2_request_rcreate(h2_request **preq, apr_pool_t *pool,
     req->path        = path;
     req->headers     = apr_table_make(pool, 10);
     req->http_status = H2_HTTP_STATUS_UNSET;
-    if (r->server) {
-        req->serialize = h2_config_rgeti(r, H2_CONF_SER_HEADERS);
-    }
 
     x.pool = pool;
     x.headers = req->headers;
@@ -195,7 +208,7 @@ apr_status_t h2_request_end_headers(h2_request *req, apr_pool_t *pool, int eos, 
         }
     }
     req->raw_bytes += raw_bytes;
-    
+
     return APR_SUCCESS;
 }
 
@@ -267,7 +280,7 @@ static request_rec *my_ap_create_request(conn_rec *c)
 }
 #endif
 
-request_rec *h2_request_create_rec(const h2_request *req, conn_rec *c)
+request_rec *h2_create_request_rec(const h2_request *req, conn_rec *c)
 {
     int access_status = HTTP_OK;    
 
