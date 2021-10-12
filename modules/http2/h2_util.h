@@ -102,7 +102,7 @@ typedef int h2_iq_cmp(int i1, int i2, void *ctx);
 h2_iqueue *h2_iq_create(apr_pool_t *pool, int capacity);
 
 /**
- * Return != 0 iff there are no tasks in the queue.
+ * Return != 0 iff there are no ints in the queue.
  * @param q the queue to check
  */
 int h2_iq_empty(h2_iqueue *q);
@@ -134,11 +134,10 @@ int h2_iq_add(h2_iqueue *q, int sid, h2_iq_cmp *cmp, void *ctx);
 int h2_iq_append(h2_iqueue *q, int sid);
 
 /**
- * Remove the stream id from the queue. Return != 0 iff task
- * was found in queue.
- * @param q the task queue
+ * Remove the int from the queue. Return != 0 iff it was found.
+ * @param q the queue
  * @param sid the stream id to remove
- * @return != 0 iff task was found in queue
+ * @return != 0 iff int was found in queue
  */
 int h2_iq_remove(h2_iqueue *q, int sid);
 
@@ -148,7 +147,7 @@ int h2_iq_remove(h2_iqueue *q, int sid);
 void h2_iq_clear(h2_iqueue *q);
 
 /**
- * Sort the stream idqueue again. Call if the task ordering
+ * Sort the stream idqueue again. Call if the int ordering
  * has changed.
  *
  * @param q the queue to sort
@@ -169,7 +168,7 @@ int h2_iq_shift(h2_iqueue *q);
 /**
  * Get the first max ids from the queue. All these ids will be removed.
  *
- * @param q the queue to get the first task from
+ * @param q the queue to get the first ids from
  * @param pint the int array to receive the values
  * @param max the maximum number of ids to shift
  * @return the actual number of ids shifted
@@ -420,15 +419,6 @@ apr_status_t h2_req_add_header(apr_table_t *headers, apr_pool_t *pool,
                                size_t max_field_len, int *pwas_added);
 
 /*******************************************************************************
- * h2_request helpers
- ******************************************************************************/
-
-struct h2_request *h2_req_create(int id, apr_pool_t *pool, const char *method, 
-                                 const char *scheme, const char *authority, 
-                                 const char *path, apr_table_t *header,
-                                 int serialize);
-
-/*******************************************************************************
  * apr brigade helpers
  ******************************************************************************/
 
@@ -469,22 +459,6 @@ typedef apr_status_t h2_util_pass_cb(void *ctx,
                                      const char *data, apr_off_t len);
 
 /**
- * Read at most *plen bytes from the brigade and pass them into the
- * given callback. If cb is NULL, just return the amount of data that
- * could have been read.
- * If an EOS was/would be encountered, set *peos != 0.
- * @param bb the brigade to read from
- * @param cb the callback to invoke for the read data
- * @param ctx optional data passed to callback
- * @param plen inout, as input gives the maximum number of bytes to read,
- *    on return specifies the actual/would be number of bytes
- * @param peos != 0 iff an EOS bucket was/would be encountered.
- */
-apr_status_t h2_util_bb_readx(apr_bucket_brigade *bb, 
-                              h2_util_pass_cb *cb, void *ctx, 
-                              apr_off_t *plen, int *peos);
-
-/**
  * Print a bucket's meta data (type and length) to the buffer.
  * @return number of characters printed
  */
@@ -509,14 +483,16 @@ apr_size_t h2_util_bb_print(char *buffer, apr_size_t bmax,
  * @param bb the brigade to log
  */
 #define h2_util_bb_log(c, sid, level, tag, bb) \
-do { \
-    char buffer[4 * 1024]; \
-    const char *line = "(null)"; \
-    apr_size_t len, bmax = sizeof(buffer)/sizeof(buffer[0]); \
-    len = h2_util_bb_print(buffer, bmax, (tag), "", (bb)); \
-    ap_log_cerror(APLOG_MARK, level, 0, (c), "bb_dump(%ld): %s", \
-        ((c)->master? (c)->master->id : (c)->id), (len? buffer : line)); \
-} while(0)
+if (APLOG_C_IS_LEVEL(c, level)) { \
+    do { \
+        char buffer[4 * 1024]; \
+        const char *line = "(null)"; \
+        apr_size_t len, bmax = sizeof(buffer)/sizeof(buffer[0]); \
+        len = h2_util_bb_print(buffer, bmax, (tag), "", (bb)); \
+        ap_log_cerror(APLOG_MARK, level, 0, (c), "bb_dump(%ld): %s", \
+            ((c)->master? (c)->master->id : (c)->id), (len? buffer : line)); \
+    } while(0); \
+}
 
 
 typedef int h2_bucket_gate(apr_bucket *b);
@@ -543,5 +519,15 @@ apr_status_t h2_append_brigade(apr_bucket_brigade *to,
  * - the bucket struct itself is counted
  */
 apr_off_t h2_brigade_mem_size(apr_bucket_brigade *bb);
+
+/**
+ * Drain a pipe used for notification.
+ */
+void h2_util_drain_pipe(apr_file_t *pipe);
+
+/**
+ * Wait on data arriving on a pipe.
+ */
+apr_status_t h2_util_wait_on_pipe(apr_file_t *pipe);
 
 #endif /* defined(__mod_h2__h2_util__) */

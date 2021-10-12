@@ -37,7 +37,6 @@ class TestBuffering:
         piper = CurlPiper(env=env, url=url)
         piper.stutter_check(chunks, stutter)
 
-    @pytest.mark.skipif(True, reason="new feature in upcoming http2")
     def test_h2_712_02(self, env):
         # same as 712_01 but via mod_proxy_http2
         #
@@ -48,7 +47,6 @@ class TestBuffering:
         piper = CurlPiper(env=env, url=url)
         piper.stutter_check(chunks, stutter)
 
-    @pytest.mark.skipif(True, reason="new feature in upcoming http2")
     def test_h2_712_03(self, env):
         # same as 712_02 but with smaller chunks
         #

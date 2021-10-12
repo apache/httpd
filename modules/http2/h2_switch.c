@@ -31,9 +31,10 @@
 #include "h2_private.h"
 
 #include "h2_config.h"
-#include "h2_ctx.h"
-#include "h2_conn.h"
-#include "h2_h2.h"
+#include "h2_conn_ctx.h"
+#include "h2_c1.h"
+#include "h2_c2.h"
+#include "h2_protocol.h"
 #include "h2_switch.h"
 
 /*******************************************************************************
@@ -54,7 +55,7 @@ static int h2_protocol_propose(conn_rec *c, request_rec *r,
 {
     int proposed = 0;
     int is_tls = ap_ssl_conn_is_ssl(c);
-    const char **protos = is_tls? h2_tls_protos : h2_clear_protos;
+    const char **protos = is_tls? h2_protocol_ids_tls : h2_protocol_ids_clear;
     
     if (!h2_mpm_supported()) {
         return DECLINED;
@@ -68,7 +69,7 @@ static int h2_protocol_propose(conn_rec *c, request_rec *r,
         return DECLINED;
     }
     
-    if (!h2_is_acceptable_connection(c, r, 0)) {
+    if (!h2_protocol_is_acceptable_c1(c, r, 0)) {
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(03084)
                       "protocol propose: connection requirements not met");
         return DECLINED;
@@ -81,7 +82,7 @@ static int h2_protocol_propose(conn_rec *c, request_rec *r,
          */
         const char *p;
         
-        if (!h2_allows_h2_upgrade(r)) {
+        if (!h2_c1_can_upgrade(r)) {
             return DECLINED;
         }
          
@@ -128,7 +129,7 @@ static int h2_protocol_switch(conn_rec *c, request_rec *r, server_rec *s,
                               const char *protocol)
 {
     int found = 0;
-    const char **protos = ap_ssl_conn_is_ssl(c)? h2_tls_protos : h2_clear_protos;
+    const char **protos = ap_ssl_conn_is_ssl(c)? h2_protocol_ids_tls : h2_protocol_ids_clear;
     const char **p = protos;
     
     (void)s;
@@ -145,13 +146,12 @@ static int h2_protocol_switch(conn_rec *c, request_rec *r, server_rec *s,
     }
     
     if (found) {
-        h2_ctx *ctx = h2_ctx_get(c, 1);
-        
+        h2_conn_ctx_t *ctx;
+
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
                       "switching protocol to '%s'", protocol);
-        h2_ctx_protocol_set(ctx, protocol);
-        h2_ctx_server_update(ctx, s);
-        
+        ctx = h2_conn_ctx_create_for_c1(c, s, protocol);
+
         if (r != NULL) {
             apr_status_t status;
             /* Switching in the middle of a request means that
@@ -163,16 +163,16 @@ static int h2_protocol_switch(conn_rec *c, request_rec *r, server_rec *s,
             ap_remove_output_filter_byhandle(r->output_filters, "HTTP_HEADER");
             
             /* Ok, start an h2_conn on this one. */
-            status = h2_conn_setup(c, r, s);
+            status = h2_c1_setup(c, r, s);
             
             if (status != APR_SUCCESS) {
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r, APLOGNO(03088)
                               "session setup");
-                h2_ctx_clear(c);
+                h2_conn_ctx_detach(c);
                 return !OK;
             }
             
-            h2_conn_run(c);
+            h2_c1_run(c);
         }
         return OK;
     }
@@ -182,7 +182,13 @@ static int h2_protocol_switch(conn_rec *c, request_rec *r, server_rec *s,
 
 static const char *h2_protocol_get(const conn_rec *c)
 {
-    return h2_ctx_protocol_get(c);
+    h2_conn_ctx_t *ctx;
+
+    if (c->master) {
+        c = c->master;
+    }
+    ctx = h2_conn_ctx_get(c);
+    return ctx? ctx->protocol : NULL;
 }
 
 void h2_switch_register_hooks(void)

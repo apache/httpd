@@ -19,7 +19,11 @@
 
 #include "h2.h"
 
-apr_status_t h2_request_rcreate(h2_request **preq, apr_pool_t *pool, 
+h2_request *h2_request_create(int id, apr_pool_t *pool, const char *method,
+                              const char *scheme, const char *authority,
+                              const char *path, apr_table_t *header);
+
+apr_status_t h2_request_rcreate(h2_request **preq, apr_pool_t *pool,
                                 request_rec *r);
 
 apr_status_t h2_request_add_header(h2_request *req, apr_pool_t *pool,
@@ -43,7 +47,7 @@ h2_request *h2_request_clone(apr_pool_t *p, const h2_request *src);
  * @param conn the connection to process the request on
  * @return the request_rec representing the request
  */
-request_rec *h2_request_create_rec(const h2_request *req, conn_rec *conn);
+request_rec *h2_create_request_rec(const h2_request *req, conn_rec *conn);
 
 
 #endif /* defined(__mod_h2__h2_request__) */

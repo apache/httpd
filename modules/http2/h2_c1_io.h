@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef __mod_h2__h2_conn_io__
-#define __mod_h2__h2_conn_io__
+#ifndef __mod_h2__h2_c1_io__
+#define __mod_h2__h2_c1_io__
 
 struct h2_config;
 struct h2_session;
@@ -31,6 +31,7 @@ typedef struct {
     apr_bucket_brigade *output;
 
     int is_tls;
+    int unflushed;
     apr_time_t cooldown_usecs;
     apr_int64_t warmup_size;
     
@@ -40,37 +41,60 @@ typedef struct {
     apr_int64_t bytes_written;
     
     int buffer_output;
-    apr_size_t flush_threshold;
+    apr_off_t buffered_len;
+    apr_off_t flush_threshold;
     unsigned int is_flushed : 1;
     
     char *scratch;
     apr_size_t ssize;
     apr_size_t slen;
-} h2_conn_io;
+} h2_c1_io;
 
-apr_status_t h2_conn_io_init(h2_conn_io *io, conn_rec *c, server_rec *s);
+apr_status_t h2_c1_io_init(h2_c1_io *io, conn_rec *c, server_rec *s);
 
 /**
  * Append data to the buffered output.
  * @param buf the data to append
  * @param length the length of the data to append
  */
-apr_status_t h2_conn_io_write(h2_conn_io *io,
+apr_status_t h2_c1_io_add_data(h2_c1_io *io,
                          const char *buf,
                          size_t length);
 
-apr_status_t h2_conn_io_pass(h2_conn_io *io, apr_bucket_brigade *bb);
+apr_status_t h2_c1_io_add(h2_c1_io *io, apr_bucket *b);
+
+apr_status_t h2_c1_io_append(h2_c1_io *io, apr_bucket_brigade *bb);
 
 /**
  * Pass any buffered data on to the connection output filters.
  * @param io the connection io
- * @param flush if a flush bucket should be appended to any output
  */
-apr_status_t h2_conn_io_flush(h2_conn_io *io);
+apr_status_t h2_c1_io_pass(h2_c1_io *io);
+
+/**
+ * if there is any data pendiong or was any data send
+ * since the last FLUSH, send out a FLUSH now.
+ */
+apr_status_t h2_c1_io_assure_flushed(h2_c1_io *io);
 
 /**
  * Check if the buffered amount of data needs flushing.
  */
-int h2_conn_io_needs_flush(h2_conn_io *io);
+int h2_c1_io_needs_flush(h2_c1_io *io);
 
-#endif /* defined(__mod_h2__h2_conn_io__) */
+/**
+ * Check if we have output pending.
+ */
+int h2_c1_io_pending(h2_c1_io *io);
+
+struct h2_session;
+
+/**
+ * Read c1 input and pass it on to nghttp2.
+ * @param session the session
+ * @param when_pending != 0 if only pending input (sitting in filters)
+ *                     needs to be read
+ */
+apr_status_t h2_c1_read(struct h2_session *session);
+
+#endif /* defined(__mod_h2__h2_c1_io__) */

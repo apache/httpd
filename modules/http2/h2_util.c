@@ -352,11 +352,9 @@ static int iq_bubble_down(h2_iqueue *q, int i, int bottom,
 h2_iqueue *h2_iq_create(apr_pool_t *pool, int capacity)
 {
     h2_iqueue *q = apr_pcalloc(pool, sizeof(h2_iqueue));
-    if (q) {
-        q->pool = pool;
-        iq_grow(q, capacity);
-        q->nelts = 0;
-    }
+    q->pool = pool;
+    iq_grow(q, capacity);
+    q->nelts = 0;
     return q;
 }
 
@@ -441,7 +439,7 @@ void h2_iq_sort(h2_iqueue *q, h2_iq_cmp *cmp, void *ctx)
             ni = iq_bubble_up(q, i, prev, cmp, ctx);
             if (ni == prev) {
                 /* i bubbled one up, bubble the new i down, which
-                 * keeps all tasks below i sorted. */
+                 * keeps all ints below i sorted. */
                 iq_bubble_down(q, i, last, cmp, ctx);
             }
             i = prev;
@@ -1157,14 +1155,11 @@ apr_size_t h2_util_table_bytes(apr_table_t *t, apr_size_t pair_extra)
 
 static apr_status_t last_not_included(apr_bucket_brigade *bb, 
                                       apr_off_t maxlen, 
-                                      int same_alloc,
-                                      apr_size_t *pfile_buckets_allowed,
                                       apr_bucket **pend)
 {
     apr_bucket *b;
     apr_status_t status = APR_SUCCESS;
-    int files_allowed = pfile_buckets_allowed? (int)*pfile_buckets_allowed : 0;
-    
+
     if (maxlen >= 0) {
         /* Find the bucket, up to which we reach maxlen/mem bytes */
         for (b = APR_BRIGADE_FIRST(bb); 
@@ -1189,14 +1184,12 @@ static apr_status_t last_not_included(apr_bucket_brigade *bb,
                     return status;
                 }
                 
-                if (same_alloc && APR_BUCKET_IS_FILE(b)) {
-                    /* we like it move it, always */
-                }
-                else if (files_allowed > 0 && APR_BUCKET_IS_FILE(b)) {
-                    /* this has no memory footprint really unless
-                     * it is read, disregard it in length count,
-                     * unless we do not move the file buckets */
-                    --files_allowed;
+                if (APR_BUCKET_IS_FILE(b)
+#if APR_HAS_MMAP
+                 || APR_BUCKET_IS_MMAP(b)
+#endif
+                 ) {
+                    /* we like to move it, always */
                 }
                 else if (maxlen < (apr_off_t)b->length) {
                     apr_bucket_split(b, (apr_size_t)maxlen);
@@ -1308,7 +1301,7 @@ int h2_util_has_eos(apr_bucket_brigade *bb, apr_off_t len)
 {
     apr_bucket *b, *end;
     
-    apr_status_t status = last_not_included(bb, len, 0, 0, &end);
+    apr_status_t status = last_not_included(bb, len, &end);
     if (status != APR_SUCCESS) {
         return status;
     }
@@ -1343,7 +1336,7 @@ apr_status_t h2_util_bb_avail(apr_bucket_brigade *bb,
     else {
         /* data in the brigade, limit the length returned. Check for EOS
          * bucket only if we indicate data. This is required since plen == 0
-         * means "the whole brigade" for h2_util_hash_eos()
+         * means "the whole brigade" for h2_util_has_eos()
          */
         if (blen < *plen || *plen < 0) {
             *plen = blen;
@@ -1353,82 +1346,7 @@ apr_status_t h2_util_bb_avail(apr_bucket_brigade *bb,
     return APR_SUCCESS;
 }
 
-apr_status_t h2_util_bb_readx(apr_bucket_brigade *bb, 
-                              h2_util_pass_cb *cb, void *ctx, 
-                              apr_off_t *plen, int *peos)
-{
-    apr_status_t status = APR_SUCCESS;
-    int consume = (cb != NULL);
-    apr_off_t written = 0;
-    apr_off_t avail = *plen;
-    apr_bucket *next, *b;
-    
-    /* Pass data in our brigade through the callback until the length
-     * is satisfied or we encounter an EOS.
-     */
-    *peos = 0;
-    for (b = APR_BRIGADE_FIRST(bb);
-         (status == APR_SUCCESS) && (b != APR_BRIGADE_SENTINEL(bb));
-         b = next) {
-        
-        if (APR_BUCKET_IS_METADATA(b)) {
-            if (APR_BUCKET_IS_EOS(b)) {
-                *peos = 1;
-            }
-            else {
-                /* ignore */
-            }
-        }
-        else if (avail <= 0) {
-            break;
-        } 
-        else {
-            const char *data = NULL;
-            apr_size_t data_len;
-            
-            if (b->length == ((apr_size_t)-1)) {
-                /* read to determine length */
-                status = apr_bucket_read(b, &data, &data_len, APR_NONBLOCK_READ);
-            }
-            else {
-                data_len = b->length;
-            }
-            
-            if (data_len > avail) {
-                apr_bucket_split(b, avail);
-                data_len = (apr_size_t)avail;
-            }
-            
-            if (consume) {
-                if (!data) {
-                    status = apr_bucket_read(b, &data, &data_len, 
-                                             APR_NONBLOCK_READ);
-                }
-                if (status == APR_SUCCESS) {
-                    status = cb(ctx, data, data_len);
-                }
-            }
-            else {
-                data_len = b->length;
-            }
-            avail -= data_len;
-            written += data_len;
-        }
-        
-        next = APR_BUCKET_NEXT(b);
-        if (consume) {
-            apr_bucket_delete(b);
-        }
-    }
-    
-    *plen = written;
-    if (status == APR_SUCCESS && !*peos && !*plen) {
-        return APR_EAGAIN;
-    }
-    return status;
-}
-
-apr_size_t h2_util_bucket_print(char *buffer, apr_size_t bmax, 
+apr_size_t h2_util_bucket_print(char *buffer, apr_size_t bmax,
                                 apr_bucket *b, const char *sep)
 {
     apr_size_t off = 0;
@@ -1655,7 +1573,7 @@ static apr_status_t ngheader_create(h2_ngheader **ph, apr_pool_t *p,
         return APR_ENOMEM;
     }
     
-    ctx.ngh->nv =  apr_pcalloc(p, n * sizeof(nghttp2_nv));
+    ctx.ngh->nv = apr_pcalloc(p, n * sizeof(nghttp2_nv));
     if (!ctx.ngh->nv) {
         return APR_ENOMEM;
     }
@@ -1855,27 +1773,6 @@ apr_status_t h2_req_add_header(apr_table_t *headers, apr_pool_t *pool,
 }
 
 /*******************************************************************************
- * h2 request handling
- ******************************************************************************/
-
-h2_request *h2_req_create(int id, apr_pool_t *pool, const char *method, 
-                          const char *scheme, const char *authority, 
-                          const char *path, apr_table_t *header, int serialize)
-{
-    h2_request *req = apr_pcalloc(pool, sizeof(h2_request));
-    
-    req->method         = method;
-    req->scheme         = scheme;
-    req->authority      = authority;
-    req->path           = path;
-    req->headers        = header? header : apr_table_make(pool, 10);
-    req->request_time   = apr_time_now();
-    req->serialize      = serialize;
-    
-    return req;
-}
-
-/*******************************************************************************
  * frame logging
  ******************************************************************************/
 
@@ -1992,3 +1889,26 @@ int h2_push_policy_determine(apr_table_t *headers, apr_pool_t *p, int push_enabl
     return policy;
 }
 
+void h2_util_drain_pipe(apr_file_t *pipe)
+{
+    char rb[512];
+    apr_size_t nr = sizeof(rb);
+
+    while (apr_file_read(pipe, rb, &nr) == APR_SUCCESS) {
+        /* Although we write just one byte to the other end of the pipe
+         * during wakeup, multiple threads could call the wakeup.
+         * So simply drain out from the input side of the pipe all
+         * the data.
+         */
+        if (nr != sizeof(rb))
+            break;
+    }
+}
+
+apr_status_t h2_util_wait_on_pipe(apr_file_t *pipe)
+{
+    char rb[512];
+    apr_size_t nr = sizeof(rb);
+
+    return apr_file_read(pipe, rb, &nr);
+}
