@@ -1,0 +1,3 @@
+  *) core: Be safe with ap_lingering_close() called with a socket NULL-ed by
+     a third-party module.  PR 65627.
+     [acmondor <bz.apache.org acmondor.ca>, Yann Ylavic]
