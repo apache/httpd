@@ -533,12 +533,13 @@ h2_stream *h2_stream_create(int id, apr_pool_t *pool, h2_session *session,
     stream->session      = session;
     stream->monitor      = monitor;
 
+#ifdef H2_NG2_LOCAL_WIN_SIZE
     if (id) {
         stream->in_window_size =
             nghttp2_session_get_stream_local_window_size(
                 stream->session->ngh2, stream->id);
     }
-
+#endif
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c1,
                   H2_STRM_LOG(APLOGNO(03082), stream, "created"));
     on_state_enter(stream);
@@ -1131,6 +1132,7 @@ apr_status_t h2_stream_in_consumed(h2_stream *stream, apr_off_t amount)
             consumed -= len;
         }
 
+#ifdef H2_NG2_LOCAL_WIN_SIZE
         if (1) {
             int cur_size = nghttp2_session_get_stream_local_window_size(
                 session->ngh2, stream->id);
@@ -1173,6 +1175,7 @@ apr_status_t h2_stream_in_consumed(h2_stream *stream, apr_off_t amount)
                           session->id, stream->id, (long)amount, 
                           cur_size, stream->in_window_size);
         }
+#endif /* #ifdef H2_NG2_LOCAL_WIN_SIZE */
     }
     return APR_SUCCESS;   
 }
