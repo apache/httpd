@@ -146,11 +146,9 @@ static int h2_protocol_switch(conn_rec *c, request_rec *r, server_rec *s,
     }
     
     if (found) {
-        h2_conn_ctx_t *ctx;
-
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
                       "switching protocol to '%s'", protocol);
-        ctx = h2_conn_ctx_create_for_c1(c, s, protocol);
+        h2_conn_ctx_create_for_c1(c, s, protocol);
 
         if (r != NULL) {
             apr_status_t status;
