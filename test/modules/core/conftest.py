@@ -14,7 +14,7 @@ def pytest_report_header(config, startdir):
     return f"core [apache: {env.get_httpd_version()}, mpm: {env.mpm_type}, {env.prefix}]"
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="package")
 def env(pytestconfig) -> CoreTestEnv:
     level = logging.INFO
     console = logging.StreamHandler()
@@ -28,7 +28,7 @@ def env(pytestconfig) -> CoreTestEnv:
     return env
 
 
-@pytest.fixture(autouse=True, scope="module")
+@pytest.fixture(autouse=True, scope="package")
 def _session_scope(env):
     yield
     assert env.apache_stop() == 0

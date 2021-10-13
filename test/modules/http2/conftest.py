@@ -27,7 +27,7 @@ def pytest_generate_tests(metafunc):
         metafunc.parametrize('repeat', range(count))
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="package")
 def env(pytestconfig) -> H2TestEnv:
     level = logging.INFO
     console = logging.StreamHandler()
@@ -41,7 +41,7 @@ def env(pytestconfig) -> H2TestEnv:
     return env
 
 
-@pytest.fixture(autouse=True, scope="module")
+@pytest.fixture(autouse=True, scope="package")
 def _session_scope(env):
     yield
     assert env.apache_stop() == 0
