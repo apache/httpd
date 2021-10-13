@@ -90,6 +90,7 @@ misspellings.</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Options</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_speling</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.5.0 and later</td></tr>
 </table>
     <p>When set, this directive extends the action of the spelling correction
     to the file name extension. For example a file <code>foo.gif</code> will

@@ -552,7 +552,8 @@ DIGIT       ::= &lt;any US-ASCII digit "0".."9"&gt;</pre>
             (RFC4514) and LDAP filter escaping (RFC4515).</td><td /></tr>
 <tr class="odd"><td><code>replace</code></td>
         <td>replace(string, "from", "to") replaces all occurrences of "from"
-            in the string with "to".</td><td /></tr>
+            in the string with "to". The first parameter must not be a literal string.
+            </td><td /></tr>
 </table>
 
     <p>The functions marked as "restricted" in the final column are not 
@@ -695,9 +696,8 @@ DIGIT       ::= &lt;any US-ASCII digit "0".."9"&gt;</pre>
 &lt;If "md5('foo') == 'acbd18db4cc2f85cedef654fccc4a4d8'"&gt;
   Header set checksum-matched true
 &lt;/If&gt;
-&lt;If "md5('foo') == replace('md5:XXXd18db4cc2f85cedef654fccc4a4d8', 'md5:XXX', 'acb')"&gt;
-  Header set checksum-matched-2 true
-&lt;/If&gt;
+
+Require expr replace(%{REQUEST_METHOD},  'E', 'O') == 'GET'"
 
 # Function example in string context
 Header set foo-checksum "expr=%{md5:foo}"
