@@ -475,7 +475,7 @@ static int show_server_settings(request_rec * r)
                "keep-alive: %d</tt></dt>",
                (int) (apr_time_sec(serv->timeout)),
                (int) (apr_time_sec(serv->keep_alive_timeout)));
-    ap_mpm_query(AP_MPMQ_MAX_DAEMON_USED, &max_daemons);
+    ap_mpm_query(AP_MPMQ_MAX_DAEMONS, &max_daemons);
     ap_mpm_query(AP_MPMQ_IS_THREADED, &threaded);
     ap_mpm_query(AP_MPMQ_IS_FORKED, &forked);
     ap_rprintf(r, "<dt><strong>MPM Name:</strong> <tt>%s</tt></dt>\n",
