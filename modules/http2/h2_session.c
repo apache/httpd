@@ -890,11 +890,12 @@ apr_status_t h2_session_create(h2_session **psession, conn_rec *c, request_rec *
     /* We need to handle window updates ourself, otherwise we
      * get flooded by nghttp2. */
     nghttp2_option_set_no_auto_window_update(options, 1);
+#ifdef H2_NG2_NO_CLOSED_STREAMS
     /* We do not want nghttp2 to keep information about closed streams as
      * that accumulates memory on long connections. This makes PRIORITY
      * setting in relation to older streams non-working. */
     nghttp2_option_set_no_closed_streams(options, 1);
-
+#endif
     rv = nghttp2_session_server_new2(&session->ngh2, callbacks,
                                      session, options);
     nghttp2_session_callbacks_del(callbacks);
