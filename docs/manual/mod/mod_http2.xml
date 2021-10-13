@@ -1005,4 +1005,24 @@ H2TLSCoolDownSecs 0
         </usage>
     </directivesynopsis>
     
+    <directivesynopsis>
+        <name>H2StreamTimeout</name>
+        <description>Maximum time waiting when pushing stream data to a connection</description>
+        <syntax>H2StreamTimeout <var>time-interval</var>[s]</syntax>
+        <default>Value of <directive module="core">Timeout</directive></default>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+            <context>directory</context>
+        </contextlist>
+        <compatibility>Available in version 2.5.1 and later.</compatibility>
+
+        <usage>
+            <p>
+                'H2StreamTimeout' specifies the maximum time that a stream will wait on the
+                connection for accepting stream data.
+            </p>
+        </usage>
+    </directivesynopsis>
+
 </modulesynopsis>
