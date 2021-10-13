@@ -161,6 +161,9 @@ dnl # nghttp2 >= 1.14.0: invalid header callback
 dnl # nghttp2 >= 1.15.0: get/set stream window sizes
       AC_CHECK_FUNCS([nghttp2_session_get_stream_local_window_size], 
         [APR_ADDTO(MOD_CPPFLAGS, ["-DH2_NG2_LOCAL_WIN_SIZE"])], [])
+dnl # nghttp2 >= 1.15.0: don't keep info on closed streams
+      AC_CHECK_FUNCS([nghttp2_option_set_no_closed_streams],
+        [APR_ADDTO(MOD_CPPFLAGS, ["-DH2_NG2_NO_CLOSED_STREAMS"])], [])
     else
       AC_MSG_WARN([nghttp2 version is too old])
     fi
