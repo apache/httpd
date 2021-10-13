@@ -84,12 +84,12 @@ class Nghttp:
             if len(l) == 0:
                 body += '\n'
                 continue
-            m = re.match(r'\[.*] recv \(stream_id=(\d+)\) (\S+): (\S*)', l)
+            m = re.match(r'\[(.*)] recv \(stream_id=(\d+)\) (\S+): (\S*)', l)
             if m:
-                s = self.get_stream(streams, m.group(1))
-                hname = m.group(2)
-                hval = m.group(3)
-                print("stream %d header %s: %s" % (s["id"], hname, hval))
+                s = self.get_stream(streams, m.group(2))
+                hname = m.group(3)
+                hval = m.group(4)
+                print(f"{m.group(1)}: stream {s['id']} header {hname}: {hval}")
                 header = s["header"]
                 if hname in header: 
                     header[hname] += ", %s" % hval
@@ -98,11 +98,11 @@ class Nghttp:
                 body = ''
                 continue
 
-            m = re.match(r'\[.*] recv HEADERS frame <.* stream_id=(\d+)>', l)
+            m = re.match(r'\[(.*)] recv HEADERS frame <.* stream_id=(\d+)>', l)
             if m:
-                s = self.get_stream(streams, m.group(1))
+                s = self.get_stream(streams, m.group(2))
                 if s:
-                    print("stream %d: recv %d header" % (s["id"], len(s["header"]))) 
+                    print(f"{m.group(1)}: recv HEADERS on stream {s['id']} with {len(s['header'])} fields")
                     response = s["response"]
                     hkey = "header"
                     if "header" in response:
@@ -121,13 +121,13 @@ class Nghttp:
                 body = ''
                 continue
             
-            m = re.match(r'(.*)\[.*] recv DATA frame <length=(\d+), .*stream_id=(\d+)>', l)
+            m = re.match(r'(.*)\[(.*)] recv DATA frame <length=(\d+), .*stream_id=(\d+)>', l)
             if m:
-                s = self.get_stream(streams, m.group(3))
+                s = self.get_stream(streams, m.group(4))
                 body += m.group(1)
-                blen = int(m.group(2))
+                blen = int(m.group(3))
                 if s:
-                    print("stream %d: %d DATA bytes added" % (s["id"], blen))
+                    print(f"{m.group(2)}: recv DATA on stream {s['id']} with {blen} bytes")
                     padlen = 0
                     if len(lines) > lidx + 2:
                         mpad = re.match(r' +\(padlen=(\d+)\)', lines[lidx+2])
@@ -140,14 +140,14 @@ class Nghttp:
                 skip_indents = True
                 continue
                 
-            m = re.match(r'\[.*] recv PUSH_PROMISE frame <.* stream_id=(\d+)>', l)
+            m = re.match(r'\[(.*)] recv PUSH_PROMISE frame <.* stream_id=(\d+)>', l)
             if m:
-                s = self.get_stream(streams, m.group(1))
+                s = self.get_stream(streams, m.group(2))
                 if s:
                     # headers we have are request headers for the PUSHed stream
                     # these have been received on the originating stream, the promised
                     # stream id it mentioned in the following lines
-                    print("stream %d: %d PUSH_PROMISE header" % (s["id"], len(s["header"])))
+                    print(f"{m.group(1)}: recv PUSH_PROMISE on stream {s['id']} with {len(s['header'])} header")
                     if len(lines) > lidx+2:
                         m2 = re.match(r'\s+\(.*promised_stream_id=(\d+)\)', lines[lidx+2])
                         if m2:
@@ -157,16 +157,16 @@ class Nghttp:
                     s["header"] = {} 
                 continue
                     
-            m = re.match(r'(.*)\[.*] recv (\S+) frame <length=(\d+), .*stream_id=(\d+)>', l)
+            m = re.match(r'(.*)\[(.*)] recv (\S+) frame <length=(\d+), .*stream_id=(\d+)>', l)
             if m:
-                print("recv frame %s on stream %s" % (m.group(2), m.group(4)))
+                print(f"{m.group(2)}: recv frame {m.group(3)} on stream {m.group(5)}")
                 body += m.group(1)
                 skip_indents = True
                 continue
                 
-            m = re.match(r'(.*)\[.*] send (\S+) frame <length=(\d+), .*stream_id=(\d+)>', l)
+            m = re.match(r'(.*)\[(.*)] send (\S+) frame <length=(\d+), .*stream_id=(\d+)>', l)
             if m:
-                print("send frame %s on stream %s" % (m.group(2), m.group(4)))
+                print(f"{m.group(2)}: send frame {m.group(3)} on stream {m.group(5)}")
                 body += m.group(1)
                 skip_indents = True
                 continue
