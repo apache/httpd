@@ -1007,7 +1007,7 @@ H2TLSCoolDownSecs 0
     
     <directivesynopsis>
         <name>H2StreamTimeout</name>
-        <description>Maximum time waiting when pushing stream data to a connection</description>
+        <description>Maximum time waiting when sending/receiving data to stream processing</description>
         <syntax>H2StreamTimeout <var>time-interval</var>[s]</syntax>
         <default>Value of <directive module="core">Timeout</directive></default>
         <contextlist>
@@ -1019,8 +1019,8 @@ H2TLSCoolDownSecs 0
 
         <usage>
             <p>
-                'H2StreamTimeout' specifies the maximum time that a stream will wait on the
-                connection for accepting stream data.
+                'H2StreamTimeout' specifies the maximum time that a stream being processed will wait
+                for its data to be sent/received.
             </p>
         </usage>
     </directivesynopsis>
