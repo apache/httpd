@@ -692,6 +692,7 @@ static ssize_t stream_request_data(nghttp2_session *ngh2, int32_t stream_id,
     }
 }
 
+#ifdef H2_NG2_INVALID_HEADER_CB
 static int on_invalid_header_cb(nghttp2_session *ngh2,
                                 const nghttp2_frame *frame, 
                                 const uint8_t *name, size_t namelen, 
@@ -710,6 +711,7 @@ static int on_invalid_header_cb(nghttp2_session *ngh2,
                                      frame->hd.stream_id, 
                                      NGHTTP2_PROTOCOL_ERROR);
 }
+#endif
 
 h2_proxy_session *h2_proxy_session_setup(const char *id, proxy_conn_rec *p_conn,
                                          proxy_server_conf *conf,
@@ -751,8 +753,9 @@ h2_proxy_session *h2_proxy_session_setup(const char *id, proxy_conn_rec *p_conn,
         nghttp2_session_callbacks_set_on_header_callback(cbs, on_header);
         nghttp2_session_callbacks_set_before_frame_send_callback(cbs, before_frame_send);
         nghttp2_session_callbacks_set_send_callback(cbs, raw_send);
+#ifdef H2_NG2_INVALID_HEADER_CB
         nghttp2_session_callbacks_set_on_invalid_header_callback(cbs, on_invalid_header_cb);
-
+#endif
         nghttp2_option_new(&option);
         nghttp2_option_set_peer_max_concurrent_streams(option, 100);
         nghttp2_option_set_no_auto_window_update(option, 0);
