@@ -602,6 +602,7 @@ static int on_frame_send_cb(nghttp2_session *ngh2,
     return 0;
 }
 
+#ifdef H2_NG2_INVALID_HEADER_CB
 static int on_invalid_header_cb(nghttp2_session *ngh2,
                                 const nghttp2_frame *frame, 
                                 const uint8_t *name, size_t namelen, 
@@ -622,6 +623,7 @@ static int on_invalid_header_cb(nghttp2_session *ngh2,
     }
     return 0;
 }
+#endif
 
 static ssize_t select_padding_cb(nghttp2_session *ngh2, 
                                  const nghttp2_frame *frame, 
@@ -676,7 +678,9 @@ static apr_status_t init_callbacks(conn_rec *c, nghttp2_session_callbacks **pcb)
     NGH2_SET_CALLBACK(*pcb, on_header, on_header_cb);
     NGH2_SET_CALLBACK(*pcb, send_data, on_send_data_cb);
     NGH2_SET_CALLBACK(*pcb, on_frame_send, on_frame_send_cb);
+#ifdef H2_NG2_INVALID_HEADER_CB
     NGH2_SET_CALLBACK(*pcb, on_invalid_header, on_invalid_header_cb);
+#endif
     NGH2_SET_CALLBACK(*pcb, select_padding, select_padding_cb);
     return APR_SUCCESS;
 }
