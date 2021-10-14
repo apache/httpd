@@ -205,7 +205,7 @@ h2_headers *h2_headers_die(apr_status_t type,
     return headers;
 }
 
-int h2_headers_are_response(h2_headers *headers)
+int h2_headers_are_final_response(h2_headers *headers)
 {
     return headers->status >= 200;
 }

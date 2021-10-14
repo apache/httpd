@@ -79,7 +79,7 @@ h2_headers *h2_headers_clone(apr_pool_t *pool, h2_headers *h);
 h2_headers *h2_headers_die(apr_status_t type,
                            const struct h2_request *req, apr_pool_t *pool);
 
-int h2_headers_are_response(h2_headers *headers);
+int h2_headers_are_final_response(h2_headers *headers);
 
 /**
  * Give the number of bytes of all contained header strings.

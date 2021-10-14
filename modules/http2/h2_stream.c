@@ -900,7 +900,7 @@ static apr_status_t buffer_output_process_headers(h2_stream *stream)
 {
     conn_rec *c1 = stream->session->c1;
     h2_headers *headers = NULL;
-    apr_status_t rv = APR_SUCCESS;
+    apr_status_t rv = APR_EAGAIN;
     int ngrv = 0, is_empty;
     h2_ngheader *nh = NULL;
     apr_bucket *b, *e;
@@ -1001,7 +1001,7 @@ static apr_status_t buffer_output_process_headers(h2_stream *stream)
              * pushes and served its purpose nevertheless */
             goto cleanup;
         }
-        if (h2_headers_are_response(headers)) {
+        if (h2_headers_are_final_response(headers)) {
             stream->response = headers;
         }
 
@@ -1283,10 +1283,10 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
                       "h2_stream(%ld-%d): need more (read len=%ld, %ld in buffer)",
                       session->id, (int)stream_id, (long)length, (long)buf_len);
         rv = buffer_output_receive(stream);
-        if (APR_SUCCESS == rv) {
-            /* process any headers sitting at the buffer head. */
+        /* process all headers sitting at the buffer head. */
+        while (APR_SUCCESS == rv) {
             rv = buffer_output_process_headers(stream);
-            if (APR_SUCCESS != rv) {
+            if (APR_SUCCESS != rv && APR_EAGAIN != rv) {
                 ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c1,
                               H2_STRM_LOG(APLOGNO(10300), stream,
                               "data_cb, error processing headers"));
@@ -1294,6 +1294,7 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
             }
             buf_len = buffer_output_data_to_send(stream, &eos);
         }
+
         if (APR_EOF == rv) {
             eos = 1;
         }
@@ -1370,9 +1371,15 @@ apr_status_t h2_stream_read_output(h2_stream *stream)
     rv = buffer_output_receive(stream);
     if (APR_SUCCESS != rv) goto cleanup;
 
-    /* process any headers sitting at the buffer head. */
-    rv = buffer_output_process_headers(stream);
-    if (APR_SUCCESS != rv) goto cleanup;
+    /* process all headers sitting at the buffer head. */
+    while (1) {
+        rv = buffer_output_process_headers(stream);
+        if (APR_EAGAIN == rv) {
+            rv = APR_SUCCESS;
+            break;
+        }
+        if (APR_SUCCESS != rv) goto cleanup;
+    }
 
     nghttp2_session_resume_data(stream->session->ngh2, stream->id);
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c1,
