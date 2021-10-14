@@ -999,6 +999,7 @@ static apr_status_t buffer_output_process_headers(h2_stream *stream)
             && !h2_config_sgeti(stream->session->s, H2_CONF_EARLY_HINTS)) {
             /* suppress sending this to the client, it might have triggered
              * pushes and served its purpose nevertheless */
+            rv = APR_SUCCESS;
             goto cleanup;
         }
         if (h2_headers_are_final_response(headers)) {
