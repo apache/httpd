@@ -99,15 +99,15 @@ class TestStore:
         assert r.response["body"] == src, f"expected '{src}', got '{r.response['body']}'"
 
     @pytest.mark.parametrize("name", [
-        "data-1k", "data-10k", "data-100k", "data-1m"
+        # "data-1k", "data-10k", "data-100k", "data-1m"
+        "data-1m"
     ])
-    def test_h2_004_21(self, env, name):
+    def test_h2_004_21(self, env, name, repeat):
         self.nghttp_post_and_verify(env, name, [])
 
     @pytest.mark.parametrize("name", [
         "data-1k", "data-10k", "data-100k", "data-1m",
     ])
-    @pytest.mark.skip(reason="FIXME: this fails on rare occasions")
     def test_h2_004_22(self, env, name, repeat):
         self.nghttp_post_and_verify(env, name, ["--no-content-length"])
 
