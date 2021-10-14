@@ -824,7 +824,7 @@ static apr_status_t buffer_output_receive(h2_stream *stream)
         buf_len = 0;
     }
     else {
-        /* if the brigade contains a file bucket, it normal report length
+        /* if the brigade contains a file bucket, its normal report length
          * might be megabytes, but the memory used is tiny. For buffering,
          * we are only interested in the memory footprint. */
         buf_len = h2_brigade_mem_size(stream->out_buffer);
@@ -1336,8 +1336,6 @@ apr_status_t h2_stream_read_output(h2_stream *stream)
 {
     conn_rec *c1 = stream->session->c1;
     apr_status_t rv = APR_EAGAIN;
-    apr_off_t buf_len;
-    int eos;
 
     /* stream->pout_recv_write signalled a change. Check what has happend, read
      * from it and act on seeing a response/data. */
@@ -1369,22 +1367,17 @@ apr_status_t h2_stream_read_output(h2_stream *stream)
         goto cleanup;
     }
 
-    buf_len = buffer_output_data_to_send(stream, &eos);
-    if (buf_len < stream->session->io.write_size) {
-        rv = buffer_output_receive(stream);
-        if (APR_SUCCESS == rv) {
-            /* process any headers sitting at the buffer head. */
-            rv = buffer_output_process_headers(stream);
-            if (APR_SUCCESS != rv) goto cleanup;
-        }
-        buf_len = buffer_output_data_to_send(stream, &eos);
-        if (buf_len || eos) {
-            nghttp2_session_resume_data(stream->session->ngh2, stream->id);
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c1,
-                          "h2_stream(%ld-%d): resumed",
-                          stream->session->id, (int)stream->id);
-        }
-    }
+    rv = buffer_output_receive(stream);
+    if (APR_SUCCESS != rv) goto cleanup;
+
+    /* process any headers sitting at the buffer head. */
+    rv = buffer_output_process_headers(stream);
+    if (APR_SUCCESS != rv) goto cleanup;
+
+    nghttp2_session_resume_data(stream->session->ngh2, stream->id);
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c1,
+                  "h2_stream(%ld-%d): resumed",
+                  stream->session->id, (int)stream->id);
 
 cleanup:
     return rv;
