@@ -140,7 +140,7 @@ class TestStore:
         assert 0 == len(promises)
 
     # 2 H2PushResource config trigger on GET, but not on POST
-    def test_h2_400_20(self, env):
+    def test_h2_400_20(self, env, repeat):
         url = env.mkurl("https", "push", "/006-push20.html")
         r = env.nghttp().get(url)
         assert 200 == r.response["status"]

@@ -416,8 +416,24 @@ receive:
 
 static apr_status_t beam_out(conn_rec *c2, h2_conn_ctx_t *conn_ctx, apr_bucket_brigade* bb)
 {
-    apr_off_t written;
+    apr_off_t written, header_len = 0;
     apr_status_t rv;
+
+    if (h2_c2_logio_add_bytes_out) {
+        /* mod_logio wants to report the number of bytes  written in a
+         * response, including header and footer fields. Since h2 converts
+         * those during c1 processing into the HPACKed h2 HEADER frames,
+         * we need to give mod_logio something here and count just the
+         * raw lengths of all headers in the buckets. */
+        apr_bucket *b;
+        for (b = APR_BRIGADE_FIRST(bb);
+             b != APR_BRIGADE_SENTINEL(bb);
+             b = APR_BUCKET_NEXT(b)) {
+            if (H2_BUCKET_IS_HEADERS(b)) {
+                header_len += (apr_off_t)h2_bucket_headers_headers_length(b);
+            }
+        }
+    }
 
     rv = h2_beam_send(conn_ctx->beam_out, c2, bb, APR_BLOCK_READ, &written);
 
@@ -425,7 +441,7 @@ static apr_status_t beam_out(conn_rec *c2, h2_conn_ctx_t *conn_ctx, apr_bucket_b
         rv = APR_SUCCESS;
     }
     if (written && h2_c2_logio_add_bytes_out) {
-        h2_c2_logio_add_bytes_out(c2, written);
+        h2_c2_logio_add_bytes_out(c2, written + header_len);
     }
     return rv;
 }

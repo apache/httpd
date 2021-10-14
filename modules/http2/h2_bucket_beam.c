@@ -442,7 +442,6 @@ static apr_status_t append_bucket(h2_bucket_beam *beam,
         APR_BUCKET_REMOVE(b);
         apr_bucket_setaside(b, beam->pool);
         H2_BLIST_INSERT_TAIL(&beam->buckets_to_send, b);
-        *pwritten += (apr_off_t)b->length;
         goto cleanup;
     }
     /* non meta bucket */
