@@ -1471,8 +1471,10 @@ static void perform_idle_server_maintenance(int child_bucket)
         }
         /* XXX if (!ps->quiescing)     is probably more reliable  GLA */
         if (!any_dying_threads) {
-            last_non_dead = i;
             ++total_non_dead;
+        }
+        if (ps->pid != 0) {
+            last_non_dead = i;
         }
     }
 
