@@ -3094,7 +3094,6 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
 {
     int i, j;
     int idle_thread_count = 0;
-    worker_score *ws;
     process_score *ps;
     int free_length = 0;
     int free_slots[MAX_SPAWN_RATE];
@@ -3102,29 +3101,27 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
     int active_thread_count = 0;
 
     for (i = 0; i < server_limit; ++i) {
-        /* Initialization to satisfy the compiler. It doesn't know
-         * that threads_per_child is always > 0 */
-        int status = SERVER_DEAD;
-        int child_threads_active = 0;
-        int bucket = i % num_buckets;
-
+        if (num_buckets > 1 && (i % num_buckets) != child_bucket) {
+            /* We only care about child_bucket in this call */
+            continue;
+        }
         if (i >= retained->max_daemons_limit &&
             free_length == retained->idle_spawn_rate[child_bucket]) {
             /* short cut if all active processes have been examined and
              * enough empty scoreboard slots have been found
              */
-
             break;
         }
+
         ps = &ap_scoreboard_image->parent[i];
         if (ps->pid != 0) {
+            int child_threads_active = 0;
             if (ps->quiescing == 1) {
                 ps->quiescing = 2;
                 active_daemons--;
             }
             for (j = 0; j < threads_per_child; j++) {
-                ws = &ap_scoreboard_image->servers[i][j];
-                status = ws->status;
+                int status = ap_scoreboard_image->servers[i][j].status;
 
                 /* We consider a starting server as idle because we started it
                  * at least a cycle ago, and if it still hasn't finished starting
@@ -3133,25 +3130,25 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
                  * This depends on the ordering of SERVER_READY and SERVER_STARTING.
                  */
                 if (status <= SERVER_READY && !ps->quiescing && !ps->not_accepting
-                    && ps->generation == retained->mpm->my_generation
-                    && bucket == child_bucket)
-                {
+                    && ps->generation == retained->mpm->my_generation) {
                     ++idle_thread_count;
                 }
                 if (status >= SERVER_READY && status < SERVER_GRACEFUL) {
                     ++child_threads_active;
                 }
             }
+            active_thread_count += child_threads_active;
+            if (child_threads_active == threads_per_child) {
+                had_healthy_child = 1;
+            }
             last_non_dead = i;
         }
-        active_thread_count += child_threads_active;
-        if (!ps->pid
-                && bucket == child_bucket
-                && free_length < retained->idle_spawn_rate[child_bucket])
+        else if (free_length < retained->idle_spawn_rate[child_bucket]) {
             free_slots[free_length++] = i;
-        else if (child_threads_active == threads_per_child)
-            had_healthy_child = 1;
+        }
     }
+
+    retained->max_daemons_limit = last_non_dead + 1;
 
     if (retained->sick_child_detected) {
         if (had_healthy_child) {
@@ -3160,6 +3157,10 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
              * problem will be resolved.
              */
             retained->sick_child_detected = 0;
+        }
+        else if (child_bucket < num_buckets - 1) {
+            /* check for had_healthy_child up to the last child bucket */
+            return;
         }
         else {
             /* looks like a basket case, as no child ever fully initialized; give up.
@@ -3175,8 +3176,6 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
             return;
         }
     }
-
-    retained->max_daemons_limit = last_non_dead + 1;
 
     if (idle_thread_count > max_spare_threads / num_buckets)
     {
@@ -3217,7 +3216,7 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
         }
     }
     else if (idle_thread_count < min_spare_threads / num_buckets) {
-        if (active_thread_count >= max_workers) {
+        if (active_thread_count >= max_workers / num_buckets) {
             if (0 == idle_thread_count) { 
                 if (!retained->maxclients_reported) {
                     ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf, APLOGNO(00484)

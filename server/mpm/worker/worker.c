@@ -1377,7 +1377,6 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
 {
     int i, j;
     int idle_thread_count;
-    worker_score *ws;
     process_score *ps;
     int free_length;
     int totally_free_length = 0;
@@ -1396,13 +1395,15 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
     for (i = 0; i < ap_daemons_limit; ++i) {
         /* Initialization to satisfy the compiler. It doesn't know
          * that threads_per_child is always > 0 */
-        int status = SERVER_DEAD;
         int any_dying_threads = 0;
         int any_dead_threads = 0;
         int all_dead_threads = 1;
         int child_threads_active = 0;
-        int bucket = i % num_buckets;
 
+        if (num_buckets > 1 && (i % num_buckets) != child_bucket) {
+            /* We only care about child_bucket in this call */
+            continue;
+        }
         if (i >= retained->max_daemons_limit &&
             totally_free_length == retained->idle_spawn_rate[child_bucket]) {
             /* short cut if all active processes have been examined and
@@ -1412,8 +1413,7 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
         }
         ps = &ap_scoreboard_image->parent[i];
         for (j = 0; j < threads_per_child; j++) {
-            ws = &ap_scoreboard_image->servers[i][j];
-            status = ws->status;
+            int status = ap_scoreboard_image->servers[i][j].status;
 
             /* XXX any_dying_threads is probably no longer needed    GLA */
             any_dying_threads = any_dying_threads ||
@@ -1433,8 +1433,7 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
                                    loop if no pid?  not much else matters */
                 if (status <= SERVER_READY &&
                         !ps->quiescing &&
-                        ps->generation == retained->mpm->my_generation &&
-                        bucket == child_bucket) {
+                        ps->generation == retained->mpm->my_generation) {
                     ++idle_thread_count;
                 }
                 if (status >= SERVER_READY && status < SERVER_GRACEFUL) {
@@ -1444,7 +1443,6 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
         }
         active_thread_count += child_threads_active;
         if (any_dead_threads
-                && bucket == child_bucket
                 && totally_free_length < retained->idle_spawn_rate[child_bucket]
                 && free_length < max_spawn_rate_per_bucket
                 && (!ps->pid               /* no process in the slot */
@@ -1477,6 +1475,8 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
         }
     }
 
+    retained->max_daemons_limit = last_non_dead + 1;
+
     if (retained->sick_child_detected) {
         if (had_healthy_child) {
             /* Assume this is a transient error, even though it may not be.  Leave
@@ -1484,6 +1484,10 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
              * problem will be resolved.
              */
             retained->sick_child_detected = 0;
+        }
+        else if (child_bucket < num_buckets - 1) {
+            /* check for had_healthy_child up to the last child bucket */
+            return;
         }
         else {
             /* looks like a basket case, as no child ever fully initialized; give up.
@@ -1500,8 +1504,6 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
         }
     }
 
-    retained->max_daemons_limit = last_non_dead + 1;
-
     if (idle_thread_count > max_spare_threads / num_buckets) {
         /* Kill off one child */
         ap_mpm_podx_signal(retained->buckets[child_bucket].pod,
@@ -1512,7 +1514,7 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
         /* terminate the free list */
         if (free_length == 0) { /* scoreboard is full, can't fork */
 
-            if (active_thread_count >= ap_daemons_limit * threads_per_child) {
+            if (active_thread_count >= max_workers / num_buckets) {
                 /* no threads are "inactive" - starting, stopping, etc. */
                 /* have we reached MaxRequestWorkers, or just getting close? */
                 if (0 == idle_thread_count) {
