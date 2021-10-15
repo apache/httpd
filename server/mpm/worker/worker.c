@@ -1373,9 +1373,9 @@ static void startup_children(int number_to_start)
     }
 }
 
-static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
+static void perform_idle_server_maintenance(int child_bucket)
 {
-    int i, j;
+    int num_buckets = retained->mpm->num_buckets;
     int idle_thread_count;
     process_score *ps;
     int free_length;
@@ -1384,6 +1384,7 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
     int last_non_dead;
     int total_non_dead;
     int active_thread_count = 0;
+    int i, j;
 
     /* initialize the free_list */
     free_length = 0;
@@ -1581,8 +1582,9 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
     }
 }
 
-static void server_main_loop(int remaining_children_to_start, int num_buckets)
+static void server_main_loop(int remaining_children_to_start)
 {
+    int num_buckets = retained->mpm->num_buckets;
     ap_generation_t old_gen;
     int child_slot;
     apr_exit_why_e exitwhy;
@@ -1696,7 +1698,7 @@ static void server_main_loop(int remaining_children_to_start, int num_buckets)
         }
 
         for (i = 0; i < num_buckets; i++) {
-            perform_idle_server_maintenance(i, num_buckets);
+            perform_idle_server_maintenance(i);
         }
     }
 }
@@ -1891,7 +1893,7 @@ static int worker_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
                 apr_proc_mutex_defname());
     retained->mpm->mpm_state = AP_MPMQ_RUNNING;
 
-    server_main_loop(remaining_children_to_start, num_buckets);
+    server_main_loop(remaining_children_to_start);
     retained->mpm->mpm_state = AP_MPMQ_STOPPING;
 
     if (retained->mpm->shutdown_pending && retained->mpm->is_ungraceful) {
