@@ -2051,7 +2051,6 @@ static int worker_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
         retained = ap_retained_data_create(userdata_key, sizeof(*retained));
         retained->mpm = ap_unixd_mpm_get_retained_data();
         retained->mpm->baton = retained;
-        retained->max_daemons_limit = -1;
     }
     else if (retained->mpm->baton != retained) {
         /* If the MPM changes on restart, be ungraceful */
