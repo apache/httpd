@@ -1,0 +1,2 @@
+  *) mod_proxy_connect: Honor the smallest of the backend or client timeout
+     while tunneling.  [Yann Ylavic]
