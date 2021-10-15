@@ -2877,7 +2877,7 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
          * gracefully finishing processes may accumulate, filling up the
          * scoreboard. To avoid running out of scoreboard entries, we
          * don't shut down more processes when the total number of processes
-         * is high.
+         * is high, until there are more than max_workers/4 idle threads.
          *
          * XXX It would be nice if we could
          * XXX - kill processes without keepalive connections first
@@ -2885,13 +2885,19 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
          * XXX   depending on server load, later be able to resurrect them
          *       or kill them
          */
-        if (retained->total_daemons <= active_daemons_limit &&
-            retained->total_daemons < server_limit) {
+        if ((retained->total_daemons <= active_daemons_limit
+             && retained->total_daemons < server_limit)
+            /* The above test won't transition from true to false until a child
+             * exits by itself (i.e. MaxRequestsPerChild reached), so the below
+             * test makes sure that the situation unblocks when the load falls
+             * significantly (regardless of MaxRequestsPerChild, e.g. 0) */
+            || idle_thread_count > max_workers/4 / num_buckets) {
             /* Kill off one child */
             ap_mpm_podx_signal(all_buckets[child_bucket].pod,
                                AP_MPM_PODX_GRACEFUL);
             retained->idle_spawn_rate[child_bucket] = 1;
         } else {
+            /* Still busy enough, don't kill */
             ap_log_error(APLOG_MARK, APLOG_TRACE5, 0, ap_server_conf,
                          "Not shutting down child: total daemons %d / "
                          "active limit %d / ServerLimit %d",
