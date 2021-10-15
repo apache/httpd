@@ -1365,11 +1365,10 @@ static void startup_children(int number_to_start)
     }
 }
 
-static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
+static void perform_idle_server_maintenance(int child_bucket)
 {
-    int i, j;
+    int num_buckets = retained->mpm->num_buckets;
     int idle_thread_count;
-    worker_score *ws;
     process_score *ps;
     int free_length;
     int totally_free_length = 0;
@@ -1377,6 +1376,7 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
     int last_non_dead;
     int total_non_dead;
     int active_thread_count = 0;
+    int i, j;
 
     /* initialize the free_list */
     free_length = 0;
@@ -1388,13 +1388,15 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
     for (i = 0; i < ap_daemons_limit; ++i) {
         /* Initialization to satisfy the compiler. It doesn't know
          * that threads_per_child is always > 0 */
-        int status = SERVER_DEAD;
         int any_dying_threads = 0;
         int any_dead_threads = 0;
         int all_dead_threads = 1;
         int child_threads_active = 0;
-        int bucket = i % num_buckets;
 
+        if (num_buckets > 1 && (i % num_buckets) != child_bucket) {
+            /* We only care about child_bucket in this call */
+            continue;
+        }
         if (i >= retained->max_daemons_limit &&
             totally_free_length == retained->idle_spawn_rate[child_bucket]) {
             /* short cut if all active processes have been examined and
@@ -1404,8 +1406,7 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
         }
         ps = &ap_scoreboard_image->parent[i];
         for (j = 0; j < threads_per_child; j++) {
-            ws = &ap_scoreboard_image->servers[i][j];
-            status = ws->status;
+            int status = ap_scoreboard_image->servers[i][j].status;
 
             /* XXX any_dying_threads is probably no longer needed    GLA */
             any_dying_threads = any_dying_threads ||
@@ -1425,8 +1426,7 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
                                    loop if no pid?  not much else matters */
                 if (status <= SERVER_READY &&
                         !ps->quiescing &&
-                        ps->generation == retained->mpm->my_generation &&
-                        bucket == child_bucket) {
+                        ps->generation == retained->mpm->my_generation) {
                     ++idle_thread_count;
                 }
                 if (status >= SERVER_READY && status < SERVER_GRACEFUL) {
@@ -1436,7 +1436,6 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
         }
         active_thread_count += child_threads_active;
         if (any_dead_threads
-                && bucket == child_bucket
                 && totally_free_length < retained->idle_spawn_rate[child_bucket]
                 && free_length < MAX_SPAWN_RATE / num_buckets
                 && (!ps->pid               /* no process in the slot */
@@ -1464,10 +1463,14 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
         }
         /* XXX if (!ps->quiescing)     is probably more reliable  GLA */
         if (!any_dying_threads) {
-            last_non_dead = i;
             ++total_non_dead;
         }
+        if (ps->pid != 0) {
+            last_non_dead = i;
+        }
     }
+
+    retained->max_daemons_limit = last_non_dead + 1;
 
     if (retained->sick_child_detected) {
         if (had_healthy_child) {
@@ -1476,6 +1479,10 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
              * problem will be resolved.
              */
             retained->sick_child_detected = 0;
+        }
+        else if (child_bucket < num_buckets - 1) {
+            /* check for had_healthy_child up to the last child bucket */
+            return;
         }
         else {
             /* looks like a basket case, as no child ever fully initialized; give up.
@@ -1492,8 +1499,6 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
         }
     }
 
-    retained->max_daemons_limit = last_non_dead + 1;
-
     if (idle_thread_count > max_spare_threads / num_buckets) {
         /* Kill off one child */
         ap_mpm_podx_signal(all_buckets[child_bucket].pod,
@@ -1504,7 +1509,7 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
         /* terminate the free list */
         if (free_length == 0) { /* scoreboard is full, can't fork */
 
-            if (active_thread_count >= ap_daemons_limit * threads_per_child) {
+            if (active_thread_count >= max_workers / num_buckets) {
                 /* no threads are "inactive" - starting, stopping, etc. */
                 /* have we reached MaxRequestWorkers, or just getting close? */
                 if (0 == idle_thread_count) {
@@ -1567,8 +1572,9 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
     }
 }
 
-static void server_main_loop(int remaining_children_to_start, int num_buckets)
+static void server_main_loop(int remaining_children_to_start)
 {
+    int num_buckets = retained->mpm->num_buckets;
     ap_generation_t old_gen;
     int child_slot;
     apr_exit_why_e exitwhy;
@@ -1682,7 +1688,7 @@ static void server_main_loop(int remaining_children_to_start, int num_buckets)
         }
 
         for (i = 0; i < num_buckets; i++) {
-            perform_idle_server_maintenance(i, num_buckets);
+            perform_idle_server_maintenance(i);
         }
     }
 }
@@ -1764,7 +1770,7 @@ static int worker_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
                 apr_proc_mutex_defname());
     retained->mpm->mpm_state = AP_MPMQ_RUNNING;
 
-    server_main_loop(remaining_children_to_start, num_buckets);
+    server_main_loop(remaining_children_to_start);
     retained->mpm->mpm_state = AP_MPMQ_STOPPING;
 
     if (retained->mpm->shutdown_pending && retained->mpm->is_ungraceful) {
@@ -2019,7 +2025,6 @@ static int worker_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
     if (!retained) {
         retained = ap_retained_data_create(userdata_key, sizeof(*retained));
         retained->mpm = ap_unixd_mpm_get_retained_data();
-        retained->max_daemons_limit = -1;
     }
     retained->mpm->mpm_state = AP_MPMQ_STARTING;
     if (retained->mpm->baton != retained) {

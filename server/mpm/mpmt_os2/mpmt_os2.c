@@ -79,7 +79,7 @@ int ap_min_spare_threads = 0;
 int ap_max_spare_threads = 0;
 
 /* Keep track of a few interesting statistics */
-int ap_max_daemons_limit = -1;
+int ap_max_daemons_limit = 0;
 
 /* volatile just in case */
 static int volatile shutdown_pending;
@@ -344,8 +344,8 @@ static void spawn_child(int slot)
                      "error spawning child, slot %d", slot);
     }
 
-    if (ap_max_daemons_limit < slot) {
-        ap_max_daemons_limit = slot;
+    if (slot + 1 > ap_max_daemons_limit) {
+        ap_max_daemons_limit = slot + 1;
     }
 
     ap_scoreboard_image->parent[slot].pid = proc_rc.codeTerminate;
