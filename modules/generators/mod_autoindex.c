@@ -133,6 +133,7 @@ typedef struct autoindex_config_struct {
     int desc_adjust;
     int icon_width;
     int icon_height;
+    int not_found;
     char default_keyid;
     char default_direction;
 
@@ -608,6 +609,11 @@ static const command_rec autoindex_cmds[] =
     AP_INIT_TAKE1("IndexHeadInsert", ap_set_string_slot,
                   (void *)APR_OFFSETOF(autoindex_config_rec, head_insert),
                   DIR_CMD_PERMS, "String to insert in HTML HEAD section"),
+    AP_INIT_FLAG("IndexForbiddenReturn404", ap_set_flag_slot,
+                 (void *)APR_OFFSETOF(autoindex_config_rec, not_found),
+                 DIR_CMD_PERMS,
+                 "Return 404 in place of 403 when Options doesn't allow indexes"),
+
     {NULL}
 };
 
@@ -2331,7 +2337,7 @@ static int handle_autoindex(request_rec *r)
                       "Options directive",
                        r->filename,
                        index_names ? index_names : "none");
-        return HTTP_FORBIDDEN;
+        return d->not_found ? HTTP_NOT_FOUND : HTTP_FORBIDDEN;
     }
 }
 
