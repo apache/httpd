@@ -88,7 +88,7 @@ réponse</description>
 
     <example><title>Exemple</title>
         <highlight language="config">
-&lt;Location "/&gt;
+&lt;Location "/"&gt;
     AddOutputFilterByType SUBSTITUTE text/html
     Substitute "s/foo/bar/ni"
 &lt;/Location&gt;
