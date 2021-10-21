@@ -48,6 +48,7 @@ typedef struct dir_config_struct {
     moddir_cfg checkhandler;
     int redirect_index;
     const char *dflt;
+    moddir_cfg do_slash_notfound;
 } dir_config_rec;
 
 #define DIR_CMD_PERMS OR_INDEXES
@@ -86,6 +87,13 @@ static const char *configure_slash(cmd_parms *cmd, void *d_, int arg)
     dir_config_rec *d = d_;
 
     d->do_slash = arg ? MODDIR_ON : MODDIR_OFF;
+    return NULL;
+}
+static const char *configure_slash_notfound(cmd_parms *cmd, void *d_, int arg)
+{
+    dir_config_rec *d = d_;
+
+    d->do_slash_notfound = arg ? MODDIR_ON : MODDIR_OFF;
     return NULL;
 }
 static const char *configure_checkhandler(cmd_parms *cmd, void *d_, int arg)
@@ -132,6 +140,8 @@ static const command_rec dir_cmds[] =
                     "a list of file names"),
     AP_INIT_FLAG("DirectorySlash", configure_slash, NULL, DIR_CMD_PERMS,
                  "On or Off"),
+    AP_INIT_FLAG("DirectorySlashNotFound", configure_slash_notfound, NULL, DIR_CMD_PERMS,
+                 "On or Off"),
     AP_INIT_FLAG("DirectoryCheckHandler", configure_checkhandler, NULL, DIR_CMD_PERMS,
                  "On or Off"),
     AP_INIT_TAKE1("DirectoryIndexRedirect", configure_redirect,
@@ -146,6 +156,7 @@ static void *create_dir_config(apr_pool_t *p, char *dummy)
 
     new->index_names = NULL;
     new->do_slash = MODDIR_UNSET;
+    new->do_slash_notfound = MODDIR_UNSET;
     new->checkhandler = MODDIR_UNSET;
     new->redirect_index = REDIRECT_UNSET;
     return (void *) new;
@@ -160,6 +171,8 @@ static void *merge_dir_configs(apr_pool_t *p, void *basev, void *addv)
     new->index_names = add->index_names ? add->index_names : base->index_names;
     new->do_slash =
         (add->do_slash == MODDIR_UNSET) ? base->do_slash : add->do_slash;
+    new->do_slash_notfound =
+        (add->do_slash_notfound == MODDIR_UNSET) ? base->do_slash_notfound : add->do_slash_notfound;
     new->checkhandler =
         (add->checkhandler == MODDIR_UNSET) ? base->checkhandler : add->checkhandler;
     new->redirect_index=
@@ -249,6 +262,10 @@ static int fixup_dir(request_rec *r)
 
         if (!d->do_slash) {
             return DECLINED;
+        }
+
+        if (d->do_slash_notfound == MODDIR_ON) { 
+            return HTTP_NOT_FOUND;
         }
 
         /* Only redirect non-get requests if we have no note to warn

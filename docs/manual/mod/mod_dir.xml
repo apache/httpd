@@ -230,6 +230,22 @@ a directory</description>
 </usage>
 </directivesynopsis>
 <directivesynopsis>
+<name>DirectorySlashNotFound</name>
+<description>Toggle sending a HTTP 404 error in place of a trailing slash</description>
+<syntax>DirectorySlashNotFound On|Off</syntax>
+<default>DirectorySlashNotFound  Off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>Indexes</override>
+<compatibility>Added in 2.5.1</compatibility>
+
+<usage>
+    <p>The <directive>DirectorySlashNotFound</directive> directive determines whether
+    <module>mod_dir</module> should return an HTTP 404 status code where it would 
+    otherwise have redirected the request to include a trailing slash.  </p>
+</usage>
+</directivesynopsis>
+<directivesynopsis>
 <name>FallbackResource</name>
 <description>Define a default URL for requests that don't map to a file</description>
 <syntax>FallbackResource disabled | <var>local-url</var></syntax>

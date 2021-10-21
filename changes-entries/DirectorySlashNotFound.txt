@@ -1,0 +1,2 @@
+  *) mod_dir: Add "DirectorySlashNotFound" to return 404 instead of a 
+     DirectorySlash redirect. [Eric Covener]
