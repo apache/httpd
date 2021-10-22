@@ -39,16 +39,23 @@ typedef enum {
     MODDIR_UNSET
 } moddir_cfg;
 
+typedef enum {
+    SLASH_OFF = 0,
+    SLASH_ON,
+    SLASH_NOTFOUND,
+    SLASH_UNSET
+} moddir_doslash;
+
+
 #define REDIRECT_OFF   0
 #define REDIRECT_UNSET 1
 
 typedef struct dir_config_struct {
     apr_array_header_t *index_names;
-    moddir_cfg do_slash;
+    moddir_doslash do_slash;
     moddir_cfg checkhandler;
     int redirect_index;
     const char *dflt;
-    moddir_cfg do_slash_notfound;
 } dir_config_rec;
 
 #define DIR_CMD_PERMS OR_INDEXES
@@ -82,18 +89,22 @@ static const char *add_index(cmd_parms *cmd, void *dummy, const char *arg)
     return NULL;
 }
 
-static const char *configure_slash(cmd_parms *cmd, void *d_, int arg)
+static const char *configure_slash(cmd_parms *cmd, void *d_, const char *arg1)
 {
     dir_config_rec *d = d_;
 
-    d->do_slash = arg ? MODDIR_ON : MODDIR_OFF;
-    return NULL;
-}
-static const char *configure_slash_notfound(cmd_parms *cmd, void *d_, int arg)
-{
-    dir_config_rec *d = d_;
-
-    d->do_slash_notfound = arg ? MODDIR_ON : MODDIR_OFF;
+    if (!ap_cstr_casecmp(arg1, "on")) { 
+        d->do_slash = SLASH_ON;
+    }
+    else if (!ap_cstr_casecmp(arg1, "off")) { 
+        d->do_slash = SLASH_OFF;
+    }
+    else if (!ap_cstr_casecmp(arg1, "NotFound")) { 
+        d->do_slash = SLASH_NOTFOUND;
+    }
+    else { 
+        return "DirectorySlash only accepts ON, OFF, or 'NotFound'";
+    }
     return NULL;
 }
 static const char *configure_checkhandler(cmd_parms *cmd, void *d_, int arg)
@@ -138,9 +149,7 @@ static const command_rec dir_cmds[] =
                   DIR_CMD_PERMS, "Set a default handler"),
     AP_INIT_RAW_ARGS("DirectoryIndex", add_index, NULL, DIR_CMD_PERMS,
                     "a list of file names"),
-    AP_INIT_FLAG("DirectorySlash", configure_slash, NULL, DIR_CMD_PERMS,
-                 "On or Off"),
-    AP_INIT_FLAG("DirectorySlashNotFound", configure_slash_notfound, NULL, DIR_CMD_PERMS,
+    AP_INIT_TAKE1("DirectorySlash", configure_slash, NULL, DIR_CMD_PERMS,
                  "On or Off"),
     AP_INIT_FLAG("DirectoryCheckHandler", configure_checkhandler, NULL, DIR_CMD_PERMS,
                  "On or Off"),
@@ -155,8 +164,7 @@ static void *create_dir_config(apr_pool_t *p, char *dummy)
     dir_config_rec *new = apr_pcalloc(p, sizeof(dir_config_rec));
 
     new->index_names = NULL;
-    new->do_slash = MODDIR_UNSET;
-    new->do_slash_notfound = MODDIR_UNSET;
+    new->do_slash = SLASH_UNSET;
     new->checkhandler = MODDIR_UNSET;
     new->redirect_index = REDIRECT_UNSET;
     return (void *) new;
@@ -170,9 +178,7 @@ static void *merge_dir_configs(apr_pool_t *p, void *basev, void *addv)
 
     new->index_names = add->index_names ? add->index_names : base->index_names;
     new->do_slash =
-        (add->do_slash == MODDIR_UNSET) ? base->do_slash : add->do_slash;
-    new->do_slash_notfound =
-        (add->do_slash_notfound == MODDIR_UNSET) ? base->do_slash_notfound : add->do_slash_notfound;
+        (add->do_slash == SLASH_UNSET) ? base->do_slash : add->do_slash;
     new->checkhandler =
         (add->checkhandler == MODDIR_UNSET) ? base->checkhandler : add->checkhandler;
     new->redirect_index=
@@ -260,13 +266,13 @@ static int fixup_dir(request_rec *r)
     {
         char *ifile;
 
-        if (!d->do_slash) {
+        if (d->do_slash == SLASH_OFF) {
             return DECLINED;
         }
-
-        if (d->do_slash_notfound == MODDIR_ON) { 
+        if (d->do_slash == SLASH_NOTFOUND) {
             return HTTP_NOT_FOUND;
         }
+
 
         /* Only redirect non-get requests if we have no note to warn
          * that this browser cannot handle redirs on non-GET requests

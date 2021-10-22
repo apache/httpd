@@ -178,19 +178,20 @@ a directory</description>
 <directivesynopsis>
 <name>DirectorySlash</name>
 <description>Toggle trailing slash redirects on or off</description>
-<syntax>DirectorySlash On|Off</syntax>
+<syntax>DirectorySlash On|Off|NotFound</syntax>
 <default>DirectorySlash On</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>Indexes</override>
+<compatibility>Argument NotFound added in 2.5.1</compatibility>
 
 <usage>
-    <p>The <directive>DirectorySlash</directive> directive determines whether
+    <p>The <directive>DirectorySlash</directive> directive determines how 
     <module>mod_dir</module> should fixup URLs pointing to a directory or
     not.</p>
 
     <p>Typically if a user requests a resource without a trailing slash, which
-    points to a directory, <module>mod_dir</module> redirects him to the same
+    points to a directory, <module>mod_dir</module> redirects them to the same
     resource, but <em>with</em> trailing slash for some good reasons:</p>
 
     <ul>
@@ -227,22 +228,12 @@ a directory</description>
     </note>
 	<p>Also note that some browsers may erroneously change POST requests into GET
 	(thus discarding POST data) when a redirect is issued.</p>
-</usage>
-</directivesynopsis>
-<directivesynopsis>
-<name>DirectorySlashNotFound</name>
-<description>Toggle sending a HTTP 404 error in place of a trailing slash</description>
-<syntax>DirectorySlashNotFound On|Off</syntax>
-<default>DirectorySlashNotFound  Off</default>
-<contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context><context>.htaccess</context></contextlist>
-<override>Indexes</override>
-<compatibility>Added in 2.5.1</compatibility>
 
-<usage>
-    <p>The <directive>DirectorySlashNotFound</directive> directive determines whether
-    <module>mod_dir</module> should return an HTTP 404 status code where it would 
-    otherwise have redirected the request to include a trailing slash.  </p>
+    <p>To avoid the risks of the "off" behavior above, or to avoid disclosing 
+    that a directory is present via the behavior of "on", an argument of 
+    "NotFound" can be used to tell <module>mod_dir</module> to return an HTTP 
+    404 status code redirected the request to include a trailing slash.</p>
+
 </usage>
 </directivesynopsis>
 <directivesynopsis>
