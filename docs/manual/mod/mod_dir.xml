@@ -232,7 +232,7 @@ a directory</description>
     <p>To avoid the risks of the "off" behavior above, or to avoid disclosing 
     that a directory is present via the behavior of "on", an argument of 
     "NotFound" can be used to tell <module>mod_dir</module> to return an HTTP 
-    404 status code redirected the request to include a trailing slash.</p>
+    404 status code instead of redirecting the request to include a trailing slash.</p>
 
 </usage>
 </directivesynopsis>
