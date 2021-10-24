@@ -975,116 +975,6 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut
     </directivesynopsis>
 
     <directivesynopsis>
-        <name>H2Timeout</name>
-        <description>Délai (en secondes) pour les connexions HTTP/2</description>
-        <syntax>H2Timeout secondes</syntax>
-        <default>H2Timeout 5</default>
-        <contextlist>
-            <context>server config</context>
-            <context>virtual host</context>
-        </contextlist>
-        <compatibility>Disponible à partir de la version 2.4.19 du serveur HTTP
-	Apache.</compatibility>
-
-        <usage>
-            <p>
-                Cette directive permet de définir un délai pour les opérations
-		de lecture/écriture lorsqu'une connexion HTTP/2 a été
-		négociée. Elle peut être définie pour l'ensemble du serveur ou
-		pour un <directive module="core" type="section">serveur
-		virtuel</directive> spécifique.
-            </p>
-            <p>
-                Elle est similaire à la directive <directive module="core"
-		type="section">Timeout</directive>, mais elle ne s'applique
-		qu'aux connexions HTTP/2.
-            </p>
-            <p>
-                Une valeur de 0 signifie qu'aucun délai n'est imposé.
-            </p>
-        </usage>
-    </directivesynopsis>
-
-    <directivesynopsis>
-        <name>H2KeepAliveTimeout</name>
-        <description>Durée de vie en secondes des connexions HTTP/2 inactives</description>
-        <syntax>H2KeepAliveTimeout secondes</syntax>
-        <contextlist>
-            <context>server config</context>
-            <context>virtual host</context>
-        </contextlist>
-        <compatibility>Disponible à partir de la version 2.4.19 du serveur HTTP
-	Apache.</compatibility>
-
-        <usage>
-            <p>
-                Cette directive permet de définir la durée de vie des connexions
-		HTTP/2 inactives. Sa portée peut s'étendre à l'ensemble du
-		serveur, ou seulement à un <directive module="core"
-		type="section">VirtualHost</directive> spécifique.
-            </p>
-            <p>
-                Cette directive est équivalente à la directive <directive
-		module="core" type="section">KeepAliveTimeout</directive>, mais
-		elle ne s'applique qu'aux connexions HTTP/2. Une connexion
-		HTTP/2 est considérée comme inactive lorsqu'aucun flux n'est
-		ouvert, autrement dit lorsqu'aucune requête n'est sur le point
-		d'être traitée.
-            </p>
-            <p>
-                Pour les MPMs non-asynch (prefork, worker), la durée de vie
-		sera par défaut égale à H2Timeout. Pour les MPMs async, il
-		semble qu'aucune action ne soit à entreprendre pour la durée de
-		vie des connexions HTTP/1.
-            </p>
-        </usage>
-    </directivesynopsis>
-
-    <directivesynopsis>
-        <name>H2StreamTimeout</name>
-        <description>Durée de vie en secondes des connexions HTTP/2 inactives</description>
-        <syntax>H2StreamTimeout secondes</syntax>
-        <default>H2StreamTimeout 0</default>
-        <contextlist>
-            <context>server config</context>
-            <context>virtual host</context>
-        </contextlist>
-        <compatibility>Disponible à partir de la version 2.4.19 du serveur HTTP
-	Apache.</compatibility>
-
-        <usage>
-            <p>
-		Cette directive permet de définir la durée de vie des flux
-		HTTP/2 pour les requêtes individuelles. Sa portée peut s'étendre
-		à l'ensemble du serveur, ou seulement à un <directive
-		module="core" type="section">VirtualHost</directive> spécifique
-            </p>
-            <p>
-                De par la nature de HTTP/2 qui transmet plusieurs requêtes sur
-		une seule connexion et gère une planification des priorités, les
-		flux individuels ne sont pas susceptibles de recevoir des
-		données en entrée beaucoup plus longtemps qu'une connexion
-		HTTP/1.1.
-            </p>
-            <p>
-                Si cette directive est définie à 0, la durée de vie des flux
-		HTTP/2 n'a aucune limite, et il peuvent attendre indéfiniment
-		l'arrivée de données à lire ou écrire. Cela expose cependant le
-		serveur à atteindre sa limite en nombre de threads.
-            </p>
-            <p>
-                Un site peut nécessiter une augmentation de cette valeur en
-		fonction de votre gestion des flux PUSHés, des priorités et de
-		la réactivité générale. Par exemple, si vous PUSHez une
-		ressource de taille importante <em>avant</em> celle qui a fait
-		l'objet d'une requête, le flux initiale n'effectuera aucune
-		écriture jusqu'à ce que la ressource PUSHée ne soit envoyée dans
-		son intégralité.
-            </p>
-        </usage>
-    </directivesynopsis>
-
-    <directivesynopsis>
         <name>H2CopyFiles</name>
         <description>Contrôle la gestion des fichiers dans les réponses</description>
         <syntax>H2CopyFiles on|off</syntax>
@@ -1285,7 +1175,7 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut
 
         <usage>
             <p>
-                Cette directive permet de spécifier le temps maximum pendant
+                'H2StreamTimeout' permet de spécifier le temps maximum pendant
 		lequel un flux en cours de traitement attendra pour
 		l'envoi/réception de ses données.
             </p>
