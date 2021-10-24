@@ -340,6 +340,7 @@
 <li><a href="mod_http2.html#h2pushresource">H2PushResource</a></li>
 <li><a href="mod_http2.html#h2serializeheaders">H2SerializeHeaders</a></li>
 <li><a href="mod_http2.html#h2streammaxmemsize">H2StreamMaxMemSize</a></li>
+<li><a href="mod_http2.html#h2streamtimeout">H2StreamTimeout</a></li>
 <li><a href="mod_http2.html#h2tlscooldownsecs">H2TLSCoolDownSecs</a></li>
 <li><a href="mod_http2.html#h2tlswarmupsize">H2TLSWarmUpSize</a></li>
 <li><a href="mod_http2.html#h2upgrade">H2Upgrade</a></li>
@@ -367,6 +368,7 @@
 <li><a href="mod_imagemap.html#imapmenu">ImapMenu</a></li>
 <li><a href="core.html#include">Include</a></li>
 <li><a href="core.html#includeoptional">IncludeOptional</a></li>
+<li><a href="mod_autoindex.html#indexforbiddenreturn404">IndexForbiddenReturn404</a></li>
 <li><a href="mod_autoindex.html#indexheadinsert">IndexHeadInsert</a></li>
 <li><a href="mod_autoindex.html#indexignore">IndexIgnore</a></li>
 <li><a href="mod_autoindex.html#indexignorereset">IndexIgnoreReset</a></li>

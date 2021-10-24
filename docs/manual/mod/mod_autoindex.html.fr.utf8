@@ -93,6 +93,7 @@ shell Win32 <code>dir</code></td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#addiconbytype">AddIconByType</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#defaulticon">DefaultIcon</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#headername">HeaderName</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#indexforbiddenreturn404">IndexForbiddenReturn404</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#indexheadinsert">IndexHeadInsert</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#indexignore">IndexIgnore</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#indexignorereset">IndexIgnoreReset</a></li>
@@ -523,6 +524,24 @@ contenant l'index</td></tr>
 <ul>
 <li><code class="directive"><a href="#readmename">ReadmeName</a></code></li>
 </ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="indexforbiddenreturn404" id="indexforbiddenreturn404">Directive</a> <a name="IndexForbiddenReturn404" id="IndexForbiddenReturn404">IndexForbiddenReturn404</a> <a title="Lien permanent" href="#indexforbiddenreturn404" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Renvoie une erreur HTTP 404 au lieu de Forbidden lorsque les
+options n'autorisent pas le listing de répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>IndexForbiddenReturn404 On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_autoindex</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.1 du serveur HTTP Apache</td></tr>
+</table>
+    <p>La directive <code class="directive">IndexForbiddenReturn404</code> permet de
+    définir si ce module renvoie un code d'état HTTP 404 au lieu d'un code
+    d'état 403 lorsque la directive <code class="directive">Options</code> n'autorise
+    pas le listing de répertoire.</p>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="indexheadinsert" id="indexheadinsert">Directive</a> <a name="IndexHeadInsert" id="IndexHeadInsert">IndexHeadInsert</a> <a title="Lien permanent" href="#indexheadinsert" class="permalink">&para;</a></h2>

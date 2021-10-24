@@ -892,34 +892,37 @@ cible</td></tr>
 <tr class="odd"><td><a href="mod_imagemap.html#imapmenu">ImapMenu</a></td><td class="module"><a href="mod_imagemap.html">mod_imagemap</a></td></tr>
 <tr class="odd"><td colspan="2" class="descr">Action à entreprendre si aucune coordonnée n'est fournie
 lorsqu'on invoque un fichier imagemap</td></tr>
-<tr><td><a href="mod_autoindex.html#indexheadinsert">IndexHeadInsert</a></td><td class="module"><a href="mod_autoindex.html">mod_autoindex</a></td></tr>
-<tr><td colspan="2" class="descr">Insère du texte dans la section HEAD de la page
+<tr><td><a href="mod_autoindex.html#indexforbiddenreturn404">IndexForbiddenReturn404</a></td><td class="module"><a href="mod_autoindex.html">mod_autoindex</a></td></tr>
+<tr><td colspan="2" class="descr">Renvoie une erreur HTTP 404 au lieu de Forbidden lorsque les
+options n'autorisent pas le listing de répertoire</td></tr>
+<tr class="odd"><td><a href="mod_autoindex.html#indexheadinsert">IndexHeadInsert</a></td><td class="module"><a href="mod_autoindex.html">mod_autoindex</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Insère du texte dans la section HEAD de la page
 d'index.</td></tr>
-<tr class="odd"><td><a href="mod_autoindex.html#indexignore">IndexIgnore</a></td><td class="module"><a href="mod_autoindex.html">mod_autoindex</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Ajouts à la liste des fichiers à cacher lors de l'affichage
+<tr><td><a href="mod_autoindex.html#indexignore">IndexIgnore</a></td><td class="module"><a href="mod_autoindex.html">mod_autoindex</a></td></tr>
+<tr><td colspan="2" class="descr">Ajouts à la liste des fichiers à cacher lors de l'affichage
 de l'index d'un répertoire</td></tr>
-<tr><td><a href="mod_autoindex.html#indexignorereset">IndexIgnoreReset</a></td><td class="module"><a href="mod_autoindex.html">mod_autoindex</a></td></tr>
-<tr><td colspan="2" class="descr">Vide la liste des fichiers à cacher lors de l'affichage du
+<tr class="odd"><td><a href="mod_autoindex.html#indexignorereset">IndexIgnoreReset</a></td><td class="module"><a href="mod_autoindex.html">mod_autoindex</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Vide la liste des fichiers à cacher lors de l'affichage du
 contenu d'un répertoire</td></tr>
-<tr class="odd"><td><a href="mod_autoindex.html#indexoptions">IndexOptions</a></td><td class="module"><a href="mod_autoindex.html">mod_autoindex</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Diverses options de configuration pour l'indexation d'un
+<tr><td><a href="mod_autoindex.html#indexoptions">IndexOptions</a></td><td class="module"><a href="mod_autoindex.html">mod_autoindex</a></td></tr>
+<tr><td colspan="2" class="descr">Diverses options de configuration pour l'indexation d'un
 répertoire</td></tr>
-<tr><td><a href="mod_autoindex.html#indexorderdefault">IndexOrderDefault</a></td><td class="module"><a href="mod_autoindex.html">mod_autoindex</a></td></tr>
-<tr><td colspan="2" class="descr">Définit l'ordre d'affichage par défaut d'un index de
+<tr class="odd"><td><a href="mod_autoindex.html#indexorderdefault">IndexOrderDefault</a></td><td class="module"><a href="mod_autoindex.html">mod_autoindex</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Définit l'ordre d'affichage par défaut d'un index de
 répertoire</td></tr>
-<tr class="odd"><td><a href="mod_autoindex.html#indexstylesheet">IndexStyleSheet</a></td><td class="module"><a href="mod_autoindex.html">mod_autoindex</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Ajoute une feuille de style CSS à l'index du
+<tr><td><a href="mod_autoindex.html#indexstylesheet">IndexStyleSheet</a></td><td class="module"><a href="mod_autoindex.html">mod_autoindex</a></td></tr>
+<tr><td colspan="2" class="descr">Ajoute une feuille de style CSS à l'index du
 répertoire</td></tr>
-<tr><td><a href="mod_cern_meta.html#metadir">MetaDir</a></td><td class="module"><a href="mod_cern_meta.html">mod_cern_meta</a></td></tr>
-<tr><td colspan="2" class="descr">Le nom du répertoire où trouver les fichiers de
+<tr class="odd"><td><a href="mod_cern_meta.html#metadir">MetaDir</a></td><td class="module"><a href="mod_cern_meta.html">mod_cern_meta</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Le nom du répertoire où trouver les fichiers de
 métainformations dans le style du CERN</td></tr>
-<tr class="odd"><td><a href="mod_cern_meta.html#metafiles">MetaFiles</a></td><td class="module"><a href="mod_cern_meta.html">mod_cern_meta</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Active le traitement des métafichiers du CERN</td></tr>
-<tr><td><a href="mod_cern_meta.html#metasuffix">MetaSuffix</a></td><td class="module"><a href="mod_cern_meta.html">mod_cern_meta</a></td></tr>
-<tr><td colspan="2" class="descr">Suffixe du fichier contenant les métainformations dans le
+<tr><td><a href="mod_cern_meta.html#metafiles">MetaFiles</a></td><td class="module"><a href="mod_cern_meta.html">mod_cern_meta</a></td></tr>
+<tr><td colspan="2" class="descr">Active le traitement des métafichiers du CERN</td></tr>
+<tr class="odd"><td><a href="mod_cern_meta.html#metasuffix">MetaSuffix</a></td><td class="module"><a href="mod_cern_meta.html">mod_cern_meta</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Suffixe du fichier contenant les métainformations dans le
 style du CERN</td></tr>
-<tr class="odd"><td><a href="mod_autoindex.html#readmename">ReadmeName</a></td><td class="module"><a href="mod_autoindex.html">mod_autoindex</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Nom du fichier dont le contenu sera inséré à la fin de
+<tr><td><a href="mod_autoindex.html#readmename">ReadmeName</a></td><td class="module"><a href="mod_autoindex.html">mod_autoindex</a></td></tr>
+<tr><td colspan="2" class="descr">Nom du fichier dont le contenu sera inséré à la fin de
 l'index</td></tr>
 </table></div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a name="override-limit">Limit</a></h2>
     <p>

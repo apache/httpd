@@ -234,15 +234,17 @@ répertoires.
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Activation/Désactivation de la redirection "slash de
 fin"</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DirectorySlash On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DirectorySlash On|Off|NotFound</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>DirectorySlash On</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dir</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>L'argument NotFound est disponible à partir de la version 2.5.1
+du serveur HTTP Apache</td></tr>
 </table>
-    <p>La directive <code class="directive">DirectorySlash</code> permet de
-    déterminer si <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> doit corriger ou non les URLs
+    <p>La directive <code class="directive">DirectorySlash</code> permet de déterminer
+    comment <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> doit éventuellement corriger les URLs
     pointant vers un répertoire.</p>
 
     <p>En général, si un utilisateur envoie une requête pour une
@@ -291,6 +293,12 @@ fin"</td></tr>
     <p>Notez aussi que certains navigateurs peuvent modifier par erreur
     des requêtes POST en requêtes GET lors d'une redirection, les
     données POST étant alors perdues.</p>
+
+    <p>Pour éviter les risques inhérents à l'option "off" ci-dessus ou pour
+    éviter de divulguer la présence d'un répertoire via l'option "on", on peut
+    utiliser l'argument "NotFound" pour que <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> renvoie un
+    code d'état 404 au lieu de rediriger la requête pour inclure un slash de
+    fin.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
